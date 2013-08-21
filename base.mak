@@ -79,15 +79,15 @@ CFG_HI_BASE_ENV+=" CROSS_COMPILE "
 #3. export CFG_HI_CFLAGS
 CFG_HI_CFLAGS :=
 
-ifeq (${CFG_HI_TOOLCHAINS_NAME},arm-hismall-linux)
-    CFG_HI_CFLAGS+=-march=armv5te -mtune=arm926ej-s
-endif
-ifeq (${CFG_HI_TOOLCHAINS_NAME},arm-hisiv110-linux)
-    CFG_HI_CFLAGS+=-march=armv7-a -mcpu=cortex-a9 -mfloat-abi=softfp -mfpu=vfpv3-d16
-endif
-ifeq (${CFG_HI_TOOLCHAINS_NAME},arm-hisiv200-linux)
-    CFG_HI_CFLAGS+=-march=armv7-a -mcpu=cortex-a9 -mfloat-abi=softfp -mfpu=vfpv3-d16
-endif
+#ifeq (${CFG_HI_TOOLCHAINS_NAME},arm-hismall-linux)
+#    CFG_HI_CFLAGS+=-march=armv5te -mtune=arm926ej-s
+#endif
+#ifeq (${CFG_HI_TOOLCHAINS_NAME},arm-hisiv110-linux)
+#    CFG_HI_CFLAGS+=-march=armv7-a -mcpu=cortex-a9 -mfloat-abi=softfp -mfpu=vfpv3-d16
+#endif
+#ifeq (${CFG_HI_TOOLCHAINS_NAME},arm-hisiv200-linux)
+#    CFG_HI_CFLAGS+=-march=armv7-a -mcpu=cortex-a9 -mfloat-abi=softfp -mfpu=vfpv3-d16
+#endif
 
 ifeq ($(CFG_HI_OPTM_SIZE_SUPPORT),y)
 CFG_HI_CFLAGS+= -c -Os -ffunction-sections -Wall -fPIC -DUSE_AEC -D_GNU_SOURCE -D_XOPEN_SOURCE=600

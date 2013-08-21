@@ -12,23 +12,23 @@ HI_FLASH_DIR=flash
 #===============================================================================
 # local variable
 #===============================================================================
-CFLAGS  += $(CFG_HI_CFLAGS)
+#CFLAGS  += $(CFG_HI_CFLAGS)
 
-CFLAGS += -I$(MSP_DIR)/api/include
-CFLAGS += -I$(COMMON_DIR)/include
-CFLAGS += -I$(COMMON_DIR)/api/include
-CFLAGS += -I$(COMMON_DIR)/drv/include
-CFLAGS += -I$(COMMON_DIR)/api/stat
-CFLAGS += -I$(COMMON_DIR)/api/sys
-CFLAGS += -I$(COMMON_DIR)/api/log
-CFLAGS += -I$(COMMON_DIR)/api/mem
-CFLAGS += -I$(COMMON_DIR)/api/mmz
-CFLAGS += -I$(COMMON_DIR)/api/module
-CFLAGS += -I$(COMMON_DIR)/drv/module
-CFLAGS += -I$(COMMON_DIR)/drv/mem
+CFG_HI_CFLAGS += -I$(MSP_DIR)/api/include
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/include
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/api/include
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/drv/include
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/api/stat
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/api/sys
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/api/log
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/api/mem
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/api/mmz
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/api/module
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/drv/module
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/drv/mem
 
 ifeq (y,$(CFG_HI_TEST_SUPPORT))
-CFLAGS += -I$(COMMON_DIR)/drv/test
+CFG_HI_CFLAGS += -I$(COMMON_DIR)/drv/test
 endif
 
 LIBS := libhi_common
@@ -46,7 +46,7 @@ OBJS := ./sys/hi_common.o     \
 DEPENDS := $(patsubst %.o, %.d, $(OBJS))
 
 ifeq (y,$(CFG_HI_TEST_SUPPORT))
-CFLAGS += -DCMN_TEST_SUPPORTED
+CFG_HI_CFLAGS += -DCMN_TEST_SUPPORTED
 OBJS   += ./test/mpi_test.o
 endif
 PUB_HEADERS  := $(wildcard $(COMMON_DIR)/include/*.h)
@@ -96,14 +96,14 @@ $(LIBS): $(OBJS)
 
 ## Building api objects
 ## using: -save-temps for temporary files
-#${OBJS}: %.o : %.c
-#	$(AT)echo "Compiling $@..."
-#	$(AT)$(CC) $(CFLAGS) -c $< -o $@
+${OBJS}: %.o : %.c
+	echo "Compiling $@..."
+	$(CC) $(CFLAGS) $(CFG_HI_CFLAGS) -c $< -o $@
 
 $(DEPENDS):%.d:%.c
 	@echo "[$(CC)] $@..."
 	@set -e; rm -f $@; \
-	$(CC) -MM $(CFLAGS) $< > $@.$$$$; \
+	$(CC) -MM $(CFLAGS) $(CFG_HI_CFLAGS) $< > $@.$$$$; \
 	sed 's,\($(notdir $*)\)\.o[ :]*,$(dir $@)\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 	

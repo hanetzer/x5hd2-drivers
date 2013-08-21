@@ -7,7 +7,8 @@
 #	local varibale
 #=======================================
 
-objects:= hdmi gpio vo pdm cipher
+#objects:= hdmi gpio vo pdm cipher
+objects:= hdmi vo pdm
 
 ifeq ($(CFG_HI_LOADER_APPLOADER),y)
 objects+= i2c frontend ir demux tde jpeg otp png jpge higo 
@@ -15,8 +16,9 @@ endif
 
 ifneq ($(CFG_HI_LOADER_APPLOADER),y)
  ifneq ($(CFG_HI_LOADER_RECOVERY),y)
- objects+= i2c frontend ir demux tde jpeg otp higo \
-           pm avplay pvr sync ao adec vdec wdg png omx mce gpu jpge
+# objects+= i2c frontend ir demux tde jpeg otp higo \
+#           pm avplay pvr sync ao adec vdec wdg png omx mce gpu jpge
+ objects+= i2c frontend ir ao omx gpu
  endif
 endif
 
@@ -57,8 +59,8 @@ objects_uninstall:=${addsuffix _uninstall,${objects}}
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 .PHONY: all clean install uninstall ${objects} ${objects_clean} ${objects_install} ${objects_uninstall} test
-test:
-	@echo ${objects}
+#test:
+#	@echo ${objects}
 
 all:    ${objects}
 

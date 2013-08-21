@@ -21,6 +21,7 @@ CFLAGS  +=  -I$(COMMON_UNF_INCLUDE)                 \
             -I$(MSP_API_INCLUDE)                    \
             -I$(MSP_DRV_INCLUDE)                    
 
+CFLAGS += -fPIC
 
 LIBS := libOMX.hisi.video.decoder
 OBJS := omx_allocator.o omx_event_queue.o omx_vdec.o vdec_drv_ctx.o
