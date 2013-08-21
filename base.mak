@@ -32,10 +32,10 @@ CFG_HI_BASE_ENV+=" COMMON_UNF_INCLUDE COMMON_API_INCLUDE COMMON_DRV_INCLUDE "
 #=============PUB_DIR======================================================================
 ROOTBOX_DIR=${PUB_DIR}/rootbox
 IMAGE_DIR=${PUB_DIR}/image
-INCLUDE_DIR=${PUB_DIR}/include
-LIB_DIR=${PUB_DIR}/lib
-STATIC_LIB_DIR=${LIB_DIR}/static
-SHARED_LIB_DIR=${LIB_DIR}/share
+#INCLUDE_DIR=${PUB_DIR}/include
+#LIB_DIR=${PUB_DIR}/lib
+#STATIC_LIB_DIR=${LIB_DIR}/static
+#SHARED_LIB_DIR=${LIB_DIR}/share
 EXTERN_LIB_DIR=${LIB_DIR}/extern
 MODULE_DIR=${PUB_DIR}/kmod
 ROOTFS_DIR=${PUB_DIR}/rootfs
