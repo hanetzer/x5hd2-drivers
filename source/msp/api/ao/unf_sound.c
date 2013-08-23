@@ -282,12 +282,14 @@ HI_S32 HI_UNF_SND_Attach(HI_HANDLE hTrack, HI_HANDLE hSource)
 {
     HI_S32 s32Ret;
     
+#if 0 /* temp remove dependency. this function is not used in rdk */
     s32Ret = HI_MPI_AVPLAY_AttachSnd(hSource, hTrack);
     if (s32Ret != HI_SUCCESS)
     {
         HI_ERR_AO("call HI_MPI_AVPLAY_AttachSnd failed.\n");            
         return s32Ret;
     }
+#endif
 
     return HI_SUCCESS;
 }
@@ -295,13 +297,15 @@ HI_S32 HI_UNF_SND_Attach(HI_HANDLE hTrack, HI_HANDLE hSource)
 HI_S32 HI_UNF_SND_Detach(HI_HANDLE hTrack, HI_HANDLE hSource)
 {
     HI_S32 ret;
-    
+
+#if 0 /* temp remove dependency. this function is not used in rdk */
     ret = HI_MPI_AVPLAY_DetachSnd(hSource, hTrack);
     if (ret != HI_SUCCESS)
     {
         HI_ERR_AO("call HI_MPI_AVPLAY_DetachSnd failed.\n");            
         return ret;
     }
+#endif
     return HI_SUCCESS;
 }
 

@@ -30,6 +30,7 @@ depends_uninstall:=$(addsuffix _uninstall,${depends})
 
 HEADER_FILES := $(MSP_UNF_INCLUDE)/hi_unf_common.h \
                 $(MSP_UNF_INCLUDE)/hi_unf_audio.h  \
+                $(MSP_UNF_INCLUDE)/hi_audio_codec.h  \
                 $(MSP_UNF_INCLUDE)/hi_unf_video.h  \
                 $(MSP_UNF_INCLUDE)/hi_unf_version.h  \
                 $(MSP_UNF_INCLUDE)/hi_unf_ecs.h  \

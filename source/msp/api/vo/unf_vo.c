@@ -310,12 +310,14 @@ HI_S32 HI_UNF_VO_AttachWindow(HI_HANDLE hWindow, HI_HANDLE hSrc)
 {
     HI_S32 s32Ret = HI_SUCCESS;
 
+#if 0 /* temp remove depedency. this function is not needed here */
     s32Ret = HI_MPI_AVPLAY_AttachWindow(hSrc, hWindow);
     if (s32Ret)
     {
         HI_ERR_WIN("HI_MPI_AVPLAY_AttachWindow failed!\n");
         return s32Ret;
     }
+#endif
 
     return HI_SUCCESS;
 }
@@ -324,13 +326,14 @@ HI_S32 HI_UNF_VO_DetachWindow(HI_HANDLE hWindow, HI_HANDLE hSrc)
 {
     HI_S32 s32Ret = HI_SUCCESS;
 
+#if 0 /* temp remove depedency. this function is not needed here */
     s32Ret = HI_MPI_AVPLAY_DetachWindow(hSrc, hWindow);
 	if (s32Ret)
 	{
 		HI_ERR_WIN("HI_MPI_AVPLAY_DettachWindow failed!\n");
 		return s32Ret;
 	}
-
+#endif
     return HI_SUCCESS;
 }
 
