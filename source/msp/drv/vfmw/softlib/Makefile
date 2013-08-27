@@ -18,8 +18,8 @@ endif
 # export variables
 #===============================================================================
 ########tmp value###############################
-export CROSS_COMPILE=arm-hisiv200-linux-
-export ARCH=arm
+#export CROSS_COMPILE=arm-hisiv200-linux-
+#export ARCH=arm
 
 ifeq ($(SRC_ROOT), )
 export SRC_ROOT      := ${SOURCE_DIR}
