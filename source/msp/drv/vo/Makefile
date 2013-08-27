@@ -92,7 +92,7 @@ EXTRA_CFLAGS += -DHI_VO_HD_VIDEO_DO_DEI
 endif
 
 #EXTRA_CFLAGS += -Os
-STRIP=$(CFG_HI_TOOLCHAINS_NAME)-strip
+#STRIP=$(CFG_HI_TOOLCHAINS_NAME)-strip
 
 MOD_NAME := hi_vou
 
@@ -151,7 +151,7 @@ $(MOD_NAME)-y = $(ODRV_OBJS)
 
 all: 
 	$(AT)make -C $(LINUX_DIR) M=$(CURDIR) modules
-	@$(STRIP)  --strip-unneeded $(MSP_DIR)/drv/vo/hi_vou.ko
+#	@$(STRIP)  --strip-unneeded $(MSP_DIR)/drv/vo/hi_vou.ko
 clean:
 	$(AT)make -C $(LINUX_DIR) M=$(CURDIR) clean
 	$(AT)rm -rf  *.o
