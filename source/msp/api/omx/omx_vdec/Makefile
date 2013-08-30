@@ -23,6 +23,9 @@ CFLAGS  +=  -I$(COMMON_UNF_INCLUDE)                 \
 
 CFLAGS += -fPIC
 
+LDFLAGS = -L$(COMMON_DIR)/api
+LDLIBS = -lhi_common
+
 LIBS := libOMX.hisi.video.decoder
 OBJS := omx_allocator.o omx_event_queue.o omx_vdec.o vdec_drv_ctx.o
 
@@ -48,5 +51,5 @@ uninstall:
 
 $(LIBS) : $(OBJS)
 	$(AT)$(AR) -rsv $@.a $^
-	$(AT)$(CC) -shared -o $@.so $^
+	$(AT)$(CC) $(LDFLAGS) $(LDLIBS) -shared -o $@.so $^
 

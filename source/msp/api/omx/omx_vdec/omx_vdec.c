@@ -2408,7 +2408,7 @@ static void event_process(OMX_COMPONENT_PRIVATE *pcom_priv, OMX_U32 id)
 
 		case OMX_GENERATE_IMAGE_SIZE_CHANGE:
 			port_priv = &pcom_priv->m_port[OUTPUT_PORT_INDEX];
-			port_priv->m_port_reconfig = OMX_TRUE;  
+			//port_priv->m_port_reconfig = OMX_TRUE;  
 			omx_report_event(pcom_priv, OMX_EventPortSettingsChanged, OUTPUT_PORT_INDEX, OMX_IndexParamPortDefinition, NULL);
 			break;
 
@@ -2955,15 +2955,19 @@ static OMX_ERRORTYPE  set_parameter(
 				return OMX_ErrorUndefined;
 			}
 
-                     drv_cfg = &(pcomp_priv->drv_ctx.drv_cfg);
-			drv_cfg->cfg_width   = portDefn->format.video.nFrameWidth;
-			drv_cfg->cfg_height  = portDefn->format.video.nFrameHeight;
-			ret = update_picture_info(pcomp_priv, drv_cfg->cfg_width, drv_cfg->cfg_height);
-			if (ret != OMX_ErrorNone)
-			{
+                        if(portDefn->nPortIndex == OUTPUT_PORT_INDEX)
+                        {
+                            drv_cfg = &(pcomp_priv->drv_ctx.drv_cfg);
+			    drv_cfg->cfg_width   = portDefn->format.video.nFrameWidth;
+			    drv_cfg->cfg_height  = portDefn->format.video.nFrameHeight;
+                            printf( "set parameter index=%d w=%d, h=%d\n", portDefn->nPortIndex, drv_cfg->cfg_width, drv_cfg->cfg_height );
+			    ret = update_picture_info(pcomp_priv, drv_cfg->cfg_width, drv_cfg->cfg_height);
+			    if (ret != OMX_ErrorNone)
+			    {
 				DEBUG_PRINT_ERROR("set_parameter: update_picture_info failed!\n");
 				return ret;
-			}
+			    }
+                        }
 
 			if (portDefn->nPortIndex == INPUT_PORT_INDEX)
 			{
