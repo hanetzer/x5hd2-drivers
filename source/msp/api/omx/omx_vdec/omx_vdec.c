@@ -2971,6 +2971,25 @@ static OMX_ERRORTYPE  set_parameter(
 
 			if (portDefn->nPortIndex == INPUT_PORT_INDEX)
 			{
+                                OMX_U32 i;
+
+                                for (i = 0; i < COUNTOF(codec_trans_list); i++)
+                                {
+                                if (codec_trans_list[i].compress_fmt == portDefn->format.video.eCompressionFormat)
+                                    break;
+                                }
+
+                                if (i >= COUNTOF(codec_trans_list))
+                                {
+                                DEBUG_PRINT_ERROR("set_parameter: fmt %d not support\n", portDefn->format.video.eCompressionFormat);
+                                ret = OMX_ErrorUnsupportedSetting;
+                                }
+                                else
+                                {
+                                strncpy((OMX_STRING)pcomp_priv->m_role, codec_trans_list[i].role_name, OMX_MAX_STRINGNAME_SIZE);
+                                pcomp_priv->drv_ctx.decoder_format = codec_trans_list[i].codec_type;
+                                pcomp_priv->m_dec_fmt = codec_trans_list[i].compress_fmt;
+                                }
 				port_priv->port_pro.buffer_size = portDefn->nBufferSize;
 			}
 
