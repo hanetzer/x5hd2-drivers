@@ -38,7 +38,7 @@ extern "C" {
 #define DMX_INDEX_SC_TYPE_PES_ERR    0xf      /* the header of PES syntax error */
 
 HI_VOID DmxRecUpdateFrameInfo(HI_U32 *Param, FRAME_POS_S *IndexInfo);
-HI_S32  DmxScdToVideoIndex(const DMX_IDX_DATA_S *pDmxIndexData, FINDEX_SCD_S *pstFidx);
+HI_S32  DmxScdToVideoIndex(HI_BOOL bUseTimeStamp,const DMX_IDX_DATA_S *ScData, FINDEX_SCD_S *pstFidx);
 HI_S32  DmxScdToAudioIndex(HI_UNF_DMX_REC_INDEX_S *LastFrame, const DMX_IDX_DATA_S *ScData);
 
 #ifdef __cplusplus

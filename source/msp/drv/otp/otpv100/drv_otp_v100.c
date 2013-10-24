@@ -3,12 +3,12 @@
   Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
 
  ******************************************************************************
-  File Name     : otp_drv_v100.c
+  File Name     : drv_otp_v100.c
   Version       : Initial Draft
-  Author        : 
+  Author        : Hisilicon hisecurity team
   Created       : 
   Last Modified :
-  Description   : OTP REG DEFINE
+  Description   : 
   Function List :
   History       :
 ******************************************************************************/
@@ -40,16 +40,16 @@
 #define OTP_DTS_SUPPORT_BIT         (1 << 1)
 
 #define otp_rd_u32(addr, val) do { \
-        val = do_apb_para_read(addr); \
+        val = HAL_OTP_V100_Read(addr); \
     } while (0)
 
 #define otp_wt_u32(addr, val) do { \
         HI_S32 Ret = HI_SUCCESS; \
         unsigned char *ptr = (unsigned char *)&val; \
-        Ret = do_apb_write_byte((addr + 0), ptr[0]); \
-        Ret |= do_apb_write_byte((addr + 1), ptr[1]); \
-        Ret |= do_apb_write_byte((addr + 2), ptr[2]); \
-        Ret |= do_apb_write_byte((addr + 3), ptr[3]); \
+        Ret = HAL_OTP_V100_WriteByte((addr + 0), ptr[0]); \
+        Ret |= HAL_OTP_V100_WriteByte((addr + 1), ptr[1]); \
+        Ret |= HAL_OTP_V100_WriteByte((addr + 2), ptr[2]); \
+        Ret |= HAL_OTP_V100_WriteByte((addr + 3), ptr[3]); \
         if (HI_SUCCESS != Ret) \
         { \
             HI_ERR_OTP("Fail to write OTP\n"); \
@@ -59,7 +59,7 @@
 
 #define otp_wt_u8(addr, val) do { \
         HI_S32 Ret = HI_SUCCESS; \
-        Ret = do_apb_write_byte(addr, val); \
+        Ret = HAL_OTP_V100_WriteByte(addr, val); \
         if (HI_SUCCESS != Ret) \
         { \
             HI_ERR_OTP("Fail to write OTP\n"); \
@@ -69,7 +69,7 @@
 
 #define otp_wt_Bit(addr, pos, val) do { \
         HI_S32 Ret = HI_SUCCESS; \
-        Ret = do_apb_write_bit(addr, pos, val); \
+        Ret = HAL_OTP_V100_WriteBit(addr, pos, val); \
         if (HI_SUCCESS != Ret) \
         { \
             HI_ERR_OTP("Fail to write OTP\n"); \
@@ -117,7 +117,7 @@ HI_S32 OTP_V100_Get_CustomerKey(OTP_CUSTOMER_KEY_S *pCustomerKey)
 
 HI_S32 OTP_V100_Func_Disable(HI_U32 u32SRBit)
 {
-    return otp_set_sr_bit(u32SRBit);
+    return HAL_OTP_V100_SetSrBit(u32SRBit);
 }
 
 HI_S32 OTP_V100_Get_DDPLUS_Flag(HI_BOOL *pDDPLUSFlag)

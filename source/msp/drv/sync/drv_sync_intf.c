@@ -35,12 +35,14 @@
 #include <linux/ioport.h>
 #include <linux/string.h>
 
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_mmz.h"
 #include "drv_sync.h"
 #include "drv_sync_intf.h"
 #include "drv_sync_ext.h"
+#include "hi_osal.h"
+#include "hi_debug.h"
 
 
 #ifdef __cplusplus
@@ -94,7 +96,7 @@ static HI_S32 SYNC_ProcRead(struct seq_file *p, HI_VOID *v)
 
     pSync = SYNC_getInfoPtr(SyncId);
     if(pSync == NULL){
-        p += seq_printf(p,"inst %d not exist \n", SyncId);
+        PROC_PRINT(p,"inst %d not exist \n", SyncId);
         return HI_SUCCESS;
     }
 
@@ -104,9 +106,9 @@ static HI_S32 SYNC_ProcRead(struct seq_file *p, HI_VOID *v)
 
     ScrLocalTime = SYNC_GetLocalTime(pSync, SYNC_CHAN_SCR);
 
-    p += seq_printf(p,"------------------------Hisilicon SYNC%2d Out Info--------------------------\n", SyncId);
-    p += seq_printf(p,"__________Hisilicon SYNC ATTR__________|__________Hisilicon PCR____________\n");
-    p += seq_printf(p,"SyncPrint                   :%-10d|CrtStatus             :%s\n"
+    PROC_PRINT(p,"------------------------Hisilicon SYNC%2d Out Info--------------------------\n", SyncId);
+    PROC_PRINT(p,"__________Hisilicon SYNC ATTR__________|__________Hisilicon PCR____________\n");
+    PROC_PRINT(p,"SyncPrint                   :%-10d|CrtStatus             :%s\n"
                       "SyncRef                     :%-10s|PreSyncStartSysTime   :%d\n"
                       "SyncStart.VidPlusTime       :%-10d|PreSyncEndSysTime     :%d\n"
                       "SyncStart.VidNegativeTime   :%-10d|PreSyncFinish         :%d\n"
@@ -142,8 +144,8 @@ static HI_S32 SYNC_ProcRead(struct seq_file *p, HI_VOID *v)
                                                              pSync->PcrSyncInfo.PcrVidSyncOK
         );
 
-    p += seq_printf(p,"__________Hisilicon VID________________|__________Hisilicon AUD____________\n");
-    p += seq_printf(p,"VidFirstCome                :%-10d|AudFirstCome          :%d\n"
+    PROC_PRINT(p,"__________Hisilicon VID________________|__________Hisilicon AUD____________\n");
+    PROC_PRINT(p,"VidFirstCome                :%-10d|AudFirstCome          :%d\n"
                       "VidFirstSysTime             :%-10d|AudFirstSysTime       :%d\n"
                       "VidFirstPts                 :%-10d|AudFirstPts           :%d\n"
                       "VidLastPts                  :%-10d|AudLastPts            :%d\n"
@@ -181,8 +183,8 @@ static HI_S32 SYNC_ProcRead(struct seq_file *p, HI_VOID *v)
                     );
 
 #ifdef HI_AVPLAY_SCR_SUPPORT
-    p += seq_printf(p,"__________Hisilicon SCR________________\n");
-    p += seq_printf(p,"ScrInitFlag                 :%-10d\n"
+    PROC_PRINT(p,"__________Hisilicon SCR________________\n");
+    PROC_PRINT(p,"ScrInitFlag                 :%-10d\n"
                       "ScrFirstSysTime             :%-10d\n"
                       "ScrFirstLocalTime           :%-10d\n"
                       "ScrLocalTime                :%-10d\n"
@@ -237,7 +239,7 @@ HI_S32 SYNC_ProcParsePara(HI_CHAR *pProcPara,HI_CHAR **ppItem,HI_CHAR **ppValue)
 
 HI_VOID SYNC_ProcPrintHelp(HI_VOID)
 {
-    printk("echo SyncPrint = 1|0 > /proc/msp/syncxx\n"
+    HI_PRINT("echo SyncPrint = 1|0 > /proc/msp/syncxx\n"
            "echo SyncRef   = audio|pcr|scr|none > proc/msp/syncxx\n"
            "echo SyncStart.VidPlusTime = xxx > /proc/msp/syncxx\n"
            "echo SyncStart.VidNegativeTime = xxx > /proc/msp/syncxx\n"
@@ -266,6 +268,8 @@ static HI_S32 SYNC_ProcWrite(struct file * file,
         return -EFAULT;
     }
 
+    ProcPara[63] = '\0';
+
     Ret = SYNC_ProcParsePara(ProcPara,&pItem,&pValue);
     if (HI_SUCCESS != Ret)
     {
@@ -277,85 +281,82 @@ static HI_S32 SYNC_ProcWrite(struct file * file,
 
     pSync = SYNC_getInfoPtr(SyncId);
     if(pSync == NULL){
-        printk("inst %d not exist \n",SyncId);
+        HI_PRINT("inst %d not exist \n",SyncId);
         return HI_SUCCESS;
     }
-    if (!strcmp(pItem,"SyncPrint"))
+    /* Don't use strlen("xxx")+1, SYNC_ProcParsePara add '\n' to every cmd */
+    if (!HI_OSAL_Strncmp(pItem, "SyncPrint", strlen("SyncPrint")))
     {
         pSync->bPrint = simple_strtol(pValue, NULL, 10);
     }
-    else if (!strcmp(pItem,"SyncRef"))
+    else if (0 == HI_OSAL_Strncmp(pItem, "SyncRef", strlen("SyncRef")))
     {
-        if (!strcmp(pValue,"none\n"))
+        if (0 == HI_OSAL_Strncmp(pValue,"none", strlen("none")))
         {
             pSync->SyncAttr.enSyncRef = HI_UNF_SYNC_REF_NONE;
         }
-        else if (!strcmp(pValue,"audio\n"))
+        else if (0 == HI_OSAL_Strncmp(pValue,"audio", strlen("audio")))
         {
             pSync->SyncAttr.enSyncRef = HI_UNF_SYNC_REF_AUDIO;
         }
-        else if (!strcmp(pValue,"pcr\n"))
+        else if (0 == HI_OSAL_Strncmp(pValue,"pcr", strlen("pcr")))
         {
             pSync->SyncAttr.enSyncRef = HI_UNF_SYNC_REF_PCR;
-        }
-        else if (!strcmp(pValue,"scr\n"))
-        {
-            pSync->SyncAttr.enSyncRef = HI_UNF_SYNC_REF_SCR;
         }
         else
         {
             SYNC_ProcPrintHelp();
         }
     }
-    else if (!strcmp(pItem,"SyncStart.VidPlusTime"))
+    else if (0 == HI_OSAL_Strncmp(pItem,"SyncStart.VidPlusTime", strlen("SyncStart.VidPlusTime")))
     {
         pSync->SyncAttr.stSyncStartRegion.s32VidPlusTime = simple_strtol(pValue, NULL, 10);
     }
-    else if (!strcmp(pItem,"SyncStart.VidNegativeTime"))
+    else if (0 == HI_OSAL_Strncmp(pItem,"SyncStart.VidNegativeTime", strlen("SyncStart.VidNegativeTime")))
     {
         pSync->SyncAttr.stSyncStartRegion.s32VidNegativeTime = simple_strtol(pValue, NULL, 10);
     }
-    else if (!strcmp(pItem, "SyncStart.bSmoothPlay"))
+    else if (0 == HI_OSAL_Strncmp(pItem, "SyncStart.bSmoothPlay", strlen("SyncStart.bSmoothPlay")))
     {
-        if (!strcmp(pValue,"true\n"))
+        if (0 == HI_OSAL_Strncmp(pValue,"true", strlen("true")))
         {
             pSync->SyncAttr.stSyncStartRegion.bSmoothPlay = HI_TRUE;
         }
-        else if(!strcmp(pValue,"false\n"))
+        else if(0 == HI_OSAL_Strncmp(pValue,"false", strlen("false")))
         {
             pSync->SyncAttr.stSyncStartRegion.bSmoothPlay = HI_FALSE;
         }
     }
-    else if (!strcmp(pItem, "SyncNovel.VidPlusTime"))
+    else if (0 == HI_OSAL_Strncmp(pItem, "SyncNovel.VidPlusTime", strlen("SyncNovel.VidPlusTime")))
     {
         pSync->SyncAttr.stSyncNovelRegion.s32VidPlusTime = simple_strtol(pValue, NULL, 10);
     }
-    else if (!strcmp(pItem, "SyncNovel.VidNegativeTime"))
+    else if (0 == HI_OSAL_Strncmp(pItem, "SyncNovel.VidNegativeTime", strlen("SyncNovel.VidNegativeTime")))
     {
         pSync->SyncAttr.stSyncNovelRegion.s32VidNegativeTime = simple_strtol(pValue, NULL, 10);
     }
-    else if (!strcmp(pItem, "SyncNovel.bSmoothPlay"))
+    else if (0 == HI_OSAL_Strncmp(pItem, "SyncNovel.bSmoothPlay", strlen("SyncNovel.bSmoothPlay")))
     {
-        if (!strcmp(pValue,"true\n"))
+        if (0 == HI_OSAL_Strncmp(pValue,"true", strlen("true")))
         {
             pSync->SyncAttr.stSyncNovelRegion.bSmoothPlay = HI_TRUE;
         }
-        else if(!strcmp(pValue,"false\n"))
+        else if(0 == HI_OSAL_Strncmp(pValue,"false", strlen("false")))
         {
             pSync->SyncAttr.stSyncNovelRegion.bSmoothPlay = HI_FALSE;
         }
     }
-    else if (!strcmp(pItem, "PreSyncTimeoutMs"))
+    else if (0 == HI_OSAL_Strncmp(pItem, "PreSyncTimeoutMs", strlen("PreSyncTimeoutMs")))
     {
         pSync->SyncAttr.u32PreSyncTimeoutMs = simple_strtol(pValue, NULL, 10);
     }
-    else if (!strcmp(pItem, "bQuickOutput"))
+    else if (0 == HI_OSAL_Strncmp(pItem, "bQuickOutput", strlen("bQuickOutput")))
     {
-        if (!strcmp(pValue,"true\n"))
+        if (0 == HI_OSAL_Strncmp(pValue,"true", strlen("true")))
         {
             pSync->SyncAttr.bQuickOutput = HI_TRUE;
         }
-        else if(!strcmp(pValue,"false\n"))
+        else if(0 == HI_OSAL_Strncmp(pValue,"false", strlen("false")))
         {
             pSync->SyncAttr.bQuickOutput = HI_FALSE;
         }
@@ -427,7 +428,7 @@ HI_S32 SYNC_DRV_ModInit(HI_VOID)
         return HI_FAILURE;
     }
     
-    sprintf(g_SyncRegisterData.devfs_name, UMAP_DEVNAME_SYNC);
+    HI_OSAL_Snprintf(g_SyncRegisterData.devfs_name, sizeof(g_SyncRegisterData.devfs_name), UMAP_DEVNAME_SYNC);
     g_SyncRegisterData.fops = &SYNC_FOPS;
     g_SyncRegisterData.minor = UMAP_MIN_MINOR_SYNC;
     g_SyncRegisterData.owner  = THIS_MODULE;

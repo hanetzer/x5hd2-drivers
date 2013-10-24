@@ -42,6 +42,15 @@ typedef enum hiUNF_GPIO_INTTYPE_E
     HI_UNF_GPIO_INTTYPE_BUTT, /**<Invalid value*/                        /**< CNcomment:非法边界值*/
 } HI_UNF_GPIO_INTTYPE_E;
 
+/**GPIO output type*/
+/** CNcomment:GPIO 输出类型*/
+typedef enum hiUNF_GPIO_OUTPUTTYPE_E
+{
+	HI_UNF_GPIO_OUTPUTTYPE_CMOS,
+	HI_UNF_GPIO_OUTPUTTYPE_OD,
+	HI_UNF_GPIO_OUTPUTTYPE_BUTT,		
+}HI_UNF_GPIO_OUTPUTTYPE_E;
+
 /** @}*/  /** <!-- ==== Structure Definition End ====*/
 
 
@@ -106,6 +115,9 @@ N/A
  */
 HI_S32 HI_UNF_GPIO_ReadBit(HI_U32 u32GpioNo, HI_BOOL  *pbHighVolt);
 
+HI_S32 HI_UNF_GPIO_SetOutputType(HI_U32 u32GpioNo, HI_UNF_GPIO_OUTPUTTYPE_E  enOutputType);
+
+HI_S32 HI_UNF_GPIO_GetOutputType(HI_U32 u32GpioNo, HI_UNF_GPIO_OUTPUTTYPE_E  *penOutputType);
 /**
  \brief Writes data to a GPIO pin.
 CNcomment:\brief 向GPIO单个引脚输出数据。CNend

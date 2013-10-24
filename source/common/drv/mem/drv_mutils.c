@@ -1,10 +1,9 @@
 #include <linux/slab.h>
 
 #include "hi_type.h"
-
 #include "drv_mutils.h"
-
 #include "drv_module_ioctl.h"
+#include "hi_drv_mem.h"
 
 #ifdef USING_KMEM
 #include "common_mem_mgr.h"
@@ -18,14 +17,7 @@
 
 #define KERNEL_MODE "kernel"
 
-#if 0
-#define THIS_ERR_PRINT( fmt, arg...) printk(fmt, ##arg)
-#define THIS_INFO_PRINT(fmt, arg...) printk(fmt, ##arg)
 static HI_U8* g_szPoolName[] = {"Module_Mem_Pool", "Adp_Mem_Pool", "Usr_Mem_Pool", "MMZ_Pool", "UnknowType"};
-#else
-#define THIS_ERR_PRINT( fmt, arg...)
-#define THIS_INFO_PRINT(fmt, arg...)
-#endif
 
 
 HI_HANDLE KMem_Utils_Init(HI_U32 u32Count, KMEM_UTILS_S stMem)
@@ -38,7 +30,7 @@ HI_HANDLE KMem_Utils_Init(HI_U32 u32Count, KMEM_UTILS_S stMem)
 
     if (NULL == pUtils)
     {
-        THIS_ERR_PRINT("<%s:%s> malloc %d size failure!\n", KERNEL_MODE, __func__, u32Count * u32ItemSize);
+        HI_ERR_MEM("<%s:%s> malloc %d size failure!\n", KERNEL_MODE, __func__, u32Count * u32ItemSize);
 
         return 0;
     }
@@ -75,14 +67,15 @@ HI_HANDLE KMem_Utils_Init(HI_U32 u32Count, KMEM_UTILS_S stMem)
     pUtils->pMemBaseAddr = kmalloc(u32ItemSize, GFP_KERNEL);
     if (NULL == pUtils->pMemBaseAddr)
     {
-        THIS_ERR_PRINT("<%s:%s> , failed to request %s memory size %d\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], u32ItemSize);
+        HI_ERR_MEM("<%s:%s> , failed to request %s memory size %d\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], u32ItemSize);
+        kfree(pUtils);
     }
     else
     {
         memset(pUtils->pMemBaseAddr, 0, u32ItemSize);
         hResult = (HI_HANDLE)pUtils;
         
-        THIS_INFO_PRINT("<%s:%s>  successfully, request %s, and base address is %p\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pUtils->pMemBaseAddr);
+        HI_INFO_MEM("<%s:%s>  successfully, request %s, and base address is %p\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pUtils->pMemBaseAddr);
     }
     
     return hResult;
@@ -96,7 +89,7 @@ HI_VOID KMem_Utils_DeInit(HI_HANDLE hUtils)
     {
         if (NULL != pUtils->pMemBaseAddr)
         {
-            THIS_INFO_PRINT("<%s:%s>  free %s memory, and address is %p\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pUtils->pMemBaseAddr);
+            HI_INFO_MEM("<%s:%s>  free %s memory, and address is %p\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pUtils->pMemBaseAddr);
             kfree(pUtils->pMemBaseAddr);
         }
         
@@ -139,6 +132,8 @@ HI_VOID* KMem_Utils_MALLOC(HI_HANDLE hUtils)
 
     if (NULL != pUtils && pUtils->pMemBaseAddr != NULL)
     {
+        HI_INFO_MEM("pool type:%d, maxsize:%u, size:%u, membase:0x%x.\n", pUtils->enType, pUtils->u32ItemCount, pUtils->u32HasCount,  pUtils->pMemBaseAddr);
+                
         switch(pUtils->enType)
         {
             case KMEM_POOL_TYPE_MODULE:
@@ -170,7 +165,6 @@ HI_VOID* KMem_Utils_MALLOC(HI_HANDLE hUtils)
             default:
             break;
         }
-
         
         for (u32Index=0; u32Index<pUtils->u32ItemCount; u32Index++)
         {            
@@ -182,7 +176,7 @@ HI_VOID* KMem_Utils_MALLOC(HI_HANDLE hUtils)
 
                 pUtils->u32HasCount++;
                 
-                THIS_INFO_PRINT("<%s:%s> ... request %s and address[%d] is %p!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], u32Index, pResult);
+                HI_INFO_MEM("<%s:%s> ... request %s and address[%d] is %p!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], u32Index, pResult);
                 break;
             }
             
@@ -196,7 +190,7 @@ HI_VOID* KMem_Utils_MALLOC(HI_HANDLE hUtils)
 
                 pUtils->u32HasCount++;
                 
-                THIS_INFO_PRINT("<%s:%s> ... request %s and address[%d] is %p!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], u32Index, pResult);
+                HI_INFO_MEM("<%s:%s> ... request %s and address[%d] is %p!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], u32Index, pResult);
                 break;
             }
 
@@ -208,7 +202,7 @@ HI_VOID* KMem_Utils_MALLOC(HI_HANDLE hUtils)
 
                 pUtils->u32HasCount++;
                 
-                THIS_INFO_PRINT("<%s:%s> ... request %s and address[%d] is %p!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], u32Index, pResult);
+                HI_INFO_MEM("<%s:%s> ... request %s and address[%d] is %p!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], u32Index, pResult);
                 break;
             }
 #endif
@@ -222,7 +216,7 @@ HI_VOID* KMem_Utils_MALLOC(HI_HANDLE hUtils)
 
                 pUtils->u32HasCount++;
                 
-                THIS_INFO_PRINT("<%s:%s> ... request %s and address[%d] is %p!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], u32Index, pResult);
+                HI_INFO_MEM("<%s:%s> ... request %s and address[%d] is %p!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], u32Index, pResult);
                 break;
             }
 #endif
@@ -232,7 +226,7 @@ HI_VOID* KMem_Utils_MALLOC(HI_HANDLE hUtils)
     }
 
 
-    THIS_ERR_PRINT("<%s:%s> ... param is invalid!\n",KERNEL_MODE, __func__);
+    HI_ERR_MEM("<%s:%s> ... param is invalid!\n",KERNEL_MODE, __func__);
     
     return NULL;
 }
@@ -255,6 +249,8 @@ HI_VOID KMem_Utils_FREE(HI_HANDLE hUtils, HI_VOID* pAddr)
 
     if (NULL != pUtils && pUtils->pMemBaseAddr != NULL)
     {
+        HI_INFO_MEM("pool type:%d, maxsize:%u, size:%u, addr:0x%x.\n", pUtils->enType, pUtils->u32ItemCount, pUtils->u32HasCount,  pAddr);
+        
         switch(pUtils->enType)
         {
             case KMEM_POOL_TYPE_MODULE:
@@ -298,7 +294,7 @@ HI_VOID KMem_Utils_FREE(HI_HANDLE hUtils, HI_VOID* pAddr)
 
                 pUtils->u32HasCount--;
                 
-                THIS_INFO_PRINT("<%s:%s>... idle %s and address is %p, successfully!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pAddr);
+                HI_INFO_MEM("<%s:%s>... idle %s and address is %p, successfully!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pAddr);
                 break;
             }
 
@@ -311,7 +307,7 @@ HI_VOID KMem_Utils_FREE(HI_HANDLE hUtils, HI_VOID* pAddr)
 
                 pUtils->u32HasCount--;
                 
-                THIS_INFO_PRINT("<%s:%s>... idle %s and address is %p, successfully!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pAddr);
+                HI_INFO_MEM("<%s:%s>... idle %s and address is %p, successfully!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pAddr);
                 break;
             }
 
@@ -323,7 +319,7 @@ HI_VOID KMem_Utils_FREE(HI_HANDLE hUtils, HI_VOID* pAddr)
 
                 pUtils->u32HasCount--;
                 
-                THIS_INFO_PRINT("<%s:%s>... idle %s and address is %p, successfully!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pAddr);
+                HI_INFO_MEM("<%s:%s>... idle %s and address is %p, successfully!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pAddr);
                 break;
             }
 #endif
@@ -337,7 +333,7 @@ HI_VOID KMem_Utils_FREE(HI_HANDLE hUtils, HI_VOID* pAddr)
 
                 pUtils->u32HasCount--;
                 
-                THIS_INFO_PRINT("<%s:%s>... idle %s and address is %p, successfully!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pAddr);
+                HI_INFO_MEM("<%s:%s>... idle %s and address is %p, successfully!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pAddr);
                 break;
             }
 #endif
@@ -347,7 +343,7 @@ HI_VOID KMem_Utils_FREE(HI_HANDLE hUtils, HI_VOID* pAddr)
     }
 
 
-    THIS_ERR_PRINT("<%s:%s>... idle %s and address is %p, failure!!!\n", KERNEL_MODE, __func__, g_szPoolName[pUtils->enType], pAddr);
+    HI_ERR_MEM("<%s:%s>... idle %s and address is %p, failure!!!\n", KERNEL_MODE, __func__, pUtils ? g_szPoolName[pUtils->enType] : g_szPoolName[KMEM_POOL_TYPE_BUTT], pAddr);
     
     return;
 

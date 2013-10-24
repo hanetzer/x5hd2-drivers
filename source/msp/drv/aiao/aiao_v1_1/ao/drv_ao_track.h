@@ -31,7 +31,6 @@ extern "C" {
 #define AO_TRACK_HBR_BUFSIZE_MS_MAX 512
 #define AO_TRACK_BUF_EMPTY_THRESHOLD_MS 10 //aip 5ms + engine 5ms
 
-#define AO_TRACK_AIP_START_LATENCYMS 50 
 #define AO_TRACK_PCM_BUFSIZE_BYTE_MAX (((192000 * 2 * sizeof(HI_U32)) / 1000) * AO_TRACK_PCM_BUFSIZE_MS_MAX)
 #define AO_TRACK_LBR_BUFSIZE_BYTE_MAX (((192000 * 2 * sizeof(HI_U32)) / 1000) * AO_TRACK_PCM_BUFSIZE_MS_MAX)
 #define AO_TRACK_HBR_BUFSIZE_BYTE_MAX (((192000 * 8 * sizeof(HI_U32)) / 1000) * AO_TRACK_PCM_BUFSIZE_MS_MAX)
@@ -52,6 +51,10 @@ extern "C" {
 #define AO_TRACK_SLAVE_DEFATTR_FADEOUTMS 1
 #define AO_TRACK_SLAVE_DEFATTR_BUFSIZE (4 * AO_TRACK_DEFATTR_BUFSIZE)
 #define AO_TRACK_VIRTUAL_DEFATTR_BUFSIZE (256 * AO_TRACK_DEFATTR_BUFSIZE)
+
+#define AO_TRACK_PATH_NAME_MAXLEN 256
+#define AO_TRACK_FILE_NAME_MAXLEN 256
+
 typedef enum
 {
     TRACK_STREAMMODE_CHANGE_NONE = 0,
@@ -133,6 +136,11 @@ typedef struct
     SND_TRACK_STATUS_E      enCurnStatus;
     SND_TRACK_STREAM_ATTR_S stStreamAttr;
 
+    /*save pcm*/
+    SND_DEBUG_CMD_CTRL_E    enSaveState;
+    HI_U32                  u32SaveCnt;
+    struct file *           fileHandle;            
+
     /*track send statistics*/
     HI_U32                  u32SendTryCnt;
     HI_U32                  u32SendCnt;
@@ -197,7 +205,9 @@ HI_S32  TRACK_IsBufEmpty(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID, HI_BOOL *pb
 HI_S32  TRACK_SetEosFlag(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID, HI_BOOL bEosFlag);
 HI_S32	TRACK_GetStatus(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID, HI_VOID *pstParam);
 HI_S32	TRACK_GetDefAttr(HI_UNF_AUDIOTRACK_ATTR_S * pstDefAttr);
-HI_S32  Track_ShowProc(struct seq_file* p, SND_CARD_STATE_S *pCard);
+HI_S32  Track_ReadProc(struct seq_file* p, SND_CARD_STATE_S *pCard);
+HI_S32  TRACK_WriteProc(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID, SND_DEBUG_CMD_CTRL_E enCmd);
+
 
 #if defined (HI_SND_DRV_SUSPEND_SUPPORT)
 HI_S32 TRACK_GetSetting(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID, SND_TRACK_SETTINGS_S* pstSndSettings);

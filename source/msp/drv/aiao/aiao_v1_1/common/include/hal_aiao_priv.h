@@ -28,6 +28,9 @@ extern "C" {
 #endif /* __cplusplus */
 
 /***************************** Macro Definition ******************************/
+
+#define HW_CHN_PTR_BUG
+
 typedef struct
 {
     AIAO_PORT_USER_CFG_S stUserCongfig;
@@ -57,7 +60,16 @@ typedef union
         unsigned int Reserved_2            : 3; // [11..9]
         unsigned int aiaoclk_skipcfg       : 5; // [16..12]
         unsigned int aiaoclk_loaden        : 1; // [17]
+#if defined (CHIP_TYPE_hi3716cv200es)        
         unsigned int Reserved_3            : 14;// [31..18]
+#elif defined (CHIP_TYPE_hi3716cv200)\
+        || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100) \
+        || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+        || defined (CHIP_TYPE_hi3718mv100) 
+        unsigned int Reserved_3            : 2; // [19..18]
+        unsigned int aiao_mclk_sel         : 2; // [21..20]
+        unsigned int Reserved_4            : 10; // [31..22]
+#endif        
     } bits;
 
     // Define an unsigned member
@@ -1382,61 +1394,63 @@ typedef struct
 /*****************************************************************************
  Description  : AIAO Golbal HAL API
 *****************************************************************************/
-HI_S32                  AIAO_HW_Reset(HI_VOID);
-HI_S32					AIAO_HW_Init(HI_VOID);
-HI_VOID					AIAO_HW_DeInit(HI_VOID);
-HI_VOID					AIAO_HW_GetHwCapability(HI_U32 *pu32Capability);
-HI_VOID					AIAO_HW_GetHwVersion(HI_U32 *pu32Version);
-HI_VOID					AIAO_HW_DBG_RWReg(AIAO_Dbg_Reg_S *pstReg);
+HI_S32                  AIAO_HW_PowerOn(HI_VOID);
+HI_VOID                 AIAO_HW_PowerOff(HI_VOID);
+HI_S32                  AIAO_HW_Init(HI_VOID);
+HI_VOID                 AIAO_HW_DeInit(HI_VOID);
+HI_VOID                 AIAO_HW_GetHwCapability(HI_U32 *pu32Capability);
+HI_VOID                 AIAO_HW_GetHwVersion(HI_U32 *pu32Version);
+HI_VOID                 AIAO_HW_DBG_RWReg(AIAO_Dbg_Reg_S *pstReg);
 
-HI_VOID					AIAO_HW_SetTopInt(HI_U32 u32Multibit);
-HI_U32					AIAO_HW_GetTopIntRawStatus(HI_VOID);
-HI_U32					AIAO_HW_GetTopIntStatus(HI_VOID);
+HI_VOID                 AIAO_HW_SetTopInt(HI_U32 u32Multibit);
+HI_U32                  AIAO_HW_GetTopIntRawStatus(HI_VOID);
+HI_U32                  AIAO_HW_GetTopIntStatus(HI_VOID);
 
 /*****************************************************************************
  Description  : AIAO Rx/Tx Port CRG/I2s Attr HAL API
 *****************************************************************************/
-HI_VOID					AIAO_HW_SetIfAttr(AIAO_PORT_ID_E enPortID, AIAO_IfAttr_S *pstIfAttr);
-HI_VOID					AIAO_HW_SetSPDIFPortEn(AIAO_PORT_ID_E enPortID, HI_S32 bEn);
-HI_VOID					AIAO_HW_SetSPDIFPortSelect(AIAO_PORT_ID_E enPortID, AIAO_SPDIFPORT_SOURCE_E eSrcChnId);
-HI_VOID					AIAO_HW_SetI2SDataSelect(AIAO_PORT_ID_E enPortID, AIAO_I2S_SD_E eOrgSd, AIAO_I2S_SD_E eSrcSd);
+HI_VOID                 AIAO_HW_SetIfAttr(AIAO_PORT_ID_E enPortID, AIAO_IfAttr_S *pstIfAttr);
+HI_VOID                 AIAO_HW_SetSPDIFPortEn(AIAO_PORT_ID_E enPortID, HI_S32 bEn);
+HI_VOID                 AIAO_HW_SetSPDIFPortSelect(AIAO_PORT_ID_E enPortID, AIAO_SPDIFPORT_SOURCE_E eSrcChnId);
+HI_VOID                 AIAO_HW_SetI2SDataSelect(AIAO_PORT_ID_E enPortID, AIAO_I2S_SD_E eOrgSd, AIAO_I2S_SD_E eSrcSd);
 
 /*****************************************************************************
  Description  : AIAO TX/RX Port DSP Control HAL API
 *****************************************************************************/
-HI_VOID					AIAO_HW_SetInt(AIAO_PORT_ID_E enPortID, HI_U32 u32Multibit);
-HI_VOID					AIAO_HW_ClrInt(AIAO_PORT_ID_E enPortID, HI_U32 u32Multibit);
-HI_U32					AIAO_HW_GetIntStatusRaw(AIAO_PORT_ID_E enPortID);
-HI_U32					AIAO_HW_GetIntStatus(AIAO_PORT_ID_E enPortID);
+HI_VOID                 AIAO_HW_SetInt(AIAO_PORT_ID_E enPortID, HI_U32 u32Multibit);
+HI_VOID                 AIAO_HW_ClrInt(AIAO_PORT_ID_E enPortID, HI_U32 u32Multibit);
+HI_U32                  AIAO_HW_GetIntStatusRaw(AIAO_PORT_ID_E enPortID);
+HI_U32                  AIAO_HW_GetIntStatus(AIAO_PORT_ID_E enPortID);
 
 /*****************************************************************************
  Description  : AIAO TX/RX Port DSP Control HAL API
 *****************************************************************************/
-HI_S32					AIAO_HW_SetStart(AIAO_PORT_ID_E enPortID, HI_S32 bEn);
-HI_S32					AIAO_HW_GetStopDoneStatus(AIAO_PORT_ID_E enPortID);
-HI_VOID					AIAO_HW_SetBypass(AIAO_PORT_ID_E enPortID, HI_S32 bEn);
-HI_VOID					AIAO_HW_SetVolumedB(AIAO_PORT_ID_E enPortID, HI_S32 VoldB);
-HI_VOID					AIAO_HW_SetFadeOutRate(AIAO_PORT_ID_E enPortID, AIAO_FADE_RATE_E eFadeRate);
-HI_VOID					AIAO_HW_SetFadeInRate(AIAO_PORT_ID_E enPortID, AIAO_FADE_RATE_E eFadeRate);
-HI_VOID					AIAO_HW_SetMuteFade(AIAO_PORT_ID_E enPortID, HI_S32 bEn);
-HI_VOID					AIAO_HW_SetMute(AIAO_PORT_ID_E enPortID, HI_S32 bEn);
-HI_VOID					AIAO_HW_SetTrackMode(AIAO_PORT_ID_E enPortID, AIAO_TRACK_MODE_E eTrackMode);
+HI_S32                  AIAO_HW_SetStart(AIAO_PORT_ID_E enPortID, HI_S32 bEn);
+HI_S32                  AIAO_HW_GetStopDoneStatus(AIAO_PORT_ID_E enPortID);
+HI_VOID                 AIAO_HW_SetBypass(AIAO_PORT_ID_E enPortID, HI_S32 bEn);
+HI_VOID                 AIAO_HW_SetVolumedB(AIAO_PORT_ID_E enPortID, HI_S32 VoldB);
+HI_VOID                 AIAO_HW_SetFadeOutRate(AIAO_PORT_ID_E enPortID, AIAO_FADE_RATE_E eFadeRate);
+HI_VOID                 AIAO_HW_SetFadeInRate(AIAO_PORT_ID_E enPortID, AIAO_FADE_RATE_E eFadeRate);
+HI_VOID                 AIAO_HW_SetMuteFade(AIAO_PORT_ID_E enPortID, HI_S32 bEn);
+HI_VOID                 AIAO_HW_SetMute(AIAO_PORT_ID_E enPortID, HI_S32 bEn);
+HI_VOID                 AIAO_HW_SetTrackMode(AIAO_PORT_ID_E enPortID, AIAO_TRACK_MODE_E eTrackMode);
+HI_VOID                 AIAO_HW_SetI2SMasterClk(AIAO_PORT_ID_E enPortID, AIAO_IfAttr_S *pstIfAttrMaster);
 
 /*****************************************************************************
  Description  : AIAO TX/RX Port Buffer HAL API
 *****************************************************************************/
-HI_VOID					AIAO_HW_GetRptrAndWptrRegAddr(AIAO_PORT_ID_E enPortID, HI_U32 *pu32WptrReg,
+HI_VOID                 AIAO_HW_GetRptrAndWptrRegAddr(AIAO_PORT_ID_E enPortID, HI_U32 *pu32WptrReg,
                                                        HI_U32 *pu32RptrReg);
 // new
 HI_VOID AIAO_HW_GetRptrAndWptrRegPhyAddr(AIAO_PORT_ID_E enPortID, HI_U32 *pu32WptrReg, HI_U32 *pu32RptrReg);
-HI_VOID					AIAO_HW_GetBufu32Wptr(AIAO_PORT_ID_E enPortID, HI_U32 *pu32Wptr);
-HI_VOID					AIAO_HW_GetBufu32Rptr(AIAO_PORT_ID_E enPortID, HI_U32 *pu32Rptr);
-HI_VOID					AIAO_HW_SetBufAddrAndSize(AIAO_PORT_ID_E enPortID, HI_U32 u32StartAddr, HI_U32 u32Size);
-HI_VOID					AIAO_HW_SetBufWptr(AIAO_PORT_ID_E enPortID, HI_U32 u32Wptr);
-HI_VOID					AIAO_HW_SetBufRptr(AIAO_PORT_ID_E enPortID, HI_U32 u32Rptr);
-HI_VOID					AIAO_HW_SetBuf(AIAO_PORT_ID_E enPortID, AIAO_BufInfo_S *pstBuf);
-HI_VOID					AIAO_HW_GetDbgBclkCnt(AIAO_PORT_ID_E enPortID, HI_U32 *pu32BclkCnt);
-HI_VOID					AIAO_HW_GetDbgWsCnt(AIAO_PORT_ID_E enPortID, HI_U32 *pu32WsCnt);
+HI_VOID                 AIAO_HW_GetBufu32Wptr(AIAO_PORT_ID_E enPortID, HI_U32 *pu32Wptr);
+HI_VOID                 AIAO_HW_GetBufu32Rptr(AIAO_PORT_ID_E enPortID, HI_U32 *pu32Rptr);
+HI_VOID                 AIAO_HW_SetBufAddrAndSize(AIAO_PORT_ID_E enPortID, HI_U32 u32StartAddr, HI_U32 u32Size);
+HI_VOID                 AIAO_HW_SetBufWptr(AIAO_PORT_ID_E enPortID, HI_U32 u32Wptr);
+HI_VOID                 AIAO_HW_SetBufRptr(AIAO_PORT_ID_E enPortID, HI_U32 u32Rptr);
+HI_VOID                 AIAO_HW_SetBuf(AIAO_PORT_ID_E enPortID, AIAO_BufInfo_S *pstBuf);
+HI_VOID                 AIAO_HW_GetDbgBclkCnt(AIAO_PORT_ID_E enPortID, HI_U32 *pu32BclkCnt);
+HI_VOID                 AIAO_HW_GetDbgWsCnt(AIAO_PORT_ID_E enPortID, HI_U32 *pu32WsCnt);
 
 
 #ifdef __cplusplus

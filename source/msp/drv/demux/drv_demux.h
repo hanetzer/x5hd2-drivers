@@ -11,7 +11,7 @@
 #ifndef __DRV_DEMUX_H__
 #define __DRV_DEMUX_H__
 
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
 #include "hi_unf_demux.h"
 #include "drv_demux_define.h"
 

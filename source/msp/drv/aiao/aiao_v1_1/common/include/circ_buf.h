@@ -603,6 +603,69 @@ static inline HI_U32 CIRC_BUF_ALSA_UpdateWptr(CIRC_BUF_S *pstCb, HI_U32 u32Len)
     return u32WtLen[0] + u32WtLen[1];
 }
 
+#ifdef HI_ALSA_AI_SUPPORT
+static inline HI_VOID CIRC_BUF_ALSA_Flush(CIRC_BUF_S *pstCb)
+{
+    *pstCb->pu32Write     = 0;
+    *pstCb->pu32Read      = 0;
+}
+static inline HI_U32 CIRC_BUF_ALSA_QueryWritePos(CIRC_BUF_S *pstCb)
+{
+    return *(pstCb->pu32Write);
+}
+static inline HI_U32 CIRC_BUF_ALSA_QueryReadPos(CIRC_BUF_S *pstCb)
+{
+    return *(pstCb->pu32Read);
+}
+static inline HI_U32 CIRC_BUF_ALSA_UpdateRptr(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32 u32Len)
+{
+    HI_U32  u32ReadPos, u32WritePos;
+    u32ReadPos  = *(pstCb->pu32Read);
+    u32WritePos = *(pstCb->pu32Write);
+#if 1
+  u32ReadPos += u32Len;
+  if (u32ReadPos > pstCb->u32Lenght) 
+	  u32ReadPos -= pstCb->u32Lenght;
+#else
+    u32RdPos[0] = u32ReadPos;
+    if (u32WritePos >= u32ReadPos)
+    {
+        if (u32WritePos >= u32ReadPos + u32Len)
+        {
+            u32RdLen[0] = u32Len;
+        }
+        else
+        {
+            u32RdLen[0] = u32WritePos - u32ReadPos;
+        }
+    }
+    else
+    {
+        if ( u32ReadPos + u32Len <= pstCb->u32Lenght)
+        {
+            u32RdLen[0] = u32Len;
+        }
+        else
+        {
+            u32RdLen[0] = pstCb->u32Lenght - u32ReadPos;
+            u32RdPos[1] = 0;
+            u32RdLen[1] = u32Len - u32RdLen[0];
+            if(u32WritePos < u32RdLen[1])
+            {
+                u32RdLen[1] = u32WritePos;
+            }
+        }
+    }
+    for (i=0; ( i < 2 ) && (u32RdLen[i] != 0); i++)
+    {
+        u32ReadPos = u32RdPos[i] + u32RdLen[i];
+    }
+    if (u32ReadPos == pstCb->u32Lenght) u32ReadPos = 0;
+   #endif 
+    *(pstCb->pu32Read) = u32ReadPos;
+    return HI_TRUE;
+}
+#endif
 #ifdef __cplusplus
 #if __cplusplus
 }

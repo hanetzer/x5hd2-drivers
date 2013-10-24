@@ -31,29 +31,19 @@
 #include <linux/slab.h>
 
 #include "hi_kernel_adapt.h"
-#include "drv_reg_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_reg.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_sys.h"
 #include "drv_i2c.h"
 #include "drv_i2c_ioctl.h"
 #include "drv_i2c_ext.h"
 #include "hi_common.h"
+#include "hi_reg_common.h"
 #include "hi_drv_i2c.h"
 #include "hi_module.h"
-#include "drv_module_ext.h"
-#include "drv_mem_ext.h"
-
-#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
-#define PERI_CRG (0xF8A2206c)     //I2c0 clock & soft reset control register
-
-#else
-#define PERI_CRG38 (0x101f50d8)     //I2c0 clock & soft reset control register
-#define PERI_CRG39 (0x101f50dc)     //I2c1 clock & soft reset control register
-#define PERI_CRG40 (0x101f50e0)     //I2c2 clock & soft reset control register
-#define PERI_CRG41 (0x101f50e4)     //I2c3 clock & soft reset control register
-#define PERI_CRG24 (0x101f50a0)     //QAM/ADC/I2C clock & soft reset control register
-#endif
+#include "hi_drv_module.h"
+#include "hi_drv_mem.h"
 
 #define I2C_WAIT_TIME_OUT 0x1000
 
@@ -64,21 +54,22 @@
 //static atomic_t g_I2cCount = ATOMIC_INIT(0);
 HI_DECLARE_MUTEX(g_I2cMutex);
 
-static HI_U32 g_I2cKernelAddr[HI_I2C_MAX_NUM];
-static HI_U32 regI2CStore[5] = {0};
+static HI_U32 g_I2cKernelAddr[HI_STD_I2C_NUM];
+static HI_U32 regI2CStore[HI_STD_I2C_NUM] = {0};
+HI_U32 g_aI2cRate[HI_STD_I2C_NUM] = {0};
 
 static HI_CHIP_TYPE_E g_enChipType;
 
 static I2C_EXT_FUNC_S g_stI2cExtFuncs =
 {
-    .pfnI2cWriteConfig  = HI_DRV_I2C_WriteConfig,
-    .pfnI2cWrite        = HI_DRV_I2C_Write,
-    .pfnI2cRead         = HI_DRV_I2C_Read,
-    .pfnI2cWriteNostop  = HI_DRV_I2C_Write_NoSTOP,
+    .pfnI2cWriteConfig	= HI_DRV_I2C_WriteConfig,
+    .pfnI2cWrite		= HI_DRV_I2C_Write,
+    .pfnI2cRead			= HI_DRV_I2C_Read,
+    .pfnI2cWriteNostop	= HI_DRV_I2C_Write_NoSTOP,
     .pfnI2cReadDirectly = HI_DRV_I2C_ReadDirectly,
 };
 
-static HI_VOID I2C_DRV_SetRate(HI_U32 I2cNum, HI_U32 I2cRate)
+HI_VOID I2C_DRV_SetRate(HI_U32 I2cNum, HI_U32 I2cRate)
 {
     HI_U32 Value = 0;
     HI_U32 SclH = 0;
@@ -87,6 +78,13 @@ static HI_VOID I2C_DRV_SetRate(HI_U32 I2cNum, HI_U32 I2cRate)
     //HI_CHIP_TYPE_E enChipType;
     //HI_U32 u32ChipVersion;
     HI_U32 SysClock = I2C_DFT_SYSCLK;
+
+    if (I2cNum >= HI_STD_I2C_NUM)
+    {
+        return;
+    }
+
+    g_aI2cRate[I2cNum] = I2cRate;
 
     /* read i2c I2C_CTRL register*/
     Value = I2C_READ_REG((g_I2cKernelAddr[I2cNum] + I2C_CTRL_REG));
@@ -440,16 +438,14 @@ int  i2c_pm_suspend(PM_BASEDEV_S *pdev, pm_message_t state)
         pmStatus[i].rsclh = I2C_READ_REG(g_I2cKernelAddr[i] + I2C_SCL_H_REG);
         pmStatus[i].rscll = I2C_READ_REG(g_I2cKernelAddr[i] + I2C_SCL_L_REG);
     }
-#if  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
-    regI2CStore[0] = I2C_READ_REG(IO_ADDRESS(PERI_CRG));
-#else
-    regI2CStore[0] = I2C_READ_REG(IO_ADDRESS(PERI_CRG38));
-    regI2CStore[1] = I2C_READ_REG(IO_ADDRESS(PERI_CRG39));
-    regI2CStore[2] = I2C_READ_REG(IO_ADDRESS(PERI_CRG40));
-    regI2CStore[3] = I2C_READ_REG(IO_ADDRESS(PERI_CRG41));
-    regI2CStore[4] = I2C_READ_REG(IO_ADDRESS(PERI_CRG24));
 
+#if  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
+    regI2CStore[0] = g_pstRegCrg->PERI_CRG27.u32;
 #endif
+
 
     up(&g_I2cMutex);
     HI_INFO_I2C("i2c_pm_suspend ok \n");
@@ -468,15 +464,11 @@ int  i2c_pm_resume(PM_BASEDEV_S *pdev)
         return -1;
     }
 
-#if  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG),regI2CStore[0]);
-#else
-
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG38), regI2CStore[0]);
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG39), regI2CStore[1]);
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG40), regI2CStore[2]);
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG41), regI2CStore[3]);
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG24), regI2CStore[4]);
+#if  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
+    g_pstRegCrg->PERI_CRG27.u32 = regI2CStore[0];
 #endif
 
     // 1
@@ -544,7 +536,6 @@ static HI_VOID HI_DRV_I2C_Open(HI_VOID)
     up(&g_I2cMutex);
     return;
 }
-
 
 HI_S32 I2C_Ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
@@ -669,68 +660,22 @@ HI_S32 HI_DRV_I2C_Init(HI_VOID)
     g_I2cKernelAddr[2] = IO_ADDRESS(I2C2_PHY_ADDR);
     g_I2cKernelAddr[3] = IO_ADDRESS(I2C3_PHY_ADDR);
     g_I2cKernelAddr[4] = IO_ADDRESS(I2C4_PHY_ADDR);
-#if  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
-     g_I2cKernelAddr[5] = IO_ADDRESS(I2CQAM_PHY_ADDR);
+#if  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
+    g_I2cKernelAddr[5] = IO_ADDRESS(I2CQAM_PHY_ADDR);
 #endif
 
-#if 0
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG38), 0x0100);      /*open i2c0 clk, rmove i2c0 soft reset*/
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG39), 0x0100);      /*open i2c1 clk, rmove i2c1 soft reset*/
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG40), 0x0100);      /*open i2c2 clk, rmove i2c2 soft reset*/
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG41), 0x0100);      /*open i2c3 clk, rmove i2c3 soft reset*/
 
-    //    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG24), 0x0400);		/*open i2c4 clk, rmove i2c4 soft reset,QAMADC clk close*/
-#endif
-
-#if  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG));
-    u32RegVal  &= ~0x222222;
-    u32RegVal  |= 0x111111;
-    HI_REG_WRITE(IO_ADDRESS(PERI_CRG), u32RegVal);
-#else
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG38));
-    u32RegVal |= (0x1 << 8);
-    u32RegVal &= ~0x1;
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG38), u32RegVal);    /*open i2c0 clk, rmove i2c0 soft reset*/
-
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG39));
-    u32RegVal |= (0x1 << 8);
-    u32RegVal &= ~0x1;
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG39), u32RegVal);    /*open i2c1 clk, rmove i2c1 soft reset*/
-
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG40));
-    u32RegVal |= (0x1 << 8);
-    u32RegVal &= ~0x1;
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG40), u32RegVal);    /*open i2c2 clk, rmove i2c2 soft reset*/
-
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG41));
-    u32RegVal |= (0x1 << 8);
-    u32RegVal &= ~0x1;
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG41), u32RegVal);    /*open i2c3 clk, rmove i2c3 soft reset*/
-
-    /* add by q46153 at 20110512, fix QAM's clock  */
-    {
-        HI_REG_READ(IO_ADDRESS(PERI_CRG24), u32RegVal);
-
-        HI_DRV_SYS_GetChipVersion( &g_enChipType, HI_NULL );
-        if (HI_CHIP_TYPE_HI3716M == g_enChipType)
-        {
-            /* QAM clock: 62.5M */
-            u32RegVal = (((((u32RegVal & ~(0x3)) | (0x7 << 8)) | (0x1 << 16)) & ~(0x3 << 17)) | (0x1 << 19));
-            HI_REG_WRITE(IO_ADDRESS(PERI_CRG24), u32RegVal);
-        }
-        else if (g_enChipType == HI_CHIP_TYPE_HI3712)
-        {
-            u32RegVal = (u32RegVal & ~(0x1)) | (0x1 << 8);
-            HI_REG_WRITE(IO_ADDRESS(PERI_CRG24), u32RegVal);
-        }
-        else
-        {
-            /* QAM clock: 74.25M */
-            u32RegVal = ((((u32RegVal & ~(0x3)) | (0x7 << 8)) | (0x1 << 16)) & ~(0x7 << 17));
-            HI_REG_WRITE(IO_ADDRESS(PERI_CRG24), u32RegVal);
-        }
-    }
+#if  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
+    u32RegVal  = g_pstRegCrg->PERI_CRG27.u32;
+    u32RegVal &= ~0x222222;
+    u32RegVal |= 0x111111;
+    g_pstRegCrg->PERI_CRG27.u32 = u32RegVal;
 #endif
     HI_DRV_I2C_Open();
 
@@ -748,80 +693,14 @@ HI_VOID HI_DRV_I2C_DeInit(HI_VOID)
         HI_INFO_I2C(" GPIO Module unregister failed 0x%x.\n", s32Ret);
     }
 
-#if 0
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG38), 0x0101);
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG39), 0x0101);
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG40), 0x0101);
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG41), 0x0101);
-#endif
-#if  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG));
-    u32RegVal  |= 0x222222;
-    HI_REG_WRITE(IO_ADDRESS(PERI_CRG), u32RegVal);
-#else
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG38));
-    u32RegVal |= ((0x1 << 8) | (0x1 << 0));
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG38), u32RegVal);    /*open i2c0 clk,  i2c0 soft reset*/
 
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG39));
-    u32RegVal |= ((0x1 << 8) | (0x1 << 0));
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG39), u32RegVal);    /*open i2c1 clk,  i2c1 soft reset*/
-
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG40));
-    u32RegVal |= ((0x1 << 8) | (0x1 << 0));
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG40), u32RegVal);    /*open i2c2 clk,  i2c2 soft reset*/
-
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG41));
-    u32RegVal |= ((0x1 << 8) | (0x1 << 0));
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG41), u32RegVal);    /*open i2c3 clk,  i2c3 soft reset*/
-
-    u32RegVal = I2C_READ_REG(IO_ADDRESS(PERI_CRG24));
-    if (g_enChipType == HI_CHIP_TYPE_HI3712)
-    {
-        u32RegVal |= ((0x1 << 8) | 0x1);
-    }
-    else
-    {
-        u32RegVal |= ((0x1 << 10) | (0x1 << 1));
-    }
-
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG24), u32RegVal);   /* open QAM clk, i2c4 QAM soft reset*/
-
-#if 0
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG38), 0x0001);
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG39), 0x0001);
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG40), 0x0001);
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG41), 0x0001);
-#endif
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG38));
-    u32RegVal &= (~(0x1 << 8));
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG38), u32RegVal);    /*close i2c0 clk,  i2c0 soft reset*/
-
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG39));
-    u32RegVal &= (~(0x1 << 8));
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG39), u32RegVal);    /*close i2c1 clk,  i2c1 soft reset*/
-
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG40));
-    u32RegVal &= (~(0x1 << 8));
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG40), u32RegVal);    /*close i2c2 clk,  i2c2 soft reset*/
-
-    u32RegVal  = I2C_READ_REG(IO_ADDRESS(PERI_CRG41));
-    u32RegVal &= (~(0x1 << 8));
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG41), u32RegVal);    /*close i2c3 clk,  i2c3 soft reset*/
-
-    u32RegVal = I2C_READ_REG(IO_ADDRESS(PERI_CRG24));
-    if (g_enChipType == HI_CHIP_TYPE_HI3712)
-    {
-        u32RegVal &= (~(0x1 << 8));
-        u32RegVal |= 0x1;
-    }
-    else
-    {
-        u32RegVal &= (~(0x1 << 10));
-        u32RegVal |= (0x1 << 1);
-    }
-
-    I2C_WRITE_REG(IO_ADDRESS(PERI_CRG24), u32RegVal);   /* close QAM clk, i2c4 QAM soft reset*/
+#if  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
+    u32RegVal  = g_pstRegCrg->PERI_CRG27.u32;
+    u32RegVal |= 0x222222;
+    g_pstRegCrg->PERI_CRG27.u32 = u32RegVal;
 #endif
 
     i2cState = 0;
@@ -832,6 +711,12 @@ HI_VOID HI_DRV_I2C_DeInit(HI_VOID)
 HI_S32 HI_DRV_I2C_WriteConfig(HI_U32 I2cNum, HI_U8 I2cDevAddr)
 {
     HI_S32 Ret;
+
+    if (I2cNum >= HI_STD_I2C_NUM)
+    {
+        HI_ERR_I2C("I2cNum(%d) is wrong, STD_I2C_NUM is %d\n", I2cNum, HI_STD_I2C_NUM);
+        return HI_FAILURE;
+    }
 
     Ret = down_interruptible(&g_I2cMutex);
     if (Ret)
@@ -851,6 +736,12 @@ HI_S32 HI_DRV_I2C_Write(HI_U32 I2cNum, HI_U8 I2cDevAddr, HI_U32 I2cRegAddr, HI_U
                         HI_U32 DataLen)
 {
     HI_S32 Ret;
+
+    if (I2cNum >= HI_STD_I2C_NUM)
+    {
+        HI_ERR_I2C("I2cNum(%d) is wrong, STD_I2C_NUM is %d\n", I2cNum, HI_STD_I2C_NUM);
+        return HI_FAILURE;
+    }
 
     Ret = down_interruptible(&g_I2cMutex);
     if (Ret)
@@ -873,6 +764,12 @@ HI_S32 HI_DRV_I2C_Write_NoSTOP(HI_U32 I2cNum, HI_U8 I2cDevAddr, HI_U32 I2cRegAdd
 {
     HI_S32 Ret;
 
+    if (I2cNum >= HI_STD_I2C_NUM)
+    {
+        HI_ERR_I2C("I2cNum(%d) is wrong, STD_I2C_NUM is %d\n", I2cNum, HI_STD_I2C_NUM);
+        return HI_FAILURE;
+    }
+
     Ret = down_interruptible(&g_I2cMutex);
     if (Ret)
     {
@@ -893,6 +790,12 @@ HI_S32 HI_DRV_I2C_Read(HI_U32 I2cNum, HI_U8 I2cDevAddr, HI_U32 I2cRegAddr, HI_U3
                        HI_U32 DataLen)
 {
     HI_S32 Ret;
+
+    if (I2cNum >= HI_STD_I2C_NUM)
+    {
+        HI_ERR_I2C("I2cNum(%d) is wrong, STD_I2C_NUM is %d\n", I2cNum, HI_STD_I2C_NUM);
+        return HI_FAILURE;
+    }
 
     Ret = down_interruptible(&g_I2cMutex);
     if (Ret)
@@ -916,6 +819,12 @@ HI_S32 HI_DRV_I2C_ReadDirectly(HI_U32 I2cNum, HI_U8 I2cDevAddr, HI_U32 I2cRegAdd
                                HI_U8 *pData, HI_U32 DataLen)
 {
     HI_S32 Ret;
+
+    if (I2cNum >= HI_STD_I2C_NUM)
+    {
+        HI_ERR_I2C("I2cNum(%d) is wrong, STD_I2C_NUM is %d\n", I2cNum, HI_STD_I2C_NUM);
+        return HI_FAILURE;
+    }
 
     Ret = down_interruptible(&g_I2cMutex);
     if (Ret)

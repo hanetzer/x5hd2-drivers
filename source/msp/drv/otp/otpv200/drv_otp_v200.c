@@ -3,12 +3,12 @@
   Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
 
  ******************************************************************************
-  File Name     : otp_drv_v200.c
+  File Name     : drv_otp_v200.c
   Version       : Initial Draft
-  Author        : 
+  Author        : Hisilicon hisecurity team
   Created       : 
   Last Modified :
-  Description   : OTP REG DEFINE
+  Description   : 
   Function List :
   History       :
 ******************************************************************************/
@@ -29,12 +29,62 @@
 #ifdef SDK_OTP_ARCH_VERSION_V3
 #include "hi_error_mpi.h"
 #include "drv_otp_ext.h"
+#include "hi_reg_common.h"
 #else
 #include "otp_drv.h"
 #endif
 
 #define OTP_CUSTOMER_KEY_ADDR    0x2c0
 #define OTP_STB_PRIV_DATA_ADDR    0x2b0
+
+extern HI_VOID HI_DRV_SYS_GetChipVersion(HI_CHIP_TYPE_E * penChipType, HI_CHIP_VERSION_E * penChipVersion);
+
+static HI_U16 OTP_CalculateCRC16 (const HI_U8 *pu8Data, HI_U32 u32DataLen)
+{
+    HI_U16 crc_value = 0xff;
+    HI_U16 polynomial = 0x8005;
+    HI_U16 data_index = 0;
+    HI_U32 l = 0;
+    HI_BOOL flag = HI_FALSE;
+    HI_U8 byte0 = 0;
+    HI_U8 au8CrcInput[17];
+
+    if (NULL == pu8Data)
+    {
+        HI_ERR_OTP("Input param error, null pointer!\n");
+        return crc_value;
+    }
+
+    if (u32DataLen == 0)
+    {
+        HI_ERR_OTP("Input param error, length = 0!\n");
+        return crc_value;
+    }
+
+    memset(au8CrcInput, 0, sizeof(au8CrcInput));
+    au8CrcInput[0] = 0x55;
+    memcpy(au8CrcInput + 1, pu8Data, u32DataLen);
+    u32DataLen += 1;
+    
+    for (data_index = 0; data_index < u32DataLen; data_index++)
+    {
+        byte0 = au8CrcInput[data_index];
+        crc_value ^= byte0 * 256;
+
+        for (l=0; l<8; l++)
+        {
+            flag = ((crc_value & 0x8000) == 32768);
+            crc_value = (crc_value & 0x7FFF)*2;
+            if (HI_TRUE == flag)
+            {
+                crc_value ^= polynomial;
+            }
+        }
+    }
+
+    return crc_value;
+}
+
 
 HI_S32 OTP_V200_Set_CustomerKey(OTP_CUSTOMER_KEY_S *pCustomerKey)
 {
@@ -50,7 +100,7 @@ HI_S32 OTP_V200_Set_CustomerKey(OTP_CUSTOMER_KEY_S *pCustomerKey)
 
     for(i = 0; i < 4; i++)
     {
-        pu32CustomerKey[i] = do_apb_v200_read(OTP_CUSTOMER_KEY_ADDR + i * 4);
+        pu32CustomerKey[i] = HAL_OTP_V200_Read(OTP_CUSTOMER_KEY_ADDR + i * 4);
         if (0x0 != pu32CustomerKey[i])
         {
             break;
@@ -62,7 +112,7 @@ HI_S32 OTP_V200_Set_CustomerKey(OTP_CUSTOMER_KEY_S *pCustomerKey)
         pu8CustomerKey = (HI_U8*)(pCustomerKey->u32CustomerKey);
         for(i = 0; i < 16; i++)
         {
-            ret = do_apb_v200_write_byte(OTP_CUSTOMER_KEY_ADDR + i, pu8CustomerKey[i]);
+            ret = HAL_OTP_V200_WriteByte(OTP_CUSTOMER_KEY_ADDR + i, pu8CustomerKey[i]);
             if (HI_SUCCESS != ret)
             {
                 HI_ERR_OTP("ERROR: Set Customer Key Error!\n");
@@ -92,7 +142,7 @@ HI_S32 OTP_V200_Get_CustomerKey(OTP_CUSTOMER_KEY_S *pCustomerKey)
     pu32CustomerKey = (HI_U32*)(pCustomerKey->u32CustomerKey);
     for(i = 0; i < 4; i++)
     {
-        pu32CustomerKey[i] = do_apb_v200_read(OTP_CUSTOMER_KEY_ADDR + i * 4);
+        pu32CustomerKey[i] = HAL_OTP_V200_Read(OTP_CUSTOMER_KEY_ADDR + i * 4);
     }
 
     return HI_SUCCESS;
@@ -105,10 +155,10 @@ HI_S32 OTP_V200_Get_DDPLUS_Flag(HI_BOOL *pu32DDPlusFlag)
 
     if (NULL == pu32DDPlusFlag)
     {
-        return HI_ERR_CA_INVALID_PARA;
+        return HI_FAILURE;
     }
     
-	PV_1.u32 = do_apb_v200_read(OTP_V200_INTERNAL_PV_1);
+	PV_1.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_PV_1);
 
     if (1 == PV_1.bits.dolby_flag)  /*0:support DDPLUS(default); 1: do not support DDPLUS*/
     {
@@ -129,10 +179,10 @@ HI_S32 OTP_V200_Get_DTS_Flag(HI_BOOL *pu32DTSFlag)
 
     if (NULL == pu32DTSFlag)
     {
-        return HI_ERR_CA_INVALID_PARA;
+        return HI_FAILURE;
     }
     
-	PV_1.u32 = do_apb_v200_read(OTP_V200_INTERNAL_PV_1);
+	PV_1.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_PV_1);
 
     if (1 == PV_1.bits.dts_flag)  /*0:do not support DTS(default); 1: support DTS*/
     {
@@ -154,7 +204,7 @@ HI_S32 OTP_V200_Set_StbPrivData(OTP_STB_PRIV_DATA_S *pStbPrivData)
         return HI_FAILURE;
     }
 
-    return do_apb_v200_write_byte(OTP_STB_PRIV_DATA_ADDR + pStbPrivData->u32Offset, pStbPrivData->u8Data);
+    return HAL_OTP_V200_WriteByte(OTP_STB_PRIV_DATA_ADDR + pStbPrivData->u32Offset, pStbPrivData->u8Data);
 }
 
 HI_S32 OTP_V200_Get_StbPrivData(OTP_STB_PRIV_DATA_S *pStbPrivData)
@@ -164,7 +214,7 @@ HI_S32 OTP_V200_Get_StbPrivData(OTP_STB_PRIV_DATA_S *pStbPrivData)
         return HI_FAILURE;
     }
 
-    pStbPrivData->u8Data = do_apb_v200_read_byte(OTP_STB_PRIV_DATA_ADDR + pStbPrivData->u32Offset);
+    pStbPrivData->u8Data = HAL_OTP_V200_ReadByte(OTP_STB_PRIV_DATA_ADDR + pStbPrivData->u32Offset);
 
     return HI_SUCCESS;
 }
@@ -172,54 +222,77 @@ HI_S32 OTP_V200_Get_StbPrivData(OTP_STB_PRIV_DATA_S *pStbPrivData)
 /* Not support Hi3716MV300 */
 HI_S32 OTP_V200_SetHdcpRootKey(HI_U8 *pu8Key)
 {
-    HI_S32    ret = HI_SUCCESS;
-    HI_U32    i = 0;
+    HI_S32 ret = HI_SUCCESS;
+    HI_U32 i = 0;
     OTP_V200_INTERNAL_DATALOCK_0_U DataLock_0;
-    HI_U8     u8HdcpOTPKey[OTP_HDCP_ROOT_KEY_LEN] = {0};
-    HI_BOOL OTPMatchingFlag = HI_TRUE;
+    OTP_V200_INTERNAL_CHECKSUMLOCK_U ChecksumLock;
+    HI_U16 u16CRCValue = 0;
+    HI_U8 u8CheckSum = 0;
+    HI_U8 u8CheckSumCmp = 0;
 
     if (NULL == pu8Key)
     {
-        return HI_ERR_CA_INVALID_PARA;
+        return HI_FAILURE;
     }
 
-    /* check if locked or not */
-    DataLock_0.u32 = do_apb_v200_read(OTP_V200_INTERNAL_DATALOCK_0);
-    if (1 == DataLock_0.bits.esck_lock)
+    /* check if key locked */
+    DataLock_0.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_DATALOCK_0);
+    if (1 == DataLock_0.bits.HDCP_RootKey_lock)
     {
         HI_ERR_OTP("HDCPKEY set ERROR! secret key lock!\n");
+        return HI_FAILURE;
+    }
+
+    /* check if checksum locked */
+    ChecksumLock.u32 = 0;
+    ChecksumLock.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_CHECKSUMLOCK);
+    if( 1 == ChecksumLock.bits.locker_HDCP_RootKey)
+    {
+        HI_ERR_OTP("Error! Checksum Locked before set key!\n");
         return HI_FAILURE;
     }
 
     /* write to OTP */
 	for (i = 0; i < OTP_HDCP_ROOT_KEY_LEN; i++)
 	{
-	    do_apb_v200_write_byte(OTP_V200_INTERNAL_ESCK_0 + i, pu8Key[i]);
+	    HAL_OTP_V200_WriteByte(OTP_V200_INTERNAL_HDCP_ROOTKEY_0 + i, pu8Key[i]);
 	}
 
-    /* read from otp */
-    for ( i = 0 ; i < OTP_HDCP_ROOT_KEY_LEN ; i++ )
-	{
-        u8HdcpOTPKey[i] = (HI_U8)do_apb_v200_read_byte(OTP_V200_INTERNAL_ESCK_0 + i);
-	}
-    
-    /* Compare HDCP key */
-    OTPMatchingFlag = HI_TRUE;
-	for(i = 0; i < OTP_HDCP_ROOT_KEY_LEN; i ++)
-	{
-	    if(u8HdcpOTPKey[i] != pu8Key[i])
-	    {
-	        OTPMatchingFlag = HI_FALSE; //not equal£¡
-	        break;
-	    }
-	}
+    /* set checksum */
+    u16CRCValue = OTP_CalculateCRC16(pu8Key, 16);
+    u8CheckSum = u16CRCValue & 0xff;
+    ret = HAL_OTP_V200_WriteByte(OTP_V200_INTERNAL_CHECKSUM_HDCP_ROOT_KEY, u8CheckSum);
+    if (HI_SUCCESS != ret)
+    {
+        HI_ERR_OTP("Fail to write checksum!\n");
+        return ret;
+    }
 
-    /* Check Compare result! */
-	if(HI_FALSE == OTPMatchingFlag)
-	{
-	    HI_ERR_OTP("Error: Burn HDCP Root key Error\n");
-	    ret = HI_FAILURE;
-	}
+    u8CheckSumCmp = HAL_OTP_V200_ReadByte(OTP_V200_INTERNAL_CHECKSUM_HDCP_ROOT_KEY);
+    if (u8CheckSumCmp != u8CheckSum)
+    {
+        HI_ERR_OTP("Fail to write checksum!\n");
+        return HI_FAILURE;
+    }
+
+    /* lock checksum */
+    ChecksumLock.u32 = 0;
+    ChecksumLock.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_CHECKSUMLOCK);
+    ChecksumLock.bits.locker_HDCP_RootKey = 1;
+    ret = HAL_OTP_V200_Write(OTP_V200_INTERNAL_CHECKSUMLOCK, ChecksumLock.u32);
+    if (HI_SUCCESS != ret)
+    {
+        HI_ERR_OTP("Fail to write checksum lock!\n");
+        return ret;
+    }
+
+    ChecksumLock.u32 = 0;
+    ChecksumLock.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_CHECKSUMLOCK);
+    if( 1 != ChecksumLock.bits.locker_HDCP_RootKey )
+    {
+        HI_ERR_OTP("Fail to write checksum Lock!\n");
+        return HI_FAILURE;
+    }
 
 	return ret;
 }
@@ -227,17 +300,17 @@ HI_S32 OTP_V200_SetHdcpRootKey(HI_U8 *pu8Key)
 /* Not support Hi3716MV300 */
 HI_S32 OTP_V200_GetHdcpRootKey(HI_U8 *pu8Key)
 {
-    HI_S32    ret = HI_SUCCESS;
+    HI_S32 ret = HI_SUCCESS;
     HI_U32 i = 0;
     OTP_V200_INTERNAL_DATALOCK_0_U DataLock_0;
 
     if (NULL == pu8Key)
     {
-        return HI_ERR_CA_INVALID_PARA;
+        return HI_FAILURE;
     }
 
-    DataLock_0.u32 = do_apb_v200_read(OTP_V200_INTERNAL_DATALOCK_0);
-    if (1 == DataLock_0.bits.esck_lock)
+    DataLock_0.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_DATALOCK_0);
+    if (1 == DataLock_0.bits.HDCP_RootKey_lock)
     {
         HI_ERR_OTP("HDCP Root KEY get ERROR! Hdcp root key lock!\n");
         return HI_FAILURE;
@@ -246,7 +319,7 @@ HI_S32 OTP_V200_GetHdcpRootKey(HI_U8 *pu8Key)
     /* read from OTP */
 	for (i = 0; i < OTP_HDCP_ROOT_KEY_LEN; i++)
 	{
-	    pu8Key[i] = do_apb_v200_read_byte(OTP_V200_INTERNAL_ESCK_0 + i);
+	    pu8Key[i] = HAL_OTP_V200_ReadByte(OTP_V200_INTERNAL_HDCP_ROOTKEY_0 + i);
 	}
 
 	return ret;
@@ -259,8 +332,8 @@ HI_S32 OTP_V200_SetHdcpRootKeyLock(HI_VOID)
     OTP_V200_INTERNAL_DATALOCK_0_U DataLock_0;
 
     DataLock_0.u32 = 0;
-    DataLock_0.bits.esck_lock = 1;
-    do_apb_v200_write(OTP_V200_INTERNAL_DATALOCK_0, DataLock_0.u32);
+    DataLock_0.bits.HDCP_RootKey_lock = 1;
+    HAL_OTP_V200_Write(OTP_V200_INTERNAL_DATALOCK_0, DataLock_0.u32);
 
 	return ret;
 }
@@ -273,11 +346,11 @@ HI_S32 OTP_V200_GetHdcpRootKeyLock(HI_BOOL *pBLock)
 
     if (NULL == pBLock)
     {
-        return HI_ERR_CA_INVALID_PARA;
+        return HI_FAILURE;
     }
 
-    DataLock_0.u32 = do_apb_v200_read(OTP_V200_INTERNAL_DATALOCK_0);
-    *pBLock = DataLock_0.bits.esck_lock;
+    DataLock_0.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_DATALOCK_0);
+    *pBLock = DataLock_0.bits.HDCP_RootKey_lock;
 
 	return ret;
 }
@@ -285,54 +358,75 @@ HI_S32 OTP_V200_GetHdcpRootKeyLock(HI_BOOL *pBLock)
 /* Not support Hi3716MV300 */
 HI_S32 OTP_V200_SetSTBRootKey(HI_U8 u8Key[16])
 {
-    HI_S32    ret = HI_SUCCESS;
-    HI_U32    i = 0;
+    HI_S32 ret = HI_SUCCESS;
+    HI_U32 i = 0;
     OTP_V200_INTERNAL_DATALOCK_0_U DataLock_0;
-    HI_U8     u8STBRootKey[16] = {0};
-    HI_BOOL OTPMatchingFlag = HI_TRUE;
+    OTP_V200_INTERNAL_CHECKSUMLOCK_U ChecksumLock;
+    HI_U16 u16CRCValue = 0;
+    HI_U8 u8CheckSum = 0;
+    HI_U8 u8CheckSumCmp = 0;
 
     if (NULL == u8Key)
     {
-        return HI_ERR_CA_INVALID_PARA;
+        return HI_FAILURE;
     }
 
-    /* check if locked or not */
-    DataLock_0.u32 = do_apb_v200_read(OTP_V200_INTERNAL_DATALOCK_0);
+    /* check if key locked */
+    DataLock_0.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_DATALOCK_0);
     if (1 == DataLock_0.bits.stb_rootkey_lock)
     {
         HI_ERR_OTP("STB root key set ERROR! Is locked!\n");
         return HI_FAILURE;
     }
 
+    /* check if checksum locked */
+    ChecksumLock.u32 = 0;
+    ChecksumLock.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_CHECKSUMLOCK);
+    if( 1 == ChecksumLock.bits.locker_STB_RootKey)
+    {
+        HI_ERR_OTP("Error! Checksum Locked before set key!\n");
+        return HI_FAILURE;
+    }
+
     /* write to OTP */
 	for (i = 0; i < OTP_STB_ROOT_KEY_LEN; i++)
 	{
-	    do_apb_v200_write_byte(OTP_V200_INTERNAL_STB_ROOTKEY_0 + i, u8Key[i]);
+	    HAL_OTP_V200_WriteByte(OTP_V200_INTERNAL_STB_ROOTKEY_0 + i, u8Key[i]);
 	}
 
-    /* read from otp */
-    for ( i = 0 ; i < OTP_STB_ROOT_KEY_LEN ; i++ )
-	{
-        u8STBRootKey[i] = (HI_U8)do_apb_v200_read_byte(OTP_V200_INTERNAL_STB_ROOTKEY_0 + i);
-	}
-    
-    /* Compare */
-    OTPMatchingFlag = HI_TRUE;
-	for(i = 0; i < OTP_STB_ROOT_KEY_LEN; i ++)
-	{
-	    if(u8STBRootKey[i] != u8Key[i])
-	    {
-	        OTPMatchingFlag = HI_FALSE;
-	        break;
-	    }
-	}
+    /* set checksum */
+    u16CRCValue = OTP_CalculateCRC16(u8Key, 16);
+    u8CheckSum = u16CRCValue & 0xff;
+    ret = HAL_OTP_V200_WriteByte(OTP_V200_INTERNAL_CHECKSUM_STB_ROOT_KEY, u8CheckSum);
+    if (HI_SUCCESS != ret)
+    {
+        HI_ERR_OTP("Fail to write checksum!\n");
+        return ret;
+    }
+    u8CheckSumCmp = HAL_OTP_V200_ReadByte(OTP_V200_INTERNAL_CHECKSUM_STB_ROOT_KEY);
+    if (u8CheckSumCmp != u8CheckSum)
+    {
+        HI_ERR_OTP("Fail to write checksum!\n");
+        return HI_FAILURE;
+    }
 
-    /* Check Compare result! */
-	if(HI_FALSE == OTPMatchingFlag)
-	{
-	    HI_ERR_OTP("Error: Burn STB root key Error\n");
-	    ret = HI_FAILURE;
-	}
+    /* lock checksum */
+    ChecksumLock.u32 = 0;
+    ChecksumLock.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_CHECKSUMLOCK);
+    ChecksumLock.bits.locker_STB_RootKey = 1;
+    ret = HAL_OTP_V200_Write(OTP_V200_INTERNAL_CHECKSUMLOCK, ChecksumLock.u32);
+    if (HI_SUCCESS != ret)
+    {
+        HI_ERR_OTP("Fail to write checksum lock!\n");
+        return ret;
+    }
+    ChecksumLock.u32 = 0;
+    ChecksumLock.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_CHECKSUMLOCK);
+    if( 1 != ChecksumLock.bits.locker_STB_RootKey )
+    {
+        HI_ERR_OTP("Fail to write checksum Lock!\n");
+        return HI_FAILURE;
+    }
 
 	return ret;
 }
@@ -345,10 +439,10 @@ HI_S32 OTP_V200_GetSTBRootKey(HI_U8 u8Key[16])
 
     if (NULL == u8Key)
     {
-        return HI_ERR_CA_INVALID_PARA;
+        return HI_FAILURE;
     }
 
-    DataLock_0.u32 = do_apb_v200_read(OTP_V200_INTERNAL_DATALOCK_0);
+    DataLock_0.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_DATALOCK_0);
     if (1 == DataLock_0.bits.stb_rootkey_lock)
     {
         HI_ERR_OTP("STB root key get ERROR! Is locked!\n");
@@ -358,7 +452,7 @@ HI_S32 OTP_V200_GetSTBRootKey(HI_U8 u8Key[16])
     /* read from OTP */
 	for (i = 0; i < OTP_STB_ROOT_KEY_LEN; i++)
 	{
-	    u8Key[i] = do_apb_v200_read_byte(OTP_V200_INTERNAL_STB_ROOTKEY_0 + i);
+	    u8Key[i] = HAL_OTP_V200_ReadByte(OTP_V200_INTERNAL_STB_ROOTKEY_0 + i);
 	}
 
 	return HI_SUCCESS;
@@ -369,10 +463,18 @@ HI_S32 OTP_V200_LockSTBRootKey(HI_VOID)
 {
     OTP_V200_INTERNAL_DATALOCK_0_U DataLock_0;
 
+    DataLock_0.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_DATALOCK_0);
+    if (1 == DataLock_0.bits.stb_rootkey_lock)
+    {
+        HI_ERR_OTP("STB root key have already been locked!\n");
+        return HI_SUCCESS;
+    }
+
+    /* lock */
     DataLock_0.u32 = 0;
     DataLock_0.bits.stb_rootkey_lock = 1;
-    do_apb_v200_write(OTP_V200_INTERNAL_DATALOCK_0, DataLock_0.u32);
-    
+    HAL_OTP_V200_Write(OTP_V200_INTERNAL_DATALOCK_0, DataLock_0.u32);
+
 	return HI_SUCCESS;
 }
 
@@ -382,10 +484,10 @@ HI_S32 OTP_V200_GetSTBRootKeyLockFlag(HI_BOOL *pBLock)
 
     if (NULL == pBLock)
     {
-        return HI_ERR_CA_INVALID_PARA;
+        return HI_FAILURE;
     }
 
-    DataLock_0.u32 = do_apb_v200_read(OTP_V200_INTERNAL_DATALOCK_0);
+    DataLock_0.u32 = HAL_OTP_V200_Read(OTP_V200_INTERNAL_DATALOCK_0);
     *pBLock = DataLock_0.bits.stb_rootkey_lock;
 
 	return HI_SUCCESS;
@@ -393,40 +495,22 @@ HI_S32 OTP_V200_GetSTBRootKeyLockFlag(HI_BOOL *pBLock)
 
 HI_S32 OTP_V200_Reset(HI_VOID)
 {
-#ifndef CHIP_TYPE_hi3716cv200es
-    OTP_V200_CRG_HDMI_CTRL_U OtpV200CrgCtrl;
-#else
-    OTP_V200_CRG_CA_CTRL_U OtpV200CrgCtrl;
-#endif
-    
-    OtpV200CrgCtrl.u32 = 0;
+    U_PERI_CRG48 unOTPCrg;
+/* Reset request */
+    unOTPCrg.u32 = g_pstRegCrg->PERI_CRG48.u32;
+    unOTPCrg.bits.otp_srst_req = 1;
+    g_pstRegCrg->PERI_CRG48.u32 = unOTPCrg.u32;
 
-/* Reset */
-#ifndef CHIP_TYPE_hi3716cv200es
-    OtpV200CrgCtrl.u32 = otp_read_reg(OTP_V200_CRG_HDMI_ADDR);
-    OtpV200CrgCtrl.bits.otp_reset = 1;
-    otp_write_reg(OTP_V200_CRG_HDMI_ADDR, OtpV200CrgCtrl.u32);
-#else
-    OtpV200CrgCtrl.u32 = otp_read_reg(OTP_V200_CRG_CA_ADDR);
-    OtpV200CrgCtrl.bits.otp_srst_req = 1;
-    otp_write_reg(OTP_V200_CRG_CA_ADDR, OtpV200CrgCtrl.u32);
-#endif
-
-    otp_wait(1000);
+    otp_wait(1000); /* 1ms */
 
 /* Cancel Reset */
-#ifndef CHIP_TYPE_hi3716cv200es
-    OtpV200CrgCtrl.u32 = otp_read_reg(OTP_V200_CRG_HDMI_ADDR);
-    OtpV200CrgCtrl.bits.otp_reset = 0;
-    otp_write_reg(OTP_V200_CRG_HDMI_ADDR, OtpV200CrgCtrl.u32);
-#else
-    OtpV200CrgCtrl.u32 = otp_read_reg(OTP_V200_CRG_CA_ADDR);
-    OtpV200CrgCtrl.bits.otp_srst_req = 0;
-    otp_write_reg(OTP_V200_CRG_CA_ADDR, OtpV200CrgCtrl.u32);
-#endif
+    unOTPCrg.u32 = g_pstRegCrg->PERI_CRG48.u32;
+    unOTPCrg.bits.otp_srst_req = 0;
+    g_pstRegCrg->PERI_CRG48.u32 = unOTPCrg.u32;
 
 	return HI_SUCCESS;
 }
-/*--------------------------------------END--------------------------------------*/
 
 EXPORT_SYMBOL(OTP_V200_Reset);
+/*--------------------------------------END--------------------------------------*/
+

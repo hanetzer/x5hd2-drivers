@@ -1,15 +1,22 @@
 #ifndef __VPSS_REG_STRUCT_H__
 #define __VPSS_REG_STRUCT_H__
 #include "hi_drv_video.h"
+#include "vpss_common.h"
 typedef enum hiVPSS_REG_PORT_E
 {
     VPSS_REG_HD = 0,
-    VPSS_REG_STR,
     VPSS_REG_SD,
+    VPSS_REG_STR,
     VPSS_REG_BUTT
 }VPSS_REG_PORT_E;
 
-
+typedef enum hiVPSS_REG_PREZME_E{
+    PREZME_DISABLE = 0,
+    PREZME_2X,
+    PREZME_4X,
+    PREZME_8X,
+    PREZME_BUTT
+}VPSS_REG_PREZME_E;
 typedef enum hiREG_FIELDPOS_E
 {
     LAST_FIELD = 0,
@@ -29,6 +36,16 @@ typedef enum hiREG_FRAMEPOS_E
     BUTT_FRAME
 }REG_FRAMEPOS_E;
 
+#if DEF_VPSS_VERSION_2_0
+typedef enum hiREG_TUNLPOS_E
+{
+    ROW_2_WIRTE_TUNL = 0,
+    ROW_4_WIRTE_TUNL,
+    ROW_8_WIRTE_TUNL,
+    ROW_16_WIRTE_TUNL,
+    BUTT_WIRTE_TUNL
+}REG_TUNLPOS_E;
+#endif
 
 typedef enum 
 {

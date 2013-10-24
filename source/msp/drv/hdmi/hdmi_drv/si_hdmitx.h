@@ -40,6 +40,7 @@ Bool SI_IsHDMICompatible(void);
 void SI_SW_ResetHDMITX(void);
 void SI_AssertHDMITX_SWReset( HI_U8 );
 void SI_ReleaseHDMITX_SWReset( HI_U8 );
+HI_BOOL SI_IsHDMIResetting(void);
 void SI_SetDeepColor ( HI_U8 bDeepColor );
 void HDMI_ProcessCableIn(void);
 
@@ -83,6 +84,10 @@ HI_U32 SI_HPD_SetHPDUserCallbackCount( void );
 HI_U32 SI_Is_HPDUserCallback_DetectHPD( void );
 
 HI_S32 SI_TX_IsHDMImode(void);
+HI_VOID SI_HW_ResetCtrl(int iEnable);
+HI_VOID SI_HW_ResetPhy(int iEnable);
+
+
 
 #endif
 

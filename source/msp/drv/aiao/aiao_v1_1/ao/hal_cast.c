@@ -12,20 +12,21 @@
 #include "hi_type.h"
 #include "hi_module.h"
 #include <linux/string.h>
-#include "drv_mem_ext.h"
+#include "hi_drv_mem.h"
 #include "hal_cast.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_mem_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_mem.h"
+#include "hi_drv_module.h"
 
 #include "hi_drv_ao.h"
 #include "hi_audsp_common.h"
 #include "circ_buf.h"
 #include "hal_aoe.h"
 #include "hal_cast.h"
+#include "audio_util.h"
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -62,12 +63,11 @@ typedef struct
     AIAO_CAST_ATTR_S stUserAttr;
 
     /* internal state */
-    AIAO_CAST_ID_E      enCast;
-    HI_U32              u32BufFrameSize;
-    AIAO_CAST_STATUS_E  enCurnStatus;
-    CAST_VIRTUAL_RBUF_S stVirBuf;
-    CIRC_BUF_S          stCB;
-    CAST_PROC_STATUS_S  stProc;
+    AIAO_CAST_ID_E     enCast;
+    HI_U32             u32BufFrameSize;
+    AIAO_CAST_STATUS_E enCurnStatus;
+    CIRC_BUF_S         stCB;
+    CAST_PROC_STATUS_S stProc;
 } CAST_CHN_STATE_S;
 
 /* private state */
@@ -181,10 +181,10 @@ HI_S32  HAL_CAST_Create(AIAO_CAST_ID_E *penCAST, AIAO_CAST_ATTR_S *pstAttr)
         return HI_FAILURE;
     }
 
-    state = HI_KMALLOC(HI_ID_AIAO, sizeof(CAST_CHN_STATE_S), GFP_KERNEL);
+    state = AUTIL_AO_MALLOC(HI_ID_AO, sizeof(CAST_CHN_STATE_S), GFP_KERNEL);
     if (state == HI_NULL)
     {
-        HI_FATAL_AO("HI_KMALLOC CAST_CHN_STATE_S failed\n");
+        HI_FATAL_AO("malloc CAST_CHN_STATE_S failed\n");
         goto CAST_Create_ERR_EXIT;
     }
 
@@ -203,7 +203,7 @@ HI_S32  HAL_CAST_Create(AIAO_CAST_ID_E *penCAST, AIAO_CAST_ATTR_S *pstAttr)
 
 CAST_Create_ERR_EXIT:
     *penCAST = AIAO_CAST_BUTT;
-    HI_KFREE(HI_ID_AIAO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     g_CastRm.hCast[enCAST] = HI_NULL;
     return Ret;
 }
@@ -224,7 +224,7 @@ HI_VOID     HAL_CAST_Destroy(AIAO_CAST_ID_E enCAST)
         HAL_CAST_Stop(enCAST);
     }
 
-    HI_KFREE(HI_ID_AIAO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     g_CastRm.hCast[enCAST] = HI_NULL;
     return;
 }
@@ -232,11 +232,9 @@ HI_VOID     HAL_CAST_Destroy(AIAO_CAST_ID_E enCAST)
 HI_S32  HAL_CAST_SetAttr(AIAO_CAST_ID_E enCAST, AIAO_CAST_ATTR_S *pstAttr)
 {
     CAST_CHN_STATE_S *state = HI_NULL;
-    HI_U32 PhyAddr, VirAddr;
 
-    //todo, check attr
     CHECK_CAST_OPEN(enCAST);
-    
+
     state = (CAST_CHN_STATE_S*)g_CastRm.hCast[enCAST];
     if (AIAO_CAST_STATUS_STOP != state->enCurnStatus)
     {
@@ -248,27 +246,11 @@ HI_S32  HAL_CAST_SetAttr(AIAO_CAST_ID_E enCAST, AIAO_CAST_ATTR_S *pstAttr)
         return HI_FAILURE;
     }
 
-    PhyAddr = pstAttr->extDmaMem.u32BufPhyAddr;
-    VirAddr = pstAttr->extDmaMem.u32BufVirAddr;
-    state->stVirBuf.u32BufPhyAddr = PhyAddr;
-    state->stVirBuf.u32BufVirAddr = VirAddr;
-#if 0    
-    state->stVirBuf.u32BufSize = pstAttr->extDmaMem.u32BufSize - CAST_DMABUF_RESERVED_SIZE;
-    state->stVirBuf.u32BufPhyWptr = PhyAddr + (pstAttr->extDmaMem.u32BufSize - CAST_DMABUF_RESERVED_SIZE);
-    state->stVirBuf.u32BufVirWptr = VirAddr + (pstAttr->extDmaMem.u32BufSize - CAST_DMABUF_RESERVED_SIZE);
-#else
-    state->stVirBuf.u32BufSize = pstAttr->extDmaMem.u32BufSize;
-    state->stVirBuf.u32BufPhyWptr = PhyAddr + (AO_CAST_MMZSIZE_MAX - CAST_DMABUF_RESERVED_SIZE);
-    state->stVirBuf.u32BufVirWptr = VirAddr + (AO_CAST_MMZSIZE_MAX - CAST_DMABUF_RESERVED_SIZE);
-#endif    
-    state->stVirBuf.u32BufPhyRptr = state->stVirBuf.u32BufPhyWptr + sizeof(HI_U32);
-    state->stVirBuf.u32BufVirRptr = state->stVirBuf.u32BufVirWptr + sizeof(HI_U32);
-
     CIRC_BUF_Init(&state->stCB,
-                  (HI_U32 *)(state->stVirBuf.u32BufVirWptr),
-                  (HI_U32 *)(state->stVirBuf.u32BufVirRptr),
-                  (HI_U32 *)state->stVirBuf.u32BufVirAddr,
-                  state->stVirBuf.u32BufSize);
+                  (HI_U32 *)(pstAttr->extDmaMem.u32WptrAddr),
+                  (HI_U32 *)(pstAttr->extDmaMem.u32RptrAddr),
+                  (HI_U32 *)pstAttr->extDmaMem.u32BufVirAddr,
+                  pstAttr->extDmaMem.u32BufSize);
 
     state->u32BufFrameSize = UTIL_CalcFrameSize(pstAttr->u32BufChannels,
                                                 pstAttr->u32BufBitPerSample);
@@ -451,26 +433,6 @@ HI_VOID                 HAL_CAST_GetBufDelayMs(AIAO_CAST_ID_E enCAST, HI_U32 *pD
     FreeBytes = CIRC_BUF_QueryBusy(&state->stCB);
     *pDelayms = CALC_LATENCY_MS(state->stUserAttr.u32BufSampleRate, state->u32BufFrameSize, FreeBytes);
     return;
-}
-
-
-HI_S32					HAL_CAST_GetRbfAttr(AIAO_CAST_ID_E enCAST, AIAO_CAST_RBUF_ATTR_S *pstRbfAttr)
-{
-    CAST_CHN_STATE_S *state = HI_NULL;
-
-    CHECK_CAST_OPEN(enCAST);
-
-    state = (CAST_CHN_STATE_S*)g_CastRm.hCast[enCAST];
-
-    pstRbfAttr->u32BufPhyAddr = state->stVirBuf.u32BufPhyAddr;
-    pstRbfAttr->u32BufVirAddr = state->stVirBuf.u32BufVirAddr;
-    pstRbfAttr->u32BufPhyRptr = state->stVirBuf.u32BufPhyRptr;
-    pstRbfAttr->u32BufVirRptr = state->stVirBuf.u32BufVirRptr;
-    pstRbfAttr->u32BufPhyWptr = state->stVirBuf.u32BufPhyWptr;
-    pstRbfAttr->u32BufVirWptr = state->stVirBuf.u32BufVirWptr;
-    pstRbfAttr->u32BufSize = state->stVirBuf.u32BufSize;
-    return HI_SUCCESS;
-    
 }
 
 HI_VOID HAL_CAST_GetDefAttr(AIAO_CAST_ATTR_S *pstAttr)

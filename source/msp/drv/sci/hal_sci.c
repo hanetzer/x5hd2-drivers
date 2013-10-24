@@ -11,6 +11,7 @@
 
 #include "hal_sci.h"
 #include "drv_sci.h"
+#include "hi_reg_common.h"
 
 volatile SCI_REG_S       *g_pSciReg[HI_UNF_SCI_PORT_BUTT];
 
@@ -23,76 +24,52 @@ HI_VOID SCI_HAL_Init(HI_UNF_SCI_PORT_E enSciPort, SCI_REG_S *pSciReg)
 
 /*set sci clk module*/
 HI_VOID SCI_HAL_SetSCIClock(HI_UNF_SCI_PORT_E enSciPort, HI_BOOL bEnable)
-{
-    HI_U32 u32CRGBaseAddr;
-    HI_U32  *pSciCRGAddr = HI_NULL;
-    HI_U32 u32SciCRGValue;
-    SCI_PORT_ATTR_S stPortAttr;
+{   
+#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
+	U_PERI_CRG29 uTmpValue;
 
-    if (HI_SUCCESS != SCI_GetPortAttr(enSciPort, &stPortAttr))
-    {
-        return;
-    }
-
-    u32CRGBaseAddr = (HI_U32)IO_ADDRESS(SYS_PERI_CRG_ADDR);
-    pSciCRGAddr = (HI_U32 *)(u32CRGBaseAddr + stPortAttr.u32CRGAddrOffset);
-
-    u32SciCRGValue = *pSciCRGAddr;
-    
-#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
+	uTmpValue.u32 = g_pstRegCrg->PERI_CRG29.u32;
     if (HI_TRUE == bEnable)
     {
     	if(HI_UNF_SCI_PORT0 == enSciPort)
-       		 *pSciCRGAddr = u32SciCRGValue | 0x001;
+       		 uTmpValue.bits.sci0_cken = 0x1;
     	else
-    		 *pSciCRGAddr = u32SciCRGValue | 0x010;
+    		 uTmpValue.bits.sci1_cken = 0x1;
     }
     else
     {
     	if(HI_UNF_SCI_PORT0 == enSciPort)
-      	    *pSciCRGAddr = u32SciCRGValue & (~(0x1));
+      	    uTmpValue.bits.sci0_cken = 0x0;
     	else
-    		*pSciCRGAddr = u32SciCRGValue & (~(0x10));
+    		uTmpValue.bits.sci1_cken = 0x0;
     }
-#else
-    if (HI_TRUE == bEnable)
-    {
-        *pSciCRGAddr = u32SciCRGValue | 0x100;
-    }
-    else
-    {
-        *pSciCRGAddr = u32SciCRGValue & (~(0x1<<8 ));
-    }
+
+	g_pstRegCrg->PERI_CRG29.u32 = uTmpValue.u32;
 #endif
     return;
 }
 
 /*sci module reset*/
 HI_VOID SCI_HAL_SetSCIReset(HI_UNF_SCI_PORT_E enSciPort)
-{
-    HI_U32 u32CRGBaseAddr;
-    HI_U32  *pSciCRGAddr = HI_NULL;
-    HI_U32 u32SciCRGValue;
-    SCI_PORT_ATTR_S stPortAttr;
+{    
+#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
 
-    if (HI_SUCCESS != SCI_GetPortAttr(enSciPort, &stPortAttr))
-    {
-        return;
-    }
+	U_PERI_CRG29 uTmpValue;
 
-    u32CRGBaseAddr = (HI_U32)IO_ADDRESS(SYS_PERI_CRG_ADDR);
-    pSciCRGAddr = (HI_U32 *)(u32CRGBaseAddr + stPortAttr.u32CRGAddrOffset);
-
-    u32SciCRGValue = *pSciCRGAddr;
-    
-#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
-
+	uTmpValue.u32 = g_pstRegCrg->PERI_CRG29.u32;
+	
 	if(HI_UNF_SCI_PORT0 == enSciPort)
- 	    *pSciCRGAddr = u32SciCRGValue | 0x2;
+ 	    uTmpValue.bits.sci0_srst_req = 0x1;
 	if(HI_UNF_SCI_PORT1 == enSciPort)
-		*pSciCRGAddr = u32SciCRGValue | 0x20;    	
-#else
-    *pSciCRGAddr = u32SciCRGValue | 0x1;
+		uTmpValue.bits.sci1_srst_req = 0x1;   	
+
+	g_pstRegCrg->PERI_CRG29.u32 = uTmpValue.u32;
 #endif
     return;
 }
@@ -100,28 +77,22 @@ HI_VOID SCI_HAL_SetSCIReset(HI_UNF_SCI_PORT_E enSciPort)
 /*remove sci module reset*/
 HI_VOID SCI_HAL_ClearSCIReset(HI_UNF_SCI_PORT_E enSciPort)
 {
-    HI_U32 u32CRGBaseAddr;
-    HI_U32  *pSciCRGAddr = HI_NULL;
-    HI_U32 u32SciCRGValue;
-    SCI_PORT_ATTR_S stPortAttr;
+#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
+	U_PERI_CRG29 uTmpValue;
 
-    if (HI_SUCCESS != SCI_GetPortAttr(enSciPort, &stPortAttr))
-    {
-        return;
-    }
-
-    u32CRGBaseAddr = (HI_U32)IO_ADDRESS(SYS_PERI_CRG_ADDR);
-    pSciCRGAddr = (HI_U32 *)(u32CRGBaseAddr + stPortAttr.u32CRGAddrOffset);
-
-    u32SciCRGValue = *pSciCRGAddr;
-#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
+	uTmpValue.u32 = g_pstRegCrg->PERI_CRG29.u32;
+	
 	if(HI_UNF_SCI_PORT0 == enSciPort)
-	    *pSciCRGAddr = u32SciCRGValue & (~0x2);
+	    uTmpValue.bits.sci0_srst_req = 0x0;
 	if(HI_UNF_SCI_PORT1 == enSciPort)
-		*pSciCRGAddr = u32SciCRGValue & (~0x20);
-#else
-	  *pSciCRGAddr = u32SciCRGValue & (~0x1);
-#endif
+		uTmpValue.bits.sci1_srst_req = 0x0;
+
+	g_pstRegCrg->PERI_CRG29.u32 = uTmpValue.u32;
+#endif	
+
     return;
 }
 
@@ -302,7 +273,7 @@ HI_VOID SCI_HAL_SetDirection(HI_UNF_SCI_PORT_E enSciPort, SCI_DIRECTION_E enDire
     return;
 }
 
-HI_VOID SCI_HAL_SetClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_CLK_MODE_E enClkMode)
+HI_VOID SCI_HAL_SetClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enClkMode)
 {
     SCI_SCR1_REG SciCr1;
 
@@ -313,6 +284,50 @@ HI_VOID SCI_HAL_SetClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_CLK_MODE_E en
     g_pSciReg[enSciPort]->SciCr1.Value = SciCr1.Value;
 
     return;
+}
+
+HI_VOID SCI_HAL_SetResetMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enResetMode)
+{
+#if defined (CHIP_TYPE_hi3716cv200) || defined (CHIP_TYPE_hi3719cv100) \
+	|| defined (CHIP_TYPE_hi3718cv100) || defined (CHIP_TYPE_hi3719mv100) \
+	|| defined (CHIP_TYPE_hi3719mv100_a) || defined (CHIP_TYPE_hi3718mv100) 
+	U_PERI_SIM_OD_CTRL uTmpValue;
+
+	uTmpValue.u32 = g_pstRegPeri->PERI_SIM_OD_CTRL.u32;
+	
+	if (enSciPort == HI_UNF_SCI_PORT0)
+	{
+		uTmpValue.bits.sim0_rst_od_sel = enResetMode;
+	}
+	else
+	{
+		uTmpValue.bits.sim1_rst_od_sel = enResetMode;
+	}
+
+	g_pstRegPeri->PERI_SIM_OD_CTRL.u32 = uTmpValue.u32;
+#endif
+}
+
+HI_VOID SCI_HAL_SetVccEnMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enVccEnMode)
+{
+#if defined (CHIP_TYPE_hi3716cv200) || defined (CHIP_TYPE_hi3719cv100) \
+	|| defined (CHIP_TYPE_hi3718cv100) || defined (CHIP_TYPE_hi3719mv100) \
+	|| defined (CHIP_TYPE_hi3719mv100_a) || defined (CHIP_TYPE_hi3718mv100) 
+	U_PERI_SIM_OD_CTRL uTmpValue;
+
+	uTmpValue.u32 = g_pstRegPeri->PERI_SIM_OD_CTRL.u32;
+	
+	if (enSciPort == HI_UNF_SCI_PORT0)
+	{
+		uTmpValue.bits.sim0_pwren_od_sel = enVccEnMode;
+	}
+	else
+	{
+		uTmpValue.bits.sim1_pwren_od_sel = enVccEnMode;
+	}
+
+	g_pstRegPeri->PERI_SIM_OD_CTRL.u32 = uTmpValue.u32;
+#endif
 }
 
 HI_VOID SCI_HAL_SetBlockProtect(HI_UNF_SCI_PORT_E enSciPort, HI_BOOL bEnable)

@@ -30,7 +30,11 @@ extern "C"{
 
 /*define the buffer size for log*/
 #define DEBUG_MSG_BUF_RESERVE   (1024 * 4)
-#define LOG_CONFIG_BUF_SIZE   (1024 * 8)
+#define LOG_CONFIG_BUF_SIZE   (1024 * 16)
+
+#define PRINT_FMT "[%d %s-%s]:%s[%d]:%s", TimeMs, DebugLevelName[u32Level],\
+                g_pLogConfigInfo[enModId].ModName,\
+                pFuncName, u32LineNum, log_str
 
 typedef enum hiLOG_OUTPUT_POS_E
 {
@@ -52,11 +56,10 @@ typedef enum hiLOG_OUTPUT_POS_E
 /*CNcomment: 模块打印级别控制信息结构 */
 typedef struct hiLOG_CONFIG_INFO_S
 {
-    HI_U32 u32LogLevel;         /*log level*//*CNcomment:  模块打印级别控制 */
-    HI_U32 u32LogPrintPos;      /*log output location, 0:serial port; 1:network;2:u-disk*//*CNcomment:  模块打印位置控制 0:串口 1:网络 2:U盘 */
-    // TODO: Check length
-    HI_U8 ModName[16];          /*mode name*/
-    HI_BOOL bUdiskFlag;         /* u-disk log flag */
+    HI_U8 ModName[16+12];     /*mode name 16 + '_' 1 + pid 10 */
+    HI_U8 u8LogLevel;         /*log level*//*CNcomment:  模块打印级别控制 */
+    HI_U8 u8LogPrintPos;      /*log output location, 0:serial port; 1:network;2:u-disk*//*CNcomment:  模块打印位置控制 0:串口 1:网络 2:U盘 */
+    HI_U8 u8UdiskFlag;        /* u-disk log flag */
 }LOG_CONFIG_INFO_S;
 
 typedef struct hiLOG_BUF_READ_S
@@ -79,16 +82,6 @@ typedef struct hiLOG_BUF_WRITE_S
 #define UMAP_CMPI_LOG_WRITE_LOG         _IOW  (HI_ID_LOG, 3, LOG_BUF_WRITE_S)
 #define UMAP_CMPI_LOG_SET_PATH          _IOW  (HI_ID_LOG, 4, LOG_PATH_S)
 #define UMAP_CMPI_LOG_SET_STORE_PATH    _IOW  (HI_ID_LOG, 5, STORE_PATH_S)
-
-
-
-/*Define Debug Level For LOG                 */
-#define HI_FATAL_LOG(fmt...)  HI_FATAL_PRINT(HI_ID_LOG, fmt)
-
-#define HI_ERR_LOG(fmt...) HI_ERR_PRINT(HI_ID_LOG, fmt)
-
-#define HI_WARN_LOG(fmt...) HI_WARN_PRINT(HI_ID_LOG, fmt)
-#define HI_INFO_LOG(fmt...) HI_INFO_PRINT(HI_ID_LOG, fmt)
 
 
 #ifdef __cplusplus

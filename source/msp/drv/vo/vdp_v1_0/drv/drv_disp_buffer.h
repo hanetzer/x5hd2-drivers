@@ -48,6 +48,7 @@ typedef struct
     HI_U32 u32BufWidth;
     HI_U32 u32BufHeight;
     HI_U32 u32BufStride;
+    HI_U32 u32BufSize;
     HI_DRV_PIX_FORMAT_E eDataFormat;
 
 	// user supply mem
@@ -111,6 +112,11 @@ typedef struct
 {
     HI_U32 u32BufNum;
     
+    /*maybe it should not be located here, it's just for storing the
+      setting passed by user. not real allocated information.*/
+    HI_U32  u32BufSize;
+    HI_U32  u32BufStride;
+    
     //BUF_S stBufQueue[WIN_BUFFER_MAX_NUMBER];
     BUF_S *pstBufQueue;
 
@@ -127,7 +133,6 @@ typedef struct
     HI_BOOL bAllocMemory;
     BUF_ALLOC_S stAlloc;
     BUF_MEM_TYPE_E enMemType;
-
     BUF_STAT_S stStatistic;
 }BUF_POOL_S;
 

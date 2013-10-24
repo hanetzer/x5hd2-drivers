@@ -8,7 +8,7 @@ typedef struct
 
 	HI_S8	s8LTIHPTmp[5];             /*8bit*/
 
-	HI_S16  s16LTICompsatRatio;      /*12bit*/   // TODO:√ª’“µΩ   lgain_ratio??
+	HI_S16  s16LTICompsatRatio;      /*12bit*/   //how to config?can't get reg
 	HI_U16  u16LTICoringThrsh;       /*12bit*/   
 	HI_U16  u16LTIUnderSwingThrsh;	 /*10bit*/
 	HI_U16  u16LTIOverSwingThrsh;    /*10bit*/

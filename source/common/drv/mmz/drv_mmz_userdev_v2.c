@@ -54,9 +54,9 @@
 #include <asm/system.h>
 #include <asm/cacheflush.h>
 
-#include "drv_dev_ext.h"
+#include "hi_drv_dev.h"
 #include "drv_media_mem.h"
-#include "drv_mmz_userdev_ioctl.h"
+#include "drv_mmz_ioctl.h"
 #include "hi_kernel_adapt.h"
 
 
@@ -1573,6 +1573,7 @@ static struct file_operations mmz_userdev_fops = {
 #define MEDIA_MEM_NAME  "media-mem"
 static int media_mem_proc_init(void)
 {
+#if !(0 == HI_PROC_SUPPORT)
     struct proc_dir_entry *p;
 
 //    p = create_proc_entry(MEDIA_MEM_NAME, 0644, &proc_root);
@@ -1581,13 +1582,16 @@ static int media_mem_proc_init(void)
         return -1;
     p->read_proc = mmz_read_proc;
     p->write_proc = mmz_write_proc;
+#endif
 
     return 0;
 }
 
 static void media_mem_proc_exit(void)
 {
+#if !(0 == HI_PROC_SUPPORT)
     remove_proc_entry(MEDIA_MEM_NAME, NULL);
+#endif
 }
 
 /********************init**************************/

@@ -4,7 +4,7 @@
 #include "hi_type.h"
 
 #include "hi_unf_frontend.h"
-#include "drv_dev_ext.h"
+#include "hi_drv_dev.h"
 
 typedef HI_S32 (*FN_TUNER_OPEN)(struct inode *inode, struct file *filp);
 typedef long (*FN_TUNER_IOCTL)(struct file *filp, HI_U32 cmd, unsigned long arg);

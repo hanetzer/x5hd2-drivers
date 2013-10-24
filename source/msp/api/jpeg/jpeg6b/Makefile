@@ -8,18 +8,21 @@ include $(SDK_DIR)/base.mak
 endif
 
 
+#===============================================================================
+# standard jpeg dir
+#===============================================================================
 TARGET := jpeg6b
+
 #===============================================================================
 # local variable
 #===============================================================================
-
 LIBS := libjpeg
 
-HEADER_FILES := $(MSP_DIR)/api/jpeg/$(TARGET)/include/jpeglib.h
-HEADER_FILES += $(MSP_DIR)/api/jpeg/$(TARGET)/include/jmorecfg.h
-HEADER_FILES += $(MSP_DIR)/api/jpeg/$(TARGET)/include/jerror.h
-HEADER_FILES += $(MSP_DIR)/api/jpeg/$(TARGET)/include/jconfig.h
-HEADER_FILES += $(MSP_DIR)/api/jpeg/$(TARGET)/include/hi_jpeg_api.h
+HEADER_FILES := $(MSP_DIR)/api/jpeg/$(TARGET)/inc/inc_6b/jpeglib.h
+HEADER_FILES += $(MSP_DIR)/api/jpeg/$(TARGET)/inc/inc_6b/jmorecfg.h
+HEADER_FILES += $(MSP_DIR)/api/jpeg/$(TARGET)/inc/inc_6b/jerror.h
+HEADER_FILES += $(MSP_DIR)/api/jpeg/$(TARGET)/inc/inc_6b/jconfig.h
+HEADER_FILES += $(MSP_DIR)/api/jpeg/$(TARGET)/inc/inc_hard/hi_jpeg_api.h
 
 #===============================================================================
 # rules  use -a to copy with the link lib
@@ -33,10 +36,11 @@ clean:
 	$(AT)rm -rf src/$(LIBS)*.so
 	$(AT)rm -rf src/$(LIBS)*.a
 install: all
-	$(AT)cp -f  src/$(LIBS)*.a           $(STATIC_LIB_DIR)/  -a
-	$(AT)cp -f  src/$(LIBS)*.so          $(SHARED_LIB_DIR)/  -a
-	
-	$(AT)cp -f  $(HEADER_FILES)             $(INCLUDE_DIR)/
+	$(AT)cp -f  src/$(LIBS)*.a            $(STATIC_LIB_DIR)/  -a
+ifndef CFG_HI_STATIC_LIB_ONLY
+	$(AT)cp -f  src/$(LIBS)*.so           $(SHARED_LIB_DIR)/  -a
+endif	
+	$(AT)cp -f  $(HEADER_FILES)           $(INCLUDE_DIR)/
 
 uninstall:
 	$(AT)rm -rf $(STATIC_LIB_DIR)/$(LIBS)*.a

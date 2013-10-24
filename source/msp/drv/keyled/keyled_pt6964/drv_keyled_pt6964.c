@@ -39,10 +39,10 @@
 
 #include "hi_common.h"
 #include "hi_type.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 
 #include "drv_gpio_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 
 #include "hi_unf_keyled.h"
 #include "hi_error_mpi.h"
@@ -88,6 +88,9 @@ static wait_queue_head_t wait_keyleds;
 static HI_BOOL dot_flag = HI_FALSE;
 
 static struct  timer_list dotflash_timer;
+
+DEFINE_SPINLOCK(pt6964lock);
+
 
 static HI_UNF_KEYLED_TIME_S s_keyled_time = {
     0
@@ -180,6 +183,9 @@ HI_S32 keyled_pt6964_tx_byte(HI_U8 u8data)
 {
     HI_U8 bitval = 0;
     HI_U8 j = 0;
+    HI_SIZE_T flag;
+    
+    spin_lock_irqsave(&pt6964lock, flag);        
 
     s_pGpioFunc->pfnGpioDirSetBit(DIN_PT6964, 0);
     keyled_udelay(1);
@@ -199,6 +205,8 @@ HI_S32 keyled_pt6964_tx_byte(HI_U8 u8data)
 
         keyled_udelay(1);
     }
+
+    spin_unlock_irqrestore(&pt6964lock, flag);    
 
     return HI_SUCCESS;
 }
@@ -225,12 +233,15 @@ HI_S32 keyled_pt6964_rx_byte(HI_U8 *u8data)
     HI_U8 u8realval = 0;
     HI_U32 bitval = 0;
     HI_U8 j = 0;
+    HI_SIZE_T flag;
 
     if (NULL == u8data)
     {
         HI_ERR_KEYLED("null pointer\n");
         return HI_FAILURE;
-    }
+    } 
+           
+    spin_lock_irqsave(&pt6964lock, flag);    
 
     s_pGpioFunc->pfnGpioDirSetBit(DOUT_PT6964, 1);
 
@@ -250,7 +261,9 @@ HI_S32 keyled_pt6964_rx_byte(HI_U8 *u8data)
 
         keyled_udelay(1);
     }
-
+    
+    spin_unlock_irqrestore(&pt6964lock, flag);
+    
     HI_INFO_KEYLED("u8val:0x%x\n", u8val);
 
     u8realval = 0;
@@ -950,6 +963,24 @@ HI_S32 KEYLED_LED_SetFlashPin_PT6964(HI_UNF_KEYLED_LIGHT_E enPin)
 
 HI_S32 KEYLED_LED_SetFlashFreq_PT6964(HI_UNF_KEYLED_LEVEL_E enLevel)
 {
+    return HI_SUCCESS;
+}
+
+HI_S32 KEYLED_GetProcInfo_PT6964(KEYLED_PROC_INFO_S *stInfo)
+{
+    stInfo->KeyBufSize = keyled_dev.buf_len;
+    stInfo->KeyBufHead = keyled_dev.head;
+    stInfo->KeyBufTail = keyled_dev.tail;
+    stInfo->KeyComeNum = keyled_dev.key_come;
+    stInfo->KeyReadNum = keyled_dev.key_read;
+    stInfo->u32RepKeyTimeMs = keyled_dev.repkey_delaytime;
+    stInfo->u32IsRepKeyEnable = keyled_dev.enable_repkey;
+    stInfo->u32IsUpKeyEnable = keyled_dev.enable_keyup;
+    stInfo->u32BlockTime = keyled_dev.blocktime;
+    stInfo->enFlashPin = keyled_dev.FlashPin;
+    stInfo->enFlashLevel = keyled_dev.FlashLevel;
+    stInfo->KeyBufTail= keyled_dev.tail;
+
     return HI_SUCCESS;
 }
 

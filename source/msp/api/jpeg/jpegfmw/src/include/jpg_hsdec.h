@@ -160,6 +160,14 @@ typedef struct hiJPGHD_CTX_S
     HI_U32    PhysAddr;             
     HI_U32    RegOffset;            
 
+#if defined(CHIP_TYPE_hi3716cv200) || defined(CHIP_TYPE_hi3718cv100) \
+	|| defined(CHIP_TYPE_hi3719cv100) || defined(CHIP_TYPE_hi3719mv100_a)
+	HI_CHAR* pStremPhyBuf;
+	HI_CHAR* pStremVirBuf;
+	HI_U32	 u32StremSize;
+	HI_BOOL  bAllocStrem;
+#endif
+
     JPG_CYCLEBUF_S  HDecBuf;        
 
     HI_BOOL         bFirstStart;    

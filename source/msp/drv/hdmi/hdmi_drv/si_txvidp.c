@@ -140,6 +140,9 @@ void SI_SetDeepColor ( HI_U8 bDeepColor )
     HI_U8 bRegVal2;
     HI_U32 u32Value = 0;
 
+    //pw down phy is similar to pll reset
+    SI_TX_PHY_PowerDown(HI_TRUE);
+    
     bTmpDeepColor = bDeepColor;
     if (bTmpDeepColor == SiI_DeepColor_Off)
     {
@@ -206,6 +209,8 @@ void SI_SetDeepColor ( HI_U8 bDeepColor )
     HI_INFO_HDMI ("[TXVIDP.C](SI_SetDeepColor): Set Deep Color AUDP_TXCTRL_ADDR:0x%02x, data:0x%02x\n", TX_VID_MODE_ADDR, bRegVal2);
 
     SI_TX_PHY_SetDeepColor(bDeepColor);
+
+    SI_TX_PHY_PowerDown(HI_FALSE);
     #if 0
     /* Config rooG IP for DeepColor*/
 #if defined(BOARD_TYPE_hi3716mv300_fpga)
@@ -370,6 +375,28 @@ void SI_TX_InvertSyncPol(HI_BOOL bInvert)
     }
     WriteByteHDMITXP0(DE_CNTRL_ADDR,RegVal);    
 }
+
+void SI_TX_CSC709Select(HI_BOOL bSpace709)
+{
+    HI_U8 RegVal = 0;
+
+    RegVal = ReadByteHDMITXP0(TX_VID_CTRL_ADDR);
+    HI_INFO_HDMI("TX_VID_CTRL_ADDR:0x%x, Before RegVal:0x%x\n", TX_VID_CTRL_ADDR, RegVal);
+
+    if(bSpace709)
+    {
+        RegVal |= BIT_VID_CTRL_CSCSEL;
+        HI_INFO_HDMI("709 Standard TX_VID_CTRL_ADDR:0x%x, change RegVal:0x%x\n", TX_VID_CTRL_ADDR, RegVal);
+    }
+    else
+    {
+        RegVal &= (~BIT_VID_CTRL_CSCSEL);
+        HI_INFO_HDMI("601 Standard TX_VID_CTRL_ADDR:0x%x, change RegVal:0x%x\n", TX_VID_CTRL_ADDR, RegVal);
+    }
+    WriteByteHDMITXP0(TX_VID_CTRL_ADDR,RegVal);    
+    
+}
+
 
 #if 0 /*--TMDS Reg has been Del in 1.4 ctrller--*/
 //------------------------------------------------------------------------------

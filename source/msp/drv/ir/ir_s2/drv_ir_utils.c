@@ -16,7 +16,7 @@
 #include "hi_drv_ir.h"
 #include "drv_ir_protocol.h"
 #include "drv_ir_utils.h"
-#include "drv_stat_ext.h"
+#include "hi_drv_stat.h"
 
 struct key_attr *ir_get_write_key_n(struct ir_buffer *head, u32 n)
 {

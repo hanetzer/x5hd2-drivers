@@ -1,20 +1,16 @@
 /******************************************************************************
 
-  Copyright (C), 2001-2011, Hisilicon Tech. Co., Ltd.
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
 
  ******************************************************************************
-  File Name             :     adec_intf.c
-  Version               :     Initial Draft
-  Author                :     Hisilicon multimedia software group
-  Created               :     2006/01/23
-  Last Modified         :
-  Description           :
-  Function List         :    So Much ....
-  History               :
-  1.Date                :     2006/01/23
-    Author              :     f47391
-    Modification        :    Created file
-
+  File Name     : drv_cipher_intf.c
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
 ******************************************************************************/
 #include <linux/proc_fs.h>
 //#include <linux/config.h>
@@ -43,15 +39,16 @@
 #include "hi_debug.h"
 #include "hi_common.h"
 #include "hi_kernel_adapt.h"
-#include "drv_dev_ext.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_mem.h"
 #include "hal_cipher.h"
 #include "drv_cipher.h"
 #include "drv_cipher_ioctl.h"
 #include "drv_cipher_ext.h"
 #include "drv_advca_ext.h"
-#include "drv_mmz_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_module.h"
+#include "hi_drv_proc.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -61,10 +58,10 @@ extern "C"{
 
 typedef struct hiCIPHER_OSR_CHN_S
 {
-    HI_BOOL g_bSoftChnOpen; /* mark soft channel open or not*/
-    HI_BOOL g_bDataDone;    /* mark the data done or not */
-    wait_queue_head_t cipher_wait_queue; /* mutex method */
-    struct file *pWichFile; /* which file need to operate */
+    HI_BOOL g_bSoftChnOpen;                 /* mark soft channel open or not*/
+    HI_BOOL g_bDataDone;                    /* mark the data done or not */
+    wait_queue_head_t cipher_wait_queue;    /* mutex method */
+    struct file *pWichFile;                 /* which file need to operate */
 
     HI_UNF_CIPHER_DATA_S *pstDataPkg;
     HI_U32                u32DataPkgNum;
@@ -72,7 +69,7 @@ typedef struct hiCIPHER_OSR_CHN_S
 
 ADVCA_EXPORT_FUNC_S  *s_pAdvcaFunc = HI_NULL;
 
-/* initialize mutex variable g_CipherMutexKernel to 1 */
+/* Initialize mutex variable g_CipherMutexKernel to 1 */
 HI_DECLARE_MUTEX(g_CipherMutexKernel);
 
 static UMAP_DEVICE_S    g_CipherDevice;
@@ -88,6 +85,28 @@ static CIPHER_OSR_CHN_S g_stCipherOsrChn[CIPHER_SOFT_CHAN_NUM];
     }while(0)
 
 extern HI_VOID HI_DRV_SYS_GetChipVersion(HI_CHIP_TYPE_E *penChipType, HI_CHIP_VERSION_E *penChipID);
+
+
+HI_S32 CIPHER_ProcRead(struct seq_file *p, HI_VOID *v)
+{
+    PROC_PRINT(p, "---------Hisilicon cipher Info---------\n");
+
+    PROC_PRINT(p, "---------Hisilicon cipher Info End---------\n");
+
+    return HI_SUCCESS;
+}
+
+HI_S32 CIPHER_ProcWrite(struct file * file, const char __user * buf, size_t count, loff_t *ppos)
+{
+    HI_CHAR ProcPara[64];
+
+    if (copy_from_user(ProcPara, buf, count))
+    {
+        return -EFAULT;
+    }
+
+    return count;
+}
 
 /*****************************************************************************
  Prototype    : DRV_CIPHER_UserCommCallBack
@@ -162,10 +181,16 @@ static HI_S32 DRV_CIPHER_Release(struct inode * inode, struct file * file)
 *****************************************************************************/
 static HI_S32 DRV_CIPHER_Open(struct inode * inode, struct file * file)
 {
-    // This ptr must be initialized into NULL before getting its value
-    s_pAdvcaFunc = HI_NULL;  
-    // No need to check the return value of GetFunction
-    HI_DRV_MODULE_GetFunction(HI_ID_CA, (HI_VOID**)&s_pAdvcaFunc);
+#ifdef HI_ADVCA_SUPPORT
+    HI_S32 ret = HI_SUCCESS;
+
+    ret = HI_DRV_MODULE_GetFunction(HI_ID_CA, (HI_VOID**)&s_pAdvcaFunc);
+    if ( (HI_SUCCESS != ret) || (NULL == s_pAdvcaFunc) )
+    {
+        HI_ERR_CIPHER("Get advca function failed.\n");
+        return -1;
+    }
+#endif
 
     return 0;
 }
@@ -198,42 +223,43 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	    case CMD_CIPHER_CREATEHANDLE:
 		{
 	        HI_U32 i = 0;
-	        HI_HANDLE  Cipherchn = 0;   /* cipher handle */
+	        HI_HANDLE Cipherchn = 0;   /* cipher handle */
 	        HI_U32 softChnId = 0;       /* soft channel ID */
 	        CIPHER_HANDLE_S *pstCIHandle = (CIPHER_HANDLE_S *)argp;
 	
-	        HI_CHIP_TYPE_E enChip;
-	        HI_CHIP_VERSION_E enChipVersion;
+	        HI_CHIP_TYPE_E enchipType = HI_CHIP_TYPE_BUTT;
+	        HI_CHIP_VERSION_E enchipVersion = HI_CHIP_VERSION_BUTT;
 	
-	        HI_DRV_SYS_GetChipVersion(&enChip, &enChipVersion);
+	        HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
 	        
 	        /* check opened or not */
 	        if ( HI_UNF_CIPHER_TYPE_NORMAL != pstCIHandle->stCipherAtts.enCipherType )
 	        {
-	        	if( HI_UNF_CIPHER_TYPE_BUTT == pstCIHandle->stCipherAtts.enCipherType )
-	        	{
-	                    Ret = HI_ERR_CIPHER_FAILED_GETHANDLE;
-	                    HI_ERR_CIPHER("Invalid Cipher Type!\n");
-	                    break;
-	            }
-				else if( HI_UNF_CIPHER_TYPE_COPY_AVOID == pstCIHandle->stCipherAtts.enCipherType )
+				if( HI_UNF_CIPHER_TYPE_COPY_AVOID == pstCIHandle->stCipherAtts.enCipherType )
 	            {
-	                if( (HI_CHIP_TYPE_HI3712 != enChip) && (HI_CHIP_TYPE_HI3716CES != enChip) )
+	                if( ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3712 == enchipType))
+                     || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716C == enchipType))
+                     || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)
+                     || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3718C == enchipType))
+                     || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719C == enchipType))
+                     || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719M_A == enchipType))) )
+                    {
+                        /* supported chip types */
+                    }
+                    else
 	                {
 	                    Ret = HI_ERR_CIPHER_FAILED_GETHANDLE;
 	                    HI_ERR_CIPHER("Not supported!\n");
 	                    break;
 	                }
-	                else
-	                {
-	                	/* for reserved */
-	                }
 	            }
 	            else
-	            {
-	            	/* for reserved */
+	        	{
+	                    Ret = HI_ERR_CIPHER_FAILED_GETHANDLE;
+	                    HI_ERR_CIPHER("Invalid Cipher Type!\n");
+	                    break;
 	            }
-	            
+
 	            if (0 == g_stCipherOsrChn[0].g_bSoftChnOpen)
 	            {
 	                i = 0;
@@ -253,7 +279,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	                }
 	            }
 	        }
-	
+
 	        if (i >= CIPHER_SOFT_CHAN_NUM)
 	        {
 	            Ret = HI_ERR_CIPHER_FAILED_GETHANDLE;
@@ -262,20 +288,19 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	        }
 	        else /* get a free chn */
 	        {
-	            g_stCipherOsrChn[i].pstDataPkg = HI_VMALLOC(HI_ID_CIPHER, sizeof(HI_UNF_CIPHER_DATA_S) * CI_MAX_LIST_NUM);
+	            g_stCipherOsrChn[i].pstDataPkg = HI_VMALLOC(HI_ID_CIPHER, sizeof(HI_UNF_CIPHER_DATA_S) * CIPHER_MAX_LIST_NUM);
 	            if (NULL == g_stCipherOsrChn[i].pstDataPkg)
 	            {
 	                Ret = HI_ERR_CIPHER_FAILED_GETHANDLE;
 	                HI_ERR_CIPHER("can NOT malloc memory for cipher.\n");
 	                break;
 	            }
-	                
+
 	            softChnId = i;
 	            g_stCipherOsrChn[softChnId].g_bSoftChnOpen = HI_TRUE;
 	        }
 	
 	        Cipherchn = HI_HANDLE_MAKEHANDLE(HI_ID_CIPHER, 0, softChnId);
-	        HI_INFO_CIPHER("the softChnId and the handle are %d %#x\n", softChnId, Cipherchn);
 	
 	        Ret = DRV_Cipher_OpenChn(softChnId);
 	        if (HI_SUCCESS != Ret)
@@ -321,10 +346,11 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	
 	    case CMD_CIPHER_CONFIGHANDLE:
 	    {
-	        CIPHER_Config_CTRL  CIConfig = *(CIPHER_Config_CTRL *)argp;
+	        CIPHER_Config_CTRL CIConfig = *(CIPHER_Config_CTRL *)argp;
 	        HI_U32 softChnId = 0;       /* soft channel ID */                
 	        softChnId = HI_HANDLE_GET_CHNID(CIConfig.CIHandle);  
 	        CIPHER_CheckHandle(softChnId, file);
+
 	        Ret = DRV_Cipher_ConfigChn(softChnId, &CIConfig.CIpstCtrl, DRV_CIPHER_UserCommCallBack);
 	        
 	        break;
@@ -335,7 +361,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	        HI_U32 softChnId = 0;       /* soft channel ID */                
 	        CIPHER_DATA_S       CIData = *(CIPHER_DATA_S *)argp;
 	        HI_DRV_CIPHER_TASK_S       pCITask;
-	
+
 	        softChnId = HI_HANDLE_GET_CHNID(CIData.CIHandle);
 	
 	        CIPHER_CheckHandle(softChnId, file);
@@ -345,7 +371,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	            /* channel 1~7 */            
 	            pCITask.stData2Process.u32src = CIData.ScrPhyAddr;
 	            pCITask.stData2Process.u32dest = CIData.DestPhyAddr;
-	            pCITask.stData2Process.u32length = CIData.ByteLength;
+	            pCITask.stData2Process.u32length = CIData.u32PkgNum;
 	            pCITask.stData2Process.bDecrypt = HI_FALSE;
 	            pCITask.u32CallBackArg = softChnId;
 	
@@ -381,14 +407,14 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	            MMZ_BUFFER_S stSrcMmzBuf;
 	            MMZ_BUFFER_S stDestMmzBuf;            
 				
-	            if ( CIData.ByteLength % 16 != 0)
+	            if ( CIData.u32PkgNum % 16 != 0)
 	            {
 	                HI_ERR_CIPHER("Invalid encrypt length, must be multiple of 16 bytes!\n");
 	                Ret = HI_FAILURE;
 	                break;
 	            }
 	            
-	            stSrcMmzBuf.u32Size = CIData.ByteLength;
+	            stSrcMmzBuf.u32Size = CIData.u32PkgNum;
 	            stSrcMmzBuf.u32StartPhyAddr = CIData.ScrPhyAddr;
 	            Ret = HI_DRV_MMZ_Map(&stSrcMmzBuf);
 	            if ( HI_FAILURE == Ret)
@@ -397,7 +423,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	                break;
 	            }
 	
-	            stDestMmzBuf.u32Size = CIData.ByteLength;
+	            stDestMmzBuf.u32Size = CIData.u32PkgNum;
 	            stDestMmzBuf.u32StartPhyAddr = CIData.DestPhyAddr;
 	            Ret = HI_DRV_MMZ_Map(&stDestMmzBuf);
 	            if ( HI_FAILURE == Ret)
@@ -408,8 +434,8 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	            
 	            CIPHER_CheckHandle(softChnId, file);
 	
-	            memcpy((HI_U8 *)(pCITask.stData2Process.u32DataPkg), (HI_U8 *)stSrcMmzBuf.u32StartVirAddr, CIData.ByteLength);
-	            pCITask.stData2Process.u32length = CIData.ByteLength;
+	            memcpy((HI_U8 *)(pCITask.stData2Process.u32DataPkg), (HI_U8 *)stSrcMmzBuf.u32StartVirAddr, CIData.u32PkgNum);
+	            pCITask.stData2Process.u32length = CIData.u32PkgNum;
 	            pCITask.stData2Process.bDecrypt = HI_FALSE;
 	            pCITask.u32CallBackArg = softChnId;
 	
@@ -421,7 +447,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	                break;
 	            }
 	            
-	            memcpy((HI_U8 *)stDestMmzBuf.u32StartVirAddr, (HI_U8 *)(pCITask.stData2Process.u32DataPkg), CIData.ByteLength);
+	            memcpy((HI_U8 *)stDestMmzBuf.u32StartVirAddr, (HI_U8 *)(pCITask.stData2Process.u32DataPkg), CIData.u32PkgNum);
 	            HI_DRV_MMZ_Unmap(&stSrcMmzBuf);
 	            HI_DRV_MMZ_Unmap(&stDestMmzBuf);
 	            
@@ -436,7 +462,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	        HI_U32 softChnId = 0;       /* soft channel ID */                
 	        CIPHER_DATA_S       CIData = *(CIPHER_DATA_S *)argp;
 	        HI_DRV_CIPHER_TASK_S       pCITask;
-	        
+
 	        softChnId = HI_HANDLE_GET_CHNID(CIData.CIHandle);
 	        CIPHER_CheckHandle(softChnId, file);
 	        
@@ -445,7 +471,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	            /* chanel 1~7 */
 	            pCITask.stData2Process.u32src=CIData.ScrPhyAddr;
 	            pCITask.stData2Process.u32dest=CIData.DestPhyAddr;
-	            pCITask.stData2Process.u32length=CIData.ByteLength;
+	            pCITask.stData2Process.u32length=CIData.u32PkgNum;
 	            pCITask.stData2Process.bDecrypt=HI_TRUE;
 	
 	            pCITask.u32CallBackArg=softChnId;
@@ -483,14 +509,14 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	            MMZ_BUFFER_S stSrcMmzBuf;
 	            MMZ_BUFFER_S stDestMmzBuf;
 	
-	            if ( CIData.ByteLength % 16 != 0)
+	            if ( CIData.u32PkgNum % 16 != 0)
 	            {
 	                HI_ERR_CIPHER("Invalid decrypt length, must be multiple of 16 bytes!\n");
 	                Ret = HI_FAILURE;
 	                break;
 	            }
 	            
-	            stSrcMmzBuf.u32Size = CIData.ByteLength;
+	            stSrcMmzBuf.u32Size = CIData.u32PkgNum;
 	            stSrcMmzBuf.u32StartPhyAddr = CIData.ScrPhyAddr;
 	            Ret = HI_DRV_MMZ_Map(&stSrcMmzBuf);
 	            if ( HI_FAILURE == Ret)
@@ -499,7 +525,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	                break;
 	            }
 	
-	            stDestMmzBuf.u32Size = CIData.ByteLength;
+	            stDestMmzBuf.u32Size = CIData.u32PkgNum;
 	            stDestMmzBuf.u32StartPhyAddr = CIData.DestPhyAddr;
 	            Ret = HI_DRV_MMZ_Map(&stDestMmzBuf);
 	            if ( HI_FAILURE == Ret)
@@ -508,8 +534,8 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	                break;
 	            }
 	            
-	            memcpy((HI_U8 *)(pCITask.stData2Process.u32DataPkg), (HI_U8 *)stSrcMmzBuf.u32StartVirAddr, CIData.ByteLength);
-	            pCITask.stData2Process.u32length = CIData.ByteLength;
+	            memcpy((HI_U8 *)(pCITask.stData2Process.u32DataPkg), (HI_U8 *)stSrcMmzBuf.u32StartVirAddr, CIData.u32PkgNum);
+	            pCITask.stData2Process.u32length = CIData.u32PkgNum;
 	            pCITask.stData2Process.bDecrypt = HI_TRUE;
 	            pCITask.u32CallBackArg = softChnId;
 	
@@ -521,7 +547,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	                break;
 	            }
 	            
-	            memcpy((HI_U8 *)stDestMmzBuf.u32StartVirAddr, (HI_U8 *)(pCITask.stData2Process.u32DataPkg), CIData.ByteLength);
+	            memcpy((HI_U8 *)stDestMmzBuf.u32StartVirAddr, (HI_U8 *)(pCITask.stData2Process.u32DataPkg), CIData.u32PkgNum);
 	
 	            HI_DRV_MMZ_Unmap(&stSrcMmzBuf);
 	            HI_DRV_MMZ_Unmap(&stDestMmzBuf);
@@ -536,17 +562,17 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	        HI_U32 i;
 	        HI_U32 softChnId = 0;       /* soft channel ID */                
 	        CIPHER_DATA_S CIData = *(CIPHER_DATA_S *)argp;
-	        static HI_DRV_CIPHER_DATA_INFO_S  tmpData[CI_MAX_LIST_NUM];
+	        static HI_DRV_CIPHER_DATA_INFO_S  tmpData[CIPHER_MAX_LIST_NUM];
 	        HI_UNF_CIPHER_DATA_S *pTmp;
 	        HI_U32 pkgNum;
 	
 	        softChnId = HI_HANDLE_GET_CHNID(CIData.CIHandle);
 	        CIPHER_CheckHandle(softChnId, file);
 	
-	        pkgNum = CIData.ByteLength;
-	        if (pkgNum > CI_MAX_LIST_NUM)
+	        pkgNum = CIData.u32PkgNum;
+	        if (pkgNum > CIPHER_MAX_LIST_NUM)
 	        {
-	            HI_ERR_CIPHER("Error: you send too many pkg(%d), must < %d.\n",pkgNum, CI_MAX_LIST_NUM);
+	            HI_ERR_CIPHER("Error: you send too many pkg(%d), must < %d.\n",pkgNum, CIPHER_MAX_LIST_NUM);
 	            Ret = HI_ERR_CIPHER_INVALID_PARA;
 	            break;
 	        }
@@ -560,7 +586,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	        }
 	       
 	        
-	        for (i = 0; i < CIData.ByteLength; i++)
+	        for (i = 0; i < CIData.u32PkgNum; i++)
 	        {
 	            pTmp = g_stCipherOsrChn[softChnId].pstDataPkg + i;
 	            tmpData[i].bDecrypt = HI_FALSE;
@@ -601,17 +627,17 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	        HI_U32 i;
 	        HI_U32 softChnId = 0;       /* soft channel ID */                
 	        CIPHER_DATA_S CIData = *(CIPHER_DATA_S *)argp;
-	        static HI_DRV_CIPHER_DATA_INFO_S  tmpData[CI_MAX_LIST_NUM];
+	        static HI_DRV_CIPHER_DATA_INFO_S  tmpData[CIPHER_MAX_LIST_NUM];
 	        HI_UNF_CIPHER_DATA_S *pTmp;
 	        HI_U32 pkgNum;
-	
+
 	        softChnId = HI_HANDLE_GET_CHNID(CIData.CIHandle);
 	        CIPHER_CheckHandle(softChnId, file);
 	
-	        pkgNum = CIData.ByteLength;
-	        if (pkgNum > CI_MAX_LIST_NUM)
+	        pkgNum = CIData.u32PkgNum;
+	        if (pkgNum > CIPHER_MAX_LIST_NUM)
 	        {
-	            HI_ERR_CIPHER("Error: you send too many pkg(%d), must < %d.\n",pkgNum, CI_MAX_LIST_NUM);
+	            HI_ERR_CIPHER("Error: you send too many pkg(%d), must < %d.\n",pkgNum, CIPHER_MAX_LIST_NUM);
 	            Ret = HI_ERR_CIPHER_INVALID_PARA;
 	            break;
 	        }
@@ -624,7 +650,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	        }
 	       
 	        
-	        for (i = 0; i < CIData.ByteLength; i++)
+	        for (i = 0; i < CIData.u32PkgNum; i++)
 	        {
 	            pTmp = g_stCipherOsrChn[softChnId].pstDataPkg + i;
 	            tmpData[i].bDecrypt = HI_TRUE;
@@ -662,53 +688,54 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	    }
 	    case CMD_CIPHER_GETRANDOMNUMBER:
 	    {
-	        HI_CHIP_TYPE_E enChip;
-	        HI_CHIP_VERSION_E enChipVersion;
+	        HI_CHIP_TYPE_E enChip = HI_CHIP_TYPE_BUTT;
+	        HI_CHIP_VERSION_E enChipVersion = HI_CHIP_VERSION_BUTT;
 	        HI_U32 rngBaseAddr = REG_RNG_BASE_ADDR;
 	        HI_U32 rngNumberAddr = REG_RNG_NUMBER_ADDR;
 	        HI_U32 rngStatAddr = REG_RNG_STAT_ADDR;
 	        HI_U32 u32RngStat = 0;
 	        HI_U32 u32RngCtrl = 0;
-	        HI_U32 u32RngRandomNumber = 0;
-	        
+	        HI_U32 *pu32RngRandomNumber = (HI_U32 *)argp;
+
 	        HI_DRV_SYS_GetChipVersion(&enChip, &enChipVersion);
-	        
+
 	        if( ((HI_CHIP_VERSION_V300 == enChipVersion) && (HI_CHIP_TYPE_HI3716M == enChip))
-	        	|| ((HI_CHIP_VERSION_V200 == enChipVersion) && (HI_CHIP_TYPE_HI3716CES == enChip)) )
+	         || ((HI_CHIP_VERSION_V200 == enChipVersion) && (HI_CHIP_TYPE_HI3716CES == enChip))
+	         || ((HI_CHIP_VERSION_V200 == enChipVersion) && (HI_CHIP_TYPE_HI3716C == enChip))
+             || ((HI_CHIP_VERSION_V100 == enChipVersion) && (HI_CHIP_TYPE_HI3718C == enChip))
+             || ((HI_CHIP_VERSION_V100 == enChipVersion) && (HI_CHIP_TYPE_HI3719C == enChip))
+             || ((HI_CHIP_VERSION_V100 == enChipVersion) && (HI_CHIP_TYPE_HI3719M_A == enChip)))
 	        {
-	            //select the source of the random number
-	            u32RngCtrl = (*(volatile HI_U32 *)(IO_ADDRESS(rngBaseAddr)));
+	            (HI_VOID)DRV_CIPHER_ReadReg(IO_ADDRESS(rngBaseAddr), &u32RngCtrl);
 	            if ((0x01 == (u32RngCtrl & 0x03)) || (0x0 == (u32RngCtrl & 0x03)))
 	            {
 	                u32RngCtrl &= 0xfffffffc;
 	                u32RngCtrl |= 0x03;
-	                (*(volatile HI_U32 *)(IO_ADDRESS(rngBaseAddr))) = u32RngCtrl;
+    	            (HI_VOID)DRV_CIPHER_WriteReg(IO_ADDRESS(rngBaseAddr), u32RngCtrl);
 	                msleep(2);
 	            }
-	            
+
 	            while(1)
 	            {
-	                u32RngStat = (*(volatile HI_U32 *)(IO_ADDRESS(rngStatAddr)));
+    	            (HI_VOID)DRV_CIPHER_ReadReg(IO_ADDRESS(rngStatAddr), &u32RngStat);
 	                if((u32RngStat & 0xFF) > 0)
 	                {
 	                    break;
 	                }
 	            }
-	
-	            u32RngRandomNumber = (*(volatile HI_U32 *)(IO_ADDRESS(rngNumberAddr)));
-	
-	            if (copy_to_user(argp, &u32RngRandomNumber, sizeof(u32RngRandomNumber)))
-	            {
-	                HI_ERR_CIPHER("copy data to user fail!\n");
-	                Ret = HI_FAILURE;
-	                break;
-	            }
-	            
+
+                Ret = DRV_CIPHER_ReadReg(IO_ADDRESS(rngNumberAddr), pu32RngRandomNumber);
+                if ( HI_SUCCESS != Ret)
+                {
+                    HI_ERR_CIPHER("Cipher read register failed!\n");
+                    break;
+                }
+
 	            Ret = HI_SUCCESS;
 	        }
 	        else
 	        {
-	            HI_ERR_CIPHER("Error: Do not support!\n");
+	            HI_ERR_CIPHER("Error: Not supported!\n");
 	            Ret = HI_FAILURE;
 	        }
 	        break;
@@ -770,7 +797,7 @@ HI_S32 CIPHER_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI
 	    {
 	        HI_DRV_CIPHER_FLASH_ENCRYPT_HDCPKEY_S stFlashEncrytedHdcpKey = *(HI_DRV_CIPHER_FLASH_ENCRYPT_HDCPKEY_S *)argp;
 
-	        Ret = DRV_Cipher_LoadHdcpKey(stFlashEncrytedHdcpKey);
+	        Ret = DRV_Cipher_LoadHdcpKey(&stFlashEncrytedHdcpKey);
 	        if(Ret != HI_SUCCESS)
 	        {
 	            HI_ERR_CIPHER("cipher load hdcp key failed!\n");
@@ -864,18 +891,19 @@ static PM_BASEOPS_S cipher_drvops = {
     Author       : vicent feng
     Modification : Created function
 *****************************************************************************/
+
 HI_S32 CIPHER_DRV_ModInit(HI_VOID)
 {
     HI_U32 i;
     HI_S32 ret;
+    DRV_PROC_EX_S stProc = {0};
 
-    sprintf(g_CipherDevice.devfs_name, UMAP_DEVNAME_CIPHER);
+    snprintf(g_CipherDevice.devfs_name, sizeof(UMAP_DEVNAME_CIPHER), UMAP_DEVNAME_CIPHER);
     g_CipherDevice.fops = &DRV_CIPHER_Fops;
     g_CipherDevice.minor = UMAP_MIN_MINOR_CIPHER;
     g_CipherDevice.owner  = THIS_MODULE;
     g_CipherDevice.drvops = &cipher_drvops;
 
-    /* */
     if (HI_DRV_DEV_Register(&g_CipherDevice) < 0)
     {
         HI_FATAL_CIPHER("register CIPHER failed.\n");
@@ -897,10 +925,13 @@ HI_S32 CIPHER_DRV_ModInit(HI_VOID)
         g_stCipherOsrChn[i].pstDataPkg = NULL;
     }
 
+    stProc.fnRead   = CIPHER_ProcRead;
+    stProc.fnWrite  = CIPHER_ProcWrite;
+     
+    HI_DRV_PROC_AddModule(HI_MOD_CIPHER, &stProc, NULL);
+
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    HI_INFO_CIPHER("Load hi_cipher.ko success.\t(%s)\n", VERSION_STRING);
-#endif
+    HI_PRINT("Load hi_cipher.ko success.\t(%s)\n", VERSION_STRING);
 #endif
 
     return HI_SUCCESS;
@@ -908,8 +939,12 @@ HI_S32 CIPHER_DRV_ModInit(HI_VOID)
 
 HI_VOID CIPHER_DRV_ModExit(HI_VOID)
 {
+    HI_DRV_PROC_RemoveModule(HI_MOD_CIPHER);
+    
     HI_DRV_DEV_UnRegister(&g_CipherDevice);
+
     DRV_Cipher_DeInit();
+
     return ;
 }
 

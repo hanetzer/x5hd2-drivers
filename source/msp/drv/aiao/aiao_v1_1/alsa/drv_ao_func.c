@@ -13,9 +13,9 @@
 #include "drv_ao_ioctl.h"
 #include <linux/kernel.h>
 #include <asm/io.h>
+#include "drv_ao_private.h"
+#include "hi_reg_common.h"
 
-#define DSP0TOA9ADDR 0xf8a200c8
-volatile HI_U32 *pdsp0intaddr;
 /************************ interface with aiao *******************************/
 //DRV Interface
 extern HI_S32 AO_DRV_Kopen(struct file  *file);
@@ -58,7 +58,10 @@ int aoe_dma_prepare(int dma_Index, void * p)
 
 void clr_dsp_int(void)
 {
-    *pdsp0intaddr = 0;
+    U_PERI_INT_DSP0TOA9 uTmpValue;
+    uTmpValue.u32 = g_pstRegPeri->PERI_INT_DSP0TOA9.u32;
+    uTmpValue.bits.int_swi_dsp0toa9 = 0;
+    g_pstRegPeri->PERI_INT_DSP0TOA9.u32 = uTmpValue.u32;
 }
 
 int aoe_dma_sethwparam(int dma_Index, void *param)
@@ -75,6 +78,7 @@ int aoe_dma_requestchan(int *dma_index, struct file *file, void *arg)
     AO_BUF_ATTR_S *parg = (AO_BUF_ATTR_S *)arg;
     HI_S32 Ret;
 
+    memset(&stTrack,0,sizeof(AO_Track_Create_Param_S));
     stTrack.bAlsaTrack = HI_TRUE;
     stTrack.enSound = HI_UNF_SND_0;
     stTrack.stAttr.enTrackType = HI_UNF_SND_TRACK_TYPE_SLAVE;
@@ -129,11 +133,13 @@ int  aoe_dma_open(void *p, struct file *file)
 {
 
     AO_SND_Open_Param_S stAttr;
+#if 1//def HI_ALSA_I2S_ONLY_SUPPORT
+    memset(&stAttr,0,sizeof(AO_SND_Open_Param_S));
+    stAttr.pAlsaPara = HI_NULL;    
+#endif
     
     stAttr.enSound = HI_UNF_SND_0;
     memcpy(&stAttr.stAttr, (HI_UNF_SND_ATTR_S *)p, sizeof(HI_UNF_SND_ATTR_S));
-
-    pdsp0intaddr = (volatile HI_U32 *)ioremap_nocache((HI_U32)(DSP0TOA9ADDR), sizeof(HI_U32));
 
     AO_DRV_Kopen(file);
 
@@ -142,8 +148,6 @@ int  aoe_dma_open(void *p, struct file *file)
 
 int  aoe_dma_close(struct file *file)
 {
-   iounmap(pdsp0intaddr);
-
     AO_Snd_Kclose(HI_UNF_SND_0, file);
 
     return AO_DRV_Krelease(file);

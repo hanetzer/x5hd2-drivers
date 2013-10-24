@@ -93,7 +93,7 @@ typedef enum {
 #define HI_OS_TYPE      HI_OS_LINUX
 #endif
 
-#ifdef ADVCA_SUPPORT
+#ifdef HI_ADVCA_SUPPORT
 #define __INIT__
 #define __EXIT__
 #else

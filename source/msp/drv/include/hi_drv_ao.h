@@ -29,7 +29,6 @@ History       :
 #define  AO_MAX_VIRTUAL_TRACK_NUM  (6)
 #define  AO_MAX_REAL_TRACK_NUM     (8)
 #define  AO_MAX_TOTAL_TRACK_NUM    AO_MAX_REAL_TRACK_NUM
-#define  AI_MAX_TOTAL_NUM          (3)
 
 #define AO_MAX_CAST_NUM (4)
 
@@ -48,6 +47,8 @@ History       :
 #define AO_TRACK_CHNID_MASK 0xff
 #define AO_CAST_CHNID_MASK 0xff
 
+#define AO_TRACK_AIP_START_LATENCYMS 50 
+
 #define CHECK_AO_SNDCARD_OPEN(enSound) \
     do                                                         \
     {                                                          \
@@ -55,7 +56,7 @@ History       :
         if (HI_NULL == s_stAoDrv.astSndEntity[enSound].pCard)     \
         {                                                       \
             HI_WARN_AO(" Invalid snd id %d\n", enSound);        \
-            return HI_ERR_SND_INVALID_ID;                       \
+            return HI_ERR_AO_SOUND_NOT_OPEN;                       \
         }                                                       \
     } while (0)
 
@@ -64,12 +65,12 @@ History       :
             if((Track & 0xffff0000) != (HI_ID_AO << 16))              \
             {                                               \
                 HI_ERR_AO("track(0x%x) is not ao handle!\n", Track);  \
-                return HI_FAILURE;                          \
+                return HI_ERR_AO_INVALID_PARA;                          \
             }                                               \
             if((Track & 0xff00) != (HI_ID_TRACK << 8))              \
             {                                               \
                 HI_ERR_AO("track(0x%x) is not track handle!\n", Track);  \
-                return HI_FAILURE;                          \
+                return HI_ERR_AO_INVALID_PARA;                          \
             }    \
          } while(0)        
 
@@ -80,7 +81,7 @@ History       :
         if (0 == atomic_read(&s_stAoDrv.astTrackEntity[Track & AO_TRACK_CHNID_MASK].atmUseCnt))   \
         {                                                       \
             HI_WARN_AO(" Invalid track id 0x%x\n", Track);        \
-            return HI_ERR_SND_INVALID_PARA;                       \
+            return HI_ERR_AO_INVALID_PARA;                       \
         }                                                       \
     } while (0)
 
@@ -90,7 +91,7 @@ History       :
             if(HI_NULL == p)                                \
             {                                               \
                 HI_ERR_AO("NULL pointer \n");               \
-                return HI_FAILURE;                          \
+                return HI_ERR_AO_NULL_PTR;                          \
             }                                               \
          } while(0)
          
@@ -110,7 +111,7 @@ History       :
         if (HI_UNF_SND_BUTT <= card)                            \
         {                                                       \
             HI_WARN_AO(" Invalid snd id %d\n", card);           \
-            return HI_ERR_SND_INVALID_ID;                       \
+            return HI_ERR_AO_INVALID_ID;                       \
         }                                                       \
     } while (0)
 /* master & slave only */
@@ -120,7 +121,7 @@ History       :
         if (AO_MAX_TOTAL_TRACK_NUM <= (track & AO_TRACK_CHNID_MASK))                            \
         {                                                       \
             HI_WARN_AO(" Invalid Snd Track 0x%x\n", track);           \
-            return HI_ERR_SND_INVALID_PARA;                       \
+            return HI_ERR_AO_INVALID_PARA;                       \
         }                                                       \
     } while (0)
 	
@@ -130,7 +131,7 @@ History       :
                 if (AO_MAX_CAST_NUM <= (cast & AO_CAST_CHNID_MASK))                            \
                 {                                                       \
                     HI_WARN_AO(" Invalid Snd Cast 0x%x\n", cast);           \
-                    return HI_ERR_SND_INVALID_PARA;                       \
+                    return HI_ERR_AO_INVALID_PARA;                       \
                 }                                                       \
             } while (0)	
 
@@ -140,7 +141,7 @@ History       :
         if (HI_UNF_SND_OUTPUTPORT_MAX < num)                    \
         {                                                       \
             HI_WARN_AO(" Invalid outport number %d\n", num);       \
-            return HI_ERR_SND_INVALID_PARA;                     \
+            return HI_ERR_AO_INVALID_PARA;                     \
         }                                                       \
     } while (0)
 
@@ -150,7 +151,7 @@ History       :
         if ((HI_UNF_SND_OUTPUTPORT_ARC0 < port) && (HI_UNF_SND_OUTPUTPORT_ALL != port))    \
         {                                                                                   \
             HI_WARN_AO(" Invalid outport %d\n", port);                                      \
-            return HI_ERR_SND_INVALID_PARA;                                                 \
+            return HI_ERR_AO_INVALID_PARA;                                                 \
         }                                                                                   \
     } while (0)  
 
@@ -171,7 +172,7 @@ History       :
         if (HI_UNF_TRACK_MODE_BUTT <= mode)                     \
         {                                                       \
             HI_WARN_AO(" Invalid trackmode %d\n", mode);        \
-            return HI_ERR_SND_INVALID_ID;                       \
+            return HI_ERR_AO_INVALID_PARA;                       \
         }                                                       \
     } while (0)
 
@@ -181,7 +182,7 @@ History       :
         if (HI_UNF_SND_HDMI_MODE_BUTT <= mode)                     \
         {                                                       \
             HI_WARN_AO(" Invalid hdmimode %d\n", mode);        \
-            return HI_ERR_SND_INVALID_ID;                       \
+            return HI_ERR_AO_INVALID_PARA;                       \
         }                                                       \
     } while (0)     
 
@@ -191,9 +192,34 @@ History       :
         if (HI_UNF_SND_SPDIF_MODE_BUTT <= mode)                     \
         {                                                       \
             HI_WARN_AO(" Invalid spdifmode %d\n", mode);        \
-            return HI_ERR_SND_INVALID_ID;                       \
+            return HI_ERR_AO_INVALID_PARA;                       \
         }                                                       \
     } while (0)         
+
+#define CHECK_AO_FRAME_SAMPLERATE(inrate)                   \
+    do                                                  \
+    {                                                   \
+        switch (inrate)                                \
+        {                                               \
+        case  HI_UNF_SAMPLE_RATE_8K:                    \
+        case  HI_UNF_SAMPLE_RATE_11K:                   \
+        case  HI_UNF_SAMPLE_RATE_12K:                   \
+        case  HI_UNF_SAMPLE_RATE_16K:                   \
+        case  HI_UNF_SAMPLE_RATE_22K:                   \
+        case  HI_UNF_SAMPLE_RATE_24K:                   \
+        case  HI_UNF_SAMPLE_RATE_32K:                   \
+        case  HI_UNF_SAMPLE_RATE_44K:                   \
+        case  HI_UNF_SAMPLE_RATE_48K:                   \
+        case  HI_UNF_SAMPLE_RATE_88K:                   \
+        case  HI_UNF_SAMPLE_RATE_96K:                   \
+        case  HI_UNF_SAMPLE_RATE_176K:                  \
+        case  HI_UNF_SAMPLE_RATE_192K:                  \
+            break;                                      \
+        default:                                        \
+            HI_INFO_AO("don't support this insamplerate(%d)\n", inrate);    \
+            return HI_SUCCESS;                        \
+        }                                                       \
+     } while (0)   
 
 #define CHECK_AO_SAMPLERATE(outrate )                   \
     do                                                  \

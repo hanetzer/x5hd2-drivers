@@ -20,18 +20,17 @@ Date				Author        		Modification
 #include <linux/miscdevice.h>
 #include <linux/interrupt.h>
 #include <asm/uaccess.h>
-#include "drv_dev_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_struct.h"
 #include "hi_drv_png.h"
 #include "png_hal.h"
 #include "png_osires.h"
 #include "png_osi.h"
 #include "png_proc.h"
 #include "png_define.h"
-
+#include "hi_gfx_comm_k.h"
 #include "hi_png_config.h"
-
 #define MKSTR(exp) # exp
 #define MKMARCOTOSTR(exp) MKSTR(exp)
 
@@ -51,49 +50,7 @@ static int png_open(struct inode *finode, struct file  *ffile);
 static int png_close(struct inode *finode, struct file  *ffile);
 static int png_pm_suspend(PM_BASEDEV_S *pdev, pm_message_t state);
 static int png_pm_resume(PM_BASEDEV_S *pdev);
-
-/* png device operation*/
-static struct file_operations png_fops =
-{
-    .owner   = THIS_MODULE,
-    .unlocked_ioctl = png_ioctl,
-    .open    = png_open,
-    .release = png_close,
-};
-
-/* png device extention operation */
-static PM_BASEOPS_S  png_drvops = {
-    .probe        = NULL,
-    .remove       = NULL,
-    .shutdown     = NULL,
-    .prepare      = NULL,
-    .complete     = NULL,
-    .suspend      = png_pm_suspend,
-    .suspend_late = NULL,
-    .resume_early = NULL,
-    .resume       = png_pm_resume,
-};
-
-/* png device */
-static UMAP_DEVICE_S  png_dev = {
-    .minor = UMAP_MIN_MINOR_PNG,
-    .devfs_name  = "hi_png",
-    .owner = THIS_MODULE,
-    .fops = &png_fops,
-    .drvops = &png_drvops
-};
-
-#ifndef HIPNG_GAO_AN_VERSION
-/* PNG version info*/
-static inline void png_version(void)
-{
-    #ifdef YANJIANQING_DEBUG
-	HI_CHAR PNGVersion[160] ="SDK_VERSION:["MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
-	__DATE__", "__TIME__"]";
-	printk("Load hi_png.ko success.\t\t(%s)\n", PNGVersion);
-	#endif
-}	
-#endif
+ DECLARE_GFX_NODE("hi_png",png_open, png_close, png_ioctl, png_pm_suspend, png_pm_resume);
 
 /* interrutp function */
 static int png_isr(int irq, void *dev_id)
@@ -116,20 +73,7 @@ void PNG_DRV_ModExit(void);
 int PNG_DRV_ModInit(void)
 {
 
-	HI_S32 Ret;
-	HI_CHIP_TYPE_E enChipType;
-    HI_CHIP_VERSION_E enChipVersion;
-    HI_DRV_SYS_GetChipVersion(&enChipType,&enChipVersion);
-    if(HI_CHIP_VERSION_V100 == enChipVersion)
-    {
-        if((HI_CHIP_TYPE_HI3716H == enChipType)
-			|| (HI_CHIP_TYPE_HI3716C == enChipType)
-			|| (HI_CHIP_TYPE_HI3716M == enChipType)
-            ||(HI_CHIP_TYPE_HI3720 == enChipType))
-        {
-           return -1;
-        }
-    }
+    HI_S32 Ret;
 
 
     /* Hal init*/
@@ -160,28 +104,24 @@ int PNG_DRV_ModInit(void)
     }
 
     /* register interrupt function*/
-    if (0 != request_irq(PngHalGetIrqNum(), (irq_handler_t)png_isr, IRQF_PROBE_SHARED, "png_isr", NULL))
+    if (0 != request_irq(PngHalGetIrqNum(), (irq_handler_t)png_isr, IRQF_PROBE_SHARED, "hi_png_irq", NULL))
     {
     	goto ERR1;
     }
 
     /* register device*/
-    if(HI_DRV_DEV_Register(&png_dev) < 0)        
-    {
-    	PNG_ERROR("register png failed.\n");
-    	goto ERR1;
-    }
-
-	#ifndef HIPNG_GAO_AN_VERSION
+    HI_GFX_PM_Register();
     /* proc init*/
+   #ifndef  CONFIG_PNG_PROC_DISABLE 
     PNG_ProcInit();
-
+    #endif
     /*Version info*/
     /*CNcomment:°æ±¾ÐÅÏ¢*/
-    png_version();
+    #ifndef CONFIG_PNG_VERSION_DISABLE
+    HI_GFX_ShowVersionK(HIGFX_PNG_ID);
+    #endif
+    Ret = HI_GFX_MODULE_Register(HIGFX_PNG_ID, PNGNAME, NULL);
 
-	#endif
-	Ret = HI_DRV_MODULE_Register(HI_ID_PNG, PNGNAME, NULL); 
     if (HI_SUCCESS != Ret)
     {
 	   PNG_ERROR("HI_DRV_MODULE_Register PNG failed\n");
@@ -211,14 +151,13 @@ ERR5:
 
 void PNG_DRV_ModExit(void)
 {
-    #ifndef HIPNG_GAO_AN_VERSION
     /* proc deinit*/
+    #ifndef CONFIG_PNG_PROC_DISABLE 
     PNG_ProcCleanup();
     #endif
-	HI_DRV_MODULE_UnRegister(HI_ID_PNG);
     /* logoout device */
-    HI_DRV_DEV_UnRegister(&png_dev);
-
+    HI_GFX_PM_UnRegister();
+    HI_GFX_MODULE_UnRegister(HIGFX_PNG_ID);
     /* release interrupt num*/
     free_irq(PngHalGetIrqNum(), NULL);
 

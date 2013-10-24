@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "drv_otp_ioctl.h"
 #include "hi_common.h"
 

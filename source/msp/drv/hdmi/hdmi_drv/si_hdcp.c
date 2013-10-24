@@ -20,8 +20,9 @@
 #include "hi_mpi_mem.h"
 #include "si_audio.h"
 #include "drv_hdmi.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_sys.h"
 #include "si_mpi_hdmi.h"
+#include "si_phy.h"
 #include <linux/delay.h>
 #include <linux/mm.h>
 #include <linux/time.h>
@@ -146,7 +147,7 @@ static HI_U8 IsBKSVError(void)
 //------------------------------------------------------------
 HI_U8 AreR0sMatch(HI_U8 * Match)
 {
-    HI_U16 R0RX, R0TX;
+    HI_U16 R0RX, R0TX = 0;
     HI_U8 Error;
 	
     Error = MDDCBlockReadHDCPRX(2, DDC_Ri_ADDR, (HI_U8 *)&R0RX);
@@ -666,6 +667,7 @@ HI_U8 SI_Authentication( void )
 }
 //----------------------------------------------------------------------------------
 
+#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
 unsigned int hdcp_counter = 10;
 void reset_hdcp_counter(void)
 {
@@ -683,16 +685,19 @@ unsigned int  get_hdcp_counter(void)
 {
 	return hdcp_counter;	
 }
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
 
 void SI_ReAthentication( void )
 {
     //HI_U32 Reg, Reg_tmp, hdcpKeyState, hdcpKeyCheckTimeout;
     HI_U8 Mode;
+
+    HI_U32 time_out = 0;
+    HI_U32 epst;     
+    
 #if defined (DVI_SUPPORT)
     HI_U8 BlankValue[3];
 #endif
-    HI_CHIP_TYPE_E enChip;
-    HI_CHIP_VERSION_E enChipVersion;
     //HI_U8 uRSEN  = GetSysStat() & BIT_RSEN;
 
     DEBUG_PRINTK("HDCP AUTO Check RI\n");
@@ -739,133 +744,97 @@ void SI_ReAthentication( void )
     SI_SetEncryption(OFF);        // Must turn encryption off when AVMUTE
 
     HI_INFO_HDMI("OutputEnable : %d\n", SI_TX_PHY_GetOutPutEnable());
+  
+
+    /*--NO MODIFY : COMMENT BY CODINGPARTNER--
+    typedef union
+    {
+        struct
+        {
+            HI_U32 hdcp_mode_en         : 1;    // [0]
+            HI_U32 tx_read              : 1;    // [1]
+            HI_U32 hdcp_rootkey_sel     : 2;    // [3:2]
+            HI_U32 rx_read              : 1;    // [4]
+            HI_U32 rx_sel               : 1;    // [5]
+            HI_U32 reserved             : 26;   // [31:6]
+        } bits;
+        HI_U32 u32;
+    } CIPHER_HDCP_MODE_CTRL_U;  //Offset:0x820
+    */
+    DRV_HDMI_WriteRegister((HI_U32)0xF9A00820, 0x3);//time clock
+
+    WriteByteHDMITXP0(RI_CMD_ADDR,0x0);//RI CMD
+    WriteByteHDMITXP0(HDCP_CTRL_ADDR,0x0);//RI CMD
+    WriteByteHDMITXP0(HDCP_CTRL_ADDR,0x04);//RI CMD
+
+#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+    DRV_HDMI_WriteRegister(0x1017009c, 0); //RI CMD
+    DRV_HDMI_WriteRegister(0x1017003c, 0);//HDCP CTRL
+    DRV_HDMI_WriteRegister(0x1017003c, 0x4); //HDCP_CTRL
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+    // load ksv    
+    WriteByteHDMITXP0(0xf9,0x0);
+    WriteByteHDMITXP0(0xfa,0x20);
+#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+    DRV_HDMI_WriteRegister(0x101703e4, 0x0);
+    DRV_HDMI_WriteRegister(0x101703e8, 0x20);
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+    msleep(10);
+    time_out = 4;
+    epst = ReadByteHDMITXP0(0xf9);
+#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+    DRV_HDMI_ReadRegister(0x101703e4, &epst);    
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+    HI_INFO_HDMI("L[%d] epst = %#x.\n", __LINE__, epst);
+
+    while((epst & 0x1) != 1 && time_out != 0)    
+    {        
+       epst = ReadByteHDMITXP0(0xf9);
+#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+       DRV_HDMI_ReadRegister(0x101703e4,&epst) ;        
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+       msleep(10);        
+       HI_INFO_HDMI("L[%d] epst = %#x.\n", __LINE__, epst);        
+       time_out --;    
+    }    
+    if((epst & 0x7f) != 1)        
+       HI_ERR_HDMI("error(1)\n");
+
+
+#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+    DRV_HDMI_WriteRegister(0x101703e4,0);
+    DRV_HDMI_WriteRegister(0x101703e8,4);
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+    WriteByteHDMITXP0(0xf9,0x0);
+    WriteByteHDMITXP0(0xfa,0x04);
+
+    time_out = 10;    
+#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+    DRV_HDMI_ReadRegister(0x101703e4,&epst) ; 
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+    epst = ReadByteHDMITXP0(0xf9);
+    HI_INFO_HDMI("L[%d] epst = %#x.\n", __LINE__, epst);    
+    while((epst & 0x1) != 1 && time_out != 0)    
+    {        
+#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+       DRV_HDMI_ReadRegister(0x101703e4,&epst) ; 
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+       epst = ReadByteHDMITXP0(0xf9);
+       msleep(10);        
+       HI_INFO_HDMI("L[%d] epst = %#x.\n", __LINE__, epst);        
+       time_out --;    
+    }    
+    if((epst & 0x02) == 0x2)
+    {
+       HI_ERR_HDMI("hdcp crc check is error!\n");
+    }
+    else
+    {
+       HI_INFO_HDMI("hdcp crc check is right!\n");
+    }
+
     
-   HI_DRV_SYS_GetChipVersion(&enChip, &enChipVersion);
-
-   if(enChip == HI_CHIP_TYPE_HI3712)
-   {
-	   HI_U32 time_out = 0;
-	   HI_U32 epst; 
-
-	   DRV_HDMI_WriteRegister((HI_U32)0x600e0820, 0x3);//time clock
-	   DRV_HDMI_WriteRegister(0x1017009c,0); //RI CMD
-	   DRV_HDMI_WriteRegister(0x1017003c, 0);//HDCP CTRL
-	   DRV_HDMI_WriteRegister(0x1017003c, 0x4); //HDCP_CTRL
-	   // load ksv    
-	   DRV_HDMI_WriteRegister(0x101703e4, 0x0);
-	   DRV_HDMI_WriteRegister(0x101703e8, 0x20);
-	   msleep(10);
-	   time_out = 4;
-	   DRV_HDMI_ReadRegister(0x101703e4, &epst);    
-	   HI_INFO_HDMI("L[%d] epst = %#x.\n", __LINE__, epst);
-
-	   while((epst & 0x1) != 1 && time_out != 0)    
-	   {        
-		   DRV_HDMI_ReadRegister(0x101703e4,&epst) ;        
-		   msleep(10);        
-		   HI_INFO_HDMI("L[%d] epst = %#x.\n", __LINE__, epst);        
-		   time_out --;    
-	   }    
-	   if((epst & 0x7f) != 1)        
-		   HI_ERR_HDMI("error(1)\n");
-
-
-	   DRV_HDMI_WriteRegister(0x101703e4,0);
-	   DRV_HDMI_WriteRegister(0x101703e8,4);
-
-	   time_out = 10;    
-	   DRV_HDMI_ReadRegister(0x101703e4,&epst) ;    
-	   HI_INFO_HDMI("L[%d] epst = %#x.\n", __LINE__, epst);    
-	   while((epst & 0x1) != 1 && time_out != 0)    
-	   {        
-		   DRV_HDMI_ReadRegister(0x101703e4,&epst) ; 
-		   msleep(10);        
-		   HI_ERR_HDMI("L[%d] epst = %#x.\n", __LINE__, epst);        
-		   time_out --;    
-	   }    
-	   if((epst & 0x02) == 0x2)
-	   {
-		   HI_ERR_HDMI("hdcp crc check is error!\n");
-	   }
-	   else
-	   {
-		   HI_INFO_HDMI("hdcp crc check is right!\n");
-	   }
-   }
-   else
-   {
-	   /*TMDS switch here: to switch otp mode to tmds if necessary*/
-       //需要增加替换
-       #if 0        
-       
-	   DRV_HDMI_ReadRegister((HI_U32)0x10180000, &Reg);
-	   DRV_HDMI_ReadRegister((HI_U32)0x10180018, &Reg_tmp);
-
-
-	   if( (!(Reg & 0x1)) || (!(Reg_tmp & 0x2)) )
-	   {
-		   /*config the otp to tmds mode for hdcp key reading.*/
-		   Reg &= 0xfffffffc;
-		   Reg |= 0x1;
-
-		   Reg_tmp &= 0xfffffff8;
-		   Reg_tmp |= 0x2;
-
-		   DRV_HDMI_WriteRegister((HI_U32)0x10180000, Reg);
-		   if(enChipVersion != HI_CHIP_VERSION_V300)
-		   {
-			   DRV_HDMI_WriteRegister((HI_U32)0x10180018, Reg_tmp);
-
-			   /* check hdcp key */
-			   hdcpKeyState = 0;
-			   hdcpKeyCheckTimeout = 0;
-			   while(hdcpKeyCheckTimeout < 5)
-			   {
-				   if (HI_SUCCESS != DRV_HDMI_ReadRegister(0x10180018, &hdcpKeyState)){
-					   break;
-				   }
-
-				   if (hdcpKeyState != 0xa){
-					   msleep(10);
-					   hdcpKeyCheckTimeout++;
-				   }else{
-					   /* hdcp key OK, break */
-					   break;
-				   }
-			   }
-
-			   HI_INFO_HDMI("hdcpKeyState:%d\n", hdcpKeyState);
-
-			   if (hdcpKeyState != 0xa)
-			   {
-				   HI_ERR_HDMI("HDCP key state NOT checked, HDCP may not ready!\n");
-			   }
-		   }
-
-		   HI_INFO_HDMI("Reload KSV from OTP\n");
-		   WriteByteHDMITXP0(0xFA,0x00);
-		   msleep(10);
-		   WriteByteHDMITXP0(0xFA,0x20);
-		   msleep(10);
-		   WriteByteHDMITXP0(0xFA,0x00); 
-		   increase_hdcp_counter();
-	   }
-
-
-	   if(!get_hdcp_counter())
-	   {
-		   HI_INFO_HDMI("Reload KSV from OTP\n");
-		   WriteByteHDMITXP0(0xFA,0x00);
-		   msleep(10);
-		   WriteByteHDMITXP0(0xFA,0x20);
-		   msleep(10);
-		   WriteByteHDMITXP0(0xFA,0x00);
-	   }                
-	   increase_hdcp_counter();
-
-       #endif 
-     }
-
+ 
      AuthState = SI_Authentication();
      SI_PrintAuthState();
 

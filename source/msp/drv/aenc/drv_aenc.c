@@ -28,10 +28,12 @@
 #include <asm/io.h>
 #include <linux/seq_file.h>
 
-#include "drv_mmz_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_file.h"
 //#include "drv_log_ext.h"
 //#include "drv_event_ext.h"
 
@@ -39,15 +41,16 @@
 
 #include "hi_drv_aenc.h"
 
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
 #include "hi_kernel_adapt.h"
-
+#include "hi_drv_file.h"
 
 #ifdef __cplusplus
  #if __cplusplus
 extern "C" {
  #endif
 #endif /* End of #ifdef __cplusplus */
+   
 
 typedef struct hiAENC_KADDR_S
 {
@@ -57,8 +60,16 @@ typedef struct hiAENC_KADDR_S
     HI_CHAR 		   szProcMmzName[32];
 } AENC_KADDR_S;
 
+typedef struct tagAenc_REGISTER_PARAM_S
+{
+    DRV_PROC_READ_FN  pfnReadProc;
+    DRV_PROC_WRITE_FN pfnWriteProc;
+} AENC_REGISTER_PARAM_S;
+
+
 static AENC_KADDR_S g_sAencKAddrArray[AENC_INSTANCE_MAXNUM];
 static UMAP_DEVICE_S g_sAencDevice;
+
 HI_DECLARE_MUTEX(g_AencMutex);
 
 static HI_VOID AENCResetVKaddrArray(HI_VOID)
@@ -80,7 +91,7 @@ static HI_S32 AENCRegisterDevice(struct file_operations *drvFops, PM_BASEOPS_S *
     AENCResetVKaddrArray();
 
     /*register AENC Dev*/
-    sprintf(g_sAencDevice.devfs_name, "%s", UMAP_DEVNAME_AENC);
+    snprintf(g_sAencDevice.devfs_name, sizeof(g_sAencDevice.devfs_name), "%s", UMAP_DEVNAME_AENC);
     g_sAencDevice.fops  = drvFops;
     g_sAencDevice.minor = UMAP_MIN_MINOR_AENC;
 	g_sAencDevice.owner  = THIS_MODULE;
@@ -125,7 +136,7 @@ static HI_S32 AENC_DRV_Open(struct inode * inode, struct file * filp)
 
     g_sAencKAddrArray[i].bUsed = HI_TRUE;
     g_sAencKAddrArray[i].psAencKernelAddr = NULL;
-    sprintf(g_sAencKAddrArray[i].szProcMmzName, "%s%02d", "AENCProc", i);
+    snprintf(g_sAencKAddrArray[i].szProcMmzName, sizeof(g_sAencKAddrArray[i].szProcMmzName), "%s%02d", "AENC_Proc", i);
     filp->private_data = ((void *)(&g_sAencKAddrArray[i]));
     up(&g_AencMutex);
     return 0;
@@ -197,6 +208,12 @@ static long AENC_DRV_Ioctl(struct file *filp,
 		if (!psKAddrElem->psAencKernelAddr)
 		{
 			psKAddrElem->psAencKernelAddr = (AENC_PROC_ITEM_S *)psKAddrElem->AencProcMmz.u32StartVirAddr;
+			psKAddrElem->psAencKernelAddr->enPcmCtrlState= AENC_CMD_CTRL_STOP;
+			psKAddrElem->psAencKernelAddr->u32SavePcmCnt = 0;
+			psKAddrElem->psAencKernelAddr->enEsCtrlState= AENC_CMD_CTRL_STOP;
+			psKAddrElem->psAencKernelAddr->u32SaveEsCnt = 0;
+			psKAddrElem->psAencKernelAddr->stAttach.eType = ANEC_SOURCE_BUTT;
+			psKAddrElem->psAencKernelAddr->stAttach.hSource = HI_INVALID_HANDLE;
 		}
 		if(copy_to_user((void*)arg, &psKAddrElem->AencProcMmz.u32StartPhyAddr, sizeof(HI_U32)))
 		{
@@ -228,101 +245,125 @@ static struct file_operations AENC_DRV_Fops =
     .release 		= AENC_DRV_Release,
 };
 
-HI_S32 AENC_DRV_Proc(struct seq_file *p, HI_VOID *v)
+static  HI_CHAR * AENC_DRV_ReadAttachname(AENC_PROC_ITEM_S *param)
 {
-    HI_U32 i, u32BufPercent, u32FramePercent, u32FrameFullNum;
-    AENC_PROC_ITEM_S *tmp = NULL;
-
-    p += seq_printf(p, "\n############################# Hisi AENC  Dev Stat ############################\n" );
-    for (i = 0; i < AENC_INSTANCE_MAXNUM; i++)
+     HI_CHAR *AencName[ANEC_SOURCE_BUTT+1] =
     {
-        p += seq_printf(p, "\n---------AENC[%d] Stat---------\n", i);
-        if (g_sAencKAddrArray[i].bUsed == HI_FALSE)
-        {
-            p += seq_printf(p, "  AENC not open\n");
-            continue;
-        }
+        "Ai",
+        "Cast",
+        "Track",
+        "None",
+    };
+	
+    return AencName[param->stAttach.eType];
+}
 
-        if (g_sAencKAddrArray[i].psAencKernelAddr == NULL)
-        {
-            p += seq_printf(p, "  AENC PROC not INIT\n");
-            continue;
-        }
+HI_S32 AENC_DRV_Proc(struct seq_file *p, HI_U32  u32ChNum )
+{
+    HI_U32 u32BufPercent, u32FramePercent, u32FrameFullNum;
+    HI_U32 u32DataSize = 0;
+    AENC_PROC_ITEM_S* tmp = NULL;
+    HI_CHAR* attachname; 
 
-        tmp = (AENC_PROC_ITEM_S *)g_sAencKAddrArray[i].psAencKernelAddr;
-        if (tmp->u32InBufSize)
-        {
-            if (tmp->u32InBufWrite >= tmp->u32InBufRead)
-            {
-                u32BufPercent = (tmp->u32InBufWrite - tmp->u32InBufRead) * 100 / tmp->u32InBufSize;
-            }
-            else
-            {
-                u32BufPercent = ((tmp->u32InBufSize
-                                  - tmp->u32InBufRead) + tmp->u32InBufWrite) * 100 / tmp->u32InBufSize;
-            }
-        }
-        else
-        {
-            u32BufPercent = 0;
-        }
+    PROC_PRINT( p, "\n----------------------- AENC[%02d] State --------------------------\n", u32ChNum );
 
-        if (tmp->u32OutFrameNum)
-        {
-            if (tmp->u32OutFrameWIdx >= tmp->u32OutFrameRIdx)
-            {
-                u32FramePercent = (tmp->u32OutFrameWIdx - tmp->u32OutFrameRIdx) * 100 / tmp->u32OutFrameNum;
-                u32FrameFullNum = tmp->u32OutFrameWIdx - tmp->u32OutFrameRIdx;
-            }
-            else
-            {
-                u32FramePercent = ((tmp->u32OutFrameNum
-                                    - tmp->u32OutFrameRIdx) + tmp->u32OutFrameWIdx) * 100 / tmp->u32OutFrameNum;
-                u32FrameFullNum = tmp->u32OutFrameNum - tmp->u32OutFrameRIdx + tmp->u32OutFrameWIdx;
-            }
-        }
-        else
-        {
-            u32FramePercent = 0;
-            u32FrameFullNum = 0;
-        }
-
-        p += seq_printf(p,
-                        "Work State             :%s\n"
-                        "Codec ID               :%s(0x%x)\n"
-                        "Sample Rate            :%d\n"
-                        "Channels               :%d\n"
-                        "Auto SRC               :%s\n"
-                        "Enc FrameNum           :%d\n"
-                        "Err  FrameNum          :%d\n"
-                        "IN Buf Size            :%d\n"
-                        "IN Buf Percent         :%d\n"
-                        "Out FrameBuf Num       :%d\n"
-                        "Out FrameBuf Percent   :%d\n"
-
-                        //"Pts Lost Num         :%d\n"
-                        "SendBuffer:    Try=%d, OK=%d\n"
-                        "ReceiveStream: Try=%d, OK=%d\n"
-                        "Try  Encode times      :%d\n",
-                        (tmp->bAdecWorkEnable == HI_TRUE) ? "ON" : "OFF",
-                        tmp->szCodecType, tmp->u32CodecID,
-                        tmp->u32SampleRate,
-                        tmp->u32Channels,
-                        (tmp->bAutoSRC == HI_TRUE) ? "ON" : "OFF",
-                        tmp->u32EncFrame,
-                        tmp->u32ErrFrame,
-                        tmp->u32InBufSize,
-                        u32BufPercent,
-                        tmp->u32OutFrameNum,
-                        u32FramePercent,
-                        tmp->u32DbgSendBufCount_Try,
-                        tmp->u32DbgSendBufCount,
-                        tmp->u32DbgReceiveStreamCount_Try,
-                        tmp->u32DbgReceiveStreamCount,
-                        tmp->u32DbgTryEncodeCount);
+    if ( g_sAencKAddrArray[u32ChNum].bUsed == HI_FALSE )
+    {
+        PROC_PRINT( p, "  AENC[%02d] not open\n", u32ChNum );
+        return HI_FAILURE;
     }
 
-    p += seq_printf(p, "\n#########################################################################\n" );
+    if ( g_sAencKAddrArray[u32ChNum].psAencKernelAddr == NULL )
+    {
+        PROC_PRINT( p, "  AENC[%02d] PROC not INIT\n", u32ChNum );
+        return HI_FAILURE;
+    }
+
+    tmp = ( AENC_PROC_ITEM_S* )g_sAencKAddrArray[u32ChNum].psAencKernelAddr;
+    if ( tmp->u32InBufSize )
+    {
+        if ( tmp->u32InBufWrite >= tmp->u32InBufRead )
+        {
+            u32DataSize =  tmp->u32InBufWrite - tmp->u32InBufRead;
+        }
+        else
+        {
+            u32DataSize = tmp->u32InBufSize - tmp->u32InBufRead + tmp->u32InBufWrite;
+        }
+        u32BufPercent = u32DataSize * 100 / tmp->u32InBufSize;
+    }
+    else
+    {
+        u32BufPercent = 0;
+    }
+
+    if ( tmp->u32OutFrameNum )
+    {
+        if ( tmp->u32OutFrameWIdx >= tmp->u32OutFrameRIdx )
+        {
+            u32FramePercent = ( tmp->u32OutFrameWIdx - tmp->u32OutFrameRIdx ) * 100 / tmp->u32OutFrameNum;
+            u32FrameFullNum = tmp->u32OutFrameWIdx - tmp->u32OutFrameRIdx;
+        }
+        else
+        {
+            u32FramePercent = ( ( tmp->u32OutFrameNum - tmp->u32OutFrameRIdx ) + tmp->u32OutFrameWIdx ) * 100 / tmp->u32OutFrameNum;
+            u32FrameFullNum = tmp->u32OutFrameNum - tmp->u32OutFrameRIdx + tmp->u32OutFrameWIdx;
+        }
+    }
+    else
+    {
+        u32FramePercent = 0;
+        u32FrameFullNum = 0;
+    }
+
+    attachname = AENC_DRV_ReadAttachname( tmp );
+
+    PROC_PRINT( p,
+                     "WorkStatus                           :%s\n"
+                     "Codec ID                             :0x%x\n"
+                     "Description                          :%s\n"
+                     "Sample Rate                          :%u\n"
+                     "Channels                             :%u\n"
+                     "BitWidth                             :%u\n",
+                     ( tmp->bAdecWorkEnable == HI_TRUE ) ? "start" : "stop",
+                     tmp->u32CodecID,
+                     tmp->szCodecType,
+                     tmp->u32SampleRate,
+                     tmp->u32Channels,
+                     tmp->u32BitWidth );
+
+    if ( !strcasecmp( "None", attachname ) )
+    {
+        PROC_PRINT( p, "AttachSource                         :%s\n", attachname );
+    }
+    else
+    {
+        PROC_PRINT( p, "AttachSource                         :%s%02d\n", attachname, ( tmp->stAttach.hSource & 0xff ) );
+    }
+
+    PROC_PRINT( p, "\nTryEncodeTimes                       :%u\n"
+                     "EncodeFrameNum(Total/Error)          :%u/%d\n"
+                     "FrameBuf(Total/Use/Percent)(Bytes)   :%u/%u/%u%%\n"
+                     "StreamBuf(Total/Use/Percent)         :%u/%u/%u%%\n"
+                     "SendFrame(Try/OK)                    :%u/%u\n"
+                     "ReceiveStream(Try/OK)                :%u/%u\n"
+                     "ReleaseStream(Try/OK)                :%u/%u\n\n",
+                     tmp->u32DbgTryEncodeCount,
+                     tmp->u32EncFrame,
+                     ( HI_S32 )tmp->u32ErrFrame,
+                     tmp->u32InBufSize,
+                     u32DataSize,
+                     u32BufPercent,
+                     tmp->u32OutFrameNum,
+                     u32FrameFullNum,
+                     u32FramePercent,
+                     tmp->u32DbgSendBufCount_Try,
+                     tmp->u32DbgSendBufCount,
+                     tmp->u32DbgReceiveStreamCount_Try,
+                     tmp->u32DbgReceiveStreamCount,
+                     tmp->u32DbgReleaseStreamCount_Try,
+                     tmp->u32DbgReleaseStreamCount );
+
     return HI_SUCCESS;
 }
 
@@ -400,21 +441,262 @@ static PM_BASEOPS_S aenc_drvops = {
 };
 
 
+#define AENC_DEBUG_SHOW_HELP(u32ChNum) \
+    do                                                         \
+    {                                                          \
+        printk("\nfunction: save pcm data before audio encode\n"); \
+        printk("commad:   echo save_pcm start|stop > /proc/msp/aenc%02d\n", u32ChNum); \
+        printk("example:  echo save_pcm start > /proc/msp/aenc%02d\n", u32ChNum); \
+        printk("\nfunction: save es data after audio encode \n"); \
+        printk("commad:   echo save_es start|stop > /proc/msp/aenc%02d\n", u32ChNum); \
+        printk("example:  echo save_es start > /proc/msp/aenc%02d\n\n", u32ChNum); \
+    } while (0)     
+
+
+#define AENC_STRING_SKIP_BLANK(str)            \
+    while (str[0] == ' ')      \
+    {                                  \
+        (str)++;                    \
+    }  
+
+#define AENC_STRING_SKIP_NON_BLANK(str) \
+    while (str[0] != ' ')      \
+    {                                  \
+        (str)++;                    \
+    }  
+
+
+static HI_S32 AENC_DRV_ReadProc( struct seq_file* p, HI_VOID* v )
+{
+    HI_U32 u32ChNum;
+    DRV_PROC_ITEM_S *pstProcItem;
+
+    pstProcItem = p->private;
+	
+    if (HI_NULL == pstProcItem)
+    {
+        HI_ERR_AENC("the proc item pointer of aenc  is NULL\n");
+        return HI_FAILURE;
+    }
+	
+    (HI_VOID)sscanf(pstProcItem->entry_name, "aenc%2d", &u32ChNum);
+	
+    if(u32ChNum >= AENC_INSTANCE_MAXNUM)
+    {
+        PROC_PRINT(p, "Invalid Aenc ID:%d.\n", u32ChNum);
+        return HI_FAILURE;
+    }
+
+    AENC_DRV_Proc( p, u32ChNum );
+
+    return HI_SUCCESS;
+}
+
+#define  AENC_PATH_NAME_MAXLEN  256
+#define  AENC_FILE_NAME_MAXLEN  256
+
+static HI_S32 AENC_DRV_WriteProc(struct file * file, const char __user * buf, size_t count, loff_t *ppos)
+{
+    HI_U32 u32ChNum;
+    AENC_CMD_SAVE_E enSaveCmd;
+    HI_CHAR szBuf[48];
+    HI_CHAR* pcBuf = szBuf;
+    HI_CHAR* pcStartCmd = "start";
+    HI_CHAR* pcStopCmd = "stop";
+    HI_CHAR* pcSavePcmCmd = "save_pcm";
+    HI_CHAR* pcSaveEsCmd = "save_es";
+    HI_CHAR* pcHelpCmd = "help";
+    struct seq_file* p = file->private_data;
+    AENC_PROC_ITEM_S* pstAencProc;
+    DRV_PROC_ITEM_S* pstProcItem = p->private;
+
+    if ( copy_from_user( szBuf, buf, count ) )
+    {
+        HI_ERR_AENC( "copy from user failed\n" );
+        return HI_FAILURE;
+    }
+
+    ( HI_VOID )sscanf( pstProcItem->entry_name, "aenc%2d", &u32ChNum );
+
+    if ( u32ChNum >= AENC_INSTANCE_MAXNUM )
+    {
+        HI_ERR_AENC( "Invalid Aenc ID:%02d.\n", u32ChNum );
+        goto SAVE_CMD_FAULT;
+    }
+    if ( g_sAencKAddrArray[u32ChNum].bUsed == HI_FALSE )
+    {
+        HI_ERR_AENC( "  AENC[%02d] not open\n", u32ChNum );
+        return HI_FAILURE;
+    }
+
+    if ( g_sAencKAddrArray[u32ChNum].psAencKernelAddr == NULL )
+    {
+        HI_ERR_AENC( "  AENC[%02d] PROC not INIT\n", u32ChNum );
+        return HI_FAILURE;
+    }
+
+    pstAencProc = ( AENC_PROC_ITEM_S* )g_sAencKAddrArray[u32ChNum].psAencKernelAddr;
+    AENC_STRING_SKIP_BLANK( pcBuf );
+
+    if ( strstr( pcBuf, pcSavePcmCmd ) )
+    {
+        enSaveCmd = AENC_CMD_PROC_SAVE_PCM;
+        pcBuf += strlen( pcSavePcmCmd );
+    }
+    else if ( strstr( pcBuf, pcSaveEsCmd ) )
+    {
+        enSaveCmd = AENC_CMD_PROC_SAVE_ES;
+        pcBuf += strlen( pcSaveEsCmd );
+    }
+    else if ( strstr( pcBuf, pcHelpCmd ) )
+    {
+        AENC_DEBUG_SHOW_HELP(u32ChNum);
+        return count;
+    }
+    else
+    {
+        goto SAVE_CMD_FAULT;
+    }
+
+    AENC_STRING_SKIP_BLANK( pcBuf );
+
+    if ( strstr( pcBuf, pcStartCmd ) )
+    {
+        if ( HI_SUCCESS != HI_DRV_FILE_GetStorePath( pstAencProc->filePath, AENC_PATH_NAME_MAXLEN ) )
+        {
+        	HI_ERR_AENC( "get store path failed\n" );
+       		return HI_FAILURE;
+    	 }
+		
+        if ( enSaveCmd == AENC_CMD_PROC_SAVE_PCM )
+        {
+        	if(pstAencProc->enPcmCtrlState != AENC_CMD_CTRL_START)
+        	{
+        		snprintf( pstAencProc->filePath, sizeof( pstAencProc->filePath ), "%s/aenc%d_%d.pcm", pstAencProc->filePath, u32ChNum, pstAencProc->u32SavePcmCnt );
+           		pstAencProc->u32SavePcmCnt++;
+            		pstAencProc->enPcmCtrlState = AENC_CMD_CTRL_START;
+        	}
+        }
+        else if ( enSaveCmd == AENC_CMD_PROC_SAVE_ES )
+        {
+        	if(pstAencProc->enEsCtrlState != AENC_CMD_CTRL_START)
+        	{
+        		snprintf( pstAencProc->filePath, sizeof( pstAencProc->filePath ), "%s/aenc%d_%d.aac", pstAencProc->filePath, u32ChNum, pstAencProc->u32SaveEsCnt );
+            		pstAencProc->u32SaveEsCnt++;
+             		pstAencProc->enEsCtrlState =  AENC_CMD_CTRL_START;
+        	}
+        }
+    }
+    else if ( strstr( pcBuf, pcStopCmd ) )
+    {
+        if ( enSaveCmd == AENC_CMD_PROC_SAVE_PCM )
+        {
+            pstAencProc->enPcmCtrlState  = AENC_CMD_CTRL_STOP;
+        }
+        else if ( enSaveCmd == AENC_CMD_PROC_SAVE_ES )
+        {
+             pstAencProc->enEsCtrlState  = AENC_CMD_CTRL_STOP;
+        }
+    }
+    else
+    {
+        goto SAVE_CMD_FAULT;
+    }
+
+    return count;
+
+SAVE_CMD_FAULT:
+    HI_ERR_AENC( "proc cmd is fault\n" );
+    AENC_DEBUG_SHOW_HELP(u32ChNum);
+    return HI_FAILURE;
+}
+
+
+static AENC_REGISTER_PARAM_S s_stProcParam = {
+    .pfnReadProc  = AENC_DRV_ReadProc,
+    .pfnWriteProc = AENC_DRV_WriteProc,
+};
+
+static HI_S32 AENC_RegProc(HI_U32 u32AencNum, AENC_REGISTER_PARAM_S * pstParam)
+{
+    HI_CHAR aszBuf[16];
+    DRV_PROC_ITEM_S*  pProcItem;
+
+    /* Check parameters */
+    if (HI_NULL == pstParam)
+    {
+        HI_ERR_AENC("the parameter pointer of aenc register is NULL\n");
+        return HI_FAILURE;
+    }
+
+    /* Create proc */
+    snprintf(aszBuf, sizeof(aszBuf), "aenc%02d", u32AencNum);
+    pProcItem = HI_DRV_PROC_AddModule(aszBuf, HI_NULL, HI_NULL);
+    if (!pProcItem)
+    {
+        HI_FATAL_AENC("Create Aenc proc entry fail!\n");
+        return HI_FAILURE;
+    }
+
+    /* Set functions */
+    pProcItem->read  = pstParam->pfnReadProc;
+    pProcItem->write = pstParam->pfnWriteProc;
+
+    HI_INFO_AENC("Create Aenc proc entry for OK!\n");
+    return HI_SUCCESS;
+}
+
+
+static HI_S32 AENC_DRV_RegisterProc(AENC_REGISTER_PARAM_S * pstParam)
+{
+    HI_U32 i;
+    
+    /* Check parameters */
+    if (HI_NULL == pstParam)
+    {
+        HI_ERR_AENC("the parameter pointer of aenc register is NULL\n");
+        return HI_FAILURE;
+    }
+
+    /* Create proc */
+    for(i = 0; i < AENC_INSTANCE_MAXNUM; i++)
+    {
+        AENC_RegProc(i, pstParam);
+    }
+
+    return HI_SUCCESS;
+}
+
 HI_S32 AENC_DRV_ModInit(HI_VOID)
 {
+    HI_S32  ret;
     /*register AENC device*/
     AENCRegisterDevice(&AENC_DRV_Fops, &aenc_drvops);
+    ret = AENC_DRV_RegisterProc(&s_stProcParam);
+    if (HI_SUCCESS != ret)
+    {
+        HI_FATAL_AENC("Reg proc fail!\n");
+        return HI_FAILURE;
+    }
 
-    HI_DRV_PROC_AddModule("aenc", AENC_DRV_Proc, NULL);
+#ifdef MODULE
+    HI_PRINT("Load hi_aenc.ko success.  \t(%s)\n", VERSION_STRING);
+#endif
 
     return HI_SUCCESS;
 }
 
 HI_VOID  AENC_DRV_ModExit(HI_VOID)
 {
-    /*unregister AENC device*/
-    HI_DRV_PROC_RemoveModule("aenc");
-
+    /* Unregister proc */
+    HI_U32 i;
+    HI_CHAR aszBuf[16];
+	
+    for(i = 0; i < AENC_INSTANCE_MAXNUM; i++)
+    {
+         snprintf(aszBuf, sizeof(aszBuf), "aenc%02d", i);
+         HI_DRV_PROC_RemoveModule(aszBuf);
+    }
     AENCUnregisterDevice();
     return;
 }

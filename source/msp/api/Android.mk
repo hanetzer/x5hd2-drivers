@@ -1,16 +1,20 @@
 LOCAL_PATH := $(call my-dir)
 
-API_MODULE := hdmi gpio vo pdm cipher
+API_MODULE := hdmi gpio vo pdm cipher pq
 
 ifeq ($(CFG_HI_LOADER_APPLOADER),y)
-API_MODULE += i2c frontend ir demux tde jpeg otp higo
+API_MODULE += i2c frontend ir demux tde jpeg otp png jpge higo
 endif
 
 ifneq ($(CFG_HI_LOADER_APPLOADER),y)
  ifneq ($(CFG_HI_LOADER_RECOVERY),y)
  API_MODULE += i2c frontend ir demux tde jpeg otp higo \
-           pm avplay pvr sync ao adec vdec wdg png omx mce 3d jpge
+           pm avplay pvr sync ao adec vdec wdg png omx mce gpu jpge
  endif
+endif
+
+ifeq ($(CFG_HI_AI_SUPPORT),y)
+API_MODULE += ai
 endif
 
 ifeq ($(CFG_HI_KEYLED_SUPPORT),y)
@@ -39,6 +43,10 @@ endif
 
 ifeq ($(CFG_HI_VENC_SUPPORT),y)
 API_MODULE += venc
+endif
+
+ifeq ($(CFG_HI_ADVCA_SUPPORT),y)
+API_MODULE += advca
 endif
 
 

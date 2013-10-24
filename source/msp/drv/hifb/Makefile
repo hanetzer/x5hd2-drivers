@@ -25,11 +25,34 @@ EXTRA_CFLAGS += -I$(COMMON_UNF_INCLUDE)                 \
                 -I$(MSP_DIR)/drv/hifb/include	        \
                 -I$(MSP_DIR)/drv/hifb/adp/include	\
                 -I$(MSP_DIR)/drv/hifb/adp/platform/include	\
+                -I$(MSP_DIR)/drv/hifb/adp/platform/alg \
                 -I$(MSP_DIR)/drv/hifb/src	\
                 -I$(MSP_DIR)/drv/tde/include	\
                 -I$(MSP_DIR)/api/tde/include	\
 		-I$(MSP_DIR)/api/higo/include \
 	 	-I$(COMPONENT_DIR)/ha_codec/include
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200es)
+HAL_DIR := cv200es
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200)
+HAL_DIR := cv200
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719cv100)
+HAL_DIR := cv200
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3718cv100)
+HAL_DIR := cv200
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719mv100_a)
+HAL_DIR := cv200
+endif
+
+EXTRA_CFLAGS += -I$(MSP_DIR)/drv/hifb/adp/platform/$(HAL_DIR)
 
 ifeq ($(CFG_HIFB_CURSOR_SUPPORT), y)
 EXTRA_CFLAGS += -DCFG_HIFB_CURSOR_SUPPORT
@@ -43,16 +66,14 @@ ifeq ($(CFG_HIFB_SCROLLTEXT_SUPPORT), y)
 EXTRA_CFLAGS += -DCFG_HIFB_SCROLLTEXT_SUPPORT
 endif
 
-ifeq ($(CFG_HIFB_STEREO3D_HW_SUPPORT), y)
+ifeq ($(CFG_HIFB_STEREO3D_SUPPORT), y)
 EXTRA_CFLAGS += -DCFG_HIFB_STEREO3D_HW_SUPPORT
 endif
 
-ifeq ($(CFG_HIFB_STEREO3D_SW_SUPPORT), y)
-EXTRA_CFLAGS += -DCFG_HIFB_STEREO3D_SW_SUPPORT
-endif
-
-EXTRA_CFLAGS += -DCFG_HI_HD0_FB_VRAM_SIZE=$(CFG_HI_HD_FB_VRAM_SIZE)
-EXTRA_CFLAGS += -DCFG_HI_SD0_FB_VRAM_SIZE=$(CFG_HI_SD_FB_VRAM_SIZE)
+EXTRA_CFLAGS += -DCFG_HI_HD0_FB_VRAM_SIZE=$(CFG_HI_HD0_FB_VRAM_SIZE)
+EXTRA_CFLAGS += -DCFG_HI_HD1_FB_VRAM_SIZE=$(CFG_HI_HD1_FB_VRAM_SIZE)
+EXTRA_CFLAGS += -DCFG_HI_HD2_FB_VRAM_SIZE=$(CFG_HI_HD2_FB_VRAM_SIZE)
+EXTRA_CFLAGS += -DCFG_HI_SD0_FB_VRAM_SIZE=$(CFG_HI_SD0_FB_VRAM_SIZE)
 EXTRA_CFLAGS += -DHIFB_PROC_SUPPORT
 
 MOD_NAME := hi_fb
@@ -67,16 +88,17 @@ DRIVER_PATH := $(MSP_DIR)/drv/hifb
 
 COMMON_FILES := $(wildcard $(DRIVER_PATH)/src/*.c)
 ADAPT_FILES  := $(wildcard $(DRIVER_PATH)/adp/src/*.c)
-HAL_FILES    := $(wildcard $(DRIVER_PATH)/adp/platform/src/*.c)
-ALG_FILES    := $(wildcard $(DRIVER_PATH)/adp/platform/src/*alg*.S)
+HAL_FILES    := $(wildcard $(DRIVER_PATH)/adp/platform/$(HAL_DIR)/*.c)
+ALG_FILES    := $(wildcard $(DRIVER_PATH)/adp/platform/alg/*.c)
+ALG_FILES    += $(wildcard $(DRIVER_PATH)/adp/platform/alg/*alg*.S)
 FULL_PATH_DRV_FILES += $(HAL_FILES) \
 		       $(ALG_FILES) \
                        $(ADAPT_FILES)  \
                        $(COMMON_FILES) 
 
-ifeq ($(CFG_HIFB_SCROLLTEXT_SUPPORT), y)
-FULL_PATH_DRV_FILES := $(filter-out hifb_scrolltext.c, $(FULL_PATH_DRV_FILES))
-endif
+#ifeq ($(CFG_HIFB_SCROLLTEXT_SUPPORT), y)
+#FULL_PATH_DRV_FILES := $(filter-out hifb_scrolltext.c, $(FULL_PATH_DRV_FILES))
+#endif
 
 DRV_SRCS := $(shell echo $(FULL_PATH_DRV_FILES) \
             | awk '{for(i=1;i<=NF;i++)print $$i}' \

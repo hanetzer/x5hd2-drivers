@@ -22,7 +22,8 @@
 
 #include "hi_unf_hdmi.h"
 #include "hi_error_mpi.h"
-#include "hi_mpi_hiao.h"
+#include "hi_drv_disp.h"
+
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -30,16 +31,14 @@
 #endif
 #endif
 
-//#define HDMI_PHY_BASE_ADDR 0x10170000L
-#define HDMI_HARDWARE_RESET_ADDR 0xf8a2210cL
-#define HDMI_TX_PHY_BASE_ADDR 0xf8ce0000L
-//#define HDMI_TX_HARDWARE_RESET_ADDR 0xf8a2210cL
+#define HDMI_TX_BASE_ADDR     0xf8ce0000L
+
 
 
 /*
 **HDMI Debug
 */
-#ifndef CONFIG_SUPPORT_CA_RELEASE
+#ifndef HI_ADVCA_FUNCTION_RELEASE
 #define HI_FATAL_HDMI(fmt...)       HI_FATAL_PRINT  (HI_ID_HDMI, fmt)
 #define HI_ERR_HDMI(fmt...)         HI_ERR_PRINT    (HI_ID_HDMI, fmt)
 #define HI_WARN_HDMI(fmt...)        HI_WARN_PRINT   (HI_ID_HDMI, fmt)
@@ -65,49 +64,72 @@ typedef enum  hiHDMI_AUDIOINTERFACE_E
     HDMI_AUDIO_INTERFACE_BUTT
 }HDMI_AUDIOINTERFACE_E;
 
-#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
-/*hdmi struct */
-typedef struct hiHDMI_ATTR_S
-{
-	HI_UNF_HDMI_ATTR_S 		stHDMIAttr;
-	//HI_MPI_HIAO_INTERFACE_E  enSoundIntf;
-    HDMI_AUDIO_ATTR_S       stAudAttr;
-    HDMI_VIDEO_ATTR_S       stVidAttr;    
-}HDMI_ATTR_S;
 
-
-/*In order to extern ,so we define struct*/
 typedef struct hiHDMI_AUDIO_ATTR_S
 {
-	HI_MPI_HIAO_INTERFACE_E  enSoundIntf;
-	HI_UNF_SAMPLE_RATE_E 	enSampleRate;
-	HI_U32 					u32Channels;
-    HI_U8                   u8DownSampleParm;  
-    HI_UNF_BIT_DEPTH_E      enBitDepth;
-    HI_U8                   u8I2SCtlVbit;  
+//  HI_BOOL                 bEnableAudio;        /**<Enable flag of Audio*//**CNcomment:是否Enable音频 */
+    HDMI_AUDIOINTERFACE_E   enSoundIntf;         /**<the origin of Sound,suggestion set HI_UNF_SND_INTERFACE_I2S,the parameter need consistent with Ao input *//**<CNcomment:HDMI音频来源, 建议HI_UNF_SND_INTERFACE_I2S,此参数需要与AO输入保持一致 */
+    HI_BOOL                 bIsMultiChannel;     /**<set mutiChannel or stereo ;0:stereo,1:mutichannel fixup 8 channel *//**<CNcomment:多声道还是立体声，0:立体声，1:多声道固定为8声道 */
+	HI_U32 					u32Channels;         //先channel和multy channel都保留，后续在内核态干掉multy channel
+    HI_UNF_SAMPLE_RATE_E    enSampleRate;        /**<the samplerate of audio,this parameter consistent with AO config *//**<CNcomment:PCM音频采样率,此参数需要与AO的配置保持一致 */
+    HI_U8                   u8DownSampleParm;    /**<PCM parameter of dowmsample,default 0*//**CNcomment:PCM音频向下downsample采样率的参数，默认为0 */
+    
+    HI_UNF_BIT_DEPTH_E      enBitDepth;          //目前默认配16bit    /**<the audio bit depth,defualt 16,this parameter consistent with AO config*//**<CNcomment:音频位宽，默认为16,此参数需要与AO的配置保持一致 */
+    HI_U8                   u8I2SCtlVbit;        /**<reserve:config 0,I2S control(0x7A:0x1D)*//**CNcomment:保留，请配置为0, I2S control (0x7A:0x1D) */
+
+//  HI_BOOL                 bEnableAudInfoFrame; /**<Enable flag of Audio InfoFrame,suggestion:enable*//**<CNcomment:是否使能 AUDIO InfoFrame，建议使能 */
 }HDMI_AUDIO_ATTR_S;
 
 /*In order to extern ,so we define struct*/
 typedef struct hiHDMI_VIDEO_ATTR_S
 {
-    HI_UNF_ENC_FMT_E        enVideoFmt; 
-    HI_UNF_HDMI_VIDEO_MODE_E enVidOutMode;
+//	HI_BOOL                 bEnableHdmi;         /**<force to HDMI or DVI,the value must set before HI_UNF_HDMI_Start or behind HI_UNF_HDMI_Stop*//**<CNcomment:是否强制HDMI,否则为DVI.该值必须在 HI_UNF_HDMI_Start之前或者HI_UNF_HDMI_Stop之后设置  */
+//  HI_BOOL                 bEnableVideo;        /**<parameter must set HI_TRUE,or the HDMI diver will force to set HI_TRUE*//**<CNcomment:必须是HI_TRUE, 如果是HI_FALSE:HDMI驱动会强制设置为HI_TRUE */
+    HI_DRV_DISP_FMT_E       enVideoFmt;          /**<video fromat ,the format must consistent with display  config*//**<CNcomment:视频制式,此参数需要与Display配置的制式保持一致 */
+//  HI_UNF_HDMI_VIDEO_MODE_E enVidOutMode;       /**<HDMI output vedio mode VIDEO_MODE_YCBCR,VIDEO_MODE_YCBCR444，VIDEO_MODE_YCBCR422，VIDEO_MODE_RGB444 *//**<CNcomment:HDMI输出视频模式，VIDEO_MODE_YCBCR444，VIDEO_MODE_YCBCR422，VIDEO_MODE_RGB444 */
+//  HI_UNF_HDMI_DEEP_COLOR_E enDeepColorMode;    /**<Deep Color output mode,defualt: HI_UNF_HDMI_DEEP_COLOR_24BIT *//**<CNcomment:DeepColor输出模式, 默认为HI_UNF_HDMI_DEEP_COLOR_24BIT */
+//  HI_BOOL                 bxvYCCMode;          /**<the xvYCC output mode,default:HI_FALSE*//**<CNcomment:< xvYCC输出模式，默认为HI_FALSE */
+
+//  HI_BOOL                 bEnableAviInfoFrame; /**<Enable flag of AVI InfoFrame,suggestion:enable *//**<CNcomment:是否使能 AVI InfoFrame，建议使能 */
+//  HI_BOOL                 bEnableSpdInfoFrame; /**<Enable flag of SPD info frame,suggestion:disable*//**<CNcomment:是否使能 SPD InfoFrame， 建议关闭 */
+//  HI_BOOL                 bEnableMpegInfoFrame;/**<Enable flag of MPEG info frame,suggestion:disable*//**<CNcomment:是否使能 MPEG InfoFrame， 建议关闭 */
+
+    HI_BOOL                 b3DEnable;           /**<0:disable 3d,1,enable 3d mode*//**<CNcomment:< 0:3D不激活，1:3D模式打开 */
+    HI_U32                  u83DParam;           /**<3D Parameter,defualt HI_FALSE*//**<CNcomment:< 3D Parameter, 默认为HI_FALSE */
+
+//  HI_U32                  bDebugFlag;          /**<the flag of hdmi dubug,suggestion:disable*//**<CNcomment:< 是否使能 打开hdmi内部debug信息， 建议关闭 */
+//  HI_BOOL                 bHDCPEnable;         /**<0:HDCP disable mode,1:eable HDCP mode*//**<CNcomment:< 0:HDCP不激活，1:HDCP模式打开 */
 }HDMI_VIDEO_ATTR_S;
 
-#else
+/*In order to extern ,so we define struct*/
+typedef struct hiHDMI_APP_ATTR_S
+{
+	HI_BOOL                 bEnableHdmi;         /**<force to HDMI or DVI,the value must set before HI_UNF_HDMI_Start or behind HI_UNF_HDMI_Stop*//**<CNcomment:是否强制HDMI,否则为DVI.该值必须在 HI_UNF_HDMI_Start之前或者HI_UNF_HDMI_Stop之后设置  */
+    HI_BOOL                 bEnableVideo;        /**<parameter must set HI_TRUE,or the HDMI diver will force to set HI_TRUE*//**<CNcomment:必须是HI_TRUE, 如果是HI_FALSE:HDMI驱动会强制设置为HI_TRUE */
+    HI_BOOL                 bEnableAudio;        /**<Enable flag of Audio*//**CNcomment:是否Enable音频 */
+
+    HI_UNF_HDMI_VIDEO_MODE_E enVidOutMode;       /**<HDMI output vedio mode VIDEO_MODE_YCBCR,VIDEO_MODE_YCBCR444，VIDEO_MODE_YCBCR422，VIDEO_MODE_RGB444 *//**<CNcomment:HDMI输出视频模式，VIDEO_MODE_YCBCR444，VIDEO_MODE_YCBCR422，VIDEO_MODE_RGB444 */
+    HI_UNF_HDMI_DEEP_COLOR_E enDeepColorMode;    /**<Deep Color output mode,defualt: HI_UNF_HDMI_DEEP_COLOR_24BIT *//**<CNcomment:DeepColor输出模式, 默认为HI_UNF_HDMI_DEEP_COLOR_24BIT */
+    HI_BOOL                 bxvYCCMode;          /**<the xvYCC output mode,default:HI_FALSE*//**<CNcomment:< xvYCC输出模式，默认为HI_FALSE */
+
+    HI_BOOL                 bEnableAviInfoFrame; /**<Enable flag of AVI InfoFrame,suggestion:enable *//**<CNcomment:是否使能 AVI InfoFrame，建议使能 */
+    HI_BOOL                 bEnableSpdInfoFrame; /**<Enable flag of SPD info frame,suggestion:disable*//**<CNcomment:是否使能 SPD InfoFrame， 建议关闭 */
+    HI_BOOL                 bEnableMpegInfoFrame;/**<Enable flag of MPEG info frame,suggestion:disable*//**<CNcomment:是否使能 MPEG InfoFrame， 建议关闭 */
+    HI_BOOL                 bEnableAudInfoFrame; /**<Enable flag of Audio InfoFrame,suggestion:enable*//**<CNcomment:是否使能 AUDIO InfoFrame，建议使能 */
+
+    HI_U32                  bDebugFlag;          /**<the flag of hdmi dubug,suggestion:disable*//**<CNcomment:< 是否使能 打开hdmi内部debug信息， 建议关闭 */
+    HI_BOOL                 bHDCPEnable;         /**<0:HDCP disable mode,1:eable HDCP mode*//**<CNcomment:< 0:HDCP不激活，1:HDCP模式打开 */
+}HDMI_APP_ATTR_S;
+
+
+
 /*hdmi struct */
 typedef struct hiHDMI_ATTR_S
 {
-	HI_UNF_HDMI_ATTR_S 		stAttr;
-	HDMI_AUDIOINTERFACE_E  enSoundIntf;
+	HDMI_AUDIO_ATTR_S  stAudioAttr;
+    HDMI_VIDEO_ATTR_S  stVideoAttr;
+    HDMI_APP_ATTR_S    stAppAttr;
 }HDMI_ATTR_S;
-
-typedef struct hiHDMI_AUDIO_ATTR_S
-{
-	HDMI_AUDIOINTERFACE_E   enSoundIntf;
-	HI_UNF_SAMPLE_RATE_E 	enSampleRate;
-	HI_U32 					u32Channels;
-}HDMI_AUDIO_ATTR_S;
 
 typedef struct hiHDMI_AUDIO_CAPABILITY_S
 {
@@ -120,282 +142,22 @@ typedef struct hiHDMI_AUDIO_CAPABILITY_S
 }HDMI_AUDIO_CAPABILITY_S;
 
 
-#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
 
+HI_S32  HI_DRV_HDMI_Init(HI_VOID);
+HI_VOID  HI_DRV_HDMI_Deinit(HI_VOID);
+HI_S32 HI_DRV_HDMI_Open(HI_UNF_HDMI_ID_E enHdmi);
+HI_S32 HI_DRV_HDMI_Close(HI_UNF_HDMI_ID_E enHdmi);
 
-/*
-** HDMI IOCTL Data Structure
-*/
-typedef struct hiHDMI_OPEN_S
-{
-	HI_UNF_HDMI_ID_E                  enHdmi;
-    HI_UNF_HDMI_DEFAULT_ACTION_E      enDefaultMode;
-    HI_U32         u32ProcID;
-}HDMI_OPEN_S;
+HI_S32 HI_DRV_HDMI_PlayStus(HI_UNF_HDMI_ID_E enHdmi, HI_U32 *pu32Stutus);
+HI_S32 HI_DRV_AO_HDMI_GetAttr(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
+HI_S32 HI_DRV_HDMI_GetSinkCapability(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_SINK_CAPABILITY_S *pstSinkCap);
+HI_S32 HI_DRV_HDMI_GetAudioCapability(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_CAPABILITY_S *pstAudCap);
+HI_S32 HI_DRV_HDMI_AudioChange(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
 
-typedef struct hiHDMI_DEINIT_S
-{
-    HI_U32                          NoUsed;
-}HDMI_DEINIT_S;
+HI_S32 HI_DRV_HDMI_PreFormat(HI_UNF_HDMI_ID_E enHdmi, HI_DRV_DISP_FMT_E enEncodingFormat);
+HI_S32 HI_DRV_HDMI_SetFormat(HI_UNF_HDMI_ID_E enHdmi, HI_DRV_DISP_FMT_E enFmt, HI_DRV_DISP_STEREO_E enStereo);
+//HI_S32 HI_DRV_HDMI_Set3DMode(HI_UNF_HDMI_ID_E enHdmi, HI_BOOL b3DEnable,HI_U8 u83Dmode);
 
-typedef struct hiHDMI_INIT_S
-{
-    HI_U32                          NoUsed;
-}HDMI_INIT_S;
-
-typedef struct hiHDMI_COLSE_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_U32                          NoUsed;
-}HDMI_CLOSE_S;
-
-typedef struct hiHDMI_START_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_U32                          NoUsed;
-}HDMI_START_S;
-
-typedef struct hiHDMI_STOP_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_U32                          NoUsed;
-}HDMI_STOP_S;
-
-typedef struct hiHDMI_POLL_EVENT_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_UNF_HDMI_EVENT_TYPE_E        Event;
-    HI_U32                          u32ProcID;
-}HDMI_POLL_EVENT_S;
-
-typedef struct hiHDMI_SINK_CAPABILITY_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_UNF_HDMI_SINK_CAPABILITY_S   SinkCap;
-}HDMI_SINK_CAPABILITY_S;
-
-typedef struct hiHDMI_PORT_ATTR_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HDMI_ATTR_S                     stHDMIAttr;
-}HDMI_PORT_ATTR_S;
-
-typedef struct hiHDMI_INFORFRAME_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_UNF_HDMI_INFOFRAME_TYPE_E    enInfoFrameType;
-    HI_UNF_HDMI_INFOFRAME_S         InfoFrame;
-}HDMI_INFORFRAME_S;
-
-typedef struct hiHDMI_AVMUTE_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_U32                          AVMuteEnable;
-}HDMI_AVMUTE_S;
-
-typedef struct hiHDMI_VIDEOTIMING_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_U32                          VideoTiming;
-}HDMI_VIDEOTIMING_S;
-
-typedef struct hiHDMI_PREVIDEOTIMING_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_U32                          VideoTiming;
-}HDMI_PREVIDEOTIMING_S;
-
-typedef struct hiHDMI_DEEPCOLOR_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_UNF_HDMI_DEEP_COLOR_E        enDeepColor;
-}HDMI_DEEPCOLORC_S;
-
-typedef struct hiHDMI_SET_XVYCC_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_U32                          xvYCCEnable;
-}HDMI_SET_XVYCC_S;
-
-typedef struct hiHDMI_CEC_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_UNF_HDMI_CEC_CMD_S           CECCmd;
-    HI_U32                          timeout;
-}HDMI_CEC_S;
-
-
-typedef struct
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_UNF_HDMI_CEC_STATUS_S        stStatus;
-}HDMI_CEC_STATUS;
-
-typedef struct hiHDMI_EDID_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_U8                           u8EdidValid;
-    HI_U32                          u32Edidlength;
-    HI_U8                           u8Edid[512];
-}HDMI_EDID_S;
-
-typedef struct hiHDMI_PLAYSTAUS_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-    HI_U32                          u32PlayStaus;
-}HDMI_PLAYSTAUS_S;
-
-typedef struct hiHDMI_CEC_ENABLE_S
-{
-    HI_U32                          NoUsed;
-}HDMI_CEC_ENABlE_S;
-
-typedef struct hiHDMI_CEC_DISABLE_S
-{
-    HI_U32                          NoUsed;
-}HDMI_CEC_DISABLE_S;
-
-typedef struct hiHDMI_REGCALLBACKFUNC_S
-{
-    HI_UNF_HDMI_ID_E                enHdmi;
-	HI_U32							u32CallBackAddr;
-}HDMI_REGCALLBACKFUNC_S;
-
-typedef struct hiHDMI_LOADKEY_S
-{
-	HI_UNF_HDMI_ID_E               enHdmi;
-	HI_UNF_HDMI_LOAD_KEY_S         stLoadKey;
-}HDMI_LOADKEY_S;
-
-typedef struct hiHDMI_GETPROCID_S
-{
-	HI_UNF_HDMI_ID_E               enHdmi;
-	HI_U32         u32ProcID;
-}HDMI_GET_PROCID_S;
-
-enum hiIOCTL_HDMI_E
-{
-    IOCTL_HDMI_INIT = 0X01,
-    IOCTL_HDMI_DEINIT,
-    IOCTL_HDMI_OPEN,
-    IOCTL_HDMI_CLOSE,
-    IOCTL_HDMI_START,
-    IOCTL_HDMI_STOP,
-    IOCTL_HDMI_SINK_CAPABILITY,
-    IOCTL_HDMI_POLL_EVENT,
-    IOCTL_HDMI_GET_ATTR,
-    IOCTL_HDMI_SET_ATTR,
-    IOCTL_HDMI_GET_INFORFRAME,
-    IOCTL_HDMI_SET_INFORFRAME,
-    IOCTL_HDMI_AVMUTE,
-    IOCTL_HDMI_VIDEO_TIMING,
-    IOCTL_HDMI_GET_DEEPCOLOR,
-    IOCTL_HDMI_SET_DEEPCOLOR,
-    IOCTL_HDMI_XVYCC,
-    IOCTL_HDMI_SET_CEC,
-    IOCTL_HDMI_GET_CEC,
-    IOCTL_HDMI_CECSTATUS,
-    IOCTL_HDMI_PRE_VIDEO_TIMING,
-    IOCTL_HDMI_FORCE_GET_EDID,
-    IOCTL_HDMI_GET_HDMI_PLAYSTAUS,
-    IOCTL_HDMI_CEC_ENABLE,
-    IOCTL_HDMI_CEC_DISABLE,
-    IOCTL_HDMI_REG_CALLBACK_FUNC,
-    IOCTL_HDMI_LOADKEY,
-    IOCTL_HDMI_GET_PROCID,
-    IOCTL_HDMI_RELEASE_PROCID,
-    IOCTL_HDMI_MAX,
-};
-
-/*
-**IOCTRL Between User/Kernel Level
-*/
-#define CMD_HDMI_INIT                _IOWR(HI_ID_HDMI, IOCTL_HDMI_INIT,           HDMI_INIT_S)
-#define CMD_HDMI_DEINIT              _IOWR(HI_ID_HDMI, IOCTL_HDMI_DEINIT,         HDMI_DEINIT_S)
-#define CMD_HDMI_OPEN                _IOWR(HI_ID_HDMI, IOCTL_HDMI_OPEN,           HDMI_OPEN_S)
-#define CMD_HDMI_CLOSE               _IOWR(HI_ID_HDMI, IOCTL_HDMI_CLOSE,          HDMI_CLOSE_S)
-#define CMD_HDMI_START               _IOWR(HI_ID_HDMI, IOCTL_HDMI_START,          HDMI_START_S)
-#define CMD_HDMI_STOP                _IOWR(HI_ID_HDMI, IOCTL_HDMI_STOP,           HDMI_STOP_S)
-#define CMD_HDMI_SINK_CAPABILITY     _IOWR(HI_ID_HDMI, IOCTL_HDMI_SINK_CAPABILITY,HDMI_SINK_CAPABILITY_S)
-#define CMD_HDMI_POLL_EVENT          _IOWR(HI_ID_HDMI, IOCTL_HDMI_POLL_EVENT,     HDMI_POLL_EVENT_S)
-#define CMD_HDMI_GET_ATTR            _IOWR(HI_ID_HDMI, IOCTL_HDMI_GET_ATTR,       HDMI_PORT_ATTR_S)
-#define CMD_HDMI_SET_ATTR            _IOWR(HI_ID_HDMI, IOCTL_HDMI_SET_ATTR,       HDMI_PORT_ATTR_S)
-#define CMD_HDMI_GET_INFORFRAME      _IOWR(HI_ID_HDMI, IOCTL_HDMI_GET_INFORFRAME, HDMI_INFORFRAME_S)
-#define CMD_HDMI_SET_INFORFRAME      _IOWR(HI_ID_HDMI, IOCTL_HDMI_SET_INFORFRAME, HDMI_INFORFRAME_S)
-#define CMD_HDMI_SET_AVMUTE          _IOWR(HI_ID_HDMI, IOCTL_HDMI_AVMUTE,         HDMI_AVMUTE_S)
-#define CMD_HDMI_VIDEO_TIMING        _IOWR(HI_ID_HDMI, IOCTL_HDMI_VIDEO_TIMING,   HDMI_VIDEOTIMING_S)
-#define CMD_HDMI_GET_DEEPCOLOR       _IOWR(HI_ID_HDMI, IOCTL_HDMI_GET_DEEPCOLOR,  HDMI_DEEPCOLORC_S)
-#define CMD_HDMI_SET_DEEPCOLOR       _IOWR(HI_ID_HDMI, IOCTL_HDMI_SET_DEEPCOLOR,  HDMI_DEEPCOLORC_S)
-#define CMD_HDMI_SET_XVYCC           _IOWR(HI_ID_HDMI, IOCTL_HDMI_XVYCC,          HDMI_SET_XVYCC_S)
-#define CMD_HDMI_GET_CEC             _IOWR(HI_ID_HDMI, IOCTL_HDMI_GET_CEC,        HDMI_CEC_S)
-#define CMD_HDMI_SET_CEC             _IOWR(HI_ID_HDMI, IOCTL_HDMI_SET_CEC,        HDMI_CEC_S)
-#define CMD_HDMI_CECSTATUS           _IOWR(HI_ID_HDMI, IOCTL_HDMI_CECSTATUS,      HDMI_CEC_STATUS)
-#define CMD_HDMI_PREVTIMING          _IOWR(HI_ID_HDMI, IOCTL_HDMI_PRE_VIDEO_TIMING,    HDMI_PREVIDEOTIMING_S)
-#define CMD_HDMI_FORCE_GET_EDID      _IOWR(HI_ID_HDMI, IOCTL_HDMI_FORCE_GET_EDID,      HDMI_EDID_S) 
-#define CMD_HDMI_GET_HDMI_PLAYSTAUS  _IOWR(HI_ID_HDMI, IOCTL_HDMI_GET_HDMI_PLAYSTAUS,  HDMI_PLAYSTAUS_S) 
-#define CMD_HDMI_CEC_ENABLE          _IOWR(HI_ID_HDMI, IOCTL_HDMI_CEC_ENABLE,     HDMI_CEC_ENABlE_S) 
-#define CMD_HDMI_CEC_DISABLE         _IOWR(HI_ID_HDMI, IOCTL_HDMI_CEC_DISABLE,    HDMI_CEC_DISABLE_S) 
-#define CMD_HDMI_REG_CALLBACK_FUNC   _IOWR(HI_ID_HDMI, IOCTL_HDMI_REG_CALLBACK_FUNC, HDMI_REGCALLBACKFUNC_S) 
-#define CMD_HDMI_LOADKEY             _IOWR(HI_ID_HDMI, IOCTL_HDMI_LOADKEY, HDMI_LOADKEY_S)
-#define CMD_HDMI_GET_PROCID          _IOWR(HI_ID_HDMI, IOCTL_HDMI_GET_PROCID, HDMI_GET_PROCID_S)
-#define CMD_HDMI_RELEASE_PROCID      _IOWR(HI_ID_HDMI, IOCTL_HDMI_RELEASE_PROCID, HDMI_GET_PROCID_S)
-
-
-typedef struct {
-
-    HI_U8 Bus;
-    HI_U8 SlaveAddr;
-    HI_U8 Flags;
-    HI_U8 NBytes;
-    HI_U8 RegAddrL;
-    HI_U8 RegAddrH;
-} I2CShortCommandType;
-
-typedef struct {
-    HI_U8 SlaveAddr;
-    HI_U8 Offset;
-    HI_U8 RegAddr;
-    HI_U8 NBytesLSB;
-    HI_U8 NBytesMSB;
-    HI_U8 Dummy;
-    HI_U8 Cmd;
-    HI_U8 * PData;
-    HI_U8 Data[6];
-} MDDCType;
-
-
-
-#define FLG_SHORT 0x01 // Used for Ri Short Read
-#define FLG_NOSTOP 0x02 // Don't release IIC Bus
-#define FLG_CONTD 0x04 // Continued from previous operation
-
-//#define IIC_CAPTURED 0xF0
-//#define NO_ACK_FROM_IIC_DEV 0xF1
-//#define MDDC_IIC_CAPTURED 0xF2
-//#define MDDC_NO_ACK_FROM_IIC_DEV 0xF3
-
-
-#define _IIC_CAPTURED  1
-#define _IIC_NOACK     2
-#define _MDDC_CAPTURED 3
-#define _MDDC_NOACK    4
-#define _MDDC_FIFO_FULL  5
-#define IIC_OK 0
-
-HI_S32 DRV_HDMI_WriteRegister(HI_U32 u32RegAddr, HI_U32 u32Value);
-HI_S32 DRV_HDMI_ReadRegister(HI_U32 u32RegAddr, HI_U32 *pu32Value);
-
-HI_U8 DRV_ReadByte_8BA(HI_U8 Bus, HI_U8 SlaveAddr, HI_U8 RegAddr);
-void DRV_WriteByte_8BA(HI_U8 Bus, HI_U8 SlaveAddr, HI_U8 RegAddr, HI_U8 Data);
-HI_U16 DRV_ReadWord_8BA(HI_U8 Bus, HI_U8 SlaveAddr, HI_U8 RegAddr);
-HI_U8 DRV_ReadByte_16BA(HI_U8 Bus, HI_U8 SlaveAddr, HI_U16 RegAddr);
-HI_U16 DRV_ReadWord_16BA(HI_U8 Bus, HI_U8 SlaveAddr, HI_U16 RegAddr);
-void DRV_WriteWord_8BA(HI_U8 Bus, HI_U8 SlaveAddr, HI_U8 RegAddr, HI_U16 Data);
-void DRV_WriteWord_16BA(HI_U8 Bus, HI_U8 SlaveAddr, HI_U16 RegAddr, HI_U16 Data);
-void DRV_WriteByte_16BA(HI_U8 Bus, HI_U8 SlaveAddr, HI_U16 RegAddr, HI_U8 Data);
-HI_S32 DRV_BlockRead_8BAS(I2CShortCommandType * I2CCommand, HI_U8 * Data);
-HI_U8 DRV_BlockWrite_8BAS( I2CShortCommandType * I2CCommand, HI_U8 * Data );
-HI_U8 DRV_HDMI_HWReset(HI_U32 u32Enable);
 
 #ifdef __cplusplus
 #if __cplusplus

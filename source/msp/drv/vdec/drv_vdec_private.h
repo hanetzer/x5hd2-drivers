@@ -3,15 +3,17 @@
 
 #include "hi_type.h"
 #include "hi_module.h"
-#include "drv_sys_ext.h"
-#include "drv_mmz_ext.h"
-#include "drv_mem_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_mem.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_module.h"
 #include "drv_vdec_buf_mng.h"
 #include "hi_unf_avplay.h"
 #include "hi_drv_video.h"
+#include "hi_drv_vdec.h"
 #ifdef __cplusplus
 #if __cplusplus
 extern "C"{
@@ -26,6 +28,7 @@ extern "C"{
 #define VDEC_UDC_MAX_NUM 16
 //add by l00225186
 #define VDEC_MAX_PORT_NUM 3
+#define VDEC_MAX_PORT_FRAME 20
 #define HI_KMALLOC_VDEC(size)           HI_KMALLOC(HI_ID_VDEC, size, GFP_KERNEL)
 #define HI_KMALLOC_ATOMIC_VDEC(size)    HI_KMALLOC(HI_ID_VDEC, size, GFP_ATOMIC)
 #define HI_KFREE_VDEC(addr)             HI_KFREE(HI_ID_VDEC, addr)
@@ -38,12 +41,20 @@ typedef enum tagVDEC_CHAN_STATE_E{
 	VDEC_CHAN_STATE_INVALID
 }VDEC_CHAN_STATE_E;
 
+typedef enum tagVDEC_FRAME_FORMAT_E{
+	VDEC_I_FRAME = 0,
+	VDEC_P_FRAME,
+	VDEC_B_FRAME,
+	VDEC_FRAME_BUTT
+}VDEC_FRAME_FORMAT_E;
+
 typedef struct tagVDEC_CHAN_STATINFO_S{
 	HI_U32 u32TotalVdecOutFrame;    /*the number of total output frames*/
     HI_U32 u32TotalVdecParseIFrame; /*the number of total I frames decoded from stream*/
 	HI_U32 u32TotalVdecInByte;      /*total bytes of the input stream*/
 	HI_U32 u32TotalVdecHoldByte;    /*bytes of stream in VDEC_Frimware buffer*/
 	HI_U32 u32TotalVdecTime;        /*total run time of the vdec channel*/
+    HI_U32 u32CalcBpsVdecTime;      /*run time of the vdec channel, can be reset, used by calculate bps*/
 	HI_U32 u32AvrgVdecFps;          /*the integer part of average output frame rate*/
 	HI_U32 u32AvrgVdecFpsLittle;    /*the decimal part of average output frame rate*/
 	HI_U32 u32AvrgVdecInBps;        /*the average stream input bit rate(bps)*/
@@ -114,14 +125,41 @@ typedef struct
 	BUFMNG_VPSS_IRQ_LOCK_S stAvailableListLock;
 	BUFMNG_VPSS_IRQ_LOCK_S stUnAvailableListLock;
 }BUFMNG_VPSS_INST_S;
+
+typedef struct tagVDEC_PORT_FRAME_LIST_NODE_S
+{
+	HI_DRV_VIDEO_FRAME_S stPortOutFrame;
+	struct list_head node;
+}VDEC_PORT_FRAME_LIST_NODE_S;
+
+typedef struct tagVDEC_PORT_FRAME_LIST_LOCK_S
+{
+    spinlock_t     irq_lock;
+    unsigned long  irq_lockflags;
+    int            isInit;
+} VDEC_PORT_FRAME_LIST_LOCK_S;
+
+typedef struct tagVDEC_PORT_LIST_S
+{
+    struct list_head stVdecPortFrameList;
+	VDEC_PORT_FRAME_LIST_LOCK_S stPortFrameListLock;
+}VDEC_PORT_LIST_S;
+
 typedef struct
 {
 	HI_HANDLE           hPort;
     HI_BOOL             bMainPort; /*0:SlavePort 1:MainPort*/
+	VDEC_PORT_TYPE_E    enPortType;
 	HI_BOOL             bEnable;/*0:enable 1:disable*/
     BUFMNG_VPSS_INST_S  stBufVpssInst;
 	HI_DRV_VPSS_BUFFER_TYPE_E bufferType;
-	
+	VDEC_PORT_LIST_S    stPortList;
+	VDEC_PORT_FRAME_LIST_NODE_S astPortTmpList[VDEC_MAX_PORT_FRAME];
+	HI_S32 s32PortTmpListPos;
+    HI_S32 s32GetFirstVpssFrameFlag;
+    HI_S32 s32RecvNewFrame;
+    HI_S32 s32PortLastFrameGopNum;
+	HI_U32 u32LastFrameIndex;
 }VDEC_VPSS_PORT_PARAM_S;
 
 typedef struct tagVDEC_CHANNEL_S
@@ -146,12 +184,16 @@ typedef struct tagVDEC_CHANNEL_S
    // HI_UNF_VIDEO_FRAME_INFO_S stLastFrm;
    //chang by l00225186
     HI_DRV_VIDEO_FRAME_S    stLastFrm;
+	HI_U32                  u32UserSetAspectWidth;
+	HI_U32                  u32UserSetAspectHeight;
+    HI_U32                  u32DecodeAspectWidth;
+	HI_U32                  u32DecodeAspectHeight;
     HI_U32                  u32LastFrmId;
     HI_U32                  u32LastFrmTryTimes;
     HI_U32                  u32EndFrmFlag;
     HI_BOOL                 bEndOfStrm;
     HI_UNF_ENC_FMT_E        enDisplayNorm;
-
+	HI_UNF_VIDEO_FRAME_PACKING_TYPE_E eFramePackType;
     /* Last display frame info */
     HI_DRV_VIDEO_FRAME_S stLastDispFrameInfo;////////123
     
@@ -218,8 +260,14 @@ typedef struct tagVDEC_CHANNEL_S
     HI_U8                   u8ResolutionChange;
 
     HI_BOOL                 bIsIFrameDec;
+	HI_BOOL                 bUnSupportStream;
     
 }VDEC_CHANNEL_S;
+
+typedef struct tagVDEC_CONTROLINFO_S{
+    HI_S32  u32BackwardOptimizeFlag;  /*Backward optimize flag, 1 means optimize the backward fast play performance*/
+    HI_S32  u32DispOptimizeFlag;      /*Display optimize flag, 1 means optimize the VO display performance*/
+}VDEC_CONTROLINFO_S;
 
 typedef struct tagVDEC_VPSSCHANNEL_S
 {
@@ -227,11 +275,19 @@ typedef struct tagVDEC_VPSSCHANNEL_S
 	HI_HANDLE hVpss;
     HI_BOOL bUsed;
 	HI_UNF_VIDEO_FRAME_PACKING_TYPE_E eFramePackType;
-	//add by l00225186
 	VDEC_VPSS_PORT_PARAM_S       stPort[VDEC_MAX_PORT_NUM];
+	VDEC_CONTROLINFO_S stControlInfo;
+	HI_S32 s32Speed;
+	HI_S32 s32GetFirstIFrameFlag;
+	HI_S32 s32ImageDistance;
+	HI_S32 s32GetFirstVpssFrameFlag;
+	VDEC_FRAME_FORMAT_E eLastFrameFormat;
+	HI_S32 s32LastFrameGopNum;
 }VDEC_VPSSCHANNEL_S;
 
 typedef struct tagVDEC_REGISTER_PARAM_S{
+	DRV_PROC_READ_FN  pfnCtrlReadProc;
+	DRV_PROC_WRITE_FN pfnCtrlWriteProc;
 	DRV_PROC_READ_FN  pfnReadProc;
 	DRV_PROC_WRITE_FN pfnWriteProc;
 }VDEC_REGISTER_PARAM_S;
@@ -253,7 +309,7 @@ HI_VOID VDEC_DRV_Exit(HI_VOID);
 HI_S32 VDEC_DRV_Open(struct inode *inode,  struct file  *filp);
 HI_S32 VDEC_DRV_Release(struct inode *inode,  struct file  *filp);
 HI_S32 VDEC_Ioctl(struct inode *inode,  struct file  *filp,  unsigned int  cmd,  void *arg);
-
+HI_S32 VDEC_FindVpssHandleByVdecHandle(HI_HANDLE hVdec, HI_HANDLE *phVpss);
 #ifdef __cplusplus
 #if __cplusplus
 }

@@ -231,7 +231,7 @@ HI_S32 HI_UNF_SND_DeInit(HI_VOID);
 \param[in] enSound     ID of an AO device CNcomment:ÒôÆµÊä³öÉè±¸ºÅ CNend
 \param[out] pstAttr     Audio attributes CNcomment:ÒôÆµÊôĞÔ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_SND_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\retval ::HI_ERR_AO_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
 \retval ::HI_ERR_AO_NULL_PTR           The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \see \n
 N/A
@@ -246,9 +246,9 @@ N/A
 \param[in] pstAttr     Attribute of an AO device CNcomment:ÒôÆµÊä³öÉè±¸²ÎÊı CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
 \retval ::HI_FAILURE FAILURE CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_AO_CREATE_FAIL	    The device fails to be started. CNcomment:´ò¿ªÉè±¸Ê§°Ü CNend
 \retval ::HI_ERR_AO_INVALID_PARA	    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_SND_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\retval ::HI_ERR_AO_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\retval ::HI_ERR_AO_NULL_PTR               The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \see \n
 N/A
 */
@@ -260,7 +260,7 @@ HI_S32 HI_UNF_SND_Open(HI_UNF_SND_E enSound, const HI_UNF_SND_ATTR_S *pstAttr);
 An instance cannot be destroyed repeatedly. CNcomment:²»Ö§³ÖÖØ¸´Ïú»Ù CNend
 \param[in] enSound     ID of an AO device CNcomment:ÒôÆµÊä³öÉè±¸ºÅ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_SND_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\retval ::HI_ERR_AO_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
 \see \n
 N/A
 */
@@ -276,9 +276,9 @@ N/A
 \param[in] bMute
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
 \retval ::HI_FAILURE FAILURE CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_INVALID_PARA	    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_SND_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\retval ::HI_ERR_AO_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
 \see \n
 N/A
 */
@@ -293,10 +293,10 @@ N/A
 \param[out] pbMute CNcomment: 
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
 \retval ::HI_FAILURE FAILURE CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_NULL_PTR           The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \retval ::HI_ERR_AO_INVALID_PARA	    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_SND_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\retval ::HI_ERR_AO_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
 \see \n
 N/A
 */
@@ -310,12 +310,27 @@ HI_S32   HI_UNF_SND_GetMute(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutP
 \param[in] enHdmiMode HDMI mode CNcomment:HDMIÄ£Ê½CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
 \retval ::HI_FAILURE FAILURE CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_SND_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
 \see \n
 N/A
 */
 HI_S32   HI_UNF_SND_SetHdmiMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_HDMI_MODE_E enHdmiMode);
+
+/** 
+\brief Gets the output mode of the HDMI.
+\attention \n
+\param[in] enSound CNcomment:ÒôÆµÊä³öÉè±¸ºÅ  CNend
+\param[in] enOutPort  Audio OutputPort   CNcomment:ÒôÆµÊä³ö¶Ë¿Ú CNend
+\param[out] Pointer to the obtained HDMI mode CNcomment:»ñÈ¡µ½µÄHDMIÄ£Ê½µÄÖ¸ÕëCNend
+\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
+\retval ::HI_FAILURE FAILURE CNcomment:Ê§°Ü CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\see \n
+N/A
+*/
+HI_S32   HI_UNF_SND_GetHdmiMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_HDMI_MODE_E *penHdmiMode);
 
 /** 
 \brief Sets the output mode of the SPDIF(PCM/RAW).
@@ -325,12 +340,28 @@ HI_S32   HI_UNF_SND_SetHdmiMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E en
 \param[in] enHdmiMode SPDIF mode CNcomment:SPDIFÄ£Ê½CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
 \retval ::HI_FAILURE FAILURE CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_SND_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_INVALID_ID    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
 \see \n
 N/A
 */                                               
 HI_S32   HI_UNF_SND_SetSpdifMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_SPDIF_MODE_E enSpdifMode);
+
+/** 
+\brief Gets the output mode of the SPDIF.
+\attention \n
+\param[in] enSound CNcomment:ÒôÆµÊä³öÉè±¸ºÅ  CNend
+\param[in] enOutPort  Audio OutputPort   CNcomment:ÒôÆµÊä³ö¶Ë¿Ú CNend
+\param[out] Pointer to the obtained SPDIF mode CNcomment:»ñÈ¡µ½µÄSPDIFÄ£Ê½µÄÖ¸ÕëCNend
+\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
+\retval ::HI_FAILURE FAILURE CNcomment:Ê§°Ü CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_INVALID_ID    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\retval ::HI_ERR_AO_NULL_PTR               The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
+\see \n
+N/A
+*/                                               
+HI_S32   HI_UNF_SND_GetSpdifMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_SPDIF_MODE_E *penSpdifMode);
 
 
 /**
@@ -342,9 +373,10 @@ If s32Gain is set to a value greater than 100 or 0dB, then return failure. CNcom
  \param[in] pstGain     Volume value CNcomment:ÉèÖÃµÄÒôÁ¿Öµ CNend
  \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
  \retval ::HI_FAILURE FAILURE CNcomment:Ê§°Ü CNend
- \retval ::HI_ERR_AO_DEV_NOT_OPEN	    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+ \retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
  \retval ::HI_ERR_AO_INVALID_PARA	    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
  \retval ::HI_ERR_SND_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+ \retval ::HI_ERR_AO_NULL_PTR               The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
  \see \n
 N/A
  */
@@ -359,9 +391,10 @@ The default linear volume value is 100 and abslute volume is 0dB. CNcomment:²éÑ¯
  \param[out] pstGain    Pointer to the obtained volume value CNcomment:Ö¸ÕëÀàĞÍ£¬»ñÈ¡µ½µÄÒôÁ¿Öµ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
 \retval ::HI_FAILURE FAILURE CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_INVALID_PARA	    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_SND_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\retval ::HI_ERR_AO_INVALID_ID	    The parameter enSound is invalid. CNcomment:ÎŞĞ§Sound ID CNend
+\retval ::HI_ERR_AO_NULL_PTR               The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \see \n
 N/A
 */
@@ -377,7 +410,7 @@ CNcomment:Ä¿Ç°Êä³ö²ÉÑùÂÊÄ¬ÈÏÎª48k(Êµ¼ÊÊä³ö²ÉÑùÂÊÎª48K~192K)£¬Ö§³Ö´Ó8Kµ½192KÂëÁ÷Ê
 \param[in] enSound          ID of an AO device CNcomment:ÒôÆµÊä³öÉè±¸ºÅ CNend
 \param[in] enSampleRate    Audio sampling rate. For details, see the description of ::HI_UNF_SAMPLE_RATE_E. CNcomment:ÒôÆµ²ÉÑùÂÊ¡£Çë²Î¼û::HI_UNF_SAMPLE_RATE_E CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_INVALID_PARA	    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
 \see \n
 N/A
@@ -391,7 +424,7 @@ The 48 kHz sampling rate is returned by default. CNcomment:´Ë½Ó¿ÚÄ¬ÈÏ·µ»Ø48kHz²É
 \param[in] enSound           ID of an AO device CNcomment:ÒôÆµÊä³öÉè±¸ºÅ CNend
 \param[out] penSampleRate   Pointer to the type of the audio sampling rate CNcomment:Ö¸ÕëÀàĞÍ£¬ÒôÆµ²ÉÑùÂÊµÄÀàĞÍ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_NULL_PTR           The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \retval ::HI_ERR_AO_INVALID_PARA	    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
 \see \n
@@ -412,7 +445,7 @@ CNcomment:1. Ä¬ÈÏ¹Ø±Õ¸ÃÖÇÄÜÒôÁ¿\n
 \param[in] enOutPort  CNcomment:soundÊä³ö¶Ë¿Ú CNend
 \param[in] bSmartVolume     Smart volume enable, HI_TRUE: enabled; HI_FALSE: disabled CNcomment:ÊÇ·ñ´ò¿ªÖÇÄÜÒôÁ¿¡£HI_TRUE£º´ò¿ª£»HI_FALSE£º¹Ø±Õ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_INVALID_PARA	    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
 \see \n
 N/A
@@ -426,8 +459,9 @@ HI_S32   HI_UNF_SND_SetSmartVolume(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E
 \param[in] enOutPort  CNcomment:soundÊä³ö¶Ë¿Ú CNend
 \param[out] pbSmartVolume     Pointer to the enable status of the smart volume CNcomment:Ö¸ÕëÀàĞÍ£¬ÊÇ·ñ´ò¿ªÖÇÄÜÒôÁ¿ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_INVALID_PARA	    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_NULL_PTR               The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \see \n
 N/A
 */
@@ -441,7 +475,7 @@ N/A
 \param[in] enOutPort   CNcomment:soundÊä³ö¶Ë¿Ú CNend
 \param[in] enMode     Audio track mode. For details, see the description of ::HI_UNF_TRACK_MODE_E. CNcomment:ÒôÆµÉùµÀÄ£Ê½£¬Çë²Î¼û::HI_UNF_TRACK_MODE_E CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_INVALID_PARA	    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
 \see \n
 N/A
@@ -457,9 +491,9 @@ N/A
 \param[out] penMode   Pointer to the AO track mode. For details, see the description of ::HI_UNF_TRACK_MODE_E.
 CNcomment:Ö¸ÕëÀàĞÍ£¬ÒôÆµÉùµÀÄ£Ê½¡£Çë²Î¼û::HI_UNF_TRACK_MODE_E CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	    No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_NULL_PTR           The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
-\retval ::HI_ERR_AO_INVALID_PARA	    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_INVALID_PARA    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
 \see \n
 N/A
 */
@@ -472,8 +506,7 @@ Before calling this API, you must create a player and ensure that the player has
 \param[in] hTrack             Instance handle of an AVPLAY CNcomment:Track ÊµÀı¾ä±ú CNend
 \param[in] hSource           Instance handle of an AVPLAY CNcomment:AV²¥·ÅÆ÷²¥·ÅÊµÀı¾ä±ú CNend  
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	        No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_AO_INVALID_PORT	        The attach type is invalid. CNcomment:ÎŞĞ§°ó¶¨ÀàĞÍ CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_INVALID_PARA	        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
 \see \n
 N/A
@@ -488,8 +521,8 @@ N/A
 \param[in] hTrack             Instance handle of an AVPLAY CNcomment:Track ÊµÀı¾ä±ú CNend 
 \param[in] hSource    Instance handle of an AVPLAY CNcomment:AV²¥·ÅÆ÷²¥·ÅÊµÀı¾ä±ú CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	        No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_AO_INVALID_PARA	        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_INVALID_PARA        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
 \see \n
 N/A
 */
@@ -504,8 +537,9 @@ CNcomment:Á½¸öTrack Êä³öÒôÁ¿µÄ¼ÆËã·½·¨Îª£º£¨ÉèÖÃµÄÒôÁ¿%È¨ÖØ1+ÉèÖÃµÄÒôÁ¿%È¨ÖØ2£©/
 \param[in] hTrack              ID of an AO device CNcomment:ÒôÆµÊä³öTrack CNend
 \param[in] stMixWeightGain   the MixWeight Gain, ranging from 0 to 100. 0: minimum value; 100: maximum value CNcomment:È¨ÖØ£¬·¶Î§Îª0¡«100¡£0£º×îĞ¡Öµ£»100£º×î´óÖµ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	        No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_INVALID_PARA	        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_NULL_PTR           The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \see \n
 N/A
 */
@@ -519,7 +553,7 @@ HI_S32  HI_UNF_SND_SetTrackWeight(HI_HANDLE hTrack, const HI_UNF_SND_GAIN_ATTR_S
 \param[in] hTrack              ID of an AO device CNcomment:ÒôÆµÊä³öTrack CNend
 \param[in] pstMixWeightGain     Pointer to the MixWeight Gain CNcomment:Ö¸ÕëÀàĞÍ£¬È¨ÖØÊôĞÔ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AO_DEV_NOT_OPEN	        No audio device is started. CNcomment:AudioÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
 \retval ::HI_ERR_AO_NULL_PTR               The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \retval ::HI_ERR_AO_INVALID_PARA	        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
 \see \n
@@ -534,6 +568,7 @@ HI_S32   HI_UNF_SND_GetTrackWeight(HI_HANDLE hTrack, HI_UNF_SND_GAIN_ATTR_S *pst
  \param[out] pstAttr     Audio attributes CNcomment:ÒôÆµÊôĞÔ CNend
  \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
  \retval ::HI_FAILURE  Failure  CNcomment:Ê§°Ü CNend
+ \retval ::HI_ERR_AO_NULL_PTR               The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
  \see \n
 N/A
  */
@@ -542,12 +577,16 @@ HI_S32   HI_UNF_SND_GetDefaultTrackAttr(HI_UNF_SND_TRACK_TYPE_E enTrackType, HI_
 /** 
 \brief Create a Track. CNcomment:´´½¨Ò»Â·Track CNend
 \attention \n
+Create 8 output tracks(master/slave track) and 6 virtual tracks at the most. only create 1 master track on every sound. 
+CNcomment:×î¶à¿É´´½¨8Â·Êä³ötrack(master/slave), 6Â·ĞéÄâtrack£¬Ã¿¸ösoundÖ»ÄÜ´´½¨Ò»Â·master track CNend
 \param[in] enSound     ID of an AO device CNcomment:ÒôÆµÊä³öÉè±¸ºÅ CNend
 \param[in] pTrackAttr  Track attributes CNcomment:Ö¸ÕëÀàĞÍ£¬Track  ÊôĞÔ CNend
 \param[out] phTrack   Pointer to the handle of the created Track CNcomment:Ö¸ÕëÀàĞÍ£¬´´½¨µÄTrack ¾ä±ú CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
 \retval ::HI_FAILURE  Failure  CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_SND_INVALID_PARA The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_INVALID_PARA The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_NULL_PTR           The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \see \n
 N/A
 */
@@ -558,8 +597,8 @@ HI_S32   HI_UNF_SND_CreateTrack(HI_UNF_SND_E enSound,const HI_UNF_AUDIOTRACK_ATT
 \attention \n
 \param[in] hTrack   the handle of the Track CNcomment:Track ¾ä±ú CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_SND_INVALID_ID The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_SND_INVALID_PARA The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_INVALID_PARA The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
 \see \n
 N/A
 */
@@ -571,8 +610,10 @@ HI_S32   HI_UNF_SND_DestroyTrack(HI_HANDLE hTrack);
 \param[in] hTrack   the handle of the Track CNcomment:Track ¾ä±ú CNend
 \param[in] stTrackAttr   the attribute of the Track CNcomment:Track ÊôĞÔ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_SND_INVALID_ID	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_SND_INVALID_PARA	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_INVALID_ID The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_INVALID_PARA The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_NULL_PTR           The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \see \n
 N/A
 */
@@ -584,8 +625,10 @@ HI_S32   HI_UNF_SND_SetTrackAttr(HI_HANDLE hTrack, const HI_UNF_AUDIOTRACK_ATTR_
 \param[in] hTrack   the handle of the Track CNcomment:Track ¾ä±ú CNend
 \param[in] pstTrackAttr   the attribute of the Track CNcomment:Track ÊôĞÔ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_SND_INVALID_ID	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_SND_INVALID_PARA	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_INVALID_ID The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_INVALID_PARA The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_NULL_PTR           The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \see \n
 N/A
 */
@@ -597,8 +640,9 @@ HI_S32   HI_UNF_SND_GetTrackAttr(HI_HANDLE hTrack, HI_UNF_AUDIOTRACK_ATTR_S *pst
 \param[in] hTrack   the handle of the Track CNcomment:Track ¾ä±ú CNend
 \param[out] pstAOFrame the audio frame  CNcomment:Track ÒôÆµÖ¡ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_SND_INVALID_ID The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_SND_INVALID_PARA   The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_INVALID_ID The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_INVALID_PARA   The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_NULL_PTR           The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \see \n
 N/A
 */
@@ -610,8 +654,9 @@ HI_S32   HI_UNF_SND_AcquireTrackFrame(HI_HANDLE hTrack, HI_UNF_AO_FRAMEINFO_S *p
 \param[in] hTrack   the handle of the Track CNcomment:Track ¾ä±ú CNend
 \param[in] pstAOFrame the audio frame  CNcomment:Track ÒôÆµÖ¡ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_SND_INVALID_ID	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_SND_INVALID_PARA	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_INVALID_ID	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_INVALID_PARA	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_NULL_PTR           The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
 \see \n
 N/A
 */
@@ -645,8 +690,8 @@ CNcomment:1 Èç¹û·µ»ØHI_ERR_AO_OUT_BUF_FULL£¬ĞèÒªµ÷¶ÈÕß¼ÌĞøËÍÉÏ´ÎÊ§°ÜÊı¾İ£¬²ÅÄÜ±£
 \param[in] hTrack   Track handle CNcomment:Track ¾ä±ú CNend
 \param[out] pstAOFrame   Information about the audio data CNcomment:ÒôÆµÊı¾İĞÅÏ¢ CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_SND_NULL_PTR	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_SND_INVALID_PARA	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_NULL_PTR	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AO_INVALID_PARA	The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
 \retval ::HI_ERR_AO_OUT_BUF_FULL  Data fails to be transmitted because the mixer buffer is full. CNcomment:»ìÒô»º³åÇøÊı¾İÂú£¬ËÍÊı¾İÊ§°Ü CNend
 \see \n
 N/A
@@ -661,10 +706,10 @@ none. CNcomment:ÎŞ
 \param[in] enSound      display channel.CNcomment:²¥·ÅÍ¨Â· CNend
 \param[out] pstAttr      handle of default attr  .CNcomment:ÉèÖÃÄ¬ÈÏÊôĞÔ¾ä±ú CNend
 \retval ::HI_SUCCESS CNcomment: success.³É¹¦ CNend
-\retval ::HI_ERR_SND_DEV_NO_INIT    SND uninitialization.CNcomment:SNDÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_SND_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_SND_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_SND_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+\retval ::HI_ERR_AO_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\retval ::HI_ERR_AO_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
 \see \n
 none.CNcomment:ÎŞ CNend
 */
@@ -678,10 +723,10 @@ none. CNcomment:ÎŞ
 \param[in] pstAttr      pointer of parameter .CNcomment:Ö¸Õë,ÊôĞÔ²ÎÊı CNend
 \param[out] phCast      handle of screen share .CNcomment:ÉùÒô¹²Ïí¾ä±ú CNend
 \retval ::HI_SUCCESS CNcomment: success.³É¹¦ CNend
-\retval ::HI_ERR_SND_DEV_NO_INIT    SND uninitialization.CNcomment:SNDÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_SND_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_SND_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_SND_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+\retval ::HI_ERR_AO_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\retval ::HI_ERR_AO_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
 \see \n
 none.CNcomment:ÎŞ CNend
 */
@@ -693,10 +738,10 @@ HI_S32 HI_UNF_SND_CreateCast(HI_UNF_SND_E enSound, HI_UNF_SND_CAST_ATTR_S *pstAt
 none. CNcomment:ÎŞ CNend
 \param[in] phCast      handle of screen share .CNcomment:ÉùÒô¹²Ïí¾ä±ú CNend
 \retval ::HI_SUCCESS CNcomment: success.³É¹¦ CNend
-\retval ::HI_ERR_SND_DEV_NO_INIT    SND uninitialization.CNcomment:SNDÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_SND_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_SND_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_SND_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+\retval ::HI_ERR_AO_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\retval ::HI_ERR_AO_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
 \see \n
 none.CNcomment:ÎŞ CNend
 */
@@ -709,10 +754,10 @@ none. CNcomment:ÎŞ
 \param[in] phCast      handle of screen share .CNcomment:ÉùÒô¹²Ïí¾ä±ú
 \param[in] bEnable      enable screen share .CNcomment:Ê¹ÄÜÉùÒô¹²Ïí CNend
 \retval ::HI_SUCCESS CNcomment: success.³É¹¦ CNend
-\retval ::HI_ERR_SND_DEV_NO_INIT    SND uninitialization.CNcomment:SNDÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_SND_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_SND_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_SND_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+\retval ::HI_ERR_AO_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\retval ::HI_ERR_AO_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
 \see \n
 none.CNcomment:ÎŞ CNend
 */
@@ -725,10 +770,10 @@ none. CNcomment:ÎŞ CNend
 \param[in] phCast      handle of screen share .CNcomment:ÉùÒô¹²Ïí¾ä±ú CNend
 \param[out] bEnable     flag .CNcomment:±êÖ¾ CNend
 \retval ::HI_SUCCESS CNcomment: success.³É¹¦ CNend
-\retval ::HI_ERR_SND_DEV_NO_INIT    SND uninitialization.CNcomment:SNDÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_SND_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_SND_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_SND_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+\retval ::HI_ERR_AO_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\retval ::HI_ERR_AO_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
 \see \n
 none.CNcomment:ÎŞ CNend
 */
@@ -742,10 +787,11 @@ Cast pcm data format  s32BitPerSample(16), u32Channels(2),bInterleaved(HI_TRUE),
 \param[out] pstCastFrame        frame info.CNcomment:Ö¡ĞÅÏ¢ CNend
 \param[in] u32TimeoutMs         acquire timeout.CNcomment:»ñÈ¡³¬Ê± CNend
 \retval ::HI_SUCCESS CNcomment: success.³É¹¦ CNend
-\retval ::HI_ERR_SND_DEV_NO_INIT    SND uninitialization.CNcomment:SNDÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_SND_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_SND_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_SND_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+\retval ::HI_ERR_V_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\retval ::HI_ERR_AO_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
+\retval ::HI_ERR_AO_CAST_TIMEOUT   no enough data.CNcomment:Êı¾İ²»¹» CNend
 \see \n
 none.CNcomment:ÎŞ CNend
 */
@@ -759,10 +805,10 @@ none. CNcomment:ÎŞ CNend
 \param[in] pstCastFrame     frame info.CNcomment:Ö¡ĞÅÏ¢ CNend
 \param[in] u32TimeoutMs    release timeout.CNcomment:ÊÍ·Å³¬Ê± CNend
 \retval ::HI_SUCCESS CNcomment: success.³É¹¦ CNend
-\retval ::HI_ERR_SND_DEV_NO_INIT    SND uninitialization.CNcomment:SNDÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_SND_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_SND_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_SND_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
+\retval ::HI_ERR_AO_SOUND_NOT_OPEN    Sound device is not opened. CNcomment:SoundÉè±¸Î´´ò¿ª CNend
+\retval ::HI_ERR_AO_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+\retval ::HI_ERR_AO_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\retval ::HI_ERR_AO_INVALID_OPT    invalid operation. CNcomment:²Ù×÷·Ç·¨ CNend
 \see \n
 none.CNcomment:ÎŞ CNend
 */

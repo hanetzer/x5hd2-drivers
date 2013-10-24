@@ -35,25 +35,31 @@ typedef struct hiSYS_CONF_S
 /** Define the chip type. */
 typedef enum hiCHIP_TYPE_E
 {
-    HI_CHIP_TYPE_HI3716M,  /**<HI3716M */
-    HI_CHIP_TYPE_HI3716H,  /**<HI3716H */
-    HI_CHIP_TYPE_HI3716C,  /**<HI3716C */
-    HI_CHIP_TYPE_HI3716CES,  /**<HI3716CES */
+    HI_CHIP_TYPE_HI3716M,
+    HI_CHIP_TYPE_HI3716H,
+    HI_CHIP_TYPE_HI3716C,
+    HI_CHIP_TYPE_HI3716CES,
 
-    HI_CHIP_TYPE_HI3720,  /**<HI3720 */
-    HI_CHIP_TYPE_HI3712,  /**<HI3712 */
-    HI_CHIP_TYPE_HI3715,  /**<HI3715 */
+    HI_CHIP_TYPE_HI3720,
+    HI_CHIP_TYPE_HI3712,
+    HI_CHIP_TYPE_HI3715,
 
+    HI_CHIP_TYPE_HI3718M,
+    HI_CHIP_TYPE_HI3718C,
+    HI_CHIP_TYPE_HI3719M,
+    HI_CHIP_TYPE_HI3719C,
+    HI_CHIP_TYPE_HI3719M_A,
+    
     HI_CHIP_TYPE_BUTT
 }HI_CHIP_TYPE_E;
 
 /** Define the chip version. */
 typedef enum hiCHIP_VERSION_E
 {
-    HI_CHIP_VERSION_V100 = 0x100,  /**< V100  */
-    HI_CHIP_VERSION_V101 = 0x101,  /**< V101  */
-    HI_CHIP_VERSION_V200 = 0x200,  /**< V200  */
-    HI_CHIP_VERSION_V300 = 0x300,  /**< V300  */
+    HI_CHIP_VERSION_V100 = 0x100,
+    HI_CHIP_VERSION_V101 = 0x101,
+    HI_CHIP_VERSION_V200 = 0x200,
+    HI_CHIP_VERSION_V300 = 0x300,
     HI_CHIP_VERSION_BUTT
 }HI_CHIP_VERSION_E;
 
@@ -112,6 +118,7 @@ typedef struct hiPROC_SHOW_BUFFER_S
 {
     HI_U8* pu8Buf;                  /**<Buffer address*/  /**<CNcomment: Buffer地址 */
     HI_U32 u32Size;                 /**<Buffer size*/     /**<CNcomment: Buffer大小 */
+    HI_U32 u32Offset;               /**<Offset*/          /**<CNcomment: 打印偏移地址 */
 }HI_PROC_SHOW_BUFFER_S;
 
 /** Proc show function */
@@ -120,15 +127,15 @@ typedef HI_S32 (* HI_PROC_SHOW_FN)(HI_PROC_SHOW_BUFFER_S * pstBuf, HI_VOID *pPri
 
 /** Proc command function */
 /**CNcomment: Proc控制回调函数 */
-typedef HI_S32 (* HI_PROC_CMD_FN)(HI_U32 u32Argc, HI_U8 *pu8Argv[], HI_VOID *pPrivData);
+typedef HI_S32 (* HI_PROC_CMD_FN)(HI_PROC_SHOW_BUFFER_S * pstBuf, HI_U32 u32Argc, HI_U8 *pu8Argv[], HI_VOID *pPrivData);
 
 /** Defines user mode proc entry */
 /**CNcomment: 用户态PROC入口定义 */
 typedef struct hiPROC_ENTRY_S
 {
     HI_CHAR *pszEntryName;          /**<Entry name*/            /**<CNcomment: 入口文件名 */
-    HI_CHAR *pszDirectory;          /**<Directory name. If null, the entry will be added to msp directory*/
-                                    /**<CNcomment: 目录名，如果为空，将创建到msp目录下 */
+    HI_CHAR *pszDirectory;          /**<Directory name. If null, the entry will be added to /proc/hisi directory*/
+                                    /**<CNcomment: 目录名，如果为空，将创建到/proc/hisi目录下 */
     HI_PROC_SHOW_FN pfnShowProc;    /**<Proc show function*/    /**<CNcomment: Proc信息显示回调函数 */
     HI_PROC_CMD_FN pfnCmdProc;      /**<Proc command function*/ /**<CNcomment: Proc控制回调函数 */
     HI_VOID *pPrivData;             /**<Private data*/          /**<CNcomment: Buffer地址 */
@@ -623,41 +630,101 @@ HI_VOID* HI_MEM_Realloc(HI_U32 u32ModuleID, HI_VOID *pMemAddr, HI_U32 u32Size);
 
 
 #ifdef MMZ_V2_SUPPORT
+/**
+@brief pplies for an MMZ with a specified name and obtains its physical address. CNcomment: 指定mmz的名字申请mmz内存，返回物理地址 CNend
+@attention \n
+N/A CNcomment: 无 CNend
+@param[in] u32Size Buffer size CNcomment: buffer大小 CNend
+@param[in] u32Align Alignment mode CNcomment: 对齐方式 CNend
+@param[in] ps8MMZName Name of an MMZ in the buffer. If the MMZ name is set to NULL, an MMZ is anonymously applied for. CNcomment: buffer分区的名字，传入NULL匿名申请 CNend
+@param[in] ps8MMBName Buffer name CNcomment: buffer块的名字 CNend
+@retval ::NULL The application fails. CNcomment: 申请失败 CNend
+@retval Physical address CNcomment: 物理地址 CNend
+@see \n
+N/A CNcomment: 无 CNend
+*/
+HI_VOID *HI_MMZ_New_Share(HI_U32 u32Size , HI_U32 u32Align, HI_CHAR *ps8MMZName, HI_CHAR *ps8MMBName);
 
-#define SHM_WRAPPER_BY_MMZ     1
 
-#if SHM_WRAPPER_BY_MMZ
-#define SHM_COMMON_SIZE        4096
-#define MAX_SHM_WRAPPER        10
-#define FLFAG_SHM_WRAP_NULL    0
-#define FLFAG_SHM_WRAP_USED    0x55
-#define SHM_COM_HEADER_FLAG    0x5A5AA5A5
+/**
+@brief pplies for an MMZ with a specified name and obtains its physical address. CNcomment: 指定mmz的名字申请mmz内存，返回物理地址 CNend
+@attention \n
+N/A CNcomment: 无 CNend
+@param[in] u32Size Buffer size CNcomment: buffer大小 CNend
+@param[in] u32Align Alignment mode CNcomment: 对齐方式 CNend
+@param[in] ps8MMZName Name of an MMZ in the buffer. If the MMZ name is set to NULL, an MMZ is anonymously applied for. CNcomment: buffer分区的名字，传入NULL匿名申请 CNend
+@param[in] ps8MMBName Buffer name CNcomment: buffer块的名字 CNend
+@retval ::NULL The application fails. CNcomment: 申请失败 CNend
+@retval Physical address CNcomment: 物理地址 CNend
+@see \n
+N/A CNcomment: 无 CNend
+*/
+HI_VOID *HI_MMZ_New_Shm_Com(HI_U32 u32Size , HI_U32 u32Align, HI_CHAR *ps8MMZName, HI_CHAR *ps8MMBName);
 
-typedef struct _shm_info {
-      int                      pid;
-      int                      shmid;
-      unsigned int        shm_phy;
-      int                      shm_size;
-      int                      flag;
-      int                      shm_cpid;       /* pid of creator */
-      int                      shm_lpid;        /* pid of last shmop */
-      int                      shm_nattch;  /* number of current attaches */
-}shm_info;
 
-typedef struct _shm_com_info {
-      unsigned int        info_flag;
-      shm_info            sShmInfo[MAX_SHM_WRAPPER];
-}shm_com_info;
-#endif /* endif SHM_WRAPPER_BY_MMZ */
+/**
+@brief Get physical address and size of chm or com type MMZ. CNcomment: 获取shm或com型MMZ物理地址和大小 CNend
+@attention \n
+N/A CNcomment: 无 CNend
+@param[out] pu32PhysAddr Physical address of the buffer CNcomment: buffer物理地址 CNend
+@param[out] pu32Size     Size of the buffer             CNcomment: buffer大小 CNend
+@retval ::HI_SUCCESS Success CNcomment: 成功 CNend
+@retval ::HI_FAILURE Calling this API fails. CNcomment: API系统调用失败 CNend
+@see \n
+N/A CNcomment: 无 CNend
+*/
+HI_S32 HI_MMZ_Get_Shm_Com(HI_U32 *pu32PhysAddr, HI_U32 *pu32Size);
 
-HI_VOID *HI_MMZ_New_Share(HI_U32 size , HI_U32 align, HI_CHAR *mmz_name, HI_CHAR *mmb_name);
-HI_VOID *HI_MMZ_New_Shm_Com(HI_U32 size , HI_U32 align, HI_CHAR *mmz_name, HI_CHAR *mmb_name);
-HI_S32 HI_MMZ_Get_Shm_Com(HI_U32 *phyaddr, HI_U32 *size);
-HI_S32 HI_MMZ_Force_Delete(HI_U32 phys_addr);
-HI_S32 HI_MMZ_Flush_Dirty(HI_U32 phys_addr, HI_U32 virt_addr, HI_U32 size);
+
+/**
+@brief Force releases an MMZ based on its physical address. CNcomment: 通过物理地址强行释放mmz内存 CNend
+@attention \n
+N/A CNcomment: 无 CNend
+@param[in] u32PhysAddr Physical address of a buffer CNcomment: buffer物理地址 CNend
+@retval ::HI_SUCCESS Success CNcomment: 成功 CNend
+@retval ::HI_FAILURE Calling this API fails. CNcomment: API系统调用失败 CNend
+@see \n
+N/A CNcomment: 无 CNend
+*/
+HI_S32 HI_MMZ_Force_Delete(HI_U32 u32PhysAddr);
+
+
+/**
+@brief Flushes MMZ. CNcomment: Flush MMZ数据 CNend
+@attention \n
+@param[in] u32PhysAddr Physical address of a buffer CNcomment: buffer物理地址 CNend
+@param[in] u32VirtAddr Virtual address of a buffer  CNcomment: buffer虚拟地址 CNend
+@param[in] u32Size     Size of a buffer             CNcomment: buffer空间大小 CNend
+@retval ::HI_SUCCESS Success CNcomment: 成功 CNend
+@retval ::HI_FAILURE Fail. CNcomment: 失败 CNend
+@see \n
+N/A CNcomment: 无 CNend
+*/
+HI_S32 HI_MMZ_Flush_Dirty(HI_U32 u32PhysAddr, HI_U32 u32VirtAddr, HI_U32 u32Size);
+
+
+/**
+@brief Open MMZ. CNcomment: 打开MMZ CNend
+@attention \n
+@param  None CNcomment: 无 CNend
+@retval ::HI_SUCCESS Success CNcomment: 成功 CNend
+@retval ::HI_FAILURE Fail. CNcomment: 失败 CNend
+@see \n
+N/A CNcomment: 无 CNend
+*/
 HI_S32 HI_MMZ_open(HI_VOID);
-HI_S32 HI_MMZ_close(HI_VOID);
 
+
+/**
+@brief Close MMZ. CNcomment: 关闭MMZ CNend
+@attention \n
+@param  None CNcomment: 无 CNend
+@retval ::HI_SUCCESS Success CNcomment: 成功 CNend
+@retval ::HI_FAILURE Fail. CNcomment: 失败 CNend
+@see \n
+N/A CNcomment: 无 CNend
+*/
+HI_S32 HI_MMZ_close(HI_VOID);
 #endif /* endif MMZ_V2_SUPPORT */
 
 

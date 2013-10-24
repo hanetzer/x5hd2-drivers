@@ -1,5 +1,6 @@
 LOCAL_PATH := $(call my-dir)
 
+############ shared lib
 include $(CLEAR_VARS)
 
 include $(SDK_DIR)/Android.def
@@ -20,8 +21,29 @@ else
 LOCAL_CFLAGS += -DHI_VDEC_REG_CODEC_SUPPORT=0
 endif
 
+ifeq (y,$(CFG_HI_VDEC_MJPEG_SUPPORT))
+LOCAL_CFLAGS += -DHI_VDEC_MJPEG_SUPPORT=1
+else
+LOCAL_CFLAGS += -DHI_VDEC_MJPEG_SUPPORT=0
+endif
+
+ifeq (y,$(CFG_HI_VDEC_USERDATA_CC_SUPPORT))
+LOCAL_CFLAGS += -DHI_VDEC_USERDATA_CC_SUPPORT=1
+ifneq (,$(CFG_HI_VDEC_USERDATA_CC_BUFSIZE))
+LOCAL_CFLAGS += -DHI_VDEC_USERDATA_CC_BUFSIZE=$(CFG_HI_VDEC_USERDATA_CC_BUFSIZE)
+else
+LOCAL_CFLAGS += -DHI_VDEC_USERDATA_CC_BUFSIZE=0xC000
+endif
+else
+LOCAL_CFLAGS += -DHI_VDEC_USERDATA_CC_SUPPORT=0
+endif
+
 #LOCAL_SRC_FILES := $(sort $(call all-c-files-under, ./))
 LOCAL_SRC_FILES := hi_codec.c  mpi_vdec_adapter.c  mpi_vdec.c
+
+ifeq (y,$(CFG_HI_VDEC_MJPEG_SUPPORT))
+LOCAL_SRC_FILES += mpi_vdec_mjpeg.c
+endif
 
 LOCAL_C_INCLUDES := $(COMMON_UNF_INCLUDE)
 LOCAL_C_INCLUDES += $(COMMON_DRV_INCLUDE)
@@ -43,17 +65,21 @@ endif
 
 LOCAL_SHARED_LIBRARIES := libcutils libutils libhi_common libdl libhi_demux
 
+ifeq (y,$(CFG_HI_VDEC_MJPEG_SUPPORT))
+LOCAL_SHARED_LIBRARIES += libhi_jpeg
+endif
+
 include $(BUILD_SHARED_LIBRARY)
 
-ifeq (y,$(CFG_HI_VDEC_REG_CODEC_SUPPORT))
-
+############ static lib
 include $(CLEAR_VARS)
-include $(SDK_DIR)/$(SDK_CFGFILE)
+
 include $(SDK_DIR)/Android.def
 
 LOCAL_PRELINK_MODULE := false
 
-LOCAL_MODULE := libhi_codec.MJPEG
+LOCAL_MODULE := libhi_vdec
+ALL_DEFAULT_INSTALLED_MODULES += $(LOCAL_MODULE)
 
 LOCAL_MODULE_TAGS := optional
 
@@ -66,7 +92,29 @@ else
 LOCAL_CFLAGS += -DHI_VDEC_REG_CODEC_SUPPORT=0
 endif
 
-LOCAL_SRC_FILES := mjpeg.c
+ifeq (y,$(CFG_HI_VDEC_MJPEG_SUPPORT))
+LOCAL_CFLAGS += -DHI_VDEC_MJPEG_SUPPORT=1
+else
+LOCAL_CFLAGS += -DHI_VDEC_MJPEG_SUPPORT=0
+endif
+
+ifeq (y,$(CFG_HI_VDEC_USERDATA_CC_SUPPORT))
+LOCAL_CFLAGS += -DHI_VDEC_USERDATA_CC_SUPPORT=1
+ifneq (,$(CFG_HI_VDEC_USERDATA_CC_BUFSIZE))
+LOCAL_CFLAGS += -DHI_VDEC_USERDATA_CC_BUFSIZE=$(CFG_HI_VDEC_USERDATA_CC_BUFSIZE)
+else
+LOCAL_CFLAGS += -DHI_VDEC_USERDATA_CC_BUFSIZE=0xC000
+endif
+else
+LOCAL_CFLAGS += -DHI_VDEC_USERDATA_CC_SUPPORT=0
+endif
+
+#LOCAL_SRC_FILES := $(sort $(call all-c-files-under, ./))
+LOCAL_SRC_FILES := hi_codec.c  mpi_vdec_adapter.c  mpi_vdec.c
+
+ifeq (y,$(CFG_HI_VDEC_MJPEG_SUPPORT))
+LOCAL_SRC_FILES += mpi_vdec_mjpeg.c
+endif
 
 LOCAL_C_INCLUDES := $(COMMON_UNF_INCLUDE)
 LOCAL_C_INCLUDES += $(COMMON_DRV_INCLUDE)
@@ -86,8 +134,10 @@ else
 LOCAL_C_INCLUDES += $(MSP_DIR)/drv/vfmw/vfmw_v4.0/firmware/product/HiX5HD
 endif
 
-LOCAL_SHARED_LIBRARIES := libcutils libutils libhi_common libdl libhi_demux libhi_jpeg
+LOCAL_SHARED_LIBRARIES := libcutils libutils libhi_common libdl libhi_demux
 
-include $(BUILD_SHARED_LIBRARY)
-
+ifeq (y,$(CFG_HI_VDEC_MJPEG_SUPPORT))
+LOCAL_SHARED_LIBRARIES += libhi_jpeg
 endif
+
+include $(BUILD_STATIC_LIBRARY)

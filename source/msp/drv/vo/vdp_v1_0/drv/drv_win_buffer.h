@@ -84,26 +84,18 @@ typedef struct tagWB_DEBUG_INFO_S
 typedef struct tagWB_POOL_S
 {
     HI_U32 u32BufNumber;
-
-    // memory type
+    
     HI_U32 u32MemType;
     WIN_BUF_ALLOC_PARA_S stAlloc;
-
-    // buffer core
     DISP_BUF_S stBuffer;
-
     // source info
     WB_SOURCE_INFO_S stSrcInfo;
 
-    //WB_NODE_S stDisplaying;
-    //WB_NODE_S stConfiged;
+    /*lastest display and config.*/
     DISP_BUF_NODE_S *pstDisplay;
     DISP_BUF_NODE_S *pstConfig;
-
-    HI_DRV_VIDEO_FRAME_S stRlsFrame[16];
-    HI_U32 u32RlsWrite;
-    HI_U32 u32RlsRead;
-
+    DISP_BUF_NODE_S *pstCapture;
+    
     WB_DEBUG_INFO_S *pstDebugInfo;
 }WB_POOL_S;
 
@@ -123,11 +115,19 @@ HI_DRV_VIDEO_FRAME_S *WinBuf_GetDisplayedFrame(WB_POOL_S *pstWinBP);
 HI_DRV_VIDEO_FRAME_S *WinBuf_GetConfigedFrame(WB_POOL_S *pstWinBP);
 
 HI_DRV_VIDEO_FRAME_S *WinBuf_GetConfigFrame(WB_POOL_S *pstWinBP);
+HI_S32 WinBuf_SetCaptureFrame(WB_POOL_S *pstWinBP, HI_U32 u32InvalidFlag);
+HI_S32 WinBuf_ReleaseCaptureFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_BOOL bForceFlag);
+HI_DRV_VIDEO_FRAME_S *WinBuf_GetCapturedFrame(WB_POOL_S *pstWinBP);
+
+
+
 
 HI_S32 WinBuf_ForceReleaseFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstFrame);
 HI_S32 WinBuf_ReleaseOneFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstPreFrame);
 HI_S32 WinBuf_FlushWaitingFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstPreFrame);
-HI_DRV_VIDEO_FRAME_S * WinBuf_GetFrameByMaxID(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstRefFrame,HI_U32 u32RefID);
+HI_DRV_VIDEO_FRAME_S *WinBuf_GetFrameByMaxID(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstRefFrame,HI_U32 u32RefID, HI_DRV_FIELD_MODE_E enDstField);
+HI_DRV_VIDEO_FRAME_S * WinBuf_GetFrameByDstFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstDstFrame, HI_DRV_VIDEO_FRAME_S *pstRefFrame);
+HI_DRV_VIDEO_FRAME_S *WinBuf_GetFrameByDisplayInfo(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstRefFrame, HI_U32 u32RefRate, HI_DRV_FIELD_MODE_E enDstField);
 HI_DRV_VIDEO_FRAME_S * WinBuf_GetNewestFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstRefFrame);
 HI_S32 WinBuf_GetFullBufNum(WB_POOL_S *pstBP, HI_U32 *pu32BufNum);
 

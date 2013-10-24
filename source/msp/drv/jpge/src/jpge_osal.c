@@ -5,8 +5,7 @@
 #include <linux/irqreturn.h>
 #include <linux/interrupt.h>
 #include <linux/io.h>
-#include "hi_jpge_config.h"
-
+#include "hi_gfx_comm_k.h"
 #ifdef __cplusplus
  #if __cplusplus
 extern "C" {
@@ -31,7 +30,7 @@ HI_S32 JpgeOsal_IrqInit( HI_U32 Irq, HI_VOID (*ptrCallBack)(HI_VOID) )
 {
     ptrJpgeCallBack = ptrCallBack;
     
-    if( HI_SUCCESS != request_irq(Irq, JpgeOsal_JencISR, IRQF_DISABLED, "jpge", NULL) )
+    if( HI_SUCCESS != request_irq(Irq, JpgeOsal_JencISR, IRQF_DISABLED, "hi_jpge_irq", NULL) )
      {
         return HI_FAILURE;
      }
@@ -97,12 +96,12 @@ HI_S32 JpgeOsal_MutexUnlock( JPGE_SEM_S *pMutex )
 **********************************************************************/
 HI_VOID* JpgeOsal_MapRegisterAddr( HI_U32 phyAddr, HI_U32 len )
 {
-    return JPGE_REG_MAP( phyAddr, len );
+    return HI_GFX_REG_MAP( phyAddr, len );
 }
 
 HI_VOID JpgeOsal_UnmapRegisterAddr( HI_VOID* pVir )
 {
-    JPGE_REG_UNMAP( pVir);
+    HI_GFX_REG_UNMAP( pVir);
     return;
 }
 

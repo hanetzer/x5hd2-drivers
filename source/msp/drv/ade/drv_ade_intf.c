@@ -15,10 +15,10 @@
 
 /* Unf headers */
 #include "hi_error_mpi.h"
-#include "drv_mmz_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_proc.h"
 
 /* Drv headers */
 #include "drv_ade_ext.h"
@@ -112,9 +112,7 @@ HI_S32 ADE_DRV_ModInit(HI_VOID)
     }
 
 #ifdef MODULE
- #ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_ade.ko success.\t(%s)\n", VERSION_STRING);
- #endif
+    HI_PRINT("Load hi_ade.ko success.\t(%s)\n", VERSION_STRING);
 #endif
 
     return HI_SUCCESS;

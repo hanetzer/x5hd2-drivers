@@ -2,7 +2,7 @@
 #define __VPSS_HAL_H__
 #include"hi_type.h"
 
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
 
 #include"vpss_alg.h"
 
@@ -23,13 +23,10 @@
 #define HAL_VERSION_2 0x102
 
 #define HAL_NODE_MAX 2
-/*HAL 层的信息 */
-
-/*
-版本号
-寄存器基地址
-寄存器表单物理地址
-寄存器表单虚拟地址
+/*HAL info 
+*
+* logic version
+* register basic addr
 */
 typedef struct hiVPSS_HAL_CFG_S{
     HI_U32 u32LogicVersion;    
@@ -38,47 +35,24 @@ typedef struct hiVPSS_HAL_CFG_S{
     HI_U32 u32AppVirtualAddr[HAL_NODE_MAX];
     MMZ_BUFFER_S stRegBuf[HAL_NODE_MAX];
 
-    /*寄存器中各输出port的占用情况
+    /*logic port alloc state
      *[0]: HD
      *[1]: STR
      *[2]: SD
-     * =1:已分配
-     * =0:未分配
+     * =1:allocated
+     * =0:will allocate
      */
     HI_U32 u32RegPortAlloc[DEF_HI_DRV_VPSS_PORT_MAX_NUMBER];
 }VPSS_HAL_INFO_S;
 
+typedef enum VPSS_HAL_NODE_TYPE{
+    HAL_NODE_NORMAL = 0,
+    HAL_NODE_FPK ,
+    HAL_NODE_2D_PRE,
+    HAL_NODE_3D_PRE,
+    HAL_NODE_BUTT
+}VPSS_HAL_NODE_E;
 
-/*
-
-HAL Au的适配
-芯片版本外部宏会传入
-
-HAL层保留HAL通用接口
-
-与硬件密切相关的寄存器操作放到REG
-VPSS_HAL_Init
-VPSS_HAL_DelInit
-VPSS_HAL_GetCaps
-VPSS_HAL_SetHalCfg
-VPSS_HAL_SetIntMask
-VPSS_HAL_ClearIntState
-VPSS_HAL_GetIntState
-HAL抽象的软件行为
-
-HAL_Init
-HAL_DelInit
-HAL_GetLogicCapability
-
-
-软件可配置项与硬件相关
-
-
-VPSS从HAL要获取的能力集
-1.最大通道数
-2.各PORT能力集
-
-*/
 typedef union
 {
     // Define the struct bits
@@ -121,14 +95,14 @@ typedef union
 } U_VPSS_HAL_CAPS;
 
 /*
-    HAL的对外接口
+    HAL interface
 */
 typedef struct hiVPSS_HAL_CAP_S{
     U_VPSS_HAL_CAPS u32Caps;
     
     HI_S32 (*PFN_VPSS_HAL_SetHalCfg)(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID);
     
-    HI_S32 (*PFN_VPSS_HAL_StartLogic)(HI_BOOL bTwoNode);
+    HI_S32 (*PFN_VPSS_HAL_StartLogic)(VPSS_HAL_NODE_E eNodeType);
     
     HI_S32 (*PFN_VPSS_HAL_SetIntMask)(HI_U32 u32Data);
     
@@ -138,16 +112,18 @@ typedef struct hiVPSS_HAL_CAP_S{
         
 }VPSS_HAL_CAP_S;
 
-/*通用接口*/
+/*common interface*/
 HI_S32 VPSS_HAL_Init(HI_U32 u32LogicVersion,VPSS_HAL_CAP_S *pstHalCaps);
 
 HI_S32 VPSS_HAL_DelInit(HI_VOID);
 HI_S32 VPSS_HAL_CloseClock(HI_VOID);   
 HI_S32 VPSS_HAL_OpenClock(HI_VOID);     
 
-/*需要根据逻辑版本适配的对外接口*/
+/*
+ * interface via logic version
+ */
 
-HI_S32 VPSS_HAL_StartLogic(HI_BOOL bTwoNode);
+HI_S32 VPSS_HAL_StartLogic(VPSS_HAL_NODE_E eNodeType);
 
 HI_S32 VPSS_HAL_SetIntMask(HI_U32 u32Data);
 
@@ -161,7 +137,7 @@ HI_S32 VPSS_HAL_ClearIntState(HI_U32 u32Data);
 
 HI_S32 VPSS_HAL_SetHalCfg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID);
 
-/*内部实现*/
+/*inner*/
 HI_S32 VPSS_HAL_GetCaps(HI_U32 u32DrvVersion,VPSS_HAL_CAP_S *pstHalCaps);
 
 HI_S32 VPSS_HAL_SetSrcImg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID);

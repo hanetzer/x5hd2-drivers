@@ -180,7 +180,7 @@ void SI_SetAudioPath ( HI_U8 * abAudioPath )
 
 HI_U8 SI_FindFs(void)
 {
-    HI_U8 tmpArray[2], Fs;
+    HI_U8 tmpArray[2] = {0}, Fs;
     SI_BlockReadEEPROM ( 2, EE_TX_AUDIOPATH_ADDR, tmpArray );
     if ((tmpArray[0] & SiI_AudioModesSelect) == SiI_SPDIF)  // if input audio format is SPDIF
     {
@@ -189,7 +189,7 @@ HI_U8 SI_FindFs(void)
         else
             Fs = tmpArray[1] & 0x0F;
 		
-          WriteByteHDMITXP1(AUD_MODE_ADDR, 0x03);     // En.SPDIF
+        WriteByteHDMITXP1(AUD_MODE_ADDR, 0x03);     // En.SPDIF
     }
     else
         Fs = tmpArray[1] & 0x0F;

@@ -1,6 +1,21 @@
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : drv_otp.c
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
 #include <linux/kernel.h>
 #include <linux/version.h>
 #include <linux/module.h>
+#include <linux/delay.h>
 #include <asm/delay.h>
 #include <linux/kernel.h>
 #include <mach/platform.h>
@@ -8,58 +23,80 @@
 #include <asm/io.h>
 #include <asm/memory.h>
 #include "hi_type.h"
-
 #include "drv_otp.h"
 #include "drv_otp_ext.h"
 #include "drv_otp_common.h"
 #include "drv_otp_v100.h"
 #include "drv_otp_v200.h"
 #include "drv_otp_reg_v200.h"
-#include "drv_dev_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_module.h"
 #include "drv_cipher_ext.h"
+#include "hi_reg_common.h"
 
 #define OTP_NAME "HI_OTP"
 
 static OTP_RegisterFunctionlist_S s_OTPExportFunctionList =
 {
-	.do_apb_v200_read 		=	do_apb_v200_read,
-	.do_apb_v200_read_byte	=   do_apb_v200_read_byte,
-	.do_apb_v200_write		=   do_apb_v200_write,
-	.do_apb_v200_write_byte	=   do_apb_v200_write_byte,
-	.do_apb_v200_write_bit	=   do_apb_v200_write_bit,
-	.do_apb_write_byte		=   do_apb_write_byte,
-	.do_apb_write_bit		=   do_apb_write_bit,
-	.set_apb_write_protect	=   set_apb_write_protect,
-	.get_apb_write_protect	=   get_apb_write_protect,
-	.do_apb_para_read		=   do_apb_para_read,
-	.otp_get_sr_bit			=   otp_get_sr_bit,
-	.otp_set_sr_bit			=   otp_set_sr_bit,
-	.otp_reset				=   otp_reset,
-	.otp_func_disable		=   otp_func_disable,
+	.HAL_OTP_V200_Read 		        =	HAL_OTP_V200_Read,
+	.HAL_OTP_V200_ReadByte	        =   HAL_OTP_V200_ReadByte,
+	.HAL_OTP_V200_Write		        =   HAL_OTP_V200_Write,
+	.HAL_OTP_V200_WriteByte	        =   HAL_OTP_V200_WriteByte,
+	.HAL_OTP_V200_WriteBit	        =   HAL_OTP_V200_WriteBit,
+	.HAL_OTP_V100_WriteByte	        =   HAL_OTP_V100_WriteByte,
+	.HAL_OTP_V100_WriteBit		    =   HAL_OTP_V100_WriteBit,
+	.HAL_OTP_V100_SetWriteProtect	=   HAL_OTP_V100_SetWriteProtect,
+	.HAL_OTP_V100_GetWriteProtect	=   HAL_OTP_V100_GetWriteProtect,
+	.HAL_OTP_V100_Read		        =   HAL_OTP_V100_Read,
+	.HAL_OTP_V100_GetSrBit			=   HAL_OTP_V100_GetSrBit,
+	.HAL_OTP_V100_SetSrBit			=   HAL_OTP_V100_SetSrBit,
+	.HAL_OTP_V100_Reset				=   HAL_OTP_V100_Reset,
+	.HAL_OTP_V100_FuncDisable	    =   HAL_OTP_V100_FuncDisable,
 };
 
 extern HI_VOID HI_DRV_SYS_GetChipVersion(HI_CHIP_TYPE_E *penChipType, HI_CHIP_VERSION_E *penChipVersion);
 
 static OTP_VERSION_E gOTPVesion = OTP_VERSION_100;
 
-HI_S32 DRV_OTP_Init(void)
-{    
-	HI_S32 ret = HI_SUCCESS;
-    HI_CHIP_TYPE_E enChip;
-    HI_CHIP_VERSION_E enChipVersion;
+static HI_VOID DRV_OTP_ClockConfig(HI_VOID)
+{
+#ifdef CHIP_TYPE_hi3716cv200es
+    U_PERI_CRG48 unOTPCrg;
+
+    unOTPCrg.u32 = 0;
+    unOTPCrg.u32 = g_pstRegCrg->PERI_CRG48.u32;
+    if( 0 == unOTPCrg.bits.otp_bus_cken )
+    {
+        unOTPCrg.bits.otp_bus_cken = 1;
+        g_pstRegCrg->PERI_CRG48.u32 = unOTPCrg.u32;
+    }
+#endif
+    return;
+}
     
+HI_S32 DRV_OTP_Init(void)
+{
+	HI_S32 ret = HI_SUCCESS;
+    HI_CHIP_TYPE_E enChip = HI_CHIP_TYPE_BUTT;
+    HI_CHIP_VERSION_E enChipVersion = HI_CHIP_VERSION_BUTT;
+
+    (HI_VOID)DRV_OTP_ClockConfig();
+
     ret = HI_DRV_MODULE_Register(HI_ID_OTP, OTP_NAME, (HI_VOID*)&s_OTPExportFunctionList);
     if (HI_SUCCESS != ret)
     {
         HI_FATAL_OTP("HI_DRV_MODULE_Register otp failed\n");
         return ret;
     }
-    
+
     HI_DRV_SYS_GetChipVersion(&enChip, &enChipVersion);
-    if(((HI_CHIP_TYPE_HI3712 == enChip) && (HI_CHIP_VERSION_V100 == enChipVersion)) ||
-        ((HI_CHIP_TYPE_HI3716M == enChip) && (HI_CHIP_VERSION_V300 == enChipVersion)) ||
-        ((HI_CHIP_TYPE_HI3716CES == enChip) && (HI_CHIP_VERSION_V200 == enChipVersion)))
+    if( ((HI_CHIP_TYPE_HI3712 == enChip)    && (HI_CHIP_VERSION_V100 == enChipVersion))     ||
+        ((HI_CHIP_TYPE_HI3716M == enChip)   && (HI_CHIP_VERSION_V300 == enChipVersion))     ||
+        ((HI_CHIP_TYPE_HI3716CES == enChip) && (HI_CHIP_VERSION_V200 == enChipVersion))     ||
+        ((HI_CHIP_TYPE_HI3716C == enChip)   && (HI_CHIP_VERSION_V200 == enChipVersion))     ||
+        ((HI_CHIP_TYPE_HI3718C == enChip)   && (HI_CHIP_VERSION_V100 == enChipVersion))     ||
+        ((HI_CHIP_TYPE_HI3719C == enChip)   && (HI_CHIP_VERSION_V100 == enChipVersion))     ||
+        ((HI_CHIP_TYPE_HI3719M_A == enChip) && (HI_CHIP_VERSION_V100 == enChipVersion)))
     {
         gOTPVesion = OTP_VERSION_200;
     }
@@ -67,7 +104,7 @@ HI_S32 DRV_OTP_Init(void)
     {
         gOTPVesion = OTP_VERSION_100;
     }
-	
+
     return HI_SUCCESS;
 }
 
@@ -77,15 +114,28 @@ HI_S32 DRV_OTP_DeInit(void)
     return HI_SUCCESS;
 }
 
-HI_S32 DRV_OTP_Read(HI_U32 Addr)
+HI_U32 DRV_OTP_Read(HI_U32 Addr)
 {
     if(gOTPVesion == OTP_VERSION_200)
     {
-        return do_apb_v200_read(Addr);
+        return HAL_OTP_V200_Read(Addr);
     }
     else
     {
-        return do_apb_para_read(Addr);
+        return HAL_OTP_V100_Read(Addr);
+    }
+}
+
+HI_U8 DRV_OTP_ReadByte(HI_U32 Addr)
+{
+    if(gOTPVesion == OTP_VERSION_200)
+    {
+        return HAL_OTP_V200_ReadByte(Addr);
+    }
+    else
+    {
+        HI_ERR_OTP("Not supported for otpv100!\n");
+        return 0;
     }
 }
 
@@ -96,18 +146,18 @@ HI_S32 DRV_OTP_Write(HI_U32 Addr, HI_U32 value)
     if(gOTPVesion == OTP_VERSION_200)
     {
         HI_U8 *pByte = (HI_U8*)&value;
-        ErrorReturn = do_apb_v200_write_byte((Addr + 0), pByte[0]); 
-        ErrorReturn |= do_apb_v200_write_byte((Addr + 1), pByte[1]); 
-        ErrorReturn |= do_apb_v200_write_byte((Addr + 2), pByte[2]); 
-        ErrorReturn |= do_apb_v200_write_byte((Addr + 3), pByte[3]);
+        ErrorReturn = HAL_OTP_V200_WriteByte((Addr + 0), pByte[0]); 
+        ErrorReturn |= HAL_OTP_V200_WriteByte((Addr + 1), pByte[1]); 
+        ErrorReturn |= HAL_OTP_V200_WriteByte((Addr + 2), pByte[2]); 
+        ErrorReturn |= HAL_OTP_V200_WriteByte((Addr + 3), pByte[3]);
     }
     else
     {
         HI_U8 *pByte = (HI_U8*)&value;
-        ErrorReturn = do_apb_write_byte((Addr + 0), pByte[0]); 
-        ErrorReturn |= do_apb_write_byte((Addr + 1), pByte[1]); 
-        ErrorReturn |= do_apb_write_byte((Addr + 2), pByte[2]); 
-        ErrorReturn |= do_apb_write_byte((Addr + 3), pByte[3]);
+        ErrorReturn = HAL_OTP_V100_WriteByte((Addr + 0), pByte[0]); 
+        ErrorReturn |= HAL_OTP_V100_WriteByte((Addr + 1), pByte[1]); 
+        ErrorReturn |= HAL_OTP_V100_WriteByte((Addr + 2), pByte[2]); 
+        ErrorReturn |= HAL_OTP_V100_WriteByte((Addr + 3), pByte[3]);
     }
     
     return ErrorReturn;
@@ -119,11 +169,11 @@ HI_S32 DRV_OTP_Write_Byte(HI_U32 Addr, HI_U8 value)
     
     if(gOTPVesion == OTP_VERSION_200)
     {
-        ErrorReturn = do_apb_v200_write_byte(Addr, value);
+        ErrorReturn = HAL_OTP_V200_WriteByte(Addr, value);
     }
     else
     {
-        ErrorReturn = do_apb_write_byte(Addr, value);
+        ErrorReturn = HAL_OTP_V100_WriteByte(Addr, value);
     }
     
     return ErrorReturn;
@@ -147,11 +197,11 @@ HI_S32 DRV_OTP_Write_Bit(HI_U32 Addr, HI_U32 BitPos, HI_U32 BitValue)
 	
     if(gOTPVesion == OTP_VERSION_200)
     {
-        ErrorReturn = do_apb_v200_write_bit(Addr, BitPos, BitValue);
+        ErrorReturn = HAL_OTP_V200_WriteBit(Addr, BitPos, BitValue);
     }
     else
     {
-        ErrorReturn = do_apb_write_bit(Addr, BitPos, BitValue);
+        ErrorReturn = HAL_OTP_V100_WriteBit(Addr, BitPos, BitValue);
     }
     
     return ErrorReturn;
@@ -167,7 +217,7 @@ HI_S32 DRV_OTP_Reset(HI_VOID)
     }
     else
     {
-        ErrorReturn = otp_reset();
+        ErrorReturn = HAL_OTP_V100_Reset();
     }
     
     return ErrorReturn;

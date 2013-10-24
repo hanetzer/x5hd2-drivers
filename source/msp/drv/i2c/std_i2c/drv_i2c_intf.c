@@ -30,16 +30,16 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
 #include "drv_i2c.h"
 #include "drv_i2c_ext.h"
 #include "hi_drv_i2c.h"
 #include "drv_i2c_ioctl.h"
 #include "hi_common.h"
 #include "drv_gpioi2c_ext.h"
-#include "drv_module_ext.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_module.h"
+#include "hi_drv_mem.h"
 
 #define I2C_WRITE_REG(Addr, Value) ((*(volatile HI_U32 *)(Addr)) = (Value))
 #define I2C_READ_REG(Addr) (*(volatile HI_U32 *)(Addr))
@@ -53,30 +53,57 @@ static UMAP_DEVICE_S g_I2cRegisterData;
 
 static GPIO_I2C_EXT_FUNC_S* g_pstGpioI2cExtFuncs = HI_NULL;
 
-#if 0
+extern HI_U32 g_aI2cRate[HI_STD_I2C_NUM];
+#ifdef HI_GPIOI2C_SUPPORT
+extern I2C_GPIO_S g_stI2cGpio[HI_I2C_MAX_NUM];
+#endif
+
 HI_S32 I2C_ProcRead(struct seq_file *p, HI_VOID *v)
 {
-    p += seq_printf(p, "---------Hisilicon I2C Info---------\n");
+	HI_U8 ii = 0;
+    PROC_PRINT(p, "---------Hisilicon Standard I2C Info---------\n");
+	PROC_PRINT(p, "No.            Rate\n");
+
+	for (ii = 0; ii < HI_STD_I2C_NUM; ii++)
+	{
+		PROC_PRINT(p, "%d             %d\n", ii, g_aI2cRate[ii]);
+	}
+
+#ifdef HI_GPIOI2C_SUPPORT
+	PROC_PRINT(p, "---------Hisilicon GPIO simulate I2C Info---------\n");
+	PROC_PRINT(p, "No.            SCL_IO       SDA_IO\n");
+	for (ii = 0; ii < HI_I2C_MAX_NUM; ii++)
+	{
+		if (g_stI2cGpio[ii].bUsed)
+		{
+			PROC_PRINT(p, "%d                %d           %d\n", g_stI2cGpio[ii].I2cNum,
+							g_stI2cGpio[ii].u32SCLGpioNo, g_stI2cGpio[ii].u32SDAGpioNo);
+		}		
+	}
+#endif
+
     return HI_SUCCESS;
 }
 
-#endif
 
 HI_S32 I2C_ProcWrite(struct file * file, const char __user * buf, size_t count, loff_t *ppos)
 {
     HI_U32 u32I2cNo = 0, u32DevAddr = 0, u32RegAddr = 0, u32Val = 0;
     HI_S32 s32Ret = HI_SUCCESS;
     char acInput[256];
+	char tmp[256];
     char *p  = HI_NULL;
     HI_U32 i = 0;
     HI_U8 SendData[32] = {0};
     HI_U8 u8SendCount = 0;
     HI_U8 u8ArgCount = 0;
     HI_BOOL bCommondErr = HI_FALSE;
+	HI_BOOL bSetRate = HI_FALSE;
+	HI_U32 u32Rate = 0;
 
     if (count >= sizeof(acInput))
     {
-        printk("commond line is too long, please try it in 256 Bytes\n");
+        HI_PRINT("commond line is too long, please try it in 256 Bytes\n");
         return HI_FAILURE;
     }
 
@@ -86,7 +113,60 @@ HI_S32 I2C_ProcWrite(struct file * file, const char __user * buf, size_t count, 
         //printk("copy from user failed\n");
         return HI_FAILURE;
     }
+	
+	acInput[255] = '\0';
 
+	/*begin deal with set rate cmd*/
+	p = acInput;
+	u8ArgCount = 0;
+	for (i = 0; i < count && i < strlen(acInput); i++)
+    {
+        if ((acInput[i] == ' ') || (acInput[i] == '\n'))
+        {
+        	memset(tmp, 0, sizeof(tmp));
+			memcpy(tmp, p, i);
+			tmp[255] = '\0';
+			u8ArgCount++;
+			p = &acInput[i+1];
+
+			if (1 == u8ArgCount)
+			{
+				if (0 == strncmp(tmp, "SetRate", strlen("SetRate")))
+				{
+					bSetRate = HI_TRUE;
+				}
+				else
+				{
+					break;
+				}
+			}
+			else if (2 == u8ArgCount)
+			{
+				u32I2cNo = simple_strtol(tmp, NULL, 10);
+			}
+			else if (3 == u8ArgCount)
+			{
+				u32Rate = simple_strtol(tmp, NULL, 10);
+				break;
+			}
+        }
+    }
+
+	if (bSetRate)
+	{
+		if (u32I2cNo >= HI_STD_I2C_NUM)
+		{
+			HI_PRINT("I2c NO.%d not support rate setting!\n", u32I2cNo);
+		}
+		else
+		{
+			I2C_DRV_SetRate(u32I2cNo, u32Rate);
+		}
+		
+		return count;
+	}
+	/*end deal with set rate cmd*/
+	
     p = acInput;
     u8ArgCount = 0;
 
@@ -147,7 +227,7 @@ HI_S32 I2C_ProcWrite(struct file * file, const char __user * buf, size_t count, 
             s32Ret = HI_DRV_MODULE_GetFunction(HI_ID_GPIO_I2C, (HI_VOID * *)&g_pstGpioI2cExtFuncs);
             if ((HI_SUCCESS != s32Ret) || (HI_NULL == g_pstGpioI2cExtFuncs))
             {
-                printk("GPIO_I2C Function ERR: ret:0x%08x, func:0x%08x\n", s32Ret,
+                HI_PRINT("GPIO_I2C Function ERR: ret:0x%08x, func:0x%08x\n", s32Ret,
                        (HI_U32)g_pstGpioI2cExtFuncs);
                 break;
             }
@@ -155,7 +235,7 @@ HI_S32 I2C_ProcWrite(struct file * file, const char __user * buf, size_t count, 
 
         if (u8ArgCount == 3)
         {
-            printk("Read: u32I2cNo=%d, u32DevAddr=0x%x, u32RegAddr=0x%x\n", u32I2cNo, u32DevAddr, u32RegAddr);
+            HI_PRINT("Read: u32I2cNo=%d, u32DevAddr=0x%x, u32RegAddr=0x%x\n", u32I2cNo, u32DevAddr, u32RegAddr);
             if (u32I2cNo < HI_STD_I2C_NUM)
             {
                 s32Ret = HI_DRV_I2C_Read(u32I2cNo, (HI_U8)u32DevAddr, u32RegAddr, 1, (HI_U8 *)&u32Val, 1);
@@ -165,7 +245,7 @@ HI_S32 I2C_ProcWrite(struct file * file, const char __user * buf, size_t count, 
                 }
                 else
                 {
-                    printk("0x%x\n", u32Val);
+                    HI_PRINT("0x%x\n", u32Val);
                 }
             }
             else
@@ -188,7 +268,7 @@ HI_S32 I2C_ProcWrite(struct file * file, const char __user * buf, size_t count, 
                             }
                             else
                             {
-                                printk("0x%x\n", u32Val);
+                                HI_PRINT("0x%x\n", u32Val);
                             }
                         }
                     }
@@ -205,7 +285,7 @@ HI_S32 I2C_ProcWrite(struct file * file, const char __user * buf, size_t count, 
         }
         else
         {
-            printk("Write: u32I2cNo=%d, u32DevAddr=0x%x, u32RegAddr=0x%x, write number=0x%x\n", u32I2cNo,
+            HI_PRINT("Write: u32I2cNo=%d, u32DevAddr=0x%x, u32RegAddr=0x%x, write number=0x%x\n", u32I2cNo,
                    u32DevAddr, u32RegAddr, u8SendCount);
             if (u32I2cNo < HI_STD_I2C_NUM)
             {
@@ -250,11 +330,13 @@ HI_S32 I2C_ProcWrite(struct file * file, const char __user * buf, size_t count, 
 
     if (bCommondErr)
     {
-        printk("\nUsage:\n");
-        printk("Read data: echo 'bus' 'device address' 'Register address' > /proc/msp/i2c\n");
-        printk("Write data: echo 'bus' 'device address' 'Register address' 'data' > /proc/msp/i2c\n");
-        printk("or:echo 'bus' 'device address' 'Register address' 'data number n(n<=32)' 'data1' ...'datan > /proc/msp/i2c\n");
-        printk("such as: echo 4 a0 5d 2 b c > /proc/msp/i2c \n");
+        HI_PRINT("\nUsage:\n");
+        HI_PRINT("Read data: echo 'bus' 'device address' 'Register address' > /proc/msp/i2c\n");
+        HI_PRINT("Write data: echo 'bus' 'device address' 'Register address' 'data' > /proc/msp/i2c\n");
+        HI_PRINT("or:echo 'bus' 'device address' 'Register address' 'data number n(n<=32)' 'data1' ...'datan > /proc/msp/i2c\n");
+        HI_PRINT("such as: echo 4 a0 5d 2 b c > /proc/msp/i2c \n");
+		HI_PRINT("Set Standard i2c rate: echo SetRate 'bus' 'rate' > /proc/msp/i2c .such as :echo SetRate 1 100000  > /proc/msp/i2c\n");
+		HI_PRINT("Look over i2c info: cat /proc/msp/i2c\n");
     }
 
     return count;
@@ -379,7 +461,7 @@ HI_S32 I2C_DRV_ModInit(HI_VOID)
     //#endif
 
     /* I2C driver register */
-    sprintf(g_I2cRegisterData.devfs_name, UMAP_DEVNAME_I2C);
+    snprintf(g_I2cRegisterData.devfs_name, sizeof(g_I2cRegisterData.devfs_name), UMAP_DEVNAME_I2C);
     g_I2cRegisterData.minor = UMAP_MIN_MINOR_I2C;
     g_I2cRegisterData.owner = THIS_MODULE;
     g_I2cRegisterData.fops   = &I2C_FOPS;
@@ -399,13 +481,11 @@ HI_S32 I2C_DRV_ModInit(HI_VOID)
         return HI_FAILURE;
     }
 
-    //pProcItem->read  = I2C_ProcRead;
+    pProcItem->read  = I2C_ProcRead;
     pProcItem->write = I2C_ProcWrite;
 
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_i2c.ko success.  \t(%s)\n", VERSION_STRING);
-#endif
+    HI_PRINT("Load hi_i2c.ko success.  \t(%s)\n", VERSION_STRING);
 #endif
     return 0;
 }

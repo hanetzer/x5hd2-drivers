@@ -1,7 +1,7 @@
 #ifndef __VPSS_ALG_CSC_H__
 #define __VPSS_ALG_CSC_H__
 
-#include"drv_mmz_ext.h"
+#include"hi_drv_mmz.h"
 #include"hi_drv_video.h"
 
 
@@ -41,6 +41,7 @@ typedef struct
     HI_DRV_COLOR_SPACE_E eInputCS;
     HI_DRV_COLOR_SPACE_E eOutputCS;
     HI_BOOL bIsBGRIn;
+    HI_BOOL bIsBGROut;
 
     HI_U32 u32Bright;      //bright adjust value,range[0,100],default setting 50; 
     HI_U32 u32Contrst;     //contrast adjust value,range[0,100],default setting 50;

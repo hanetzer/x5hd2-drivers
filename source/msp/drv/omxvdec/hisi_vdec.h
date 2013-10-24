@@ -31,11 +31,11 @@ enum {
 };
 
 
-#define DEFAULT_FRAME_WIDTH		1920  
+#define DEFAULT_FRAME_WIDTH	        1920  
 #define DEFAULT_FRAME_HEIGHT		1080 
 
-/* vdec msg response types */
-#define VDEC_MSG_RESP_BASE		0x10000
+/* vdec msg response types */ 
+#define VDEC_MSG_RESP_BASE		    0x10000
 #define VDEC_MSG_RESP_OPEN              (VDEC_MSG_RESP_BASE + 0x1)
 #define VDEC_MSG_RESP_START_DONE        (VDEC_MSG_RESP_BASE + 0x2)
 #define VDEC_MSG_RESP_STOP_DONE		(VDEC_MSG_RESP_BASE + 0x3)
@@ -81,6 +81,9 @@ enum {
 #define VDEC_BUFFERFLAG_SYNCFRAME	  0x00000020
 #define VDEC_BUFFERFLAG_EXTRADATA	  0x00000040
 #define VDEC_BUFFERFLAG_CODECCONFIG	  0x00000080
+
+
+#define PATH_LEN                      64
 
 /* ========================================================
  * IOCTL for interaction with omx components
@@ -164,7 +167,7 @@ struct vdec_ioctl_msg {
 	_IOW(VDEC_IOCTL_MAGIC, 23, struct vdec_ioctl_msg)
 
 
-#define DRIVER_NAME	        "hi_omxvdec"
+#define OMXVDEC_NAME	        "hi_omxvdec"
 #define DRIVER_PATH         "/dev/hi_omxvdec"
 
 #define OMXTRACE()            printk("fun:%s, line: %d\n", __func__, __LINE__)
@@ -182,13 +185,18 @@ typedef struct vdec_driver_cfg {
 
 typedef struct vdec_driver_context {
 
-	HI_S32 video_driver_fd;
-	HI_S32 chan_handle;
+	HI_S32     video_driver_fd;
+	HI_S32     chan_handle;
 
-	HI_U32 decoder_format;
-	HI_U32 extradata;
+	HI_U32     decoder_format;
+	HI_U32     extradata;
     
     driver_cfg drv_cfg;
+    
+    HI_VOID*   yuv_fp;
+    HI_U8*     chrom_l;
+    HI_U32     chrom_l_size;
+    
 }vdec_drv_context;
 
 /* ========================================================
@@ -262,7 +270,7 @@ typedef struct hiOMX_VDEC_FRAME_S
     HI_U32   height;
 
     HI_U32   save_yuv;
-    HI_S8     save_path[64];
+    HI_CHAR  save_path[PATH_LEN];
     
 }OMX_VDEC_FRAME_S;
 
@@ -294,7 +302,6 @@ struct image_size {
 union vdec_msgdata {
 	struct vdec_user_buf_desc buf;
 	struct image_size img_size;
-	HI_U32 msg_priv;
 };
 
 

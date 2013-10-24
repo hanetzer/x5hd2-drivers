@@ -3,7 +3,7 @@
   Copyright (C), 2001-2011, Hisilicon Tech. Co., Ltd.
 
  ******************************************************************************
-  File Name     : hi3560.c
+  File Name     : drv_sys_ext.c
   Version       : Initial Draft
   Author        : Hisilicon multimedia software group
   Created       : 2006/02/09
@@ -26,19 +26,18 @@
 
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
-
 #include <linux/delay.h>
-
+#include <mach/hardware.h>
 #include "hi_type.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_reg_ext.h"
-
+#include "hi_osal.h"
+#include "hi_reg_common.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_reg.h"
 #include "drv_sys_ioctl.h"
 
-static HI_CHAR s_szSdkKoVersion[] = "SDK_VERSION:["\
+static HI_CHAR s_szSdkKoVersion[] __attribute__((used)) = "SDK_VERSION:["\
     MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
     __DATE__", "__TIME__"]";
 
@@ -49,9 +48,14 @@ HI_CHAR *g_pszChipName[HI_CHIP_TYPE_BUTT+1] = {
 "Hi3716CES",
 
 "Hi3720",
-
 "HI3712" ,
 "HI3715" ,
+
+"HI3718M",
+"HI3718C",
+"HI3719M",
+"HI3719C",
+"HI3719M_A",
 
 "UNKNOWN"
 };
@@ -134,8 +138,11 @@ static HI_S32 SYS_Ioctl(struct inode *pInode,
 
         case SYS_GET_TIMESTAMPMS :
             ret = HI_DRV_SYS_GetTimeStampMs((HI_U32*)arg);
-
             break;
+			
+	 case SYS_GET_DOLBYSUPPORT:
+	 	ret = HI_DRV_SYS_GetDolbySupport((HI_U32*)arg);
+		break;
 
         default :
             HI_WARN_SYS("ioctl cmd %d nonexist!\n", cmd);
@@ -148,28 +155,37 @@ static HI_S32 SysProcShow(struct seq_file *s, HI_VOID *pArg)
 {
     HI_CHIP_TYPE_E      ChipType    = HI_CHIP_TYPE_BUTT;
     HI_CHIP_VERSION_E   ChipVersion = 0;
-    HI_U32              Value;
+    HI_U32 u32DolbySupport ;
+    HI_U32 u32DtsSupport ;
+    HI_U32 u32RoviSupport ;
 
     HI_DRV_SYS_GetChipVersion(&ChipType, &ChipVersion);
 
-    seq_printf(s, "%s\n", s_szSdkKoVersion);
+    PROC_PRINT(s, "%s\n", s_szSdkKoVersion);
 
     if (ChipType <= HI_CHIP_TYPE_BUTT)
     {
-        seq_printf(s, "CHIP_VERSION: %s(0x%x)_v%x\n", g_pszChipName[ChipType], ChipType, ChipVersion);
+        PROC_PRINT(s, "CHIP_VERSION: %s(0x%x)_v%x\n", g_pszChipName[ChipType], ChipType, ChipVersion);
     }
     else
     {
-        seq_printf(s, "CHIP_VERSION: %s(0x%x)_v%x\n", g_pszChipName[HI_CHIP_TYPE_BUTT], ChipType, ChipVersion);
+        PROC_PRINT(s, "CHIP_VERSION: %s(0x%x)_v%x\n", g_pszChipName[HI_CHIP_TYPE_BUTT], ChipType, ChipVersion);
     }
 
-    if ((HI_CHIP_TYPE_HI3712 == ChipType) || (HI_CHIP_TYPE_HI3716CES == ChipType) || ((HI_CHIP_TYPE_HI3716M == ChipType) && (HI_CHIP_VERSION_V300 == ChipVersion)))
+    if (HI_SUCCESS == HI_DRV_SYS_GetDolbySupport(&u32DolbySupport))
     {
-        HI_REG_READ(IO_ADDRESS(HI_DOLBY_REG), Value);
-
-        seq_printf(s, "DOLBY: %s\n", (Value & HI_DOLBY_BIT) ? "NO" : "YES");
+    	PROC_PRINT(s, "DOLBY: %s\n", (u32DolbySupport) ? "YES" : "NO");
     }
 
+    if (HI_SUCCESS == HI_DRV_SYS_GetDtsSupport(&u32DtsSupport))
+    {
+        PROC_PRINT(s, "DTS: %s\n", (u32DtsSupport) ? "YES" : "NO");
+    }
+
+    if (HI_SUCCESS == HI_DRV_SYS_GetRoviSupport(&u32RoviSupport))
+    {
+        PROC_PRINT(s, "ROVI: %s\n", (u32RoviSupport) ? "YES" : "NO");
+    }
     return 0;
 }
 
@@ -202,26 +218,32 @@ static struct file_operations stFileOp =
 };
 static UMAP_DEVICE_S s_stDevice;
 
-
 HI_S32 HI_DRV_SYS_Init(HI_VOID)
 {
+    DRV_PROC_EX_S stFnOpt =
+    {
+         .fnRead = SysProcShow,
+    };
+
     sema_init(&s_stSocData.stSem, 1);
-    sprintf(s_stDevice.devfs_name, UMAP_DEVNAME_SYS);
+	
+    HI_OSAL_Snprintf(s_stDevice.devfs_name, sizeof(s_stDevice.devfs_name), UMAP_DEVNAME_SYS);
     s_stDevice.fops = &stFileOp;
     s_stDevice.minor = UMAP_MIN_MINOR_SYS;
     s_stDevice.owner  = THIS_MODULE;
     s_stDevice.drvops = NULL;
+	
     if (HI_DRV_DEV_Register(&s_stDevice))
     {
         HI_ERR_SYS("Register system device failed!\n");
         goto OUT;
     }
 
-    HI_DRV_PROC_AddModule(HI_MOD_SYS, SysProcShow, 0);
+    HI_DRV_PROC_AddModule(HI_MOD_SYS, &stFnOpt, 0);
 
     return 0;
-OUT:
 
+OUT:
     HI_WARN_SYS("load sys ...FAILED!\n");
     return HI_FAILURE;
 }
@@ -230,7 +252,5 @@ HI_VOID HI_DRV_SYS_Exit(HI_VOID)
 {
     HI_DRV_PROC_RemoveModule(HI_MOD_SYS);
     HI_DRV_DEV_UnRegister(&s_stDevice);
-    return ;
 }
-
 

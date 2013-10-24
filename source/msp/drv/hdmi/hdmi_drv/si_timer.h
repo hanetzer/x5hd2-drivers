@@ -12,7 +12,7 @@
 #define _TIMER_
 
 
-#ifdef CONFIG_SUPPORT_CA_RELEASE
+#ifdef HI_ADVCA_FUNCTION_RELEASE
 #define DEBUG_PRINTK(fmt, args...)
 #else
 #define DEBUG_PRINTK(fmt,args...)  printk(fmt,##args)

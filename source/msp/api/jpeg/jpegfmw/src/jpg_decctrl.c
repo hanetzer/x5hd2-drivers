@@ -103,7 +103,7 @@ typedef struct hiJPG_DECCTX_S
 
 #define JPG_GETCURPICINFO(tHandle, tNeedIdx, tpNeedPicInfo) \
     do {\
-        JPG_PICPARSEINFO_S* tpList; \
+        JPG_PICPARSEINFO_S* tpList = HI_NULL; \
         HI_U32 tIdx; \
         HI_S32 GetRet; \
         GetRet = JPGPARSE_GetImgInfo((tHandle), &tpList); \
@@ -317,7 +317,7 @@ HI_VOID*  JPGFMW_Alloc(JPG_MEM_S* pstMem, HI_U32 Size)
 	        }
 	    }
 
-	    PhysAddr = JPG_MMB_Alloc(Size, 64, (HI_U8*)"decctrl", JPG_CACHED, &pVirtAddr);
+	    PhysAddr = JPG_MMB_Alloc(Size, 64, (HI_U8*)"JPEG_DECODER", JPG_CACHED, &pVirtAddr);
 	    if (0 == PhysAddr)
 	    {
 	        return HI_NULL;
@@ -750,7 +750,7 @@ STATIC_FUNC HI_S32 JPGCopyParseBuf2HDBuf(JPG_DECCTX_S*   pstCtx)
         JPGBUF_DATA_S stData;
         HI_S32 s32Ret;
         HI_BOOL bEOI = HI_FALSE;
-        HI_U32 EOIOffset;
+        HI_U32 EOIOffset = 0;
         JPGDEC_WRITESTREAM_S stWriteStrm;
 
         HI_U8 FFData = 0xFF;
@@ -1593,7 +1593,7 @@ HI_S32  JPG_GetPrimaryInfo(JPG_HANDLE Handle, JPG_PRIMARYINFO_S **pPrimaryInfo)
         JPG_DECCTX_S*    pstCtx;
         HI_S32 s32Ret;
 
-        JPG_PICPARSEINFO_S* pPicInfoHead;
+        JPG_PICPARSEINFO_S* pPicInfoHead = HI_NULL;
         JPG_PICPARSEINFO_S* pList;
         JPG_PRIMARYINFO_S*  pstPrimInfo;
         JPG_PICINFO_S*      pPicInfoAddr;
@@ -1697,6 +1697,11 @@ HI_S32  JPG_ReleasePrimaryInfo(JPG_HANDLE Handle, const JPG_PRIMARYINFO_S *pImag
 		
 }
 
+static JPG_STATE_E JPG_TransformParseState(JPG_PARSESTATE_E enState)
+{
+    return (JPG_STATE_E)enState;
+}
+
 /******************************************************************************
 * Function:      JPG_GetPicInfo
 * Description:   get info for a spcecified picture
@@ -1782,7 +1787,7 @@ HI_S32  JPG_GetPicInfo(JPG_HANDLE Handle, JPG_PICINFO_S *pPicInfo,
                                 Index, pstCtx->bReqExif, &stParseState);
         JPG_CHECK_RET(s32Ret, return HI_FAILURE);
 
-        pstCtx->State = (JPG_STATE_E)stParseState.State;
+        pstCtx->State = JPG_TransformParseState(stParseState.State);
 
         pstCtx->CurrIndex = (HI_S32)stParseState.Index;
         pstCtx->ThumbCnt = stParseState.ThumbCnt;
@@ -1993,7 +1998,7 @@ HI_S32  JPG_SendStream(HI_U32 Handle, JPGDEC_WRITESTREAM_S *pWriteInfo)
                                         pstCtx->ReqIndex, pstCtx->bReqExif, &stParseState);
                 JPG_CHECK_RET(s32Ret, return HI_FAILURE);
 
-                pstCtx->State = (JPG_STATE_E)stParseState.State;
+                pstCtx->State = JPG_TransformParseState(stParseState.State);
 
                 /*refresh state*/
                 pstCtx->CurrIndex = (HI_S32)stParseState.Index;
@@ -2120,7 +2125,6 @@ HI_S32  JPG_SendStream(HI_U32 Handle, JPGDEC_WRITESTREAM_S *pWriteInfo)
         default:
 			/** revise by yanjianqing **/
             jpg_assert((HI_FALSE!=bAssert), return HI_FAILURE);
-            break;
         }
 
         pstCtx->TotalOffset += pWriteInfo->CopyLen;
@@ -2247,6 +2251,11 @@ HI_S32  JPG_ResetDecoder1(JPG_HANDLE Handle)
 		
 }
 
+static JPG_STATE_E JPG_TransformHdState(JPG_HDSTATE_E enState)
+{
+    return (JPG_STATE_E)enState;
+}
+
 /******************************************************************************
 * Function:      JPG_IsNeedStream
 * Description:   require if the decoder need more stream or not, if need, return the size of the free buffer
@@ -2345,7 +2354,7 @@ HI_S32  JPG_IsNeedStream(JPG_HANDLE Handle, HI_VOID** pAddr, HI_U32 *pSize)
             JPG_CHECK_RET(s32Ret, return HI_FAILURE);
 
             /*maintain the state of the decoder controller according to the interrupt type*/
-            pstCtx->State = (JPG_STATE_E)HdState;
+            pstCtx->State = JPG_TransformHdState(HdState);
 
             if (JPG_STATE_DECODING == pstCtx->State)
             {

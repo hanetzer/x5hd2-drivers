@@ -3,8 +3,8 @@
 
 #include "hi_type.h"
 #include "hi_module.h"
-#include "drv_mmz_ext.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_sys.h"
 #include "hi_kernel_adapt.h"
 
 #include "demux_debug.h"
@@ -13,7 +13,7 @@
 #include "drv_demux_reg.h"
 #include "drv_demux_func.h"
 #include "drv_demux_osal.h"
-#include "drv_file_ext.h"
+#include "hi_drv_file.h"
 
 
 #ifdef __cplusplus
@@ -888,7 +888,7 @@ static HI_U32 DMX_SwGetRunChannelNum(HI_VOID)
 #ifdef DMX_SW_DEBUG
 static struct file * g_stTsHandle = HI_NULL;
 #endif
-static HI_S32 SW_Extract_thread(HI_VOID *arg)
+static HI_S32 HI_DMX_SWExtractthread(HI_VOID *arg)
 {
     static DMX_UserMsg_S stReqBufTmp[DMX_ACQUIRE_BUF_NUM];
     DMX_DEV_OSI_S *pDmxDevOsi = g_pDmxDevOsi;
@@ -1035,7 +1035,7 @@ HI_S32 HI_DMX_SwNewChannel(HI_U32 u32ChannelId)
     ChanInfo->ChanBufSize = u32BlockNum * DMX_MAX_SEC_LEN;
 
     memset(&stSwChn[u32ChannelId].stDataBuf, 0, sizeof(st_SW_DataBuf));
-    sprintf(BufName, "DMX_SW_BUF[%u]", u32ChannelId);
+    snprintf(BufName, 16,"DMX_SWChannelBuf[%u]", u32ChannelId);
     s32Ret = HI_DRV_MMZ_AllocAndMap(BufName, HI_NULL, ChanInfo->ChanBufSize, 4,
                                        &(stSwChn[u32ChannelId].stDataBuf.dataBuf));
     if (HI_SUCCESS != s32Ret)
@@ -1044,7 +1044,7 @@ HI_S32 HI_DMX_SwNewChannel(HI_U32 u32ChannelId)
         return HI_ERR_DMX_ALLOC_MEM_FAILED;
     }
 
-    sprintf(BufName, "DMX_SW_DSC[%u]", u32ChannelId);
+    snprintf(BufName, 16,"DMX_SWDescriptor[%u]", u32ChannelId);
     s32Ret = HI_DRV_MMZ_AllocAndMap(BufName, HI_NULL, u32BlockNum * sizeof(st_SW_DESC), 4,
                                        &(stSwChn[u32ChannelId].stDataBuf.dscBuf));
     if (HI_SUCCESS != s32Ret)
@@ -1110,7 +1110,7 @@ HI_S32 HI_DMX_SwOpenChannel(HI_U32 u32ChannelId)
     LOCKSWCHN(u32ChannelId);
     if (!gu32SWThreadRunFlag) //thread not run
     {
-        pstDemuxSwThread = kthread_create(SW_Extract_thread, NULL, "DmxSw"); //create thread
+        pstDemuxSwThread = kthread_create(HI_DMX_SWExtractthread, NULL, "DmxSw"); //create thread
         if (HI_NULL == pstDemuxSwThread)
         {
             HI_ERR_DEMUX("create kthread failed!\n");

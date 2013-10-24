@@ -546,14 +546,14 @@ typedef struct hiUNF_TUNER_FE_LNB_CONFIG_S
 /** CNcomment:TUNER Ù–‘*/
 typedef struct  hiTUNER_ATTR_S
 {
-    HI_UNF_TUNER_SIG_TYPE_E     enSigType ;         /**<Signal type*/                             /**<CNcomment:–≈∫≈¿‡–Õ*/
-    HI_UNF_TUNER_DEV_TYPE_E enTunerDevType;     /**<Tuner type*/                                  /**<CNcomment:TUNER¿‡–Õ*/
-    HI_U32 u32TunerAddr;                                      /*The i2c address of tuner, if demod type is 3130I,3130E or J83B, you cannot set it*/
-    HI_UNF_DEMOD_DEV_TYPE_E enDemodDevType;     /**<QAM type*/                                    /**<CNcomment:QAM¿‡–Õ*/
-    HI_U32 u32DemodAddr;                                   /*The i2c address of demod, if demod type is 3130I,3130E or J83B, you cannot set it*/
-    HI_UNF_TUNER_OUPUT_MODE_E   enOutputMode ;      /**<Output mode of transport streams (TSs)*/  /**<CNcomment:TS¡˜ ‰≥ˆƒ£ Ω*/
-    HI_U8   enI2cChannel;       /**<I2C channel used by the tuner*/                               /**<CNcomment:TUNER π”√µƒI2CÕ®µ¿*/
-    HI_U32                         u32ResetGpioNo;  /**<Demod reset GPIO NO.*/                    /**<CNcomment:∏¥Œª π”√µƒgpioπ‹Ω≈∫≈*/
+    HI_UNF_TUNER_SIG_TYPE_E	enSigType ;         /**<Signal type*/                             /**<CNcomment:–≈∫≈¿‡–Õ*/
+    HI_UNF_TUNER_DEV_TYPE_E	enTunerDevType;     /**<Tuner type*/                                  /**<CNcomment:TUNER¿‡–Õ*/
+    HI_U32	u32TunerAddr;                                      /*The i2c address of tuner, if demod type is 3130I,3130E or J83B, you cannot set it*/
+    HI_UNF_DEMOD_DEV_TYPE_E	enDemodDevType;     /**<QAM type*/                                    /**<CNcomment:QAM¿‡–Õ*/
+    HI_U32	u32DemodAddr;                                   /*The i2c address of demod, if demod type is 3130I,3130E or J83B, you cannot set it*/
+    HI_UNF_TUNER_OUPUT_MODE_E	enOutputMode ;      /**<Output mode of transport streams (TSs)*/  /**<CNcomment:TS¡˜ ‰≥ˆƒ£ Ω*/
+    HI_U8	enI2cChannel;       /**<I2C channel used by the tuner*/                               /**<CNcomment:TUNER π”√µƒI2CÕ®µ¿*/
+    HI_U32	u32ResetGpioNo;  /**<Demod reset GPIO NO.*/                    /**<CNcomment:∏¥Œª π”√µƒgpioπ‹Ω≈∫≈*/
 } HI_UNF_TUNER_ATTR_S ;
 
 /** Frequency locking parameters of the tuner*/
@@ -886,7 +886,6 @@ N/A
 */
 HI_S32 HI_UNF_TUNER_DeInit(HI_VOID);
 
-
 /**
 \brief  Obtains the default attributes of the tuner. 
 CNcomment:\brief  ªÒ»°TUNERµƒƒ¨»œ Ù–‘°£CNend
@@ -895,9 +894,11 @@ This API is available only after the tuner is initialized.
 CNcomment:¥ÀΩ”ø⁄‘⁄TUNER…Ë±∏≥ı ºªØ∫Û≤≈ƒ‹ π”√°£CNend
 \param[in] u32tunerId   tuner port ID. The port ID can be 0-2.             CNcomment:TUNER∂Àø⁄∫≈£¨»°÷µŒ™0-2°£CNend
 \param[out] pstTunerAttr The default attributes of the tuner are returned. CNcomment:∑µªÿµ±«∞TUNERµƒƒ¨»œ Ù–‘°£CNend
-\retval ::HI_SUCCESS Success                                               CNcomment: ≥…π¶ CNend
-\retval ::HI_FAILURE Calling this API fails.                               CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
-
+\retval ::HI_SUCCESS Success.									   CNcomment: ≥…π¶ CNend
+\retval ::HI_FAILURE Calling this API fails.                                               CNcomment: APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_INIT  The Frontend module is not initialized. CNcomment: ƒ£øÈ√ª”–≥ı ºªØCNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»ÎPORT ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»ÎPORT ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -913,6 +914,11 @@ N/A
 \param[in] pstTunerAttr tuner attributes                            CNcomment:TUNERµƒ Ù–‘°£CNend
 \retval ::HI_SUCCESS Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE  Calling this API fails.                       CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_SELECTI2CCHANNEL The input I2C channel is invalid. CNcomment: ‰»ÎI2C Õ®µ¿∑«∑® CNend
 \see \n
 N/A
 */
@@ -928,6 +934,11 @@ N/A
 \param[in] pstSatTunerAttr tuner attributes                         CNcomment:Œ¿–«TUNERµƒ∏Ωº” Ù–‘°£CNend
 \retval ::HI_SUCCESS Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE  Calling this API fails.                       CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_SETSATATTR Tuner TUNER_SETSATATTR_CMD error. CNcomment:…Ë÷√ Ù–‘ ß∞‹ CNend
 \see \n
 N/A
 */
@@ -936,8 +947,8 @@ HI_S32 HI_UNF_TUNER_SetSatAttr(HI_U32	u32tunerId , const HI_UNF_TUNER_SAT_ATTR_S
 /** 
 \brief Obtains the attributes of the tuner.
 CNcomment:\brief ªÒ»°TUNERµƒ Ù–‘°£CNend
-
 \attention \n
+N/A
 This API is available only after the tuner is initialized.
 CNcomment:¥ÀΩ”ø⁄‘⁄TUNER…Ë±∏≥ı ºªØ∫Û≤≈ƒ‹ π”√°£CNend
 
@@ -945,7 +956,9 @@ CNcomment:¥ÀΩ”ø⁄‘⁄TUNER…Ë±∏≥ı ºªØ∫Û≤≈ƒ‹ π”√°£CNend
 \param[out] pstTunerAttr   The current attributes of the tuner are returned. CNcomment:∑µªÿµ±«∞TUNERµƒ Ù–‘°£CNend
 \retval ::HI_SUCCESS Success                                                 CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE  Calling this API fails.                                CNcomment: APIœµÕ≥µ˜”√ ß∞‹ CNend
-
+\retval ::HI_ERR_TUNER_NOT_INIT  The TUNER module is not initialized. CNcomment: ƒ£øÈ√ª”–≥ı ºªØCNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -963,7 +976,9 @@ CNcomment:÷ß≥÷÷ÿ∏¥¥Úø™TUNER…Ë±∏°£¥À ±£¨÷±Ω”∑µªÿ≥…π¶°£CNend
 \param[in] u32tunerId   tuner port ID. The port ID can be 0-2.      CNcomment:TUNER∂Àø⁄∫≈£¨»°÷µŒ™0-2 CNend
 \retval ::HI_SUCCESS Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
-
+\retval ::HI_ERR_TUNER_NOT_INIT  The TUNER module is not initialized. CNcomment: ƒ£øÈ√ª”–≥ı ºªØCNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_INIT  Opening The TUNER module  fails. CNcomment:¥Úø™…Ë±∏ ß∞‹CNend
 \see \n
 N/A
 */
@@ -981,6 +996,8 @@ CNcomment:÷ß≥÷÷ÿ∏¥πÿ±’TUNER…Ë±∏°£¥À ±£¨÷±Ω”∑µªÿ≥…π¶°£CNend
 \param[in] u32tunerId  tuner port ID. The port ID can be 0-2.     CNcomment:TUNER∂Àø⁄∫≈£¨»°÷µŒ™0-2 CNend
 \retval ::HI_SUCCESS Success                                      CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE  Calling this API fails.                     CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_INIT  The TUNER module is not initialized. CNcomment: ƒ£øÈ√ª”–≥ı ºªØCNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 
 \see \n
 N/A
@@ -1001,6 +1018,11 @@ maximum wait period.
                                                                           CNcomment:TUNERµƒÀ¯∂®µ»¥˝≥¨ ± ±º‰£¨0Œ™≤ªµ»¥˝£¨∆‰À˚Œ™◊Ó≥§µ»¥˝ ±º‰£¨µ•Œªms°£CNend
 \retval ::HI_SUCCESS Success                                              CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE  Calling this API fails.                             CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_CONNECT The signal is locked unsuccessfully . CNcomment:À¯∂®∆µµ„ ß∞‹CNend
 
 \see \n
 N/A
@@ -1013,15 +1035,19 @@ HI_S32 HI_UNF_TUNER_Connect(HI_U32  u32tunerId , const HI_UNF_TUNER_CONNECT_PARA
 \attention \n
 \Please call this API to set TS out. \n
 \There are 12 signals in ts interface, ts_dat[0..7], ts_sync, ts_vld, ts_err, ts_clk.\n 
-\There're 12 pins in HI3136 chip, and each pin can be set to output ts_dat[0..7], ts_sync,\n
+\There're 12 pins in HI3136 or HI3130v200 chip, and each pin can be set to output ts_dat[0..7], ts_sync,\n
 \ts_vld or ts_err, but ts_clk is binded to one pin, cannot be setted.\n
-CNcomment:tsΩ”ø⁄π≤”–12∏˘–≈∫≈œﬂ£¨∑÷± «ts_dat[0..7], ts_sync, ts_vld, ts_err, ts_clk£¨HI3136–æ∆¨…œ”–12∏ˆtsπ‹Ω≈£¨√ø∏ˆπ‹Ω≈ø…“‘\n
-≈‰÷√≥…≥˝ts_clk÷ÆÕ‚µƒ»Œ“‚“ª∏ˆπ‹Ω≈£¨ts_clk «πÃ∂®‘⁄HI3136–æ∆¨…œµƒ£¨≤ª÷ß≥÷≈‰÷√°£CNend
+CNcomment:tsΩ”ø⁄π≤”–12∏˘–≈∫≈œﬂ£¨∑÷± «ts_dat[0..7], ts_sync, ts_vld, ts_err, ts_clk£¨HI3136/HI3130V200 –æ∆¨…œ”–12∏ˆtsπ‹Ω≈£¨√ø∏ˆπ‹Ω≈ø…“‘\n
+≈‰÷√≥…≥˝ts_clk÷ÆÕ‚µƒ»Œ“‚“ª∏ˆπ‹Ω≈£¨ts_clk «πÃ∂®µƒ£¨≤ª÷ß≥÷≈‰÷√°£CNend
 
 \param[in] u32tunerId  tuner port ID. The port ID can be 0-2.             CNcomment:TUNER∂Àø⁄∫≈£¨»°÷µŒ™0-2 CNend
 \param[in] pstTSOUT   pointer of ts pin.                                  CNcomment:÷∏’Î¿‡–Õ£¨tsπ‹Ω≈∂®“Â£¨«Î≤Œº˚::HI_UNF_TUNER_TSOUT_SET_S CNend
 \retval ::HI_SUCCESS                                                      CNcomment: success.≥…π¶ CNend
 \retval ::HI_FAILURE  Calling this API fails.                             CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_SETTSOUT Setting tsout fails. CNcomment:…Ë÷√ts out  ß∞‹ CNend
 \see \n
 none.CNcomment:Œﬁ CNend
 */
@@ -1041,6 +1067,9 @@ N/A
 \param[out] pstTunerStatus: The current frequency locking status and parameters of the tuner are returned. Note: This parameter is valid only when HI_SUCCESS is returned.  CNcomment: ∑µªÿµ±«∞TUNERµƒÀ¯∆µ◊¥Ã¨∫ÕÀ¯∆µ≤Œ ˝°£ ◊¢“‚£∫¥À≤Œ ˝÷ª‘⁄∫Ø ˝∑µªÿ≥…π¶µƒ«Èøˆœ¬≤≈”–“‚“Â°£CNend
 \retval ::HI_SUCCESS Success                    CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE  Calling this API fails.  CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 
 \see \n
 N/A
@@ -1074,6 +1103,10 @@ CNcomment:\param[out] pu32BER  ÷∏œÚµ±«∞TUNER ŒÛ¬Î¬ µƒ÷∏’Î°£∏√÷∏’Î÷∏œÚ“ª∏ˆ∞¸∫¨»˝∏
                               ∑Ò‘Ú”¶”√≤„ø…∏˘æ› µº «Èøˆ◊‘––…Ë÷√“ª∏ˆΩœ¥Û÷µ(±»»Á0.5£¨º¥»˝∏ˆ‘™Àÿ∑÷±Œ™5°¢0°¢1)°£CNend
 \retval ::HI_SUCCESS Success                  CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE Calling this API fails.  CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:–≈∫≈Œ¥À¯∂® CNend
 
 \see \n
 N/A
@@ -1095,6 +1128,11 @@ CNcomment:\param[out] pu32SNR  ÷∏œÚµ±«∞TUNER–≈‘Î±»µƒ÷∏’Î°£
                               ∑Ò‘Ú£¨”¶”√≤„ø…Ω´¥À÷µ…Ë÷√Œ™◊Ó–°÷µ°£CNend
 \retval ::HI_SUCCESS Success                   CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE  Calling this API fails.  CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:–≈∫≈Œ¥À¯∂® CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:ªÒ»°–≈µ¿À¯∂®◊¥Ã¨ ß∞‹ CNend
 
 \see \n
 N/A
@@ -1120,6 +1158,13 @@ CNcomment:\param[out] pu32SignalStrength  ÷∏œÚµ±«∞TUNER–≈∫≈«ø∂»µƒ÷∏’Î°£
                             ∑Ò‘Ú£¨”¶”√≤„ø…Ω´¥À÷µ…Ë÷√Œ™◊Ó–°÷µ°£CNend
 \retval ::HI_SUCCESS Success                  CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE  Calling this API fails. CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:–≈∫≈Œ¥À¯∂® CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:ªÒ»°–≈µ¿À¯∂®◊¥Ã¨ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSIGNALSTRENGTH Calling this CMD fails. CNcomment:ioctlœµÕ≥µ˜”√ ß∞‹ CNend
+
 \see \n
 N/A
 */
@@ -1127,13 +1172,20 @@ HI_S32 HI_UNF_TUNER_GetSignalStrength(HI_U32   u32tunerId , HI_U32 *pu32SignalSt
 
 /**
 \brief Obtains the current signal quality of the tuner, returns a percentage value. 
-CNcomment:\brief ªÒ»°µ±«∞TUNERµƒ–≈∫≈÷ ¡ø£¨∑µªÿ∞Ÿ∑÷±»°£CNend
+CNcomment:\brief ªÒ»°µ±«∞TUNERµƒ–≈∫≈÷ ¡ø£¨∑µªÿ∞Ÿ∑÷±»( ¥ÀΩ”ø⁄≤ª÷ß≥÷DVB_C ∫ÕJ83B÷∆ Ω)°£CNend
 \attention \n
 N/A
 \param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER∂Àø⁄∫≈£¨»°÷µŒ™0-2 CNend
 \param[out] pu32SignalQuality   Output pointer.                       CNcomment:÷∏œÚ–≈∫≈÷ ¡øµƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:–≈∫≈Œ¥À¯∂® CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:ªÒ»°–≈µ¿À¯∂®◊¥Ã¨ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSIGNALQUALITY Calling this CMD fails. CNcomment:ioctlœµÕ≥µ˜”√ ß∞‹ CNend
+
 \see \n
 N/A
 */
@@ -1150,6 +1202,13 @@ N/A
 \param[out] pu32Symb   Points to the current symbol rate.             CNcomment:÷∏œÚµ±«∞∑˚∫≈¬  CNend
 \retval ::HI_SUCCESS Success                                          CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE  Calling this API fails.                         CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:–≈∫≈Œ¥À¯∂® CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:ªÒ»°–≈µ¿À¯∂®◊¥Ã¨ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSIGNALSTRENGTH  Calling this CMD fails. CNcomment:ioctlœµÕ≥µ˜”√ ß∞‹ CNend
+
 \see \n
 N/A
 */
@@ -1164,6 +1223,13 @@ N/A
 \param[out] pstSignalInfo Pointer to a signal info structure.         CNcomment:÷∏œÚ–≈∫≈–≈œ¢Ω·ππÃÂµƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:–≈∫≈Œ¥À¯∂® CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:ªÒ»°–≈µ¿À¯∂®◊¥Ã¨ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSIGNALINFO  Calling this CMD fails. CNcomment:ioctlœµÕ≥µ˜”√ ß∞‹ CNend
+
 \see \n
 N/A
 */
@@ -1178,6 +1244,10 @@ N/A
 \param[in] pstLNB      Pointer to a LNB parameter structure.          CNcomment:÷∏œÚLNB≤Œ ˝Ω·ππÃÂµƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1192,6 +1262,11 @@ N/A
 \param[in] enLNBPower  The enumeration of the LNB power type.         CNcomment:LNBπ©µÁ∑Ω Ω√∂æŸ÷µ°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+
 \see \n
 N/A
 */
@@ -1206,6 +1281,10 @@ N/A
 \param[in] u8PLPID  The PLP ID.                                       CNcomment:ŒÔ¿Ì≤„π‹µ¿ID°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_SETPLPID  Calling this CMD fails. CNcomment:ioctlœµÕ≥µ˜”√ ß∞‹ CNend
+
 \see \n
 N/A
 */
@@ -1221,6 +1300,11 @@ N/A
 \param[out] pu8PLPNum  The PLP number.                                CNcomment:ŒÔ¿Ì≤„π‹µ¿ ˝¡ø°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_GETPLPNUM  Calling this CMD fails. CNcomment:ioctlœµÕ≥µ˜”√ ß∞‹ CNend
+
 \see \n
 N/A
 */
@@ -1237,6 +1321,11 @@ N/A
 \param[out] penPLPType  The PLP type.                                 CNcomment:ŒÔ¿Ì≤„π‹µ¿¿‡–Õ°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_GETPLPTYPE  Calling this CMD fails. CNcomment:ioctlœµÕ≥µ˜”√ ß∞‹ CNend
+
 \see \n
 N/A
 */
@@ -1253,6 +1342,12 @@ N/A
 \param[in] pstPara     The pointer to the blind scan parameter.       CNcomment:÷∏œÚ√§…®≤Œ ˝µƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_BLINDSCAN Blind scan busy. CNcomment:√§…®’˝‘⁄”¶”√ CNend
+
 \see Please refer to definition of HI_UNF_TUNER_BLINDSCAN_PARA_S.
 N/A
 */
@@ -1266,6 +1361,9 @@ N/A
 \param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER∂Àø⁄∫≈£¨»°÷µŒ™0-2 CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+
 \see \n
 N/A
 */
@@ -1273,12 +1371,16 @@ HI_S32 HI_UNF_TUNER_BlindScanStop(HI_U32 u32TunerId);
 
 /**
 \brief TUNER standby. 
-CNcomment:\brief TUNER¥˝ª˙ CNend
+CNcomment:\brief TUNER¥˝ª˙(  ¥ÀΩ”ø⁄≤ª÷ß≥÷DVB_C ∫ÕJ83B÷∆ Ω£¨¥À¡Ω÷÷÷∆ Ω¥˝ª˙«Î≤Œº˚pmoc ¥˝ª˙Ω”ø⁄)  CNend
 \attention \n
 N/A
 \param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER∂Àø⁄∫≈£¨»°÷µŒ™0-2 CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_STANDBY  Calling this CMD fails. CNcomment:ioctlœµÕ≥µ˜”√ ß∞‹ CNend
+
 \see \n
 N/A
 */
@@ -1286,12 +1388,15 @@ HI_S32 HI_UNF_TUNER_Standby(HI_U32 u32TunerId);
 
 /**
 \brief Wakes up TUNER. 
-CNcomment:\brief TUNERªΩ–— CNend
+CNcomment:\brief TUNERªΩ–—(  ¥ÀΩ”ø⁄≤ª÷ß≥÷DVB_C ∫ÕJ83B÷∆ Ω£¨¥À¡Ω÷÷÷∆ ΩªΩ–—«Î≤Œº˚pmoc ªΩ–—ªΩ–—Ω”ø⁄) CNend
 \attention \n
 N/A
 \param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER∂Àø⁄∫≈£¨»°÷µŒ™0-2 CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_WAKEUP  Calling this CMD fails. CNcomment:ioctlœµÕ≥µ˜”√ ß∞‹ CNend
 \see \n
 N/A
 */
@@ -1308,6 +1413,13 @@ N/A
 CNcomment:\param[out] pstRecvMsg ÷∏œÚΩ” ’œ˚œ¢Ω·ππÃÂµƒ÷∏’Î°£»Áπ˚ «DiSEqC 1.x…Ë±∏£¨’‚¿Ôø…“‘¥´NULL°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_DISEQC Send DiSEqC message fail. CNcomment:∑¢ÀÕœ˚œ¢ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_FAILED_DISEQC Recv DiSEqC message fail. CNcomment:Ω” ’œ˚œ¢ ß∞‹ CNend
+
 \see \n
 N/A
 */
@@ -1324,6 +1436,9 @@ N/A
 \param[in] enPort      The enumeration of the switch port.            CNcomment:ø™πÿ√∂æŸ÷µ°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1338,6 +1453,9 @@ N/A
 \param[in] enPort      The enumeration of the switch port.            CNcomment:ø™πÿ√∂æŸ÷µ°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1352,6 +1470,10 @@ N/A
 \param[in] enStatus    The enumeration of the switch port.            CNcomment:ø™πÿ√∂æŸ÷µ°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_DISEQC  Calling this CMD fails. CNcomment:ioctlœµÕ≥µ˜”√ ß∞‹ CNend
 \see \n
 N/A
 */
@@ -1367,6 +1489,9 @@ N/A
 \param[in] pstPara     The pointer to a switch parameter structure.   CNcomment:÷∏œÚø™πÿ≤Œ ˝µƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see Please refer to definition of HI_UNF_TUNER_DISEQC_SWITCH4PORT_S.
 N/A
 */
@@ -1381,6 +1506,9 @@ N/A
 \param[in] pstPara     The pointer to a switch parameter structure.   CNcomment:÷∏œÚø™πÿ≤Œ ˝µƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1395,6 +1523,9 @@ N/A
 \param[in] pstPara     The pointer to a position parameter structure. CNcomment:÷∏œÚŒª÷√≤Œ ˝µƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1409,6 +1540,9 @@ N/A
 \param[in] pstPara     The pointer to a position parameter structure. CNcomment:÷∏œÚŒª÷√≤Œ ˝µƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1423,6 +1557,9 @@ N/A
 \param[in] pstPara     The pointer to a limit parameter structure.    CNcomment:÷∏œÚlimit≤Œ ˝µƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1437,6 +1574,9 @@ N/A
 \param[in] pstPara     The pointer to a movement parameter structure. CNcomment:÷∏œÚ“∆∂Ø≤Œ ˝µƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1451,6 +1591,8 @@ N/A
 \param[in] enLevel     The command level of the DiSEqC motor.         CNcomment:¬Ì¥Ô÷ß≥÷µƒ√¸¡Óµ»º∂°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1466,6 +1608,9 @@ N/A
                                                                       CNcomment:÷∏œÚ÷ÿº∆À„≤Œ ˝µƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1480,6 +1625,9 @@ N/A
 \param[in/out] pstPara The pointer to a USALS parameter structure.    CNcomment:÷∏œÚUSALSº∆À„≤Œ ˝µƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1494,6 +1642,9 @@ N/A
 \param[in] pstPara     The pointer to a USALS angular structure.      CNcomment:÷∏œÚUSALSΩ«∂»≤Œ ˝µƒ÷∏’Î°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1508,6 +1659,8 @@ N/A
 \param[in] enLevel     The command level of the DiSEqC device.        CNcomment:…Ë±∏÷ß≥÷µƒ√¸¡Óµ»º∂°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1522,6 +1675,8 @@ N/A
 \param[in] enLevel     The command level of the DiSEqC device.        CNcomment:…Ë±∏÷ß≥÷µƒ√¸¡Óµ»º∂°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1536,6 +1691,8 @@ N/A
 \param[in] enLevel     The command level of the DiSEqC device.        CNcomment:…Ë±∏÷ß≥÷µƒ√¸¡Óµ»º∂°£CNend
 \retval ::HI_SUCCESS   Success                                        CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */
@@ -1551,6 +1708,10 @@ N/A
 \param[out] pstData       The buffer to store data.                          CNcomment: ˝æ›¥Ê¥¢«¯°£CNend
 \retval ::HI_SUCCESS   Success                                               CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                               CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_SAMPLEDATA Tuner sample data fail. CNcomment:ªÒ»° ˝æ› ß∞‹ CNend
 \see \n
 N/A
 */
@@ -1566,6 +1727,10 @@ N/A
 \param[out] pu32Data      The buffer to store data.                          CNcomment: ˝æ›¥Ê¥¢«¯°£CNend
 \retval ::HI_SUCCESS   Success                                               CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                               CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_FAILED_SAMPLEDATA Tuner sample data fail. CNcomment:ªÒ»° ˝æ› ß∞‹ CNend
 \see \n
 N/A
 */
@@ -1581,6 +1746,10 @@ N/A
 \param[out] pu32TimeOutMs      The upper limit time.                         CNcomment:◊Ó¥ÛÀ¯Ã® ±º‰°£CNend
 \retval ::HI_SUCCESS   Success                                               CNcomment:≥…π¶ CNend
 \retval ::HI_FAILURE   Calling this API fails.                               CNcomment:APIœµÕ≥µ˜”√ ß∞‹ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: ƒ£øÈ√ª”–¥Úø™CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment: ‰»Î ≤Œ ˝∑«∑® CNend
 \see \n
 N/A
 */

@@ -39,7 +39,7 @@ extern "C"
 
     /***************************** Macro Definition ******************************/
  
-    #if defined(ADVCA_SUPPORT) && defined(CONFIG_SUPPORT_CA_RELEASE)
+    #if defined(HI_ADVCA_SUPPORT) && defined(HI_ADVCA_FUNCTION_RELEASE)
 	  
 	      #define GRAPHICS_ADVCA_VERSION 
 		  
@@ -71,7 +71,7 @@ extern "C"
     #endif
 
      #if 0
-	 #ifdef ADVCA_SUPPORT
+	 #ifdef HI_ADVCA_SUPPORT
           #define __INIT__
           #define __EXIT__
      #else

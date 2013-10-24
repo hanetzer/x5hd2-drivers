@@ -408,7 +408,7 @@ static void LEndianBEndianConvert(HI_U8 * Number)
 //------------------------------------------------------------------------------
 static Bool CompareVi(SHA_CTX IRAM * Sha)
 {
-    HI_U32 VPrime;
+    HI_U32 VPrime = 0;
     Bool Result = TRUE;
     HI_U8 i;
     

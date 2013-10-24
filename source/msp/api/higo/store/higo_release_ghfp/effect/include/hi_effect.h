@@ -76,14 +76,14 @@ enum HIEFFECT_ErrorCode_E
     ERR_HIEFFECT_CODE_UNDEF,               
     ERR_HIEFFECT_PTR_NULL,                 /**<pointer is NULL*/
     ERR_HIEFFECT_NO_OPEN,                  /**<effect not open*/
-    ERR_HIEFFECT_OPENED,                   
-    ERR_HIEFFECT_CLOSED,                   
+    ERR_HIEFFECT_OPENED,                   /**<effect opened*/
+    ERR_HIEFFECT_CLOSED,                   /**<effect closed*/
 
     /* New */
     ERR_HIEFFECT_INVALID_DEVICE,           /**<invalid device */
-    ERR_HIEFFECT_INVALID_HANDLE,
+    ERR_HIEFFECT_INVALID_HANDLE,           /**<invalid handle*/
     ERR_HIEFFECT_INVALID_PARAMETER,        /**<invalid parameter */
-    ERR_HIEFFECT_INVALID_OPERATION,
+    ERR_HIEFFECT_INVALID_OPERATION,        /**<invalid operation*/
     ERR_HIEFFECT_ADDR_FAULT,               /**<address fault */
     ERR_HIEFFECT_NO_MEM                    /**<mem alloc fail */
 };

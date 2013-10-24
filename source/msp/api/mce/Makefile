@@ -54,7 +54,9 @@ clean:
 
 install: all
 	$(AT)cp -f libhi_$(LIBS).a	$(STATIC_LIB_DIR)/
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)cp -f libhi_$(LIBS).so	$(SHARED_LIB_DIR)/
+endif
 	$(AT)cp -f $(MSP_DIR)/include/hi_unf_mce.h $(INCLUDE_DIR)/
 
 uninstall:
@@ -64,5 +66,7 @@ uninstall:
 
 $(LIBS) : $(OBJS)
 	$(AT)$(AR) -rsv libhi_$@.a $^
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)$(CC) -shared -o libhi_$@.so $^
+endif
 

@@ -2,9 +2,9 @@
 
 Open MAX   Component: Video Decoder
 This module contains the class definition for openMAX decoder component.
-file:	       vdec_drv_ctx.h
+file:     vdec_drv_ctx.h
 author:   y00226912
-date:      16, 03, 2013.
+date:     16, 03, 2013.
 
 =================================================*/
 
@@ -43,7 +43,7 @@ OMX_S32 channel_bind_buffer(vdec_drv_context *drv_ctx, struct vdec_user_buf_desc
 
 OMX_S32 channel_unbind_buffer(vdec_drv_context *drv_ctx, struct vdec_user_buf_desc *puser_buf);
 
-void debug_save_yuv(FILE* pFile, OMX_U8 *Yaddress, OMX_U8 *Caddress, OMX_U32 Width, OMX_U32 Height,  OMX_U32 Stride);
+OMX_S8  debug_save_yuv(FILE* pFile, OMX_U8* pstChroml, OMX_U8 *Yaddress, OMX_U8 *Caddress, OMX_U32 Width, OMX_U32 Height,  OMX_U32 Stride);
 
 
 #endif

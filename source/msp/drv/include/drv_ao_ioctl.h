@@ -29,6 +29,7 @@ typedef struct hiAO_SND_Open_Param_S
 {
     HI_UNF_SND_E       enSound;
     HI_UNF_SND_ATTR_S  stAttr;
+    HI_VOID                  *pAlsaPara;//HI_ALSA_I2S_ONLY_SUPPORT //0730
 } AO_SND_Open_Param_S, *AO_SND_Open_Param_S_PTR;
 
 typedef struct hiAO_SND_Mute_Param_S
@@ -203,6 +204,8 @@ typedef struct hiAO_Cast_Data_Param_S
  #define CMD_AO_SND_GETSMARTVOLUME _IOWR (HI_ID_AO, 0x0e, AO_SND_SmartVolume_Param_S)
  #define CMD_AO_SND_SETCASTENABLE _IOW (HI_ID_AO, 0x0f, AO_SND_CastEnable_Param_S)  
  #define CMD_AO_SND_READCASTDATA _IOW (HI_ID_AO, 0x10, AO_SND_CastData_Param_S)  //_IOW verify
+ #define CMD_AO_SND_GETHDMIMODE _IOWR (HI_ID_AO, 0x11, AO_SND_HdmiMode_Param_S)
+ #define CMD_AO_SND_GETSPDIFMODE _IOWR (HI_ID_AO, 0x12, AO_SND_SpdifMode_Param_S)
  
  #define CMD_AO_SND_ATTACHTRACK _IOW (HI_ID_AO, 0x020, HI_HANDLE)
  #define CMD_AO_SND_DETACHTRACK _IOW  (HI_ID_AO, 0x21, HI_HANDLE)

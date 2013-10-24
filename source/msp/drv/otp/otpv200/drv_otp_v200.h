@@ -3,12 +3,12 @@
   Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
 
  ******************************************************************************
-  File Name     : otp_reg_v200.h
+  File Name     : drv_otp_v200.h
   Version       : Initial Draft
-  Author        : 
+  Author        : Hisilicon hisecurity team
   Created       : 
   Last Modified :
-  Description   : OTP REG DEFINE
+  Description   : 
   Function List :
   History       :
 ******************************************************************************/
@@ -37,11 +37,11 @@ HI_S32 OTP_V200_Reset(HI_VOID);
 
 #ifdef SDK_OTP_ARCH_VERSION_V3
 /* hal v200 interface */
-HI_U32 do_apb_v200_read(HI_U32 addr);
-HI_U8 do_apb_v200_read_byte(HI_U32 addr);
-HI_S32 do_apb_v200_write(HI_U32 addr,HI_U32 tdata);
-HI_S32 do_apb_v200_write_byte(HI_U32 addr,HI_U8 tdata);
-HI_S32 do_apb_v200_write_bit(HI_U32 addr, HI_U32 bit_pos, HI_U32  bit_value);
+HI_U32 HAL_OTP_V200_Read(HI_U32 addr);
+HI_U8 HAL_OTP_V200_ReadByte(HI_U32 addr);
+HI_S32 HAL_OTP_V200_Write(HI_U32 addr,HI_U32 tdata);
+HI_S32 HAL_OTP_V200_WriteByte(HI_U32 addr,HI_U8 tdata);
+HI_S32 HAL_OTP_V200_WriteBit(HI_U32 addr, HI_U32 bit_pos, HI_U32  bit_value);
 #endif
 
 #endif /* __OTP_DRV_V200_H__ */

@@ -12,16 +12,17 @@
 #include "hi_type.h"
 #include "hi_module.h"
 #include <linux/string.h>
-#include "drv_mem_ext.h"
+#include "hi_drv_mem.h"
 #include "hal_aoe.h"
 #include "hal_aoe_func.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_mem_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_mem.h"
+#include "hi_drv_module.h"
 #include "circ_buf.h"  //todo drv_aiao_debug_common
+#include "audio_util.h"
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -78,7 +79,7 @@ static HI_VOID AOEAIPFlushState(AOE_AIP_CHN_STATE_S *state)
 }
 
 /* global function */
-HI_S32                  HAL_AOE_Init(HI_U32 u32AoeRegBase)
+HI_S32                  HAL_AOE_Init(HI_BOOL bSwAoeFlag)
 {
     AOE_AIP_ID_E aip;
     AOE_AOP_ID_E aop;
@@ -100,7 +101,7 @@ HI_S32                  HAL_AOE_Init(HI_U32 u32AoeRegBase)
         g_AoeRm.hMix[engine] = HI_NULL;
     }
 
-    return iHAL_AOE_Init(u32AoeRegBase);
+    return iHAL_AOE_Init(bSwAoeFlag);
 }
 
 HI_VOID                 HAL_AOE_DeInit(HI_VOID)
@@ -202,10 +203,10 @@ HI_S32  HAL_AOE_AIP_Create(AOE_AIP_ID_E *penAIP, AOE_AIP_CHN_ATTR_S *pstAttr)
         return HI_FAILURE;
     }
 
-    state = HI_KMALLOC(HI_ID_AIAO, sizeof(AOE_AIP_CHN_STATE_S), GFP_KERNEL);
+    state = AUTIL_AO_MALLOC(HI_ID_AO, sizeof(AOE_AIP_CHN_STATE_S), GFP_KERNEL);
     if (state == HI_NULL)
     {
-        HI_FATAL_AO("HI_KMALLOC AOE_AIP_CHN_STATE_S failed\n");
+        HI_FATAL_AO("malloc AOE_AIP_CHN_STATE_S failed\n");
         goto AIP_Create_ERR_EXIT;
     }
 
@@ -228,7 +229,7 @@ HI_S32  HAL_AOE_AIP_Create(AOE_AIP_ID_E *penAIP, AOE_AIP_CHN_ATTR_S *pstAttr)
 
 AIP_Create_ERR_EXIT:
     *penAIP = AOE_AIP_BUTT;
-    HI_KFREE(HI_ID_AIAO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     g_AoeRm.hAip[enAIP] = HI_NULL;
     return Ret;
 }
@@ -249,7 +250,7 @@ HI_VOID     HAL_AOE_AIP_Destroy(AOE_AIP_ID_E enAIP)
         HAL_AOE_AIP_Stop(enAIP);
     }
 
-    HI_KFREE(HI_ID_AOE, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     g_AoeRm.hAip[enAIP] = HI_NULL;
     return;
 }
@@ -664,10 +665,19 @@ HI_VOID                 HAL_AOE_AIP_GetFiFoDelayMs(AOE_AIP_ID_E enAIP, HI_U32 *p
     return;
 }
 
-HI_S32 HAL_AOE_AIP_GetStatus(AOE_AIP_ID_E enAIP, HI_VOID *pstStatus)
+HI_VOID HAL_AOE_AIP_GetStatus(AOE_AIP_ID_E enAIP, AOE_AIP_STATUS_E *peStatus)
 {
-    //TODO
-    return HI_SUCCESS;
+    AOE_AIP_CHN_STATE_S *state = HI_NULL;
+    
+    if (HI_NULL == g_AoeRm.hAip[enAIP])
+    {
+        *peStatus = AOE_AIP_STATUS_STOP;
+        return;
+    }
+
+    state = (AOE_AIP_CHN_STATE_S*)g_AoeRm.hAip[enAIP];
+    *peStatus = state->enCurnStatus;
+    return;
 }
 
 
@@ -764,10 +774,10 @@ HI_S32 HAL_AOE_AOP_Create(AOE_AOP_ID_E *penAOP, AOE_AOP_CHN_ATTR_S *pstAttr)
         return HI_FAILURE;
     }
 
-    state = HI_KMALLOC(HI_ID_AIAO, sizeof(AOE_AOP_CHN_STATE_S), GFP_KERNEL);
+    state = AUTIL_AO_MALLOC(HI_ID_AO, sizeof(AOE_AOP_CHN_STATE_S), GFP_KERNEL);
     if (state == HI_NULL)
     {
-        HI_FATAL_AO("HI_KMALLOC AOE_AOP_CHN_ATTR_S failed\n");
+        HI_FATAL_AO("malloc AOE_AOP_CHN_ATTR_S failed\n");
         goto AOP_Create_ERR_EXIT;
     }
 
@@ -787,7 +797,7 @@ HI_S32 HAL_AOE_AOP_Create(AOE_AOP_ID_E *penAOP, AOE_AOP_CHN_ATTR_S *pstAttr)
     return HI_SUCCESS;
 
 AOP_Create_ERR_EXIT:
-    HI_KFREE(HI_ID_AIAO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     g_AoeRm.hAop[enAOP] = HI_NULL;
     *penAOP = AOE_AOP_BUTT;
     return Ret;
@@ -804,7 +814,7 @@ HI_VOID HAL_AOE_AOP_Destroy(AOE_AOP_ID_E enAOP)
     }
     state = (AOE_AOP_CHN_STATE_S*)g_AoeRm.hAop[enAOP];
 
-    HI_KFREE(HI_ID_AOE, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     g_AoeRm.hAop[enAOP] = HI_NULL;
     return;
 }
@@ -931,10 +941,10 @@ HI_S32 HAL_AOE_ENGINE_Create(AOE_ENGINE_ID_E *penENGINE, AOE_ENGINE_CHN_ATTR_S *
         return HI_FAILURE;
     }
 
-    state = HI_KMALLOC(HI_ID_AIAO, sizeof(AOE_ENGINE_CHN_STATE_S), GFP_KERNEL);
+    state = AUTIL_AO_MALLOC(HI_ID_AO, sizeof(AOE_ENGINE_CHN_STATE_S), GFP_KERNEL);
     if (state == HI_NULL)
     {
-        HI_FATAL_AO("HI_KMALLOC AOE_ENGINE_CHN_STATE_S failed\n");
+        HI_FATAL_AO("malloc AOE_ENGINE_CHN_STATE_S failed\n");
         goto Engine_Create_ERR_EXIT;
     }
 
@@ -954,7 +964,7 @@ HI_S32 HAL_AOE_ENGINE_Create(AOE_ENGINE_ID_E *penENGINE, AOE_ENGINE_CHN_ATTR_S *
 
 Engine_Create_ERR_EXIT:
     *penENGINE = AOE_ENGINE_BUTT;
-    HI_KFREE(HI_ID_AIAO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     g_AoeRm.hMix[enEngine] = HI_NULL;
     return Ret;
 
@@ -970,7 +980,7 @@ HI_VOID HAL_AOE_ENGINE_Destroy(AOE_ENGINE_ID_E enENGINE)
     }
     state = (AOE_ENGINE_CHN_STATE_S*)g_AoeRm.hMix[enENGINE];
 
-    HI_KFREE(HI_ID_AOE, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     g_AoeRm.hMix[enENGINE] = HI_NULL;
     return;
 

@@ -36,7 +36,9 @@ static struct ir_protocol ir_protocols[] =
 		0,				/* private data */
 		nec_frame_2headers_full_parse,	/* fram parser */
 		NULL,				/* match error handle */
-		NULL				/* parse error handle */
+		NULL,				/* parse error handle */
+		0,                  /* key_hold_timeout_time, 0 means using the default value */
+		0                   /* 0: enable; 1: disable*/
 	},
 	/* NEC SIMPLE 2headers. changshu */
 	{
@@ -60,7 +62,9 @@ static struct ir_protocol ir_protocols[] =
 		1,				/* private data */
 		nec_frame_2headers_simple_parse,		/* fram parser */
 		NULL,				/* match error handle */
-		NULL				/* parse error handle */
+		NULL,				/* parse error handle */		
+        0,                  /* key_hold_timeout_time, 0 means using the default value */
+        0                   /* 0: enable; 1: disable*/
 	},
 	/* NEC simple repeate constains
 	 * uPD6121G/D6121/BU5777/D1913
@@ -86,7 +90,9 @@ static struct ir_protocol ir_protocols[] =
 		2,				/* private data */
 		nec_frame_simple_parse,		/* fram parser */
 		NULL,				/* match error handle */
-		NULL				/* parse error handle */
+		NULL,				/* parse error handle */
+		200,                        /* key_hold_timeout_time */
+		0                           /* 0: enable; 1: disable*/
 	},
 	/* NEC simple repeat, LC7461M-C13 */
 	{
@@ -110,7 +116,9 @@ static struct ir_protocol ir_protocols[] =
 		3,				/* private data */
 		nec_frame_simple_parse,		/* frame parser */
 		NULL,				/* match error handle */
-		NULL				/* parse error handle */
+		NULL,				/* parse error handle */		
+        0,                  /* key_hold_timeout_time, 0 means using the default value */
+        0                   /* 0: enable; 1: disable*/
 	},
 	/* dezhou */
 	{
@@ -134,7 +142,9 @@ static struct ir_protocol ir_protocols[] =
 		4,				/* private data */
 		nec_frame_full_parse,		/* frame parser */
 		NULL,				/* match error handle */
-		NULL				/* parse error handle */
+		NULL,				/* parse error handle */
+        0,                  /* key_hold_timeout_time, 0 means using the default value */
+        0                   /* 0: enable; 1: disable*/
 	},
 	/* huizhou */
 	{
@@ -158,7 +168,9 @@ static struct ir_protocol ir_protocols[] =
 		5,				/* private data */
 		nec_frame_full_parse,		/* frame parser */
 		NULL,				/* match error handle */
-		NULL				/* parse error handle */
+		NULL,				/* parse error handle */
+        0,                  /* key_hold_timeout_time, 0 means using the default value */
+        0                   /* 0: enable; 1: disable*/		
 	},
 	/* NEC SIMPLE 2headers. guangdong */
 	{
@@ -182,7 +194,9 @@ static struct ir_protocol ir_protocols[] =
 		6,				/* private data */
 		nec_frame_2headers_simple_parse,		/* fram parser */
 		NULL,				/* match error handle */
-		NULL				/* parse error handle */
+		NULL,   			/* parse error handle */
+        0,                  /* key_hold_timeout_time, 0 means using the default value */
+        0                   /* 0: enable; 1: disable*/		
 	},
 #endif
 
@@ -210,7 +224,8 @@ static struct ir_protocol ir_protocols[] =
 		credit_frame_parse,		/* frame parser */
 		NULL,				/* match error handle */
 		NULL,				/* parse error handle */
-		1				/* default disabled */
+        0,                  /* key_hold_timeout_time, 0 means using the default value */		
+		1				    /* default disabled */
 	},
 #endif
 
@@ -239,6 +254,8 @@ static struct ir_protocol ir_protocols[] =
 		sony_frame_full_parse,		/* frame parser */
 		NULL,				/* match error handle */
 		NULL,				/* parse error handle */
+        0,                  /* key_hold_timeout_time, 0 means using the default value */
+        0                   /* 0: enable; 1: disable*/      		
 	},
 	/* sony d7c8 */
 	{
@@ -263,6 +280,8 @@ static struct ir_protocol ir_protocols[] =
 		sony_frame_full_parse,		/* frame parser */
 		NULL,				/* match error handle */
 		NULL,				/* parse error handle */
+        0,                  /* key_hold_timeout_time, 0 means using the default value */
+        0                   /* 0: enable; 1: disable*/              		
 	},
 #endif
 
@@ -290,6 +309,8 @@ static struct ir_protocol ir_protocols[] =
 		tc9012_frame_simple_parse,	/* frame parser */
 		NULL,				/* match error handle */
 		NULL,				/* parse error handle */
+        0,                  /* key_hold_timeout_time, 0 means using the default value */
+        0                   /* 0: enable; 1: disable*/              		
 	},
 #endif
 
@@ -317,7 +338,9 @@ static struct ir_protocol ir_protocols[] =
 		0,				/* private data */
 		parse_rc6,			/* frame parser */
 		rc6_match_error_handle,		/* match error handle */
-		rc6_parse_error_handle		/* parse error handle */
+		rc6_parse_error_handle,		/* parse error handle */
+        0,                          /* key_hold_timeout_time, 0 means using the default value */
+        0                           /* 0: enable; 1: disable*/              
 
 	},
 	/* rc6 3 */				/* chuangwei TATA(Sky */
@@ -343,8 +366,9 @@ static struct ir_protocol ir_protocols[] =
 		1,				/* private data */
 		parse_rc6,			/* frame parser */
 		rc6_match_error_handle,		/* match error handle */
-		rc6_parse_error_handle		/* parse error handle */
-
+		rc6_parse_error_handle,		/* parse error handle */
+        0,                          /* key_hold_timeout_time, 0 means using the default value */
+        0                           /* 0: enable; 1: disable*/              
 	},
 	/* rc6 2 */				/* philips dvd player */
 	{
@@ -369,8 +393,9 @@ static struct ir_protocol ir_protocols[] =
 		2,				/* private data */
 		parse_rc6,			/* frame parser */
 		rc6_match_error_handle,		/* match error handle */
-		rc6_parse_error_handle		/* parse error handle */
-
+		rc6_parse_error_handle,		/* parse error handle */
+        0,                          /* key_hold_timeout_time, 0 means using the default value */
+        0                           /* 0: enable; 1: disable*/              
 	},
 #endif
 
@@ -398,7 +423,9 @@ static struct ir_protocol ir_protocols[] =
 		0,				/* private data */
 		parse_rc5,			/* frame parser */
 		rc5_match_error_handle,		/* match error handle */
-		rc5_parse_error_handle		/* parse error handle */
+		rc5_parse_error_handle,		/* parse error handle */
+        0,                          /* key_hold_timeout_time, 0 means using the default value */
+        0                           /* 0: enable; 1: disable*/              
 	},
 
     /* Extended rc5 */
@@ -424,7 +451,9 @@ static struct ir_protocol ir_protocols[] =
         1,              /* private data */
         parse_extended_rc5,     /* frame parser */
         extended_rc5_match_error_handle,    /* match error handle */
-        extended_rc5_parse_error_handle     /* parse error handle */
+        extended_rc5_parse_error_handle,    /* parse error handle */
+        0,                                  /* key_hold_timeout_time, 0 means using the default value */
+        0                                   /* 0: enable; 1: disable*/              
     },
 #endif
 	/* DO NOT REMOVE THIS. */

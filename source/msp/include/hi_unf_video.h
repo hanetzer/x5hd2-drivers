@@ -28,8 +28,8 @@ extern "C"{
 #include "hi_common.h"
 
 /*************************** Structure Definition ****************************/
-/** \addtogroup      H_2_2_1 */
-/** @{ */  /** <!-- 【Common for the media domain CNcomment: 视频通用】 */
+/** \addtogroup      VIDEO */
+/** @{ */  /** <!-- [VIDEO] */
 
 /**Defines the video norm.*/
 /**CNcomment: 定义视频制式枚举*/
@@ -71,17 +71,21 @@ typedef enum hiUNF_ENC_FMT_E
     HI_UNF_ENC_FMT_VESA_1280X720_60,
     HI_UNF_ENC_FMT_VESA_1280X800_60,
     HI_UNF_ENC_FMT_VESA_1280X1024_60,
-    HI_UNF_ENC_FMT_VESA_1360X768_60,         //Rowe
+    HI_UNF_ENC_FMT_VESA_1360X768_60,
     HI_UNF_ENC_FMT_VESA_1366X768_60,
-    HI_UNF_ENC_FMT_VESA_1400X1050_60,        //Rowe
+    HI_UNF_ENC_FMT_VESA_1400X1050_60,
     HI_UNF_ENC_FMT_VESA_1440X900_60,
     HI_UNF_ENC_FMT_VESA_1440X900_60_RB,
     HI_UNF_ENC_FMT_VESA_1600X900_60_RB,
     HI_UNF_ENC_FMT_VESA_1600X1200_60,
-    HI_UNF_ENC_FMT_VESA_1680X1050_60,       //Rowe
+    HI_UNF_ENC_FMT_VESA_1680X1050_60,     
+    HI_UNF_ENC_FMT_VESA_1680X1050_60_RB,
     HI_UNF_ENC_FMT_VESA_1920X1080_60,
     HI_UNF_ENC_FMT_VESA_1920X1200_60,
+    HI_UNF_ENC_FMT_VESA_1920X1440_60,
     HI_UNF_ENC_FMT_VESA_2048X1152_60,
+    HI_UNF_ENC_FMT_VESA_2560X1440_60_RB,
+    HI_UNF_ENC_FMT_VESA_2560X1600_60_RB,
 
     HI_UNF_ENC_FMT_BUTT
 }HI_UNF_ENC_FMT_E;
@@ -152,7 +156,7 @@ typedef enum hiUNF_VCODEC_TYPE_E
     HI_UNF_VCODEC_TYPE_SORENSON,    /**<SORENSON SPARK*/
     HI_UNF_VCODEC_TYPE_DIVX3,       /**<DIVX3*/
     HI_UNF_VCODEC_TYPE_RAW,         /**RAW*/
-    HI_UNF_VCODEC_TYPE_JPEG,        /**JPEG，added for VENC*/
+    HI_UNF_VCODEC_TYPE_JPEG,        /**JPEG,added for VENC*/
     HI_UNF_VCODEC_TYPE_VP8,         /**<VP8*/
     HI_UNF_VCODEC_TYPE_MSMPEG4V1,   /**< MS private MPEG4 */
     HI_UNF_VCODEC_TYPE_MSMPEG4V2,
@@ -177,6 +181,18 @@ typedef enum hiUNF_VCODEC_TYPE_E
     HI_UNF_VCODEC_TYPE_DV,
     HI_UNF_VCODEC_TYPE_BUTT
 }HI_UNF_VCODEC_TYPE_E;
+
+/**Defines the H264 profile of the video encoder.*/
+/**CNcomment: 定义视频解码器 H264协议档次*/
+typedef enum hiUNF_H264_PROFILE_E
+{
+    HI_UNF_H264_PROFILE_BASELINE = 0,   /**<Encode H264 stream by baseline profile.*/ /**<CNcomment: 采用基线档次编码H264码流*/
+    HI_UNF_H264_PROFILE_MAIN,           /**<Encode H264 stream by main profile.*/     /**<CNcomment:采用主要档次编码H264码流*/
+    HI_UNF_H264_PROFILE_EXTENDED,       /**<Encode H264 stream by extended profile.*/ /**<CNcomment:采用扩展档次编码H264码流*/
+    HI_UNF_H264_PROFILE_HIGH,           /**<Encode H264 stream by high profile.*/     /**<CNcomment: 采用高级档次编码H264码流*/
+    HI_UNF_H264_PROFILE_BUTT
+}HI_UNF_H264_PROFILE_E;
+
 
 typedef struct hiUNF_VCODEC_VC1_ATTR_S
 {
@@ -340,7 +356,7 @@ typedef enum hiUNF_VIDEO_FORMAT_E
     HI_UNF_FORMAT_YUV_SEMIPLANAR_411,
     HI_UNF_FORMAT_YUV_SEMIPLANAR_422_1X2,
     HI_UNF_FORMAT_YUV_SEMIPLANAR_444,
-    HI_UNF_FORMAT_YUV_SEMIPLANAR_420_UV,   /**<The YUV spatial sampling format is 4:2:0，U first.*/ /**<CNcomment: YUV空间采样格式为4:2:0, U在低位*/
+    HI_UNF_FORMAT_YUV_SEMIPLANAR_420_UV,   /**<The YUV spatial sampling format is 4:2:0,U first.*/ /**<CNcomment: YUV空间采样格式为4:2:0, U在低位*/
 
 
     /* Package */
@@ -383,9 +399,9 @@ typedef enum hiUNF_VIDEO_FIELD_MODE_E
 
 typedef struct hiUNF_CAPTURE_MEM_MODE_S
 {
-    HI_U32			    u32StartPhyAddr;	    /**<start phy addr*/ /* *<CNcomment: 起始物理地址*/
-    HI_U32			    u32StartUserAddr;       /**<start user addr*/ /*  *<CNcomment: 起始用户地址*/
-    HI_U32			    u32DataLen;		        /**<len of databuf*/ /*  *<CNcomment: 数据区长度*/
+    HI_U32			    u32StartPhyAddr;	    /**<start phy addr*/ /**<CNcomment: 起始物理地址*/
+    HI_U32			    u32StartUserAddr;       /**<start user addr*/ /**<CNcomment: 起始用户地址*/
+    HI_U32			    u32DataLen;		        /**<len of databuf*/ /**<CNcomment: 数据区长度*/
 }HI_UNF_CAPTURE_MEM_MODE_S;
 
 

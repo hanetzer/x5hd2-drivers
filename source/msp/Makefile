@@ -9,9 +9,54 @@ endif
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #	variable
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-objects:= gpu adac adec aenc avplay ci cimax+ cipher demux dmac frontend gpio \
-	  hdcp hdmi aiao hifb higo i2c ir jpeg jpegfmw jpge keyled mce pm otp png pvr \
-	  sci ssp sync tde vdec wdg vfmw vo ndpt venc vi vad vpss omxvdec omx pdm
+objects :=  adac        \
+            adec        \
+            adsp        \
+            aenc        \
+            ai          \
+            aiao        \
+            ao          \
+            avplay      \
+            ci          \
+            cimax+      \
+            cipher      \
+            demux       \
+            dmac        \
+            frontend    \
+            gpio        \
+            gpu         \
+            hdcp        \
+            hdmi        \
+            hifb        \
+            higo        \
+            i2c         \
+            ir          \
+            jpeg        \
+            jpge        \
+            keyled      \
+            mce         \
+            ndpt        \
+            omx         \
+            omxvdec     \
+            otp         \
+            pdm         \
+            pm          \
+            png         \
+            pvr         \
+            sci         \
+            sync        \
+            tde         \
+            vad         \
+            vdec        \
+            venc        \
+            vfmw        \
+            vi          \
+            vo          \
+            pq          \
+            vpss        \
+            wdg			\
+			advca
+
 objects_clean:=${addsuffix _clean,${objects}}
 objects_install:=${addsuffix _install,${objects}}
 objects_uninstall:=${addsuffix _uninstall,${objects}}

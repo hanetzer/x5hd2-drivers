@@ -25,9 +25,10 @@
 #include "hi_common.h"
 #include "hi_module.h"
 #include "hi_debug.h"
-#include "drv_mmz_ext.h"
-#include "drv_mem_ext.h"
-
+#include "hi_drv_mmz.h"
+#include "hi_drv_mem.h"
+#include "drv_vdec_ext.h"
+#include "hi_drv_sys.h"
 /* Local headers */
 #include "drv_vdec_buf_mng.h"
 
@@ -158,6 +159,12 @@ extern "C" {
         } \
     }
 
+#if (1 == PRE_ALLOC_VDEC_ESBUF_MMZ)
+extern MMZ_BUFFER_S g_stESBUFMMZ;
+extern HI_BOOL g_bVdecPreESBUFMMZUsed;
+#endif
+
+
 /************************ Static Structure Definition ************************/
 
 typedef enum tagBUFMNG_BLOCK_STATUS_E
@@ -233,6 +240,20 @@ typedef struct tagBUFMNG_GLOBAL_S
 
 /***************************** Global Definition *****************************/
 
+struct file *VdecSaveRawFile = HI_NULL;
+HI_S32 VdecRawChanNum = -1;
+struct semaphore stRawSem;
+
+struct file *VdecSaveYuvFile = HI_NULL;
+HI_S32 VdecYuvChanNum = -1;
+HI_U8 *U_Array = NULL;
+HI_U8 *V_Array = NULL;
+HI_U8 *YUV_Array = NULL;
+HI_U8 *vl = NULL;
+HI_U8 *ul = NULL;
+struct semaphore stYuvSem;
+
+
 /***************************** Static Definition *****************************/
 
 static BUFMNG_GLOBAL_S s_stBMParam = 
@@ -282,6 +303,8 @@ HI_S32 BUFMNG_DeInit(HI_VOID)
     s_stBMParam.u16InstHandle = 0;
     BUFMNG_UNLOCK(s_stBMParam.stSem);
 
+	BUFMNG_CloseFile(-1, 2);
+
     return HI_SUCCESS;
 }
 
@@ -310,19 +333,30 @@ HI_S32 BUFMNG_Create(HI_HANDLE *phBuf, BUFMNG_INST_CONFIG_S* pstConfig)
     /* If BUFMNG_ALLOC_INNER, alloc MMZ here */
     if (BUFMNG_ALLOC_INNER == pstConfig->enAllocType)
     {
-#if defined (CFG_ANDROID_TOOLCHAIN)
-        s32Ret = HI_DRV_MMZ_AllocAndMap(pstConfig->aszName, "vdec", pstConfig->u32Size, 0, &stMMZAllocBuf);
-#else
-        s32Ret = HI_DRV_MMZ_AllocAndMap(pstConfig->aszName, HI_NULL, pstConfig->u32Size, 0, &stMMZAllocBuf);
-#endif
-        if (HI_SUCCESS != s32Ret)
+#if (1 == PRE_ALLOC_VDEC_ESBUF_MMZ)
+        if ((HI_FALSE == g_bVdecPreESBUFMMZUsed) && (pstConfig->u32Size <= g_stESBUFMMZ.u32Size))
         {
-            HI_FATAL_BUFMNG("Alloc MMZ fail:0x%x.\n", s32Ret);
-            return HI_ERR_BM_NO_MEMORY;
+            g_bVdecPreESBUFMMZUsed = HI_TRUE;
+            pstConfig->u32PhyAddr = g_stESBUFMMZ.u32StartPhyAddr;
+            pstConfig->pu8KnlVirAddr = (HI_U8*)g_stESBUFMMZ.u32StartVirAddr;
         }
+        else
+#endif
+        {
+#if defined (CFG_ANDROID_TOOLCHAIN)
+            s32Ret = HI_DRV_MMZ_AllocAndMap(pstConfig->aszName, "vdec", pstConfig->u32Size, 0, &stMMZAllocBuf);
+#else
+            s32Ret = HI_DRV_MMZ_AllocAndMap(pstConfig->aszName, HI_NULL, pstConfig->u32Size, 0, &stMMZAllocBuf);
+#endif
+            if (HI_SUCCESS != s32Ret)
+            {
+                HI_FATAL_BUFMNG("Alloc MMZ fail:0x%x.\n", s32Ret);
+                return HI_ERR_BM_NO_MEMORY;
+            }
 
-        pstConfig->u32PhyAddr = stMMZAllocBuf.u32StartPhyAddr;
-        pstConfig->pu8KnlVirAddr = (HI_U8*)stMMZAllocBuf.u32StartVirAddr;
+            pstConfig->u32PhyAddr = stMMZAllocBuf.u32StartPhyAddr;
+            pstConfig->pu8KnlVirAddr = (HI_U8*)stMMZAllocBuf.u32StartVirAddr;
+        }
     }
 
     /* Allocate an instance */
@@ -359,7 +393,16 @@ HI_S32 BUFMNG_Create(HI_HANDLE *phBuf, BUFMNG_INST_CONFIG_S* pstConfig)
             HI_ERR_BUFMNG("HI_DRV_MMZ_Map fail!\n");
             if (BUFMNG_ALLOC_INNER == pstConfig->enAllocType)
             {
-                HI_DRV_MMZ_UnmapAndRelease(&stMMZAllocBuf);
+#if (1 == PRE_ALLOC_VDEC_ESBUF_MMZ)
+                if (g_bVdecPreESBUFMMZUsed)
+                {
+                    g_bVdecPreESBUFMMZUsed = HI_FALSE;
+                }
+                else
+#endif
+                {
+                    HI_DRV_MMZ_UnmapAndRelease(&stMMZAllocBuf);
+                }
             }
             HI_KFREE_BUFMNG(pstInst);
             return HI_FAILURE;
@@ -465,14 +508,21 @@ HI_S32 BUFMNG_Destroy(HI_HANDLE hBuf)
     /* If need, free */
     if (BUFMNG_ALLOC_INNER == pstInst->enAllocType)
     {
-		// TODO: REMOVE BUFMNG_LOCK
-        BUFMNG_SPIN_LOCK(pstInst->stSpinLock);
-        stMMZBuf.u32StartPhyAddr = pstInst->u32PhyAddr;
-        stMMZBuf.u32StartVirAddr = (HI_U32)pstInst->pu8KnlVirAddr;
-        stMMZBuf.u32Size = pstInst->u32Size;
-	    BUFMNG_SPIN_UNLOCK(pstInst->stSpinLock);
-        HI_DRV_MMZ_UnmapAndRelease(&stMMZBuf);
-	 
+#if (1 == PRE_ALLOC_VDEC_ESBUF_MMZ)
+        if (g_bVdecPreESBUFMMZUsed)
+        {
+            g_bVdecPreESBUFMMZUsed = HI_FALSE;
+        }
+        else
+#endif
+        {
+            BUFMNG_SPIN_LOCK(pstInst->stSpinLock);
+            stMMZBuf.u32StartPhyAddr = pstInst->u32PhyAddr;
+            stMMZBuf.u32StartVirAddr = (HI_U32)pstInst->pu8KnlVirAddr;
+            stMMZBuf.u32Size = pstInst->u32Size;
+	        BUFMNG_SPIN_UNLOCK(pstInst->stSpinLock);
+            HI_DRV_MMZ_UnmapAndRelease(&stMMZBuf);
+        }
     }
 
     BUFMNG_LOCK(s_stBMParam.stSem);
@@ -749,10 +799,12 @@ HI_S32 BUFMNG_PutWriteBuffer(HI_HANDLE hBuf, BUFMNG_BUF_S *pstBuf)
     if (0 != pstBuf->pu8UsrVirAddr)
     {
         u32PhyAddr = pstBuf->pu8UsrVirAddr - pstInst->pu8UsrVirAddr + pstInst->u32PhyAddr;
+		pstBuf->pu8KnlVirAddr = pstBuf->pu8UsrVirAddr - pstInst->pu8UsrVirAddr + pstInst->pu8KnlVirAddr;
     }
     else
     {
         u32PhyAddr = pstBuf->pu8KnlVirAddr - pstInst->pu8KnlVirAddr + pstInst->u32PhyAddr;
+		pstBuf->pu8UsrVirAddr = pstBuf->pu8KnlVirAddr - pstInst->pu8KnlVirAddr + pstInst->pu8UsrVirAddr;
     }
 
     /* The block must be WRITING status and its address must be right */
@@ -1152,6 +1204,399 @@ HI_S32 BUFMNG_Debug(HI_HANDLE hBuf)
 }
 
 #endif
+
+
+HI_VOID BUFMNG_SaveInit(HI_VOID)
+{
+    HI_INIT_MUTEX(&stRawSem);
+    HI_INIT_MUTEX(&stYuvSem);
+
+	return;
+}
+
+
+HI_BOOL BUFMNG_CheckFile(HI_S32 Handle, HI_S8 Flag)
+{
+    HI_S32 ret = HI_FALSE;
+    struct semaphore *p_stSem;
+
+	switch(Flag)
+    {
+        case 0:
+     	    p_stSem = &stRawSem;
+			break;
+
+		case 1:
+    	    p_stSem = &stYuvSem;
+			break;
+
+		default:
+            HI_ERR_BUFMNG("%s unkown flag(%d).\n", __func__, Flag);
+			return -1;
+	}
+
+	
+    BUFMNG_LOCK(*p_stSem);
+	
+	switch(Flag)
+    {
+        case 0:
+     	    if (HI_NULL != VdecSaveRawFile && Handle == VdecRawChanNum)
+     	    {
+     	        ret = HI_TRUE;
+     	    }
+			break;
+
+		case 1:
+     	    if (HI_NULL != VdecSaveYuvFile && Handle == VdecYuvChanNum)
+     	    {
+     	        ret = HI_TRUE;
+     	    }
+			break;
+	}
+
+    BUFMNG_UNLOCK(*p_stSem);
+
+
+	return ret;
+
+}
+
+
+HI_S32 BUFMNG_OpenFile(HI_S32 Handle, HI_S8 *FilePath, HI_S8 Flag)
+{
+    HI_S32 ret = HI_FAILURE;
+    struct semaphore *p_stSem;
+
+	switch(Flag)
+    {
+        case 0:
+     	    p_stSem = &stRawSem;
+			break;
+
+		case 1:
+    	    p_stSem = &stYuvSem;
+			break;
+
+		default:
+            HI_ERR_BUFMNG("%s unkown flag(%d).\n", __func__, Flag);
+			return -1;
+	}
+
+	
+    BUFMNG_LOCK(*p_stSem);
+	
+	switch(Flag)
+    {
+        case 0:
+	        VdecSaveRawFile = filp_open(FilePath, O_RDWR|O_CREAT, 0);
+            if (IS_ERR(VdecSaveRawFile))
+            {
+                VdecSaveRawFile = HI_NULL;
+            }
+			else
+			{
+	            VdecRawChanNum = Handle;
+			    ret = HI_SUCCESS;
+			}
+			break;
+
+		case 1:
+	        VdecSaveYuvFile = filp_open(FilePath, O_RDWR|O_CREAT, 0);
+            if (IS_ERR(VdecSaveYuvFile))
+            {
+                VdecSaveYuvFile = HI_NULL;
+            }
+			else
+			{
+	            VdecYuvChanNum = Handle;
+			    ret = HI_SUCCESS;
+			}
+			break;
+	}
+
+    BUFMNG_UNLOCK(*p_stSem);
+
+	return ret;
+
+}
+
+
+HI_S32 BUFMNG_CloseFile(HI_S32 Handle, HI_S8 Flag)
+{
+    HI_S32 ret = HI_FAILURE;
+    struct semaphore *p_stSem;
+
+	if (2 == Flag)
+    {
+        BUFMNG_LOCK(stRawSem);
+		if (HI_NULL != VdecSaveRawFile)
+		{
+	        filp_close(VdecSaveRawFile, HI_NULL);
+            printk("OK close file for vdec%2d raw stream save\n", VdecRawChanNum);
+        	VdecSaveRawFile = HI_NULL;
+        	VdecRawChanNum = -1;
+		}
+        BUFMNG_UNLOCK(stRawSem);
+		
+        BUFMNG_LOCK(stYuvSem);
+		if (HI_NULL != VdecSaveYuvFile)
+		{
+	        filp_close(VdecSaveYuvFile, HI_NULL);
+            printk("OK close file for vdec%2d yuv save\n", VdecYuvChanNum);
+        	VdecSaveYuvFile = HI_NULL;
+			HI_VFREE_BUFMNG(U_Array);
+        	VdecYuvChanNum = -1;
+			U_Array = V_Array = HI_NULL;
+		}
+        BUFMNG_UNLOCK(stYuvSem);
+
+		return HI_SUCCESS;
+    }
+
+	switch(Flag)
+    {
+        case 0:
+     	    p_stSem = &stRawSem;
+			break;
+
+		case 1:
+    	    p_stSem = &stYuvSem;
+			break;
+
+		default:
+            HI_ERR_BUFMNG("%s unkown flag(%d).\n", __func__, Flag);
+			return -1;
+	}
+
+	
+    BUFMNG_LOCK(*p_stSem);
+	
+	switch(Flag)
+    {
+        case 0:
+			if (Handle == VdecRawChanNum)
+			{
+    	        filp_close(VdecSaveRawFile, HI_NULL);
+            	VdecSaveRawFile = HI_NULL;
+            	VdecRawChanNum = -1;
+			    ret = HI_SUCCESS;
+			}
+			break;
+
+		case 1:
+			if (Handle == VdecYuvChanNum)
+			{
+    	        filp_close(VdecSaveYuvFile, HI_NULL);
+				HI_VFREE_BUFMNG(U_Array);
+            	VdecSaveYuvFile = HI_NULL;
+            	VdecYuvChanNum = -1;
+				U_Array = V_Array = HI_NULL;
+			    ret = HI_SUCCESS;
+			}
+			break;
+	}
+
+    BUFMNG_UNLOCK(*p_stSem);
+
+	return ret;
+
+}
+
+
+HI_S32 BUFMNG_SaveRaw(HI_S32 Handle, HI_S8 *Addr, HI_S32 Length)
+{
+    HI_S32 len = 0;
+    mm_segment_t oldfs; 
+	
+    BUFMNG_LOCK(stRawSem);
+
+	if (HI_NULL == VdecSaveRawFile || Handle != VdecRawChanNum)
+	{
+        BUFMNG_UNLOCK(stRawSem);
+		return -1;
+	}
+
+    oldfs = get_fs();
+    set_fs(KERNEL_DS);
+    len = VdecSaveRawFile->f_op->write(VdecSaveRawFile, Addr, Length, &VdecSaveRawFile->f_pos);
+    set_fs(oldfs);
+
+    BUFMNG_UNLOCK(stRawSem);
+	
+	return len;
+
+}
+
+
+HI_S32 BUFMNG_SaveYuv(HI_S32 Handle, HI_DRV_VIDEO_FRAME_S *pstFrame,HI_UNF_VCODEC_TYPE_E enType)
+{
+    HI_U32 i, j;
+    HI_S32 len = 0;
+    HI_S32 chroma_width = 0;
+    HI_S32 chroma_height = 0;
+    HI_S32 chroma_len = 0;
+	HI_S8 *Y_Addr = HI_NULL;
+	HI_S8 *C_Addr = HI_NULL;
+    mm_segment_t oldfs;
+	HI_CHIP_TYPE_E enChipType = HI_CHIP_TYPE_HI3716CES;
+	HI_CHIP_VERSION_E enChipVersion = HI_CHIP_VERSION_V200;
+
+	HI_U8 *dst, *src, *tmp;
+	HI_U32 Stride =0;
+    HI_U8 *Caddress ;		
+    HI_BOOL bVcmpFlag = HI_TRUE;
+	if (HI_NULL != pstFrame)
+	{
+        Stride = ((pstFrame->u32Width + (64*4 -1))&(~(64*4 -1)))*16;
+	}
+
+	HI_DRV_SYS_GetChipVersion(&enChipType,&enChipVersion);
+
+    BUFMNG_LOCK(stYuvSem);
+
+	if (HI_NULL == VdecSaveYuvFile || Handle != VdecYuvChanNum || HI_NULL == pstFrame)
+	{
+        BUFMNG_UNLOCK(stYuvSem);
+	    return -1;
+	}
+	
+    oldfs = get_fs();
+    set_fs(KERNEL_DS);
+
+    if((HI_CHIP_TYPE_HI3716CES == enChipType) || (HI_UNF_VCODEC_TYPE_H263 == enType))
+    {
+	    if (HI_NULL == U_Array)
+		{
+		    U_Array = HI_VMALLOC_BUFMNG(pstFrame->u32Width * pstFrame->u32Height / 2);		
+	        if (HI_NULL == U_Array)
+	        {
+	            filp_close(VdecSaveYuvFile, HI_NULL);
+	            VdecSaveYuvFile = HI_NULL;
+	            VdecYuvChanNum = -1;
+				U_Array = V_Array = HI_NULL;
+	            BUFMNG_UNLOCK(stYuvSem);
+				return -1;
+	        }
+			V_Array = U_Array + pstFrame->u32Width * pstFrame->u32Height / 4;
+		}
+
+		/* Y */
+		Y_Addr = (HI_S8 *)phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_Y);
+	    for (i=0; i<pstFrame->u32Height; i++)
+	    {
+	        len = VdecSaveYuvFile->f_op->write(VdecSaveYuvFile, Y_Addr, pstFrame->u32Width, &VdecSaveYuvFile->f_pos);
+			if (len < pstFrame->u32Width)
+			{
+	            HI_ERR_BUFMNG("%s write y failed.\n", __func__);
+			}
+			Y_Addr += pstFrame->stBufAddr[0].u32Stride_Y;
+	    }
+	    
+	    /* UV */
+	    chroma_width = pstFrame->u32Width/2;
+	    chroma_height = pstFrame->u32Height/2;
+	    C_Addr = (HI_S8 *)phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_C);
+		
+	    for (i=0; i<chroma_height; i++)
+	    {
+	        for (j=0; j<chroma_width; j++)
+	        {
+	            V_Array[i*chroma_width+j] = C_Addr[2*j];
+	            U_Array[i*chroma_width+j] = C_Addr[2*j+1];
+	        }
+	        
+	        C_Addr += pstFrame->stBufAddr[0].u32Stride_C;
+	    }
+	    
+	    chroma_len = chroma_width*chroma_height;
+	    len = VdecSaveYuvFile->f_op->write(VdecSaveYuvFile, U_Array, chroma_len, &VdecSaveYuvFile->f_pos);
+	    if(len != chroma_len)
+	    {
+	        HI_ERR_BUFMNG("%s write u failed.\n", __func__);
+	    }
+	    
+	    len = VdecSaveYuvFile->f_op->write(VdecSaveYuvFile, V_Array, chroma_len, &VdecSaveYuvFile->f_pos);
+	    if(len != chroma_len)
+	    {
+	        HI_ERR_BUFMNG("%s write v failed.\n", __func__);
+	    }
+	    set_fs(oldfs);
+
+	    printk("VDEC saving yuv(%dx%d)...\n", pstFrame->u32Width, pstFrame->u32Height);
+    }
+	else
+	{
+	    HI_DRV_VDEC_GetVcmpFlag(&bVcmpFlag);
+	    if(!bVcmpFlag)
+	    {
+	        if(HI_NULL == YUV_Array)
+	        {
+	            YUV_Array = HI_VMALLOC_BUFMNG(pstFrame->u32Width * pstFrame->u32Height);
+				ul = HI_VMALLOC_BUFMNG(pstFrame->u32Width * pstFrame->u32Height / 2);
+				vl = HI_VMALLOC_BUFMNG(pstFrame->u32Width * pstFrame->u32Height / 2);
+		        if (HI_NULL == YUV_Array)
+		        {
+		            filp_close(VdecSaveYuvFile, HI_NULL);
+		            VdecSaveYuvFile = HI_NULL;
+		            VdecYuvChanNum = -1;
+		            BUFMNG_UNLOCK(stYuvSem);
+					return -1;
+		        }
+	        }
+	        for(i=0;i<pstFrame->u32Height;i++)
+            {
+                for(j=0;j<pstFrame->u32Width;j+=256)
+                {
+                    dst  = (unsigned char*)(YUV_Array+ pstFrame->u32Width*i + j);
+                    src =  (unsigned char*)phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_Y) + Stride*(i/16)+(i%16)*256 + (j/256)*256*16;
+				    memcpy(dst,src,256);
+                }
+            }
+            len = VdecSaveYuvFile->f_op->write(VdecSaveYuvFile, YUV_Array, pstFrame->u32Width*pstFrame->u32Height, &VdecSaveYuvFile->f_pos);
+			Caddress = phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_Y) + ((pstFrame->u32Width + (64*4 -1))&(~(64*4 -1)))*((pstFrame->u32Height + 31)/32)*32
+                    + ((pstFrame->u32Width  + 127) / 128 + 15) / 16 * 16*((pstFrame->u32Height + 31)/32)*32;
+			for(i=0;i<pstFrame->u32Height/2;i++)
+            {
+                for(j=0;j<pstFrame->u32Width;j+=256)
+                {
+                   dst  = (unsigned char*)(YUV_Array + pstFrame->u32Width*i + j);
+                   src =  (unsigned char*)Caddress + (Stride/2)*(i/8)+(i%8)*256 +  (j/256)*256*8;
+    			   memcpy(dst,src,256);
+                }
+            }
+     		tmp = YUV_Array;
+            {
+                for (i=0;i<pstFrame->u32Height/2;i++)
+                {
+                    for (j=0;j<pstFrame->u32Width/2;j++)
+                    {
+                        vl[i*pstFrame->u32Width/2+j] = tmp[2*j];
+                        ul[i*pstFrame->u32Width/2+j] = tmp[2*j+1];
+                    }
+                    tmp+= pstFrame->u32Width;
+                }
+            }
+		    len = VdecSaveYuvFile->f_op->write(VdecSaveYuvFile, ul, pstFrame->u32Width*pstFrame->u32Height/4, &VdecSaveYuvFile->f_pos);
+		    len = VdecSaveYuvFile->f_op->write(VdecSaveYuvFile, vl, pstFrame->u32Width*pstFrame->u32Height/4, &VdecSaveYuvFile->f_pos);
+	    }
+		else
+		{
+		    //save 1D compressed data
+	        //TODO
+	    }
+		set_fs(oldfs);
+
+	    printk("VDEC saving yuv(%dx%d)...\n", pstFrame->u32Width, pstFrame->u32Height);
+
+	}
+	
+    BUFMNG_UNLOCK(stYuvSem);
+	
+	return len;
+	
+}
+
 
 #ifdef __cplusplus
  #if __cplusplus

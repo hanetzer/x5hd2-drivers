@@ -27,7 +27,8 @@ extern "C"{
 #endif  /* __cplusplus */
 
 #include "hi_type.h"
-/* #include "hi_common.h" */
+
+
 
 typedef HI_S32                  HI_PNG_HANDLE;
 

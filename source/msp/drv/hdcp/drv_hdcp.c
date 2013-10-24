@@ -1,3 +1,17 @@
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : drv_hdcp.c
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
 #include <linux/device.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -13,15 +27,15 @@
 
 #include "hi_common.h"
 #include "hi_kernel_adapt.h"
-#include "drv_dev_ext.h"
-#include "drv_mmz_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_module.h"
 #include "drv_hdcp_ioctl.h"
 #include "drv_otp_ext.h"
 #include "drv_cipher_ext.h"
 
 CIPHER_RegisterFunctionlist_S *g_pCIPHERExportFunctionList_forhdcp = HI_NULL;
-OTP_RegisterFunctionlist_S *g_pOTPExportFunctionList = HI_NULL;
+OTP_RegisterFunctionlist_S *g_pOTPExportFunctionList_forhdcp = HI_NULL;
 
 /*************************************************************************
 *   Macro Definition   *
@@ -107,7 +121,7 @@ static HI_U32 crc_tab32[256];
 static HI_VOID init_crc32_tab( HI_VOID ) 
 {
     HI_U32 i,j;
-    HI_U32 u32Crc;
+    HI_U32 u32Crc = 0;
  
     for (i=0; i<256; i++) {
         u32Crc = (HI_U32) i;
@@ -135,8 +149,8 @@ static HI_U32 update_crc_32(HI_U32 u32Crc, HI_CHAR s8C)
 
 static HI_S32 HDCPKey_CRC32( HI_U8* pu8Buff,HI_U32 length, HI_U32 *pu32Crc32Result)
 {
-    HI_U32 u32Crc32;
-    HI_U32 i;
+    HI_U32 u32Crc32 = 0;
+    HI_U32 i = 0;
     u32Crc32 = 0xffffffffL;
 
     if ( (NULL == pu32Crc32Result) || (NULL == pu8Buff) )
@@ -232,14 +246,14 @@ static HI_VOID DRV_CIPHER_UserCommCallBack(HI_U32 arg)
 }
 static HI_S32 HDCPKey_CipherAesCbc(HI_U8 *pu8Input,
                                     HI_U32 u32InputLen, 
-                                    HI_DRV_CIPHER_HDCP_MODE_E enHdcpEnMode, 
+                                    HI_DRV_CIPHER_HDCP_KEY_MODE_E enHdcpEnMode, 
                                     HI_DRV_CIPHER_HDCP_KEY_RAM_MODE_E enRamMode,
-                                    HI_DRV_CIPHER_HDCP_KEY_TYPE_E enKeyType,
+                                    HI_DRV_CIPHER_HDCP_ROOT_KEY_TYPE_E enKeyType,
                                     HI_BOOL bIsDecryption, 
                                     HI_U8 *pu8Output)
 {
     HI_S32 Ret = HI_SUCCESS;
-    HI_U32 softChnId;
+    HI_U32 softChnId = 0;
     HI_UNF_CIPHER_CTRL_S CipherCtrl;
     HI_DRV_CIPHER_TASK_S pCITask;
     HI_U32 i = 0;
@@ -270,7 +284,9 @@ static HI_S32 HDCPKey_CipherAesCbc(HI_U8 *pu8Input,
         return HI_FAILURE;
     }
    			    
-    softChnId = 0;
+    memset(&pCITask, 0, sizeof(pCITask));
+    memset(&CipherCtrl, 0, sizeof(CipherCtrl));
+
     Ret = (g_pCIPHERExportFunctionList_forhdcp->DRV_Cipher_OpenChn)(softChnId);
     if (HI_SUCCESS != Ret)
     {
@@ -333,22 +349,21 @@ static HI_S32 HDCPKey_CipherAesCbc(HI_U8 *pu8Input,
 
 static HI_S32 HDCPKey_Decryption(HI_UNF_HDCP_HDCPKEY_S *pSrcKey,  HI_UNF_HDCP_DECRYPT_S *pDstkey)
 {
-	HI_U32 softChnId;
+	HI_U32 softChnId = 0;
 	HI_U8 key[16];
 	HI_U8 ResultBuf[320];
 	HI_S32 Ret = HI_SUCCESS;
 	HI_U8 VersionBuf[8];
 	HI_BOOL ValidFlag = HI_TRUE;
-	HI_U32 i;
-      HI_S32 ret = HI_SUCCESS;
-	
+	HI_U32 i = 0;
+    HI_S32 ret = HI_SUCCESS;
 	HI_UNF_HDCP_ENCRYPT_S stEncryptKey;
 	HI_UNF_CIPHER_CTRL_S CipherCtrl;
 	MMZ_BUFFER_S encrypt_buf, decrypt_buf;
-	HI_DRV_CIPHER_TASK_S pCITask;
+	HI_DRV_CIPHER_TASK_S stCITask;
 	HI_DECLARE_MUTEX(g_CipherMutexKernel);
 	init_waitqueue_head(&cipher_wait_queue);
-	
+
 	if(!pSrcKey->EncryptionFlag)
 	{
 		HI_ERR_HDCP("EncryptionFlag Error!\n");
@@ -356,24 +371,28 @@ static HI_S32 HDCPKey_Decryption(HI_UNF_HDCP_HDCPKEY_S *pSrcKey,  HI_UNF_HDCP_DE
 	}
 	
 	//stEncryptKey = (HI_UNF_HDCP_ENCRYPT_S)(pSrcKey->key.EncryptData);
+    memset(&stEncryptKey, 0, sizeof(stEncryptKey));
 	memcpy(&stEncryptKey, &pSrcKey->key, sizeof(HI_UNF_HDCP_ENCRYPT_S));
 	
-      ret = down_interruptible(&g_CipherMutexKernel);			
+    ret = down_interruptible(&g_CipherMutexKernel);			
 	softChnId = 7;
 	Ret = (g_pCIPHERExportFunctionList_forhdcp->DRV_Cipher_OpenChn)(softChnId);
 	if (HI_SUCCESS != Ret)
 	{
 		up(&g_CipherMutexKernel);
-		HI_ERR_HDCP("up(&g_CipherMutexKernel) failed\n");
+		HI_ERR_HDCP("Cipher open chn failed\n");
 		return HI_FAILURE;
 	}
+
+    memset(&CipherCtrl, 0, sizeof(CipherCtrl));
 	CipherCtrl.bKeyByCA = HI_FALSE;
 	CipherCtrl.enAlg = HI_UNF_CIPHER_ALG_AES;
 	CipherCtrl.enWorkMode = HI_UNF_CIPHER_WORK_MODE_CBC;
 	CipherCtrl.enBitWidth = HI_UNF_CIPHER_BIT_WIDTH_8BIT;
 	CipherCtrl.enKeyLen = HI_UNF_CIPHER_KEY_AES_128BIT;
 	CipherCtrl.stChangeFlags.bit1IV = 1;
-	
+
+    memset(VersionBuf, 0, sizeof(VersionBuf));
 	memcpy(VersionBuf, &stEncryptKey.u8EncryptKey[8], 8);
 	
 	for(i = 0; i < 8; ++i)
@@ -390,19 +409,21 @@ static HI_S32 HDCPKey_Decryption(HI_UNF_HDCP_HDCPKEY_S *pSrcKey,  HI_UNF_HDCP_DE
 		HI_ERR_HDCP("EncryptKey check version failed\n");
 		return HI_FAILURE;
 	}
+
 	memset(key, 0, sizeof(key)); 
 	key[0] = 'z';
 	key[1] = 'h';
 	key[2] = 'o';
 	key[3] = 'n';
 	key[4] = 'g'; 
-	memcpy((HI_U8 *)CipherCtrl.u32Key, key, 32);
+	memcpy((HI_U8 *)CipherCtrl.u32Key, key, sizeof(key));
 	
 	memset(CipherCtrl.u32IV, 0, sizeof(CipherCtrl.u32IV));
 
 	Ret = (g_pCIPHERExportFunctionList_forhdcp->DRV_Cipher_ConfigChn)(softChnId, &CipherCtrl, DRV_CIPHER_UserCommCallBack);
 	up(&g_CipherMutexKernel);
 
+    memset(&encrypt_buf, 0, sizeof(encrypt_buf));
 	if (HI_SUCCESS != HI_DRV_MMZ_AllocAndMap("EncryptBuf", MMZ_OTHERS, 320, 32, &encrypt_buf))
 	{					
 		HI_ERR_HDCP("CMPI_MEM_AllocAndMapMem EncryptBuf failed\n");
@@ -411,6 +432,7 @@ static HI_S32 HDCPKey_Decryption(HI_UNF_HDCP_HDCPKEY_S *pSrcKey,  HI_UNF_HDCP_DE
 
 	memset((HI_U8 *)(encrypt_buf.u32StartVirAddr), 0x0, 320);
 
+    memset(&decrypt_buf, 0, sizeof(decrypt_buf));
 	if (HI_SUCCESS != HI_DRV_MMZ_AllocAndMap("DecryptBuf", MMZ_OTHERS, 320, 32, &decrypt_buf))
 	{
 		HI_DRV_MMZ_UnmapAndRelease(&encrypt_buf);
@@ -421,18 +443,19 @@ static HI_S32 HDCPKey_Decryption(HI_UNF_HDCP_HDCPKEY_S *pSrcKey,  HI_UNF_HDCP_DE
 	memset((HI_U8 *)(decrypt_buf.u32StartVirAddr), 0x0, 320);
 
 	memcpy((HI_U8 *)encrypt_buf.u32StartVirAddr, (HI_U8 *)stEncryptKey.u8EncryptKey + 48, 320);
-	
-	pCITask.stData2Process.u32src = encrypt_buf.u32StartPhyAddr;
-	pCITask.stData2Process.u32dest = decrypt_buf.u32StartPhyAddr;
-	pCITask.stData2Process.u32length = 320;
-	pCITask.stData2Process.bDecrypt = HI_TRUE;
 
-	pCITask.u32CallBackArg = softChnId; 	
+    memset(&stCITask, 0, sizeof(stCITask));
+	stCITask.stData2Process.u32src = encrypt_buf.u32StartPhyAddr;
+	stCITask.stData2Process.u32dest = decrypt_buf.u32StartPhyAddr;
+	stCITask.stData2Process.u32length = 320;
+	stCITask.stData2Process.bDecrypt = HI_TRUE;
+
+	stCITask.u32CallBackArg = softChnId; 	
 	HI_INFO_HDCP("In drv_sethdcp:Start to Decrypt, chnNum = %#x!\n", softChnId);		
 
     g_bDataDone = HI_FALSE;
     
-	Ret = (g_pCIPHERExportFunctionList_forhdcp->DRV_Cipher_CreatTask)(softChnId, &pCITask, NULL, NULL);
+	Ret = (g_pCIPHERExportFunctionList_forhdcp->DRV_Cipher_CreatTask)(softChnId, &stCITask, NULL, NULL);
 	if (HI_SUCCESS != Ret)
 	{
 		HI_DRV_MMZ_UnmapAndRelease(&encrypt_buf);
@@ -448,6 +471,8 @@ static HI_S32 HDCPKey_Decryption(HI_UNF_HDCP_HDCPKEY_S *pSrcKey,  HI_UNF_HDCP_DE
 		HI_ERR_HDCP("Encrypt time out!\n");
 		return HI_FAILURE;
 	}
+
+    memset(&ResultBuf, 0, sizeof(ResultBuf));
 	memcpy(ResultBuf, (HI_U8 *)decrypt_buf.u32StartVirAddr, 320);
 	if(ResultBuf[5] || ResultBuf[6] || ResultBuf[7])
 	{
@@ -473,17 +498,19 @@ static HI_S32 HDCPKey_Encryption(OTP_HDCP_KEY_TRANSFER_S *pstHdcpKeyTransfer)
 {
     HI_S32 s32Ret = HI_SUCCESS;
     OTP_HDCPKEY_S stOtpHdcpKey;
-//    HI_UNF_HDCP_DECRYPT_S stDestKey;
     HI_U8 u8KeyBuf[320];    
-    HI_U32 u32CRC_0;
-	HI_U32 u32CRC_1;
+    HI_U32 u32CRC_0 = 0;
+	HI_U32 u32CRC_1 = 0;
     HI_U8 u8WriteFlagChar[2] = {'H', 'I'};
 
     if ( NULL== pstHdcpKeyTransfer)
     {
         HI_ERR_HDCP("Invalid param, null pointer!\n");
         return HI_FAILURE;
-    }    
+    }
+
+    memset(&stOtpHdcpKey, 0, sizeof(stOtpHdcpKey));
+    memset(u8KeyBuf, 0, sizeof(u8KeyBuf));
 
     s32Ret = (g_pCIPHERExportFunctionList_forhdcp->DRV_Cipher_SoftReset)();
     if ( HI_SUCCESS != s32Ret )
@@ -513,12 +540,12 @@ static HI_S32 HDCPKey_Encryption(OTP_HDCP_KEY_TRANSFER_S *pstHdcpKeyTransfer)
         {
             HI_ERR_HDCP("HDCPKey decytion and format failed!\n");
             return HI_FAILURE;
-        }        
+        }
     }
     else
     {
         HDCPKey_Format((HI_UNF_HDCP_DECRYPT_S *)&pstHdcpKeyTransfer->stHdcpKey.key, &stOtpHdcpKey);                            
-    }      
+    }
 
     /* encrypt formated text*/
     if ( HI_TRUE ==  pstHdcpKeyTransfer->bIsUseOTPRootKey)
@@ -577,7 +604,7 @@ static HI_S32 HDCPKey_Encryption(OTP_HDCP_KEY_TRANSFER_S *pstHdcpKeyTransfer)
 
 static HI_S32 HDCPKey_DecryptAndFormat(HI_UNF_HDCP_HDCPKEY_S *pSrcKey, OTP_HDCPKEY_S *pstOtpHdcpKey)
 {
-    HI_S32 ret;
+    HI_S32 ret = HI_SUCCESS;
     HI_UNF_HDCP_DECRYPT_S DstKey;
 
     if ( NULL == pstOtpHdcpKey)
@@ -585,7 +612,9 @@ static HI_S32 HDCPKey_DecryptAndFormat(HI_UNF_HDCP_HDCPKEY_S *pSrcKey, OTP_HDCPK
         HI_ERR_HDCP("Invalid param, null pointer!\n");
         return HI_FAILURE;
     }
-    
+
+    memset(&DstKey, 0, sizeof(DstKey));
+
     if(pSrcKey->EncryptionFlag)
     {
         ret = HDCPKey_Decryption(pSrcKey, &DstKey);
@@ -680,7 +709,7 @@ int DRV_HDCP_Open(struct inode *inode, struct file *filp)
         return -1;
     }
     
-    HI_DRV_MODULE_GetFunction(HI_ID_CIPHER, (HI_VOID**)&g_pCIPHERExportFunctionList_forhdcp);
+    (HI_VOID)HI_DRV_MODULE_GetFunction(HI_ID_CIPHER, (HI_VOID**)&g_pCIPHERExportFunctionList_forhdcp);
     if( NULL == g_pCIPHERExportFunctionList_forhdcp)
     {
     	HI_ERR_HDCP("Get cipher functions failed!\n");
@@ -688,8 +717,8 @@ int DRV_HDCP_Open(struct inode *inode, struct file *filp)
     	return -1;
     }
     
-    HI_DRV_MODULE_GetFunction(HI_ID_OTP, (HI_VOID**)&g_pOTPExportFunctionList);
-    if( NULL == g_pOTPExportFunctionList)
+    HI_DRV_MODULE_GetFunction(HI_ID_OTP, (HI_VOID**)&g_pOTPExportFunctionList_forhdcp);
+    if( NULL == g_pOTPExportFunctionList_forhdcp)
     {
     	HI_ERR_HDCP("Get otp functions failed!\n");
     	up(&g_SetHDCPSem);

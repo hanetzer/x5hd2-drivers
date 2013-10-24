@@ -11,24 +11,16 @@ extern "C"{
 
 #include "hifb.h"
 #include "hi_debug.h"
-
-
-#define MKSTR(exp) # exp
-#define MKMARCOTOSTR(exp) MKSTR(exp)
-
-#undef HIFB_SECURITY_VERSION
-
-#if defined(CONFIG_SUPPORT_CA_RELEASE)
-#define HIFB_SECURITY_VERSION
-#define HIFB_DISENABLE_PROC
-#endif
-
+#include "hi_gfx_comm.h"
 
 /* define debug level */
-#define HIFB_FATAL(fmt...)  HI_TRACE(HI_LOG_LEVEL_FATAL, HI_ID_FB, fmt)
-#define HIFB_ERROR(fmt...)  HI_TRACE(HI_LOG_LEVEL_ERROR, HI_ID_FB, fmt)
-#define HIFB_WARNING(fmt...)  HI_TRACE(HI_LOG_LEVEL_WARNING, HI_ID_FB, fmt)
-#define HIFB_INFO(fmt...)  HI_TRACE(HI_LOG_LEVEL_INFO, HI_ID_FB, fmt)
+#define HIFB_FATAL(fmt...)  HI_GFX_COMM_LOG_FATAL(HIGFX_FB_ID,fmt)
+#define HIFB_ERROR(fmt...)  HI_GFX_COMM_LOG_ERROR(HIGFX_FB_ID,fmt)
+#define HIFB_WARNING(fmt...)  HI_GFX_COMM_LOG_WARNING(HIGFX_FB_ID,fmt)
+#define HIFB_INFO(fmt...)  HI_GFX_COMM_LOG_INFO(HIGFX_FB_ID,fmt)
+
+#define HIFB_FILE_PATH_MAX_LEN 256
+#define HIFB_FILE_NAME_MAX_LEN 32
 
 
 /* unit rect */
@@ -47,14 +39,8 @@ extern "C"{
 
 #define HIFB_MIN(m, n) (m) > (n) ? (n) : (m)
 
-
-
 HI_VOID hifb_version(HI_VOID);
 
-HI_S32 hifb_buf_initmem(HI_VOID);
-
-HI_VOID hifb_buf_deinitmem(HI_VOID);
- 
 HI_VOID *hifb_buf_map(HI_U32 u32PhyAddr);
 
 HI_S32 hifb_buf_ummap(HI_VOID *pViraddr);
@@ -75,11 +61,6 @@ HI_BOOL hifb_isoverlay(HIFB_RECT *pstSrcRect, HIFB_RECT *pstDstRect);
 HI_U32 hifb_getbppbyfmt(HIFB_COLOR_FMT_E enColorFmt);
 
 HI_S32 hifb_bitfieldcmp(struct fb_bitfield x, struct fb_bitfield y);
-
-
-HI_S32 HIGO_Log_Init(HI_VOID);
-
-HI_S32 HIGO_Log_Deinit(HI_VOID);
 
 #ifdef __cplusplus
 #if __cplusplus

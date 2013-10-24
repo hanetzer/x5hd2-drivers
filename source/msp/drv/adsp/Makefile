@@ -33,6 +33,7 @@ obj-$(CFG_MSP_BUILDTYPE) += ${addsuffix /,${objects}}
 endif
 objects_clean:=${addsuffix _clean,${objects}}
 objects_install:=${addsuffix _install,${objects}}
+objects_uninstall:=${addsuffix _uninstall,${objects}}
 
 #=================================================================
 #	  rules

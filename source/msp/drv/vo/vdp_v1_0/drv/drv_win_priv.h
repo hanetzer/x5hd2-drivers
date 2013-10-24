@@ -19,6 +19,7 @@ History       :
 #include "drv_win_prc.h"
 #include "drv_win_buffer.h"
 #include "drv_disp_buffer.h"
+#include "drv_virtual.h"
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -34,30 +35,40 @@ extern "C" {
 #define WIN_DISPLAY_MAX_NUMBER 16
 #define WIN_VIRTAUL_MAX_NUMBER 16
 
-#define WIN_INDEX_PREFIX      0x5A500000ul
-#define WIN_INDEX_PREFIX_MASK 0xFFF00000ul
+#define WIN_INDEX_PREFIX_MASK 0xFFFF0000ul
+#define WIN_INDEX_PREFIX_SHIFT_NUMBER 16
+#define WIN_INDEX_PREFIX      ((HI_U32)HI_ID_VO << WIN_INDEX_PREFIX_SHIFT_NUMBER)
+
+/*VIRTUAL PREFIX*/
+//#define WIN_INDEX_VIRTUAL_PREFIX  ((((HI_U32)HI_ID_VO << WIN_INDEX_PREFIX_SHIFT_NUMBER))|0x5a000000)
+#define WIN_INDEX_VIRTUAL_CHANNEL ((HI_U32)0xF)
+
 #define WIN_INDEX_DISPID_SHIFT_NUMBER 8
 #define WIN_INDEX_DISPID_MASK 0x0000000Ful
 #define WIN_INDEX_MASK        0x000000FFul
 
 #define WIN_INDEX_SLAVE_PREFIX  0x00000080ul
 
-#define WIN_FRAME_MIN_WIDTH  128
+#define WIN_FRAME_MIN_WIDTH  64
 #define WIN_FRAME_MIN_HEIGHT 64
-#define WIN_FRAME_MAX_WIDTH  1920
-#define WIN_FRAME_MAX_HEIGHT 1920
+#define WIN_FRAME_MAX_WIDTH  2560
+#define WIN_FRAME_MAX_HEIGHT 1600
 
 #define WIN_MAX_ASPECT_RATIO 16
 
-#define WIN_INRECT_MIN_WIDTH   128
+#define WIN_INRECT_MIN_WIDTH   64
 #define WIN_INRECT_MAX_WIDTH   1920
 #define WIN_INRECT_MIN_HEIGHT  64
-#define WIN_INRECT_MAX_HEIGHT  1920
+#define WIN_INRECT_MAX_HEIGHT  1080
 
-#define WIN_OUTRECT_MIN_WIDTH  128
-#define WIN_OUTRECT_MAX_WIDTH  1920
+#define WIN_OUTRECT_MIN_WIDTH  64
+#define WIN_OUTRECT_MAX_WIDTH  2560
 #define WIN_OUTRECT_MIN_HEIGHT 64
-#define WIN_OUTRECT_MAX_HEIGHT 1920
+#define WIN_OUTRECT_MAX_HEIGHT 1600
+
+//virtual window max width and height
+#define WIN_VIRTUAL_OUTRECT_MAX_WIDTH  1920
+#define WIN_VIRTUAL_OUTRECT_MAX_HEIGHT 1080
 
 #define WIN_CROPRECT_MAX_OFFSET_TOP     128
 #define WIN_CROPRECT_MAX_OFFSET_LEFT    128
@@ -85,18 +96,16 @@ typedef struct tagWIN_CONFIG_S
 
     HI_DRV_WIN_ATTR_S stAttrBuf;
     atomic_t bNewAttrFlag;
-
-    /* for calc outrect when display format changes */
-    HI_RECT_S stRefScreen;
-    HI_RECT_S stRefOutRect;
-
+    
     HI_DRV_WIN_SRC_INFO_S stSource;
 
     /* may change when window lives */
     HI_BOOL bQuickOutput;
 
     /*  */
-
+    HI_DRV_COLOR_SPACE_E enFrameCS;
+    HI_U32 u32Fidelity;
+    HI_DRV_COLOR_SPACE_E enOutCS;
 }WIN_CONFIG_S;
 
 typedef struct tagWIN_STATISTIC_S
@@ -133,23 +142,15 @@ typedef struct tagWIN_BUF_NODE_S
 
 typedef struct tagWIN_BUFFER_S
 {
-    //BUF_POOL_S    stBP;
-    WB_POOL_S stWinBP;
+    WB_POOL_S stWinBP;   
     
-    HI_U32        u32UsingFbNum;
-    WIN_BUF_NODE_S stUsingBufNode[WIN_USING_FB_MAX_NUMBER];
-    HI_U32 u32DispIndex;
-    HI_U32 u32CfgIndex;
-
-    /* useless frame buffer */
+    /* for  frame buffer not used ,should moved to wb_pool_s next.*/
     HI_DRV_VIDEO_FRAME_S stUselessFrame[WIN_USELESS_FRAME_MAX_NUMBER];
     HI_U32 u32ULSRdPtr;
     HI_U32 u32ULSWtPtr;
     HI_U32 u32ULSIn;
     HI_U32 u32ULSOut;
-
-    HI_BOOL bWaitRelease;
-    HI_DRV_VIDEO_FRAME_S stWaitReleaseFrame;
+    
 
     HI_U32 u32UnderLoad;
 }WIN_BUFFER_S;
@@ -187,6 +188,14 @@ typedef struct tagWIN_DELAY_INFO_S
     HI_BOOL bInterlace;
     volatile HI_BOOL bTBMatch;  /* for interlace frame display on interlace timing */
 }WIN_DELAY_INFO_S;
+
+
+typedef struct tagWIN_DISP_INFO_S
+{
+    HI_U32 u32RefreshRate;
+    HI_BOOL bIsInterlace;
+    HI_BOOL bIsBtm;
+}WIN_DISP_INFO_S;
 
 typedef struct tagWINDOW_S
 {
@@ -226,6 +235,7 @@ typedef struct tagWINDOW_S
 
     /* play info */
     volatile WIN_DELAY_INFO_S stDelayInfo;
+    volatile HI_BOOL bInInterrupt;
 
     /* statistic info */
     WIN_STATISTIC_S stStatistic;
@@ -242,13 +252,43 @@ typedef struct tagWINDOW_S
     HI_HANDLE hSlvWin;
     HI_HANDLE pstMstWin;
 
+    WIN_DISP_INFO_S stDispInfo;
     HI_U32 u32TBTestCount;
     HI_U32 u32TBNotMatchCount;
 
     /* video surface function */
     VIDEO_LAYER_FUNCTIONG_S stVLayerFunc;
-}WINDOW_S;
 
+    /*the lastest frame may be a member of window.
+     * this may be a temporary modify,should be discussed with others.
+     */     
+    HI_DRV_VIDEO_FRAME_S  latest_display_frame;
+    HI_U32                latest_display_frame_valid;
+    DISP_MMZ_BUF_S        stWinCaptureMMZ;
+    HI_U32                u32WinCapMMZvalid;    
+    HI_BOOL               bRestoreFlag;    
+    
+}WINDOW_S;
+#define MAX_RELEASE_NO  16
+
+typedef  struct task_struct*    WIN_THREAD;
+typedef   wait_queue_head_t    WAIT_QUEUE_HAEAD;
+
+typedef enum tagTHREAT_EVENT_E
+{
+    EVENT_NOTHING= 0,
+    EVENT_RELEASE,
+    EVENT_BUTT
+}THREAT_EVENT_E;
+
+typedef struct hiWIN_RELEASE_FRM_S
+{
+    WAIT_QUEUE_HAEAD  stWaitQueHead;
+    THREAT_EVENT_E  enThreadEvent;
+    WIN_THREAD  hThread;
+    
+     HI_DRV_VIDEO_FRAME_S *pstNeedRelFrmNode[MAX_RELEASE_NO]; 
+} WIN_RELEASE_FRM_S;
 
 typedef struct tagDISPLAY_WINDOW_S
 {
@@ -257,15 +297,16 @@ typedef struct tagDISPLAY_WINDOW_S
     HI_U32    u32WinNumber;
 
     VIDEO_LAYER_FUNCTIONG_S stVSurfFunc;
-    
+
+    WIN_RELEASE_FRM_S stWinRelFrame;
+
 }DISPLAY_WINDOW_S;
 
 
 typedef struct tagVIRTUAL_WINDOW_S
 {
-    HI_BOOL bOpen;
-    WINDOW_S *stWinArray[WINDOW_MAX_NUMBER];
-    
+    HI_U32    u32WinNumber;
+    VIRTUAL_S *pstWinArray[WIN_VIRTAUL_MAX_NUMBER];
 }VIRTUAL_WINDOW_S;
 
 

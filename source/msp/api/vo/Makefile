@@ -45,7 +45,9 @@ clean:
 
 install: all
 	$(AT)cp -f  $(LIBS).a           $(STATIC_LIB_DIR)/
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)cp -f  $(LIBS).so          $(SHARED_LIB_DIR)/
+endif
 	$(AT)cp -f  $(HEADER_FILES)     $(INCLUDE_DIR)/
 
 uninstall:
@@ -57,5 +59,7 @@ $(LIBS) : $(OBJS)
 #	make -C vo_algbase
 #	$(CFG_HI_TOOLCHAINS_NAME)-ar x vo_algbase/lib/$(CFG_HI_TOOLCHAINS_NAME)/*.a
 	$(AT)$(AR) -rsv $@.a $^ $(OBJS_ALG)
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)$(CC) -shared -o $@.so $^ $(OBJS_ALG)
+endif
 

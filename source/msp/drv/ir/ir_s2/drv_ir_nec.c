@@ -581,8 +581,16 @@ repeat_key:
 
 start_timer_out:
     del_timer(&nec_timer[idx]);
-    nec_timer[idx].expires = jiffies +
+    if (0 == ip->key_hold_timeout_time)
+    {
+        nec_timer[idx].expires = jiffies +
                              msecs_to_jiffies(ir->key_hold_timeout_time);
+    }
+    else
+    {
+        nec_timer[idx].expires = jiffies +
+                             msecs_to_jiffies(ip->key_hold_timeout_time);
+    }
     nec_timer[idx].data = idx;
     add_timer(&nec_timer[idx]);
 out:
@@ -701,7 +709,7 @@ int nec_frame_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
     {
         if (fail)
         {
-            symbol = ir_next_reader_clr_inc(rd);
+            (void)ir_next_reader_clr_inc(rd);
             goto out;
         }
 
@@ -717,7 +725,7 @@ int nec_frame_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
             {
                 last_key->key_stat = KEY_STAT_HOLD;
                 ir_insert_key_tail(wr, last_key);
-                symbol = ir_next_reader_clr_inc(rd);
+                (void)ir_next_reader_clr_inc(rd);
                 nec_repeat_next_time[idx] = jiffies +
                                             msecs_to_jiffies(
                     ir->key_repeat_interval);
@@ -749,7 +757,7 @@ int nec_frame_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
 
         key.key_stat = KEY_STAT_DOWN;
         ir_insert_key_tail(wr, &key);
-        symbol = ir_next_reader_clr_inc(rd);
+        (void)ir_next_reader_clr_inc(rd);
         nec_repeat_next_time[idx] = jiffies +
                                     msecs_to_jiffies(ir->key_repeat_interval);
 
@@ -759,8 +767,16 @@ int nec_frame_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
 
 start_timer_out:
     del_timer(&nec_timer[idx]);
-    nec_timer[idx].expires = jiffies +
+    if (0 == ip->key_hold_timeout_time)
+    {
+        nec_timer[idx].expires = jiffies +
                              msecs_to_jiffies(ir->key_hold_timeout_time);
+    }
+    else
+    {
+        nec_timer[idx].expires = jiffies +
+                             msecs_to_jiffies(ip->key_hold_timeout_time);
+    }
     nec_timer[idx].data = idx;
     add_timer(&nec_timer[idx]);
 
@@ -1693,8 +1709,16 @@ repeat_key:
 
 start_timer_out:
     del_timer(&nec_timer[idx]);
-    nec_timer[idx].expires = jiffies +
+    if (0 == ip->key_hold_timeout_time)
+    {
+        nec_timer[idx].expires = jiffies +
                              msecs_to_jiffies(ir->key_hold_timeout_time);
+    }
+    else
+    {
+        nec_timer[idx].expires = jiffies +
+                             msecs_to_jiffies(ip->key_hold_timeout_time);
+    }
     nec_timer[idx].data = idx;
     add_timer(&nec_timer[idx]);
 out:
@@ -1838,7 +1862,7 @@ int nec_frame_2headers_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
     {
         if (fail)
         {
-            symbol = ir_next_reader_clr_inc(rd);
+            (void)ir_next_reader_clr_inc(rd);
             goto out;
         }
 
@@ -1854,7 +1878,7 @@ int nec_frame_2headers_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
             {
                 last_key->key_stat = KEY_STAT_HOLD;
                 ir_insert_key_tail(wr, last_key);
-                symbol = ir_next_reader_clr_inc(rd);
+                (void)ir_next_reader_clr_inc(rd);
                 nec_repeat_next_time[idx] = jiffies +
                                             msecs_to_jiffies(
                     ir->key_repeat_interval);
@@ -1886,7 +1910,7 @@ int nec_frame_2headers_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
 
         key.key_stat = KEY_STAT_DOWN;
         ir_insert_key_tail(wr, &key);
-        symbol = ir_next_reader_clr_inc(rd);
+        (void)ir_next_reader_clr_inc(rd);
         nec_repeat_next_time[idx] = jiffies +
                                     msecs_to_jiffies(ir->key_repeat_interval);
 
@@ -1896,8 +1920,16 @@ int nec_frame_2headers_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
 
 start_timer_out:
     del_timer(&nec_timer[idx]);
-    nec_timer[idx].expires = jiffies +
+    if (0 == ip->key_hold_timeout_time)
+    {
+        nec_timer[idx].expires = jiffies +
                              msecs_to_jiffies(ir->key_hold_timeout_time);
+    }
+    else
+    {
+        nec_timer[idx].expires = jiffies +
+                             msecs_to_jiffies(ip->key_hold_timeout_time);
+    }
     nec_timer[idx].data = idx;
     add_timer(&nec_timer[idx]);
 

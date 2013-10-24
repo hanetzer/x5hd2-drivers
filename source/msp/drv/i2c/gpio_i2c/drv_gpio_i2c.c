@@ -66,10 +66,10 @@
 #include "drv_gpioi2c.h"
 #include "hi_drv_gpioi2c.h"
 #include "hi_module.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 #include "hi_debug.h"
-#include "drv_mem_ext.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_mem.h"
+#include "hi_drv_sys.h"
 
 #define GPIO_0_BASE IO_ADDRESS(HI_GPIO_0_ADDR)
 #define GPIO_1_BASE IO_ADDRESS(HI_GPIO_1_ADDR)
@@ -84,7 +84,10 @@
 #define GPIO_10_BASE IO_ADDRESS(HI_GPIO_10_ADDR)
 #define GPIO_11_BASE IO_ADDRESS(HI_GPIO_11_ADDR)
 #define GPIO_12_BASE IO_ADDRESS(HI_GPIO_12_ADDR)
-#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
 #define GPIO_13_BASE IO_ADDRESS(HI_GPIO_13_ADDR)
 #define GPIO_14_BASE IO_ADDRESS(HI_GPIO_14_ADDR)
 #define GPIO_15_BASE IO_ADDRESS(HI_GPIO_15_ADDR)
@@ -550,7 +553,7 @@ static HI_S32 DRV_GPIOI2C_ReadData(HI_U32 I2cNum, HI_U8 devaddress, HI_U32 addre
         return HI_FAILURE;
     }
 
-    if (HI_FALSE == g_stI2cGpio[I2cNum].bUsed)
+    if ((I2cNum >= HI_I2C_MAX_NUM) || (HI_FALSE == g_stI2cGpio[I2cNum].bUsed))
     {
         HI_ERR_GPIOI2C("the I2cNum haven't requested ,can't read operation.\n");
         up(&gpio_i2_sem);
@@ -740,7 +743,7 @@ static HI_S32 DRV_GPIOI2C_WriteData(HI_U32 I2cNum, HI_U8 devaddress, HI_U32 addr
         return HI_FAILURE;
     }
 
-    if (HI_FALSE == g_stI2cGpio[I2cNum].bUsed)
+    if ((I2cNum >= HI_I2C_MAX_NUM) || (HI_FALSE == g_stI2cGpio[I2cNum].bUsed))
     {
         HI_ERR_GPIOI2C("the I2cNum haven't requested ,can't write operation.\n");
         up(&gpio_i2_sem);
@@ -1290,8 +1293,8 @@ HI_S32 HI_DRV_GPIOI2C_Init(HI_VOID)
 
     if (gpioinitialized == 0)
     {
-        HI_CHIP_TYPE_E enChipType;
-        HI_CHIP_VERSION_E enChipVersion;
+        HI_CHIP_TYPE_E enChipType = HI_CHIP_TYPE_BUTT;
+        HI_CHIP_VERSION_E enChipVersion = HI_CHIP_VERSION_BUTT;
         HI_DRV_SYS_GetChipVersion( &enChipType, &enChipVersion );
         if ((HI_CHIP_TYPE_HI3716M == enChipType) && (HI_CHIP_VERSION_V300 == enChipVersion))
         {
@@ -1319,7 +1322,10 @@ HI_S32 HI_DRV_GPIOI2C_Init(HI_VOID)
         g_u32GpioRegAddrs[10] = GPIO_10_BASE;
         g_u32GpioRegAddrs[11] = GPIO_11_BASE;
         g_u32GpioRegAddrs[12] = GPIO_12_BASE;
-#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
         g_u32GpioRegAddrs[13] = GPIO_13_BASE;
         g_u32GpioRegAddrs[14] = GPIO_14_BASE;
         g_u32GpioRegAddrs[15] = GPIO_15_BASE;
@@ -1380,3 +1386,4 @@ EXPORT_SYMBOL(HI_DRV_GPIOI2C_DestroyGpioI2c);
 //EXPORT_SYMBOL(DRV_GPIOI2C_IsUsed);
 #endif
 EXPORT_SYMBOL(i2cmode);
+EXPORT_SYMBOL(g_stI2cGpio);

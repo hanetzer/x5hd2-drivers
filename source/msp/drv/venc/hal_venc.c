@@ -45,6 +45,14 @@ HI_VOID VENC_HAL_ReadReg( HI_U32 EncHandle )
         pEncPara->TotalTxtBits  = pAllReg->VEDU_TOTALTXTBITS;              //码率控制需要的整帧图像的纹理bit数
         pEncPara->TotalTxtCost0 = pAllReg->VEDU_TOTALCOST0;                //码率控制需要的整帧图像的纹理cost低32bits
         pEncPara->TotalTxtCost1 = pAllReg->VEDU_TOTALCOST1;                //码率控制需要的整帧图像的纹理cost高32bits
+///////////add by ckf77439
+
+        pEncPara->stRc.NumIMBCurFrm =  pAllReg->VEDU_PICINFO1.u32
+                                     + pAllReg->VEDU_PICINFO6.u32 
+                                     + pAllReg->VEDU_PICINFO7.u32 
+                                     + pAllReg->VEDU_PICINFO8.u32;
+
+////////////add end
         pEncPara->Timer         = pAllReg->VEDU_TIMER;                     //
         pEncPara->IdleTimer     = pAllReg->VEDU_IDLE_TIMER;                //
 #ifdef __VENC_S40V200_CONFIG__
@@ -55,6 +63,17 @@ HI_VOID VENC_HAL_ReadReg( HI_U32 EncHandle )
 	    pEncPara->IntraCloseCnt = pAllReg->VEDU_LOWPOW_CNT0;               //
 	    pEncPara->IntpSearchCnt = pAllReg->VEDU_LOWPOW_CNT2;               //
 	    pEncPara->FracCloseCnt  = pAllReg->VEDU_LOWPOW_CNT1;               //
+
+		pEncPara->stStat.u32TotalPicBits += pEncPara->PicBits;
+		if (pEncPara->stStat.u32TotalPicBits <= pEncPara->PicBits)
+		{
+		    pEncPara->stStat.u32TotalPicBits = pEncPara->PicBits;
+			pEncPara->stStat.u32TotalEncodeNum = 1;
+		}
+		else
+		{
+		    pEncPara->stStat.u32TotalEncodeNum++;
+		}
     }
 
     /* clear vedu int */
@@ -75,94 +94,6 @@ HI_VOID VENC_HAL_CfgReg( HI_U32 EncHandle )
     VeduEfl_EncPara_S *pEncPara = (VeduEfl_EncPara_S *)EncHandle;
     S_VEDU_REGS_TYPE  *pAllReg = (S_VEDU_REGS_TYPE  *)pEncPara->pRegBase;
     int i;
-/*****************************************************************/
-#if 0
-    typedef struct
-    {
-      int  rWnd[2];
-      int  thresh[2];
-      int  rectMod[6];
-      int  range[6][4];
-  
-    } intSearchIn;
-    
-   // int  RcQpDeltaThr[12] = {7, 7, 7, 9, 11, 14, 18, 25, 255, 255, 255, 255};
-    int  ModLambda[40] = {
-        1,    1,    1,    2,    2,    3,    3,    4,    5,    7,
-        9,   11,   14,   17,   22,   27,   34,   43,   54,   69,
-       86,  109,  137,  173,  218,  274,  345,  435,  548,  691,
-      870, 1097, 1382, 1741, 2193, 2763, 3482, 4095, 4095, 4095 };
-    static intSearchIn isrD1 = 
-    {
-        { 5, 2 },  { 0, 1500 },  { 1, 1, 1, 1, 0, 0 },
- 
-        {  { 2, 2, 0, 0}, {  8,  8, 0, 0}, {13, 13, 1, 1}, 
-           { 4, 4, 0, 0}, {  0,  0, 0, 0}, { 0,  0, 0, 0}  }
-    };
-    static intSearchIn isr720p = 
-    {
-        { 5, 1 },  { 0, 1500 },  { 1, 1, 1, 1, 0, 0 },
- 
-        {  { 2, 2, 0, 0}, {  8,  8, 0, 0}, {13, 13, 1, 1}, 
-           { 4, 4, 0, 0}, {  0,  0, 0, 0}, { 0,  0, 0, 0}  }
-    };
-    static intSearchIn isr1080p = 
-    {
-         { 5, 0 },  { 0, 1500 },  { 1, 1, 1, 1, 0, 0 },
- 
-        {  { 2, 2, 0, 0}, {  8,  8, 0, 0}, {13, 13, 1, 1}, 
-           { 4, 4, 0, 0}, {  0,  0, 0, 0}, { 0,  0, 0, 0}  }
-    };
-    static intSearchIn isrWidth0 = 
-    {
-        { 5, 0 },  { 0, 1500 },  { 1, 1, 1, 1, 0, 0 },
- 
-        {  { 2, 2, 0, 0}, {  8,  8, 0, 0}, {13, 13, 1, 1}, 
-           { 4, 4, 0, 0}, {  0,  0, 0, 0}, { 0,  0, 0, 0}  }
-    };
-    
-    intSearchIn *pIsr;
-    
-    if     (pEncPara->PicWidth >  1920 ) pIsr = &isrWidth0;
-    else if(pEncPara->PicWidth >  1024 ) pIsr = &isr1080p;
-    else if(pEncPara->PicWidth >   720 ) pIsr = &isr720p;
-    else                                 pIsr = &isrD1;
-
- 
-    static intSearchIn isrMpeg4 = 
-    {
-         { 1, 0 },  { 0,  0 },  { 1, 0, 0, 0, 0, 0 },
- 
-        {  { 2, 2, 0, 0}, {  8,  8, 0, 0}, {13, 13, 1, 1}, 
-           { 4, 4, 0, 0}, {  0,  0, 0, 0}, { 0,  0, 0, 0}  }
-    };
-
-HI_U8 Quant8_intra_default[64] =
-{
- 6,10,13,16,18,23,25,27,
-10,11,16,18,23,25,27,29,
-13,16,18,23,25,27,29,31,
-16,18,23,25,27,29,31,33,
-18,23,25,27,29,31,33,36,
-23,25,27,29,31,33,36,38,
-25,27,29,31,33,36,38,40,
-27,29,31,33,36,38,40,42
-};
-
-HI_U8 Quant8_inter_default[64] =
-{
- 9,13,15,17,19,21,22,24,
-13,13,17,19,21,22,24,25,
-15,17,19,21,22,24,25,27,
-17,19,21,22,24,25,27,28,
-19,21,22,24,25,27,28,30,
-21,22,24,25,27,28,30,32,
-22,24,25,27,28,30,32,33,
-24,25,27,28,30,32,33,35
-};
-#endif
-/*********************************  end   ************************/ 
-
     
     {   //INTMASK
         U_VEDU_INTMASK D32;
@@ -209,7 +140,7 @@ HI_U8 Quant8_inter_default[64] =
         D32.bits.cabacByteStuff  = pEncPara->CabacStuffEn;                                           
         D32.bits.ConstIntra      = pEncPara->ConstIntra;                                       
         D32.bits.Ipicture        = pEncPara->IntraPic;
-        D32.bits.TransMode       = pEncPara->H264HpEn ? 0 : 1;                              
+        D32.bits.TransMode       = pEncPara->TransMode;                        
         D32.bits.numRefIndex     = pEncPara->NumRefIndex;                     
         D32.bits.NalRefIdc       = 3;
         D32.bits.EntropyEncMode  = pEncPara->H264CabacEn;                     
@@ -709,11 +640,12 @@ HI_U8 Quant8_inter_default[64] =
         U_VEDU_RC1 D32;
         D32.u32 = 0;
         
-        D32.bits.rcQpDelta   = (pEncPara->IntraPic ? 0 : 3);
-        D32.bits.rcMadpDelta = 0;
+        D32.bits.rcQpDelta   = (pEncPara->IntraPic ? pEncPara->stRc.IQpDelta: pEncPara->stRc.PQpDelta);
+        D32.bits.rcMadpDelta = -8;//0;
         
         pAllReg->VEDU_RC1.u32 = D32.u32;
     }
+#if 0  //old version	
     if (pEncPara->IntraPic)                                         /*  调节图像质量 */
     {
         pAllReg->VEDU_QPDELTATHR0.u32 = 0x110f0e0c;   
@@ -726,6 +658,11 @@ HI_U8 Quant8_inter_default[64] =
         pAllReg->VEDU_QPDELTATHR1.u32 = 0x17120e0b;
         pAllReg->VEDU_QPDELTATHR2.u32 = 0xffffff1c;
     }
+#else
+        pAllReg->VEDU_QPDELTATHR0.u32 = 0x09070707;
+        pAllReg->VEDU_QPDELTATHR1.u32 = 0x19120e0c;
+        pAllReg->VEDU_QPDELTATHR2.u32 = 0xffffffff;
+#endif
     
     pAllReg->VEDU_TARGETBITS  = pEncPara->TargetBits;
     //pAllReg->VEDU_REFMBHBITS  = pEncPara->TotalMbhBits;

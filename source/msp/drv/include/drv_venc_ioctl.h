@@ -22,6 +22,8 @@
 #include "hi_unf_venc.h"
 #include "hi_drv_venc.h"
 
+#include "drv_venc_ext.h"
+
 #ifdef __cplusplus
  #if __cplusplus
 extern "C" {
@@ -40,11 +42,13 @@ typedef struct hiVENC_CHN_INFO_S
     HI_U32        u32StrmBufPhyAddr;
     HI_U32        u32BufSize;
     HI_HANDLE     handle;
+	HI_HANDLE     hSource;
 } VENC_CHN_INFO_S;
 
 typedef struct hiVENC_INFO_CREATE_S
 {
     HI_HANDLE              hVencChn;
+	HI_BOOL                bOMXChn;
     HI_UNF_VENC_CHN_ATTR_S stAttr;
     VENC_CHN_INFO_S        stVeInfo;
 } VENC_INFO_CREATE_S;
@@ -62,6 +66,7 @@ typedef struct hiVENC_INFO_ACQUIRE_STREAM_S
     HI_UNF_VENC_STREAM_S stStream;
     HI_U32               u32BlockFlag;
     VENC_BUF_OFFSET_S    stBufOffSet;
+    HI_VOID*             omx_stream_buf;                //for omxvenc
 } VENC_INFO_ACQUIRE_STREAM_S;
 
 typedef struct hiVENC_STATE_S
@@ -73,7 +78,36 @@ typedef struct hiVENC_FRAME_INFO_S
 {
     HI_HANDLE                 hVencChn;
     HI_UNF_VIDEO_FRAME_INFO_S stVencFrame;
+    venc_user_buf             stVencFrame_OMX;         //for omxvenc
 } VENC_INFO_QUEUE_FRAME_S;
+
+
+typedef struct hiVENC_SET_SRC_INFO_S
+{
+    HI_HANDLE                 hVencChn;         
+    HI_DRV_VENC_SRC_INFO_S    stVencSrcInfo;                             
+} VENC_SET_SRC_INFO_S;
+
+/////////////////////////////////////////////////////// just for omxvenc
+typedef struct hiVENC_GET_INFO_S
+{
+    HI_HANDLE                 hVencChn;
+    venc_msginfo              msg_info_omx;
+}VENC_INFO_GET_MSG_S;
+
+typedef struct hiVENC_INFO_MMZ_MAP_S
+{
+    HI_HANDLE                 hVencChn;
+    HI_MMZ_BUF_S              stVencBuf;
+}VENC_INFO_MMZ_MAP_S;
+
+typedef struct hiVENC_INFO_FLUSH_PORT_S
+{
+    HI_HANDLE                 hVencChn;
+    HI_U32                    u32PortIndex;
+}VENC_INFO_FLUSH_PORT_S;
+/////////////////////////////////////////////////////// end
+
 #define CMD_VENC_SET_CHN_ATTR _IOW(IOC_TYPE_VENC, 0, VENC_INFO_CREATE_S)
 #define CMD_VENC_GET_CHN_ATTR _IOWR(IOC_TYPE_VENC, 1, VENC_INFO_CREATE_S)
 
@@ -94,6 +128,18 @@ typedef struct hiVENC_FRAME_INFO_S
 
 #define CMD_VENC_QUEUE_FRAME _IOWR(IOC_TYPE_VENC, 0xc, VENC_INFO_QUEUE_FRAME_S)
 #define CMD_VENC_DEQUEUE_FRAME _IOWR(IOC_TYPE_VENC, 0xd, VENC_INFO_QUEUE_FRAME_S)
+
+#define CMD_VENC_SET_SRCINFO _IOWR(IOC_TYPE_VENC, 0xe, VENC_SET_SRC_INFO_S)
+
+////////////////////////////////////////////////////////////////////////////// just for omxvenc
+#define CMD_VENC_GET_MSG _IOWR(IOC_TYPE_VENC, 0xf,VENC_INFO_GET_MSG_S)
+#define CMD_VENC_QUEUE_STREAM _IOWR(IOC_TYPE_VENC, 0x10,VENC_INFO_QUEUE_FRAME_S)
+
+#define CMD_VENC_MMZ_MAP _IOWR(IOC_TYPE_VENC, 0x11, VENC_INFO_MMZ_MAP_S)
+#define CMD_VENC_MMZ_UMMAP _IOWR(IOC_TYPE_VENC, 0x12, VENC_INFO_MMZ_MAP_S)
+
+#define CMD_VENC_FLUSH_PORT _IOWR(IOC_TYPE_VENC, 0x13,VENC_INFO_FLUSH_PORT_S)
+/////////////////////////////////////////////////////////////////////////////// end
 #ifdef __cplusplus
  #if __cplusplus
 }

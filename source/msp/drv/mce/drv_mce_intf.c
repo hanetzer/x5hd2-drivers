@@ -1,11 +1,12 @@
 #include <linux/kernel.h>
 #include <mach/hardware.h>
 #include <asm/io.h>
+#include <asm/uaccess.h>
 
 #include "hi_module.h"
-#include "drv_module_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_module.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
 
 #include "hi_drv_mce.h"
 #include "drv_mce_ext.h"
@@ -13,6 +14,7 @@
 #include "drv_pdm_ext.h"
 #include "drv_disp_ext.h"
 #include "drv_hifb_ext.h"
+#include "hi_osal.h"
 
 #define MCE_NAME                "HI_MCE"
 #define MMZ_INFOZONE_SIZE       (8*1024)
@@ -48,39 +50,35 @@ MCE_S   g_Mce =
     .BeginTime = 0,
     .EndTime = 0,
     .stStopParam.enCtrlMode = HI_UNF_MCE_PLAYCTRL_BUTT,
-    .TsplayEnd = HI_FALSE
+    .playEnd = HI_FALSE
 };
 
 static HI_S32 MCE_ProcRead(struct seq_file *p, HI_VOID *v)
 {
+#if 0      
     HI_U32      u32BgColor;
-    MCE_S       *pMce = &g_Mce;
-    HI_UNF_MCE_PLAY_PARAM_S *pPlayParam = HI_NULL;
-        
     u32BgColor = (pMce->stDispParam.stBgColor.u8Red << 16) + (pMce->stDispParam.stBgColor.u8Green << 8)
         + pMce->stDispParam.stBgColor.u8Blue;
     
-    p += seq_printf(p,"---------------------Hisilicon MCE Out Info-----------------------\n");
-    p += seq_printf(p,"----------------------------BaseParam-----------------------------\n");
-    p += seq_printf(p,"enFormat:        %10d,   u32Brightness:      %10d\n"
+    PROC_PRINT(p,"---------------------Hisilicon MCE Out Info-----------------------\n");
+    PROC_PRINT(p,"----------------------------BaseParam-----------------------------\n");
+    PROC_PRINT(p,"enFormat:        %10d,   u32Brightness:      %10d\n"
                       "u32Contrast:     %10d,   u32Saturation:      %10d\n"
                       "u32HuePlus:      %10d,   bGammaEnable:       %10d\n"
-                      "BgColor:         %10x,   enPixelFormat:      %10d\n"
-                      "u32DisplayWidth: %10d,   u32DisplayHeight:   %10d\n"
-                      "u32ScreenXpos:   %10d,   u32ScreenYpos:      %10d\n"
-                      "u32ScreenWidth:  %10d,   u32ScreenHeight:    %10d\n",
+                      "BgColor:         %10x\n",
                       pMce->stDispParam.enFormat,pMce->stDispParam.u32Brightness,
                       pMce->stDispParam.u32Contrast,pMce->stDispParam.u32Saturation,
                       pMce->stDispParam.u32HuePlus,pMce->stDispParam.bGammaEnable,
-                      u32BgColor,                  pMce->stGrcParam.enPixelFormat,
-                      pMce->stGrcParam.u32DisplayWidth,pMce->stGrcParam.u32DisplayHeight,
-                      pMce->stGrcParam.u32ScreenXpos,pMce->stGrcParam.u32ScreenYpos,
-                      pMce->stGrcParam.u32ScreenWidth,pMce->stGrcParam.u32ScreenHeight
+                      u32BgColor                  
     );
+#endif
     
-#ifdef HI_MCE_SUPPORT    
-    p += seq_printf(p,"---------------------------PlayParam------------------------------\n");
-    p += seq_printf(p,"enPlayType:      %10d,   bPlayEnable:        %10d\n",
+#ifdef HI_MCE_SUPPORT 
+    MCE_S       *pMce = &g_Mce;
+    HI_UNF_MCE_PLAY_PARAM_S *pPlayParam = HI_NULL;
+
+    PROC_PRINT(p,"---------------------------PlayParam------------------------------\n");
+    PROC_PRINT(p,"enPlayType:      %10d,   bPlayEnable:        %10d\n",
                        pMce->stMceParam.stPlayParam.enPlayType, pMce->stMceParam.stPlayParam.bPlayEnable
                    );
 
@@ -88,7 +86,7 @@ static HI_S32 MCE_ProcRead(struct seq_file *p, HI_VOID *v)
     pPlayParam = &pMce->stMceParam.stPlayParam;
     if (HI_UNF_MCE_TYPE_PLAY_DVB == pPlayParam->enPlayType)
     {
-        p += seq_printf(p,"u32VideoPid:     %10d,   u32AudioPid:        %10d\n"
+        PROC_PRINT(p,"u32VideoPid:     %10d,   u32AudioPid:        %10d\n"
                           "enVideoType:     %10d,   enAudioType:        %10d\n"
                           "u32Volume:       %10d,   enTrackMode:        %10d\n"
                           "enSigType:       %10d                            \n",
@@ -100,7 +98,7 @@ static HI_S32 MCE_ProcRead(struct seq_file *p, HI_VOID *v)
 
         if (HI_UNF_TUNER_SIG_TYPE_SAT == pPlayParam->unParam.stDvbParam.stConnectPara.enSigType)
         {
-            p += seq_printf(p,"u32Freq:         %10d,   u32SymbolRate:      %10d\n"
+            PROC_PRINT(p,"u32Freq:         %10d,   u32SymbolRate:      %10d\n"
                               "enPolar:         %10d                            \n",
                               pPlayParam->unParam.stDvbParam.stConnectPara.unConnectPara.stSat.u32Freq,pPlayParam->unParam.stDvbParam.stConnectPara.unConnectPara.stSat.u32SymbolRate,
                               pPlayParam->unParam.stDvbParam.stConnectPara.unConnectPara.stSat.enPolar
@@ -108,7 +106,7 @@ static HI_S32 MCE_ProcRead(struct seq_file *p, HI_VOID *v)
         }
         else if (HI_UNF_TUNER_SIG_TYPE_CAB == pPlayParam->unParam.stDvbParam.stConnectPara.enSigType)
         {
-            p += seq_printf(p,"u32Freq:         %10d,   u32SymbolRate:      %10d\n"
+            PROC_PRINT(p,"u32Freq:         %10d,   u32SymbolRate:      %10d\n"
                               "enModType:       %10d                            \n",
                               pPlayParam->unParam.stDvbParam.stConnectPara.unConnectPara.stCab.u32Freq,pPlayParam->unParam.stDvbParam.stConnectPara.unConnectPara.stCab.u32SymbolRate,
                               pPlayParam->unParam.stDvbParam.stConnectPara.unConnectPara.stCab.enModType
@@ -117,7 +115,7 @@ static HI_S32 MCE_ProcRead(struct seq_file *p, HI_VOID *v)
     }
     else if (HI_UNF_MCE_TYPE_PLAY_TSFILE == pPlayParam->enPlayType)
     {
-        p += seq_printf(p,"u32VideoPid:     %10d,   u32AudioPid:        %10d\n"
+        PROC_PRINT(p,"u32VideoPid:     %10d,   u32AudioPid:        %10d\n"
                           "enVideoType:     %10d,   enAudioType:        %10d\n"
                           "u32Volume:       %10d,   enTrackMode:        %10d\n"
                           "u32ContentLen:   %10d                            \n",
@@ -129,8 +127,8 @@ static HI_S32 MCE_ProcRead(struct seq_file *p, HI_VOID *v)
     
     }
                    
-    p += seq_printf(p,"---------------------------PlayStatus-----------------------------\n");
-    p += seq_printf(p,"hAvplay:         %10d,   hWindow:            %10d\n"
+    PROC_PRINT(p,"---------------------------PlayStatus-----------------------------\n");
+    PROC_PRINT(p,"hAvplay:         %10d,   hWindow:            %10d\n"
                       "BeginTime:       %10d,   EndTime:            %10d\n",
                       pMce->hAvplay,    pMce->hWindow,
                       pMce->BeginTime,  pMce->EndTime
@@ -143,7 +141,30 @@ static HI_S32 MCE_ProcRead(struct seq_file *p, HI_VOID *v)
 static HI_S32 MCE_ProcWrite(struct file * file,
     const char __user * buf, size_t count, loff_t *ppos)
 {
-    return HI_SUCCESS;
+#ifdef HI_MCE_SUPPORT         
+	HI_CHAR           ProcPara[64]={0};
+    MCE_S       *pMce = &g_Mce;
+	HI_S32 s32Ret = HI_SUCCESS;
+
+    if (copy_from_user(ProcPara, buf, count))
+    {
+        return -EFAULT;
+    }
+
+	if (0 == strncmp(ProcPara, "stop", strlen("stop")))
+	{
+		HI_UNF_MCE_STOPPARM_S stStopParam;
+		HI_UNF_MCE_EXITPARAM_S stExitParam;
+		stStopParam.enCtrlMode = HI_UNF_MCE_PLAYCTRL_BY_TIME;
+		stStopParam.enStopMode = HI_UNF_AVPLAY_STOP_MODE_BLACK;
+		stStopParam.u32PlayTimeMs = 0;
+		s32Ret = HI_DRV_MCE_Stop(&stStopParam);
+		stExitParam.hNewWin = HI_INVALID_HANDLE;
+		s32Ret |= HI_DRV_MCE_Exit(&stExitParam);
+	}
+#endif
+
+    return count;
 }
 
 HI_S32 MCE_DRV_Open(struct inode *finode, struct file  *ffile)
@@ -182,19 +203,11 @@ HI_S32 MCE_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
         }
         case HI_MCE_CLEAR_LOGO_CMD:
         {
-		    HI_DRV_MODULE_GetFunction(HI_ID_FB, (HI_VOID **)&pstFbFuncs);
-            HI_DRV_MODULE_GetFunction(HI_ID_PDM, (HI_VOID **)&pstPdmFuncs);
+		    Ret = HI_DRV_MODULE_GetFunction(HI_ID_FB, (HI_VOID **)&pstFbFuncs);
 
-            if (HI_NULL != pstFbFuncs)
+            if ((HI_SUCCESS == Ret) && (HI_NULL != pstFbFuncs))
             {
                 (HI_VOID)pstFbFuncs->pfnHifbSetLogoLayerEnable(HI_FALSE);
-            }
-
-            if (HI_NULL != pstPdmFuncs)
-            {
-                /*release the reserve mem for logo*/
-                pstPdmFuncs->pfnPDM_ReleaseReserveMem("Optm_GfxWbc2");
-                pstPdmFuncs->pfnPDM_ReleaseReserveMem("Display_Buffer"); 
             }
             
             break;
@@ -264,7 +277,7 @@ HI_S32 MCE_DRV_ModInit(HI_VOID)
 
     Ret = HI_DRV_MODULE_Register(HI_ID_FASTPLAY, MCE_NAME, HI_NULL);
 
-    sprintf(ProcName, "%s", HI_MOD_MCE);
+    HI_OSAL_Snprintf(ProcName, sizeof(ProcName), "%s", HI_MOD_MCE);
 
     pProcItem = HI_DRV_PROC_AddModule(ProcName, HI_NULL, HI_NULL);
     if(HI_NULL != pProcItem)
@@ -273,7 +286,7 @@ HI_S32 MCE_DRV_ModInit(HI_VOID)
         pProcItem->write = g_MceProcPara.wtproc;
     }
         
-    sprintf(g_MceRegisterData.devfs_name, UMAP_DEVNAME_MCE);
+    HI_OSAL_Snprintf(g_MceRegisterData.devfs_name, sizeof(g_MceRegisterData.devfs_name), UMAP_DEVNAME_MCE);
     g_MceRegisterData.fops = &g_MceFops;
     g_MceRegisterData.minor = UMAP_MIN_MINOR_MCE;
     g_MceRegisterData.owner  = THIS_MODULE;
@@ -293,7 +306,7 @@ HI_VOID MCE_DRV_ModExit(HI_VOID)
     
     HI_DRV_DEV_UnRegister(&g_MceRegisterData);
 
-    sprintf(ProcName, "%s", HI_MOD_MCE);
+    HI_OSAL_Snprintf(ProcName, sizeof(ProcName), "%s", HI_MOD_MCE);
     HI_DRV_PROC_RemoveModule(ProcName);
     
     HI_DRV_MODULE_UnRegister(HI_ID_FASTPLAY);

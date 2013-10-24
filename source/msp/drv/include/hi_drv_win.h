@@ -27,7 +27,7 @@ extern "C"{
 #endif
 
 
-#ifndef CONFIG_SUPPORT_CA_RELEASE
+#ifndef HI_ADVCA_FUNCTION_RELEASE
 #define HI_FATAL_WIN(fmt...) \
             HI_FATAL_PRINT(HI_ID_VO, fmt)
 
@@ -48,6 +48,7 @@ extern "C"{
 #endif
 
 #define DEF_MAX_WIN_NUM_ON_SINGLE_DISP 16
+#define DEF_MAX_WIN_NUM_ON_VIRTUAL_DISP 16
 
 /* window type */
 typedef enum hiDRV_WIN_TYPE_E
@@ -127,10 +128,60 @@ typedef struct hiDRV_WIN_PLAY_INFO_S
     HI_U32    u32DelayTime; /* in ms */
     HI_U32    u32DispRate;  /* in 1/100 Hz */
     HI_U32    u32FrameNumInBufQn;
-
+    HI_DRV_VIDEO_FRAME_S    newest_playframeinfo;    
     HI_BOOL   bTBMatch;  /* for interlace frame display on interlace timing */
 }HI_DRV_WIN_PLAY_INFO_S;
 
+typedef struct hiDRV_WIN_INTF_S
+{
+    HI_VOID* pfAcqFrame;
+    HI_VOID* pfRlsFrame;
+    HI_VOID* pfSetWinAttr;
+
+    HI_U32    u32Resrve0;
+    HI_U32    u32Resrve1;
+}HI_DRV_WIN_INTF_S;
+HI_S32 HI_DRV_WIN_Create(HI_DRV_WIN_ATTR_S *pWinAttr, HI_HANDLE *phWindow);
+HI_S32 HI_DRV_WIN_Destroy(HI_HANDLE hWindow);
+HI_S32 HI_DRV_WIN_SetAttr(HI_HANDLE hWin, HI_DRV_WIN_ATTR_S *pWinAttr);
+HI_S32 HI_DRV_WIN_GetAttr(HI_HANDLE hWin, HI_DRV_WIN_ATTR_S *pWinAttr);
+HI_S32 HI_DRV_WIN_GetInfo(HI_HANDLE hWindow, HI_DRV_WIN_INFO_S *pInfo);
+HI_S32 HI_DRV_WIN_SetSource(HI_HANDLE hWindow, HI_DRV_WIN_SRC_INFO_S *pstSrc);
+HI_S32 HI_DRV_WIN_GetSource(HI_HANDLE hWin, HI_DRV_WIN_SRC_INFO_S *pstSrc);
+HI_S32 HI_DRV_WIN_SetEnable(HI_HANDLE hWindow, HI_BOOL bEnable);
+HI_S32 HI_DRV_WIN_GetEnable(HI_HANDLE hWindow, HI_BOOL *pbEnable);
+HI_S32 HI_DRV_WIN_QFrame(HI_HANDLE hWindow, HI_DRV_VIDEO_FRAME_S *pFrame);
+HI_S32 HI_DRV_WIN_QULSFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameInfo);
+HI_S32 HI_DRV_WIN_DQFrame(HI_HANDLE hWindow, HI_DRV_VIDEO_FRAME_S *pFrame);
+HI_S32 HI_DRV_WIN_GetPlayInfo(HI_HANDLE hWindow, HI_DRV_WIN_PLAY_INFO_S *pInfo);
+HI_S32 HI_DRV_WIN_SetZorder(HI_HANDLE hWin, HI_DRV_DISP_ZORDER_E ZFlag);
+HI_S32 HI_DRV_WIN_GetZorder(HI_HANDLE hWin, HI_U32 *pu32Zorder);
+
+HI_S32 HI_DRV_WIN_Reset(HI_HANDLE hWindow, HI_DRV_WIN_SWITCH_E enMode);
+HI_S32 HI_DRV_WIN_GetPlayInfo(HI_HANDLE hWindow, HI_DRV_WIN_PLAY_INFO_S *pstInfo);
+
+HI_S32 HI_DRV_WIN_SendFrame(HI_HANDLE hWindow, HI_DRV_VIDEO_FRAME_S *pFrame);
+HI_S32 HI_DRV_WIN_SetZorder(HI_HANDLE hWin, HI_DRV_DISP_ZORDER_E ZFlag);
+HI_S32 HI_DRV_WIN_Freeze(HI_HANDLE hWin, HI_BOOL bEnable,  HI_DRV_WIN_SWITCH_E eRst);
+HI_S32 HI_DRV_WIN_GetLatestFrameInfo(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *frame_info);
+HI_S32 HI_DRV_WIN_Reset(HI_HANDLE hWindow, HI_DRV_WIN_SWITCH_E enSwitch);
+HI_S32 HI_DRV_WIN_Pause(HI_HANDLE hWin, HI_BOOL bEnable);
+HI_S32 HI_DRV_WIN_SetStepMode(HI_HANDLE hWin, HI_BOOL bStepMode);
+HI_S32 HI_DRV_WIN_SetStepPlay(HI_HANDLE hWin);
+HI_S32 HI_DRV_WIN_SetExtBuffer(HI_HANDLE hWin, HI_DRV_VIDEO_BUFFER_POOL_S* pstBuf);
+HI_S32 HI_DRV_WIN_AcquireFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameinfo);
+HI_S32 HI_DRV_WIN_ReleaseFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameinfo);
+HI_S32 HI_DRV_WIN_SetQuick(HI_HANDLE hWin, HI_BOOL bEnable);
+HI_S32 HI_DRV_WIN_CapturePicture(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pstPic);
+HI_S32 HI_DRV_WIN_CapturePictureRelease(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pstPic);
+HI_S32 HI_DRV_WIN_SetRotation(HI_HANDLE hWin, HI_DRV_ROT_ANGLE_E enRotation);
+HI_S32 HI_DRV_WIN_GetRotation(HI_HANDLE hWin, HI_DRV_ROT_ANGLE_E *penRotation);
+HI_S32 HI_DRV_WIN_SetFlip(HI_HANDLE hWin, HI_BOOL bHoriFlip, HI_BOOL bVertFlip);
+HI_S32 HI_DRV_WIN_GetFlip(HI_HANDLE hWin, HI_BOOL *pbHoriFlip, HI_BOOL *pbVertFlip);
+HI_S32 HI_DRV_WIN_SendFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameinfo);
+HI_S32 HI_DRV_WIN_UpdatePqData(HI_U32 u32UpdateType, PQ_PARAM_S* pstPqParam);
+HI_S32 HI_DRV_WIN_Init(HI_VOID);
+HI_S32 HI_DRV_WIN_DeInit(HI_VOID);
 
 #ifdef __cplusplus
 #if __cplusplus

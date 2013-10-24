@@ -45,7 +45,6 @@ extern "C"{
 
 #define MAX_USERDATA_IN_ONE_FRAME (4)
 #define VDEC_USERDATA_ONLY_SUPPORT_CC (1)
-
 /*************************** Structure Definition ****************************/
 
 typedef struct 
@@ -120,7 +119,7 @@ HI_S32 USRDATA_Alloc(HI_HANDLE hHandle, HI_DRV_VDEC_USERDATABUF_S* pstBuf)
     stBufInstCfg.pu8UsrVirAddr = HI_NULL;
     stBufInstCfg.pu8KnlVirAddr = HI_NULL;
     stBufInstCfg.u32Size = pstBuf->u32Size;
-    sprintf(stBufInstCfg.aszName, "VDEC_UsrData%02d", (HI_U8)hHandle);
+    snprintf(stBufInstCfg.aszName, sizeof(stBufInstCfg.aszName),"VDEC_UsrData%02d", (HI_U8)hHandle);
     s32Ret = BUFMNG_Create(&hBuf, &stBufInstCfg);
     if (s32Ret != HI_SUCCESS)
     {
@@ -295,7 +294,7 @@ static HI_S32 USRDATA_CC(HI_HANDLE hHandle, USRDAT* pstUsrData)
 {
     HI_S32 i;
     HI_U8 u8DataCnt;
-
+#if (1==VDEC_USERDATA_NEED_ARRANGE)
     /* I_FRAME or P_FRAME, sort */
     if ((I_FRAME == pstUsrData->pic_coding_type) || (P_FRAME == pstUsrData->pic_coding_type))
     {
@@ -331,6 +330,7 @@ static HI_S32 USRDATA_CC(HI_HANDLE hHandle, USRDAT* pstUsrData)
     }
     /* B_FRAME or other error frame, put directly */
     else
+#endif
     {
         return USRDATA_Put(hHandle, pstUsrData, HI_UNF_VIDEO_USERDATA_DVB1_CC);
     }
@@ -346,7 +346,7 @@ HI_S32 USRDATA_Arrange(HI_HANDLE hHandle, USRDAT* pstUsrData)
 #endif
 
     if ((hHandle >= HI_VDEC_MAX_INSTANCE_NEW) || (HI_NULL == pstUsrData) || 
-        (HI_NULL == pstUsrData->data) || (0 == pstUsrData->data_size))
+       (0 == pstUsrData->data_size))
     {
         return HI_FAILURE;
     }
@@ -387,4 +387,9 @@ HI_S32 USRDATA_Arrange(HI_HANDLE hHandle, USRDAT* pstUsrData)
 #endif
 }
 
+#ifdef __cplusplus
+#if __cplusplus
+}
+#endif
+#endif /* End of #ifdef __cplusplus */
 

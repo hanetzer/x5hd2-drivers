@@ -59,13 +59,14 @@ typedef struct
     HI_U32                  u32FrameSamples;
     HI_U32                  u32SampleBytes;
     
+    HI_BOOL                 bAcquireCastFrameFlag;
     SND_CAST_STATUS_E      enCurnStatus;
 
 } SND_CAST_STATE_S;
 
 
 HI_S32 CAST_GetDefAttr(HI_UNF_SND_CAST_ATTR_S * pstDefAttr);
-HI_S32 CAST_CreateNew(SND_CARD_STATE_S *pCard, HI_UNF_SND_CAST_ATTR_S *pstCastAttr, HI_U32 *pu32ReqSize, HI_U32 hCast);
+HI_S32 CAST_CreateNew(SND_CARD_STATE_S *pCard, HI_UNF_SND_CAST_ATTR_S *pstCastAttr, MMZ_BUFFER_S *pstMMz, HI_U32 hCast);
 HI_S32 CAST_Destroy(SND_CARD_STATE_S *pCard, HI_U32 hCast);
 HI_S32 CAST_SetInfo(SND_CARD_STATE_S *pCard, HI_U32 u32CastID, HI_U32 u32UserVirtAddr);
 HI_S32 CAST_GetInfo(SND_CARD_STATE_S *pCard, HI_U32 hCast, AO_Cast_Info_Param_S *pstInfo);
@@ -73,6 +74,8 @@ HI_S32 CAST_SetEnable(SND_CARD_STATE_S *pCard, HI_U32 u32CastID, HI_BOOL bEnable
 HI_S32 CAST_GetEnable(SND_CARD_STATE_S *pCard, HI_U32 hCast, HI_BOOL *pbEnable);
 HI_S32 CAST_ReadData(SND_CARD_STATE_S *pCard, HI_U32 u32CastId, AO_Cast_Data_Param_S *pstCastData);
 HI_S32 CAST_ReleaseData(SND_CARD_STATE_S *pCard, HI_U32 u32CastId,  AO_Cast_Data_Param_S *pstCastData);
+HI_VOID CAST_GetSettings(SND_CARD_STATE_S *pCard, HI_HANDLE hCast, SND_CAST_SETTINGS_S* pstCastSettings);
+HI_VOID CAST_RestoreSettings(SND_CARD_STATE_S *pCard, HI_HANDLE hCast, SND_CAST_SETTINGS_S* pstCastSettings);
    
 #ifdef __cplusplus
  #if __cplusplus

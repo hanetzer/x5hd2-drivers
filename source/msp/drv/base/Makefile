@@ -26,7 +26,7 @@ EXTRA_CFLAGS += -I$(COMMON_UNF_INCLUDE)                 \
                 -I$(MSP_DRV_INCLUDE)                    \
                 -I$(MSP_DIR)/api/higo/include	        \
                 -I$(MSP_DIR)/api/tde/include	        \
-                -I$(MSP_DRV_INCLUDE)/adsp                 
+                -I$(MSP_DIR)/drv/adsp/adsp_v1_1/include                 
 
 KBUILD_EXTRA_SYMBOLS += $(COMMON_DIR)/drv/Module.symvers
 

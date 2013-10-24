@@ -26,24 +26,23 @@ extern "C"{
 
 #include "png_hal.h"
 #include "hi_png_errcode.h"
-#include "hi_png_config.h"
-
+#include "hi_gfx_comm_k.h"
 /** get chip version **/
-#include "drv_sys_ext.h"
-
+#include "hi_drv_sys.h"
+#include "hi_png_config.h"
+#include "hi_reg_common.h"
 
 /* ptr to register structure*/
 static volatile PNG_HAL_REGISTER_S *g_pstPngReg = HI_NULL;
 
-/* vitural address to reset registet base*/
-static volatile HI_U32 *g_pu32RegReset = HI_NULL;
-
-static HI_CHIP_TYPE_E g_enChipType = HI_CHIP_TYPE_BUTT;
-HI_CHIP_VERSION_E  g_enChipVersion = HI_CHIP_VERSION_BUTT;
-
 static HI_U32 g_u32PngIrqNum = 0;
 static HI_U32 g_u32PngRegAddr = 0;
-static HI_U32 g_u32PngResetAddr = 0;
+
+#define DECLARE_PNG_REG \
+{\
+    g_u32PngRegAddr = 0xf8c70000;\
+    g_u32PngIrqNum = 128;    \
+}
 /********************************************************************************************
 * func:	Hal init
 * in:	none
@@ -54,37 +53,12 @@ static HI_U32 g_u32PngResetAddr = 0;
 *********************************************************************************************/
 HI_S32 PngHalInit(HI_VOID)
 {
-    HI_DRV_SYS_GetChipVersion(&g_enChipType, &g_enChipVersion);
-    if ((HI_CHIP_TYPE_HI3716M != g_enChipType)
-		&& (HI_CHIP_TYPE_HI3716C != g_enChipType)
-		&& (HI_CHIP_TYPE_HI3716H != g_enChipType)
-		&& (HI_CHIP_TYPE_HI3712 != g_enChipType)
-		&& (HI_CHIP_TYPE_HI3716CES != g_enChipType))
-    {
-        return HI_FAILURE;
-    }
-
-    if ((HI_CHIP_TYPE_HI3716CES == g_enChipType)
-        || ((HI_CHIP_TYPE_HI3716C == g_enChipType)
-        && (HI_CHIP_VERSION_V200 == g_enChipVersion)))
-    {
-        g_u32PngRegAddr = 0xf8c70000;
-        g_u32PngResetAddr = 0xf8a22084;
-        g_u32PngIrqNum = 128;
-    }
-	
+    DECLARE_PNG_REG
     /* register map*/
-    g_pstPngReg = (volatile PNG_HAL_REGISTER_S *)PNG_REG_MAP(g_u32PngRegAddr, PNG_REG_SIZE);
+    g_pstPngReg = (volatile PNG_HAL_REGISTER_S *)HI_GFX_REG_MAP(g_u32PngRegAddr, PNG_REG_SIZE);
 
     if (NULL == g_pstPngReg)
     {
-        return HI_ERR_PNG_SYS;
-    }
-
-    g_pu32RegReset = (volatile HI_U32 *)PNG_REG_MAP(g_u32PngResetAddr, 4);
-    if (NULL == g_pu32RegReset)
-    {
-        PNG_REG_UNMAP(g_pstPngReg);
         return HI_ERR_PNG_SYS;
     }
 
@@ -117,13 +91,7 @@ HI_S32 PngHalInit(HI_VOID)
 *********************************************************************************************/
 HI_VOID PngHalDeinit(HI_VOID)
 {
-    /* todo:reset && close clock*/
-
-    /* umap register*/
-    PNG_REG_UNMAP(g_pu32RegReset);
-    g_pu32RegReset = HI_NULL;
-
-    PNG_REG_UNMAP(g_pstPngReg);
+    HI_GFX_REG_UNMAP(g_pstPngReg);
     g_pstPngReg = HI_NULL;
 
     return;
@@ -144,7 +112,8 @@ HI_VOID PngHalReset(HI_VOID)
     HI_U32 u32RdcPhyaddr = 0;
     HI_U32 u32ErrMode = 0;
     HI_U32 u32IntMask = 0;
-
+    U_PERI_CRG33 unTempValue;
+    
     /* reset the value of register before reseting */
     u32AXIConfig = g_pstPngReg->u32AXIConfig;
     u32TimeOut = g_pstPngReg->u32TimeOut;
@@ -152,29 +121,27 @@ HI_VOID PngHalReset(HI_VOID)
     u32ErrMode = g_pstPngReg->uErrMode.u32All;
     u32IntMask = g_pstPngReg->uIntMask.u32All;
 
-    if ((HI_CHIP_TYPE_HI3716CES == g_enChipType)
-        || ((HI_CHIP_TYPE_HI3716C == g_enChipType)
-        && (HI_CHIP_VERSION_V200 == g_enChipVersion)))
-        *g_pu32RegReset |= 0x10;
+    unTempValue.u32 = g_pstRegCrg->PERI_CRG33.u32;
+    /*reset*/
+    unTempValue.bits.pgd_srst_req = 0x1; 
 
-#if 1
+    g_pstRegCrg->PERI_CRG33.u32 = unTempValue.u32;
+    
     while(1)
     {
-    	for (i = 0; i < 100; i++)
-    	{
-    	}
-    	if (0 == g_pstPngReg->u32RstBusy)
-    	{
-    		break;
-    	}
+        for (i = 0; i < 100; i++)
+        {
+        }
+        if (0 == g_pstPngReg->u32RstBusy)
+        {
+        	break;
+        }
     }
-    #endif
 
-    if ((HI_CHIP_TYPE_HI3716CES == g_enChipType)
-            || ((HI_CHIP_TYPE_HI3716C == g_enChipType)
-            && (HI_CHIP_VERSION_V200 == g_enChipVersion)))
-        *g_pu32RegReset &= ~0x10;
-
+    unTempValue.u32 = g_pstRegCrg->PERI_CRG33.u32;
+    /*cancel reset*/
+    unTempValue.bits.pgd_srst_req = 0x0; 
+    g_pstRegCrg->PERI_CRG33.u32 = unTempValue.u32;
     
     /* recover value */
     g_pstPngReg->u32AXIConfig = u32AXIConfig;
@@ -188,14 +155,16 @@ HI_VOID PngHalReset(HI_VOID)
 
 HI_VOID PngHalSetClock(HI_VOID)
 {
-    if ((HI_CHIP_TYPE_HI3716CES == g_enChipType)
-        || ((HI_CHIP_TYPE_HI3716C == g_enChipType)
-        && (HI_CHIP_VERSION_V200 == g_enChipVersion)))
-    {
-        *g_pu32RegReset &= ~0x10;
-        *g_pu32RegReset |= 0x1;
-    }
+    U_PERI_CRG33 unTempValue;
 
+    unTempValue.u32 = g_pstRegCrg->PERI_CRG33.u32;
+    /*cancel reset*/
+    unTempValue.bits.pgd_srst_req = 0x0;
+
+    /*enable clock*/
+    unTempValue.bits.pgd_cken = 0x1;
+
+    g_pstRegCrg->PERI_CRG33.u32 = unTempValue.u32;
     return;
 }
 
@@ -293,12 +262,15 @@ HI_VOID PngHalSetTransform(HI_PNG_TRANSFORM_S stTransform)
         uTransform.stBits.u32Strip4En = HI_TRUE;
         uTransform.stBits.u32Strip4Fmt = stTransform.eOutFmt;
     }
+   
     if (stTransform.u32Transform & HI_PNG_TRANSFORM_PREMULTI_ALPHA)
     {
-        uTransform.stBits.u32PreMultiAlphaEn = HI_TRUE;
-        uTransform.stBits.u32PreMultiRoundMode = 0x1;
-        
+        #ifdef CONFIG_PNG_PREMULTIALPHA_ENABLE
+            uTransform.stBits.u32PreMultiAlphaEn = HI_TRUE;
+            uTransform.stBits.u32PreMultiRoundMode = 0x1;   
+         #endif
     }
+   
     g_pstPngReg->uTransform.u32All = uTransform.u32All;
     g_pstPngReg->uTransColor0.u32All = uTransColor0.u32All;
     g_pstPngReg->uTransColor1.u32All = uTransColor1.u32All;

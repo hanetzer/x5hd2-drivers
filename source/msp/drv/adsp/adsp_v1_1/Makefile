@@ -14,14 +14,9 @@ include $(SDK_DIR)/base.mak
 endif
 
 #===============================================================================
-# HI_SND_DRV_SUSPEND_SUPPORT : suspend & resume driver
-#===============================================================================
-EXTRA_CFLAGS += -DHI_SND_DRV_SUSPEND_SUPPORT
-
-#===============================================================================
 # local variables
 #===============================================================================
-ADSP_DRV_INCLUDE = $(MSP_DRV_INCLUDE)/adsp/ 
+ADSP_DRV_INCLUDE =$(SDK_DIR)/source/msp/drv/adsp/adsp_v1_1/include 
 
 EXTRA_CFLAGS += $(CFG_HI_KMOD_CFLAGS)
 

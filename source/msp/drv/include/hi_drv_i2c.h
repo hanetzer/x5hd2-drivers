@@ -38,7 +38,10 @@
     || defined (CHIP_TYPE_hi3716m)	\
     || defined (CHIP_TYPE_hi3712)
  #define HI_STD_I2C_NUM (5)
-#elif  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
+#elif  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
 #define HI_STD_I2C_NUM 6
 #else
  #error YOU MUST DEFINE  CHIP_TYPE!
@@ -49,7 +52,7 @@
 #define HI_I2C_MAX_NUM_RESERVE 1
 #define HI_I2C_MAX_NUM (HI_I2C_MAX_NUM_USER + HI_I2C_MAX_NUM_RESERVE)
 
-#define HI_I2C_MAX_LENGTH 64
+#define HI_I2C_MAX_LENGTH  1024
 
 HI_S32  HI_DRV_I2C_Init(HI_VOID);
 HI_VOID HI_DRV_I2C_DeInit(HI_VOID);

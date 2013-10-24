@@ -42,8 +42,8 @@ typedef struct tagMCE_S
 {
     HI_HANDLE               hAvplay;
     HI_HANDLE               hWindow;
+	HI_HANDLE				hSnd;
     HI_DISP_PARAM_S         stDispParam;
-    HI_GRC_PARAM_S          stGrcParam;
     HI_MCE_PARAM_S          stMceParam;
     HI_U32                  u32PlayDataAddr;
 
@@ -55,9 +55,9 @@ typedef struct tagMCE_S
     HI_U32                  BeginTime;
     HI_U32                  EndTime;
     
-    HI_BOOL                 TsplayEnd;
+    HI_BOOL                 playEnd;
     DMX_MMZ_BUF_S           TsBuf;
-    struct task_struct      *pTsTask;
+    struct task_struct      *pPlayTask;
 }MCE_S;
 
 

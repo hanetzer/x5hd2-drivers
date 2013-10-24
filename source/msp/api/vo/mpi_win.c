@@ -35,9 +35,10 @@
 
 #include "hi_mpi_avplay.h"
 #include "hi_error_mpi.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "drv_vdec_ext.h"
 
+#include "drv_venc_ext.h"
 
 HI_VOID InitCompressor(HI_VOID);
 
@@ -82,7 +83,7 @@ HI_S32 HI_MPI_WIN_Init(HI_VOID)
         HI_VO_UNLOCK();
         return HI_SUCCESS;
     }
-
+    
     if (HI_FAILURE == stat(g_VoDevName, &st))
     {
         HI_FATAL_WIN("VO is not exist.\n");
@@ -157,7 +158,8 @@ HI_S32 HI_MPI_WIN_Create(const HI_DRV_WIN_ATTR_S *pWinAttr, HI_HANDLE *phWindow)
         return HI_ERR_VO_NULL_PTR;
     }
 
-    if (pWinAttr->enDisp >= HI_DRV_DISPLAY_BUTT)
+    if (pWinAttr->enDisp >= HI_DRV_DISPLAY_BUTT
+        && pWinAttr->bVirtual == HI_FALSE)
     {
         HI_ERR_WIN("para pWinAttr->enVo is invalid.\n");
         return HI_ERR_VO_INVALID_PARA;
@@ -973,264 +975,163 @@ HI_S32 HI_MPI_WIN_SetQuickOutput(HI_HANDLE hWindow, HI_BOOL bEnable)
 
 
 HI_S32 HI_MPI_VO_UseDNRFrame(HI_HANDLE hWindow, HI_BOOL bEnable)
-{
- 
+{ 
     return HI_FAILURE;
 }
 
 
-#if 0
-HI_S32 HI_MPI_VO_CapturePictureExt(HI_HANDLE hWindow, HI_DRV_VIDEO_FRAME_S *pstCapPicture,  VO_CAPTURE_MEM_MODE_S *pstCapMode)
+HI_S32 HI_MPI_VO_CapturePictureExt(HI_HANDLE hWindow, HI_DRV_VIDEO_FRAME_S *pstCapPicture)
 {
-    HI_S32            Ret;
-    WIN_CAPTURE_S VoWinCapture;
-    WIN_CAPTURE_S    VoWinRls;
-
-
-
-    if (HI_INVALID_HANDLE == hWindow)
-    {
-        HI_ERR_WIN("para hWindow is invalid.\n");
+    HI_S32            Ret = HI_SUCCESS;
+    WIN_CAPTURE_S     VoWinCapture;    
+    HI_U32          datalen = 0, i = 0, y_stride = 0, height = 0;
+    HI_UCHAR        *DecompressOutBuf = HI_NULL, *DecompressInBuf = HI_NULL;
+    HI_UCHAR        *Inptr = HI_NULL, *Outptr = HI_NULL;
+    HI_VDEC_PRIV_FRAMEINFO_S pstPrivInfo;
+    
+    CHECK_VO_INIT();           
+    if ((HI_INVALID_HANDLE == hWindow) || (!pstCapPicture))
+    {          
+        HI_ERR_WIN(" invalid param.\n");
         return HI_ERR_VO_INVALID_PARA; 
     }
-
-    if (!pstCapPicture)
-    {
-        HI_ERR_WIN("para pstCapPicture is null.\n");
-        return HI_ERR_VO_NULL_PTR;
-    }
-
-    if (!pstCapMode)
-    {
-        HI_ERR_WIN("para pstCapMode is null.\n");
-        return HI_ERR_VO_NULL_PTR;
-    }
-
-    CHECK_VO_INIT();
-
-    VoWinCapture.hWindow = hWindow;
-    memcpy(&(VoWinCapture.MemMode), pstCapMode, sizeof(VO_CAPTURE_MEM_MODE_S));
-
-#if  defined (CHIP_TYPE_hi3712)
-
-    Ret = ioctl(g_VoDevFd, CMD_VO_WIN_CAPTURE_START, &VoWinCapture);
-    goto release;
-
-#elif defined (CHIP_TYPE_hi3716h) \
-    || defined (CHIP_TYPE_hi3716c)  \
-    || defined (CHIP_TYPE_hi3716cv200es)  \
-    ||defined (CHIP_TYPE_hi3716m)
-
-    HI_U32  datalen,i;
-    HI_UCHAR          *DecompressOutBuf = HI_NULL, *DecompressInBuf = HI_NULL, *Inptr = HI_NULL, *Outptr = HI_NULL;
-    HI_VDEC_PRIV_FRAMEINFO_S *pstPrivInfo;
-
-    pstPrivInfo = (HI_VDEC_PRIV_FRAMEINFO_S *)(VoWinCapture.CapPicture.u32Private);
-    Ret = ioctl(g_VoDevFd, CMD_VO_WIN_CAPTURE_START, &VoWinCapture);
+    
+    /*first,  we get a frame from the window.*/
+    VoWinCapture.hWindow = hWindow;    
+    Ret = ioctl(g_VoDevFd, CMD_VO_WIN_CAPTURE_START, &VoWinCapture);        
     if (Ret != HI_SUCCESS) 
-    {
         return Ret;
-    }
-
-    if (pstCapMode->enAllocMemType == VO_CAPTURE_DRIVER_ALLOC) 
+    
+    y_stride = VoWinCapture.CapPicture.stBufAddr[0].u32Stride_Y;    
+    /*secondary,  we make a address mapping to get a virtual addr. 
+     *Pay attention please ,we should ensure that mmapped with no cache.!
+     *!!!!!!!!!!!!!!!!!!!!!!!!????????
+     * else we should flush the cache for other bus master using.
+     */
+    memcpy((void *)(&pstPrivInfo), (void*)(VoWinCapture.CapPicture.u32Priv), sizeof(HI_VDEC_PRIV_FRAMEINFO_S));    
+       
+    height = (HI_TRUE == pstPrivInfo.stCompressInfo.u32CompressFlag)
+                     ? pstPrivInfo.stCompressInfo.s32CompFrameHeight : VoWinCapture.CapPicture.u32Height; 
+    
+    DecompressOutBuf = (HI_UCHAR *)(HI_MMAP(VoWinCapture.driver_supply_addr.startPhyAddr,
+                                                VoWinCapture.driver_supply_addr.length));
+    
+    if (HI_TRUE == pstPrivInfo.stCompressInfo.u32CompressFlag) 
     {
-        /* we should remap the addr and then use it */
-        DecompressOutBuf = (HI_UCHAR *)(HI_MMAP(VoWinCapture.MemMode.u32StartPhyAddr, VoWinCapture.MemMode.u32DataLen));
-        VoWinCapture.MemMode.u32StartUserAddr = (HI_U32)DecompressOutBuf;
-    }
-    else if (pstCapMode->enAllocMemType == VO_CAPTURE_USER_ALLOC) 
-    {
-        DecompressOutBuf = (HI_UCHAR *)pstCapMode->u32StartUserAddr;
-    }
-    if (HI_TRUE == pstPrivInfo->stCompressInfo.u32CompressFlag) 
-    {
-        if ( HI_UNF_FORMAT_YUV_SEMIPLANAR_420 == VoWinCapture.CapPicture.enVideoFormat) 
-        {
-            datalen = (pstPrivInfo->stCompressInfo.s32CompFrameHeight) * (VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YStride) * 3 / 2;
-        }
+        /*don't know why there exists these two branches, do we condidered gstreamer?*/
+        if ( HI_DRV_PIX_FMT_NV21 == VoWinCapture.CapPicture.ePixFormat) 
+            datalen = height * y_stride * 3 / 2 + height * 4;
         else 
-        {
-            datalen = pstPrivInfo->stCompressInfo.s32CompFrameHeight * VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YStride * 2;
-        }
-
-        datalen += pstPrivInfo->stCompressInfo.s32CompFrameHeight * 4;
+            datalen = height * y_stride * 2 + height * 4;
     }
     else
-    {
-        if ( HI_UNF_FORMAT_YUV_SEMIPLANAR_420 == VoWinCapture.CapPicture.enVideoFormat) 
-        {
-            datalen = (VoWinCapture.CapPicture.u32Height) * (VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YStride) * 3 / 2;
-        }
+    {        
+        if ( HI_DRV_PIX_FMT_NV21 == VoWinCapture.CapPicture.ePixFormat) 
+            datalen = height * y_stride * 3 / 2;
         else 
-        {
-            datalen = VoWinCapture.CapPicture.u32Height * VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YStride * 2;
-        }
+            datalen = height * y_stride * 2;
     }
+    
+    DecompressInBuf =(HI_UCHAR *)(HI_MMAP(VoWinCapture.CapPicture.stBufAddr[0].u32PhyAddr_Y, datalen));
 
-    if (pstCapMode->enAllocMemType != VO_CAPTURE_NO_ALLOC) 
+    /*third  step, we make a decompress or simple copy from driver-vpss frame to user frame.*/
+    if (pstPrivInfo.stCompressInfo.u32CompressFlag == HI_TRUE) 
     {
-        DecompressInBuf =(HI_UCHAR *)(HI_MMAP(VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YAddr, datalen));
-    }
-    if (pstPrivInfo->stCompressInfo.u32CompressFlag == HI_TRUE) 
-    {
-        /* decompress  */
+        #if 0
         InitCompressor();
-        Ret = decompress(DecompressInBuf, 0, pstPrivInfo->stCompressInfo.s32CompFrameWidth, 
-                pstPrivInfo->stCompressInfo.s32CompFrameHeight, VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YStride, 
-                VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YStride, DecompressOutBuf);
-#if 0
-        FILE    *yuvfile=fopen("./t.yuv", "wb");
-        if (yuvfile == HI_NULL)
-        {
-            printf("open yuv file fail\r\n");
-            return HI_FAILURE;
-        }
-        printf("yuv file len %d \r\n", VoWinCapture.MemMode.u32DataLen);
-        fwrite(DecompressOutBuf, 1, VoWinCapture.MemMode.u32DataLen, yuvfile);
-        fflush(yuvfile);
-#endif
-
-        if (Ret <= 0) 
-        {
+        Ret = decompress(DecompressInBuf,
+                         0, 
+                         pstPrivInfo->stCompressInfo.s32CompFrameWidth, 
+                         pstPrivInfo->stCompressInfo.s32CompFrameHeight, 
+                         y_stride, 
+                         y_stride, 
+                         DecompressOutBuf);
+        
+        Ret = (Ret <= 0)? HI_FAILURE:HI_SUCCESS;        
+        if (Ret == HI_FAILURE)         
             HI_ERR_WIN("decompress data fail\r\n");
-            Ret  = HI_FAILURE;
-        }
-        else 
-        {
-            Ret  = HI_SUCCESS;
-        }
+        
+        #endif        
     }
     else 
     {
-        if (pstCapMode->enAllocMemType != VO_CAPTURE_NO_ALLOC) 
-        {
-            /* just copy */
             Inptr = DecompressInBuf; 
             Outptr = DecompressOutBuf;
-
-            if ( (HI_NULL ==Inptr) ||(HI_NULL ==Outptr) ||(0 == VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YStride))
+            
+            if ( (HI_NULL ==Inptr) ||(HI_NULL ==Outptr) 
+                  ||(0 == y_stride))                  
                 return HI_FAILURE;
 
-            for(i = 0 ; i < datalen / VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YStride; i++) 
+            for(i = 0 ; i < datalen / y_stride; i++) 
             {
-                memcpy(Outptr, Inptr, VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YStride);
-                Inptr += VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YStride;
-                Outptr += VoWinCapture.CapPicture.stVideoFrameAddr[0].u32YStride;
+                memcpy(Outptr, Inptr, y_stride);
+                Inptr += y_stride;
+                Outptr += y_stride;
             }
-        }
     }
-
-    if (pstCapMode->enAllocMemType != VO_CAPTURE_NO_ALLOC) 
+      
+    if (HI_SUCCESS != HI_MUNMAP((void*)DecompressInBuf)) 
     {
-        if (HI_SUCCESS != HI_MUNMAP((void*)DecompressInBuf)) 
-        {
-            HI_ERR_WIN("decompress buffer unmap fail\r\n");
-            goto release;
-        }
+        HI_ERR_WIN("decompress buffer unmap fail\r\n");
+        (HI_VOID)HI_MUNMAP((void*)DecompressOutBuf);
+        goto release;
     }
-
-    if (pstCapMode->enAllocMemType == VO_CAPTURE_DRIVER_ALLOC) 
+    
+    if (HI_SUCCESS != HI_MUNMAP((void*)DecompressOutBuf))
     {
-        if (HI_SUCCESS != HI_MUNMAP((void*)DecompressOutBuf))
-        {
-            HI_ERR_WIN("decompress buffer unmap fail\r\n");
-            goto release;
-        }
+        HI_ERR_WIN("decompress buffer unmap fail\r\n");
+        goto release;
     }
-#else
-#error YOU MUST DEFINE  CHIP_TYPE!
-#endif
+    
+release:    
 
-release:
-    /*  release freezed frame*/
-    VoWinRls.hWindow = hWindow;
-    memcpy(&(VoWinRls.MemMode), &(VoWinCapture.MemMode), sizeof(VO_CAPTURE_MEM_MODE_S));
-    ioctl(g_VoDevFd, CMD_VO_WIN_CAPTURE_RELEASE, &VoWinRls);
+    Ret = ioctl(g_VoDevFd, CMD_VO_WIN_CAPTURE_RELEASE, &VoWinCapture);
     if (Ret != HI_SUCCESS) 
-    {
         return Ret;
-    }
-
-    memcpy(pstCapPicture, &VoWinCapture.CapPicture, sizeof(HI_DRV_VIDEO_FRAME_S));
-    pstCapPicture->stVideoFrameAddr[0].u32YAddr = VoWinCapture.MemMode.u32StartPhyAddr;
-    pstCapPicture->stVideoFrameAddr[0].u32CAddr = VoWinCapture.MemMode.u32StartPhyAddr + pstCapPicture->u32Height * pstCapPicture->stVideoFrameAddr[0].u32YStride;
-
+    
+    *pstCapPicture = VoWinCapture.CapPicture;    
+    /*FIXME: we should know how the 3d will be dealed with*/
+    pstCapPicture->stBufAddr[0].u32PhyAddr_Y = VoWinCapture.driver_supply_addr.startPhyAddr;        
+    pstCapPicture->stBufAddr[1].u32PhyAddr_Y = VoWinCapture.driver_supply_addr.startPhyAddr;
+      
     return HI_SUCCESS;
-
 }
-#endif
+
 
 HI_S32 HI_MPI_WIN_CapturePicture(HI_HANDLE hWindow, HI_DRV_VIDEO_FRAME_S *pstCapPicture)
 {
-#if 0
-    HI_S32            Ret ;
-	WIN_CAPTURE_S stCap;
-//  HI_SYS_VERSION_S pstVersion;
-    VO_CAPTURE_MEM_MODE_S stCapMode;
-
-#if 0
-    HI_SYS_GetVersion(&pstVersion);
-    if((pstVersion.enChipVersion != HI_CHIP_VERSION_V300)&&(pstVersion.enChipTypeSoft != HI_CHIP_TYPE_HI3712))
-    {
-        stCapMode.enAllocMemType = VO_CAPTURE_NO_ALLOC;
-    }
-    else
-#endif
-    {
-        stCapMode.enAllocMemType = VO_CAPTURE_DRIVER_ALLOC;
-    }
-    Ret = HI_MPI_VO_CapturePictureExt(hWindow, pstCapPicture,  &stCapMode);
-    return Ret;
-#endif
-	return HI_SUCCESS;
+    HI_S32            Ret = HI_SUCCESS;
+    
+    Ret = HI_MPI_VO_CapturePictureExt(hWindow, pstCapPicture);    
+    return Ret;	
 }
 
 
 HI_S32 HI_MPI_WIN_CapturePictureRelease(HI_HANDLE hWindow, HI_DRV_VIDEO_FRAME_S *pstCapPicture)
 {
-#if 0
-    HI_S32            Ret ;
+    HI_S32          Ret = HI_SUCCESS;
     WIN_CAPTURE_S   VoWinRls;
-    //HI_SYS_VERSION_S pstVersion;
-
-    if (HI_INVALID_HANDLE == hWindow)
+    
+    CHECK_VO_INIT();
+    if ((HI_INVALID_HANDLE == hWindow) || (!pstCapPicture))
     {
-        HI_ERR_WIN("para hWindow is invalid.\n");
+        HI_ERR_WIN("invalid  param.\n");    
         return HI_ERR_VO_INVALID_PARA; 
     }
-
-
-    if (!pstCapPicture)
-    {
-        HI_ERR_WIN("para pstCapPicture is null.\n");
-        return HI_ERR_VO_NULL_PTR;
-    }
-
-    CHECK_VO_INIT();
-#if 0
-    HI_SYS_GetVersion(&pstVersion);
-
-    if((pstVersion.enChipVersion != HI_CHIP_VERSION_V300)&&(pstVersion.enChipTypeSoft != HI_CHIP_TYPE_HI3712))
-    {
-        return HI_SUCCESS;
-    }
-#endif
-    /*  release freezed frame*/
+    
     VoWinRls.hWindow = hWindow;
-
-    memcpy(&(VoWinRls.CapPicture), pstCapPicture, sizeof(HI_DRV_VIDEO_FRAME_S));
-
+    VoWinRls.CapPicture = *pstCapPicture;
+    VoWinRls.driver_supply_addr.startPhyAddr = pstCapPicture->stBufAddr[0].u32PhyAddr_Y;
+    
     Ret = ioctl(g_VoDevFd, CMD_VO_WIN_CAPTURE_FREE, &VoWinRls);
     if (Ret != HI_SUCCESS)
     {
         HI_ERR_WIN("HI_MPI_WIN_CapturePictureRelease fail (INVALID_PARA)\r\n");
         return Ret;
     }
-#endif
+    
     return HI_SUCCESS;
-
 }
-
 
 HI_S32 HI_MPI_WIN_SetRotation(HI_HANDLE hWindow, HI_DRV_ROT_ANGLE_E enRotation)
 {
@@ -1343,7 +1244,114 @@ HI_S32 HI_MPI_WIN_GetHandle(WIN_GET_HANDLE_S *pstWinHandle)
     return Ret;
 }
 
+HI_S32 HI_MPI_WIN_GetWinParam(HI_HANDLE hWin, HI_DRV_WIN_INTF_S *pstWinIntf)
+{
+    HI_S32      Ret;
+    WIN_INTF_S stWinIntf;
+    
+    if (HI_INVALID_HANDLE == hWin)
+    {
+        HI_ERR_WIN("para hWindow is invalid.\n");
+        return HI_ERR_VO_INVALID_PARA; 
+    }
 
+    CHECK_VO_INIT();
+
+    Ret = ioctl(g_VoDevFd, CMD_WIN_GET_INTF, &stWinIntf);
+    if (Ret != HI_SUCCESS)
+    {
+        HI_ERR_WIN("HI_MPI_WIN_AttachSink failed\n");
+    }
+    else
+    {
+       
+        pstWinIntf->pfAcqFrame = stWinIntf.pfAcqFrame;
+        pstWinIntf->pfRlsFrame = stWinIntf.pfRlsFrame;
+        pstWinIntf->pfSetWinAttr = stWinIntf.pfSetWinAttr;
+    }
+
+    return Ret;
+}
+
+
+HI_S32 HI_MPI_WIN_AttachWinSink(HI_HANDLE hWin, HI_HANDLE hSink)
+{
+    HI_S32      Ret;
+    WIN_ATTACH_S stAttach;
+    
+    if (HI_INVALID_HANDLE == hWin)
+    {
+        HI_ERR_WIN("para hWindow is invalid.\n");
+        return HI_ERR_VO_INVALID_PARA; 
+    }
+
+    CHECK_VO_INIT();
+
+    stAttach.enType = ATTACH_TYPE_SINK;
+    stAttach.hWindow = hWin;
+    stAttach.hMutual = hSink;
+    
+    Ret = ioctl(g_VoDevFd, CMD_WIN_ATTACH, &stAttach);
+    if (Ret != HI_SUCCESS)
+    {
+        HI_ERR_WIN("HI_MPI_WIN_AttachSink failed\n");
+    }
+
+    return Ret;
+}
+
+HI_S32 HI_MPI_WIN_DetachWinSink(HI_HANDLE hWin, HI_HANDLE hSink)
+{
+    HI_S32      Ret;
+    WIN_ATTACH_S stAttach;
+    
+    if (HI_INVALID_HANDLE == hWin)
+    {
+        HI_ERR_WIN("para hWindow is invalid.\n");
+        return HI_ERR_VO_INVALID_PARA; 
+    }
+
+    CHECK_VO_INIT();
+
+    stAttach.enType = ATTACH_TYPE_SINK;
+    stAttach.hWindow = hWin;
+    stAttach.hMutual = hSink;
+    
+    Ret = ioctl(g_VoDevFd, CMD_WIN_DETACH, &stAttach);
+    if (Ret != HI_SUCCESS)
+    {
+        HI_ERR_WIN("HI_MPI_WIN_DetachSink failed\n");
+    }
+
+    return Ret;
+}
+
+
+HI_S32 HI_MPI_WIN_GetLatestFrameInfo(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S  *frame_info)
+{
+    HI_S32      Ret; 
+    WIN_FRAME_S frame_struct;
+    
+    if (HI_INVALID_HANDLE == hWin)
+    {
+        HI_ERR_WIN("para hWindow is invalid.\n");
+        return HI_ERR_VO_INVALID_PARA; 
+    }
+
+    CHECK_VO_INIT();
+
+    frame_struct.hWindow = hWin;
+    
+    Ret = ioctl(g_VoDevFd, CMD_WIN_GET_LATESTFRAME_INFO, &frame_struct);
+    if (Ret != HI_SUCCESS)
+    {
+	    HI_ERR_WIN("get latest frame info failed\n");
+	    return Ret;
+    }
+
+    *frame_info  = frame_struct.stFrame;   
+    return Ret;
+}
 
 #ifdef __cplusplus
 #if __cplusplus

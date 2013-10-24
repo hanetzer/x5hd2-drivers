@@ -17,11 +17,15 @@
 #include <pthread.h>
 
 #include "drv_i2c_ioctl.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 
 static HI_S32 g_I2cDevFd = -1;
 
 static pthread_mutex_t g_I2cMutex = PTHREAD_MUTEX_INITIALIZER;
+
+static const HI_U8 s_szI2CVersion[] = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 #define HI_I2C_LOCK() (void)pthread_mutex_lock(&g_I2cMutex);
 #define HI_I2C_UNLOCK() (void)pthread_mutex_unlock(&g_I2cMutex);
@@ -157,9 +161,7 @@ HI_S32 HI_UNF_I2C_Read(HI_U32 u32I2cNum, HI_U8 u8DevAddress, HI_U32 u32RegAddr,
         return HI_ERR_I2C_INVALID_PARA;
     }
 
-    if ((u32RegAddrCount != 1)
-        && (u32RegAddrCount != 2)
-    )
+    if (u32RegAddrCount > 4)
     {
         HI_ERR_I2C("para u32RegAddrCount is invalid.\n");
         return HI_ERR_I2C_INVALID_PARA;
@@ -218,9 +220,7 @@ HI_S32 HI_UNF_I2C_Write(HI_U32 u32I2cNum, HI_U8 u8DevAddress, HI_U32 u32RegAddr,
         return HI_ERR_I2C_INVALID_PARA;
     }
 
-    if ((u32RegAddrCount != 1)
-        && (u32RegAddrCount != 2)
-    )
+    if (u32RegAddrCount > 4)
     {
         HI_ERR_I2C("para u32RegAddrCount is invalid.\n");
         return HI_ERR_I2C_INVALID_PARA;

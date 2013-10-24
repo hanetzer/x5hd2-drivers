@@ -511,11 +511,12 @@ HI_U32 PTSREC_CalcStamp(HI_HANDLE hHandle, HI_UNF_VCODEC_TYPE_E enVdecType, IMAG
             s_stPtsRecChan[hHandle].s32InterPtsDelta = 0;
         }
     }
-
+    #if 0
     if (0 == (pstImage->format & 0x300))/*PROGRESSIVE*/
     {
 		s_stPtsRecChan[hHandle].s32InterPtsDelta = 0;
     }
+	#endif
 
     pstImage->PTS = (HI_U64)u32Pts;
     PTSREC_FrameRateDetect(hHandle, pstImage);

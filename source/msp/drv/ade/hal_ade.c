@@ -28,10 +28,10 @@
 #include <asm/io.h>
 #include <linux/seq_file.h>
 
-#include "drv_mmz_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_proc.h"
 #include "hi_drv_ade.h"
 
 #include "hal_ade.h"

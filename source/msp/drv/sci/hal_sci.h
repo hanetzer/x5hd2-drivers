@@ -10,11 +10,13 @@
 #endif
 #endif
 
-#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
 #define IRQ_SCI0    (36 + 32)
 #define IRQ_SCI1    (37 + 32)
 
-#define SYS_PERI_CRG_ADDR (0xF8A22000)
 #define SCI0_CRG_OFFSET   (0x74)
 #define SCI1_CRG_OFFSET   (0x74)
 #define SCI0_PHY_ADDR     (0xF8B18000)
@@ -24,7 +26,6 @@
 #define IRQ_SCI0    (31 + 32)
 #define IRQ_SCI1    (32 + 32)
 
-#define SYS_PERI_CRG_ADDR (0x101F5000)
 #define SCI0_CRG_OFFSET   (0xE8)
 #define SCI1_CRG_OFFSET   (0xEC)
 #define SCI0_PHY_ADDR     (0x101F3000)
@@ -94,10 +95,12 @@ HI_VOID SCI_HAL_SetRxParityMode(HI_UNF_SCI_PORT_E enSciPort, HI_BOOL bEnable, SC
 HI_VOID SCI_HAL_SetParityEnable(HI_UNF_SCI_PORT_E enSciPort, HI_BOOL bEnable);
 HI_BOOL SCI_HAL_GetParityEnable(HI_UNF_SCI_PORT_E enSciPort);
 HI_VOID SCI_HAL_SetClock(HI_UNF_SCI_PORT_E enSciPort, HI_BOOL bEnable, HI_U32 Value);
+HI_VOID SCI_HAL_SetResetMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enResetMode);
+HI_VOID SCI_HAL_SetVccEnMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enVccEnMode);
 
 HI_VOID SCI_HAL_SetAtrTimeoutEnable(HI_UNF_SCI_PORT_E enSciPort, HI_BOOL bEnable);
 HI_VOID SCI_HAL_SetBlockTimeoutEnable(HI_UNF_SCI_PORT_E enSciPort, HI_BOOL bEnable);
-HI_VOID SCI_HAL_SetClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_CLK_MODE_E enClkMode);
+HI_VOID SCI_HAL_SetClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enClkMode);
 HI_VOID SCI_HAL_SetDirection(HI_UNF_SCI_PORT_E enSciPort, SCI_DIRECTION_E enDirection);
 HI_VOID SCI_HAL_SetBlockProtect(HI_UNF_SCI_PORT_E enSciPort, HI_BOOL bEnable);
 HI_VOID SCI_HAL_SelectCounter(HI_UNF_SCI_PORT_E enSciPort, HI_U32 Value);

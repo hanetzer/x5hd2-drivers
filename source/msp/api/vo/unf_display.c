@@ -32,6 +32,11 @@ extern "C" {
 #endif
 #endif
 
+static const HI_U8 s_szDISPVersion[]__attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
+
+
 HI_S32 HI_UNF_DISP_Init(HI_VOID)
 {
     HI_S32 s32Ret;
@@ -104,46 +109,10 @@ HI_S32 HI_UNF_DISP_Close(HI_UNF_DISP_E enDisp)
     return s32Ret;
 }
 
-HI_S32 HI_UNF_DISP_SetScreenArea(HI_UNF_DISP_E enDisp, HI_RECT_S *pstOutRect)
-{
-    HI_DRV_DISPLAY_E enD;
-    HI_S32 s32Ret;
-
-    if (!pstOutRect)
-    {
-        HI_ERR_DISP("para pstOutRect is null.\n");
-        return HI_ERR_DISP_NULL_PTR;
-    }
-
-    Transfer_DispID(&enDisp, &enD, HI_TRUE);
-
-    s32Ret = HI_MPI_DISP_SetScreen(enD, pstOutRect);
-
-    return s32Ret;
-}
-
-HI_S32 HI_UNF_DISP_GetScreenArea(HI_UNF_DISP_E enDisp, HI_RECT_S *pstOutRect)
-{
-    HI_DRV_DISPLAY_E enD;
-    HI_S32 s32Ret;
-
-     if (!pstOutRect)
-    {
-        HI_ERR_DISP("para pstOutRect is null.\n");
-        return HI_ERR_DISP_NULL_PTR;
-    }
-     
-    Transfer_DispID(&enDisp, &enD, HI_TRUE);
-
-    s32Ret = HI_MPI_DISP_GetScreen(enD, pstOutRect);
-
-    return s32Ret;
-}
-
 HI_S32 HI_UNF_DISP_SetFormat(HI_UNF_DISP_E enDisp, HI_UNF_ENC_FMT_E enEncodingFormat)
 {
     HI_DRV_DISPLAY_E enD;
-    HI_DRV_DISP_FMT_E enF;
+    HI_DRV_DISP_FMT_E enF = HI_DRV_DISP_FMT_BUTT;
     HI_S32 s32Ret;
 
     if (  (enEncodingFormat >= HI_UNF_ENC_FMT_1080P_24_FRAME_PACKING)
@@ -178,6 +147,7 @@ HI_S32 HI_UNF_DISP_GetFormat(HI_UNF_DISP_E enDisp, HI_UNF_ENC_FMT_E *penEncoding
     HI_DRV_DISPLAY_E enD;
     HI_DRV_DISP_FMT_E enF;
     HI_S32 s32Ret;
+    HI_DRV_DISP_STEREO_MODE_E enDrv3D;
 
     if (!penEncodingFormat)
     {
@@ -187,7 +157,7 @@ HI_S32 HI_UNF_DISP_GetFormat(HI_UNF_DISP_E enDisp, HI_UNF_ENC_FMT_E *penEncoding
     
     Transfer_DispID(&enDisp, &enD, HI_TRUE);
 
-    s32Ret = HI_MPI_DISP_GetFormat(enD, &enF);
+    s32Ret = HI_MPI_DISP_GetFormat(enD, &enDrv3D, &enF);
 
     if (!s32Ret)
     {
@@ -211,8 +181,12 @@ HI_S32 HI_UNF_DISP_SetAspectRatio(HI_UNF_DISP_E enDisp, HI_UNF_DISP_ASPECT_RATIO
         HI_ERR_DISP("para aspect ratio is invalid.\n");
         return HI_ERR_DISP_INVALID_PARA;
     }
-
-    if (pstDispAspectRatio->enDispAspectRatio == HI_UNF_DISP_ASPECT_RATIO_USER)
+	if (HI_UNF_DISP_ASPECT_RATIO_BUTT <= pstDispAspectRatio->enDispAspectRatio)
+	{
+		HI_ERR_DISP("para aspect ratio is invalid.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+	}
+    if ( pstDispAspectRatio->enDispAspectRatio == HI_UNF_DISP_ASPECT_RATIO_USER)
     {
         if (  (pstDispAspectRatio->u32UserAspectWidth > HI_DISP_ASPECT_RATIO_MAX_WIDTH)
             ||(pstDispAspectRatio->u32UserAspectHeight> HI_DISP_ASPECT_RATIO_MAX_HEIGHT)
@@ -376,8 +350,10 @@ HI_S32 HI_UNF_DISP_AttachIntf(HI_UNF_DISP_E enDisp, HI_UNF_DISP_INTF_S *pstIntf,
         for(; u>0; u--)
         {
             // delete inft from [u-1]
-            Transfer_Intf(&pstIntf[u-1], &stDrvIntf, HI_TRUE);
-            HI_MPI_DISP_DelIntf(enD, &stDrvIntf);
+            s32Ret = Transfer_Intf(&pstIntf[u-1], &stDrvIntf, HI_TRUE);            
+            s32Ret |= HI_MPI_DISP_DelIntf(enD, &stDrvIntf);
+            if (s32Ret != HI_SUCCESS)
+                continue;
         }
     }
 
@@ -450,7 +426,7 @@ HI_S32 HI_UNF_DISP_SetCustomTiming(HI_UNF_DISP_E enDisp,  HI_UNF_DISP_TIMING_S *
     }
     
     Transfer_DispID(&enDisp, &enD, HI_TRUE);
-
+    memset(&stTiming,0,sizeof(HI_DRV_DISP_TIMING_S));
     Transfer_Timing(pstTiming, &stTiming, HI_TRUE);
 
     s32Ret = HI_MPI_DISP_SetTiming(enD, &stTiming);
@@ -484,12 +460,20 @@ HI_S32 HI_UNF_DISP_GetCustomTiming(HI_UNF_DISP_E enDisp, HI_UNF_DISP_TIMING_S *p
 HI_S32 HI_UNF_DISP_SetLayerZorder(HI_UNF_DISP_E enDisp, HI_UNF_DISP_LAYER_E enLayer, HI_LAYER_ZORDER_E enZFlag)
 {
     HI_DRV_DISPLAY_E enD;
-    HI_DRV_DISP_LAYER_E enYer;
+    HI_DRV_DISP_LAYER_E enYer = HI_DRV_DISP_LAYER_BUTT;
     HI_DRV_DISP_ZORDER_E enZ;
     HI_S32 s32Ret;
 
+    if ((enLayer >= HI_UNF_DISP_LAYER_BUTT) || enZFlag  >= HI_LAYER_ZORDER_BUTT)
+    {
+        HI_ERR_DISP("para  is invalid.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+	
     Transfer_DispID(&enDisp, &enD, HI_TRUE);
+    
     Transfer_LayerID(&enLayer, &enYer, HI_TRUE);
+
     Transfe_ZOrder(&enZFlag, &enZ, HI_TRUE);
 
     s32Ret = HI_MPI_DISP_SetLayerZorder(enD, enYer, enZ);
@@ -500,7 +484,7 @@ HI_S32 HI_UNF_DISP_SetLayerZorder(HI_UNF_DISP_E enDisp, HI_UNF_DISP_LAYER_E enLa
 HI_S32 HI_UNF_DISP_GetLayerZorder(HI_UNF_DISP_E enDisp, HI_UNF_DISP_LAYER_E enLayer, HI_U32 *pu32Zorder)
 {
     HI_DRV_DISPLAY_E enD;
-    HI_DRV_DISP_LAYER_E enYer;
+    HI_DRV_DISP_LAYER_E enYer = HI_DRV_DISP_LAYER_BUTT;
     HI_S32 s32Ret;
 
     if (!pu32Zorder)
@@ -508,7 +492,13 @@ HI_S32 HI_UNF_DISP_GetLayerZorder(HI_UNF_DISP_E enDisp, HI_UNF_DISP_LAYER_E enLa
         HI_ERR_DISP("para pu32Zorder is null.\n");
         return HI_ERR_DISP_NULL_PTR;
     }
-    
+	
+    if (enLayer >= HI_UNF_DISP_LAYER_BUTT)
+    {
+        HI_ERR_DISP("para  is invalid.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+	
     Transfer_DispID(&enDisp, &enD, HI_TRUE);
     Transfer_LayerID(&enLayer, &enYer, HI_TRUE);
     s32Ret = HI_MPI_DISP_GetLayerZorder(enD, enYer, pu32Zorder);
@@ -832,6 +822,7 @@ HI_S32 HI_UNF_DISP_AcquireSnapshot(HI_UNF_DISP_E enDisp, HI_UNF_VIDEO_FRAME_INFO
     HI_DRV_VIDEO_FRAME_S stFrame;
     HI_S32 s32Ret = HI_SUCCESS;
 
+    memset(&stFrame, 0, sizeof(HI_DRV_VIDEO_FRAME_S));
     if (!pstFrameInfo)
     {
         HI_ERR_DISP("para pstSnapShotFrame is null.\n");
@@ -839,11 +830,10 @@ HI_S32 HI_UNF_DISP_AcquireSnapshot(HI_UNF_DISP_E enDisp, HI_UNF_VIDEO_FRAME_INFO
     }
     
     Transfer_DispID(&enDisp, &enD, HI_TRUE);
-
-    s32Ret =  HI_MPI_DISP_Snapshot(enD, &stFrame);
+    s32Ret =  HI_MPI_DISP_Snapshot_Acquire(enD, &stFrame);
     if (!s32Ret)
     {
-        Transfer_Frame(pstFrameInfo, &stFrame, HI_TRUE);
+        (HI_VOID)Transfer_Frame(pstFrameInfo, &stFrame, HI_FALSE);
     }
 
     return s32Ret;
@@ -852,27 +842,51 @@ HI_S32 HI_UNF_DISP_AcquireSnapshot(HI_UNF_DISP_E enDisp, HI_UNF_VIDEO_FRAME_INFO
 HI_S32 HI_UNF_DISP_ReleaseSnapshot(HI_UNF_DISP_E enDisp, HI_UNF_VIDEO_FRAME_INFO_S * pstFrameInfo)
 {
     HI_DRV_DISPLAY_E enD;
-    HI_DRV_VIDEO_FRAME_S stFrame;
     HI_S32 s32Ret = HI_SUCCESS;
+    HI_DRV_VIDEO_FRAME_S stFrame;
 
     if (!pstFrameInfo)
     {
         HI_ERR_DISP("para pstSnapShotFrame is null.\n");
         return HI_ERR_DISP_NULL_PTR;
     }
+    memset(&stFrame, 0, sizeof(HI_DRV_VIDEO_FRAME_S));
     
     Transfer_DispID(&enDisp, &enD, HI_TRUE);
-
-#if 0
-    s32Ret =  HI_MPI_DISP_Snapshot(enD, &stFrame);
-    if (!s32Ret)
-    {
-        Transfer_Frame(pstSnapShotFrame, &stFrame, HI_TRUE);
-    }
-#endif
+    
+	memcpy(&stFrame.u32Priv[0], pstFrameInfo->u32Private, 64*sizeof(HI_U32));
+    s32Ret =  HI_MPI_DISP_Snapshot_Release(enD, &stFrame);
 
     return s32Ret;
 }
+
+/**Defines the default buffer number.*/ 
+#define HI_DISP_CAST_BUFFER_DEF_NUMBER  ( 5 ) 
+
+HI_S32 HI_UNF_DISP_GetDefaultCastAttr(HI_UNF_DISP_E enDisp,HI_UNF_DISP_CAST_ATTR_S * pstAttr)
+{
+    if ( !pstAttr )
+    {
+        HI_ERR_DISP("para pstAttr is null.\n");
+        return HI_ERR_DISP_NULL_PTR;
+    }
+
+    if(enDisp >= HI_UNF_DISPLAY_BUTT)
+    { 
+    HI_ERR_DISP("para enDisp is invalid.\n");
+    return HI_ERR_DISP_INVALID_PARA;
+    } 
+
+    pstAttr->enFormat = HI_UNF_FORMAT_YUV_SEMIPLANAR_420;
+    pstAttr->u32Width = 1280;
+    pstAttr->u32Height = 720;
+    pstAttr->u32BufNum = HI_DISP_CAST_BUFFER_DEF_NUMBER;
+    pstAttr->bUserAlloc = HI_FALSE;
+    pstAttr->bCrop = HI_FALSE;
+
+    return HI_SUCCESS;
+}
+
 
 HI_S32 HI_UNF_DISP_CreateCast(HI_UNF_DISP_E enDisp, HI_UNF_DISP_CAST_ATTR_S * pstAttr, HI_HANDLE *phCast)
 {
@@ -1026,7 +1040,7 @@ HI_S32 HI_UNF_DISP_SetDefaultPara( HI_UNF_DISP_E enDisp)
 HI_S32 HI_UNF_DISP_Set3DMode(HI_UNF_DISP_E enDisp, HI_UNF_DISP_3D_E en3D, HI_UNF_ENC_FMT_E enEncFormat)
 {
     HI_DRV_DISPLAY_E enD;
-    HI_DRV_DISP_FMT_E enF;
+    HI_DRV_DISP_FMT_E enF = HI_DRV_DISP_FMT_BUTT;
     HI_DRV_DISP_STEREO_MODE_E enDrv3D;
     HI_S32 s32Ret;
 
@@ -1036,7 +1050,7 @@ HI_S32 HI_UNF_DISP_Set3DMode(HI_UNF_DISP_E enDisp, HI_UNF_DISP_3D_E en3D, HI_UNF
         return HI_ERR_DISP_INVALID_PARA;
     }
 
-    if (en3D > HI_UNF_DISP_3D_FRAME_PACKING)
+    if (en3D > HI_UNF_DISP_3D_TOP_AND_BOTTOM)
     {
         HI_ERR_DISP("para en3D is invalid or not support now.\n");
         return HI_ERR_DISP_INVALID_PARA;
@@ -1054,6 +1068,27 @@ HI_S32 HI_UNF_DISP_Set3DMode(HI_UNF_DISP_E enDisp, HI_UNF_DISP_3D_E en3D, HI_UNF
     {
         if(   (enEncFormat < HI_UNF_ENC_FMT_1080P_24_FRAME_PACKING )
             ||(enEncFormat > HI_UNF_ENC_FMT_720P_50_FRAME_PACKING )
+           )
+        {
+            HI_ERR_DISP("para enEncodingFormat is invalid.\n");
+            return HI_ERR_DISP_INVALID_PARA;
+        } 
+    }
+    if (en3D == HI_UNF_DISP_3D_SIDE_BY_SIDE_HALF)
+    {
+        if(   (enEncFormat != HI_UNF_ENC_FMT_1080i_60 )
+            &&(enEncFormat != HI_UNF_ENC_FMT_1080i_50 )
+           )
+        {
+            HI_ERR_DISP("para enEncodingFormat is invalid.\n");
+            return HI_ERR_DISP_INVALID_PARA;
+        } 
+    }
+    if (en3D == HI_UNF_DISP_3D_TOP_AND_BOTTOM)
+    {
+        if(   (enEncFormat != HI_UNF_ENC_FMT_1080P_24 )
+            &&(enEncFormat != HI_UNF_ENC_FMT_720P_60)
+            &&(enEncFormat != HI_UNF_ENC_FMT_720P_50)
            )
         {
             HI_ERR_DISP("para enEncodingFormat is invalid.\n");
@@ -1082,6 +1117,41 @@ HI_S32 HI_UNF_DISP_Set3DMode(HI_UNF_DISP_E enDisp, HI_UNF_DISP_3D_E en3D, HI_UNF
 }
 
 
+HI_S32 HI_UNF_DISP_Get3DMode(HI_UNF_DISP_E enDisp, HI_UNF_DISP_3D_E *pen3D, HI_UNF_ENC_FMT_E *penEncFormat)
+{
+    HI_DRV_DISPLAY_E enD;
+    HI_DRV_DISP_FMT_E enF;
+    HI_DRV_DISP_STEREO_MODE_E enDrv3D;
+    HI_S32 s32Ret;
+
+    //CHECK_DISP_PTR(pen3D);
+    //CHECK_DISP_PTR(penEncFormat);
+    if (!pen3D || !penEncFormat)
+    {
+        HI_ERR_DISP("para is null ptr.\n");
+        return HI_ERR_DISP_NULL_PTR;
+    }
+
+
+    if (enDisp > HI_UNF_DISPLAY1)
+    {
+        HI_ERR_DISP("para enDisp is invalid or not support now.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+
+    Transfer_DispID(&enDisp, &enD, HI_TRUE);
+
+    s32Ret = HI_MPI_DISP_GetFormat(enD, &enDrv3D, &enF);
+
+    if (HI_SUCCESS == s32Ret)
+    {
+        Transfer_EncFmt(penEncFormat, &enF, HI_FALSE);
+        Transfer_Disp3DMode(pen3D, &enDrv3D, HI_FALSE);
+    }
+    return s32Ret;
+}
+
+
 HI_S32 HI_UNF_DISP_SetRightEyeFirst(HI_UNF_DISP_E enDisp, HI_BOOL bEnable)
 {
     HI_DRV_DISPLAY_E enD;
@@ -1091,7 +1161,11 @@ HI_S32 HI_UNF_DISP_SetRightEyeFirst(HI_UNF_DISP_E enDisp, HI_BOOL bEnable)
         HI_ERR_DISP("para enDisp is invalid or not support now.\n");
         return HI_ERR_DISP_INVALID_PARA;
     }
-
+    if ((HI_TRUE != bEnable) && (HI_FALSE != bEnable))
+    {
+        HI_ERR_WIN("para bEnable is invalid.\n");
+        return HI_ERR_VO_INVALID_PARA; 
+    }
     Transfer_DispID(&enDisp, &enD, HI_TRUE);
     return HI_MPI_DISP_SetRightEyeFirst(enD, bEnable);
 }
@@ -1107,16 +1181,57 @@ HI_S32 HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISP_E enDisp, HI_U32 u32Width, HI_U3
     }
 
     Transfer_DispID(&enDisp, &enD, HI_TRUE);
-
-    HI_ERR_DISP("Depth of filed is not support now.\n");
     
-    return HI_ERR_DISP_INVALID_OPT;
+    return  HI_MPI_DISP_SetVirtualScreen(enD, u32Width, u32Height);
+
 }
+
+HI_S32 HI_UNF_DISP_GetVirtualScreen(HI_UNF_DISP_E enDisp, HI_U32 *u32Width, HI_U32 *u32Height)
+{
+    HI_DRV_DISPLAY_E enD;
+
+    if (enDisp > HI_UNF_DISPLAY1)
+    {
+        HI_ERR_DISP("para enDisp is invalid or not support now.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+    
+    Transfer_DispID(&enDisp, &enD, HI_TRUE);
+    
+    return  HI_MPI_DISP_GetVirtualScreen(enD, u32Width, u32Height);
+
+}
+
 
 
 HI_S32 HI_UNF_DISP_SetScreenOffset(HI_UNF_DISP_E enDisp, HI_UNF_DISP_OFFSET_S *pstOffset)
 {
     HI_DRV_DISPLAY_E enD;
+    HI_DRV_DISP_OFFSET_S drv_offset;
+
+    if (enDisp > HI_UNF_DISPLAY1)
+    {
+        HI_ERR_DISP("para enDisp is invalid or not support now.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+    if (!pstOffset)
+    {
+        HI_ERR_DISP("para pstOffset is null.\n");
+        return HI_ERR_DISP_NULL_PTR;
+    }
+    Transfer_DispID(&enDisp, &enD, HI_TRUE);
+
+    Transfer_DispOffset(pstOffset, &drv_offset, HI_TRUE);
+
+    return HI_MPI_DISP_SetScreenOffset(enD, &drv_offset);
+}
+
+
+HI_S32 HI_UNF_DISP_GetScreenOffset(HI_UNF_DISP_E enDisp, HI_UNF_DISP_OFFSET_S *pstOffset)
+{
+    HI_DRV_DISPLAY_E enD;
+    HI_DRV_DISP_OFFSET_S drv_offset;
+    HI_S32 Ret = 0;
 
     if (enDisp > HI_UNF_DISPLAY1)
     {
@@ -1132,10 +1247,16 @@ HI_S32 HI_UNF_DISP_SetScreenOffset(HI_UNF_DISP_E enDisp, HI_UNF_DISP_OFFSET_S *p
     
     Transfer_DispID(&enDisp, &enD, HI_TRUE);
 
-    HI_ERR_DISP("Depth of filed is not support now.\n");
+    Ret = HI_MPI_DISP_GetScreenOffset(enD, &drv_offset);
+
+    if (HI_SUCCESS != Ret)
+        return Ret;
     
-    return HI_ERR_DISP_INVALID_OPT;
+    Transfer_DispOffset(pstOffset, &drv_offset, HI_FALSE);
+    
+    return HI_SUCCESS;
 }
+
 
 #ifdef __cplusplus
 #if __cplusplus

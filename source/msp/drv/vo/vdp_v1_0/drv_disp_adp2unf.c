@@ -9,8 +9,8 @@
   Created       : 2012/09/20
   Description   :
   History       :
-  1.Date        : 
-  Author        : 
+  1.Date        :
+  Author        :
   Modification  : Created file
 
 *******************************************************************************/
@@ -22,7 +22,7 @@
 
 #include "hi_drv_pdm.h"
 #include "drv_pdm_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 
 #include "drv_display.h"
 #include "drv_disp_com.h"
@@ -30,40 +30,40 @@
 
 #ifdef __cplusplus
 #if __cplusplus
-extern "C"{
+extern "C" {
 #endif
 #endif
 
-HI_S32 DISP_PrintParam(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
+HI_S32 DISP_PrintParam(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S* pP)
 {
     HI_S32 i;
-    
+
     DISP_PRINT("DISP%d PDM Param:\n", enDisp);
 
-    DISP_PRINT("Fmt=%d, B=%d, C=%d, S=%d,H=%d,GM=%d\n", 
-                pP->enFormat,
-                pP->u32Brightness,
-                pP->u32Contrast,
-                pP->u32Saturation,
-                pP->u32HuePlus,
-                pP->bGammaEnable);
+    DISP_PRINT("Fmt=%d, B=%d, C=%d, S=%d,H=%d,GM=%d\n",
+               pP->enFormat,
+               pP->u32Brightness,
+               pP->u32Contrast,
+               pP->u32Saturation,
+               pP->u32HuePlus,
+               pP->bGammaEnable);
 #if 0
-    DISP_PRINT("x=%d, y=%d, w=%d, h=%d\n", 
-                pP->u32ScreenXpos,
-                pP->u32ScreenYpos,
-                pP->u32ScreenWidth,
-                pP->u32ScreenHeight);
+    DISP_PRINT("x=%d, y=%d, w=%d, h=%d\n",
+               pP->u32ScreenXpos,
+               pP->u32ScreenYpos,
+               pP->u32ScreenWidth,
+               pP->u32ScreenHeight);
 
-    DISP_PRINT("BGC=%d, =%d, =%d, AR=%d,WvsH=%dvs%d\n", 
-                pP->stBgColor.u8Red,
-                pP->stBgColor.u8Green,
-                pP->stBgColor.u8Blue,
-                pP->stAspectRatio.enDispAspectRatio,
-                pP->stAspectRatio.u32UserAspectWidth,
-                pP->stAspectRatio.u32UserAspectHeight);
+    DISP_PRINT("BGC=%d, =%d, =%d, AR=%d,WvsH=%dvs%d\n",
+               pP->stBgColor.u8Red,
+               pP->stBgColor.u8Green,
+               pP->stBgColor.u8Blue,
+               pP->stAspectRatio.enDispAspectRatio,
+               pP->stAspectRatio.u32UserAspectWidth,
+               pP->stAspectRatio.u32UserAspectHeight);
 #endif
 
-    for(i=0; i<HI_UNF_DISP_INTF_TYPE_BUTT; i++)
+    for (i = 0; i < HI_UNF_DISP_INTF_TYPE_BUTT; i++)
     {
         //DISP_PRINT("INTF %d, type=%d : ", i, pP->stIntf[i].enIntfType);
         if (pP->stIntf[i].enIntfType == HI_UNF_DISP_INTF_TYPE_HDMI)
@@ -72,36 +72,36 @@ HI_S32 DISP_PrintParam(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
         }
         else if (pP->stIntf[i].enIntfType == HI_UNF_DISP_INTF_TYPE_YPBPR)
         {
-            DISP_PRINT("Y=%d, Pb=%d, Pr=%d\n", 
-                        pP->stIntf[i].unIntf.stYPbPr.u8DacY,
-                        pP->stIntf[i].unIntf.stYPbPr.u8DacPb,
-                        pP->stIntf[i].unIntf.stYPbPr.u8DacPr);
+            DISP_PRINT("Y=%d, Pb=%d, Pr=%d\n",
+                       pP->stIntf[i].unIntf.stYPbPr.u8DacY,
+                       pP->stIntf[i].unIntf.stYPbPr.u8DacPb,
+                       pP->stIntf[i].unIntf.stYPbPr.u8DacPr);
         }
         else if (pP->stIntf[i].enIntfType == HI_UNF_DISP_INTF_TYPE_CVBS)
         {
-            DISP_PRINT("CVBS=%d\n", 
-                        pP->stIntf[i].unIntf.stCVBS.u8Dac);
+            DISP_PRINT("CVBS=%d\n",
+                       pP->stIntf[i].unIntf.stCVBS.u8Dac);
         }
         else
         {
             //DISP_PRINT("NULL\n");
         }
-        
+
     }
 #if 0
     DISP_PRINT("TIMING===============================\n");
     DISP_PRINT(" VFB=%d,VBB=%d,VACT=%d\n HFB=%d,HBB=%d,HACT=%d\n VPW=%d,HPW=%d\n IDV=%d,IHS=%d,IVS=%d\n",
-            pP->stDispTiming.VFB,
-            pP->stDispTiming.VBB,
-            pP->stDispTiming.VACT,
-            pP->stDispTiming.HFB,
-            pP->stDispTiming.HBB,
-            pP->stDispTiming.HACT,
-            pP->stDispTiming.VPW,
-            pP->stDispTiming.HPW,
-            pP->stDispTiming.IDV,
-            pP->stDispTiming.IHS,
-            pP->stDispTiming.IVS);
+               pP->stDispTiming.VFB,
+               pP->stDispTiming.VBB,
+               pP->stDispTiming.VACT,
+               pP->stDispTiming.HFB,
+               pP->stDispTiming.HBB,
+               pP->stDispTiming.HACT,
+               pP->stDispTiming.VPW,
+               pP->stDispTiming.HPW,
+               pP->stDispTiming.IDV,
+               pP->stDispTiming.IHS,
+               pP->stDispTiming.IVS);
 #endif
 
     return HI_SUCCESS;
@@ -109,8 +109,8 @@ HI_S32 DISP_PrintParam(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
 
 
 
-HI_S32 DISP_CheckParam(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
-{
+HI_S32 DISP_CheckParam(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S* pP)
+{
     HI_S32 i;
 
     //DISP_PrintParam(enDisp, pP);
@@ -123,18 +123,18 @@ HI_S32 DISP_CheckParam(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
             return HI_FAILURE;
         }
 
-        for(i=0; i < HI_UNF_DISP_INTF_TYPE_BUTT; i++)
-        {   
+        for (i = 0; i < HI_UNF_DISP_INTF_TYPE_BUTT; i++)
+        {
             if (pP->stIntf[i].enIntfType != HI_UNF_DISP_INTF_TYPE_BUTT)
             {
                 if (pP->stIntf[i].enIntfType == HI_UNF_DISP_INTF_TYPE_YPBPR)
                 {
                     if (   ( pP->stIntf[i].unIntf.stYPbPr.u8DacY > 3)
-                        || ( pP->stIntf[i].unIntf.stYPbPr.u8DacPb > 3)
-                        || ( pP->stIntf[i].unIntf.stYPbPr.u8DacPr > 3)
-                        || ( pP->stIntf[i].unIntf.stYPbPr.u8DacY == pP->stIntf[i].unIntf.stYPbPr.u8DacPb)
-                        || ( pP->stIntf[i].unIntf.stYPbPr.u8DacY == pP->stIntf[i].unIntf.stYPbPr.u8DacPr)
-                        || ( pP->stIntf[i].unIntf.stYPbPr.u8DacPb == pP->stIntf[i].unIntf.stYPbPr.u8DacPr)
+                           || ( pP->stIntf[i].unIntf.stYPbPr.u8DacPb > 3)
+                           || ( pP->stIntf[i].unIntf.stYPbPr.u8DacPr > 3)
+                           || ( pP->stIntf[i].unIntf.stYPbPr.u8DacY == pP->stIntf[i].unIntf.stYPbPr.u8DacPb)
+                           || ( pP->stIntf[i].unIntf.stYPbPr.u8DacY == pP->stIntf[i].unIntf.stYPbPr.u8DacPr)
+                           || ( pP->stIntf[i].unIntf.stYPbPr.u8DacPb == pP->stIntf[i].unIntf.stYPbPr.u8DacPr)
                        )
                     {
                         DISP_ERROR("invalid vadc id!\n");
@@ -148,19 +148,19 @@ HI_S32 DISP_CheckParam(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
     else
     {
         //HI_UNF_DISPLAY1
-        if ( (pP->enFormat > HI_UNF_ENC_FMT_SECAM_COS) || (pP->enFormat < HI_UNF_ENC_FMT_PAL) )
+         if (pP->enFormat >= HI_UNF_ENC_FMT_BUTT)
         {
             DISP_ERROR("invalid enformt!\n");
             return HI_FAILURE;
         }
 
-        for(i=0; i < HI_UNF_DISP_INTF_TYPE_BUTT; i++)
-        {   
+        for (i = 0; i < HI_UNF_DISP_INTF_TYPE_BUTT; i++)
+        {
             if (pP->stIntf[i].enIntfType != HI_UNF_DISP_INTF_TYPE_BUTT)
             {
                 if (pP->stIntf[i].enIntfType == HI_UNF_DISP_INTF_TYPE_CVBS)
                 {
-                    if( pP->stIntf[i].unIntf.stCVBS.u8Dac > 3)
+                    if ( pP->stIntf[i].unIntf.stCVBS.u8Dac > 3)
                     {
                         DISP_ERROR("invalid vadc id!\n");
                         return HI_FAILURE;
@@ -172,22 +172,22 @@ HI_S32 DISP_CheckParam(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
     }
 
     if (  (pP->u32Brightness > 100 )
-        ||(pP->u32Contrast > 100) 
-        ||(pP->u32Saturation > 100) 
-        ||(pP->u32HuePlus > 100) )
+          || (pP->u32Contrast > 100)
+          || (pP->u32Saturation > 100)
+          || (pP->u32HuePlus > 100) )
     {
         DISP_ERROR("invalid color param!\n");
         return HI_FAILURE;
     }
 
-/*
-    pP->bGammaEnable; 
-    pP->u32ScreenXpos;
-    pP->u32ScreenYpos;
-    pP->u32ScreenWidth;
-    pP->u32ScreenHeight; 
-    pP->stBgColor;
-*/
+    /*
+        pP->bGammaEnable;
+        pP->u32ScreenXpos;
+        pP->u32ScreenYpos;
+        pP->u32ScreenWidth;
+        pP->u32ScreenHeight;
+        pP->stBgColor;
+    */
     if (pP->stAspectRatio.enDispAspectRatio > HI_UNF_DISP_ASPECT_RATIO_USER)
     {
         DISP_ERROR("invalid aspect ratio param!\n");
@@ -197,35 +197,33 @@ HI_S32 DISP_CheckParam(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
     if (pP->stAspectRatio.enDispAspectRatio == HI_UNF_DISP_ASPECT_RATIO_USER)
     {
         if (  (pP->stAspectRatio.u32UserAspectWidth > (pP->stAspectRatio.u32UserAspectHeight * 16))
-            || (pP->stAspectRatio.u32UserAspectHeight > (pP->stAspectRatio.u32UserAspectWidth * 16)))
+              || (pP->stAspectRatio.u32UserAspectHeight > (pP->stAspectRatio.u32UserAspectWidth * 16)))
         {
             DISP_ERROR("invalid aspect ratio param!\n");
             return HI_FAILURE;
         }
     }
-   
+
     //pP->stDispTiming;
 
     return HI_SUCCESS;
 }
 
 
-HI_S32 HI_PDM_GetDispParamTEST(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
+HI_S32 HI_PDM_GetDispParamTEST(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S* pP)
 {
     HI_S32 i;
-    
+
     if (enDisp == HI_UNF_DISPLAY1)
     {
-        pP->enFormat = HI_UNF_ENC_FMT_1080i_50;   
+        pP->enFormat = HI_UNF_ENC_FMT_1080i_50;
         pP->u32Brightness = 50;
         pP->u32Contrast   = 50;
         pP->u32Saturation = 50;
         pP->u32HuePlus    = 50;
-        pP->bGammaEnable  = HI_FALSE; 
-        pP->u32ScreenXpos = 0;
-        pP->u32ScreenYpos = 0;
-        pP->u32ScreenWidth  = 0;
-        pP->u32ScreenHeight = 0; 
+        pP->bGammaEnable  = HI_FALSE;
+        pP->u32VirtScreenWidth  = 0;
+        pP->u32VirtScreenHeight = 0;
         pP->stBgColor.u8Red   = 0;
         pP->stBgColor.u8Green = 0;
         pP->stBgColor.u8Blue  = 0;
@@ -238,8 +236,8 @@ HI_S32 HI_PDM_GetDispParamTEST(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
 
         pP->stIntf[1].enIntfType = HI_UNF_DISP_INTF_TYPE_HDMI;
         pP->stIntf[1].unIntf.enHdmi = HI_UNF_HDMI_ID_0;
-        
-        for(i=1; i<HI_UNF_DISP_INTF_TYPE_BUTT; i++)
+
+        for (i = 1; i < HI_UNF_DISP_INTF_TYPE_BUTT; i++)
         {
             pP->stIntf[i].enIntfType = HI_UNF_DISP_INTF_TYPE_BUTT;
         }
@@ -248,16 +246,14 @@ HI_S32 HI_PDM_GetDispParamTEST(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
     else
     {
         //HI_UNF_DISPLAY1
-        pP->enFormat = HI_UNF_ENC_FMT_PAL;   
+        pP->enFormat = HI_UNF_ENC_FMT_PAL;
         pP->u32Brightness = 50;
         pP->u32Contrast   = 50;
         pP->u32Saturation = 50;
         pP->u32HuePlus    = 50;
-        pP->bGammaEnable  = HI_FALSE; 
-        pP->u32ScreenXpos = 0;
-        pP->u32ScreenYpos = 0;
-        pP->u32ScreenWidth  = 0;
-        pP->u32ScreenHeight = 0; 
+        pP->bGammaEnable  = HI_FALSE;
+        pP->u32VirtScreenWidth  = 0;
+        pP->u32VirtScreenHeight = 0;
         pP->stBgColor.u8Red   = 0;
         pP->stBgColor.u8Green = 0;
         pP->stBgColor.u8Blue  = 0;
@@ -265,8 +261,8 @@ HI_S32 HI_PDM_GetDispParamTEST(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
 
         pP->stIntf[0].enIntfType = HI_UNF_DISP_INTF_TYPE_CVBS;
         pP->stIntf[0].unIntf.stCVBS.u8Dac = 2;
-        
-        for(i=1; i<HI_UNF_DISP_INTF_TYPE_BUTT; i++)
+
+        for (i = 1; i < HI_UNF_DISP_INTF_TYPE_BUTT; i++)
         {
             pP->stIntf[i].enIntfType = HI_UNF_DISP_INTF_TYPE_BUTT;
         }
@@ -274,42 +270,33 @@ HI_S32 HI_PDM_GetDispParamTEST(HI_UNF_DISP_E enDisp, HI_DISP_PARAM_S *pP)
 
     return HI_SUCCESS;
 }
-
-HI_S32 HI_UNF_DISP_Init(HI_VOID)
+HI_DRV_DISP_FMT_E DISP_Disp0FmtRevise_Attach(HI_DRV_DISP_FMT_E U)
 {
-    HI_S32 nRet;
-    // disp init
-    nRet = DISP_Init();
-
-    return nRet;
+    if (U >= HI_DRV_DISP_FMT_PAL &&  U  <= HI_DRV_DISP_FMT_SECAM_H)
+        return U; 
+     switch (U)
+    {
+        case HI_DRV_DISP_FMT_1080P_50:
+        case HI_DRV_DISP_FMT_1080P_25:
+        case HI_DRV_DISP_FMT_1080P_24:
+        case HI_DRV_DISP_FMT_1080i_50:
+        case HI_DRV_DISP_FMT_720P_50:
+        case HI_DRV_DISP_FMT_576P_50:
+        case HI_DRV_DISP_FMT_720P_50_FP:
+        case HI_DRV_DISP_FMT_1080P_24_FP:
+        case HI_DRV_DISP_FMT_1440x576i_50:
+            return HI_DRV_DISP_FMT_PAL;
+        case HI_DRV_DISP_FMT_1080P_60:
+        case HI_DRV_DISP_FMT_1080P_30:
+        case HI_DRV_DISP_FMT_1080i_60:
+        case HI_DRV_DISP_FMT_720P_60:
+        case HI_DRV_DISP_FMT_480P_60:
+        case HI_DRV_DISP_FMT_1440x480i_60:
+        case HI_DRV_DISP_FMT_720P_60_FP:
+        default:
+            return HI_DRV_DISP_FMT_NTSC;
+    }
 }
-
-HI_S32 HI_UNF_DISP_DeInit(HI_VOID)
-{
-    //HI_S32 nRet;
-
-    // disp deinit
-    DISP_DeInit();
-    return HI_SUCCESS;
-}
-
-HI_S32 HI_UNF_DISP_Open (HI_UNF_DISP_E enDisp)
-{
-    HI_S32 nRet;
-
-    nRet = DISP_Open((HI_DRV_DISPLAY_E)(enDisp));
-
-    return nRet;
-}
-
-HI_S32 HI_UNF_DISP_Close(HI_UNF_DISP_E enDisp)
-{
-    HI_S32 nRet;
-
-    nRet =  DISP_Close((HI_DRV_DISPLAY_E)(enDisp));
-    return nRet;
-}
-
 
 HI_DRV_DISP_FMT_E DISP_TVHDFmtU2V(HI_UNF_ENC_FMT_E U)
 {
@@ -421,7 +408,7 @@ HI_U8 DISP_GetVdacIdFromPinIDForMPW(HI_U8 PinId)
 }
 
 
-HI_S32 DISP_GetDrvIntf(HI_UNF_DISP_INTF_S *pU, HI_DRV_DISP_INTF_S *pM, HI_BOOL bu2m)
+HI_S32 DISP_GetDrvIntf(HI_UNF_DISP_INTF_S* pU, HI_DRV_DISP_INTF_S* pM, HI_BOOL bu2m)
 {
     if (bu2m)
     {
@@ -444,8 +431,8 @@ HI_S32 DISP_GetDrvIntf(HI_UNF_DISP_INTF_S *pU, HI_DRV_DISP_INTF_S *pM, HI_BOOL b
                 pM->u8VDAC_Y_G  = DISP_GetVdacIdFromPinIDForMPW(pU->unIntf.stYPbPr.u8DacY);
                 pM->u8VDAC_Pb_B = DISP_GetVdacIdFromPinIDForMPW(pU->unIntf.stYPbPr.u8DacPb);
                 pM->u8VDAC_Pr_R = DISP_GetVdacIdFromPinIDForMPW(pU->unIntf.stYPbPr.u8DacPr);
-                DISP_INFO("=================Y=%d,Pb=%d, Pr=%d\n", 
-                       pM->u8VDAC_Y_G, pM->u8VDAC_Pb_B, pM->u8VDAC_Pr_R);
+                DISP_INFO("=================Y=%d,Pb=%d, Pr=%d\n",
+                          pM->u8VDAC_Y_G, pM->u8VDAC_Pb_B, pM->u8VDAC_Pr_R);
                 break;
             case HI_UNF_DISP_INTF_TYPE_SVIDEO:
                 pM->eID = HI_DRV_DISP_INTF_SVIDEO0;
@@ -455,39 +442,39 @@ HI_S32 DISP_GetDrvIntf(HI_UNF_DISP_INTF_S *pU, HI_DRV_DISP_INTF_S *pM, HI_BOOL b
             case HI_UNF_DISP_INTF_TYPE_CVBS:
                 pM->eID = HI_DRV_DISP_INTF_CVBS0;
                 pM->u8VDAC_Y_G  = DISP_GetVdacIdFromPinIDForMPW(pU->unIntf.stCVBS.u8Dac);
-                DISP_INFO("=================CVBS=%d\n", 
-                       pM->u8VDAC_Y_G);
+                DISP_INFO("=================CVBS=%d\n",
+                          pM->u8VDAC_Y_G);
                 break;
-/*
-            case HI_UNF_DISP_INTF_TYPE_LCD:
-                pM->eID =  + (pU->unIntf.enLCD - );
-                if (pM->eID > )
-                {
-                    return HI_FAILURE;
-                }
-                break;
-            case HI_UNF_DISP_INTF_TYPE_BT1120:
-                pM->eID =  + (pU->unIntf.enHDMI - );
-                if (pM->eID > )
-                {
-                    return HI_FAILURE;
-                }
-                break;
-            case HI_UNF_DISP_INTF_TYPE_BT656:
-                pM->eID =  + (pU->unIntf.enHDMI - );
-                if (pM->eID > )
-                {
-                    return HI_FAILURE;
-                }
-                break;
-            case HI_UNF_DISP_INTF_TYPE_RGB:
-                pM->eID =  + (pU->unIntf.enHDMI - );
-                if (pM->eID > )
-                {
-                    return HI_FAILURE;
-                }
-                break;
-*/
+                /*
+                            case HI_UNF_DISP_INTF_TYPE_LCD:
+                                pM->eID =  + (pU->unIntf.enLCD - );
+                                if (pM->eID > )
+                                {
+                                    return HI_FAILURE;
+                                }
+                                break;
+                            case HI_UNF_DISP_INTF_TYPE_BT1120:
+                                pM->eID =  + (pU->unIntf.enHDMI - );
+                                if (pM->eID > )
+                                {
+                                    return HI_FAILURE;
+                                }
+                                break;
+                            case HI_UNF_DISP_INTF_TYPE_BT656:
+                                pM->eID =  + (pU->unIntf.enHDMI - );
+                                if (pM->eID > )
+                                {
+                                    return HI_FAILURE;
+                                }
+                                break;
+                            case HI_UNF_DISP_INTF_TYPE_RGB:
+                                pM->eID =  + (pU->unIntf.enHDMI - );
+                                if (pM->eID > )
+                                {
+                                    return HI_FAILURE;
+                                }
+                                break;
+                */
             default:
                 return HI_FAILURE;
         }
@@ -500,13 +487,14 @@ HI_S32 DISP_GetDrvIntf(HI_UNF_DISP_INTF_S *pU, HI_DRV_DISP_INTF_S *pM, HI_BOOL b
 
 #define DISP_VERSION_HI3716CV200_MPW 0x20130417ul
 
-HI_S32 DispGetInitParam(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INIT_PARAM_S *pstSetting)
+HI_S32 DispGetInitParam(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INIT_PARAM_S* pstSetting)
 {
-    HI_DISP_PARAM_S stDispParam, *pstDispParam;
-    PDM_EXPORT_FUNC_S *pst_PDMFunc;
+    HI_DISP_PARAM_S stDispParam0, stDispParam1, *pstDispParam;
+    HI_DRV_DISP_FMT_E  enFormat = HI_DRV_DISP_FMT_BUTT; 
+    PDM_EXPORT_FUNC_S* pst_PDMFunc;
     HI_UNF_DISP_E enUnfDisp;
     HI_S32 i, j, nRet;
-    
+
     if (enDisp > HI_DRV_DISPLAY_1)
     {
         return HI_FAILURE;
@@ -523,8 +511,17 @@ HI_S32 DispGetInitParam(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INIT_PARAM_S *pstSe
         }
 
         enUnfDisp = (HI_DRV_DISPLAY_0 == enDisp) ? HI_UNF_DISPLAY0 : HI_UNF_DISPLAY1;
-        nRet = pst_PDMFunc->pfnPDM_GetDispParam(enUnfDisp, &stDispParam);
-        nRet |= DISP_CheckParam(enUnfDisp, &stDispParam);
+        
+        nRet  = pst_PDMFunc->pfnPDM_GetDispParam(HI_UNF_DISPLAY0, &stDispParam0);
+        nRet |= pst_PDMFunc->pfnPDM_GetDispParam(HI_UNF_DISPLAY1, &stDispParam1);
+        if (nRet)
+        {
+            DISP_ERROR("DISP get param failed!\n");
+            return HI_FAILURE;
+        }
+         
+        nRet  = DISP_CheckParam(HI_UNF_DISPLAY0, &stDispParam0);
+        nRet |= DISP_CheckParam(HI_UNF_DISPLAY1, &stDispParam1);		
         if (nRet)
         {
             DISP_ERROR("DISP0 Param invalid!\n");
@@ -545,41 +542,78 @@ HI_S32 DispGetInitParam(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INIT_PARAM_S *pstSe
 #endif
 
     }
-
-    pstDispParam = &stDispParam;
-
-    pstSetting->u32Version = DISP_VERSION_HI3716CV200_MPW;
-    pstSetting->bSelfStart = HI_TRUE;
-    pstSetting->enFormat   = DISP_GetEncFmt(pstDispParam->enFormat);
-
-    if (enDisp == HI_DRV_DISPLAY_1)
-    {
-        pstSetting->bIsMaster = HI_TRUE;
-        //pstSetting->bIsMaster = HI_FALSE;
-        pstSetting->bIsSlave  = HI_FALSE;
-        pstSetting->enAttachedDisp = HI_DRV_DISPLAY_0;
+	
+    if (HI_DRV_DISPLAY_0 == enDisp)
+    { 
+    	pstDispParam = &stDispParam0; 
     }
     else
     {
-        pstSetting->bIsMaster = HI_FALSE;
-        pstSetting->bIsSlave  = HI_TRUE;
-        //pstSetting->bIsSlave  = HI_FALSE;
-        pstSetting->enAttachedDisp = HI_DRV_DISPLAY_1;
-    }
-    pstSetting->u32Brightness = pstDispParam->u32Brightness;
-    pstSetting->u32Contrast   = pstDispParam->u32Contrast;
-    pstSetting->u32Saturation = pstDispParam->u32Saturation;
-    pstSetting->u32HuePlus    = pstDispParam->u32HuePlus;
-    pstSetting->bGammaEnable  = pstDispParam->bGammaEnable; 
-    pstSetting->u32ScreenXpos   = pstDispParam->u32ScreenXpos;
-    pstSetting->u32ScreenYpos   = pstDispParam->u32ScreenYpos;
-    pstSetting->u32ScreenWidth  = pstDispParam->u32ScreenWidth;
-    pstSetting->u32ScreenHeight = pstDispParam->u32ScreenHeight; 
-    pstSetting->stBgColor.u8Red   = pstDispParam->stBgColor.u8Red;
-    pstSetting->stBgColor.u8Green = pstDispParam->stBgColor.u8Green;
-    pstSetting->stBgColor.u8Blue  = pstDispParam->stBgColor.u8Blue;
+    	pstDispParam = &stDispParam1; 
+	}
 
-    switch(pstDispParam->stAspectRatio.enDispAspectRatio)
+    pstSetting->u32Version = DISP_VERSION_HI3716CV200_MPW;
+    //pstSetting->bSelfStart = HI_TRUE;
+    pstSetting->enFormat   = DISP_GetEncFmt(pstDispParam->enFormat);
+
+
+    if (HI_DRV_DISPLAY_1 == stDispParam0.enSrcDisp)
+    {
+        //printk("pdm attach  mode!\n ");
+        if (HI_DRV_DISPLAY_0 == enDisp)
+        {
+            enFormat = DISP_GetEncFmt(stDispParam1.enFormat);
+            pstSetting->enFormat = DISP_Disp0FmtRevise_Attach(enFormat);
+            pstSetting->bIsMaster = HI_FALSE;
+            pstSetting->bIsSlave  = HI_TRUE;
+            pstSetting->enAttachedDisp = HI_DRV_DISPLAY_1;
+			
+            pstSetting->u32VirtScreenWidth	= stDispParam0.u32VirtScreenWidth;
+            pstSetting->u32VirtScreenHeight = stDispParam0.u32VirtScreenHeight;
+            pstSetting->stOffsetInfo		= *((HI_DRV_DISP_OFFSET_S*)&stDispParam0.stOffsetInfo);
+        }
+		
+        if (HI_DRV_DISPLAY_1 == enDisp)
+        {
+            pstSetting->bIsMaster = HI_TRUE;
+            pstSetting->bIsSlave  = HI_FALSE;
+            pstSetting->enAttachedDisp = HI_DRV_DISPLAY_0;
+            pstSetting->u32VirtScreenWidth	= stDispParam1.u32VirtScreenWidth;
+            pstSetting->u32VirtScreenHeight = stDispParam1.u32VirtScreenHeight;
+            pstSetting->stOffsetInfo		= *((HI_DRV_DISP_OFFSET_S*)&stDispParam1.stOffsetInfo);
+  
+        }
+		
+        pstSetting->u32Brightness = stDispParam1.u32Brightness;
+        pstSetting->u32Contrast   = stDispParam1.u32Contrast;
+        pstSetting->u32Saturation = stDispParam1.u32Saturation;
+        pstSetting->u32HuePlus    = stDispParam1.u32HuePlus;
+        pstSetting->bGammaEnable  = stDispParam1.bGammaEnable;
+        pstSetting->stBgColor.u8Red     = stDispParam1.stBgColor.u8Red;
+        pstSetting->stBgColor.u8Green   = stDispParam1.stBgColor.u8Green;
+        pstSetting->stBgColor.u8Blue    = stDispParam1.stBgColor.u8Blue;
+    }
+    else
+    {
+        //printk("pdm no attach  mode!\n ");
+        pstSetting->bIsMaster = HI_FALSE;
+        pstSetting->bIsSlave  = HI_FALSE;
+        pstSetting->enAttachedDisp = HI_DRV_DISPLAY_BUTT;
+
+        pstSetting->u32Brightness = pstDispParam->u32Brightness;
+        pstSetting->u32Contrast   = pstDispParam->u32Contrast;
+        pstSetting->u32Saturation = pstDispParam->u32Saturation;
+        pstSetting->u32HuePlus    = pstDispParam->u32HuePlus;
+        pstSetting->bGammaEnable  = pstDispParam->bGammaEnable;
+        pstSetting->u32VirtScreenWidth  = pstDispParam->u32VirtScreenWidth;
+        pstSetting->u32VirtScreenHeight = pstDispParam->u32VirtScreenHeight;
+        pstSetting->stOffsetInfo        = *((HI_DRV_DISP_OFFSET_S*)&pstDispParam->stOffsetInfo);
+        pstSetting->stBgColor.u8Red     = pstDispParam->stBgColor.u8Red;
+        pstSetting->stBgColor.u8Green   = pstDispParam->stBgColor.u8Green;
+        pstSetting->stBgColor.u8Blue    = pstDispParam->stBgColor.u8Blue;
+    }
+	
+    switch (pstDispParam->stAspectRatio.enDispAspectRatio)
     {
         case HI_UNF_DISP_ASPECT_RATIO_4TO3:
             pstSetting->bCustomRatio = HI_TRUE;
@@ -609,7 +643,7 @@ HI_S32 DispGetInitParam(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INIT_PARAM_S *pstSe
             break;
     }
 
-    for(i=0, j=0; i<HI_UNF_DISP_INTF_TYPE_BUTT; i++)
+    for (i = 0, j = 0; i < HI_UNF_DISP_INTF_TYPE_BUTT; i++)
     {
         //printk(" i=%d,  intf type=%d\n", i, pstDispParam->stIntf[i].enIntfType);
         if (pstDispParam->stIntf[i].enIntfType < HI_UNF_DISP_INTF_TYPE_BUTT)
@@ -620,13 +654,13 @@ HI_S32 DispGetInitParam(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INIT_PARAM_S *pstSe
         }
     }
 
-    for(; j<HI_DRV_DISP_INTF_ID_MAX; j++)
+    for (; j < HI_DRV_DISP_INTF_ID_MAX; j++)
     {
         pstSetting->stIntf[j].eID = HI_DRV_DISP_INTF_ID_MAX;
     }
 
 
-    //pstSetting->stDispTiming; 
+    //pstSetting->stDispTiming;
 
     return HI_SUCCESS;
 }

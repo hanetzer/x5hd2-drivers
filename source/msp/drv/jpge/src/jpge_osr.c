@@ -24,12 +24,12 @@
 #include "jpge_ext.h"
 #include "jpge_hal.h"
 
-#include "drv_dev_ext.h"
+#include "hi_drv_dev.h"
 
-#include "hi_jpge_config.h"
-#include "drv_mem_ext.h"
-#include "drv_module_ext.h"
-
+#include "hi_jpge_define.h"
+#include "hi_drv_mem.h"
+#include "hi_drv_module.h"
+#include "hi_gfx_comm_k.h"
 static int jpge_pm_suspend(PM_BASEDEV_S *pdev, pm_message_t state);
 static int jpge_pm_resume(PM_BASEDEV_S *pdev);
 
@@ -80,7 +80,7 @@ static long jpge_ioctl(struct file  *ffile, unsigned int  cmd, unsigned long arg
     case JPGE_CREATE_CMD:
     {
         Jpge_EncCfgInfo_S EncCfgInfo;
-        HI_U32 ret;
+
         if ((ret = copy_from_user(&EncCfgInfo, argp, sizeof(Jpge_EncCfgInfo_S))) < 0)
         {
             return -EFAULT;
@@ -98,16 +98,16 @@ static long jpge_ioctl(struct file  *ffile, unsigned int  cmd, unsigned long arg
     }
     case JPGE_ENCODE_CMD:
     {
-         Jpge_EncInfo_S EncInfo;   
-         if ((ret = copy_from_user(&EncInfo, argp, sizeof(Jpge_EncInfo_S))) < 0)
+        Jpge_EncInfo_S EncInfo;   
+        if ((ret = copy_from_user(&EncInfo, argp, sizeof(Jpge_EncInfo_S))) < 0)
         {
             return -EFAULT;
         }
         ret =  Jpge_Encode ( EncInfo.EncHandle, &EncInfo.EncIn, &EncInfo.EncOut);
-	     if(0 != ret)
-         {
-	        return ret;
-	    }
+        if(0 != ret)
+        {
+            return ret;
+        }
         if((ret = copy_to_user(argp, &EncInfo, sizeof(Jpge_EncInfo_S))) < 0)
         {
             return -EFAULT;
@@ -128,33 +128,8 @@ static long jpge_ioctl(struct file  *ffile, unsigned int  cmd, unsigned long arg
     }
 }
 
-struct file_operations jpge_fops =
-{
-    .owner   = THIS_MODULE,
-	.unlocked_ioctl = jpge_ioctl,
-    .open    = jpge_open,
-    .release = jpge_release,
-};
 
-static PM_BASEOPS_S jpge_drvops = {
-    .probe          = NULL,
-    .remove       = NULL,
-    .shutdown    = NULL,
-    .prepare       = NULL,
-    .complete     = NULL,
-    .suspend      = jpge_pm_suspend,
-    .suspend_late = NULL,
-    .resume_early = NULL,
-    .resume       = jpge_pm_resume,
-};
-
-static UMAP_DEVICE_S jpge_dev = {
-    .devfs_name  = "hi_jpge",
-    .minor = UMAP_MIN_MINOR_JPGE,
-    .owner = THIS_MODULE,
-    .fops = &jpge_fops,
-    .drvops = &jpge_drvops
-};
+DECLARE_GFX_NODE("hi_jpge", jpge_open, jpge_release, jpge_ioctl, jpge_pm_suspend, jpge_pm_resume)
 
 typedef unsigned long       HI_UL;
 
@@ -163,50 +138,41 @@ void JPGE_DRV_ModExit(void);
 
 #define JPGENAME "HI_JPGE"
 
-HI_VOID jpge_version(HI_VOID)
-{
-    HI_CHAR JPGEVersion[80] ="SDK_VERSION:["\
-        MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
-        __DATE__", "__TIME__"]";
 
-    printk("Load hi_jpge.ko success.     \t(%s)\n", JPGEVersion);
-}
 
 
 int JPGE_DRV_ModInit(void)
 {
     int ret; 
+    
     ret = Jpge_Open();
     if(0 != ret)
     {
         HIJPGE_TRACE("request_irq for JPGE failure!\n");
         return -1;
     }
-    ret = HI_DRV_DEV_Register(&jpge_dev);
-    if (ret)
-    {
-        Jpge_Close();
-        return -1;
-    }
-	ret = HI_DRV_MODULE_Register(HI_ID_JPGENC, JPGENAME, NULL); 
+    
+    HI_GFX_PM_Register();
+    
+    ret = HI_GFX_MODULE_Register(HIGFX_JPGENC_ID, JPGENAME, NULL);
     if (HI_SUCCESS != ret)
     {
-	   HIJPGE_TRACE("HI_DRV_MODULE_Register JPGE failed\n");
-       JPGE_DRV_ModExit();
-	   return -1;
+        HIJPGE_TRACE("HI_DRV_MODULE_Register JPGE failed\n");
+        JPGE_DRV_ModExit();
+        return -1;
     }
 
-    jpge_version();
+    HI_GFX_ShowVersionK(HIGFX_JPGENC_ID);
     
     return 0;
 }
 
 void JPGE_DRV_ModExit(void)
 {
-	HI_DRV_MODULE_UnRegister(HI_ID_JPGENC);
+    HI_GFX_MODULE_UnRegister(HIGFX_JPGENC_ID);
     Jpge_Close();
     /* cleanup_module is never called if registering failed */
-    HI_DRV_DEV_UnRegister(&jpge_dev);
+    HI_GFX_PM_UnRegister();
 }
 
 static int jpge_pm_suspend(PM_BASEDEV_S *pdev, pm_message_t state)

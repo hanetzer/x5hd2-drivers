@@ -28,8 +28,7 @@ static OPTM_GFX_OPS_S g_stGfxOps;
 
 OPTM_GFX_GP_E OPTM_GetGfxGpId(HIFB_LAYER_ID_E enLayerId)
 {
-	if(enLayerId >= HIFB_LAYER_HD_0
-		&& HIFB_LAYER_HD_3 >= enLayerId)
+	if(HIFB_LAYER_HD_3 >= enLayerId)
 	{
 		return OPTM_GFX_GP_0;
 	}
@@ -78,7 +77,7 @@ HI_S32 HIFB_DRV_SetColorReg(HIFB_LAYER_ID_E enLayerId, HI_U32 u32OffSet, HI_U32 
 {
     if (u32OffSet > 255)
     {
-        Print("GFX color clut offset > 255.\n");
+        HIFB_ERROR("GFX color clut offset > 255.\n");
         return HI_FAILURE;
     }
     return g_stGfxOps.OPTM_GfxSetColorReg(enLayerId, u32OffSet, u32Color, UpFlag);
@@ -338,7 +337,7 @@ HI_S32 HIFB_DRV_GetGFXCap(const HIFB_CAPABILITY_S **pstCap)
 
 	if (HI_NULL == pstCap)
 	{
-		Print("GFX get device capability failed!\n");
+		HIFB_ERROR("GFX get device capability failed!\n");
 		return HI_FAILURE;
 	}
 
@@ -376,6 +375,16 @@ HI_S32 HIFB_DRV_SetLayerMaskFlag(HIFB_LAYER_ID_E enLayerId, HI_BOOL bFlag)
 HI_S32 HIFB_DRV_GetLayerMaskFlag(HIFB_LAYER_ID_E enLayerId)
 {	
 	return g_stGfxOps.OPTM_GFX_GetGfxMask(OPTM_GetGfxGpId(enLayerId));
+}
+
+HI_S32 HIFB_DRV_ClearLogo(HIFB_LAYER_ID_E enLayerId)
+{
+	return g_stGfxOps.OPTM_GFX_ClearLogoOsd(enLayerId);
+}
+
+HI_S32 HIFB_DRV_SetStereoDepth(HIFB_LAYER_ID_E enLayerId, HI_S32 s32Depth)
+{
+	return g_stGfxOps.OPTM_GFX_SetStereoDepth(enLayerId, s32Depth);
 }
 
 HI_VOID HIFB_DRV_GetDevOps(HIFB_DRV_OPS_S    *Ops)
@@ -424,6 +433,9 @@ HI_VOID HIFB_DRV_GetDevOps(HIFB_DRV_OPS_S    *Ops)
 	Ops->HIFB_DRV_GetLayerMaskFlag  = HIFB_DRV_GetLayerMaskFlag;
 	//Ops->HIFB_DRV_WaitRegUpdateFinished = HIFB_DRV_WaitRegUpdateFinished;
     Ops->HIFB_DRV_GetDispSize       = HIFB_DRV_GetDispSize;
+	Ops->HIFB_DRV_ClearLogo         = HIFB_DRV_ClearLogo;
+	Ops->HIFB_DRV_SetStereoDepth    = HIFB_DRV_SetStereoDepth;
+	
 	return;
 }
 

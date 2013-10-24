@@ -47,9 +47,21 @@ $(MOD_NAME)-y += clock_mpu.o	\
 		 hi_cpufreq_hotplug.o 
 endif
 
+ifeq ($(CFG_HI_DVFS_CORE_SUPPORT),y)
+EXTRA_CFLAGS += -DHI_DVFS_CORE_SUPPORT
+endif
+
+ifeq ($(CFG_HI_PMU_DEVICE_SELECT),y)
+EXTRA_CFLAGS += -DHI_PMU_DEVICE_SELECT
+endif
+
 ifeq ($(CFG_HI_DVFS_GPU_SUPPORT),y)
 EXTRA_CFLAGS += -DHI_DVFS_GPU_SUPPORT
 $(MOD_NAME)-y += drv_pm_gpu_proc.o
+endif
+
+ifeq ($(CFG_HI_AVS_SUPPORT),y)
+EXTRA_CFLAGS += -DHI_AVS_SUPPORT
 endif
 
 obj-$(CFG_MSP_BUILDTYPE) += $(MOD_NAME).o

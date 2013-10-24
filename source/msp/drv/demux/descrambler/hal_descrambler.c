@@ -215,6 +215,10 @@ HI_VOID DmxHalSetCWWord1(
             type = 0x22;
             break;
 
+        case HI_UNF_DMX_DESCRAMBLER_TYPE_DES_IPTV :
+            type = 0x30;
+            break;
+
         case HI_UNF_DMX_DESCRAMBLER_TYPE_DES_CI :
             type = 0x32;
             break;
@@ -245,6 +249,18 @@ HI_VOID DmxHalSetCWWord1(
 
         case HI_UNF_DMX_DESCRAMBLER_TYPE_AES_CBC :
             type = 0x63;
+            break;
+
+        case HI_UNF_DMX_DESCRAMBLER_TYPE_TDES_IPTV :
+            type = 0x70;
+            break;
+
+        case HI_UNF_DMX_DESCRAMBLER_TYPE_TDES_ECB :
+            type = 0x71;
+            break;
+
+        case HI_UNF_DMX_DESCRAMBLER_TYPE_TDES_CBC :
+            type = 0x73;
             break;
 
         case HI_UNF_DMX_DESCRAMBLER_TYPE_CSA2 :

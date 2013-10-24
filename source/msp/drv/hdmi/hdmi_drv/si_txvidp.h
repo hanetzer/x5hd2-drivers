@@ -39,4 +39,5 @@ void  SI_Mpll_setup(HI_U8);
 void  SI_FApost_setup(HI_U8, int, HI_U8);
 
 void SI_TX_InvertSyncPol(HI_BOOL bInvert);
+void SI_TX_CSC709Select(HI_BOOL bSpace709);
 

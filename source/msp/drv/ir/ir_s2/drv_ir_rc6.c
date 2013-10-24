@@ -397,7 +397,7 @@ void rc6_parse_error_handle(struct ir_priv *ir,
 				|| data_fallin(symbol->upper,
 					ip->attr.burst.mins,
 					ip->attr.burst.maxs)) {
-			symbol = ir_next_reader_clr_inc(symb_head);
+			(HI_VOID)ir_next_reader_clr_inc(symb_head);
 			break;
 		}
 		symbol = ir_next_reader_clr_inc(symb_head);
@@ -470,8 +470,9 @@ int parse_rc6(struct ir_priv *ir, struct ir_protocol *ip,
 
 			rc6_repeat_next_time[ip->priv] = jiffies + 
 				msecs_to_jiffies(ir->key_repeat_interval);
-			cnt ++;
+			//cnt ++;
 		}
+        cnt ++;
 		goto out;
 	}
 	/* if a new key recevied, send a key up event of last key. */
@@ -494,8 +495,17 @@ int parse_rc6(struct ir_priv *ir, struct ir_protocol *ip,
 		msecs_to_jiffies(ir->key_repeat_interval);
 out:
 
-	rc6_timer[ip->priv].expires = jiffies +
-		msecs_to_jiffies(ir->key_hold_timeout_time);
+	if (0 == ip->key_hold_timeout_time)
+    {
+        rc6_timer[ip->priv].expires = jiffies +
+                             msecs_to_jiffies(ir->key_hold_timeout_time);
+    }
+    else
+    {
+        rc6_timer[ip->priv].expires = jiffies +
+                             msecs_to_jiffies(ip->key_hold_timeout_time);
+    }
+    
 	rc6_timer[ip->priv].data = ip->priv;
 	add_timer(&rc6_timer[ip->priv]);
 	memcpy(&rc6->last_key, &rc6->this_key, sizeof(struct key_attr));

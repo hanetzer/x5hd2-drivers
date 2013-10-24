@@ -13,32 +13,35 @@ extern "C"{
 #endif /* __cplusplus */
 
 #include "hifb.h"
-#define HIFB_WORK_QUEUE      "hifb_workqueque"
-//#define GFX_TEST_LOG
+#include "hifb_comm.h"
 
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-#define Print printk
-#else
-#define Print(x...) 
-#endif 
+#define HIFB_WORK_QUEUE      "HIFB_WorkQueque"
+#define OPTM_GFX_WBC2_BUFFER "HIFB_GfxWbc2"
+#define DISPLAY_BUFFER       "HIFB_Display_Buffer"
+#define HIFB_ZME_COEF_BUFFER "HIFB_ZmeCoef"
 	
 #ifdef GFX_TEST_LOG
 #define PRINT_IN  printk("func %s in!\n", __FUNCTION__)
 #define PRINT_OUT printk("func %s out!\n",__FUNCTION__)
-#define Print_Log printk
 #else
 #define PRINT_IN 
 #define PRINT_OUT
-#define Print_Log(x...)
 #endif 
 
 /*the point of callback function*/
 /*CNcomment:回调函数指针*/
 typedef HI_S32 (* IntCallBack)(HI_VOID *pParaml, HI_VOID *pParamr);
 
-#define IS_HD_LAYER(enLayerId) ((enLayerId >= HIFB_LAYER_HD_0) && (HIFB_LAYER_HD_3 >= enLayerId))
+#define IS_HD_LAYER(enLayerId) (HIFB_LAYER_HD_3 >= enLayerId)
 #define IS_SD_LAYER(enLayerId) ((enLayerId >= HIFB_LAYER_SD_0) && (HIFB_LAYER_SD_3 >= enLayerId))
 #define IS_AD_LAYER(enLayerId) ((enLayerId >= HIFB_LAYER_AD_0) && (HIFB_LAYER_AD_3 >= enLayerId))
+
+#define HIFB_CHECK_PONITER(pStr) do{\
+if (pStr == HI_NULL){\
+      HIFB_ERROR("unable to process null pointer!\n");\
+      return HI_FAILURE;}\
+}while(0)
+
 
 typedef struct
 {
@@ -91,10 +94,6 @@ typedef enum
 	/*VO Register update completed interrupt */
     /*CNcomment:寄存器更新完成中断*/
     HIFB_CALLBACK_TYPE_REGUP = 0x4, 
-    
-    /*DISP format changed interrupt */
-    /*CNcomment:disp 制式切换中断*/
-    HIFB_CALLBACK_TYPE_DISP_CHG = 0x8, 
     
     HIFB_CALLBACK_TYPE_BUTT,
 }HIFB_CALLBACK_TPYE_E;

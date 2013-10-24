@@ -5,12 +5,15 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <string.h>
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "hi_common.h"
 #include "drv_hdcp_ioctl.h"
 
 static HI_S32 g_s32HDCPFd = -1;
 
+static const HI_U8 s_szHdcpVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 /***********************************************************************************
 *  Function:       HI_UNF_HDCP_SetHDCPKey

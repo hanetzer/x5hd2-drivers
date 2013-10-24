@@ -43,6 +43,10 @@ static HI_BOOL s_bIngage = HI_FALSE;
 static JPGVCOS_sem_t s_semEngage;
 HI_VOID *s_pRegReset = HI_NULL;
 
+static const HI_U8 s_szJPEGVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
+
 #define JPGDRV_CHECK(jpgfd) \
     do {\
         if (0 >= jpgfd) \
@@ -83,23 +87,11 @@ HI_VOID *s_pRegReset = HI_NULL;
 *******************************************************************************/
 HI_S32 HI_JPG_Open(HI_VOID)
 {
-
-
     HI_S32 Ret;
 
     if (0 < s_s32fdJpgDev)
     {
         return HI_SUCCESS;
-    }
-
-    if (0 != JPGVCOS_access(JPEG_DEV, JPGVCOS_F_OK))
-    {
-        if (0 != JPGVCOS_access(JPEG_DEV_1, JPGVCOS_F_OK))
-        {
-            JPG_TRACE(HI_JPGLOG_LEVEL_ERROR, JPEGFMW,
-                      "%s don't exist\n", JPEG_DEV);
-            return HI_FAILURE;
-        }
     }
 
     Ret = JPGVCOS_sem_init(&s_semEngage, 0, 1);
@@ -373,16 +365,19 @@ HI_S32 JPGDRV_ReleaseRegAddr(HI_VOID *pRegPtr,   \
                                             HI_VOID *pRstRegPtr, \
                                             HI_VOID *pVhbRegPtr)
 {
+    HI_S32 s32Ret;
+    
+    if (NULL != pRstRegPtr)
+    {
+        HI_U32  *pRstReg = (HI_U32 *)pRstRegPtr;
+        pRstReg[0] &= (~0x100);
+    }
 
-	    if (NULL != pRstRegPtr)
-	    {
-	        HI_U32  *pRstReg = (HI_U32 *)pRstRegPtr;
-	        pRstReg[0] &= (~0x100);
-	    }
+    s32Ret = JPGVCOS_munmap(pRegPtr, JPGDRV_REGISTER_LENGTH);
+    if (HI_SUCCESS != s32Ret)
+        return HI_FAILURE;
 
-	    JPGVCOS_munmap(pRegPtr, JPGDRV_REGISTER_LENGTH);
-
-	    return HI_SUCCESS;
+    return HI_SUCCESS;
 	
 }
 

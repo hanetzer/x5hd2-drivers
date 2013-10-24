@@ -31,9 +31,11 @@ EXTRA_CFLAGS += -I$(COMMON_UNF_INCLUDE)                                         
 EXTRA_CFLAGS += -I$(SOURCE_DIR)/common/include/
 EXTRA_CFLAGS += -I$(SOURCE_DIR)/common/drv/include/
 EXTRA_CFLAGS += -I$(SOURCE_DIR)/common/api/stat/
+
+KBUILD_EXTRA_SYMBOLS += $(COMMON_DIR)/drv/Module.symvers
+
 #################### base #####################
 MOD_NAME := hi_tuner
-
 
 obj-$(CFG_MSP_BUILDTYPE) += $(MOD_NAME).o
 
@@ -43,6 +45,7 @@ $(MOD_NAME)-y += tuner_intf.o
 
 ifeq ($(CFG_HI_DEMOD_TYPE_HI3130),y)
 hi_tuner-y +=	demod/hi3130/hi3130.o
+hi_tuner-y +=	demod/hi3130v200/dvb_c/hi3130v200.o
 EXTRA_CFLAGS += -DDEMOD_DEV_TYPE_HI3130
 endif
 
@@ -58,12 +61,18 @@ endif
 
 ifeq ($(CFG_HI_DEMOD_TYPE_X5HDV2QAM),y)
 hi_tuner-y +=	demod/x5hdqamv200/x5hdqamv200.o
+hi_tuner-y +=	demod/hi3716cv200/dvb_c/hi3716cv200.o
 EXTRA_CFLAGS += -DDEMOD_DEV_TYPE_X5HDV2QAM
 endif
 
 ifeq ($(CFG_HI_DEMOD_TYPE_J83B),y)
 hi_tuner-y +=	demod/j83b/j83b.o
+hi_tuner-y +=	demod/hi3716cv200/j83b/hi3716cv200_j83b.o
 EXTRA_CFLAGS += -DDEMOD_DEV_TYPE_J83B
+	ifeq ($(CFG_HI_DEMOD_TYPE_HI3130),y)
+	hi_tuner-y +=	demod/hi3130v200/j83b/hi3130v200_j83b.o
+	EXTRA_CFLAGS += -DDEMOD_DEV_TYPE_HI3130
+	endif
 endif
 
 ifeq ($(CFG_HI_DEMOD_TYPE_AVL6211),y)

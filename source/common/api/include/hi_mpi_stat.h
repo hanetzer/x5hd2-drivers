@@ -34,38 +34,14 @@
 #ifndef __HI_MPI_STAT_H__
 #define __HI_MPI_STAT_H__
 
+#include "hi_drv_stat.h"
+
 #ifdef __cplusplus
 extern "C"{
 #endif
 
 /** @addtogroup H_MPI_STAT */
 /** @{ */
-typedef enum tagSTAT_EVENT
-{
-    STAT_EVENT_KEYIN,
-    STAT_EVENT_KEYOUT,
-    STAT_EVENT_ASTOP,
-    STAT_EVENT_VSTOP,
-    STAT_EVENT_CONNECT,
-    STAT_EVENT_LOCKED,
-    STAT_EVENT_ASTART,
-    STAT_EVENT_VSTART,
-    STAT_EVENT_CWSET,
-    STAT_EVENT_STREAMIN,
-    STAT_EVENT_ISTREAMGET,
-    STAT_EVENT_IFRAMEOUT,
-    STAT_EVENT_VPSSGETFRM,
-    STAT_EVENT_VPSSOUTFRM,
-    STAT_EVENT_AVPLAYGETFRM,    
-	STAT_EVENT_PRESYNC,
-    STAT_EVENT_BUFREADY,
-    STAT_EVENT_FRAMEDISP,
-	STAT_EVENT_VOGETFRM,
-    STAT_EVENT_IFRAMEINTER,
-    STAT_EVENT_BUTT
-    
-}STAT_EVENT_E;
-
 typedef char THREAD_NAME[64];
 
 /* for userspace stat */
@@ -78,8 +54,6 @@ typedef struct
 
     THREAD_NAME name;
 }STAT_USERSPACE_S;
-
-
 
 typedef struct
 {

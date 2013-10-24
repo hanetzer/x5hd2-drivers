@@ -30,6 +30,7 @@ EXTRA_CFLAGS += -I$(COMMON_UNF_INCLUDE)                 \
                 -I$(COMPONENT_DIR)/vp/api               \
                 -I$(COMPONENT_DIR)/ha_codec/include
 
+KBUILD_EXTRA_SYMBOLS += $(COMMON_DIR)/drv/Module.symvers
 
 MOD_NAME := hi_avplay
 

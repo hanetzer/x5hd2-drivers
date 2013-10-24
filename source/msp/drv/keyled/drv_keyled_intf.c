@@ -39,9 +39,9 @@
 
 #include "hi_common.h"
 #include "hi_type.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
 
 #include "hi_unf_keyled.h"
 #include "hi_error_mpi.h"
@@ -69,7 +69,8 @@
 #include "drv_keyled_fd650.h"
 #endif
 
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
+#include "hi_osal.h"
 
 /*-------------------------------------------------------------------
  * macro define section
@@ -84,8 +85,10 @@
  *-----------------------------------------------------------------*/
 static KeyLed_Status_E keyledflag = KeyOFF_LedOFF;
 static KEYLED_OPT_S g_stKeyLedOpt;
-
-static HI_BOOL s_bInitialized = HI_FALSE;
+static atomic_t g_KeyledInitCount = ATOMIC_INIT(0);
+static atomic_t g_KeyOpenCount = ATOMIC_INIT(0);
+static atomic_t g_LedOpenCount = ATOMIC_INIT(0);
+static KEYLED_PROC_INFO_S g_stKeyLedProcInfo = {0};
 
 #ifdef  KEYLED_STANDARD
 static HI_CHIP_TYPE_E enChipType;
@@ -121,22 +124,23 @@ static HI_VOID KEYLEDSelectCT1642(HI_VOID)
     g_stKeyLedOpt.KEYLED_LED_SetFlashFreq = KEYLED_LED_SetFlashFreq_CT1642;
     g_stKeyLedOpt.KEYLED_LED_DisplayLED = HI_NULL;
     g_stKeyLedOpt.KEYLED_SetMode = HI_NULL;
+    g_stKeyLedOpt.KEYLED_GetProcInfo = KEYLED_GetProcInfo_CT1642;
 
     g_stKeyLedOpt.KEYLED_Suspend = KEYLED_Suspend_CT1642;
     g_stKeyLedOpt.KEYLED_Resume	 = KEYLED_Resume_CT1642;
-
-	s_bInitialized = HI_TRUE;
-	
+    
     return;
 }
 #endif
 
 static HI_S32 KEYLEDSelectType(HI_UNF_KEYLED_TYPE_E enKeyLedType)
 {
-    if (enKeyLedType == HI_UNF_KEYLED_TYPE_STD)
+    HI_BOOL bInitializedFlag = HI_FALSE;
+    
+    if (enKeyLedType == HI_UNF_KEYLED_TYPE_74HC164)
     {
 #ifdef KEYLED_STANDARD
-        HI_INFO_KEYLED("select std keyled\n");
+        HI_INFO_KEYLED("select 74hc164 keyled\n");
 
         g_stKeyLedOpt.KEYLED_KEY_Open  = KEYLED_KEY_Open;
         g_stKeyLedOpt.KEYLED_KEY_Close = KEYLED_KEY_Close;
@@ -155,17 +159,19 @@ static HI_S32 KEYLEDSelectType(HI_UNF_KEYLED_TYPE_E enKeyLedType)
         g_stKeyLedOpt.KEYLED_LED_SetFlashFreq = KEYLED_LED_SetFlashFreq;
         g_stKeyLedOpt.KEYLED_LED_DisplayLED = KEYLED_LED_DisplayLED;
         g_stKeyLedOpt.KEYLED_SetMode = KEYLED_SetMode;
+        g_stKeyLedOpt.KEYLED_GetProcInfo = KEYLED_GetProcInfo;
 
         g_stKeyLedOpt.KEYLED_Suspend = KEYLED_Suspend;
         g_stKeyLedOpt.KEYLED_Resume	 = KEYLED_Resume;
 
-		s_bInitialized = HI_TRUE;
+		bInitializedFlag = HI_TRUE;
 #endif
     }
     else if (enKeyLedType == HI_UNF_KEYLED_TYPE_CT1642)
     {
 #ifdef KEYLED_CT1642
         KEYLEDSelectCT1642();
+        bInitializedFlag = HI_TRUE;
 #endif
 
     }
@@ -190,11 +196,12 @@ static HI_S32 KEYLEDSelectType(HI_UNF_KEYLED_TYPE_E enKeyLedType)
         g_stKeyLedOpt.KEYLED_LED_SetFlashFreq = KEYLED_LED_SetFlashFreq_PT6961;
         g_stKeyLedOpt.KEYLED_LED_DisplayLED = HI_NULL;
         g_stKeyLedOpt.KEYLED_SetMode = HI_NULL;
+        g_stKeyLedOpt.KEYLED_GetProcInfo = KEYLED_GetProcInfo_PT6961;
 
         g_stKeyLedOpt.KEYLED_Suspend = KEYLED_Suspend_PT6961;
         g_stKeyLedOpt.KEYLED_Resume	 = KEYLED_Resume_PT6961;
 
-		s_bInitialized = HI_TRUE;
+		bInitializedFlag = HI_TRUE;
 #endif
     }
     else if (enKeyLedType == HI_UNF_KEYLED_TYPE_PT6964)
@@ -219,11 +226,12 @@ static HI_S32 KEYLEDSelectType(HI_UNF_KEYLED_TYPE_E enKeyLedType)
         g_stKeyLedOpt.KEYLED_LED_SetFlashFreq = KEYLED_LED_SetFlashFreq_PT6964;
         g_stKeyLedOpt.KEYLED_LED_DisplayLED = HI_NULL;
         g_stKeyLedOpt.KEYLED_SetMode = HI_NULL;
+        g_stKeyLedOpt.KEYLED_GetProcInfo = KEYLED_GetProcInfo_PT6964;
 
         g_stKeyLedOpt.KEYLED_Suspend = KEYLED_Suspend_PT6964;
         g_stKeyLedOpt.KEYLED_Resume	 = KEYLED_Resume_PT6964;
 
-		s_bInitialized = HI_TRUE;
+		bInitializedFlag = HI_TRUE;
 #endif
     }
 	else if (enKeyLedType == HI_UNF_KEYLED_TYPE_FD650)
@@ -249,11 +257,12 @@ static HI_S32 KEYLEDSelectType(HI_UNF_KEYLED_TYPE_E enKeyLedType)
 		g_stKeyLedOpt.KEYLED_LED_SetLockIndicator = KEYLED_LED_SetLockIndicator_FD650;
         g_stKeyLedOpt.KEYLED_LED_DisplayLED = HI_NULL;
         g_stKeyLedOpt.KEYLED_SetMode = HI_NULL;
+        g_stKeyLedOpt.KEYLED_GetProcInfo = KEYLED_GetProcInfo_FD650;
 
         g_stKeyLedOpt.KEYLED_Suspend = KEYLED_Suspend_FD650;
         g_stKeyLedOpt.KEYLED_Resume	 = KEYLED_Resume_FD650;
 
-		s_bInitialized = HI_TRUE;
+		bInitializedFlag = HI_TRUE;
 #endif
 	}
     else
@@ -264,9 +273,10 @@ static HI_S32 KEYLEDSelectType(HI_UNF_KEYLED_TYPE_E enKeyLedType)
 /* If set ct1642 in kernel, force the functions to ct1642 */
 #ifdef HI_KEYLED_CT1642_KERNEL_SUPPORT    
 	KEYLEDSelectCT1642();
+    bInitializedFlag = HI_TRUE;
 #endif
 
-	if (HI_FALSE == s_bInitialized)
+	if (HI_FALSE == bInitializedFlag)
 	{
 		return HI_FAILURE;		
 	}
@@ -287,43 +297,48 @@ static HI_S32 KEYLEDIoctl(struct inode *inode, struct file * file, HI_U32 cmd, H
     switch (cmd)
     {
     case HI_KEYLED_SELECT_CMD:
-        return KEYLEDSelectType(*(HI_UNF_KEYLED_TYPE_E*)arg);
-
-    case HI_KEYLED_KEY_OPEN_CMD:
-
-        /* deal with it temporary , do something more if it is needed later*/
-        /*CNcomment: only one, 临时处理，如果严谨的话需要细化*/
-        if (keyledflag & KeyON)
         {
-            return HI_SUCCESS;
+            g_stKeyLedProcInfo.enKeyLedType = *(HI_UNF_KEYLED_TYPE_E*)arg;
+            return KEYLEDSelectType(*(HI_UNF_KEYLED_TYPE_E*)arg);                        
         }
-        else
+
+    case HI_KEYLED_KEY_OPEN_CMD:    
+        if (1 == atomic_inc_return(&g_KeyOpenCount))
         {
-            ret = g_stKeyLedOpt.KEYLED_KEY_Open();
-            if (ret == HI_SUCCESS)
+            if (keyledflag & KeyON)
             {
-                keyledflag |= KeyON;
+                return HI_SUCCESS;
             }
+            else
+            {
+                ret = g_stKeyLedOpt.KEYLED_KEY_Open();
+                if (ret == HI_SUCCESS)
+                {
+                    keyledflag |= KeyON;
+                }
 
 #ifdef  KEYLED_STANDARD
-            KEYLED_GetChipType(&enChipType, &enChipVersion);
+                KEYLED_GetChipType(&enChipType, &enChipVersion);
 #endif
-            return ret;
-        }
+                return ret;
+            }
+        }       
+        return HI_SUCCESS;
 
     case HI_KEYLED_KEY_CLOSE_CMD:
-
-        /* deal with it temporary , do something more if it is needed later*/
-        /*CNcomment: only one, 临时处理，如果严谨的话需要细化*/
-        if (keyledflag & KeyON)
+        if (atomic_dec_and_test(&g_KeyOpenCount))
         {
-            keyledflag &= (~KeyON);
-            return g_stKeyLedOpt.KEYLED_KEY_Close();
+            if (keyledflag & KeyON)
+            {
+                keyledflag &= (~KeyON);
+                return g_stKeyLedOpt.KEYLED_KEY_Close();
+            }
+            else
+            {
+                return HI_SUCCESS;
+            }
         }
-        else
-        {
-            return HI_SUCCESS;
-        }
+        return HI_SUCCESS;           
 
     case HI_KEYLED_KEY_RESET_CMD:
         if (keyledflag & KeyON)
@@ -393,44 +408,47 @@ static HI_S32 KEYLEDIoctl(struct inode *inode, struct file * file, HI_U32 cmd, H
         }
 
     case HI_KEYLED_LED_OPEN_CMD:
-
-        /* deal with it temporary , do something more if it is needed later*/
-        /*CNcomment: only one, 临时处理，如果严谨的话需要细化*/
-        if (keyledflag & LedON)
+        if (1 == atomic_inc_return(&g_LedOpenCount))
         {
-            return HI_SUCCESS;
-        }
-        else
-        {
-            ret = g_stKeyLedOpt.KEYLED_LED_Open();
-            if (ret == HI_SUCCESS)
+            if (keyledflag & LedON)
             {
-                keyledflag |= LedON;
+                return HI_SUCCESS;
             }
+            else
+            {
+                ret = g_stKeyLedOpt.KEYLED_LED_Open();
+                if (ret == HI_SUCCESS)
+                {
+                    keyledflag |= LedON;
+                }
 
 #ifdef  KEYLED_STANDARD
-            KEYLED_GetChipType(&enChipType, &enChipVersion);
+                KEYLED_GetChipType(&enChipType, &enChipVersion);
 #endif
-            return ret;
+                return ret;
+            }
         }
-
+        return HI_SUCCESS;
+        
     case HI_KEYLED_LED_CLOSE_CMD:
-
-        /* deal with it temporary , do something more if it is needed later*/
-        /*CNcomment: only one, 临时处理，如果严谨的话需要细化*/
-        if (keyledflag & LedON)
+        if (atomic_dec_and_test(&g_LedOpenCount))
         {
-            keyledflag &= (~LedON);
-            return g_stKeyLedOpt.KEYLED_LED_Close();
+            if (keyledflag & LedON)
+            {
+                keyledflag &= (~LedON);
+                return g_stKeyLedOpt.KEYLED_LED_Close();
+            }
+            else
+            {
+                return HI_SUCCESS;
+            }
         }
-        else
-        {
-            return HI_SUCCESS;
-        }
+        return HI_SUCCESS;
 
     case HI_KEYLED_DISPLAY_CODE_CMD:
         if (keyledflag & LedON)
         {
+            g_stKeyLedProcInfo.u32DispCode = *(HI_U32*)arg;
             return g_stKeyLedOpt.KEYLED_LED_Display(*(HI_U32*)arg);
         }
         else
@@ -442,6 +460,7 @@ static HI_S32 KEYLEDIoctl(struct inode *inode, struct file * file, HI_U32 cmd, H
     case HI_KEYLED_DISPLAY_TIME_CMD:
         if (keyledflag & LedON)
         {
+            g_stKeyLedProcInfo.stLedTime = *(HI_UNF_KEYLED_TIME_S*)arg;
             return g_stKeyLedOpt.KEYLED_LED_DisplayTime(*(HI_UNF_KEYLED_TIME_S*)arg);
         }
         else
@@ -549,7 +568,6 @@ static HI_S32 KEYLEDIoctl(struct inode *inode, struct file * file, HI_U32 cmd, H
 }
 
 #if 0
-
 /*entrance of function controled by the proc file system*/
 /*CNcomment:通过proc文件系统进行控制的函数入口*/
 
@@ -565,15 +583,62 @@ static HI_S32 KEYLEDProcWrite(struct file * file,
 {
     return HI_DRV_PROC_ModuleWrite(file, buf, count, ppos, KEYLEDDebugCtrl);
 }
+#endif
 
+static HI_S8 g_s8KeyLedType[5][16] = {"74HC164", "PT6961", "CT1642", "PT6964", "FD650"};
+static HI_S8 g_s8LedFlashType[7][16] = {"Not Set","First", "Second", "Third", "Fourth", "ALL", "NONE"};
 static HI_S32 KEYLEDProcRead(struct seq_file *p, HI_VOID *v)
 {
-    p += seq_printf(p, "---------Hisilicon keyled Info---------\n");
+    if (HI_NULL != g_stKeyLedOpt.KEYLED_GetProcInfo)
+    {
+        (HI_VOID)g_stKeyLedOpt.KEYLED_GetProcInfo(&g_stKeyLedProcInfo);
+    }
+
+    if (g_stKeyLedProcInfo.enFlashPin >= HI_UNF_KEYLED_LIGHT_BUTT)
+    {
+        g_stKeyLedProcInfo.enFlashPin = 0; //means not set flash pin.
+    }
+    
+    PROC_PRINT(p, "---------Hisilicon KeyLed Info---------\n");
+
+    PROC_PRINT(p,
+                       "KeyStatus               \t :%s\n"
+                       "LedStatus               \t :%s\n"
+                       "Select KeyLed Type      \t :%s\n"
+                       "Timeout of Reading Key  \t :%u(ms)\n"
+                       "Key Up Report           \t :%s\n"
+                       "Repeat Key Report       \t :%s\n"
+                       "Repeat Key Report time  \t :%u(ms)\n"
+                       "Led Display Code        \t :0x%08x\n"
+                       "Led Display Time        \t :%u:%u(hour:minute)\n"
+                       "Led Flash Pin           \t :%s\n"
+                       "Led Flash Pin Level     \t :%u\n"
+                       "Key Buffer Length       \t :%u\n"
+                       "Key Buffer Head         \t :%u\n"
+                       "Key Buffer Tail         \t :%u\n"
+                       "Key Come Number         \t :%u\n"
+                       "Key Read Number         \t :%u\n"
+                       ,
+    
+                       (keyledflag & KeyON) ? "Open" : "Close",
+                       (keyledflag & LedON) ? "Open" : "Close",
+                       g_s8KeyLedType[g_stKeyLedProcInfo.enKeyLedType],
+                       g_stKeyLedProcInfo.u32BlockTime,
+                       (g_stKeyLedProcInfo.u32IsUpKeyEnable) ? "Enable" : "Disable",
+                       (g_stKeyLedProcInfo.u32IsRepKeyEnable) ? "Enable" : "Disable",
+                       g_stKeyLedProcInfo.u32RepKeyTimeMs,
+                       g_stKeyLedProcInfo.u32DispCode,
+                       g_stKeyLedProcInfo.stLedTime.u32Hour, g_stKeyLedProcInfo.stLedTime.u32Minute,
+                       g_s8LedFlashType[g_stKeyLedProcInfo.enFlashPin],
+                       g_stKeyLedProcInfo.enFlashLevel,
+                       g_stKeyLedProcInfo.KeyBufSize,
+                       g_stKeyLedProcInfo.KeyBufHead,
+                       g_stKeyLedProcInfo.KeyBufTail,
+                       g_stKeyLedProcInfo.KeyComeNum,
+                       g_stKeyLedProcInfo.KeyReadNum);
 
     return HI_SUCCESS;
 }
-
-#endif
 
 static long KEYLED_Ioctl(struct file * file, HI_U32 cmd, unsigned long arg)
 {
@@ -586,17 +651,36 @@ static long KEYLED_Ioctl(struct file * file, HI_U32 cmd, unsigned long arg)
 
 static HI_S32 KEYLED_Open(struct inode *inode, struct file *filp)
 {
+    atomic_inc(&g_KeyledInitCount);
+    
     return HI_SUCCESS;
 }
 
 static HI_S32 KEYLED_Release(struct inode *inode, struct file *filp)
 {
-    //g_stKeyLedOpt.KEYLED_KEY_Close();
-    //g_stKeyLedOpt.KEYLED_LED_Close();
+    if (atomic_dec_and_test(&g_KeyledInitCount))
+    {
+        if (atomic_read(&g_KeyOpenCount))
+        {
+            if (atomic_dec_and_test(&g_KeyOpenCount))
+            {
+                keyledflag &= (~KeyON);
+                g_stKeyLedOpt.KEYLED_KEY_Close();
+            }
+        }
 
-    //keyledflag = 0;
-
+        if (atomic_read(&g_LedOpenCount))
+        {
+            if (atomic_dec_and_test(&g_LedOpenCount))
+            {
+                keyledflag &= (~LedON);
+                g_stKeyLedOpt.KEYLED_LED_Close();
+            }
+        }
+    }   
+    
     return HI_SUCCESS;
+    
 }
 
 static struct file_operations stKEYLEDOpts =
@@ -670,6 +754,7 @@ static UMAP_DEVICE_S g_stKeyLedDev;
 HI_S32 KEYLED_DRV_ModInit(HI_VOID)
 {
     HI_S32 ret;
+    DRV_PROC_ITEM_S *item;
 
 #if  defined (KEYLED_STANDARD)     \
         || defined (KEYLED_CT1642)  \
@@ -690,7 +775,7 @@ HI_S32 KEYLED_DRV_ModInit(HI_VOID)
 
     keyledflag = 0;
 
-    sprintf(g_stKeyLedDev.devfs_name, "%s", UMAP_DEVNAME_KEYLED);
+    HI_OSAL_Snprintf(g_stKeyLedDev.devfs_name, sizeof(g_stKeyLedDev.devfs_name), UMAP_DEVNAME_KEYLED);
     g_stKeyLedDev.fops	 = &stKEYLEDOpts;
     g_stKeyLedDev.minor	 = UMAP_MIN_MINOR_KEYLED;
     g_stKeyLedDev.owner	 = THIS_MODULE;
@@ -701,7 +786,7 @@ HI_S32 KEYLED_DRV_ModInit(HI_VOID)
         return HI_FAILURE;
     }
 
-#if 0
+#if 1
     item = HI_DRV_PROC_AddModule("keyled", NULL, NULL);
     if (!item)
     {
@@ -710,7 +795,6 @@ HI_S32 KEYLED_DRV_ModInit(HI_VOID)
     }
 
     item->read	= KEYLEDProcRead;
-    item->write = KEYLEDProcWrite;
 #endif
 
 #ifdef KEYLED_STANDARD
@@ -838,9 +922,7 @@ HI_S32 KEYLED_DRV_ModInit(HI_VOID)
 #endif
 
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_keyled.ko success.\t(%s)\n", VERSION_STRING);
-#endif
+    HI_PRINT("Load hi_keyled.ko success.\t(%s)\n", VERSION_STRING);
 #endif
 
     return HI_SUCCESS;
@@ -851,7 +933,7 @@ HI_VOID KEYLED_DRV_ModExit(HI_VOID)
     //g_stKeyLedOpt.KEYLED_KEY_Close();
     //g_stKeyLedOpt.KEYLED_LED_Close();
 
-    //HI_DRV_PROC_RemoveModule("keyled");
+    HI_DRV_PROC_RemoveModule("keyled");
 
     (HI_VOID)HI_DRV_MODULE_UnRegister(HI_ID_KEYLED);
 

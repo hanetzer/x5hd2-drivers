@@ -58,9 +58,9 @@ STATIC TDE_WAITALLDONE_S s_stTdeWaitAll;
 STATIC wait_queue_head_t s_TdeBeginJobWq;   /* block queue when task number achieve the limit */
 
 
-STATIC TDE_DECLARE_MUTEX(g_TDEJobSubLock);  /* ensure command submit is mutex lock in order */
-STATIC TDE_DECLARE_MUTEX(g_TDEHdMgrLock);
-STATIC TDE_DECLARE_MUTEX(g_TDEWaitAllLock);
+STATIC HI_DECLARE_MUTEX(g_TDEJobSubLock);  /* ensure command submit is mutex lock in order */
+STATIC HI_DECLARE_MUTEX(g_TDEHdMgrLock);
+STATIC HI_DECLARE_MUTEX(g_TDEWaitAllLock);
 
 
 /****************************************************************************/
@@ -525,14 +525,15 @@ HI_S32 TdeOsiListAddNode(TDE_HANDLE s32Handle, TDE_NODE_BUF_S * pSwNode,
     switch(enSubmType)
     {
         case TDE_NODE_SUBM_PARENT:
-            //s_pstParentSwNode = pstCmd;
             pstJob->pstParentCmd = pstCmd;
             pstCmd->pstParentNodeInCmd = HI_NULL;
+            break;
         case TDE_NODE_SUBM_CHILD:
-            //pstCmd->pstParentNodeInCmd = s_pstParentSwNode;
             pstCmd->pstParentNodeInCmd = pstJob->pstParentCmd;
+            break;
         case TDE_NODE_SUBM_ALONE:
             pstCmd->pstParentNodeInCmd = HI_NULL;
+            break;
     }
 
     if (HI_NULL != pstJob->pstTailNode)

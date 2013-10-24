@@ -283,10 +283,11 @@ typedef struct
     HI_S32  s32DeiMdLum;   /*0-5 field; 1-4 filed; 2-3 field; 3-reserved*/
     HI_S32  s32DeiMdChr;
     HI_BOOL bDeiRst;       /*0-reset invalid; 1-reset valid,don't read history motion infomation;*/
-    HI_BOOL FodEnable;         /* field order detect enable on-off: 1-enable; 0-disable*/
+    HI_S32  FodEnable;         /* field order detect enable on-off: 1-enable; 0-disable,forced to top first; 2-disable,forced to bottom first; 3-disable,default;*/
     HI_BOOL Pld22Enable;      /* Interleaved/Progressive detect enable on-off: 1-enable; 0-disable*/
     HI_BOOL Pld32Enable;      /* pulldown detect enable on-off: 1-enable; 0-disable*/    
     HI_BOOL EdgeSmoothEn;  /* edge smooth enable on-off: 1-disable; 0-enable*/
+    HI_S32  s32Pld22Md;
 
     HI_S32 s32FrmHeight;          /* height of source*/
     HI_S32 s32FrmWidth;           /* width of source*/    
@@ -315,6 +316,8 @@ typedef struct
      ALG_FMD_RTL_OUTPARA_S stRtlOutParaBak;/*当DEI逻辑Timeout时，使用上一次的计算结果*/
 }ALG_FMD_SOFTINFO_S;
 
+HI_VOID FmdThdParaInitDefault(void);
+
 HI_S32 ALG_FmdInit(ALG_FMD_SOFTINFO_S *pstFmdSoftInfo);
 
 HI_VOID FmdThdParaInit(ALG_FMD_RTL_INITPARA_S *pstFmdRtlInPara);
@@ -324,6 +327,12 @@ HI_S32 ALG_FmdDeInit(ALG_FMD_SOFTINFO_S *pstFmdSoftInfo);
 HI_S32 ALG_FmdReset(ALG_FMD_SOFTINFO_S *pstFmdSoftInfo,ALG_DEI_DRV_PARA_S* pstDeiDrvPara);
 
 HI_S32 ALG_FmdSet(ALG_FMD_SOFTINFO_S *pstFmdSoftInfo,ALG_DEI_DRV_PARA_S* pstDeiDrvPara,ALG_FMD_RTL_OUTPARA_S*pstFmdRtlOutPara);
+
+HI_VOID ALG_SetFmdDbgPara(PQ_FMD_COEF_S* pstPqFmdCoef);
+HI_VOID ALG_GetFmdDbgPara(PQ_FMD_COEF_S* pstPqFmdCoef);
+
+
+
 
 #endif
 

@@ -3,7 +3,7 @@
 
 
 #include "vpss_alg_fmd.h"
-#include"drv_mmz_ext.h"
+#include"hi_drv_mmz.h"
 #include"vpss_common.h"
 
 
@@ -227,11 +227,11 @@ typedef struct
 
 }ALG_MAD_RTL_PARA_S;
 
-/*默认配置水线*/
+/*default threshold*/
 typedef struct
 {     
     ALG_MAD_RTL_PARA_S   stMadRtlPara;
-    ALG_FMD_RTL_INITPARA_S  stFmdRtlInitPara;  /*threshold of FMD ,FMD启动时候配一次*/
+    ALG_FMD_RTL_INITPARA_S  stFmdRtlInitPara;  /*threshold of FMD ,once start config once*/
 }ALG_DEI_RTL_PARA_S;
 
 typedef struct
@@ -241,14 +241,13 @@ typedef struct
 }ALG_MAD_MEM_S;
 
 
-/*软件用的历史信息，绑定实例*/
+/*history info,related to instance*/
 typedef struct
 {
     ALG_FMD_SOFTINFO_S stFmdSoftInfo;
     ALG_MAD_MEM_S stMadMem;
 }ALG_DEI_MEM_S;
 
-/*DEI 输出信息*/
 typedef struct
 {
     ALG_FMD_RTL_OUTPARA_S stFmdRtlOutPara;
@@ -260,7 +259,7 @@ typedef struct
 }ALG_FMD_CTXT_S;
 #endif 
 
-
+HI_VOID MadThdParaInitDefault(void);
 HI_VOID ALG_DeiInit( ALG_DEI_RTL_PARA_S *pstDeiRtlPara);
 HI_VOID ALG_DeiDeInit(HI_VOID);
 
@@ -269,8 +268,16 @@ HI_S32 ALG_DeiInfoDeInit(ALG_DEI_MEM_S *pstDeiMem);
 
 
 HI_VOID ALG_DeiRst(ALG_DEI_MEM_S *pstDeiMem,ALG_DEI_DRV_PARA_S * pstDeiDrvPara, ALG_DEI_RTL_PARA_S *pstDeiRtlPara);
-HI_S32 ALG_DeiSet(ALG_DEI_MEM_S *pstDeiMem, ALG_DEI_DRV_PARA_S *pstDeiDrvPara, ALG_DEI_RTL_PARA_S *pstDeiRtlPara,ALG_DEI_RTL_OUTPARA_S* pstDeiRtlOutPara);
 
+HI_S32 ALG_DeiSet(ALG_DEI_MEM_S *pstDeiMem, 
+					ALG_DEI_DRV_PARA_S *pstDeiDrvPara, 
+					ALG_DEI_RTL_PARA_S *pstDeiRtlPara,
+					ALG_DEI_RTL_OUTPARA_S* pstDeiRtlOutPara,
+					HI_BOOL bAlgDebugEn);
+
+
+HI_VOID ALG_SetDeiDbgPara(PQ_DEI_COEF_S* pstPqDeiCoef);
+HI_VOID ALG_GetDeiDbgPara(PQ_DEI_COEF_S* pstPqDeiCoef);
 
 #endif /*__ALG_DEI_H__*/
 

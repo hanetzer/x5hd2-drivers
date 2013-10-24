@@ -26,9 +26,11 @@ EXTRA_CFLAGS += -I$(COMMON_UNF_INCLUDE)                 \
                 -I$(MSP_UNF_INCLUDE)                    \
                 -I$(MSP_API_INCLUDE)                    \
                 -I$(MSP_DRV_INCLUDE)                    \
-                -I$(MSP_DIR)/drv/vfmw/vfmw_release
+                -I$(MSP_DIR)/drv/vfmw/vfmw_release      \
+                -I$(MSP_DIR)/drv/vdec
                  
 KBUILD_EXTRA_SYMBOLS += $(COMMON_DIR)/drv/Module.symvers
+KBUILD_EXTRA_SYMBOLS += $(MSP_DIR)/drv/vdec/Module.symvers
 
 MOD_NAME := hi_omxvdec
 

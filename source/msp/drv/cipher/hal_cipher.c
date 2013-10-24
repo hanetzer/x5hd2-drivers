@@ -1,42 +1,51 @@
-/**
-\file
-\brief cipher hal interface
-\copyright Shenzhen Hisilicon Co., Ltd.
-\date 2008-2018
-\version draft
-\author QuYaxin 46153
-\date 2009-11-3
-*/
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : hal_cipher.c
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
 
 #include <linux/jiffies.h>
+#include <asm/barrier.h>    /* mb() */
 #include "hi_type.h"
 #include "hi_debug.h"
 #include "hi_common.h"
 #include "hi_error_mpi.h"
 #include "drv_cipher_ioctl.h"
+#include "drv_cipher_reg.h"
 #include "hal_cipher.h"
 #include "drv_advca_ext.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_cipher.h"
+#include "hi_drv_reg.h"
+#include "hi_reg_common.h"
 
-/* Set the defualt timeout value for hash calculating (6000 ms)*/
-#define HASH_MAX_DURATION (6000)
+/* Set the defualt timeout value for hash calculating (5000 ms)*/
+#define HASH_MAX_DURATION (5000)
 
 extern HI_VOID HI_DRV_SYS_GetChipVersion(HI_CHIP_TYPE_E *penChipType, HI_CHIP_VERSION_E *penChipVersion);
 
 /***************************** Macro Definition ******************************/
-/* cipher reg read and write macro define */
-#ifndef CIPHER_READ_REG
-#define CIPHER_READ_REG(reg, result) ((result) = *(volatile unsigned int *)(reg))
-#endif
-
-#ifndef CIPHER_WRITE_REG
-#define CIPHER_WRITE_REG(reg, data) (*((volatile unsigned int *)(reg)) = (data))
-#endif
-
 /*process of bit*/
 #define HAL_SET_BIT(src, bit)        ((src) |= (1<<bit))
 #define HAL_CLEAR_BIT(src,bit)       ((src) &= ~(1<<bit))
 
+#if 0
+#ifndef HI_REG_READ32
+#define HI_REG_READ32(addr,result)  ((result) = *(volatile unsigned int *)(addr))
+#endif
+#ifndef HI_REG_WRITE32
+#define HI_REG_WRITE32(addr,result)  (*(volatile unsigned int *)(addr) = (result))
+#endif
+#endif
 
 /*************************** Structure Definition ****************************/
 typedef enum
@@ -47,6 +56,18 @@ typedef enum
 }HASH_WAIT_TYPE;
 
 /******************************* API declaration *****************************/
+HI_VOID HAL_CIPHER_ReadReg(HI_U32 addr, HI_U32 *pu32Val)
+{
+    HI_REG_READ32(addr, *pu32Val);
+    return;
+}
+
+HI_VOID HAL_CIPHER_WriteReg(HI_U32 addr, HI_U32 u32Val)
+{
+    HI_REG_WRITE32(addr, u32Val);
+    return;
+}
+
 inline HI_S32 HASH_WaitReady( HASH_WAIT_TYPE enType)
 {
     CIPHER_SHA_STATUS_U unCipherSHAstatus;
@@ -59,7 +80,7 @@ inline HI_S32 HASH_WaitReady( HASH_WAIT_TYPE enType)
     while(1)
     {
         unCipherSHAstatus.u32 = 0;
-        CIPHER_READ_REG(CIPHER_HASH_REG_STATUS_ADDR, unCipherSHAstatus.u32);
+        (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_STATUS_ADDR, &unCipherSHAstatus.u32);
         if(HASH_READY == enType)
         {
             if(1 == unCipherSHAstatus.bits.hash_rdy)
@@ -99,6 +120,78 @@ inline HI_S32 HASH_WaitReady( HASH_WAIT_TYPE enType)
     return HI_SUCCESS;
 }
 
+/* check if hash module is idle or not */
+static HI_S32 HAL_CIPHER_WaitHashIdle(HI_VOID)
+{
+    CIPHER_SHA_CTRL_U unCipherSHACtrl;
+    HI_SIZE_T ulStartTime = 0;
+    HI_SIZE_T ulLastTime = 0;
+    HI_SIZE_T ulDuraTime = 0;
+
+__HASH_WAIT__:
+    ulStartTime = jiffies;
+    unCipherSHACtrl.u32 = 0;
+    (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_CTRL_ADDR, &unCipherSHACtrl.u32);
+    while(0 != (unCipherSHACtrl.bits.usedbyarm | unCipherSHACtrl.bits.usedbyc51))
+    {
+        ulLastTime = jiffies;
+        ulDuraTime = jiffies_to_msecs(ulLastTime - ulStartTime);
+        if (ulDuraTime >= HASH_MAX_DURATION )
+        { 
+            HI_ERR_CIPHER("Error! Hash module is busy now!\n");
+            return HI_FAILURE;
+        }
+        else
+        {
+            mdelay(1);
+            unCipherSHACtrl.u32 = 0;
+            (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_CTRL_ADDR, &unCipherSHACtrl.u32);
+            continue;
+        }
+    }
+
+    /* set bit 6 */
+    (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_CTRL_ADDR, &unCipherSHACtrl.u32);
+    unCipherSHACtrl.bits.usedbyarm = 0x1;
+    (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32);
+
+    /* check if set bit 6 valid or not */
+    unCipherSHACtrl.u32 = 0;
+    (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_CTRL_ADDR, &unCipherSHACtrl.u32);
+    unCipherSHACtrl.u32 = (unCipherSHACtrl.u32 >> 6) & 0x3;
+    switch(unCipherSHACtrl.u32)
+    {
+        case 0x1:
+        {
+            return HI_SUCCESS;
+        }
+        case 0x3:
+        {
+            /* clear bit 6*/
+            (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_CTRL_ADDR, &unCipherSHACtrl.u32);
+            unCipherSHACtrl.bits.usedbyarm = 0;
+            (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32);
+            goto __HASH_WAIT__;
+        }
+        default:
+        {
+            goto __HASH_WAIT__;
+        }
+    }
+}
+
+static HI_VOID HAL_CIPHER_MarkHashIdle(HI_VOID)
+{
+    CIPHER_SHA_CTRL_U unCipherSHACtrl;
+
+    unCipherSHACtrl.u32 = 0;
+    (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_CTRL_ADDR, &unCipherSHACtrl.u32);
+    unCipherSHACtrl.bits.usedbyarm = 0x0;
+    (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32);
+
+    return;
+}
+
 HI_S32 HAL_Cipher_SetInBufNum(HI_U32 chnId, HI_U32 num)
 {
     HI_U32 regAddr = 0;
@@ -117,7 +210,7 @@ HI_S32 HAL_Cipher_SetInBufNum(HI_U32 chnId, HI_U32 num)
         num = 0xffff;
     }
 
-    CIPHER_WRITE_REG(regAddr, num);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, num);
     
     HI_INFO_CIPHER(" cnt=%u\n", num);
     
@@ -135,7 +228,7 @@ HI_S32 HAL_Cipher_GetInBufNum(HI_U32 chnId, HI_U32 *pNum)
     }
 
     regAddr = CIPHER_REG_CHANn_IBUF_NUM(chnId);
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
     
     *pNum = regValue;
 
@@ -162,7 +255,7 @@ HI_S32 HAL_Cipher_SetInBufCnt(HI_U32 chnId, HI_U32 num)
         num = 0xffff;
     }
 
-    CIPHER_WRITE_REG(regAddr, num);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, num);
     
     HI_INFO_CIPHER(" HAL_Cipher_SetInBufCnt=%u\n", num);
     
@@ -180,7 +273,7 @@ HI_S32 HAL_Cipher_GetInBufCnt(HI_U32 chnId, HI_U32 *pNum)
     }
 
     regAddr = CIPHER_REG_CHANn_IBUF_CNT(chnId);
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
     *pNum = regValue;
     
     HI_INFO_CIPHER(" cnt=%u\n", regValue);
@@ -206,7 +299,7 @@ HI_S32 HAL_Cipher_SetInBufEmpty(HI_U32 chnId, HI_U32 num)
         num = 0xffff;
     }
 
-    CIPHER_WRITE_REG(regAddr, num);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, num);
     
     HI_INFO_CIPHER(" cnt=%u\n", num);
     
@@ -224,7 +317,7 @@ HI_S32 HAL_Cipher_GetInBufEmpty(HI_U32 chnId, HI_U32 *pNum)
     }
 
     regAddr = CIPHER_REG_CHANn_IEMPTY_CNT(chnId);
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
     
     *pNum = regValue;
     
@@ -250,7 +343,7 @@ HI_S32 HAL_Cipher_SetOutBufNum(HI_U32 chnId, HI_U32 num)
         num = 0xffff;
     }
 
-    CIPHER_WRITE_REG(regAddr, num);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, num);
     
     HI_INFO_CIPHER("chn=%d cnt=%u\n", chnId, num);
     
@@ -268,7 +361,7 @@ HI_S32 HAL_Cipher_GetOutBufNum(HI_U32 chnId, HI_U32 *pNum)
     }
 
     regAddr = CIPHER_REG_CHANn_OBUF_NUM(chnId);
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
 
     *pNum = regValue;
 
@@ -295,7 +388,7 @@ HI_S32 HAL_Cipher_SetOutBufCnt(HI_U32 chnId, HI_U32 num)
         num = 0xffff;
     }
 
-    CIPHER_WRITE_REG(regAddr, num);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, num);
     
     HI_INFO_CIPHER("SetOutBufCnt=%u, chnId=%u\n", num,chnId);
     
@@ -313,7 +406,7 @@ HI_S32 HAL_Cipher_GetOutBufCnt(HI_U32 chnId, HI_U32 *pNum)
     }
 
     regAddr = CIPHER_REG_CHANn_OBUF_CNT(chnId);
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
 
     *pNum = regValue;
 
@@ -340,7 +433,7 @@ HI_S32 HAL_Cipher_SetOutBufFull(HI_U32 chnId, HI_U32 num)
         num = 0xffff;
     }
 
-    CIPHER_WRITE_REG(regAddr, num);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, num);
     
     HI_INFO_CIPHER(" cnt=%u\n", num);
     
@@ -358,7 +451,7 @@ HI_S32 HAL_Cipher_GetOutBufFull(HI_U32 chnId, HI_U32 *pNum)
     }
 
     regAddr = CIPHER_REG_CHANn_OFULL_CNT(chnId);
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
 
     *pNum = regValue;
 
@@ -380,7 +473,7 @@ HI_S32 HAL_Cipher_WaitIdle(HI_VOID)
     u32RegAddr = CIPHER_REG_CHAN0_CFG;
     for (i = 0; i < CIPHER_WAIT_IDEL_TIMES; i++)
     {
-        CIPHER_READ_REG(u32RegAddr, u32RegValue);
+        (HI_VOID)HAL_CIPHER_ReadReg(u32RegAddr, &u32RegValue);
         if (0x0 == ((u32RegValue >> 1) & 0x01))
         {
             return HI_SUCCESS;
@@ -402,7 +495,7 @@ HI_BOOL HAL_Cipher_IsIdle(HI_U32 chn)
 
     HI_ASSERT(CIPHER_PKGx1_CHAN == chn);
 
-    CIPHER_READ_REG(CIPHER_REG_CHAN0_CFG, u32RegValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_REG_CHAN0_CFG, &u32RegValue);
     if (0x0 == ((u32RegValue >> 1) & 0x01))
     {
         return HI_TRUE;
@@ -421,7 +514,7 @@ HI_S32 HAL_Cipher_SetDataSinglePkg(HI_DRV_CIPHER_DATA_INFO_S * info)
     /***/
     for (i = 0; i < (16/sizeof(HI_U32)); i++)
     {
-        CIPHER_WRITE_REG(regAddr + (i * sizeof(HI_U32)), (*(info->u32DataPkg + i)) );
+        (HI_VOID)HAL_CIPHER_WriteReg(regAddr + (i * sizeof(HI_U32)), (*(info->u32DataPkg + i)) );
     }
     
     return HI_SUCCESS;
@@ -437,7 +530,7 @@ HI_S32 HAL_Cipher_ReadDataSinglePkg(HI_U32 *pData)
     /***/
     for (i = 0; i < (16/sizeof(HI_U32)); i++)
     {
-        CIPHER_READ_REG(regAddr + (i * sizeof(HI_U32)), (*(pData+ i)) );
+        (HI_VOID)HAL_CIPHER_ReadReg(regAddr + (i * sizeof(HI_U32)), &(*(pData+ i)));
     }
     
     return HI_SUCCESS;
@@ -451,10 +544,10 @@ HI_S32 HAL_Cipher_StartSinglePkg(HI_U32 chnId)
     HI_ASSERT(CIPHER_PKGx1_CHAN == chnId);
 
     u32RegAddr = CIPHER_REG_CHAN0_CFG;
-    CIPHER_READ_REG(u32RegAddr, u32RegValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(u32RegAddr, &u32RegValue);
     
     u32RegValue |= 0x1;
-    CIPHER_WRITE_REG(u32RegAddr, u32RegValue); /* start work */
+    (HI_VOID)HAL_CIPHER_WriteReg(u32RegAddr, u32RegValue); /* start work */
     
     return HI_SUCCESS;
 }
@@ -487,7 +580,7 @@ HI_S32 HAL_Cipher_SetBufAddr(HI_U32 chnId, CIPHER_BUF_TYPE_E bufType, HI_U32 add
     HI_INFO_CIPHER("Set chn%d '%s' BufAddr to:%x.\n",chnId,
         (CIPHER_BUF_TYPE_IN == bufType)?"In":"Out",  addr);
 
-    CIPHER_WRITE_REG(regAddr, addr);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, addr);
 
     return HI_SUCCESS;
 }
@@ -497,7 +590,7 @@ HI_S32 HAL_Cipher_SetBufAddr(HI_U32 chnId, CIPHER_BUF_TYPE_E bufType, HI_U32 add
 HI_VOID HAL_Cipher_Reset(HI_VOID)
 {
 
-    //CIPHER_WRITE_REG(CIPHER_SOFT_RESET_ADDR, 1);
+    //(HI_VOID)HAL_CIPHER_WriteReg(CIPHER_SOFT_RESET_ADDR, 1);
     return;
 }
 
@@ -519,7 +612,7 @@ HI_S32 HAL_Cipher_GetOutIV(HI_U32 chnId, HI_UNF_CIPHER_CTRL_S* pCtrl)
     /***/
     for (i = 0; i < (CI_IV_SIZE/sizeof(HI_U32)); i++)
     {
-        CIPHER_READ_REG(regAddr + (i * sizeof(HI_U32)), pCtrl->u32IV[i]);
+        (HI_VOID)HAL_CIPHER_ReadReg(regAddr + (i * sizeof(HI_U32)), &(pCtrl->u32IV[i]));
     }
 
     return HI_SUCCESS;
@@ -540,7 +633,7 @@ HI_S32 HAL_Cipher_SetInIV(HI_U32 chnId, HI_UNF_CIPHER_CTRL_S* pCtrl)
     /***/
     for (i = 0; i < (CI_IV_SIZE/sizeof(HI_U32)); i++)
     {
-        CIPHER_WRITE_REG(regAddr + (i * sizeof(HI_U32)), pCtrl->u32IV[i]);
+        (HI_VOID)HAL_CIPHER_WriteReg(regAddr + (i * sizeof(HI_U32)), pCtrl->u32IV[i]);
     }
 
     return HI_SUCCESS;
@@ -550,60 +643,108 @@ extern ADVCA_EXPORT_FUNC_S  *s_pAdvcaFunc;
 
 HI_S32 HAL_Cipher_SetKey(HI_U32 chnId, HI_UNF_CIPHER_CTRL_S* pCtrl)
 {
-    HI_S32 s32Ret = HI_SUCCESS;
     HI_U32 i = 0;
     HI_U32 regAddr = 0;
+    DRV_ADVCA_EXTFUNC_PARAM_S stADVCAFuncParam = {0};
 
     regAddr = CIPHER_REG_CIPHER_KEY(chnId);
 
-    /***/
+    if(NULL == pCtrl)
+    {
+        HI_ERR_CIPHER("Error, null pointer!\n");
+        return HI_ERR_CA_INVALID_PARA;
+    }
+
     if (HI_FALSE == pCtrl->bKeyByCA)
     {
         for (i = 0; i < (CI_KEY_SIZE/sizeof(HI_U32)); i++)
         {
-            CIPHER_WRITE_REG(regAddr + (i * sizeof(HI_U32)), pCtrl->u32Key[i]);
+            (HI_VOID)HAL_CIPHER_WriteReg(regAddr + (i * sizeof(HI_U32)), pCtrl->u32Key[i]);
         }
     }
     else
     {
-        if (HI_UNF_CIPHER_CA_TYPE_SP == pCtrl->enCaType)
+        if (s_pAdvcaFunc && s_pAdvcaFunc->pfnAdvcaCrypto)
         {
-            HI_CHIP_VERSION_E enChipVersion;
-            HI_DRV_SYS_GetChipVersion(HI_NULL, &enChipVersion);
-            if (HI_CHIP_VERSION_V300 == enChipVersion)
-            {
-                if (s_pAdvcaFunc && s_pAdvcaFunc->pfnAdvcaDecryptSP)
-                {
-                    s32Ret = (s_pAdvcaFunc->pfnAdvcaDecryptSP)(chnId,0,(HI_U8*)pCtrl->u32Key);
-                    if (HI_SUCCESS != s32Ret)
-                    {
-                        return s32Ret;
-                    }
-                }
-            }
-            else
-            {
-                HI_ERR_CIPHER("Can not use SP Key Ladder!\n");
-            }
-        }
-        else
-        {
-            if (s_pAdvcaFunc && s_pAdvcaFunc->pfnAdvcaDecryptCipher)
-            {
-                s32Ret = (s_pAdvcaFunc->pfnAdvcaDecryptCipher)(chnId,pCtrl->u32Key); 
-                if (HI_SUCCESS != s32Ret)
-                {
-                    return s32Ret;
-                }
-            }
+            memset(&stADVCAFuncParam, 0, sizeof(stADVCAFuncParam));
+            stADVCAFuncParam.enCAType = pCtrl->enCaType;
+            stADVCAFuncParam.AddrID = chnId;
+            /* Ignore evenOrOdd value here */
+            stADVCAFuncParam.EvenOrOdd = 0;
+            stADVCAFuncParam.pu8Data = (HI_U8 *)pCtrl->u32Key;
+            stADVCAFuncParam.bIsDeCrypt = HI_TRUE;
+            stADVCAFuncParam.enTarget = DRV_ADVCA_CA_TARGET_MULTICIPHER;
+            return (s_pAdvcaFunc->pfnAdvcaCrypto)(stADVCAFuncParam); 
         }
     }
 
-    HI_INFO_CIPHER("SetKey: chn%u,Key:%#x, %#x, %#x, %#x.\n", chnId,
-        pCtrl->u32Key[0], pCtrl->u32Key[1], pCtrl->u32Key[2], pCtrl->u32Key[3]);
+    HI_INFO_CIPHER("SetKey: chn%u,Key:%#x, %#x, %#x, %#x.\n", chnId, pCtrl->u32Key[0], pCtrl->u32Key[1], pCtrl->u32Key[2], pCtrl->u32Key[3]);
     
     return HI_SUCCESS;
 }
+
+static HI_S32 HAL_CIPHER_IsCABusy(HI_VOID)
+{
+    HI_U32 cnt = 0;
+    HI_U32 u32CAState = 0;
+
+    while (cnt < 50)
+    {
+        u32CAState = 0;
+        (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_REG_CA_STATE, &u32CAState);
+        if( ((u32CAState >> 31) & 0x1) == 0)
+        {
+            break;
+        }
+        mdelay(10);
+        cnt++;
+    }
+
+    if (cnt >= 50)
+    {
+        HI_ERR_CIPHER("Error Time out! \n");
+        return HI_FAILURE;
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 HAL_CIPHER_LoadSTBRootKey(HI_U32 u32ChID)
+{
+    HI_S32 ret = HI_SUCCESS;
+    CIPHER_CA_STB_KEY_CTRL_U unSTBKeyCtrl;
+    CIPHER_CA_CONFIG_STATE_U unConfigState;
+
+    unConfigState.u32 = 0;
+    (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_REG_CA_CONFIG_STATE, &unConfigState.u32);
+    if(unConfigState.bits.st_vld != 1)
+    {
+        HI_ERR_CIPHER("Error: ca unStatus.bits.st_vld != 1\n");
+        return HI_FAILURE;
+    }
+
+    ret = HAL_CIPHER_IsCABusy();
+    if(HI_SUCCESS != ret)
+    {
+        HI_ERR_CIPHER("CA time out!\n");
+        return HI_FAILURE;
+    }
+
+    unSTBKeyCtrl.u32 = 0;
+    (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_REG_STB_KEY_CTRL, &unSTBKeyCtrl.u32);
+    unSTBKeyCtrl.bits.key_addr = u32ChID;
+    (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_REG_STB_KEY_CTRL, unSTBKeyCtrl.u32);
+
+    ret = HAL_CIPHER_IsCABusy();
+    if(HI_SUCCESS != ret)
+    {
+        HI_ERR_CIPHER("CA time out!\n");
+        return HI_FAILURE;
+    }
+
+    return HI_SUCCESS;
+}
+
 
 /*
 =========channel n control register==========
@@ -643,7 +784,7 @@ HI_S32 HAL_Cipher_Config(HI_U32 chnId, HI_BOOL bDecrypt, HI_BOOL bIVChange, HI_U
         regAddr = CIPHER_REG_CHANn_CIPHER_CTRL(chnId);
     }
 
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
 
     if (HI_FALSE == bDecrypt)/* encrypt */
     {
@@ -689,7 +830,7 @@ HI_S32 HAL_Cipher_Config(HI_U32 chnId, HI_BOOL bDecrypt, HI_BOOL bIVChange, HI_U
         regValue |= ((keyId & 0x7) << 14);
 //    }
 
-    CIPHER_WRITE_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, regValue);
     
     return HI_SUCCESS;
 }
@@ -723,7 +864,7 @@ HI_S32 HAL_Cipher_SetAGEThreshold(HI_U32 chnId, CIPHER_INT_TYPE_E intType, HI_U3
         value = 0xffff;
     }
 
-    CIPHER_WRITE_REG(regAddr, value);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, value);
 
     return HI_SUCCESS;
 }
@@ -757,7 +898,7 @@ HI_S32 HAL_Cipher_SetIntThreshold(HI_U32 chnId, CIPHER_INT_TYPE_E intType, HI_U3
         value = 0xffff;
     }
 
-    CIPHER_WRITE_REG(regAddr, value);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, value);
 
     return HI_SUCCESS;
 }
@@ -783,7 +924,7 @@ HI_S32 HAL_Cipher_EnableInt(HI_U32 chnId, int intType)
     HI_U32 regValue = 0;
 
     regAddr = CIPHER_REG_INT_EN;
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
 
     regValue |= (1 << 31); /* sum switch int_en */
 
@@ -805,7 +946,7 @@ HI_S32 HAL_Cipher_EnableInt(HI_U32 chnId, int intType)
         }
     }
 
-    CIPHER_WRITE_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, regValue);
 
     HI_INFO_CIPHER("HAL_Cipher_EnableInt: Set INT_EN:%#x\n", regValue);
 
@@ -818,7 +959,7 @@ HI_S32 HAL_Cipher_DisableInt(HI_U32 chnId, int intType)
     HI_U32 regValue = 0;
 
     regAddr = CIPHER_REG_INT_EN;
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
 
     if (CIPHER_PKGx1_CHAN == chnId)
     {
@@ -843,7 +984,7 @@ HI_S32 HAL_Cipher_DisableInt(HI_U32 chnId, int intType)
         regValue &= ~(1 << 31); /* regValue = 0; sum switch int_en */
     }
 
-    CIPHER_WRITE_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, regValue);
 
     HI_INFO_CIPHER("HAL_Cipher_DisableInt: Set INT_EN:%#x\n", regValue);
 
@@ -857,7 +998,7 @@ HI_VOID HAL_Cipher_DisableAllInt(HI_VOID)
 
     regAddr = CIPHER_REG_INT_EN;
     regValue = 0;
-    CIPHER_WRITE_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, regValue);
 }
 /*
 interrupt status register
@@ -880,7 +1021,7 @@ HI_VOID HAL_Cipher_GetIntState(HI_U32 *pState)
     HI_U32 regValue = 0;
 
     regAddr = CIPHER_REG_INT_STATUS;
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
 
     if (pState)
     {
@@ -897,7 +1038,7 @@ HI_VOID HAL_Cipher_GetIntEnState(HI_U32 *pState)
 
     regAddr = CIPHER_REG_INT_EN;
     
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
 
     if (pState)
     {
@@ -914,7 +1055,7 @@ HI_VOID HAL_Cipher_GetRawIntState(HI_U32 *pState)
 
     regAddr = CIPHER_REG_INT_RAW;
     
-    CIPHER_READ_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_ReadReg(regAddr, &regValue);
 
     if (pState)
     {
@@ -931,10 +1072,10 @@ HI_VOID HAL_Cipher_ClrIntState(HI_U32 intStatus)
 
     regAddr = CIPHER_REG_INT_RAW;
     regValue = intStatus;
-    CIPHER_WRITE_REG(regAddr, regValue);
+    (HI_VOID)HAL_CIPHER_WriteReg(regAddr, regValue);
 }
 
-HI_VOID HAL_Cipher_SetHdcpModeEn(HI_DRV_CIPHER_HDCP_MODE_E enMode)
+HI_VOID HAL_Cipher_SetHdcpModeEn(HI_DRV_CIPHER_HDCP_KEY_MODE_E enMode)
 {
     HI_U32 u32RegAddr = 0;
     CIPHER_HDCP_MODE_CTRL_U stHDCPModeCtrl;
@@ -942,7 +1083,7 @@ HI_VOID HAL_Cipher_SetHdcpModeEn(HI_DRV_CIPHER_HDCP_MODE_E enMode)
     memset((HI_VOID *)&stHDCPModeCtrl, 0, sizeof(stHDCPModeCtrl.u32));
 
     u32RegAddr = CIPHER_REG_HDCP_MODE_CTRL;
-    CIPHER_READ_REG(u32RegAddr, stHDCPModeCtrl.u32);
+    (HI_VOID)HAL_CIPHER_ReadReg(u32RegAddr, &stHDCPModeCtrl.u32);
     
     if ( CIPHER_HDCP_MODE_NO_HDCP_KEY == enMode)
     {
@@ -953,12 +1094,12 @@ HI_VOID HAL_Cipher_SetHdcpModeEn(HI_DRV_CIPHER_HDCP_MODE_E enMode)
         stHDCPModeCtrl.bits.hdcp_mode_en = 1;
     }
 
-    CIPHER_WRITE_REG(u32RegAddr, stHDCPModeCtrl.u32);
+    (HI_VOID)HAL_CIPHER_WriteReg(u32RegAddr, stHDCPModeCtrl.u32);
     
     return;
 }
 
-HI_S32 HAL_Cipher_GetHdcpModeEn(HI_DRV_CIPHER_HDCP_MODE_E *penMode)
+HI_S32 HAL_Cipher_GetHdcpModeEn(HI_DRV_CIPHER_HDCP_KEY_MODE_E *penMode)
 {
     HI_U32 u32RegAddr = 0;
     CIPHER_HDCP_MODE_CTRL_U stHDCPModeCtrl;
@@ -972,7 +1113,7 @@ HI_S32 HAL_Cipher_GetHdcpModeEn(HI_DRV_CIPHER_HDCP_MODE_E *penMode)
     memset((HI_VOID *)&stHDCPModeCtrl, 0, sizeof(CIPHER_HDCP_MODE_CTRL_U));
 
     u32RegAddr = CIPHER_REG_HDCP_MODE_CTRL;
-    CIPHER_READ_REG(u32RegAddr, stHDCPModeCtrl.u32);
+    (HI_VOID)HAL_CIPHER_ReadReg(u32RegAddr, &stHDCPModeCtrl.u32);
     
     if ( 0 == stHDCPModeCtrl.bits.hdcp_mode_en)
     {
@@ -994,7 +1135,7 @@ HI_VOID HAL_Cipher_SetHdcpKeyRamMode(HI_DRV_CIPHER_HDCP_KEY_RAM_MODE_E enMode)
     memset((HI_VOID *)&unHDCPModeCtrl, 0, sizeof(CIPHER_HDCP_MODE_CTRL_U));
 
     u32RegAddr = CIPHER_REG_HDCP_MODE_CTRL;
-    CIPHER_READ_REG(u32RegAddr, unHDCPModeCtrl.u32);
+    (HI_VOID)HAL_CIPHER_ReadReg(u32RegAddr, &unHDCPModeCtrl.u32);
 
     if ( CIPHER_HDCP_KEY_RAM_MODE_READ == enMode)
     {
@@ -1005,7 +1146,7 @@ HI_VOID HAL_Cipher_SetHdcpKeyRamMode(HI_DRV_CIPHER_HDCP_KEY_RAM_MODE_E enMode)
         unHDCPModeCtrl.bits.tx_read = 0x0;      //cpu write mode
     }    
 
-    CIPHER_WRITE_REG(u32RegAddr, unHDCPModeCtrl.u32);
+    (HI_VOID)HAL_CIPHER_WriteReg(u32RegAddr, unHDCPModeCtrl.u32);
     
     return;
 }
@@ -1023,7 +1164,7 @@ HI_S32 HAL_Cipher_GetHdcpKeyRamMode(HI_DRV_CIPHER_HDCP_KEY_RAM_MODE_E *penMode)
     memset((HI_VOID *)&unHDCPModeCtrl, 0, sizeof(CIPHER_HDCP_MODE_CTRL_U));
     
     u32RegAddr = CIPHER_REG_HDCP_MODE_CTRL;
-    CIPHER_READ_REG(u32RegAddr, unHDCPModeCtrl.u32);
+    (HI_VOID)HAL_CIPHER_ReadReg(u32RegAddr, &unHDCPModeCtrl.u32);
     
     if ( 0 == unHDCPModeCtrl.bits.tx_read )
     {
@@ -1037,7 +1178,7 @@ HI_S32 HAL_Cipher_GetHdcpKeyRamMode(HI_DRV_CIPHER_HDCP_KEY_RAM_MODE_E *penMode)
     return HI_SUCCESS;
 }
 
-HI_S32 HAL_Cipher_SetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_KEY_TYPE_E enHdcpKeySelectMode)
+HI_S32 HAL_Cipher_SetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_ROOT_KEY_TYPE_E enHdcpKeySelectMode)
 {
     HI_U32 u32RegAddr = 0;
     CIPHER_HDCP_MODE_CTRL_U unHDCPModeCtrl;
@@ -1045,7 +1186,7 @@ HI_S32 HAL_Cipher_SetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_KEY_TYPE_E enHdcpKeySe
     memset((HI_VOID *)&unHDCPModeCtrl, 0, sizeof(CIPHER_HDCP_MODE_CTRL_U));
 
     u32RegAddr = CIPHER_REG_HDCP_MODE_CTRL;
-    CIPHER_READ_REG(u32RegAddr, unHDCPModeCtrl.u32);       
+    (HI_VOID)HAL_CIPHER_ReadReg(u32RegAddr, &unHDCPModeCtrl.u32);       
     
     if ( CIPHER_HDCP_KEY_TYPE_OTP_ROOT_KEY == enHdcpKeySelectMode )
     {
@@ -1055,25 +1196,25 @@ HI_S32 HAL_Cipher_SetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_KEY_TYPE_E enHdcpKeySe
     {
         unHDCPModeCtrl.bits.hdcp_rootkey_sel = 0x01;
     }
-    else if ( CIPHER_HDCP_KEY_TYPE_HDCP_HOST_ROOT_KEY == enHdcpKeySelectMode)
+    else if ( CIPHER_HDCP_KEY_TYPE_HOST_ROOT_KEY == enHdcpKeySelectMode)
     {
         unHDCPModeCtrl.bits.hdcp_rootkey_sel = 0x2;
     }
     else
     {
         unHDCPModeCtrl.bits.hdcp_rootkey_sel = 0x3;
-        CIPHER_WRITE_REG(u32RegAddr, unHDCPModeCtrl.u32);
+        (HI_VOID)HAL_CIPHER_WriteReg(u32RegAddr, unHDCPModeCtrl.u32);
 
         HI_ERR_CIPHER("Unexpected hdcp key type selected!\n");
         return HI_FAILURE;
     }
     
-    CIPHER_WRITE_REG(u32RegAddr, unHDCPModeCtrl.u32);
+    (HI_VOID)HAL_CIPHER_WriteReg(u32RegAddr, unHDCPModeCtrl.u32);
     
     return HI_SUCCESS;
 }
 
-HI_S32 HAL_Cipher_GetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_KEY_TYPE_E *penHdcpKeySelectMode)
+HI_S32 HAL_Cipher_GetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_ROOT_KEY_TYPE_E *penHdcpKeySelectMode)
 {
     HI_U32 u32RegAddr = 0;
     CIPHER_HDCP_MODE_CTRL_U unHDCPModeCtrl;
@@ -1087,7 +1228,7 @@ HI_S32 HAL_Cipher_GetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_KEY_TYPE_E *penHdcpKey
     memset((HI_VOID *)&unHDCPModeCtrl, 0, sizeof(CIPHER_HDCP_MODE_CTRL_U));
     
     u32RegAddr = CIPHER_REG_HDCP_MODE_CTRL;
-    CIPHER_READ_REG(u32RegAddr, unHDCPModeCtrl.u32);
+    (HI_VOID)HAL_CIPHER_ReadReg(u32RegAddr, &unHDCPModeCtrl.u32);
 
     if ( 0x00 == unHDCPModeCtrl.bits.hdcp_rootkey_sel )
     {
@@ -1099,7 +1240,7 @@ HI_S32 HAL_Cipher_GetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_KEY_TYPE_E *penHdcpKey
     }
     else if (  0x02 == unHDCPModeCtrl.bits.hdcp_rootkey_sel )
     {
-        *penHdcpKeySelectMode = CIPHER_HDCP_KEY_TYPE_HDCP_HOST_ROOT_KEY;
+        *penHdcpKeySelectMode = CIPHER_HDCP_KEY_TYPE_HOST_ROOT_KEY;
     }
     else
     {
@@ -1111,10 +1252,12 @@ HI_S32 HAL_Cipher_GetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_KEY_TYPE_E *penHdcpKey
 
 HI_VOID HAL_Cipher_ClearHdcpCtrlReg(HI_VOID)
 {
-    CIPHER_WRITE_REG(CIPHER_REG_HDCP_MODE_CTRL, 0);
+    (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_REG_HDCP_MODE_CTRL, 0);
     return;
 }
 
+HI_U32 g_u32HashCount = 0;
+HI_U32 g_u32RecLen = 0;
 HI_S32 HAL_Cipher_CalcHashInit(CIPHER_HASH_DATA_S *pCipherHashData)
 {
     HI_S32 ret = HI_SUCCESS;
@@ -1132,18 +1275,29 @@ HI_S32 HAL_Cipher_CalcHashInit(CIPHER_HASH_DATA_S *pCipherHashData)
         return HI_FAILURE;
     }
 
+    ret = HAL_CIPHER_WaitHashIdle();
+    if(HI_SUCCESS != ret)
+    {
+        HI_ERR_CIPHER("Time out!Hash is busy now!\n");
+        (HI_VOID)HAL_CIPHER_MarkHashIdle();
+        return HI_FAILURE;
+    }
+
+    g_u32HashCount = 0;
+    g_u32RecLen = 0;
+
     /* set little-endian for cv200es */
     (HI_VOID)HI_DRV_SYS_GetChipVersion(&enChipType, &enChipVersion);
     if((HI_CHIP_TYPE_HI3716CES == enChipType) && (HI_CHIP_VERSION_V200 == enChipVersion))
     {
-        CIPHER_WRITE_REG(CIPHER_SEC_MISC_CTR_ADDR, 0x2);
+        (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_SEC_MISC_CTR_ADDR, 0x2);
     }
 
     /* wait for hash_rdy */
     ret = HASH_WaitReady(HASH_READY);
     if(HI_SUCCESS != ret)
     {
-        HI_ERR_CIPHER("Hash wait ready failed!\n");
+        HI_ERR_CIPHER("Hash wait ready failed! g_u32HashCount = 0x%08x\n", g_u32HashCount);
         (HI_VOID)HAL_Cipher_HashSoftReset();
         return HI_FAILURE;
     }
@@ -1158,16 +1312,17 @@ HI_S32 HAL_Cipher_CalcHashInit(CIPHER_HASH_DATA_S *pCipherHashData)
                            (pCipherHashData->u8HMACKey[2+i] << 16) |
                            (pCipherHashData->u8HMACKey[1+i] << 8)  |
                            (pCipherHashData->u8HMACKey[0+i]);
-            CIPHER_WRITE_REG(CIPHER_HASH_REG_MCU_KEY0 + i, u32WriteData);
+            (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_MCU_KEY0 + i, u32WriteData);
         }
     }
 
     /* write total len low and high */
-    CIPHER_WRITE_REG(CIPHER_HASH_REG_TOTALLEN_LOW_ADDR, pCipherHashData->u32TotalDataLen + pCipherHashData->u32PaddingLen);
-    CIPHER_WRITE_REG(CIPHER_HASH_REG_TOTALLEN_HIGH_ADDR, 0);
+    (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_TOTALLEN_LOW_ADDR, pCipherHashData->u32TotalDataLen + pCipherHashData->u32PaddingLen);
+    (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_TOTALLEN_HIGH_ADDR, 0);
 
     /* config sha_ctrl : read by dma first, and by cpu in the hash final function */
     unCipherSHACtrl.u32 = 0;
+    (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_CTRL_ADDR, &unCipherSHACtrl.u32);
     unCipherSHACtrl.bits.read_ctrl = 0;
     if( HI_UNF_CIPHER_HASH_TYPE_SHA1 == pCipherHashData->enShaType )
     {
@@ -1198,12 +1353,12 @@ HI_S32 HAL_Cipher_CalcHashInit(CIPHER_HASH_DATA_S *pCipherHashData)
         return HI_FAILURE;
     }
 
-    CIPHER_WRITE_REG(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32);    
+    (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32);    
     
     /* config sha_start */
     unCipherSHAStart.u32 = 0;
     unCipherSHAStart.bits.sha_start = 1;
-    CIPHER_WRITE_REG(CIPHER_HASH_REG_START_ADDR, unCipherSHAStart.u32);
+    (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_START_ADDR, unCipherSHAStart.u32);
 
     return HI_SUCCESS;
 }
@@ -1216,7 +1371,13 @@ HI_S32 HAL_Cipher_CalcHashUpdate(CIPHER_HASH_DATA_S *pCipherHashData)
     MMZ_BUFFER_S stMMZBuffer = {0};
     HI_U32 u32WriteData = 0;
     HI_U32 u32WriteLength = 0;
+    HI_U32 u32CPUWriteRound = 0;
     HI_U8 *pu8Ptr = NULL;
+    HI_U32 i = 0;
+    HI_U32 u32RecDmaLen = 0;
+    HI_SIZE_T ulStartTime = 0;
+    HI_SIZE_T ulLastTime = 0;
+    HI_SIZE_T ulDuraTime = 0;
 
     if( (NULL == pCipherHashData) || ( NULL == pCipherHashData->pu8InputData) )
     {
@@ -1225,100 +1386,179 @@ HI_S32 HAL_Cipher_CalcHashUpdate(CIPHER_HASH_DATA_S *pCipherHashData)
         return HI_FAILURE;
     }
 
-    s32Ret = HI_DRV_MMZ_AllocAndMap("HASH", NULL, pCipherHashData->u32InputDataLen, 0, &stMMZBuffer);
-    if( HI_SUCCESS != s32Ret )
+    s32Ret= HASH_WaitReady(REC_READY);
+    if(HI_SUCCESS != s32Ret)
     {
-        HI_ERR_CIPHER("Error, mmz alloc and map failed!\n");
+        HI_ERR_CIPHER("Hash wait ready failed! g_u32HashCount = 0x%08x\n", g_u32HashCount);
+        s32Ret = HI_FAILURE;
         (HI_VOID)HAL_Cipher_HashSoftReset();
         return HI_FAILURE;
     }
 
     unCipherSHAStatus.u32 = 0;
-    u32WriteLength = pCipherHashData->u32InputDataLen - pCipherHashData->u32InputDataLen % 4;
-    memcpy((HI_U8 *)stMMZBuffer.u32StartVirAddr, pCipherHashData->pu8InputData, u32WriteLength);
+    u32WriteLength = pCipherHashData->u32InputDataLen & (~0x3f);
 
-    /* wait for rec_ready */
-    s32Ret= HASH_WaitReady(REC_READY);
+    if( 0 != u32WriteLength )
+    {
+        s32Ret = HI_DRV_MMZ_AllocAndMap("HASH", NULL, u32WriteLength, 0, &stMMZBuffer);
+        if( HI_SUCCESS != s32Ret )
+        {
+            HI_ERR_CIPHER("Error, mmz alloc and map failed!\n");
+            (HI_VOID)HAL_Cipher_HashSoftReset();
+            return HI_FAILURE;
+        }
+
+        memcpy((HI_U8 *)stMMZBuffer.u32StartVirAddr, pCipherHashData->pu8InputData, u32WriteLength);
+        mb();
+        (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_DMA_START_ADDR, stMMZBuffer.u32StartPhyAddr);
+        (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_DMA_LEN, u32WriteLength);
+        g_u32HashCount += u32WriteLength;
+        g_u32RecLen += u32WriteLength;
+    }
+
+    ulStartTime = jiffies;
+    while(1)
+    {
+        (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_REC_LEN1, &u32RecDmaLen);
+        if( (HI_UNF_CIPHER_HASH_TYPE_HMAC_SHA1 == pCipherHashData->enShaType)
+         || (HI_UNF_CIPHER_HASH_TYPE_HMAC_SHA256 == pCipherHashData->enShaType) )
+        {
+            if(g_u32RecLen == (u32RecDmaLen - 0x40))
+            {
+                break;
+            }
+        }
+        else
+        {
+            if(g_u32RecLen == u32RecDmaLen)
+            {
+                break;
+            }
+        }
+
+        ulLastTime = jiffies;
+        ulDuraTime = jiffies_to_msecs(ulLastTime - ulStartTime);
+        if (ulDuraTime >= HASH_MAX_DURATION )
+        {
+            HI_ERR_CIPHER("Error! Hash time out!g_u32RecLen = 0x%08x, u32RecDmaLen = 0x%08x\n", g_u32RecLen, u32RecDmaLen);
+            s32Ret = HI_FAILURE;
+            (HI_VOID)HAL_Cipher_HashSoftReset();
+            goto __QUIT__;
+        }
+    }
+
+    s32Ret  = HASH_WaitReady(REC_READY);
     if(HI_SUCCESS != s32Ret)
     {
-        HI_ERR_CIPHER("Hash wait ready failed!\n");
+        HI_ERR_CIPHER("Hash wait ready failed! g_u32HashCount = 0x%08x\n", g_u32HashCount);
         s32Ret = HI_FAILURE;
         (HI_VOID)HAL_Cipher_HashSoftReset();
         goto __QUIT__;
     }
 
-    /* small endian */
-    if( 0 != u32WriteLength )
-    {
-        CIPHER_WRITE_REG(CIPHER_HASH_REG_DMA_START_ADDR, stMMZBuffer.u32StartPhyAddr);
-        CIPHER_WRITE_REG(CIPHER_HASH_REG_DMA_LEN, u32WriteLength);
-    }
+    u32WriteLength = pCipherHashData->u32InputDataLen & 0x3f;
 
-    u32WriteLength = pCipherHashData->u32InputDataLen % 4;
     if( 0 == u32WriteLength )
     {
         s32Ret = HI_SUCCESS;
         goto __QUIT__;
     }
 
+    /* the last round , if input data is not 64bytes aligned */
     pu8Ptr = pCipherHashData->pu8InputData + pCipherHashData->u32InputDataLen - u32WriteLength;
 
-    /* the last round , if input data is not 4bytes aligned */  
+    unCipherSHACtrl.u32 = 0;
+    (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_CTRL_ADDR, &unCipherSHACtrl.u32);
+    unCipherSHACtrl.bits.read_ctrl = 1;
+    (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32); 
+
+    u32CPUWriteRound = u32WriteLength / 4;
+    if( 0 != u32CPUWriteRound)
+    {
+        for(i = 0; i < u32CPUWriteRound * 4; i += 4 )
+        {
+            s32Ret  = HASH_WaitReady(REC_READY);
+            if(HI_SUCCESS != s32Ret)
+            {
+                HI_ERR_CIPHER("Hash wait ready failed! g_u32HashCount = 0x%08x\n", g_u32HashCount);
+                s32Ret = HI_FAILURE;
+                (HI_VOID)HAL_Cipher_HashSoftReset();
+                goto __QUIT__;
+            }
+
+            u32WriteData = ( pu8Ptr[i + 3] << 24)
+                         | ( pu8Ptr[i + 2] << 16)
+                         | ( pu8Ptr[i + 1] << 8 )
+                         |   pu8Ptr[i];
+            (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_DATA_IN, u32WriteData);
+            g_u32HashCount += 4;
+        }
+    }
+
+    pu8Ptr += u32CPUWriteRound * 4;
+    u32WriteLength = pCipherHashData->u32InputDataLen & 0x3;
+
     s32Ret  = HASH_WaitReady(REC_READY);
-    s32Ret |= HASH_WaitReady(DMA_READY);
     if(HI_SUCCESS != s32Ret)
     {
-        HI_ERR_CIPHER("Hash wait ready failed!\n");
+        HI_ERR_CIPHER("Hash wait ready failed! g_u32HashCount = 0x%08x\n", g_u32HashCount);
         s32Ret = HI_FAILURE;
         (HI_VOID)HAL_Cipher_HashSoftReset();
         goto __QUIT__;
     }
 
-    unCipherSHACtrl.u32 = 0;
-    CIPHER_READ_REG(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32);
-    unCipherSHACtrl.bits.read_ctrl = 1;
-    CIPHER_WRITE_REG(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32); 
-    
-    /* small endian */
-    if( 1 == u32WriteLength )
+    switch(u32WriteLength)
     {
-        u32WriteData = ( pCipherHashData->u8Padding[2] << 24)
-                     | ( pCipherHashData->u8Padding[1] << 16)
-                     | ( pCipherHashData->u8Padding[0] << 8 )
-                     |   pu8Ptr[0];
-        CIPHER_WRITE_REG(CIPHER_HASH_REG_DATA_IN, u32WriteData);
-    }
-    else if( 2 == u32WriteLength )
-    {
-        u32WriteData = ( pCipherHashData->u8Padding[1] << 24)
-                     | ( pCipherHashData->u8Padding[0] << 16)
-                     | ( pu8Ptr[1] << 8 )
-                     |   pu8Ptr[0];
-        CIPHER_WRITE_REG(CIPHER_HASH_REG_DATA_IN, u32WriteData);
-    }
-    else if( 3 == u32WriteLength )
-    {
-        u32WriteData = ( pCipherHashData->u8Padding[0] << 24)
-                     | ( pu8Ptr[2] << 16)
-                     | ( pu8Ptr[1] << 8 )
-                     |   pu8Ptr[0];
-        CIPHER_WRITE_REG(CIPHER_HASH_REG_DATA_IN, u32WriteData);
-    }
-    else
-    {
-        /* the input data is 4bytes aligned */
+        case 1:
+        {
+            u32WriteData = ( pCipherHashData->u8Padding[2] << 24)
+                         | ( pCipherHashData->u8Padding[1] << 16)
+                         | ( pCipherHashData->u8Padding[0] << 8 )
+                         |   pu8Ptr[0];
+            (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_DATA_IN, u32WriteData);
+            g_u32HashCount += 4;
+            break;
+        }
+        case 2:
+        {
+            u32WriteData = ( pCipherHashData->u8Padding[1] << 24)
+                         | ( pCipherHashData->u8Padding[0] << 16)
+                         | ( pu8Ptr[1] << 8 )
+                         |   pu8Ptr[0];
+            (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_DATA_IN, u32WriteData);
+            g_u32HashCount += 4;
+            break;
+        }
+        case 3:
+        {
+            u32WriteData = ( pCipherHashData->u8Padding[0] << 24)
+                         | ( pu8Ptr[2] << 16)
+                         | ( pu8Ptr[1] << 8 )
+                         |   pu8Ptr[0];
+            (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_DATA_IN, u32WriteData);
+            g_u32HashCount += 4;
+            break;
+        }
+        default:
+        {
+            /* the input data is 4bytes aligned */
+            break;
+        }
     }
 
 __QUIT__:
     HI_DRV_MMZ_UnmapAndRelease(&stMMZBuffer);
 
     /* the last step: make sure rec_ready */
-    s32Ret= HASH_WaitReady(REC_READY);
-    if(HI_SUCCESS != s32Ret)
+    if( HI_SUCCESS == s32Ret )
     {
-        HI_ERR_CIPHER("Hash wait ready failed!\n");
-        (HI_VOID)HAL_Cipher_HashSoftReset();
-        s32Ret = HI_FAILURE;
+        s32Ret= HASH_WaitReady(REC_READY);
+        if(HI_SUCCESS != s32Ret)
+        {
+            HI_ERR_CIPHER("Hash wait ready failed! g_u32HashCount = 0x%08x\n", g_u32HashCount);
+            (HI_VOID)HAL_Cipher_HashSoftReset();
+            s32Ret = HI_FAILURE;
+        }
     }
 
     return s32Ret;
@@ -1345,51 +1585,66 @@ HI_S32 HAL_Cipher_CalcHashFinal(CIPHER_HASH_DATA_S *pCipherHashData)
 
     /* write padding data */
     unCipherSHAStatus.u32 = 0;
-    u32DataLengthNotAligned = pCipherHashData->u32TotalDataLen % 4;
+    u32DataLengthNotAligned = pCipherHashData->u32TotalDataLen & 0x3;
     u32StartFromPaddingBuffer = (0 == u32DataLengthNotAligned)?(0):(4 - u32DataLengthNotAligned);
     u32WritePaddingLength = pCipherHashData->u32PaddingLen - u32StartFromPaddingBuffer;
 
-    if( 0 != (u32WritePaddingLength % 4) )
+    if( 0 != (u32WritePaddingLength & 0x3) )
     {
-        HI_ERR_CIPHER("Error, Padding length not aligned: %d!\n", (u32WritePaddingLength % 4));
+        HI_ERR_CIPHER("Error, Padding length not aligned: %d!\n", (u32WritePaddingLength & 0x3));
         (HI_VOID)HAL_Cipher_HashSoftReset();
         return HI_FAILURE;
     }
 
+    s32Ret  = HASH_WaitReady(REC_READY);
+    if(HI_SUCCESS != s32Ret)
+    {
+        HI_ERR_CIPHER("Hash wait ready failed! g_u32HashCount = 0x%08x\n", g_u32HashCount);
+        (HI_VOID)HAL_Cipher_HashSoftReset();
+        return HI_FAILURE;
+    }
+
+    unCipherSHACtrl.u32 = 0;
+    (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_CTRL_ADDR, &unCipherSHACtrl.u32);
+    unCipherSHACtrl.bits.read_ctrl = 1;
+    (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32); 
+
     for( i = u32StartFromPaddingBuffer; i < pCipherHashData->u32PaddingLen; i = i + 4)
     {
-        /* wait for rec_ready */
         s32Ret  = HASH_WaitReady(REC_READY);
-        s32Ret |= HASH_WaitReady(DMA_READY);
         if(HI_SUCCESS != s32Ret)
         {
-            HI_ERR_CIPHER("Hash wait ready failed!\n");
+            HI_ERR_CIPHER("Hash wait ready failed! g_u32HashCount = 0x%08x\n", g_u32HashCount);
             (HI_VOID)HAL_Cipher_HashSoftReset();
             return HI_FAILURE;
         }
 
         unCipherSHACtrl.u32 = 0;
-        CIPHER_READ_REG(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32);
+        (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_CTRL_ADDR, &unCipherSHACtrl.u32);
         unCipherSHACtrl.bits.read_ctrl = 1;
-        CIPHER_WRITE_REG(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32); 
+        (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_CTRL_ADDR, unCipherSHACtrl.u32);          
 
         /* small endian */
-        u32WriteData = (pCipherHashData->u8Padding[3+i] << 24) | (pCipherHashData->u8Padding[2+i] << 16) |(pCipherHashData->u8Padding[1+i] << 8) | pCipherHashData->u8Padding[0+i];
-        CIPHER_WRITE_REG(CIPHER_HASH_REG_DATA_IN, u32WriteData);
+        u32WriteData = (pCipherHashData->u8Padding[3+i] << 24) 
+                     | (pCipherHashData->u8Padding[2+i] << 16) 
+                     | (pCipherHashData->u8Padding[1+i] << 8) 
+                     |  pCipherHashData->u8Padding[0+i];
+        (HI_VOID)HAL_CIPHER_WriteReg(CIPHER_HASH_REG_DATA_IN, u32WriteData);
+        g_u32HashCount += 4;
     }
  
     /* wait for hash_ready */
     s32Ret= HASH_WaitReady(HASH_READY);
     if(HI_SUCCESS != s32Ret)
     {
-        HI_ERR_CIPHER("Hash wait ready failed!\n");
+        HI_ERR_CIPHER("Hash wait ready failed! g_u32HashCount = 0x%08x\n", g_u32HashCount);
         (HI_VOID)HAL_Cipher_HashSoftReset();
         return HI_FAILURE;
     }
 
     /* read digest */
     unCipherSHAStatus.u32 = 0;
-    CIPHER_READ_REG(CIPHER_HASH_REG_STATUS_ADDR, unCipherSHAStatus.u32);
+    (HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_STATUS_ADDR, &unCipherSHAStatus.u32);
 
     if( 0x00 == unCipherSHAStatus.bits.error_state )
     {
@@ -1397,11 +1652,11 @@ HI_S32 HAL_Cipher_CalcHashFinal(CIPHER_HASH_DATA_S *pCipherHashData)
         if( (HI_UNF_CIPHER_HASH_TYPE_SHA1 == pCipherHashData->enShaType)
          || (HI_UNF_CIPHER_HASH_TYPE_HMAC_SHA1 == pCipherHashData->enShaType))
         {
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT1, sha_out[0]);
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT2, sha_out[1]);
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT3, sha_out[2]);
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT4, sha_out[3]);
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT5, sha_out[4]);
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT1, &(sha_out[0]));
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT2, &(sha_out[1]));
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT3, &(sha_out[2]));
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT4, &(sha_out[3]));
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT5, &(sha_out[4]));
 
     		for(i = 0; i < 5; i++)
     		{
@@ -1415,14 +1670,14 @@ HI_S32 HAL_Cipher_CalcHashFinal(CIPHER_HASH_DATA_S *pCipherHashData)
         else if( (HI_UNF_CIPHER_HASH_TYPE_SHA256 == pCipherHashData->enShaType )
               || (HI_UNF_CIPHER_HASH_TYPE_HMAC_SHA256 == pCipherHashData->enShaType))
         {
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT1, sha_out[0]);
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT2, sha_out[1]);
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT3, sha_out[2]);
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT4, sha_out[3]);
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT5, sha_out[4]);
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT6, sha_out[5]);
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT7, sha_out[6]);
-    		CIPHER_READ_REG(CIPHER_HASH_REG_SHA_OUT8, sha_out[7]);
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT1, &(sha_out[0]));
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT2, &(sha_out[1]));
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT3, &(sha_out[2]));
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT4, &(sha_out[3]));
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT5, &(sha_out[4]));
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT6, &(sha_out[5]));
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT7, &(sha_out[6]));
+    		(HI_VOID)HAL_CIPHER_ReadReg(CIPHER_HASH_REG_SHA_OUT8, &(sha_out[7]));
 
     		for(i = 0; i < 8; i++)
     		{
@@ -1447,123 +1702,85 @@ HI_S32 HAL_Cipher_CalcHashFinal(CIPHER_HASH_DATA_S *pCipherHashData)
         return HI_FAILURE;
     }
 
+    (HI_VOID)HAL_CIPHER_MarkHashIdle();
+
     return HI_SUCCESS;
 }
 
 HI_S32 HAL_Cipher_HashSoftReset(HI_VOID)
 {
-    CIPHER_SHA_RST_U unShaRst;
+    U_PERI_CRG49 unShaCrg;
 
-    unShaRst.u32 = 0;
-	CIPHER_READ_REG(CIPHER_REG_SYS_CLK_SHA_ADDR, unShaRst.u32);
-    unShaRst.bits.sha_cken = 1;
-    unShaRst.bits.sha_srst_req = 1;
-    CIPHER_WRITE_REG(CIPHER_REG_SYS_CLK_SHA_ADDR, unShaRst.u32);
+/* reset request */
+    unShaCrg.u32 = g_pstRegCrg->PERI_CRG49.u32;
+    unShaCrg.bits.sha_cken = 1;
+    unShaCrg.bits.sha_srst_req = 1;
+    g_pstRegCrg->PERI_CRG49.u32 = unShaCrg.u32;
 
-    unShaRst.u32 = 0;
-	CIPHER_READ_REG(CIPHER_REG_SYS_CLK_SHA_ADDR, unShaRst.u32);
-    unShaRst.bits.sha_cken = 1;
-    unShaRst.bits.sha_srst_req = 0;
-    CIPHER_WRITE_REG(CIPHER_REG_SYS_CLK_SHA_ADDR, unShaRst.u32);
+    mdelay(1);
 
+/* cancel reset */
+    unShaCrg.u32 = g_pstRegCrg->PERI_CRG49.u32;
+    unShaCrg.bits.sha_cken = 1;
+    unShaCrg.bits.sha_srst_req = 0;
+    g_pstRegCrg->PERI_CRG49.u32 = unShaCrg.u32;
+
+    (HI_VOID)HAL_CIPHER_MarkHashIdle();
     return HI_SUCCESS;
 }
 
-#if 0
 HI_VOID HAL_Cipher_Init(void)
 {
-    HI_U32 CipherCrgValue;
-
-#if 0 //by g00182102 fro debug clock register
-    HI_U32 uCipherValue = 0;
-#endif
-
-    CIPHER_READ_REG(CIPHER_REG_SYS_CLK_CA_ADDR,CipherCrgValue);
-    
-    /* open clock [ref Hi3716C/Hi3716H/Hi3716M user guide section PERI_CRG29]
-        [31:10] reserved
-        [9] CA EFUSE clock status. 0-closed 1-opened
-        [8] CA clock status. 0-closed 1-opened
-        [7:2] reserved
-        [1] CA EFUSE soft reset request. 0 cancel reset, 1-reset request
-        [0] CA CI soft reset. 0-cancel reset 1-reset request
-        */
-
-    /* reset clock, so open clock and set [1:0] to 3, that is 0x0103 */
-    HAL_SET_BIT(CipherCrgValue, 0); /* set the bit 0, CI reset request */
-    HAL_SET_BIT(CipherCrgValue, 1); /* set the bit 1, EFUSE reset request */
-    HAL_SET_BIT(CipherCrgValue, 8); /* set the bit 8, CA clock opened */
-    HAL_SET_BIT(CipherCrgValue, 9); /* set the bit 9, CA EFUSE clock opened */
-
-    CIPHER_WRITE_REG(CIPHER_REG_SYS_CLK_CA_ADDR, CipherCrgValue);
-
-    #if 0 //debug by g00182102 debug clock register
-    CIPHER_READ_REG(CIPHER_REG_SYS_CLK_CA_ADDR,uCipherValue);
-    HI_INFO_CIPHER("after reset clock register:0x%08x\n", uCipherValue);
-    #endif
-    
-    /* clock select and cancel reset */
-    HAL_CLEAR_BIT(CipherCrgValue, 0); /* clear bit 0, for cancel reset CI bit request */
-    HAL_CLEAR_BIT(CipherCrgValue, 1); /* clear bit 1, for cancel reset KL bit request */
-
-    HAL_SET_BIT(CipherCrgValue, 8); /* make sure clock opened */
-	HAL_SET_BIT(CipherCrgValue, 9); /* make sure clock opened */
-    
-    CIPHER_WRITE_REG(CIPHER_REG_SYS_CLK_CA_ADDR, CipherCrgValue);
-
-    #if 0 //debug by g00182102 debug clock register
-    CIPHER_READ_REG(CIPHER_REG_SYS_CLK_CA_ADDR,uCipherValue);
-    HI_INFO_CIPHER("after cancel reset clock register:0x%08x\n", uCipherValue);
-    #endif
-
-    return;
-}
-#endif
-
-HI_VOID HAL_Cipher_Init(void)
-{
-    CIPHER_CA_SYS_CLK_U unCRG;
-
-    unCRG.u32 = 0;
+    U_PERI_CRG48 unCipherCrg;
 
 #ifdef CHIP_TYPE_hi3716cv200es
-    unCRG.bits.ca_kl_srst_req = 1;
-    unCRG.bits.ca_ci_srst_req = 1;
-    unCRG.bits.otp_srst_req = 1;
+    unCipherCrg.u32 = g_pstRegCrg->PERI_CRG48.u32;
+    /* reset request */
+    unCipherCrg.bits.ca_kl_srst_req = 1;
+    unCipherCrg.bits.ca_ci_srst_req = 1;
+    unCipherCrg.bits.otp_srst_req = 1;
     /* clock open */
-    unCRG.bits.ca_ci_bus_cken = 1;
-    unCRG.bits.ca_ci_cken = 1;
-
+    unCipherCrg.bits.ca_kl_bus_cken = 1;
+    unCipherCrg.bits.ca_ci_bus_cken = 1;
+    unCipherCrg.bits.ca_ci_cken = 1;
     /* ca clock select : 200M */
-    unCRG.bits.ca_clk_sel = 0;
-    CIPHER_WRITE_REG(CIPHER_REG_SYS_CLK_CA_ADDR, unCRG.u32);
+    unCipherCrg.bits.ca_clk_sel = 0;
+    g_pstRegCrg->PERI_CRG48.u32 = unCipherCrg.u32;
 
-    unCRG.bits.ca_kl_srst_req = 0;
-    unCRG.bits.ca_ci_srst_req = 0;
-    unCRG.bits.otp_srst_req = 0;
+    mdelay(1);
 
+    unCipherCrg.u32 = g_pstRegCrg->PERI_CRG48.u32;
+    /* cancel reset */
+    unCipherCrg.bits.ca_kl_srst_req = 0;
+    unCipherCrg.bits.ca_ci_srst_req = 0;
+    unCipherCrg.bits.otp_srst_req = 0;
     /* make sure clock opened */
-    unCRG.bits.ca_ci_bus_cken = 1;
-    unCRG.bits.ca_ci_cken = 1;
+    unCipherCrg.bits.ca_kl_bus_cken = 1;
+    unCipherCrg.bits.ca_ci_bus_cken = 1;
+    unCipherCrg.bits.ca_ci_cken = 1;
     /* make sure ca clock select : 200M */
-    unCRG.bits.ca_clk_sel = 0;
-    CIPHER_WRITE_REG(CIPHER_REG_SYS_CLK_CA_ADDR, unCRG.u32);
+    unCipherCrg.bits.ca_clk_sel = 0;
+    g_pstRegCrg->PERI_CRG48.u32 = unCipherCrg.u32;
+
 #else
-    unCRG.bits.ca_kl_srst_req = 1;
-    unCRG.bits.ca_ci_srst_req = 1;
-    unCRG.bits.otp_srst_req = 1;
-
+    unCipherCrg.u32 = g_pstRegCrg->PERI_CRG48.u32;
+    /* reset request */
+    unCipherCrg.bits.ca_kl_srst_req = 1;
+    unCipherCrg.bits.ca_ci_srst_req = 1;
+    unCipherCrg.bits.otp_srst_req = 1;
     /* ca clock select : 200M */
-    unCRG.bits.ca_ci_clk_sel = 0;
-    CIPHER_WRITE_REG(CIPHER_REG_SYS_CLK_CA_ADDR, unCRG.u32);
+    unCipherCrg.bits.ca_ci_clk_sel = 0;
+    g_pstRegCrg->PERI_CRG48.u32 = unCipherCrg.u32;
 
-    unCRG.bits.ca_kl_srst_req = 0;
-    unCRG.bits.ca_ci_srst_req = 0;
-    unCRG.bits.otp_srst_req = 0;
+    mdelay(1);
 
+    unCipherCrg.u32 = g_pstRegCrg->PERI_CRG48.u32;
+    unCipherCrg.bits.ca_kl_srst_req = 0;
+    unCipherCrg.bits.ca_ci_srst_req = 0;
+    unCipherCrg.bits.otp_srst_req = 0;
     /* make sure ca clock select : 200M */
-    unCRG.bits.ca_ci_clk_sel = 0;
-    CIPHER_WRITE_REG(CIPHER_REG_SYS_CLK_CA_ADDR, unCRG.u32);
+    unCipherCrg.bits.ca_ci_clk_sel = 0;
+    g_pstRegCrg->PERI_CRG48.u32 = unCipherCrg.u32;
 #endif
 
     return;
@@ -1571,9 +1788,6 @@ HI_VOID HAL_Cipher_Init(void)
 
 HI_VOID HAL_Cipher_DeInit(void)
 {
-    /* use the same clock of CA */
-    //CIPHER_WRITE_REG(CIPHER_REG_SYS_CLK_CA_ADDR, 0x0103); 
-    //CIPHER_WRITE_REG(CIPHER_REG_SYS_CLK_CA_ADDR, 0x3); /* close cipher's clock */
     return;
 }
 

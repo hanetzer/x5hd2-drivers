@@ -39,8 +39,8 @@
 #include <linux/poll.h>
 
 #include "hi_type.h"
-#include "drv_struct_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_module.h"
 #include "drv_gpio_ext.h"
 
 #include "hi_unf_keyled.h"
@@ -70,9 +70,9 @@
     { \
         if ((level) >= KEYLED_TRACE_LEVEL) \
         { \
-            printk("keyled_trace:%s:%d: ", __FILE__, __LINE__); \
-            printk(msg); \
-            printk("\n"); \
+            HI_INFO_KEYLED("keyled_trace:%s:%d: ", __FILE__, __LINE__); \
+            HI_INFO_KEYLED(msg); \
+            HI_INFO_KEYLED("\n"); \
         } \
     } while (0)
 
@@ -370,6 +370,7 @@ HI_S32 keyled_fd650_display_config(HI_U8 *u8buf)
     if (NULL == u8buf)
     {
         keyled_trace(8, "null pointer(u8buf)\n");
+        return -1;
     }
 
     for (i = 0; i < DISPLAY_REG_NUM; i++)
@@ -990,7 +991,6 @@ HI_S32 KEYLED_KEY_Open_FD650(HI_VOID)
     KEYLED_Init_FD650();
     FD650Status |= KeyON;
     HI_INFO_KEYLED("start IsKeyOpen=%d\n", (FD650Status & KeyON) ? 1 : 0);
-    printk("key open!\n");
     return HI_SUCCESS;
 }
 
@@ -1199,6 +1199,25 @@ HI_S32 KEYLED_LED_SetFlashFreq_FD650(HI_UNF_KEYLED_LEVEL_E enLevel)
 {
     return HI_SUCCESS;
 }
+
+HI_S32 KEYLED_GetProcInfo_FD650(KEYLED_PROC_INFO_S *stInfo)
+{
+    stInfo->KeyBufSize = keyled_dev.buf_len;
+    stInfo->KeyBufHead = keyled_dev.head;
+    stInfo->KeyBufTail = keyled_dev.tail;
+    stInfo->KeyComeNum = keyled_dev.key_come;
+    stInfo->KeyReadNum = keyled_dev.key_read;
+    stInfo->u32RepKeyTimeMs = keyled_dev.repkey_delaytime;
+    stInfo->u32IsRepKeyEnable = keyled_dev.enable_repkey;
+    stInfo->u32IsUpKeyEnable = keyled_dev.enable_keyup;
+    stInfo->u32BlockTime = keyled_dev.blocktime;
+    stInfo->enFlashPin = keyled_dev.FlashPin;
+    stInfo->enFlashLevel = keyled_dev.FlashLevel;
+    stInfo->KeyBufTail= keyled_dev.tail;
+
+    return HI_SUCCESS;
+}
+
 
 HI_S32 KEYLED_Suspend_FD650(HI_VOID)
 {

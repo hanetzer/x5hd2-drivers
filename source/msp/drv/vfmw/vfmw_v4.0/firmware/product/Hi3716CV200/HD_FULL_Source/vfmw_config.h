@@ -77,7 +77,7 @@ VFMW_BPD_H_SUPPORT = YES
 #################  vfmw_chan  ################################
 VFMW_CHAN_SUPPORT = YES
 #VFMW_CHAN_SUPPORT = NO
-VFMW_MAX_CHAN_NUM = 4 
+VFMW_MAX_CHAN_NUM = 16 
 
 #################  vfmw_raw_num  #############################
 #VFMW_RAW_NUM_SUPPORT = YES
@@ -131,6 +131,14 @@ VFMW_VDH_V200R004_SUPPORT = YES
 #VFMW_SCD_LOWDLY_SUPPORT = YES
 #VFMW_SCD_LOWDLY_SUPPORT = NO
 
+#################  vfmw_avs_plus_enable  ############################
+VFMW_AVSPLUS_SUPPORT = YES
+#VFMW_AVSPLUS_SUPPORT = NO
+
 #################  VFMW MODULE LOWDLY ENABLE  ############################
 #VFMW_MODULE_LOWDLY_SUPPORT = YES
 #VFMW_MODULE_LOWDLY_SUPPORT = NO
+
+#################  VFMW SYSTEM REG DISABLE  ############################
+VFMW_SYSTEM_REG_DISABLE = YES
+#VFMW_SYSTEM_REG_DISABLE = NO

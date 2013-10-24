@@ -22,6 +22,7 @@
 
 #include "hi_type.h"
 #include "hi_error_mpi.h"
+#include "hi_drv_video.h"
 #ifdef __cplusplus
 #if __cplusplus
 extern "C"{
@@ -114,6 +115,13 @@ HI_S32 BUFMNG_AcqReadBuffer(HI_HANDLE hBuf, BUFMNG_BUF_S *pBuf);
 HI_S32 BUFMNG_RlsReadBuffer(HI_HANDLE hBuf, BUFMNG_BUF_S *pBuf);
 HI_S32 BUFMNG_Reset(HI_HANDLE hBuf);
 HI_S32 BUFMNG_GetStatus(HI_HANDLE hBuf, BUFMNG_STATUS_S* pstStatus);
+HI_VOID BUFMNG_SaveInit(HI_VOID);
+HI_BOOL BUFMNG_CheckFile(HI_S32 Handle, HI_S8 Flag);
+HI_S32 BUFMNG_OpenFile(HI_S32 Handle, HI_S8 *FilePath, HI_S8 Flag);
+HI_S32 BUFMNG_CloseFile(HI_S32 Handle, HI_S8 Flag);
+HI_S32 BUFMNG_SaveRaw(HI_S32 Handle, HI_S8 *Addr, HI_S32 Length);
+HI_S32 BUFMNG_SaveYuv(HI_S32 Handle, HI_DRV_VIDEO_FRAME_S *pstFrame,HI_UNF_VCODEC_TYPE_E enType);
+
 #if (BUFMNG_DEBUG==1)
 HI_S32 BUFMNG_Debug(HI_HANDLE hBuf);
 #endif

@@ -8,9 +8,10 @@
 * Version      Date         Author        DefectNum    Description
 * main\1    20090927    y00106256      NULL      Create this file.
 ***********************************************************************************/
-#include "hi_type.h"
 
+#include "hi_type.h"
 #include "hi_module.h"
+#include "hi_reg_common.h"
 
 #include "demux_debug.h"
 #include "drv_demux_reg.h"
@@ -19,9 +20,9 @@
 #include "hal_demux.h"
 
 //#include "basedef.h"
-#include "drv_struct_ext.h"
-#include "drv_sys_ext.h"
-
+#include "hi_drv_struct.h"
+#include "hi_drv_sys.h"
+#include <asm/barrier.h>    /*wmb() */ //we added this for DTS2013091204261 
 #if 1
 #define DMX_COM_EQUAL(exp, act)
 #else
@@ -34,6 +35,17 @@
         }                                                                               \
     } while (0)
 #endif
+/*demux 中对于寄存器操作存在竞争，可能会引起莫名奇妙的错误，需要全局review 所有寄存器，统一修改
+引入以下两个锁，是临时方案，暂时先处理调最容易引起问题的两个寄存器，问题单号: DTS2013082001104 */
+struct semaphore      HALLockOQ;
+struct semaphore      HALLockFQ;
+HI_BOOL bSemphoreInit = HI_FALSE;
+
+static HI_VOID DmxHalSemaphoreInit(HI_VOID)
+{
+    HI_INIT_MUTEX(&HALLockOQ);
+    HI_INIT_MUTEX(&HALLockFQ);
+}
 
 /***********************************************************************************
 * Function      : DmxHalDvbPortSetAttr
@@ -186,45 +198,48 @@ HI_VOID DmxHalDvbPortSetClkInPol(HI_U32 PortId, HI_BOOL Pol)
 
     SYS_WRITE_REG(PERI_CRG25, reg.value);
 }
-#elif defined(CHIP_TYPE_hi3716cv200es) || defined(CHIP_TYPE_hi3716cv200) 
-
+#elif defined (CHIP_TYPE_hi3716cv200es)    || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
 HI_VOID DmxHalDvbPortSetClkInPol(HI_U32 PortId, HI_BOOL Pol)
 {
-    U_PERI_CRG63 reg;
+    U_PERI_CRG63 PeriCrg63;
 
-    reg.value = SYS_READ_REG(PERI_CRG63);
+    PeriCrg63.u32 = g_pstRegCrg->PERI_CRG63.u32;
 
     switch (PortId)
     {
         case 1 :
-            reg.bits.pvr_tsi2_pctrl = Pol;
+            PeriCrg63.bits.pvr_tsi2_pctrl = Pol;    /*pvr_tsi2_pctrl acturally is point to tsi0*/
             break;
 
         case 2 :
-            reg.bits.pvr_tsi3_pctrl = Pol;
+            PeriCrg63.bits.pvr_tsi3_pctrl = Pol;
             break;
-
+#if defined(CHIP_TYPE_hi3716cv200es) || defined(CHIP_TYPE_hi3716cv200) 
         case 3 :
-            reg.bits.pvr_tsi4_pctrl = Pol;
+            PeriCrg63.bits.pvr_tsi4_pctrl = Pol;
             break;
 
         case 4 :
-            reg.bits.pvr_tsi5_pctrl = Pol;
+            PeriCrg63.bits.pvr_tsi5_pctrl = Pol;
             break;
-
+#endif
+#if defined(CHIP_TYPE_hi3716cv200es)
         case 5 :
-            reg.bits.pvr_tsi6_pctrl = Pol;
+            PeriCrg63.bits.pvr_tsi6_pctrl = Pol;
             break;
 
         case 6 :
-            reg.bits.pvr_tsi7_pctrl = Pol;
+            PeriCrg63.bits.pvr_tsi7_pctrl = Pol;
             break;
-
+#endif
         default :
             return;
     }
 
-    SYS_WRITE_REG(PERI_CRG63, reg.value);
+    g_pstRegCrg->PERI_CRG63.u32 = PeriCrg63.u32;
 }
 #endif
 
@@ -454,6 +469,7 @@ HI_VOID DmxHalIPPortDescAdd(const HI_U32 PortId, const HI_U32 DescNum)
 {
     U_IP_DESC_ADD DescAdd;
 
+    wmb();/*sync the DDR*/
     DescAdd.u32 = DMX_READ_REG(IP_DESC_ADD(PortId));
 
     DescAdd.bits.ip_desc_add = DescNum;
@@ -588,9 +604,16 @@ HI_VOID DmxHalIPPortEnableInt(HI_U32 PortId)
             unEnaErr.bits.iena_ip3_all = 1;
             break;
 
-    #if defined(CHIP_TYPE_hi3716cv200) || defined(CHIP_TYPE_hi3716cv200es)
+    #if defined (CHIP_TYPE_hi3716cv200es)    || defined (CHIP_TYPE_hi3716cv200) 
         case 4:
             unEnaErr.bits.iena_ip4_all = 1;
+            break;
+    #endif
+    #if defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
+        case 5:
+            unEnaErr.bits.iena_ip5_all = 1;
             break;
     #endif
 
@@ -988,7 +1011,10 @@ HI_VOID DmxHalSetChannelPlayBufId(HI_U32 ChanId, HI_U32 OQId)
 * Others:
 ***********************************************************************************/
 
-#if defined(CHIP_TYPE_hi3716cv200es) || defined(CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es)    || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
 HI_VOID DmxHalSetDemuxPortId(HI_U32 DmxId, DMX_PORT_MODE_E PortMode, HI_U32 PortId)
 {
     HI_U32          Id = 0;
@@ -1116,13 +1142,16 @@ HI_VOID DmxHalSetDemuxPortId(HI_U32 DmxId, DMX_PORT_MODE_E PortMode, HI_U32 Port
 ***********************************************************************************/
 HI_VOID DmxHalSetDataFakeMod(HI_BOOL bFakeEn)
 {
-#if defined(CHIP_TYPE_hi3716cv200) || defined(CHIP_TYPE_hi3716cv200es)
+#if defined (CHIP_TYPE_hi3716cv200es)    || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
     U_SWITCH_FAKE_EN switch_fake_en;
 
     switch_fake_en.u32 = DMX_READ_REG(SWITCH_FAKE_EN);
     switch_fake_en.bits.switch_fake_en = bFakeEn;
     DMX_WRITE_REG(SWITCH_FAKE_EN, switch_fake_en.u32);
-#else 
+#else
     U_SWITCH_CFG switch_cfg;
 
     switch_cfg.u32 = DMX_READ_REG(SWITCH_CFG);
@@ -1168,7 +1197,10 @@ HI_VOID DmxHalSetRecType(HI_U32 DmxId, DMX_REC_TYPE_E RecType)
             dmx_ctrl_func.bits.dmx5_rec_ctrl = RecType;
             break;
 
-    #if defined(CHIP_TYPE_hi3716cv200) || defined(CHIP_TYPE_hi3716cv200es)
+    #if defined (CHIP_TYPE_hi3716cv200es)    || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
         case 6:
             dmx_ctrl_func.bits.dmx6_rec_ctrl = RecType;
             break;
@@ -2640,44 +2672,52 @@ HI_VOID DmxHalConfigHardware(HI_VOID)
     SYS_WRITE_REG(PERI_CRG25, reg.value);
 }
 
-#elif defined(CHIP_TYPE_hi3716cv200es) || defined(CHIP_TYPE_hi3716cv200)
-
+#elif defined (CHIP_TYPE_hi3716cv200es)    || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100)  
 HI_VOID DmxHalConfigHardware(HI_VOID)
 {
-    U_PERI_CRG63 reg;
-    U_PERI_CRG64 reg64;
+    U_PERI_CRG63 PeriCrg63;
+    U_PERI_CRG64 PeriCrg64;
 
-    reg.value = SYS_READ_REG(PERI_CRG63);
+    PeriCrg63.u32 = g_pstRegCrg->PERI_CRG63.u32;
 
-    reg.bits.pvr_srst_req = 1;
-    SYS_WRITE_REG(PERI_CRG63, reg.value);
+    // reset demux
+    PeriCrg63.bits.pvr_srst_req = 1;
+    g_pstRegCrg->PERI_CRG63.u32 = PeriCrg63.u32;
 
-    reg.bits.pvr_bus_cken   = 1;
-    reg.bits.pvr_dmx_cken   = 1;
-    reg.bits.pvr_27m_cken   = 1;
-    reg.bits.pvr_tsi1_cken  = 1;
-    reg.bits.pvr_tsi2_cken  = 1;
-    reg.bits.pvr_tsi3_cken	= 1;
-    reg.bits.pvr_tsi4_cken  = 1;
-    reg.bits.pvr_tsi5_cken  = 1;
-    reg.bits.pvr_tsi6_cken  = 1;
-    reg.bits.pvr_tsi7_cken  = 1;
-    reg.bits.pvr_ts0_cken   = 1;
-    reg.bits.pvr_ts1_cken   = 1;
-    reg.bits.pvr_tsout0_cken= 1;
-    reg.bits.pvr_tsout1_cken= 1;
-    reg.bits.pvr_srst_req   = 0;
+    udelay(1);
 
-    SYS_WRITE_REG(PERI_CRG63, reg.value);
+    PeriCrg63.bits.pvr_bus_cken     = 1;
+    PeriCrg63.bits.pvr_dmx_cken     = 1;
+    PeriCrg63.bits.pvr_27m_cken     = 1;
+    PeriCrg63.bits.pvr_tsi1_cken    = 1;
+    PeriCrg63.bits.pvr_tsi2_cken    = 1;
+#if defined(CHIP_TYPE_hi3716cv200es) || defined(CHIP_TYPE_hi3716cv200)   
+    PeriCrg63.bits.pvr_tsi3_cken    = 1;
+    PeriCrg63.bits.pvr_tsi4_cken    = 1;
+    PeriCrg63.bits.pvr_tsi5_cken    = 1;
+#endif
+#ifdef CHIP_TYPE_hi3716cv200es
+    PeriCrg63.bits.pvr_tsi6_cken    = 1;
+    PeriCrg63.bits.pvr_tsi7_cken    = 1;
+#endif
+    PeriCrg63.bits.pvr_ts0_cken     = 1;
+    PeriCrg63.bits.pvr_ts1_cken     = 1;
+    PeriCrg63.bits.pvr_tsout0_cken  = 1;
+    PeriCrg63.bits.pvr_tsout1_cken  = 1;
+    PeriCrg63.bits.pvr_srst_req     = 0;
 
-    reg64.value = SYS_READ_REG(PERI_CRG64);
+    g_pstRegCrg->PERI_CRG63.u32 = PeriCrg63.u32;
 
-    reg64.bits.pvr_ts0_clk_sel = 1;
-    reg64.bits.pvr_ts1_clk_sel = 1;
+    PeriCrg64.u32 = g_pstRegCrg->PERI_CRG64.u32;
 
-    SYS_WRITE_REG(PERI_CRG64, reg64.value);
+    PeriCrg64.bits.pvr_ts0_clk_sel  = 1;
+    PeriCrg64.bits.pvr_ts1_clk_sel  = 1;
+
+    g_pstRegCrg->PERI_CRG64.u32 = PeriCrg64.u32;
 }
-
 #endif
 
 /***********************************************************************************
@@ -3150,10 +3190,18 @@ HI_VOID DmxHalEnableOQRecive(HI_U32 OQId)
     HI_U32  offset  = OQId >> 5;
     HI_U32  bit     = OQId & 0x1f;
     HI_U32  value;
-
-    value  = DMX_READ_REG(OQ_ENA_0(offset));
-    value |= 1 << bit;
-    DMX_WRITE_REG(OQ_ENA_0(offset), value);
+    if( bSemphoreInit == HI_FALSE)
+    {
+        DmxHalSemaphoreInit();
+        bSemphoreInit = HI_TRUE;
+    }
+    if (0 == down_interruptible(&HALLockOQ))
+    {
+        value  = DMX_READ_REG(OQ_ENA_0(offset));
+        value |= 1 << bit;
+        DMX_WRITE_REG(OQ_ENA_0(offset), value);
+        up(&HALLockOQ);
+    }
 }
 
 /***********************************************************************************
@@ -3169,10 +3217,18 @@ HI_VOID DmxHalDisableOQRecive(HI_U32 OQId)
     HI_U32  offset  = OQId >> 5;
     HI_U32  bit     = OQId & 0x1f;
     HI_U32  value;
-
-    value  = DMX_READ_REG(OQ_ENA_0(offset));
-    value &= ~(1 << bit);
-    DMX_WRITE_REG(OQ_ENA_0(offset), value);
+    if( bSemphoreInit == HI_FALSE)
+    {
+        DmxHalSemaphoreInit();
+        bSemphoreInit = HI_TRUE;
+    }
+    if (0 == down_interruptible(&HALLockOQ))
+    {
+        value  = DMX_READ_REG(OQ_ENA_0(offset));
+        value &= ~(1 << bit);
+        DMX_WRITE_REG(OQ_ENA_0(offset), value);
+        up(&HALLockOQ);
+    }
 }
 
 HI_BOOL DmxHalGetOQEnableStatus(HI_U32 OQId)
@@ -3207,17 +3263,26 @@ HI_VOID DmxHalFQEnableRecive(HI_U32 FQId, HI_BOOL Enable)
     HI_U32  bit     = FQId & 0x1f;
     HI_U32  value;
 
-    value = DMX_READ_REG(FQ_ENA_0(offset));
+    if( bSemphoreInit == HI_FALSE)
+    {
+        DmxHalSemaphoreInit();
+        bSemphoreInit = HI_TRUE;
+    }
+    if (0 == down_interruptible(&HALLockFQ))
+    {
+        value = DMX_READ_REG(FQ_ENA_0(offset));
 
-    if (Enable)
-    {
-        value |= 1 << bit;
+        if (Enable)
+        {
+            value |= 1 << bit;
+        }
+        else
+        {
+            value &= ~(1 << bit);
+        }
+        DMX_WRITE_REG(FQ_ENA_0(offset), value);
+        up(&HALLockFQ);
     }
-    else
-    {
-        value &= ~(1 << bit);
-    }
-    DMX_WRITE_REG(FQ_ENA_0(offset), value);
 }
 
 HI_S32 DmxHalGetInitStatus(HI_VOID)
@@ -3244,6 +3309,7 @@ HI_S32 DmxHalGetInitStatus(HI_VOID)
 ***********************************************************************************/
 HI_VOID DmxHalSetFQWORDx(HI_U32 FQId, HI_U32 Offset, HI_U32 Value)
 {
+    wmb();/*sync the DDR*/
     switch (Offset)
     {
         case DMX_FQ_CTRL_OFFSET:
@@ -3322,6 +3388,7 @@ HI_VOID DmxHalGetFQWORDx(HI_U32 FQId, HI_U32 Offset, HI_U32 *pu32Data)
 ***********************************************************************************/
 HI_VOID DmxHalSetFQWritePtr(HI_U32 FQId, HI_U32 WritePtr)
 {
+    wmb();/*sync the DDR*/
     DMX_WRITE_REG(ADDR_FQ_WORD2(FQId), WritePtr);
 }
 
@@ -3361,6 +3428,7 @@ HI_U32 DmxHalGetFQReadPtr(HI_U32 FQId)
 ***********************************************************************************/
 HI_VOID DmxHalSetOQWORDx(HI_U32 OQId, HI_U32 Offset, HI_U32 Value)
 {
+    wmb();/*sync the DDR*/
     switch (Offset)
     {
         case DMX_OQ_RSV_OFFSET:
@@ -3471,6 +3539,8 @@ HI_U32 DxmHalGetOQRegMask(HI_VOID)
 HI_VOID DmxHalSetOQReadPtr(HI_U32 OQId, HI_U32 ReadPtr)
 {
     HI_U32 u32MaskValue;
+
+    //wmb();/*sync the DDR*/
 
     ReadPtr = (ReadPtr & DMX_OQ_DEPTH) << 16;
 
@@ -3685,6 +3755,33 @@ HI_VOID DmxHalFilterSetSecStuffCtrl(HI_BOOL Enable)
     }
 
     DMX_WRITE_REG(DMX_FILTER_CTRL, flt_ctrl.value);
+    DMX_COM_EQUAL(flt_ctrl.value, DMX_READ_REG(DMX_FILTER_CTRL));
+}
+
+/***********************************************************************************
+* Function      :  DmxHalSetTei
+* Description   :
+* Input         :
+*
+* Output        :
+* Return        :
+* Others:
+***********************************************************************************/
+HI_VOID DmxHalSetTei(HI_U32   u32DemuxID,HI_BOOL bCheckTei)
+{
+    U_DMX_GLB_CTRL1 glb_cfg1;
+
+    glb_cfg1.value = DMX_READ_REG(DMX_GLB_CTRL1(u32DemuxID));/*(0x3B00 + ((DmxId) << 4))*/
+    if (bCheckTei)
+    {
+        glb_cfg1.bits.dmx_tei_ctrl = 1;
+    }
+    else
+    {
+        glb_cfg1.bits.dmx_tei_ctrl = 0;
+    }
+    DMX_WRITE_REG(DMX_GLB_CTRL1(u32DemuxID), glb_cfg1.value);
+    DMX_COM_EQUAL(glb_cfg1.value, DMX_READ_REG(DMX_GLB_CTRL1(u32DemuxID)));
 }
 
 #ifdef DMX_FILTER_DEPTH_SUPPORT
@@ -3807,5 +3904,26 @@ HI_VOID DmxHalSetAllRecExcludePid(HI_U32 RecCfgID, HI_U32 DmxID, HI_U32 PID)
 
     DMX_COM_EQUAL(allrec_cfg.value, DMX_READ_REG(ALLREC_CFG0_29(RecCfgID)));
 }
+
 #endif
+
+#ifdef DMX_REC_TIME_STAMP_SUPPORT    /*only hi3719 support this */
+
+/***********************************************************************************
+* Function      : DmxHalConfigRecTsTimeStamp
+* Description   : Config Record Ts time stamp
+* Input         : DmxID,enRecTimeStamp
+* Output        :
+* Return        :
+* Others:
+***********************************************************************************/
+HI_VOID DmxHalConfigRecTsTimeStamp(HI_U32 DmxID, DMX_REC_TIMESTAMP_MODE_E enRecTimeStamp)
+{
+    U_TIMESTAMP_CTRL timestamp_ctrl;
+    timestamp_ctrl.value = DMX_READ_REG(TIMESTAMP_CTRL);
+    timestamp_ctrl.value |= ((enRecTimeStamp << DmxID) && (0x3fff));
+    DMX_WRITE_REG(TIMESTAMP_CTRL, timestamp_ctrl.value);
+}
+#endif
+
 

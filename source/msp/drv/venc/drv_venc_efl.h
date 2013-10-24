@@ -5,6 +5,8 @@
 #include "drv_venc_buf_mng.h"
 #include "hi_unf_common.h"
 #include "hi_drv_video.h"
+#include "drv_venc_queue_mng.h"
+
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -12,14 +14,28 @@ extern "C" {
  #endif
 #endif
 
-#ifdef __VENC_S40V200_CONFIG__
-#define VENC_TO_VPSS_SUPPORT
-#endif
-
 #define VEDU_TR_STEP 1
+/*************************************************************************************/
+
+#define MAX_VEDU_CHN 8
+
+#define MAX_VEDU_QUEUE_NUM 6
+#define MSG_QUEUE_NUM     100
+#define INVAILD_CHN_FLAG   (-1)
+
+#define VEDU_MAX_ENC_WIDTH   (1920)
+#define VEDU_MIN_ENC_WIDTH   (176)
+#define VEDU_MAX_ENC_HEIGHT  (1088)
+#define VEDU_MIN_ENC_HEIGHT  (144)
+/*******************************************************************/
+
+#define __VEDU_NEW_RC_ALG__
 
 #define D_VENC_ALIGN_UP(val, align) ( (val+((align)-1))&~((align)-1) )
-typedef HI_S32 (*VE_IMAGE_FUNC)(HI_S32 handle, HI_DRV_VIDEO_FRAME_S *pstImage);    //liminqi
+typedef HI_S32 (*VE_IMAGE_FUNC)(HI_S32 handle, HI_DRV_VIDEO_FRAME_S *pstImage);   
+typedef HI_S32 (*VE_IMAGE_OMX_FUNC)(HI_S32 handle, venc_user_buf *pstImage);   
+typedef HI_S32 (*VE_CHANGE_INFO_FUNC)(HI_HANDLE handle, HI_U32 u32Width,HI_U32 u32Height);
+typedef HI_S32 (*VE_DETACH_FUNC)(HI_HANDLE handle, HI_HANDLE hSrc);
 
 typedef struct
 {
@@ -87,9 +103,12 @@ typedef struct
 
 typedef struct
 {
-    HI_S32        handle;
-    VE_IMAGE_FUNC pfGetImage;
-    VE_IMAGE_FUNC pfPutImage;
+    HI_S32              handle;
+    VE_IMAGE_FUNC       pfGetImage;
+	VE_IMAGE_OMX_FUNC   pfGetImage_OMX;
+    VE_IMAGE_FUNC       pfPutImage;
+	VE_CHANGE_INFO_FUNC pfChangeInfo;
+    VE_DETACH_FUNC      pfDetachFunc;
 } VeduEfl_SrcInfo_S;
 
 typedef struct
@@ -105,15 +124,37 @@ typedef struct
     HI_U32 PutStreamNumOK;
 
     HI_U32 BufFullNum;
-    HI_U32 SkipFrmNum;
+    //HI_U32 SkipFrmNum;
+	HI_U32 FrmRcCtrlSkip;
+	HI_U32 SamePTSSkip;
+	HI_U32 QuickEncodeSkip;
+	HI_U32 TooFewBufferSkip;
+	HI_U32 ErrCfgSkip;
+
+	HI_U32 QueueNum;
+	HI_U32 DequeueNum;                  /*OMX Channel not use this data*/
+	HI_U32 StreamQueueNum;              /*just OMX Channel use this data*/
+    HI_U32 MsgQueueNum;
+	
+	HI_U32 UsedStreamBuf;
 
     HI_U32 StreamTotalByte;
+
+    HI_U32 u32RealSendInputRrmRate;       /*use to record curent Input FrameRate in use*/
+	HI_U32 u32RealSendOutputFrmRate;      /*use to record curent Output FrameRate in use*/
+	HI_U32 u32FrameType;
+
+	HI_U32 u32TotalPicBits;
+	HI_U32 u32TotalEncodeNum;
+	//HI_U32 u32AvgFrmRate;
+	
 } VeduEfl_StatInfo_S;
 
 typedef struct
 {
     HI_U32 Protocol;      /* VEDU_H264, VEDU_H263 or VEDU_MPEG4 */
 	HI_U32 CapLevel;      /* VEDU buffer alloc*/
+	HI_U32 Profile;       /* H264 Profile*/
     HI_U32 FrameWidth;    /* width	in pixel, 96 ~ 2048 */
     HI_U32 FrameHeight;   /* height in pixel, 96 ~ 2048 */
 
@@ -128,8 +169,8 @@ typedef struct
 	HI_BOOL SlcSplitMod;   /* 0 or 1, 0:byte; 1:mb line */
     HI_U32 SplitSize;     /* <512 mb line @ H264, H263 don't care*/
     HI_U32 Gop;
-    
-
+    HI_U32 QLevel;        /* venc don't care */
+    HI_BOOL bOMXChn;
 } VeduEfl_EncCfg_S;
 
 typedef struct
@@ -140,6 +181,7 @@ typedef struct
 
     HI_U32   MaxQp;         /* H264: 0 ~ 51, Mpeg4: 1 ~ 31 */
     HI_U32   MinQp;         /* MinQp <= MaxQp */
+	HI_U32   Gop;         /* for new RC ALG*/
 } VeduEfl_RcAttr_S;
 
 typedef struct
@@ -194,13 +236,93 @@ typedef struct
     
 }VeduEfl_OsdAttr_S;
 
+//////////// add by ckf77439
+
+typedef struct   
+{
+    HI_S32 MbNum;//number of mb
+    HI_S32 FrmNumInGop; //frame number in gop minus 1
+    HI_S32 FrmNumSeq;//frame number in sequence
+    
+ /*******bits***********/
+    HI_S32 GopBits;//bits in gop
+    HI_S32 AveFrameBits;//average bits of one frame
+
+  //  HI_S32 GopFrameNum;//frame num in gop
+    HI_S32 GopBitsLeft;//left bits in gop
+    HI_S32 PreGopBitsLeft;//left bits in previous gop
+    HI_S32 TotalBitsLeft;//left bits in sequence
+    HI_S32 TotalTargetBitsUsedInGop;//total target bits used in gop
+    HI_S32 TotalBitsUsedInGop;//actual total used bits used in gop
+
+    HI_S32 AvePBits;//bits of P frame
+    HI_S32 ConsAvePBits;//constant bits of P frame
+
+    HI_S32 ITotalBits[6];//bits of previous six I frames
+    HI_S32 PTotalBits[6];//bits of previous six P frames
+    HI_S32 PreType;//I or P frame of previous frame, 1--I frame, 0--P frame'
+    HI_S32 PPreQp[6];//Qp of previous six P frames
+    HI_S32 IPreQp[6];//Qp of previous six I frames
+    HI_S32 PreTargetBits;
+
+    HI_S32 SaveBitsMode;//mode of saving bits
+
+/*********IMB***********/
+    HI_S32 NumIMBCurFrm;//number of I MB in current  frame
+    HI_S32 NumIMB[6];//number of I MB of previous six frames
+    HI_S32 AveOfIMB;//average number of I MB of previous six frames
+    HI_S32 ImbRatioSeq;//sum of Imb Ratio in the sequence
+
+/**********scence change detect *************/	
+    HI_S32 CurZone[16];//histogram of scene change detect of current frame
+    HI_S32 PreZone[16];//histogram of scene change detect of previous frame
+    HI_S32 SceneChangeFlag;
+    HI_S32 PreSceneChangeFlag;
+    HI_S32 AveDiffZone;//average of previous six differences
+    HI_S32 DiffZone[6];//previous six differences
+
+    HI_S32 SenChaNum[6];//sence change num of previous gop
+    HI_S32 CurSenChaNum;//sence change num of current gop
+
+    HI_S32 PreAveY;//average of Y of previous frame
+    HI_S32 AverageY[6];//Y of previous six frame
+
+/************RC Out**************/
+    HI_S32 CurQp;
+    HI_S32 TargetBits;
+
+
+    HI_S32 InitialQp;
+    HI_S32 PreQp;
+    HI_S32 PreMeanQp;
+    HI_S32 MeanQp[6];
+    HI_S32 AveMeanQp;
+
+    HI_S32 StillToMove;
+    HI_S32 StillMoveNum;
+    HI_S32 StillFrameNum;
+    HI_S32 StillFrameNum2;
+
+   /**********parameter set************/
+    HI_S32 MinTimeOfP;
+    HI_S32 MaxTimeOfP;
+    HI_S32 DeltaTimeOfP;
+    HI_S32 AveFrameMinusAveP;
+    HI_S32 StillToMoveDelay;
+    HI_S32 IQpDelta;
+    HI_S32 PQpDelta;
+
+
+}VeduEfl_Rc_S;
+
 typedef struct
 {
     /* channel parameter */
     HI_U32 Protocol;
-    HI_U32  H264CabacEn;       //不需要外部传，内部做策略                                                                  //
-    HI_U32  H264HpEn;          //不需要外部传，内部做策略：S40V200，CV200均不支持High profile                                                                 //
-
+    HI_U32  H264CabacEn;     
+    HI_U32  H264HpEn; 
+	
+   
     HI_U32 PicWidth;           /* done for 16 aligned @ venc */
     HI_U32 PicHeight;          /* done for 16 aligned @ venc */
     HI_U32 YuvStoreType;
@@ -218,6 +340,7 @@ typedef struct
 #endif
     HI_U8  Priority;
     HI_BOOL QuickEncode;
+	HI_BOOL OMXChn;
 
     /* frame buffer parameter */
     HI_U32 SStrideY;
@@ -246,7 +369,7 @@ typedef struct
 
     /* header parameter */
     HI_U8  SpsStream[16];
-    HI_U8  PpsStream[12];
+    HI_U8  PpsStream[320];
     HI_U32 SpsBits;
     HI_U32 PpsBits;
     HI_U32 SlcHdrStream [4];
@@ -258,7 +381,7 @@ typedef struct
 
     /* other parameter */
     HI_U32 *pRegBase;
-    HI_U32  WaitingIsr;         /* to block STOP channel */
+    volatile HI_U32  WaitingIsr;         /* to block STOP channel */
     HI_U32  PTS0;
     HI_U32  PTS1;
     HI_BOOL bNeverEnc;
@@ -293,6 +416,11 @@ typedef struct
     HI_U32  SkipFrameEn;                                                                      //
 
     /* frame rate control out */
+	HI_U32      RcStart;
+	HI_U32      TrCount;
+    HI_U32      LastTR;
+    HI_U32      InterFrmCnt;
+	
     HI_U32 IntraPic;
     HI_U32 TargetBits;         /* targetBits of each frame */
     HI_U32 StartQp;
@@ -300,13 +428,15 @@ typedef struct
     HI_U32 MaxQp;
 
     /* rate control mid */
-    HI_U32      RcStart;
-    HI_U32      BitsFifo[60];
+#ifndef __VEDU_NEW_RC_ALG__
+    VALG_FIFO_S stBitsFifo; 
     HI_U32      MeanBit;
-    HI_U32      TrCount;
-    HI_U32      LastTR;
-    HI_U32      InterFrmCnt;
-    VALG_FIFO_S stBitsFifo;
+	HI_U32      BitsFifo[60];
+    
+#else
+	VeduEfl_Rc_S stRc;   //add by ckf77439  new version
+#endif
+
     HI_S32  bMorePPS;                                                                     
     HI_S32  ChrQpOffset;
     HI_S32  ConstIntra;
@@ -359,7 +489,7 @@ typedef struct
 #ifdef __VENC_S40V200_CONFIG__  
     HI_S32  MctfStrength0; /* NA */
     HI_S32  MctfStrength1; /* NA */
-
+    
     HI_S32  MctfStillEn;
     HI_S32  MctfMovEn;
     HI_S32  mctfStillMvThr;
@@ -474,12 +604,21 @@ typedef struct
     VeduEfl_SrcInfo_S     stSrcInfo;
     VeduEfl_SrcInfo_S     stSrcInfo_toVPSS;
     HI_DRV_VIDEO_FRAME_S  stImage;
-
+    venc_user_buf         stImage_OMX;
     /* statistic */
     VeduEfl_StatInfo_S stStat;
 
+#if 0
     VALG_CRCL_QUE_BUF_S stCycQueBuf;      //add
+#else
+	queue_info_s *FrameDequeue;
+    queue_info_s *FrameQueue;
+#endif
+    queue_info_s *MsgQueue_OMX;
+    queue_info_s *StreamQueue_OMX;
+    queue_info_s *FrameQueue_OMX;
 
+    HI_U32 KernelVirAddr[6];
     
 } VeduEfl_EncPara_S;
 
@@ -510,7 +649,10 @@ typedef struct
     HI_U32   CurrHandle;   /* used in ISR */
     HI_U32  *pRegBase;
     HI_VOID *pChnLock;     /* lock ChnCtx[MAX_CHN] */
-    HI_VOID *pTask;
+    //HI_VOID *pTask;
+
+    HI_VOID *pTask_Frame;        //for both venc & omxvenc
+    HI_VOID *pTask_Stream;       //juse for omxvenc
     HI_U32   StopTask;
     HI_U32   TaskRunning;  /* to block Close IP */
 } VeduEfl_IpCtx_S;
@@ -524,7 +666,8 @@ HI_S32	VENC_DRV_EflDetachInput( HI_U32 EncHandle, VeduEfl_SrcInfo_S *pSrcInfo );
 HI_S32	VENC_DRV_EflStartVenc( HI_U32 EncHandle );
 HI_S32	VENC_DRV_EflStopVenc( HI_U32 EncHandle );
 HI_S32	VENC_DRV_EflRcGetAttr( HI_U32 EncHandle, VeduEfl_RcAttr_S *pRcAttr );
-HI_S32	VENC_DRV_EflRcSetAttr( HI_U32 EncHandle, VeduEfl_RcAttr_S *pRcAttr );
+HI_S32	VENC_DRV_EflRcAttrInit( HI_U32 EncHandle, VeduEfl_RcAttr_S *pRcAttr );
+HI_S32  VENC_DRV_EflRcSetAttr( HI_U32 EncHandle, VeduEfl_RcAttr_S *pRcAttr );
 HI_S32	VENC_DRV_EflRcFrmRateCtrl( HI_U32 EncHandle, HI_U32 TR );
 HI_S32	VENC_DRV_EflRcOpenOneFrm( HI_U32 EncHandle );
 HI_S32	VENC_DRV_EflRcCloseOneFrm( HI_U32 EncHandle );
@@ -541,13 +684,25 @@ HI_U32	VENC_DRV_EflGetStreamLen( HI_U32 EncHandle );
 HI_S32  VENC_DRV_EflQueueFrame( HI_U32 EncHandle, HI_DRV_VIDEO_FRAME_S  *pstFrame);
 HI_S32  VENC_DRV_EflDequeueFrame( HI_U32 EncHandle, HI_DRV_VIDEO_FRAME_S  *pstFrame);
 HI_S32  VENC_DRV_EflGetImage(HI_S32 EncHandle, HI_DRV_VIDEO_FRAME_S  *pstFrame);
+HI_S32  VENC_DRV_EflGetImage_OMX(HI_S32 EncHandle, venc_user_buf *pstFrame);
 HI_S32  VENC_DRV_EflPutImage(HI_S32 EncHandle, HI_DRV_VIDEO_FRAME_S  *pstFrame);
 
 HI_S32  VENC_DRV_EflCfgRegVenc( HI_U32 EncHandle );
 HI_VOID VENC_DRV_EflSortPriority(HI_VOID);
 
-HI_BOOL VENC_DRV_EflJudgeVPSS( HI_HANDLE EncHandle, HI_DRV_VIDEO_FRAME_S *pstFrameInfo ,HI_BOOL bActiveMode);   //调用在获得帧信息后
+HI_BOOL VENC_DRV_EflJudgeVPSS( HI_HANDLE EncHandle, HI_DRV_VIDEO_FRAME_S *pstFrameInfo);   //调用在获得帧信息后
 HI_VOID VENC_DRV_EflWakeUpThread(HI_VOID);
+
+HI_S32 VENC_DRV_EflQFrameByAttach( HI_U32 EncHandle, HI_DRV_VIDEO_FRAME_S  *pstFrame);
+HI_S32 VENC_DRV_EflRlsAllFrame( HI_U32 EncHandle);
+HI_VOID VENC_DRV_EflSceChaDetect(VeduEfl_Rc_S *pRc, HI_S32 w, HI_S32 h, HI_S32 IntraPic);
+HI_S32  VEDU_DRV_EflRcInitQp(HI_S32 bits,HI_S32 w,HI_S32 h);
+HI_S32  VENC_DRV_EflRcAverage(HI_S32 *pData,HI_S32 n);
+HI_VOID VENC_DRV_EflRcCalIFrmQp(VeduEfl_Rc_S *pRc, HI_S32 w, HI_S32 h, HI_S32 times, HI_S32 GopLength,int FrameIMBRatio);
+HI_VOID VENC_DRV_EflRcCalPFrmQp(VeduEfl_Rc_S *pRc, HI_S32 PrePicBits, HI_S32 FrameIMBRatio, HI_S32 Gop);
+
+HI_S32 VENC_DRV_DbgWriteYUV(HI_DRV_VIDEO_FRAME_S *pstFrame,HI_CHAR* pFileName);
+HI_S32 VENC_DRV_EflSuspendVedu( HI_VOID );
 /*************************************************************************************/
 #ifdef __cplusplus
  #if __cplusplus

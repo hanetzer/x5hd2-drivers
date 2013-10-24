@@ -71,6 +71,48 @@ DefaultDemodulator demod[TUNER_NUM] =
         0,      //Byte pidCounter;
         0,      //Byte demodAddr;       /** Demodulator I2C Address */
         False   //Bool Clkout_en;       /** Clock output enable */
+    },
+    {
+        NULL,   //Handle userData;
+        NULL,   //Byte* firmwareCodes;
+        NULL,   //Segment* firmwareSegments;
+        NULL,   //Byte* firmwarePartitions;
+        NULL,   //Word* scriptSets;
+        NULL,   //ValueSet* scripts;
+        12000,      //Dword crystalFrequency;
+        20250000,       //Dword adcFrequency;
+        StreamType_DVBT_PARALLEL,   //StreamType streamType;
+        8000,       //Word bandwidth;
+        722000,     // Dword frequency;
+        0,      //Dword fcw;
+        {False,False,0,0,},     //Statistic statistic;
+        0,      //Byte hostInterface;
+        False,  //Bool booted;
+        False,  //Bool initialized;
+        0,      //Byte pidCounter;
+        0,      //Byte demodAddr;       /** Demodulator I2C Address */
+        False   //Bool Clkout_en;       /** Clock output enable */
+    },
+    {
+        NULL,   //Handle userData;
+        NULL,   //Byte* firmwareCodes;
+        NULL,   //Segment* firmwareSegments;
+        NULL,   //Byte* firmwarePartitions;
+        NULL,   //Word* scriptSets;
+        NULL,   //ValueSet* scripts;
+        12000,      //Dword crystalFrequency;
+        20250000,       //Dword adcFrequency;
+        StreamType_DVBT_PARALLEL,   //StreamType streamType;
+        8000,       //Word bandwidth;
+        722000,     // Dword frequency;
+        0,      //Dword fcw;
+        {False,False,0,0,},     //Statistic statistic;
+        0,      //Byte hostInterface;
+        False,  //Bool booted;
+        False,  //Bool initialized;
+        0,      //Byte pidCounter;
+        0,      //Byte demodAddr;       /** Demodulator I2C Address */
+        False   //Bool Clkout_en;       /** Clock output enable */
     }
 };
 HI_U32 g_ulIt9133InitFlag = HI_FALSE;
@@ -220,7 +262,7 @@ HI_S32 it9133_get_signal_strength(HI_U32 u32TunerPort, HI_U32* pu32SignalStrengt
     //HI_S32 ifpullUpVolt_X10 = 33;
     HI_U32 u32SignalStrength;
 
-    HI_ASSERT(HI_NULL != pu32SignalStrength);
+    HI_TUNER_CHECKPOINTER( pu32SignalStrength);
     /* Check tuner port and init. */
     if (u32TunerPort >= TUNER_NUM)
     {
@@ -245,7 +287,7 @@ HI_S32 it9133_get_signal_info(HI_U32 u32TunerPort, HI_UNF_TUNER_SIGNALINFO_S *ps
     HI_S32 s32Ret;
     ChannelModulation CM;
 
-    HI_ASSERT(HI_NULL != pstInfo);
+    HI_TUNER_CHECKPOINTER( pstInfo);
     /* Check tuner port and init. */
     if (u32TunerPort >= TUNER_NUM)
     {
@@ -386,8 +428,8 @@ HI_S32 it9133_get_freq_symb_offset(HI_U32 u32TunerPort, HI_U32 * pu32Freq, HI_U3
     HI_U32 u32CurFreq = 0;
     HI_U32 u32BaseFreq = 0;
 
-    HI_ASSERT(HI_NULL != pu32Freq);
-    HI_ASSERT(HI_NULL != pu32Symb);
+    HI_TUNER_CHECKPOINTER( pu32Freq);
+    HI_TUNER_CHECKPOINTER( pu32Symb);
     /* Check tuner port and init. */
     if (u32TunerPort >= TUNER_NUM)
     {

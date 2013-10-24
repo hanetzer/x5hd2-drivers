@@ -121,11 +121,13 @@ typedef struct
 
 HI_VOID 				SND_GetDelayMs(SND_CARD_STATE_S *pCard, HI_U32 *pdelayms);
 HI_VOID					SND_DestroyOp(SND_CARD_STATE_S *pCard);
-HI_S32 					SND_CreateOp(SND_CARD_STATE_S *pCard, HI_UNF_SND_ATTR_S *pstAttr);
+HI_S32                  SND_CreateOp(SND_CARD_STATE_S *pCard, HI_UNF_SND_ATTR_S *pstAttr,AO_ALSA_I2S_Param_S* pstAoI2sParam);
 HI_S32					SND_SetOpMute(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_BOOL bMute);
 HI_S32					SND_GetOpMute(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_BOOL *pbMute);
 HI_S32                  SND_SetOpHdmiMode(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_HDMI_MODE_E enMode);
+HI_S32                  SND_GetOpHdmiMode(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_HDMI_MODE_E *penMode);
 HI_S32                  SND_SetOpSpdifMode(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_SPDIF_MODE_E enMode);
+HI_S32                  SND_GetOpSpdifMode(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_SPDIF_MODE_E *penMode);
 HI_S32					SND_SetOpVolume(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort,
                                         HI_UNF_SND_GAIN_ATTR_S stGain);
 HI_S32					SND_GetOpVolume(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort,
@@ -163,13 +165,13 @@ HI_S32 SND_RestoreSetting(SND_CARD_STATE_S *pCard, SND_CARD_SETTINGS_S* pstSndSe
 #ifdef HI_SND_CAST_SUPPORT
 HI_S32 SND_StopCastOp(SND_CARD_STATE_S *pCard, HI_S32 s32CastID);
 HI_S32 SND_StartCastOp(SND_CARD_STATE_S *pCard, HI_S32 s32CastID);
-HI_S32 SND_CreateCastOp(SND_CARD_STATE_S *pCard,  HI_S32 *ps32CastId, HI_UNF_SND_CAST_ATTR_S *pstAttr, HI_U32 *pu32PhyAddr);
+HI_S32 SND_CreateCastOp(SND_CARD_STATE_S *pCard,  HI_S32 *ps32CastId, HI_UNF_SND_CAST_ATTR_S *pstAttr, MMZ_BUFFER_S *pstMMz);
 
 HI_S32 SND_DestoryCastOp(SND_CARD_STATE_S *pCard,  HI_U32 CastId);
 HI_U32 SND_ReadCastData(SND_CARD_STATE_S *pCard, HI_S32 u32CastId, AO_Cast_Data_Param_S *pstCastData);
 HI_U32 SND_ReleaseCastData(SND_CARD_STATE_S *pCard, HI_S32 u32CastId, AO_Cast_Data_Param_S *pstCastData);
 #endif
-HI_S32 SND_ShowOpProc(struct seq_file* p, SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enPort);
+HI_S32 SND_ReadOpProc(struct seq_file* p, SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enPort);
 
 #ifdef __cplusplus
  #if __cplusplus

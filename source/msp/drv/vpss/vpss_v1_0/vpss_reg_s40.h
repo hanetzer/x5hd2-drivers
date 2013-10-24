@@ -2,12 +2,12 @@
 #define __VPSS_REG_S40_H__
 #include "vpss_common.h"
 #include "vpss_reg_struct.h"
-
+#include "hi_drv_reg.h"
+#include "hi_reg_common.h"
 
 
 //s40v200
-#define VPSS_BASE_ADDR  0xf8cb0000    
-#define VPSS_CRG_ADDR  0xf8a220f0
+#define VPSS_BASE_ADDR  0xf8cb0000
 
 typedef union
 {
@@ -3655,25 +3655,25 @@ typedef struct
 
 } VPSS_REG_S;
 
-/*寄存器读写操作*/
+
 HI_S32 VPSS_REG_RegWrite(volatile HI_U32 *a, HI_U32 b);
 HI_U32 VPSS_REG_RegRead(volatile HI_U32* a);
 
-/*寄存器复位*/
+
 HI_S32 VPSS_REG_ReSetCRG(HI_VOID);
 HI_S32 VPSS_REG_CloseClock(HI_VOID);
 HI_S32 VPSS_REG_OpenClock(HI_VOID);
 
-/*寄存器物理地址映射*/
+
 HI_S32 VPSS_REG_BaseRegInit(VPSS_REG_S **ppstPhyReg);
 
-/*载入配置结点地址映射*/
+
 HI_S32 VPSS_REG_AppRegInit(VPSS_REG_S **ppstAppReg,HI_U32 u32VirAddr);
 
-/*配置结点重置*/
+
 HI_S32 VPSS_REG_ResetAppReg(HI_U32 u32AppAddr);
 
-/*中断寄存器相关操作*/
+
 /********************************/
 HI_S32 VPSS_REG_SetIntMask(HI_U32 u32AppAddr,HI_U32 u32Mask);
 HI_S32 VPSS_REG_GetIntMask(HI_U32 u32AppAddr,HI_U32 *pu32Mask);
@@ -3683,16 +3683,16 @@ HI_S32 VPSS_REG_ClearIntState(HI_U32 u32AppAddr,HI_U32 u32Data);
 /********************************/
 
 
-/*逻辑超时设置*/
+
 HI_S32 VPSS_REG_SetTimeOut(HI_U32 u32AppAddr,HI_U32 u32Data);
 
-/*配置结点地址载入，启动逻辑*/
+
 HI_S32 VPSS_REG_StartLogic(HI_U32 u32AppAddr,HI_U32 u32PhyAddr);
 
-/*输出PORT使能*/
+
 HI_S32 VPSS_REG_EnPort(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL bEnable);
 
-/*输入Image相关操作*/
+
 /********************************/
 HI_S32 VPSS_REG_SetImgSize(HI_U32 u32AppAddr,HI_U32 u32Height,HI_U32 u32Width,HI_BOOL bProgressive);
 HI_S32 VPSS_REG_SetImgAddr(HI_U32 u32AppAddr,REG_FIELDPOS_E ePos,HI_U32 u32Yaddr,HI_U32 u32Caddr);
@@ -3701,7 +3701,7 @@ HI_S32 VPSS_REG_SetImgFormat(HI_U32 u32AppAddr,HI_DRV_PIX_FORMAT_E eFormat);
 HI_S32 VPSS_REG_SetImgReadMod(HI_U32 u32AppAddr,HI_BOOL bField);
 /********************************/
 
-/*输出Frame相关操作*/
+
 /********************************/
 HI_S32 VPSS_REG_SetFrmSize(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32Height,HI_U32 u32Width);
 HI_S32 VPSS_REG_SetFrmAddr(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32Yaddr,HI_U32 u32Caddr);
@@ -3709,7 +3709,7 @@ HI_S32 VPSS_REG_SetFrmStride(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32Y
 HI_S32 VPSS_REG_SetFrmFormat(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_DRV_PIX_FORMAT_E eFormat);
 /********************************/
 
-/*ZME相关操作*/
+
 /********************************/
 /*ZME*/
 HI_S32 VPSS_REG_SetZmeEnable(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,REG_ZME_MODE_E eMode,HI_BOOL bEnable);
@@ -3748,7 +3748,7 @@ HI_S32 VPSS_REG_SetCHpassCoef(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S8  *ps
 
 /********************************/
 
-/*入网指标DET相关操作*/
+
 /********************************/
 HI_VOID VPSS_REG_SetDetEn(HI_U32 u32AppAddr,HI_BOOL bEnable);
 HI_VOID VPSS_REG_SetDetMode(HI_U32 u32AppAddr,HI_U32 u32Mode);
@@ -3758,7 +3758,7 @@ HI_VOID VPSS_REG_GetDetPixel(HI_U32 u32AppAddr,HI_U32 BlkNum, HI_U8* pstData);
 
 
 
-/*DEI相关操作*/
+
 /********************************/
 /*DEI*/
 HI_S32 VPSS_REG_EnDei(HI_U32 u32AppAddr,HI_BOOL bEnDei);
@@ -3852,7 +3852,7 @@ HI_S32 VPSS_REG_SetDeiParaAddr(HI_U32 u32AppAddr,HI_U32 u32ParaAddr);
 
 /********************************/
 
-/*VC1相关操作*/
+
 /********************************/
 HI_S32 VPSS_REG_SetVc1En(HI_U32 u32AppAddr,HI_U32 u32EnVc1);
 HI_S32 VPSS_REG_SetVc1Profile(HI_U32 u32AppAddr,REG_FRAMEPOS_E ePos,HI_U32 u32Profile);

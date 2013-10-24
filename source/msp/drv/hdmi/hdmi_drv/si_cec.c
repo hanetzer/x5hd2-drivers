@@ -188,7 +188,7 @@ HI_U8 SI_CEC_GetCommand( SiI_CEC_t * pSiI_CEC )
 HI_U8 SI_CEC_Interrupt_Processing ( SiI_CEC_Int_t * pInt )
 {
     HI_U8 error = FALSE;
-    HI_U8 cec_int_status_reg[2];
+    HI_U8 cec_int_status_reg[2] = {0};
     HI_U8 bTmpRXState = 0;
     
     // Get Interrupts

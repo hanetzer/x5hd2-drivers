@@ -39,10 +39,10 @@
 #include <linux/ioport.h>
 #include <linux/string.h>
 
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
 #include "hi_module.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 #include "hi_kernel_adapt.h"
 
 #include "hi_drv_video.h"
@@ -54,6 +54,7 @@
 #include "drv_disp_debug.h"
 #include "drv_disp.h"
 #include "drv_disp_osal.h"
+#include "hi_osal.h"
 
 
 #ifdef __cplusplus
@@ -120,7 +121,7 @@ HI_VOID DISP_ModExit(HI_VOID)
 HI_S32 DISP_ModInit(HI_VOID)
 {
     /* Regist Disp device */
-    sprintf(g_DispRegisterData.devfs_name, UMAP_DEVNAME_DISP);
+    HI_OSAL_Snprintf(g_DispRegisterData.devfs_name,HIMEDIA_DEVICE_NAME_MAX_LEN,"%s", UMAP_DEVNAME_DISP);
     g_DispRegisterData.fops   = &s_DispFileOps;
     g_DispRegisterData.minor  = UMAP_MIN_MINOR_DISP;
     g_DispRegisterData.owner  = THIS_MODULE;
@@ -157,14 +158,12 @@ HI_S32 VDP_DRV_ModInit(HI_VOID)
         return HI_FAILURE;
     }
 
-#ifndef MINI_SYS_SURPORT
     if(HI_SUCCESS != WIN_ModInit())
     {
         HI_FATAL_DISP("WIN_ModInit failed.\n");
         DISP_ModExit();
         return HI_FAILURE;
     }
-#endif
 
     DRV_DISP_Init2();
 

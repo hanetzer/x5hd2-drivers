@@ -12,6 +12,13 @@
 #ifndef __DRV_LOG_EXT_H__
 #define __DRV_LOG_EXT_H__
 #include <linux/kernel.h>
+#include <linux/module.h>
+#include <linux/device.h>
+#include <linux/major.h>
+#include <asm/types.h>
+#include <linux/fs.h>
+#include <asm/atomic.h>
+
 #include "hi_debug.h"
 #include "drv_log_ioctl.h"
 

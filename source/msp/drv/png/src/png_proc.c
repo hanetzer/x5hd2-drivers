@@ -21,7 +21,7 @@ Date				Author        		Modification
 #include <linux/seq_file.h>
 #include <linux/slab.h>
 
-#include "drv_proc_ext.h"
+#include "hi_drv_proc.h"
 
 #include "png_proc.h"
 #include "png_define.h"
@@ -52,40 +52,46 @@ HI_S32 PNG_Read_Proc(struct seq_file *p, HI_VOID *v)
     switch(procinfo->eColorFmt)
     {
         case HI_PNG_IMAGEFMT_AGRAY:
-            strcpy(fmtname, "AGray");
-            break;
-        case HI_PNG_IMAGEFMT_ARGB:
-            strcpy(fmtname, "ARGB");
-            break;
-        case HI_PNG_IMAGEFMT_CLUT:
-            strcpy(fmtname, "Clut");
-            break;
-        case HI_PNG_IMAGEFMT_GRAY:
-            strcpy(fmtname, "Gray");
-            break;
-        case HI_PNG_IMAGEFMT_RGB:
-            strcpy(fmtname, "RGB");
-            break;
-        default:
-            strcpy(fmtname, "Unknown");
+        strncpy(fmtname, "AGray",strlen("AGray"));
+        fmtname[strlen("AGray")] = '\0';
+        break;
+    case HI_PNG_IMAGEFMT_ARGB:
+        strncpy(fmtname, "ARGB",strlen("ARGB"));
+        fmtname[strlen("ARGB")] = '\0';
+        break;
+    case HI_PNG_IMAGEFMT_CLUT:
+        strncpy(fmtname, "Clut",strlen("Clut"));
+        fmtname[strlen("Clut")] = '\0';
+        break;
+    case HI_PNG_IMAGEFMT_GRAY:
+        strncpy(fmtname, "Gray",strlen("Gray"));
+        fmtname[strlen("Gray")] = '\0';
+        break;
+    case HI_PNG_IMAGEFMT_RGB:
+        strncpy(fmtname, "RGB",strlen("RGB"));
+        fmtname[strlen("RGB")] = '\0';
+        break;
+    default:
+        strncpy(fmtname, "Unknown",strlen("Unknown"));
+        fmtname[strlen("Unknown")] = '\0';
             break;
     }
-    
-    seq_printf(p, "width\t\t:%u\n", procinfo->u32Width);
-    seq_printf(p, "height\t\t:%u\n", procinfo->u32Height);
-    seq_printf(p, "fmt\t\t:%s\n", fmtname);
-    seq_printf(p, "bitdepth\t:%d\n", procinfo->u8BitDepth);
-    seq_printf(p, "transform\t:0x%x\n", procinfo->u32Transform);
-    seq_printf(p, "sync\t\t:%s\n", procinfo->bSync?("YES"):("NO"));
-    seq_printf(p, "state\t\t:%s\n", s_decstate[procinfo->eState]);
-    seq_printf(p, "filter buf addr\t:0x%x\n", procinfo->u32FlterPhyaddr);
-    seq_printf(p, "filter buf size\t:0x%x\n", procinfo->u32Size);
-    seq_printf(p, "stream buf addr\t:0x%x\n", procinfo->u32StreamBufPhyaddr);
-    seq_printf(p, "dst addr\t:0x%x\n", procinfo->u32ImagePhyaddr);
-    seq_printf(p, "dst stride\t:0x%x\n", procinfo->u32Stride);
-    seq_printf(p, "transcolor\t:0x%x%x%x\n", procinfo->u16TrnsColorRed, procinfo->u16TrnsColorGreen, procinfo->u16TrnsColorBlue);
-    seq_printf(p, "filler\t\t:0x%x\n", procinfo->u16Filler);
-
+    #ifndef CONFIG_PNG_STR_DISABLE
+    PROC_PRINT(p, "width\t\t:%u\n", procinfo->u32Width);
+    PROC_PRINT(p, "height\t\t:%u\n", procinfo->u32Height);
+    PROC_PRINT(p, "fmt\t\t:%s\n", fmtname);
+    PROC_PRINT(p, "bitdepth\t:%d\n", procinfo->u8BitDepth);
+    PROC_PRINT(p, "transform\t:0x%x\n", procinfo->u32Transform);
+    PROC_PRINT(p, "sync\t\t:%s\n", procinfo->bSync?("YES"):("NO"));
+    PROC_PRINT(p, "state\t\t:%s\n", s_decstate[procinfo->eState]);
+    PROC_PRINT(p, "filter buf addr\t:0x%x\n", procinfo->u32FlterPhyaddr);
+    PROC_PRINT(p, "filter buf size\t:0x%x\n", procinfo->u32Size);
+    PROC_PRINT(p, "stream buf addr\t:0x%x\n", procinfo->u32StreamBufPhyaddr);
+    PROC_PRINT(p, "dst addr\t:0x%x\n", procinfo->u32ImagePhyaddr);
+    PROC_PRINT(p, "dst stride\t:0x%x\n", procinfo->u32Stride);
+    PROC_PRINT(p, "transcolor\t:0x%x%x%x\n", procinfo->u16TrnsColorRed, procinfo->u16TrnsColorGreen, procinfo->u16TrnsColorBlue);
+    PROC_PRINT(p, "filler\t\t:0x%x\n", procinfo->u16Filler);
+    #endif
     return HI_SUCCESS;
 }
 
@@ -108,12 +114,12 @@ HI_S32 PNG_Write_Proc(struct file * file,
     if (strstr(buf, "proc on"))
     {
         s_bPngProcOn = HI_TRUE;
-        //seq_printf(seq, "png proc on!\n");
+        //PROC_PRINT(seq, "png proc on!\n");
     }
     else if (strstr(buf, "proc off"))
     {
         s_bPngProcOn = HI_FALSE;
-        //seq_printf(seq, "png proc off!\n");
+        //PROC_PRINT(seq, "png proc off!\n");
     }
 
     return count;
@@ -122,21 +128,14 @@ HI_S32 PNG_Write_Proc(struct file * file,
 
 HI_VOID PNG_ProcInit(HI_VOID)
 {
-    DRV_PROC_EX_S  stProc;
-
-    stProc.fnRead   = PNG_Read_Proc;
-    stProc.fnWrite  = PNG_Write_Proc;
-    stProc.fnIoctl = NULL;
-
-    HI_DRV_PROC_AddModuleEx("png", &stProc, &s_stPngProcInfo);
-    
-    return ;
+    GFX_PROC_ITEM_S pProcItem = {PNG_Read_Proc,PNG_Write_Proc,NULL};
+    HI_GFX_PROC_AddModule("png", &pProcItem, &s_stPngProcInfo);
+    return;
 }
 
 HI_VOID PNG_ProcCleanup(HI_VOID)
 {
-    HI_DRV_PROC_RemoveModule("png");
-    
+    HI_GFX_PROC_RemoveModule("png");
     return;
 }
 

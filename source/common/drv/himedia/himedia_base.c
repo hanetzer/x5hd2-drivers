@@ -35,7 +35,7 @@ static ssize_t modalias_show(struct device *dev, struct device_attribute *a,
 							char *buf)
 {
 	PM_BASEDEV_S *pdev = TO_PM_BASEDEV(dev);
-	int len = snprintf(buf, PAGE_SIZE, "himedia:%s\n", pdev->name);
+	int len = snprintf(buf, PAGE_SIZE, "himedia:%s\n", (char*)pdev->name);
 
 	return (len >= PAGE_SIZE) ? (PAGE_SIZE - 1) : len;
 }
@@ -49,7 +49,7 @@ static struct device_attribute himedia_dev_attrs[] = {
 static int himedia_match(struct device *dev, struct device_driver *drv)
 {
 	PM_BASEDEV_S *pdev = TO_PM_BASEDEV(dev);
-	return (strcmp(pdev->name, drv->name) == 0);
+	return (strncmp(pdev->name, drv->name, HIMEDIA_DEVICE_NAME_MAX_LEN+8) == 0);
 }
 
 static int himedia_uevent(struct device *dev, struct kobj_uevent_env *env)

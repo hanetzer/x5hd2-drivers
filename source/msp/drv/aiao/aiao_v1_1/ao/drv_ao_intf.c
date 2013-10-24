@@ -15,10 +15,10 @@
 
 /* Unf headers */
 #include "hi_error_mpi.h"
-#include "drv_mmz_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_proc.h"
 
 /* Drv headers */
 #include "hi_drv_ao.h"
@@ -64,7 +64,7 @@ static UMAP_DEVICE_S s_stAdeUmapDev;
 static __inline__ int  AO_DRV_RegisterDev(void)
 {
     /*register aenc chn device*/
-    sprintf(s_stAdeUmapDev.devfs_name, UMAP_DEVNAME_AO);
+    snprintf(s_stAdeUmapDev.devfs_name, sizeof(s_stAdeUmapDev.devfs_name), UMAP_DEVNAME_AO);
     s_stAdeUmapDev.fops   = &s_stDevFileOpts;
     s_stAdeUmapDev.minor  = UMAP_MIN_MINOR_AO;
     s_stAdeUmapDev.owner  = THIS_MODULE;

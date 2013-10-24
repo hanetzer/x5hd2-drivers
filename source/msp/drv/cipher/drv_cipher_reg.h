@@ -1,12 +1,17 @@
-/**
-\file
-\brief cipher 
-\copyright Shenzhen Hisilicon Co., Ltd.
-\date 2008-2018
-\version draft
-\author QuYaxin 46153
-\date 2009-11-3
-*/
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : drv_cipher_reg.h
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
 
 #ifndef __DRV_CIPHER_REG_H__
 #define __DRV_CIPHER_REG_H__
@@ -19,17 +24,8 @@ extern "C"
 {
 #endif
 
-/* CRG register base address : 0xF8A22000 */
-#define  CIPHER_REG_SYS_CLK_ADDR_PHY            (0xF8A22000)
-#define  CIPHER_REG_SYS_CLK_ADDR                IO_ADDRESS(CIPHER_REG_SYS_CLK_ADDR_PHY)
-/* 0x00C0:[PERI_CRG48 CA] */
-#define  CIPHER_REG_SYS_CLK_CA_ADDR             (CIPHER_REG_SYS_CLK_ADDR + 0xC0)
-/* 0x00C4:[PERI_CRG49] SHA */
-#define  CIPHER_REG_SYS_CLK_SHA_ADDR            (CIPHER_REG_SYS_CLK_ADDR + 0xC4)
-
 /* CIPHER register addr define */
-#define  CIPHER_REG_BASE_ADDR_PHY      			(0xF9A00000)
-#define  CIPHER_REG_BASE_ADDR                   IO_ADDRESS(CIPHER_REG_BASE_ADDR_PHY)
+#define  CIPHER_REG_BASE_ADDR                   IO_ADDRESS(0xF9A00000)
 
 #define  CIPHER_REG_CHAN0_CIPHER_DOUT(id)       (CIPHER_REG_BASE_ADDR + 0x0000 + (id)*0)
 #define  CIPHER_REG_CHAN0_CIPHER_IVOUT(id)      (CIPHER_REG_BASE_ADDR + 0x0010 + (id)*0)
@@ -119,42 +115,32 @@ extern "C"
 #define  CIPHER_HASH_REG_KL_KEY2                (CIPHER_HASH_REG_BASE_ADDR + 0x88)
 #define  CIPHER_HASH_REG_KL_KEY3                (CIPHER_HASH_REG_BASE_ADDR + 0x8C)
 
+/* STB KEY CTRL */
+#define  CIPHER_REG_CA_CONFIG_STATE             IO_ADDRESS(0xF8A90000)
+#define  CIPHER_REG_STB_KEY_CTRL                IO_ADDRESS(0xF8A90034)
+#define  CIPHER_REG_CA_STATE                    IO_ADDRESS(0xF8A90038)
 
-#ifdef CHIP_TYPE_hi3716cv200es
+
 typedef union
 {
-    struct
+    struct 
     {
-        HI_U32 ca_kl_bus_cken	    :1; //[0]
-        HI_U32 ca_ci_bus_cken	    :1; //[1]
-        HI_U32 ca_ci_cken	        :1; //[2]
-        HI_U32 otp_bus_cken	        :1; //[3]
-        HI_U32 reserved0	        :4; //[7:4]
-        HI_U32 ca_kl_srst_req	    :1; //[8]
-        HI_U32 ca_ci_srst_req	    :1; //[9]
-        HI_U32 otp_srst_req	        :1; //[10]
-        HI_U32 reserved1	        :1; //[11]
-        HI_U32 ca_clk_sel	        :1; //[12]
-        HI_U32 reserved2        	:1; //[13~31]
+        HI_U32 key_addr       : 8;  //[7:0]
+        HI_U32 reserved       : 24; //[31:8]
     }bits;
     HI_U32 u32;
-}CIPHER_CA_SYS_CLK_U;       //0xc0
-#else
+}CIPHER_CA_STB_KEY_CTRL_U;
+
 typedef union
 {
-    struct
+    struct 
     {
-        HI_U32 reserved0        :8; //[0~7]
-        HI_U32 ca_kl_srst_req	:1; //[8]
-        HI_U32 ca_ci_srst_req	:1; //[9]
-        HI_U32 otp_srst_req	    :1; //[10]
-        HI_U32 reserved1	    :4; //[11]
-        HI_U32 ca_ci_clk_sel	:1; //[12]
-        HI_U32 reserved2	    :1; //[13~31]
+        HI_U32 st_vld         : 1;  //[0]
+        HI_U32 reserved       : 31; //[31:1]
     }bits;
     HI_U32 u32;
-}CIPHER_CA_SYS_CLK_U;       //0xc0
-#endif
+}CIPHER_CA_CONFIG_STATE_U;
+
 
 typedef union
 {
@@ -179,7 +165,8 @@ typedef union
         HI_U32 hardkey_hmac_flag    : 1;    // [3]
         HI_U32 hardkey_sel          : 1;    // [4]
         HI_U32 small_end_en         : 1;    // [5]
-        HI_U32 reserved1            : 2;    // [7:6]
+        HI_U32 usedbyarm            : 1;    // [6]
+        HI_U32 usedbyc51            : 1;    // [7]
         HI_U32 reserved2            : 24;   // [31:8]
     } bits;
     HI_U32 u32;
@@ -195,21 +182,8 @@ typedef union
     HI_U32 u32;
 }CIPHER_SHA_START_U;
 
-typedef union
-{
-    struct
-    {
-        HI_U32 sha_cken            : 1;    // [0]
-        HI_U32 reserved            : 3;    // [3:1]
-        HI_U32 sha_srst_req        : 1;    // [4]
-        HI_U32 reserved2           : 27;   // [31:5]
-    } bits;
-    HI_U32 u32;
-}CIPHER_SHA_RST_U;
-
-
 /* RNG REGISTERS AND STRUCTURES */
-#ifndef CHIP_TYPE_hi3716cv200es
+#ifdef CHIP_TYPE_hi3716mv300
 #define  REG_RNG_BASE_ADDR 					(0x101e5000)
 #define  REG_RNG_NUMBER_ADDR				(REG_RNG_BASE_ADDR + 0x4)
 #define  REG_RNG_STAT_ADDR					(REG_RNG_BASE_ADDR + 0x8)
@@ -242,3 +216,4 @@ typedef union
 }
 #endif
 #endif /* end #ifndef __DRV_CIPHER_REG_H__ */
+

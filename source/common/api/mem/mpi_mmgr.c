@@ -7,12 +7,9 @@
 
 #include "hi_type.h"
 #include "hi_debug.h"
-#include "drv_struct_ext.h"
-
-#include "mpi_debug.h"
-
+#include "hi_drv_mem.h"
+#include "hi_drv_struct.h"
 #include "mpi_mmgr.h"
-
 #include "mpi_mem_base.h"
 
 
@@ -32,7 +29,7 @@ do{                                                                         \
         fd = open("/dev/"name, O_RDWR);                                     \
         if (fd < 0)                                                         \
         {                                                                   \
-            THIS_ERR_PRINT("open %s failure, %s\n", name, strerror(errno)); \
+            HI_ERR_MEM("open %s failure, %s\n", name, strerror(errno)); \
             return HI_FAILURE;                                              \
         }                                                                   \
     }                                                                       \
@@ -59,15 +56,15 @@ static HI_S32 Mem_UpdataInfo(HI_U32 u32ModuleID, MEM_TYPE_E enMemType, HI_S32 s3
     {
         case MEM_TYPE_MMZ:
             stModuleMem.u32SizeMMZ= s32Size*MEM_ADD_DEL(s32Size);
-            THIS_INFO_PRINT("find the module ID 0x%08x and op mmz memory size:%d\n", u32ModuleID, s32Size);
+            HI_INFO_MEM("find the module ID 0x%08x and op mmz memory size:%d\n", u32ModuleID, s32Size);
         break;
         case MEM_TYPE_USR:
             stModuleMem.u32SizeUsrMem = s32Size*MEM_ADD_DEL(s32Size);
-            THIS_INFO_PRINT("find the module ID 0x%08x and op user memory size:%d\n", u32ModuleID, s32Size);
+            HI_INFO_MEM("find the module ID 0x%08x and op user memory size:%d\n", u32ModuleID, s32Size);
         break;
         case MEM_TYPE_KERNEL:
             stModuleMem.u32SizeKernelMem = s32Size*MEM_ADD_DEL(s32Size);
-            THIS_INFO_PRINT("find the module ID 0x%08x and op kernel memory size:%d\n", u32ModuleID, s32Size);
+            HI_INFO_MEM("find the module ID 0x%08x and op kernel memory size:%d\n", u32ModuleID, s32Size);
         break;
         default:
         break;

@@ -111,6 +111,7 @@ typedef struct hiVDEC_EVENT_S
     HI_UNF_VIDEO_FRAME_PACKING_TYPE_E enFramePackingType;
 
     HI_BOOL  bIFrameErr;
+	HI_BOOL  bUnSupportStream;
 } VDEC_EVENT_S;
 
 typedef enum hiVDEC_DISCARD_MODE_E
@@ -157,6 +158,26 @@ typedef struct tagVDEC_PORT_PARAM_WITHPORT_S
   HI_HANDLE hPort;
   VDEC_PORT_PARAM_S stVdecPortParam;
 }VDEC_PORT_PARAM_WITHPORT_S;
+typedef enum hiVDEC_PORT_TYPE_E
+{
+    VDEC_PORT_TYPE_MASTER,
+    VDEC_PORT_TYPE_SLAVE,
+    VDEC_PORT_TYPE_VIRTUAL,
+    VDEC_PORT_TYPE_BUTT
+}VDEC_PORT_TYPE_E;
+
+typedef struct tagVDEC_PORT_TYPE_WITHPORT_S
+{
+  HI_HANDLE hPort;
+  VDEC_PORT_TYPE_E enPortType;
+}VDEC_PORT_TYPE_WITHPORT_S;
+
+typedef struct tagVDEC_PORT_ATTR_WITHHANDLE_S
+{
+    HI_HANDLE                   hPort;
+    HI_DRV_VPSS_PORT_CFG_S      stPortCfg;
+}VDEC_PORT_ATTR_WITHHANDLE_S;
+
 /****************************** API Declaration ******************************/
 
 HI_S32 HI_MPI_VDEC_Init(HI_VOID);
@@ -190,7 +211,13 @@ HI_S32 HI_MPI_VDEC_DiscardFrame(HI_HANDLE hVdec, VDEC_DISCARD_FRAME_S* pstParam)
 HI_S32 HI_MPI_VDEC_CreatePort(HI_HANDLE hVdec, HI_HANDLE *phPort, VDEC_PORT_ABILITY_E ePortAbility);
 HI_S32 HI_MPI_VDEC_EnablePort(HI_HANDLE hVdec,HI_HANDLE hPort);
 HI_S32 HI_MPI_VDEC_DisablePort(HI_HANDLE hVdec,HI_HANDLE hPort);
-HI_S32 HI_MPI_VDEC_SetMainPort(HI_HANDLE hVdec,HI_HANDLE hPort);  
+//HI_S32 HI_MPI_VDEC_SetMainPort(HI_HANDLE hVdec,HI_HANDLE hPort);  
+HI_S32 HI_MPI_VDEC_SetPortType(HI_HANDLE hVdec, HI_HANDLE hPort, VDEC_PORT_TYPE_E enPortType);
+
+HI_S32 HI_MPI_VDEC_GetPortAttr(HI_HANDLE hVdec, HI_HANDLE hPort, HI_DRV_VPSS_PORT_CFG_S *pstPortCfg);
+
+HI_S32 HI_MPI_VDEC_SetPortAttr(HI_HANDLE hVdec, HI_HANDLE hPort, HI_DRV_VPSS_PORT_CFG_S *pstPortCfg);
+
 HI_S32 HI_MPI_VDEC_CancleMainPort(HI_HANDLE hVdec,HI_HANDLE hPort);
 HI_S32 HI_MPI_VDEC_DestroyPort(HI_HANDLE hVdec,HI_HANDLE hPort);
 HI_S32 HI_MPI_VDEC_GetPortParam(HI_HANDLE hVdec, HI_HANDLE hPort, VDEC_PORT_PARAM_S *pstParam);
@@ -202,6 +229,9 @@ HI_S32 HI_MPI_VDEC_AcqUserData(HI_HANDLE hVdec,
                 HI_UNF_VIDEO_USERDATA_S* pstUserData, HI_UNF_VIDEO_USERDATA_TYPE_E* penType);
 HI_S32 HI_MPI_VDEC_RlsUserData(HI_HANDLE hVdec, HI_UNF_VIDEO_USERDATA_S* pstUserData);
 HI_S32 HI_MPI_VDEC_Invoke(HI_HANDLE hVdec, HI_CODEC_VIDEO_CMD_S* pstParam);
+HI_S32 HI_MPI_VDEC_GetChanOpenParam(HI_HANDLE hVdec, HI_UNF_AVPLAY_OPEN_OPT_S *pstOpenPara);
+
+HI_S32 HI_MPI_VDEC_ReleaseFrame(HI_HANDLE hPort, HI_DRV_VIDEO_FRAME_S *pVideoFrame);
 
 #ifdef __cplusplus
 #if __cplusplus

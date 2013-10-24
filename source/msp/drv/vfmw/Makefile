@@ -23,6 +23,22 @@ ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200es)
 PRODUCT_DIR = HiS40V200
 endif
 
+ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200)
+PRODUCT_DIR = Hi3716CV200
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719cv100)
+PRODUCT_DIR = Hi3716CV200
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3718cv100)
+PRODUCT_DIR = Hi3716CV200
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719mv100_a)
+PRODUCT_DIR = Hi3716CV200
+endif
+
 ifeq ($(CFG_HI_VFMW_DECODE_CAPABILITY),SD_ONLY)
 CFG_DIR = SD_ONLY
 endif
@@ -30,6 +46,10 @@ ifeq ($(CFG_HI_VFMW_DECODE_CAPABILITY),HD_SIMPLE)
 CFG_DIR = HD_SIMPLE
 endif
 ifeq ($(CFG_HI_VFMW_DECODE_CAPABILITY),HD_FULL)
+CFG_DIR = HD_FULL
+endif
+
+ifeq ($(PRODUCT_DIR),Hi3716CV200)
 CFG_DIR = HD_FULL
 endif
 
@@ -53,7 +73,9 @@ ifneq ($(CFG_MSP_BUILDTYPE),y)
 	$(AT)cp $(VFMW_DIR)/firmware/product/$(PRODUCT_DIR)/vfmw.h vfmw_release
 	$(AT)cp $(VFMW_DIR)/firmware/product/$(PRODUCT_DIR)/vfmw_ext.h vfmw_release
 endif
+ifeq ($(CFG_HI_VDEC_SVDEC_SUPPORT),y)
 	$(AT)make -C softlib/ all
+endif
 
 clean:
 ifneq ($(CFG_MSP_BUILDTYPE),y)
@@ -70,6 +92,14 @@ ifneq ($(CFG_MSP_BUILDTYPE),y)
 endif
 ifeq ($(CFG_HI_VDEC_SVDEC_SUPPORT),y)
 	$(AT)make -C softlib/ install
+endif
+
+uninstall:
+ifneq ($(CFG_MSP_BUILDTYPE),y)
+	$(AT)make -C $(VFMW_DIR)/ uninstall
+endif
+ifeq ($(CFG_HI_VDEC_SVDEC_SUPPORT),y)
+	$(AT)make -C softlib/ uninstall
 endif
 
 prepare:

@@ -31,8 +31,7 @@ Date				Author        		Modification
 #include "hi_drv_png.h"
 
 #include "hi_png_config.h"
-
-
+#include "hi_gfx_comm.h"
 #ifdef DEBUG
  #define PNG_API_ASSERT(EXP) assert(EXP)
 #else
@@ -56,6 +55,10 @@ static HI_U32 g_u32PngRef = 0;
 
 /* PNG device lock */
 static pthread_mutex_t g_PngMutex = PTHREAD_MUTEX_INITIALIZER;
+
+
+
+    
 
 /* check if PNG device is open */
 #define PNG_CHECK_DEVSTATE() do \
@@ -109,7 +112,13 @@ static HI_VOID   PNG_UnMap(HI_U32 u32Phyaddr, HI_VOID *pVir, HI_U32 u32Size);
 ********************************************************************************************/
 HI_S32 HI_PNG_Open(HI_VOID)
 {
-    pthread_mutex_lock(&g_PngMutex);
+    HI_S32 s32Ret;
+    
+    s32Ret = pthread_mutex_lock(&g_PngMutex);
+    if (HI_SUCCESS != s32Ret)
+    {
+        return HI_ERR_PNG_DEV_BUSY;
+    }
 
     /* device opened, return afrer adding ref */
     if (g_s32PngFd != -1)
@@ -153,7 +162,13 @@ HI_S32 HI_PNG_Open(HI_VOID)
 ********************************************************************************************/
 HI_VOID HI_PNG_Close(HI_VOID)
 {
-    pthread_mutex_lock(&g_PngMutex);
+    HI_S32 s32Ret;
+
+    s32Ret = pthread_mutex_lock(&g_PngMutex);
+    if (HI_SUCCESS != s32Ret)
+    {
+        return;
+    }
 
     /* device is not open,return */
     if (-1 == g_s32PngFd)
@@ -558,6 +573,7 @@ HI_S32 HI_PNG_GetReadPtr(HI_PNG_HANDLE s32Handle, HI_PNG_READ_FN *ppReadFunc)
         gs_PngApiInstance[s32Handle - 1].pReadParam = (PNG_READ_INFO_S *)malloc(sizeof(PNG_READ_INFO_S));
         if (HI_NULL == gs_PngApiInstance[s32Handle - 1].pReadParam)
         {
+            pthread_mutex_unlock(&gs_PngApiInstance[s32Handle - 1].stLock);
             HIPNG_TRACE("malloc failed!\n");
             return HI_ERR_PNG_NOMEM;
         }
@@ -594,7 +610,7 @@ HI_U32 HIPNG_Read(HI_UCHAR *pBuf, HI_U32 u32Len, HI_PNG_HANDLE s32Handle)
     HI_S32 s32Ret = HI_SUCCESS;
     HI_U32 u32Phyaddr = 0;
     HI_U32 u32Size = 0;
-	HI_VOID *pViraddr = HI_NULL;
+    HI_VOID *pViraddr = HI_NULL;
     HI_U32 u32ReadLen = 0;
 
     if ((HI_NULL == pBuf) || (HI_NULL == gs_PngApiInstance[s32Handle - 1].pReadParam))
@@ -612,6 +628,7 @@ HI_U32 HIPNG_Read(HI_UCHAR *pBuf, HI_U32 u32Len, HI_PNG_HANDLE s32Handle)
     pViraddr = PNG_Map(u32Phyaddr, u32Size);
     if (HI_NULL == pViraddr)
     {
+        pthread_mutex_unlock(&gs_PngApiInstance[s32Handle - 1].stLock);
         return u32ReadLen;
     }
 

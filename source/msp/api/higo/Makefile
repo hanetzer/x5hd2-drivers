@@ -44,43 +44,7 @@ HEADER_FILES += $(MSP_DIR)/api/$(TARGET)/include/hi_effect.h
 #===============================================================================
 .PHONY: all clean install uninstall
 
-all: 
-	if [ $(CFG_HI_TOOLCHAINS_NAME) =  gcc-3.4.3-soft ];\
-        then \
-        cp -a  $(NEED_HIGO_OSFP_DIR)/higodep.tar.gz      $(HIGOLIB)/lib;     \
-        cp -a  $(NEED_HIGO_OSFP_DIR)/r_dynamic/*         $(HIGOLIB)/lib;     \
-        cp -a  $(NEED_HIGO_OSFP_DIR)/r_static/*          $(HIGOLIB)/lib;     \
-        cp -a  $(NEED_HIGO_OSFP_DIR)/effect/lib/*        $(HIGOLIB)/lib;     \
-	cp -rf $(NEED_HIGO_OSFP_DIR)/include/*.h         $(HIGOLIB)/include; \
-	cp -rf $(NEED_HIGO_OSFP_DIR)/effect/include/*.h  $(HIGOLIB)/include; \
-        fi;
-	if [ $(CFG_HI_TOOLCHAINS_NAME) =  gcc-3.4.3-vfp ]; \
-        then \
-        cp -a  $(NEED_HIGO_OHFP_DIR)/higodep.tar.gz      $(HIGOLIB)/lib;     \
-        cp -a  $(NEED_HIGO_OHFP_DIR)/r_dynamic/*         $(HIGOLIB)/lib;     \
-        cp -a  $(NEED_HIGO_OHFP_DIR)/r_static/*          $(HIGOLIB)/lib;     \
-        cp -a  $(NEED_HIGO_OHFP_DIR)/effect/lib/*        $(HIGOLIB)/lib;     \
-	cp -rf $(NEED_HIGO_OHFP_DIR)/include/*.h         $(HIGOLIB)/include; \
-	cp -rf $(NEED_HIGO_OHFP_DIR)/effect/include/*.h  $(HIGOLIB)/include; \
-        fi;
-	if [ $(CFG_HI_TOOLCHAINS_NAME) =  gcc-4.4.0-soft ]; \
-        then \
-        cp -a  $(NEED_HIGO_NSFP_DIR)/higodep.tar.gz      $(HIGOLIB)/lib;     \
-        cp -a  $(NEED_HIGO_NSFP_DIR)/r_dynamic/*         $(HIGOLIB)/lib;     \
-        cp -a  $(NEED_HIGO_NSFP_DIR)/r_static/*          $(HIGOLIB)/lib;     \
-        cp -a  $(NEED_HIGO_NSFP_DIR)/effect/lib/*        $(HIGOLIB)/lib;     \
-	cp -rf $(NEED_HIGO_NSFP_DIR)/include/*.h         $(HIGOLIB)/include; \
-	cp -rf $(NEED_HIGO_NSFP_DIR)/effect/include/*.h  $(HIGOLIB)/include; \
-	fi;
-	if [ $(CFG_HI_TOOLCHAINS_NAME) =  gcc-4.4.0-vfp ]; \
-        then \
-        cp -a $(NEED_HIGO_NHFP_DIR)/higodep.tar.gz       $(HIGOLIB)/lib;     \
-        cp -a $(NEED_HIGO_NHFP_DIR)/r_dynamic/*          $(HIGOLIB)/lib;     \
-        cp -a $(NEED_HIGO_NHFP_DIR)/r_static/*           $(HIGOLIB)/lib;     \
-	cp -a $(NEED_HIGO_NHFP_DIR)/effect/lib/*         $(HIGOLIB)/lib;     \
-	cp -rf $(NEED_HIGO_NHFP_DIR)/include/*.h         $(HIGOLIB)/include; \
-	cp -rf $(NEED_HIGO_NHFP_DIR)/effect/include/*.h  $(HIGOLIB)/include; \
-	fi;
+all:
 	if [ $(CFG_HI_TOOLCHAINS_NAME) =  arm-hisiv200-linux ]; \
         then \
         cp -a $(NEED_HIGO_GHFP_DIR)/higodep.tar.gz       $(HIGOLIB)/lib;     \
@@ -90,15 +54,7 @@ all:
 	cp -rf $(NEED_HIGO_GHFP_DIR)/include/*.h         $(HIGOLIB)/include; \
 	cp -rf $(NEED_HIGO_GHFP_DIR)/effect/include/*.h  $(HIGOLIB)/include; \
 	fi;
-	if [ $(CFG_HI_TOOLCHAINS_NAME) =  arm-hisiv110-linux ]; \
-        then \
-        cp -a $(NEED_HIGO_UHFP_DIR)/higodep.tar.gz       $(HIGOLIB)/lib;     \
-        cp -a $(NEED_HIGO_UHFP_DIR)/r_dynamic/*          $(HIGOLIB)/lib;     \
-        cp -a $(NEED_HIGO_UHFP_DIR)/r_static/*           $(HIGOLIB)/lib;     \
-        cp -a $(NEED_HIGO_UHFP_DIR)/effect/lib/*         $(HIGOLIB)/lib;     \
-	cp -rf $(NEED_HIGO_UHFP_DIR)/include/*.h         $(HIGOLIB)/include; \
-	cp -rf $(NEED_HIGO_UHFP_DIR)/effect/include/*.h  $(HIGOLIB)/include; \
-	fi;
+
 clean:
 	$(AT)rm -rf lib/*
 
@@ -114,9 +70,12 @@ install: all
 	$(AR) -r lib/libhigo.a lib/cut-obj/higofontprovider_freetype.o; \
 	fi;
 	$(AT)cp -rf  $(HEADER_FILES)     $(INCLUDE_DIR)/
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)cp -rf  lib/*.so            $(SHARED_LIB_DIR)/
-	$(AT)cp -rf  lib/*.a             $(STATIC_LIB_DIR)/
 	$(AT)cp -rf  lib/higo-adp        $(EXTERN_LIB_DIR)/
+endif
+	$(AT)cp -rf  lib/*.a             $(STATIC_LIB_DIR)/
+	
 	rm -rf lib/cut-obj
 uninstall:
 	$(AT)rm -rf $(SHARED_LIB_DIR)/libhigo*.so

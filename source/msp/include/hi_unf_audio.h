@@ -88,7 +88,7 @@ typedef enum hiUNF_TRACK_MODE_E
 /**Defines the attributes of the audio decoder.*/
 /**CNcomment: 定义音频解码器属性结构*/
 typedef struct hiUNF_ACODEC_ATTR_S{
-    HI_U32        enType;                    /**<Audio decoder type*/ /**<CNcomment: 音频解码类型*/
+    HA_CODEC_ID_E        enType;                    /**<Audio decoder type*/ /**<CNcomment: 音频解码类型*/
     HI_HADECODE_OPENPARAM_S stDecodeParam;   /**<Audio decoder parameter*/ /**<CNcomment: 音频解码参数*/
 }HI_UNF_ACODEC_ATTR_S;
 
@@ -214,6 +214,7 @@ typedef struct hiUNF_AO_FRAMEINFO_S
     HI_U32  u32PcmSamplesPerFrame; /**<Number of sampling points of the PCM data*/ /**<CNcomment: PCM数据采样点数量*/
     HI_U32  u32BitsBytesPerFrame;  /**<IEC61937 data size*/ /**<CNcomment: IEC61937数据长度*/
     HI_U32  u32FrameIndex;         /**<Frame ID*/ /**<CNcomment: 帧序号 */
+	HI_U32  u32IEC61937DataType;      /**<IEC61937 Data Type*/ /**<CNcomment: IEC61937数据类型标识，低8bit为IEC数据类型 */
 } HI_UNF_AO_FRAMEINFO_S;
 
 /** @} */  /** <!-- ==== Structure Definition End ==== */

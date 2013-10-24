@@ -46,11 +46,20 @@ typedef struct hiSCI_LEVEL_S
     HI_UNF_SCI_LEVEL_E enSciLevel;
 } SCI_LEVEL_S;
 
-typedef struct hiSCI_CLK_S
+typedef enum hiSCI_IO_E
+{
+	SCI_IO_CLK,
+	SCI_IO_RESET,
+	SCI_IO_VCC_EN,
+	SCI_IO_BUTT,
+}SCI_IO_E;
+
+typedef struct hiSCI_IO_OUTPUTTYPE_S
 {
     HI_UNF_SCI_PORT_E     enSciPort;
-    HI_UNF_SCI_CLK_MODE_E enClkMode;
-} SCI_CLK_S;
+	SCI_IO_E			  enIO;
+    HI_UNF_SCI_MODE_E     enOutputType;
+} SCI_IO_OUTPUTTYPE_S;
 
 typedef struct hiSCI_DEV_STATE_S
 {
@@ -107,7 +116,7 @@ typedef struct hiSCI_TXRETRY_S
 #define CMD_SCI_GET_STATUS _IOWR(HI_ID_SCI, 0x6, SCI_STATUS_S)
 #define CMD_SCI_CONF_VCC _IOW(HI_ID_SCI, 0x7, SCI_LEVEL_S)
 #define CMD_SCI_CONF_DETECT _IOW(HI_ID_SCI, 0x8, SCI_LEVEL_S)
-#define CMD_SCI_CONF_CLK_MODE _IOW(HI_ID_SCI, 0x9, SCI_CLK_S)
+#define CMD_SCI_CONF_MODE _IOW(HI_ID_SCI, 0x9, SCI_IO_OUTPUTTYPE_S)
 #define CMD_SCI_SEND_DATA _IOWR(HI_ID_SCI, 0xa, SCI_DATA_S)
 #define CMD_SCI_RECEIVE_DATA _IOWR(HI_ID_SCI, 0xb, SCI_DATA_S)
 #define CMD_SCI_SWITCH _IOW(HI_ID_SCI, 0xc, SCI_OPEN_S)

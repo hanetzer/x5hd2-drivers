@@ -23,7 +23,7 @@
 
 #include "hi_unf_gpio.h"
 #include "drv_gpio_ioctl.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 
 static HI_S32 g_GpioDevFd = -1;
 static HI_S32 g_GpioDrvFd = -1;
@@ -31,6 +31,10 @@ static HI_S32 g_GpioOpen = 0;
 
 #define DEVNAME_GPIO "hi_gpio"
 static pthread_mutex_t g_GpioMutex = PTHREAD_MUTEX_INITIALIZER;
+
+static const HI_U8 s_szGPIOVersion[] = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 #define HI_GPIO_LOCK() (void)pthread_mutex_lock(&g_GpioMutex);
 #define HI_GPIO_UNLOCK() (void)pthread_mutex_unlock(&g_GpioMutex);
@@ -73,16 +77,19 @@ HI_S32 HI_UNF_GPIO_Init(HI_VOID)
     Ret = ioctl(g_GpioDrvFd, CMD_GPIO_GET_GPIONUM, &g_GpioNum);
     if (HI_SUCCESS != Ret)
     {
-        HI_GPIO_UNLOCK();
         HI_ERR_GPIO("ioctl CMD_GPIO_GET_CHIPTYPE failed.\n");
         close(g_GpioDevFd);
         close(g_GpioDrvFd);
         g_GpioDrvFd = -1;
         g_GpioDevFd = -1;
+		HI_GPIO_UNLOCK();
         return HI_FAILURE;
     }
 
-#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a) \
+	|| defined (CHIP_TYPE_hi3718mv100)
 	HI_U8 ii = 0;
 
 #define GPIO_USER_MAP_SIZE_TOTAL (0x12000)
@@ -421,6 +428,89 @@ HI_S32 HI_UNF_GPIO_ReadBit(HI_U32 u32GpioNo, HI_BOOL *pbHighVolt)
     HI_GPIO_UNLOCK();
     return HI_SUCCESS;
 }
+
+HI_S32 HI_UNF_GPIO_SetOutputType(HI_U32 u32GpioNo, HI_UNF_GPIO_OUTPUTTYPE_E  enOutputType)
+{
+    HI_S32 Ret = HI_SUCCESS;
+	GPIO_OUTPUT_TYPE_S stOutputType;
+	
+	if (u32GpioNo >= g_GpioNum.u8GpioMaxNum)
+    {
+        HI_ERR_GPIO("para u32GpioNo is invalid.\n");
+        return HI_ERR_GPIO_INVALID_PARA;
+    }
+
+	if (enOutputType >= HI_UNF_GPIO_OUTPUTTYPE_BUTT)
+    {
+        HI_ERR_GPIO("para enOutputType is invalid.\n");
+        return HI_ERR_GPIO_INVALID_PARA;
+    }
+
+    HI_GPIO_LOCK();
+
+    if (g_GpioDevFd < 0)
+    {
+        HI_ERR_GPIO("GPIO is not open.\n");
+        HI_GPIO_UNLOCK();
+        return HI_ERR_GPIO_NOT_INIT;
+    }
+
+	stOutputType.u32GpioNo = u32GpioNo;
+	stOutputType.enOutputType = enOutputType;
+
+	Ret = ioctl(g_GpioDrvFd, CMD_GPIO_SET_OUTPUTTYPE, &stOutputType);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_GPIO_UNLOCK();
+        return HI_ERR_GPIO_FAILED_SETOUTPUTTYPE;
+    }
+
+    HI_GPIO_UNLOCK();
+
+	return Ret;
+} 
+
+HI_S32 HI_UNF_GPIO_GetOutputType(HI_U32 u32GpioNo, HI_UNF_GPIO_OUTPUTTYPE_E  *penOutputType)
+{
+	HI_S32 Ret = HI_SUCCESS;
+	GPIO_OUTPUT_TYPE_S stOutputType;
+	
+	if (u32GpioNo >= g_GpioNum.u8GpioMaxNum)
+    {
+        HI_ERR_GPIO("para u32GpioNo is invalid.\n");
+        return HI_ERR_GPIO_INVALID_PARA;
+    }
+
+	if (penOutputType == HI_NULL)
+    {
+        HI_ERR_GPIO("para penOutputType is invalid.\n");
+        return HI_ERR_GPIO_INVALID_PARA;
+    }
+
+    HI_GPIO_LOCK();
+
+    if (g_GpioDevFd < 0)
+    {
+        HI_ERR_GPIO("GPIO is not open.\n");
+        HI_GPIO_UNLOCK();
+        return HI_ERR_GPIO_NOT_INIT;
+    }
+
+	stOutputType.u32GpioNo = u32GpioNo;
+
+	Ret = ioctl(g_GpioDrvFd, CMD_GPIO_GET_OUTPUTTYPE, &stOutputType);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_GPIO_UNLOCK();
+        return HI_ERR_GPIO_FAILED_GETOUTPUTTYPE;
+    }
+
+	*penOutputType = stOutputType.enOutputType;
+
+    HI_GPIO_UNLOCK();
+
+	return Ret;
+} 
 
 HI_S32 HI_UNF_GPIO_SetIntType(HI_U32 u32GpioNo, HI_UNF_GPIO_INTTYPE_E enIntType)
 {

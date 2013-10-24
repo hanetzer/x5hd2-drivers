@@ -102,7 +102,6 @@ HI_U32 hifb_parse_scrolltexthandle(HI_U32 u32Handle, HI_U32 *pU32LayerId, HI_U32
     *pScrollTextId = u32Handle & 0x0f;
     //printk("pU32LayerId:%d,pScrollTextId:%d\n", *pU32LayerId, *pScrollTextId);    
     if (*pU32LayerId == HIFB_LAYER_CURSOR
-        || *pU32LayerId < HIFB_LAYER_SD_0
         || *pU32LayerId >= HIFB_LAYER_ID_BUTT)
     {
     	//printk("~~~~~~%d\n", __LINE__);
@@ -155,23 +154,23 @@ HI_S32 hifb_check_scrolltext_para(HI_U32 u32LayerId, HIFB_SCROLLTEXT_ATTR_S *stA
     }
 
     if (0 > stScrollTextRect.x || 0 > stScrollTextRect.y
-        || pstPar->stDisplayInfo.stPos.s32XPos > stScrollTextRect.x 
-        || pstPar->stDisplayInfo.stPos.s32YPos > stScrollTextRect.y)
+        || pstPar->stExtendInfo.stPos.s32XPos > stScrollTextRect.x 
+        || pstPar->stExtendInfo.stPos.s32YPos > stScrollTextRect.y)
     {
         HIFB_ERROR("failed to create the scrolltext because of wrong pos info!\n");                
         return HI_FAILURE;
     }
 
     if (0 > stScrollTextRect.w || 0 > stScrollTextRect.h
-        || pstPar->stDisplayInfo.u32DisplayWidth  < stScrollTextRect.w
-        || pstPar->stDisplayInfo.u32DisplayHeight < stScrollTextRect.h)
+        || pstPar->stExtendInfo.u32DisplayWidth  < stScrollTextRect.w
+        || pstPar->stExtendInfo.u32DisplayHeight < stScrollTextRect.h)
     {
         HIFB_ERROR("failed to create the scrolltext because of wrong width or height!\n");                
         return HI_FAILURE;
     }
 
-    if (pstPar->stDisplayInfo.u32DisplayWidth  < (stScrollTextRect.w + stScrollTextRect.x)
-	    || pstPar->stDisplayInfo.u32DisplayHeight < (stScrollTextRect.h + stScrollTextRect.y))
+   if ((pstPar->stExtendInfo.stPos.s32XPos+pstPar->stExtendInfo.u32DisplayWidth)  < (stScrollTextRect.w + stScrollTextRect.x)
+	    || (pstPar->stExtendInfo.stPos.s32YPos+pstPar->stExtendInfo.u32DisplayHeight) < (stScrollTextRect.h + stScrollTextRect.y)) 
     {
         HIFB_ERROR("failed to create the scrolltext because of wrong width or height!\n");                
         return HI_FAILURE;
@@ -183,7 +182,7 @@ HI_S32 hifb_check_scrolltext_para(HI_U32 u32LayerId, HIFB_SCROLLTEXT_ATTR_S *stA
 		if (s_stTextLayer[u32LayerId].stScrollText[i].bAvailable)
 		{
 			stSrcRect = s_stTextLayer[u32LayerId].stScrollText[i].stRect;
-			if (hifb_isoverlay(stSrcRect, stScrollTextRect))
+			if (hifb_isoverlay(&stSrcRect, &stScrollTextRect))
 			{
 				HIFB_ERROR("failed to create the scrolltext because the scrolltext overlayed with another!\n");                
         		return HI_FAILURE;
@@ -284,7 +283,7 @@ HI_S32 hifb_allocscrolltext_buf(HI_U32 u32LayerId, HIFB_SCROLLTEXT_ATTR_S *stAtt
 
     for (i = 0; i < stAttr->u16CacheNum; i++)
     {         
-		snprintf(name, sizeof(name), "hifb_layer%d_scroll%d", u32LayerId, i);
+		snprintf(name, sizeof(name), "HIFB_Layer%d_Scroll%d", u32LayerId, i);
 		u32StartAddr = hifb_buf_allocmem(name, u32cacheSize);
 
 		if (HI_NULL == u32StartAddr)
@@ -448,7 +447,7 @@ HI_S32 hifb_fill_scrolltext(HIFB_SCROLLTEXT_DATA_S *stScrollTextData)
             if (!stCacheBuf.bInusing)
             {
                 stTempBuf.stCanvas.u32PhyAddr = stCacheBuf.u32PhyAddr;
-                stTempBuf.stCanvas.enFmt      = pstPar->enColFmt;
+                stTempBuf.stCanvas.enFmt      = pstPar->stExtendInfo.enColFmt;
                 stTempBuf.stCanvas.u32Width   = pstScrollText->stRect.w;
                 stTempBuf.stCanvas.u32Height  = pstScrollText->stRect.h;                
 				stTempBuf.stCanvas.u32Pitch = pstScrollText->u32Stride;
@@ -464,9 +463,9 @@ HI_S32 hifb_fill_scrolltext(HIFB_SCROLLTEXT_DATA_S *stScrollTextData)
                 }
 
                 if (pstScrollText->bDeflicker
-                    && pstPar->stDisplayInfo.enAntiflickerMode == HIFB_ANTIFLICKER_TDE)
+                    && pstPar->stBaseInfo.enAntiflickerMode == HIFB_ANTIFLICKER_TDE)
                 {
-                    stBlitOpt.enAntiflickerLevel = pstPar->stDisplayInfo.enAntiflickerLevel;
+                    stBlitOpt.enAntiflickerLevel = pstPar->stBaseInfo.enAntiflickerLevel;
                 }
 
                 //stBlitOpt.bRegionDeflicker = HI_TRUE;
@@ -554,7 +553,7 @@ HI_S32 hifb_fill_scrolltext(HIFB_SCROLLTEXT_DATA_S *stScrollTextData)
     	HI_CHAR *pBuf;
     	/*when using virtual address, ensure the usr colorfmt was the same with layer*/
 	//	printk("hifb_fill_scrolltext layer:%d, text:%d\n",pstPar->enColFmt,pstScrollText->ePixelFmt);
-		if (pstPar->enColFmt != pstScrollText->ePixelFmt)
+		if (pstPar->stExtendInfo.enColFmt != pstScrollText->ePixelFmt)
 		{
 			HIFB_ERROR("invalid virtual address!\n");
 			return HI_FAILURE;
@@ -748,7 +747,7 @@ HI_S32 hifb_scrolltext_blit(HI_U32 u32LayerID)
 	pstPar = (HIFB_PAR_S *)(info->par);
     pstScrollTextInfo = &(s_stTextLayer[u32LayerID]);
     //u32StartAddr = pstPar->stBufInfo.u32DisplayAddr[0];	
-    u32StartAddr = pstPar->stBufInfo.u32ScreenAddr;	
+    u32StartAddr = pstPar->stRunInfo.u32ScreenAddr;	
 	/*blit the cache buffer of scrolltext to the display buffer*/	
     if (s_stTextLayer[u32LayerID].bAvailable)
     {        
@@ -768,7 +767,7 @@ HI_S32 hifb_scrolltext_blit(HI_U32 u32LayerID)
                 memset(&stBlitOpt, 0, sizeof(HIFB_BLIT_OPT_S));
                 
                 stCanvasBuf.stCanvas.u32PhyAddr = pstScrollText->stCachebuf[j].u32PhyAddr;
-                stCanvasBuf.stCanvas.enFmt      = pstPar->enColFmt;
+                stCanvasBuf.stCanvas.enFmt      = pstPar->stExtendInfo.enColFmt;					
                 stCanvasBuf.stCanvas.u32Width   = pstScrollText->stRect.w;
                 stCanvasBuf.stCanvas.u32Height  = pstScrollText->stRect.h;
                 stCanvasBuf.stCanvas.u32Pitch   = pstScrollText->u32Stride;
@@ -781,15 +780,15 @@ HI_S32 hifb_scrolltext_blit(HI_U32 u32LayerID)
                 stCanvasBuf.UpdateRect.h        = pstScrollText->stRect.h;
 
                 stTempBuf.stCanvas.u32PhyAddr   = u32StartAddr;
-                stTempBuf.stCanvas.enFmt        = pstPar->enColFmt;
-                stTempBuf.stCanvas.u32Width     = pstPar->stDisplayInfo.u32DisplayWidth;
-                stTempBuf.stCanvas.u32Height    = pstPar->stDisplayInfo.u32DisplayHeight;
+                stTempBuf.stCanvas.enFmt        = pstPar->stExtendInfo.enColFmt;
+                stTempBuf.stCanvas.u32Width     = pstPar->stExtendInfo.u32DisplayWidth;
+                stTempBuf.stCanvas.u32Height    = pstPar->stExtendInfo.u32DisplayHeight;
 				stTempBuf.stCanvas.u32Pitch   = info->fix.line_length;
 				//printk("hifb_scrolltext_blit line_length:%d\n", info->fix.line_length);
 				//printk("hifb_scrolltext_blit u32StartAddr:0x%x\n",stTempBuf.stCanvas.u32PhyAddr);
 
-                stTempBuf.UpdateRect.x          = pstScrollText->stRect.x - pstPar->stDisplayInfo.stPos.s32XPos;
-                stTempBuf.UpdateRect.y          = pstScrollText->stRect.y - pstPar->stDisplayInfo.stPos.s32YPos;;
+                stTempBuf.UpdateRect.x          = pstScrollText->stRect.x - pstPar->stExtendInfo.stPos.s32XPos;
+                stTempBuf.UpdateRect.y          = pstScrollText->stRect.y - pstPar->stExtendInfo.stPos.s32YPos;;
                 stTempBuf.UpdateRect.w          = pstScrollText->stRect.w;
                 stTempBuf.UpdateRect.h          = pstScrollText->stRect.h;
 
@@ -800,9 +799,9 @@ HI_S32 hifb_scrolltext_blit(HI_U32 u32LayerID)
                 }
 
                 if (pstScrollText->bDeflicker
-                    && pstPar->stDisplayInfo.enAntiflickerMode == HIFB_ANTIFLICKER_TDE)
+                    && pstPar->stBaseInfo.enAntiflickerMode == HIFB_ANTIFLICKER_TDE)
                 {
-                    stBlitOpt.enAntiflickerLevel = pstPar->stDisplayInfo.enAntiflickerLevel;
+                    stBlitOpt.enAntiflickerLevel = pstPar->stBaseInfo.enAntiflickerLevel;
                 }
 
                 //stBlitOpt.bRegionDeflicker = HI_TRUE;

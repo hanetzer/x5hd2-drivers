@@ -5,6 +5,7 @@
 #include "nand.h"
 
 #define  HI_FLASH_END_DUETO_BADBLOCK -10
+#define  HINFC610_OOBSIZE_FOR_YAFFS  32
 
 int nand_raw_init(void);
 

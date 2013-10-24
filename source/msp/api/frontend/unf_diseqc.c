@@ -42,7 +42,7 @@
 
 /*--------------------------- MACRO DECLARATIONS ---------------------------------------*/
 
-#define UNF_TUNER_NUM 3
+#define UNF_TUNER_NUM 5
 
 #define LO_FREQUENCY_L (0x0)
 #define LO_FREQUENCY_H (0x1)

@@ -21,11 +21,58 @@ History       :
 
 
 
+
 #ifdef __cplusplus
  #if __cplusplus
 extern "C" {
  #endif
 #endif /* __cplusplus */
+/******************************************************************************
+    local function and macro
+******************************************************************************/
+#define WinGetType(pstWin)    (pstWin->enType)
+#define WinGetLayerID(pstWin) (pstWin->eLayer)
+#define WinGetDispID(pstWin)  (pstWin->enDisp)
+
+#define WinCheckDeviceOpen()    \
+{                                \
+    if (WIN_DEVICE_STATE_OPEN != s_s32WindowGlobalFlag)  \
+    {                            \
+        WIN_ERROR("WIN is not inited or suspended in %s!\n", __FUNCTION__); \
+        return HI_ERR_VO_NO_INIT;  \
+    }                             \
+}
+
+#define WinCheckNullPointer(ptr) \
+{                                \
+    if (!ptr)                    \
+    {                            \
+        WIN_ERROR("WIN Input null pointer in %s!\n", __FUNCTION__); \
+        return HI_ERR_VO_NULL_PTR;  \
+    }                             \
+}
+
+#define WinCheckWindow(hWin, pstWin) \
+{                                    \
+    pstWin = WinGetWindow(hWin);     \
+    if (!pstWin)                      \
+    {                                \
+        WIN_ERROR("WIN is not exist!\n"); \
+        return HI_ERR_VO_WIN_NOT_EXIST; \
+    }  \
+}
+
+#define WinCheckSlaveWindow(pstWin) \
+{                                   \
+    if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinGetType(pstWin)) \
+    {                               \
+        if (!pstWin->hSlvWin)        \
+        {                           \
+            WIN_ERROR("WIN Slave window is lost in %s\n", __FUNCTION__); \
+            return HI_ERR_VO_SLAVE_WIN_LOST;    \
+        }                           \
+    }                               \
+}
 
 #define WINDOW_INVALID_ID 0xFFFFFFFFul
 #define WINDOW_MAX_NUMBER 4
@@ -79,9 +126,9 @@ HI_S32 WIN_SetStepPlay(HI_HANDLE hWin);
 HI_S32 WIN_SetExtBuffer(HI_HANDLE hWin, HI_DRV_VIDEO_BUFFER_POOL_S* pstBuf);
 HI_S32 WIN_AcquireFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameinfo);
 HI_S32 WIN_ReleaseFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameinfo);
-
-//todo
-HI_S32 WIN_Set3DMode(HI_HANDLE hWin, HI_BOOL b3DEnable,HI_DRV_DISP_STEREO_E eMode);
+HI_S32 WIN_AttachSink(HI_HANDLE hWin, HI_HANDLE hSink);
+HI_S32 WIN_DetachSink(HI_HANDLE hWin, HI_HANDLE hSink);
+HI_S32 WIN_SetVirtualAttr(HI_HANDLE hWin, HI_U32 u32Width,HI_U32 u32Height);
 
 HI_S32 WIN_SetQuick(HI_HANDLE hWin, HI_BOOL bEnable);
 
@@ -95,6 +142,9 @@ HI_S32 WIN_SetFlip(HI_HANDLE hWin, HI_BOOL bHoriFlip, HI_BOOL bVertFlip);
 HI_S32 WIN_GetFlip(HI_HANDLE hWin, HI_BOOL *pbHoriFlip, HI_BOOL *pbVertFlip);
 
 HI_S32 WIN_SendFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameinfo);
+HI_S32 WIN_DestroyStillFrame(HI_DRV_VIDEO_FRAME_S *pStillFrameinfo);
+HI_U32 WinGetIndex(HI_HANDLE hWin, HI_DRV_DISPLAY_E *enDisp, HI_U32 *u32WinIndex);
+HI_S32 WinForceClearCapture(HI_HANDLE hWin);
 
 typedef struct tagWIN_HANDLE_ARRAY_S
 {
@@ -208,7 +258,11 @@ HI_S32 WinGetProcIndex(HI_HANDLE hWin, HI_U32 *p32Index);
 HI_S32 WinGetProcInfo(HI_HANDLE hWin, WIN_PROC_INFO_S *pstInfo);
 
 HI_S32 WinGetCurrentImg(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pstFrame);
-
+HI_S32 WinCaptureFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_U32 *stMMZPhyAddr, HI_U32 *stMMZlen);
+HI_S32 WinReleaseCaptureFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pstFrame);
+HI_S32 WinFreeCaptureMMZBuf(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *cap_frame);
+HI_S32 WinCapturePause(HI_HANDLE hWin, HI_BOOL bCaptureStart);
+HI_S32 WinReleaseStillFrame(HI_DRV_VIDEO_FRAME_S *pStillFrameInfo);
 
 #ifdef __cplusplus
  #if __cplusplus

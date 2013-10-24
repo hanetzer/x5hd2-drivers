@@ -34,13 +34,21 @@
 #include "hi_type.h"
 #include "hi_mpi_mem.h"
 #include "drv_venc_ioctl.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 
+#include "hi_mpi_vi.h"
+#include "hi_mpi_win.h"
+#include "hi_mpi_disp.h"
 #ifdef __cplusplus
  #if __cplusplus
 extern "C" {
  #endif
 #endif /* End of #ifdef __cplusplus */
+
+
+static const HI_CHAR s_szVencVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 static HI_S32 g_VEncDevFd = -1;
 static const HI_CHAR g_VEncDevName[] = "/dev/" UMAP_DEVNAME_VENC;
@@ -76,7 +84,7 @@ static VENC_CHN_INFO_S s_asrVeChnInfo[VENC_MAX_CHN_NUM];
 
 static HI_S32 MpiVencChechStaticUserConfig(const HI_UNF_VENC_CHN_ATTR_S *pstAttr)
 {
-    HI_U32 u32BufMinSize = 0;
+    HI_U32 u32BufMinSize = 0,u32TotalMB = 0;
     if (pstAttr->enVencType >= HI_UNF_VCODEC_TYPE_BUTT)
     {
         HI_ERR_VENC("enVencType(%d) invalid.\n", pstAttr->enVencType);
@@ -89,16 +97,13 @@ static HI_S32 MpiVencChechStaticUserConfig(const HI_UNF_VENC_CHN_ATTR_S *pstAttr
         return HI_ERR_VENC_NOT_SUPPORT;
     }
 
-    if ((pstAttr->enVencType != HI_UNF_VCODEC_TYPE_MPEG4)
-        && (pstAttr->enVencType != HI_UNF_VCODEC_TYPE_H263)
-        && (pstAttr->enVencType != HI_UNF_VCODEC_TYPE_H264)
-        && (pstAttr->enVencType != HI_UNF_VCODEC_TYPE_JPEG))
+    if ((pstAttr->enVencType != HI_UNF_VCODEC_TYPE_H264)&& (pstAttr->enVencType != HI_UNF_VCODEC_TYPE_JPEG))
     {
         HI_ERR_VENC("NOT support Type(%d) VENC channel.\n", pstAttr->enVencType);
         return HI_ERR_VENC_NOT_SUPPORT;
     }
 
-    if (pstAttr->enCapLevel >= HI_UNF_VCODEC_CAP_LEVEL_BUTT)
+    if (pstAttr->enCapLevel > HI_UNF_VCODEC_CAP_LEVEL_FULLHD)
     {
         HI_ERR_VENC("enCapLevel(%d) invalid.\n", pstAttr->enCapLevel);
         return HI_ERR_VENC_INVALID_PARA;
@@ -118,35 +123,67 @@ static HI_S32 MpiVencChechStaticUserConfig(const HI_UNF_VENC_CHN_ATTR_S *pstAttr
         return HI_ERR_VENC_INVALID_PARA;
     }
 
-    /*if ((pstAttr->u32Height % HI_VENC_PIC_SZIE_ALIGN) || (pstAttr->u32Width % HI_VENC_PIC_SZIE_ALIGN))
+    if ((pstAttr->u32Height % HI_VENC_PIC_SZIE_ALIGN) || (pstAttr->u32Width % HI_VENC_PIC_SZIE_ALIGN))
     {
         HI_ERR_VENC("Picture Width(%u) or Heigth(%u) invalid, should N*%d.\n", pstAttr->u32Width, pstAttr->u32Height,
                     HI_VENC_PIC_SZIE_ALIGN);
         return HI_ERR_VENC_INVALID_PARA;
-    }*/
+    }
 
+    u32TotalMB = (VENC_ALIGN_UP(pstAttr->u32Height, 16)>>4) *(VENC_ALIGN_UP(pstAttr->u32Width, 16)>>4);
     switch (pstAttr->enCapLevel)
     {
         case HI_UNF_VCODEC_CAP_LEVEL_QCIF:
+			if (u32TotalMB > 99)
+		    {
+		       HI_ERR_VENC("Picture Width(%u) or Heigth(%u) too large for enCapLevel(%d) .\n", 
+			   	            pstAttr->u32Width, pstAttr->u32Height,pstAttr->enCapLevel);
+               return HI_ERR_VENC_INVALID_PARA; 
+		    }
 			u32BufMinSize = 176*144*2;
 			break;
 		case HI_UNF_VCODEC_CAP_LEVEL_CIF:
+			if (u32TotalMB > 396)
+		    {
+		       HI_ERR_VENC("Picture Width(%u) or Heigth(%u) too large for enCapLevel(%d) .\n", 
+			   	            pstAttr->u32Width, pstAttr->u32Height,pstAttr->enCapLevel);
+               return HI_ERR_VENC_INVALID_PARA; 
+		    }
 			u32BufMinSize = 352*288*2;
 			break;
 		case HI_UNF_VCODEC_CAP_LEVEL_D1:
+			if (u32TotalMB > 1620)
+		    {
+		       HI_ERR_VENC("Picture Width(%u) or Heigth(%u) too large for enCapLevel(%d) .\n", 
+			   	            pstAttr->u32Width, pstAttr->u32Height,pstAttr->enCapLevel);
+               return HI_ERR_VENC_INVALID_PARA; 
+		    }
 			u32BufMinSize = 720*576*2;
 			break;
 		case HI_UNF_VCODEC_CAP_LEVEL_720P:
+			if (u32TotalMB > 3600)
+		    {
+		       HI_ERR_VENC("Picture Width(%u) or Heigth(%u) too large for enCapLevel(%d) .\n", 
+			   	            pstAttr->u32Width, pstAttr->u32Height,pstAttr->enCapLevel);
+               return HI_ERR_VENC_INVALID_PARA; 
+		    }
 			u32BufMinSize = 1280*720*2;
 			break;
 		case HI_UNF_VCODEC_CAP_LEVEL_FULLHD:
+			if (u32TotalMB > 8160)
+		    {
+		       HI_ERR_VENC("Picture Width(%u) or Heigth(%u) too large for enCapLevel(%d) .\n", 
+			   	            pstAttr->u32Width, pstAttr->u32Height,pstAttr->enCapLevel);
+               return HI_ERR_VENC_INVALID_PARA; 
+		    }
 			u32BufMinSize = 1920*1080*2;
 			break;
 		default:
-			HI_ERR_VENC("enVencType(%d) invalid.\n", pstAttr->enVencType);
+			HI_ERR_VENC("enCapLevel(%d) invalid.\n", pstAttr->enCapLevel);
             return HI_ERR_VENC_INVALID_PARA;
 			
     }
+	
     if ((pstAttr->u32StrmBufSize < u32BufMinSize)
         || (pstAttr->u32StrmBufSize > HI_VENC_MAX_BUF_SIZE))
     {
@@ -162,6 +199,17 @@ static HI_S32 MpiVencChechStaticUserConfig(const HI_UNF_VENC_CHN_ATTR_S *pstAttr
             HI_ERR_VENC("u32RotationAngle(%u) only support 0 now.\n", pstAttr->u32RotationAngle);
             return HI_ERR_VENC_NOT_SUPPORT;
         }
+
+		if (pstAttr->enVencProfile >= HI_UNF_H264_PROFILE_BUTT)
+		{
+		   HI_ERR_VENC("enVencProfile(%d) invalid.\n",pstAttr->enVencProfile);
+           return HI_ERR_VENC_INVALID_PARA;
+		}
+		if (pstAttr->enVencProfile == HI_UNF_H264_PROFILE_EXTENDED)
+		{
+		   HI_ERR_VENC("enVencProfile(%d) not support.\n",pstAttr->enVencProfile);
+           return HI_ERR_VENC_NOT_SUPPORT;
+		}
     }
     else /* JPEG */
     {
@@ -176,6 +224,13 @@ static HI_S32 MpiVencChechStaticUserConfig(const HI_UNF_VENC_CHN_ATTR_S *pstAttr
         {
             HI_ERR_VENC("u32RotationAngle(%u) invalid, should N*90.\n", pstAttr->u32RotationAngle);
             return HI_ERR_VENC_INVALID_PARA;
+        }
+
+		if ((pstAttr->u32Qlevel < HI_VENC_MIN_Q_VALUE)
+            || (pstAttr->u32Qlevel > HI_VENC_MAX_Q_VALUE))
+        {
+            HI_ERR_VENC("u32Qlevel(%u) is invalid.\n", pstAttr->u32Qlevel);
+            return HI_ERR_VENC_INVALID_PARA;    
         }
 
     }
@@ -329,6 +384,11 @@ HI_S32 HI_MPI_VENC_SetAttr(HI_HANDLE hVencChn, const HI_UNF_VENC_CHN_ATTR_S *pst
     CHECK_VENC_INIT();
     CHECK_CHANNEL_EXIST(i,VENC_MAX_CHN_NUM,hVencChn);
 
+    s32Ret = MpiVencChechStaticUserConfig(pstAttr);
+    if (HI_SUCCESS != s32Ret)
+    {
+        return s32Ret;
+    }
     s32Ret = MpiVencChechUserConfig(pstAttr);
     if (HI_SUCCESS != s32Ret)
     {
@@ -409,8 +469,9 @@ HI_S32 HI_MPI_VENC_Create(HI_HANDLE *phVencChn, const HI_UNF_VENC_CHN_ATTR_S *ps
         return HI_ERR_VENC_CREATE_ERR;
     }
 
+    stVencChnCreate.bOMXChn = HI_FALSE;
     memcpy(&(stVencChnCreate.stAttr), pstAttr, sizeof(HI_UNF_VENC_CHN_ATTR_S));
-
+    
     s32Ret = ioctl(g_VEncDevFd, CMD_VENC_CREATE_CHN, &stVencChnCreate);
     if (HI_SUCCESS != s32Ret)
     {
@@ -418,6 +479,7 @@ HI_S32 HI_MPI_VENC_Create(HI_HANDLE *phVencChn, const HI_UNF_VENC_CHN_ATTR_S *ps
     }
 
     memcpy(&(s_asrVeChnInfo[i]), &(stVencChnCreate.stVeInfo), sizeof(VENC_CHN_INFO_S));
+	s_asrVeChnInfo[i].hSource = HI_INVALID_HANDLE;
     if (pstAttr->bSlcSplitEn)
     { 
        patchBufSize = VENC_ALIGN_UP((pstAttr->u32Width *pstAttr->u32Height*3/2/4), 64);
@@ -447,7 +509,7 @@ HI_S32 HI_MPI_VENC_Create(HI_HANDLE *phVencChn, const HI_UNF_VENC_CHN_ATTR_S *ps
 HI_S32 HI_MPI_VENC_Destroy(HI_HANDLE hVencChn)
 {
     HI_S32 s32Ret = 0, i = 0;
-
+    HI_MOD_ID_E enModID = HI_ID_BUTT;
     if (HI_INVALID_HANDLE == hVencChn)
     {
         HI_ERR_VENC("para hVencChn is invalid.\n");
@@ -456,6 +518,28 @@ HI_S32 HI_MPI_VENC_Destroy(HI_HANDLE hVencChn)
 
     CHECK_VENC_INIT();
     CHECK_CHANNEL_EXIST(i,VENC_MAX_CHN_NUM,hVencChn);
+	
+	enModID = (HI_MOD_ID_E)((s_asrVeChnInfo[i].hSource & 0xff0000) >> 16);
+    switch (enModID)
+    {
+       case HI_ID_VI:
+            s32Ret =  HI_MPI_VI_Detach(s_asrVeChnInfo[i].hSource, hVencChn);
+            break;
+       case HI_ID_VO:
+            s32Ret =  HI_MPI_WIN_DetachWinSink(s_asrVeChnInfo[i].hSource, hVencChn);
+            break;
+       case HI_ID_DISP:
+           s32Ret =  HI_MPI_DISP_ExtDeAttach(s_asrVeChnInfo[i].hSource, hVencChn);
+           break;
+       default:
+            break;
+   }
+   if (s32Ret != HI_SUCCESS)
+   {
+       HI_ERR_VENC("VENC still attach Module(%d),please detach first!\n",enModID);
+       return HI_ERR_VENC_CHN_INVALID_STAT;
+   }
+	
     s32Ret = ioctl(g_VEncDevFd, CMD_VENC_DESTROY_CHN, &hVencChn);
     if (HI_SUCCESS != s32Ret)
     {
@@ -469,6 +553,7 @@ HI_S32 HI_MPI_VENC_Destroy(HI_HANDLE hVencChn)
     }
 
     s_asrVeChnInfo[i].handle = HI_INVALID_HANDLE;
+	s_asrVeChnInfo[i].hSource= HI_INVALID_HANDLE;
 
     return s32Ret;
 }
@@ -477,7 +562,8 @@ HI_S32 HI_MPI_VENC_AttachInput(HI_HANDLE hVencChn, HI_HANDLE hSrc)
 {
     HI_S32 s32Ret = 0, i = 0;
     VENC_INFO_ATTACH_S stVencAttachInfo;
-
+    HI_MOD_ID_E enModID = HI_ID_BUTT;
+	
     if (HI_INVALID_HANDLE == hSrc)
     {
         HI_ERR_VENC("para hSrc is invalid.\n");
@@ -489,23 +575,135 @@ HI_S32 HI_MPI_VENC_AttachInput(HI_HANDLE hVencChn, HI_HANDLE hSrc)
         HI_ERR_VENC("para hVencChn is invalid.\n");
         return HI_ERR_VENC_CHN_NOT_EXIST;
     }
+ 
     CHECK_VENC_INIT();
     CHECK_CHANNEL_EXIST(i,VENC_MAX_CHN_NUM,hVencChn);
 
+    enModID = (HI_MOD_ID_E)((hSrc & 0xff0000) >> 16);
+
     stVencAttachInfo.hSrc = hSrc;
-    stVencAttachInfo.hVencChn = hVencChn;
-    stVencAttachInfo.enModId = (HI_MOD_ID_E)((hSrc & 0xff0000) >> 16);
+	stVencAttachInfo.hVencChn = hVencChn;
+	stVencAttachInfo.enModId = enModID;
 
-    s32Ret = ioctl(g_VEncDevFd, CMD_VENC_ATTACH_INPUT, &stVencAttachInfo);
+    s32Ret  = ioctl(g_VEncDevFd, CMD_VENC_ATTACH_INPUT, &stVencAttachInfo);
+    if (s32Ret != HI_SUCCESS)
+    {
+        return s32Ret;       
+    }
 
-    return s32Ret;
+    switch(enModID)
+    {
+      case HI_ID_VI:
+#ifdef HI_VI_SUPPORT 
+        s32Ret = HI_MPI_VI_Attach(hSrc , hVencChn);      
+#else
+        HI_ERR_VENC("venc not support attach VI in this version!\n", enModID);
+        s32Ret = HI_ERR_VENC_NOT_SUPPORT;
+#endif
+        break;
+
+      case HI_ID_VO:
+	  {
+#if 1	
+           //s32Ret = HI_MPI_Virtual_AttachSink(hSrc , hVencChn);
+           HI_DRV_WIN_INTF_S stWinIntf;
+           VENC_SET_SRC_INFO_S stSetSrcInfo;
+           HI_DRV_VENC_SRC_INFO_S *pstVencSrcInfo;
+           
+   	       HI_MPI_WIN_GetWinParam(hSrc,&stWinIntf);
+   	       s32Ret = HI_MPI_WIN_AttachWinSink(hSrc, hVencChn);
+		   if (HI_SUCCESS != s32Ret)
+		   {
+		      ioctl(g_VEncDevFd, CMD_VENC_DETACH_INPUT, &stVencAttachInfo);
+			  return HI_FAILURE;
+		   }
+		   
+   	       stSetSrcInfo.hVencChn      = hVencChn;
+   	       pstVencSrcInfo = &(stSetSrcInfo.stVencSrcInfo);
+   
+   	       pstVencSrcInfo->hSrc = hSrc;
+   	       pstVencSrcInfo->pfAcqFrame = stWinIntf.pfAcqFrame;  //(FN_VENC_GET_FRAME)
+   	       pstVencSrcInfo->pfRlsFrame = stWinIntf.pfRlsFrame;  //(FN_VENC_PUT_FRAME)
+   	       pstVencSrcInfo->pfChangeInfo = stWinIntf.pfSetWinAttr;  //(FN_VENC_CHANGE_INFO)
+   
+   	       pstVencSrcInfo->u32Resrve0 = 0xaaaa;
+   	       s32Ret = ioctl(g_VEncDevFd, CMD_VENC_SET_SRCINFO, &stSetSrcInfo);
+#endif	   
+      } 
+        break;
+      case HI_ID_DISP:
+      {
+         s32Ret = HI_MPI_DISP_ExtAttach(hSrc, hVencChn);          
+      }
+	  	break;	
+      default:
+        HI_ERR_VENC("ModId not surpport now, enModId=%x!\n", enModID);
+        s32Ret = HI_ERR_VENC_INVALID_PARA;
+        break;
+    } 
+
+    if (HI_SUCCESS == s32Ret)
+    {
+       s_asrVeChnInfo[i].hSource = hSrc;
+	   s32Ret = HI_MPI_VENC_Start(hVencChn);
+    }
+	else            
+	{
+	   if (HI_ID_VO == enModID)
+	   {
+	      s32Ret = HI_MPI_WIN_DetachWinSink(hSrc, hVencChn);
+	   }
+	   else if (HI_ID_DISP == enModID)
+	   {
+	      s32Ret = HI_MPI_DISP_ExtDeAttach(hSrc, hVencChn);
+	   }
+
+	   if (s32Ret != HI_SUCCESS)
+	   {
+	      HI_WARN_VENC("Mode(%d) detach func return failed!",enModID);
+	   }
+	   ioctl(g_VEncDevFd, CMD_VENC_DETACH_INPUT, &stVencAttachInfo);
+	}
+	return s32Ret;
 }
+
+HI_S32 HI_MPI_VENC_SetSource(HI_HANDLE hVencChn, HI_DRV_VENC_SRC_INFO_S *pstSrc)
+{
+    HI_S32 s32Ret = 0, i = 0;
+    VENC_SET_SRC_INFO_S stSetSrcInfo;
+	
+    if (HI_INVALID_HANDLE == hVencChn)
+    {
+        HI_ERR_VENC("para hSrc is invalid.\n");
+        return HI_ERR_VENC_INVALID_PARA;
+    }
+
+    if (!pstSrc)
+    {
+        HI_ERR_VENC("para pstStream is NULL.\n");
+        return HI_ERR_VENC_NULL_PTR;
+    }
+
+    CHECK_VENC_INIT();
+    CHECK_CHANNEL_EXIST(i,VENC_MAX_CHN_NUM,hVencChn);
+
+    stSetSrcInfo.hVencChn      = hVencChn;
+	stSetSrcInfo.stVencSrcInfo = *pstSrc;
+
+	s32Ret = ioctl(g_VEncDevFd, CMD_VENC_SET_SRCINFO, &stSetSrcInfo);
+	if (HI_SUCCESS != s32Ret)
+    {
+       s_asrVeChnInfo[i].hSource = HI_INVALID_HANDLE;
+    }
+	return s32Ret;
+}
+
 
 HI_S32 HI_MPI_VENC_DetachInput(HI_HANDLE hVencChn/*, HI_HANDLE hSrc*/)
 {
     HI_S32 s32Ret = 0,i = 0;
     VENC_INFO_ATTACH_S stVencAttachInfo;
-
+    HI_MOD_ID_E enModID = HI_ID_BUTT;
 
     if (HI_INVALID_HANDLE == hVencChn)
     {
@@ -517,9 +715,43 @@ HI_S32 HI_MPI_VENC_DetachInput(HI_HANDLE hVencChn/*, HI_HANDLE hSrc*/)
     
     stVencAttachInfo.hVencChn = hVencChn;
 
-    s32Ret = ioctl(g_VEncDevFd, CMD_VENC_DETACH_INPUT, &stVencAttachInfo);
+    enModID = (HI_MOD_ID_E)((s_asrVeChnInfo[i].hSource & 0xff0000) >> 16);
 
-    return s32Ret;
+    switch (enModID)
+    {
+       case HI_ID_VI:
+            s32Ret =  HI_MPI_VI_Detach(s_asrVeChnInfo[i].hSource, hVencChn);
+            break;
+       case HI_ID_VO:
+            s32Ret =  HI_MPI_WIN_DetachWinSink(s_asrVeChnInfo[i].hSource, hVencChn);
+            break;
+       case HI_ID_DISP:
+           s32Ret =  HI_MPI_DISP_ExtDeAttach(s_asrVeChnInfo[i].hSource, hVencChn);
+           break;
+	   case HI_ID_BUTT:
+	   	   return HI_ERR_VENC_CHN_NO_ATTACH;
+       default:
+           HI_ERR_VENC("Venc Detach, ModId not surpport now, enModId=%x!\n", enModID);
+           return HI_ERR_VENC_INVALID_PARA;		    
+   }
+
+   if (HI_SUCCESS != s32Ret)
+   {
+      HI_ERR_VENC("venc can't detach with ModID(%x) now.\n",enModID);
+	  return HI_FAILURE;
+   }
+
+   s32Ret = ioctl(g_VEncDevFd, CMD_VENC_DETACH_INPUT, &stVencAttachInfo);
+	
+	if (HI_SUCCESS == s32Ret)
+	{
+	   s_asrVeChnInfo[i].hSource = HI_INVALID_HANDLE;
+	   return HI_SUCCESS;
+	}
+	else
+	{
+	   return HI_FAILURE;
+	}
 }
 
 HI_S32 HI_MPI_VENC_AcquireStream(HI_HANDLE hVencChn, HI_UNF_VENC_STREAM_S *pstStream, HI_U32 u32TimeoutMs)
@@ -588,6 +820,7 @@ HI_S32 HI_MPI_VENC_ReleaseStream(HI_HANDLE hVencChn, const HI_UNF_VENC_STREAM_S 
     stVencAcquireStream.hVencChn = hVencChn;
     memcpy(&(stVencAcquireStream.stStream), pstStream, sizeof(HI_UNF_VENC_STREAM_S));
 
+    stVencAcquireStream.stStream.pu8Addr = (HI_U8*)(stVencAcquireStream.stStream.pu8Addr - (HI_U8*)(s_asrVeChnInfo[i].pStrmBufVirAddr));
     s32Ret = ioctl(g_VEncDevFd, CMD_VENC_RELEASE_STREAM, &stVencAcquireStream);
 
     return s32Ret;
@@ -695,6 +928,7 @@ HI_S32 HI_MPI_VENC_DequeueFrame(HI_HANDLE hVencChn,HI_UNF_VIDEO_FRAME_INFO_S *ps
 	}
     return s32Ret;
 }
+
 
 #ifdef __cplusplus
  #if __cplusplus

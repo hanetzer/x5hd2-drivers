@@ -35,12 +35,14 @@
 #include <stdarg.h>
 #include <sys/time.h>
 
-#include "drv_struct_ext.h"
-
+#include "hi_osal.h"
 #include "hi_debug.h"
+#include "hi_drv_struct.h"
 #include "mpi_log.h"
 #include "hi_mpi_mem.h"
-
+#if defined(ANDROID)
+#include <utils/Log.h>
+#endif
 
 static HI_U32 g_LogModInit = 0;
 static HI_S32 g_s32DbgDevFd = -1;
@@ -66,22 +68,23 @@ static HI_S32 MPILogDeviceOpen(HI_CHAR  *pathname,const HI_S32 Flags)
     HI_S32 DbgDevFd;
     struct stat st;
 
-    if (HI_FAILURE== stat (pathname, &st))
+    DbgDevFd  = open(pathname,Flags,0);
+    if(-1 == DbgDevFd)
     {
-        fprintf(stderr, "Cannot identify '%s': %d, %s\n",
-            pathname, errno, strerror (errno));
+        return HI_FAILURE;
+    }
+
+    if (-1 == fstat(DbgDevFd, &st))
+    {
+        fprintf(stderr, "Cannot identiy '%s'.\n", pathname);
+        close(DbgDevFd);
         return HI_FAILURE;
     }
 
     if (!S_ISCHR (st.st_mode))
     {
         fprintf(stderr, "%s is no device\n", pathname);
-        return HI_FAILURE;
-    }
-
-    DbgDevFd  = open(pathname,Flags,0);
-    if(-1 == DbgDevFd)
-    {
+        close(DbgDevFd);
         return HI_FAILURE;
     }
 
@@ -163,7 +166,7 @@ HI_S32 LOGPrintToBuf(const char *format, ...)
     }
 
     va_start(args, format);
-    MsgLen = vsnprintf(log_str, LOG_MAX_TRACE_LEN-1, format, args);
+    MsgLen = HI_OSAL_Vsnprintf(log_str, LOG_MAX_TRACE_LEN-1, format, args);
     va_end(args);
 
     if (MsgLen >= (LOG_MAX_TRACE_LEN-1))
@@ -191,17 +194,23 @@ HI_S32 LOGPrintToBuf(const char *format, ...)
 */
 HI_BOOL LOGLevelChk(HI_S32 s32Levle, HI_U32 u32ModId, HI_BOOL* pUsrModeIDFlag)
 {
-    if(0 == g_LogModInit)
+    if (u32ModId < LOG_CONFIG_BUF_SIZE/sizeof(LOG_CONFIG_INFO_S))
     {
-        return HI_TRUE;
+        /* log module has Initialized yet */
+        if (g_LogModInit && s32Levle <= g_pLogConfigInfo[u32ModId].u8LogLevel)
+        {
+            return HI_TRUE;
+        }
+
+        /* log module has not Initialized yet */
+        if(!g_LogModInit && s32Levle <= HI_LOG_LEVEL_DEFAULT)
+        {
+            return HI_TRUE;
+        }
+        
     }
 
-    if ((u32ModId >= LOG_CONFIG_BUF_SIZE/sizeof(LOG_CONFIG_INFO_S)) ||
-        ((HI_U32)s32Levle > g_pLogConfigInfo[u32ModId].u32LogLevel))
-    {
-        return HI_FALSE;
-    }
-    return HI_TRUE;
+    return HI_FALSE;
 }
 
 /*
@@ -222,12 +231,12 @@ HI_U32 LOGPrintPosGet(HI_U32 u32ModId)
         return LOG_OUTPUT_SERIAL;
     }
 
-    if (g_pLogConfigInfo->bUdiskFlag == HI_TRUE)
+    if (g_pLogConfigInfo->u8UdiskFlag == 1)
     {
         return LOG_OUTPUT_UDISK;
     }
 
-    u32Pos = g_pLogConfigInfo[u32ModId].u32LogPrintPos;
+    u32Pos = g_pLogConfigInfo[u32ModId].u8LogPrintPos;
 
     return u32Pos;
 }
@@ -238,8 +247,6 @@ inline HI_U32 LOGGetTimeMs(HI_VOID)
     (HI_VOID)gettimeofday(&tv , NULL);
     return (((HI_U32)tv.tv_sec)*1000 + ((HI_U32)tv.tv_usec)/1000);
 }
-
-
 
 HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId, HI_U8 *pFuncName, HI_U32 u32LineNum, const char *format, ...)
 {
@@ -252,16 +259,12 @@ HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId, HI_U8 *pFuncName, HI_U32
  
     HI_LOG_LOCK();
 
-    if (0 != g_LogModInit)
-    {        
-        bLevel = LOGLevelChk((HI_S32)u32Level, (HI_U32)enModId, &bUsrModeFlag);
-    }
- 
-    if ((0 == g_LogModInit) || bLevel)
+    bLevel = LOGLevelChk((HI_S32)u32Level, (HI_U32)enModId, &bUsrModeFlag);
+    if (bLevel)
     {
 
         va_start(args, format);
-        MsgLen = vsnprintf(log_str, LOG_MAX_TRACE_LEN, format, args);
+        MsgLen = HI_OSAL_Vsnprintf(log_str, LOG_MAX_TRACE_LEN, format, args);
         va_end(args);
 
         if (MsgLen >= LOG_MAX_TRACE_LEN)
@@ -273,20 +276,8 @@ HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId, HI_U8 *pFuncName, HI_U32
             log_str[LOG_MAX_TRACE_LEN-5] = '.';
         }
 
-        if (0 == g_LogModInit)
-        {
-            if (bUsrModeFlag == HI_FALSE)
-            {
-                 HI_PRINT("[%s-Unknow]: %s[%d]:%s", DebugLevelName[u32Level],  pFuncName,
-                            u32LineNum, log_str);
-            }
-
-            HI_LOG_UNLOCK();
-            
-            return;
-        }
-
-        if (bLevel)
+        /* log module has Initialized. */
+        if (g_LogModInit)
         {
             /*get the time, unit ms*/           
             TimeMs = LOGGetTimeMs();
@@ -299,13 +290,35 @@ HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId, HI_U8 *pFuncName, HI_U32
                 {
                     case LOG_OUTPUT_SERIAL://output to serial port
                     default:
-                        HI_PRINT PRINT_FMT;                    
+#if defined(ANDROID)
+                        switch (u32Level)
+                        {
+                            case HI_TRACE_LEVEL_FATAL:
+                            case HI_TRACE_LEVEL_ERROR:
+                            default:
+                                ALOGE(PRINT_FMT);
+                                break;
+                            case HI_TRACE_LEVEL_WARN:
+                                ALOGI(PRINT_FMT);
+                                break;
+                            case HI_TRACE_LEVEL_INFO:
+                                ALOGV(PRINT_FMT);
+                                break;
+                            case HI_TRACE_LEVEL_DBG:
+                                ALOGD(PRINT_FMT);
+                                break;
+                        }
+                            
+#else
+                        HI_PRINT(PRINT_FMT);
+#endif
                         break;
+
                     case LOG_OUTPUT_NETWORK://output to network
                     case LOG_OUTPUT_UDISK:
-                        #if defined(LOG_NETWORK_SUPPORT) || defined(LOG_UDISK_SUPPORT)
-                        LOGPrintToBuf PRINT_FMT;
-                        #endif
+#if defined(LOG_NETWORK_SUPPORT) || defined(LOG_UDISK_SUPPORT)
+                        LOGPrintToBuf(PRINT_FMT);
+#endif
                         break;
                 }
             }
@@ -313,6 +326,18 @@ HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId, HI_U8 *pFuncName, HI_U32
             {
                 HI_U8* pModuleName = (HI_U8*)"ABC";//HI_ModuleMGR_GetModuleName(enModId);
                 HI_PRINT ("<\33[32m%s\33[0m>:[%s - %d]:%s\n", pModuleName, pFuncName, u32LineNum, log_str);
+            }
+
+            HI_LOG_UNLOCK();
+            
+            return;
+        }
+        else /* log module has not Initialized. */
+        {
+             if (bUsrModeFlag == HI_FALSE)
+            {
+                 HI_PRINT("[%s-Unknow]: %s[%d]:%s", DebugLevelName[u32Level],  pFuncName,
+                            u32LineNum, log_str);
             }
 
             HI_LOG_UNLOCK();
@@ -337,7 +362,7 @@ HI_S32 HI_MPI_LogInit(HI_VOID)
 
     if(-1 == g_s32DbgDevFd)
     {
-        sprintf((char*)pathname, "/dev/%s", UMAP_DEVNAME_LOG);
+        HI_OSAL_Snprintf((char*)pathname, sizeof(pathname), "/dev/%s", UMAP_DEVNAME_LOG);
         g_s32DbgDevFd = MPILogDeviceOpen((char*)pathname,O_RDWR|O_NONBLOCK);
         if(HI_FAILURE ==  g_s32DbgDevFd)
         {
@@ -443,7 +468,7 @@ HI_S32 HI_MPI_LogLevelSet(HI_U32 u32ModId,  HI_LOG_LEVEL_E enLogLevel)
         return HI_FAILURE;
     }
 
-    g_pLogConfigInfo[u32ModId].u32LogLevel = (HI_U32)enLogLevel;
+    g_pLogConfigInfo[u32ModId].u8LogLevel = (HI_U8)enLogLevel;
 
     HI_LOG_UNLOCK();
 
@@ -469,11 +494,11 @@ HI_S32 HI_MPI_LogPrintPosSet(HI_U32 u32ModId, LOG_OUTPUT_POS_E enPrintPos)
 
     if (enPrintPos != LOG_OUTPUT_BUTT)
     {
-        g_pLogConfigInfo[u32ModId].u32LogPrintPos = enPrintPos;
+        g_pLogConfigInfo[u32ModId].u8LogPrintPos = (HI_U8)enPrintPos;
     }
     else
     {
-        g_pLogConfigInfo[u32ModId].u32LogPrintPos = LOG_OUTPUT_POS_DEFAULT;
+        g_pLogConfigInfo[u32ModId].u8LogPrintPos = LOG_OUTPUT_POS_DEFAULT;
     }
 
     HI_LOG_UNLOCK();

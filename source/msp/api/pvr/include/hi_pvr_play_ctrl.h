@@ -52,6 +52,15 @@ extern "C" {
 
 #define WHENCE_STRING(whence)   ((0 == (whence)) ? "SEEK_SET" : ((1 == (whence)) ? "SEEK_CUR" : "SEEK_END"))
 
+#define PVR_TIME_CTRL_INTERVAL 1000	
+
+#define PVR_DEFAULT_FRAME_BUFF_NUM  6
+#define PVR_VO_FRMBUFF_NUM_OF_DISABLE_DEI  3
+#define PVR_VO_FRMBUFF_NUM_OF_ENABLE_DEI   7
+
+#define PVR_ENABLE_DISP_OPTIMIZE  1
+#define PVR_DISABLE_DISP_OPTIMIZE 0
+
 /* check channel validity                                                   */
 #define PVR_PLAY_CHECK_CHN(u32Chn)\
     do {\
@@ -101,19 +110,21 @@ otherwise, return the file header.*/
                 if ((n = PVR_PREAD64(pu8Addr, (size), \
                             pChnAttr->s32DataFile, (offset))) == -1)\
                 {\
-                    if (EINTR == errno)\
+                    if (NULL != &errno)\
                     {\
-                        continue;\
-                    }\
-                    else if (errno)\
-                    { \
-                        perror("read ts error: ");\
-                        return HI_ERR_PVR_FILE_CANT_READ;\
-                    }\
-                    else\
-                    {\
-                        HI_ERR_PVR("read err1,  want:%u, off:%llu \n", (size), offset);\
-                        return HI_ERR_PVR_FILE_TILL_END;\
+                        if (EINTR == errno)\
+                        {\
+                            continue;\
+                        }\
+                        else if (errno)\
+                        { \
+                            return HI_ERR_PVR_FILE_CANT_READ;\
+                        }\
+                        else\
+                        {\
+                            HI_ERR_PVR("read err1,  want:%u, off:%llu \n", (size), offset);\
+                            return HI_ERR_PVR_FILE_TILL_END;\
+                        }\
                     }\
                 }\
                 if ((0 == n) && (0 != (size)))\
@@ -138,6 +149,75 @@ typedef struct hiPVR_TPLAY_SPEED_CTRL_S
     HI_U32               u32RefFrmSysTimeMs;     /* the system time of reference frame output */
 
 }PVR_TPLAY_SPEED_CTRL_S;
+
+/* frame tag from pvr to demux */
+typedef struct hiPVR_FRAME_TAG
+{
+    HI_U32          u32DispEnableFlag;       
+    HI_U32          u32DispFrameDistance;   
+    HI_U32          u32DistanceBeforeFirstFrame;
+    HI_U32          u32GopNum;
+} PVR_FRAME_TAG_S;
+
+typedef struct hiPVR_SMOOTH_PARA
+{
+    HI_U32  u32StartCtrlTimeInMs;
+    HI_U32  u32LastCtrlTimeInMs;
+    HI_U32  u32StartCtrlPtsInMs;
+    HI_U32  u32FrameNumAfterLastDisp;
+    HI_U32  u32GopCnt;
+    HI_UNF_PVR_PLAY_SPEED_E enBackwardLastSpeed;
+    HI_U32 u32TimeCtrlSkipFlag;
+    HI_UNF_PVR_PLAY_SPEED_E enSmoothLastSpeed;
+    HI_U32 u32BackCount;
+    HI_U32 u32BackLastVORate;
+    HI_U32 u32BackAverageVORate;	
+}PVR_SMOOTH_PARA_S;
+
+#ifdef PVR_PROC_SUPPORT
+typedef struct hiPVR_PLAY_FF_PROC_S
+{
+    HI_U32          u32TimeCtrlFindFrm;
+    HI_U32          u32TimeCtrlCurFrm;
+    HI_U32          u32FirstFrm;
+    HI_U32          u32TryFrmNum;
+    HI_U32          u32NextIFrm;
+    HI_U32          u32TotalFrmNum;
+    HI_U32          u32TotalIFrmNum;
+    HI_U32          u32TotalPFrmNum;
+    HI_U32          u32TotalBFrmNum;
+    HI_U32          u32NextTimeStartFrm;
+}PVR_PLAY_FF_PROC_S;
+
+typedef struct hi_PVR_PLAY_FB_PROC_S
+{
+    HI_U32          u32OptimizeFlg;
+    HI_U32          u32DispDistance;
+    HI_U32          u32SupportMaxGopSize;
+    HI_U32          u32FirstFrm;
+    HI_U32          u32TotalFrmNum;
+    HI_U32          u32TotalGopNum;
+    HI_U32          u32TotalPFrmNum;
+    HI_U32          u32TotalBFrmNum;
+}PVR_PLAY_FB_PROC_S;
+
+/* attributes of play channel                                               */
+typedef struct hiPVR_PLAY_CHN_PROC_S
+{
+    HI_U32          u32PrintFlg;
+    HI_U32          u32ChipId;
+    HI_U32          u32ChipVer;
+    HI_U32          u32Width;
+    HI_U32          u32Heigth;
+    HI_U32          u32DecAblity;
+    HI_U32          u32OrigFrmRate;
+    HI_U32          u32FieldFlg;
+    HI_U32          u32SetFrmRateInt;
+    HI_U32          u32SetFrmRateDec;
+    PVR_PLAY_FF_PROC_S stFFCtrlParameter;
+    PVR_PLAY_FB_PROC_S stFBCtrlParameter;
+} PVR_PLAY_PROC_S;
+#endif
 
 /* attributes of play channel                                               */
 typedef struct hiPVR_PLAY_CHN_S
@@ -177,8 +257,18 @@ typedef struct hiPVR_PLAY_CHN_S
     PVR_TPLAY_SPEED_CTRL_S stTplayCtlInfo;      /* control info for trick mode */
     HI_UNF_PVR_PLAY_STATUS_S stLastStatus;     /* the last play status, when failure to get current play status, return this */
     ExtraCallBack     readCallBack;
+    HI_U32           u32FrmNum;
+    HI_U32           u32VoFrmNum;
+    HI_UNF_PVR_PLAY_SPEED_E enFBTimeCtrlLastSpeed;
     pthread_mutex_t  stMutex;
-
+    HI_U32           u32CurPlayTimeMs;
+    HI_UNF_AVPLAY_CONTROL_INFO_S  stVdecCtrlInfo;
+    HI_U32           u32GopNumOfStart;
+    PVR_FRAME_TAG_S  stFrmTag;
+    PVR_SMOOTH_PARA_S stSmoothPara;
+#ifdef PVR_PROC_SUPPORT
+    PVR_PLAY_PROC_S stPlayProcInfo;
+#endif
 } PVR_PLAY_CHN_S;
 
 
@@ -187,6 +277,10 @@ HI_S32 HI_PVR_PlayRegisterReadCallBack(HI_U32 u32Chn, ExtraCallBack readCallBack
 HI_S32 HI_PVR_PlayUnRegisterReadCallBack(HI_U32 u32Chn);
 
 HI_BOOL PVR_Play_IsFilePlayingSlowPauseBack(const HI_CHAR *pFileName);
+HI_BOOL PVR_Play_IsPlaying(void);
+
+void PVRPlaySyncTrickPlayTime(PVR_PLAY_CHN_S *pChnAttr);
+
 
 #ifdef __cplusplus
 #if __cplusplus

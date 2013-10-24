@@ -71,7 +71,7 @@ HI_S32 HI_UNF_AI_GetAttr(HI_HANDLE hAI, HI_UNF_AI_ATTR_S *pstAttr)
 HI_S32 HI_UNF_AI_Create(HI_UNF_AI_E enAiPort, HI_UNF_AI_ATTR_S *pstAttr, HI_HANDLE *phandle)
 {
 
-    return HI_UNF_AI_Create(enAiPort,pstAttr,phandle);
+    return HI_MPI_AI_Create(enAiPort,pstAttr,phandle);
 }
 
 HI_S32 HI_UNF_AI_Destroy(HI_HANDLE hAI)

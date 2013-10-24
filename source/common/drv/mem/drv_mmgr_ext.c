@@ -1,33 +1,24 @@
 #include <linux/slab.h>
 #include <linux/vmalloc.h>
-
 #include <linux/kernel.h>
 #include <linux/sched.h>
 #include <linux/module.h>
 #include <linux/fs.h>
 #include <linux/proc_fs.h>
 #include <asm/uaccess.h>
-
 #include "hi_type.h"
 #include "hi_debug.h"
 #include "hi_module.h"
-
+#include "hi_debug.h"
+#include "hi_osal.h"
 #include "drv_mmgr.h"
-
 #include "drv_module_ioctl.h"
 #include "mpi_mmgr.h"
-
-#include "drv_proc_ext.h"
-#include "drv_dev_ext.h"
-
-#include "drv_module_ext.h"
-
-#include "drv_mem_ext.h"
-#include "drv_module_ext.h"
-
+#include "hi_drv_proc.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_module.h"
+#include "hi_drv_mem.h"
 #include "drv_mem.h"
-
-#include "hi_debug.h"
 
 static UMAP_DEVICE_S    g_stModuleMemDev = {{0}};
 
@@ -40,15 +31,6 @@ static UMAP_DEVICE_S    g_stModuleMemDev = {{0}};
 #define KERNEL_MODE "kernel"
 
 #define ABS_SIZE(s) ( (s) > 0 ? (s) : (-1)*(s) )
-
-#if 0
-#define THIS_ERR_PRINT( fmt, arg...) HI_ERR_PRINT(HI_ID_SYS, fmt, ##arg)
-#define THIS_INFO_PRINT(fmt, arg...) HI_INFO_PRINT(HI_ID_SYS, fmt, ##arg)
-#else
-#define THIS_ERR_PRINT( fmt, arg...)
-#define THIS_INFO_PRINT(fmt, arg...)
-#endif
-
 
 DECLARE_MUTEX(g_KModuleMemMutex);
 
@@ -112,7 +94,7 @@ HI_VOID KMODULE_MEM_Pool_Init(HI_U32 u32Count)
 
         if (NULL == g_KModuleMemBaseAddr)
         {
-            THIS_ERR_PRINT("<%s> malloc %d size failure!\n", KERNEL_MODE, u32Count * sizeof(KMODULE_MEM_POOL_S));
+            HI_ERR_MEM("<%s> malloc %d size failure!\n", KERNEL_MODE, u32Count * sizeof(KMODULE_MEM_POOL_S));
 
             return;
         }
@@ -194,7 +176,7 @@ HI_S32 KMODULE_MEM_POOL_FindNode(KMODULE_MEM_ITEM_S* pNodeHeader, HI_U32 u32Modu
 
     if (NULL == pNodeHeader || pstNode == NULL)
     {
-        THIS_ERR_PRINT("<%s>: add node failure, node header is NULL\n", KERNEL_MODE);
+        HI_ERR_MEM("<%s>: add node failure, node header is NULL\n", KERNEL_MODE);
 
         return HI_FAILURE;
     }
@@ -234,12 +216,12 @@ HI_S32 KMODULE_MEM_POOL_AddNode(KMODULE_MEM_ITEM_S* pNodeHeader, KMODULE_MEM_ITE
 
     if (NULL == pNodeHeader || pstNode == NULL)
     {
-        THIS_ERR_PRINT("<%s>: add node failure, node header is NULL\n", KERNEL_MODE);
+        HI_ERR_MEM("<%s>: add node failure, node header is NULL\n", KERNEL_MODE);
 
         return HI_FAILURE;
     }
 
-    THIS_INFO_PRINT("<%s>........ pNodeHeader address is %p, and next address is %p\n",KERNEL_MODE, pNodeHeader, pNodeHeader->pNext);
+    HI_INFO_MEM("<%s>........ pNodeHeader address is %p, and next address is %p\n",KERNEL_MODE, pNodeHeader, pNodeHeader->pNext);
 
     s32Ret = KMODULE_MEM_POOL_FindNode(pNodeHeader, pstNode->stMemInfo.u32ModuleID, &pMemItem);
     if (HI_SUCCESS == s32Ret)
@@ -264,7 +246,7 @@ HI_S32 KMODULE_MEM_POOL_AddNode(KMODULE_MEM_ITEM_S* pNodeHeader, KMODULE_MEM_ITE
     pstAddNode = (KMODULE_MEM_ITEM_S*)KMODULE_MEM_POOL_MALLOC(sizeof(KMODULE_MEM_ITEM_S));
     if ( NULL == pstAddNode)
     {
-        THIS_ERR_PRINT("<%s>: add node failure, malloc node failure.\n", KERNEL_MODE);
+        HI_ERR_MEM("<%s>: add node failure, malloc node failure.\n", KERNEL_MODE);
         return HI_FAILURE;
     }
 
@@ -298,7 +280,7 @@ HI_S32 KMODULE_MEM_POOL_AddNode(KMODULE_MEM_ITEM_S* pNodeHeader, KMODULE_MEM_ITE
     pItrNode->pNext = pstAddNode;
     pNodeHeader->u32ItemCnt++;
 
-    THIS_INFO_PRINT("<%s>++++++++++ pNodeHeader address is %p, and next address is %p\n", KERNEL_MODE, pNodeHeader, pNodeHeader->pNext);
+    HI_INFO_MEM("<%s>++++++++++ pNodeHeader address is %p, and next address is %p\n", KERNEL_MODE, pNodeHeader, pNodeHeader->pNext);
     
     return HI_SUCCESS;
 }
@@ -322,7 +304,7 @@ HI_S32 KMODULE_MEM_POOL_DelNode(KMODULE_MEM_ITEM_S* pNodeHeader, KMODULE_MEM_ITE
 
     if (NULL == pNodeHeader || pNodeHeader->pNext == NULL)
     {
-        THIS_ERR_PRINT("<%s>:delete node failure, node header is NULL\n", KERNEL_MODE);
+        HI_ERR_MEM("<%s>:delete node failure, node header is NULL\n", KERNEL_MODE);
 
         return HI_FAILURE;
     }
@@ -339,7 +321,7 @@ HI_S32 KMODULE_MEM_POOL_DelNode(KMODULE_MEM_ITEM_S* pNodeHeader, KMODULE_MEM_ITE
             pDelNode = pItrNode;
             pItrNode = pItrNode->pNext;
 
-            THIS_INFO_PRINT("<%s>: delete module node:%#x\n", KERNEL_MODE, pDelNode->stMemInfo.u32ModuleID);
+            HI_INFO_MEM("<%s>: delete module node:%#x\n", KERNEL_MODE, pDelNode->stMemInfo.u32ModuleID);
 
             KMODULE_MEM_POOL_FREE(pDelNode);
         }
@@ -350,7 +332,7 @@ HI_S32 KMODULE_MEM_POOL_DelNode(KMODULE_MEM_ITEM_S* pNodeHeader, KMODULE_MEM_ITE
         return HI_SUCCESS;
     }
 
-    while ( NULL != pItrNode->pNext)
+    while ((NULL != pItrNode) && (NULL != pItrNode->pNext))
     {
         if (pItrNode->pNext->stMemInfo.u32ModuleID == pstNode->stMemInfo.u32ModuleID)
         {
@@ -365,7 +347,7 @@ HI_S32 KMODULE_MEM_POOL_DelNode(KMODULE_MEM_ITEM_S* pNodeHeader, KMODULE_MEM_ITE
         pDelNode = pItrNode->pNext;
         pItrNode->pNext = pItrNode->pNext->pNext;
 
-        THIS_INFO_PRINT("<%s>: delete module node:%#x\n", KERNEL_MODE, pDelNode->stMemInfo.u32ModuleID);
+        HI_INFO_MEM("<%s>: delete module node:%#x\n", KERNEL_MODE, pDelNode->stMemInfo.u32ModuleID);
 
         KMODULE_MEM_POOL_FREE(pDelNode);
         
@@ -405,7 +387,7 @@ HI_S32 KMODULE_MEM_POOL_UpdateNode(KMODULE_MEM_ITEM_S* pNodeHeader, KMODULE_MEM_
     {
         if (bAddMemory == HI_TRUE)
         {
-            THIS_INFO_PRINT("<%s>++++ ++++, update module[0x%08x] memory info:add %d to old:%d\n", KERNEL_MODE,pstNode->stMemInfo.u32ModuleID, \
+            HI_INFO_MEM("<%s>++++ ++++, update module[0x%08x] memory info:add %d to old:%d\n", KERNEL_MODE,pstNode->stMemInfo.u32ModuleID, \
                 pstNode->stMemInfo.u32UsrSize, pMemItem->stMemInfo.u32UsrSize);
 
             pMemItem->stMemInfo.u32KKSize += pstNode->stMemInfo.u32KKSize;
@@ -419,7 +401,7 @@ HI_S32 KMODULE_MEM_POOL_UpdateNode(KMODULE_MEM_ITEM_S* pNodeHeader, KMODULE_MEM_
         }
         else
         {
-            THIS_INFO_PRINT("<%s>---- ----, update module[0x%08x] memory info:del:%d from old:%d\n", KERNEL_MODE,pstNode->stMemInfo.u32ModuleID, \
+            HI_INFO_MEM("<%s>---- ----, update module[0x%08x] memory info:del:%d from old:%d\n", KERNEL_MODE,pstNode->stMemInfo.u32ModuleID, \
                 pstNode->stMemInfo.u32MMZSize, pMemItem->stMemInfo.u32MMZSize);
 
             u32TotalSize = pMemItem->stMemInfo.u32KKSize + pMemItem->stMemInfo.u32KVSize;
@@ -434,7 +416,7 @@ HI_S32 KMODULE_MEM_POOL_UpdateNode(KMODULE_MEM_ITEM_S* pNodeHeader, KMODULE_MEM_
             u32TotalSize += pMemItem->stMemInfo.u32UsrSize + pMemItem->stMemInfo.u32MMZSize;
         }
 
-        THIS_INFO_PRINT("<%s>, total size:%d and max size:%d\n", KERNEL_MODE,u32TotalSize, pMemItem->stMemInfo.u32MaxSize);        
+        HI_INFO_MEM("<%s>, total size:%d and max size:%d\n", KERNEL_MODE,u32TotalSize, pMemItem->stMemInfo.u32MaxSize);        
 
         if ( u32TotalSize > pMemItem->stMemInfo.u32MaxSize)
         {
@@ -444,7 +426,7 @@ HI_S32 KMODULE_MEM_POOL_UpdateNode(KMODULE_MEM_ITEM_S* pNodeHeader, KMODULE_MEM_
         return HI_SUCCESS;
     }
     
-    THIS_ERR_PRINT("<%s> update module memory failure, id = 0x%x!!!\n",KERNEL_MODE, pstNode->stMemInfo.u32ModuleID);
+    HI_ERR_MEM("<%s> update module memory failure, id = 0x%x!!!\n",KERNEL_MODE, pstNode->stMemInfo.u32ModuleID);
     
     return HI_FAILURE;
 }
@@ -509,11 +491,11 @@ static HI_S32 CMPI_Mem_Ioctl(struct inode *inode, struct file *file,HI_U32 cmd, 
             MODULE_INFO_S* pModule = (MODULE_INFO_S*)arg;
             KMODULE_MEM_ITEM_S stModuleMem = {{0}};
 
-            //THIS_INFO_PRINT("<%s:%s>++++Add module info and module id=0x%08x name = %s\n", KERNEL_MODE, __func__, pModule->u32ModuleID, pModule->u8ModuleName);
+            // HI_INFO_MEM("<%s:%s>++++Add module info and module id=0x%08x name = %s\n", KERNEL_MODE, __func__, pModule->u32ModuleID, pModule->u8ModuleName);
 
             stModuleMem.stMemInfo.u32ModuleID = pModule->u32ModuleID;
             stModuleMem.stMemInfo.u32PID = current->pid;
-            THIS_INFO_PRINT("stModuleMem.stMemInfo.u32PID = 0x%08x..............................\n", stModuleMem.stMemInfo.u32PID);
+            HI_INFO_MEM("stModuleMem.stMemInfo.u32PID = 0x%08x.\n", stModuleMem.stMemInfo.u32PID);
 
             s32Ret = KMODULE_MEM_POOL_AddNode(g_pstMemItemHeader, &stModuleMem);
         }
@@ -526,9 +508,9 @@ static HI_S32 CMPI_Mem_Ioctl(struct inode *inode, struct file *file,HI_U32 cmd, 
             stModuleMem.stMemInfo.u32ModuleID = pModule->u32ModuleID;
             stModuleMem.stMemInfo.u32PID = current->pid;
 
-            THIS_INFO_PRINT("stModuleMem.stMemInfo.u32PID = 0x%08x+++++++++++++++++++++++++\n", stModuleMem.stMemInfo.u32PID);
+            HI_INFO_MEM("stModuleMem.stMemInfo.u32PID = 0x%08x.\n", stModuleMem.stMemInfo.u32PID);
 
-            //THIS_INFO_PRINT("<%s:%s>----Del module info and module id=0x%08x name = %s \n",KERNEL_MODE, __func__, pModule->u32ModuleID, pModule->u8ModuleName);
+            // HI_INFO_MEM("<%s:%s>----Del module info and module id=0x%08x name = %s \n",KERNEL_MODE, __func__, pModule->u32ModuleID, pModule->u8ModuleName);
 
             s32Ret = KMODULE_MEM_POOL_DelNode(g_pstMemItemHeader, &stModuleMem);
         }
@@ -539,7 +521,7 @@ static HI_S32 CMPI_Mem_Ioctl(struct inode *inode, struct file *file,HI_U32 cmd, 
             KMODULE_MEM_ITEM_S stModuleMem = {{0}};
             
             
-            THIS_INFO_PRINT("<%s>Add module memory with id=0x%08x mmz size:%u, user size:%u\n", KERNEL_MODE, pMemInfo->u32ModuleID, pMemInfo->u32SizeMMZ, \
+            HI_INFO_MEM("<%s>Add module memory with id=0x%08x mmz size:%u, user size:%u\n", KERNEL_MODE, pMemInfo->u32ModuleID, pMemInfo->u32SizeMMZ, \
                     pMemInfo->u32SizeUsrMem);
 
             stModuleMem.stMemInfo.u32ModuleID = pMemInfo->u32ModuleID;
@@ -556,8 +538,8 @@ static HI_S32 CMPI_Mem_Ioctl(struct inode *inode, struct file *file,HI_U32 cmd, 
             MODULE_MEM_INFO_S* pMemInfo = (MODULE_MEM_INFO_S*)arg;
             KMODULE_MEM_ITEM_S stModuleMem = {{0}};
             
-            THIS_INFO_PRINT("<%s>del module memory info ... with id=0x%08x\n", KERNEL_MODE, pMemInfo->u32ModuleID);
-            THIS_INFO_PRINT("<%s>del user size is %d, and mmz size is %d\n", KERNEL_MODE, pMemInfo->u32SizeUsrMem, \
+            HI_INFO_MEM("<%s>del module memory info ... with id=0x%08x\n", KERNEL_MODE, pMemInfo->u32ModuleID);
+            HI_INFO_MEM("<%s>del user size is %d, and mmz size is %d\n", KERNEL_MODE, pMemInfo->u32SizeUsrMem, \
                     pMemInfo->u32SizeMMZ);
 
             stModuleMem.stMemInfo.u32ModuleID = pMemInfo->u32ModuleID;
@@ -571,7 +553,7 @@ static HI_S32 CMPI_Mem_Ioctl(struct inode *inode, struct file *file,HI_U32 cmd, 
         break;
         default:
             kmodule_mem_unlock();
-            THIS_ERR_PRINT("<%s>================Unknown cmd:%#x\n", KERNEL_MODE, cmd);
+            HI_ERR_MEM("<%s>================Unknown cmd:%#x\n", KERNEL_MODE, cmd);
         return HI_FAILURE;
     }
 
@@ -628,18 +610,18 @@ HI_S32 MemProcRead(struct seq_file *s, HI_VOID *pArg)
 
     if (0 == g_ModuleMemModInit)
     {
-        seq_printf(s,"    Mem module not init\n");
+        PROC_PRINT(s,"    Mem module not init\n");
         return 0;
     }
 
 
     kmodule_mem_lock(HI_FAILURE);
 
-    seq_printf(s, COLOR_START_HEAD);
-    seq_printf(s, "----------------------------------------------------------------------------------------------\n");
-    seq_printf(s, "|Module Name |    ID    |   MMZ   |   USR_MEM   |   KERNEL_MEM   |   MAX_MEM   |   CUR_MEM   |\n");
-    seq_printf(s, "----------------------------------------------------------------------------------------------\n");
-    seq_printf(s, COLOR_END);
+    PROC_PRINT(s, COLOR_START_HEAD);
+    PROC_PRINT(s, "----------------------------------------------------------------------------------------------\n");
+    PROC_PRINT(s, "|Module Name |    ID    |   MMZ   |   USR_MEM   |   KERNEL_MEM   |   MAX_MEM   |   CUR_MEM   |\n");
+    PROC_PRINT(s, "----------------------------------------------------------------------------------------------\n");
+    PROC_PRINT(s, COLOR_END);
 
     if (NULL != g_pstMemItemHeader )
     {
@@ -662,21 +644,21 @@ HI_S32 MemProcRead(struct seq_file *s, HI_VOID *pArg)
 
             if (u32Count%2 == 0)
             {
-                seq_printf(s, COLOR_START_HEAD"|"COLOR_END);
-                seq_printf(s, " %-8.8s    0x%-08x   %-8u      %-8u      %-8u      %-8u      %-8u  ", pModuleName, \
+                PROC_PRINT(s, COLOR_START_HEAD"|"COLOR_END);
+                PROC_PRINT(s, " %-8.8s    0x%-8x   %-8u      %-8u      %-8u      %-8u      %-8u  ", pModuleName, \
                      pItr->stMemInfo.u32ModuleID, pItr->stMemInfo.u32MMZSize, pItr->stMemInfo.u32UsrSize, \
                      u32SizeK, pItr->stMemInfo.u32MaxSize, u32TotalSize);
-                seq_printf(s, COLOR_START_HEAD"|\n"COLOR_END);
+                PROC_PRINT(s, COLOR_START_HEAD"|\n"COLOR_END);
 
                 u32Count = 1;
             }
             else
             {
-                seq_printf(s, COLOR_START_HEAD"|"COLOR_END COLOR_START_RED);
-                seq_printf(s, " %-8.8s    0x%-08x   %-8u      %-8u      %-8u      %-8u      %-8u  ", pModuleName, \
+                PROC_PRINT(s, COLOR_START_HEAD"|"COLOR_END COLOR_START_RED);
+                PROC_PRINT(s, " %-8.8s    0x%-8x   %-8u      %-8u      %-8u      %-8u      %-8u  ", pModuleName, \
                      pItr->stMemInfo.u32ModuleID, pItr->stMemInfo.u32MMZSize, pItr->stMemInfo.u32UsrSize, \
                      u32SizeK, pItr->stMemInfo.u32MaxSize, u32TotalSize);
-                seq_printf(s, COLOR_END COLOR_START_HEAD"|"COLOR_END"\n");
+                PROC_PRINT(s, COLOR_END COLOR_START_HEAD"|"COLOR_END"\n");
 
                u32Count = 0;
             }
@@ -684,9 +666,9 @@ HI_S32 MemProcRead(struct seq_file *s, HI_VOID *pArg)
             pItr = pItr->pNext;
         }
     }
-    seq_printf(s, COLOR_START_HEAD);
-    seq_printf(s, "----------------------------------------------------------------------------------------------\n");
-    seq_printf(s, COLOR_END);
+    PROC_PRINT(s, COLOR_START_HEAD);
+    PROC_PRINT(s, "----------------------------------------------------------------------------------------------\n");
+    PROC_PRINT(s, COLOR_END);
 
     kmodule_mem_unlock();
 
@@ -722,7 +704,7 @@ HI_S32 KModule_MemMgr_Init(HI_U32 u32ModuleCount, HI_U32 u32ModuleMemCount)
 
     KMODULE_MEM_Pool_Init(u32ModuleCount);
     // 0
-    sprintf(g_stModuleMemDev.devfs_name, "%s", UMAP_DEVNAME_MEM2);
+    HI_OSAL_Snprintf(g_stModuleMemDev.devfs_name, sizeof(g_stModuleMemDev.devfs_name), "%s", UMAP_DEVNAME_MEM2);
     g_stModuleMemDev.fops = &DRV_mem_Fops;
     g_stModuleMemDev.minor = UMAP_MIN_MINOR_MEM2;
     g_stModuleMemDev.owner  = THIS_MODULE;
@@ -730,7 +712,7 @@ HI_S32 KModule_MemMgr_Init(HI_U32 u32ModuleCount, HI_U32 u32ModuleMemCount)
 
     if(HI_DRV_DEV_Register(&g_stModuleMemDev) < 0)
     {
-        THIS_ERR_PRINT(KERN_EMERG"<%s>Unable to register dbg dev\n", KERNEL_MODE);
+        HI_ERR_MEM("<%s>Unable to register dbg dev\n", KERNEL_MODE);
         return -1;
     }
     // 1

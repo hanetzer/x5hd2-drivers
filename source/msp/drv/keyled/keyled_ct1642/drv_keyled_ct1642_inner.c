@@ -41,9 +41,9 @@
 
 #include "hi_common.h"
 #include "hi_type.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
 #include "hi_kernel_adapt.h"
 #include "hi_unf_keyled.h"
 #include "hi_error_mpi.h"
@@ -51,10 +51,9 @@
 #include "drv_keyled_ioctl.h"
 #include "drv_keyled.h"
 #include "drv_keyled_ct1642_inner.h"
-#include "drv_reg_ext.h"
+#include "hi_drv_reg.h"
 
 #define DEFAULT_REP_KEY_TIME   200
-//#define MULIT_CONFIG_BASEADDR 0x10203000
 
 static struct semaphore sem_keyled_std;
 
@@ -312,7 +311,7 @@ static HI_U32 keyled_get_key(HI_VOID)
     switch (key)
     {
     case KEY_7_PRESS:
-        return (7);
+        return (8);
     case KEY_6_PRESS:
         return (6);
     case KEY_5_PRESS:
@@ -727,7 +726,7 @@ HI_S32 KEYLED_Init_CT1642(HI_VOID)
     keyled_clear_keybuf_func();
 
      /* registe keyled irq handle */
-    err = request_irq(KEYLED_IRQ, keyled_interrupt_handler, IRQF_DISABLED, "keyled_ct1642", NULL);
+    err = request_irq(KEYLED_IRQ, keyled_interrupt_handler, IRQF_DISABLED, "hi_keyled_ct1642_irq", NULL);
     if (0 != err)
     {
         HI_ERR_KEYLED("keyled request irq failed\n");
@@ -1184,6 +1183,24 @@ HI_S32 KEYLED_LED_SetFlashFreq_CT1642(HI_UNF_KEYLED_LEVEL_E enLevel)
     return HI_SUCCESS;
 }
 
+HI_S32 KEYLED_GetProcInfo_CT1642(KEYLED_PROC_INFO_S *stInfo)
+{
+    stInfo->KeyBufSize = keyled_dev.buf_len;
+    stInfo->KeyBufHead = keyled_dev.head;
+    stInfo->KeyBufTail = keyled_dev.tail;
+    stInfo->KeyComeNum = keyled_dev.key_come;
+    stInfo->KeyReadNum = keyled_dev.key_read;
+    stInfo->u32RepKeyTimeMs = keyled_dev.repkey_delaytime;
+    stInfo->u32IsRepKeyEnable = keyled_dev.enable_repkey;
+    stInfo->u32IsUpKeyEnable = keyled_dev.enable_keyup;
+    stInfo->u32BlockTime = keyled_dev.blocktime;
+    stInfo->enFlashPin = keyled_dev.FlashPin;
+    stInfo->enFlashLevel = keyled_dev.FlashLevel;
+    stInfo->KeyBufTail= keyled_dev.tail;
+    
+    return HI_SUCCESS;
+}
+
 HI_S32 KEYLED_Suspend_CT1642(HI_VOID)
 {
 	if ( 0 == IsLedOpen && 0 == IsKeyOpen )
@@ -1246,10 +1263,15 @@ HI_S32 KEYLED_Resume_CT1642(HI_VOID)
 	{
 		keyled_displaytime(SuspendSaveVal.TimeData,SuspendSaveVal.dotflag);
 	}
-	else
+	else if (HI_TRUE == SuspendSaveVal.bDisNormalData)
 	{
-    	HI_ERR_KEYLED("Resume Display error. \n");
+        keyled_display(SuspendSaveVal.LedData[0] | SuspendSaveVal.LedData[1] << 8
+                | SuspendSaveVal.LedData[2] << 16 | SuspendSaveVal.LedData[3] << 24);
 	}
+    else
+    {
+        HI_ERR_KEYLED("Resume Display error. \n");
+    }
 	
     keyled_enable_key();
     keyled_enable_ledc();

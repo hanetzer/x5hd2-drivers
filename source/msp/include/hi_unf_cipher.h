@@ -73,8 +73,14 @@ typedef struct hiUNF_CIPHER_CTRL_CHANGE_FLAG_S
 /** CNcomment:使用哪个key ladder标志 */
 typedef enum hiUNF_CIPHER_CA_TYPE_E
 {
-    HI_UNF_CIPHER_CA_TYPE_R2R       = 0x0,    /**< Using R2R key ladder */                                                    /**< CNcomment:使用R2R key ladder */
-    HI_UNF_CIPHER_CA_TYPE_SP        = 0x1,    /**< Using SP key ladder */                                                    /**< CNcomment:使用SP key ladder */
+    HI_UNF_CIPHER_CA_TYPE_R2R   = 0x0,      /**< Using R2R key ladder */                                                 /**< CNcomment:使用R2R key ladder */
+    HI_UNF_CIPHER_CA_TYPE_SP,               /**< Using SP key ladder */                                                  /**< CNcomment:使用SP key ladder */
+    HI_UNF_CIPHER_CA_TYPE_CSA2,             /**< Using CSA2 key ladder */                                                /**< CNcomment:使用CSA2 key ladder */
+    HI_UNF_CIPHER_CA_TYPE_CSA3,             /**< Using CSA3 key ladder */                                                /**< CNcomment:使用CSA3 key ladder */
+    HI_UNF_CIPHER_CA_TYPE_MISC,             /**< Using MISC ladder */                                                    /**< CNcomment:使用SP key ladder */
+    HI_UNF_CIPHER_CA_TYPE_GDRM,             /**< Using GDRM ladder */                                                    /**< CNcomment:使用GDRM key ladder */
+    HI_UNF_CIPHER_CA_TYPE_BLPK,             /**< Using BLPK ladder */                                                    /**< CNcomment:使用BLPK key ladder */
+    HI_UNF_CIPHER_CA_TYPE_LPK,              /**< Using LPK ladder */                                                     /**< CNcomment:使用LPK key ladder */
 }HI_UNF_CIPHER_CA_TYPE_E;
 
 /** Encryption/Decryption type selecting */
@@ -95,15 +101,15 @@ typedef struct
 /** CNcomment:加密控制信息结构 */
 typedef struct hiHI_UNF_CIPHER_CTRL_S
 {
-    HI_U32                              u32Key[8];    /**< Key */                                                                                                       /**< CNcomment:密钥 */
-    HI_U32                              u32IV[4];     /**< Initialization vector (IV) */                                                                                /**< CNcomment:初始向量 */
-    HI_BOOL                             bKeyByCA;     /**< Encryption using advanced conditional access (CA) or decryption using keys */                                /**< CNcomment:是否使用高安全CA加密或解密Key */
-    HI_UNF_CIPHER_CA_TYPE_E             enCaType;     /**< Using the R2R key or SP key when using advanced CA */                                                  		/**< CNcomment:使用高安全CA时使用SP Key或R2R Key */
-    HI_UNF_CIPHER_ALG_E                 enAlg;        /**< Cipher algorithm */                                                                                          /**< CNcomment:加密算法 */
-    HI_UNF_CIPHER_BIT_WIDTH_E           enBitWidth;   /**< Bit width for encryption or decryption */                                                                    /**< CNcomment:加密或解密的位宽 */
-    HI_UNF_CIPHER_WORK_MODE_E           enWorkMode;   /**< Operating mode */                                                                                            /**< CNcomment:工作模式 */
-    HI_UNF_CIPHER_KEY_LENGTH_E          enKeyLen;     /**< Key length */                                                                                                /**< CNcomment:密钥长度 */
-    HI_UNF_CIPHER_CTRL_CHANGE_FLAG_S    stChangeFlags;/**< control information exchange choices, we default all woulde be change except they have been in the choices */ 	/**< CNcomment:控制信息变更选项，选项中没有标识的项默认全部变更 */  
+    HI_U32 u32Key[8];                               /**< Key input */                                                                                                     /**< CNcomment:输入密钥 */
+    HI_U32 u32IV[4];                                /**< Initialization vector (IV) */                                                                                    /**< CNcomment:初始向量 */
+    HI_BOOL bKeyByCA;                               /**< Encryption using advanced conditional access (CA) or decryption using keys */                                    /**< CNcomment:是否使用高安全CA加密或解密Key */
+    HI_UNF_CIPHER_CA_TYPE_E enCaType;                   /**< Select keyladder type when using advanced CA */                                                  		          /**< CNcomment:使用高安全CA时,选择何种类型的keyladder */
+    HI_UNF_CIPHER_ALG_E enAlg;                      /**< Cipher algorithm */                                                                                              /**< CNcomment:加密算法 */
+    HI_UNF_CIPHER_BIT_WIDTH_E enBitWidth;           /**< Bit width for encryption or decryption */                                                                        /**< CNcomment:加密或解密的位宽 */
+    HI_UNF_CIPHER_WORK_MODE_E enWorkMode;           /**< Operating mode */                                                                                                /**< CNcomment:工作模式 */
+    HI_UNF_CIPHER_KEY_LENGTH_E enKeyLen;            /**< Key length */                                                                                                    /**< CNcomment:密钥长度 */
+    HI_UNF_CIPHER_CTRL_CHANGE_FLAG_S stChangeFlags; /**< control information exchange choices, we default all woulde be change except they have been in the choices */ 	  /**< CNcomment:控制信息变更选项，选项中没有标识的项默认全部变更 */
 } HI_UNF_CIPHER_CTRL_S;
 
 /** Cipher data */
@@ -368,17 +374,17 @@ N/A
 HI_S32 HI_UNF_CIPHER_HashInit(HI_UNF_CIPHER_HASH_ATTS_S *pstHashAttr, HI_HANDLE *pHashHandle);
 
 /** 
-\brief Calculate the hash, if the size of the data to be calculated is very big and the DDR ram is not enough, this API can calculate the data one block by one block.
-CNcomment:\brief 计算hash值，如果需要计算的数据量比较大，该接口可以实现一个block一个block的计算，避免数据量比较大的情况下，内存不足的问题。 CNend
+\brief Calculate the hash, if the size of the data to be calculated is very big and the DDR ram is not enough, this API can calculate the data one block by one block. Attention: The input block length must be 64bytes alingned except for the last block.
+CNcomment:\brief 计算hash值，如果需要计算的数据量比较大，该接口可以实现一个block一个block的计算，避免数据量比较大的情况下，内存不足的问题。 特别注意，除了最后一个block，前面的每一轮输入的长度都必须是64字节对齐。CNend
 
 \attention \n
 N/A
 
 \param[in] hHashHandl:  Hash handle.                                  		CNcomment:Hash句柄。 CNend
 \param[in] pu8InputData:  The input data buffer.                  			CNcomment:输入数据缓冲 CNend
-\param[in] u32InputDataLen:  The input data length, attention: the block length input must be 4bytes aligned except the last block!			CNcomment:输入数据的长度。重要： 输入数据块的长度必须是4字节对齐，最后一个block无此限制。 CNend
+\param[in] u32InputDataLen:  The input data length, attention: the block length input must be 64bytes aligned except the last block!			CNcomment:输入数据的长度。重要： 输入数据块的长度必须是64字节对齐，最后一个block无此限制。 CNend
 \retval ::HI_SUCCESS  Call this API succussful. 						 	CNcomment:API系统调用成功。 CNend
-\retval ::HI_FAILURE  Call this API fails.                       		CNcomment:API系统调用失败。 CNend
+\retval ::HI_FAILURE  Call this API fails.                       		    CNcomment:API系统调用失败。 CNend
 
 \see \n
 N/A

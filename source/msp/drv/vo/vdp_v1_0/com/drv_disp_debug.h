@@ -46,7 +46,7 @@ int vdp_k_fwrite(char *buf, int len, struct file *filp);
 
 
 HI_S32 vdp_k_SaveYUVImg(struct file *pfYUV, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_S32 num);
-HI_S32 vdp_WinSaveDispImg(HI_HANDLE hWin, char *buffer, HI_U32 count);
+HI_S32 vdp_DebugSaveYUVImg(HI_DRV_VIDEO_FRAME_S *pstCurFrame, HI_CHAR *buffer, HI_U32 count);
 
 #ifdef __cplusplus
  #if __cplusplus

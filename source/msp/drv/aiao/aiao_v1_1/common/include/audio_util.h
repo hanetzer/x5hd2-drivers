@@ -22,6 +22,7 @@
 #include "hi_drv_ao.h"
 #include "hi_drv_ai.h"
 #include "drv_ao_private.h"
+#include "hal_aiao_common.h"
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -49,23 +50,30 @@ extern "C"
 #define IEC61937_DATATYPE_DTSCD 0xff         /* DTS CD */
 #define IEC61937_DATATYPE_DOLBY_SIMUL 0xfe
 
-HI_U32 AUTIL_IEC61937DataType(HI_U16 *pu16IecData, HI_U32 u32IecDataSize);
-HI_S32 AUTIL_isIEC61937Hbr(HI_U32 u32IEC61937DataType, HI_U32 uSourceRate);
-HI_U32 AUTIL_CalcFrameSize(HI_U32 u32Ch, HI_U32 u32BitDepth);
-HI_U32 AUTIL_LatencyMs2ByteSize(HI_U32 u32LatencyMs, HI_U32 u32FrameSize, HI_U32 u32SampleRate);
-HI_U32 AUTIL_ByteSize2LatencyMs(HI_U32 u32DataBytes, HI_U32 u32FrameSize, HI_U32 u32SampleRate);
-HI_U32 AUTIL_VolumeLinear2RegdB(HI_U32 u32Linear);
-HI_U32 AUTIL_VolumedB2RegdB(HI_S32 dBVol);
-HI_S32 AUTIL_SetBitZeroOrOne(HI_U32* pu32Val, HI_U32 u32Bit, HI_U32 u32ZeroOrOne);
+HI_U32			AUTIL_IEC61937DataType(HI_U16 *pu16IecData, HI_U32 u32IecDataSize);
+HI_S32			AUTIL_isIEC61937Hbr(HI_U32 u32IEC61937DataType, HI_U32 uSourceRate);
+HI_U32			AUTIL_CalcFrameSize(HI_U32 u32Ch, HI_U32 u32BitDepth);
+HI_U32			AUTIL_LatencyMs2ByteSize(HI_U32 u32LatencyMs, HI_U32 u32FrameSize, HI_U32 u32SampleRate);
+HI_U32			AUTIL_ByteSize2LatencyMs(HI_U32 u32DataBytes, HI_U32 u32FrameSize, HI_U32 u32SampleRate);
+HI_U32			AUTIL_VolumeLinear2RegdB(HI_U32 u32Linear);
+HI_U32			AUTIL_VolumedB2RegdB(HI_S32 dBVol);
+HI_S32			AUTIL_SetBitZeroOrOne(HI_U32* pu32Val, HI_U32 u32Bit, HI_U32 u32ZeroOrOne);
+HI_U32          AUTIL_FclkDiv(HI_UNF_I2S_MCLK_SEL_E enMclkSel, HI_UNF_I2S_BCLK_SEL_E enBclkSel);
 
-const HI_CHAR *AUTIL_Port2Name(HI_UNF_SND_OUTPUTPORT_E enPort);
-const HI_CHAR *AUTIL_TrackMode2Name(HI_UNF_TRACK_MODE_E enMode);
-const HI_CHAR *AUTIL_HdmiMode2Name(HI_UNF_SND_HDMI_MODE_E enMode);
-const HI_CHAR *AUTIL_SpdifMode2Name(HI_UNF_SND_SPDIF_MODE_E enMode);
-const HI_CHAR *AUTIL_Engine2Name(SND_ENGINE_TYPE_E enEngine);
-const HI_CHAR *AUTIL_Format2Name(HI_U32 u32Format);
+const HI_CHAR * AUTIL_Port2Name(HI_UNF_SND_OUTPUTPORT_E enPort);
+const HI_CHAR * AUTIL_TrackMode2Name(HI_UNF_TRACK_MODE_E enMode);
+const AIAO_TRACK_MODE_E AUTIL_TrackModeTransform(HI_UNF_TRACK_MODE_E enMode);
+const HI_CHAR * AUTIL_HdmiMode2Name(HI_UNF_SND_HDMI_MODE_E enMode);
+const HI_CHAR * AUTIL_SpdifMode2Name(HI_UNF_SND_SPDIF_MODE_E enMode);
+const HI_CHAR * AUTIL_Engine2Name(SND_ENGINE_TYPE_E enEngine);
+const HI_CHAR * AUTIL_Format2Name(HI_U32 u32Format);
 
-HI_VOID AUTIL_OS_GetTime(HI_U32 *t_ms);
+HI_VOID			AUTIL_OS_GetTime(HI_U32 *t_ms);
+
+HI_VOID*		AUTIL_AO_MALLOC(HI_U32 u32ModuleID, HI_U32 u32Size, HI_S32 flag);
+HI_VOID			AUTIL_AO_FREE(HI_U32 u32ModuleID, HI_VOID* pMemAddr);
+HI_VOID*		AUTIL_AIAO_MALLOC(HI_U32 u32ModuleID, HI_U32 u32Size, HI_S32 flag);
+HI_VOID			AUTIL_AIAO_FREE(HI_U32 u32ModuleID, HI_VOID* pMemAddr);
 
 #ifdef __cplusplus
  #if __cplusplus

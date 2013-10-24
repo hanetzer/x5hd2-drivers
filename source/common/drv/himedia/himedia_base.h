@@ -1,7 +1,7 @@
 #ifndef _HIMEDIA_BASE_H_
 #define _HIMEDIA_BASE_H_
 
-#include "drv_dev_ext.h"
+#include "hi_drv_dev.h"
 
 // bus
 int  himedia_bus_init(void);

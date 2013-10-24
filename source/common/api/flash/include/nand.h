@@ -10,8 +10,8 @@
 #define MTD_DATAFLASH       6
 #define MTD_UBIVOLUME       7
 
-#define SPAN_PART_HANDLE    1000
-#define MAX_MTD_PARTITION   (32)
+#define MAX_PARTS         32    /* Flash max partition number*/
+#define MAX_MTD_PARTITION   (MAX_PARTS)
 
 #if defined (ANDROID)
 #define DEV_MTDBASE         "/dev/mtd/mtd"
@@ -103,6 +103,7 @@ struct nand_raw_ctrl
     unsigned long pagesize;
     unsigned long blocksize;
     unsigned long oobsize;
+    unsigned long oobused;
 
     unsigned long pageshift;
     unsigned long blockshift;
@@ -110,7 +111,7 @@ struct nand_raw_ctrl
     unsigned long pagemask;
     unsigned long blockmask;
 
-    struct mtd_partition partition[0];
+    struct mtd_partition partition[1];
 };
 
 #if 0

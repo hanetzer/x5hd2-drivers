@@ -436,6 +436,10 @@ __inline static HI_U32 VENC_DRV_BufGetDataLen(VALG_CRCL_BUF_S* pstCB)
 {
     HI_U32 u32DataLen = 0;
 
+    if(!pstCB)
+    {
+        return u32DataLen;
+    }
     if (pstCB->u32WrTail >= pstCB->u32RdHead)/* Write tail before read head, that did not turn back buffer*/
     {
         /*Calculate data length in buffer when turn back*/

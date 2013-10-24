@@ -69,7 +69,9 @@
 #define HLENGTH_ADDR						(0x44)
 #define VBIT_TO_VSYNC_ADDR					(0x46)
 #define VLENGTH_ADDR						(0x47)
+
 #define TX_VID_CTRL_ADDR					(0x48)
+#define     BIT_VID_CTRL_CSCSEL 			(0x10)  // Color Space Conversion Standard select: BT.601(0) / BT.709(1)
 
 #define VID_ACEN_ADDR						(0x49)
 #define     BIT_VID_ACEN_CLIP_CS_ID			(0x10)  // Color Space on the link: RGB (0) / YCbCr (1)
@@ -77,7 +79,7 @@
 #define     BIT_VID_ACEN_RGB2YCBCR			(0x04)  // enable(1) / disable(0-default) RGB to YCbCr color-space converter
 #define     BIT_VID_ACEN_RANGE_COMP			(0x02)  // enable(1) / disable(0-default)
 #define     BIT_VID_ACEN_DWN_SAMPLE			(0x01)  // enable(1) / disable(0-default) 4:4:4 to 4:2:2 chroma down sampler
-//#define		VID_ACEN_DEEP_COLOR_CLR			(0x3F)  // del in 1.4
+//#define		VID_ACEN_DEEP_COLOR_CLR		(0x3F)  // del in 1.4
 
 #define TX_VID_MODE_ADDR					(0x4A)
 #define		BIT_TX_SYNC_EXTR				(0x01)

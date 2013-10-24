@@ -30,7 +30,7 @@ extern "C"{
 #include "hipng_accelerate.h"
 #include "pngpriv.h"
 #include "hi_common.h"
-
+#include "hi_png_config.h"
 #define PNG_CHUNK_HEAD_LEN 8
 #define PNG_CHUNK_TAIL_LEN 4
 
@@ -415,11 +415,15 @@ HI_S32 hipng_set_transform(png_structp png_ptr, HI_PNG_TRANSFORM_S *pstTransform
         pstTransform->u32Transform |= HI_PNG_TRANSFORM_8TO4;
         pstTransform->eOutFmt = HI_PNG_COLORFMT_RGB444;
     }
-
     if(png_ptr->transformations & PNG_PREMULTI_ALPHA)
     {   
-        pstTransform->u32Transform |= HI_PNG_TRANSFORM_PREMULTI_ALPHA;
+        #ifdef CONFIG_PNG_PREMULTIALPHA_ENABLE
+            pstTransform->u32Transform |= HI_PNG_TRANSFORM_PREMULTI_ALPHA;
+        #else
+            return HI_FAILURE;
+        #endif
     }
+    
     return HI_SUCCESS;
 }
 

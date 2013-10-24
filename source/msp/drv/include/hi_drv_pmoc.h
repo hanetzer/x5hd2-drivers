@@ -10,29 +10,22 @@
 #define C51_SIZE             0x10000
 #define C51_DATA             0xe000
 #define MCU_CODE_MAXSIZE     0x5000
-#define CFG_BASE_ADDR        0x101e0000
 #elif defined (CHIP_TYPE_hi3712)
 #define C51_BASE             0x0
 #define C51_SIZE             0x4000
 #define C51_DATA             0x3e00
 #define MCU_CODE_MAXSIZE     0x3000
-#define CFG_BASE_ADDR        0x101e0000
-#elif defined (CHIP_TYPE_hi3716cv200es)|| defined (CHIP_TYPE_hi3716cv200)
+#elif defined (CHIP_TYPE_hi3716cv200) || defined (CHIP_TYPE_hi3716cv200es) \
+            || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+            || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+            || defined (CHIP_TYPE_hi3718mv100)
 #define C51_BASE             0xf8400000
 #define C51_SIZE             0x10000
 #define C51_DATA             0xe000
 #define MCU_CODE_MAXSIZE     0x5000
-#define CFG_BASE_ADDR        0xf8000000
 #else
 #error YOU MUST DEFINE  CHIP_TYPE!
 #endif
-
-#define LOW_POWER_CTRL       0x40
-#define SRST_REQ_CTRL        0x48
-#define SC_GEN6              0x98
-#define SC_GEN7              0x9c
-#define SC_GEN10             0xa8
-#define ETH_FW_FLAG          0x1211beef
 
 #define HI_FATAL_PM(fmt...) HI_FATAL_PRINT(HI_ID_PM, fmt)
 

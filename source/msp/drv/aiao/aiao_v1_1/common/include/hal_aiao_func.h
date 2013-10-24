@@ -64,6 +64,7 @@ HI_S32					iHAL_AIAO_P_SetI2SSdSelect(HI_HANDLE handle, AIAO_I2SDataSel_S  *pstS
 HI_S32 iHAL_AIAO_P_SetAttr(HI_HANDLE handle, AIAO_PORT_ATTR_S *pstAttr);
 HI_S32 iHAL_AIAO_P_GetAttr(HI_HANDLE handle, AIAO_PORT_ATTR_S *pstAttr);
 HI_VOID iHAL_AIAO_P_ProcStatistics(HI_HANDLE handle, HI_U32 u32IntStatus);
+HI_S32 iHAL_AIAO_P_SetI2SMasterClk(AIAO_PORT_ID_E enPortID, AIAO_IfAttr_S *pstIfAttr);
 
 
 /* port buffer function */
@@ -76,7 +77,14 @@ HI_U32					iHAL_AIAO_P_UpdateRptr(HI_HANDLE handle, HI_U8 * pu32Dest, HI_U32 u32
 HI_U32					iHAL_AIAO_P_UpdateWptr(HI_HANDLE handle, HI_U8 * pu32Src, HI_U32 u3SrcLen);
 HI_S32                  iHAL_AIAO_P_GetRbfAttr(HI_HANDLE handle, AIAO_RBUF_ATTR_S *pstRbfAttr);
 HI_VOID iHAL_AIAO_P_GetDelayMs(HI_HANDLE handle, HI_U32 * pu32Delayms);
+#ifdef HI_ALSA_AI_SUPPORT
+HI_U32 iHAL_AIAO_P_ALSA_UpdateRptr(HI_HANDLE handle, HI_U8 * pu32Dest, HI_U32 u32DestSize);
+HI_U32 iHAL_AIAO_P_ALSA_QueryWritePos (HI_HANDLE handle);
+HI_U32 iHAL_AIAO_P_ALSA_QueryReadPos (HI_HANDLE handle);
 
+HI_U32 iHAL_AIAO_P_ALSA_UpdateWptr(HI_HANDLE handle, HI_U8 * pu32Dest, HI_U32 u32DestSize);
+HI_U32 iHAL_AIAO_P_ALSA_FLASH(HI_HANDLE handle);
+#endif
 #ifdef __cplusplus
  #if __cplusplus
 }

@@ -76,7 +76,7 @@ static atomic_t freq_table_users = ATOMIC_INIT(0);
 static unsigned int max_freq;
 static unsigned int current_target_freq;
 static bool hi_cpufreq_ready;
-static bool hi_cpufreq_suspended;
+bool hi_cpufreq_suspended = 0;
 
 static DEFINE_MUTEX(hi_cpufreq_lock);
 
@@ -182,7 +182,7 @@ static int hi_cpufreq_target(struct cpufreq_policy *policy,
                                          relation, &i);
     if (ret)
     {
-        HI_WARN_PM(&mpu_dev, "%s: cpu%d: no freq match for %d(ret=%d)\n",
+        HI_WARN_PM("%s: cpu%d: no freq match for %d(ret=%d)\n",
                    __func__, policy->cpu, target_freq, ret);
         return ret;
     }
@@ -232,7 +232,7 @@ static int hi_cpufreq_cpu_init(struct cpufreq_policy *policy)
         return PTR_ERR(pMpuClk);
     }
 
-    if (policy->cpu >= NR_CPUS)
+    if (policy->cpu >= 1)
     {
         result = -EINVAL;
         goto fail_ck;

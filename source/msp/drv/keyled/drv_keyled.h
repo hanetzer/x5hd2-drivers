@@ -32,16 +32,18 @@ typedef struct hiKEYLED_PROC_INFO_S
 {
     HI_U32 KeyBufSize;	       /*  size of  keybuf  */                                   /*CNcomment: keybuf大小*/
     HI_U32 KeyBufHead;	       /*  head of keybuf  */                                    /*CNcomment: keybuf头*/
-    HI_U32 KeyBufTeil;	       /*  tail of keybuf  */                                    /*CNcomment: keybuf结尾*/
+    HI_U32 KeyBufTail;	       /*  tail of keybuf  */                                    /*CNcomment: keybuf结尾*/
 	HI_U32 KeyComeNum;	         /*  the top num of keybuf  */                             /*CNcomment: keybuf到达个数*/
     HI_U32 KeyReadNum;	       /*  number that the keybuf can read  */                   /*CNcomment: keybuf读取个数*/
     HI_U32 u32RepKeyTimeMs;    /*whether it is the time we think it is repeat key*/      /*CNcomment: 按键重复判断时间*/
     HI_U32 u32IsRepKeyEnable;  /*whether the  function of repeat key  is enable*/        /*CNcomment: 是否使能重复按键*/
     HI_U32 u32IsUpKeyEnable;   /*whether the function of key up is enable*/              /*CNcomment: 是否使能按键弹起*/
-
-    HI_U8  au8LedCode[4];      /*the number that the LED is displaying */                /*CNcomment: 当前数码管显示的码型值*/
-    HI_U32 au32LedEnable[4];   /*whether the LED is enable*/                             /*CNcomment: 当前数码管是否使能*/
-    HI_U32 au32LedFlashLevel;  /*level of the LED twinkle*/                              /*CNcomment: 数码管闪烁级别*/
+    HI_U32 u32BlockTime;
+    HI_UNF_KEYLED_LIGHT_E enFlashPin;
+    HI_UNF_KEYLED_LEVEL_E enFlashLevel;  /*level of the LED twinkle*/                              /*CNcomment: 数码管闪烁级别*/
+    HI_UNF_KEYLED_TYPE_E enKeyLedType;
+    HI_UNF_KEYLED_TIME_S stLedTime;
+    HI_U32 u32DispCode;        /*the number that the LED is displaying */                /*CNcomment: 当前数码管显示的码型值*/
 
 }KEYLED_PROC_INFO_S;
 
@@ -84,7 +86,7 @@ typedef struct
 #define KEYLED_BUF_HEAD keyled_dev.buf[keyled_dev.head]
 #define KEYLED_BUF_TAIL keyled_dev.buf[keyled_dev.tail]
 #define KEYLED_BUF_LAST keyled_dev.buf[(keyled_dev.head == 0) ? (keyled_dev.buf_len - 1) : (keyled_dev.head - 1)]
-#define KEYLED_INC_BUF(x, len) ((++ (x)) % (len))
+#define KEYLED_INC_BUF(x, len) (((x) + 1) % (len))
 
 /* keyled operation */
 typedef struct tagKEYLED_OPT_S
@@ -111,7 +113,7 @@ typedef struct tagKEYLED_OPT_S
 	HI_S32 (*KEYLED_LED_SetLockIndicator)(HI_BOOL bLock);
     
     /*get the proc information of  the module */ /*CNcomment:获取模块的PROC信息*/
-    HI_S32 (*KEYLED_GetProcInfo)(KEYLED_PROC_INFO_S stInfo);
+    HI_S32 (*KEYLED_GetProcInfo)(KEYLED_PROC_INFO_S *stInfo);
 
     HI_S32 (*KEYLED_Suspend)(HI_VOID);
     HI_S32 (*KEYLED_Resume)(HI_VOID);

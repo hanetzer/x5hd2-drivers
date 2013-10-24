@@ -1,3 +1,17 @@
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : drv_cipher_define.h
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
 #ifndef __DRV_CIPHER_DEFINE_H__
 #define __DRV_CIPHER_DEFINE_H__
 
@@ -7,26 +21,20 @@
 
 #define CIPHER_WAIT_IDEL_TIMES 		1000
 
-#if LINUX_VERSION_CODE > KERNEL_VERSION(2,6,14)
-#define  SA_INTERRUPT     IRQF_DISABLED
-#define  SA_SHIRQ         IRQF_SHARED
-#endif
+#define TASK_QUEUE_IDLE 			(0)
+#define TASK_QUEUE_BUSY 			(1)
+
+#define MEM_LENGTH_ERROR    		(1)
+#define AHB_BUS_ERROR       		(2)
+
+#define CIPHER_MAX_LIST_NUM  		(128)
+
+#define CI_IV_SIZE       			(16)  /* max 128bit */
+#define CI_KEY_SIZE      			(32)  /* max 256bit */
 
 
-#define TASK_QUEUE_IDLE 			0
-#define TASK_QUEUE_BUSY 			1
-
-#define MEM_LENGTH_ERROR    		1
-#define AHB_BUS_ERROR       		2
-
-#define CI_MAX_LIST_NUM  			128
-
-#define CI_IV_SIZE       			16  /* max 128bit */
-#define CI_KEY_SIZE      			32  /* max 256bit */
-
-
-#define CI_BUF_LIST_FLAG_IVSET_BIT  21
-#define CI_BUF_LIST_FLAG_EOL_BIT    22
+#define CI_BUF_LIST_FLAG_IVSET_BIT  (21)
+#define CI_BUF_LIST_FLAG_EOL_BIT    (22)
 
 typedef struct hiCI_BUF_LIST_ENTRY_S
 {

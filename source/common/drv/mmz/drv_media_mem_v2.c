@@ -1608,6 +1608,7 @@ int mmz_read_proc(char *page, char **start, off_t off,
 int mmz_write_proc(struct file *file, const char __user *buffer,
                                    unsigned long count, void *data)
 {
+#if !(0 == HI_PROC_SUPPORT)
     char buf[256];
 
 
@@ -1624,6 +1625,7 @@ int mmz_write_proc(struct file *file, const char __user *buffer,
         return -EIO;
     }
     media_mem_parse_cmdline(buf);
+#endif
 
     return count;
 }

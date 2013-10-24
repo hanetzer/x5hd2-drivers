@@ -128,65 +128,6 @@ typedef union
 
     HI_U32 value;
 } U_PERI_CRG25;
-
-#elif defined(CHIP_TYPE_hi3716cv200es) || defined(CHIP_TYPE_hi3716cv200)
-
-#define PERI_CRG63          (0x00FC)
-
-typedef union
-{
-    struct
-    {
-        HI_U32  pvr_bus_cken    : 1;    // [0]
-        HI_U32  pvr_dmx_cken    : 1;    // [1]
-        HI_U32  pvr_27m_cken    : 1;    // [2]
-        HI_U32  pvr_tsi1_cken   : 1;    // [3]
-        HI_U32  pvr_tsi2_cken   : 1;    // [4]
-        HI_U32  pvr_tsi3_cken   : 1;    // [5]
-        HI_U32  pvr_tsi4_cken   : 1;    // [6]
-        HI_U32  pvr_tsi5_cken   : 1;    // [7]
-        HI_U32  pvr_tsi6_cken   : 1;    // [8]
-        HI_U32  pvr_tsi7_cken   : 1;    // [9]
-        HI_U32  pvr_ts0_cken    : 1;    // [10]
-        HI_U32  pvr_ts1_cken    : 1;    // [11]
-        HI_U32  pvr_tsout0_cken : 1;    // [12]
-        HI_U32  pvr_tsout1_cken : 1;    // [13]
-        HI_U32  reserved0       : 2;    // [15:14]
-        HI_U32  pvr_tsi2_pctrl  : 1;    // [16]
-        HI_U32  pvr_tsi3_pctrl  : 1;    // [17]
-        HI_U32  pvr_tsi4_pctrl  : 1;    // [18]
-        HI_U32  pvr_tsi5_pctrl  : 1;    // [19]
-        HI_U32  pvr_tsi6_pctrl  : 1;    // [20]
-        HI_U32  pvr_tsi7_pctrl  : 1;    // [21]
-        HI_U32  pvr_srst_req    : 1;    // [22]
-        HI_U32  reserved1       : 9;    // [31:23]
-    } bits;
-
-    HI_U32 value;
-} U_PERI_CRG63;
-
-#define PERI_CRG64          (0x0100)
-
-typedef union
-{
-    struct
-    {
-        HI_U32  pvr_tsout0_pctrl    : 1;    // [0]
-        HI_U32  pvr_tsout1_pctrl    : 1;    // [1]
-        HI_U32  pvr_dmx_clk_sel     : 2;    // [3:2]
-        HI_U32  sw_dmx_clk_div      : 5;    // [8:4]
-        HI_U32  sw_dmxclk_loaden    : 1;    // [9]
-        HI_U32  pvr_dmx_clkdiv_cfg  : 1;    // [10]
-        HI_U32  reserved0           : 1;    // [11]
-        HI_U32  pvr_ts0_clk_sel     : 2;    // [13:12]
-        HI_U32  pvr_ts1_clk_sel     : 2;    // [15:14]
-        HI_U32  pvr_ts0_clk_div     : 4;    // [19:16]
-        HI_U32  pvr_ts1_clk_div     : 4;    // [23:20]
-        HI_U32  reserved1           : 8;    // [31:24]
-    } bits;
-
-    HI_U32 value;
-} U_PERI_CRG64;
 #endif
 
 #define DMX_SUBDEV_SHIFT_BIT        4
@@ -832,7 +773,10 @@ typedef union
 #define DMX_PID_PLAY_BUF(ChanId)        (0x3800 + ((ChanId) << 2))  /* pointed PID channel play buf number  */
 
 
-#if defined(CHIP_TYPE_hi3716cv200es) || defined(CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es)    || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
 #define SWITCH_CFG0                     (0x3A00)
 #define SWITCH_CFG1                     (0x3A04)
 #define SWITCH_FAKE_EN                  (0x3A10)
@@ -949,7 +893,10 @@ typedef union
 } U_DMX_PID_PLAY_BUF;
 
 
-#if defined(CHIP_TYPE_hi3716cv200es) || defined(CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es)    || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100)
 // Define the union U_SWITCH_CFG0
 typedef union
 {
@@ -1060,15 +1007,18 @@ typedef union
         unsigned int    dmx4_rec_ctrl         : 3   ; // [15..13]
         unsigned int    dmx5_sps_ctrl         : 1   ; // [16]
         unsigned int    dmx5_rec_ctrl         : 3   ; // [19..17]
-    #if defined(CHIP_TYPE_hi3716cv200es) || defined(CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es)    || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100)
         unsigned int    dmx6_sps_ctrl         : 1   ; // [20]
         unsigned int    dmx6_rec_ctrl         : 3   ; // [23..21]
         unsigned int    dmx7_sps_ctrl         : 1   ; // [24]
         unsigned int    dmx7_rec_ctrl         : 3   ; // [27..25]
         unsigned int    Reserved_0            : 4   ; // [31..28]
-    #else 
+#else 
         unsigned int    Reserved_0            : 12  ; // [31..20]
-    #endif
+#endif
     } bits;
 
     // Define an unsigned member
@@ -2821,6 +2771,8 @@ typedef union
 #define REC_TSCNT_CFG_0                 (0xC1E0)    /* config TS count 0~3 join in someone record buffer */
 #define REC_TSCNT_CFG_1                 (0xC1E4)    /* config TS count 4~5 join in someone record buffer */
 #define SCD_TSCNT_ENA                   (0xC1F0)    /* in record index, whether TS packet count need use DAV TS packet count to replace */
+#define TIMESTAMP_CTRL                  (0xC1F8)    /* the type of time stamp added in ts packet */
+
 
 #define IP_BP_CLR_CFG                   (0xC200)    /* when IP channel timeout whether automatic clear config */
 
@@ -2829,17 +2781,32 @@ typedef union
     struct
     {
         HI_U32  ipaful_clr_time : 24;   // [23:0]
-    #if defined(CHIP_TYPE_hi3716cv200es) || defined(CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es)    || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100)
         HI_U32  ipaful_clr_ena  : 7;    // [30:24]
         HI_U32  reserved        : 1;    // [31]
-    #else
+#else
         HI_U32  ipaful_clr_ena  : 4;    // [27:24]
         HI_U32  reserved        : 4;    // [31:28]
-    #endif
+#endif
     } bits;
 
     HI_U32 value;
 } U_IP_BP_CLR_CFG;
+
+typedef union
+{
+    struct
+    {
+        HI_U32  rec_timestamp_mode : 14;   // [13:0]
+        HI_U32  reserved           : 18;    // [31:14]
+    } bits;
+
+    HI_U32 value;
+} U_TIMESTAMP_CTRL;
+
 
 //#define IP_CHN_BP_STA                   (0xC204)    /* IP channel counter-press state */
 //#define IP_BP_AUTOCLR_ENA               (0xC208)    /* IP channel counter-press state automatic clear enable register */
@@ -3048,18 +3015,24 @@ typedef union
         unsigned int    iena_fq_desc_err      : 1   ; // [25]
         unsigned int    iena_fq_ovfl_err      : 1   ; // [26]
         unsigned int    iena_oq_ovfl_err      : 1   ; // [27]
-    #if defined(CHIP_TYPE_hi3716cv200es) || defined(CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es)    || defined (CHIP_TYPE_hi3716cv200) 
         unsigned int    iena_ip4_all          : 1   ; // [28]
         unsigned int    Reserved_0            : 3   ; // [31..29]     
-    #else
+#elif defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
+	    unsigned int    iena_ip4_all          : 1   ; // [28]
+	    unsigned int    iena_ip5_all          : 1   ; // [29]
+        unsigned int    Reserved_0            : 2   ; // [31..30]    
+#else
         unsigned int    Reserved_0            : 4   ; // [31..28]
-    #endif
+#endif
     } bits;
 
     // Define an unsigned member
     unsigned int    u32;
 
-} U_ENA_INT_TYPE;
+} U_ENA_INT_TYPE;  /*0xc104*/
 
 // Define the union U_INT_STA_ALL
 typedef union

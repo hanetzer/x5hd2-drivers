@@ -32,7 +32,7 @@
 
 #include <linux/interrupt.h>
 #include "hi_module.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 
 #include "drv_hifb_ext.h"
 #include "drv_pdm_ext.h"
@@ -42,7 +42,7 @@
 #define SD_LAYE_ADDR   0xf8cc8000
 #define WBC_LAYE_ADDR  0xf8cca800
 
-#ifndef CONFIG_SUPPORT_CA_RELEASE
+#ifndef HI_ADVCA_FUNCTION_RELEASE
 #define HIFB_PRINT_INFO  printk
 #else
 #define HIFB_PRINT_INFO(x...)
@@ -62,23 +62,36 @@ static HIFB_EXPORT_FUNC_S s_HifbExportFuncs =
 HI_VOID HifbSetLogoLayerEnable(HI_BOOL bEnable)
 {
     PDM_EXPORT_FUNC_S *ps_PdmExportFuncs = HI_NULL;
-
-    /* free the reserve memory*/
+	
     if (bEnable) 
     {
         *g_u32LogoCtrlReg |= (0x1 << 31);
         *g_u32SDCtrlReg   |= (0x1 << 31);
         *g_u32WBCCtrlReg  |= (0x1 << 31);
+
+        *(g_u32LogoCtrlReg + 1) = 0x1;
+        *(g_u32SDCtrlReg + 1)   = 0x1;
+        *(g_u32WBCCtrlReg + 1)  = 0x1;
+
     }
     else
     {
         *g_u32LogoCtrlReg &= ~(0x1 << 31);
         *g_u32SDCtrlReg   &= ~(0x1 << 31);
         *g_u32WBCCtrlReg  &= ~(0x1 << 31);
-	
+
+        *(g_u32LogoCtrlReg + 1) = 0x1;
+        *(g_u32SDCtrlReg + 1)   = 0x1;
+        *(g_u32WBCCtrlReg + 1)  = 0x1;
+
+        msleep(40);
 
         /* free the reserve memory*/
-        HI_DRV_MODULE_GetFunction(HI_ID_PDM, (HI_VOID**)&ps_PdmExportFuncs);
+        if (HI_SUCCESS != HI_DRV_MODULE_GetFunction(HI_ID_PDM, (HI_VOID**)&ps_PdmExportFuncs))
+        {
+        	return;
+        }
+		
         if(HI_NULL != ps_PdmExportFuncs)
         {
             ps_PdmExportFuncs->pfnPDM_ReleaseReserveMem(DISPLAY_BUFFER);
@@ -87,9 +100,7 @@ HI_VOID HifbSetLogoLayerEnable(HI_BOOL bEnable)
         }
     }
 
-    *(g_u32LogoCtrlReg + 1) = 0x1;
-    *(g_u32SDCtrlReg + 1)   = 0x1;
-    *(g_u32WBCCtrlReg + 1)  = 0x1;
+    return;
 }
 
 HI_S32 hifb_init_module_k(HI_VOID)
@@ -97,9 +108,9 @@ HI_S32 hifb_init_module_k(HI_VOID)
     HI_S32 ret;
 
     g_u32LogoCtrlReg = (HI_U32*)ioremap_nocache(LOGO_LAYE_ADDR, 8);
-    g_u32SDCtrlReg   = (HI_U32*)ioremap_nocache(SD_LAYE_ADDR,   8);
-    g_u32WBCCtrlReg  = (HI_U32*)ioremap_nocache(WBC_LAYE_ADDR,  8);
-    ret = HI_DRV_MODULE_Register(HI_ID_FB, HIFB_NAME, &s_HifbExportFuncs); 
+	g_u32SDCtrlReg   = (HI_U32*)ioremap_nocache(SD_LAYE_ADDR, 8);
+	g_u32WBCCtrlReg  = (HI_U32*)ioremap_nocache(WBC_LAYE_ADDR, 8);
+    ret = HI_GFX_MODULE_Register(HIGFX_FB_ID, HIFB_NAME, &s_HifbExportFuncs); 
     if (HI_SUCCESS != ret)
     {
         HIFB_PRINT_INFO("HI_DRV_MODULE_Register failed\n");
@@ -111,8 +122,8 @@ HI_S32 hifb_init_module_k(HI_VOID)
 
 HI_VOID hifb_cleanup_module_k(HI_VOID)
 {
-    HI_DRV_MODULE_UnRegister(HI_ID_FB);
+    HI_GFX_MODULE_UnRegister(HIGFX_FB_ID);
     iounmap(g_u32LogoCtrlReg);
-    iounmap(g_u32SDCtrlReg);
-    iounmap(g_u32WBCCtrlReg);
+	iounmap(g_u32SDCtrlReg);
+	iounmap(g_u32WBCCtrlReg);
 }

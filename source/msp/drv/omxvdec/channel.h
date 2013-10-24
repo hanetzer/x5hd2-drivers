@@ -18,7 +18,7 @@
 #include <linux/platform_device.h>
 
 #include "drv_vpss_ext.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
 #include "hi_type.h"
 #include "msg.h"
 
@@ -129,6 +129,8 @@ struct chan_ctx_s {
 	spinlock_t raw_lock;
 	struct list_head raw_queue;
 	HI_U32 raw_use_cnt;
+	HI_U32 raw_get_cnt;
+	HI_U32 last_get_raw_time;
 
 	spinlock_t yuv_lock;
 	struct list_head yuv_queue;

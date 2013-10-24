@@ -22,7 +22,7 @@
 #include "hi_type.h"
 #include "hi_debug.h"
 
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "hi_module.h"
 
 #include "demux_debug.h"
@@ -36,7 +36,7 @@
 /********************** Global Variable define **************************/
 #define DMX_COPY_PES    1
 
-#define DMX_POOLBUF_BLOCK_SIZE          4096
+
 
 HI_S32 g_s32DmxFd = -1;     /* the file discreption for DEMUX module */
 
@@ -49,11 +49,16 @@ static DMX_MMZ_BUF_S    g_RecMmzBuf[DMX_CNT];
 
 static pthread_mutex_t g_stDmxMutex = PTHREAD_MUTEX_INITIALIZER;
 
+static const HI_CHAR s_szDmxVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
+
 #define MPIDmxCheckDeviceFd()           \
     do                                  \
     {                                   \
         if (-1 == g_s32DmxFd)           \
         {                               \
+            HI_ERR_DEMUX("Dmx not init!\n"); \
             return HI_ERR_DMX_NOT_INIT; \
         }                               \
     } while (0)
@@ -63,6 +68,7 @@ static pthread_mutex_t g_stDmxMutex = PTHREAD_MUTEX_INITIALIZER;
     {                                   \
         if (HI_NULL == p)               \
         {                               \
+            HI_ERR_DEMUX("Null Pointer!\n"); \
             return HI_ERR_DMX_NULL_PTR; \
         }                               \
     } while (0)
@@ -200,7 +206,7 @@ static HI_S32 MPIPesMemMalloc(HI_HANDLE hChannel, HI_U32 u32Size, HI_U8** pu8Pes
 {
     HI_UNF_DMX_CHAN_ATTR_S stChAttr;
     HI_U32 u32ChnID;
-
+	stChAttr.u32BufSize= 0;
     u32ChnID = DMX_CHANID(hChannel);
     if (u32ChnID >= DMX_CHANNEL_CNT)
     {
@@ -208,13 +214,6 @@ static HI_S32 MPIPesMemMalloc(HI_HANDLE hChannel, HI_U32 u32Size, HI_U8** pu8Pes
         return HI_FAILURE;
     }
     HI_MPI_DMX_GetChannelAttr(hChannel, &stChAttr);
-    if ((MPIPesMemSize[u32ChnID] >= stChAttr.u32BufSize) || (u32Size > stChAttr.u32BufSize))
-    {
-        HI_ERR_DEMUX("Pes mem size(%x) > channel(%d) buffersize(%x)\n", MPIPesMemSize[u32ChnID],
-                     DMX_CHANID(hChannel), stChAttr.u32BufSize);
-        return HI_FAILURE;
-    }
-
     *pu8PesAddr = (HI_U8*)HI_MALLOC(HI_ID_DEMUX, u32Size);
     if (!(*pu8PesAddr))
     {
@@ -244,15 +243,13 @@ none
 static HI_S32 MPIPesMemFree(HI_HANDLE hChannel, HI_U32 u32Size, HI_U8* pu8PesAddr)
 {
     HI_U32 u32ChnID;
+    
+    MPIDmxCheckPointer(pu8PesAddr);
 
     u32ChnID = DMX_CHANID(hChannel);
     if (u32ChnID >= DMX_CHANNEL_CNT)
     {
         HI_ERR_DEMUX("channel handle error:%d\n",u32ChnID);
-        return HI_FAILURE;
-    }
-    if (!pu8PesAddr)
-    {
         return HI_FAILURE;
     }
 
@@ -330,7 +327,7 @@ static HI_S32 DMX_MPI_PortGetType(const HI_UNF_DMX_PORT_E Port, DMX_PORT_MODE_E 
 
         default :
         {
-            HI_WARN_DEMUX("Invalid port 0x%x\n", Port);
+            HI_ERR_DEMUX("Invalid port 0x%x\n", Port);
         }
     }
 
@@ -397,6 +394,7 @@ static HI_S32 MPIDMXDestroyTSBuffer(HI_U32 PortId)
 
     if (0 == g_stTsBuf[PortId].u32BufPhyAddr)
     {
+        HI_ERR_DEMUX("invalid buffer addr!\n");
         return HI_ERR_DMX_INVALID_PARA;
     }
 
@@ -460,7 +458,7 @@ HI_S32 HI_MPI_DMX_Init(HI_VOID)
     if (g_s32DmxFd == -1)
     {
         fd = open (DmxDevName, O_RDWR, 0);
-        if (fd <= 0)
+        if (fd < 0)
         {
             HI_FATAL_DEMUX("Cannot open '%s'\n", DmxDevName);
             (void)pthread_mutex_unlock(&g_stDmxMutex);
@@ -771,6 +769,7 @@ HI_S32 HI_MPI_DMX_CreateTSBuffer(HI_UNF_DMX_PORT_E enPortId, HI_U32 u32TsBufSize
 
     if (DMX_PORT_MODE_TUNER == PortMode)
     {
+        HI_ERR_DEMUX("Invalid port mode:%d!\n",PortMode);
         return HI_ERR_DMX_NOT_SUPPORT;
     }
 
@@ -938,7 +937,12 @@ HI_S32 HI_MPI_DMX_GetPortMode(HI_U32 u32DmxId, HI_UNF_DMX_PORT_MODE_E *penPortMo
     HI_UNF_DMX_PORT_E       PortId;
     HI_UNF_DMX_PORT_ATTR_S  PortAttr;
 
-    MPIDmxCheckDeviceFd();
+    if (-1 == g_s32DmxFd)           
+    {                               
+        HI_WARN_DEMUX("Dmx not init!\n"); 
+        return HI_ERR_DMX_NOT_INIT; 
+    }
+    
     MPIDmxCheckPointer(penPortMod);
 
     ret = HI_MPI_DMX_GetTSPortId(u32DmxId, &PortId);
@@ -1569,8 +1573,7 @@ HI_S32  HI_MPI_DMX_AcquireBuf(HI_HANDLE hChannel, HI_U32 u32AcquireNum,
             {
                 u32MallocLen += pstBufTmp[i].u32Size;
             }
-            u32MallocLen = (u32MallocLen + DMX_POOLBUF_BLOCK_SIZE - 1) / DMX_POOLBUF_BLOCK_SIZE;
-            s32Ret = MPIPesMemMalloc(hChannel, u32MallocLen * DMX_POOLBUF_BLOCK_SIZE, &pu8PesMem);
+            s32Ret = MPIPesMemMalloc(hChannel, u32MallocLen, &pu8PesMem);
             if (HI_SUCCESS == s32Ret)
             {
                 u32PesLen = MPICopyPesTogether(pu8PesMem, pstBufTmp, *pu32AcquiredNum);
@@ -1587,7 +1590,7 @@ HI_S32  HI_MPI_DMX_AcquireBuf(HI_HANDLE hChannel, HI_U32 u32AcquireNum,
             }
             else
             {
-                MPIPesMemFree(hChannel, u32MallocLen * DMX_POOLBUF_BLOCK_SIZE, pu8PesMem);
+                MPIPesMemFree(hChannel, u32MallocLen, pu8PesMem);
             }
 
             return s32Ret;
@@ -1617,8 +1620,7 @@ HI_S32  HI_MPI_DMX_ReleaseBuf(HI_HANDLE hChannel, HI_U32 u32ReleaseNum,
 #if  DMX_COPY_PES
     if (MPIGetChnType(hChannel) == HI_UNF_DMX_CHAN_TYPE_PES)
     {
-        u32ReleaseNum = (pstBuf[0].u32Size + DMX_POOLBUF_BLOCK_SIZE - 1) / DMX_POOLBUF_BLOCK_SIZE;
-        return MPIPesMemFree(hChannel, u32ReleaseNum * DMX_POOLBUF_BLOCK_SIZE, pstBuf[0].pu8Data);
+        return MPIPesMemFree(hChannel, pstBuf[0].u32Size, pstBuf[0].pu8Data);
     }
 #endif /* #if DMX_COPY_PES */
 
@@ -2115,6 +2117,7 @@ HI_S32 HI_MPI_DMX_StartRecord(HI_U32 u32DmxId,
         }
         else
         {
+            HI_ERR_DEMUX("start rec failed 0x%x\n", ret);
             ret = HI_MPI_DMX_DestroyRecChn(RecHandle);
             if (HI_SUCCESS != ret)
             {
@@ -2150,6 +2153,7 @@ HI_S32 HI_MPI_DMX_StopRecord(HI_U32 u32DmxId)
                 }
                 else
                 {
+                    HI_ERR_DEMUX("munmap failed!\n");
                     ret = HI_ERR_DMX_MUNMAP_FAILED;
                 }
             }
@@ -2236,6 +2240,7 @@ HI_S32 HI_MPI_DMX_AcquireRecScdBuf(HI_U32 u32DmxId, DMX_DATA_S *pstBuf, HI_U32 u
             UsrAddr = (HI_U32)HI_MMAP(pstBuf->u32PhyAddr, 56 * 1024);
             if (0 == UsrAddr)
             {
+                HI_ERR_DEMUX("mmap failed!\n");
                 ret = HI_ERR_DMX_MMAP_FAILED;
             }
             else
@@ -2286,6 +2291,22 @@ HI_S32 HI_MPI_DMX_Invoke(HI_UNF_DMX_INVOKE_TYPE_E enCmd, const HI_VOID *pCmdPara
         memcpy(&Param.stChCCRepeatSet, (HI_UNF_DMX_CHAN_CC_REPEAT_SET_S*)pCmdPara, sizeof(HI_UNF_DMX_CHAN_CC_REPEAT_SET_S));
 
         return ioctl(g_s32DmxFd, CMD_DEMUX_CHAN_CC_REPEAT_SET, (HI_S32)&Param);
+    }
+
+    if (HI_UNF_DMX_INVOKE_TYPE_PUSI_SET == enCmd)
+    {
+        HI_UNF_DMX_PUSI_SET_S Param;
+        memcpy(&Param, (HI_UNF_DMX_PUSI_SET_S*)pCmdPara, sizeof(HI_UNF_DMX_PUSI_SET_S));
+
+        return ioctl(g_s32DmxFd, CMD_DEMUX_SET_PUSI, (HI_S32)&Param);
+    }
+
+    if (HI_UNF_DMX_INVOKE_TYPE_TEI_SET == enCmd)
+    {
+        HI_UNF_DMX_TEI_SET_S Param;
+        memcpy(&Param, (HI_UNF_DMX_TEI_SET_S*)pCmdPara, sizeof(HI_UNF_DMX_TEI_SET_S));
+
+        return ioctl(g_s32DmxFd, CMD_DEMUX_SET_TEI, (HI_S32)&Param);
     }
     HI_ERR_DEMUX("unknow cmd:%d.\n",enCmd);
     return HI_ERR_DMX_INVALID_PARA;

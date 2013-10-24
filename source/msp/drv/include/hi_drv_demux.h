@@ -49,7 +49,11 @@ typedef struct
     HI_U32  u32BufLen;
     HI_U32  u32PtsMs;
     HI_U32  u32Index;
-    HI_U32  u32DispTime;
+    HI_U32  u32DispTime;//add for pvr
+    HI_U32  u32DispEnableFlag;       
+    HI_U32  u32DispFrameDistance;   
+    HI_U32  u32DistanceBeforeFirstFrame;   
+    HI_U32  u32GopNum;
 } DMX_Stream_S;
 
 HI_S32  HI_DRV_DMX_Init(HI_VOID);
@@ -59,6 +63,8 @@ HI_S32  HI_DRV_DMX_Close(HI_U32 file);
 
 HI_S32  HI_DRV_DMX_GetPoolBufAddr(DMX_MMZ_BUF_S *PoolBuf);
 HI_S32  HI_DRV_DMX_GetCapability(HI_UNF_DMX_CAPABILITY_S *Cap);
+HI_S32 HI_DRV_DMX_SetPusi(HI_BOOL bCheckPusi);
+HI_S32 HI_DRV_DMX_SetTei(HI_UNF_DMX_TEI_SET_S *pstTei);
 
 HI_S32  HI_DRV_DMX_TunerPortGetAttr(const HI_U32 PortId, HI_UNF_DMX_PORT_ATTR_S *PortAttr);
 HI_S32  HI_DRV_DMX_TunerPortSetAttr(const HI_U32 PortId, const HI_UNF_DMX_PORT_ATTR_S *PortAttr);

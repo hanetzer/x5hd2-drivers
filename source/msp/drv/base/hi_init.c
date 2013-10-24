@@ -6,6 +6,7 @@
 #include "hi_type.h"
 
 #include "drv_vdec_ext.h"
+#include "drv_omxvdec_ext.h"
 #include "drv_pmoc_ext.h"
 #include "drv_gpio_ext.h"
 #include "drv_gpioi2c_ext.h"
@@ -40,7 +41,9 @@
 #include "drv_aenc_ext.h"
 #include "drv_ao_ext.h"
 #include "drv_adsp_ext.h"
-
+#include "drv_vi_ext.h"
+#include "drv_hdmirx_ext.h"
+#include "drv_pq_ext.h"
 #ifndef MODULE
 HI_S32 HI_DRV_LoadModules(HI_VOID)
 {
@@ -55,6 +58,8 @@ HI_S32 HI_DRV_LoadModules(HI_VOID)
     CIPHER_DRV_ModInit();
 
     PDM_DRV_ModInit();
+	
+    PQ_DRV_ModInit();	
 
     HDMI_DRV_ModInit();
 
@@ -93,11 +98,14 @@ HI_S32 HI_DRV_LoadModules(HI_VOID)
 
     ADEC_DRV_ModInit();
 
-#ifndef HI_MCE_SUPPORT
     VFMW_DRV_ModInit();
-#endif
+    SVDEC_ModeInit();
 
     VDEC_DRV_ModInit();
+	
+#if 1 //def ANDROID
+    OMXVDEC_DRV_ModInit();
+#endif
 
     VPSS_DRV_ModInit();
 
@@ -128,6 +136,10 @@ HI_S32 HI_DRV_LoadModules(HI_VOID)
 
 #ifdef HI_VENC_SUPPORT
     VENC_DRV_ModInit();
+#endif
+
+#ifdef HI_VI_SUPPORT
+    VI_DRV_ModInit();
 #endif
 
     return HI_SUCCESS;

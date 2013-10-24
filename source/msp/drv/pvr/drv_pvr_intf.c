@@ -3,7 +3,7 @@
   Copyright (C), 2001-2011, Hisilicon Tech. Co., Ltd.
 
  ******************************************************************************
-  File Name     : pvr_intf.c
+  File Name     : drv_pvr_intf.c
   Version       : Initial Draft
   Author        : Hisilicon multimedia software group
   Created       : 2010/04/27
@@ -22,8 +22,8 @@
 #include "hi_type.h"
 #include "hi_debug.h"
 #include "hi_module.h"
-#include "drv_module_ext.h"
-#include "drv_dev_ext.h"
+#include "hi_drv_module.h"
+#include "hi_drv_dev.h"
 #include "hi_kernel_adapt.h"
 
 #include "pvr_debug.h"
@@ -211,7 +211,7 @@ HI_S32 PVR_DRV_ModInit(HI_VOID)
     PvrFileOps.release          = PVR_DRV_Close;
 	PvrFileOps.unlocked_ioctl   = PVR_DRV_Ioctl;
 
-    strcpy(PvrDev.devfs_name, UMAP_DEVNAME_PVR);
+    strncpy(PvrDev.devfs_name, UMAP_DEVNAME_PVR, strlen(UMAP_DEVNAME_PVR)+1);
     PvrDev.minor  = UMAP_MIN_MINOR_PVR;
     PvrDev.owner  = THIS_MODULE;
     PvrDev.fops   = &PvrFileOps;
@@ -236,8 +236,8 @@ HI_S32 PVR_DRV_ModInit(HI_VOID)
         PvrRecChan[i] = 0;
     }
 
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_pvr.ko success.  \t(%s)\n", VERSION_STRING);
+#ifdef MODULE
+    HI_PRINT("Load hi_pvr.ko success.  \t(%s)\n", VERSION_STRING);
 #endif
 
     return HI_SUCCESS;

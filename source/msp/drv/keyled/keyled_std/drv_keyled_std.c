@@ -41,9 +41,10 @@
 
 #include "hi_common.h"
 #include "hi_type.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_reg.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
 #include "hi_kernel_adapt.h"
 #include "hi_unf_keyled.h"
 #include "hi_error_mpi.h"
@@ -51,12 +52,9 @@
 #include "drv_keyled_ioctl.h"
 #include "drv_keyled.h"
 #include "drv_keyled_std.h"
-#include "drv_reg_ext.h"
+#include "hi_drv_reg.h"
 
 #define DEFAULT_REP_KEY_TIME   200
-#define MULIT_CONFIG_BASEADDR 0xf8000044
-
-HI_U32 MultConfigVir;
 
 struct semaphore sem_keyled_std;
 
@@ -780,37 +778,6 @@ static HI_S32 keyled_set_flash(HI_UNF_KEYLED_LEVEL_E level)
     return HI_SUCCESS;
 }
 
-#if 0
-/* standard front pannel default 1*8 key + 5LED config  */    
-HI_S32 KEYLED_ConfigPin(HI_VOID)
-{
-//    HI_U32 RegVal;
-    MultConfigVir = IO_ADDRESS(MULIT_CONFIG_BASEADDR);
-    if (MultConfigVir < 0)
-    {
-        HI_ERR_KEYLED(" request viraddr failure \n");
-        return -EFAULT;
-    }
- 
-    HI_REG_WRITE(MultConfigVir + 0x74,0x1);
-
-    HI_REG_WRITE(MultConfigVir + 0x78,0x1);
-    
-    HI_REG_WRITE(MultConfigVir + 0x7C,0x1);
-    
-    HI_REG_WRITE(MultConfigVir + 0x80,0x1);
-    
-    HI_REG_WRITE(MultConfigVir + 0x84,0x1);
-      
-    HI_REG_WRITE(MultConfigVir + 0x88,0x1);
-    
-    HI_REG_WRITE(MultConfigVir + 0x8C,0x1);
-
-    return HI_SUCCESS;
-
-}
-#endif
-
 HI_VOID KEYLED_GetChipType(HI_CHIP_TYPE_E *penChipType, HI_CHIP_VERSION_E *penChipVersion)
 {
     *penChipType = enChipType;
@@ -826,10 +793,10 @@ HI_VOID KEYLED_GetChipType(HI_CHIP_TYPE_E *penChipType, HI_CHIP_VERSION_E *penCh
 HI_S32 KEYLED_SetMode(HI_KEYLED_MODE_S KeyledMode)
 {
     HI_U32 regvalue = 0;
-    HI_U32 GpioDirect = 0;
-    HI_U32 GpioFunctionConfig = 0;
+    //HI_U32 GpioDirect = 0;
+    //HI_U32 GpioFunctionConfig = 0;
     HI_U32 KeyTimValue,SysFreTim;
-    HI_U32 Gpio5BaseAddr = IO_ADDRESS(GPIO5_PHY_ADDR);
+    //HI_U32 Gpio5BaseAddr = IO_ADDRESS(GPIO5_PHY_ADDR);
 
     HI_INFO_KEYLED("KEYLED_SetMode: KeyledMode.KeyScanMode---> %d, KeyledMode.LedNum--->%d \n",
 							KeyledMode.KeyScanMode, KeyledMode.LedNum );
@@ -840,27 +807,16 @@ HI_S32 KEYLED_SetMode(HI_KEYLED_MODE_S KeyledMode)
         return HI_FAILURE;
     }
     
-    MultConfigVir = IO_ADDRESS(MULIT_CONFIG_BASEADDR);
-    if (MultConfigVir < 0)
-    {
-        HI_ERR_KEYLED(" request viraddr failure \n");
-        return -EFAULT;
-    }
-
     HI_REG_READ(keyled_base_addr + LEDC_CONFIG, regvalue);
 
     if (HI_KEYLED_1MUL8 == KeyledMode.KeyScanMode)
     {
         regvalue |= KEY_SCAN_MODE;
         
-        /*config gpio5_6 to led cs5*/
+        /*config gpio5_6 to led cs5 should set in boot reg*/
 		if (HI_KEYLED_5LED == KeyledMode.LedNum)
 		{			
-			HI_REG_READ(MultConfigVir, GpioFunctionConfig);
-			HI_INFO_KEYLED("read1 GpioFunctionConfig = %d \n", GpioFunctionConfig);
-			GpioFunctionConfig &= (~0x0c);
-			GpioFunctionConfig |= 0x08; //bit3:2 to 10
-			HI_REG_WRITE(MultConfigVir, GpioFunctionConfig);
+            
 		}
 
         if (HI_KEYLED_1MUL8_HIGH == KeyledMode.KeyLevel)
@@ -885,14 +841,8 @@ HI_S32 KEYLED_SetMode(HI_KEYLED_MODE_S KeyledMode)
     {
         regvalue &= ~KEY_SCAN_MODE;
 		
-        HI_REG_READ(MultConfigVir, GpioFunctionConfig);
-        HI_INFO_KEYLED("read2 GpioFunctionConfig = %d \n", GpioFunctionConfig);
-
-        /*config gpio5_6 to key1 bit3:2 to 01*/
-		GpioFunctionConfig &= (~0x0c);
-        GpioFunctionConfig |= 0x04;
-        HI_REG_WRITE(MultConfigVir, GpioFunctionConfig);
-        HI_REG_READ(Gpio5BaseAddr + 0x04, GpioDirect);
+        /*config gpio5_6 to key1 bit3:2 to 01 should set in boot reg */
+        //HI_REG_READ(Gpio5BaseAddr + 0x04, GpioDirect);
 
         /*config 2*4 mode keyscan alternation to default */
         keyled_config_keytim(KEY_DEFAULT);
@@ -959,7 +909,7 @@ HI_S32 KEYLED_Init(HI_VOID)
     keyled_clear_keybuf_func();
 
      /* registe keyled irq handle */
-    ret = request_irq(KEYLED_IRQ, keyled_interrupt_handler, IRQF_DISABLED, "keyled_std", NULL);
+    ret = request_irq(KEYLED_IRQ, keyled_interrupt_handler, IRQF_DISABLED, "hi_keyled_std_irq", NULL);
     if (0 != ret)
     {
         HI_ERR_KEYLED("keyled request irq failed\n");
@@ -1496,9 +1446,21 @@ HI_S32 KEYLED_LED_SetFlashFreq(HI_UNF_KEYLED_LEVEL_E enLevel)
     return HI_SUCCESS;
 }
 
-
-HI_S32 KEYLED_GetProcInfo(KEYLED_PROC_INFO_S stInfo)
+HI_S32 KEYLED_GetProcInfo(KEYLED_PROC_INFO_S *stInfo)
 {
+    stInfo->KeyBufSize = keyled_dev.buf_len;
+    stInfo->KeyBufHead = keyled_dev.head;
+    stInfo->KeyBufTail = keyled_dev.tail;
+    stInfo->KeyComeNum = keyled_dev.key_come;
+    stInfo->KeyReadNum = keyled_dev.key_read;
+    stInfo->u32RepKeyTimeMs = keyled_dev.repkey_delaytime;
+    stInfo->u32IsRepKeyEnable = keyled_dev.enable_repkey;
+    stInfo->u32IsUpKeyEnable = keyled_dev.enable_keyup;
+    stInfo->u32BlockTime = keyled_dev.blocktime;
+    stInfo->enFlashPin = keyled_dev.FlashPin;
+    stInfo->enFlashLevel = keyled_dev.FlashLevel;
+    stInfo->KeyBufTail= keyled_dev.tail;
+
     return HI_SUCCESS;
 }
 

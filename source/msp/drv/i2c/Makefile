@@ -20,7 +20,8 @@ endif
 objects := std_i2c
 
 ifeq ($(CFG_HI_GPIOI2C_SUPPORT),y)	  
-objects += gpio_i2c 
+CFG_HI_KMOD_CFLAGS += -DHI_GPIOI2C_SUPPORT
+objects += gpio_i2c
 endif
 
 objects_clean:=${addsuffix _clean,${objects}}

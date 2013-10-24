@@ -1,4 +1,4 @@
-CFG_HI_SDK_VERSION="HiSTBLinuxV100R002C00SPC011"
+CFG_HI_SDK_VERSION="HiSTBLinuxV100R002C00SPC020"
 
 SDK_CFGFILE=cfg.mak
 
@@ -36,7 +36,7 @@ IMAGE_DIR=${PUB_DIR}/image
 #LIB_DIR=${PUB_DIR}/lib
 #STATIC_LIB_DIR=${LIB_DIR}/static
 #SHARED_LIB_DIR=${LIB_DIR}/share
-EXTERN_LIB_DIR=${LIB_DIR}/extern
+#EXTERN_LIB_DIR=${LIB_DIR}/extern
 MODULE_DIR=${PUB_DIR}/kmod
 ROOTFS_DIR=${PUB_DIR}/rootfs
 BIN_DIR=${PUB_DIR}/bin
@@ -67,7 +67,12 @@ TUNE2FS=${SERVER_UNTILS_DIR}/tune2fs
 E2FSCK=${SERVER_UNTILS_DIR}/e2fsck
 MKSQUASHFS=${SERVER_UNTILS_DIR}/mksquashfs
 MKJFFS2=${SERVER_UNTILS_DIR}/mkfs.jffs2
+ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200es)
 MKYAFFS=${SERVER_UNTILS_DIR}/mkyaffs2image504
+else
+MKYAFFS=${SERVER_UNTILS_DIR}/mkyaffs2image610
+endif
+MKUBIIMG=${SERVER_UNTILS_DIR}/mkubiimg.sh
 FILECAP=${SERVER_UNTILS_DIR}/filecap
 SCP=${SERVER_UNTILS_DIR}/cp
 SRM=${SERVER_UNTILS_DIR}/rm
@@ -79,20 +84,18 @@ CFG_HI_BASE_ENV+=" CROSS_COMPILE "
 #3. export CFG_HI_CFLAGS
 CFG_HI_CFLAGS :=
 
-#ifeq (${CFG_HI_TOOLCHAINS_NAME},arm-hismall-linux)
-#    CFG_HI_CFLAGS+=-march=armv5te -mtune=arm926ej-s
-#endif
-#ifeq (${CFG_HI_TOOLCHAINS_NAME},arm-hisiv110-linux)
+ifeq (${CFG_HI_TOOLCHAINS_NAME},arm-hisiv200-linux)
 #    CFG_HI_CFLAGS+=-march=armv7-a -mcpu=cortex-a9 -mfloat-abi=softfp -mfpu=vfpv3-d16
-#endif
-#ifeq (${CFG_HI_TOOLCHAINS_NAME},arm-hisiv200-linux)
-#    CFG_HI_CFLAGS+=-march=armv7-a -mcpu=cortex-a9 -mfloat-abi=softfp -mfpu=vfpv3-d16
-#endif
+endif
 
 ifeq ($(CFG_HI_OPTM_SIZE_SUPPORT),y)
-CFG_HI_CFLAGS+= -c -Os -ffunction-sections -Wall -fPIC -DUSE_AEC -D_GNU_SOURCE -D_XOPEN_SOURCE=600
+CFG_HI_CFLAGS+= -c -Os -ffunction-sections -Wall -DUSE_AEC -D_GNU_SOURCE -D_XOPEN_SOURCE=600
 else
-CFG_HI_CFLAGS+= -c -O2 -Wall -fPIC -DUSE_AEC -D_GNU_SOURCE -D_XOPEN_SOURCE=600
+CFG_HI_CFLAGS+= -c -O2 -Wall -DUSE_AEC -D_GNU_SOURCE -D_XOPEN_SOURCE=600
+endif
+
+ifndef CFG_HI_STATIC_LIB_ONLY
+CFG_HI_CFLAGS+= -fPIC
 endif
 
 #ifeq (${CFG_HI_MCE_SUPPORT},y)
@@ -108,22 +111,51 @@ endif
 #CFG_HI_CFLAGS+= -I${MSP_UNF_INCLUDE} -I${MSP_API_INCLUDE} -I${MSP_DRV_INCLUDE} -I${COMMON_UNF_INCLUDE} -I${COMMON_API_INCLUDE} -I${COMMON_DRV_INCLUDE}
 CFG_HI_CFLAGS+= -DCHIP_TYPE_${CFG_HI_CHIP_TYPE} -DSDK_VERSION=${CFG_HI_SDK_VERSION}
 
-## common and other modules will use hi_debug.h, which refers to the CFG_HI_LOG_LEVEL
+## common and other modules will use hi_debug.h, which refers to the HI_LOG_LEVEL
+ifeq (y,$(CFG_HI_LOG_SUPPORT))
+CFG_HI_CFLAGS += -DHI_LOG_SUPPORT=1
 ifdef CFG_HI_LOG_LEVEL
-CFG_HI_CFLAGS += -DCFG_HI_LOG_LEVEL=$(CFG_HI_LOG_LEVEL)
+CFG_HI_CFLAGS += -DHI_LOG_LEVEL=$(CFG_HI_LOG_LEVEL)
 else
-CFG_HI_CFLAGS += -DCFG_HI_LOG_LEVEL=1
+CFG_HI_CFLAGS += -DHI_LOG_LEVEL=1
 endif
-
-## common api and msp_deubg will use these macro
 ifeq (y,$(CFG_HI_LOG_NETWORK_SUPPORT))
 CFG_HI_CFLAGS += -DLOG_NETWORK_SUPPORT
 endif
 ifeq (y,$(CFG_HI_LOG_UDISK_SUPPORT))
 CFG_HI_CFLAGS += -DLOG_UDISK_SUPPORT
 endif
+else
+CFG_HI_CFLAGS += -DHI_LOG_SUPPORT=0
+endif
+ifeq (y,$(CFG_HI_PROC_SUPPORT))
+CFG_HI_CFLAGS += -DHI_PROC_SUPPORT=1
+else
+CFG_HI_CFLAGS += -DHI_PROC_SUPPORT=0
+endif
+
+## common api and msp_deubg will use these macro
 ifeq (y,$(CFG_HI_MEMMGR_SUPPORT))
 CFG_HI_CFLAGS += -DCMN_MMGR_SUPPORT
+endif
+ifeq (y,$(CFG_HI_VI_SUPPORT))
+CFG_HI_CFLAGS += -DHI_VI_SUPPORT
+endif
+ifeq (y,$(CFG_HI_VENC_SUPPORT))
+CFG_HI_CFLAGS += -DHI_VENC_SUPPORT
+endif
+
+ifeq ($(CFG_HI_ADVCA_SUPPORT),y)
+    CFG_HI_CFLAGS += -DHI_ADVCA_SUPPORT
+    CFG_HI_CFLAGS += -DHI_ADVCA_TYPE_$(CFG_HI_ADVCA_TYPE)
+
+    ifdef CFG_HI_ADVCA_FUNCTION
+        ifeq ($(CFG_HI_ADVCA_FUNCTION),FINAL)
+            CFG_HI_CFLAGS += -DHI_ADVCA_FUNCTION_RELEASE
+        else
+            CFG_HI_CFLAGS += -DHI_ADVCA_FUNCTION_$(CFG_HI_ADVCA_FUNCTION)
+        endif
+    endif
 endif
 
 #=============KERNEL MODULE COMPILE OPTIONS=====================================================
@@ -141,16 +173,30 @@ ifeq ($(CFG_HI_MCE_SUPPORT),y)
 CFG_HI_KMOD_CFLAGS += -DHI_MCE_SUPPORT
 endif
 
+ifeq ($(CFG_HI_GPIOI2C_SUPPORT),y)
+CFG_HI_KMOD_CFLAGS += -DHI_GPIOI2C_SUPPORT
+endif
+
 ## common and other modules will use drv_mem_ext.h, which refer to the CMN_MMGR_SUPPORT
 ifeq (y,$(CFG_HI_MEMMGR_SUPPORT))
 CFG_HI_KMOD_CFLAGS += -DCMN_MMGR_SUPPORT
 endif
 
-## common and other modules will use hi_debug.h, which refers to the CFG_HI_LOG_LEVEL
+## common and other modules will use hi_debug.h, which refers to the HI_LOG_LEVEL
+ifeq (y,$(CFG_HI_LOG_SUPPORT))
+CFG_HI_KMOD_CFLAGS += -DHI_LOG_SUPPORT=1
 ifdef CFG_HI_LOG_LEVEL
-CFG_HI_KMOD_CFLAGS += -DCFG_HI_LOG_LEVEL=$(CFG_HI_LOG_LEVEL)
+CFG_HI_KMOD_CFLAGS += -DHI_LOG_LEVEL=$(CFG_HI_LOG_LEVEL)
 else
-CFG_HI_KMOD_CFLAGS += -DCFG_HI_LOG_LEVEL=1
+CFG_HI_KMOD_CFLAGS += -DHI_LOG_LEVEL=1
+endif
+else
+CFG_HI_KMOD_CFLAGS += -DHI_LOG_SUPPORT=0
+endif
+ifeq (y,$(CFG_HI_PROC_SUPPORT))
+CFG_HI_KMOD_CFLAGS += -DHI_PROC_SUPPORT=1
+else
+CFG_HI_KMOD_CFLAGS += -DHI_PROC_SUPPORT=0
 endif
 
 ifeq ($(CFG_HI_LOADER_APPLOADER),y)
@@ -171,6 +217,10 @@ endif
 
 ifeq ($(CFG_HI_SCI_SUPPORT),y)
 CFG_HI_KMOD_CFLAGS += -DHI_SCI_SUPPORT
+endif
+
+ifeq ($(CFG_HI_VI_SUPPORT),y)
+CFG_HI_KMOD_CFLAGS += -DHI_VI_SUPPORT
 endif
 
 ifeq ($(CFG_HI_VENC_SUPPORT),y)
@@ -953,16 +1003,6 @@ CFG_HI_BOARD_CONFIGS += -DHI_DAC_YPBPR_PR=${CFG_HI_DAC_YPBPR_PR}
 else
 CFG_HI_BOARD_CONFIGS += -DHI_DAC_YPBPR_PR=2
 endif
-ifneq (${CFG_HI_DAC_SVIDEO_Y},)
-CFG_HI_BOARD_CONFIGS += -DHI_DAC_SVIDEO_Y=${CFG_HI_DAC_SVIDEO_Y}
-else
-CFG_HI_BOARD_CONFIGS += -DHI_DAC_SVIDEO_Y=5
-endif
-ifneq (${CFG_HI_DAC_SVIDEO_C},)
-CFG_HI_BOARD_CONFIGS += -DHI_DAC_SVIDEO_C=${CFG_HI_DAC_SVIDEO_C}
-else
-CFG_HI_BOARD_CONFIGS += -DHI_DAC_SVIDEO_C=4
-endif
 
 ifneq (${CFG_HI_SND_MUTECTL_GPIO},)
 CFG_HI_BOARD_CONFIGS += -DHI_SND_MUTECTL_GPIO=${CFG_HI_DAC_SVIDEO_C}
@@ -976,6 +1016,20 @@ CFG_HI_BOARD_CONFIGS += -DHI_SCI_CLK_MODE=0
 endif
 ifeq (${CFG_HI_SCI_CLK_MODE_OD},y)
 CFG_HI_BOARD_CONFIGS += -DHI_SCI_CLK_MODE=1
+endif
+
+ifeq (${CFG_HI_SCI_VCCEN_MODE_CMOS},y)
+CFG_HI_BOARD_CONFIGS += -DHI_SCI_VCCEN_MODE=0
+endif
+ifeq (${CFG_HI_SCI_VCCEN_MODE_OD},y)
+CFG_HI_BOARD_CONFIGS += -DHI_SCI_VCCEN_MODE=1
+endif
+
+ifeq (${CFG_HI_SCI_RESET_MODE_CMOS},y)
+CFG_HI_BOARD_CONFIGS += -DHI_SCI_RESET_MODE=0
+endif
+ifeq (${CFG_HI_SCI_RESET_MODE_OD},y)
+CFG_HI_BOARD_CONFIGS += -DHI_SCI_RESET_MODE=1
 endif
 
 ifeq (${CFG_HI_SCI_VCCEN_LOW},y)

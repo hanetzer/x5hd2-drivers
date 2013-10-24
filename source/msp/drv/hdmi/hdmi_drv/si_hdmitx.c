@@ -29,7 +29,9 @@
 #include "si_defsmddc.h"
 #include "si_mpi_hdmi.h"
 #include "si_phy.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_sys.h"
+
+#include "hi_reg_common.h"
 
 HI_U8 SI_ByteReadEDID(HI_U8, HI_U8, HI_U8 *);
 Bool F_TxInit;
@@ -87,14 +89,144 @@ void SI_ReadBlockHDMITXP1(HI_U8 Addr, HI_U8 NBytes, HI_U8 * Data )
     BlockRead_8BAS((I2CShortCommandType *)&I2CComm, Data);
 }
 
+#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+/*
+ ** HDMI Hardware Reset:Set PERI_CRG2
+ ** 复位 先 1 后 0   需要提取?
+ */
+HI_S32 SI_HdmiHardwareReset(int iEnable)
+{
+    //HI_U32    u32BaseAddr;
+    //u32BaseAddr = SYS_PHY_BASE_ADDR;//f8a22000
+    
+    //HDMI_WriteReg(IO_ADDRESS(u32BaseAddr), 0x10c, 0x33f);
+    //HDMI_WriteReg(IO_ADDRESS(u32BaseAddr), 0x10c, 0x3f);
+    //volatile HI_U32 *pulArgs = (HI_U32*)IO_ADDRESS(HDMI_HARDWARE_RESET_ADDR);
+    HI_U32    u32Ctrller;
+    HI_U32    u32Phy;
+    HI_U32 tmp = 0;
+    HI_U32 tmp2 = 0;
+    
+    DRV_HDMI_ReadRegister(HDMI_SYS_CTRL_ADDR,&u32Ctrller);
+    DRV_HDMI_ReadRegister(HDMI_SYS_PHY_ADDR,&u32Phy);
+    if (iEnable == 0)
+    {
+        tmp = u32Ctrller;
+        //tmp &= 0xfffffffe;
+        tmp &= ~0x300;
+        u32Ctrller = tmp;
+    
+        tmp2 = u32Phy;
+        tmp2 &= ~0x10;
+        u32Phy = tmp2;
+    }
+
+    //复位
+    else
+    {
+        tmp = u32Ctrller;
+        tmp |= 0x300;
+        u32Ctrller = tmp;
+
+        tmp2 = u32Phy;
+        tmp2 |= 0x10;
+        u32Phy = tmp2;
+    }
+
+    DRV_HDMI_WriteRegister(HDMI_SYS_CTRL_ADDR,u32Ctrller);
+    
+    DelayMS(1);
+    
+    DRV_HDMI_WriteRegister(HDMI_SYS_PHY_ADDR,u32Phy);
+    
+    return HI_SUCCESS;    
+}
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+
+
+HI_VOID SI_HW_ResetCtrl(int iEnable)
+{
+    HI_U32    u32Ctrller;
+    if (iEnable == 0)
+    {
+        u32Ctrller = 0x3f;    
+    }    
+    else
+    {
+        /*reset.*/
+        u32Ctrller = 0x23f;
+    }
+    /* to be confirmed: clk and reset should be set one by one ,not together.*/
+    g_pstRegCrg->PERI_CRG67.u32 = u32Ctrller;
+}
+
+HI_VOID SI_HW_ResetPhy(int iEnable)
+{
+    
+    HI_U32    u32Phy;
+    
+    u32Phy = g_pstRegCrg->PERI_CRG68.u32;
+    if (iEnable == 0)
+    {    
+        u32Phy = 0x01;    
+    }
+    else //reset
+    {
+
+        u32Phy = 0x10;  
+    }
+    g_pstRegCrg->PERI_CRG68.u32 = u32Phy;
+
+}
+
 
 void SI_HW_ResetHDMITX(void)
 {
     HI_INFO_HDMI("--> SI_HW_ResetHDMITX.\n");
-    SI_HdmiHardwareReset(1);
+    //printk("new HW reset");
+
+
+    // The Procedures for Hw reset
+    // HW Reset controller
+    // Hw Reset Phy
+    // delay 50us
+    // Release Hw reset Phy
+    // cfg Phy
+    // Release HW reset for controller
+    // Delay 5ms for pll stable
+
+    //SI_HdmiHardwareReset(1);
     //udelay(100); 
+    SI_HW_ResetCtrl(1);
+    // temp DelayMS(1);
+    SI_HW_ResetPhy(1);
+    // temp DelayMS(10);
+    DelayMS(1);
+    
+    SI_HW_ResetPhy(0);
+    // temp DelayMS(10);
+    DelayMS(1);
+    SI_TX_PHY_INIT();
+    // temp DelayMS(10);
+    DelayMS(1); 
+
+    SI_HW_ResetCtrl(0);
+    // temp DelayMS(100);
+    DelayMS(10);     
+
+    //if register isr,need config it
+    WriteByteHDMITXP0 (INT_CNTRL_ADDR, 0x02);
+    //DelayMS(1); 
+
+    // 0x72:0xf6 DDC_DELAY_CNT
+    WriteByteHDMITXP0(DDC_DELAY_CNT,0x1a);
+
+    WriteByteHDMITXP0 (TX_SYS_CTRL1_ADDR, 0x35);
+    
+#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+    SI_HdmiHardwareReset(1);
     DelayMS(10); 
-    SI_HdmiHardwareReset(0);
+    //SI_HdmiHardwareReset(0);
     DelayMS(10); 
     //WriteByteHDMITXP0 (0x79, 0x00);
     WriteByteHDMITXP0 (INT_CNTRL_ADDR, 0x02);
@@ -103,15 +235,14 @@ void SI_HW_ResetHDMITX(void)
     SI_TX_PHY_INIT();
     //udelay(100); 
     DelayMS(1); 
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
 }
+
+
 
 
 HI_BOOL SI_HDMI_Setup_INBoot(HI_U32 *VIC)
 {
-    //HI_U32 Ret;
-    //HI_U32 u32Value = 0;
-    //HDMI PHY
-
     //check oe
     if (!SI_TX_PHY_GetOutPutEnable())
     {
@@ -119,15 +250,10 @@ HI_BOOL SI_HDMI_Setup_INBoot(HI_U32 *VIC)
     }
 
     //HDMI HPD Flag
-    //Ret = DRV_HDMI_ReadRegister((HI_U32)0x10170024, &u32Value);
-    //if (0x87 != (u32Value & 0x87))
-    //    return HI_FALSE;
     if (!SI_HPD_Status())
         return HI_FALSE;
 
     //Read VIC form AVI Inforframe
-    //Ret = DRV_HDMI_ReadRegister((HI_U32)0x1017051C, &u32Value);
-    //*VIC = u32Value;
     *VIC = SI_GetAVIInfoFrameVID();
     
     return HI_TRUE;
@@ -150,6 +276,25 @@ void SI_ReleaseHDMITX_SWReset( HI_U8 SoftReset )
     RegVal &= (~SoftReset);
     WriteByteHDMITXP0( TX_SWRST_ADDR, 0);
 }
+
+HI_BOOL SI_IsHDMIResetting(void)
+{
+    HI_U32    u32Ctrller;
+    HI_U32    u32Phy;
+    
+   u32Ctrller = g_pstRegCrg->PERI_CRG67.u32;
+   u32Phy = g_pstRegCrg->PERI_CRG68.u32;
+    
+    if((ReadByteHDMITXP0( TX_SWRST_ADDR ) & 0x01 ) ||
+       (u32Ctrller & 0x300) || (u32Phy & 0x10))
+    {
+        HI_INFO_HDMI("HDMI Is Resetting...\n");
+        return HI_TRUE;
+    }
+
+    return HI_FALSE;
+}
+
 //-------------------------------------------------------------------
 void SI_SW_ResetHDMITX(void)
 {
@@ -184,8 +329,10 @@ void SI_WakeUpHDMITX(void)
 
     RegVal = ReadByteHDMITXP0(TX_SYS_CTRL1_ADDR) | BIT_TX_PD;
     
+#if 0 /*--w00226427 said need cfg to 0x37--*/
     //x6等之前版本0x08默认值 0x34,S40 默认值0x37.不太确定做什么的，先和以往版本保持一致
     RegVal &=  ~BIT_TX_CLOCK_RISING_EDGE;
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
     
     WriteByteHDMITXP0 (TX_SYS_CTRL1_ADDR, RegVal);         // 0x35->0x37 GVG
     WriteByteHDMITXP0 (INT_CNTRL_ADDR, INT_CONTROL);       // Interrupt pin control defined per board
@@ -346,7 +493,7 @@ document.
 #if defined (DVI_SUPPORT)
 void SI_Init_DVITX(void)
 {
-    HI_U8 abData[4];
+    HI_U8 abData[4] = {0};
     HI_U8 bVideoMode;
     //HI_U8 bError;
 #ifdef _9132_DIAG_PD_DEFAULT_    /// TRUE for Fred. FALSE for Dino
@@ -469,11 +616,17 @@ void SI_Start_HDMITX(void)
 
     /* Video */
     bVideoMode = SI_ReadByteEEPROM(EE_TX_VIDEO_MODE_INDEX_ADDR);
-
+#if defined (DVI_SUPPORT)
     if(bVideoMode >= 100){
 	    DEBUG_PRINTK("index is out of bounds.\n");
 	    return ;
     }
+#else
+    if(bVideoMode >= 60){
+	    DEBUG_PRINTK("index is out of bounds.\n");
+	    return ;
+    }
+#endif
 
     if(SI_ReadByteEEPROM(EE_TX_DE_ENABLED_ADDR)& 0x01)
     {
@@ -487,7 +640,7 @@ void SI_Start_HDMITX(void)
     }
 	udelay(200);
     SI_SetIClk( SI_ReadByteEEPROM(EE_TX_ICLK_ADDR) );
-    memset(abData, 4, 0);
+    memset(abData, 0, 4);
     SI_BlockReadEEPROM ( 4, EE_TX_VIDEOPATH_ADDR, abData );
     HI_INFO_HDMI("SI_Start_HDMITX to SI_SetVideoPath bVideoMode:0x%02x, abData[0]:0x%02x, abData[1]:0x%02x, abData[2]:0x%02x, abData[3]:0x%02x\n",
         bVideoMode, abData[0], abData[1], abData[2], abData[3]);
@@ -552,9 +705,9 @@ void SI_Start_HDMITX(void)
 Bool SI_IsHDMICompatible(void)
 {
 #if defined (DVI_SUPPORT)
-    HI_U8 Offset, BlockCount, Data;
-    HI_U8 NumOfExtensions, BlockPtr;
-    HI_U8 MaxBlockOffset, BlockLength, Error;
+    HI_U8 Offset, BlockCount, Data = 0;
+    HI_U8 NumOfExtensions = 0, BlockPtr;
+    HI_U8 MaxBlockOffset = 0, BlockLength, Error;
     
 
     HI_INFO_HDMI("-->SI_IsHDMICompatible.\n");

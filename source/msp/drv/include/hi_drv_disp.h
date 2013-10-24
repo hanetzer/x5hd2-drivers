@@ -21,14 +21,14 @@
 #include "hi_common.h"
 #include "hi_debug.h"
 #include "hi_drv_video.h"
-
+#include "drv_pq_ext.h"
 
 #ifdef __cplusplus
 #if __cplusplus
 extern "C"{
 #endif
 #endif
-#ifndef CONFIG_SUPPORT_CA_RELEASE
+#ifndef HI_ADVCA_FUNCTION_RELEASE
 #define HI_FATAL_DISP(fmt...) \
             HI_FATAL_PRINT(HI_ID_DISP, fmt)
 
@@ -61,14 +61,9 @@ typedef enum hiDRV_DISPLAY_E
 typedef enum hiDRV_DISP_LAYER_E
 {
     HI_DRV_DISP_LAYER_NONE = 0,
-    HI_DRV_DISP_LAYER_VIDEO0,
-    HI_DRV_DISP_LAYER_VIDEO1,
-    HI_DRV_DISP_LAYER_VIDEO2,
+    HI_DRV_DISP_LAYER_VIDEO,
 
-    HI_DRV_DISP_LAYER_GFX0,
-    HI_DRV_DISP_LAYER_GFX1,
-    HI_DRV_DISP_LAYER_GFX2,
-    HI_DRV_DISP_LAYER_GFX3,
+    HI_DRV_DISP_LAYER_GFX,
     
     HI_DRV_DISP_LAYER_BUTT
 }HI_DRV_DISP_LAYER_E;
@@ -147,7 +142,7 @@ typedef enum hiDRV_DISP_FMT_E
     HI_DRV_DISP_FMT_1080P_24_FP,
     HI_DRV_DISP_FMT_720P_60_FP,
     HI_DRV_DISP_FMT_720P_50_FP,
-
+    
     HI_DRV_DISP_FMT_861D_640X480_60,
     HI_DRV_DISP_FMT_VESA_800X600_60,
     HI_DRV_DISP_FMT_VESA_1024X768_60,
@@ -162,13 +157,13 @@ typedef enum hiDRV_DISP_FMT_E
     HI_DRV_DISP_FMT_VESA_1600X900_60_RB,
     HI_DRV_DISP_FMT_VESA_1600X1200_60,
     HI_DRV_DISP_FMT_VESA_1680X1050_60,       //Rowe
+    HI_DRV_DISP_FMT_VESA_1680X1050_60_RB,       //Rowe
     HI_DRV_DISP_FMT_VESA_1920X1080_60,
     HI_DRV_DISP_FMT_VESA_1920X1200_60,
+    HI_DRV_DISP_FMT_VESA_1920X1440_60,
     HI_DRV_DISP_FMT_VESA_2048X1152_60,
-
-    //ADD
-    HI_DRV_DISP_FMT_VESA_2560X1600_60,
-    HI_DRV_DISP_FMT_xxxx_3840X2160_60,
+    HI_DRV_DISP_FMT_VESA_2560X1440_60_RB,
+    HI_DRV_DISP_FMT_VESA_2560X1600_60_RB,
 
     //ADD
     HI_DRV_DISP_FMT_CUSTOM,
@@ -195,6 +190,7 @@ typedef enum hiDRV_DISP_VDAC_SIGNAL_E
 typedef enum hiDRV_DISP_INTF_ID_E
 {
     HI_DRV_DISP_INTF_YPBPR0 = 0,
+    HI_DRV_DISP_INTF_RGB0,
     HI_DRV_DISP_INTF_SVIDEO0,
     HI_DRV_DISP_INTF_CVBS0,
     HI_DRV_DISP_INTF_VGA0,
@@ -227,6 +223,7 @@ typedef struct hiDRV_DISP_INTF_S
     HI_U8 u8VDAC_Y_G;
     HI_U8 u8VDAC_Pb_B;
     HI_U8 u8VDAC_Pr_R;
+    HI_BOOL bDacSync;
 }HI_DRV_DISP_INTF_S;
 
 typedef enum hiDRV_DISP_INTF_DATA_FMT
@@ -301,6 +298,13 @@ typedef struct hiDISP_CROP_S
     HI_U32 u32BottomOffset;
 }HI_DRV_DISP_CROP_S;
 
+typedef struct hiDRV_DISP_OFFSET_S
+{
+    HI_U32 u32Left;    /*left offset */
+    HI_U32 u32Top;     /*top offset */
+    HI_U32 u32Right;   /*right offset */
+    HI_U32 u32Bottom;  /*bottom offset */
+}HI_DRV_DISP_OFFSET_S;
  
 typedef struct hiDISP_DISPLAY_INFO_S
 {
@@ -314,12 +318,13 @@ typedef struct hiDISP_DISPLAY_INFO_S
     HI_BOOL bIsBottomField;
     HI_U32 u32Vline;
 
-    HI_BOOL bUseAdjRect;
-    HI_RECT_S stAdjRect;
-    HI_RECT_S stOrgRect;
-    HI_RECT_S stRefRect;
-    HI_DRV_ASPECT_RATIO_S stAR;
+    /*just a back of display setting, for virt screen and  offset set.*/
+    HI_RECT_S stVirtaulScreen;        
+    HI_DRV_DISP_OFFSET_S stOffsetInfo;
+    HI_RECT_S stFmtResolution;
+    HI_RECT_S stPixelFmtResolution;
 
+    HI_DRV_ASPECT_RATIO_S stAR;
     HI_U32 u32RefreshRate;
     HI_DRV_COLOR_SPACE_E eColorSpace;
 
@@ -436,7 +441,7 @@ typedef struct hiDRV_DISP_COLOR_SETTING_S
 typedef struct hiDRV_DISP_INIT_PARAM_S
 {
     HI_U32                u32Version;
-    HI_BOOL               bSelfStart;
+    //HI_BOOL               bSelfStart;
     HI_BOOL               bIsMaster;
     HI_BOOL               bIsSlave;
     HI_DRV_DISPLAY_E      enAttachedDisp;
@@ -445,11 +450,10 @@ typedef struct hiDRV_DISP_INIT_PARAM_S
     HI_U32                u32Contrast;
     HI_U32                u32Saturation;
     HI_U32                u32HuePlus;
-    HI_BOOL               bGammaEnable; 
-    HI_U32                u32ScreenXpos;
-    HI_U32                u32ScreenYpos;
-    HI_U32                u32ScreenWidth;
-    HI_U32                u32ScreenHeight; 
+    HI_BOOL               bGammaEnable;    
+    HI_U32                u32VirtScreenWidth;
+    HI_U32                u32VirtScreenHeight;
+    HI_DRV_DISP_OFFSET_S  stOffsetInfo;
     HI_DRV_DISP_COLOR_S   stBgColor;
     HI_BOOL               bCustomRatio;
     HI_U32                u32CustomRatioWidth;
@@ -465,7 +469,7 @@ typedef struct hiDRV_DISP_SETTING_S
 {
     HI_U32  u32BootVersion;
     HI_BOOL bGetPDMParam;
-    HI_BOOL bSelfStart;
+    //HI_BOOL bSelfStart;
     HI_BOOL bIsMaster;
     HI_BOOL bIsSlave;
     HI_DRV_DISPLAY_E enAttachedDisp;
@@ -479,13 +483,11 @@ typedef struct hiDRV_DISP_SETTING_S
     HI_DRV_DISP_COLOR_SETTING_S stColor;
 
     /* background color */
-    HI_DRV_DISP_COLOR_S stBgColor;
+    HI_DRV_DISP_COLOR_S stBgColor;    
 
-    //HI_BOOL bCGMSAEnable;
-    //HI_DRV_DISP_CGMSA_TYPE_E  eCGMSAType;
-    //HI_DRV_DISP_CGMSA_MODE_E  eCGMSAMode;
-
-    //HI_DRV_DISP_MACROVISION_E eMcvnType;
+    /*just for screen ajust.*/
+    HI_RECT_S stVirtaulScreen;
+    HI_DRV_DISP_OFFSET_S stOffsetInfo;
 
     /* interface setting */
     HI_U32 u32IntfNumber;
@@ -493,11 +495,7 @@ typedef struct hiDRV_DISP_SETTING_S
 
     HI_U32 u32LayerNumber;
     HI_DRV_DISP_LAYER_E enLayer[HI_DRV_DISP_LAYER_BUTT]; /* Z-order is from bottom to top */
-
-    /* about sink display screen */
-    HI_BOOL bAdjRect;
-    HI_RECT_S stAdjRect;
-
+    
     HI_BOOL bCustomRatio;
     HI_U32 u32CustomRatioWidth;
     HI_U32 u32CustomRatioHeight;
@@ -584,8 +582,7 @@ typedef enum hiDRV_DISP_CALLBACK_EVENT_E
     HI_DRV_DISP_C_RESUME,
 
     HI_DRV_DISP_C_DISPLAY_SETTING_CHANGE = 0x20,
-    HI_DRV_DISP_C_ADJUCT_SCREEN_AREA,
-
+    
     HI_DRV_DISP_C_VT_INT = 0x100,
     HI_DRV_DISP_C_EVENT_BUTT
 }HI_DRV_DISP_CALLBACK_EVENT_E;
@@ -606,6 +603,11 @@ typedef struct hiDRV_DISP_CALLBACK_INFO_S
     HI_DISP_DISPLAY_INFO_S stDispInfo;
 }HI_DRV_DISP_CALLBACK_INFO_S;
 
+typedef struct hiDRV_DISP_Cast_Attr_S
+{
+    HI_S32  s32Width;
+    HI_S32  s32Height;    
+}HI_DRV_DISP_Cast_Attr_S;
 typedef struct hiDRV_DISP_CALLBACK_S
 {
     HI_VOID (* pfDISP_Callback)(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INFO_S *pstInfo);
@@ -613,11 +615,61 @@ typedef struct hiDRV_DISP_CALLBACK_S
 }HI_DRV_DISP_CALLBACK_S;
 
 
+HI_S32 HI_DRV_DISP_Init(HI_VOID);
+HI_S32 HI_DRV_DISP_DeInit(HI_VOID);
+HI_S32 HI_DRV_DISP_Attach(HI_DRV_DISPLAY_E enDstDisp, HI_DRV_DISPLAY_E enSlave);
+HI_S32 HI_DRV_DISP_Detach(HI_DRV_DISPLAY_E enDstDisp, HI_DRV_DISPLAY_E enSlave);
+HI_S32 HI_DRV_DISP_SetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E enEncodingFormat);
+HI_S32 HI_DRV_DISP_GetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E *penFormat);
+HI_S32 HI_DRV_DISP_SetCustomTiming(HI_DRV_DISPLAY_E enDisp,  HI_DRV_DISP_TIMING_S *pstTiming);
+HI_S32 HI_DRV_DISP_GetCustomTiming(HI_DRV_DISPLAY_E enDisp,  HI_DRV_DISP_TIMING_S *pstTiming);
+HI_S32 HI_DRV_DISP_AddIntf(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INTF_S *pstIntf);
+HI_S32 HI_DRV_DISP_DelIntf(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INTF_S *pstIntf);
+
+HI_S32 HI_DRV_DISP_Open(HI_DRV_DISPLAY_E enDisp);
+
+HI_S32 HI_DRV_DISP_Close(HI_DRV_DISPLAY_E enDisp);
+HI_S32 HI_DRV_DISP_SetEnable(HI_DRV_DISPLAY_E enDisp, HI_BOOL bEnable);
+HI_S32 HI_DRV_DISP_GetEnable(HI_DRV_DISPLAY_E enDisp, HI_BOOL *pbEnable);
+HI_S32 HI_DRV_DISP_SetRightEyeFirst(HI_DRV_DISPLAY_E enDisp, HI_BOOL bEnable);
+
+HI_S32 HI_DRV_DISP_SetBgColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_S *pstBgColor);
+HI_S32 HI_DRV_DISP_GetBgColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_S *pstBgColor);
+    
+HI_S32 HI_DRV_DISP_SetColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_SETTING_S *pstCS);
+HI_S32 HI_DRV_DISP_GetColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_SETTING_S *pstCS);
 
 
+HI_S32 HI_DRV_DISP_SetAspectRatio(HI_DRV_DISPLAY_E enDisp, HI_U32 u32Ratio_h, HI_U32 u32Ratio_v);
+HI_S32 HI_DRV_DISP_GetAspectRatio(HI_DRV_DISPLAY_E enDisp, HI_U32 *pu32Ratio_h, HI_U32 *pu32Ratio_v);
 
+HI_S32 HI_DRV_DISP_SetLayerZorder(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_LAYER_E enLayer, HI_DRV_DISP_ZORDER_E enZFlag);
+HI_S32 HI_DRV_DISP_GetLayerZorder(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_LAYER_E enLayer, HI_U32 *pu32Zorder);
 
+HI_S32 HI_DRV_DISP_CreateCast (HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CAST_CFG_S * pstCfg, HI_HANDLE *phCast);
+HI_S32 HI_DRV_DISP_DestroyCast(HI_HANDLE hCast);
 
+HI_S32 HI_DRV_DISP_SetCastEnable(HI_HANDLE hCast, HI_BOOL bEnable);
+HI_S32 HI_DRV_DISP_GetCastEnable(HI_HANDLE hCast, HI_BOOL *pbEnable);
+
+HI_S32 HI_DRV_DISP_AcquireCastFrame(HI_HANDLE hCast, HI_DRV_VIDEO_FRAME_S *pstCastFrame);
+HI_S32 HI_DRV_DISP_ReleaseCastFrame(HI_HANDLE hCast, HI_DRV_VIDEO_FRAME_S *pstCastFrame);
+HI_S32 HI_DRV_DISP_ExternlAttach(HI_HANDLE hCast, HI_HANDLE hSink);
+HI_S32 HI_DRV_DISP_ExternlDetach(HI_HANDLE hCast, HI_HANDLE hSink);
+
+HI_S32 HI_DRV_DISP_GetInitFlag(HI_BOOL *pbInited);
+HI_S32 HI_DRV_DISP_GetVersion(HI_DRV_DISP_VERSION_S *pstVersion);
+HI_BOOL HI_DRV_DISP_IsOpened(HI_DRV_DISPLAY_E enDisp);
+HI_S32 HI_DRV_DISP_GetSlave(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISPLAY_E *penSlave);
+HI_S32 HI_DRV_DISP_GetMaster(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISPLAY_E *penMaster);
+HI_S32 HI_DRV_DISP_GetDisplayInfo(HI_DRV_DISPLAY_E enDisp, HI_DISP_DISPLAY_INFO_S *pstInfo);
+HI_S32 HI_DRV_DISP_Process(HI_U32 cmd, HI_VOID *arg);
+HI_S32 HI_DRV_DISP_RegCallback(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CALLBACK_TYPE_E eType,
+                            HI_DRV_DISP_CALLBACK_S *pstCallback);
+HI_S32 HI_DRV_DISP_UnRegCallback(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CALLBACK_TYPE_E eType,
+                              HI_DRV_DISP_CALLBACK_S *pstCallback);
+HI_S32 HI_DRV_DISP_UpdatePqData(HI_U32 u32UpdateType,PQ_PARAM_S * pstPqParam);
+            
 #ifdef __cplusplus
 #if __cplusplus
 }

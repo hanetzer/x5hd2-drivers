@@ -25,8 +25,8 @@ extern "C" {
 #include "drv_demux_config.h"
 #include "drv_demux_ext.h"
 
-#include "drv_mmz_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_proc.h"
 
 #include "hi_unf_common.h"
 #include "hi_unf_demux.h"
@@ -107,7 +107,7 @@ extern "C" {
 #define SECTION_LENGTH_FIELD_SIZE       2
 
 #define DMX_MAX_IP_DESC_DEPTH           0xffff
-#define DMX_MIN_IP_DESC_DEPTH           0xff
+#define DMX_MIN_IP_DESC_DEPTH           0x3ff
 #define DMX_MAX_IP_BLOCK_SIZE           0xffff
 
 #define DMX_MAX_LOST_TH                 0x3
@@ -132,10 +132,15 @@ extern "C" {
 
 #define DMX_DEFAULT_POST_TH             0
 
-//speed = 4, the rate is equal twice frequency,
-//serial IP rate set, rate=0x20,imply speed v = demuxfrequency*2/(rate+1)
-//normally, it should be 50M in FPGA(20101101)
-#define DMX_DEFAULT_IP_SPEED            0x4
+/* speed is 15 ,it means the Max speed of a IP port equal :
+100 Mbps@MV300
+126 Mbps@CV200
+We consider this speed is enough for IP port,
+user can change this value small to get more speed of IP port,
+but that may cause the total speed of demux be stress
+*/
+#define DMX_DEFAULT_IP_SPEED              15
+
 
 #define DMX_KEY_HARDONLY_FLAG           0xffffffff
 
@@ -159,7 +164,7 @@ extern "C" {
     {                                                       \
         if (!(ptr))                                         \
         {                                                   \
-            HI_WARN_DEMUX("pointer is null\n");             \
+            HI_ERR_DEMUX("pointer is null\n");             \
             return HI_ERR_DMX_NULL_PTR;                     \
         }                                                   \
     } while (0)
@@ -169,7 +174,7 @@ extern "C" {
     {                                                       \
         if ((DmxId) >= DMX_CNT)                             \
         {                                                   \
-            HI_WARN_DEMUX("invalid demux %d\n", DmxId);     \
+            HI_ERR_DEMUX("invalid demux %d\n", DmxId);     \
             return HI_ERR_DMX_INVALID_PARA;                 \
         }                                                   \
     } while (0)
@@ -179,7 +184,7 @@ extern "C" {
     {                                                       \
         if ((Id) >= DMX_TUNERPORT_CNT)                      \
         {                                                   \
-            HI_WARN_DEMUX("invalid tuner port %u\n", Id);   \
+            HI_ERR_DEMUX("invalid tuner port %u\n", Id);   \
             return HI_ERR_DMX_INVALID_PARA;                 \
         }                                                   \
     } while (0)
@@ -189,7 +194,7 @@ extern "C" {
     {                                                       \
         if ((Id) >= DMX_RAMPORT_CNT)                        \
         {                                                   \
-            HI_WARN_DEMUX("invalid ram port %u\n", Id);     \
+            HI_ERR_DEMUX("invalid ram port %u\n", Id);     \
             return HI_ERR_DMX_INVALID_PARA;                 \
         }                                                   \
     } while (0)
@@ -331,6 +336,18 @@ typedef struct
     wait_queue_head_t *pWatchWaitQueue;
 } DMX_OQ_Info_S;
 
+/*
+Passing decode parameters
+*/
+typedef struct hi_Disp_Control_t
+{
+    HI_U32          u32DispTime;
+    HI_U32          u32DispEnableFlag;       
+    HI_U32          u32DispFrameDistance;   
+    HI_U32          u32DistanceBeforeFirstFrame;
+    HI_U32          u32GopNum;
+} Disp_Control_t;
+
 typedef struct
 {
     HI_U32                          DmxId;
@@ -359,8 +376,8 @@ typedef struct
 #ifdef DMX_USE_ECM
     HI_U32                          u32SwFlag;
 #endif
-    HI_U32                          LastDispTime;
     HI_BOOL                         ChanEosFlag;
+    Disp_Control_t                  stLastControl;
 } DMX_ChanInfo_S;
 
 typedef struct
@@ -435,6 +452,16 @@ typedef struct
     HI_U64  ScrValue;
 } DMX_PCR_Info_S;
 
+/**recorded Ts time stamp mode*/
+/**CNcomment: 录制TS包时间戳添加模式*/
+typedef enum hiDMX_REC_TIMESTAMP_MODE_E
+{
+    DMX_REC_TIMESTAMP_NONE,               /**<No time stamp added before each recoreded  ts packet*/  /**<CNcomment: 不在每个录制的TS 包前加时间戳 */
+	DMX_REC_TIMESTAMP_ZERO, 				 /**<Use 4 byte 0  added before each recoreded  ts packet*/  /**<CNcomment: 在每个录制的TS 包前加4字节时间戳，内容为0 */
+    DMX_REC_TIMESTAMP_HIGH32BIT_SCR,      /**<Use high 32 bit of SCR_base (4 byte)  added before each recoreded  ts packet*/  /**<CNcomment: 在每个录制的TS 包前加4字节时间戳，内容为SCR_BASE 的高32bit */ 
+    DMX_REC_TIMESTAMP_LOW32BIT_SCR, 		 /**<Use low 32 bit of SCR_base (4 byte)  added before each recoreded  ts packet*/  /**<CNcomment: 在每个录制的TS 包前加4字节时间戳，内容为SCR_BASE 的低32bit */ 
+} DMX_REC_TIMESTAMP_MODE_E;
+
 typedef struct
 {
     HI_U32                      DmxId;
@@ -453,6 +480,7 @@ typedef struct
     HI_U32                      FirstFrameMs;
     HI_UNF_DMX_REC_INDEX_S      LastFrameInfo;
     HI_U32                      AddUpMs;
+	DMX_REC_TIMESTAMP_MODE_E    enRecTimeStamp;
     struct semaphore            LockRec;
 } DMX_RecInfo_S;
 

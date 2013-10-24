@@ -17,12 +17,12 @@ History       :
 
 #include "hi_type.h"
 #include "hi_module.h"
-#include "drv_mmz_ext.h"
-#include "drv_mem_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_module_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_file_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_mem.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_module.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_file.h"
 #include "hi_kernel_adapt.h"
 
 #include "demux_debug.h"
@@ -44,7 +44,6 @@ History       :
 #endif
 
 #include "drv_sync_ext.h"
-#include "drv_file_ext.h"
 
 /***************************** Macro Definition ******************************/
 #define DEMUX_NAME                      "HI_DEMUX"
@@ -53,7 +52,7 @@ History       :
 #define DMX_MAX_POOLBUFFER_SIZE         0x400000
 #define DMX_DEFAULT_POOLBUFFER_SIZE     CFG_HI_DEMUX_POOLBUF_SIZE
 
-#define DMX_MIN_FQ_BLOCK_SIZE           0x1000
+#define DMX_MIN_FQ_BLOCK_SIZE           0x1400      /*previously ,we set this equal 0x1000 (4K) ,now change it to 0x1400 (5K),for customer No:HSCP20130723010833*/
 #define DMX_MAX_FQ_BLOCK_SIZE           0xffff
 #define DMX_DEFAULT_FQ_BLOCK_SIZE       0x1000
 
@@ -67,7 +66,7 @@ History       :
         if (   (DMX_FLTID(FilterHandle) >= DMX_FILTER_CNT)              \
             || (((FilterHandle) & 0xffffff00) != DMX_FLTHANDLE(0)) )    \
         {                                                               \
-            HI_WARN_DEMUX("Invalid FilterHandle 0x%x\n", FilterHandle); \
+            HI_ERR_DEMUX("Invalid FilterHandle 0x%x\n", FilterHandle); \
             return HI_ERR_DMX_INVALID_PARA;                             \
         }                                                               \
     } while (0)
@@ -77,7 +76,7 @@ History       :
     {                                                                   \
         if ((PcrHandle) >= DMX_PCR_CHANNEL_CNT)                         \
         {                                                               \
-            HI_WARN_DEMUX("Invalid PcrHandle 0x%x\n", PcrHandle);       \
+            HI_ERR_DEMUX("Invalid PcrHandle 0x%x\n", PcrHandle);       \
             return HI_ERR_DMX_INVALID_PARA;                             \
         }                                                               \
     } while (0)
@@ -113,7 +112,7 @@ extern SYNC_EXPORT_FUNC_S   *g_pSyncFunc;
 /****************************** internal function *****************************/
 #ifdef HI_DEMUX_PROC_SUPPORT
 static HI_VOID DMX_OsrStopSaveEs(HI_VOID);
-static HI_VOID DMX_OsrSaveTsStop(HI_VOID);
+static HI_VOID DMX_OsrSaveIPTsStop(HI_VOID);
 static HI_VOID DMX_OsrSaveALLTs_Stop(HI_VOID);
 static HI_VOID DMX_OsrSaveDmxTs_Stop(HI_VOID);
 #endif
@@ -183,6 +182,7 @@ HI_S32 HI_DRV_DMX_Init(HI_VOID)
     if (HI_SUCCESS != ret)
     {
         HI_DRV_MODULE_UnRegister(HI_ID_DEMUX);
+        HI_ERR_DEMUX("DMX_OsiDeviceInit failed 0x%x\n", ret);
 
         return ret;
     }
@@ -201,7 +201,7 @@ HI_VOID HI_DRV_DMX_DeInit(HI_VOID)
 {
 #ifdef HI_DEMUX_PROC_SUPPORT
     DMX_OsrStopSaveEs();
-    DMX_OsrSaveTsStop();
+    DMX_OsrSaveIPTsStop();
     DMX_OsrSaveALLTs_Stop();
     DMX_OsrSaveDmxTs_Stop();
 #endif
@@ -220,9 +220,8 @@ HI_VOID HI_DRV_DMX_DeInit(HI_VOID)
 *****************************************************************************/
 HI_S32 HI_DRV_DMX_Open(HI_VOID)
 {
-    HI_DRV_MODULE_GetFunction(HI_ID_SYNC, (HI_VOID**)&g_pSyncFunc);
+    return HI_DRV_MODULE_GetFunction(HI_ID_SYNC, (HI_VOID**)&g_pSyncFunc);
 
-    return HI_SUCCESS;
 }
 
 /*****************************************************************************
@@ -286,7 +285,7 @@ HI_S32 HI_DRV_DMX_Close(HI_U32 file)
             ret = HI_DRV_DMX_DestroyChannel(DMX_CHANHANDLE(i));
             if (HI_SUCCESS != ret)
             {
-                HI_WARN_DEMUX("destroy chan failed 0x%x\n", ret);
+                HI_ERR_DEMUX("destroy chan failed 0x%x\n", ret);
             }
         }
     }
@@ -323,6 +322,21 @@ HI_S32 HI_DRV_DMX_GetCapability(HI_UNF_DMX_CAPABILITY_S *Cap)
     Cap->u32KeyNum          = DMX_KEY_CNT;
     Cap->u32RecChnNum       = DMX_REC_CNT;
 
+    return HI_SUCCESS;
+}
+HI_S32 HI_DRV_DMX_SetPusi(HI_BOOL bCheckPusi)
+{
+    HI_BOOL bNoPusiEn = HI_TRUE;
+    bNoPusiEn = (bCheckPusi == HI_TRUE)?HI_FALSE:HI_TRUE;
+    DMX_OsiSetNoPusiEn(bNoPusiEn);
+    return HI_SUCCESS;
+}
+
+HI_S32 HI_DRV_DMX_SetTei(HI_UNF_DMX_TEI_SET_S *pstTei)
+{
+    CHECKPOINTER(pstTei);
+    CHECKDMXID(pstTei->u32DemuxID);
+    DMX_OsiSetTei(pstTei->u32DemuxID,pstTei->bTei);   
     return HI_SUCCESS;
 }
 
@@ -629,7 +643,7 @@ HI_S32 DMX_OsrGetChannelSwBufAddr(HI_HANDLE hChannel, DMX_MMZ_BUF_S* pstSwBuf)
     ret = DMX_OsiGetChannelSwBufAddr(DMX_CHANID(hChannel), &stChnSwBuf);
     if (HI_SUCCESS != ret)
     {
-        HI_WARN_DEMUX("DMX_OsiGetChannelSwBufAddr failed:ChId=%d\n", DMX_CHANID(hChannel));
+        HI_ERR_DEMUX("DMX_OsiGetChannelSwBufAddr failed:ChId=%d\n", DMX_CHANID(hChannel));
         return ret;
     }
     pstSwBuf->u32BufPhyAddr = stChnSwBuf.u32StartPhyAddr;
@@ -709,20 +723,18 @@ HI_S32 HI_DRV_DMX_DestroyAllFilter(HI_HANDLE Channel)
 
     for (FilterId = 0; FilterId < DMX_FILTER_CNT; FilterId++)
     {
-        HI_S32 ErrCode;
         HI_U32 ChanId;
 
-        ErrCode = DMX_OsiGetFilterChannel(FilterId, &ChanId);
-        if (HI_SUCCESS == ErrCode)
+        ret = DMX_OsiGetFilterChannel(FilterId, &ChanId);
+        if (HI_SUCCESS == ret)
         {
             if (ChanId == DMX_CHANID(Channel))
             {
-                ErrCode = DMX_OsiDeleteFilter(FilterId);
-                if (HI_SUCCESS != ErrCode)
+                ret = DMX_OsiDeleteFilter(FilterId);
+                if (HI_SUCCESS != ret)
                 {
-                    ret = ErrCode;
-
-                    break;
+                    HI_ERR_DEMUX("DMX_OsiDeleteFilter failed:0x%x\n", ret);
+                    return ret;
                 }
 
                 g_stDmxOsr.u32FilterProcessHandle[FilterId] = 0;
@@ -730,7 +742,7 @@ HI_S32 HI_DRV_DMX_DestroyAllFilter(HI_HANDLE Channel)
         }
     }
 
-    return ret;
+    return HI_SUCCESS;
 }
 
 HI_S32 HI_DRV_DMX_SetFilterAttr(HI_HANDLE Filter, HI_UNF_DMX_FILTER_ATTR_S *FilterAttr)
@@ -777,8 +789,6 @@ HI_S32 HI_DRV_DMX_GetFilterChannelHandle(HI_HANDLE Filter, HI_HANDLE *Channel)
     if (HI_SUCCESS == ret)
     {
         *Channel = DMX_CHANHANDLE(ChanId);
-
-        ret = HI_SUCCESS;
     }
 
     return ret;
@@ -809,6 +819,7 @@ HI_S32 HI_DRV_DMX_SelectDataHandle(HI_U32 *pu32WatchChannel, HI_U32 u32WatchNum,
 
     if (0 == u32WatchNum)
     {
+        HI_ERR_DEMUX("u32WatchNum == 0!\n");
         return HI_ERR_DMX_INVALID_PARA;
     }
 
@@ -863,16 +874,15 @@ HI_S32 HI_DRV_DMX_AcquireBuf(HI_HANDLE hChannel, HI_U32 u32AcquireNum,
     DMX_OsiGetChannelSwFlag(ChanId, &u32SwFlag);
     if (u32SwFlag)
     {
-        HI_S32 s32Ret;
-        s32Ret  = HI_DMX_SwReadDataRequest(ChanId, u32AcquireNum, pu32AcquiredNum, pstBufTmp, u32TimeOutMs);
-        if (HI_SUCCESS != s32Ret)
+        ret  = HI_DMX_SwReadDataRequest(ChanId, u32AcquireNum, pu32AcquiredNum, pstBufTmp, u32TimeOutMs);
+        if (HI_SUCCESS != ret)
         {
             if (u32AcquireNum > DMX_DEFAULT_BUF_NUM)
             {
                 HI_VFREE(HI_ID_DEMUX, pstBufTmp);
             }
-
-            return s32Ret;
+            HI_WARN_DEMUX("HI_DMX_SwReadDataRequest failed:%x.\n",ret);
+            return ret;
         }
 
     }
@@ -886,7 +896,7 @@ HI_S32 HI_DRV_DMX_AcquireBuf(HI_HANDLE hChannel, HI_U32 u32AcquireNum,
             {
                 HI_VFREE(HI_ID_DEMUX, pstBufTmp);
             }
-
+            HI_WARN_DEMUX("DMX_OsiReadDataRequset failed:%x.\n",ret);
             return ret;
         }
     #ifdef DMX_USE_ECM
@@ -943,6 +953,7 @@ HI_S32 HI_DRV_DMX_ReleaseBuf(HI_HANDLE hChannel, HI_U32 u32ReleaseNum, HI_UNF_DM
 
     if (0 == u32ReleaseNum)
     {
+        HI_ERR_DEMUX("u32ReleaseNum == 0!\n");
         return HI_ERR_DMX_INVALID_PARA;
     }
 
@@ -988,7 +999,7 @@ HI_S32 HI_DRV_DMX_ReleaseBuf(HI_HANDLE hChannel, HI_U32 u32ReleaseNum, HI_UNF_DM
         s32Ret  = HI_DMX_SwReleaseReadData(ChanId, u32ReleaseNum, pstBufTmp);
         if (HI_SUCCESS != s32Ret)
         {
-            HI_WARN_DEMUX(" sw channel %d release error:%x!\n", ChanId, s32Ret);
+            HI_ERR_DEMUX(" sw channel %d release error:%x!\n", ChanId, s32Ret);
             if (u32ReleaseNum > DMX_DEFAULT_BUF_NUM)
             {
                 HI_VFREE(HI_ID_DEMUX, pstBufTmp);
@@ -1004,7 +1015,7 @@ HI_S32 HI_DRV_DMX_ReleaseBuf(HI_HANDLE hChannel, HI_U32 u32ReleaseNum, HI_UNF_DM
         ret = DMX_OsiReleaseReadData(ChanId, u32ReleaseNum, pstBufTmp);
         if (HI_SUCCESS != ret)
         {
-            HI_WARN_DEMUX("DMX_OsiReleaseReadData failed: ChId=%d, ret=0x%x\n", ChanId, ret);
+            HI_ERR_DEMUX("DMX_OsiReleaseReadData failed: ChId=%d, ret=0x%x\n", ChanId, ret);
             if (u32ReleaseNum > DMX_DEFAULT_BUF_NUM)
             {
                 HI_VFREE(HI_ID_DEMUX, pstBufTmp);
@@ -1127,13 +1138,14 @@ HI_S32 HI_DRV_DMX_CreateRecChn(
 {
     HI_S32  ret;
     HI_U32  RecId;
+	DMX_REC_TIMESTAMP_MODE_E enRecTimeStamp = DMX_REC_TIMESTAMP_NONE;
 
     CHECKPOINTER(RecAttr);
     CHECKPOINTER(RecHandle);
     CHECKPOINTER(RecBufPhyAddr);
     CHECKPOINTER(RecBufSize);
 
-    ret = DMX_DRV_REC_CreateChannel(RecAttr, &RecId, RecBufPhyAddr, RecBufSize);
+    ret = DMX_DRV_REC_CreateChannel(RecAttr, enRecTimeStamp,&RecId, RecBufPhyAddr, RecBufSize);
     if (HI_SUCCESS == ret)
     {
         g_stDmxOsr.RecFile[RecId] = file;
@@ -1317,6 +1329,7 @@ HI_S32 HI_DRV_DMX_ReleaseScdData(HI_HANDLE RecHandle, const HI_UNF_DMX_REC_DATA_
 #ifdef HI_DEMUX_PROC_SUPPORT
 #define DMX_FILE_NAME_LEN   (256)
 
+HI_DECLARE_MUTEX(SaveEsMutex);
 static struct file *DmxEsHandle[DMX_CHANNEL_CNT];
 static HI_U32       SaveEsFlag         = 0;
 
@@ -1324,38 +1337,42 @@ HI_VOID DMX_OsrSaveEs(HI_U32 type, HI_U8 *buf, HI_U32 len,HI_U32 chnid)
 {
     if (len)
     {
-        if (SaveEsFlag && ((HI_UNF_DMX_CHAN_TYPE_VID == type) || (HI_UNF_DMX_CHAN_TYPE_AUD == type)))
-        {
-            if (HI_NULL == DmxEsHandle[chnid])
+		if (0 == down_interruptible(&SaveEsMutex))
+		{
+            if (SaveEsFlag && ((HI_UNF_DMX_CHAN_TYPE_VID == type) || (HI_UNF_DMX_CHAN_TYPE_AUD == type)))
             {
-                HI_CHAR str[DMX_FILE_NAME_LEN]  = {0};
-                HI_CHAR path[DMX_FILE_NAME_LEN] = {0};
-
-                if (HI_SUCCESS != HI_DRV_FILE_GetStorePath(path, DMX_FILE_NAME_LEN))
+                if (HI_NULL == DmxEsHandle[chnid])
                 {
-                    HI_ERR_DEMUX("get path failed\n");
+                    HI_CHAR str[DMX_FILE_NAME_LEN]  = {0};
+                    HI_CHAR path[DMX_FILE_NAME_LEN] = {0};
 
-                    return;
+                    if (HI_SUCCESS != HI_DRV_FILE_GetStorePath(path, DMX_FILE_NAME_LEN))
+                    {
+                        HI_ERR_DEMUX("get path failed\n");
+
+                        return;
+                    }
+                    if (HI_UNF_DMX_CHAN_TYPE_VID == type)
+                    {
+                        snprintf(str, sizeof(str),"%s/dmx_vid_%u.es", path, chnid);
+                    }
+                    else
+                    {
+                        snprintf(str,sizeof(str), "%s/dmx_aud_%u.es", path, chnid);
+                    }                
+
+                    DmxEsHandle[chnid] = HI_DRV_FILE_Open(str, 1);
+                    if (!DmxEsHandle[chnid])
+                    {
+                        HI_ERR_DEMUX("open %s error\n", str);
+
+                        return;
+                    }
                 }
-                if (HI_UNF_DMX_CHAN_TYPE_VID == type)
-                {
-                    sprintf(str, "%s/dmx_vid_%u.es", path, chnid);
-                }
-                else
-                {
-                    sprintf(str, "%s/dmx_aud_%u.es", path, chnid);
-                }                
-
-                DmxEsHandle[chnid] = HI_DRV_FILE_Open(str, 1);
-                if (!DmxEsHandle[chnid])
-                {
-                    HI_ERR_DEMUX("open %s error\n", str);
-
-                    return;
-                }
-            }
-            HI_DRV_FILE_Write(DmxEsHandle[chnid], buf, len);
-        }        
+                HI_DRV_FILE_Write(DmxEsHandle[chnid], buf, len);
+            } 
+    		up(&SaveEsMutex);
+		}       
 
     }
 }
@@ -1368,6 +1385,7 @@ static HI_S32 DMX_OsrStartSaveEs(HI_VOID)
     {
         return HI_SUCCESS;
     }
+	
 
     if (HI_SUCCESS != HI_DRV_FILE_GetStorePath(path, DMX_FILE_NAME_LEN))
     {
@@ -1375,39 +1393,54 @@ static HI_S32 DMX_OsrStartSaveEs(HI_VOID)
 
         return HI_FAILURE;
     }
-    memset(DmxEsHandle,0,DMX_CHANNEL_CNT*sizeof(struct file *));
-    SaveEsFlag = 1;
-    return HI_SUCCESS;
+	if (0 == down_interruptible(&SaveEsMutex))
+	{
+        memset(DmxEsHandle,0,DMX_CHANNEL_CNT*sizeof(struct file *));
+        SaveEsFlag = 1;
+    	up(&SaveEsMutex);
+    	return HI_SUCCESS;
+	}
+    return HI_FAILURE;
 }
 
 static HI_VOID DMX_OsrStopSaveEs(HI_VOID)
 {
     HI_S32 i;
-
-    for ( i = 0 ; i < DMX_CHANNEL_CNT ; i++ )
-    {
-        if (DmxEsHandle[i])
+	if (0 == down_interruptible(&SaveEsMutex))
+	{
+        for ( i = 0 ; i < DMX_CHANNEL_CNT ; i++ )
         {
-            HI_DRV_FILE_Close(DmxEsHandle[i]);
-            DmxEsHandle[i] = HI_NULL;
+            if (DmxEsHandle[i])
+            {
+                HI_DRV_FILE_Close(DmxEsHandle[i]);
+                DmxEsHandle[i] = HI_NULL;
+            }
         }
-    }
-	SaveEsFlag = 0;
+    	
+    	SaveEsFlag = 0;
+    	up(&SaveEsMutex);
+	}
     
 }
+
+HI_DECLARE_MUTEX(DmxRamPortTsMutex);
 
 static struct file *DmxRamPortTsHandle  = HI_NULL;
 static HI_U32       DmxRamPortID         = 0;
 
 HI_VOID DMX_OsrSaveIPTs(HI_U8 *buf, HI_U32 len,HI_U32 u32PortID)
 {
-    if (DmxRamPortTsHandle && (DmxRamPortID - HI_UNF_DMX_PORT_RAM_0) == u32PortID)
-    {
-        HI_DRV_FILE_Write(DmxRamPortTsHandle, buf, len);
-    }
+	if (0 == down_interruptible(&DmxRamPortTsMutex))
+    {	
+        if (DmxRamPortTsHandle && (DmxRamPortID - HI_UNF_DMX_PORT_RAM_0) == u32PortID)
+        {
+            HI_DRV_FILE_Write(DmxRamPortTsHandle, buf, len);
+        }
+    	up(&DmxRamPortTsMutex);
+	}
 }
 
-static HI_S32 DMX_OsrSaveTsStart(HI_U32 u32PortID)
+static HI_S32 DMX_OsrSaveIPTsStart(HI_U32 u32PortID)
 {
     char str[DMX_FILE_NAME_LEN];
 
@@ -1425,31 +1458,38 @@ static HI_S32 DMX_OsrSaveTsStart(HI_U32 u32PortID)
     }
     DmxRamPortID = u32PortID;
 
-    if (DmxRamPortTsHandle == HI_NULL)
+ if (0 == down_interruptible(&DmxRamPortTsMutex))
     {
-        sprintf(str, "%s/dmx_ram_%u.ts", str, u32PortID);
-
-        DmxRamPortTsHandle = HI_DRV_FILE_Open(str, 1);
-        if (!DmxRamPortTsHandle)
+        if (DmxRamPortTsHandle == HI_NULL)
         {
+            snprintf(str, sizeof(str),"%s/dmx_ram_%u.ts", str, u32PortID);
 
-            HI_ERR_DEMUX("open %s error\n", str);
-
-            return HI_FAILURE;
+            DmxRamPortTsHandle = HI_DRV_FILE_Open(str, 1);
+            if (!DmxRamPortTsHandle)
+            {
+                HI_ERR_DEMUX("open %s error\n", str);
+    			up(&DmxRamPortTsMutex);
+                return HI_FAILURE;
+            }
         }
-    }
+    	up(&DmxRamPortTsMutex);
+	}
 
     return HI_SUCCESS;
 }
 
-static HI_VOID DMX_OsrSaveTsStop(HI_VOID)
+static HI_VOID DMX_OsrSaveIPTsStop(HI_VOID)
 {
+if (0 == down_interruptible(&DmxRamPortTsMutex))
+    {
     if (DmxRamPortTsHandle)
     {
         HI_DRV_FILE_Close(DmxRamPortTsHandle);
         DmxRamPortTsHandle = HI_NULL;
         DmxRamPortID = 0;
     }
+	 up(&DmxRamPortTsMutex);
+	}
 }
 
 #define DMX_ALLTS_DMXID (4)
@@ -1461,7 +1501,7 @@ static struct file         *DmxAllTsHandle  = HI_NULL;
 static struct task_struct  *DmxAllTsThread  = HI_NULL;
 static HI_U32               DmxAllTsRecId   = DMX_INVALID_REC_ID;
 
-static HI_S32 DMX_OsrSaveALLTS_Routine(HI_VOID *arg)
+static HI_S32 HI_DMX_SaveAllTS_Routine(HI_VOID *arg)
 {
     while (1)
     {
@@ -1505,6 +1545,7 @@ static HI_S32 DMX_OsrSaveALLTs_Start(HI_U32 PortId)
     HI_U32                  PhyAddr;
     HI_U32                  BufSize;
     HI_CHAR                 FileName[DMX_FILE_NAME_LEN] = {0};
+	DMX_REC_TIMESTAMP_MODE_E enRecTimeStamp = DMX_REC_TIMESTAMP_NONE;
 
     ret = HI_DRV_FILE_GetStorePath(FileName, DMX_FILE_NAME_LEN);
     if (HI_SUCCESS != ret)
@@ -1522,7 +1563,7 @@ static HI_S32 DMX_OsrSaveALLTs_Start(HI_U32 PortId)
         return HI_FAILURE;
     }
 
-    sprintf(FileName, "%s/dmx_allts_%u.ts", FileName, PortId);
+    snprintf(FileName, sizeof(FileName),"%s/dmx_allts_%u.ts", FileName, PortId);
 
     DmxAllTsHandle = HI_DRV_FILE_Open(FileName, 1);
     if (!DmxAllTsHandle)
@@ -1555,7 +1596,7 @@ static HI_S32 DMX_OsrSaveALLTs_Start(HI_U32 PortId)
     RecAttr.u32RecBufSize   = 0x400000;
     RecAttr.enRecType       = HI_UNF_DMX_REC_TYPE_ALL_PID;
 
-    ret = DMX_DRV_REC_CreateChannel(&RecAttr, &DmxAllTsRecId, &PhyAddr, &BufSize);
+    ret = DMX_DRV_REC_CreateChannel(&RecAttr, enRecTimeStamp,&DmxAllTsRecId, &PhyAddr, &BufSize);
     if (HI_SUCCESS != ret)
     {
         HI_ERR_DEMUX("open rec failed 0x%x\n", ret);
@@ -1571,7 +1612,7 @@ static HI_S32 DMX_OsrSaveALLTs_Start(HI_U32 PortId)
         goto exit;
     }
 
-    DmxAllTsThread = kthread_create(DMX_OsrSaveALLTS_Routine, HI_NULL, "SaveAllTs");
+    DmxAllTsThread = kthread_create(HI_DMX_SaveAllTS_Routine, HI_NULL, "SaveAllTs");
     if (!DmxAllTsThread)
     {
         HI_ERR_DEMUX("create kthread failed\n");
@@ -1630,7 +1671,7 @@ static struct task_struct  *DmxRecTsThread  = HI_NULL;
 static struct file         *DmxRecTsHandle  = HI_NULL;
 static HI_U32               DmxTsRecId      = DMX_INVALID_REC_ID;
 
-static HI_S32 DMX_OsrSaveDmxTS_Routine(HI_VOID *arg)
+static HI_S32 HI_DMX_SaveDmxTS_Routine(HI_VOID *arg)
 {
     while (1)
     {
@@ -1672,6 +1713,7 @@ static HI_S32 DMX_OsrSaveDmxTs_Start(HI_U32 DmxId)
     HI_U32                  PhyAddr;
     HI_U32                  BufSize;
     HI_CHAR                 FileName[DMX_FILE_NAME_LEN] = {0};
+	DMX_REC_TIMESTAMP_MODE_E enRecTimeStamp = DMX_REC_TIMESTAMP_NONE;
 
     ret = HI_DRV_FILE_GetStorePath(FileName, DMX_FILE_NAME_LEN);
     if (HI_SUCCESS != ret)
@@ -1696,7 +1738,7 @@ static HI_S32 DMX_OsrSaveDmxTs_Start(HI_U32 DmxId)
         return HI_FAILURE;
     }
 
-    sprintf(FileName, "%s/dmx_rects_%u.ts", FileName, DmxId);
+    snprintf(FileName,sizeof(FileName), "%s/dmx_rects_%u.ts", FileName, DmxId);
 
     DmxRecTsHandle = HI_DRV_FILE_Open(FileName, 1);
     if (!DmxRecTsHandle)
@@ -1713,7 +1755,7 @@ static HI_S32 DMX_OsrSaveDmxTs_Start(HI_U32 DmxId)
     RecAttr.enRecType       = HI_UNF_DMX_REC_TYPE_SELECT_PID;
     RecAttr.u32RecBufSize   = 0x400000;
 
-    ret = DMX_DRV_REC_CreateChannel(&RecAttr, &DmxTsRecId, &PhyAddr, &BufSize);
+    ret = DMX_DRV_REC_CreateChannel(&RecAttr, enRecTimeStamp,&DmxTsRecId, &PhyAddr, &BufSize);
     if (HI_SUCCESS != ret)
     {
         HI_ERR_DEMUX("open rec failed 0x%x\n", ret);
@@ -1729,7 +1771,7 @@ static HI_S32 DMX_OsrSaveDmxTs_Start(HI_U32 DmxId)
         goto exit;
     }
 
-    DmxRecTsThread = kthread_create(DMX_OsrSaveDmxTS_Routine, HI_NULL, "SaveDmxTs");
+    DmxRecTsThread = kthread_create(HI_DMX_SaveDmxTS_Routine, HI_NULL, "SaveDmxTs");
     if (HI_NULL == DmxRecTsThread)
     {
         HI_ERR_DEMUX("create kthread failed\n");
@@ -1832,7 +1874,7 @@ HI_S32 DMX_OsrDebugCtrl(HI_U32 cmd,DMX_DEBUG_CMD_CTRl cmdctrl,HI_U32 param)
         {
             if (DMX_DEBUG_CMD_START == cmdctrl)
             {
-                ret = DMX_OsrSaveTsStart(param);
+                ret = DMX_OsrSaveIPTsStart(param);
                 if (HI_SUCCESS == ret)
                 {
                     printk("begin save ram port:%d ts\n",param);
@@ -1841,7 +1883,7 @@ HI_S32 DMX_OsrDebugCtrl(HI_U32 cmd,DMX_DEBUG_CMD_CTRl cmdctrl,HI_U32 param)
             else
             {
                 printk("stop save ip port ts\n");
-                DMX_OsrSaveTsStop();
+                DMX_OsrSaveIPTsStop();
             }
 
             break;

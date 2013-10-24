@@ -16,7 +16,7 @@
 #include "slac_private.h"
 #include "slac_public.h"
 
-#include "drv_sys_ext.h"
+#include "hi_drv_sys.h"
 #include "hi_module.h"
 #include "hi_debug.h"
 /*

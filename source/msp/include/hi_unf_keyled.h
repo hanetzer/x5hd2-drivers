@@ -31,7 +31,7 @@ extern "C"{
 /**CNcomment:KEYLED类型 */
 typedef enum  hiUNF_KEYLED_TYPE_E
 {
-    HI_UNF_KEYLED_TYPE_STD = 0x0, /**<KEYLED type inherent in HiSilicon chips*/   /**<CNcomment:海思芯片自带的KEYLED类型 */
+    HI_UNF_KEYLED_TYPE_74HC164 = 0x0, /**<KEYLED type:74HC164*/                   /**<CNcomment:KEYLED型号: 74HC164 */
     HI_UNF_KEYLED_TYPE_PT6961,    /**<KEYLED type: PT6961*/                       /**<CNcomment:KEYLED型号：PT6961 */
     HI_UNF_KEYLED_TYPE_CT1642,    /**<KEYLED type: CT1642*/                       /**<CNcomment:KEYLED型号：CT1642 */
     HI_UNF_KEYLED_TYPE_PT6964,	  /**<KEYLED type: PT6964*/                       /**<CNcomment:KEYLED型号：PT6964 */
@@ -108,7 +108,7 @@ CNcomment:重复调用本接口，会返回成功。CNend
 
 \param N/A                                             CNcomment:无 CNend
 \retval ::HI_SUCCESS Success                           CNcomment:成功 CNend
-\retval ::HI_FAILURE  The KEYLED device fails to open. CNcomment:KEYLED设备打开失败 CNend
+\retval ::HI_FAILURE  The KEYLED device fails to close. CNcomment:KEYLED设备关闭失败 CNend
 \see \n
 N/A
 */
@@ -203,7 +203,7 @@ CNcomment:获取buffer中最早到达的按键值，返回按键值的数值和状态\n
 没有按键时，进行等待，超时后退出并返回超时错误码\n
 超时值为0时为非阻塞接口，没有按键直接返回没有按键错误码\n
 超时值设置为0xffffffff，一直等待。CNend
-\param[out] pu32PressStatus Key status: pressed(0x1), hold(0x1) or released(0x3) CNcomment:按键状态是按下，长按还是弹起。CNend
+\param[out] pu32PressStatus Key status: pressed(0x0), hold(0x1) or released(0x2) CNcomment:按键状态是按下，长按还是弹起。CNend
 \param[out] pu32KeyId  Key value                                                 CNcomment:按键值。CNend
 \retval ::HI_SUCCESS  Success                                                    CNcomment:成功 CNend
 \retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.          CNcomment:模块没有初始化 CNend
@@ -354,7 +354,7 @@ The common display characters and values of the LEDs on HiSilicon demo board are
      0xFF, 0x03, 0x31, 0xFF, 0xFF, 0x49, 0xFF, 0x83, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF\n
   Lower-case letters a-z (the characters that cannot be displayed are expressed as 0xFF):\n
     0xFF, 0xC1, 0xE5, 0x85, 0x21, 0xFF, 0x09, 0xD1, 0xDF, 0xFF, 0xFF, 0x9F, 0xFF,\n
-    0xD5, 0xC5, 0x31, 0x19, 0xFF, 0x49, 0xFF, 0xC7, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
+    0xD5, 0xC5, 0x31, 0x19, 0xFF, 0x49, 0xFF, 0xC7, 0xE1, 0xFF, 0xFF, 0xFF, 0xFF
 CNcomment:	每个数码管要显示的字符对应一个字节的显示值。\n
 显示时需要将4 个待显示字符对应的显示值组合成一个unsiged int（32bit）数据作为此接口的参数值。\n
 从左到右的4 个LED 依次显示数据的bit[7:0]、bit[15:8]、bit[23:16]、bit[31:24]。\n
@@ -376,7 +376,7 @@ CNcomment:	每个数码管要显示的字符对应一个字节的显示值。\n
      0xFF, 0x03, 0x31, 0xFF, 0xFF, 0x49, 0xFF, 0x83, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF\n
   . 小写字母a-z（不能显示的用0xFF 表示）：\n
      0xFF, 0xC1, 0xE5, 0x85, 0x21, 0xFF, 0x09, 0xD1, 0xDF, 0xFF, 0xFF, 0x9F, 0xFF,\n
-     0xD5, 0xC5, 0x31, 0x19, 0xFF, 0x49, 0xFF, 0xC7, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF CNend
+     0xD5, 0xC5, 0x31, 0x19, 0xFF, 0x49, 0xE1, 0xC7, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF CNend
 \param[in] u32CodeValue 4-digit value to be displayed                   CNcomment:需要显示的4位数值。CNend
 \retval ::HI_SUCCESS Success                                            CNcomment:成功 CNend
 \retval ::HI_FAILURE  Calling Ioctrl fails.                             CNcomment: Ioctrl调用失败 CNend

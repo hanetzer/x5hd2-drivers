@@ -39,11 +39,11 @@
 #include <linux/ioport.h>
 #include <linux/string.h>
 
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
 #include "hi_kernel_adapt.h"
 
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 
 #include "hi_drv_disp.h"
 #include "drv_disp.h"
@@ -52,6 +52,7 @@
 #include "drv_disp_debug.h"
 #include "drv_disp_ext.h"
 #include "drv_disp_osal.h"
+#include "hi_osal.h"
 
 
 #ifdef __cplusplus
@@ -78,12 +79,8 @@ HI_S32 DISP_ExtClose(HI_DRV_DISPLAY_E enDisp, DRV_DISP_STATE_S *pDispState, HI_B
 #define DEF_DRV_DISP_PROC_FUNCTION_START_FROM_HERE
 HI_U8 *g_pDispLayerString[HI_DRV_DISP_LAYER_BUTT] = {
     "NONE",
-    "VIDEO_0",
-    "VIDEO_1",
-    "VIDEO_2",
-    "GFX_0",
-    "GFX_1",
-    "GFX_2",
+    "VIDEO",
+    "GFX",
 };
 
 //TODO
@@ -150,11 +147,13 @@ HI_U8 *g_pVDPDispFmtString[HI_DRV_DISP_FMT_BUTT] = {
     "1600x900_RB",
     "1600x1200",
     "1680x1050",
+    "1680x1050_RB",
     "1920x1080",
     "1920x1200",
+    "1920x1440",
     "2048x1152",
-    "2560x1600",
-    "3840x2160",
+    "2560x1440_RB",
+     "2560x1600_RB",
     "CustomerTiming"
 };
 
@@ -196,6 +195,7 @@ HI_U8 *g_pVDPColorSpaceString[HI_DRV_CS_BUTT] = {
 
 HI_U8 *g_pVDPCInterfaceString[HI_DRV_DISP_INTF_ID_MAX] = {
     "YPbPr0", 
+      "RGB0",   
     "S_VIDEO0", 
     "CVBS0",
     "VGA0", 
@@ -213,10 +213,7 @@ HI_U8 *g_pVDPCInterfaceString[HI_DRV_DISP_INTF_ID_MAX] = {
     "LCD_2",
 };
 
-
 HI_U8 *g_pDispMacrovisionString[4] = {"TYPE0", "TYPE1", "TYPE2", "TYPE3"};
-
-
 #define DISPLAY_INVALID_ID 0xFFFFFFFFul
 static HI_U32 s_DispProcId[HI_DRV_DISPLAY_BUTT]={DISPLAY_INVALID_ID};
 
@@ -246,7 +243,7 @@ static HI_VOID DRV_DISP_ProcDeInit(HI_VOID)
     {
         if (s_DispProcId[u] != DISPLAY_INVALID_ID)
         {
-            sprintf(ProcName, "%s%d", HI_MOD_DISP, u);
+            HI_OSAL_Snprintf(ProcName, 12, "%s%d", HI_MOD_DISP, u);
             HI_DRV_PROC_RemoveModule(ProcName);
         }
     }
@@ -260,7 +257,7 @@ static HI_S32 DRV_DISP_ProcAdd(HI_DRV_DISPLAY_E enDisp)
     HI_CHAR           ProcName[12];
 
     /* register HD-display PROC*/
-    sprintf(ProcName, "%s%d", HI_MOD_DISP, enDisp);
+    HI_OSAL_Snprintf(ProcName, 12, "%s%d", HI_MOD_DISP, enDisp);
     pProcItem = HI_DRV_PROC_AddModule(ProcName, HI_NULL, HI_NULL);
     if (!pProcItem)
     {
@@ -284,7 +281,7 @@ static HI_S32 DRV_DISP_ProcDel(HI_DRV_DISPLAY_E enDisp)
     HI_CHAR ProcName[12];
 
     /* register HD-display PROC*/
-    sprintf(ProcName, "%s%d", HI_MOD_DISP, enDisp);
+    HI_OSAL_Snprintf(ProcName, 12, "%s%d", HI_MOD_DISP, enDisp);
     HI_DRV_PROC_RemoveModule(ProcName);
 
     s_DispProcId[enDisp] = DISPLAY_INVALID_ID;
@@ -295,61 +292,83 @@ static HI_S32 DRV_DISP_ProcDel(HI_DRV_DISPLAY_E enDisp)
 HI_U8 disp_attr[256];
 HI_U8 *Disp_GetAttr(HI_VOID)
 {
+    HI_U8 *pBuffer;
     memset(disp_attr, 0x0, 256);
+    
 #ifdef  HI_DISP_TTX_SUPPORT
-    strcat(disp_attr, "ttx ");
+    pBuffer = "ttx ";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
 
 #ifdef HI_DISP_ATTACH_OSD_SUPPORT 
-    strcat(disp_attr, "attach_osd ");
+    pBuffer = "attach_osd";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
 
 #ifdef  HI_DISP_MODE_TC
-    strcat(disp_attr, "tc ");
+    pBuffer = "tc ";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
 
 #ifdef HI_VO_WRAP_SUPPORT
-    strcat(disp_attr, "vo_wrap ");
+    pBuffer = "vo_wrap";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
 
 #ifdef HI_DISP_CGMS_SUPPOR
-    strcat(disp_attr, "cgms ");
+    pBuffer = "cgms ";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
 
 #ifdef HI_DISP_LCD_SUPPORT
-    strcat(disp_attr, "lcd ");
+    HI_OSAL_Strncat(disp_attr, "lcd ", 256);
 #endif
 
 #ifdef HI_VO_MOSAIC_SUPPORT
-    strcat(disp_attr, "mosaic ");
+    pBuffer = "mosaic ";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
 
 #ifdef HI_VO_SINGLE_VIDEO_SUPPORT
-    strcat(disp_attr, "signle_vid ");
+    pBuffer = "signle_vid ";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
 
 #ifdef HI_VO_STILLFRAME_SUPPORT
-    strcat(disp_attr, "vo_still ");
+    pBuffer = "vo_still ";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
 
 #ifdef HI_VO_DUMPFRAME_SUPPORT
-    strcat(disp_attr, "vo_dump ");
+    pBuffer = "vo_dump ";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
 
 #ifdef HI_VO_MOSAIC_SUPPORT
-    strcat(disp_attr, "mosaic ");
+    pBuffer = "mosaic ";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
 
 #ifdef HI_VO_SHARPNESS_SUPPORT
-    strcat(disp_attr, "sharp ");
+    pBuffer = "sharp ";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
 
 #ifdef HI_VO_HD_VIDEO_DO_DEI
-    strcat(disp_attr, "vo_not_dei ");
+    pBuffer = "vo_not_dei ";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
 #endif
-    strcat(disp_attr, "\r\n");
+    pBuffer = "\r\n";
+    HI_OSAL_Strncat(disp_attr, pBuffer, strlen(pBuffer)+1);
     return disp_attr;
 }
+
+HI_CHAR *g_pVDPDispName[HI_DRV_DISPLAY_BUTT] = {"display0", "display1","display2"};
+HI_CHAR *g_pVDPDispState[2] = {"Close", "Open"};
+HI_CHAR *g_pVDPDispState_1[2] = {"Disable", "Enable"};
+HI_CHAR *g_pVDPDispARMode[2] = {"Auto", "Custmer Setting"};
+HI_CHAR *g_pVDPDispCastAllocMode[2] = {"DispAllocate", "UserAllocate"};
+HI_U32  g_pVDPDispCastBufferState[5] = {1, 4, 2, 3, 4};
 
 
 static DISP_PROC_INFO_S  s_DispAttr;
@@ -366,152 +385,504 @@ static HI_S32 DISP_ProcRead(struct seq_file *p, HI_VOID *v)
     Ret = DISP_GetProcInto(enDisp, &s_DispAttr);
     if (Ret)
     {
-        p += seq_printf(p,"---------Get Hisilicon DISP %d Out Info Failed!---------\n", enDisp);
+        PROC_PRINT(p,"---------Get Hisilicon DISP %d Out Info Failed!---------\n", enDisp);
         return HI_SUCCESS;
     }
-    p += seq_printf(p,"---------Hisilicon DISP %d State---------\n", enDisp);
+    PROC_PRINT(p,"---------Hisilicon DISP %d State---------\n", enDisp);
 
+    PROC_PRINT(p, "%-20s:%s\n", "State",g_pVDPDispState[s_DispAttr.bEnable]);
+    PROC_PRINT(p, "%-20s:%s/%s\n", "Formt/DispMode",g_pVDPDispFmtString[s_DispAttr.eFmt], g_pVDPDispModeString[s_DispAttr.eDispMode]);
+    PROC_PRINT(p, "%-20s:%s\n", "RightEyeFirst",g_pVDPDispState_1[s_DispAttr.bRightEyeFirst]);
+    PROC_PRINT(p, "%-20s:%d/%d\n", "VirtualScreen",s_DispAttr.stVirtaulScreen.s32Width,s_DispAttr.stVirtaulScreen.s32Height);
+    PROC_PRINT(p, "%-20s:%d/%d/%d/%d\n", "Offset(L/T/R/B)",s_DispAttr.stOffsetInfo.u32Left,
+                                                  s_DispAttr.stOffsetInfo.u32Top,
+                                                  s_DispAttr.stOffsetInfo.u32Right,
+                                                  s_DispAttr.stOffsetInfo.u32Bottom);
+    
+    PROC_PRINT(p, "%-20s:%s\n", "AspectRatioMode",g_pVDPDispARMode[(HI_U32)s_DispAttr.bCustAspectRatio]);
+    PROC_PRINT(p, "%-20s:%d:%d\n", "AspectRatio",s_DispAttr.u32AR_w,s_DispAttr.u32AR_h);
+    
+    PROC_PRINT(p, "%-20s:%s->%s\n", "ColorSpace",g_pVDPColorSpaceString[(HI_U32)s_DispAttr.eDispColorSpace],
+                                                g_pVDPColorSpaceString[(HI_U32)s_DispAttr.eDispColorSpace]);
+    PROC_PRINT(p, "%-20s:%d\n", "Bright",s_DispAttr.u32Bright);
+    PROC_PRINT(p, "%-20s:%d\n", "Contrast",s_DispAttr.u32Contrst);
+    PROC_PRINT(p, "%-20s:%d\n", "Saturation",s_DispAttr.u32Satur);
+    PROC_PRINT(p, "%-20s:%d\n", "Hue",s_DispAttr.u32Hue);
+    PROC_PRINT(p, "%-20s:0x%x/0x%x/0x%x\n", "Background (R/G/B)",s_DispAttr.stBgColor.u8Red,
+                                                     s_DispAttr.stBgColor.u8Green,
+                                                     s_DispAttr.stBgColor.u8Blue);
+    PROC_PRINT(p, "%-20s:%s->%s\n", "Zorder(Bot->Top)",g_pDispLayerString[s_DispAttr.enLayer[0]],
+                                                        g_pDispLayerString[s_DispAttr.enLayer[1]]);
+    
+    if (s_DispAttr.bMaster == HI_TRUE)        
+        PROC_PRINT(p, "%-20s:%s\n", "AttachRole","source");    
 
-    p += seq_printf(p,
-        "GlobalCnt            :%d\n"
-        "Attach/Suspend       :%d /%d\n"
-        "Open/hCast           :%d/ 0x%x\n"
-        "OpenCnt[U/K/A]       :%d /%d / %d\n",
-        atomic_read(&g_DispCount),
-        g_s32DispAttachCount,
-        g_DispSuspend,
-        g_DispModState.bDispOpen[enDisp],
-        g_DispModState.hCastHandle[enDisp],
-        g_DispUserCountState.DispOpenNum[enDisp],
-        g_DispKernelCountState.DispOpenNum[enDisp],
-        g_DispAllCountState.DispOpenNum[enDisp]
-        );
-
-    p += seq_printf(p,"---------Hisilicon DISP %d Out Info---------\n", enDisp);
-
-    p += seq_printf(p,
-        "Formt/Mode           :%s/ %s\n"
-        "RightEyeFirst        :%d\n"
-        "Enable/M/S           :%d / %d / %d\n"
-        "StartTime            :0x%x\n"
-        "Underflow            :%d\n",
-        g_pVDPDispFmtString[(HI_S32)s_DispAttr.eFmt],
-        g_pVDPDispModeString[(HI_S32)s_DispAttr.eDispMode],
-        s_DispAttr.bRightEyeFirst,
-        s_DispAttr.bEnable, s_DispAttr.bMaster, s_DispAttr.bSlave,
-        s_DispAttr.u32StartTime,
-        s_DispAttr.u32Underflow
-        );
-
-    /* customer timing */
-    if (s_DispAttr.eFmt == HI_DRV_DISP_FMT_CUSTOM)
-    {
-        p += seq_printf(p,
-            "------ TIMING -----\n"
-            "V BB/ACT/FB          :%d/ %d/ %d\n"
-            "H BB/ACT/FB          :%d/ %d/ %d\n"
-            "VPW / HPW            :%d/ %d\n",
-            s_DispAttr.stTiming.u32VBB,
-            s_DispAttr.stTiming.u32VACT,
-            s_DispAttr.stTiming.u32VFB,
-            s_DispAttr.stTiming.u32HBB,
-            s_DispAttr.stTiming.u32HACT,
-            s_DispAttr.stTiming.u32HFB,
-            s_DispAttr.stTiming.u32VPW,
-            s_DispAttr.stTiming.u32HPW
-            );
-    }
-
-    p += seq_printf(p,
-        "AR/Custom            :[%d vs %d] /[%d vs %d]\n"
-        "AdjRetc(x/y/w/h)     :%d/%d/%d/%d\n"
-        "CS/Custom(I/O)       :%s->%s / %s->%s\n"
-        "Bright               :%d\n"
-        "Contrast             :%d\n"
-        "Saturation           :%d\n"
-        "Hue                  :%d\n"
-        "Background (R/G/B)   :0x%x/0x%x/0x%x\n",
-        s_DispAttr.u32AR_w,
-        s_DispAttr.u32AR_h,
-        s_DispAttr.u32CustomAR_w,
-        s_DispAttr.u32CustomAR_h,
-        s_DispAttr.stAdjRect.s32X,
-        s_DispAttr.stAdjRect.s32Y,
-        s_DispAttr.stAdjRect.s32Width,
-        s_DispAttr.stAdjRect.s32Height,
-        g_pVDPColorSpaceString[(HI_S32)s_DispAttr.eMixColorSpace],
-        g_pVDPColorSpaceString[(HI_S32)s_DispAttr.eDispColorSpace],
-        g_pVDPColorSpaceString[(HI_S32)s_DispAttr.stColorSetting.enInCS],
-        g_pVDPColorSpaceString[(HI_S32)s_DispAttr.stColorSetting.enOutCS],
-        s_DispAttr.stColorSetting.u32Bright,
-        s_DispAttr.stColorSetting.u32Contrst,
-        s_DispAttr.stColorSetting.u32Satur,
-        s_DispAttr.stColorSetting.u32Hue,
-        s_DispAttr.stBgColor.u8Red,
-        s_DispAttr.stBgColor.u8Green,
-        s_DispAttr.stBgColor.u8Blue
-        );  
-
-    // interface
-    p += seq_printf(p,"---------interface Info---------\n");
+    if (s_DispAttr.bSlave == HI_TRUE)        
+        PROC_PRINT(p, "%-20s:%s\n", "AttachRole","destination");
+    
+    if ((s_DispAttr.bMaster != HI_TRUE) && (s_DispAttr.bSlave != HI_TRUE))
+        PROC_PRINT(p, "%-20s:%s\n", "AttachRole","single running.");        
+    
+    PROC_PRINT(p, "%-20s:%s\n", "AttachDisp",g_pVDPDispName[s_DispAttr.enAttachedDisp]);
+    
+    PROC_PRINT(p, "%-20s:", "Interface");    
     for(i=0; i<s_DispAttr.u32IntfNumber;i++)
     {
-        p += seq_printf(p,
-            "INTF(Y_G/PB_B/PR_R)  :%s(%d/%d/%d)\n",
-            g_pVDPCInterfaceString[(HI_S32)s_DispAttr.stIntf[i].eID],
-            s_DispAttr.stIntf[i].u8VDAC_Y_G,
-            s_DispAttr.stIntf[i].u8VDAC_Pb_B,
-            s_DispAttr.stIntf[i].u8VDAC_Pr_R
-            );
+        PROC_PRINT(p, "%s ", g_pVDPCInterfaceString[(HI_S32)s_DispAttr.stIntf[i].eID]);
+
+        if (s_DispAttr.stIntf[i].eID <= HI_DRV_DISP_INTF_VGA0)
+            PROC_PRINT(p, "(%3d/%3d/%3d) ",
+                s_DispAttr.stIntf[i].u8VDAC_Y_G,
+                s_DispAttr.stIntf[i].u8VDAC_Pb_B,
+                s_DispAttr.stIntf[i].u8VDAC_Pr_R);
     }
+    PROC_PRINT(p, "\n");
+    
+    PROC_PRINT(p, "%-20s:%d\n", "InitCount", atomic_read(&g_DispCount));
+    PROC_PRINT(p, "%-20s:%d/%d\n", "OpenCnt[User/Kernel]", g_DispUserCountState.DispOpenNum[enDisp], g_DispKernelCountState.DispOpenNum[enDisp]);
+    PROC_PRINT(p, "%-20s:%d\n", "LowbandCount", s_DispAttr.u32Underflow);
+    
+    if (s_DispAttr.pstCastInfor)
+    {
+        PROC_PRINT(p,"------------------CAST Info---------------------------------\n");
+        PROC_PRINT(p, "%-20s:%s\n", "State", g_pVDPDispState_1[s_DispAttr.stCastInfor.bEnable]);
+        PROC_PRINT(p, "%-20s:%s\n", "Crop", "False");
+        PROC_PRINT(p, "%-20s:%d/%d/%d/%d\n", "CropRect(L/T/R/B)", 0,0,0,0);
+        PROC_PRINT(p, "%-20s:%d/%d\n", "Resolution", s_DispAttr.stCastInfor.u32OutResolutionWidth,
+                                                  s_DispAttr.stCastInfor.u32OutResolutionHeight);
+        
+        PROC_PRINT(p, "%-20s:%s\n", "PixelFormat","NV21");
+        PROC_PRINT(p, "%-20s:%d\n", "FrameRate", s_DispAttr.stCastInfor.u32CastOutFrameRate/2);
+        PROC_PRINT(p, "%-20s:%s\n", "LowDelay", g_pVDPDispState_1[s_DispAttr.stCastInfor.bLowDelay]);
+        
+        PROC_PRINT(p, "%-20s:%s\n", "MemoryType", g_pVDPDispCastAllocMode[s_DispAttr.stCastInfor.bUserAllocate]);
+        PROC_PRINT(p, "%-20s:%d\n", "BufferNumber", s_DispAttr.stCastInfor.u32TotalBufNum);
+        
+        PROC_PRINT(p, "%-20s:%d/%d\n", "BufferWidth/Height", s_DispAttr.stCastInfor.u32OutResolutionWidth,
+                                                             s_DispAttr.stCastInfor.u32OutResolutionHeight);
+        
+        PROC_PRINT(p, "%-20s:0x%x\n", "BufferSize", s_DispAttr.stCastInfor.u32BufSize);
+        PROC_PRINT(p, "%-20s:%d\n", "BufferStride", s_DispAttr.stCastInfor.u32BufStride);
+        PROC_PRINT(p,"------------------Buffer---------------------------------\n");
+        PROC_PRINT(p, "%-20s:%d/%d\n", "Acquire(Try/OK)", s_DispAttr.stCastInfor.u32CastAcquireTryCnt,
+                                                          s_DispAttr.stCastInfor.u32CastAcquireOkCnt);        
+        
+        PROC_PRINT(p, "%-20s:%d/%d\n", "Release(Try/OK)", s_DispAttr.stCastInfor.u32CastReleaseTryCnt,
+                                                          s_DispAttr.stCastInfor.u32CastReleaseOkCnt);
+        PROC_PRINT(p,"---------------------------------------------------------\n");
+        PROC_PRINT(p,"BufferQueue: [state, FrameID]\n");
+        PROC_PRINT(p,"(State: 1,Empty[%d]; 2,Write[%d]; 3,Full[%d]; 4,Use[%d]\n",
+                                    s_DispAttr.stCastInfor.u32CastEmptyBufferNum,
+                                    s_DispAttr.stCastInfor.u32CastWriteBufferNum,
+                                    s_DispAttr.stCastInfor.u32CastFullBufferNum,                                    
+                                    s_DispAttr.stCastInfor.u32CastUsedBufferNum);
 
-    p += seq_printf(p,"---------miracst Info---------\n");
-
-    //mirrorcast
-    p += seq_printf(p,
-        "hCast                :0x%x\n",
-        s_DispAttr.hCast
-        );
-
+        for (i = 0; i < s_DispAttr.stCastInfor.u32TotalBufNum; i++)
+        {   
+            if ((i != 0) && ((i%4) ==0))
+                PROC_PRINT(p,"\n");
+            
+                PROC_PRINT(p,"[%d,0x%x] ", g_pVDPDispCastBufferState[s_DispAttr.stCastInfor.enState[i]],
+                                           s_DispAttr.stCastInfor.u32FrameIndex[i]);
+        }
+        
+        PROC_PRINT(p,"\n");
+    }
+        
     return HI_SUCCESS;
 }
 
-HI_S32 DISP_ProcParsePara(HI_CHAR *pProcPara,HI_CHAR **ppItem,HI_CHAR **ppValue)
+static HI_S32 DispProcParsePara(HI_CHAR *pProcPara,HI_CHAR **ppArg1,HI_CHAR **ppArg2)
 {
     HI_CHAR *pChar = HI_NULL;
-    HI_CHAR *pItem,*pValue;
 
-    pChar = strchr(pProcPara,'=');
-    if (HI_NULL == pChar)
+    if (strlen(pProcPara) == 0)
     {
-        return HI_FAILURE; /* Not Found '=' */
+        /* not fined arg1 and arg2, return failed */
+        *ppArg1  = HI_NULL;
+        *ppArg2  = HI_NULL;        
+        return HI_FAILURE;
     }
 
-    pItem = pProcPara;
-    pValue = pChar + 1;
-    *pChar = '\0';
-
-    /* remove blank bytes from item tail */
-    pChar = pItem;
-    while(*pChar != ' ' && *pChar != '\0')
+    /* find arg1 */
+    pChar = pProcPara;
+    while( (*pChar == ' ') && (*pChar != '\0') )
     {
         pChar++;
     }
-    *pChar = '\0';
-    
-    /* remove blank bytes from value head */
-    while(*pValue == ' ')
+   
+    if (*pChar != '\0')
     {
-        pValue++;
+        *ppArg1 = pChar;
+    }
+    else
+    {
+        *ppArg1  = HI_NULL;
+        
+        return HI_FAILURE;
     }
 
-    *ppItem = pItem;
-    *ppValue = pValue;
+    /* ignor arg1 */
+    while( (*pChar != ' ') && (*pChar != '\0') )
+    {
+        pChar++;
+    }
+
+    /* Not find arg2, return */
+    if (*pChar == '\0')
+    {
+        *ppArg2 = HI_NULL;
+        
+        return HI_SUCCESS;
+    }
+
+    /* add '\0' for arg1 */
+    *pChar = '\0';
+
+    /* start to find arg2 */
+    pChar = pChar + 1;
+    while( (*pChar == ' ') && (*pChar != '\0') )
+    {
+        pChar++;
+    }
+
+    if (*pChar != '\0')
+    {
+        *ppArg2 = pChar;
+    }
+    else
+    {
+        *ppArg2 = HI_NULL;
+    }
+
     return HI_SUCCESS;
 }
 
+
+
+HI_DRV_DISP_FMT_E DispGetFmtbyString(HI_CHAR *pFmtString)
+{
+    if (0 == HI_OSAL_Strncmp(pFmtString, "1080p60", strlen("1080p60")))
+    {
+        return HI_DRV_DISP_FMT_1080P_60;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "1080p50", strlen("1080p50")))
+    {
+        return HI_DRV_DISP_FMT_1080P_50;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "1080p30", strlen("1080p30")))
+    {
+        return HI_DRV_DISP_FMT_1080P_30;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "1080p25", strlen("1080p25")))
+    {
+        return HI_DRV_DISP_FMT_1080P_25;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "1080p24", strlen("1080p24")))
+    {
+        return HI_DRV_DISP_FMT_1080P_24;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "1080i60", strlen("1080i60")))
+    {
+        return HI_DRV_DISP_FMT_1080i_60;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "1080i50", strlen("1080i50")))
+    {
+        return HI_DRV_DISP_FMT_1080i_50;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "720p60", strlen("720p60")))
+    {
+        return HI_DRV_DISP_FMT_720P_60;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "720p50", strlen("720p50")))
+    {
+        return HI_DRV_DISP_FMT_720P_50;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "576p50", strlen("576p50")))
+    {
+        return HI_DRV_DISP_FMT_576P_50;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "480p60", strlen("480p60")))
+    {
+        return HI_DRV_DISP_FMT_480P_60;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "pal", strlen("pal")))
+    {
+        return HI_DRV_DISP_FMT_PAL;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "ntsc", strlen("ntsc")))
+    {
+        return HI_DRV_DISP_FMT_NTSC;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "1080p24fp", strlen("1080p24fp")))
+    {
+        return HI_DRV_DISP_FMT_1080P_24_FP;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "720p60fp", strlen("720p60fp")))
+    {
+        return HI_DRV_DISP_FMT_720P_60_FP;
+    }
+    else if (0 == HI_OSAL_Strncmp(pFmtString, "720p50fp", strlen("720p50fp")))
+    {
+        return HI_DRV_DISP_FMT_720P_50_FP;
+    }
+    else
+    {
+        return HI_DRV_DISP_FMT_BUTT;
+    }
+
+}
+
+//HI_S32 DISP_SetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_STEREO_MODE_E enStereo, HI_DRV_DISP_FMT_E enEncFmt);
+HI_S32 DispProcCmdProcee(HI_DRV_DISPLAY_E enDisp, HI_CHAR *pArg1,HI_CHAR *pArg2)
+{
+    HI_S32 nRet = HI_SUCCESS;
+
+    if (0 == HI_OSAL_Strncmp(pArg1, "fmt", strlen("fmt")))
+    {
+        HI_DRV_DISP_FMT_E fmt;
+        
+        fmt = DispGetFmtbyString(pArg2);
+
+        if (fmt == HI_DRV_DISP_FMT_BUTT)
+        {
+            return HI_FAILURE;
+        }
+        else if( (fmt >= HI_DRV_DISP_FMT_1080P_24_FP) && (fmt <= HI_DRV_DISP_FMT_720P_50_FP))
+        {
+            nRet = DISP_SetFormat(enDisp, HI_DRV_DISP_STEREO_FRAME_PACKING, fmt);;
+        }
+        else
+        {
+            HI_DRV_DISP_FMT_E fmtold;
+            HI_DRV_DISP_STEREO_MODE_E enStereoold;
+
+            nRet = DISP_GetFormat(enDisp, &enStereoold, &fmtold);
+            if (nRet == HI_SUCCESS)
+            {
+                nRet = DISP_SetFormat(enDisp, enStereoold, fmt);
+            }
+        }
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "3d", strlen("3d")))
+    {
+        HI_DRV_DISP_FMT_E fmtold;
+        HI_DRV_DISP_STEREO_MODE_E enStereoold;
+
+        nRet = DISP_GetFormat(enDisp, &enStereoold, &fmtold);
+        if (nRet != HI_SUCCESS)
+        {
+            return HI_FAILURE;
+        }
+
+        if (0 == HI_OSAL_Strncmp(pArg2, "2d", strlen("2d")))
+        {
+            nRet = DISP_SetFormat(enDisp, HI_DRV_DISP_STEREO_NONE, fmtold);
+        }
+        if (0 == HI_OSAL_Strncmp(pArg2, "sbs_hf", strlen("sbs_hf")))
+        {
+            nRet = DISP_SetFormat(enDisp, HI_DRV_DISP_STEREO_SBS_HALF, fmtold);
+        }
+        if (0 == HI_OSAL_Strncmp(pArg2, "tab", strlen("tab")))
+        {
+            nRet = DISP_SetFormat(enDisp, HI_DRV_DISP_STEREO_TAB, fmtold);
+        }
+        else
+        {
+            return HI_FAILURE;
+        }
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "rf", strlen("rf")))
+    {
+        if (0 == HI_OSAL_Strncmp(pArg2, "on", strlen("on")))
+        {
+            nRet = DISP_SetRightEyeFirst(enDisp, HI_TRUE);
+        }
+        else if (0 == HI_OSAL_Strncmp(pArg2, "off", strlen("off")))
+        {
+            nRet = DISP_SetRightEyeFirst(enDisp, HI_FALSE);
+        }
+        else
+        {
+            return HI_FAILURE;
+        }
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "bright", strlen("bright")))
+    {
+        HI_DRV_DISP_COLOR_SETTING_S stCS;
+
+        nRet = DISP_GetColor(enDisp, &stCS);
+        if (nRet == HI_SUCCESS)
+        {
+            stCS.u32Bright = (HI_U32)simple_strtol(pArg2, NULL, 10);
+            nRet = DISP_SetColor(enDisp, &stCS);
+        }
+        else
+        {
+            return HI_FAILURE;
+        }
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "contrast", strlen("contrast")))
+    {
+        HI_DRV_DISP_COLOR_SETTING_S stCS;
+
+        nRet = DISP_GetColor(enDisp, &stCS);
+        if (nRet == HI_SUCCESS)
+        {
+            stCS.u32Contrst= (HI_U32)simple_strtol(pArg2, NULL, 10);
+            nRet = DISP_SetColor(enDisp, &stCS);
+        }
+        else
+        {
+            return HI_FAILURE;
+        }
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "hue", strlen("hue")))
+    {
+        HI_DRV_DISP_COLOR_SETTING_S stCS;
+
+        nRet = DISP_GetColor(enDisp, &stCS);
+        if (nRet == HI_SUCCESS)
+        {
+            stCS.u32Hue = (HI_U32)simple_strtol(pArg2, NULL, 10);
+            nRet = DISP_SetColor(enDisp, &stCS);
+        }
+        else
+        {
+            return HI_FAILURE;
+        }
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "satu", strlen("satu")))
+    {
+        HI_DRV_DISP_COLOR_SETTING_S stCS;
+
+        nRet = DISP_GetColor(enDisp, &stCS);
+        if (nRet == HI_SUCCESS)
+        {
+            stCS.u32Satur = (HI_U32)simple_strtol(pArg2, NULL, 10);
+            nRet = DISP_SetColor(enDisp, &stCS);
+        }
+        else
+        {
+            return HI_FAILURE;
+        }
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "left", strlen("left")))
+    {
+        HI_DRV_DISP_OFFSET_S screenoffset;
+
+        nRet = DISP_GetScreenOffset(enDisp, &screenoffset);
+        if (nRet == HI_SUCCESS)
+        {
+            screenoffset.u32Left= (HI_U32)simple_strtol(pArg2, NULL, 10);
+            nRet = DISP_SetScreenOffset(enDisp, &screenoffset);
+        }
+        else
+        {
+            return HI_FAILURE;
+        }
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "right", strlen("right")))
+    {
+        HI_DRV_DISP_OFFSET_S screenoffset;
+
+        nRet = DISP_GetScreenOffset(enDisp, &screenoffset);
+        if (nRet == HI_SUCCESS)
+        {
+            screenoffset.u32Right = (HI_U32)simple_strtol(pArg2, NULL, 10);
+            nRet = DISP_SetScreenOffset(enDisp, &screenoffset);
+        }
+        else
+        {
+            return HI_FAILURE;
+        }
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "bottom", strlen("bottom")))
+    {
+        HI_DRV_DISP_OFFSET_S screenoffset;
+
+        nRet = DISP_GetScreenOffset(enDisp, &screenoffset);
+        if (nRet == HI_SUCCESS)
+        {
+            screenoffset.u32Bottom = (HI_U32)simple_strtol(pArg2, NULL, 10);
+            nRet = DISP_SetScreenOffset(enDisp, &screenoffset);;
+        }
+        else
+        {
+            return HI_FAILURE;
+        }
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "video", strlen("video")))
+    {
+        if (0 == HI_OSAL_Strncmp(pArg2, "up", strlen("up")))
+        {
+            nRet = DISP_SetLayerZorder(enDisp, HI_DRV_DISP_LAYER_VIDEO, HI_DRV_DISP_ZORDER_MOVEUP);
+        }
+        else if (0 == HI_OSAL_Strncmp(pArg2, "down", strlen("down")))
+        {
+            nRet = DISP_SetLayerZorder(enDisp, HI_DRV_DISP_LAYER_VIDEO, HI_DRV_DISP_ZORDER_MOVEDOWN);
+        }
+        else
+        {
+            return HI_FAILURE;
+        }
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "reset", strlen("reset")))
+    {
+
+        HI_ERR_DISP("Not support set rotation now\n");
+        return HI_SUCCESS;
+    }
+    else if (0 == HI_OSAL_Strncmp(pArg1, "cat", strlen("cat")))
+    {
+        HI_UCHAR *pChar = pArg2;
+        HI_DRV_VIDEO_FRAME_S *pstCurFrame;
+        HI_U32 pathlength = 0;
+
+
+        pstCurFrame = (HI_DRV_VIDEO_FRAME_S*)DISP_MALLOC(sizeof(HI_DRV_VIDEO_FRAME_S));
+        if (!pstCurFrame)
+        {
+            HI_ERR_DISP("alloc frame info memory failed\n");
+            return nRet;
+        }
+
+        /* get currently displayed frame */
+        nRet = DISP_AcquireSnapshot(enDisp, pstCurFrame, HI_NULL);
+        if (nRet != HI_SUCCESS)
+        {
+            HI_ERR_DISP("catpure screen failed\n");
+            DISP_FREE(pstCurFrame);
+            return nRet;
+        }
+
+        /* calculate char nubmer of path string */
+        while( (*pChar != ' ') && (*pChar != '\0') )
+        {
+            pChar++;
+            pathlength++;
+        }
+        pathlength++;
+
+        /* save yuv frame */
+        nRet = vdp_DebugSaveYUVImg(pstCurFrame, pArg2, pathlength);
+
+        DISP_ReleaseSnapshot(enDisp, pstCurFrame, 0);
+
+        DISP_FREE(pstCurFrame);        
+    }
+    else
+    {
+        return HI_FAILURE;
+    }
+
+    return nRet;
+}
+
+
 HI_VOID DISP_ProcPrintHelp(HI_VOID)
 {
+/*
     printk("Please input these commands:\n"
            "echo enfromat = 0(1080P60)|1(1080P50)|2(1080p30)|3(1080p25)|4(1080p24)|\n"
                 "5(1080i60)|6(1080i50)|7(720p60)|8(720p50)|9(576p50)|10(480p60)\n "
@@ -520,73 +891,67 @@ HI_VOID DISP_ProcPrintHelp(HI_VOID)
            "echo bright = 0~100 > /proc/msp/dispxxx\n"
            "echo contrast = 0~100 > /proc/msp/dispxxx\n"
            "echo saturation = 0~100 > /proc/msp/dispxxx\n");
+*/
+    HI_PRINT("echo help                            > /proc/msp/dispX\n");
+    HI_PRINT("echo fmt 1080i50/720p50/pal/ntsc/... > /proc/msp/dispX\n");
+    HI_PRINT("echo 3d fp/sbs_hf/tab                > /proc/msp/dispX\n");
+    HI_PRINT("echo rf on/off                       > /proc/msp/dispX\n");
+    HI_PRINT("echo bright   X                      > /proc/msp/dispX\n");
+    HI_PRINT("echo contrast X                      > /proc/msp/dispX\n");
+    HI_PRINT("echo hue      X                      > /proc/msp/dispX\n");
+    HI_PRINT("echo satu     X                      > /proc/msp/dispX\n");
+    HI_PRINT("echo left     X                      > /proc/msp/dispX\n");
+    HI_PRINT("echo top      X                      > /proc/msp/dispX\n");
+    HI_PRINT("echo right    X                      > /proc/msp/dispX\n");
+    HI_PRINT("echo bottom   X                      > /proc/msp/dispX\n");
+    HI_PRINT("echo video up/down                   > /proc/msp/dispX\n");
+    HI_PRINT("echo reset                           > /proc/msp/dispX\n");
+    HI_PRINT("echo cat AbsolutePath                > /proc/msp/dispX\n");
 }
 
+
+HI_CHAR u8DispProcBuffer[256];
 static HI_S32 DISP_ProcWrite(struct file * file,
     const char __user * buf, size_t count, loff_t *ppos)
 {
     struct seq_file   *p = file->private_data;
     DRV_PROC_ITEM_S  *pProcItem = p->private;
+    HI_CHAR *pArg1, *pArg2;
     HI_DRV_DISPLAY_E enDisp;
+    HI_S32 nRet;
         
     pProcItem = p->private;
     enDisp = (HI_DRV_DISPLAY_E)pProcItem->data;
 
-#if 0
-    HI_S32      bright, contrast, saturation;
-    HI_CHAR           ProcPara[64];
-    HI_CHAR           *pItem,*pValue;
-    HI_S32            Ret;
-    HI_DRV_DISPLAY_E  enintf;
-    HI_DRV_DISP_FMT_E enEncFmt;
-    HI_S32 Ret;
-
-    if (copy_from_user(ProcPara, buf, count))
+    if(count >= sizeof(u8DispProcBuffer)) 
     {
+        HI_ERR_DISP("your parameter string is too long!\n");
         return -EFAULT;
     }
-    if (NULL != g_pDebug2VouFanc)
+
+    memset(u8DispProcBuffer, 0, sizeof(u8DispProcBuffer));
+    if (copy_from_user(u8DispProcBuffer, buf, count))
     {
-        stVouDebugModule.eModule = HI_VOU_DEBUG_MODULE_DISP;
-        stVouDebugModule.ID =(pProcItem->entry_name[4] - '0');
-        g_pDebug2VouFanc->pfnVOU_DebugProcWrite(stVouDebugModule,ProcPara,count);
-        return count;
+        HI_ERR_DISP("MMZ: copy_from_user failed!\n");    
+        return -EFAULT;
     }
-    else
-    {
-        printk("new debug disp is null!!");
-    }
-    Ret = DISP_ProcParsePara(ProcPara,&pItem,&pValue);
-    if (HI_SUCCESS != Ret)
+    u8DispProcBuffer[count] = 0;
+
+    nRet = DispProcParsePara(u8DispProcBuffer, &pArg1, &pArg2);
+    if(  (nRet != HI_SUCCESS) 
+        ||(0 == HI_OSAL_Strncmp(pArg1, "help", strlen("help")))
+        ||(pArg2 == HI_NULL) )
     {
         DISP_ProcPrintHelp();
         return -EFAULT;
     }
 
-    enintf = (pProcItem->entry_name[4] - '0');
-
-    if (!strcmp(pItem,"enfromat"))
+    printk("====================echo debug disp%d\n", enDisp);
+    nRet = DispProcCmdProcee(enDisp, pArg1, pArg2);
+    if (nRet != HI_SUCCESS)
     {
-        enEncFmt = simple_strtol(pValue, NULL, 10);
-        DISP_SetFormat(enintf, enEncFmt);
+        DISP_ProcPrintHelp();
     }
-    else if (!strcmp(pItem,"bright"))
-    {
-        bright = simple_strtol(pValue, NULL, 10);   
-        DISP_SetBright(enintf, bright);
-    }
-    else if (!strcmp(pItem,"contrast"))
-    {
-        contrast = simple_strtol(pValue, NULL, 10);
-        DISP_SetContrast(enintf, contrast);
-
-    }
-    else if (!strcmp(pItem,"saturation"))
-    {
-        saturation = simple_strtol(pValue, NULL, 10);
-        DISP_SetSaturation(enintf, saturation);
-    }
-#endif
 
     return count;
 }
@@ -640,6 +1005,7 @@ HI_S32 DISP_FileOpen(struct inode *finode, struct file  *ffile)
     {
         pDispState->bDispOpen[u] = HI_FALSE;
         pDispState->hCastHandle[u] = HI_NULL;
+        pDispState->hSnapshot[u] = HI_NULL;
     }
 
     ffile->private_data = pDispState;
@@ -662,31 +1028,34 @@ HI_S32 DISP_FileClose(struct inode *finode, struct file  *ffile)
 
     for(u=0; u<HI_DRV_DISPLAY_BUTT; u++)
     {
+        /*to close cast service, no matter disp open or not.*/
+        if (pDispState->hCastHandle[u])
+        {
+            Ret = DISP_DestroyCast(pDispState->hCastHandle[u]);
+            if (Ret != HI_SUCCESS)  
+                HI_ERR_DISP("destroy cast  %d  failed!\n", u);
+        }
+        
+        /*to close snapshot service, for ctrl+c condition.*/
+        if (pDispState->hSnapshot[u])
+        {
+            Ret = DISP_DestroySnapshot(pDispState->hSnapshot[u]);
+            if (Ret != HI_SUCCESS)  
+                HI_ERR_DISP("destroy cast  %d  failed!\n", u);
+        }
+
         if (pDispState->bDispOpen[u])
         {
-            //DEBUG_PRINTK("DISP_FileClose close hd gain \n");
             Ret = DISP_ExtClose(u, pDispState, HI_TRUE);
             if (Ret != HI_SUCCESS)
             {
                 HI_ERR_DISP("Display %d close failed!\n", u);
-            }
-        }
-
-        if (pDispState->hCastHandle[u])
-        {
-            //DEBUG_PRINTK("DISP_FileClose close hd gain \n");
-            Ret = DISP_DestroyCast(pDispState->hCastHandle[u]);
-            if (Ret != HI_SUCCESS)
-            {
-                HI_ERR_DISP("Display %d close failed!\n", u);
-            }
+            }            
         }
     }
 
     if (atomic_dec_and_test(&g_DispCount))
     {
-        //DRV_DISP_ProcDeInit();
-
         /* for close of clock */
         DISP_DeInit();
 
@@ -722,7 +1091,7 @@ HI_S32 DRV_DISP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, 
 /***************************************************************/
 #define DEF_DRV_DISP_DRV_FUNCTION_START_FROM_HERE
 
-HI_S32 DRV_DISP_Process(HI_U32 cmd, HI_VOID *arg)
+HI_S32 HI_DRV_DISP_Process(HI_U32 cmd, HI_VOID *arg)
 {
     DRV_DISP_STATE_S    *pDispState;
     HI_S32          Ret;
@@ -738,6 +1107,14 @@ HI_S32 DRV_DISP_Process(HI_U32 cmd, HI_VOID *arg)
     return Ret;
 }
 
+HI_S32 HI_DRV_DISP_Process_Intr(HI_U32 cmd, HI_VOID *arg)
+{
+    DRV_DISP_STATE_S    *pDispState;
+    HI_S32          Ret;
+    pDispState = &g_DispModState;
+    Ret = DRV_DISP_ProcessCmd(cmd, arg, pDispState, HI_FALSE);
+    return Ret;
+}
 HI_U32 DISP_ResetCountStatus(void)
 {
     HI_DRV_DISPLAY_E u;
@@ -749,6 +1126,7 @@ HI_U32 DISP_ResetCountStatus(void)
         g_DispKernelCountState.DispOpenNum[u] = 0;
         g_DispModState.bDispOpen[u] = HI_FALSE;
         g_DispModState.hCastHandle[u] = HI_NULL;
+        g_DispModState.hSnapshot[u] = HI_NULL;
     }
 
     g_DispSuspend = HI_FALSE;
@@ -775,7 +1153,7 @@ HI_U32 DISP_Get_CountStatus(void)
 HI_S32 DISP_ExtOpen(HI_DRV_DISPLAY_E enDisp, DRV_DISP_STATE_S *pDispState, HI_BOOL bUser)
 { 
     HI_S32            Ret;
-
+    
     /* create DISP for the first time */
     if (!pDispState->bDispOpen[enDisp])
     {
@@ -857,26 +1235,19 @@ HI_S32 DISP_ExtClose(HI_DRV_DISPLAY_E enDisp, DRV_DISP_STATE_S *pDispState, HI_B
 
 HI_S32 DISP_ExtAttach(HI_DRV_DISPLAY_E enMaster, HI_DRV_DISPLAY_E enSlave)
 {
-    HI_S32 nRet;
-    
+    HI_S32 nRet = HI_SUCCESS;
+
     if ( (enMaster != HI_DRV_DISPLAY_1) || (enSlave != HI_DRV_DISPLAY_0))
     {
         HI_FATAL_DISP("Attach parameters invalid.\n");
         return HI_ERR_DISP_INVALID_OPT;
     }
 
-    if (!g_s32DispAttachCount)
+    if(   (0 == g_DispAllCountState.DispOpenNum[enMaster])
+        &&(0 == g_DispAllCountState.DispOpenNum[enSlave]) )
+ 
     {
         nRet = DISP_Attach(enMaster, enSlave);
-    }
-    else
-    {
-        nRet = HI_SUCCESS;
-    }
-
-    if (HI_SUCCESS == nRet)
-    {
-        g_s32DispAttachCount++;
     }
 
     return nRet;
@@ -884,31 +1255,20 @@ HI_S32 DISP_ExtAttach(HI_DRV_DISPLAY_E enMaster, HI_DRV_DISPLAY_E enSlave)
 
 HI_S32 DISP_ExtDetach(HI_DRV_DISPLAY_E enMaster, HI_DRV_DISPLAY_E enSlave)
 {
-    HI_S32 nRet = HI_FAILURE;
-    
+    HI_S32 nRet = HI_SUCCESS;
+
     if ( (enMaster != HI_DRV_DISPLAY_1) || (enSlave != HI_DRV_DISPLAY_0))
     {
         HI_FATAL_DISP("Attach parameters invalid.\n");
         return HI_ERR_DISP_INVALID_OPT;
     }
 
-    if (g_s32DispAttachCount <= 0)
-    {
-        return HI_SUCCESS;
-    }
-
-    if (1 == g_s32DispAttachCount)
+    if(   (0 == g_DispAllCountState.DispOpenNum[enMaster])
+        &&(0 == g_DispAllCountState.DispOpenNum[enSlave]) )
+ 
     {
         nRet = DISP_Detach(enMaster, enSlave);
-    }
-    else
-    {
-        nRet = HI_SUCCESS;
-    }
-
-    if (HI_SUCCESS == nRet)
-    {
-        g_s32DispAttachCount--;
+//printk(" DISP_ExtDetach  003 = 0x%x\n", nRet);
     }
 
     return nRet;
@@ -916,40 +1276,41 @@ HI_S32 DISP_ExtDetach(HI_DRV_DISPLAY_E enMaster, HI_DRV_DISPLAY_E enSlave)
 
 
 /* DRV_DISP_XXX */
-HI_S32 DRV_DISP_Attach(HI_DRV_DISPLAY_E enMaster, HI_DRV_DISPLAY_E enSlave)
+HI_S32 HI_DRV_DISP_Attach(HI_DRV_DISPLAY_E enMaster, HI_DRV_DISPLAY_E enSlave)
 {
     HI_S32 Ret;
     DISP_ATTACH_S  enDispAttach;
     
     enDispAttach.enMaster = enMaster;
     enDispAttach.enSlave  = enSlave;
-    Ret = DRV_DISP_Process(CMD_DISP_ATTACH, &enDispAttach);
+    Ret = HI_DRV_DISP_Process(CMD_DISP_ATTACH, &enDispAttach);
     return Ret;
 }
 
-HI_S32 DRV_DISP_Detach(HI_DRV_DISPLAY_E enMaster, HI_DRV_DISPLAY_E enSlave)
+HI_S32 HI_DRV_DISP_Detach(HI_DRV_DISPLAY_E enMaster, HI_DRV_DISPLAY_E enSlave)
 {
     HI_S32 Ret;
     DISP_ATTACH_S  enDispAttach;
     
     enDispAttach.enMaster = enMaster;
     enDispAttach.enSlave  = enSlave;
-    Ret = DRV_DISP_Process(CMD_DISP_DETACH, &enDispAttach);
+    Ret = HI_DRV_DISP_Process(CMD_DISP_DETACH, &enDispAttach);
     return Ret;
 }
 
-HI_S32 DRV_DISP_SetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E enFormat)
+HI_S32 HI_DRV_DISP_SetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E enFormat)
 {    
     HI_S32 Ret;
     DISP_FORMAT_S  enDispFormat;
 
     enDispFormat.enDisp = enDisp;
     enDispFormat.enFormat = enFormat;
-    Ret = DRV_DISP_Process(CMD_DISP_SET_FORMAT,  &enDispFormat);
+    enDispFormat.enStereo = HI_DRV_DISP_STEREO_NONE;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_SET_FORMAT,  &enDispFormat);
     return Ret;
 }
 
-HI_S32 DRV_DISP_GetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E *penFormat)
+HI_S32 HI_DRV_DISP_GetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E *penFormat)
 {    
     HI_S32 Ret;
     DISP_FORMAT_S  enDispFormat;
@@ -958,9 +1319,9 @@ HI_S32 DRV_DISP_GetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E *penFormat)
     {
         return HI_FAILURE;
     }
-
+    memset(&enDispFormat, 0, sizeof(DISP_FORMAT_S));
     enDispFormat.enDisp = enDisp;
-    Ret = DRV_DISP_Process(CMD_DISP_GET_FORMAT,  &enDispFormat);
+    Ret = HI_DRV_DISP_Process(CMD_DISP_GET_FORMAT,  &enDispFormat);
     if (!Ret)
     {
         *penFormat = enDispFormat.enFormat;
@@ -968,17 +1329,32 @@ HI_S32 DRV_DISP_GetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E *penFormat)
     return Ret;
 }
 
-HI_S32 DRV_DISP_SetTiming(HI_DRV_DISPLAY_E enDisp,  HI_DRV_DISP_TIMING_S *pstTiming)
+HI_S32 HI_DRV_DISP_SetCustomTiming(HI_DRV_DISPLAY_E enDisp,  HI_DRV_DISP_TIMING_S *pstTiming)
 {    
     HI_S32 Ret;
     DISP_TIMING_S  DispTiming;
     DispTiming.enDisp = enDisp;
     memcpy(&DispTiming.stTimingPara, pstTiming, sizeof(HI_DRV_DISP_TIMING_S));
-    Ret = DRV_DISP_Process(CMD_DISP_SET_TIMING, &DispTiming);
+    Ret = HI_DRV_DISP_Process(CMD_DISP_SET_TIMING, &DispTiming);
     return Ret;
 }
 
-HI_S32 DRV_DISP_AddIntf(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INTF_S *pstIntf)
+HI_S32 HI_DRV_DISP_GetCustomTiming(HI_DRV_DISPLAY_E enDisp,  HI_DRV_DISP_TIMING_S *pstTiming)
+{    
+    HI_S32 Ret;
+    DISP_TIMING_S  DispTiming;
+    memset(&DispTiming, 0, sizeof(DISP_TIMING_S));
+    DispTiming.enDisp = enDisp;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_GET_TIMING, &DispTiming);
+    if (HI_SUCCESS != Ret)
+    {
+        return Ret;
+    }
+    memcpy(pstTiming, &DispTiming.stTimingPara, sizeof(HI_DRV_DISP_TIMING_S));
+    return Ret;
+}
+
+HI_S32 HI_DRV_DISP_AddIntf(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INTF_S *pstIntf)
 {
     HI_S32          Ret;
     DISP_SET_INTF_S DispIntf;
@@ -987,7 +1363,20 @@ HI_S32 DRV_DISP_AddIntf(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INTF_S *pstIntf)
 
     memcpy(&DispIntf.stIntf, pstIntf, sizeof(HI_DRV_DISP_INTF_S));
 
-    Ret = DRV_DISP_Process(CMD_DISP_ADD_INTF, &DispIntf);
+    Ret = HI_DRV_DISP_Process(CMD_DISP_ADD_INTF, &DispIntf);
+    return Ret;
+}
+
+HI_S32 HI_DRV_DISP_DelIntf(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INTF_S *pstIntf)
+{
+    HI_S32          Ret;
+    DISP_SET_INTF_S DispIntf;
+
+    DispIntf.enDisp = enDisp;
+
+    memcpy(&DispIntf.stIntf, pstIntf, sizeof(HI_DRV_DISP_INTF_S));
+
+    Ret = HI_DRV_DISP_Process(CMD_DISP_DEL_INTF, &DispIntf);
     return Ret;
 }
 
@@ -996,35 +1385,88 @@ HI_S32 DRV_DISP_AttachVDAC(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_INTF_ID_E eVdacI
     return HI_FAILURE;
 }
 
-HI_S32 DRV_DISP_Open(HI_DRV_DISPLAY_E enDisp)
+HI_S32 HI_DRV_DISP_Open(HI_DRV_DISPLAY_E enDisp)
 {
     HI_S32 Ret;
     
-    Ret = DRV_DISP_Process(CMD_DISP_OPEN, &enDisp);
+    Ret = HI_DRV_DISP_Process(CMD_DISP_OPEN, &enDisp);
     return Ret;
 }
 
-HI_S32 DRV_DISP_Close(HI_DRV_DISPLAY_E enDisp)
+HI_S32 HI_DRV_DISP_Close(HI_DRV_DISPLAY_E enDisp)
 {
     HI_S32 Ret;
     
-    Ret = DRV_DISP_Process(CMD_DISP_CLOSE, &enDisp);
+    Ret = HI_DRV_DISP_Process(CMD_DISP_CLOSE, &enDisp);
     return Ret;
 }
 
-HI_S32 DRV_DISP_SetBgColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_S *pstBgColor)
+HI_S32 HI_DRV_DISP_SetEnable(HI_DRV_DISPLAY_E enDisp, HI_BOOL bEnable)
 {
     HI_S32 Ret;
-    DISP_BGC_S  enDispBgc;
-
-    enDispBgc.stBgColor = *pstBgColor;
-    enDispBgc.enDisp = enDisp;
-    Ret = DRV_DISP_Process(CMD_DISP_SET_BGC, &enDispBgc);
+    DISP_ENABLE_S  stDispEnable;
+    
+    stDispEnable.bEnable = bEnable;
+    stDispEnable.enDisp = enDisp;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_SET_ENABLE, &stDispEnable);
     return Ret;
 }
 
+HI_S32 HI_DRV_DISP_GetEnable(HI_DRV_DISPLAY_E enDisp, HI_BOOL *pbEnable)
+{
+    HI_S32 Ret;
+    DISP_ENABLE_S  stDispEnable;
+    
+    memset(&stDispEnable, 0, sizeof(DISP_ENABLE_S));
+    stDispEnable.enDisp = enDisp;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_GET_ENABLE, &stDispEnable);
+    if (HI_SUCCESS != Ret)
+    {
+        return Ret;
+    }
+    *pbEnable = stDispEnable.bEnable;
+    return Ret;
+}
 
-HI_S32 DRV_DISP_SetColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_SETTING_S *pstCS)
+HI_S32 HI_DRV_DISP_SetRightEyeFirst(HI_DRV_DISPLAY_E enDisp, HI_BOOL bEnable)
+{
+    HI_S32 Ret;
+    DISP_R_EYE_FIRST_S  stREFirst; 
+    
+    stREFirst.bREFirst = bEnable;
+    stREFirst.enDisp = enDisp;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_SET_R_E_FIRST, &stREFirst);
+    return Ret;
+}
+
+HI_S32 HI_DRV_DISP_SetBgColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_S *pstBgColor)
+{
+    HI_S32 Ret;
+    DISP_BGC_S  stDispBgc;
+
+    stDispBgc.stBgColor = *pstBgColor;
+    stDispBgc.enDisp = enDisp;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_SET_BGC, &stDispBgc);
+    return Ret;
+}
+
+HI_S32 HI_DRV_DISP_GetBgColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_S *pstBgColor)
+{
+    HI_S32 Ret;
+    DISP_BGC_S  stDispBgc;
+
+    memset(&stDispBgc, 0, sizeof(DISP_BGC_S));
+    stDispBgc.enDisp = enDisp;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_GET_BGC, &stDispBgc);
+    if (HI_SUCCESS != Ret)
+    {
+        return Ret;
+    }
+    *pstBgColor = stDispBgc.stBgColor ;
+    return Ret;
+}
+
+HI_S32 HI_DRV_DISP_SetColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_SETTING_S *pstCS)
 {
     HI_S32 Ret;
     DISP_COLOR_S stDispColor;
@@ -1032,17 +1474,18 @@ HI_S32 DRV_DISP_SetColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_SETTING_S *p
     stDispColor.enDisp = enDisp;
     stDispColor.stColor= *pstCS;
     
-    Ret = DRV_DISP_Process(CMD_DISP_SET_COLOR, &stDispColor);
+    Ret = HI_DRV_DISP_Process(CMD_DISP_SET_COLOR, &stDispColor);
     return Ret;
 }
 
-HI_S32 DRV_DISP_GetColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_SETTING_S *pstCS)
+HI_S32 HI_DRV_DISP_GetColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_SETTING_S *pstCS)
 {
     HI_S32 Ret;
     DISP_COLOR_S stDispColor;
 
+    memset(&stDispColor, 0, sizeof(DISP_COLOR_S));
     stDispColor.enDisp = enDisp;
-    Ret = DRV_DISP_Process(CMD_DISP_GET_COLOR, &stDispColor);
+    Ret = HI_DRV_DISP_Process(CMD_DISP_GET_COLOR, &stDispColor);
     if(!Ret)
     {
         *pstCS = stDispColor.stColor;
@@ -1050,19 +1493,7 @@ HI_S32 DRV_DISP_GetColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_SETTING_S *p
     return Ret;
 }
 
-
-HI_S32 DRV_DISP_SetScreen(HI_DRV_DISPLAY_E enDisp, HI_RECT_S *pstRect)
-{
-    HI_S32 Ret;
-    DISP_SCREEN_S stDispScreen;
-
-    stDispScreen.enDisp = enDisp;
-    stDispScreen.stRect = *pstRect;
-    Ret = DRV_DISP_Process(CMD_DISP_SET_SCREEN, &stDispScreen);
-    return Ret;
-}
-
-HI_S32 DRV_DISP_SetAspectRatio(HI_DRV_DISPLAY_E enDisp, HI_U32 u32Ratio_h, HI_U32 u32Ratio_v)
+HI_S32 HI_DRV_DISP_SetAspectRatio(HI_DRV_DISPLAY_E enDisp, HI_U32 u32Ratio_h, HI_U32 u32Ratio_v)
 {
     HI_S32 Ret;
     DISP_ASPECT_RATIO_S stDispRatio;
@@ -1070,11 +1501,27 @@ HI_S32 DRV_DISP_SetAspectRatio(HI_DRV_DISPLAY_E enDisp, HI_U32 u32Ratio_h, HI_U3
     stDispRatio.enDisp = enDisp;
     stDispRatio.u32ARHori = u32Ratio_h;
     stDispRatio.u32ARVert = u32Ratio_v;
-    Ret = DRV_DISP_Process(CMD_DISP_SET_DEV_RATIO, &stDispRatio);
+    Ret = HI_DRV_DISP_Process(CMD_DISP_SET_DEV_RATIO, &stDispRatio);
     return Ret;
 }
 
-HI_S32 DRV_DISP_SetLayerZorder(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_LAYER_E enLayer, HI_DRV_DISP_ZORDER_E enZFlag)
+HI_S32 HI_DRV_DISP_GetAspectRatio(HI_DRV_DISPLAY_E enDisp, HI_U32 *pu32Ratio_h, HI_U32 *pu32Ratio_v)
+{
+    HI_S32 Ret;
+    DISP_ASPECT_RATIO_S stDispRatio;
+
+    memset(&stDispRatio, 0, sizeof(DISP_ASPECT_RATIO_S));
+    stDispRatio.enDisp = enDisp;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_GET_DEV_RATIO, &stDispRatio);
+    if(!Ret)
+    {
+        *pu32Ratio_h = stDispRatio.u32ARHori;
+        *pu32Ratio_v = stDispRatio.u32ARVert;
+    }
+    return Ret;
+}
+
+HI_S32 HI_DRV_DISP_SetLayerZorder(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_LAYER_E enLayer, HI_DRV_DISP_ZORDER_E enZFlag)
 {
     HI_S32 Ret;
     DISP_ZORDER_S stDispZorder;
@@ -1082,11 +1529,156 @@ HI_S32 DRV_DISP_SetLayerZorder(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_LAYER_E enLa
     stDispZorder.enDisp = enDisp;
     stDispZorder.Layer  = enLayer;
     stDispZorder.ZFlag  = enZFlag;
-    Ret = DRV_DISP_Process(CMD_DISP_SET_ZORDER, &stDispZorder);
+    Ret = HI_DRV_DISP_Process(CMD_DISP_SET_ZORDER, &stDispZorder);
     return Ret;
 }
 
-HI_S32 DRV_DISP_GetInitFlag(HI_BOOL *pbInited)
+HI_S32 HI_DRV_DISP_GetLayerZorder(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_LAYER_E enLayer, HI_U32 *pu32Zorder)
+{
+    HI_S32 Ret;
+    DISP_ZORDER_S stDispZorder;
+
+    memset(&stDispZorder, 0, sizeof(DISP_ZORDER_S));
+    stDispZorder.enDisp = enDisp;
+    stDispZorder.Layer  = enLayer;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_SET_ZORDER, &stDispZorder);
+    *pu32Zorder = stDispZorder.ZFlag;
+    return Ret;
+}
+
+HI_S32 HI_DRV_DISP_CreateCast (HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CAST_CFG_S * pstCfg, HI_HANDLE *phCast)
+{
+    HI_S32 Ret;
+    DISP_CAST_CREATE_S stCastCreate;
+    
+    stCastCreate.enDisp = enDisp;
+    stCastCreate.hCast = *phCast;
+    stCastCreate.stCfg = *pstCfg;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_CREATE_CAST, &stCastCreate);
+    return Ret;
+}
+
+HI_S32  HI_DRV_DISP_DestroyCast(HI_HANDLE hCast)
+{
+    HI_S32 Ret;
+    DISP_CAST_DESTROY_S stCastDestroy;
+    
+    stCastDestroy.hCast = hCast;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_DESTROY_CAST, &stCastDestroy);
+    return Ret;
+}
+
+HI_S32 HI_DRV_DISP_SetCastEnable(HI_HANDLE hCast, HI_BOOL bEnable)
+{
+    HI_S32 Ret;
+    DISP_CAST_ENABLE_S stCastEnable;
+    
+    stCastEnable.hCast = hCast;
+    stCastEnable.bEnable = bEnable;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_SET_CAST_ENABLE, &stCastEnable);
+    return Ret;
+}
+
+HI_S32  HI_DRV_DISP_GetCastEnable(HI_HANDLE hCast, HI_BOOL *pbEnable)
+{
+    HI_S32 Ret;
+    DISP_CAST_ENABLE_S stCastEnable;
+    
+    memset(&stCastEnable, 0, sizeof(DISP_CAST_ENABLE_S));
+    stCastEnable.hCast = hCast;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_GET_CAST_ENABLE, &stCastEnable);
+    if(!Ret)
+    {
+        *pbEnable = stCastEnable.bEnable;
+    }
+    return Ret ;
+}
+
+HI_S32  HI_DRV_DISP_AcquireCastFrame(HI_HANDLE hCast, HI_DRV_VIDEO_FRAME_S *pstCastFrame)
+{
+    HI_S32 Ret;
+    DISP_CAST_FRAME_S stCastFrame;
+    
+    memset(&stCastFrame, 0, sizeof(DISP_CAST_FRAME_S));
+    stCastFrame.hCast = hCast;
+    Ret = HI_DRV_DISP_Process(CMD_DISP_ACQUIRE_CAST_FRAME, &stCastFrame);
+    if(!Ret)
+    {
+        *pstCastFrame = stCastFrame.stFrame;
+    }
+    return Ret ;
+}
+
+HI_S32 HI_DRV_DISP_ReleaseCastFrame(HI_HANDLE hCast, HI_DRV_VIDEO_FRAME_S *pstCastFrame)
+{
+    HI_S32 Ret;
+    DISP_CAST_FRAME_S stCastFrame;
+    
+    stCastFrame.hCast = hCast;
+    stCastFrame.stFrame = *pstCastFrame;
+    
+    Ret = HI_DRV_DISP_Process_Intr(CMD_DISP_RELEASE_CAST_FRAME, &stCastFrame);
+    
+    return Ret ;
+}
+
+HI_S32 HI_DRV_DISP_ExternlAttach(HI_HANDLE hCast, HI_HANDLE hSink)
+{
+    HI_S32 Ret;
+    DISP_EXT_ATTACH_S disp_attach_info;
+    
+    disp_attach_info.hCast = hCast;
+    disp_attach_info.hMutual = hSink;
+    disp_attach_info.enType = EXT_ATTACH_TYPE_SINK;    
+    
+    Ret = HI_DRV_DISP_Process(CMD_DISP_EXT_ATTACH, &disp_attach_info);
+    
+    return Ret ;
+}
+
+HI_S32 HI_DRV_DISP_SetCastAttr(HI_HANDLE hCast, HI_DRV_DISP_Cast_Attr_S *pstCastAttr)
+{
+    HI_S32 Ret;
+    DISP_CAST_EXT_ATTR_S disp_cast_attr;
+    
+    disp_cast_attr.hCast = hCast;
+    disp_cast_attr.castAttr = *pstCastAttr;
+    
+    Ret = HI_DRV_DISP_Process(CMD_DISP_SET_CASTATTR, &disp_cast_attr);    
+    return Ret ;
+}
+
+HI_S32 HI_DRV_DISP_GetCastAttr(HI_HANDLE hCast, HI_DRV_DISP_Cast_Attr_S *pstCastAttr)
+{
+    HI_S32 Ret;
+    DISP_CAST_EXT_ATTR_S disp_cast_attr;
+    memset((void*)&disp_cast_attr, 0, sizeof(DISP_CAST_EXT_ATTR_S));
+    
+    disp_cast_attr.hCast = hCast;    
+    
+    Ret = HI_DRV_DISP_Process(CMD_DISP_GET_CASTATTR, &disp_cast_attr);
+    if (HI_FAILURE ==  Ret)
+        return  Ret;
+    
+    *pstCastAttr = disp_cast_attr.castAttr;
+    return Ret ;
+}
+
+HI_S32 HI_DRV_DISP_ExternlDetach(HI_HANDLE hCast, HI_HANDLE hSink)
+{
+    HI_S32 Ret;
+    DISP_EXT_ATTACH_S disp_attach_info;
+    
+    disp_attach_info.hCast = hCast;
+    disp_attach_info.hMutual = hSink;
+    disp_attach_info.enType = EXT_ATTACH_TYPE_SINK;  
+    
+    Ret = HI_DRV_DISP_Process(CMD_DISP_EXT_DEATTACH, &disp_attach_info);
+    
+    return Ret ;
+}
+
+HI_S32 HI_DRV_DISP_GetInitFlag(HI_BOOL *pbInited)
 {
     HI_S32 Ret;
 
@@ -1099,7 +1691,7 @@ HI_S32 DRV_DISP_GetInitFlag(HI_BOOL *pbInited)
     return Ret;
 }
 
-HI_S32 DRV_DISP_GetVersion(HI_DRV_DISP_VERSION_S *pstVersion)
+HI_S32 HI_DRV_DISP_GetVersion(HI_DRV_DISP_VERSION_S *pstVersion)
 {
     HI_S32 Ret;
 
@@ -1112,7 +1704,7 @@ HI_S32 DRV_DISP_GetVersion(HI_DRV_DISP_VERSION_S *pstVersion)
     return Ret;
 }
 
-HI_BOOL DRV_DISP_IsOpened(HI_DRV_DISPLAY_E enDisp)
+HI_BOOL HI_DRV_DISP_IsOpened(HI_DRV_DISPLAY_E enDisp)
 {
     HI_S32 Ret;
 
@@ -1125,7 +1717,7 @@ HI_BOOL DRV_DISP_IsOpened(HI_DRV_DISPLAY_E enDisp)
     return Ret;
 }
 
-HI_S32 DRV_DISP_GetSlave(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISPLAY_E *penSlave)
+HI_S32 HI_DRV_DISP_GetSlave(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISPLAY_E *penSlave)
 {
     HI_S32 Ret;
 
@@ -1138,7 +1730,7 @@ HI_S32 DRV_DISP_GetSlave(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISPLAY_E *penSlave)
     return Ret;
 }
 
-HI_S32 DRV_DISP_GetMaster(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISPLAY_E *penMaster)
+HI_S32 HI_DRV_DISP_GetMaster(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISPLAY_E *penMaster)
 {
     HI_S32 Ret;
 
@@ -1151,7 +1743,7 @@ HI_S32 DRV_DISP_GetMaster(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISPLAY_E *penMaster)
     return Ret;
 }
 
-HI_S32 DRV_DISP_GetDisplayInfo(HI_DRV_DISPLAY_E enDisp, HI_DISP_DISPLAY_INFO_S *pstInfo)
+HI_S32 HI_DRV_DISP_GetDisplayInfo(HI_DRV_DISPLAY_E enDisp, HI_DISP_DISPLAY_INFO_S *pstInfo)
 {
     HI_S32 Ret;
 
@@ -1164,7 +1756,7 @@ HI_S32 DRV_DISP_GetDisplayInfo(HI_DRV_DISPLAY_E enDisp, HI_DISP_DISPLAY_INFO_S *
     return Ret;
 }
 
-HI_S32 DRV_DISP_RegCallback(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CALLBACK_TYPE_E eType,
+HI_S32 HI_DRV_DISP_RegCallback(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CALLBACK_TYPE_E eType,
                             HI_DRV_DISP_CALLBACK_S *pstCallback)
 {    
     HI_S32 Ret;
@@ -1175,7 +1767,7 @@ HI_S32 DRV_DISP_RegCallback(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CALLBACK_TYPE_E
     return Ret;
 }
 
-HI_S32 DRV_DISP_UnRegCallback(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CALLBACK_TYPE_E eType,
+HI_S32 HI_DRV_DISP_UnRegCallback(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CALLBACK_TYPE_E eType,
                               HI_DRV_DISP_CALLBACK_S *pstCallback)
 {    
     HI_S32 Ret;
@@ -1395,7 +1987,7 @@ HI_S32 DRV_DISP_ProcessCmd(unsigned int cmd, HI_VOID *arg, DRV_DISP_STATE_S *pDi
 
                 pDispFormat = (DISP_FORMAT_S *)arg;
 
-                Ret = DISP_GetFormat(pDispFormat->enDisp, &pDispFormat->enFormat);
+                Ret = DISP_GetFormat(pDispFormat->enDisp, &pDispFormat->enStereo,&pDispFormat->enFormat);
 
                 break;
             }
@@ -1411,6 +2003,40 @@ HI_S32 DRV_DISP_ProcessCmd(unsigned int cmd, HI_VOID *arg, DRV_DISP_STATE_S *pDi
                 break;
             }
 
+        case CMD_DISP_SET_VIRTSCREEN:
+            {
+                DISP_VIRTSCREEN_S  pVirtScreen;
+                pVirtScreen = *((DISP_VIRTSCREEN_S *)arg);
+                
+                Ret = DISP_SetVirtScreen(pVirtScreen.enDisp, pVirtScreen.stVirtScreen);
+
+                break;
+            }
+        case CMD_DISP_GET_VIRTSCREEN:
+            {
+                DISP_VIRTSCREEN_S  *pVirtScreen;
+                pVirtScreen = (DISP_VIRTSCREEN_S *)arg;
+                
+                Ret = DISP_GetVirtScreen(pVirtScreen->enDisp, &pVirtScreen->stVirtScreen);
+                break;
+            }
+        case CMD_DISP_SET_SCREENOFFSET:
+            {
+                DISP_SCREENOFFSET_S  *pOffset;
+                pOffset = (DISP_SCREENOFFSET_S *)arg;
+
+                Ret = DISP_SetScreenOffset(pOffset->enDisp, &pOffset->stScreenOffset);
+                break;
+            }
+        case CMD_DISP_GET_SCREENOFFSET:
+            {
+                DISP_SCREENOFFSET_S  *pOffset;
+                pOffset = (DISP_SCREENOFFSET_S *)arg;
+                
+                Ret = DISP_GetScreenOffset(pOffset->enDisp, &pOffset->stScreenOffset);
+                break;
+            }
+        
         case CMD_DISP_SET_TIMING:
             {
                 DISP_TIMING_S  *pDispTiming;
@@ -1511,6 +2137,7 @@ HI_S32 DRV_DISP_ProcessCmd(unsigned int cmd, HI_VOID *arg, DRV_DISP_STATE_S *pDi
                 DISP_CSC_S  *pDispCsc;
                 HI_DRV_DISP_COLOR_SETTING_S stCS;
 
+                memset(&stCS, 0, sizeof(HI_DRV_DISP_COLOR_SETTING_S));
                 pDispCsc = (DISP_CSC_S *)arg;
 
                 Ret = DISP_GetColor(pDispCsc->enDisp, &stCS);
@@ -1540,6 +2167,7 @@ HI_S32 DRV_DISP_ProcessCmd(unsigned int cmd, HI_VOID *arg, DRV_DISP_STATE_S *pDi
                 DISP_CSC_S  *pDispCsc;
                 HI_DRV_DISP_COLOR_SETTING_S stCS;
 
+                memset(&stCS, 0, sizeof(HI_DRV_DISP_COLOR_SETTING_S));  
                 pDispCsc = (DISP_CSC_S *)arg;
 
                 Ret = DISP_GetColor(pDispCsc->enDisp, &stCS);
@@ -1568,6 +2196,7 @@ HI_S32 DRV_DISP_ProcessCmd(unsigned int cmd, HI_VOID *arg, DRV_DISP_STATE_S *pDi
                 DISP_CSC_S  *pDispCsc;
                 HI_DRV_DISP_COLOR_SETTING_S stCS;
 
+                memset(&stCS, 0, sizeof(HI_DRV_DISP_COLOR_SETTING_S));
                 pDispCsc = (DISP_CSC_S *)arg;
 
                 Ret = DISP_GetColor(pDispCsc->enDisp, &stCS);
@@ -1597,6 +2226,7 @@ HI_S32 DRV_DISP_ProcessCmd(unsigned int cmd, HI_VOID *arg, DRV_DISP_STATE_S *pDi
                 DISP_CSC_S  *pDispCsc;
                 HI_DRV_DISP_COLOR_SETTING_S stCS;
 
+                memset(&stCS, 0, sizeof(HI_DRV_DISP_COLOR_SETTING_S));
                 pDispCsc = (DISP_CSC_S *)arg;
 
                 Ret = DISP_GetColor(pDispCsc->enDisp, &stCS);
@@ -1732,13 +2362,8 @@ HI_S32 DRV_DISP_ProcessCmd(unsigned int cmd, HI_VOID *arg, DRV_DISP_STATE_S *pDi
                 break;
             }
 #endif
-            /* 2011-05-18 HuangMinghu
-             * CGMS
-             */
         case CMD_DISP_SET_CGMS:
             {
-                //DEBUG_PRINTK("#DRV_DISP_Ioctl@disp_intf_k.c\n");
-
                 DISP_CGMS_S  *pDispCgms;
 
                 pDispCgms = (DISP_CGMS_S *)arg;
@@ -1747,35 +2372,14 @@ HI_S32 DRV_DISP_ProcessCmd(unsigned int cmd, HI_VOID *arg, DRV_DISP_STATE_S *pDi
 
                 break;
             }
-        case CMD_DISP_SET_DISP_SCREEN:
-            {
-                //DEBUG_PRINTK("#DRV_DISP_Ioctl@disp_intf_k.c\n");
-
-                DISP_OUTRECT_S  *pDispOutRect;
-
-                pDispOutRect = (DISP_OUTRECT_S *)arg;
-
-                Ret = DISP_SetScreen(pDispOutRect->enDisp, &pDispOutRect->stOutRectCfg);
-
-                break;
-            }  
-        case CMD_DISP_GET_DISP_SCREEN:
-            {
-                //DEBUG_PRINTK("#DRV_DISP_Ioctl@disp_intf_k.c\n");
-
-                DISP_OUTRECT_S  *pDispOutRect;
-
-                pDispOutRect = (DISP_OUTRECT_S *)arg;
-                /*To do*/
-                Ret = DISP_SetScreen(pDispOutRect->enDisp, &pDispOutRect->stOutRectCfg);
-                break;
-            }
-
          case CMD_DISP_CREATE_CAST:
             {
                 DISP_CAST_CREATE_S *pstC = (DISP_CAST_CREATE_S *)arg;
 
-                /*To do*/
+                /*if cast already open , return failed*/
+                if (pDispState->hCastHandle[pstC->enDisp] != HI_NULL)
+                    return HI_FAILURE;
+                
                 //printk(">>>>>>>>>>>>>>>> CMD_DISP_CREATE_CAST >>>>>>>>>>>>. \n");
                 Ret = DISP_CreateCast(pstC->enDisp, &pstC->stCfg, &pstC->hCast);
                 if (!Ret)
@@ -1835,6 +2439,70 @@ HI_S32 DRV_DISP_ProcessCmd(unsigned int cmd, HI_VOID *arg, DRV_DISP_STATE_S *pDi
                 Ret = DISP_ReleaseCastFrame(pstC->hCast, &pstC->stFrame);
                 break;
             }
+
+		case CMD_DISP_ACQUIRE_SNAPSHOT:
+			{
+				DISP_SNAPSHOT_FRAME_S *pstFrame = (DISP_SNAPSHOT_FRAME_S*)arg;
+                HI_HANDLE snapshotHandleOut = 0;
+                
+                /*does not support continuous snapshot.*/
+                if (pDispState->hSnapshot[pstFrame->enDispLayer] != 0)
+                    break;
+                
+				Ret =  DISP_AcquireSnapshot(pstFrame->enDispLayer, 
+                                            &pstFrame->stFrame,
+                                            &snapshotHandleOut);
+                if (!Ret)
+                    pDispState->hSnapshot[pstFrame->enDispLayer] = snapshotHandleOut;
+                else
+                    pDispState->hSnapshot[pstFrame->enDispLayer] = 0;                    
+                
+				break;
+			}
+		case CMD_DISP_RELEASE_SNAPSHOT:
+			{
+				DISP_SNAPSHOT_FRAME_S *pstFrame = (DISP_SNAPSHOT_FRAME_S*)arg;
+
+                /*for released snapshot, just break.*/
+                if (pDispState->hSnapshot[pstFrame->enDispLayer] == 0)
+                    break;
+                
+				Ret = DISP_ReleaseSnapshot(pstFrame->enDispLayer, &pstFrame->stFrame, pDispState->hSnapshot[pstFrame->enDispLayer]);
+                pDispState->hSnapshot[pstFrame->enDispLayer] = 0; 
+				break;
+			}
+        case CMD_DISP_EXT_ATTACH:
+            {
+                DISP_EXT_ATTACH_S *pstC = (DISP_EXT_ATTACH_S *)arg;
+
+                /*To do*/
+                Ret = DISP_External_Attach(pstC->hCast, pstC->hMutual);
+                break;
+            }
+        case CMD_DISP_EXT_DEATTACH:
+            {
+                DISP_EXT_ATTACH_S *pstC = (DISP_EXT_ATTACH_S *)arg;
+
+                /*To do*/
+                Ret = DISP_External_DeAttach(pstC->hCast, pstC->hMutual);
+                break;
+            }
+        case CMD_DISP_SET_CASTATTR:
+            {
+                DISP_CAST_EXT_ATTR_S *pstC = (DISP_CAST_EXT_ATTR_S *)arg;
+                
+                /*To do*/
+                Ret = DRV_DISP_SetCastAttr(pstC->hCast, &pstC->castAttr);
+                break;
+            }
+        case CMD_DISP_GET_CASTATTR:
+            {
+                DISP_CAST_EXT_ATTR_S *pstC = (DISP_CAST_EXT_ATTR_S *)arg;
+
+                /*To do*/
+                Ret = DRV_DISP_GetCastAttr(pstC->hCast, &pstC->castAttr);
+                break;
+            }            
         case CMD_DISP_SUSPEND:
             {
                 /*To do*/
@@ -1867,10 +2535,10 @@ HI_S32 DRV_DISP_Init2(HI_VOID)
     DRV_DISP_ProcAdd(HI_DRV_DISPLAY_0);
     DRV_DISP_ProcAdd(HI_DRV_DISPLAY_1);
 
-    DISP_Init();
+    (HI_VOID)DISP_Init();
 
-    DRV_DISP_Open(HI_DRV_DISPLAY_0);
-    DRV_DISP_Open(HI_DRV_DISPLAY_1);
+    HI_DRV_DISP_Open(HI_DRV_DISPLAY_0);
+    HI_DRV_DISP_Open(HI_DRV_DISPLAY_1);
     
     
     return HI_SUCCESS;
@@ -1883,8 +2551,8 @@ HI_S32 DRV_DISP_DeInit2(HI_VOID)
 
     DRV_DISP_ProcDeInit();
 
-    DRV_DISP_Close(HI_DRV_DISPLAY_0);
-    DRV_DISP_Close(HI_DRV_DISPLAY_1);
+    HI_DRV_DISP_Close(HI_DRV_DISPLAY_0);
+    HI_DRV_DISP_Close(HI_DRV_DISPLAY_1);
 
     /* closing clock */
     DISP_DeInit();
@@ -1895,7 +2563,7 @@ HI_S32 DRV_DISP_DeInit2(HI_VOID)
 }
 
 //may be delete
-HI_S32 DRV_DISP_Init(HI_VOID)
+HI_S32 HI_DRV_DISP_Init(HI_VOID)
 {
     HI_S32          Ret;
 
@@ -1915,11 +2583,12 @@ HI_S32 DRV_DISP_Init(HI_VOID)
     }
 
     up(&g_DispMutex);
+	Ret = DRV_DISP_Register();
     return Ret;
 }
 
 //HI_S32 HI_DRV_DISP_ModDeinit(HI_VOID)
-HI_S32 DRV_DISP_DeInit(HI_VOID)
+HI_S32 HI_DRV_DISP_DeInit(HI_VOID)
 {
     HI_S32 Ret;
     HI_DRV_DISPLAY_E u;
@@ -1956,44 +2625,60 @@ HI_S32 DRV_DISP_DeInit(HI_VOID)
     return 0;
 }
 
-
+HI_S32 HI_DRV_DISP_UpdatePqData(HI_U32 u32UpdateType, PQ_PARAM_S* pstPqParam)
+{  
+	
+    return HI_SUCCESS;
+}
 static DISP_EXPORT_FUNC_S s_stDispExportFuncs = {
-    .DRV_DISP_Init             = DRV_DISP_Init            ,
-    .DRV_DISP_DeInit           = DRV_DISP_DeInit          ,
-    .DRV_DISP_Attach           = DRV_DISP_Attach          ,
-    .DRV_DISP_Detach           = DRV_DISP_Detach          ,
-    .DRV_DISP_SetFormat        = DRV_DISP_SetFormat       ,
-    .DRV_DISP_GetFormat        = DRV_DISP_GetFormat       ,
-    .DRV_DISP_SetTiming        = DRV_DISP_SetTiming       ,
-    //.DRV_DISP_GetTiming        = DRV_DISP_GetTiming       ,
-    .DRV_DISP_AddIntf          = DRV_DISP_AddIntf         ,
-    //.DRV_DISP_DelIntf          = DRV_DISP_DelIntf         ,
+    .pfnDispInit             = HI_DRV_DISP_Init            ,
+    .pfnDispDeInit           = HI_DRV_DISP_DeInit          ,
+    .pfnDispAttach           = HI_DRV_DISP_Attach          ,
+    .pfnDispDetach           = HI_DRV_DISP_Detach          ,
+    .pfnDispSetFormat        = HI_DRV_DISP_SetFormat       ,
+    .pfnDispGetFormat        = HI_DRV_DISP_GetFormat       ,
+    .pfnDispSetCustomTiming  = HI_DRV_DISP_SetCustomTiming ,
+    .pfnDispGetCustomTiming  = HI_DRV_DISP_GetCustomTiming ,
+    .pfnDispAddIntf          = HI_DRV_DISP_AddIntf         ,
+    .pfnDispDeIntf           = HI_DRV_DISP_DelIntf         ,
 
-    .DRV_DISP_Open             = DRV_DISP_Open            ,
-    .DRV_DISP_Close            = DRV_DISP_Close           ,
-    //.DRV_DISP_SetEnable        = DRV_DISP_SetEnable       ,
-    //.DRV_DISP_GetEnable        = DRV_DISP_GetEnable       ,
-    .DRV_DISP_SetBgColor       = DRV_DISP_SetBgColor      ,
-    //.DRV_DISP_GetBgColor       = DRV_DISP_GetBgColor      ,
-    .DRV_DISP_SetColor         = DRV_DISP_SetColor        ,
-    .DRV_DISP_GetColor         = DRV_DISP_GetColor        ,
-    .DRV_DISP_SetScreen        = DRV_DISP_SetScreen       ,
-    //.DRV_DISP_GetScreen        = DRV_DISP_GetScreen       ,
-    .DRV_DISP_SetAspectRatio   = DRV_DISP_SetAspectRatio  ,
-    //.DRV_DISP_GetAspectRatio   = DRV_DISP_GetAspectRatio  ,
-    .DRV_DISP_SetLayerZorder   = DRV_DISP_SetLayerZorder  ,
-    //.DRV_DISP_GetLayerZorder   = DRV_DISP_GetLayerZorder  ,
+    .pfnDispOpen             = HI_DRV_DISP_Open            ,
+    .pfnDispClose            = HI_DRV_DISP_Close           ,
+    .pfnDispSetEnable        = HI_DRV_DISP_SetEnable       ,
+    .pfnDispGetEnable        = HI_DRV_DISP_GetEnable       ,
+    .pfnDispSetRightEyeFirst = HI_DRV_DISP_SetRightEyeFirst,
+    .pfnDispSetBgColor       = HI_DRV_DISP_SetBgColor      ,
+    .pfnDispGetBgColor       = HI_DRV_DISP_GetBgColor      ,
+    .pfnDispSetColor         = HI_DRV_DISP_SetColor        ,
+    .pfnDispGetColor         = HI_DRV_DISP_GetColor        ,
+    .pfnDispSetAspectRatio   = HI_DRV_DISP_SetAspectRatio  ,
+    .pfnDispGetAspectRatio   = HI_DRV_DISP_GetAspectRatio  ,
+    .pfnDispSetLayerZorder   = HI_DRV_DISP_SetLayerZorder  ,
+    .pfnDispGetLayerZorder   = HI_DRV_DISP_GetLayerZorder  ,
+    
+    .pfnDispCreatCast        = HI_DRV_DISP_CreateCast      ,
+    .pfnDispDestoryCast      = HI_DRV_DISP_DestroyCast     ,
+    .pfnDispSetCastEnable    = HI_DRV_DISP_SetCastEnable   ,
+    .pfnDispGetCastEnable    = HI_DRV_DISP_GetCastEnable   ,
+    .pfnDispAcquireCastFrm   = HI_DRV_DISP_AcquireCastFrame,
+    .pfnDispRlsCastFrm       = HI_DRV_DISP_ReleaseCastFrame,
+    
+    .pfnDispExtAttach        = HI_DRV_DISP_ExternlAttach,       
+    .pfnDispExtDeAttach      = HI_DRV_DISP_ExternlDetach,      
+    .pfnDispSetCastAttr      = HI_DRV_DISP_SetCastAttr,       
+    .pfnDispGetCastAttr      = HI_DRV_DISP_GetCastAttr,   
 
-    .DRV_DISP_GetInitFlag      = DRV_DISP_GetInitFlag     ,
-    .DRV_DISP_GetVersion       = DRV_DISP_GetVersion      ,
-    .DRV_DISP_IsOpened         = DRV_DISP_IsOpened        ,
-    .DRV_DISP_GetSlave         = DRV_DISP_GetSlave        ,
-    .DRV_DISP_GetMaster        = DRV_DISP_GetMaster       ,
-    .DRV_DISP_GetDisplayInfo   = DRV_DISP_GetDisplayInfo  ,
+    .pfnDispGetInitFlag      = HI_DRV_DISP_GetInitFlag     ,
+    .pfnDispGetVersion       = HI_DRV_DISP_GetVersion      ,
+    .pfnDispIsOpen           = HI_DRV_DISP_IsOpened        ,
+    .pfnDispGetSlave         = HI_DRV_DISP_GetSlave        ,
+    .pfnDispGetMaster        = HI_DRV_DISP_GetMaster       ,
+    .pfnDispGetDispInfo      = HI_DRV_DISP_GetDisplayInfo  ,
 
-    .FN_DISP_Ioctl         = DRV_DISP_Process,
-    .FN_DISP_RegCallback   = DRV_DISP_RegCallback,
-    .FN_DISP_UnRegCallback = DRV_DISP_UnRegCallback,
+    .pfnDispIoctl            = HI_DRV_DISP_Process,
+    .pfnDispRegCallback      = HI_DRV_DISP_RegCallback,
+    .pfnDispUnRegCallback    = HI_DRV_DISP_UnRegCallback,
+    .pfnDispUpdatePqData    = HI_DRV_DISP_UpdatePqData,    
 };
 
 HI_S32 DRV_DISP_Register(HI_VOID)

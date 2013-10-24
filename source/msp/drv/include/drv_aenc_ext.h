@@ -3,6 +3,7 @@
 #define __HI_DRV_AENC_H__
 
 //#include "hi_drv_type.h"
+#include "hi_drv_aenc.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -12,7 +13,6 @@ extern "C"{
 
 HI_S32   AENC_DRV_ModInit(HI_VOID);
 HI_VOID  AENC_DRV_ModExit(HI_VOID);
-HI_S32   AENC_DRV_Proc(struct seq_file *p, HI_VOID *v);
 
 #ifdef __cplusplus
 #if __cplusplus

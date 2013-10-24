@@ -1,29 +1,51 @@
 #ifndef __VPSS_COMMON_H__
 #define __VPSS_COMMON_H__
 
-#include"drv_mem_ext.h"
+#include"hi_drv_mem.h"
 #include"drv_vdec_ext.h"
+#include"hi_drv_log.h"
 #include "hi_debug.h"
 #include <linux/list.h>
 #include <linux/io.h>
 #include <linux/delay.h>
 
 
-#define DEF_HI_DRV_VPSS_VERSION 0x101  
-/*S40V200 Çý¶¯*/
 /*
-#ifdef VPSS_S40  
-#endif
+Logic Version
+S40:DEF_VPSS_VERSION_1_0
+CV200:DEF_VPSS_VERSION_2_0
 */
- /*CV200 Çý¶¯*/
-#ifdef VPSS_CV200
+#ifdef HI_VPSS_DRV_VER_S40
+#define DEF_VPSS_VERSION_1_0 1
+#else
+#define DEF_VPSS_VERSION_1_0 0
+#endif
+
+#ifdef HI_VPSS_DRV_VER_CV200
+#define DEF_VPSS_VERSION_2_0 1
+#else
+#define DEF_VPSS_VERSION_2_0 0
+#endif
+
+#define DEF_TUNNEL_EN 0
+
+
+#if DEF_VPSS_VERSION_1_0
+#define DEF_HI_DRV_VPSS_VERSION 0x101 
+#endif
+
+#if DEF_VPSS_VERSION_2_0
 #define DEF_HI_DRV_VPSS_VERSION 0x102 
 #endif
 
-#define DEF_FILE_NAMELENGTH 20
+#define DEF_FILE_NAMELENGTH 30
 
 typedef struct list_head LIST;
 
+#define FB_DBG 0
+
+#define DEF_SDK_VERSIO_LOG "2013090813"
+#define DEF_TUNNEL_LENTH 32
 /*
     300M/20 = 15M = 0xe4e1c0
     300M/60 = 5M = 0x4c4b40
@@ -57,4 +79,9 @@ typedef struct list_head LIST;
 #define OPTM_ALG_MAX2(x, y) (((x) > (y)) ? (x) : (y))
 #define OPTM_ALG_CLIP3(low, high, x) (OPTM_ALG_MAX2( OPTM_ALG_MIN2((x), (high)), (low)))
 #define OPTM_ALG_ROUND(x)   (((x % 10) > 4) ? (x / 10 + 1) * 10 : x)
+
+
+#define VPSS_HEIGHT_ALIGN 0xfffffffc
+#define VPSS_WIDTH_ALIGN 0xfffffffe
+
 #endif

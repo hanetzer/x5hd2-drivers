@@ -20,6 +20,8 @@
 
 #include "drv_ir_protocols_descript.c"
 
+#include "hi_osal.h"
+
 static struct list_head ir_prot_head;
 DEFINE_SPINLOCK(irlock);
 //static unsigned long flag;
@@ -103,7 +105,7 @@ int ir_protocol_check(struct ir_protocol *ip)
             return -1;
         }
 
-        if (!strcmp(ci->ir_code_name, ip->ir_code_name))
+        if (!HI_OSAL_Strncmp(ci->ir_code_name, ip->ir_code_name, strlen(ip->ir_code_name)))
         {
             hiir_info("%s have been registered or used!\n", ip->ir_code_name);
             return -1;

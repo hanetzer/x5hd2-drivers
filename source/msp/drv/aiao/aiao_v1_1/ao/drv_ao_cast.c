@@ -12,18 +12,16 @@
 #include <linux/interrupt.h>
 
 #include "hi_type.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
 
 #include "hi_module.h"
-#include "drv_mmz_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_module_ext.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_module.h"
+#include "hi_drv_mem.h"
 #include "hi_error_mpi.h"
 
 #include "audio_util.h"
@@ -72,11 +70,12 @@
 
 
 
- static HI_S32 CastCreate(SND_CARD_STATE_S *pCard, HI_S32 *ps32CastId, HI_UNF_SND_CAST_ATTR_S *pstCastAttr, HI_U32 *pu32PhyAddr)
+static HI_S32 CastCreate(SND_CARD_STATE_S *pCard, HI_S32 *ps32CastId, HI_UNF_SND_CAST_ATTR_S *pstCastAttr,
+                         MMZ_BUFFER_S *pstMMz)
 {
     HI_S32 Ret;
 
-    Ret = SND_CreateCastOp(pCard,  ps32CastId, pstCastAttr, pu32PhyAddr);
+    Ret = SND_CreateCastOp(pCard, ps32CastId, pstCastAttr, pstMMz);
     if (HI_SUCCESS != Ret)
     {
         return HI_FAILURE;
@@ -176,9 +175,7 @@ HI_S32 CAST_GetDefAttr(HI_UNF_SND_CAST_ATTR_S * pstDefAttr)
     return HI_SUCCESS;
 }
 
-
-
-HI_S32 CAST_CreateNew(SND_CARD_STATE_S *pCard, HI_UNF_SND_CAST_ATTR_S *pstCastAttr, HI_U32 *pu32ReqSize, HI_U32 hCast)
+HI_S32 CAST_CreateNew(SND_CARD_STATE_S *pCard, HI_UNF_SND_CAST_ATTR_S *pstCastAttr, MMZ_BUFFER_S *pstMMz, HI_U32 hCast)
 {
     SND_CAST_STATE_S *state = HI_NULL;
     HI_U32 CastId;
@@ -189,23 +186,24 @@ HI_S32 CAST_CreateNew(SND_CARD_STATE_S *pCard, HI_UNF_SND_CAST_ATTR_S *pstCastAt
         return HI_FAILURE;
     }
 
-    state = HI_KMALLOC(HI_ID_AO, sizeof(SND_CAST_STATE_S), GFP_KERNEL);
+    state = AUTIL_AO_MALLOC(HI_ID_AO, sizeof(SND_CAST_STATE_S), GFP_KERNEL);
     if (state == HI_NULL)
     {
-        HI_FATAL_AO("HI_KMALLOC CAST_Create failed\n");
+        HI_FATAL_AO("malloc CAST_Create failed\n");
         goto CastCreate_ERR_EXIT;
     }
 
     memset(state, 0, sizeof(SND_CAST_STATE_S));
 
-    memcpy(&state->stUserCastAttr , pstCastAttr, sizeof(HI_UNF_SND_CAST_ATTR_S));
-    
+    memcpy(&state->stUserCastAttr, pstCastAttr, sizeof(HI_UNF_SND_CAST_ATTR_S));
 
-    if (HI_SUCCESS != CastCreate(pCard, &CastId, &state->stUserCastAttr, &state->u32PhyAddr))
+    if (HI_SUCCESS != CastCreate(pCard, &CastId, &state->stUserCastAttr, pstMMz))
     {
         goto CastCreate_ERR_EXIT;
     }
-    state->hCast = hCast;
+
+    state->u32PhyAddr = pstMMz->u32StartPhyAddr;
+    state->hCast  = hCast;
     state->CastId = CastId;
 
     state->u32Channels = 2;
@@ -218,13 +216,13 @@ HI_S32 CAST_CreateNew(SND_CARD_STATE_S *pCard, HI_UNF_SND_CAST_ATTR_S *pstCastAt
 
     state->bUserEnableSetting = HI_FALSE;               
     state->enCurnStatus = SND_CAST_STATUS_STOP;
-    
+    state->bAcquireCastFrameFlag = HI_FALSE;
+
     //pstCastAttr->u32PhyAddr = state->stUserCastAttr.u32PhyAddr;
     //pstCastAttr->u32Channels = state->stUserCastAttr.u32Channels;
     //pstCastAttr->u32SampleRate = state->stUserCastAttr.u32SampleRate;
     //pstCastAttr->s32BitPerSample = state->stUserCastAttr.s32BitPerSample;
 
-    *pu32ReqSize = state->u32FrameBytes * state->stUserCastAttr.u32PcmFrameMaxNum;
 #if 0
     HI_ERR_AO("state->hCast = 0x%x\n", state->hCast);
     HI_ERR_AO("state->CastId = 0x%x\n", state->CastId);
@@ -239,7 +237,7 @@ HI_S32 CAST_CreateNew(SND_CARD_STATE_S *pCard, HI_UNF_SND_CAST_ATTR_S *pstCastAt
     return HI_SUCCESS;
     
 CastCreate_ERR_EXIT:
-    HI_KFREE(HI_ID_AO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     return Ret;
 }
 
@@ -290,7 +288,7 @@ HI_S32 CAST_Destroy(SND_CARD_STATE_S *pCard, HI_U32 hCast)
     pCard->uSndCastInitFlag &= ~((HI_U32)1L << state->hCast);
     pCard->hCast[state->hCast] = HI_NULL;
     
-    HI_KFREE(HI_ID_AO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     return HI_SUCCESS;
 }
 
@@ -332,6 +330,51 @@ HI_S32 CAST_GetInfo(SND_CARD_STATE_S *pCard, HI_U32 hCast, AO_Cast_Info_Param_S 
     //HI_ERR_AO("u32UserVirtAddr = 0x%x\n", *pu32UserVirtAddr);
 
     return HI_SUCCESS;
+}
+
+HI_VOID CAST_GetSettings(SND_CARD_STATE_S *pCard, HI_HANDLE hCast, SND_CAST_SETTINGS_S* pstCastSettings)
+{
+    SND_CAST_STATE_S *state;
+
+    state = (SND_CAST_STATE_S *)pCard->hCast[hCast];
+    if (HI_NULL == state)
+    {
+        return;
+    }
+
+    pstCastSettings->u32UserVirtAddr = state->u32UserVirtAddr;
+    pstCastSettings->bUserEnableSetting = state->bUserEnableSetting;
+    return;
+}
+
+HI_VOID CAST_RestoreSettings(SND_CARD_STATE_S *pCard, HI_HANDLE hCast, SND_CAST_SETTINGS_S* pstCastSettings)
+{
+    SND_CAST_STATE_S *state;
+
+    state = (SND_CAST_STATE_S *)pCard->hCast[hCast];
+    if (HI_NULL == state)
+    {
+        return;
+    }
+
+    if (state)
+    {
+        state->u32UserVirtAddr = pstCastSettings->u32UserVirtAddr;
+
+        /* fource discard ReleaseCastFrame after resume */
+        state->bAcquireCastFrameFlag = HI_FALSE;
+        if (pstCastSettings->bUserEnableSetting != state->bUserEnableSetting)
+        {
+            CAST_SetEnable(pCard, hCast, pstCastSettings->bUserEnableSetting);
+        }
+    }
+    else
+    {
+        HI_ERR_AO("Cast(%d) don't attach card!\n", hCast);
+        return;
+    }
+
+    return;
 }
 
 HI_S32 CAST_SetEnable(SND_CARD_STATE_S *pCard, HI_U32 hCast, HI_BOOL bEnable)
@@ -389,8 +432,10 @@ HI_S32 CAST_SetEnable(SND_CARD_STATE_S *pCard, HI_U32 hCast, HI_BOOL bEnable)
     hEngine = CastGetEngineHandlebyType(pCard, SND_ENGINE_TYPE_PCM);
     if(!hEngine)
     {
-        if(bEnable)    
+        if (bEnable)
+        {
             return HI_SUCCESS;
+        }
         else
         {
             HI_ERR_AIAO("Disable Cast But No Engine Found !\n");
@@ -520,6 +565,8 @@ HI_S32 CAST_ReadData(SND_CARD_STATE_S *pCard, HI_U32 hCast,
         return HI_FAILURE;
     }
 
+    state->bAcquireCastFrameFlag = HI_TRUE;
+
     return HI_SUCCESS;
 }
 
@@ -553,7 +600,13 @@ HI_S32 CAST_ReleaseData(SND_CARD_STATE_S *pCard, HI_U32 hCast,
         return HI_FAILURE;
     }
 
-    pstCastData->u32FrameBytes = state->u32FrameBytes;
+    /* discard ReleaseCastFrame before call AcquireCastFrame */
+    if (HI_FALSE == state->bAcquireCastFrameFlag)
+    {
+        return HI_SUCCESS;
+    }
+
+    pstCastData->u32FrameBytes  = state->u32FrameBytes;
     pstCastData->u32SampleBytes = state->u32SampleBytes;
     
 #if 0
@@ -569,6 +622,8 @@ HI_S32 CAST_ReleaseData(SND_CARD_STATE_S *pCard, HI_U32 hCast,
     {
         return HI_FAILURE;
     }
+
+    state->bAcquireCastFrameFlag = HI_FALSE;
 
     return HI_SUCCESS;
 

@@ -17,7 +17,7 @@
 
 #include "hi_type.h"
 #include "drv_i2c_ext.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_sys.h"
 #include "drv_tuner_ioctl.h"
 
 #include "MxL101SF_OEM_Drv.h"

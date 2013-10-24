@@ -1,21 +1,16 @@
 /******************************************************************************
 
-  Copyright (C), 2001-2011, Hisilicon Tech. Co., Ltd.
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
 
  ******************************************************************************
   File Name     : drv_cipher_ioctl.h
   Version       : Initial Draft
-  Author        : Hisilicon multimedia software group
-  Created       : 2006/05/17
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
   Description   : 
+  Function List :
   History       :
-  1.Date        : 2006/05/17
-    Author      : g45345
-    Modification: Created file
-  2.Date        : 2013/04/12
-    Author      : z00213260
-    Modification: Modify file name, hi_drv_cipher.h to drv_cipher_ioctl.h
-
 ******************************************************************************/
 
 #ifndef __DRV_CIPHER_IOCTL_H__
@@ -44,7 +39,7 @@ typedef struct  hiCIPHER_DATA_S
     HI_HANDLE CIHandle;
     HI_U32 ScrPhyAddr;
     HI_U32 DestPhyAddr;
-    HI_U32 ByteLength;
+    HI_U32 u32PkgNum;
 }CIPHER_DATA_S;
 
 typedef struct hiCIPHER_Config_CTRL

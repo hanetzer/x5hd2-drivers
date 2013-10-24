@@ -17,8 +17,8 @@
 #include <asm/io.h>
 
 #include "hi_module.h"
-#include "drv_module_ext.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_module.h"
+#include "hi_drv_mem.h"
 #include "drv_tde_ext.h"
 
 #include "hi_tde_type.h"
@@ -28,14 +28,9 @@
 #include "tde_osilist.h"
 #include "tde_hal.h"
 #include "wmalloc.h"
+#include "tde_config.h"
 
 typedef unsigned long       HI_UL;
-
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-#define TDE_PRINT_INFO  printk
-#else
-#define TDE_PRINT_INFO(x...)
-#endif
 
 #define TDE_NAME    "HI_TDE"
 
@@ -94,20 +89,19 @@ HI_S32 tde_init_module_k(HI_VOID)
     }
 
     if (0 != request_irq(TDE_INTNUM, (irq_handler_t)tde_osr_isr,
-                         IRQF_PROBE_SHARED, "tde_osr_isr", NULL))
+                         IRQF_PROBE_SHARED, "hi_tde_irq", NULL))
     {
-        TDE_PRINT_INFO(KERN_ERR "request_irq for TDE failure!\n");
-
+        TDE_TRACE(TDE_KERN_ERR, "request_irq for TDE failure!\n");
         TdeHalRelease();
         return -1;
     }
 	
     TdeOsiListInit();
 
-    ret = HI_DRV_MODULE_Register(HI_ID_TDE, TDE_NAME, &s_TdeExportFuncs); 
+    ret = HI_GFX_MODULE_Register(HIGFX_TDE_ID, TDE_NAME,&s_TdeExportFuncs);
     if (HI_SUCCESS != ret)
     {
-        TDE_PRINT_INFO("HI_DRV_MODULE_Register failed\n");
+        TDE_TRACE(TDE_KERN_ERR, "register module failed!\n");
         tde_cleanup_module_k();
         return ret;
     }
@@ -578,19 +572,20 @@ STATIC void tde_tasklet_func(unsigned long int_status)
 /* tde wait for start  */
 int tde_pm_suspend(PM_BASEDEV_S *pdev, pm_message_t state)
 {
-	TdeOsiWaitAllDone(HI_FALSE);
-	TDE_PRINT_INFO("===================tde suspend!\n");
+    TdeOsiWaitAllDone(HI_FALSE);
 
-	return 0;
+    TDE_TRACE(TDE_KERN_INFO, "tde suspend!\n");
+
+    return 0;
 }
 
 /* wait for resume */
 int tde_pm_resume(PM_BASEDEV_S *pdev)
 {
-	TDE_PRINT_INFO("===================tde resume!\n");
-    
-	TdeHalResumeInit();
-    
+    TDE_TRACE(TDE_KERN_INFO, "tde resume!\n");
+
+    TdeHalResumeInit();
+
     return 0;
 }
 

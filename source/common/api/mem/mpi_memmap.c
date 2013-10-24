@@ -54,7 +54,7 @@ MMAP_Node_t * pMMAPNode = NULL;
 #define MEM_PAGE_SIZE  0x1000
 #define PAGE_SIZE_MASK 0xfffff000
 
-#define mmmp_dev "/dev/mem"
+#define mmmp_dev "/dev/hi_mem"
 
 #endif
 
@@ -108,12 +108,11 @@ HI_VOID * HI_MMAP(HI_U32 phy_addr, HI_U32 size)
     if(mmmp_fd < 0)
     {
         /* dev not opened yet, so open it */
-        //mmmp_fd = open (mmmp_dev, O_RDWR);
         mmmp_fd = open (mmmp_dev, O_RDWR | O_NONBLOCK | O_SYNC); /*without cache*/
         if (mmmp_fd < 0)
         {
-            WRITE_LOG_ERROR("memmap():open %s error!\n", mmmp_dev);
             HI_MEMMAP_UNLOCK() ;
+            WRITE_LOG_ERROR("memmap():open %s error!\n", mmmp_dev);
             return NULL;
         }
     }
@@ -128,9 +127,9 @@ HI_VOID * HI_MMAP(HI_U32 phy_addr, HI_U32 size)
     addr = mmap ((void *)0, size_in_page, PROT_READ|PROT_WRITE, MAP_SHARED, mmmp_fd, (long)phy_addr_in_page);
     if (addr == MAP_FAILED)
     {
-        WRITE_LOG_ERROR("memmap():mmap @ 0x%x error!\n", phy_addr_in_page);
-        perror("memmap error: ");
         HI_MEMMAP_UNLOCK() ;
+        WRITE_LOG_ERROR("memmap():mmap @ 0x%x error!\n", phy_addr_in_page);
+        perror("memmap error\n");
         return NULL;
     }
     if(mmmp_fd > 0)
@@ -146,8 +145,8 @@ HI_VOID * HI_MMAP(HI_U32 phy_addr, HI_U32 size)
     pNew = (MMAP_Node_t *)HI_MALLOC(HI_ID_MEM, sizeof(MMAP_Node_t));
     if(NULL == pNew)
     {
-        WRITE_LOG_ERROR("memmap():malloc new node failed!\n");
         HI_MEMMAP_UNLOCK() ;
+        WRITE_LOG_ERROR("memmap():malloc new node failed!\n");
         return NULL;
     }
     pNew->Start_P = phy_addr_in_page;
@@ -236,7 +235,8 @@ HI_S32 HI_MUNMAP(HI_VOID * addr_mapped)
                 /* munmap */
                 if(munmap((void *)pTmp->Start_V, pTmp->length) != 0 )
                 {
-                    WRITE_LOG_INFO("memunmap(): munmap failed!\n");
+                    /* Don't call LOG print between HI_MEMMAP_LOCK and HI_MEMMAP_UNLOCK */
+                    //WRITE_LOG_INFO("memunmap(): munmap failed!\n");
                 }
 #if 1
                 else
@@ -248,7 +248,7 @@ HI_S32 HI_MUNMAP(HI_VOID * addr_mapped)
                 HI_FREE(HI_ID_MEM, pTmp);
             }
 
-		HI_MEMMAP_UNLOCK() ;
+		    HI_MEMMAP_UNLOCK() ;
             return 0;
         }
 
@@ -256,8 +256,8 @@ HI_S32 HI_MUNMAP(HI_VOID * addr_mapped)
         pTmp = pTmp->next;
     }while(pTmp != NULL);
 
-    WRITE_LOG_ERROR("memunmap(): address have not been mmaped!\n");
     HI_MEMMAP_UNLOCK() ;
+    WRITE_LOG_ERROR("memunmap(): address have not been mmaped!\n");
     return -1;
 }
 

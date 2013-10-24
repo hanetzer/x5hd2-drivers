@@ -13,42 +13,44 @@
 @	compiled by GNU C version 4.1.1 20061011 (Red Hat 4.1.1-30), GMP version 4.3.1, MPFR version 2.4.2.
 @ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 @ options passed:  -nostdinc
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/include
 @ -Iarch/arm/include/generated -Iinclude
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vo
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vo
 @ -Idrivers/msp/vo
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/drv/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/higo/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/api/vo
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/hal_cv200es
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/alg
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/com
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/drv
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/higo/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/vo
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/hal/common
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/hal/cv200
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/alg
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/com
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/drv
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/include
 @ -imultilib armv7a_soft -iprefix
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/
 @ -isysroot /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../target
 @ -D__KERNEL__ -D__LINUX_ARM_ARCH__=7 -Uarm -DHI_DISP_BUILD_FULL
 @ -D__DISP_PLATFORM_SDK__ -D__DISP_D0_FOLLOW_D1__ -D__DISP_SELF_START__
-@ -DHI_VO_SHARPNESS_SUPPORT -DHI_VO_HD_VIDEO_DO_DEI
-@ -DCHIP_TYPE_hi3716cv200es -DSDK_VERSION=HiSTBLinuxV100R002C00SPC011
-@ -DCFG_HI_LOG_LEVEL=4 -DHI_KEYLED_SUPPORT -DHI_SCI_SUPPORT
+@ -DHI_VO_SHARPNESS_SUPPORT -DHI_VO_HD_VIDEO_DO_DEI -DCHIP_TYPE_hi3716cv200
+@ -DSDK_VERSION=HiSTBLinuxV100R002C00SPC020 -DHI_GPIOI2C_SUPPORT
+@ -DHI_LOG_SUPPORT=1 -DHI_LOG_LEVEL=4 -DHI_PROC_SUPPORT=1
+@ -DHI_KEYLED_SUPPORT -DHI_HDCP_SUPPORT -DHI_SCI_SUPPORT -DHI_VI_SUPPORT
 @ -DHI_VENC_SUPPORT -DHI_AENC_SUPPORT -DKBUILD_STR(s)=#s
 @ -DKBUILD_BASENAME=KBUILD_STR(drv_disp_alg_zme)
 @ -DKBUILD_MODNAME=KBUILD_STR(hi_vou) -isystem
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/include
 @ -include
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include/linux/kconfig.h
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include/linux/kconfig.h
 @ -MD drivers/msp/vo/./vdp_v1_0/alg/.drv_disp_alg_zme.o.d
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vo/./vdp_v1_0/alg/drv_disp_alg_zme.c
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vo/./vdp_v1_0/alg/drv_disp_alg_zme.c
 @ -mlittle-endian -marm -mapcs -mno-sched-prolog -mabi=aapcs-linux
 @ -mno-thumb-interwork -march=armv7-a -msoft-float -auxbase-strip
 @ drivers/msp/vo/./vdp_v1_0/alg/drv_disp_alg_zme.o -O2 -Wall -Wundef
@@ -92,7 +94,7 @@
 	.type	VZmeTransCoefAlign, %function
 VZmeTransCoefAlign:
 	.fnstart
-.LFB1233:
+.LFB1246:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -141,12 +143,12 @@ VZmeTransCoefAlign:
 	mov	r4, r8, lsr #16	@ tmp235, tmp227,
 	bfi	r4, r7, #2, #10	@ tmp235, tmp238,,
 	strh	r4, [r1, #10]	@ movhi	@ tmp235,
-	ldrsh	r4, [r0, #12]	@ u32Tmp.469,
+	ldrsh	r4, [r0, #12]	@ u32Tmp.475,
 	ldrb	r8, [r1, #11]	@ zero_extendqisi2	@,
-	bfi	r8, r4, #4, #4	@ tmp244, u32Tmp.469,,
+	bfi	r8, r4, #4, #4	@ tmp244, u32Tmp.475,,
 	strb	r8, [r1, #11]	@ tmp244,
 	ldrb	r1, [r3, #4]	@ zero_extendqisi2	@,
-	mov	r7, r4, lsr #4	@ tmp248, u32Tmp.469,
+	mov	r7, r4, lsr #4	@ tmp248, u32Tmp.475,
 	ldrh	r4, [r3, #6]	@,
 	bfi	r1, r7, #0, #6	@ tmp253, tmp248,,
 	strb	r1, [r3, #4]	@ tmp253,
@@ -158,10 +160,10 @@ VZmeTransCoefAlign:
 	ldrh	r7, [r0, #16]	@ tmp275,
 	bfi	r4, r7, #0, #10	@ tmp272, tmp275,,
 	strh	r4, [r3, #6]	@ movhi	@ tmp272,
-	ldrsh	r7, [r0, #18]	@ u32Tmp.476,
+	ldrsh	r7, [r0, #18]	@ u32Tmp.482,
 	ldrb	r4, [r3, #7]	@ zero_extendqisi2	@,
-	mov	r8, r7, lsr #6	@ tmp287, u32Tmp.476,
-	bfi	r4, r7, #2, #6	@ tmp283, u32Tmp.476,,
+	mov	r8, r7, lsr #6	@ tmp287, u32Tmp.482,
+	bfi	r4, r7, #2, #6	@ tmp283, u32Tmp.482,,
 	bfi	r1, r8, #0, #4	@ tmp292, tmp287,,
 	strb	r4, [r3, #7]	@ tmp283,
 	strb	r1, [r3, #8]	@ tmp292,
@@ -186,7 +188,7 @@ VZmeTransCoefAlign:
 	movt	ip, #:upper16:.LANCHOR0	@ tmp177,
 	movw	r5, #:lower16:-1431655765	@ tmp184,
 	movt	r5, #:upper16:-1431655765	@ tmp184,
-	ldr	r3, [ip, r1, asl #2]	@ tmp178, CSWTCH.409
+	ldr	r3, [ip, r1, asl #2]	@ tmp178, CSWTCH.415
 	add	ip, r3, r3, asl #3	@, tmp181, tmp178, tmp178,
 	mov	r1, ip, asl #1	@ tmp182, tmp181,
 	umull	ip, r3, r5, r1	@, tmp183, tmp184, tmp182
@@ -199,7 +201,7 @@ VZmeTransCoefAlign:
 	.type	GetVerticalScalerOffset, %function
 GetVerticalScalerOffset:
 	.fnstart
-.LFB1239:
+.LFB1252:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -253,7 +255,7 @@ GetVerticalScalerOffset:
 	.type	GetVLCfirCoef, %function
 GetVLCfirCoef:
 	.fnstart
-.LFB1241:
+.LFB1254:
 	@ args = 0, pretend = 0, frame = 16
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -322,7 +324,7 @@ GetVLCfirCoef:
 	.type	ALG_VZmeComnSet, %function
 ALG_VZmeComnSet:
 	.fnstart
-.LFB1242:
+.LFB1259:
 	@ args = 0, pretend = 0, frame = 8
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -350,9 +352,9 @@ ALG_VZmeComnSet:
 	str	r9, [r1, #40]	@ tmp154, <variable>.bZmeMedVL
 	ldr	r9, [r0, #0]	@ u32ZmeCWIn, <variable>.u32ZmeFrmWIn
 	str	r9, [r1, #72]	@ u32ZmeCWIn, <variable>.u32ZmeWIn
-	mov	sl, r9, asl #20	@ prephitmp.560, u32ZmeCWIn,
+	mov	sl, r9, asl #20	@ prephitmp.566, u32ZmeCWIn,
 	ldr	r6, [r0, #8]	@ u32ZmeCWOut, <variable>.u32ZmeFrmWOut
-	mov	r0, sl	@, prephitmp.560
+	mov	r0, sl	@, prephitmp.566
 	str	r6, [r1, #80]	@ u32ZmeCWOut, <variable>.u32ZmeWOut
 	mov	r1, r6	@, u32ZmeCWOut
 	ldr	r8, [r5, #4]	@ u32ZmeCHIn, <variable>.u32ZmeFrmHIn
@@ -369,21 +371,21 @@ ALG_VZmeComnSet:
 	bl	__aeabi_uidiv	@
 	str	r0, [r4, #92]	@ u32ZmeRatioVLReal, <variable>.u32ZmeRatioVL
 	mov	r8, r0	@ u32ZmeRatioVLReal,
-	ldrb	r1, [r5, #16]	@ zero_extendqisi2	@ D.24342, <variable>.u8ZmeYCFmtIn
-	ldrb	r2, [r5, #17]	@ zero_extendqisi2	@ D.24347, <variable>.u8ZmeYCFmtOut
-	cmp	r1, #2	@ D.24342,
+	ldrb	r1, [r5, #16]	@ zero_extendqisi2	@ D.24176, <variable>.u8ZmeYCFmtIn
+	ldrb	r2, [r5, #17]	@ zero_extendqisi2	@ D.24181, <variable>.u8ZmeYCFmtOut
+	cmp	r1, #2	@ D.24176,
 	ldr	r0, [fp, #-52]	@,
 	movne	sl, r9, lsr #1	@ tmp164, u32ZmeCWIn,
-	movne	sl, sl, asl #20	@ prephitmp.560, tmp164,
-	cmp	r2, #2	@ D.24347,
+	movne	sl, sl, asl #20	@ prephitmp.566, tmp164,
+	cmp	r2, #2	@ D.24181,
 	movne	r6, r6, lsr #1	@ u32ZmeCWOut, u32ZmeCWOut,
-	cmp	r1, #1	@ D.24342,
+	cmp	r1, #1	@ D.24176,
 	moveq	r0, r0, lsr #1	@ tmp165, u32ZmeCHIn,
 	mov	r1, r6	@, u32ZmeCWOut
 	moveq	r0, r0, asl #12	@, tmp165,
 	streq	r0, [fp, #-48]	@, %sfp
-	cmp	r2, #1	@ D.24347,
-	mov	r0, sl	@, prephitmp.560
+	cmp	r2, #1	@ D.24181,
+	mov	r0, sl	@, prephitmp.566
 	moveq	r7, r7, lsr #1	@ u32ZmeCHOut, u32ZmeCHOut,
 	bl	__aeabi_uidiv	@
 	mov	r1, r7	@, u32ZmeCHOut
@@ -489,12 +491,12 @@ ALG_VZmeComnSet:
 	.fnend
 	.size	ALG_VZmeComnSet, .-ALG_VZmeComnSet
 	.align	2
-	.global	ALG_VZmeVdpHQSet
-	.type	ALG_VZmeVdpHQSet, %function
-ALG_VZmeVdpHQSet:
+	.global	ALG_VZmeVdpSQSetSptAddr
+	.type	ALG_VZmeVdpSQSetSptAddr, %function
+ALG_VZmeVdpSQSetSptAddr:
 	.fnstart
-.LFB1243:
-	@ args = 0, pretend = 0, frame = 16
+.LFB1262:
+	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
 	mov	ip, sp	@,
@@ -503,8 +505,6 @@ ALG_VZmeVdpHQSet:
 	.save {r4, r5, fp, ip, lr}
 	.setfp fp, ip, #-4
 	sub	fp, ip, #4	@,,
-	.pad #16
-	sub	sp, sp, #16	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
 	mov	r4, r2	@ pstZmeRtlPara, pstZmeRtlPara
@@ -516,106 +516,241 @@ ALG_VZmeVdpHQSet:
 	mov	r0, #16777216	@,
 	mov	r1, r1, lsr #8	@, <variable>.u32ZmeRatioHL,
 	bl	__aeabi_uidiv	@
-	cmp	r0, #4096	@ tmp143,
-	ldrhi	r1, [r5, #124]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_1
+	cmp	r0, #4096	@ tmp148,
+	ldrhi	r3, [r5, #12]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_1
 	bhi	.L60	@,
-	ldreq	r1, [r5, #128]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_E1
+	ldreq	r3, [r5, #16]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_E1
 	beq	.L60	@,
-	cmp	r0, #3072	@ tmp143,
-	ldrcs	r1, [r5, #132]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_075
+	cmp	r0, #3072	@ tmp148,
+	ldrcs	r3, [r5, #20]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_075
 	bcs	.L60	@,
-	cmp	r0, #2048	@ tmp143,
-	ldrcs	r1, [r5, #136]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_05
+	cmp	r0, #2048	@ tmp148,
+	ldrcs	r3, [r5, #24]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_05
 	bcs	.L60	@,
-	movw	r3, #1364	@ tmp146,
-	cmp	r0, r3	@ tmp143, tmp146
-	ldrhi	r1, [r5, #140]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_033
-	bhi	.L60	@,
-	cmp	r0, #1024	@ tmp143,
-	ldrcs	r1, [r5, #144]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_025
-	ldrcc	r1, [r5, #148]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_0
+	movw	r3, #1364	@ tmp151,
+	cmp	r0, r3	@ tmp148, tmp151
+	ldrhi	r3, [r5, #28]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_033
+	bls	.L88	@,
 .L60:
-	ldr	r2, [r4, #92]	@ <variable>.u32ZmeRatioVL, <variable>.u32ZmeRatioVL
-	sub	ip, fp, #32	@ tmp151,,
-	str	r1, [r4, #116]	@ u32CoefAddr, <variable>.u32ZmeCoefAddrHL
-	mov	lr, #6	@ tmp149,
-	add	r0, r5, #12	@, pstMem,
-	str	lr, [fp, #-28]	@ tmp149, stPickCoef.u32TapL
-	str	r2, [fp, #-32]	@ <variable>.u32ZmeRatioVL, stPickCoef.u32Ratio
-	ldmia	ip, {r1, r2, r3}	@ tmp151,,,
-	bl	GetVLCfirCoef	@
-	str	r0, [r4, #124]	@, <variable>.u32ZmeCoefAddrVL
-	sub	sp, fp, #20
-	ldmfd	sp, {r4, r5, fp, sp, pc}
+	ldr	r2, [r4, #96]	@ <variable>.u32ZmeRatioHC, <variable>.u32ZmeRatioHC
+	mov	r0, #16777216	@,
+	str	r3, [r4, #116]	@ u32CoefAddr, <variable>.u32ZmeCoefAddrHL
+	mov	r1, r2, lsr #8	@, <variable>.u32ZmeRatioHC,
+	bl	__aeabi_uidiv	@
+	cmp	r0, #4096	@ tmp157,
+	ldrhi	r3, [r5, #40]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_1
+	bhi	.L67	@,
+	ldreq	r3, [r5, #44]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_E1
+	beq	.L67	@,
+	cmp	r0, #3072	@ tmp157,
+	ldrcs	r3, [r5, #48]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_075
+	bcs	.L67	@,
+	cmp	r0, #2048	@ tmp157,
+	ldrcs	r3, [r5, #52]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_05
+	bcs	.L67	@,
+	movw	r3, #1364	@ tmp160,
+	cmp	r0, r3	@ tmp157, tmp160
+	ldrhi	r3, [r5, #56]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_033
+	bls	.L89	@,
+.L67:
+	str	r3, [r4, #120]	@ u32CoefAddr, <variable>.u32ZmeCoefAddrHC
+	mov	r0, #16777216	@,
+	ldr	r1, [r4, #92]	@, <variable>.u32ZmeRatioVL
+	bl	__aeabi_uidiv	@
+	cmp	r0, #4096	@ tmp164,
+	ldrhi	r3, [r5, #208]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_1
+	bhi	.L74	@,
+	ldreq	r3, [r5, #212]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_E1
+	beq	.L74	@,
+	cmp	r0, #3072	@ tmp164,
+	ldrcs	r3, [r5, #216]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_075
+	bcs	.L74	@,
+	cmp	r0, #2048	@ tmp164,
+	ldrcs	r3, [r5, #220]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_05
+	bcs	.L74	@,
+	movw	r3, #1364	@ tmp167,
+	cmp	r0, r3	@ tmp164, tmp167
+	ldrhi	r3, [r5, #224]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_033
+	bls	.L90	@,
+.L74:
+	str	r3, [r4, #124]	@ u32CoefAddr, <variable>.u32ZmeCoefAddrVL
+	mov	r0, #16777216	@,
+	ldr	r1, [r4, #100]	@, <variable>.u32ZmeRatioVC
+	bl	__aeabi_uidiv	@
+	cmp	r0, #4096	@ tmp171,
+	ldrhi	r3, [r5, #96]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_1
+	bhi	.L81	@,
+	ldreq	r3, [r5, #100]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_E1
+	beq	.L81	@,
+	cmp	r0, #3072	@ tmp171,
+	ldrcs	r3, [r5, #104]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_075
+	bcs	.L81	@,
+	cmp	r0, #2048	@ tmp171,
+	ldrcs	r3, [r5, #108]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_05
+	bcs	.L81	@,
+	movw	r3, #1364	@ tmp174,
+	cmp	r0, r3	@ tmp171, tmp174
+	ldrhi	r3, [r5, #112]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_033
+	bhi	.L81	@,
+	cmp	r0, #1024	@ tmp171,
+	ldrcs	r3, [r5, #116]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_025
+	ldrcc	r3, [r5, #120]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_0
+.L81:
+	str	r3, [r4, #128]	@ u32CoefAddr, <variable>.u32ZmeCoefAddrVC
+	ldmfd	sp, {r4, r5, fp, sp, pc}	@
+.L90:
+	cmp	r0, #1024	@ tmp164,
+	ldrcs	r3, [r5, #228]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_025
+	ldrcc	r3, [r5, #232]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_0
+	b	.L74	@
+.L89:
+	cmp	r0, #1024	@ tmp157,
+	ldrcs	r3, [r5, #60]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_025
+	ldrcc	r3, [r5, #64]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_0
+	b	.L67	@
+.L88:
+	cmp	r0, #1024	@ tmp148,
+	ldrcs	r3, [r5, #32]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_025
+	ldrcc	r3, [r5, #36]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_0
+	b	.L60	@
 	.fnend
-	.size	ALG_VZmeVdpHQSet, .-ALG_VZmeVdpHQSet
+	.size	ALG_VZmeVdpSQSetSptAddr, .-ALG_VZmeVdpSQSetSptAddr
 	.align	2
 	.global	ALG_VZmeVdpSQSet
 	.type	ALG_VZmeVdpSQSet, %function
 ALG_VZmeVdpSQSet:
 	.fnstart
-.LFB1244:
+.LFB1261:
 	@ args = 0, pretend = 0, frame = 16
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
 	mov	ip, sp	@,
-	stmfd	sp!, {r4, r5, fp, ip, lr, pc}	@,
+	stmfd	sp!, {r4, r5, r6, r7, fp, ip, lr, pc}	@,
 	.pad #4
-	.save {r4, r5, fp, ip, lr}
+	.save {r4, r5, r6, r7, fp, ip, lr}
 	.setfp fp, ip, #-4
 	sub	fp, ip, #4	@,,
 	.pad #16
 	sub	sp, sp, #16	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
+	sub	r5, fp, #40	@ tmp153,,
 	mov	r4, r2	@ pstZmeRtlPara, pstZmeRtlPara
-	mov	r5, r0	@ pstMem, pstMem
-	mov	r0, r1	@, pstZmeDrvPara
-	mov	r1, r2	@, pstZmeRtlPara
+	mov	r7, r1	@ pstZmeDrvPara, pstZmeDrvPara
+	mov	r6, r0	@ pstMem, pstMem
+	mov	r1, #12	@,
+	mov	r0, r5	@, tmp153
+	bl	__memzero	@
+	mov	r0, r7	@, pstZmeDrvPara
+	mov	r1, r4	@, pstZmeRtlPara
 	bl	ALG_VZmeComnSet	@
 	ldr	r1, [r4, #88]	@ <variable>.u32ZmeRatioHL, <variable>.u32ZmeRatioHL
 	mov	r0, #16777216	@,
 	mov	r1, r1, lsr #8	@, <variable>.u32ZmeRatioHL,
 	bl	__aeabi_uidiv	@
-	cmp	r0, #4096	@ tmp143,
-	ldrhi	r1, [r5, #124]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_1
-	bhi	.L69	@,
-	ldreq	r1, [r5, #128]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_E1
-	beq	.L69	@,
-	cmp	r0, #3072	@ tmp143,
-	ldrcs	r1, [r5, #132]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_075
-	bcs	.L69	@,
-	cmp	r0, #2048	@ tmp143,
-	ldrcs	r1, [r5, #136]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_05
-	bcs	.L69	@,
-	movw	r3, #1364	@ tmp146,
-	cmp	r0, r3	@ tmp143, tmp146
-	ldrhi	r1, [r5, #140]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_033
-	bhi	.L69	@,
-	cmp	r0, #1024	@ tmp143,
-	ldrcs	r1, [r5, #144]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_025
-	ldrcc	r1, [r5, #148]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_0
-.L69:
-	ldr	r2, [r4, #92]	@ <variable>.u32ZmeRatioVL, <variable>.u32ZmeRatioVL
-	sub	ip, fp, #32	@ tmp151,,
-	str	r1, [r4, #116]	@ u32CoefAddr, <variable>.u32ZmeCoefAddrHL
-	mov	lr, #4	@ tmp149,
-	add	r0, r5, #12	@, pstMem,
-	str	lr, [fp, #-28]	@ tmp149, stPickCoef.u32TapL
-	str	r2, [fp, #-32]	@ <variable>.u32ZmeRatioVL, stPickCoef.u32Ratio
-	ldmia	ip, {r1, r2, r3}	@ tmp151,,,
+	cmp	r0, #4096	@ tmp144,
+	ldrhi	r2, [r6, #124]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_1
+	bhi	.L93	@,
+	ldreq	r2, [r6, #128]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_E1
+	beq	.L93	@,
+	cmp	r0, #3072	@ tmp144,
+	ldrcs	r2, [r6, #132]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_075
+	bcs	.L93	@,
+	cmp	r0, #2048	@ tmp144,
+	ldrcs	r2, [r6, #136]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_05
+	bcs	.L93	@,
+	movw	r3, #1364	@ tmp147,
+	cmp	r0, r3	@ tmp144, tmp147
+	ldrhi	r2, [r6, #140]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_033
+	bhi	.L93	@,
+	cmp	r0, #1024	@ tmp144,
+	ldrcs	r2, [r6, #144]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_025
+	ldrcc	r2, [r6, #148]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_0
+.L93:
+	ldr	ip, [r4, #92]	@ <variable>.u32ZmeRatioVL, <variable>.u32ZmeRatioVL
+	add	r0, r6, #12	@, pstMem,
+	str	r2, [r4, #116]	@ u32CoefAddr, <variable>.u32ZmeCoefAddrHL
+	mov	r2, #4	@ tmp150,
+	str	r2, [fp, #-36]	@ tmp150, stPickCoef.u32TapL
+	str	ip, [fp, #-40]	@ <variable>.u32ZmeRatioVL, stPickCoef.u32Ratio
+	ldmia	r5, {r1, r2, r3}	@ tmp153,,,
 	bl	GetVLCfirCoef	@
 	str	r0, [r4, #124]	@, <variable>.u32ZmeCoefAddrVL
-	sub	sp, fp, #20
-	ldmfd	sp, {r4, r5, fp, sp, pc}
+	sub	sp, fp, #28
+	ldmfd	sp, {r4, r5, r6, r7, fp, sp, pc}
 	.fnend
 	.size	ALG_VZmeVdpSQSet, .-ALG_VZmeVdpSQSet
+	.align	2
+	.global	ALG_VZmeVdpHQSet
+	.type	ALG_VZmeVdpHQSet, %function
+ALG_VZmeVdpHQSet:
+	.fnstart
+.LFB1260:
+	@ args = 0, pretend = 0, frame = 16
+	@ frame_needed = 1, uses_anonymous_args = 0
+	.movsp ip
+	mov	ip, sp	@,
+	stmfd	sp!, {r4, r5, r6, r7, fp, ip, lr, pc}	@,
+	.pad #4
+	.save {r4, r5, r6, r7, fp, ip, lr}
+	.setfp fp, ip, #-4
+	sub	fp, ip, #4	@,,
+	.pad #16
+	sub	sp, sp, #16	@,,
+	push	{lr}
+	bl	__gnu_mcount_nc
+	sub	r5, fp, #40	@ tmp153,,
+	mov	r4, r2	@ pstZmeRtlPara, pstZmeRtlPara
+	mov	r7, r1	@ pstZmeDrvPara, pstZmeDrvPara
+	mov	r6, r0	@ pstMem, pstMem
+	mov	r1, #12	@,
+	mov	r0, r5	@, tmp153
+	bl	__memzero	@
+	mov	r0, r7	@, pstZmeDrvPara
+	mov	r1, r4	@, pstZmeRtlPara
+	bl	ALG_VZmeComnSet	@
+	ldr	r1, [r4, #88]	@ <variable>.u32ZmeRatioHL, <variable>.u32ZmeRatioHL
+	mov	r0, #16777216	@,
+	mov	r1, r1, lsr #8	@, <variable>.u32ZmeRatioHL,
+	bl	__aeabi_uidiv	@
+	cmp	r0, #4096	@ tmp144,
+	ldrhi	r2, [r6, #124]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_1
+	bhi	.L102	@,
+	ldreq	r2, [r6, #128]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_E1
+	beq	.L102	@,
+	cmp	r0, #3072	@ tmp144,
+	ldrcs	r2, [r6, #132]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_075
+	bcs	.L102	@,
+	cmp	r0, #2048	@ tmp144,
+	ldrcs	r2, [r6, #136]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_05
+	bcs	.L102	@,
+	movw	r3, #1364	@ tmp147,
+	cmp	r0, r3	@ tmp144, tmp147
+	ldrhi	r2, [r6, #140]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_033
+	bhi	.L102	@,
+	cmp	r0, #1024	@ tmp144,
+	ldrcs	r2, [r6, #144]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_025
+	ldrcc	r2, [r6, #148]	@ u32CoefAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_0
+.L102:
+	ldr	ip, [r4, #92]	@ <variable>.u32ZmeRatioVL, <variable>.u32ZmeRatioVL
+	add	r0, r6, #12	@, pstMem,
+	str	r2, [r4, #116]	@ u32CoefAddr, <variable>.u32ZmeCoefAddrHL
+	mov	r2, #6	@ tmp150,
+	str	r2, [fp, #-36]	@ tmp150, stPickCoef.u32TapL
+	str	ip, [fp, #-40]	@ <variable>.u32ZmeRatioVL, stPickCoef.u32Ratio
+	ldmia	r5, {r1, r2, r3}	@ tmp153,,,
+	bl	GetVLCfirCoef	@
+	str	r0, [r4, #124]	@, <variable>.u32ZmeCoefAddrVL
+	sub	sp, fp, #28
+	ldmfd	sp, {r4, r5, r6, r7, fp, sp, pc}
+	.fnend
+	.size	ALG_VZmeVdpHQSet, .-ALG_VZmeVdpHQSet
 	.align	2
 	.global	ALG_VZmeVdpComnDeInit
 	.type	ALG_VZmeVdpComnDeInit, %function
 ALG_VZmeVdpComnDeInit:
 	.fnstart
-.LFB1238:
+.LFB1251:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -641,7 +776,7 @@ ALG_VZmeVdpComnDeInit:
 	.type	VZmeLoadVdpCoefH, %function
 VZmeLoadVdpCoefH:
 	.fnstart
-.LFB1234:
+.LFB1247:
 	@ args = 0, pretend = 0, frame = 400
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -673,11 +808,11 @@ VZmeLoadVdpCoefH:
 	ldr	r3, [fp, #-428]	@ stArray.u32Size, stArray.u32Size
 	mov	r2, r4	@, tmp146
 	ldr	r0, [r7, #28]	@, g_pVZmeCoef
-	add	r6, r6, r3	@ pu8Addr.670, pu8Addr, stArray.u32Size
+	add	r6, r6, r3	@ pu8Addr.699, pu8Addr, stArray.u32Size
 	mov	r1, #2	@,
 	bl	VZmeTransCoefAlign	@
 	mov	r1, r5	@, tmp150
-	mov	r0, r6	@, pu8Addr.670
+	mov	r0, r6	@, pu8Addr.699
 	ldr	r2, [fp, #-428]	@, stArray.u32Size
 	bl	memcpy	@
 	mov	r0, #0	@,
@@ -686,10 +821,10 @@ VZmeLoadVdpCoefH:
 	.fnend
 	.size	VZmeLoadVdpCoefH, .-VZmeLoadVdpCoefH
 	.align	2
-	.type	T.413, %function
-T.413:
+	.type	T.419, %function
+T.419:
 	.fnstart
-.LFB1245:
+.LFB1263:
 	@ args = 0, pretend = 0, frame = 400
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -722,35 +857,35 @@ T.413:
 	ldr	r3, [fp, #-436]	@ stArray.u32Size, stArray.u32Size
 	mov	r2, r5	@, tmp148
 	ldr	r0, [r4, #24]	@, g_pVZmeCoef
-	add	r7, r7, r3	@ pu8Addr.696, pu8Addr, stArray.u32Size
+	add	r7, r7, r3	@ pu8Addr.725, pu8Addr, stArray.u32Size
 	mov	r1, #2	@,
 	bl	VZmeTransCoefAlign	@
 	mov	r1, r6	@, tmp152
-	mov	r0, r7	@, pu8Addr.696
+	mov	r0, r7	@, pu8Addr.725
 	ldr	r2, [fp, #-436]	@, stArray.u32Size
 	bl	memcpy	@
 	mov	r0, #0	@,
 	sub	sp, fp, #32
 	ldmfd	sp, {r4, r5, r6, r7, r8, fp, sp, pc}
 	.fnend
-	.size	T.413, .-T.413
+	.size	T.419, .-T.419
 	.align	2
 	.global	ALG_VZmeVdpComnInit
 	.type	ALG_VZmeVdpComnInit, %function
 ALG_VZmeVdpComnInit:
 	.fnstart
-.LFB1237:
+.LFB1250:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
 	mov	ip, sp	@,
-	stmfd	sp!, {r4, r5, r6, r7, r8, sl, fp, ip, lr, pc}	@,
+	stmfd	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, ip, lr, pc}	@,
 	.pad #4
-	.save {r4, r5, r6, r7, r8, sl, fp, ip, lr}
+	.save {r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
 	.setfp fp, ip, #-4
 	sub	fp, ip, #4	@,,
-	.pad #8
-	sub	sp, sp, #8	@,,
+	.pad #12
+	sub	sp, sp, #12	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
 	mov	r1, #0	@,
@@ -761,146 +896,209 @@ ALG_VZmeVdpComnInit:
 	movt	r0, #:upper16:.LC0	@,
 	str	r4, [sp, #0]	@ pstVZmeCoefMem,
 	bl	DISP_OS_MMZ_AllocAndMap	@
-	subs	r8, r0, #0	@ nRet,
-	bne	.L87	@,
+	subs	sl, r0, #0	@ nRet,
+	bne	.L120	@,
 	ldr	r6, [r4, #0]	@ pu8CurAddr, <variable>.stMBuf.u32StartVirAddr
 	ldr	r5, [r4, #4]	@ u32PhyAddr, <variable>.stMBuf.u32StartPhyAddr
-	add	r7, r6, #4080	@ pu8CurAddr.752, pu8CurAddr,
+	add	r7, r6, #4080	@ pu8CurAddr.796, pu8CurAddr,
 	mov	r1, r6	@, pu8CurAddr
-	add	sl, r5, #288	@ u32PhyAddr.721, u32PhyAddr,
+	add	r8, r5, #288	@ u32PhyAddr.750, u32PhyAddr,
 	bl	VZmeLoadVdpCoefH	@
-	str	r5, [r4, #124]	@ u32PhyAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_1
 	add	r1, r6, #288	@, pu8CurAddr,
+	add	r0, r5, #192	@ tmp180, u32PhyAddr,
+	str	r5, [r4, #12]	@ u32PhyAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_1
+	str	r5, [r4, #124]	@ u32PhyAddr, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_1
+	add	r9, r5, #576	@ u32PhyAddr.753, u32PhyAddr,
+	str	r0, [r4, #40]	@ tmp180, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_1
 	mov	r0, #1	@,
 	bl	VZmeLoadVdpCoefH	@
-	str	sl, [r4, #128]	@ u32PhyAddr.721, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_E1
+	add	ip, r5, #480	@ tmp181, u32PhyAddr,
 	add	r1, r6, #576	@, pu8CurAddr,
+	str	ip, [r4, #44]	@ tmp181, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_E1
+	str	r8, [r4, #128]	@ u32PhyAddr.750, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_E1
 	mov	r0, #2	@,
+	str	r8, [r4, #16]	@ u32PhyAddr.750, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_E1
+	add	r8, r5, #864	@ u32PhyAddr.756, u32PhyAddr,
 	bl	VZmeLoadVdpCoefH	@
-	add	r1, r5, #576	@ u32PhyAddr.723, u32PhyAddr,
-	mov	r0, #3	@,
-	str	r1, [r4, #132]	@ u32PhyAddr.723, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_075
+	add	r3, r5, #768	@ tmp182, u32PhyAddr,
 	add	r1, r6, #864	@, pu8CurAddr,
-	add	sl, r5, #864	@ u32PhyAddr.725, u32PhyAddr,
+	str	r3, [r4, #48]	@ tmp182, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_075
+	str	r9, [r4, #132]	@ u32PhyAddr.753, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_075
+	mov	r0, #3	@,
+	str	r9, [r4, #20]	@ u32PhyAddr.753, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_075
+	add	r9, r5, #1152	@ u32PhyAddr.759, u32PhyAddr,
 	bl	VZmeLoadVdpCoefH	@
-	str	sl, [r4, #136]	@ u32PhyAddr.725, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_05
+	add	r2, r5, #1056	@ tmp183, u32PhyAddr,
 	add	r1, r6, #1152	@, pu8CurAddr,
+	str	r2, [r4, #52]	@ tmp183, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_05
+	str	r8, [r4, #136]	@ u32PhyAddr.756, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_05
 	mov	r0, #4	@,
+	str	r8, [r4, #24]	@ u32PhyAddr.756, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_05
+	add	r8, r5, #1440	@ u32PhyAddr.762, u32PhyAddr,
 	bl	VZmeLoadVdpCoefH	@
-	add	sl, r5, #1152	@ u32PhyAddr.727, u32PhyAddr,
 	add	r1, r6, #1440	@, pu8CurAddr,
-	str	sl, [r4, #140]	@ u32PhyAddr.727, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_033
+	str	r9, [r4, #140]	@ u32PhyAddr.759, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_033
 	mov	r0, #5	@,
-	add	sl, r5, #1440	@ u32PhyAddr.729, u32PhyAddr,
+	str	r9, [r4, #28]	@ u32PhyAddr.759, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_033
+	add	r9, r5, #1344	@ tmp184, u32PhyAddr,
+	str	r9, [r4, #56]	@ tmp184, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_033
+	add	r9, r5, #1728	@ u32PhyAddr.765, u32PhyAddr,
 	bl	VZmeLoadVdpCoefH	@
 	add	r1, r6, #1728	@, pu8CurAddr,
-	str	sl, [r4, #144]	@ u32PhyAddr.729, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_025
+	add	r0, r5, #1632	@ tmp185, u32PhyAddr,
+	str	r8, [r4, #144]	@ u32PhyAddr.762, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_025
+	str	r8, [r4, #32]	@ u32PhyAddr.762, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_025
+	add	r8, r5, #2016	@ u32PhyAddr.768, u32PhyAddr,
+	str	r0, [r4, #60]	@ tmp185, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_025
 	mov	r0, #6	@,
 	bl	VZmeLoadVdpCoefH	@
-	add	r0, r5, #1728	@ u32PhyAddr.731, u32PhyAddr,
-	mov	r1, #1	@,
-	str	r0, [r4, #148]	@ u32PhyAddr.731, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_0
+	add	ip, r5, #1920	@ tmp186, u32PhyAddr,
 	add	r2, r6, #2016	@, pu8CurAddr,
-	mov	r0, r8	@, nRet
-	bl	T.413	@
-	mov	r0, #1	@,
-	add	ip, r5, #2016	@ u32PhyAddr.733, u32PhyAddr,
-	mov	r1, r0	@,
-	str	ip, [r4, #152]	@ u32PhyAddr.733, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_1
-	add	r2, r6, #2256	@, pu8CurAddr,
-	bl	T.413	@
-	add	r3, r5, #2256	@ u32PhyAddr.735, u32PhyAddr,
+	str	ip, [r4, #64]	@ tmp186, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHC4_0
 	mov	r1, #1	@,
-	str	r3, [r4, #156]	@ u32PhyAddr.735, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_E1
+	str	r9, [r4, #148]	@ u32PhyAddr.765, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8C4_0
+	str	r9, [r4, #36]	@ u32PhyAddr.765, <variable>.stZmeCoefAddr.u32ZmeCoefAddrHL8_0
+	mov	r0, sl	@, nRet
+	bl	T.419	@
+	mov	r0, #1	@,
+	add	r3, r5, #2160	@ tmp187, u32PhyAddr,
+	add	r2, r6, #2256	@, pu8CurAddr,
+	str	r3, [r4, #96]	@ tmp187, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_1
+	mov	r1, r0	@,
+	str	r8, [r4, #152]	@ u32PhyAddr.768, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_1
+	str	r8, [r4, #68]	@ u32PhyAddr.768, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6_1
+	add	r8, r5, #2496	@ u32PhyAddr.774, u32PhyAddr,
+	bl	T.419	@
+	add	r2, r5, #2256	@ u32PhyAddr.771, u32PhyAddr,
+	add	r0, r5, #2400	@ tmp188, u32PhyAddr,
+	str	r2, [r4, #156]	@ u32PhyAddr.771, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_E1
+	mov	r1, #1	@,
+	str	r2, [r4, #72]	@ u32PhyAddr.771, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6_E1
+	str	r0, [r4, #100]	@ tmp188, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_E1
 	add	r2, r6, #2496	@, pu8CurAddr,
 	mov	r0, #2	@,
-	bl	T.413	@
-	add	r2, r5, #2496	@ u32PhyAddr.737, u32PhyAddr,
-	mov	r1, #1	@,
-	str	r2, [r4, #160]	@ u32PhyAddr.737, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_075
-	mov	r0, #3	@,
+	bl	T.419	@
+	add	ip, r5, #2640	@ tmp189, u32PhyAddr,
 	add	r2, r6, #2736	@, pu8CurAddr,
-	bl	T.413	@
-	add	ip, r5, #2736	@ u32PhyAddr.739, u32PhyAddr,
+	str	ip, [r4, #104]	@ tmp189, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_075
+	str	r8, [r4, #160]	@ u32PhyAddr.774, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_075
 	mov	r1, #1	@,
-	str	ip, [r4, #164]	@ u32PhyAddr.739, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_05
-	add	r2, r6, #2976	@, pu8CurAddr,
-	mov	r0, #4	@,
-	bl	T.413	@
-	add	r1, r5, #2976	@ u32PhyAddr.741, u32PhyAddr,
-	add	r2, r6, #3216	@, pu8CurAddr,
-	str	r1, [r4, #168]	@ u32PhyAddr.741, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_033
-	mov	r0, #5	@,
-	mov	r1, #1	@,
-	bl	T.413	@
-	add	r0, r5, #3216	@ u32PhyAddr.743, u32PhyAddr,
-	mov	r1, #1	@,
-	str	r0, [r4, #172]	@ u32PhyAddr.743, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_025
-	add	r2, r6, #3456	@, pu8CurAddr,
-	mov	r0, #6	@,
-	bl	T.413	@
-	add	r3, r5, #3456	@ u32PhyAddr.745, u32PhyAddr,
-	mov	r1, #2	@,
-	str	r3, [r4, #176]	@ u32PhyAddr.745, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_0
-	add	r2, r6, #3696	@, pu8CurAddr,
-	mov	r0, r8	@, nRet
-	bl	T.413	@
-	add	r2, r5, #3696	@ u32PhyAddr.747, u32PhyAddr,
-	mov	r1, #2	@,
-	str	r2, [r4, #180]	@ u32PhyAddr.747, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_1
-	mov	r0, #1	@,
-	add	r2, r6, #3888	@, pu8CurAddr,
-	bl	T.413	@
-	mov	r0, #2	@,
-	add	ip, r5, #3888	@ u32PhyAddr.749, u32PhyAddr,
-	mov	r1, r0	@,
-	str	ip, [r4, #184]	@ u32PhyAddr.749, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_E1
-	mov	r2, r7	@, pu8CurAddr.752
-	bl	T.413	@
-	add	r5, r5, #4080	@ u32PhyAddr.751, u32PhyAddr,
-	mov	r1, #2	@,
-	str	r5, [r4, #188]	@ u32PhyAddr.751, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_075
-	add	r2, r7, #192	@, pu8CurAddr.752,
+	str	r8, [r4, #76]	@ u32PhyAddr.774, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6_075
 	mov	r0, #3	@,
-	bl	T.413	@
-	add	r1, r5, #192	@ u32PhyAddr.753, u32PhyAddr.751,
-	add	r2, r7, #384	@, pu8CurAddr.752,
-	str	r1, [r4, #192]	@ u32PhyAddr.753, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_05
+	bl	T.419	@
+	add	r3, r5, #2736	@ u32PhyAddr.777, u32PhyAddr,
+	add	r2, r6, #2976	@, pu8CurAddr,
+	str	r3, [r4, #164]	@ u32PhyAddr.777, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_05
+	str	r3, [r4, #80]	@ u32PhyAddr.777, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6_05
+	add	r0, r5, #2880	@ tmp190, u32PhyAddr,
+	mov	r1, #1	@,
+	str	r0, [r4, #108]	@ tmp190, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_05
 	mov	r0, #4	@,
-	mov	r1, #2	@,
-	bl	T.413	@
-	add	r0, r5, #384	@ u32PhyAddr.755, u32PhyAddr.751,
-	mov	r1, #2	@,
-	str	r0, [r4, #196]	@ u32PhyAddr.755, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_033
-	add	r2, r7, #576	@, pu8CurAddr.752,
+	add	r8, r5, #2976	@ u32PhyAddr.780, u32PhyAddr,
+	bl	T.419	@
+	add	ip, r5, #3120	@ tmp191, u32PhyAddr,
+	add	r2, r6, #3216	@, pu8CurAddr,
+	str	ip, [r4, #112]	@ tmp191, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_033
+	str	r8, [r4, #168]	@ u32PhyAddr.780, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_033
+	mov	r1, #1	@,
+	str	r8, [r4, #84]	@ u32PhyAddr.780, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6_033
 	mov	r0, #5	@,
-	bl	T.413	@
-	add	r3, r5, #576	@ u32PhyAddr.757, u32PhyAddr.751,
-	add	r2, r7, #768	@, pu8CurAddr.752,
-	str	r3, [r4, #200]	@ u32PhyAddr.757, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_025
+	bl	T.419	@
+	add	r8, r5, #3360	@ tmp192, u32PhyAddr,
+	add	r2, r5, #3216	@ u32PhyAddr.783, u32PhyAddr,
+	mov	r1, #1	@,
+	str	r2, [r4, #172]	@ u32PhyAddr.783, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_025
 	mov	r0, #6	@,
+	str	r2, [r4, #88]	@ u32PhyAddr.783, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6_025
+	add	r2, r6, #3456	@, pu8CurAddr,
+	str	r8, [r4, #116]	@ tmp192, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_025
+	add	r8, r5, #3456	@ u32PhyAddr.786, u32PhyAddr,
+	bl	T.419	@
+	add	r3, r5, #3600	@ tmp193, u32PhyAddr,
+	add	r2, r6, #3696	@, pu8CurAddr,
+	str	r3, [r4, #120]	@ tmp193, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_0
 	mov	r1, #2	@,
-	bl	T.413	@
-	mov	r0, r8	@ D.24199, nRet
-	add	r5, r5, #768	@ tmp180, u32PhyAddr.751,
-	str	r5, [r4, #204]	@ tmp180, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_0
-.L85:
-	sub	sp, fp, #36
-	ldmfd	sp, {r4, r5, r6, r7, r8, sl, fp, sp, pc}
-.L87:
+	str	r8, [r4, #176]	@ u32PhyAddr.786, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6C4_0
+	str	r8, [r4, #92]	@ u32PhyAddr.786, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL6_0
+	mov	r0, sl	@, nRet
+	bl	T.419	@
+	add	r0, r5, #3696	@ u32PhyAddr.789, u32PhyAddr,
+	add	r2, r6, #3888	@, pu8CurAddr,
+	str	r0, [r4, #180]	@ u32PhyAddr.789, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_1
+	add	r6, r5, #3792	@ tmp194, u32PhyAddr,
+	mov	r1, #2	@,
+	str	r0, [r4, #208]	@ u32PhyAddr.789, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_1
+	mov	r0, #1	@,
+	str	r6, [r4, #96]	@ tmp194, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_1
+	add	r6, r5, #4080	@ u32PhyAddr.795, u32PhyAddr,
+	bl	T.419	@
+	mov	r0, #2	@,
+	add	ip, r5, #3984	@ tmp195, u32PhyAddr,
+	add	r1, r5, #3888	@ u32PhyAddr.792, u32PhyAddr,
+	str	ip, [r4, #100]	@ tmp195, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_E1
+	mov	r2, r7	@, pu8CurAddr.796
+	str	r1, [r4, #184]	@ u32PhyAddr.792, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_E1
+	add	r5, r6, #192	@ u32PhyAddr.798, u32PhyAddr.795,
+	str	r1, [r4, #212]	@ u32PhyAddr.792, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_E1
+	mov	r1, r0	@,
+	bl	T.419	@
+	add	r3, r6, #96	@ tmp196, u32PhyAddr.795,
+	str	r6, [r4, #216]	@ u32PhyAddr.795, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_075
+	mov	r1, #2	@,
+	str	r3, [r4, #104]	@ tmp196, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_075
+	add	r2, r7, #192	@, pu8CurAddr.796,
+	str	r6, [r4, #188]	@ u32PhyAddr.795, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_075
+	mov	r0, #3	@,
+	bl	T.419	@
+	add	ip, r6, #288	@ tmp197, u32PhyAddr.795,
+	str	r5, [r4, #192]	@ u32PhyAddr.798, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_05
+	mov	r1, #2	@,
+	str	ip, [r4, #108]	@ tmp197, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_05
+	add	r2, r7, #384	@, pu8CurAddr.796,
+	str	r5, [r4, #220]	@ u32PhyAddr.798, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_05
+	mov	r0, #4	@,
+	bl	T.419	@
+	add	r5, r6, #480	@ tmp198, u32PhyAddr.795,
+	add	r2, r6, #384	@ u32PhyAddr.801, u32PhyAddr.795,
+	mov	r1, #2	@,
+	str	r2, [r4, #196]	@ u32PhyAddr.801, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_033
+	mov	r0, #5	@,
+	str	r2, [r4, #224]	@ u32PhyAddr.801, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_033
+	add	r2, r7, #576	@, pu8CurAddr.796,
+	str	r5, [r4, #112]	@ tmp198, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_033
+	add	r5, r6, #576	@ u32PhyAddr.804, u32PhyAddr.795,
+	bl	T.419	@
+	add	r0, r6, #672	@ tmp199, u32PhyAddr.795,
+	str	r5, [r4, #200]	@ u32PhyAddr.804, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_025
+	add	r2, r7, #768	@, pu8CurAddr.796,
+	str	r0, [r4, #116]	@ tmp199, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_025
+	mov	r1, #2	@,
+	str	r5, [r4, #228]	@ u32PhyAddr.804, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_025
+	mov	r0, #6	@,
+	bl	T.419	@
+	mov	r0, sl	@ D.23934, nRet
+	add	r3, r6, #864	@ tmp201, u32PhyAddr.795,
+	add	r6, r6, #768	@ u32PhyAddr.807, u32PhyAddr.795,
+	str	r3, [r4, #120]	@ tmp201, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVC4_0
+	str	r6, [r4, #204]	@ u32PhyAddr.807, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4C4_0
+	str	r6, [r4, #232]	@ u32PhyAddr.807, <variable>.stZmeCoefAddr.u32ZmeCoefAddrVL4_0
+.L118:
+	sub	sp, fp, #40
+	ldmfd	sp, {r4, r5, r6, r7, r8, r9, sl, fp, sp, pc}
+.L120:
 	movw	r0, #:lower16:.LC1	@,
 	movt	r0, #:upper16:.LC1	@,
 	bl	printk	@
-	mvn	r0, #0	@ D.24199,
-	b	.L85	@
+	mvn	r0, #0	@ D.23934,
+	b	.L118	@
 	.fnend
 	.size	ALG_VZmeVdpComnInit, .-ALG_VZmeVdpComnInit
 	.section	.rodata
 	.align	2
 .LANCHOR0 = . + 0
-	.type	CSWTCH.409, %object
-	.size	CSWTCH.409, 16
-CSWTCH.409:
+	.type	CSWTCH.415, %object
+	.size	CSWTCH.415, 16
+CSWTCH.415:
 	.word	8
 	.word	6
 	.word	4
@@ -2316,8 +2514,7 @@ s16ZmeCoef_4T32P_4M_a15:
 	.section	.rodata.str1.4,"aMS",%progbits,1
 	.align	2
 .LC0:
-	.ascii	"VDPZME\000"
-	.space	1
+	.ascii	"VDP_Zme\000"
 .LC1:
 	.ascii	"Get zme_buf failed\012\000"
 	.ident	"GCC: (Hisilicon_v200(gcc4.4-290+glibc-2.11+eabi+nptl)) 4.4.1"

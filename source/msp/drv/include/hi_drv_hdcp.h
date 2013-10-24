@@ -1,18 +1,16 @@
 /******************************************************************************
 
-  Copyright (C), 2001-2011, Hisilicon Tech. Co., Ltd.
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
 
  ******************************************************************************
   File Name     : hi_drv_hdcp.h
   Version       : Initial Draft
-  Author        : advca
-  Created       : 2013/04/12
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
   Description   : 
+  Function List :
   History       :
-  1.Date        : 2013/04/12
-    Author      : z00213260
-    Modification: Created file
-
 ******************************************************************************/
 
 #ifndef __HI_DRV_HDCP_H__

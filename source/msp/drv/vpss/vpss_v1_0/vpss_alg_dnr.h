@@ -26,34 +26,53 @@ typedef struct
     HI_S32 dbthrmaxdiffvert;
     HI_S32 dbthrleastblkdiffhor;
     HI_S32 dbthrleastblkdiffvert;
+	
+	
+	#if DEF_VPSS_VERSION_2_0
+    HI_S32 dbTextEn;
+    HI_S32 dbThrMaxGrad;
+	#endif
 }ALG_DB_RTL_PARA_S;
 
+
+#if DEF_VPSS_VERSION_2_0
 typedef struct
 {
-    HI_BOOL drEn;    
-    HI_BOOL dbEn;
-    HI_BOOL dbEnHort;
-    HI_BOOL dbEnVert;
-    HI_U32 u32YInfoAddr;
-    HI_U32 u32CInfoAddr;
-    HI_U32 u32YInfoStride;
-    HI_U32 u32CInfoStride;
-}ALG_DNR_CTRL_PARA_S;
+     HI_S32 ArThrInterlaceCnt;  // 4bit,
+     HI_S32 ArThrIntlColCnt;     // 4bit
+     HI_S32 DrThrPeak8x8Zone; //8bit
+     HI_S32 DrThrEdgeGrad;     //8bit    
+}ALG_DET_RTL_PARA_S;
+#endif
 
-typedef struct 
+typedef struct
 {
     HI_BOOL drEn;
     HI_BOOL dbEn;
     HI_BOOL dbEnHort;
     HI_BOOL dbEnVert;
-    HI_U32 u32YInfoAddr;
+    #if DEF_VPSS_VERSION_1_0
+	HI_U32 u32YInfoAddr;
     HI_U32 u32CInfoAddr;
     HI_U32 u32YInfoStride;
     HI_U32 u32CInfoStride;
+	#endif
+}ALG_DNR_CTRL_PARA_S;
+
+typedef struct 
+{
     ALG_DR_RTL_PARA_S stDrThd;
     ALG_DB_RTL_PARA_S stDbThd;
+	ALG_DNR_CTRL_PARA_S stDnrCtrl;
+	#if DEF_VPSS_VERSION_2_0
+    ALG_DET_RTL_PARA_S stDetCtrl;
+	#endif
+    
 }ALG_DNR_RTL_PARA_S;
 
 HI_VOID ALG_DnrInit(ALG_DNR_CTRL_PARA_S *pstDrvPara,ALG_DNR_RTL_PARA_S * pstDnrRtlPara);
+HI_VOID ALG_SetDnrDbgPara(PQ_DNR_COEF_S* pstPqDnrCoef);
+HI_VOID ALG_GetDnrDbgPara(PQ_DNR_COEF_S* pstPqDnrCoef);
+HI_VOID DnrThdParaInitDefault(HI_VOID);
 
 #endif

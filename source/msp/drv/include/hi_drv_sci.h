@@ -29,7 +29,12 @@
     || defined (CHIP_TYPE_hi3716c)  \
     || defined (CHIP_TYPE_hi3716cv200es)    \
     || defined (CHIP_TYPE_hi3716cv200)    \
-    || defined (CHIP_TYPE_hi3716m)
+    || defined (CHIP_TYPE_hi3719cv100) \
+    || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) \
+	|| defined (CHIP_TYPE_hi3719mv100_a) \
+	|| defined (CHIP_TYPE_hi3718mv100) \
+	|| defined (CHIP_TYPE_hi3716m)
  #define HI_SCI_PORT_NUM (2)
 #elif defined (CHIP_TYPE_hi3712)
  #define HI_SCI_PORT_NUM (1)

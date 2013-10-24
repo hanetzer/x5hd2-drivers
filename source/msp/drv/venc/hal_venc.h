@@ -18,7 +18,6 @@ extern "C" {
  #endif
 #endif
 
-#define VENC_CRG_CONTROL   0xf8a2208c 
 #define VEDU_REG_BASE_ADDR 0xf8c80000
 #define VEDU_IRQ_ID 133						/* 101+32 */
 

@@ -31,7 +31,9 @@ typedef enum hiMPI_ADEC_INFO_E
 	//GetStreamInfo
 	HI_MPI_ADEC_STREAMINFO,
 	//BufferStatus
-	HI_MPI_ADEC_BUFFERSTATUS
+	HI_MPI_ADEC_BUFFERSTATUS,
+	//HaSzNameInfo
+	HI_MPI_ADEC_HaSzNameInfo
 }HI_MPI_ADEC_INFO_E;
 
 typedef struct hiADEC_ATTR_S
@@ -88,6 +90,12 @@ typedef struct hiADEC_DEBUGINFO_S
     HI_U32 u32DecFrameNum;
     HI_U32 u32ErrDecFrameNum;
 } ADEC_DEBUGINFO_S;
+
+typedef struct hiADEC_SzNameINFO_S
+{
+    HI_CHAR szHaCodecName[32];
+} ADEC_SzNameINFO_S;
+
 
 /* Outputting audio stream structure                                         */
 typedef struct hiADEC_STREAMINFO_S

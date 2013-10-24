@@ -1,12 +1,17 @@
-/**
-\file
-\brief DRV_HDCP_EXT_H
-\copyright Shenzhen Hisilicon Co., Ltd.
-\date 2008-2018
-\version draft
-\author  z00213260
-\date 2012-10-10
-*/
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : drv_hdcp_ext.h
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
 
 #ifndef __DRV_HDCP_EXT_H__
 #define __DRV_HDCP_EXT_H__

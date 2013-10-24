@@ -38,8 +38,8 @@ extern "C"
 
 /* Driver version definition */
 #define TDA18250A_COMP_NUM                       0  /* Major protocol change - Specification change required */
-#define TDA18250A_MAJOR_VER                      0  /* Minor protocol change - Specification change required */
-#define TDA18250A_MINOR_VER                      36 /* Software update - No protocol change - No specification change required */
+#define TDA18250A_MAJOR_VER                      1  /* Minor protocol change - Specification change required */
+#define TDA18250A_MINOR_VER                      13 /* Software update - No protocol change - No specification change required */
 
 /* Instance macros */
 #define P_OBJ_VALID                             (pObj != Null)
@@ -119,7 +119,7 @@ typedef enum _TDA18250A_power_state_mode_Item_t {
 
 #define TDA18250A_REG_ADD_SZ                             (0x01)
 #define TDA18250A_REG_DATA_MAX_SZ                        (0x01)
-#define TDA18250A_REG_MAP_NB_BYTES                       (0x5A)
+#define TDA18250A_REG_MAP_NB_BYTES                       (0x5D)
 
 #define TDA18250A_REG_DATA_LEN(_FIRST_REG, _LAST_REG)    ( (_LAST_REG.Address - _FIRST_REG.Address) + 1)
 
@@ -162,6 +162,8 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_Thermo_byte_2__TM_ON = { 0x04, 
 static const TDA18250A_BitField_t gTDA18250A_Reg_Power_state_byte_1 = { 0x05, 0x00, 0x08, 0x00 };
 /* POR bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_Power_state_byte_1__POR = { 0x05, 0x07, 0x01, 0x00 };
+/* AGC_Lock bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_Power_state_byte_1__AGC_Lock = { 0x05, 0x01, 0x01, 0x00 };
 /* LO_Lock bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_Power_state_byte_1__LO_Lock = { 0x05, 0x00, 0x01, 0x00 };
 
@@ -318,6 +320,8 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_LT_byte_2__LT_smooth_t_cst = { 
 
 /* TDA18250A Register AGC2_byte_1 0x12 */
 static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_byte_1 = { 0x12, 0x00, 0x08, 0x00 };
+/* AGC2_top_range_adapt bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_byte_1__AGC2_top_range_adapt = { 0x12, 0x07, 0x01, 0x00 };
 /* AGC2_cfi_shift bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_byte_1__AGC2_cfi_shift = { 0x12, 0x05, 0x02, 0x00 };
 /* Force_AGC2_gain bit(s):  */
@@ -361,7 +365,7 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_byte_4__AGC2_Gain = { 0x15
 /* TDA18250A Register AGC2_byte_5 0x16 */
 static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_byte_5 = { 0x16, 0x00, 0x08, 0x00 };
 /* AGC2_adapt_top23_delta bit(s):  */
-static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_byte_5__AGC2_adapt_top23_delta = { 0x16, 0x04, 0x03, 0x00 };
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_byte_5__AGC2_adapt_top23_delta = { 0x16, 0x04, 0x04, 0x00 };
 /* AGC2_adapt_top23_enable bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_byte_5__AGC2_adapt_top23_enable = { 0x16, 0x03, 0x01, 0x00 };
 /* AGC2_HP_EN_BP bit(s):  */
@@ -438,6 +442,14 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_Gain_status__AGC2_gain_rea
 
 /* TDA18250A Register AGC3_gain_status 0x1D */
 static const TDA18250A_BitField_t gTDA18250A_Reg_AGC3_gain_status = { 0x1D, 0x00, 0x08, 0x00 };
+/* AGC1_FREEZE bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC3_gain_status__AGC1_FREEZE = { 0x1D, 0x07, 0x01, 0x00 };
+/* AGC2_FREEZE bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC3_gain_status__AGC2_FREEZE = { 0x1D, 0x06, 0x01, 0x00 };
+/* AGC3_FREEZE bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC3_gain_status__AGC3_FREEZE = { 0x1D, 0x05, 0x01, 0x00 };
+/* AGCK_FREEZE bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC3_gain_status__AGCK_FREEZE = { 0x1D, 0x04, 0x01, 0x00 };
 /* RSSI_ALARM bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_AGC3_gain_status__RSSI_ALARM = { 0x1D, 0x03, 0x01, 0x00 };
 /* AGC3_Gain_Read bit(s):  */
@@ -574,6 +586,8 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_MSM_byte_1__Calc_PLL = { 0x2A, 
 
 /* TDA18250A Register MSM_byte_2 0x2B */
 static const TDA18250A_BitField_t gTDA18250A_Reg_MSM_byte_2 = { 0x2B, 0x00, 0x08, 0x00 };
+/* Fast_Auto_Launch bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_MSM_byte_2__Fast_Auto_Launch = { 0x2B, 0x02, 0x01, 0x00 };
 /* XtalCal_Launch bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_MSM_byte_2__XtalCal_Launch = { 0x2B, 0x01, 0x01, 0x00 };
 /* MSM_Launch bit(s):  */
@@ -594,6 +608,8 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_PowerSavingMode_byte_1__PSM_Lod
 
 /* TDA18250A Register PowerSavingMode_byte_2 0x2D */
 static const TDA18250A_BitField_t gTDA18250A_Reg_PowerSavingMode_byte_2 = { 0x2D, 0x00, 0x08, 0x00 };
+/* H3H5_boost_stage_2_3 bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_PowerSavingMode_byte_2__H3H5_boost_stage_2_3 = { 0x2D, 0x07, 0x01, 0x00 };
 /* H3H5_boost bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_PowerSavingMode_byte_2__H3H5_boost = { 0x2D, 0x06, 0x01, 0x00 };
 /* PSM_H3H5 bit(s):  */
@@ -962,6 +978,8 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_ircal_loop_4__ircal_loop_4 = { 
 
 /* TDA18250A Register pll_log 0x57 */
 static const TDA18250A_BitField_t gTDA18250A_Reg_pll_log = { 0x57, 0x00, 0x08, 0x00 };
+/* ES3_info bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_pll_log__ES3_info = { 0x57, 0x07, 0x01, 0x00 };
 /* pll_log bit(s): frq04920: pll_state_oute<=e'000'ewhene(state_plle=ewt_boot)eelse eee'001'ewhene(state_plle=ecal_start)eelse eee'010'ewhene(state_plle=ecal_PostDiv)eelsee eee'011'ewhene(state_plle=ecal_fvco_compute)eelsee eee'100'ewhene(state_plle=ecal_Prescaler)eelsee eee'101'ewhene(state_plle=ecal_NK_div)eelsee eee'110'ewhene(state_plle=ecal_NK_calc)eelseeee eee'111' ee--epll_end  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_pll_log__pll_log = { 0x57, 0x00, 0x03, 0x00 };
 
@@ -978,8 +996,38 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_UDLD_byte_1__AGC2_TOP_UP_U
 
 /* TDA18250A Register AGC2_UDLD_byte_2 0x59 */
 static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_UDLD_byte_2 = { 0x59, 0x00, 0x08, 0x00 };
+/* AGC2_detect2_gain_plus7 bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_UDLD_byte_2__AGC2_detect2_gain_plus7 = { 0x59, 0x07, 0x01, 0x00 };
 /* AGC2_FAST_AUTO_DELTA bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_AGC2_UDLD_byte_2__AGC2_FAST_AUTO_DELTA = { 0x59, 0x00, 0x04, 0x00 };
+
+
+/* TDA18250A Register H3H5_CSTAB_byte 0x5A */
+static const TDA18250A_BitField_t gTDA18250A_Reg_H3H5_CSTAB_byte = { 0x5A, 0x00, 0x08, 0x00 };
+/* CSTAB_EN bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_H3H5_CSTAB_byte__CSTAB_EN = { 0x5A, 0x07, 0x01, 0x00 };
+/* CSTAB bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_H3H5_CSTAB_byte__CSTAB = { 0x5A, 0x00, 0x05, 0x00 };
+
+
+/* TDA18250A Register AGC_fast_auto_byte_1 0x5B */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC_fast_auto_byte_1 = { 0x5B, 0x00, 0x08, 0x00 };
+/* AGC_detect_gain_select bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC_fast_auto_byte_1__AGC_detect_gain_select = { 0x5B, 0x06, 0x02, 0x00 };
+/* AGC2_up_udld_fast_reduce bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC_fast_auto_byte_1__AGC2_up_udld_fast_reduce = { 0x5B, 0x05, 0x01, 0x00 };
+/* AGC2_up_fast_reduce bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC_fast_auto_byte_1__AGC2_up_fast_reduce = { 0x5B, 0x04, 0x01, 0x00 };
+/* AGC_timer_mod_fast_auto bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC_fast_auto_byte_1__AGC_timer_mod_fast_auto = { 0x5B, 0x02, 0x02, 0x00 };
+/* AGC_type_fast_auto bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC_fast_auto_byte_1__AGC_type_fast_auto = { 0x5B, 0x00, 0x02, 0x00 };
+
+
+/* TDA18250A Register AGC_debug_byte_1 0x5C */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC_debug_byte_1 = { 0x5C, 0x00, 0x08, 0x00 };
+/* AGC_detect_gain bit(s):  */
+static const TDA18250A_BitField_t gTDA18250A_Reg_AGC_debug_byte_1__AGC_detect_gain = { 0x5C, 0x00, 0x05, 0x00 };
 
 
 
@@ -1350,26 +1398,68 @@ typedef enum _TDA18250AXTOut_t {
     TDA18250A_XTOUT_Max
 } TDA18250AXTOut_t, *pTDA18250AXTOut_t;
 
+/*
 typedef enum _TDA18250AAGC2_Do_Step_t {
-    TDA18250A_AGC2_Do_Step_8192ms = 0,
-    TDA18250A_AGC2_Do_Step_2048ms = 1,
-    TDA18250A_AGC2_Do_Step_1048ms = 2,
-    TDA18250A_AGC2_Do_Step_0512ms = 3,
+    TDA18250A_AGC2_Do_Step_8_192ms = 0,
+    TDA18250A_AGC2_Do_Step_2_048ms = 1,
+    TDA18250A_AGC2_Do_Step_1_048ms = 2,
+    TDA18250A_AGC2_Do_Step_0_512ms = 3,
 } TDA18250AAGC2_Do_Step_t, *pTDA18250AAGC2_Do_Step_t;
+*/
+typedef enum _TDA18250AAGC2_Up_Step_t {
+    TDA18250A_AGC2_Up_Step_262ms = 0,
+    TDA18250A_AGC2_Up_Step_131ms = 1,
+    TDA18250A_AGC2_Up_Step_65_5ms = 2,
+    TDA18250A_AGC2_Up_Step_23_8 = 3,
+} TDA18250AAGC2_Up_Step_t, *pTDA18250AAGC2_Up_Step_t;
 
 typedef enum _TDA18250AAGC2_Up_Udld_Step_t {
-    TDA18250AAGC2_Up_Udld_Step_262ms = 0,
-    TDA18250AAGC2_Up_Udld_Step_131ms = 1,
-    TDA18250AAGC2_Up_Udld_Step_65ms = 2,
-    TDA18250AAGC2_Up_Udld_Step_65msbis = 3,
+    TDA18250A_AGC2_Up_Udld_Step_262ms = 0,
+    TDA18250A_AGC2_Up_Udld_Step_131ms = 1,
+    TDA18250A_AGC2_Up_Udld_Step_65_5ms = 2,
+    TDA18250A_AGC2_Up_Udld_Step_23_8 = 3,
 } TDA18250AAGC2_Up_Udld_Step_t, *pTDA18250AAGC2_Up_Udld_Step_t;
 
-typedef struct _TDA18250AStdAGCTOP
+typedef enum _TDA18250AAGC_Timer_Mod_Fast_Auto_t {
+    TDA18250A_AGC_Timer_Mod_Fast_Auto_00 = 0,
+    TDA18250A_AGC_Timer_Mod_Fast_Auto_01 = 1,
+    TDA18250A_AGC_Timer_Mod_Fast_Auto_10 = 2,
+    TDA18250A_AGC_Timer_Mod_Fast_Auto_11 = 3,
+} TDA18250AAGC_Timer_Mod_Fast_Auto_t, *pTDA18250AAGC_Timer_Mod_Fast_Auto_t;
+
+typedef enum _TDA18250AAGC_Type_Fast_Auto_t {
+    TDA18250A_AGC_Type_Fast_Auto_00 = 0,
+    TDA18250A_AGC_Type_Fast_Auto_01 = 1,
+    TDA18250A_AGC_Type_Fast_Auto_10 = 2,
+    TDA18250A_AGC_Type_Fast_Auto_11 = 3,
+} TDA18250AAGC_Type_Fast_Auto_t, *pTDA18250AAGC_Type_Fast_Auto_t;
+
+typedef enum _TDA18250AAGC1_Do_Step_t {
+    TDA18250A_AGC1_Do_Step_8_182ms = 0,
+    TDA18250A_AGC1_Do_Step_2_048ms = 1,
+    TDA18250A_AGC1_Do_Step_1_024ms = 2,
+    TDA18250A_AGC1_Do_Step_0_512ms = 3,
+} TDA18250AAGC1_Do_Step_t, *pTDA18250AAGC1_Do_Step_t;
+
+typedef enum _TDA18250AAGC2_Do_Step_t {
+    TDA18250A_AGC2_Do_Step_8_182ms = 0,
+    TDA18250A_AGC2_Do_Step_2_048ms = 1,
+    TDA18250A_AGC2_Do_Step_1_024ms = 2,
+    TDA18250A_AGC2_Do_Step_0_512ms = 3,
+} TDA18250AAGC2_Do_Step_t, *pTDA18250AAGC2_Do_Step_t;
+
+typedef struct _TDA18250AStdAGC1TOP
+{
+    UInt32 uFreq;
+    TDA18250AAGC1_TOP_I2C_DN_UP_t uTOPDnUp;
+} TDA18250AStdAGC1TOP;
+
+typedef struct _TDA18250AStdAGC2TOP
 {
     UInt32 uFreq;
     UInt8 uTOPDn;
     UInt8 uTOPUp;
-} TDA18250AStdAGCTOP;
+} TDA18250AStdAGC2TOP;
 
 typedef struct _TDA18250AStdS2DGain
 {
@@ -1403,7 +1493,7 @@ typedef struct _TDA18250AStdCoefficients
     /* IF Settings                                                  */
     /****************************************************************/
     UInt32                                      IF;                          /* IF Frequency */
-    UInt32                                      CF_Offset;                   /* CF Offset */
+    Int32                                      CF_Offset;                   /* CF Offset */
 
     /****************************************************************/
     /* IF SELECTIVITY Settings                                      */
@@ -1424,26 +1514,42 @@ typedef struct _TDA18250AStdCoefficients
     /****************************************************************/
     TDA18250AAGC1_GAIN_t                         AGC1_GAIN;                  /* AGC1 GAIN */
     TDA18250AAGC1_GAIN_SMOOTH_ALGO_t             AGC1_GAIN_SMOOTH_ALGO;      /* AGC1 GAIN SMOOTH ALGO */
-    TDA18250AAGC1_TOP_I2C_DN_UP_t                AGC1_TOP_I2C_DN_UP;         /* AGC1 TOP I2C DN/UP */
+    TDA18250AStdAGC1TOP                          AGC1_TOP_ES1[TDA18250A_CONFIG_STD_FREQ_NUM]; /* AGC1 TOP DN/UP ES1 */
+    TDA18250AStdAGC1TOP                          AGC1_TOP_ES2[TDA18250A_CONFIG_STD_FREQ_NUM]; /* AGC1 TOP DN/UP ES2 */
+    TDA18250AStdAGC1TOP                          AGC1_TOP_ES3[TDA18250A_CONFIG_STD_FREQ_NUM]; /* AGC1 TOP DN/UP ES3 */
     TDA18250AAGC1_TOP_STRATEGY_t                 AGC1_TOP_STRATEGY;          /* AGC1 TOP STRATEGY */
     TDA18250AAGC1_DET_SPEED_t                    AGC1_DET_SPEED;             /* AGC1 DET SPEED */
     TDA18250AAGC1_SMOOTH_T_CST_t                 AGC1_Smooth_T_Cst;          /* AGC1 Smooth T Cst */
+    TDA18250AAGC1_Do_Step_t                      AGC1_Do_Step;               /* AGC1 Do Step */
     TDA18250ALNA_ZIN_t							 LNA_Zin;
-    Bool                                         AGC2_GAIN_CONTROL_EN;       /* AGC2 Gain Control En  */
-    TDA18250AStdAGCTOP                           AGC2_TOP[TDA18250A_CONFIG_STD_FREQ_NUM]; /* AGC2 TOP */
+    Bool                                         AGC2_GAIN_CONTROL_EN_ES1;   /* AGC2 Gain Control En ES1 */
+    Bool                                         AGC2_GAIN_CONTROL_EN_ES2;   /* AGC2 Gain Control En ES2 */
+    Bool                                         AGC2_GAIN_CONTROL_EN_ES3;   /* AGC2 Gain Control En ES3 */
+    TDA18250AStdAGC2TOP                          AGC2_TOP_ES1[TDA18250A_CONFIG_STD_FREQ_NUM]; /* AGC2 TOP ES1 */
+    TDA18250AStdAGC2TOP                          AGC2_TOP_ES2[TDA18250A_CONFIG_STD_FREQ_NUM]; /* AGC2 TOP ES2 */
+    TDA18250AStdAGC2TOP                          AGC2_TOP_ES3[TDA18250A_CONFIG_STD_FREQ_NUM]; /* AGC2 TOP ES3 */
     TDA18250AAGC2_DET_SPEED_t                    AGC2_Det_Speed;             /* AGC2 Det Speed */
-    Bool                                         AGC2_Adapt_TOP23_Enable;    /* AGC2 Adapt TOP23_Enable */
-    UInt8                                        AGC2_Adapt_TOP23_Delta;     /* AGC2 Adapt TOP23 Delta (in dB) */    
+    Bool                                         AGC2_Adapt_TOP23_Enable_ES2;    /* AGC2 Adapt TOP23_Enable ES2 */
+    UInt8                                        AGC2_Adapt_TOP23_Delta_ES2;     /* AGC2 Adapt TOP23 Delta (in dB) ES2 */
+    Bool                                         AGC2_Adapt_TOP23_Enable_ES3;    /* AGC2 Adapt TOP23_Enable  ES2*/
+    UInt8                                        AGC2_Adapt_TOP23_Delta_ES3;     /* AGC2 Adapt TOP23 Delta (in dB)  ES2 */    
     Bool                                         AGC2_Gain_Control_Speed;    /* AGC2 Gain Control Speed (False 1ms ; True 0.5ms)   */
     TDA18250AAGC2_Do_Step_t                      AGC2_Do_Step;               /* AGC2 Do Step */
+    TDA18250AAGC2_Up_Step_t                      AGC2_Up_Step;               /* AGC2 Up Step */
     TDA18250AAGC2_Up_Udld_Step_t                 AGC2_Up_Udld_Step;          /* AGC2 Ip Udld Step */
     Int8                                         AGC2_TOP_Up_Udld;           /* AGC2 TOP Up Udld */
     UInt8                                        AGC2_Fast_Auto_Delta;       /* AGC2 Fast Auto Delta */
     TDA18250ADET12_CINT_t                        DET12_CINT;                 /* DET12 CINT */
-    TDA18250AStdAGCTOP                           AGC3_TOP[TDA18250A_CONFIG_STD_FREQ_NUM]; /* AGC3 TOP */
+    TDA18250AStdAGC2TOP                           AGC3_TOP[TDA18250A_CONFIG_STD_FREQ_NUM]; /* AGC3 TOP */
     TDA18250AIF_Output_Level_t                   IF_Output_Level;            /* IF Output Level */
     TDA18250AStdS2DGain                          S2D_Gain[TDA18250A_CONFIG_STD_FREQ_NUM]; /* S2D gain */
-	/****************************************************************/
+    Bool                                         Fast_Auto_Launch;           /* Fast Auto Launch */
+    TDA18250AAGC_Timer_Mod_Fast_Auto_t           AGC_Timer_Mod_Fast_Auto;    /* AGC Timer Mod Fast Auto */
+    Bool                                         AGC2_Up_Udld_Fast_Reduce;   /* AGC2 Up Udld Fast Reduce */
+    Bool                                         AGC2_Up_Fast_Reduce;        /* AGC2 Up Fast Reduce */
+    TDA18250AAGC_Type_Fast_Auto_t                AGC_Type_Fast_Auto;         /* AGC Type Fast Auto */
+	
+    /****************************************************************/
     /* GSK Settings                                                 */
     /****************************************************************/
     TDA18250AAGCK_Time_Constant_t                AGCK_Time_Constant;         /* AGCK Time Constant */
@@ -1459,17 +1565,53 @@ typedef struct _TDA18250AStdCoefficients
     /****************************************************************/
 	TDA18250ARSSI_CAP_VAL_t                      RSSI_Cap_Val;				 /* RSSI Cap Val */
     TDA18250ARSSI_CK_SPEED_t                     RSSI_Ck_Speed;				 /* RSSI Ck Speed */
-	
-    UInt8                                        uES1PSMByte1;           /* Nominal Power Saving Byte 1 */
-    UInt8                                        uES1PSMByte2;           /* Nominal Power Saving Byte 2 */
-    UInt8                                        uES1PSMByte3;           /* Nominal Power Saving Byte 3 */
-    UInt8                                        uES2PSMByte1;               /* Low Power Saving Byte 1 */
-    UInt8                                        uES2PSMByte2;               /* Low Power Saving Byte 2 */
-    UInt8                                        uES2PSMByte3;               /* Low Power Saving Byte 3 */
+
+	/****************************************************************/
+    /*PSM Settings                                                  */
+    /****************************************************************/
+    UInt8                                        uES1PSMByte1;               /* ES1 Power Saving Byte 1 */
+    UInt8                                        uES1PSMByte2;               /* ES1 Power Saving Byte 2 */
+    UInt8                                        uES1PSMByte3;               /* ES1 Power Saving Byte 3 */
+    UInt8                                        uES2PSMByte1;               /* ES2 Power Saving Byte 1 */
+    UInt8                                        uES2PSMByte2;               /* ES2 Power Saving Byte 2 */
+    UInt8                                        uES2PSMByte3;               /* ES2 Power Saving Byte 3 */
+    UInt8                                        uES3PSMByte1;               /* ES3 Power Saving Byte 1 */
+    UInt8                                        uES3PSMByte2;               /* ES3 Power Saving Byte 2 */
+    UInt8                                        uES3PSMByte3;               /* ES3 Power Saving Byte 3 */
 
 } TDA18250AStdCoefficients, *pTDA18250AStdCoefficients;
 
-
+typedef struct _TDA18250ASmoothCurrentStateSave_t
+{
+    UInt8 uAGC2LoopOff;
+    UInt8 uAGC2;
+    UInt8 uDigClock;
+    UInt8 uPSMRFPoly;
+    UInt8 uPSMIfPoly;
+    UInt8 uPSMMixer;
+    UInt8 uPSMLodriver;
+    UInt8 uAGC1Boost;
+    UInt8 uPSMHpfIfn;
+    UInt8 uPSMLpf;
+    UInt8 uPSMDCC;
+    UInt8 uPSMH3H5;
+    UInt8 uPSMVCO;
+    UInt8 uPDDet1;
+    UInt8 uPDDet2;
+    UInt8 uPDDet3;
+    UInt8 uPDVCO;
+    UInt8 uPDSynthe;
+    UInt8 uIFHPEnable;
+    UInt8 uIFNotchEnable;
+    UInt8 uDCNotch;
+    UInt8 uGPIO1;
+    UInt8 uGPIO2;
+    UInt8 uWFilterEnable;
+    UInt8 uXtOut;
+    UInt8 uPDLNA;
+    UInt8 uPDLT;
+    UInt8 uPDS2BIF;
+} TDA18250ASmoothCurrentStateSave_t;
 
 typedef struct _TDA18250AObject_t
 {
@@ -1481,6 +1623,10 @@ typedef struct _TDA18250AObject_t
     tmbslFrontEndTimeFunc_t         sTime;
     tmbslFrontEndDebugFunc_t        sDebug;
     tmbslFrontEndMutexFunc_t        sMutex;
+    TDA18250AVersion_t              eChipVersion;
+    Bool                            bMasterNotSlave;
+    tmUnitSelect_t                  tOtherUnit;
+    TDA18250ASmoothCurrentStateSave_t sSmoothCurrentStateSave;
     /* Device specific part: */
     tmPowerState_t                  curPowerState;
     TDA18250APowerState_t            curLLPowerState;
@@ -1511,11 +1657,12 @@ typedef struct _TDA18250AObject_t
 
 
 /* WARNING : when defining the modes, define them form the lowest VCO frequency to the highest VCO frequency, the lowest should always be inferior to the minimum VCO frequency of the chip */
-#define TDA18250A_16000000VCOModesNb 1
+#define TDA18250A_16000000VCOModesNb 2
 static TDA18250A_VCOMode_t ps16000000VCOModes[TDA18250A_16000000VCOModesNb] =
 {
     /* uVCOFreq(lowest limit) - uNDiv - uRDiv - uICP */
-    {0, 1, 0, 0x02},
+    {0, 1, 0, 0x05},
+    {6622000, 1, 0, 0x02},
 };
 
 #define TDA18250A_24000000VCOModesNb 1
@@ -1569,25 +1716,22 @@ static TDA18250A_VCOMode_t ps29000000VCOModes[TDA18250A_29000000VCOModesNb] =
     {0, 2, 0, 0x02},
 };
 
-#define TDA18250A_30000000VCOModesNb 1
+#define TDA18250A_30000000VCOModesNb 2
 static TDA18250A_VCOMode_t ps30000000VCOModes[TDA18250A_30000000VCOModesNb] =
 {
     /* uVCOFreq(lowest limit) - uNDiv - uRDiv - uICP */
-    {0, 2, 0, 0x02},
+    {0000000, 2, 0, 0x05},
+    {6811000, 2, 0, 0x02},
 };
 
-static TDA18250A_RDivNDivTableDef RDivNDivTable[9] =
+static TDA18250A_RDivNDivTableDef RDivNDivTable[5] =
 {
 	/* Be carefull, Rdiv & Ndiv values in this table are the values of the bit in
 	the register, not the decoded values */
     {TDA18250A_16000000VCOModesNb, ps16000000VCOModes, 16000000, 4096, 32}, /* 16MHz */
     {TDA18250A_24000000VCOModesNb, ps24000000VCOModes, 24000000, 3072, 24}, /* 24MHz */
     {TDA18250A_25000000VCOModesNb, ps25000000VCOModes, 25000000, 3200, 25}, /* 25MHz */
-	{TDA18250A_26000000VCOModesNb, ps26000000VCOModes, 26000000, 3328, 26}, /* 26MHz */
     {TDA18250A_27000000VCOModesNb, ps27000000VCOModes, 27000000, 3456, 27}, /* 27MHz */
-    {TDA18250A_28800000VCOModesNb, ps28800000VCOModes, 28800000, 3686, 29}, /* 28.8MHz */
-    {TDA18250A_28920000VCOModesNb, ps28920000VCOModes, 28920000, 3702, 29}, /* 28.92MHz */
-	{TDA18250A_29000000VCOModesNb, ps29000000VCOModes, 29000000, 3712, 29}, /* 29MHz */
     {TDA18250A_30000000VCOModesNb, ps30000000VCOModes, 30000000, 3840, 30}, /* 30MHz */
 };
 
@@ -1601,6 +1745,9 @@ iTDA18250A_CheckHwState(pTDA18250AObject_t pObj, TDA18250AHwStateCaller_t caller
 
 extern tmErrorCode_t
 iTDA18250A_SetRF(pTDA18250AObject_t pObj);
+
+extern tmErrorCode_t
+iTDA18250A_SetFreqDependantStandard(pTDA18250AObject_t pObj, UInt32 uRF);
 
 extern tmErrorCode_t
 iTDA18250A_SetMSM(pTDA18250AObject_t pObj, UInt8 uValue, Bool bLaunch);

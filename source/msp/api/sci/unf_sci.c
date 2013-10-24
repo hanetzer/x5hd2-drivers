@@ -18,11 +18,15 @@
 #include <pthread.h>
 
 #include "drv_sci_ioctl.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 
 static HI_S32 g_SciDevFd = -1;
 
 static pthread_mutex_t g_SciMutex = PTHREAD_MUTEX_INITIALIZER;
+
+static const HI_U8 s_szSCIVersion[] = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 #define HI_SCI_LOCK() (void)pthread_mutex_lock(&g_SciMutex);
 #define HI_SCI_UNLOCK() (void)pthread_mutex_unlock(&g_SciMutex);
@@ -577,10 +581,10 @@ Output			:NA
 Return			:ErrorCode(reference to document)
 Others			:NA
 *******************************************/
-HI_S32 HI_UNF_SCI_ConfigClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_CLK_MODE_E enClkMode)
+HI_S32 HI_UNF_SCI_ConfigClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enClkMode)
 {
     HI_S32 Ret;
-    SCI_CLK_S SciClk;
+    SCI_IO_OUTPUTTYPE_S SciClk;
 
     if (enSciPort >= HI_SCI_PORT_NUM)
     {
@@ -588,7 +592,7 @@ HI_S32 HI_UNF_SCI_ConfigClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_CLK_MODE
         return HI_ERR_SCI_INVALID_PARA;
     }
 
-    if (enClkMode >= HI_UNF_SCI_CLK_MODE_BUTT)
+    if (enClkMode >= HI_UNF_SCI_MODE_BUTT)
     {
         HI_ERR_SCI("para enClkMode is invalid.\n");
         return HI_ERR_SCI_INVALID_PARA;
@@ -597,9 +601,67 @@ HI_S32 HI_UNF_SCI_ConfigClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_CLK_MODE
     CHECK_SCI_OPEN();
 
     SciClk.enSciPort = enSciPort;
-    SciClk.enClkMode = enClkMode;
+	SciClk.enIO = SCI_IO_CLK;
+    SciClk.enOutputType = enClkMode;
 
-    Ret = ioctl(g_SciDevFd, CMD_SCI_CONF_CLK_MODE, &SciClk);
+    Ret = ioctl(g_SciDevFd, CMD_SCI_CONF_MODE, &SciClk);
+
+    return Ret;
+}
+
+HI_S32 HI_UNF_SCI_ConfigResetMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enResetMode)
+{
+    HI_S32 Ret;
+    SCI_IO_OUTPUTTYPE_S SciReset;
+
+    if (enSciPort >= HI_SCI_PORT_NUM)
+    {
+        HI_ERR_SCI("para enSciPort is invalid.\n");
+        return HI_ERR_SCI_INVALID_PARA;
+    }
+
+    if (enResetMode >= HI_UNF_SCI_MODE_BUTT)
+    {
+        HI_ERR_SCI("para enResetMode is invalid.\n");
+        return HI_ERR_SCI_INVALID_PARA;
+    }
+
+    CHECK_SCI_OPEN();
+
+    SciReset.enSciPort = enSciPort;
+	SciReset.enIO = SCI_IO_RESET;
+    SciReset.enOutputType = enResetMode;
+
+    Ret = ioctl(g_SciDevFd, CMD_SCI_CONF_MODE, &SciReset);
+
+    return Ret;
+}	
+
+
+HI_S32 HI_UNF_SCI_ConfigVccEnMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enVccEnMode)
+{
+    HI_S32 Ret;
+    SCI_IO_OUTPUTTYPE_S SciVcc;
+
+    if (enSciPort >= HI_SCI_PORT_NUM)
+    {
+        HI_ERR_SCI("para enSciPort is invalid.\n");
+        return HI_ERR_SCI_INVALID_PARA;
+    }
+
+    if (enVccEnMode >= HI_UNF_SCI_MODE_BUTT)
+    {
+        HI_ERR_SCI("para enVccEnMode is invalid.\n");
+        return HI_ERR_SCI_INVALID_PARA;
+    }
+
+    CHECK_SCI_OPEN();
+
+    SciVcc.enSciPort = enSciPort;
+	SciVcc.enIO = SCI_IO_VCC_EN;
+    SciVcc.enOutputType = enVccEnMode;
+
+    Ret = ioctl(g_SciDevFd, CMD_SCI_CONF_MODE, &SciVcc);
 
     return Ret;
 }

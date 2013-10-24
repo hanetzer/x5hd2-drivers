@@ -20,6 +20,9 @@
 
 #include "hi_common.h"
 #include "tde_filterPara.h"
+#include "hi_reg_common.h"
+
+#include <asm/barrier.h>
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -507,12 +510,6 @@ typedef struct hiTDE_PARA_TABLE_S
 /* Base addr of register after mapping */
 STATIC volatile HI_U32* s_pu32BaseVirAddr = HI_NULL;
 
-/* Pointer of TDE clock register after mapping */
-STATIC volatile HI_U32 *s_pu32TdeClockVir = HI_NULL;
-
-/* Pointer of GPL control register after mapping */
-//STATIC volatile HI_U32 *s_pu32GpllCtlVir = HI_NULL;
-
 /* State information when Aq is suspend */
 STATIC TDE_SUSP_STAT_S s_stSuspStat = {0};
 
@@ -590,17 +587,9 @@ HI_S32 TdeHalInit(HI_U32 u32BaseAddr)
     }
 
      /*map address for the register *//*CNcomment:寄存器映射*/
-    s_pu32BaseVirAddr = (volatile HI_U32*)TDE_REG_MAP(u32BaseAddr, TDE_REG_SIZE);
+    s_pu32BaseVirAddr = (volatile HI_U32*)HI_GFX_REG_MAP(u32BaseAddr, TDE_REG_SIZE);
     if(HI_NULL == s_pu32BaseVirAddr)
     {
-        goto TDE_INIT_ERR;
-    }
-
-     /* set limit of clock and div *//*CNcomment:  设置时钟门限、时钟分频 */
-    s_pu32TdeClockVir = (volatile HI_U32 *)TDE_REG_MAP(TDE_REG_CLOCK, 4);
-    if (HI_NULL == s_pu32TdeClockVir)
-    {
-        TDE_REG_UNMAP(s_pu32BaseVirAddr);
         goto TDE_INIT_ERR;
     }
 
@@ -627,53 +616,6 @@ HI_VOID TdeHalResumeInit(HI_VOID)
     return;
 }
 
-#if 0
-/* reset hardware for tde*//*CNcomment: 系统复位*/
-HI_VOID TdeHalSystemInit(HI_VOID)
-{
-    HI_U32 i;
-
-    *s_pu32TdeClockVir |= 0x1;
-    for (i = 0; i < 10 ; i++)
-    {	
-    }
-    *s_pu32TdeClockVir &= ~0x1;
-
-    TdeHalInitQueue();
-
-    /* set channel ID */
-    if ( (HI_CHIP_TYPE_HI3716M == s_enChipType)
-        && (HI_CHIP_VERSION_V300 == s_enChipVersion))
-    {
-        TDE_BUSLIMITER_U uBusLimiter;
-
-        uBusLimiter.u32All = TDE_READ_REG(s_pu32BaseVirAddr, TDE_BUS_LIMITER);
-        uBusLimiter.stBits.u32Src1RidSel = 0x0;
-        uBusLimiter.stBits.u32Src2RidSel = 0x1;
-        uBusLimiter.stBits.u32Y1RidSel = 0x0;
-        uBusLimiter.stBits.u32Y2RidSel = 0x1;
-        TDE_WRITE_REG(s_pu32BaseVirAddr, TDE_BUS_LIMITER, uBusLimiter.u32All);
-        
-        TDE_WRITE_REG(s_pu32BaseVirAddr, TDE_REQ_TH, 0x1fef7cf);
-    }
-    else if(HI_CHIP_TYPE_HI3712 == s_enChipType)
-    {
-        TDE_BUSLIMITER_U uBusLimiter;
-
-        uBusLimiter.u32All = TDE_READ_REG(s_pu32BaseVirAddr, TDE_BUS_LIMITER);
-        uBusLimiter.stBits.u32Src1RidSel = 0x0;
-        uBusLimiter.stBits.u32Src2RidSel = 0x1;
-        uBusLimiter.stBits.u32Y1RidSel = 0x0;
-        uBusLimiter.stBits.u32Y2RidSel = 0x1;
-        TDE_WRITE_REG(s_pu32BaseVirAddr, TDE_BUS_LIMITER, uBusLimiter.u32All);
-        
-        TDE_WRITE_REG(s_pu32BaseVirAddr, TDE_REQ_TH, 0x1FF0810);
-    }    
-        
-
-    return;
-}
-#endif
 /*****************************************************************************
 * Function:      TdeHalOpen
 * Description:   open the tde
@@ -698,39 +640,50 @@ HI_S32 TdeHalOpen(HI_VOID)
 *****************************************************************************/
 HI_VOID TdeHalRelease(HI_VOID)
 {
+    HI_VOID *pBuf;
     if(0 != s_stParaTable.u32HfCoefAddr)
     {
-        HI_VOID *pHfCoef = (HI_VOID *)wgetvrt(s_stParaTable.u32HfCoefAddr);
-        TDE_FREE(pHfCoef);
+        pBuf = (HI_VOID *)wgetvrt(s_stParaTable.u32HfCoefAddr);
+        if (HI_NULL != pBuf)
+        {
+            TDE_FREE(pBuf);
+            s_stParaTable.u32HfCoefAddr = 0;
+        }
     }
     if (0 != s_stParaTable.u32VfCoefAddr)
     {
-        HI_VOID *pVfCoef = (HI_VOID *)wgetvrt(s_stParaTable.u32VfCoefAddr);
-        TDE_FREE(pVfCoef);
+        pBuf = (HI_VOID *)wgetvrt(s_stParaTable.u32VfCoefAddr);
+        if (HI_NULL != pBuf)
+        {
+            TDE_FREE(pBuf);
+            s_stParaTable.u32VfCoefAddr = 0;
+        }
     }
 
 #ifdef TDE_VERSION_PILOT
     if (0 != s_u32Rgb2YuvCoefAddr)
     {
-        TDE_FREE(wgetvrt(s_u32Rgb2YuvCoefAddr));
-        s_u32Rgb2YuvCoefAddr = 0;
+        pBuf = (HI_VOID *)wgetvrt(s_u32Rgb2YuvCoefAddr);
+        if (HI_NULL != pBuf)
+        {
+            TDE_FREE(pBuf);
+            s_u32Rgb2YuvCoefAddr = 0;
+        }
     }
 
     if (0 != s_u32Yuv2RgbCoefAddr)
     {
-        TDE_FREE(wgetvrt(s_u32Yuv2RgbCoefAddr));
-        s_u32Yuv2RgbCoefAddr = 0;
+        pBuf = (HI_VOID *)wgetvrt(s_u32Yuv2RgbCoefAddr);
+        if (HI_NULL != pBuf)
+        {
+            TDE_FREE(pBuf);
+            s_u32Yuv2RgbCoefAddr = 0;
+        }
     }
 #endif
 
-
-    /* unmap*//*CNcomment: 解除映射*/
-    TDE_REG_UNMAP(s_pu32TdeClockVir);
-    s_pu32TdeClockVir = HI_NULL;
-
-
     /* unmap the base address*//*CNcomment:  反映射基地址 */
-    TDE_REG_UNMAP(s_pu32BaseVirAddr);
+    HI_GFX_REG_UNMAP(s_pu32BaseVirAddr);
     s_pu32BaseVirAddr = HI_NULL;
 
      /*free the pool of memery*//*CNcomment:TDE内存池去初始化*/
@@ -831,11 +784,17 @@ HI_VOID TdeHalCtlReset(HI_VOID)
 
 HI_VOID TdeHalSetClock(HI_VOID)
 {
+    U_PERI_CRG37 unTempValue;
+
+    unTempValue.u32 = g_pstRegCrg->PERI_CRG37.u32;
+    
     /*cancel reset*/
-    *s_pu32TdeClockVir &= ~0x10;
+    unTempValue.bits.tde_srst_req = 0x0;
 
     /*enable clock*/
-    *s_pu32TdeClockVir |= 0x1;
+    unTempValue.bits.tde_cken = 0x1;
+
+    g_pstRegCrg->PERI_CRG37.u32 = unTempValue.u32;
     
     return;
 }
@@ -863,47 +822,6 @@ HI_VOID TdeHalCtlIntClear(TDE_LIST_TYPE_E enListType, HI_U32 u32Stats)
         u32ReadStats = (u32ReadStats & 0xffff0000) | (u32Stats & 0x0000ffff);
     }
     TDE_WRITE_REG(s_pu32BaseVirAddr, TDE_INT, u32ReadStats);
-}
-
-
-/*****************************************************************************
-* Function:      TdeHalCtlGetRunningSwNode
-* Description:   get the software node with running,if the list not running then return null
-* Input:         enListType:type of list that is running
-* Output:        none
-* Return:        the pointer of running node
-* Others:        none
-*****************************************************************************/
-HI_BOOL TdeHalCtlGetRunningSwNode(TDE_LIST_TYPE_E enListType, HI_S32 *ps32Handle, HI_VOID **ppstSwNode)
-{
-    HI_U32 u32RunningPhyAddr;
-    HI_U32* pu32RunningVirAddr = HI_NULL;
-    HI_BOOL bWork = HI_TRUE;
-#if HI_TDE_SQ_SUPPORT
-    HI_BOOL bSqWork;   
-#endif
-    if (TdeHalCtlIsIdle())
-    {
-        bWork = HI_FALSE;
-    }
-#if HI_TDE_SQ_SUPPORT
-    /*read the state of tde*//*CNcomment:TDE正在工作则读取内部工作状态*/
-    bSqWork = (HI_BOOL)((TDE_READ_REG(s_pu32BaseVirAddr, TDE_STA) & 0x4) >> 2);
-
-    if ((HI_FALSE == bSqWork && TDE_LIST_SQ == enListType)
-        || (HI_TRUE == bSqWork && TDE_LIST_AQ == enListType))
-    {
-        bWork = HI_FALSE;
-    }
-#endif    
-     /*read the address of node that is running, and keep address*//*CNcomment:读取当前节点物理地址,并保存其对应的物理/虚拟地址*/
-    u32RunningPhyAddr = TdeHalCurNode(enListType);
-    pu32RunningVirAddr = (HI_U32 *)wgetvrt(u32RunningPhyAddr-4);
-    TDE_ASSERT(HI_NULL != pu32RunningVirAddr);
- 
-    *ppstSwNode = (HI_VOID *)pu32RunningVirAddr;
-
-    return bWork;
 }
 
 /*get the queue of tde*//*CNcomment:判断TDE的工作队列是同步还是异步*/
@@ -1117,6 +1035,8 @@ HI_S32 TdeHalNodeExecute(TDE_LIST_TYPE_E enListType, HI_U32 u32NodePhyAddr, HI_U
 
             TDE_WRITE_REG(s_pu32BaseVirAddr, TDE_AQ_CTRL, unAqCtrl.u32All);
 
+            mb();
+
             /*start Aq list*//* CNcomment:启动Aq*/
             TDE_WRITE_REG(s_pu32BaseVirAddr, TDE_CTRL, 0x1);   
         }
@@ -1210,7 +1130,6 @@ HI_VOID TdeHalNodeSetSrc1(TDE_HWNode_S* pHWNode, TDE_DRV_SURFACE_S* pDrvSurface)
     TDE_Y_PITCH_U unYPitch;
     TDE_ARGB_ORDER_U unArgbOrder;
     TDE_INS_U unIns;
-    
     TDE_ASSERT(HI_NULL != pHWNode);
     TDE_ASSERT(HI_NULL != pDrvSurface);
 
@@ -1524,7 +1443,7 @@ HI_VOID TdeHalNodeSetBaseOperate(TDE_HWNode_S* pHWNode, TDE_DRV_BASEOPT_MODE_E e
             TDE_FILL_DATA_BY_FMT(pHWNode->u32TDE_S1_FILL, 
                 pstColorFill->u32FillData, pstColorFill->enDrvColorFmt);
             TDE_SET_UPDATE(u32TDE_S1_FILL, pHWNode->u64TDE_UPDATE);
-            
+
             unAluMode.stBits.u32AluMod = TDE_SRC1_BYPASS;
             unIns.stBits.u32Src1Mod = TDE_SRC_QUICK_FILL;
             unIns.stBits.u32Src2Mod = TDE_SRC_MODE_DISA;
@@ -3048,7 +2967,7 @@ STATIC HI_VOID TdeHalNodeSetSrc2Base(TDE_HWNode_S* pHWNode, TDE_DRV_SURFACE_S* p
 
         TDE_SET_UPDATE(u32TDE_Y2_ADDR, pHWNode->u64TDE_UPDATE);
         TDE_SET_UPDATE(u32TDE_Y2_PITCH, pHWNode->u64TDE_UPDATE);
-	 TDE_SET_UPDATE(u32TDE_INS, pHWNode->u64TDE_UPDATE);	
+	TDE_SET_UPDATE(u32TDE_INS, pHWNode->u64TDE_UPDATE);	
     }
     else
 #endif

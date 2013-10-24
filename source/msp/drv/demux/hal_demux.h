@@ -229,6 +229,7 @@ HI_U32  DmxHalGetChannelCounter(HI_U32 u32ChId);
 HI_VOID DmxHalResetChannelCounter(HI_U32 u32ChId);
 
 HI_VOID DmxHalFilterSetSecStuffCtrl(HI_BOOL Enable);
+HI_VOID DmxHalSetTei(HI_U32   u32DemuxID,HI_BOOL bCheckTei);
 
 #ifdef DMX_FILTER_DEPTH_SUPPORT
 HI_VOID DmxHalFilterEnableDepth(HI_VOID);
@@ -240,6 +241,11 @@ HI_VOID DmxHalEnableAllRecExcludePid(HI_U32 DmxID);
 HI_VOID DmxHalDisableAllRecExcludePid(HI_U32 DmxID);
 HI_VOID DmxHalGetAllRecExcludePid(HI_U32 RecCfgID, HI_U32* DmxID, HI_U32* PID);
 HI_VOID DmxHalSetAllRecExcludePid(HI_U32 RecCfgID, HI_U32 DmxID, HI_U32 PID);
+#endif
+
+
+#ifdef DMX_REC_TIME_STAMP_SUPPORT    /*only hi3719 support this */
+HI_VOID DmxHalConfigRecTsTimeStamp(HI_U32 DmxID, DMX_REC_TIMESTAMP_MODE_E enRecTimeStamp);
 #endif
 
 #ifdef __cplusplus

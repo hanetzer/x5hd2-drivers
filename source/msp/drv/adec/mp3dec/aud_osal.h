@@ -40,7 +40,7 @@ extern "C"
 #include <linux/file.h>
 
 #include "hi_module.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_mem.h"
 
 
 #if 0

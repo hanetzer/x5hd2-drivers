@@ -21,6 +21,8 @@
 #endif
 #endif
 
+//#define  AVPLAY_VID_THREAD
+
 #define  AVPLAY_MAX_NUM                 16
 #define  AVPLAY_MAX_WIN                 6
 #define  AVPLAY_MAX_DMX_AUD_CHAN_NUM    32
@@ -45,6 +47,7 @@
 
 #define    APPLAY_EOS_BUF_MIN_LEN    (1024)
 #define    AVPLAY_EOS_TIMEOUT        (200)
+#define    APPLAY_EOS_STREAM_THRESHOLD (2)
 
 
 /* video buffer dither waterline */
@@ -63,6 +66,8 @@
 
 /* max delay time of adec in buffer */
 #define    AVPLAY_ADEC_MAX_DELAY        1200
+
+#define    AVPLAY_THREAD_TIMEOUT        30
 
 typedef    HI_S32 (*AVPLAY_EVT_CB_FN)(HI_HANDLE hAvplay, HI_UNF_AVPLAY_EVENT_E EvtMsg, HI_U32 EvtPara);
 
@@ -102,7 +107,15 @@ typedef struct tagAVPLAY_ALG_FRC_S
 	HI_U32  u32InputCount; /* input counter */
 }AVPLAY_ALG_FRC_S;
 
-typedef struct hiAVPLAY_STATISTICS_S
+typedef struct hiAVPLAY_VIDFRM_STAT_S
+{
+    HI_U32      SendNum;
+    HI_U32      PlayNum;
+    HI_U32      RepeatNum;
+    HI_U32      DiscardNum;
+}AVPLAY_VIDFRM_STAT_S;
+
+typedef struct hiAVPLAY_DEBUG_INFO_S
 {
     HI_U32                     AcquireAudEsNum;
     HI_U32                     AcquiredAudEsNum;
@@ -116,13 +129,19 @@ typedef struct hiAVPLAY_STATISTICS_S
 
     HI_U32                     AcquireVidFrameNum;
     HI_U32                     AcquiredVidFrameNum;
-    HI_U32                     SendVidFrameNum;
-    HI_U32                     SendedVidFrameNum;
+    AVPLAY_VIDFRM_STAT_S       MasterVidStat;
+    AVPLAY_VIDFRM_STAT_S       SlaveVidStat[AVPLAY_MAX_SLAVE_FRMCHAN];
+    AVPLAY_VIDFRM_STAT_S       VirVidStat[AVPLAY_MAX_VIR_FRMCHAN];
 
     HI_U32                     VidOverflowNum;
     HI_U32                     AudOverflowNum;
 
-}AVPLAY_STATISTICS_S;
+    HI_U32                     ThreadBeginTime;
+    HI_U32                     ThreadEndTime;
+    HI_U32                     ThreadScheTimeOutCnt;
+    HI_U32                     ThreadExeTimeOutCnt;
+
+}AVPLAY_DEBUG_INFO_S;
 
 typedef enum hiTHREAD_PRIO_E
 {
@@ -136,118 +155,127 @@ typedef enum hiTHREAD_PRIO_E
 #pragma pack(4)
 typedef struct hiAVPLAY_S
 {
-    HI_UNF_AVPLAY_ATTR_S       AvplayAttr;
-    HI_HANDLE                  hAvplay;
+    HI_UNF_AVPLAY_ATTR_S            AvplayAttr;
+    HI_UNF_VCODEC_ATTR_S            VdecAttr;
+    HI_UNF_AVPLAY_LOW_DELAY_ATTR_S  LowDelayAttr;
+    HI_U32                          AdecType;
+    
+    HI_HANDLE                       hAvplay;
+    HI_HANDLE                       hVdec;
+    HI_HANDLE                       hAdec;
+    HI_HANDLE                       hDmxVid;
+    HI_HANDLE                       hDmxAud[AVPLAY_MAX_DMX_AUD_CHAN_NUM];
+    HI_HANDLE                       hDmxPcr;
+    HI_HANDLE                       hSync;
+    
+    HI_U32                          DmxVidPid;
+    HI_U32                          DmxPcrPid; 
+    HI_U32                          DmxAudPid[AVPLAY_MAX_DMX_AUD_CHAN_NUM]; 
 
-    HI_HANDLE                  hVdec;
-    HI_UNF_VCODEC_ATTR_S       VdecAttr;         /*vdec attribute*/
-    HI_HANDLE                  hDmxVid;
-    HI_U32                     DmxVidPid;         /*dmx pid of vid channel*/
+    /*multi audio demux channel*/
+    HI_U32                          CurDmxAudChn;
+    HI_U32                          DmxAudChnNum;
+    HI_UNF_ACODEC_ATTR_S            *pstAcodecAttr;
+           
+    /*multi video frame channel*/
+    AVPLAY_VID_PORT_AND_WIN_S       MasterFrmChn;
+    AVPLAY_VID_PORT_AND_WIN_S       SlaveFrmChn[AVPLAY_MAX_SLAVE_FRMCHAN];
+    HI_U32                          SlaveChnNum;
+    AVPLAY_VID_PORT_AND_WIN_S       VirFrmChn[AVPLAY_MAX_VIR_FRMCHAN];
+    HI_U32                          VirChnNum;
 
-    HI_HANDLE                  hAdec;
-    HI_U32                     AdecType;         /*audio decode protocol type*/
+    /*multi audio track channel*/
+    HI_HANDLE                       hSyncTrack;
+    HI_HANDLE                       hTrack[AVPLAY_MAX_TRACK];
+    HI_U32                          TrackNum;
 
-    HI_U32                     CurDmxAudChn;
-    HI_U32                     DmxAudChnNum;
-    HI_HANDLE                  hDmxAud[AVPLAY_MAX_DMX_AUD_CHAN_NUM];
-    HI_U32                     DmxAudPid[AVPLAY_MAX_DMX_AUD_CHAN_NUM]; 
-    HI_UNF_ACODEC_ATTR_S       *pstAcodecAttr;
+    /*frc parameters*/
+    HI_BOOL                         bFrcEnable;
+    AVPLAY_FRC_CFG_S                FrcParamCfg;        /* config frc param */ /*CNcomment: 配置的frc参数 */
+    AVPLAY_ALG_FRC_S                FrcCalAlg;          /* frc used rate info */ /*CNcomment: frc正在使用的帧率信息 */
+    AVPLAY_FRC_CTRL_S               FrcCtrlInfo;        /* frc control */ /*CNcomment: frc控制信息 */
+    HI_U32                          FrcNeedPlayCnt;     /* this frame need to play time*/ /*CNcomment:该帧需要播几次 */
+    HI_U32                          FrcCurPlayCnt;      /* this frame had played time*/   /*CNcomment:该帧实际播到第几次*/
 
-    HI_HANDLE                  hDmxPcr;
+    /*flush stream control*/
+    HI_BOOL                         bSetEosFlag;
+    HI_BOOL                         bSetAudEos;
+    HI_BOOL                         bSetEosBeginTime;
+    HI_U32                          u32EosBeginTime;
 
-    /*dmx pid of pcr channel, it uses when avplay reset or start, because there's no open/close interface of pcr channel*/
-    /*CNcomment: PCR通道没有open/close接口，所以需要记录以供reset，start使用 */
-    HI_U32                     DmxPcrPid;         
+    /*ddp test*/
+    HI_BOOL                         AudDDPMode;
+    HI_U32                          LastAudPts;
 
-    AVPLAY_VID_PORT_AND_WIN_S   MasterFrmChn;
-    AVPLAY_VID_PORT_AND_WIN_S   SlaveFrmChn[AVPLAY_MAX_SLAVE_FRMCHAN];
-    HI_U32                      SlaveChnNum;
-    AVPLAY_VID_PORT_AND_WIN_S   VirFrmChn[AVPLAY_MAX_VIR_FRMCHAN];
-    HI_U32                      VirChnNum;
+    AVPLAY_EVT_CB_FN                EvtCbFunc[HI_UNF_AVPLAY_EVENT_BUTT]; 
 
-    HI_HANDLE                  hSyncTrack;
-    HI_HANDLE                  hTrack[AVPLAY_MAX_TRACK];
-    HI_U32                     TrackNum;
-
-    HI_HANDLE                  hSync;
-
-    HI_BOOL                    bFrcEnable;
-    AVPLAY_FRC_CFG_S           FrcParamCfg;        /* config frc param */ /*CNcomment: 配置的frc参数 */
-    AVPLAY_ALG_FRC_S           FrcCalAlg;          /* frc used rate info */ /*CNcomment: frc正在使用的帧率信息 */
-    AVPLAY_FRC_CTRL_S          FrcCtrlInfo;        /* frc control */ /*CNcomment: frc控制信息 */
-
-    HI_U32                     FrcNeedPlayCnt;     /* this frame need to play time*/ /*CNcomment:该帧需要播几次 */
-    HI_U32                     FrcCurPlayCnt;     /* this frame had played time*/   /*CNcomment:该帧实际播到第几次*/
-
-    HI_BOOL                    VidEnable;
-    HI_BOOL                    AudEnable;
-
-    HI_BOOL                    bSetEosFlag;
-    HI_BOOL                    bSetAudEos;
-
-    HI_BOOL                    AudDDPMode; /* for DDP test only */
-    HI_U32                     LastAudPts; /* for DDP test only */
-
-    AVPLAY_EVT_CB_FN           EvtCbFunc[HI_UNF_AVPLAY_EVENT_BUTT];   /*event callback function*/
-
-    HI_UNF_AVPLAY_STATUS_E     LstStatus;        /* last avplay status */
-    HI_UNF_AVPLAY_STATUS_E     CurStatus;            /* current avplay status */
-    HI_UNF_AVPLAY_OVERFLOW_E   OverflowProc;
-
-    AVPLAY_STATISTICS_S        AvplayStatisticsInfo;
-
-    HI_BOOL                    AvplayProcContinue;
-    HI_BOOL                    AvplayProcDataFlag[AVPLAY_PROC_BUTT];
-
-    VDEC_ES_BUF_S              AvplayVidEsBuf;      /*vdec buffer in es mode*/
-    HI_UNF_STREAM_BUF_S        AvplayAudEsBuf;      /*adec buffer in es mode*/
-    HI_UNF_ES_BUF_S            AvplayDmxEsBuf;      /*audio denux buffer in ts mode*/
-    HI_UNF_AO_FRAMEINFO_S      AvplayAudFrm;        /*audio frames get form adec*/
-    SYNC_AUD_INFO_S            AudInfo;
-    SYNC_AUD_OPT_S             AudOpt;
-
-    HI_DRV_VIDEO_FRAME_PACKAGE_S CurFrmPack;
-    HI_DRV_VIDEO_FRAME_PACKAGE_S LstFrmPack;
-
-    SYNC_VID_INFO_S            VidInfo;
-    SYNC_VID_OPT_S             VidOpt;
-
-    HI_BOOL                    bStepMode;
-    HI_BOOL                    bStepPlay;
-
-    HI_U32                     PreAudEsBuf;         /*audio es buffer size when EOS happens*/
-    HI_U32                     PreVidEsBuf;         /*video es buffer size when EOS happens*/
-    HI_U32                     PreSystime;          /*system time when EOS happens*/
-    HI_U32                     PreVidEsBufWPtr;     /*position of the video es buffer write pointer*/
-    HI_U32                     PreAudEsBufWPtr;     /*position of the audio es buffer write pointer*/
-    HI_U32                     PreTscnt;            /*ts count when EOS happens*/
-    HI_BOOL                    CurBufferEmptyState; /*current buffer state is empty or not*/
-
-    HI_UNF_AVPLAY_BUF_STATE_E   PreVidBufState;     /*the status of video es buffer when CheckBuf*/
-    HI_UNF_AVPLAY_BUF_STATE_E   PreAudBufState;     /*the status of audio es buffer when CheckBuf*/
-    HI_BOOL                     VidDiscard;
-
-    HI_BOOL                    AvplayThreadRun;
-    THREAD_PRIO_E              AvplayThreadPrio;    /*the priority level of avplay thread*/
-
-    HI_U32                     EosStartTime;        /*EOS start time*/
-    HI_U32                     EosDurationTime;     /*EOS duration time*/
-
-    HI_BOOL                    bStandBy;            /*is standby or not*/
-
-    /*Add for EOS time out case */
-    HI_BOOL                    bSetEosBeginTime;
-    HI_U32                     u32EosBeginTime;
+    /*play control parameters*/
+    HI_BOOL                         bSendedFrmToVirWin;          /*whether this frame has send to virtual window*/   
+    HI_BOOL                         VidEnable;
+    HI_BOOL                         AudEnable;
+    HI_UNF_AVPLAY_STATUS_E          LstStatus;                   /* last avplay status */
+    HI_UNF_AVPLAY_STATUS_E          CurStatus;                   /* current avplay status */
+    HI_UNF_AVPLAY_OVERFLOW_E        OverflowProc;
+    HI_BOOL                         AvplayProcContinue;          /*flag for thread continue*/
+    HI_BOOL                         AvplayVidProcContinue;       /*flag for video thread continue*/
 	
-    HI_U32                     u32TBMatchBeginTime;
+    HI_BOOL                         AvplayProcDataFlag[AVPLAY_PROC_BUTT];
+
+    HI_UNF_STREAM_BUF_S             AvplayAudEsBuf;      /*adec buffer in es mode*/
+    HI_UNF_ES_BUF_S                 AvplayDmxEsBuf;      /*audio denux buffer in ts mode*/
+    HI_UNF_AO_FRAMEINFO_S           AvplayAudFrm;        /*audio frames get form adec*/
+    SYNC_AUD_INFO_S                 AudInfo;
+    SYNC_AUD_OPT_S                  AudOpt;
+
+    VDEC_ES_BUF_S                   AvplayVidEsBuf;      /*vdec buffer in es mode*/
+    HI_DRV_VIDEO_FRAME_PACKAGE_S    CurFrmPack;
+    HI_DRV_VIDEO_FRAME_PACKAGE_S    LstFrmPack;
+    SYNC_VID_INFO_S                 VidInfo;
+    SYNC_VID_OPT_S                  VidOpt;
+
+    HI_DRV_VDEC_FRAME_S             stIFrame;
+
+    HI_BOOL                         bStepMode;
+    HI_BOOL                         bStepPlay;
+
+    AVPLAY_DEBUG_INFO_S             DebugInfo;
+    
+    HI_U32                          PreAudEsBuf;         /*audio es buffer size when EOS happens*/
+    HI_U32                          PreVidEsBuf;         /*video es buffer size when EOS happens*/
+    HI_U32                          PreSystime;          /*system time when EOS happens*/
+    HI_U32                          PreVidEsBufWPtr;     /*position of the video es buffer write pointer*/
+    HI_U32                          PreAudEsBufWPtr;     /*position of the audio es buffer write pointer*/
+    HI_U32                          PreTscnt;            /*ts count when EOS happens*/
+    HI_BOOL                         CurBufferEmptyState; /*current buffer state is empty or not*/
+
+    HI_UNF_AVPLAY_BUF_STATE_E       PreVidBufState;     /*the status of video es buffer when CheckBuf*/
+    HI_UNF_AVPLAY_BUF_STATE_E       PreAudBufState;     /*the status of audio es buffer when CheckBuf*/
+    HI_BOOL                         VidDiscard;
+
+    HI_U32                          EosStartTime;        /*EOS start time*/
+    HI_U32                          EosDurationTime;     /*EOS duration time*/
+    HI_U32                          AvgStrmBitrate;      /*Average stream bitrate */
+
+    HI_BOOL                         bStandBy;            /*is standby or not*/
+
+    HI_U32                          AdecDelayMs;            /*How many mseconds in ADEC buffer*/
+    ADEC_SzNameINFO_S               AdecNameInfo;
+
+    HI_U32                          u32DispOptimizeFlag;    /*this is for pvr smooth tplay*/
+    
+    HI_U32                          ThreadID;
+    HI_BOOL                         AvplayThreadRun;
+    THREAD_PRIO_E                   AvplayThreadPrio;    /*the priority level of avplay thread*/
 
 #ifndef __KERNEL__
-    pthread_t                   AvplayDataThdInst;  /* run handle of avplay thread */  
-    pthread_attr_t              AvplayThreadAttr;   /*attribute of avplay thread*/
-    pthread_mutex_t             *pAvplayThreadMutex;     /*mutex for data safety use*/
-    pthread_mutex_t             *pAvplayMutex;            /* mutex for interface safety use */
+    pthread_t                       AvplayDataThdInst;  /* run handle of avplay thread */  
+    pthread_t                       AvplayVidDataThdInst;  /* run handle of avplay thread */ 
+    pthread_attr_t                  AvplayThreadAttr;   /*attribute of avplay thread*/
+    pthread_mutex_t                 *pAvplayThreadMutex;     /*mutex for data safety use*/
+    pthread_mutex_t                 *pAvplayVidThreadMutex;     /*mutex for data safety use*/
+    pthread_mutex_t                 *pAvplayMutex;            /* mutex for interface safety use */
 
-    pthread_t                   AvplayStatThdInst;    /* run handle of avplay thread */  
+    pthread_t                       AvplayStatThdInst;    /* run handle of avplay thread */  
 #endif
 }AVPLAY_S;
 #pragma pack()

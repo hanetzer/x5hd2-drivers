@@ -21,14 +21,12 @@ CFLAGS  +=  -I$(COMMON_UNF_INCLUDE)                 \
             -I$(CURDIR)                             \
             -I$(CURDIR)/../adec                     
 
-ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200es)
-CFLAGS  +=  -I$(CURDIR)/../hiao/aiaov2
-else
-CFLAGS  +=  -I$(CURDIR)/../hiao/hiao
-endif            
-
 CFLAGS  += -DCFG_HI_ADEC_MAX_INSTANCE=$(CFG_HI_ADEC_MAX_INSTANCE)
 CFLAGS  += -DCFG_HI_ADEC_OUTPUTBUF_FRAMENUM=$(CFG_HI_ADEC_OUTPUTBUF_FRAMENUM)
+
+ifeq ($(CFG_HI_AI_SUPPORT),y)
+CFLAGS += -DHI_AENC_AI_SUPPORT
+endif
 
 LIBS := libhi_aenc
 
@@ -48,7 +46,9 @@ clean:
 
 install:all
 	$(AT)cp -f  $(LIBS).a           $(STATIC_LIB_DIR)/
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)cp -f  $(LIBS).so          $(SHARED_LIB_DIR)/
+endif
 	$(AT)cp -f  $(HEADER_FILES)     $(INCLUDE_DIR)/
 
 uninstall:
@@ -58,4 +58,6 @@ uninstall:
 
 $(LIBS) : $(OBJS)
 	$(AT)$(AR) -rsv $@.a $^
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)$(CC) -shared -o $@.so $^
+endif

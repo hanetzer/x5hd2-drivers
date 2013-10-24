@@ -11,8 +11,8 @@
 #endif
 #include <linux/seq_file.h>
 
-#include "drv_proc_ext.h"
-
+#include "hi_drv_proc.h"
+#include "hi_drv_pmoc.h"
 
 int gpu_dvfs_set_voltage(unsigned int voltage);
 int gpu_dvfs_set_freq(unsigned int freq);
@@ -24,11 +24,11 @@ HI_S32 GPUDebugCtrl(HI_U32 u32Para1, HI_U32 u32Para2)
 {
 	HI_U32 u32CpuCurFreq = 0;
     
-    printk("\n gpu freq = 0x%x, voltage = 0x%x \n", u32Para1, u32Para2);
+    HI_INFO_PM("\n gpu freq = 0x%x, voltage = 0x%x \n", u32Para1, u32Para2);
     
 	if ((0 == u32Para1) && (0 == u32Para2))
 	{
-		printk("plese set the valid value \n");
+		HI_ERR_PM("plese set the valid value \n");
 		return HI_SUCCESS;
 	}
     
@@ -76,7 +76,7 @@ static HI_S32 GPUProcRead(struct seq_file *p, HI_VOID *v)
     
 	u32GpuVolt = gpu_dvfs_get_voltage();
 	
-	p += seq_printf(p, "gpu_freq = 0x%x gpu_volt = 0x%x \n", u32GpuFreq, u32GpuVolt);
+	PROC_PRINT(p, "gpu_freq = %d(Khz) gpu_volt = %d(mv) \n", u32GpuFreq, u32GpuVolt);
 
     return 0;
 }
@@ -93,7 +93,7 @@ int gpu_proc_create(void)
 	item = HI_DRV_PROC_AddModule("pm_gpu", NULL, NULL);
     if (!item)
     {
-        printk(KERN_ERR "add GPU proc module failed\n");
+        HI_ERR_PM(KERN_ERR "add GPU proc module failed\n");
         return -1;
     }
 	item->read	    = GPUProcRead;

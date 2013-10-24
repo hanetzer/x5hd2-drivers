@@ -21,7 +21,13 @@ CFLAGS  +=  -I$(COMMON_UNF_INCLUDE)                 \
 
 LIBS := libhi_ir
 
+ifeq ($(CFG_HI_IR_TYPE_STD), y)
+OBJS := unf_ir_std.o
+endif
+
+ifeq ($(CFG_HI_IR_TYPE_S2), y)
 OBJS := unf_ir.o
+endif
 
 HEADER_FILES := $(MSP_DIR)/include/hi_unf_ir.h 
 
@@ -39,7 +45,9 @@ clean:
 
 install: all
 	$(AT)cp -f  $(LIBS).a           $(STATIC_LIB_DIR)/
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)cp -f  $(LIBS).so          $(SHARED_LIB_DIR)/
+endif
 	$(AT)cp -f  $(HEADER_FILES)     $(INCLUDE_DIR)/
 
 uninstall:
@@ -49,5 +57,7 @@ uninstall:
 
 $(LIBS) : $(OBJS)
 	$(AT)$(AR) -rsv $@.a $^
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)$(CC) -shared -o $@.so $^
+endif
 

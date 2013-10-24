@@ -35,6 +35,7 @@ extern "C" {
 /** CNcomment:基本配置参数结构体*/
 typedef struct hiUNF_PDM_DISP_PARAM_S
 {
+	HI_UNF_DISP_E				enSrcDisp;			/**<source display*//**<CNcomment: 同源display枚举*/
     HI_UNF_ENC_FMT_E            enFormat;           /**<Format*//**<CNcomment: 制式*/
     HI_U32                      u32Brightness;      /**<Brightness*//**<CNcomment: 亮度*/ 
     HI_U32                      u32Contrast;        /**<Contrast*//**<CNcomment: 对比度*/ 
@@ -46,12 +47,9 @@ typedef struct hiUNF_PDM_DISP_PARAM_S
     HI_UNF_DISP_TIMING_S        stDispTiming;       /**<Display timeing*//**<CNcomment: 显示时序*/
 	
     HIGO_PF_E                   enPixelFormat;      /**<Pixel format*//**<CNcomment: 像素格式*/
-    HI_U32                      u32DisplayWidth;    /**<Width of the display buffer of a graphics layer.*//**<CNcomment: 图层的显示buffer宽度*/
-    HI_U32                      u32DisplayHeight;   /**<Height of the display buffer of a graphics layer.*//**<CNcomment: 图形的显示buffer高度*/
-    HI_U32                      u32ScreenXpos;      /**<X position of a graphics layer on the screen.*//**<CNcomment: 图层在屏幕上的X坐标*/
-    HI_U32                      u32ScreenYpos;      /**<Y position of a graphics layer on the screen*//**<CNcomment: 图层在屏幕上的Y坐标*/
-    HI_U32                      u32ScreenWidth;     /**<Width of a graphics layer on the screen*//**<CNcomment: 图层在屏幕上的宽度*/
-    HI_U32                      u32ScreenHeight;    /**<Height of a graphics layer on the screen*//**<CNcomment: 图层在屏幕上的高度*/
+    HI_UNF_DISP_OFFSET_S        stDispOffset;		/**<Display margin info*//**<CNcomment: 显示空白区域*/
+    HI_U32                      u32VirtScreenWidth;	/**<Virtual screen width*//**<CNcomment: 虚拟屏幕宽*/
+    HI_U32                      u32VirtScreenHeight;	/**<Virtual screen height*//**<CNcomment: 虚拟屏幕高*/
 	
     HI_UNF_DISP_ASPECT_RATIO_S  stAspectRatio;      /**<The device aspect ratio*//**<CNcomment: 设备宽高比*/
 }HI_UNF_PDM_DISP_PARAM_S;

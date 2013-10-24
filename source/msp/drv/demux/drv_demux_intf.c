@@ -11,10 +11,10 @@
 
 /***************************** included files ******************************/
 #include "hi_type.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
 #include "hi_module.h"
 #include "hi_kernel_adapt.h"
 
@@ -161,7 +161,7 @@ static HI_S32 DMXProcRead(struct seq_file *p, HI_VOID *v)
 {
     HI_U32 DmxId;
 
-    seq_printf(p, "DmxId\tPortId\n");
+    PROC_PRINT(p, "DmxId\tPortId\n");
 
     for (DmxId = 0; DmxId < DMX_CNT; DmxId++)
     {
@@ -173,62 +173,64 @@ static HI_S32 DMXProcRead(struct seq_file *p, HI_VOID *v)
         ret = HI_DRV_DMX_GetPortId(DmxId, &PortMode, &PortId);
         if (HI_SUCCESS == ret)
         {
-            sprintf(PortStr, "%u", (DMX_PORT_MODE_TUNER == PortMode) ? PortId : HI_UNF_DMX_PORT_RAM_0 + PortId);
+            snprintf(PortStr, 8,"%u", (DMX_PORT_MODE_TUNER == PortMode) ? PortId : HI_UNF_DMX_PORT_RAM_0 + PortId);
         }
 
-        seq_printf(p, "  %u\t%s\n", DmxId, PortStr);
+        PROC_PRINT(p, "  %u\t%s\n", DmxId, PortStr);
     }
+	PROC_PRINT(p, "type \"echo help > /proc/msp/demux_main\" to get help informatin\n");
 
     return HI_SUCCESS;
 }
 
-static HI_VOID PortTypeToString(HI_CHAR *str, HI_U32 Type)
+static HI_VOID PortTypeToString(HI_CHAR *str, HI_U32 len, HI_U32 Type)
+
 {
     switch (Type)
     {
         case HI_UNF_DMX_PORT_TYPE_PARALLEL_BURST :
-            strcpy(str, "BST");
+            strncpy(str, "BST",len);
             break;
 
         case HI_UNF_DMX_PORT_TYPE_PARALLEL_VALID :
-            strcpy(str, "VLD");
+            strncpy(str, "VLD",len);
             break;
 
         case HI_UNF_DMX_PORT_TYPE_PARALLEL_NOSYNC_204 :
-            strcpy(str, "204");
+            strncpy(str, "204",len);
             break;
 
         case HI_UNF_DMX_PORT_TYPE_PARALLEL_NOSYNC_188_204 :
-            strcpy(str, "188/204");
+            strncpy(str, "188/204",len);
             break;
 
         case HI_UNF_DMX_PORT_TYPE_SERIAL :
-            strcpy(str, "SER");
+            strncpy(str, "SER",len);
             break;
 
         case HI_UNF_DMX_PORT_TYPE_SERIAL2BIT :
-            strcpy(str, "SER_2BIT");
+            strncpy(str, "SER_2BIT",len);
             break;
 
         case HI_UNF_DMX_PORT_TYPE_SERIAL_NOSYNC :
-            strcpy(str, "SER_NOSYNC");
+            strncpy(str, "SER_NOSYNC",len);
             break;
 
         case HI_UNF_DMX_PORT_TYPE_SERIAL2BIT_NOSYNC :
-            strcpy(str, "SER_2BIT_NOSYNC");
+            strncpy(str, "SER_2BIT_NOSYNC",len);
             break;
 
         case HI_UNF_DMX_PORT_TYPE_USER_DEFINED :
-            strcpy(str, "USR");
+            strncpy(str, "USR",len);
             break;
 
         case HI_UNF_DMX_PORT_TYPE_AUTO :
-            strcpy(str, "AUTO");
+            strncpy(str, "AUTO",len);
             break;
 
         case HI_UNF_DMX_PORT_TYPE_PARALLEL_NOSYNC_188 :
         default :
-            strcpy(str, "188");
+            strncpy(str, "188",len);
     }
 }
 
@@ -238,8 +240,8 @@ static HI_S32 DMXPortProcRead(struct seq_file *p, HI_VOID *v)
     HI_U32                  TsPacks;
     HI_U32                  ErrTsPacks;
     HI_UNF_DMX_PORT_ATTR_S  PortAttr;
-
-    seq_printf(p, " Id  AllTsCnt   ErrTsCnt  Lock/lost  Type\n");
+	PROC_PRINT(p, "--------------------------tuner port--------------------------------\n");
+    PROC_PRINT(p, " Id  AllTsCnt   ErrTsCnt  Lock/lost  Type  TsInClkReverse   BitSel\n");
 
     for (i = 0; i < DMX_TUNERPORT_CNT; i++)
     {
@@ -249,12 +251,15 @@ static HI_S32 DMXPortProcRead(struct seq_file *p, HI_VOID *v)
 
         HI_DRV_DMX_TunerPortGetPacketNum(i, &TsPacks, &ErrTsPacks);
 
-        PortTypeToString(str, PortAttr.enPortType);
+        PortTypeToString(str, sizeof(str),PortAttr.enPortType);
 
-        seq_printf(p, "%3u 0x%-8x   0x%-4x      %u/%u     %s\n",
-            i, TsPacks, ErrTsPacks, PortAttr.u32SyncLockTh, PortAttr.u32SyncLostTh, str);
+        PROC_PRINT(p, "%3u    0x%-8x 0x%-4x      %u/%u     %s          %d           %d\n",
+            i, TsPacks, ErrTsPacks, PortAttr.u32SyncLockTh, PortAttr.u32SyncLostTh, str,PortAttr.u32TunerInClk,PortAttr.u32SerialBitSelector);
+		
     }
 
+	PROC_PRINT(p, "\n---------------------------ram port---------------------------------\n");
+	PROC_PRINT(p, " Id  AllTsCnt   ErrTsCnt  Lock/lost  Type      TsLenChk1   TsLenChk2\n");
     for (i = 0; i < DMX_RAMPORT_CNT; i++)
     {
         HI_CHAR str[16] = "";
@@ -263,10 +268,19 @@ static HI_S32 DMXPortProcRead(struct seq_file *p, HI_VOID *v)
 
         HI_DRV_DMX_RamPortGetPacketNum(i, &TsPacks);
 
-        PortTypeToString(str, PortAttr.enPortType);
-
-        seq_printf(p, "%3u 0x%-8x   0x0         %u/%u     %s\n",
+        PortTypeToString(str, sizeof(str),PortAttr.enPortType);
+		if ( PortAttr.enPortType !=  HI_UNF_DMX_PORT_TYPE_USER_DEFINED)
+		{
+		    PROC_PRINT(p, "%3u    0x%-8x 0x0         %u/%u     %s         --         --\n",
             HI_UNF_DMX_PORT_RAM_0 + i, TsPacks, PortAttr.u32SyncLockTh, PortAttr.u32SyncLostTh, str);
+		}
+		else
+		{
+		 	PROC_PRINT(p, "%3u    0x%-8x 0x0         %u/%u     %s         %d          %dn",
+            HI_UNF_DMX_PORT_RAM_0 + i, TsPacks, PortAttr.u32SyncLockTh, PortAttr.u32SyncLostTh, str,PortAttr.u32UserDefLen1,PortAttr.u32UserDefLen2); 
+		}
+
+        
     }
 
     return HI_SUCCESS;
@@ -276,7 +290,7 @@ static HI_S32 DMXTsBufProcRead(struct seq_file *p, HI_VOID *v)
 {
     HI_U32  PortId;
 
-    seq_printf(p, "Id  BufAddr    BufSize    BufUsed    Read       Write           Get(Try/Ok)      Put\n");
+    PROC_PRINT(p, "Id  BufAddr    BufSize    BufUsed    Read       Write           Get(Try/Ok)      Put\n");
 
     for (PortId = 0; PortId < DMX_RAMPORT_CNT; PortId++)
     {
@@ -287,7 +301,7 @@ static HI_S32 DMXTsBufProcRead(struct seq_file *p, HI_VOID *v)
             continue;
         }
 
-        seq_printf(p, "%u 0x%-8x 0x%-8x 0x%-8x 0x%-8x 0x%-8x %10u/%-10u %u\n",
+        PROC_PRINT(p, "%u 0x%-8x 0x%-8x 0x%-8x 0x%-8x 0x%-8x %10u/%-10u %u\n",
                 HI_UNF_DMX_PORT_RAM_0 + PortId,
                 BufInfo.PhyAddr,
                 BufInfo.BufSize,
@@ -307,13 +321,13 @@ static HI_S32 DMXChanProcRead(struct seq_file *p, HI_VOID *v)
 {
     HI_U32  ChanId;
 
-    seq_printf(p, "Id DmxId  PID\tType Mod Stat  KeyId    Acquire(Try/Ok)    Release\n");
+    PROC_PRINT(p, "Id DmxId  PID\tType Mod Stat  KeyId    Acquire(Try/Ok)    Release\n");
 
     for (ChanId = 0; ChanId < DMX_CHANNEL_CNT; ChanId++)
     {
         DMX_ChanInfo_S *ChanInfo;
         HI_CHAR         ChanType[][8]   = {"SEC", "PES", "AUD", "VID", "PST", "ECM"};
-        HI_CHAR         OutMode[][8]    = {"PLY", "REC", "P&R"};
+        HI_CHAR         OutMode[][8]    = {"Reserve","PLY", "REC", "P&R"};
         HI_CHAR         KeyStr[8]       = "--";
 
         ChanInfo = DMX_OsiGetChannelProc(ChanId);
@@ -324,15 +338,15 @@ static HI_S32 DMXChanProcRead(struct seq_file *p, HI_VOID *v)
 
         if (ChanInfo->KeyId < DMX_KEY_CNT)
         {
-            sprintf(KeyStr, "%-2u", ChanInfo->KeyId);
+            snprintf(KeyStr, 8,"%-2u", ChanInfo->KeyId);
         }
 
-        seq_printf(p, "%-2u   %u   0x%x\t%s  %s %s\t%s   %10u/%-10u %u\n",
+        PROC_PRINT(p, "%-2u   %u   0x%x\t%s  %s %s\t%s   %10u/%-10u %u\n",
                         ChanId,
                         ChanInfo->DmxId,
                         ChanInfo->ChanPid,
                         ChanType[ChanInfo->ChanType],
-                        OutMode[ChanInfo->ChanOutMode - 1],
+                        (ChanInfo->ChanOutMode == HI_UNF_DMX_CHAN_OUTPUT_MODE_BUTT)?"UNO":OutMode[ChanInfo->ChanOutMode ],
                         (ChanInfo->ChanStatus == HI_UNF_DMX_CHAN_CLOSE)  ? "CLOSE" : "OPEN",
                         KeyStr,
                         ChanInfo->u32TotolAcq,
@@ -348,7 +362,7 @@ static HI_S32 DMXChanBufProcRead(struct seq_file *p, HI_VOID *v)
 {
     HI_U32 i;
 
-    seq_printf(p, "Id  Size  BlkCnt BlkSize Read Write Used Overflow\n");
+    PROC_PRINT(p, "Id  Size  BlkCnt BlkSize Read Write Used Overflow\n");
 
     for (i = 0; i < DMX_CHANNEL_CNT; i++)
     {
@@ -375,7 +389,7 @@ static HI_S32 DMXChanBufProcRead(struct seq_file *p, HI_VOID *v)
 
         Size = BufInfo.DescDepth * BufInfo.BlockSize / 1024;
 
-        seq_printf(p, "%2u %5uK %-6u %-7u %-4u %-5u %3u%% %u\n",
+        PROC_PRINT(p, "%2u %5uK %-6u %-7u %-4u %-5u %3u%% %u\n",
             i, Size, BufInfo.DescDepth, BufInfo.BlockSize, BufInfo.DescRead, BufInfo.DescWrite, UsedPercent, BufInfo.Overflow);
     }
 
@@ -387,7 +401,7 @@ static HI_S32 DMXFilterProcRead(struct seq_file *p, HI_VOID *v)
     HI_U32 FilterId;
     HI_U32 i;
 
-    seq_printf(p, "Id ChanId Depth Param\n");
+    PROC_PRINT(p, "Id ChanId Depth Param\n");
 
     for (FilterId = 0; FilterId < DMX_FILTER_CNT; FilterId++)
     {
@@ -402,29 +416,29 @@ static HI_S32 DMXFilterProcRead(struct seq_file *p, HI_VOID *v)
 
         if (FilterInfo->ChanId < DMX_CHANNEL_CNT)
         {
-            sprintf(str, "%2u", FilterInfo->ChanId);
+            snprintf(str, 16,"%2u", FilterInfo->ChanId);
         }
 
-        seq_printf(p, "%2u   %s   %3u   Match :", FilterId, str, FilterInfo->Depth);
+        PROC_PRINT(p, "%2u   %s   %3u   Match :", FilterId, str, FilterInfo->Depth);
 
         for (i = 0; i < FilterInfo->Depth; i++)
         {
-            seq_printf(p, " %02x", FilterInfo->Match[i]);
+            PROC_PRINT(p, " %02x", FilterInfo->Match[i]);
         }
 
-        seq_printf(p, "\n\t\tMask  :");
+        PROC_PRINT(p, "\n\t\tMask  :");
         for (i = 0; i < FilterInfo->Depth; i++)
         {
-            seq_printf(p, " %02x", FilterInfo->Mask[i]);
+            PROC_PRINT(p, " %02x", FilterInfo->Mask[i]);
         }
 
-        seq_printf(p, "\n\t\tNegate:");
+        PROC_PRINT(p, "\n\t\tNegate:");
         for (i = 0; i < FilterInfo->Depth; i++)
         {
-            seq_printf(p, " %02x", FilterInfo->Negate[i]);
+            PROC_PRINT(p, " %02x", FilterInfo->Negate[i]);
         }
 
-        seq_printf(p, "\n");
+        PROC_PRINT(p, "\n");
     }
 
     return 0;
@@ -434,7 +448,7 @@ static HI_S32 DMXPcrProcRead(struct seq_file *p, HI_VOID *v)
 {
     HI_U32 PcrId;
 
-    seq_printf(p, "Id DmxId PID    CurrPcr     CurrScr\n");
+    PROC_PRINT(p, "Id DmxId PID    CurrPcr     CurrScr\n");
 
     for (PcrId = 0; PcrId < DMX_PCR_CHANNEL_CNT; PcrId++)
     {
@@ -446,7 +460,7 @@ static HI_S32 DMXPcrProcRead(struct seq_file *p, HI_VOID *v)
             continue;
         }
 
-        seq_printf(p, "%-2u   %u   0x%-4x 0x%-9llx 0x%-9llx\n",
+        PROC_PRINT(p, "%-2u   %u   0x%-4x 0x%-9llx 0x%-9llx\n",
             PcrId, PcrInfo->DmxId, PcrInfo->PcrPid, PcrInfo->PcrValue, PcrInfo->ScrValue);
     }
 
@@ -457,7 +471,7 @@ static HI_S32 DMXRecProcRead(struct seq_file *p, HI_VOID *v)
 {
     HI_U32 RecId;
 
-    seq_printf(p, "DmxId Type Descramed Status  Size  BlkCnt BlkSize Read Write Overflow\n");
+    PROC_PRINT(p, "DmxId Type Descramed Status  Size  BlkCnt BlkSize Read Write Overflow\n");
 
     for (RecId = 0; RecId < DMX_CNT; RecId++)
     {
@@ -488,7 +502,7 @@ static HI_S32 DMXRecProcRead(struct seq_file *p, HI_VOID *v)
         Size    = RecInfo.BlockCnt * RecInfo.BlockSize / 1024;
         Status  = RecInfo.RecStatus ? "start" : "stop ";
 
-        seq_printf(p, "%3u   %s      %u     %s  %5uK %-6u %-7u %-4u %-5u %u\n",
+        PROC_PRINT(p, "%3u   %s      %u     %s  %5uK %-6u %-7u %-4u %-5u %u\n",
             RecId, Type, RecInfo.Descramed, Status, Size, RecInfo.BlockCnt,
             RecInfo.BlockSize, RecInfo.BufRead, RecInfo.BufWrite, RecInfo.Overflow);
     }
@@ -500,7 +514,7 @@ static HI_S32 DMXRecScdProcRead(struct seq_file *p, HI_VOID *v)
 {
     HI_U32 RecId;
 
-    seq_printf(p, "DmxId Type  Pid    Size BlkCnt BlkSize Read Write Overflow\n");
+    PROC_PRINT(p, "DmxId Type  Pid    Size BlkCnt BlkSize Read Write Overflow\n");
 
     for (RecId = 0; RecId < DMX_CNT; RecId++)
     {
@@ -530,7 +544,7 @@ static HI_S32 DMXRecScdProcRead(struct seq_file *p, HI_VOID *v)
 
         Size = ScdInfo.BlockCnt * ScdInfo.BlockSize / 1024;
 
-        seq_printf(p, "%3u   %s 0x%-4x %3uK %-6u %-7u %-4u %-5u %u\n",
+        PROC_PRINT(p, "%3u   %s 0x%-4x %3uK %-6u %-7u %-4u %-5u %u\n",
             RecId, Type, ScdInfo.IndexPid, Size, ScdInfo.BlockCnt,
             ScdInfo.BlockSize, ScdInfo.BufRead, ScdInfo.BufWrite, ScdInfo.Overflow);
     }
@@ -564,10 +578,22 @@ static HI_S32 DMXGlobalIoctl(struct file *file, HI_U32 cmd, HI_VOID *arg)
 
             break;
         }
+        case CMD_DEMUX_SET_PUSI:
+        {  
+            HI_UNF_DMX_PUSI_SET_S *pPara = (HI_UNF_DMX_PUSI_SET_S *)arg;            
+            ret = HI_DRV_DMX_SetPusi(pPara->bPusi);
+            break;
+        }
+        case CMD_DEMUX_SET_TEI:
+        {  
+            HI_UNF_DMX_TEI_SET_S *pPara = (HI_UNF_DMX_TEI_SET_S *)arg;
+            ret = HI_DRV_DMX_SetTei(pPara);
+            break;
+        }
 
         default:
         {
-            HI_WARN_DEMUX("unknown cmd: 0x%x\n", cmd);
+            HI_ERR_DEMUX("unknown cmd: 0x%x\n", cmd);
         }
     }
 
@@ -664,7 +690,7 @@ static HI_S32 DMXPortIoctl(struct file *file, HI_U32 cmd, HI_VOID *arg)
 
         default:
         {
-            HI_WARN_DEMUX("unknown cmd: 0x%x\n", cmd);
+            HI_ERR_DEMUX("unknown cmd: 0x%x\n", cmd);
         }
     }
 
@@ -728,7 +754,7 @@ static HI_S32 DMXTsBufferIoctl(struct file *file, HI_U32 cmd, HI_VOID *arg)
 
         default:
         {
-            HI_WARN_DEMUX("unknown cmd: 0x%x\n", cmd);
+            HI_ERR_DEMUX("unknown cmd: 0x%x\n", cmd);
         }
     }
 
@@ -860,7 +886,7 @@ static HI_S32 DMXChanIoctl(struct file *file, HI_U32 cmd, HI_VOID *arg)
 
         default:
         {
-            HI_WARN_DEMUX("unknown cmd: 0x%x\n", cmd);
+            HI_ERR_DEMUX("unknown cmd: 0x%x\n", cmd);
         }
     }
 
@@ -996,7 +1022,7 @@ static HI_S32 DMXRecvIoctl(struct file *file, HI_U32 cmd, HI_VOID *arg)
 
         default:
         {
-            HI_WARN_DEMUX("unknown cmd: 0x%x\n", cmd);
+            HI_ERR_DEMUX("unknown cmd: 0x%x\n", cmd);
         }
     }
 
@@ -1060,7 +1086,7 @@ static HI_S32 DMXPcrIoctl(struct file *file, HI_U32 cmd, HI_VOID *arg)
 
         default:
         {
-            HI_WARN_DEMUX("unknown cmd: 0x%x\n", cmd);
+            HI_ERR_DEMUX("unknown cmd: 0x%x\n", cmd);
         }
     }
 
@@ -1084,7 +1110,8 @@ static HI_S32 DMXAvIoctl(struct file *file, HI_U32 cmd, HI_VOID *arg)
         {
             DMX_PesBufGet_S *pPara = (DMX_PesBufGet_S *)arg;
             DMX_Stream_S stEsBuf;
-
+			stEsBuf.u32BufLen = 0;
+			stEsBuf.u32PtsMs = INVALID_PTS;
             ret = HI_DRV_DMX_AcquireEs(pPara->hChannel, &stEsBuf);
             if (HI_SUCCESS == ret)
             {
@@ -1111,7 +1138,7 @@ static HI_S32 DMXAvIoctl(struct file *file, HI_U32 cmd, HI_VOID *arg)
 
         default:
         {
-            HI_WARN_DEMUX("unknown cmd: 0x%x\n", cmd);
+            HI_ERR_DEMUX("unknown cmd: 0x%x\n", cmd);
         }
     }
 
@@ -1266,7 +1293,7 @@ static HI_S32 DMXRecIoctl(struct file *file, HI_U32 cmd, HI_VOID *arg)
 
         default:
         {
-            HI_WARN_DEMUX("unknown cmd: 0x%x\n", cmd);
+            HI_ERR_DEMUX("unknown cmd: 0x%x\n", cmd);
         }
     }
 
@@ -1354,7 +1381,7 @@ HI_S32 DMX_OsrIoctl(struct inode *inode, struct file *file, HI_U32 cmd, HI_VOID 
 
         default:
         {
-            HI_WARN_DEMUX("unknown cmd: 0x%x\n", cmd);
+            HI_ERR_DEMUX("unknown cmd: 0x%x\n", cmd);
         }
     }
 
@@ -1433,6 +1460,7 @@ HI_S32 DMX_DRV_ModInit(HI_VOID)
 {
 #ifdef HI_DEMUX_PROC_SUPPORT
     DRV_PROC_ITEM_S *item;
+    DRV_PROC_EX_S stFnOpt = {0};
 #endif
 
 #ifndef HI_MCE_SUPPORT
@@ -1442,7 +1470,8 @@ HI_S32 DMX_DRV_ModInit(HI_VOID)
     }
 #endif
 
-    strcpy(g_stDemuxDev.devfs_name, UMAP_DEVNAME_DEMUX);
+    strncpy(g_stDemuxDev.devfs_name, UMAP_DEVNAME_DEMUX,strlen(UMAP_DEVNAME_DEMUX));
+    g_stDemuxDev.devfs_name[strlen(UMAP_DEVNAME_DEMUX)] = '\0';
     g_stDemuxDev.fops   = &DMX_DRV_Fops;
     g_stDemuxDev.minor  = UMAP_MIN_MINOR_DEMUX;
     g_stDemuxDev.owner  = THIS_MODULE;
@@ -1458,7 +1487,7 @@ HI_S32 DMX_DRV_ModInit(HI_VOID)
     item = HI_DRV_PROC_AddModule("demux_main", NULL, NULL);
     if (!item)
     {
-        HI_WARN_DEMUX("add proc demux_main failed\n");
+        HI_ERR_DEMUX("add proc demux_main failed\n");
     }
     else
     {
@@ -1466,67 +1495,74 @@ HI_S32 DMX_DRV_ModInit(HI_VOID)
         item->write = DMXProcWrite;
     }
 
-    item = HI_DRV_PROC_AddModule("demux_port", DMXPortProcRead, NULL);
+    stFnOpt.fnRead = DMXPortProcRead;
+    item = HI_DRV_PROC_AddModule("demux_port", &stFnOpt, NULL);
     if (!item)
     {
-        HI_WARN_DEMUX("add proc demux_port failed\n");
+        HI_ERR_DEMUX("add proc demux_port failed\n");
     }
 
-    item = HI_DRV_PROC_AddModule("demux_tsbuf", DMXTsBufProcRead, NULL);
+    stFnOpt.fnRead = DMXTsBufProcRead;
+    item = HI_DRV_PROC_AddModule("demux_tsbuf", &stFnOpt, NULL);
     if (!item)
     {
-        HI_WARN_DEMUX("add proc demux_tsbuf failed\n");
+        HI_ERR_DEMUX("add proc demux_tsbuf failed\n");
     }
 
-    item = HI_DRV_PROC_AddModule("demux_chan", DMXChanProcRead, NULL);
+    stFnOpt.fnRead = DMXChanProcRead;
+    item = HI_DRV_PROC_AddModule("demux_chan", &stFnOpt, NULL);
     if (!item)
     {
-        HI_WARN_DEMUX("add proc demux_chan failed\n");
+        HI_ERR_DEMUX("add proc demux_chan failed\n");
     }
 
-    item = HI_DRV_PROC_AddModule("demux_chanbuf", DMXChanBufProcRead, NULL);
+    stFnOpt.fnRead = DMXChanBufProcRead;
+    item = HI_DRV_PROC_AddModule("demux_chanbuf", &stFnOpt, NULL);
     if (!item)
     {
-        HI_WARN_DEMUX("add proc demux_chanbuf failed\n");
+        HI_ERR_DEMUX("add proc demux_chanbuf failed\n");
     }
 
-    item = HI_DRV_PROC_AddModule("demux_filter", DMXFilterProcRead, NULL);
+    stFnOpt.fnRead = DMXFilterProcRead;
+    item = HI_DRV_PROC_AddModule("demux_filter", &stFnOpt, NULL);
     if (!item)
     {
-        HI_WARN_DEMUX("add proc demux_filter failed\n");
+        HI_ERR_DEMUX("add proc demux_filter failed\n");
     }
 
 #ifdef DMX_DESCRAMBLER_SUPPORT
-    item = HI_DRV_PROC_AddModule("demux_key", DMXKeyProcRead, NULL);
+    stFnOpt.fnRead = DMXKeyProcRead;
+    item = HI_DRV_PROC_AddModule("demux_key", &stFnOpt, NULL);
     if (!item)
     {
-        HI_WARN_DEMUX("add proc demux_key failed\n");
+        HI_ERR_DEMUX("add proc demux_key failed\n");
     }
 #endif
 
-    item = HI_DRV_PROC_AddModule("demux_pcr", DMXPcrProcRead, NULL);
+    stFnOpt.fnRead = DMXPcrProcRead;
+    item = HI_DRV_PROC_AddModule("demux_pcr", &stFnOpt, NULL);
     if (!item)
     {
-        HI_WARN_DEMUX("add proc demux_pcr failed\n");
+        HI_ERR_DEMUX("add proc demux_pcr failed\n");
     }
 
-    item = HI_DRV_PROC_AddModule("demux_rec", DMXRecProcRead, NULL);
+    stFnOpt.fnRead = DMXRecProcRead;
+    item = HI_DRV_PROC_AddModule("demux_rec", &stFnOpt, NULL);
     if (!item)
     {
-        HI_WARN_DEMUX("add proc demux_rec failed\n");
+        HI_ERR_DEMUX("add proc demux_rec failed\n");
     }
 
-    item = HI_DRV_PROC_AddModule("demux_rec_index", DMXRecScdProcRead, NULL);
+    stFnOpt.fnRead = DMXRecScdProcRead;
+    item = HI_DRV_PROC_AddModule("demux_rec_index", &stFnOpt, NULL);
     if (!item)
     {
-        HI_WARN_DEMUX("add proc demux_rec_index failed\n");
+        HI_ERR_DEMUX("add proc demux_rec_index failed\n");
     }
 #endif
 
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_demux.ko success.  \t(%s)\n", VERSION_STRING);
-#endif
+    HI_PRINT("Load hi_demux.ko success.  \t(%s)\n", VERSION_STRING);
 #endif
 
     return HI_SUCCESS;

@@ -13,9 +13,9 @@
 
 #include "hi_type.h"
 #include "hi_module.h"
-#include "drv_mmz_ext.h"
-#include "drv_mem_ext.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_mem.h"
+#include "hi_drv_sys.h"
 #include "hi_kernel_adapt.h"
 
 #include "demux_debug.h"
@@ -54,8 +54,15 @@
 #define DMX_REC_AUD_SCD_BUF_SIZE            (28 * 1024)
 
 #define DMX_REC_TS_PACKETS_UNIT             (4 * 188)
+
+
 #define DMX_REC_VID_TS_PACKETS_PER_BLOCK    (64 * DMX_REC_TS_PACKETS_UNIT)
 #define DMX_REC_AUD_TS_PACKETS_PER_BLOCK    (32 * DMX_REC_TS_PACKETS_UNIT)
+
+#define DMX_REC_TS_WITH_TIMESTAMP_UNIT      (4 * 192)
+#define DMX_REC_VID_TS_WITH_TIMESTAMP_BLOCK_SIZE    (64 * DMX_REC_TS_WITH_TIMESTAMP_UNIT)
+#define DMX_REC_AUD_TS_WITH_TIMESTAMP_BLOCK_SIZE    (32 * DMX_REC_TS_WITH_TIMESTAMP_UNIT)
+
 
 #define DMX_REC_SCD_NUM_PER_BLOCK           (32 * 28)
 
@@ -92,9 +99,7 @@ static DMX_ERRMSG_S psErrMsg[DMX_MAX_ERRLIST_NUM];
 static wait_queue_head_t AllChnWaitQueue;
 static wait_queue_head_t *s_pAllChnWatchWaitQueue = HI_NULL;
 
-#if 1
-#define IsDmxDevInit()
-#else
+
 #define IsDmxDevInit()                                      \
     do                                                      \
     {                                                       \
@@ -104,7 +109,6 @@ static wait_queue_head_t *s_pAllChnWatchWaitQueue = HI_NULL;
             return HI_ERR_DMX_NOT_INIT;                     \
         }                                                   \
     } while (0)
-#endif
 
 extern HI_VOID DMX_OsrSaveEs(HI_U32 type, HI_U8 *buf, HI_U32 len,HI_U32 chnid);
 static HI_VOID DMXOsiOQGetReadWrite(HI_U32 OQId, HI_U32 *BlockWrite, HI_U32 *BlockRead);
@@ -390,6 +394,10 @@ static HI_VOID DmxFqIdRelease(HI_U32 FqId)
 
             up(&FqInfo->LockFq);
         }
+        else
+        {
+            HI_ERR_DEMUX("down_interruptible failed!\n");
+        }
     }
 }
 
@@ -538,6 +546,7 @@ static HI_S32 DmxOQRelease(HI_U32 FqId, HI_U32 OqId, HI_U32 PhyAddr, HI_U32 len)
     {
         if (0 != down_interruptible(&FqInfo->LockFq))
         {
+            HI_ERR_DEMUX("down_interruptible failed!\n");
             return HI_ERR_DMX_BUSY;
         }
     }
@@ -650,7 +659,7 @@ static HI_S32 ParsePesHeader(
         HI_U32          u32ParserAddr,
         HI_U32          PESLength,
         HI_U32         *pPESHeadLen,
-        HI_U32         *pDispTime
+        Disp_Control_t *pDispController
     )
 {
     HI_U8 *pData;
@@ -730,16 +739,19 @@ static HI_S32 ParsePesHeader(
         {
             pChanInfo->LastPts = INVALID_PTS;
         }
-
-        if ((0xee == StreamId) && (PESLength > 24))
+        //add by yangchun 201302234
+        if((0xee == StreamId) && PESLength > 24) 
         {
-            if ((0x70 == pData[13]) && (0x76 == pData[14]) && (0x72 == pData[15]) && (0x63 == pData[16]))
+            if( (0x70 == pData[13]) && (0x76 == pData[14]) && (0x72 == pData[15]) && (0x63 == pData[16]))
             {
-                if ((0x75 == pData[17]) && (0x72 == pData[18]) && (0x74 == pData[19]) && (0x6d == pData[20]))
+                if( (0x75 == pData[17]) && (0x72 == pData[18]) && (0x74 == pData[19]) && (0x6d == pData[20]))
                 {
-                    *pDispTime      = *(HI_U32 *)&pData[21];
-                    *pPESHeadLen    = 184;
-
+                    pDispController->u32DispTime = *(HI_U32 *)&pData[21];
+                    pDispController->u32DispEnableFlag = *(HI_U32 *)&pData[25];
+                    pDispController->u32DispFrameDistance = *(HI_U32 *)&pData[29];
+                    pDispController->u32DistanceBeforeFirstFrame = *(HI_U32 *)&pData[33];
+                    pDispController->u32GopNum = *(HI_U32 *)&pData[37];
+                    *pPESHeadLen = 184;
                     return -2;
                 }
             }
@@ -749,7 +761,7 @@ static HI_S32 ParsePesHeader(
     }
     else
     {
-        HI_WARN_DEMUX("streamID:%x did not del the pes header!\n", StreamId);
+        HI_ERR_DEMUX("streamID:%x did not del the pes header!\n", StreamId);
         return HI_FAILURE;
     }
 }
@@ -767,6 +779,7 @@ static HI_S32 DMXCheckBuffer(  HI_U32 u32BufStartAddr,
         u32PhyAddr = u32BufStartAddr + u32Offset;
         if (u32BufLen < u32Offset)
         {
+            HI_ERR_DEMUX("invalide offset,u32BufLen:%d,u32Offset:%d!\n",u32BufLen,u32Offset);
             return -1;
         }
 
@@ -774,6 +787,7 @@ static HI_S32 DMXCheckBuffer(  HI_U32 u32BufStartAddr,
         u32SecLen += *(HI_U8 *)(u32PhyAddr + 2);
         if ((u32SecLen > u32BufLenTmp) || (u32SecLen > DMX_MAX_SEC_LEN))
         {
+            HI_ERR_DEMUX("invalid u32SecLen, u32SecLen:%d,u32BufLenTmp:%d!\n",u32SecLen,u32BufLenTmp);
             return -1;
         }
 
@@ -891,11 +905,18 @@ static HI_S32 RamPortClean(HI_U32 PortId)
     return HI_SUCCESS;
 }
 
+/*
+1. check the avaliable space in ts buffer head part (Head) and tail part (Tail)
+2. if Tail is enough for ReqLen, return Tail sapce, otherwise ,retuen Head space.
+3. if both not enough ,return     
+PortInfo->ReqAddr   = 0;
+PortInfo->ReqLen    = 0;
+*/
 static HI_VOID GetIPBufLen(const HI_U32 PortId, const HI_U32 ReqLen)
 {
     DMX_RamPort_Info_S *PortInfo = &g_pDmxDevOsi->RamPortInfo[PortId];
-    HI_U32              Head;
-    HI_U32              Tail;
+    HI_U32              Head;/*the avaliable space in ts buffer head part*/
+    HI_U32              Tail;/*the avaliable space in ts buffer tail part*/
 
     PortInfo->ReqAddr   = 0;
     PortInfo->ReqLen    = 0;
@@ -945,18 +966,9 @@ static HI_VOID GetIPBufLen(const HI_U32 PortId, const HI_U32 ReqLen)
 }
 
 /**
- \brief
-
- \attention
-
- \param[in] u32PortId
- \param[in] u32DataSize
-
- \retval none
- \return none
-
- \see
- \li ::
+1. check wether TS buffer have enough space for user to get (u32DataSize)
+2. check wether Desc queue have enough free Desc to description the (u32DataSize) TS buffer ,
+each Desc can descript 64K block of buffer.
  */
 static HI_BOOL CheckIPBuf(const HI_U32 PortId, const HI_U32 ReqLen)
 {
@@ -965,7 +977,7 @@ static HI_BOOL CheckIPBuf(const HI_U32 PortId, const HI_U32 ReqLen)
     HI_U32              AddDesc;
     HI_U32              FreeDesc;
     HI_SIZE_T           LockFlag;
-
+    /*the number of Desc should add into the Desc queue */
     AddDesc  = ReqLen / DMX_MAX_IP_BLOCK_SIZE + 2;
 
     DescRead = DmxHalIPPortDescGetRead(PortId);
@@ -980,6 +992,14 @@ static HI_BOOL CheckIPBuf(const HI_U32 PortId, const HI_U32 ReqLen)
     }
 
     spin_lock_irqsave(&PortInfo->LockRamPort, LockFlag);
+/*
+call GetIPBufLen
+1. check the avaliable space in ts buffer head part (Head) and tail part (Tail)
+2. if Tail is enough for ReqLen, return Tail sapce, otherwise ,retuen Head space.
+3. if both not enough ,return     
+PortInfo->ReqAddr   = 0;
+PortInfo->ReqLen    = 0;
+*/
     GetIPBufLen(PortId, ReqLen);
     spin_unlock_irqrestore(&PortInfo->LockRamPort, LockFlag);
 
@@ -1068,7 +1088,7 @@ static HI_S32 IsAddrValid( HI_U32 u32Read, HI_U32 u32Write, HI_U32 u32Addr)
         }
         else
         {
-            HI_WARN_DEMUX("Addr is out of range, R=0x%x, W=0x%x, J=0x%x!\n", u32Read, u32Write, u32Addr);
+            HI_ERR_DEMUX("Addr is out of range, R=0x%x, W=0x%x, J=0x%x!\n", u32Read, u32Write, u32Addr);
             return HI_FAILURE;
         }
     }
@@ -1080,7 +1100,7 @@ static HI_S32 IsAddrValid( HI_U32 u32Read, HI_U32 u32Write, HI_U32 u32Addr)
         }
         else
         {
-            HI_WARN_DEMUX("Addr is out of range, R=0x%x, W=0x%x, J=0x%x!\n", u32Read, u32Write, u32Addr);
+            HI_ERR_DEMUX("Addr is out of range, R=0x%x, W=0x%x, J=0x%x!\n", u32Read, u32Write, u32Addr);
             return HI_FAILURE;
         }
     }
@@ -1331,7 +1351,6 @@ static HI_S32 DMXOsiOQGetBbsAddrSize(HI_U32 OqId, HI_U32 OqWrite, HI_U32 *BbsAdd
 
 static HI_VOID DMXOsiRelaseOQ(DMX_OQ_Info_S *pstChPlayBuf, HI_U32 u32ReadBlk, HI_U32 u32Num)
 {
-    HI_S32  ret;
     HI_U32  u32CurrentBlk;
     HI_U32  FqId;
     HI_U32  fqwrite, oqread;
@@ -1339,13 +1358,13 @@ static HI_VOID DMXOsiRelaseOQ(DMX_OQ_Info_S *pstChPlayBuf, HI_U32 u32ReadBlk, HI
     FQ_DescInfo_S* fq_desc;
     DMX_DEV_OSI_S *pDmxDevOsi = g_pDmxDevOsi;
     DMX_FQ_Info_S  *FqInfo;
+	HI_SIZE_T u32LockFlag;
 
     FqId = pstChPlayBuf->u32FQId;
 
     FqInfo = &pDmxDevOsi->DmxFqInfo[FqId];
 
-    ret = down_interruptible(&FqInfo->LockFq);
-
+	spin_lock_irqsave(&(pDmxDevOsi->splock_OqBuf), u32LockFlag);			
     fqwrite = DmxHalGetFQWritePtr(FqId);
 
     oqread = u32ReadBlk;
@@ -1365,8 +1384,7 @@ static HI_VOID DMXOsiRelaseOQ(DMX_OQ_Info_S *pstChPlayBuf, HI_U32 u32ReadBlk, HI
     DmxHalSetOQReadPtr(pstChPlayBuf->u32OQId, oqread);
     pstChPlayBuf->u32ReleaseBlk = oqread;
     DmxHalSetFQWritePtr(FqId, fqwrite);
-
-    up(&FqInfo->LockFq);
+    spin_unlock_irqrestore(&(pDmxDevOsi->splock_OqBuf), u32LockFlag);
 }
 
 static HI_S32 DMXOsiFindPes(DMX_ChanInfo_S * pChanInfo,
@@ -1804,7 +1822,7 @@ static HI_S32 DMXOsiIsr(int irq, void* devId)
     DMX_OQ_Info_S  *OqInfo;
     HI_U32          DmxId;
     HI_U32          OqId;
-    HI_U32          ChanId;
+    HI_U32          ChanId = 0;
     HI_U32          PortId;
     HI_U32          IntStatus;
     HI_U32          i;
@@ -2091,7 +2109,7 @@ static HI_S32 DMXOsiIsr(int irq, void* devId)
             {
                 HI_U32  DescRead;
                 HI_U32 *ReadAddr;
-
+                /*DmxHalIPPortDescGetRead return the Desc logic is reading */
                 DescRead = DmxHalIPPortDescGetRead(PortId);
                 if (0 == DescRead)
                 {
@@ -2099,11 +2117,11 @@ static HI_S32 DMXOsiIsr(int irq, void* devId)
                 }
                 else
                 {
-                    --DescRead;
+                    --DescRead;/*it means the Desc which logic alreadly finished read it*/
                 }
 
                 ReadAddr = (HI_U32*)(PortInfo->DescKerAddr + (DescRead << 4));
-
+                /*PortInfo->Read is the ts buffer read offset*/
                 PortInfo->Read = *ReadAddr - PortInfo->PhyAddr;
                 if (PortInfo->Read == PortInfo->Write)
                 {
@@ -2113,7 +2131,13 @@ static HI_S32 DMXOsiIsr(int irq, void* devId)
             }
 
             DmxHalIPPortClearOutIntStatus(PortId);
-
+            /*
+            in DMX_OsiTsBufferGet,
+            if have not enough space ,the PortInfo->WaitLen will be give value ,and wait the interupt of 
+            DmxHalIPPortGetOutIntStatus (new Desc be readed by logic,so there may be new space avaliable),
+            every time in DmxHalIPPortGetOutIntStatus ,will call GetIpFreeDescAndBufLen again , if return HI_FALSE,
+            will wake up
+            */
             if (PortInfo->WaitLen)
             {
                 if (!CheckIPBuf(PortId, PortInfo->WaitLen))
@@ -2243,13 +2267,17 @@ static HI_S32 DMXOsiGetSecNum(DMX_ChanInfo_S * pChanInfo,
     HI_S32 s32Ret;
     DMX_OQ_Info_S  *OqInfo  = &g_pDmxDevOsi->DmxOqInfo[pChanInfo->ChanOqId];
     OQ_DescInfo_S  *oq_dsc;
-
+    
+    /*get current OQ Desc write pointer in register*/
     DMXOsiOQGetReadWrite(pChanInfo->ChanOqId, &u32WriteBlk, HI_NULL);
 
     u32Offset   = OqInfo->u32ProcsOffset;
-    u32ReadBlk  = OqInfo->u32ProcsBlk;
+    /*we not directly using the read pointer in register but use the backup in software because the read pointer in register
+    will only updated after the DMX_OsiReleaseReadData be called in order to avoid these buffer be writen by hardware*/
+    u32ReadBlk  = OqInfo->u32ProcsBlk;/*the current OQ Desc now be processing (software is reading the data of the correlative buffer block)*/
     u32ProcsBlk = u32ReadBlk;
     *pu32BlkNum = 0;
+    /*process block one by one ,until the u32ReadBlk == u32WriteBlk*/
     while (u32ReadBlk != u32WriteBlk)
     {
         u32CurrentBlk = OqInfo->u32OQVirAddr + u32ReadBlk * DMX_OQ_DESC_SIZE;
@@ -2262,6 +2290,7 @@ static HI_S32 DMXOsiGetSecNum(DMX_ChanInfo_S * pChanInfo,
 
         u32BufPhyAddr = oq_dsc->start_addr;
         u32DataLen = oq_dsc->pvrctrl_datalen & 0xffff;
+        /*if finished read the data of the current read  OQ Desc -> Buffer block  */
         if (u32Offset >= u32DataLen)
         {
             DMXINC(u32ReadBlk, OqInfo->u32OQDepth);
@@ -2386,9 +2415,11 @@ static HI_S32 DMXOsiReadSec(DMX_ChanInfo_S * pChanInfo,
     HI_U32 u32EopAddr;
     HI_U32 u32BlkNum = 0;
     DMX_OQ_Info_S  *OqInfo  = &g_pDmxDevOsi->DmxOqInfo[pChanInfo->ChanOqId];
-
+    /*first we get the current EOP ,because the EOP may be updated by hardware while we do  "DmxOsiReadToMsgBuffer" ,by l00188263*/
     u32EopAddr = DMXOsiGetCurEopaddr(pChanInfo);
-
+    
+    /*step1 . "DmxOsiReadToMsgBuffer" is used to read at least one whole buffer block, 
+    if there is no a whole block data, the pu32AcqedNum will == 0 */
     ret = DmxOsiReadToMsgBuffer(pChanInfo, u32AcqNum, pu32AcqedNum, psMsgList);
     if ((ret == HI_SUCCESS) && (*pu32AcqedNum > 0))
     {
@@ -2401,7 +2432,8 @@ static HI_S32 DMXOsiReadSec(DMX_ChanInfo_S * pChanInfo,
 
         return HI_SUCCESS;
     }
-
+    /*step2 . if there is no whole buffer block of data ,judge whether the current block (read==write) 
+    have some data or not ,if not ,wait untile time out*/
     pu32Offset = &OqInfo->u32ProcsOffset;
     if (*pu32Offset == u32EopAddr)
     {
@@ -2409,7 +2441,7 @@ static HI_S32 DMXOsiReadSec(DMX_ChanInfo_S * pChanInfo,
         {
             return HI_ERR_DMX_NOAVAILABLE_DATA;
         }
-
+        /*wait untile interupt happened. see DmxHalOQGetAllEopIntStatus*/
         ret = DMXOsiChannelWaitTimeOut(pChanInfo, u32TimeOutMs);
         if (0 == ret)
         {
@@ -2431,9 +2463,15 @@ static HI_S32 DMXOsiReadSec(DMX_ChanInfo_S * pChanInfo,
             return HI_SUCCESS;
         }
     }
-
+    
+    /*step3 . if after wait wake up, we still not get a whole buffer block of data ,
+    judge whether the current buffer block (read==write) have data or not ,if it does ,read it*/
+    
+    /*get current block's u32BufPhyAddr ,the following function DMXOsiParseSection will use it*/
     if (DMXOsiGetCurSAddr(pChanInfo, &u32BufPhyAddr, &u32EopAddr) != HI_SUCCESS)
     {
+        /*most possiblily, the DMXOsiGetCurBufblockSAddr return failure because of the "u32WriteBlk != u32ReadBlk" ,
+        so we call DmxOsiReadToMsgBuffer to read whole buffer again*/
         ret = DmxOsiReadToMsgBuffer(pChanInfo, u32AcqNum, pu32AcqedNum, psMsgList);
         if (ret == HI_SUCCESS)
         {
@@ -3032,6 +3070,16 @@ HI_S32 DMX_OsiGetPoolBufAddr(HI_U32 *PhyAddr, HI_U32 *BufSize)
     return HI_SUCCESS;
 }
 
+HI_VOID DMX_OsiSetNoPusiEn(HI_BOOL bNoPusiEn)
+{
+        DmxHalFilterSetSecStuffCtrl(bNoPusiEn);
+}
+
+HI_VOID DMX_OsiSetTei(HI_U32 u32DmxId,HI_BOOL bTei)
+{
+        DmxHalSetTei(u32DmxId,bTei);
+}
+    
 HI_S32 DMX_OsiAttachPort(const HI_U32 DmxId, const DMX_PORT_MODE_E PortMode, const HI_U32 PortId)
 {
     DMX_Sub_DevInfo_S  *DmxInfo = &g_pDmxDevOsi->SubDevInfo[DmxId];
@@ -3119,7 +3167,11 @@ HI_S32 DMX_OsiGetPortId(const HI_U32 DmxId, DMX_PORT_MODE_E *PortMode, HI_U32 *P
 
         ret = HI_SUCCESS;
     }
-
+    else
+    {
+        HI_WARN_DEMUX("the demux not attach with any port, DmxId=%d.\n", DmxId);
+    }
+    
     return ret;
 }
 
@@ -3253,6 +3305,7 @@ HI_S32 DMX_OsiRamPortSetAttr(const HI_U32 PortId, const HI_UNF_DMX_PORT_ATTR_S *
 
             break;
     #else
+            HI_ERR_DEMUX("do not support auto scan!\n");
             return HI_ERR_DMX_NOT_SUPPORT;
     #endif
 
@@ -3285,7 +3338,7 @@ HI_S32 DMX_OsiRamPortSetAttr(const HI_U32 PortId, const HI_UNF_DMX_PORT_ATTR_S *
             return HI_ERR_DMX_NOT_SUPPORT;
 
         default :
-            HI_WARN_DEMUX("Invalid type %u\n", PortAttr->enPortType);
+            HI_ERR_DEMUX("Invalid type %u\n", PortAttr->enPortType);
 
             return HI_ERR_DMX_INVALID_PARA;
     }
@@ -3358,14 +3411,14 @@ HI_S32 DMX_OsiTsBufferCreate(const HI_U32 PortId, const HI_U32 Size, DMX_MMZ_BUF
 
     if (PortInfo->PhyAddr)
     {
-        HI_WARN_DEMUX("TSBuffer has been used by other process:PortId=%u\n", PortId);
+        HI_ERR_DEMUX("TSBuffer has been used by other process:PortId=%u\n", PortId);
 
         return HI_ERR_DMX_RECREAT_TSBUFFER;
     }
 
     if ((Size > DMX_MAX_TS_BUFFER_SIZE) || (Size < DMX_MIN_TS_BUFFER_SIZE))
     {
-        HI_WARN_DEMUX("TsBuffer size 0x%x invalid, bigger than 0x%x, or less than 0x%x\n",
+        HI_ERR_DEMUX("TsBuffer size 0x%x invalid, bigger than 0x%x, or less than 0x%x\n",
             Size, DMX_MAX_TS_BUFFER_SIZE, DMX_MIN_TS_BUFFER_SIZE);
 
         return HI_ERR_DMX_INVALID_PARA;
@@ -3388,7 +3441,7 @@ HI_S32 DMX_OsiTsBufferCreate(const HI_U32 PortId, const HI_U32 Size, DMX_MMZ_BUF
     ret = HI_DRV_MMZ_AllocAndMap(BufName, HI_NULL, BufSize + DescBufSize, 0, &MmzBuf);
     if (HI_SUCCESS != ret)
     {
-        HI_WARN_DEMUX("malloc 0x%x failed\n", BufSize + DescBufSize);
+        HI_ERR_DEMUX("malloc 0x%x failed\n", BufSize + DescBufSize);
 
         return HI_ERR_DMX_ALLOC_MEM_FAILED;
     }
@@ -3415,7 +3468,7 @@ HI_S32 DMX_OsiTsBufferCreate(const HI_U32 PortId, const HI_U32 Size, DMX_MMZ_BUF
 #endif
 
     memset((HI_VOID*)PortInfo->DescKerAddr, 0, DescBufSize);
-
+    /*config the register*/
     TsBufferConfig(PortId, HI_TRUE, PortInfo->DescPhyAddr, DescDepth);
 
     TsBuf->u32BufPhyAddr    = PortInfo->PhyAddr;
@@ -3450,6 +3503,10 @@ HI_S32 DMX_OsiTsBufferDestroy(const HI_U32 PortId)
 
         ret = HI_SUCCESS;
     }
+    else
+    {
+        HI_ERR_DEMUX("invalid PhyAddr!\n");
+    }
 
     return ret;
 }
@@ -3465,20 +3522,27 @@ HI_S32 DMX_OsiTsBufferGet(const HI_U32 PortId, const HI_U32 ReqLen, DMX_DATA_BUF
 
     if (0 == ReqLen)
     {
-        HI_WARN_DEMUX("port %d get buf len is 0\n", PortId);
+        HI_ERR_DEMUX("port %d get buf len is 0\n", PortId);
 
         return HI_ERR_DMX_INVALID_PARA;
     }
 
     if (ReqLen > PortInfo->BufSize)
     {
-        HI_WARN_DEMUX("error, ReqLen(0x%x) > BufSize(0x%x)\n", ReqLen, PortInfo->BufSize);
+        HI_ERR_DEMUX("error, ReqLen(0x%x) > BufSize(0x%x)\n", ReqLen, PortInfo->BufSize);
 
         return HI_ERR_DMX_INVALID_PARA;
     }
 
     ++PortInfo->GetCount;
-
+/**
+call GetIpFreeDescAndBufLen
+1. check wether TS buffer have enough space for user to get (u32DataSize)
+2. check wether Desc queue have enough free Desc to description the (u32DataSize) TS buffer ,
+each Desc can descript 64K block of buffer.
+3. if this return HI_TRUE, 
+the space of PortInfo->ReqAddr and PortInfo->ReqLen will have right value (be writen in this function )
+ */
     if (CheckIPBuf(PortId, ReqLen))
     {
         HI_S32 ret;
@@ -3487,7 +3551,10 @@ HI_S32 DMX_OsiTsBufferGet(const HI_U32 PortId, const HI_U32 ReqLen, DMX_DATA_BUF
         {
             return HI_ERR_DMX_NOAVAILABLE_BUF;
         }
-
+        /*if have not enough space ,the PortInfo->WaitLen will be give value ,and wait the interupt of 
+        DmxHalIPPortGetOutIntStatus (new Desc be readed by logic,so there may be new space avaliable),
+        every time in DmxHalIPPortGetOutIntStatus ,will call GetIpFreeDescAndBufLen again , if return HI_FALSE,
+        will wake up*/
         PortInfo->WakeUp    = HI_FALSE;
         PortInfo->WaitLen   = ReqLen;
 
@@ -3521,6 +3588,7 @@ HI_S32 DMX_OsiTsBufferPut(const HI_U32 PortId, const HI_U32 DataLen, const HI_U3
 
     if (0 == PortInfo->PhyAddr)
     {
+        HI_ERR_DEMUX("put phyaddr is 0!");
         return HI_ERR_DMX_INVALID_PARA;
     }
 
@@ -3569,7 +3637,11 @@ HI_S32 DMX_OsiTsBufferPut(const HI_U32 PortId, const HI_U32 DataLen, const HI_U3
             PortInfo->DescWrite     = 0;
             PortInfo->DescCurrAddr  = (HI_U32*)PortInfo->DescKerAddr;
         }
-
+        /*the last time ,BufferLen == 0,will add a desc with len==0, this is OK,we need do it,
+        Because 
+        1.when Desc read pointer updated , may be logic is reading the block ,not finished ,if at that time , 
+        DMX_OsiTsBufferGet be called , then buffer may be covered. 
+        2. if we put a ZERO Desc ,then ,every time when Desc read pointer updated ,the logic must finished read the block*/
         DmxHalIPPortDescAdd(PortId, 1);
 
         if (0 == len)
@@ -3579,7 +3651,7 @@ HI_S32 DMX_OsiTsBufferPut(const HI_U32 PortId, const HI_U32 DataLen, const HI_U3
 
         BufferAddr  += len;
         BufferLen   -= len;
-    } while (BufferLen >= 0);
+    } while (1);
 
     return HI_SUCCESS;
 }
@@ -3709,6 +3781,7 @@ HI_S32 DMX_OsiNewFilter(const HI_U32 DmxId, HI_U32 *FilterId)
     }
     else
     {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
         ret = HI_ERR_DMX_BUSY;
     }
 
@@ -3766,6 +3839,7 @@ HI_S32 DMX_OsiDeleteFilter(const HI_U32 FilterId)
             }
             else
             {
+                HI_ERR_DEMUX("down_interruptible failed!\n");
                 ret = HI_ERR_DMX_BUSY;
             }
         }
@@ -3773,6 +3847,7 @@ HI_S32 DMX_OsiDeleteFilter(const HI_U32 FilterId)
     else
     {
         ret = HI_ERR_DMX_BUSY;
+        HI_ERR_DEMUX("down_interruptible failed!\n");
     }
 
     return ret;
@@ -3796,7 +3871,7 @@ HI_S32 DMX_OsiSetFilterAttr(const HI_U32 FilterId, const HI_UNF_DMX_FILTER_ATTR_
 
     if (FilterAttr->u32FilterDepth > DMX_FILTER_MAX_DEPTH)
     {
-        HI_WARN_DEMUX("filter %u set depth is %u too long\n", FilterId, FilterAttr->u32FilterDepth);
+        HI_ERR_DEMUX("filter %u set depth is %u too long\n", FilterId, FilterAttr->u32FilterDepth);
 
         return HI_ERR_DMX_INVALID_PARA;
     }
@@ -3805,7 +3880,7 @@ HI_S32 DMX_OsiSetFilterAttr(const HI_U32 FilterId, const HI_UNF_DMX_FILTER_ATTR_
     {
         if (FilterAttr->au8Negate[i] > 1)
         {
-            HI_WARN_DEMUX("filter %u set negate is invalid\n", FilterId);
+            HI_ERR_DEMUX("filter %u set negate is invalid\n", FilterId);
 
             return HI_ERR_DMX_INVALID_PARA;
         }
@@ -3856,6 +3931,7 @@ HI_S32 DMX_OsiSetFilterAttr(const HI_U32 FilterId, const HI_UNF_DMX_FILTER_ATTR_
     else
     {
         ret = HI_ERR_DMX_BUSY;
+        HI_ERR_DEMUX("down_interruptible failed!\n");
     }
 
     return ret;
@@ -3916,11 +3992,13 @@ HI_S32 DMX_OsiAttachFilter(const HI_U32 FilterId, const HI_U32 ChanId)
 
     if ((DMX_INVALID_CHAN_ID == Chan->ChanId) || (DMX_INVALID_FILTER_ID == Filter->FilterId))
     {
+        HI_ERR_DEMUX("ChanId:%d or FilterId:%d invalid!\n",Chan->ChanId,Filter->FilterId);
         return HI_ERR_DMX_INVALID_PARA;
     }
 
     if (DMX_INVALID_CHAN_ID != Filter->ChanId)
     {
+        HI_ERR_DEMUX("filter already attached!\n");
         return HI_ERR_DMX_ATTACHED_FILTER;
     }
 
@@ -3928,7 +4006,7 @@ HI_S32 DMX_OsiAttachFilter(const HI_U32 FilterId, const HI_U32 ChanId)
         && (HI_UNF_DMX_CHAN_TYPE_ECM_EMM!= Chan->ChanType)
         && (HI_UNF_DMX_CHAN_TYPE_PES    != Chan->ChanType) )
     {
-        HI_WARN_DEMUX("invalid channel type\n");
+        HI_ERR_DEMUX("invalid channel type\n");
 
         return HI_ERR_DMX_NOT_SUPPORT;
     }
@@ -3951,6 +4029,7 @@ HI_S32 DMX_OsiAttachFilter(const HI_U32 FilterId, const HI_U32 ChanId)
 
     if (0 != down_interruptible(&DmxDevOsi->lock_Channel))
     {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
         return HI_ERR_DMX_BUSY;
     }
 
@@ -3960,6 +4039,7 @@ HI_S32 DMX_OsiAttachFilter(const HI_U32 FilterId, const HI_U32 ChanId)
 
     if (0 != down_interruptible(&DmxDevOsi->lock_Filter))
     {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
         return HI_ERR_DMX_BUSY;
     }
 
@@ -4031,6 +4111,7 @@ HI_S32 DMX_OsiDetachFilter(const HI_U32 FilterId, const HI_U32 ChanId)
     }
     else
     {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
         ret = HI_ERR_DMX_BUSY;
     }
 
@@ -4072,6 +4153,7 @@ HI_S32 DMX_OsiGetFilterChannel(const HI_U32 FilterId, HI_U32 *ChanId)
     }
     else
     {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
         ret = HI_ERR_DMX_BUSY;
     }
 
@@ -4155,7 +4237,7 @@ HI_S32 DMX_OsiCreateChannel(HI_U32 DmxId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr, DMX_
                     break;
 
                 default :
-                    HI_WARN_DEMUX("invalid crc mode %u\n", ChanAttr->enCRCMode);
+                    HI_ERR_DEMUX("invalid crc mode %u\n", ChanAttr->enCRCMode);
 
                     return HI_ERR_DMX_INVALID_PARA;
             }
@@ -4176,7 +4258,7 @@ HI_S32 DMX_OsiCreateChannel(HI_U32 DmxId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr, DMX_
             break;
 
         default :
-            HI_WARN_DEMUX("invalid chan type %u\n", ChanAttr->enChannelType);
+            HI_ERR_DEMUX("invalid chan type %u\n", ChanAttr->enChannelType);
 
             return HI_ERR_DMX_INVALID_PARA;
     }
@@ -4189,7 +4271,7 @@ HI_S32 DMX_OsiCreateChannel(HI_U32 DmxId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr, DMX_
             break;
 
         default :
-            HI_WARN_DEMUX("Invalid output mode %u\n", ChanAttr->enOutputMode);
+            HI_ERR_DEMUX("Invalid output mode %u\n", ChanAttr->enOutputMode);
 
             return HI_ERR_DMX_INVALID_PARA;
     }
@@ -4215,12 +4297,13 @@ HI_S32 DMX_OsiCreateChannel(HI_U32 DmxId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr, DMX_
     }
     else
     {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
         return HI_ERR_DMX_BUSY;
     }
 
     if (i >= RegionEnd)
     {
-        HI_WARN_DEMUX("no free channel\n");
+        HI_ERR_DEMUX("no free channel\n");
 
         return HI_ERR_DMX_NOFREE_CHAN;
     }
@@ -4245,6 +4328,7 @@ HI_S32 DMX_OsiCreateChannel(HI_U32 DmxId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr, DMX_
     ChanInfo->u32Release    = 0;
     ChanInfo->LastPts       = INVALID_PTS;
     ChanInfo->ChanEosFlag   = HI_FALSE;
+    memset((HI_U8 *)&ChanInfo->stLastControl,0,sizeof(Disp_Control_t));
 
 #ifdef DMX_USE_ECM
     ChanInfo->u32SwFlag     = 0;
@@ -4275,7 +4359,7 @@ HI_S32 DMX_OsiCreateChannel(HI_U32 DmxId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr, DMX_
             {
                 up(&DmxMgr->lock_AVChan);
 
-                HI_WARN_DEMUX("no free av channel\n");
+                HI_ERR_DEMUX("no free av channel\n");
 
                 ChanInfo->DmxId = DMX_INVALID_DEMUX_ID;
 
@@ -4285,10 +4369,10 @@ HI_S32 DMX_OsiCreateChannel(HI_U32 DmxId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr, DMX_
             ++DmxMgr->AVChanCount;
             up(&DmxMgr->lock_AVChan);
 
-            FqId = DmxFqIdAcquire(DMX_FQ_AV_BASE, DMX_FQ_CNT);
+            FqId = DmxFqIdAcquire(1, DMX_FQ_CNT);
             if (FqId >= DMX_FQ_CNT)
             {
-                HI_WARN_DEMUX("no free fq\n");
+                HI_ERR_DEMUX("no free fq\n");
 
                 ChanInfo->DmxId = DMX_INVALID_DEMUX_ID;
 
@@ -4303,7 +4387,11 @@ HI_S32 DMX_OsiCreateChannel(HI_U32 DmxId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr, DMX_
 
             str         = (HI_UNF_DMX_CHAN_TYPE_AUD == ChanInfo->ChanType) ? "Aud" : "Vid";
             BlockSize   = (HI_UNF_DMX_CHAN_TYPE_AUD == ChanInfo->ChanType) ? DMX_FQ_AUD_BLOCK_SIZE : DMX_FQ_VID_BLOCK_SIZE;
-
+            /*
+            1.if buffer size > 1208*0x3ff (1M),will enter the following if ,and change the BlockSize,then ,the FQ Depth == DMX_MAX_AVFQ_DESC(0x3ff)
+            2.if buffer size > 8192*0x3ff (8M),will enter the following if ,and change the BlockSize,then ,the FQ Depth == DMX_MAX_AVFQ_DESC(0x3ff)
+            3.usually ,I think will this will not happen.(in StartAVPlay ,we set vedio channel buffer size as 0x300000)
+            */
             if ((BufSize / DMX_MAX_AVFQ_DESC) > BlockSize)
             {
                 BlockSize = (BufSize/ DMX_MAX_AVFQ_DESC) - ((BufSize / DMX_MAX_AVFQ_DESC) % 4);
@@ -4317,12 +4405,12 @@ HI_S32 DMX_OsiCreateChannel(HI_U32 DmxId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr, DMX_
             OqDepth     = (FqDepth < DMX_OQ_DEPTH) ? (FqDepth - 1) : DMX_OQ_DEPTH;
             OqBufSize   = OqDepth * DMX_OQ_DESC_SIZE;
 
-            sprintf(BufName, "DMX_%sBuf[%u]", str, ChanInfo->ChanId);
+            snprintf(BufName, 16,"DMX_%sBuf[%u]", str, ChanInfo->ChanId);
 
             ret = HI_DRV_MMZ_AllocAndMap(BufName, MMZ_OTHERS, BufSize + FqBufSize + OqBufSize, 0, &MmzBuf);
             if (HI_SUCCESS != ret)
             {
-                HI_WARN_DEMUX("memory allocate failed, BufSize=0x%x\n", BufSize + FqBufSize + OqBufSize);
+                HI_ERR_DEMUX("memory allocate failed, BufSize=0x%x\n", BufSize + FqBufSize + OqBufSize);
 
                 DmxFqIdRelease(FqId);
 
@@ -4351,16 +4439,16 @@ HI_S32 DMX_OsiCreateChannel(HI_U32 DmxId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr, DMX_
         else
         {
             FqInfo = &DmxMgr->DmxFqInfo[FqId];
-
+            /*OqDepth usually equal FqInfo->u32FQDepth - 1, except DmxPoolBufSize > DmxBlockSize *  DMX_OQ_DEPTH (5K*0X3ff) > 5M*/
             OqDepth     = FqInfo->u32FQDepth < DMX_OQ_DEPTH ? (FqInfo->u32FQDepth - 1) : DMX_OQ_DEPTH;
             OqBufSize   = OqDepth * DMX_OQ_DESC_SIZE;
 
-            sprintf(BufName, "DMX_OqBuf[%u]", ChanInfo->ChanId);
+            snprintf(BufName, 16,"DMX_OqBuf[%u]", ChanInfo->ChanId);
 
             ret = HI_DRV_MMZ_AllocAndMap(BufName, MMZ_OTHERS, OqBufSize, 0, &MmzBuf);
             if (HI_SUCCESS != ret)
             {
-                HI_WARN_DEMUX("memory allocate failed, BufSize=0x%x\n", OqBufSize);
+                HI_ERR_DEMUX("memory allocate failed, BufSize=0x%x\n", OqBufSize);
 
                 ChanInfo->DmxId = DMX_INVALID_DEMUX_ID;
 
@@ -4418,12 +4506,7 @@ HI_S32 DMX_OsiDestroyChannel(HI_U32 ChanId)
     DMX_ChanInfo_S *ChanInfo    = &DmxMgr->DmxChanInfo[ChanId];
     HI_U32          DmxId       = ChanInfo->DmxId;
 
-    if (DmxId >= DMX_CNT)
-    {
-        HI_ERR_DEMUX("chan %d is no existed\n", ChanId);
-
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(DmxId);
 
 #ifdef DMX_USE_ECM
     if (DMXOsiGetChnSwFlag(ChanId))
@@ -4556,11 +4639,8 @@ HI_S32 DMX_OsiOpenChannel(HI_U32 ChanId)
     DMX_Sub_DevInfo_S  *DmxInfo;
 
     ChanInfo = &pDmxDevOsi->DmxChanInfo[ChanId];
-    if (ChanInfo->DmxId >= DMX_CNT)
-    {
-        HI_ERR_DEMUX("channel %d is no existed\n", ChanId);
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+
+    CHECKDMXID(ChanInfo->DmxId);
 
     OqInfo  = &pDmxDevOsi->DmxOqInfo[ChanInfo->ChanOqId];
     DmxInfo = &pDmxDevOsi->SubDevInfo[ChanInfo->DmxId];
@@ -4672,11 +4752,7 @@ HI_S32 DMX_OsiCloseChannel(HI_U32 ChanId)
     DMX_OQ_Info_S      *OqInfo;
     DMX_FLUSH_TYPE_E    FlushType;
 
-    if (ChanInfo->DmxId >= DMX_CNT)
-    {
-        HI_ERR_DEMUX("channel %u is no existed\n", ChanId);
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(ChanInfo->DmxId);
 
     OqInfo = &pDmxDevOsi->DmxOqInfo[ChanInfo->ChanOqId];
 
@@ -4769,6 +4845,7 @@ HI_S32 DMX_OsiGetChannelAttr(HI_U32 ChanId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr)
     }
     else
     {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
         ret = HI_ERR_DMX_BUSY;
     }
 
@@ -4790,15 +4867,13 @@ HI_S32 DMX_OsiSetChannelAttr(HI_U32 ChanId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr)
     DMX_DEV_OSI_S  *DmxMgr      = g_pDmxDevOsi;
     DMX_ChanInfo_S *ChanInfo    = &DmxMgr->DmxChanInfo[ChanId];
 
-    if (ChanInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(ChanInfo->DmxId);
 
     if (   (ChanAttr->u32BufSize    != ChanInfo->ChanBufSize)
         || (ChanAttr->enChannelType != ChanInfo->ChanType)
         || (ChanAttr->enOutputMode  != ChanInfo->ChanOutMode) )
     {
+        HI_ERR_DEMUX("do not suppor change attr of buffer size, channel type and channel output mode!");
         return HI_ERR_DMX_NOT_SUPPORT;
     }
 
@@ -4822,7 +4897,7 @@ HI_S32 DMX_OsiSetChannelAttr(HI_U32 ChanId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr)
                 }
 
                 default :
-                    HI_WARN_DEMUX("invalid crc mode %u\n", ChanAttr->enCRCMode);
+                    HI_ERR_DEMUX("invalid crc mode %u\n", ChanAttr->enCRCMode);
 
                     ret = HI_ERR_DMX_INVALID_PARA;
             }
@@ -4835,13 +4910,14 @@ HI_S32 DMX_OsiSetChannelAttr(HI_U32 ChanId, HI_UNF_DMX_CHAN_ATTR_S *ChanAttr)
         case HI_UNF_DMX_CHAN_TYPE_POST :
             if (ChanAttr->enCRCMode != ChanInfo->ChanCrcMode)
             {
+                HI_ERR_DEMUX("PES/VID/AUD/POST channels do not support change their crc mode: %u\n", ChanAttr->enCRCMode);
                 ret = HI_ERR_DMX_NOT_SUPPORT;
             }
 
             break;
 
         default :
-            HI_WARN_DEMUX("invalid chan type %u\n", ChanAttr->enChannelType);
+            HI_ERR_DEMUX("invalid chan type %u\n", ChanAttr->enChannelType);
 
             ret = HI_ERR_DMX_INVALID_PARA;
     }
@@ -4872,11 +4948,13 @@ HI_S32 DMX_OsiSetChannelPid(HI_U32 ChanId, HI_U32 Pid)
 
     if ((ChanInfo->DmxId >= DMX_CNT) || (Pid > DMX_INVALID_PID))
     {
+        HI_ERR_DEMUX("invalid param, dmxid:%d,Pid:0x%x\n",ChanInfo->DmxId, Pid);
         return HI_ERR_DMX_INVALID_PARA;
     }
 
     if (HI_UNF_DMX_CHAN_CLOSE != ChanInfo->ChanStatus)
     {
+        HI_ERR_DEMUX("close channel first when set channel pid!\n");
         return HI_ERR_DMX_OPENING_CHAN;
     }
 
@@ -4925,6 +5003,7 @@ HI_S32 DMX_OsiGetChannelStatus(HI_U32 ChanId, HI_UNF_DMX_CHAN_STATUS_E *ChanStat
     }
     else
     {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
         ret = HI_ERR_DMX_BUSY;
     }
 
@@ -4974,11 +5053,8 @@ HI_S32 DMX_OsiGetChannelScrambleFlag(HI_U32 u32ChannelId, HI_UNF_DMX_SCRAMBLED_F
     IsDmxDevInit();
 
     pChInofo = &pDmxDevOsi->DmxChanInfo[u32ChannelId];
-    if (pChInofo->DmxId >= DMX_CNT)
-    {
-        HI_ERR_DEMUX("channel %d is no existed!\n", u32ChannelId);
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+
+    CHECKDMXID(pChInofo->DmxId);
 
     if (HI_UNF_DMX_CHAN_CLOSE == pChInofo->ChanStatus)
     {
@@ -5008,13 +5084,11 @@ HI_S32 DMX_OsiSetChannelEosFlag(HI_U32 ChanId)
 {
     DMX_ChanInfo_S *ChanInfo = &g_pDmxDevOsi->DmxChanInfo[ChanId];
 
-    if (ChanInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(ChanInfo->DmxId);
 
     if (HI_UNF_DMX_CHAN_CLOSE == ChanInfo->ChanStatus)
     {
+        HI_ERR_DEMUX("channel %d is not opened!\n", ChanId);
         return HI_ERR_DMX_NOT_OPEN_CHAN;
     }
 
@@ -5066,11 +5140,7 @@ HI_S32 DMX_OsiSetChannelCCRepeat(HI_U32 ChanId, HI_UNF_DMX_CHAN_CC_REPEAT_SET_S 
     CHECKPOINTER(pstChCCReaptSet);
     
     pChanInfo = &pDmxDevOsi->DmxChanInfo[ChanId];
-    if (pChanInfo->DmxId >= DMX_CNT)
-    {
-        HI_ERR_DEMUX("channel %d is no existed!\n", ChanId);
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(pChanInfo->DmxId);
 
     if (pstChCCReaptSet->enCCRepeatMode == HI_UNF_DMX_CHAN_CC_REPEAT_MODE_DROP)
     {
@@ -5094,6 +5164,7 @@ HI_S32 DMX_OsiGetChannelId(HI_U32 DmxId, HI_U32 Pid, HI_U32 *ChanId)
 
     if (Pid >= DMX_INVALID_PID)
     {
+        HI_ERR_DEMUX("invalid pid:%d!\n", Pid);
         return HI_ERR_DMX_INVALID_PARA;
     }
 
@@ -5114,6 +5185,7 @@ HI_S32 DMX_OsiGetChannelId(HI_U32 DmxId, HI_U32 Pid, HI_U32 *ChanId)
     }
     else
     {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
         ret = HI_ERR_DMX_BUSY;
     }
 
@@ -5155,7 +5227,7 @@ HI_S32  DMX_OsiReadDataRequset(HI_U32         u32ChId,
 
     if (HI_UNF_DMX_CHAN_PLAY_EN != (HI_UNF_DMX_CHAN_PLAY_EN & pChanInfo->ChanStatus))
     {
-        HI_WARN_DEMUX("channel %d is not open yet or not play channel\n", u32ChId);
+        HI_ERR_DEMUX("channel %d is not open yet or not play channel\n", u32ChId);
 
         return HI_ERR_DMX_NOAVAILABLE_DATA;
     }
@@ -5259,7 +5331,7 @@ HI_S32 DMX_OsiReleaseReadData(HI_U32 u32ChId, HI_U32 u32RelNum, DMX_UserMsg_S* p
 
     if (HI_UNF_DMX_CHAN_PLAY_EN != (HI_UNF_DMX_CHAN_PLAY_EN & pChanInfo->ChanStatus))
     {
-        HI_WARN_DEMUX("channel %d is not open yet or not play channel\n", u32ChId);
+        HI_ERR_DEMUX("channel %d is not open yet or not play channel\n", u32ChId);
         return HI_ERR_DMX_NOAVAILABLE_DATA;
     }
 #ifdef DMX_USE_ECM
@@ -5279,8 +5351,17 @@ HI_S32 DMX_OsiReleaseReadData(HI_U32 u32ChId, HI_U32 u32RelNum, DMX_UserMsg_S* p
     OqInfo = &pDmxDevOsi->DmxOqInfo[pChanInfo->ChanOqId];
 
     pChanInfo->u32ChnResetLock = 1;
+    /*
+    first ,get OQ Desc read write pointer from register , 
+    OQ read pointer is only update by software,now ,it is the value last time software update it.
+    OQ write pointer is only update by logic(hardware   )
+    */
     DMXOsiOQGetReadWrite(pChanInfo->ChanOqId, &u32WriteBlk, &u32ReadPtr);
 
+    /*
+    malloc pAddr for record the bufferAddress and  buffersize of error buffer block, each error block need 2 words ,
+    so ,malloc size is sizeof(HI_U32) * DMX_MAX_ERRLIST_NUM * 2
+     */
     pAddr = HI_VMALLOC(HI_ID_DEMUX, sizeof(HI_U32) * DMX_MAX_ERRLIST_NUM * 2);
     if (HI_NULL == pAddr)
     {
@@ -5288,10 +5369,10 @@ HI_S32 DMX_OsiReleaseReadData(HI_U32 u32ChId, HI_U32 u32RelNum, DMX_UserMsg_S* p
         pChanInfo->u32ChnResetLock = 0;
         return HI_FAILURE;
     }
-
+     /*the start release position is the u32ReadPtr*/
     OqInfo->u32ReleaseBlk = u32ReadPtr;
     pu32ReleaseBlk = &OqInfo->u32ReleaseBlk;
-
+    /***********************************situition1 ,channel type is common(SEC/POST.ECM/EMM)*******************/
     if (   (HI_UNF_DMX_CHAN_TYPE_SEC    == pChanInfo->ChanType)
         || (HI_UNF_DMX_CHAN_TYPE_ECM_EMM== pChanInfo->ChanType)
         || (HI_UNF_DMX_CHAN_TYPE_POST   == pChanInfo->ChanType) )
@@ -5299,23 +5380,29 @@ HI_S32 DMX_OsiReleaseReadData(HI_U32 u32ChId, HI_U32 u32RelNum, DMX_UserMsg_S* p
         while (*pu32ReleaseBlk != u32WriteBlk)
         {
             u32RealseFlag = 0;
-
+            /*u32CurrentBlk is the address of current descriptor (which will be released current) in OQ, not the number */
             u32CurrentBlk = OqInfo->u32OQVirAddr + *pu32ReleaseBlk * DMX_OQ_DESC_SIZE;
-            u32BufPhyAddr = *(HI_U32 *)u32CurrentBlk;
-            u32BufLen  = *(HI_U32 *)(u32CurrentBlk + 8) & 0xffff;
-            u32BufSize = *(HI_U32 *)(u32CurrentBlk + 4) & 0xffff;
+            u32BufPhyAddr = *(HI_U32 *)u32CurrentBlk;               /*u32BufPhyAddr is current block address,acturally, this first word of Desc is block address*/
+            u32BufLen  = *(HI_U32 *)(u32CurrentBlk + 8) & 0xffff;   /*u32BufLen is current block's data  length*/
+            u32BufSize = *(HI_U32 *)(u32CurrentBlk + 4) & 0xffff;   /*u32BufSize is current block's size*/
             u32ReadBlkNext = *pu32ReleaseBlk + 1;
             if (u32ReadBlkNext >= OqInfo->u32OQDepth)
             {
                 u32ReadBlkNext = 0;
             }
-
+            
+            /*the following if-else if mainly for find out the next valide block to be released,
+            both error block and valide block's information will be recored in pAddr[i].
+            so ,the output of this if-else is u32BufPhyAddrNext and u32BufLenNext*/
             if (IsAddrValid(u32ReadPtr, u32WriteBlk, u32ReadBlkNext) != HI_SUCCESS)
             {
                 u32NextBlkValidFlag = 0;
             }
             else
             {
+                /*
+                to find out next valid block ,first ,judge wether the next block is the "last next" ,meets: read == write.
+                */
                 DmxHalGetOQWORDx(pChanInfo->ChanOqId, DMX_OQ_SADDR_OFFSET, &u32BufPhyAddrNext);
                 DmxHalGetOQWORDx(pChanInfo->ChanOqId, DMX_OQ_SZUS_OFFSET, &u32BufLenNext);
                 u32BufLenNext >>= 16;
@@ -5326,6 +5413,7 @@ HI_S32 DMX_OsiReleaseReadData(HI_U32 u32ChId, HI_U32 u32RelNum, DMX_UserMsg_S* p
                 }
                 else
                 {
+                    /*find a valid next block*/
                     while(1)
                     {
                         if (u32ReadBlkNext != u32WriteBlk)
@@ -5355,13 +5443,19 @@ HI_S32 DMX_OsiReleaseReadData(HI_U32 u32ChId, HI_U32 u32RelNum, DMX_UserMsg_S* p
                     }
                 }
             }
-
+            
+            /*at here ,we release the buffer */
             for (; i < u32RelNum; i++)
             {
                 u32RealseFlag = 0;
+                /*if psMsgList[i] is in current block buffer*/
                 if ((psMsgList[i].u32BufStartAddr >= u32BufPhyAddr)
                    && (psMsgList[i].u32BufStartAddr <= (u32BufPhyAddr + u32BufLen - 1)))
                 {
+                    /*for section channel ,one block buffer (5K) usually contains some psMsgList[i] .the i is keep increasing ,
+                    when psMsgList[i]'s end address large than current block's end address ,
+                    it means the whole current block should be released, so set flag u32RealseFlag = 1 .
+                    this flag u32RealseFlag is for bolck ,not for psMsgList[i]*/
                     if ((psMsgList[i].u32BufStartAddr + psMsgList[i].u32MsgLen) >= (u32BufPhyAddr + u32BufLen))
                     {
                         u32RealseFlag = 1;
@@ -5369,13 +5463,20 @@ HI_S32 DMX_OsiReleaseReadData(HI_U32 u32ChId, HI_U32 u32RelNum, DMX_UserMsg_S* p
                 }
                 else if (u32NextBlkValidFlag)
                 {
+                    /*if psMsgList[i] is not in  current block buffer, judge wether it is in the next block of buffer*/
                     if ((psMsgList[i].u32BufStartAddr >= u32BufPhyAddrNext)
                        && (psMsgList[i].u32BufStartAddr <= (u32BufPhyAddrNext + u32BufLenNext - 1)))
                     {
                         u32RealseFlag = 1;
                     }
+                    /*if psMsgList[i] is not in  current block buffer and next block buffer, 
+                    may be there are error block between current and next block , or the current block is error block 
+                    and psMsgList[i] is in it*/
                     else
                     {
+                        /*
+                        if current block is error block ,use pAddr to record it
+                        */
                         if (DMXOsiRelErrMSG(u32BufPhyAddr) == 0)
                         {
                             //u32RealseFlag = 1;
@@ -5423,7 +5524,8 @@ HI_S32 DMX_OsiReleaseReadData(HI_U32 u32ChId, HI_U32 u32RelNum, DMX_UserMsg_S* p
                 break;
             }
         }
-
+        
+        /*at here ,now we finish calc the new read pointer in OQ, the following code is fo update the register to finished the release operation*/
         if (u32Blkcnt)
         {
             u32Fq = OqInfo->u32FQId;
@@ -5575,17 +5677,13 @@ HI_S32 DMX_OsiReadEsRequset(HI_U32 ChanId, DMX_Stream_S *EsData)
     HI_U32              StartPhyAddr= 0;
     HI_U32              PesHeadLen  = 0;
     HI_U32              tm;
+    Disp_Control_t      stDispController;
 
-    if (ChanInfo->DmxId >= DMX_CNT)
-    {
-        HI_WARN_DEMUX("channel %d is invalid\n", ChanId);
-
-        return HI_ERR_DMX_INVALID_PARA;
-    }
-
+    CHECKDMXID(ChanInfo->DmxId);
+    
     if ((HI_UNF_DMX_CHAN_TYPE_VID != ChanInfo->ChanType) && (HI_UNF_DMX_CHAN_TYPE_AUD != ChanInfo->ChanType))
     {
-        HI_WARN_DEMUX("channel %d type is not av\n", ChanId);
+        HI_ERR_DEMUX("channel %d type is not av\n", ChanId);
 
         return HI_ERR_DMX_NOT_SUPPORT;
     }
@@ -5671,6 +5769,14 @@ HI_S32 DMX_OsiReadEsRequset(HI_U32 ChanId, DMX_Stream_S *EsData)
                 return HI_ERR_DMX_NOAVAILABLE_DATA;
             }
         }
+        else
+        {
+            DMXOsiOQGetReadWrite(OqInfo->u32OQId, &OqWrite, HI_NULL);//flush OqWrite again
+            if (OqRead == OqWrite)
+            {
+                return HI_ERR_DMX_NOAVAILABLE_DATA;
+            }
+        }
     }
 
     if (OqRead != OqWrite)
@@ -5703,14 +5809,18 @@ HI_S32 DMX_OsiReadEsRequset(HI_U32 ChanId, DMX_Stream_S *EsData)
     }
 
     DataKerAddr = FqInfo->u32BufVirAddr + (DataPhyAddr - FqInfo->u32BufPhyAddr);
+    //add by yangchun: defaut value for there is no disp time;
+    EsData->u32DispTime = ChanInfo->stLastControl.u32DispTime;
+    EsData->u32DispEnableFlag= ChanInfo->stLastControl.u32DispEnableFlag;
+    EsData->u32DispFrameDistance= ChanInfo->stLastControl.u32DispFrameDistance;
+    EsData->u32DistanceBeforeFirstFrame= ChanInfo->stLastControl.u32DistanceBeforeFirstFrame;
+    EsData->u32GopNum = ChanInfo->stLastControl.u32GopNum;
 
     if (PvrCtrl & DMX_MASK_BIT_2)   // sop flag == 1
     {
-        HI_U32  DispTime;
-
         ChanInfo->u32PesLength = 0;
 
-        ret = ParsePesHeader(ChanInfo, DataKerAddr, DataLen, &PesHeadLen, &DispTime);
+        ret = ParsePesHeader(ChanInfo, DataKerAddr, DataLen, &PesHeadLen, &stDispController);
         if (HI_SUCCESS == ret)
         {
             HI_U8 *buf = (HI_U8*)DataKerAddr;
@@ -5728,8 +5838,12 @@ HI_S32 DMX_OsiReadEsRequset(HI_U32 ChanId, DMX_Stream_S *EsData)
                 DataPhyAddr += PesHeadLen;
                 DataKerAddr += PesHeadLen;
                 DataLen     -= PesHeadLen;
-
-                ChanInfo->LastDispTime = DispTime;
+                EsData->u32DispTime = stDispController.u32DispTime;
+                EsData->u32DispEnableFlag= stDispController.u32DispEnableFlag;
+                EsData->u32DispFrameDistance= stDispController.u32DispFrameDistance;
+                EsData->u32DistanceBeforeFirstFrame= stDispController.u32DistanceBeforeFirstFrame;
+                EsData->u32GopNum = stDispController.u32GopNum;
+                memcpy(&(ChanInfo->stLastControl), &stDispController, sizeof(Disp_Control_t));
             }
             else
             {
@@ -5763,8 +5877,6 @@ HI_S32 DMX_OsiReadEsRequset(HI_U32 ChanId, DMX_Stream_S *EsData)
     EsData->u32BufVirAddr   = DataKerAddr;
     EsData->u32BufLen       = DataLen;
     EsData->u32PtsMs        = ChanInfo->LastPts;
-    EsData->u32DispTime     = ChanInfo->LastDispTime;
-
     ChanInfo->LastPts = INVALID_PTS;
 
 #ifdef HI_DEMUX_PROC_SUPPORT
@@ -5784,23 +5896,18 @@ HI_S32 DMX_OsiReleaseReadEs(HI_U32 ChanId, DMX_Stream_S *EsData)
     DMX_OQ_Info_S  *OqInfo;
     HI_U32          TimeMs;
 
-    if (ChanInfo->DmxId >= DMX_CNT)
-    {
-        HI_WARN_DEMUX("channel %d is invalid\n", ChanId);
-
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(ChanInfo->DmxId);
 
     if ((HI_UNF_DMX_CHAN_TYPE_VID != ChanInfo->ChanType) && (HI_UNF_DMX_CHAN_TYPE_AUD != ChanInfo->ChanType))
     {
-        HI_WARN_DEMUX("channel %d type is not av\n", ChanId);
+        HI_ERR_DEMUX("channel %d type is not av\n", ChanId);
 
         return HI_ERR_DMX_NOT_SUPPORT;
     }
 
     if (HI_UNF_DMX_CHAN_PLAY_EN != (HI_UNF_DMX_CHAN_PLAY_EN & ChanInfo->ChanStatus))
     {
-        HI_WARN_DEMUX("channel %d is not open yet or not play channel\n", ChanId);
+        HI_ERR_DEMUX("channel %d is not open yet or not play channel\n", ChanId);
 
         return HI_ERR_DMX_NOT_OPEN_CHAN;
     }
@@ -5908,16 +6015,13 @@ HI_S32 DMX_OsiGetChanBufStatus(HI_U32 ChanId, HI_MPI_DMX_BUF_STATUS_S *BufStatus
     IsDmxDevInit();
 
     ChanInfo = &pDmxDevOsi->DmxChanInfo[ChanId];
-    if (ChanInfo->DmxId >= DMX_CNT)
-    {
-        HI_WARN_DEMUX("channel %d is invalid\n", ChanId);
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+
+    CHECKDMXID(ChanInfo->DmxId);
 
     OqInfo = &pDmxDevOsi->DmxOqInfo[ChanInfo->ChanOqId];
     if (OqInfo->enOQBufMode == DMX_OQ_MODE_UNUSED)
     {
-        HI_INFO_DEMUX("channel %d OQ status not used.\n", ChanId);
+        HI_ERR_DEMUX("channel %d OQ status not used.\n", ChanId);
         return HI_ERR_DMX_INVALID_PARA;
     }
 
@@ -6104,7 +6208,7 @@ HI_S32 DMX_OsiPcrChannelSetPid(const HI_U32 PcrId, const HI_U32 PcrPid)
 
     if ((PcrPid > DMX_INVALID_PID) || (PcrInfo->DmxId >= DMX_CNT))
     {
-        HI_WARN_DEMUX("Invalid parameter: PcrPid=0x%x, DmxId=%u\n", PcrPid, PcrInfo->DmxId);
+        HI_ERR_DEMUX("Invalid parameter: PcrPid=0x%x, DmxId=%u\n", PcrPid, PcrInfo->DmxId);
 
         return HI_ERR_DMX_INVALID_PARA;
     }
@@ -6120,7 +6224,7 @@ HI_S32 DMX_OsiPcrChannelSetPid(const HI_U32 PcrId, const HI_U32 PcrPid)
                 if (DmxMgr->DmxPcrInfo[i].PcrPid == PcrPid)
                 {
                     PcrInfo->PcrPid = PcrPid;
-                    HI_WARN_DEMUX("chanel(%x) pcr pid(%x) already used.\n", PcrId, PcrPid);
+                    HI_ERR_DEMUX("chanel(%x) pcr pid(%x) already used.\n", PcrId, PcrPid);
                     return HI_SUCCESS;
                 }
             }
@@ -6197,7 +6301,7 @@ HI_S32 DMX_OsiPcrChannelDetachSync(const HI_U32 PcrId)
     return ret;
 }
 
-HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, HI_U32 *BufPhyAddr, HI_U32 *BufSize)
+HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, DMX_REC_TIMESTAMP_MODE_E enRecTimeStamp,HI_U32 *RecId, HI_U32 *BufPhyAddr, HI_U32 *BufSize)
 {
     HI_S32          ret             = HI_ERR_DMX_NOFREE_CHAN;
     DMX_DEV_OSI_S  *DmxMgr          = g_pDmxDevOsi;
@@ -6228,6 +6332,10 @@ HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, 
 
     CHECKDMXID(RecAttr->u32DmxId);
 
+#ifndef DMX_REC_TIME_STAMP_SUPPORT
+	enRecTimeStamp = DMX_REC_TIMESTAMP_NONE;
+#endif
+
     switch (RecAttr->enRecType)
     {
         case HI_UNF_DMX_REC_TYPE_SELECT_PID :
@@ -6236,6 +6344,7 @@ HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, 
                 case HI_UNF_DMX_REC_INDEX_TYPE_VIDEO :
                     if (RecAttr->u32IndexSrcPid >= DMX_INVALID_PID)
                     {
+                        HI_ERR_DEMUX("invalid index pid:0x%x\n",RecAttr->u32IndexSrcPid);
                         return HI_ERR_DMX_INVALID_PARA;
                     }
 
@@ -6258,22 +6367,33 @@ HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, 
                             break;
 
                         default :
+                            HI_ERR_DEMUX("invalid vcodec type:%d\n",RecAttr->enVCodecType);
                             return HI_ERR_DMX_INVALID_PARA;
                     }
 
                     ScdBufSize = DMX_REC_VID_SCD_BUF_SIZE;
-
+					if ( enRecTimeStamp >= DMX_REC_TIMESTAMP_ZERO)
+					{
+					    RecFqBlockSize  = DMX_REC_VID_TS_WITH_TIMESTAMP_BLOCK_SIZE;
+					}	
                     break;
 
                 case HI_UNF_DMX_REC_INDEX_TYPE_AUDIO :
                     if (RecAttr->u32IndexSrcPid >= DMX_INVALID_PID)
                     {
+                        HI_ERR_DEMUX("invalid index pid:0x%x\n",RecAttr->u32IndexSrcPid);
                         return HI_ERR_DMX_INVALID_PARA;
                     }
 
                     ScdBufSize      = DMX_REC_AUD_SCD_BUF_SIZE;
-                    RecFqBlockSize  = DMX_REC_AUD_TS_PACKETS_PER_BLOCK;
-
+					if ( enRecTimeStamp >= DMX_REC_TIMESTAMP_ZERO)
+					{
+					    RecFqBlockSize  = DMX_REC_AUD_TS_WITH_TIMESTAMP_BLOCK_SIZE;
+					}
+					else
+					{
+					    RecFqBlockSize  = DMX_REC_AUD_TS_PACKETS_PER_BLOCK;
+					}
                     break;
 
                 case HI_UNF_DMX_REC_INDEX_TYPE_NONE :
@@ -6289,11 +6409,13 @@ HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, 
             break;
 
         default :
+            HI_ERR_DEMUX("invalid RecAttr->enRecType:%d\n",RecAttr->enRecType);
             return HI_ERR_DMX_INVALID_PARA;
     }
 
     if (RecAttr->u32RecBufSize < DMX_REC_MIN_BUF_SIZE)
     {
+        HI_ERR_DEMUX("invalid RecAttr->u32RecBufSize:0x%x\n",RecAttr->u32RecBufSize);
         return HI_ERR_DMX_INVALID_PARA;
     }
 
@@ -6309,17 +6431,20 @@ HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, 
     }
     else
     {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
         return HI_ERR_DMX_BUSY;
     }
 
     if (!RecInfo)
     {
+        HI_ERR_DEMUX("no free rec channel or channel already in use!\n");
         return HI_ERR_DMX_NOFREE_CHAN;
     }
 
-    RecFqId = DmxFqIdAcquire(DMX_FQ_REC_BASE, DMX_FQ_SCD_BASE);
+    RecFqId = DmxFqIdAcquire(1, DMX_FQ_CNT);
     if (RecFqId >= DMX_FQ_CNT)
     {
+        HI_ERR_DEMUX("invalid fq id:%d!\n",RecFqId);
         goto exit;
     }
 
@@ -6338,9 +6463,10 @@ HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, 
             }
         }
 
-        ScdFqId = DmxFqIdAcquire(DMX_FQ_SCD_BASE, DMX_FQ_AV_BASE);
+        ScdFqId = DmxFqIdAcquire(1, DMX_FQ_CNT);
         if (ScdFqId >= DMX_FQ_CNT)
         {
+            HI_ERR_DEMUX("invalid fq id:%d!\n",RecFqId);
             goto exit;
         }
 
@@ -6355,7 +6481,7 @@ HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, 
     RecOqDepth      = RecFqDepth < DMX_OQ_DEPTH ? (RecFqDepth - 1) : DMX_OQ_DEPTH;
     RecOqBufSize    = RecOqDepth * DMX_OQ_DESC_SIZE;
 
-    sprintf(BufName, "DMX_RecBuf[%u]", RecFqId);
+    snprintf(BufName, 16,"DMX_RecBuf[%u]", RecFqId);
 
     Size = RecBufSize + RecFqBufSize + RecOqBufSize;
 
@@ -6378,7 +6504,7 @@ HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, 
         ScdOqDepth      = ScdFqDepth < DMX_OQ_DEPTH ? (ScdFqDepth - 1) : DMX_OQ_DEPTH;
         ScdOqBufSize    = ScdOqDepth * DMX_OQ_DESC_SIZE;
 
-        sprintf(BufName, "DMX_ScdBuf[%u]", ScdFqId);
+        snprintf(BufName, 16,"DMX_ScdBuf[%u]", ScdFqId);
 
         Size = ScdBufSize + ScdFqBufSize + ScdOqBufSize;
 
@@ -6415,6 +6541,7 @@ HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, 
     }
     else
     {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
         ret = HI_ERR_DMX_BUSY;
 
         goto exit;
@@ -6465,6 +6592,21 @@ HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, 
     *BufPhyAddr = RecFqInfo->u32BufPhyAddr;
     *BufSize    = RecBufSize;
 
+	/*set recorded ts packet len,added by l00188263 ,Hi3719 support 192 Byte ts packet length recording*/
+#ifdef DMX_REC_TIME_STAMP_SUPPORT
+	if (0 == down_interruptible(&RecInfo->LockRec))
+    {
+        RecInfo->enRecTimeStamp   = enRecTimeStamp;
+        up(&RecInfo->LockRec);
+    }
+    else
+    {
+        HI_ERR_DEMUX("down_interruptible failed!\n");
+        return HI_ERR_DMX_BUSY;
+    }
+	
+	DmxHalConfigRecTsTimeStamp(RecAttr->u32DmxId, enRecTimeStamp);
+#endif	
     return HI_SUCCESS;
 
 exit :
@@ -6546,6 +6688,7 @@ HI_S32 DMX_DRV_REC_DestroyChannel(HI_U32 RecId)
         }
         else
         {
+            HI_ERR_DEMUX("stop the rec channel first!\n");
             ret = HI_ERR_DMX_STARTING_REC_CHAN;
         }
     }
@@ -6563,15 +6706,12 @@ HI_S32 DMX_DRV_REC_AddRecPid(HI_U32 RecId, HI_U32 Pid, HI_U32 *ChanId)
 
     if (Pid > DMX_INVALID_PID)
     {
-        HI_WARN_DEMUX("Invalid pid 0x%x\n", Pid);
+        HI_ERR_DEMUX("Invalid pid:0x%x\n", Pid);
 
         return HI_ERR_DMX_INVALID_PARA;
     }
 
-    if (RecInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(RecInfo->DmxId);
 
     ChanAttr.u32BufSize    = 0;
     ChanAttr.enChannelType = HI_UNF_DMX_CHAN_TYPE_PES;
@@ -6612,11 +6752,13 @@ HI_S32 DMX_DRV_REC_DelRecPid(HI_U32 RecId, HI_U32 ChanId)
 
     if ((RecInfo->DmxId >= DMX_CNT) || (ChanInfo->DmxId >= DMX_CNT))
     {
+        HI_ERR_DEMUX("RecInfo->DmxId:%d or ChanInfo->DmxId:%d invalid\n", RecInfo->DmxId,ChanInfo->DmxId);
         return HI_ERR_DMX_INVALID_PARA;
     }
 
     if (RecInfo->DmxId != ChanInfo->DmxId)
     {
+        HI_ERR_DEMUX("RecInfo->DmxId:%d or ChanInfo->DmxId:%d not equal!\n", RecInfo->DmxId,ChanInfo->DmxId);
         return HI_ERR_DMX_UNMATCH_CHAN;
     }
 
@@ -6643,10 +6785,8 @@ HI_S32 DMX_DRV_REC_DelAllRecPid(HI_U32 RecId)
     DMX_ChanInfo_S *ChanInfo;
     HI_U32          i;
 
-    if (RecInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+
+    CHECKDMXID(RecInfo->DmxId);
 
     for (i = 0; i < DMX_CHANNEL_CNT; i++)
     {
@@ -6680,7 +6820,7 @@ HI_S32 DMX_DRV_REC_AddExcludeRecPid(HI_U32 RecId, HI_U32 Pid)
 
     if (Pid > DMX_INVALID_PID)
     {
-        HI_WARN_DEMUX("Invalid pid 0x%x\n", Pid);
+        HI_ERR_DEMUX("Invalid pid 0x%x\n", Pid);
 
         return HI_ERR_DMX_INVALID_PARA;
     }
@@ -6719,7 +6859,7 @@ HI_S32 DMX_DRV_REC_DelExcludeRecPid(HI_U32 RecId, HI_U32 Pid)
 #endif
     if (Pid > DMX_INVALID_PID)
     {
-        HI_WARN_DEMUX("Invalid pid 0x%x\n", Pid);
+        HI_ERR_DEMUX("Invalid pid 0x%x\n", Pid);
 
         return HI_ERR_DMX_INVALID_PARA;
     }
@@ -6769,10 +6909,7 @@ HI_S32 DMX_DRV_REC_StartRecChn(HI_U32 RecId)
     DMX_RecInfo_S  *RecInfo = &DmxMgr->DmxRecInfo[RecId];
     HI_U32          i;
 
-    if (RecInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(RecInfo->DmxId);
 
     if (DMX_REC_STATUS_START == RecInfo->RecStatus)
     {
@@ -6934,10 +7071,7 @@ HI_S32 DMX_DRV_REC_StopRecChn(HI_U32 RecId)
     DMX_RecInfo_S  *RecInfo     = &DmxMgr->DmxRecInfo[RecId];
     DMX_OQ_Info_S  *RecOqInfo   = &DmxMgr->DmxOqInfo[RecInfo->RecOqId];
 
-    if (RecInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(RecInfo->DmxId);
 
     if (DMX_REC_STATUS_STOP == RecInfo->RecStatus)
     {
@@ -6998,10 +7132,7 @@ HI_S32 DMX_DRV_REC_AcquireRecData(HI_U32 RecId, HI_U32 *PhyAddr, HI_U32 *KerAddr
     HI_U32          Read;
     HI_U32          Write;
 
-    if (RecInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(RecInfo->DmxId);
 
     if (DMX_REC_STATUS_START != RecInfo->RecStatus)
     {
@@ -7070,13 +7201,11 @@ HI_S32 DMX_DRV_REC_ReleaseRecData(HI_U32 RecId, HI_U32 PhyAddr, HI_U32 Len)
     DMX_DEV_OSI_S  *DmxMgr  = g_pDmxDevOsi;
     DMX_RecInfo_S  *RecInfo = &DmxMgr->DmxRecInfo[RecId];
 
-    if (RecInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(RecInfo->DmxId);
 
     if (DMX_REC_STATUS_START != RecInfo->RecStatus)
     {
+        HI_ERR_DEMUX("start rec channel first!");
         return HI_ERR_DMX_NOT_START_REC_CHAN;
     }
 
@@ -7094,14 +7223,13 @@ HI_S32 DMX_DRV_REC_AcquireRecIndex(HI_U32 RecId, HI_UNF_DMX_REC_INDEX_S *RecInde
     HI_U32          Read;
     HI_U32          Write;
     HI_U32          KerAddr;
+	HI_BOOL         bUseTimeStamp = HI_FALSE;
 
-    if (RecInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(RecInfo->DmxId);
 
     if (DMX_REC_STATUS_START != RecInfo->RecStatus)
     {
+        HI_ERR_DEMUX("start rec channel first!");
         return HI_ERR_DMX_NOT_START_REC_CHAN;
     }
 
@@ -7109,6 +7237,11 @@ HI_S32 DMX_DRV_REC_AcquireRecIndex(HI_U32 RecId, HI_UNF_DMX_REC_INDEX_S *RecInde
     {
         return HI_ERR_DMX_NOAVAILABLE_DATA;
     }
+	
+	if ( RecInfo->enRecTimeStamp >= DMX_REC_TIMESTAMP_ZERO)
+	{
+	    bUseTimeStamp = HI_TRUE;
+	}
 
     FqInfo  = &DmxMgr->DmxFqInfo[RecInfo->ScdFqId];
     OqInfo  = &DmxMgr->DmxOqInfo[RecInfo->ScdOqId];
@@ -7170,7 +7303,7 @@ HI_S32 DMX_DRV_REC_AcquireRecIndex(HI_U32 RecId, HI_UNF_DMX_REC_INDEX_S *RecInde
                 {
                     HI_U32 SrcClk = ScData->u32SrcClk;
 
-                    if (HI_SUCCESS == DmxScdToVideoIndex(ScData++, &EsScd))
+                    if (HI_SUCCESS == DmxScdToVideoIndex(bUseTimeStamp,ScData++, &EsScd))
                     {
                         HI_U64 GlobalOffset = CurrFrame->u64GlobalOffset;
 
@@ -7238,10 +7371,7 @@ HI_S32 DMX_DRV_REC_GetRecBufferStatus(HI_U32 RecId, HI_UNF_DMX_RECBUF_STATUS_S *
     DMX_RecInfo_S  *RecInfo = &DmxMgr->DmxRecInfo[RecId];
     DMX_FQ_Info_S  *FqInfo  = &DmxMgr->DmxFqInfo[RecInfo->RecFqId];
 
-    if (RecInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(RecInfo->DmxId);
 
     BufStatus->u32BufSize   = FqInfo->u32BufSize;
     BufStatus->u32UsedSize  = 0;
@@ -7274,10 +7404,7 @@ HI_S32 DMX_DRV_REC_AcquireScdData(HI_U32 RecId, HI_U32 *PhyAddr, HI_U32 *KerAddr
     HI_U32          Read;
     HI_U32          Write;
 
-    if (RecInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(RecInfo->DmxId);
 
     if (DMX_REC_STATUS_START != RecInfo->RecStatus)
     {
@@ -7346,10 +7473,7 @@ HI_S32 DMX_DRV_REC_ReleaseScdData(HI_U32 RecId, HI_U32 PhyAddr, HI_U32 Len)
     DMX_DEV_OSI_S  *DmxMgr  = g_pDmxDevOsi;
     DMX_RecInfo_S  *RecInfo = &DmxMgr->DmxRecInfo[RecId];
 
-    if (RecInfo->DmxId >= DMX_CNT)
-    {
-        return HI_ERR_DMX_INVALID_PARA;
-    }
+    CHECKDMXID(RecInfo->DmxId);
 
     if (DMX_REC_STATUS_START != RecInfo->RecStatus)
     {
@@ -7369,7 +7493,7 @@ HI_S32 DMX_OsiDeviceInit(HI_U32 PoolBufSize, HI_U32 BlockSize)
         return ret;
     }
 
-    if (0 != request_irq(DMX_INT_NUM, (irq_handler_t) DMXOsiIsr, IRQF_DISABLED, "Demux", HI_NULL))
+    if (0 != request_irq(DMX_INT_NUM, (irq_handler_t) DMXOsiIsr, IRQF_DISABLED, "hi_dmx_irq", HI_NULL))
     {
         DMX_OsiDeInit();
         HI_FATAL_DEMUX("request_irq error\n");
@@ -7438,6 +7562,7 @@ HI_S32 DMX_OsiResume(PM_BASEDEV_S *himd)
     HI_UNF_DMX_PORT_ATTR_S  PortAttr;
     HI_U32                  i;
     HI_U32                  j;
+	HI_S32					ret;
 
     if (HI_SUCCESS != DmxReset())
     {
@@ -7583,7 +7708,11 @@ HI_S32 DMX_OsiResume(PM_BASEDEV_S *himd)
             {
                 ChanInfo->ChanStatus = HI_UNF_DMX_CHAN_CLOSE;
 
-                DMX_OsiOpenChannel(i);
+                ret = DMX_OsiOpenChannel(i);
+				if (ret != HI_SUCCESS)
+				{
+					return ret;
+            	}
             }
         }
         else
@@ -8049,7 +8178,7 @@ HI_S32 DMX_OsiSaveDmxTs_Start(HI_U32 DmxId, HI_U32 u32RecDmxId)
     DMX_Sub_DevInfo_S  *DmxInfo     = &DmxDevOsi->SubDevInfo[DmxId];
     DMX_PCR_Info_S     *PcrInfo     = DmxDevOsi->DmxPcrInfo;
     DMX_ChanInfo_S     *ChanInfo    = DmxDevOsi->DmxChanInfo;
-    HI_U32              ChanId;
+    HI_U32              ChanId = 0xffffffff;
     HI_U32              i;
 
     ret = DMX_OsiAttachPort(u32RecDmxId, DmxInfo->PortMode, DmxInfo->PortId);

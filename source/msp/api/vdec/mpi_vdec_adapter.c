@@ -34,7 +34,7 @@
 #include "mpi_vdec_adapter.h"
 
 /* Drv headers */
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "vfmw.h"
 #include "hi_drv_vdec.h"
 #include "hi_drv_video.h"
@@ -1438,6 +1438,27 @@ static HI_S32 VFMW_SetCtrlInfo(HI_HANDLE hInst, HI_UNF_AVPLAY_CONTROL_INFO_S* ps
     return HI_SUCCESS;
 }
 
+static HI_S32 VFMW_SetProgressive(HI_HANDLE hInst, HI_BOOL* pParam)
+{
+    HI_S32 s32Ret;
+	VDEC_CMD_SET_PROGRESSIVE_S stParam;
+    if (HI_NULL == pParam)
+    {
+        return HI_ERR_CODEC_INVALIDPARAM;
+    }
+
+    stParam.hHandle = VFMW_INST_HANDLE(hInst);
+	stParam.bProgressive = *pParam;
+    s32Ret = ioctl(s_stVdecAdpParam.s32DevFd, UMAPC_VDEC_CHAN_PROGRSSIVE, &stParam);
+    if (HI_SUCCESS != s32Ret)
+    {
+        HI_ERR_VDEC("Chan %d SetProgressive err:%x!\n", stParam.hHandle, s32Ret);
+        return HI_ERR_CODEC_OPERATEFAIL;
+    }	
+    HI_INFO_VDEC("Chan %d SetProgressive OK\n", stParam.hHandle);
+    return HI_SUCCESS;
+	
+}
 static HI_S32 VFMW_Control(HI_HANDLE hInst, HI_U32 u32CMD, HI_VOID * pParam)
 {
     switch (u32CMD)
@@ -1482,6 +1503,8 @@ static HI_S32 VFMW_Control(HI_HANDLE hInst, HI_U32 u32CMD, HI_VOID * pParam)
         return VFMW_SetTPlayOpt(hInst, (HI_UNF_AVPLAY_TPLAY_OPT_S*)pParam);
     case VFMW_CMD_SETCTRLINFO:
         return VFMW_SetCtrlInfo(hInst, (HI_UNF_AVPLAY_CONTROL_INFO_S*)pParam);
+	case VFMW_CMD_SET_PROGRESSIVE:
+		return VFMW_SetProgressive(hInst, (HI_BOOL*)pParam);
     default:
         return HI_ERR_CODEC_UNSUPPORT;
     }
@@ -1490,7 +1513,7 @@ static HI_S32 VFMW_Control(HI_HANDLE hInst, HI_U32 u32CMD, HI_VOID * pParam)
 HI_S32 VPSS_RecvFrm(HI_HANDLE hVpss, HI_DRV_VIDEO_FRAME_PACKAGE_S* pstFrameInfo)
 {
 	HI_S32 s32Ret;
-    VDEC_CMD_VPSS_FRAME_S stParam;
+    VDEC_CMD_VPSS_FRAME_S stParam = {0};
 
     if (HI_NULL == pstFrameInfo)
     {
@@ -1509,10 +1532,35 @@ HI_S32 VPSS_RecvFrm(HI_HANDLE hVpss, HI_DRV_VIDEO_FRAME_PACKAGE_S* pstFrameInfo)
         return HI_FAILURE;
     }
 
-    *pstFrameInfo = stParam.stFrame;
+    /* BEGIN: Deleted by z00111416, 2013/7/19 入参使用局部变量赋值!!!!!*/
+    //*pstFrameInfo = stParam.stFrame;
+    /* END:   Deleted by z00111416, 2013/7/19 */
+    memcpy(pstFrameInfo, &(stParam.stFrame), sizeof(HI_DRV_VIDEO_FRAME_PACKAGE_S));
     HI_INFO_VDEC("Chan %d RecvVPSSFrm OK\n", stParam.hHandle);
     return s32Ret;
 }
+
+HI_S32 VPSS_ReleaseFrm(HI_HANDLE hPort, HI_DRV_VIDEO_FRAME_S *pVideoFrame)
+{
+    HI_S32 s32Ret;
+	VDEC_CMD_VPSS_FRAME_S stParam = {0};
+	
+    if (HI_NULL == pVideoFrame)
+    {
+        HI_ERR_VDEC("Bad param.\n");
+        return HI_ERR_VDEC_INVALID_PARA;
+    }
+	stParam.hHandle = hPort;
+	stParam.pVideoFrame = pVideoFrame;
+    s32Ret = ioctl(s_stVdecAdpParam.s32DevFd, UMAPC_VDEC_CHAN_RLSPORTFRM, &stParam);
+    if (HI_SUCCESS != s32Ret)
+    {
+        HI_INFO_VDEC("release port %d frame err:%x!\n", stParam.hHandle, s32Ret);
+        return HI_FAILURE;
+    }
+	return s32Ret;	
+}
+
 //add by l00225186
 HI_S32 VPSS_CreateVpss(HI_HANDLE hVdec,HI_HANDLE* phVpss)
 {
@@ -1554,7 +1602,6 @@ HI_S32 VPSS_DestoryVpss(HI_HANDLE hVdec,HI_HANDLE* phVpss)
         HI_ERR_VDEC("VPSS Destory err:%d!\n", hVdec);
         return HI_FAILURE;
     }
-    memcpy(phVpss, &stParam, sizeof(HI_HANDLE));
 	return s32Ret; 
 }
 //add by l00225186
@@ -1656,23 +1703,24 @@ HI_S32 VPSS_DisablePort(HI_HANDLE hVpss, HI_HANDLE* phPort)
 	return s32Ret;
 }
 //add by l00225186
-HI_S32 VPSS_SetMainPort(HI_HANDLE hVpss, HI_HANDLE* phPort)
+HI_S32 VPSS_SetPortType(HI_HANDLE hVpss, VDEC_PORT_TYPE_WITHPORT_S* pstPortTypeWithPortHandle)
 {
     HI_S32 s32Ret;
 	VDEC_CMD_VPSS_FRAME_S stParam;
 	s32Ret = HI_SUCCESS;
-	if (HI_NULL == phPort)
+	if (HI_NULL == pstPortTypeWithPortHandle)
     {
         HI_ERR_VDEC("Bad param.\n");
         return HI_ERR_VDEC_INVALID_PARA;
     }
 	stParam.hHandle = hVpss;
-	stParam.hPort  = *phPort;
+	stParam.hPort  = pstPortTypeWithPortHandle->hPort;
+	stParam.enPortType = pstPortTypeWithPortHandle->enPortType;
     /* Ioctl UMAPC_VDEC_CHAN_RCVFRM */
-    s32Ret = ioctl(s_stVdecAdpParam.s32DevFd, UMAPC_VDEC_CHAN_SETMAINPORT, &stParam);
+    s32Ret = ioctl(s_stVdecAdpParam.s32DevFd, UMAPC_VDEC_CHAN_SETPORTTYPE, &stParam);
     if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_VDEC("Chan %d VPSS_EnablePort err:%x!\n", hVpss, s32Ret);
+        HI_ERR_VDEC("Chan %d VPSS_SetPortType err:%x!\n", hVpss, s32Ret);
         return HI_FAILURE;
     }
 	return s32Ret;
@@ -1819,6 +1867,50 @@ HI_S32 VPSS_GetStatusInfo(HI_HANDLE hVdec,VDEC_FRMSTATUSINFOWITHPORT_S* pstVdecF
 
     return s32Ret;
 }
+
+HI_S32 VPSS_GetPortAttr(HI_HANDLE hVdec, VDEC_PORT_ATTR_WITHHANDLE_S *pstAttrWithHandle)
+{
+    HI_S32                  Ret;
+    VDEC_CMD_VPSS_FRAME_S   stParam;
+
+    memset(&stParam, 0x0, sizeof(VDEC_CMD_VPSS_FRAME_S));
+
+    stParam.hHandle = hVdec;
+    stParam.hPort = pstAttrWithHandle->hPort;
+
+    Ret = ioctl(s_stVdecAdpParam.s32DevFd, UMAPC_VDEC_CHAN_GETPORTATTR, &stParam);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_ERR_VDEC("Chan %d Get Port Attr ERR, Ret=%#x\n", hVdec, Ret);
+        return Ret;
+    }
+
+    pstAttrWithHandle->stPortCfg = stParam.stPortCfg;
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_SetPortAttr(HI_HANDLE hVdec, VDEC_PORT_ATTR_WITHHANDLE_S *pstAttrWithHandle)
+{
+    HI_S32                  Ret;
+    VDEC_CMD_VPSS_FRAME_S   stParam;
+
+    memset(&stParam, 0x0, sizeof(VDEC_CMD_VPSS_FRAME_S));
+
+    stParam.hHandle = hVdec;
+    stParam.hPort = pstAttrWithHandle->hPort;
+    stParam.stPortCfg = pstAttrWithHandle->stPortCfg;
+
+    Ret = ioctl(s_stVdecAdpParam.s32DevFd, UMAPC_VDEC_CHAN_SETPORTATTR, &stParam);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_ERR_VDEC("Chan %d Set Port Attr ERR, Ret=%#x\n", hVdec, Ret);
+        return Ret;
+    }
+
+    return Ret;
+}
+
 //add by l00225186
 HI_S32 VPSS_Control(HI_HANDLE handle, HI_U32 u32CMD, HI_VOID * pParam)
 {
@@ -1841,8 +1933,8 @@ HI_S32 VPSS_Control(HI_HANDLE handle, HI_U32 u32CMD, HI_VOID * pParam)
 			return VPSS_EnablePort(handle,(HI_HANDLE *)pParam);
 		case VPSS_CMD_DISABLEPORT:
 			return VPSS_DisablePort(handle,(HI_HANDLE *)pParam);
-		case VPSS_CMD_SETMAINPORT:
-			return VPSS_SetMainPort(handle,(HI_HANDLE *)pParam);
+		case VPSS_CMD_SETPORTTYPE:
+			return VPSS_SetPortType(handle,(VDEC_PORT_TYPE_WITHPORT_S *)pParam);
 		case VPSS_CMD_CANCLEMAINPORT:
 			return VPSS_CancleMainPort(handle,(HI_HANDLE *)pParam);
 		case VPSS_CMD_SETCHAN_FRMPACKTYPE:
@@ -1858,6 +1950,10 @@ HI_S32 VPSS_Control(HI_HANDLE handle, HI_U32 u32CMD, HI_VOID * pParam)
 			return VPSS_SendEos(handle);
 		case VPSS_CMD_GETPORTSTATE:
 			return VPSS_GetPortState(handle,(HI_BOOL*)pParam);
+		case VPSS_CMD_GETPORTATTR:
+		    return VPSS_GetPortAttr(handle, (VDEC_PORT_ATTR_WITHHANDLE_S *)pParam);
+		case VPSS_CMD_SETPORTATTR:
+		    return VPSS_SetPortAttr(handle, (VDEC_PORT_ATTR_WITHHANDLE_S *)pParam);
         default:
             return HI_ERR_CODEC_UNSUPPORT;    
 	}
@@ -1963,7 +2059,7 @@ HI_S32 VDEC_DestroyStreamBuf(HI_HANDLE hBuf)
 {
     HI_S32 s32Ret = HI_SUCCESS;
     STREAM_BUF_INST_S* pstBufInst = HI_NULL;
-
+	
     STRMBUF_FIND_INST(hBuf, pstBufInst);
     if (HI_NULL == pstBufInst)
     {
@@ -1982,7 +2078,7 @@ HI_S32 VDEC_DestroyStreamBuf(HI_HANDLE hBuf)
     }
 
     /* Delete node and free memory */
-    VDEC_LOCK(s_stStrmBufParam.stMutex);
+	VDEC_LOCK(s_stStrmBufParam.stMutex);
     list_del(&pstBufInst->stBufNode);
     HI_FREE_VDEC(pstBufInst);
     VDEC_UNLOCK(s_stStrmBufParam.stMutex);
@@ -2207,7 +2303,10 @@ HI_S32 VDEC_CreateFrameBuf(HI_HANDLE *phBuf)
     {
         return HI_ERR_VDEC_MALLOC_FAILED;
     }
-    memset(pstBufInst, 0, sizeof(FRAME_BUF_INST_S));
+	else
+	{
+        memset(pstBufInst, 0, sizeof(FRAME_BUF_INST_S));
+	}
 
     stParam.hHandle = *phBuf;
     stParam.stOpenOpt.enDecType  = HI_UNF_VCODEC_DEC_TYPE_NORMAL;
@@ -2228,6 +2327,7 @@ HI_S32 VDEC_CreateFrameBuf(HI_HANDLE *phBuf)
     if (HI_INVALID_HANDLE == stFrmBufAttr.hHandle)
     {
         HI_ERR_VDEC("hBuf err!\n");
+	    HI_FREE_VDEC(pstBufInst);
         return HI_ERR_VDEC_CREATECH_FAILED;
     }
 
@@ -2266,7 +2366,6 @@ HI_S32 VDEC_DestroyFrameBuf(HI_HANDLE hBuf)
 {
     HI_S32 s32Ret;
     FRAME_BUF_INST_S* pstBufInst = HI_NULL;
-
     FRMBUF_FIND_INST(hBuf, pstBufInst);
     if (HI_NULL == pstBufInst)
     {
@@ -2281,7 +2380,7 @@ HI_S32 VDEC_DestroyFrameBuf(HI_HANDLE hBuf)
     }
 
     /* Delete node and free memory */
-    VDEC_LOCK(s_stFrmBufParam.stMutex);
+	VDEC_LOCK(s_stFrmBufParam.stMutex);
     list_del(&pstBufInst->stBufNode);
     HI_FREE_VDEC(pstBufInst);
     VDEC_UNLOCK(s_stFrmBufParam.stMutex);

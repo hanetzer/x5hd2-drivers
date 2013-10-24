@@ -30,9 +30,10 @@
 #include "hi_common.h"
 #include "hi_error_mpi.h"
 #include "drv_gpio_ioctl.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_sys.h"
 #include "hi_module.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
+#include "hi_reg_common.h"
 #include "drv_gpio_ext.h"
 #include "drv_gpio.h"
 
@@ -40,7 +41,7 @@
 #define  GPIO_BUF_HEAD g_stGpioAttr.GpioIntBuf[g_stGpioAttr.Head]
 #define  GPIO_BUF_TAIL g_stGpioAttr.GpioIntBuf[g_stGpioAttr.Tail]
 
-#define  INC_BUF(x, len) ((++ (x)) % (len))
+#define  INC_BUF(x, len) (((x) + 1) % (len))
 
 typedef struct
 {
@@ -62,25 +63,25 @@ typedef struct
 
 static GPIO_ATTR_S g_stGpioAttr;
 
-static HI_CHAR g_GpioIrqName[][8] = {
-    "gpio00",
-    "gpio01",
-    "gpio02",
-    "gpio03",
-    "gpio04",
-    "gpio05",
-    "gpio06",
-    "gpio07",
-    "gpio08",
-    "gpio09",
-    "gpio10",
-    "gpio11",
-    "gpio12",
-    "gpio13",
-    "gpio14",
-    "gpio15",
-    "gpio16",
-    "gpio17"
+static HI_CHAR g_GpioIrqName[][16] = {
+    "hi_gpio00_irq",
+    "hi_gpio01_irq",
+    "hi_gpio02_irq",
+    "hi_gpio03_irq",
+    "hi_gpio04_irq",
+    "hi_gpio05_irq",
+    "hi_gpio06_irq",
+    "hi_gpio07_irq",
+    "hi_gpio08_irq",
+    "hi_gpio09_irq",
+    "hi_gpio10_irq",
+    "hi_gpio11_irq",
+    "hi_gpio12_irq",
+    "hi_gpio13_irq",
+    "hi_gpio14_irq",
+    "hi_gpio15_irq",
+    "hi_gpio16_irq",
+    "hi_gpio17_irq"
 };
 
 static GPIO_EXT_FUNC_S g_stGpioExportFuncs =
@@ -498,6 +499,70 @@ HI_S32 DRV_GPIO_Close(struct inode *inode, struct file *filp)
 	return HI_SUCCESS;
 }
 
+HI_S32 DRV_GPIO_SetOutputType(HI_U32 u32GpioNo, HI_UNF_GPIO_OUTPUTTYPE_E  enOutputType)
+{
+#if defined (CHIP_TYPE_hi3716cv200) || defined (CHIP_TYPE_hi3719cv100) \
+	|| defined (CHIP_TYPE_hi3718cv100) || defined (CHIP_TYPE_hi3719mv100) \
+	|| defined (CHIP_TYPE_hi3719mv100_a) || defined (CHIP_TYPE_hi3718mv100)
+
+    HI_U32 u32Value = 0;
+	HI_U32 u32Bit = 0;
+
+	if ((u32GpioNo < 5 * 8 + 0)
+		|| (u32GpioNo > 5 * 8 + 7)
+		|| (u32GpioNo == 5 * 8 + 5)
+		|| (u32GpioNo == 5 * 8 + 6))
+	{
+		return HI_ERR_GPIO_NOT_SUPPORT;
+	}
+
+	u32Value = g_pstRegSysCtrl->SC_GPIO_OD_CTRL.u32;
+
+	u32Bit = u32GpioNo % 8;
+	u32Value &= ~(1 << u32Bit);
+	u32Value |= enOutputType << u32Bit;
+
+	g_pstRegSysCtrl->SC_GPIO_OD_CTRL.u32 = u32Value;
+	
+	return HI_SUCCESS;
+	
+#else
+	return HI_ERR_GPIO_NOT_SUPPORT;
+#endif
+}
+
+HI_S32 DRV_GPIO_GetOutputType(HI_U32 u32GpioNo, HI_UNF_GPIO_OUTPUTTYPE_E  *penOutputType)
+{
+#if defined (CHIP_TYPE_hi3716cv200) || defined (CHIP_TYPE_hi3719cv100) \
+	|| defined (CHIP_TYPE_hi3718cv100) || defined (CHIP_TYPE_hi3719mv100) \
+	|| defined (CHIP_TYPE_hi3719mv100_a) || defined (CHIP_TYPE_hi3718mv100)
+
+	HI_U32 u32Value = 0;
+	HI_U32 u32Bit = 0;
+
+	if ((u32GpioNo < 5 * 8 + 0)
+		|| (u32GpioNo > 5 * 8 + 7)
+		|| (u32GpioNo == 5 * 8 + 5)
+		|| (u32GpioNo == 5 * 8 + 6))
+	{
+		return HI_ERR_GPIO_NOT_SUPPORT;
+	}	
+
+	u32Value = g_pstRegSysCtrl->SC_GPIO_OD_CTRL.u32;
+
+	u32Bit = u32GpioNo % 8;
+	
+	u32Value = (u32Value >> u32Bit) & 0x1;
+	*penOutputType = (HI_UNF_GPIO_OUTPUTTYPE_E)u32Value;
+
+	
+	return HI_SUCCESS;
+	
+#else
+	return HI_ERR_GPIO_NOT_SUPPORT;
+#endif
+}
+
 HI_S32 HI_DRV_GPIO_RegisterServerFunc(HI_U32 u32GpioNo, HI_VOID (*func)(HI_U32))
 {
     if (u32GpioNo >= g_GpioNum.u8GpioMaxNum)
@@ -691,7 +756,10 @@ HI_S32 HI_DRV_GPIO_Init(void)
     g_GpioUsrAddr[11] = IO_ADDRESS(HI_GPIO_11_ADDR);
     g_GpioUsrAddr[12] = IO_ADDRESS(HI_GPIO_12_ADDR);
 
-#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
     g_GpioUsrAddr[13] = IO_ADDRESS(HI_GPIO_13_ADDR);
     g_GpioUsrAddr[14] = IO_ADDRESS(HI_GPIO_14_ADDR);
     g_GpioUsrAddr[15] = IO_ADDRESS(HI_GPIO_15_ADDR);

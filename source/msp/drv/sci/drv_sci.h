@@ -41,7 +41,9 @@ typedef struct hiSCI_ATTR_S
     HI_U32                   TxTimeout;
     HI_UNF_SCI_LEVEL_E       enSciVcc;
     HI_UNF_SCI_LEVEL_E       enSciDetect;
-    HI_UNF_SCI_CLK_MODE_E    enClkMode;
+    HI_UNF_SCI_MODE_E        enClkMode;
+	HI_UNF_SCI_MODE_E        enResetMode;
+	HI_UNF_SCI_MODE_E        enVccEnMode;
 }SCI_ATTR_S;
 
 typedef struct hiSCI_SETUP_PARA_S
@@ -202,7 +204,9 @@ HI_S32 SCI_PPS_GetRecBuf(HI_UNF_SCI_PORT_E enSciPort, HI_U8* pRecBuf, HI_U32* pD
 HI_S32 SCI_OutPutParam(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_PARAMS_S_PTR pSciOutParam);
 HI_S32 SCI_ConfVcc(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_LEVEL_E enSciLevel);
 HI_S32 SCI_ConfDetect(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_LEVEL_E enSciLevel);
-HI_S32 SCI_ConfClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_CLK_MODE_E enClkMode);
+HI_S32 SCI_ConfClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enClkMode);
+HI_S32 SCI_ConfResetMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enResetMode);
+HI_S32 SCI_ConfVccEnMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enVccEnMode);
 HI_S32 SCI_SendPPSData(HI_UNF_SCI_PORT_E enSciPort, HI_U8 *pDataBuf, HI_U32 BufSize, HI_U32 *pDataLen, HI_U32 TimeoutMs);
 HI_S32 SCI_SendData(HI_UNF_SCI_PORT_E enSciPort, HI_U8 *pDataBuf, HI_U32 BufSize, HI_U32 *pDataLen, HI_U32 TimeoutMs);
 HI_S32 SCI_ReceiveData(HI_UNF_SCI_PORT_E enSciPort, HI_U8 *pDataBuf, HI_U32 BufSize, HI_U32 *pDataLen, HI_U32 TimeoutMs);

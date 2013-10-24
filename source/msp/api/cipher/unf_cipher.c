@@ -27,11 +27,15 @@
 #include <pthread.h>
 #include "drv_cipher_ioctl.h"
 #include "hi_common.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "hi_error_mpi.h"
 
 static HI_S32 g_CipherDevFd = -1;
 static pthread_mutex_t   g_CipherMutex = PTHREAD_MUTEX_INITIALIZER;
+
+static const HI_U8 s_szCipherVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 #define HI_CIPHER_LOCK()  	     (void)pthread_mutex_lock(&g_CipherMutex);
 #define HI_CIPHER_UNLOCK()  	 (void)pthread_mutex_unlock(&g_CipherMutex);
@@ -146,34 +150,52 @@ static HI_VOID leftshift_onebit(HI_U8 *input, HI_U8 *output)
 //the output is the last 8 bytes only
 static HI_S32 AES_Encrypt(HI_HANDLE hCipherHandle, HI_U8 *input, HI_U32 datalen, HI_U8 *output)
 {
-    HI_U32 u32InputAddrPhy;
-    HI_U32 u32OutPutAddrPhy;
+    HI_U32 u32InputAddrPhy = 0;
+    HI_U32 u32OutPutAddrPhy = 0;
     HI_U32 u32MmzCached = 0;
-    HI_U8* pu8InputAddrVir;
-    HI_U8* pu8OutputAddrVir;
+    HI_U8* pu8InputAddrVir = NULL;
+    HI_U8* pu8OutputAddrVir = NULL;
     HI_S32 Ret = HI_SUCCESS;
     HI_U32 u32EncryptDataLen = 0;
     HI_U32 u32LeftDataLen = 0;
     HI_U32 i = 0;
     HI_U32 u32BlockNum = 0;
     
-    u32InputAddrPhy = (HI_U32)HI_MMZ_New(MAX_DATA_LEN, 0, NULL, "cipherIn");
+    u32InputAddrPhy = (HI_U32)HI_MMZ_New(MAX_DATA_LEN, 0, NULL, "CIPHER_BufIn");
     if (0 == u32InputAddrPhy)
     {
-        HI_ERR_CIPHER("get phyaddr for input!\n");
+        HI_ERR_CIPHER("mmz new for u32InputAddrPhy failed!\n");
         return HI_FAILURE;
     }
     pu8InputAddrVir = HI_MMZ_Map(u32InputAddrPhy, u32MmzCached);
+    if( NULL == pu8InputAddrVir )
+    {
+        HI_MMZ_Unmap(u32InputAddrPhy);
+        HI_MMZ_Delete(u32InputAddrPhy);
+        HI_ERR_CIPHER("mmz map for pu8InputAddrVir failed!\n");
+        return HI_FAILURE;
+    }
     
-    u32OutPutAddrPhy = (HI_U32)HI_MMZ_New(MAX_DATA_LEN, 0, NULL, "cipherOut");
+    u32OutPutAddrPhy = (HI_U32)HI_MMZ_New(MAX_DATA_LEN, 0, NULL, "CIPHER_BufOut");
     if (0 == u32OutPutAddrPhy)
     {
-        HI_ERR_CIPHER("get phyaddr for output!\n");
+        HI_ERR_CIPHER("mmz new for u32OutPutAddrPhy failed!\n");
         HI_MMZ_Unmap(u32InputAddrPhy);
         HI_MMZ_Delete(u32InputAddrPhy);      
         return HI_FAILURE;
     }
+
     pu8OutputAddrVir = HI_MMZ_Map(u32OutPutAddrPhy, u32MmzCached);
+    if( NULL == pu8OutputAddrVir )
+    {
+        HI_ERR_CIPHER("mmz map for pu8OutputAddrVir failed!\n");
+        HI_MMZ_Unmap(u32InputAddrPhy);
+        HI_MMZ_Delete(u32InputAddrPhy);
+        HI_MMZ_Unmap(u32OutPutAddrPhy);
+        HI_MMZ_Delete(u32OutPutAddrPhy);
+        return HI_FAILURE;
+    }
+
     memset(pu8OutputAddrVir, 0, MAX_DATA_LEN);
 
     u32LeftDataLen = datalen;
@@ -193,10 +215,8 @@ static HI_S32 AES_Encrypt(HI_HANDLE hCipherHandle, HI_U8 *input, HI_U32 datalen,
     memcpy(output, pu8OutputAddrVir + u32EncryptDataLen - 16, 16);
 
 CIPHER_RELEASE_BUF:
-
     HI_MMZ_Unmap(u32InputAddrPhy);
     HI_MMZ_Delete(u32InputAddrPhy);
-
     HI_MMZ_Unmap(u32OutPutAddrPhy);
     HI_MMZ_Delete(u32OutPutAddrPhy);
 
@@ -375,7 +395,7 @@ HI_S32 HI_UNF_CIPHER_DestroyHandle(HI_HANDLE hCipher)
 HI_S32 HI_UNF_CIPHER_ConfigHandle(HI_HANDLE hCipher, HI_UNF_CIPHER_CTRL_S* pstCtrl)
 {
     HI_S32 Ret;
-    CIPHER_Config_CTRL  configdata;
+    CIPHER_Config_CTRL configdata;
 
     if (NULL == pstCtrl)
     {
@@ -386,15 +406,15 @@ HI_S32 HI_UNF_CIPHER_ConfigHandle(HI_HANDLE hCipher, HI_UNF_CIPHER_CTRL_S* pstCt
     memcpy(&configdata.CIpstCtrl, pstCtrl, sizeof(HI_UNF_CIPHER_CTRL_S));
     configdata.CIHandle=hCipher;
 
-    if(configdata.CIpstCtrl.enWorkMode>=HI_UNF_CIPHER_WORK_MODE_BUTT)
+    if(configdata.CIpstCtrl.enWorkMode >= HI_UNF_CIPHER_WORK_MODE_BUTT)
     {
-        HI_ERR_CIPHER("para setCIPHER wokemode is invalid.\n");
+        HI_ERR_CIPHER("para set CIPHER wokemode is invalid.\n");
         return HI_ERR_CIPHER_INVALID_PARA;
     }
 
     CHECK_CIPHER_OPEN();
 
-    Ret=ioctl(g_CipherDevFd,CMD_CIPHER_CONFIGHANDLE, &configdata);
+    Ret=ioctl(g_CipherDevFd, CMD_CIPHER_CONFIGHANDLE, &configdata);
 
     if (Ret != HI_SUCCESS)
     {
@@ -427,7 +447,7 @@ HI_S32 HI_UNF_CIPHER_Encrypt(HI_HANDLE hCipher, HI_U32 u32SrcPhyAddr, HI_U32 u32
 
     CIdata.ScrPhyAddr=u32SrcPhyAddr;
     CIdata.DestPhyAddr=u32DestPhyAddr;
-    CIdata.ByteLength=u32ByteLength;
+    CIdata.u32PkgNum=u32ByteLength;
     CIdata.CIHandle=hCipher;
 
     CHECK_CIPHER_OPEN();
@@ -464,7 +484,7 @@ HI_S32 HI_UNF_CIPHER_Decrypt(HI_HANDLE hCipher, HI_U32 u32SrcPhyAddr, HI_U32 u32
 
     CIdata.ScrPhyAddr=u32SrcPhyAddr;
     CIdata.DestPhyAddr=u32DestPhyAddr;
-    CIdata.ByteLength=u32ByteLength;
+    CIdata.u32PkgNum=u32ByteLength;
     CIdata.CIHandle=hCipher;
 
     CHECK_CIPHER_OPEN();
@@ -505,7 +525,7 @@ HI_S32 HI_UNF_CIPHER_EncryptMulti(HI_HANDLE hCipher, HI_UNF_CIPHER_DATA_S *pstDa
 
     CIdata.ScrPhyAddr=(HI_U32)pstDataPkg;
     CIdata.DestPhyAddr= 0;
-    CIdata.ByteLength=u32DataPkgNum;
+    CIdata.u32PkgNum=u32DataPkgNum;
     CIdata.CIHandle=hCipher;
 
     CHECK_CIPHER_OPEN();
@@ -547,7 +567,7 @@ HI_S32 HI_UNF_CIPHER_DecryptMulti(HI_HANDLE hCipher, HI_UNF_CIPHER_DATA_S *pstDa
 
     CIdata.ScrPhyAddr=(HI_U32)pstDataPkg;
     CIdata.DestPhyAddr= 0;
-    CIdata.ByteLength=u32DataPkgNum;
+    CIdata.u32PkgNum=u32DataPkgNum;
     CIdata.CIHandle=hCipher;
 
     CHECK_CIPHER_OPEN();
@@ -574,6 +594,7 @@ HI_S32 HI_UNF_CIPHER_GetRandomNumber(HI_U32 *pu32RandomNumber)
         return HI_ERR_CIPHER_INVALID_POINT;
     }
 
+    memset(&stVersion, 0, sizeof(stVersion));
     Ret = HI_SYS_GetVersion(&stVersion);
     if ( HI_FAILURE == Ret )
     {
@@ -621,12 +642,12 @@ HI_S32 HI_UNF_CIPHER_GetHandleConfig(HI_HANDLE hCipherHandle, HI_UNF_CIPHER_CTRL
     return HI_SUCCESS;
 }
 
-
 HI_S32 HI_UNF_CIPHER_CalcMAC(HI_HANDLE hCipherHandle, HI_U8 *pInputData, HI_U32 u32InputDataLen,
                                         HI_U8 *pOutputMAC, HI_BOOL bIsLastBlock)
 {
     HI_U8 X[16], M_last[16], padded[16];
-    HI_U8 K1[16], K2[16];
+    static HI_U8 K1[16] = {0};
+	static HI_U8 K2[16] = {0};
     HI_U32 n, i, flag;
     HI_U8 u8TmpBuf[16];
     HI_S32 Ret = HI_SUCCESS;
@@ -634,6 +655,13 @@ HI_S32 HI_UNF_CIPHER_CalcMAC(HI_HANDLE hCipherHandle, HI_U8 *pInputData, HI_U32 
     static HI_BOOL bIsFirstBlock = HI_TRUE;
 
     CHECK_CIPHER_OPEN();
+
+    memset(&stCipherCtrl, 0, sizeof(stCipherCtrl));
+    memset(u8TmpBuf, 0, sizeof(u8TmpBuf));
+    memset(X, 0, sizeof(X));
+    memset(M_last, 0, sizeof(M_last));
+    memset(padded, 0, sizeof(padded));
+
     if(bIsFirstBlock) //if first block, reset the configure handle and generate the subkey again
     {
         Ret = HI_UNF_CIPHER_GetHandleConfig(hCipherHandle, &stCipherCtrl);
@@ -708,7 +736,7 @@ HI_S32 HI_UNF_CIPHER_CalcMAC(HI_HANDLE hCipherHandle, HI_U8 *pInputData, HI_U32 
            }
         }
         
-        AES_Encrypt(hCipherHandle, M_last, 16, X);
+        Ret = AES_Encrypt(hCipherHandle, M_last, 16, X);
         if(Ret != HI_SUCCESS)
         {
             return Ret;
@@ -729,15 +757,12 @@ HI_S32 HI_UNF_CIPHER_HashInit(HI_UNF_CIPHER_HASH_ATTS_S *pstHashAttr, HI_HANDLE 
 {
     HI_S32 Ret = HI_SUCCESS;
 
-    if( (NULL== pstHashAttr) || (NULL == pHashHandle) )
+    if( (NULL== pstHashAttr)
+     || (NULL == pHashHandle)
+     || (0 == pstHashAttr->u32TotalDataLen)
+     || (pstHashAttr->eShaType >= HI_UNF_CIPHER_HASH_TYPE_BUTT))
     {
         HI_ERR_CIPHER("Invalid parameter!\n");
-        return HI_FAILURE;
-    }
-
-    if(pstHashAttr->eShaType >= HI_UNF_CIPHER_HASH_TYPE_BUTT)
-    {
-        HI_ERR_CIPHER("Invalid hash type input!\n");
         return HI_FAILURE;
     }
 
@@ -756,17 +781,8 @@ HI_S32 HI_UNF_CIPHER_HashInit(HI_UNF_CIPHER_HASH_ATTS_S *pstHashAttr, HI_HANDLE 
     g_stCipherHashData.u32TotalDataLen = pstHashAttr->u32TotalDataLen;
     if( ( HI_UNF_CIPHER_HASH_TYPE_HMAC_SHA1 == pstHashAttr->eShaType) || (HI_UNF_CIPHER_HASH_TYPE_HMAC_SHA256 == pstHashAttr->eShaType ))
     {
-        if( NULL != pstHashAttr->u8HMACKey )
-        {
-            memcpy(g_stCipherHashData.u8HMACKey, pstHashAttr->u8HMACKey, 16);
-            g_stCipherHashData.enHMACKeyFrom = HI_CIPHER_HMAC_KEY_FROM_CPU;
-        }
-        else
-        {
-            HI_ERR_CIPHER("Invalid hmac key input!\n");
-            g_HashDevFd = -1;
-            return HI_FAILURE;
-        }
+        memcpy(g_stCipherHashData.u8HMACKey, pstHashAttr->u8HMACKey, 16);
+        g_stCipherHashData.enHMACKeyFrom = HI_CIPHER_HMAC_KEY_FROM_CPU;
     }
 
     Ret = ioctl(g_CipherDevFd, CMD_CIPHER_CALCHASHINIT, &g_stCipherHashData);
@@ -778,7 +794,7 @@ HI_S32 HI_UNF_CIPHER_HashInit(HI_UNF_CIPHER_HASH_ATTS_S *pstHashAttr, HI_HANDLE 
     *pHashHandle = (HI_U32)&g_stCipherHashData;
 
 //    g_hashType = eShaType;
-    
+
     return HI_SUCCESS;
 }
 
@@ -795,7 +811,7 @@ HI_S32 HI_UNF_CIPHER_HashUpdate(HI_HANDLE hHashHandle, HI_U8 *pu8InputData, HI_U
     }
 
     CHECK_CIPHER_OPEN();
-    
+
 //  pstCipherHashData->enShaType = g_hashType;
     pstCipherHashData->u32InputDataLen = u32InputDataLen;
     pstCipherHashData->pu8InputData = pu8InputData;

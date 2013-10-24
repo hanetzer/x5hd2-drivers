@@ -15,6 +15,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <sys/syscall.h>
 #include <errno.h>
 #include <unistd.h>
 #include <pthread.h>
@@ -24,6 +25,7 @@
 #include "hi_unf_sound.h"
 #include "hi_drv_adec.h"
 #include "hi_module.h"
+#include "hi_common.h"
 #include "hi_mpi_mem.h"
 #include "mpi_adec_assembly.h"
 #include "mpi_adec_waveform.h"
@@ -39,13 +41,17 @@ extern "C" {
 
 #define ADEC_BYTES_DISCARD_THD 0x100      /* dicard max when decoder  holding  */
 
-//#define ADEC_MMZ_BUF_SUPPORT /* Input and output Buffer use mmz memory */
+//#define ADEC_MMZ_INBUF_SUPPORT /* Input Buffer use mmz memory */
+#define ADEC_MMZ_OUTBUF_SUPPORT /* output Buffer use mmz memory */
 #define ADEC_MAX_INPUT_FRAME 0x8000    /* max adec input frame size */
 #define ADEC_MIN_INPUT_FRAME 8            /* min  adec input frame size */
 #define ADEC_CONTINUE_DISCARDPTS_THD 8     /*continue discard pts threshold  */
 #define ADEC_SYS_SLEEP_TIME 10   //for adec pull thread
 #define ADEC_PTSMS_DIFF 10 //max differ-times stream bps
 #define ADEC_MAXPTSTIME 50000
+
+#define ADEC_SCHE_THREADTIME_LIMIT  (ADEC_SYS_SLEEP_TIME*3)
+#define ADEC_EXE_THREADTIME_LIMIT    (ADEC_SYS_SLEEP_TIME*3)
 
 /* ADEC_INPUTBUF_PADDING_SIZE description: Buffer allocate additional memory, deal with Buf loop
    mechanism:
@@ -124,14 +130,16 @@ typedef struct hiADEC_CHANNEL_S
     HI_U32               u32TotalAdecTime;
     HI_U32               u32StartTime;
     HI_U32               u32EndTime;
-    pthread_mutex_t      mutex;
+    pthread_mutex_t      ApiMutex;
+	pthread_mutex_t      DataMutex;
+	pthread_mutex_t      IOMutex;
     HI_BOOL              AdecThreadRun;
-    HI_BOOL              AdecPullContinue;
     pthread_t            AdecThreadInst;
     HI_U32               u32CodecID;                 /* decoder u32CodecID                         */
     HI_BOOL              bPacketDecoder;
     HI_BOOL              bHwDecoder;
     HI_S32               AdecDevFd;
+	HI_S32               s32BsConsumeBytes;
     ADEC_INFO_S          decAttr;
     ADEC_PTS_QUE_S       PTSQue;
     ADEC_MIDSTATE_S      midState;
@@ -143,18 +151,6 @@ typedef struct hiADEC_CHANNEL_S
 
 static HI_BOOL g_bAdecInit = HI_FALSE;
 static ADEC_CHAN_S *g_pstAdecChan [ADEC_INSTANCE_MAXNUM];
-
-#ifdef ADEC_MMZ_BUF_SUPPORT
-static HI_CHAR g_szAdecInBuf_MMzName[ADEC_INSTANCE_MAXNUM][MAX_BUFFER_NAME_SIZE] =
-{"ADECInBuf0",
- "ADECInBuf1",
- "ADECInBuf2"};
-
-static HI_CHAR g_szAdecOutBuf_MMzName[ADEC_INSTANCE_MAXNUM][MAX_BUFFER_NAME_SIZE] =
-{"ADECOutBuf0",
- "ADECOutBuf1",
- "ADECOutBuf2"};
-#endif
 
 #ifdef HI_ADEC_AUDSPECTRUM_SUPPORT
 
@@ -576,10 +572,12 @@ static HI_S32 ADECInitInBuf(ADEC_CHAN_S *pstAdecChan, ADEC_STREAM_BUFFER_S  *pst
         }
         
         pstInBuf->u32BufPaddingSize = u32PaddingSize;
-#ifdef ADEC_MMZ_BUF_SUPPORT
-        strcpy(pstInBuf->sAdecInMMzBuf.bufname, g_szAdecInBuf_MMzName[u32AdecChID]);
+#ifdef ADEC_MMZ_INBUF_SUPPORT
+
+		snprintf(pstInBuf->sAdecInMMzBuf.bufname, sizeof(pstInBuf->sAdecInMMzBuf.bufname), "ADEC_InBuf%d", u32AdecChID);
+
         pstInBuf->sAdecInMMzBuf.bufsize = (pstInBuf->u32BufSize + u32PaddingSize) * sizeof(HI_U8);
-        pstInBuf->sAdecInMMzBuf.phyaddr = (HI_U32)HI_MPI_MMZ_New(pstInBuf->sAdecInMMzBuf.bufsize, 0x32, HI_NULL,
+        pstInBuf->sAdecInMMzBuf.phyaddr = (HI_U32)HI_MMZ_New(pstInBuf->sAdecInMMzBuf.bufsize, 0x32, HI_NULL,
                                                                  pstInBuf->sAdecInMMzBuf.bufname);
         if (pstInBuf->sAdecInMMzBuf.phyaddr)
         {
@@ -677,9 +675,9 @@ static HI_VOID ADECDeInitInBuf(ADEC_CHAN_S *pstAdecChan, ADEC_STREAM_BUFFER_S  *
         else
 #endif
         {
-#ifdef ADEC_MMZ_BUF_SUPPORT
+#ifdef ADEC_MMZ_INBUF_SUPPORT
             (HI_VOID) HI_MMZ_Unmap(pstInBuf->sAdecInMMzBuf.phyaddr);
-            (HI_VOID)HI_MPI_MMZ_Delete(pstInBuf->sAdecInMMzBuf.phyaddr);
+            (HI_VOID)HI_MMZ_Delete(pstInBuf->sAdecInMMzBuf.phyaddr);
 #else
             HI_FREE(HI_ID_ADEC, pstInBuf->pu8Data - pstInBuf->u32BufPaddingSize);
 #endif
@@ -748,10 +746,12 @@ static HI_S32 ADECInitOutBuf(ADEC_CHAN_S *pstAdecChan, ADEC_STREAM_OUTBUF_S  *ps
 
     {
         /* Allocate OutBuffer */
-#ifdef ADEC_MMZ_BUF_SUPPORT
-        strcpy(pstOutBuf->sAdecOutMMzBuf.bufname, g_szAdecOutBuf_MMzName[u32AdecChID]);
+#ifdef ADEC_MMZ_OUTBUF_SUPPORT
+
+		snprintf(pstOutBuf->sAdecOutMMzBuf.bufname, sizeof(pstOutBuf->sAdecOutMMzBuf.bufname), "ADEC_OutBuf%d", u32AdecChID);
+
         pstOutBuf->sAdecOutMMzBuf.bufsize = (pstOutBuf->u32OutBufNum * uMaxBufSizePerFrame);
-        pstOutBuf->sAdecOutMMzBuf.phyaddr = (HI_U32)HI_MPI_MMZ_New(pstOutBuf->sAdecOutMMzBuf.bufsize, 0x32, HI_NULL,
+        pstOutBuf->sAdecOutMMzBuf.phyaddr = (HI_U32)HI_MMZ_New(pstOutBuf->sAdecOutMMzBuf.bufsize, 0x32, HI_NULL,
                                                                    pstOutBuf->sAdecOutMMzBuf.bufname);
         if (pstOutBuf->sAdecOutMMzBuf.phyaddr)
         {
@@ -808,9 +808,9 @@ static HI_VOID ADECDeInitOutBuf(ADEC_CHAN_S *pstAdecChan, ADEC_STREAM_OUTBUF_S  
         else
 #endif
         {
-#ifdef ADEC_MMZ_BUF_SUPPORT
+#ifdef ADEC_MMZ_OUTBUF_SUPPORT
             (HI_VOID) HI_MMZ_Unmap(pstOutBuf->sAdecOutMMzBuf.phyaddr);
-            (HI_VOID)HI_MPI_MMZ_Delete(pstOutBuf->sAdecOutMMzBuf.phyaddr);
+            (HI_VOID)HI_MMZ_Delete(pstOutBuf->sAdecOutMMzBuf.phyaddr);
 #else
             HI_FREE(HI_ID_ADEC, pstOutBuf->pu32BaseAddr);
 #endif
@@ -873,12 +873,12 @@ static HI_BOOL ADECIsPTSFull(ADEC_PTS_QUE_S *pstPTSQue)
 {
     if (((pstPTSQue->ulPTSwrite + 1) % ADEC_MAX_STORED_PTS_NUM) == pstPTSQue->ulPTSread)
     {
-#if 1
+#if 0
         /* pstPTSQue is full , discard oldest pts */
         pstPTSQue->ulPTSread = (pstPTSQue->ulPTSread + 1) % ADEC_MAX_STORED_PTS_NUM;
         return HI_FALSE;
 #else
-        return HI_SUCCESS;
+        return HI_TRUE;
 #endif
     }
 
@@ -905,20 +905,18 @@ static HI_U32 ADECGetStreamReadPos(ADEC_STREAM_BUFFER_S *pstInBuf)
 }
 
 /* call at sw decoder only */
-static HI_U32 ADECGetPtsReadPos(ADEC_CHAN_S *pstAdecChan, HI_U32 u32DecFifoleftBytes)
+static HI_U32 ADECFixStreamReadPos(ADEC_CHAN_S *pstAdecChan, HI_U32 u32StreamReadPos, HI_U32 u32BackwardBytes)
 {
-    HI_U32 u32ReadPos;
+    HI_U32 u32FixStreamReadPos;
     ADEC_STREAM_BUFFER_S  *pstInBuf = &(pstAdecChan->InStreamBuf);
 
-    u32ReadPos = ADECGetStreamReadPos(&pstAdecChan->InStreamBuf);
-
-    u32ReadPos -= u32DecFifoleftBytes;
-    if (u32ReadPos >= pstInBuf->u32Boundary)
+    u32FixStreamReadPos = u32StreamReadPos - u32BackwardBytes;
+    if (u32FixStreamReadPos >= pstInBuf->u32Boundary)
     {
-        u32ReadPos -= pstInBuf->u32Boundary;
+        u32FixStreamReadPos -= pstInBuf->u32Boundary;
     }
 
-    return u32ReadPos;
+    return u32FixStreamReadPos;
 }
 
 /****************************************************************************
@@ -965,7 +963,10 @@ static HI_U32 ADECFindPTS(ADEC_PTS_QUE_S *pstPTSQue, HI_U32 u32Pos, HI_U32 u32Pc
             }
         }
     }
-
+    if (u32PcmOutSamplesPerFrame & 0xffff0000)
+    {
+        u32PcmOutSamplesPerFrame = u32PcmOutSamplesPerFrame & 0xffff;
+    }
     if (((HI_U32)-1) == FoundPtsPos)
     {
         /*can not find a valid PTS*/
@@ -1005,6 +1006,36 @@ static HI_U32 ADECFindPTS(ADEC_PTS_QUE_S *pstPTSQue, HI_U32 u32Pos, HI_U32 u32Pc
     return u32PtsMs;
 }
 
+static HI_VOID ADECDiscardPTS(ADEC_PTS_QUE_S *pstPTSQue, HI_U32 u32Pos)
+{
+    HI_U32 Pos;//, FoundPtsPos = (HI_U32)-1;
+    HI_U32 rdPos;
+    HI_U32 wtPos;
+    ADEC_PTS *ptPTS = HI_NULL;
+
+    rdPos = (HI_U32)pstPTSQue->ulPTSread;
+    wtPos = (HI_U32)pstPTSQue->ulPTSwrite;
+    ptPTS = pstPTSQue->tPTSArry;
+    for (Pos = rdPos; Pos != wtPos;  Pos = (Pos + 1) % ADEC_MAX_STORED_PTS_NUM)
+    {
+        if (ptPTS[Pos].u32BegPos < ptPTS[Pos].u32EndPos)
+        {
+            if ((ptPTS[Pos].u32BegPos <= u32Pos) && (ptPTS[Pos].u32EndPos > u32Pos))
+            {
+                break;
+            }
+        }
+        else
+        {
+            if ((ptPTS[Pos].u32BegPos <= u32Pos) || (ptPTS[Pos].u32EndPos > u32Pos))
+            {
+                break;
+            }
+        }
+    }
+
+    pstPTSQue->ulPTSread = (HI_U32)Pos;
+}
 static HI_VOID ADECSetPacketEosFlag (ADEC_CHAN_S *pstAdecChan)
 {
     ADEC_PACKET_QUE_S   *pstPacketQue = HI_NULL_PTR;
@@ -1248,30 +1279,40 @@ static HI_S32 ADECGetStreamPTS(ADEC_CHAN_S *pstAdecChan, HI_S32 *s32BufferBps, H
     if (pstPTSQue->u32LastPtsMs < pstPTSQue->u32LastStorePtsMs)
     {
         u32PtsMs = (pstPTSQue->u32LastStorePtsMs - pstPTSQue->u32LastPtsMs);
-        ADECGetBsByteLefts(pstInBuf, &u32totalbytes);
-        pstPTSQue->u32RecyleStorePtsMs  = 0;
-        pstPTSQue->u32RecycleFirstPtsMs = 0;
-        pstPTSQue->u32PtsBeforeRevise = pstPTSQue->u32LastPtsMs;
+        
+		pstPTSQue->u32RecyleStorePtsMs	= 0;
+		pstPTSQue->u32RecycleFirstPtsMs = 0;
+		pstPTSQue->u32PtsBeforeRevise = pstPTSQue->u32LastPtsMs;
+
     }
+	else if(pstPTSQue->u32LastStorePtsMs == pstPTSQue->u32LastPtsMs)
+	{
+		u32PtsMs = 0;
+	}
     else
     {
         if ((pstPTSQue->u32RecyleStorePtsMs) && (pstPTSQue->u32LastPtsMs <= pstPTSQue->u32RecyleStorePtsMs))
         {
             u32PtsMs = (pstPTSQue->u32RecyleStorePtsMs
-                        - pstPTSQue->u32LastPtsMs) + (pstPTSQue->u32LastStorePtsMs - pstPTSQue->u32RecycleFirstPtsMs);                                //pts re-cycle
+                        - pstPTSQue->u32LastPtsMs) + (pstPTSQue->u32LastStorePtsMs - pstPTSQue->u32RecycleFirstPtsMs); //pts re-cycle
+            pstPTSQue->u32RecycleFirstPtsMs = pstPTSQue->u32LastStorePtsMs;
         }
         else if ((pstPTSQue->u32RecyleStorePtsMs) && (pstPTSQue->u32LastPtsMs > pstPTSQue->u32RecyleStorePtsMs))
         {
             u32PtsMs = (pstPTSQue->u32LastStorePtsMs - pstPTSQue->u32RecycleFirstPtsMs); //pts re-cycle and modify
+            pstPTSQue->u32RecycleFirstPtsMs = pstPTSQue->u32LastStorePtsMs;
+            
         }
         else
         {
             u32PtsMs = pstPTSQue->u32LastStorePtsMs - pstPTSQue->u32PtsBeforeRevise; //pts modify,currentpts = lastpts + delta
+            pstPTSQue->u32PtsBeforeRevise = pstPTSQue->u32LastStorePtsMs;
+            
         }
-
-        ADECGetBsByteLefts(pstInBuf, &u32totalbytes);
+		
     }
 
+	ADECGetBsByteLefts(pstInBuf, &u32totalbytes);
     if (u32PtsMs)
     {
         *s32BufferBps = (u32totalbytes * 1000) / (u32PtsMs);
@@ -1285,6 +1326,71 @@ static HI_S32 ADECGetStreamPTS(ADEC_CHAN_S *pstAdecChan, HI_S32 *s32BufferBps, H
     return HI_SUCCESS;
 }
 
+static HI_VOID ADECGetFrameTime(HI_UNF_AO_FRAMEINFO_S *pstAOFrame, HI_U32 *u32FrameDurationMs)
+{
+	if(pstAOFrame->u32SampleRate)
+	{
+	    if (pstAOFrame->u32PcmSamplesPerFrame)
+	    {
+	        *u32FrameDurationMs = (pstAOFrame->u32PcmSamplesPerFrame
+	                               * 1000) / ((HI_U32)pstAOFrame->u32SampleRate);
+	    }
+	    else
+	    {
+	        *u32FrameDurationMs = (((pstAOFrame->u32BitsBytesPerFrame
+	                                 & 0xffff)
+	                                / (2 * sizeof(HI_U16))) * 1000) / ((HI_U32)pstAOFrame->u32SampleRate);
+	    }	
+	}
+	else
+	{
+		*u32FrameDurationMs = 0;
+	}
+
+}
+
+HI_VOID ADECGetOutbufDurationMs (ADEC_CHAN_S *pstAdecChan, HI_U32 *pu32DurationMs)
+{
+    ADEC_STREAM_OUTBUF_S  *pstOutBuf = HI_NULL_PTR;
+    ADEC_OUTPUTBUF_S *ptOutElem   = HI_NULL_PTR;
+    HI_U32 u32BufReadIdx,u32BufWriteIdx;
+    HI_U32 u32FrameDurationMs;
+    HI_U32 u32OutBufDurationMs = 0;
+    HI_U32 u32OutBufNum;
+    HI_UNF_AO_FRAMEINFO_S stAOFrame;
+
+    pstOutBuf   = &(pstAdecChan->outStreamBuf);
+
+    *pu32DurationMs = 0;
+    u32BufReadIdx = pstOutBuf->u32BufReadIdx;
+    u32BufWriteIdx = pstOutBuf->u32BufWriteIdx;
+    u32OutBufNum = pstOutBuf->u32OutBufNum;
+    /* No data */
+    while (u32OutBufNum--)
+    {
+        if(u32BufReadIdx==u32BufWriteIdx)
+        {
+            break;
+        }
+        ptOutElem = &(pstOutBuf->outBuf[u32BufReadIdx++]);
+        /* fill frame info */
+        stAOFrame.u32FrameIndex = pstOutBuf->u32BufReadIdx;
+        stAOFrame.bInterleaved = ptOutElem->bInterleaved;
+        stAOFrame.s32BitPerSample = (HI_S32)ptOutElem->u32BitPerSample;
+        stAOFrame.u32SampleRate = ptOutElem->u32OutSampleRate;
+        stAOFrame.u32Channels = ptOutElem->u32OutChannels;
+        stAOFrame.u32PtsMs = ptOutElem->u32PTS;
+        stAOFrame.u32PcmSamplesPerFrame = ptOutElem->u32PcmOutSamplesPerFrame;
+        stAOFrame.u32BitsBytesPerFrame = ptOutElem->u32BitsOutBytesPerFrame;
+        stAOFrame.ps32PcmBuffer  = ptOutElem->ps32PcmOutBuf;
+        stAOFrame.ps32BitsBuffer = ptOutElem->ps32BitsOutBuf;
+        ADECGetFrameTime(&stAOFrame, &u32FrameDurationMs);
+        u32OutBufDurationMs += u32FrameDurationMs;
+
+    }
+    *pu32DurationMs = u32OutBufDurationMs;
+    return ;
+}
 HI_S32 ADEC_GetDelayMs(HI_HANDLE hAdec, HI_U32 *pDelayMs)
 {
     ADEC_CHAN_S *pstAdecChan = HI_NULL_PTR;
@@ -1293,10 +1399,10 @@ HI_S32 ADEC_GetDelayMs(HI_HANDLE hAdec, HI_U32 *pDelayMs)
     HI_U32 u32InStreamPts;
     HI_S32 S32DelayBps;
     HI_U32 u32TotalAdecTime;
-
+    HI_U32 u32OutBufDurationMs;
     pstAdecChan = g_pstAdecChan[hAdec];
 
-    ADEC_LOCK(&pstAdecChan->mutex);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
     ADECGetStreamPTS(pstAdecChan, &s32BufferBps, &u32InStreamPts);
     HI_SYS_GetTimeStampMs(&pstAdecChan->u32EndTime);
 
@@ -1313,7 +1419,7 @@ HI_S32 ADEC_GetDelayMs(HI_HANDLE hAdec, HI_U32 *pDelayMs)
     if (!s32BufferBps || !s32AvgStreamBps)
     {
         *pDelayMs = 0;
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+        ADEC_UNLOCK(&pstAdecChan->ApiMutex);
         return HI_SUCCESS;
     }
 
@@ -1331,8 +1437,15 @@ HI_S32 ADEC_GetDelayMs(HI_HANDLE hAdec, HI_U32 *pDelayMs)
     {
         *pDelayMs = 0;
     }
-
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    /* outbuf DurationMs is more critical than inbuf for low delay control */ 
+    ADECGetOutbufDurationMs(pstAdecChan, &u32OutBufDurationMs);
+    if(u32OutBufDurationMs < (4*ADEC_SYS_SLEEP_TIME))
+    {
+        *pDelayMs = 0;
+        ADEC_UNLOCK(&pstAdecChan->ApiMutex);
+        return HI_SUCCESS;
+    }
+    ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return HI_SUCCESS;
 }
 
@@ -1442,6 +1555,9 @@ static HI_VOID ADECInitProcInfo(ADEC_PROC_ITEM_S *pstAdecInfo)
     pstAdecInfo->u32FrameSize  = 0;
     pstAdecInfo->u32FrameRead  = 0;
     pstAdecInfo->u32FrameWrite = 0;
+    pstAdecInfo->u32OutChannels = 0;
+	pstAdecInfo->u32BitsOutBytesPerFrame = 0;
+	pstAdecInfo->u32PcmSamplesPerFrame = 0;
     pstAdecInfo->u32PtsLost = 0;
 
     pstAdecInfo->u32DbgGetBufCount_Try = 0;
@@ -1453,6 +1569,12 @@ static HI_VOID ADECInitProcInfo(ADEC_PROC_ITEM_S *pstAdecInfo)
     pstAdecInfo->u32DbgSendStraemCount_Try = 0;
     pstAdecInfo->u32DbgSendStraemCount = 0;
     pstAdecInfo->u32DbgTryDecodeCount = 0;
+    
+    pstAdecInfo->u32ThreadId = 0;
+    pstAdecInfo->ThreadBeginTime = 0;
+    pstAdecInfo->ThreadEndTime = 0;
+    pstAdecInfo->ThreadExeTimeOutCnt = 0;
+    pstAdecInfo->ThreadScheTimeOutCnt = 0;
 
     return;
 }
@@ -1475,7 +1597,7 @@ static HI_VOID ADECGetHaSzname(ADEC_CHAN_S *pstAdecChan)
         }
         else
         {
-            strcpy((HI_CHAR *)pstAdecInfo->szCodecType, "UNKNOWN");
+            strncpy((HI_CHAR *)pstAdecInfo->szCodecType, "UNKNOWN", sizeof(pstAdecInfo->szCodecType));
         }
 
         if (hHaEntry->pszDescription)
@@ -1485,7 +1607,7 @@ static HI_VOID ADECGetHaSzname(ADEC_CHAN_S *pstAdecChan)
         }
         else
         {
-            strcpy((HI_CHAR *)pstAdecInfo->szCodecDescription, "UNKNOWN");
+            strncpy((HI_CHAR *)pstAdecInfo->szCodecDescription, "UNKNOWN", sizeof(pstAdecInfo->szCodecDescription));
         }
     }
 
@@ -1507,6 +1629,9 @@ static HI_VOID ADECResetProcInfo2(ADEC_CHAN_S *pstAdecChan)
     pstAdecInfo->u32BufSize    = pstAdecChan->InStreamBuf.u32BufSize;
     pstAdecInfo->u32FrameRead  = 0;
     pstAdecInfo->u32FrameWrite = 0;
+    pstAdecInfo->u32OutChannels = 0;
+	pstAdecInfo->u32BitsOutBytesPerFrame = 0;
+	pstAdecInfo->u32PcmSamplesPerFrame = 0;
     pstAdecInfo->s32BufRead  = 0;
     pstAdecInfo->u32BufWrite = 0;
     pstAdecInfo->u32PtsLost = 0;
@@ -1608,6 +1733,10 @@ static HI_VOID  ADEC_Process32bitVolume(HI_S32 *pPcmBuf, HI_S32 InSamps, HI_S32 
 
 HI_VOID  ADEC_ProcessVolume(HI_S32 * ps32PcmBuf, HI_S32 InSamps, HI_S32 BitPerSample, HI_S32 Channels, HI_S16 s16Volume)
 {
+    if (InSamps & 0xffff0000)
+    {
+        InSamps = InSamps & 0xffff;
+    }
     if (16 == BitPerSample)
     {
         ADEC_Process16bitVolume((HI_S16*)ps32PcmBuf, InSamps, Channels, s16Volume);
@@ -1640,11 +1769,31 @@ static HI_VOID ADECConvertHaOut2MpiOut(ADEC_CHAN_S *pstAdecChan, ADEC_OUTPUTBUF_
                                        HI_U32 u32StreamReadPos)
 {
     HI_U32 u32OrgPTS;
+	HI_U32 u32PcmSamplesPerFrame;
+    HI_U32 u32FixStreamReadPos;
 
     /* look for PTS */
+	if(pstAout->u32PcmOutSamplesPerFrame & 0xffff)
+	{
+		u32PcmSamplesPerFrame = pstAout->u32PcmOutSamplesPerFrame;
+	}
+	else
+	{
+		if(pstAout->u32OutChannels)
+		{
+			u32PcmSamplesPerFrame = (pstAout->u32BitsOutBytesPerFrame & 0xffff)/(pstAout->u32OutChannels * sizeof(HI_U16));//only passthrough exist
+		}
+		else
+		{
+			u32PcmSamplesPerFrame = 0;
+		}
+		
+	}
 
-    ptRetBuf->u32PTS = ADECFindPTS(&(pstAdecChan->PTSQue), (HI_U32)u32StreamReadPos,
-                                   pstAout->u32PcmOutSamplesPerFrame,
+    u32FixStreamReadPos = ADECFixStreamReadPos(pstAdecChan, u32StreamReadPos,
+                                            pstAout->stPtsInfo.unPts.u32SwDecoderBytesLeft);
+    ptRetBuf->u32PTS = ADECFindPTS(&(pstAdecChan->PTSQue), (HI_U32)u32FixStreamReadPos,
+                                   u32PcmSamplesPerFrame,
                                    pstAout->u32OutSampleRate, &u32OrgPTS);
 
     ptRetBuf->u32OrgPTS = u32OrgPTS;
@@ -1703,6 +1852,7 @@ static HI_S32 ADECSwDecode( ADEC_CHAN_S *pstAdecChan)
     ADEC_PROC_ITEM_S *pstAdecInfo    = HI_NULL_PTR;
     ADEC_STREAM_OUTBUF_S  *pstOutBuf = HI_NULL_PTR;
     ADEC_MIDSTATE_S *pstMidState     = HI_NULL_PTR;
+	ADEC_PTS_QUE_S *pstPTSQue = HI_NULL_PTR;
     HI_HA_DECODE_S *pHaDev;
     HI_HADECODE_INPACKET_S avpkt;
     HI_HADECODE_OUTPUT_S sOut;
@@ -1716,14 +1866,15 @@ static HI_S32 ADECSwDecode( ADEC_CHAN_S *pstAdecChan)
     pstOutBuf   = &(pstAdecChan->outStreamBuf);
     pstAdecInfo = pstAdecChan->pstAdecInfo;
     pstMidState = &(pstAdecChan->midState);
+	pstPTSQue = &(pstAdecChan->PTSQue);
     hDecoder = (HI_VOID*)ptDecAttr->hDecoder;
 
     CHECK_ADEC_NULL_PTR(ptDecAttr->pHaDecoderDev);
 
+	ADEC_LOCK(&pstAdecChan->IOMutex);
     pHaDev = ptDecAttr->pHaDecoderDev;
 
     ADECGetInputBuf(pstAdecChan, &avpkt);
-
     /* Some decoder  may has its own delay buffer, try to pull decoder untill HA_ErrorNotEnoughData  */
     while (1)
     {
@@ -1738,11 +1889,13 @@ static HI_S32 ADECSwDecode( ADEC_CHAN_S *pstAdecChan)
         ADECConvertMpiOut2HaOut(pHaDev, hDecoder, ptRetBuf, &sOut);
 
         /* get pts readpos before decode one frame */
-        u32StreamReadPos = ADECGetPtsReadPos(pstAdecChan,0);
+        u32StreamReadPos = ADECGetStreamReadPos(&pstAdecChan->InStreamBuf);
 
         /* decode one audio frame */
         u32ByteLeftBfDecode = avpkt.s32Size;
+		ADEC_UNLOCK(&pstAdecChan->IOMutex);
         sRet = pHaDev->DecDecodeFrame(hDecoder, &avpkt, &sOut);
+		ADEC_LOCK(&pstAdecChan->IOMutex);
         if ((HI_U32)avpkt.s32Size > u32ByteLeftBfDecode)
         {
             HI_ERR_ADEC("BytesBfDecode=0x%.8x,BytesAfDecode=0x%.8x\n", u32ByteLeftBfDecode, avpkt.s32Size);
@@ -1750,7 +1903,8 @@ static HI_S32 ADECSwDecode( ADEC_CHAN_S *pstAdecChan)
         }
 
         u32FrameConsumeBytes = u32ByteLeftBfDecode - avpkt.s32Size;
-
+		pstAdecChan->s32BsConsumeBytes += u32FrameConsumeBytes; //for ADECCheckScrambler
+		
         /* check decode one audio frame */
         if (HA_ErrorNotEnoughData == sRet)
         {
@@ -1769,8 +1923,15 @@ static HI_S32 ADECSwDecode( ADEC_CHAN_S *pstAdecChan)
             }
 
             ADECUpdateInputBuf(pstAdecChan, u32FrameConsumeBytes);
-
-            break;
+			if (((pstPTSQue->ulPTSwrite + 1) % ADEC_MAX_STORED_PTS_NUM) == pstPTSQue->ulPTSread)
+			{
+			    
+                u32StreamReadPos = ADECFixStreamReadPos(pstAdecChan, u32StreamReadPos,
+                                                        sOut.stPtsInfo.unPts.u32SwDecoderBytesLeft);
+				ADECDiscardPTS(pstPTSQue, u32StreamReadPos);
+			}
+		         
+		    break;
         }
         else if (HA_ErrorNone == sRet)    /* Success */
         {
@@ -1789,10 +1950,12 @@ static HI_S32 ADECSwDecode( ADEC_CHAN_S *pstAdecChan)
             pstOutBuf->u32BufWriteIdx = (pstOutBuf->u32BufWriteIdx + 1) % (pstOutBuf->u32OutBufNum);
             pstMidState->u32ContinueErrNum = 0;
             pstAdecInfo->u32FramnNm++;
+	     pstAdecInfo->u32FrameWrite = pstOutBuf->u32BufWriteIdx;
+			
         }
         else     /* Failure */
         {
-            HI_ERR_ADEC( "Decode packet HA_ErrorStreamCorrupt \n");
+            HI_INFO_ADEC( "Decode packet HA_ErrorStreamCorrupt \n");
             if (!u32FrameConsumeBytes)
             {
                 /*  decode holding,  discard  bytes */
@@ -1805,10 +1968,19 @@ static HI_S32 ADECSwDecode( ADEC_CHAN_S *pstAdecChan)
 
             pstAdecInfo->u32ErrFrameNum++;
             ADECUpdateInputBuf(pstAdecChan, u32FrameConsumeBytes);
-            break;
-        }
-    }
+			if (((pstPTSQue->ulPTSwrite + 1) % ADEC_MAX_STORED_PTS_NUM) == pstPTSQue->ulPTSread)
+			{
+			
+                u32StreamReadPos = ADECFixStreamReadPos(pstAdecChan, u32StreamReadPos,
+                                                        sOut.stPtsInfo.unPts.u32SwDecoderBytesLeft);
+				ADECDiscardPTS(pstPTSQue, u32StreamReadPos);
+			}
 
+		    break;
+        }
+    }//end while 1
+	pstAdecInfo->u32DbgTryDecodeCount++;
+	ADEC_UNLOCK(&pstAdecChan->IOMutex);
     return HI_SUCCESS;
 }
 
@@ -1948,7 +2120,9 @@ static HI_S32  ADECOpenChannel(ADEC_CHAN_S *pstAdecChan)
     CHECK_ADEC_NULL_PTR(pstAdecChan);
 #ifndef DISABLE_MKP_ADEC
     /* Check if initialized */
-    sprintf((HI_CHAR*)pathname, "/dev/%s", DRV_ADEC_DEVICE_NAME);
+
+	snprintf((HI_CHAR*)pathname, sizeof(pathname), "/dev/%s", DRV_ADEC_DEVICE_NAME);
+
     pstAdecChan->AdecDevFd = ADECOpenDevice((HI_CHAR*)pathname, O_RDWR);
     if (pstAdecChan->AdecDevFd < 0)
     {
@@ -2000,7 +2174,7 @@ static HI_VOID  ADECCloseChannel(ADEC_CHAN_S *pstAdecChan)
 
     if (pstAdecChan->pstAdecInfo)
     {
-        HI_MUNMAP(pstAdecChan->pstAdecInfo);
+        (HI_VOID)HI_MUNMAP(pstAdecChan->pstAdecInfo);
         pstAdecChan->pstAdecInfo = HI_NULL_PTR;
     }
 
@@ -2138,8 +2312,11 @@ static HI_S32 ADECGetInputAttr(ADEC_CHAN_S *pstAdecChan, const ADEC_ATTR_S  *pst
     {
         HA_CODEC_PACKETDECODER_QUERY_PARAM_S stPacketDecoder;
         HA_CODEC_HARDWAREDECODER_QUERY_PARAM_S stHwDecoder;
+		memset(&stPacketDecoder, 0, sizeof(HA_CODEC_PACKETDECODER_QUERY_PARAM_S));
+		memset(&stHwDecoder, 0, sizeof(HA_CODEC_HARDWAREDECODER_QUERY_PARAM_S));
+		
         stPacketDecoder.enCmd = HA_CODEC_PACKETDECODER_QUERY_CMD;
-        ADEC_SetConfigDeoder(pstAttr->u32CodecID, &stPacketDecoder); //get packet mode,add by 183717
+        ADEC_SetConfigDeoder(pstAttr->u32CodecID, &stPacketDecoder);
         pstAdecChan->bPacketDecoder = stPacketDecoder.bPacketDecoder;
 
         stHwDecoder.enCmd = HA_CODEC_HARDWAREDECODER_QUERY_CMD;
@@ -2326,37 +2503,39 @@ HI_VOID *ADEC_DecThread(HI_VOID *arg)
 {
     HI_HANDLE hAdec = (HI_HANDLE)arg;
     ADEC_CHAN_S *pstAdecChan = HI_NULL_PTR;
-    ADEC_STREAM_BUFFER_S  *pstInBuf = HI_NULL_PTR;
     ADEC_INFO_S   *ptDecAttr = HI_NULL_PTR;
-    HI_S32 s32BsLeftBytes, s32BsConsumeBytes;
-    ADEC_PROC_ITEM_S *pstAdecInfo = HI_NULL_PTR;
 
     if (hAdec >= ADEC_INSTANCE_MAXNUM)
     {
         return HI_NULL;
     }
 
-    pstAdecChan = g_pstAdecChan[hAdec];
-    pstAdecInfo = pstAdecChan->pstAdecInfo;
-    ptDecAttr = &(pstAdecChan->decAttr);
+    pstAdecChan = g_pstAdecChan[hAdec];  
+
+    pstAdecChan->pstAdecInfo->u32ThreadId = syscall(__NR_gettid);
 
     while (pstAdecChan->AdecThreadRun)
     {
-        ADEC_LOCK(&pstAdecChan->mutex);
+        HI_SYS_GetTimeStampMs(&pstAdecChan->pstAdecInfo->ThreadBeginTime);
+
+	    if ((pstAdecChan->pstAdecInfo->ThreadBeginTime - pstAdecChan->pstAdecInfo->ThreadEndTime > ADEC_SCHE_THREADTIME_LIMIT)
+            && (0 != pstAdecChan->pstAdecInfo->ThreadEndTime))
+        {
+            pstAdecChan->pstAdecInfo->ThreadScheTimeOutCnt++;
+        }
+			
+	    ADEC_LOCK(&pstAdecChan->DataMutex);
+	    ptDecAttr = &(pstAdecChan->decAttr);
         if (ptDecAttr->hDecoder == HI_NULL)
         {
-            ADEC_UNLOCK(&pstAdecChan->mutex);
+			ADEC_UNLOCK(&pstAdecChan->DataMutex);
             (HI_VOID)usleep(ADEC_SYS_SLEEP_TIME * 1000);
             continue;
         }
 
         if ((pstAdecChan->beAssigned == HI_TRUE) && (pstAdecChan->beWork == HI_TRUE))
         {
-            pstInBuf = &(pstAdecChan->InStreamBuf);
-            s32BsLeftBytes = (HI_S32)(pstInBuf->u32BufSize - pstInBuf->u32BufFree);
-            pstAdecChan->AdecPullContinue = HI_TRUE;
-
-            pstAdecInfo->u32DbgTryDecodeCount++;
+            
 #ifdef HA_HW_CODEC_SUPPORT
             if (HI_TRUE==pstAdecChan->bHwDecoder)
             {
@@ -2368,15 +2547,34 @@ HI_VOID *ADEC_DecThread(HI_VOID *arg)
                 (RET_VOID) ADECSwDecode( pstAdecChan );
             }
 
-            s32BsConsumeBytes = s32BsLeftBytes - ((HI_S32)(pstInBuf->u32BufSize - pstInBuf->u32BufFree));
-            ADECCheckScrambler(hAdec, s32BsConsumeBytes);
-            ADEC_UNLOCK(&pstAdecChan->mutex);
 
+            if(HI_FALSE == pstAdecChan->bPacketDecoder)
+            {
+				// pop sound only in non-Packet mode
+                ADECCheckScrambler(hAdec, pstAdecChan->s32BsConsumeBytes);
+				pstAdecChan->s32BsConsumeBytes = 0;
+            }
+            
+            ADEC_UNLOCK(&pstAdecChan->DataMutex);
+
+	        HI_SYS_GetTimeStampMs(&pstAdecChan->pstAdecInfo->ThreadEndTime);
+	     
+	        if (pstAdecChan->pstAdecInfo->ThreadEndTime -pstAdecChan->pstAdecInfo->ThreadBeginTime > ADEC_EXE_THREADTIME_LIMIT)
+            {
+            	   pstAdecChan->pstAdecInfo->ThreadExeTimeOutCnt++;
+            }
+		 
             (HI_VOID)usleep(ADEC_SYS_SLEEP_TIME * 1000);
         }
         else
         {
-            ADEC_UNLOCK(&pstAdecChan->mutex);
+	        ADEC_UNLOCK(&pstAdecChan->DataMutex);
+	        HI_SYS_GetTimeStampMs(&pstAdecChan->pstAdecInfo->ThreadEndTime);
+	     
+	        if (pstAdecChan->pstAdecInfo->ThreadEndTime -pstAdecChan->pstAdecInfo->ThreadBeginTime > ADEC_EXE_THREADTIME_LIMIT)
+            {
+            	   pstAdecChan->pstAdecInfo->ThreadExeTimeOutCnt++;
+            }
             (HI_VOID)usleep(ADEC_SYS_SLEEP_TIME * 1000);
         }
     }
@@ -2450,8 +2648,9 @@ HI_S32 ADEC_Open(HI_HANDLE *phAdec)
     pstAdecChan->midState.u32LastFrameChannels  = 2;
     pstAdecChan->midState.enLastFrameSmaplerate = HI_UNF_SAMPLE_RATE_48K;
 
-    ADEC_LOCK_INIT(&(pstAdecChan->mutex));
-
+    ADEC_LOCK_INIT(&(pstAdecChan->ApiMutex));
+    ADEC_LOCK_INIT(&(pstAdecChan->DataMutex));
+	ADEC_LOCK_INIT(&(pstAdecChan->IOMutex));
     (RET_VOID)ADECGetDefalutOpenParam(&sAdecDefaultAttr);
     (RET_VOID)ADECGetInputAttr(pstAdecChan, &sAdecDefaultAttr);
 
@@ -2465,7 +2664,8 @@ HI_S32 ADEC_Open(HI_HANDLE *phAdec)
     pstAdecChan->u32TotalAdecTime = 0;
     g_pstAdecChan[chan_id] = pstAdecChan;
 
-    ADEC_LOCK(&pstAdecChan->mutex);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+	ADEC_LOCK(&pstAdecChan->DataMutex);
 
     nRet = ADECOpenChannel(pstAdecChan);
 
@@ -2473,7 +2673,8 @@ HI_S32 ADEC_Open(HI_HANDLE *phAdec)
     if (HI_SUCCESS != nRet)
     {
         HI_ERR_ADEC(" DrvErrCode =0x%x\n", nRet);
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+        ADEC_UNLOCK(&pstAdecChan->DataMutex);
+		ADEC_UNLOCK(&pstAdecChan->ApiMutex);
 #ifdef HI_ADEC_AUDSPECTRUM_SUPPORT
         HI_FREE(HI_ID_ADEC, g_pu32Bufffer[chan_id]);
         g_pu32Bufffer[chan_id] = NULL;
@@ -2486,7 +2687,8 @@ HI_S32 ADEC_Open(HI_HANDLE *phAdec)
     pstAdecChan->u32Volume = ADEC_MAX_VOLUME;
     pstAdecChan->pstAdecInfo->u32Volume = ADEC_MAX_VOLUME;
     pstAdecChan->s16VolumeFrac = 0x7fff;
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    ADEC_UNLOCK(&pstAdecChan->DataMutex);
+	ADEC_UNLOCK(&pstAdecChan->ApiMutex);
 
     *phAdec = chan_id;
     pstAdecChan->AdecThreadRun = HI_TRUE;
@@ -2521,12 +2723,22 @@ HI_S32 ADEC_Close(HI_HANDLE hAdec)
     CHECK_ADEC_HANDLE(hAdec);
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
+
+    if(!pstAdecChan)
+    {   
+        return HI_FAILURE;
+    }
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+	ADEC_LOCK(&pstAdecChan->DataMutex);
     if (HI_FALSE == pstAdecChan->beAssigned)
     {
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+	    ADEC_UNLOCK(&pstAdecChan->DataMutex);
+        ADEC_UNLOCK(&pstAdecChan->ApiMutex);
         return HI_SUCCESS;
     }
+
+    pstAdecChan->AdecThreadRun = HI_FALSE;
+    (HI_VOID)pthread_join(pstAdecChan->AdecThreadInst, HI_NULL);
 
     if (HI_TRUE == pstAdecChan->beWork)
     {
@@ -2539,16 +2751,15 @@ HI_S32 ADEC_Close(HI_HANDLE hAdec)
     pstAdecChan->u32AdecChID = (HI_U32)-1;
     (RET_VOID)ADECGetDefalutOpenParam(&sAdecDefaultAttr);
     (RET_VOID)ADECGetInputAttr(pstAdecChan, &sAdecDefaultAttr);
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    ADEC_UNLOCK(&pstAdecChan->DataMutex);
+	ADEC_UNLOCK(&pstAdecChan->ApiMutex);
 
-    pstAdecChan->AdecThreadRun = HI_FALSE;
-    (HI_VOID)pthread_join(pstAdecChan->AdecThreadInst, HI_NULL);
+    ADEC_LOCK_DESTROY(&(pstAdecChan->ApiMutex));
+    ADEC_LOCK_DESTROY(&(pstAdecChan->DataMutex));
+	ADEC_LOCK_DESTROY(&(pstAdecChan->IOMutex));
 
-    if (pstAdecChan)
-    {
-        HI_FREE(HI_ID_ADEC, (HI_VOID*)(pstAdecChan));
-        g_pstAdecChan[hAdec] = NULL;
-    }
+    HI_FREE(HI_ID_ADEC, (HI_VOID*)(pstAdecChan));
+    g_pstAdecChan[hAdec] = NULL;
 
 #ifdef HI_ADEC_AUDSPECTRUM_SUPPORT
     if (g_pu32Bufffer[hAdec])
@@ -2568,6 +2779,7 @@ HI_S32 ADEC_SetAttr(HI_HANDLE hAdec, HI_U32 u32Command, void *pstParam)
     ADEC_CHAN_S *pstAdecChan = HI_NULL_PTR;
 
     ADEC_ATTR_S stAllAttr;
+	memset(&stAllAttr, 0, sizeof(ADEC_ATTR_S));
 
     /* check parameter */
     CHECK_ADEC_HANDLE(hAdec);
@@ -2632,15 +2844,16 @@ HI_S32 ADEC_SetAttr(HI_HANDLE hAdec, HI_U32 u32Command, void *pstParam)
     }
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+	ADEC_LOCK(&pstAdecChan->DataMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beAssigned, &pstAdecChan->DataMutex,&pstAdecChan->ApiMutex);
 
     /* check if initialized, update attr to global variable*/
     pstAdecChan->bAdecEosFlag = stAllAttr.bEosState;
     nRet = ADECheckInputAttr(pstAdecChan, &stAllAttr);
-    HI_MPI_ADEC_RetUserErr(nRet, &pstAdecChan->mutex);
-
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    HI_MPI_ADEC_RetUserErrARG2(nRet, &pstAdecChan->DataMutex,&pstAdecChan->ApiMutex);
+    ADEC_UNLOCK(&pstAdecChan->DataMutex);
+    ADEC_UNLOCK(&pstAdecChan->ApiMutex);
 
     return HI_SUCCESS;
 }
@@ -2669,8 +2882,9 @@ HI_S32 ADEC_GetAttr(HI_HANDLE hAdec, HI_U32 u32Command, void  *pstAttr)
     CHECK_ADEC_NULL_PTR(pstAttr);
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+
+	CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->ApiMutex);
 
     switch (u32Command)
     {
@@ -2723,10 +2937,10 @@ HI_S32 ADEC_GetAttr(HI_HANDLE hAdec, HI_U32 u32Command, void  *pstAttr)
 
     default:
         HI_ERR_ADEC(" ADEC_GetAttr fail: INVALID PARAM = 0x%x\n", u32Command);
+		ADEC_UNLOCK(&pstAdecChan->ApiMutex);
         return HI_FAILURE;
     }
-
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return HI_SUCCESS;
 }
 
@@ -2745,6 +2959,7 @@ HI_S32 ADEC_GetAttr(HI_HANDLE hAdec, HI_U32 u32Command, void  *pstAttr)
 HI_S32 ADEC_SendStream (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream, HI_U32 u32PtsMs)
 {
     HI_S32 sRet = HI_SUCCESS;
+    static FILE *fEstream = NULL;
 
     ADEC_CHAN_S *pstAdecChan = HI_NULL_PTR;
     ADEC_PTS_QUE_S   *pstPTSQue     = HI_NULL_PTR;
@@ -2772,9 +2987,9 @@ HI_S32 ADEC_SendStream (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream, H
     }
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beWork, &pstAdecChan->mutex);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+	ADEC_LOCK(&pstAdecChan->IOMutex);//IO
+    CHECK_ADEC_STATEARG2(pstAdecChan->beAssigned, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
 
     pstPTSQue = &(pstAdecChan->PTSQue);
     pstInBuf = &(pstAdecChan->InStreamBuf);
@@ -2782,7 +2997,8 @@ HI_S32 ADEC_SendStream (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream, H
 
     if (HI_TRUE == ADECIsPTSFull(pstPTSQue))
     {
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+       ADEC_UNLOCK(&pstAdecChan->IOMutex);
+	   ADEC_UNLOCK(&pstAdecChan->ApiMutex);
         return HI_ERR_ADEC_IN_PTSBUF_FULL;
     }
 
@@ -2790,8 +3006,9 @@ HI_S32 ADEC_SendStream (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream, H
     {
         if (HI_TRUE == ADECIsPacketFull(pstAdecChan->pstPacketQue))
         {
-            ADEC_UNLOCK(&pstAdecChan->mutex);
-            return HI_ERR_ADEC_IN_PTSBUF_FULL;
+            ADEC_UNLOCK(&pstAdecChan->IOMutex);
+            ADEC_UNLOCK(&pstAdecChan->ApiMutex);
+			return HI_ERR_ADEC_IN_PTSBUF_FULL;
         }
     }
 
@@ -2843,7 +3060,33 @@ HI_S32 ADEC_SendStream (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream, H
     }
 
     pstAdecInfo->u32BufWrite = pstInBuf->u32BufWritePos;
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    ADEC_UNLOCK(&pstAdecChan->IOMutex);
+    ADEC_UNLOCK(&pstAdecChan->ApiMutex);
+
+     if( pstAdecInfo->enEsCtrlState == ADEC_CMD_CTRL_START )
+    {
+   	  if(!fEstream)
+      	  {
+           	fEstream = fopen(pstAdecInfo->filePath, "wb");
+          	if (!fEstream)
+          	{
+              		HI_ERR_ADEC("can not open file (%s)\n",pstAdecInfo->filePath);
+           	}
+      	  }
+         if (fEstream)
+         {
+	       	fwrite(pstStream->pu8Data, 1, pstStream->u32Size, fEstream);   // discard PTS
+         }
+    }
+    if( pstAdecInfo->enEsCtrlState == ADEC_CMD_CTRL_STOP )
+    {
+	  if (fEstream)
+         {
+	     	fclose(fEstream);
+	    	fEstream = NULL;
+         }
+    }
+	 
     return sRet;
 }
 
@@ -2883,9 +3126,11 @@ HI_S32 ADEC_GetBuffer (HI_HANDLE hAdec, HI_U32 u32RequestSize, HI_UNF_STREAM_BUF
     }
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beWork, &pstAdecChan->mutex);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+	ADEC_LOCK(&pstAdecChan->IOMutex);
+
+    CHECK_ADEC_STATEARG2(pstAdecChan->beAssigned, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beWork, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
 
     pstInBuf = &(pstAdecChan->InStreamBuf);
     pstMidState = &(pstAdecChan->midState);
@@ -2893,7 +3138,8 @@ HI_S32 ADEC_GetBuffer (HI_HANDLE hAdec, HI_U32 u32RequestSize, HI_UNF_STREAM_BUF
 
     if (HI_TRUE == ADECIsPTSFull(pstPTSQue))
     {
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+        ADEC_UNLOCK(&pstAdecChan->IOMutex);
+		ADEC_UNLOCK(&pstAdecChan->ApiMutex);
         return HI_ERR_ADEC_IN_PTSBUF_FULL;
     }
 
@@ -2901,7 +3147,8 @@ HI_S32 ADEC_GetBuffer (HI_HANDLE hAdec, HI_U32 u32RequestSize, HI_UNF_STREAM_BUF
     {
         if (HI_TRUE == ADECIsPacketFull(pstAdecChan->pstPacketQue))
         {
-            ADEC_UNLOCK(&pstAdecChan->mutex);
+            ADEC_UNLOCK(&pstAdecChan->IOMutex);
+			ADEC_UNLOCK(&pstAdecChan->ApiMutex);
             return HI_ERR_ADEC_IN_PTSBUF_FULL;
         }
     }
@@ -2928,14 +3175,16 @@ HI_S32 ADEC_GetBuffer (HI_HANDLE hAdec, HI_U32 u32RequestSize, HI_UNF_STREAM_BUF
     else
     {
         /* input buffer is full */
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+		ADEC_UNLOCK(&pstAdecChan->IOMutex);
+        ADEC_UNLOCK(&pstAdecChan->ApiMutex);
         return HI_ERR_ADEC_IN_BUF_FULL;
     }
 
     /*recode*/
     memcpy(&pstMidState->lastPkt[0], pstStream1, sizeof(HI_UNF_STREAM_BUF_S));
     memcpy(&pstMidState->lastPkt[1], pstStream2, sizeof(HI_UNF_STREAM_BUF_S));
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    ADEC_UNLOCK(&pstAdecChan->IOMutex);
+	ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return HI_SUCCESS;
 }
 
@@ -2949,6 +3198,7 @@ HI_S32 ADEC_PutBuffer (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream1,
     ADEC_STREAM_BUFFER_S  *pstInBuf = HI_NULL_PTR;
     ADEC_MIDSTATE_S *pstMidState    = HI_NULL_PTR;
     HI_U32 u32BsSize;
+    static FILE *fEstream = NULL;
 
     /* Check parameter */
     CHECK_ADEC_HANDLE(hAdec);
@@ -2979,9 +3229,10 @@ HI_S32 ADEC_PutBuffer (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream1,
     }
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beWork, &pstAdecChan->mutex);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+	ADEC_LOCK(&pstAdecChan->IOMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beAssigned, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beWork, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
 
     pstPTSQue = &(pstAdecChan->PTSQue);
     pstInBuf = &(pstAdecChan->InStreamBuf);
@@ -2994,7 +3245,7 @@ HI_S32 ADEC_PutBuffer (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream1,
     if (u32BsSize > pstInBuf->u32BufFree)
     {
         //HI_INFO_ADEC(":u32BsSize%(d) bigger than u32BufFree(%d) \n", u32BsSize,pstInBuf->u32BufFree);
-        HI_MPI_ADEC_RetUserErr2(HI_ERR_ADEC_IN_BUF_FULL, &pstAdecChan->mutex);
+        HI_MPI_ADEC_RetUserErr2ARG2(HI_ERR_ADEC_IN_BUF_FULL, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
     }
 
     if (pstStream2->u32Size)
@@ -3004,7 +3255,7 @@ HI_S32 ADEC_PutBuffer (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream1,
             HI_ERR_ADEC("pstStream1 u32Size(%d) != lastPkt[0].u32Size(%d)\n", pstStream1->u32Size,
                         (pstMidState->lastPkt[0]).u32Size);
 
-            HI_MPI_ADEC_RetUserErr2(HI_FAILURE, &pstAdecChan->mutex);
+            HI_MPI_ADEC_RetUserErr2ARG2(HI_FAILURE, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
         }
 
         if (((pstStream1->pu8Data + pstStream1->u32Size) != (pstInBuf->pu8Data + pstInBuf->u32BufSize))
@@ -3016,7 +3267,7 @@ HI_S32 ADEC_PutBuffer (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream1,
                         pstStream2->u32Size);
             HI_ERR_ADEC("pstInBuf->pu8Data(0x%x),pstInBuf->u32BufSize(0x%x) \n", pstInBuf->pu8Data,
                         pstInBuf->u32BufSize);
-            HI_MPI_ADEC_RetUserErr2(HI_FAILURE, &pstAdecChan->mutex);
+            HI_MPI_ADEC_RetUserErr2ARG2(HI_FAILURE, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
         }
 
         if ((pstStream2->u32Size > (pstMidState->lastPkt[1]).u32Size)
@@ -3027,7 +3278,7 @@ HI_S32 ADEC_PutBuffer (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream1,
             HI_ERR_ADEC("lastPkt[1].pu8Data(0x%x),lastPkt[1].u32Size(0x%x) \n",
                         (pstMidState->lastPkt[1]).pu8Data,
                         (pstMidState->lastPkt[1]).u32Size);
-            HI_MPI_ADEC_RetUserErr2(HI_FAILURE, &pstAdecChan->mutex);
+            HI_MPI_ADEC_RetUserErr2ARG2(HI_FAILURE, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
         }
     }
 
@@ -3040,13 +3291,39 @@ HI_S32 ADEC_PutBuffer (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream1,
                     (pstMidState->lastPkt[0]).pu8Data,
                     (pstMidState->lastPkt[0]).u32Size);
 
-        HI_MPI_ADEC_RetUserErr2(HI_FAILURE, &pstAdecChan->mutex);
+        HI_MPI_ADEC_RetUserErr2ARG2(HI_FAILURE, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
+
     }
 
     ADECStorePTS(pstPTSQue, pstInBuf, u32PtsMs, u32BsSize, pstAdecChan->bPacketDecoder);
     if (HI_TRUE == pstAdecChan->bPacketDecoder)
     {
        ADECStorePacket(pstAdecChan, u32PtsMs, u32BsSize);
+    }
+
+    if( pstAdecInfo->enEsCtrlState == ADEC_CMD_CTRL_START )
+    {
+   	  if(!fEstream)
+      	  {
+           	fEstream = fopen(pstAdecInfo->filePath, "wb");
+          	if (!fEstream)
+          	{
+              		HI_ERR_ADEC("can not open file (%s)\n",pstAdecInfo->filePath);
+           	}
+      	  }
+         if (fEstream)
+         {
+	       	fwrite(pstStream1->pu8Data, 1, pstStream1->u32Size, fEstream);   // discard PTS
+	       	fwrite(pstStream2->pu8Data, 1, pstStream2->u32Size, fEstream);   // discard PTS
+         }
+    }
+    if( pstAdecInfo->enEsCtrlState == ADEC_CMD_CTRL_STOP )
+    {
+	  if (fEstream)
+         {
+	     	fclose(fEstream);
+	    	fEstream = NULL;
+         }
     }
 
     pstInBuf->u32BufWritePos = ((HI_U32)pstInBuf->u32BufWritePos + u32BsSize) % (pstInBuf->u32BufSize);
@@ -3061,7 +3338,8 @@ HI_S32 ADEC_PutBuffer (HI_HANDLE hAdec, const HI_UNF_STREAM_BUF_S *pstStream1,
 #endif
 
     pstAdecInfo->u32BufWrite = (HI_U32)pstInBuf->u32BufWritePos;
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    ADEC_UNLOCK(&pstAdecChan->IOMutex);
+	ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return HI_SUCCESS;
 }
 
@@ -3077,10 +3355,10 @@ HI_S32 ADEC_GetBufferStatus (HI_HANDLE hAdec, ADEC_BUFSTATUS_S *pstBufStatus)
     CHECK_ADEC_NULL_PTR(pstBufStatus);
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
 
-    //CHECK_ADEC_STATE(pstAdecChan->beWork, &pstAdecChan->mutex);
+    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->ApiMutex);
+
 
     pstInBuf = &(pstAdecChan->InStreamBuf);
 
@@ -3097,24 +3375,10 @@ HI_S32 ADEC_GetBufferStatus (HI_HANDLE hAdec, ADEC_BUFSTATUS_S *pstBufStatus)
         pstBufStatus->bEndOfFrame = HI_TRUE;
     }
 
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return HI_SUCCESS;
 }
 
-static HI_VOID ADECGetFrameTime(HI_UNF_AO_FRAMEINFO_S *pstAOFrame, HI_U32 *u32FrameDurationMs)
-{
-    if (pstAOFrame->u32PcmSamplesPerFrame)
-    {
-        *u32FrameDurationMs = (pstAOFrame->u32PcmSamplesPerFrame
-                               * 1000) / ((HI_U32)pstAOFrame->u32SampleRate);
-    }
-    else
-    {
-        *u32FrameDurationMs = (((pstAOFrame->u32BitsBytesPerFrame
-                                 & 0xffff)
-                                / (2 * sizeof(HI_U16))) * 1000) / ((HI_U32)pstAOFrame->u32SampleRate);
-    }
-}
 
 /****************************************************************************
  * Function:    ADEC_ReceiveFrame
@@ -3136,6 +3400,7 @@ HI_S32 ADEC_ReceiveFrame (HI_HANDLE hAdec, HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
     ADEC_STREAM_OUTBUF_S  *pstOutBuf = HI_NULL_PTR;
     ADEC_OUTPUTBUF_S *ptOutElem   = HI_NULL_PTR;
     ADEC_MIDSTATE_S  *pstMidState = HI_NULL_PTR;
+    static FILE *fPcm = NULL;
 
     /* Check parameter */
     CHECK_ADEC_HANDLE(hAdec);
@@ -3149,22 +3414,21 @@ HI_S32 ADEC_ReceiveFrame (HI_HANDLE hAdec, HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
     CHECK_ADEC_NULL_PTR(pstAOFrame);
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beWork, &pstAdecChan->mutex);
-
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+	ADEC_LOCK(&pstAdecChan->IOMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beAssigned, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beWork, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
     pstOutBuf   = &(pstAdecChan->outStreamBuf);
     pstAdecInfo = pstAdecChan->pstAdecInfo;
     pstMidState = &(pstAdecChan->midState);
-
     /* No data */
     if (pstOutBuf->u32BufReadIdx == pstOutBuf->u32BufWriteIdx)
     {
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+	    ADEC_UNLOCK(&pstAdecChan->IOMutex);
+        ADEC_UNLOCK(&pstAdecChan->ApiMutex);
 
         return HI_ERR_ADEC_OUT_BUF_EMPTY;
     }
-
     ptOutElem = &(pstOutBuf->outBuf[pstOutBuf->u32BufReadIdx]);
 
     /* fill frame info */
@@ -3174,11 +3438,11 @@ HI_S32 ADEC_ReceiveFrame (HI_HANDLE hAdec, HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
     pstAOFrame->u32SampleRate = ptOutElem->u32OutSampleRate;
     pstAOFrame->u32Channels = ptOutElem->u32OutChannels;
     pstAOFrame->u32PtsMs = ptOutElem->u32PTS;
-    pstAOFrame->u32PcmSamplesPerFrame = ptOutElem->u32PcmOutSamplesPerFrame;
+    pstAOFrame->u32PcmSamplesPerFrame = (ptOutElem->u32PcmOutSamplesPerFrame & 0xffff);
+    pstAOFrame->u32IEC61937DataType = (ptOutElem->u32PcmOutSamplesPerFrame & 0xffff0000) >> 16;
     pstAOFrame->u32BitsBytesPerFrame = ptOutElem->u32BitsOutBytesPerFrame;
     pstAOFrame->ps32PcmBuffer  = ptOutElem->ps32PcmOutBuf;
     pstAOFrame->ps32BitsBuffer = ptOutElem->ps32BitsOutBuf;
-
     /* add extend adec infomation */
     if (pstExtInfo)
     {
@@ -3206,7 +3470,8 @@ HI_S32 ADEC_ReceiveFrame (HI_HANDLE hAdec, HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
         pstOutBuf->u32BufReadIdx  = (pstOutBuf->u32BufReadIdx + 1) % (pstOutBuf->u32OutBufNum);
         pstAdecInfo->u32FrameRead = pstOutBuf->u32BufReadIdx;
 
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+        ADEC_UNLOCK(&pstAdecChan->IOMutex);
+		ADEC_UNLOCK(&pstAdecChan->ApiMutex);
         HI_WARN_ADEC("internal error:unsupport sample rate %d or bit depth %d.\n",
                      ptOutElem->u32OutSampleRate,
                      ptOutElem->u32BitPerSample);
@@ -3241,12 +3506,38 @@ HI_S32 ADEC_ReceiveFrame (HI_HANDLE hAdec, HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
     pstAdecInfo->enSampleRate = (HI_UNF_SAMPLE_RATE_E)pstAOFrame->u32SampleRate;
     pstAdecInfo->enBitWidth = (HI_UNF_BIT_DEPTH_E)pstAOFrame->s32BitPerSample;
     pstAdecInfo->u32PcmSamplesPerFrame = pstAOFrame->u32PcmSamplesPerFrame;
+    pstAdecInfo->u32OutChannels = pstAOFrame->u32Channels;
+    pstAdecInfo->u32BitsOutBytesPerFrame = pstAOFrame->u32BitsBytesPerFrame;
 
     /* Move header */
     pstOutBuf->u32BufReadIdx  = (pstOutBuf->u32BufReadIdx + 1) % (pstOutBuf->u32OutBufNum);
     pstAdecInfo->u32FrameRead = pstOutBuf->u32BufReadIdx;
-
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    ADEC_UNLOCK(&pstAdecChan->IOMutex);
+	ADEC_UNLOCK(&pstAdecChan->ApiMutex);
+    if( pstAdecChan->pstAdecInfo->enPcmCtrlState== ADEC_CMD_CTRL_START )
+   {
+   	  if(!fPcm)
+      	  {
+           	fPcm = fopen(pstAdecChan->pstAdecInfo->filePath, "wb");
+          	if (!fPcm)
+          	{
+              		HI_ERR_ADEC("can not open file (%s)\n",pstAdecChan->pstAdecInfo->filePath);
+           	}
+      	  }
+         if (fPcm)
+         {
+	       	fwrite((HI_VOID *)pstAOFrame->ps32PcmBuffer, sizeof(short), pstAOFrame->u32PcmSamplesPerFrame*pstAOFrame->u32Channels, fPcm);	 // discard PTS
+         }
+    }
+    if( pstAdecChan->pstAdecInfo->enPcmCtrlState == ADEC_CMD_CTRL_STOP )
+   {
+	  if (fPcm)
+         {
+	     	fclose(fPcm);
+	    	fPcm = NULL;
+         }
+    }
+	
     return HI_SUCCESS;
 }
 
@@ -3273,11 +3564,11 @@ HI_S32 ADEC_ReleaseFrame(HI_HANDLE hAdec, const HI_UNF_AO_FRAMEINFO_S *pstAOFram
     CHECK_ADEC_OUTBUF_NUMBER(pstAOFrame->u32FrameIndex);
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beWork, &pstAdecChan->mutex);
-
-    pstOutBuf = &(pstAdecChan->outStreamBuf);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+	ADEC_LOCK(&pstAdecChan->IOMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beAssigned, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beWork, &pstAdecChan->IOMutex,&pstAdecChan->ApiMutex);
+	pstOutBuf = &(pstAdecChan->outStreamBuf);
 #ifdef HA_HW_CODEC_SUPPORT
     if (HI_TRUE==pstAdecChan->bHwDecoder)
     {
@@ -3288,7 +3579,8 @@ HI_S32 ADEC_ReleaseFrame(HI_HANDLE hAdec, const HI_UNF_AO_FRAMEINFO_S *pstAOFram
 
     /* free buffer */
     (pstOutBuf->outBuf)[pstAOFrame->u32FrameIndex].bFlag = HI_FALSE;
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    ADEC_UNLOCK(&pstAdecChan->IOMutex);
+	ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return HI_SUCCESS;
 }
 
@@ -3316,9 +3608,10 @@ HI_S32 ADEC_GetStatusInfo(HI_HANDLE hAdec, ADEC_STATUSINFO_S *pstStatusinfo)
     CHECK_ADEC_NULL_PTR(pstStatusinfo);
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
 
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+
+    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->ApiMutex);
     pstAdecInfo = pstAdecChan->pstAdecInfo;
     pstOutBuf = &(pstAdecChan->outStreamBuf);
 
@@ -3354,7 +3647,7 @@ HI_S32 ADEC_GetStatusInfo(HI_HANDLE hAdec, ADEC_STATUSINFO_S *pstStatusinfo)
     pstStatusinfo->enSampleRate = pstAdecInfo->enSampleRate;
     pstStatusinfo->enBitDepth = pstAdecInfo->enBitWidth;
 
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+	ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return HI_SUCCESS;
 }
 
@@ -3380,13 +3673,14 @@ HI_S32 ADEC_GetDebugInfo(HI_HANDLE hAdec, ADEC_DEBUGINFO_S *pstDebuginfo)
     CHECK_ADEC_NULL_PTR(pstDebuginfo);
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
 
+    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->ApiMutex);
     pstAdecInfo = pstAdecChan->pstAdecInfo;
     pstDebuginfo->u32DecFrameNum = (HI_U32)pstAdecInfo->u32FramnNm;
     pstDebuginfo->u32ErrDecFrameNum = (HI_U32)pstAdecInfo->u32ErrFrameNum;
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+
+	ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return HI_SUCCESS;
 }
 
@@ -3412,15 +3706,37 @@ HI_S32 ADEC_GetStreamInfo(HI_HANDLE hAdec, ADEC_STREAMINFO_S * pstStreaminfo)
     CHECK_ADEC_NULL_PTR(pstStreaminfo);
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
 
+    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->ApiMutex);
     pstAdecInfo = pstAdecChan->pstAdecInfo;
     pstStreaminfo->u32CodecID   = pstAdecInfo->u32CodecID;
     pstStreaminfo->enSampleRate = pstAdecInfo->enSampleRate;
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+
+	ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return HI_SUCCESS;
 }
+
+HI_S32 ADEC_GetHaSzNameInfo(HI_HANDLE hAdec,ADEC_SzNameINFO_S *pHaSznameInfo)	
+{
+	ADEC_CHAN_S *pstAdecChan = HI_NULL_PTR;
+	ADEC_PROC_ITEM_S *pstAdecInfo = HI_NULL_PTR;
+
+	/* Check parameter */
+    CHECK_ADEC_HANDLE(hAdec);
+    CHECK_ADEC_NULL_PTR(pHaSznameInfo);
+	
+    pstAdecChan = g_pstAdecChan[hAdec];
+	
+	ADEC_LOCK(&pstAdecChan->ApiMutex);
+	
+	CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->ApiMutex);
+	pstAdecInfo = pstAdecChan->pstAdecInfo;
+	strncpy(pHaSznameInfo->szHaCodecName, pstAdecInfo->szCodecType, sizeof(pHaSznameInfo->szHaCodecName));
+	ADEC_UNLOCK(&pstAdecChan->ApiMutex);
+	return HI_SUCCESS;
+}
+
 
 #ifdef HI_ADEC_AUDSPECTRUM_SUPPORT
 HI_S32 ADEC_TryReceiveFrame (HI_HANDLE hAdec, HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
@@ -3442,16 +3758,17 @@ HI_S32 ADEC_TryReceiveFrame (HI_HANDLE hAdec, HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
     CHECK_ADEC_NULL_PTR(pstAOFrame);
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beWork, &pstAdecChan->mutex);
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+
+    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->ApiMutex);
+	CHECK_ADEC_STATE(pstAdecChan->beWork, &pstAdecChan->ApiMutex);
 
     pstOutBuf = &(pstAdecChan->outStreamBuf);
 
     /* No data */
     if (pstOutBuf->u32BufReadIdx == pstOutBuf->u32BufWriteIdx)
     {
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+	   ADEC_UNLOCK(&pstAdecChan->ApiMutex);
 
         return HI_ERR_ADEC_OUT_BUF_EMPTY;
     }
@@ -3465,7 +3782,8 @@ HI_S32 ADEC_TryReceiveFrame (HI_HANDLE hAdec, HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
     pstAOFrame->u32SampleRate = ptOutElem->u32OutSampleRate;
     pstAOFrame->u32Channels = ptOutElem->u32OutChannels;
     pstAOFrame->u32PtsMs = ptOutElem->u32PTS;
-    pstAOFrame->u32PcmSamplesPerFrame = ptOutElem->u32PcmOutSamplesPerFrame;
+    pstAOFrame->u32PcmSamplesPerFrame = (ptOutElem->u32PcmOutSamplesPerFrame & 0xffff);
+	pstAOFrame->u32IEC61937DataType = (ptOutElem->u32PcmOutSamplesPerFrame & 0xffff0000) >> 16;
     pstAOFrame->u32BitsBytesPerFrame = ptOutElem->u32BitsOutBytesPerFrame;
     pstAOFrame->ps32PcmBuffer  = ptOutElem->ps32PcmOutBuf;
     pstAOFrame->ps32BitsBuffer = ptOutElem->ps32BitsOutBuf;
@@ -3491,7 +3809,7 @@ HI_S32 ADEC_TryReceiveFrame (HI_HANDLE hAdec, HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
     if ((ptOutElem->u32OutSampleRate > 192000) || (ptOutElem->u32OutSampleRate < 8000)
         || (ptOutElem->u32BitPerSample > 24) || (ptOutElem->u32BitPerSample < 8))
     {
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+		ADEC_UNLOCK(&pstAdecChan->ApiMutex);
         HI_WARN_ADEC("internal error:unsupport sample rate %d or bit depth %d.\n",
                      ptOutElem->u32OutSampleRate,
                      ptOutElem->u32BitPerSample);
@@ -3503,7 +3821,7 @@ HI_S32 ADEC_TryReceiveFrame (HI_HANDLE hAdec, HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
         pstAOFrame->ps32BitsBuffer = HI_NULL_PTR;
     }
 
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return HI_SUCCESS;
 }
 
@@ -3651,6 +3969,7 @@ HI_S32 ADEC_GetAudSpectrum(HI_U16 *pSpectrum, HI_U32 u32BandNum)
 
     if (ChannelsCurrent > 0)
     {
+        memset(EnergyOut, 0, 512*sizeof(HI_U16));
         spectrum_do((short *)PcmDataCurrent, (short)ChannelsCurrent, (short *)EnergyOut, (int)u32BandNum);
         memcpy((HI_U8*)pSpectrum, (HI_U8*)EnergyOut, u32BandNum * 2);
     }
@@ -3806,10 +4125,10 @@ HI_S32  ADEC_SetEosFlag(HI_HANDLE hAdec)
     CHECK_ADEC_HANDLE(hAdec);
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beWork, &pstAdecChan->mutex);
-
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+	ADEC_LOCK(&pstAdecChan->DataMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beAssigned, &pstAdecChan->DataMutex,&pstAdecChan->ApiMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beWork, &pstAdecChan->DataMutex,&pstAdecChan->ApiMutex);
 #ifdef HA_HW_CODEC_SUPPORT
     if (HI_TRUE==pstAdecChan->bHwDecoder)
     {
@@ -3829,7 +4148,8 @@ HI_S32  ADEC_SetEosFlag(HI_HANDLE hAdec)
     }
 
     pstAdecChan->bAdecEosFlag = HI_TRUE;
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+	ADEC_UNLOCK(&pstAdecChan->DataMutex);
+    ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return HI_SUCCESS;
 }
 
@@ -3844,21 +4164,23 @@ HI_S32 ADEC_SetCodecCmd(HI_HANDLE hAdec, HI_VOID *pstCodecCmd)
     CHECK_ADEC_HANDLE(hAdec);
 
     pstAdecChan = g_pstAdecChan[hAdec];
-    ADEC_LOCK(&pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beAssigned, &pstAdecChan->mutex);
-    CHECK_ADEC_STATE(pstAdecChan->beWork, &pstAdecChan->mutex);
-
+    ADEC_LOCK(&pstAdecChan->ApiMutex);
+	ADEC_LOCK(&pstAdecChan->DataMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beAssigned, &pstAdecChan->DataMutex,&pstAdecChan->ApiMutex);
+    CHECK_ADEC_STATEARG2(pstAdecChan->beWork, &pstAdecChan->DataMutex,&pstAdecChan->ApiMutex);
     pstDecAttr = &(pstAdecChan->decAttr);
     if (HI_NULL == pstDecAttr->pHaDecoderDev)
     {
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+	    ADEC_UNLOCK(&pstAdecChan->DataMutex);
+        ADEC_UNLOCK(&pstAdecChan->ApiMutex);
         HI_ERR_ADEC("ha_err:invalid NULL poiner,pHaDecoderDev is NULL!\n");
         return HI_FAILURE;
     }
 
     if (HI_NULL == pstDecAttr->hDecoder)
     {
-        ADEC_UNLOCK(&pstAdecChan->mutex);
+	    ADEC_UNLOCK(&pstAdecChan->DataMutex);
+        ADEC_UNLOCK(&pstAdecChan->ApiMutex);
         HI_ERR_ADEC("ha_err:invalid NULL poiner,hDecoder is NULL!\n");
         return HI_FAILURE;
     }
@@ -3877,8 +4199,8 @@ HI_S32 ADEC_SetCodecCmd(HI_HANDLE hAdec, HI_VOID *pstCodecCmd)
             sRet = HI_SUCCESS;
         }
     }
-
-    ADEC_UNLOCK(&pstAdecChan->mutex);
+    ADEC_UNLOCK(&pstAdecChan->DataMutex);
+    ADEC_UNLOCK(&pstAdecChan->ApiMutex);
     return sRet;
 }
 
@@ -4058,8 +4380,13 @@ static HI_VOID ADECHwReleaseFrame( ADEC_CHAN_S *pstAdecChan, HI_U32 u32FrameInde
 
 static HI_VOID ADECHwDecode( ADEC_CHAN_S *pstAdecChan)
 {
+	ADEC_PROC_ITEM_S *pstAdecInfo = HI_NULL;
+	pstAdecInfo = pstAdecChan->pstAdecInfo;
+	
     ADECHwInputSyncRpos(pstAdecChan);
     ADECHwReceiveFrame(pstAdecChan);
+	
+	pstAdecInfo->u32DbgTryDecodeCount++;
 }
 
 #endif

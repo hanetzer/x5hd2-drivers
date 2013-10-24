@@ -21,7 +21,7 @@
 #include "drv_i2c_ext.h"
 #include "hi_debug.h"
 #include "hi_error_mpi.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_proc.h"
 #include "drv_demod.h"
 
 /* CD1616 HI3130 CONFIG */
@@ -409,20 +409,20 @@ HI_VOID hi3130_test_single_agc( HI_U32 u32TunerPort, AGC_TEST_S * pstAgcTest )
     HI_U8  u8RegVal = 0;
     HI_U8  au8Tmp[2] = {0};
     HI_U32 u32Agc2 = 0;
-    
+    HI_U8  u8TemVal = 0;
 	s32Ret = qam_read_byte(u32TunerPort, MCTRL_11_ADDR, &u8RegVal);
     if (HI_SUCCESS != s32Ret)
     {
         HI_ERR_TUNER("i2c operation error\n");
         return;
     }
-
+    u8TemVal = ( u8RegVal & 0x80 ) >> 7;
     if ( 0xf8 == u8RegVal )
     {
 		pstAgcTest->bLockFlag = HI_TRUE;
 		pstAgcTest->bAgcLockFlag = HI_TRUE;
     }
-    else if ( 1 == ( u8RegVal & 0x80 ) )
+    else if ( 1 == u8TemVal )
     {
 		pstAgcTest->bAgcLockFlag = HI_TRUE;
     }
@@ -484,19 +484,19 @@ HI_VOID hi3130_get_registers(HI_U32 u32TunerPort, void *p)
 	{
 		if ( 0 == i % 3 )
 		{
-			seq_printf(p, "\n");
+			PROC_PRINT(p, "\n");
 		}
 	    qam_read_byte(u32TunerPort, pstReg->u8Addr, &u8Value);
 	    pstReg++;
-	    seq_printf(p, "{%s  ,0x%02x },  ", s_stQamRegName[i], u8Value);
+	    PROC_PRINT(p, "{%s  ,0x%02x },  ", s_stQamRegName[i], u8Value);
 	}
-	seq_printf(p, "\n\n");
+	PROC_PRINT(p, "\n\n");
 
 }
 
 static HI_VOID hi3130_set_customreg_value(HI_U32 u32TunerPort, HI_BOOL BInversion, HI_U32 u32SymbolRate)
 {	
-    HI_U8 u8Val;
+    HI_U8 u8Val = 0;
     
     /*set adc type*/
      if (g_stTunerOps[u32TunerPort].u8AdcType)
@@ -653,7 +653,8 @@ HI_S32 hi3130_get_status (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *penT
     HI_S32 s32Ret = HI_SUCCESS;
     HI_S32 i = 0;
 
-    HI_ASSERT(HI_NULL != penTunerStatus);
+    //HI_ASSERT(HI_NULL != penTunerStatus);
+    HI_TUNER_CHECKPOINTER(penTunerStatus);
     HI3130_I2C_CHECK(u32TunerPort);
 
     for (i = 0; i < 10; i++)  /*prevent twittering*/
@@ -733,7 +734,9 @@ HI_S32 hi3130_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel)
 	HI_S32 s32FuncRet = HI_SUCCESS;
 	HI_U32 u32SymbolRate;
 
-	HI_ASSERT(HI_NULL != pstChannel);
+	//HI_ASSERT(HI_NULL != pstChannel);
+	HI_TUNER_CHECKPOINTER(pstChannel);
+	
 	HI3130_I2C_CHECK(u32TunerPort);
 
 	g_stTunerOps[u32TunerPort].u32CurrQamMode = pstChannel->enQamType;
@@ -766,7 +769,8 @@ HI_S32 hi3130_get_signal_strength(HI_U32 u32TunerPort, HI_U32 *pu32SignalStrengt
 {
     HI_U8 au8RegVal[2] = {0};
 
-    HI_ASSERT(HI_NULL != pu32SignalStrength);
+    //HI_ASSERT(HI_NULL != pu32SignalStrength);
+    HI_TUNER_CHECKPOINTER(pu32SignalStrength);
     HI3130_I2C_CHECK(u32TunerPort);
 
     qam_write_byte(u32TunerPort, CR_CTRL_21_ADDR, 0x1);
@@ -803,7 +807,8 @@ HI_S32 hi3130_get_ber(HI_U32 u32TunerPort, HI_U32 *pu32ber)
 	HI_U8  u8Val = 0;
 	HI_S32 i = 0;
 
-	HI_ASSERT(HI_NULL != pu32ber);
+	//HI_ASSERT(HI_NULL != pu32ber);
+	HI_TUNER_CHECKPOINTER(pu32ber);
 	HI3130_I2C_CHECK(u32TunerPort);
 
 	qam_write_bit(u32TunerPort, BER_1_ADDR, 7, 0); /*disable*/
@@ -855,7 +860,8 @@ HI_S32 hi3130_get_snr(HI_U32 u32TunerPort, HI_U32* pu32SNR)
     HI_U32 u32Snr = 0;
     HI_U8  u8RdVal = 0;
 
-    HI_ASSERT(HI_NULL != pu32SNR);
+    //HI_ASSERT(HI_NULL != pu32SNR);
+    HI_TUNER_CHECKPOINTER(pu32SNR);
     HI3130_I2C_CHECK(u32TunerPort);
 
     qam_write_byte(u32TunerPort, CR_CTRL_21_ADDR, 1);
@@ -883,8 +889,10 @@ HI_S32 hi3130_get_freq_symb_offset(HI_U32 u32TunerPort, HI_U32 * pu32Freq, HI_U3
 	HI_U8  au8Symb[2] = { 0 };
 	HI_S32 s32RealSymb = 0;
 
-    HI_ASSERT(HI_NULL != pu32Freq);
-	HI_ASSERT(HI_NULL != pu32Symb);
+   // HI_ASSERT(HI_NULL != pu32Freq);
+    //HI_ASSERT(HI_NULL != pu32Symb);
+    HI_TUNER_CHECKPOINTER(pu32Freq);
+    HI_TUNER_CHECKPOINTER(pu32Symb);
     HI3130_I2C_CHECK(u32TunerPort);
 
     qam_write_byte(u32TunerPort, CR_CTRL_21_ADDR, 0x1);

@@ -1,6 +1,7 @@
 #include "vpss_hal.h"
 #include "linux/kthread.h"
 #include "vpss_common.h"
+#include <asm/barrier.h>
 #ifdef __cplusplus
 #if __cplusplus
 extern "C"{
@@ -21,25 +22,29 @@ HI_U32 VPSS_HAL_RegRead(volatile HI_U32* a)
 {
    return (*(a));
 }
-/*通用*/
 HI_S32 VPSS_HAL_Init(HI_U32 u32HalVersion,VPSS_HAL_CAP_S *pstHalCaps)
 {
-    /*
-    1.获取版本号
-    2.绑定相应接口函数
-    */
-    /*配置结点1初始化*/
-    HI_DRV_MMZ_AllocAndMap("VPSS_RegBuf_0", HI_NULL,sizeof(VPSS_REG_S),
+    HI_S32 s32Ret;
+    
+    s32Ret = HI_DRV_MMZ_AllocAndMap("VPSS_RegBuf_0", HI_NULL,sizeof(VPSS_REG_S),
         	                                              0, &(stHalInfo.stRegBuf[0]));
-
+    if (s32Ret != HI_SUCCESS)
+    {
+        return HI_FAILURE;
+    }
     stHalInfo.u32AppPhyAddr[0] = stHalInfo.stRegBuf[0].u32StartPhyAddr;
     stHalInfo.u32AppVirtualAddr[0] = stHalInfo.stRegBuf[0].u32StartVirAddr;
     
     VPSS_REG_AppRegInit(&(AppReg[0]),stHalInfo.u32AppVirtualAddr[0]);
-    /*配置结点2*/
-    HI_DRV_MMZ_AllocAndMap("VPSS_RegBuf_1", HI_NULL,sizeof(VPSS_REG_S),
-        	                                              0, &(stHalInfo.stRegBuf[1]));
 
+    s32Ret = HI_DRV_MMZ_AllocAndMap("VPSS_RegBuf_1", HI_NULL,sizeof(VPSS_REG_S),
+        	                                              0, &(stHalInfo.stRegBuf[1]));
+    if (s32Ret != HI_SUCCESS)
+    {
+        HI_DRV_MMZ_UnmapAndRelease(&(stHalInfo.stRegBuf[0]));
+        return HI_FAILURE;
+    }
+    
     stHalInfo.u32AppPhyAddr[1] = stHalInfo.stRegBuf[1].u32StartPhyAddr;
     stHalInfo.u32AppVirtualAddr[1] = stHalInfo.stRegBuf[1].u32StartVirAddr;
     VPSS_REG_AppRegInit(&(AppReg[1]),stHalInfo.u32AppVirtualAddr[1]);
@@ -52,11 +57,6 @@ HI_S32 VPSS_HAL_Init(HI_U32 u32HalVersion,VPSS_HAL_CAP_S *pstHalCaps)
     VPSS_REG_ReSetCRG();
 
     VPSS_REG_SetIntMask((HI_U32)PhyReg,0x0);
-    /*
-     300M/60 = 5M = 0x4c4b40
-     */
-    //VPSS_REG_SetTimeOut((HI_U32)PhyReg,0x4c4b40);
-    /*test*/
     VPSS_REG_SetTimeOut((HI_U32)PhyReg,DEF_LOGIC_TIMEOUT);
     
     return HI_SUCCESS;
@@ -72,7 +72,6 @@ HI_S32 VPSS_HAL_CloseClock(HI_VOID)
     VPSS_REG_CloseClock();
     return HI_SUCCESS;
 }
-/*通用*/
 HI_S32 VPSS_HAL_DelInit(HI_VOID)
 {
     HI_DRV_MMZ_UnmapAndRelease(&(stHalInfo.stRegBuf[0]));
@@ -86,7 +85,6 @@ HI_S32 VPSS_HAL_DelInit(HI_VOID)
     return HI_SUCCESS;
 }
 
-/*通用*/
 HI_S32 VPSS_HAL_GetCaps(HI_U32 u32HalVersion,VPSS_HAL_CAP_S *pstHalCaps)
 {
     if(u32HalVersion == HAL_VERSION_1)
@@ -101,7 +99,7 @@ HI_S32 VPSS_HAL_GetCaps(HI_U32 u32HalVersion,VPSS_HAL_CAP_S *pstHalCaps)
     }
     else
     {
-        VPSS_FATAL("\nInvalid vpss driver version\t\n");
+        VPSS_FATAL("Invalid vpss driver version.\n");
         return HI_FAILURE;
     }
 
@@ -243,7 +241,7 @@ HI_S32 VPSS_HAL_SetDeiCfg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
                 VPSS_REG_SetMode(u32AppRegVAddr,REG_DIE_MODE_CHROME,0x0);
                 break;
             default:
-                VPSS_FATAL("\n DEI REG ERROR\n");
+                VPSS_FATAL("DEI REG ERROR\n");
         }
 
 
@@ -491,12 +489,6 @@ HI_S32 VPSS_HAL_SetDeiCfg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
 
 HI_S32 VPSS_HAL_GetRegPort(VPSS_ALG_PortCFG_S *pstAuPortCfg)
 {
-    /*
-     *根据port配置，决定用哪一个逻辑通道输出
-     *1.保真
-     *2.输出格式
-     *
-     */
     HI_U32 u32Count;
     if(pstAuPortCfg->bFidelity == HI_TRUE)
     {
@@ -530,7 +522,7 @@ HI_S32 VPSS_HAL_GetRegPort(VPSS_ALG_PortCFG_S *pstAuPortCfg)
 
     return HI_FAILURE;
 }
-/*通用 待合入*/
+
 HI_S32 VPSS_HAL_SetHalCfg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
 {
     HI_U32 u32Count;
@@ -567,7 +559,6 @@ HI_S32 VPSS_HAL_SetHalCfg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
     s32Ret = VPSS_HAL_SetUVCfg(pstAlgCfg,u32NodeID);
 	#endif
 	
-    /*分配逻辑输出通路前，初始化分配计数*/
     memset(stHalInfo.u32RegPortAlloc,0,sizeof(HI_U32)*DEF_HI_DRV_VPSS_PORT_MAX_NUMBER);
     
     for (u32Count = 0; u32Count < DEF_HI_DRV_VPSS_PORT_MAX_NUMBER; u32Count ++)
@@ -579,9 +570,6 @@ HI_S32 VPSS_HAL_SetHalCfg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
         
         if (pstFrmCfg->u32Height != 0)
         {
-            /*
-                根据通道配置，获取逻辑通道
-               */
             s32Ret = VPSS_HAL_GetRegPort(pstAuPortCfg);
             if (s32Ret != HI_SUCCESS)
             {
@@ -594,7 +582,6 @@ HI_S32 VPSS_HAL_SetHalCfg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
             {
                 return HI_FAILURE;
             }
-			/*走保真通道*/
             
             s32Ret = VPSS_HAL_SetZmeCfg(u32Count,pstAuPortCfg->eRegPort,pstAlgCfg,u32NodeID); 
             if (s32Ret != HI_SUCCESS)
@@ -658,7 +645,7 @@ HI_S32 VPSS_HAL_ClearIntState(HI_U32 u32Data)
     return HI_SUCCESS;
 }
 
-/*通用 待合入*/
+
 HI_S32 VPSS_HAL_SetZmeCfg(HI_U32 u32PortID,VPSS_REG_PORT_E ePort,
                             VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
 {
@@ -690,9 +677,23 @@ HI_S32 VPSS_HAL_SetZmeCfg(HI_U32 u32PortID,VPSS_REG_PORT_E ePort,
         VPSS_REG_SetZmeEnable(u32AppVAddr,ePort,REG_ZME_MODE_ALL,HI_TRUE);
         
         VPSS_REG_SetZmeFirEnable(u32AppVAddr,ePort,
-                                    REG_ZME_MODE_ALL,HI_TRUE);
+                                    REG_ZME_MODE_HORL,pstZmeCfg->bZmeMdHL);
+        VPSS_REG_SetZmeFirEnable(u32AppVAddr,ePort,
+                                    REG_ZME_MODE_HORC,pstZmeCfg->bZmeMdHC);
+        VPSS_REG_SetZmeFirEnable(u32AppVAddr,ePort,
+                                    REG_ZME_MODE_VERL,pstZmeCfg->bZmeMdVL);
+        VPSS_REG_SetZmeFirEnable(u32AppVAddr,ePort,
+                                    REG_ZME_MODE_VERC,pstZmeCfg->bZmeMdVC);
+
         VPSS_REG_SetZmeMidEnable(u32AppVAddr,ePort,
-                                    REG_ZME_MODE_ALL,HI_FALSE);
+                                    REG_ZME_MODE_HORL,pstZmeCfg->bZmeMedHL);
+        VPSS_REG_SetZmeMidEnable(u32AppVAddr,ePort,
+                                    REG_ZME_MODE_HORC,pstZmeCfg->bZmeMedHC);
+        VPSS_REG_SetZmeMidEnable(u32AppVAddr,ePort,
+                                    REG_ZME_MODE_VERL,pstZmeCfg->bZmeMedVL);
+        VPSS_REG_SetZmeMidEnable(u32AppVAddr,ePort,
+                                    REG_ZME_MODE_VERC,pstZmeCfg->bZmeMedVC);
+                                    
         VPSS_REG_SetZmePhase(u32AppVAddr,ePort,
                                     REG_ZME_MODE_VERL,pstZmeCfg->s32ZmeOffsetVL);
         VPSS_REG_SetZmePhase(u32AppVAddr,ePort,
@@ -738,20 +739,41 @@ HI_S32 VPSS_HAL_SetSrcImg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
     eLReye = pstSrcImg->eLReye;
     u32AppVAddr = (HI_U32)AppReg[u32NodeID];
 
-    if(pstAlgCfg->stAuTunnelCfg.stDeiCfg.bDei == HI_TRUE || pstSrcImg->bProgressive == HI_TRUE)
+    if(pstSrcImg->bProgressive == HI_TRUE)
     {
-        bInProgressive = HI_TRUE;
+        if (pstSrcImg->enFieldMode == HI_DRV_FIELD_ALL)
+        {
+            bInProgressive = HI_TRUE;
+        }
+        else
+        {
+            bInProgressive = HI_FALSE;
+        }
     }
     else
     {
         bInProgressive = HI_FALSE;
     }
+
+    if (pstAlgCfg->stAuTunnelCfg.stDeiCfg.bDei == HI_TRUE)
+    {
+        bInProgressive = HI_TRUE;
+    }
+    
     VPSS_REG_SetImgSize(u32AppVAddr,pstSrcImg->u32Height,pstSrcImg->u32Width,bInProgressive);
 
     if(pstSrcImg->bProgressive == HI_TRUE)
     {
-        u32YStride = pstSrcImg->stBufAddr[eLReye].u32Stride_Y;
-        u32CStride = pstSrcImg->stBufAddr[eLReye].u32Stride_C;
+        if (pstSrcImg->enFieldMode == HI_DRV_FIELD_ALL)
+        {
+            u32YStride = pstSrcImg->stBufAddr[eLReye].u32Stride_Y;
+            u32CStride = pstSrcImg->stBufAddr[eLReye].u32Stride_C;
+        }
+        else
+        {
+            u32YStride = pstSrcImg->stBufAddr[eLReye].u32Stride_Y * 2;
+            u32CStride = pstSrcImg->stBufAddr[eLReye].u32Stride_C * 2;
+        }
     }
     else
     {    
@@ -776,7 +798,7 @@ HI_S32 VPSS_HAL_SetSrcImg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
     VPSS_REG_SetImgAddr(u32AppVAddr,CUR_FIELD,u32YAddr,u32CAddr);
     VPSS_REG_SetImgFormat(u32AppVAddr,pstSrcImg->ePixFormat);
 
-    VPSS_REG_SetImgReadMod(u32AppVAddr, !pstSrcImg->bProgressive);
+    VPSS_REG_SetImgReadMod(u32AppVAddr, pstSrcImg->bReadField);
     
     return HI_SUCCESS;
 }
@@ -803,12 +825,7 @@ HI_S32 VPSS_HAL_SetDstFrm(HI_U32 u32PortID,VPSS_REG_PORT_E ePort,
     eLReye = pstFrmCfg->eLReye;
     if (pstFrmCfg->u32Height != 0)
     {
-        /*打开相应输出通道*/
         VPSS_REG_EnPort(u32AppVAddr,ePort,HI_TRUE);
-        /*
-          根据portCfg决定保真使能
-          ********************
-          */
         
         u32YStride = pstFrmCfg->stBufAddr[eLReye].u32Stride_Y;
         u32CStride = pstFrmCfg->stBufAddr[eLReye].u32Stride_C;
@@ -839,23 +856,28 @@ HI_S32 VPSS_HAL_SetUVCfg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
 
     return HI_SUCCESS;
 }
-/*非通用*/
-HI_S32 VPSS_HAL_StartLogic(HI_BOOL bTwoNode)
+HI_S32 VPSS_HAL_StartLogic(VPSS_HAL_NODE_E eNodeType)
 {
-    if(bTwoNode == HI_FALSE)
+    switch(eNodeType)
     {
-        VPSS_REG_StartLogic(0, 
-                            (HI_U32)stHalInfo.u32AppVirtualAddr[0]);
-        VPSS_REG_StartLogic((HI_U32)stHalInfo.u32AppPhyAddr[0], (HI_U32)PhyReg);
-        
-    }
-    else
-    {
-        VPSS_REG_StartLogic((HI_U32)stHalInfo.u32AppPhyAddr[1], 
-                            (HI_U32)stHalInfo.u32AppVirtualAddr[0]);
-    
-        VPSS_REG_StartLogic((HI_U32)stHalInfo.u32AppPhyAddr[0], (HI_U32)PhyReg);
-        
+        case HAL_NODE_NORMAL:
+            VPSS_REG_StartLogic(0, 
+                                (HI_U32)stHalInfo.u32AppVirtualAddr[0]);
+            mb();                            
+            VPSS_REG_StartLogic((HI_U32)stHalInfo.u32AppPhyAddr[0], (HI_U32)PhyReg);
+            break;
+        case HAL_NODE_FPK:
+            VPSS_REG_StartLogic(0, 
+                                (HI_U32)stHalInfo.u32AppVirtualAddr[1]);
+            VPSS_REG_StartLogic((HI_U32)stHalInfo.u32AppPhyAddr[1], 
+                                (HI_U32)stHalInfo.u32AppVirtualAddr[0]);
+            mb();
+            VPSS_REG_StartLogic((HI_U32)stHalInfo.u32AppPhyAddr[0], (HI_U32)PhyReg);
+            break;
+        default:
+            VPSS_FATAL("NodeType Error %d\n",eNodeType);
+            break;
+            
     }
     return HI_SUCCESS;
 }
@@ -1009,32 +1031,35 @@ HI_S32 VPSS_HAL_SetDnrCfg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
     pstDnrCfg = &(pstAlgCfg->stAuTunnelCfg.stDnrCfg);
 
 
-    if (pstDnrCfg->drEn == HI_TRUE || pstDnrCfg->dbEn == HI_TRUE)
+    if (pstDnrCfg->stDnrCtrl.drEn == HI_TRUE || pstDnrCfg->stDnrCtrl.dbEn == HI_TRUE)
     {
         VPSS_REG_SetDnrInfoAddr(u32AppVAddr,
-                                pstDnrCfg->u32YInfoAddr,
-                                pstDnrCfg->u32CInfoAddr,
-                                pstDnrCfg->u32YInfoStride,
-                                pstDnrCfg->u32CInfoStride);
+                                pstDnrCfg->stDnrCtrl.u32YInfoAddr,
+                                pstDnrCfg->stDnrCtrl.u32CInfoAddr,
+                                pstDnrCfg->stDnrCtrl.u32YInfoStride,
+                                pstDnrCfg->stDnrCtrl.u32CInfoStride);
     }
     
-    if (pstDnrCfg->drEn == HI_TRUE)
+    if (pstDnrCfg->stDnrCtrl.drEn == HI_TRUE)
     {
-        VPSS_REG_SetDREn(u32AppVAddr, pstDnrCfg->drEn);
-        VPSS_REG_SetDRPara(u32AppVAddr,pstDnrCfg->stDrThd.drthrflat3x3zone,
+        VPSS_REG_SetDREn(u32AppVAddr, pstDnrCfg->stDnrCtrl.drEn);
+        VPSS_REG_SetDRPara(u32AppVAddr,
+                            pstDnrCfg->stDrThd.drthrflat3x3zone,
                             pstDnrCfg->stDrThd.drthrmaxsimilarpixdiff,
                             pstDnrCfg->stDrThd.dralphascale,
                             pstDnrCfg->stDrThd.drbetascale);
     }
     else
     {
-        VPSS_REG_SetDREn(u32AppVAddr, pstDnrCfg->drEn);
+        VPSS_REG_SetDREn(u32AppVAddr, pstDnrCfg->stDnrCtrl.drEn);
     }
 
-    if(pstDnrCfg->dbEn == HI_TRUE)
+    if(pstDnrCfg->stDnrCtrl.dbEn == HI_TRUE)
     {
-        VPSS_REG_SetDBEn(u32AppVAddr,pstDnrCfg->dbEn);
-        VPSS_REG_SetDBVH(u32AppVAddr,pstDnrCfg->dbEnVert, pstDnrCfg->dbEnHort);
+        VPSS_REG_SetDBEn(u32AppVAddr,pstDnrCfg->stDnrCtrl.dbEn);
+        VPSS_REG_SetDBVH(u32AppVAddr,
+                            pstDnrCfg->stDnrCtrl.dbEnVert, 
+                            pstDnrCfg->stDnrCtrl.dbEnHort);
         
         VPSS_REG_SetEdgeThd(u32AppVAddr,pstDnrCfg->stDbThd.dbthredge);
         VPSS_REG_SetVerProg(u32AppVAddr,pstDnrCfg->stDbThd.dbvertasprog);
@@ -1052,7 +1077,7 @@ HI_S32 VPSS_HAL_SetDnrCfg(VPSS_ALG_CFG_S *pstAlgCfg,HI_U32 u32NodeID)
     }
     else
     {
-        VPSS_REG_SetDBEn(u32AppVAddr,pstDnrCfg->dbEn);
+        VPSS_REG_SetDBEn(u32AppVAddr,pstDnrCfg->stDnrCtrl.dbEn);
     }
     return HI_SUCCESS;
 }
@@ -1152,8 +1177,6 @@ HI_S32 VPSS_HAL_SetSDFidelity(HI_BOOL bEnFidelity,HI_U32 u32NodeID)
     VPSS_REG_SetLBAEn(u32AppVAddr,VPSS_REG_SD,HI_FALSE);
     return HI_SUCCESS;
 }
-
-
 #ifdef __cplusplus
  #if __cplusplus
 }

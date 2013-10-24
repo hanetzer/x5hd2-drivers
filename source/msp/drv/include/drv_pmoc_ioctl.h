@@ -9,7 +9,7 @@ extern "C"{
 #endif
 #endif /* End of #ifdef __cplusplus */
 
-#define MCU_IRKEY_MAXNUM 6
+//#define MCU_IRKEY_MAXNUM 6
 
 typedef struct hiC51_PmocDisp_S
 {
@@ -20,10 +20,12 @@ typedef struct hiC51_PmocDisp_S
 typedef struct hiC51_PmocVal_S
 {
 	unsigned int irnum;
-	unsigned int irlVal[MCU_IRKEY_MAXNUM];
-	unsigned int irhVal[MCU_IRKEY_MAXNUM];
+	unsigned int irlVal[PMOC_WKUP_IRKEY_MAXNUM];
+	unsigned int irhVal[PMOC_WKUP_IRKEY_MAXNUM];
 	unsigned int keyVal;
 	unsigned int timeVal;
+    unsigned char usbWakeupMask;
+    unsigned char ethWakeupFlag;
 }C51_PMOC_VAL_S;
 
 typedef enum 
@@ -38,7 +40,9 @@ typedef enum
 {
 	C51_PMOC_WAKEUP_IR = 0,
 	C51_PMOC_WAKEUP_KEY,	
-	C51_PMOC_WAKEUP_TIME,	
+	C51_PMOC_WAKEUP_TIME,
+	C51_PMOC_WAKEUP_ETH,
+	C51_PMOC_WAKEUP_USB,
 	C51_PMOC_WAKEUP_BUTT 	
 }C51_PMOC_WAKEUP_E;
 

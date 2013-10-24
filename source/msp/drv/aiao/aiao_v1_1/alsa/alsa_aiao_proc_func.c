@@ -1,7 +1,7 @@
 #include "alsa_aiao_proc_func.h"
 
 #ifdef CONFIG_AIAO_ALSA_PROC_SUPPORT
-static void hiaudio_proc_read(struct snd_info_entry *entry,
+static void hiaudio_ao_proc_read(struct snd_info_entry *entry,
                                     struct snd_info_buffer *buffer)
 {
 
@@ -35,7 +35,7 @@ static void hiaudio_proc_read(struct snd_info_entry *entry,
 
 }
 
-int hiaudio_proc_init(void * card, const char * name, struct hiaudio_data *had)
+int hiaudio_ao_proc_init(void * card, const char * name, struct hiaudio_data *had)
 {
     int ret;
     if((NULL == card) || (NULL == name) || (NULL == had))
@@ -47,11 +47,44 @@ int hiaudio_proc_init(void * card, const char * name, struct hiaudio_data *had)
     {
         //TO DO    
     }
-    snd_info_set_text_ops(had->entry, had, hiaudio_proc_read);    
+    snd_info_set_text_ops(had->entry, had, hiaudio_ao_proc_read);    
     
     return 0;
 }
 
+#ifdef HI_ALSA_AI_SUPPORT
+static void hiaudio_ai_proc_read(struct snd_info_entry *entry,
+                                    struct snd_info_buffer *buffer)
+{
+    struct hiaudio_data *had = entry->private_data;
+     snd_iprintf(buffer,
+                        " ai_handle=0x%x,  int_cnt(total)=%x\n",
+                         had->ai_handle, had->isr_total_cnt_c
+                         );
+    snd_iprintf(buffer,
+                       " runtime_appl_ptr=0x%x, had->ai_writepos=0x%x,had->last_c_pos=0x%x\n",
+                       had->current_c_pos, had->ai_writepos,had->last_c_pos
+                        );
+    snd_iprintf(buffer,
+                        " ack_cnt=0x%x\n",
+                         had->ack_c_cnt
+                         );
+}
+int hiaudio_ai_proc_init(void * card, const char * name, struct hiaudio_data *had)
+{
+    int ret;
+    if((NULL == card) || (NULL == name) || (NULL == had))
+    {
+        return -EINVAL;
+    }
+    ret = snd_card_proc_new((struct snd_card *)card, name, &had->entry);
+    if(ret)
+    {
+    }
+    snd_info_set_text_ops(had->entry, had, hiaudio_ai_proc_read);    
+    return 0;
+}
+#endif
 void hiaudio_proc_cleanup(void)
 {
     //TODO

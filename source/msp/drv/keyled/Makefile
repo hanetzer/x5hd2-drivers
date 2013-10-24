@@ -85,16 +85,16 @@ endif
 ifeq ($(CFG_HI_KEYLED_CT1642_SUPPORT), y)
     EXTRA_CFLAGS += -DKEYLED_CT1642
     EXTRA_CFLAGS += -I$(DRV_SRC_BASE)/keyled_ct1642
-    ifeq ($(findstring hi3716cv200,$(CFG_HI_CHIP_TYPE)), hi3716cv200) 
-   	 $(MOD_NAME)-y  += keyled_ct1642/drv_keyled_ct1642_inner.o
-    else
-    ifdef CFG_HI_KEYLED_CT1642_CLOCK_GPIO
-        EXTRA_CFLAGS += -DHI_KEYLED_CT1642_CLOCK_GPIO=$(CFG_HI_KEYLED_CT1642_CLOCK_GPIO)
-        EXTRA_CFLAGS += -DHI_KEYLED_CT1642_DAT_GPIO=$(CFG_HI_KEYLED_CT1642_DAT_GPIO)
-        EXTRA_CFLAGS += -DHI_KEYLED_CT1642_KEY_GPIO=$(CFG_HI_KEYLED_CT1642_KEY_GPIO)
-    endif
-	$(MOD_NAME)-y  += keyled_ct1642/drv_keyled_ct1642.o
-    endif
+#   ifeq ($(findstring hi3716cv200,$(CFG_HI_CHIP_TYPE)), hi3716cv200) 
+    $(MOD_NAME)-y  += keyled_ct1642/drv_keyled_ct1642_inner.o
+#   else
+#    ifdef CFG_HI_KEYLED_CT1642_CLOCK_GPIO
+#        EXTRA_CFLAGS += -DHI_KEYLED_CT1642_CLOCK_GPIO=$(CFG_HI_KEYLED_CT1642_CLOCK_GPIO)
+#        EXTRA_CFLAGS += -DHI_KEYLED_CT1642_DAT_GPIO=$(CFG_HI_KEYLED_CT1642_DAT_GPIO)
+#        EXTRA_CFLAGS += -DHI_KEYLED_CT1642_KEY_GPIO=$(CFG_HI_KEYLED_CT1642_KEY_GPIO)
+#    endif
+#	$(MOD_NAME)-y  += keyled_ct1642/drv_keyled_ct1642.o
+#   endif
 endif
 
 #===============================================================================

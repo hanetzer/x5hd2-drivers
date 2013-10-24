@@ -21,6 +21,11 @@
 #define BIT_MDDC_ST_IN_PROGR    0x10
 #define BIT_MDDC_ST_I2C_LOW     0x40
 #define BIT_MDDC_ST_NO_ACK      0x20
+#define BIT_MDDC_ST_FIFO_FULL   0x08
+#define BIT_MDDC_ST_FIFO_EMPL   0x04
+#define BIT_MDDC_ST_FRD_USE     0x02
+#define BIT_MDDC_ST_FWT_USE     0x01
+
 
 
 //      DDC Command[3:0]:

@@ -45,6 +45,7 @@ extern "C"{
 #define HI_CODEC_LIB_HANDLE(hInst)  ((hInst>>8) & 0xFF)
 #define HI_CODEC_INST_HANDLE(hInst) (hInst & 0xFF)
 
+#define HI_CODEC_MAX_NUMBER         (16)
 
 /*************************** Structure Definition ****************************/
 /** \addtogroup       */

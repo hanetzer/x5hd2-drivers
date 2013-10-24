@@ -33,7 +33,7 @@
 #include "drv_gpio.h"
 #include "drv_gpio_ioctl.h"
 #include "drv_gpio_ext.h"
-#include "drv_dev_ext.h"
+#include "hi_drv_dev.h"
 
 static struct semaphore g_GpioSemIntf;   // kf39117 g_GpioSemIntf;
 
@@ -127,6 +127,41 @@ static long hi_gpio_ioctl(struct file *filp, HI_U32 cmd, unsigned long arg)
         break;
     }
 
+	case CMD_GPIO_SET_OUTPUTTYPE:
+	{
+		GPIO_OUTPUT_TYPE_S stOutputType;
+
+		if (copy_from_user(&stOutputType, argp, sizeof(GPIO_OUTPUT_TYPE_S)))
+        {
+            HI_INFO_GPIO("copy data from user fail!\n");
+            Ret = HI_FAILURE;
+        }
+
+        Ret = DRV_GPIO_SetOutputType(stOutputType.u32GpioNo, stOutputType.enOutputType);
+		break;
+	}
+
+	case CMD_GPIO_GET_OUTPUTTYPE:
+	{
+		GPIO_OUTPUT_TYPE_S stOutputType;
+		
+		if (copy_from_user(&stOutputType, argp, sizeof(GPIO_OUTPUT_TYPE_S)))
+        {
+            HI_INFO_GPIO("copy data from user fail!\n");
+            Ret = HI_FAILURE;
+        }
+
+		Ret = DRV_GPIO_GetOutputType(stOutputType.u32GpioNo, &stOutputType.enOutputType);
+
+        if (copy_to_user(argp, &stOutputType, sizeof(GPIO_OUTPUT_TYPE_S)))
+        {
+            HI_INFO_GPIO("copy data to user fail!\n");
+            Ret = HI_FAILURE;
+        }
+
+		break;
+	}
+
     default:
     {
         up(&g_GpioSemIntf);
@@ -185,7 +220,7 @@ HI_S32 GPIO_DRV_ModInit(HI_VOID)
  #endif
 #endif
 
-    sprintf(g_GpioRegisterData.devfs_name, UMAP_DEVNAME_GPIO);
+    snprintf(g_GpioRegisterData.devfs_name, sizeof(g_GpioRegisterData.devfs_name), UMAP_DEVNAME_GPIO);
     g_GpioRegisterData.minor = UMAP_MIN_MINOR_GPIO;
     g_GpioRegisterData.owner = THIS_MODULE;
     g_GpioRegisterData.fops   = &hi_gpio_fops;
@@ -197,9 +232,7 @@ HI_S32 GPIO_DRV_ModInit(HI_VOID)
     }
 
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_gpio.ko success.\t(%s)\n", VERSION_STRING);
-#endif
+    HI_PRINT("Load hi_gpio.ko success.\t(%s)\n", VERSION_STRING);
 #endif
 
     return HI_SUCCESS;
@@ -224,9 +257,7 @@ HI_VOID GPIO_DRV_ModExit(HI_VOID)
 #endif
 
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("remove hi_gpio.ko ok!\n");
-#endif
+    HI_PRINT("remove hi_gpio.ko ok!\n");
 #endif
     return;
 }

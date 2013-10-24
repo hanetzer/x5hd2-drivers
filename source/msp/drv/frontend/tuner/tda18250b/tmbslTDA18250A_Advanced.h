@@ -47,11 +47,6 @@ tmbslTDA18250A_GetSWSettingsVersion(
 );
 
 tmErrorCode_t
-tmbslTDA18250A_CheckHWVersion(
-    tmUnitSelect_t tUnit    /* I: Unit number */
-);
-
-tmErrorCode_t
 tmbslTDA18250A_SetGpio(
     tmUnitSelect_t          tUnit,           /* I: Unit number */
     UInt8                   bNumber,         /* I: Number of the GPIO to set */
@@ -153,18 +148,6 @@ tmbslTDA18250A_GetLLPowerState(
     tmUnitSelect_t          tUnit,      /* I: Unit number */
     TDA18250APowerState_t*   pPowerState /* O: Power state of TDA18250A */
 );
-
-//tmErrorCode_t
-//tmbslTDA18250A_SetPowerSavingMode(
-//    tmUnitSelect_t  tUnit/*,*/      /* I: Unit number */
-//    /*TDA18250APowerSavingMode_t uPowerSavingMode*/
-//);
-
-//tmErrorCode_t
-//tmbslTDA18250A_GetPowerSavingMode(
-//    tmUnitSelect_t  tUnit,      /* I: Unit number */
-//    TDA18250APowerSavingMode_t* pPowerSavingMode
-//);
 
 tmErrorCode_t
 tmbslTDA18250A_PLLcalc(

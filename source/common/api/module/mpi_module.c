@@ -3,15 +3,12 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-
 #include <sys/ioctl.h>
 #include <fcntl.h>
 #include <errno.h>
 
-
 #include "hi_debug.h"
-#include "drv_struct_ext.h"
-#include "mpi_debug.h"
+#include "hi_drv_struct.h"
 #include "mpi_module.h"
 #include "drv_module_ioctl.h"
 #include "mpi_mem_base.h"
@@ -116,16 +113,14 @@ HI_S32 HI_MODULE_Register(HI_U32 u32ModuleID, const HI_CHAR * pszModuleName)
     stModule.u32ModuleID = u32ModuleID;
 
     s32Ret = ioctl(g_s32ModuleFd,  CMD_ADD_MODULE_INFO, &stModule);
-        
     if (s32Ret != HI_SUCCESS)
     {
+        HI_ERR_PRINT(HI_ID_MODULE, "Add module fail:%#x!\n", s32Ret);
         MODULE_UNLOCK(&g_ModuleMutex);
-        
         return HI_FAILURE;
     }
 
     MODULE_UNLOCK(&g_ModuleMutex);
-    
     HI_INFO_PRINT(HI_ID_MODULE, "stModule %s and module ID = 0x%08x\n",stModule.u8ModuleName, stModule.u32ModuleID);
     
 #ifdef CMN_MMGR_SUPPORT 
@@ -146,7 +141,7 @@ HI_S32 HI_MODULE_RegisterByName(const HI_CHAR * pszModuleName, HI_U32* pu32Modul
     HI_S32 s32Ret = HI_FAILURE;
     MODULE_ALLOC_S stModule = {0};
 
-    if ((NULL == pszModuleName) || (strlen(pszModuleName)==0) || (strlen(pszModuleName)>15) || (NULL == pu32ModuleID))
+    if ((NULL == pszModuleName) || (strlen(pszModuleName)==0) || (strlen(pszModuleName)>MAX_MODULE_NAME-1) || (NULL == pu32ModuleID))
     {
         HI_ERR_PRINT(HI_ID_MODULE, "name invalid!\n");
         return HI_FAILURE;
@@ -154,7 +149,6 @@ HI_S32 HI_MODULE_RegisterByName(const HI_CHAR * pszModuleName, HI_U32* pu32Modul
 
     memcpy(stModule.u8ModuleName, pszModuleName, sizeof(stModule.u8ModuleName));
 
-    // TODO: Check g_s32ModuleFd lock
     if (g_s32ModuleFd == -1)
     {
         (HI_VOID)HI_MODULE_Init();
@@ -201,7 +195,7 @@ HI_S32 HI_MODULE_UnRegister(HI_U32 u32ModuleID)
 
     stModule.u32ModuleID = u32ModuleID;
     
-    s32Ret = ioctl(g_s32ModuleFd,       CMD_GET_MODULE_INFO, &stModule);
+    s32Ret = ioctl(g_s32ModuleFd, CMD_GET_MODULE_INFO, &stModule);
 
     if (s32Ret != HI_SUCCESS)
     {
@@ -210,10 +204,14 @@ HI_S32 HI_MODULE_UnRegister(HI_U32 u32ModuleID)
     }
 
 #ifdef CMN_MMGR_SUPPORT
-    s32Ret = Module_Mem_DelModuleInfo(&stModule);
+    if (stModule.s32RegCount == 1)
+    {
+        s32Ret = Module_Mem_DelModuleInfo(&stModule);
+        
+    }
 #endif
 
-    s32Ret = ioctl(g_s32ModuleFd,       CMD_DEL_MODULE_INFO, &stModule);
+    s32Ret = ioctl(g_s32ModuleFd, CMD_DEL_MODULE_INFO, &stModule);
 
     MODULE_UNLOCK(&g_ModuleMutex);
 

@@ -11,7 +11,7 @@
 #ifndef __DRV_DEMUX_FUNC_H__
 #define __DRV_DEMUX_FUNC_H__
 
-#include "drv_dev_ext.h"
+#include "hi_drv_dev.h"
 #include "drv_demux_define.h"
 #include "hi_unf_demux.h"
 #include "hi_mpi_demux.h"
@@ -25,6 +25,8 @@ extern "C" {
 HI_S32  DMX_OsiInit(HI_U32 PoolBufSize, HI_U32 BlockSize);
 HI_S32  DMX_OsiDeInit(HI_VOID);
 HI_S32  DMX_OsiGetPoolBufAddr(HI_U32 *PhyAddr, HI_U32 *BufSize);
+HI_VOID DMX_OsiSetNoPusiEn(HI_BOOL bNoPusiEn);
+HI_VOID DMX_OsiSetTei(HI_U32 u32DmxId,HI_BOOL bTei);
 
 /* Port */
 HI_S32  DMX_OsiTunerPortGetAttr(const HI_U32 PortId, HI_UNF_DMX_PORT_ATTR_S *PortAttr);
@@ -107,7 +109,7 @@ HI_S32  DMX_OsiPcrChannelGetClock(const HI_U32 PcrId, HI_U64 *PcrValue, HI_U64 *
 HI_S32  DMX_OsiPcrChannelAttachSync(const HI_U32 PcrId, const HI_U32 SyncHadle);
 HI_S32  DMX_OsiPcrChannelDetachSync(const HI_U32 PcrId);
 
-HI_S32  DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, HI_U32 *RecId, HI_U32 *BufPhyAddr, HI_U32 *BufSize);
+HI_S32 DMX_DRV_REC_CreateChannel(HI_UNF_DMX_REC_ATTR_S *RecAttr, DMX_REC_TIMESTAMP_MODE_E enRecTimeStamp,HI_U32 *RecId, HI_U32 *BufPhyAddr, HI_U32 *BufSize);
 HI_S32  DMX_DRV_REC_DestroyChannel(HI_U32 RecId);
 HI_S32  DMX_DRV_REC_AddRecPid(HI_U32 RecId, HI_U32 Pid, HI_U32 *ChanId);
 HI_S32  DMX_DRV_REC_DelRecPid(HI_U32 RecId, HI_U32 ChanId);

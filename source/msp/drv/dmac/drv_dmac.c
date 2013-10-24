@@ -48,18 +48,18 @@
 #include <linux/dma-mapping.h>
 
 #include "hi_type.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_sys.h"
 #include "hi_drv_dmac.h"
 #include "drv_dmac.h"
-#include "drv_proc_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_mmz.h"
 #include "hi_debug.h"
 #include "hi_module.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_mem.h"
 #include "drv_dmac_ext.h"
 #include "hi_module.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 
 #define DMAC_NAME                      "HI_DMAC"
 
@@ -1798,8 +1798,9 @@ static int __INIT__ dmac_module_init(void)
 
         HI_DRV_PROC_AddModule("dma", DMA_DRV_Proc, NULL);
     }
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_dmac.ko success.\t(%s)\n", VERSION_STRING);
+
+#ifdef MODULE
+    HI_PRINT("Load hi_dmac.ko success.\t(%s)\n", VERSION_STRING);
 #endif
 
     return HI_SUCCESS;

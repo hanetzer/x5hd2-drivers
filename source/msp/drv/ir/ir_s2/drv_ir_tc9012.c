@@ -433,7 +433,7 @@ repeat_key:
 		}
 
 		/* clear repeat header */
-		symbol = ir_next_reader_clr_inc(rd);
+		(HI_VOID)ir_next_reader_clr_inc(rd);
 		/* skip C0 bit in the repeat frame. */
 		symbol = ir_get_read_key_n(rd, 1);
 		/* burst */
@@ -454,10 +454,10 @@ repeat_key:
 				ip->attr.burst.pluse, ip->attr.burst.space,
 				ip->attr.burst.factor);
 			/* clear C0 bit in the repeat frame. */
-			symbol = ir_next_reader_clr_inc(rd);
+			(HI_VOID)ir_next_reader_clr_inc(rd);
 		} else {
 			/* clear C0 bit in the repeat frame. */
-			symbol = ir_next_reader_clr_inc(rd);
+			(HI_VOID)ir_next_reader_clr_inc(rd);
 			hiir_debug("repeat parsed ,last_key[l,u,s] [0x%x,0x%x,%d],"
 					"time_after:%d,idx:%d!\n",
 					(u32)last_key->lower,(u32)last_key->upper,
@@ -485,8 +485,18 @@ repeat_key:
 	} while(symbol->upper && symbol->lower);
 start_timer_out:
 	del_timer(&tc9012_timer[idx]);
-	tc9012_timer[idx].expires = jiffies +
-		msecs_to_jiffies(ir->key_hold_timeout_time);
+
+    if (0 == ip->key_hold_timeout_time)
+    {
+        tc9012_timer[idx].expires = jiffies +
+                             msecs_to_jiffies(ir->key_hold_timeout_time);
+    }
+    else
+    {
+        tc9012_timer[idx].expires = jiffies +
+                             msecs_to_jiffies(ip->key_hold_timeout_time);
+    }
+    
 	tc9012_timer[idx].data = idx;
 	add_timer(&tc9012_timer[idx]);
 out:

@@ -132,7 +132,7 @@ HI_S32 DispBuf_Reset(DISP_BUF_S *pstBuffer)
 HI_S32 DispBuf_GetNodeContent(DISP_BUF_S *pstBuffer, HI_S32 s32Index, DISP_BUF_NODE_S **ppstNode)
 {
     if (pstBuffer && ppstNode)
-    {
+    {
         if (s32Index < pstBuffer->u32Number)
         {
             *ppstNode = pstBuffer->pstBufArray[s32Index];
@@ -311,6 +311,46 @@ HI_S32 DispBuf_GetNextFullNode(DISP_BUF_S *pstBuffer, DISP_BUF_NODE_S **ppstNode
 
     RP1 = (pstBuffer->u32FullReaddPos + 1)% pstBuffer->u32Number;
 
+    if (pstBuffer->u32FullArray[RP1] != DISP_BUF_INVALID_ID)
+    {
+        nodeID = DISP_GET_NODE_ID(pstBuffer->u32FullArray[RP1]);
+        DISP_ASSERT(nodeID < pstBuffer->u32Number);
+        
+        pstTmp = pstBuffer->pstBufArray[nodeID];
+        DISP_ASSERT(pstTmp->u32State == DISP_BUFN_STATE_FULL);
+
+#ifdef DISP_BUF_DEBUG
+        if (pstTmp->u32State != DISP_BUFN_STATE_FULL)
+        {
+            DispBuf_PrintFullState(pstBuffer);
+        }
+#endif
+
+        *ppstNode = pstTmp;
+#ifdef DISP_BUFFER_DEBUG_PRINT
+printk("========= get nxt full %d, node=0x%x\n", RP1, pstTmp->u32ID);
+#endif
+        return HI_SUCCESS;
+    }
+
+    return HI_FAILURE;
+}
+
+
+HI_S32 DispBuf_GetFullNodeByIndex(DISP_BUF_S *pstBuffer, HI_U32 u32Index, DISP_BUF_NODE_S **ppstNode)
+{
+    DISP_BUF_NODE_S *pstTmp;
+    HI_S32 RP1, nodeID;
+
+    DBC_CHECK_NULL_RETURN(pstBuffer);
+    DBC_CHECK_NULL_RETURN(ppstNode);
+
+    if (u32Index >= pstBuffer->u32Number)
+    {
+        return HI_FAILURE;
+    }
+
+    RP1 = (pstBuffer->u32FullReaddPos + u32Index) % pstBuffer->u32Number;
     if (pstBuffer->u32FullArray[RP1] != DISP_BUF_INVALID_ID)
     {
         nodeID = DISP_GET_NODE_ID(pstBuffer->u32FullArray[RP1]);

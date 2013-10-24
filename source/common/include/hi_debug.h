@@ -21,7 +21,15 @@ extern "C"{
 #include "hi_type.h"
 #include "hi_module.h"
 
-//#undef HI_DEBUG
+#if defined(HI_LOG_SUPPORT) && (0 == HI_LOG_SUPPORT)
+#undef HI_DEBUG
+
+#define HI_PANIC(fmt...)  do{\
+}while(0)
+
+#define HI_PRINT(fmt...) do{\
+}while(0)
+#else
 #define HI_DEBUG
 
 #ifdef __OS_LINUX__
@@ -39,6 +47,8 @@ extern "C"{
     #define HI_PANIC printk
 #else
     #define HI_PANIC printf
+#endif
+
 #endif
 
 /*************************** Structure Definition ****************************/
@@ -81,8 +91,8 @@ typedef enum hiLOG_LEVEL_E
 /**Just only for debug level print.   */   /**CNcomment: 为了打印调试信息而制定的宏打印级别 */
 #define HI_TRACE_LEVEL_DBG      (4)
 
-#ifndef CFG_HI_LOG_LEVEL
-#define CFG_HI_LOG_LEVEL         (HI_TRACE_LEVEL_INFO)
+#ifndef HI_LOG_LEVEL
+#define HI_LOG_LEVEL         (HI_TRACE_LEVEL_INFO)
 #endif
 
 
@@ -90,10 +100,6 @@ typedef enum hiLOG_LEVEL_E
 /**CNcomment: 调试输出信息接口，不推荐直接调用此接口 */
 extern HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId,
             HI_U8 *pFuncName, HI_U32 u32LineNum, const char *format, ...);
-
-#define PRINT_FMT ("[%d %s-%s]:%s[%d]:%s", TimeMs, DebugLevelName[u32Level],\
-                g_pLogConfigInfo[enModId].ModName,\
-                pFuncName, u32LineNum, log_str)
 
 #ifdef HI_DEBUG
 
@@ -124,23 +130,11 @@ extern HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId,
             HI_TRACE(HI_LOG_LEVEL_INFO, HI_ID_SYS, fmt)
 
 
-
-
 /**Supported for debug output to serial/network/u-disk. */
 /**CNcomment: 各个模块需要调用以下宏进行输出调试信息、可输出到串口、网口、U盘存储等 */
-#if defined(ANDROID)
-#include <utils/Log.h>
-#define HI_INFO_PRINT( module_id, fmt...)  ALOGV(fmt)
-#define HI_DBG_PRINT(  module_id, fmt...)  ALOGD(fmt)
-#define HI_WARN_PRINT( module_id, fmt...)  ALOGI(fmt)
-#define HI_ERR_PRINT(  module_id, fmt...)  ALOGE(fmt)
-#define HI_FATAL_PRINT(module_id, fmt...)  ALOGE(fmt)
-
-#else
-
 /**Just only reserve the fatal level output. */
 /**CNcomment: 仅仅保留致命的调试信息 */
-#if (CFG_HI_LOG_LEVEL == HI_TRACE_LEVEL_FATAL)
+#if (HI_LOG_LEVEL == HI_TRACE_LEVEL_FATAL)
 #define HI_FATAL_PRINT(module_id, fmt...)   HI_TRACE(HI_TRACE_LEVEL_FATAL,    module_id, fmt)
 #define HI_ERR_PRINT(  module_id, fmt...)
 #define HI_WARN_PRINT( module_id, fmt...)
@@ -148,7 +142,7 @@ extern HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId,
 #define HI_DBG_PRINT(  module_id, fmt...)
 /**Just only reserve the fatal/error level output. */
 /**CNcomment: 仅仅保留致命的和错误级别的调试信息 */
-#elif (CFG_HI_LOG_LEVEL == HI_TRACE_LEVEL_ERROR)
+#elif (HI_LOG_LEVEL == HI_TRACE_LEVEL_ERROR)
 #define HI_FATAL_PRINT(module_id, fmt...)   HI_TRACE(HI_TRACE_LEVEL_FATAL,    module_id, fmt)
 #define HI_ERR_PRINT(  module_id, fmt...)   HI_TRACE(HI_TRACE_LEVEL_ERROR,    module_id, fmt)
 #define HI_WARN_PRINT( module_id, fmt...)
@@ -156,7 +150,7 @@ extern HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId,
 #define HI_DBG_PRINT(  module_id, fmt...)
 /**Just only reserve the fatal/error/warning level output. */
 /**CNcomment: 仅仅保留致命的、错误的、警告级别的调试信息 */
-#elif (CFG_HI_LOG_LEVEL == HI_TRACE_LEVEL_WARN)
+#elif (HI_LOG_LEVEL == HI_TRACE_LEVEL_WARN)
 #define HI_FATAL_PRINT(module_id, fmt...)   HI_TRACE(HI_TRACE_LEVEL_FATAL,    module_id, fmt)
 #define HI_ERR_PRINT(  module_id, fmt...)   HI_TRACE(HI_TRACE_LEVEL_ERROR,    module_id, fmt)
 #define HI_WARN_PRINT( module_id, fmt...)   HI_TRACE(HI_TRACE_LEVEL_WARN,     module_id, fmt)
@@ -164,7 +158,7 @@ extern HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId,
 #define HI_DBG_PRINT(  module_id, fmt...)
 /**Just only reserve the fatal/error/warning/info level output. */
 /**CNcomment: 仅仅保留致命的、错误的、警告和信息级别的调试信息 */
-#elif (CFG_HI_LOG_LEVEL == HI_TRACE_LEVEL_INFO)
+#elif (HI_LOG_LEVEL == HI_TRACE_LEVEL_INFO)
 #define HI_FATAL_PRINT(module_id, fmt...)   HI_TRACE(HI_TRACE_LEVEL_FATAL,    module_id, fmt)
 #define HI_ERR_PRINT(  module_id, fmt...)   HI_TRACE(HI_TRACE_LEVEL_ERROR,    module_id, fmt)
 #define HI_WARN_PRINT( module_id, fmt...)   HI_TRACE(HI_TRACE_LEVEL_WARN,     module_id, fmt)
@@ -180,15 +174,17 @@ extern HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId,
 #define HI_DBG_PRINT(  module_id, fmt...)   HI_TRACE(HI_TRACE_LEVEL_DBG,      module_id, fmt)
 #endif
 
-#endif
-
-
 #else
+#define HI_FATAL_PRINT(module_id, fmt...)
+#define HI_ERR_PRINT(  module_id, fmt...)
+#define HI_WARN_PRINT( module_id, fmt...)
+#define HI_INFO_PRINT( module_id, fmt...)
+#define HI_DBG_PRINT(  module_id, fmt...)
 #define HI_TRACE(level, module_id, fmt...)
 #define HI_ASSERT(expr)
 #define HI_ASSERT_RET(expr)
 #define HI_DEBUG_LOG(fmt...)
-#endif
+#endif /* endif HI_DEBUG */
 
 /** @} */  /** <!-- ==== Structure Definition End ==== */
 
@@ -196,6 +192,40 @@ extern HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId,
 #define MKSTR(exp) # exp
 #define MKMARCOTOSTR(exp) MKSTR(exp)
 #define VERSION_STRING ("SDK_VERSION:["MKMARCOTOSTR(SDK_VERSION)"] Build Time:["__DATE__", "__TIME__"]")
+
+
+/**Initialize a user module.*/
+/**CNcomment: 用户模块初始化 */
+#define HI_MODULE_DECLARE(MODULE_NAME)	\
+	static HI_U32 g_u32ModuleId = HI_INVALID_MODULE_ID;	\
+	static HI_S32 __attribute__((constructor(200))) init_module_id() \
+	{	 \
+		return HI_MODULE_RegisterByName(MODULE_NAME, &g_u32ModuleId); \
+	} \
+    static HI_S32 __attribute__((destructor(200))) deinit_module_id() \
+    { \
+        return HI_MODULE_UnRegister(g_u32ModuleId); \
+    }
+
+/**Defines a user module ID.*/
+/**CNcomment: 用户模块ID宏定义 */
+#define MODULE_ID (g_u32ModuleId)
+
+/**Defines the command of the user module different level log print.*/
+/**CNcomment: 用户模块日志输出宏定义 */
+#define HI_MODULE_FATAL(pszFormat...)  HI_FATAL_PRINT(MODULE_ID,pszFormat)
+#define HI_MODULE_ERROR(pszFormat...)  HI_ERR_PRINT(MODULE_ID,pszFormat)
+#define HI_MODULE_WARN(pszFormat...)   HI_WARN_PRINT(MODULE_ID,pszFormat)
+#define HI_MODULE_DEBUG(pszFormat...)  HI_DBG_PRINT(MODULE_ID,pszFormat)
+#define HI_MODULE_INFO(pszFormat...)   HI_INFO_PRINT(MODULE_ID,pszFormat)
+
+/**Defines the memory allocate and free command used by user module.*/
+/**CNcomment: 用户模块内存分配宏定义 */
+#define HI_MODULE_MALLOC(u32Size)               HI_MEM_Malloc(MODULE_ID, u32Size)
+#define HI_MODULE_FREE(pMemAddr)                HI_MEM_Free(MODULE_ID, pMemAddr)
+#define HI_MODULE_CALLOC(u32MemBlock, u32Size)  HI_MEM_Calloc(MODULE_ID, u32MemBlock, u32Size)
+#define HI_MODULE_REALLOC(pMemAddr, u32Size)    HI_MEM_Realloc(MODULE_ID, pMemAddr, u32Size)
+
 
 #ifdef __cplusplus
 }

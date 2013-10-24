@@ -17,7 +17,7 @@
 #ifndef __DRV_DISP_H__
 #define __DRV_DISP_H__
 
-#include "drv_proc_ext.h"
+#include "hi_drv_proc.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -40,8 +40,17 @@ typedef struct hiWIN_PROC_FN_S{
 }WIN_PROC_FN_S;
 
 
+typedef struct hiDRV_DISP_STATE_S
+{
+    HI_BOOL bDispOpen[HI_DRV_DISPLAY_BUTT];
+    HI_HANDLE hCastHandle[HI_DRV_DISPLAY_BUTT];
+    HI_HANDLE hSnapshot[HI_DRV_DISPLAY_BUTT];
+}DRV_DISP_STATE_S;
 
-
+typedef struct hiDRV_DISP_GLOBAL_STATE_S
+{      
+    HI_U32 DispOpenNum[HI_DRV_DISPLAY_BUTT];
+}DRV_DISP_GLOBAL_STATE_S;
 
 #ifdef __cplusplus
 #if __cplusplus

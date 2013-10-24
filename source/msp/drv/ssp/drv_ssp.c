@@ -45,7 +45,7 @@
 #include "drv_ssp.h"
 #include "hi_drv_dmac.h"
 #include "hi_common.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 #include "drv_dmac_ext.h"
 
 #include "hi_module.h"
@@ -518,34 +518,31 @@ void hi_ssp_dmac_exit(void)
  */
 static int __INIT__ hi_ssp_init(void)
 {
-    #if 0
+#if 0
     unsigned int reg;
     KCOM_HI_DMAC_INIT();
 
-    if(sspinitialized == 0)
+    if (sspinitialized == 0)
     {
         reg = readl(IO_ADDRESS(0x101E0040));
         reg &= 0xfffcf3ff;
         reg |= 0x00010800;
         writel(reg,IO_ADDRESS(0x101E0040));
         sspinitialized = 1;
-
-        HI_ERR_PRINT(HI_ID_SIO, "Load hi_ssp.ko success.  \t(%s)\n", VERSION_STRING);
-
-        return 0;
     }
     else
     {
         HI_ERR_PRINT(HI_ID_SIO, "SSP has been initialized.\n");
         return 0;
     }
-    #else
-    //spiconfig_multi();
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_ssp.ko success.  \t(%s)\n", VERSION_STRING);
 #endif
+    //spiconfig_multi();
+
+#ifdef MODULE
+    HI_PRINT("Load hi_ssp.ko success.  \t(%s)\n", VERSION_STRING);
+#endif
+
     return 0;
-    #endif
 }
 
 static void __EXIT__ hi_ssp_exit(void)

@@ -36,9 +36,9 @@
 
 #include "hi_unf_i2c.h"
 
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_module.h"
 //#include "common_dev.h"
 //#include "common_proc.h"
 //#include "common_mem.h"
@@ -167,9 +167,7 @@ HI_S32 TUNER_DRV_ModInit(HI_VOID)
 #endif
 	
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-	printk("Load hi_tuner.ko success.\t(%s)\n", VERSION_STRING);
-#endif
+	HI_PRINT("Load hi_tuner.ko success.\t(%s)\n", VERSION_STRING);
 #endif
 
     return HI_SUCCESS;    

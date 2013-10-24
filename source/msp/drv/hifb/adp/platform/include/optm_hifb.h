@@ -17,7 +17,6 @@ History       :
 #else
 #include "hifb_debug.h"
 #endif
-#include "optm_hal.h"
 
 
 #ifndef __OPTM_HIFB_H_H__
@@ -40,6 +39,15 @@ typedef enum tagOPTM_GFX_GP_E
 	OPTM_GFX_GP_1,		/** process gfx4,gfx5                */
 	OPTM_GFX_GP_BUTT
 }OPTM_GFX_GP_E;
+
+typedef struct tagOPTM_GFX_OFFSET_S
+{
+    HI_U32 u32Left;    /*left offset */
+    HI_U32 u32Top;     /*top offset */
+    HI_U32 u32Right;   /*right offset */
+    HI_U32 u32Bottom;  /*bottom offset */
+}OPTM_GFX_OFFSET_S;
+
 
 
 /** csc state*/
@@ -227,10 +235,13 @@ typedef struct
 	/*get gfx mask flag*/
 	HI_S32 (*OPTM_GFX_GetGfxMask)(OPTM_GFX_GP_E enGpId);
 	HI_S32 (*OPTM_GfxGetDispFMTSize)(OPTM_GFX_GP_E enGpId, HIFB_RECT *pstOutRect);
+	HI_S32 (*OPTM_GFX_ClearLogoOsd)(HIFB_LAYER_ID_E enLayerId);
+	HI_S32 (*OPTM_GFX_SetStereoDepth)(HIFB_LAYER_ID_E enLayerId, HI_S32 s32Depth);
 }OPTM_GFX_OPS_S;
 
 HI_VOID OPTM_GFX_GetOps(OPTM_GFX_OPS_S *ops);
 #ifdef HI_BUILD_IN_BOOT
+HI_S32 OPTM_GfxInit(HI_VOID);
 HI_S32 OPTM_GfxOpenLayer(HIFB_LAYER_ID_E enLayerId);
 HI_S32 OPTM_GfxCloseLayer(HIFB_LAYER_ID_E enLayerId);
 HI_S32 OPTM_GfxOpenSlvLayer(HIFB_LAYER_ID_E enLayerId);
@@ -246,6 +257,7 @@ HI_S32 OPTM_GfxSetGpRect(OPTM_GFX_GP_E enGpId, const HIFB_RECT * pstInputRect);
 HI_S32 OPTM_GfxUpLayerReg(HIFB_LAYER_ID_E enLayerId);
 HIFB_GFX_MODE_EN OPTM_Get_GfxWorkMode(HI_VOID);
 HI_S32 OPTM_GpInitFromDisp(OPTM_GFX_GP_E enGPId);
+HI_S32 OPTM_GfxSetDispFMTSize(OPTM_GFX_GP_E enGpId, const HI_RECT_S *pstOutRect);
 #endif
 #endif /* __OPTM_HIFB_H_H__*/
 

@@ -22,7 +22,7 @@ EXTRA_CFLAGS += -I$(COMMON_UNF_INCLUDE)                 \
                 -I$(MSP_UNF_INCLUDE)                    \
                 -I$(MSP_API_INCLUDE)                    \
                 -I$(MSP_DRV_INCLUDE)                    \
-                -I$(MSP_DIR)/drv/higo/include       \
+                -I$(MSP_DIR)/api/higo/include       \
                 -I$(MSP_DIR)/api/vo
 
 #EXTRA_CFLAGS += -DHI_DISP_TTX_SUPPORT  -DHI_DISP_CC_SUPPORT  -DHI_DISP_WSS_SUPPORT   -DHI_VO_SINGLE_VIDEO_SUPPORT
@@ -106,20 +106,36 @@ EXTRA_CFLAGS += $(CFG_HI_KMOD_CFLAGS)
 
 
 ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200es)
-HAL_DIR := hal_cv200es
+HAL_DIR := cv200es
 endif
 
 ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200)
-HAL_DIR := hal_cv200
+HAL_DIR := cv200
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719cv100)
+HAL_DIR := cv200
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3718cv100)
+HAL_DIR := cv200
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719mv100_a)
+HAL_DIR := cv200
 endif
 
 
+
+
+
 DRIVER_PATH := $(MSP_DIR)/drv/vo/vdp_v1_0
-EXTRA_CFLAGS += -I$(DRIVER_PATH)/$(HAL_DIR) -I$(DRIVER_PATH)/alg -I$(DRIVER_PATH)/com -I$(DRIVER_PATH)/drv -I$(DRIVER_PATH)
+EXTRA_CFLAGS += -I$(DRIVER_PATH)/hal/common -I$(DRIVER_PATH)/hal/$(HAL_DIR) -I$(DRIVER_PATH)/alg -I$(DRIVER_PATH)/com -I$(DRIVER_PATH)/drv -I$(DRIVER_PATH)
 
 EXTRA_CFLAGS += -I$(DRIVER_PATH)/include
 
-HAL_FILES := $(wildcard $(DRIVER_PATH)/$(HAL_DIR)/*.c)
+HAL_FILES := $(wildcard $(DRIVER_PATH)/hal/common/*.c)
+HAL_FILES += $(wildcard $(DRIVER_PATH)/hal/$(HAL_DIR)/*.c)
 ALG_FILES := $(wildcard $(DRIVER_PATH)/alg/*.c)
 ALG_FILES += $(wildcard $(DRIVER_PATH)/alg/*.S)
 

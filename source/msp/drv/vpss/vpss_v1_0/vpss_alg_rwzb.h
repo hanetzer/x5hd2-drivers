@@ -35,7 +35,8 @@ typedef enum
     PAT_ITS1_NTSC,     //CVBS 21
     PAT_CODEC43,     //CVBS-ntsc
     PAT_MATRX525,     //CVBS-ntsc
-    PAT_CBAR704_576 //CVBS_PAL
+    PAT_CBAR704_576,  //CVBS_PAL
+    PAT_M480I_NTSC,  //moto cvbs ntsc
 } DNR_PAT_E;
 
 typedef struct hi_DET_PAT_S
@@ -85,17 +86,13 @@ typedef struct hiVPSS_ALG_RWZBCFG_S{
 /*****************************************************************************
                                   RWZB
 *****************************************************************************/
-/***对外API**/
 HI_S32 ALG_DetPic(DET_INFO_S *pDetInfo,
                      VPSS_ALG_RWZBCFG_S *pstRwzbCfg);
                      
 HI_S32 ALG_InitRwzbInfo(DET_INFO_S *pDetInfo);
-//HI_S32 OPTM_ALG_API_Reset_RWZBInfo(DET_INFO_S *pDetInfo);
 HI_S32 ALG_DeInitRwzbInfo(DET_INFO_S *pDetInfo);
 
 
-
-/*内部实现*/
 HI_VOID DetPic_Compare_Pattern(DET_INFO_S *pDetInfo,VPSS_ALG_RWZBCFG_S *pstRwzbCfg);
 HI_VOID DetPic_Config_Addr(DET_INFO_S *pDetInfo,VPSS_ALG_RWZBCFG_S *pstRwzbCfg);
 HI_S32 Init_RWZB(DET_INFO_S *pDetInfo, HI_U32 height, HI_U32 width);

@@ -129,7 +129,7 @@ static HI_FLASH_TYPE_E get_flashtype_by_bootargs(const char *pszBootargs, char *
     char szTypeStr[HI_FLASH_TYPE_BUTT][16]={
         "hi_sfc:",
         "hinand:",
-        "hi_emmc:"};
+        "mmcblk0:"};
     char *pszType[HI_FLASH_TYPE_BUTT];
 
     if(NULL == pszPartitionName)
@@ -221,13 +221,14 @@ int flash_partition_info_init(void)
             }
 
             p = &line[0];
-            p= get_word(p, argv[0]);
+            p = get_word(p, argv[0]);
             p = get_word(p, argv[1]);
             p = get_word(p, argv[2]);
             p = get_word(p, argv[3]);
+            p = p; /* for no TQE warning */
 
             pstPartInfo = &gPartInfo[i];
-            pstPartInfo->PartSize = (HI_U64)(HI_U32)strtol(argv[1],NULL, 16);  //partion size
+            pstPartInfo->PartSize = (HI_U64)(HI_U32)strtoull(argv[1],NULL, 16);  //partion size
             pstPartInfo->BlockSize = (HI_U64)(HI_U32)strtol(argv[2], NULL,16); //erase size
             strncpy(pstPartInfo->DevName, argv[0], (strlen(argv[0])-1));
             strncpy(pstPartInfo->PartName, (argv[3]+1), (strlen(argv[3])-2));

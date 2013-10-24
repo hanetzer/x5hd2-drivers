@@ -27,8 +27,8 @@ extern "C" {
         }  \
     } while (0)
 
-#define D_VENC_CHECK_CHN(s32VeChn) \
-    do {if ((0 > s32VeChn) || (VENC_MAX_CHN_NUM <= s32VeChn)){    \
+#define D_VENC_CHECK_CHN(u32VeChn) \
+    do {if (u32VeChn >= VENC_MAX_CHN_NUM){    \
             return HI_ERR_VENC_CHN_NOT_EXIST;           \
         }                                          \
     } while (0)
@@ -36,8 +36,17 @@ extern "C" {
 
 enum {
 	VEDU_H264	= 0,
-	VEDU_H263	= 1,
-	VEDU_MPEG4  = 2
+	VEDU_JPGE   = 1,
+	VEDU_H263	= 2,
+	VEDU_MPEG4  = 3,
+	
+};
+
+enum {
+	VEDU_H264_BASELINE_PROFILE	= 0,
+	VEDU_H264_MAIN_PROFILE	= 1,
+	VEDU_H264_EXTENDED_PROFILE = 2,
+	VEDU_H264_HIGH_PROFILE  = 3
 };
 
 enum {
@@ -62,11 +71,23 @@ enum {
 
 #define MAX_VPSS_PORT 3
 
+typedef struct hiVENC_PROC_WRITE_S
+{
+    struct file *  fpSaveFile;    /* file pointer */
+	HI_CHAR YUVFileName[64];
+	HI_CHAR StreamFileName[64];
+    HI_U32  u32FrameModeCount;    /* number of saved frame, used in frame mode */
+    HI_BOOL bTimeModeRun;         /* run tag in time mode */
+    HI_BOOL bFrameModeRun;        /* run tag in frame mode */
+	HI_BOOL bSaveYUVFileRun;
+} VENC_PROC_WRITE_S;
 typedef struct tagOPTM_VENC_CHN_S
 {
     HI_U32                 u32UID;
     HI_BOOL                bEnable;
     HI_BOOL                bNeedVPSS;
+	HI_BOOL                bFrameBufMng;
+	HI_BOOL                bOMXChn;
     HI_HANDLE              hSource;
     HI_HANDLE              hVEncHandle;
     HI_HANDLE              hUsrHandle;     //user handle will not change after pmoc
@@ -88,9 +109,14 @@ typedef struct tagOPTM_VENC_CHN_S
     HI_U32 u32LastSecKbps;                 /* bit rate of last second, count as Kbps */
     HI_U32 u32LastSecTryNum;
     HI_U32 u32LastTryNumTotal;
+	HI_U32 u32LastSecOKNum;
+    HI_U32 u32LastOKNumTotal;
     HI_U32 u32LastSecPutNum;
     HI_U32 u32LastPutNumTotal;
     struct file *pWhichFile;
+
+	VeduEfl_SrcInfo_S     stSrcInfo;
+	VENC_PROC_WRITE_S     stProcWrite;
 } OPTM_VENC_CHN_S;
 
 typedef struct tagVENC_SOURCE_HANDLE_S
@@ -100,20 +126,13 @@ typedef struct tagVENC_SOURCE_HANDLE_S
     VE_IMAGE_FUNC pfPutImage;
 } VENC_SOURCE_HANDLE_S;
 
-typedef struct hiVENC_PROC_WRITE_S
-{
-    struct file *  fpSaveFile;           /* file pointer */
-    HI_U32  u32FrameModeCount;    /* number of saved frame, used in frame mode */
-    HI_BOOL bTimeModeRun;         /* run tag in time mode */
-    HI_BOOL bFrameModeRun;        /* run tag in frame mode */
-} VENC_PROC_WRITE_S;
 
 HI_S32 VENC_DRV_Init(HI_VOID);
 HI_VOID VENC_DRV_Exit(HI_VOID);
 HI_VOID VENC_DRV_BoardInit(HI_VOID);
 HI_VOID VENC_DRV_BoardDeinit(HI_VOID);
 
-HI_S32	VENC_DRV_CreateChn( HI_HANDLE *phVencChn, HI_UNF_VENC_CHN_ATTR_S *pstAttr, VENC_CHN_INFO_S *pstVeInfo,
+HI_S32	VENC_DRV_CreateChn( HI_HANDLE *phVencChn, HI_UNF_VENC_CHN_ATTR_S *pstAttr, VENC_CHN_INFO_S *pstVeInfo,HI_BOOL bOMXChn,
                             struct file  *pfile);
 HI_S32	VENC_DRV_DestroyChn( HI_HANDLE hVencChn);
 
@@ -134,6 +153,11 @@ HI_S32	VENC_DRV_RequestIFrame(HI_U32 EncHandle);
 
 HI_S32 VENC_DRV_QueueFrame(HI_HANDLE hVencChn, HI_UNF_VIDEO_FRAME_INFO_S *pstFrameInfo );
 HI_S32 VENC_DRV_DequeueFrame(HI_HANDLE hVencChn, HI_UNF_VIDEO_FRAME_INFO_S *pstFrameInfo );
+
+HI_S32 VENC_DRV_SetSrcInfo(HI_HANDLE hVencChn,HI_DRV_VENC_SRC_INFO_S *pstSrcInfo);
+
+HI_S32 VENC_DRV_ProcAdd(HI_HANDLE hVenc,HI_U32 u32ChnID);   /**/
+HI_VOID VENC_DRV_ProcDel(HI_HANDLE hVenc,HI_U32 u32ChnID);
 #ifdef __cplusplus
  #if __cplusplus
 }

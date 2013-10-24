@@ -34,11 +34,9 @@
 #include <pthread.h>
 
 #include "hi_type.h"
-
-#include "drv_mmz_userdev_ioctl.h"
-
+#include "drv_mmz_ioctl.h"
 #include "hi_debug.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "drv_mem_ioctl.h"
 #include "hi_mpi_mem.h"
 

@@ -67,24 +67,33 @@ typedef enum hiUNF_PMOC_SCENE_E
     HI_UNF_PMOC_SCENE_BUTT
 }HI_UNF_PMOC_SCENE_E;
 
+typedef enum hiUNF_PMOC_ETH_E
+{
+    HI_UNF_PMOC_ETH_0 = 0x01,        /**<The first ETH.*/    /**<CNcomment:第1个网口*/
+    HI_UNF_PMOC_ETH_1 = 0x02,        /**<The second ETH.*/   /**<CNcomment:第2个网口*/    
+    HI_UNF_PMOC_ETH_BUTT = 0x04
+}HI_UNF_PMOC_ETH_E;
+
+
 #define PMOC_WKUP_IRKEY_MAXNUM 6
+#define FILTER_VALUE_COUNT   (31)
+#define FILTER_COUNT         (4)
 
 typedef struct hiUNF_PMOC_WAKEUP_FRAME
 {
-    HI_U32	u32MaskBytes;  /**<Mask byte*/            /**<CNcomment: 掩码 */
-    HI_BOOL bMaskValid;    /**<Mask valid flag*/      /**<CNcomment: 掩码有效标志位*/
-    HI_U8	u8Offset;      /**<Filter offset*/        /**<CNcomment: 过滤器偏移量*/
-    HI_U8	u8Value[31];   /**<Filter value*/         /**<CNcomment: 过滤器的值*/
-    HI_U8	u8Valid;       /**<Valid filter*/         /**<CNcomment: 过滤器是否有效*/
+    HI_U32	u32MaskBytes;  /**<Mask byte, bitN to control u8Value[N]. 0: invalid, 1: valid*/  /**<CNcomment: 对应value的掩码, bitN对应u8Value[N], 0代表无效，1代表有效 */
+    HI_U8	u8Offset;      /**<Filter offset, should be bigger than or equal to 12*/          /**<CNcomment: 过滤器偏移量。需要大于或等于12*/
+    HI_U8	u8Value[FILTER_VALUE_COUNT];   /**<Filter value*/                                 /**<CNcomment: 过滤器的值*/
+    HI_BOOL	bFilterValid;  /**<Valid filter, 0: invalid, 1: valid*/                           /**<CNcomment: 过滤器是否有效，0代表无效，1代表有效*/
 }HI_UNF_PMOC_WAKEUP_FRAME_S, *HI_UNF_WAKEUP_FRAME_S_PTR;
 
 typedef struct hiUNF_PMOC_NETWORK
 {
-    HI_U8					   u8EthIndex;         /**<Eth index*/              /**<CNcomment: 网口序号 */
-    HI_BOOL					   bUcPacketEnable;    /**<Single packet enable*/   /**<CNcomment: 单播包使能 */ 
-    HI_BOOL					   bMagicPacketEnable; /**<Magic packet enable*/    /**<CNcomment: 魔法包使能*/
-    HI_BOOL					   bWakeupFrameEnable; /**<Wakeup Frame enable*/    /**<CNcomment: 唤醒帧使能 */
-    HI_UNF_PMOC_WAKEUP_FRAME_S stFrame[4];         /**<Filter frame*/           /**<CNcomment: 唤醒帧数据 */
+    HI_UNF_PMOC_ETH_E		   enEthIndex;         /**<Eth index, can set several eth once*/  /**<CNcomment: 网口序号，可以同时设置多个网口*/
+    HI_BOOL					   bUcPacketEnable;    /**<Single packet enable*/                 /**<CNcomment: 单播包使能 */ 
+    HI_BOOL					   bMagicPacketEnable; /**<Magic packet enable*/                  /**<CNcomment: 魔法包使能*/
+    HI_BOOL					   bWakeupFrameEnable; /**<Wakeup Frame enable*/                  /**<CNcomment: 唤醒帧使能 */
+    HI_UNF_PMOC_WAKEUP_FRAME_S stFrame[FILTER_COUNT];         /**<Filter frame*/              /**<CNcomment: 唤醒帧数据 */
 }HI_UNF_PMOC_NETWORK_S, *HI_UNF_PMOC_NETWORK_S_PTR;
 
 /**Defines the standby wake-up conditions.*/
@@ -118,7 +127,7 @@ typedef struct hiUNF_PMOC_TIME_S
 typedef struct hiUNF_PMOC_STANDBY_MODE_S
 {
     HI_U32			   u32Mode;      /**<0: no display; 1: display the digits represented by u32DispCod; 2: display the time represented by stTimeInfo*/     /**<CNcomment:0 : 无显示 1 : 显示u32DispCode代表的数字; 2 : 显示stTimeInfo代表的时间. */
-    HI_U32			   u32DispCode;  /**<Digits displayed on the front panel when u32Mode is 1*/                                                             /**<CNcomment:u32Mode为1时，前面板显示的数字*/
+    HI_U32			   u32DispCode;  /**<Digits displayed on the front panel when u32Mode is 1, value range from 0000 to 9999, do not support hex */         /**<CNcomment:u32Mode为1时，前面板显示的数字，取值范围从0000到9999，不支持16进制数 */
     HI_UNF_PMOC_TIME_S stTimeInfo; /**<Time displayed on the front panel when u32Mode is 2*/	                                                             /**<CNcomment:u32Mode为2时，前面板显示的时间*/
 }HI_UNF_PMOC_STANDBY_MODE_S, *HI_UNF_PMOC_STANDBY_MODE_S_PTR;
 
@@ -223,7 +232,7 @@ CNcomment:\brief 设置唤醒显示内容。CNend
 content that the panel display when standby
 CNcomment:待机时面板显示指定内容\n CNend
 
-\param[in] pstStandbyMode  display content:time or channle or no display   CNcomment:显示内容:时间 or 频道 or 无显示。CNend
+\param[in] pstStandbyMode  display content:time or channel or no display   CNcomment:显示内容:时间 or 频道 or 无显示。CNend
 \retval HI_SUCCESS  success                                                CNcomment:成功 CNend 
 \retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoC设备未打开 CNend
 \retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.               CNcomment:非法指针 CNend
@@ -239,8 +248,8 @@ HI_S32 HI_UNF_PMOC_SetStandbyDispMode(HI_UNF_PMOC_STANDBY_MODE_S_PTR pstStandbyM
 CNcomment:\brief 获取系统当前模式。CNend
 
 \attention \n
-This API is forward compatible and is valid only in normal state.\n
-CNcomment:仅在正常状态下有效，接口前向兼容\n CNend
+This API is abandoned and only used for forward compatible. It always returns normal state.\n
+CNcomment:此接口已废弃，始终返回普通模式，仅为兼容之前版本使用。\n CNend
 
 \param[in] penSystemMode  Mode to be obtained                   CNcomment:需要获取的模式。CNend
 \retval HI_SUCCESS Success                                      CNcomment:成功 CNend
@@ -256,8 +265,8 @@ HI_S32 HI_UNF_PMOC_ReadSystemMode(HI_UNF_PMOC_MODE_E * penSystemMode);
 CNcomment:\brief 设置工作场景。CNend
 
 \attention \n
-Only the standby scenario is supported currently.\n
-CNcomment:目前仅支持标准待机场景\n CNend
+Only the standby scenario and the forward scenario are supported currently.\n
+CNcomment:目前仅支持标准待机场景和网口转发场景\n CNend
 
 \param[in] eScene  Standby scenario                               CNcomment:待机场景。CNend
 \retval HI_SUCCESS Success                                        CNcomment:成功 CNend

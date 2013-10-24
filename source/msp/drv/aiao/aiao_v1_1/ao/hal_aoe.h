@@ -39,9 +39,7 @@ extern "C" {
 #define AO_SPDIF_MMZSIZE_MAX  ((192000*2*sizeof(HI_U16)/1000)*AOE_AOP_BUFF_LATENCYMS_MAX)
 #define AO_HDMI_MMZSIZE_MAX   ((192000*8*sizeof(HI_U16)/1000)*AOE_AOP_BUFF_LATENCYMS_MAX)
 #define AO_CAST_MMZSIZE_MAX   ((48000*2*sizeof(HI_U16)/1000)*AOE_CAST_BUFF_LATENCYMS_MAX)
-#ifdef HI_SND_CAST_SUPPORT
-#define CAST_DMABUF_RESERVED_SIZE 64
-#endif
+
 static inline HI_U32 CALC_LATENCY_MS(HI_U32 Rate, HI_U32 FrameSize, HI_U32 Byte)
 {                                                          
     if(Rate&&FrameSize)                                      
@@ -55,7 +53,7 @@ static inline HI_U32 CALC_LATENCY_MS(HI_U32 Rate, HI_U32 FrameSize, HI_U32 Byte)
 }
 
 /* global function */
-HI_S32					HAL_AOE_Init(HI_U32 u32AoeRegBase);
+HI_S32                  HAL_AOE_Init(HI_BOOL bSwAoeFlag);
 HI_VOID					HAL_AOE_DeInit(HI_VOID);
 
 /* AIP function */
@@ -74,7 +72,7 @@ HI_U32					HAL_AOE_AIP_QueryBufData(AOE_AIP_ID_E enAIP);
 HI_U32					HAL_AOE_AIP_QueryBufFree(AOE_AIP_ID_E enAIP);
 HI_VOID					HAL_AOE_AIP_GetBufDelayMs(AOE_AIP_ID_E enAIP, HI_U32 *pDelayms);  // for aip buf delay
 HI_VOID					HAL_AOE_AIP_GetFiFoDelayMs(AOE_AIP_ID_E enAIP, HI_U32 *pDelayms); // for aip fifo delay
-HI_S32					HAL_AOE_AIP_GetStatus(AOE_AIP_ID_E enAIP, HI_VOID *pstStatus);
+HI_VOID					HAL_AOE_AIP_GetStatus(AOE_AIP_ID_E enAIP, AOE_AIP_STATUS_E *peStatus);
 
 
 

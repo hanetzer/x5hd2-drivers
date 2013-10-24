@@ -21,10 +21,11 @@
 #endif
 
 #include "hi_type.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
 #include "tde_proc.h"
-
+#include "hi_gfx_comm_k.h"
+#include "tde_config.h"
 #define MKSTR(exp) # exp
 #define MKMARCOTOSTR(exp) MKSTR(exp)
 
@@ -38,43 +39,8 @@ extern long tde_ioctl(struct file  *ffile, unsigned int  cmd, unsigned long arg)
 extern int tde_pm_suspend(PM_BASEDEV_S *pdev, pm_message_t state);
 extern int tde_pm_resume(PM_BASEDEV_S *pdev);
 
+DECLARE_GFX_NODE("hi_tde",tde_open, tde_release, tde_ioctl, tde_pm_suspend, tde_pm_resume);
 
-struct file_operations tde_fops =
-{
-    .owner   = THIS_MODULE,
-    .unlocked_ioctl = tde_ioctl,
-    .open    = tde_open,
-    .release = tde_release,
-};
-
-static PM_BASEOPS_S tde_drvops = {
-    .probe          = NULL,
-    .remove       = NULL,
-    .shutdown    = NULL,
-    .prepare       = NULL,
-    .complete     = NULL,
-    .suspend      = tde_pm_suspend,
-    .suspend_late = NULL,
-    .resume_early = NULL,
-    .resume       = tde_pm_resume,
-};
-
-static UMAP_DEVICE_S tde_dev = {
-    .devfs_name  = "hi_tde",
-    .minor = UMAP_MIN_MINOR_TDE,
-    .owner = THIS_MODULE,
-    .fops = &tde_fops,
-    .drvops = &tde_drvops
-};
-
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-static void tde_version(void)
-{
-    HI_CHAR TDEVersion[160] ="SDK_VERSION:["MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
-        __DATE__", "__TIME__"]";
-    printk("Load tde.ko success.\t\t(%s)\n", TDEVersion);
-}
-#endif
 HI_S32  TDE_DRV_ModInit(HI_VOID)
 {
 
@@ -87,48 +53,31 @@ HI_S32  TDE_DRV_ModInit(HI_VOID)
     }    
 #endif
     /* register tde device */
-    if(HI_DRV_DEV_Register(&tde_dev) < 0)
-    {
-        printk("register tde failed.\n");
-#ifndef HI_MCE_SUPPORT
-        tde_cleanup_module_k();
-#endif
-        return -1;
-    }
+    HI_GFX_PM_Register();
 
-#ifndef CONFIG_SUPPORT_CA_RELEASE
+#ifndef CONFIG_TDE_PROC_DISABLE
 {
-    DRV_PROC_ITEM_S *item;
-    item = HI_DRV_PROC_AddModule("tde", NULL, NULL);
-    if (!item)
-    {
-        //TDE_TRACE(TDE_KERN_ERR, "add proc module failed\n");
-        tde_cleanup_module_k();
-        return -1;
-    }
-
-    item->read  = tde_read_proc;
-    item->write = tde_write_proc;
-
-   
-    tde_version();
+   GFX_PROC_ITEM_S pProcItem = {tde_read_proc,tde_write_proc,NULL};
+   HI_GFX_PROC_AddModule("tde", &pProcItem, NULL);
 }    
+#endif
+#ifndef CONFIG_TDE_VERSION_DISABLE
+   HI_GFX_ShowVersionK(HIGFX_TDE_ID);
 #endif
     return 0;
 }
 
 HI_VOID  TDE_DRV_ModExit(HI_VOID)
 {
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    HI_DRV_PROC_RemoveModule("tde");
-#endif
-
+    #ifndef CONFIG_TDE_PROC_DISABLE
+    HI_GFX_PROC_RemoveModule("tde");
+    #endif
 #ifndef HI_MCE_SUPPORT
     tde_cleanup_module_k();
 #endif
 
     /* cleanup_module is never called if registering failed */
-    HI_DRV_DEV_UnRegister(&tde_dev);
+    HI_GFX_PM_UnRegister();
 }
 
 #ifdef MODULE

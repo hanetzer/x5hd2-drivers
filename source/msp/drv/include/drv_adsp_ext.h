@@ -22,7 +22,7 @@ typedef union hiADSP_VERSIONTYPE_U
     HI_U32 u32Version;
 } ADSP_VERSIONTYPE_U;
 
-typedef struct hiADSP_FIRMWARE_INFO_S
+typedef struct 
 {
     /**< IN. dsp code Id */
     ADSP_CODEID_E u32DspCodeId;
@@ -34,21 +34,36 @@ typedef struct hiADSP_FIRMWARE_INFO_S
     HI_PCHAR pszDescription;
 } ADSP_FIRMWARE_INFO_S;
 
+typedef struct 
+{
+    HI_U32  u32AoeRegBaseAddr;
+
+    HI_BOOL bAoeSwFlag;
+} ADSP_FIRMWARE_AOE_INFO_S;
+
 typedef HI_S32 (*FN_ADSP_LoadFrm)(ADSP_CODEID_E);
 
 typedef HI_S32 (*FN_ADSP_UnLoadFrm)(ADSP_CODEID_E);
 
 typedef HI_S32 (*FN_ADSP_GetFrmInfo)(ADSP_CODEID_E, ADSP_FIRMWARE_INFO_S *);
 
+typedef HI_S32 (*FN_ADSP_GetAoeFwmInfo)(ADSP_CODEID_E, ADSP_FIRMWARE_AOE_INFO_S*);
+
 typedef struct tagADSP_EXPORT_FUNC_S
 {
     FN_ADSP_LoadFrm pfnADSP_LoadFirmware;
     FN_ADSP_UnLoadFrm pfnADSP_UnLoadFirmware;
     FN_ADSP_GetFrmInfo pfnADSP_GetFirmwareInfo;
+    FN_ADSP_GetAoeFwmInfo pfnADSP_GetAoeFwmInfo;
 } ADSP_EXPORT_FUNC_S;
 
 HI_S32	ADSP_DRV_ModInit(HI_VOID);
 HI_VOID ADSP_DRV_ModExit(HI_VOID);
+
+#if defined(HI_MCE_SUPPORT)
+HI_S32  HI_DRV_ADSP_Init(HI_VOID);
+HI_VOID HI_DRV_ADSP_DeInit(HI_VOID);
+#endif
 
 #ifdef __cplusplus
  #if __cplusplus

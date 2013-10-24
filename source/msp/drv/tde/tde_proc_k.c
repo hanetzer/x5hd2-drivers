@@ -5,7 +5,7 @@ extern "C" {
 #endif  /* __cplusplus */
 
 #include "tde_proc.h"
-
+#include "tde_config.h"
 typedef struct _hiTDE_PROCINFO_S
 {
     HI_U32          u32CurNode;
@@ -30,7 +30,8 @@ HI_VOID TDEProcRecordNode(TDE_HWNode_S* pHWNode)
     
     memcpy(&g_stTdeProcInfo.stTdeHwNode[g_stTdeProcInfo.u32CurNode], pHWNode, sizeof(TDE_HWNode_S));
 
-    g_stTdeProcInfo.u32CurNode = (++g_stTdeProcInfo.u32CurNode)%TDE_MAX_PROC_NUM;
+    g_stTdeProcInfo.u32CurNode++;
+    g_stTdeProcInfo.u32CurNode = (g_stTdeProcInfo.u32CurNode)%TDE_MAX_PROC_NUM;
 }
 
 HI_VOID TDEProcClearNode(HI_VOID)
@@ -49,7 +50,7 @@ HI_VOID TDEProcEnableTrace(HI_BOOL bEnable)
 int tde_write_proc(struct file * file,
     const char __user * buf, size_t count, loff_t *ppos)  
 {
-    char buffer[128];
+    char buffer[128] = {0};
 
     if(count > sizeof(buffer))
     {
@@ -147,15 +148,15 @@ int tde_read_proc(struct seq_file *p, HI_VOID *v)
 
     TDE_HWNode_S *pstHwNode = g_stTdeProcInfo.stTdeHwNode;
     p = wprintinfo(p+len);
-
+     #ifndef CONFIG_TDE_STR_DISABLE
     /* print node information */
-    p += seq_printf(p,"\n--------- Hisilicon TDE Node params Info ---------\n");
+    PROC_PRINT(p,"\n--------- Hisilicon TDE Node params Info ---------\n");
 
     for (j = 0 ; j < g_stTdeProcInfo.u32CurNode; j++)
     {
         if (0 != pstHwNode[j].u64TDE_UPDATE)
         {
-            p += seq_printf(p, "\n--- HWNode update: 0x%08x %08x ---\n", 
+            PROC_PRINT(p, "\n--- HWNode update: 0x%08x %08x ---\n", 
                 (HI_U32)(pstHwNode[j].u64TDE_UPDATE >> 32),
                 (HI_U32)pstHwNode[j].u64TDE_UPDATE);
 
@@ -163,11 +164,11 @@ int tde_read_proc(struct seq_file *p, HI_VOID *v)
             for (i = 0; i < sizeof(TDE_HWNode_S) / 4 - 2; i++)
             {
                 if (((pstHwNode[j].u64TDE_UPDATE >> i) & 1) != 0)
-                    p += seq_printf(p, "(%s):\t0x%08x\n", chUpdate[i], *(pu32Cur + i));
+                    PROC_PRINT(p, "(%s):\t0x%08x\n", chUpdate[i], *(pu32Cur + i));
             }
         }
     }
-
+    #endif
     return 0;
 }
 

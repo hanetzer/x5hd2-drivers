@@ -15,14 +15,38 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <pthread.h>
 
 #include "hi_unf_keyled.h"
 #include "hi_drv_keyled.h"
 #include "drv_keyled_ioctl.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 
-static HI_S32 g_s32KEYLEDFd = 0;
+static HI_S32 g_s32KEYLEDFd = -1;
+static HI_U32 g_u32KeyledInitCount = 0;
+
 static const char *keyled_devname = "/dev/"UMAP_DEVNAME_KEYLED;
+
+static const HI_U8 s_szKEYLEDVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
+
+static pthread_mutex_t g_KeyledMutex = PTHREAD_MUTEX_INITIALIZER;
+
+#define HI_KEYLED_LOCK() (void)pthread_mutex_lock(&g_KeyledMutex);
+#define HI_KEYLED_UNLOCK() (void)pthread_mutex_unlock(&g_KeyledMutex);
+
+#define CHECK_KEYLED_OPEN()\
+do{\
+    HI_KEYLED_LOCK();\
+    if (g_s32KEYLEDFd < 0)\
+    {\
+        HI_ERR_KEYLED("keyled not init\n");\
+        HI_KEYLED_UNLOCK();\
+        return HI_ERR_KEYLED_NOT_INIT;\
+    }\
+    HI_KEYLED_UNLOCK();\
+}while(0)
 
 
 /***********************************************************************************
@@ -38,21 +62,25 @@ static const char *keyled_devname = "/dev/"UMAP_DEVNAME_KEYLED;
  ***********************************************************************************/
 HI_S32 HI_UNF_KEYLED_Init(HI_VOID)
 {
-    HI_S32 s32DevFd = 0;
     HI_S32 flags = O_RDWR | O_NONBLOCK;
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        s32DevFd = open(keyled_devname, flags, 0);
+    HI_KEYLED_LOCK();
+    
+    g_u32KeyledInitCount++;
 
-        if (s32DevFd < 0)
+    if (g_s32KEYLEDFd < 0)
+    {
+        g_s32KEYLEDFd = open(keyled_devname, flags, 0);
+        if (g_s32KEYLEDFd < 0)
         {
-            HI_ERR_KEYLED("open keyled error dev:%s\n", keyled_devname);
+            HI_ERR_KEYLED("Init KEYLED error dev:%s\n", keyled_devname);
+            HI_KEYLED_UNLOCK();
             return HI_FAILURE;
         }
-        g_s32KEYLEDFd = s32DevFd;
     }
-
+    
+    HI_KEYLED_UNLOCK();
+    
     return HI_SUCCESS;
 }
 
@@ -69,28 +97,40 @@ HI_S32 HI_UNF_KEYLED_Init(HI_VOID)
  ***********************************************************************************/
 HI_S32 HI_UNF_KEYLED_DeInit(HI_VOID)
 {
-    if (g_s32KEYLEDFd <= 0)
+    HI_S32 s32Ret = 0;
+    
+    HI_KEYLED_LOCK();
+
+    if (g_s32KEYLEDFd < 0)
     {
         HI_ERR_KEYLED("keyled not init\n");
+        HI_KEYLED_UNLOCK();
         return HI_SUCCESS;
     }
 
-    close(g_s32KEYLEDFd);
+    g_u32KeyledInitCount--;
 
-    g_s32KEYLEDFd = 0;
+    if (0 == g_u32KeyledInitCount)
+    {
+        s32Ret = close(g_s32KEYLEDFd);
+        if (HI_SUCCESS != s32Ret)
+        {
+            HI_ERR_KEYLED("DeInit KEYLED err.%d \n", g_s32KEYLEDFd);
+            HI_KEYLED_UNLOCK();
+            return HI_FAILURE;
+        }
+    
+        g_s32KEYLEDFd = -1;
+    }
+
+    HI_KEYLED_UNLOCK();
 
     return HI_SUCCESS;
 }
 
 HI_S32 HI_UNF_KEYLED_SelectType(HI_UNF_KEYLED_TYPE_E enKeyLedType)
 {
-    HI_S32 s32Result = HI_SUCCESS;
-
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
+    HI_S32 s32Ret = HI_SUCCESS;
 
     if (enKeyLedType >= HI_UNF_KEYLED_TYPE_BUTT)
     {
@@ -98,17 +138,27 @@ HI_S32 HI_UNF_KEYLED_SelectType(HI_UNF_KEYLED_TYPE_E enKeyLedType)
         return HI_ERR_KEYLED_INVALID_PARA;
     }
 
-    s32Result = ioctl(g_s32KEYLEDFd, HI_KEYLED_SELECT_CMD, (HI_S32)&enKeyLedType);
-    if (HI_SUCCESS != s32Result)
+#if defined (CHIP_TYPE_hi3716cv200)  \
+            || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+            || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+            || defined (CHIP_TYPE_hi3718mv100)
+    if (HI_UNF_KEYLED_TYPE_74HC164 == enKeyLedType)
     {
-        HI_ERR_KEYLED("keyled select keyled type failed s32Result = 0x%x \n", s32Result);
+        HI_ERR_KEYLED("Don't support this keyled type.\n");
+        return HI_ERR_KEYLED_INVALID_PARA;
+    }
+#endif
+
+    CHECK_KEYLED_OPEN();
+
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_SELECT_CMD, (HI_S32)&enKeyLedType);
+    if (HI_SUCCESS != s32Ret)
+    {
+        HI_ERR_KEYLED("keyled select keyled type failed s32Result = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
-    else
-    {
-        return HI_SUCCESS;
-    }
-
+    
+    return HI_SUCCESS;
 }
 
 /***********************************************************************************
@@ -124,18 +174,14 @@ HI_S32 HI_UNF_KEYLED_SelectType(HI_UNF_KEYLED_TYPE_E enKeyLedType)
  ***********************************************************************************/
 HI_S32 HI_UNF_KEY_Open(HI_VOID)
 {
-    HI_S32 status = 0;
+    HI_S32 s32Ret = 0;
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
+    CHECK_KEYLED_OPEN();
 
-    status = ioctl(g_s32KEYLEDFd, HI_KEYLED_KEY_OPEN_CMD);
-    if (HI_SUCCESS != status)
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_KEY_OPEN_CMD);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_KEYLED("keyled enable failed, ret = 0x%x \n", status);
+        HI_ERR_KEYLED("keyled enable failed, ret = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
 
@@ -155,18 +201,14 @@ HI_S32 HI_UNF_KEY_Open(HI_VOID)
  ***********************************************************************************/
 HI_S32 HI_UNF_KEY_Close(HI_VOID)
 {
-    HI_S32 status = 0;
+    HI_S32 s32Ret = 0;
 
-    if (g_s32KEYLEDFd <= 0)
+    CHECK_KEYLED_OPEN();
+    
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_KEY_CLOSE_CMD);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
-
-    status = ioctl(g_s32KEYLEDFd, HI_KEYLED_KEY_CLOSE_CMD);
-    if (HI_SUCCESS != status)
-    {
-        HI_ERR_KEYLED("keyled Disable failed, ret = 0x%x \n", status);
+        HI_ERR_KEYLED("keyled Disable failed, ret = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
 
@@ -186,24 +228,18 @@ HI_S32 HI_UNF_KEY_Close(HI_VOID)
  ***********************************************************************************/
 HI_S32 HI_UNF_KEY_Reset(HI_VOID)
 {
-    HI_S32 s32Result;
+    HI_S32 s32Ret;
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
+    CHECK_KEYLED_OPEN();
 
-    s32Result = ioctl(g_s32KEYLEDFd, HI_KEYLED_KEY_RESET_CMD);
-    if (HI_SUCCESS != s32Result)
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_KEY_RESET_CMD);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_KEYLED("keyled clear buf failed, ret = 0x%x \n", s32Result);
+        HI_ERR_KEYLED("keyled clear buf failed, ret = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
-    else
-    {
-        return HI_SUCCESS;
-    }
+
+    return HI_SUCCESS;
 }
 
 /***********************************************************************************
@@ -222,12 +258,6 @@ HI_S32 HI_UNF_KEY_GetValue(HI_U32 *pu32PressStatus, HI_U32 *pu32KeyId)
     HI_S32 s32Ret = 0;
     GET_KEY_VALUE_S stPara = {0};
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
-
     if (NULL == pu32PressStatus)
     {
         HI_ERR_KEYLED("Input parameter(pu32PressStatus) invalid\n");
@@ -240,6 +270,8 @@ HI_S32 HI_UNF_KEY_GetValue(HI_U32 *pu32PressStatus, HI_U32 *pu32KeyId)
         return HI_ERR_KEYLED_NULL_PTR;
     }
 
+    CHECK_KEYLED_OPEN();
+
     s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_KEY_GET_VALUE_CMD, (HI_S32)&stPara);
     if (HI_SUCCESS != s32Ret)
     {
@@ -249,30 +281,24 @@ HI_S32 HI_UNF_KEY_GetValue(HI_U32 *pu32PressStatus, HI_U32 *pu32KeyId)
 
     *pu32KeyId = stPara.u32KeyCode;
     *pu32PressStatus = stPara.u32KeyStatus;
-	
+
     return HI_SUCCESS;
 }
 
 HI_S32 HI_UNF_KEY_SetBlockTime(HI_U32 u32BlockTimeMs)
 {
-    HI_S32 s32Result = HI_SUCCESS;
+    HI_S32 s32Ret = HI_SUCCESS;
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
+    CHECK_KEYLED_OPEN();
 
-    s32Result = ioctl(g_s32KEYLEDFd, HI_KEYLED_SET_BLOCK_TIME_CMD, (HI_S32)&u32BlockTimeMs);
-    if (HI_SUCCESS != s32Result)
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_SET_BLOCK_TIME_CMD, (HI_S32)&u32BlockTimeMs);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_KEYLED("keyled set block time failed, ret = 0x%x \n", s32Result);
+        HI_ERR_KEYLED("keyled set block time failed, ret = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
-    else
-    {
-        return HI_SUCCESS;
-    }
+    
+    return HI_SUCCESS;
 }
 
 
@@ -289,13 +315,9 @@ HI_S32 HI_UNF_KEY_SetBlockTime(HI_U32 u32BlockTimeMs)
  ***********************************************************************************/
 HI_S32 HI_UNF_KEY_RepKeyTimeoutVal(HI_U32 u32RepTimeMs)
 {
-    HI_S32 s32status = 0;
+    HI_S32 s32Ret = 0;
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
+    CHECK_KEYLED_OPEN();
 
     if (u32RepTimeMs < 108)
     {
@@ -306,10 +328,10 @@ HI_S32 HI_UNF_KEY_RepKeyTimeoutVal(HI_U32 u32RepTimeMs)
         u32RepTimeMs = 65536;
     }
 
-    s32status = ioctl(g_s32KEYLEDFd, HI_KEYLED_SET_REPKEY_TIME_CMD, (HI_S32)&u32RepTimeMs);
-    if (HI_SUCCESS != s32status)
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_SET_REPKEY_TIME_CMD, (HI_S32)&u32RepTimeMs);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_KEYLED("keyled u32RepTimeMs  Setup Error ret = 0x%x \n", s32status);
+        HI_ERR_KEYLED("keyled u32RepTimeMs  Setup Error ret = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
 
@@ -329,13 +351,9 @@ HI_S32 HI_UNF_KEY_RepKeyTimeoutVal(HI_U32 u32RepTimeMs)
  ***********************************************************************************/
 HI_S32 HI_UNF_KEY_IsRepKey(HI_U32 u32IsRepKey)
 {
-    HI_S32 s32status = 0;
+    HI_S32 s32Ret = 0;
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
+    CHECK_KEYLED_OPEN();
 
     if (u32IsRepKey > 1)
     {
@@ -344,15 +362,15 @@ HI_S32 HI_UNF_KEY_IsRepKey(HI_U32 u32IsRepKey)
     }
     else
     {
-        s32status = ioctl(g_s32KEYLEDFd, HI_KEYLED_SET_IS_REPKEY_CMD, (HI_S32)&u32IsRepKey);
-        if (HI_SUCCESS != s32status)
+        s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_SET_IS_REPKEY_CMD, (HI_S32)&u32IsRepKey);
+        if (HI_SUCCESS != s32Ret)
         {
-            HI_ERR_KEYLED("keyled isrepkey setup error ret = 0x%x \n", s32status);
+            HI_ERR_KEYLED("keyled isrepkey setup error ret = 0x%x \n", s32Ret);
             return HI_FAILURE;
         }
-
-        return HI_SUCCESS;
     }
+
+    return HI_SUCCESS;
 }
 
 /***********************************************************************************
@@ -368,14 +386,10 @@ HI_S32 HI_UNF_KEY_IsRepKey(HI_U32 u32IsRepKey)
  ***********************************************************************************/
 HI_S32 HI_UNF_KEY_IsKeyUp(HI_U32 u32IsKeyUp)
 {
-    HI_S32 s32status = 0;
+    HI_S32 s32Ret = 0;
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
-
+    CHECK_KEYLED_OPEN();
+    
     if (u32IsKeyUp > 1)
     {
         HI_ERR_KEYLED("Input parameter(u32IsKeyUp) invalid:%d\n", u32IsKeyUp);
@@ -383,15 +397,15 @@ HI_S32 HI_UNF_KEY_IsKeyUp(HI_U32 u32IsKeyUp)
     }
     else
     {
-        s32status = ioctl(g_s32KEYLEDFd, HI_KEYLED_SET_IS_KEYUP_CMD, (HI_S32)&u32IsKeyUp);
-        if (HI_SUCCESS != s32status)
+        s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_SET_IS_KEYUP_CMD, (HI_S32)&u32IsKeyUp);
+        if (HI_SUCCESS != s32Ret)
         {
-            HI_ERR_KEYLED("keyled iskeyup setup error ret = 0x%x \n", s32status);
+            HI_ERR_KEYLED("keyled iskeyup setup error ret = 0x%x \n", s32Ret);
             return HI_FAILURE;
-        }
-
-        return HI_SUCCESS;
+        }        
     }
+
+    return HI_SUCCESS;
 }
 
 /***********************************************************************************
@@ -407,18 +421,14 @@ HI_S32 HI_UNF_KEY_IsKeyUp(HI_U32 u32IsKeyUp)
  ***********************************************************************************/
 HI_S32 HI_UNF_LED_Open(HI_VOID)
 {
-    HI_S32 status = 0;
+    HI_S32 s32Ret = 0;
+    
+    CHECK_KEYLED_OPEN();    
 
-    if (g_s32KEYLEDFd <= 0)
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_LED_OPEN_CMD);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
-
-    status = ioctl(g_s32KEYLEDFd, HI_KEYLED_LED_OPEN_CMD);
-    if (HI_SUCCESS != status)
-    {
-        HI_ERR_KEYLED("keyled enable failed ret = 0x%x \n", status);
+        HI_ERR_KEYLED("keyled enable failed ret = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
 
@@ -438,18 +448,14 @@ HI_S32 HI_UNF_LED_Open(HI_VOID)
  ***********************************************************************************/
 HI_S32 HI_UNF_LED_Close(HI_VOID)
 {
-    HI_S32 status = 0;
+    HI_S32 s32Ret = 0;
 
-    if (g_s32KEYLEDFd <= 0)
+    CHECK_KEYLED_OPEN();    
+    
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_LED_CLOSE_CMD);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
-
-    status = ioctl(g_s32KEYLEDFd, HI_KEYLED_LED_CLOSE_CMD);
-    if (HI_SUCCESS != status)
-    {
-        HI_ERR_KEYLED("keyled Disable failed ret = 0x%x \n", status);
+        HI_ERR_KEYLED("keyled Disable failed ret = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
 
@@ -469,18 +475,14 @@ HI_S32 HI_UNF_LED_Close(HI_VOID)
  ***********************************************************************************/
 HI_S32 HI_UNF_LED_Display(HI_U32 u32CodeValue)
 {
-    HI_S32 retval = HI_SUCCESS;
+    HI_S32 s32Ret = HI_SUCCESS;
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
+    CHECK_KEYLED_OPEN();        
 
-    retval = ioctl(g_s32KEYLEDFd, HI_KEYLED_DISPLAY_CODE_CMD, (HI_S32)&u32CodeValue);
-    if (HI_SUCCESS != retval)
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_DISPLAY_CODE_CMD, (HI_S32)&u32CodeValue);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_KEYLED("keyled display ioctl error ret = 0x%x \n", retval);
+        HI_ERR_KEYLED("keyled display ioctl error ret = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
 
@@ -500,13 +502,9 @@ HI_S32 HI_UNF_LED_Display(HI_U32 u32CodeValue)
  ***********************************************************************************/
 HI_S32 HI_UNF_LED_DisplayTime(HI_UNF_KEYLED_TIME_S stLedTime)
 {
-    HI_S32 retval = HI_SUCCESS;
+    HI_S32 s32Ret = HI_SUCCESS;
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
+    CHECK_KEYLED_OPEN();           
 
     if ((stLedTime.u32Hour > 23) || (stLedTime.u32Minute > 59))
     {
@@ -514,10 +512,10 @@ HI_S32 HI_UNF_LED_DisplayTime(HI_UNF_KEYLED_TIME_S stLedTime)
         return HI_ERR_KEYLED_INVALID_PARA;
     }
 
-    retval = ioctl(g_s32KEYLEDFd, HI_KEYLED_DISPLAY_TIME_CMD, (HI_S32)&stLedTime);
-    if (HI_SUCCESS != retval)
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_DISPLAY_TIME_CMD, (HI_S32)&stLedTime);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_KEYLED("keyled display time ioctl error ret = 0x%x \n", retval);
+        HI_ERR_KEYLED("keyled display time ioctl error ret = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
 
@@ -538,30 +536,24 @@ HI_S32 HI_UNF_LED_DisplayTime(HI_UNF_KEYLED_TIME_S stLedTime)
  ***********************************************************************************/
 HI_S32 HI_UNF_LED_SetFlashPin(HI_UNF_KEYLED_LIGHT_E enPin)
 {
-    HI_S32 status = 0;
+    HI_S32 s32Ret = 0;
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
-
+    CHECK_KEYLED_OPEN();           
+    
     if ((enPin < HI_UNF_KEYLED_LIGHT_1) || (enPin > HI_UNF_KEYLED_LIGHT_NONE))
     {
         HI_ERR_KEYLED("Input Flash Pin error:%d\n", enPin);
         return HI_ERR_KEYLED_INVALID_PARA;
     }
 
-    status = ioctl(g_s32KEYLEDFd, HI_KEYLED_SET_FLASH_PIN_CMD, (HI_S32)&enPin);
-    if (HI_SUCCESS != status)
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_SET_FLASH_PIN_CMD, (HI_S32)&enPin);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_KEYLED("keyled set flash pin error ret = 0x%x \n", status);
+        HI_ERR_KEYLED("keyled set flash pin error ret = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
-    else
-    {
-        return HI_SUCCESS;
-    }
+    
+    return HI_SUCCESS;
 }
 
 
@@ -579,13 +571,9 @@ HI_S32 HI_UNF_LED_SetFlashPin(HI_UNF_KEYLED_LIGHT_E enPin)
  ***********************************************************************************/
 HI_S32 HI_UNF_LED_SetFlashFreq(HI_UNF_KEYLED_LEVEL_E enLevel)
 {
-    HI_S32 status = 0;
+    HI_S32 s32Ret = 0;
 
-    if (g_s32KEYLEDFd <= 0)
-    {
-        HI_ERR_KEYLED("keyled not init\n");
-        return HI_ERR_KEYLED_NOT_INIT;
-    }
+    CHECK_KEYLED_OPEN();               
 
     if ((enLevel < HI_UNF_KEYLED_LEVEL_1) || (enLevel > HI_UNF_KEYLED_LEVEL_5))
     {
@@ -593,16 +581,14 @@ HI_S32 HI_UNF_LED_SetFlashFreq(HI_UNF_KEYLED_LEVEL_E enLevel)
         return HI_ERR_KEYLED_INVALID_PARA;
     }
 
-    status = ioctl(g_s32KEYLEDFd, HI_KEYLED_CONFIG_FLASH_FREQ_CMD, (HI_S32)&enLevel);
-    if (HI_SUCCESS != status)
+    s32Ret = ioctl(g_s32KEYLEDFd, HI_KEYLED_CONFIG_FLASH_FREQ_CMD, (HI_S32)&enLevel);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_ERR_KEYLED("Set Flash Freq error ret = 0x%x \n", status);
+        HI_ERR_KEYLED("Set Flash Freq error ret = 0x%x \n", s32Ret);
         return HI_FAILURE;
     }
-    else
-    {
-        return HI_SUCCESS;
-    }
+    
+    return HI_SUCCESS;
 }
 
 

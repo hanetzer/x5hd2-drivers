@@ -1,13 +1,15 @@
 #include "vpss_instance.h"
 #include "vpss_alg.h"
 #include "vpss_common.h"
-#include "drv_stat_ext.h"
+#include "hi_drv_stat.h"
 
 #ifdef __cplusplus
 #if __cplusplus
 extern "C"{
 #endif
 #endif
+#define SAVEYUV 0
+#define IMAGEINFO 0
 
 HI_U32 VPSS_INST_AddEmptyImage(VPSS_INSTANCE_S *pstInstance,
                                 VPSS_IMAGE_NODE_S *pstUndoImage)
@@ -26,6 +28,7 @@ HI_S32 VPSS_INST_RelImageBuf(VPSS_INSTANCE_S *pstInstance,VPSS_IMAGE_NODE_S *pst
 {
     HI_S32 s32Ret;
     VPSS_IMAGELIST_INFO_S *pstImageList;
+    HI_BOOL bNeedRls = HI_FALSE;
     
     pstImageList = &(pstInstance->stSrcImagesList);
     
@@ -34,43 +37,39 @@ HI_S32 VPSS_INST_RelImageBuf(VPSS_INSTANCE_S *pstInstance,VPSS_IMAGE_NODE_S *pst
         if(pstDoneImageNode->stSrcImage.enFieldMode == HI_DRV_FIELD_TOP
             && pstDoneImageNode->stSrcImage.bTopFieldFirst == HI_FALSE)
         {
-            pstImageList->u32RelUsrTotal ++;
-            s32Ret = pstInstance->stSrcFuncs.VPSS_REL_SRCIMAGE(pstInstance->ID,
-                                        &(pstDoneImageNode->stSrcImage));
-            if (s32Ret == HI_FAILURE)
-            {
-                pstImageList->u32RelUsrFailed++;
-            }
+            bNeedRls = HI_TRUE;
         }
 
         if(pstDoneImageNode->stSrcImage.enFieldMode == HI_DRV_FIELD_BOTTOM
             && pstDoneImageNode->stSrcImage.bTopFieldFirst == HI_TRUE)
         {
-            pstImageList->u32RelUsrTotal ++;
-            if(pstInstance->stSrcFuncs.VPSS_REL_SRCIMAGE == HI_NULL)
-            {
-                VPSS_FATAL("\n VPSS_REL_SRCIMAGE HI_NULL \n");
-            }
-            s32Ret = pstInstance->stSrcFuncs.VPSS_REL_SRCIMAGE(pstInstance->ID,
-                                        &(pstDoneImageNode->stSrcImage));
-            if (s32Ret == HI_FAILURE)
-            {
-                pstImageList->u32RelUsrFailed++;
-            }
+            bNeedRls = HI_TRUE;
         }
     }
     else
     {
+        bNeedRls = HI_TRUE;
+    }
+
+    if (bNeedRls == HI_TRUE)
+    {
         pstImageList->u32RelUsrTotal ++;
-        s32Ret = pstInstance->stSrcFuncs.VPSS_REL_SRCIMAGE(pstInstance->ID,
-                                        &(pstDoneImageNode->stSrcImage));
-        if (s32Ret == HI_FAILURE)
+        if(pstInstance->stSrcFuncs.VPSS_REL_SRCIMAGE != HI_NULL)
         {
-            pstImageList->u32RelUsrFailed++;
+            s32Ret = pstInstance->stSrcFuncs.VPSS_REL_SRCIMAGE(pstInstance->ID,
+                                        &(pstDoneImageNode->stSrcImage));
+        }
+        else
+        {
+            s32Ret = HI_FAILURE;
         }
         
+        if (s32Ret == HI_SUCCESS)
+        {
+            pstImageList->u32RelUsrSuccess++;
+        }
     }
-    
+
     VPSS_INST_AddEmptyImage(pstInstance,pstDoneImageNode);
 
     return HI_SUCCESS;
@@ -78,11 +77,9 @@ HI_S32 VPSS_INST_RelImageBuf(VPSS_INSTANCE_S *pstInstance,VPSS_IMAGE_NODE_S *pst
 
 HI_S32 VPSS_INST_RelDoneImage(VPSS_INSTANCE_S *pstInstance)
 {
-    /*
-        根据pstInstance处理需要的IMG，释放掉不用的IMG
-    */
     VPSS_IMAGELIST_INFO_S *pstImageList;
     VPSS_IMAGE_NODE_S *pstDoneImageNode;
+    VPSS_IMAGE_NODE_S *pstNextImageNode;
     HI_BOOL bProgressive;
     LIST *pos, *n, *head;
     
@@ -90,57 +87,34 @@ HI_S32 VPSS_INST_RelDoneImage(VPSS_INSTANCE_S *pstInstance)
     pstDoneImageNode = HI_NULL;
     bProgressive = HI_FALSE;
 
-    #if 0
-    {
-        LIST *pos, *n;
-        VPSS_IMAGE_NODE_S *pstCurFieldNode;
-        printk("\n-----------------RelDone Start------------------\n");
-        list_for_each_safe(pos, n, &(pstImageList->stFulImageList))
-        {
-            
-            pstCurFieldNode = list_entry(pos,VPSS_IMAGE_NODE_S, node);
-
-            printk("\nIn ID %d BT %d TopFirst %x",pstCurFieldNode->stSrcImage.u32FrameIndex,
-                                pstCurFieldNode->stSrcImage.enFieldMode,
-                                pstCurFieldNode->stSrcImage.bTopFieldFirst);
-            
-            if(pos == pstImageList->pstTarget_1)
-            {
-                printk("-->tar_1");
-            }
-        }
-        printk("\n-----------------RelDone Down------------------\n");
-    }
-    #endif
     /*
-        获取已处理场的逐隔行信息
-        逐行:未依赖历史场信息，可以释放target_1场
-        隔行:依赖了历史场信息，可以释放target_1->pre场
-        逐隔行切换
+      *  release done image according to fieldmode
+      *  Progressive:not related to pre field ,target_1 can be released
+      *  Interlace: related to pre field,target_1->pre can be released
      */
     if(pstImageList->pstTarget_1->next != &(pstImageList->stFulImageList))
     {
         pstDoneImageNode = list_entry((pstImageList->pstTarget_1->next),
                                 VPSS_IMAGE_NODE_S, node);
         bProgressive = pstDoneImageNode->stSrcImage.bProgressive;
-
     }
     else
     {
-        VPSS_FATAL("\n RelDoneImage Error\n");
+        VPSS_FATAL("RelDoneImage Error\n");
         return HI_FAILURE;
     }
 
     /*
-       未打开DEI 每次处理时释放上一IMG
-       需要考虑场序修正和逐隔行修正
+      * progressive image process
      */
     pstDoneImageNode = HI_NULL;
     if (bProgressive == HI_TRUE)
     {
         head = &(pstImageList->stFulImageList);
             
-        /*释放该帧前所有帧存*/
+        /*
+           * if progressive,release all before image 
+           */
         for (pos = (head)->next, n = pos->next; pos != (pstImageList->pstTarget_1)->next; 
 	        pos = n, n = pos->next)
 	    {
@@ -151,18 +125,45 @@ HI_S32 VPSS_INST_RelDoneImage(VPSS_INSTANCE_S *pstInstance)
                 pstImageList->pstTarget_1 = pstImageList->pstTarget_1->prev;
             }
             list_del_init(&(pstDoneImageNode->node));
+            
             VPSS_INST_RelImageBuf(pstInstance, pstDoneImageNode);
 	    }
 	    
-        /*当前处理为逐行，则该帧前所有帧存可释放*/
         if(pstImageList->pstTarget_1->next != &(pstImageList->stFulImageList))
         {
-		    /*释放刚刚处理帧*/
             pstDoneImageNode = list_entry((pstImageList->pstTarget_1->next),
                                 VPSS_IMAGE_NODE_S, node);
             
-            list_del_init(&(pstDoneImageNode->node));
-            VPSS_INST_RelImageBuf(pstInstance, pstDoneImageNode);
+            /*P -> I*/
+            if (pstImageList->pstTarget_1->next->next 
+                    != &(pstImageList->stFulImageList))
+            {
+                pstNextImageNode = list_entry(
+                            (pstImageList->pstTarget_1->next->next),
+                            VPSS_IMAGE_NODE_S, node);
+                if (pstNextImageNode->stSrcImage.u32FrameIndex
+                    == pstDoneImageNode->stSrcImage.u32FrameIndex)
+                {
+                    pstDoneImageNode->stSrcImage.bProgressive = HI_FALSE;
+                    pstImageList->pstTarget_1 = pstImageList->pstTarget_1->next;
+                }
+                else
+                {
+                    if (pstDoneImageNode->stSrcImage.bProgressive == HI_FALSE)
+                    {
+                        pstDoneImageNode->stSrcImage.bProgressive = HI_TRUE;
+                    }
+                    
+                    list_del_init(&(pstDoneImageNode->node));
+                    VPSS_INST_RelImageBuf(pstInstance, pstDoneImageNode);
+                }
+                
+            }
+            else
+            {
+                list_del_init(&(pstDoneImageNode->node));
+                VPSS_INST_RelImageBuf(pstInstance, pstDoneImageNode);
+            }
         }
         else
         {
@@ -173,14 +174,11 @@ HI_S32 VPSS_INST_RelDoneImage(VPSS_INSTANCE_S *pstInstance)
     {
         switch(pstInstance->stProcCtrl.eDEI)
         {
-            /*
-                    5场模式 一帧分为1,2两场
-               */
             case HI_DRV_VPSS_DIE_5FIELD:
             case HI_DRV_VPSS_DIE_4FIELD:
             case HI_DRV_VPSS_DIE_3FIELD:
                 /*
-                    释放target_1前一场
+                    *release target_1->prev
                     */
                 if(pstImageList->pstTarget_1 != &(pstImageList->stFulImageList))
                 {
@@ -188,15 +186,16 @@ HI_S32 VPSS_INST_RelDoneImage(VPSS_INSTANCE_S *pstInstance)
                                 VPSS_IMAGE_NODE_S, node);
                     pstImageList->pstTarget_1 = pstImageList->pstTarget_1->prev;
                     list_del_init(&(pstDoneImageNode->node));
+                 
                     VPSS_INST_RelImageBuf(pstInstance, pstDoneImageNode);
+                    pstImageList->pstTarget_1 = pstImageList->pstTarget_1->next;
                 }
                 else
                 {
                     
                 }
                 break;
-            default://4场模式
-                
+            default:
                 break;
         }
     }
@@ -205,22 +204,19 @@ HI_S32 VPSS_INST_RelDoneImage(VPSS_INSTANCE_S *pstInstance)
 }
 
 /*
-用户主动释放IMG的接口
+* user active release image interface
 */
 HI_S32 VPSS_INST_DelDoneImage(VPSS_INSTANCE_S *pstInstance,
                                 HI_DRV_VIDEO_FRAME_S *pstImage)
 {
-    /*
-        根据pstInstance处理需要的IMG，释放掉不用的IMG
-    */
     VPSS_IMAGELIST_INFO_S *pstImageList;
     VPSS_IMAGE_NODE_S *pstDoneImageNode;
     
     pstImageList = &(pstInstance->stSrcImagesList);
 
     /*
-        目前简化策略是每次处理时释放最早处理完的帧
-    */
+        release first done image
+     */
     VPSS_OSAL_DownLock(&(pstImageList->stFulListLock));
 
     if((pstImageList->stFulImageList.next != pstImageList->pstTarget_1->next))
@@ -286,12 +282,11 @@ HI_S32 VPSS_INST_DelFulImage(VPSS_INSTANCE_S *pstInstance,
     }
     else
     {
-        VPSS_FATAL("\n RelImg doesn't exit------------->func %s line %d \r\n",
-                    __func__, __LINE__);
+        VPSS_FATAL("RelImg doesn't exit.\n");
         return HI_FAILURE;
     }
 }
-/*生产者:USRCALLBACK*/
+
 VPSS_IMAGE_NODE_S* VPSS_INST_GetEmptyImage(VPSS_INSTANCE_S *pstInstance)
 {
     VPSS_IMAGE_NODE_S *pstTarget;
@@ -326,10 +321,49 @@ HI_S32 VPSS_INST_AddFulImage(VPSS_INSTANCE_S *pstInstance,
                                 VPSS_IMAGE_NODE_S *pstFulImage)
 {
     VPSS_IMAGELIST_INFO_S *pstImageList;
-
+    VPSS_IMAGE_NODE_S *pstTarget;
+    LIST *pstTarget_1;
+    LIST *pos, *n;
     pstImageList = &(pstInstance->stSrcImagesList);
 
     VPSS_OSAL_DownLock(&(pstImageList->stFulListLock));
+
+    if (pstInstance->eSrcImgMode == VPSS_SOURCE_MODE_VPSSACTIVE)
+    {
+        if (pstFulImage->stSrcImage.bProgressive == HI_FALSE)
+        {
+            /*
+               *P -> I
+               *Empty -> I
+               *First Frame read filed
+               */
+            if (pstImageList->stFulImageList.next == &(pstImageList->stFulImageList))
+            {
+                pstFulImage->stSrcImage.bProgressive = HI_TRUE;
+            }
+        }
+        else
+        {
+            /*
+               *I -> P
+               */
+            if (pstImageList->stFulImageList.next != &(pstImageList->stFulImageList))
+            {
+                pstTarget_1 = pstImageList->pstTarget_1;
+                if (pstTarget_1 != pstImageList->stFulImageList.next)
+                {
+                    VPSS_ERROR("interlace to progressive Error\n");
+                }
+                for (pos = pstTarget_1->next, n = pos->next; 
+                        pos != &(pstImageList->stFulImageList); 
+    		            pos = n, n = pos->next)
+                {
+                    pstTarget = list_entry(pos, VPSS_IMAGE_NODE_S, node);
+                    pstTarget->stSrcImage.bProgressive = HI_TRUE;
+                }
+            }
+        }
+    }
     list_add_tail(&(pstFulImage->node), &(pstImageList->stFulImageList));
     VPSS_OSAL_UpLock(&(pstImageList->stFulListLock));
 
@@ -340,17 +374,20 @@ HI_S32 VPSS_INST_AddFulImage(VPSS_INSTANCE_S *pstInstance,
 HI_S32 VPSS_INST_GetUserImage(VPSS_INSTANCE_S *pstInstance,
                                 VPSS_IMAGE_NODE_S *pstSrcImage)
 {
-    HI_S32 s32Ret;
+    HI_S32 s32Ret = HI_FAILURE;
     HI_S32 hDst;
     PFN_VPSS_SRC_FUNC  pfUsrCallBack;
+    #if 0
+    HI_DRV_VIDEO_FRAME_S stQuickImage_1;
+    HI_DRV_VIDEO_FRAME_S stQuickImage_2;
+    #endif
     HI_VOID *pstArgs;
 
     pfUsrCallBack = pstInstance->stSrcFuncs.VPSS_GET_SRCIMAGE;
     
     if(!pfUsrCallBack)
     {
-        VPSS_FATAL("\n VPSS_GET_SRCIMAGE doesn't Exit------------->func %s line %d \r\n",
-                    __func__, __LINE__);
+        VPSS_FATAL("VPSS_GET_SRCIMAGE doesn't Exit.\n");
         return HI_FAILURE;
     }
 
@@ -359,7 +396,34 @@ HI_S32 VPSS_INST_GetUserImage(VPSS_INSTANCE_S *pstInstance,
     pstArgs = &(pstSrcImage->stSrcImage);
     
     s32Ret = pfUsrCallBack(pstInstance->ID,pstArgs);
-
+    #if 0
+    /*always get the newest image*/
+    if (s32Ret == HI_SUCCESS 
+        && pstInstance->bAlwaysFlushSrc == HI_TRUE)
+    {
+        memcpy(&stQuickImage_2,
+               &(pstSrcImage->stSrcImage),
+               sizeof(HI_DRV_VIDEO_FRAME_S));
+        pstArgs = &stQuickImage_1;
+        while(pfUsrCallBack(pstInstance->ID,pstArgs)
+               == HI_SUCCESS)
+        {
+            if(pstInstance->stSrcFuncs.VPSS_REL_SRCIMAGE != HI_NULL)
+            {
+                (HI_VOID)pstInstance->stSrcFuncs.VPSS_REL_SRCIMAGE(
+                                    pstInstance->ID,
+                                    &stQuickImage_2);
+            }
+            memcpy(&stQuickImage_2,
+               &stQuickImage_1,
+               sizeof(HI_DRV_VIDEO_FRAME_S));
+        }
+        memcpy(&(pstSrcImage->stSrcImage),
+               &stQuickImage_2,
+               sizeof(HI_DRV_VIDEO_FRAME_S));
+        s32Ret = HI_SUCCESS;
+    }
+    #endif
     return s32Ret;
 }
 
@@ -369,12 +433,18 @@ VPSS_PORT_S *VPSS_INST_GetPort(VPSS_INSTANCE_S * pstInstance, VPSS_HANDLE hPort)
     HI_U32 u32PortID;
     VPSS_PORT_S *pstPort;
     u32PortID = PORTHANDLE_TO_PORTID(hPort);
+	
+	if (u32PortID >= DEF_HI_DRV_VPSS_PORT_MAX_NUMBER)
+    {
+        VPSS_FATAL("Invalid PortID %#x.",u32PortID);
+        return HI_NULL;
+    }	
+	
     pstPort = &(pstInstance->stPort[u32PortID]);
 
     if (pstPort->s32PortId == VPSS_INVALID_HANDLE)
     {
-        VPSS_FATAL("\nPort doesn't Exit------------->func %s line %d \r\n",
-                    __func__, __LINE__);
+        VPSS_FATAL("Port doesn't Exit.\n");
         
         pstPort = HI_NULL;
     }
@@ -395,18 +465,19 @@ HI_BOOL VPSS_INST_CheckImageList(VPSS_INSTANCE_S *pstInstance)
     pstImgInfo = &(pstInstance->stSrcImagesList);
     
     VPSS_OSAL_DownLock(&(pstImgInfo->stFulListLock));
-    //有未处理IMAGE
+    
+    /*has undo image*/
     if ((pstImgInfo->pstTarget_1)->next != &(pstImgInfo->stFulImageList))
     {
         pstImgNode = list_entry((pstImgInfo->pstTarget_1->next),
                                 VPSS_IMAGE_NODE_S, node);
-        /*待处理帧为逐行*/
+        /*undo image is progressive*/
         if(pstInstance->stProcCtrl.eDEI == HI_DRV_VPSS_DIE_DISABLE
             || pstImgNode->stSrcImage.bProgressive == HI_TRUE)
         {
                 bReVal = HI_TRUE;
         }
-        /*待处理帧为隔行*/
+        /*undo image is interlace*/
         else
         {
             switch(pstInstance->stProcCtrl.eDEI)
@@ -469,8 +540,80 @@ HI_BOOL VPSS_INST_CheckImageList(VPSS_INSTANCE_S *pstInstance)
     return bReVal;
 }
 
-HI_U32 u32Pts = 0;
-HI_U32 u32PrePts = 0;
+HI_BOOL VPSS_INST_CheckImage(HI_DRV_VIDEO_FRAME_S *pstImage)
+{
+    HI_DRV_VIDEO_PRIVATE_S *pstPriv;
+    HI_BOOL bSupported = HI_TRUE;
+    pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstImage->u32Priv[0]);
+
+    if (pstPriv->u32LastFlag == DEF_HI_DRV_VPSS_LAST_ERROR_FLAG)
+    {
+        return HI_TRUE;
+    }
+    
+    #if DEF_VPSS_VERSION_1_0
+    if (pstImage->ePixFormat != HI_DRV_PIX_FMT_NV12
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV21
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV16_2X1
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV61_2X1
+        )
+    #endif
+    
+    #if DEF_VPSS_VERSION_2_0
+    if (pstImage->ePixFormat != HI_DRV_PIX_FMT_NV12
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV21
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV12_CMP
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV21_CMP
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV12_TILE
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV21_TILE
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV12_TILE_CMP
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV21_TILE_CMP
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV16
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV61
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV16_2X1
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_NV61_2X1
+        && pstImage->ePixFormat !=  HI_DRV_PIX_FMT_YUV400
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_YUV_444
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_YUV422_2X1
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_YUV422_1X2
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_YUV420p
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_YUV411
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_YUV410p
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_YUYV
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_YVYU
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_UYVY
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_ARGB8888
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_ABGR8888
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_ARGB1555
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_ABGR1555
+        && pstImage->ePixFormat != HI_DRV_PIX_FMT_RGB565
+        //&& pstImage->ePixFormat != HI_DRV_PIX_FMT_BGR565
+        //&& pstImage->ePixFormat != HI_DRV_PIX_FMT_YUV400_TILE
+        //&& pstImage->ePixFormat != HI_DRV_PIX_FMT_YUV400_TILE_CMP
+        )
+    #endif
+    {
+        VPSS_FATAL("In image can't be processed Pixformat %d\n",pstImage->ePixFormat);
+        bSupported = HI_FALSE;
+    }
+
+    if (pstImage->eFrmType == HI_DRV_FT_BUTT)
+    {
+        VPSS_FATAL("In image can't be processed FrmType %d\n",pstImage->eFrmType);
+        bSupported = HI_FALSE;
+    }
+
+    if (pstImage->u32Height == 0 || pstImage->u32Width == 0)
+    {
+        VPSS_FATAL("In image can't be processed H %d W %d\n",
+            pstImage->u32Height,
+            pstImage->u32Width);
+        bSupported = HI_FALSE;
+    }
+    return bSupported;
+}
+
+
 HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
 {
     VPSS_IMAGELIST_INFO_S* pstImgInfo;
@@ -478,11 +621,12 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
     VPSS_IMAGE_NODE_S* pstEmpty2ndImage;
     HI_DRV_VIDEO_PRIVATE_S *pstPriv;
     HI_S32 s32Ret;
+    HI_BOOL bSupported;
     
     pstImgInfo = &(pstInstance->stSrcImagesList);
     if(pstInstance->eSrcImgMode == VPSS_SOURCE_MODE_VPSSACTIVE)
     {
-        /*不管是逐行，隔行的待处理帧，获取两个帧存*/
+        /*get two image node to split interlace image*/
         pstEmpty1stImage = VPSS_INST_GetEmptyImage(pstInstance);
         pstImgInfo->u32GetUsrTotal++;
         
@@ -501,6 +645,7 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
             return HI_FALSE;
         }
 
+        pstInstance->u32ImgCnt++;
         s32Ret = VPSS_INST_GetUserImage(pstInstance,pstEmpty1stImage);
 
         
@@ -508,82 +653,54 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
         {
             VPSS_INFO("\n-------%d------NO UsrImage",pstInstance->ID);
             
-            pstImgInfo->u32GetUsrFailed++;
+            
+            VPSS_INST_AddEmptyImage(pstInstance,pstEmpty1stImage);
+            VPSS_INST_AddEmptyImage(pstInstance,pstEmpty2ndImage);
+            return HI_FALSE;
+        }
+        pstInstance->u32ImgSucCnt++;
+		pstImgInfo->u32GetUsrSuccess++;
+        bSupported = VPSS_INST_CheckImage(&(pstEmpty1stImage->stSrcImage));
+                
+        if (bSupported == HI_FALSE)
+        {
             VPSS_INST_AddEmptyImage(pstInstance,pstEmpty1stImage);
             VPSS_INST_AddEmptyImage(pstInstance,pstEmpty2ndImage);
             return HI_FALSE;
         }
 
-        if (pstInstance->stDbgCtrl.stInstDbg.bWriteYUV == HI_TRUE)
         {
-            VPSS_OSAL_WRITEYUV(&(pstEmpty1stImage->stSrcImage), 
-                                pstInstance->stDbgCtrl.stInstDbg.chFile);
-            pstInstance->stDbgCtrl.stInstDbg.bWriteYUV = HI_FALSE;                  
+            VPSS_HANDLE hDbgPart = DEF_DBG_SRC_ID;
+            VPSS_DBG_ReplyDbgCmd(&(pstInstance->stDbgCtrl),
+                                 DBG_INFO_FRM,
+                                 &hDbgPart,
+                                 &(pstEmpty1stImage->stSrcImage));
+                                 
+            VPSS_DBG_ReplyDbgCmd(&(pstInstance->stDbgCtrl),
+                                 DBG_W_YUV,
+                                 &hDbgPart,
+                                 &(pstEmpty1stImage->stSrcImage));
         }
-        //printk("Before InPro %d \n",pstEmpty1stImage->stSrcImage.bProgressive);
-
+		pstInstance->u32StreamInRate = pstEmpty1stImage->stSrcImage.u32FrameRate;
+        pstInstance->u32StreamTopFirst = pstEmpty1stImage->stSrcImage.bTopFieldFirst;
+        pstInstance->u32StreamProg = pstEmpty1stImage->stSrcImage.bProgressive;
+        
         if (pstEmpty1stImage->stSrcImage.bIsFirstIFrame)
         {
             HI_DRV_STAT_Event(STAT_EVENT_VPSSGETFRM, 0);
         }
-
-        /*Revise image height to 4X*/
-        pstEmpty1stImage->stSrcImage.u32Height = 
-                pstEmpty1stImage->stSrcImage.u32Height & 0xfffffffc;       
-		 /*3D TEST*/
-		#if 0
-        pstEmpty1stImage->stSrcImage.eFrmType = HI_DRV_FT_SBS;
-        pstEmpty1stImage->stSrcImage.bProgressive = HI_FALSE;
-        pstEmpty1stImage->stSrcImage.bTopFieldFirst = HI_TRUE;
-        pstEmpty1stImage->stSrcImage.enFieldMode = HI_DRV_FIELD_ALL;
-        /**************************************************/
-        #endif
         
-        /*
-         * SBS TAB 处理一致 MVC透传
-         * 
-         */
-        if(pstEmpty1stImage->stSrcImage.eFrmType == HI_DRV_FT_SBS)
-        {
-            HI_DRV_VIDEO_FRAME_S *pstImg;
-            pstImg = &(pstEmpty1stImage->stSrcImage);
-            memcpy(&(pstImg->stBufAddr[1]),&(pstImg->stBufAddr[0]),
-                        sizeof(HI_DRV_VID_FRAME_ADDR_S));
-                        
-            pstImg->stBufAddr[HI_DRV_BUF_ADDR_RIGHT].u32PhyAddr_Y = 
-                    pstImg->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32PhyAddr_Y + pstImg->u32Width/2;
-            pstImg->stBufAddr[HI_DRV_BUF_ADDR_RIGHT].u32PhyAddr_C = 
-                    pstImg->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32PhyAddr_C + pstImg->u32Width/2;
-        }
-
-        if(pstEmpty1stImage->stSrcImage.eFrmType == HI_DRV_FT_TAB)
-        {
-            HI_DRV_VIDEO_FRAME_S *pstImg;
-            pstImg = &(pstEmpty1stImage->stSrcImage);
-            memcpy(&(pstImg->stBufAddr[1]),&(pstImg->stBufAddr[0]),
-                        sizeof(HI_DRV_VID_FRAME_ADDR_S));
-                        
-            pstImg->stBufAddr[HI_DRV_BUF_ADDR_RIGHT].u32PhyAddr_Y = 
-                    pstImg->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32PhyAddr_Y 
-                    + pstImg->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32Stride_Y * pstImg->u32Height/2;
-            pstImg->stBufAddr[HI_DRV_BUF_ADDR_RIGHT].u32PhyAddr_C = 
-                    pstImg->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32PhyAddr_C
-                    + pstImg->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32Stride_C * pstImg->u32Height/4;
-        }
         /**************************************************/
         
 		VPSS_INST_CheckNeedRstDei(pstInstance,&(pstEmpty1stImage->stSrcImage));
-		
+
         VPSS_INST_CorrectProgInfo(pstInstance,&(pstEmpty1stImage->stSrcImage));
 
-        if (pstEmpty1stImage->stSrcImage.bIsFirstIFrame)
-        {
-            pstEmpty1stImage->stSrcImage.bProgressive = HI_TRUE;
-        }
-		
-        VPSS_INFO("\n-----%d------get Usr img",pstInstance->ID);
+        VPSS_INST_ReviseImage(pstInstance,&(pstEmpty1stImage->stSrcImage));
         
-        /*首次收帧时，相信码流自带顶底场优先信息*/
+        /*
+           * when get first image ,believe its topfirst info
+           */
         if(pstInstance->u32RealTopFirst == 0xffffffff)
         {
             if(pstEmpty1stImage->stSrcImage.bProgressive == HI_TRUE)
@@ -599,7 +716,7 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
         else
         {
             /*
-               *检出场序信息为逐行
+               * detect progressive
                */
             if (pstInstance->u32RealTopFirst == 0xfffffffe)
             {
@@ -614,7 +731,7 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
                 }
             }
             /*
-               *检出场序信息为隔行
+               * detect interlace
                */
             else
             {
@@ -632,18 +749,18 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
             
         }
 
-        
-
         if (pstEmpty1stImage->stSrcImage.bProgressive == HI_FALSE
             && pstEmpty1stImage->stSrcImage.enFieldMode == HI_DRV_FIELD_ALL)
         {
             HI_DRV_VIDEO_PRIVATE_S *pstFrmPriv;
             HI_VDEC_PRIV_FRAMEINFO_S *pstVdecPriv;
-            /*一个帧存存储的顶底两场信息，做帧信息拆分*/
+            
+            /*
+            * split interlace image to top and bottom
+            */
             memcpy(&(pstEmpty2ndImage->stSrcImage),&(pstEmpty1stImage->stSrcImage),
                     sizeof(HI_DRV_VIDEO_FRAME_S));
             if(pstInstance->u32RealTopFirst == HI_TRUE)
-            //if(pstEmpty1stImage->stSrcImage.bTopFieldFirst == HI_TRUE)
             {
                 pstEmpty1stImage->stSrcImage.enFieldMode = HI_DRV_FIELD_TOP;
                 
@@ -665,27 +782,36 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
             pstEmpty2ndImage->stSrcImage.u32FrameRate = 
                         pstEmpty2ndImage->stSrcImage.u32FrameRate*2;
 
+
+            #if 1
+            if (pstEmpty1stImage->stSrcImage.bIsFirstIFrame)
+            {
+                HI_DRV_VIDEO_PRIVATE_S *pstFrmPriv;
+                HI_VDEC_PRIV_FRAMEINFO_S *pstVdecPriv;
+
+                pstFrmPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstEmpty1stImage->stSrcImage.u32Priv[0]);
+                pstVdecPriv = (HI_VDEC_PRIV_FRAMEINFO_S *)&(pstFrmPriv->u32Reserve[0]);
+
+                //pstEmpty1stImage->stSrcImage.bProgressive = HI_TRUE;
+                
+                pstEmpty2ndImage->stSrcImage.bIsFirstIFrame = HI_FALSE;
+            }
+            #endif
+        
             VPSS_INST_ChangeInRate(pstInstance,pstEmpty1stImage->stSrcImage.u32FrameRate);
-            /*
-            printk("\n 1st PTS %d 2nd PTS %d  Rate %d\n",
-                    pstEmpty1stImage->stSrcImage.u32Pts,
-                    pstEmpty2ndImage->stSrcImage.u32Pts,
-                    pstEmpty1stImage->stSrcImage.u32FrameRate);
+
+            
+            /*  VFMW last frame scheme
+                *if the frame has last frame flag
+                *progressive:bypass
+                *interlace:change last three field info to progressive
                 */
-            /*****************VFMW 最后一帧适配方案*****************************/
-            /*
-                *当读取的帧信息带有最后一帧标记时候
-                *逐行源:无影响
-                *隔行源:改变倒数第二帧第二场的逐隔行信息，强送出去
-                *    影响:送出三场隔行图,但传送给后级的是逐行信息
-                */
-            /**********************************************/
             pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstEmpty1stImage->stSrcImage.u32Priv[0]);
             
             if (pstPriv->u32LastFlag
                     == DEF_HI_DRV_VPSS_LAST_FRAME_FLAG)
             {
-                /*1.改变前一帧的第二场 逐隔行信息为逐行*/
+                /*1.change pre-frame's second field I->P*/
                 VPSS_IMAGE_NODE_S* pstPreNode;
                 if(pstImgInfo->stFulImageList.prev
                     != &(pstImgInfo->stFulImageList))
@@ -696,15 +822,15 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
                 }
                 else
                 {
-                    VPSS_FATAL("\nLast Field Error\n");
+                    VPSS_FATAL("Last Field Error\n");
                 }
 
-                /*2.改变最后一帧两场的 逐隔行信息为逐行*/
+                /*2.change last frame's two field I->P*/
                 pstEmpty1stImage->stSrcImage.bProgressive = HI_TRUE;
                 pstEmpty2ndImage->stSrcImage.bProgressive = HI_TRUE;
-                /*3.将最后一帧标记打在第2场*/
+                /*3.set last flag to second field*/
                 pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstEmpty1stImage->stSrcImage.u32Priv[0]);
-                pstPriv->u32LastFlag = DEF_HI_DRV_VPSS_LAST_FRAME_FLAG;
+                pstPriv->u32LastFlag = 0;
 
                 pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstEmpty2ndImage->stSrcImage.u32Priv[0]);
                 pstPriv->u32LastFlag = DEF_HI_DRV_VPSS_LAST_FRAME_FLAG;
@@ -722,7 +848,10 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
                 HI_BOOL bPreProg;
                 pstPre = pstImgInfo->stFulImageList.prev;
                 bPreProg = HI_FALSE;
-				/*最后ERROR假帧默认给隔行，需要判定当前源是否在做隔行处理*/
+
+                /*DEF_HI_DRV_VPSS_LAST_ERROR_FLAG must be Interlace
+                    *we need to check whether pre stream is interlace
+                    */
                 if (pstPre != &(pstImgInfo->stFulImageList))
                 {
                     pstPreNode = list_entry(pstPre,
@@ -740,9 +869,10 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
                     || pstPre->prev == &(pstImgInfo->stFulImageList)
                     || pstPre->prev->prev == &(pstImgInfo->stFulImageList))
                     {
-                        VPSS_FATAL("\nCan't Get pre three field\n");
+                        VPSS_FATAL("Can't Get pre three field\n");
                     }
-
+                    else
+                    {
                     pstPreNode = list_entry(pstPre,
                                 VPSS_IMAGE_NODE_S, node);
                     pstPreNode->stSrcImage.bProgressive = HI_TRUE;
@@ -758,6 +888,7 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
                     pstPreNode = list_entry(pstPre,
                                 VPSS_IMAGE_NODE_S, node);
                     pstPreNode->stSrcImage.bProgressive = HI_TRUE;
+                    }
                 }
                 
 
@@ -775,42 +906,20 @@ HI_S32 VPSS_INST_AddUndoImage(VPSS_INSTANCE_S *pstInstance)
         }
         else
         {
+            //VPSS_INST_ChangeInRate(pstInstance,pstEmpty1stImage->stSrcImage.u32FrameRate);
+                
             s32Ret = VPSS_INST_AddFulImage(pstInstance,pstEmpty1stImage);
         
             VPSS_INST_AddEmptyImage(pstInstance,pstEmpty2ndImage);
         }
     }
-    #if 0
-    {
-        LIST *pos, *n;
-        VPSS_IMAGE_NODE_S *pstCurFieldNode;
-        printk("\n-----------------List Start------------------\n");
-        list_for_each_safe(pos, n, &(pstImgInfo->stFulImageList))
-        {
-            
-            pstCurFieldNode = list_entry(pos,VPSS_IMAGE_NODE_S, node);
-
-            printk("\nIn ID %d BT %d TopFirst %x",pstCurFieldNode->stSrcImage.u32FrameIndex,
-                                pstCurFieldNode->stSrcImage.enFieldMode,
-                                pstCurFieldNode->stSrcImage.bTopFieldFirst);
-            
-            if(pos == pstImgInfo->pstTarget_1)
-            {
-                printk("-->tar_1");
-            }
-        }
-        printk("\n-----------------List Down------------------\n");
-    }
-    #endif
     return HI_SUCCESS;
 }
 HI_BOOL VPSS_INST_CheckUndoImage(VPSS_INSTANCE_S *pstInstance)
 {
-    //有未处理IMAGE
     HI_S32 s32Ret;
     if (VPSS_INST_CheckImageList(pstInstance) == HI_TRUE)
     {
-        VPSS_INFO("\n-----%d------has undo img",pstInstance->ID);
         return HI_TRUE;
     }
     else
@@ -832,7 +941,13 @@ HI_S32 VPSS_INST_GetPortFrame(VPSS_INSTANCE_S *pstInstance,VPSS_HANDLE hPort,HI_
     HI_CHAR *pchFile = HI_NULL;
     
     u32PortID = PORTHANDLE_TO_PORTID(hPort);
-
+    
+    if (u32PortID >= DEF_HI_DRV_VPSS_PORT_MAX_NUMBER)
+    {
+        VPSS_FATAL("Invalid PortID %#x.",u32PortID);
+        return HI_FAILURE;
+    }
+    
     pstPort = HI_NULL;
     pstPort = VPSS_INST_GetPort(pstInstance,hPort); 
     
@@ -844,14 +959,47 @@ HI_S32 VPSS_INST_GetPortFrame(VPSS_INSTANCE_S *pstInstance,VPSS_HANDLE hPort,HI_
     
     pstFrameList = &(pstPort->stFrmInfo);
     
-    if(pstInstance->stDbgCtrl.stPortDbg[u32PortID].bWriteYUV == HI_TRUE)
-    {   
-        pchFile = pstInstance->stDbgCtrl.stPortDbg[u32PortID].chFile;
-        pstInstance->stDbgCtrl.stPortDbg[u32PortID].bWriteYUV = HI_FALSE;
-    }
-    
     s32Ret = VPSS_FB_GetFulFrmBuf(pstFrameList,pstFrame,pchFile);
-    
+	
+    if (s32Ret == HI_SUCCESS)
+    {
+        #if SAVEYUV
+        if (pstPort->s32PortId == 0x0)
+        {
+            HI_U8 chFile[20] = "vpss_out.yuv";
+            pchFile = chFile;
+            VPSS_OSAL_WRITEYUV(pstFrame, pchFile);
+        }
+        #endif
+        {
+            VPSS_HANDLE hDbgPart;
+            switch(pstPort->s32PortId & 0x000000ff)
+            {
+                case 0:
+                    hDbgPart = DEF_DBG_PORT0_ID;
+                    break;
+                case 1:
+                    hDbgPart = DEF_DBG_PORT1_ID;
+                    break;
+                case 2:
+                    hDbgPart = DEF_DBG_PORT2_ID;
+                    break;
+                default:
+                    VPSS_FATAL("Invalid Port ID %#x\n",pstPort->s32PortId);
+                    hDbgPart = DEF_DBG_PORT0_ID;
+                    break;
+            }
+            VPSS_DBG_ReplyDbgCmd(&(pstInstance->stDbgCtrl),
+                                 DBG_INFO_FRM,
+                                 &hDbgPart,
+                                 pstFrame);
+                                 
+            VPSS_DBG_ReplyDbgCmd(&(pstInstance->stDbgCtrl),
+                                 DBG_W_YUV,
+                                 &hDbgPart,
+                                 pstFrame);
+        }
+    }
     return s32Ret;
 }
 
@@ -877,7 +1025,7 @@ HI_S32 VPSS_INST_RelPortFrame(VPSS_INSTANCE_S *pstInstance,VPSS_HANDLE hPort,HI_
     }
     else
     {
-        VPSS_FATAL("\n Buffer type don't support RelPortFrame");
+        VPSS_FATAL("Buffer type don't support RelPortFrame\n");
         return HI_FAILURE;
     }
     s32Ret = VPSS_FB_RelFulFrmBuf(pstFrameList,pstFrame);
@@ -894,6 +1042,8 @@ HI_S32 VPSS_INST_GetDefInstCfg(HI_DRV_VPSS_CFG_S *pstVpssCfg)
 
     pstVpssCfg->bAlwaysFlushSrc = HI_FALSE;
 
+    pstVpssCfg->enProgInfo = HI_DRV_VPSS_PRODETECT_AUTO;
+    
     pstProcCtrl = &(pstVpssCfg->stProcCtrl);
 
     pstProcCtrl->eACC = HI_DRV_VPSS_ACC_DISABLE;
@@ -929,7 +1079,9 @@ HI_S32 VPSS_INST_Init(VPSS_INSTANCE_S *pstInstance,HI_DRV_VPSS_CFG_S *pstVpssCfg
     VPSS_IMAGE_NODE_S *pstImageNode;
     HI_DRV_VPSS_CFG_S stTmpCfg;
     HI_S32 s32Ret;
-    /*ID由VPSS_CTRL分配*/
+    LIST *pos, *n;
+    VPSS_IMAGE_NODE_S* pstImgNode;
+    
     pstInstance->ID = 0;
     
     pstInstance->hDst = 0;
@@ -947,6 +1099,12 @@ HI_S32 VPSS_INST_Init(VPSS_INSTANCE_S *pstInstance,HI_DRV_VPSS_CFG_S *pstVpssCfg
 	
 	pstInstance->u32Rwzb = 0;
 	pstInstance->u32InRate = 0;
+
+    pstInstance->u32StreamInRate = 0;
+    pstInstance->u32StreamTopFirst = 0;
+	pstInstance->u32StreamProg = 0;
+
+	
     pstImageList = &(pstInstance->stSrcImagesList);
 
     VPSS_OSAL_InitLOCK(&(pstImageList->stEmptyListLock), 1);
@@ -956,15 +1114,18 @@ HI_S32 VPSS_INST_Init(VPSS_INSTANCE_S *pstInstance,HI_DRV_VPSS_CFG_S *pstVpssCfg
     INIT_LIST_HEAD(&(pstImageList->stFulImageList));
     
     pstImageList->u32GetUsrTotal = 0;
-    pstImageList->u32GetUsrFailed = 0;
+    pstImageList->u32GetUsrSuccess = 0;
     pstImageList->u32RelUsrTotal = 0;
-    pstImageList->u32RelUsrFailed = 0;
+    pstImageList->u32RelUsrSuccess = 0;
     u32Count = 0;
     while(u32Count < VPSS_SOURCE_MAX_NUMB)
     {
-        
         pstImageNode = (VPSS_IMAGE_NODE_S*)VPSS_VMALLOC(sizeof(VPSS_IMAGE_NODE_S));
-        
+        if (pstImageNode == HI_NULL)
+        {
+            VPSS_FATAL("vmalloc imageNode failed\n");
+            goto INST_Init_Failed;
+        }
         memset(&(pstImageNode->stSrcImage), 0, 
                 sizeof(HI_DRV_VIDEO_FRAME_S));
         
@@ -1001,7 +1162,7 @@ HI_S32 VPSS_INST_Init(VPSS_INSTANCE_S *pstInstance,HI_DRV_VPSS_CFG_S *pstVpssCfg
 
     if(s32Ret == HI_FAILURE)
     {
-        VPSS_FATAL("\n------------------Init Sync VPSS CFG Fail\n");
+        VPSS_FATAL("Init Sync VPSS CFG Fail\n");
     }
     else
     {
@@ -1009,6 +1170,18 @@ HI_S32 VPSS_INST_Init(VPSS_INSTANCE_S *pstInstance,HI_DRV_VPSS_CFG_S *pstVpssCfg
     }
     VPSS_DBG_DbgInit(&(pstInstance->stDbgCtrl));
     return HI_SUCCESS;
+    
+INST_Init_Failed:
+    list_for_each_safe(pos, n, &(pstImageList->stEmptyImageList))
+    {
+        pstImgNode = list_entry(pos, VPSS_IMAGE_NODE_S, node);
+
+        list_del_init(pos);
+
+        VPSS_VFREE(pstImgNode);
+        u32Count++;
+    }
+    return HI_FAILURE;
 }
 
 HI_S32 VPSS_INST_DelInit(VPSS_INSTANCE_S *pstInstance)
@@ -1019,9 +1192,7 @@ HI_S32 VPSS_INST_DelInit(VPSS_INSTANCE_S *pstInstance)
     VPSS_IMAGELIST_INFO_S*  pstImgList;
     LIST *pos, *n;
     VPSS_IMAGE_NODE_S* pstImgNode;
-    /*
-    销毁SrcImage占用的空间
-    */
+    
     pstImgList = &(pstInstance->stSrcImagesList);
 
     u32Count = 0;
@@ -1047,13 +1218,11 @@ HI_S32 VPSS_INST_DelInit(VPSS_INSTANCE_S *pstInstance)
 
     if(u32Count != VPSS_SOURCE_MAX_NUMB)
     {
-        VPSS_FATAL("\n##############Inst %d free SrcImage Error %d",
+        VPSS_FATAL("Inst %d free SrcImage Error %d.\n",
                         pstInstance->ID,
                         u32Count);
     }
-    /*
-    销毁各PORT开辟的空间
-    */
+    
     for(u32Count = 0; u32Count < DEF_HI_DRV_VPSS_PORT_MAX_NUMBER; u32Count ++)
     {
         pstPort = &(pstInstance->stPort[u32Count]);
@@ -1074,22 +1243,22 @@ HI_S32 VPSS_INST_DelInit(VPSS_INSTANCE_S *pstInstance)
 HI_S32 VPSS_INST_SetInstCfg(VPSS_INSTANCE_S *pstInstance,
                                 HI_DRV_VPSS_CFG_S *pstVpssCfg)
 {
-    //HI_RECT_S *pstInstInCrop;
-    //HI_RECT_S *pstCfgInCrop;
-    //HI_DRV_CROP_RECT_S *pstInstUsrCrop;
-    //HI_DRV_CROP_RECT_S *pstCfgUsrCrop;
     HI_DRV_VPSS_CFG_S *pstInstUsrcCfg;
+    unsigned long flags;
     
     pstInstUsrcCfg = &(pstInstance->stUsrInstCfg);
 
-    
-    VPSS_OSAL_DownSpin(&(pstInstance->stUsrSetSpin));
+    spin_lock_irqsave(&(pstInstance->stUsrSetSpin.irq_lock), flags);
     
     pstInstance->u32IsNewCfg = HI_TRUE;
+    
+    pstInstUsrcCfg->enProgInfo = pstVpssCfg->enProgInfo;
+    
     pstInstUsrcCfg->bAlwaysFlushSrc = pstVpssCfg->bAlwaysFlushSrc;
     pstInstUsrcCfg->s32Priority = pstVpssCfg->s32Priority;
     pstInstUsrcCfg->stProcCtrl = pstVpssCfg->stProcCtrl;
-    VPSS_OSAL_UpSpin(&(pstInstance->stUsrSetSpin));
+    
+    spin_unlock_irqrestore(&(pstInstance->stUsrSetSpin.irq_lock), flags);
     
     return HI_SUCCESS;
 }
@@ -1098,12 +1267,20 @@ HI_S32 VPSS_INST_SetInstCfg(VPSS_INSTANCE_S *pstInstance,
 HI_U32 VPSS_INST_GetInstCfg(VPSS_INSTANCE_S *pstInstance,
                                 HI_DRV_VPSS_CFG_S *pstVpssCfg)
 {
-    pstVpssCfg->s32Priority = pstInstance->s32Priority;
-    pstVpssCfg->bAlwaysFlushSrc = pstInstance->bAlwaysFlushSrc;
+    HI_DRV_VPSS_CFG_S *pstInstUsrcCfg;
+    unsigned long flags;
+    pstInstUsrcCfg = &(pstInstance->stUsrInstCfg);
 
-    memcpy(&(pstVpssCfg->stProcCtrl),&(pstInstance->stProcCtrl),
+    
+    spin_lock_irqsave(&(pstInstance->stUsrSetSpin.irq_lock), flags);
+    
+    pstVpssCfg->s32Priority = pstInstUsrcCfg->s32Priority;
+    pstVpssCfg->bAlwaysFlushSrc = pstInstUsrcCfg->bAlwaysFlushSrc;
+    pstVpssCfg->enProgInfo = pstInstUsrcCfg->enProgInfo;
+    memcpy(&(pstVpssCfg->stProcCtrl),&(pstInstUsrcCfg->stProcCtrl),
                                         sizeof(HI_DRV_VPSS_PROCESS_S));
 
+    spin_unlock_irqrestore(&(pstInstance->stUsrSetSpin.irq_lock), flags);
     return HI_SUCCESS;
 }
 
@@ -1114,9 +1291,6 @@ HI_U32 VPSS_INST_GetDefPortCfg(HI_DRV_VPSS_PORT_CFG_S *pstPortCfg)
     pstPortCfg->bTunnelEnable = HI_FALSE;
     pstPortCfg->s32SafeThr = 100;
     
-    //pstPortCfg->s32OutputWidth = 720;
-    //pstPortCfg->s32OutputHeight = 576;
-
     pstPortCfg->s32OutputWidth = 0;
     pstPortCfg->s32OutputHeight = 0;
 
@@ -1138,14 +1312,14 @@ HI_U32 VPSS_INST_GetDefPortCfg(HI_DRV_VPSS_PORT_CFG_S *pstPortCfg)
     pstPortCfg->u32MaxFrameRate = 60;
 
     pstPortCfg->stBufListCfg.eBufType = HI_DRV_VPSS_BUF_VPSS_ALLOC_MANAGE;
-    pstPortCfg->stBufListCfg.u32BufNumber = 10;
-
+    pstPortCfg->stBufListCfg.u32BufNumber = HI_VPSS_MAX_BUFFER_NUMB;
     //pstPortCfg->stBufListCfg.u32BufSize = 720*576*2;
     //pstPortCfg->stBufListCfg.u32BufStride = 720;
 
     pstPortCfg->stBufListCfg.u32BufSize = 1920*1080*2;
     pstPortCfg->stBufListCfg.u32BufStride = 1920;
-
+    
+    pstPortCfg->b3Dsupport = HI_FALSE;
     return HI_SUCCESS;
 }
 
@@ -1166,8 +1340,7 @@ HI_S32 VPSS_INST_CreatePort(VPSS_INSTANCE_S *pstInstance,
     }
     if (u32Count == DEF_HI_DRV_VPSS_PORT_MAX_NUMBER)
     {
-        VPSS_FATAL("\nPort Number is MAX------------->func %s line %d \r\n",
-                    __func__, __LINE__);
+        VPSS_FATAL("Port Number is MAX.\n");
 
         *phPort = 0;
         return HI_FAILURE;
@@ -1238,7 +1411,9 @@ HI_S32 VPSS_INST_GetPortCfg(VPSS_INSTANCE_S * pstInstance, VPSS_HANDLE hPort,
                                 HI_DRV_VPSS_PORT_CFG_S *pstPortCfg)
 {
     VPSS_PORT_S *pstPort;
-
+    HI_U32 u32PortID;
+    HI_DRV_VPSS_PORT_CFG_S *pstUsrPortCfg;
+    unsigned long flags;
     pstPort = HI_NULL;
     pstPort = VPSS_INST_GetPort(pstInstance,hPort);
 
@@ -1246,37 +1421,49 @@ HI_S32 VPSS_INST_GetPortCfg(VPSS_INSTANCE_S * pstInstance, VPSS_HANDLE hPort,
     {
         return HI_FAILURE;
     }
+    u32PortID = PORTHANDLE_TO_PORTID(hPort);
+    
+    if (u32PortID >= DEF_HI_DRV_VPSS_PORT_MAX_NUMBER)
+    {
+        VPSS_FATAL("Invalid PortID %#x.",u32PortID);
+        return HI_FAILURE;
+    }
+    
+    spin_lock_irqsave(&(pstInstance->stUsrSetSpin.irq_lock), flags);
+    
+    pstUsrPortCfg = &(pstInstance->stUsrPortCfg[u32PortID]);
+    
+    pstPortCfg->eFormat = pstUsrPortCfg->eFormat; 
+    pstPortCfg->s32OutputWidth = pstUsrPortCfg->s32OutputWidth;
+    pstPortCfg->s32OutputHeight = pstUsrPortCfg->s32OutputHeight;
+    pstPortCfg->eDstCS = pstUsrPortCfg->eDstCS;
+    pstPortCfg->stDispPixAR = pstUsrPortCfg->stDispPixAR;
+    pstPortCfg->eAspMode = pstUsrPortCfg->eAspMode;
+    pstPortCfg->bTunnelEnable = pstUsrPortCfg->bTunnelEnable;
+    pstPortCfg->s32SafeThr = pstUsrPortCfg->s32SafeThr;   
+    pstPortCfg->u32MaxFrameRate = pstUsrPortCfg->u32MaxFrameRate; 
 
-    pstPortCfg->eFormat = pstPort->eFormat; 
-    pstPortCfg->s32OutputWidth = pstPort->s32OutputWidth;
-    pstPortCfg->s32OutputHeight = pstPort->s32OutputHeight;
-    pstPortCfg->eDstCS = pstPort->eDstCS;
-    pstPortCfg->stDispPixAR = pstPort->stDispPixAR;
-    pstPortCfg->eAspMode = pstPort->eAspMode;
-    pstPortCfg->bTunnelEnable = pstPort->bTunnelEnable;
-    pstPortCfg->s32SafeThr = pstPort->s32SafeThr;   
-    pstPortCfg->u32MaxFrameRate = pstPort->u32MaxFrameRate; 
-
-    memcpy(&(pstPortCfg->stProcCtrl),&(pstPort->stProcCtrl),
+    pstPortCfg->b3Dsupport = pstUsrPortCfg->b3Dsupport;
+    memcpy(&(pstPortCfg->stProcCtrl),&(pstUsrPortCfg->stProcCtrl),
                                         sizeof(HI_DRV_VPSS_PORT_PROCESS_S));
     
-    memcpy(&(pstPortCfg->stBufListCfg),&((pstPort->stFrmInfo).stBufListCfg),
+    memcpy(&(pstPortCfg->stBufListCfg),&(pstUsrPortCfg->stBufListCfg),
                                         sizeof(HI_DRV_VPSS_BUFLIST_CFG_S));
-
+    spin_unlock_irqrestore(&(pstInstance->stUsrSetSpin.irq_lock), flags);
     return HI_SUCCESS;
 }
 HI_S32 VPSS_INST_SetPortCfg(VPSS_INSTANCE_S * pstInstance, VPSS_HANDLE hPort, 
                                 HI_DRV_VPSS_PORT_CFG_S *pstPortCfg)
 {
     /*
-        Set操作分为两步
-        UsrSet
-        SyncCfg
+        SetCfg process two step:
+        1.UsrSet
+        2.SyncCfg
      */
-     
     VPSS_PORT_S *pstPort;
     HI_DRV_VPSS_PORT_CFG_S *pstUsrPortCfg;
     HI_U32 u32PortID;
+    unsigned long flags;
     pstPort = HI_NULL;
 
     pstPort = VPSS_INST_GetPort(pstInstance,hPort);
@@ -1284,10 +1471,16 @@ HI_S32 VPSS_INST_SetPortCfg(VPSS_INSTANCE_S * pstInstance, VPSS_HANDLE hPort,
     {
         return HI_FAILURE;
     }
-
-    VPSS_OSAL_DownSpin(&(pstInstance->stUsrSetSpin));
     
     u32PortID = PORTHANDLE_TO_PORTID(hPort);
+    
+    if (u32PortID >= DEF_HI_DRV_VPSS_PORT_MAX_NUMBER)
+    {
+        VPSS_FATAL("Invalid PortID %#x.",u32PortID);
+        return HI_FAILURE;
+    }
+    
+    spin_lock_irqsave(&(pstInstance->stUsrSetSpin.irq_lock), flags);
     
     pstInstance->u32IsNewCfg = HI_TRUE;
 
@@ -1313,8 +1506,9 @@ HI_S32 VPSS_INST_SetPortCfg(VPSS_INSTANCE_S * pstInstance, VPSS_HANDLE hPort,
     pstUsrPortCfg->s32SafeThr = pstPortCfg->s32SafeThr;
     pstUsrPortCfg->stBufListCfg = pstPortCfg->stBufListCfg;
     pstUsrPortCfg->stProcCtrl = pstPortCfg->stProcCtrl;
-    
-    VPSS_OSAL_UpSpin(&(pstInstance->stUsrSetSpin));
+
+    pstUsrPortCfg->b3Dsupport = pstPortCfg->b3Dsupport;
+    spin_unlock_irqrestore(&(pstInstance->stUsrSetSpin.irq_lock), flags);
     #if 0
     pstPort->eFormat = pstPortCfg->eFormat; 
     pstPort->s32OutputWidth = pstPortCfg->s32OutputWidth;
@@ -1329,7 +1523,9 @@ HI_S32 VPSS_INST_SetPortCfg(VPSS_INSTANCE_S * pstInstance, VPSS_HANDLE hPort,
     memcpy(&(pstPort->stProcCtrl),&(pstPortCfg->stProcCtrl),
                                         sizeof(HI_DRV_VPSS_PORT_PROCESS_S));
     #endif                                    
-    /*输出PORT的BUFFER配置需要创建时指定，不可改变*/
+    /*
+      *outBuffer size can't be modified
+      */
     /*
     memcpy(&((pstPort->stFrmInfo).stBufListCfg),&(pstPortCfg->stBufListCfg),
                                         sizeof(HI_DRV_VPSS_BUFLIST_CFG_S));
@@ -1348,9 +1544,7 @@ HI_S32 VPSS_INST_EnablePort(VPSS_INSTANCE_S * pstInstance, VPSS_HANDLE hPort,HI_
     {
         return HI_FAILURE;
     }
-    /*
-        使能的条件在此加入
-    */
+    
     pstPort->bEnble = bEnPort;
      
     return HI_SUCCESS;
@@ -1373,14 +1567,15 @@ HI_S32 VPSS_INST_CheckPortCfg(VPSS_INSTANCE_S * pstInstance, VPSS_HANDLE hPort,
     pstProcCtrl = &(pstVpssPortCfg->stProcCtrl);
 
     if(pstVpssPortCfg->eFormat == HI_DRV_PIX_FMT_NV12 
-		|| pstVpssPortCfg->eFormat == HI_DRV_PIX_FMT_NV16
+		|| pstVpssPortCfg->eFormat == HI_DRV_PIX_FMT_NV16_2X1
 		|| pstVpssPortCfg->eFormat == HI_DRV_PIX_FMT_NV21
-		|| pstVpssPortCfg->eFormat == HI_DRV_PIX_FMT_NV61)
+		|| pstVpssPortCfg->eFormat == HI_DRV_PIX_FMT_NV61_2X1)
     {
         
     }
 	else
 	{
+	    VPSS_FATAL("Invalid Port eFormat %d\n",pstVpssPortCfg->eFormat);
 		return HI_FAILURE;
 	}
     
@@ -1408,6 +1603,8 @@ HI_S32 VPSS_INST_ReplyUserCommand(VPSS_INSTANCE_S * pstInstance,
                                     HI_VOID *pArgs)
 {
     HI_BOOL *pbAllDone;
+    HI_DRV_VPSS_PORT_AVAILABLE_S *pstAvailable;
+    
     switch ( eCommand )
     {
         case HI_DRV_VPSS_USER_COMMAND_RESET:
@@ -1416,6 +1613,11 @@ HI_S32 VPSS_INST_ReplyUserCommand(VPSS_INSTANCE_S * pstInstance,
         case HI_DRV_VPSS_USER_COMMAND_CHECKALLDONE:
             pbAllDone = (HI_BOOL *)pArgs;
             *pbAllDone = VPSS_INST_CheckAllDone(pstInstance);
+            break;
+        case HI_DRV_VPSS_USER_COMMAND_CHECKAVAILABLE:
+            pstAvailable = (HI_DRV_VPSS_PORT_AVAILABLE_S *)pArgs;
+            pstAvailable->bAvailable
+                = VPSS_INST_CheckPortBuffer(pstInstance,pstAvailable->hPort);
             break;
         default:
             break;
@@ -1454,7 +1656,7 @@ HI_S32 VPSS_INST_Reset(VPSS_INSTANCE_S *pstInstance)
 
     VPSS_OSAL_DownLock(&(pstInstance->stInstLock));
 
-    /*重置输出image队列*/
+    /*reset image list*/
     pstImgList = &(pstInstance->stSrcImagesList);
     
     list_for_each_safe(pos, n, &(pstImgList->stFulImageList))
@@ -1468,7 +1670,7 @@ HI_S32 VPSS_INST_Reset(VPSS_INSTANCE_S *pstInstance)
 
     pstImgList->pstTarget_1 = &(pstImgList->stFulImageList);
 
-    /*重置port*/
+    /*reset port*/
     for(u32Count = 0; u32Count < DEF_HI_DRV_VPSS_PORT_MAX_NUMBER; u32Count ++)
     {
         pstPort = &(pstInstance->stPort[u32Count]);
@@ -1478,13 +1680,35 @@ HI_S32 VPSS_INST_Reset(VPSS_INSTANCE_S *pstInstance)
         }
     }
     VPSS_OSAL_UpLock(&(pstInstance->stInstLock));
+    pstInstance->stSrcImagesList.u32GetUsrTotal = 0;
+    pstInstance->stSrcImagesList.u32GetUsrSuccess = 0;
+    pstInstance->stSrcImagesList.u32RelUsrTotal = 0;
+    pstInstance->stSrcImagesList.u32RelUsrSuccess = 0;
+    pstInstance->u32CheckRate = 0;
+    pstInstance->u32CheckSucRate = 0;;
+    pstInstance->u32CheckCnt = 0;
+    pstInstance->u32CheckSucCnt = 0;
 
+    pstInstance->u32ImgRate = 0;
+    pstInstance->u32ImgSucRate = 0;
+    pstInstance->u32ImgCnt = 0;
+    pstInstance->u32ImgSucCnt = 0;
+    
+    pstInstance->u32SrcRate = 0;
+    pstInstance->u32SrcSucRate = 0;
+    pstInstance->u32SrcCnt = 0;
+    pstInstance->u32SrcSucCnt = 0;
+    
+    pstInstance->u32BufRate = 0;
+    pstInstance->u32BufSucRate = 0;
+    pstInstance->u32BufCnt = 0;
+    pstInstance->u32BufSucCnt = 0;
 	return HI_SUCCESS;
 }
 HI_BOOL VPSS_INST_CheckIsAvailable(VPSS_INSTANCE_S *pstInstance)
 {
     HI_U32 u32Count;
-    HI_U32 u32BufIsEnough;
+    HI_S32 s32BufIsEnough;
     PFN_VPSS_CALLBACK pfUserCallBack;
     HI_S32 hDst;
     HI_DRV_VPSS_BUFFUL_STRATAGY_E eBufStratagy;
@@ -1492,7 +1716,7 @@ HI_BOOL VPSS_INST_CheckIsAvailable(VPSS_INSTANCE_S *pstInstance)
     HI_U32 u32HasEnablePort;
 
     /*
-     检测三路PORT情况
+     check if at least one port enabled
      */
     u32HasEnablePort = 0;
     for(u32Count = 0; u32Count < DEF_HI_DRV_VPSS_PORT_MAX_NUMBER;
@@ -1510,18 +1734,21 @@ HI_BOOL VPSS_INST_CheckIsAvailable(VPSS_INSTANCE_S *pstInstance)
     }
     
     /*
-     获取待处理image
+        check undo image
      */
+    pstInstance->u32SrcCnt ++;
     if(!VPSS_INST_CheckUndoImage(pstInstance))
     {
         return HI_FALSE;
     }
+    pstInstance->u32SrcSucCnt ++;
 
-    u32BufIsEnough = 0;
+    s32BufIsEnough = 0;
     u32HasEnablePort = 0;
     /*
-    保证打开的通道有足够BUF
-    */
+        check if all enabled port has write space
+     */
+    pstInstance->u32BufCnt ++;
     for(u32Count = 0; u32Count < DEF_HI_DRV_VPSS_PORT_MAX_NUMBER;
             u32Count ++)
     {       
@@ -1529,11 +1756,11 @@ HI_BOOL VPSS_INST_CheckIsAvailable(VPSS_INSTANCE_S *pstInstance)
             && pstInstance->stPort[u32Count].bEnble == HI_TRUE)
         {
             u32HasEnablePort = 1;
-            u32BufIsEnough = u32BufIsEnough - 1;
+            s32BufIsEnough = s32BufIsEnough - 1;
             pstFrameList = &((pstInstance->stPort[u32Count]).stFrmInfo);
             if(VPSS_FB_CheckIsAvailable(pstFrameList))
             {
-                u32BufIsEnough = u32BufIsEnough + 1;
+                s32BufIsEnough = s32BufIsEnough + 1;
             }
             else
             {
@@ -1547,24 +1774,26 @@ HI_BOOL VPSS_INST_CheckIsAvailable(VPSS_INSTANCE_S *pstInstance)
     {
         return HI_FALSE;
     }
-    if (u32BufIsEnough != 0)
+    if (s32BufIsEnough != 0)
     {
         if(pstInstance->pfUserCallBack == HI_NULL)
         {
-            VPSS_FATAL("\n------%d------UserCallBack is NULL------",pstInstance->ID);
+            VPSS_FATAL("Inst %d UserCallBack is NULL.\n",pstInstance->ID);
             return HI_FALSE;
         }
         pfUserCallBack = pstInstance->pfUserCallBack;
         hDst = pstInstance->hDst;
         eBufStratagy = HI_DRV_VPSS_BUFFUL_BUTT;
         pfUserCallBack(hDst, VPSS_EVENT_BUFLIST_FULL, &eBufStratagy);
+        
         if(eBufStratagy == HI_DRV_VPSS_BUFFUL_PAUSE 
             || eBufStratagy == HI_DRV_VPSS_BUFFUL_BUTT)
         {
-            VPSS_INFO("\n------%d------OUT Buf Is FULL------",pstInstance->ID);
+            VPSS_INFO("Inst %d OUT Buf Is FULL.\n",pstInstance->ID);
             return HI_FALSE;
         }
     }
+    pstInstance->u32BufSucCnt ++;
     return HI_TRUE;
     
 }
@@ -1574,7 +1803,7 @@ HI_DRV_VIDEO_FRAME_S *VPSS_INST_GetUndoImage(VPSS_INSTANCE_S *pstInstance)
 {
     VPSS_IMAGE_NODE_S *pstImgNode;
     VPSS_IMAGELIST_INFO_S *pstImgListInfo;
-    //HI_DRV_VIDEO_FRAME_S *pstImage;
+    
     pstImgListInfo = &(pstInstance->stSrcImagesList);
     
 
@@ -1590,7 +1819,7 @@ HI_DRV_VIDEO_FRAME_S *VPSS_INST_GetUndoImage(VPSS_INSTANCE_S *pstInstance)
     }
     else
     {
-        VPSS_FATAL("\t\nWrong VPSS_INST_GetUndoImage");
+        VPSS_FATAL("Wrong VPSS_INST_GetUndoImage.\n");
         VPSS_OSAL_UpLock(&(pstImgListInfo->stFulListLock));
         return HI_NULL;
     }
@@ -1605,17 +1834,12 @@ HI_S32 VPSS_INST_CompleteUndoImage(VPSS_INSTANCE_S *pstInstance)
     
     pstImgInfo = &(pstInstance->stSrcImagesList);
 
-    //有未处理IMAGE
     VPSS_OSAL_DownLock(&(pstImgInfo->stFulListLock));
 
     if ((pstImgInfo->pstTarget_1)->next != &(pstImgInfo->stFulImageList))
     {
         pstImgInfo->pstTarget_1 = (pstImgInfo->pstTarget_1)->next;
-    }
-    else
-    {
-        //VPSS_FATAL("\t\n CompleteUndoImage VPSS_INST_CompleteUndoImage Wrong");
-    }
+    }   
     
     VPSS_OSAL_UpLock(&(pstImgInfo->stFulListLock));
     return HI_SUCCESS;
@@ -1631,10 +1855,13 @@ HI_S32 VPSS_INST_GetSrcListState(VPSS_INSTANCE_S* pstInstance,VPSS_IMAGELIST_STA
     LIST *pos, *n;
     if(pstInstance == HI_NULL)
     {
-        VPSS_FATAL("\n pstInstance is NULL");
+        VPSS_FATAL("pstInstance is NULL\n");
         return HI_FAILURE;
     }
     pstImgList = &(pstInstance->stSrcImagesList);
+
+
+    VPSS_OSAL_DownLock(&(pstImgList->stFulListLock));
     
     pstListState->u32Target = (HI_U32)list_entry(pstImgList->pstTarget_1, VPSS_IMAGE_NODE_S, node);
     if (pstImgList->pstTarget_1 == &(pstImgList->stFulImageList))
@@ -1663,6 +1890,12 @@ HI_S32 VPSS_INST_GetSrcListState(VPSS_INSTANCE_S* pstInstance,VPSS_IMAGELIST_STA
         u32Total++;
         
     }
+    VPSS_OSAL_UpLock(&(pstImgList->stFulListLock));
+
+    pstListState->u32FulListNumb = u32Count;
+    
+    u32Count = 0;
+    VPSS_OSAL_DownLock(&(pstImgList->stEmptyListLock));
     list_for_each_safe(pos, n, &(pstImgList->stEmptyImageList))
     {
         pstImgNode = list_entry(pos, VPSS_IMAGE_NODE_S, node);
@@ -1673,24 +1906,22 @@ HI_S32 VPSS_INST_GetSrcListState(VPSS_INSTANCE_S* pstInstance,VPSS_IMAGELIST_STA
         u32Count++;
         u32Total++;
     }
+    VPSS_OSAL_UpLock(&(pstImgList->stEmptyListLock));
+    
     pstListState->u32EmptyListNumb = u32Count;
-    
-    u32Count = 0;
-    
     
     if (u32Total != VPSS_SOURCE_MAX_NUMB)
     {
         VPSS_FATAL("SrcList Proc Error.\n");
     }
-    pstListState->u32FulListNumb = u32Count;
 
     pstListState->u32TotalNumb = pstListState->u32EmptyListNumb
                                 + pstListState->u32FulListNumb;
     
     pstListState->u32GetUsrTotal = pstImgList->u32GetUsrTotal;
-    pstListState->u32GetUsrFailed = pstImgList->u32GetUsrFailed;
+    pstListState->u32GetUsrSuccess = pstImgList->u32GetUsrSuccess;
     pstListState->u32RelUsrTotal = pstImgList->u32RelUsrTotal;
-    pstListState->u32RelUsrFailed = pstImgList->u32RelUsrFailed;
+    pstListState->u32RelUsrSuccess = pstImgList->u32RelUsrSuccess;
     return HI_SUCCESS;                            
 }
 
@@ -1736,7 +1967,7 @@ HI_S32 VPSS_INST_GetFrmBuffer(VPSS_INSTANCE_S* pstInstance,VPSS_HANDLE hPort,
 
     if(pstInstance == HI_NULL)
     {
-        VPSS_FATAL("\n pstInstance is NULL");
+        VPSS_FATAL("pstInstance is NULL\n");
         return HI_FAILURE;
     }
     eBufferType = pstBufCfg->eBufType;
@@ -1745,7 +1976,7 @@ HI_S32 VPSS_INST_GetFrmBuffer(VPSS_INSTANCE_S* pstInstance,VPSS_HANDLE hPort,
     pstMMZBuf = &(pstBuffer->stMMZBuf);
     if(pstInstance->pfUserCallBack == HI_NULL)
     {
-        VPSS_FATAL("\n pfUserCallBack is NULL");
+        VPSS_FATAL("pfUserCallBack is NULL\n");
         return HI_FAILURE;
     }
     stFrmBuf.hPort = hPort;
@@ -1775,13 +2006,13 @@ HI_S32 VPSS_INST_RelFrmBuffer(VPSS_INSTANCE_S* pstInstance,VPSS_HANDLE  hPort,
 
     if(pstInstance == HI_NULL)
     {
-        VPSS_FATAL("\n pstInstance is NULL");
+        VPSS_FATAL("pstInstance is NULL\n");
         return HI_FAILURE;
     }
 
     if(pstInstance->pfUserCallBack == HI_NULL)
     {
-        VPSS_FATAL("\n pfUserCallBack is NULL");
+        VPSS_FATAL("pfUserCallBack is NULL\n");
         return HI_FAILURE;
     }
     stFrmBuf.hPort = hPort;
@@ -1810,13 +2041,13 @@ HI_S32 VPSS_INST_ReportNewFrm(VPSS_INSTANCE_S* pstInstance,
 
     if(pstInstance == HI_NULL)
     {
-        VPSS_FATAL("\n pstInstance is NULL");
+        VPSS_FATAL("pstInstance is NULL\n");
         return HI_FAILURE;
     }
 
     if(pstInstance->pfUserCallBack == HI_NULL)
     {
-        VPSS_FATAL("\n pfUserCallBack is NULL");
+        VPSS_FATAL("pfUserCallBack is NULL\n");
         return HI_FAILURE;
     }
     stFrmInfo.hPort = hPort;
@@ -1835,17 +2066,18 @@ HI_S32 VPSS_INST_GetFieldAddr(LIST *pNode,
     
     VPSS_IMAGE_NODE_S *pstTarget;
     HI_DRV_VIDEO_FRAME_S *pstImg;
+
+    #if DEF_VPSS_VERSION_1_0
     HI_U32 u32InHeight;
     HI_U32 u32InWidth;
+    #endif
     
     pstTarget = list_entry(pNode,VPSS_IMAGE_NODE_S, node);
     pstImg = &(pstTarget->stSrcImage);
+    
     memcpy(pstFieldAddr,&(pstImg->stBufAddr[eLReye]),
                         sizeof(HI_DRV_VID_FRAME_ADDR_S));
-
-    
-    
-    #if 1
+#if DEF_VPSS_VERSION_1_0
     if (pstInRect->s32X == 0 && pstInRect->s32Y == 0 
         && pstInRect->s32Height == 0 && pstInRect->s32Width == 0)
     {
@@ -1869,8 +2101,8 @@ HI_S32 VPSS_INST_GetFieldAddr(LIST *pNode,
                 + pstImg->stBufAddr[eLReye].u32Stride_C * pstInRect->s32Y / 2 + pstInRect->s32X;
             
         }
-        else if(pstTarget->stSrcImage.ePixFormat == HI_DRV_PIX_FMT_NV16 
-                || pstTarget->stSrcImage.ePixFormat == HI_DRV_PIX_FMT_NV61)
+        else if(pstTarget->stSrcImage.ePixFormat == HI_DRV_PIX_FMT_NV16_2X1 
+                || pstTarget->stSrcImage.ePixFormat == HI_DRV_PIX_FMT_NV61_2X1)
         {
             pstFieldAddr->u32PhyAddr_Y = 
                 pstImg->stBufAddr[eLReye].u32PhyAddr_Y 
@@ -1881,25 +2113,35 @@ HI_S32 VPSS_INST_GetFieldAddr(LIST *pNode,
         }
         else
         {
-            VPSS_FATAL("\n InCropError \n");
+            VPSS_FATAL("InCropError\n");
         }
     }
-    #endif
 
     if(pstTarget->stSrcImage.enFieldMode == HI_DRV_FIELD_BOTTOM)
     {
         pstFieldAddr->u32PhyAddr_Y = pstFieldAddr->u32PhyAddr_Y + pstFieldAddr->u32Stride_Y;
         pstFieldAddr->u32PhyAddr_C= pstFieldAddr->u32PhyAddr_C + pstFieldAddr->u32Stride_C;
     }
-
-    if(pstTarget->stSrcImage.bProgressive == HI_FALSE)
+    if (pstTarget->stSrcImage.bProgressive == HI_TRUE)
     {
-        
+        if (pstTarget->stSrcImage.enFieldMode == HI_DRV_FIELD_ALL)
+        {
+            pstFieldAddr->u32Stride_Y = pstFieldAddr->u32Stride_Y;
+            pstFieldAddr->u32Stride_C = pstFieldAddr->u32Stride_C;
+        }
+        else
+        {
+            pstFieldAddr->u32Stride_Y = 2* pstFieldAddr->u32Stride_Y;
+            pstFieldAddr->u32Stride_C = 2* pstFieldAddr->u32Stride_C;
+        }
+    }
+    else
+    {
         pstFieldAddr->u32Stride_Y = 2* pstFieldAddr->u32Stride_Y;
         pstFieldAddr->u32Stride_C = 2* pstFieldAddr->u32Stride_C;
-        
     }
-
+#endif
+    
     return HI_SUCCESS;
 }
 HI_S32 VPSS_INST_GetDeiAddr(VPSS_INSTANCE_S* pstInstance,
@@ -1925,7 +2167,7 @@ HI_S32 VPSS_INST_GetDeiAddr(VPSS_INSTANCE_S* pstInstance,
     }
     else
     {
-        VPSS_FATAL("\nGet Dei Addr Error\n");
+        VPSS_FATAL("Get Dei Addr Error\n");
         return HI_FAILURE;
     }
     
@@ -1973,7 +2215,7 @@ HI_S32 VPSS_INST_GetDeiAddr(VPSS_INSTANCE_S* pstInstance,
             pNode = pNode->next->next;
             if(pNode == &(pstImageList->stFulImageList))
             {
-                VPSS_FATAL("\n GetDeiAddr Error 3\n");
+                VPSS_FATAL("GetDeiAddr Error 3\n");
             }
             VPSS_INST_GetFieldAddr(pNode,&(stAddr[3]),eLReye,&stInRect);
             
@@ -1984,7 +2226,7 @@ HI_S32 VPSS_INST_GetDeiAddr(VPSS_INSTANCE_S* pstInstance,
             VPSS_INST_GetFieldAddr(pNode,&(stAddr[5]),eLReye,&stInRect);   
             break;
         default:
-            VPSS_FATAL("\n Dei Mode isn't supported");
+            VPSS_FATAL("Dei Mode isn't supported\n");
             return HI_FAILURE;
             break;
     }
@@ -2056,17 +2298,8 @@ HI_S32 VPSS_INST_GetVc1Info(VPSS_INSTANCE_S* pstInstance,VPSS_ALG_VC1INFO_S *pst
             pNode = pNode->next;
             pstCurFieldNode = list_entry(pNode,VPSS_IMAGE_NODE_S, node);
 
-            /*
-               * 1.处理一帧的第一场，需要前一帧，当前帧，后一帧信息
-               *     T B T B T B
-               *         |
-               *  2.处理一帧的第二场，需要当前帧，后一帧，后两帧信息
-               *     T B T B T B
-               *       |
-               */
             pNode = pstImageList->pstTarget_1;
             
-            /*处理的是一帧的第一场*/
             if (pstPreFieldNode->stSrcImage.u32FrameIndex
                 != pstCurFieldNode->stSrcImage.u32FrameIndex)
             {
@@ -2086,7 +2319,7 @@ HI_S32 VPSS_INST_GetVc1Info(VPSS_INSTANCE_S* pstInstance,VPSS_ALG_VC1INFO_S *pst
             }
             break;
         default:
-            VPSS_FATAL("\n Dei Mode isn't supported");
+            VPSS_FATAL("Dei Mode isn't supported\n");
             return HI_FAILURE;
             break;
     }
@@ -2108,59 +2341,19 @@ HI_S32 VPSS_INST_CorrectImgListOrder(VPSS_INSTANCE_S* pstInstance,HI_U32 u32Real
     
     pstImageList = &(pstInstance->stSrcImagesList);
 
-    #if 0
-    list_for_each_safe(pos, n, &(pstImageList->stFulImageList))
-    {
-        
-        pstCurFieldNode = list_entry(pos,VPSS_IMAGE_NODE_S, node);
-
-        printk("\nIn ID %d BT %d TopFirst %d",pstCurFieldNode->stSrcImage.u32FrameIndex,
-                            pstCurFieldNode->stSrcImage.enFieldMode,
-                            pstCurFieldNode->stSrcImage.bTopFieldFirst);
-        
-        if(pos == pstImageList->pstTarget_1)
-        {
-            printk("-->tar_1");
-        }
-    }
-    #endif
     if(u32RealTopFirst == pstInstance->u32RealTopFirst )
     {
         return HI_SUCCESS;
     }
-
-    /*
-     1.检出顶底场顺序保存在实例属性中
-     2.根据该属性，拆分隔行源
-     3.算法检出->获取DEI地址后调用修正
-     4.目前可见的情况:
-        (1)逐行源第一帧进入
-            0xffffffff -> 0xfffffffe
-        (2)隔行源第一帧进入,根据帧信息，做第一次赋值
-            0xffffffff -> TRUE，然后做帧信息拆分
-        (3)传入帧信息逐隔行变化
-            逐行->隔行
-                问题1:
-                   修正逐行->假隔行
-                   真实逐行->真隔行  存在吗?暂不考虑
-            隔行->逐行
-                问题2:
-                   修正隔行->假逐行
-                   真实隔行->真逐行  存在吗?暂不考虑
-     */
-
      
-    /*初始值->有效值*/
+    
     if(pstInstance->u32RealTopFirst == 0xffffffff)
     {
         pstInstance->u32RealTopFirst = u32RealTopFirst;
         return HI_SUCCESS;
     }
 
-    
-
-    
-    /*底场优先 -> 顶场优先 切换*/
+    /*bottom first  -> top first */
     /*
 	 *   B T  B T B T
 	 *     | 
@@ -2181,7 +2374,7 @@ HI_S32 VPSS_INST_CorrectImgListOrder(VPSS_INSTANCE_S* pstInstance,HI_U32 u32Real
 
         
     }
-    /*顶场优先->底场优先 切换*/
+    /*top first -> bottom first */
     else
     {
         pNode = pstImageList->pstTarget_1->next;
@@ -2224,7 +2417,6 @@ HI_S32 VPSS_INST_CorrectImgListOrder(VPSS_INSTANCE_S* pstInstance,HI_U32 u32Real
         list_del_init(pos);
         list_del_init(n);
 
-        /*顶底场调换*/
         n->next = pos;
         n->prev = pPreNode;
         pos->next = pNextNode;
@@ -2234,36 +2426,6 @@ HI_S32 VPSS_INST_CorrectImgListOrder(VPSS_INSTANCE_S* pstInstance,HI_U32 u32Real
         pNextNode->prev = pos;
     }
     pstInstance->u32RealTopFirst = u32RealTopFirst;
-    #if 0 
-    list_for_each_safe(pos, n, &(pstImageList->stFulImageList))
-    {
-        
-        pstCurFieldNode = list_entry(pos,VPSS_IMAGE_NODE_S, node);
-        
-        printk("\nOut ID %d BT %d TopFirst %d",pstCurFieldNode->stSrcImage.u32FrameIndex,
-                            pstCurFieldNode->stSrcImage.enFieldMode,
-                            pstCurFieldNode->stSrcImage.bTopFieldFirst);
-    }
-
-    printk("\n");
-    #endif
-    #if 0
-    printk("\nOut ###################\n");
-    list_for_each_safe(pos, n, &(pstImageList->stFulImageList))
-    {
-        
-        pstCurFieldNode = list_entry(pos,VPSS_IMAGE_NODE_S, node);
-
-        printk("\nIn ID %d BT %d TopFirst %d",pstCurFieldNode->stSrcImage.u32FrameIndex,
-                            pstCurFieldNode->stSrcImage.enFieldMode,
-                            pstCurFieldNode->stSrcImage.bTopFieldFirst);
-        
-        if(pos == pstImageList->pstTarget_1)
-        {
-            printk("-->tar_1");
-        }
-    }
-    #endif
     return HI_SUCCESS;
 }
 
@@ -2347,19 +2509,26 @@ HI_S32 VPSS_INST_CorrectProgInfo(VPSS_INSTANCE_S *pstInstance,HI_DRV_VIDEO_FRAME
         return ;
     }
     */
-
     if ( 0x2 == (pstVdecPriv->u8Marker &= 0x2)) 
     {
         pImage->bProgressive = HI_TRUE;
         return  HI_SUCCESS;
     }
 
-    if ( pImage->u32Height > 1080 && pImage->u32Width > 1920) 
+    if ( pImage->u32Height > 1080 || pImage->u32Width > 1920) 
     {
         pImage->bProgressive = HI_TRUE;
         return  HI_SUCCESS;
     }
     
+    if ( pImage->u32Height >= 1080 && pImage->u32Width >= 1920) 
+    {
+        if (pImage->u32FrameRate > 50000)
+        {
+            pImage->bProgressive = HI_TRUE;
+            return  HI_SUCCESS;
+        }
+    }
 
     if (pImage->eFrmType == HI_DRV_FT_FPK)
     {
@@ -2373,87 +2542,100 @@ HI_S32 VPSS_INST_CorrectProgInfo(VPSS_INSTANCE_S *pstInstance,HI_DRV_VIDEO_FRAME
         return HI_SUCCESS;
     }
     
-    if (  (HI_UNF_VCODEC_TYPE_REAL8 == pstVdecPriv->entype)
-            ||(HI_UNF_VCODEC_TYPE_REAL9 == pstVdecPriv->entype)
-            ||(HI_UNF_VCODEC_TYPE_MPEG4 == pstVdecPriv->entype))
+    if (pImage->ePixFormat == HI_DRV_PIX_FMT_YUYV
+        || pImage->ePixFormat == HI_DRV_PIX_FMT_YVYU
+        || pImage->ePixFormat == HI_DRV_PIX_FMT_UYVY)
     {
+        pImage->bProgressive = HI_TRUE;
         return HI_SUCCESS;
     }
-
-    if(pstInstance->u32Rwzb > 0)
+    
+    if(pstInstance->enProgInfo == HI_DRV_VPSS_PRODETECT_AUTO)
     {
-        /* special HD bit-stream, according to discussion of algorithm (20110115),
-         * employ way of trusting output system information.
-         * Currently, it is used in HD output.
-         */
-
-        /* for 576i/p 480i/p CVBS output, employ interlaced read */
-        if( (pstInstance->u32Rwzb == PAT_CCITT033)
-                || (pstInstance->u32Rwzb == PAT_CCITT18)
-                || (pstInstance->u32Rwzb == PAT_CBAR576_75)
-                || (pstInstance->u32Rwzb == PAT_CCIR3311)
-                || (pstInstance->u32Rwzb == PAT_MATRIX625)
-                || ((pstInstance->u32Rwzb >= PAT_CBAR576_75_B) && (pstInstance->u32Rwzb <= PAT_M576I_BOWTIE))
-          )
+        if (  (HI_UNF_VCODEC_TYPE_REAL8 == pstVdecPriv->entype)
+                ||(HI_UNF_VCODEC_TYPE_REAL9 == pstVdecPriv->entype)
+                ||(HI_UNF_VCODEC_TYPE_MPEG4 == pstVdecPriv->entype))
         {
-            pImage->bProgressive = HI_FALSE;
+            return HI_SUCCESS;
         }
-        else if (pstInstance->u32Rwzb == PAT_720P50 || pstInstance->u32Rwzb == PAT_720P59)
+
+        if(pstInstance->u32Rwzb > 0)
         {
-			pImage->bProgressive = HI_TRUE;
-            /*
-            if (1 == OPTM_M_GetDispProgressive(HAL_DISP_CHANNEL_DHD))
+            /* special HD bit-stream, according to discussion of algorithm (20110115),
+             * employ way of trusting output system information.
+             * Currently, it is used in HD output.
+             */
+
+            /* for 576i/p 480i/p CVBS output, employ interlaced read */
+            if( (pstInstance->u32Rwzb == PAT_CCITT033)
+                    || (pstInstance->u32Rwzb == PAT_CCITT18)
+                    || (pstInstance->u32Rwzb == PAT_CBAR576_75)
+                    || (pstInstance->u32Rwzb == PAT_CCIR3311)
+                    || (pstInstance->u32Rwzb == PAT_MATRIX625)
+                    || ((pstInstance->u32Rwzb >= PAT_CBAR576_75_B) && (pstInstance->u32Rwzb <= PAT_M576I_BOWTIE))
+              )
             {
-                pFrame->enSampleType = VIDEO_SAMPLE_TYPE_PROGRESSIVE;
+                pImage->bProgressive = HI_FALSE;
+            }
+            else if (pstInstance->u32Rwzb == PAT_720P50 || pstInstance->u32Rwzb == PAT_720P59)
+            {
+    			pImage->bProgressive = HI_TRUE;
+                /*
+                if (1 == OPTM_M_GetDispProgressive(HAL_DISP_CHANNEL_DHD))
+                {
+                    pFrame->enSampleType = VIDEO_SAMPLE_TYPE_PROGRESSIVE;
+                }
+                else
+                {
+                    pFrame->enSampleType = VIDEO_SAMPLE_TYPE_INTERLACE;
+                }
+                */
             }
             else
             {
-                pFrame->enSampleType = VIDEO_SAMPLE_TYPE_INTERLACE;
+
             }
-            */
-        }
-        else
-        {
 
-        }
-
-        /* special SD bit-stream, trust bit-stream information  */
-    }    
-    else if(pImage->u32Height == 720)
-    {
-        pImage->bProgressive = HI_TRUE;
-    }
-    /* un-trust bit-stream information  */
-    else if(pImage->u32Height <= 576)
-    {
-        if ( (240 >= pImage->u32Height) && (320 >= pImage->u32Width) )
+            /* special SD bit-stream, trust bit-stream information  */
+        }    
+        else if(pImage->u32Height == 720)
         {
             pImage->bProgressive = HI_TRUE;
         }
-        else if (pImage->u32Height <= (pImage->u32Width * 9 / 14 ) ) 
+        /* un-trust bit-stream information  */
+        else if(pImage->u32Height <= 576)
         {
-            // Rule: wide aspect ratio stream is normal progressive, we think that progressive info is correct.
+            if ( (240 >= pImage->u32Height) && (320 >= pImage->u32Width) )
+            {
+                pImage->bProgressive = HI_TRUE;
+            }
+            else if (pImage->u32Height <= (pImage->u32Width * 9 / 14 ) ) 
+            {
+                // Rule: wide aspect ratio stream is normal progressive, we think that progressive info is correct.
+            }
+            else
+            {
+                pImage->bProgressive = HI_FALSE;
+            }
         }
         else
         {
-            pImage->bProgressive = HI_FALSE;
+
         }
+    }
+    else if (pstInstance->enProgInfo == HI_DRV_VPSS_PRODETECT_INTERLACE)
+    {
+        pImage->bProgressive = HI_FALSE;
+    }
+    else if(pstInstance->enProgInfo == HI_DRV_VPSS_PRODETECT_PROGRESSIVE)
+    {
+        pImage->bProgressive = HI_TRUE;
     }
     else
     {
-
+        VPSS_FATAL("Invalid ProgInfo %d\n",pstInstance->enProgInfo);
     }
-
-    /*对于隔行非顶底场间插的帧数据，强制拆分*/
-    if (pImage->enFieldMode != HI_DRV_FIELD_ALL)
-    {
-        VPSS_INFO("\n InImgFieldMode %d  OriPro %d  TopFirst %d CorrectProg Error \n",
-                    pImage->enFieldMode,
-                    pImage->bProgressive,
-                    pImage->bTopFieldFirst);
-        pImage->bProgressive = HI_FALSE;
-        pImage->enFieldMode = HI_DRV_FIELD_ALL;
-    }
+    
 
     return HI_SUCCESS;
 }
@@ -2558,7 +2740,9 @@ HI_BOOL VPSS_INST_CheckAllDone(VPSS_INSTANCE_S *pstInstance)
     pstImgListInfo = &(pstInstance->stSrcImagesList);
     bDone = HI_TRUE;
     
-    /*检查前级输入的image是否都处理完*/
+    /*
+     *check image all done
+     */
     VPSS_OSAL_DownLock(&(pstImgListInfo->stFulListLock));
     if ( pstImgListInfo->pstTarget_1 != pstImgListInfo->stFulImageList.prev)
     {
@@ -2570,31 +2754,85 @@ HI_BOOL VPSS_INST_CheckAllDone(VPSS_INSTANCE_S *pstInstance)
     }
     VPSS_OSAL_UpLock(&(pstImgListInfo->stFulListLock));
 
-    /*检查后级输出的frame是否都取走*/
-    for(u32Count = 0; u32Count < DEF_HI_DRV_VPSS_PORT_MAX_NUMBER;u32Count ++)
+    if (bDone == HI_TRUE)
     {
-        pstPort = &(pstInstance->stPort[u32Count]);
-        if(pstPort->s32PortId != VPSS_INVALID_HANDLE)
+        /*
+         *check all outframe acquired
+         */
+        for(u32Count = 0; u32Count < DEF_HI_DRV_VPSS_PORT_MAX_NUMBER;u32Count ++)
         {
-            pstFrmListInfo = &(pstPort->stFrmInfo);
-            //VPSS_OSAL_DownLock(&(pstFrmListInfo->stFulBufLock));
-            VPSS_OSAL_DownSpin(&(pstFrmListInfo->stFulBufSpin));
-            if (pstFrmListInfo->pstTarget_1 != pstFrmListInfo->stFulFrmList.prev)
+            pstPort = &(pstInstance->stPort[u32Count]);
+            if(pstPort->s32PortId != VPSS_INVALID_HANDLE)
             {
-                bDone = bDone & HI_FALSE;
+                pstFrmListInfo = &(pstPort->stFrmInfo);
+                VPSS_OSAL_DownSpin(&(pstFrmListInfo->stFulBufSpin));
+                if (pstFrmListInfo->pstTarget_1 != pstFrmListInfo->stFulFrmList.prev)
+                {
+                    bDone = HI_FALSE;
+                }
+                VPSS_OSAL_UpSpin(&(pstFrmListInfo->stFulBufSpin));
             }
-            else
-            {
-                bDone = bDone & HI_TRUE;
-            }
-            VPSS_OSAL_UpSpin(&(pstFrmListInfo->stFulBufSpin));
-            //VPSS_OSAL_UpLock(&(pstFrmListInfo->stFulBufLock));
         }
     }
+    else
+    {
+
+    }
+    
 
     return bDone;
 }
 
+HI_BOOL VPSS_INST_CheckPortBuffer(VPSS_INSTANCE_S *pstInstance,VPSS_HANDLE hPort)
+{
+    VPSS_PORT_S *pstPort;
+    VPSS_FB_INFO_S *pstFrmListInfo;
+    HI_BOOL bAvailable = HI_FALSE;
+    VPSS_FB_NODE_S *pstFrmNode;
+    HI_DRV_VIDEO_FRAME_S *pstFrm;
+    LIST *pstNextNode;
+    pstPort = HI_NULL;
+
+    pstPort = VPSS_INST_GetPort(pstInstance,hPort);
+    
+    if(!pstPort)
+    {
+        return HI_FAILURE;
+    }
+    pstFrmListInfo = &(pstPort->stFrmInfo);
+    VPSS_OSAL_DownSpin(&(pstFrmListInfo->stFulBufSpin));
+
+    pstNextNode = (pstFrmListInfo->pstTarget_1)->next;
+    if (pstNextNode != &(pstFrmListInfo->stFulFrmList))
+    {
+        pstFrmNode = list_entry(pstNextNode,
+                        VPSS_FB_NODE_S, node);
+        pstFrm = &(pstFrmNode->stOutFrame);
+        
+        if(pstFrm->eFrmType == HI_DRV_FT_NOT_STEREO)
+        {
+            bAvailable = HI_TRUE;
+        }
+        else
+        {
+			if(pstNextNode->next != &(pstFrmListInfo->stFulFrmList))
+            {
+				bAvailable = HI_TRUE;
+            }
+            else
+            {
+                bAvailable = HI_FALSE;
+            }
+        }
+    }
+    else
+    {
+        bAvailable = HI_FALSE;
+    }
+    VPSS_OSAL_UpSpin(&(pstFrmListInfo->stFulBufSpin));
+
+    return bAvailable;
+}
 
 HI_S32 VPSS_INST_SyncUsrCfg(VPSS_INSTANCE_S * pstInstance)
 {
@@ -2606,11 +2844,9 @@ HI_S32 VPSS_INST_SyncUsrCfg(VPSS_INSTANCE_S * pstInstance)
     HI_U32 u32Count;
     VPSS_PORT_S *pstPort;
     HI_DRV_VPSS_PORT_CFG_S *pstPortCfg;
-    HI_S32 s32Ret;
+    unsigned long flags;
 
-    s32Ret = VPSS_OSAL_TryLockSpin(&(pstInstance->stUsrSetSpin));
-
-    if(s32Ret != HI_SUCCESS)
+    if(!spin_trylock_irqsave(&(pstInstance->stUsrSetSpin.irq_lock), flags))
     {
         return HI_FAILURE;
     }
@@ -2619,11 +2855,11 @@ HI_S32 VPSS_INST_SyncUsrCfg(VPSS_INSTANCE_S * pstInstance)
     {
         pstInstUsrcCfg = &(pstInstance->stUsrInstCfg);
     
-    //VPSS_OSAL_DownLock(&(pstInstance->stInstLock));
-    
         pstInstance->s32Priority = pstInstUsrcCfg->s32Priority;  
         pstInstance->bAlwaysFlushSrc = pstInstUsrcCfg->bAlwaysFlushSrc;
-
+        
+        pstInstance->enProgInfo = pstInstUsrcCfg->enProgInfo;
+        
         pstInstInCrop = &(pstInstance->stProcCtrl.stInRect);
         pstCfgInCrop= &(pstInstUsrcCfg->stProcCtrl.stInRect);
 
@@ -2679,6 +2915,8 @@ HI_S32 VPSS_INST_SyncUsrCfg(VPSS_INSTANCE_S * pstInstance)
                 pstPort->s32SafeThr = pstPortCfg->s32SafeThr;   
                 pstPort->u32MaxFrameRate = pstPortCfg->u32MaxFrameRate; 
 
+                pstPort->b3Dsupport = pstPortCfg->b3Dsupport;
+                pstPort->stFrmInfo.stBufListCfg = pstPortCfg->stBufListCfg;
                 pstPort->stProcCtrl = pstPortCfg->stProcCtrl;
             }
         }
@@ -2690,9 +2928,34 @@ HI_S32 VPSS_INST_SyncUsrCfg(VPSS_INSTANCE_S * pstInstance)
     {
 
     }
+    spin_unlock_irqrestore(&(pstInstance->stUsrSetSpin.irq_lock), flags);
     
-    VPSS_OSAL_UpSpin(&(pstInstance->stUsrSetSpin));
+    for(u32Count = 0; 
+        u32Count < DEF_HI_DRV_VPSS_PORT_MAX_NUMBER;
+        u32Count ++)
+    {
+        pstPort = &(pstInstance->stPort[u32Count]);
+        
+        if(pstPort->s32PortId != VPSS_INVALID_HANDLE)
+        {
+            if (pstPort->stFrmInfo.stBufListCfg.eBufType
+                    == HI_DRV_VPSS_BUF_VPSS_ALLOC_MANAGE)
+            {
+                if (pstPort->b3Dsupport == HI_TRUE)
+                {
+                    VPSS_FB_AllocExtBuffer(&(pstPort->stFrmInfo),
+                            pstPort->stFrmInfo.stBufListCfg.u32BufNumber);
+                }
+                else
+                {
+                    VPSS_FB_AllocExtBuffer(&(pstPort->stFrmInfo),0);
+                }
 
+                VPSS_FB_RlsExtBuffer(&(pstPort->stFrmInfo));
+            }
+        }
+    }
+    
     return HI_SUCCESS;
 }
 
@@ -2731,7 +2994,7 @@ HI_S32 VPSS_INST_GetPortPrc(VPSS_INSTANCE_S* pstInstance,VPSS_HANDLE hPort,VPSS_
         pstPortPrc->stProcCtrl = pstPort->stProcCtrl ;
         pstPortPrc->bTunnelEnable = pstPort->bTunnelEnable ;
         pstPortPrc->s32SafeThr = pstPort->s32SafeThr ;
-        
+        pstPortPrc->b3Dsupport = pstPort->b3Dsupport;
         pstPortPrc->stBufListCfg.eBufType = pstPort->stFrmInfo.stBufListCfg.eBufType;
         pstPortPrc->stBufListCfg.u32BufNumber = pstPort->stFrmInfo.stBufListCfg.u32BufNumber;
         pstPortPrc->stBufListCfg.u32BufSize = pstPort->stFrmInfo.stBufListCfg.u32BufSize;
@@ -2755,6 +3018,81 @@ HI_S32 VPSS_INST_GetDeiData(VPSS_INSTANCE_S *pstInstance,ALG_FMD_RTL_STATPARA_S 
 {
     VPSS_ALG_GetDeiData((HI_U32)pstInstance->stAuInfo,pstDeiData);
 
+    return HI_SUCCESS;
+}
+
+
+HI_BOOL VPSS_INST_Check_3D_Process(VPSS_INSTANCE_S *pstInstance)
+{
+    HI_U32 u32Count;
+    VPSS_PORT_S *pstPort;
+    HI_BOOL b3Dprocess = HI_TRUE;
+    for(u32Count = 0; u32Count < DEF_HI_DRV_VPSS_PORT_MAX_NUMBER; u32Count ++)
+    {
+        pstPort = &(pstInstance->stPort[u32Count]);
+        if (pstPort->s32PortId != VPSS_INVALID_HANDLE
+            && pstPort->bEnble == HI_TRUE)
+        {
+            b3Dprocess = b3Dprocess | pstPort->b3Dsupport;
+        }
+    }
+
+    return b3Dprocess;
+}
+
+
+HI_S32 VPSS_INST_ReviseImage(VPSS_INSTANCE_S *pstInstance,HI_DRV_VIDEO_FRAME_S *pImage)
+{
+    /*1.Revise image height to 4X*/
+    pImage->u32Height = 
+            pImage->u32Height & 0xfffffffc; 
+     /*
+       * 2. 3d addr revise
+       * SBS TAB read half image 
+       * MVC read two addr
+       */
+    if(pImage->eFrmType == HI_DRV_FT_SBS)
+    {
+        memcpy(&(pImage->stBufAddr[1]),&(pImage->stBufAddr[0]),
+                    sizeof(HI_DRV_VID_FRAME_ADDR_S));
+        
+        #if DEF_VPSS_VERSION_1_0            
+        pImage->stBufAddr[HI_DRV_BUF_ADDR_RIGHT].u32PhyAddr_Y = 
+                pImage->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32PhyAddr_Y + pImage->u32Width/2;
+        pImage->stBufAddr[HI_DRV_BUF_ADDR_RIGHT].u32PhyAddr_C = 
+                pImage->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32PhyAddr_C + pImage->u32Width/2;
+        #endif
+    }
+
+    if(pImage->eFrmType == HI_DRV_FT_TAB)
+    {
+        memcpy(&(pImage->stBufAddr[1]),&(pImage->stBufAddr[0]),
+                    sizeof(HI_DRV_VID_FRAME_ADDR_S));
+        
+        #if DEF_VPSS_VERSION_1_0          
+        pImage->stBufAddr[HI_DRV_BUF_ADDR_RIGHT].u32PhyAddr_Y = 
+                pImage->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32PhyAddr_Y 
+                + pImage->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32Stride_Y * pImage->u32Height/2;
+        pImage->stBufAddr[HI_DRV_BUF_ADDR_RIGHT].u32PhyAddr_C = 
+                pImage->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32PhyAddr_C
+                + pImage->stBufAddr[HI_DRV_BUF_ADDR_LEFT].u32Stride_C * pImage->u32Height/4;
+        #endif
+    }
+    /*
+     *revise frame rate
+     */
+    if (pImage->u32FrameRate == 0)
+    {
+        pImage->u32FrameRate = 25000;
+    }
+    
+    /*
+     * if not top/bottom Interleaved,force Split
+     */
+    if (pImage->enFieldMode != HI_DRV_FIELD_ALL)
+    {
+        pImage->bProgressive = HI_TRUE;
+    }
     return HI_SUCCESS;
 }
 #ifdef __cplusplus

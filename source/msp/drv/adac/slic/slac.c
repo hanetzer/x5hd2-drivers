@@ -18,11 +18,11 @@
 #include "hi_module.h"
 #include "hi_debug.h"
 /* BEGIN: Modified for PN:SLIC initialize with audio error by f00172091, 2011/1/30 */
-#include "drv_proc_ext.h"
+#include "hi_drv_proc.h"
 /* END:   Modified for PN:SLIC initialize with audio error by f00172091, 2011/1/30 */
 #include "hi_kernel_adapt.h"
 
-#ifdef  CONFIG_SUPPORT_CA_RELEASE
+#ifdef  HI_ADVCA_FUNCTION_RELEASE
     #define TRC(x...)
 #else
     #define TRC(x...)  printk(x)
@@ -159,14 +159,14 @@ int Slac_ProcRead(struct seq_file *p, void *v)
 
     };
 
-    p += seq_printf(p,"---------Hisilicon Slac Driver Info---------\n");
+    PROC_PRINT(p,"---------Hisilicon Slac Driver Info---------\n");
 
     SLAC_LOCK();
     
     if(atomic_read(&open_cnt) == 0)
     {
         SLAC_UNLOCK();
-        p += seq_printf(p,"The slac is not opened.\n");
+        PROC_PRINT(p,"The slac is not opened.\n");
         return 0;
     }
 
@@ -175,71 +175,71 @@ int Slac_ProcRead(struct seq_file *p, void *v)
     {
     	if (0 <= stLineState && 28 > stLineState) //for fix MOTO
     	{
-			p += seq_printf(p,"Vp Line State: %d , %s\n",stLineState,LineState2Str[stLineState]);
+			PROC_PRINT(p,"Vp Line State: %d , %s\n",stLineState,LineState2Str[stLineState]);
 		}        
     }
     else
     {
-        p += seq_printf(p,"VpGetLineState() failure, %d\n",res);
+        PROC_PRINT(p,"VpGetLineState() failure, %d\n",res);
     }
 
-    p += seq_printf(p,"\n");
+    PROC_PRINT(p,"\n");
 
     for(input = VP_INPUT_HOOK; input < VP_NUM_INPUT_TYPES; input++)
     {
         res = VpGetDeviceStatus(&devCtx, input, &u32DeviceStatus);
         if ( res ==  VP_STATUS_SUCCESS )
         {
-            p += seq_printf(p,"Vp Device Status: input %s, status %d\n",Input2Str[input],(int)u32DeviceStatus);
+            PROC_PRINT(p,"Vp Device Status: input %s, status %d\n",Input2Str[input],(int)u32DeviceStatus);
         }
         else
         {
-            p += seq_printf(p,"VpGetDeviceStatus() failure, input %s, res %d\n",Input2Str[input],res);
+            PROC_PRINT(p,"VpGetDeviceStatus() failure, input %s, res %d\n",Input2Str[input],res);
         }
         
     }
     
-    p += seq_printf(p,"\n");
+    PROC_PRINT(p,"\n");
 
     for(input = VP_INPUT_HOOK; input < VP_NUM_INPUT_TYPES; input++)
     {
         res = VpGetLineStatus(&lineCtx, input, &bLineStatus);
         if ( res ==  VP_STATUS_SUCCESS )
         {
-            p += seq_printf(p,"Vp Line Status: input %s, status %s\n",Input2Str[input],bLineStatus?"TRUE":"FALSE");
+            PROC_PRINT(p,"Vp Line Status: input %s, status %s\n",Input2Str[input],bLineStatus?"TRUE":"FALSE");
         }
         else
         {
-            p += seq_printf(p,"VpGetLineStatus() failure, input %s, res %d\n",Input2Str[input],res);
+            PROC_PRINT(p,"VpGetLineStatus() failure, input %s, res %d\n",Input2Str[input],res);
         }
     }
     
     {
         HI_U8   data[2];
-        p += seq_printf(p,"\n");
+        PROC_PRINT(p,"\n");
 
         le89116_reg_read(0x73, data, 2);    //read chip version and product code number
-        p += seq_printf(p,"SLIC 0x73 REG is 0x%x 0x%x\n",data[0],data[1]);
+        PROC_PRINT(p,"SLIC 0x73 REG is 0x%x 0x%x\n",data[0],data[1]);
 
         le89116_reg_read(0x41, data, 1);
-        p += seq_printf(p,"SLIC 0x41 REG is 0x%x\n",data[0]);
+        PROC_PRINT(p,"SLIC 0x41 REG is 0x%x\n",data[0]);
 
         le89116_reg_read(0x43, data, 1);
-        p += seq_printf(p,"SLIC 0x43 REG is 0x%x\n",data[0]);
+        PROC_PRINT(p,"SLIC 0x43 REG is 0x%x\n",data[0]);
         
         le89116_reg_read(0x61, data, 1);
-        p += seq_printf(p,"SLIC 0x61 REG is 0x%x\n",data[0]);
+        PROC_PRINT(p,"SLIC 0x61 REG is 0x%x\n",data[0]);
 
         le89116_reg_read(0x45, data, 1);
-        p += seq_printf(p,"SLIC 0x45 REG is 0x%x\n",data[0]);
+        PROC_PRINT(p,"SLIC 0x45 REG is 0x%x\n",data[0]);
 
         le89116_reg_read(0x4b, data, 1);
-        p += seq_printf(p,"SLIC 0x4B REG is 0x%x\n",data[0]);
+        PROC_PRINT(p,"SLIC 0x4B REG is 0x%x\n",data[0]);
         
     }
 
     SLAC_UNLOCK();
-    p += seq_printf(p,"\n");
+    PROC_PRINT(p,"\n");
     return 0;
 }
 /* END:   Modified for PN: initialize with audio error by f00172091, 2011/1/30 */
@@ -1207,15 +1207,7 @@ static int __INIT__ slac_init(void)
         slac_device_major = res;
     }
     #endif
-#if 0
-    res = request_irq(SLAC_IOIRQ_NO, &slac_ioirq_handler, SA_SHIRQ|SA_INTERRUPT, SLAC_DEVICE_NAME, &slac_ioirq_handler);
-    if(res)
-    {
-        TRC(KERN_DEBUG "SLAC Error: request IRQ(%d) failed\n", SLAC_IOIRQ_NO);
-        unregister_chrdev(slac_device_major, SLAC_DEVICE_NAME);
-        return res;
-    }
-#endif
+
 /* BEGIN: Deleted for PN: initialize with audio error by f00172091, 2011/1/30 */
 /*
     init_timer(&slac_timer);
@@ -1242,8 +1234,9 @@ static int __INIT__ slac_init(void)
     pProcItem->read = Slac_ProcRead;
     pProcItem->write = Slac_ProcWrite;
 /* END:   Modified for PN: initialize with audio error by f00172091, 2011/1/30 */
-    TRC("Load hi_slic.ko success. res=%d  \t(%s)\n", res, VERSION_STRING);
-
+#ifdef MODULE
+    HI_PRINT("Load hi_slic.ko success.\t(%s)\n", VERSION_STRING);
+#endif
     //TRC("SLAC init ok. res=%d, ver=%s, %s.\n",  __DATE__, __TIME__);
     //return res;
     return 0;

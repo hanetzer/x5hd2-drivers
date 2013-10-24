@@ -95,7 +95,7 @@ HI_S32 JPGFMW_Handle_Alloc(JPG_HANDLE *pHandle, HI_VOID *pInstance)
     /* find free intem*/
     Cnt = 0;
     jpg_assert((s_struHandleInfo.Count <= JPGFMW_HANDLE_EVERYMALLOC_NUM),
-                return HI_FAILURE);
+                (HI_VOID)JPGVCOS_sem_post(&s_struHandleInfo.semLock);return HI_FAILURE);
     while ((Cnt < s_struHandleInfo.Count)
            && (HI_FALSE != s_struHandleInfo.pItemHead[Cnt].UsedFlag))
     {
@@ -146,7 +146,7 @@ HI_VOID JPGFMW_Handle_Free(JPG_HANDLE Handle)
 
     Cnt = 0;
     jpg_assert((s_struHandleInfo.Count <= JPGFMW_HANDLE_EVERYMALLOC_NUM),
-                return );
+                (HI_VOID)JPGVCOS_sem_post(&s_struHandleInfo.semLock);return );
     while (Cnt < s_struHandleInfo.Count)
     {
         if ((Handle == s_struHandleInfo.pItemHead[Cnt].Handle)
@@ -188,7 +188,7 @@ HI_VOID* JPGFMW_Handle_GetInstance(JPG_HANDLE Handle)
 
     Cnt = 0;
     jpg_assert((s_struHandleInfo.Count <= JPGFMW_HANDLE_EVERYMALLOC_NUM),
-                return NULL);
+                (HI_VOID)JPGVCOS_sem_post(&s_struHandleInfo.semLock);return NULL);
     while ((Cnt < s_struHandleInfo.Count)
            && ((Handle != s_struHandleInfo.pItemHead[Cnt].Handle)
            || ((Handle == s_struHandleInfo.pItemHead[Cnt].Handle)

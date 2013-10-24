@@ -20,49 +20,46 @@ HI_U32 VPSS_REG_RegRead(volatile HI_U32* a)
 }
 
 HI_S32 VPSS_REG_ReSetCRG(HI_VOID)
-{
-    HI_U32 *g_pSysHdClkRegVirAddr;
-    HI_U32 u32Count;
-    VPSS_REG_S *pstPhyReg;
+{   
+    U_PERI_CRG60 PERI_CRG60;
     
-    g_pSysHdClkRegVirAddr = (HI_U32 *)IO_ADDRESS(VPSS_CRG_ADDR);
-
-    
-    *g_pSysHdClkRegVirAddr = 0x11;
-
-    /*延迟1ums等待逻辑复位*/
+    PERI_CRG60.u32 = g_pstRegCrg->PERI_CRG60.u32;
+    PERI_CRG60.bits.vpss_cken = 1;
+    PERI_CRG60.bits.vpss_srst_req = 1;
+    g_pstRegCrg->PERI_CRG60.u32 = PERI_CRG60.u32;
+    /*wait for reg ready*/
     udelay(1);
-    
-    *g_pSysHdClkRegVirAddr = 0x1;
-    
-    for(u32Count = 0;u32Count < 100;u32Count++)
-    {
-
-    }
-    pstPhyReg = (VPSS_REG_S * )IO_ADDRESS(VPSS_BASE_ADDR);
+    PERI_CRG60.u32 = g_pstRegCrg->PERI_CRG60.u32;
+    PERI_CRG60.bits.vpss_cken = 1;
+    PERI_CRG60.bits.vpss_srst_req = 0;
+    g_pstRegCrg->PERI_CRG60.u32 = PERI_CRG60.u32;
+    udelay(1);
     
     return HI_SUCCESS;
 }
 
 HI_S32 VPSS_REG_CloseClock(HI_VOID)
-{
-    HI_U32 *g_pSysHdClkRegVirAddr;
+{  
+    U_PERI_CRG60 PERI_CRG60;
     
-    g_pSysHdClkRegVirAddr = (HI_U32 *)IO_ADDRESS(VPSS_CRG_ADDR);
-
-    *g_pSysHdClkRegVirAddr = 0x0;
-
+    PERI_CRG60.u32 = g_pstRegCrg->PERI_CRG60.u32;
+    PERI_CRG60.bits.vpss_cken = 0;
+    g_pstRegCrg->PERI_CRG60.u32 = PERI_CRG60.u32;
+    /*wait for reg ready*/
+    udelay(1);
+    
     return HI_SUCCESS;
     
 }
 HI_S32 VPSS_REG_OpenClock(HI_VOID)
-{
-    HI_U32 *g_pSysHdClkRegVirAddr;
+{  
+    U_PERI_CRG60 PERI_CRG60;
     
-    g_pSysHdClkRegVirAddr = (HI_U32 *)IO_ADDRESS(VPSS_CRG_ADDR);
-
-    
-    *g_pSysHdClkRegVirAddr = 0x1;
+    PERI_CRG60.u32 = g_pstRegCrg->PERI_CRG60.u32;
+    PERI_CRG60.bits.vpss_cken = 1;
+    g_pstRegCrg->PERI_CRG60.u32 = PERI_CRG60.u32;
+    /*wait for reg ready*/
+    udelay(1);
     
     return HI_SUCCESS;
     
@@ -223,7 +220,7 @@ HI_S32 VPSS_REG_EnPort(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL bEnable)
             VPSS_CTRL.bits.vsd_en = bEnable;
             break;
         default:
-            VPSS_FATAL("\n ePort Error");
+            VPSS_FATAL("ePort Error\n");
     }
 
     VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32);
@@ -420,8 +417,8 @@ HI_S32 VPSS_REG_SetImgFormat(HI_U32 u32AppAddr,HI_DRV_PIX_FORMAT_E eFormat)
                 HI_DRV_PIX_FMT_NV12,HI_DRV_PIX_FMT_NV21,eFormat);
                 */
             break;
-        case HI_DRV_PIX_FMT_NV16:
-        case HI_DRV_PIX_FMT_NV61:
+        case HI_DRV_PIX_FMT_NV16_2X1:
+        case HI_DRV_PIX_FMT_NV61_2X1:
             VPSS_CTRL.bits.in_b422 = 0x1;
             break;
         default:
@@ -448,7 +445,6 @@ HI_S32 VPSS_REG_SetImgReadMod(HI_U32 u32AppAddr,HI_BOOL bField)
 /*************************************************************************************************/
 
 
-/*输出Frame相关操作*/
 /********************************/
 HI_S32 VPSS_REG_SetFrmSize(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32Height,HI_U32 u32Width)
 {
@@ -565,8 +561,8 @@ HI_S32 VPSS_REG_SetFrmFormat(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_DRV_PIX_
                 HI_DRV_PIX_FMT_NV12,HI_DRV_PIX_FMT_NV21,eFormat);
                 */
             break;
-        case HI_DRV_PIX_FMT_NV16:
-        case HI_DRV_PIX_FMT_NV61:
+        case HI_DRV_PIX_FMT_NV61_2X1:
+        case HI_DRV_PIX_FMT_NV16_2X1:
             u32Format = 0x1;
             break;
         default:
@@ -602,7 +598,6 @@ HI_S32 VPSS_REG_SetFrmFormat(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_DRV_PIX_
 /***************************************************************************************/
 
 
-/*ZME相关操作*/
 /***************************************************************************************/
 HI_S32 VPSS_REG_SetZmeEnable(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,REG_ZME_MODE_E eMode,HI_BOOL bEnable)
 {
@@ -1217,8 +1212,8 @@ HI_S32 VPSS_REG_SetZmeInFmt(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_DRV_PIX_F
         case HI_DRV_PIX_FMT_NV21:
             u32Format = 0x1;
             break;
-        case HI_DRV_PIX_FMT_NV16:
-        case HI_DRV_PIX_FMT_NV61:
+        case HI_DRV_PIX_FMT_NV16_2X1:
+        case HI_DRV_PIX_FMT_NV61_2X1:
             u32Format = 0x0;
             break;
         default:
@@ -1271,8 +1266,8 @@ HI_S32 VPSS_REG_SetZmeOutFmt(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_DRV_PIX_
         case HI_DRV_PIX_FMT_NV21:
             u32Format = 0x1;
             break;
-        case HI_DRV_PIX_FMT_NV16:
-        case HI_DRV_PIX_FMT_NV61:
+        case HI_DRV_PIX_FMT_NV16_2X1:
+        case HI_DRV_PIX_FMT_NV61_2X1:
             u32Format = 0x0;
             break;
         case HI_DRV_PIX_FMT_NV24:
@@ -1579,7 +1574,6 @@ HI_VOID VPSS_REG_GetDetPixel(HI_U32 u32AppAddr,HI_U32 BlkNum, HI_U8* pstData)
 
 }
 
-/*DEI相关操作*/
 /*************************************************************************************************/
 
 /*DEI*/
@@ -1688,16 +1682,6 @@ HI_S32 VPSS_REG_SetDeiAddr(HI_U32 u32AppAddr,REG_FIELDPOS_E eField,HI_U32 u32YAd
 
     }
     
-    #if 0
-    printk("\n VPSS_REFYADDR %x VPSS_REFCADDR %x\n",
-                pstReg->VPSS_REFYADDR,pstReg->VPSS_REFCADDR);
-    printk("\n VPSS_NEXT1YADDR %x VPSS_NEXT1CADDR %x\n",
-                pstReg->VPSS_NEXT1YADDR,pstReg->VPSS_NEXT1CADDR);
-    printk("\n VPSS_NEXT2YADDR %x VPSS_NEXT2CADDR %x\n",
-                pstReg->VPSS_NEXT2YADDR,pstReg->VPSS_NEXT2CADDR);
-    printk("\n VPSS_NEXT3YADDR %x VPSS_NEXT3CADDR %x\n",
-                pstReg->VPSS_NEXT3YADDR,pstReg->VPSS_NEXT3CADDR);
-    #endif
     return HI_SUCCESS;
 }
 HI_S32 VPSS_REG_SetDeiStride(HI_U32 u32AppAddr,REG_FIELDPOS_E eField,HI_U32 u32YStride,HI_U32 u32CStride)
@@ -3504,7 +3488,7 @@ HI_S32 VPSS_REG_SetLTIEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL  bEnLTI
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_CTRL.u32), VPSS_STR_LTI_CTRL.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3536,7 +3520,7 @@ HI_S32 VPSS_REG_SetLGainRatio(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s3
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_CTRL.u32), VPSS_STR_LTI_CTRL.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3574,7 +3558,7 @@ HI_S32 VPSS_REG_SetLGainCoef(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S8  *ps8
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LGAIN_COEF.u32), VPSS_STR_LGAIN_COEF.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3606,7 +3590,7 @@ HI_S32 VPSS_REG_SetLMixingRatio(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_CTRL.u32), VPSS_STR_LTI_CTRL.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3638,7 +3622,7 @@ HI_S32 VPSS_REG_SetLCoringThd(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s3
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_THD.u32), VPSS_STR_LTI_THD.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3673,7 +3657,7 @@ HI_S32 VPSS_REG_SetLSwing(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s32Und
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_THD.u32), VPSS_STR_LTI_THD.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3734,7 +3718,7 @@ HI_S32 VPSS_REG_SetLHpassCoef(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S8  *ps
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_CTRL.u32), VPSS_STR_LTI_CTRL.u32);
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3769,7 +3753,7 @@ HI_S32 VPSS_REG_SetLHfreqThd(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S16  *ps
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LHFREQ_THD.u32), VPSS_STR_LHFREQ_THD.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3802,7 +3786,7 @@ HI_S32 VPSS_REG_SetCTIEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL  bEnCTI
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CTI_CTRL.u32), VPSS_STR_CTI_CTRL.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3834,7 +3818,7 @@ HI_S32 VPSS_REG_SetCGainRatio(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s3
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CTI_CTRL.u32), VPSS_STR_CTI_CTRL.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3866,7 +3850,7 @@ HI_S32 VPSS_REG_SetCMixingRatio(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CTI_CTRL.u32), VPSS_STR_CTI_CTRL.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3898,7 +3882,7 @@ HI_S32 VPSS_REG_SetCCoringThd(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s3
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CTI_THD.u32), VPSS_STR_CTI_THD.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3933,7 +3917,7 @@ HI_S32 VPSS_REG_SetCSwing(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s32Und
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CTI_THD.u32), VPSS_STR_CTI_THD.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3971,7 +3955,7 @@ HI_S32 VPSS_REG_SetCHpassCoef(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S8  *ps
             VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CHPASS_COEF.u32), VPSS_STR_CHPASS_COEF.u32); 
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -3996,7 +3980,7 @@ HI_S32 VPSS_REG_SetLBAEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL bEnLba)
             VPSS_CTRL.bits.str_lba_en = bEnLba;
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
             return HI_FAILURE;
     }
     VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32);
@@ -4040,7 +4024,7 @@ HI_S32 VPSS_REG_SetLBABg(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32Color
             VPSS_REG_RegWrite(&(pstReg->VPSS_STRLBA_BK.u32), VPSS_STRLBA_BK.u32);
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
             return HI_FAILURE;
     }
 
@@ -4104,7 +4088,7 @@ HI_S32 VPSS_REG_SetLBADispPos(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32
             VPSS_REG_RegWrite(&(pstReg->VPSS_STRLBA_DLPOS.u32), VPSS_STRLBA_DLPOS.u32);
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;
@@ -4161,7 +4145,7 @@ HI_S32 VPSS_REG_SetLBAVidPos(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32X
             VPSS_REG_RegWrite(&(pstReg->VPSS_STRLBA_VLPOS.u32), VPSS_STRLBA_VLPOS.u32);
             break;
         default:
-            VPSS_FATAL("\nReg Error\n");
+            VPSS_FATAL("Reg Error\n");
     }
 
     return HI_SUCCESS;

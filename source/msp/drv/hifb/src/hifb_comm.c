@@ -17,99 +17,32 @@
 ******************************************************************************/
 
 #include "hifb_comm.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
 
-HI_VOID hifb_version(HI_VOID)
+HI_VOID hifb_version(HI_VOID) 
 {
-    /* Use "strings hifb.ko | grep "HIFB_MAIN_VERSION"" to get the version */
-#if 1
-    HI_CHAR HIFBVersion[80] ="SDK_VERSION:["\
-        MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
-        __DATE__", "__TIME__"]";
-
-    printk("Load hi_fb.ko success.     \t(%s)\n", HIFBVersion);
-#endif
-
+	HI_GFX_ShowVersionK(HIGFX_FB_ID);
 }
-
- HI_S32 hifb_buf_initmem(HI_VOID)
-{
-    return HI_SUCCESS;
-}
-
- HI_VOID hifb_buf_deinitmem(HI_VOID)
-{
-    return;
-}
-
-
+ 
 HI_VOID *hifb_buf_map(HI_U32 u32PhyAddr)
-{    
-    MMZ_BUFFER_S stBuffer;
-
-    stBuffer.u32StartPhyAddr = u32PhyAddr;
-    if(HI_SUCCESS == HI_DRV_MMZ_Map(&stBuffer))        
-     {                                                   
-            return ((unsigned char *)stBuffer.u32StartVirAddr);            
-     }                                                   
-     else                                                
-     {                                                   
-            //return -1;
-            return HI_NULL;
-     } 
+{
+	return HI_GFX_Map(u32PhyAddr);
 }
-
 
 HI_S32 hifb_buf_ummap(HI_VOID *pViraddr)
 {
-    MMZ_BUFFER_S stBuffer;                             
-    stBuffer.u32StartVirAddr = (HI_U32)pViraddr;              
-    HI_DRV_MMZ_Unmap(&stBuffer);                  
-
-    return HI_SUCCESS;
+	return HI_GFX_Unmap(pViraddr);
 }
 
 HI_VOID hifb_buf_freemem(HI_U32 u32Phyaddr)
 {
-        MMZ_BUFFER_S stBuffer;                             
-        stBuffer.u32StartPhyAddr = u32Phyaddr;               
-        HI_DRV_MMZ_Release(&stBuffer);                    
+	HI_GFX_FreeMem(u32Phyaddr);
 }
 
 HI_U32 hifb_buf_allocmem(HI_CHAR *pName, HI_U32 u32LayerSize)
 {
-    int addr;
-    MMZ_BUFFER_S stBuffer; 
-    
-    if ((u32LayerSize == 0) || (u32LayerSize > 0x40000000))
-    {
-        return 0;
-    }
-    
-	if(HI_SUCCESS == HI_DRV_MMZ_Alloc(pName, "hifb", u32LayerSize, 16, &stBuffer))   
-    {                                                          
-            addr = stBuffer.u32StartPhyAddr; 
-			return addr;
-    }  
-    else if(HI_SUCCESS == HI_DRV_MMZ_Alloc(pName, "graphics", u32LayerSize, 16, &stBuffer))   
-    {                                                          
-            addr = stBuffer.u32StartPhyAddr;
-			return addr;
-    } 
-	else if(HI_SUCCESS == HI_DRV_MMZ_Alloc(pName, NULL, u32LayerSize, 16, &stBuffer))   
-    {                                                          
-            addr = stBuffer.u32StartPhyAddr; 
-			return addr;
-    }                                                          
-    else                                                       
-    {          
-            HIFB_ERROR("alloc mem failed!\n");
-            addr = 0;                                           
-    }  
-	return addr;
+	return HI_GFX_AllocMem(pName, "hifb", u32LayerSize);
 }
-
-
 
 
 inline HI_S32 HIFB_RectToRegion(const HIFB_RECT* pRect, HIFB_REGION* pRegion)

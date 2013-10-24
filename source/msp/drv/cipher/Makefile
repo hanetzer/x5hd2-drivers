@@ -25,7 +25,8 @@ EXTRA_CFLAGS += -I$(MSP_UNF_INCLUDE)			\
 		-I$(MSP_DIR)/drv/cipher/sha				\
 		-I$(COMMON_UNF_INCLUDE)					\
 		-I$(COMMON_DRV_INCLUDE)					\
-		-I$(COMPONENT_DIR)/hisecurity/common/drv
+		-I$(COMPONENT_DIR)/hisecurity/common/drv \
+		-I$(INCLUDE_DIR)
 		
 
 KBUILD_EXTRA_SYMBOLS += $(COMMON_DIR)/drv/Module.symvers

@@ -126,6 +126,7 @@ N/A
 \retval HI_SUCCESS Success                                                    CNcomment:成功 CNend
 \retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.               CNcomment:IR设备未初始化 CNend
 \retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.                   CNcomment:参数非法 CNend
+\retval ::HI_ERR_IR_ENABLE_FAILED It fails to enable IR device.               CNcomment:使能设备失败 CNend
 \see \n
 N/A
 */
@@ -136,12 +137,13 @@ HI_S32 HI_UNF_IR_Enable ( HI_BOOL bEnable);
 CNcomment:\brief 获取遥控器的协议类型 。CNend
 
 \attention \n
-This interface is not supported now \n
-CNcomment:此接口暂不支持 CNend
+This interface is only supported in IR_STD mode. And it must be used after function "HI_UNF_IR_GetValueWithProtocol".\n
+CNcomment:此接口只在IR_STD模式下支持。需要在HI_UNF_IR_GetValueWithProtocol函数后调用。 CNend
 
 \param[out]  penProtocol  protocol type pointer,reference HI_UNF_IR_PROTOCOL_E for detail   CNcomment:协议类型指针  具体含义请参考::HI_UNF_IR_PROTOCOL_E CNend
-\retval HI_SUCCESS Success                           CNcomment:成功 CNend
-\retval ::HI_ERR_IR_NULL_PTR   The pointer is null.  CNcomment:指针为空 CNend
+\retval HI_SUCCESS Success                                                            CNcomment:成功 CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                       CNcomment:IR设备未初始化 CNend
+\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.                                 CNcomment: 指针为空 CNend
 \see \n
 N/A
 */
@@ -158,8 +160,7 @@ CNcomment:当IR_TYPE=IR_LIRC时有效，此接口暂不支持 CNend
 
 \param[out]  pProtocolName  used to save first address of the protocol name buffer    CNcomment:用于存储协议名称的缓冲区首地址 CNend
 \param[in]   s32BufLen      used to save length of the protocol name buffer           CNcomment:用于存储协议名称的缓冲区长度 CNend
-\retval ::HI_SUCCESS        success                                                   CNcomment:成功 CNend
-\retval ::HI_ERR_IR_INVALID_PARA  invalid patameter                                   CNcomment:参数无效 CNend
+\retval ::HI_ERR_IR_UNSUPPORT   It is not supported.                                  CNcomment:操作不支持 CNend
 \see \n
 N/A
 */
@@ -180,7 +181,8 @@ CNcomment:\brief 获取遥控器的按键值和按键状态 。CNend
 \retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                       CNcomment:IR设备未初始化 CNend
 \retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.                                 CNcomment: 指针为空 CNend
 \retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.                           CNcomment:参数非法 CNend
-\retval ::HI_ERR_IR_READ_FAILED  The IR device fails to read key                      CNcomment:读取键值和状态失败 CNend
+\retval ::HI_ERR_IR_SET_BLOCKTIME_FAILED  The IR device fails to set block time.      CNcomment:设置阻塞时间失败 CNend
+\retval ::HI_ERR_IR_READ_FAILED  The IR device fails to read key.                     CNcomment:读取键值和状态失败 CNend
 \see \n
 N/A
 */
@@ -197,11 +199,14 @@ HI_S32 HI_UNF_IR_GetValueWithProtocol(HI_UNF_KEY_STATUS_E *penPressStatus, HI_U6
 CNcomment:\brief 设定从红外驱动获取的是键值还是裸电平 。CNend
 
 \attention \n
+when IR_TYPE=IR_S2 is effective.
+CNcomment:当IR_TYPE=IR_S2时有效。CNend
 
 \param[in] mode 0 means key mode. 1 means symbol mode                                 CNcomment:0获取键值，1获取裸电平 CNend
 \retval HI_SUCCESS Success                                                            CNcomment:成功 CNend
 \retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                       CNcomment:IR设备未初始化 CNend
 \retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.                           CNcomment:参数非法 CNend
+\retval ::HI_ERR_IR_SET_FETCHMETHOD_FAILED  The IR device fails to set fetch method.  CNcomment:设置获取方式失败 CNend
 \see \n
 N/A
 */
@@ -212,6 +217,8 @@ HI_S32 HI_UNF_IR_SetFetchMode(HI_S32 s32Mode);
 CNcomment:\brief 获取遥控器的裸电平 。CNend
 
 \attention \n
+when IR_TYPE=IR_S2 is effective.
+CNcomment:当IR_TYPE=IR_S2时有效。CNend
 
 \param[out]  pu64lower  lower pluse value                                             CNcomment:裸电平对的低位 CNend
 \param[out]  pu64upper  upper space value                                             CNcomment:裸电平对的高位 CNend
@@ -220,7 +227,8 @@ CNcomment:\brief 获取遥控器的裸电平 。CNend
 \retval HI_SUCCESS Success                                                            CNcomment:成功 CNend
 \retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized. 					  CNcomment:IR设备未初始化 CNend
 \retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.								  CNcomment: 指针为空 CNend
-\retval ::HI_ERR_IR_READ_FAILED  The IR device fails to read key					  CNcomment:读取键值和状态失败 CNend
+\retval ::HI_ERR_IR_SET_BLOCKTIME_FAILED  The IR device fails to set block time.      CNcomment:设置阻塞时间失败 CNend
+\retval ::HI_ERR_IR_READ_FAILED  The IR device fails to read key.					  CNcomment:读取键值和状态失败 CNend
 \see \n
 N/A
 */
@@ -240,6 +248,7 @@ CNcomment:如不设置，默认为打开。CNend
 \retval HI_SUCCESS  Success                                             CNcomment:成功 CNend
 \retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.         CNcomment:IR设备未初始化 CNend
 \retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.             CNcomment:参数非法 CNend
+\retval ::HI_ERR_IR_SET_KEYUP_FAILED  It fails to enable released key.  CNcomment:设置上报按键弹起状态失败 CNend
 \see \n
 N/A
 */
@@ -264,6 +273,7 @@ CNcomment:如不设置，默认为打开\n
 \retval HI_SUCCESS Success                                                     CNcomment:成功 CNend
 \retval ::HI_ERR_IR_NOT_INIT   The IR device is not initialized.               CNcomment:IR设备未初始化 CNend
 \retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                   CNcomment:参数非法 CNend
+\retval ::HI_ERR_IR_SET_REPEAT_FAILED   It fails to enable repeat key.         CNcomment:设置上报重复键失败 CNend
 \see \n
 N/A
 */
@@ -277,12 +287,13 @@ CNcomment:\brief 设置上报重复按键的时间间隔，单位为ms 。CNend
 This API is unavailable if the function of reporting the same key value is disabled by calling HI_UNF_IR_IsRepKey.
 CNcomment:当HI_UNF_IR_IsRepKey配置为不上报重复按键时，此接口设置无效。CNend
 
-\param[in] u32TimeoutMs   Interval of reporting the same key value. The interval ranges from 108 ms to 65,536 ms.\n
-						  The value smaller than 108 will be set to 108, and the value bigger than 65536 will be set to 65536 \n
-                          CNcomment:上报重复按键的时间间隔，设置范围：108ms～65536ms 。\n
-						  小于108的参数会被强制设置成108，大于65536的参数会被强制设值成65536。CNend
+\param[in] u32TimeoutMs   Interval of reporting the same key value. The interval ranges from 0 ms to 65,536 ms.\n
+						  The value 0 will be set to 108, and the value bigger than 65536 will be set to 65536 \n
+                          CNcomment:上报重复按键的时间间隔，设置范围：0ms～65536ms 。\n
+						  等于0的参数会被强制设置成108，大于65536的参数会被强制设置成65536。CNend
 \retval HI_SUCCESS Success CNcomment:                                          CNcomment:成功 CNend
 \retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                CNcomment:IR设备未初始化 CNend
+\retval ::HI_ERR_IR_SET_REPKEYTIMEOUT_FAILED  It fails to set repeat key timeout.  CNcomment:设置上报重复按键间隔失败 CNend
 \see \n
 N/A
 */
@@ -293,11 +304,19 @@ HI_S32 HI_UNF_IR_SetRepKeyTimeoutAttr(HI_U32 u32TimeoutMs);
 CNcomment:\brief 设置遥控器码型。CNend
 
 \attention \n
-The API is abandoned, always return success.
-CNcomment:此接口功能已废弃，始终返回成功。CNend
+when IR_TYPE=IR_STD is effective.
+CNcomment:当IR_TYPE=IR_STD时有效。CNend
+
 
 \param[in] enIRCode Four standard code types of the remote control are supported by default.  CNcomment:默认支持4种标准遥控器码型：CNend
-\retval HI_SUCCESS Success                                       CNcomment:成功 CNend
+                     HI_UNF_IR_CODE_NEC_SIMPLE：Nec With Simple code type. CNcomment:Nec Simple 码型。 CNend
+                     HI_UNF_IR_CODE_TC9012：TC9012 code type.              CNcomment:TC9012 码型。     CNend
+                     HI_UNF_IR_CODE_NEC_FULL：Nec With Full code type.     CNcomment:Nec Full 码型。   CNend
+                     HI_UNF_IR_CODE_SONY_12BIT：Sony 12 Bit code type.     CNcomment:Sony 12 bit 码型。CNend
+\retval HI_SUCCESS Success                                                 CNcomment:成功 CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.            CNcomment:IR设备未初始化 CNend
+\retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.               CNcomment:参数非法 CNend
+\retval ::HI_ERR_IR_SETFORMAT_FAILED It fails to set IR code type.         CNcomment:设置IR类型失败 CNend
 \see \n
 N/A
 */
@@ -314,6 +333,7 @@ CNcomment:只是把buffer中的键值清掉。CNend
 \param N/A         CNcomment:无 CNend
 \retval HI_SUCCESS Success                                                      CNcomment:成功 CNend
 \retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IR设备未初始化 CNend
+\retval ::HI_ERR_IR_RESET_FAILED  The IR device fails to reset.                 CNcomment:IR设备复位失败 CNend
 \see \n
 N/A
 */
@@ -324,12 +344,15 @@ HI_S32 HI_UNF_IR_Reset(HI_VOID);
 CNcomment:\brief  激活某类红外遥控器协议。CNend
 
 \attention \n
+when IR_TYPE=IR_S2 is effective.
+CNcomment:当IR_TYPE=IR_S2时有效。CNend
 
 \param N/A         CNcomment:无 CNend
 \retval HI_SUCCESS Success                                                      CNcomment:成功 CNend
 \retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IR设备未初始化 CNend
 \retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.							CNcomment: 指针为空 CNend
 \retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                    CNcomment:参数非法 CNend
+\retval ::HI_ERR_IR_ENABLE_PROT_FAILED  It fails to enable an infrared code.    CNcomment:激活遥控协议失败 CNend
 \see \n
 N/A
 */
@@ -340,22 +363,27 @@ HI_S32 HI_UNF_IR_EnableProtocol(HI_CHAR* pszProtocolName);
 CNcomment:\brief  禁用某类红外遥控器协议。CNend
 
 \attention \n
+when IR_TYPE=IR_S2 is effective.
+CNcomment:当IR_TYPE=IR_S2时有效。CNend
 
 \param N/A         CNcomment:无 CNend
 \retval HI_SUCCESS Success                                                      CNcomment:成功 CNend
 \retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IR设备未初始化 CNend
 \retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.							CNcomment: 指针为空 CNend
 \retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                    CNcomment:参数非法 CNend
+\retval ::HI_ERR_IR_DISABLE_PROT_FAILED   It fails to disalbe an infrared code. CNcomment:禁用遥控协议失败 CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_IR_DisableProtocol(HI_CHAR* pszProtocolName);
 
 /**
-\brief get the enable or disable stat of  a infrared code.
+\brief get the enable or disable status of  an infrared code.
 CNcomment:\brief  获取某类红外遥控器协议激活状态。CNend
 
 \attention \n
+when IR_TYPE=IR_S2 is effective.
+CNcomment:当IR_TYPE=IR_S2时有效。CNend
 
 \param N/A         CNcomment:无 CNend
 \retval HI_SUCCESS Success                                                      CNcomment:成功 CNend
@@ -363,6 +391,7 @@ CNcomment:\brief  获取某类红外遥控器协议激活状态。CNend
 \retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IR设备未初始化 CNend
 \retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.							CNcomment: 指针为空 CNend
 \retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                    CNcomment:参数非法 CNend
+\retval ::HI_ERR_IR_GET_PROTENABLE_FAILED It fails to get status of an infrared code.  CNcomment:获取遥控协议状态失败 CNend
 \see \n
 N/A
 */

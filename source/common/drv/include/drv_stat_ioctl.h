@@ -19,6 +19,7 @@
 #define __DRV_STAT_IOCTL_H__
 
 #include "hi_debug.h"
+#include "hi_drv_stat.h"
 
 typedef struct
 {
@@ -36,16 +37,6 @@ typedef struct
 
 #define UMAPC_CMPI_STAT_EVENT              _IOW (HI_ID_STAT,  104, STAT_EVENT_S)
 #define UMAPC_CMPI_STAT_GETTICK            _IOR (HI_ID_STAT,  105, HI_U32)
-
-
-// STAT
-#define HI_FATAL_STAT(fmt...) HI_FATAL_PRINT(HI_ID_STAT, fmt)
-
-#define HI_ERR_STAT(fmt...) HI_ERR_PRINT(HI_ID_STAT, fmt)
-
-#define HI_WARN_STAT(fmt...) HI_WARN_PRINT(HI_ID_STAT, fmt)
-
-#define HI_INFO_STAT(fmt...) HI_INFO_PRINT(HI_ID_STAT, fmt)
 
 #endif /* __DRV_STAT_IOCTL_H__ */
 

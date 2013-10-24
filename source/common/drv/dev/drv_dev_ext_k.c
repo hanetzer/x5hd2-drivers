@@ -22,10 +22,9 @@
 #include <linux/device.h>
 #include <linux/slab.h>
 #include <asm/uaccess.h>
-
-#include "drv_dev_ext.h"
 #include "hi_module.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_mem.h"
 
 
 HI_S32 HI_DRV_UserCopy(struct inode *inode, struct file *file,
@@ -53,8 +52,9 @@ HI_S32 HI_DRV_UserCopy(struct inode *inode, struct file *file,
             }
             else
             {
+                HI_U32 buff_size = _IOC_SIZE(cmd);
                 /* too big to allocate from stack */
-                mbuf = HI_KMALLOC(HI_ID_MEM, _IOC_SIZE(cmd),GFP_KERNEL);
+                mbuf = HI_KMALLOC(HI_ID_MEM, buff_size, GFP_KERNEL);
                 if (NULL == mbuf)
                 {
                     HI_FATAL_DEV("malloc cmd buffer failed\n");

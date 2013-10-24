@@ -360,8 +360,8 @@ typedef enum hiTDE2_BLENDCMD_E
     TDE2_BLENDCMD_BUTT
 }TDE2_BLENDCMD_E;
 
-/*Options for the alpha blending operation*/
-/*CNcomment:alpha混合操作选项 */
+/**Options for the alpha blending operation*/
+/**CNcomment:alpha混合操作选项 */
 typedef struct hiTDE2_BLEND_OPT_S
 {
     HI_BOOL  bGlobalAlphaEnable;        /**<Global alpha enable*//**<CNcomment:是否使能全局alpha */
@@ -373,8 +373,8 @@ typedef struct hiTDE2_BLEND_OPT_S
     TDE2_BLEND_MODE_E eSrc2BlendMode;   /**<Src2 blending mode select. It is valid when eBlendCmd is set to TDE2_BLENDCMD_CONFIG.*//**<CNcomment:Src2 blend模式选择,在eBlendCmd = TDE2_BLENDCMD_CONFIG时有效 */
 }TDE2_BLEND_OPT_S;
 
-/*CSC parameter option*/
-/*CNcomment:CSC参数选项*/
+/**CSC parameter option*/
+/**CNcomment:CSC参数选项*/
 typedef struct hiTDE2_CSC_OPT_S
 {
     HI_BOOL bICSCUserEnable;		/**User-defined ICSC parameter enable*//**CNcomment:用户自定义ICSC参数使能*/
@@ -465,11 +465,11 @@ typedef struct hiTDE2_PATTERN_FILL_OPT_S
 
     TDE2_OUTALPHA_FROM_E enOutAlphaFrom;    /**<Source of the output alpha*//**<CNcomment:输出alpha来源*/
 
-    HI_U32 u32Colorize;                     /*Colorize value*//*CNcomment:Colorize值*/
+    HI_U32 u32Colorize;                     /**<Colorize value*//**<CNcomment:Colorize值*/
 
-    TDE2_BLEND_OPT_S stBlendOpt;            /*Options of the blending operation*//*CNcomment:Blend操作选项 */
+    TDE2_BLEND_OPT_S stBlendOpt;           /**<Options of the blending operation*//**<CNcomment:Blend操作选项 */
 
-    TDE2_CSC_OPT_S stCscOpt;		/*CSC parameter option*//*CNcomment:Csc参数选项*/
+    TDE2_CSC_OPT_S stCscOpt;		/**<CSC parameter option*//**<CNcomment:Csc参数选项*/
     
 }TDE2_PATTERN_FILL_OPT_S;
 

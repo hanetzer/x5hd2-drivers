@@ -30,7 +30,7 @@ extern "C" {
 
 /* global function */
 /* global function */
-HI_S32					iHAL_AOE_Init(HI_U32 u32AoeRegBase);
+HI_S32					iHAL_AOE_Init(HI_BOOL bSwAoeFlag);
 HI_VOID					iHAL_AOE_DeInit(HI_VOID);
 HI_VOID					iHAL_AOE_GetHwCapability(HI_U32 *pu32Capability);
 HI_VOID					iHAL_AOE_GetHwVersion(HI_U32 *pu32Version);

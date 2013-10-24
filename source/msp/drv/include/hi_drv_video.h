@@ -30,6 +30,7 @@ typedef enum hiDRV_PIX_FORMAT_E
     HI_DRV_PIX_FMT_RGB444  ,   /* 16  xxxxrrrr ggggbbbb */
     HI_DRV_PIX_FMT_RGB555  ,   /* 16  RGB-5-5-5     */
     HI_DRV_PIX_FMT_RGB565  ,   /* 16  RGB-5-6-5     */
+    HI_DRV_PIX_FMT_BGR565  ,   /* 16  RGB-5-6-5     */
     HI_DRV_PIX_FMT_RGB555X ,   /* 16  RGB-5-5-5 BE  */
     HI_DRV_PIX_FMT_RGB565X ,   /* 16  RGB-5-6-5 BE  */
     HI_DRV_PIX_FMT_BGR666  ,   /* 18  BGR-6-6-6	  */
@@ -157,6 +158,7 @@ typedef enum hiDRV_PIX_FORMAT_E
 
     HI_DRV_PIX_FMT_NV12_TILE,    /* 12 tile  */
     HI_DRV_PIX_FMT_NV21_TILE,    /* 21 tile  */
+    HI_DRV_PIX_FMT_YUV400_TILE,    /* 21 tile  */
     
     HI_DRV_PIX_FMT_NV12_TILE_CMP,   /* 12 tile compressed */
     HI_DRV_PIX_FMT_NV21_TILE_CMP,   /* 21 tile compressed */
@@ -379,7 +381,14 @@ typedef struct hiDRV_VIDEO_FRAME_S
 }HI_DRV_VIDEO_FRAME_S;
 #endif
 
-
+/* define of how to adjust the TB match */
+typedef enum hiDRV_VIDEO_TB_ADJUST_E
+{
+    HI_DRV_VIDEO_TB_PLAY = 0,
+    HI_DRV_VIDEO_TB_REPEAT,
+    HI_DRV_VIDEO_TB_DISCARD,
+    HI_DRV_VIDEO_TB_BUTT
+}HI_DRV_VIDEO_TB_ADJUST_E;
 
 
 typedef struct hiDRV_VIDEO_FRAME_S
@@ -418,9 +427,13 @@ typedef struct hiDRV_VIDEO_FRAME_S
 	*/
     HI_U32 u32ErrorLevel;                   //???????
 	HI_U32 u32Priv[DEF_HI_DRV_FRAME_INFO_SIZE];  /* must be 0 */ //??????????,????
-		/***********above as unf***************/
+	/***********above as unf***************/
 
     HI_BOOL bIsFirstIFrame;
+    HI_BOOL bStillFrame;
+
+    HI_DRV_VIDEO_TB_ADJUST_E    enTBAdjust;
+
 		
 		/***********below should be deleted************/
     //maybe use
@@ -450,9 +463,11 @@ typedef struct hiDRV_VIDEO_PRIVATE_S
 	HI_DRV_COLOR_SPACE_E eColorSpace;    //?????????
 	HI_U32 u32BufferID;                    //?????????????ID
 	HI_U32 u32FrmCnt;
-	HI_U32  u32PlayTime;                /* ????*/
+	HI_U32 u32PlayTime;                /* ????*/
+	HI_U32 u32Fidelity;
 	HI_DRV_FIELD_MODE_E  eOriginField;   /*?DEI???,????????????*/
     HI_RECT_S stOriginImageRect;         /* ?LBOX???,??LBOX?????? */
+	HI_U32 u32PrivDispTime;             //This displaytime is for pvr smooth tplay
 	HI_U32 u32Reserve[32]; 				//??????????????????,?VC1????
 }HI_DRV_VIDEO_PRIVATE_S;
 
@@ -505,6 +520,7 @@ typedef struct hiDRV_WIN_PRIV_INFO_S
     HI_BOOL   bInterlaced;
     HI_RECT_S stScreen;
     HI_DRV_ASPECT_RATIO_S stScreenAR;
+    HI_BOOL  bIn3DMode;
     
     /*Display MaxRate*/
     HI_U32 u32MaxRate;     /* in 1/100 Hz', if 0, full rate */

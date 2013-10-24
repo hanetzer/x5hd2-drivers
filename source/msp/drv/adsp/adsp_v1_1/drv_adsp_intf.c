@@ -15,10 +15,10 @@
 
 /* Unf headers */
 #include "hi_error_mpi.h"
-#include "drv_mmz_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_proc.h"
 
 /* Drv headers */
 #include "drv_adsp_ext.h"
@@ -65,7 +65,8 @@ static UMAP_DEVICE_S s_stAdspUmapDev;
 static __inline__ int  ADSP_DRV_RegisterDev(void)
 {
     /*register aenc chn device*/
-    sprintf(s_stAdspUmapDev.devfs_name, UMAP_DEVNAME_ADSP);
+ 
+	snprintf(s_stAdspUmapDev.devfs_name, sizeof(s_stAdspUmapDev.devfs_name), UMAP_DEVNAME_ADSP);
     s_stAdspUmapDev.fops   = &s_stDevFileOpts;
     s_stAdspUmapDev.minor  = UMAP_MIN_MINOR_ADSP;
     s_stAdspUmapDev.owner  = THIS_MODULE;
@@ -128,9 +129,7 @@ HI_S32 ADSP_DRV_ModInit(HI_VOID)
     }
 
 #ifdef MODULE
- #ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_adsp.ko success.\t(%s)\n", VERSION_STRING);
- #endif
+    HI_PRINT("Load hi_adsp.ko success.\t(%s)\n", VERSION_STRING);
 #endif
 
     return HI_SUCCESS;

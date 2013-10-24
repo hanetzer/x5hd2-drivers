@@ -215,7 +215,9 @@ unsigned long long spi_raw_get_start_addr(const char *dev_name, unsigned long bl
     else
     {
         *value_valid = 1;
+        /*lint -e661*/
         return ptn->start;
+        /*lint +e661*/
     }
 }
 /*****************************************************************************/
@@ -278,7 +280,7 @@ int spi_raw_read
                 && read(ptn->fd, buffer, (size_t)num_read) != (ssize_t)num_read)
             {
                 PRINTF_CA("read \"%s\" fail. %s\n", ptn->mtddev, strerror(errno));
-                return -errno;
+                return HI_FAILURE;
             }
 
             buffer    += num_read;
@@ -440,7 +442,7 @@ int spi_raw_write
                 && write(ptn->fd, buffer, (size_t)num_write) != (ssize_t)num_write)
             {
                 PRINTF_CA("write \"%s\" fail. %s\n", ptn->mtddev, strerror(errno));
-                return -errno;
+                return HI_FAILURE;
             }
 
             buffer     += num_write;

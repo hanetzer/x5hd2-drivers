@@ -6,7 +6,7 @@
 #=======================================
 #	local varibale
 #=======================================
-objects:= omx_core omx_vdec
+objects:= omx_core omx_vdec omx_venc
 
 
 objects_clean:=${addsuffix _clean,${objects}}

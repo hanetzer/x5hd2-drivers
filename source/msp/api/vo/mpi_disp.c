@@ -28,7 +28,7 @@
 #include <linux/types.h>
 
 #include "hi_mpi_disp.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "hi_error_mpi.h"
 
 #include "hi_drv_disp.h"
@@ -49,17 +49,16 @@ static pthread_mutex_t   g_DispMutex = PTHREAD_MUTEX_INITIALIZER;
 #define HI_DISP_LOCK()       (void)pthread_mutex_lock(&g_DispMutex);
 #define HI_DISP_UNLOCK()     (void)pthread_mutex_unlock(&g_DispMutex);
 
-#define CHECK_DISP_INIT()\
+
+#define CHECK_DISP_PTR(pointer)\
 do{\
-    HI_DISP_LOCK();\
-    if (g_DispDevFd < 0)\
+    if (!(pointer))\
     {\
-        HI_ERR_DISP("DISP is not init.\n");\
-        HI_DISP_UNLOCK();\
-        return HI_ERR_DISP_NO_INIT;\
+        HI_ERR_DISP("para is null ptr.\n");\
+        return HI_ERR_DISP_NULL_PTR;\
     }\
-    HI_DISP_UNLOCK();\
 }while(0)
+
 
 
 HI_S32 HI_MPI_DISP_Init(HI_VOID)
@@ -302,7 +301,7 @@ HI_S32 HI_MPI_DISP_SetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_STEREO_MODE_E 
         return HI_ERR_DISP_INVALID_PARA;
     }
 
-    if (enStereo > HI_DRV_DISP_STEREO_FRAME_PACKING)
+    if (enStereo > HI_DRV_DISP_STEREO_TAB)
     {
         HI_ERR_DISP("para enStereo is invalid.\n");
         return HI_ERR_DISP_INVALID_PARA;
@@ -318,9 +317,30 @@ HI_S32 HI_MPI_DISP_SetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_STEREO_MODE_E 
             return HI_ERR_DISP_INVALID_PARA;
         }
     }
+    else if (enStereo == HI_DRV_DISP_STEREO_SBS_HALF)
+    {
+        if (  (enFormat != HI_DRV_DISP_FMT_1080i_60)
+            &&(enFormat != HI_DRV_DISP_FMT_1080i_50)
+            )
+        {
+            HI_ERR_DISP("para enStereo is invalid.\n");
+            return HI_ERR_DISP_INVALID_PARA;
+        }
+    }
+    else if (enStereo == HI_DRV_DISP_STEREO_TAB)
+    {
+        if (  (enFormat != HI_DRV_DISP_FMT_1080P_24)
+            &&(enFormat != HI_DRV_DISP_FMT_720P_50)
+            &&(enFormat != HI_DRV_DISP_FMT_720P_60)
+            )
+        {
+            HI_ERR_DISP("para enStereo is invalid.\n");
+            return HI_ERR_DISP_INVALID_PARA;
+        }
+    }
     else
     {
-        if (enFormat > HI_DRV_DISP_FMT_SECAM_COS)
+        if (enFormat > HI_DRV_DISP_FMT_CUSTOM)
         {
             HI_ERR_DISP("para enFormat is invalid.\n");
             return HI_ERR_DISP_INVALID_PARA;
@@ -341,7 +361,7 @@ HI_S32 HI_MPI_DISP_SetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_STEREO_MODE_E 
     return HI_SUCCESS;
 }
 
-HI_S32 HI_MPI_DISP_GetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E *penFormat)
+HI_S32 HI_MPI_DISP_GetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_STEREO_MODE_E *penStereo,HI_DRV_DISP_FMT_E *penFormat)
 {
 
     HI_S32                   Ret;
@@ -353,12 +373,8 @@ HI_S32 HI_MPI_DISP_GetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E *penForm
         return HI_ERR_DISP_INVALID_PARA;
     }
 
-    if (!penFormat)
-    {
-        HI_ERR_DISP("para penFormat is null.\n");
-        return HI_ERR_DISP_NULL_PTR;
-    }
-
+    CHECK_DISP_PTR(penStereo);
+    CHECK_DISP_PTR(penFormat);
     CHECK_DISP_INIT();    
 
     DispFormat.enDisp = enDisp;
@@ -370,6 +386,7 @@ HI_S32 HI_MPI_DISP_GetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E *penForm
     }
     
     *penFormat = DispFormat.enFormat;
+    *penStereo = DispFormat.enStereo;
     return HI_SUCCESS;
 }
 
@@ -393,6 +410,119 @@ HI_S32 HI_MPI_DISP_SetRightEyeFirst(HI_DRV_DISPLAY_E enDisp, HI_BOOL bRFirst)
 
     return Ret;
 }
+
+HI_S32 HI_MPI_DISP_SetVirtualScreen(HI_DRV_DISPLAY_E enDisp, HI_U32 u32Width, HI_U32 u32Height)
+{
+    HI_S32 Ret;
+    
+    DISP_VIRTSCREEN_S virtscreen;
+
+    if (enDisp >= HI_DRV_DISPLAY_BUTT)
+    {
+        HI_ERR_DISP("para enDisp is invalid.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+    
+    CHECK_DISP_INIT();    
+    
+    virtscreen.enDisp = enDisp;
+    virtscreen.stVirtScreen.s32X        = 0;
+    virtscreen.stVirtScreen.s32Y        = 0;
+    virtscreen.stVirtScreen.s32Height   = u32Height;
+    virtscreen.stVirtScreen.s32Width    = u32Width;   
+    
+    Ret = ioctl(g_DispDevFd, CMD_DISP_SET_VIRTSCREEN, &virtscreen);
+    
+    return Ret;
+}
+
+HI_S32 HI_MPI_DISP_GetVirtualScreen(HI_DRV_DISPLAY_E enDisp, HI_U32 *u32Width, HI_U32 *u32Height)
+{
+    HI_S32 Ret;    
+    DISP_VIRTSCREEN_S virtscreen;
+
+    if (enDisp >= HI_DRV_DISPLAY_BUTT)
+    {
+        HI_ERR_DISP("para enDisp is invalid.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+
+    if ((!u32Width) || (!u32Height))
+    {
+        HI_ERR_DISP("para ptr is null.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+    
+    CHECK_DISP_INIT();    
+    
+    virtscreen.enDisp = enDisp;    
+    Ret = ioctl(g_DispDevFd, CMD_DISP_GET_VIRTSCREEN, &virtscreen);
+
+    if (Ret != HI_SUCCESS)
+        return Ret;
+    
+    *u32Width    =   virtscreen.stVirtScreen.s32Width;    
+    *u32Height   =   virtscreen.stVirtScreen.s32Height;
+    
+    return Ret;
+}
+
+
+HI_S32 HI_MPI_DISP_SetScreenOffset(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_OFFSET_S *pstOffset)
+{
+    HI_S32 Ret;
+    DISP_SCREENOFFSET_S screen_offset;
+
+    if (enDisp >= HI_DRV_DISPLAY_BUTT)
+    {
+        HI_ERR_DISP("para enDisp is invalid.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+
+    if (!pstOffset)
+    {
+        HI_ERR_DISP("para ptr is null.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+
+    CHECK_DISP_INIT();    
+    
+    screen_offset.enDisp = enDisp;
+    screen_offset.stScreenOffset =  *pstOffset;    
+    Ret = ioctl(g_DispDevFd, CMD_DISP_SET_SCREENOFFSET, &screen_offset);
+    
+    return Ret;
+}
+
+
+HI_S32 HI_MPI_DISP_GetScreenOffset(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_OFFSET_S *pstOffset)
+{
+    HI_S32 Ret;
+    DISP_SCREENOFFSET_S screen_offset;
+
+    if (enDisp >= HI_DRV_DISPLAY_BUTT)
+    {
+        HI_ERR_DISP("para enDisp is invalid.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+    
+    if (!pstOffset)
+    {
+        HI_ERR_DISP("para ptr is null.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+
+    CHECK_DISP_INIT();    
+
+    screen_offset.enDisp = enDisp;     
+    Ret = ioctl(g_DispDevFd, CMD_DISP_GET_SCREENOFFSET, &screen_offset);
+    if (Ret != HI_SUCCESS)
+        return Ret;
+
+    *pstOffset  =  screen_offset.stScreenOffset;    
+    return Ret;
+}
+
 
 HI_S32 HI_MPI_DISP_SetAspectRatio(HI_DRV_DISPLAY_E enDisp, HI_U32 u32ARHori, HI_U32 u32ARVert)
 {
@@ -507,7 +637,7 @@ HI_S32 HI_MPI_DISP_SetTiming(HI_DRV_DISPLAY_E enDisp,  HI_DRV_DISP_TIMING_S *pst
         HI_ERR_DISP("para pstLcdPara is null.\n");
         return HI_ERR_DISP_NULL_PTR;
     }
-
+#if 0
     if ((pstTiming->bIDV!= HI_TRUE)
       &&(pstTiming->bIDV != HI_FALSE)
        )
@@ -559,6 +689,7 @@ HI_S32 HI_MPI_DISP_SetTiming(HI_DRV_DISPLAY_E enDisp,  HI_DRV_DISP_TIMING_S *pst
         HI_ERR_DISP("para pstLcdPara->DitherEnable is invalid.\n");
         return HI_ERR_DISP_INVALID_PARA;
     }
+    #endif
 
     CHECK_DISP_INIT();
 
@@ -1327,18 +1458,16 @@ HI_S32 HI_MPI_DISP_SetCgms(HI_DRV_DISPLAY_E enDisp, const HI_DRV_DISP_CGMSA_CFG_
     }
     
     /* check validity of pstCgmsCgf->enType */
-    if (  (pstCgmsCgf->enType < HI_DRV_DISP_CGMSA_A) 
-        ||(pstCgmsCgf->enType >= HI_DRV_DISP_CGMSA_TYPE_BUTT)
-       )
+    if (pstCgmsCgf->enType >= HI_DRV_DISP_CGMSA_TYPE_BUTT)
+      
     {
         HI_ERR_DISP("para pstCgmsCgf->enType is invalid.\n");
         return HI_ERR_DISP_INVALID_PARA;
     }
     
     /* check validity of pstCgmsCgf->enMode */
-    if (  (pstCgmsCgf->enMode < HI_DRV_DISP_CGMSA_COPY_FREELY) 
-        ||(pstCgmsCgf->enMode >= HI_DRV_DISP_CGMSA_MODE_BUTT)
-       )
+    if (pstCgmsCgf->enMode >= HI_DRV_DISP_CGMSA_MODE_BUTT)
+       
     {
         HI_ERR_DISP("para pstCgmsCgf->enMode is invalid.\n");
         return HI_ERR_DISP_INVALID_PARA;
@@ -1350,12 +1479,34 @@ HI_S32 HI_MPI_DISP_SetCgms(HI_DRV_DISPLAY_E enDisp, const HI_DRV_DISP_CGMSA_CFG_
     return Ret;
 
 }
-/* MPI_disp interface for Set display output rect */
-HI_S32 HI_MPI_DISP_SetScreen(HI_DRV_DISPLAY_E enDisp, HI_RECT_S *pstOutRect)
-{
-    HI_S32      Ret = 0;
-    DISP_OUTRECT_S  DispOutRect;
 
+HI_S32 HI_MPI_DISP_Snapshot_Acquire(HI_DRV_DISPLAY_E enDisp, HI_DRV_VIDEO_FRAME_S * pstSnapShotFrame)
+{
+	DISP_SNAPSHOT_FRAME_S stFrame;
+	HI_S32 Ret;
+    /* DISP validity check */
+    if(enDisp >= HI_DRV_DISPLAY_BUTT)
+    { 
+        HI_ERR_DISP("para enDisp is invalid.\n");
+        return HI_ERR_DISP_INVALID_PARA;
+    } 
+
+    /* check DISP initialization status */
+    CHECK_DISP_INIT();
+    memset((void*)&stFrame, 0, sizeof(DISP_SNAPSHOT_FRAME_S));
+    
+	stFrame.enDispLayer = enDisp;
+	Ret =  ioctl(g_DispDevFd, CMD_DISP_ACQUIRE_SNAPSHOT, &stFrame);
+
+	if (!Ret)
+	    memcpy(pstSnapShotFrame, &(stFrame.stFrame), sizeof(HI_DRV_VIDEO_FRAME_S));
+
+	return Ret;
+}
+
+HI_S32 HI_MPI_DISP_Snapshot_Release(HI_DRV_DISPLAY_E enDisp, HI_DRV_VIDEO_FRAME_S * pstSnapShotFrame)
+{
+	DISP_SNAPSHOT_FRAME_S stFrame;
 
     /* DISP validity check */
     if(enDisp >= HI_DRV_DISPLAY_BUTT)
@@ -1364,61 +1515,13 @@ HI_S32 HI_MPI_DISP_SetScreen(HI_DRV_DISPLAY_E enDisp, HI_RECT_S *pstOutRect)
         return HI_ERR_DISP_INVALID_PARA;
     } 
 
-    /* pointer validity check */
-    if (!pstOutRect)
-    {
-        HI_ERR_DISP("para pstOutRect is null.\n");
-        return HI_ERR_DISP_NULL_PTR;
-    }
-
     /* check DISP initialization status */
     CHECK_DISP_INIT();
 
-    DispOutRect.enDisp = enDisp;
-    memcpy(&(DispOutRect.stOutRectCfg), pstOutRect, sizeof(HI_RECT_S));
-    
-    /* call DISP_SCREEN by kernel */    
-    Ret = ioctl(g_DispDevFd, CMD_DISP_SET_DISP_SCREEN, &DispOutRect);
-
-    return Ret;
-
-}
-HI_S32 HI_MPI_DISP_GetScreen(HI_DRV_DISPLAY_E enDisp, HI_RECT_S *pstOutRect)
-{
-    HI_S32      Ret = 0;
-    DISP_OUTRECT_S  DispOutRect;
-
-
-    /* DISP validity check */
-    if(enDisp >= HI_DRV_DISPLAY_BUTT)
-    { 
-        HI_ERR_DISP("para enDisp is invalid.\n");
-        return HI_ERR_DISP_INVALID_PARA;
-    } 
-
-    /* pointer validity check */
-    if (!pstOutRect)
-    {
-        HI_ERR_DISP("para pstOutRect is null.\n");
-        return HI_ERR_DISP_NULL_PTR;
-    }
-
-    /* check DISP initialization status */
-    CHECK_DISP_INIT();
-
-    DispOutRect.enDisp = enDisp;
-    
-    /* call DISP_SCREEN by kernel */    
-    Ret = ioctl(g_DispDevFd, CMD_DISP_GET_DISP_SCREEN, &DispOutRect);
-
-    return Ret;
-
-}
-
-HI_S32 HI_MPI_DISP_Snapshot(HI_DRV_DISPLAY_E enDisp, HI_DRV_VIDEO_FRAME_S * pstSnapShotFrame)
-{
-    HI_ERR_DISP(" The Func is not support.\n");
-    return HI_ERR_DISP_NOT_EXIST;
+	stFrame.enDispLayer = enDisp;
+	stFrame.stFrame = *pstSnapShotFrame;
+	
+	return ioctl(g_DispDevFd, CMD_DISP_RELEASE_SNAPSHOT, &stFrame);
 }
 
 HI_S32 HI_MPI_DISP_CreateCast(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CAST_CFG_S * pstCfg, HI_HANDLE *phCast)
@@ -1444,16 +1547,14 @@ HI_S32 HI_MPI_DISP_CreateCast(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CAST_CFG_S * 
     CHECK_DISP_INIT();
 
     stCast.enDisp = enDisp;
-	stCast.stCfg  = *pstCfg;
-
-printf(" HI_MPI_DISP_CreateCast \n");
+    stCast.stCfg  = *pstCfg;
 
     /* call DISP_SCREEN by kernel */    
     Ret = ioctl(g_DispDevFd, CMD_DISP_CREATE_CAST, &stCast);
-	if (!Ret)
-	{
-		*phCast = stCast.hCast;
-	}
+    if (!Ret)
+    {
+        *phCast = stCast.hCast;
+    }
 
     return Ret;
 }
@@ -1481,7 +1582,7 @@ HI_S32 HI_MPI_DISP_SetCastEnable(HI_HANDLE hCast, HI_BOOL bEnable)
     CHECK_DISP_INIT();
 
     stCast.hCast = hCast;
-	stCast.bEnable = bEnable;
+    stCast.bEnable = bEnable;
     
     /* call DISP_SCREEN by kernel */    
     Ret = ioctl(g_DispDevFd, CMD_DISP_SET_CAST_ENABLE, &stCast);
@@ -1568,6 +1669,56 @@ HI_S32 HI_MPI_DISP_ReleaseCastFrame(HI_HANDLE hCast, HI_DRV_VIDEO_FRAME_S *pstCa
     /* call DISP_SCREEN by kernel */    
     Ret = ioctl(g_DispDevFd, CMD_DISP_RELEASE_CAST_FRAME, &stCast);
 
+    return Ret;
+}
+
+HI_S32 HI_MPI_DISP_ExtAttach(HI_HANDLE hCast, HI_HANDLE hSink)
+{
+    HI_S32      Ret = HI_SUCCESS;
+    DISP_EXT_ATTACH_S stAttach;
+    
+    if (HI_INVALID_HANDLE == hCast)
+    {
+        HI_ERR_DISP("para hWindow is invalid.\n");
+        return HI_ERR_VO_INVALID_PARA; 
+    }
+    CHECK_DISP_INIT();
+
+    stAttach.enType = EXT_ATTACH_TYPE_SINK;
+    stAttach.hCast =  hCast;
+    stAttach.hMutual = hSink;
+
+    Ret = ioctl(g_DispDevFd, CMD_DISP_EXT_ATTACH, &stAttach);
+    if (Ret != HI_SUCCESS)
+    {
+        HI_ERR_DISP("HI_MPI_DISP_ExtAttach failed\n");
+    }
+    
+    return Ret;
+}
+
+HI_S32 HI_MPI_DISP_ExtDeAttach(HI_HANDLE hCast, HI_HANDLE hSink)
+{
+    HI_S32      Ret = HI_SUCCESS;
+    DISP_EXT_ATTACH_S stAttach;
+    
+    if (HI_INVALID_HANDLE == hCast)
+    {
+        HI_ERR_DISP("para hWindow is invalid.\n");
+        return HI_ERR_VO_INVALID_PARA; 
+    }
+    CHECK_DISP_INIT();
+
+    stAttach.enType = EXT_ATTACH_TYPE_SINK;
+    stAttach.hCast =  hCast;
+    stAttach.hMutual = hSink;
+
+    Ret = ioctl(g_DispDevFd, CMD_DISP_EXT_DEATTACH, &stAttach);
+    if (Ret != HI_SUCCESS)
+    {
+        HI_ERR_DISP("HI_MPI_DISP_ExtAttach failed\n");
+    }
+    
     return Ret;
 }
 

@@ -263,6 +263,8 @@ typedef struct
 	HI_S32 (*HIFB_DRV_GetLayerMaskFlag)(HIFB_LAYER_ID_E enLayerId);
 
 	HI_S32 (*HIFB_DRV_GetDispSize)(HIFB_LAYER_ID_E enLayerId, HIFB_RECT *pstOutputRect);
+	HI_S32 (*HIFB_DRV_ClearLogo)(HIFB_LAYER_ID_E enLayerId);
+	HI_S32 (*HIFB_DRV_SetStereoDepth)(HIFB_LAYER_ID_E enLayerId, HI_S32 s32Depth);
 }HIFB_DRV_OPS_S;
 
 typedef struct

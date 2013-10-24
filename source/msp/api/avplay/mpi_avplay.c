@@ -27,13 +27,15 @@
 #include <sys/mman.h>
 #include <sys/time.h>
 #include <sys/times.h>
+#include <sys/types.h>
 
 #include "hi_mpi_avplay.h"
 #include "hi_error_mpi.h"
 #include "hi_mpi_mem.h"
 #include "hi_module.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "avplay_frc.h"
+#include <sys/syscall.h>
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -46,6 +48,10 @@ extern "C"{
 static HI_S32            g_AvplayDevFd    = -1;
 static const HI_CHAR     g_AvplayDevName[] ="/dev/"UMAP_DEVNAME_AVPLAY;
 static pthread_mutex_t   g_AvplayMutex = PTHREAD_MUTEX_INITIALIZER;
+
+static const HI_U8 s_szAVPLAYVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 //static HI_U32 u32ThreadMutexCount = 0, u32AvplayMutexCount = 0;
 void AVPLAY_ThreadMutex_Lock(pthread_mutex_t *ss)
@@ -117,8 +123,8 @@ HI_VOID AVPLAY_Notify(const AVPLAY_S *pAvplay, HI_UNF_AVPLAY_EVENT_E EvtMsg, HI_
 
 HI_BOOL AVPLAY_IsBufEmpty(AVPLAY_S *pAvplay)
 {
-    ADEC_BUFSTATUS_S            AdecBuf;
-    VDEC_STATUSINFO_S           VdecBuf;
+    ADEC_BUFSTATUS_S            AdecBuf = {0};
+    VDEC_STATUSINFO_S           VdecBuf = {0};
     HI_U32                      AudEsBuf = 0;
     HI_U32                      VidEsBuf = 0;
     HI_U32                      VidEsBufWptr = 0;
@@ -127,7 +133,7 @@ HI_BOOL AVPLAY_IsBufEmpty(AVPLAY_S *pAvplay)
     HI_BOOL                     bEmpty = HI_TRUE;
     HI_U32                      Systime = 0;
     HI_U32                      u32TsCnt = 0;
-    HI_DRV_WIN_PLAY_INFO_S      WinPlayInfo;
+    HI_DRV_WIN_PLAY_INFO_S      WinPlayInfo = {0};
     HI_S32                      Ret;
 
     WinPlayInfo.u32DelayTime = 0;
@@ -270,9 +276,12 @@ HI_UNF_AVPLAY_BUF_STATE_E AVPLAY_CaclBufState(const AVPLAY_S *pAvplay, HI_UNF_AV
 {
     HI_UNF_AVPLAY_BUF_STATE_E          CurBufState = HI_UNF_AVPLAY_BUF_STATE_NORMAL;
     VDEC_FRMSTATUSINFO_S               VdecFrmBuf = {0};
-    HI_U32                             u32StrmTime = 0;
     HI_U32                             u32FrmTime = 0;
-    HI_S32 Ret = HI_SUCCESS;
+    HI_DRV_WIN_PLAY_INFO_S             WinInfo;
+    HI_S32                             Ret = HI_SUCCESS;
+    HI_U32                             u32StrmTime = 0;
+
+    memset(&WinInfo, 0x0, sizeof(HI_DRV_WIN_PLAY_INFO_S));
 
     if (HI_UNF_AVPLAY_MEDIA_CHAN_AUD == enChn)
     {
@@ -324,6 +333,64 @@ HI_UNF_AVPLAY_BUF_STATE_E AVPLAY_CaclBufState(const AVPLAY_S *pAvplay, HI_UNF_AV
         }
         else if (UsedBufPercent < AVPLAY_ES_VID_LOW_PERCENT)
         {
+            if (HI_INVALID_HANDLE == pAvplay->MasterFrmChn.hWindow)
+            {
+                return HI_UNF_AVPLAY_BUF_STATE_LOW;
+            }
+
+            Ret = HI_MPI_VDEC_GetChanFrmStatusInfo(pAvplay->hVdec, pAvplay->MasterFrmChn.hPort, &VdecFrmBuf);                   
+            Ret |= HI_MPI_WIN_GetPlayInfo(pAvplay->MasterFrmChn.hWindow, &WinInfo);
+            if (Ret != HI_SUCCESS)
+            {
+                return HI_UNF_AVPLAY_BUF_STATE_LOW;
+            }
+            
+            /*InBps is too small*/
+            if(VdecFrmBuf.u32StrmInBps < 100)
+            {
+                u32StrmTime = 0;
+            }
+            else
+            {
+                u32StrmTime = (VdecFrmBuf.u32StrmSize * 1000)/(VdecFrmBuf.u32StrmInBps);
+            }
+
+            if (WinInfo.u32FrameNumInBufQn <= 1)
+            {
+                CurBufState = HI_UNF_AVPLAY_BUF_STATE_EMPTY;
+            }
+            else if (WinInfo.u32FrameNumInBufQn + VdecFrmBuf.u32DecodedFrmNum <= 5)
+            {
+                if (u32StrmTime <= 80)
+                {
+                    CurBufState = HI_UNF_AVPLAY_BUF_STATE_EMPTY;
+                }
+                else
+                {
+                    CurBufState = HI_UNF_AVPLAY_BUF_STATE_LOW;
+                }                
+            }
+            else if (WinInfo.u32FrameNumInBufQn + VdecFrmBuf.u32DecodedFrmNum <= 10)
+            {
+                if (u32StrmTime <= 40)
+                {
+                    CurBufState = HI_UNF_AVPLAY_BUF_STATE_EMPTY;
+                }
+                else if (u32StrmTime <= 80)
+                {
+                    CurBufState = HI_UNF_AVPLAY_BUF_STATE_LOW;
+                }
+                else 
+                {
+                    CurBufState = HI_UNF_AVPLAY_BUF_STATE_NORMAL;
+                }                
+            }
+            else
+            {
+                CurBufState = HI_UNF_AVPLAY_BUF_STATE_NORMAL;
+            }
+
+#if 0        
             Ret = HI_MPI_VDEC_GetChanFrmStatusInfo(pAvplay->hVdec, pAvplay->MasterFrmChn.hPort, &VdecFrmBuf);
             if (HI_SUCCESS == Ret)
             {
@@ -372,6 +439,7 @@ HI_UNF_AVPLAY_BUF_STATE_E AVPLAY_CaclBufState(const AVPLAY_S *pAvplay, HI_UNF_AV
                     CurBufState = HI_UNF_AVPLAY_BUF_STATE_LOW;
                 }
             }
+#endif
         }
     }
 
@@ -381,7 +449,7 @@ HI_UNF_AVPLAY_BUF_STATE_E AVPLAY_CaclBufState(const AVPLAY_S *pAvplay, HI_UNF_AV
 HI_VOID AVPLAY_ProcAdecToAo(AVPLAY_S *pAvplay)
 {
     HI_S32                  Ret = HI_SUCCESS;
-    ADEC_EXTFRAMEINFO_S     AdecExtInfo;
+    ADEC_EXTFRAMEINFO_S     AdecExtInfo = {0};
     HI_U32                  AoBufTime = 0;
     ADEC_STATUSINFO_S       AdecStatusinfo;
     HI_U32                  i;
@@ -397,9 +465,12 @@ HI_VOID AVPLAY_ProcAdecToAo(AVPLAY_S *pAvplay)
         return;
     }
 
+    memset(&AdecStatusinfo, 0x0, sizeof(ADEC_STATUSINFO_S));
+    memset(&stTrackInfo, 0x0, sizeof(HI_UNF_AUDIOTRACK_ATTR_S));
+
     if (!pAvplay->AvplayProcDataFlag[AVPLAY_PROC_ADEC_AO])
     {
-        pAvplay->AvplayStatisticsInfo.AcquireAudFrameNum++;
+        pAvplay->DebugInfo.AcquireAudFrameNum++;
 
         Ret = HI_MPI_ADEC_ReceiveFrame(pAvplay->hAdec, &pAvplay->AvplayAudFrm, &AdecExtInfo);
         if (HI_SUCCESS == Ret)
@@ -408,7 +479,7 @@ HI_VOID AVPLAY_ProcAdecToAo(AVPLAY_S *pAvplay)
             pAvplay->AudInfo.Pts = pAvplay->AvplayAudFrm.u32PtsMs;
             pAvplay->AudInfo.FrameTime = AdecExtInfo.u32FrameDurationMs;
             
-            pAvplay->AvplayStatisticsInfo.AcquiredAudFrameNum++;
+            pAvplay->DebugInfo.AcquiredAudFrameNum++;
             pAvplay->AvplayProcDataFlag[AVPLAY_PROC_ADEC_AO] = HI_TRUE;
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
             AVPLAY_Notify(pAvplay, HI_UNF_AVPLAY_EVENT_NEW_AUD_FRAME, (HI_U32)(&pAvplay->AvplayAudFrm));
@@ -483,10 +554,10 @@ HI_VOID AVPLAY_ProcAdecToAo(AVPLAY_S *pAvplay)
                 }
             }
             
-            pAvplay->AvplayStatisticsInfo.SendAudFrameNum++;
+            pAvplay->DebugInfo.SendAudFrameNum++;
 
             if (HI_INVALID_HANDLE != pAvplay->hSyncTrack)
-            {
+            {          
                 /*send frame to main track*/
                 Ret = HI_MPI_AO_Track_SendData(pAvplay->hSyncTrack, &pAvplay->AvplayAudFrm);
                 if (HI_SUCCESS == Ret)
@@ -515,7 +586,7 @@ HI_VOID AVPLAY_ProcAdecToAo(AVPLAY_S *pAvplay)
 			
             if (HI_SUCCESS == Ret)
             {
-                pAvplay->AvplayStatisticsInfo.SendedAudFrameNum++;
+                pAvplay->DebugInfo.SendedAudFrameNum++;
                 pAvplay->AvplayProcDataFlag[AVPLAY_PROC_ADEC_AO] = HI_FALSE;
                 pAvplay->AvplayProcContinue = HI_TRUE;
                 
@@ -577,6 +648,8 @@ HI_VOID AVPLAY_ProcFrmToVirWin(AVPLAY_S *pAvplay)
     HI_S32                              Ret;
     HI_U32                              i, j;
     HI_HANDLE                           hWindow = HI_INVALID_HANDLE;
+
+    pAvplay->bSendedFrmToVirWin = HI_TRUE;
     
     if (HI_INVALID_HANDLE != pAvplay->MasterFrmChn.hWindow)
     {
@@ -588,14 +661,21 @@ HI_VOID AVPLAY_ProcFrmToVirWin(AVPLAY_S *pAvplay)
             {
                 if (hWindow == pAvplay->VirFrmChn[j].hWindow)
                 {
+                    pAvplay->DebugInfo.VirVidStat[j].SendNum++;
+                
                     Ret = HI_MPI_WIN_QueueFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);
                     if (HI_SUCCESS != Ret)
                     {
                         (HI_VOID)HI_MPI_WIN_QueueUselessFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo); 
+                        pAvplay->DebugInfo.VirVidStat[j].DiscardNum++;
+                    }
+                    else
+                    {
+                        pAvplay->DebugInfo.VirVidStat[j].PlayNum++;
                     }
                 }  
             }
-        }
+        }        
     }
     else
     {
@@ -607,17 +687,33 @@ HI_VOID AVPLAY_ProcFrmToVirWin(AVPLAY_S *pAvplay)
             {
                 if (hWindow == pAvplay->VirFrmChn[j].hWindow)
                 {
+                    pAvplay->DebugInfo.VirVidStat[j].SendNum++;
+                    
                     Ret = HI_MPI_WIN_QueueFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);
                     if (HI_SUCCESS == Ret)
                     {
+#ifdef AVPLAY_VID_THREAD
+                        pAvplay->AvplayVidProcContinue = HI_TRUE;
+#else
                         pAvplay->AvplayProcContinue = HI_TRUE;
+#endif
                         pAvplay->AvplayProcDataFlag[AVPLAY_PROC_VDEC_VO] = HI_FALSE;
+                        pAvplay->DebugInfo.VirVidStat[j].PlayNum++;
                     }
                     else if (HI_ERR_VO_BUFQUE_FULL != Ret)
                     {
                        (HI_VOID)HI_MPI_WIN_QueueUselessFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);                    
+#ifdef AVPLAY_VID_THREAD
+                       pAvplay->AvplayVidProcContinue = HI_TRUE;
+#else
                        pAvplay->AvplayProcContinue = HI_TRUE;
+#endif
                        pAvplay->AvplayProcDataFlag[AVPLAY_PROC_VDEC_VO] = HI_FALSE;
+                       pAvplay->DebugInfo.VirVidStat[j].DiscardNum++;
+                    }
+                    else
+                    {
+                        pAvplay->bSendedFrmToVirWin = HI_FALSE;
                     }
                 }  
             }
@@ -633,9 +729,17 @@ HI_VOID AVPLAY_ProcVidFrc(AVPLAY_S *pAvplay)
     HI_HANDLE                           hWindow = HI_INVALID_HANDLE;
     HI_DRV_WIN_PLAY_INFO_S              WinInfo;
     
+    memset(&WinInfo, 0x0, sizeof(HI_DRV_WIN_PLAY_INFO_S));
+    
     pAvplay->FrcNeedPlayCnt = 1;
     pAvplay->FrcCurPlayCnt = 0;
     pAvplay->FrcCtrlInfo.s32FrmState = 0;
+
+    /* do not do frc in low delay mode */
+    if (pAvplay->LowDelayAttr.bEnable)
+    {
+        return;
+    }
 
     /* find the master chan */
     for (i=0; i<pAvplay->CurFrmPack.u32FrmNum; i++)
@@ -675,6 +779,21 @@ HI_VOID AVPLAY_ProcVidSync(AVPLAY_S *pAvplay)
     HI_HANDLE                           hWindow = HI_INVALID_HANDLE;
     HI_DRV_WIN_PLAY_INFO_S              WinInfo;
     HI_DRV_VIDEO_PRIVATE_S              *pstFrmPriv = HI_NULL;
+
+    memset(&WinInfo, 0x0, sizeof(HI_DRV_WIN_PLAY_INFO_S));
+
+    pAvplay->VidOpt.SyncProc = SYNC_PROC_PLAY;
+
+    for (i=0; i<pAvplay->CurFrmPack.u32FrmNum; i++)
+    {
+        pAvplay->CurFrmPack.stFrame[i].stFrameVideo.enTBAdjust = HI_DRV_VIDEO_TB_PLAY;
+    }
+
+    /* do not do sync in low delay mode */
+    if (pAvplay->LowDelayAttr.bEnable)
+    {
+        return;
+    }
 
     /* find the master chan */
     for (i=0; i<pAvplay->CurFrmPack.u32FrmNum; i++)
@@ -722,34 +841,19 @@ HI_VOID AVPLAY_ProcVidSync(AVPLAY_S *pAvplay)
     /* need to obtain real-time delaytime */
     (HI_VOID)HI_MPI_WIN_GetPlayInfo(hWindow, &WinInfo);
     pAvplay->VidInfo.DelayTime = WinInfo.u32DelayTime;
-
-#if 0
-    if (abs((HI_S32)WinInfo.u32DispRate - (HI_S32)pAvplay->CurFrmPack.stFrame[i].stFrameVideo.u32FrameRate/10) < 100)
-    {
-        if (pAvplay->u32TBMatchBeginTime == 0xFFFFFFFF)
-        {
-            pAvplay->u32TBMatchBeginTime = AVPLAY_GetSysTime();
-        }
-
-        if (AVPLAY_GetSysTime() - pAvplay->u32TBMatchBeginTime > 16 * (1000 *100 / WinInfo.u32DispRate))
-        {
-            pAvplay->VidInfo.bTBMatch = WinInfo.bTBMatch;
-            pAvplay->u32TBMatchBeginTime = AVPLAY_GetSysTime();
-        }
-        else
-        {
-            pAvplay->VidInfo.bTBMatch = HI_TRUE;
-        }
-    }
-    else
-    {
-        pAvplay->VidInfo.bTBMatch = HI_TRUE;
-    }
-#else
-    pAvplay->VidInfo.bTBMatch = HI_TRUE;
-#endif
+    pAvplay->VidInfo.DispRate = WinInfo.u32DispRate;
 
     (HI_VOID)HI_MPI_SYNC_VidJudge(pAvplay->hSync, &pAvplay->VidInfo, &pAvplay->VidOpt);
+
+    for (i=0; i<pAvplay->CurFrmPack.u32FrmNum; i++)
+    {
+        pAvplay->CurFrmPack.stFrame[i].stFrameVideo.enTBAdjust = pAvplay->VidOpt.enTBAdjust;
+
+        if (HI_UNF_AVPLAY_STATUS_TPLAY == pAvplay->CurStatus)
+        {
+            pAvplay->CurFrmPack.stFrame[i].stFrameVideo.enTBAdjust = HI_DRV_VIDEO_TB_PLAY;
+        }
+    }
 
     return;
 }
@@ -775,7 +879,8 @@ HI_VOID AVPLAY_ProcVidPlay(AVPLAY_S *pAvplay)
         return;
     }
 
-    pAvplay->AvplayStatisticsInfo.SendVidFrameNum++;
+    pAvplay->DebugInfo.MasterVidStat.SendNum++;
+    
     Ret = HI_MPI_WIN_QueueFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);
     if (HI_SUCCESS == Ret)
     {
@@ -787,9 +892,13 @@ HI_VOID AVPLAY_ProcVidPlay(AVPLAY_S *pAvplay)
         HI_INFO_AVPLAY("Play: queue frame to master win success!\n");
         
         memcpy(&pAvplay->LstFrmPack, &pAvplay->CurFrmPack, sizeof(HI_DRV_VIDEO_FRAME_PACKAGE_S));
+#ifdef AVPLAY_VID_THREAD
+        pAvplay->AvplayVidProcContinue = HI_TRUE;
+#else
         pAvplay->AvplayProcContinue = HI_TRUE;
-        pAvplay->AvplayStatisticsInfo.SendedVidFrameNum++;
+#endif
         pAvplay->FrcCurPlayCnt++;
+        pAvplay->DebugInfo.MasterVidStat.PlayNum++;
     }
     else if (HI_ERR_VO_BUFQUE_FULL != Ret)
     {
@@ -800,8 +909,13 @@ HI_VOID AVPLAY_ProcVidPlay(AVPLAY_S *pAvplay)
             (HI_VOID)HI_MPI_WIN_QueueUselessFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);                    
         }
 
+#ifdef AVPLAY_VID_THREAD
+        pAvplay->AvplayVidProcContinue = HI_TRUE;
+#else
         pAvplay->AvplayProcContinue = HI_TRUE;
+#endif
         pAvplay->FrcCurPlayCnt = pAvplay->FrcNeedPlayCnt;
+        pAvplay->DebugInfo.MasterVidStat.DiscardNum++;
     }
     else
     {
@@ -818,16 +932,25 @@ HI_VOID AVPLAY_ProcVidPlay(AVPLAY_S *pAvplay)
         {
             if (hWindow == pAvplay->SlaveFrmChn[j].hWindow)
             {
+                pAvplay->DebugInfo.SlaveVidStat[j].SendNum++;
+            
                 Ret = HI_MPI_WIN_QueueFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);
                 if (HI_SUCCESS != Ret)
                 {
                     HI_WARN_AVPLAY("Master queue ok, slave queue failed, Ret=%#x!\n", Ret);
 
-                    if (0 == pAvplay->FrcCurPlayCnt)
+                    /*FrcCurPlayCnt maybe has add to 1, because master window send success!*/
+                    if (0 == pAvplay->FrcCurPlayCnt || 1 == pAvplay->FrcCurPlayCnt)
                     {
                         (HI_VOID)HI_MPI_WIN_QueueUselessFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);
                     }
-                }  
+
+                    pAvplay->DebugInfo.SlaveVidStat[j].DiscardNum++;
+                } 
+                else
+                {
+                    pAvplay->DebugInfo.SlaveVidStat[j].PlayNum++;
+                }
             }
         }
     }
@@ -857,12 +980,17 @@ HI_VOID AVPLAY_ProcVidQuickOutput(AVPLAY_S *pAvplay)
         return;
     }
 
-    pAvplay->AvplayStatisticsInfo.SendVidFrameNum++;
+    pAvplay->DebugInfo.MasterVidStat.SendNum++;
+    
     Ret = HI_MPI_WIN_QueueFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);
     if (HI_SUCCESS == Ret)
     {
+#ifdef AVPLAY_VID_THREAD
+        pAvplay->AvplayVidProcContinue = HI_TRUE;
+#else
         pAvplay->AvplayProcContinue = HI_TRUE;
-        pAvplay->AvplayStatisticsInfo.SendedVidFrameNum++;
+#endif
+        pAvplay->DebugInfo.MasterVidStat.PlayNum++;
         pAvplay->FrcCurPlayCnt++;
     }
     else if (HI_ERR_VO_BUFQUE_FULL != Ret)
@@ -874,8 +1002,13 @@ HI_VOID AVPLAY_ProcVidQuickOutput(AVPLAY_S *pAvplay)
             (HI_VOID)HI_MPI_WIN_QueueUselessFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);                    
         }
 
+#ifdef AVPLAY_VID_THREAD
+        pAvplay->AvplayVidProcContinue = HI_TRUE;
+#else
         pAvplay->AvplayProcContinue = HI_TRUE;
+#endif
         pAvplay->FrcCurPlayCnt = pAvplay->FrcNeedPlayCnt;
+        pAvplay->DebugInfo.MasterVidStat.DiscardNum++;
     }
     else
     {
@@ -891,6 +1024,8 @@ HI_VOID AVPLAY_ProcVidQuickOutput(AVPLAY_S *pAvplay)
         {
             if (hWindow == pAvplay->SlaveFrmChn[j].hWindow)
             {
+                pAvplay->DebugInfo.SlaveVidStat[j].SendNum++;
+            
                 Ret = HI_MPI_WIN_QueueFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);
                 if (HI_SUCCESS != Ret)
                 {
@@ -900,7 +1035,13 @@ HI_VOID AVPLAY_ProcVidQuickOutput(AVPLAY_S *pAvplay)
                     {
                         (HI_VOID)HI_MPI_WIN_QueueUselessFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);
                     }
-                }  
+
+                    pAvplay->DebugInfo.SlaveVidStat[j].DiscardNum++;
+                } 
+                else
+                {
+                    pAvplay->DebugInfo.SlaveVidStat[j].PlayNum++;
+                }
             }
         }
     }
@@ -940,6 +1081,8 @@ HI_VOID AVPLAY_ProcVidRepeat(AVPLAY_S *pAvplay)
     {
         return;
     }
+
+    pAvplay->DebugInfo.MasterVidStat.SendNum++;
     
     Ret = HI_MPI_WIN_QueueFrame(hWindow, &pAvplay->LstFrmPack.stFrame[i].stFrameVideo);
     if (HI_SUCCESS != Ret)
@@ -947,6 +1090,8 @@ HI_VOID AVPLAY_ProcVidRepeat(AVPLAY_S *pAvplay)
         HI_INFO_AVPLAY("Repeat, queue last frame to master win failed, Ret=%#x!\n", Ret);
         return;
     } 
+
+    pAvplay->DebugInfo.MasterVidStat.RepeatNum++;
 
     HI_INFO_AVPLAY("Repeat: Queue frame to master win success!\n");
 
@@ -963,11 +1108,17 @@ HI_VOID AVPLAY_ProcVidRepeat(AVPLAY_S *pAvplay)
                     continue;
                 }
 
+                pAvplay->DebugInfo.SlaveVidStat[j].SendNum++;
+                
                 Ret = HI_MPI_WIN_QueueFrame(hWindow, &pAvplay->LstFrmPack.stFrame[i].stFrameVideo);
                 if (HI_SUCCESS != Ret)
                 {
                     HI_INFO_AVPLAY("Sync repeat, queue last frame to slave win failed, Ret=%#x!\n", Ret);
-                }    
+                }
+                else
+                {
+                    pAvplay->DebugInfo.SlaveVidStat[j].RepeatNum++;
+                }
             }
         }
     }
@@ -997,7 +1148,7 @@ HI_VOID AVPLAY_ProcVidDiscard(AVPLAY_S *pAvplay)
         return;
     }
 
-    pAvplay->AvplayStatisticsInfo.SendVidFrameNum++;
+    pAvplay->DebugInfo.MasterVidStat.SendNum++;
     
     Ret = HI_MPI_WIN_QueueUselessFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);
     if (HI_SUCCESS != Ret)
@@ -1008,9 +1159,13 @@ HI_VOID AVPLAY_ProcVidDiscard(AVPLAY_S *pAvplay)
 
     HI_INFO_AVPLAY("Discard, queue useless frame to master win success!\n");
     
+#ifdef AVPLAY_VID_THREAD
+    pAvplay->AvplayVidProcContinue = HI_TRUE;
+#else
     pAvplay->AvplayProcContinue = HI_TRUE;
-    pAvplay->AvplayStatisticsInfo.SendedVidFrameNum++;
+#endif
     pAvplay->FrcCurPlayCnt = pAvplay->FrcNeedPlayCnt;
+    pAvplay->DebugInfo.MasterVidStat.DiscardNum++;
 
     for (i=0; i<pAvplay->CurFrmPack.u32FrmNum; i++)
     {
@@ -1020,7 +1175,11 @@ HI_VOID AVPLAY_ProcVidDiscard(AVPLAY_S *pAvplay)
         {
             if (hWindow == pAvplay->SlaveFrmChn[j].hWindow)
             {
+                pAvplay->DebugInfo.SlaveVidStat[j].SendNum++;
+                
                 (HI_VOID)HI_MPI_WIN_QueueUselessFrame(hWindow, &pAvplay->CurFrmPack.stFrame[i].stFrameVideo);
+
+                pAvplay->DebugInfo.SlaveVidStat[j].DiscardNum++;
             }
         }
     }    
@@ -1044,13 +1203,15 @@ HI_VOID AVPLAY_ProcVdecToVo(AVPLAY_S *pAvplay)
 
     if (!pAvplay->AvplayProcDataFlag[AVPLAY_PROC_VDEC_VO])
     {
-        pAvplay->AvplayStatisticsInfo.AcquireVidFrameNum++;
+        pAvplay->DebugInfo.AcquireVidFrameNum++;
         
         Ret = HI_MPI_VDEC_ReceiveFrame(pAvplay->hVdec, &pAvplay->CurFrmPack);
         if (HI_SUCCESS != Ret)
         {
             return;
         } 
+
+        pAvplay->bSendedFrmToVirWin = HI_FALSE;
 
         if (pAvplay->CurFrmPack.stFrame[0].stFrameVideo.bIsFirstIFrame)
         {
@@ -1061,13 +1222,16 @@ HI_VOID AVPLAY_ProcVdecToVo(AVPLAY_S *pAvplay)
             AVPLAY_GetSysTime(), pAvplay->CurFrmPack.stFrame[0].stFrameVideo.u32FrameIndex,
             pAvplay->CurFrmPack.stFrame[0].stFrameVideo.u32Pts);
 
-        pAvplay->AvplayStatisticsInfo.AcquiredVidFrameNum++;
+        pAvplay->DebugInfo.AcquiredVidFrameNum++;
 
         pAvplay->AvplayProcDataFlag[AVPLAY_PROC_VDEC_VO] = HI_TRUE;
 
-        AVPLAY_ProcFrmToVirWin(pAvplay);
-
         AVPLAY_ProcVidFrc(pAvplay);
+    }
+
+    if (!pAvplay->bSendedFrmToVirWin)
+    {
+        AVPLAY_ProcFrmToVirWin(pAvplay);
     }
 
     if (pAvplay->bStepMode)
@@ -1129,7 +1293,6 @@ HI_VOID AVPLAY_ProcDmxToAdec(AVPLAY_S *pAvplay)
     HI_S32                          Ret;
     HI_U32                          i;
     HI_UNF_ES_BUF_S                 AudDmxEsBuf = {0}; 
-    HI_U32                          AdecDelay = 0;
 
     /* AVPLAY_Start: pAvplay->AudEnable = HI_TRUE */
     if (!pAvplay->AudEnable)
@@ -1137,8 +1300,8 @@ HI_VOID AVPLAY_ProcDmxToAdec(AVPLAY_S *pAvplay)
         return;
     }
 
-    Ret = HI_MPI_ADEC_GetDelayMs(pAvplay->hAdec, &AdecDelay);
-    if (HI_SUCCESS == Ret && AdecDelay > AVPLAY_ADEC_MAX_DELAY)
+    Ret = HI_MPI_ADEC_GetDelayMs(pAvplay->hAdec, &pAvplay->AdecDelayMs);
+    if (HI_SUCCESS == Ret && pAvplay->AdecDelayMs > AVPLAY_ADEC_MAX_DELAY)
     {
         return;
     }
@@ -1149,11 +1312,11 @@ HI_VOID AVPLAY_ProcDmxToAdec(AVPLAY_S *pAvplay)
         {
             if(i == pAvplay->CurDmxAudChn)
             {
-                pAvplay->AvplayStatisticsInfo.AcquireAudEsNum++;
+                pAvplay->DebugInfo.AcquireAudEsNum++;
                 Ret = HI_MPI_DMX_AcquireEs(pAvplay->hDmxAud[i], &(pAvplay->AvplayDmxEsBuf));
                 if (HI_SUCCESS == Ret)
                 {
-                    pAvplay->AvplayStatisticsInfo.AcquiredAudEsNum++;
+                    pAvplay->DebugInfo.AcquiredAudEsNum++;
                     pAvplay->AvplayProcDataFlag[AVPLAY_PROC_DMX_ADEC] = HI_TRUE;
                 }
                 else
@@ -1196,7 +1359,7 @@ HI_VOID AVPLAY_ProcDmxToAdec(AVPLAY_S *pAvplay)
         AdecEsBuf.pu8Data = pAvplay->AvplayDmxEsBuf.pu8Buf;
         AdecEsBuf.u32Size = pAvplay->AvplayDmxEsBuf.u32BufLen;
 
-        pAvplay->AvplayStatisticsInfo.SendAudEsNum++;
+        pAvplay->DebugInfo.SendAudEsNum++;
         
         /* for DDP test only, when ts stream revers(this pts < last pts), 
             reset audChn, and buffer 600ms audio stream  */
@@ -1249,7 +1412,7 @@ HI_VOID AVPLAY_ProcDmxToAdec(AVPLAY_S *pAvplay)
         Ret = HI_MPI_ADEC_SendStream(pAvplay->hAdec, &AdecEsBuf, pAvplay->AvplayDmxEsBuf.u32PtsMs);
         if (HI_SUCCESS == Ret)
         {
-            pAvplay->AvplayStatisticsInfo.SendedAudEsNum++;
+            pAvplay->DebugInfo.SendedAudEsNum++;
             pAvplay->AvplayProcDataFlag[AVPLAY_PROC_DMX_ADEC] = HI_FALSE;
             pAvplay->AvplayProcContinue = HI_TRUE;
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
@@ -1279,40 +1442,44 @@ HI_VOID AVPLAY_Eos(AVPLAY_S *pAvplay)
     pAvplay->PreSystime = 0;
     pAvplay->PreVidEsBufWPtr= 0;
     pAvplay->PreAudEsBufWPtr= 0;
+    pAvplay->CurBufferEmptyState = HI_TRUE;
     pAvplay->LstStatus = pAvplay->CurStatus;
     pAvplay->CurStatus = HI_UNF_AVPLAY_STATUS_EOS;
+    
     return;
 }
 
 HI_VOID AVPLAY_ProcEos(AVPLAY_S *pAvplay)
 {
     ADEC_BUFSTATUS_S        AdecBuf;
-    VDEC_STATUSINFO_S       VdecStatus;
+    VDEC_STATUSINFO_S       VdecStatus= {0};
     HI_BOOL                 bEmpty = HI_TRUE;
 	HI_BOOL					bVidEos = HI_TRUE;
 	HI_BOOL					bAudEos = HI_TRUE;
-	HI_DRV_WIN_PLAY_INFO_S  WinPlayInfo;
+	HI_DRV_WIN_PLAY_INFO_S  WinPlayInfo = {0};
 	
 	HI_BOOL                 bNeedSetAudEosTime = HI_TRUE;
 	HI_BOOL                 bNeedSetVidEosTime = HI_TRUE;
 
-
-	WinPlayInfo.u32DelayTime = 0;
+    HI_U32                  u32FrmNumThrd;
+    HI_U32                  u32FrmRate = 24;
 
 	if (pAvplay->CurStatus == HI_UNF_AVPLAY_STATUS_EOS)
 	{
 	    return;
 	}
+
+    memset(&AdecBuf, 0x0, sizeof(ADEC_BUFSTATUS_S));
 	
     if (pAvplay->AudEnable)
     {
         bAudEos = HI_FALSE;
         
         (HI_VOID)HI_MPI_ADEC_GetInfo(pAvplay->hAdec, HI_MPI_ADEC_BUFFERSTATUS, &AdecBuf);   
+        (HI_VOID)HI_MPI_AO_Track_IsBufEmpty(pAvplay->hSyncTrack, &bEmpty);
     
         if (AdecBuf.bEndOfFrame && HI_INVALID_HANDLE != pAvplay->hSyncTrack) 
         {
-            (HI_VOID)HI_MPI_AO_Track_IsBufEmpty(pAvplay->hSyncTrack, &bEmpty);
 			if (HI_TRUE == bEmpty)
 			{
 				bAudEos = HI_TRUE;
@@ -1320,7 +1487,7 @@ HI_VOID AVPLAY_ProcEos(AVPLAY_S *pAvplay)
         }
         
         bNeedSetAudEosTime = HI_FALSE;
-        if (0 != AdecBuf.u32BufferSize && 100*AdecBuf.u32BufferUsed/AdecBuf.u32BufferSize < 5)
+        if (HI_TRUE == bEmpty)
         {
             bNeedSetAudEosTime = HI_TRUE;
         }
@@ -1332,13 +1499,25 @@ HI_VOID AVPLAY_ProcEos(AVPLAY_S *pAvplay)
         
         (HI_VOID)HI_MPI_VDEC_GetChanStatusInfo(pAvplay->hVdec,  &VdecStatus);
 
-        if (VdecStatus.bEndOfStream && VdecStatus.bAllPortCompleteFrm && pAvplay->VidEnable)
+        if (pAvplay->AvgStrmBitrate < VdecStatus.u32StrmInBps)
         {
-            if (HI_INVALID_HANDLE != pAvplay->MasterFrmChn.hWindow)
-            {
-                (HI_VOID)HI_MPI_WIN_GetPlayInfo(pAvplay->MasterFrmChn.hWindow, &WinPlayInfo);
-            }
+            pAvplay->AvgStrmBitrate = VdecStatus.u32StrmInBps;
+        }
+        if (0 != VdecStatus.stVfmwFrameRate.u32fpsInteger)
+        {
+            u32FrmRate = VdecStatus.stVfmwFrameRate.u32fpsInteger;
+        }
+        u32FrmNumThrd = (HI_UNF_VCODEC_TYPE_MVC == pAvplay->VdecAttr.enType) 
+                     ? (2*APPLAY_EOS_STREAM_THRESHOLD) : APPLAY_EOS_STREAM_THRESHOLD;
+       
+        
+        if (HI_INVALID_HANDLE != pAvplay->MasterFrmChn.hWindow)
+        {
+            (HI_VOID)HI_MPI_WIN_GetPlayInfo(pAvplay->MasterFrmChn.hWindow, &WinPlayInfo);
+        }
 
+        if (VdecStatus.bEndOfStream && VdecStatus.bAllPortCompleteFrm)
+        {
 			if (0 == WinPlayInfo.u32FrameNumInBufQn)
 			{
 				bVidEos = HI_TRUE;
@@ -1346,11 +1525,13 @@ HI_VOID AVPLAY_ProcEos(AVPLAY_S *pAvplay)
         }
 
         bNeedSetVidEosTime = HI_FALSE;
-        if (0 != VdecStatus.u32BufferSize && 100*VdecStatus.u32BufferUsed/VdecStatus.u32BufferSize < 5)
+        
+        if (((VdecStatus.u32BufferUsed <= APPLAY_EOS_BUF_MIN_LEN) 
+                || (VdecStatus.u32BufferUsed <= (pAvplay->AvgStrmBitrate/8/u32FrmRate)*u32FrmNumThrd)) 
+             && (WinPlayInfo.u32FrameNumInBufQn <= 1))
         {
             bNeedSetVidEosTime = HI_TRUE;
         }
-        
     }
 
     if (bVidEos && bAudEos)
@@ -1369,30 +1550,37 @@ HI_VOID AVPLAY_ProcEos(AVPLAY_S *pAvplay)
     }
     else
     {
-         if (AVPLAY_GetSysTime() - pAvplay->u32EosBeginTime > 4000)
+         if ((AVPLAY_GetSysTime() - pAvplay->u32EosBeginTime > 2000)
+                && (HI_TRUE == AVPLAY_IsBufEmpty(pAvplay))
+             )
          {
+            HI_ERR_AVPLAY("EOS TimeOut!\n");
             AVPLAY_Eos(pAvplay);
             AVPLAY_Notify(pAvplay, HI_UNF_AVPLAY_EVENT_EOS, HI_NULL);
          }
     }
-   
+
+#if 0
+    HI_ERR_AVPLAY("bVidEos %d, bAudEos %d, AdecEnd %d, AoEmpty %d, Vdec %d, VoFrmNum:%d\n",
+        bVidEos, bAudEos, AdecBuf.bEndOfFrame, bEmpty, VdecStatus.bEndOfStream, WinPlayInfo.u32FrameNumInBufQn);
+#endif   
 
     return;
 }
 
 HI_VOID AVPLAY_ProcCheckBuf(AVPLAY_S *pAvplay)
 {
-    ADEC_BUFSTATUS_S                   AdecBuf;
-    VDEC_STATUSINFO_S                  VdecBuf;
-    HI_MPI_DMX_BUF_STATUS_S            VidChnBuf;
-    HI_MPI_DMX_BUF_STATUS_S            AudChnBuf;
+    ADEC_BUFSTATUS_S                   AdecBuf = {0};
+    VDEC_STATUSINFO_S                  VdecBuf = {0};
+    HI_MPI_DMX_BUF_STATUS_S            VidChnBuf = {0};
+    HI_MPI_DMX_BUF_STATUS_S            AudChnBuf = {0};
 
     HI_UNF_AVPLAY_BUF_STATE_E          CurVidBufState = HI_UNF_AVPLAY_BUF_STATE_EMPTY;
     HI_UNF_AVPLAY_BUF_STATE_E          CurAudBufState = HI_UNF_AVPLAY_BUF_STATE_EMPTY;
     HI_U32                             VidBufPercent = 0;
     HI_U32                             AudBufPercent = 0;
 
-    HI_UNF_DMX_PORT_MODE_E             PortMode;
+    HI_UNF_DMX_PORT_MODE_E             PortMode = HI_UNF_DMX_PORT_MODE_BUTT;
 
     HI_BOOL                            RealModeFlag = HI_FALSE;
     HI_BOOL                            ResetProc = HI_FALSE;
@@ -1493,7 +1681,7 @@ HI_VOID AVPLAY_ProcCheckBuf(AVPLAY_S *pAvplay)
         if (HI_UNF_AVPLAY_BUF_STATE_FULL == CurAudBufState)
         {
             ResetProc = HI_TRUE;
-            pAvplay->AvplayStatisticsInfo.AudOverflowNum++;
+            pAvplay->DebugInfo.AudOverflowNum++;
             HI_ERR_AVPLAY("Aud Dmx Buf overflow, reset.\n");
         }
 
@@ -1511,13 +1699,13 @@ HI_VOID AVPLAY_ProcCheckBuf(AVPLAY_S *pAvplay)
                 if (HI_UNF_AVPLAY_OVERFLOW_RESET == pAvplay->OverflowProc)
                 {
                     ResetProc = HI_TRUE;
-                    pAvplay->AvplayStatisticsInfo.VidOverflowNum++;
+                    pAvplay->DebugInfo.VidOverflowNum++;
                     HI_ERR_AVPLAY("Vid Dmx Buf overflow, reset.\n");
                 }
                 else
                 {
                     pAvplay->VidDiscard = HI_TRUE;
-                    pAvplay->AvplayStatisticsInfo.VidOverflowNum++;
+                    pAvplay->DebugInfo.VidOverflowNum++;
 
                     (HI_VOID)AVPLAY_ResetAudChn(pAvplay);
 
@@ -1543,43 +1731,62 @@ HI_VOID AVPLAY_ProcCheckBuf(AVPLAY_S *pAvplay)
     }
     else
     {
+        if (SyncAudBufState == SYNC_BUF_STATE_LOW || SyncAudBufState == SYNC_BUF_STATE_EMPTY)
+        {
+            SyncBufStatus.AudBufState = SyncAudBufState;
+        }
+		else
+		{
+			SyncBufStatus.AudBufState = SYNC_BUF_STATE_NORMAL;
+		}
+        
         SyncBufStatus.AudBufPercent = AudBufPercent;
-        SyncBufStatus.AudBufState = SYNC_BUF_STATE_NORMAL;
+
+        if (SyncVidBufState == SYNC_BUF_STATE_LOW || SyncVidBufState == SYNC_BUF_STATE_EMPTY) 
+        {
+            SyncBufStatus.VidBufState = SyncVidBufState;
+        }
+		else
+		{
+			SyncBufStatus.VidBufState = SYNC_BUF_STATE_NORMAL;
+		}
+        
         SyncBufStatus.VidBufPercent = VidBufPercent;
-        SyncBufStatus.VidBufState = SYNC_BUF_STATE_NORMAL;
+        
         SyncBufStatus.bOverflowDiscFrm = pAvplay->VidDiscard;
+
         (HI_VOID)HI_MPI_SYNC_SetBufState(pAvplay->hSync,SyncBufStatus);
     }
 
     return;
 }
 
-HI_VOID AVPLAY_DRV2UNF_VidFrm(HI_DRV_VIDEO_FRAME_S stDRVFrm, HI_UNF_VIDEO_FRAME_INFO_S *pstUNFFrm)
+HI_VOID AVPLAY_DRV2UNF_VidFrm(HI_DRV_VIDEO_FRAME_S *pstDRVFrm, HI_UNF_VIDEO_FRAME_INFO_S *pstUNFFrm)
 {
-    pstUNFFrm->u32FrameIndex = stDRVFrm.u32FrameIndex;
-    pstUNFFrm->stVideoFrameAddr[0].u32YAddr = stDRVFrm.stBufAddr[0].u32PhyAddr_Y;
-    pstUNFFrm->stVideoFrameAddr[0].u32CAddr = stDRVFrm.stBufAddr[0].u32PhyAddr_C;
-    pstUNFFrm->stVideoFrameAddr[0].u32CrAddr = stDRVFrm.stBufAddr[0].u32PhyAddr_Cr;
-    pstUNFFrm->stVideoFrameAddr[0].u32YStride = stDRVFrm.stBufAddr[0].u32Stride_Y;
-    pstUNFFrm->stVideoFrameAddr[0].u32CStride = stDRVFrm.stBufAddr[0].u32Stride_C;
-    pstUNFFrm->stVideoFrameAddr[0].u32CrStride = stDRVFrm.stBufAddr[0].u32Stride_Cr;
-    pstUNFFrm->stVideoFrameAddr[1].u32YAddr = stDRVFrm.stBufAddr[1].u32PhyAddr_Y;
-    pstUNFFrm->stVideoFrameAddr[1].u32CAddr = stDRVFrm.stBufAddr[1].u32PhyAddr_C;
-    pstUNFFrm->stVideoFrameAddr[1].u32CrAddr = stDRVFrm.stBufAddr[1].u32PhyAddr_Cr;
-    pstUNFFrm->stVideoFrameAddr[1].u32YStride = stDRVFrm.stBufAddr[1].u32Stride_Y;
-    pstUNFFrm->stVideoFrameAddr[1].u32CStride = stDRVFrm.stBufAddr[1].u32Stride_C;
-    pstUNFFrm->stVideoFrameAddr[1].u32CrStride = stDRVFrm.stBufAddr[1].u32Stride_Cr; 
-    pstUNFFrm->u32Width = stDRVFrm.u32Width;
-    pstUNFFrm->u32Height = stDRVFrm.u32Height;
-    pstUNFFrm->u32SrcPts = stDRVFrm.u32SrcPts;
-    pstUNFFrm->u32Pts = stDRVFrm.u32Pts;
-    pstUNFFrm->u32AspectWidth = stDRVFrm.u32AspectWidth;
-    pstUNFFrm->u32AspectHeight = stDRVFrm.u32AspectHeight;
-    pstUNFFrm->stFrameRate.u32fpsInteger = stDRVFrm.u32FrameRate/1000;
-    pstUNFFrm->stFrameRate.u32fpsDecimal = stDRVFrm.u32FrameRate % 1000;
-    pstUNFFrm->bProgressive = stDRVFrm.bProgressive;
+    pstUNFFrm->u32FrameIndex = pstDRVFrm->u32FrameIndex;
+    pstUNFFrm->stVideoFrameAddr[0].u32YAddr = pstDRVFrm->stBufAddr[0].u32PhyAddr_Y;
+    pstUNFFrm->stVideoFrameAddr[0].u32CAddr = pstDRVFrm->stBufAddr[0].u32PhyAddr_C;
+    pstUNFFrm->stVideoFrameAddr[0].u32CrAddr = pstDRVFrm->stBufAddr[0].u32PhyAddr_Cr;
+    pstUNFFrm->stVideoFrameAddr[0].u32YStride = pstDRVFrm->stBufAddr[0].u32Stride_Y;
+    pstUNFFrm->stVideoFrameAddr[0].u32CStride = pstDRVFrm->stBufAddr[0].u32Stride_C;
+    pstUNFFrm->stVideoFrameAddr[0].u32CrStride = pstDRVFrm->stBufAddr[0].u32Stride_Cr;
+    pstUNFFrm->stVideoFrameAddr[1].u32YAddr = pstDRVFrm->stBufAddr[1].u32PhyAddr_Y;
+    pstUNFFrm->stVideoFrameAddr[1].u32CAddr = pstDRVFrm->stBufAddr[1].u32PhyAddr_C;
+    pstUNFFrm->stVideoFrameAddr[1].u32CrAddr = pstDRVFrm->stBufAddr[1].u32PhyAddr_Cr;
+    pstUNFFrm->stVideoFrameAddr[1].u32YStride = pstDRVFrm->stBufAddr[1].u32Stride_Y;
+    pstUNFFrm->stVideoFrameAddr[1].u32CStride = pstDRVFrm->stBufAddr[1].u32Stride_C;
+    pstUNFFrm->stVideoFrameAddr[1].u32CrStride = pstDRVFrm->stBufAddr[1].u32Stride_Cr; 
+    pstUNFFrm->u32Width = pstDRVFrm->u32Width;
+    pstUNFFrm->u32Height = pstDRVFrm->u32Height;
+    pstUNFFrm->u32SrcPts = pstDRVFrm->u32SrcPts;
+    pstUNFFrm->u32Pts = pstDRVFrm->u32Pts;
+    pstUNFFrm->u32AspectWidth = pstDRVFrm->u32AspectWidth;
+    pstUNFFrm->u32AspectHeight = pstDRVFrm->u32AspectHeight;
+    pstUNFFrm->stFrameRate.u32fpsInteger = pstDRVFrm->u32FrameRate/1000;
+    pstUNFFrm->stFrameRate.u32fpsDecimal = pstDRVFrm->u32FrameRate % 1000;
+    pstUNFFrm->bProgressive = pstDRVFrm->bProgressive;
 
-    switch (stDRVFrm.ePixFormat)
+    switch (pstDRVFrm->ePixFormat)
     {
         case HI_DRV_PIX_FMT_NV61_2X1:
             pstUNFFrm->enVideoFormat = HI_UNF_FORMAT_YUV_SEMIPLANAR_422;
@@ -1635,7 +1842,7 @@ HI_VOID AVPLAY_DRV2UNF_VidFrm(HI_DRV_VIDEO_FRAME_S stDRVFrm, HI_UNF_VIDEO_FRAME_
             break;
     }
 
-    switch (stDRVFrm.enFieldMode)
+    switch (pstDRVFrm->enFieldMode)
     {
         case HI_DRV_FIELD_TOP:
         {
@@ -1659,9 +1866,9 @@ HI_VOID AVPLAY_DRV2UNF_VidFrm(HI_DRV_VIDEO_FRAME_S stDRVFrm, HI_UNF_VIDEO_FRAME_
         }
     }
     
-    pstUNFFrm->bTopFieldFirst = stDRVFrm.bTopFieldFirst;
+    pstUNFFrm->bTopFieldFirst = pstDRVFrm->bTopFieldFirst;
     
-    switch (stDRVFrm.eFrmType)
+    switch (pstDRVFrm->eFrmType)
     {
         case HI_DRV_FT_NOT_STEREO:
         {
@@ -1690,14 +1897,14 @@ HI_VOID AVPLAY_DRV2UNF_VidFrm(HI_DRV_VIDEO_FRAME_S stDRVFrm, HI_UNF_VIDEO_FRAME_
         }
     }
     
-    pstUNFFrm->u32Circumrotate = stDRVFrm.u32Circumrotate;
-    pstUNFFrm->bVerticalMirror = stDRVFrm.bToFlip_V;
-    pstUNFFrm->bHorizontalMirror = stDRVFrm.bToFlip_H;
-    pstUNFFrm->u32DisplayWidth = (HI_U32)stDRVFrm.stDispRect.s32Width;
-    pstUNFFrm->u32DisplayHeight = (HI_U32)stDRVFrm.stDispRect.s32Height;
-    pstUNFFrm->u32DisplayCenterX = (HI_U32)stDRVFrm.stDispRect.s32X;
-    pstUNFFrm->u32DisplayCenterY = (HI_U32)stDRVFrm.stDispRect.s32Y;
-    pstUNFFrm->u32ErrorLevel = stDRVFrm.u32ErrorLevel;
+    pstUNFFrm->u32Circumrotate = pstDRVFrm->u32Circumrotate;
+    pstUNFFrm->bVerticalMirror = pstDRVFrm->bToFlip_V;
+    pstUNFFrm->bHorizontalMirror = pstDRVFrm->bToFlip_H;
+    pstUNFFrm->u32DisplayWidth = (HI_U32)pstDRVFrm->stDispRect.s32Width;
+    pstUNFFrm->u32DisplayHeight = (HI_U32)pstDRVFrm->stDispRect.s32Height;
+    pstUNFFrm->u32DisplayCenterX = (HI_U32)pstDRVFrm->stDispRect.s32X;
+    pstUNFFrm->u32DisplayCenterY = (HI_U32)pstDRVFrm->stDispRect.s32Y;
+    pstUNFFrm->u32ErrorLevel = pstDRVFrm->u32ErrorLevel;
     
     return;
 }
@@ -1720,7 +1927,7 @@ HI_VOID AVPLAY_ProcVidEvent(AVPLAY_S *pAvplay)
                 Ret = HI_MPI_VDEC_ReadNewFrame(pAvplay->hVdec, &VdecDrvFrm);
                 if (HI_SUCCESS == Ret)
                 {
-                    AVPLAY_DRV2UNF_VidFrm(VdecDrvFrm, &VdecUnfFrm);
+                    AVPLAY_DRV2UNF_VidFrm(&VdecDrvFrm, &VdecUnfFrm);
                     AVPLAY_Notify(pAvplay, HI_UNF_AVPLAY_EVENT_NEW_VID_FRAME, (HI_U32)(&VdecUnfFrm));
                 }
                 else
@@ -1752,9 +1959,14 @@ HI_VOID AVPLAY_ProcVidEvent(AVPLAY_S *pAvplay)
                 AVPLAY_Notify(pAvplay, HI_UNF_AVPLAY_EVENT_FRAMEPACKING_CHANGE, (HI_U32)(VdecEvent.enFramePackingType));
             }
 
-            if(VdecEvent.bIFrameErr && pAvplay->EvtCbFunc[HI_UNF_AVPLAY_EVENT_IFRAME_ERR])
+            if (VdecEvent.bIFrameErr && pAvplay->EvtCbFunc[HI_UNF_AVPLAY_EVENT_IFRAME_ERR])
             {
                 AVPLAY_Notify(pAvplay, HI_UNF_AVPLAY_EVENT_IFRAME_ERR, HI_NULL);
+            }
+
+            if (VdecEvent.bUnSupportStream && pAvplay->EvtCbFunc[HI_UNF_AVPLAY_EVENT_VID_UNSUPPORT])
+            {
+                AVPLAY_Notify(pAvplay, HI_UNF_AVPLAY_EVENT_VID_UNSUPPORT, HI_NULL);
             }
             
             if (VdecEvent.bFirstValidPts)
@@ -1850,8 +2062,19 @@ HI_VOID *AVPLAY_DataThread(HI_VOID *Arg)
 
     pAvplay = (AVPLAY_S *)Arg;
 
+    pAvplay->ThreadID = syscall(__NR_gettid);
+
     while (pAvplay->AvplayThreadRun)
     {
+        HI_SYS_GetTimeStampMs(&pAvplay->DebugInfo.ThreadBeginTime);
+
+        if ((pAvplay->DebugInfo.ThreadBeginTime - pAvplay->DebugInfo.ThreadEndTime > AVPLAY_THREAD_TIMEOUT)
+            && (0 != pAvplay->DebugInfo.ThreadEndTime)
+            )
+        {
+            pAvplay->DebugInfo.ThreadScheTimeOutCnt++;
+        }
+    
         AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
  
         pAvplay->AvplayProcContinue = HI_FALSE;
@@ -1863,14 +2086,22 @@ HI_VOID *AVPLAY_DataThread(HI_VOID *Arg)
         
         AVPLAY_ProcAdecToAo(pAvplay);
 
+#ifndef AVPLAY_VID_THREAD
         AVPLAY_ProcVdecToVo(pAvplay);
-
+#endif
         AVPLAY_ProcCheckBuf(pAvplay);
 
         AVPLAY_ProcCheckStandBy(pAvplay);
 
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
 
+        HI_SYS_GetTimeStampMs(&pAvplay->DebugInfo.ThreadEndTime); 
+
+        if (pAvplay->DebugInfo.ThreadEndTime - pAvplay->DebugInfo.ThreadBeginTime > AVPLAY_THREAD_TIMEOUT)
+        {
+            pAvplay->DebugInfo.ThreadExeTimeOutCnt++;
+        }
+                
         if (pAvplay->AvplayProcContinue)
         {
             continue;
@@ -1882,29 +2113,63 @@ HI_VOID *AVPLAY_DataThread(HI_VOID *Arg)
     return    HI_NULL ;
 }
 
+HI_VOID *AVPLAY_VidDataThread(HI_VOID *Arg)
+{
+    AVPLAY_S                        *pAvplay;
+
+    pAvplay = (AVPLAY_S *)Arg;
+
+    while (pAvplay->AvplayThreadRun)
+    {
+        AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+ 
+        pAvplay->AvplayVidProcContinue = HI_FALSE;
+       
+        AVPLAY_ProcVdecToVo(pAvplay);
+
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+
+        if (pAvplay->AvplayVidProcContinue)
+        {
+            continue;
+        }
+
+        (HI_VOID)usleep(AVPLAY_SYS_SLEEP_TIME*1000);
+    }
+
+    return    HI_NULL ;
+}
+
+
 HI_VOID AVPLAY_ResetProcFlag(AVPLAY_S *pAvplay)
 {
     HI_U32 i;
 
     pAvplay->AvplayProcContinue = HI_FALSE;
+    pAvplay->AvplayVidProcContinue = HI_FALSE;
 
     for (i=0; i<AVPLAY_PROC_BUTT; i++)
     {
         pAvplay->AvplayProcDataFlag[i] = HI_FALSE;
     }
 
+    pAvplay->bSendedFrmToVirWin = HI_FALSE;
+
     pAvplay->PreVidBufState = HI_UNF_AVPLAY_BUF_STATE_EMPTY;
     pAvplay->PreAudBufState = HI_UNF_AVPLAY_BUF_STATE_EMPTY;
     pAvplay->VidDiscard = HI_FALSE;
 
     pAvplay->bSetEosFlag = HI_FALSE;
+    pAvplay->AvgStrmBitrate = 0;
     pAvplay->bSetAudEos = HI_FALSE;
     pAvplay->bStandBy = HI_FALSE;
 
     pAvplay->bSetEosBeginTime = HI_FALSE;
     pAvplay->u32EosBeginTime = 0xFFFFFFFF;
-	
-    pAvplay->u32TBMatchBeginTime = 0xFFFFFFFF;
+
+    pAvplay->AdecDelayMs = 0;
+
+    pAvplay->u32DispOptimizeFlag = 0;
 
     if (HI_TRUE == pAvplay->CurBufferEmptyState)
     {
@@ -1924,8 +2189,11 @@ HI_VOID AVPLAY_ResetProcFlag(AVPLAY_S *pAvplay)
        pAvplay->PreVidEsBufWPtr = 0xFFFFFFFF;       
     }
 
-    memset(&pAvplay->AvplayStatisticsInfo, 0, sizeof(AVPLAY_STATISTICS_S));
+    memset(&pAvplay->DebugInfo, 0, sizeof(AVPLAY_DEBUG_INFO_S));
     memset(&pAvplay->LstFrmPack, 0, sizeof(HI_DRV_VIDEO_FRAME_PACKAGE_S));
+
+    pAvplay->stIFrame.hport = HI_INVALID_HANDLE;
+    memset(&pAvplay->stIFrame.stFrameVideo, 0x0, sizeof(HI_DRV_VIDEO_FRAME_S));
 
     return;
 }
@@ -1956,11 +2224,26 @@ HI_S32 AVPLAY_CreateThread(AVPLAY_S *pAvplay)
         return HI_FAILURE;
     }
 
+#ifdef AVPLAY_VID_THREAD
+    /* create avplay data process thread */
+    Ret = pthread_create(&pAvplay->AvplayVidDataThdInst, &pAvplay->AvplayThreadAttr, AVPLAY_VidDataThread, pAvplay);
+    if (HI_SUCCESS != Ret)
+    {
+        pAvplay->AvplayThreadRun = HI_FALSE;
+        (HI_VOID)pthread_join(pAvplay->AvplayDataThdInst, HI_NULL);
+        pthread_attr_destroy(&pAvplay->AvplayThreadAttr);
+        return HI_FAILURE;
+    }
+#endif
+
     /* create avplay status check thread */
     Ret = pthread_create(&pAvplay->AvplayStatThdInst, &pAvplay->AvplayThreadAttr, AVPLAY_StatThread, pAvplay);
     if (HI_SUCCESS != Ret)
     {
         pAvplay->AvplayThreadRun = HI_FALSE;
+#ifdef AVPLAY_VID_THREAD
+        (HI_VOID)pthread_join(pAvplay->AvplayVidDataThdInst, HI_NULL);
+#endif
         (HI_VOID)pthread_join(pAvplay->AvplayDataThdInst, HI_NULL);
         pthread_attr_destroy(&pAvplay->AvplayThreadAttr);
         return HI_FAILURE;
@@ -2433,7 +2716,7 @@ HI_S32 AVPLAY_SetAdecAttr(AVPLAY_S *pAvplay, const HI_UNF_ACODEC_ATTR_S *pAdecAt
 #endif
     AdecAttr.bEnable = HI_FALSE;
     AdecAttr.bEosState = HI_FALSE;
-    AdecAttr.u32CodecID = pAdecAttr->enType;
+    AdecAttr.u32CodecID = (HI_U32)pAdecAttr->enType;
     if (HI_UNF_AVPLAY_STREAM_TYPE_TS == pAvplay->AvplayAttr.stStreamAttr.enStreamType)
     {
         AdecAttr.u32InBufSize = pAvplay->AvplayAttr.stStreamAttr.u32AudBufSize * 2 / 3;
@@ -2452,7 +2735,7 @@ HI_S32 AVPLAY_SetAdecAttr(AVPLAY_S *pAvplay, const HI_UNF_ACODEC_ATTR_S *pAdecAt
         return Ret;
     }
 
-    pAvplay->AdecType = pAdecAttr->enType;
+    pAvplay->AdecType = (HI_U32)pAdecAttr->enType;
 
     return Ret;
 }
@@ -2461,6 +2744,8 @@ HI_S32 AVPLAY_GetAdecAttr(const AVPLAY_S *pAvplay, HI_UNF_ACODEC_ATTR_S *pAdecAt
 {
     ADEC_ATTR_S  AdecAttr;
     HI_S32       Ret;
+
+    memset(&AdecAttr, 0x0, sizeof(ADEC_ATTR_S));
 
     if (HI_INVALID_HANDLE == pAvplay->hAdec)
     {
@@ -2474,7 +2759,7 @@ HI_S32 AVPLAY_GetAdecAttr(const AVPLAY_S *pAvplay, HI_UNF_ACODEC_ATTR_S *pAdecAt
         HI_ERR_AVPLAY("call HI_MPI_ADEC_GetAllAttr failed.\n");
     }
 
-    pAdecAttr->enType = (HI_U32)AdecAttr.u32CodecID;
+    pAdecAttr->enType = (HA_CODEC_ID_E)AdecAttr.u32CodecID;
     pAdecAttr->stDecodeParam = AdecAttr.sOpenPram;
 
     return Ret;
@@ -2620,6 +2905,8 @@ HI_S32 AVPLAY_SetPid(AVPLAY_S *pAvplay, HI_UNF_AVPLAY_ATTR_ID_E enAttrID, const 
                                                 
                 pAvplay->CurDmxAudChn = i; 
             }
+            
+            pAvplay->AvplayProcDataFlag[AVPLAY_PROC_ADEC_AO] = HI_FALSE;
 
             (HI_VOID)HI_MPI_SYNC_Stop(pAvplay->hSync, SYNC_CHAN_AUD);
 
@@ -2635,7 +2922,7 @@ HI_S32 AVPLAY_SetPid(AVPLAY_S *pAvplay, HI_UNF_AVPLAY_ATTR_ID_E enAttrID, const 
 
             if (HI_NULL != pAvplay->pstAcodecAttr)
             {
-                (HI_VOID)AVPLAY_SetAdecAttr(pAvplay, (HI_UNF_ACODEC_ATTR_S *)(pAvplay->pstAcodecAttr + i));
+                (HI_VOID)AVPLAY_SetAdecAttr(pAvplay, (HI_UNF_ACODEC_ATTR_S *)(pAvplay->pstAcodecAttr + pAvplay->CurDmxAudChn));
             }
             
             (HI_VOID)HI_MPI_ADEC_Start(pAvplay->hAdec);
@@ -2797,6 +3084,59 @@ HI_S32 AVPLAY_GetOverflowProc(AVPLAY_S *pAvplay, HI_UNF_AVPLAY_OVERFLOW_E *pOver
     return HI_SUCCESS;
 }
 
+HI_S32 AVPLAY_SetLowDelay(AVPLAY_S *pAvplay, HI_UNF_AVPLAY_LOW_DELAY_ATTR_S *pstAttr)
+{
+    HI_S32      Ret;
+    HI_U32      i;
+
+    if (HI_INVALID_HANDLE == pAvplay->hVdec)
+    {
+        HI_ERR_AVPLAY("vid chan is closed!\n");
+        return HI_ERR_AVPLAY_INVALID_OPT;
+    }
+
+    if (pAvplay->VidEnable)
+    {
+        HI_ERR_AVPLAY("vid chan is running!\n");
+        return HI_ERR_AVPLAY_INVALID_OPT;        
+    }
+
+    if (HI_INVALID_HANDLE != pAvplay->MasterFrmChn.hWindow)
+    {
+        Ret = HI_MPI_WIN_SetQuickOutput(pAvplay->MasterFrmChn.hWindow, pstAttr->bEnable);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_AVPLAY("HI_MPI_WIN_SetQuickOutput ERR, Ret=%#x\n", Ret);
+        }
+    }
+    
+    for (i = 0; i < pAvplay->SlaveChnNum; i++)
+    {
+        Ret = HI_MPI_WIN_SetQuickOutput(pAvplay->SlaveFrmChn[i].hWindow, pstAttr->bEnable);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_AVPLAY("HI_MPI_WIN_SetQuickOutput ERR, Ret=%#x\n", Ret);
+        }
+    }
+
+    /*call vdec function ...
+
+    HI_MPI_VDEC_SetLowDelay(HI_HANDLE hVdec, HI_UNF_AVPLAY_LOW_DELAY_ATTR_S *pstAttr);
+    
+    */
+    pAvplay->LowDelayAttr = *pstAttr;
+
+    return HI_SUCCESS;
+}
+
+HI_S32 AVPLAY_GetLowDelay(AVPLAY_S *pAvplay, HI_UNF_AVPLAY_LOW_DELAY_ATTR_S *pstAttr)
+{
+    *pstAttr = pAvplay->LowDelayAttr;
+
+    return HI_SUCCESS;
+}
+
+
 HI_S32 AVPLAY_RelSpecialFrame(AVPLAY_S *pAvplay, HI_HANDLE hWin)
 {
     HI_U32                              i;
@@ -2888,24 +3228,30 @@ HI_S32 AVPLAY_StartVidChn(const AVPLAY_S *pAvplay)
         return Ret;
     }
 
-    Ret = HI_MPI_VDEC_ChanStart(pAvplay->hVdec);
-    if (Ret != HI_SUCCESS)
-    {
-        HI_ERR_AVPLAY("call HI_MPI_VDEC_ChanStart failed.\n");
-        (HI_VOID)HI_MPI_SYNC_Stop(pAvplay->hSync, SYNC_CHAN_VID);
-        return Ret;
-    }
-
     if (HI_UNF_AVPLAY_STREAM_TYPE_TS == pAvplay->AvplayAttr.stStreamAttr.enStreamType)
     {
         Ret = HI_MPI_DMX_OpenChannel(pAvplay->hDmxVid);
         if (Ret != HI_SUCCESS)
         {
-            HI_ERR_AVPLAY("call HI_MPI_DMX_OpenChannel failed.\n");
-            (HI_VOID)HI_MPI_VDEC_ChanStop(pAvplay->hDmxVid);
+            HI_ERR_AVPLAY("call HI_MPI_DMX_OpenChannel failed, Ret=%#x.\n", Ret);
             (HI_VOID)HI_MPI_SYNC_Stop(pAvplay->hSync, SYNC_CHAN_VID);
             return Ret;
         }
+    }
+    
+    Ret = HI_MPI_VDEC_ChanStart(pAvplay->hVdec);
+    if (Ret != HI_SUCCESS)
+    {
+        HI_ERR_AVPLAY("call HI_MPI_VDEC_ChanStart failed, Ret=%#x.\n", Ret);
+        
+        if (HI_UNF_AVPLAY_STREAM_TYPE_TS == pAvplay->AvplayAttr.stStreamAttr.enStreamType)
+        {
+            (HI_VOID)HI_MPI_DMX_CloseChannel(pAvplay->hDmxVid);
+        }
+        
+        (HI_VOID)HI_MPI_SYNC_Stop(pAvplay->hSync, SYNC_CHAN_VID);
+        
+        return Ret;
     }
 
     return HI_SUCCESS;
@@ -2985,7 +3331,7 @@ HI_S32 AVPLAY_StopVidChn(const AVPLAY_S *pAvplay, HI_UNF_AVPLAY_STOP_MODE_E enMo
     return HI_SUCCESS;
 }
 
-HI_S32 AVPLAY_StartAudChn(const AVPLAY_S *pAvplay)
+HI_S32 AVPLAY_StartAudChn(AVPLAY_S *pAvplay)
 {
     HI_S32         Ret;
     HI_U32         i, j;
@@ -3005,6 +3351,8 @@ HI_S32 AVPLAY_StartAudChn(const AVPLAY_S *pAvplay)
         return Ret;
     }
 
+    /* get the string of adec type */
+    (HI_VOID)HI_MPI_ADEC_GetInfo(pAvplay->hAdec, HI_MPI_ADEC_HaSzNameInfo, &(pAvplay->AdecNameInfo));
 
     for (i=0; i<pAvplay->TrackNum; i++)
     {
@@ -3107,7 +3455,7 @@ HI_S32 AVPLAY_StopAudChn(const AVPLAY_S *pAvplay)
                 return Ret;
             }
 
-           (HI_VOID)HI_MPI_AO_Track_Flush(pAvplay->hTrack[i]);
+           //(HI_VOID)HI_MPI_AO_Track_Flush(pAvplay->hTrack[i]);
         }
     }
 
@@ -3413,6 +3761,12 @@ HI_S32 AVPLAY_GetMultiAud(AVPLAY_S *pAvplay, HI_UNF_AVPLAY_MULTIAUD_ATTR_S *pAtt
     {
         pAttr->u32PidNum = pAvplay->DmxAudChnNum;
     }
+
+    if (pAttr->u32PidNum > AVPLAY_MAX_DMX_AUD_CHAN_NUM)
+    {
+        HI_ERR_AVPLAY("u32PidNum is larger than %d\n", AVPLAY_MAX_DMX_AUD_CHAN_NUM);
+        return HI_ERR_AVPLAY_INVALID_PARA;
+    }
     
     memcpy(pAttr->pu32AudPid, pAvplay->DmxAudPid, sizeof(HI_U32) * pAttr->u32PidNum);
 
@@ -3463,6 +3817,13 @@ HI_S32 AVPLAY_SetEosFlag(AVPLAY_S *pAvplay)
     
     if (pAvplay->VidEnable)
     {
+        Ret = HI_MPI_VDEC_SetEosFlag(pAvplay->hVdec);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_AVPLAY("ERR: HI_MPI_VDEC_SetEosFlag, Ret = %#x! \n", Ret);
+            return HI_ERR_AVPLAY_INVALID_OPT;
+        }
+    
         if (HI_UNF_AVPLAY_STREAM_TYPE_TS == pAvplay->AvplayAttr.stStreamAttr.enStreamType)
         {
             Ret = HI_MPI_DMX_SetChannelEosFlag(pAvplay->hDmxVid);
@@ -3472,13 +3833,6 @@ HI_S32 AVPLAY_SetEosFlag(AVPLAY_S *pAvplay)
                 return HI_ERR_AVPLAY_INVALID_OPT;
             }
         }
-    
-        Ret = HI_MPI_VDEC_SetEosFlag(pAvplay->hVdec);
-        if (HI_SUCCESS != Ret)
-        {
-            HI_ERR_AVPLAY("ERR: HI_MPI_VDEC_SetEosFlag, Ret = %#x! \n", Ret);
-            return HI_ERR_AVPLAY_INVALID_OPT;
-        }
     }
 
     pAvplay->bSetEosFlag = HI_TRUE;
@@ -3486,25 +3840,21 @@ HI_S32 AVPLAY_SetEosFlag(AVPLAY_S *pAvplay)
     return HI_SUCCESS;
 }
 
-HI_S32 AVPLAY_SetPortAttr(AVPLAY_S *pAvplay, HI_HANDLE hPort, HI_BOOL bMainPort)
+HI_S32 AVPLAY_SetPortAttr(AVPLAY_S *pAvplay, HI_HANDLE hPort, VDEC_PORT_TYPE_E enType)
 {
     HI_S32                      Ret;
 
-    if (bMainPort)
+    Ret = HI_MPI_VDEC_SetPortType(pAvplay->hVdec, hPort, enType);
+    if (HI_SUCCESS != Ret)
     {
-        /*default all port is ordinary*/
-        Ret = HI_MPI_VDEC_SetMainPort(pAvplay->hVdec, hPort);
-        if (HI_SUCCESS != Ret)
-        {
-            HI_ERR_AVPLAY("ERR: HI_MPI_VDEC_SetMainPort.\n");
-            return HI_ERR_AVPLAY_INVALID_OPT;
-        }
+        HI_ERR_AVPLAY("ERR: HI_MPI_VDEC_SetPortType, Ret=%#x.\n", Ret);
+        return HI_ERR_AVPLAY_INVALID_OPT;        
     }
-
+    
     Ret = HI_MPI_VDEC_EnablePort(pAvplay->hVdec, hPort);
     if (HI_SUCCESS != Ret)
     {
-        HI_ERR_AVPLAY("ERR: HI_MPI_VDEC_EnablePort.\n");
+        HI_ERR_AVPLAY("ERR: HI_MPI_VDEC_EnablePort, Ret=%#x.\n", Ret);
         return HI_ERR_AVPLAY_INVALID_OPT;
     }
 
@@ -3517,6 +3867,8 @@ HI_S32 AVPLAY_CreatePort(AVPLAY_S *pAvplay, HI_HANDLE hWin, VDEC_PORT_ABILITY_E 
     HI_S32                      Ret;
     VDEC_PORT_PARAM_S           stPortPara;
     HI_DRV_WIN_SRC_INFO_S       stSrcInfo;
+
+    memset(&stSrcInfo, 0x0, sizeof(HI_DRV_WIN_SRC_INFO_S));
     
     Ret = HI_MPI_VDEC_CreatePort(pAvplay->hVdec, phPort, enAbility);
     if (HI_SUCCESS != Ret)
@@ -3535,7 +3887,6 @@ HI_S32 AVPLAY_CreatePort(AVPLAY_S *pAvplay, HI_HANDLE hWin, VDEC_PORT_ABILITY_E 
     }
 
     stSrcInfo.hSrc = *phPort;
-    //stSrcInfo.pfAcqFrame = (PFN_GET_FRAME_CALLBACK)stPortPara.pfVOAcqFrame;
     stSrcInfo.pfAcqFrame = (PFN_GET_FRAME_CALLBACK)HI_NULL;
     stSrcInfo.pfRlsFrame = (PFN_PUT_FRAME_CALLBACK)stPortPara.pfVORlsFrame;
     stSrcInfo.pfSendWinInfo = (PFN_GET_WIN_INFO_CALLBACK)stPortPara.pfVOSendWinInfo;
@@ -3556,6 +3907,8 @@ HI_S32 AVPLAY_DestroyPort(AVPLAY_S *pAvplay, HI_HANDLE hWin, HI_HANDLE hPort)
 {
     HI_S32                      Ret = HI_SUCCESS;
     HI_DRV_WIN_SRC_INFO_S       stSrcInfo;
+
+    memset(&stSrcInfo, 0x0, sizeof(HI_DRV_WIN_SRC_INFO_S));
 
     stSrcInfo.hSrc = hPort;
     stSrcInfo.pfAcqFrame = (PFN_GET_FRAME_CALLBACK)HI_NULL;
@@ -3634,7 +3987,7 @@ HI_S32 HI_MPI_AVPLAY_Init(HI_VOID)
 HI_S32 HI_MPI_AVPLAY_DeInit(HI_VOID)
 {
     HI_S32  Ret;
-    HI_U32  AvplayNum;
+    HI_U32  AvplayNum = 0;
 
     HI_AVPLAY_LOCK();
 
@@ -3763,7 +4116,7 @@ HI_S32 HI_MPI_AVPLAY_Create(const HI_UNF_AVPLAY_ATTR_S *pstAvAttr, HI_HANDLE *ph
     if (Ret != HI_SUCCESS)
     {
         HI_ERR_AVPLAY("AVPLAY CMD_AVPLAY_CREATE failed.\n");
-        goto ERR0;
+        goto RET;
     }
 
     /* remap the memories allocated in kernel space to user space */
@@ -3773,8 +4126,35 @@ HI_S32 HI_MPI_AVPLAY_Create(const HI_UNF_AVPLAY_ATTR_S *pstAvAttr, HI_HANDLE *ph
     {
         HI_ERR_AVPLAY("AVPLAY memmap failed.\n");       
         Ret = HI_ERR_AVPLAY_CREATE_ERR;
-        goto ERR1;
+        goto AVPLAY_DESTROY;
     }
+
+    pAvplay->pAvplayThreadMutex = (pthread_mutex_t *)HI_MALLOC(HI_ID_AVPLAY, sizeof(pthread_mutex_t));
+    if (pAvplay->pAvplayThreadMutex == HI_NULL)
+    {
+        Ret = HI_ERR_AVPLAY_CREATE_ERR;
+        goto AVPLAY_UNMAP;
+    }
+    (HI_VOID)pthread_mutex_init(pAvplay->pAvplayThreadMutex, NULL);
+
+#ifdef AVPLAY_VID_THREAD
+    pAvplay->pAvplayVidThreadMutex = (pthread_mutex_t *)HI_MALLOC(HI_ID_AVPLAY, sizeof(pthread_mutex_t));
+    if (pAvplay->pAvplayVidThreadMutex == HI_NULL)
+    {
+        Ret = HI_ERR_AVPLAY_CREATE_ERR;
+        goto DESTROY_THREAD_MUTEX;
+    }
+    (HI_VOID)pthread_mutex_init(pAvplay->pAvplayVidThreadMutex, NULL);
+#endif
+
+    pAvplay->pAvplayMutex = (pthread_mutex_t *)HI_MALLOC(HI_ID_AVPLAY, sizeof(pthread_mutex_t));
+    if (pAvplay->pAvplayMutex == HI_NULL)
+    {
+        Ret = HI_ERR_AVPLAY_CREATE_ERR;
+        goto DESTROY_THREAD_MUTEX;
+    }
+    (HI_VOID)pthread_mutex_init(pAvplay->pAvplayMutex, NULL);
+
 
     AvplayUsrAddr.AvplayId = AvplayCreate.AvplayId;
     AvplayUsrAddr.AvplayUsrAddr = (HI_U32)pAvplay;
@@ -3783,8 +4163,10 @@ HI_S32 HI_MPI_AVPLAY_Create(const HI_UNF_AVPLAY_ATTR_S *pstAvAttr, HI_HANDLE *ph
     if (Ret != HI_SUCCESS)
     {
         HI_ERR_AVPLAY("AVPLAY set user addr failed.\n");
-        goto ERR2;
+        goto DESTROY_MUTEX;
     }
+
+    AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
 
     /* record stream attributes */
     memcpy(&pAvplay->AvplayAttr, pstAvAttr, sizeof(HI_UNF_AVPLAY_ATTR_S));
@@ -3800,6 +4182,7 @@ HI_S32 HI_MPI_AVPLAY_Create(const HI_UNF_AVPLAY_ATTR_S *pstAvAttr, HI_HANDLE *ph
 
     pAvplay->hAdec = HI_INVALID_HANDLE;
     pAvplay->AdecType = 0xffffffff;
+    memset(&(pAvplay->AdecNameInfo), 0x0, sizeof(ADEC_SzNameINFO_S));
 
     for(i=0; i<AVPLAY_MAX_DMX_AUD_CHAN_NUM; i++)
     {
@@ -3837,11 +4220,13 @@ HI_S32 HI_MPI_AVPLAY_Create(const HI_UNF_AVPLAY_ATTR_S *pstAvAttr, HI_HANDLE *ph
     pAvplay->SlaveChnNum = 0;
     pAvplay->VirChnNum = 0;
 
+    pAvplay->LowDelayAttr.bEnable = HI_FALSE;
+
     Ret = AVPLAY_FrcCreate(pAvplay);
     if (Ret != HI_SUCCESS)
     {
         HI_ERR_AVPLAY("AVPLAY create frc failed.\n");
-        goto ERR2;
+        goto AVPLAY_UNLOCK;
     }
 
     pAvplay->bFrcEnable = HI_TRUE;
@@ -3883,55 +4268,54 @@ HI_S32 HI_MPI_AVPLAY_Create(const HI_UNF_AVPLAY_ATTR_S *pstAvAttr, HI_HANDLE *ph
     if (Ret != HI_SUCCESS)
     {
         HI_ERR_AVPLAY("AVPLAY create sync failed.\n");
-        goto ERR3;
+        goto FRC_DESTROY;
     }
-
-    pAvplay->pAvplayThreadMutex = (pthread_mutex_t *)HI_MALLOC(HI_ID_AVPLAY, sizeof(pthread_mutex_t));
-    if (pAvplay->pAvplayThreadMutex == HI_NULL)
-    {
-        Ret = HI_ERR_AVPLAY_CREATE_ERR;
-        goto ERR4;
-    }
-    (HI_VOID)pthread_mutex_init(pAvplay->pAvplayThreadMutex, NULL);
-
-    pAvplay->pAvplayMutex = (pthread_mutex_t *)HI_MALLOC(HI_ID_AVPLAY, sizeof(pthread_mutex_t));
-    if (pAvplay->pAvplayMutex == HI_NULL)
-    {
-        Ret = HI_ERR_AVPLAY_CREATE_ERR;
-        goto ERR5;
-    }
-    (HI_VOID)pthread_mutex_init(pAvplay->pAvplayMutex, NULL);
 
     /* create thread */
     Ret = AVPLAY_CreateThread(pAvplay);
     if (Ret != HI_SUCCESS)
     {
         HI_ERR_AVPLAY("AVPLAY create thread failed:%x\n",Ret);
-        goto ERR6;
+        goto SYNC_DESTROY;
     }
 
     pAvplay->hAvplay = (HI_ID_AVPLAY << 16) | AvplayCreate.AvplayId;
 
     *phAvplay = (HI_ID_AVPLAY << 16) | AvplayCreate.AvplayId;
 
+    AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+
     return     HI_SUCCESS;
 
-ERR6:
-    (HI_VOID)pthread_mutex_destroy(pAvplay->pAvplayMutex);
-    HI_FREE(HI_ID_AVPLAY, (HI_VOID*)(pAvplay->pAvplayMutex));
-ERR5:
-    (HI_VOID)pthread_mutex_destroy(pAvplay->pAvplayThreadMutex);
-    HI_FREE(HI_ID_AVPLAY, (HI_VOID*)(pAvplay->pAvplayThreadMutex));
-ERR4:
+SYNC_DESTROY:
     (HI_VOID)HI_MPI_SYNC_Destroy(pAvplay->hSync);
-ERR3:
+    
+FRC_DESTROY:
     (HI_VOID)AVPLAY_FrcDestroy(pAvplay);
      pAvplay->bFrcEnable = HI_FALSE;
-ERR2:
+     
+AVPLAY_UNLOCK:
+    AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+     
+DESTROY_MUTEX:
+    (HI_VOID)pthread_mutex_destroy(pAvplay->pAvplayMutex);
+    HI_FREE(HI_ID_AVPLAY, (HI_VOID*)(pAvplay->pAvplayMutex));
+
+DESTROY_THREAD_MUTEX:
+    (HI_VOID)pthread_mutex_destroy(pAvplay->pAvplayThreadMutex);
+    HI_FREE(HI_ID_AVPLAY, (HI_VOID*)(pAvplay->pAvplayThreadMutex));  
+#ifdef AVPLAY_VID_THREAD
+    (HI_VOID)pthread_mutex_destroy(pAvplay->pAvplayVidThreadMutex);
+    HI_FREE(HI_ID_AVPLAY, (HI_VOID*)(pAvplay->pAvplayVidThreadMutex));
+#endif
+    
+AVPLAY_UNMAP:
     (HI_VOID)HI_MUNMAP(pAvplay);
-ERR1:
+    
+AVPLAY_DESTROY:
     (HI_VOID)ioctl(g_AvplayDevFd, CMD_AVPLAY_DESTROY, &(AvplayCreate.AvplayId));
-ERR0:    
+    
+RET:    
     return Ret;    
 }
 
@@ -3941,14 +4325,10 @@ HI_S32 HI_MPI_AVPLAY_Destroy(HI_HANDLE hAvplay)
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32             Ret;
 
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     CHECK_AVPLAY_INIT();
 
+    memset(&AvplayUsrAddr, 0x0, sizeof(AVPLAY_USR_ADDR_S));
+    
     Ret = AVPLAY_CheckHandle(hAvplay, &AvplayUsrAddr);
     if (Ret != HI_SUCCESS)
     {
@@ -3987,6 +4367,9 @@ HI_S32 HI_MPI_AVPLAY_Destroy(HI_HANDLE hAvplay)
     /* stop thread */
     pAvplay->AvplayThreadRun = HI_FALSE;
     (HI_VOID)pthread_join(pAvplay->AvplayDataThdInst, HI_NULL);
+#ifdef AVPLAY_VID_THREAD
+    (HI_VOID)pthread_join(pAvplay->AvplayVidDataThdInst, HI_NULL);
+#endif
     (HI_VOID)pthread_join(pAvplay->AvplayStatThdInst, HI_NULL);
     pthread_attr_destroy(&pAvplay->AvplayThreadAttr);
 
@@ -3995,13 +4378,6 @@ HI_S32 HI_MPI_AVPLAY_Destroy(HI_HANDLE hAvplay)
     (HI_VOID)AVPLAY_FrcDestroy(pAvplay);
     pAvplay->bFrcEnable = HI_FALSE;
 
-    Ret = ioctl(g_AvplayDevFd, CMD_AVPLAY_DESTROY, &AvplayUsrAddr.AvplayId);
-    if (Ret != HI_SUCCESS)
-    {
-        AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
-        return Ret;
-    }
-
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
 
     (HI_VOID)pthread_mutex_destroy(pAvplay->pAvplayThreadMutex);
@@ -4009,10 +4385,21 @@ HI_S32 HI_MPI_AVPLAY_Destroy(HI_HANDLE hAvplay)
     HI_FREE(HI_ID_AVPLAY, (HI_VOID*)(pAvplay->pAvplayThreadMutex));
     HI_FREE(HI_ID_AVPLAY, (HI_VOID*)(pAvplay->pAvplayMutex));
 
+#ifdef AVPLAY_VID_THREAD
+    (HI_VOID)pthread_mutex_destroy(pAvplay->pAvplayVidThreadMutex);
+    HI_FREE(HI_ID_AVPLAY, (HI_VOID*)(pAvplay->pAvplayVidThreadMutex));
+#endif
+
     if (HI_NULL != pAvplay->pstAcodecAttr)
     {
         HI_FREE(HI_ID_AVPLAY, (HI_VOID*)(pAvplay->pstAcodecAttr));
         pAvplay->pstAcodecAttr = HI_NULL;
+    }
+
+    Ret = ioctl(g_AvplayDevFd, CMD_AVPLAY_DESTROY, &AvplayUsrAddr.AvplayId);
+    if (Ret != HI_SUCCESS)
+    {
+        return Ret;
     }
     
     (HI_VOID)HI_MUNMAP((HI_VOID *)AvplayUsrAddr.AvplayUsrAddr);
@@ -4025,12 +4412,6 @@ HI_S32 HI_MPI_AVPLAY_ChnOpen(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn
     AVPLAY_S           *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32             Ret;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     if (enChn < HI_UNF_AVPLAY_MEDIA_CHAN_AUD)
     {
@@ -4123,12 +4504,6 @@ HI_S32 HI_MPI_AVPLAY_ChnClose(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enCh
     AVPLAY_S           *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32               Ret;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     if (enChn < HI_UNF_AVPLAY_MEDIA_CHAN_AUD)
     {
@@ -4345,12 +4720,6 @@ HI_S32 HI_MPI_AVPLAY_SetAttr(HI_HANDLE hAvplay, HI_UNF_AVPLAY_ATTR_ID_E enAttrID
     AVPLAY_USR_ADDR_S               AvplayUsrAddr;
     HI_S32                          Ret;
 
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (enAttrID >= HI_UNF_AVPLAY_ATTR_ID_BUTT)
     {
         HI_ERR_AVPLAY("para enAttrID is invalid.\n");
@@ -4469,6 +4838,13 @@ HI_S32 HI_MPI_AVPLAY_SetAttr(HI_HANDLE hAvplay, HI_UNF_AVPLAY_ATTR_ID_E enAttrID
                 HI_ERR_AVPLAY("Set frm packing type failed.\n");
             }
             break;                         
+        case HI_UNF_AVPLAY_ATTR_ID_LOW_DELAY:
+            Ret = AVPLAY_SetLowDelay(pAvplay, (HI_UNF_AVPLAY_LOW_DELAY_ATTR_S *)pPara);
+            if (Ret != HI_SUCCESS)
+            {
+                HI_ERR_AVPLAY("Set Low Delay failed.\n");
+            }
+            break;
         default:
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_SUCCESS;
@@ -4485,12 +4861,6 @@ HI_S32 HI_MPI_AVPLAY_GetAttr(HI_HANDLE hAvplay, HI_UNF_AVPLAY_ATTR_ID_E enAttrID
     AVPLAY_USR_ADDR_S               AvplayUsrAddr;
     HI_S32                          Ret;
     
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (enAttrID >= HI_UNF_AVPLAY_ATTR_ID_BUTT)
     {
         HI_ERR_AVPLAY("para enAttrID is invalid.\n");
@@ -4601,7 +4971,14 @@ HI_S32 HI_MPI_AVPLAY_GetAttr(HI_HANDLE hAvplay, HI_UNF_AVPLAY_ATTR_ID_E enAttrID
             {
                 HI_ERR_AVPLAY("Get frm packing type  failed.\n");
             }
-            break;                         
+            break;    
+        case HI_UNF_AVPLAY_ATTR_ID_LOW_DELAY:
+            Ret = AVPLAY_GetLowDelay(pAvplay, (HI_UNF_AVPLAY_LOW_DELAY_ATTR_S *)pPara);
+            if (Ret != HI_SUCCESS)
+            {
+                HI_ERR_AVPLAY("Get Low Delay failed.\n");
+            }
+            break;
         default:
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_SUCCESS;
@@ -4619,16 +4996,11 @@ HI_S32 HI_MPI_AVPLAY_DecodeIFrame(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_I_FRAME
     AVPLAY_USR_ADDR_S           AvplayUsrAddr;
     HI_UNF_VIDEO_FRAME_INFO_S   stVidFrameInfo;
     HI_DRV_VIDEO_FRAME_S        stDrvFrm;
-    HI_BOOL                     bCapture = HI_FALSE;
     HI_U32                      i, j;
     HI_HANDLE                   hWindow = HI_INVALID_HANDLE;
     HI_DRV_VIDEO_FRAME_PACKAGE_S    stFrmPack;
-
-    if (HI_INVALID_HANDLE == hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;        
-    }
+    HI_BOOL                     bCapture = HI_FALSE;
+    HI_DRV_VPSS_PORT_CFG_S      stOldCfg, stNewCfg;
 
     if (HI_NULL == pstIframe)
     {
@@ -4644,6 +5016,8 @@ HI_S32 HI_MPI_AVPLAY_DecodeIFrame(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_I_FRAME
         HI_ERR_AVPLAY("avplay handle is invalid.\n");
         return Ret;
     }
+
+    memset(&stFrmPack, 0x0, sizeof(HI_DRV_VIDEO_FRAME_PACKAGE_S));
 
     pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
 
@@ -4663,16 +5037,74 @@ HI_S32 HI_MPI_AVPLAY_DecodeIFrame(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_I_FRAME
         return HI_ERR_AVPLAY_INVALID_OPT;
     }
 
+    if (pAvplay->stIFrame.hport != HI_INVALID_HANDLE)
+    {
+        HI_ERR_AVPLAY("please release I frame first.\n");
+        AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+        return HI_ERR_AVPLAY_INVALID_OPT;        
+    }
+
+    /* if there is no window exist, we need create vpss source */
+    if (HI_INVALID_HANDLE == pAvplay->MasterFrmChn.hWindow)
+    {
+        if (HI_NULL == pstCapPicture)
+        {
+            HI_ERR_AVPLAY("there is no window.\n");
+            AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+            return HI_ERR_AVPLAY_INVALID_OPT;
+        }
+        
+        Ret = HI_MPI_VDEC_CreatePort(pAvplay->hVdec, &pAvplay->MasterFrmChn.hPort, VDEC_PORT_HD);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_AVPLAY("HI_MPI_VDEC_CreatePort ERR, Ret=%#x\n", Ret);
+            AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+            return HI_ERR_AVPLAY_INVALID_OPT; 
+        }
+        
+        Ret = HI_MPI_VDEC_SetPortType(pAvplay->hVdec, pAvplay->MasterFrmChn.hPort, VDEC_PORT_TYPE_MASTER);
+        Ret |= HI_MPI_VDEC_EnablePort(pAvplay->hVdec, pAvplay->MasterFrmChn.hPort); 
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_AVPLAY("HI_MPI_VDEC_EnablePort ERR, Ret=%#x\n", Ret);
+            HI_MPI_VDEC_DestroyPort(pAvplay->hVdec, pAvplay->MasterFrmChn.hPort);
+            AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+            return HI_ERR_AVPLAY_INVALID_OPT; 
+        }        
+    }
+
+    Ret = HI_MPI_VDEC_GetPortAttr(pAvplay->hVdec, pAvplay->MasterFrmChn.hPort, &stOldCfg);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_ERR_AVPLAY("HI_MPI_VDEC_GetPortAttr ERR, Ret=%#x\n", Ret);
+        AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+        return HI_ERR_AVPLAY_INVALID_OPT;
+    }
+    
+    stNewCfg = stOldCfg;
+    stNewCfg.s32OutputWidth = 0;
+    stNewCfg.s32OutputHeight = 0;
+
+    /*set vpss attr, do not do zoom*/
+    Ret = HI_MPI_VDEC_SetPortAttr(pAvplay->hVdec, pAvplay->MasterFrmChn.hPort, &stNewCfg);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_ERR_AVPLAY("HI_MPI_VDEC_SetPortAttr ERR, Ret=%#x\n", Ret);
+        AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+        return HI_ERR_AVPLAY_INVALID_OPT;
+    }
+
     if (HI_NULL != pstCapPicture)
     {
         bCapture = HI_TRUE;
     }
-    
+
     memset(&stVidFrameInfo, 0x0, sizeof(HI_UNF_VIDEO_FRAME_INFO_S));
     Ret = HI_MPI_VDEC_ChanIFrameDecode(pAvplay->hVdec, (HI_UNF_AVPLAY_I_FRAME_S *)pstIframe, &stDrvFrm, bCapture);
     if (Ret != HI_SUCCESS)
     {
         HI_ERR_AVPLAY("call HI_MPI_VDEC_ChanIFrameDecode failed.\n");
+        (HI_VOID)HI_MPI_VDEC_SetPortAttr(pAvplay->hVdec, pAvplay->MasterFrmChn.hPort, &stOldCfg);
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return Ret;
     }
@@ -4689,6 +5121,15 @@ HI_S32 HI_MPI_AVPLAY_DecodeIFrame(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_I_FRAME
         usleep(10 * 1000);
     }
 
+    /*resume vpss attr*/
+    Ret = HI_MPI_VDEC_SetPortAttr(pAvplay->hVdec, pAvplay->MasterFrmChn.hPort, &stOldCfg);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_ERR_AVPLAY("HI_MPI_VDEC_SetPortAttr ERR, Ret=%#x\n", Ret);
+        AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+        return HI_ERR_AVPLAY_INVALID_OPT;
+    }
+
     if (i >= 20)
     {
         HI_ERR_AVPLAY("call HI_MPI_VDEC_ReceiveFrame failed, Ret=%#x.\n", Ret);
@@ -4696,6 +5137,7 @@ HI_S32 HI_MPI_AVPLAY_DecodeIFrame(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_I_FRAME
         return Ret;
     }
 
+    /* display on vo */
     if (HI_FALSE == bCapture)
     {
         for (i=0; i<stFrmPack.u32FrmNum; i++)
@@ -4744,24 +5186,15 @@ HI_S32 HI_MPI_AVPLAY_DecodeIFrame(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_I_FRAME
     }
     else
     {
-        /*capture the master frame*/
-        for (i=0; i<stFrmPack.u32FrmNum; i++)
-        {
-            (HI_VOID)AVPLAY_GetWindowByPort(pAvplay, stFrmPack.stFrame[i].hport, &hWindow);
+        /*use frame of port0, release others*/
+        memcpy(&pAvplay->stIFrame, &stFrmPack.stFrame[0], sizeof(HI_DRV_VDEC_FRAME_S));
 
-            if (hWindow == pAvplay->MasterFrmChn.hWindow)
-            {
-                break;
-            }
+        for (i = 1; i < stFrmPack.u32FrmNum; i++)
+        {
+            (HI_VOID)HI_MPI_VDEC_ReleaseFrame(stFrmPack.stFrame[i].hport, &stFrmPack.stFrame[i].stFrameVideo);
         }
 
-        if (i == stFrmPack.u32FrmNum)
-        {
-            AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
-            return HI_ERR_AVPLAY_INVALID_OPT;
-        }
-    
-        AVPLAY_DRV2UNF_VidFrm(stFrmPack.stFrame[i].stFrameVideo, pstCapPicture);
+        AVPLAY_DRV2UNF_VidFrm(&(pAvplay->stIFrame.stFrameVideo), pstCapPicture);
     }
 
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
@@ -4770,6 +5203,70 @@ HI_S32 HI_MPI_AVPLAY_DecodeIFrame(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_I_FRAME
 
 HI_S32 HI_MPI_AVPLAY_ReleaseIFrame(HI_HANDLE hAvplay, HI_UNF_VIDEO_FRAME_INFO_S *pstCapPicture)
 {
+    HI_S32                      Ret;
+    AVPLAY_S                    *pAvplay = HI_NULL;
+    AVPLAY_USR_ADDR_S           AvplayUsrAddr;
+
+    if (HI_NULL == pstCapPicture)
+    {
+        HI_ERR_AVPLAY("para pstCapPicture is null.\n");
+        return HI_ERR_AVPLAY_NULL_PTR;
+    }
+
+    CHECK_AVPLAY_INIT();
+
+    Ret = AVPLAY_CheckHandle(hAvplay, &AvplayUsrAddr);
+    if (Ret != HI_SUCCESS)
+    {
+        HI_ERR_AVPLAY("avplay handle is invalid.\n");
+        return Ret;
+    }
+
+    pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
+
+    AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
+
+    if (HI_INVALID_HANDLE == pAvplay->hVdec)
+    {
+        HI_ERR_AVPLAY("hVdec is invalid.\n");
+        AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+        return HI_ERR_AVPLAY_INVALID_OPT;
+    }
+    
+    AVPLAY_Mutex_Lock(pAvplay->pAvplayThreadMutex);
+
+    /* destroy vpss source */
+    if (HI_INVALID_HANDLE == pAvplay->MasterFrmChn.hWindow)
+    {
+        Ret = HI_MPI_VDEC_DisablePort(pAvplay->hVdec, pAvplay->MasterFrmChn.hPort);  
+        Ret |= HI_MPI_VDEC_DestroyPort(pAvplay->hVdec, pAvplay->MasterFrmChn.hPort);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_AVPLAY("HI_MPI_VDEC_DestroyPort ERR, Ret=%#x\n", Ret);
+
+            AVPLAY_Mutex_UnLock(pAvplay->pAvplayThreadMutex);
+            AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+            
+            return Ret;
+        }
+		
+		 pAvplay->MasterFrmChn.hPort = HI_INVALID_HANDLE;
+    }
+    else
+    {
+        if (pAvplay->stIFrame.hport != HI_INVALID_HANDLE)
+        {
+            (HI_VOID)HI_MPI_VDEC_ReleaseFrame(pAvplay->stIFrame.hport, &pAvplay->stIFrame.stFrameVideo);
+
+            memset(&pAvplay->stIFrame.stFrameVideo, 0x0, sizeof(HI_DRV_VIDEO_FRAME_S));
+        }    
+    }
+
+    pAvplay->stIFrame.hport = HI_INVALID_HANDLE;
+
+    AVPLAY_Mutex_UnLock(pAvplay->pAvplayThreadMutex);
+    AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
+
     return HI_SUCCESS;
 }
 
@@ -4783,12 +5280,6 @@ HI_S32 HI_MPI_AVPLAY_DecodeIFrame(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_I_FRAME
     HI_S32                      Ret;
     HI_BOOL                     bWinEnable = HI_FALSE;
     HI_UNF_VIDEO_FRAME_INFO_S   stVidFrameInfo;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
     
     if (!pstIframe)
     {
@@ -4881,12 +5372,6 @@ HI_S32 HI_MPI_AVPLAY_SetDecodeMode(HI_HANDLE hAvplay, HI_UNF_VCODEC_MODE_E enDec
     HI_UNF_VCODEC_ATTR_S   VdecAttr;
     HI_S32                   Ret;
 
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (enDecodeMode >= HI_UNF_VCODEC_MODE_BUTT)
     {
         HI_ERR_AVPLAY("para enDecodeMode is invalid.\n");
@@ -4940,12 +5425,6 @@ HI_S32 HI_MPI_AVPLAY_RegisterEvent(HI_HANDLE      hAvplay,
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32               Ret;
     
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (enEvent >= HI_UNF_AVPLAY_EVENT_BUTT)
     {
         HI_ERR_AVPLAY("para enEvent is invalid.\n");
@@ -4998,12 +5477,6 @@ HI_S32 HI_MPI_AVPLAY_UnRegisterEvent(HI_HANDLE hAvplay, HI_UNF_AVPLAY_EVENT_E en
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32               Ret;
     
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (enEvent >= HI_UNF_AVPLAY_EVENT_BUTT)
     {
         HI_ERR_AVPLAY("para enEvent is invalid.\n");
@@ -5088,12 +5561,6 @@ HI_S32 HI_MPI_AVPLAY_Start(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn)
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32               Ret;
 
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (enChn < HI_UNF_AVPLAY_MEDIA_CHAN_AUD)
     {
         HI_ERR_AVPLAY("para enChn is invalid.\n");
@@ -5117,16 +5584,27 @@ HI_S32 HI_MPI_AVPLAY_Start(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn)
     pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
 
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
+    
+#ifndef AVPLAY_VID_THREAD
     AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#endif
 
     if (enChn & ((HI_U32)HI_UNF_AVPLAY_MEDIA_CHAN_VID))
     {
+#ifdef AVPLAY_VID_THREAD    
+        AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#endif
         if (!pAvplay->VidEnable)
         {
             if (HI_INVALID_HANDLE == pAvplay->hVdec)
             {
                 HI_ERR_AVPLAY("vid chn is close, can not start.\n");
+                
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return HI_ERR_AVPLAY_INVALID_OPT;
             }
@@ -5136,16 +5614,24 @@ HI_S32 HI_MPI_AVPLAY_Start(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn)
                 )
             {
                 HI_ERR_AVPLAY("window is not attached, can not start.\n");
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return HI_ERR_AVPLAY_INVALID_OPT;
             }
-            
+           
             Ret = AVPLAY_StartVidChn(pAvplay);
             if (Ret != HI_SUCCESS)
             {
                 HI_ERR_AVPLAY("start vid chn failed.\n");
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return Ret;
             }
@@ -5161,10 +5647,16 @@ HI_S32 HI_MPI_AVPLAY_Start(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn)
 
             (HI_VOID)HI_MPI_STAT_Event(STAT_EVENT_VSTART, 0);
         }
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
     }
 
     if (enChn & ((HI_U32)HI_UNF_AVPLAY_MEDIA_CHAN_AUD))
     {
+#ifdef AVPLAY_VID_THREAD    
+        AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#endif
         if (!pAvplay->AudEnable)
         {
             if (HI_INVALID_HANDLE == pAvplay->hAdec)
@@ -5203,6 +5695,9 @@ HI_S32 HI_MPI_AVPLAY_Start(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn)
 
             (HI_VOID)HI_MPI_STAT_Event(STAT_EVENT_ASTART, 0);
         }
+#ifdef AVPLAY_VID_THREAD    
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
     }
 
     if (HI_UNF_AVPLAY_STREAM_TYPE_TS == pAvplay->AvplayAttr.stStreamAttr.enStreamType)
@@ -5211,13 +5706,17 @@ HI_S32 HI_MPI_AVPLAY_Start(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn)
         if (Ret != HI_SUCCESS)
         {
             HI_ERR_AVPLAY("call HI_MPI_DMX_PcrPidSet failed.\n");
+#ifndef AVPLAY_VID_THREAD  
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return Ret;
         }
     }
-
+    
+#ifndef AVPLAY_VID_THREAD  
     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
     return HI_SUCCESS;
 }
@@ -5231,13 +5730,7 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
     HI_BOOL                    Block;
     HI_S32                     Ret;
     HI_BOOL                    bStopNotify = HI_FALSE;
-    HI_U32                     i;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }    
+    HI_U32                     i;   
 
     if (enChn < HI_UNF_AVPLAY_MEDIA_CHAN_AUD)
     {
@@ -5289,20 +5782,30 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
     }
     
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
+
+#ifndef AVPLAY_VID_THREAD
     AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#endif
 
 	/*Non Block invoke*/
     if (0 == StopOpt.u32TimeoutMs)
     {
         if (enChn & ((HI_U32)HI_UNF_AVPLAY_MEDIA_CHAN_VID))
         {
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#endif
             if (pAvplay->VidEnable)
             {
                 Ret = AVPLAY_StopVidChn(pAvplay, StopOpt.enMode);
                 if (Ret != HI_SUCCESS)
                 {
-                    HI_ERR_AVPLAY("stop vid chn failed.\n");
+                    HI_ERR_AVPLAY("stop vid chn failed.\n");                    
+#ifdef AVPLAY_VID_THREAD
+                    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                     return Ret;
                 }
@@ -5326,10 +5829,16 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
 
                 (HI_VOID)HI_MPI_STAT_Event(STAT_EVENT_VSTOP, 0);
             }
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         }
 
         if (enChn & ((HI_U32)HI_UNF_AVPLAY_MEDIA_CHAN_AUD))
         {
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#endif
             if (pAvplay->AudEnable)
             {
                 Ret = AVPLAY_StopAudChn(pAvplay);
@@ -5364,6 +5873,9 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
 
                 (HI_VOID)HI_MPI_STAT_Event(STAT_EVENT_ASTOP, 0);
             }
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
         }
 
         if (HI_UNF_AVPLAY_STREAM_TYPE_TS == pAvplay->AvplayAttr.stStreamAttr.enStreamType)
@@ -5376,7 +5888,9 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
                 if (Ret != HI_SUCCESS)
                 {
                     HI_ERR_AVPLAY("call HI_MPI_DMX_PcrPidSet failed.\n");
+#ifndef AVPLAY_VID_THREAD
                     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                     return Ret;
                 }
@@ -5393,12 +5907,19 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
     }
     else
     {
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+        AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#endif
         if ((pAvplay->VidEnable && pAvplay->AudEnable)
           &&(enChn <= HI_UNF_AVPLAY_MEDIA_CHAN_VID)
            )
         {
             HI_ERR_AVPLAY("must control vid and aud chn together.\n");
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_ERR_AVPLAY_INVALID_PARA;
         }
@@ -5417,11 +5938,18 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
         {
             HI_ERR_AVPLAY("ERR: AVPLAY_SetEosFlag, Ret = %#x.\n", Ret);
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return Ret;
         }
-
+        
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+
         pAvplay->EosStartTime = AVPLAY_GetSysTime();
         while (1)
         {
@@ -5452,8 +5980,12 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
 
             (HI_VOID)usleep(AVPLAY_SYS_SLEEP_TIME*1000);
         }
-        
+
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#else
         AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#endif
 
         if (pAvplay->VidEnable)
         {
@@ -5461,7 +5993,12 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
             if (Ret != HI_SUCCESS)
             {
                 HI_ERR_AVPLAY("stop vid chn failed.\n");
+                
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return Ret;
             }
@@ -5478,6 +6015,13 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
             (HI_VOID)HI_MPI_STAT_Event(STAT_EVENT_VSTOP, 0);
         }
 
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
+
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#endif
         if (pAvplay->AudEnable)
         {
             Ret = AVPLAY_StopAudChn(pAvplay);
@@ -5510,13 +6054,18 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
             (HI_VOID)HI_MPI_STAT_Event(STAT_EVENT_ASTOP, 0);
         }
 
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
         if (HI_UNF_AVPLAY_STREAM_TYPE_TS == pAvplay->AvplayAttr.stStreamAttr.enStreamType)
         {
             Ret = HI_MPI_DMX_PcrPidSet(pAvplay->hDmxPcr, 0x1fff);
             if (Ret != HI_SUCCESS)
             {
                 HI_ERR_AVPLAY("call HI_MPI_DMX_PcrPidSet failed.\n");
+#ifndef AVPLAY_VID_THREAD
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif                
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return Ret;
             }
@@ -5526,12 +6075,15 @@ HI_S32 HI_MPI_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, c
         bStopNotify = HI_TRUE;
     }
 
+#ifndef AVPLAY_VID_THREAD
     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
+
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
 
     if (HI_TRUE == bStopNotify)
     {
-          AVPLAY_Notify(pAvplay, HI_UNF_AVPLAY_EVENT_STOP, HI_NULL);
+        AVPLAY_Notify(pAvplay, HI_UNF_AVPLAY_EVENT_STOP, HI_NULL);
     }
 
     return HI_SUCCESS;
@@ -5544,12 +6096,6 @@ HI_S32 HI_MPI_AVPLAY_Pause(HI_HANDLE hAvplay)
     HI_S32               Ret;
     HI_U32              i;
 
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     CHECK_AVPLAY_INIT();
 
     Ret = AVPLAY_CheckHandle(hAvplay, &AvplayUsrAddr);
@@ -5560,16 +6106,19 @@ HI_S32 HI_MPI_AVPLAY_Pause(HI_HANDLE hAvplay)
 
     pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
 
+    if (HI_UNF_AVPLAY_STATUS_PAUSE == pAvplay->CurStatus)
+    {
+        return HI_SUCCESS; 
+    }
+
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
 
     AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#endif
 
-    if (HI_UNF_AVPLAY_STATUS_PAUSE == pAvplay->CurStatus)
-    {
-        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
-        AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
-        return HI_SUCCESS; 
-    }
+
 
     if ((!pAvplay->VidEnable)
       &&(!pAvplay->AudEnable)
@@ -5577,6 +6126,9 @@ HI_S32 HI_MPI_AVPLAY_Pause(HI_HANDLE hAvplay)
     {
         HI_ERR_AVPLAY("vid and aud chn is stopped.\n");
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_ERR_AVPLAY_INVALID_OPT;
     }
@@ -5624,6 +6176,9 @@ HI_S32 HI_MPI_AVPLAY_Pause(HI_HANDLE hAvplay)
     }
 
     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
     return HI_SUCCESS;
 }
@@ -5635,12 +6190,6 @@ HI_S32 HI_MPI_AVPLAY_Tplay(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_TPLAY_OPT_S *p
     HI_S32                  Ret;
     HI_U32                  i;
     HI_U32                  AvplayRatio;
-
-    if (HI_INVALID_HANDLE == hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     CHECK_AVPLAY_INIT();
 
@@ -5654,11 +6203,17 @@ HI_S32 HI_MPI_AVPLAY_Tplay(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_TPLAY_OPT_S *p
 
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
     AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#endif
 
     if (!pAvplay->VidEnable && !pAvplay->AudEnable)
     {
         HI_ERR_AVPLAY("vid and aud chn is stopped.\n");
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_ERR_AVPLAY_INVALID_OPT;        
     }
@@ -5667,6 +6222,9 @@ HI_S32 HI_MPI_AVPLAY_Tplay(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_TPLAY_OPT_S *p
     {
         HI_ERR_AVPLAY("AVPLAY has not attach master window.\n"); 
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_ERR_AVPLAY_INVALID_OPT;
     }
@@ -5691,6 +6249,9 @@ HI_S32 HI_MPI_AVPLAY_Tplay(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_TPLAY_OPT_S *p
         {
             HI_ERR_AVPLAY("Set tplay speed invalid!\n");
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_ERR_AVPLAY_INVALID_PARA;
         }
@@ -5701,6 +6262,9 @@ HI_S32 HI_MPI_AVPLAY_Tplay(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_TPLAY_OPT_S *p
         pAvplay->FrcParamCfg.u32PlayRate = AvplayRatio;
         
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_SUCCESS;
     }
@@ -5714,6 +6278,9 @@ HI_S32 HI_MPI_AVPLAY_Tplay(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_TPLAY_OPT_S *p
         {
             HI_ERR_AVPLAY("avplay reset err, Ret=%#x.\n", Ret);
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return Ret;
         }
@@ -5770,6 +6337,9 @@ HI_S32 HI_MPI_AVPLAY_Tplay(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_TPLAY_OPT_S *p
     AVPLAY_Tplay(pAvplay);
 
     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
 
     return HI_SUCCESS;    
@@ -5782,12 +6352,6 @@ HI_S32 HI_MPI_AVPLAY_Resume(HI_HANDLE hAvplay)
     AVPLAY_USR_ADDR_S       AvplayUsrAddr;
     HI_S32                  Ret;
     HI_U32                  i;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     CHECK_AVPLAY_INIT();
 
@@ -5802,6 +6366,9 @@ HI_S32 HI_MPI_AVPLAY_Resume(HI_HANDLE hAvplay)
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
 
     AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#endif
 
     pAvplay->bStepMode = HI_FALSE;
     pAvplay->bStepPlay = HI_FALSE;
@@ -5809,6 +6376,9 @@ HI_S32 HI_MPI_AVPLAY_Resume(HI_HANDLE hAvplay)
     if (HI_UNF_AVPLAY_STATUS_PLAY == pAvplay->CurStatus)
     {
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_SUCCESS; 
     }
@@ -5819,6 +6389,9 @@ HI_S32 HI_MPI_AVPLAY_Resume(HI_HANDLE hAvplay)
     {
         HI_ERR_AVPLAY("vid and aud chn is stopped.\n");
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_ERR_AVPLAY_INVALID_OPT;
     }
@@ -5832,6 +6405,9 @@ HI_S32 HI_MPI_AVPLAY_Resume(HI_HANDLE hAvplay)
         {
             HI_ERR_AVPLAY("AVPLAY_Reset, Ret=%#x.\n", Ret);
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return Ret;
         }
@@ -5889,6 +6465,9 @@ HI_S32 HI_MPI_AVPLAY_Resume(HI_HANDLE hAvplay)
     AVPLAY_Play(pAvplay);
 
     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
     return HI_SUCCESS;
 }
@@ -5898,12 +6477,6 @@ HI_S32 HI_MPI_AVPLAY_Reset(HI_HANDLE hAvplay)
     AVPLAY_S           *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32               Ret;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     CHECK_AVPLAY_INIT();
 
@@ -5918,17 +6491,26 @@ HI_S32 HI_MPI_AVPLAY_Reset(HI_HANDLE hAvplay)
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
 
     AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#endif
 
     Ret = AVPLAY_Reset(pAvplay);
     if (Ret != HI_SUCCESS)
     {
         HI_ERR_AVPLAY("call AVPLAY_Reset failed.\n");
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return Ret;
     }
 
     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
     return HI_SUCCESS;
 }
@@ -5942,13 +6524,6 @@ HI_S32 HI_MPI_AVPLAY_GetBuf(HI_HANDLE  hAvplay,
     AVPLAY_S           *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32               Ret;
-    HI_U32              AdecDelay;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     if (enBufId >= HI_UNF_AVPLAY_BUF_ID_BUTT)
     {
@@ -6027,14 +6602,14 @@ HI_S32 HI_MPI_AVPLAY_GetBuf(HI_HANDLE  hAvplay,
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_ERR_AVPLAY_INVALID_OPT;
         }
-
-        Ret = HI_MPI_ADEC_GetDelayMs(pAvplay->hAdec, &AdecDelay);
-        if (HI_SUCCESS == Ret && AdecDelay > AVPLAY_ADEC_MAX_DELAY)
+#if 0
+        Ret = HI_MPI_ADEC_GetDelayMs(pAvplay->hAdec, &pAvplay->AdecDelayMs);
+        if (HI_SUCCESS == Ret && pAvplay->AdecDelayMs > AVPLAY_ADEC_MAX_DELAY)
         {
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_ERR_AVPLAY_INVALID_OPT;
         }
-
+#endif
         Ret = HI_MPI_ADEC_GetBuffer(pAvplay->hAdec, u32ReqLen, &pAvplay->AvplayAudEsBuf);
         if (Ret != HI_SUCCESS)
         {
@@ -6062,12 +6637,6 @@ HI_S32 HI_MPI_AVPLAY_PutBuf(HI_HANDLE hAvplay, HI_UNF_AVPLAY_BUFID_E enBufId,
     AVPLAY_S           *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32               Ret;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     if (enBufId >= HI_UNF_AVPLAY_BUF_ID_BUTT)
     {
@@ -6162,12 +6731,6 @@ HI_S32 HI_MPI_AVPLAY_GetSyncVdecHandle(HI_HANDLE hAvplay, HI_HANDLE *phVdec, HI_
     AVPLAY_USR_ADDR_S       AvplayUsrAddr;
     HI_S32                  Ret;
 
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (!phVdec)
     {
         HI_ERR_AVPLAY("para phVdec is invalid.\n");
@@ -6212,12 +6775,6 @@ HI_S32 HI_MPI_AVPLAY_GetSndHandle(HI_HANDLE hAvplay, HI_HANDLE *phTrack)
     AVPLAY_USR_ADDR_S       AvplayUsrAddr;
     HI_S32                  Ret;
 
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (!phTrack)
     {
         HI_ERR_AVPLAY("para phTrack is invalid.\n");
@@ -6255,12 +6812,6 @@ HI_S32 HI_MPI_AVPLAY_GetWindowHandle(HI_HANDLE hAvplay, HI_HANDLE *phWindow)
     AVPLAY_S           *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32               Ret;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     if (!phWindow)
     {
@@ -6301,12 +6852,6 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
     HI_S32                      Ret;
     HI_DRV_WIN_INFO_S           stWinInfo;
 
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (HI_INVALID_HANDLE == hWindow)
     {
         HI_ERR_AVPLAY("para hWindow is invalid.\n");
@@ -6324,13 +6869,21 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
     pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
 
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);  
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#else
     AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#endif
 
     Ret = HI_MPI_WIN_GetInfo(hWindow, &stWinInfo);
     if (HI_SUCCESS != Ret)
     {
-        HI_ERR_AVPLAY("ERR: HI_MPI_WIN_GetPrivnfo.\n");        
+        HI_ERR_AVPLAY("ERR: HI_MPI_WIN_GetPrivnfo.\n");  
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_ERR_AVPLAY_INVALID_OPT;
     }
@@ -6340,7 +6893,11 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         if (pAvplay->MasterFrmChn.hWindow == stWinInfo.hPrim)
         {
             HI_ERR_AVPLAY("this window is already attached.\n");
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_SUCCESS;
         }
@@ -6349,7 +6906,11 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         if (HI_INVALID_HANDLE != pAvplay->MasterFrmChn.hWindow)
         {
             HI_ERR_AVPLAY("avplay can only attach one master handle.\n");
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_ERR_AVPLAY_INVALID_OPT;
         }
@@ -6357,7 +6918,11 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         if (pAvplay->SlaveChnNum >= AVPLAY_MAX_SLAVE_FRMCHAN)
         {
             HI_ERR_AVPLAY("avplay has attached max slave window.\n");
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_ERR_AVPLAY_INVALID_OPT;
         }
@@ -6365,18 +6930,26 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         Ret = AVPLAY_CreatePort(pAvplay, stWinInfo.hPrim, VDEC_PORT_HD, &(pAvplay->MasterFrmChn.hPort));
         if(HI_SUCCESS != Ret)
         {
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return Ret;
         }
 
-        Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->MasterFrmChn.hPort, HI_TRUE);
+        Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->MasterFrmChn.hPort, VDEC_PORT_TYPE_MASTER);
         if(HI_SUCCESS != Ret)
         {
             (HI_VOID)AVPLAY_DestroyPort(pAvplay, stWinInfo.hPrim, pAvplay->MasterFrmChn.hPort);
             pAvplay->MasterFrmChn.hPort = HI_INVALID_HANDLE;
 
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return Ret;
         }
@@ -6387,12 +6960,16 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             (HI_VOID)AVPLAY_DestroyPort(pAvplay, stWinInfo.hPrim, pAvplay->MasterFrmChn.hPort);
             pAvplay->MasterFrmChn.hPort = HI_INVALID_HANDLE;
 
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return Ret;
         }
 
-        Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->SlaveFrmChn[pAvplay->SlaveChnNum].hPort,HI_FALSE);
+        Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->SlaveFrmChn[pAvplay->SlaveChnNum].hPort,VDEC_PORT_TYPE_SLAVE);
         if(HI_SUCCESS != Ret)
         {
             (HI_VOID)AVPLAY_DestroyPort(pAvplay, stWinInfo.hPrim, pAvplay->MasterFrmChn.hPort);
@@ -6400,7 +6977,11 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             (HI_VOID)AVPLAY_DestroyPort(pAvplay, stWinInfo.hSec, pAvplay->SlaveFrmChn[pAvplay->SlaveChnNum].hPort);
             pAvplay->SlaveFrmChn[pAvplay->SlaveChnNum].hPort = HI_INVALID_HANDLE;
 
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return Ret;
         }
@@ -6424,7 +7005,11 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         if (hWindow == pAvplay->MasterFrmChn.hWindow)
         {
             HI_ERR_AVPLAY("this window is alreay attached!\n");
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_SUCCESS;
         }
@@ -6434,18 +7019,26 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             Ret = AVPLAY_CreatePort(pAvplay, hWindow, VDEC_PORT_HD, &(pAvplay->MasterFrmChn.hPort));
             if (HI_SUCCESS != Ret)
             {
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return Ret;
             }
 
-            Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->MasterFrmChn.hPort, HI_TRUE);
+            Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->MasterFrmChn.hPort, VDEC_PORT_TYPE_MASTER);
             if(HI_SUCCESS != Ret)
             {
                 (HI_VOID)AVPLAY_DestroyPort(pAvplay, hWindow, pAvplay->MasterFrmChn.hPort);
                 pAvplay->MasterFrmChn.hPort = HI_INVALID_HANDLE;
 
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return Ret;
             }
@@ -6468,7 +7061,11 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
                 if (pAvplay->SlaveFrmChn[i].hWindow == hWindow)
                 {
                     HI_ERR_AVPLAY("this window is already attached!\n");
+#ifdef AVPLAY_VID_THREAD
+                    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                     return HI_SUCCESS;
                 }
@@ -6477,7 +7074,11 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             if (pAvplay->SlaveChnNum >= AVPLAY_MAX_SLAVE_FRMCHAN)
             {
                 HI_ERR_AVPLAY("avplay has attached max slave window.\n");
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return HI_ERR_AVPLAY_INVALID_OPT;
             }          
@@ -6485,18 +7086,26 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             Ret = AVPLAY_CreatePort(pAvplay, hWindow, VDEC_PORT_SD, &(pAvplay->SlaveFrmChn[pAvplay->SlaveChnNum].hPort));
             if(HI_SUCCESS != Ret)
             {
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return Ret;
             }
 
-            Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->SlaveFrmChn[pAvplay->SlaveChnNum].hPort,HI_FALSE);
+            Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->SlaveFrmChn[pAvplay->SlaveChnNum].hPort,VDEC_PORT_TYPE_SLAVE);
             if(HI_SUCCESS != Ret)
             {
                 (HI_VOID)AVPLAY_DestroyPort(pAvplay, hWindow, pAvplay->SlaveFrmChn[pAvplay->SlaveChnNum].hPort);
                 pAvplay->SlaveFrmChn[pAvplay->SlaveChnNum].hPort = HI_INVALID_HANDLE;
 
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return Ret;
             }
@@ -6513,7 +7122,11 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             if (pAvplay->VirFrmChn[i].hWindow == hWindow)
             {
                 HI_ERR_AVPLAY("this window is already attached!\n");
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);    
                 return HI_SUCCESS;
             }
@@ -6522,7 +7135,11 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         if (pAvplay->VirChnNum >= AVPLAY_MAX_VIR_FRMCHAN)
         {
             HI_ERR_AVPLAY("the avplay has attached max window!\n");
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);    
             return HI_ERR_AVPLAY_INVALID_OPT;
         }
@@ -6530,18 +7147,26 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         Ret= AVPLAY_CreatePort(pAvplay, hWindow, VDEC_PORT_STR, &pAvplay->VirFrmChn[pAvplay->VirChnNum].hPort);
         if (HI_SUCCESS != Ret)
         {
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);    
             return HI_ERR_AVPLAY_INVALID_OPT;
         }
 
-        Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->VirFrmChn[pAvplay->VirChnNum].hPort, HI_TRUE);
+        Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->VirFrmChn[pAvplay->VirChnNum].hPort, VDEC_PORT_TYPE_VIRTUAL);
         if(HI_SUCCESS != Ret)
         {
             (HI_VOID)AVPLAY_DestroyPort(pAvplay, hWindow, pAvplay->VirFrmChn[pAvplay->VirChnNum].hPort);
             pAvplay->VirFrmChn[pAvplay->VirChnNum].hPort = HI_INVALID_HANDLE;      
 
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return Ret;        
         }
@@ -6550,7 +7175,12 @@ HI_S32 HI_MPI_AVPLAY_AttachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         pAvplay->VirChnNum++;
     }
 
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
+
 	AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
 
     return HI_SUCCESS;
@@ -6563,12 +7193,6 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
     HI_U32                  i;
     HI_S32                  Ret;
     HI_DRV_WIN_INFO_S       WinInfo;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     if (HI_INVALID_HANDLE == hWindow)
     {
@@ -6587,13 +7211,22 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
     pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
 
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
+    
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#else
     AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#endif
 
     Ret = HI_MPI_WIN_GetInfo(hWindow, &WinInfo);
     if (HI_SUCCESS != Ret)
     {
         HI_ERR_AVPLAY("ERR: HI_MPI_VO_GetWindowInfo.\n");
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_ERR_AVPLAY_INVALID_OPT;    
     }
@@ -6604,7 +7237,11 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         if (pAvplay->MasterFrmChn.hWindow != WinInfo.hPrim)
         {
             HI_ERR_AVPLAY("ERR: this is not a attached window.\n");
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_ERR_AVPLAY_INVALID_OPT;
         }
@@ -6620,7 +7257,11 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         if (i == pAvplay->SlaveChnNum)
         {
             HI_ERR_AVPLAY("ERR: this is not a attached window.\n");
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_ERR_AVPLAY_INVALID_OPT;
         }
@@ -6637,7 +7278,11 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         Ret |= AVPLAY_DestroyPort(pAvplay, pAvplay->SlaveFrmChn[i].hWindow, pAvplay->SlaveFrmChn[i].hPort);
         if (HI_SUCCESS != Ret)
         {
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_ERR_AVPLAY_INVALID_OPT;
         }
@@ -6672,7 +7317,7 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             pAvplay->MasterFrmChn.hWindow = pAvplay->SlaveFrmChn[i].hWindow;
             pAvplay->MasterFrmChn.hPort = pAvplay->SlaveFrmChn[i].hPort;
         
-            Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->MasterFrmChn.hPort, HI_TRUE);
+            Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->MasterFrmChn.hPort, VDEC_PORT_TYPE_MASTER);
             if(HI_SUCCESS != Ret)
             {
                 HI_ERR_AVPLAY("ERR: set main port failed.\n");
@@ -6702,7 +7347,11 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             Ret = AVPLAY_DestroyPort(pAvplay, pAvplay->MasterFrmChn.hWindow, pAvplay->MasterFrmChn.hPort);
             if (HI_SUCCESS != Ret)
             {
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return HI_ERR_AVPLAY_INVALID_OPT;               
             }
@@ -6729,7 +7378,7 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
                 pAvplay->MasterFrmChn.hWindow = pAvplay->SlaveFrmChn[i].hWindow;
                 pAvplay->MasterFrmChn.hPort = pAvplay->SlaveFrmChn[i].hPort;
             
-                Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->MasterFrmChn.hPort, HI_TRUE);
+                Ret = AVPLAY_SetPortAttr(pAvplay,pAvplay->MasterFrmChn.hPort, VDEC_PORT_TYPE_MASTER);
                 if(HI_SUCCESS != Ret)
                 {
                     HI_ERR_AVPLAY("ERR: set main port failed.\n");
@@ -6757,7 +7406,11 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             if (i == pAvplay->SlaveChnNum)
             {
                 HI_ERR_AVPLAY("ERR: this is not a attached master window.\n");
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return HI_ERR_AVPLAY_INVALID_OPT;             
             }
@@ -6772,7 +7425,11 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             Ret = AVPLAY_DestroyPort(pAvplay, hWindow, pAvplay->SlaveFrmChn[i].hPort);
             if (HI_SUCCESS != Ret)
             {
+#ifdef AVPLAY_VID_THREAD
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
                 AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return HI_ERR_AVPLAY_INVALID_OPT;               
             }
@@ -6803,7 +7460,11 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         if (i == pAvplay->VirChnNum)
         {
             HI_ERR_AVPLAY("ERR: this is not a attached master window.\n");
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_ERR_AVPLAY_INVALID_OPT;             
         }
@@ -6821,7 +7482,11 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         Ret = AVPLAY_DestroyPort(pAvplay, hWindow, pAvplay->VirFrmChn[i].hPort);
         if (HI_SUCCESS != Ret)
         {
+#ifdef AVPLAY_VID_THREAD
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
             AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_ERR_AVPLAY_INVALID_OPT;          
         }
@@ -6836,7 +7501,12 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
     }
 
 
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
+
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
     return HI_SUCCESS;
 }
@@ -6849,12 +7519,6 @@ HI_S32 HI_MPI_AVPLAY_SetWindowRepeat(HI_HANDLE hAvplay, HI_U32 u32Repeat)
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_U32               AvplayRatio;
     HI_S32               Ret;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     if (0 == u32Repeat)
     {
@@ -6873,12 +7537,21 @@ HI_S32 HI_MPI_AVPLAY_SetWindowRepeat(HI_HANDLE hAvplay, HI_U32 u32Repeat)
     pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
 
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
+
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#else
     AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#endif
 
     if (HI_INVALID_HANDLE == pAvplay->MasterFrmChn.hWindow)
     {
         HI_ERR_AVPLAY("AVPLAY has not attach master window.\n");
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_ERR_AVPLAY_INVALID_OPT;
     }
@@ -6889,14 +7562,22 @@ HI_S32 HI_MPI_AVPLAY_SetWindowRepeat(HI_HANDLE hAvplay, HI_U32 u32Repeat)
         || (AvplayRatio < AVPLAY_ALG_FRC_MIN_PLAY_RATIO))
     {
         HI_ERR_AVPLAY("Set repeat invalid!\n");
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_ERR_AVPLAY_INVALID_PARA;
     }
 
     pAvplay->FrcParamCfg.u32PlayRate = AvplayRatio;
 
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
 
     return HI_SUCCESS;
@@ -6909,12 +7590,6 @@ HI_S32 HI_MPI_AVPLAY_AttachSnd(HI_HANDLE hAvplay, HI_HANDLE hTrack)
     HI_S32              Ret;
     HI_S32              i;
     HI_UNF_AUDIOTRACK_ATTR_S    stTrackInfo;
-
-    if (HI_INVALID_HANDLE == hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     if (HI_INVALID_HANDLE == hTrack)
     {
@@ -6933,20 +7608,24 @@ HI_S32 HI_MPI_AVPLAY_AttachSnd(HI_HANDLE hAvplay, HI_HANDLE hTrack)
     pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
 
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
+    AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
 
     for (i=0; i<AVPLAY_MAX_TRACK; i++)
     {
         if (pAvplay->hTrack[i] == hTrack)
         {
+            AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
             AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
             return HI_SUCCESS;
         }
     }
-    
+
+    memset(&stTrackInfo, 0x0, sizeof(HI_UNF_AUDIOTRACK_ATTR_S));
     Ret = HI_MPI_AO_Track_GetAttr(hTrack, &stTrackInfo);
     if (HI_SUCCESS != Ret)
     {
         HI_ERR_AVPLAY("ERR: HI_MPI_HIAO_GetTrackInfo.\n");
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_FAILURE;
     }
@@ -6962,6 +7641,7 @@ HI_S32 HI_MPI_AVPLAY_AttachSnd(HI_HANDLE hAvplay, HI_HANDLE hTrack)
     if(AVPLAY_MAX_TRACK == i)
     {
         HI_ERR_AVPLAY("AVPLAY has attached max track.\n");
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_FAILURE;        
     }    
@@ -6975,7 +7655,8 @@ HI_S32 HI_MPI_AVPLAY_AttachSnd(HI_HANDLE hAvplay, HI_HANDLE hTrack)
     {
         pAvplay->hSyncTrack = hTrack;
     }
-    
+
+    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
     return HI_SUCCESS;
 }
@@ -6988,17 +7669,13 @@ HI_S32 HI_MPI_AVPLAY_DetachSnd(HI_HANDLE hAvplay, HI_HANDLE hTrack)
     HI_U32              i, j;
     HI_UNF_AUDIOTRACK_ATTR_S    stTrackInfo;
 
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (HI_INVALID_HANDLE == hTrack)
     {
         HI_ERR_AVPLAY("para hTrack is invalid.\n");
         return HI_ERR_AVPLAY_INVALID_PARA;
     }
+
+    memset(&stTrackInfo, 0x0, sizeof(HI_UNF_AUDIOTRACK_ATTR_S));
 
     CHECK_AVPLAY_INIT();
 
@@ -7011,6 +7688,7 @@ HI_S32 HI_MPI_AVPLAY_DetachSnd(HI_HANDLE hAvplay, HI_HANDLE hTrack)
     pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
 
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
+    AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
 
     for (i=0; i<pAvplay->TrackNum; i++)
     {
@@ -7023,6 +7701,7 @@ HI_S32 HI_MPI_AVPLAY_DetachSnd(HI_HANDLE hAvplay, HI_HANDLE hTrack)
     if (i == pAvplay->TrackNum)
     {
         HI_ERR_AVPLAY("this is not a attached track, can not detach.\n");
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_ERR_AVPLAY_INVALID_OPT;
     }
@@ -7040,6 +7719,7 @@ HI_S32 HI_MPI_AVPLAY_DetachSnd(HI_HANDLE hAvplay, HI_HANDLE hTrack)
             if (HI_UNF_SND_TRACK_TYPE_VIRTUAL != stTrackInfo.enTrackType)
             {
                 pAvplay->hSyncTrack = pAvplay->hTrack[j];
+                AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
                 AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
                 return HI_SUCCESS;
             }            
@@ -7050,7 +7730,8 @@ HI_S32 HI_MPI_AVPLAY_DetachSnd(HI_HANDLE hAvplay, HI_HANDLE hTrack)
             pAvplay->hSyncTrack= HI_INVALID_HANDLE;
         }
     }
-
+    
+    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
     return HI_SUCCESS;
 }
@@ -7060,12 +7741,6 @@ HI_S32 HI_MPI_AVPLAY_GetDmxAudChnHandle(HI_HANDLE hAvplay, HI_HANDLE *phDmxAudCh
     AVPLAY_S           *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32               Ret;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     if (!phDmxAudChn)
     {
@@ -7111,12 +7786,6 @@ HI_S32 HI_MPI_AVPLAY_GetDmxVidChnHandle(HI_HANDLE hAvplay, HI_HANDLE *phDmxVidCh
     AVPLAY_USR_ADDR_S  AvplayUsrAddr;
     HI_S32               Ret;
 
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (!phDmxVidChn)
     {
         HI_ERR_AVPLAY("para phDmxVidChn is null.\n");
@@ -7160,17 +7829,11 @@ HI_S32 HI_MPI_AVPLAY_GetStatusInfo(HI_HANDLE hAvplay, HI_UNF_AVPLAY_STATUS_INFO_
     AVPLAY_S                       *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S              AvplayUsrAddr;
     HI_S32                           Ret;
-    ADEC_BUFSTATUS_S               AdecBufStatus;
-    VDEC_STATUSINFO_S              VdecBufStatus;
-    HI_MPI_DMX_BUF_STATUS_S        VidChnBuf;
+    ADEC_BUFSTATUS_S               AdecBufStatus = {0};
+    VDEC_STATUSINFO_S              VdecBufStatus = {0};
+    HI_MPI_DMX_BUF_STATUS_S        VidChnBuf = {0};
     HI_U32                         SndDelay = 0;
-    HI_DRV_WIN_PLAY_INFO_S         WinPlayInfo;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
+    HI_DRV_WIN_PLAY_INFO_S         WinPlayInfo = {0};
 
     if (!pstStatusInfo)
     {
@@ -7319,6 +7982,7 @@ HI_S32 HI_MPI_AVPLAY_GetStatusInfo(HI_HANDLE hAvplay, HI_UNF_AVPLAY_STATUS_INFO_
         return Ret;
     }
 
+#if 0
     if(HI_INVALID_PTS !=  pstStatusInfo->stSyncStatus.u32LastAudPts)
     {
         if (pstStatusInfo->stSyncStatus.u32LastAudPts > pstStatusInfo->stBufStatus[HI_UNF_AVPLAY_BUF_ID_ES_AUD].u32FrameBufTime)
@@ -7342,6 +8006,7 @@ HI_S32 HI_MPI_AVPLAY_GetStatusInfo(HI_HANDLE hAvplay, HI_UNF_AVPLAY_STATUS_INFO_
             pstStatusInfo->stSyncStatus.u32LastVidPts = 0;
         }
     } 
+#endif
 
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
     return HI_SUCCESS;
@@ -7352,14 +8017,8 @@ HI_S32 HI_MPI_AVPLAY_GetStreamInfo(HI_HANDLE hAvplay, HI_UNF_AVPLAY_STREAM_INFO_
     AVPLAY_S                *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S       AvplayUsrAddr;
     HI_S32                  Ret;
-    ADEC_STREAMINFO_S       AdecStreaminfo;
+    ADEC_STREAMINFO_S       AdecStreaminfo = {0};
     
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-
     if (!pstStreamInfo)
     {
         HI_ERR_AVPLAY("para pstStreamInfo is null.\n");
@@ -7412,12 +8071,6 @@ HI_S32 HI_MPI_AVPLAY_GetAudioSpectrum(HI_HANDLE hAvplay, HI_U16 *pSpectrum, HI_U
     AVPLAY_S                *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S       AvplayUsrAddr;
     HI_S32                  Ret;
-    
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
 
     if (!pSpectrum)
     {
@@ -7463,12 +8116,6 @@ HI_S32 HI_MPI_AVPLAY_IsBuffEmpty(HI_HANDLE hAvplay, HI_BOOL *pbIsEmpty)
     AVPLAY_S                *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S       AvplayUsrAddr;
     HI_S32                  Ret;
-
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
     
     if (!pbIsEmpty)
     {
@@ -7517,13 +8164,7 @@ HI_S32 HI_MPI_AVPLAY_SetDDPTestMode(HI_HANDLE hAvplay, HI_BOOL bEnable)
     AVPLAY_S              *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S     AvplayUsrAddr;
     HI_S32                Ret;
-    
-    if (!hAvplay)
-    {
-        HI_ERR_AVPLAY("para hAvplay is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
-    
+        
     CHECK_AVPLAY_INIT();
     Ret = AVPLAY_CheckHandle(hAvplay, &AvplayUsrAddr);
     if (Ret != HI_SUCCESS)
@@ -7552,7 +8193,7 @@ HI_S32 HI_MPI_AVPLAY_SwitchDmxAudChn(HI_HANDLE hAvplay, HI_HANDLE hNewDmxAud, HI
     AVPLAY_USR_ADDR_S     AvplayUsrAddr;
     HI_S32                Ret;
     
-    if ((HI_INVALID_HANDLE == hAvplay) || (HI_INVALID_HANDLE == hNewDmxAud) || (HI_NULL == phOldDmxAud))
+    if ((!hAvplay) || (!hNewDmxAud) || (HI_NULL == phOldDmxAud))
     {
         HI_ERR_AVPLAY("para is null.\n");
         return HI_ERR_AVPLAY_NULL_PTR;
@@ -7592,7 +8233,7 @@ HI_S32 HI_MPI_AVPLAY_PutAudPts(HI_HANDLE hAvplay, HI_U32 u32AudPts)
     AVPLAY_USR_ADDR_S     AvplayUsrAddr;
     HI_S32                Ret;
     
-    if ((HI_INVALID_HANDLE == hAvplay))
+    if ((!hAvplay))
     {
         HI_ERR_AVPLAY("para is null.\n");
         return HI_ERR_AVPLAY_NULL_PTR;
@@ -7627,7 +8268,7 @@ HI_S32 HI_MPI_AVPLAY_FlushStream(HI_HANDLE hAvplay, HI_UNF_AVPLAY_FLUSH_STREAM_O
     AVPLAY_S                *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S       AvplayUsrAddr;
 
-    if ((HI_INVALID_HANDLE == hAvplay))
+    if ((!hAvplay))
     {
         HI_ERR_AVPLAY("para is null.\n");
         return HI_ERR_AVPLAY_NULL_PTR;
@@ -7644,10 +8285,16 @@ HI_S32 HI_MPI_AVPLAY_FlushStream(HI_HANDLE hAvplay, HI_UNF_AVPLAY_FLUSH_STREAM_O
 
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
     AVPLAY_Mutex_Lock(pAvplay->pAvplayThreadMutex);
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_Mutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#endif
 
     if (HI_UNF_AVPLAY_STATUS_EOS == pAvplay->CurStatus)
     {
         HI_INFO_AVPLAY("current status is eos!\n");
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_Mutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayThreadMutex);
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_SUCCESS;
@@ -7656,6 +8303,9 @@ HI_S32 HI_MPI_AVPLAY_FlushStream(HI_HANDLE hAvplay, HI_UNF_AVPLAY_FLUSH_STREAM_O
     if (pAvplay->bSetEosFlag)
     {
         HI_INFO_AVPLAY("Eos Flag has been set!\n");
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_Mutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayThreadMutex);
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_SUCCESS;
@@ -7665,11 +8315,17 @@ HI_S32 HI_MPI_AVPLAY_FlushStream(HI_HANDLE hAvplay, HI_UNF_AVPLAY_FLUSH_STREAM_O
     if (HI_SUCCESS != Ret)
     {
         HI_ERR_AVPLAY("ERR: AVPLAY_SetEosFlag, Ret = %#x\n", Ret);
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_Mutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayThreadMutex);
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);        
         return Ret;
     }
 
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_Mutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#endif
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayThreadMutex);
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
 
@@ -7682,7 +8338,7 @@ HI_S32 HI_MPI_AVPLAY_Step(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_STEP_OPT_S *pst
     AVPLAY_S                *pAvplay = HI_NULL;
     AVPLAY_USR_ADDR_S       AvplayUsrAddr;
 
-    if ((HI_INVALID_HANDLE == hAvplay))
+    if ((!hAvplay))
     {
         HI_ERR_AVPLAY("para is null.\n");
         return HI_ERR_AVPLAY_NULL_PTR;
@@ -7699,12 +8355,20 @@ HI_S32 HI_MPI_AVPLAY_Step(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_STEP_OPT_S *pst
 
     AVPLAY_Mutex_Lock(pAvplay->pAvplayMutex);
 
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayVidThreadMutex);
+#else
     AVPLAY_ThreadMutex_Lock(pAvplay->pAvplayThreadMutex);
+#endif
 
     if (HI_INVALID_HANDLE == pAvplay->MasterFrmChn.hWindow)
     {
         HI_ERR_AVPLAY("AVPLAY has not attach master window.\n");
+#ifdef AVPLAY_VID_THREAD
+        AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
         AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
         AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
         return HI_ERR_AVPLAY_INVALID_OPT;
     }
@@ -7712,7 +8376,11 @@ HI_S32 HI_MPI_AVPLAY_Step(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_STEP_OPT_S *pst
     pAvplay->bStepMode = HI_TRUE;
     pAvplay->bStepPlay = HI_TRUE;
 
+#ifdef AVPLAY_VID_THREAD
+    AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayVidThreadMutex);
+#else
     AVPLAY_ThreadMutex_UnLock(pAvplay->pAvplayThreadMutex);
+#endif
 
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
 
@@ -7721,17 +8389,12 @@ HI_S32 HI_MPI_AVPLAY_Step(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_STEP_OPT_S *pst
 
 HI_S32 HI_MPI_AVPLAY_Invoke(HI_HANDLE hAvplay, HI_UNF_AVPLAY_INVOKE_E enInvokeType, HI_VOID *pPara)
 {
-    HI_S32                  Ret;
-    AVPLAY_S                *pAvplay = HI_NULL;
-    AVPLAY_USR_ADDR_S       AvplayUsrAddr;
-   // HI_WIN_PRIV_INFO_S       stWinPrivInfo;
-   // HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S     stPlayInfo;
-
-    if (HI_INVALID_HANDLE == hAvplay)
-    {
-        HI_ERR_AVPLAY("para is null.\n");
-        return HI_ERR_AVPLAY_NULL_PTR;
-    }
+    HI_S32                                  Ret;
+    AVPLAY_S                                *pAvplay = HI_NULL;
+    AVPLAY_USR_ADDR_S                       AvplayUsrAddr;
+    HI_DRV_VIDEO_FRAME_S                    stVidFrame;
+    HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S     stPlayInfo;
+    HI_DRV_VIDEO_PRIVATE_S                  stVidPrivate;
 
     if (enInvokeType >= HI_UNF_AVPLAY_INVOKE_BUTT)
     {
@@ -7744,6 +8407,10 @@ HI_S32 HI_MPI_AVPLAY_Invoke(HI_HANDLE hAvplay, HI_UNF_AVPLAY_INVOKE_E enInvokeTy
         HI_ERR_AVPLAY("para pPara is null.\n");
         return HI_ERR_AVPLAY_NULL_PTR;
     }
+
+    memset(&stVidFrame, 0x0, sizeof(HI_DRV_VIDEO_FRAME_S));
+    memset(&stPlayInfo, 0x0, sizeof(HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S));
+    memset(&stVidPrivate, 0x0, sizeof(HI_DRV_VIDEO_PRIVATE_S));
 
     CHECK_AVPLAY_INIT();
     Ret = AVPLAY_CheckHandle(hAvplay, &AvplayUsrAddr);
@@ -7768,7 +8435,7 @@ HI_S32 HI_MPI_AVPLAY_Invoke(HI_HANDLE hAvplay, HI_UNF_AVPLAY_INVOKE_E enInvokeTy
         Ret = HI_MPI_VDEC_Invoke(pAvplay->hVdec, pPara);
         if (Ret != HI_SUCCESS)
         {
-            HI_ERR_AVPLAY("HI_MPI_VDEC_Invoke failed.\n");
+            HI_WARN_AVPLAY("HI_MPI_VDEC_Invoke failed.\n");
         }
     }
     else if (HI_UNF_AVPLAY_INVOKE_ACODEC == enInvokeType)
@@ -7788,7 +8455,6 @@ HI_S32 HI_MPI_AVPLAY_Invoke(HI_HANDLE hAvplay, HI_UNF_AVPLAY_INVOKE_E enInvokeTy
     }
     else if (HI_UNF_AVPLAY_INVOKE_GET_PRIV_PLAYINFO == enInvokeType)
     {
-#if 0
         if (HI_INVALID_HANDLE == pAvplay->MasterFrmChn.hWindow)
         {
             HI_ERR_AVPLAY("AVPLAY has not attach master window.\n"); 
@@ -7796,22 +8462,140 @@ HI_S32 HI_MPI_AVPLAY_Invoke(HI_HANDLE hAvplay, HI_UNF_AVPLAY_INVOKE_E enInvokeTy
             return HI_ERR_AVPLAY_INVALID_OPT;
         }
 
-        Ret = HI_MPI_WIN_GetPrivInfo(pAvplay->MasterFrmChn.hWindow, &stWinPrivInfo);
+        Ret = HI_MPI_WIN_GetLatestFrameInfo(pAvplay->MasterFrmChn.hWindow, &stVidFrame);
         if (Ret != HI_SUCCESS)
         {
-            HI_ERR_AVPLAY("HI_MPI_WIN_GetPrivInfo failed.\n");
+            HI_ERR_AVPLAY("HI_MPI_WIN_GetLatestFrameInfo failed.\n");
         }
 
-        stPlayInfo.u32LastPts = stWinPrivInfo.u32Pts;
-        stPlayInfo.u32LastPlayTime = stWinPrivInfo.u32PrivPlayTime;
+        stPlayInfo.u32LastPts = stVidFrame.u32Pts;
 
-        memcpy((HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S *)pPara, &stWinPrivInfo, sizeof(HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S));
-#endif
+        memcpy(&stVidPrivate, (HI_DRV_VIDEO_PRIVATE_S *)(stVidFrame.u32Priv), sizeof(HI_DRV_VIDEO_PRIVATE_S));
+        
+        stPlayInfo.u32LastPlayTime = stVidPrivate.u32PrivDispTime;
+        
+        stPlayInfo.u32DispOptimizeFlag = pAvplay->u32DispOptimizeFlag;
+
+        memcpy((HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S *)pPara, &stPlayInfo, sizeof(HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S));
+    }
+    else if (HI_UNF_AVPLAY_INVOKE_SET_DISP_OPTIMIZE_FLAG == enInvokeType)
+    {
+        pAvplay->u32DispOptimizeFlag = *(HI_U32 *)pPara;
     }
 
     AVPLAY_Mutex_UnLock(pAvplay->pAvplayMutex);
 
     return Ret;
+}
+
+
+HI_S32 HI_MPI_AVPLAY_AcqUserData(HI_HANDLE hAvplay, HI_UNF_VIDEO_USERDATA_S *pstUserData, HI_UNF_VIDEO_USERDATA_TYPE_E *penType)
+{
+    HI_S32                  Ret;
+    AVPLAY_S                *pAvplay = HI_NULL;
+    AVPLAY_USR_ADDR_S       AvplayUsrAddr;
+
+    if ((HI_INVALID_HANDLE == hAvplay))
+    {
+        HI_ERR_AVPLAY("para is null.\n");
+        return HI_ERR_AVPLAY_NULL_PTR;
+    }
+    
+    CHECK_AVPLAY_INIT();
+    Ret = AVPLAY_CheckHandle(hAvplay, &AvplayUsrAddr);
+    if (HI_SUCCESS != Ret)
+    {
+        return Ret;
+    }
+
+    pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
+
+    if (!pAvplay->VidEnable)
+    {
+        HI_ERR_AVPLAY("Vid chan is not start.\n");
+        return HI_ERR_AVPLAY_INVALID_OPT;        
+    }
+
+    Ret = HI_MPI_VDEC_AcqUserData(pAvplay->hVdec, pstUserData, penType);
+    if (HI_SUCCESS != Ret)
+    {
+        return HI_ERR_AVPLAY_INVALID_OPT;    
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 HI_MPI_AVPLAY_RlsUserData(HI_HANDLE hAvplay, HI_UNF_VIDEO_USERDATA_S* pstUserData)
+{
+    HI_S32                  Ret;
+    AVPLAY_S                *pAvplay = HI_NULL;
+    AVPLAY_USR_ADDR_S       AvplayUsrAddr;
+
+    if ((HI_INVALID_HANDLE == hAvplay))
+    {
+        HI_ERR_AVPLAY("para is null.\n");
+        return HI_ERR_AVPLAY_NULL_PTR;
+    }
+    
+    CHECK_AVPLAY_INIT();
+    Ret = AVPLAY_CheckHandle(hAvplay, &AvplayUsrAddr);
+    if (HI_SUCCESS != Ret)
+    {
+        return Ret;
+    }
+
+    pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
+
+    if (!pAvplay->VidEnable)
+    {
+        HI_ERR_AVPLAY("Vid chan is not start.\n");
+        return HI_ERR_AVPLAY_INVALID_OPT;        
+    }
+
+    Ret = HI_MPI_VDEC_RlsUserData(pAvplay->hVdec, pstUserData);
+    if (HI_SUCCESS != Ret)
+    {
+        return HI_ERR_AVPLAY_INVALID_OPT;    
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 HI_MPI_AVPLAY_GetVidChnOpenParam(HI_HANDLE hAvplay, HI_UNF_AVPLAY_OPEN_OPT_S *pstOpenPara)
+{
+    HI_S32                  Ret;
+    AVPLAY_S                *pAvplay = HI_NULL;
+    AVPLAY_USR_ADDR_S       AvplayUsrAddr;
+
+    if (HI_NULL == pstOpenPara)
+    {
+        HI_ERR_AVPLAY("pstOpenPara is null.\n");
+        return HI_ERR_AVPLAY_NULL_PTR;        
+    }
+
+    CHECK_AVPLAY_INIT();
+    Ret = AVPLAY_CheckHandle(hAvplay, &AvplayUsrAddr);
+    if (HI_SUCCESS != Ret)
+    {
+        return Ret;
+    }
+
+    pAvplay = (AVPLAY_S *)AvplayUsrAddr.AvplayUsrAddr;
+
+    if (HI_INVALID_HANDLE == pAvplay->hVdec)
+    {
+        HI_ERR_AVPLAY("Vid Chan is not open!\n");
+        return HI_ERR_AVPLAY_INVALID_OPT;
+    }
+
+    Ret = HI_MPI_VDEC_GetChanOpenParam(pAvplay->hVdec, pstOpenPara);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_ERR_AVPLAY("HI_MPI_VDEC_GetChanOpenParam ERR, Ret=%#x\n", Ret);
+        return HI_ERR_AVPLAY_INVALID_OPT;
+    }
+    
+    return HI_SUCCESS;
 }
 
 

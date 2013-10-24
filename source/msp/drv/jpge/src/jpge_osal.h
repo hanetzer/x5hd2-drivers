@@ -15,7 +15,6 @@ extern "C" {
 
 #define JPGE_REG_BASE_ADDR 0xF8C90000 //0x60118000
 #define JPGE_IRQ_ID        134 //32+45
-#define JPGE_REG_CLOCK 0xf8a22090 //0x101f506c
 
 typedef unsigned long  JPGE_LOCK_FLAG;
 typedef spinlock_t     JPGE_LOCK_S;

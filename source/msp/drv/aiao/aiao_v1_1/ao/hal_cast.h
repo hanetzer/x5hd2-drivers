@@ -49,17 +49,13 @@ typedef struct
     HI_U32  u32BufPhyAddr;  
     HI_U32  u32BufVirAddr;  
     HI_U32  u32BufSize;
+    HI_U32  u32WptrAddr;
+    HI_U32  u32RptrAddr;
 } AIAO_CAST_MEM_ATTR_S;
 
 typedef struct
 {
-    HI_U32  u32BufPhyAddr;
-    HI_U32  u32BufPhyWptr;
-    HI_U32  u32BufPhyRptr;
-    HI_U32  u32BufVirAddr;
-    HI_U32  u32BufVirWptr;
-    HI_U32  u32BufVirRptr;
-    HI_U32  u32BufSize;
+    HI_U32  todo;
 } AIAO_CAST_RBUF_ATTR_S;
 
 typedef struct

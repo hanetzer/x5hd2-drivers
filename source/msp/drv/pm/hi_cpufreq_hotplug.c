@@ -31,8 +31,12 @@
 #include <linux/sched.h>
 #include <linux/err.h>
 #include <linux/slab.h>
+
+#include "hi_reg_common.h"
+
 #include "hi_dvfs.h"
 #include "hi_drv_pmoc.h"
+#include "hi_osal.h"
 
 /* greater than 80% avg load across online CPUs increases frequency */
 #define DEFAULT_UP_FREQ_MIN_LOAD			(80)
@@ -150,7 +154,7 @@ static inline cputime64_t get_cpu_idle_time(unsigned int cpu, cputime64_t *wall)
 static ssize_t show_##file_name						\
 (struct kobject *kobj, struct attribute *attr, char *buf)		\
 {									\
-	return sprintf(buf, "%u\n", dbs_tuners_ins.object);		\
+	return HI_OSAL_Snprintf(buf, 11, "%u\n", dbs_tuners_ins.object);		\
 }
 show_one(sampling_rate, sampling_rate);
 show_one(up_threshold, up_threshold);
@@ -166,7 +170,7 @@ static ssize_t store_sampling_rate(struct kobject *a, struct attribute *b,
 {
 	unsigned int input;
 	int ret;
-	ret = sscanf(buf, "%u", &input);
+	ret = sscanf(buf, "%10u", &input);
 	if (ret != 1)
 		return -EINVAL;
 
@@ -182,7 +186,7 @@ static ssize_t store_up_threshold(struct kobject *a, struct attribute *b,
 {
 	unsigned int input;
 	int ret;
-	ret = sscanf(buf, "%u", &input);
+	ret = sscanf(buf, "%10u", &input);
 
 	if (ret != 1 || input <= dbs_tuners_ins.down_threshold) {
 		return -EINVAL;
@@ -200,7 +204,7 @@ static ssize_t store_down_differential(struct kobject *a, struct attribute *b,
 {
 	unsigned int input;
 	int ret;
-	ret = sscanf(buf, "%u", &input);
+	ret = sscanf(buf, "%10u", &input);
 
 	if (ret != 1 || input >= dbs_tuners_ins.up_threshold)
 		return -EINVAL;
@@ -217,7 +221,7 @@ static ssize_t store_down_threshold(struct kobject *a, struct attribute *b,
 {
 	unsigned int input;
 	int ret;
-	ret = sscanf(buf, "%u", &input);
+	ret = sscanf(buf, "%10u", &input);
 
 	if (ret != 1 || input >= dbs_tuners_ins.up_threshold) {
 		return -EINVAL;
@@ -237,7 +241,7 @@ static ssize_t store_hotplug_in_sampling_periods(struct kobject *a,
 	unsigned int *temp;
 	unsigned int max_windows;
 	int ret;
-	ret = sscanf(buf, "%u", &input);
+	ret = sscanf(buf, "%10u", &input);
 
 	if (ret != 1)
 		return -EINVAL;
@@ -286,7 +290,7 @@ static ssize_t store_hotplug_out_sampling_periods(struct kobject *a,
 	unsigned int *temp;
 	unsigned int max_windows;
 	int ret;
-	ret = sscanf(buf, "%u", &input);
+	ret = sscanf(buf, "%10u", &input);
 
 	if (ret != 1)
 		return -EINVAL;
@@ -337,7 +341,7 @@ static ssize_t store_ignore_nice_load(struct kobject *a, struct attribute *b,
 
 	unsigned int j;
 
-	ret = sscanf(buf, "%u", &input);
+	ret = sscanf(buf, "%10u", &input);
 	if (ret != 1)
 		return -EINVAL;
 
@@ -374,7 +378,7 @@ static ssize_t store_io_is_busy(struct kobject *a, struct attribute *b,
 	unsigned int input;
 	int ret;
 
-	ret = sscanf(buf, "%u", &input);
+	ret = sscanf(buf, "%10u", &input);
 	if (ret != 1)
 		return -EINVAL;
 
@@ -442,7 +446,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	for_each_cpu(j, policy->cpus) {
 		unsigned int load;
 		unsigned int idle_time, wall_time;
-		cputime64_t cur_wall_time, cur_idle_time;
+		cputime64_t cur_wall_time = 0, cur_idle_time;
 		struct cpu_dbs_info_s *j_dbs_info;
 
 		j_dbs_info = &per_cpu(hp_cpu_dbs_info, j);
@@ -486,18 +490,18 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
         if (0 == j)
         {
             //printk("<%d> \n", load);            
-            regValue = __raw_readl(IO_ADDRESS(0xf80000ec));
+            regValue = g_pstRegSysCtrl->SC_GEN27;
             regValue &= 0xffff0000;
             regValue |= max_load;
-            __raw_writel(regValue, IO_ADDRESS(0xf80000ec));
+            g_pstRegSysCtrl->SC_GEN27 = regValue;
         }
         else
         {
             //printk("[%d] \n", load);            
-            regValue = __raw_readl(IO_ADDRESS(0xf80000ec));
+            regValue = g_pstRegSysCtrl->SC_GEN27;
             regValue &= 0x0000ffff;
             regValue |= (max_load << 16);
-            __raw_writel(regValue, IO_ADDRESS(0xf80000ec));            
+            g_pstRegSysCtrl->SC_GEN27 = regValue;
         }
 	}
 
@@ -545,6 +549,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 	if (++dbs_tuners_ins.hotplug_load_index == periods)
 		dbs_tuners_ins.hotplug_load_index = 0;
 
+#ifdef CONFIG_SMP
 	/* check if auxiliary CPU is needed based on avg_load */
 	if (avg_load > dbs_tuners_ins.up_threshold) {
 		/* should we enable auxillary CPUs? */
@@ -560,6 +565,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 			goto out;
 		}
 	}
+#endif
 
 	/* check for frequency increase based on max_load */
 	if (max_load > dbs_tuners_ins.up_threshold) {
@@ -571,6 +577,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 		goto out;
 	}
 
+#ifdef CONFIG_SMP
 	/* check for frequency decrease */
 	if (avg_load < dbs_tuners_ins.down_threshold) {
 		/* are we at the minimum frequency already? */
@@ -585,6 +592,7 @@ static void dbs_check_cpu(struct cpu_dbs_info_s *this_dbs_info)
 			goto out;
 		}
 	}
+#endif
 
 	/*
 	 * go down to the lowest frequency which can sustain the load by

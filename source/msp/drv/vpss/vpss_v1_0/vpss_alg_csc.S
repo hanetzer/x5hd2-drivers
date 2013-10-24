@@ -13,31 +13,34 @@
 @	compiled by GNU C version 4.1.1 20061011 (Red Hat 4.1.1-30), GMP version 4.3.1, MPFR version 2.4.2.
 @ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 @ options passed:  -nostdinc
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/include
 @ -Iarch/arm/include/generated -Iinclude
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vpss
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vpss
 @ -Idrivers/msp/vpss
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/drv/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/include
 @ -imultilib armv7a_soft -iprefix
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/
 @ -isysroot /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../target
-@ -D__KERNEL__ -D__LINUX_ARM_ARCH__=7 -Uarm -DCHIP_TYPE_hi3716cv200es
-@ -DSDK_VERSION=HiSTBLinuxV100R002C00SPC011 -DCFG_HI_LOG_LEVEL=4
-@ -DHI_KEYLED_SUPPORT -DHI_SCI_SUPPORT -DHI_VENC_SUPPORT -DHI_AENC_SUPPORT
-@ -DKBUILD_STR(s)=#s -DKBUILD_BASENAME=KBUILD_STR(vpss_alg_csc)
+@ -D__KERNEL__ -D__LINUX_ARM_ARCH__=7 -Uarm -DCHIP_TYPE_hi3716cv200
+@ -DSDK_VERSION=HiSTBLinuxV100R002C00SPC020 -DHI_GPIOI2C_SUPPORT
+@ -DHI_LOG_SUPPORT=1 -DHI_LOG_LEVEL=4 -DHI_PROC_SUPPORT=1
+@ -DHI_KEYLED_SUPPORT -DHI_HDCP_SUPPORT -DHI_SCI_SUPPORT -DHI_VI_SUPPORT
+@ -DHI_VENC_SUPPORT -DHI_AENC_SUPPORT -DHI_VPSS_MAX_BUFFER_NUMB=6
+@ -DHI_VPSS_DRV_VER_CV200 -DKBUILD_STR(s)=#s
+@ -DKBUILD_BASENAME=KBUILD_STR(vpss_alg_csc)
 @ -DKBUILD_MODNAME=KBUILD_STR(hi_vpss) -isystem
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/include
 @ -include
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include/linux/kconfig.h
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include/linux/kconfig.h
 @ -MD drivers/msp/vpss/vpss_v1_0/.vpss_alg_csc.o.d
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vpss/vpss_v1_0/vpss_alg_csc.c
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vpss/vpss_v1_0/vpss_alg_csc.c
 @ -mlittle-endian -marm -mapcs -mno-sched-prolog -mabi=aapcs-linux
 @ -mno-thumb-interwork -march=armv7-a -msoft-float -auxbase-strip
 @ drivers/msp/vpss/vpss_v1_0/vpss_alg_csc.o -O2 -Wall -Wundef
@@ -82,7 +85,7 @@
 	.type	CalcCscCoef_RGBtoYCbCr, %function
 CalcCscCoef_RGBtoYCbCr:
 	.fnstart
-.LFB1233:
+.LFB1246:
 	@ args = 0, pretend = 0, frame = 24
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -96,13 +99,13 @@ CalcCscCoef_RGBtoYCbCr:
 	sub	sp, sp, #28	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
-	ldr	r9, [r0, #28]	@ <variable>.u32Kr, <variable>.u32Kr
-	ldr	r4, [r0, #16]	@ <variable>.u32Contrst, <variable>.u32Contrst
+	ldr	r9, [r0, #32]	@ <variable>.u32Kr, <variable>.u32Kr
+	ldr	r4, [r0, #20]	@ <variable>.u32Contrst, <variable>.u32Contrst
 	movw	r5, #:lower16:1374389535	@ tmp356,
-	ldr	r8, [r0, #32]	@ <variable>.u32Kg, <variable>.u32Kg
+	ldr	r8, [r0, #36]	@ <variable>.u32Kg, <variable>.u32Kg
 	movt	r5, #:upper16:1374389535	@ tmp356,
 	mov	r6, r9, asl #1	@, <variable>.u32Kr,
-	ldr	sl, [r0, #36]	@ <variable>.u32Kb, <variable>.u32Kb
+	ldr	sl, [r0, #40]	@ <variable>.u32Kb, <variable>.u32Kb
 	mov	r4, r4, asl #1	@ s32ContrstAdj, <variable>.u32Contrst,
 	movw	ip, #:lower16:1759218605	@ tmp357,
 	mov	r3, r8, asl #1	@, <variable>.u32Kg,
@@ -111,7 +114,7 @@ CalcCscCoef_RGBtoYCbCr:
 	mov	r7, sl, asl #1	@, <variable>.u32Kb,
 	str	r7, [fp, #-52]	@, %sfp
 	mul	r7, r3, r4	@ tmp166,, s32ContrstAdj
-	ldr	sl, [r0, #20]	@ <variable>.u32Hue, <variable>.u32Hue
+	ldr	sl, [r0, #24]	@ <variable>.u32Hue, <variable>.u32Hue
 	str	r6, [fp, #-60]	@, %sfp
 	ldr	r9, [r1, #0]	@ <variable>.s32C00, <variable>.s32C00
 	str	r3, [fp, #-56]	@, %sfp
@@ -139,7 +142,7 @@ CalcCscCoef_RGBtoYCbCr:
 	ldr	r9, [fp, #-48]	@, %sfp
 	smull	sl, ip, ip, r7	@, tmp169, tmp357, tmp167
 	rsb	r6, r6, r9, asr #12	@, tmp181, tmp180,,
-	ldr	r9, [r0, #24]	@ <variable>.u32Satur, <variable>.u32Satur
+	ldr	r9, [r0, #28]	@ <variable>.u32Satur, <variable>.u32Satur
 	add	sl, r3, r5, asl #2	@, tmp194, tmp182, u32Hue,
 	mov	r7, r7, asr #31	@ tmp172, tmp167,
 	str	r8, [r2, #0]	@ tmp165, <variable>.s32C00
@@ -149,7 +152,7 @@ CalcCscCoef_RGBtoYCbCr:
 	movt	r0, #:upper16:274877907	@ tmp358,
 	rsb	r8, r7, ip, asr #12	@, tmp173, tmp172, tmp169,
 	ldr	r7, [r1, #12]	@ <variable>.s32C10, <variable>.s32C10
-	mul	r4, r4, r9	@ D.24034, s32ContrstAdj, s32SatAdj
+	mul	r4, r4, r9	@ D.23721, s32ContrstAdj, s32SatAdj
 	str	r8, [r2, #4]	@ tmp173, <variable>.s32C01
 	ldr	r9, [r1, #24]	@, <variable>.s32C20
 	movw	ip, #:lower16:1125899907	@ tmp359,
@@ -159,7 +162,7 @@ CalcCscCoef_RGBtoYCbCr:
 	mul	r7, r7, r6	@ tmp183, <variable>.s32C10, tmp184
 	mul	r6, r9, r8	@ tmp196,, tmp197
 	ldr	r9, [fp, #-60]	@, %sfp
-	mul	r8, r9, r4	@,, D.24034
+	mul	r8, r9, r4	@,, D.23721
 	str	r8, [fp, #-60]	@, %sfp
 	ldr	r9, [r1, #32]	@, <variable>.s32C22
 	str	r9, [fp, #-64]	@, %sfp
@@ -169,12 +172,12 @@ CalcCscCoef_RGBtoYCbCr:
 	smull	r8, r9, r0, r6	@, tmp200, tmp358, tmp196
 	mov	r6, r6, asr #31	@ tmp203, tmp196,
 	ldr	r8, [fp, #-56]	@, %sfp
-	mul	r8, r8, r4	@,, D.24034
+	mul	r8, r8, r4	@,, D.23721
 	str	r8, [fp, #-56]	@, %sfp
 	ldr	r8, [fp, #-48]	@, %sfp
 	rsb	r7, r7, r8, asr #6	@, tmp186, tmp190,,
 	ldr	r8, [fp, #-52]	@, %sfp
-	mul	r4, r8, r4	@,, D.24034
+	mul	r4, r8, r4	@,, D.23721
 	str	r4, [fp, #-52]	@, %sfp
 	rsb	r4, r6, r9, asr #6	@, tmp199, tmp203, tmp200,
 	ldr	r6, [fp, #-60]	@, %sfp
@@ -288,7 +291,7 @@ CalcCscCoef_RGBtoYCbCr:
 	.type	CalcCscCoef_YCbCrtoRGB, %function
 CalcCscCoef_YCbCrtoRGB:
 	.fnstart
-.LFB1234:
+.LFB1247:
 	@ args = 0, pretend = 0, frame = 48
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -302,13 +305,13 @@ CalcCscCoef_YCbCrtoRGB:
 	sub	sp, sp, #52	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
-	ldr	r5, [r0, #28]	@ <variable>.u32Kr, <variable>.u32Kr
-	ldr	r4, [r0, #16]	@ <variable>.u32Contrst, <variable>.u32Contrst
+	ldr	r5, [r0, #32]	@ <variable>.u32Kr, <variable>.u32Kr
+	ldr	r4, [r0, #20]	@ <variable>.u32Contrst, <variable>.u32Contrst
 	movw	ip, #:lower16:1374389535	@ tmp358,
-	ldr	r6, [r0, #20]	@ <variable>.u32Hue, <variable>.u32Hue
+	ldr	r6, [r0, #24]	@ <variable>.u32Hue, <variable>.u32Hue
 	movt	ip, #:upper16:1374389535	@ tmp358,
 	mov	r8, r5, asl #1	@ tmp155, <variable>.u32Kr,
-	ldr	r7, [r0, #24]	@ <variable>.u32Satur, <variable>.u32Satur
+	ldr	r7, [r0, #28]	@ <variable>.u32Satur, <variable>.u32Satur
 	mov	r4, r4, asl #1	@ s32ContrstAdj, <variable>.u32Contrst,
 	ldr	r5, [r1, #0]	@ <variable>.s32C00, <variable>.s32C00
 	rsb	r9, r6, r6, asl #4	@, tmp149, <variable>.u32Hue, <variable>.u32Hue,
@@ -328,10 +331,10 @@ CalcCscCoef_YCbCrtoRGB:
 	mov	r6, r6, lsr #5	@ u32Hue, tmp151,
 	mul	sl, r7, r9	@,,
 	str	sl, [fp, #-68]	@, %sfp
-	ldr	r8, [r0, #32]	@, <variable>.u32Kg
+	ldr	r8, [r0, #36]	@, <variable>.u32Kg
 	str	r8, [fp, #-48]	@, %sfp
 	add	r8, ip, r6, asl #2	@, tmp178, tmp164, u32Hue,
-	ldr	r7, [r0, #36]	@, <variable>.u32Kb
+	ldr	r7, [r0, #40]	@, <variable>.u32Kb
 	movw	r0, #:lower16:274877907	@ tmp360,
 	ldr	r9, [fp, #-48]	@, %sfp
 	movt	r0, #:upper16:274877907	@ tmp360,
@@ -548,7 +551,7 @@ CalcCscCoef_YCbCrtoRGB:
 	.type	CalcCscCoef_YCbCrtoYCbCr, %function
 CalcCscCoef_YCbCrtoYCbCr:
 	.fnstart
-.LFB1236:
+.LFB1249:
 	@ args = 0, pretend = 0, frame = 88
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -562,10 +565,10 @@ CalcCscCoef_YCbCrtoYCbCr:
 	sub	sp, sp, #92	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
-	ldr	r4, [r0, #16]	@ <variable>.u32Contrst, <variable>.u32Contrst
+	ldr	r4, [r0, #20]	@ <variable>.u32Contrst, <variable>.u32Contrst
 	ldr	r8, [r1, #0]	@ <variable>.s32C00, <variable>.s32C00
 	movw	r3, #:lower16:1374389535	@ tmp544,
-	ldr	r9, [r0, #20]	@ <variable>.u32Hue, <variable>.u32Hue
+	ldr	r9, [r0, #24]	@ <variable>.u32Hue, <variable>.u32Hue
 	movt	r3, #:upper16:1374389535	@ tmp544,
 	mov	r4, r4, asl #1	@ s32ContrstAdj, <variable>.u32Contrst,
 	ldr	r6, [r1, #4]	@ <variable>.s32C01, <variable>.s32C01
@@ -596,7 +599,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	rsb	r6, r9, r6, asr #5	@,,, tmp178,
 	str	r6, [fp, #-92]	@, %sfp
 	ldr	r9, [fp, #-92]	@, %sfp
-	ldr	r6, [r0, #24]	@ <variable>.u32Satur, <variable>.u32Satur
+	ldr	r6, [r0, #28]	@ <variable>.u32Satur, <variable>.u32Satur
 	ldr	r5, [fp, #-80]	@, %sfp
 	str	r9, [r2, #4]	@, <variable>.s32C01
 	ldr	r9, [fp, #-48]	@, %sfp
@@ -609,7 +612,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	mov	r9, r6, asl #1	@ s32SatAdj, <variable>.u32Satur,
 	ldr	sl, [r1, #24]	@, <variable>.s32C20
 	movw	r6, #:lower16:1759218605	@ tmp546,
-	mul	r4, r4, r9	@ D.24382, s32ContrstAdj, s32SatAdj
+	mul	r4, r4, r9	@ D.24069, s32ContrstAdj, s32SatAdj
 	ldr	r9, [ip, r7, asl #2]	@, COS_TABLE
 	str	sl, [fp, #-52]	@, %sfp
 	movt	r6, #:upper16:1759218605	@ tmp546,
@@ -645,7 +648,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	rsb	r9, r9, sl, asr #6	@,,,,
 	ldr	sl, [fp, #-48]	@, %sfp
 	add	r9, sl, r9	@,,
-	mul	r9, r4, r9	@, D.24382,
+	mul	r9, r4, r9	@, D.24069,
 	str	r9, [fp, #-56]	@, %sfp
 	smull	r9, sl, r6, r9	@,, tmp546,
 	ldr	r9, [fp, #-56]	@, %sfp
@@ -686,7 +689,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	rsb	r9, r9, sl, asr #6	@,,,,
 	ldr	sl, [fp, #-48]	@, %sfp
 	add	r9, sl, r9	@,,
-	mul	r9, r4, r9	@, D.24382,
+	mul	r9, r4, r9	@, D.24069,
 	str	r9, [fp, #-56]	@, %sfp
 	smull	r9, sl, r6, r9	@,, tmp546,
 	ldr	r9, [fp, #-56]	@, %sfp
@@ -727,7 +730,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	rsb	r9, r9, sl, asr #6	@,,,,
 	ldr	sl, [fp, #-48]	@, %sfp
 	add	r9, sl, r9	@,,
-	mul	r9, r4, r9	@, D.24382,
+	mul	r9, r4, r9	@, D.24069,
 	str	r9, [fp, #-56]	@, %sfp
 	smull	r9, sl, r6, r9	@,, tmp546,
 	ldr	r9, [fp, #-56]	@, %sfp
@@ -764,7 +767,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	ldr	r9, [fp, #-48]	@, %sfp
 	rsb	r1, r1, sl, asr #6	@, tmp289,,,
 	rsb	sl, r1, r9	@ tmp294, tmp289,
-	mul	sl, r4, sl	@ tmp295, D.24382, tmp294
+	mul	sl, r4, sl	@ tmp295, D.24069, tmp294
 	smull	r9, r1, r6, sl	@, tmp296, tmp546, tmp295
 	mov	r9, sl, asr #31	@ tmp299, tmp295,
 	rsb	sl, r9, r1, asr #12	@,, tmp299, tmp296,
@@ -795,7 +798,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	rsb	r1, r9, sl, asr #6	@, tmp317,,,
 	ldr	r9, [fp, #-60]	@, %sfp
 	rsb	sl, r1, r9	@ tmp322, tmp317,
-	mul	sl, r4, sl	@ tmp323, D.24382, tmp322
+	mul	sl, r4, sl	@ tmp323, D.24069, tmp322
 	smull	r9, r1, r6, sl	@, tmp324, tmp546, tmp323
 	mov	sl, sl, asr #31	@ tmp327, tmp323,
 	rsb	r9, sl, r1, asr #12	@,, tmp327, tmp324,
@@ -814,7 +817,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	rsb	r9, r7, r8, asr #6	@, tmp332, tmp336, tmp333,
 	rsb	r1, sl, ip, asr #6	@, tmp345, tmp349, tmp346,
 	rsb	ip, r1, r9	@ tmp350, tmp345, tmp332
-	mul	r8, r4, ip	@ tmp351, D.24382, tmp350
+	mul	r8, r4, ip	@ tmp351, D.24069, tmp350
 	smull	ip, sl, r6, r8	@, tmp352, tmp546, tmp351
 	mov	r7, r8, asr #31	@ tmp355, tmp351,
 	mov	r6, #114	@,
@@ -822,9 +825,9 @@ CalcCscCoef_YCbCrtoYCbCr:
 	str	r9, [fp, #-52]	@, %sfp
 	str	r9, [r2, #32]	@, <variable>.s32C22
 	movw	r7, #587	@ tmp360,
-	ldr	r1, [r0, #36]	@ <variable>.u32Kb, <variable>.u32Kb
-	ldr	r4, [r0, #32]	@ <variable>.u32Kg, <variable>.u32Kg
-	ldr	ip, [r0, #28]	@ <variable>.u32Kr, <variable>.u32Kr
+	ldr	r1, [r0, #40]	@ <variable>.u32Kb, <variable>.u32Kb
+	ldr	r4, [r0, #36]	@ <variable>.u32Kg, <variable>.u32Kg
+	ldr	ip, [r0, #32]	@ <variable>.u32Kr, <variable>.u32Kr
 	mov	r0, r1, asl #1	@ s32Bgain, <variable>.u32Kb,
 	mov	r1, r4, asl #1	@ s32Ggain, <variable>.u32Kg,
 	rsb	r8, r1, r4, asl #24	@, tmp421, s32Ggain, <variable>.u32Kg,
@@ -891,13 +894,13 @@ CalcCscCoef_YCbCrtoYCbCr:
 	smull	r8, r6, r3, r8	@, tmp376, tmp544,
 	smull	r8, r1, r3, r4	@,, tmp544, tmp384
 	ldr	r4, [fp, #-68]	@, %sfp
-	rsb	r7, r4, r7, asr #5	@, D.24933,, tmp367,
+	rsb	r7, r4, r7, asr #5	@, D.24614,, tmp367,
 	ldr	r4, [fp, #-84]	@, %sfp
 	str	r1, [fp, #-120]	@, %sfp
 	mvn	r1, #202	@ tmp437,
 	mla	r8, r1, r0, sl	@, tmp437, s32Bgain, tmp438
 	ldr	sl, [fp, #-116]	@, %sfp
-	rsb	r6, r4, r6, asr #5	@, D.24929,, tmp376,
+	rsb	r6, r4, r6, asr #5	@, D.24610,, tmp376,
 	movw	r1, #701	@ tmp446,
 	mvn	r4, #99	@ tmp430,
 	mla	ip, r1, ip, sl	@ tmp449, tmp446, s32Rgain,
@@ -907,7 +910,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	ldr	r1, [fp, #-96]	@, %sfp
 	mla	r0, r4, r0, r8	@ tmp431, tmp430, s32Bgain,
 	ldr	r8, [fp, #-128]	@, %sfp
-	rsb	r4, r1, sl, asr #5	@, D.24925,,,
+	rsb	r4, r1, sl, asr #5	@, D.24606,,,
 	smull	sl, r1, r3, r8	@, tmp397, tmp544,
 	ldr	sl, [fp, #-132]	@, %sfp
 	mov	r8, sl, asr #31	@,,
@@ -919,84 +922,84 @@ CalcCscCoef_YCbCrtoYCbCr:
 	str	sl, [fp, #-64]	@, %sfp
 	smull	sl, r8, r3, r9	@,, tmp544, tmp414
 	ldr	r9, [fp, #-100]	@, %sfp
-	rsb	sl, r9, r1, asr #5	@, D.24919,, tmp397,
+	rsb	sl, r9, r1, asr #5	@, D.24600,, tmp397,
 	ldr	r9, [fp, #-104]	@, %sfp
 	str	r8, [fp, #-112]	@, %sfp
 	smull	r1, r8, r3, ip	@,, tmp544, tmp449
 	mov	ip, ip, asr #31	@ tmp453, tmp449,
 	ldr	r1, [fp, #-96]	@, %sfp
 	str	r8, [fp, #-84]	@, %sfp
-	rsb	r8, r9, r1, asr #5	@, D.24915,,,
+	rsb	r8, r9, r1, asr #5	@, D.24596,,,
 	smull	r1, r9, r3, r0	@,, tmp544, tmp431
 	ldr	r1, [fp, #-112]	@, %sfp
 	ldr	r0, [fp, #-108]	@, %sfp
 	str	r9, [fp, #-100]	@, %sfp
-	rsb	r9, r0, r1, asr #5	@, D.24911,,,
+	rsb	r9, r0, r1, asr #5	@, D.24592,,,
 	ldr	r0, [fp, #-132]	@, %sfp
 	smull	r1, r0, r3, r0	@,, tmp544,
 	ldr	r1, [fp, #-48]	@, %sfp
 	ldr	r3, [fp, #-100]	@, %sfp
 	str	r0, [fp, #-104]	@, %sfp
-	mul	r0, r4, r1	@, D.24925,
+	mul	r0, r4, r1	@, D.24606,
 	ldr	r1, [fp, #-64]	@, %sfp
 	str	r0, [fp, #-96]	@, %sfp
-	rsb	r0, r1, r3, asr #5	@, D.24905,,,
+	rsb	r0, r1, r3, asr #5	@, D.24586,,,
 	ldr	r3, [fp, #-80]	@, %sfp
-	mul	r1, r3, r4	@,, D.24925
+	mul	r1, r3, r4	@,, D.24606
 	ldr	r3, [fp, #-84]	@, %sfp
-	rsb	ip, ip, r3, asr #5	@, D.24897, tmp453,,
+	rsb	ip, ip, r3, asr #5	@, D.24578, tmp453,,
 	str	r1, [fp, #-64]	@, %sfp
 	ldr	r1, [fp, #-76]	@, %sfp
-	mul	r3, r4, r1	@, D.24925,
+	mul	r3, r4, r1	@, D.24606,
 	str	r3, [fp, #-84]	@, %sfp
 	ldr	r1, [fp, #-104]	@, %sfp
 	ldr	r4, [fp, #-68]	@, %sfp
-	rsb	r3, r4, r1, asr #5	@, D.24901,,,
+	rsb	r3, r4, r1, asr #5	@, D.24582,,,
 	ldr	r1, [fp, #-48]	@, %sfp
-	mul	r4, r7, r1	@, D.24933,
+	mul	r4, r7, r1	@, D.24614,
 	ldr	r1, [fp, #-48]	@, %sfp
 	str	r4, [fp, #-100]	@, %sfp
-	mul	r4, r6, r1	@, D.24929,
+	mul	r4, r6, r1	@, D.24610,
 	ldr	r1, [fp, #-80]	@, %sfp
 	str	r4, [fp, #-104]	@, %sfp
-	mul	r4, r1, r7	@,, D.24933
+	mul	r4, r1, r7	@,, D.24614
 	ldr	r1, [fp, #-80]	@, %sfp
 	str	r4, [fp, #-48]	@, %sfp
-	mul	r4, r1, r6	@,, D.24929
+	mul	r4, r1, r6	@,, D.24610
 	ldr	r1, [fp, #-76]	@, %sfp
-	mul	r7, r7, r1	@ tmp485, D.24933,
+	mul	r7, r7, r1	@ tmp485, D.24614,
 	str	r4, [fp, #-80]	@, %sfp
-	mul	r6, r6, r1	@ tmp495, D.24929,
+	mul	r6, r6, r1	@ tmp495, D.24610,
 	ldr	r4, [fp, #-96]	@, %sfp
 	ldr	r1, [fp, #-60]	@, %sfp
-	mla	r1, r9, r1, r4	@, D.24911,,
+	mla	r1, r9, r1, r4	@, D.24592,,
 	ldr	r4, [fp, #-64]	@, %sfp
 	str	r1, [fp, #-68]	@, %sfp
 	ldr	r1, [fp, #-92]	@, %sfp
-	mla	r1, r1, r9, r4	@,, D.24911,
+	mla	r1, r1, r9, r4	@,, D.24592,
 	ldr	r4, [fp, #-84]	@, %sfp
 	str	r1, [fp, #-76]	@, %sfp
 	ldr	r1, [fp, #-72]	@, %sfp
-	mla	r9, r9, r1, r4	@ tmp506, D.24911,,
+	mla	r9, r9, r1, r4	@ tmp506, D.24592,,
 	ldr	r1, [fp, #-60]	@, %sfp
 	ldr	r4, [fp, #-100]	@, %sfp
-	mla	r1, sl, r1, r4	@, D.24919,,
+	mla	r1, sl, r1, r4	@, D.24600,,
 	ldr	r4, [fp, #-104]	@, %sfp
 	str	r1, [fp, #-84]	@, %sfp
 	ldr	r1, [fp, #-60]	@, %sfp
-	mla	r1, r8, r1, r4	@, D.24915,,
+	mla	r1, r8, r1, r4	@, D.24596,,
 	ldr	r4, [fp, #-48]	@, %sfp
 	str	r1, [fp, #-96]	@, %sfp
 	ldr	r1, [fp, #-92]	@, %sfp
-	mla	r1, r1, sl, r4	@,, D.24919,
+	mla	r1, r1, sl, r4	@,, D.24600,
 	ldr	r4, [fp, #-80]	@, %sfp
 	str	r1, [fp, #-60]	@, %sfp
 	ldr	r1, [fp, #-92]	@, %sfp
-	mla	r1, r1, r8, r4	@,, D.24915,
+	mla	r1, r1, r8, r4	@,, D.24596,
 	ldr	r4, [fp, #-72]	@, %sfp
-	mla	r6, r8, r4, r6	@, D.24915,, tmp495
+	mla	r6, r8, r4, r6	@, D.24596,, tmp495
 	str	r1, [fp, #-48]	@, %sfp
-	mla	r1, sl, r4, r7	@, D.24919,, tmp485
+	mla	r1, sl, r4, r7	@, D.24600,, tmp485
 	str	r1, [fp, #-92]	@, %sfp
 	str	r6, [fp, #-64]	@, %sfp
 	ldr	sl, [fp, #-68]	@, %sfp
@@ -1004,38 +1007,38 @@ CalcCscCoef_YCbCrtoYCbCr:
 	ldr	r4, [fp, #-76]	@, %sfp
 	ldr	r6, [fp, #-56]	@, %sfp
 	ldr	r7, [fp, #-52]	@, %sfp
-	mla	r8, ip, r7, sl	@ tmp538, D.24897,,
+	mla	r8, ip, r7, sl	@ tmp538, D.24578,,
 	ldr	sl, [fp, #-52]	@, %sfp
-	mla	r7, r1, ip, r4	@ tmp478,, D.24897,
-	mla	ip, ip, r6, r9	@ tmp508, D.24897,, tmp506
+	mla	r7, r1, ip, r4	@ tmp478,, D.24578,
+	mla	ip, ip, r6, r9	@ tmp508, D.24578,, tmp506
 	ldr	r9, [fp, #-84]	@, %sfp
 	ldr	r6, [fp, #-96]	@, %sfp
 	mov	r4, r8, asr #31	@, tmp538,
 	str	r4, [fp, #-80]	@, %sfp
-	mla	r1, r0, sl, r9	@, D.24905,,
+	mla	r1, r0, sl, r9	@, D.24586,,
 	ldr	sl, [fp, #-52]	@, %sfp
 	mov	r9, r7, asr #31	@, tmp478,
 	str	r9, [fp, #-72]	@, %sfp
-	mla	r4, r3, sl, r6	@ tmp528, D.24901,,
+	mla	r4, r3, sl, r6	@ tmp528, D.24582,,
 	ldr	sl, [fp, #-88]	@, %sfp
 	str	r1, [fp, #-68]	@, %sfp
 	mov	r6, ip, asr #31	@, tmp508,
 	ldr	r1, [fp, #-60]	@, %sfp
 	str	r6, [fp, #-76]	@, %sfp
-	mla	r9, sl, r0, r1	@ tmp458,, D.24905,
+	mla	r9, sl, r0, r1	@ tmp458,, D.24586,
 	ldr	r1, [fp, #-48]	@, %sfp
-	mla	r6, sl, r3, r1	@ tmp468,, D.24901,
+	mla	r6, sl, r3, r1	@ tmp468,, D.24582,
 	ldr	sl, [fp, #-68]	@, %sfp
 	mov	r1, sl, asr #31	@,,
 	ldr	sl, [fp, #-92]	@, %sfp
 	str	r1, [fp, #-48]	@, %sfp
 	ldr	r1, [fp, #-56]	@, %sfp
-	mla	r0, r0, r1, sl	@ tmp488, D.24905,,
+	mla	r0, r0, r1, sl	@ tmp488, D.24586,,
 	ldr	sl, [fp, #-56]	@, %sfp
 	mov	r1, r4, asr #31	@, tmp528,
 	str	r1, [fp, #-88]	@, %sfp
 	ldr	r1, [fp, #-64]	@, %sfp
-	mla	r3, r3, sl, r1	@ tmp498, D.24901,,
+	mla	r3, r3, sl, r1	@ tmp498, D.24582,,
 	mov	sl, r9, asr #31	@, tmp458,
 	str	sl, [fp, #-64]	@, %sfp
 	smull	sl, r1, r5, r8	@,, tmp545, tmp538
@@ -1088,7 +1091,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	.type	CalcCscCoef_RGBtoRGB, %function
 CalcCscCoef_RGBtoRGB:
 	.fnstart
-.LFB1237:
+.LFB1250:
 	@ args = 0, pretend = 0, frame = 48
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -1102,8 +1105,8 @@ CalcCscCoef_RGBtoRGB:
 	sub	sp, sp, #52	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
-	ldr	r1, [r0, #20]	@ <variable>.u32Hue, <variable>.u32Hue
-	ldr	r3, [r0, #24]	@, <variable>.u32Satur
+	ldr	r1, [r0, #24]	@ <variable>.u32Hue, <variable>.u32Hue
+	ldr	r3, [r0, #28]	@, <variable>.u32Satur
 	mov	r8, #242	@ tmp159,
 	movw	r4, #:lower16:1374389535	@ tmp455,
 	movt	r4, #:upper16:1374389535	@ tmp455,
@@ -1121,11 +1124,11 @@ CalcCscCoef_RGBtoRGB:
 	movw	r4, #:lower16:1759218605	@ tmp457,
 	str	r9, [fp, #-56]	@, %sfp
 	movt	r4, #:upper16:1759218605	@ tmp457,
-	ldr	r6, [r0, #28]	@ <variable>.u32Kr, <variable>.u32Kr
-	ldr	r8, [r0, #16]	@ <variable>.u32Contrst, <variable>.u32Contrst
-	ldr	sl, [r0, #32]	@ <variable>.u32Kg, <variable>.u32Kg
+	ldr	r6, [r0, #32]	@ <variable>.u32Kr, <variable>.u32Kr
+	ldr	r8, [r0, #20]	@ <variable>.u32Contrst, <variable>.u32Contrst
+	ldr	sl, [r0, #36]	@ <variable>.u32Kg, <variable>.u32Kg
 	mov	r7, r7, lsr #5	@ u32Hue, tmp152,
-	ldr	r0, [r0, #36]	@, <variable>.u32Kb
+	ldr	r0, [r0, #40]	@, <variable>.u32Kb
 	mov	r9, r6, asl #1	@ tmp156, <variable>.u32Kr,
 	mov	r8, r8, asl #1	@ s32ContrstAdj, <variable>.u32Contrst,
 	movw	r6, #475	@ tmp192,
@@ -1375,7 +1378,7 @@ CalcCscCoef_RGBtoRGB:
 	.type	VPSS_GetCscType, %function
 VPSS_GetCscType:
 	.fnstart
-.LFB1238:
+.LFB1251:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -1391,27 +1394,27 @@ VPSS_GetCscType:
 	cmp	r0, #10	@ tmp135,
 	ldrls	pc, [pc, r0, asl #2]	@ tmp135
 	b	.L10	@
-.L16:
+.L17:
 	.word	.L11
 	.word	.L12
-	.word	.L10
-	.word	.L10
-	.word	.L10
-	.word	.L10
-	.word	.L10
 	.word	.L13
 	.word	.L14
 	.word	.L10
+	.word	.L10
+	.word	.L10
 	.word	.L15
-.L15:
-	mov	r0, #3	@ tmp144,
-	mov	ip, #1	@ tmp145,
-	stmia	r1, {r0, ip}	@ phole stm
+	.word	.L16
+	.word	.L13
+	.word	.L14
+.L16:
+	mov	r2, #1	@ tmp142,
+	str	r2, [r1, #4]	@ tmp142, <variable>.eCsRange
+	str	r2, [r1, #0]	@ tmp142, <variable>.eCsType
 	ldmfd	sp, {fp, sp, pc}	@
 .L10:
-	mov	r3, #0	@ tmp146,
-	str	r3, [r1, #4]	@ tmp146, <variable>.eCsRange
-	str	r3, [r1, #0]	@ tmp146, <variable>.eCsType
+	mov	ip, #0	@ tmp148,
+	str	ip, [r1, #4]	@ tmp148, <variable>.eCsRange
+	str	ip, [r1, #0]	@ tmp148, <variable>.eCsType
 	ldmfd	sp, {fp, sp, pc}	@
 .L11:
 	mov	r3, #2	@ tmp136,
@@ -1425,15 +1428,20 @@ VPSS_GetCscType:
 	str	r2, [r1, #4]	@ tmp139, <variable>.eCsRange
 	ldmfd	sp, {fp, sp, pc}	@
 .L13:
+	mov	r2, #3	@ tmp146,
+	mov	r3, #2	@ tmp147,
+	stmia	r1, {r2, r3}	@ phole stm
+	ldmfd	sp, {fp, sp, pc}	@
+.L14:
+	mov	r0, #3	@ tmp144,
+	mov	ip, #1	@ tmp145,
+	stmia	r1, {r0, ip}	@ phole stm
+	ldmfd	sp, {fp, sp, pc}	@
+.L15:
 	mov	r3, #1	@ tmp140,
 	mov	r0, #2	@ tmp141,
 	str	r3, [r1, #0]	@ tmp140, <variable>.eCsType
 	str	r0, [r1, #4]	@ tmp141, <variable>.eCsRange
-	ldmfd	sp, {fp, sp, pc}	@
-.L14:
-	mov	r2, #1	@ tmp142,
-	str	r2, [r1, #4]	@ tmp142, <variable>.eCsRange
-	str	r2, [r1, #0]	@ tmp142, <variable>.eCsType
 	ldmfd	sp, {fp, sp, pc}	@
 	.fnend
 	.size	VPSS_GetCscType, .-VPSS_GetCscType
@@ -1442,22 +1450,22 @@ VPSS_GetCscType:
 	.type	CalcCscMatrix, %function
 CalcCscMatrix:
 	.fnstart
-.LFB1239:
+.LFB1252:
 	@ args = 0, pretend = 0, frame = 56
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
 	mov	ip, sp	@,
-	stmfd	sp!, {r4, r5, r6, r7, r8, fp, ip, lr, pc}	@,
+	stmfd	sp!, {r4, r5, r6, r7, r8, sl, fp, ip, lr, pc}	@,
 	.pad #4
-	.save {r4, r5, r6, r7, r8, fp, ip, lr}
+	.save {r4, r5, r6, r7, r8, sl, fp, ip, lr}
 	.setfp fp, ip, #-4
 	sub	fp, ip, #4	@,,
-	.pad #60
-	sub	sp, sp, #60	@,,
+	.pad #56
+	sub	sp, sp, #56	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
-	sub	r6, fp, #88	@ tmp178,,
-	add	r2, r6, #4	@ tmp179, tmp178,
+	sub	r6, fp, #88	@ tmp192,,
+	add	r2, r6, #4	@ tmp198, tmp192,
 	mov	r7, #0	@ tmp139,
 	mov	r5, r0	@ pstCscDrvPara, pstCscDrvPara
 	mov	r4, r1	@ pstCscRtlPara, pstCscRtlPara
@@ -1476,73 +1484,93 @@ CalcCscMatrix:
 	ldr	r0, [r5, #4]	@, <variable>.eOutputCS
 	sub	r1, fp, #52	@,,
 	bl	VPSS_GetCscType	@
-	ldr	r0, [fp, #-44]	@ D.24592, stAlgCSIn.eCsType
-	ldr	r2, [fp, #-52]	@ D.24593, stAlgCSOut.eCsType
+	ldr	r0, [fp, #-44]	@ D.24282, stAlgCSIn.eCsType
+	ldr	r2, [fp, #-52]	@ D.24283, stAlgCSOut.eCsType
 	movw	r3, #:lower16:.LANCHOR1	@ tmp152,
-	cmp	r0, #2	@ D.24592,
+	cmp	r0, #2	@ D.24282,
 	movt	r3, #:upper16:.LANCHOR1	@ tmp152,
-	add	r1, r2, r0, asl #2	@, tmp154, D.24593, D.24592,
+	add	r1, r2, r0, asl #2	@, tmp154, D.24283, D.24282,
 	ldr	r1, [r3, r1, asl #2]	@ pCSCMatrixOri, CSC_MatrixTbl
-	bls	.L21	@,
-	cmp	r2, #2	@ D.24593,
 	bls	.L22	@,
-	mov	r2, r6	@, tmp178
+	cmp	r2, #2	@ D.24283,
+	bls	.L23	@,
+	mov	r2, r6	@, tmp192
 	mov	r0, r5	@, pstCscDrvPara
 	bl	CalcCscCoef_RGBtoRGB	@
 	ldr	r6, [r5, #8]	@ <variable>.bIsBGRIn, <variable>.bIsBGRIn
 	cmp	r6, #0	@ <variable>.bIsBGRIn,
-	bne	.L25	@,
-.L30:
-	ldr	r7, [fp, #-84]	@ stCscTbl.s32C01, stCscTbl.s32C01
-	ldr	r5, [fp, #-80]	@ stCscTbl.s32C02, stCscTbl.s32C02
+	beq	.L30	@,
+.L26:
+	sub	r2, fp, #88
+	ldmia	r2, {r2, r3, sl}	@ phole ldm
+	ldr	r1, [fp, #-68]	@ stCscTbl.s32C12, stCscTbl.s32C12
+	ldr	r0, [fp, #-72]	@ stCscTbl.s32C11, stCscTbl.s32C11
 	ldr	ip, [fp, #-76]	@ stCscTbl.s32C10, stCscTbl.s32C10
-	sub	r0, fp, #72
-	ldmia	r0, {r0, r1, r2, r3}	@ phole ldm
 	ldr	r6, [fp, #-56]	@ stCscTbl.s32C22, stCscTbl.s32C22
-	ldr	r8, [fp, #-88]	@ stCscTbl.s32C00, stCscTbl.s32C00
-	b	.L28	@
-.L21:
-	cmp	r2, #2	@ D.24593,
-	bhi	.L29	@,
-	mov	r2, r6	@, tmp178
+	ldr	r7, [fp, #-60]	@ stCscTbl.s32C21, stCscTbl.s32C21
+	ldr	r8, [fp, #-64]	@ stCscTbl.s32C20, stCscTbl.s32C20
+	str	sl, [r4, #24]	@ stCscTbl.s32C02, <variable>.s32CscCoef_00
+	str	r3, [r4, #28]	@ stCscTbl.s32C01, <variable>.s32CscCoef_01
+	str	r2, [r4, #32]	@ stCscTbl.s32C00, <variable>.s32CscCoef_02
+	str	r1, [r4, #36]	@ stCscTbl.s32C12, <variable>.s32CscCoef_10
+	str	r0, [r4, #40]	@ stCscTbl.s32C11, <variable>.s32CscCoef_11
+	str	ip, [r4, #44]	@ stCscTbl.s32C10, <variable>.s32CscCoef_12
+	str	r6, [r4, #48]	@ stCscTbl.s32C22, <variable>.s32CscCoef_20
+	str	r7, [r4, #52]	@ stCscTbl.s32C21, <variable>.s32CscCoef_21
+	str	r8, [r4, #56]	@ stCscTbl.s32C20, <variable>.s32CscCoef_22
+	b	.L27	@
+.L22:
+	cmp	r2, #2	@ D.24283,
+	bhi	.L31	@,
+	mov	r2, r6	@, tmp192
 	mov	r0, r5	@, pstCscDrvPara
 	bl	CalcCscCoef_YCbCrtoYCbCr	@
-.L23:
+.L24:
 	ldr	r6, [r5, #8]	@ <variable>.bIsBGRIn, <variable>.bIsBGRIn
 	cmp	r6, #0	@ <variable>.bIsBGRIn,
-	beq	.L30	@,
-.L25:
-	ldr	r7, [fp, #-84]	@ stCscTbl.s32C01, stCscTbl.s32C01
-	ldr	r5, [fp, #-88]	@ stCscTbl.s32C00, stCscTbl.s32C00
-	ldr	ip, [fp, #-68]	@ stCscTbl.s32C12, stCscTbl.s32C12
-	ldr	r0, [fp, #-72]	@ stCscTbl.s32C11, stCscTbl.s32C11
-	ldr	r1, [fp, #-76]	@ stCscTbl.s32C10, stCscTbl.s32C10
-	ldr	r2, [fp, #-56]	@ stCscTbl.s32C22, stCscTbl.s32C22
-	ldr	r3, [fp, #-60]	@ stCscTbl.s32C21, stCscTbl.s32C21
-	ldr	r6, [fp, #-64]	@ stCscTbl.s32C20, stCscTbl.s32C20
-	ldr	r8, [fp, #-80]	@ stCscTbl.s32C02, stCscTbl.s32C02
-.L28:
-	str	r8, [r4, #24]	@ stCscTbl.s32C02, <variable>.s32CscCoef_00
-	str	r7, [r4, #28]	@ stCscTbl.s32C01, <variable>.s32CscCoef_01
-	str	r6, [r4, #56]	@ stCscTbl.s32C20, <variable>.s32CscCoef_22
-	str	r5, [r4, #32]	@ stCscTbl.s32C00, <variable>.s32CscCoef_02
-	str	ip, [r4, #36]	@ stCscTbl.s32C12, <variable>.s32CscCoef_10
+	bne	.L26	@,
+.L30:
+	sub	r2, fp, #88
+	ldmia	r2, {r2, r3, sl, ip}	@ phole ldm
+	sub	r0, fp, #72
+	ldmia	r0, {r0, r1, r8}	@ phole ldm
+	ldr	r7, [fp, #-60]	@ stCscTbl.s32C21, stCscTbl.s32C21
+	ldr	r6, [fp, #-56]	@ stCscTbl.s32C22, stCscTbl.s32C22
+	str	r2, [r4, #24]	@ stCscTbl.s32C00, <variable>.s32CscCoef_00
+	str	r3, [r4, #28]	@ stCscTbl.s32C01, <variable>.s32CscCoef_01
+	str	sl, [r4, #32]	@ stCscTbl.s32C02, <variable>.s32CscCoef_02
+	str	ip, [r4, #36]	@ stCscTbl.s32C10, <variable>.s32CscCoef_10
 	str	r0, [r4, #40]	@ stCscTbl.s32C11, <variable>.s32CscCoef_11
-	str	r1, [r4, #44]	@ stCscTbl.s32C10, <variable>.s32CscCoef_12
-	str	r2, [r4, #48]	@ stCscTbl.s32C22, <variable>.s32CscCoef_20
-	str	r3, [r4, #52]	@ stCscTbl.s32C21, <variable>.s32CscCoef_21
-	sub	sp, fp, #32
-	ldmfd	sp, {r4, r5, r6, r7, r8, fp, sp, pc}
+	str	r1, [r4, #44]	@ stCscTbl.s32C12, <variable>.s32CscCoef_12
+	str	r8, [r4, #48]	@ stCscTbl.s32C20, <variable>.s32CscCoef_20
+	str	r7, [r4, #52]	@ stCscTbl.s32C21, <variable>.s32CscCoef_21
+	str	r6, [r4, #56]	@ stCscTbl.s32C22, <variable>.s32CscCoef_22
+.L27:
+	ldr	r5, [r5, #12]	@ <variable>.bIsBGROut, <variable>.bIsBGROut
+	cmp	r5, #1	@ <variable>.bIsBGROut,
+	bne	.L29	@,
+	str	sl, [r4, #56]	@ stCscTbl.s32C02, <variable>.s32CscCoef_22
+	str	r8, [r4, #24]	@ stCscTbl.s32C20, <variable>.s32CscCoef_00
+	str	r7, [r4, #28]	@ stCscTbl.s32C21, <variable>.s32CscCoef_01
+	str	r6, [r4, #32]	@ stCscTbl.s32C22, <variable>.s32CscCoef_02
+	str	ip, [r4, #36]	@ stCscTbl.s32C10, <variable>.s32CscCoef_10
+	str	r0, [r4, #40]	@ stCscTbl.s32C11, <variable>.s32CscCoef_11
+	str	r1, [r4, #44]	@ stCscTbl.s32C12, <variable>.s32CscCoef_12
+	str	r2, [r4, #48]	@ stCscTbl.s32C00, <variable>.s32CscCoef_20
+	str	r3, [r4, #52]	@ stCscTbl.s32C01, <variable>.s32CscCoef_21
 .L29:
-	mov	r2, r6	@, tmp178
+	sub	sp, fp, #36
+	ldmfd	sp, {r4, r5, r6, r7, r8, sl, fp, sp, pc}
+.L31:
+	mov	r2, r6	@, tmp192
 	mov	r0, r5	@, pstCscDrvPara
 	bl	CalcCscCoef_YCbCrtoRGB	@
-	b	.L23	@
-.L22:
-	mov	r2, r6	@, tmp178
+	b	.L24	@
+.L23:
+	mov	r2, r6	@, tmp192
 	mov	r0, r5	@, pstCscDrvPara
 	bl	CalcCscCoef_RGBtoYCbCr	@
-	b	.L23	@
+	b	.L24	@
 	.fnend
 	.size	CalcCscMatrix, .-CalcCscMatrix
 	.global	__aeabi_idiv
@@ -1551,7 +1579,7 @@ CalcCscMatrix:
 	.type	CalcCscDc, %function
 CalcCscDc:
 	.fnstart
-.LFB1240:
+.LFB1253:
 	@ args = 0, pretend = 0, frame = 16
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -1566,11 +1594,11 @@ CalcCscDc:
 	push	{lr}
 	bl	__gnu_mcount_nc
 	mov	r5, r0	@ pstCscDrvPara, pstCscDrvPara
-	ldr	r7, [r0, #12]	@ <variable>.u32Bright, <variable>.u32Bright
+	ldr	r7, [r0, #16]	@ <variable>.u32Bright, <variable>.u32Bright
 	mov	r4, r1	@ pstCscRtlPara, pstCscRtlPara
 	ldr	r0, [r0, #0]	@, <variable>.eInputCS
 	sub	r1, fp, #36	@,,
-	ldr	r6, [r5, #16]	@ tmpContrst, <variable>.u32Contrst
+	ldr	r6, [r5, #20]	@ tmpContrst, <variable>.u32Contrst
 	bl	VPSS_GetCscType	@
 	sub	r1, fp, #44	@,,
 	ldr	r0, [r5, #4]	@, <variable>.eOutputCS
@@ -1582,173 +1610,152 @@ CalcCscDc:
 	movne	r1, r6	@ tmpContrst, tmpContrst
 	moveq	r1, #1	@ tmpContrst,
 	cmp	r3, #1	@ tmp145,
-	bls	.L77	@,
-	ldr	lr, [fp, #-44]	@ stAlgCSOut.eCsType, stAlgCSOut.eCsType
-	sub	ip, lr, #1	@ tmp204, stAlgCSOut.eCsType,
-	cmp	ip, #1	@ tmp204,
 	bls	.L78	@,
+	ldr	r3, [fp, #-44]	@ stAlgCSOut.eCsType, stAlgCSOut.eCsType
+	sub	lr, r3, #1	@ tmp204, stAlgCSOut.eCsType,
+	cmp	lr, #1	@ tmp204,
+	bls	.L79	@,
 	ldr	r3, [fp, #-32]	@ stAlgCSIn.eCsRange, stAlgCSIn.eCsRange
 	cmp	r3, #1	@ stAlgCSIn.eCsRange,
-	beq	.L72	@,
-	cmp	r3, #2	@ stAlgCSIn.eCsRange,
-	beq	.L79	@,
-.L72:
-	mov	ip, #0	@ tmp232,
-	str	ip, [r4, #0]	@ tmp232, <variable>.s32CscDcIn_0
-	str	ip, [r4, #8]	@ tmp232, <variable>.s32CscDcIn_2
-	str	ip, [r4, #4]	@ tmp232, <variable>.s32CscDcIn_1
-.L61:
-	ldr	r3, [fp, #-40]	@ stAlgCSOut.eCsRange, stAlgCSOut.eCsRange
-	cmp	r3, #1	@ stAlgCSOut.eCsRange,
 	beq	.L73	@,
-	cmp	r3, #2	@ stAlgCSOut.eCsRange,
+	cmp	r3, #2	@ stAlgCSIn.eCsRange,
 	beq	.L80	@,
 .L73:
-	movw	r1, #298	@ tmp250,
-	mul	lr, r1, r7	@ tmp249, tmp250, tmpBright
-	add	ip, lr, #128	@ tmp251, tmp249,
-	add	r2, ip, #255	@ tmp253, tmp251,
-	cmp	ip, #0	@ tmp251,
-	movlt	ip, r2	@ tmp270, tmp253
-	mov	r5, ip, asr #8	@ tmp254, tmp270,
-	str	r5, [r4, #12]	@ tmp254, <variable>.s32CscDcOut_0
-	str	r5, [r4, #20]	@ tmp254, <variable>.s32CscDcOut_2
-	str	r5, [r4, #16]	@ tmp254, <variable>.s32CscDcOut_1
-.L42:
-	ldmia	r4, {r0, lr}	@ phole ldm
-	ldr	r5, [r4, #8]	@ <variable>.s32CscDcIn_2, <variable>.s32CscDcIn_2
-	ldr	r2, [r4, #20]	@ <variable>.s32CscDcOut_2, <variable>.s32CscDcOut_2
-	mov	ip, lr, asl #2	@ tmp258, <variable>.s32CscDcIn_1,
-	ldr	r3, [r4, #16]	@ <variable>.s32CscDcOut_1, <variable>.s32CscDcOut_1
-	mov	r1, r0, asl #2	@ tmp260, <variable>.s32CscDcIn_0,
-	ldr	lr, [r4, #12]	@ <variable>.s32CscDcOut_0, <variable>.s32CscDcOut_0
-	mov	r5, r5, asl #2	@ tmp256, <variable>.s32CscDcIn_2,
-	mov	r2, r2, asl #2	@ tmp262, <variable>.s32CscDcOut_2,
-	str	r5, [r4, #8]	@ tmp256, <variable>.s32CscDcIn_2
-	mov	r3, r3, asl #2	@ tmp264, <variable>.s32CscDcOut_1,
-	str	ip, [r4, #4]	@ tmp258, <variable>.s32CscDcIn_1
-	mov	r0, lr, asl #2	@ tmp266, <variable>.s32CscDcOut_0,
-	str	r1, [r4, #0]	@ tmp260, <variable>.s32CscDcIn_0
-	str	r0, [r4, #12]	@ tmp266, <variable>.s32CscDcOut_0
-	str	r2, [r4, #20]	@ tmp262, <variable>.s32CscDcOut_2
-	str	r3, [r4, #16]	@ tmp264, <variable>.s32CscDcOut_1
-	sub	sp, fp, #28
-	ldmfd	sp, {r4, r5, r6, r7, fp, sp, pc}
-.L77:
-	ldr	ip, [fp, #-44]	@ stAlgCSOut.eCsType, stAlgCSOut.eCsType
-	sub	r2, ip, #1	@ tmp147, stAlgCSOut.eCsType,
-	cmp	r2, #1	@ tmp147,
-	bls	.L81	@,
-	ldr	r2, [fp, #-32]	@ stAlgCSIn.eCsRange, stAlgCSIn.eCsRange
-	cmp	r2, #1	@ stAlgCSIn.eCsRange,
-	beq	.L44	@,
-	mov	r0, #50	@ tmp186,
-	mul	r0, r0, r7	@, tmp186, tmpBright
-	bl	__aeabi_idiv	@
-	mvn	r3, #127	@ tmp192,
-	str	r3, [r4, #0]	@ tmp192, <variable>.s32CscDcIn_0
-	str	r3, [r4, #4]	@ tmp192, <variable>.s32CscDcIn_1
-	sub	r1, r0, #16	@ tmp191,,
-	str	r1, [r4, #8]	@ tmp191, <variable>.s32CscDcIn_2
-.L46:
-	ldr	r3, [fp, #-40]	@ stAlgCSOut.eCsRange, stAlgCSOut.eCsRange
-	cmp	r3, #1	@ stAlgCSOut.eCsRange,
-	beq	.L69	@,
-	cmp	r3, #2	@ stAlgCSOut.eCsRange,
-	beq	.L82	@,
-.L69:
-	mov	r2, #0	@ tmp201,
-	str	r2, [r4, #12]	@ tmp201, <variable>.s32CscDcOut_0
-	str	r2, [r4, #20]	@ tmp201, <variable>.s32CscDcOut_2
-	str	r2, [r4, #16]	@ tmp201, <variable>.s32CscDcOut_1
-	b	.L42	@
-.L81:
-	ldr	r1, [fp, #-32]	@ stAlgCSIn.eCsRange, stAlgCSIn.eCsRange
-	cmp	r1, #1	@ stAlgCSIn.eCsRange,
-	beq	.L36	@,
-	mvn	r5, #127	@ tmp157,
-	mvn	r0, #15	@ tmp156,
-	str	r5, [r4, #0]	@ tmp157, <variable>.s32CscDcIn_0
-	str	r5, [r4, #4]	@ tmp157, <variable>.s32CscDcIn_1
-	str	r0, [r4, #8]	@ tmp156, <variable>.s32CscDcIn_2
-.L54:
+	mov	r3, #0	@ tmp232,
+	str	r3, [r4, #0]	@ tmp232, <variable>.s32CscDcIn_0
+	str	r3, [r4, #8]	@ tmp232, <variable>.s32CscDcIn_2
+	str	r3, [r4, #4]	@ tmp232, <variable>.s32CscDcIn_1
+.L62:
 	ldr	r3, [fp, #-40]	@ stAlgCSOut.eCsRange, stAlgCSOut.eCsRange
 	cmp	r3, #1	@ stAlgCSOut.eCsRange,
 	beq	.L74	@,
 	cmp	r3, #2	@ stAlgCSOut.eCsRange,
-	addne	r7, r7, #16	@ tmp222, tmpBright,
-	beq	.L83	@,
+	beq	.L81	@,
 .L74:
-	mov	r5, #128	@ tmp223,
-	str	r7, [r4, #20]	@ tmp222, <variable>.s32CscDcOut_2
-	str	r5, [r4, #12]	@ tmp223, <variable>.s32CscDcOut_0
-	str	r5, [r4, #16]	@ tmp223, <variable>.s32CscDcOut_1
-	b	.L42	@
+	movw	ip, #298	@ tmp250,
+	mul	r0, ip, r7	@ tmp249, tmp250, tmpBright
+	add	r3, r0, #128	@ tmp251, tmp249,
+	add	r2, r3, #255	@ tmp253, tmp251,
+	cmp	r3, #0	@ tmp251,
+	movlt	r3, r2	@ tmp258, tmp253
+	mov	lr, r3, asr #8	@ tmp254, tmp258,
+	str	lr, [r4, #12]	@ tmp254, <variable>.s32CscDcOut_0
+	str	lr, [r4, #20]	@ tmp254, <variable>.s32CscDcOut_2
+	str	lr, [r4, #16]	@ tmp254, <variable>.s32CscDcOut_1
+.L66:
+	sub	sp, fp, #28
+	ldmfd	sp, {r4, r5, r6, r7, fp, sp, pc}
 .L78:
+	ldr	ip, [fp, #-44]	@ stAlgCSOut.eCsType, stAlgCSOut.eCsType
+	sub	r2, ip, #1	@ tmp147, stAlgCSOut.eCsType,
+	cmp	r2, #1	@ tmp147,
+	bls	.L82	@,
+	ldr	ip, [fp, #-32]	@ stAlgCSIn.eCsRange, stAlgCSIn.eCsRange
+	cmp	ip, #1	@ stAlgCSIn.eCsRange,
+	beq	.L45	@,
+	mov	r0, #50	@ tmp186,
+	mul	r0, r0, r7	@, tmp186, tmpBright
+	bl	__aeabi_idiv	@
+	mvn	r2, #127	@ tmp192,
+	str	r2, [r4, #0]	@ tmp192, <variable>.s32CscDcIn_0
+	str	r2, [r4, #4]	@ tmp192, <variable>.s32CscDcIn_1
+	sub	r3, r0, #16	@ tmp191,,
+	str	r3, [r4, #8]	@ tmp191, <variable>.s32CscDcIn_2
+.L47:
+	ldr	r3, [fp, #-40]	@ stAlgCSOut.eCsRange, stAlgCSOut.eCsRange
+	cmp	r3, #1	@ stAlgCSOut.eCsRange,
+	beq	.L70	@,
+	cmp	r3, #2	@ stAlgCSOut.eCsRange,
+	beq	.L83	@,
+.L70:
+	mov	r1, #0	@ tmp201,
+	str	r1, [r4, #12]	@ tmp201, <variable>.s32CscDcOut_0
+	str	r1, [r4, #20]	@ tmp201, <variable>.s32CscDcOut_2
+	str	r1, [r4, #16]	@ tmp201, <variable>.s32CscDcOut_1
+	b	.L66	@
+.L82:
+	ldr	r1, [fp, #-32]	@ stAlgCSIn.eCsRange, stAlgCSIn.eCsRange
+	cmp	r1, #1	@ stAlgCSIn.eCsRange,
+	beq	.L37	@,
+	mvn	r2, #127	@ tmp157,
+	mvn	r0, #15	@ tmp156,
+	str	r2, [r4, #0]	@ tmp157, <variable>.s32CscDcIn_0
+	str	r2, [r4, #4]	@ tmp157, <variable>.s32CscDcIn_1
+	str	r0, [r4, #8]	@ tmp156, <variable>.s32CscDcIn_2
+.L55:
+	ldr	r1, [fp, #-40]	@ stAlgCSOut.eCsRange, stAlgCSOut.eCsRange
+	mov	ip, #128	@ tmp223,
+	str	ip, [r4, #12]	@ tmp223, <variable>.s32CscDcOut_0
+	cmp	r1, #1	@ stAlgCSOut.eCsRange,
+	str	ip, [r4, #16]	@ tmp223, <variable>.s32CscDcOut_1
+	addne	r7, r7, #16	@ tmp222, tmpBright,
+	str	r7, [r4, #20]	@ tmp222, <variable>.s32CscDcOut_2
+	b	.L66	@
+.L79:
 	ldr	r3, [fp, #-32]	@ stAlgCSIn.eCsRange, stAlgCSIn.eCsRange
 	cmp	r3, #1	@ stAlgCSIn.eCsRange,
-	beq	.L70	@,
+	beq	.L71	@,
 	cmp	r3, #2	@ stAlgCSIn.eCsRange,
 	beq	.L84	@,
-.L70:
-	mov	r3, #0	@ tmp213,
-	str	r3, [r4, #0]	@ tmp213, <variable>.s32CscDcIn_0
-	str	r3, [r4, #8]	@ tmp213, <variable>.s32CscDcIn_2
-	str	r3, [r4, #4]	@ tmp213, <variable>.s32CscDcIn_1
-	b	.L54	@
-.L79:
-	mov	r2, #16	@ tmp229,
-	str	r2, [r4, #0]	@ tmp229, <variable>.s32CscDcIn_0
-	str	r2, [r4, #8]	@ tmp229, <variable>.s32CscDcIn_2
-	str	r2, [r4, #4]	@ tmp229, <variable>.s32CscDcIn_1
-	b	.L61	@
-.L80:
-	movw	r0, #298	@ tmp243,
-	mul	r7, r0, r7	@ tmp242, tmp243, tmpBright
+.L71:
+	mov	r0, #0	@ tmp213,
+	str	r0, [r4, #0]	@ tmp213, <variable>.s32CscDcIn_0
+	str	r0, [r4, #8]	@ tmp213, <variable>.s32CscDcIn_2
+	mov	ip, #128	@ tmp223,
+	str	r0, [r4, #4]	@ tmp213, <variable>.s32CscDcIn_1
+	ldr	r1, [fp, #-40]	@ stAlgCSOut.eCsRange, stAlgCSOut.eCsRange
+	str	ip, [r4, #12]	@ tmp223, <variable>.s32CscDcOut_0
+	cmp	r1, #1	@ stAlgCSOut.eCsRange,
+	str	ip, [r4, #16]	@ tmp223, <variable>.s32CscDcOut_1
+	addne	r7, r7, #16	@ tmp222, tmpBright,
+	str	r7, [r4, #20]	@ tmp222, <variable>.s32CscDcOut_2
+	b	.L66	@
+.L81:
+	movw	r1, #298	@ tmp243,
+	mul	r7, r1, r7	@ tmp242, tmp243, tmpBright
 	add	r7, r7, #128	@ tmp244, tmp242,
-	add	r3, r7, #255	@ tmp247, tmp244,
+	add	ip, r7, #255	@ tmp247, tmp244,
 	cmp	r7, #0	@ tmp244,
-	movlt	r7, r3	@ tmp269, tmp247
-	mov	r1, r7, asr #8	@ tmp248, tmp269,
-	add	lr, r1, #16	@ D.24685, tmp248,
-	str	lr, [r4, #12]	@ D.24685, <variable>.s32CscDcOut_0
-	str	lr, [r4, #20]	@ D.24685, <variable>.s32CscDcOut_2
-	str	lr, [r4, #16]	@ D.24685, <variable>.s32CscDcOut_1
-	b	.L42	@
-.L83:
-	mov	r0, #128	@ tmp220,
-	add	r7, r7, #16	@ tmp219, tmpBright,
-	str	r0, [r4, #12]	@ tmp220, <variable>.s32CscDcOut_0
-	str	r7, [r4, #20]	@ tmp219, <variable>.s32CscDcOut_2
-	str	r0, [r4, #16]	@ tmp220, <variable>.s32CscDcOut_1
-	b	.L42	@
+	movlt	r7, ip	@ tmp257, tmp247
+	mov	r0, r7, asr #8	@ tmp248, tmp257,
+	add	r2, r0, #16	@ D.24378, tmp248,
+	str	r2, [r4, #12]	@ D.24378, <variable>.s32CscDcOut_0
+	str	r2, [r4, #20]	@ D.24378, <variable>.s32CscDcOut_2
+	str	r2, [r4, #16]	@ D.24378, <variable>.s32CscDcOut_1
+	b	.L66	@
+.L80:
+	mov	lr, #16	@ tmp229,
+	str	lr, [r4, #0]	@ tmp229, <variable>.s32CscDcIn_0
+	str	lr, [r4, #8]	@ tmp229, <variable>.s32CscDcIn_2
+	str	lr, [r4, #4]	@ tmp229, <variable>.s32CscDcIn_1
+	b	.L62	@
 .L84:
-	mov	r1, #16	@ tmp210,
-	str	r1, [r4, #0]	@ tmp210, <variable>.s32CscDcIn_0
-	str	r1, [r4, #8]	@ tmp210, <variable>.s32CscDcIn_2
-	str	r1, [r4, #4]	@ tmp210, <variable>.s32CscDcIn_1
-	b	.L54	@
-.L44:
+	mov	r2, #16	@ tmp210,
+	str	r2, [r4, #0]	@ tmp210, <variable>.s32CscDcIn_0
+	str	r2, [r4, #8]	@ tmp210, <variable>.s32CscDcIn_2
+	str	r2, [r4, #4]	@ tmp210, <variable>.s32CscDcIn_1
+	b	.L55	@
+.L45:
 	mov	lr, #50	@ tmp170,
 	mul	r0, lr, r7	@, tmp170, tmpBright
 	bl	__aeabi_idiv	@
-	mvn	ip, #127	@ tmp174,
-	str	ip, [r4, #0]	@ tmp174, <variable>.s32CscDcIn_0
-	str	ip, [r4, #4]	@ tmp174, <variable>.s32CscDcIn_1
+	mvn	r1, #127	@ tmp174,
+	str	r1, [r4, #0]	@ tmp174, <variable>.s32CscDcIn_0
+	str	r1, [r4, #4]	@ tmp174, <variable>.s32CscDcIn_1
 	str	r0, [r4, #8]	@, <variable>.s32CscDcIn_2
-	b	.L46	@
-.L82:
-	mov	r5, #16	@ tmp198,
-	str	r5, [r4, #12]	@ tmp198, <variable>.s32CscDcOut_0
-	str	r5, [r4, #20]	@ tmp198, <variable>.s32CscDcOut_2
-	str	r5, [r4, #16]	@ tmp198, <variable>.s32CscDcOut_1
-	b	.L42	@
-.L36:
+	b	.L47	@
+.L83:
+	mov	ip, #16	@ tmp198,
+	str	ip, [r4, #12]	@ tmp198, <variable>.s32CscDcOut_0
+	str	ip, [r4, #20]	@ tmp198, <variable>.s32CscDcOut_2
+	str	ip, [r4, #16]	@ tmp198, <variable>.s32CscDcOut_1
+	b	.L66	@
+.L37:
 	mvn	r3, #127	@ tmp151,
 	mov	lr, #0	@ tmp150,
 	str	r3, [r4, #0]	@ tmp151, <variable>.s32CscDcIn_0
 	stmib	r4, {r3, lr}	@ phole stm
-	b	.L54	@
+	b	.L55	@
 	.fnend
 	.size	CalcCscDc, .-CalcCscDc
 	.align	2
@@ -1756,7 +1763,7 @@ CalcCscDc:
 	.type	VPSS_ALG_CscCoefSet, %function
 VPSS_ALG_CscCoefSet:
 	.fnstart
-.LFB1241:
+.LFB1254:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip

@@ -15,6 +15,7 @@ History       :
 
 #include <linux/ioctl.h>
 #include "hi_tde_type.h"
+#include "tde_config.h"
 
 #ifdef __cplusplus
 #if __cplusplus

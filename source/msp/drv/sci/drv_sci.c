@@ -13,7 +13,7 @@
 #include <linux/sched.h>
 #include <linux/wait.h>
 
-#include "drv_sys_ext.h"
+#include "hi_drv_sys.h"
 #include "drv_sci.h"
 #include "hi_kernel_adapt.h"
 
@@ -746,9 +746,8 @@ HI_S32 SCI_PPS_Negotiation(HI_UNF_SCI_PORT_E enSciPort, HI_U8 *pSendBuf, HI_U32 
 
 HI_S32 SCI_SetAtrByte(HI_UNF_SCI_PORT_E enSciPort, HI_U32 AtrMask)
 {
-    HI_S32 Ret;
 
-    Ret = down_interruptible(&g_SciPara[enSciPort].SciSem);
+    //Ret = down_interruptible(&g_SciPara[enSciPort].SciSem);
 
     /*TA1 present && TA2 present and bit5=0, will direct set TA1*/
     if ((g_SciAtrBuf[enSciPort].DataBuf[1] & 0x10) && g_SciPara[enSciPort].SciState.bForceFlag)
@@ -790,7 +789,7 @@ HI_S32 SCI_SetAtrByte(HI_UNF_SCI_PORT_E enSciPort, HI_U32 AtrMask)
         SCI_HAL_SetBlockTimeout(enSciPort, g_SciPara[enSciPort].SciState.SciArtPara.BlockTime);
     }
 
-    up(&g_SciPara[enSciPort].SciSem);
+    //up(&g_SciPara[enSciPort].SciSem);
 
     return HI_SUCCESS;
 }
@@ -1164,7 +1163,10 @@ HI_S32 SCI_AtrProcessHis(HI_UNF_SCI_PORT_E enSciPort, HI_U8 AtrData)
         SCI_AtrProcessEnd(enSciPort, AtrData);
     }
 
-    g_SciPara[enSciPort].SciState.SciArtPara.NumHist--; /*next historical character*/
+	if (g_SciPara[enSciPort].SciState.SciArtPara.NumHist != 0)
+	{
+		g_SciPara[enSciPort].SciState.SciArtPara.NumHist--; /*next historical character*/
+	}    
 
     return HI_SUCCESS;
 }
@@ -1213,7 +1215,9 @@ HI_VOID SCI_Init(HI_VOID)
         g_SciPara[i].SciAttr.TxTimeout = 1000;
         g_SciPara[i].SciAttr.enSciVcc = HI_UNF_SCI_LEVEL_HIGH;
         g_SciPara[i].SciAttr.enSciDetect = HI_UNF_SCI_LEVEL_HIGH;
-        g_SciPara[i].SciAttr.enClkMode = HI_UNF_SCI_CLK_MODE_OD;
+        g_SciPara[i].SciAttr.enClkMode = HI_UNF_SCI_MODE_OD;
+		g_SciPara[i].SciAttr.enResetMode = HI_UNF_SCI_MODE_OD;
+		g_SciPara[i].SciAttr.enVccEnMode = HI_UNF_SCI_MODE_OD;
 
         g_SciPara[i].ErrType = 0;
 
@@ -1254,7 +1258,7 @@ HI_VOID SCI_Init(HI_VOID)
 HI_S32 SCI_Open(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_PROTOCOL_E enSciProtocol, HI_U32 Frequency)
 {
     HI_S32 Ret;
-    static HI_CHAR s8Buff[HI_UNF_SCI_PORT_BUTT][12];
+    static HI_CHAR s8Buff[HI_UNF_SCI_PORT_BUTT][16];
     SCI_PORT_ATTR_S stPortAttr;
 
     g_SciPara[enSciPort].SciAttr.enSciProtocol = enSciProtocol;
@@ -1267,6 +1271,9 @@ HI_S32 SCI_Open(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_PROTOCOL_E enSciProtocol
     SCI_HAL_ClearSCIReset(enSciPort);
 
     SCI_HAL_SetClkMode(enSciPort, g_SciPara[enSciPort].SciAttr.enClkMode);
+	SCI_HAL_SetResetMode(enSciPort, g_SciPara[enSciPort].SciAttr.enResetMode);
+	SCI_HAL_SetVccEnMode(enSciPort, g_SciPara[enSciPort].SciAttr.enVccEnMode);
+	
     SCI_HAL_SetVcc(enSciPort, g_SciPara[enSciPort].SciAttr.enSciVcc);
     SCI_HAL_SetDetect(enSciPort, g_SciPara[enSciPort].SciAttr.enSciDetect);
     SCI_HAL_DisableAllInt(enSciPort);
@@ -1287,7 +1294,7 @@ HI_S32 SCI_Open(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_PROTOCOL_E enSciProtocol
     }
 
     memset(s8Buff[enSciPort], 0, sizeof(s8Buff[enSciPort]));
-    sprintf(s8Buff[enSciPort], "hi_sci%d", enSciPort);
+    snprintf(s8Buff[enSciPort], sizeof(s8Buff[0]), "hi_sci%d_irq", enSciPort);
 
     Ret = request_irq(stPortAttr.u32IrqNo, SCI_Isr, IRQF_DISABLED, s8Buff[enSciPort], NULL);
     if (Ret != HI_SUCCESS)
@@ -1629,7 +1636,7 @@ HI_S32 SCI_ConfDetect(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_LEVEL_E enSciLevel
     return HI_SUCCESS;
 }
 
-HI_S32 SCI_ConfClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_CLK_MODE_E enClkMode)
+HI_S32 SCI_ConfClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enClkMode)
 {
     HI_S32 Ret;
 
@@ -1648,6 +1655,77 @@ HI_S32 SCI_ConfClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_CLK_MODE_E enClkM
 
     up(&g_SciPara[enSciPort].SciSem);
     return HI_SUCCESS;
+}
+
+HI_S32 SCI_ConfResetMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enResetMode)
+{
+
+#if defined (CHIP_TYPE_hi3716cv200) || defined (CHIP_TYPE_hi3719cv100) \
+	|| defined (CHIP_TYPE_hi3718cv100) || defined (CHIP_TYPE_hi3719mv100) \
+	|| defined (CHIP_TYPE_hi3719mv100_a) || defined (CHIP_TYPE_hi3718mv100)  
+    HI_S32 Ret;	
+
+    Ret = down_interruptible(&g_SciPara[enSciPort].SciSem);
+
+    if (!g_SciPara[enSciPort].bSciEnable)
+    {
+        HI_ERR_SCI("SCI %d is not opened.\n", enSciPort);
+        up(&g_SciPara[enSciPort].SciSem);
+        return HI_ERR_SCI_INVALID_OPT;
+    }
+
+	if ((enSciPort >= HI_UNF_SCI_PORT_BUTT) || (enResetMode >= HI_UNF_SCI_MODE_BUTT))
+	{
+		HI_ERR_SCI("Invalid param, port:%d, mode:%d\n", enSciPort, enResetMode);
+		up(&g_SciPara[enSciPort].SciSem);
+        return HI_ERR_SCI_INVALID_PARA;
+	}
+
+    g_SciPara[enSciPort].SciAttr.enResetMode = enResetMode;
+	
+    SCI_HAL_SetResetMode(enSciPort, enResetMode);
+	
+    up(&g_SciPara[enSciPort].SciSem);
+    return HI_SUCCESS;
+#else
+
+	return HI_ERR_SCI_NOTSUPPORT;
+#endif
+}
+
+HI_S32 SCI_ConfVccEnMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enVccEnMode)
+{
+#if defined (CHIP_TYPE_hi3716cv200) || defined (CHIP_TYPE_hi3719cv100) \
+	|| defined (CHIP_TYPE_hi3718cv100) || defined (CHIP_TYPE_hi3719mv100) \
+	|| defined (CHIP_TYPE_hi3719mv100_a) || defined (CHIP_TYPE_hi3718mv100) 
+    HI_S32 Ret;	
+
+    Ret = down_interruptible(&g_SciPara[enSciPort].SciSem);
+
+    if (!g_SciPara[enSciPort].bSciEnable)
+    {
+        HI_ERR_SCI("SCI %d is not opened.\n", enSciPort);
+        up(&g_SciPara[enSciPort].SciSem);
+        return HI_ERR_SCI_INVALID_OPT;
+    }
+
+	if ((enSciPort >= HI_UNF_SCI_PORT_BUTT) || (enVccEnMode >= HI_UNF_SCI_MODE_BUTT))
+	{
+		HI_ERR_SCI("Invalid param, port:%d, mode:%d\n", enSciPort, enVccEnMode);
+		up(&g_SciPara[enSciPort].SciSem);
+        return HI_ERR_SCI_INVALID_PARA;
+	}
+
+    g_SciPara[enSciPort].SciAttr.enVccEnMode = enVccEnMode;
+
+	SCI_HAL_SetVccEnMode(enSciPort, enVccEnMode);
+
+    up(&g_SciPara[enSciPort].SciSem);
+    return HI_SUCCESS;
+#else
+
+	return HI_ERR_SCI_NOTSUPPORT;
+#endif
 }
 
 HI_S32 SCI_SendData(HI_UNF_SCI_PORT_E enSciPort, HI_U8 *pDataBuf, HI_U32 BufSize, HI_U32 *pDataLen, HI_U32 TimeoutMs)
@@ -2357,7 +2435,6 @@ HI_VOID SCI_ReadTasklet(HI_UNF_SCI_PORT_E enSciPort)
         {
             SCI_HAL_Finish(enSciPort);
             SCI_SetState(enSciPort, HI_UNF_SCI_STATUS_INACTIVECARD);
-            mdelay(10);
         }
     }
 
@@ -2391,28 +2468,28 @@ irqreturn_t SCI_Isr(HI_S32 irq, HI_VOID *dev_id)
     {
         if (IntState & SCI_INT_CARDIN)
         {
-            HI_ERR_SCI("sci%d card in\n", enSciPort);
+            HI_INFO_SCI("sci%d card in\n", enSciPort);
             SCI_HAL_ClearInt(enSciPort, SCI_INT_CARDIN);
             SCI_CardIn(enSciPort);
         }
 
         if (IntState & SCI_INT_CARDOUT)
         {
-            HI_ERR_SCI("sci%d card out\n", enSciPort);
+            HI_INFO_SCI("sci%d card out\n", enSciPort);
             SCI_HAL_ClearInt(enSciPort, SCI_INT_CARDOUT);
             SCI_CardOut(enSciPort);
         }
 
         if (IntState & SCI_INT_CARDDOWN)
         {
-            HI_ERR_SCI("sci%d card down\n", enSciPort);
+            HI_INFO_SCI("sci%d card down\n", enSciPort);
             SCI_HAL_ClearInt(enSciPort, SCI_INT_CARDDOWN);
             SCI_CardDown(enSciPort);
         }
 
         if (IntState & SCI_INT_CARDUP)
         {
-            HI_ERR_SCI("sci%d card up\n", enSciPort);
+            HI_INFO_SCI("sci%d card up\n", enSciPort);
 
             SCI_HAL_ClearInt(enSciPort, SCI_INT_CARDUP);
 
@@ -2495,6 +2572,9 @@ HI_S32 SCI_Resume(HI_VOID)
             SCI_HAL_ClearSCIReset(index);
 
             SCI_ConfClkMode( index, g_SciPara[index].SciAttr.enClkMode);
+			SCI_ConfResetMode( index, g_SciPara[index].SciAttr.enResetMode);
+			SCI_ConfVccEnMode( index, g_SciPara[index].SciAttr.enVccEnMode);
+			
             SCI_ConfVcc( index, g_SciPara[index].SciAttr.enSciVcc);
             SCI_ConfDetect( index, g_SciPara[index].SciAttr.enSciDetect);
 

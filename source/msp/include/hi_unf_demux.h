@@ -33,7 +33,7 @@ extern "C" {
 
 /*************************** Structure Definition ****************************/
 /** \addtogroup      DEMUX */
-/** @{ */  /** <!-- 【DEMUX】 */
+/** @{ */  /** <!-- [DEMUX] */
 
 /**Maximum depth of a filter. */
 /**CNcomment:filter最大深度*/
@@ -329,9 +329,26 @@ typedef struct hiUNF_DMX_CHAN_CC_REPEAT_SET_S
     HI_UNF_DMX_CHAN_CC_REPEAT_MODE_E enCCRepeatMode;   /**<Repeat CC mode of channel*/ /**< CNcomment:通道的CC模式*/  
 }HI_UNF_DMX_CHAN_CC_REPEAT_SET_S;
 
+/** PUSI (Payload Unit Start Index) config structure*/
+/**CNcomment: PUSI 配置结构体 */
+typedef struct hiUNF_DMX_PUSI_SET_S
+{
+    HI_BOOL bPusi;                               /**< Value of Pusi , Default is HI_FALSE means receive ts packet without checking PUSI*/ /**< CNcomment:NoPusiEn 的值，默认为 HI_FALSE 表示接收TS包的时候不检测PUSI标志*/ 
+}HI_UNF_DMX_PUSI_SET_S;
+
+/** TEI (Transport Error Index) config structure*/
+/**CNcomment: TEI 配置结构体 */
+typedef struct hiUNF_DMX_TEI_SET_S
+{
+    HI_U32   u32DemuxID;					/**<The Subdiviece ID*/ /**< CNcomment:Demux 子设备ID*/ 
+    HI_BOOL bTei;                                   /**< Value of bTei , Default is HI_FALSE means receive ts packet even TEI equal 1*/ /**< CNcomment:TEICfg 的值，默认为 HI_FALSE 表示接收TEI为1 的 TS包仍然接收*/     
+}HI_UNF_DMX_TEI_SET_S;
+
 typedef enum hiUNF_DMX_INVOKE_TYPE
 {
     HI_UNF_DMX_INVOKE_TYPE_CHAN_CC_REPEAT_SET  = 0,  /**<dmx set channel extra attr,param:HI_UNF_DMX_CHAN_CC_REPEAT_SET_S*//**<CNcomment: 设置通道附加属性，使用参数HI_UNF_DMX_CHAN_CC_REPEAT_SET_S */
+    HI_UNF_DMX_INVOKE_TYPE_PUSI_SET,                    /**<dmx set PUSI flag,param:HI_UNF_DMX_PUSI_SET_S*//**<CNcomment: 设置 NoPusiEn 标志，使用参数HI_UNF_DMX_PUSI_SET_S */
+    HI_UNF_DMX_INVOKE_TYPE_TEI_SET,				/**<dmx set TEI flag,param:HI_UNF_DMX_TEI_SET_S*//**<CNcomment: 设置Demux 子设备TEICfg 标志，使用参数HI_UNF_DMX_TEI_SET_S */
     HI_UNF_DMX_INVOKE_TYPE_BUTT
 } HI_UNF_DMX_INVOKE_TYPE_E; 
 
@@ -340,7 +357,7 @@ typedef enum hiUNF_DMX_INVOKE_TYPE
 
 /******************************* API Declaration *****************************/
 /** \addtogroup      DEMUX */
-/** @{ */  /** <!-- 【DEMUX】 */
+/** @{ */  /** <!-- [DEMUX] */
 
 /**
 \brief Initializes the DEMUX module.CNcomment:初始化DEMUX模块。CNend
@@ -867,10 +884,10 @@ HI_S32 HI_UNF_DMX_SetChannelAttr(HI_HANDLE hChannel, const HI_UNF_DMX_CHAN_ATTR_
 /**
 \brief Sets the PID of a channel.CNcomment:设置通道PID。CNend
 \attention \n
-Does not allow two channels set the same PID of a DEMUX.\n
+If you set the same PID for two channels of a DEMUX, the PID of the second channel is valid, and the PID of the first channel is changed to 0x1FFF.\n
 You must set the PID of a channel after the channel is disabled.\n
-If you set the PID of a channel to 0x1FFF, the channel cannot receive data. That is, the channel is disabled.
-CNcomment:同一路DEMUX不允许两个通道设置相同的PID。
+If you set the PID of a channel to 0x1FFF, the channel cannot receive data. That is, the channel is disabled. 
+CNcomment:同一路DEMUX的两个通道设置相同的PID。后设置的通道有效，先设置的通道的PID被修改为0x1fff\n
 必须在通道关闭的状态下配置通道的PID\n
 允许将通道的PID配置为0x1fff,配置为0x1fff后不接收任何数据，相当于关闭通道。CNend
 \param[in] hChannel   Channel handle.CNcomment:通道句柄。CNend
@@ -1617,19 +1634,19 @@ HI_S32  HI_UNF_DMX_AcquireRecIndex(HI_HANDLE hRecChn, HI_UNF_DMX_REC_INDEX_S *ps
 HI_S32  HI_UNF_DMX_GetRecBufferStatus(HI_HANDLE hRecChn, HI_UNF_DMX_RECBUF_STATUS_S *pstBufStatus);
 
 /**
-\brief Set or get the extra attributes of a demux through the commands.CNcomment:通过命令设置或获取DMX附加属性
+\brief Set or get the extra attributes of a demux through the commands.CNcomment:通过命令设置或获取DMX附加属性CNend
 \attention \n
 Diffrent CMD use diffrent param, for details see the description of HI_UNF_DMX_INVOKE_TYPE_E.\n
-CNcomment:不同的命令使用的参数不同，具体信息请参考命令枚举的定义HI_UNF_DMX_INVOKE_TYPE_E\n
-\param[in] enCmd   Command type.CNcomment:命令类型。
-\param[in] pCmdPara    Pointer to command param.  CNcomment:命令参数。
-\retval ::HI_SUCCESS Success.CNcomment:成功
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:API系统调用失败
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:模块没有初始化
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:输入参数非法
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:指针参数为空
+CNcomment:不同的命令使用的参数不同，具体信息请参考命令枚举的定义HI_UNF_DMX_INVOKE_TYPE_E\n CNend
+\param[in] enCmd   Command type.CNcomment:命令类型。CNend
+\param[in] pCmdPara    Pointer to command param.  CNcomment:命令参数CNend
+\retval ::HI_SUCCESS Success.CNcomment:成功CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:API系统调用失败CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:模块没有初始化CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:输入参数非法CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:指针参数为空CNend
 \see \n
- N/A.CNcomment:无
+ N/A. CNcomment:无。CNend
  */
 HI_S32 HI_UNF_DMX_Invoke(HI_UNF_DMX_INVOKE_TYPE_E enCmd, const HI_VOID *pCmdPara);
 

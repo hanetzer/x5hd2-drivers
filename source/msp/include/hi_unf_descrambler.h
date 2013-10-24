@@ -21,7 +21,7 @@ extern "C" {
 
 /*************************** Structure Definition ****************************/
 /** \addtogroup      Descrambler */
-/** @{ */  /** <!-- 【Descrambler】 */
+/** @{ */  /** <!-- [Descrambler] */
 
 /**Conditional access (CA) type, indicating whether advanced CA is used.*/
 /**CNcomment:CA类型，是否使用高安全CA*/
@@ -61,6 +61,10 @@ typedef enum hiUNF_DMX_DESCRAMBLER_TYPE_E
     HI_UNF_DMX_DESCRAMBLER_TYPE_SMS4_ECB  ,      /**<SMS4 ECB*/
     HI_UNF_DMX_DESCRAMBLER_TYPE_SMS4_CBC  ,      /**<SMS4 CBC*/
     HI_UNF_DMX_DESCRAMBLER_TYPE_AES_CBC   ,      /**<AES CBC*/
+    HI_UNF_DMX_DESCRAMBLER_TYPE_DES_IPTV,
+    HI_UNF_DMX_DESCRAMBLER_TYPE_TDES_IPTV,
+    HI_UNF_DMX_DESCRAMBLER_TYPE_TDES_ECB,
+    HI_UNF_DMX_DESCRAMBLER_TYPE_TDES_CBC,
     HI_UNF_DMX_DESCRAMBLER_TYPE_BUTT
 } HI_UNF_DMX_DESCRAMBLER_TYPE_E;
 
@@ -70,7 +74,7 @@ typedef struct hiUNF_DMX_DESCRAMBLER_ATTR_S
 {
     HI_UNF_DMX_CA_TYPE_E enCaType;                    /**<Whether the descrambler adopts advanced CA.*/ /**< CNcomment:解扰器是否使用高安全CA*/
     HI_UNF_DMX_DESCRAMBLER_TYPE_E enDescramblerType;  /**<Descrambling protocol type of the descrambler*/ /**< CNcomment:解扰器解扰协议类型*/
-    HI_UNF_DMX_CA_ENTROPY_E enEntropyReduction;       /**<CA Entropy reduction mode*/ /**< CNcomment:0:48bit模式，1:64 bit模式，cas2.0时有效*/
+    HI_UNF_DMX_CA_ENTROPY_E enEntropyReduction;       /**<CA Entropy reduction mode,for CSA2.0*/ /**< CNcomment:熵减少模式，CSA2.0有效*/
 } HI_UNF_DMX_DESCRAMBLER_ATTR_S;
 
 /** @} */  /** <!-- ==== Structure Definition end ==== */
@@ -78,7 +82,7 @@ typedef struct hiUNF_DMX_DESCRAMBLER_ATTR_S
 
 /******************************* API Declaration *****************************/
 /** \addtogroup      Descrambler */
-/** @{ */  /** <!-- 【Descrambler】 */
+/** @{ */  /** <!--[Descrambler]*/
 
 /**
 \brief Creates a key area.CNcomment:创建一个密钥区。CNend

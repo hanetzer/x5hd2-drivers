@@ -16,13 +16,13 @@
 
 #include "hi_type.h"
 #include "hi_module.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_mem_ext.h"
-#include "drv_module_ext.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_mem.h"
+#include "hi_drv_module.h"
+#include "hi_drv_mmz.h"
 #include "audio_util.h"
 
 #include "hal_aiao_func.h"
@@ -37,20 +37,20 @@ extern "C" {
 
 
 
-static HI_VOID AIAOMmzName(AIAO_PORT_ID_E enPortID, HI_CHAR *pszMmzName)
+static HI_VOID AIAOMmzName(AIAO_PORT_ID_E enPortID, HI_CHAR *pszMmzName, HI_U32 u32NameSize)
 {
     HI_U32 ChnId = PORT2CHID(enPortID);
 
     switch (PORT2MODE(enPortID))
     {
     case AIAO_MODE_RXI2S:
-        sprintf(pszMmzName, "%s%02d", "aiao_rx", ChnId);
+        snprintf(pszMmzName, u32NameSize, "%s%02d", "aiao_rx", ChnId);
         break;
     case AIAO_MODE_TXI2S:
-        sprintf(pszMmzName, "%s%02d", "aiao_tx", ChnId);
+        snprintf(pszMmzName, u32NameSize, "%s%02d", "aiao_tx", ChnId);
         break;
     case AIAO_MODE_TXSPDIF:
-        sprintf(pszMmzName, "%s%02d", "aiao_sp", ChnId);
+        snprintf(pszMmzName, u32NameSize, "%s%02d", "aiao_sp", ChnId);
         break;
     }
 }
@@ -140,7 +140,7 @@ static HI_S32 PortBufInit(AIAO_PORT_S hPort)
     else
     {
         // step 1.0, MMZ
-        AIAOMmzName(hPort->enPortID, hPort->szProcMmzName);
+        AIAOMmzName(hPort->enPortID, hPort->szProcMmzName, sizeof(hPort->szProcMmzName));
         if (HI_SUCCESS
             != HI_DRV_MMZ_AllocAndMap(hPort->szProcMmzName, MMZ_OTHERS, uBufSize, AIAO_BUFFER_ADDR_ALIGN, &hPort->stMmz))
         {
@@ -279,6 +279,7 @@ static HI_S32 PortStop(AIAO_PORT_S hPort, AIAO_PORT_STOPMODE_E enStopMode)
     switch (hPort->enStatus)
     {
     case AIAO_PORT_STATUS_START:
+#if  0      
         if (AIAO_STOP_FADEOUT == enStopMode)
         {
             /* dont stop immediately, just mute */
@@ -286,6 +287,7 @@ static HI_S32 PortStop(AIAO_PORT_S hPort, AIAO_PORT_STOPMODE_E enStopMode)
             hPort->enStatus = AIAO_PORT_STATUS_STOP_PENDDING;
         }
         else
+#endif            
         {
             /* stop immediately */
             Ret = AIAO_HW_SetStart(hPort->enPortID, AIAO_STOP);
@@ -439,6 +441,12 @@ typedef struct
 } AIAO_PORT_ATTR_S;
 */
 
+HI_S32 iHAL_AIAO_P_SetI2SMasterClk(AIAO_PORT_ID_E enPortID, AIAO_IfAttr_S *pstIfAttr)
+{
+    AIAO_HW_SetI2SMasterClk(enPortID, pstIfAttr);
+    return HI_SUCCESS;
+}
+
 HI_S32 iHAL_AIAO_P_SetAttr(HI_HANDLE handle, AIAO_PORT_ATTR_S *pstAttr)
 {
     AIAO_PORT_S hPort = (AIAO_PORT_S)handle;
@@ -492,10 +500,10 @@ HI_S32 iHAL_AIAO_P_Open(const AIAO_PORT_ID_E enPortID, const AIAO_PORT_USER_CFG_
     AIAO_ASSERT_NULL(phPort);
 
     // step 1 malloc AIAO_PORT_CTX_S
-    hPort = HI_KMALLOC(HI_ID_AIAO, sizeof(AIAO_PORT_CTX_S), GFP_KERNEL);
+    hPort = AUTIL_AIAO_MALLOC(HI_ID_AIAO, sizeof(AIAO_PORT_CTX_S), GFP_KERNEL);
     if (hPort == HI_NULL)
     {
-        HI_FATAL_AIAO("HI_KMALLOC AIAO_PORT_CTX_S failed\n");
+        HI_FATAL_AIAO("malloc AIAO_PORT_CTX_S failed\n");
         return HI_FAILURE;
     }
 
@@ -507,7 +515,7 @@ HI_S32 iHAL_AIAO_P_Open(const AIAO_PORT_ID_E enPortID, const AIAO_PORT_USER_CFG_
     // step 2 AIAO Buf Init
     if (HI_FAILURE == PortBufInit(hPort))
     {
-        HI_KFREE(HI_ID_AIAO, hPort);
+        AUTIL_AIAO_FREE(HI_ID_AIAO, hPort);
         HI_FATAL_AIAO("PortBufInit failed\n");
         return HI_FAILURE;
     }
@@ -567,7 +575,7 @@ HI_VOID iHAL_AIAO_P_Close(HI_HANDLE handle)
     PortBufDeInit(hPort);
 
     // step 3 free dev sourece
-    HI_KFREE(HI_ID_AIAO, hPort);
+    AUTIL_AIAO_FREE(HI_ID_AIAO, hPort);
 
     return;
 }
@@ -590,6 +598,7 @@ HI_S32 iHAL_AIAO_P_GetStatus(HI_HANDLE handle, AIAO_PORT_STAUTS_S *pstStatus)
     memcpy(&pstStatus->stProcStatus, &hPort->stStatus, sizeof(AIAO_PROC_STAUTS_S));
     memcpy(&pstStatus->stUserConfig, &hPort->stUserCongfig, sizeof(AIAO_PORT_USER_CFG_S));
     memcpy(&pstStatus->stBuf, &hPort->stBuf, sizeof(AIAO_BufInfo_S));
+    memcpy(&pstStatus->stCircBuf, &hPort->stCB, sizeof(CIRC_BUF_S));
     pstStatus->enStatus = hPort->enStatus;
     return HI_SUCCESS;
 }
@@ -730,7 +739,7 @@ HI_U32 iHAL_AIAO_P_ReadData(HI_HANDLE handle, HI_U8 * pu32Dest, HI_U32 u32DestSi
     HI_U32 Bytes = 0;
 
     AIAO_ASSERT_NULL(hPort);
-    HI_ASSERT(HI_NULL != pu32Dest);
+    HI_ASSERT_RET(HI_NULL != pu32Dest);
 
     pstCB   = &hPort->stCB;
     pstProc = &hPort->stStatus;
@@ -983,7 +992,80 @@ HI_U32					iHAL_AIAO_P_GetIntStatus(AIAO_PORT_ID_E enPortID)
     return iHAL_AIAO_P_GetIntStatus(enPortID);
 }
 
+#ifdef HI_ALSA_AI_SUPPORT
+HI_U32 iHAL_AIAO_P_ALSA_QueryWritePos (HI_HANDLE handle)
+{
+    AIAO_PORT_S hPort = (AIAO_PORT_S)handle;
+    CIRC_BUF_S *pstCB;
+    HI_U32 Bytes = 0;
 
+    AIAO_ASSERT_NULL(hPort);
+    pstCB   = &hPort->stCB;
+    if (AIAO_PORT_STATUS_START == hPort->enStatus)
+    {
+            Bytes = CIRC_BUF_ALSA_QueryWritePos(pstCB);	
+    }
+    return Bytes;
+}
+HI_U32 iHAL_AIAO_P_ALSA_QueryReadPos (HI_HANDLE handle)
+{
+    AIAO_PORT_S hPort = (AIAO_PORT_S)handle;
+    CIRC_BUF_S *pstCB;
+    HI_U32 Bytes = 0;
+    AIAO_ASSERT_NULL(hPort);
+    pstCB   = &hPort->stCB;
+    if (AIAO_PORT_STATUS_START == hPort->enStatus)
+    {
+            Bytes = CIRC_BUF_ALSA_QueryReadPos(pstCB);	
+    }
+    return Bytes;
+}
+HI_U32 iHAL_AIAO_P_ALSA_UpdateRptr(HI_HANDLE handle, HI_U8 * pu32Dest, HI_U32 u32DestSize)
+{
+    AIAO_PORT_S hPort = (AIAO_PORT_S)handle;
+    CIRC_BUF_S *pstCB;
+    AIAO_PROC_STAUTS_S *pstProc;
+    HI_U32 Bytes = 0;
+    AIAO_ASSERT_NULL(hPort);
+    pstCB   = &hPort->stCB;
+    pstProc = &hPort->stStatus;
+    if (AIAO_PORT_STATUS_START == hPort->enStatus)
+    {
+            pstProc->uTryReadCnt++;
+            Bytes = CIRC_BUF_ALSA_UpdateRptr(pstCB, pu32Dest, u32DestSize);
+            pstProc->uTotalByteRead += Bytes;
+        }
+    return Bytes;
+}
+HI_U32 iHAL_AIAO_P_ALSA_UpdateWptr(HI_HANDLE handle, HI_U8 * pu32Dest, HI_U32 u32DestSize)
+        {
+    AIAO_PORT_S hPort = (AIAO_PORT_S)handle;
+    CIRC_BUF_S *pstCB;
+    AIAO_PROC_STAUTS_S *pstProc;
+    HI_U32 Bytes = 0;
+    AIAO_ASSERT_NULL(hPort);
+    pstCB   = &hPort->stCB;
+    pstProc = &hPort->stStatus;
+    if (AIAO_PORT_STATUS_START == hPort->enStatus)
+    {
+            pstProc->uTryReadCnt++;
+            Bytes = CIRC_BUF_ALSA_UpdateWptr(pstCB,u32DestSize);
+            pstProc->uTotalByteRead += Bytes;
+    }
+    return Bytes;
+}
+HI_U32 iHAL_AIAO_P_ALSA_FLASH(HI_HANDLE handle)
+{
+    AIAO_PORT_S hPort = (AIAO_PORT_S)handle;
+    CIRC_BUF_S *pstCB; 
+    AIAO_ASSERT_NULL(hPort);
+    pstCB   = &hPort->stCB;
+    if (AIAO_PORT_STATUS_START == hPort->enStatus)
+            CIRC_BUF_ALSA_Flush(pstCB);
+
+    return HI_TRUE;
+}
+#endif
 #ifdef __cplusplus
  #if __cplusplus
 }

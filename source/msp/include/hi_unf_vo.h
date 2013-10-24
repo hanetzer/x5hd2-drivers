@@ -38,7 +38,7 @@ extern "C" {
 
 
 /**defines the ROTATION type.*/
-/**CNcomment:定义输出宽高比来源枚举*/
+/**CNcomment:定义视频旋转角度*/
 typedef enum hiUNF_VO_ROTATION_E
 {
     HI_UNF_VO_ROTATION_0, /**< 0 degree rotation*//**<CNcomment: 0度旋转*/
@@ -112,12 +112,15 @@ typedef struct hiUNF_WINDOW_ATTR_S
                                                   大于视频源大小的设置, 显示整个视频图像。\n
                                                   宽度和高度不能小于64，将限制到64*64*/
 
-    HI_RECT_S                 stOutputRect;  /**<the window display area on the layer. \n
-                                              all values are zero indicate outputing to whole screen \n
-                                              the value can be out of screen, picture of put of screen will not be displayed.\n*/
-                                            /**<CNcomment: 窗口在视频层上的显示区域 \n
-                                             所有值为0代表输出到整个屏幕 \n
-                                             可以设置屏幕以外的值，超出屏幕部分将不显示*/
+    HI_RECT_S                 stOutputRect;  /**<the window display area on the virtual screen. \n
+                                                The width and height of display area should not larger than virtual screen,\n
+                                                and all parameters are zero means to fill whole virtual screen.\n
+                                                The area could move out of virtual screen, and the outside part will not display.\n*/
+                                                /**<CNcomment: 窗口在虚拟屏幕上的显示区域。\n
+                                                显示区域的宽度与高度不能大于虚拟屏幕的宽度和高度，全部为0表示填满虚拟屏幕。\n
+                                                显示区域可以移出虚拟屏幕，移出屏幕部分不显示*/
+
+
 
 } HI_UNF_WINDOW_ATTR_S;
 
@@ -617,7 +620,7 @@ HI_S32 HI_UNF_VO_GetFlip(HI_HANDLE hWindow, HI_BOOL *pbHoriFlip, HI_BOOL *pbVert
 \brief set video stereo depth for 3D output.CNcomment:设置3D输出视频景深 CNend
 \attention \n
 3716/3712: not support.Only take effect in 3D output mode.
-CNcomment: 3716/3712不支持 CNend.仅在3D输出时有效 CNend
+CNcomment: 3716/3712不支持 .仅在3D输出时有效 CNend
 \param[in] hWindow    window handle .CNcomment:窗口句柄 CNend
 \param[in] s32Depth Depth of filed. the range is [-50,50].CNcomment:景深，取值为[-50,50]. CNend
 \retval ::HI_SUCCESS  success.CNcomment:成功 CNend

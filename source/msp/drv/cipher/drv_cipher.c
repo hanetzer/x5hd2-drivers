@@ -1,6 +1,20 @@
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : drv_cipher.c
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
 //#include <asm/arch/hardware.h>
 #include <asm/setup.h>
-
+#include <asm/barrier.h>    /* mb() */
 #include <asm/uaccess.h>
 #include <linux/string.h>
 #include <linux/slab.h>
@@ -33,8 +47,8 @@
 #include "drv_cipher_ioctl.h"
 #include "drv_cipher_ext.h"
 #include "hi_kernel_adapt.h"
-#include "drv_mmz_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_module.h"
 #include "hal_cipher.h"
 #include "drv_cipher.h"
 #include "drv_cipher_sha1.h"
@@ -72,11 +86,11 @@ typedef struct hiCIPHER_IV_VALUE_S
 
 /*
 -----------------------------------------------------------
-0 | input buf list Node(16Byte) | ...  * CI_MAX_LIST_NUM  | = 16*CI_MAX_LIST_NUM
+0 | input buf list Node(16Byte) | ...  * CIPHER_MAX_LIST_NUM  | = 16*CIPHER_MAX_LIST_NUM
 -----------------------------------------------------------
-  | output buf list Node(16Byte)| ...  * CI_MAX_LIST_NUM  |
+  | output buf list Node(16Byte)| ...  * CIPHER_MAX_LIST_NUM  |
 -----------------------------------------------------------
-  | IV (16Byte)                 | ...  * CI_MAX_LIST_NUM  |
+  | IV (16Byte)                 | ...  * CIPHER_MAX_LIST_NUM  |
 -----------------------------------------------------------
 ... * 7 Channels
 
@@ -107,10 +121,10 @@ typedef struct hiCIPHER_CHAN_S
     HI_U32                  chnId;
     CI_BUF_LIST_ENTRY_S     *pstInBuf;
     CI_BUF_LIST_ENTRY_S     *pstOutBuf;
-    CIPHER_IV_VALUE_S       astCipherIVValue[CI_MAX_LIST_NUM]; /*  */
-    HI_U32                  au32WitchSoftChn[CI_MAX_LIST_NUM];
-    HI_U32                  au32CallBackArg[CI_MAX_LIST_NUM];
-    HI_BOOL                 bNeedCallback[CI_MAX_LIST_NUM];                                               
+    CIPHER_IV_VALUE_S       astCipherIVValue[CIPHER_MAX_LIST_NUM]; /*  */
+    HI_U32                  au32WitchSoftChn[CIPHER_MAX_LIST_NUM];
+    HI_U32                  au32CallBackArg[CIPHER_MAX_LIST_NUM];
+    HI_BOOL                 bNeedCallback[CIPHER_MAX_LIST_NUM];                                               
     CIPHER_DATA_MNG_U       unInData;
     CIPHER_DATA_MNG_U       unOutData;
 } CIPHER_CHAN_S;
@@ -127,7 +141,7 @@ typedef struct hiCIPHER_SOFTCHAN_S
     HI_U32                u32LastPkg;     /* save which pkg's IV we should use for next pkg */
     HI_BOOL               bDecrypt;       /* hi_false: encrypt */
 
-    HI_U32                u32PirvateData;
+    HI_U32                u32PrivateData;
     funcCipherCallback    pfnCallBack;
 
 } CIPHER_SOFTCHAN_S;
@@ -256,16 +270,16 @@ static HI_S32 Cipher_HashMsgPadding(CIPHER_HASH_DATA_S *pCipherHashData)
 
 static HI_S32 Cipher_HdcpKeyAesCbc(HI_U8 *pu8Input,
                                     HI_U32 u32InputLen, 
-                                    HI_DRV_CIPHER_HDCP_MODE_E enHdcpEnMode, 
+                                    HI_DRV_CIPHER_HDCP_KEY_MODE_E enHdcpEnMode, 
                                     HI_DRV_CIPHER_HDCP_KEY_RAM_MODE_E enRamMode,
-                                    HI_DRV_CIPHER_HDCP_KEY_TYPE_E enKeyType,
+                                    HI_DRV_CIPHER_HDCP_ROOT_KEY_TYPE_E enKeyType,
                                     HI_BOOL bIsDecryption, 
                                     HI_U8 *pu8Output)
 {
     HI_S32 Ret = HI_SUCCESS;
-    HI_U32 softChnId;
+    HI_U32 softChnId = 0;
     HI_UNF_CIPHER_CTRL_S CipherCtrl;
-    HI_DRV_CIPHER_TASK_S pCITask;
+    HI_DRV_CIPHER_TASK_S stCITask;
     HI_U32 i = 0;
 
     HI_DECLARE_MUTEX(g_CipherMutexKernel);
@@ -313,8 +327,9 @@ static HI_S32 Cipher_HdcpKeyAesCbc(HI_U8 *pu8Input,
         {
             up(&g_CipherMutexKernel);
             return HI_FAILURE;
-        } 
+        }
 
+        memset(&CipherCtrl, 0 , sizeof(CipherCtrl));        
         CipherCtrl.enAlg = HI_UNF_CIPHER_ALG_AES;
         CipherCtrl.enWorkMode = HI_UNF_CIPHER_WORK_MODE_CBC;
         CipherCtrl.enBitWidth = HI_UNF_CIPHER_BIT_WIDTH_128BIT;
@@ -322,15 +337,15 @@ static HI_S32 Cipher_HdcpKeyAesCbc(HI_U8 *pu8Input,
         memset(CipherCtrl.u32IV, 0 , sizeof(CipherCtrl.u32IV));
         CipherCtrl.stChangeFlags.bit1IV = (0 == i) ? 1 : 0;            
 
-       
         Ret = DRV_Cipher_ConfigChn(softChnId, &CipherCtrl, DRV_CIPHER_UserCommCallBack);
 
-        memcpy((HI_U8 *)(pCITask.stData2Process.u32DataPkg), pu8Input + (i * 16), 16);
-        pCITask.stData2Process.u32length = 16;
-        pCITask.stData2Process.bDecrypt = bIsDecryption;
-        pCITask.u32CallBackArg = softChnId;
-        
-        Ret = DRV_Cipher_CreatTask(softChnId, &pCITask, NULL, NULL);
+        memset(&stCITask, 0, sizeof(stCITask));
+        memcpy((HI_U8 *)(stCITask.stData2Process.u32DataPkg), pu8Input + (i * 16), 16);
+        stCITask.stData2Process.u32length = 16;
+        stCITask.stData2Process.bDecrypt = bIsDecryption;
+        stCITask.u32CallBackArg = softChnId;
+
+        Ret = DRV_Cipher_CreatTask(softChnId, &stCITask, NULL, NULL);
         if (HI_SUCCESS != Ret)
         {
             (HI_VOID)DRV_Cipher_ClearHdcpConfig();
@@ -342,16 +357,34 @@ static HI_S32 Cipher_HdcpKeyAesCbc(HI_U8 *pu8Input,
 
         if ( NULL != pu8Output )
         {
-            memcpy(pu8Output + ( i * 16), (HI_U8 *)(pCITask.stData2Process.u32DataPkg), 16);
+            memcpy(pu8Output + ( i * 16), (HI_U8 *)(stCITask.stData2Process.u32DataPkg), 16);
         }
         up(&g_CipherMutexKernel); 
         
     }//end for
-                 
+
     (HI_VOID)DRV_Cipher_ClearHdcpConfig();
     DRV_Cipher_CloseChn(softChnId);    
     HI_INFO_CIPHER("In Drv_burnhdcp:Decrypt OK, chnNum = %#x!\n", softChnId);	    
     
+    return HI_SUCCESS;
+}
+
+HI_S32 DRV_CIPHER_ReadReg(HI_U32 addr, HI_U32 *pVal)
+{
+    if ( NULL == pVal )
+    {
+        return HI_ERR_CIPHER_INVALID_PARA;
+    }
+
+    (HI_VOID)HAL_CIPHER_ReadReg(addr, pVal);
+
+    return HI_SUCCESS;;
+}
+
+HI_S32 DRV_CIPHER_WriteReg(HI_U32 addr, HI_U32 Val)
+{
+    (HI_VOID)HAL_CIPHER_WriteReg(addr, Val);
     return HI_SUCCESS;
 }
 
@@ -362,12 +395,12 @@ HI_S32 DRV_CipherInitHardWareChn(HI_U32 chnId )
 
     pChan = &g_stCipherChans[chnId];
 
-    HAL_Cipher_SetInBufNum(chnId, CI_MAX_LIST_NUM);
+    HAL_Cipher_SetInBufNum(chnId, CIPHER_MAX_LIST_NUM);
     HAL_Cipher_SetInBufCnt(chnId, 0);
-//    HAL_Cipher_SetInBufEmpty(chnId, CI_MAX_LIST_NUM);
+//    HAL_Cipher_SetInBufEmpty(chnId, CIPHER_MAX_LIST_NUM);
 
-    HAL_Cipher_SetOutBufNum(chnId, CI_MAX_LIST_NUM);
-    HAL_Cipher_SetOutBufCnt(chnId, CI_MAX_LIST_NUM);
+    HAL_Cipher_SetOutBufNum(chnId, CIPHER_MAX_LIST_NUM);
+    HAL_Cipher_SetOutBufCnt(chnId, CIPHER_MAX_LIST_NUM);
 //    HAL_Cipher_SetOutBufFull(chnId, 0);
 
     HAL_Cipher_SetAGEThreshold(chnId, CIPHER_INT_TYPE_OUT_BUF, 0);
@@ -377,7 +410,7 @@ HI_S32 DRV_CipherInitHardWareChn(HI_U32 chnId )
 
     //HAL_Cipher_Config(chnId, 0);
 
-    for (i = 0; i < CI_MAX_LIST_NUM; i++)
+    for (i = 0; i < CIPHER_MAX_LIST_NUM; i++)
     {
         ;
     }
@@ -388,12 +421,12 @@ HI_S32 DRV_CipherInitHardWareChn(HI_U32 chnId )
 HI_S32 DRV_CipherDeInitHardWareChn(HI_U32 chnId)
 {
 /*
-    HAL_Cipher_SetInBufNum(CI_MAX_LIST_NUM);
+    HAL_Cipher_SetInBufNum(CIPHER_MAX_LIST_NUM);
     HAL_Cipher_SetInBufCnt(0);
-    HAL_Cipher_SetInBufEmpty(CI_MAX_LIST_NUM);
+    HAL_Cipher_SetInBufEmpty(CIPHER_MAX_LIST_NUM);
 
-    HAL_Cipher_SetOutBufNum(CI_MAX_LIST_NUM);
-    HAL_Cipher_SetOutBufCnt(CI_MAX_LIST_NUM);
+    HAL_Cipher_SetOutBufNum(CIPHER_MAX_LIST_NUM);
+    HAL_Cipher_SetOutBufCnt(CIPHER_MAX_LIST_NUM);
     HAL_Cipher_SetOutBufFull(0);
 */
 
@@ -443,10 +476,10 @@ HI_S32 DRV_Cipher_CloseChn(HI_U32 softChnId)
 HI_S32 DRV_Cipher_ConfigChn(HI_U32 softChnId,  HI_UNF_CIPHER_CTRL_S *pConfig,
                             funcCipherCallback fnCallBack)
 {
-    HI_S32 ret;
-    HI_BOOL bDecrypt = HI_FALSE; /*  */
+    HI_S32 ret = HI_SUCCESS;
+    HI_BOOL bDecrypt = HI_FALSE;
     HI_U32 hardWareChn;
-    HI_BOOL bIVSet;   /*  */
+    HI_BOOL bIVSet;
     CIPHER_CHAN_S *pChan;
     CIPHER_SOFTCHAN_S *pSoftChan;
 
@@ -455,7 +488,7 @@ HI_S32 DRV_Cipher_ConfigChn(HI_U32 softChnId,  HI_UNF_CIPHER_CTRL_S *pConfig,
     pChan = &g_stCipherChans[pSoftChan->u32HardWareChn];
     pSoftChan->pfnCallBack = fnCallBack;
     bIVSet = (pConfig->stChangeFlags.bit1IV & 0x1) ? HI_TRUE : HI_FALSE;
-    
+
     ret = HAL_Cipher_Config(pChan->chnId, bDecrypt, bIVSet, pConfig);
 
     pSoftChan->bIVChange = bIVSet;
@@ -466,11 +499,24 @@ HI_S32 DRV_Cipher_ConfigChn(HI_U32 softChnId,  HI_UNF_CIPHER_CTRL_S *pConfig,
     /* set Key */
     if (pSoftChan->bKeyChange &&  (HI_TRUE == pConfig->bKeyByCA))
     {
-        ret = HAL_Cipher_SetKey(hardWareChn, &(pSoftChan->stCtrl));
-        if (HI_SUCCESS != ret)
+        /* Used for copy protection mode */
+        if( 0 == hardWareChn)
         {
-            return ret;
-        }        
+            ret = HAL_CIPHER_LoadSTBRootKey(0);
+            if (HI_SUCCESS != ret)
+            {
+                HI_ERR_CIPHER("Load STB root key failed!\n");
+                return ret;
+            }
+        }
+        else
+        {
+            ret = HAL_Cipher_SetKey(hardWareChn, &(pSoftChan->stCtrl));
+            if (HI_SUCCESS != ret)
+            {
+                return ret;
+            }
+        }
         pSoftChan->bKeyChange = HI_FALSE;
     }
 
@@ -487,15 +533,6 @@ HI_S32 DRV_CipherStartSinglePkgChn(HI_U32 softChnId, HI_DRV_CIPHER_DATA_INFO_S *
 
     pSoftChan = &g_stCipherSoftChans[softChnId];
     pChan = &g_stCipherChans[pSoftChan->u32HardWareChn];
-
-    //added check status by g00182102
-    #if 0
-    if ( HI_FALSE == HAL_Cipher_IsIdle(0) )
-    {
-        HI_DEBUG_CIPHER("start single packet failure as the channel is busy!\n");
-        return HI_FAILURE;
-    }
-    #endif
     
     HAL_Cipher_Config(0, pBuf2Process->bDecrypt, pSoftChan->bIVChange, &(pSoftChan->stCtrl));
 
@@ -533,7 +570,6 @@ HI_S32 DRV_CipherStartMultiPkgChn(HI_U32 softChnId, HI_DRV_CIPHER_DATA_INFO_S *p
     hardWareChn = pSoftChan->u32HardWareChn;
     pChan = &g_stCipherChans[hardWareChn];
 
-
     HAL_Cipher_GetInBufCnt(hardWareChn, &BusyCnt);
     HI_DEBUG_CIPHER("HAL_Cipher_GetInBufCnt, BusyCnt=%d.\n", BusyCnt);
 
@@ -543,7 +579,7 @@ HI_S32 DRV_CipherStartMultiPkgChn(HI_U32 softChnId, HI_DRV_CIPHER_DATA_INFO_S *p
     pInBuf = pChan->pstInBuf + currentPtr;
     pOutBuf = pChan->pstOutBuf + currentPtr;
 
-    if (BusyCnt < CI_MAX_LIST_NUM) /* */
+    if (BusyCnt < CIPHER_MAX_LIST_NUM) /* */
     {
         /* set addr */
         pInBuf->u32DataAddr = pBuf2Process->u32src;
@@ -557,7 +593,7 @@ HI_S32 DRV_CipherStartMultiPkgChn(HI_U32 softChnId, HI_DRV_CIPHER_DATA_INFO_S *p
         {
             memcpy(pChan->astCipherIVValue[currentPtr].pu32VirAddr,
                 pSoftChan->stCtrl.u32IV, CI_IV_SIZE);
-
+            mb();
             pInBuf->u32IVStartAddr
                 = pChan->astCipherIVValue[currentPtr].u32PhyAddr;
 
@@ -604,12 +640,12 @@ HI_S32 DRV_CipherStartMultiPkgChn(HI_U32 softChnId, HI_DRV_CIPHER_DATA_INFO_S *p
 
         pChan->au32WitchSoftChn[currentPtr] = softChnId;
         pChan->au32CallBackArg[currentPtr] = callBackArg;
-        pSoftChan->u32PirvateData = callBackArg;
+        pSoftChan->u32PrivateData = callBackArg;
         pChan->bNeedCallback[currentPtr] = HI_TRUE;
         HI_INFO_CIPHER("pkg %d set ok.\n", currentPtr);
         
         currentPtr++;
-        if (currentPtr >=  CI_MAX_LIST_NUM)
+        if (currentPtr >=  CIPHER_MAX_LIST_NUM)
         {
             currentPtr = 0;
         }
@@ -652,16 +688,15 @@ HI_S32 DRV_Cipher_CreatMultiPkgTask(HI_U32 softChnId, HI_DRV_CIPHER_DATA_INFO_S 
     hardWareChn = pSoftChan->u32HardWareChn;
     pChan = &g_stCipherChans[hardWareChn];
 
-
     HAL_Cipher_GetInBufCnt(hardWareChn, &BusyCnt);
     HI_DEBUG_CIPHER("HAL_Cipher_GetInBufCnt, BusyCnt=%d.\n", BusyCnt);
 
     pChan->unInData.stPkgNMng.u32BusyCnt = BusyCnt;
  
-    if (BusyCnt + pkgNum > CI_MAX_LIST_NUM) /* */
+    if (BusyCnt + pkgNum > CIPHER_MAX_LIST_NUM) /* */
     {
          HI_ERR_CIPHER("%s: pkg want to do: %u, free pkg num:%u.\n", pBuf2Process->bDecrypt ? "Dec" : "ENC",
-                pkgNum, CI_MAX_LIST_NUM - BusyCnt);
+                pkgNum, CIPHER_MAX_LIST_NUM - BusyCnt);
          return HI_ERR_CIPHER_BUSY;
     }
 
@@ -699,7 +734,7 @@ HI_S32 DRV_Cipher_CreatMultiPkgTask(HI_U32 softChnId, HI_DRV_CIPHER_DATA_INFO_S 
         {
             memcpy(pChan->astCipherIVValue[currentPtr].pu32VirAddr,
                 pSoftChan->stCtrl.u32IV, CI_IV_SIZE);
-
+            mb();
             pInBuf->u32IVStartAddr
                 = pChan->astCipherIVValue[currentPtr].u32PhyAddr;
 
@@ -712,7 +747,7 @@ HI_S32 DRV_Cipher_CreatMultiPkgTask(HI_U32 softChnId, HI_DRV_CIPHER_DATA_INFO_S 
 #else  /* for multi pkg task, reset IV(use the user configed IV ) each time. */
 			memcpy(pChan->astCipherIVValue[currentPtr].pu32VirAddr,
 				pSoftChan->stCtrl.u32IV, CI_IV_SIZE);
-
+            mb();
 			pInBuf->u32IVStartAddr
 				= pChan->astCipherIVValue[currentPtr].u32PhyAddr;
 
@@ -724,7 +759,7 @@ HI_S32 DRV_Cipher_CreatMultiPkgTask(HI_U32 softChnId, HI_DRV_CIPHER_DATA_INFO_S 
     
         pChan->au32WitchSoftChn[currentPtr] = softChnId;
         pChan->au32CallBackArg[currentPtr] = callBackArg;
-        pSoftChan->u32PirvateData = callBackArg;
+        pSoftChan->u32PrivateData = callBackArg;
         if ((i + 1) == pkgNum)
         {
             pChan->bNeedCallback[currentPtr] = HI_TRUE ;
@@ -740,7 +775,7 @@ HI_S32 DRV_Cipher_CreatMultiPkgTask(HI_U32 softChnId, HI_DRV_CIPHER_DATA_INFO_S 
         
         
         currentPtr++;
-        if (currentPtr >=  CI_MAX_LIST_NUM)
+        if (currentPtr >=  CIPHER_MAX_LIST_NUM)
         {
             currentPtr = 0;
         }
@@ -774,7 +809,6 @@ HI_S32 DRV_Cipher_CreatTask(HI_U32 softChnId, HI_DRV_CIPHER_TASK_S *pTask, HI_U3
 
     pSoftChan = &g_stCipherSoftChans[softChnId];
     pChan = &g_stCipherChans[pSoftChan->u32HardWareChn];
-
    
     if (pKey)
     {
@@ -819,7 +853,7 @@ HI_S32 DRV_CipherDataDoneSinglePkg(HI_U32 chnId)
 
     if (pSoftChan->pfnCallBack)
     {
-        pSoftChan->pfnCallBack(pSoftChan->u32PirvateData);
+        pSoftChan->pfnCallBack(pSoftChan->u32PrivateData);
     }
     return HI_SUCCESS;
 }
@@ -827,16 +861,15 @@ HI_S32 DRV_CipherDataDoneSinglePkg(HI_U32 chnId)
 HI_S32 DRV_CipherDataDoneMultiPkg(HI_U32 chnId)
 {
     HI_S32 ret;
-    HI_U32 currentPtr;
-    HI_U32 softChnId;
-    HI_U32 fullCnt;
-    HI_U32 i, idx;
-    CIPHER_CHAN_S *pChan;
-    CIPHER_SOFTCHAN_S *pSoftChan;
-    CI_BUF_LIST_ENTRY_S *pInBuf;
-    CI_BUF_LIST_ENTRY_S *pOutBuf;
+    HI_U32 currentPtr = 0;
+    HI_U32 softChnId = 0;
+    HI_U32 fullCnt = 0;
+    HI_U32 i, idx = 0;
+    CIPHER_CHAN_S *pChan = NULL;
+    CIPHER_SOFTCHAN_S *pSoftChan = NULL;
+    CI_BUF_LIST_ENTRY_S *pInBuf = NULL;
+    CI_BUF_LIST_ENTRY_S *pOutBuf = NULL;
 
-    
     pChan = &g_stCipherChans[chnId];
     HI_DEBUG_CIPHER("Data DONE, hwChn:%d\n", chnId);
 
@@ -852,9 +885,10 @@ HI_S32 DRV_CipherDataDoneMultiPkg(HI_U32 chnId)
     }
     idx = currentPtr;
 
-    if(idx >= CI_MAX_LIST_NUM)
+    if(idx >= CIPHER_MAX_LIST_NUM)
     {
         HI_ERR_CIPHER("idx error: idx=%u, chnId=%d \n", idx, chnId);
+        return HI_FAILURE;
     }
 
     if (fullCnt > 0) /* have list entry */
@@ -872,7 +906,7 @@ HI_S32 DRV_CipherDataDoneMultiPkg(HI_U32 chnId)
             if (pSoftChan->pfnCallBack && pChan->bNeedCallback[idx])
             {
                 HI_DEBUG_CIPHER("CallBack function\n");
-                pSoftChan->pfnCallBack(pSoftChan->u32PirvateData);
+                pSoftChan->pfnCallBack(pSoftChan->u32PrivateData);
             }
 
             pInBuf = pChan->pstInBuf + idx;  /* reset the flag of each pkg */
@@ -882,7 +916,7 @@ HI_S32 DRV_CipherDataDoneMultiPkg(HI_U32 chnId)
             pOutBuf->u32Flags = 0;
     
             idx++;
-            if (idx >= CI_MAX_LIST_NUM)
+            if (idx >= CIPHER_MAX_LIST_NUM)
             {
                 idx = 0;
             }
@@ -940,8 +974,6 @@ irqreturn_t DRV_Cipher_ISR(HI_S32 irq, HI_VOID *devId)
 //    HAL_Cipher_ClrIntState();
     return IRQ_HANDLED;
 }
-
-extern HI_S32 CIPHER_Test_Run(HI_U32 beginNo, HI_U32 endNo);
 
 
 HI_S32 DRV_Cipher_Init(HI_VOID)
@@ -1008,8 +1040,8 @@ HI_S32 DRV_Cipher_Init(HI_VOID)
 =============================================================
 */
 
-    databufSizeChn = sizeof(CI_BUF_LIST_ENTRY_S) * CI_MAX_LIST_NUM;
-    ivbufSizeChn = CI_IV_SIZE * CI_MAX_LIST_NUM;
+    databufSizeChn = sizeof(CI_BUF_LIST_ENTRY_S) * CIPHER_MAX_LIST_NUM;
+    ivbufSizeChn = CI_IV_SIZE * CIPHER_MAX_LIST_NUM;
     bufSizeChn = (databufSizeChn * 2) + ivbufSizeChn;/* inBuf + outBuf + keyBuf */
     bufSizeTotal = bufSizeChn * (CIPHER_PKGxN_CHAN_MAX - CIPHER_PKGxN_CHAN_MIN + 1) ; /* only 7 channels need buf */
 
@@ -1017,7 +1049,7 @@ HI_S32 DRV_Cipher_Init(HI_VOID)
     HAL_Cipher_DisableAllInt();
 
     /* allocate 7 channels size */
-    ret = HI_DRV_MMZ_AllocAndMap("cipherCfg",NULL, bufSizeTotal, 0, &(cipherListBuf));
+    ret = HI_DRV_MMZ_AllocAndMap("CIPHER_ChnBuf",NULL, bufSizeTotal, 0, &(cipherListBuf));
     if (HI_SUCCESS != ret)
     {
         HI_ERR_CIPHER("Can NOT get mem for cipher, init failed, exit...\n");
@@ -1063,13 +1095,12 @@ startPhyAddr
         hwChnId = i+CIPHER_PKGxN_CHAN_MIN;
         pChan = &g_stCipherChans[hwChnId];
 
-        
         pChan->astCipherIVValue[0].u32PhyAddr
             = cipherListBuf.u32StartPhyAddr + (i * bufSizeChn);
         pChan->astCipherIVValue[0].pu32VirAddr
             = (HI_U32*)(cipherListBuf.u32StartVirAddr + (i * bufSizeChn));
 
-        for (j = 1; j < CI_MAX_LIST_NUM; j++)
+        for (j = 1; j < CIPHER_MAX_LIST_NUM; j++)
         {
             pChan->astCipherIVValue[j].u32PhyAddr
                 = pChan->astCipherIVValue[0].u32PhyAddr + (CI_IV_SIZE * j);
@@ -1105,11 +1136,10 @@ startPhyAddr
             pChan->astCipherIVValue[0].u32PhyAddr + ivbufSizeChn + databufSizeChn, pChan->pstOutBuf );
     }
 
-
     HAL_Cipher_ClrIntState(0xffffffff);
 
     /* request irq */
-    ret = request_irq(CIPHER_IRQ_NUMBER, DRV_Cipher_ISR, SA_INTERRUPT, "CI_IRQ", &g_stCipherComm);
+    ret = request_irq(CIPHER_IRQ_NUMBER, DRV_Cipher_ISR, IRQF_DISABLED, "hi_cipher_irq", &g_stCipherComm);
     if(HI_SUCCESS != ret)
     {
         HAL_Cipher_DisableAllInt();
@@ -1119,8 +1149,6 @@ startPhyAddr
         HI_DRV_MMZ_UnmapAndRelease(&(g_stCipherComm.stPhyBuf));
         return HI_FAILURE;
     }
-
- //   CIPHER_Test_Run(g_u32CipherStartCase, g_u32CipherEndCase);
 
     return HI_SUCCESS;
 }
@@ -1144,15 +1172,6 @@ HI_VOID DRV_Cipher_DeInit(HI_VOID)
     free_irq(CIPHER_IRQ_NUMBER, &g_stCipherComm);
 
     HI_DRV_MMZ_UnmapAndRelease(&(g_stCipherComm.stPhyBuf));
-
-#if 0
-    /* Èí¸´Î»cipher */
-    REG_SYS_BASE_ADDR_VIRT = (HI_U32)ioremap_nocache(REG_SYS_BASE_ADDR_PHY, 0x1000);
-    *((volatile unsigned int *)(REG_SYS_BASE_ADDR_VIRT+0xb4)) = 0x00000103;
-    msleep(100);
-    *((volatile unsigned int *)(REG_SYS_BASE_ADDR_VIRT+0xb4)) = 0x00000100;
-    iounmap((void *)REG_SYS_BASE_ADDR_VIRT);
-#endif
 
     HAL_Cipher_DeInit();
 
@@ -1186,8 +1205,8 @@ HI_S32 DRV_Cipher_Resume(HI_VOID)
     memset(&g_stCipherComm, 0, sizeof(g_stCipherComm));
     memset(&g_stCipherChans, 0, sizeof(g_stCipherChans));
     
-    databufSizeChn = sizeof(CI_BUF_LIST_ENTRY_S) * CI_MAX_LIST_NUM;
-    ivbufSizeChn = CI_IV_SIZE * CI_MAX_LIST_NUM;
+    databufSizeChn = sizeof(CI_BUF_LIST_ENTRY_S) * CIPHER_MAX_LIST_NUM;
+    ivbufSizeChn = CI_IV_SIZE * CIPHER_MAX_LIST_NUM;
     bufSizeChn = (databufSizeChn * 2) + ivbufSizeChn;/* inBuf + outBuf + keyBuf */
     bufSizeTotal = bufSizeChn * (CIPHER_PKGxN_CHAN_MAX - CIPHER_PKGxN_CHAN_MIN + 1) ; /* only 7 channels need buf */
 
@@ -1196,7 +1215,7 @@ HI_S32 DRV_Cipher_Resume(HI_VOID)
     HAL_Cipher_DisableAllInt();
 
     /* allocate 7 channels size */
-    ret = HI_DRV_MMZ_AllocAndMap("cipherCfg", NULL, bufSizeTotal, 0, &(cipherListBuf));
+    ret = HI_DRV_MMZ_AllocAndMap("CIPHER_ChnBuf", NULL, bufSizeTotal, 0, &(cipherListBuf));
     if (HI_SUCCESS != ret)
     {
         HI_ERR_CIPHER("Can NOT get mem for cipher, init failed, exit...\n");
@@ -1228,7 +1247,7 @@ HI_S32 DRV_Cipher_Resume(HI_VOID)
         pChan->astCipherIVValue[0].pu32VirAddr
             = (HI_U32*)(cipherListBuf.u32StartVirAddr + (i * bufSizeChn));
 
-        for (j = 1; j < CI_MAX_LIST_NUM; j++)
+        for (j = 1; j < CIPHER_MAX_LIST_NUM; j++)
         {
             pChan->astCipherIVValue[j].u32PhyAddr
                 = pChan->astCipherIVValue[0].u32PhyAddr + (CI_IV_SIZE * j);
@@ -1252,7 +1271,7 @@ HI_S32 DRV_Cipher_Resume(HI_VOID)
     HAL_Cipher_ClrIntState(0xffffffff);
 
     /* request irq */
-    ret = request_irq(CIPHER_IRQ_NUMBER, DRV_Cipher_ISR, SA_INTERRUPT, "CI_IRQ", &g_stCipherComm);
+    ret = request_irq(CIPHER_IRQ_NUMBER, DRV_Cipher_ISR, IRQF_DISABLED, "hi_cipher_irq", &g_stCipherComm);
     if(HI_SUCCESS != ret)
     {
         HAL_Cipher_DisableAllInt();
@@ -1291,13 +1310,13 @@ HI_S32 DRV_Cipher_GetHandleConfig(HI_U32 u32SoftChanId, HI_UNF_CIPHER_CTRL_S *pC
     return HI_SUCCESS;
 }
 
-HI_VOID DRV_Cipher_SetHdcpModeEn(HI_DRV_CIPHER_HDCP_MODE_E enMode)
+HI_VOID DRV_Cipher_SetHdcpModeEn(HI_DRV_CIPHER_HDCP_KEY_MODE_E enMode)
 {
     HAL_Cipher_SetHdcpModeEn(enMode);
     return;
 }
 
-HI_S32 DRV_Cipher_GetHdcpModeEn(HI_DRV_CIPHER_HDCP_MODE_E *penMode)
+HI_S32 DRV_Cipher_GetHdcpModeEn(HI_DRV_CIPHER_HDCP_KEY_MODE_E *penMode)
 {
     return HAL_Cipher_GetHdcpModeEn(penMode);    
 }
@@ -1308,17 +1327,17 @@ HI_VOID DRV_Cipher_SetHdcpKeyRamMode(HI_DRV_CIPHER_HDCP_KEY_RAM_MODE_E enMode)
     return;
 }
 
-HI_S32 DRV_Cipher_SetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_KEY_TYPE_E enHdcpKeySelectMode)
+HI_S32 DRV_Cipher_SetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_ROOT_KEY_TYPE_E enHdcpKeySelectMode)
 {
     return HAL_Cipher_SetHdcpKeySelectMode(enHdcpKeySelectMode);
 }
 
-HI_S32 DRV_Cipher_GetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_KEY_TYPE_E *penHdcpKeySelectMode)
+HI_S32 DRV_Cipher_GetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_ROOT_KEY_TYPE_E *penHdcpKeySelectMode)
 {
     return HAL_Cipher_GetHdcpKeySelectMode(penHdcpKeySelectMode);
 }
 
-HI_S32 DRV_Cipher_HdcpParamConfig(HI_DRV_CIPHER_HDCP_MODE_E enHdcpEnMode, HI_DRV_CIPHER_HDCP_KEY_RAM_MODE_E enRamMode, HI_DRV_CIPHER_HDCP_KEY_TYPE_E enKeyType)
+HI_S32 DRV_Cipher_HdcpParamConfig(HI_DRV_CIPHER_HDCP_KEY_MODE_E enHdcpEnMode, HI_DRV_CIPHER_HDCP_KEY_RAM_MODE_E enRamMode, HI_DRV_CIPHER_HDCP_ROOT_KEY_TYPE_E enKeyType)
 { 
     DRV_Cipher_SetHdcpModeEn(enHdcpEnMode);    
     DRV_Cipher_SetHdcpKeyRamMode(enRamMode);
@@ -1549,7 +1568,10 @@ HI_S32 DRV_Cipher_CalcHashInit(CIPHER_HASH_DATA_S *pCipherHashData)
         s32Ret = Cipher_CalcHashInit_Sw(pCipherHashData);
     }
     else if( ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716C == enchipType))
-          || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)) )
+          || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType))
+          || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3718C == enchipType))
+          || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719C == enchipType))
+          || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719M_A == enchipType)))
     {
         s32Ret = Cipher_CalcHashInit_Hw(pCipherHashData);
     }
@@ -1581,7 +1603,10 @@ HI_S32 DRV_Cipher_CalcHashUpdate(CIPHER_HASH_DATA_S *pCipherHashData)
         s32Ret = Cipher_CalcHashUpdate_Sw(pCipherHashData);
     }
     else if( ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716C == enchipType))
-          || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)) )
+          || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType))
+          || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3718C == enchipType))
+          || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719C == enchipType))
+          || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719M_A == enchipType)))
     {
         s32Ret = Cipher_CalcHashUpdate_Hw(pCipherHashData);
     }
@@ -1612,7 +1637,10 @@ HI_S32 DRV_Cipher_CalcHashFinal(CIPHER_HASH_DATA_S *pCipherHashData)
         s32Ret = Cipher_CalcHashFinal_Sw(pCipherHashData);
     }
     else if( ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716C == enchipType))
-          || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)) )
+          || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType))
+          || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3718C == enchipType))
+          || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719C == enchipType))
+          || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719M_A == enchipType)))
     {
         s32Ret = Cipher_CalcHashFinal_Hw(pCipherHashData);
     }
@@ -1630,15 +1658,21 @@ HI_S32 DRV_Cipher_CalcHashFinal(CIPHER_HASH_DATA_S *pCipherHashData)
       |-------|-----------------------------------------|------|------|
       |4bytes-|-----------------Encrypt(320bytes)-------|-4byte|-4byte|
 */
-HI_S32 DRV_Cipher_LoadHdcpKey(HI_DRV_CIPHER_FLASH_ENCRYPT_HDCPKEY_S stFlashHdcpKey)
+HI_S32 DRV_Cipher_LoadHdcpKey(HI_DRV_CIPHER_FLASH_ENCRYPT_HDCPKEY_S *pstFlashHdcpKey)
 {
     HI_S32 s32Ret = HI_SUCCESS;
     HI_U32 u32Crc32Result = 0;
     HI_U32 u32CRC32_1;
-    HI_DRV_CIPHER_HDCP_KEY_TYPE_E enKeyType;
+    HI_DRV_CIPHER_HDCP_ROOT_KEY_TYPE_E enKeyType;
     HI_U32 u32Tmp = 0;
 
-    u32Tmp = stFlashHdcpKey.u8Key[0] & 0xc0;
+    if( NULL == pstFlashHdcpKey)
+    {
+        HI_ERR_CIPHER("NULL Pointer, Invalid param input!\n");
+        return  HI_FAILURE;
+    }
+
+    u32Tmp = pstFlashHdcpKey->u8Key[0] & 0xc0;
     if ( 0x00 == u32Tmp)
     {
         enKeyType = CIPHER_HDCP_KEY_TYPE_OTP_ROOT_KEY;
@@ -1654,14 +1688,14 @@ HI_S32 DRV_Cipher_LoadHdcpKey(HI_DRV_CIPHER_FLASH_ENCRYPT_HDCPKEY_S stFlashHdcpK
     }
 
     /* verify crc32_1 */
-    s32Ret = Cipher_CRC32(stFlashHdcpKey.u8Key, (332-4), &u32Crc32Result);
+    s32Ret = Cipher_CRC32(pstFlashHdcpKey->u8Key, (332-4), &u32Crc32Result);
     if ( HI_FAILURE == s32Ret)
     {
         HI_ERR_CIPHER("HDCP KEY CRC32_1 calc failed!\n");
         return HI_FAILURE;
     }
 
-    memcpy((HI_U8 *)&u32CRC32_1, &stFlashHdcpKey.u8Key[328], 4);
+    memcpy((HI_U8 *)&u32CRC32_1, &pstFlashHdcpKey->u8Key[328], 4);
     
     if ( u32Crc32Result != u32CRC32_1 )
     {
@@ -1669,7 +1703,7 @@ HI_S32 DRV_Cipher_LoadHdcpKey(HI_DRV_CIPHER_FLASH_ENCRYPT_HDCPKEY_S stFlashHdcpK
         return HI_FAILURE;
     }
 
-    s32Ret = Cipher_HdcpKeyAesCbc(stFlashHdcpKey.u8Key+4,
+    s32Ret = Cipher_HdcpKeyAesCbc(pstFlashHdcpKey->u8Key+4,
                                      320,
                                      CIPHER_HDCP_MODE_HDCP_KEY,
                                      CIPHER_HDCP_KEY_RAM_MODE_WRITE,

@@ -24,11 +24,8 @@ extern "C" {
 HI_VOID DISP_OS_GetTime(HI_U32 *t_ms)
 {
 #ifdef __DISP_PLATFORM_SDK__
-	struct timeval tv;
 
-	do_gettimeofday(&tv);
-
-	*t_ms = (tv.tv_usec/1000) + tv.tv_sec * 1000;
+    HI_DRV_SYS_GetTimeStampMs(t_ms);
 	return;
 #else
 
@@ -39,7 +36,7 @@ HI_VOID DISP_OS_GetTime(HI_U32 *t_ms)
 }
 
 HI_S32  DISP_OS_MMZ_Alloc(const char *bufname, char *zone_name, HI_U32 size, int align, DISP_MMZ_BUF_S *pstMBuf)
-{
+{
 #ifdef __DISP_PLATFORM_SDK__
     MMZ_BUFFER_S stMMZ;
     HI_S32 nRet;
@@ -61,8 +58,54 @@ HI_S32  DISP_OS_MMZ_Alloc(const char *bufname, char *zone_name, HI_U32 size, int
 #endif
 }
 
+HI_S32  DISP_OS_MMZ_Map( DISP_MMZ_BUF_S *pstMBuf)
+{
+#ifdef __DISP_PLATFORM_SDK__
+    MMZ_BUFFER_S stMMZ;
+    HI_S32 nRet;
+
+    memset((void*)&stMMZ, 0, sizeof(MMZ_BUFFER_S));
+    
+    stMMZ.u32StartPhyAddr = pstMBuf->u32StartPhyAddr ;
+        
+    nRet =HI_DRV_MMZ_Map(&stMMZ);
+    if (!nRet)
+    {
+        pstMBuf->u32StartPhyAddr = stMMZ.u32StartPhyAddr;
+        pstMBuf->u32StartVirAddr = stMMZ.u32StartVirAddr;
+        pstMBuf->u32Size = stMMZ.u32Size;
+    }
+
+    //printk("mmz addr=0x%x, size=%d, nRet = 0x%x\n", stMMZ.u32StartPhyAddr, stMMZ.u32Size, nRet);
+
+    return nRet;
+#else
+
+    return HI_FAILURE;
+#endif
+}
+
+HI_S32  DISP_OS_MMZ_UnMap( DISP_MMZ_BUF_S *pstMBuf)
+{
+#ifdef __DISP_PLATFORM_SDK__
+    MMZ_BUFFER_S stMMZ;
+    HI_S32 nRet = HI_SUCCESS;
+
+    stMMZ.u32StartVirAddr = pstMBuf->u32StartVirAddr ;
+        
+    HI_DRV_MMZ_Unmap(&stMMZ);
+
+
+    //printk("mmz addr=0x%x, size=%d, nRet = 0x%x\n", stMMZ.u32StartPhyAddr, stMMZ.u32Size, nRet);
+
+    return nRet;
+#else
+
+    return HI_FAILURE;
+#endif
+}
 HI_VOID DISP_OS_MMZ_Release(DISP_MMZ_BUF_S *pstMBuf)
-{
+{
 #ifdef __DISP_PLATFORM_SDK__
     MMZ_BUFFER_S stMMZ;
 

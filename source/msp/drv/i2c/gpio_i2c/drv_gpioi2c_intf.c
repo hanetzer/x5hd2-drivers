@@ -65,7 +65,7 @@
 #include "hi_drv_gpioi2c.h"
 #include "drv_i2c_ioctl.h"
 #include "drv_gpio_ext.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_sys.h"
 
 #if 0
 static int gpioidclock = 11;
@@ -136,9 +136,7 @@ HI_S32 GPIOI2C_DRV_ModInit(HI_VOID)
 #endif
 
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_gpioi2c.ko success.\t(%s)\n", VERSION_STRING);
-#endif
+    HI_PRINT("Load hi_gpioi2c.ko success.\t(%s)\n", VERSION_STRING);
 #endif
     return HI_SUCCESS;
 

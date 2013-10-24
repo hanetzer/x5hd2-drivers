@@ -40,6 +40,11 @@ typedef struct tagMCE_AVPLAY_S
     HI_BOOL                    VidEnable;
     HI_BOOL                    AudEnable;
 
+	HI_BOOL                    bStepMode;
+    HI_BOOL                    bStepPlay;
+
+	HI_BOOL					   bSetEosFlag;
+
     HI_BOOL                    AvplayProcContinue;
     HI_BOOL                    AvplayProcDataFlag[AVPLAY_PROC_BUTT];
 
@@ -51,6 +56,25 @@ typedef struct tagMCE_AVPLAY_S
     HI_UNF_AO_FRAMEINFO_S      AvplayAudFrm;
     SYNC_AUD_INFO_S            AudInfo;
     SYNC_AUD_OPT_S             AudOpt;
+
+	HI_BOOL                    bFrcEnable;
+    AVPLAY_FRC_CFG_S           FrcParamCfg;        /* config frc param */ /*CNcomment: 配置的frc参数 */
+    AVPLAY_ALG_FRC_S           FrcCalAlg;          /* frc used rate info */ /*CNcomment: frc正在使用的帧率信息 */
+    AVPLAY_FRC_CTRL_S          FrcCtrlInfo;        /* frc control */ /*CNcomment: frc控制信息 */
+
+    HI_U32                     FrcNeedPlayCnt;     /* this frame need to play time*/ /*CNcomment:该帧需要播几次 */
+    HI_U32                     FrcCurPlayCnt;     /* this frame had played time*/   /*CNcomment:该帧实际播到第几次*/
+
+	HI_DRV_VIDEO_FRAME_PACKAGE_S CurFrmPack;
+    HI_DRV_VIDEO_FRAME_PACKAGE_S LstFrmPack;
+
+	HI_BOOL						bTBMatch;
+
+	SYNC_VID_INFO_S            VidInfo;
+    SYNC_VID_OPT_S             VidOpt;
+
+	AVPLAY_VID_PORT_AND_WIN_S   MasterFrmChn;
+    AVPLAY_VID_PORT_AND_WIN_S   SlaveFrmChn;
     
     HI_BOOL                    AvplayThreadRun;
     struct task_struct         *pAvplayThreadInst;
@@ -76,7 +100,19 @@ HI_S32 HI_DRV_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow);
 HI_S32 HI_DRV_AVPLAY_AttachSnd(HI_HANDLE hAvplay, HI_HANDLE hSnd);
 HI_S32 HI_DRV_AVPLAY_DetachSnd(HI_HANDLE hAvplay, HI_HANDLE hSnd);
 HI_BOOL HI_DRV_AVPLAY_IsBufEmpty(HI_HANDLE hAvplay);
+HI_S32 HI_DRV_AVPLAY_Step(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_STEP_OPT_S *pstStepOpt);
+HI_S32 HI_DRV_AVPLAY_GetBuf(HI_HANDLE  hAvplay,
+                            HI_UNF_AVPLAY_BUFID_E enBufId,
+                            HI_U32                u32ReqLen,
+                            HI_UNF_STREAM_BUF_S  *pstData,
+                            HI_U32                u32TimeOutMs);
 
+HI_S32 HI_DRV_AVPLAY_PutBuf(HI_HANDLE hAvplay, HI_UNF_AVPLAY_BUFID_E enBufId,
+                                       HI_U32 u32ValidDataLen, HI_U32 u32Pts, HI_UNF_AVPLAY_PUTBUFEX_OPT_S *pstExOpt);
+
+HI_S32 HI_DRV_AVPLAY_ProcStatus(HI_HANDLE hAvplay, HI_UNF_AVPLAY_BUFID_E enBufId, HI_BOOL *pbStatus);
+HI_S32 HI_DRV_AVPLAY_FlushStream(HI_HANDLE hAvplay);
+HI_S32 HI_DRV_AVPLAY_SetProgressive(HI_HANDLE hAvplay, HI_BOOL bProgressive);
 
 #ifdef __cplusplus
 }

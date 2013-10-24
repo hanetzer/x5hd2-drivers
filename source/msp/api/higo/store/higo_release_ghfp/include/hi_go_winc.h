@@ -23,15 +23,7 @@ extern "C" {
 /** \addtogroup      HIGO_WINC */
 /** @{ */  /** <!—[HIGO_WINC]  */
 
-/**Mode of adjusting the window z-order*//** CNcomment:窗口Z序调整方式*/ 
-typedef enum
-{
-    HIGO_ZORDER_MOVETOP = 0,  /**<Move to the top*//**<CNcomment:移到最顶部*/
-    HIGO_ZORDER_MOVEUP,       /**<Move upwards*//**<CNcomment:向上移*/
-    HIGO_ZORDER_MOVEBOTTOM,   /**<Move to the bottom*//**<CNcomment:移到最底部*/
-    HIGO_ZORDER_MOVEDOWN,     /**<Move downwards*//**<CNcomment:向下移*/
-    HIGO_ZORDER_BUTT
-} HIGO_ZORDER_E;
+
 
 /**Number of buffers used by the window*//** CNcomment:window使用buffer的方式*/
 typedef enum

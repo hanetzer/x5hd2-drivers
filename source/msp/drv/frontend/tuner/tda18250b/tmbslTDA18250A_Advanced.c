@@ -35,7 +35,19 @@
 #include "tmbslTDA18250A_Advanced.h"
 
 #include "tmbslTDA18250A_Local.h"
-#include "tmbslTDA18250A_Config.h"
+#ifdef TDA18250A_DVBC_SUPPORTED
+#include "tmbslTDA18250A_Config_DVBC.h"
+#endif
+#ifdef TDA18250A_DVBT_SUPPORTED
+#include "tmbslTDA18250A_Config_DVBT.h"
+#endif
+#ifdef TDA18250A_DTMB_SUPPORTED
+#include "tmbslTDA18250A_Config_DTMB.h"
+#endif
+#ifdef TDA18250A_ISDBT_SUPPORTED
+#include "tmbslTDA18250A_Config_ISDBT.h"
+#endif
+#include "tmbslTDA18250A_Config_Common.h"
 
 /*============================================================================*/
 /* Static internal functions:                                                 */
@@ -93,101 +105,6 @@ tmbslTDA18250A_GetSWSettingsVersion(
     pSWSettingsVersion->minorVersionNr  = TDA18250A_SETTINGS_MINOR_VER;
 
     return TM_OK;
-}
-
-/*============================================================================*/
-/* FUNCTION:    tmbslTDA18250A_CheckHWVersion:                                 */
-/*                                                                            */
-/* DESCRIPTION: Checks TDA18250A HW Version.                                   */
-/*                                                                            */
-/* RETURN:      TM_OK                                                         */
-/*                                                                            */
-/*============================================================================*/
-tmErrorCode_t
-tmbslTDA18250A_CheckHWVersion(
-    tmUnitSelect_t tUnit    /* I: Unit number */
-)
-{
-    pTDA18250AObject_t   pObj = Null;
-    tmErrorCode_t        err = TM_OK;
-    //UInt16              uIdentity = 0;
-    //UInt8               ID_byte_1 = 0;
-    //UInt8               ID_byte_2 = 0;
-    //UInt8               majorRevision = 0;
-    //UInt8               minorRevision = 0;
-
-    /* Get a driver instance */
-    err = iTDA18250A_GetInstance(tUnit, &pObj);
-
-    _MUTEX_ACQUIRE(TDA18250A)
-
-    tmDBGPRINTEx(DEBUGLVL_INOUT, "tmbslTDA18250A_CheckHWVersion(0x%08X)", tUnit);
-
-    /* TODO ALEX : reactivate after discussing with designers */
-
-    //err = iTDA18250A_ReadRegMap(pObj, gTDA18250A_Reg_ID_byte_1.Address, TDA18250A_REG_DATA_LEN(gTDA18250A_Reg_ID_byte_1__Ident_1, gTDA18250A_Reg_ID_byte_3));
-    //tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_ReadRegMap(0x%08X) failed.", tUnit));
-
-    //if(err == TM_OK)
-    //{
-    //    err = iTDA18250A_Read(pObj, &gTDA18250A_Reg_ID_byte_1__Ident_1, &ID_byte_1, Bus_None);
-    //    tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Read(0x%08X) failed.", tUnit));
-    //}
-
-    //if(err == TM_OK)
-    //{
-    //    err = iTDA18250A_Read(pObj, &gTDA18250A_Reg_ID_byte_2__Ident_2, &ID_byte_2, Bus_None);
-    //    tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Read(0x%08X) failed.", tUnit));
-    //}
-
-    //if(err == TM_OK)
-    //{
-    //    /* Construct Identity */
-    //    uIdentity = (ID_byte_1 << 8) | ID_byte_2;
-
-    //    if ((uIdentity == 18274) || (uIdentity == 18214))
-    //    {
-    //        /* TDA18250A found. Check Major & Minor Revision */
-    //        err = iTDA18250A_Read(pObj, &gTDA18250A_Reg_ID_byte_3__Major_rev, &majorRevision, Bus_None);
-    //        tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Read(0x%08X) failed.", tUnit));
-
-    //        err = iTDA18250A_Read(pObj, &gTDA18250A_Reg_ID_byte_3__Minor_rev, &minorRevision, Bus_None);
-    //        tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Read(0x%08X) failed.", tUnit));
-
-    //        switch (majorRevision)
-    //        {
-    //            case 1:
-    //            {
-    //                switch (minorRevision)
-    //                {
-    //                    case 0:
-    //                        /* ES1 is supported */
-    //                        err = TM_OK;
-    //                        break;
-
-    //                    default:
-    //                        /* Only TDA18250A ES1 are supported */
-    //                        err = TDA18250A_ERR_BAD_VERSION;
-    //                        break;
-    //                }
-    //            }
-    //            break;
-
-    //            default:
-    //                /* Only TDA18250A ES1 are supported */
-    //                err = TDA18250A_ERR_BAD_VERSION;
-    //                break;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        err = TDA18250A_ERR_BAD_VERSION;
-    //    }
-    //}
-
-    _MUTEX_RELEASE(TDA18250A)
-
-    return err;
 }
 
 /*============================================================================*/
@@ -688,6 +605,14 @@ tmbslTDA18250A_SetRawRF(
 
     tmDBGPRINTEx(DEBUGLVL_INOUT, "tmbslTDA18250A_SetRawRF(0x%08X)", tUnit);
 
+    /* Test parameter(s) */
+    if(   pObj->StandardMode<=TDA18250A_StandardMode_Unknown
+        || pObj->StandardMode>=TDA18250A_StandardMode_Max
+        || pObj->pStandard == Null)
+    {
+        err = TDA18250A_ERR_STD_NOT_SET;
+    }
+
     if(err == TM_OK)
     {
         /* Check if Hw is ready to operate */
@@ -909,70 +834,6 @@ tmbslTDA18250A_GetLLPowerState(
 
     return err;
 }
-
-/*============================================================================*/
-/* FUNCTION:    tmbslTDA18250A_SetPowerSavingMode                              */
-/*                                                                            */
-/* DESCRIPTION: set registers according  the  PowerSavingMode                 */
-/*                                                                            */
-/* RETURN:      TM_OK if no error                                             */
-/*                                                                            */
-/*============================================================================*/
-//tmErrorCode_t
-//tmbslTDA18250A_SetPowerSavingMode(
-//    tmUnitSelect_t  tUnit/*,*/      /* I: Unit number */
-//    /*TDA18250APowerSavingMode_t uPowerSavingMode*/
-//)
-//{
-//    pTDA18250AObject_t   pObj = Null;
-//    tmErrorCode_t       err = TM_OK;
-//
-//    /* Get a driver instance */
-//    err = iTDA18250A_GetInstance(tUnit, &pObj);
-//
-//    _MUTEX_ACQUIRE(TDA18250A)
-//
-//    tmDBGPRINTEx(DEBUGLVL_INOUT, "tmbslTDA18250A_SetPowerSavingMode(0x%08X)", tUnit);
-//   
-//    err = iTDA18250A_PowerSavingMode(pObj/*, uPowerSavingMode*/);
-//    tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_PowerSavingMode(0x%08X) failed.", pObj->tUnitW));
-//
-//    _MUTEX_RELEASE(TDA18250A)
-//
-//    return err;
-//}
-/*============================================================================*/
-/* FUNCTION:    tmbslTDA18250A_GetPowerSavingMode                              */
-/*                                                                            */
-/* DESCRIPTION: get current  PowerSavingMode                                  */
-/*                                                                            */
-/* RETURN:      TM_OK if no error                                             */
-/*                                                                            */
-/*============================================================================*/
-//tmErrorCode_t
-//tmbslTDA18250A_GetPowerSavingMode(
-//    tmUnitSelect_t  tUnit/*,*/      /* I: Unit number */
-//    /*TDA18250APowerSavingMode_t* pPowerSavingMode*/
-//)
-//{
-//    pTDA18250AObject_t   pObj = Null;
-//    tmErrorCode_t       err = TM_OK;
-//
-//    /* Get a driver instance */
-//    err = iTDA18250A_GetInstance(tUnit, &pObj);
-//
-//    _MUTEX_ACQUIRE(TDA18250A)
-//
-//    tmDBGPRINTEx(DEBUGLVL_INOUT, "tmbslTDA18250A_SetPowerSavingMode(0x%08X)", tUnit);
-//    if(err == TM_OK)
-//    {
-//        *pPowerSavingMode = pObj->curPowerSavingMode;
-//	}
-//
-//	_MUTEX_RELEASE(TDA18250A)
-//
-//    return err;
-//}
 
 /*============================================================================*/
 /* FUNCTION:    tmbslTDA18250A_PLLcalc                                         */
@@ -1292,20 +1153,11 @@ tmbslTDA18250A_GetXtal(
         case 25000000:
             *peXtal = TDA18250A_XtalFreq_25000000;
             break;
-        case 26000000:
-            *peXtal = TDA18250A_XtalFreq_26000000;
-            break;
         case 27000000:
             *peXtal = TDA18250A_XtalFreq_27000000;
             break;
-        case 28800000:
-            *peXtal = TDA18250A_XtalFreq_28800000;
-            break;
-        case 28920000:
-            *peXtal = TDA18250A_XtalFreq_28920000;
-            break;
-        case 29000000:
-            *peXtal = TDA18250A_XtalFreq_29000000;
+        case 30000000:
+            *peXtal = TDA18250A_XtalFreq_30000000;
             break;
         default:
             *peXtal = TDA18250A_XtalFreq_Unknown;
@@ -1555,51 +1407,143 @@ tmbslTDA18250A_AGCTOP23(
 
     tmDBGPRINTEx(DEBUGLVL_INOUT, "tmbslAGCTOP23(0x%08X)", tUnit);
 
-    // get AGC3 gain
+    /* get AGC3 gain */
     err = iTDA18250A_Read(pObj, &gTDA18250A_Reg_AGC3_gain_status__AGC3_Gain_Read, &uAGC3Gain, Bus_RW);
     tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Read(0x%08X) failed.", pObj->tUnitW));
 
-    //find the base TOP
-    while ((pObj->uProgRF >= pObj->pStandard->AGC2_TOP[i].uFreq) && (i<TDA18250A_CONFIG_STD_FREQ_NUM))
-    {
-        i++;
-    }
-    i--;
-    if (pObj->pStandard->AGC2_TOP[i].uFreq == -1)
-    {
-        i--;
-    }
-    uValue1 = pObj->pStandard->AGC2_TOP[i].uTOPDn;
-    uValue2 = pObj->pStandard->AGC2_TOP[i].uTOPUp;
 
-    if (err == TM_OK)
+    if (pObj->eChipVersion == TDA18250A_VersionES1)
     {
-        if (AGC3_Gain_Read[uAGC3Gain] == 15)
+        /* find the base TOP */
+        while ((pObj->uProgRF >= pObj->pStandard->AGC2_TOP_ES1[i].uFreq) && (i<TDA18250A_CONFIG_STD_FREQ_NUM))
         {
-            /* AGC2_TOP_DO */ //qwerty
-            err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_2__AGC2_TOP_DO, (107-uValue1)*2-lDelta, Bus_NoRead);
-            tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
-            if(err == TM_OK)
+            i++;
+        }
+        i--;
+        if (pObj->pStandard->AGC2_TOP_ES1[i].uFreq == -1)
+        {
+            i--;
+        }
+        uValue1 = pObj->pStandard->AGC2_TOP_ES1[i].uTOPDn;
+        uValue2 = pObj->pStandard->AGC2_TOP_ES1[i].uTOPUp;
+
+        if (err == TM_OK)
+        {
+            if (AGC3_Gain_Read[uAGC3Gain] == 15)
             {
-                /* AGC2_TOP_UP */ //qwerty
-                err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_3__AGC2_TOP_UP, (107-uValue2)*2-lDelta, Bus_NoRead);
+                /* AGC2_TOP_DO */
+                err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_2__AGC2_TOP_DO, 107-uValue1-lDelta, Bus_NoRead);
                 tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                if(err == TM_OK)
+                {
+                    /* AGC2_TOP_UP */
+                    err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_3__AGC2_TOP_UP, 107-uValue2-lDelta, Bus_NoRead);
+                    tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                }
+            }
+            else if (AGC3_Gain_Read[uAGC3Gain] <= 9)
+            {
+                /* AGC2_TOP_DO */
+                err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_2__AGC2_TOP_DO, 107-uValue1, Bus_NoRead);
+                tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                if(err == TM_OK)
+                {
+                    /* AGC2_TOP_UP */
+                    err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_3__AGC2_TOP_UP, 107-uValue2, Bus_NoRead);
+                    tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                }
             }
         }
-        else if (AGC3_Gain_Read[uAGC3Gain] <= 9)
+    }
+    else if ( pObj->eChipVersion == TDA18250A_VersionES2 )
+    {
+        /* find the base TOP */
+        while ((pObj->uProgRF >= pObj->pStandard->AGC2_TOP_ES2[i].uFreq) && (i<TDA18250A_CONFIG_STD_FREQ_NUM))
         {
-            /* AGC2_TOP_DO */ //qwerty
-            err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_2__AGC2_TOP_DO, (107-uValue1)*2, Bus_NoRead);
-            tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
-            if(err == TM_OK)
+            i++;
+        }
+        i--;
+        if (pObj->pStandard->AGC2_TOP_ES2[i].uFreq == -1)
+        {
+            i--;
+        }
+        uValue1 = pObj->pStandard->AGC2_TOP_ES2[i].uTOPDn;
+        uValue2 = pObj->pStandard->AGC2_TOP_ES2[i].uTOPUp;
+
+        if (err == TM_OK)
+        {
+            if (AGC3_Gain_Read[uAGC3Gain] == 15)
             {
-                /* AGC2_TOP_UP */ //qwerty
-                err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_3__AGC2_TOP_UP, (107-uValue2)*2, Bus_NoRead);
+                /* AGC2_TOP_DO */
+                err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_2__AGC2_TOP_DO, (107-uValue1)*2-lDelta, Bus_NoRead);
                 tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                if(err == TM_OK)
+                {
+                    /* AGC2_TOP_UP */
+                    err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_3__AGC2_TOP_UP, (107-uValue2)*2-lDelta, Bus_NoRead);
+                    tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                }
+            }
+            else if (AGC3_Gain_Read[uAGC3Gain] <= 9)
+            {
+                /* AGC2_TOP_DO */
+                err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_2__AGC2_TOP_DO, (107-uValue1)*2, Bus_NoRead);
+                tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                if(err == TM_OK)
+                {
+                    /* AGC2_TOP_UP */
+                    err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_3__AGC2_TOP_UP, (107-uValue2)*2, Bus_NoRead);
+                    tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                }
+            }
+        }
+    }
+    else
+    {
+        /* find the base TOP */
+        while ((pObj->uProgRF >= pObj->pStandard->AGC2_TOP_ES3[i].uFreq) && (i<TDA18250A_CONFIG_STD_FREQ_NUM))
+        {
+            i++;
+        }
+        i--;
+        if (pObj->pStandard->AGC2_TOP_ES3[i].uFreq == -1)
+        {
+            i--;
+        }
+        uValue1 = pObj->pStandard->AGC2_TOP_ES3[i].uTOPDn;
+        uValue2 = pObj->pStandard->AGC2_TOP_ES3[i].uTOPUp;
+
+        if (err == TM_OK)
+        {
+            if (AGC3_Gain_Read[uAGC3Gain] == 15)
+            {
+                /* AGC2_TOP_DO */
+                err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_2__AGC2_TOP_DO, (107-uValue1)*2-lDelta, Bus_NoRead);
+                tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                if(err == TM_OK)
+                {
+                    /* AGC2_TOP_UP */
+                    err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_3__AGC2_TOP_UP, (107-uValue2)*2-lDelta, Bus_NoRead);
+                    tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                }
+            }
+            else if (AGC3_Gain_Read[uAGC3Gain] <= 9)
+            {
+                /* AGC2_TOP_DO */
+                err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_2__AGC2_TOP_DO, (107-uValue1)*2, Bus_NoRead);
+                tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                if(err == TM_OK)
+                {
+                    /* AGC2_TOP_UP */
+                    err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_AGC2_byte_3__AGC2_TOP_UP, (107-uValue2)*2, Bus_NoRead);
+                    tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
+                }
             }
         }
     }
     
+    
+
     _MUTEX_RELEASE(TDA18250A)
 
     return err;

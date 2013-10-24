@@ -21,7 +21,8 @@
 #include "hi_type.h"
 
 #include "demux_debug.h"
-#include "drv_demux_scd.h"
+#include "drv_demux_scd.h"
+
 
 #define PVR_INDEX_INVALID_PTSMS             ((HI_U32)(-1))
 
@@ -125,12 +126,18 @@ static HI_VOID PVR_SCDDmxIdxToPvrIdx(const DMX_IDX_DATA_S *pDmxIndexData,
 }
 
 
-static HI_U64 PVR_SCDIndexCalcGlobalOffset(const PVR_INDEX_SCD_S *pScData)
+static HI_U64 PVR_SCDIndexCalcGlobalOffset(HI_BOOL bUseTimeStamp,const PVR_INDEX_SCD_S *pScData)
 {
     HI_U64 offset; /* frame header offset (tota value) */
-
-    offset = (pScData->u64TSCnt - pScData->u32OffsetInDavBuf - 1) * 188ULL + pScData->u16OffsetInTs;
-
+	
+	if ( bUseTimeStamp)
+	{
+	    offset = (pScData->u64TSCnt - pScData->u32OffsetInDavBuf - 1) * 192ULL + pScData->u16OffsetInTs;
+	}
+	else
+	{
+		offset = (pScData->u64TSCnt - pScData->u32OffsetInDavBuf - 1) * 188ULL + pScData->u16OffsetInTs;    
+	}		
     return offset;
 }
 
@@ -151,7 +158,7 @@ static HI_U64 PVR_SCDIndexCalcGlobalOffset(const PVR_INDEX_SCD_S *pScData)
     Modification : Created function
 
 *****************************************************************************/
-HI_S32 DmxScdToVideoIndex(const DMX_IDX_DATA_S *ScData, FINDEX_SCD_S *pstFidx)
+HI_S32 DmxScdToVideoIndex(HI_BOOL bUseTimeStamp,const DMX_IDX_DATA_S *ScData, FINDEX_SCD_S *pstFidx)
 {
     PVR_INDEX_SCD_S IndexData;
     HI_U64          CurrGlobalOffset = 0;
@@ -169,7 +176,7 @@ HI_S32 DmxScdToVideoIndex(const DMX_IDX_DATA_S *ScData, FINDEX_SCD_S *pstFidx)
     /* need to calculate global offset, that is, the size from start record to current, included rewind */
     if (DMX_INDEX_SC_TYPE_PTS != IndexData.u8IndexType)
     {
-        CurrGlobalOffset = PVR_SCDIndexCalcGlobalOffset(&IndexData);
+        CurrGlobalOffset = PVR_SCDIndexCalcGlobalOffset(bUseTimeStamp,&IndexData);
     }
     else
     {
@@ -220,7 +227,8 @@ HI_S32 DmxScdToAudioIndex(HI_UNF_DMX_REC_INDEX_S *CurrFrame, const DMX_IDX_DATA_
     PtsValue /= 45;
 
     OffsetInTs  = ScData->u32ScType_Byte12AfterSc_OffsetInTs & 0xff;
-    TsCount     = ((ScData->u32TsCntHi8_Byte345AfterSc & 0xff000000) << 8) | ScData->u32TsCntLo32;
+    TsCount     = (HI_U64)(ScData->u32TsCntHi8_Byte345AfterSc & 0xff000000) << 8;
+	TsCount     = TsCount | ScData->u32TsCntLo32;
     BackTsCount = ScData->u32BackPacetNum & 0x0001fffff;
 
     CurrFrame->enFrameType      = HI_UNF_FRAME_TYPE_UNKNOWN;

@@ -25,20 +25,21 @@
 #include "hi_drv_aenc.h"
 #include "hi_module.h"
 #include "hi_mpi_mem.h"
+#include "hi_drv_ao.h"
+#include "hi_mpi_ao.h"
 
+#ifdef HI_AENC_AI_SUPPORT
+#include "hi_mpi_ai.h"
+#endif
 #ifdef __cplusplus
  #if __cplusplus
 extern "C" {
  #endif
 #endif /* __cplusplus */
 
-#define MPI_AENC_WORKINGBUFER_OPTIMIZE
-#ifdef  MPI_AENC_WORKINGBUFER_OPTIMIZE
-#include "stdio.h"
-#include "stdlib.h"
-#include "string.h"
-#endif
-
+ #include "stdio.h"
+ #include "stdlib.h"
+ #include "string.h"
 
 #define PTS_SUPPORT
 
@@ -93,10 +94,19 @@ typedef struct hiAENC_Stream_OutBuf_S
     AENC_OUTPUTBUF_S outBuf[AENC_MAX_STORED_PTS_NUM];
 } AENC_Stream_OutBuf_S;
 
+typedef struct hiAENC_ENCODER_INFO_S
+{
+    HI_HAENCODE_OPENPARAM_S              stOpenParam;
+    HI_VOID *                            pAudPrivDataBak; /* backup private data */
+    HI_U32                               u32AudPrivDataBakDize;
+} AENC_ENCODER_INFO_S;
+
+
 typedef struct hiAENC_CHANNEL_S
 {
     pthread_mutex_t      mutex;
     HI_BOOL              beAssigned;
+    HI_BOOL              bStart;
     HI_U32               u32CodecID;
     HI_U32               u32InBufSize;                     /* Input buffer  size              */
     HI_U32               u32OutBufNum;                       /* output frame number        */
@@ -107,19 +117,27 @@ typedef struct hiAENC_CHANNEL_S
 
     HI_BOOL bAutoSRC;
 
+    HI_U32              *pu32WorkBuf;
+    HI_U32               u32WorkBufIdx;
+
     /* keep encoder open param */
     HI_U32  u32DesiredOutChannels;
     HI_BOOL bInterleaved;
     HI_U32  u32BitPerSample;
     HI_U32  u32DesiredSampleRate;
     HI_U32  u32SamplePerFrame;
+    AENC_ENCODER_INFO_S   stEncoderInfo;
 
     AENC_PTS_QUE_S       PTSQue;
     AENC_PCM_BUFFER_S    sInPcmBuf;
     AENC_Stream_OutBuf_S sOutStreamBuf;
 
+    AENC_INFO_ATTACH_S stAttach;
+
     //AENC_PROC_ITEM_S     sProcInfo;
     AENC_PROC_ITEM_S     *pstAencInfo;
+    HI_BOOL               AencThreadRun;
+    pthread_t             AencThreadInst;
 } AENC_CHAN_S;
 
 static AENC_CHAN_S *g_pstAencChan[AENC_INSTANCE_MAXNUM];
@@ -154,78 +172,57 @@ static HI_CHAR g_szAencOutBuf_MMzName[AENC_INSTANCE_MAXNUM][MAX_BUFFER_NAME_SIZE
  "AENCOutBuf2"};
 #endif
 
+#define AENC_SYS_SLEEP_TIME 10   //for adec pull thread
+
+HI_VOID *AENC_Thread(HI_VOID *arg);
+
+static HI_S32 AENCCreateWorkBuf(AENC_CHAN_S *pstAencChan)
+{
+    HI_U32 AencWorkingBuffferSize = 0;
+    AencWorkingBuffferSize = AENC_WORK_BUFFER_NUM * sizeof(HI_U32) * (AENC_MAX_POSTPROCESS_FRAME + 1);
+    pstAencChan->pu32WorkBuf = (HI_U32*)HI_MALLOC(HI_ID_AENC, AencWorkingBuffferSize);
+    if(HI_NULL == pstAencChan->pu32WorkBuf)
+    {
+        HI_ERR_AENC("malloc AENC WorkingBufffer fail\n");
+        return HI_FAILURE;
+    }
+    pstAencChan->u32WorkBufIdx = 0;
+    
+    return HI_SUCCESS;
+    
+}
+
+static HI_VOID AENCDestroyWorkBuf(AENC_CHAN_S *pstAencChan)
+{
+    if(HI_NULL != pstAencChan->pu32WorkBuf)
+    {
+        HI_FREE(HI_ID_AENC, (HI_VOID *)pstAencChan->pu32WorkBuf);
+        pstAencChan->pu32WorkBuf = HI_NULL;
+    }
+    pstAencChan->u32WorkBufIdx = 0;
+    
+    return;
+}
+
+static HI_U32 *AENCGetWorkBuf(AENC_CHAN_S *pstAencChan)
+{
+    HI_U32 *pu32WorkBuf;
+    
+    if(pstAencChan->u32WorkBufIdx >= AENC_WORK_BUFFER_NUM)
+    {
+        pstAencChan->u32WorkBufIdx = 0;
+    }
+
+    pu32WorkBuf = pstAencChan->pu32WorkBuf + pstAencChan->u32WorkBufIdx * (AENC_MAX_POSTPROCESS_FRAME + 1);
+    pstAencChan->u32WorkBufIdx++;
+    
+    return pu32WorkBuf;
+}
+
 /*
   Audio  Working Buffer managment, use as ping-pong bufffer
   pipelining mode, use two temporary buffer to simply buffer manager
  */
-#ifdef MPI_AENC_WORKINGBUFER_OPTIMIZE
-static HI_U32 *g_pu32AencWorkingBufffer = NULL;
-#else
-static HI_U32 g_u32AencWorkingBufffer[2][AENC_MAX_POSTPROCESS_FRAME + 1]; /* 1 for PTS */
-#endif
-
-static HI_U32 g_u32WorkingBufFlag[2];
-
-#ifdef MPI_AENC_WORKINGBUFER_OPTIMIZE
-static HI_S32 CreateWorkingBuffer(HI_VOID)
-{
-    HI_U32 AencWorkingBufffer_size;
-
-    //static HI_U32 g_u32AencWorkingBufffer[2][AENC_MAX_POSTPROCESS_FRAME + 1]; /* 1 for PTS */
-
-    AencWorkingBufffer_size = sizeof(HI_U32) * (2 * (AENC_MAX_POSTPROCESS_FRAME + 1));
-
-    g_pu32AencWorkingBufffer = (HI_U32*)HI_MALLOC(HI_ID_AENC, AencWorkingBufffer_size);
-    if (HI_NULL == g_pu32AencWorkingBufffer)
-    {
-        HI_ERR_AENC("ERR: malloc AENC WorkingBufffer fail\n");
-        return HI_FAILURE;
-    }
-
-    return HI_SUCCESS;
-}
-
-static HI_VOID DestroyWorkingBuffer(HI_VOID)
-{
-    if (g_pu32AencWorkingBufffer)
-    {
-        HI_FREE(HI_ID_AENC, g_pu32AencWorkingBufffer);
-        g_pu32AencWorkingBufffer = NULL;
-    }
-}
-
-#endif
-
-static HI_VOID AencInitWKBuf()
-{
-    g_u32WorkingBufFlag[0] = 0;
-    g_u32WorkingBufFlag[1] = 0;
-}
-
-/* get a free working buffer */
-static HI_U32* AencGetWKBuf()
-{
-    if (0 == g_u32WorkingBufFlag[0])
-    {
-        g_u32WorkingBufFlag[0] = 1;
-        g_u32WorkingBufFlag[1] = 0;
-#ifdef MPI_AENC_WORKINGBUFER_OPTIMIZE
-        return g_pu32AencWorkingBufffer;
-#else
-        return g_u32AencWorkingBufffer[0];
-#endif
-    }
-    else
-    {
-        g_u32WorkingBufFlag[0] = 0;
-        g_u32WorkingBufFlag[1] = 1;
-#ifdef MPI_AENC_WORKINGBUFER_OPTIMIZE
-        return g_pu32AencWorkingBufffer + AENC_MAX_POSTPROCESS_FRAME + 1;
-#else
-        return g_u32AencWorkingBufffer[1];
-#endif
-    }
-}
 
 #ifdef  ENA_AENC_AUTOSRC
  #include "mpi_resample_linear.h"
@@ -236,7 +233,7 @@ static SRC_Linear g_sAencLinearSRC[AENC_INSTANCE_MAXNUM];
 
 /* use LinearSRC to do simple SRC for AENC
  */
-static HI_VOID LinearSRCProcess(HI_UNF_AO_FRAMEINFO_S *pstAOFrame, SRC_Linear* pInst, HI_U32 u32DesiredSampleRate)
+static HI_VOID LinearSRCProcess(HI_UNF_AO_FRAMEINFO_S *pstAOFrame, SRC_Linear* pInst, HI_U32 u32DesiredSampleRate, AENC_CHAN_S *pstAencChan)
 {
     HI_S32 doSRC;
 
@@ -249,13 +246,13 @@ static HI_VOID LinearSRCProcess(HI_UNF_AO_FRAMEINFO_S *pstAOFrame, SRC_Linear* p
     if (doSRC)
     {
         HI_S32 uPcmSamplesPerFrame = (HI_S32)pstAOFrame->u32PcmSamplesPerFrame;
-        HI_S32 *pu32LinearSRC_Out = (HI_S32*)AencGetWKBuf();
+        HI_S32 *ps32LinearSRC_Out = (HI_S32*)AENCGetWorkBuf(pstAencChan);
         HI_S32 outsamps;
-        outsamps = LinearSRC_ProcessFrame(pInst, (HI_S32*)(pstAOFrame->ps32PcmBuffer), pu32LinearSRC_Out,
+        outsamps = LinearSRC_ProcessFrame(pInst, (HI_S32*)(pstAOFrame->ps32PcmBuffer), ps32LinearSRC_Out,
                                           (HI_S32)uPcmSamplesPerFrame);
 
         /* after LinearSRC, update info */
-        pstAOFrame->ps32PcmBuffer = (HI_S32*)(pu32LinearSRC_Out);
+        pstAOFrame->ps32PcmBuffer = (HI_S32*)(ps32LinearSRC_Out);
         pstAOFrame->u32PcmSamplesPerFrame = (HI_U32)outsamps;
     }
 }
@@ -309,7 +306,7 @@ static HI_VOID  AENCBuildHaEncoderTable(HI_CHAR* pszComponentName[] )
             return;
         }
 
-        strncpy(pszDLLNameTab, pszComponentName[i], sizeof(pszComponentName[i])); //for fix MOTO
+        strncpy(pszDLLNameTab, pszComponentName[i], MAXNAMESIZE); //for fix MOTO
  #else
         strcpy(buf, prefix);                      /* the lengths are defined herein or have been */
         strcat(buf, pszComponentName[i]);  /* checked already, so strcpy and strcat are  */
@@ -349,7 +346,7 @@ static HI_HA_ENCODE_S *AENCFindHaEncoder(HI_U32 enCodecID)
     p = g_hFirstCodec;
     while (p)
     {
-        if ( /*(p->DecDecodeFrame != NULL) && */ ( HA_GET_ID(p->enCodecID) ==  HA_GET_ID(enCodecID)))
+        if ( /*(p->DecDecodeFrame != NULL) && */ (HA_GET_ID(p->enCodecID) == HA_GET_ID(enCodecID)))
         {
             //fprintf (stderr, "  AENCFindHaEncoder  Encoder OK  (ID=0x%0x)  \n", enCodecID);
             return p;
@@ -419,7 +416,7 @@ static HI_S32 AENCRegisterHaEncoder(const HI_CHAR *pszDecoderDllName)
     p = &g_hFirstCodec;
     while (*p != NULL)
     {
-        if ( HA_GET_ID((*p)->enCodecID) ==  HA_GET_ID(pEntry->enCodecID))
+        if (HA_GET_ID((*p)->enCodecID) == HA_GET_ID(pEntry->enCodecID))
         {
             HI_WARN_AENC ( " Fail:Encoder(CodecID=0x%x) had been Registered \n\n",
                            pEntry->enCodecID);
@@ -556,7 +553,7 @@ static HI_VOID AENC_DbgCountReceiveStream (HI_HANDLE hAenc)
     pstAencInfo->u32DbgReceiveStreamCount++;
 }
 
-static HI_VOID AENC_DbgCountTrySendBuf (HI_HANDLE hAenc)
+static HI_VOID AENC_DbgCountTryReleaseStream (HI_HANDLE hAenc)
 {
     AENC_CHAN_S *pstAencChan = HI_NULL_PTR;
     AENC_PROC_ITEM_S *pstAencInfo = HI_NULL_PTR;
@@ -569,10 +566,10 @@ static HI_VOID AENC_DbgCountTrySendBuf (HI_HANDLE hAenc)
 
     pstAencChan = g_pstAencChan[hAenc];
     pstAencInfo = (pstAencChan->pstAencInfo);
-    pstAencInfo->u32DbgSendBufCount_Try++;
+    pstAencInfo->u32DbgReleaseStreamCount_Try++;
 }
 
-static HI_VOID AENC_DbgCountSendBuf (HI_HANDLE hAenc)
+static HI_VOID AENC_DbgCountReleaseStream (HI_HANDLE hAenc)
 {
     AENC_CHAN_S *pstAencChan = HI_NULL_PTR;
     AENC_PROC_ITEM_S *pstAencInfo = HI_NULL_PTR;
@@ -584,6 +581,22 @@ static HI_VOID AENC_DbgCountSendBuf (HI_HANDLE hAenc)
     }
 
     pstAencChan = g_pstAencChan[hAenc];
+    pstAencInfo = (pstAencChan->pstAencInfo);
+    pstAencInfo->u32DbgReleaseStreamCount++;
+}
+
+static HI_VOID AENC_DbgCountTrySendBuf (AENC_CHAN_S * pstAencChan)
+{
+    AENC_PROC_ITEM_S *pstAencInfo = HI_NULL_PTR;
+
+    pstAencInfo = (pstAencChan->pstAencInfo);
+    pstAencInfo->u32DbgSendBufCount_Try++;
+}
+
+static HI_VOID AENC_DbgCountSendBuf (AENC_CHAN_S * pstAencChan)
+{
+    AENC_PROC_ITEM_S *pstAencInfo = HI_NULL_PTR;
+
     pstAencInfo = (pstAencChan->pstAencInfo);
     pstAencInfo->u32DbgSendBufCount++;
 }
@@ -800,7 +813,7 @@ static HI_S32 AENCReceiveOutBufUnit(AENC_Stream_OutBuf_S  *pstOutBuf, AENC_OUTPU
     if (HI_TRUE == (pstOutBuf->outBuf[pstOutBuf->u32ReadIdx].bFlag))
     {
         *pstOutBufUnit = &(pstOutBuf->outBuf[pstOutBuf->u32ReadIdx]);
-        pstOutBuf->outBuf[pstOutBuf->u32ReadIdx].bFlag = HI_FALSE;
+        //pstOutBuf->outBuf[pstOutBuf->u32ReadIdx].bFlag = HI_FALSE;
         return HI_SUCCESS;
     }
     else
@@ -816,8 +829,10 @@ static HI_S32 AENCReleaseCurrentOutBufUnit(AENC_Stream_OutBuf_S  *pstOutBuf, con
     pstOutBufUnit = &(pstOutBuf->outBuf[pstOutBuf->u32ReadIdx]);
     if (pstStream->pu8Data == pstOutBufUnit->pu8Data)
     {
-        if (HI_FALSE == (pstOutBuf->outBuf[pstOutBuf->u32ReadIdx].bFlag))
+        
+        if (HI_TRUE == (pstOutBuf->outBuf[pstOutBuf->u32ReadIdx].bFlag))
         {
+            pstOutBuf->outBuf[pstOutBuf->u32ReadIdx].bFlag = HI_FALSE;
             pstOutBuf->u32ReadIdx += 1;
             if (pstOutBuf->u32ReadIdx == pstOutBuf->u32FrameNum)
             {
@@ -859,12 +874,12 @@ static HI_VOID AENCResetPTSQue(AENC_PTS_QUE_S *pstPTSQue)
     memset(pstPTSQue->tPTSArry, 0, sizeof(AENC_PTS) * AENC_MAX_STORED_PTS_NUM);
     pstPTSQue->ulPTSreadIdx  = 0;
     pstPTSQue->ulPTSwriteIdx = 0;
-    pstPTSQue->u32LastPtsMs = 0;
+    pstPTSQue->u32LastPtsMs = (HI_U32)-1;
     return;
 }
 
 /*
-    ADEC PTS use Read and Write Position to manage PTS Que, AENC use  Read and Write Poniter !
+    AENC PTS use Read and Write Position to manage PTS Que, AENC use  Read and Write Poniter !
  */
 static HI_U32 AENCFindPTS(AENC_PTS_QUE_S *pstPTSQue, HI_U8 *pu8StartPtr, HI_U32 u32PcmSamplesPerFrame,
                           HI_U32 u32PcmSampleRate)
@@ -902,9 +917,20 @@ static HI_U32 AENCFindPTS(AENC_PTS_QUE_S *pstPTSQue, HI_U8 *pu8StartPtr, HI_U32 
     if (((HI_U32)-1) == FoundPtsPos)
     {
         /*can not find a valid PTS*/
-        HI_U32 u32Delta;
-        u32Delta = (u32PcmSamplesPerFrame * 1000) / u32PcmSampleRate;
-        u32PtsMs = pstPTSQue->u32LastPtsMs + u32Delta;
+        if(((HI_U32)-1) != pstPTSQue->u32LastPtsMs)
+        {
+            HI_U32 u32Delta;
+            u32Delta = (u32PcmSamplesPerFrame * 1000) / u32PcmSampleRate;
+            u32PtsMs = pstPTSQue->u32LastPtsMs + u32Delta;
+            if (((HI_U32)-1) == u32PtsMs)
+            {
+                u32PtsMs = 0;
+            }  
+        }
+        else
+        {
+            u32PtsMs = (HI_U32)-1;     /* if the PTS of first Frame isnot valid, dont insert the PTS*/
+        }
         if (Pos != wtPos)
         {
             /* Found a invalid PTS */
@@ -959,7 +985,9 @@ static HI_S32 AENCCreateEncoder(AENC_CHAN_S *pstAencChan, AENC_ATTR_S *pstAencAt
     HI_S32 nRet;
     HI_U32 u32FrameSize, u32BitsMaxFrameSize;
     HI_HAENCODE_OPENPARAM_S *pstOpenParms;
-
+    HI_HAENCODE_OPENPARAM_S *pstChnOpenParms;
+    AENC_ENCODER_INFO_S   *pstEncoderInfo;
+ 
     hHaEntry = AENCFindHaEncoder((HI_U32) (pstAencAttr->u32CodecID));
     if (HI_NULL == hHaEntry)
     {
@@ -967,11 +995,63 @@ static HI_S32 AENCCreateEncoder(AENC_CHAN_S *pstAencChan, AENC_ATTR_S *pstAencAt
         return HI_ERR_AENC_CREATECH_FAIL;
     }
 
+    pstOpenParms = (HI_HAENCODE_OPENPARAM_S *)(&(pstAencAttr->sOpenParam));
+    pstEncoderInfo = &pstAencChan->stEncoderInfo;
+    pstChnOpenParms = &pstEncoderInfo->stOpenParam;
+
+    memset(pstChnOpenParms, 0, sizeof(HI_HAENCODE_OPENPARAM_S));
+    memcpy(pstChnOpenParms, &pstAencAttr->sOpenParam, sizeof(HI_HAENCODE_OPENPARAM_S));
+      
+    if ((HI_NULL != pstOpenParms->pCodecPrivateData)
+            && (0 != pstOpenParms->u32CodecPrivateDataSize))
+    {
+        HI_U32 u32AudPrivDataDize;
+
+        u32AudPrivDataDize = pstOpenParms->u32CodecPrivateDataSize;
+
+        if ((HI_NULL != pstEncoderInfo->pAudPrivDataBak) && (pstEncoderInfo->u32AudPrivDataBakDize >= u32AudPrivDataDize))
+        {
+            /* only update u32AudPrivDataDize, avoid HI_MALLOC again */
+            pstEncoderInfo->u32AudPrivDataBakDize = u32AudPrivDataDize;
+        }
+        else
+        {
+            HI_VOID *pSrcAudPrivData;
+            if (HI_NULL != pstEncoderInfo->pAudPrivDataBak)
+            {
+                HI_FREE(HI_ID_AENC, pstEncoderInfo->pAudPrivDataBak);
+                pstEncoderInfo->pAudPrivDataBak = HI_NULL_PTR;
+            }
+
+            /*HI_MALLOC privattr structure*/
+            pSrcAudPrivData = (HI_VOID*)HI_MALLOC(HI_ID_AENC, u32AudPrivDataDize);
+            if (HI_NULL == pSrcAudPrivData)
+            {
+                HI_ERR_AENC("  HI_MALLOC AudPrivData fail \n");
+                return HI_FAILURE;
+            }
+
+            pstEncoderInfo->pAudPrivDataBak = pSrcAudPrivData;
+            pstEncoderInfo->u32AudPrivDataBakDize = u32AudPrivDataDize;
+        }
+
+        memcpy(pstEncoderInfo->pAudPrivDataBak, (const HI_VOID*)(pstOpenParms->pCodecPrivateData), u32AudPrivDataDize);
+
+        /* use pAudPrivDataBak mem */
+        pstChnOpenParms->pCodecPrivateData = pstEncoderInfo->pAudPrivDataBak;
+        pstChnOpenParms->u32CodecPrivateDataSize = pstEncoderInfo->u32AudPrivDataBakDize;
+    }
+
+    else
+    {
+        HI_ERR_AENC("  Encodec private data err \n");
+        return HI_FAILURE;
+    }
+
     // 1 Init Encoder
-    nRet = hHaEntry->EncodeInit(&hEncoder, (const HI_HAENCODE_OPENPARAM_S *)(&(pstAencAttr->sOpenParam)));
+    nRet = hHaEntry->EncodeInit(&hEncoder, (const HI_HAENCODE_OPENPARAM_S *)(pstChnOpenParms));
     if (HA_ErrorNone != nRet)
     {
-        pstOpenParms = (HI_HAENCODE_OPENPARAM_S *)(&(pstAencAttr->sOpenParam));
         HI_ERR_AENC("ha_err: EncodeInit (codec:%s), err=0x%x\n", (HI_CHAR*)(hHaEntry->szName), nRet);
         HI_ERR_AENC("enCodecID=0x%x\n", hHaEntry->enCodecID);
         HI_ERR_AENC("u32DesiredOutChannels=0x%x\n", pstOpenParms->u32DesiredOutChannels);
@@ -1170,16 +1250,16 @@ static HI_VOID AENCFillDataInBuf(AENC_PCM_BUFFER_S  *pstInBuf, HI_VOID *pPcmBuf,
 }
 
 static HI_VOID AutoMixProcess(HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
-                              HI_U32                 u32DesiredChannels)
+                              HI_U32  u32DesiredChannels ,AENC_CHAN_S *pstAencChan)
 {
     HI_U32 i;
     HI_U32 u32PcmSamplesPerFrame = pstAOFrame->u32PcmSamplesPerFrame;
-    HI_U16 *pu32UniAoBuf = (HI_U16*)AencGetWKBuf();
+    HI_U32 *pu32WorkBuf = AENCGetWorkBuf(pstAencChan);
 
     if ((2 == u32DesiredChannels) && (1 == pstAOFrame->u32Channels))
     {
         HI_S16 *ps16Src;
-        HI_S16 *ps16Dst = (HI_S16 *)pu32UniAoBuf;
+        HI_S16 *ps16Dst = (HI_S16 *)pu32WorkBuf;
         HI_S16 s16Data;
 
         ps16Src = (HI_S16*)(pstAOFrame->ps32PcmBuffer);
@@ -1193,7 +1273,7 @@ static HI_VOID AutoMixProcess(HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
     else if ((1 == u32DesiredChannels) && (2 == pstAOFrame->u32Channels))
     {
         HI_S16 *ps16Src;
-        HI_S16 *ps16Dst = (HI_S16 *)pu32UniAoBuf;
+        HI_S16 *ps16Dst = (HI_S16 *)pu32WorkBuf;
         HI_S32 s32DataL, s32DataR;
 
         ps16Src = (HI_S16*)(pstAOFrame->ps32PcmBuffer);
@@ -1213,26 +1293,25 @@ static HI_VOID AutoMixProcess(HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
     }
 
     pstAOFrame->u32Channels   = u32DesiredChannels;
-    pstAOFrame->ps32PcmBuffer = (HI_S32*)pu32UniAoBuf;
+    pstAOFrame->ps32PcmBuffer = (HI_S32*)pu32WorkBuf;
 }
 
-static HI_VOID AENCUnifyIntreleavedPcmData(HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
+static HI_VOID AENCUnifyIntreleavedPcmData(HI_UNF_AO_FRAMEINFO_S *pstAOFrame, AENC_CHAN_S *pstAencChan)
 {
     HI_U32 i;
     HI_U32 uPcmSamplesPerFrame = pstAOFrame->u32PcmSamplesPerFrame;
-    HI_S32 *ps32Outbuf;
+    HI_U32 *pu32WorkBuf = AENCGetWorkBuf(pstAencChan);
 
     if (HI_TRUE == pstAOFrame->bInterleaved)
     {
         return;
     }
 
-    ps32Outbuf = (HI_S32*)AencGetWKBuf();
     if (16 == pstAOFrame->s32BitPerSample)
     {
         HI_S16 *pSrcL16, *pSrcR16;
         pSrcL16 = (HI_S16*)(pstAOFrame->ps32PcmBuffer);
-        HI_U16 *pu16Data = (HI_U16  *)ps32Outbuf;
+        HI_U16 *pu16Data = (HI_U16  *)pu32WorkBuf;
 
         if (2 == pstAOFrame->u32Channels)
         {
@@ -1254,7 +1333,7 @@ static HI_VOID AENCUnifyIntreleavedPcmData(HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
     else
     {
         HI_S32 *pSrcL32, *pSrcR32;
-        HI_U32 *pu32Data = (HI_U32 *)ps32Outbuf;
+        HI_U32 *pu32Data = (HI_U32 *)pu32WorkBuf;
 
         pSrcL32 = (HI_S32*)(pstAOFrame->ps32PcmBuffer);
         if (2 == pstAOFrame->u32Channels)
@@ -1274,25 +1353,23 @@ static HI_VOID AENCUnifyIntreleavedPcmData(HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
     }
 
     pstAOFrame->bInterleaved  = HI_TRUE;
-    pstAOFrame->ps32PcmBuffer = (HI_S32*)ps32Outbuf;
+    pstAOFrame->ps32PcmBuffer = (HI_S32*)pu32WorkBuf;
 
     return;
 }
 
-static HI_VOID AENCUnifyBitDepthPcmData(HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
+static HI_VOID AENCUnifyBitDepthPcmData(HI_UNF_AO_FRAMEINFO_S *pstAOFrame, AENC_CHAN_S *pstAencChan)
 {
     HI_U32 i;
-    HI_S16 *ps16UniAoBuf;
     HI_S32 *ps32Src;
     HI_S16 *ps16Dst;
+    HI_U32 *pu32WorkBuf = AENCGetWorkBuf(pstAencChan);
 
     if (16 == pstAOFrame->s32BitPerSample)
     {
         return;
     }
-
-    ps16UniAoBuf = (HI_S16*)AencGetWKBuf();
-    ps16Dst = (HI_S16 *)ps16UniAoBuf;
+    ps16Dst = (HI_S16 *)pu32WorkBuf;
 
     ps32Src = (HI_S32*)(pstAOFrame->ps32PcmBuffer);
 
@@ -1302,7 +1379,9 @@ static HI_VOID AENCUnifyBitDepthPcmData(HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
     }
 
     pstAOFrame->s32BitPerSample = 16;
-    pstAOFrame->ps32PcmBuffer = (HI_S32*)ps16UniAoBuf;
+    pstAOFrame->ps32PcmBuffer = (HI_S32*)pu32WorkBuf;
+
+    return;
 }
 
 /*****************************************************************************
@@ -1313,33 +1392,36 @@ static HI_U32 AENCUnifyPcmData(AENC_CHAN_S *pstAencChan, HI_UNF_AO_FRAMEINFO_S *
     HI_U32 u32RealFrameSize, u32SamplePerFrame;
     HI_U32 u32DesiredChannels;
     HI_U32 u32DesiredSampleRate;
+
     //HI_U32 u32DesiredBitPerSample;
 
-    u32DesiredChannels     = pstAencChan->u32DesiredOutChannels;
-    u32DesiredSampleRate   = pstAencChan->u32DesiredSampleRate;
+    u32DesiredChannels   = pstAencChan->u32DesiredOutChannels;
+    u32DesiredSampleRate = pstAencChan->u32DesiredSampleRate;
+
     //u32DesiredBitPerSample = pstAencChan->u32BitPerSample;
 
     if (HI_FALSE == pstAOFrame->bInterleaved)
     {
-        AENCUnifyIntreleavedPcmData(pstAOFrame);
+        AENCUnifyIntreleavedPcmData(pstAOFrame, pstAencChan);
     }
 
     if (16 != pstAOFrame->s32BitPerSample)
     {
-        AENCUnifyBitDepthPcmData(pstAOFrame);
+        AENCUnifyBitDepthPcmData(pstAOFrame, pstAencChan);
     }
 
     if (u32DesiredChannels != pstAOFrame->u32Channels)
     {
-        AutoMixProcess(pstAOFrame, u32DesiredChannels);
+        AutoMixProcess(pstAOFrame, u32DesiredChannels, pstAencChan);
     }
 
 #ifdef ENA_AENC_AUTOSRC
+
     if (HI_TRUE == pstAencChan->bAutoSRC)
     {
         if (u32DesiredSampleRate != pstAOFrame->u32SampleRate)
         {
-            LinearSRCProcess(pstAOFrame, &g_sAencLinearSRC[pstAencChan->u32ChID], u32DesiredSampleRate);
+            LinearSRCProcess(pstAOFrame, &g_sAencLinearSRC[pstAencChan->u32ChID], u32DesiredSampleRate, pstAencChan);
         }
     }
 #endif
@@ -1408,6 +1490,14 @@ static HI_U32 AENCCalcInBufNeedSize(HI_UNF_AO_FRAMEINFO_S *pstAOFrame,
 static HI_S32 AENCSentInputData(AENC_CHAN_S  *pstAencChan, HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
 {
     HI_U32 u32InBufSize, u32NeedFrameSize, u32RealFrameSize;
+    static FILE *fPcm = NULL;
+	
+    AENC_DbgCountTrySendBuf (pstAencChan);
+    if(HI_NULL == pstAOFrame->ps32PcmBuffer || 0 == pstAOFrame->u32PcmSamplesPerFrame)
+    {
+        HI_WARN_AENC("no input data\n");
+        return HI_FAILURE;
+    }
 
     if (HI_FALSE == pstAencChan->bAutoSRC)
     {
@@ -1438,38 +1528,37 @@ static HI_S32 AENCSentInputData(AENC_CHAN_S  *pstAencChan, HI_UNF_AO_FRAMEINFO_S
         return HI_ERR_AENC_INVALID_PARA;
     }
 
-#if 0
-    {
-        static FILE *fPcm;
-        static HI_S32 counter = 0;
-        if (counter == 0)
+    if( pstAencChan->pstAencInfo->enPcmCtrlState == AENC_CMD_CTRL_START )
+   {
+        if (!fPcm)
         {
-            fPcm = fopen("/mnt/vector/trascode2.pcm", "wb");
-            if (fPcm)
-            {
-                HI_INFO_AENC(" aac file is trascode2.pcm \n");
-            }
-        }
-
-        counter++;
-        if ((counter < 64) && fPcm)
-        {
-            fwrite(pstAOFrame->ps32PcmBuffer, 1, u32RealFrameSize, fPcm);
-        }
-
-        if ((counter == 64) && fPcm)
-        {
-            fclose(fPcm);
-        }
+            	fPcm = fopen(pstAencChan->pstAencInfo->filePath, "wb");
+            	if(!fPcm)
+	    	{
+               	 HI_ERR_AENC("can not open file (%s)\n",pstAencChan->pstAencInfo->filePath);
+            	}
+         }
+         if (fPcm)
+         {
+	      	fwrite((HI_VOID *)pstAOFrame->ps32PcmBuffer, 1, u32RealFrameSize, fPcm);
+         }
     }
-#endif
+    if( pstAencChan->pstAencInfo->enPcmCtrlState == AENC_CMD_CTRL_STOP )
+    {
+	  if (fPcm)
+         {
+	      	  fclose(fPcm);
+		  fPcm = NULL;
+         }
+     }
+
 
     AENCFillDataInBuf(&pstAencChan->sInPcmBuf, (HI_VOID*)(pstAOFrame->ps32PcmBuffer), u32RealFrameSize);
 #ifdef PTS_SUPPORT
     AENCStorePTS (&pstAencChan->PTSQue, &pstAencChan->sInPcmBuf, pstAOFrame->u32PtsMs, u32RealFrameSize);
 #endif
     pstAencChan->pstAencInfo->u32InBufWrite = (HI_U32)pstAencChan->sInPcmBuf.pWrite;
-
+    AENC_DbgCountSendBuf (pstAencChan);
     return HI_SUCCESS;
 }
 
@@ -1546,25 +1635,17 @@ HI_S32 AENC_Init(const HI_CHAR* pszCodecNameTable[])
     AENC_CHAN_S *pstAencChan;
     HI_VOID *pBase;
 
-    pBase = (HI_VOID*)HI_MALLOC(HI_ID_AENC, sizeof(AENC_CHAN_S) * AENC_INSTANCE_MAXNUM);
-    if (NULL == pBase)
+    if (!g_s32AencInitCnt)
     {
-        HI_ERR_AENC("malloc AENC_CHAN_S fail\n");
-        return HI_FAILURE;
-    }
+        pBase = (HI_VOID*)HI_MALLOC(HI_ID_AENC, sizeof(AENC_CHAN_S) * AENC_INSTANCE_MAXNUM);
+        if (NULL == pBase)
+        {
+            HI_ERR_AENC("malloc AENC_CHAN_S fail\n");
+            return HI_FAILURE;
+        }
 
-    memset(pBase, 0, sizeof(AENC_CHAN_S) * AENC_INSTANCE_MAXNUM);
-#ifdef MPI_AENC_WORKINGBUFER_OPTIMIZE
-    if (HI_SUCCESS != CreateWorkingBuffer())
-    {
-        HI_FREE(HI_ID_AENC, pBase);
-        HI_ERR_AENC("malloc WorkingBuffer fail\n");
-        return HI_FAILURE;
-    }
-#endif
+        memset(pBase, 0, sizeof(AENC_CHAN_S) * AENC_INSTANCE_MAXNUM);
 
-
-    {
 #ifdef HA_AUIDO_SUPPORT
         if (pszCodecNameTable)
         {
@@ -1579,13 +1660,12 @@ HI_S32 AENC_Init(const HI_CHAR* pszCodecNameTable[])
             pstAencChan = &(((AENC_CHAN_S *)pBase)[i]);
             AENC_LOCK_INIT(&(pstAencChan->mutex));
             pstAencChan->beAssigned = HI_FALSE;
+            pstAencChan->stAttach.hSource = HI_INVALID_HANDLE;
             g_pstAencChan[i] = pstAencChan;
         }
-
-        AencInitWKBuf();
-
-        g_s32AencInitCnt = 1;
     }
+
+    g_s32AencInitCnt++;
 
     return HI_SUCCESS;
 }
@@ -1595,47 +1675,49 @@ HI_S32 AENC_deInit(HI_VOID)
     HI_U32 i;
     AENC_CHAN_S *pstAencChan;
 
-    if (HI_TRUE != g_s32AencInitCnt)
+    g_s32AencInitCnt--;
+    if (g_s32AencInitCnt)
     {
         return HI_SUCCESS;
     }
 
-    g_s32AencInitCnt = 0;
-    {
 #ifdef HA_AUIDO_SUPPORT
  #if 0
-        AENCUnRegisterHaEncoderAll();
- #endif
-        (HI_VOID)AENCUnBuildHaEncoderTable();
+    AENCUnRegisterHaEncoderAll();
 #endif
-        for (i = 0; i < AENC_INSTANCE_MAXNUM; i++)
+    (HI_VOID)AENCUnBuildHaEncoderTable();
+#endif
+    for (i = 0; i < AENC_INSTANCE_MAXNUM; i++)
+    {
+        pstAencChan = g_pstAencChan[i];
+        AENC_LOCK(&pstAencChan->mutex);
+
+        if (HI_INVALID_HANDLE != pstAencChan->stAttach.hSource)
         {
-            pstAencChan = g_pstAencChan[i];
-            AENC_LOCK(&pstAencChan->mutex);
-
-            if (pstAencChan->beAssigned == HI_TRUE)
-            {
-                (HI_VOID)AENCDestroyEncoder(pstAencChan);
-                (HI_VOID)AENCCloseDevice(pstAencChan->AencDevFd);
-                pstAencChan->AencDevFd = -1;
-                pstAencChan->pstAencInfo->bAdecWorkEnable = HI_FALSE;
-            }
-
-            pstAencChan->beAssigned = HI_FALSE;
-
+            HI_ERR_AENC("please destroy detach hsource(0x%x) first.\n", pstAencChan->stAttach.hSource);
             AENC_UNLOCK(&(pstAencChan->mutex));
-            AENC_LOCK_DESTROY(&(pstAencChan->mutex));
+            return HI_ERR_AENC_CH_NOT_SUPPORT;
         }
+
+        if (pstAencChan->beAssigned == HI_TRUE)
+        {
+            (HI_VOID)AENCDestroyEncoder(pstAencChan);
+            (HI_VOID)AENCCloseDevice(pstAencChan->AencDevFd);
+            pstAencChan->AencDevFd = -1;
+            pstAencChan->pstAencInfo->bAdecWorkEnable = HI_FALSE;
+        }
+
+        pstAencChan->beAssigned = HI_FALSE;
+
+        AENC_UNLOCK(&(pstAencChan->mutex));
+        AENC_LOCK_DESTROY(&(pstAencChan->mutex));
     }
+        
     if (g_pstAencChan[0])
     {
         HI_FREE(HI_ID_AENC, (HI_VOID*)(g_pstAencChan[0]));
         g_pstAencChan[0] = NULL;
     }
-
-#ifdef MPI_AENC_WORKINGBUFER_OPTIMIZE
-    DestroyWorkingBuffer();
-#endif
 
     for (i = 0; i < AENC_INSTANCE_MAXNUM; i++)
     {
@@ -1659,7 +1741,7 @@ static HI_VOID ANECGetHaSzname(AENC_CHAN_S *pstAencChan)
         }
         else
         {
-            strcpy((HI_CHAR *)pstAencChan->pstAencInfo->szCodecType, "UNKNOWN");
+            strncpy((HI_CHAR *)pstAencChan->pstAencInfo->szCodecType, "UNKNOWN", sizeof(pstAencChan->pstAencInfo->szCodecType));
         }
 
         pstAencChan->u32CodecID = hHaEntry->enCodecID;
@@ -1685,6 +1767,8 @@ static HI_VOID AENCInitProcInfo(AENC_CHAN_S *pstAencChan)
     pstAencInfo->u32DbgSendBufCount = 0;
     pstAencInfo->u32DbgReceiveStreamCount_Try = 0;
     pstAencInfo->u32DbgReceiveStreamCount = 0;
+    pstAencInfo->u32DbgReleaseStreamCount_Try = 0;
+    pstAencInfo->u32DbgReleaseStreamCount = 0;
     pstAencInfo->u32DbgTryEncodeCount = 0;
 
     ANECGetHaSzname(pstAencChan);
@@ -1692,17 +1776,24 @@ static HI_VOID AENCInitProcInfo(AENC_CHAN_S *pstAencChan)
     return;
 }
 
-HI_S32 AENC_Open(HI_HANDLE *phAenc, const AENC_ATTR_S *pstAencAttr)
+HI_S32 AENC_Open(HI_HANDLE *phAenc, const HI_UNF_AENC_ATTR_S *pstAencAttr)
 {
     HI_U32 i;
     HI_S32 nRet;
     AENC_CHAN_S *pstAencChan;
     HI_CHAR pathname[64];
     HI_U32 phy_adress;
+    AENC_ATTR_S stAencAttr;
 
     CHECK_AENC_NULL_PTR(pstAencAttr);
-    CHECK_AENC_OPEN_FORMAT(pstAencAttr->sOpenParam.u32DesiredOutChannels, pstAencAttr->sOpenParam.s32BitPerSample,
-                           pstAencAttr->sOpenParam.bInterleaved);
+//    CHECK_AENC_TYPE(pstAencAttr->enAencType);
+    CHECK_AENC_OPEN_FORMAT(pstAencAttr->sOpenParam.u32DesiredSampleRate, pstAencAttr->sOpenParam.u32DesiredOutChannels, 
+                            pstAencAttr->sOpenParam.s32BitPerSample, pstAencAttr->sOpenParam.bInterleaved);
+
+    stAencAttr.u32CodecID    = pstAencAttr->enAencType;
+    stAencAttr.sOpenParam    = pstAencAttr->sOpenParam;
+    stAencAttr.u32InBufSize = AENC_DEFAULT_INPUT_BUFFER_SIZE;
+    stAencAttr.u32OutBufNum = AENC_DEFAULT_OUTBUF_NUM;
 
     if (!g_s32AencInitCnt)
     {
@@ -1728,11 +1819,10 @@ HI_S32 AENC_Open(HI_HANDLE *phAenc, const AENC_ATTR_S *pstAencAttr)
     pstAencChan->u32ChID = i;
 
     AENC_LOCK(&pstAencChan->mutex);
-   
 
 #if 1
     /* Check if initialized */
-    sprintf((HI_CHAR*)pathname, "/dev/%s", DRV_AENC_DEVICE_NAME);
+    snprintf((HI_CHAR*)pathname, sizeof(pathname), "/dev/%s", DRV_AENC_DEVICE_NAME);
     pstAencChan->AencDevFd = AENCOpenDevice((HI_CHAR*)pathname, O_RDWR);
     if (pstAencChan->AencDevFd < 0)
     {
@@ -1741,36 +1831,49 @@ HI_S32 AENC_Open(HI_HANDLE *phAenc, const AENC_ATTR_S *pstAencAttr)
     }
 
     nRet = ioctl(pstAencChan->AencDevFd, DRV_AENC_PROC_INIT, &phy_adress);
-	if (HI_SUCCESS != nRet)
-	{
-		(HI_VOID)AENCCloseDevice(pstAencChan->AencDevFd);
-		pstAencChan->AencDevFd = -1;
-		HI_ERR_AENC("ioctl  DRV_AENC_PROC_INIT err \n");
-		HI_MPI_AENC_RetUserErr2(HI_ERR_AENC_CREATECH_FAIL, &pstAencChan->mutex);
-	}
-	pstAencChan->pstAencInfo = (AENC_PROC_ITEM_S*)HI_MMAP(phy_adress, sizeof(AENC_PROC_ITEM_S));
+    if (HI_SUCCESS != nRet)
+    {
+        (HI_VOID)AENCCloseDevice(pstAencChan->AencDevFd);
+        pstAencChan->AencDevFd = -1;
+        HI_ERR_AENC("ioctl  DRV_AENC_PROC_INIT err \n");
+        HI_MPI_AENC_RetUserErr2(HI_ERR_AENC_CREATECH_FAIL, &pstAencChan->mutex);
+    }
+
+    pstAencChan->pstAencInfo = (AENC_PROC_ITEM_S*)HI_MMAP(phy_adress, sizeof(AENC_PROC_ITEM_S));
     if (NULL == pstAencChan->pstAencInfo)
     {
-		(HI_VOID)AENCCloseDevice(pstAencChan->AencDevFd);
+        (HI_VOID)AENCCloseDevice(pstAencChan->AencDevFd);
         pstAencChan->AencDevFd = -1;
         HI_ERR_AENC("AENC_PROC_ITEM_S memmap fail \n");
         HI_MPI_AENC_RetUserErr2(HI_ERR_AENC_CREATECH_FAIL, &pstAencChan->mutex);
     }
 #endif
 
+    nRet = AENCCreateWorkBuf(pstAencChan);
+    if (HI_SUCCESS != nRet)
+    {
+        (HI_VOID)AENCCloseDevice(pstAencChan->AencDevFd);
+        pstAencChan->AencDevFd = -1;
+        (HI_VOID)HI_MUNMAP(pstAencChan->pstAencInfo);
+        HI_ERR_AENC("AENCCreateWorkBuf err \n");
+        HI_MPI_AENC_RetUserErr2(HI_ERR_AENC_CREATECH_FAIL, &pstAencChan->mutex);
+    }
 
-    nRet = AENCCreateEncoder(pstAencChan, (AENC_ATTR_S*)pstAencAttr);
+    memset(&pstAencChan->stEncoderInfo, 0, sizeof(AENC_ENCODER_INFO_S));
+    nRet = AENCCreateEncoder(pstAencChan, &stAencAttr);
     if (HI_SUCCESS != nRet)
     {
         //free(pstAencChan->pstAencInfo); //for fix MOTO
+        (HI_VOID)AENCDestroyWorkBuf(pstAencChan);
         (HI_VOID)AENCCloseDevice(pstAencChan->AencDevFd);
         pstAencChan->AencDevFd = -1;
-        HI_MUNMAP(pstAencChan->pstAencInfo);
+        (HI_VOID)HI_MUNMAP(pstAencChan->pstAencInfo);
         HI_ERR_AENC("AENCCreateEncoder err \n");
         HI_MPI_AENC_RetUserErr2(HI_ERR_AENC_CREATECH_FAIL, &pstAencChan->mutex);
     }
 
     AENCInitProcInfo(pstAencChan);
+
     pstAencChan->pstAencInfo->bAdecWorkEnable = HI_TRUE;
     pstAencChan->pstAencInfo->u32BitWidth   = pstAencChan->u32BitPerSample;
     pstAencChan->pstAencInfo->u32SampleRate = pstAencChan->u32DesiredSampleRate;
@@ -1781,11 +1884,28 @@ HI_S32 AENC_Open(HI_HANDLE *phAenc, const AENC_ATTR_S *pstAencAttr)
 
     pstAencChan->bAutoSRC   = HI_TRUE; //HI_FALSE;
     pstAencChan->beAssigned = HI_TRUE;
+    pstAencChan->bStart = HI_FALSE;
+    pstAencChan->stAttach.eType = ANEC_SOURCE_BUTT;
+    pstAencChan->stAttach.hSource = HI_INVALID_HANDLE;
+    memcpy( &pstAencChan->pstAencInfo->stAttach, &pstAencChan->stAttach, sizeof( AENC_INFO_ATTACH_S ) );
     AENC_UNLOCK(&pstAencChan->mutex);
 
     HI_INFO_AENC("open aenc chans %d succeed !\n", i);
 
     *phAenc = i;
+    pstAencChan->AencThreadRun = HI_TRUE;
+    nRet = pthread_create(&pstAencChan->AencThreadInst, HI_NULL, AENC_Thread, (HI_VOID *)(*phAenc));
+    if (HI_SUCCESS != nRet)
+    {
+        HI_ERR_AENC("AENC Create Thread err \n");
+        AENCDestroyEncoder(pstAencChan);
+        (HI_VOID)AENCDestroyWorkBuf(pstAencChan);
+        (HI_VOID)AENCCloseDevice(pstAencChan->AencDevFd);
+        pstAencChan->AencDevFd = -1;
+        (HI_VOID)HI_MUNMAP(pstAencChan->pstAencInfo);
+        return HI_FAILURE;
+    }
+
     return HI_SUCCESS;
 }
 
@@ -1798,17 +1918,45 @@ HI_S32 AENC_Close (HI_HANDLE hAenc)
     pstAencChan = g_pstAencChan[hAenc];
     AENC_LOCK(&pstAencChan->mutex);
 
+    if (pstAencChan->bStart)
+    {
+        HI_ERR_AENC("please stop aenc first.\n");
+        AENC_UNLOCK(&pstAencChan->mutex);
+        return HI_ERR_AENC_CH_NOT_SUPPORT;
+    }
+
+    if (HI_INVALID_HANDLE != pstAencChan->stAttach.hSource)
+    {
+        HI_ERR_AENC("please detach aenc first.\n");
+        AENC_UNLOCK(&pstAencChan->mutex);
+        return HI_ERR_AENC_CH_NOT_SUPPORT;
+    }
+
     (HI_VOID)AENCDestroyEncoder(pstAencChan);
+
+    (HI_VOID)AENCDestroyWorkBuf(pstAencChan);
+
+    if (HI_NULL != pstAencChan->stEncoderInfo.pAudPrivDataBak)
+    {
+        HI_FREE(HI_ID_AENC, pstAencChan->stEncoderInfo.pAudPrivDataBak);
+        pstAencChan->stEncoderInfo.pAudPrivDataBak = HI_NULL_PTR;
+        pstAencChan->stEncoderInfo.u32AudPrivDataBakDize = 0;
+    }
 
     ioctl(pstAencChan->AencDevFd, DRV_AENC_PROC_EXIT, &pstAencChan->pstAencInfo);
 
     (HI_VOID)AENCCloseDevice(pstAencChan->AencDevFd);
     pstAencChan->AencDevFd = -1;
     pstAencChan->pstAencInfo->bAdecWorkEnable = HI_FALSE;
-    HI_MUNMAP(pstAencChan->pstAencInfo);
+    (HI_VOID)HI_MUNMAP(pstAencChan->pstAencInfo);
 
     pstAencChan->beAssigned = HI_FALSE;
+    pstAencChan->stAttach.eType = ANEC_SOURCE_BUTT;
+    pstAencChan->stAttach.hSource = HI_INVALID_HANDLE;
+
     AENC_UNLOCK(&pstAencChan->mutex);
+    pstAencChan->AencThreadRun = HI_FALSE;
+    (HI_VOID)pthread_join(pstAencChan->AencThreadInst, HI_NULL);
 
     return HI_SUCCESS;
 }
@@ -1854,7 +2002,7 @@ HI_U32 AENC_GetEncodeInDataSize(HI_HANDLE hAenc)
 
 HI_S32 AENC_Pull(HI_HANDLE hAenc)
 {
-    HI_S32 nRet;
+    HI_S32 nRet = HI_SUCCESS;
     AENC_CHAN_S *pstAencChan;
     HI_HA_ENCODE_S *hHaEntry;
     HI_HAENCODE_INPACKET_S sApkt;
@@ -1881,6 +2029,7 @@ HI_S32 AENC_Pull(HI_HANDLE hAenc)
         /* sInPcmBuf, don't need consider loop in the buffer end*/
         if (sApkt.u32Size < u32EncodeInDataSize)
         {
+            nRet = HI_ERR_AENC_IN_BUF_FULL;
             break;
         }
 
@@ -1888,7 +2037,7 @@ HI_S32 AENC_Pull(HI_HANDLE hAenc)
         nRet = AENCGetOutBufIdleUnit(&pstAencChan->sOutStreamBuf, &pstOutBufUnit);
         if (HI_SUCCESS != nRet)
         {
-            //HI_INFO_AENC("%s:  line[%d] \n", __FUNCTION__,__LINE__);
+            nRet = HI_ERR_AENC_OUT_BUF_FULL;
             break;
         }
 
@@ -1900,7 +2049,7 @@ HI_S32 AENC_Pull(HI_HANDLE hAenc)
             static HI_S32 counter = 0;
             if (counter == 0)
             {
-                fPcm = fopen("/mnt/vector/trascode.pcm", "wb");
+                fPcm = fopen("/mnt/trascode.pcm", "wb");
                 if (fPcm)
                 {
                     HI_INFO_AENC(" aac file is trascode.pcm \n");
@@ -1908,12 +2057,12 @@ HI_S32 AENC_Pull(HI_HANDLE hAenc)
             }
 
             counter++;
-            if ((counter < 64) && fPcm)
+            if ((counter < 640) && fPcm)
             {
                 fwrite(sApkt.pu8Data, 1, u32EncodeInDataSize, fPcm);
             }
 
-            if ((counter == 64) && fPcm)
+            if ((counter == 640) && fPcm)
             {
                 fclose(fPcm);
             }
@@ -1926,6 +2075,7 @@ HI_S32 AENC_Pull(HI_HANDLE hAenc)
         {
             HI_ERR_AENC(" HA EncodeFrame fail errCode=0x%x! \n", nRet);
             pstAencChan->pstAencInfo->u32ErrFrame += 1;
+            nRet = HI_ERR_AENC_INVALID_OUTFRAME;
             break;
         }
 
@@ -1945,10 +2095,11 @@ HI_S32 AENC_Pull(HI_HANDLE hAenc)
         pstAencChan->pstAencInfo->u32InBufRead = (HI_U32)pstAencChan->sInPcmBuf.pRead;
         pstAencChan->pstAencInfo->u32OutFrameWIdx = pstAencChan->sOutStreamBuf.u32WriteIdx;
         pstAencChan->pstAencInfo->u32EncFrame += 1;
+        nRet = HI_SUCCESS;
     }
 
     AENC_UNLOCK(&pstAencChan->mutex);
-    return HI_SUCCESS;
+    return nRet;
 }
 
 HI_S32 AENC_SendBuffer (HI_HANDLE hAenc, const HI_UNF_AO_FRAMEINFO_S *pstOrgAOFrame)
@@ -1960,22 +2111,32 @@ HI_S32 AENC_SendBuffer (HI_HANDLE hAenc, const HI_UNF_AO_FRAMEINFO_S *pstOrgAOFr
 
     CHECK_AENC_CH_CREATE(hAenc);
     CHECK_AENC_NULL_PTR(pstOrgAOFrame);
-    CHECK_AENC_PCM_FORMAT(pstOrgAOFrame->u32Channels, pstOrgAOFrame->bInterleaved );
+    CHECK_AENC_PCM_CHANNEL(pstOrgAOFrame->u32Channels);
+    CHECK_AENC_PCM_SAMPLERATE(pstOrgAOFrame->u32SampleRate);
+    CHECK_AENC_PCM_BITWIDTH(pstOrgAOFrame->s32BitPerSample);
     CHECK_AENC_PCM_SAMPLESIZE(pstOrgAOFrame->u32PcmSamplesPerFrame);
-
-    AENC_DbgCountTrySendBuf (hAenc);
-
-    AENC_Pull(hAenc);
 
     pstAOFrame = &sAOFrameinfo;
     memcpy(pstAOFrame, pstOrgAOFrame, sizeof(HI_UNF_AO_FRAMEINFO_S));
     pstAencChan = g_pstAencChan[hAenc];
     AENC_LOCK(&pstAencChan->mutex);
 
+    if (!pstAencChan->bStart)
+    {
+        HI_ERR_AENC("hAenc(%d) not start.\n", hAenc);
+        AENC_UNLOCK(&pstAencChan->mutex);
+        return HI_ERR_AENC_CH_NOT_SUPPORT;
+    }
+
+    if (HI_INVALID_HANDLE != pstAencChan->stAttach.hSource)
+    {
+        HI_ERR_AENC("hAenc(%d) work at Attatch mode.\n", hAenc);
+        AENC_UNLOCK(&pstAencChan->mutex);
+        return HI_ERR_AENC_CH_NOT_SUPPORT;
+    }
+
     nRet = AENCSentInputData(pstAencChan, pstAOFrame);
     HI_MPI_AENC_RetUserErr(nRet, &pstAencChan->mutex);
-
-    AENC_DbgCountSendBuf (hAenc);
 
     AENC_UNLOCK(&pstAencChan->mutex);
     return HI_SUCCESS;
@@ -1999,12 +2160,14 @@ HI_U32 AENC_GetInBufDataSize(HI_HANDLE hAenc)
 }
 
 /* To obtain audio stream from an audio encoder.                                                     */
-HI_S32 AENC_ReceiveStream (HI_HANDLE hAenc, AENC_STREAM_S *pstStream)
+HI_S32 AENC_ReceiveStream (HI_HANDLE hAenc, AENC_STREAM_S *pstStream, HI_U32 u32TimeoutMs)
 {
     HI_S32 nRet;
+    HI_U32 u32SleepCnt;
     AENC_CHAN_S *pstAencChan;
     AENC_OUTPUTBUF_S *pstOutBufUnit;
-
+    static FILE *fEstream = NULL;
+	
     CHECK_AENC_CH_CREATE(hAenc);
     CHECK_AENC_NULL_PTR(pstStream);
     AENC_DbgCountTryReceiveStream(hAenc);
@@ -2014,17 +2177,69 @@ HI_S32 AENC_ReceiveStream (HI_HANDLE hAenc, AENC_STREAM_S *pstStream)
 
     pstAencChan = g_pstAencChan[hAenc];
     AENC_LOCK(&pstAencChan->mutex);
+    if (!pstAencChan->bStart)
+    {
+        HI_ERR_AENC("hAenc(%d) not start.\n", hAenc);
+        AENC_UNLOCK(&pstAencChan->mutex);
+        return HI_ERR_AENC_CH_NOT_SUPPORT;
+    }
 
     nRet = AENCReceiveOutBufUnit(&pstAencChan->sOutStreamBuf, &pstOutBufUnit);
     if (HI_SUCCESS != nRet)
     {
-        nRet = HI_ERR_AENC_OUT_BUF_EMPTY;
-        HI_MPI_AENC_RetUserErr(nRet, &pstAencChan->mutex);
+        if(0 == u32TimeoutMs)
+        {
+            nRet = HI_ERR_AENC_OUT_BUF_EMPTY;
+            HI_MPI_AENC_RetUserErr(nRet, &pstAencChan->mutex);
+        }
+        else
+        {
+            for(u32SleepCnt = 0; u32SleepCnt < u32TimeoutMs; u32SleepCnt++)
+            {
+                AENC_UNLOCK(&pstAencChan->mutex);
+                (HI_VOID)usleep(1 * 1000);
+                AENC_LOCK(&pstAencChan->mutex);
+                nRet = AENCReceiveOutBufUnit(&pstAencChan->sOutStreamBuf, &pstOutBufUnit);
+                if(HI_SUCCESS == nRet)
+                {
+                    break;
+                }
+            }
+            if(HI_SUCCESS != nRet)
+            {
+                nRet = HI_ERR_AENC_OUT_BUF_EMPTY;
+                HI_MPI_AENC_RetUserErr(nRet, &pstAencChan->mutex);
+            }
+        }
     }
 
     pstStream->pu8Data  = pstOutBufUnit->pu8Data;
     pstStream->u32Bytes = pstOutBufUnit->u32Bytes;
     pstStream->u32PtsMs = pstOutBufUnit->u32PtsMs;
+
+    if( pstAencChan->pstAencInfo->enEsCtrlState == AENC_CMD_CTRL_START )
+    {
+   	  if(!fEstream)
+      	  {
+           	fEstream = fopen(pstAencChan->pstAencInfo->filePath, "wb");
+          	if (!fEstream)
+          	{
+              		HI_ERR_AENC("can not open file (%s)\n",pstAencChan->pstAencInfo->filePath);
+           	}
+      	  }
+         if (fEstream)
+         {
+	       fwrite(pstStream->pu8Data, 1, pstStream->u32Bytes, fEstream);
+         }
+    }
+   if( pstAencChan->pstAencInfo->enEsCtrlState == AENC_CMD_CTRL_STOP )
+   {
+	  if (fEstream)
+         {
+	     	fclose(fEstream);
+	    	fEstream = NULL;
+         }
+   }
 
     AENC_DbgCountReceiveStream(hAenc);
 
@@ -2039,6 +2254,7 @@ HI_S32 AENC_ReleaseStream(HI_U32 hAenc, const AENC_STREAM_S *pstStream)
 
     CHECK_AENC_CH_CREATE(hAenc);
     CHECK_AENC_NULL_PTR(pstStream);
+    AENC_DbgCountTryReleaseStream(hAenc);
 
     pstAencChan = g_pstAencChan[hAenc];
     AENC_LOCK(&pstAencChan->mutex);
@@ -2047,10 +2263,18 @@ HI_S32 AENC_ReleaseStream(HI_U32 hAenc, const AENC_STREAM_S *pstStream)
         HI_MPI_AENC_RetUserErr2(HI_ERR_AENC_CH_NOT_OPEN, &pstAencChan->mutex);
     }
 
+    if (!pstAencChan->bStart)
+    {
+        HI_ERR_AENC("hAenc(%d) not start.\n", hAenc);
+        AENC_UNLOCK(&pstAencChan->mutex);
+        return HI_ERR_AENC_CH_NOT_SUPPORT;
+    }
+
     /* output buf keep line, must fist in last out*/
     nRet = AENCReleaseCurrentOutBufUnit(&pstAencChan->sOutStreamBuf, pstStream);
     pstAencChan->pstAencInfo->u32OutFrameRIdx = pstAencChan->sOutStreamBuf.u32ReadIdx;
 
+    AENC_DbgCountReleaseStream(hAenc);
     AENC_UNLOCK(&pstAencChan->mutex);
     return nRet;
 }
@@ -2079,7 +2303,6 @@ HI_S32 AENC_ResetBuf(HI_HANDLE hAenc, HI_U32 u32BufType)
     CHECK_AENC_CH_CREATE(hAenc);
 
     pstAencChan = g_pstAencChan[hAenc];
-    AENC_LOCK(&pstAencChan->mutex);
 
     /*reset in buf*/
     if (u32BufType & 0x01)
@@ -2096,8 +2319,260 @@ HI_S32 AENC_ResetBuf(HI_HANDLE hAenc, HI_U32 u32BufType)
         pstAencChan->pstAencInfo->u32OutFrameRIdx = pstAencChan->sOutStreamBuf.u32ReadIdx;
         pstAencChan->pstAencInfo->u32OutFrameWIdx = pstAencChan->sOutStreamBuf.u32WriteIdx;
     }
+    
+    return HI_SUCCESS;
+}
+
+static HI_S32 AENC_SendInnerBuffer (AENC_CHAN_S *pstAencChan)
+{
+    HI_S32 nRet = HI_FAILURE;
+    HI_UNF_AO_FRAMEINFO_S stSendFrame;
+    HI_UNF_AO_FRAMEINFO_S stOrgFrame;
+
+    AENC_LOCK(&pstAencChan->mutex);
+    if (ANEC_SOURCE_AI == pstAencChan->stAttach.eType)
+    {
+#ifdef HI_AENC_AI_SUPPORT
+        if (HI_SUCCESS == HI_MPI_AI_AcquireFrame(pstAencChan->stAttach.hSource, &stOrgFrame))
+        {
+            memcpy(&stSendFrame, &stOrgFrame, sizeof(HI_UNF_AO_FRAMEINFO_S));
+            if (HI_SUCCESS == AENCSentInputData(pstAencChan, &stSendFrame))
+            {
+                nRet = HI_MPI_AI_ReleaseFrame(pstAencChan->stAttach.hSource, &stOrgFrame);
+            }
+        }
+#endif
+    }
+    else if (ANEC_SOURCE_CAST == pstAencChan->stAttach.eType)
+    {
+        if (HI_SUCCESS == HI_MPI_AO_SND_AcquireCastFrame(pstAencChan->stAttach.hSource, &stOrgFrame))
+        {
+            memcpy(&stSendFrame, &stOrgFrame, sizeof(HI_UNF_AO_FRAMEINFO_S));
+            if (HI_SUCCESS == AENCSentInputData(pstAencChan, &stSendFrame))
+            {
+                nRet = HI_MPI_AO_SND_ReleaseCastFrame(pstAencChan->stAttach.hSource, &stOrgFrame);
+            }
+        }
+    }
+    else if (ANEC_SOURCE_VIRTRACK == pstAencChan->stAttach.eType)
+    {
+        if (HI_SUCCESS == HI_MPI_AO_Track_AcquireFrame(pstAencChan->stAttach.hSource, &stOrgFrame))
+        {
+            memcpy(&stSendFrame, &stOrgFrame, sizeof(HI_UNF_AO_FRAMEINFO_S));
+            if (HI_SUCCESS == AENCSentInputData(pstAencChan, &stSendFrame))
+            {
+                nRet = HI_MPI_AO_Track_ReleaseFrame(pstAencChan->stAttach.hSource, &stOrgFrame);
+            }
+        }
+    }
 
     AENC_UNLOCK(&pstAencChan->mutex);
+    return nRet;
+}
+
+HI_VOID *AENC_Thread(HI_VOID *arg)
+{
+    HI_HANDLE hAenc = (HI_HANDLE)arg;
+    AENC_CHAN_S *pstAencChan = HI_NULL_PTR;
+    HI_S32 nRet;
+
+    if (hAenc >= AENC_INSTANCE_MAXNUM)
+    {
+        return HI_NULL;
+    }
+
+    pstAencChan = g_pstAencChan[hAenc];
+
+    while (pstAencChan->AencThreadRun)
+    {
+        if ((HI_TRUE == pstAencChan->beAssigned) && (HI_TRUE == pstAencChan->bStart))
+        {
+            if (HI_INVALID_HANDLE != pstAencChan->stAttach.hSource)
+            {
+                AENC_SendInnerBuffer(pstAencChan);
+            }
+
+            nRet = AENC_Pull(hAenc);
+            if (HI_SUCCESS != nRet)
+            {
+                (HI_VOID)usleep(AENC_SYS_SLEEP_TIME * 1000);
+            }
+        }
+        else
+        {
+            (HI_VOID)usleep(AENC_SYS_SLEEP_TIME * 1000);
+        }
+    }
+
+    return HI_NULL;
+}
+
+HI_S32 AENC_SetEnable(HI_HANDLE hAenc, HI_BOOL bEnable)
+{
+    AENC_CHAN_S *pstAencChan;
+    HI_S32 nRet;
+
+    CHECK_AENC_CH_CREATE(hAenc);
+
+    pstAencChan = g_pstAencChan[hAenc];
+    AENC_LOCK(&pstAencChan->mutex);
+
+    if (HI_TRUE == bEnable)
+    {
+        pstAencChan->bStart = HI_TRUE;
+    }
+    else
+    {
+        if (!pstAencChan->bStart)
+        {
+            AENC_UNLOCK(&pstAencChan->mutex);
+            return HI_SUCCESS;
+        }
+        pstAencChan->bStart = HI_FALSE;
+
+        nRet = AENC_ResetBuf(hAenc, 0);
+        if (nRet != HI_SUCCESS)
+        {
+            AENC_UNLOCK(&pstAencChan->mutex);
+            HI_ERR_AENC("call AENC_ResetBuf failed:%#x.\n", nRet);
+            return nRet;
+        }
+    }
+
+    AENC_UNLOCK(&pstAencChan->mutex);
+    return HI_SUCCESS;
+}
+
+HI_S32 AENC_AttachInput(HI_HANDLE hAenc, HI_HANDLE hSource)
+{
+    AENC_CHAN_S *pstAencChan;
+
+    CHECK_AENC_CH_CREATE(hAenc);
+    pstAencChan = g_pstAencChan[hAenc];
+    AENC_LOCK(&pstAencChan->mutex);
+
+    if (HI_INVALID_HANDLE != pstAencChan->stAttach.hSource)
+    {
+        HI_ERR_AENC("hAenc(%d) had been attach.\n", hAenc);
+        AENC_UNLOCK(&pstAencChan->mutex);
+        return HI_ERR_AENC_CH_NOT_SUPPORT;
+    }
+
+    if ((hSource & 0xffff0000) == (HI_ID_AO << 16))
+    {
+        if ((hSource & 0xff00) == (HI_ID_TRACK << 8))
+        {
+            pstAencChan->stAttach.eType   = ANEC_SOURCE_VIRTRACK;
+            pstAencChan->stAttach.hSource = hSource;
+        }
+        else if ((hSource & 0xff00) == (HI_ID_CAST << 8))
+        {
+            pstAencChan->stAttach.eType   = ANEC_SOURCE_CAST;
+            pstAencChan->stAttach.hSource = hSource;
+        }
+        memcpy( &pstAencChan->pstAencInfo->stAttach, &pstAencChan->stAttach, sizeof( AENC_INFO_ATTACH_S ) );
+    }
+#ifdef HI_AENC_AI_SUPPORT
+    else if ((hSource & 0xffff0000) == (HI_ID_AI << 16))
+    {
+        pstAencChan->stAttach.eType   = ANEC_SOURCE_AI;
+        pstAencChan->stAttach.hSource = hSource;
+		memcpy( &pstAencChan->pstAencInfo->stAttach, &pstAencChan->stAttach, sizeof( AENC_INFO_ATTACH_S ) );
+    }
+#endif
+    if (HI_INVALID_HANDLE == pstAencChan->stAttach.hSource)
+    {
+        HI_ERR_AENC("hAenc(%d) invalid hSource(0x%x).\n", hAenc, hSource);
+        AENC_UNLOCK(&pstAencChan->mutex);
+        return HI_ERR_AENC_CH_NOT_SUPPORT;
+    }
+
+    AENC_UNLOCK(&pstAencChan->mutex);
+    return HI_SUCCESS;
+}
+
+HI_S32 AENC_DetachInput(HI_HANDLE hAenc)
+{
+    AENC_CHAN_S *pstAencChan;
+
+    CHECK_AENC_CH_CREATE(hAenc);
+    pstAencChan = g_pstAencChan[hAenc];
+    AENC_LOCK(&pstAencChan->mutex);
+
+    if (HI_INVALID_HANDLE == pstAencChan->stAttach.hSource)
+    {
+        HI_WARN_AENC("hAenc(%d) had been dettach.\n", hAenc);
+        AENC_UNLOCK(&pstAencChan->mutex);
+        return HI_SUCCESS;
+    }
+
+    pstAencChan->stAttach.hSource = HI_INVALID_HANDLE;
+    pstAencChan->stAttach.eType = ANEC_SOURCE_BUTT;
+
+    AENC_UNLOCK(&pstAencChan->mutex);
+    return HI_SUCCESS;
+}
+
+HI_S32 AENC_SetAttr(HI_HANDLE hAenc, const HI_UNF_AENC_ATTR_S *pstAencAttr)
+{
+    HI_S32 s32Ret;
+    AENC_CHAN_S *pstAencChan;
+    AENC_ATTR_S stAencAttr;
+
+    CHECK_AENC_CH_CREATE(hAenc);
+    CHECK_AENC_NULL_PTR(pstAencAttr);
+    //CHECK_AENC_TYPE(pstAencAttr->enAencType); verify
+    CHECK_AENC_OPEN_FORMAT(pstAencAttr->sOpenParam.u32DesiredSampleRate, pstAencAttr->sOpenParam.u32DesiredOutChannels, 
+                            pstAencAttr->sOpenParam.s32BitPerSample, pstAencAttr->sOpenParam.bInterleaved);
+
+    stAencAttr.u32CodecID    = pstAencAttr->enAencType;
+    stAencAttr.sOpenParam    = pstAencAttr->sOpenParam;
+    stAencAttr.u32InBufSize = AENC_DEFAULT_INPUT_BUFFER_SIZE;
+    stAencAttr.u32OutBufNum = AENC_DEFAULT_OUTBUF_NUM;
+    pstAencChan = g_pstAencChan[hAenc];
+
+    AENC_LOCK(&pstAencChan->mutex);
+    if(HI_TRUE == pstAencChan->bStart)
+    {
+        HI_ERR_AENC("First stop aenc before set attr!\n");
+        AENC_UNLOCK(&pstAencChan->mutex);
+        return HI_FAILURE;
+    }
+
+    (HI_VOID)AENCDestroyEncoder(pstAencChan);
+
+    s32Ret = AENCCreateEncoder(pstAencChan, &stAencAttr);
+    if (HI_SUCCESS != s32Ret)
+    {
+        HI_ERR_AENC("AENCCreateEncoder err \n");
+        HI_MPI_AENC_RetUserErr2(HI_ERR_AENC_CREATECH_FAIL, &pstAencChan->mutex);
+    }
+
+    pstAencChan->pstAencInfo->u32BitWidth   = pstAencChan->u32BitPerSample;
+    pstAencChan->pstAencInfo->u32SampleRate = pstAencChan->u32DesiredSampleRate;
+    pstAencChan->pstAencInfo->u32Channels = pstAencChan->u32DesiredOutChannels;
+
+    AENC_UNLOCK(&pstAencChan->mutex);
+
+    return HI_SUCCESS;
+}
+
+HI_S32 AENC_GetAttr(HI_HANDLE hAenc, HI_UNF_AENC_ATTR_S *pstAencAttr)
+{
+    AENC_CHAN_S *pstAencChan;
+
+    CHECK_AENC_CH_CREATE(hAenc);
+    CHECK_AENC_NULL_PTR(pstAencAttr);
+
+    pstAencChan = g_pstAencChan[hAenc];
+    
+    AENC_LOCK(&pstAencChan->mutex);
+    
+    pstAencAttr->enAencType = pstAencChan->u32CodecID;
+    memcpy(&pstAencAttr->sOpenParam, &pstAencChan->stEncoderInfo.stOpenParam, sizeof(HI_HAENCODE_OPENPARAM_S));
+        
+    AENC_UNLOCK(&pstAencChan->mutex);
+
     return HI_SUCCESS;
 }
 

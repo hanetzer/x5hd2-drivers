@@ -14,6 +14,8 @@
 #include "nand.h"
 #include "nand_raw.h"
 
+#define NAND_PAGE_BUF_SIZE       16384
+#define NAND_OOB_BUF_SIZE        1200
 
 static struct nand_raw_ctrl * nandraw_ctrl = NULL;
 
@@ -37,7 +39,7 @@ int nand_raw_init(void)
     if (nandraw_ctrl)
         return 0;
 
-    if (0 == (max_partition = get_max_partition()))
+    if (0 > (max_partition = get_max_partition()))
     {
 
 #ifdef NAND_RAW_DBG
@@ -62,7 +64,7 @@ int nand_raw_init(void)
     if (!nandraw_ctrl)
     {
         PRINTF_CA("Not enough memory.\n");
-        return -ENOMEM;
+        return -1;
     }
 
     nandraw_ctrl->num_partition = 0;
@@ -133,6 +135,7 @@ int nand_raw_init(void)
             nandraw_ctrl->pagemask  = (mtdinfo.writesize - 1);
             nandraw_ctrl->blockmask = (mtdinfo.erasesize - 1);
             nandraw_ctrl->oobsize   = mtdinfo.oobsize;
+            nandraw_ctrl->oobused    = HINFC610_OOBSIZE_FOR_YAFFS;
 
             nandraw_ctrl->pageshift  = (HI_U32)offshift(mtdinfo.writesize);
             nandraw_ctrl->blockshift = (HI_U32)offshift(mtdinfo.erasesize);
@@ -162,7 +165,7 @@ void nand_raw_get_info
     *totalsize  = nandraw_ctrl->size;
     *pagesize   = nandraw_ctrl->pagesize;
     *blocksize  = nandraw_ctrl->blocksize;
-    *oobsize    = nandraw_ctrl->oobsize;
+    *oobsize    = nandraw_ctrl->oobused;
     *blockshift = nandraw_ctrl->blockshift;
 }
 
@@ -211,7 +214,9 @@ unsigned long long nand_raw_get_start_addr(const char *dev_name, unsigned long b
     else
     {
         *value_valid = 1;
+        /*lint -e661*/
         return ptn->start;
+        /*lint +e661*/
     }
 }
 /*****************************************************************************/
@@ -289,7 +294,7 @@ int nand_raw_read
             if (offset - openaddr >= limit_leng)
             {
                 PRINTF_CA("bad block cause read end(beyond limit_leng =%#llx)!\n", limit_leng);
-                return HI_FLASH_END_DUETO_BADBLOCK;
+                return totalread;
             }
 
             /* read all pages in one block */
@@ -302,7 +307,7 @@ int nand_raw_read
                 {
                     PRINTF_CA("read \"%s\" fail. %s\n",
                         ptn->mtddev, strerror(errno));
-                    return -errno;
+                    return -1;
                 }
 
                 buffer    += num_read;
@@ -313,22 +318,22 @@ int nand_raw_read
                 {
                     struct mtd_oob_buf oob;
 
-                    if (length >= nandraw_ctrl->oobsize)
+                    if (length >= nandraw_ctrl->oobused)
                     {
                         oob.start  = (unsigned long)(offset - ptn->start);
-                        oob.length = nandraw_ctrl->oobsize;
+                        oob.length = nandraw_ctrl->oobused;
                         oob.ptr    = (unsigned char *)buffer;
 
                         if (ioctl(ptn->fd, MEMREADOOB, &oob))
                         {
                             PRINTF_CA("read oob \"%s\" fail. %s\n",
                                 ptn->mtddev, strerror(errno));
-                            return -errno;
+                            return -1;
                         }
 
-                        buffer    += nandraw_ctrl->oobsize;
-                        length    -= nandraw_ctrl->oobsize;
-                        totalread += (int)nandraw_ctrl->oobsize;
+                        buffer    += nandraw_ctrl->oobused;
+                        length    -= nandraw_ctrl->oobused;
+                        totalread += (int)nandraw_ctrl->oobused;
                     }
                     else
                     {
@@ -408,7 +413,7 @@ int nand_raw_erase
             if (offset - openaddr >= limit_leng)
             {
                 PRINTF_CA("1bad block cause erase end(beyond limit_leng =%#llx)!\n", limit_leng);
-                return HI_FLASH_END_DUETO_BADBLOCK;
+                return totalerase;
             }
 
             blockindex = (int)((offset - ptn->start) >> nandraw_ctrl->blockshift);
@@ -433,7 +438,7 @@ int nand_raw_erase
                     {
                         PRINTF_CA("\nMTD block_markbad at 0x%08llx failed: %d, aborting\n",
                                 offset, rel);
-                        return rel;
+                        return HI_FAILURE;
                     }
                 }
                 rel = 1;
@@ -442,7 +447,7 @@ int nand_raw_erase
             }
 
             if (rel < 0)
-                return rel;
+                return HI_FAILURE;
 
             /* rel > 0 */
             offset += (unsigned long)((HI_U32)rel << nandraw_ctrl->blockshift);
@@ -501,7 +506,7 @@ int nand_raw_force_erase(unsigned long long offset)
             if (rel)
             {
                 PRINTF_CA("Force Erase 0x%llx failed!\n", offset);
-                return rel;
+                return -1;
             }
         }
     }
@@ -527,55 +532,81 @@ int nand_raw_write
     int totalwrite = 0;
     int num_write = 0;
     int blockindex;
-    unsigned char databuf[8192];
-    unsigned char oobbuf[512];
+    unsigned char *databuf = NULL;
+    unsigned char *oobbuf  = NULL;
+    int ret = -1;
+
     struct mtd_partition *ptn;
     struct mtd_epage_buf epage_buf;
     unsigned long long offset = *startaddr;
 
     fd = fd;
 
+    databuf = malloc(NAND_PAGE_BUF_SIZE);
+    if (NULL == databuf)
+    {
+        ret = -1;
+        goto fail;
+    }
+    memset(databuf, 0, NAND_PAGE_BUF_SIZE);
+
+    oobbuf = malloc(NAND_OOB_BUF_SIZE);
+    if (NULL == oobbuf)
+    {
+        ret = -1;
+        goto fail;
+    }
+    memset(oobbuf, 0, NAND_OOB_BUF_SIZE);
+
     if (!nandraw_ctrl)
     {
         PRINTF_CA("Please initialize before use this function.\n");
-        return -1;
+        ret = -1;
+        goto fail;
     }
 
     if (offset >= nandraw_ctrl->size || !length)
     {
-        return -1;
+        ret = -1;
+        goto fail;
     }
 
     if ((unsigned long)offset & nandraw_ctrl->pagemask)
     {
         PRINTF_CA("Startaddr should be alignment with pagesize(0x%lX)\n",
             nandraw_ctrl->pagesize);
-        return -1;
+        ret = -1;
+        goto fail;
+
     }
 
     /* if write_oob is used, align with (oobsize + pagesize) */
-    if (write_oob && (length % (nandraw_ctrl->pagesize + nandraw_ctrl->oobsize)))
+    if (write_oob && (length % (nandraw_ctrl->pagesize + nandraw_ctrl->oobused)))
     {
         PRINTF_CA("Length should be alignment with pagesize + oobsize when write oob.\n");
-        return -1;
+        ret = -1;
+        goto fail;
+
     }
 
     if (!write_oob)
     {
-        if (sizeof(oobbuf) < nandraw_ctrl->oobsize)
+        if (NAND_OOB_BUF_SIZE < nandraw_ctrl->oobused)
         {
             PRINTF_CA("%s: BUG program need enough oobbuf.\n",
                 __FUNCTION__);
-            return -1;
+            ret = -1;
+            goto fail;
         }
-        memset(oobbuf, 0xFF, sizeof(oobbuf));
+        memset(oobbuf, 0xFF, NAND_OOB_BUF_SIZE);
     }
 
-    if (sizeof(databuf) < nandraw_ctrl->pagesize)
+    if (NAND_PAGE_BUF_SIZE < nandraw_ctrl->pagesize)
     {
         PRINTF_CA("%s: BUG program need enough databuf.\n",
             __FUNCTION__);
-        return -1;
+        ret = -1;
+        goto fail;
     }
 
     for (ix = 0; ix < nandraw_ctrl->num_partition && length; ix++)
@@ -584,7 +615,8 @@ int nand_raw_write
         if (ptn->readonly)
         {
             PRINTF_CA("Write a read only partition \"%s\".\n", ptn->mtddev);
-            return -1;
+            ret = -1;
+            goto fail;
         }
 
         while ((ptn->start <= offset) && (offset < ptn->end) && length && (ptn->perm & ACCESS_WR) && ptn->fd != INVALID_FD)
@@ -593,8 +625,10 @@ int nand_raw_write
             blockindex = (int)((offset - ptn->start) >> nandraw_ctrl->blockshift);
 
             rel = check_skip_badblock(ptn, &blockindex, (int)nandraw_ctrl->blocksize);
-            if (rel < 0)
-                return rel;
+            if (rel < 0) {
+                ret = rel;
+                goto fail;
+            }
 
             if (rel > 0)
             {
@@ -610,7 +644,8 @@ int nand_raw_write
             if (offset - openaddr >= limit_leng)
             {
                 PRINTF_CA("bad block cause write end(beyond limit_leng =%#llx)!\n", limit_leng);
-                return HI_FLASH_END_DUETO_BADBLOCK;
+                ret = HI_FLASH_END_DUETO_BADBLOCK;
+                goto fail;
             }
 
             /* write all pages in one block */
@@ -622,7 +657,7 @@ int nand_raw_write
                 if ((HI_U32)num_write < nandraw_ctrl->pagesize)
                 {
                     /* less than one pagesize */
-                    memset(databuf, 0xFF, sizeof(databuf));
+                    memset(databuf, 0xFF, NAND_PAGE_BUF_SIZE);
                     memcpy(databuf, buffer, (size_t)num_write);
                     epage_buf.data_ptr = databuf;
                 }
@@ -639,30 +674,33 @@ int nand_raw_write
 
                 if (write_oob) /* if write_oob */
                 {
-                    if (length < nandraw_ctrl->oobsize)
+                    if (length < nandraw_ctrl->oobused)
                     {
                         PRINTF_CA("%s(%d): buf not align error!\n", __FILE__, __LINE__);
-                        return -1;
+                        ret = -1;
+                        goto fail;
+
                     }
 
                     epage_buf.oob_ptr = buffer;
 
-                    buffer     += nandraw_ctrl->oobsize;
-                    length     -= nandraw_ctrl->oobsize;
-                    totalwrite += (int)nandraw_ctrl->oobsize;
+                    buffer     += nandraw_ctrl->oobused;
+                    length     -= nandraw_ctrl->oobused;
+                    totalwrite += (int)nandraw_ctrl->oobused;
                 }
                 else
                 {
                     epage_buf.oob_ptr = oobbuf;
                 }
-                epage_buf.oob_len = nandraw_ctrl->oobsize;
+                epage_buf.oob_len = nandraw_ctrl->oobused;
 
                 /* avoid mark bad block unexpected. */
                 if ((*(epage_buf.oob_ptr + 1) << 8) + *epage_buf.oob_ptr != 0xFFFF)
                 {
                     PRINTF_CA("Please check input data, it maybe mark bad block. value:0x%04X\n",
                         (*(epage_buf.oob_ptr + 1) << 8) + *epage_buf.oob_ptr);
-                    return -1;
+                    ret = -1;
+                    goto fail;
                 }
 
                 /* should reerase and write if write error when upgrade. */
@@ -670,7 +708,9 @@ int nand_raw_write
                 {
                     PRINTF_CA("ioctl(%s, MEMEWRITEPAGE) fail. %s\n",
                         ptn->mtddev, strerror(errno));
-                    return -errno;
+                    /* union return value to HI_FAILURE.*/
+                    ret = HI_FAILURE;
+                    goto fail;
                 }
 
             } while (length && (offset & nandraw_ctrl->blockmask));
@@ -678,8 +718,16 @@ int nand_raw_write
     }
 
     *startaddr = offset;
+    ret = totalwrite;
 
-    return totalwrite;
+done:
+    if (databuf)
+        free(databuf);
+    if (oobbuf)
+        free(oobbuf);
+    return ret;
+fail:
+    goto done; 
 }
 /*****************************************************************************/
 /*
@@ -790,7 +838,7 @@ int nand_show_badblock(unsigned long long offset, unsigned long long length)
             if ((badblock = ioctl(ptn->fd, MEMGETBADBLOCK, &blockoffset)) < 0)
             {
                 PRINTF_CA("Get nand badblock fail. %s\n", strerror(errno));
-                return -errno;
+                return -1;
             }
             if (badblock == 1)
             {
@@ -911,7 +959,7 @@ static int check_skip_badblock(struct mtd_partition *ptn, int *blockindex,
         if ((badblock = ioctl(ptn->fd, MEMGETBADBLOCK, &offset)) < 0)
         {
             PRINTF_CA("Get nand badblock fail. %s\n", strerror(errno));
-            return -errno;
+            return -1;
         }
         if (badblock == 1)
         {
@@ -957,7 +1005,7 @@ int nand_raw_get_physical_index(unsigned long long startaddr, int *blockindex, i
             if ((badblock = ioctl(ptn->fd, MEMGETBADBLOCK, &offset)) < 0)
             {
                 PRINTF_CA("Get nand badblock fail. %s\n", strerror(errno));
-                return -errno;
+                return -1;
             }
             if (0 == badblock)
             {

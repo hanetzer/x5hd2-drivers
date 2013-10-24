@@ -1,3 +1,17 @@
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : drv_otp_intf.c
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
 #include <linux/seq_file.h>
 #include <linux/device.h>
 #include <linux/module.h>
@@ -11,40 +25,173 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 #include <linux/spinlock.h>
+#include <linux/vmalloc.h>
 
 #include "hi_kernel_adapt.h"
 #include "drv_otp.h"
 #include "drv_otp_ext.h"
-#include "drv_dev_ext.h"
+#include "hi_drv_dev.h"
 #include "drv_cipher_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 #include "drv_otp_common.h"
 #include "drv_otp_ioctl.h"
 #include "drv_otp_v200.h"
+#include "hi_drv_proc.h"
 
 CIPHER_RegisterFunctionlist_S *g_pCIPHERExportFunctionList = NULL;
 extern HI_VOID HI_DRV_SYS_GetChipVersion(HI_CHIP_TYPE_E *penChipType, HI_CHIP_VERSION_E *penChipVersion);
 
 static UMAP_DEVICE_S   g_stOtpUmapDev;
-//static atomic_t        g_OtpCount = ATOMIC_INIT(0);
 HI_DECLARE_MUTEX(g_OtpMutex);
 
-
-HI_S32 OTP_ProcRead(struct seq_file *p, HI_VOID *v)
+static HI_VOID OTP_ProcGetHelpInfo(HI_VOID)
 {
-    p += seq_printf(p,"---------Hisilicon SCI Info---------\n");
+    HI_PRINT("\nUsage as following: \n");
+    HI_PRINT("    cat /proc/hisi/msp/otp                      Display all proc information \n");
+    HI_PRINT("    echo help > /proc/hisi/msp/otp              Display help infomation for otp proc module \n");
+    HI_PRINT("    echo write addr data > /proc/hisi/msp/otp   Set data to addr in otp, byte by byte \n");
+    HI_PRINT("    For example: echo write 0x******** 0x******** > /proc/hisi/msp/otp \n");
+
+    HI_PRINT("\n    Attention:\n");
+    HI_PRINT("        1 Operations must be carefully when setting data to otp !!!\n");
+    HI_PRINT("        2 Input 'addr' and 'data' must be take the '0x' prefix in hex format !!!\n");
+    HI_PRINT("        3 Otp must be set byte by byte !!!\n");
+
+    return;
+}
+
+static HI_S32 OTP_ProcReadAllOver(struct seq_file *p)
+{
+    HI_U32 *pu32Val = NULL;
+    HI_U32 u32Addr = 0;
+
+    PROC_PRINT(p, "OTP read all over:\n");
+    pu32Val = (HI_U32 *)vmalloc(0x800);
+    
+    if(NULL == pu32Val)
+    {
+        HI_ERR_OTP("vmalloc(size 0x800) failed!");
+        return HI_FAILURE;
+    }
+
+    for (u32Addr = 0; u32Addr < 0x800; u32Addr+=4)
+    {
+        if (0 == (u32Addr & 0xF))
+        {
+            PROC_PRINT(p, "\n%04x: ", u32Addr);
+        }
+
+        pu32Val[u32Addr/4] = DRV_OTP_Read(u32Addr);
+        PROC_PRINT(p, "%08x ", pu32Val[u32Addr/4]);
+    }
+
+    PROC_PRINT(p, "\n");
+
+    if(NULL != pu32Val)
+    {
+        vfree((HI_VOID *)pu32Val);
+    }
+
     return HI_SUCCESS;
 }
 
-HI_S32 OTP_ProcWrite(struct file * file,
-    const char __user * buf, size_t count, loff_t *ppos)
-
+HI_S32 OTP_ProcRead(struct seq_file *p, HI_VOID *v)
 {
-    HI_CHAR ProcPara[64];
+    PROC_PRINT(p, "---------Hisilicon OTP Info---------\n");
 
-    if (copy_from_user(ProcPara, buf, count))
+    OTP_ProcReadAllOver(p);
+
+    PROC_PRINT(p, "---------Hisilicon otp Info End---------\n");
+
+    return HI_SUCCESS;
+}
+
+HI_S32 OTP_ProcWrite(struct file * file, const char __user * pBufIn, size_t count, loff_t *ppos)
+{
+    HI_S32 ret = HI_SUCCESS;
+    HI_CHAR ProcParam[256];
+    HI_CHAR *ptr1 = NULL;
+    HI_CHAR *ptr2 = NULL;
+    HI_U32 u32Addr = 0;
+    HI_U32 u32Value = 0;
+
+    if (count > sizeof(ProcParam))
     {
+        HI_ERR_OTP("The command string is out of buf space :%d bytes !\n", sizeof(ProcParam));
+        (HI_VOID)OTP_ProcGetHelpInfo();
+        return HI_FAILURE;
+    }
+
+    memset(ProcParam, 0, sizeof(ProcParam));
+
+    if (copy_from_user(ProcParam, pBufIn, count))
+    {
+        HI_ERR_OTP("failed to call copy_from_user !\n");
+        (HI_VOID)OTP_ProcGetHelpInfo();
         return -EFAULT;
+    }
+
+    ptr1 = strstr(ProcParam, "help");
+    if( NULL != ptr1)
+    {
+        (HI_VOID)OTP_ProcGetHelpInfo();
+        return count;
+    }
+
+    ptr1 = strstr(ProcParam, "write");
+    if( NULL == ptr1)
+    {
+        HI_ERR_OTP("Invalid write otp command !\n");
+        (HI_VOID)OTP_ProcGetHelpInfo();
+        return HI_FAILURE;
+    }
+
+    ptr1 = strstr(ProcParam, "0x");
+    if( NULL == ptr1)
+    {
+        HI_ERR_OTP("Invalid write otp command !\n");
+        (HI_VOID)OTP_ProcGetHelpInfo();
+        return HI_FAILURE;
+    }
+
+    u32Addr = (HI_U32)simple_strtoul(ptr1, &ptr2, 16);
+    if(NULL == ptr2)
+    {
+        HI_ERR_OTP("Invalid write otp command !\n");
+        return HI_FAILURE;
+    }
+
+    ptr2 = strstr(ptr2, "0x");
+    if( NULL == ptr2)
+    {
+        HI_ERR_OTP("Invalid write otp command !\n");
+        (HI_VOID)OTP_ProcGetHelpInfo();
+        return HI_FAILURE;
+    }
+
+    if ( 0x800 <= u32Addr )
+    {
+        HI_ERR_OTP("Invalid input addr !\n\n");
+        (HI_VOID)OTP_ProcGetHelpInfo();
+        return HI_FAILURE;
+    }
+
+    u32Value = (HI_U32)simple_strtoul(ptr2, &ptr1, 16);
+    if(0 != (u32Value & 0xffffff00))
+    {
+        HI_ERR_OTP("Invalid input data, data should be type of HI_U8 !\n\n");
+        (HI_VOID)OTP_ProcGetHelpInfo();
+        return HI_FAILURE;
+    }
+
+    HI_WARN_OTP("u32Addr = 0x%08x  ", u32Addr);
+    HI_WARN_OTP("u8Value = 0x%02x\n", u32Value & 0xffffff00);
+
+    ret = DRV_OTP_Write_Byte(u32Addr, (HI_U8)(u32Value & 0xff));
+    if(HI_SUCCESS != ret)
+    {
+        HI_ERR_OTP("Write otp failed, ret = 0x%08x !\n", ret);
+        return HI_FAILURE;
     }
 
     return count;
@@ -64,7 +211,6 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
         case CMD_OTP_READ:
         {
             OTP_ENTRY_S *pOtpEntry = (OTP_ENTRY_S *)arg;
-            //pOtpEntry->Value = do_apb_para_read(pOtpEntry->Addr);
             pOtpEntry->Value = DRV_OTP_Read(pOtpEntry->Addr);
             break;
         }
@@ -118,10 +264,6 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
         case CMD_OTP_GETDDPLUSFLAG:
         {
             HI_BOOL *pDDPLUSFlag = (HI_BOOL*)arg;
-            HI_CHIP_TYPE_E enchipType = HI_CHIP_TYPE_BUTT;
-            HI_CHIP_VERSION_E enchipVersion = 0;
-
-            HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
             Ret = DRV_OTP_Get_DDPLUS_Flag(pDDPLUSFlag);
             
             break;
@@ -129,32 +271,20 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
         case CMD_OTP_GETDTSFLAG:
         {
             HI_BOOL *pDTSFlag = (HI_BOOL*)arg;
-            HI_CHIP_TYPE_E enchipType = HI_CHIP_TYPE_BUTT;
-            HI_CHIP_VERSION_E enchipVersion = 0;
-
-            HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
             Ret = DRV_OTP_Get_DTS_Flag(pDTSFlag);
             
             break;
         }
         case CMD_OTP_SETSTBPRIVDATA:
         {
-            HI_CHIP_TYPE_E enchipType = HI_CHIP_TYPE_BUTT;
-            HI_CHIP_VERSION_E enchipVersion = 0;
             OTP_STB_PRIV_DATA_S *pStbPrivData = (OTP_STB_PRIV_DATA_S*)arg;
-
-            HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
 	        Ret = DRV_OTP_Set_StbPrivData(pStbPrivData);
 
 			break;
         }
         case CMD_OTP_GETSTBPRIVDATA:
         {
-            HI_CHIP_TYPE_E enchipType = HI_CHIP_TYPE_BUTT;
-            HI_CHIP_VERSION_E enchipVersion = 0;
            	OTP_STB_PRIV_DATA_S *pStbPrivData = (OTP_STB_PRIV_DATA_S*)arg;
-
-            HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
             Ret = DRV_OTP_Get_StbPrivData(pStbPrivData);
 			break;
         }
@@ -182,7 +312,11 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
 
             HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
             if( ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3712 == enchipType))
-                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)) )
+            || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType))
+            || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716C == enchipType))
+            || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3718C == enchipType))
+            || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719C == enchipType))
+            || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719M_A == enchipType)))
             {
                 OTP_HDCP_ROOT_KEY_S stHdcpRootKey = *(OTP_HDCP_ROOT_KEY_S *)arg;            
                 Ret = OTP_V200_SetHdcpRootKey(stHdcpRootKey.u8Key);
@@ -208,8 +342,7 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
             HI_CHIP_VERSION_E enchipVersion = 0;
 
             HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
-            if( ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3712 == enchipType))
-                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)) )
+            if( (HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3712 == enchipType) )
             {
                 OTP_HDCP_ROOT_KEY_S *pstHdcpRootKey = (OTP_HDCP_ROOT_KEY_S *)arg;
                 Ret = OTP_V200_GetHdcpRootKey(pstHdcpRootKey->u8Key);
@@ -228,7 +361,11 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
 
             HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
             if( ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3712 == enchipType))
-                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)) )
+                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType))
+                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3718C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719M_A == enchipType)))
             {
                 Ret = OTP_V200_SetHdcpRootKeyLock();
             }
@@ -247,7 +384,11 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
 
             HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
             if( ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3712 == enchipType))
-                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)) )
+                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType))
+                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3718C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719M_A == enchipType)))
             {
                 HI_BOOL *pbKeyLockFlag = (HI_BOOL *)arg;
                 Ret = OTP_V200_GetHdcpRootKeyLock(pbKeyLockFlag);
@@ -267,7 +408,11 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
 
             HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
             if( ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3712 == enchipType))
-                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)) )
+                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType))
+                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3718C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719M_A == enchipType)))
             {
                 OTP_STB_ROOT_KEY_S stSTBRootKey = *(OTP_STB_ROOT_KEY_S *)arg;
                 Ret = OTP_V200_SetSTBRootKey(stSTBRootKey.u8Key);
@@ -284,7 +429,7 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
             {
                 HI_ERR_OTP("Not supported!\n");
                 Ret = HI_FAILURE;
-            }                       
+            }
             break;
         }
         case CMD_OTP_READSTBROOTKEY:
@@ -293,8 +438,7 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
             HI_CHIP_VERSION_E enchipVersion = 0;
 
             HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
-            if( ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3712 == enchipType))
-                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)) )
+            if( (HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3712 == enchipType) )
             {
                 OTP_STB_ROOT_KEY_S *pstSTBRootKey = (OTP_STB_ROOT_KEY_S *)arg;
             	Ret = OTP_V200_GetSTBRootKey(pstSTBRootKey->u8Key);
@@ -304,7 +448,7 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
                 HI_ERR_OTP("Not supported!\n");
                 Ret = HI_FAILURE;
             }
-            
+
             break;
         }
         case CMD_OTP_LOCKSTBROOTKEY:
@@ -314,7 +458,11 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
 
             HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
             if( ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3712 == enchipType))
-                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)) )
+                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType))
+                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3718C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719M_A == enchipType)))
             {
                 Ret = OTP_V200_LockSTBRootKey();
             }
@@ -332,7 +480,11 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
 
             HI_DRV_SYS_GetChipVersion(&enchipType, &enchipVersion);
             if( ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3712 == enchipType))
-                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType)) )
+                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716CES == enchipType))
+                || ((HI_CHIP_VERSION_V200 == enchipVersion) && (HI_CHIP_TYPE_HI3716C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3718C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719C == enchipType))
+                || ((HI_CHIP_VERSION_V100 == enchipVersion) && (HI_CHIP_TYPE_HI3719M_A == enchipType)))
             {
                 HI_BOOL *pbSTBRootKeyLockFlag = (HI_BOOL *)arg;
 	            Ret = OTP_V200_GetSTBRootKeyLockFlag(pbSTBRootKeyLockFlag);
@@ -357,13 +509,15 @@ HI_S32 OTP_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
 
 static HI_S32 DRV_OTP_Open(struct inode *inode, struct file *filp)
 {
+    HI_S32 ret = HI_SUCCESS;
+
     if(down_interruptible(&g_OtpMutex))
     {
         return -1;        
     }
 
-	HI_DRV_MODULE_GetFunction(HI_ID_CIPHER, (HI_VOID**)&g_pCIPHERExportFunctionList);
-	if( NULL == g_pCIPHERExportFunctionList)
+	ret = HI_DRV_MODULE_GetFunction(HI_ID_CIPHER, (HI_VOID**)&g_pCIPHERExportFunctionList);
+	if( (HI_SUCCESS != ret) || (NULL == g_pCIPHERExportFunctionList) )
 	{
 		HI_FATAL_OTP("Get cipher functions failed!\n");	
 		return HI_FAILURE;
@@ -430,8 +584,9 @@ static PM_BASEOPS_S  otp_drvops = {
 HI_S32 OTP_DRV_ModInit(HI_VOID)
 {
     HI_S32 ret = HI_SUCCESS;
-    
-    sprintf(g_stOtpUmapDev.devfs_name, UMAP_DEVNAME_OTP);
+    DRV_PROC_EX_S stProcFunc = {0};
+
+    snprintf(g_stOtpUmapDev.devfs_name, sizeof(UMAP_DEVNAME_OTP), UMAP_DEVNAME_OTP);
     g_stOtpUmapDev.minor = UMAP_MIN_MINOR_OTP;
 	g_stOtpUmapDev.owner  = THIS_MODULE;
 	g_stOtpUmapDev.drvops = &otp_drvops;
@@ -442,16 +597,19 @@ HI_S32 OTP_DRV_ModInit(HI_VOID)
         HI_FATAL_OTP("register otp failed.\n");
         return HI_FAILURE;
     }
-    
+
     ret = DRV_OTP_Init();
     if (HI_SUCCESS != ret)
     {
         return ret;
     }
+
+    stProcFunc.fnRead   = OTP_ProcRead;
+    stProcFunc.fnWrite  = OTP_ProcWrite;
+    HI_DRV_PROC_AddModule(HI_MOD_OTP, &stProcFunc, NULL);
+
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    HI_INFO_OTP("Load hi_otp.ko success.  \t(%s)\n", VERSION_STRING);
-#endif
+    HI_PRINT("Load hi_otp.ko success.  \t(%s)\n", VERSION_STRING);
 #endif
 
     return 0;
@@ -459,6 +617,8 @@ HI_S32 OTP_DRV_ModInit(HI_VOID)
 
 HI_VOID OTP_DRV_ModExit(HI_VOID)
 {
+    HI_DRV_PROC_RemoveModule(HI_MOD_OTP);
+
     DRV_OTP_DeInit();
 
     HI_DRV_DEV_UnRegister(&g_stOtpUmapDev);
@@ -472,3 +632,4 @@ module_exit(OTP_DRV_ModExit);
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("HISILICON");
+

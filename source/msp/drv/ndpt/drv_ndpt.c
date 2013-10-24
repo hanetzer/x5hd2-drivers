@@ -31,11 +31,11 @@
 #include <net/ip.h>
 #include <linux/time.h>
 
-#include "drv_proc_ext.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_struct.h"
 #include "drv_ndpt_ext.h"
-#include "drv_module_ext.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_module.h"
+#include "hi_drv_mem.h"
 #include "hi_drv_ndpt.h"
 #include "hi_kernel_adapt.h"
 
@@ -78,41 +78,41 @@ HI_S32 NDPT_ProcRead(struct seq_file *p, void *v)
     HI_U32  u32Interval = 0;
     NDPT_PACKET_INTERVAL_S *  pstInterval = NULL;
 
-    p += seq_printf(p,"---------Hisilicon Net adapter Info---------\n");
+    PROC_PRINT(p,"---------Hisilicon Net adapter Info---------\n");
 
     HI_NDPT_LOCK();    
 
     for(pstNdptCh=pstNdptCh_Head; pstNdptCh!=NULL; pstNdptCh=pstNdptCh->next)
     {
-        p += seq_printf(p,"\n");
-        p += seq_printf(p,"Channel index :  [%d]\n",pstNdptCh->handle&0xff);
+        PROC_PRINT(p,"\n");
+        PROC_PRINT(p,"Channel index :  [%d]\n",pstNdptCh->handle&0xff);
         if(pstNdptCh->stNetFlag.bit1SrcIP)
-            p += seq_printf(p,"Source IP :  [%d.%d.%d.%d]\n",pstNdptCh->stNetPara.sip[pstNdptCh->stNetPara.sip_len-4],pstNdptCh->stNetPara.sip[pstNdptCh->stNetPara.sip_len-3],pstNdptCh->stNetPara.sip[pstNdptCh->stNetPara.sip_len-2],pstNdptCh->stNetPara.sip[pstNdptCh->stNetPara.sip_len-1]);
+            PROC_PRINT(p,"Source IP :  [%d.%d.%d.%d]\n",pstNdptCh->stNetPara.sip[pstNdptCh->stNetPara.sip_len-4],pstNdptCh->stNetPara.sip[pstNdptCh->stNetPara.sip_len-3],pstNdptCh->stNetPara.sip[pstNdptCh->stNetPara.sip_len-2],pstNdptCh->stNetPara.sip[pstNdptCh->stNetPara.sip_len-1]);
         if(pstNdptCh->stNetFlag.bit1DstIP)
-            p += seq_printf(p,"Dest IP :  [%d.%d.%d.%d]\n",pstNdptCh->stNetPara.dip[pstNdptCh->stNetPara.dip_len-4],pstNdptCh->stNetPara.dip[pstNdptCh->stNetPara.dip_len-3],pstNdptCh->stNetPara.dip[pstNdptCh->stNetPara.dip_len-2],pstNdptCh->stNetPara.dip[pstNdptCh->stNetPara.dip_len-1]);
+            PROC_PRINT(p,"Dest IP :  [%d.%d.%d.%d]\n",pstNdptCh->stNetPara.dip[pstNdptCh->stNetPara.dip_len-4],pstNdptCh->stNetPara.dip[pstNdptCh->stNetPara.dip_len-3],pstNdptCh->stNetPara.dip[pstNdptCh->stNetPara.dip_len-2],pstNdptCh->stNetPara.dip[pstNdptCh->stNetPara.dip_len-1]);
         if(pstNdptCh->stNetFlag.bit1SrcPort)
-            p += seq_printf(p,"Source port :  [%d]\n",pstNdptCh->stNetPara.sport);
+            PROC_PRINT(p,"Source port :  [%d]\n",pstNdptCh->stNetPara.sport);
         if(pstNdptCh->stNetFlag.bit1DstPort)
-            p += seq_printf(p,"Dest port :  [%d]\n",pstNdptCh->stNetPara.dport);
+            PROC_PRINT(p,"Dest port :  [%d]\n",pstNdptCh->stNetPara.dport);
         if((pstNdptCh->stNetFlag.bit1IPTos))
-            p += seq_printf(p,"Mask :  [0x%02x]\n",pstNdptCh->stNetPara.mask);
+            PROC_PRINT(p,"Mask :  [0x%02x]\n",pstNdptCh->stNetPara.mask);
         if(pstNdptCh->stNetFlag.bit1IPTos)
-            p += seq_printf(p,"IP_Tos :  [0x%02x]\n",pstNdptCh->stNetPara.ip_tos);
+            PROC_PRINT(p,"IP_Tos :  [0x%02x]\n",pstNdptCh->stNetPara.ip_tos);
         if(pstNdptCh->stNetFlag.bit1Vlan)
         {
-            p += seq_printf(p,"Vlan_En :  [%d]\n",pstNdptCh->stNetPara.vlan_en);
-            p += seq_printf(p,"Vlan_Pri :  [%d]\n",pstNdptCh->stNetPara.vlan_pri);
-            p += seq_printf(p,"Vlan_Pid :  [%d]\n",pstNdptCh->stNetPara.vlan_pid);
+            PROC_PRINT(p,"Vlan_En :  [%d]\n",pstNdptCh->stNetPara.vlan_en);
+            PROC_PRINT(p,"Vlan_Pri :  [%d]\n",pstNdptCh->stNetPara.vlan_pri);
+            PROC_PRINT(p,"Vlan_Pid :  [%d]\n",pstNdptCh->stNetPara.vlan_pid);
         }
-        p += seq_printf(p,"Loopback mode :  [%d]\n",pstNdptCh->eLoopback);
-        p += seq_printf(p,"Transport ID :  [%d]\n",pstNdptCh->TransId);
-        p += seq_printf(p,"Send  Try/Ok :  [%d/%d]\n",pstNdptCh->uiSendTry,pstNdptCh->uiSendOkCnt);
+        PROC_PRINT(p,"Loopback mode :  [%d]\n",pstNdptCh->eLoopback);
+        PROC_PRINT(p,"Transport ID :  [%d]\n",pstNdptCh->TransId);
+        PROC_PRINT(p,"Send  Try/Ok :  [%d/%d]\n",pstNdptCh->uiSendTry,pstNdptCh->uiSendOkCnt);
 
         if(pstNdptCh->uiRevRtpCnt == 0)
             u32SeqCnt = 0;
         else
             u32SeqCnt = (pstNdptCh->uiRevSeqMax-pstNdptCh->uiRevSeqMin + 1) + pstNdptCh->uiRevSeqCnt;
-        p += seq_printf(p,"Received OK/Lost :  [%d/%d]\n",pstNdptCh->uiRevRtpCnt,u32SeqCnt-pstNdptCh->uiRevRtpCnt);
+        PROC_PRINT(p,"Received OK/Lost :  [%d/%d]\n",pstNdptCh->uiRevRtpCnt,u32SeqCnt-pstNdptCh->uiRevRtpCnt);
 
         u32IntervalCnt = pstNdptCh->u32RevIntervalCnt;
         pstInterval = pstNdptCh->pstRevIntervalHead;
@@ -131,37 +131,37 @@ HI_S32 NDPT_ProcRead(struct seq_file *p, void *v)
         
         if(pstNdptCh->u32RevIntervalCnt > 0)
         {
-            p += seq_printf(p,"Receive interval (us): average [%d], max [%d], min [%d]\n",pstNdptCh->u32RevIntervalTotal/pstNdptCh->u32RevIntervalCnt,u32IntervalMax,u32IntervalMin);
+            PROC_PRINT(p,"Receive interval (us): average [%d], max [%d], min [%d]\n",pstNdptCh->u32RevIntervalTotal/pstNdptCh->u32RevIntervalCnt,u32IntervalMax,u32IntervalMin);
         }    
 
         if(pstNdptCh->stSendErrFlag.bit1DstIP)
-            p += seq_printf(p,"Send ERR, can't achieve dest IP address .\n");
+            PROC_PRINT(p,"Send ERR, can't achieve dest IP address .\n");
         if(pstNdptCh->stSendErrFlag.bit1Long)
-            p += seq_printf(p,"Send ERR, rtp packet is too long.\n");
+            PROC_PRINT(p,"Send ERR, rtp packet is too long.\n");
         if(pstNdptCh->stSendErrFlag.bit1SameIP)
-            p += seq_printf(p,"Send NOTICE, the source and dest ip is same.\n");
+            PROC_PRINT(p,"Send NOTICE, the source and dest ip is same.\n");
         if(pstNdptCh->stSendErrFlag.bit1Skb)
-            p += seq_printf(p,"Send ERR, malloc skb failure.\n");
+            PROC_PRINT(p,"Send ERR, malloc skb failure.\n");
         if(pstNdptCh->stSendErrFlag.bit1MacHd)
-            p += seq_printf(p,"Send ERR, create mac header failure.\n");
+            PROC_PRINT(p,"Send ERR, create mac header failure.\n");
         if(pstNdptCh->stSendErrFlag.bit1Xmit)
-            p += seq_printf(p,"Send ERR, dev_queue_xmit() failure.\n");
+            PROC_PRINT(p,"Send ERR, dev_queue_xmit() failure.\n");
         if(pstNdptCh->stSendErrFlag.bit1Para)
-            p += seq_printf(p,"Send ERR, the para of HI_DRV_NDPT_SendRtp() is error.\n");
+            PROC_PRINT(p,"Send ERR, the para of HI_DRV_NDPT_SendRtp() is error.\n");
         if(pstNdptCh->stSendErrFlag.bit1NotReady)
-            p += seq_printf(p,"Send ERR, the channel is not ready to send and receive data.\n");
+            PROC_PRINT(p,"Send ERR, the channel is not ready to send and receive data.\n");
         
-        p += seq_printf(p,"\n");
+        PROC_PRINT(p,"\n");
     }
     
     HI_NDPT_UNLOCK();    
 
-    p += seq_printf(p,"\n");
-    p += seq_printf(p,"NDPT debug cmd format:  echo ChIndex Cmd Para > /proc/msp/ndpt \n");
-    p += seq_printf(p,"ChIndex : the ndpt channel index.\n");
-    p += seq_printf(p,"Cmd : 0--lookback 1--clear send and receive cnt and flag 2--ip tos.\n");
-    p += seq_printf(p,"Sample to set SEND_BACK lookback mode : echo 0 0 1 > /proc/msp/ndpt\n");
-    p += seq_printf(p,"\n");
+    PROC_PRINT(p,"\n");
+    PROC_PRINT(p,"NDPT debug cmd format:  echo ChIndex Cmd Para > /proc/msp/ndpt \n");
+    PROC_PRINT(p,"ChIndex : the ndpt channel index.\n");
+    PROC_PRINT(p,"Cmd : 0--lookback 1--clear send and receive cnt and flag 2--ip tos.\n");
+    PROC_PRINT(p,"Sample to set SEND_BACK lookback mode : echo 0 0 1 > /proc/msp/ndpt\n");
+    PROC_PRINT(p,"\n");
     return HI_SUCCESS;
 }
 
@@ -243,7 +243,8 @@ static struct net_device *dev_get_by_ip(HI_U32 ip)
 #if 0
 	return hieth_get_device_by_ip(ip);
 #else
-    struct net *net = dev_net(NULL);
+    // struct net *net = dev_net(NULL);
+    struct net *net = &init_net;
     struct net_device *dev = NULL;
     struct in_device *ipdev = NULL;
     struct in_ifaddr *ifaddr = NULL;
@@ -257,7 +258,7 @@ static struct net_device *dev_get_by_ip(HI_U32 ip)
             HI_ERR_NDPT("count find net.\n");
             return NULL;
     }
-    
+
     dev = first_net_device(net);
     while(dev!=NULL)
     {
@@ -389,12 +390,12 @@ static  HI_S32 ndpt_get_ip4(HI_U32 len,HI_U8 *pAddr,HI_U32 *pIPV4)
 
 static HI_S32   ndpt_get_dest_mac(HI_U8 *dmac,struct net_device *dev,HI_U32 Dip,HI_U32 Sip)
 {
-    struct net *net = dev_net(NULL);
+    //struct net *net = dev_net(NULL);
+    struct net *net = &init_net;
     struct rtable *rt;
-    struct flowi fl;
+    struct flowi4 fl;
     HI_U32 gateway = 0;
     struct neighbour *n = NULL;
-    HI_S32 err;
 
     if(dmac == NULL)
         return HI_FAILURE;
@@ -404,10 +405,11 @@ static HI_S32   ndpt_get_dest_mac(HI_U8 *dmac,struct net_device *dev,HI_U32 Dip,
         return HI_FAILURE;
 
     memset(&fl, 0, sizeof(fl));
-    fl.nl_u.ip4_u.daddr = Dip;
-    err = ip_route_output_key(net,&rt, &fl);
-    if(err)
+    fl.daddr = Dip;
+    rt = ip_route_output_key(net, &fl);
+    if(rt == NULL)
     {
+        HI_ERR_NDPT("ip_route_output_key failed\n");
         return HI_FAILURE;
     }
     gateway = rt->rt_gateway;
@@ -1372,8 +1374,7 @@ HI_S32 HI_DRV_NDPT_ModifyNetPara(HI_U32 handle,HI_VOID * pNetCfgPara)
     pstNetCfg = (NDPT_NET_CONFIG_PARA_S*)pNetCfgPara;
    
     if(pstNetCfg->stChange.bit1SrcIP)
-    {
-        
+    {   
         Ret = ndpt_get_ip4(pstNetCfg->stBody.sip_len,pstNetCfg->stBody.sip,&u32Sip);
         if(Ret!=HI_SUCCESS)
         {
@@ -1381,6 +1382,7 @@ HI_S32 HI_DRV_NDPT_ModifyNetPara(HI_U32 handle,HI_VOID * pNetCfgPara)
             HI_ERR_NDPT("invalid source ip\n");
             return HI_FAILURE;
         }
+      
         dev = dev_get_by_ip(u32Sip);
         if(dev == NULL)
         {
@@ -1507,7 +1509,6 @@ HI_S32 HI_DRV_NDPT_ModifyNetPara(HI_U32 handle,HI_VOID * pNetCfgPara)
             return HI_FAILURE;
         }
     }
-
 
     /*get remote route*//*CNcomment:获取远端路由*/
 	
@@ -1740,9 +1741,11 @@ static HI_S32 __INIT__ NDPT_ModeInit(HI_VOID)
     }
     pProcItem->read = NDPT_ProcRead;
     pProcItem->write = NDPT_ProcWrite;
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_ndpt.ko success.  \t(%s)\n", VERSION_STRING);
+
+#ifdef MODULE
+    HI_PRINT("Load hi_ndpt.ko success.  \t(%s)\n", VERSION_STRING);
 #endif
+
     return HI_SUCCESS;
 }
 

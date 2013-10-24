@@ -27,25 +27,21 @@
 #include <sys/mman.h>
 #include <sys/ioctl.h>
 #include <stdarg.h>
-
 #include <sys/time.h>
-
 #include "hi_common.h"
-
-
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "hi_mpi_stat.h"
 #include "drv_stat_ioctl.h"
-
-
-#include "drv_reg_ext.h"
 #include "hi_module.h"
+#include "hi_osal.h"
 #include "hi_mpi_mem.h"
 //#define __STAT_USE_HW_TIMER__
 
 #define CALLING_USED
 HI_S32 s_s32StatFd = -1;
+#ifdef __STAT_USE_HW_TIMER__
 volatile HI_VOID * g_Timer7_addr = NULL;
+#endif
 
 static pthread_mutex_t   s_StatMutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -60,7 +56,10 @@ HI_U32 STAT_GetTimer0Addr(HI_VOID)
 
     memset(&stSysChipInfo, 0, sizeof(stSysChipInfo));
     
-    HI_SYS_GetVersion(&stSysChipInfo);
+    if (HI_SYS_GetVersion(&stSysChipInfo))
+    {
+        return 0;
+    }
 
     if ( (stSysChipInfo.enChipTypeHardWare != HI_CHIP_TYPE_BUTT) && (stSysChipInfo.enChipVersion == HI_CHIP_VERSION_V300) )
     {
@@ -76,7 +75,10 @@ HI_U32 STAT_GetTimer0Addr(HI_VOID)
 
 HI_S32 HI_MPI_STAT_Init(HI_VOID)
 {
+#ifdef __STAT_USE_HW_TIMER__
+    HI_U32 RegAddr;
     HI_U32 RegValue;
+#endif
 
     HI_STAT_LOCK();
     
@@ -90,9 +92,19 @@ HI_S32 HI_MPI_STAT_Init(HI_VOID)
             return HI_FAILURE ;
         }
 
+#ifdef __STAT_USE_HW_TIMER__
         if(g_Timer7_addr == NULL)
         {
-            g_Timer7_addr = (HI_VOID *)HI_MMAP(STAT_GetTimer0Addr(), 4000);
+            RegAddr = STAT_GetTimer0Addr();
+            if (0 == RegAddr)
+            {
+                close(s_s32StatFd);
+                s_s32StatFd = -1;
+                HI_STAT_UNLOCK();
+                return HI_FAILURE ;
+            }
+            
+            g_Timer7_addr = (HI_VOID *)HI_MMAP(RegAddr, 4000);
             if (NULL == g_Timer7_addr)
             {
                 close(s_s32StatFd);
@@ -119,6 +131,7 @@ HI_S32 HI_MPI_STAT_Init(HI_VOID)
 
             usleep(1*1000);
         }
+#endif
     }
 
     HI_STAT_UNLOCK();
@@ -138,11 +151,13 @@ HI_S32 HI_MPI_STAT_DeInit(HI_VOID)
 
         s_s32StatFd = -1;
 
+#ifdef __STAT_USE_HW_TIMER__
         if (g_Timer7_addr)
         {
             HI_MUNMAP((void *)g_Timer7_addr);
             g_Timer7_addr = NULL;
         }
+#endif 
     }
 
     HI_STAT_UNLOCK();
@@ -171,7 +186,7 @@ HI_S32 stat_fast_get_time(struct timeval * tv)
     tv->tv_usec = (time_diff % TIMER_PRE) * 1000000 / TIMER_PRE;
 #else
     /*use gettimeofday first, may be change to read hardware timer to get time subsequently */
-    gettimeofday(tv, NULL);
+    (HI_VOID)gettimeofday(tv, NULL);
 #endif
 
     return HI_SUCCESS;
@@ -256,7 +271,7 @@ HI_S32 HI_MPI_STAT_ThreadRegister(char * name, HI_STAT_HANDLE * pHandle)
         *pHandle = NULL;
         return HI_FAILURE;
     }
-    strncpy((*pHandle)->stat_thread_uvirtaddr->name, name, sizeof(THREAD_NAME));
+    HI_OSAL_Strncpy((*pHandle)->stat_thread_uvirtaddr->name, name, sizeof(THREAD_NAME)-1);
 
     return HI_SUCCESS;
 }
@@ -271,7 +286,7 @@ HI_S32 HI_MPI_STAT_ThreadUnregister(HI_STAT_HANDLE * pHandle)
     memset((*pHandle)->stat_thread_uvirtaddr, 0, sizeof(STAT_USERSPACE_S));
     if ((void *)(*pHandle)->stat_thread_uvirtaddr)
     {
-        HI_MUNMAP((void *)(*pHandle)->stat_thread_uvirtaddr);
+        (HI_VOID)HI_MUNMAP((void *)(*pHandle)->stat_thread_uvirtaddr);
     }
     HI_FREE(HI_ID_MEM, *pHandle);
     (*pHandle) = NULL;

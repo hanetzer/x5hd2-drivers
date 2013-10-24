@@ -23,8 +23,8 @@
 #include "hi_debug.h"
 #include "hi_error_mpi.h"
 //#include " hi_unf_ecs_type.h"
-#include "drv_proc_ext.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_sys.h"
 
 //#include "common_proc.h"
 //#include "tuner_common_pilot.h"
@@ -33,9 +33,9 @@
 #include "sharp_qm1d1c004x.h"
 #include "M88TS2022.h"
 #include "RDA5815.h"
-#define TUNER_NUM 3
+//#define TUNER_NUM 5
 
-HI3136_CFG_ITEM_S hi3136_cfg[TUNER_NUM];
+HI3136_CFG_ITEM_S hi3136_cfg[TUNER_NUM] = {0};
 HI_U32 u32LPF_KHz[TUNER_NUM] = {0};
 static HI_S32 hi3136_setlpf(HI_U32 u32TunerPort, HI_U32 u32SymbolRate/*unit BAUD ,neither K, nor M*/);
 
@@ -57,7 +57,7 @@ typedef enum tagHI3136_LOCK_STATUS_E
 
 static HI_VOID hi3136_HotReset_CHIP(HI_U32 u32TunerPort)
 {
-    HI_U8 u8Temp;
+    HI_U8 u8Temp = 0;
 
     qam_read_byte(u32TunerPort, RSTN_CTRL, &u8Temp);
     u8Temp &= 0xfd;
@@ -109,13 +109,16 @@ HI_BOOL hi3136_Set_Ts_Out_Enable(HI_U32 u32TunerPort,HI_BOOL bTS_ON)
 
 HI3136_LOCK_STATUS_E hi3136_Read_Lock_Status(HI_U32 u32TunerPort)  //ÉèÖÃ×´Ì¬¼Ä´æÆ÷£¬
 {
-    HI_U8 u8Temp;
+    HI_U8 u8Temp = 0;
     HI3136_LOCK_STATUS_E lockstatus;
-
+    HI_S32 s32Ret = 0;
     lockstatus = UNLOCKED;
 
-    qam_read_byte(u32TunerPort, LOCK_FLAG, &u8Temp);
-
+    s32Ret = qam_read_byte(u32TunerPort, LOCK_FLAG, &u8Temp);
+    if(HI_SUCCESS != s32Ret)
+    {
+        return s32Ret;
+    }
     if (u8Temp & (1 << 5))
     {
         lockstatus = FEC_LOCKED;
@@ -153,7 +156,7 @@ HI_S32 hi3136_get_signal_strength(HI_U32 u32TunerPort, HI_U32 *pu32SignalStrengt
 {
     HI_U8 au8RegVal[2] = {0};
 
-    HI_ASSERT(HI_NULL != pu32SignalStrength);
+    HI_TUNER_CHECKPOINTER( pu32SignalStrength);
 
     qam_read_byte(u32TunerPort, AGC_CTRL_L, &au8RegVal[1]);
     qam_read_byte(u32TunerPort, AGC_CTRL_H, &au8RegVal[0]);
@@ -169,7 +172,7 @@ HI_VOID hi3136_read_tuner_reg(HI_U32 u32TunerPort, HI_U8 RegAddress, HI_U8 *RegD
     //TODO: read  tuner register
     HI_U8 enI2cChannel = 0;
     HI_U8 u8DevAddr = 0;
-
+    HI_S32 s32Ret = 0;
     u8DevAddr = g_stTunerOps[u32TunerPort].u32TunerAddress;
     enI2cChannel = g_stTunerOps[u32TunerPort].enI2cChannel;
 
@@ -177,7 +180,11 @@ HI_VOID hi3136_read_tuner_reg(HI_U32 u32TunerPort, HI_U8 RegAddress, HI_U8 *RegD
 
     if (4 >= enI2cChannel)
     {
-        HI_DRV_I2C_Read(enI2cChannel, u8DevAddr, RegAddress, 1, RegData, 1);
+        s32Ret = HI_DRV_I2C_Read(enI2cChannel, u8DevAddr, RegAddress, 1, RegData, 1);
+	 if(HI_SUCCESS != s32Ret)
+        {
+            return;
+        } 
     }
 }
 
@@ -186,7 +193,7 @@ HI_S32 hi3136_get_signal_strength(HI_U32 u32TunerPort, HI_U32 *pu32SignalStrengt
     HI_U8 au8RegVal[2] = {0};
     HI_U8 u8BBGain = 0, u8RFGain = 0;
 
-    HI_ASSERT(HI_NULL != pu32SignalStrength);
+    HI_TUNER_CHECKPOINTER( pu32SignalStrength);
 
     qam_read_byte(u32TunerPort, AGC_CTRL_L, &au8RegVal[0]);
     qam_read_byte(u32TunerPort, AGC_CTRL_H, &au8RegVal[1]);
@@ -218,7 +225,7 @@ HI_S32 hi3136_get_snr(HI_U32 u32TunerPort, HI_U32* pu32SNR)
     HI_U32 u32SNR = 0;
     HI_U8 u8Times = 0;
 
-    HI_ASSERT(HI_NULL != pu32SNR);
+    HI_TUNER_CHECKPOINTER( pu32SNR);
 
     do
     {
@@ -240,9 +247,13 @@ HI_S32 hi3136_get_snr(HI_U32 u32TunerPort, HI_U32* pu32SNR)
 
 HI_S32 hi3136_get_ber(HI_U32 u32TunerPort, HI_U32 *pu32ber)
 {
-    HI_U8   u8Temp, temp, temp1, temp2;
+    HI_U8   u8Temp = 0;
+    HI_U8   temp = 0;
+    HI_U8   temp1 = 0;
+    HI_U8   temp2 = 0;
     HI_U32  ErrorRate = 0;
-    HI_U32  a, b;
+    HI_U32  a = 0;
+    HI_U32  b = 0;
     HI_U32  total_num, temp3;
 
     if(pu32ber == HI_NULL)
@@ -501,7 +512,8 @@ HI_S32 hi3136_get_ber(HI_U32 u32TunerPort, HI_U32 *pu32ber)
 
 static HI_BOOL hi3136_Set_BS_Mode(HI_U32 u32TunerPort, HI_BOOL bs)   //blind sacn mode
 {
-    HI_U8 temp1,temp2;
+    HI_U8 temp1 = 0;
+    HI_U8 temp2 = 0;
     HI_U8  u8Temp = 0;
 
     qam_read_byte(u32TunerPort, CBS_CTRL_RDADDR, &u8Temp);
@@ -524,7 +536,7 @@ static HI_BOOL hi3136_Set_BS_Mode(HI_U32 u32TunerPort, HI_BOOL bs)   //blind sac
 /* 0 Power off, 1 power on */
 HI_S32 hi3136_lnbctrl_power(HI_U32 u32TunerPort, HI_U8 u8Power)
 {
-    HI_U8 u8Temp ;
+    HI_U8 u8Temp = 0 ;
 
     if (HI_UNF_DEMOD_DEV_TYPE_3136I == g_stTunerOps[u32TunerPort].enDemodDevType)
     {
@@ -599,8 +611,8 @@ HI_S32 hi3136_set_lnb_out(HI_U32 u32TunerPort, TUNER_LNB_OUT_E enOut)
 
 HI_S32 hi3136_send_continuous_22K(HI_U32 u32TunerPort,HI_BOOL b22k_on) // ÉèÖÃ22k,
 {
-    HI_U8   u8Temp;
-    HI_U32  diseqc_Ratio;
+    HI_U8   u8Temp = 0;
+    HI_U32  diseqc_Ratio = 0;
 
     //diseqc_Ratio = (HI3136_SYSCLK_SAMPLE / 22) & 0xffff;
     diseqc_Ratio = (hi3136_cfg[u32TunerPort].u32CLK_DEMO_kHz / 22) & 0xffff;
@@ -660,7 +672,12 @@ static HI_S32 hi3136_set_symrate(HI_U32 u32TunerPort, HI_U32 u32SymRate)  /*u32S
 
 HI_S32 hi3136_get_signal_info(HI_U32 u32TunerPort, HI_UNF_TUNER_SIGNALINFO_S *pstInfo)
 {
-    HI_U8   temp1, temp2, temp3, u8Temp, u8Temp1;
+
+    HI_U8   temp1 = 0;
+    HI_U8   temp2 = 0;
+    HI_U8   temp3 = 0;
+    HI_U8   u8Temp = 0;
+    HI_U8   u8Temp1 = 0;
 
     pstInfo->enSigType = HI_UNF_TUNER_SIG_TYPE_SAT;
     qam_read_byte(u32TunerPort, TX_CTRL, &u8Temp);
@@ -955,7 +972,8 @@ HI_S32 hi3136_get_signal_info(HI_U32 u32TunerPort, HI_UNF_TUNER_SIGNALINFO_S *ps
 
 HI_S32 hi3136_lock_TP(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *tp)
 {
-    HI_U8 temp, temp1;
+    HI_U8 temp = 0;
+    HI_U8 temp1 = 0;	 
     HI_S16 center_shift_KHz = 0;
     HI_S32 s32FuncRet = HI_SUCCESS;
 
@@ -991,11 +1009,11 @@ HI_S32 hi3136_lock_TP(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *tp)
 
 static HI_VOID hi3136_change_iterNum(HI_U32 u32TunerPort)
 {
-    HI_U8 s2_sync_bit = 0, temp1, temp2, temp3, u8Temp, M;
-    HI_U32 fs_cur;
-    HI_U16 ldpc_iter_num;
-    HI_U32 fec_clk, ldpc_iter_lmt;
-    HI_U8 fec_freq_l, fec_freq_m, fec_freq_h;
+    HI_U8 s2_sync_bit = 0, temp1 = 0, temp2 = 0, temp3 = 0, u8Temp = 0, M= 0;
+    HI_U32 fs_cur = 0;
+    HI_U16 ldpc_iter_num = 0;
+    HI_U32 fec_clk, ldpc_iter_lmt = 0;
+    HI_U8 fec_freq_l=0, fec_freq_m=0, fec_freq_h = 0;
 
     qam_read_bit(u32TunerPort, LOCK_FLAG, 3, &s2_sync_bit);
     if(s2_sync_bit)
@@ -1044,9 +1062,9 @@ static HI_VOID hi3136_change_iterNum(HI_U32 u32TunerPort)
 
 HI_S32 hi3136_lock_TP_BS(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *tp)
 {
-    HI_U8  j, u8Temp, temp_TPnum, tempL, tempH, fs_grade, read_reliable, fec_ok_bit = 0, old_bw_max;
-    HI_U32 fs_cur, time_cnt, fec_ok_wait, max_reliablity, reliablity, cbs_fs_sel = 0;
-    HI_S16 fc_true, center_shift_KHz, cbs_fc, cbs_fc_sel = 0;
+    HI_U8  j=0, u8Temp=0, temp_TPnum=0, tempL=0, tempH=0, fs_grade=0, read_reliable=0, fec_ok_bit = 0, old_bw_max=0;
+    HI_U32 fs_cur, time_cnt=0, fec_ok_wait=0, max_reliablity=0, reliablity, cbs_fs_sel = 0;
+    HI_S16 fc_true=0, center_shift_KHz=0, cbs_fc=0, cbs_fc_sel = 0;
     HI_S32 s32FuncRet = HI_SUCCESS;
 
     qam_read_byte (u32TunerPort, 0x58, &old_bw_max);
@@ -1176,11 +1194,11 @@ HI_S32 hi3136_lock_TP_BS(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *tp)
 HI_U32 hi3136_BS_one_Window(HI_U32 u32TunerPort, HI_U32 Fcenter/*MHz*/, HI_U32 Lpf_BW_window/*kHz*/, HI_UNF_TUNER_SAT_TPINFO_S *pstChannel)
 {
     HI_U32  TP_Num = 0, time_cnt;
-    HI_U8   i;
-    HI_U8   u8Temp, tempL, tempH, reliablity;
-    HI_S16  Fc_offset_Bs;
+    HI_U8   i=0;
+    HI_U8   u8Temp=0, tempL=0, tempH=0, reliablity=0;
+    HI_S16  Fc_offset_Bs=0;
     HI_S32  s32FuncRet = HI_SUCCESS;
-    HI_U32  Fs_Bs;
+    HI_U32  Fs_Bs=0;
 
     qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, 0x80);
 
@@ -1254,7 +1272,7 @@ HI_S32 hi3136_set_funcmode(HI_U32 u32TunerPort, TUNER_FUNC_MODE_E enFuncMode)
 
 HI_S32 hi3136_blindscan_init(HI_U32 u32TunerPort, TUNER_BLINDSCAN_INITPARA_S *pstPara)
 {
-    HI_ASSERT(HI_NULL != pstPara);
+    HI_TUNER_CHECKPOINTER( pstPara);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= TUNER_NUM)
@@ -1267,7 +1285,7 @@ HI_S32 hi3136_blindscan_init(HI_U32 u32TunerPort, TUNER_BLINDSCAN_INITPARA_S *ps
 }
 HI_S32 hi3136_blindscan_action(HI_U32 u32TunerPort, TUNER_BLINDSCAN_PARA_S *pstPara)
 {
-    HI_U8 u8Temp;
+    HI_U8 u8Temp=0;
 
     pstPara->u16Count = hi3136_BS_one_Window(u32TunerPort, pstPara->u32CentreFreq, HI3136_BS_WINDOW_STEP_KHZ, pstPara->unResult.astSat);
 
@@ -1336,20 +1354,20 @@ HI_S32 hi3136_init(HI_U32 u32TunerPort, HI_U8 enI2cChannel, HI_UNF_TUNER_DEV_TYP
         HI_ERR_TUNER("Tuner type not supported!\n");
         return HI_FAILURE;
     }
-
+ #if defined(TUNER_DEV_TYPE_RDA5815)  ||  defined(TUNER_DEV_TYPE_M88TS2022) ||defined(TUNER_DEV_TYPE_SHARP7903) || defined(TUNER_DEV_TYPE_AV2011)
     qam_write_byte(u32TunerPort, 0x22, 0x1e);      //reset waiting time
     qam_write_byte(u32TunerPort, 0x8c, 0x85 | (0<<5) | (1<<3));      //fec not search direcTV,
     qam_write_byte(u32TunerPort, 0x8d, 0x5e);      //fec not search direcTV,
     qam_write_byte(u32TunerPort, 0xa1, 0x05);
-
+#endif
     return HI_SUCCESS;
 }
 
 HI_S32 hi3136_set_sat_attr(HI_U32 u32TunerPort, HI_UNF_TUNER_SAT_ATTR_S *pstSatTunerAttr)
 {
-    HI_UNF_TUNER_SAT_ATTR_S* pstAttr;
+    HI_UNF_TUNER_SAT_ATTR_S* pstAttr = HI_NULL;
 
-    HI_ASSERT(HI_NULL != pstSatTunerAttr);
+    HI_TUNER_CHECKPOINTER( pstSatTunerAttr);
 
     if (u32TunerPort >= TUNER_NUM)
     {
@@ -1490,8 +1508,8 @@ HI_S32 hi3136_set_sat_attr(HI_U32 u32TunerPort, HI_UNF_TUNER_SAT_ATTR_S *pstSatT
 HI_S32 hi3136_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel)
 {
     HI_S32 s32FuncRet = HI_SUCCESS;
-
-    HI_ASSERT(HI_NULL != pstChannel);
+    
+    HI_TUNER_CHECKPOINTER( pstChannel);
 
     s32FuncRet = hi3136_lock_TP_BS(u32TunerPort, pstChannel); //¸Ä³É¿ªååBS
     if (HI_SUCCESS != s32FuncRet)
@@ -1499,17 +1517,24 @@ HI_S32 hi3136_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel)
         HI_ERR_TUNER( "set tuner error\n");
         return s32FuncRet;
     }
+    if(u32TunerPort < TUNER_NUM)
+    {
+          hi3136_config_IQ_swap(u32TunerPort, hi3136_cfg[u32TunerPort].enIQSpectrum);     /*ÅäÖÃIQ*/
 
-    hi3136_config_IQ_swap(u32TunerPort, hi3136_cfg[u32TunerPort].enIQSpectrum);     /*ÅäÖÃIQ*/
+          hi3136_set_ts_type(u32TunerPort, g_stTunerOps[u32TunerPort].enTsType);
+    }
+    else
+    {
+         HI_ERR_TUNER( "u32TunerPort >  TUNER_NUM error\n");
+         return HI_FAILURE;
+    }
 
-    hi3136_set_ts_type(u32TunerPort, g_stTunerOps[u32TunerPort].enTsType);
-
-    return HI_SUCCESS;
+     return HI_SUCCESS;
 }
 
 HI_S32 hi3136_get_status (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *penTunerStatus)
 {
-    HI_ASSERT(HI_NULL != penTunerStatus);
+    HI_TUNER_CHECKPOINTER( penTunerStatus);
 
     if (hi3136_Read_Lock_Status(u32TunerPort) == FEC_LOCKED)
     {
@@ -1525,7 +1550,7 @@ HI_S32 hi3136_get_status (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *penT
 
 HI_S32 hi3136_set_ts_type(HI_U32 u32TunerPort, HI_UNF_TUNER_OUPUT_MODE_E enTsType)
 {
-    HI_U8 u8Temp;
+    HI_U8 u8Temp=0;
 
     /*ts type control*/
     switch (enTsType)
@@ -1610,21 +1635,21 @@ HI_S32 hi3136_DiSEqC_send_msg(HI_U32 u32TunerPort, HI_UNF_TUNER_DISEQC_SENDMSG_S
 
 HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChannel)
 {
-    HI_U8 j = 0, m = 0, u8Temp, tempL, tempH, temp_TPnum, max_finded = 0, max_reliablity = 0, /*great_reliable = 0,*/ tim_ok_bit = 0, s2_sync_bit = 0, cr_ok_bit = 0, fec_ok_bit = 0,read_reliable;
-    HI_U32 i, fs_cur, cbs_fs_sel = 0, time_cnt, tim_ok_wait, fec_wait_s1, fec_ok_wait, /*fec_wait_2,*/ fec_wait_all=0, reliablity_temp1, reliablity_temp2, reliablity_temp3, quit_point = 0, fs_grade;
+    HI_U8 j = 0, m = 0, u8Temp=0, tempL=0, tempH=0, temp_TPnum=0, max_finded = 0, max_reliablity = 0, /*great_reliable = 0,*/ tim_ok_bit = 0, s2_sync_bit = 0, cr_ok_bit = 0, fec_ok_bit = 0,read_reliable=0;
+    HI_U32 i=0, fs_cur=0, cbs_fs_sel = 0, time_cnt=0, tim_ok_wait=0, fec_wait_s1=0, fec_ok_wait=0, /*fec_wait_2,*/ fec_wait_all=0, reliablity_temp1=0, reliablity_temp2=0, reliablity_temp3=0, quit_point = 0, fs_grade=0;
     HI_S16 cbs_fc, cbs_fc_sel = 0;
     HI_S32 s32FuncRet = HI_SUCCESS;
-    HI_U32 scan_time = 0, scan_wait_s1, scan_wait_s2_8, scan_wait_s2_q, scan_ok_wait, pre_reliablity, fec_num_all, fec_num_cnt = 0, try_enough = 0, tp_all, u32temp;
+    HI_U32 scan_time = 0, scan_wait_s1=0, scan_wait_s2_8=0, scan_wait_s2_q=0, scan_ok_wait=0, pre_reliablity=0, fec_num_all=0, fec_num_cnt = 0, try_enough = 0, tp_all, u32temp=0;
     HI_U8 s2_sync_old = 0, scan_ok_bit = 0, scan_ok_tmp = 0/*, reliable_th*/;
 
-    static HI_U32 hist_cnt, hist_fs[3200], hist_if[3200], hist_time[3200], hist_ok[3200], hist_num, low_cn_cnt, may_sfu, may_sfu_old, may_sfu_tmp, eq_fs_oked;
-    HI_U32 if_cur, fs_kHz, fec_ok_cnt, fec_no_ok_cnt, point_tmp, hist_is_ok, hist_no_ok, fs_dlt, if_dlt, equal_fs, equal_if, eq_fs_no_cnt, eq_fs_no_cnt2, time_msec, time_start, time1, time2, scan_state_old = 0;
-    HI_U32 chance_2a, chance_2, /*try_st1_waited = 0,*/ scan_st1_wait = 0, scan_state, fec_num_true, s2_fec_resync, /*special_fs,*/ find_up, s2_tryed;
-    HI_S16 cr_cn = 0, cn_th = 230, cn_drop;
+    static HI_U32 hist_cnt=0, hist_fs[3200]={0}, hist_if[3200]={0}, hist_time[3200]={0}, hist_ok[3200]={0}, hist_num=0, low_cn_cnt=0, may_sfu=0, may_sfu_old=0, may_sfu_tmp=0, eq_fs_oked=0;
+    HI_U32 if_cur=0, fs_kHz=0, fec_ok_cnt=0, fec_no_ok_cnt=0, point_tmp=0, hist_is_ok=0, hist_no_ok=0, fs_dlt=0, if_dlt=0, equal_fs=0, equal_if=0, eq_fs_no_cnt=0, eq_fs_no_cnt2=0, time_msec=0, time_start=0, time1=0, time2=0, scan_state_old = 0;
+    HI_U32 chance_2a=0, chance_2=0, /*try_st1_waited = 0,*/ scan_st1_wait = 0, scan_state=0, fec_num_true=0, s2_fec_resync=0, /*special_fs,*/ find_up, s2_tryed=0;
+    HI_S16 cr_cn = 0, cn_th = 230, cn_drop=0;
     //HI_S16 s2_cn_vec[32] = {-300, -235, -124, -30, 100, 223, 310, 403, 468, 518, 620, 642, 550, 662, 791, 935, 1069, 1098, 897, 1021, 1103, 1161, 1289, 1313, 1273, 1364, 1428, 1569, 1605};
-    HI_U8 average_num = 6, sum_num = 0, cr_ok_err = 0, low_cn = 0, try_one = 0, try_one_old = 0, modcod = 0, scan_num, fec_num, /*freq_inverse,*/ old_rst_wait, old_bw_max, bw_max_set, s1_high_cn=0;
-    HI_S32 sum_fc, sum_fs, sum_reliable, mean_fc = 0, mean_fs = 0, mean_reliable = 0, freq_tr, /*freq_loop,*/ s32temp;
-    HI_S16 s16temp, freq_err;
+    HI_U8 average_num = 6, sum_num = 0, cr_ok_err = 0, low_cn = 0, try_one = 0, try_one_old = 0, modcod = 0, scan_num, fec_num=0, /*freq_inverse,*/ old_rst_wait=0, old_bw_max=0, bw_max_set=0, s1_high_cn=0;
+    HI_S32 sum_fc, sum_fs=0, sum_reliable=0, mean_fc = 0, mean_fs = 0, mean_reliable = 0, freq_tr=0, /*freq_loop,*/ s32temp=0;
+    HI_S16 s16temp=0, freq_err=0;
 
 
     (HI_VOID)HI_DRV_SYS_GetTimeStampMs(&time_start);
@@ -2272,8 +2297,8 @@ return_proc:
 
 HI_S32 hi3136_set_ts_out(HI_U32 u32TunerPort, HI_UNF_TUNER_TSOUT_SET_S *pstTSOut)
 {
-    HI_U8 u8Temp = 0, i;
-    HI_ASSERT(HI_NULL != pstTSOut);
+    HI_U8 u8Temp = 0, i=0;
+    HI_TUNER_CHECKPOINTER( pstTSOut);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= TUNER_NUM)
@@ -2311,8 +2336,8 @@ HI_S32 hi3136_get_freq_symb_offset(HI_U32 u32TunerPort, HI_U32 * pu32Freq, HI_U3
     HI_U8 u8Temp_L = 0, u8Temp_H = 0;
     HI_S32 s32Temp = 0;
 
-    HI_ASSERT(HI_NULL != pu32Freq);
-    HI_ASSERT(HI_NULL != pu32Symb);
+    HI_TUNER_CHECKPOINTER( pu32Freq);
+    HI_TUNER_CHECKPOINTER( pu32Symb);
 
     qam_read_byte(u32TunerPort, FS_OFFSET_FC_L, &u8Temp_L);
     qam_read_byte(u32TunerPort, FS_OFFSET_FC_H, &u8Temp_H);
@@ -2343,9 +2368,9 @@ HI_S32 hi3136_send_tone(HI_U32 u32TunerPort, HI_U32 u32Tone)
 //sample data of AD or EQU
 HI_S32 hi3136_data_sample(HI_U32 u32TunerPort, TUNER_DATA_SRC_E enDataSrc, HI_U32 u32DataLen, HI_UNF_TUNER_SAMPLE_DATA_S *pstData)
 {
-    HI_U8 agc_ctrl, u8Temp, data_l, data_m, data_h;
+    HI_U8 agc_ctrl =0 , u8Temp = 0, data_l =0, data_m=0, data_h =0;
     HI_U16 u16TimeOut = 0;
-    HI_U32 i, u32Temp = 0;
+    HI_U32 i=0, u32Temp = 0;
 
     //config enable ctrl
     qam_write_byte(u32TunerPort, 0xe0, 0);

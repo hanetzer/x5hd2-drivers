@@ -1,6 +1,6 @@
 /** 
  * \file
- * \brief Describes the information about HiSilicion frame buffer (HiFB). CNcomment:提供HIBF的相关信息
+ * \brief Describes the information about HiSilicion frame buffer (HiFB). CNcomment:提供HIBF的相关信息CNend
  */
  
 #ifndef __HIFB_H__
@@ -76,24 +76,12 @@ extern "C"{
 
 /* crusor handle */
 /* Attention:surface in cursor will be released by user*/
-#define FBIOPUT_CURSOR_INFO		      _IOW(IOC_TYPE_HIFB, 104, HIFB_CURSOR_S *)
-#define FBIOGET_CURSOR_INFO		      _IOW(IOC_TYPE_HIFB, 105, HIFB_CURSOR_S *)
 
-#define FBIOPUT_CURSOR_STATE		  _IOW(IOC_TYPE_HIFB, 106, HI_BOOL *)
-#define FBIOGET_CURSOR_STATE		  _IOW(IOC_TYPE_HIFB, 107, HI_BOOL *)
 
-#define FBIOPUT_CURSOR_POS		      _IOW(IOC_TYPE_HIFB, 108, HIFB_POINT_S *)	
-#define FBIOGET_CURSOR_POS		      _IOR(IOC_TYPE_HIFB, 109, HIFB_POINT_S *)
 
-#define FBIOPUT_CURSOR_COLORKEY       _IOR(IOC_TYPE_HIFB, 110, HIFB_COLORKEY_S *)
-#define FBIOGET_CURSOR_COLORKEY       _IOW(IOC_TYPE_HIFB, 111, HIFB_COLORKEY_S *)
-#define FBIOPUT_CURSOR_ALPHA          _IOR(IOC_TYPE_HIFB, 112, HIFB_ALPHA_S *)
-#define FBIOGET_CURSOR_ALPHA          _IOW(IOC_TYPE_HIFB, 113, HIFB_ALPHA_S *)
 
 /** cursor will be separated from attached layer automatically if you attach cursor to another layer,that means
 cursor can be attached to only one layer at any time*/
-#define FBIOPUT_CURSOR_ATTCHCURSOR    _IOW(IOC_TYPE_HIFB, 114, HIFB_LAYER_ID_E *)
-#define FBIOPUT_CURSOR_DETACHCURSOR   _IOW(IOC_TYPE_HIFB, 115, HIFB_LAYER_ID_E *)
 
 
 /**Sets the information about a graphics layer.*/
@@ -151,13 +139,19 @@ cursor can be attached to only one layer at any time*/
 #define FBIO_SCROLLTEXT_DESTORY  _IOW(IOC_TYPE_HIFB, 138, HI_U32*)
 
 /*set fb stereo depth*/
-#define FBIOPUT_STEREO_DEPTH  _IOW(IOC_TYPE_HIFB, 139, HI_U32*)
+#define FBIOPUT_STEREO_DEPTH  _IOW(IOC_TYPE_HIFB, 139, HI_S32*)
 /*get fb stereo depth*/
-#define FBIOGET_STEREO_DEPTH  _IOR(IOC_TYPE_HIFB, 140, HI_U32*)
+#define FBIOGET_STEREO_DEPTH  _IOR(IOC_TYPE_HIFB, 140, HI_S32*)
 
 /**set the priority of layer in gp*/
 #define FBIOPUT_ZORDER          _IOW(IOC_TYPE_HIFB, 141, HIFB_ZORDER_E *)
 /**gett the priority of layer in gp*/
+/**default setting:
+	HD0: G0(hifb0) ---- zorder == 1  -->bottom
+	HD0: G1(hifb1) ---- zorder == 2
+	HD0: G2(hifb2) ---- zorder == 3 -->top
+	--------------------------
+	HD1: G4(hifb4) ---- zorder == 1*/
 #define FBIOGET_ZORDER          _IOW(IOC_TYPE_HIFB, 142, HI_U32 *)
 
 /**free logo*/
@@ -256,12 +250,12 @@ typedef struct
 /**CNcomment:点坐标信息 */
 typedef struct
 {
-    HI_S32 s32XPos;         /**<  horizontal position *//**<CNcommnet:水平位置 */
+    HI_S32 s32XPos;         /**<  horizontal position *//**<CNcomment:水平位置 */
     HI_S32 s32YPos;         /**<  vertical position *//**<CNcomment:垂直位置 */
 }HIFB_POINT_S;
 
 /**Anti-flicker information*/
-/**CNcommnet:抗闪烁信息 */
+/**CNcomment:抗闪烁信息 */
 typedef struct hiHIFB_DEFLICKER_S
 {
     HI_U32  u32HDfLevel;    /**<  horizontal deflicker level *//**<CNcomment:水平抗闪烁级别 */     
@@ -356,6 +350,7 @@ typedef enum
     HIFB_LAYER_BUF_ONE    = 0x1,         /**< 1 display buf in fb */
     HIFB_LAYER_BUF_NONE   = 0x2,         /**< no display buf in fb,the buf user refreshed will be directly set to VO*/    
     HIFB_LAYER_BUF_DOUBLE_IMMEDIATE=0x3, /**< 2 display buf in fb, each refresh will be displayed*/
+    HIFB_LAYER_BUF_STANDARD = 0x4,       /**< standard refresh*/
     HIFB_LAYER_BUF_BUTT
 } HIFB_LAYER_BUF_E;
 
@@ -488,24 +483,23 @@ typedef enum
 
 #if 0
 /******************************* API declaration *****************************/
-/** \addtogroup      H_1_3_2 */
+/** \addtogroup     HiFB */
 /** @{ */  /** <!-- 【HiFB】 */
 
-/**-----标准功能--------*/
 /**
-\brief Obtains the variable information about the screen. CNcomment:获取屏幕的可变信息.
+\brief Obtains the variable information about the screen. CNcomment:获取屏幕的可变信息.CNend
 \attention \n
 By default, the resolution and pixel format of the standard-definition (SD) graphics layer are 720x576 and ARGB1555 respectively; the resolution and pixel format of the high-definition (HD) graphics layer are 1280x720 and ARGB888 respectively;
-CNcomment:系统默认的标清图层分辨率为720×576，象素格式为ARGB1555。系统默认的高清图层分辨率为1280×720，象素格式为ARGB888。
+CNcomment:系统默认的标清图层分辨率为720×576，象素格式为ARGB1555。系统默认的高清图层分辨率为1280×720，象素格式为ARGB888。CNend
 
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOGET_VSCREENINFO  ioctl number. CNcomment:ioctl号
-\param[out] var  Pointer to the variable information. CNcomment:可变信息结构体指针
-\retval 0  SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOGET_VSCREENINFO  ioctl number. CNcomment:ioctl号CNend
+\param[out] var  Pointer to the variable information. CNcomment:可变信息结构体指针CNend
+\retval 0  SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOPUT_VSCREENINFO
 \par example
@@ -522,27 +516,27 @@ int ioctl (int fd, FBIOGET_VSCREENINFO, struct fb_var_screeninfo *var);
 
 
 /**
-\brief Sets the screen resolution and pixel format of the FB. CNcomment:设置Framebuffer的屏幕分辨率和象素格式等。
+\brief Sets the screen resolution and pixel format of the FB. CNcomment:设置Framebuffer的屏幕分辨率和象素格式等。CNend
 \attention \n
 The resolution must be supported by each overlay layer. You can query the maximum resolution and minimum resolution supported by each overlay layer by calling FBIOGET_CAPABILITY_HIFB.\n
 The sum of the actual resolution and offset value must be within the range of the virtual resolution. Otherwise, the system automatically adjusts the actual resolution.
-CNcomment:分辨率的大小必须在各叠加层支持的分辨率范围内，各叠加层支持的最大分辨率和最小分辨率可通过FBIOGET_CAPABILITY_HIFB获取。\n
-必须保证实际分辨率与偏移的和在虚拟分辨率范围内，否则系统会自动调整实际分辨率的大小让其在虚拟分辨率范围内。
+CNcomment:分辨率的大小必须在各叠加层支持的分辨率范围内，各叠加层支持的最大分辨率和最小分辨率可通过FBIOGET_CAPABILITY_HIFB获取。CNend
+必须保证实际分辨率与偏移的和在虚拟分辨率范围内，否则系统会自动调整实际分辨率的大小让其在虚拟分辨率范围内。CNend
 
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOPUT_VSCREENINFO ioctl number. CNcomment:ioctl号
-\param[in] var Pointer to the variable information. CNcomment:可变信息结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOPUT_VSCREENINFO ioctl number. CNcomment:ioctl号CNend
+\param[in] var Pointer to the variable information. CNcomment:可变信息结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOGET_VSCREENINFO
 \par example
 \code
 //Assume that the actual resolution is 720x576, the virtual resolution is 720x576, the offset value is (0, 0), and the pixel format is ARGB8888. In this case, the sample code is as follows:
-//CNcommnet:设置实际分辨率为720×576，虚拟分辨率为720×576，偏移为（0，0），象素格式为ARGB8888的示例代码如下：
+//CNcommnet:设置实际分辨率为720×576，虚拟分辨率为720×576，偏移为（0，0），象素格式为ARGB8888的示例代码如下：CNend
 struct fb_bitfield r32 = {16, 8, 0};
 struct fb_bitfield g32 = {8, 8, 0};
 struct fb_bitfield b32 = {0, 8, 0}; 
@@ -576,44 +570,44 @@ int ioctl (int fd, FBIOPUT_VSCREENINFO, struct fb_var_screeninfo *var);
 
 
 /**
-\brief Obtains the fixed information about the FB. CNcomment:获取Framebuffer的固定信息。
+\brief Obtains the fixed information about the FB. CNcomment:获取Framebuffer的固定信息。CNend
 \attention \n
-无
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOGET_FSCREENINFO  ioctl number. CNcomment:ioctl号
-\param[out] fix Pointer to the fixed information. CNcomment:固定信息结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+None
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOGET_FSCREENINFO  ioctl number. CNcomment:ioctl号CNend
+\param[out] fix Pointer to the fixed information. CNcomment:固定信息结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
-无
+N/A
 */
 int ioctl (int fd, FBIOGET_FSCREENINFO, struct fb_fix_screeninfo *fix);
 
 
 
 /**
-\brief Sets to display contents at different offset positions of the virtual resolution. CNcommnet:设置从虚拟分辨率中的不同偏移处开始显示。
+\brief Sets to display contents at different offset positions of the virtual resolution. CNcommnet:设置从虚拟分辨率中的不同偏移处开始显示。CNend
 \attention \n
 The sum of the actual resolution and offset value must be within the range of the virtual resolution. Otherwise, the setting is unsuccessful.
-CNcomment:必须保证实际分辨率与偏移的和在虚拟分辨率范围内，否则设置不成功。
+CNcomment:必须保证实际分辨率与偏移的和在虚拟分辨率范围内，否则设置不成功。CNend
 
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOPAN_DISPLAY  ioctl number. CNcomment:ioctl号
-\param[out] var  Pointer to the variable information. CNcomment:可变信息结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid.  CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOPAN_DISPLAY  ioctl number. CNcomment:ioctl号CNend
+\param[out] var  Pointer to the variable information. CNcomment:可变信息结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid.  CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
-无
+N/A
 \par example
 \code
 //Assume that the actual resolution is 300x300, the virtual resolution is 720x576, the start offset value is (50, 50), and the display position is (300, 0). In this case, the code for the PAN setting is as follows:
-//CNcomment:设置实际分辨率为300×300，虚拟分辨率为720×576，起始偏移为（50，50），然后偏移到（300，0）处开始显示的PAN设置代码如下：
+//CNcomment:设置实际分辨率为300×300，虚拟分辨率为720×576，起始偏移为（50，50），然后偏移到（300，0）处开始显示的PAN设置代码如下：CNend
 struct fb_bitfield r32 = {16, 8, 0};
 struct fb_bitfield g32 = {8, 8, 0};
 struct fb_bitfield b32 = {0, 8, 0};
@@ -650,18 +644,18 @@ int ioctl (int fd, FBIOPAN_DISPLAY, struct fb_var_screeninfo *var);
 
 
 /**
-\brief Obtains the information about the palette. CNcommnet:获取调色板信息。
+\brief Obtains the information about the palette. CNcommnet:获取调色板信息。CNend
 \attention \n
-无
+None
 
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOGETCMAP  ioctl number. CNcomment:ioctl号
-\param[out] cmap Pointer to the palette. CNcomment:调色板结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOGETCMAP  ioctl number. CNcomment:ioctl号CNend
+\param[out] cmap Pointer to the palette. CNcomment:调色板结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOPUTCMAP
 \par example
@@ -694,17 +688,17 @@ int ioctl (int fd, FBIOGETCMAP, struct fb_cmap *cmap);
 
 
 /**
-\brief Sets the information about the palette. CNcomment:设置调色板信息。
+\brief Sets the information about the palette. CNcomment:设置调色板信息。CNend
 \attention \n
-无
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOPUTCMAP  ioctl number. CNcomment:ioctl号
-\param[in] cmap Pointer to the palette. CNcomment:调色板结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+None
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOPUTCMAP  ioctl number. CNcomment:ioctl号CNend
+\param[in] cmap Pointer to the palette. CNcomment:调色板结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOGETCMAP
 \par example
@@ -740,38 +734,37 @@ int ioctl (int fd, FBIOPUTCMAP, struct fb_cmap *cmap);
 
 
 /**-----Extended Functions--------*/
-/**CNcomment:-----扩展功能--------*/
 /**
-\brief Obtains the capability of an overlay layer. CNcomment:获取叠加层的支持能力。
+\brief Obtains the capability of an overlay layer. CNcomment:获取叠加层的支持能力。CNend
 \attention \n
-无
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOGET_CAPABILITY_HIFB  ioctl number. CNcomment:ioctl号
-\param[out] pstCap Pointer to the capability. CNcomment:支持能力结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+None
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOGET_CAPABILITY_HIFB  ioctl number. CNcomment:ioctl号CNend
+\param[out] pstCap Pointer to the capability. CNcomment:支持能力结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
-无
+N/A
 */
 int ioctl (int fd, FBIOGET_CAPABILITY_HIFB, HIFB_CAPABILITY_S *pstCap);
 
 
 
 /**
-\brief Obtains the coordinates of the start display point of an overlay layer on the screen. CNcomment:获取叠加层在屏幕上显示的起始点坐标。
+\brief Obtains the coordinates of the start display point of an overlay layer on the screen. CNcomment:获取叠加层在屏幕上显示的起始点坐标。CNend
 \attention \n
-无
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOGET_SCREEN_ORIGIN_HIFB  ioctl number. CNcomment:ioctl号
-\param[out] pstPoint Pointer to the coordinate origin. CNcomment:坐标原点结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+None
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOGET_SCREEN_ORIGIN_HIFB  ioctl number. CNcomment:ioctl号CNend
+\param[out] pstPoint Pointer to the coordinate origin. CNcomment:坐标原点结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOPUT_SCREEN_ORIGIN_HIFB
 */
@@ -780,18 +773,18 @@ int ioctl (int fd, FBIOGET_SCREEN_ORIGIN_HIFB, HIFB_POINT_S *pstPoint);
 
 
 /**
-\brief Sets the coordinates of the start display point of an overlay layer on the screen. CNcomment:设置叠加层在屏幕上显示的起始点坐标。
+\brief Sets the coordinates of the start display point of an overlay layer on the screen. CNcomment:设置叠加层在屏幕上显示的起始点坐标。CNend
 \attention \n
 If the coordinate origin of an overlay layer is beyond the range, the coordinate origin is set to (u32MaxWidth - u32MinWidth, u32MaxHeight - u32MinHeight) by default.
-CNcomment:如果叠加层坐标原点超出了范围，默认将坐标原点设置为（u32MaxWidth –u32MinWidth,，u32MaxHeight –u32MinHeight）。
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOPUT_SCREEN_ORIGIN_HIFB  ioctl number. CNcomment:ioctl号
-\param[in] pstPoint Pointer to the coordinate origin. CNcomment:坐标原点结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+CNcomment:如果叠加层坐标原点超出了范围，默认将坐标原点设置为（u32MaxWidth –u32MinWidth,，u32MaxHeight –u32MinHeight）。CNend
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOPUT_SCREEN_ORIGIN_HIFB  ioctl number. CNcomment:ioctl号CNend
+\param[in] pstPoint Pointer to the coordinate origin. CNcomment:坐标原点结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOGET_SCREEN_ORIGIN_HIFB
 */
@@ -800,17 +793,17 @@ int ioctl (int fd, FBIOPUT_SCREEN_ORIGIN_HIFB, HIFB_POINT_S *pstPoint);
 
 
 /**
-\brief Obtains the display status of the current overlay layer. CNcomment:获取当前叠加层的显示状态。
+\brief Obtains the display status of the current overlay layer. CNcomment:获取当前叠加层的显示状态。CNend
 \attention \n
-无
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOGET_SHOW_HIFB  ioctl number. CNcomment:ioctl号
-\param[out] bShow Status of the current overlay layer. If *bShow is set to HI_TRUE, it indicates that the current overlay layer is shown; if *bShow is set to HI_FALSE, it indicates that the current overlay layer is hidden. CNcomment:指示当前叠加层的状态：*bShow = HI_TRUE：当前叠加层处于显示状态；*bShow = HI_FALSE：当前叠加层处于隐藏状态
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+None
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOGET_SHOW_HIFB  ioctl number. CNcomment:ioctl号CNend
+\param[out] bShow Status of the current overlay layer. If *bShow is set to HI_TRUE, it indicates that the current overlay layer is shown; if *bShow is set to HI_FALSE, it indicates that the current overlay layer is hidden. CNcomment:指示当前叠加层的状态：*bShow = HI_TRUE：当前叠加层处于显示状态；*bShow = HI_FALSE：当前叠加层处于隐藏状态CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOPUT_SHOW_HIFB
 */
@@ -819,17 +812,17 @@ int ioctl (int fd, FBIOGET_SHOW_HIFB, HI_BOOL *bShow);
 
 
 /**
-\brief Shows or hides the current overlay layer. CNcomment:显示或隐藏该叠加层。
+\brief Shows or hides the current overlay layer. CNcomment:显示或隐藏该叠加层。CNend
 \attention \n
-无
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOPUT_SHOW_HIFB  ioctl number. CNcomment:ioctl号
-\param[in] bShow Display status of the current overlay layer. If *bShow is set to HI_TRUE, it indicates that the current overlay layer is shown; if *bShow is set to HI_FALSE, it indicates that the current overlay layer is hidden. CNcomment:该叠加层的显示状态：*bShow = HI_TRUE：显示当前叠加层；*bShow = HI_FALSE：隐藏当前叠加层
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+None
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOPUT_SHOW_HIFB  ioctl number. CNcomment:ioctl号CNend
+\param[in] bShow Display status of the current overlay layer. If *bShow is set to HI_TRUE, it indicates that the current overlay layer is shown; if *bShow is set to HI_FALSE, it indicates that the current overlay layer is hidden. CNcomment:该叠加层的显示状态：*bShow = HI_TRUE：显示当前叠加层；*bShow = HI_FALSE：隐藏当前叠加层CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOGET_SHOW_HIFB
 */
@@ -838,17 +831,17 @@ int ioctl (int fd, FBIOPUT_SHOW_HIFB, HI_BOOL *bShow);
 
 
 /**
-\brief Obtains the colorkey of an overlay layer. CNcomment:获取叠加层的colorkey。
+\brief Obtains the colorkey of an overlay layer. CNcomment:获取叠加层的colorkey。CNend
 \attention \n
-无
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOGET_COLORKEY_HIFB  ioctl number. CNcomment:ioctl号
-\param[out] pstColorKey Pointer to the colorkey. CNcomment:colorkey结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+None
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOGET_COLORKEY_HIFB  ioctl number. CNcomment:ioctl号CNend
+\param[out] pstColorKey Pointer to the colorkey. CNcomment:colorkey结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOPUT_COLORKEY_HIFB
 */
@@ -857,23 +850,23 @@ int ioctl (int fd, FBIOGET_COLORKEY_HIFB, HIFB_COLORKEY_S *pstColorKey);
 
 
 /**
-\brief Sets the colorkey of an overlay layer. CNcomment:设置叠加层的colorkey。
+\brief Sets the colorkey of an overlay layer. CNcomment:设置叠加层的colorkey。CNend
 \attention \n
-无
-\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOPUT_COLORKEY_HIFB  ioctl number. CNcomment:ioctl号
-\param[in] pstColorKey  Pointer to the colorkey. CNcomment:colorkey结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+None
+\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOPUT_COLORKEY_HIFB  ioctl number. CNcomment:ioctl号CNend
+\param[in] pstColorKey  Pointer to the colorkey. CNcomment:colorkey结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOGET_COLORKEY_HIFB
 \par example
 \code
 //Assume that the pixel format is ARGB8888. To filter the red color, perform the following setting:
-//CNcomment:假设当前象素格式为ARGB8888，则要过滤掉红色,具体设置如下：
+//CNcomment:假设当前象素格式为ARGB8888，则要过滤掉红色,具体设置如下：CNend
 HIFB_COLORKEY_S stColorKey;
 
 stColorKey.bKeyEnable = HI_TRUE;
@@ -890,19 +883,19 @@ int ioctl (int fd, FBIOPUT_COLORKEY_HIFB, HIFB_COLORKEY_S *pstColorKey);
 
 
 /**
-\brief Obtains the alpha value of an overlay layer. CNcomment:获取叠加层Alpha。
+\brief Obtains the alpha value of an overlay layer. CNcomment:获取叠加层Alpha。CNend
 \attention \n
 For details, see the description of ::HIFB_ALPHA_S.
-CNcomment:请参见::HIFB_ALPHA_S的说明。
+CNcomment:请参见::HIFB_ALPHA_S的说明。CNend
 
-\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOGET_ALPHA_HIFB  ioctl number. CNcomment:ioctl号
-\param[out] pstAlpha  Pointer to the alpha value. CNcomment:Alpha结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOGET_ALPHA_HIFB  ioctl number. CNcomment:ioctl号CNend
+\param[out] pstAlpha  Pointer to the alpha value. CNcomment:Alpha结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOPUT_ALPHA_HIFB
 */
@@ -912,19 +905,19 @@ int ioctl (int fd, FBIOGET_ALPHA_HIFB, HIFB_ALPHA_S *pstAlpha);
 
 
 /**
-\brief Sets the alpha value of an overlay layer. CNcomment:设置叠加层的Alpha。
+\brief Sets the alpha value of an overlay layer. CNcomment:设置叠加层的Alpha。CNend
 \attention \n
 For details, see the description of ::HIFB_ALPHA_S.
-CNcomment:请参见::HIFB_ALPHA_S的说明。
+CNcomment:请参见::HIFB_ALPHA_S的说明CNend
 
-\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOPUT_ALPHA_HIFB  ioctl number. CNcomment:ioctl号
-\param[in] pstAlpha  Pointer to the alpha value. CNcomment:Alpha结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOPUT_ALPHA_HIFB  ioctl number. CNcomment:ioctl号CNend
+\param[in] pstAlpha  Pointer to the alpha value. CNcomment:Alpha结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOGET_ALPHA_HIFB
 */
@@ -933,25 +926,25 @@ int ioctl (int fd, FBIOPUT_ALPHA_HIFB, HIFB_ALPHA_S *pstAlpha);
 
 
 /**
-\brief Obtains the anti-flicker setting of an overlay layer. The HD platform does not support this function. CNcomment:获取叠加层的抗闪烁设置。高清平台不支持设置。
+\brief Obtains the anti-flicker setting of an overlay layer. The HD platform does not support this function. CNcomment:获取叠加层的抗闪烁设置。高清平台不支持设置。CNend
 \attention \n
 Before obtaining the values of anti-flicker parameters, you must set the maximum anti-flicker level that can be obtained, and allocate sufficient memory for storing anti-flicker coefficients. This API is invalid for the HD platform currently.
-CNcomment:在获取抗闪烁参数时，必须设置能够获取抗闪烁的最大级别，且为抗闪烁系数分配足够的内存。目前该接口在高清无效。
+CNcomment:在获取抗闪烁参数时，必须设置能够获取抗闪烁的最大级别，且为抗闪烁系数分配足够的内存。目前该接口在高清无效。CNend
 
-\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOGET_DEFLICKER_HIFB  ioctl number. CNcomment:ioctl号
-\param[out] pstDeflicker  Pointer to the anti-flicker setting. CNcomment:抗闪烁结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOGET_DEFLICKER_HIFB  ioctl number. CNcomment:ioctl号CNend
+\param[out] pstDeflicker  Pointer to the anti-flicker setting. CNcomment:抗闪烁结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOPUT_DEFLICKER_HIFB
 \par example
 \code
 //Assume that the maximum horizontal and vertical anti-flicker levels that can be obtained are 2. In this case, the sample code is as follows:
-//CNcomment:获取水平和垂直抗闪烁最大级别为2的示例代码如下：
+//CNcomment:获取水平和垂直抗闪烁最大级别为2的示例代码如下：CNend
 HI_U8 u8HDefCoef;
 HI_U8 u8VDefCoef;
 HIFB_DEFLICKER_S stDeflicker;
@@ -973,25 +966,25 @@ int ioctl (int fd, FBIOGET_DEFLICKER_HIFB, HIFB_DEFLICKER_S *pstDeflicker);
 
 
 /**
-\brief Sets the anti-flicker function of an overlay layer. CNcomment:设置叠加层的抗闪烁功能。
+\brief Sets the anti-flicker function of an overlay layer. CNcomment:设置叠加层的抗闪烁功能。CNend
 \attention \n
 For details, see the description of ::HIFB_DEFLICKER_S. This API is invalid for the HD platform currently.
-CNcomment:请参见::HIFB_DEFLICKER_S的说明。目前该接口在高清无效。
+CNcomment:请参见::HIFB_DEFLICKER_S的说明。目前该接口在高清无效。CNend
 
-\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOPUT_DEFLICKER_HIFB  ioctl number. CNcomment:ioctl号
-\param[in] pstDeflicker  Pointer to the anti-flicker setting. CNcomment:抗闪烁结构体指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOPUT_DEFLICKER_HIFB  ioctl number. CNcomment:ioctl号CNend
+\param[in] pstDeflicker  Pointer to the anti-flicker setting. CNcomment:抗闪烁结构体指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOGET_DEFLICKER_HIFB
 \par example
 \code
 //Assume that the 2-tap horizontal and vertical anti-flicker functions are required. In this case, the sample code is as follows:
-//CNcomment:设置水平和垂直2阶抗闪烁的代码如下：
+//CNcomment:设置水平和垂直2阶抗闪烁的代码如下：CNend
 HI_U8 u8HDefCoef = 0x80;
 HI_U8 u8VDefCoef = 0x80;
 HIFB_DEFLICKER_S stDeflicker;
@@ -1012,35 +1005,35 @@ int ioctl (int fd, FBIOPUT_DEFLICKER_HIFB, HIFB_DEFLICKER_S *pstDeflicker);
 
 
 /**
-\brief Waits for the vertical blanking region of an overlay layer. To operate the display buffer without tearing, you can operate it in the vertical blanking region. CNcomment:为了操作显存时而不引起撕裂现象，一般可以在该叠加层的垂直消隐区对显存进行操作，通过该接口可以等待该叠加层垂直消隐区的到来。
+\brief Waits for the vertical blanking region of an overlay layer. To operate the display buffer without tearing, you can operate it in the vertical blanking region. CNcomment:为了操作显存时而不引起撕裂现象，一般可以在该叠加层的垂直消隐区对显存进行操作，通过该接口可以等待该叠加层垂直消隐区的到来。CNend
 \attention \n
-无
-\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOGET_VBLANK_HIFB  ioctl number. CNcomment:ioctl号
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+None
+\param[in] fd ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOGET_VBLANK_HIFB  ioctl number. CNcomment:ioctl号CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
-无
+N/A
 */
 int ioctl (int fd, FBIOGET_VBLANK_HIFB);
 
 
 /**
-\brief Obtains the stereo frame encode format. CNcomment:获取Stereo帧编码格式功能。
+\brief Obtains the stereo frame encode format. CNcomment:获取Stereo帧编码格式功能。CNend
 \attention \n
 For details, see the description of ::HIFB_STEREO_MODE_E. 
 
-\param[in] fd  Framebuffer设备号
-\param[in] FBIOGET_STEREO_MODE  ioctl号
-\param[out] penStereoMode  stereo模式枚举指针
-\retval  0 SUCCESS 成功
-\retval ::EPERM  1,不支持该操作
-\retval ::ENOMEM  12,内存不够
-\retval ::EFAULT  14,传入参数指针地址无效
-\retval ::EINVAL  22,传入参数无效
+\param[in] fd  Framebuffer设备号CNend
+\param[in] FBIOGET_STEREO_MODE  ioctl号CNend
+\param[out] penStereoMode  stereo模式枚举指针CNend
+\retval  0 SUCCESS 成功CNend
+\retval ::EPERM  1,不支持该操作CNend
+\retval ::ENOMEM  12,内存不够CNend
+\retval ::EFAULT  14,传入参数指针地址无效CNend
+\retval ::EINVAL  22,传入参数无效CNend
 \see \n
 ::FBIOPUT_STEREO_MODE
 */
@@ -1048,18 +1041,18 @@ int ioctl (int fd, FBIOGET_STEREO_MODE, HIFB_STEREO_MODE_E *penStereoMode);
 
 
 /**
-\brief 设置Stereo模式功能。
+\brief 设置Stereo模式功能。CNend
 \attention \n
-请参见::HIFB_STEREO_MODE_E的说明。
+请参见::HIFB_STEREO_MODE_E的说明。CNend
 
-\param[in] fd  Framebuffer设备号
-\param[in] FBIOPUT_STEREO_MODE  ioctl号
-\param[in] penStereoMode  stereo模式枚举指针
-\retval  0 SUCCESS 成功
-\retval ::EPERM  1,不支持该操作
-\retval ::ENOMEM  12,内存不够
-\retval ::EFAULT  14,传入参数指针地址无效
-\retval ::EINVAL  22,传入参数无效
+\param[in] fd  Framebuffer设备号CNend
+\param[in] FBIOPUT_STEREO_MODE  ioctl号CNend
+\param[in] penStereoMode  stereo模式枚举指针CNend
+\retval  0 SUCCESS 成功CNend
+\retval ::EPERM  1,不支持该操作CNend
+\retval ::ENOMEM  12,内存不够CNend
+\retval ::EFAULT  14,传入参数指针地址无效CNend
+\retval ::EINVAL  22,传入参数无效CNend
 \see \n
 ::FBIOGET_STEREO_MODE
 */
@@ -1067,18 +1060,18 @@ int ioctl (int fd, FBIOPUT_STEREO_MODE, HIFB_STEREO_MODE_E *penStereoMode);
 
 
 /**
-\brief 获取Stereo帧编码格式功能。
+\brief 获取Stereo帧编码格式功能。CNend
 \attention \n
-CNcomment:请参见::HIFB_ENCODER_PICTURE_FRAMING_E的说明。
+CNcomment:请参见::HIFB_ENCODER_PICTURE_FRAMING_E的说明。CNend
 
-\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOGET_STEREO_MODE  ioctl number. CNcomment:ioctl号
-\param[out] penStereoMode  Pointer to the frame encode format. CNcomment:帧编码格式枚举指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOGET_STEREO_MODE  ioctl number. CNcomment:ioctl号CNend
+\param[out] penStereoMode  Pointer to the frame encode format. CNcomment:帧编码格式枚举指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOPUT_ENCODER_PICTURE_FRAMING
 */
@@ -1086,19 +1079,19 @@ int ioctl (int fd, FBIOGET_ENCODER_PICTURE_FRAMING, HIFB_STEREO_MODE_E *penEncPi
 
 
 /**
-\brief Sets the stereo frame encode format. CNcomment:设置Stereo帧编码格式功能。
+\brief Sets the stereo frame encode format. CNcomment:设置Stereo帧编码格式功能。CNend
 \attention \n
 For details, see the description of ::HIFB_STEREO_MODE_E. 
-CNcomment:请参见::HIFB_ENCODER_PICTURE_FRAMING_E的说明。
+CNcomment:请参见::HIFB_ENCODER_PICTURE_FRAMING_E的说明。CNend
 
-\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号
-\param[in] FBIOPUT_STEREO_MODE  ioctl number. CNcomment:ioctl号
-\param[in] penStereoMode  Pointer to the frame encode format. CNcomment:帧编码格式枚举指针
-\retval  0 SUCCESS Success. CNcomment:成功
-\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作
-\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够
-\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效
-\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效
+\param[in] fd  ID of an FB device. CNcomment:Framebuffer设备号CNend
+\param[in] FBIOPUT_STEREO_MODE  ioctl number. CNcomment:ioctl号CNend
+\param[in] penStereoMode  Pointer to the frame encode format. CNcomment:帧编码格式枚举指针CNend
+\retval  0 SUCCESS Success. CNcomment:成功CNend
+\retval ::EPERM  1. The operation is not supported. CNcomment:1,不支持该操作CNend
+\retval ::ENOMEM  12. The memory is insufficient. CNcomment:12,内存不够CNend
+\retval ::EFAULT  14. The input pointer is invalid. CNcomment:14,传入参数指针地址无效CNend
+\retval ::EINVAL  22. The input parameter is invalid. CNcomment:22,传入参数无效CNend
 \see \n
 ::FBIOGET_ENCODER_PICTURE_FRAMING
 */

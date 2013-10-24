@@ -190,11 +190,11 @@ typedef struct tagCODEC_S
 /* Global parameter of this layer */
 typedef struct tagCODEC_GLOBAL_S
 {
-    HI_U16              u16CodecNum;
-    HI_U16              u16CodecHandle;     /* Allocate handle according to this number */
+    HI_BOOL             bCodecAlloc[HI_CODEC_MAX_NUMBER];
     HI_BOOL             bInited;            /* Had been inited or not */
     pthread_mutex_t     stMutex;            /* Global mutex */
     struct list_head    stCodecHead;        /* Codec list head */
+    HI_U16              u16CodecNum;
 } CODEC_GLOBAL_S;
 
 /***************************** Global Definition *****************************/
@@ -278,6 +278,7 @@ static HI_VOID CODEC_UnRegister(CODEC_PARAM_S* pstCodecParam)
     /* Delete this codec from list */
     CODEC_LOCK(s_stParam.stMutex);
     list_del(&pstCodecParam->stCodecNode);
+    s_stParam.bCodecAlloc[pstCodecParam->hCodec] = HI_FALSE;
     s_stParam.u16CodecNum--;
     CODEC_UNLOCK(s_stParam.stMutex);
 
@@ -307,12 +308,16 @@ static HI_VOID CODEC_UnRegister(CODEC_PARAM_S* pstCodecParam)
 HI_S32 HI_CODEC_Init(HI_VOID)
 {
     HI_S32 s32Ret;
+    HI_S32 i;
 
     if (!s_stParam.bInited)
     {
         /* Init parameter */
         s_stParam.u16CodecNum = 0;
-        s_stParam.u16CodecHandle = 0;
+        for (i=0; i<HI_CODEC_MAX_NUMBER; i++)
+        {
+            s_stParam.bCodecAlloc[i] = HI_FALSE;
+        }
 
         /* Init list */
         INIT_LIST_HEAD(&s_stParam.stCodecHead);
@@ -383,6 +388,8 @@ HI_S32 HI_CODEC_RegisterLib(const HI_CHAR *pszCodecDllName)
     HI_VOID* pDllModule = HI_NULL;
     HI_CODEC_S* pstCodec = HI_NULL;
     CODEC_PARAM_S* pstCodecParam = HI_NULL;
+    HI_HANDLE hCodecHandle = HI_INVALID_HANDLE;
+    HI_U32 i;
 
     CODEC_CHECK_INIT;
 
@@ -449,6 +456,24 @@ HI_S32 HI_CODEC_RegisterLib(const HI_CHAR *pszCodecDllName)
     /* 5. Add CODEC_PARAM_S to codec list */
     CODEC_LOCK(s_stParam.stMutex);
 
+    /* Alloc codec handle */
+    for (i=0; i<HI_CODEC_MAX_NUMBER; i++)
+    {
+        if (!(s_stParam.bCodecAlloc[i]))
+        {
+            hCodecHandle = i;
+            break;
+        }
+    }
+    
+    if ((HI_INVALID_HANDLE == hCodecHandle) || (HI_CODEC_MAX_NUMBER == hCodecHandle))
+    {
+        CODEC_UNLOCK(s_stParam.stMutex);
+        HI_FREE_CODEC(pstCodecParam);
+        HI_ERR_CODEC("Too many codecs registered.\n");
+        return HI_ERR_CODEC_NOENOUGHRES;
+    }
+
     /* Init parameter of codec */
     pstCodecParam->pDllModule = pDllModule;
     pstCodecParam->pszLibName = (HI_CHAR*)HI_MALLOC_CODEC(strlen(pszCodecDllName)+1);
@@ -458,9 +483,9 @@ HI_S32 HI_CODEC_RegisterLib(const HI_CHAR *pszCodecDllName)
         s32Ret = HI_ERR_CODEC_NOENOUGHRES;
         goto err2;
     }
-    strcpy(pstCodecParam->pszLibName, pszCodecDllName);
+    strncpy(pstCodecParam->pszLibName, pszCodecDllName,strlen(pszCodecDllName)+1);
     pstCodecParam->pstCodec = pstCodec;
-    pstCodecParam->hCodec = s_stParam.u16CodecHandle++;
+    pstCodecParam->hCodec = hCodecHandle;
     pstCodecParam->bRegByLib = HI_TRUE;
     if (0 != pthread_mutex_init(&pstCodecParam->stMutex, HI_NULL))
     {
@@ -474,6 +499,9 @@ HI_S32 HI_CODEC_RegisterLib(const HI_CHAR *pszCodecDllName)
     /* Add this codec to list TAIL.(USE list_add_tail) */
     list_add_tail(&pstCodecParam->stCodecNode, &s_stParam.stCodecHead);
     s_stParam.u16CodecNum++;
+    
+    /* Set handle flag */
+    s_stParam.bCodecAlloc[hCodecHandle] = HI_TRUE;
 
     CODEC_UNLOCK(s_stParam.stMutex);
     
@@ -484,6 +512,7 @@ err3:
     HI_FREE_CODEC(pstCodecParam->pszLibName);
 err2:
     HI_FREE_CODEC(pstCodecParam);
+    CODEC_UNLOCK(s_stParam.stMutex);
 err1:
     dlclose(pDllModule);
 err0:
@@ -521,7 +550,9 @@ HI_S32 HI_CODEC_UnRegisterLib(const HI_CHAR *pszCodecDllName)
 HI_S32 HI_CODEC_Register(HI_CODEC_S* pstCodec)
 {
     CODEC_PARAM_S* pstCodecParam = HI_NULL;
-
+    HI_HANDLE hCodecHandle = HI_INVALID_HANDLE;
+    HI_U32 i;
+    
     CODEC_CHECK_INIT;
 
     /* Check member property and method */
@@ -549,13 +580,31 @@ HI_S32 HI_CODEC_Register(HI_CODEC_S* pstCodec)
 
     CODEC_LOCK(s_stParam.stMutex);
 
+    /* Alloc codec handle */
+    for (i=0; i<HI_CODEC_MAX_NUMBER; i++)
+    {
+        if (!(s_stParam.bCodecAlloc[i]))
+        {
+            hCodecHandle = i;
+            break;
+        }
+    }
+    
+    if ((HI_INVALID_HANDLE == hCodecHandle) || (HI_CODEC_MAX_NUMBER == hCodecHandle))
+    {
+        CODEC_UNLOCK(s_stParam.stMutex);
+        HI_FREE_CODEC(pstCodecParam);
+        HI_ERR_CODEC("Too many codecs registered.\n");
+        return HI_ERR_CODEC_NOENOUGHRES;
+    }
+
     /* Init parameter of codec */
 #if (HI_VDEC_REG_CODEC_SUPPORT == 1)
     pstCodecParam->pDllModule = HI_NULL;
     pstCodecParam->pszLibName = HI_NULL;
 #endif
     pstCodecParam->pstCodec = pstCodec;
-    pstCodecParam->hCodec = s_stParam.u16CodecHandle++;
+    pstCodecParam->hCodec = hCodecHandle;
     pstCodecParam->bRegByLib = HI_FALSE;
     if (0 != pthread_mutex_init(&pstCodecParam->stMutex, HI_NULL))
     {
@@ -574,6 +623,9 @@ HI_S32 HI_CODEC_Register(HI_CODEC_S* pstCodec)
      */
     list_add(&pstCodecParam->stCodecNode, &s_stParam.stCodecHead);
     s_stParam.u16CodecNum++;
+    
+    /* Set handle flag */
+    s_stParam.bCodecAlloc[hCodecHandle] = HI_TRUE;
 
     CODEC_UNLOCK(s_stParam.stMutex);
     HI_INFO_CODEC("HI_CODEC_Register OK\n");

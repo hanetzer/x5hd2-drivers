@@ -20,8 +20,8 @@
 ************************************************************************/
 
 
-#ifndef __FIDX_EXT_HEADER__
-#define __FIDX_EXT_HEADER__
+#ifndef __PVR_INDEX_HEADER__
+#define __PVR_INDEX_HEADER__
 
 
 #include <unistd.h>
@@ -114,7 +114,7 @@ typedef struct hiFINDEX_SCD_S
 @brief
 	global init, clear residual information, and register call back.
  ************************************************************************/
-HI_VOID FIDX_Init(HI_S32 (*OutputFramePosition)(HI_U32 InstIdx, FRAME_POS_S *pstScInfo));
+HI_VOID FIDX_Init(HI_S32 (*OutputFramePosition)(HI_U32 InstIdx, FRAME_POS_S *pstScInfo,HI_U32 u32DirectFlag));
 
 /*!***********************************************************************
 @brief
@@ -146,7 +146,8 @@ HI_S32  FIDX_CloseInstance( HI_S32 InstIdx );
  ************************************************************************/
 HI_VOID  FIDX_FeedStartCode(
     HI_S32 InstIdx,                    /*! instance ID */
-    const FINDEX_SCD_S *pstSC );      /* SCD descriptor */
+    const FINDEX_SCD_S *pstSC , /* SCD descriptor */
+    HI_U32 u32DirectFlag);     
 
 
 /*!***********************************************************************

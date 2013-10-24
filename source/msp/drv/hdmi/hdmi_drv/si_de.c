@@ -106,6 +106,7 @@ void SI_UpdateTX_656(HI_U8 VMode)
 
    HI_INFO_HDMI("Vmode=%d. VxH=%dx%d@%d.\n", VMode, VModeTables[VMode].Res.V, VModeTables[VMode].Res.H, VModeTables[VMode].Tag.VFreq);
     
+#if 0 /*--SetCsc in setAttr--*/
    //if HD, set CSCSEL bit at 0x72:0x48[4]:
    if ((VMode == 2) || (VMode == 3) || (VMode == 11) || (VMode == 13) || (VMode == 14) ||
         ((VMode >= 24) && (VMode <= 27)))
@@ -118,6 +119,7 @@ void SI_UpdateTX_656(HI_U8 VMode)
    }
    
    WriteByteHDMITXP0( TX_VID_CTRL_ADDR, RegVal);
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
 
 }
 //--------------------------------------------------------------------------

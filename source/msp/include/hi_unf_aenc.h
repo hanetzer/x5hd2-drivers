@@ -147,7 +147,7 @@ HI_S32 HI_UNF_AENC_RegisterEncoder(const HI_CHAR *pEncoderDllName);
 \brief Attach audio encoder with audio track,reserved. CNcomment:°ó¶¨ÒôÆµ±àÂëÆ÷ºÍÒôÆµTrack Í¨Â·, Ô¤Áô CNend
 \attention \n
 Before obtaining the streams and encoding, you must call the interface. CNcomment:¿ªÊ¼±àÂëºÍ»ñÈ¡ÂëÁ÷Ö®Ç°ĞèÒªÊ×ÏÈµ÷ÓÃ¸Ã½Ó¿Ú CNend
-\param[in] htrack   The handle of audio track CNcomment:track¾ä±ú CNend
+\param[in] hSrc   The handle of audio track CNcomment:×ÊÔ´¾ä±ú CNend
 \param[in] hAenc     The handle of audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
 \retval ::HI_ERR_AENC_INVALID_PARA	        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
@@ -157,13 +157,12 @@ Before obtaining the streams and encoding, you must call the interface. CNcommen
 \see \n
 N/A
 */
-HI_S32 HI_UNF_AENC_AttachInput(HI_HANDLE hAenc, HI_HANDLE hTrack);
+HI_S32 HI_UNF_AENC_AttachInput(HI_HANDLE hAenc, HI_HANDLE hSrc);
 
 /**
 \brief Detach audio encoder with audio track, reserved. CNcomment:½â³ıÒôÆµ±àÂëÆ÷ºÍÒôÆµTrack Í¨Â·µÄ°ó¶¨, Ô¤Áô CNend
 \attention \n
 Before calling the interface, stop the encoding. CNcomment:µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈÍ£Ö¹±àÂë CNend
-\param[in] hTrack   The handle of audio track CNcomment:AVPLAY²¥·ÅÆ÷¾ä±ú CNend
 \param[in] hAenc     The handle of audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
 \retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
 \retval ::HI_ERR_AENC_INVALID_PARA	        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
@@ -173,7 +172,7 @@ Before calling the interface, stop the encoding. CNcomment:µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈÍ£Ö
 \see \n
 N/A
 */
-HI_S32 HI_UNF_AENC_DetachInput(HI_HANDLE hAenc, HI_HANDLE hTrack);
+HI_S32 HI_UNF_AENC_DetachInput(HI_HANDLE hAenc);
 
 /**
 \brief Start to encode. CNcomment:¿ªÊ¼±àÂë CNend
@@ -205,6 +204,35 @@ CNcomment:µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈ³õÊ¼»¯±àÂëÆ÷£¬´´½¨±àÂëÍ¨µÀ£¬°ó¶¨²¥·ÅÆ÷£¬ÒÑ¾­¿ªÊ¼±àÂë
 N/A
 */
 HI_S32 HI_UNF_AENC_Stop(HI_HANDLE hAenc);
+
+/**
+\brief Set the attribution of encode. CNcomment:ÉèÖÃ±àÂëÊôĞÔ CNend
+\attention \n
+Before calling the interface, you need to stop the encoder.
+CNcomment:µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈÍ£Ö¹±àÂëCNend
+\param[in] hAenc   The handle of audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
+\param[in] pstAencAttr   The attribution of audio encoder CNcomment:ÒôÆµ±àÂëÊôĞÔ CNend
+\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AENC_NULL_PTR            The pointer is null. CNcomment:Ö¸ÕëÎª¿Õ CNend
+\see \n
+N/A
+*/
+HI_S32 HI_UNF_AENC_SetAttr(HI_HANDLE hAenc, const HI_UNF_AENC_ATTR_S *pstAencAttr);
+
+/**
+\brief Set the attribution of encode. CNcomment:»ñÈ¡±àÂëÊôĞÔ CNend
+\attention \n
+\param[in] hAenc   The handle of audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
+\param[out] pstAencAttr   The attribution of audio encoder CNcomment:ÒôÆµ±àÂëÊôĞÔ CNend
+\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
+\retval ::HI_ERR_AENC_NULL_PTR            The pointer is null. CNcomment:Ö¸ÕëÎª¿Õ CNend
+\see \n
+N/A
+*/
+HI_S32 HI_UNF_AENC_GetAttr(HI_HANDLE hAenc, HI_UNF_AENC_ATTR_S *pstAencAttr);
+
 
 /** @} */  /** <!-- ==== API declaration end ==== */
 

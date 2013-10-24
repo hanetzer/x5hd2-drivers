@@ -33,6 +33,10 @@ HI_S32 VENC_DRV_OsalInitEvent( VEDU_OSAL_EVENT *pEvent, HI_S32 InitVal );
 HI_S32 VENC_DRV_OsalGiveEvent( VEDU_OSAL_EVENT *pEvent );
 HI_S32 VENC_DRV_OsalWaitEvent( VEDU_OSAL_EVENT *pEvent, HI_U32 msWaitTime );
 
+struct file *VENC_DRV_OsalFopen(const char *filename, int flags, int mode);
+void VENC_DRV_OsalFclose(struct file *filp);
+int VENC_DRV_OsalFread(char *buf, unsigned int len, struct file *filp);
+int VENC_DRV_OsalFwrite(char *buf, int len, struct file *filp);
 #ifdef __cplusplus
  #if __cplusplus
 }

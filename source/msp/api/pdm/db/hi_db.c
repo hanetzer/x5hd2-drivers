@@ -9,6 +9,9 @@
 #include <sys/stat.h>
 #endif
 
+#include "hi_type.h"
+#include "hi_debug.h"
+#include "hi_module.h"
 #include "hi_db.h"
 
 
@@ -30,14 +33,8 @@ KEY:   | name | valuelen | value |
 #define DB_FREE(p)          free(p)
 #endif
 
-#ifdef __KERNEL__
-#define HI_ERR_DB(format, arg...)    printk( "%s,%d: " format , __FUNCTION__, __LINE__, ## arg)
-#define HI_INFO_DB(format, arg...)    printk( "%s,%d: " format , __FUNCTION__, __LINE__, ## arg)
-#else
-#define HI_ERR_DB(format, arg...)    printf( "%s,%d: " format , __FUNCTION__, __LINE__, ## arg)
-#define HI_INFO_DB(format, arg...)    printf( "%s,%d: " format , __FUNCTION__, __LINE__, ## arg)
-#endif
-
+#define HI_ERR_DB(format...)    HI_ERR_PRINT(HI_ID_PDM, format)
+#define HI_INFO_DB(format...)    HI_INFO_PRINT(HI_ID_PDM, format)
 
 static HI_CHAR g_DBCheck[HI_DB_CHECK_LEN] = {"###"};
 
@@ -176,8 +173,9 @@ HI_S32 HI_DB_GetTableByName(HI_DB_S *pstDB, HI_CHAR TableName[], HI_DB_TABLE_S *
     while((HI_U32)(pDBStr - pstDB->pData) < pstDB->u32DataLen)
     {
         stTable.pstDB = pstDB;
-                    
-        memcpy(stTable.Name, pDBStr, HI_DB_MAX_NAME_LEN);
+
+		memset(stTable.Name, 0, sizeof(stTable.Name));
+        memcpy(stTable.Name, pDBStr, HI_DB_MAX_NAME_LEN - 1);
         pDBStr += HI_DB_MAX_NAME_LEN;
         
         stTable.u32DataSize = *((HI_U32 *)(pDBStr));
@@ -269,7 +267,8 @@ HI_S32 HI_DB_GetKeyByName(HI_DB_TABLE_S *pstTable, HI_CHAR KeyName[], HI_DB_KEY_
 
     while((HI_U32)(pTableStr - pstTable->pData) < pstTable->u32DataSize)
     {
-        memcpy(stKey.Name, pTableStr, HI_DB_MAX_NAME_LEN);
+    	memset(stKey.Name, 0, sizeof(stKey.Name));
+        memcpy(stKey.Name, pTableStr, HI_DB_MAX_NAME_LEN - 1);
         pTableStr += HI_DB_MAX_NAME_LEN;
         
         stKey.u32ValueSize = (HI_U32)(*pTableStr);
@@ -291,7 +290,7 @@ HI_S32 HI_DB_GetKeyByName(HI_DB_TABLE_S *pstTable, HI_CHAR KeyName[], HI_DB_KEY_
 
     if((HI_U32)(pTableStr - pstTable->pData) >= pstTable->u32DataSize)
     {
-        HI_ERR_DB("ERR: can not find key %s\n", KeyName);
+        HI_INFO_DB("ERR: can not find key %s\n", KeyName);
         return HI_FAILURE;
     }
     

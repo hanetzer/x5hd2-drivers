@@ -1,24 +1,16 @@
 #include <linux/module.h>
 #include <linux/slab.h>
 #include <linux/sched.h>
-
 #include "hi_type.h"
 #include "hi_debug.h"
 #include "hi_module.h"
-
-#include "drv_mem_ext.h"
-
-#include "drv_proc_ext.h"
-#include "drv_dev_ext.h"
-
+#include "hi_osal.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
 #include "drv_module_ioctl.h"
-
 #include "drv_mutils.h"
-
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 #include "drv_mmgr.h"
-#include "drv_module_ext.h"
-#include "drv_mem_ext.h"
 
 #ifdef CMN_MMGR_SUPPORT
 #include "drv_mem.h"
@@ -39,20 +31,12 @@ static MODULE_S*        g_pstKModuleHeader = NULL;
 #define COLOR_END       "\33[0m"
 
 #define KERNEL_MODE   "kernel"
-#if 0
-#define THIS_ERR_PRINT( fmt, arg...) printk(COLOR_START_RED);printk("<%s:%s>: ", KERNEL_MODE, __func__);printk(fmt, ##arg);printk(COLOR_END)
-#define THIS_INFO_PRINT(fmt, arg...) printk(COLOR_START);    printk("<%s:%s>: ", KERNEL_MODE, __func__);printk(fmt, ##arg);printk(COLOR_END)
-#else
-#define THIS_ERR_PRINT( fmt, arg...)
-#define THIS_INFO_PRINT(fmt, arg...)
-#endif
 
 #define MIN_LEN(x, y) ( (x) > (y) ? (y) : (x) )
 
 #define KMODULE_BASE_ID (HI_DEBUG_ID_BUTT)
 
-// TODO: check
-#define MIN_USER_MODULE_NUMBER 200
+#define MIN_USER_MODULE_NUMBER 256
 
 HI_HANDLE              g_hKModuleMgr = 0;
 
@@ -68,7 +52,13 @@ do{                                                             \
 }while(0)
 #define kmodule_mgr_unlock() up(&g_KModuleMgrMutex)
 
-static HI_S32 ModuleMgr_Link_DelNode(MODULE_S* pNodeHeader, MODULE_S* pstNode);
+static HI_S32 ModuleMgr_Link_DelNode(MODULE_S* pNodeHeader, MODULE_S* pstNode, HI_BOOL bForce);
+static HI_S32 MODULE_DRV_Register(HI_U32 u32ModuleID, 
+                        const HI_U8* pu8ModuleName, HI_VOID* pFunc, struct file * file);
+
+extern HI_S32 LOGAddModule(HI_PCHAR szProcName, HI_MOD_ID_E u32It);
+extern HI_S32 LOGRemoveModule(HI_PCHAR szProcName, HI_MOD_ID_E u32ItemID);
+
 /*
 HI_U32 ModuleMgr_RegisterID(const HI_U8* pu8Name)
 {
@@ -79,7 +69,7 @@ HI_U32 ModuleMgr_RegisterID(const HI_U8* pu8Name)
     HI_U8 u8Tmp[3]={'\0'};
     HI_U8 i = 0;
 
-    THIS_INFO_PRINT("to md5 name is %s\n", pu8Name);
+    HI_INFO_MEM("to md5 name is %s\n", pu8Name);
 
     KMD5Init( &md5c );
     KMD5Update( &md5c, (unsigned char*)pu8Name, strlen(pu8Name) );
@@ -92,13 +82,13 @@ HI_U32 ModuleMgr_RegisterID(const HI_U8* pu8Name)
         strcat(u8BufResult,u8Tmp);
     }
 
-    THIS_INFO_PRINT("u8BufResult is %s\n", u8BufResult);
+    HI_INFO_MEM("u8BufResult is %s\n", u8BufResult);
 
     u32Result = (HI_U32)simple_strtoll(u8BufResult, NULL, 16) + KMODULE_BASE_ID;
 
     u32Result &= 0x7FFFFFFF;
 
-    THIS_INFO_PRINT("u32Result 2 is 0x%08x\n", u32Result);
+    HI_INFO_MEM("u32Result 2 is 0x%08x\n", u32Result);
 
     return u32Result;
 }
@@ -113,14 +103,15 @@ static HI_S32 ModuleMgr_FindNodeByName(MODULE_S* pNodeHeader, MODULE_S** pstNode
 
     if (NULL == pu8ModuleName)
     {
-        THIS_ERR_PRINT("param invalid!\n");
+        HI_ERR_MODULE("param invalid!\n");
 
         return HI_FAILURE;
     }
 
     while (NULL != pItrNode)
     {
-        s32CmpResult = strcmp(pItrNode->stModuleInfo.u8ModuleName, pu8ModuleName);
+        s32CmpResult = HI_OSAL_Strncmp(pItrNode->stModuleInfo.u8ModuleName, 
+                            pu8ModuleName, sizeof(pItrNode->stModuleInfo.u8ModuleName));
         if ( s32CmpResult == 0)
         {
             //find out
@@ -134,12 +125,12 @@ static HI_S32 ModuleMgr_FindNodeByName(MODULE_S* pNodeHeader, MODULE_S** pstNode
 
     if (NULL != pItrNode)
     {
-        THIS_INFO_PRINT("found out the module name:%s node\n", pu8ModuleName);
+        HI_INFO_MODULE("found out the module name:%s node\n", pu8ModuleName);
 
         return HI_SUCCESS;
     }
 
-    THIS_ERR_PRINT("not found out the module name:%s node\n", pu8ModuleName);
+    HI_ERR_MODULE("not found out the module name:%s node\n", pu8ModuleName);
 
     return HI_FAILURE;
 }
@@ -165,12 +156,12 @@ static HI_S32 ModuleMgr_FindNodeByID(MODULE_S* pNodeHeader, MODULE_S** pstNode, 
 
     if (NULL != pItrNode)
     {
-        THIS_INFO_PRINT("found out the module id:0x%08x node\n", u32ModuleID);
+        HI_INFO_MODULE("found out the module id:0x%08x node\n", u32ModuleID);
 
         return HI_SUCCESS;
     }
 
-    THIS_ERR_PRINT("not found out the module id:0x%08x node\n", u32ModuleID);
+    HI_ERR_MODULE("not found out the module id:0x%08x node\n", u32ModuleID);
 
     return HI_FAILURE;
 
@@ -198,7 +189,7 @@ static HI_S32 ModuleMgr_Link_Init(HI_U32 u32Count)
 
     if (NULL != g_pstKModuleHeader)
     {
-        THIS_ERR_PRINT("Init has been called.\n");
+        HI_INFO_MODULE("Init has been called.\n");
 
         return HI_SUCCESS;
     }
@@ -206,7 +197,7 @@ static HI_S32 ModuleMgr_Link_Init(HI_U32 u32Count)
     g_pstKModuleHeader = (MODULE_S*)kmalloc(sizeof(MODULE_S), GFP_KERNEL);
     if (NULL == g_pstKModuleHeader)
     {
-        THIS_ERR_PRINT("kmalloc size %d failure\n", sizeof(MODULE_S));
+        HI_ERR_MODULE("kmalloc size %d failure\n", sizeof(MODULE_S));
         return HI_FAILURE;
     }
 
@@ -221,7 +212,7 @@ static HI_S32 ModuleMgr_Link_Init(HI_U32 u32Count)
 
 static HI_S32 ModuleMgr_Link_DeInit(HI_VOID)
 {
-    ModuleMgr_Link_DelNode(g_pstKModuleHeader, NULL);
+    ModuleMgr_Link_DelNode(g_pstKModuleHeader, NULL, HI_TRUE);
 
     KMem_Utils_DeInit(g_hKModuleMgr);
 
@@ -267,10 +258,11 @@ static HI_S32 ModuleMgr_Link_AddNode(MODULE_S* pNodeHeader, MODULE_S* pstNode)
 {
     MODULE_S* pItrNode = NULL;
     MODULE_S* pstAddNode = NULL;
+    MODULE_POOL_S* pstModuleBase = NULL;
 
     if (NULL == pNodeHeader)
     {
-        THIS_ERR_PRINT("add node failure, node header is NULL\n");
+        HI_ERR_MODULE("add node failure, node header is NULL\n");
 
         return HI_FAILURE;
     }
@@ -283,25 +275,28 @@ static HI_S32 ModuleMgr_Link_AddNode(MODULE_S* pNodeHeader, MODULE_S* pstNode)
             pItrNode->stModuleInfo.pFnCallback = pstNode->stModuleInfo.pFnCallback;
         }
         //has added it, so return success, directly
-        THIS_INFO_PRINT("has node %s in link\n" , pstNode->stModuleInfo.u8ModuleName);
+        HI_INFO_MODULE("has node %s in link\n" , pstNode->stModuleInfo.u8ModuleName);
         return HI_SUCCESS;
     }
 
-    pstAddNode = (MODULE_S*)KMem_Utils_MALLOC(g_hKModuleMgr);
-    if ( NULL == pstAddNode)
+    pstModuleBase = (MODULE_POOL_S*)KMem_Utils_MALLOC(g_hKModuleMgr);
+    if ( NULL == pstModuleBase || 1 != pstModuleBase->u32Idle )
     {
 
-        THIS_ERR_PRINT("add node failure, malloc node failure.\n");
+        HI_ERR_MODULE("add node failure, malloc node failure.\n");
         return HI_FAILURE;
     }
+    pstAddNode    =  &pstModuleBase->stItem;
 
     memset(pstAddNode, 0, sizeof(MODULE_S));
 
-    THIS_INFO_PRINT("add module name %s at address %p\n", pstNode->stModuleInfo.u8ModuleName, pstAddNode);
+    HI_INFO_MODULE("add module name %s at address %p\n", pstNode->stModuleInfo.u8ModuleName, pstAddNode);
 
     memcpy(pstAddNode->stModuleInfo.u8ModuleName, pstNode->stModuleInfo.u8ModuleName, sizeof(pstAddNode->stModuleInfo.u8ModuleName));
     pstAddNode->stModuleInfo.u32ModuleID = pstNode->stModuleInfo.u32ModuleID;
     pstAddNode->stModuleInfo.pFnCallback = pstNode->stModuleInfo.pFnCallback;
+    pstAddNode->stModuleInfo.s32RegCount = 1;
+    pstAddNode->stModuleInfo.u32File = pstNode->stModuleInfo.u32File;
     pstAddNode->pNextModule = NULL;
 
     pItrNode = pNodeHeader;
@@ -318,14 +313,14 @@ static HI_S32 ModuleMgr_Link_AddNode(MODULE_S* pNodeHeader, MODULE_S* pstNode)
 }
 
 // Delete the node from link
-static HI_S32 ModuleMgr_Link_DelNode(MODULE_S* pNodeHeader, MODULE_S* pstNode)
+static HI_S32 ModuleMgr_Link_DelNode(MODULE_S* pNodeHeader, MODULE_S* pstNode, HI_BOOL bForce)
 {
     MODULE_S* pItrNode = NULL;
     MODULE_S* pDelNode = NULL;
 
     if (NULL == pNodeHeader || pNodeHeader->pNextModule == NULL)
     {
-        THIS_ERR_PRINT("delete node failure, node header is NULL\n");
+        HI_ERR_MODULE("delete node failure, node header is NULL\n");
 
         return HI_FAILURE;
     }
@@ -342,9 +337,9 @@ static HI_S32 ModuleMgr_Link_DelNode(MODULE_S* pNodeHeader, MODULE_S* pstNode)
             pDelNode = pItrNode;
             pItrNode = pItrNode->pNextModule;
 
-            THIS_INFO_PRINT("delete module node:%s\n", pDelNode->stModuleInfo.u8ModuleName);
+            HI_INFO_MODULE("delete module node:%s\n", pDelNode->stModuleInfo.u8ModuleName);
 
-            KMem_Utils_FREE(g_hKModuleMgr, pDelNode);
+            KMem_Utils_FREE(g_hKModuleMgr, container_of(pDelNode, MODULE_POOL_S, stItem));
         }
 
         pNodeHeader->pNextModule = NULL;
@@ -352,7 +347,7 @@ static HI_S32 ModuleMgr_Link_DelNode(MODULE_S* pNodeHeader, MODULE_S* pstNode)
         return HI_SUCCESS;
     }
 
-    while ( NULL != pItrNode->pNextModule)
+    while (NULL != pItrNode && NULL != pItrNode->pNextModule)
     {
         if (pItrNode->pNextModule->stModuleInfo.u32ModuleID == pstNode->stModuleInfo.u32ModuleID)
         {
@@ -363,13 +358,19 @@ static HI_S32 ModuleMgr_Link_DelNode(MODULE_S* pNodeHeader, MODULE_S* pstNode)
 
     if (NULL != pItrNode && NULL != pItrNode->pNextModule)
     {
+        /* If user mode registered more than 1 time, only sub count before count = 1 */
+        if ((!bForce) && (pItrNode->pNextModule->stModuleInfo.s32RegCount > 1))
+        {
+            pItrNode->pNextModule->stModuleInfo.s32RegCount--;
+            return HI_SUCCESS;
+        }
         //found out the next node to delete.
         pDelNode = pItrNode->pNextModule;
         pItrNode->pNextModule = pItrNode->pNextModule->pNextModule;
 
-        THIS_INFO_PRINT("delete module node:%s\n", pDelNode->stModuleInfo.u8ModuleName);
+        HI_INFO_MODULE("delete module node:%s\n", pDelNode->stModuleInfo.u8ModuleName);
 
-        KMem_Utils_FREE(g_hKModuleMgr, pDelNode);
+        KMem_Utils_FREE(g_hKModuleMgr, container_of(pDelNode, MODULE_POOL_S, stItem));
 
         pNodeHeader->u32ItemCnt--;
 
@@ -391,10 +392,10 @@ static HI_S32 CMPI_Module_Ioctl(struct inode *inode, struct file *file,HI_U32 cm
 
             if (HI_INVALID_MODULE_ID != pModule->u32ModuleID)
             {
-                s32Ret = HI_DRV_MODULE_Register(pModule->u32ModuleID, pModule->u8ModuleName, pModule->pFnCallback);
+                s32Ret = MODULE_DRV_Register(pModule->u32ModuleID, pModule->u8ModuleName, pModule->pFnCallback, file);
             }
 
-            THIS_INFO_PRINT("add module:%s, id %#x!\n", pModule->u8ModuleName, pModule->u32ModuleID);
+            HI_INFO_MODULE("add module:%s, id %#x!\n", pModule->u8ModuleName, pModule->u32ModuleID);
         }
         break;
         case CMD_GET_MODULE_INFO:
@@ -423,7 +424,7 @@ static HI_S32 CMPI_Module_Ioctl(struct inode *inode, struct file *file,HI_U32 cm
                     u32MinLen = MIN_LEN( sizeof(pModule->u8ModuleName)-1, strlen(pNode->stModuleInfo.u8ModuleName));
                     memcpy(pModule->u8ModuleName, pNode->stModuleInfo.u8ModuleName, u32MinLen);
 
-                    THIS_INFO_PRINT("get module:%s, id %#x!\n", pModule->u8ModuleName, pModule->u32ModuleID);
+                    HI_INFO_MODULE("get module:%s, id %#x!\n", pModule->u8ModuleName, pModule->u32ModuleID);
                 }
             }
         }
@@ -433,7 +434,7 @@ static HI_S32 CMPI_Module_Ioctl(struct inode *inode, struct file *file,HI_U32 cm
             MODULE_INFO_S *pModule = (MODULE_INFO_S*)arg;
 
             s32Ret = HI_DRV_MODULE_UnRegister(pModule->u32ModuleID);
-            THIS_INFO_PRINT("del module:%s, id %#x!\n", pModule->u8ModuleName, pModule->u32ModuleID);
+            HI_INFO_MODULE("del module:%s, id %#x!\n", pModule->u8ModuleName, pModule->u32ModuleID);
         }
         break;
         case CMD_ALLOC_MODULE_ID:
@@ -445,7 +446,7 @@ static HI_S32 CMPI_Module_Ioctl(struct inode *inode, struct file *file,HI_U32 cm
         }
         break;
         default:
-            THIS_ERR_PRINT("================cmd:%#x\n", cmd);
+            HI_ERR_MODULE("================cmd:%#x\n", cmd);
             s32Ret = HI_SUCCESS;
         break;
     }
@@ -468,6 +469,27 @@ static long MODULE_DRV_Ioctl(struct file *file,
 
 static HI_S32 MODULE_DRV_Release(struct inode * inode, struct file * file)
 {
+    MODULE_S* pstLastNode = g_pstKModuleHeader;
+    MODULE_S* pstNode = pstLastNode->pNextModule;
+
+    /* UnRegister moudules registered by this file */
+    while (HI_NULL != pstNode)
+    {
+        if ((HI_U32)file == pstNode->stModuleInfo.u32File)
+        {
+            HI_INFO_MODULE("Remove module %s\n", pstNode->stModuleInfo.u8ModuleName);
+            LOGRemoveModule(pstNode->stModuleInfo.u8ModuleName, pstNode->stModuleInfo.u32ModuleID);
+            ModuleMgr_Link_DelNode(pstLastNode, pstNode, HI_TRUE);
+            /* pstNode had been freed */
+            pstNode = pstLastNode->pNextModule;
+        }
+        else
+        {
+            pstLastNode = pstNode;
+            pstNode = pstNode->pNextModule;
+        }
+    }
+    
     return 0;
 }
 
@@ -504,7 +526,7 @@ HI_S32 ModuleProcRead(struct seq_file *s, HI_VOID *pArg)
     HI_U32 u32Count = 0;
     MODULE_S* pItr = NULL;
     HI_U8  u8LevelName[8] = {0};
-    HI_U32 u32LogLevel = 0;
+    HI_U8  u8LogLevel = 0;
 
 #ifdef CMN_MMGR_SUPPORT
     HI_U32 u32TotalSize = 0;
@@ -513,54 +535,54 @@ HI_S32 ModuleProcRead(struct seq_file *s, HI_VOID *pArg)
 
     if (0 == g_ModuleModInit)
     {
-        seq_printf(s,"    Module module not init\n");
+        PROC_PRINT(s,"    Module module not init\n");
         return 0;
     }
 
     kmodule_mgr_lock(HI_FAILURE);
 
-    seq_printf(s, COLOR_START_HEAD);
-    seq_printf(s, SPLIT_LINE);
-    seq_printf(s, "|  Module Name  |     ID      | Log Level | Heap Memory |\n");
-    seq_printf(s, SPLIT_LINE);
-    seq_printf(s, COLOR_END);
+    PROC_PRINT(s, COLOR_START_HEAD);
+    PROC_PRINT(s, SPLIT_LINE);
+    PROC_PRINT(s, "|  Module Name  |     ID      | Log Level | Heap Memory |\n");
+    PROC_PRINT(s, SPLIT_LINE);
+    PROC_PRINT(s, COLOR_END);
 
     if (NULL != g_pstKModuleHeader)
     {
         pItr = g_pstKModuleHeader->pNextModule;
         while (NULL != pItr)
         {
-            u32LogLevel = LOG_GetLevel(pItr->stModuleInfo.u32ModuleID, u8LevelName, sizeof(u8LevelName));
+            u8LogLevel = LOG_GetLevel(pItr->stModuleInfo.u32ModuleID, u8LevelName, sizeof(u8LevelName));
 
             if (u32Count%2 == 0)
             {
-                seq_printf(s, COLOR_START_HEAD"|"COLOR_END);
-                seq_printf(s, " %-16.16s 0x%08x   %d: %-s ", pItr->stModuleInfo.u8ModuleName,  pItr->stModuleInfo.u32ModuleID, \
-                                                             u32LogLevel, u8LevelName);
+                PROC_PRINT(s, COLOR_START_HEAD"|"COLOR_END);
+                PROC_PRINT(s, " %-16.16s 0x%08x   %d: %-s ", pItr->stModuleInfo.u8ModuleName,  pItr->stModuleInfo.u32ModuleID, \
+                                                             u8LogLevel, u8LevelName);
 #ifdef CMN_MMGR_SUPPORT
                 u32Size = KModule_MemMgr_GetUsedSize(pItr->stModuleInfo.u32ModuleID);
                 u32TotalSize += u32Size;
-                seq_printf(s, "     %-10d", u32Size);
+                PROC_PRINT(s, "     %-10d", u32Size);
 #else
-                seq_printf(s, "     %-10s", " ");
+                PROC_PRINT(s, "     %-10s", " ");
 #endif
-                seq_printf(s, COLOR_START_HEAD"|\n"COLOR_END);
+                PROC_PRINT(s, COLOR_START_HEAD"|\n"COLOR_END);
 
                 u32Count = 1;
             }
             else
             {
-                seq_printf(s, COLOR_START_HEAD"|"COLOR_END COLOR_START_RED);
-                seq_printf(s, " %-16.16s 0x%08x   %d: %-s ", pItr->stModuleInfo.u8ModuleName,  pItr->stModuleInfo.u32ModuleID, \
-                                                             u32LogLevel, u8LevelName);
+                PROC_PRINT(s, COLOR_START_HEAD"|"COLOR_END COLOR_START_RED);
+                PROC_PRINT(s, " %-16.16s 0x%08x   %d: %-s ", pItr->stModuleInfo.u8ModuleName,  pItr->stModuleInfo.u32ModuleID, \
+                                                             u8LogLevel, u8LevelName);
 #ifdef CMN_MMGR_SUPPORT
                 u32Size = KModule_MemMgr_GetUsedSize(pItr->stModuleInfo.u32ModuleID);
                 u32TotalSize += u32Size;
-                seq_printf(s, "     %-10d", u32Size);
+                PROC_PRINT(s, "     %-10d", u32Size);
 #else
-                seq_printf(s, "     %-10s", " ");
+                PROC_PRINT(s, "     %-10s", " ");
 #endif
-                seq_printf(s, COLOR_END COLOR_START_HEAD"|"COLOR_END"\n");
+                PROC_PRINT(s, COLOR_END COLOR_START_HEAD"|"COLOR_END"\n");
 
                 u32Count = 0;
             }
@@ -569,15 +591,15 @@ HI_S32 ModuleProcRead(struct seq_file *s, HI_VOID *pArg)
         }
     }
 
-    seq_printf(s, COLOR_START_HEAD);
-    seq_printf(s, SPLIT_LINE);
+    PROC_PRINT(s, COLOR_START_HEAD);
+    PROC_PRINT(s, SPLIT_LINE);
 
 #ifdef CMN_MMGR_SUPPORT
-    seq_printf(s, "| %-43s %-10d|\n", "Total", u32TotalSize);
-    seq_printf(s, SPLIT_LINE);
+    PROC_PRINT(s, "| %-43s %-10d|\n", "Total", u32TotalSize);
+    PROC_PRINT(s, SPLIT_LINE);
 #endif
 
-    seq_printf(s, COLOR_END);
+    PROC_PRINT(s, COLOR_END);
 
     kmodule_mgr_unlock();
 
@@ -594,6 +616,7 @@ HI_S32 HI_DRV_MMNGR_Init(HI_U32 u32ModuleCount, HI_U32 u32ModuleMemCount)
 
 HI_S32 MMNGR_DRV_ModInit(HI_U32 u32ModuleCount, HI_U32 u32ModuleMemCount)
 {
+    HI_S32 s32Ret;
     DRV_PROC_ITEM_S *item ;
 
     if (g_ModuleModInit)
@@ -601,18 +624,22 @@ HI_S32 MMNGR_DRV_ModInit(HI_U32 u32ModuleCount, HI_U32 u32ModuleMemCount)
         return HI_SUCCESS;
     }
 
-    HI_DRV_MODULE_Register(HI_ID_SYS,    "HI_SYS",      HI_NULL);
-    HI_DRV_MODULE_Register(HI_ID_MODULE, "HI_MODULE",   HI_NULL);
-    HI_DRV_MODULE_Register(HI_ID_LOG,    "HI_LOG",      HI_NULL);
-    HI_DRV_MODULE_Register(HI_ID_PROC,   "HI_PROC",     HI_NULL);
-    HI_DRV_MODULE_Register(HI_ID_STAT,   "HI_STAT",     HI_NULL);
-    HI_DRV_MODULE_Register(HI_ID_MEM,    "HI_MEM",      HI_NULL);
-
 #ifdef CMN_MMGR_SUPPORT
     KModule_MemMgr_Init(u32ModuleCount, u32ModuleMemCount);
 #endif
 
-    sprintf(g_stModuleDev.devfs_name, "%s", UMAP_DEVNAME_MODULE);
+    s32Ret = HI_DRV_MODULE_Register(HI_ID_SYS,    "HI_SYS",      HI_NULL);
+    s32Ret |= HI_DRV_MODULE_Register(HI_ID_MODULE, "HI_MODULE",   HI_NULL);
+    s32Ret |= HI_DRV_MODULE_Register(HI_ID_LOG,    "HI_LOG",      HI_NULL);
+    s32Ret |= HI_DRV_MODULE_Register(HI_ID_PROC,   "HI_PROC",     HI_NULL);
+    s32Ret |= HI_DRV_MODULE_Register(HI_ID_STAT,   "HI_STAT",     HI_NULL);
+    s32Ret |= HI_DRV_MODULE_Register(HI_ID_MEM,    "HI_MEM",      HI_NULL);
+    if (HI_SUCCESS != s32Ret)
+    {
+        HI_ERR_MODULE("Reg basic module err:%#x.\n", s32Ret);
+    }
+
+    HI_OSAL_Snprintf(g_stModuleDev.devfs_name, sizeof(g_stModuleDev.devfs_name), "%s", UMAP_DEVNAME_MODULE);
     g_stModuleDev.fops = &DRV_module_Fops;
     g_stModuleDev.minor = UMAP_MIN_MINOR_MODULE;
     g_stModuleDev.owner  = THIS_MODULE;
@@ -620,7 +647,7 @@ HI_S32 MMNGR_DRV_ModInit(HI_U32 u32ModuleCount, HI_U32 u32ModuleMemCount)
 
     if(HI_DRV_DEV_Register(&g_stModuleDev) < 0)
     {
-        THIS_ERR_PRINT("Unable to register dbg dev\n");
+        HI_ERR_MODULE("Unable to register dbg dev\n");
         return HI_FAILURE;
     }
     // 1
@@ -662,7 +689,6 @@ HI_VOID MMNGR_DRV_ModExit(HI_VOID)
     HI_DRV_MODULE_UnRegister(HI_ID_MODULE);
     HI_DRV_MODULE_UnRegister(HI_ID_PROC);
     HI_DRV_MODULE_UnRegister(HI_ID_STAT);
-    HI_DRV_MODULE_UnRegister(HI_ID_EVENT);
 
     KModule_MemMgr_Exit();
 #endif
@@ -768,12 +794,15 @@ HI_U32 HI_DRV_MODULE_GetIDByName(HI_U8* pu8Name)
     return 0;
 }
 #endif
-extern HI_S32 LOGAddModule(HI_PCHAR szProcName, HI_MOD_ID_E u32It);
-HI_S32 HI_DRV_MODULE_Register(HI_U32 u32ModuleID, const HI_U8* pu8ModuleName, HI_VOID* pFunc)
+
+static HI_S32 MODULE_DRV_Register(HI_U32 u32ModuleID, 
+                        const HI_U8* pu8ModuleName, HI_VOID* pFunc, struct file * file)
 {
     MODULE_S stModule = {{0}};
     HI_U32   u32MinLen = 0;
     HI_S32   s32Ret = HI_FAILURE;
+
+    HI_INFO_MODULE("Register %d %s %p\n", u32ModuleID, pu8ModuleName, file);
 
     if ( NULL == pu8ModuleName )
     {
@@ -790,6 +819,7 @@ HI_S32 HI_DRV_MODULE_Register(HI_U32 u32ModuleID, const HI_U8* pu8ModuleName, HI
     memcpy(stModule.stModuleInfo.u8ModuleName, pu8ModuleName, u32MinLen);
 
     stModule.stModuleInfo.pFnCallback = pFunc;
+    stModule.stModuleInfo.u32File = (HI_U32)file;
 
     // Add a node to into the link.
     kmodule_mgr_lock(HI_FAILURE);
@@ -807,24 +837,28 @@ HI_S32 HI_DRV_MODULE_Register(HI_U32 u32ModuleID, const HI_U8* pu8ModuleName, HI
         LOGAddModule((HI_PCHAR)pu8ModuleName, (HI_MOD_ID_E)u32ModuleID);
     }
 
-    THIS_INFO_PRINT("add module:%s, id %#x!\n", stModule.stModuleInfo.u8ModuleName, stModule.stModuleInfo.u32ModuleID);
+    HI_INFO_MODULE("add module:%s, id %#x!\n", stModule.stModuleInfo.u8ModuleName, stModule.stModuleInfo.u32ModuleID);
 
     return s32Ret;
+}
+
+HI_S32 HI_DRV_MODULE_Register(HI_U32 u32ModuleID, const HI_U8* pu8ModuleName, HI_VOID* pFunc)
+{
+    return MODULE_DRV_Register(u32ModuleID, pu8ModuleName, pFunc, HI_NULL);
 }
 
 HI_S32 HI_DRV_MODULE_AllocId(HI_U8* pu8ModuleName, HI_U32 *pu32ModuleID, HI_S32 *ps32Status)
 {
     MODULE_S *pstFindModude = HI_NULL;
     HI_S32   s32Ret = HI_FAILURE;
-    HI_CHAR  aszModuleName[MAX_MODULE_NAME*2];
+    HI_CHAR  aszModuleName[MAX_MODULE_NAME+12];
 
     if ( NULL == pu8ModuleName )
     {
         return HI_FAILURE;
     }
 
-    sprintf(aszModuleName, "%s_%d", pu8ModuleName, current->pid);
-    aszModuleName[MAX_MODULE_NAME-1] = 0;
+    HI_OSAL_Snprintf(aszModuleName, sizeof(aszModuleName), "%s_%d", pu8ModuleName, current->pid);
 
     kmodule_mgr_lock(HI_FAILURE);
 
@@ -832,8 +866,10 @@ HI_S32 HI_DRV_MODULE_AllocId(HI_U8* pu8ModuleName, HI_U32 *pu32ModuleID, HI_S32 
     s32Ret = ModuleMgr_FindNodeByName(g_pstKModuleHeader, &pstFindModude, aszModuleName);
     if ((HI_SUCCESS == s32Ret) && (HI_NULL != pstFindModude))
     {
+        pstFindModude->stModuleInfo.s32RegCount++;
         kmodule_mgr_unlock();
-        memcpy(pu8ModuleName, aszModuleName, MAX_MODULE_NAME-1);
+        HI_INFO_MODULE("Alloc again, reg count=%d\n", pstFindModude->stModuleInfo.s32RegCount);
+        HI_OSAL_Strncpy(pu8ModuleName, aszModuleName, MAX_MODULE_NAME+12-1);
         *pu32ModuleID = pstFindModude->stModuleInfo.u32ModuleID;
         *ps32Status = 1;
         return HI_SUCCESS;
@@ -850,7 +886,9 @@ HI_S32 HI_DRV_MODULE_AllocId(HI_U8* pu8ModuleName, HI_U32 *pu32ModuleID, HI_S32 
     }
 
     *ps32Status = 0;
-    memcpy(pu8ModuleName, aszModuleName, MAX_MODULE_NAME-1);
+    HI_OSAL_Strncpy(pu8ModuleName, aszModuleName, MAX_MODULE_NAME+12-1);
+    
+    HI_INFO_MODULE("AllocId %s, %d\n", pu8ModuleName, *pu32ModuleID);
     return HI_SUCCESS;
 }
 
@@ -862,8 +900,9 @@ HI_S32 HI_DRV_MODULE_UnRegister(HI_U32 u32ModuleID)
     kmodule_mgr_lock(HI_FAILURE);
 
     stNode.stModuleInfo.u32ModuleID = u32ModuleID;
+    LOGRemoveModule(stNode.stModuleInfo.u8ModuleName, u32ModuleID);
 
-    s32Ret = ModuleMgr_Link_DelNode(g_pstKModuleHeader, &stNode);
+    s32Ret = ModuleMgr_Link_DelNode(g_pstKModuleHeader, &stNode, HI_FALSE);
     if (HI_FAILURE == s32Ret)
     {
         kmodule_mgr_unlock();
@@ -891,7 +930,7 @@ HI_S32 HI_DRV_MODULE_GetFunction(HI_U32 u32ModuleID, HI_VOID** ppFunc)
 
     if (ppFunc == NULL)
     {
-        THIS_ERR_PRINT("param invalid!\n");
+        HI_ERR_MODULE("param invalid!\n");
 
         return HI_FAILURE;
     }
@@ -904,7 +943,7 @@ HI_S32 HI_DRV_MODULE_GetFunction(HI_U32 u32ModuleID, HI_VOID** ppFunc)
 
     if (s32Ret != HI_SUCCESS)
     {
-        THIS_ERR_PRINT("Not found module ID: 0x%08x\n", u32ModuleID);
+        HI_ERR_MODULE("Not found module ID: 0x%08x\n", u32ModuleID);
 
         return HI_FAILURE;
     }

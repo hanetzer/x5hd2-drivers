@@ -100,12 +100,20 @@ typedef struct hiUNF_MCE_TSFILE_PARAM_S
     HI_UNF_VO_DEV_MODE_E        enDevMode;      /**<mode of vo device  *//**<CNcomment:vo设备的模式  */
 }HI_UNF_MCE_TSFILE_PARAM_S;
 
+#define ANI_MAX_PIC_SUPPORT	(30)
+typedef struct hiUNF_MCE_ANI_PARAM_S
+{
+    HI_U32  u32ContentLen;  /**File length*//**<CNcomment:文件长度  */
+	HI_U32	u32PicCount;
+	HI_U32	au32PicTime[ANI_MAX_PIC_SUPPORT];
+}HI_UNF_MCE_ANI_PARAM_S;
 
 /**Play type*//**<CNcomment:播放类型*/
 typedef enum hiUNF_MCE_PLAY_TYPE_E
 {
     HI_UNF_MCE_TYPE_PLAY_DVB	 = 0,   /**<DVB type*/ /**<CNcomment:DVB 类型 */ 
     HI_UNF_MCE_TYPE_PLAY_TSFILE  = 1,   /**<TS file type*/ /**<CNcomment:ts 文件类型 */
+    HI_UNF_MCE_TYPE_PLAY_ANI     = 2,	/**<ES file type*/ /**<CNcomment:es 文件类型 */
     HI_UNF_MCE_TYPE_PLAY_BUTT
 }HI_UNF_MCE_PLAY_TYPE_E;
 
@@ -120,6 +128,7 @@ typedef struct hiUNF_MCE_PLAY_PARAM_S
     {
         HI_UNF_MCE_DVB_PARAM_S     stDvbParam;      /**<dvb parameter*//**<CNcomment:dvb参数*/
         HI_UNF_MCE_TSFILE_PARAM_S  stTsParam;       /**<ts parameter*//**<CNcomment:ts参数*/
+		HI_UNF_MCE_ANI_PARAM_S     stAniParam;		/**<es parameter*//**<CNcomment:es参数*/
 	}unParam;
 }HI_UNF_MCE_PLAY_PARAM_S;
 

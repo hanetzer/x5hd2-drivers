@@ -107,7 +107,7 @@ Description:
  Description  : ADAC API
 *****************************************************************************/
 HI_VOID ADAC_TIANLAI_Init(HI_U32 uSampelRate);
-HI_VOID ADAC_TIANLAI_DeInit(HI_VOID);
+HI_VOID ADAC_TIANLAI_DeInit(HI_BOOL bDestoryFlag);
 
 
 

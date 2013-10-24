@@ -3,9 +3,12 @@
 
 #include <linux/delay.h>
 #include <asm/cacheflush.h>
+#include <linux/dma-direction.h>
+#include <asm/io.h>
 
 #include "jpge_reg.h"
 #include "jpge_hal.h"
+#include "hi_reg_common.h"
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -19,7 +22,6 @@ extern "C" {
 static Jpge_ChnCtx_S JpgeChnCtx[JPGE_MAX_CHN];
 static Jpge_IpCtx_S  JpgeIpCtx;
 
-static volatile HI_U32 *s_pu32JpgeRegClock = HI_NULL;
 /*************************************************************************************/
 
 static const HI_U8 ZigZagScan[64] =
@@ -105,9 +107,9 @@ static HI_S32 Jpge_ChkChnCfg( Jpge_EncCfg_S *pEncCfg )
     CfgErr |= (pEncCfg->FrameWidth  < 16) | (pEncCfg->FrameWidth  > 4096);
     CfgErr |= (pEncCfg->FrameHeight < 16) | (pEncCfg->FrameHeight > 4096);
     
-    CfgErr |= (pEncCfg->YuvStoreType  < JPGE_SEMIPLANNAR) | (pEncCfg->YuvStoreType  > JPGE_PACKAGE     );
-    CfgErr |= (pEncCfg->RotationAngle < JPGE_ROTATION_0 ) | (pEncCfg->YuvStoreType  > JPGE_ROTATION_180);
-    CfgErr |= (pEncCfg->YuvSampleType < JPGE_YUV420     ) | (pEncCfg->YuvSampleType > JPGE_YUV444      );
+    CfgErr |= (pEncCfg->YuvStoreType  > JPGE_PACKAGE);
+    CfgErr |= (pEncCfg->YuvStoreType  > JPGE_ROTATION_180);
+    CfgErr |= (pEncCfg->YuvSampleType > JPGE_YUV444);
     
     CfgErr |= (pEncCfg->SlcSplitEn != 0);
     CfgErr |= (pEncCfg->Qlevel      < 1) | (pEncCfg->Qlevel    > 99);
@@ -199,9 +201,14 @@ static HI_S32 Jpge_StartOneFrame( HI_U32 EncHandle, Jpge_EncIn_S *pEncIn )
     */
     __cpuc_flush_kern_all(); // flush l1cache
     outer_flush_all(); // flush l2cache
+
+    /*Invalidate output buf cache*/
+    outer_inv_range(pEncIn->BusOutBuf, pEncIn->BusOutBuf + pEncIn->OutBufSize);
+    dmac_unmap_area(pEncIn->pOutBuf, pEncIn->OutBufSize, DMA_FROM_DEVICE);
     
     return HI_SUCCESS;
 }
+
 /******************************************************************************
 Function   : 
 Description: 
@@ -214,7 +221,8 @@ Others     :
 static HI_VOID Jpge_CfgReg( HI_U32 EncHandle )
 {
     Jpge_EncPara_S *pEncPara = (Jpge_EncPara_S *)EncHandle;    
-    S_JPGE_REGS_TYPE  *pAllReg = (S_JPGE_REGS_TYPE  *)pEncPara->pRegBase;    
+    S_JPGE_REGS_TYPE  *pAllReg = (S_JPGE_REGS_TYPE  *)pEncPara->pRegBase;   
+    
     {   
         U_JPGE_INTMASK D32;
         D32.u32 = 0;
@@ -339,6 +347,7 @@ static HI_VOID Jpge_ReadReg( HI_U32 EncHandle )
     /* clear jpge int */
     pAllReg->JPGE_INTCLR.u32 = 0xFFFFFFFF;
 }
+
 /******************************************************************************
 Function   : 
 Description: 
@@ -364,11 +373,13 @@ static HI_S32 Jpge_EndOneFrame( HI_U32 EncHandle, Jpge_EncOut_S *pEncOut )
         return HI_FAILURE;
     }
 
+#if 0
     /* 
      * DMA similarity operation need flush l1cache and l2cache manually *
     */
     __cpuc_flush_kern_all(); // flush l1cache
     outer_flush_all(); // flush l2cache
+#endif
 
     pEncOut->StrmSize  = pNaluHdr->PacketLen - 64 - pNaluHdr->InvldByte + JfifHdrLen;
     pEncOut->BusStream = pEncPara->StrmBufAddr + 64 - JfifHdrLen;
@@ -410,8 +421,6 @@ HI_S32 Jpge_Open( HI_VOID )
     /* map reg_base_addr to virtual address */
     JpgeIpCtx.pRegBase = (HI_U32 *)JpgeOsal_MapRegisterAddr( JPGE_REG_BASE_ADDR, 0x1000 );
 
-    s_pu32JpgeRegClock = (volatile HI_U32 *)JpgeOsal_MapRegisterAddr(JPGE_REG_CLOCK, 4);
-
     Jpge_SetClock();
     
     /* init lock & mutex */
@@ -430,16 +439,8 @@ HI_S32 Jpge_Open( HI_VOID )
 HI_S32 Jpge_Close( HI_VOID )
 {
     JpgeOsal_IrqFree( JPGE_IRQ_ID );
-
-    /* reset */
-    *s_pu32JpgeRegClock |= 0x8;
-
-    udelay(1);
     
-    JpgeOsal_UnmapRegisterAddr((HI_VOID*)s_pu32JpgeRegClock);
-    s_pu32JpgeRegClock = HI_NULL;
     JpgeOsal_UnmapRegisterAddr( JpgeIpCtx.pRegBase );
-    
     
     return HI_SUCCESS;
 }
@@ -608,17 +609,17 @@ HI_S32 Jpge_Encode( HI_U32 EncHandle, Jpge_EncIn_S *pEncIn, Jpge_EncOut_S *pEncO
 
 HI_VOID Jpge_SetClock(HI_VOID)
 {
-#if 0
-    /* open clock */
-    *s_pu32JpgeRegClock  |= 0x100;
+    U_PERI_CRG36 unTempValue;
 
-    //udelay(1);
+    unTempValue.u32 = g_pstRegCrg->PERI_CRG36.u32;
 
-    /* clear reset state */
-    *s_pu32JpgeRegClock &= 0xfffffff0;
-#endif
-    *s_pu32JpgeRegClock &= ~0x10;
-    *s_pu32JpgeRegClock |= 0x1;
+    /*cancel reset*/
+    unTempValue.bits.jpge_srst_req = 0x0;
+
+    /*enable clock */
+    unTempValue.bits.jpge_cken = 0x1;
+
+    g_pstRegCrg->PERI_CRG36.u32 = unTempValue.u32;
     
     return;
 }

@@ -37,6 +37,7 @@ extern "C"
 #endif
 
 HI_S32 Transfer_DispID(HI_UNF_DISP_E *pU, HI_DRV_DISPLAY_E *pM, HI_BOOL bu2m);
+HI_S32 Transfer_DispOffset(HI_UNF_DISP_OFFSET_S *pU, HI_DRV_DISP_OFFSET_S *pM, HI_BOOL bu2m);
 HI_S32 Transfer_LayerID(HI_UNF_DISP_LAYER_E *pU, HI_DRV_DISP_LAYER_E *pM, HI_BOOL bu2m);
 HI_S32 Transfer_EncFmt(HI_UNF_ENC_FMT_E *pU, HI_DRV_DISP_FMT_E *pM, HI_BOOL bu2m);
 HI_S32 Transfer_AspectRatio(HI_UNF_DISP_ASPECT_RATIO_S *pU, HI_U32 *pH, HI_U32 *pV, HI_BOOL bu2m);

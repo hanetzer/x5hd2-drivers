@@ -1,7 +1,7 @@
 #ifndef __VPSS_ALG_ZME_H__
 #define __VPSS_ALG_ZME_H__
 
-#include"drv_mmz_ext.h"
+#include"hi_drv_mmz.h"
 #include"hi_drv_video.h"
 #include"vpss_common.h"
 

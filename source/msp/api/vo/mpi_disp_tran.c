@@ -41,6 +41,23 @@ HI_S32 Transfer_DispID(HI_UNF_DISP_E *pU, HI_DRV_DISPLAY_E *pM, HI_BOOL bu2m)
     }
 }
 
+
+HI_S32 Transfer_DispOffset(HI_UNF_DISP_OFFSET_S *pU, HI_DRV_DISP_OFFSET_S *pM, HI_BOOL bu2m)
+{
+    if (bu2m)
+    {
+        *pM = *((HI_DRV_DISP_OFFSET_S* )pU);
+        return HI_SUCCESS;
+    }
+    else
+    {
+        *pU = *((HI_UNF_DISP_OFFSET_S *)pM);
+        return HI_SUCCESS;
+    }
+}
+
+
+
 HI_S32 Transfer_Disp3DMode(HI_UNF_DISP_3D_E *pU, HI_DRV_DISP_STEREO_MODE_E *pM, HI_BOOL bu2m)
 {
     if (bu2m)
@@ -55,23 +72,17 @@ HI_S32 Transfer_Disp3DMode(HI_UNF_DISP_3D_E *pU, HI_DRV_DISP_STEREO_MODE_E *pM, 
     }
 }
 
-static HI_DRV_DISP_LAYER_E s_DrvLayerTab[HI_UNF_DISP_LAYER_BUTT] = 
-{HI_DRV_DISP_LAYER_VIDEO0, HI_DRV_DISP_LAYER_VIDEO1, HI_DRV_DISP_LAYER_VIDEO2,
- HI_DRV_DISP_LAYER_GFX0,   HI_DRV_DISP_LAYER_GFX1,   HI_DRV_DISP_LAYER_GFX2
-};
-
-static HI_UNF_DISP_LAYER_E s_UnfLayerTab[HI_DRV_DISP_LAYER_BUTT] = 
-{HI_UNF_DISP_LAYER_VIDEO0, HI_UNF_DISP_LAYER_VIDEO1, HI_UNF_DISP_LAYER_VIDEO2,
- HI_UNF_DISP_LAYER_GFX0,   HI_UNF_DISP_LAYER_GFX1,   HI_UNF_DISP_LAYER_GFX2
-};
-
 HI_S32 Transfer_LayerID(HI_UNF_DISP_LAYER_E *pU, HI_DRV_DISP_LAYER_E *pM, HI_BOOL bu2m)
 {
     if (bu2m)
     {
         if (*pU < HI_UNF_DISP_LAYER_BUTT)
         {
-            *pM = s_DrvLayerTab[*pU];
+            if  (*pU == HI_UNF_DISP_LAYER_VIDEO)
+                *pM  = HI_DRV_DISP_LAYER_VIDEO;
+            else
+                *pM  = HI_DRV_DISP_LAYER_GFX;
+
             return HI_SUCCESS;
         }
         else
@@ -83,7 +94,10 @@ HI_S32 Transfer_LayerID(HI_UNF_DISP_LAYER_E *pU, HI_DRV_DISP_LAYER_E *pM, HI_BOO
     {
         if(*pM < HI_DRV_DISP_LAYER_BUTT)
         {
-            *pU = s_UnfLayerTab[*pM];
+             if  (*pM == HI_DRV_DISP_LAYER_VIDEO)
+                *pU  = HI_UNF_DISP_LAYER_VIDEO;
+            else
+                *pU  = HI_UNF_DISP_LAYER_GFX;
             return HI_SUCCESS;
         }
         else
@@ -234,7 +248,7 @@ HI_UNF_ENC_FMT_E Transfer_3DFmtV2U(HI_DRV_DISP_FMT_E V)
 
 HI_DRV_DISP_FMT_E Transfer_DVIFmtU2V(HI_UNF_ENC_FMT_E U)
 {
-    if (U <= HI_UNF_ENC_FMT_VESA_2048X1152_60)
+    if (U <= HI_UNF_ENC_FMT_VESA_2560X1600_60_RB)
     {
         HI_U32 t;
         
@@ -251,7 +265,7 @@ HI_DRV_DISP_FMT_E Transfer_DVIFmtU2V(HI_UNF_ENC_FMT_E U)
 
 HI_UNF_ENC_FMT_E Transfer_DVIFmtV2U(HI_DRV_DISP_FMT_E V)
 {
-    if (V <= HI_DRV_DISP_FMT_VESA_2048X1152_60)
+    if (V <= HI_DRV_DISP_FMT_VESA_2560X1600_60_RB)
     {
         HI_U32 t;
         
@@ -285,7 +299,7 @@ HI_S32 Transfer_EncFmt(HI_UNF_ENC_FMT_E *pU, HI_DRV_DISP_FMT_E *pM, HI_BOOL bu2m
             *pM = Transfer_3DFmtU2V(*pU);
             return HI_SUCCESS;
         }
-        else if (*pU <= HI_UNF_ENC_FMT_VESA_2048X1152_60)
+        else if (*pU <= HI_UNF_ENC_FMT_VESA_2560X1600_60_RB)
         {
             *pM = Transfer_DVIFmtU2V(*pU);
             return HI_SUCCESS;
@@ -318,7 +332,7 @@ HI_S32 Transfer_EncFmt(HI_UNF_ENC_FMT_E *pU, HI_DRV_DISP_FMT_E *pM, HI_BOOL bu2m
             *pU = Transfer_3DFmtV2U(*pM);
             return HI_SUCCESS;
         }
-        else if (*pM <= HI_DRV_DISP_FMT_VESA_2048X1152_60)
+        else if (*pM <= HI_DRV_DISP_FMT_VESA_2560X1600_60_RB)
         {
             *pU = Transfer_DVIFmtV2U(*pM);
             return HI_SUCCESS;
@@ -400,6 +414,36 @@ HI_S32 Transfer_AspectRatio(HI_UNF_DISP_ASPECT_RATIO_S *pU, HI_U32 *pH, HI_U32 *
 
 HI_S32 Transfer_Timing(HI_UNF_DISP_TIMING_S *pU, HI_DRV_DISP_TIMING_S *pM, HI_BOOL bu2m)
 {
+    pM->u32VFB = pU->VFB;
+    pM->u32VBB = pU->VBB;
+    pM->u32VACT = pU->VACT;
+    
+    pM->u32HFB = pU->HFB;
+    pM->u32HBB = pU->HBB;
+    pM->u32HACT = pU->HACT;
+    
+    pM->u32VPW = pU->VPW;
+    pM->u32HPW = pU->HPW;
+    pM->bIDV = pU->IDV;
+    pM->bIHS = pU->IHS;
+    pM->bIVS = pU->IVS;
+    
+    pM->bClkReversal = pU->ClockReversal;
+    pM->u32DataWidth = pU->DataWidth;
+    if (pU->ItfFormat == HI_UNF_DISP_INTF_DATA_FMT_YUV422)
+        pM->eDataFmt = HI_DRV_DISP_INTF_DATA_FMT_YUV422;
+    else
+        pM->eDataFmt = HI_DRV_DISP_INTF_DATA_FMT_RGB444;
+    
+    pM->bDitherEnable = pU->DitherEnable;
+    pM->u32PixFreq = pU->PixFreq;
+    pM->u32VertFreq = pU->VertFreq;
+    pM->u32AspectRatioW = pU->AspectRatioW;
+    pM->u32AspectRatioH = pU->AspectRatioH;
+    
+    pM->u32bUseGamma = pU->bUseGamma;
+    pM->u32Reserve0 = pU->Reserve0;
+    pM->u32Reserve1 = pU->Reserve1;
 
     return HI_SUCCESS;
 }
@@ -417,6 +461,22 @@ HI_S32 Transfer_BGColor(HI_UNF_DISP_BG_COLOR_S *pU, HI_DRV_DISP_COLOR_S *pM, HI_
         pU->u8Blue  = pM->u8Blue;
         pU->u8Green = pM->u8Green;
         pU->u8Red   = pM->u8Red;
+    }
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 Transfer_FrameRate(HI_U32 pM, HI_UNF_VCODEC_FRMRATE_S *pU, HI_BOOL bu2m)
+{    
+    if (bu2m)
+    {
+        pM = pU->u32fpsInteger * 1000 + pU->u32fpsDecimal;
+    }
+    else
+    {
+        pU->u32fpsInteger = pM /1000;
+        pU->u32fpsDecimal = pM - ((pM / 1000) * 1000);
     }
 
     return HI_SUCCESS;
@@ -667,7 +727,7 @@ static HI_DRV_FIELD_MODE_E s_DrvFMTab[HI_UNF_VIDEO_FIELD_BUTT] =
 {HI_DRV_FIELD_ALL, HI_DRV_FIELD_TOP, HI_DRV_FIELD_BOTTOM};
 
 static HI_UNF_VIDEO_FIELD_MODE_E s_UnfFMTab[HI_DRV_FIELD_BUTT] = 
-{HI_UNF_VIDEO_FIELD_ALL, HI_UNF_VIDEO_FIELD_TOP, HI_UNF_VIDEO_FIELD_BOTTOM};
+{HI_UNF_VIDEO_FIELD_TOP,HI_UNF_VIDEO_FIELD_BOTTOM, HI_UNF_VIDEO_FIELD_ALL};
 
 #define TRANSFER_A2B(a, b)   a = b
 #define TRANSFER_A2B_R(a, b) b = a
@@ -698,9 +758,9 @@ HI_S32 Transfer_Frame(HI_UNF_VIDEO_FRAME_INFO_S  *pU, HI_DRV_VIDEO_FRAME_S *pM, 
         TRANSFER_A2B(pM->u32AspectHeight, (HI_U8)pU->u32AspectHeight);
 
         // TODO:
-        //TRANSFER_A2B(pM->u32FrameRate , pU->stFrameRate);
-
-        TRANSFER_A2B(pM->u32FrameRate, pU->u32FrameIndex);
+        Transfer_FrameRate(pM->u32FrameRate , &pU->stFrameRate, HI_TRUE);
+        TRANSFER_A2B(pM->u32FrameIndex, pU->u32FrameIndex);        
+        
         TRANSFER_A2B(pM->u32SrcPts , pU->u32SrcPts);
         TRANSFER_A2B(pM->u32Pts    , pU->u32Pts);
 
@@ -721,11 +781,11 @@ HI_S32 Transfer_Frame(HI_UNF_VIDEO_FRAME_INFO_S  *pU, HI_DRV_VIDEO_FRAME_S *pM, 
         TRANSFER_A2B(pM->stBufAddr[1].u32PhyAddr_Cr , pU->stVideoFrameAddr[1].u32CrAddr   );
         TRANSFER_A2B(pM->stBufAddr[1].u32Stride_Cr  , pU->stVideoFrameAddr[1].u32CrStride ); 
 
-        memcpy(pM->u32Priv, pU->u32Private, sizeof(HI_U32) * 64);
+        TRANSFER_A2B(pM->u32Circumrotate, pU->u32Circumrotate);
+        TRANSFER_A2B(pM->bToFlip_V, pU->bVerticalMirror);
+        TRANSFER_A2B(pM->bToFlip_H, pU->bHorizontalMirror);
 
-        //pU->u32Circumrotate;
-        //pU->bVerticalMirror;
-        //pU->bHorizontalMirror;
+        memcpy(pM->u32Priv, pU->u32Private, sizeof(HI_U32) * 64);
 
         return HI_SUCCESS;
     }
@@ -750,14 +810,13 @@ HI_S32 Transfer_Frame(HI_UNF_VIDEO_FRAME_INFO_S  *pU, HI_DRV_VIDEO_FRAME_S *pM, 
         TRANSFER_A2B_R((HI_U32)pM->u32AspectWidth, pU->u32AspectWidth);
         TRANSFER_A2B_R((HI_U32)pM->u32AspectHeight, pU->u32AspectHeight);
 
-        // TODO:
-        //TRANSFER_A2B_R(pM->u32FrameRate , pU->stFrameRate);
+        Transfer_FrameRate(pM->u32FrameRate , &pU->stFrameRate, HI_FALSE);
 
         TRANSFER_A2B_R(pM->u32FrameIndex, pU->u32FrameIndex);
         TRANSFER_A2B_R(pM->u32SrcPts , pU->u32SrcPts);
         TRANSFER_A2B_R(pM->u32Pts    , pU->u32Pts);
 
-        pU->enFieldMode= s_UnfFMTab[pM->enFieldMode];
+        pU->enFieldMode = s_UnfFMTab[pM->enFieldMode];
 
         TRANSFER_A2B_R(pM->u32ErrorLevel, pU->u32ErrorLevel);
 
@@ -773,10 +832,11 @@ HI_S32 Transfer_Frame(HI_UNF_VIDEO_FRAME_INFO_S  *pU, HI_DRV_VIDEO_FRAME_S *pM, 
         TRANSFER_A2B_R(pM->stBufAddr[1].u32PhyAddr_C  , pU->stVideoFrameAddr[1].u32CAddr    );
         TRANSFER_A2B_R(pM->stBufAddr[1].u32Stride_C   , pU->stVideoFrameAddr[1].u32CStride  );
         TRANSFER_A2B_R(pM->stBufAddr[1].u32PhyAddr_Cr , pU->stVideoFrameAddr[1].u32CrAddr   );
-        TRANSFER_A2B_R(pM->stBufAddr[1].u32Stride_Cr  , pU->stVideoFrameAddr[1].u32CrStride );  
+        TRANSFER_A2B_R(pM->stBufAddr[1].u32Stride_Cr  , pU->stVideoFrameAddr[1].u32CrStride ); 
 
-        //printf(" transfer y=%X, c=%x\n", pU->stVideoFrameAddr[0].u32YAddr,
-        //	                             pU->stVideoFrameAddr[0].u32CAddr);
+        TRANSFER_A2B_R(pM->u32Circumrotate, pU->u32Circumrotate);
+        TRANSFER_A2B_R(pM->bToFlip_V, pU->bVerticalMirror);
+        TRANSFER_A2B_R(pM->bToFlip_H, pU->bHorizontalMirror);
 
         memcpy(pU->u32Private, pM->u32Priv, sizeof(HI_U32) * 64);
 
@@ -878,6 +938,13 @@ HI_S32 Transfer_Intf(HI_UNF_DISP_INTF_S *pU, HI_DRV_DISP_INTF_S *pM, HI_BOOL bu2
             case HI_UNF_DISP_INTF_TYPE_CVBS:
                 pM->eID = HI_DRV_DISP_INTF_CVBS0;
                 pM->u8VDAC_Y_G  = Transfer_GetVdacIdFromPinIDForMPW(pU->unIntf.stCVBS.u8Dac);
+                break;
+            case HI_UNF_DISP_INTF_TYPE_RGB:
+                pM->eID = HI_DRV_DISP_INTF_RGB0;
+                pM->u8VDAC_Y_G  = Transfer_GetVdacIdFromPinIDForMPW(pU->unIntf.stRGB.u8DacG);
+                pM->u8VDAC_Pb_B = Transfer_GetVdacIdFromPinIDForMPW(pU->unIntf.stRGB.u8DacB);
+                pM->u8VDAC_Pr_R = Transfer_GetVdacIdFromPinIDForMPW(pU->unIntf.stRGB.u8DacR);
+                pM->bDacSync = pU->unIntf.stRGB.bDacSync;
                 break;
 /*
             case HI_UNF_DISP_INTF_TYPE_LCD:

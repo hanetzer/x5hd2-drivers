@@ -59,9 +59,9 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ********************************/
 
 /************************************************************************/
-#define  SAMPLETRACE()    printf("fun: %s, line: %d\n", __func__, __LINE__)
-#define DEBUG_PRINT		//printf  //yyc test
-#define DEBUG_PRINT_ERROR	printf
+#define  SAMPLETRACE()        printf("fun: %s, line: %d\n", __func__, __LINE__)
+#define  DEBUG_PRINT          //printf
+#define  DEBUG_PRINT_ERROR    printf
 
 /************************************************************************/
 
@@ -69,7 +69,7 @@ ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #define SUCCEEDED(result) (result == OMX_ErrorNone)
 
 #define DEFAULT_WIDTH	1920
-#define DEFAULT_HEIGHT	1088
+#define DEFAULT_HEIGHT	1080
 
 #define ALIGN_SIZE		4096
 
@@ -204,6 +204,8 @@ HI_MMZ_BUF_S buffer[10];
 
 struct timeval t_first = {0, 0};
 
+static int last_cmd;
+
 /************************************************************************/
 /*              GLOBAL FUNC DECL                        */
 /************************************************************************/
@@ -218,20 +220,23 @@ static int Play_Decoder(void);
 static int open_video_file (void);
 static void loop_function(void);
 
-static OMX_ERRORTYPE Allocate_Buffers ( OMX_COMPONENTTYPE *dec_handle,
+static OMX_ERRORTYPE Allocate_Buffers(OMX_COMPONENTTYPE *dec_handle,
 		OMX_BUFFERHEADERTYPE  ***pBufHdrs,
 		OMX_U32 nPortIndex,
-		long bufCntMin, long bufSize);
+		long bufCntMin, 
+		long bufSize);
 
-static OMX_ERRORTYPE Use_Buffers ( OMX_COMPONENTTYPE *dec_handle,
+static OMX_ERRORTYPE Use_Buffers(OMX_COMPONENTTYPE *dec_handle,
 		OMX_BUFFERHEADERTYPE  ***pBufHdrs,
 		OMX_U32 nPortIndex,
-		long bufCntMin, long bufSize);
+		long bufCntMin, 
+		long bufSize);
 
 static OMX_ERRORTYPE EventHandler(OMX_IN OMX_HANDLETYPE hComponent,
 		OMX_IN OMX_PTR pAppData,
 		OMX_IN OMX_EVENTTYPE eEvent,
-		OMX_IN OMX_U32 nData1, OMX_IN OMX_U32 nData2,
+		OMX_IN OMX_U32 nData1, 
+		OMX_IN OMX_U32 nData2,
 		OMX_IN OMX_PTR pEventData);
 
 static OMX_ERRORTYPE EmptyBufferDone(OMX_IN OMX_HANDLETYPE hComponent,
@@ -246,7 +251,7 @@ static void do_freeHandle_and_clean_up(bool isDueToError);
 
 static inline int clip2(int x)
 {
-	x = x -1;
+	x = x - 1;
 	x = x | x >> 1;
 	x = x | x >> 2;
 	x = x | x >> 4;
@@ -255,7 +260,6 @@ static inline int clip2(int x)
 	return x;
 }
 
-static int last_cmd;
 static void wait_for_event(int cmd)
 {
 	pthread_mutex_lock(&lock);
@@ -493,14 +497,14 @@ OMX_ERRORTYPE EventHandler(OMX_IN OMX_HANDLETYPE hComponent,
 
 	    printf("OMX_EventPortSettingsChanged\n");
         
-           preStatus = currentStatus;
+        preStatus = currentStatus;
 	    currentStatus = PORT_SETTING_CHANGE_STATE;
 	    sem_post(&fbd_sem);
         
 	    if (waitForPortSettingsChanged)
 	    {
-               waitForPortSettingsChanged = 0;
-               event_complete(-1);
+           waitForPortSettingsChanged = 0;
+           event_complete(-1);
 	    }
 	    else
 	    {
@@ -518,7 +522,7 @@ OMX_ERRORTYPE EventHandler(OMX_IN OMX_HANDLETYPE hComponent,
 	        pthread_mutex_lock(&eos_lock);
 	        bOutputEosReached = true;
 	        pthread_mutex_unlock(&eos_lock);
-               printf("Receive last frame, thank you!\n");
+            printf("Receive last frame, thank you!\n");
 	    }
 	    else
 	    {
@@ -598,18 +602,18 @@ OMX_ERRORTYPE FillBufferDone(OMX_OUT OMX_HANDLETYPE hComponent,
 		}
 		sem_post(&fbd_sem);
 	}
+    else
+    {
+       if (0 == alloc_use_option)
+       {
+           OMX_FreeBuffer(dec_handle, 1, pBuffer);
+       }
        else
        {
-           if (0 == alloc_use_option)
-           {
-               OMX_FreeBuffer(dec_handle, 1, pBuffer);
-           }
-           else
-           {
-               OMX_FreeBuffer(dec_handle, 1, pBuffer);
-               HI_MMZ_Free(&buffer[pBuffer->nTickCount]);
-           }
+           OMX_FreeBuffer(dec_handle, 1, pBuffer);
+           HI_MMZ_Free(&buffer[pBuffer->nTickCount]);
        }
+    }
 
 	pthread_mutex_unlock(&fbd_lock);
 
@@ -1479,8 +1483,8 @@ int main(int argc, char **argv)
 
 
  /*
-       codec_format_option = 0;  //yyc  test
-       test_option = 1;
+    codec_format_option = 0;  //yyc  test
+    test_option = 1;
 */
 
 
@@ -1505,7 +1509,7 @@ int main(int argc, char **argv)
 		return -1;
 	}
 #ifdef SupportNative
-    	printf("*********************************************\n");
+    printf("*********************************************\n");
 	printf("please enter alloc/use option\n");
 	printf("*********************************************\n");
 	printf("0--> Alloc Buffers\n");
@@ -1650,16 +1654,16 @@ int main(int argc, char **argv)
 		return -1;
 	}
 
-       if (0)
-       {	
-           printf("wait for exit...\n");
-           sem_wait(&esc_sem);
-           printf("prepare to exit.\n");
-       }
-       else
-       {
-          loop_function();
-       }
+    if (0)
+    {	
+        printf("wait for exit...\n");
+        sem_wait(&esc_sem);
+        printf("prepare to exit.\n");
+    }
+    else
+    {
+        loop_function();
+    }
     
 	ebd_thread_exit = 1;
 	fbd_thread_exit = 1;
@@ -1731,7 +1735,7 @@ static void loop_function(void)
                   break;
               }
 
-		if (!strcmp(curr_seq_command, "esc")) 
+		if (!strcmp(curr_seq_command, "q")) 
               {
                   printf("test-case exit!!\n");
                   break;
@@ -1755,7 +1759,7 @@ static OMX_ERRORTYPE Allocate_Buffers ( OMX_COMPONENTTYPE *dec_handle,
 	*pBufHdrs= (OMX_BUFFERHEADERTYPE **)malloc(sizeof(OMX_BUFFERHEADERTYPE*)*bufCntMin);
 
 	for(bufCnt=0; bufCnt < bufCntMin; ++bufCnt)
-       {
+    {
 		DEBUG_PRINT("OMX_AllocateBuffer No %d\n", bufCnt);
 		error = OMX_AllocateBuffer(dec_handle, &((*pBufHdrs)[bufCnt]),
 	                           nPortIndex, NULL, bufSize);

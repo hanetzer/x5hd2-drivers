@@ -56,15 +56,19 @@ $(MOD_NAME_CMN)-y := sys/drv_base_ext_k.o  \
                proc/drv_proc_ext_k.o \
                log/drv_log_ext_k.o 
 
-$(MOD_NAME_CMN)-y += sys/drv_base_ext.o      \
-               sys/drv_sys_ext.o       \
-               stat/drv_stat_ext.o     \
-               mem/drv_mutils.o        \
-               module/drv_module_ext.o \
-               file/drv_file_ext.o     \
-               proc/drv_proc_ext.o     \
-               log/drv_log_ext.o
-               
+$(MOD_NAME_CMN)-y +=    sys/drv_base_ext.o          \
+                        sys/drv_sys_ext.o           \
+                        sys/drv_reg_common.o        \
+                        stat/drv_stat_ext.o         \
+                        mem/drv_mutils.o            \
+                        module/drv_module_ext.o     \
+                        file/drv_file_ext.o         \
+                        proc/drv_proc_ext.o         \
+                        log/drv_log_ext.o           \
+                        memdev/drv_memdev.o         \
+                        userproc/drv_userproc.o     \
+                        osal/drv_osal.o
+
 $(MOD_NAME_MEDIA)-y := himedia/himedia_base.o  \
                        himedia/himedia.o
 
@@ -87,6 +91,10 @@ else
 $(MOD_NAME_MMZ)-y += mmz/drv_mmz_userdev.o mmz/drv_media_mem.o
 endif
 
+DEPENDS := $(patsubst %.o, %.d, $($(MOD_NAME_MEDIA)-y))
+DEPENDS += $(patsubst %.o, %.d, $($(MOD_NAME_MMZ)-y))
+DEPENDS += $(patsubst %.o, %.d, $($(MOD_NAME_CMN)-y))
+
 ###############################################################################
 obj-$(CFG_MSP_BUILDTYPE) += $(MOD_NAME_MEDIA).o $(MOD_NAME_MMZ).o $(MOD_NAME_CMN).o
 
@@ -108,3 +116,9 @@ clean:
 modules_install:
 	make -C $(KERNEL)  M=`pwd` modules_install
 
+$(DEPENDS):%.d:%.c
+	@set -e; rm -f $(COMMON_DIR)/drv/$@; \
+	$(CC) -MM $(EXTRA_CFLAGS) $< > $(COMMON_DIR)/drv/$@; \
+	sed -i 's,\($(notdir $*)\)\.o[ :]*,$(dir $@)\1.o $@ : ,g' $(COMMON_DIR)/drv/$@
+	
+-include $(DEPENDS)

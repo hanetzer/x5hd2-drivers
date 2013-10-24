@@ -109,9 +109,6 @@ typedef struct hil_media_memory_zone hil_mmz_t;
 /* for inf & usr */
 #define HIL_MMB_NAME_LEN 16
 struct hil_media_memory_block {
-#ifndef MMZ_V2_SUPPORT
-    unsigned int id;
-#endif
     char name[HIL_MMB_NAME_LEN];
     struct hil_media_memory_zone *zone;
     struct list_head list;
@@ -134,13 +131,10 @@ typedef struct hil_media_memory_block hil_mmb_t;
 #define HIL_MMB_MAP2KERN    (1<<0)
 #define HIL_MMB_MAP2KERN_CACHED (1<<1)
 #define HIL_MMB_RELEASED    (1<<2)
-#ifdef MMZ_V2_SUPPORT
+
 #define HIL_MMB_FMT_S "phys(0x%08lX, 0x%08lX), kvirt=0x%p, flags=0x%08lX, length=%luKB,    name=\"%s\""
 #define hil_mmb_fmt_arg(p) (p)->phys_addr,mmz_grain_align((p)->phys_addr+(p)->length)-1,(p)->kvirt,(p)->flags,(p)->length/SZ_1K,(p)->name
-#else
-#define HIL_MMB_FMT_S "         (0x%08lx, 0x%08lx)   %04d  0x%08x   0x%08lx      %-10lu   %-16s  "
-#define hil_mmb_fmt_arg(p) (p)->phys_addr,mmz_grain_align((p)->phys_addr+(p)->length)-1,(p)->id,(unsigned int)(p)->kvirt,(p)->flags,(p)->length/SZ_1K,(p)->name
-#endif
+
 
 
 /********** API_0 for inf *********/
@@ -183,9 +177,6 @@ extern int mmz_write_proc(struct file *file, const char __user *buffer,
 
 int HI_DRV_MMZ_Init(void);
 void HI_DRV_MMZ_Exit(void);
-
-int DRV_MMZ_ModInit(void);
-void DRV_MMZ_ModExit(void);
 
 #ifdef __cplusplus
 }

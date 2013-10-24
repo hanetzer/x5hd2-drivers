@@ -23,7 +23,7 @@ extern "C"{
 
 //#include <linux/kcom.h>
 //#include <kcom/mmz.h> 
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
 #include "hi_drv_png.h"
 #include "hi_png_errcode.h"
 #include "png_define.h"
@@ -33,7 +33,7 @@ extern "C"{
 static PNG_INSTANCE_S g_PngInstance[PNG_MAX_HANDLE];
 
 /* handle lock */
-PNG_DECLARE_MUTEX(g_HandleMutex);
+HI_DECLARE_MUTEX(g_HandleMutex);
 
 /********************************************************************************************
 * func:	handle init
@@ -225,7 +225,8 @@ HI_VOID PngOsiResDeinitMem(HI_VOID)
 *********************************************************************************************/
 HI_S32 PngOsiResAllocMem(HI_UCHAR *pName, HI_U32 u32Size, HI_U32 u32Align, HI_U32 *pu32Phyaddr)
 {
-    PNG_GET_PHYADDR_MMB(pName, u32Size, u32Align, *pu32Phyaddr);
+    *pu32Phyaddr = HI_GFX_AllocMem(pName, NULL, u32Size);
+
     if (0 == *pu32Phyaddr)
     {
         PNG_ERROR("No mem!\n");
@@ -246,7 +247,7 @@ HI_VOID PngOsiResReleaseMem(HI_U32 u32Phyaddr)
 {
     if (u32Phyaddr)
     {
-        PNG_FREE_MMB(u32Phyaddr);
+        HI_GFX_FreeMem(u32Phyaddr);
     }
 
     return;
@@ -262,7 +263,7 @@ HI_VOID PngOsiResReleaseMem(HI_U32 u32Phyaddr)
 *********************************************************************************************/
 HI_S32 PngOsiResMapMem(HI_U32 u32Phyaddr, HI_VOID **pViraddr)
 {
-    PNG_REMAP_MMB(u32Phyaddr,*pViraddr);
+    *pViraddr = HI_GFX_Map(u32Phyaddr);
     if (HI_NULL == *pViraddr)
     {
         PNG_ERROR("map failed!\n");
@@ -281,9 +282,8 @@ HI_S32 PngOsiResMapMem(HI_U32 u32Phyaddr, HI_VOID **pViraddr)
 *********************************************************************************************/
 HI_VOID PngOsiResUnMapMem(HI_VOID * pViraddr)
 {
-    PNG_UNMAP_MMB((HI_U32)pViraddr);
-
-	return;
+    HI_GFX_Unmap(pViraddr);
+    return;
 }
 
 /* default stream buffer size*/
@@ -343,7 +343,7 @@ HI_S32 PngOsiResAllocBuf(HI_U32 *pu32Phyaddr, HI_U32 *pu32Size)
         *pu32Size = PNG_BUF_DEFAULTSIZE;
     }
 
-    s32Ret = PngOsiResAllocMem("PNG_STREAM_BUF", *pu32Size, 16, pu32Phyaddr);
+    s32Ret = PngOsiResAllocMem("PNG_StreamBuf", *pu32Size, 16, pu32Phyaddr);
     if (s32Ret < 0)
     {
         return s32Ret;

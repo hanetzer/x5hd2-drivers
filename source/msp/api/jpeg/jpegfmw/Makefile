@@ -31,8 +31,9 @@ clean:
 	$(AT)rm -rf src/$(LIBS)*.a
 install: all
 	$(AT)cp -f  src/$(LIBS)*.a           $(STATIC_LIB_DIR)/  -a
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)cp -f  src/$(LIBS)*.so          $(SHARED_LIB_DIR)/  -a
-	
+endif	
 	$(AT)cp -f  $(HEADER_FILES)          $(INCLUDE_DIR)/
 
 uninstall:

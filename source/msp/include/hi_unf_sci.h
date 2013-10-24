@@ -29,12 +29,12 @@ extern "C" {
 
 /**Output configuration of the smart card interface clock (SCICLK) pin*/
 /** CNcomment:SCICLK引脚输出配置*/
-typedef enum  hiUNF_SCI_CLK_MODE_E
+typedef enum  hiUNF_SCI_MODE_E
 {
-    HI_UNF_SCI_CLK_MODE_CMOS = 0, /**<Complementary metal-oxide semiconductor (CMOS) output*/   /**<CNcomment:CMOS输出*/
-    HI_UNF_SCI_CLK_MODE_OD, /**<Open drain (OD) output*/                                  /**<CNcomment:OD输出*/
-    HI_UNF_SCI_CLK_MODE_BUTT
-} HI_UNF_SCI_CLK_MODE_E;
+    HI_UNF_SCI_MODE_CMOS = 0, /**<Complementary metal-oxide semiconductor (CMOS) output*/   /**<CNcomment:CMOS输出*/
+    HI_UNF_SCI_MODE_OD, /**<Open drain (OD) output*/                                  /**<CNcomment:OD输出*/
+    HI_UNF_SCI_MODE_BUTT
+} HI_UNF_SCI_MODE_E;
 
 /**SCI port*/
 /** CNcomment:SCI 端口 */
@@ -49,8 +49,8 @@ typedef enum hiUNF_SCI_PORT_E
 /** CNcomment:智能卡状态 */
 typedef enum hiUNF_SCI_STATUS_E
 {
-    HI_UNF_SCI_STATUS_UNINIT = 0, /**<The SCI card is not initialized.*/               /**<CNcomment: SCI未初始化 */
-    HI_UNF_SCI_STATUS_FIRSTINIT, /**<The SCI card is being initialized.*/             /**<CNcomment:SCI初始化过程中*/
+    HI_UNF_SCI_STATUS_UNINIT = 0, /**<The SCI card is not initialized.(Reserved status) */               /**<CNcomment: SCI未初始化。(预留状态) */
+    HI_UNF_SCI_STATUS_FIRSTINIT, /**<The SCI card is being initialized.(Reserved status)*/             /**<CNcomment:SCI初始化过程中。(预留状态)*/
     HI_UNF_SCI_STATUS_NOCARD, /**<There is no SCI card.*/                          /**<CNcomment:无卡 */
     HI_UNF_SCI_STATUS_INACTIVECARD, /**<The SCI card is not activated (unavailable).*/   /**<CNcomment:卡未完成激活（卡无效） */
 
@@ -193,7 +193,7 @@ CNcomment:没有插入卡，复位会失败。\n
 在调用打开SCI设备接口后，对卡进行拔插，也需要调用该接口进行复位。CNend
 
  \param[in] enSciPort   ID of an SCI port. The port ID can be 0 or 1                                             CNcomment:SCI端口号，取值范围为0和1。CNend
- \param[in] bWarmResetValid   Reset mode. The value can be 0 or 1. 1: warm reset; 0: cold reset (recommended)    CNcomment:复位方式，取值范围为0和1。0:warm reset,1:cold reset（推荐用这种方式）。CNend
+ \param[in] bWarmResetValid   Reset mode.  HI_TRUE: warm reset; HI_FALSE: cold reset (recommended)    			 CNcomment:复位方式。HI_TRUE: 热复位; HI_FALSE: 冷复位（推荐用这种方式）。CNend
  \retval 0 Success.                                                                                              CNcomment:成功。CNend
  \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCI设备未打开。CNend
  \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:参数非法。CNend
@@ -228,15 +228,15 @@ CNcomment:获取SCI卡ATR数据。CNend
  \attention \n
 N/A
  \param[in]  enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI端口号，取值范围为0和1。CNend
- \param[in]  pu8AtrBuf   Length of the ATR data read from the buffer.                                             CNcomment:ATR 数据读取 buffer 长度。CNend
- \param[in] u32AtrBufSize  Actual number of ATR data segments.                                                    CNcomment:实际获取的ATR数据个数。CNend
- \param[in]  pu8AtrRcvCount Address for storing the obtained ATR data.                                            CNcomment:获取的ATR数据的存储地址。CNend
+ \param[out]  pu8AtrBuf   Address for storing the obtained ATR data.                                               CNcomment:获取的ATR数据的存储地址。CNend
+ \param[in]  u32AtrBufSize  Length of the ATR data read from the buffer.                                          CNcomment:ATR 数据读取 buffer 长度。CNend
+ \param[out]  pu8AtrRcvCount Actual number of ATR data segments.                                                   CNcomment:实际获取的ATR数据个数。CNend
  \retval 0   Success.                                                                                             CNcomment:成功。CNend
  \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                                                        CNcomment:SCI设备未打开。CNend
  \retval ::HI_ERR_SCI_NULL_PTR The pointer is invalid.                                                      	  CNcomment: 非法指针。CNend
  \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                     CNcomment:参数非法。CNend
  \retval ::HI_ERR_SCI_NO_ATR  There is no ATR data.                                                               CNcomment:无ATR数据。CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			  CNcomment:不可用的选项。CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			  				  CNcomment:不可用的选项。CNend
  \see \n
 N/A
  */
@@ -300,9 +300,9 @@ You must set the data length obtained by each upper-layer application based on t
 CNcomment:上层应用程序必须根据协议来配置所获取的长度，如果希望获取的长度超出实际能够返回的长度，则只能等到超时到期才能返回。CNend
 
  \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI端口号，取值范围为0和1。CNend
- \param[in]  pSciReceiveBuf   Address for storing the received data.                                              CNcomment:接收数据的存储地址。CNend
+ \param[out]  pSciReceiveBuf   Address for storing the received data.                                              CNcomment:接收数据的存储地址。CNend
  \param[in] u32ReceiveLen  Number of data segments (in byte) to be received.                                      CNcomment:期望接收数据的个数,单位为 BYTE。CNend
- \param[in]  pu32ActLen   Number of received data segments (in byte).                                             CNcomment:实际接收数据个数,单位为 BYTE。CNend
+ \param[out]  pu32ActLen   Number of received data segments (in byte).                                             CNcomment:实际接收数据个数,单位为 BYTE。CNend
  \param[in] u32TimeOutMs  Wait timeout (in ms). 0: not blocked; 0xFFFFFFFF: infinite block.                       CNcomment:等待超时值, 单位是毫秒, 0 - 不阻塞, 0xFFFFFFFF-永久阻塞。CNend
  \retval 0 Success.                                                                                               CNcomment:成功。CNend
  \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                                                       CNcomment:SCI设备未打开。CNend
@@ -372,7 +372,49 @@ CNcomment:需要根据硬件电路进行设置，默认为OD模式，更改此项配置后需要调用HI_UNF_S
  \see \n
 N/A
  */
-HI_S32 HI_UNF_SCI_ConfigClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_CLK_MODE_E enClkMode);
+HI_S32 HI_UNF_SCI_ConfigClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enClkMode);
+
+/**
+ \brief Sets the mode of a clock signal.
+CNcomment:设置RESET线的模式。CNend
+ \attention \n
+The mode needs to be set based on the circuits of hardware, and the OD mode is selected by default.\n
+After changing the mode, you need to call HI_UNF_SCI_ResetCard for the modification take effect.\n
+CNcomment:需要根据硬件电路进行设置，默认为OD模式，更改此项配置后需要调用HI_UNF_SCI_ResetCard才能使新的配置有效。CNend
+
+ \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI端口号，取值范围为0和1。CNend
+ \param[in] enClkMode  Mode of a reset signal.                                                                    CNcomment:时钟线的模式。CNend
+ \retval 0 Success.                                                                                               CNcomment:成功。CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCI设备未打开。CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:参数非法。CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                            			                 CNcomment:不可用的选项。CNend
+ \retval ::HI_ERR_SCI_NOTSUPPORT	Current chipset not support config RESET output type.                        CNcomment:当前芯片不支持配置RESET输出类型。CNend
+ \see \n
+N/A
+ */
+HI_S32 HI_UNF_SCI_ConfigResetMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enResetMode);
+
+/**
+ \brief Sets the mode of a clock signal.
+CNcomment:设置POWEREN线的模式。CNend
+ \attention \n
+The mode needs to be set based on the circuits of hardware, and the OD mode is selected by default.\n
+After changing the mode, you need to call HI_UNF_SCI_ResetCard for the modification take effect.\n
+CNcomment:需要根据硬件电路进行设置，默认为OD模式，更改此项配置后需要调用HI_UNF_SCI_ResetCard才能使新的配置有效。CNend
+
+ \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI端口号，取值范围为0和1。CNend
+ \param[in] enClkMode  Mode of a poweren signal.                                                                    CNcomment:时钟线的模式。CNend
+ \retval 0 Success.                                                                                               CNcomment:成功。CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCI设备未打开。CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:参数非法。CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                            			                 CNcomment:不可用的选项。CNend
+ \retval ::HI_ERR_SCI_NOTSUPPORT	Current chipset not support config POWEREN output type.                      CNcomment:当前芯片不支持配置POWEREN输出类型。CNend
+
+ \see \n
+N/A
+ */
+HI_S32 HI_UNF_SCI_ConfigVccEnMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E enVccEnMode);
+
 
 /**
  \brief Changes the card slot.

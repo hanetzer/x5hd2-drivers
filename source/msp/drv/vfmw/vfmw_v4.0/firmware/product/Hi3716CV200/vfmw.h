@@ -463,6 +463,7 @@ typedef struct hiCHAN_CFG_S
     SINT32    s32VcmpWmStartLine; /* water marker start line number */
     SINT32    s32VcmpWmEndLine;	/* water marker end line number */ 
     SINT32    s32SupportAllP;         /* support stream of all p frames */ 
+	SINT32    s32ModuleLowlyEnable;
 } VDEC_CHAN_CFG_S;
 
 //add by z00222166, 2012.11.20
@@ -593,11 +594,15 @@ typedef struct
     UINT8*      chrom_tf_vir_addr;
     UINT8*      luma_2d_vir_addr;
     UINT8*      chrom_2d_vir_addr;
+	UINT8*  	line_num_vir_addr;
    
     UINT32      u32AspectWidth;
     UINT32      u32AspectHeight;
 
-
+    UINT32      DispEnableFlag;       
+    UINT32      DispFrameDistance;   
+    UINT32      DistanceBeforeFirstFrame;     
+    UINT32      GopNum;
     UINT32      u32RepeatCnt;
 
     SINT32      top_luma_phy_addr;    
@@ -651,14 +656,14 @@ typedef struct
     SINT32      btm_luma_phy_addr_1;    
     SINT32      btm_chrom_phy_addr_1; 
 	SINT32      line_num_phy_addr;
-	SINT32  	line_num_vir_addr;
 	IMAGE_BTL_S BTLInfo_1;
 	#ifdef VFMW_BVT_SUPPORT
-    SINT32      luma_sum_h;
-	SINT32      luma_sum_l;
-	SINT32      luma_historgam[32];
-	SINT32      is_1Dcompress;
+    UINT32      luma_sum_h;
+	UINT32      luma_sum_l;
+	UINT32      luma_historgam[32];
+
 	#endif
+	UINT32      is_1Dcompress;
     FRAME_PACKING_TYPE_E  eFramePackingType;
     IMAGE_DNR_S ImageDnr;       
     IMAGE_BTL_S BTLInfo;
@@ -769,6 +774,10 @@ typedef struct hiSTREAM_PACKET_S
     UINT32      discontinue_count;
     UINT8       is_not_last_packet_flag;  //add by z00222166, 2012.11.09
     UINT8       is_stream_end_flag;        //add by y00226912, 2012.12.10
+    UINT32      DispEnableFlag;       
+    UINT32      DispFrameDistance;   
+    UINT32      DistanceBeforeFirstFrame;    
+    UINT32      GopNum;
 } STREAM_DATA_S;
 
 typedef struct hiVFMW_CONTROLINFO_S
@@ -776,6 +785,8 @@ typedef struct hiVFMW_CONTROLINFO_S
     UINT32  u32IDRFlag;               /*IDR frame Flag, 1 means IDR frame.*/
     UINT32  u32BFrmRefFlag;           /*whether B frame is refer frame, 1 means B frame is refer frame.*/
     UINT32  u32ContinuousFlag;        /*whether send frame is continusous. 1 means continusous*/
+    UINT32  u32BackwardOptimizeFlag;  /*Backward optimize flag, 1 means optimize the backward fast play performance*/
+    UINT32  u32DispOptimizeFlag;      /*Display optimize flag, 1 means optimize the VO display performance*/
 } VFMW_CONTROLINFO_S;
 
 /* external frame store description(for OMX) */
@@ -838,9 +849,10 @@ typedef struct
     SINT32 s32MaxSpsNum;                       /* for H264, max sps number */
     SINT32 s32MaxPpsNum;                       /* for H264, max pps number */
     SINT32 s32MaxRefFrameNum;                  /* max reference frame num*/
-    SINT32 s32TreeFsEnable;                   /* if support tree fs. 1: yes, 0: no */        //yyc test
+    SINT32 s32TreeFsEnable;                    /* if support tree fs. 1: yes, 0: no */        //yyc test
     SINT32 s32SupportBFrame;                   /* if support B frame. 1: yes, 0: no */
     SINT32 s32SupportH264;                     /* if this channel support H.264 decoding. 1: yes, 0: no */
+    SINT32 s32ScdLowdlyEnable;                 /* if this channel support scd lowdly. 1: yes, 0: no */
     SINT32 s32ReRangeEn;                       /* when resolution change, if the framestore be re-partitioned according to the new resolution. */       
                                                /* 1:yes. can decode smaller(but more ref) stream, but one or more frame may be discarded */
                                                /* 0:no.  no frame discarded, but the stream with more ref can not dec, even if the total memory is enough */
@@ -893,6 +905,31 @@ typedef struct hiEXTRA_ACCELERATOR_S
                                                                         'character' is a 32-bits data, may be composed with many information.
                                                                         nowadays only tell the vfmw if the accelerator can decode such dec-param or not*/ 
 } EXTRA_ACCELERATOR_S;
+
+
+/*外部帧存分配接口和结构*/
+typedef struct FSP_MEM_DESC_S
+{
+	SINT32      PhyAddr;
+	VOID*       VirAddr;
+	SINT32      Length;
+}FSP_MEM_DESC_S;
+
+typedef struct FSP_FRAME_INFO_S
+{
+	FSP_MEM_DESC_S stFrameInfo;
+	UINT32 u32NeedPmv;
+	FSP_MEM_DESC_S stPmvInfo;
+} FSP_FRAME_INFO_S;
+
+typedef struct FSP_FRAME_INTF_S
+{
+	SINT32 (*IsFrameAvalible)(SINT32 s32InstID);
+	SINT32 (*AllocFrame)(SINT32 s32InstID, FSP_FRAME_INFO_S *pFrameInfo);
+	SINT32 (*ReleaseFrame)(SINT32 s32InstID, UINT32 u32FsPhyAddr);
+	SINT32 (*SetFrameRef)(SINT32 s32InstID, UINT32 u32FsPhyAddr, UINT32 u32IsRef);
+} FSP_FRAME_INTF_S;
+
 
 
 /***********************************************************************

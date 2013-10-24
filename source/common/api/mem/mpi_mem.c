@@ -6,10 +6,8 @@
 #include "hi_type.h"
 
 #ifdef CMN_MMGR_SUPPORT
-
+#include "hi_drv_mem.h"
 #include "drv_module_ioctl.h"
-#include "mpi_debug.h"
-
 #include "mpi_mem_base.h"
 #include "mpi_mutils.h"
 
@@ -41,11 +39,11 @@ HI_S32 MEM_POOL_Init(HI_U32 u32Count, fnModuleInfoCBK fnCallback)
     
     if (g_bMemInitFlag == HI_TRUE)
     {
-        THIS_INFO_PRINT("has been initialized!\n");
+        HI_INFO_MEM("has been initialized!\n");
         return HI_SUCCESS;
     }
 
-    THIS_INFO_PRINT("count is %u, and malloc request size is %d\n", u32Count, u32Count * sizeof(USR_MEM_POOL_S));
+    HI_INFO_MEM("count is %u, and malloc request size is %d\n", u32Count, u32Count * sizeof(USR_MEM_POOL_S));
         
     stMemMgrPool.enType = MEM_POOL_TYPE_USR_MEMORY;
 
@@ -69,7 +67,7 @@ HI_VOID MEM_POOL_DeInit(HI_VOID)
 {
     if (g_bMemInitFlag == HI_FALSE)
     {
-        THIS_INFO_PRINT("has been deinitialized!\n");
+        HI_INFO_MEM("has been deinitialized!\n");
         return;
     }
     
@@ -166,7 +164,7 @@ HI_VOID* HI_MALLOC(HI_U32 u32ModuleID, HI_U32 u32Size)
     pMemAddr = malloc(u32Size);
    
 #ifdef CMN_MMGR_SUPPORT
-    if (NULL != pMemAddr)
+    if (NULL != pMemAddr && g_fnModuleCallback)
     { 
         struct head* pHead = NULL;
         HI_S32 s32MallocSize = 0;
@@ -214,9 +212,9 @@ HI_VOID* HI_MALLOC(HI_U32 u32ModuleID, HI_U32 u32Size)
 
 HI_VOID HI_FREE(HI_U32 u32ModuleID, HI_VOID* pMemAddr)
 {
-    if (NULL != pMemAddr)
-    {
 #ifdef CMN_MMGR_SUPPORT
+    if (NULL != pMemAddr && g_fnModuleCallback)
+    {
         struct head *p = NULL;
         HI_S32 s32MallocSize = 0;
 
@@ -235,11 +233,11 @@ HI_VOID HI_FREE(HI_U32 u32ModuleID, HI_VOID* pMemAddr)
             MEM_Del(p);
         }
 
-        mem_unlock(&g_MemMutex);
- #endif       
-        free(pMemAddr);            
+        mem_unlock(&g_MemMutex);      
     }
-
+#endif
+ 
+    free(pMemAddr);   
     return;
 }
 
@@ -250,7 +248,7 @@ HI_VOID* HI_CALLOC(HI_U32 u32ModuleID, HI_U32 u32MemBlock, HI_U32 u32Size)
     pMemAddr = calloc(u32MemBlock, u32Size);
     
 #ifdef CMN_MMGR_SUPPORT
-    if (NULL != pMemAddr)
+    if (NULL != pMemAddr && g_fnModuleCallback)
     {
         struct head* pHead = NULL;
         HI_S32 s32MallocSize = 0;
@@ -302,7 +300,7 @@ HI_VOID* HI_REALLOC(HI_U32 u32ModuleID, HI_VOID *pMemAddr, HI_U32 u32Size)
 #ifdef CMN_MMGR_SUPPORT
     struct head *p;
     
-    if (NULL != pMemAddr)/* when pMemAddr is NULL do malloc.*/
+    if (NULL != pMemAddr && g_fnModuleCallback)/* when pMemAddr is NULL do malloc.*/
     {
         // Add memory info to MODULE MGR
         if (0 == u32Size)/* when s = 0 realloc() acts like free(). */

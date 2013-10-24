@@ -2,9 +2,7 @@
 #include <linux/module.h>
 #include <linux/sched.h>
 #include "hi_type.h"
-
-
-#include "drv_stat_ext.h"
+#include "hi_drv_stat.h"
 #include "drv_stat_ioctl.h"
 
 #ifdef __cplusplus
@@ -18,7 +16,6 @@ HI_S32 HI_DRV_STAT_EventFunc_Register(HI_VOID* pFunc)
 {
     if (NULL == pFunc)
     {
-		printk("HI_DRV_STAT_EventFunc_Register err! \n");
         return HI_FAILURE;
     }
 	stat_event_fun = (STAT_Event_Fun)pFunc;

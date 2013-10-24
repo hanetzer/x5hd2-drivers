@@ -1,3 +1,17 @@
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : drv_hdcp_intf.c
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
 #include <linux/device.h>
 #include <linux/module.h>
 #include <linux/moduleparam.h>
@@ -12,8 +26,8 @@
 #include <linux/mm.h>
 
 #include "hi_common.h"
-#include "drv_dev_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_module.h"
 #include "drv_hdcp_ioctl.h"
 
 static UMAP_DEVICE_S g_HDCP_Device;
@@ -24,7 +38,7 @@ extern HI_S32 HDCP_Ioctl(struct inode *inode, struct file *file, unsigned int cm
 
 static long DRV_HDCP_Ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 {
-    long Ret;
+    long Ret = HI_SUCCESS;
 	Ret = (long)HI_DRV_UserCopy(file->f_dentry->d_inode, file, cmd, arg, HDCP_Ioctl);
 
     return Ret;
@@ -61,7 +75,7 @@ static PM_BASEOPS_S HDCP_drvops =
 *****************************************************************************/
 HI_S32 HDCP_DRV_ModInit(HI_VOID)
 {
-    sprintf(g_HDCP_Device.devfs_name, UMAP_DEVNAME_SETHDCP);
+    snprintf(g_HDCP_Device.devfs_name, sizeof(UMAP_DEVNAME_SETHDCP), UMAP_DEVNAME_SETHDCP);
     g_HDCP_Device.minor  = UMAP_MIN_MINOR_SETHDCP;
     g_HDCP_Device.owner  = THIS_MODULE;
     g_HDCP_Device.fops   = &Drv_HDCP_Fops;
@@ -72,10 +86,9 @@ HI_S32 HDCP_DRV_ModInit(HI_VOID)
         HI_ERR_HDCP("Error:register HDCP failed.\n");
 		goto _ERROR_;
     }
+
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    HI_INFO_HDCP("Load hi_hdcp.ko success.\t(%s)\n", VERSION_STRING);
-#endif
+    HI_PRINT("Load hi_hdcp.ko success.\t(%s)\n", VERSION_STRING);
 #endif
 
     return HI_SUCCESS;
@@ -87,7 +100,6 @@ _ERROR_:
 HI_VOID HDCP_DRV_ModExit(HI_VOID)
 {
     HI_DRV_DEV_UnRegister(&g_HDCP_Device);
-
     return;
 }
 

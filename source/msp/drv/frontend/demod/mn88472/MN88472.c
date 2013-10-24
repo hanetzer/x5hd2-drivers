@@ -54,7 +54,7 @@ HI_S32 MN88472_Connect(HI_U32 u32TunerPort,TUNER_ACC_QAM_PARAMS_S *pstChannel)
     DMD_ERROR_t enRet;
     DMD_u32_t     i2caddr;
 
-    HI_ASSERT(HI_NULL != pstChannel);
+    HI_TUNER_CHECKPOINTER( pstChannel);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -166,7 +166,7 @@ HI_S32 MN88472_GetStatus (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *penT
     DMD_PARAMETER_t * pstParaMeter;
     //DMD_ERROR_t enRet;
 
-    HI_ASSERT(HI_NULL != penTunerStatus);
+    HI_TUNER_CHECKPOINTER( penTunerStatus);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -222,7 +222,7 @@ HI_S32 MN88472_GetBer(HI_U32 u32TunerPort, HI_U32 *pu32ber)
 {
     DMD_PARAMETER_t * pstParaMeter;
 
-    HI_ASSERT(HI_NULL != pu32ber);
+    HI_TUNER_CHECKPOINTER( pu32ber);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -259,7 +259,7 @@ HI_S32 MN88472_GetSnr(HI_U32 u32TunerPort, HI_U32* pu32SNR)
     HI_U32 ulCntInt = 0;
     HI_U32 ulCntDec = 0;
 
-    HI_ASSERT(HI_NULL != pu32SNR);
+    HI_TUNER_CHECKPOINTER( pu32SNR);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -282,7 +282,7 @@ HI_S32 MN88472_GetSignalStrength(HI_U32 u32TunerPort, HI_U32 *pu32SignalStrength
 {
     DMD_PARAMETER_t * pstParaMeter;
 
-    HI_ASSERT(HI_NULL != pu32SignalStrength);
+    HI_TUNER_CHECKPOINTER( pu32SignalStrength);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -300,7 +300,7 @@ HI_S32 MN88472_get_signal_info(HI_U32 u32TunerPort, HI_UNF_TUNER_SIGNALINFO_S *p
     DMD_PARAMETER_t* pstParaMeter;
     //HI_U32 i = 0;
 
-    HI_ASSERT(HI_NULL != pstInfo);
+    HI_TUNER_CHECKPOINTER( pstInfo);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -570,7 +570,7 @@ HI_S32 MN88472_get_plp_num(HI_U32 u32TunerPort, HI_U8 *pu8PLPNum)
 {
     DMD_PARAMETER_t* pstParaMeter;
 
-    HI_ASSERT(HI_NULL != pu8PLPNum);
+    HI_TUNER_CHECKPOINTER( pu8PLPNum);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -596,7 +596,7 @@ HI_S32 MN88472_get_current_plp_type(HI_U32 u32TunerPort, HI_UNF_TUNER_T2_PLP_TYP
 {
     DMD_PARAMETER_t* pstParaMeter;
 
-    HI_ASSERT(HI_NULL != penPLPType);
+    HI_TUNER_CHECKPOINTER( penPLPType);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -636,8 +636,8 @@ HI_S32 MN88472_setplpid(HI_U32 u32TunerPort, HI_U8 u8PLPID)
 HI_S32 MN88472_get_freq_symb_offset(HI_U32 u32TunerPort, HI_U32 * pu32Freq, HI_U32 * pu32Symb)
 {
     /*guarantee the pointer is not NULL*/
-    HI_ASSERT(HI_NULL != pu32Freq);
-    HI_ASSERT(HI_NULL != pu32Symb);
+    HI_TUNER_CHECKPOINTER( pu32Freq);
+    HI_TUNER_CHECKPOINTER( pu32Symb);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)

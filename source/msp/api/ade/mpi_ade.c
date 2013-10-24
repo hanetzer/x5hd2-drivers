@@ -35,7 +35,7 @@ extern "C" {
 #include "hi_common.h"
 #include "hi_mpi_mem.h"
 #include "hi_mpi_ade.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "drv_ade_ioctl.h"
 #include "hi_audsp_ade.h"
 

@@ -58,6 +58,9 @@ extern "C" {
 #endif /* End of #ifdef __cplusplus */
 
 /****************************** Macro Definition *****************************/
+static const HI_CHAR s_szVdecVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 #define VDEC_FIND_INST(hFindVdec, pVDECInst) \
     { \
@@ -238,6 +241,7 @@ static HI_S32 VDEC_VFMWSpecCMD(HI_HANDLE hVdec, VFMW_CMD_E enCMD, HI_VOID* pstPa
             case VFMW_CMD_GETINFO:
             case VFMW_CMD_SETTPLAYOPT:
             case VFMW_CMD_SETCTRLINFO:
+			case VFMW_CMD_SET_PROGRESSIVE:
             default:
                 return HI_FAILURE;
         }
@@ -344,6 +348,7 @@ static HI_S32 VDEC_CreateCodec(VDEC_INST_S* pstVdec, HI_CODEC_ID_E enID)
     pstVdec->pstCodec = HI_CODEC_Create(&pstVdec->hCodecInst, &stOpenParam);
     if ((HI_NULL == pstVdec->pstCodec) || (HI_INVALID_HANDLE == pstVdec->hCodecInst))
     {
+    	pstVdec->hCodecInst = HI_INVALID_HANDLE;
         return HI_ERR_VDEC_SETATTR_FAILED;
     }
     
@@ -403,7 +408,6 @@ static HI_S32 VDEC_CreateCodec(VDEC_INST_S* pstVdec, HI_CODEC_ID_E enID)
             }
         }
     }
-
     return HI_SUCCESS;
 }
 
@@ -434,6 +438,7 @@ static HI_S32 VDEC_DestroyCodec(VDEC_INST_S* pstVdec)
     if (HI_INVALID_HANDLE != pstVdec->hFrameBuf)
     {
         s32Ret = VDEC_DestroyFrameBuf(pstVdec->hFrameBuf);
+		pstVdec->hFrameBuf = HI_INVALID_HANDLE;
     }
 
     (HI_VOID)pthread_mutex_destroy(&pstVdec->stMutex);
@@ -453,6 +458,9 @@ static HI_S32 VDEC_ChanStop(VDEC_INST_S* pstVdec)
         pstVdec->bThreadStop = HI_TRUE;
         (HI_VOID)pthread_join(pstVdec->stSoftCodec, HI_NULL);
         pstVdec->bThreadExist = HI_FALSE;
+		VDEC_LOCK(pstVdec->stMutex);
+		pstVdec->u32EosFlag = 0;
+		VDEC_UNLOCK(pstVdec->stMutex);
     }
 #endif
     
@@ -857,6 +865,7 @@ HI_S32 HI_MPI_VDEC_AllocChan(HI_HANDLE *phHandle, const HI_UNF_AVPLAY_OPEN_OPT_S
 	    if(HI_SUCCESS != s32Ret)
 	    {
 	    	VDEC_UNLOCK(s_stVdecParam.stMutex);
+			HI_FREE_VDEC(pstVdec);
 	        return s32Ret;
 	    }
 	}
@@ -905,7 +914,6 @@ HI_S32 HI_MPI_VDEC_AllocChan(HI_HANDLE *phHandle, const HI_UNF_AVPLAY_OPEN_OPT_S
 HI_S32 HI_MPI_VDEC_FreeChan(HI_HANDLE hVdec)
 {
     VDEC_INST_S* pstVdec = HI_NULL;
-    HI_S32 s32Ret;
     VDEC_CHECK_INIT;
 
     VDEC_FIND_INST(hVdec, pstVdec);
@@ -913,18 +921,15 @@ HI_S32 HI_MPI_VDEC_FreeChan(HI_HANDLE hVdec)
     {
         return HI_ERR_VDEC_INVALID_PARA;
     }
-
-    (HI_VOID)VDEC_DestroyCodec(pstVdec);
 	 /*Destroy vpss*/
 	if(HI_INVALID_HANDLE != pstVdec->hVpss)
 	{
-	    s32Ret = VPSS_Control(pstVdec->hVdec,VPSS_CMD_DESTORYVPSS,&(pstVdec->hVpss));
-	    if(HI_SUCCESS != s32Ret)
-	    {
-	    	VDEC_UNLOCK(s_stVdecParam.stMutex);
-	        return s32Ret;
-	    }
+	    (HI_VOID)VPSS_Control(pstVdec->hVdec,VPSS_CMD_DESTORYVPSS,&(pstVdec->hVpss));
+
 	}
+    (HI_VOID)VDEC_DestroyCodec(pstVdec);
+
+
     (HI_VOID)VDEC_FreeHandle(pstVdec->hVdec);
 
     /* Delete node from list */
@@ -979,9 +984,16 @@ HI_S32 HI_MPI_VDEC_SetChanAttr(HI_HANDLE hVdec, const HI_UNF_VCODEC_ATTR_S *pstA
         /* Only VFMW support type switching dynamically */
         if ((!pstVdec->bIsVFMW) || (!HI_CODEC_SupportDecode(pstVdec->pstCodec, enID)))
         {
-            s32Ret = VDEC_ChanStop(pstVdec);
-            s32Ret |= VDEC_DestroyCodec(pstVdec);
-            s32Ret |= VDEC_CreateCodec(pstVdec, enID);
+            if(HI_NULL != pstVdec->pstCodec)
+            {
+                 s32Ret = VDEC_ChanStop(pstVdec);
+                 s32Ret |= VDEC_DestroyCodec(pstVdec);
+				 if (HI_SUCCESS != s32Ret)
+                 {
+                     HI_ERR_VDEC("VDEC_ChanStop or VDEC_DestroyCodec fail.\n");
+				 }
+            }           
+            s32Ret = VDEC_CreateCodec(pstVdec, enID);
             if (HI_SUCCESS != s32Ret)
             {
                 HI_ERR_VDEC("Create Codec fail.\n");
@@ -1066,13 +1078,7 @@ HI_S32 HI_MPI_VDEC_ResetChan(HI_HANDLE hVdec)
         {
             s32Ret = pstVdec->pstCodec->Reset(HI_CODEC_INST_HANDLE(pstVdec->hCodecInst));
         }
-#if 1
-    	/*reset vpss */
-    	if (pstVdec->bIsVFMW)
-        {
-        	s32Ret = VDEC_VPSSCMD(hVdec, VPSS_CMD_RESETVPSS, HI_NULL);
-    	}
-#endif
+
         if (pstVdec->bIsVFMW)
         {
             if (HI_INVALID_HANDLE != pstVdec->hStreamBuf)
@@ -1095,6 +1101,8 @@ HI_S32 HI_MPI_VDEC_ResetChan(HI_HANDLE hVdec)
             VDEC_UNLOCK(pstVdec->stMutex);
         }
 #endif
+
+        (HI_VOID)VDEC_VPSSCMD(hVdec, VPSS_CMD_RESETVPSS, HI_NULL);
     }
 
     return VDEC_ConvertError(s32Ret);
@@ -1606,13 +1614,59 @@ HI_S32 HI_MPI_VDEC_GetPortParam(HI_HANDLE hVdec, HI_HANDLE hPort, VDEC_PORT_PARA
 	}
 	return s32Ret;
 }
-//add by l00225186
+#if 0
 HI_S32 HI_MPI_VDEC_SetMainPort(HI_HANDLE hVdec, HI_HANDLE hPort)
 {
     VDEC_CHECK_INIT;
 	 
 	return VDEC_VPSSCMD(hVdec, VPSS_CMD_SETMAINPORT, (HI_VOID*)&hPort);
 }
+#endif
+
+HI_S32 HI_MPI_VDEC_SetPortType(HI_HANDLE hVdec, HI_HANDLE hPort, VDEC_PORT_TYPE_E enPortType)
+{
+    VDEC_CHECK_INIT;
+	VDEC_PORT_TYPE_WITHPORT_S stPortTypeWithPortHandle;
+    memset(&stPortTypeWithPortHandle, 0, sizeof(VDEC_PORT_TYPE_WITHPORT_S));
+	stPortTypeWithPortHandle.hPort = hPort;
+	stPortTypeWithPortHandle.enPortType = enPortType;
+	return VDEC_VPSSCMD(hVdec, VPSS_CMD_SETPORTTYPE, (HI_VOID*)&stPortTypeWithPortHandle);
+}
+
+HI_S32 HI_MPI_VDEC_GetPortAttr(HI_HANDLE hVdec, HI_HANDLE hPort, HI_DRV_VPSS_PORT_CFG_S *pstPortCfg)
+{
+    HI_S32                          Ret;
+    VDEC_PORT_ATTR_WITHHANDLE_S     stAttrWithHandle;
+
+    VDEC_CHECK_INIT;
+    memset(&stAttrWithHandle,0,sizeof(VDEC_PORT_ATTR_WITHHANDLE_S));
+    stAttrWithHandle.hPort = hPort;
+
+    Ret = VDEC_VPSSCMD(hVdec, VPSS_CMD_GETPORTATTR, (HI_VOID*)&stAttrWithHandle);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_ERR_VDEC("VPSS_CMD_GETPORTATTR ERR, Ret=%#x\n", Ret);
+        return Ret;
+    }
+
+    *pstPortCfg = stAttrWithHandle.stPortCfg;
+
+    return HI_SUCCESS;
+}
+
+HI_S32 HI_MPI_VDEC_SetPortAttr(HI_HANDLE hVdec, HI_HANDLE hPort, HI_DRV_VPSS_PORT_CFG_S *pstPortCfg)
+{
+    VDEC_PORT_ATTR_WITHHANDLE_S     stAttrWithHandle;
+
+    VDEC_CHECK_INIT;
+
+    stAttrWithHandle.hPort = hPort;
+    stAttrWithHandle.stPortCfg = *pstPortCfg;
+
+    return VDEC_VPSSCMD(hVdec, VPSS_CMD_SETPORTATTR, (HI_VOID*)&stAttrWithHandle);
+
+}
+
 //add by l00225186
 HI_S32 HI_MPI_VDEC_CancleMainPort(HI_HANDLE hVdec, HI_HANDLE hPort)
 {
@@ -1632,6 +1686,20 @@ HI_S32 HI_MPI_VDEC_ReceiveFrame(HI_HANDLE hVdec, HI_DRV_VIDEO_FRAME_PACKAGE_S *p
 	/*get port frames*/
 	/*CNcomment:主要是从对应的PORT的队列里面取东西*/
 	s32Ret = VDEC_VPSSCMD(hVdec, VPSS_CMD_RECEIVEFRAME, (HI_VOID*)pFrmPack);
+	return s32Ret;
+}
+//add by l00225186
+HI_S32 HI_MPI_VDEC_ReleaseFrame(HI_HANDLE hPort, HI_DRV_VIDEO_FRAME_S *pVideoFrame)
+{
+    HI_S32 s32Ret;
+    VDEC_CHECK_INIT;
+    if(HI_NULL == pVideoFrame)
+    {
+        return HI_ERR_VDEC_INVALID_PARA;
+    }
+	/*release port frame*/
+	/*CNcomment:主要是从对应的PORT的队列里面释放数据*/
+	s32Ret = VPSS_ReleaseFrm(hPort,pVideoFrame);
 	return s32Ret;
 }
 HI_S32 HI_MPI_VDEC_SetEosFlag(HI_HANDLE hVdec)
@@ -1679,14 +1747,13 @@ HI_S32 HI_MPI_VDEC_Invoke(HI_HANDLE hVdec, HI_CODEC_VIDEO_CMD_S* pstParam)
     HI_UNF_AVPLAY_VDEC_INFO_S* pstInfo;
 
     if ((HI_NULL == pstParam) || 
-        (pstParam->u32CmdID > VFMW_CMD_SETCTRLINFO) || 
+        (pstParam->u32CmdID > VFMW_CMD_SET_PROGRESSIVE) || 
         (pstParam->u32CmdID < VFMW_CMD_GETINFO))
     {
         return HI_ERR_VDEC_INVALID_PARA;
     }
 
     VDEC_CHECK_INIT;
-    
     VDEC_FIND_INST(hVdec, pstVdec);
     if (HI_NULL == pstVdec)
     {
@@ -1695,8 +1762,16 @@ HI_S32 HI_MPI_VDEC_Invoke(HI_HANDLE hVdec, HI_CODEC_VIDEO_CMD_S* pstParam)
 
     if ((pstVdec->pstCodec) && (pstVdec->pstCodec->Control))
     {
-        s32Ret = pstVdec->pstCodec->Control(HI_CODEC_INST_HANDLE(pstVdec->hCodecInst),
-                                                pstParam->u32CmdID, (HI_VOID*)pstParam->pPara);
+        if(pstVdec->bIsVFMW)
+        {
+            s32Ret = pstVdec->pstCodec->Control(HI_CODEC_INST_HANDLE(pstVdec->hCodecInst),
+                                                    pstParam->u32CmdID, (HI_VOID*)pstParam->pPara);
+        }
+		else
+		{
+		    memset((HI_UNF_AVPLAY_VDEC_INFO_S*)pstParam->pPara, 0, sizeof(HI_UNF_AVPLAY_VDEC_INFO_S));
+		    s32Ret = HI_SUCCESS;
+		}
 
         /* For VFMW_CMD_GETINFO, need add undecoded frame number of ES Buffer here */
         if ((VFMW_CMD_GETINFO == pstParam->u32CmdID) && (HI_SUCCESS == s32Ret))
@@ -1832,6 +1907,7 @@ HI_S32 HI_MPI_VDEC_ChanBufferInit(HI_HANDLE hVdec, HI_U32 u32BufSize, HI_HANDLE 
         {
             return HI_ERR_VDEC_BUFFER_ATTACHED;
         }
+		pstVdec->hDmxVidChn = HI_INVALID_HANDLE;
     }
     else
     {
@@ -1910,6 +1986,23 @@ HI_S32 HI_MPI_VDEC_ChanPutBuffer(HI_HANDLE hVdec, const VDEC_ES_BUF_S *pstBuf)
     }
 
     return VDEC_PutStreamBuf(pstVdec->hStreamBuf, pstBuf);
+}
+
+HI_S32 HI_MPI_VDEC_GetChanOpenParam(HI_HANDLE hVdec, HI_UNF_AVPLAY_OPEN_OPT_S *pstOpenPara)
+{
+    VDEC_INST_S* pstVdec = HI_NULL;
+
+    VDEC_CHECK_INIT;
+
+    VDEC_FIND_INST(hVdec, pstVdec);
+    if (HI_NULL == pstVdec)
+    {
+        return HI_ERR_VDEC_INVALID_PARA;
+    }
+
+    memcpy(pstOpenPara, &pstVdec->stOpenParam, sizeof(HI_UNF_AVPLAY_OPEN_OPT_S));
+
+    return HI_SUCCESS;
 }
 
 #ifdef __cplusplus

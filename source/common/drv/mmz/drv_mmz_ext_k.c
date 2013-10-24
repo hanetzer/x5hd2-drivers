@@ -8,8 +8,11 @@
 \date 2008-12-25
 */
 /* add include here */
+#include <asm/cache.h>
+#include <asm/cacheflush.h>
+#include <linux/smp.h>
 #include "drv_mmz.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
 #include "drv_mem_ioctl.h"
 
 #define ERR_MEM(fmt...) printk(fmt)
@@ -104,6 +107,32 @@ HI_S32 HI_DRV_MMZ_MapCache(MMZ_BUFFER_S *psMBuf)
     return HI_SUCCESS;
 }
 
+HI_S32 HI_DRV_MMZ_Flush(MMZ_BUFFER_S *psMBuf)
+{
+    mmb_addr_t phyaddr = psMBuf->u32StartPhyAddr;
+    mmb_addr_t viraddr = psMBuf->u32StartVirAddr;
+    mmb_addr_t len = psMBuf->u32Size;
+#define L2_CACHE_SIZE	(512 * 1024)
+    if (len > L2_CACHE_SIZE)
+	    /* 
+	     * TODO: here we just need to flush D-cache
+	     * but flush_cache_all include I+BTB cache
+	     */
+#ifdef CONFIG_SMP
+	    on_each_cpu(__cpuc_flush_kern_all, NULL, 1);
+#else
+	    __cpuc_flush_kern_all();
+#endif
+    else
+	    /* __cpuc_flush_dcache_area have the same effect with dmac_flush_range */
+	    dmac_flush_range((const void *)viraddr, (const void *)(viraddr + len));
+
+    /* l2x0 already optimise the range based operations, see commit 444457c1f5 */
+    outer_flush_range(phyaddr, phyaddr + len);
+
+    return HI_SUCCESS;
+}
+
 HI_S32 HI_DRV_MMZ_Map(MMZ_BUFFER_S *psMBuf)
 {
     mmb_addr_t phyaddr = psMBuf->u32StartPhyAddr;
@@ -138,6 +167,7 @@ EXPORT_SYMBOL(HI_DRV_MMZ_AllocAndMap);
 EXPORT_SYMBOL(HI_DRV_MMZ_UnmapAndRelease);
 EXPORT_SYMBOL(HI_DRV_MMZ_Alloc);
 EXPORT_SYMBOL(HI_DRV_MMZ_MapCache);
+EXPORT_SYMBOL(HI_DRV_MMZ_Flush);
 EXPORT_SYMBOL(HI_DRV_MMZ_Map);
 EXPORT_SYMBOL(HI_DRV_MMZ_Unmap);
 EXPORT_SYMBOL(HI_DRV_MMZ_Release);

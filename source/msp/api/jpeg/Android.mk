@@ -1,6 +1,6 @@
 JPEG_MODULE := jpeg6b
 
-ifeq ($(CFG_HI_VDEC_REG_CODEC_SUPPORT),y)
+ifeq ($(CFG_HI_VDEC_MJPEG_SUPPORT),y)
 JPEG_MODULE += jpegfmw
 endif
 

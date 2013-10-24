@@ -16,12 +16,12 @@
 #include "hi_type.h"
 #include "hi_audsp_aoe.h"
 #include "hal_aoe_func.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_mem_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_mem.h"
+#include "hi_drv_module.h"
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -37,15 +37,15 @@ static volatile S_AIP_REGS_TYPE *       g_pAipReg[AOE_AIP_BUTT];
 static volatile S_MIXER_REGS_TYPE *       g_pMixerReg[AOE_ENGINE_BUTT];
 static volatile S_AOP_REGS_TYPE *  g_pAopReg[AOE_AOP_BUTT];
 static   HI_U32 u32RegMapAddr = 0;
+static HI_BOOL g_bSwAoeFlag = HI_TRUE;  /* HI_TRUE: sw; HI_FALSE: hw */
 
-static HI_VOID AoeIOAddressMap(HI_U32 u32AoeRegBase)
+static HI_VOID AoeIOAddressMap(HI_VOID)
 {
     AOE_AIP_ID_E aip;
     AOE_AOP_ID_E aop;
     AOE_ENGINE_ID_E engine;
 
-    HI_INFO_AO("u32AoeRegBase 0x%x \n", u32AoeRegBase);
-    u32RegMapAddr = u32AoeRegBase;
+    u32RegMapAddr = (HI_U32 )ioremap_nocache(AOE_COM_REG_BASE, AOE_REG_LENGTH);;
     
     /* reg map */
     g_pAOEReg = (S_AOE_REGS_TYPE *)(u32RegMapAddr + AOE_COM_REG_OFFSET);
@@ -90,13 +90,15 @@ static HI_VOID IOaddressUnmap(HI_VOID)
         g_pAipReg[engine] = HI_NULL;
     }
     g_pAOEReg = HI_NULL;
+    if(u32RegMapAddr)
+        iounmap((HI_VOID*)u32RegMapAddr);
 
 }
 
-HI_S32 iHAL_AOE_Init(HI_U32 u32AoeRegBase)
+HI_S32 iHAL_AOE_Init(HI_BOOL bSwAoeFlag)
 {
-    AoeIOAddressMap(u32AoeRegBase);
-
+    AoeIOAddressMap();
+    g_bSwAoeFlag = bSwAoeFlag;
     return HI_SUCCESS;
 }
 
@@ -301,21 +303,54 @@ HI_S32                  iHAL_AOE_AIP_SetAttr(AOE_AIP_ID_E enAIP, AOE_AIP_CHN_ATT
     //for alsa
     AipReg->AIP_BUFF_ATTR.bits.aip_alsa = pstAttr->stBufInAttr.bAlsaEnable;
 
-#ifdef HI_SND_AOE_SWSIMULATE_SUPPORT
-    AipReg->AIP_BUF_ADDR = pstAttr->stBufInAttr.stRbfAttr.u32BufVirAddr;
-#else
-    AipReg->AIP_BUF_ADDR = pstAttr->stBufInAttr.stRbfAttr.u32BufPhyAddr;
-#endif
+    if (HI_TRUE == g_bSwAoeFlag)
+    {
+        AipReg->AIP_BUF_ADDR = pstAttr->stBufInAttr.stRbfAttr.u32BufVirAddr;
+    }
+    else
+    {
+        HI_U32 u32DspRemapAddr=pstAttr->stBufInAttr.stRbfAttr.u32BufPhyAddr;
+#if defined(DSP_DDR_DMAREMAP_SUPPORT)
+        if((u32DspRemapAddr>=DSP_DDR_DMAREMAP_BEG_ADDR) && (u32DspRemapAddr<DSP_DDR_DMAREMAP_END_ADDR))
+        {
+            u32DspRemapAddr += DSP_DDR_DMAREMAP_MAP_ADDR;
+            //HI_ERR_AIAO("u32DspRemapAddr=0x%.8x,u32BufPhyAddr=0x%.8x\n",u32DspRemapAddr,pstAttr->stBufInAttr.stRbfAttr.u32BufPhyAddr);
+        }
+#endif        
+        AipReg->AIP_BUF_ADDR = u32DspRemapAddr;
+        
+    }
 
     if (pstAttr->stBufInAttr.stRbfAttr.u32BufWptrRptrFlag)
     {
-#ifdef HI_SND_AOE_SWSIMULATE_SUPPORT
-        AipReg->AIP_BUF_WPTR = pstAttr->stBufInAttr.stRbfAttr.u32BufVirWptr;
-        AipReg->AIP_BUF_RPTR = pstAttr->stBufInAttr.stRbfAttr.u32BufVirRptr;
-#else
-        AipReg->AIP_BUF_WPTR = pstAttr->stBufInAttr.stRbfAttr.u32BufPhyWptr;
-        AipReg->AIP_BUF_RPTR = pstAttr->stBufInAttr.stRbfAttr.u32BufPhyRptr;
-#endif
+        if (HI_TRUE == g_bSwAoeFlag)
+        {
+            AipReg->AIP_BUF_WPTR = pstAttr->stBufInAttr.stRbfAttr.u32BufVirWptr;
+            AipReg->AIP_BUF_RPTR = pstAttr->stBufInAttr.stRbfAttr.u32BufVirRptr;
+        }
+        else
+        {
+            HI_U32 u32DspRemapAddr = pstAttr->stBufInAttr.stRbfAttr.u32BufPhyWptr;
+#if defined(DSP_DDR_DMAREMAP_SUPPORT)
+            if((u32DspRemapAddr>=DSP_DDR_DMAREMAP_BEG_ADDR) && (u32DspRemapAddr<DSP_DDR_DMAREMAP_END_ADDR))
+            {
+                u32DspRemapAddr += DSP_DDR_DMAREMAP_MAP_ADDR;
+                //HI_ERR_AIAO("u32DspRemapAddr=0x%.8x,u32BufPhyWptr=0x%.8x\n",u32DspRemapAddr,pstAttr->stBufInAttr.stRbfAttr.u32BufPhyWptr);
+            }
+#endif           
+            AipReg->AIP_BUF_WPTR = u32DspRemapAddr;
+
+            u32DspRemapAddr=pstAttr->stBufInAttr.stRbfAttr.u32BufPhyRptr;
+#if defined(DSP_DDR_DMAREMAP_SUPPORT)
+            if((u32DspRemapAddr>=DSP_DDR_DMAREMAP_BEG_ADDR) && (u32DspRemapAddr<DSP_DDR_DMAREMAP_END_ADDR))
+            {
+                u32DspRemapAddr += DSP_DDR_DMAREMAP_MAP_ADDR;
+                //HI_ERR_AIAO("u32DspRemapAddr=0x%.8x,u32BufPhyRptr=0x%.8x\n",u32DspRemapAddr,pstAttr->stBufInAttr.stRbfAttr.u32BufPhyRptr);
+            }
+#endif           
+            
+            AipReg->AIP_BUF_RPTR = u32DspRemapAddr;
+        }
     }
     else
     {
@@ -490,35 +525,80 @@ HI_S32 iHAL_AOE_AOP_SetAttr(AOE_AOP_ID_E enAOP, AOE_AOP_CHN_ATTR_S *pstAttr)
     HI_U32 Rate, BitDepth, Ch;
     S_AOP_REGS_TYPE *AopReg = (S_AOP_REGS_TYPE *)g_pAopReg[enAOP];
 
-    if(1 != pstAttr->stRbfOutAttr.stRbfAttr.u32BufWptrRptrFlag)
-        return HI_FAILURE;
-    
     //set  AOP_BUFF_ATTR
-#ifdef HI_SND_AOE_SWSIMULATE_SUPPORT                //TO DO
+    if (HI_TRUE == g_bSwAoeFlag)
+    {
+        AopReg->AOP_BUF_ADDR = pstAttr->stRbfOutAttr.stRbfAttr.u32BufVirAddr;
+    }
+    else
+    {
+        HI_U32 u32DspRemapAddr = pstAttr->stRbfOutAttr.stRbfAttr.u32BufPhyAddr;
+#if defined (DSP_DDR_DMAREMAP_SUPPORT)
+        if ((u32DspRemapAddr >= DSP_DDR_DMAREMAP_BEG_ADDR) && (u32DspRemapAddr < DSP_DDR_DMAREMAP_END_ADDR))
+        {
+            u32DspRemapAddr += DSP_DDR_DMAREMAP_MAP_ADDR;
 
-    AopReg->AOP_BUF_ADDR = pstAttr->stRbfOutAttr.stRbfAttr.u32BufVirAddr;   
-    AopReg->AOP_BUF_WPTR = pstAttr->stRbfOutAttr.stRbfAttr.u32BufVirWptr;
-    AopReg->AOP_BUF_RPTR = pstAttr->stRbfOutAttr.stRbfAttr.u32BufVirRptr;
-
-#else
-    AopReg->AOP_BUF_ADDR = pstAttr->stRbfOutAttr.stRbfAttr.u32BufPhyAddr;   
-    AopReg->AOP_BUF_WPTR = pstAttr->stRbfOutAttr.stRbfAttr.u32BufPhyWptr;
-    AopReg->AOP_BUF_RPTR = pstAttr->stRbfOutAttr.stRbfAttr.u32BufPhyRptr;
+            //HI_ERR_AIAO("u32DspRemapAddr=0x%.8x,u32BufPhyAddr=0x%.8x\n",u32DspRemapAddr,pstAttr->stRbfOutAttr.stRbfAttr.u32BufPhyAddr);
+        }
 #endif
+
+        AopReg->AOP_BUF_ADDR = u32DspRemapAddr;
+    }
+
+    if (pstAttr->stRbfOutAttr.stRbfAttr.u32BufWptrRptrFlag)
+    {
+        if (HI_TRUE == g_bSwAoeFlag)
+        {
+            AopReg->AOP_BUF_WPTR = pstAttr->stRbfOutAttr.stRbfAttr.u32BufVirWptr;
+            AopReg->AOP_BUF_RPTR = pstAttr->stRbfOutAttr.stRbfAttr.u32BufVirRptr;
+        }
+        else
+        {
+            HI_U32 u32DspRemapAddr;
+            u32DspRemapAddr = pstAttr->stRbfOutAttr.stRbfAttr.u32BufPhyWptr;
+#if defined (DSP_DDR_DMAREMAP_SUPPORT)
+            if ((u32DspRemapAddr >= DSP_DDR_DMAREMAP_BEG_ADDR) && (u32DspRemapAddr < DSP_DDR_DMAREMAP_END_ADDR))
+            {
+                u32DspRemapAddr += DSP_DDR_DMAREMAP_MAP_ADDR;
+
+                //HI_ERR_AIAO("u32DspRemapAddr=0x%.8x,u32BufPhyWptr=0x%.8x\n",u32DspRemapAddr,pstAttr->stRbfOutAttr.stRbfAttr.u32BufPhyWptr);
+            }
+#endif
+
+            AopReg->AOP_BUF_WPTR = u32DspRemapAddr;
+
+            u32DspRemapAddr = pstAttr->stRbfOutAttr.stRbfAttr.u32BufPhyRptr;
+#if defined (DSP_DDR_DMAREMAP_SUPPORT)
+            if ((u32DspRemapAddr >= DSP_DDR_DMAREMAP_BEG_ADDR) && (u32DspRemapAddr < DSP_DDR_DMAREMAP_END_ADDR))
+            {
+                u32DspRemapAddr += DSP_DDR_DMAREMAP_MAP_ADDR;
+
+                //HI_ERR_AIAO("u32DspRemapAddr=0x%.8x,u32BufPhyRptr=0x%.8x\n",u32DspRemapAddr,pstAttr->stRbfOutAttr.stRbfAttr.u32BufPhyRptr);
+            }
+#endif
+
+            AopReg->AOP_BUF_RPTR = u32DspRemapAddr;
+        }
+    }
+    else
+    {
+        AopReg->AOP_BUF_WPTR = 0;
+        AopReg->AOP_BUF_RPTR = 0;
+    }
+
     AopReg->AOP_BUF_SIZE.bits.buff_size = pstAttr->stRbfOutAttr.stRbfAttr.u32BufSize;
-    AopReg->AOP_BUF_SIZE.bits.buff_flag = 1; /* u32BufWptrRptrFlag */
+    AopReg->AOP_BUF_SIZE.bits.buff_flag = pstAttr->stRbfOutAttr.stRbfAttr.u32BufWptrRptrFlag; /* u32BufWptrRptrFlag */
 
     //set fifo attr
-    AopReg->AOP_BUFF_ATTR.bits.buf_format = ( (!pstAttr->stRbfOutAttr.u32BufDataFormat) ? 0 : 1);
+    AopReg->AOP_BUFF_ATTR.bits.buf_format = ((!pstAttr->stRbfOutAttr.u32BufDataFormat) ? 0 : 1);
     AoeRegBitDepth(pstAttr->stRbfOutAttr.u32BufBitPerSample, &BitDepth);
     AopReg->AOP_BUFF_ATTR.bits.buf_precision = BitDepth;
     AoeRegChannels(pstAttr->stRbfOutAttr.u32BufChannels, &Ch);
     AopReg->AOP_BUFF_ATTR.bits.buf_ch = Ch;
     AoeRegSampelRate(pstAttr->stRbfOutAttr.u32BufSampleRate, &Rate);
     AopReg->AOP_BUFF_ATTR.bits.buf_fs = Rate;
-    
-    AopReg->AOP_BUFF_ATTR.bits.buf_priority = ( (HI_TRUE==pstAttr->stRbfOutAttr.bRbfHwPriority) ? 1 : 0);
-        
+
+    AopReg->AOP_BUFF_ATTR.bits.buf_priority = ((HI_TRUE == pstAttr->stRbfOutAttr.bRbfHwPriority) ? 1 : 0);
 
     AopReg->AOP_BUFF_ATTR.bits.buf_latency = pstAttr->stRbfOutAttr.u32BufLatencyThdMs;
 
@@ -627,8 +707,8 @@ HI_S32 iHAL_AOE_ENGINE_SetCmd(AOE_ENGINE_ID_E enEngine, AOE_ENGINE_CMD_E newcmd)
     Ack = iHAL_AOE_ENGINE_AckCmd(enEngine);
     if (AOE_ENGINE_CMD_DONE != Ack)
     {
-        HI_WARN_AO("\nENGINE SetCmd(0x%x) failed(0x%x)", newcmd, Ack);  //HI_ERR_AO
-        return HI_SUCCESS;  //return HI_FAILURE;  //TO DO
+        HI_ERR_AO("\nENGINE SetCmd(0x%x) failed(0x%x)", newcmd, Ack);  //HI_ERR_AO
+        return HI_FAILURE;  //return HI_FAILURE;  //TO DO
     }
 
     return HI_SUCCESS;

@@ -16,12 +16,13 @@
 #include <linux/delay.h>
 
 #include "hi_type.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_module_ext.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_module.h"
+#include "hi_drv_mmz.h"
+#include "hi_reg_common.h"
 
 #include "hal_aiao_priv.h"
 
@@ -34,7 +35,6 @@ extern "C" {
 #endif /* End of #ifdef __cplusplus */
 /* private state */
 
-static volatile U_S40_AIAO_SYS_CRG *        g_pAIAOSysCrg = NULL;
 static volatile S_AIAO_COM_REGS_TYPE *      g_pAIAOComReg = NULL;
 static volatile S_AIAO_RX_REGS_TYPE *       g_pAIAORxReg[AIAO_MAX_RX_PORT_NUMBER];
 static volatile S_AIAO_TX_REGS_TYPE *       g_pAIAOTxReg[AIAO_MAX_TX_PORT_NUMBER];
@@ -182,6 +182,47 @@ static HI_U32 g_u32MclkPLLTab[5][13] = {
     {0x001bf647,/* 8000 */ 0x00268900,/* 11025 */ 0x0029f16b,/* 12000 */ 0x0037ec8e,/* 16000 */ 0x004d1201,/* 22050 */ 0x0053e2d6,/* 24000 */ 0x006fd91d,/* 32000 */ 
     0x009a2403,/* 44100 */ 0x00a7c5ac,/* 48000 */ 0x01344806,/* 88200 */ 0x014f8b58,/* 96000 */ 0x0268900c,/* 176400 */ 0x029f16b0,/* 192000 */ },
     
+};
+
+#elif defined (AIAO_PLL_492MHZ)
+static HI_U32 g_u32MclkPLLTab[5][13] = {
+/* crg = mclk0*pow(2, CRG_POW)/ ARM_BPLL_FREQ */ 
+/* 128*FS mclk */ 
+{0x00044444,/* 8000 */ 0x0005e147,/* 11025 */ 0x00066666,/* 12000 */ 0x00088888,/* 16000 */ 0x000bc28f,/* 22050 */ 0x000ccccc,/* 24000 */ 0x00111111,/* 32000 */ 
+0x0017851e,/* 44100 */ 0x00199999,/* 48000 */ 0x002f0a3d,/* 88200 */ 0x00333333,/* 96000 */ 0x005e147b,/* 176400 */ 0x00666666,/* 192000 */ },
+/* 256*FS mclk */ 
+{0x00088888,/* 8000 */ 0x000bc28f,/* 11025 */ 0x000ccccc,/* 12000 */ 0x00111111,/* 16000 */ 0x0017851e,/* 22050 */ 0x00199999,/* 24000 */ 0x00222222,/* 32000 */ 
+0x002f0a3d,/* 44100 */ 0x00333333,/* 48000 */ 0x005e147b,/* 88200 */ 0x00666666,/* 96000 */ 0x00bc28f6,/* 176400 */ 0x00cccccd,/* 192000 */ },
+/* 384*FS mclk */ 
+{0x000ccccc,/* 8000 */ 0x0011a3d7,/* 11025 */ 0x00133333,/* 12000 */ 0x00199999,/* 16000 */ 0x002347ae,/* 22050 */ 0x00266666,/* 24000 */ 0x00333333,/* 32000 */ 
+0x00468f5c,/* 44100 */ 0x004ccccd,/* 48000 */ 0x008d1eb8,/* 88200 */ 0x0099999a,/* 96000 */ 0x011a3d70,/* 176400 */ 0x01333334,/* 192000 */ },
+/* 512*FS mclk */ 
+{0x00111111,/* 8000 */ 0x0017851e,/* 11025 */ 0x00199999,/* 12000 */ 0x00222222,/* 16000 */ 0x002f0a3d,/* 22050 */ 0x00333333,/* 24000 */ 0x00444444,/* 32000 */ 
+0x005e147b,/* 44100 */ 0x00666666,/* 48000 */ 0x00bc28f6,/* 88200 */ 0x00cccccd,/* 96000 */ 0x017851ec,/* 176400 */ 0x0199999a,/* 192000 */ },
+/* 1024*FS mclk */ 
+{0x00222222,/* 8000 */ 0x002f0a3d,/* 11025 */ 0x00333333,/* 12000 */ 0x00444444,/* 16000 */ 0x005e147b,/* 22050 */ 0x00666666,/* 24000 */ 0x00888889,/* 32000 */ 
+0x00bc28f6,/* 44100 */ 0x00cccccd,/* 48000 */ 0x017851ec,/* 88200 */ 0x0199999a,/* 96000 */ 0x02f0a3d8,/* 176400 */ 0x03333334,/* 192000 */ },
+};
+
+
+#elif defined (AIAO_PLL_750MHZ)
+static HI_U32 g_u32MclkPLLTab[5][13] = {
+/* crg = mclk0*pow(2, CRG_POW)/ ARM_BPLL_FREQ */ 
+/* 128*FS mclk */ 
+{0x0002cbd3,/* 8000 */ 0x0003da80,/* 11025 */ 0x000431bd,/* 12000 */ 0x000597a7,/* 16000 */ 0x0007b500,/* 22050 */ 0x0008637b,/* 24000 */ 0x000b2f4f,/* 32000 */ 
+0x000f6a00,/* 44100 */ 0x0010c6f7,/* 48000 */ 0x001ed400,/* 88200 */ 0x00218def,/* 96000 */ 0x003da801,/* 176400 */ 0x00431bde,/* 192000 */ },
+/* 256*FS mclk */ 
+{0x000597a7,/* 8000 */ 0x0007b500,/* 11025 */ 0x0008637b,/* 12000 */ 0x000b2f4f,/* 16000 */ 0x000f6a00,/* 22050 */ 0x0010c6f7,/* 24000 */ 0x00165e9f,/* 32000 */ 
+0x001ed400,/* 44100 */ 0x00218def,/* 48000 */ 0x003da801,/* 88200 */ 0x00431bde,/* 96000 */ 0x007b5002,/* 176400 */ 0x008637bd,/* 192000 */ },
+/* 384*FS mclk */ 
+{0x0008637b,/* 8000 */ 0x000b8f80,/* 11025 */ 0x000c9539,/* 12000 */ 0x0010c6f7,/* 16000 */ 0x00171f00,/* 22050 */ 0x00192a73,/* 24000 */ 0x00218def,/* 32000 */ 
+0x002e3e01,/* 44100 */ 0x003254e7,/* 48000 */ 0x005c7c02,/* 88200 */ 0x0064a9ce,/* 96000 */ 0x00b8f804,/* 176400 */ 0x00c9539c,/* 192000 */ },
+/* 512*FS mclk */ 
+{0x000b2f4f,/* 8000 */ 0x000f6a00,/* 11025 */ 0x0010c6f7,/* 12000 */ 0x00165e9f,/* 16000 */ 0x001ed400,/* 22050 */ 0x00218def,/* 24000 */ 0x002cbd3f,/* 32000 */ 
+0x003da801,/* 44100 */ 0x00431bde,/* 48000 */ 0x007b5002,/* 88200 */ 0x008637bd,/* 96000 */ 0x00f6a005,/* 176400 */ 0x010c6f7a,/* 192000 */ },
+/* 1024*FS mclk */ 
+{0x00165e9f,/* 8000 */ 0x001ed400,/* 11025 */ 0x00218def,/* 12000 */ 0x002cbd3f,/* 16000 */ 0x003da801,/* 22050 */ 0x00431bde,/* 24000 */ 0x00597a7e,/* 32000 */ 
+0x007b5002,/* 44100 */ 0x008637bd,/* 48000 */ 0x00f6a005,/* 88200 */ 0x010c6f7a,/* 96000 */ 0x01ed400a,/* 176400 */ 0x0218def4,/* 192000 */ },
 };
 
 #elif defined (AIAO_PLL_307MHZ)
@@ -431,46 +472,14 @@ static HI_U32 GetBclkDiv(HI_U32 u32XclkDiv)
     return (HI_U32)n;
 }
 
-#if defined (AIAO_SW_SIMULAUTE)
-static MMZ_BUFFER_S g_stSimulateCrgMmz;
-static MMZ_BUFFER_S g_stSimulateAiaoMmz;
-#endif
-
 static HI_VOID IOAddressMap(HI_VOID)
 {
-    HI_U32 u32RegSysVirAddr;
     HI_U32 u32RegAIAOVirAddr;
     HI_S32 ch;
 
-#if defined (AIAO_SW_SIMULAUTE)
-    if (HI_SUCCESS
-        != HI_DRV_MMZ_AllocAndMap("aiao_sys_reg", MMZ_OTHERS, 0x10000, 0x10000, &g_stSimulateCrgMmz))
-    {
-        HI_FATAL_AIAO("Unable to mmz %s \n", "aiao_sys_reg");
-        return;
-    }
-
-    if (HI_SUCCESS
-        != HI_DRV_MMZ_AllocAndMap("aiao_cbb_reg", MMZ_OTHERS, 0x10000, 0x10000, &g_stSimulateAiaoMmz))
-    {
-        HI_FATAL_AIAO("Unable to mmz %s \n", "aiao_cbb_reg");
-        return;
-    }
-
-    u32RegSysVirAddr = (HI_U32 )g_stSimulateCrgMmz.u32StartVirAddr;
-    g_pAIAOSysCrg = (U_S40_AIAO_SYS_CRG *)u32RegSysVirAddr;
-
-    u32RegAIAOVirAddr = (HI_U32 )g_stSimulateAiaoMmz.u32StartVirAddr;
-    g_pAIAOComReg = (S_AIAO_COM_REGS_TYPE *)u32RegAIAOVirAddr;
-    HI_FATAL_AIAO("AIAO_SYSCRG_REGBASE(0x%x) AIAO_CBB_REGBASE(0x%x)\n", g_stSimulateCrgMmz.u32StartPhyAddr,
-                  g_stSimulateAiaoMmz.u32StartPhyAddr);
-#else
-    u32RegSysVirAddr = (HI_U32 )IO_ADDRESS(AIAO_SYSCRG_REGBASE);
-    g_pAIAOSysCrg = (U_S40_AIAO_SYS_CRG *)u32RegSysVirAddr;
-
     u32RegAIAOVirAddr = (HI_U32 )IO_ADDRESS(AIAO_CBB_REGBASE);
     g_pAIAOComReg = (S_AIAO_COM_REGS_TYPE *)u32RegAIAOVirAddr;
-#endif
+
     for (ch = 0; ch < AIAO_MAX_RX_PORT_NUMBER; ch++)
     {
         g_pAIAORxReg[ch] = (S_AIAO_RX_REGS_TYPE *)((u32RegAIAOVirAddr + AIAO_RX_OFFSET) + AIAO_RX_REG_BANDSIZE * ch);
@@ -495,13 +504,6 @@ static HI_VOID IOAddressMap(HI_VOID)
                                                              * ch);
     }
 
-#if defined (AIAO_SW_SIMULAUTE)
-    memset((HI_VOID*)g_pAIAOComReg, 0, AIAO_CBB_REGBANDSIZE);
-    g_pAIAOComReg->HW_CAPABILITY = 0x070F0003;
-    g_pAIAOComReg->HW_VERSION = 0x20121111;
-    g_pAIAOComReg->AIAO_SWITCH_RX_BCLK.u32 = 0x76543210;
-    g_pAIAOComReg->AIAO_SWITCH_TX_BCLK.u32 = 0x76543210;
-#endif
     return;
 }
 
@@ -509,7 +511,6 @@ static HI_VOID IOaddressUnmap(HI_VOID)
 {
     HI_S32 ch;
 
-    g_pAIAOSysCrg = HI_NULL;
     g_pAIAOComReg = HI_NULL;
 
     for (ch = 0; ch < AIAO_MAX_RX_PORT_NUMBER; ch++)
@@ -531,17 +532,31 @@ static HI_VOID IOaddressUnmap(HI_VOID)
     {
         g_pAIAOSpdiferReg[ch] = HI_NULL;
     }
-
-#if defined (AIAO_SW_SIMULAUTE)
-    HI_DRV_MMZ_UnmapAndRelease(&g_stSimulateCrgMmz);
-    HI_DRV_MMZ_UnmapAndRelease(&g_stSimulateAiaoMmz);
-#endif
 }
 
-HI_S32 AIAO_HW_Reset(HI_VOID)
+HI_S32 AIAO_HW_PowerOn(HI_VOID)
 {
-    g_pAIAOSysCrg->bits.aiao_cken = 1;      /* enable aiao working clock */
-    g_pAIAOSysCrg->bits.aiao_srst_req = 0;  /* enable aiao */
+    U_PERI_CRG70 uTmpVal;
+
+    uTmpVal.u32 = g_pstRegCrg->PERI_CRG70.u32;
+    uTmpVal.bits.aiao_cken = 1;      /* enable aiao working clock */
+    uTmpVal.bits.aiao_srst_req = 0;  /* enable aiao */
+    
+#if defined (CHIP_TYPE_hi3716cv200)       /*interface clock source select*/     \
+        || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100) \
+        || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+        || defined (CHIP_TYPE_hi3718mv100)     
+#if defined (AIAO_PLL_492MHZ)
+    uTmpVal.bits.aiao_mclk_sel = 0;
+#elif defined (AIAO_PLL_600MHZ)
+    uTmpVal.bits.aiao_mclk_sel = 1;
+#elif defined (AIAO_PLL_750MHZ)
+    uTmpVal.bits.aiao_mclk_sel = 2;
+#endif
+#endif
+
+    g_pstRegCrg->PERI_CRG70.u32 = uTmpVal.u32;
+
     if (!g_pAIAOComReg->HW_CAPABILITY)
     {
         return HI_FAILURE;
@@ -549,19 +564,29 @@ HI_S32 AIAO_HW_Reset(HI_VOID)
     return HI_SUCCESS;
 }
 
+HI_VOID AIAO_HW_PowerOff(HI_VOID)
+{
+    U_PERI_CRG70 uTmpVal;
+    
+    uTmpVal.u32 = g_pstRegCrg->PERI_CRG70.u32;
+    uTmpVal.bits.aiao_cken = 0;      /* disable aiao working clock */
+    uTmpVal.bits.aiao_srst_req = 1;  /* disable aiao */
+
+    g_pstRegCrg->PERI_CRG70.u32 = uTmpVal.u32;
+}
+
+
 HI_S32 AIAO_HW_Init(HI_VOID)
 {
     IOAddressMap();
 
 
-    return AIAO_HW_Reset();
+    return AIAO_HW_PowerOn();
 }
 
 HI_VOID  AIAO_HW_DeInit(HI_VOID)
 {
-    //g_pAIAOSysCrg->bits.aiao_srst_req = 0;  /* disable aiao */
-    //g_pAIAOSysCrg->bits.aiao_cken = 1;      /* disable aiao working clock */
-
+    AIAO_HW_PowerOff();
     IOaddressUnmap();
 }
 
@@ -574,27 +599,40 @@ HI_VOID  AIAO_HW_DBG_RWReg(AIAO_Dbg_Reg_S *pstReg)
 {
     volatile HI_U32 *pu32Addr;
 
-    if (AIAO_SYSCRG_REGBASE == pstReg->u32RegAddrBase)
+    if (HI_CRG_BASE_ADDR == pstReg->u32RegAddrBase)
     {
-        pu32Addr = (HI_U32*)(((HI_U32)g_pAIAOSysCrg) + pstReg->u32RegAddrOffSet);
+        if(AIAO_SYSCRG_REGOFFSET == pstReg->u32RegAddrOffSet)
+        {
+            if (pstReg->isRead)
+            {
+                pstReg->u32RegValue = g_pstRegCrg->PERI_CRG70.u32;
+            }
+            else
+            {
+                g_pstRegCrg->PERI_CRG70.u32 = pstReg->u32RegValue;
+            }
+        }
+        else
+        {
+            HI_ERR_AIAO(" err u32RegAddrOffSet(0x%x) \n", pstReg->u32RegAddrOffSet);
+        }
     }
     else if (AIAO_CBB_REGBASE == pstReg->u32RegAddrBase)
     {
         pu32Addr = (HI_U32*)(((HI_U32)g_pAIAOComReg) + pstReg->u32RegAddrOffSet);
+        if (pstReg->isRead)
+        {
+            pstReg->u32RegValue = *pu32Addr;
+        }
+        else
+        {
+            *pu32Addr = pstReg->u32RegValue;
+        }
     }
     else
     {
         HI_ERR_AIAO(" err u32RegAddrBase(0x%x) \n", pstReg->u32RegAddrBase);
         return;
-    }
-
-    if (pstReg->isRead)
-    {
-        pstReg->u32RegValue = *pu32Addr;
-    }
-    else
-    {
-        *pu32Addr = pstReg->u32RegValue;
     }
 }
 
@@ -688,6 +726,20 @@ HI_U32 AIAO_HW_GetIntStatus(AIAO_PORT_ID_E enPortID)
     return 0;
 }
 
+HI_VOID  AIAO_HW_SetBufPeriodSize(AIAO_PORT_ID_E enPortID, HI_U32 u32PeriodSize)
+{
+    switch (PORT2MODE(enPortID))
+    {
+    case AIAO_MODE_RXI2S:
+        AIAO_RXBUF_SetBufTransSize(PORT2CHID(enPortID), u32PeriodSize);
+        break;
+    case AIAO_MODE_TXI2S:
+    case AIAO_MODE_TXSPDIF:
+        AIAO_TXBUF_SetBufTransSize(PORT2CHID(enPortID), PORT2MODE(enPortID), u32PeriodSize);
+        break;
+    }
+}
+
 HI_S32 AIAO_HW_SetStart(AIAO_PORT_ID_E enPortID, HI_S32 bEn)
 {
     switch (PORT2MODE(enPortID))
@@ -703,13 +755,30 @@ HI_S32 AIAO_HW_SetStart(AIAO_PORT_ID_E enPortID, HI_S32 bEn)
         break;
     }
 #if 1
-#if defined (AIAO_SW_SIMULAUTE)
-    return HI_SUCCESS;
-#else
+
     if(!bEn)
     {
         volatile HI_S32 loop = 0;
-#if defined (CHIP_TYPE_hi3716cv200)
+
+#if defined (HW_CHN_PTR_BUG)
+        AIAO_HW_SetBufPeriodSize(enPortID, 1);
+        switch (PORT2MODE(enPortID))
+        {
+        case AIAO_MODE_RXI2S:
+            AIAO_HW_SetBufWptr(enPortID, 0);
+            break;
+        case AIAO_MODE_TXI2S:
+        case AIAO_MODE_TXSPDIF:
+            AIAO_HW_SetBufRptr(enPortID, 0);
+            break;
+        }
+        udelay(500);       
+#endif
+        
+#if defined (CHIP_TYPE_hi3716cv200) \
+        || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100) \
+        || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+        || defined (CHIP_TYPE_hi3718mv100)
         for (loop = 0; loop < 100; loop++)
         {
             udelay(10);
@@ -734,7 +803,7 @@ HI_S32 AIAO_HW_SetStart(AIAO_PORT_ID_E enPortID, HI_S32 bEn)
         return HI_SUCCESS;     //return HI_FAILURE
 #endif		
     }
-#endif
+
 #endif
     return HI_SUCCESS;
 }
@@ -985,20 +1054,6 @@ HI_VOID  AIAO_HW_GetDbgBclkCnt(AIAO_PORT_ID_E enPortID, HI_U32 *pu32BclkCnt)
     }
 }
 
-HI_VOID  AIAO_HW_SetBufPeriodSize(AIAO_PORT_ID_E enPortID, HI_U32 u32PeriodSize)
-{
-    switch (PORT2MODE(enPortID))
-    {
-    case AIAO_MODE_RXI2S:
-        AIAO_RXBUF_SetBufTransSize(PORT2CHID(enPortID), u32PeriodSize);
-        break;
-    case AIAO_MODE_TXI2S:
-    case AIAO_MODE_TXSPDIF:
-        AIAO_TXBUF_SetBufTransSize(PORT2CHID(enPortID), PORT2MODE(enPortID), u32PeriodSize);
-        break;
-    }
-}
-
 HI_VOID  AIAO_HW_SetBufAddrAndSize(AIAO_PORT_ID_E enPortID, HI_U32 u32StartAddr, HI_U32 u32Size)
 {
     switch (PORT2MODE(enPortID))
@@ -1102,7 +1157,7 @@ static HI_VOID  AIAO_HW_SetI2SSlaveClk(AIAO_PORT_ID_E enPortID, AIAO_IfAttr_S *p
     }
 }
 
-static HI_VOID  AIAO_HW_SetI2SMasterClk(AIAO_PORT_ID_E enPortID, AIAO_IfAttr_S *pstIfAttrMaster)
+HI_VOID  AIAO_HW_SetI2SMasterClk(AIAO_PORT_ID_E enPortID, AIAO_IfAttr_S *pstIfAttrMaster)
 {
     HI_U32 ChnId = PORT2CHID(enPortID);
 

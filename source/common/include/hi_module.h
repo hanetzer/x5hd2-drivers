@@ -31,6 +31,7 @@ typedef enum hiMOD_ID_E
     HI_ID_MEM         ,
     HI_ID_STAT        ,
     HI_ID_PDM         ,
+    HI_ID_MEMDEV      ,
 
     HI_ID_DEMUX       = 0x0A,
 
@@ -57,13 +58,14 @@ typedef enum hiMOD_ID_E
     HI_ID_VDEC        ,
     HI_ID_VI          ,
     HI_ID_VENC        ,
-
+    HI_ID_PQ         ,
     /**< graphics. */ /**< CNcomment: 图形部分常量区 */
     HI_ID_TDE         = 0x30,
     HI_ID_JPGDEC      ,
     HI_ID_JPGENC      ,
     HI_ID_FB          ,
     HI_ID_PNG         ,
+    HI_ID_HIGO        ,
 
     /**< player. */ /**< CNcomment: 播放相关部分常量区 */
     HI_ID_PVR         = 0x40,
@@ -71,7 +73,7 @@ typedef enum hiMOD_ID_E
     HI_ID_SYNC        ,
     HI_ID_VSYNC       ,
     HI_ID_ASYNC       ,
-    HI_ID_FASTPLAY    ,
+    HI_ID_FASTPLAY ,
 
     /**< ecs. */ /**< CNcomment: 外设部分常量区 */
     HI_ID_FLASH       = 0x50,
@@ -95,10 +97,8 @@ typedef enum hiMOD_ID_E
     HI_ID_PM          ,
     HI_ID_CI          ,
     HI_ID_CIMAXPLUS   ,
-    HI_ID_ADV7401     ,
-    HI_ID_OV7725      ,
     HI_ID_TVP5150     ,
-    HI_ID_TW2864      ,
+    HI_ID_SIL9293     ,
 
     /**< voip, bluetooth,alsa. */ /**<  CNcomment: VOIP、蓝牙部分常量区*/
     HI_ID_VOIP_HME    = 0x80,

@@ -16,7 +16,7 @@
 ******************************************************************************/
 /**
  * \file
- * \brief Describes the information about the personal video recorder (PVR). CNcomment: Ìá¹©PVRµÄÏà¹ØÐÅÏ¢
+ * \brief Describes the information about the personal video recorder (PVR). CNcomment: Ìá¹©PVRµÄÏà¹ØÐÅÏ¢ CNend
  */
 #ifndef __HI_UNF_PVR_H__
 #define __HI_UNF_PVR_H__
@@ -35,21 +35,22 @@ extern "C"
 #endif /* End of #ifdef __cplusplus */
 
 /*************************** Structure Definition ****************************/
-/** \addtogroup      H_2_2_3 */
+/** \addtogroup    PVR */
 /** @{ */  /** <!--[PVR]*/
 
-/**Recommended value of the recording attribute u32ScdBufSize*//**CNcomment: Â¼ÖÆÊôÐÔÖÐu32ScdBufSizeµÄÍÆ¼öÖµ */
+/**Recommended value of the recording attribute u32ScdBufSize*//** CNcomment: Â¼ÖÆÊôÐÔÖÐu32ScdBufSizeµÄÍÆ¼öÖµ */
 #define PVR_STUB_SC_BUF_SZIE (7*4*2048)
 
-/**Recommended value of the recording attribute u32DavBufSize*//**CNcomment:  Â¼ÖÆÊôÐÔÖÐu32DavBufSizeµÄÍÆ¼öÖµ */
+/**Recommended value of the recording attribute u32DavBufSize*//** CNcomment:  Â¼ÖÆÊôÐÔÖÐu32DavBufSizeµÄÍÆ¼öÖµ */
 #define PVR_STUB_TSDATA_SIZE (188*12*2048)
 
 /*****************Macro Definition*******************************/
-/**Maximum length of the file name, in byte*//**CNcomment:  ÎÄ¼þÃû×î´ó³¤¶È£¬µ¥Î»:×Ö½Ú*/
+/**Maximum length of the file name, in byte*//** CNcomment:  ÎÄ¼þÃû×î´ó³¤¶È£¬µ¥Î»:×Ö½Ú*/
 #define PVR_MAX_FILENAME_LEN            256
-/**Maximum length of the encryption key, in byte. Note: The valid key length may not be the maximum length, and depends on the encryption algorithm.*//**CNcomment: ¼ÓÃÜÃÜÔ¿×î´ó³¤¶È£¬µ¥Î»:×Ö½Ú¡£×¢Òâ: ÃÜÔ¿µÄÓÐÐ§³¤¶È²»Ò»¶¨ÊÇ×î´ó³¤¶È£¬¶øÊÇÓÉ¼ÓÃÜµÄËã·¨¾ö¶¨ */
+/**Maximum length of the encryption key, in byte. Note: The valid key length may not be the maximum length, and depends on the encryption algorithm.*/
+/** CNcomment: ¼ÓÃÜÃÜÔ¿×î´ó³¤¶È£¬µ¥Î»:×Ö½Ú¡£×¢Òâ: ÃÜÔ¿µÄÓÐÐ§³¤¶È²»Ò»¶¨ÊÇ×î´ó³¤¶È£¬¶øÊÇÓÉ¼ÓÃÜµÄËã·¨¾ö¶¨ */
 #define PVR_MAX_CIPHER_KEY_LEN          128
-/**Maximum length of the user data, in byte*//**CNcomment:  ÓÃ»§Êý¾Ý×î´ó³¤¶È£¬ µ¥Î»:×Ö½Ú */
+/**Maximum length of the user data, in byte*//** CNcomment:  ÓÃ»§Êý¾Ý×î´ó³¤¶È£¬ µ¥Î»:×Ö½Ú */
 #define PVR_MAX_USERDATA_LEN            (1024*1024)
 #define PVR_MAX_CADATA_LEN              (16*1024)
 
@@ -61,24 +62,24 @@ extern "C"
 
 /***** Common Data Structures*****/
 
-/**Cyclic control data structure of the PVR index file*//**CNcomment: PVR indexÎÄ¼þÖÐÑ­»·¿ØÖÆ½á¹¹ÐÅÏ¢ */
+/**Cyclic control data structure of the PVR index file*//** CNcomment: PVR indexÎÄ¼þÖÐÑ­»·¿ØÖÆ½á¹¹ÐÅÏ¢ */
 typedef struct hiPVR_CYC_HEADER_INFO_S
 {
-    HI_U32 u32StartFrame;     /**<Offset of the start frame in the index file. The start frame is at u32StartFrame.*//** <CNcomment: ÂëÁ÷µÄÆðÊ¼Ö¡ÔÚindexÎÄ¼þÖÐµÄÆ«ÒÆ, ÆðÊ¼Ö¡·ÅÔÚu32StartFrameµÄÎ»ÖÃ*/
-    HI_U32 u32EndFrame;       /**<Offset of the end frame in the index file. The end frame is at u32EndFrame - 1.*//** <CNcomment: ÂëÁ÷µÄ½áÊøÖ¡ÔÚindexÎÄ¼þÖÐµÄÆ«ÒÆ, ½áÊøÖ¡·ÅÔÚu32EndFrame-1µÄÎ»ÖÃ*/
-    HI_U32 u32LastFrame;      /**<Offset of the last frame in the index file. The last frame is at u32LastFrame - 1.*//** <CNcomment: indexÎÄ¼þÖÐ½áÎ²Ö¡µÄÆ«ÒÆ, ½áÎ²Ö¡·ÅÔÚu32LastFrame-1µÄÎ»ÖÃ*/
-    HI_U32 u32IsRewind;       /**<Whether to record the file in rewind mode. 0: no rewind; 1: rewind*//** <CNcomment: ÎÄ¼þÊÇ·ñ»ØÈÆÂ¼ÖÆ, 0 ·Ç»ØÈÆ, 1 »ØÈÆ*/
+    HI_U32 u32StartFrame;     /**<Offset of the start frame in the index file. The start frame is at u32StartFrame.*//**<CNcomment: ÂëÁ÷µÄÆðÊ¼Ö¡ÔÚindexÎÄ¼þÖÐµÄÆ«ÒÆ, ÆðÊ¼Ö¡·ÅÔÚu32StartFrameµÄÎ»ÖÃ*/
+    HI_U32 u32EndFrame;       /**<Offset of the end frame in the index file. The end frame is at u32EndFrame - 1.*//**<CNcomment: ÂëÁ÷µÄ½áÊøÖ¡ÔÚindexÎÄ¼þÖÐµÄÆ«ÒÆ, ½áÊøÖ¡·ÅÔÚu32EndFrame-1µÄÎ»ÖÃ*/
+    HI_U32 u32LastFrame;      /**<Offset of the last frame in the index file. The last frame is at u32LastFrame - 1.*//**<CNcomment: indexÎÄ¼þÖÐ½áÎ²Ö¡µÄÆ«ÒÆ, ½áÎ²Ö¡·ÅÔÚu32LastFrame-1µÄÎ»ÖÃ*/
+    HI_U32 u32IsRewind;       /**<Whether to record the file in rewind mode. 0: no rewind; 1: rewind*//**<CNcomment: ÎÄ¼þÊÇ·ñ»ØÈÆÂ¼ÖÆ, 0 ·Ç»ØÈÆ, 1 »ØÈÆ*/
 }PVR_CYC_HEADER_INFO_S;
 
-/**Structure of the file header in the PVR index file*//*CNcomment: PVR indexÎÄ¼þÖÐÎÄ¼þÍ·ÐÅÏ¢½á¹¹ */
+/**Structure of the file header in the PVR index file*//** CNcomment: PVR indexÎÄ¼þÖÐÎÄ¼þÍ·ÐÅÏ¢½á¹¹ */
 typedef struct hiPVR_IDX_HEADER_INFO_S
 {
-    HI_U32 u32StartCode;                          /**<Start code (0x5A5A5A5A)*//** <CNcomment: ÆðÊ¼Âë(0x5A5A5A5A) */
-    HI_U32 u32HeaderLen;                          /**<Length from u32StartCode to UsrData*//** <CNcomment: ´Óu32StartCode¿ªÊ¼µ½UsrData½áÊøµÄ³¤¶È */
-    PVR_CYC_HEADER_INFO_S stCycInfo;              /**<Records the cyclic control information in the index file*//** <CNcomment: indexÖÐÂ¼ÖÆ»·»Ø¿ØÖÆÐÅÏ¢ */
-    HI_U64 u64ValidSize;                          /**<Size of the valid content in a file, in byte*//** <CNcomment:ÎÄ¼þÖÐÓÐÐ§ÄÚÈÝ´óÐ¡ µ¥Î»Byte */
-    HI_U32 u32Reserved;                           /**<Reserved, for alignment*//** <CNcomment:±£Áô£¬ÓÃ×÷¶ÔÆë */
-    HI_U32 u32UsrDataInfoLen;                     /**<User information length*//** <CNcomment: ÓÃ»§ÐÅÏ¢³¤¶È */
+    HI_U32 u32StartCode;                          /**<Start code (0x5A5A5A5A)*//**<CNcomment: ÆðÊ¼Âë(0x5A5A5A5A) */
+    HI_U32 u32HeaderLen;                          /**<Length from u32StartCode to UsrData*//**<CNcomment: ´Óu32StartCode¿ªÊ¼µ½UsrData½áÊøµÄ³¤¶È */
+    PVR_CYC_HEADER_INFO_S stCycInfo;              /**<Records the cyclic control information in the index file*//**<CNcomment: indexÖÐÂ¼ÖÆ»·»Ø¿ØÖÆÐÅÏ¢ */
+    HI_U64 u64ValidSize;                          /**<Size of the valid content in a file, in byte*//**<CNcomment:ÎÄ¼þÖÐÓÐÐ§ÄÚÈÝ´óÐ¡ µ¥Î»Byte */
+    HI_U32 u32Reserved;                           /**<Reserved, for alignment*//**<CNcomment:±£Áô£¬ÓÃ×÷¶ÔÆë */
+    HI_U32 u32UsrDataInfoLen;                     /**<User information length*//**<CNcomment: ÓÃ»§ÐÅÏ¢³¤¶È */
     HI_U32 u32CADataInfoLen;
 }PVR_IDX_HEADER_INFO_S;
 
@@ -98,7 +99,7 @@ typedef struct hiPVR_INDEX_ENTRY_S
 }PVR_INDEX_ENTRY_S,*PTR_PVR_INDEX_ENTRY;
 
 
-/**Encryption or decryption configuration of the PVR*//**CNcomment:  PVR¼Ó½âÃÜÅäÖÃ */
+/**Encryption or decryption configuration of the PVR*//** CNcomment:  PVR¼Ó½âÃÜÅäÖÃ */
 typedef struct hiUNF_PVR_CIPHER_S
 {
     HI_BOOL             bDoCipher;                             /**<Whether to perform encryption or decryption. When this parameter is set to HI_FALSE, other parameters are invalid.*//**<CNcomment:  ÊÇ·ñ½øÐÐ¼ÓÃÜ»òÕß½âÃÜ£¬´ËÏîÅäÖÃÎªHI_FALSEÊ±£¬ÆäËûÏîÃ»ÓÐÒâÒå */
@@ -107,7 +108,7 @@ typedef struct hiUNF_PVR_CIPHER_S
     HI_U32              u32KeyLen;                             /**<Cipher key length*//**<CNcomment: ÃÜÔ¿³¤¶È */
 }HI_UNF_PVR_CIPHER_S;
 
-/**Type of the PVR event*//**CNcomment:  PVRÊÂ¼þÀàÐÍ */
+/**Type of the PVR event*//** CNcomment:  PVRÊÂ¼þÀàÐÍ */
 typedef enum hiUNF_PVR_EVENT_E
 {
 
@@ -125,10 +126,10 @@ typedef enum hiUNF_PVR_EVENT_E
     HI_UNF_PVR_EVENT_BUTT            = 0x020           /**<Invalid event type*//**<CNcomment: ÎÞÐ§µÄÊÂ¼þÀàÐÍ */
 } HI_UNF_PVR_EVENT_E;
 
-/**Callback function of PVR event*//**CNcomment: PVRÊÂ¼þ»Øµ÷º¯Êý */
+/**Callback function of PVR event*//** CNcomment: PVRÊÂ¼þ»Øµ÷º¯Êý */
 typedef void (*eventCallBack)(HI_U32 u32ChnID, HI_UNF_PVR_EVENT_E EventType, HI_S32 s32EventValue, HI_VOID *args);
 
-/**Type of recorded and played streams of the PVR*//**CNcomment: PVRÂ¼ÖÆ¡¢²¥·ÅµÄÂëÁ÷ÀàÐÍ */
+/**Type of recorded and played streams of the PVR*//** CNcomment: PVRÂ¼ÖÆ¡¢²¥·ÅµÄÂëÁ÷ÀàÐÍ */
 typedef enum hiUNF_PVR_STREAM_TYPE_E
 {
     HI_UNF_PVR_STREAM_TYPE_TS,        /**<Transport stream (TS)*//**<CNcomment:  TSÁ÷ */
@@ -138,16 +139,16 @@ typedef enum hiUNF_PVR_STREAM_TYPE_E
     HI_UNF_PVR_STREAM_TYPE_BUTT
 } HI_UNF_PVR_STREAM_TYPE_E;
 
-/**Index type*//**CNcomment: Ë÷ÒýÀàÐÍ */
+/**Index type*//** CNcomment: Ë÷ÒýÀàÐÍ */
 typedef enum hiUNF_PVR_REC_INDEX_TYPE_E
 {
-    HI_UNF_PVR_REC_INDEX_TYPE_NONE,      /**<No index is created. You need to select this type when recording all streams.*//**CNcomment: <²»½¨Ë÷Òý¡£È«ÂëÁ÷Â¼ÖÆµÄÊ±ºòÇëÊ¹ÓÃ´ËÀàÐÍ  */
+    HI_UNF_PVR_REC_INDEX_TYPE_NONE,      /**<No index is created. You need to select this type when recording all streams.*//**<CNcomment: <²»½¨Ë÷Òý¡£È«ÂëÁ÷Â¼ÖÆµÄÊ±ºòÇëÊ¹ÓÃ´ËÀàÐÍ  */
     HI_UNF_PVR_REC_INDEX_TYPE_VIDEO,     /**<The index is created based on videos.*//**<CNcomment: <Õë¶ÔÊÓÆµ½¨Á¢Ë÷Òý¡£ */
     HI_UNF_PVR_REC_INDEX_TYPE_AUDIO,     /**<The index is created based on audios. *//**<CNcomment: <Õë¶ÔÒôÆµ½¨Á¢Ë÷Òý¡£ */
     HI_UNF_PVR_REC_INDEX_TYPE_BUTT       /**<Invalid*//**<CNcomment: <ÎÞÐ§µÄË÷ÒýÀàÐÍ¡£   */
 } HI_UNF_PVR_REC_INDEX_TYPE_E;
 
-/**Information about a stream file recorded by the PVR*//**CNcomment:  PVRÂ¼ÖÆµÄÂëÁ÷ÎÄ¼þÐÅÏ¢ */
+/**Information about a stream file recorded by the PVR*//** CNcomment:  PVRÂ¼ÖÆµÄÂëÁ÷ÎÄ¼þÐÅÏ¢ */
 typedef struct hiUNF_PVR_FILE_ATTR_S
 {
     HI_UNF_PVR_REC_INDEX_TYPE_E enIdxType;          /**<Index type*//**<CNcomment:  Ë÷ÒýÀàÐÍ */
@@ -161,7 +162,7 @@ typedef struct hiUNF_PVR_FILE_ATTR_S
 /** Record statuses*/
 /**INVALID -> INIT -> RUNNING -> STOPPING ->    STOP ->    INVALID  (saveIndex)  (saveStream)*/
 
-/**Status of a recording channel*//**CNcomment: Â¼ÖÆÍ¨µÀµÄ×´Ì¬ */
+/**Status of a recording channel*//** CNcomment: Â¼ÖÆÍ¨µÀµÄ×´Ì¬ */
 typedef enum hiUNF_PVR_REC_STATE_E
 {
   HI_UNF_PVR_REC_STATE_INVALID,        /**<Not initialized*//**<CNcomment:  Î´³õÊ¼»¯¡£    */
@@ -173,23 +174,26 @@ typedef enum hiUNF_PVR_REC_STATE_E
   HI_UNF_PVR_REC_STATE_BUTT            /**<Invalid*//**<CNcomment: ÎÞÐ§µÄ×´Ì¬Öµ¡£*/
 } HI_UNF_PVR_REC_STATE_E;
 
-/**Attributes of a recording channel*//**CNcomment: Â¼ÖÆÍ¨µÀÊôÐÔÊý¾Ý½á¹¹ */
+/**Attributes of a recording channel*//** CNcomment: Â¼ÖÆÍ¨µÀÊôÐÔÊý¾Ý½á¹¹ */
 typedef struct hiUNF_PVR_REC_ATTR_S
 {
     HI_UNF_PVR_REC_INDEX_TYPE_E enIndexType;                           /**<Index type, static attribute.*//**<CNcomment:  Ë÷ÒýÀàÐÍ£¬¾²Ì¬ÊôÐÔ¡£ */
-    HI_UNF_VCODEC_TYPE_E        enIndexVidType;                        /**<Video encoding protocol with which the stream (for which an index is to be created) complies. The protocol (static attribute) needs to be set only when the index type is HI_UNF_PVR_REC_INDEX_TYPE_VIDEO.*//**<CNcomment: ´ý½¨Á¢Ë÷ÒýµÄÂëÁ÷µÄÊÓÆµ±àÂëÐ­Òé, Ë÷ÒýÀàÐÍÊÇHI_UNF_PVR_REC_INDEX_TYPE_VIDEOÊ±²ÅÐèÒªÅäÖÃ,¾²Ì¬ÊôÐÔ  */
+    HI_UNF_VCODEC_TYPE_E        enIndexVidType;                        /**<Video encoding protocol with which the stream (for which an index is to be created) complies. The protocol (static attribute) needs to be set only when the index type is HI_UNF_PVR_REC_INDEX_TYPE_VIDEO.*/
+                                                                       /**<CNcomment: ´ý½¨Á¢Ë÷ÒýµÄÂëÁ÷µÄÊÓÆµ±àÂëÐ­Òé, Ë÷ÒýÀàÐÍÊÇHI_UNF_PVR_REC_INDEX_TYPE_VIDEOÊ±²ÅÐèÒªÅäÖÃ,¾²Ì¬ÊôÐÔ  */
     HI_U32                      u32IndexPid;                           /**<Index PID, static attribute.*//**<CNcomment:  Ë÷ÒýPID£¬¾²Ì¬ÊôÐÔ*/
     HI_U32                      u32DemuxID;                            /**<Recording DEMUX ID, static attribute.*//**<CNcomment:  Â¼ÖÆDEMUXºÅ£¬¾²Ì¬ÊôÐÔ¡£*/
     HI_U32                      u32DavBufSize;                         /**<Size (in byte) of a data stream buffer, static attribute.*//**<CNcomment:  Êý¾ÝÁ÷»º³åÇø´óÐ¡£¬µ¥Î»ÎªByte£¬¾²Ì¬ÊôÐÔ¡£  */
     HI_U32                      u32ScdBufSize;                         /**<Size (in byte) of an index data buffer, static attribute.*//**<CNcomment:  Ë÷ÒýÊý¾Ý»º´æÇø´óÐ¡£¬µ¥Î»ÎªByte£¬¾²Ì¬ÊôÐÔ¡£*/
     HI_U32                      u32UsrDataInfoSize;                    /**<Size (in byte) of the private user data, static attribute.*//**<CNcomment:  ÓÃ»§Ë½ÓÐÊý¾Ý´óÐ¡£¬µ¥Î»ÎªByte£¬¾²Ì¬ÊôÐÔ¡£  */
-    HI_BOOL                     bIsClearStream;                        /**<Whether to record streams as clear streams, static attribute. This item indicates that the stored streams are clear streams or scrambled streams. If the programs to be recorded are scrambled streams, the clear streams can be recorded only after a descrambler is configured for the audio/video channel of the DEMUX. The recording module of the PVR does not descramble the scrambled streams.*/
+    HI_BOOL                     bIsClearStream;                        /**<Whether to record streams as clear streams, static attribute. This item indicates that the stored streams are clear streams or scrambled streams. If the programs to be recorded are scrambled streams, the clear streams can be recorded only after a descrambler is configured for the audio/video channel of the DEMUX.
+                                                                       The recording module of the PVR does not descramble the scrambled streams.*/
                                                                        /**<CNcomment: ÊÇ·ñ°ÑÂëÁ÷Â¼ÖÆ³ÉÇåÁ÷£¬¾²Ì¬ÊôÐÔ¡£´ËÏîµÄÒâË¼ÊÇ´æÏÂÀ´µÄÂëÁ÷ÊÇÇåÁ÷»¹ÊÇ¼ÓÈÅÁ÷¡£Èç¹û´ýÂ¼ÖÆµÄ½ÚÄ¿ÊÇ¼ÓÈÅÁ÷£¬ÐèÒªÔÚÂ¼ÖÆDEMUXÉÏÆô¶¯Ò»Â·CA²ÅÄÜÂ¼ÖÆÇåÁ÷,PVRÂ¼ÖÆÄ£¿é²¢²»¸ºÔð¶Ô¼ÓÈÅÁ÷µÄ½âÈÅ²Ù×÷¡£*/
     HI_UNF_PVR_STREAM_TYPE_E    enStreamType;                          /**<Type of the data to be recorded, static attribute.*//**<CNcomment: ´ýÂ¼ÖÆµÄÊý¾ÝÀàÐÍ£¬¾²Ì¬ÊôÐÔ¡£*/
     HI_UNF_PVR_CIPHER_S         stEncryptCfg;                          /**<Stream encryption configuration, static attribute.*//**<CNcomment: ÂëÁ÷¼ÓÃÜÅäÖÃÐÅÏ¢£¬¾²Ì¬ÊôÐÔ¡£*/
-    HI_U64                      u64MaxFileSize;                        /**<Size of the file to be recorded, static attribute. If the value is 0, it indicates that there is no limit on the file size. The maximum file size is 5242880 bytes (5 MB). If the disk space is sufficient, it is recommended to set the file size to a value greater than 512 MB. The file size  and file time cannot both be 0 in rewind mode. */
+    HI_U64                      u64MaxFileSize;                        /**<Size of the file to be recorded, static attribute. If the value is 0, it indicates that there is no limit on the file size. The minimum file size is 5242880 bytes (5 MB). If the disk space is sufficient, it is recommended to set the file size to a value greater than 512 MB. The file size cannot be 0 in rewind mode. */
                                                                        /**<CNcomment: ´ýÂ¼ÖÆµÄÎÄ¼þ´óÐ¡£¬Îª0Ê±±íÊ¾ÎÞÏÞÖÆ£¬¾²Ì¬ÊôÐÔ¡£×îÐ¡ÖµÎª50M,Èç¹û´ÅÅÌ¿Õ¼ä×ã¹»µÄ»°£¬ÍÆ¼öÅäÖÃÎª512MÒÔÉÏ¡£ÅäÖÃÎª»ØÈÆÊ±²»ÔÊÐí°ÑÎÄ¼þ´óÐ¡ºÍÎÄ¼þ²¥·ÅÊ±¼ä¶¼ÅäÖÃÎª0¡£ */
-    HI_U64                      u64MaxTimeInMs;                        /**<Max play time of the file to be recorded, static attribute. If the value is 0, it indicates that there is no limit on the file play time. The maximum file time is 60*1024 MS (1 Min).  The file size  and file time cannot both be 0 in rewind mode. */
+    HI_U64                      u64MaxTimeInMs;                        /**<Max play time of the file to be recorded, static attribute. If the value is 0, it indicates that there is no limit on the file play time. The minimum file time is 60*1024 MS (1 Min).  The file size  and file time cannot both be 0 in rewind mode.*/
+                                                                       /**<CNcomment: ´ýÂ¼ÖÆµÄÎÄ¼þµÄ×î³¤²¥·ÅÊ±¼ä³¤¶È£¬Îª0Ê±±íÊ¾ÎÞÏÞÖÆ£¬¾²Ì¬ÊôÐÔ¡£×îÐ¡²¥·ÅÊ±¼äÎª60*1024ºÁÃë(1·ÖÖÓ)¡£»ØÈÆÄ£Ê½ÏÂ£¬²»ÄÜ½«ÎÄ¼þ×î´ó´óÐ¡ºÍÎÄ¼þ×î³¤²¥·ÅÊ±¼äÍ¬Ê±ÉèÖÃÎª0¡£*/
     HI_BOOL                     bRewind;                               /**<Whether to rewind, static attribute. If this item is set to HI_TRUE, the PVR rewinds to the file header to record streams after the recorded file size reaches u64MaxFileSize. If this item is set to HI_FALSE, the PVR stops recording after the recorded file size reaches u64MaxFileSize.*/
                                                                        /**<CNcomment: ÊÇ·ñ»ØÈÆ£¬¾²Ì¬ÊôÐÔ¡£ÈçÅäÖÃÎªHI_TRUE£¬Â¼ÖÆÎÄ¼þ´óÐ¡µ½´ïu64MaxFileSizeºó£¬»á»ØÈÆµ½ÎÄ¼þÍ·¼ÌÐø½øÐÐÂ¼ÖÆ£»ÈçÅäÖÃÎªHI_FALSE£¬ÔòÂ¼ÖÆÎÄ¼þ´óÐ¡µ½´ïu64MaxFileSizeºó£¬»áÍ£Ö¹Â¼ÖÆ¡£*/
     HI_CHAR                     szFileName[PVR_MAX_FILENAME_LEN];      /**<Name of a stream file, static attribute*//**<CNcomment: ÂëÁ÷ÎÄ¼þÃû£¬¾²Ì¬ÊôÐÔ¡£*/
@@ -197,7 +201,7 @@ typedef struct hiUNF_PVR_REC_ATTR_S
     HI_U32                      u32Reserved;
 }HI_UNF_PVR_REC_ATTR_S;
 
-/**Status of a PVR buffer*//**< CNcomment:¶¨ÒåPVR»º³åÇøµÄ×´Ì¬ÐÅÏ¢ */
+/**Status of a PVR buffer*//** CNcomment:¶¨ÒåPVR»º³åÇøµÄ×´Ì¬ÐÅÏ¢ */
 typedef struct hiUNF_PVR_BUF_STATUS_S
 {
     HI_U32 u32BufSize;       /**<Buffer size*//**<CNcomment: »º³åÇø´óÐ¡       */
@@ -209,7 +213,7 @@ The following describes the relationships among u32CurTimeInMs, u32StartTimeInMs
 1. Assume that the total recording time is 10000 ms, and no rewind occurs. In this case, u32StartTimeInMs is 0 ms, u32EndTimeInMs is 10000 ms, and u32CurTimeInMs is 10000 ms.
 2. Assume that the total recording time is 10000 ms, and rewind occurs at 8000 ms. In this case, u32StartTimeInMs is 2000 ms, u32EndTimeInMs is 10000 ms, and u32CurTimeInMs is 8000 ms.
 */
-/**< CNcomment:Â¼ÖÆÍ¨µÀ×´Ì¬Êý¾Ý½á¹¹.
+/** CNcomment:Â¼ÖÆÍ¨µÀ×´Ì¬Êý¾Ý½á¹¹.
 ¶Ôu32CurTimeInMs¡¢u32StartTimeInMs¡¢u32EndTimeInMsÈýÕßµÄ¹ØÏµ¾ÙÀýËµÃ÷ÈçÏÂ£º
 1¡¤¼ÙÉè´Ó¿ªÊ¼Â¼ÖÆºóÒ»¹²Â¼ÖÆÁË10000ºÁÃë£¬Èç¹ûÃ»ÓÐ·¢Éú»ØÈÆ£¬ÄÇÃ´u32StartTimeInMs Îª0£¬u32EndTimeInMs Îª10000£¬ u32CurTimeInMsÎª10000¡£
 2¡¤¼ÙÉè´Ó¿ªÊ¼Â¼ÖÆºóÒ»¹²Â¼ÖÆÁË10000ºÁÃë£¬²¢ÇÒÔÚµÚ8000ºÁÃëµÄÊ±ºò·¢ÉúÁË»ØÈÆ£¬ÄÇÃ´u32StartTimeInMs Îª2000£¬u32EndTimeInMs Îª10000£¬ u32CurTimeInMsÎª8000¡£
@@ -230,7 +234,7 @@ typedef struct hiUNF_PVR_REC_STATUS_S
 
 /**Playing direction of the PVR: forward*//** CNcomment:PVR²¥·Å·½Ïò:ÍùÇ°²¥·Å */
 #define HI_UNF_PVR_PLAY_DIRECTION_FORWARD             (1)
-/**Playing direction of the PVR: backward*//**CNcomment: PVR²¥·Å·½Ïò:Íùºó²¥·Å */
+/**Playing direction of the PVR: backward*//** CNcomment: PVR²¥·Å·½Ïò:Íùºó²¥·Å */
 #define HI_UNF_PVR_PLAY_DIRECTION_BACK                (-1)
 
 /**Type of the playing position*//** CNcomment: ²¥·ÅÎ»ÖÃÀàÐÍ */
@@ -238,11 +242,11 @@ typedef enum hiUNF_PVR_PLAY_POS_TYPE_E
 {
   HI_UNF_PVR_PLAY_POS_TYPE_SIZE,              /**<The playing position is expressed by size (in byte). This type is not supported currently.*//**<CNcomment: ÓÃ´óÐ¡£¨µ¥Î»£ºbyte£©±íÊ¾Î»ÖÃ£¨ÔÝ²»Ö§³Ö£© */
   HI_UNF_PVR_PLAY_POS_TYPE_TIME,              /**<The playing position is expressed by time (in ms).*//**<CNcomment: ÓÃÊ±¼ä£¨µ¥Î»£ºms£©Êý±íÊ¾Î»ÖÃ */
-  HI_UNF_PVR_PLAY_POS_TYPE_FRAME,             /**<The playing position is expressed by the number of frames or PESs.*//**<CNcomment: ÓÃÖ¡Êý£¨»òÕßPESÊý£©±íÊ¾Î»ÖÃ  */
+  HI_UNF_PVR_PLAY_POS_TYPE_FRAME,             /**<The playing position is expressed by the number of frames or PESs. This type is not supported currently.*//**<CNcomment: ÓÃÖ¡Êý£¨»òÕßPESÊý£©±íÊ¾Î»ÖÃ£¨ÔÝ²»Ö§³Ö£©  */
   HI_UNF_PVR_PLAY_POS_TYPE_BUTT               /**<Invalid*//**<CNcomment:ÎÞÐ§µÄÎ»ÖÃÀàÐÍ*/
 } HI_UNF_PVR_PLAY_POS_TYPE_E;
 
-/**Status of a playing channel*//**CNcomment: ²¥·ÅÍ¨µÀµÄ×´Ì¬  */
+/**Status of a playing channel*//** CNcomment: ²¥·ÅÍ¨µÀµÄ×´Ì¬  */
 typedef enum hiUNF_PVR_PALY_STATE_E
 {
     HI_UNF_PVR_PLAY_STATE_INVALID,       /**<Not initialized*//**<CNcomment: Î´³õÊ¼»¯            */
@@ -258,7 +262,7 @@ typedef enum hiUNF_PVR_PALY_STATE_E
     HI_UNF_PVR_PLAY_STATE_BUTT           /**<Invalid*//**<CNcomment: ÎÞÐ§µÄ×´Ì¬Öµ        */
 } HI_UNF_PVR_PLAY_STATE_E;
 
-/**Identifier of the playing speed*//**CNcomment: ²¥·ÅËÙ¶È±êÊ¶ */
+/**Identifier of the playing speed*//** CNcomment: ²¥·ÅËÙ¶È±êÊ¶ */
 typedef enum hiUNF_PVR_PLAY_SPEED_E
 {
     HI_UNF_PVR_PLAY_SPEED_NORMAL            = 1024,                                     /**<Normal playing speed*//**<CNcomment:Õý³£ËÙ¶È²¥·Å¡£    */
@@ -281,18 +285,20 @@ typedef enum hiUNF_PVR_PLAY_SPEED_E
     HI_UNF_PVR_PLAY_SPEED_8X_SLOW_FORWARD   = HI_UNF_PVR_PLAY_SPEED_NORMAL / 8,         /**<Slow forward at 1/8 times the normal speed*//**<CNcomment:1/8±¶ËÙÂý·Å¡£          */
     HI_UNF_PVR_PLAY_SPEED_16X_SLOW_FORWARD  = HI_UNF_PVR_PLAY_SPEED_NORMAL / 16,        /**<Slow forward at 1/16 times the normal speed*//**<CNcomment:1/16±¶ËÙÂý·Å¡£         */
     HI_UNF_PVR_PLAY_SPEED_32X_SLOW_FORWARD  = HI_UNF_PVR_PLAY_SPEED_NORMAL / 32,        /**<Slow forward at 1/32 times the normal speed*//**<CNcomment:1/32±¶ËÙÂý·Å¡£         */
+	HI_UNF_PVR_PLAY_SPEED_64X_SLOW_FORWARD  = HI_UNF_PVR_PLAY_SPEED_NORMAL / 64,        /**<Slow forward at 1/64 times the normal speed*//**<CNcomment:1/64±¶ËÙÂý·Å¡£         */
     HI_UNF_PVR_PLAY_SPEED_2X_SLOW_BACKWARD  = HI_UNF_PVR_PLAY_SPEED_NORMAL / (-2),      /**<Slow backward at two times the normal speed. This mode is not supported currently.*//**<CNcomment:2±¶ËÙÂýÍË£¬ÔÝ²»Ö§³Ö¡£  */
     HI_UNF_PVR_PLAY_SPEED_4X_SLOW_BACKWARD  = HI_UNF_PVR_PLAY_SPEED_NORMAL / (-4),      /**<Slow backward at four times the normal speed. This mode is not supported currently.*//**<CNcomment:4±¶ËÙÂýÍË£¬ÔÝ²»Ö§³Ö¡£  */
     HI_UNF_PVR_PLAY_SPEED_8X_SLOW_BACKWARD  = HI_UNF_PVR_PLAY_SPEED_NORMAL / (-8),      /**<Slow backward at eight times the normal speed. This mode is not supported currently.*//**<CNcomment:8±¶ËÙÂýÍË£¬ÔÝ²»Ö§³Ö¡£  */
     HI_UNF_PVR_PLAY_SPEED_16X_SLOW_BACKWARD = HI_UNF_PVR_PLAY_SPEED_NORMAL / (-16),     /**<Slow backward at 16 times the normal speed. This mode is not supported currently.*//**<CNcomment:16±¶ËÙÂýÍË£¬ÔÝ²»Ö§³Ö¡£ */
     HI_UNF_PVR_PLAY_SPEED_32X_SLOW_BACKWARD = HI_UNF_PVR_PLAY_SPEED_NORMAL / (-32),     /**<Slow backward at 32 times the normal speed. This mode is not supported currently.*//**<CNcomment:32±¶ËÙÂýÍË£¬ÔÝ²»Ö§³Ö¡£ */
+	HI_UNF_PVR_PLAY_SPEED_64X_SLOW_BACKWARD = HI_UNF_PVR_PLAY_SPEED_NORMAL / (-64),     /**<Slow backward at 64 times the normal speed. This mode is not supported currently.*//**<CNcomment:64±¶ËÙÂýÍË£¬ÔÝ²»Ö§³Ö¡£ */
     HI_UNF_PVR_PLAY_SPEED_BUTT                                                          /**<Invalid value*//**<CNcomment:ÎÞÐ§µÄËÙ¶ÈÖµ¡£         */
 } HI_UNF_PVR_PLAY_SPEED_E;
 
-/**Trick mode*//**CNcomment: ÌØ¼¼²¥·ÅµÄÄ£Ê½  */
+/**Trick mode*//** CNcomment: ÌØ¼¼²¥·ÅµÄÄ£Ê½  */
 typedef struct hiUNF_PVR_PLAY_MODE_S
 {
-    HI_UNF_PVR_PLAY_SPEED_E               enSpeed;    /**<For details about the playing speed, see the description of HI_UNF_PVR_PLAY_SPEED_E.*//**CNcomment: ËÙ¶È£¬¼ûHI_UNF_PVR_PLAY_SPEED_EµÄ¶¨Òå */
+    HI_UNF_PVR_PLAY_SPEED_E               enSpeed;    /**<For details about the playing speed, see the description of HI_UNF_PVR_PLAY_SPEED_E.*//**<CNcomment: ËÙ¶È£¬¼ûHI_UNF_PVR_PLAY_SPEED_EµÄ¶¨Òå */
 }HI_UNF_PVR_PLAY_MODE_S;
 
 /**Attributes of a playing channel*//** CNcomment:²¥·ÅÍ¨µÀÊôÐÔ */
@@ -301,12 +307,12 @@ typedef struct hiUNF_PVR_PLAY_ATTR_S
     HI_UNF_PVR_STREAM_TYPE_E    enStreamType;                         /**<Type of the played stream, static attributes. At present, only the TS is supported.*//**<CNcomment: ²¥·ÅÂëÁ÷ÀàÐÍ£¬Ä¿Ç°Ö»Ö§³ÖTS£¬¾²Ì¬ÊôÐÔ¡£*/
     HI_BOOL                     bIsClearStream;                       /**<Whether the stream to be played is the clear stream, static attribute. Scrambled streams can be played in normal mode only rather than in trick mode.*//**<CNcomment: ´ý²¥·ÅµÄÂëÁ÷ÊÇ·ñÇåÁ÷£¬¾²Ì¬ÊôÐÔ¡£¼ÓÈÅÁ÷²»Ö§³ÖÌØ¼¼²¥·Å£¬Ö»Ö§³ÖÕý³£²¥·Å */
     HI_UNF_PVR_CIPHER_S         stDecryptCfg;                         /**<Decryption configuration, static attribute                  *//**<CNcomment: ½âÃÜÅäÖÃ£¬¾²Ì¬ÊôÐÔ¡£                  */
-    HI_CHAR                     szFileName[PVR_MAX_FILENAME_LEN];     /**<Name of the file that contains the streams to be played, static attribute        *//**CNcomment: ´ý²¥·ÅÂëÁ÷µÄÎÄ¼þÃû£¬¾²Ì¬ÊôÐÔ¡£        */
+    HI_CHAR                     szFileName[PVR_MAX_FILENAME_LEN];     /**<Name of the file that contains the streams to be played, static attribute        *//**<CNcomment: ´ý²¥·ÅÂëÁ÷µÄÎÄ¼þÃû£¬¾²Ì¬ÊôÐÔ¡£        */
     HI_U32                      u32FileNameLen;                       /**<Length of the file name, static attribute. You need to set the item to strlen (szFileName).*//**<CNcomment: ÎÄ¼þÃû³¤¶È£¬¾²Ì¬ÊôÐÔ¡£È¡ÖµÎªstrlen£¨szFileName£©¼´¿É */
 }HI_UNF_PVR_PLAY_ATTR_S;
 
 
-/**Description of the playing position*//**CNcomment: ²¥·ÅÎ»ÖÃÃèÊö  */
+/**Description of the playing position*//** CNcomment: ²¥·ÅÎ»ÖÃÃèÊö  */
 typedef struct hiUNF_PVR_PLAY_POSITION_S
 {
     HI_UNF_PVR_PLAY_POS_TYPE_E  enPositionType;       /**<Position type*//**<CNcomment: Î»ÖÃÀàÐÍ¡£           */
@@ -314,7 +320,7 @@ typedef struct hiUNF_PVR_PLAY_POSITION_S
     HI_S64                      s64Offset;            /**<Offset. If the offset type is time, the offset is in the unit of millisecond; if the offset type is frame, the offset is in the unit of frame.*//**<CNcomment:Æ«ÒÆ¡£ Æ«ÒÆÀàÐÍÎªÊ±¼äÊ±£¬µ¥Î»ºÁÃë£»Æ«ÒÆÀàÐÍÎªÖ¡Ê±£¬µ¥Î»ÎªÒ»Ö¡ */
 }HI_UNF_PVR_PLAY_POSITION_S;
 
-/**Information required for creating an index file*//**CNcomment: ´´½¨Ë÷ÒýÎÄ¼þÐèÒªµÄÐÅÏ¢ */
+/**Information required for creating an index file*//** CNcomment: ´´½¨Ë÷ÒýÎÄ¼þÐèÒªµÄÐÅÏ¢ */
 typedef struct hiUNF_PVR_GEN_IDX_ATTR_S
 {
     HI_U32                      u32UsrDataInfoLen;         /**<Length of the user data*//**<CNcomment: ÓÃ»§Êý¾Ý³¤¶È */
@@ -332,7 +338,7 @@ typedef struct hiUNF_PVR_PLAY_STATUS_S
     HI_U32                      u32CurPlayTimeInMs;                   /**<PTS of the current frame, in ms*//**<CNcomment: µ±Ç°²¥·ÅÖ¡µÄPTS, µ¥Î»ºÁÃë¡£                     */
 }HI_UNF_PVR_PLAY_STATUS_S;
 
-/**<Data file attribution *//**<CNcomment:Êý¾ÝÎÄ¼þÊôÐÔ*/
+/**<Data file attribution *//** CNcomment:Êý¾ÝÎÄ¼þÊôÐÔ*/
 typedef struct hiUNF_PVR_DATA_ATTR_S
 {
     HI_U32     u32ChnID;                              /**<PVR channel, just consider one channel*//**<CNcomment: PVRÍ¨µÀ£¬ÏÖÔÚ¿ÉÒÔÖ»¿¼ÂÇÒ»ÖÖÍ¨µÀµÄÇé¿ö */
@@ -343,7 +349,7 @@ typedef struct hiUNF_PVR_DATA_ATTR_S
     HI_U64     u64GlobalOffset;
 } HI_UNF_PVR_DATA_ATTR_S;
 
-/**<Read or write data extra callback *//**<CNcomment:Íâ²¿¶Á¡¢Ð´Êý¾Ý»Øµ÷º¯Êý*/
+/**<Read or write data extra callback *//** CNcomment:Íâ²¿¶Á¡¢Ð´Êý¾Ý»Øµ÷º¯Êý*/
 typedef enum hiUNF_PVR_EXTRA_CALLBACK_E
 {
     HI_UNF_PVR_EXTRA_READ_CALLBACK,          /**<Read data callback *//**<CNcomment:¶ÁÊý¾Ý»Øµ÷º¯Êý*/
@@ -351,52 +357,52 @@ typedef enum hiUNF_PVR_EXTRA_CALLBACK_E
     HI_UNF_PVR_EXTRA_CALLBACK_BUTT           /**<Invalid*//**<CNcomment: ÎÞÐ§µÄ×´Ì¬Öµ        */
 } HI_UNF_PVR_EXTRA_CALLBACK_E;
 
-/**<Read or write data extra callback type *//**<CNcomment:Íâ²¿¶Á¡¢Ð´Êý¾Ý»Øµ÷º¯ÊýÀàÐÍ*/
+/**<Read or write data extra callback type *//** CNcomment:Íâ²¿¶Á¡¢Ð´Êý¾Ý»Øµ÷º¯ÊýÀàÐÍ*/
 typedef HI_S32 ( *ExtraCallBack)(HI_UNF_PVR_DATA_ATTR_S *pstDataAttr, HI_U8 *pu8DataAddr, HI_U32 u32PhyAddr, HI_U32 u32Offset, HI_U32 u32DataSize);
 
 /** @} */  /** <!-- ==== Structure Definition end ==== */
 
 /******************************* API declaration *****************************/
-/** \addtogroup      H_1_2_2 */
+/** \addtogroup      PVR  */
 /** @{ */  /** <!-- [PVR]*/
 
 /***** Application programming interfaces (APIs) for the PVR recoding module*****/
 
 /**
-\brief Initializes the PVR recording module. CNcomment:³õÊ¼»¯PVRÂ¼ÖÆÄ£¿é
+\brief Initializes the PVR recording module. CNcomment:³õÊ¼»¯PVRÂ¼ÖÆÄ£¿é CNend
 \attention \n
 If you initialize the PVR recording module repeatedly, the error code HI_SUCCESS is returned.
 Before using the APIs of the PVR recording module, you must call this API. Otherwise, other APIs are unavailable.
 CNcomment: ÖØ¸´³õÊ¼»¯·µ»Ø³É¹¦.
-Ã¿¸ö½ø³ÌÊ¹ÓÃPVRÂ¼ÖÆÄ£¿é½Ó¿ÚÇ°£¬±ØÐëÏÈµ÷ÓÃ´Ë½Ó¿Ú£¬·ñÔòÆäËû½Ó¿Ú¾ùÎÞ·¨Ê¹ÓÃ
-\param N/A
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦
-\retval ::HI_FAILURE This API fails to be called due to system errors. CNcomment: ³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü
+Ã¿¸ö½ø³ÌÊ¹ÓÃPVRÂ¼ÖÆÄ£¿é½Ó¿ÚÇ°£¬±ØÐëÏÈµ÷ÓÃ´Ë½Ó¿Ú£¬·ñÔòÆäËû½Ó¿Ú¾ùÎÞ·¨Ê¹ÓÃ CNend
+\param N/A CNcomment: ÎÞ CNend
+\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
+\retval ::HI_FAILURE This API fails to be called due to system errors. CNcomment: ³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü CNend
 \see \n
 ::HI_UNF_PVR_RecDeInit
 */
 HI_S32 HI_UNF_PVR_RecInit(HI_VOID);
 
 /**
-\brief Deinitializes the PVR recording module. CNcomment: È¥³õÊ¼»¯PVRÂ¼ÖÆÄ£¿é
+\brief Deinitializes the PVR recording module. CNcomment: È¥³õÊ¼»¯PVRÂ¼ÖÆÄ£¿é CNend
 \attention \n
 If you deinitialize the PVR recording module repeatedly, the error code HI_SUCCESS is returned.\n
 Before deintializing the PVR recording module, you must release all the recording channels. Otherwise,
 the error code HI_ERR_PVR_BUSY is returned.
 CNcomment:ÖØ¸´È¥³õÊ¼»¯·µ»Ø³É¹¦\n
-È¥³õÊ¼»¯PVRÂ¼ÖÆÄ£¿éÇ°Îñ±Ø±£Ö¤±¾½ø³ÌÄÚËùÓÐÂ¼ÖÆÍ¨µÀ¶¼ÒÑ¾­ÊÍ·Å£¬Èç¹û»¹ÓÐÂ¼ÖÆÍ¨µÀÃ»ÓÐÊÍ·Å£¬´Ë½Ó¿Ú½«»á·µ»Ø´íÎóÂëHI_ERR_PVR_BUSY
-\param N/A
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦
-\retval ::HI_FAILURE This API fails to be called due to system errors.CNcomment: ³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü
-\retval ::HI_ERR_PVR_BUSY  The PVR recording module is being used. CNcomment: Â¼ÖÆÄ£¿é»¹ÔÚÊ¹ÓÃÖÐ
-\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized. CNcomment: Â¼ÖÆÄ£¿éÎ´³õÊ¼»¯
+È¥³õÊ¼»¯PVRÂ¼ÖÆÄ£¿éÇ°Îñ±Ø±£Ö¤±¾½ø³ÌÄÚËùÓÐÂ¼ÖÆÍ¨µÀ¶¼ÒÑ¾­ÊÍ·Å£¬Èç¹û»¹ÓÐÂ¼ÖÆÍ¨µÀÃ»ÓÐÊÍ·Å£¬´Ë½Ó¿Ú½«»á·µ»Ø´íÎóÂëHI_ERR_PVR_BUSY CNend
+\param N/A CNcomment:ÎÞ CNend
+\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
+\retval ::HI_FAILURE This API fails to be called due to system errors.CNcomment: ³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü CNend
+\retval ::HI_ERR_PVR_BUSY  The PVR recording module is being used. CNcomment: Â¼ÖÆÄ£¿é»¹ÔÚÊ¹ÓÃÖÐ CNend
+\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized. CNcomment: Â¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
 \see \n
 ::HI_UNF_PVR_RecInit
 */
 HI_S32 HI_UNF_PVR_RecDeInit(HI_VOID);
 
 /**
-\brief Creates a recording channel. CNcomment: ´´½¨1Â·Â¼ÖÆÍ¨µÀ
+\brief Creates a recording channel. CNcomment: ´´½¨1Â·Â¼ÖÆÍ¨µÀ CNend
 \attention \n
 The PVR recording module automatically generates an .idx index file based on the file name specified in pAttr. \n
 The PVR recording module splits the recorded streams files to ensure that the size of each file is not greater than 4 GB (the size of each file is about 3.99 GB). \n
@@ -412,142 +418,143 @@ PVRÂ¼ÖÆÄ£¿é»á¶ÔÂ¼ÖÆµÄÂëÁ÷ÎÄ¼þ½øÐÐ·Ö¸î£¬ÒÔÈ·±£ÂëÁ÷ÎÄ¼þ²»³¬¹ý4GµÄ´óÐ¡£¨Ã¿¸öÎÄ¼þµÄ´
 Èç¹ûpAttrÖÐÖ¸¶¨µÄÎÄ¼þÒÑ¾­´æÔÚ£¬ÄÇÃ´Õâ¸öÎÄ¼þ»á±»¸²¸Ç\n
 Èç¹ûPVRÂ¼ÖÆÄ£¿é½«Òª´´½¨µÄË÷ÒýÎÄ¼þÒÑ¾­´æÔÚ£¬ÔòË÷ÒýÎÄ¼þÒ²»á±»¸²¸Ç\n
 ÓÉÓÚPVRÊ¹ÓÃµ½ÁËÆäËûÄ£¿éµÄAPI½Ó¿Úº¯Êý£¨±ÈÈçÒôÊÓÆµAPI½Ó¿ÚºÍDEMUX API½Ó¿Ú£©£¬Òò´Ë·µ»ØµÄ´íÎóÂëÓÐ¿ÉÄÜÊÇÆäËûÄ£¿éµÄ´íÎóÂë£¬
-¾ßÌå´íÎóÂëÖµÇë²Î¿¼ÏàÓ¦Ä£¿é´íÎóÂëÖµ¶¨Òå¡£ºóÃæµÄÆäËûAPIº¯Êý¾ù»áÓÐ´ËÖÖÇé¿ö
-\param[in] pu32ChnID   ID of the obtained recording channel  CNcomment: »ñÈ¡µ½µÄÂ¼ÖÆÍ¨µÀID
-\param[in] pstRecAttr  Pointer to the attributes of a channel   CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸ÏòÍ¨µÀÊôÐÔÅäÖÃ
-\retval ::HI_SUCCESS  Success CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized.  CNcomment:Â¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_NUL_PTR The pointer is null. CNcomment: Ö¸Õë²ÎÊýÎª¿Õ
-\retval ::HI_ERR_DMX_INVALID_PARA  The parameter is invalid.  CNcomment:  ²ÎÊý·Ç·¨
-\retval ::HI_ERR_PVR_FILE_INVALID_FNAME  The file name is invalid.  CNcomment:ÎÄ¼þÃû²ÎÊý·Ç·¨
-\retval ::HI_ERR_PVR_FILE_EXIST The file already exists.  CNcomment:ÎÄ¼þÒÑ¾­´æÔÚ
-\retval ::HI_ERR_PVR_NO_CHN_LEFT  There is no available channel.   CNcomment:ÒÑ¾­Ã»ÓÐ¿ÕÏÐµÄÍ¨µÀ¹©·ÖÅä
-\retval ::HI_ERR_PVR_FILE_CANT_OPEN  The file cannot be opened.  CNcomment: ÎÞ·¨´ò¿ªÎÄ¼þ
-\retval ::HI_ERR_PVR_INDEX_CANT_MKIDX  The index file cannot be opened.  CNcomment: ÎÞ·¨´ò¿ªË÷ÒýÎÄ¼þ
-\retval ::HI_ERR_PVR_REC_INVALID_DMXID The DEMUX ID received during recording is incorrect.  CNcomment: Â¼ÖÆÊ±´«ÈëÁË´íÎóµÄDEMUX ID
+¾ßÌå´íÎóÂëÖµÇë²Î¿¼ÏàÓ¦Ä£¿é´íÎóÂëÖµ¶¨Òå¡£ºóÃæµÄÆäËûAPIº¯Êý¾ù»áÓÐ´ËÖÖÇé¿ö  CNend
+\param[in] pu32ChnID   ID of the obtained recording channel  CNcomment: »ñÈ¡µ½µÄÂ¼ÖÆÍ¨µÀID CNend
+\param[in] pstRecAttr  Pointer to the attributes of a channel   CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸ÏòÍ¨µÀÊôÐÔÅäÖÃ CNend
+\retval ::HI_SUCCESS  Success CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized.  CNcomment:Â¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_NUL_PTR The pointer is null. CNcomment: Ö¸Õë²ÎÊýÎª¿Õ CNend
+\retval ::HI_ERR_PVR_INVALID_PARA  The parameter is invalid.  CNcomment:  ²ÎÊý·Ç·¨ CNend
+\retval ::HI_ERR_PVR_FILE_INVALID_FNAME  The file name is invalid.  CNcomment:ÎÄ¼þÃû²ÎÊý·Ç·¨ CNend
+\retval ::HI_ERR_PVR_FILE_EXIST The file already exists.  CNcomment:ÎÄ¼þÒÑ¾­´æÔÚ CNend
+\retval ::HI_ERR_PVR_NO_CHN_LEFT  There is no available channel.   CNcomment:ÒÑ¾­Ã»ÓÐ¿ÕÏÐµÄÍ¨µÀ¹©·ÖÅä CNend
+\retval ::HI_ERR_PVR_FILE_CANT_OPEN  The file cannot be opened.  CNcomment: ÎÞ·¨´ò¿ªÎÄ¼þ CNend
+\retval ::HI_ERR_PVR_INDEX_CANT_MKIDX  The index file cannot be opened.  CNcomment: ÎÞ·¨´ò¿ªË÷ÒýÎÄ¼þ CNend
+\retval ::HI_ERR_PVR_REC_INVALID_DMXID The DEMUX ID received during recording is incorrect.  CNcomment: Â¼ÖÆÊ±´«ÈëÁË´íÎóµÄDEMUX ID CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_RecCreateChn(HI_U32 *pu32ChnID, const HI_UNF_PVR_REC_ATTR_S *pstRecAttr);
 
 /**
-\brief  Releases a specified recording channel. CNcomment: ÊÍ·ÅÖ¸¶¨µÄÂ¼ÖÆÍ¨µÀ
+\brief  Releases a specified recording channel. CNcomment: ÊÍ·ÅÖ¸¶¨µÄÂ¼ÖÆÍ¨µÀ CNend
 \attention \n
 CNcomment:If the channel to be released is not stopped, the error code HI_ERR_PVR_BUSY is returned.
-Èç¹û´ýÊÍ·ÅµÄÍ¨µÀÃ»ÓÐÍ£Ö¹£¬½«·µ»Ø´íÎóÂë::HI_ERR_PVR_BUSY
-\param[in] u32ChnID   ID of the channel to be released CNcomment: ÐèÒªÊÍ·ÅµÄÍ¨µÀºÅ
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized. CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID  The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_BUSY  The current operation is forbidden because the channel is busy. CNcomment: Í¨µÀÃ¦£¬²»ÔÊÐí½øÐÐµ±Ç°²Ù×÷
-\see \n
+Èç¹û´ýÊÍ·ÅµÄÍ¨µÀÃ»ÓÐÍ£Ö¹£¬½«·µ»Ø´íÎóÂë::HI_ERR_PVR_BUSY CNend
+\param[in] u32ChnID   ID of the channel to be released CNcomment: ÐèÒªÊÍ·ÅµÄÍ¨µÀºÅ CNend
+\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized. CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID  The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_BUSY  The current operation is forbidden because the channel is busy. CNcomment: Í¨µÀÃ¦£¬²»ÔÊÐí½øÐÐµ±Ç°²Ù×÷ CNend
+\see \n 
 N/A
 */
 HI_S32 HI_UNF_PVR_RecDestroyChn(HI_U32 u32ChnID);
 
 /**
-\brief Sets the attributes of a recording channel. CNcomment: ÉèÖÃÂ¼ÖÆÍ¨µÀÊôÐÔ
+\brief Sets the attributes of a recording channel. CNcomment: ÉèÖÃÂ¼ÖÆÍ¨µÀÊôÐÔ CNend
 \attention \n
-You can modify only the dynamic attributes by calling this API.
-CNcomment:Ö»ÓÐ¶¯Ì¬ÊôÐÔ²ÅÄÜÓÃ´Ë½Ó¿Ú¸Ä±äÉèÖÃ
-\param[in] u32ChnID   Channel ID CNcomment: Í¨µÀºÅ
-\param[in] pstRecAttr  Attribute to be set  CNcomment:´ýÉèÖÃµÄÊôÐÔ
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized. CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID  The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨
+You can modify only the dynamic attributes by calling this API. 
+CNcomment:Ö»ÓÐ¶¯Ì¬ÊôÐÔ²ÅÄÜÓÃ´Ë½Ó¿Ú¸Ä±äÉèÖÃ£¬ÓÉÓÚÄ¿Ç°ÊôÐÔ¶¼ÊÇ¾²Ì¬µÄ£¬ËùÒÔ´Ë½Ó¿ÚÔÝÊ±²»Ö§³Ö¹¦ÄÜÉèÖÃ CNend
+\param[in] u32ChnID   Channel ID CNcomment: Í¨µÀºÅ CNend
+\param[in] pstRecAttr  Attribute to be set  CNcomment:´ýÉèÖÃµÄÊôÐÔ CNend
+\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized. CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID  The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_NOT_SUPPORT  The function is not supported. CNcomment:¹¦ÄÜ²»Ö§³Ö CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_RecSetChn(HI_U32 u32ChnID, const HI_UNF_PVR_REC_ATTR_S *pstRecAttr);
 
 /**
-\brief Obtains the attributes of a recording channel. CNcomment: »ñÈ¡Â¼ÖÆÍ¨µÀÊôÐÔ
+\brief Obtains the attributes of a recording channel. CNcomment: »ñÈ¡Â¼ÖÆÍ¨µÀÊôÐÔ CNend
 \attention \n
-N/A
-\param[in] u32ChnID   Channel ID CNcomment: Í¨µÀºÅ
-\param[in] pstRecAttr   Pointer to the obtained channel attributes   CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸Ïò»ñÈ¡µ½µÄÍ¨µÀÊôÐÔÅäÖÃ
-\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT    The PVR recording module is not initialized.  CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID  The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_NUL_PTR        The pointer is null.  CNcomment:Ö¸Õë²ÎÊýÎª¿Õ
-\retval ::HI_ERR_PVR_CHN_NOT_INIT  The specified channel is not initialized.   CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
+N/A 
+\param[in] u32ChnID   Channel ID CNcomment: Í¨µÀºÅ CNend
+\param[out] pstRecAttr   Pointer to the obtained channel attributes   CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸Ïò»ñÈ¡µ½µÄÍ¨µÀÊôÐÔÅäÖÃ CNend
+\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT    The PVR recording module is not initialized.  CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID  The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_NUL_PTR        The pointer is null.  CNcomment:Ö¸Õë²ÎÊýÎª¿Õ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT  The specified channel is not initialized.   CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_RecGetChn(HI_U32 u32ChnID, HI_UNF_PVR_REC_ATTR_S *pstRecAttr);
 
 /**
-\brief Starts a recording channel. CNcomment:Æô¶¯Â¼ÖÆÍ¨µÀ
+\brief Starts a recording channel. CNcomment:Æô¶¯Â¼ÖÆÍ¨µÀ CNend
 \attention \n
 N/A
-\param[in] u32ChnID Channel ID   CNcomment:Í¨µÀºÅ
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT   The PVR recording module is not initialized. CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID    The channel ID is invalid.  CNcomment:Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT   The specified channel is not initialized.  CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_ALREADY       The specified channel has been started.  CNcomment: Ö¸¶¨µÄÍ¨µÀÒÑ¾­Æô¶¯
-\retval ::HI_FAILURE                 This API fails to be called due to system errors.  CNcomment:³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü
+\param[in] u32ChnID Channel ID   CNcomment:Í¨µÀºÅ CNend
+\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT   The PVR recording module is not initialized. CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID    The channel ID is invalid.  CNcomment:Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT   The specified channel is not initialized.  CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_ALREADY       The specified channel has been started.  CNcomment: Ö¸¶¨µÄÍ¨µÀÒÑ¾­Æô¶¯ CNend
+\retval ::HI_FAILURE                 This API fails to be called due to system errors.  CNcomment:³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü CNend
 \see \n
 ::HI_UNF_PVR_RecStopChn
 */
 HI_S32 HI_UNF_PVR_RecStartChn(HI_U32 u32ChnID);
 
 /**
-\brief Stops a recording channel. CNcomment: Í£Ö¹Â¼ÖÆÍ¨µÀ
+\brief Stops a recording channel. CNcomment: Í£Ö¹Â¼ÖÆÍ¨µÀ CNend
 \attention \n
 If a recording channel is working in time-shift playing mode, the channel cannot be stopped until the time-shift operation stops.
 In this case, the error code HI_ERR_PVR_BUSY is returned if you call this API.
 CNcomment:Èç¹û1¸öÂ¼ÖÆÍ¨µÀÕýÔÚ½øÐÐÊ±ÒÆ²¥·Å²Ù×÷£¬ÔòÔÚÍ£Ö¹Ê±ÒÆ²¥·ÅÖ®Ç°£¬²»ÔÊÐíÍ£Ö¹¸ÃÂ¼ÖÆÍ¨µÀ \n
-Èç¹û¸ÃÍ¨µÀÕýÔÚ½øÐÐÊ±ÒÆ²¥·Å²Ù×÷£¬½«·µ»Ø´íÎóÂëHI_ERR_PVR_BUSY
-\param[in] u32ChnID   Channel ID  CNcomment:Í¨µÀºÅ
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT    The PVR recording module is not initialized.  CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID     The channel ID is invalid.    CNcomment:Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT     The specified channel is not initialized. CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_ALREADY         The specified channel has been stopped.    CNcomment:Ö¸¶¨µÄÍ¨µÀÒÑ¾­Í£Ö¹
-\retval ::HI_ERR_PVR_BUSY            The current operation is forbidden because the channel is busy. CNcomment:Í¨µÀÃ¦£¬²»ÔÊÐí½øÐÐµ±Ç°²Ù×÷
+Èç¹û¸ÃÍ¨µÀÕýÔÚ½øÐÐÊ±ÒÆ²¥·Å²Ù×÷£¬½«·µ»Ø´íÎóÂëHI_ERR_PVR_BUSY CNend
+\param[in] u32ChnID   Channel ID  CNcomment:Í¨µÀºÅ CNend
+\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT    The PVR recording module is not initialized.  CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID     The channel ID is invalid.    CNcomment:Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT     The specified channel is not initialized. CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_ALREADY         The specified channel has been stopped.    CNcomment:Ö¸¶¨µÄÍ¨µÀÒÑ¾­Í£Ö¹ CNend
+\retval ::HI_ERR_PVR_BUSY            The current operation is forbidden because the channel is busy. CNcomment:Í¨µÀÃ¦£¬²»ÔÊÐí½øÐÐµ±Ç°²Ù×÷ CNend
 \see \n
 ::HI_UNF_PVR_RecStartChn
 */
 HI_S32 HI_UNF_PVR_RecStopChn(HI_U32 u32ChnID);
 
 /**
-\brief Pauses a recording channel. CNcomment: ÔÝÍ£Â¼ÖÆÍ¨µÀ
+\brief Pauses a recording channel. CNcomment: ÔÝÍ£Â¼ÖÆÍ¨µÀ CNend
 \attention \n
 It should be called under recording mode and can be repeated call.
-CNcomment:Ö»ÓÐÂ¼ÖÆ×´Ì¬µ÷ÓÃ¸Ã½Ó¿Ú²ÅÓÐ×÷ÓÃ£¬ÔÊÐíÖØ¸´µ÷ÓÃ
-\param[in] u32ChnID   Channel ID  CNcomment:Í¨µÀºÅ
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_REC_INVALID_STATE  PVR isn't playing or pausing. CNcomment: PVR·Ç²¥·Å»òÕßÔÝÍ£×´Ì¬
+CNcomment:Ö»ÓÐÂ¼ÖÆ×´Ì¬µ÷ÓÃ¸Ã½Ó¿Ú²ÅÓÐ×÷ÓÃ£¬ÔÊÐíÖØ¸´µ÷ÓÃ CNend
+\param[in] u32ChnID   Channel ID  CNcomment:Í¨µÀºÅ CNend
+\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_REC_INVALID_STATE  PVR isn't playing or pausing. CNcomment: PVR·Ç²¥·Å»òÕßÔÝÍ£×´Ì¬ CNend
 \see \n
 ::HI_UNF_PVR_RecResumeChn
 */
 HI_S32 HI_UNF_PVR_RecPauseChn(HI_U32 u32ChnID);
 
 /**
-\brief Resumes a recording channel. CNcomment: »Ö¸´Â¼ÖÆÍ¨µÀ
+\brief Resumes a recording channel. CNcomment: »Ö¸´Â¼ÖÆÍ¨µÀ CNend
 \attention \n
 It should be called under recording mode and can be repeated call.
-CNcomment:Ö»ÓÐÂ¼ÖÆ×´Ì¬µ÷ÓÃ¸Ã½Ó¿Ú²ÅÓÐ×÷ÓÃ£¬ÔÊÐíÖØ¸´µ÷ÓÃ
-\param[in] u32ChnID   Channel ID  CNcomment:Í¨µÀºÅ
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_REC_INVALID_STATE  PVR isn't playing or paused.CNcomment: PVR·Ç²¥·Å»òÕßÔÝÍ£×´Ì¬
+CNcomment:Ö»ÓÐÂ¼ÖÆ×´Ì¬µ÷ÓÃ¸Ã½Ó¿Ú²ÅÓÐ×÷ÓÃ£¬ÔÊÐíÖØ¸´µ÷ÓÃ CNend
+\param[in] u32ChnID   Channel ID  CNcomment:Í¨µÀºÅ CNend
+\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_REC_INVALID_STATE  PVR isn't playing or paused.CNcomment: PVR·Ç²¥·Å»òÕßÔÝÍ£×´Ì¬ CNend
 \see \n
 ::HI_UNF_PVR_RecPauseChn
 */
 HI_S32 HI_UNF_PVR_RecResumeChn(HI_U32 u32ChnID);
 
 /**
-\brief Obtains the status of a recording channel.CNcomment:  »ñÈ¡Â¼ÖÆÍ¨µÀ×´Ì¬
+\brief Obtains the status of a recording channel.CNcomment:  »ñÈ¡Â¼ÖÆÍ¨µÀ×´Ì¬ CNend
 \attention \n
-N/A
-\param[in] u32ChnID  Channel ID  CNcomment:Í¨µÀºÅ
-\param[in] pstRecStatus   Pointer to the recording status   CNcomment:Â¼ÖÆ×´Ì¬ÐÅÏ¢Ö¸Õë
-\retval ::HI_SUCCESS Success  CNcomment: ³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT    The PVR recording module is not initialized.  CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID   The channel ID is invalid.   CNcomment: Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT    The specified channel is not initialized.  CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_NUL_PTR        The pointer is null. CNcomment:Ö¸Õë²ÎÊýÎª¿Õ
+N/A  
+\param[in] u32ChnID  Channel ID  CNcomment:Í¨µÀºÅ CNend
+\param[out] pstRecStatus   Pointer to the recording status   CNcomment:Â¼ÖÆ×´Ì¬ÐÅÏ¢Ö¸Õë CNend
+\retval ::HI_SUCCESS Success  CNcomment: ³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT    The PVR recording module is not initialized.  CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID   The channel ID is invalid.   CNcomment: Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT    The specified channel is not initialized.  CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_NUL_PTR        The pointer is null. CNcomment:Ö¸Õë²ÎÊýÎª¿Õ CNend
 \see \n
 N/A
 */
@@ -556,39 +563,39 @@ HI_S32 HI_UNF_PVR_RecGetStatus(HI_U32 u32ChnID, HI_UNF_PVR_REC_STATUS_S *pstRecS
 
 /***** APIs for the PVR playing module *****/
 /**
-\brief Initializes the PVR playing module. CNcomment: ³õÊ¼»¯PVR²¥·ÅÄ£¿é
+\brief Initializes the PVR playing module. CNcomment: ³õÊ¼»¯PVR²¥·ÅÄ£¿é CNend
 \attention \n
 If you initialize the PVR playing module repeatedly, the error code HI_SUCCESS is returned.\n
 Before using the APIs of the PVR playing module, you must call this API. Otherwise, other APIs are unavailable.
 CNcomment:ÖØ¸´³õÊ¼»¯·µ»Ø³É¹¦ \n
-Ã¿¸ö½ø³ÌÊ¹ÓÃPVR²¥·ÅÄ£¿é½Ó¿ÚÇ°£¬±ØÐëÏÈµ÷ÓÃ´Ë½Ó¿Ú£¬·ñÔòÆäËû½Ó¿Ú¾ùÎÞ·¨Ê¹ÓÃ
+Ã¿¸ö½ø³ÌÊ¹ÓÃPVR²¥·ÅÄ£¿é½Ó¿ÚÇ°£¬±ØÐëÏÈµ÷ÓÃ´Ë½Ó¿Ú£¬·ñÔòÆäËû½Ó¿Ú¾ùÎÞ·¨Ê¹ÓÃ CNend
 \param N/A
-\retval ::HI_SUCCESS         Success CNcomment:³É¹¦
-\retval ::HI_FAILURE           This API fails to be called due to system errors.    CNcomment:³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü
+\retval ::HI_SUCCESS         Success CNcomment:³É¹¦ CNend
+\retval ::HI_FAILURE           This API fails to be called due to system errors.    CNcomment:³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü CNend
 \see \n
 ::HI_UNF_PVR_PlayDeInit
 */
 HI_S32 HI_UNF_PVR_PlayInit(HI_VOID);
 
 /**
-\brief Deinitializes the PVR playing module.  CNcomment:È¥³õÊ¼»¯PVR²¥·ÅÄ£¿é
+\brief Deinitializes the PVR playing module.  CNcomment:È¥³õÊ¼»¯PVR²¥·ÅÄ£¿é CNend
 \attention \n
 If you deinitialize the PVR recording module repeatedly, the error code HI_SUCCESS is returned.\n
 Before deintializing the PVR playing module, you must release all the playing channels. Otherwise, the error code HI_ERR_PVR_BUSY is returned.
 CNcomment:ÖØ¸´È¥³õÊ¼»¯·µ»Ø³É¹¦ \n
-È¥³õÊ¼»¯PVR²¥·ÅÄ£¿éÇ°Îñ±Ø±£Ö¤±¾½ø³ÌÄÚËùÓÐ²¥·ÅÍ¨µÀ¶¼ÒÑ¾­ÊÍ·Å£¬Èç¹û»¹ÓÐ²¥·ÅÍ¨µÀÃ»ÓÐÊÍ·Å£¬´Ë½Ó¿Ú½«»á·µ»Ø´íÎóÂë::HI_ERR_PVR_BUSY
-\param N/A
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦
-\retval ::HI_FAILURE          This API fails to be called due to system errors.   CNcomment: ³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü
-\retval ::HI_ERR_PVR_BUSY  The PVR playing module is being used.  CNcomment: PVR²¥·ÅÄ£¿é»¹ÔÚÊ¹ÓÃÖÐ
-\retval ::HI_ERR_PVR_NOT_INIT   The PVR recording module is not initialized.CNcomment:  PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
+È¥³õÊ¼»¯PVR²¥·ÅÄ£¿éÇ°Îñ±Ø±£Ö¤±¾½ø³ÌÄÚËùÓÐ²¥·ÅÍ¨µÀ¶¼ÒÑ¾­ÊÍ·Å£¬Èç¹û»¹ÓÐ²¥·ÅÍ¨µÀÃ»ÓÐÊÍ·Å£¬´Ë½Ó¿Ú½«»á·µ»Ø´íÎóÂë::HI_ERR_PVR_BUSY CNend
+\param N/A 
+\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
+\retval ::HI_FAILURE          This API fails to be called due to system errors.   CNcomment: ³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü CNend
+\retval ::HI_ERR_PVR_BUSY  The PVR playing module is being used.  CNcomment: PVR²¥·ÅÄ£¿é»¹ÔÚÊ¹ÓÃÖÐ CNend
+\retval ::HI_ERR_PVR_NOT_INIT   The PVR recording module is not initialized.CNcomment:  PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
 \see \n
 ::HI_UNF_PVR_PlayInit
 */
 HI_S32 HI_UNF_PVR_PlayDeInit(HI_VOID);
 
 /**
-\brief Creates a playing channel. CNcomment:´´½¨1Â·²¥·ÅÍ¨µÀ
+\brief Creates a playing channel. CNcomment:´´½¨1Â·²¥·ÅÍ¨µÀ CNend
 \attention \n
 The PVR playing module automatically searches for an .idx index file based on the file name specified in pAttr.
 If the index file does not exist, the PVR playing module attempts to play the stream file, but cannot support some features,
@@ -600,38 +607,38 @@ CNcomment:PVR²¥·ÅÄ£¿é»á¸ù¾ÝpAttrÖÐÖ¸¶¨µÄÎÄ¼þÃû×Ô¶¯Ñ°ÕÒºó×ºÃûÎª".idx"µÄË÷ÒýÎÄ¼þ \
 Èç¹ûË÷ÒýÎÄ¼þ²»´æÔÚ£¬PVR²¥·ÅÄ£¿éÒ²»á³¢ÊÔ²¥·ÅÕâ¸öÎÄ¼þ£¬µ«ÊÇ¿ÉÄÜÎÞ·¨Ö§³ÖÄ³Ð©ÌØÐÔ£¬
 ±ÈÈç¿ì½ø¿ìÍË»òÕßSEEK²Ù×÷£¨¸ù¾Ý°æ±¾µÄ²»Í¬¶øÓÐËù²î±ð£¬µ±Ç°°æ±¾Ö»Ö§³Ö²¥·Å£©\n
 ²¥·ÅµÄÎÄ¼þ¿ÉÒÔÊÇÕýÔÚÂ¼ÖÆµÄÎÄ¼þ£¨¼´½øÐÐÊ±ÒÆ²¥·Å£©
-hAVPlayËù´ú±íµÄavplay±ØÐë´¦ÓÚstop×´Ì¬¡£
-\param[out] pu32ChnID  ID of the obtained playing channel  CNcomment: »ñÈ¡µ½µÄ²¥·ÅÍ¨µÀID
-\param[in] pstPlayAttr  Pointer to the channel attributes CNcomment: Í¨µÀÊôÐÔÅäÖÃÖ¸Õë
-\param[in] hAvplay      AVPLAY handle. It specifies the APVPLAY to be used. CNcomment: avplay¾ä±ú£¬±êÊ¶ÓÃÄÄ¸öavplayÀ´²¥·Å
+hAVPlayËù´ú±íµÄavplay±ØÐë´¦ÓÚstop×´Ì¬¡£ CNend
+\param[out] pu32ChnID  ID of the obtained playing channel  CNcomment: »ñÈ¡µ½µÄ²¥·ÅÍ¨µÀID CNend
+\param[in] pstPlayAttr  Pointer to the channel attributes CNcomment: Í¨µÀÊôÐÔÅäÖÃÖ¸Õë CNend
+\param[in] hAvplay      AVPLAY handle. It specifies the APVPLAY to be used. CNcomment: avplay¾ä±ú£¬±êÊ¶ÓÃÄÄ¸öavplayÀ´²¥·Å CNend
 \param[in] hTsBuffer  TS buffer handle. It specifies that TS buffer that is used for playback. In general, the TS port corresponding to the TS buffer must be attached to the DEMUX corresponding to the AVPLAY.
-tCNcomment:s buffer¾ä±ú£¬±êÊ¶ÓÃÄÄ¸öts bufferÀ´»Ø·Å£¬Ò»°ãÀ´Ëµ£¬´Ëts buffer¶ÔÓ¦µÄts¶Ë¿ÚÓ¦¸ÃÊÇ°ó¶¨ÔÚhAVPlay¶ÔÓ¦µÄdemuxÉÏµÄ
-\retval ::HI_SUCCESS   Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT       The PVR recording module is not initialized.  CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_NUL_PTR            The pointer is null. CNcomment:  Ö¸Õë²ÎÊýÎª¿Õ
-\retval ::HI_ERR_DMX_INVALID_PARA        The parameter is invalid.  CNcomment: ²ÎÊý·Ç·¨
-\retval ::HI_ERR_PVR_FILE_INVALID_FNAME   The file name is invalid.   CNcomment:ÎÄ¼þÃû²ÎÊý·Ç·¨
-\retval ::HI_ERR_PVR_FILE_EXIST          The file already exists.  CNcomment:ÎÄ¼þÒÑ¾­´æÔÚ
-\retval ::HI_ERR_PVR_NO_CHN_LEFT        There is no available channel. CNcomment:  ÒÑ¾­Ã»ÓÐ¿ÕÏÐµÄÍ¨µÀ¹©·ÖÅä
-\retval ::HI_ERR_PVR_FILE_CANT_OPEN      The file cannot be opened.   CNcomment:  ÎÞ·¨´ò¿ªÎÄ¼þ
-\retval ::HI_ERR_PVR_FILE_NOT_EXIST      The file cannot be played because it does not exist. CNcomment: ÎÄ¼þ²»´æÔÚ£¬ÎÞ·¨²¥·Å
-\retval ::HI_ERR_PVR_NO_MEM             The buffer required for playing cannot be allocated due to insufficient memory. CNcomment: ÄÚ´æ²»×ã£¬ÎÞ·¨·ÖÅä²¥·ÅÐèÒªµÄBuffer
-\retval ::HI_ERR_PVR_FILE_CANT_READ   The file cannot be read.  CNcomment:   ÎÄ¼þ¶ÁÈ¡³ö´í
+tCNcomment:s buffer¾ä±ú£¬±êÊ¶ÓÃÄÄ¸öts bufferÀ´»Ø·Å£¬Ò»°ãÀ´Ëµ£¬´Ëts buffer¶ÔÓ¦µÄts¶Ë¿ÚÓ¦¸ÃÊÇ°ó¶¨ÔÚhAVPlay¶ÔÓ¦µÄdemuxÉÏµÄ CNend
+\retval ::HI_SUCCESS   Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT       The PVR recording module is not initialized.  CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_NUL_PTR            The pointer is null. CNcomment:  Ö¸Õë²ÎÊýÎª¿Õ CNend
+\retval ::HI_ERR_DMX_INVALID_PARA        The parameter is invalid.  CNcomment: ²ÎÊý·Ç·¨ CNend
+\retval ::HI_ERR_PVR_FILE_INVALID_FNAME   The file name is invalid.   CNcomment:ÎÄ¼þÃû²ÎÊý·Ç·¨ CNend
+\retval ::HI_ERR_PVR_FILE_EXIST          The file already exists.  CNcomment:ÎÄ¼þÒÑ¾­´æÔÚ CNend
+\retval ::HI_ERR_PVR_NO_CHN_LEFT        There is no available channel. CNcomment:  ÒÑ¾­Ã»ÓÐ¿ÕÏÐµÄÍ¨µÀ¹©·ÖÅä CNend
+\retval ::HI_ERR_PVR_FILE_CANT_OPEN      The file cannot be opened.   CNcomment:  ÎÞ·¨´ò¿ªÎÄ¼þ CNend
+\retval ::HI_ERR_PVR_FILE_NOT_EXIST      The file cannot be played because it does not exist. CNcomment: ÎÄ¼þ²»´æÔÚ£¬ÎÞ·¨²¥·Å CNend
+\retval ::HI_ERR_PVR_NO_MEM             The buffer required for playing cannot be allocated due to insufficient memory. CNcomment: ÄÚ´æ²»×ã£¬ÎÞ·¨·ÖÅä²¥·ÅÐèÒªµÄBuffer CNend
+\retval ::HI_ERR_PVR_FILE_CANT_READ   The file cannot be read.  CNcomment:   ÎÄ¼þ¶ÁÈ¡³ö´í CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_PlayCreateChn(HI_U32 *pu32ChnID, const HI_UNF_PVR_PLAY_ATTR_S *pstPlayAttr, HI_HANDLE hAvplay, HI_HANDLE hTsBuffer);
 
 /**
-\brief Releases a specified playing channel. CNcomment:ÊÍ·ÅÖ¸¶¨µÄ²¥·ÅÍ¨µÀ
+\brief Releases a specified playing channel. CNcomment:ÊÍ·ÅÖ¸¶¨µÄ²¥·ÅÍ¨µÀ CNend
 \attention \n
 If the channel to be released is not stopped, the error code HI_ERR_PVR_BUSY is returned.
-CNcomment:Èç¹û´ýÊÍ·ÅµÄÍ¨µÀÃ»ÓÐÍ£Ö¹£¬½«·µ»Ø´íÎóÂë::HI_ERR_PVR_BUSY
-\param[in] u32ChnID  ID of the channel to be released CNcomment:ÐèÒªÊÍ·ÅµÄÍ¨µÀºÅ
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT     The PVR recording module is not initialized.   CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID       The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_BUSY  The current operation is forbidden because the channel is busy.  CNcomment: Í¨µÀÃ¦£¬²»ÔÊÐí½øÐÐµ±Ç°²Ù×÷
+CNcomment:Èç¹û´ýÊÍ·ÅµÄÍ¨µÀÃ»ÓÐÍ£Ö¹£¬½«·µ»Ø´íÎóÂë::HI_ERR_PVR_BUSY CNend
+\param[in] u32ChnID  ID of the channel to be released CNcomment:ÐèÒªÊÍ·ÅµÄÍ¨µÀºÅ CNend
+\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT     The PVR recording module is not initialized.   CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID       The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_BUSY  The current operation is forbidden because the channel is busy.  CNcomment: Í¨µÀÃ¦£¬²»ÔÊÐí½øÐÐµ±Ç°²Ù×÷ CNend
 \see \n
 N/A
 */
@@ -641,7 +648,7 @@ HI_S32 HI_UNF_PVR_PlayDestroyChn(HI_U32 u32ChnID);
 \brief
 Starts a time-shift playing channel.
 You can call this API to start a time-shift playing channel based on the entered IDs of recording channels. To be specific, this API automatically initializes a playing channel to play files based on the parameter configuration of the corresponding recording channel.
-CNcomment:Æô¶¯Ê±ÒÆ²¥·ÅÍ¨µÀ¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔ¸ù¾ÝÊäÈëµÄÂ¼ÖÆÍ¨µÀºÅ£¬Æô¶¯1Â·Ê±ÒÆ²¥·Å¡£´Ë½Ó¿Ú½«¸ù¾Ý¶ÔÓ¦Â¼ÖÆÍ¨µÀµÄ²ÎÊý×Ô¶¯³õÊ¼»¯1¸ö²¥·ÅÍ¨µÀ£¬²¢¿ªÊ¼²¥·Å
+CNcomment:Æô¶¯Ê±ÒÆ²¥·ÅÍ¨µÀ¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔ¸ù¾ÝÊäÈëµÄÂ¼ÖÆÍ¨µÀºÅ£¬Æô¶¯1Â·Ê±ÒÆ²¥·Å¡£´Ë½Ó¿Ú½«¸ù¾Ý¶ÔÓ¦Â¼ÖÆÍ¨µÀµÄ²ÎÊý×Ô¶¯³õÊ¼»¯1¸ö²¥·ÅÍ¨µÀ£¬²¢¿ªÊ¼²¥·Å CNend
 \attention \n
 This API is not recommended. It is used to be compatible with other interfaces. You are recommended to call HI_UNF_PVR_PlayCreateChn and HI_UNF_PVR_PlayStartChn in sequence to start to play. If you want to enable the time-shift playing mode,
 you only need to set same names for the file to be played and recorded file. Then the PVR automatically identifies the same names, and enters the time-shift playing mode.
@@ -652,133 +659,134 @@ CNcomment:²»ÍÆ¼öÊ¹ÓÃ´Ë½Ó¿Ú£¬±£Áô´Ë½Ó¿ÚÖ»ÊÇÎªÁË±£³ÖÓëÀÏ½Ó¿ÚµÄ¼æÈÝ£¬ÍÆ¼öÊ¹ÓÃHI_UNF
 Ö»ÐèÒªÉèÖÃ²¥·ÅµÄÎÄ¼þÃûÓëÂ¼ÖÆµÄÎÄ¼þÃûÒ»Ñù¼´¿É£¬PVR»á×Ô¶¯Ê¶±ðÏàÍ¬µÄÎÄ¼þÃû²¢½øÈëÊ±ÒÆ×´Ì¬¡£
 µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔÖ±½ÓÆô¶¯1Â·Ê±ÒÆ²¥·Å£¬½Ó¿ÚÄÚ²¿»á×Ô¶¯µ÷ÓÃHI_UNF_PVR_PlayCreateChn·ÖÅä²¥·ÅÍ¨µÀ£¬ÓÃ»§²»ÐèÒªÔÙÏÈµ÷ÓÃHI_UNF_PVR_PlayCreateChn´´½¨²¥·ÅÍ¨µÀ \n
 µ÷ÓÃ´Ë½Ó¿ÚÇ°ÇëÈ·±£¶ÔÓ¦µÄÂ¼ÖÆÍ¨µÀÒÑ¾­Æô¶¯£¬·ñÔò½«»á·µ»Ø´íÎóÂëHI_ERR_PVR_REC_INVAL_STATE \n
-µ÷ÓÃ´Ë½Ó¿ÚÆô¶¯1Â·Ê±ÒÆºó£¬¶ÔÓ¦µÄÂ¼ÖÆÍ¨µÀ½«²»ÄÜ±»Í£Ö¹»òÕßÏú»ÙÖ±µ½Ê±ÒÆ²¥·ÅÍ£Ö¹
-\param[out] pu32PlayChnID   ID of a playing channel CNcomment:²¥·ÅÍ¨µÀºÅ
-\param[in] u32RecChnID    ID of the recording channel to be time-shifted CNcomment: ÐèÒªÊ±ÒÆµÄÂ¼ÖÆÍ¨µÀºÅ
-\param[in] hAvplay     AVPLAY handle. It specifies the APVPLAY to be used.   CNcomment:avplay¾ä±ú£¬±êÊ¶ÓÃÄÄ¸öavplayÀ´²¥·Å
+µ÷ÓÃ´Ë½Ó¿ÚÆô¶¯1Â·Ê±ÒÆºó£¬¶ÔÓ¦µÄÂ¼ÖÆÍ¨µÀ½«²»ÄÜ±»Í£Ö¹»òÕßÏú»ÙÖ±µ½Ê±ÒÆ²¥·ÅÍ£Ö¹ CNend
+\param[out] pu32PlayChnID   ID of a playing channel CNcomment:²¥·ÅÍ¨µÀºÅ CNend
+\param[in] u32RecChnID    ID of the recording channel to be time-shifted CNcomment: ÐèÒªÊ±ÒÆµÄÂ¼ÖÆÍ¨µÀºÅ CNend
+\param[in] hAvplay     AVPLAY handle. It specifies the APVPLAY to be used.   CNcomment:avplay¾ä±ú£¬±êÊ¶ÓÃÄÄ¸öavplayÀ´²¥·Å CNend
 \param[in] hTsBuffer    TS buffer handle. It specifies that TS buffer that is used for playback. In general, the TS port corresponding to the TS buffer must be attached to the DEMUX corresponding to the AVPLAY.
-CNcomment:ts buffer¾ä±ú£¬±êÊ¶ÓÃÄÄ¸öts bufferÀ´»Ø·Å£¬Ò»°ãÀ´Ëµ£¬´Ëts buffer¶ÔÓ¦µÄts¶Ë¿ÚÓ¦¸ÃÊÇ°ó¶¨ÔÚhAVPlay¶ÔÓ¦µÄdemuxÉÏµÄ
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NUL_PTR The pointer is null.  CNcomment:Ö¸Õë²ÎÊýÎª¿Õ
-\retval ::HI_ERR_PVR_PLAY_INVALID_DMXID The DEMUX ID received during playing is incorrect. CNcomment:²¥·ÅÊ±´«ÈëÁË´íÎóµÄDEMUX ID
-\retval ::HI_ERR_PVR_INVALID_CHNID The channel ID is invalid. CNcomment: Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT The specified channel is not initialized. CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_ALREADY  The specified channel has been started. CNcomment:Ö¸¶¨µÄÍ¨µÀÒÑ¾­Æô¶¯
-\retval ::HI_ERR_PVR_NO_CHN_LEFT  There is no available playing channel.CNcomment: ÒÑ¾­Ã»ÓÐ¿ÕÏÐµÄ²¥·ÅÍ¨µÀ¹©·ÖÅä
-\retval ::HI_ERR_PVR_REC_INVALID_STATE  The recording channel is not started.CNcomment:  Â¼ÖÆÍ¨µÀÃ»ÓÐÆô¶¯
-\retval ::HI_ERR_PVR_NO_MEM   The buffer required for playing cannot be allocated due to insufficient memory.CNcomment: ÄÚ´æ²»×ã£¬ÎÞ·¨·ÖÅä²¥·ÅÐèÒªµÄBuffer
-\retval ::HI_FAILURE This API fails to be called due to system errors. CNcomment:³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü
+CNcomment:ts buffer¾ä±ú£¬±êÊ¶ÓÃÄÄ¸öts bufferÀ´»Ø·Å£¬Ò»°ãÀ´Ëµ£¬´Ëts buffer¶ÔÓ¦µÄts¶Ë¿ÚÓ¦¸ÃÊÇ°ó¶¨ÔÚhAVPlay¶ÔÓ¦µÄdemuxÉÏµÄ CNend
+\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NUL_PTR The pointer is null.  CNcomment:Ö¸Õë²ÎÊýÎª¿Õ CNend
+\retval ::HI_ERR_PVR_PLAY_INVALID_DMXID The DEMUX ID received during playing is incorrect. CNcomment:²¥·ÅÊ±´«ÈëÁË´íÎóµÄDEMUX ID CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID The channel ID is invalid. CNcomment: Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT The specified channel is not initialized. CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_ALREADY  The specified channel has been started. CNcomment:Ö¸¶¨µÄÍ¨µÀÒÑ¾­Æô¶¯ CNend
+\retval ::HI_ERR_PVR_NO_CHN_LEFT  There is no available playing channel.CNcomment: ÒÑ¾­Ã»ÓÐ¿ÕÏÐµÄ²¥·ÅÍ¨µÀ¹©·ÖÅä CNend
+\retval ::HI_ERR_PVR_REC_INVALID_STATE  The recording channel is not started.CNcomment:  Â¼ÖÆÍ¨µÀÃ»ÓÐÆô¶¯ CNend
+\retval ::HI_ERR_PVR_NO_MEM   The buffer required for playing cannot be allocated due to insufficient memory.CNcomment: ÄÚ´æ²»×ã£¬ÎÞ·¨·ÖÅä²¥·ÅÐèÒªµÄBuffer CNend
+\retval ::HI_FAILURE This API fails to be called due to system errors. CNcomment:³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü CNend
 \see \n
 ::HI_UNF_PVR_PlayStopTimeShift
 */
 HI_S32 HI_UNF_PVR_PlayStartTimeShift(HI_U32 *pu32PlayChnID, HI_U32 u32RecChnID, HI_HANDLE hAvplay, HI_HANDLE hTsBuffer);
 
 /**
-\brief Stops a playing channel.  CNcomment:Í£Ö¹²¥·ÅÍ¨µÀ
+\brief Stops a playing channel.  CNcomment:Í£Ö¹²¥·ÅÍ¨µÀ CNend
 \attention \n
 This API must work with ::HI_UNF_PVR_PlayStartTimeShift, and this API can be only used to stop the playing channel that is started by calling ::HI_UNF_PVR_PlayStartTimeShift.
 You must call ::HI_UNF_PVR_PlayStopTimeShift rather than ::HI_UNF_PVR_PlayStopChn to stop the playing channel that is started by calling ::HI_UNF_PVR_PlayStartTimeShift.
 
 CNcomment:´Ë½Ó¿ÚÓë::HI_UNF_PVR_PlayStartTimeShift½Ó¿Ú±ØÐëÅä¶ÔÊ¹ÓÃ£¬´Ë½Ó¿ÚÖ»ÄÜÍ£Ö¹Ê¹ÓÃ::HI_UNF_PVR_PlayStartTimeShiftÆô¶¯µÄ²¥·ÅÍ¨µÀ \n
-Í¨¹ý::HI_UNF_PVR_PlayStartTimeShift½Ó¿ÚÆô¶¯µÄ²¥·ÅÍ¨µÀ±ØÐëÊ¹ÓÃ´Ë½Ó¿ÚÀ´Í£Ö¹£¬¶ø²»ÔÊÐíÓÃ::HI_UNF_PVR_PlayStopChn½Ó¿ÚÀ´Í£Ö¹
-\param[in] u32PlayChnID Channel ID  CNcomment:Í¨µÀºÅ
-\param[in] pstStopOpt  Pointer to the attribute structure when the AVPLAY stops CNcomment:Í£Ö¹µÄÊôÐÔÉèÖÃ
-\retval ::HI_SUCCESS  SuccessCNcomment: ³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT        The PVR recording module is not initialized. CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID        The channel ID is invalid. CNcomment:  Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT       The specified channel is not initialized.   CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_ALREADY            The specified channel has been started.  CNcomment: Ö¸¶¨µÄÍ¨µÀÒÑ¾­Æô¶¯
+Í¨¹ý::HI_UNF_PVR_PlayStartTimeShift½Ó¿ÚÆô¶¯µÄ²¥·ÅÍ¨µÀ±ØÐëÊ¹ÓÃ´Ë½Ó¿ÚÀ´Í£Ö¹£¬¶ø²»ÔÊÐíÓÃ::HI_UNF_PVR_PlayStopChn½Ó¿ÚÀ´Í£Ö¹ CNend
+\param[in] u32PlayChnID Channel ID  CNcomment:Í¨µÀºÅ CNend
+\param[in] pstStopOpt  Pointer to the attribute structure when the AVPLAY stops CNcomment:Í£Ö¹µÄÊôÐÔÉèÖÃ CNend
+\retval ::HI_SUCCESS  SuccessCNcomment: ³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT        The PVR recording module is not initialized. CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID        The channel ID is invalid. CNcomment:  Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT       The specified channel is not initialized.   CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_ALREADY            The specified channel has been started.  CNcomment: Ö¸¶¨µÄÍ¨µÀÒÑ¾­Æô¶¯ CNend
 \retval ::HI_ERR_PVR_PLAY_INVALID_STATE    The channel status is incorrect. For example, you call this API to stop the playing channel that is started by calling HI_UNF_PVR_PlayStartChn.
-CNcomment:Í¨µÀ×´Ì¬´íÎó¡£ÀýÈç£º¶ÔÓÃ::HI_UNF_PVR_PlayStartChnÆô¶¯µÄ²¥·ÅÍ¨µÀµ÷ÓÃ´Ë½Ó¿Ú
+CNcomment:Í¨µÀ×´Ì¬´íÎó¡£ÀýÈç£º¶ÔÓÃ::HI_UNF_PVR_PlayStartChnÆô¶¯µÄ²¥·ÅÍ¨µÀµ÷ÓÃ´Ë½Ó¿Ú CNend
 \see \n
 ::HI_UNF_PVR_PlayStartTimeShift
 */
 HI_S32 HI_UNF_PVR_PlayStopTimeShift(HI_U32 u32PlayChnID, const HI_UNF_AVPLAY_STOP_OPT_S *pstStopOpt);
 
 /**
-\brief Sets the attributes of a playing channel. CNcomment:ÉèÖÃ²¥·ÅÍ¨µÀÊôÐÔ
+\brief Sets the attributes of a playing channel. CNcomment:ÉèÖÃ²¥·ÅÍ¨µÀÊôÐÔ CNend
 \attention \n
 You can set the dynamic attributes only by calling this API.
-CNcomment:Ö»ÓÐ¶¯Ì¬ÊôÐÔ²ÅÄÜÍ¨¹ý´Ë½Ó¿Ú½øÐÐÉèÖÃ
-\param[in] u32ChnID    Channel ID CNcomment: Í¨µÀºÅ
-\param[in] pstPlayAttr  Pointer to the channel attributes to be set  CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸ÏòÒªÉèÖÃµÄÍ¨µÀÊôÐÔÅäÖÃ
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized. CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID The channel ID is invalid.  CNcomment:Í¨µÀºÅ·Ç·¨
+CNcomment:Ö»ÓÐ¶¯Ì¬ÊôÐÔ²ÅÄÜÍ¨¹ý´Ë½Ó¿Ú½øÐÐÉèÖÃ£¬ÓÉÓÚÄ¿Ç°¶¼ÊÇ¶¯Ì¬ÊôÐÔ£¬ËùÒÔ´Ë½Ó¿ÚÔÝÊ±²»Ìá¹©ÉèÖÃ¹¦ÄÜ¡£ CNend
+\param[in] u32ChnID    Channel ID CNcomment: Í¨µÀºÅ CNend
+\param[in] pstPlayAttr  Pointer to the channel attributes to be set  CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸ÏòÒªÉèÖÃµÄÍ¨µÀÊôÐÔÅäÖÃ CNend
+\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized. CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID The channel ID is invalid.  CNcomment:Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_NOT_SUPPORT  The function is not supported. CNcomment:¹¦ÄÜ²»Ö§³Ö CNend
 \see \n
 ::HI_UNF_PVR_PlayGetChn
 */
 HI_S32 HI_UNF_PVR_PlaySetChn(HI_U32 u32ChnID, const HI_UNF_PVR_PLAY_ATTR_S *pstPlayAttr);
 
 /**
-\brief  Obtains the attributes of a playing channel. CNcomment:»ñÈ¡²¥·ÅÍ¨µÀÊôÐÔ
+\brief  Obtains the attributes of a playing channel. CNcomment:»ñÈ¡²¥·ÅÍ¨µÀÊôÐÔ CNend
 \attention \n
 N/A
-\param[in] u32ChnID   Channel ID CNcomment:CNcomment:Í¨µÀºÅ
-\param[out] pstPlayAttr   Pointer to the obtained channel attributes CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸Ïò»ñÈ¡µ½µÄÍ¨µÀÊôÐÔÅäÖÃ
-\retval ::HI_SUCCESS  Success CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT   The PVR recording module is not initialized.CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID   The channel ID is invalid. CNcomment:  Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT   The specified channel is not initialized. CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_NUL_PTR      The pointer is null.  CNcomment:  Ö¸Õë²ÎÊýÎª¿Õ
+\param[in] u32ChnID   Channel ID CNcomment:CNcomment:Í¨µÀºÅ CNend
+\param[out] pstPlayAttr   Pointer to the obtained channel attributes CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸Ïò»ñÈ¡µ½µÄÍ¨µÀÊôÐÔÅäÖÃ CNend
+\retval ::HI_SUCCESS  Success CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT   The PVR recording module is not initialized.CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID   The channel ID is invalid. CNcomment:  Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT   The specified channel is not initialized. CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_NUL_PTR      The pointer is null.  CNcomment:  Ö¸Õë²ÎÊýÎª¿Õ CNend
 \see \n
 ::HI_UNF_PVR_PlaySetChn
 */
 HI_S32 HI_UNF_PVR_PlayGetChn(HI_U32 u32ChnID, HI_UNF_PVR_PLAY_ATTR_S *pstPlayAttr);
 
 /**
-\brief  Starts a playing channel. CNcomment:Æô¶¯²¥·ÅÍ¨µÀ
+\brief  Starts a playing channel. CNcomment:Æô¶¯²¥·ÅÍ¨µÀ CNend
 \attention \n
 You can call this API to start the channel that is created by calling ::HI_UNF_PVR_PlayCreateChn only once. To pause or resume playing,
 you need to call ::HI_UNF_PVR_PlayPauseChn and ::HI_UNF_PVR_PlayResumeChn respectively.
 CNcomment:µ÷ÓÃ::HI_UNF_PVR_PlayCreateChnÉêÇëµÄÍ¨µÀÖ»ÄÜÍ¨¹ý´Ë½Ó¿ÚÆô¶¯Ò»´Î£¬Èç¹ûÏëÒªÔÝÍ£/»Ö¸´²¥·Å£¬
-ÐèÊ¹ÓÃ::HI_UNF_PVR_PlayPauseChnºÍ::HI_UNF_PVR_PlayResumeChn½Ó¿Ú
-\param[in] u32ChnID Channel ID  CNcomment:Í¨µÀºÅ
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT     The PVR recording module is not initialized.  CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID     The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT    The specified channel is not initialized. CNcomment:  Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_ALREADY        The specified channel has been started.   CNcomment: Ö¸¶¨µÄÍ¨µÀÒÑ¾­Æô¶¯
-\retval ::HI_FAILURE                 This API fails to be called due to system errors. CNcomment: ³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü
+ÐèÊ¹ÓÃ::HI_UNF_PVR_PlayPauseChnºÍ::HI_UNF_PVR_PlayResumeChn½Ó¿Ú CNend
+\param[in] u32ChnID Channel ID  CNcomment:Í¨µÀºÅ CNend
+\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT     The PVR recording module is not initialized.  CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID     The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT    The specified channel is not initialized. CNcomment:  Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_ALREADY        The specified channel has been started.   CNcomment: Ö¸¶¨µÄÍ¨µÀÒÑ¾­Æô¶¯ CNend
+\retval ::HI_FAILURE                 This API fails to be called due to system errors. CNcomment: ³öÏÖÏµÍ³´íÎó£¬APIµ÷ÓÃÊ§°Ü CNend
 \see \n
 ::HI_UNF_PVR_PlayStopChn
 */
 HI_S32 HI_UNF_PVR_PlayStartChn(HI_U32 u32ChnID);
 
 /**
-\brief  Stops a playing channel. CNcomment:Í£Ö¹²¥·ÅÍ¨µÀ
+\brief  Stops a playing channel. CNcomment:Í£Ö¹²¥·ÅÍ¨µÀ CNend
 \attention \n
 This API must work with ::HI_UNF_PVR_PlayStartChn, and this API can be only used to stop the playing channel that is started by calling HI_UNF_PVR_PlayStartChn.
 You must call ::HI_UNF_PVR_PlayStopChn rather than HI_UNF_PVR_PlayStopTimeShift to stop the playing channel that is started by calling HI_UNF_PVR_PlayStartChn.
 CNcomment:´Ë½Ó¿ÚÓë::HI_UNF_PVR_PlayStartChn½Ó¿Ú±ØÐëÅä¶ÔÊ¹ÓÃ£¬´Ë½Ó¿ÚÖ»ÄÜÍ£Ö¹Ê¹ÓÃ::HI_UNF_PVR_PlayStartChnÆô¶¯µÄ²¥·ÅÍ¨µÀ \n
-Í¨¹ý::HI_UNF_PVR_PlayStartChn½Ó¿ÚÆô¶¯µÄ²¥·ÅÍ¨µÀ±ØÐëÊ¹ÓÃ´Ë½Ó¿ÚÀ´Í£Ö¹£¬¶ø²»ÔÊÐíÓÃ::HI_UNF_PVR_PlayStopTimeShift½Ó¿ÚÀ´Í£Ö¹
-\param[in] u32ChnID  Channel ID CNcomment:Í¨µÀºÅ
-\param[in] pstStopOpt  Pointer to the attribute structure when the AVPLAY stops  CNcomment:Í£Ö¹µÄÊôÐÔÉèÖÃ
-\retval ::HI_SUCCESS  Success CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT    The PVR recording module is not initialized. CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID     The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT    The specified channel is not initialized.  CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_ALREADY        The specified channel has been started.  CNcomment:  Ö¸¶¨µÄÍ¨µÀÒÑ¾­Æô¶¯
+Í¨¹ý::HI_UNF_PVR_PlayStartChn½Ó¿ÚÆô¶¯µÄ²¥·ÅÍ¨µÀ±ØÐëÊ¹ÓÃ´Ë½Ó¿ÚÀ´Í£Ö¹£¬¶ø²»ÔÊÐíÓÃ::HI_UNF_PVR_PlayStopTimeShift½Ó¿ÚÀ´Í£Ö¹ CNend
+\param[in] u32ChnID  Channel ID CNcomment:Í¨µÀºÅ CNend
+\param[in] pstStopOpt  Pointer to the attribute structure when the AVPLAY stops  CNcomment:Í£Ö¹µÄÊôÐÔÉèÖÃ CNend
+\retval ::HI_SUCCESS  Success CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT    The PVR recording module is not initialized. CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID     The channel ID is invalid.  CNcomment: Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT    The specified channel is not initialized.  CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_ALREADY        The specified channel has been started.  CNcomment:  Ö¸¶¨µÄÍ¨µÀÒÑ¾­Æô¶¯ CNend
 \retval ::HI_ERR_PVR_PLAY_INVALID_STATE The channel status is incorrect. For example, you call this API to stop the playing channel that is started by calling HI_UNF_PVR_PlayStartTimeShift.
-CNcomment:Í¨µÀ×´Ì¬´íÎó¡£ÀýÈç£º¶ÔÓÃ::HI_UNF_PVR_PlayStartTimeShiftÆô¶¯µÄ²¥·ÅÍ¨µÀµ÷ÓÃ´Ë½Ó¿Ú
+CNcomment:Í¨µÀ×´Ì¬´íÎó¡£ÀýÈç£º¶ÔÓÃ::HI_UNF_PVR_PlayStartTimeShiftÆô¶¯µÄ²¥·ÅÍ¨µÀµ÷ÓÃ´Ë½Ó¿Ú CNend
 \see \n
 ::HI_UNF_PVR_PlayStartChn
 */
 HI_S32 HI_UNF_PVR_PlayStopChn(HI_U32 u32ChnID, const HI_UNF_AVPLAY_STOP_OPT_S *pstStopOpt);
 
 /**
-\brief  Pauses a playing channel. CNcomment:ÔÝÍ£²¥·ÅÍ¨µÀ
+\brief  Pauses a playing channel. CNcomment:ÔÝÍ£²¥·ÅÍ¨µÀ CNend
 \attention \n
 If you call this API when the channel is paused, the error code HI_SUCCESS is returned.\n
 If you call this API is called when the channel is stopped, the error code HI_ERR_PVR_PLAY_INVALID_STATE is returned.
 CNcomment:ÔÚÍ¨µÀÒÑ¾­ÔÝÍ£µÄÇé¿öÏÂÔÙ´Îµ÷ÓÃ::HI_UNF_PVR_PlayPauseChnÔÝÍ£Í¨µÀ½«·µ»Ø³É¹¦ \n
-ÔÚÍ¨µÀÒÑ¾­±»Í£Ö¹µÄÇé¿öÏÂµ÷ÓÃ´Ë½Ó¿ÚÔÝÍ£Í¨µÀ½«·µ»Ø´íÎóÂë::HI_ERR_PVR_PLAY_INVALID_STATE
-\param[in] u32ChnID  Channel ID  CNcomment:Í¨µÀºÅ
-\retval ::HI_SUCCESS  Success CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT      The PVR recording module is not initialized. CNcomment:  PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID     The channel ID is invalid.  CNcomment:  Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT       The specified channel is not initialized.  CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_PLAY_INVALID_STATE   The channel status is incorrect, that is , the channel has been stopped. CNcomment: Í¨µÀ×´Ì¬´íÎó£ºÍ¨µÀÒÑ¾­Í£Ö¹ÔËÐÐ
+ÔÚÍ¨µÀÒÑ¾­±»Í£Ö¹µÄÇé¿öÏÂµ÷ÓÃ´Ë½Ó¿ÚÔÝÍ£Í¨µÀ½«·µ»Ø´íÎóÂë::HI_ERR_PVR_PLAY_INVALID_STATE CNend
+\param[in] u32ChnID  Channel ID  CNcomment:Í¨µÀºÅ CNend
+\retval ::HI_SUCCESS  Success CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT      The PVR recording module is not initialized. CNcomment:  PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID     The channel ID is invalid.  CNcomment:  Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT       The specified channel is not initialized.  CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_PLAY_INVALID_STATE   The channel status is incorrect, that is , the channel has been stopped. CNcomment: Í¨µÀ×´Ì¬´íÎó£ºÍ¨µÀÒÑ¾­Í£Ö¹ÔËÐÐ CNend
 \see \n
 ::HI_UNF_PVR_PlayResumeChn
 */
@@ -786,16 +794,16 @@ HI_S32 HI_UNF_PVR_PlayPauseChn(HI_U32 u32ChnID);
 
 /**
 \brief Resumes a playing channel. You can resume a playing channel or enable a playing channel to exit the pause mode by calling this API.
-CNcomment:»Ö¸´²¥·ÅÍ¨µÀ¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔ»Ö¸´²¥·ÅÍ¨µÀ£¬½â³ý²¥·ÅÍ¨µÀµÄÔÝÍ£×´Ì¬
+CNcomment:»Ö¸´²¥·ÅÍ¨µÀ¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔ»Ö¸´²¥·ÅÍ¨µÀ£¬½â³ý²¥·ÅÍ¨µÀµÄÔÝÍ£×´Ì¬ CNend
 \attention \n
 This API must work with HI_UNF_PVR_PlayPauseChn. In addition, a channel can be resumed only when it is paused.
-CNcomment:´Ë½Ó¿ÚÓë::HI_UNF_PVR_PlayPauseChn½Ó¿Ú±ØÐëÅä¶ÔÊ¹ÓÃ£¬Ö»ÓÐÔÚÍ¨µÀÒÑ¾­ÔÝÍ£µÄÇé¿öÏÂ²ÅÔÊÐí»Ö¸´Í¨µÀ
-\param[in] u32ChnID Channel ID  CNcomment:Í¨µÀºÅ
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT       The PVR recording module is not initialized.  CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID      The channel ID is invalid.   CNcomment:Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT     The specified channel is not initialized.   CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_PLAY_INVALID_STATE The specified channel is not paused.   CNcomment:Ö¸¶¨µÄÍ¨µÀ²»ÔÚÔÝÍ£×´Ì¬
+CNcomment:´Ë½Ó¿ÚÓë::HI_UNF_PVR_PlayPauseChn½Ó¿Ú±ØÐëÅä¶ÔÊ¹ÓÃ£¬Ö»ÓÐÔÚÍ¨µÀÒÑ¾­ÔÝÍ£µÄÇé¿öÏÂ²ÅÔÊÐí»Ö¸´Í¨µÀ CNend
+\param[in] u32ChnID Channel ID  CNcomment:Í¨µÀºÅ CNend
+\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT       The PVR recording module is not initialized.  CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID      The channel ID is invalid.   CNcomment:Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT     The specified channel is not initialized.   CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_PLAY_INVALID_STATE The specified channel is not paused.   CNcomment:Ö¸¶¨µÄÍ¨µÀ²»ÔÚÔÝÍ£×´Ì¬ CNend
 \see \n
 ::HI_UNF_PVR_PlayPauseChn
 */
@@ -803,26 +811,26 @@ HI_S32 HI_UNF_PVR_PlayResumeChn(HI_U32 u32ChnID);
 
 /**
 \brief Starts the trick playing mode. You can call this API to start the trick playing mode. In this mode, the operations include fast forward, fast backward, slow playing, and normal playing.
-CNcomment:½øÐÐÌØ¼¼²¥·Å¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔ½øÐÐÌØ¼¼²¥·Å£¬¼´½øÐÐ¿ì½ø¡¢¿ìÍË¡¢Âý·Å¡¢Õý³£²¥·ÅµÈ²Ù×÷
+CNcomment:½øÐÐÌØ¼¼²¥·Å¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔ½øÐÐÌØ¼¼²¥·Å£¬¼´½øÐÐ¿ì½ø¡¢¿ìÍË¡¢Âý·Å¡¢Õý³£²¥·ÅµÈ²Ù×÷ CNend
 \attention \n
 If you want to switch the trick playing mode to the normal playing mode, you only need to the playing speed in trick playing mode to PVR_PLAY_SPEED_NORMAL.
-CNcomment:½øÈëÌØ¼¼²¥·ÅÄ£Ê½ºó£¬Èç¹ûÏëÍË»ØÕý³£²¥·ÅÄ£Ê½£¬Ö»ÐèÒªÉèÖÃÌØ¼¼²¥·ÅÄ£Ê½µÄËÙ¶ÈÎªPVR_PLAY_SPEED_NORMAL
-\param[in] u32ChnID      Channel ID CNcomment: Í¨µÀºÅ
-\param[in] pstTrickMode   Pointer to the information about the trick playing mode  CNcomment:ÌØ¼¼²¥·ÅÄ£Ê½ÐÅÏ¢Ö¸Õë
-\retval ::HI_SUCCESS   Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT        The PVR recording module is not initialized.   CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID     The channel ID is invalid.      CNcomment:Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT       The specified channel is not initialized.   CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_PLAY_INVALID_STATE   The channel status is incorrect, that is , the channel has been stopped.  CNcomment:Í¨µÀ×´Ì¬´íÎó£ºÍ¨µÀÒÑ¾­Í£Ö¹ÔËÐÐ
-\retval ::HI_ERR_DMX_INVALID_PARA      The parameter is invalid.     CNcomment:²ÎÊý·Ç·¨
-\retval ::HI_ERR_PVR_NOT_SUPPORT    The trick playing mode is not supported.  CNcomment:²»Ö§³ÖµÄÌØ¼¼²¥·ÅÄ£Ê½
+CNcomment:½øÈëÌØ¼¼²¥·ÅÄ£Ê½ºó£¬Èç¹ûÏëÍË»ØÕý³£²¥·ÅÄ£Ê½£¬Ö»ÐèÒªÉèÖÃÌØ¼¼²¥·ÅÄ£Ê½µÄËÙ¶ÈÎªPVR_PLAY_SPEED_NORMAL CNend
+\param[in] u32ChnID      Channel ID CNcomment: Í¨µÀºÅ CNend
+\param[in] pstTrickMode   Pointer to the information about the trick playing mode  CNcomment:ÌØ¼¼²¥·ÅÄ£Ê½ÐÅÏ¢Ö¸Õë CNend
+\retval ::HI_SUCCESS   Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT        The PVR recording module is not initialized.   CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID     The channel ID is invalid.      CNcomment:Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT       The specified channel is not initialized.   CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_PLAY_INVALID_STATE   The channel status is incorrect, that is , the channel has been stopped.  CNcomment:Í¨µÀ×´Ì¬´íÎó£ºÍ¨µÀÒÑ¾­Í£Ö¹ÔËÐÐ CNend
+\retval ::HI_ERR_DMX_INVALID_PARA      The parameter is invalid.     CNcomment:²ÎÊý·Ç·¨ CNend
+\retval ::HI_ERR_PVR_NOT_SUPPORT    The trick playing mode is not supported.  CNcomment:²»Ö§³ÖµÄÌØ¼¼²¥·ÅÄ£Ê½ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_PlayTPlay(HI_U32 u32ChnID, const HI_UNF_PVR_PLAY_MODE_S *pstTrickMode);
 
 /**
-\brief Seeks a specified position to play. CNcomment:¶¨Î»µ½Ö¸¶¨Î»ÖÃ½øÐÐ²¥·Å
+\brief Seeks a specified position to play, seeks by size and frame is not supported currently. CNcomment:¶¨Î»µ½Ö¸¶¨Î»ÖÃ½øÐÐ²¥·Å,ÔÝ²»Ö§³Ö°´ÕÕ´óÐ¡ºÍÖ¡Êý½øÐÐ¶¨Î» CNend
 \attention \n
 If you call this API when the channel is disabled, the error code :HI_ERR_PVR_PLAY_INVALID_STATE is returned.\n
 If the sought position is out of the boundary, the position is adjusted to the boundary automatically.\n
@@ -833,19 +841,19 @@ CNcomment:ÔÚÍ¨µÀÒÑ¾­Í£Ö¹µÄÇé¿öÏÂµ÷ÓÃ±¾½Ó¿Ú½«·µ»Ø´íÎóÂë::HI_ERR_PVR_PLAY_INVALID_
 seekÊ±Èç¹û³¬¹ý±ß½ç£¬×Ô¶¯µ÷Õûµ½±ß½ç\n
 ÏòºóseekºÍ´Ó¿ªÊ¼seek£¬Ôòseekµ½¶ÔÓ¦Î»ÖÃµÄÏÂÒ»¸öIÖ¡£¬²»³É¹¦ÔòÕÒÇ°Ò»¸öIÖ¡\n
 ÏòÇ°seekºÍ´Ó½áÎ²seek£¬Ôòseekµ½¶ÔÓ¦Î»ÖÃµÄÇ°Ò»¸öIÖ¡£¬²»³É¹¦ÔòÕÒÏÂÒ»¸öIÖ¡\n
-ÕÒ²»µ½IÖ¡»á·µ»Ø´íÎó
-\param[in] u32ChnID  Channel ID  CNcomment:Í¨µÀºÅ
-\param[in] pstPosition Pointer to the playing position.  CNcomment:²¥·ÅÎ»ÖÃÐÅÏ¢Ö¸Õë
-\retval ::HI_SUCCESS  Success  CNcomment: ³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT        The PVR recording module is not initialized.  CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID        The channel ID is invalid.   CNcomment:Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT       The specified channel is not initialized.   CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_PLAY_INVALID_STATE  The channel status is incorrect, that is , the channel has been stopped.  CNcomment: Í¨µÀ×´Ì¬´íÎó£ºÍ¨µÀÒÑ¾­Í£Ö¹ÔËÐÐ
-\retval ::HI_ERR_DMX_INVALID_PARA       The parameter is invalid.   CNcomment: ²ÎÊý·Ç·¨
-\retval ::HI_ERR_PVR_NOT_SUPPORT     The seek mode is not supported.   CNcomment:²»Ö§³ÖµÄSeekÄ£Ê½
-\retval ::HI_ERR_PVR_FILE_TILL_END       No corresponding frame is sought till the end of a file.  CNcomment:Seekµ½ÎÄ¼þÎ²Ã»ÓÐÕÒµ½ÏàÓ¦µÄÖ¡
-\retval ::HI_ERR_PVR_FILE_TILL_START   No corresponding frame is sought till the start of a file.    CNcomment:Seekµ½ÎÄ¼þÍ·Ã»ÓÐÕÒµ½ÏàÓ¦µÄÖ¡
-\retval ::HI_ERR_PVR_FILE_CANT_READ     The file cannot be read.   CNcomment:¶ÁÈ¡ÎÄ¼þÊ§°Ü
+ÕÒ²»µ½IÖ¡»á·µ»Ø´íÎó CNend
+\param[in] u32ChnID  Channel ID  CNcomment:Í¨µÀºÅ CNend
+\param[in] pstPosition Pointer to the playing position.  CNcomment:²¥·ÅÎ»ÖÃÐÅÏ¢Ö¸Õë CNend
+\retval ::HI_SUCCESS  Success  CNcomment: ³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT        The PVR recording module is not initialized.  CNcomment:PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID        The channel ID is invalid.   CNcomment:Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT       The specified channel is not initialized.   CNcomment:Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_PLAY_INVALID_STATE  The channel status is incorrect, that is , the channel has been stopped.  CNcomment: Í¨µÀ×´Ì¬´íÎó£ºÍ¨µÀÒÑ¾­Í£Ö¹ÔËÐÐ CNend
+\retval ::HI_ERR_DMX_INVALID_PARA       The parameter is invalid.   CNcomment: ²ÎÊý·Ç·¨ CNend
+\retval ::HI_ERR_PVR_NOT_SUPPORT     The seek mode is not supported.   CNcomment:²»Ö§³ÖµÄSeekÄ£Ê½ CNend
+\retval ::HI_ERR_PVR_FILE_TILL_END       No corresponding frame is sought till the end of a file.  CNcomment:Seekµ½ÎÄ¼þÎ²Ã»ÓÐÕÒµ½ÏàÓ¦µÄÖ¡ CNend
+\retval ::HI_ERR_PVR_FILE_TILL_START   No corresponding frame is sought till the start of a file.    CNcomment:Seekµ½ÎÄ¼þÍ·Ã»ÓÐÕÒµ½ÏàÓ¦µÄÖ¡ CNend
+\retval ::HI_ERR_PVR_FILE_CANT_READ     The file cannot be read.   CNcomment:¶ÁÈ¡ÎÄ¼þÊ§°Ü CNend
 \see \n
 N/A
 */
@@ -853,40 +861,40 @@ HI_S32 HI_UNF_PVR_PlaySeek(HI_U32 u32ChnID, const HI_UNF_PVR_PLAY_POSITION_S *ps
 
 /**
 \brief Plays streams by frame. You can call this API to start step forward mode or step backward mode.
-CNcomment: ÖðÖ¡²¥·Å¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔ½øÐÐÖðÖ¡µ¹ÍË»òÕßÖðÖ¡Ç°½ø²¥·Å
+CNcomment: ÖðÖ¡²¥·Å¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔ½øÐÐÖðÖ¡µ¹ÍË»òÕßÖðÖ¡Ç°½ø²¥·Å CNend
 \attention \n
-This playing mode is not supported currently. CNcomment:Ä¿Ç°²»Ö§³ÖÖðÖ¡²¥·Å
-\param[in] u32ChnID     Channel ID  CNcomment:Í¨µÀºÅ
-\param[in] s32Direction  Playing direction. If the value is greater than or equal to 0, the direction is forward; if the value is less than 0, the direction is backward. CNcomment:  ²¥·Å·½Ïò¡£´óÓÚµÈÓÚ0±íÊ¾Ç°½ø£»Ð¡ÓÚ0±íÊ¾ºóÍË
-\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT        The PVR recording module is not initialized. CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID      The channel ID is invalid.    CNcomment: Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT       The specified channel is not initialized.  CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_PLAY_INVALID_STATE   The channel status is incorrect, that is , the channel has been stopped. CNcomment: Í¨µÀ×´Ì¬´íÎó£ºÍ¨µÀÒÑ¾­Í£Ö¹ÔËÐÐ
-\retval ::HI_ERR_PVR_NOT_SUPPORT   This function is not supported.  CNcomment:²»Ö§³ÖµÄ¹¦ÄÜ
+Step backward mode is not supported currently. CNcomment:Ä¿Ç°ÔÝÊ±²»Ö§³ÖÖðÖ¡µ¹²¥ CNend
+\param[in] u32ChnID     Channel ID  CNcomment:Í¨µÀºÅ CNend
+\param[in] s32Direction  Playing direction. If the value is greater than or equal to 0, the direction is forward; if the value is less than 0, the direction is backward. CNcomment:  ²¥·Å·½Ïò¡£´óÓÚµÈÓÚ0±íÊ¾Ç°½ø£»Ð¡ÓÚ0±íÊ¾ºóÍË CNend
+\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT        The PVR recording module is not initialized. CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID      The channel ID is invalid.    CNcomment: Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT       The specified channel is not initialized.  CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_PLAY_INVALID_STATE   The channel status is incorrect, that is , the channel has been stopped. CNcomment: Í¨µÀ×´Ì¬´íÎó£ºÍ¨µÀÒÑ¾­Í£Ö¹ÔËÐÐ CNend
+\retval ::HI_ERR_PVR_NOT_SUPPORT   This function is not supported.  CNcomment:²»Ö§³ÖµÄ¹¦ÄÜ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_PlayStep(HI_U32 u32ChnID, HI_S32 s32Direction);
 
 /**
-\brief Obtains the playing status of the PVR. CNcomment:»ñÈ¡PVR»Ø·ÅµÄ×´Ì¬
+\brief Obtains the playing status of the PVR. CNcomment:»ñÈ¡PVR»Ø·ÅµÄ×´Ì¬ CNend
 \attention \n
 Before calling this API to obtain the playing status, you must create a player.
-CNcomment:»ñÈ¡²¥·ÅµÄ×´Ì¬£¬×¢ÒâÔÚ²¥·ÅÆ÷´´½¨Ö®ºóµ÷ÓÃ
+CNcomment:»ñÈ¡²¥·ÅµÄ×´Ì¬£¬×¢ÒâÔÚ²¥·ÅÆ÷´´½¨Ö®ºóµ÷ÓÃ CNend
 \param[in] u32ChnID
 \param[in] pstStatus
-\retval ::HI_SUCCESS Success  CNcomment: ³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID The channel ID is invalid.  CNcomment:Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_BUSY   The system is busy. Please try again later. CNcomment:ÏµÍ³Ã¦£¬Óöµ½ÕâÖÖÇé¿ö£¬ÇëÖØÊÔ¡£
+\retval ::HI_SUCCESS Success  CNcomment: ³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID The channel ID is invalid.  CNcomment:Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_BUSY   The system is busy. Please try again later. CNcomment:ÏµÍ³Ã¦£¬Óöµ½ÕâÖÖÇé¿ö£¬ÇëÖØÊÔ¡£ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_PlayGetStatus(HI_U32 u32ChnID, HI_UNF_PVR_PLAY_STATUS_S *pstStatus);
 
 /**
-\brief Obtains the information about the stream file recorded by the PVR based on the ID of the playing channel.  CNcomment:Í¨¹ý²¥·ÅÍ¨µÀID£¬»ñÈ¡PVRÂ¼ÖÆµÄÂëÁ÷ÎÄ¼þÐÅÏ¢
+\brief Obtains the information about the stream file recorded by the PVR based on the ID of the playing channel.  CNcomment:Í¨¹ý²¥·ÅÍ¨µÀID£¬»ñÈ¡PVRÂ¼ÖÆµÄÂëÁ÷ÎÄ¼þÐÅÏ¢ CNend
 \attention \n
 You can call this API to obtain the fixed information about the file to be played. However, the information is variable in the time-shift scenario.
 You can call ::HI_UNF_PVR_PlayGetStatus to obtain the current playing position during playing.\n
@@ -895,17 +903,17 @@ In addition, if both recording and playing do not start, you can call ::HI_UNF_P
 CNcomment: µ÷ÓÃ´Ë½Ó¿ÚÓÃÀ´»ñÈ¡²¥·ÅÎÄ¼þµÄ¹Ì¶¨ÐÅÏ¢£¬µ«ÊÇ¶ÔÓÚÊ±ÒÆ³¡¾°ÕâÐ©ÐÅÏ¢ÊÇ²»¶Ï±ä»¯µÄ
 ÔÚ²¥·Å¹ý³ÌÖÐ¿ÉÒÔÍ¨¹ý::HI_UNF_PVR_PlayGetStatus½Ó¿Ú»ñÈ¡µ±Ç°µÄ²¥·ÅÎ»ÖÃ \n
 ÔÚÊ±ÒÆ¹ý³ÌÖÐ¿ÉÒÔÍ¨¹ý::HI_UNF_PVR_RecGetStatus½Ó¿Ú»ñÈ¡µ±Ç°µÄÂ¼ÖÆÎ»ÖÃ
-´ËÍâ£¬Èç¹û¼ÈÃ»ÓÐÆô¶¯Â¼ÖÆÒ²Ã»ÓÐÆô¶¯²¥·Å£¬¿ÉÒÔÍ¨¹ý::HI_UNF_PVR_GetFileAttrByFileName½Ó¿Ú»ñÈ¡ÎÄ¼þÊôÐÔ
-\param[in] u32ChnID  Channel ID  CNcomment:Í¨µÀºÅ
+´ËÍâ£¬Èç¹û¼ÈÃ»ÓÐÆô¶¯Â¼ÖÆÒ²Ã»ÓÐÆô¶¯²¥·Å£¬¿ÉÒÔÍ¨¹ý::HI_UNF_PVR_GetFileAttrByFileName½Ó¿Ú»ñÈ¡ÎÄ¼þÊôÐÔ CNend
+\param[in] u32ChnID  Channel ID  CNcomment:Í¨µÀºÅ CNend
 \param[in] pAttr Pointer to the playing status
-\param[in] pAttr   CNcomment:²¥·Å×´Ì¬ÐÅÏ¢Ö¸Õë
-\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT            The PVR playing module is not initialized.  CNcomment:PVR²¥·ÅÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_NUL_PTR           The pointer is null.   CNcomment: ¿ÕÖ¸Õë´íÎó
-\retval ::HI_ERR_PVR_INVALID_CHNID      The channel ID is invalid.   CNcomment:Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT        The specified channel is not initialized. CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_FILE_CANT_OPEN      The file cannot be opened.  CNcomment:ÎÞ·¨´ò¿ªÎÄ¼þ
-\retval ::HI_ERR_PVR_FILE_CANT_READ    The file cannot be read.   CNcomment: ÎÞ·¨¶ÁÎÄ¼þ
+\param[in] pAttr   CNcomment:²¥·Å×´Ì¬ÐÅÏ¢Ö¸Õë CNend
+\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT            The PVR playing module is not initialized.  CNcomment:PVR²¥·ÅÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_NUL_PTR           The pointer is null.   CNcomment: ¿ÕÖ¸Õë´íÎó CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID      The channel ID is invalid.   CNcomment:Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT        The specified channel is not initialized. CNcomment: Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_FILE_CANT_OPEN      The file cannot be opened.  CNcomment:ÎÞ·¨´ò¿ªÎÄ¼þ CNend
+\retval ::HI_ERR_PVR_FILE_CANT_READ    The file cannot be read.   CNcomment: ÎÞ·¨¶ÁÎÄ¼þ CNend
 \see \n
 N/A
 */
@@ -915,24 +923,24 @@ HI_S32 HI_UNF_PVR_PlayGetFileAttr(HI_U32 u32ChnID, HI_UNF_PVR_FILE_ATTR_S *pAttr
 \brief
 Obtains the information about a stream file.
 By calling this API, you can obtain the information about a specified stream file without creating a playing channel.
-CNcomment:»ñÈ¡ÂëÁ÷ÎÄ¼þÐÅÏ¢¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔÔÚ²»ÉêÇë²¥·ÅÍ¨µÀµÄÇé¿öÏÂ»ñÈ¡Ö¸¶¨ÂëÁ÷ÎÄ¼þµÄÐÅÏ¢
+CNcomment:»ñÈ¡ÂëÁ÷ÎÄ¼þÐÅÏ¢¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔÔÚ²»ÉêÇë²¥·ÅÍ¨µÀµÄÇé¿öÏÂ»ñÈ¡Ö¸¶¨ÂëÁ÷ÎÄ¼þµÄÐÅÏ¢ CNend
 \attention \n
 pFileName points to the name of a stream file rather than an index file.\n
 You can call this API to obtain the attributes of a stream file at any time.
-CNcomment:Ö¸ÏòÂëÁ÷ÎÄ¼þÃû¶ø²»ÊÇË÷ÒýÎÄ¼þÃû.ÈÎºÎÊ±ºò¶¼¿ÉÒÔµ÷ÓÃ´Ë½Ó¿Ú»ñÈ¡ÂëÁ÷ÎÄ¼þµÄÊôÐÔ
-\param[in] pFileName Name of a stream file  CNcomment:ÂëÁ÷ÎÄ¼þÃû
-\param[in] pAttr   Pointer to the playing status   CNcomment:²¥·Å×´Ì¬ÐÅÏ¢Ö¸Õë
-\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NUL_PTR       The pointer is null.    CNcomment:¿ÕÖ¸Õë´íÎó
-\retval ::HI_ERR_PVR_FILE_CANT_OPEN  The file cannot be opened.  CNcomment:ÎÞ·¨´ò¿ªÎÄ¼þ
-\retval ::HI_ERR_PVR_FILE_CANT_READ   The file cannot be read. CNcomment:ÎÞ·¨¶ÁÎÄ¼þ
+CNcomment:Ö¸ÏòÂëÁ÷ÎÄ¼þÃû¶ø²»ÊÇË÷ÒýÎÄ¼þÃû.ÈÎºÎÊ±ºò¶¼¿ÉÒÔµ÷ÓÃ´Ë½Ó¿Ú»ñÈ¡ÂëÁ÷ÎÄ¼þµÄÊôÐÔ CNend
+\param[in] pFileName Name of a stream file  CNcomment:ÂëÁ÷ÎÄ¼þÃû CNend
+\param[in] pAttr   Pointer to the playing status   CNcomment:²¥·Å×´Ì¬ÐÅÏ¢Ö¸Õë CNend
+\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NUL_PTR       The pointer is null.    CNcomment:¿ÕÖ¸Õë´íÎó CNend
+\retval ::HI_ERR_PVR_FILE_CANT_OPEN  The file cannot be opened.  CNcomment:ÎÞ·¨´ò¿ªÎÄ¼þ CNend
+\retval ::HI_ERR_PVR_FILE_CANT_READ   The file cannot be read. CNcomment:ÎÞ·¨¶ÁÎÄ¼þ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_GetFileAttrByFileName(const HI_CHAR *pFileName, HI_UNF_PVR_FILE_ATTR_S *pAttr);
 
 /**
-\brief  Writes the user data. CNcomment: Ð´ÈëÓÃ»§Êý¾Ý
+\brief  Writes the user data. CNcomment: Ð´ÈëÓÃ»§Êý¾Ý CNend
 \attention \n
 pFileName points to the name of a stream file rather than an index file.\n
 The value of u32UsrDataLen cannot be greater than that of u32UsrDataInfoSize. The value of u32UsrDataInfoSize (one of recording channel attributes) is set before a file is recorded.
@@ -941,22 +949,22 @@ You need to write the user data after starting a recording channel.
 CNcomment:pFileNameÖ¸ÏòÂëÁ÷ÎÄ¼þÃû¶ø²»ÊÇË÷ÒýÎÄ¼þÃû \n
 u32UsrDataLenµÄÈ¡Öµ²»ÄÜ´óÓÚÂ¼ÖÆ´ËÎÄ¼þÊ±ÔÚÂ¼ÖÆÍ¨µÀÊôÐÔÀïÃæÖ¸¶¨µÄu32UsrDataInfoSizeµÄÈ¡Öµ \n
 ÓÃ»§Êý¾Ý±»±£´æÔÚË÷ÒýÎÄ¼þÖÐ \n
-ÇëÔÚÆô¶¯Â¼ÖÆÍ¨µÀºóÔÙÐ´ÈëÓÃ»§Êý¾ÝÐÅÏ¢
-\param[in] pFileName Name of a stream file CNcomment: ÂëÁ÷ÎÄ¼þÃû
-\param[in] pInfo    Pointer to the user data. The memory is allocated by customers. CNcomment:ÓÃ»§Êý¾ÝÖ¸Õë£¬¿Õ¼äÓÉÓÃ»§·ÖÅä
-\param[in] u32UsrDataLen   Length of the user data CNcomment: ÓÃ»§Êý¾Ý³¤¶È
-\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NUL_PTR       The pointer is null.   CNcomment: ¿ÕÖ¸Õë´íÎó
-\retval ::HI_ERR_PVR_FILE_CANT_OPEN   The file cannot be opened.CNcomment:ÎÞ·¨´ò¿ªÎÄ¼þ
-\retval ::HI_ERR_PVR_FILE_CANT_READ  The file cannot be read.  CNcomment:ÎÞ·¨¶ÁÎÄ¼þ
-\retval ::HI_ERR_DMX_INVALID_PARA    The parameter is invalid.  CNcomment: ²ÎÊý·Ç·¨
+ÇëÔÚÆô¶¯Â¼ÖÆÍ¨µÀºóÔÙÐ´ÈëÓÃ»§Êý¾ÝÐÅÏ¢ CNend
+\param[in] pFileName Name of a stream file CNcomment: ÂëÁ÷ÎÄ¼þÃû CNend
+\param[in] pInfo    Pointer to the user data. The memory is allocated by customers. CNcomment:ÓÃ»§Êý¾ÝÖ¸Õë£¬¿Õ¼äÓÉÓÃ»§·ÖÅä CNend
+\param[in] u32UsrDataLen   Length of the user data CNcomment: ÓÃ»§Êý¾Ý³¤¶È CNend
+\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NUL_PTR       The pointer is null.   CNcomment: ¿ÕÖ¸Õë´íÎó CNend
+\retval ::HI_ERR_PVR_FILE_CANT_OPEN   The file cannot be opened.CNcomment:ÎÞ·¨´ò¿ªÎÄ¼þ CNend
+\retval ::HI_ERR_PVR_FILE_CANT_READ  The file cannot be read.  CNcomment:ÎÞ·¨¶ÁÎÄ¼þ CNend
+\retval ::HI_ERR_DMX_INVALID_PARA    The parameter is invalid.  CNcomment: ²ÎÊý·Ç·¨ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_SetUsrDataInfoByFileName(const HI_CHAR *pFileName, HI_U8 *pInfo, HI_U32 u32UsrDataLen);
 
 /**
-\brief  Reads the user data. CNcomment: ¶ÁÈ¡ÓÃ»§Êý¾Ý
+\brief  Reads the user data. CNcomment: ¶ÁÈ¡ÓÃ»§Êý¾Ý CNend
 \attention \n
 pFileName points to the name of a stream file rather than an index file.\n
 The return value of pUsrDataLen indicates the length of the obtained user data. The value is the smaller one between the values of u32BufLen and actual length of the user data.
@@ -965,16 +973,16 @@ The PVR does not save the length of the user data set by calling HI_UNF_PVR_SetU
 CNcomment:pFileNameÖ¸ÏòÂëÁ÷ÎÄ¼þÃû¶ø²»ÊÇË÷ÒýÎÄ¼þÃû \n
 pUsrDataLen·µ»Ø¶ÁÈ¡µ½µÄÓÃ»§Êý¾ÝµÄ³¤¶È£¬ÆäÈ¡ÖµÎªu32BufLenºÍ"Êµ¼ÊÓÃ»§Êý¾Ý³¤¶È"¶þÕßÖÐµÄ½ÏÐ¡Öµ¡£
 "Êµ¼ÊÓÃ»§Êý¾Ý³¤¶È"½«²»Ð¡ÓÚHI_UNF_PVR_RecNewChnÊ±ÅäÖÃµÄ×î´óÓÃ»§Êý¾Ý³¤¶È£¬ÒÔ±£Ö¤ÄÜ¹»°ÑÈ«²¿ÓÃ»§Êý¾Ý¶Á³ö \n
-PVRÄ£¿é²»±£´æHI_UNF_PVR_SetUsrDataInfoByFileNameÊ±´«ÈëµÄÓÃ»§Êý¾Ý³¤¶È£¬Ö»±£´æHI_UNF_PVR_RecNewChnÊ±ÅäÖÃµÄ×î´óÓÃ»§Êý¾Ý³¤¶È
-\param[in] pFileName    Name of a stream file CNcomment:ÂëÁ÷ÎÄ¼þÃû
-\param[in] pInfo    User data buffer. The memory is allocated by customers.   CNcomment:ÓÃ»§Êý¾Ý»º³åÇø£¬¿Õ¼äÓÉÓÃ»§·ÖÅä
-\param[in] u32BufLen   Buffer length .CNcomment:»º³åÇø³¤¶È
-\param[in] pUsrDataLen Actual length of the obtained user data .CNcomment:Êµ¼Ê¶ÁÈ¡µ½µÄÓÃ»§Êý¾Ý³¤¶È
-\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_NUL_PTR        The pointer is null.      CNcomment: ¿ÕÖ¸Õë´íÎó
-\retval ::HI_ERR_PVR_FILE_CANT_OPEN    The file cannot be opened. CNcomment:ÎÞ·¨´ò¿ªÎÄ¼þ
-\retval ::HI_ERR_PVR_FILE_CANT_READ    The file cannot be read.  CNcomment:ÎÞ·¨¶ÁÎÄ¼þ
-\retval ::HI_ERR_DMX_INVALID_PARA      The parameter is invalid.  CNcomment: ²ÎÊý·Ç·¨
+PVRÄ£¿é²»±£´æHI_UNF_PVR_SetUsrDataInfoByFileNameÊ±´«ÈëµÄÓÃ»§Êý¾Ý³¤¶È£¬Ö»±£´æHI_UNF_PVR_RecNewChnÊ±ÅäÖÃµÄ×î´óÓÃ»§Êý¾Ý³¤¶È CNend
+\param[in] pFileName    Name of a stream file CNcomment:ÂëÁ÷ÎÄ¼þÃû CNend
+\param[in] pInfo    User data buffer. The memory is allocated by customers.   CNcomment:ÓÃ»§Êý¾Ý»º³åÇø£¬¿Õ¼äÓÉÓÃ»§·ÖÅä CNend
+\param[in] u32BufLen   Buffer length .CNcomment:»º³åÇø³¤¶È CNend
+\param[in] pUsrDataLen Actual length of the obtained user data .CNcomment:Êµ¼Ê¶ÁÈ¡µ½µÄÓÃ»§Êý¾Ý³¤¶È CNend
+\retval ::HI_SUCCESS  Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_NUL_PTR        The pointer is null.      CNcomment: ¿ÕÖ¸Õë´íÎó CNend
+\retval ::HI_ERR_PVR_FILE_CANT_OPEN    The file cannot be opened. CNcomment:ÎÞ·¨´ò¿ªÎÄ¼þ CNend
+\retval ::HI_ERR_PVR_FILE_CANT_READ    The file cannot be read.  CNcomment:ÎÞ·¨¶ÁÎÄ¼þ CNend
+\retval ::HI_ERR_DMX_INVALID_PARA      The parameter is invalid.  CNcomment: ²ÎÊý·Ç·¨ CNend
 \see \n
 N/A
 */
@@ -982,7 +990,7 @@ HI_S32 HI_UNF_PVR_GetUsrDataInfoByFileName(const HI_CHAR *pFileName, HI_U8 *pInf
 
 /**
 \brief  Registers an event callback function. You can call this API to register a callback function for PVR event. In this way, you can handle the events occurred during PVR recording and playing.
-CNcomment: ×¢²áÊÂ¼þ»Øµ÷º¯Êý¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔ×¢²áPVRÊÂ¼þµÄ»Øµ÷º¯Êý£¬´Ó¶ø¶ÔPVRÂ¼ÖÆ¡¢²¥·Å¹ý³ÌÖÐ²úÉúµÄÊÂ¼þ½øÐÐ´¦Àí
+CNcomment: ×¢²áÊÂ¼þ»Øµ÷º¯Êý¡£µ÷ÓÃ´Ë½Ó¿Ú¿ÉÒÔ×¢²áPVRÊÂ¼þµÄ»Øµ÷º¯Êý£¬´Ó¶ø¶ÔPVRÂ¼ÖÆ¡¢²¥·Å¹ý³ÌÖÐ²úÉúµÄÊÂ¼þ½øÐÐ´¦Àí CNend
 \attention \n
 You can call ::HI_UNF_PVR_UnRegisterEvent to deregister an event. If a registered event is not deregistered, it is always valid.
 For the PVR_EVENT_PLAY_REACH_REC message, it is recommended to stop the playing of the PVR by calling the registered callback function, and switch the playing mode to live mode of the AVPLAY.
@@ -993,54 +1001,54 @@ CNcomment: ¿ÉÒÔÊ¹ÓÃ::HI_UNF_PVR_UnRegisterEventÀ´·´×¢²á1¸öÊÂ¼þ£¬·ñÔòÒÑ¾­×¢²áµÄÊÂ
 ¶ÔÓÚPVR_EVENT_PLAY_REACH_RECÏûÏ¢£¬½¨ÒéÓÃ»§ÔÚ×¢²áµÄ»Øµ÷º¯ÊýÖÐÍ£Ö¹PVR²¥·Å£¬²¢ÇÐ»»µ½Ö±²¥Ä£Ê½ÓÃAVPLAY½øÐÐ²¥·Å¡£
 µ±Â¼ÖÆÊôÐÔÅäÖÃÎª²»»ØÈÆµÄÊ±ºò£¬PVR_EVENT_REC_OVER_FIXÏûÏ¢ÔÚÂ¼ÖÆ³¤¶Èµ½´ïÖ¸¶¨³¤¶È£¬¼´½«Í£Ö¹Â¼ÖÆµÄÊ±ºòÉÏ±¨£»
 µ±Â¼ÖÆÊôÐÔÅäÖÃÎª»ØÈÆµÄÊ±ºò£¬PVR_EVENT_REC_OVER_FIXÏûÏ¢ÔÚÃ¿´Î»ØÈÆµÄÊ±ºò¶¼»áÉÏ±¨£¬´ËÊ±£¬ÏûÏ¢´¦Àí»Øµ÷º¯ÊýµÄs32EventValue²ÎÊýÖµÎª»ØÈÆµÄ´ÎÊý(´Ó1¿ªÊ¼¼ÆÊý)¡£
-PVR_EVENT_REC_REACH_PLAYÏûÏ¢ÔÚÂ¼ÖÆ¼´½«×·ÉÏ²¥·ÅµÄÊ±ºòÉÏ±¨£¬´ËÊ±£¬ÏûÏ¢´¦Àí»Øµ÷º¯ÊýµÄs32EventValue²ÎÊýÖµÎªÂ¼ÖÆÎ»ÖÃ¾àÀë²¥·ÅÎ»ÖÃµÄ×Ö½ÚÊý¡£
-\param[in] enEventType  Type of the event to be registered.  CNcomment: ÏëÒª×¢²áµÄÊÂ¼þÀàÐÍ
-\param[in] callBack   Event handling callback function.   CNcomment: ÊÂ¼þ´¦Àíº¯Êý
-\param[in] args      Parameters of a customized callback function.    CNcomment:ÓÃ»§×Ô¶¨Òå»Øµ÷º¯ÊýµÄ²ÎÊý
-\retval ::HI_SUCCESS   Success CNcomment: ³É¹¦
-\retval ::HI_ERR_PVR_INTF_EVENT_INVAL   The event is invalid.  CNcomment: ·Ç·¨µÄÊÂ¼þ
-\retval ::HI_ERR_PVR_ALREADY         The registering event has been registered.    CNcomment: ³¢ÊÔ¶ÔÒÑ¾­×¢²áµÄÊÂ¼þÔÙ´Î×¢²á
-\retval ::HI_ERR_PVR_INTF_EVENT_NOREG    Registration fails because the callback function pointer is incorrect. CNcomment:  »Øµ÷º¯ÊýÖ¸Õë³ö´í£¬ÎÞ·¨×¢²á³É¹¦
+PVR_EVENT_REC_REACH_PLAYÏûÏ¢ÔÚÂ¼ÖÆ¼´½«×·ÉÏ²¥·ÅµÄÊ±ºòÉÏ±¨£¬´ËÊ±£¬ÏûÏ¢´¦Àí»Øµ÷º¯ÊýµÄs32EventValue²ÎÊýÖµÎªÂ¼ÖÆÎ»ÖÃ¾àÀë²¥·ÅÎ»ÖÃµÄ×Ö½ÚÊý¡£ CNend
+\param[in] enEventType  Type of the event to be registered.  CNcomment: ÏëÒª×¢²áµÄÊÂ¼þÀàÐÍ CNend
+\param[in] callBack   Event handling callback function.   CNcomment: ÊÂ¼þ´¦Àíº¯Êý CNend
+\param[in] args      Parameters of a customized callback function.    CNcomment:ÓÃ»§×Ô¶¨Òå»Øµ÷º¯ÊýµÄ²ÎÊý CNend
+\retval ::HI_SUCCESS   Success CNcomment: ³É¹¦ CNend
+\retval ::HI_ERR_PVR_INTF_EVENT_INVAL   The event is invalid.  CNcomment: ·Ç·¨µÄÊÂ¼þ CNend
+\retval ::HI_ERR_PVR_ALREADY         The registering event has been registered.    CNcomment: ³¢ÊÔ¶ÔÒÑ¾­×¢²áµÄÊÂ¼þÔÙ´Î×¢²á CNend
+\retval ::HI_ERR_PVR_INTF_EVENT_NOREG    Registration fails because the callback function pointer is incorrect. CNcomment:  »Øµ÷º¯ÊýÖ¸Õë³ö´í£¬ÎÞ·¨×¢²á³É¹¦ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_RegisterEvent(HI_UNF_PVR_EVENT_E enEventType, eventCallBack callBack, HI_VOID *args);
 
 /**
-\brief  Deregisters a PVR event. CNcomment: È¥×¢²áPVRÊÂ¼þµÄ»Øµ÷º¯Êý
+\brief  Deregisters a PVR event. CNcomment: È¥×¢²áPVRÊÂ¼þµÄ»Øµ÷º¯Êý CNend
 \attention \n
 You can call this API to deregister an event. If a registered event is not deregistered, it is always valid.
-CNcomment: ¿ÉÒÔÊ¹ÓÃ´Ë½Ó¿ÚÀ´È¥×¢²á1¸öÊÂ¼þ£¬·ñÔòÒÑ¾­×¢²áµÄÊÂ¼þ½«Ò»Ö±±£³ÖÓÐÐ§
-\param[in] enEventType      Type of the event to be deregistered    CNcomment: ÏëÒªÈ¥×¢²áµÄÊÂ¼þÀàÐÍ
-\retval ::HI_SUCCESS   Success  CNcomment:³É¹¦
-\retval ::HI_ERR_PVR_INTF_EVENT_INVAL  The event is invalid. CNcomment: ·Ç·¨µÄÊÂ¼þ
-\retval ::HI_ERR_PVR_INTF_EVENT_NOREG  The deregistering event is not registered. CNcomment: ¶ÔÃ»ÓÐ×¢²áµÄÊÂ¼þ½øÐÐÈ¥×¢²á
+CNcomment: ¿ÉÒÔÊ¹ÓÃ´Ë½Ó¿ÚÀ´È¥×¢²á1¸öÊÂ¼þ£¬·ñÔòÒÑ¾­×¢²áµÄÊÂ¼þ½«Ò»Ö±±£³ÖÓÐÐ§ CNend
+\param[in] enEventType      Type of the event to be deregistered    CNcomment: ÏëÒªÈ¥×¢²áµÄÊÂ¼þÀàÐÍ CNend
+\retval ::HI_SUCCESS   Success  CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_PVR_INTF_EVENT_INVAL  The event is invalid. CNcomment: ·Ç·¨µÄÊÂ¼þ CNend
+\retval ::HI_ERR_PVR_INTF_EVENT_NOREG  The deregistering event is not registered. CNcomment: ¶ÔÃ»ÓÐ×¢²áµÄÊÂ¼þ½øÐÐÈ¥×¢²á CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_UnRegisterEvent(HI_UNF_PVR_EVENT_E enEventType);
 
 /**
-\brief
+\brief Create index file by ts file. CNcomment:¸ù¾ÝÂëÁ÷ÎÄ¼þ´´½¨Ë÷ÒýÎÄ¼þ CNend
 \attention \n
-This function is not supported currently.
-CNcomment: ÔÝÊ±²»Ö§³Ö´Ë¹¦ÄÜ
+This function is not supported currently. 
+CNcomment: ÔÝÊ±²»Ö§³Ö´Ë¹¦ÄÜ CNend
 \param[in] pstTsFileName
 \param[in] pstIdxFileName
 \param[in] pAttr
-\retval ::HI_SUCCESS Success CNcomment:  ³É¹¦
-\retval ::HI_ERR_PVR_NOT_SUPPORT  This function is not supported. CNcomment: ²»Ö§³Ö´Ë¹¦ÄÜ
+\retval ::HI_SUCCESS Success CNcomment:  ³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_SUPPORT  This function is not supported. CNcomment: ²»Ö§³Ö´Ë¹¦ÄÜ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_CreateIdxFile(HI_U8* pstTsFileName, HI_U8* pstIdxFileName, HI_UNF_PVR_GEN_IDX_ATTR_S* pAttr);
 
 /**
-\brief Controls whether to output debugging information.  CNcomment:ÅäÖÃÊÇ·ñÊä³öµ÷ÊÔÐÅÏ¢
+\brief Controls whether to output debugging information.  CNcomment:ÅäÖÃÊÇ·ñÊä³öµ÷ÊÔÐÅÏ¢ CNend
 \attention \n
 The debugging information about the severity level higher than the error level is output.
-CNcomment:Ä¬ÈÏÊä³öerror ÒÔÉÏ¼¶±ðµÄµ÷ÊÔÐÅÏ¢
-\param[in] enDebugLevel  Output level of the debugging information CNcomment: µ÷ÊÔÐÅÏ¢Êä³ö¼¶±ð
+CNcomment:Ä¬ÈÏÊä³öerror ÒÔÉÏ¼¶±ðµÄµ÷ÊÔÐÅÏ¢¡£×¢ÒâºÍÈ«¾Ö´òÓ¡¼¶±ðÅäºÏÊ¹ÓÃ£¬¼´´Ë¼¶±ðÐèÒªÐ¡ÓÚµÈÓÚÈ«¾Ö´òÓ¡¼¶±ð²ÅÓÐÐ§ CNend
+\param[in] enDebugLevel  Output level of the debugging information CNcomment: µ÷ÊÔÐÅÏ¢Êä³ö¼¶±ð CNend
 \retval none
 \see \n
 N/A
@@ -1048,7 +1056,7 @@ N/A
 HI_VOID HI_UNF_PVR_ConfigDebugInfo(HI_LOG_LEVEL_E enDebugLevel);
 
 /**
-\brief  Deletes the stream files and index files generated during recording. CNcomment:É¾³ýÂ¼ÖÆÊ±Éú³ÉµÄÂëÁ÷ÎÄ¼þºÍË÷ÒýÎÄ¼þ
+\brief  Deletes the stream files and index files generated during recording. CNcomment:É¾³ýÂ¼ÖÆÊ±Éú³ÉµÄÂëÁ÷ÎÄ¼þºÍË÷ÒýÎÄ¼þ CNend
 \attention \n
 pFileName points to the name of a stream file rather than an index file.\n
 After this API is called, the stream files and index files generated during stream recording are deleted.
@@ -1056,61 +1064,41 @@ If a stream file is greater than 4 GB, multiple files named data.ts, data.ts.000
 CNcomment:pFileNameÖ¸ÏòÂëÁ÷ÎÄ¼þÃû¶ø²»ÊÇË÷ÒýÎÄ¼þÃû\n
 µ÷ÓÃ´Ë½Ó¿Úºó£¬Â¼ÖÆ´ËÂëÁ÷Ê±Éú³ÉµÄÂëÁ÷ÎÄ¼þºÍË÷ÒýÎÄ¼þ¶¼½«±»É¾³ý\n
 Èç¹ûÂëÁ÷ÎÄ¼þ´óÓÚ4G½«»áÉú³Édata.ts, data.ts.0001, data.ts.0002, data.ts.0003 ...\n
-µÈ¶à¸öÎÄ¼þ£¬µ«ÊÇÉ¾³ýÊ±Ö»ÐèÒª´«ÈëÎÄ¼þÃû"data.ts"¾Í¿ÉÒÔÁË¡£
-\param[in] pFileName  Name of a stream file  CNcomment:ÂëÁ÷ÎÄ¼þÃû
+µÈ¶à¸öÎÄ¼þ£¬µ«ÊÇÉ¾³ýÊ±Ö»ÐèÒª´«ÈëÎÄ¼þÃû"data.ts"¾Í¿ÉÒÔÁË¡£ CNend
+\param[in] pFileName  Name of a stream file  CNcomment:ÂëÁ÷ÎÄ¼þÃû CNend
 \retval none
 \see \n
 N/A
 */
 HI_VOID HI_UNF_PVR_RemoveFile(const HI_CHAR *pFileName);
 
-/**
-\brief
-\attention \n
-\param[in] u64Size
-\retval none
-\see \n
-N/A
-*/
-//HI_S32 HI_UNF_PVR_SetFileNodeMaxSize(HI_U64 u64Size);
-
 
 /**
 \brief
-\attention \n
-\param N/A
-\retval none
-\see \n
-N/A
-*/
-//HI_U64 HI_UNF_PVR_GetFileNodeMaxSize();
-
-/**
-\brief
-Register extra write callback function.When the stream file need to be extra processed  CNcomment: ×¢²áÍâ²¿¶Á¡¢Ð´Êý¾Ý»Øµ÷º¯Êý¡£µ±ÎÄ¼þÐèÒªÌØÊâ´¦ÀíÊ±×¢²á£¬ÈçË½ÓÐÐ­Òé¼ÓÈÅµÄ½ÚÄ¿¡£
+Register extra write callback function.When the stream file need to be extra processed  CNcomment: ×¢²áÍâ²¿¶Á¡¢Ð´Êý¾Ý»Øµ÷º¯Êý¡£µ±ÎÄ¼þÐèÒªÌØÊâ´¦ÀíÊ±×¢²á£¬ÈçË½ÓÐÐ­Òé¼ÓÈÅµÄ½ÚÄ¿¡£ CNend
 \attention \n
 N/A
-\param[in] u32ChnID    Channel ID  CNcomment:Í¨µÀºÅ
-\param[in] enExtraCallbackType  Callback function type CNcomment: »Øµ÷º¯ÊýÀàÐÍ
-\retval ::HI_SUCCESS Success  CNcomment: ³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID The channel ID is invalid.  CNcomment:Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT   Specified channel is not initialized   CNcomment:   Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼?
+\param[in] u32ChnID    Channel ID  CNcomment:Í¨µÀºÅ CNend
+\param[in] enExtraCallbackType  Callback function type CNcomment: »Øµ÷º¯ÊýÀàÐÍ CNend
+\retval ::HI_SUCCESS Success  CNcomment: ³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID The channel ID is invalid.  CNcomment:Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT   Specified channel is not initialized   CNcomment:   Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼? CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_PVR_RegisterExtraCallback(HI_U32 u32ChnID, HI_UNF_PVR_EXTRA_CALLBACK_E enExtraCallbackType, ExtraCallBack fCallback, HI_VOID *args);
 
 /**
-\brief Deregisters extra write callback function.When the stream file need to be extra processed  CNcomment:È¥×¢²áÍâ²¿¶Á¡¢Ð´Êý¾Ý»Øµ÷º¯Êý¡£
+\brief Deregisters extra write callback function.When the stream file need to be extra processed  CNcomment:È¥×¢²áÍâ²¿¶Á¡¢Ð´Êý¾Ý»Øµ÷º¯Êý¡£ CNend
 \attention \n
 N/A
-\param[in] u32ChnID  Channel ID  CNcomment:Í¨µÀºÅ
-\param[in] enExtraCallbackType  Callback function type CNcomment: »Øµ÷º¯ÊýÀàÐÍ
-\retval ::HI_SUCCESS Success  CNcomment: ³É¹¦
-\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯
-\retval ::HI_ERR_PVR_INVALID_CHNID The channel ID is invalid.  CNcomment:Í¨µÀºÅ·Ç·¨
-\retval ::HI_ERR_PVR_CHN_NOT_INIT   Specified channel is not initialized   CNcomment:   Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯
+\param[in] u32ChnID  Channel ID  CNcomment:Í¨µÀºÅ CNend
+\param[in] enExtraCallbackType  Callback function type CNcomment: »Øµ÷º¯ÊýÀàÐÍ CNend
+\retval ::HI_SUCCESS Success  CNcomment: ³É¹¦ CNend
+\retval ::HI_ERR_PVR_NOT_INIT  The PVR recording module is not initialized CNcomment: PVRÂ¼ÖÆÄ£¿éÎ´³õÊ¼»¯ CNend
+\retval ::HI_ERR_PVR_INVALID_CHNID The channel ID is invalid.  CNcomment:Í¨µÀºÅ·Ç·¨ CNend
+\retval ::HI_ERR_PVR_CHN_NOT_INIT   Specified channel is not initialized   CNcomment:   Ö¸¶¨µÄÍ¨µÀÎ´³õÊ¼»¯ CNend
 \see \n
 N/A
 */

@@ -16,6 +16,9 @@
 #define __VDEC_H__
 
 #include "hi_type.h"
+#include "common.h"
+#include "vfmw_ext.h"
+#include "drv_vpss_ext.h"
 
 
 #define MAX_OPEN_COUNT	16 
@@ -41,6 +44,14 @@ struct vdec_entry {
 	struct cdev cdev;
 	struct device *device;
 };
+	
+typedef struct {
+
+  VFMW_EXPORT_FUNC_S* 	pVfmwFunc;		/* VFMW extenal functions */
+  VPSS_EXPORT_FUNC_S* 	 pVpssFunc; 	  /*VPSS external functions*/
+
+}st_OmxFunc;
+
 
 HI_U32 get_channel_num(struct vdec_entry *vdec);
 HI_VOID release_channel_num(struct vdec_entry *vdec, HI_S32 chan_num);

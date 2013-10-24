@@ -2,6 +2,7 @@
 #include "si_defstx.h"
 #include "si_hdmitx.h"
 #include "si_txapidefs.h"
+#include "drv_reg_proc.h"
 #include <linux/kernel.h>
 
 #if defined(BOARD_TYPE_S40V2_fpga)    
@@ -192,7 +193,7 @@ void SI_TX_PHY_INIT(void)
     // unknown DM_TX_CTRL2
     SI_TX_PHY_WriteRegister(0x06,0x89);
     // term_en && cap_ctl  // term_en œ»πÿµÙ
-    SI_TX_PHY_WriteRegister(0x0e,0x02);
+    SI_TX_PHY_WriteRegister(0x0e,0x00);
     // unknown DM_TX_CTRL3
     SI_TX_PHY_WriteRegister(0x07,0x81);
     // unknown DM_TX_CTRL5

@@ -5,10 +5,10 @@
  ******************************************************************************
   File Name     : hal_otp_v200.c
   Version       : Initial Draft
-  Author        : 
+  Author        : Hisilicon hisecurity team
   Created       : 
   Last Modified :
-  Description   : OTP REG DEFINE
+  Description   : 
   Function List :
   History       :
 ******************************************************************************/
@@ -49,6 +49,9 @@ static HI_U32 DRV_OTP_GetOTPTimeValue(HI_VOID)
 
 HI_DECLARE_MUTEX(g_OtpV200Mutex);
 
+#define OTP_V200_INTERNAL_WRITE_STATUS_ADDR    (0X17)
+#define OTP_V200_INTERNAL_WRITE_ERROR_VALUE    (0X80)
+
 #define DRV_OTPV200_LOCK() do{									\
     	HI_S32 s32Ret = 0;									\
     	s32Ret = down_interruptible(&g_OtpV200Mutex);		\
@@ -63,9 +66,9 @@ HI_DECLARE_MUTEX(g_OtpV200Mutex);
 		up(&g_OtpV200Mutex);		\
 	}while(0)
 
-HI_U32 do_apb_v200_read(HI_U32 addr)
+HI_U32 HAL_OTP_V200_Read(HI_U32 addr)
 {
-    OTP_V200_CTRL_STATUS_U CtrlStaut;
+    volatile OTP_V200_CTRL_STATUS_U CtrlStaut;
     OTP_V200_CHANNEL_SEL_U ChannelSel;
     OTP_V200_CPU_RW_CTRL_U CPURWCtrl;
     OTP_V200_MODE_U        Mode;
@@ -114,20 +117,79 @@ HI_U32 do_apb_v200_read(HI_U32 addr)
     return Redata.u32;
 }
 
-HI_U8 do_apb_v200_read_byte(HI_U32 addr)
+HI_U8 HAL_OTP_V200_ReadByte(HI_U32 addr)
 {
     HI_U32 Value = 0;
     HI_U32 readableAddr = 0;
 
     readableAddr = addr & (~0x3);
-    Value = do_apb_v200_read(readableAddr);
+    Value = HAL_OTP_V200_Read(readableAddr);
     return (Value >> ((addr & 0x3)*8)) & 0xff ;
 //    return (HI_U8)(Value & 0xff);    
 }
 
-HI_S32  do_apb_v200_write(HI_U32 addr, HI_U32 tdata)
+//Only used internally, No lock! Write to a special address 0x17[7]
+static HI_S32 write_fail_flag(HI_VOID)
 {
-    OTP_V200_CTRL_STATUS_U CtrlStaut;
+    volatile OTP_V200_CTRL_STATUS_U CtrlStaut;
+    OTP_V200_CHANNEL_SEL_U ChannelSel;
+    OTP_V200_CPU_RW_CTRL_U CPURWCtrl;
+    OTP_V200_MODE_U        Mode;
+    OTP_V200_WADDR_U       WAddr;
+    OTP_V200_WDATA_U       WDATA;
+    OTP_V200_WR_START_U    WRStart;
+    HI_U32 u32OTPTimeValue = 0;
+    
+    HI_U32 addr  = OTP_V200_INTERNAL_WRITE_STATUS_ADDR;
+    HI_U32 tdata = OTP_V200_INTERNAL_WRITE_ERROR_VALUE;
+    
+    CtrlStaut.u32 = otp_read_reg(OTP_V200_CTRL_STATUS);
+    //Check CTRL_STATUS ctrl_ready to 0x01
+    while(CtrlStaut.bits.ctrl_ready != 1)
+    {
+        otp_wait(1);
+        CtrlStaut.u32 = otp_read_reg(OTP_V200_CTRL_STATUS);
+    }
+    //Set OTP_V200_CHANNEL_SEL bit channel_sel to 2'b10
+    ChannelSel.u32 = otp_read_reg(OTP_V200_CHANNEL_SEL);
+    ChannelSel.bits.channel_sel = 0x02;
+    otp_write_reg(OTP_V200_CHANNEL_SEL, ChannelSel.u32);
+    //Set wr_sel to 1, set wr_enable to 1, set cpu_sizeΪ2'b01(Byte operation)
+    CPURWCtrl.u32 = otp_read_reg(OTP_V200_CPU_RW_CTRL);
+    CPURWCtrl.bits.wr_sel = 0x01;
+    CPURWCtrl.bits.wr_enable = 0x01;
+    CPURWCtrl.bits.cpu_size = 0x01;    
+    otp_write_reg(OTP_V200_CPU_RW_CTRL, CPURWCtrl.u32);
+    //Set OTP_V200_MODE
+    Mode.u32 = otp_read_reg(OTP_V200_MODE);
+    u32OTPTimeValue = DRV_OTP_GetOTPTimeValue();
+    Mode.u32 |= u32OTPTimeValue;
+    otp_write_reg(OTP_V200_MODE, Mode.u32);
+    //Set OTP_V200_WADDR
+    WAddr.u32 = 0;
+    WAddr.bits.waddr = addr;
+    otp_write_reg(OTP_V200_WADDR, WAddr.u32);
+    //Set OTP_V200_WDATA
+    WDATA.bits.wdata = (HI_U32)tdata;
+    otp_write_reg(OTP_V200_WDATA, WDATA.u32);
+    //Set WR_START bit start to 1
+    WRStart.u32 = otp_read_reg(OTP_V200_WR_START);
+    WRStart.bits.start = 1;
+    otp_write_reg(OTP_V200_WR_START, WRStart.u32);
+    
+    //Check CTRL_STATUS bit ctrl_ready to 0x01
+    CtrlStaut.u32 = otp_read_reg(OTP_V200_CTRL_STATUS);
+    while(CtrlStaut.bits.ctrl_ready != 1)
+    {
+        otp_wait(1);
+        CtrlStaut.u32 = otp_read_reg(OTP_V200_CTRL_STATUS);
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32  HAL_OTP_V200_Write(HI_U32 addr, HI_U32 tdata)
+{
+    volatile OTP_V200_CTRL_STATUS_U CtrlStaut;
     OTP_V200_CHANNEL_SEL_U ChannelSel;
     OTP_V200_CPU_RW_CTRL_U CPURWCtrl;
     OTP_V200_MODE_U        Mode;
@@ -193,6 +255,7 @@ HI_S32  do_apb_v200_write(HI_U32 addr, HI_U32 tdata)
     if (0 != CtrlStaut.bits.fail_flag)
     {
         HI_FATAL_OTP("Write OTP failed!\n");
+        write_fail_flag();
         DRV_OTPV200_UNLOCK();
         return HI_FAILURE;
     }
@@ -202,9 +265,9 @@ HI_S32  do_apb_v200_write(HI_U32 addr, HI_U32 tdata)
     return HI_SUCCESS;
 }
 
-HI_S32 do_apb_v200_write_byte(HI_U32 addr, HI_U8 tdata)
+HI_S32 HAL_OTP_V200_WriteByte(HI_U32 addr, HI_U8 tdata)
 {
-    OTP_V200_CTRL_STATUS_U CtrlStaut;
+    volatile OTP_V200_CTRL_STATUS_U CtrlStaut;
     OTP_V200_CHANNEL_SEL_U ChannelSel;
     OTP_V200_CPU_RW_CTRL_U CPURWCtrl;
     OTP_V200_MODE_U        Mode;
@@ -212,7 +275,7 @@ HI_S32 do_apb_v200_write_byte(HI_U32 addr, HI_U8 tdata)
     OTP_V200_WDATA_U       WDATA;
     OTP_V200_WR_START_U    WRStart;
 	HI_U32 u32OTPTimeValue = 0;
-    
+
     DRV_OTPV200_LOCK();    
     CtrlStaut.u32 = otp_read_reg(OTP_V200_CTRL_STATUS);
     //Check CTRL_STATUS ctrl_ready to 0x01
@@ -261,6 +324,7 @@ HI_S32 do_apb_v200_write_byte(HI_U32 addr, HI_U8 tdata)
     if (0 != CtrlStaut.bits.fail_flag)
     {
         HI_FATAL_OTP("Write OTP failed!\n");
+        write_fail_flag();
         DRV_OTPV200_UNLOCK();
         return HI_FAILURE;
     }
@@ -270,16 +334,16 @@ HI_S32 do_apb_v200_write_byte(HI_U32 addr, HI_U8 tdata)
     return HI_SUCCESS;
 }
 
-HI_S32  do_apb_v200_write_bit(HI_U32 addr, HI_U32 bit_pos, HI_U32 bit_value)
+HI_S32  HAL_OTP_V200_WriteBit(HI_U32 addr, HI_U32 bit_pos, HI_U32 bit_value)
 {
     HI_U8 u8Data = 0;
 
     if(bit_value == 1)
     {
-        u8Data = do_apb_v200_read_byte(addr);
+        u8Data = HAL_OTP_V200_ReadByte(addr);
         u8Data |= (1 << bit_pos);
 
-        return do_apb_v200_write_byte(addr, u8Data);
+        return HAL_OTP_V200_WriteByte(addr, u8Data);
     }
     else
     {
@@ -288,11 +352,11 @@ HI_S32  do_apb_v200_write_bit(HI_U32 addr, HI_U32 bit_pos, HI_U32 bit_value)
     return HI_SUCCESS;
 }
 
-EXPORT_SYMBOL(do_apb_v200_read);
-EXPORT_SYMBOL(do_apb_v200_read_byte);
-EXPORT_SYMBOL(do_apb_v200_write);
-EXPORT_SYMBOL(do_apb_v200_write_byte);
-EXPORT_SYMBOL(do_apb_v200_write_bit);
+EXPORT_SYMBOL(HAL_OTP_V200_Read);
+EXPORT_SYMBOL(HAL_OTP_V200_ReadByte);
+EXPORT_SYMBOL(HAL_OTP_V200_Write);
+EXPORT_SYMBOL(HAL_OTP_V200_WriteByte);
+EXPORT_SYMBOL(HAL_OTP_V200_WriteBit);
 
 /*-------------------------------------END--------------------------------------*/
 

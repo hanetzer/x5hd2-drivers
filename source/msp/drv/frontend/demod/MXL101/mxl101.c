@@ -33,14 +33,14 @@ HI_S32 mxl101_init(HI_U32 u32TunerPort, HI_U8 enI2cChannel, HI_UNF_TUNER_DEV_TYP
 
 HI_S32 mxl101_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel)
 {
-    MXL_DEV_INFO_T mxlDevInfo;
-    MXL_XTAL_CFG_T mxlXtalCfg;
-    MXL_DEV_MODE_CFG_T mxlDevMode;
-    MXL_MPEG_CFG_T mxlMpegOutCfg;
-    MXL_TS_CTRL_T mxlTsCfg;
-    MXL_TOP_MASTER_CFG_T mxlTopMasterCfg;
-    MXL_RF_TUNE_CFG_T mxlChanCfg;
-    MXL_DEMOD_SPECTRUM_CFG_T mxlFreqSpectrumCfg;
+    MXL_DEV_INFO_T mxlDevInfo  = {0};
+    MXL_XTAL_CFG_T mxlXtalCfg = {0};
+    MXL_DEV_MODE_CFG_T mxlDevMode = {0};
+    MXL_MPEG_CFG_T mxlMpegOutCfg = {0};
+    MXL_TS_CTRL_T mxlTsCfg = {0};
+    MXL_TOP_MASTER_CFG_T mxlTopMasterCfg = {0};
+    MXL_RF_TUNE_CFG_T mxlChanCfg = {0};
+    MXL_DEMOD_SPECTRUM_CFG_T mxlFreqSpectrumCfg = {0};
     HI_S32 s32Ret = HI_FAILURE;
 
     s32Ret = down_interruptible(&mxl101_sem);
@@ -142,11 +142,11 @@ HI_S32 mxl101_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel)
 HI_S32 mxl101_get_status (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *penTunerStatus)
 {
     MXL_DEMOD_LOCK_STATUS_T rsLockStatus = {0};
-    UINT8 i;
+    UINT8 i = 0;
     MXL_STATUS status = MXL_FALSE;
     HI_S32 s32Ret = HI_FAILURE;
 
-    HI_ASSERT(HI_NULL != penTunerStatus);
+    HI_TUNER_CHECKPOINTER( penTunerStatus);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -189,7 +189,7 @@ HI_S32 mxl101_get_ber(HI_U32 u32TunerPort, HI_U32* pu32ber)
     MXL_STATUS status = MXL_FALSE;
     HI_S32 s32Ret = HI_FAILURE;
 
-    HI_ASSERT(HI_NULL != pu32ber);
+    HI_TUNER_CHECKPOINTER( pu32ber);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -228,7 +228,7 @@ HI_S32 mxl101_get_snr(HI_U32 u32TunerPort, HI_U32* pu32SNR)
     MXL_STATUS status = MXL_FALSE;
     HI_S32 s32Ret = HI_FAILURE;
 
-    HI_ASSERT(HI_NULL != pu32SNR);
+    HI_TUNER_CHECKPOINTER( pu32SNR);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -265,7 +265,7 @@ HI_S32 mxl101_get_signal_strength(HI_U32 u32TunerPort, HI_U32* pu32SignalStrengt
     MXL_STATUS status = MXL_FALSE;
     HI_S32 s32Ret = HI_FAILURE;
 
-    HI_ASSERT(HI_NULL != pu32SignalStrength);
+    HI_TUNER_CHECKPOINTER( pu32SignalStrength);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -317,7 +317,7 @@ HI_S32 mxl101_get_signal_info(HI_U32 u32TunerPort, HI_UNF_TUNER_SIGNALINFO_S *ps
     //MXL_DEMOD_TS_PRIORITY_CFG_T tsPriority = {0};
     HI_S32 s32Ret = HI_FAILURE;
 
-    HI_ASSERT(HI_NULL != pstInfo);
+    HI_TUNER_CHECKPOINTER( pstInfo);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
@@ -540,8 +540,8 @@ HI_S32 mxl101_get_freq_symb_offset(HI_U32 u32TunerPort, HI_U32 * pu32Freq, HI_U3
     HI_S32 s32Ret = HI_FAILURE;
 
     /*guarantee the pointer is not NULL*/
-    HI_ASSERT(HI_NULL != pu32Freq);
-    HI_ASSERT(HI_NULL != pu32Symb);
+    HI_TUNER_CHECKPOINTER( pu32Freq);
+    HI_TUNER_CHECKPOINTER( pu32Symb);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)

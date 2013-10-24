@@ -1,12 +1,17 @@
-/**
-\file
-\brief cipher hal
-\copyright Shenzhen Hisilicon Co., Ltd.
-\date 2008-2018
-\version draft
-\author QuYaxin 46153
-\date 2009-11-3
-*/
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : hal_cipher.h
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
 
 #ifndef __HAL_CIPHER_H__
 #define __HAL_CIPHER_H__
@@ -39,7 +44,7 @@
 extern "C" {
 #endif
 /***************************** Macro Definition ******************************/
-#ifndef CHIP_TYPE_hi3716cv200es
+#ifdef CHIP_TYPE_hi3716mv300
 #define  CIPHER_IRQ_NUMBER                      (53 + 32)
 #else
 #define  CIPHER_IRQ_NUMBER                      (75 + 32)
@@ -97,6 +102,7 @@ HI_S32 HAL_Cipher_SetBufAddr(HI_U32 chnId, CIPHER_BUF_TYPE_E bufType, HI_U32 add
 HI_S32 HAL_Cipher_SetInIV(HI_U32 chnId, HI_UNF_CIPHER_CTRL_S* pCtrl);
 HI_S32 HAL_Cipher_GetOutIV(HI_U32 chnId, HI_UNF_CIPHER_CTRL_S* pCtrl);
 HI_S32 HAL_Cipher_SetKey(HI_U32 chnId, HI_UNF_CIPHER_CTRL_S* pCtrl);
+HI_S32 HAL_CIPHER_LoadSTBRootKey(HI_U32 u32HwChID);
 
 HI_S32 HAL_Cipher_SetDataSinglePkg(HI_DRV_CIPHER_DATA_INFO_S * info);
 HI_S32 HAL_Cipher_StartSinglePkg(HI_U32 chnId);
@@ -106,12 +112,12 @@ HI_S32 HAL_Cipher_WaitIdle(HI_VOID);
 HI_BOOL HAL_Cipher_IsIdle(HI_U32 chn);
 HI_VOID HAL_Cipher_Reset(HI_VOID);
 
-HI_S32 HAL_Cipher_SetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_KEY_TYPE_E enHdcpKeySelectMode);
-HI_S32 HAL_Cipher_GetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_KEY_TYPE_E *penHdcpKeySelectMode);
+HI_S32 HAL_Cipher_SetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_ROOT_KEY_TYPE_E enHdcpKeySelectMode);
+HI_S32 HAL_Cipher_GetHdcpKeySelectMode(HI_DRV_CIPHER_HDCP_ROOT_KEY_TYPE_E *penHdcpKeySelectMode);
 HI_VOID HAL_Cipher_SetHdcpKeyRamMode(HI_DRV_CIPHER_HDCP_KEY_RAM_MODE_E enMode);
 HI_S32 HAL_Cipher_GetHdcpKeyRamMode(HI_DRV_CIPHER_HDCP_KEY_RAM_MODE_E *penMode);
-HI_S32 HAL_Cipher_GetHdcpModeEn(HI_DRV_CIPHER_HDCP_MODE_E *penMode);
-HI_VOID HAL_Cipher_SetHdcpModeEn(HI_DRV_CIPHER_HDCP_MODE_E enMode);
+HI_S32 HAL_Cipher_GetHdcpModeEn(HI_DRV_CIPHER_HDCP_KEY_MODE_E *penMode);
+HI_VOID HAL_Cipher_SetHdcpModeEn(HI_DRV_CIPHER_HDCP_KEY_MODE_E enMode);
 HI_VOID HAL_Cipher_ClearHdcpCtrlReg(HI_VOID);
 
 HI_S32 HAL_Cipher_CalcHashInit(CIPHER_HASH_DATA_S *pCipherHashData);
@@ -121,6 +127,10 @@ HI_S32 HAL_Cipher_HashSoftReset(HI_VOID);
 
 HI_VOID HAL_Cipher_Init(void);
 HI_VOID HAL_Cipher_DeInit(void);
+
+HI_VOID HAL_CIPHER_ReadReg(HI_U32 addr, HI_U32 *pu32Val);
+HI_VOID HAL_CIPHER_WriteReg(HI_U32 addr, HI_U32 u32Val);
+
 
 #ifdef __cplusplus
 }

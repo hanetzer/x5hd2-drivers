@@ -30,10 +30,7 @@ extern "C" {
 
 typedef struct tagDISP_ISR_C_LIST_S
 {
-    //HI_BOOL bUp;
-
     HI_U32 u32NodeFlag;
-    HI_U32 u32NodeFlagNew;
     HI_DRV_DISP_CALLBACK_S stNode[DEF_DISP_ISR_LIST_LENGTH];
 }DISP_ISR_C_LIST_S;
 
@@ -41,16 +38,10 @@ typedef struct tagDISP_ISR_C_LIST_S
 
 typedef struct tagDISP_ISR_CHN_S
 {
-    volatile HI_BOOL bEnable;
     HI_DRV_DISPLAY_E enDisp;
+    volatile HI_BOOL bEnable;
 
-    //PF_DISP_PRE_PROC pfPreProcess;
-    //volatile HI_DRV_DISP_CALLBACK_EVENT_E eEvent;
-
-    HI_U32 u32TotalNumber;
-//    HI_U32 u32Number[HI_DRV_DISP_C_TYPE_BUTT];
     volatile DISP_ISR_C_LIST_S stList[HI_DRV_DISP_C_TYPE_BUTT];
-
     HI_DRV_DISP_CALLBACK_INFO_S stCBInfo;
 
     //volatile HI_BOOL bDispInfoUp;
@@ -60,25 +51,19 @@ typedef struct tagDISP_ISR_CHN_S
 
 typedef struct tagDISP_ISR_M_S
 {
+    DISP_ISR_CHN_S stDispChn[HI_DRV_DISPLAY_BUTT+1];
     HI_U32 u32ChnNumber;
-    DISP_ISR_CHN_S *pstChn[HI_DRV_DISPLAY_BUTT];
-
-    HI_BOOL bDispChange;
-
-    DISP_INTF_OPERATION_S *pIntOpt;
-
     HI_U32 u32IntMaskSave4Suspend;
 }DISP_ISR_M_S;
 
-HI_S32 DISP_ISR_Init(DISP_INTF_OPERATION_S *pstIntOptFunc);
+HI_S32 DISP_ISR_Init(HI_VOID);
 HI_S32 DISP_ISR_DeInit(HI_VOID);
 
 HI_S32 DISP_ISR_Suspend(HI_VOID);
 HI_S32 DISP_ISR_Resume(HI_VOID);
 
-HI_S32 DISP_ISR_Add(HI_DRV_DISPLAY_E enDisp);
-HI_S32 DISP_ISR_Delete(HI_DRV_DISPLAY_E enDisp);
-HI_S32 DISP_ISR_SetEnable(HI_DRV_DISPLAY_E enDisp, HI_BOOL bEnable);
+HI_S32 DISP_ISR_OpenChn(HI_DRV_DISPLAY_E enDisp);
+HI_S32 DISP_ISR_CloseChn(HI_DRV_DISPLAY_E enDisp);
 
 HI_S32 DISP_ISR_RegCallback(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CALLBACK_TYPE_E eType,
                             HI_DRV_DISP_CALLBACK_S *pstCB);

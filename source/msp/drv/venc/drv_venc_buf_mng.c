@@ -65,3 +65,4 @@ HI_VOID VENC_DRV_BsPutBits32(tBitStream *pBS, HI_U32 code, int bits)
 }
  #endif
 #endif
+

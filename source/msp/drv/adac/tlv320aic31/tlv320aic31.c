@@ -29,18 +29,20 @@
 #include <linux/moduleparam.h>
 #include <linux/ioport.h>
 #include <linux/interrupt.h>
-#include "drv_dev_ext.h"
+#include "hi_drv_dev.h"
 
 #include "hi_type.h"
 #include "hi_unf_common.h"
 #include "drv_gpioi2c_ext.h"
 #include "hi_module.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 #include "drv_i2c_ext.h"
 #include "hi_drv_i2c.h"
 
 #include "tlv320aic31.h"
 #include "tlv320aic31_def.h"
+#include "drv_gpio_ext.h"
+#include "hi_reg_common.h"
 
 #if defined (CHIP_TYPE_hi3716mv300_fpga)
  #define BOARD_TYPE_fpga
@@ -50,10 +52,26 @@
  #define BOARD_TYPE_fpga
  #undef  USE_GPIO_I2C
  static int i2cchn = 1;
-#elif defined (CHIP_TYPE_hi3716cv200es)  //cv200 fpga
- #define BOARD_TYPE_fpga
- #undef  USE_GPIO_I2C
- static int i2cchn = 1;
+
+#elif defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+        || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+        || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+        || defined (CHIP_TYPE_hi3718mv100) 
+ //#define BOARD_TYPE_fpga
+ #define  USE_GPIO_I2C   //jiaxi change
+ static int i2cchn = 2;
+ #define SLAC_RESET_GPIO_GNUM_S40 2
+ #define SLAC_RESET_GPIO_PNUM_S40 4
+ #ifdef USE_GPIO_I2C
+ #define SCL_GPIO_GNUM_S40 2
+ #define SCL_GPIO_PNUM_S40 1
+
+#define SDA_GPIO_GNUM_S40 2
+#define SDA_GPIO_PNUM_S40 2
+#define SDA (((SDA_GPIO_GNUM_S40)*8)+(SDA_GPIO_PNUM_S40))
+#define SCL	(((SCL_GPIO_GNUM_S40)*8)+(SCL_GPIO_PNUM_S40))
+ HI_U32 g_pu32I2cNum;
+#endif
 #else
  static int i2cchn = 3;
  #define USE_GPIO_I2C
@@ -96,7 +114,7 @@ void tlv320aic31_write(unsigned char chip_addr, unsigned char reg_addr, unsigned
 #else
     if(s_pGpioI2cExtFunc && s_pGpioI2cExtFunc->pfnGpioI2cWriteExt)
     {
-         (s_pGpioI2cExtFunc->pfnGpioI2cWriteExt)(HI_I2C_MAX_NUM_USER, chip_addr, reg_addr, 1, (HI_U8 *)&value, 1);
+         (s_pGpioI2cExtFunc->pfnGpioI2cWriteExt)(g_pu32I2cNum, chip_addr, reg_addr, 1, (HI_U8 *)&value, 1);
     }
 #endif
 }
@@ -109,7 +127,7 @@ int tlv320aic31_read(unsigned char chip_addr, unsigned char reg_addr)
     HI_U8 u8Data = 0xff;
     if(s_pGpioI2cExtFunc && s_pGpioI2cExtFunc->pfnGpioI2cReadExt)
     {
-        (s_pGpioI2cExtFunc->pfnGpioI2cReadExt)(HI_I2C_MAX_NUM_USER, chip_addr, reg_addr, 1, (HI_U8 *)&u8Data, 1);
+        (s_pGpioI2cExtFunc->pfnGpioI2cReadExt)(g_pu32I2cNum, chip_addr, reg_addr, 1, (HI_U8 *)&u8Data, 1);
          return u8Data;
     }
    // HI_DRV_GPIOI2C_ReadExt(HI_I2C_MAX_NUM_USER, chip_addr, reg_addr, 1, (HI_U8 *)&u8Data, 1);
@@ -1153,9 +1171,31 @@ static struct miscdevice tlv320aic31_dev =
 static int __INIT__ tlv320aic31_init(void)
 {
     unsigned int ret;
-#ifdef BOARD_TYPE_fpga
+    
+#if defined (BOARD_TYPE_fpga) || defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) /* s40v200&cv200  asic  */ \
+        || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+        || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+        || defined (CHIP_TYPE_hi3718mv100) 
+    
     int i;
     unsigned int chip_count = CHIP_NUM;
+
+    g_pstRegIO->ioshare_reg20.u32 = 0x0;  //set tlv320 reset pin 
+    #ifdef USE_GPIO_I2C
+    g_pstRegIO->ioshare_reg17.u32 = 0x0;  //set I2C2_SCL pin
+    g_pstRegIO->ioshare_reg18.u32 = 0x0;  //set I2C2_SDA pin
+    #else
+    g_pstRegIO->ioshare_reg19.u32 = 0x3;  //set I2C2_SCL pin
+    g_pstRegIO->ioshare_reg20.u32 = 0x3;  //set I2C2_SDA pin
+    #endif
+    
+   //reset
+    HI_DRV_GPIO_SetDirBit(SLAC_RESET_GPIO_GNUM_S40*8+SLAC_RESET_GPIO_PNUM_S40, 0);
+    HI_DRV_GPIO_WriteBit(SLAC_RESET_GPIO_GNUM_S40*8+SLAC_RESET_GPIO_PNUM_S40, 0);
+    msleep(200);
+    
+    HI_DRV_GPIO_WriteBit(SLAC_RESET_GPIO_GNUM_S40*8+SLAC_RESET_GPIO_PNUM_S40, 1);
+    
 #endif
 
     if ((i2cchn < 0) || (i2cchn >= HI_I2C_MAX_NUM))
@@ -1179,9 +1219,25 @@ static int __INIT__ tlv320aic31_init(void)
 #endif
 #endif
 
-#ifdef BOARD_TYPE_fpga
+#if defined (BOARD_TYPE_fpga) || defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+        || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100) \
+        || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+        || defined (CHIP_TYPE_hi3718mv100) 
+
     for (i = 0; i < chip_count; i++)
     {
+        #ifdef USE_GPIO_I2C
+        s_pGpioI2cExtFunc = HI_NULL;
+        HI_DRV_MODULE_GetFunction(HI_ID_GPIO_I2C, (HI_VOID**)&s_pGpioI2cExtFunc);
+        if(s_pGpioI2cExtFunc && s_pGpioI2cExtFunc->pfnGpioI2cCreateChannel)
+        {
+            (s_pGpioI2cExtFunc->pfnGpioI2cCreateChannel)(&g_pu32I2cNum,SCL,SDA);//HI_S32 HI_DRV_GPIOI2C_CreateGpioI2c(HI_U32 *pu32I2cNum, HI_U32 u32SCLGpioNo, HI_U32 u32SDAGpioNo)
+        }
+        else
+        {
+            HI_ERR_AIC3X("could not get gpioI2c func\n");
+        }
+        #endif
         if (tlv320aic31_device_init(i) < 0)
         {
             HI_ERR_AIC3X("could not tlv320aic31_device_init tlv320aic31 device\n");
@@ -1198,6 +1254,9 @@ exit :
     himedia_deregister(&tlv320aic31_dev);
 #else
     misc_deregister(&tlv320aic31_dev);
+#endif
+#ifdef USE_GPIO_I2C
+    (s_pGpioI2cExtFunc->pfnGpioI2cDestroyChannel)(g_pu32I2cNum);
 #endif
 
     HI_ERR_AIC3X("tlv320aic31 device init failed\n");
@@ -1218,6 +1277,9 @@ static void __EXIT__ tlv320aic31_exit(void)
 #else
     misc_deregister(&tlv320aic31_dev);
 #endif
+#ifdef USE_GPIO_I2C
+    (s_pGpioI2cExtFunc->pfnGpioI2cDestroyChannel)(g_pu32I2cNum);
+	#endif
     HI_ERR_AIC3X("deregister tlv320aic31");
 }
 

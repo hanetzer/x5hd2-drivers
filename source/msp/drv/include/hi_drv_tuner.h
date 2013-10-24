@@ -4,7 +4,7 @@
 #include "hi_type.h"
 #include "hi_drv_i2c.h"
 #include "hi_debug.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "drv_i2c_ext.h"
 #include "hi_unf_frontend.h"
 

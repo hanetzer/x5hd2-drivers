@@ -43,7 +43,8 @@ typedef enum
     SiI_CEC_LogAddr_Res3        = 0x0C,
     SiI_CEC_LogAddr_Res4        = 0x0D,
     SiI_CEC_LogAddr_FreeUse     = 0x0E,
-    SiI_CEC_LogAddr_Unregister  = 0x0F
+    SiI_CEC_LogAddr_Unregister  = 0x0F,
+    SiI_CEC_LogAddr_BUTT
 } SiI_CEC_LogAddr_t;
 
 #define CEC_PA_EDID_CH0      0x1000

@@ -28,11 +28,10 @@
 #include <linux/mm.h>
 #include <linux/poll.h>
 #include "hi_type.h"
-#include "drv_struct_ext.h"
-#include "drv_reg_ext.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_mem.h"
 #include "drv_gpio_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 
 #include "hi_unf_keyled.h"
 #include "hi_error_mpi.h"
@@ -604,8 +603,8 @@ HI_S32 KEYLED_DeInit_CT1642(HI_VOID)
 	LED_DeleteTimer();
 	keyled_led_display_off();
 
-	HI_REG_WRITE(IO_ADDRESS(0x10203000 + 0x74), regDeInit[0]);
-    HI_REG_WRITE(IO_ADDRESS(0x10203000 + 0x88), regDeInit[1]);
+	//HI_REG_WRITE(IO_ADDRESS(0x10203000 + 0x74), regDeInit[0]);
+    //HI_REG_WRITE(IO_ADDRESS(0x10203000 + 0x88), regDeInit[1]);
 	
     return HI_SUCCESS;
 }
@@ -795,6 +794,23 @@ HI_S32 KEYLED_LED_DisplayTime_CT1642(HI_UNF_KEYLED_TIME_S stKeyLedTime)
     return HI_SUCCESS;
 }
 
+ HI_S32 KEYLED_GetProcInfo_CT1642(KEYLED_PROC_INFO_S *stInfo)
+ {
+     stInfo->KeyBufSize = keyled_dev.buf_len;
+     stInfo->KeyBufHead = keyled_dev.head;
+     stInfo->KeyBufTail = keyled_dev.tail;
+     stInfo->KeyComeNum = keyled_dev.key_come;
+     stInfo->KeyReadNum = keyled_dev.key_read;
+     stInfo->u32RepKeyTimeMs = keyled_dev.repkey_delaytime;
+     stInfo->u32IsRepKeyEnable = keyled_dev.enable_repkey;
+     stInfo->u32IsUpKeyEnable = keyled_dev.enable_keyup;
+     stInfo->u32BlockTime = keyled_dev.blocktime;
+     stInfo->enFlashPin = keyled_dev.FlashPin;
+     stInfo->enFlashLevel = keyled_dev.FlashLevel;
+     stInfo->KeyBufTail= keyled_dev.tail;
+     
+     return HI_SUCCESS;
+ }
 
  HI_S32 KEYLED_Suspend_CT1642(HI_VOID)
 {

@@ -86,7 +86,6 @@ typedef struct hiUNF_AI_HDMI_ATTR_S
 /**CNcomment:定义音频输入端口属性*/
 typedef struct hiHI_UNF_AI_ATTR_S
 {
-    HI_UNF_AI_E enAiPort;
     HI_UNF_SAMPLE_RATE_E    enSampleRate;          /**< samplerate*/ /**<CNcomment:设备采样频率*/
     HI_U32                  u32PcmFrameMaxNum;     /**<Max frame of the PCM data at cast buffer*/ /**<CNcomment: 最大可缓存帧数*/
     HI_U32                  u32PcmSamplesPerFrame; /**<Number of sample of the PCM data*/ /**<CNcomment: PCM数据采样点数量*/
@@ -132,7 +131,7 @@ HI_S32 HI_UNF_AI_DeInit(HI_VOID);
  \attention \n
  \param[in] pstAttr Pointer to AI attributes CNcomment: AI属性指针 CNend
  \retval ::HI_SUCCESS Success CNcomment: 成功 CNend
- \retval ::HI_ERR_AI_NULL_PTR The pointer is null. CNcomment: 空指针 CNend
+ \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: 空指针 CNend
  \see \n
 N/A CNcomment: 无 CNend
  */
@@ -146,20 +145,19 @@ CNcomment: 调用AI 模块需要首先调用该接口 CNend
  \param[in] pstAttr CNcomment: Pointer to AI attributes AI属性指针 CNend
  \param[in] phandle CNcomment: hAi Pointer to the AI handle AI句柄指针 CNend
  \retval ::HI_SUCCESS Success CNcomment: 成功 CNend
- \retval ::HI_ERR_AI_NULL_PTR The pointer is null. CNcomment: 空指针 CNend
- \retval ::HI_ERR_AI_CHN_INIT_BUF_ERR An error occurs when the buffer is initialized. CNcomment: 初始化buffer错误 CNend
- \retval ::HI_ERR_AI_INVALID_PARA The attribute parameters are incorrect. CNcomment: 属性参数错误 CNend
+ \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: 空指针 CNend
+ \retval ::HI_ERR_AI_INVALID_PARA   The attribute parameters are incorrect. CNcomment: 属性参数错误 CNend
  \see \n
 N/A CNcomment: 无 CNend
  */
-HI_S32 HI_UNF_AI_Create(HI_UNF_AI_E enAiPort, HI_UNF_AI_ATTR_S *pstAttr, HI_HANDLE *phandle);
+HI_S32 HI_UNF_AI_Create(HI_UNF_AI_E enAiPort, HI_UNF_AI_ATTR_S *pstAttr, HI_HANDLE *phAI);
 
 /**
  \brief Disable a AI port to destroy the handle. CNcomment: 关闭AI Port，销毁句柄 CNend
  \attention \n
  \param[in] hAi AI handle CNcomment: AI句柄 CNend
  \retval ::HI_SUCCESS Success CNcomment: 成功 CNend
- \retval ::HI_ERR_AI_CHN_NOT_EXIST The handle is incorrect. CNcomment: 句柄错误 CNend
+ \retval ::HI_ERR_AI_INVALID_PARA  The handle is incorrect. CNcomment: 句柄错误 CNend
  \see \n
 N/A CNcomment: 无 CNend
  */
@@ -171,10 +169,9 @@ HI_S32 HI_UNF_AI_Destroy(HI_HANDLE hAI);
  \param[in] hAi AI handle CNcomment: AI句柄 CNend
  \param[in] pstAttr  Pointer to AI attributes CNcomment: AI属性指针 CNend
  \retval ::HI_SUCCESS Success CNcomment: 成功 CNend
- \retval ::HI_ERR_AI_NULL_PTR The pointer is null. CNcomment: 空指针 CNend
- \retval ::HI_ERR_AI_CHN_NOT_EXIST The handle is incorrect. CNcomment: 句柄错误 CNend
- \retval ::HI_ERR_AI_CHN_INIT_BUF_ERR An error occurs when the buffer is initialized. CNcomment: 初始化buffer错误 CNend
- \retval ::HI_ERR_AI_INVALID_PARA The attribute parameters are incorrect. CNcomment: 属性参数错误 CNend
+ \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: 空指针 CNend
+ \retval ::HI_ERR_AI_INVALID_ID   The handle is invalid. CNcomment: 非法句柄 CNend
+ \retval ::HI_ERR_AI_INVALID_PARA   The attribute parameters are incorrect. CNcomment: 属性参数错误 CNend
  \see \n
 N/A CNcomment: 无 CNend
  */
@@ -187,8 +184,9 @@ N/A CNcomment: 无 CNend
  \param[in] hAi AI handle CNcomment: AI句柄 CNend
  \param[out] pstAttr Pointer to AI attributes CNcomment: AI属性指针 CNend
  \retval ::HI_SUCCESS Success CNcomment: 成功 CNend
- \retval ::HI_ERR_AI_NULL_PTR The pointer is null. CNcomment: 空指针 CNend
- \retval ::HI_ERR_AI_CHN_NOT_EXIST The handle is incorrect. CNcomment: 句柄错误 CNend
+ \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: 空指针 CNend
+ \retval ::HI_ERR_AI_INVALID_ID   The handle is invalid. CNcomment: 非法句柄 CNend
+ \retval ::HI_ERR_AI_INVALID_PARA   The handle is incorrect. CNcomment: 句柄错误 CNend
  \see \n
 N/A CNcomment: 无 CNend
  */
@@ -201,10 +199,9 @@ HI_S32 HI_UNF_AI_GetAttr(HI_HANDLE hAI, HI_UNF_AI_ATTR_S *pstAttr);
 \param[in] AI handle CNcomment: AI句柄 CNend
 \param[in] bEnable      enable  .CNcomment:使能控制 CNend
 \retval ::HI_SUCCESS CNcomment: success.成功 CNend
-\retval ::HI_ERR_AI_DEV_NO_INIT    AI uninitialization.CNcomment:AI未初始化 CNend
 \retval ::HI_ERR_AI_NULL_PTR          Input pointer is NULL.CNcomment:输入指针为空 CNend
+\retval ::HI_ERR_AI_INVALID_ID     The handle is invalid. CNcomment: 非法句柄 CNend
 \retval ::HI_ERR_AI_INVALID_PARA   invalid input parameter.CNcomment:输入参数非法 CNend
-\retval ::HI_ERR_AI_INVALID_OPT    invalid operation. CNcomment:操作非法 CNend
 \see \n
 N/A CNcomment: 无 CNend
 */
@@ -218,10 +215,9 @@ Cast pcm data format  s32BitPerSample(16), u32Channels(2),bInterleaved(HI_TRUE),
 \param[in] u32TimeoutMs     acquire timeout.CNcomment:获取超时 CNend
 \param[out] pstFrame        frame info.CNcomment:帧信息 CNend
 \retval ::HI_SUCCESS CNcomment: success.成功 CNend
-\retval ::HI_ERR_AI_DEV_NO_INIT    AI uninitialization.CNcomment:AI未初始化 CNend
 \retval ::HI_ERR_AI_NULL_PTR          Input pointer is NULL.CNcomment:输入指针为空 CNend
+\retval ::HI_ERR_AI_INVALID_ID     The handle is invalid. CNcomment: 非法句柄 CNend
 \retval ::HI_ERR_AI_INVALID_PARA   invalid input parameter.CNcomment:输入参数非法 CNend
-\retval ::HI_ERR_AI_INVALID_OPT    invalid operation. CNcomment:操作非法 CNend
 \see \n
 N/A CNcomment: 无 CNend
 */
@@ -234,10 +230,9 @@ HI_S32 HI_UNF_AI_AcquireFrame(HI_HANDLE hAI, HI_UNF_AO_FRAMEINFO_S *pstFrame, HI
 \param[in] u32TimeoutMs     acquire timeout.CNcomment:释放超时 CNend
 \param[out] pstFrame        frame info.CNcomment:帧信息 CNend
 \retval ::HI_SUCCESS CNcomment: success.成功 CNend
-\retval ::HI_ERR_AI_DEV_NO_INIT    AI uninitialization.CNcomment:AI未初始化 CNend
 \retval ::HI_ERR_AI_NULL_PTR          Input pointer is NULL.CNcomment:输入指针为空 CNend
+\retval ::HI_ERR_AI_INVALID_ID     The handle is invalid. CNcomment: 非法句柄 CNend
 \retval ::HI_ERR_AI_INVALID_PARA   invalid input parameter.CNcomment:输入参数非法 CNend
-\retval ::HI_ERR_AI_INVALID_OPT    invalid operation. CNcomment:操作非法 CNend
 \see \n
 N/A CNcomment: 无 CNend
 */

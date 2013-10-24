@@ -1,3 +1,17 @@
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : hal_otp_v100.c
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
 #include <linux/kernel.h>
 #include <linux/version.h>
 #include <linux/module.h>
@@ -30,6 +44,12 @@ extern "C"{
 #define ADDR_OTP_STATUS0        0x10180010
 #define ADDR_OTP_STATUS1        0x10180014
 #define ADDR_OTP_MODE_CHANGE    0x10180018
+
+#define HI_ERR_OTP_ABNORMAL     (HI_S32)(0x804E0101)
+
+#define OTP_WRITE_STATUS_ADDR       (0x1E)
+#define OTP_WRITE_SOAK_ERROR_BIT    (0x0F)
+#define OTP_WRITE_COMP_ERROR_BIT    (0xF0)
 
 //SiPROM TIF defines
 #define  SIPROM_TIF_CMD_WIDTH   3   //
@@ -72,6 +92,8 @@ HI_DECLARE_MUTEX(g_OtpV100Mutex);
 #define DRV_OTPV100_UNLOCK() do{		\
 		up(&g_OtpV100Mutex);		\
 	}while(0)
+
+static HI_S32  sub_apb_write_bit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value, UINT32 time_len);
 
 UINT32 otp_tp_reg_value( UINT32 rsv, BOOL apb_trstn, BOOL apb_tclrn, UINT32 apb_tcmd, BOOL apb_tsi, BOOL apb_tsck, BOOL tso) 
 {
@@ -138,7 +160,7 @@ void  do_cmd_noAddress_apb(UINT32 Tcmd )
 
 
 void do_cmd_oneAddress_apb(UINT32 Tcmd,UINT32 a)
-{
+{    
     UINT32 apb_tcmd, wdata;
     BOOL apb_trstn,apb_tclrn,apb_tsi,apb_tsck;
     apb_trstn=1;apb_tclrn=1;apb_tsi=1;
@@ -469,10 +491,14 @@ BOOL do_precharge_apb(UINT32 a)
 {
     BOOL    s;
     UINT32 read_data;
+    
     do_mode_apb( 0,0,0, 1,0,0,0,0,0,0,0,0, 0,1,0, 0,0,0,0,0, 0);        // Tmode_sel =0,inc2 = 0, seqEna=0, auto = 0, TSO_SEL[2:0]= 0(STATUS)
-    do_cmd_oneAddress_apb(SiFUSE_TIF_CMD_PCH, a);
+    //Solve the soak program error when SR 6 is set
+    //do_cmd_oneAddress_apb(SiFUSE_TIF_CMD_PCH, a);
+    do_cmd_fullAddress_apb(SiFUSE_TIF_CMD_PCH, a);
 //#(tpw_PCH_posedge);
     wait(1);
+
     read_data=read_reg(ADDR_OTP_TP);
     s =0x1 &  read_data;
     do_terminate_apb();   
@@ -572,7 +598,7 @@ static UINT32 do_readback(UINT32 addr)
 //input [9:0] addr;
 //input [7:0] data;
 //only for main block addr 0~1023
-UINT32 do_apb_para_read(UINT32 addr)
+UINT32 HAL_OTP_V100_Read(UINT32 addr)
 {
     UINT32 read_data;
 
@@ -584,7 +610,45 @@ UINT32 do_apb_para_read(UINT32 addr)
     return read_data;
 }
 
-HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
+//Set the soak program error flag OTP bit 0x1e[0:3]
+static HI_S32 write_soak_error(HI_VOID)
+{
+    HI_S32 Ret = HI_SUCCESS;
+    HI_U32 i = 0;
+    HI_U32 u32Value = OTP_WRITE_SOAK_ERROR_BIT;
+
+    for ( i = 0 ; i < 8 ; i++ )
+    {
+        if ((u32Value & 0x1) == 0x1)
+        {
+            Ret |= sub_apb_write_bit(OTP_WRITE_STATUS_ADDR, i, 1, 50);
+        }
+        u32Value = (u32Value >> 1);
+    }
+
+    return Ret;
+}
+
+//Set the OTP error flag bit 0x1e[4:7]
+static HI_S32 write_comp_error(HI_VOID)
+{
+    HI_S32 Ret = HI_SUCCESS;
+    HI_U32 i = 0;
+    HI_U32 u32Value = OTP_WRITE_COMP_ERROR_BIT;
+
+    for ( i = 0 ; i < 8 ; i++ )
+    {
+        if ((u32Value & 0x1) == 0x1)
+        {
+            Ret |= sub_apb_write_bit(OTP_WRITE_STATUS_ADDR, i, 1, 50);
+        }
+        u32Value = (u32Value >> 1);
+    }
+
+    return Ret;
+}
+
+HI_S32  HAL_OTP_V100_WriteByte(UINT32 addr,UINT32 tdata)
 {  
     HI_S32 Ret = HI_SUCCESS;
     BOOL    s;
@@ -592,6 +656,8 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
     UINT32  wdata, data,read_data;
     UINT32  otp_addr;
     UINT32  pch_soak_prg_cnt = 0,one_cnt;
+    HI_BOOL bSoakError = HI_FALSE;
+    HI_BOOL bCmpError = HI_FALSE;
 
     DRV_OTPV100_LOCK();
     do_apb_write_init(NORMAL_PROGRAM);
@@ -633,7 +699,8 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
                         // Soak program will be necessary when SR bit 4 and 6 are set
                         if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                         {
-                            HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                            HI_ERR_OTP("error! bit precharge soak program counter is over setting times\n");
+                            bSoakError = HI_TRUE;
                             break;
                         }
                     }
@@ -674,7 +741,8 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
                         HI_INFO_OTP("pch_soak_prg_cnt = %d\n",pch_soak_prg_cnt);
                         if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                         {
-                            HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                            HI_ERR_OTP("error! bit precharge soak program counter is over setting times\n");
+                            bSoakError = HI_TRUE;
                             break;
                         }
                     }
@@ -702,7 +770,7 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
             else
             {
                 HI_ERR_OTP("redundant mode write byte error\n");
-                Ret = HI_FAILURE;
+                bCmpError = HI_TRUE;
             }
         }
         else            //Odd address
@@ -739,7 +807,8 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
                         HI_INFO_OTP("pch_soak_prg_cnt = %d\n",pch_soak_prg_cnt);
                         if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                         {
-                            HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                            HI_ERR_OTP("error! bit precharge soak program counter is over setting times\n");
+                            bSoakError = HI_TRUE;
                             break;
                         }
                     }
@@ -779,7 +848,8 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
                         HI_INFO_OTP("pch_soak_prg_cnt = %d\n",pch_soak_prg_cnt);
                         if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                         {
-                            HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                            HI_ERR_OTP("error! bit precharge soak program counter is over setting times\n");
+                            bSoakError = HI_TRUE;
                             break;
                         }
                     }
@@ -807,7 +877,7 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
             else
             {
                 HI_ERR_OTP("redundant mode write byte error\n");
-                Ret = HI_FAILURE;
+                bCmpError = HI_TRUE;
             }
         }
         do_redundant();
@@ -831,6 +901,7 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
                 do_data_shift_apb(wdata);                    
                 do_read_apb(otp_addr,wdata);
                 s=do_precharge_apb(otp_addr);
+                
                 pch_soak_prg_cnt = 0;
                 while(s == 0x1)//precharge fail,must soak program
                 {
@@ -847,7 +918,8 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
                     HI_INFO_OTP("pch_soak_prg_cnt = %d\n",pch_soak_prg_cnt);
                     if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                     {
-                        HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                        HI_ERR_OTP("error! bit precharge soak program counter is over setting times\n");
+                        bSoakError = HI_TRUE;
                         break;
                     }
                 }
@@ -888,7 +960,8 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
                     HI_INFO_OTP("pch_soak_prg_cnt = %d\n",pch_soak_prg_cnt);
                     if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                     {
-                        HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                        HI_ERR_OTP("error! bit precharge soak program counter is over setting times\n");
+                        bSoakError = HI_TRUE;
                         break;
                     }
                 }
@@ -915,9 +988,9 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
         }    
         else
         {
-           HI_ERR_OTP("differential mode write byte error\n");
-           Ret = HI_FAILURE;
-           goto TERMINATE_DIFFERENTIAL;
+            HI_ERR_OTP("differential mode write byte error\n");
+            bCmpError = HI_TRUE;
+            goto TERMINATE_DIFFERENTIAL;
         }
         
         do_differential();
@@ -932,13 +1005,27 @@ HI_S32  do_apb_write_byte(UINT32 addr,UINT32 tdata)
         }    
         else
         {
-           HI_ERR_OTP("differential mode write byte error\n");
-           Ret = HI_FAILURE;
-           goto TERMINATE_DIFFERENTIAL;
+            HI_ERR_OTP("differential mode write byte error\n");
+            bCmpError = HI_TRUE;
+            goto TERMINATE_DIFFERENTIAL;
         }
 
 TERMINATE_DIFFERENTIAL:
         do_differential();
+    }
+
+    if (bSoakError)
+    {
+        //When soak program error, set the OTP flag and return special error code. At this time, OTP is not believable
+        write_soak_error();
+        Ret = HI_ERR_OTP_ABNORMAL;
+    }
+
+    if (bCmpError)
+    {
+        //When compare error, set the OTP flag and return HI_FAILURE. At this time, OTP MUST be considered as broken
+        write_comp_error();
+        Ret = HI_FAILURE;
     }
 
     DRV_OTPV100_UNLOCK();
@@ -951,8 +1038,9 @@ TERMINATE_DIFFERENTIAL:
 //bit_value:0~1
 //input [9:0] addr;  //byte addr 
 //input [7:0] data;
-HI_S32  sub_apb_write_bit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value, UINT32 time_len)
-{  
+static HI_S32  sub_apb_write_bit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value, UINT32 time_len)
+{
+    HI_S32 Ret = HI_SUCCESS;
     BOOL   s;
     UINT32 otp_addr;
     UINT32 wdata;
@@ -990,7 +1078,9 @@ HI_S32  sub_apb_write_bit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value, UINT32 
                 HI_INFO_OTP("pch_soak_prg_cnt = %d\n",pch_soak_prg_cnt);
                 if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                 {
+                    //Do not write soak error flag!!!
                     HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                    Ret = HI_ERR_OTP_ABNORMAL;
                     break;
                 }
             }
@@ -1019,7 +1109,9 @@ HI_S32  sub_apb_write_bit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value, UINT32 
                 HI_INFO_OTP("pch_soak_prg_cnt = %d\n",pch_soak_prg_cnt);
                 if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                 {
+                    //Do not write soak error flag!!!
                     HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                    Ret = HI_ERR_OTP_ABNORMAL;
                     break;
                 }
             }
@@ -1072,7 +1164,9 @@ HI_S32  sub_apb_write_bit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value, UINT32 
                 HI_INFO_OTP("pch_soak_prg_cnt = %d\n",pch_soak_prg_cnt);
                 if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                 {
+                    //Do not write soak error flag!!!
                     HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                    Ret = HI_ERR_OTP_ABNORMAL;
                     break;
                 }
             }
@@ -1101,7 +1195,9 @@ HI_S32  sub_apb_write_bit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value, UINT32 
                 HI_INFO_OTP("pch_soak_prg_cnt = %d\n",pch_soak_prg_cnt);
                 if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                 {
+                    //Do not write soak error flag!!!
                     HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                    Ret = HI_ERR_OTP_ABNORMAL;
                     break;
                 }
             }
@@ -1165,7 +1261,9 @@ HI_S32  sub_apb_write_bit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value, UINT32 
                 HI_INFO_OTP("pch_soak_prg_cnt = %d\n",pch_soak_prg_cnt);
                 if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                 {
+                    //Do not write soak error flag!!!
                     HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                    Ret = HI_ERR_OTP_ABNORMAL;
                     break;
                 }
             }
@@ -1206,7 +1304,9 @@ HI_S32  sub_apb_write_bit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value, UINT32 
                 HI_INFO_OTP("pch_soak_prg_cnt = %d\n",pch_soak_prg_cnt);
                 if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
                 {
+                    //Do not write soak error flag!!!
                     HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+                    Ret = HI_ERR_OTP_ABNORMAL;
                     break;
                 }
             }
@@ -1214,10 +1314,10 @@ HI_S32  sub_apb_write_bit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value, UINT32 
         do_differential();                
 
     }
-    return HI_SUCCESS;
+    return Ret;
 }
 
-HI_S32  do_apb_write_bit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value)
+HI_S32  HAL_OTP_V100_WriteBit(UINT32 addr,UINT32 bit_pos ,UINT32  bit_value)
 {
     HI_S32 Ret = HI_SUCCESS;
 
@@ -1252,6 +1352,7 @@ void  do_apb_write_bootrow_init(void)
 
 static HI_S32 do_set_sr(UINT32 bit_pos,UINT32 bit_value)
 {
+    HI_S32 Ret = HI_SUCCESS;
     UINT32 data, wdata,s;
     UINT32 otp_addr;
     UINT32 pch_soak_prg_cnt = 0;
@@ -1285,6 +1386,7 @@ static HI_S32 do_set_sr(UINT32 bit_pos,UINT32 bit_value)
         if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
         {
             HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+            Ret = HI_ERR_OTP_ABNORMAL;
             break;
         }
     }   
@@ -1320,6 +1422,7 @@ static HI_S32 do_set_sr(UINT32 bit_pos,UINT32 bit_value)
         if(pch_soak_prg_cnt > SOAK_PROGRAM_TIME)
         {
             HI_INFO_OTP("error! bit precharge soak program counter is over setting times\n");
+            Ret = HI_ERR_OTP_ABNORMAL;
             break;
         }
     }   
@@ -1328,10 +1431,10 @@ static HI_S32 do_set_sr(UINT32 bit_pos,UINT32 bit_value)
     //do_idle_apb();
     do_differential();
 
-    return HI_SUCCESS;
+    return Ret;
 }
 
-HI_S32 otp_reset(void)
+HI_S32 HAL_OTP_V100_Reset(void)
 {
     do_single_end();
     do_cmd_noAddress_apb(SiFUSE_TIF_CMD_RESET);
@@ -1428,7 +1531,7 @@ void  disable_otp_rw(unsigned int pos)
 }
 #endif
 
-int set_apb_write_protect(HI_VOID)
+int HAL_OTP_V100_SetWriteProtect(HI_VOID)
 {
 #if 0    
     UINT32 val;
@@ -1470,7 +1573,7 @@ int set_apb_write_protect(HI_VOID)
 #endif
 }
 
-int get_apb_write_protect(unsigned int *penable)
+int HAL_OTP_V100_GetWriteProtect(unsigned int *penable)
 {
     UINT32 val;
 
@@ -1492,7 +1595,7 @@ void  disable_apb_para_read(void)
     return;
 }
 
-void otp_get_sr_bit(int pos,int *pvalue)
+HI_S32 HAL_OTP_V100_GetSrBit(int pos,int *pvalue)
 {
     unsigned int val;
 
@@ -1501,10 +1604,10 @@ void otp_get_sr_bit(int pos,int *pvalue)
     *pvalue = (val & (1 << pos)) ? (1):(0);
     DRV_OTPV100_UNLOCK();
     
-    return ;
+    return HI_SUCCESS;
 }
 
-int otp_set_sr_bit(int pos)
+int HAL_OTP_V100_SetSrBit(int pos)
 {
     HI_S32 Ret = HI_SUCCESS;
     unsigned int val;
@@ -1525,21 +1628,21 @@ int otp_set_sr_bit(int pos)
     return Ret;
 }
 
-HI_S32  otp_func_disable(UINT32 bit_pos,UINT32 bit_value)
+HI_S32  HAL_OTP_V100_FuncDisable(UINT32 bit_pos,UINT32 bit_value)
 {
-    return otp_set_sr_bit(bit_pos);
+    return HAL_OTP_V100_SetSrBit(bit_pos);
 }
 
 
-EXPORT_SYMBOL(do_apb_para_read);
-EXPORT_SYMBOL(get_apb_write_protect);
-EXPORT_SYMBOL(set_apb_write_protect);
-EXPORT_SYMBOL(do_apb_write_byte);
-EXPORT_SYMBOL(do_apb_write_bit);
-EXPORT_SYMBOL(otp_get_sr_bit);
-EXPORT_SYMBOL(otp_set_sr_bit);
-EXPORT_SYMBOL(otp_func_disable);
-EXPORT_SYMBOL(otp_reset);
+EXPORT_SYMBOL(HAL_OTP_V100_Read);
+EXPORT_SYMBOL(HAL_OTP_V100_GetWriteProtect);
+EXPORT_SYMBOL(HAL_OTP_V100_SetWriteProtect);
+EXPORT_SYMBOL(HAL_OTP_V100_WriteByte);
+EXPORT_SYMBOL(HAL_OTP_V100_WriteBit);
+EXPORT_SYMBOL(HAL_OTP_V100_GetSrBit);
+EXPORT_SYMBOL(HAL_OTP_V100_SetSrBit);
+EXPORT_SYMBOL(HAL_OTP_V100_FuncDisable);
+EXPORT_SYMBOL(HAL_OTP_V100_Reset);
 
 #ifdef __cplusplus
 #if __cplusplus

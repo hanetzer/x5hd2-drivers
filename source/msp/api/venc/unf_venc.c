@@ -101,28 +101,25 @@ HI_S32 HI_UNF_VENC_GetDefaultAttr(HI_UNF_VENC_CHN_ATTR_S *pstAttr)
     {
         return HI_ERR_VENC_NULL_PTR;
     }
-    pstAttr->u32Width=720;
-    pstAttr->u32Height=576;
-    pstAttr->enVencType=HI_UNF_VCODEC_TYPE_H264;
-	pstAttr->enCapLevel=HI_UNF_VCODEC_CAP_LEVEL_D1;
-    pstAttr->u32RotationAngle=0;
-    //pstAttr->enPackageSel =HI_UNF_VENC_PACKAGE_Y0UY1V;
 
-    pstAttr->bSlcSplitEn=HI_FALSE;
-    //pstAttr->u32SplitSize= 4;
-    //pstAttr->enYuvSampleType=HI_UNF_VENC_YUV_420;
-    //pstAttr->enYuvStoreType=HI_UNF_VENC_STORE_SEMIPLANNAR;
-    
-    pstAttr->u32StrmBufSize = 720 * 576 * 2;   
-    
+    pstAttr->enVencType       = HI_UNF_VCODEC_TYPE_H264;
+	pstAttr->enCapLevel       = HI_UNF_VCODEC_CAP_LEVEL_720P;
+	pstAttr->enVencProfile    = HI_UNF_H264_PROFILE_HIGH;
+    pstAttr->u32RotationAngle = 0;
+    pstAttr->bSlcSplitEn      = HI_FALSE;    
+    pstAttr->u32StrmBufSize   = 1280 * 720 * 2;   
+
+	pstAttr->u32Width         = 1280;
+    pstAttr->u32Height        = 720;
     pstAttr->u32TargetBitRate = 4*1024*1024;    
-    pstAttr->u32InputFrmRate = 25;    
+    pstAttr->u32InputFrmRate  = 25;    
     pstAttr->u32TargetFrmRate = 25;    
-    pstAttr->u32Gop = 0x7fffffff;    
-    pstAttr->u32MaxQp = 48;
-    pstAttr->u32MinQp = 16;
-    pstAttr->bQuickEncode = HI_FALSE;
-    pstAttr->u8Priority   = 0;
+    pstAttr->u32Gop           = 100;    
+    pstAttr->u32MaxQp         = 48;
+    pstAttr->u32MinQp         = 16;
+    pstAttr->bQuickEncode     = HI_FALSE;
+    pstAttr->u8Priority       = 0;
+	pstAttr->u32Qlevel        = 0;
     return HI_SUCCESS;
 }
 

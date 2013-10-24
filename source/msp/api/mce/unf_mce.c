@@ -10,7 +10,7 @@
 #include "hi_unf_mce.h"
 #include "hi_flash.h"
 #include "unf_mce_def.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "hi_drv_mce.h"
 
 static HI_S32               g_MceDevFd = -1;
@@ -19,6 +19,11 @@ static pthread_mutex_t      g_MceMutex = PTHREAD_MUTEX_INITIALIZER;
 
 #define HI_MCE_LOCK()        (void)pthread_mutex_lock(&g_MceMutex);
 #define HI_MCE_UNLOCK()      (void)pthread_mutex_unlock(&g_MceMutex);
+
+
+static const HI_U8 s_szMCEVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 
 HI_S32 HI_UNF_MCE_Init(HI_UNF_MCE_INIT_PARAM_S *pstInitParam)

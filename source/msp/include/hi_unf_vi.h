@@ -35,11 +35,11 @@ extern "C" {
 /********************************Macro Definition********************************/
 /** \addtogroup      VI */
 /** @{ */  /** <!-- 【VI】 */
-/**Maximum external buffer number*/		
+/**Maximum external buffer number*/
 /**CNcomment: VI管理外部缓冲区最大个数*/
-#define MAX_VI_EXT_BUF_NUM (6)
-/** @} */  /** <!-- ==== Macro Definition end ==== */
+#define MAX_VI_EXT_BUF_NUM (16)
 
+/** @} */  /** <!-- ==== Macro Definition end ==== */
 
 /********************************Struct Definition********************************/
 /** \addtogroup      VI */
@@ -49,8 +49,8 @@ extern "C" {
 /**CNcomment: 输入端口 */
 typedef enum hiUNF_VI_E
 {
-    HI_UNF_VI_PORT0 = 0,      /**<Port 0, only this port can be configured in BT1120 mode *//**<CNcomment: 端口0，BT1120模式下只能配置此端口 */
-    HI_UNF_VI_PORT1,          /**<CNcomment: 端口1 */
+    HI_UNF_VI_PORT0 = 0,      /**<Port 0 *//**<CNcomment: 端口0*/
+    HI_UNF_VI_PORT1,          /**<Port 1 *//**<CNcomment: 端口1*/
     HI_UNF_VI_BUTT
 } HI_UNF_VI_E;
 
@@ -98,12 +98,12 @@ typedef struct hiUNF_VI_BUFF_ATTR_S
 /**CNcomment: VI属性 */
 typedef struct hiUNF_VI_ATTR_S
 {
-    HI_BOOL                   bVirtual;      /**<whether to create virtual VI *//**<CNcomment: 是否创建虚拟VI*/
-    HI_UNF_VI_INPUT_MODE_E    enInputMode;   /**<Video input mode *//**<CNcomment: 视频输入模式 */
-    HI_RECT_S                 stInputRect;   /**<Crop region of a window *//**<CNcomment: 窗口的裁减区域 */
-    HI_UNF_VIDEO_FORMAT_E     enVideoFormat; /**<Video format *//**<CNcomment: 视频格式 */
-    HI_UNF_VI_BUF_MGMT_E      enBufMgmtMode; /**<VI frame buffer management mode *//**<CNcomment: VI帧缓存管理方式 */
-    HI_U32                    u32BufNum;     /**<Number of available buffers *//**<CNcomment: 可用的帧buf的个数 */
+    HI_BOOL                bVirtual;      /**<whether to create virtual VI, only u32BufNum is valid in virtual VI mode *//**<CNcomment: 是否创建虚拟VI，虚拟VI下只有u32BufNum参数有效*/
+    HI_UNF_VI_INPUT_MODE_E enInputMode;   /**<Video input mode *//**<CNcomment: 视频输入模式 */
+    HI_RECT_S              stInputRect;   /**<Crop region of a window *//**<CNcomment: 窗口的裁减区域 */
+    HI_UNF_VIDEO_FORMAT_E  enVideoFormat; /**<Video format *//**<CNcomment: 视频格式 */
+    HI_UNF_VI_BUF_MGMT_E   enBufMgmtMode; /**<VI frame buffer management mode *//**<CNcomment: VI帧缓存管理方式 */
+    HI_U32                 u32BufNum;     /**<Number of available buffers *//**<CNcomment: 可用的帧buf的个数 */
 } HI_UNF_VI_ATTR_S;
 
 /** @} */  /** <!-- ==== Struct Definition End ==== */
@@ -115,7 +115,7 @@ typedef struct hiUNF_VI_ATTR_S
 /**
  \brief Initializes the video input unit (VIU). CNcomment: 初始化VI CNend
  \attention \n
-Before calling the VIU, you must call this application programming interface (API). 
+Before calling the VIU, you must call this application programming interface (API).
 CNcomment: 调用VI模块要求首先调用该接口 CNend
  \param[in] N/A CNcomment: 无 CNend
  \retval ::HI_SUCCESS Success CNcomment: 成功 CNend
@@ -236,6 +236,8 @@ HI_S32 HI_UNF_VI_Stop(HI_HANDLE hVI);
 /**
  \brief Set external buffer which will be managed by VI. CNcomment: 设置外部缓冲区，由VI管理 CNend
  \attention \n
+ The interface is only valid in real VI scene, and ::HI_UNF_VI_BUF_MMAP mode should be set.
+ CNcomment: 用户只能在实体VI场景下，设置为::HI_UNF_VI_BUF_MMAP模式时，才能使用此接口\n CNend
  \param[in] hVI VI handle CNcomment: VI句柄 CNend
  \param[in] pstBufAttr Buffer attributes CNcomment: 缓冲区属性 CNend
  \retval ::HI_SUCCESS Success CNcomment: 成功 CNend
@@ -246,15 +248,11 @@ N/A CNcomment: 无 CNend
 HI_S32 HI_UNF_VI_SetExternBuffer(HI_HANDLE hVI, HI_UNF_VI_BUFFER_ATTR_S* pstBufAttr);
 
 /**
- \brief Obtains the address of a frame buffer over a VI port. 
+ \brief Obtains the address of a frame buffer over a VI port.
  CNcomment:获取虚拟VI Port 一帧图像Buffer CNend
  \attention \n
-If a virtual VI port is created, you can obtain the VI buffer for stuffing
-the YUV data by calling this API.\n
-This API is used to store the picture captured by the USB camera in the VI
-frame buffer.\n
-CNcomment: 如果用户创建的是虚拟VI Port，一般用于USB摄像头\n
-           用户调用此接口从VI获取一帧BUF来填入YUV数据\n CNend
+ The interface can only be used in virual VI scene\n
+CNcomment: 只有在虚拟VI场景下，才可使用此接口还帧\n CNend
  \param[in] hVI VI handle CNcomment: VI句柄 CNend
  \param[out] pViBuf Pointer to the VI buffer CNcomment: VI buffer指针 CNend
  \retval ::HI_SUCCESS Success CNcomment: 成功 CNend
@@ -266,19 +264,11 @@ N/A CNcomment: 无 CNend
 HI_S32 HI_UNF_VI_DequeueFrame(HI_HANDLE hVI, HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo);
 
 /**
- \brief Releases the VI frame buffer for the driver. 
+ \brief Releases the VI frame buffer for the driver.
  CNcomment: 发送虚拟VI Port 一帧图像Buffer，驱动虚拟Port工作 CNend
  \attention
-In ::HI_UNF_VI_BUF_ALLOC mode, this API gets the address of one YUV
-frame data, after copying YUV data, \n
-user can use this function to inform VI data is ready. \n
-In ::HI_UNF_VI_BUF_MMAP mode(only used in USB camera), when camera captures one
-frame, \n
-user can use this function to inform VI data is ready. \n
-CNcomment: 当设置为::HI_UNF_VI_BUF_ALLOC模式时，本接口获取到一帧YUV数据的地址，\n
-           并且拷贝好YUV数据后，就可以调用此接口通知VI数据已经准备好\n
-           当设置为::HI_UNF_VI_BUF_MMAP模式时(仅用于USB摄像头)，摄像头捕获到一帧图像，\n
-           就可以调用此接口通知VI数据已经准备好\n CNend
+ The interface can only be used in virual VI scene\n
+CNcomment: 只有在虚拟VI场景下，才可使用此接口送帧\n CNend
  \param[in] hVI VI handle CNcomment: VI句柄 CNend
  \param[in] pViBuf Pointer to the VI buffer CNcomment: VI buffer指针 CNend
  \retval ::HI_SUCCESS Success CNcomment: 成功 CNend

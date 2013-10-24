@@ -12,9 +12,19 @@
 #include "spi_raw.h"
 #include "nand_raw.h"
 #include "emmc_raw.h"
+#include "hi_debug.h"
 
+#define MAX_HANDLE        MAX_PARTS    /* Flash max handle number */
+#define MAX_BOOTARGS_LEN  1024  /* The max length of bootargs */
 
-#define MAX_BOOTARGS_LEN 1024  /* The max length of bootargs */
+/* Expand hiflash handle fd, only HI_Flash_OpenByTypeAndName() use it */
+#define  SPAN_PART_HANDLE 1000
+
+#define HI_ERR_FLASH(fmt...) \
+             HI_ERR_PRINT(HI_ID_FLASH, fmt)
+
+#define HI_INFO_FLASH(fmt...) \
+             HI_INFO_PRINT(HI_ID_FLASH, fmt)
 
 typedef enum hi_flash_dev_stat
 {
@@ -24,18 +34,11 @@ typedef enum hi_flash_dev_stat
     HI_FLASH_STAT_BUTT
 }HI_FLASH_DEV_STAT;
 
-static HI_S32 find_flash_part(char *mtdparts,
+extern HI_S32 find_flash_part(char *cmdline_string,
                               const char *media_name,  /* hi_sfc, hinand */
                               char *ptn_name,
                               HI_U64 *start,
                               HI_U64 *length);
-static HI_S32 find_part(char *s,
-                        char **retptr,
-                        char *ptnname,
-                        HI_U64 *start,
-                        HI_U64 *length);
-static HI_U64 memparse(const char *ptr,
-                       char **retptr);
 
 static HI_Flash_InterInfo_S gFlashInfo[MAX_HANDLE];
 static HI_Flash_PartInfo_S gPartInfo[MAX_PARTS];
@@ -44,7 +47,7 @@ static HI_U8 g_au8Bootargs[MAX_BOOTARGS_LEN];
 static HI_CHAR szFlashStr[HI_FLASH_TYPE_BUTT][16]={
     "hi_sfc:",
     "hinand:",
-    "hi_emmc:"};
+    "mmcblk0:"};
 static HI_CHAR *pszPos[HI_FLASH_TYPE_BUTT];
 static HI_FLASH_DEV_STAT g_eDevStat[HI_FLASH_TYPE_BUTT];
 static pthread_mutex_t gFlashMutex;
@@ -254,17 +257,26 @@ static HI_S32 Flash_Init(HI_VOID)
                 p = get_word(p, argv[1]);
                 p = get_word(p, argv[2]);
                 p = get_word(p, argv[3]);
+                p = p; /* for no TQE warning */
 
-                gPartInfo[i].PartSize = (HI_U64)(HI_S64)strtol((const char*)argv[1], (char**)NULL, 16);
+                if (i >= MAX_PARTS)
+                {
+                    PRINTF_CA("Detected there has more than %d partitions.\n" \
+                              "You should encrease MAX_PARTS in order to use left partitions!\n", MAX_PARTS);
+                    break;
+                }
+
+                gPartInfo[i].PartSize = (HI_U64)(HI_S64)strtoull((const char*)argv[1], (char**)NULL, 16);
                 gPartInfo[i].BlockSize = (HI_U64)(HI_S64)strtol((const char*)argv[2], (char**)NULL,16); //erase size
+                memset(gPartInfo[i].PartName, 0, sizeof(gPartInfo[i].PartName));
                 strncpy(gPartInfo[i].PartName, (char*)(argv[3]+1), (strlen((char*)argv[3])-2));
                 gPartInfo[i].FlashType = get_flashtype_by_bootargs(gPartInfo[i].PartName);
                 gPartInfo[i].StartAddr = u64StartAddr[gPartInfo[i].FlashType];
                 u64StartAddr[gPartInfo[i].FlashType] += gPartInfo[i].PartSize;
 #if defined (ANDROID)
-                sprintf(gPartInfo[i].DevName, DEV_MTDBASE"%d", i);
+                snprintf(gPartInfo[i].DevName, sizeof(gPartInfo[i].DevName), DEV_MTDBASE"%d", i);
 #else
-                sprintf(gPartInfo[i].DevName, "/dev/mtd%d", i);
+                snprintf(gPartInfo[i].DevName, sizeof(gPartInfo[i].DevName), "/dev/mtd%d", i);
 #endif
                 if ((fd = open(gPartInfo[i].DevName, O_RDWR)) == -1)
                 {
@@ -353,11 +365,10 @@ static HI_S32 All_FLash_Init()
             return HI_FAILURE;
         }
 
-        if( HI_SUCCESS == emmc_raw_init())
+        if( HI_SUCCESS == emmc_raw_init((char *)g_au8Bootargs))
         {
             g_eDevStat[HI_FLASH_TYPE_EMMC_0] = HI_FLASH_STAT_INSTALL;
         }
-        /*else if(strstr((char*)g_au8Bootargs, "hi_emmc:"))*/
         else if(HI_NULL != pszPos[HI_FLASH_TYPE_EMMC_0])
         {
             (HI_VOID)spi_raw_destroy();
@@ -493,6 +504,9 @@ HI_HANDLE HI_Flash_OpenByTypeAndAddr(HI_FLASH_TYPE_E enFlashType,
     gFlashInfo[hFlash].OpenLeng= u64Len;
     gFlashInfo[hFlash].pPartInfo = NULL;
     gFlashInfo[hFlash].FlashType = enFlashType;
+    gFlashInfo[hFlash].PageSize = PageSize;
+    gFlashInfo[hFlash].OobSize = OobSize;
+    gFlashInfo[hFlash].BlockSize = BlockSize;
 
     if (HI_FLASH_TYPE_SPI_0 == enFlashType)
     {
@@ -522,6 +536,11 @@ HI_HANDLE HI_Flash_OpenByTypeAndName(HI_FLASH_TYPE_E enFlashType,
     char *ptr;
     char media_name[20];
     EMMC_CB_S *pstEmmcCB;
+    HI_U64  TotalSize = 0;
+    HI_U32  PageSize = 0;
+    HI_U32  BlockSize = 0;
+    HI_U32  OobSize = 0;
+    HI_U32  BlockShift = 0;
 
     if (HI_FLASH_TYPE_BUTT == enFlashType)
     {
@@ -557,6 +576,7 @@ HI_HANDLE HI_Flash_OpenByTypeAndName(HI_FLASH_TYPE_E enFlashType,
         if( 0 == strncmp(pPartitionName, "/dev/mmcblk0p", strlen("/dev/mmcblk0p")))
 #endif
         {
+	        char partname[FLASH_NAME_LEN];
             pstEmmcCB = emmc_node_open((HI_U8*)pPartitionName);
             if( NULL == pstEmmcCB )
             {
@@ -572,17 +592,30 @@ HI_HANDLE HI_Flash_OpenByTypeAndName(HI_FLASH_TYPE_E enFlashType,
                 return (HI_HANDLE)INVALID_FD;
             }
 
+            memset(partname, 0, sizeof(partname));
+            memset(media_name, 0 , sizeof(media_name));
+            strncpy(media_name, "mmcblk0", sizeof(media_name) - 1);
+            media_name[sizeof(media_name) - 1] = '\0';
+            if (find_part_from_devname(media_name, (char *)g_au8Bootargs, 
+                                       pPartitionName, &u64Address, &u64Len))
+            {
+                HI_ERR_FLASH("Cannot find partiton from %s\n", pPartitionName);
+                return (HI_HANDLE)INVALID_FD;
+            }
+
+            pstEmmcCB->u64PartSize = u64Len;
             gFlashInfo[hFlash].fd = (HI_S32)pstEmmcCB;
             gFlashInfo[hFlash].FlashType = HI_FLASH_TYPE_EMMC_0;
             pthread_mutex_unlock(&gFlashMutex);
             return  (HI_HANDLE)hFlash;
         }
 
-        ptr = strstr((char*)g_au8Bootargs, "hi_emmc:");
+        ptr = strstr((char*)g_au8Bootargs, "mmcblk0:");
         if(NULL != ptr)
         {
-            memset(media_name, 0 , 20);
-            strncpy(media_name, "hi_emmc", strlen("hi_emmc"));
+            memset(media_name, 0 , sizeof(media_name));
+            strncpy(media_name, "mmcblk0", sizeof(media_name) - 1);
+            media_name[sizeof(media_name) - 1] = '\0';
             if (find_flash_part(ptr, media_name, pPartitionName, &u64Address, &u64Len) == 0)
             {
                 HI_ERR_FLASH("Cannot find partition: %s\n", pPartitionName);
@@ -617,7 +650,7 @@ HI_HANDLE HI_Flash_OpenByTypeAndName(HI_FLASH_TYPE_E enFlashType,
         }
 
         pthread_mutex_unlock(&gFlashMutex);
-        return ((HI_HANDLE)MAX_HANDLE);
+        return ((HI_HANDLE)INVALID_FD);
     }
 
     if(strstr((char*)g_au8Bootargs, "hinand:")
@@ -655,8 +688,10 @@ HI_HANDLE HI_Flash_OpenByTypeAndName(HI_FLASH_TYPE_E enFlashType,
             pthread_mutex_unlock(&gFlashMutex);
             return (HI_HANDLE)INVALID_FD;
         }
-        strcpy(DevName, gPartInfo[i].DevName);
-        DevName[FLASH_NAME_LEN - 1] = '\0';
+
+        memset(DevName, 0, FLASH_NAME_LEN);
+        strncpy(DevName, gPartInfo[i].DevName, sizeof(DevName));
+        DevName[sizeof(DevName) - 1] = '\0';
 
         hPart = (HI_U32)i;
 
@@ -709,13 +744,27 @@ HI_HANDLE HI_Flash_OpenByTypeAndName(HI_FLASH_TYPE_E enFlashType,
             }
             return (HI_HANDLE)INVALID_FD;
         }
+	
+		if (HI_FLASH_TYPE_SPI_0 == enFlashType)
+		{
+			spi_raw_get_info((unsigned long long *)&TotalSize, (unsigned long *)&PageSize, (unsigned long *)&BlockSize,
+				(unsigned long *)&OobSize, (unsigned long *)&BlockShift);
+		}
+		else
+		{
+			nand_raw_get_info((unsigned long long *)&TotalSize, (unsigned long *)&PageSize, (unsigned long *)&BlockSize,
+				(unsigned long *)&OobSize, (unsigned long *)&BlockShift);
+		}
+
         gFlashInfo[hFlash].fd = fd;
         //gFlashInfo[hFlash].OpenAddr = 0;
         gFlashInfo[hFlash].OpenLeng= 0;
         gFlashInfo[hFlash].pPartInfo = &gPartInfo[hPart];
         gFlashInfo[hFlash].OpenAddr = gFlashInfo[hFlash].pPartInfo->StartAddr;
         gFlashInfo[hFlash].FlashType = enFlashType;
-
+        gFlashInfo[hFlash].PageSize = PageSize;
+        gFlashInfo[hFlash].OobSize = OobSize;
+        gFlashInfo[hFlash].BlockSize = BlockSize;
 
         if (HI_FLASH_TYPE_SPI_0 == enFlashType)
         {
@@ -758,10 +807,11 @@ HI_HANDLE HI_Flash_OpenByName(HI_CHAR *pPartitionName)
         return (HI_HANDLE)INVALID_FD;
     }
 
-    if(NULL != (ptr = strstr((char*)g_au8Bootargs, "hi_emmc:")))
+    if(NULL != (ptr = strstr((char*)g_au8Bootargs, "mmcblk0:")))
     {
-        memset(media_name, 0 , 20);
-        strncpy(media_name, "hi_emmc", strlen("hi_emmc"));
+        memset(media_name, 0 , sizeof(media_name));
+        strncpy(media_name, "mmcblk0", sizeof(media_name) - 1);
+        media_name[sizeof(media_name) - 1] = '\0';
         if (find_flash_part(ptr, media_name, pPartitionName, &u64Address, &u64Len) == 0)
         {
             HI_ERR_FLASH("Cannot find partition: %s\n", pPartitionName);
@@ -996,7 +1046,7 @@ HI_S32 HI_Flash_Erase(HI_HANDLE hFlash, HI_U64 u64Address, HI_U64 u64Len)
         if (HI_SUCCESS != ret)
         {
             pthread_mutex_unlock(&gFlashMutex);
-            return ret;
+            return HI_FAILURE;
         }
     }
     else
@@ -1040,7 +1090,10 @@ HI_S32 HI_Flash_Read(HI_HANDLE hFlash, HI_U64 u64Address, HI_U8 *pBuf, HI_U32 u3
         pstEmmcCB = (EMMC_CB_S *)(gFlashInfo[hFlash].fd);
         ret = emmc_raw_read(pstEmmcCB, u64Address, u32Len, pBuf);
         pthread_mutex_unlock(&gFlashMutex);
-        return ret;
+	/* union return value to HI_FAILURE.*/
+	if (ret <0)
+		return HI_FAILURE;
+	return ret;
     }
 
     if (SPAN_PART_HANDLE <= gFlashInfo[hFlash].fd)
@@ -1053,7 +1106,28 @@ HI_S32 HI_Flash_Read(HI_HANDLE hFlash, HI_U64 u64Address, HI_U8 *pBuf, HI_U32 u3
         StartAddr = gFlashInfo[hFlash].pPartInfo->StartAddr;
         LimitLeng = gFlashInfo[hFlash].pPartInfo->PartSize;
     }
-    CHECK_ADDR_LEN_VALID(u64Address, u32Len, LimitLeng);
+
+	if (HI_FLASH_RW_FLAG_WITH_OOB == (u32Flags & HI_FLASH_RW_FLAG_WITH_OOB))
+	{
+		if (gFlashInfo[hFlash].PageSize <= 0)
+		{
+			HI_ERR_FLASH("Page Size of HANDLE %u is not initialized!\n", hFlash);
+			pthread_mutex_unlock(&gFlashMutex);
+			return HI_FAILURE;
+		}
+		HI_U32 u32LenWithoutOOB = (u32Len 
+					   / (gFlashInfo[hFlash].OobSize 
+					      + gFlashInfo[hFlash].PageSize))
+					  * gFlashInfo[hFlash].PageSize;
+		if (u32Len % (gFlashInfo[hFlash].OobSize 
+			      + gFlashInfo[hFlash].PageSize))
+			u32LenWithoutOOB += gFlashInfo[hFlash].PageSize;
+		CHECK_ADDR_LEN_VALID(u64Address, u32LenWithoutOOB, LimitLeng);
+	} 
+	else 
+	{
+		CHECK_ADDR_LEN_VALID(u64Address, u32Len, LimitLeng);
+	} 
 
     if (HI_FLASH_TYPE_NAND_0 == gFlashInfo[hFlash].FlashType)
     {
@@ -1061,7 +1135,7 @@ HI_S32 HI_Flash_Read(HI_HANDLE hFlash, HI_U64 u64Address, HI_U8 *pBuf, HI_U32 u3
         if (HI_SUCCESS != ret)
         {
             pthread_mutex_unlock(&gFlashMutex);
-            return ret;
+            return HI_FAILURE;
         }
     }
     else
@@ -1122,7 +1196,9 @@ HI_S32 HI_Flash_Write(HI_HANDLE hFlash, HI_U64 u64Address, HI_U8 *pBuf, HI_U32 u
         pstEmmcCB = (EMMC_CB_S *)(gFlashInfo[hFlash].fd);
         ret = emmc_raw_write(pstEmmcCB, u64Address, u32Len, pBuf);
         pthread_mutex_unlock(&gFlashMutex);
-        return ret;
+	if (ret <0)
+		return HI_FAILURE;
+	return ret;
     }
 
     if (SPAN_PART_HANDLE <= gFlashInfo[hFlash].fd)
@@ -1135,7 +1211,28 @@ HI_S32 HI_Flash_Write(HI_HANDLE hFlash, HI_U64 u64Address, HI_U8 *pBuf, HI_U32 u
         StartAddr = gFlashInfo[hFlash].pPartInfo->StartAddr;
         LimitLeng = gFlashInfo[hFlash].pPartInfo->PartSize;
     }
-    CHECK_ADDR_LEN_VALID(u64Address, u32Len, LimitLeng);
+    if (HI_FLASH_RW_FLAG_WITH_OOB == (u32Flags & HI_FLASH_RW_FLAG_WITH_OOB))
+    {
+		if (gFlashInfo[hFlash].PageSize <= 0)
+		{
+			HI_ERR_FLASH("Page Size of HANDLE %u is not initialized!\n", hFlash);
+			pthread_mutex_unlock(&gFlashMutex);
+			return HI_FAILURE;
+		}
+
+		HI_U32 u32LenWithoutOOB = (u32Len 
+					   / (gFlashInfo[hFlash].OobSize 
+					      + gFlashInfo[hFlash].PageSize))
+					  * gFlashInfo[hFlash].PageSize;
+		if (u32Len % (gFlashInfo[hFlash].OobSize 
+			      + gFlashInfo[hFlash].PageSize))
+			u32LenWithoutOOB += gFlashInfo[hFlash].PageSize;
+		CHECK_ADDR_LEN_VALID(u64Address, u32LenWithoutOOB, LimitLeng);
+    } 
+    else 
+    {
+        CHECK_ADDR_LEN_VALID(u64Address, u32Len, LimitLeng);
+    } 
 
     if (HI_FLASH_TYPE_NAND_0 == gFlashInfo[hFlash].FlashType)
     {
@@ -1143,7 +1240,7 @@ HI_S32 HI_Flash_Write(HI_HANDLE hFlash, HI_U64 u64Address, HI_U8 *pBuf, HI_U32 u
         if (HI_SUCCESS != ret)
         {
             pthread_mutex_unlock(&gFlashMutex);
-            return ret;
+            return HI_FAILURE;
         }
     }
     else
@@ -1318,199 +1415,4 @@ HI_S32 HI_Flash_GetInfo(HI_HANDLE hFlash, HI_Flash_InterInfo_S *pFlashInfo)
 //#define __SUPPORT__FUNC__
 /*****************************************************************/
 
-/* 1 - find, 0 - no find */
-static HI_S32 find_flash_part(char *mtdparts,
-                              const char *media_name,  /* hi_sfc, hinand */
-                              char *ptn_name,
-                              HI_U64 *start,
-                              HI_U64 *length)
-{
-    HI_S32 rel;
-    char *s = (char *)mtdparts;
-
-    for( ; s != NULL; )
-    {
-        char *p;
-        (*start) = 0;
-
-        /* fetch <mtd-id> */
-        if (0 == (p = strchr(s, ':')))
-        {
-            HI_ERR_FLASH("no mtd-id\n");
-            return 0;
-        }
-        else
-        {
-            *p = '\0';
-            rel = strcmp(s, media_name);
-            *p = ':';
-            if (rel)
-            {
-                if (0 == (p = strchr(s, ';')))
-                    return 0;
-                s = p + 1;
-                continue;
-            }
-        }
-
-        /*
-        * parse one mtd. have it reserve memory for the
-        * struct cmdline_mtd_partition and the mtd-id string.
-        */
-        rel =find_part(p + 1, &s, ptn_name, start, length);
-
-        if (rel == 1)
-        {
-            return 1;
-        }
-        else if (rel == -1)
-        {
-            return 0;
-        }
-
-        /* EOS - we're done */
-        if (*s == 0)
-        {
-            break;
-        }
-        /* does another spec follow? */
-        if (*s != ';')
-        {
-            return 0;
-        }
-        s++;
-    }
-
-    return 0;
-}
-
-/* 0 - not find, 1 - find, -1 - error. */
-static HI_S32 find_part(char *s,
-                        char **retptr,
-                        char *ptnname,
-                        HI_U64 *start,
-                        HI_U64 *length)
-{
-    int isfind = 0;
-    char delim = 0;
-
-    /* fetch the partition size */
-    if (*s == '-')
-    {   /* assign all remaining space to this partition */
-        (*length) = (HI_U64)(-1);
-        s++;
-    }
-    else
-    {
-        (*length) = (HI_U64)memparse(s, &s);
-        if ((*length) < 8192)
-        {
-            HI_ERR_FLASH("partition size too small (%llx)\n", (*length));
-            return -1;
-        }
-    }
-
-    /* check for offset */
-    if (*s == '@')
-    {
-        s++;
-        (HI_VOID)memparse(s, &s);
-    }
-
-    /* now look for name */
-    if (*s == '(')
-    {
-         delim = ')';
-    }
-
-    if (delim)
-    {
-        char *p;
-        char *name;
-
-        name = ++s;
-        p = strchr(name, delim);
-        if (!p)
-        {
-            HI_ERR_FLASH("no closing %c found in partition name\n", delim);
-            return -1;
-        }
-
-        *p = '\0';
-        if (!strcmp(name, ptnname))
-            isfind = 1;
-        *p = ')';
-        s = p + 1;
-    }
-
-    /* test for options */
-    if (strncmp(s, "ro", 2) == 0)
-    {
-        s += 2;
-    }
-
-    /* if lk is found do NOT unlock the MTD partition*/
-    if (strncmp(s, "lk", 2) == 0)
-    {
-        s += 2;
-    }
-
-    /* test if more partitions are following */
-    if (*s == ',')
-    {
-        int ret;
-
-        if ((*length) == (HI_U64)(-1))
-        {
-            HI_ERR_FLASH("no partitions allowed after a fill-up partition\n");
-            return -1;
-        }
-
-        if (isfind)
-        {
-            return 1;
-        }
-
-        (*start) += (*length);
-        ret = find_part(s + 1, &s, ptnname, start, length);
-        *retptr = s;
-        return ret;
-    }
-
-    *retptr = s;
-    return isfind;
-}
-
-static HI_U64 memparse(const char *ptr, char **retptr)
-{
-    char *endptr;   /* local pointer to end of parsed string */
-
-    HI_U64 ret = strtoull(ptr, &endptr, 0);
-
-    switch (*endptr)
-    {
-        case 'G':
-        case 'g':
-            ret <<= 10;
-        //lint -fallthrough
-        case 'M':
-        case 'm':
-            ret <<= 10;
-        //lint -fallthrough
-        case 'K':
-        case 'k':
-            ret <<= 10;
-            endptr++;
-        //lint -fallthrough
-        default:
-            break;
-    }
-
-    if (retptr)
-    {
-        *retptr = endptr;
-    }
-
-    return ret;
-}
 

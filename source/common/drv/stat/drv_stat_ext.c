@@ -18,16 +18,12 @@
 ******************************************************************************/
 #include <linux/dma-mapping.h>
 #include <linux/sched.h>
-
 #include "hi_type.h"
 #include "hi_debug.h"
-
-
-//#include "common_sys.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
-
+#include "hi_osal.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
 #include "drv_stat_ioctl.h"
 
 
@@ -189,25 +185,25 @@ static HI_S32 stat_proc_read(struct seq_file *s, HI_VOID *pArg)
 {
     int i;
 
-    seq_printf(s, "=========== host isr stat ===========\n");
+    PROC_PRINT(s, "----------- host isr stat -----------\n");
     if(g_stat_isr_enable == HI_FALSE)
     {
-        seq_printf(s, "isr stat is disabled!\n");
+        PROC_PRINT(s, "isr stat is disabled!\n");
     }
     else
     {
-        seq_printf(s, "audio isr time = %u us\n", g_IsrTime[STAT_ISR_AUDIO].time);
-        seq_printf(s, "video isr time = %u us\n", g_IsrTime[STAT_ISR_VIDEO].time);
-        seq_printf(s, "demux isr time = %u us\n", g_IsrTime[STAT_ISR_DEMUX].time);
-        seq_printf(s, "sync isr time  = %u us\n", g_IsrTime[STAT_ISR_SYNC].time);
-        seq_printf(s, "vo isr time    = %u us\n", g_IsrTime[STAT_ISR_VO].time);
-        seq_printf(s, "tde isr time   = %u us\n", g_IsrTime[STAT_ISR_TDE].time);
+        PROC_PRINT(s, "audio isr time = %u us\n", g_IsrTime[STAT_ISR_AUDIO].time);
+        PROC_PRINT(s, "video isr time = %u us\n", g_IsrTime[STAT_ISR_VIDEO].time);
+        PROC_PRINT(s, "demux isr time = %u us\n", g_IsrTime[STAT_ISR_DEMUX].time);
+        PROC_PRINT(s, "sync isr time  = %u us\n", g_IsrTime[STAT_ISR_SYNC].time);
+        PROC_PRINT(s, "vo isr time    = %u us\n", g_IsrTime[STAT_ISR_VO].time);
+        PROC_PRINT(s, "tde isr time   = %u us\n", g_IsrTime[STAT_ISR_TDE].time);
     }
 
-    seq_printf(s, "=========== host thread stat ===========\n");
+    PROC_PRINT(s, "----------- host thread stat ----------\n");
     if(g_stat_thread_enable == HI_FALSE)
     {
-        seq_printf(s, "thread stat is disabled!\n");
+        PROC_PRINT(s, "thread stat is disabled!\n");
     }
     else
     {
@@ -215,7 +211,7 @@ static HI_S32 stat_proc_read(struct seq_file *s, HI_VOID *pArg)
         {
             if(g_stat_thread_kvirt_base[i].bUsed == HI_TRUE)
             {
-                seq_printf(s, "thread(%s) min=%08dus, avg=%08dus, max=%08d\n",
+                PROC_PRINT(s, "thread(%s) min=%08dus, avg=%08dus, max=%08d\n",
                                 g_stat_thread_kvirt_base[i].name,
                                 g_stat_thread_kvirt_base[i].min_time,
                                 g_stat_thread_kvirt_base[i].avg_time,
@@ -224,33 +220,33 @@ static HI_S32 stat_proc_read(struct seq_file *s, HI_VOID *pArg)
         }
     }
 
-    seq_printf(s, "=========== host event stat ===========\n");
+    PROC_PRINT(s, "----------- host event stat ----------\n");
     
-    seq_printf(s, "KEYIN          = %-10u (keyvalue 0x%x)\n", g_EventTime[STAT_EVENT_KEYIN].EventMs, g_EventTime[STAT_EVENT_KEYIN].Value1);
-    seq_printf(s, "KEYOUT         = %-10u (keyvalue 0x%x)\n", g_EventTime[STAT_EVENT_KEYOUT].EventMs, g_EventTime[STAT_EVENT_KEYOUT].Value1);
-    seq_printf(s, "ASTOP          = %-10u\n", g_EventTime[STAT_EVENT_ASTOP].EventMs);
-    seq_printf(s, "VSTOP          = %-10u\n", g_EventTime[STAT_EVENT_VSTOP].EventMs);
-    seq_printf(s, "CONNECT        = %-10u\n", g_EventTime[STAT_EVENT_CONNECT].EventMs);
-    seq_printf(s, "LOCKED         = %-10u\n", g_EventTime[STAT_EVENT_LOCKED].EventMs);
-    seq_printf(s, "ASTART         = %-10u\n", g_EventTime[STAT_EVENT_ASTART].EventMs);
-    seq_printf(s, "VSTART         = %-10u\n", g_EventTime[STAT_EVENT_VSTART].EventMs);
-    seq_printf(s, "CWSET          = %-10u\n", g_EventTime[STAT_EVENT_CWSET].EventMs);
-    seq_printf(s, "STREAMIN       = %-10u\n", g_EventTime[STAT_EVENT_STREAMIN].EventMs);
-    seq_printf(s, "ISTREAMGET     = %-10u (size %d)\n", g_EventTime[STAT_EVENT_ISTREAMGET].EventMs,g_EventTime[STAT_EVENT_ISTREAMGET].Value1);
-    seq_printf(s, "FRAMEDECED     = %-10u\n", g_EventTime[STAT_EVENT_IFRAMEOUT].EventMs);
+    PROC_PRINT(s, "KEYIN          = %-10u (keyvalue 0x%x)\n", g_EventTime[STAT_EVENT_KEYIN].EventMs, g_EventTime[STAT_EVENT_KEYIN].Value1);
+    PROC_PRINT(s, "KEYOUT         = %-10u (keyvalue 0x%x)\n", g_EventTime[STAT_EVENT_KEYOUT].EventMs, g_EventTime[STAT_EVENT_KEYOUT].Value1);
+    PROC_PRINT(s, "ASTOP          = %-10u\n", g_EventTime[STAT_EVENT_ASTOP].EventMs);
+    PROC_PRINT(s, "VSTOP          = %-10u\n", g_EventTime[STAT_EVENT_VSTOP].EventMs);
+    PROC_PRINT(s, "CONNECT        = %-10u\n", g_EventTime[STAT_EVENT_CONNECT].EventMs);
+    PROC_PRINT(s, "LOCKED         = %-10u\n", g_EventTime[STAT_EVENT_LOCKED].EventMs);
+    PROC_PRINT(s, "ASTART         = %-10u\n", g_EventTime[STAT_EVENT_ASTART].EventMs);
+    PROC_PRINT(s, "VSTART         = %-10u\n", g_EventTime[STAT_EVENT_VSTART].EventMs);
+    PROC_PRINT(s, "CWSET          = %-10u\n", g_EventTime[STAT_EVENT_CWSET].EventMs);
+    PROC_PRINT(s, "STREAMIN       = %-10u\n", g_EventTime[STAT_EVENT_STREAMIN].EventMs);
+    PROC_PRINT(s, "ISTREAMGET     = %-10u (size %d)\n", g_EventTime[STAT_EVENT_ISTREAMGET].EventMs,g_EventTime[STAT_EVENT_ISTREAMGET].Value1);
+    PROC_PRINT(s, "FRAMEDECED     = %-10u\n", g_EventTime[STAT_EVENT_IFRAMEOUT].EventMs);
     
-	seq_printf(s, "VPSSGET        = %-10u\n", g_EventTime[STAT_EVENT_VPSSGETFRM].EventMs);
-    seq_printf(s, "VPSSOUT        = %-10u\n", g_EventTime[STAT_EVENT_VPSSOUTFRM].EventMs);
-    seq_printf(s, "AVPLAYGET      = %-10u\n", g_EventTime[STAT_EVENT_AVPLAYGETFRM].EventMs);
+	PROC_PRINT(s, "VPSSGET        = %-10u\n", g_EventTime[STAT_EVENT_VPSSGETFRM].EventMs);
+    PROC_PRINT(s, "VPSSOUT        = %-10u\n", g_EventTime[STAT_EVENT_VPSSOUTFRM].EventMs);
+    PROC_PRINT(s, "AVPLAYGET      = %-10u\n", g_EventTime[STAT_EVENT_AVPLAYGETFRM].EventMs);
     
-	seq_printf(s, "PRESYNC        = %-10u\n", g_EventTime[STAT_EVENT_PRESYNC].EventMs);
-    seq_printf(s, "BUFREADY       = %-10u (type %d)\n", g_EventTime[STAT_EVENT_BUFREADY].EventMs,g_EventTime[STAT_EVENT_BUFREADY].Value1);
-    seq_printf(s, "FRAMEDISP      = %-10u\n", g_EventTime[STAT_EVENT_FRAMEDISP].EventMs);
+	PROC_PRINT(s, "PRESYNC        = %-10u\n", g_EventTime[STAT_EVENT_PRESYNC].EventMs);
+    PROC_PRINT(s, "BUFREADY       = %-10u (type %d)\n", g_EventTime[STAT_EVENT_BUFREADY].EventMs,g_EventTime[STAT_EVENT_BUFREADY].Value1);
+    PROC_PRINT(s, "FRAMESYNCOK    = %-10u\n", g_EventTime[STAT_EVENT_FRAMESYNCOK].EventMs);
 
-    seq_printf(s, "VOGET          = %-10u\n", g_EventTime[STAT_EVENT_VOGETFRM].EventMs);
+    PROC_PRINT(s, "VOGET          = %-10u\n", g_EventTime[STAT_EVENT_VOGETFRM].EventMs);
         
-    seq_printf(s, "IFRAMEINTER    = %-10u\n", g_EventTime[STAT_EVENT_IFRAMEINTER].Value1);
-    seq_printf(s, "TOTAL          = %-10u\n", g_EventTime[STAT_EVENT_FRAMEDISP].EventMs - g_EventTime[STAT_EVENT_KEYIN].EventMs);
+    PROC_PRINT(s, "IFRAMEINTER    = %-10u\n", g_EventTime[STAT_EVENT_IFRAMEINTER].Value1);
+    PROC_PRINT(s, "TOTAL          = %-10u\n", g_EventTime[STAT_EVENT_VOGETFRM].EventMs - g_EventTime[STAT_EVENT_KEYIN].EventMs);
 
     return 0;
 }
@@ -284,7 +280,7 @@ HI_S32 HI_DRV_STAT_Init(HI_VOID)
         g_stat_thread_kvirt_base[i].bUsed = HI_FALSE;
     }
 
-    sprintf(g_srtuStatDev.devfs_name, "%s", UMAP_DEVNAME_STAT);
+    HI_OSAL_Snprintf(g_srtuStatDev.devfs_name, sizeof(g_srtuStatDev.devfs_name), "%s", UMAP_DEVNAME_STAT);
     g_srtuStatDev.fops = &DRV_stat_Fops;
     g_srtuStatDev.minor = UMAP_MIN_MINOR_STAT;
 	g_srtuStatDev.owner  = THIS_MODULE;
@@ -395,7 +391,7 @@ HI_VOID stat_event_fun(STAT_EVENT_E enEvent, HI_U32 Value)
         case STAT_EVENT_KEYOUT:    
         case STAT_EVENT_ISTREAMGET:
         case STAT_EVENT_BUFREADY:
-        case STAT_EVENT_FRAMEDISP:
+        case STAT_EVENT_FRAMESYNCOK:
             {
                 g_EventTime[enEvent].Value1 = Value;
             }

@@ -21,6 +21,7 @@ Modification            :   Created file
 
 #include "hi_error_mpi.h"
 #include "hi_unf_venc.h"
+#include "drv_venc_ext.h"
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -46,7 +47,7 @@ extern "C" {
 #define HI_VENC_MIN_HEIGTH      (144)	
 /**<Picture size alignment (in bytes)*/		  
 /**<CNcomment: 图像大小对齐字节*/
-#define HI_VENC_PIC_SZIE_ALIGN  (16)	
+#define HI_VENC_PIC_SZIE_ALIGN  (4)	
 /**<Maximum buffer (in bytes)*/		  
 /**<CNcomment: 最大缓存字节*/
 #define HI_VENC_MAX_BUF_SIZE    (20*1024*1024)	
@@ -89,6 +90,14 @@ extern "C" {
 /**<Size of reserved bytes for the bit rate*/		 
 /**<CNcomment: 码率保留字节大小*/
 #define HI_VENC_STREAM_RESERV_SIZE  (48)
+/**<Maximum quantization level*/		  
+/**<CNcomment: 最大量化级别*/
+#define HI_VENC_MAX_Q_VALUE     (99)	
+/**<Minimum quantization level*/ 	 
+/**<CNcomment: 最小量化级别*/ 
+#define HI_VENC_MIN_Q_VALUE     (1)	
+
+
 /** @} */  /** <!-- ==== Macro Definition end ==== */
 
 
@@ -110,6 +119,7 @@ HI_S32 HI_MPI_VENC_DequeueFrame(HI_HANDLE hVencChn,HI_UNF_VIDEO_FRAME_INFO_S *ps
 //HI_S32 HI_MPI_VENC_GetFrame(HI_HANDLE hVencChn, HI_UNF_VI_BUF_S *pstFrame);
 //HI_S32 HI_MPI_VENC_PutFrame(HI_HANDLE hVencChn, const HI_UNF_VI_BUF_S *pstFrame);
 HI_S32 HI_MPI_VENC_RequestIFrame(HI_HANDLE hVencChn);
+HI_S32 HI_MPI_VENC_SetSource(HI_HANDLE hSrc, HI_DRV_VENC_SRC_INFO_S *pstSrc);
 
 #ifdef __cplusplus
  #if __cplusplus

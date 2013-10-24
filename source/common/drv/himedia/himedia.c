@@ -50,6 +50,7 @@
 #include <linux/kmod.h>
 
 #include "himedia_base.h"
+#include "hi_drv_proc.h"
 
 #include <linux/delay.h>
 
@@ -62,7 +63,7 @@ static DEFINE_MUTEX(himedia_sem);
 /*
  * Assigned numbers, used for dynamic minors
  */
-#define DYNAMIC_MINORS 64 /* like dynamic majors */
+#define DYNAMIC_MINORS 128 /* like dynamic majors */
 static unsigned char himedia_minors[DYNAMIC_MINORS / 8];
 
 extern int pmu_device_init(void);
@@ -88,7 +89,7 @@ static int himedia_seq_show(struct seq_file *seq, void *v)
 {
 	const PM_DEVICE_S *p = list_entry(v, PM_DEVICE_S, list);
 
-	seq_printf(seq, "%3i %s\n", p->minor, (char*)p->name ? (char*)p->name : "");
+	PROC_PRINT(seq, "%3i %s\n", p->minor, (char*)p->name ? (char*)p->name : "");
 	return 0;
 }
 
@@ -347,11 +348,11 @@ HI_S32 HI_DRV_PM_UnRegister(PM_DEVICE_S * himedia)
 }
 
 
-HI_S32 HI_DRV_PM_ModInit(HI_VOID)
+HI_S32 DRV_PM_ModInit(HI_VOID)
 {
 	int ret;
 	// 0
-#ifdef CONFIG_PROC_FS
+#if !(0 == HI_PROC_SUPPORT)
 	proc_create("himedia", 0, NULL, &himedia_proc_fops);
 #endif
 	// 1
@@ -367,26 +368,26 @@ HI_S32 HI_DRV_PM_ModInit(HI_VOID)
 	ret = -EIO;
 	if (register_chrdev(HIMEDIA_DEVICE_MAJOR, "himediaCharDev", &himedia_fops))
 		goto err2;
-#if !defined(CONFIG_SUPPORT_CA_RELEASE) && defined(MODULE)
-    printk("Load hi_media.ko success.\t(%s)\n", VERSION_STRING);
+#if defined(MODULE)
+    HI_PRINT("Load hi_media.ko success.\t(%s)\n", VERSION_STRING);
 #endif
 	return 0;
 	// 4
 err2:
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-	printk("!!! Module himedia: unable to get major %d for himedia devices\n", HIMEDIA_DEVICE_MAJOR);
-#endif
+
+	HI_PRINT("!!! Module himedia: unable to get major %d for himedia devices\n", HIMEDIA_DEVICE_MAJOR);
+
 	class_destroy(himedia_class);
 err1:
 	himedia_bus_exit();
 err0:
-#ifdef CONFIG_PROC_FS
+#if !(0 == HI_PROC_SUPPORT)
 	remove_proc_entry("himedia", NULL);
 #endif
 	return ret;
 }
 
-HI_VOID HI_DRV_PM_ModExit(HI_VOID)
+HI_VOID DRV_PM_ModExit(HI_VOID)
 {
 	// 0
 	if (list_empty(&himedia_list) == 0)
@@ -401,11 +402,11 @@ HI_VOID HI_DRV_PM_ModExit(HI_VOID)
 	// 3
 	himedia_bus_exit();
 	// 4
-#ifdef CONFIG_PROC_FS
+#if !(0 == HI_PROC_SUPPORT)
 	remove_proc_entry("himedia", NULL);
 #endif
-#if !defined(CONFIG_SUPPORT_CA_RELEASE) && defined(MODULE)
-    printk("remove hi_media.ko success.\n");
+#if defined(MODULE)
+    HI_PRINT("remove hi_media.ko success.\n");
 #endif
 	return;
 }
@@ -413,14 +414,14 @@ HI_VOID HI_DRV_PM_ModExit(HI_VOID)
 
 
 #ifdef MODULE
-module_init(HI_DRV_PM_ModInit);
-module_exit(HI_DRV_PM_ModExit);
+module_init(DRV_PM_ModInit);
+module_exit(DRV_PM_ModExit);
 #endif
 
 EXPORT_SYMBOL(HI_DRV_PM_Register);
 EXPORT_SYMBOL(HI_DRV_PM_UnRegister);
-EXPORT_SYMBOL(HI_DRV_PM_ModInit);
-EXPORT_SYMBOL(HI_DRV_PM_ModExit);
+EXPORT_SYMBOL(DRV_PM_ModInit);
+EXPORT_SYMBOL(DRV_PM_ModExit);
 
 
 MODULE_LICENSE("GPL");

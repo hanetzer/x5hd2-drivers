@@ -16,7 +16,12 @@ History       :
 
 #include "drv_window.h"
 #include "drv_win_priv.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_sys.h"
+#include "drv_vdec_ext.h"
+#include "drv_disp_hal.h"
+
+
+
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -29,54 +34,35 @@ extern "C" {
 ******************************************************************************/
 static volatile HI_S32 s_s32WindowGlobalFlag = WIN_DEVICE_STATE_CLOSE;
 static DISPLAY_WINDOW_S stDispWindow;
+static VIRTUAL_WINDOW_S stVirWindow;
+VIRTUAL_S *WinGetVirWindow(HI_U32 u32WinIndex)
+{
+    
+    if (!stVirWindow.u32WinNumber)
+    {
+        WIN_WARN("Not found this window!\n");
+        return HI_NULL;
+    }
 
-/******************************************************************************
-    local function and macro
-******************************************************************************/
-#define WinGetType(pstWin)    (pstWin->enType)
-#define WinGetLayerID(pstWin) (pstWin->eLayer)
-#define WinGetDispID(pstWin)  (pstWin->enDisp)
+    if ( WinGetPrefix(u32WinIndex) != WIN_INDEX_PREFIX)
+    {
+        WIN_ERROR("Invalid window index = 0x%x\n", u32WinIndex);
+        return HI_NULL;
+    }
 
-#define WinCheckDeviceOpen()    \
-{                                \
-    if (WIN_DEVICE_STATE_OPEN != s_s32WindowGlobalFlag)  \
-    {                            \
-        WIN_ERROR("WIN is not inited or suspended in %s!\n", __FUNCTION__); \
-        return HI_ERR_VO_NO_INIT;  \
-    }                             \
-}
+    if (  WinGetDispId(u32WinIndex) != WIN_INDEX_VIRTUAL_CHANNEL)
+    {
+        WIN_ERROR("Invalid window index = 0x%x\n", u32WinIndex);
+        return HI_NULL;
+    }
 
-#define WinCheckNullPointer(ptr) \
-{                                \
-    if (!ptr)                    \
-    {                            \
-        WIN_ERROR("WIN Input null pointer in %s!\n", __FUNCTION__); \
-        return HI_ERR_VO_NULL_PTR;  \
-    }                             \
-}
+    if ( WinGetId(u32WinIndex) >= WIN_VIRTAUL_MAX_NUMBER)
+    {
+        WIN_ERROR("Invalid window index = 0x%x\n", u32WinIndex);
+        return HI_NULL;
+    }
 
-// 检查句柄合法性
-#define WinCheckWindow(hWin, pstWin) \
-{                                    \
-    pstWin = WinGetWindow(hWin);     \
-    if (!pstWin)                      \
-    {                                \
-        WIN_ERROR("WIN is not exist!\n"); \
-        return HI_ERR_VO_WIN_NOT_EXIST; \
-    }  \
-}
-
-// 检查从窗口状态
-#define WinCheckSlaveWindow(pstWin) \
-{                                   \
-    if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinGetType(pstWin)) \
-    {                               \
-        if (!pstWin->hSlvWin)        \
-        {                           \
-            WIN_ERROR("WIN Slave window is lost in %s\n", __FUNCTION__); \
-            return HI_ERR_VO_SLAVE_WIN_LOST;    \
-        }                           \
-    }                               \
+    return stVirWindow.pstWinArray[WinGetId(u32WinIndex)];
 }
 
 HI_VOID ISR_CallbackForDispModeChange(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INFO_S *pstInfo);
@@ -85,11 +71,261 @@ HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INF
 /******************************************************************************
     Win device function
 ******************************************************************************/
+
+HI_S32 Check_WinFunc(WINDOW_S *pWin)
+{
+    if (!pWin)
+        return HI_FAILURE;
+
+    if ((!pWin->stVLayerFunc.PF_ReleaseLayer)
+        ||(!pWin->stVLayerFunc.PF_SetEnable)
+        ||(!pWin->stVLayerFunc.PF_Update)
+        ||(!pWin->stVLayerFunc.PF_AcquireLayerByDisplay)
+        ||(!pWin->stVLayerFunc.PF_MovBottom)
+        ||(!pWin->stVLayerFunc.PF_MovTop)
+        ||(!pWin->stVLayerFunc.PF_AcquireLayerByDisplay)
+        )
+    {
+        return HI_FAILURE;
+        
+    }
+    else
+    {
+        return HI_SUCCESS;
+    }
+}
+
+HI_VOID ISR_CallbackForWinManage(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INFO_S *pstInfo)
+{
+    HI_U32 i = 0,j = 0;
+    WINDOW_S *pWin[WINDOW_MAX_NUMBER];
+    HI_U32 u32WinRange[WINDOW_MAX_NUMBER];
+    HI_U32 u32WinOrder[WINDOW_MAX_NUMBER];
+    HI_U32 u32MaxWinRange = 0;
+    HI_U32 u32MaxWinNum = 0;
+    HI_U32 u32MainWinIndex;
+    VIDEO_LAYER_CAPABILITY_S  stVideoLayerCap;
+    HI_DRV_VIDEO_FRAME_S  *pConfigFrame;
+
+    memset(u32WinRange,0,sizeof(HI_U32)*WINDOW_MAX_NUMBER);
+    memset(pWin,0,sizeof(WINDOW_S*)*WINDOW_MAX_NUMBER);
+    memset(u32WinOrder,0,sizeof(HI_U32)*WINDOW_MAX_NUMBER);
+    
+    for ( i = 0 ; i < WINDOW_MAX_NUMBER; i++)
+    {
+        if (stDispWindow.pstWinArray[(HI_U32)hDst][i])
+        {
+            pWin[j] = stDispWindow.pstWinArray[(HI_U32)hDst][i];
+            /*check window opt is right */
+            if (HI_SUCCESS == Check_WinFunc(pWin[j]))
+            {
+                 pConfigFrame = WinBuf_GetDisplayedFrame(&pWin[j]->stBuffer.stWinBP);
+                 if (pConfigFrame)
+                 {
+                    /*save window Zorder*/
+                    pWin[j]->stVLayerFunc.PF_GetZorder(pWin[j]->u32VideoLayer,&u32WinOrder[i]);
+                    
+                    /*save window size*/
+                    u32WinRange[i] = (pConfigFrame->u32Width) * (pConfigFrame->u32Height);
+                    j++;
+                }
+             }
+        }
+    }
+
+    u32MaxWinNum = j;
+       /* if no window return */
+    if ( u32MaxWinNum<= 0)
+    {
+        return ;
+    }
+
+    /*find  largest window as MainWindow*/
+    u32MaxWinRange = u32WinRange[0];
+    u32MainWinIndex = 0;
+    for ( i = 0 ; i < u32MaxWinNum; i++)
+    {
+        if (u32WinRange[i] > u32MaxWinRange)
+        {
+            u32MaxWinRange = u32WinRange[i];
+            u32MainWinIndex = i ;
+        }
+    }
+
+    /*1: judge whether need to change window video  layer*/
+    pWin[u32MainWinIndex]->stVLayerFunc.PF_GetCapability(pWin[u32MainWinIndex]->u32VideoLayer,&stVideoLayerCap);
+    if ((!stVideoLayerCap.bZme ) && (u32WinRange[u32MainWinIndex]))
+    {    
+        /*if main window is not ZME layer,we need change layer*/
+        if (1 == u32MaxWinNum)
+         {
+                
+            /*when  change  one layer to other layer , we should close old layer*/
+                pWin[u32MainWinIndex]->stVLayerFunc.PF_SetEnable(pWin[u32MainWinIndex]->u32VideoLayer,HI_FALSE);
+                pWin[u32MainWinIndex]->stVLayerFunc.PF_Update(pWin[u32MainWinIndex]->u32VideoLayer);
+         }
+        
+        /*2: change  layer */ 
+        /*release all layer*/
+        for ( i = 0 ; i < u32MaxWinNum; i++)
+        {
+            if (pWin[i])
+            {
+                    pWin[i]->stVLayerFunc.PF_ReleaseLayer(pWin[i]->u32VideoLayer);
+            }
+        }
+
+        /*make sure that main window Acquire ZME layer */
+          //printk("manage window  change max (%d)main  (%d) layer(%d)\n ",u32MaxWinNum,u32MainWinIndex,(pWin[u32MainWinIndex]->u32VideoLayer));
+         pWin[u32MainWinIndex]->stVLayerFunc.PF_AcquireLayerByDisplay( (HI_DRV_DISPLAY_E) hDst,&(pWin[u32MainWinIndex]->u32VideoLayer));
+
+         for ( i = 0 ; i < u32MaxWinNum; i++)
+        {
+            if ((u32MainWinIndex != i ) && pWin[i])
+                pWin[i]->stVLayerFunc.PF_AcquireLayerByDisplay((HI_DRV_DISPLAY_E)  hDst,&(pWin[i]->u32VideoLayer));
+        }
+
+         /*resume  window zorder,because we only have two layers ,so we can this*/
+         if (u32WinOrder[u32MainWinIndex] == 0)
+            pWin[u32MainWinIndex]->stVLayerFunc.PF_MovBottom(pWin[u32MainWinIndex]->u32VideoLayer);
+         else
+            pWin[u32MainWinIndex]->stVLayerFunc.PF_MovTop(pWin[u32MainWinIndex]->u32VideoLayer);
+         
+         pWin[u32MainWinIndex]->stVLayerFunc.PF_Update(pWin[u32MainWinIndex]->u32VideoLayer);
+
+    }
+
+}
+
+HI_S32 WinRegWinManageCallback(HI_DRV_DISPLAY_E enDisp)
+{
+    HI_DRV_DISP_CALLBACK_S stCB;
+    HI_S32 nRet= HI_SUCCESS;    
+
+    stCB.hDst  = (HI_HANDLE)enDisp;
+    stCB.pfDISP_Callback = ISR_CallbackForWinManage;
+    nRet = DISP_RegCallback(enDisp, HI_DRV_DISP_C_INTPOS_0_PERCENT, &stCB);
+    if (nRet)
+    {
+        WIN_ERROR("WIN register callback failed in %s!\n", __FUNCTION__);
+    }
+
+    return nRet;
+}
+HI_S32 WinUnRegWinManageCallback(HI_DRV_DISPLAY_E enDisp)
+{
+    HI_DRV_DISP_CALLBACK_S stCB;
+    HI_S32 nRet= HI_SUCCESS;    
+
+    stCB.hDst  = (HI_HANDLE)enDisp;
+    stCB.pfDISP_Callback = ISR_CallbackForWinManage;
+    nRet = DISP_UnRegCallback(enDisp, HI_DRV_DISP_C_INTPOS_0_PERCENT, &stCB);
+    if (nRet)
+    {
+        WIN_ERROR("WIN unregister callback failed in %s!\n", __FUNCTION__);
+    }
+    return nRet;
+}
+
+HI_S32 WIN_DestroyStillFrame(HI_DRV_VIDEO_FRAME_S *pstReleaseFrame)
+{
+    HI_U32 i;
+    WIN_RELEASE_FRM_S* pstWinRelFrame = &stDispWindow.stWinRelFrame;
+    
+    for ( i =0; i < MAX_RELEASE_NO; i++)
+    {
+        if (!pstWinRelFrame->pstNeedRelFrmNode[i] )
+        {
+            pstWinRelFrame->pstNeedRelFrmNode[i] = pstReleaseFrame;
+            pstWinRelFrame->enThreadEvent= EVENT_RELEASE;
+            //printk(" wake up !\n");
+            wake_up(&pstWinRelFrame->stWaitQueHead);
+            return HI_SUCCESS;   
+        }
+    }
+    
+    WIN_ERROR("Release still frame failed ,buff is full. %s!\n", __FUNCTION__); 
+    return HI_FAILURE;   
+}
+HI_S32 WinReleaseFrameThreadProcess(HI_VOID* pArg)
+{   
+    HI_U32 i;
+    WIN_RELEASE_FRM_S* pstWinRelFrame = pArg;
+
+    /*if stop refush release frame buffer*/
+    while(!kthread_should_stop() )
+    {
+        for ( i =0; i < MAX_RELEASE_NO; i++)
+        {
+            if (pstWinRelFrame->pstNeedRelFrmNode[i]  )
+            {
+                if ( pstWinRelFrame->pstNeedRelFrmNode[i] ->bStillFrame)
+                {
+                    WinReleaseStillFrame(pstWinRelFrame->pstNeedRelFrmNode[i]);
+                    pstWinRelFrame->pstNeedRelFrmNode[i] = HI_NULL;
+                }
+            }
+        }
+
+        //printk("run  --%d!\n",pstWinRelFrame->enThreadEvent);
+        pstWinRelFrame->enThreadEvent = EVENT_BUTT;
+        //wait_event_timeout(stDispWindow.stQueueHead.queue_head, stDispWindow.enThreadEvent,HZ);
+        wait_event(pstWinRelFrame->stWaitQueHead, (EVENT_RELEASE == pstWinRelFrame->enThreadEvent));
+    }
+    
+    return HI_SUCCESS;
+}
+HI_S32 WinCreatReleaseFrameThread(HI_VOID )
+{
+    WIN_RELEASE_FRM_S* pstWinRelFrame = &stDispWindow.stWinRelFrame;
+    
+    memset(pstWinRelFrame,0,sizeof(WIN_RELEASE_FRM_S));
+    pstWinRelFrame->hThread =  kthread_create(WinReleaseFrameThreadProcess, (HI_VOID *)(&stDispWindow.stWinRelFrame), "HI_WIN_ReleaseFrameProcess");
+    
+    init_waitqueue_head( &(pstWinRelFrame->stWaitQueHead) );
+    if (HI_NULL == pstWinRelFrame->hThread)
+    {
+        WIN_FATAL("Can not create thread.\n");
+        return HI_FAILURE;
+    }
+    wake_up_process(pstWinRelFrame->hThread);
+    return HI_SUCCESS;
+}
+
+HI_S32 WinDestroyReleaseFrameThread(HI_VOID )
+{
+    HI_S32 s32Ret;
+    HI_S32 s32Times = 0;
+    WIN_RELEASE_FRM_S* pstWinRelFrame = &stDispWindow.stWinRelFrame;
+
+    /*reflush release buffer */
+    pstWinRelFrame->enThreadEvent = EVENT_RELEASE;
+    wake_up(&pstWinRelFrame->stWaitQueHead);
+
+    for (s32Times = 0 ; s32Times < 10; s32Times++)
+    {
+         if (EVENT_BUTT == pstWinRelFrame->enThreadEvent) 
+         {
+            pstWinRelFrame->enThreadEvent = EVENT_RELEASE;
+            s32Ret = kthread_stop(pstWinRelFrame->hThread);
+             
+            if (s32Ret != HI_SUCCESS)
+            {
+                WIN_FATAL("Destory Thread Error.\n");
+            }
+            return HI_SUCCESS;
+        }
+         msleep(100);
+    }
+    
+    return HI_FAILURE;
+}
+
 HI_S32 WIN_Init(HI_VOID)
 {
     HI_BOOL bDispInitFlag;
+    HI_S32 s32Ret;
     HI_DRV_DISP_VERSION_S stVerison;
-//    HI_S32 nRet;
     
     if (WIN_DEVICE_STATE_CLOSE != s_s32WindowGlobalFlag)
     {
@@ -97,8 +333,6 @@ HI_S32 WIN_Init(HI_VOID)
         return HI_SUCCESS;
     }
 
-
-    // s1 检查DISP是否有初始化
     DISP_GetInitFlag(&bDispInitFlag);
     if (HI_TRUE != bDispInitFlag)
     {
@@ -112,15 +346,22 @@ HI_S32 WIN_Init(HI_VOID)
         return HI_ERR_VO_MALLOC_FAILED;
     }
 
-    // s2 初始化window，获取surface操作函数
     DISP_MEMSET(&stDispWindow, 0, sizeof(DISPLAY_WINDOW_S));
     
     DISP_GetVersion(&stVerison);
-
     VideoLayer_Init(&stVerison);
 
-
-    // s3 设置初始化标志
+    DISP_MEMSET(&stVirWindow, 0, sizeof(VIRTUAL_WINDOW_S));
+    
+    WinRegWinManageCallback(HI_DRV_DISPLAY_0);
+    WinRegWinManageCallback(HI_DRV_DISPLAY_1);
+    
+    s32Ret = WinCreatReleaseFrameThread();
+    if (HI_SUCCESS != s32Ret)
+    {
+        WIN_ERROR("win Create Release Frame Thread failed!\n");
+        return HI_ERR_VO_MALLOC_FAILED;
+    }
     s_s32WindowGlobalFlag = WIN_DEVICE_STATE_OPEN;
 
     return HI_SUCCESS;
@@ -129,15 +370,14 @@ HI_S32 WIN_Init(HI_VOID)
 
 HI_S32 WIN_DeInit(HI_VOID)
 {
-    HI_S32 i,j;
+    HI_S32 i,j,s32Ret;
 
     if (WIN_DEVICE_STATE_CLOSE == s_s32WindowGlobalFlag)
     {
         WIN_INFO("VO is not inited!\n");
         return HI_SUCCESS;
     }
-
-    // s1 关闭所有wiondw
+    /*close all the windows.*/
     for(i=0; i<HI_DRV_DISPLAY_BUTT; i++)
     {
         for(j=0; j<WINDOW_MAX_NUMBER; j++)
@@ -149,19 +389,35 @@ HI_S32 WIN_DeInit(HI_VOID)
             }
         }
     }
-    
     stDispWindow.u32WinNumber = 0;
 
-    // s2 释放资源
+    
+    /*close all the virtual windows.*/
+    for(i=0; i<HI_DRV_DISPLAY_BUTT; i++)
+    {
+        if (stVirWindow.pstWinArray[i])
+        {
+            WIN_VIR_Destroy(stVirWindow.pstWinArray[i]);
+            stVirWindow.pstWinArray[i] = HI_NULL;
+        }
+    }
+    
+    stVirWindow.u32WinNumber = 0;  
+
+    WinUnRegWinManageCallback(HI_DRV_DISPLAY_1);
+    WinUnRegWinManageCallback(HI_DRV_DISPLAY_0);
+    
+    s32Ret = WinDestroyReleaseFrameThread();
+    if (HI_SUCCESS != s32Ret)
+    {
+        WIN_ERROR("win Destroy Release Frame Thread failed!\n");
+        //return HI_ERR_VO_MALLOC_FAILED;
+    }
     VideoLayer_DeInit();
-
-
-    BP_DestroyBlackFrame();
-
-    // s3 设置标志
+    BP_DestroyBlackFrame();  
     s_s32WindowGlobalFlag = WIN_DEVICE_STATE_CLOSE;
+    
     WIN_INFO("VO has been DEinited!\n");
-
     return HI_SUCCESS;
 }
 
@@ -182,8 +438,8 @@ HI_S32 WIN_Resume(HI_VOID)
         VIDEO_LAYER_FUNCTIONG_S *pF = VideoLayer_GetFunctionPtr();
 
         s_s32WindowGlobalFlag = WIN_DEVICE_STATE_OPEN;
-
-        pF->PF_SetAllLayerDefault();
+        if (pF)
+            pF->PF_SetAllLayerDefault();
     }
 
     return HI_SUCCESS;
@@ -216,15 +472,98 @@ HI_U32 WinGetId(HI_U32 u32WinIndex)
     return (HI_U32)(u32WinIndex & WINDOW_INDEX_NUMBER_MASK);
 }
 
+
+
+HI_U32 WinMakeVirIndex(HI_U32 u32WinIndex)
+{
+    /*
+     *  0x12               34                        56             78
+     *       WIN_INDEX_PREFIX  WIN_INDEX_VIRTUAL_CHANNEL   u32WinIndex  
+     *
+     */
+    return (HI_U32)(   WIN_INDEX_PREFIX
+                     | ( ( WIN_INDEX_VIRTUAL_CHANNEL& WIN_INDEX_DISPID_MASK) \
+                          << WIN_INDEX_DISPID_SHIFT_NUMBER
+                       )
+                     |(u32WinIndex& WINDOW_INDEX_NUMBER_MASK)
+                    );
+}
+
 HI_U32 WinMakeIndex(HI_DRV_DISPLAY_E enDisp, HI_U32 u32WinIndex)
 {
-    return (HI_U32)(   WIN_INDEX_PREFIX
+    return (HI_U32)(   (WIN_INDEX_PREFIX)
                      | ( ( (HI_U32)enDisp & WIN_INDEX_DISPID_MASK) \
                           << WIN_INDEX_DISPID_SHIFT_NUMBER
                        )
                      |(u32WinIndex& WINDOW_INDEX_NUMBER_MASK)
                     );
 }
+
+HI_U32 WinGetIndex(HI_HANDLE hWin, HI_DRV_DISPLAY_E *enDisp, HI_U32 *u32WinIndex)
+{
+    
+    *enDisp = (hWin & 0xff00) >> WIN_INDEX_DISPID_SHIFT_NUMBER;
+    *u32WinIndex = hWin & 0xff;
+
+    return HI_SUCCESS;
+}
+
+HI_S32 WinAddVirWindow(VIRTUAL_S *pstWin)
+{
+    HI_S32 i;
+    
+    for(i=0; i<WIN_VIRTAUL_MAX_NUMBER; i++)
+    {
+        if (!stVirWindow.pstWinArray[i])
+        {
+            pstWin->u32Index =  WinMakeVirIndex((HI_U32)i);
+            stVirWindow.pstWinArray[i] = pstWin;
+            stVirWindow.u32WinNumber++;
+
+            return HI_SUCCESS;
+        }
+    }
+    return HI_FAILURE;
+}
+HI_S32 WinDelVirWindow(HI_U32 u32WinIndex)
+{
+    if ( WinGetPrefix(u32WinIndex) != WIN_INDEX_PREFIX)
+    {
+        WIN_ERROR("Invalid window index = 0x%x\n", u32WinIndex);
+        return HI_FAILURE;
+    }
+
+    if ( WinGetDispId(u32WinIndex) != WIN_INDEX_VIRTUAL_CHANNEL)
+    {
+        WIN_ERROR("Invalid window index = 0x%x\n", u32WinIndex);
+        return HI_FAILURE;
+    }
+
+    if ( WinGetId(u32WinIndex) >= WIN_VIRTAUL_MAX_NUMBER)
+    {
+        WIN_ERROR("Invalid window index = 0x%x\n", u32WinIndex);
+        return HI_FAILURE;
+    }
+
+    if (!stVirWindow.u32WinNumber)
+    {
+        WIN_ERROR("Not found this window!\n");
+        return HI_FAILURE;
+    }
+
+    if (stVirWindow.pstWinArray[WinGetId(u32WinIndex)])
+    {
+        stVirWindow.pstWinArray[WinGetId(u32WinIndex)] = HI_NULL;
+        stVirWindow.u32WinNumber--;
+    }
+    else
+    {
+        WIN_ERROR("Not found this window!\n");
+    }
+
+    return HI_SUCCESS;
+}
+
 
 HI_S32 WinAddWindow(HI_DRV_DISPLAY_E enDisp, WINDOW_S *pstWin)
 {
@@ -243,12 +582,10 @@ HI_S32 WinAddWindow(HI_DRV_DISPLAY_E enDisp, WINDOW_S *pstWin)
 
             stDispWindow.pstWinArray[(HI_U32)enDisp][i] = pstWin;
             stDispWindow.u32WinNumber++;
-            //printk(">>>>>>>>>>>>>>>> %s, %d\n", __FUNCTION__, __LINE__);
+            
             return HI_SUCCESS;
         }
-    }
-
-    //printk(">>>>>>>>>>>>>>>> %s, %d\n", __FUNCTION__, __LINE__);
+    }    
 
     return HI_FAILURE;
 }
@@ -299,11 +636,10 @@ WINDOW_S *WinGetWindow(HI_U32 u32WinIndex)
 {
     if (!stDispWindow.u32WinNumber)
     {
-        WIN_ERROR("Not found this window!\n");
+        WIN_WARN("Not found this window!\n");
         return HI_NULL;
     }
-
-    //同时检查窗口与从窗口
+    
     if ( WinGetPrefix(u32WinIndex) != WIN_INDEX_PREFIX)
     {
         WIN_ERROR("Invalid window index = 0x%x\n", u32WinIndex);
@@ -312,7 +648,7 @@ WINDOW_S *WinGetWindow(HI_U32 u32WinIndex)
 
     if (  WinGetDispId(u32WinIndex) >= HI_DRV_DISPLAY_BUTT)
     {
-        WIN_ERROR("Invalid window index = 0x%x\n", u32WinIndex);
+        WIN_WARN("Invalid window index = 0x%x\n", u32WinIndex);
         return HI_NULL;
     }
 
@@ -354,62 +690,82 @@ HI_U32 WinParamAlignDown(HI_U32 x, HI_U32 a)
     }
 }
 
-HI_VOID WinUpdateRectBaseRect(HI_RECT_S *Old, HI_RECT_S * New, HI_RECT_S *in, HI_RECT_S *Out)
+HI_VOID window_revise(HI_RECT_S *stToBeRevisedRect_tmp, const HI_RECT_S *tmp_virtscreen)
 {
-    HI_RECT_S stTmp;
+    /*give a basic  process of width and height.*/
+    if (stToBeRevisedRect_tmp->s32Width < WIN_OUTRECT_MIN_WIDTH)
+        stToBeRevisedRect_tmp->s32Width = WIN_OUTRECT_MIN_WIDTH;
+    else if(stToBeRevisedRect_tmp->s32Width > tmp_virtscreen->s32Width)
+        stToBeRevisedRect_tmp->s32Width =  tmp_virtscreen->s32Width;
 
-    if (   (New->s32X == Old->s32X) && (New->s32Y == Old->s32Y)
-        && (New->s32Width == Old->s32Width) && (New->s32Height == Old->s32Height)
-    )
-    {
-        return;
-    }
-
-    stTmp.s32X = (in->s32X * New->s32Width) / Old->s32Width;
-    stTmp.s32Y = (in->s32Y * New->s32Height) / Old->s32Height;
-    stTmp.s32Width = (in->s32Width * New->s32Width) / Old->s32Width;
-    stTmp.s32Height = (in->s32Height * New->s32Height) / Old->s32Height;
-
-    Out->s32X = WinParamAlignUp(stTmp.s32X, 2);
-    Out->s32Y = WinParamAlignUp(stTmp.s32Y, 2);
-    Out->s32Width  = WinParamAlignUp(stTmp.s32Width, 2);
-    Out->s32Height = WinParamAlignUp(stTmp.s32Height, 2);
-
-    return;
+    if (stToBeRevisedRect_tmp->s32Height < WIN_OUTRECT_MIN_HEIGHT)
+        stToBeRevisedRect_tmp->s32Height = WIN_OUTRECT_MIN_HEIGHT;
+    else if(stToBeRevisedRect_tmp->s32Height > tmp_virtscreen->s32Height)
+        stToBeRevisedRect_tmp->s32Height =  tmp_virtscreen->s32Height;   
+    
+    return ;
 }
 
-#if 0
-HI_S32 WinProduceNewAttr(WINDOW_S *pstWin, HI_DISP_DISPLAY_INFO_S *pstDispInfo)
-{
-    pstWin->stNewAttr = pstWin->stCfg.stAttr;
+/*this func is for both graphics and video  virtual screen deal, it's a common function.*/
+HI_S32 Win_ReviseOutRect(const HI_RECT_S *tmp_virtscreen, 
+                         const HI_DRV_DISP_OFFSET_S *stOffsetInfo,
+                         const HI_RECT_S *stFmtResolution,
+                         HI_RECT_S *stToBeRevisedRect, 
+                         HI_RECT_S *stRevisedRect)
+{    
+    HI_S32 width_ratio = 0,  height_ratio = 0;
+    HI_U32 zmeDestWidth = 0, zmeDestHeight = 0;
+    HI_DRV_DISP_OFFSET_S tmp_offsetInfo;
 
-    WinUpdateRectBaseRect(&pstWin->stCfg.stRefScreen, 
-                            (HI_RECT_S *)&pstDispInfo->stOrgRect,
-                            &pstWin->stCfg.stRefOutRect,
-                            &pstWin->stUsingAttr.stOutRect);
+    HI_RECT_S stToBeRevisedRect_tmp = *stToBeRevisedRect;
 
-    // TODO: 超出屏幕的处理
+    tmp_offsetInfo = *stOffsetInfo;
+    
+    /*for browse mode, revise in virt screen .*/
+    window_revise(&stToBeRevisedRect_tmp,tmp_virtscreen);
+    
+    zmeDestWidth = (stFmtResolution->s32Width - tmp_offsetInfo.u32Left - tmp_offsetInfo.u32Right);
+    zmeDestHeight = (stFmtResolution->s32Height - tmp_offsetInfo.u32Top - tmp_offsetInfo.u32Bottom);
+    
+    
+    /*pay attention ,we must care about that  u32 overflow.....*/
+    width_ratio  = zmeDestWidth  * 100 /(tmp_virtscreen->s32Width);
+    height_ratio = zmeDestHeight * 100 /(tmp_virtscreen->s32Height);    
 
-    if (!pstWin->stNewAttr.stOutRect.s32Width)
+    if (tmp_virtscreen->s32Width != stToBeRevisedRect_tmp.s32Width)
     {
-        pstWin->stNewAttr.stOutRect = pstDispInfo->stOrgRect;
+        stRevisedRect->s32Width = (stToBeRevisedRect_tmp.s32Width * width_ratio) / 100;         
+    } else {
+        stRevisedRect->s32Width = zmeDestWidth;
     }
+    
+    if (tmp_virtscreen->s32Height != stToBeRevisedRect_tmp.s32Height)
+    {
+        stRevisedRect->s32Height = (stToBeRevisedRect_tmp.s32Height * height_ratio) / 100;      
+    } else {
+        stRevisedRect->s32Height = zmeDestHeight;
+    }
+    
+        
+    stRevisedRect->s32X = (stToBeRevisedRect_tmp.s32X * width_ratio) /100 + tmp_offsetInfo.u32Left;
+    stRevisedRect->s32Y= (stToBeRevisedRect_tmp.s32Y * height_ratio) /100 + tmp_offsetInfo.u32Top;
+    
+    stRevisedRect->s32X = WinParamAlignUp(stRevisedRect->s32X, 2);
+    stRevisedRect->s32Y = WinParamAlignUp(stRevisedRect->s32Y, 2);
+    stRevisedRect->s32Width  = WinParamAlignUp(stRevisedRect->s32Width, 2);
+    stRevisedRect->s32Height = WinParamAlignUp(stRevisedRect->s32Height, 2);
 
-    pstWin->bToUpdateAttr = HI_TRUE;
-
+    /*for browse mode, revise in virt screen .*/
+    window_revise(stRevisedRect,stFmtResolution);    
     return HI_SUCCESS;
 }
-#endif
+
 
 HI_S32 WinBufferReset(WIN_BUFFER_S *pstBuffer);
-//HI_VOID ISR_WinReleaseDisplayedFrame(WINDOW_S *pstWin);
-//HI_VOID ISR_WinReleaseFullFrame(WINDOW_S *pstWin);
-//HI_VOID ISR_WinReleaseDisplayedFrame2(WINDOW_S *pstWin);
 HI_VOID ISR_WinReleaseUSLFrame(WINDOW_S *pstWin);
 
-HI_S32 WinCreateDisplayWindow(HI_DRV_WIN_ATTR_S *pWinAttr, WINDOW_S **ppstWin)
+HI_S32 WinCreateDisplayWindow(HI_DRV_WIN_ATTR_S *pWinAttr, WINDOW_S **ppstWin, HI_U32 u32BufNum)
 {
-    //HI_DISP_DISPLAY_INFO_S stDispInfo;
     WINDOW_S *pstWin;
     HI_S32 nRet;
 
@@ -418,8 +774,7 @@ HI_S32 WinCreateDisplayWindow(HI_DRV_WIN_ATTR_S *pWinAttr, WINDOW_S **ppstWin)
         WIN_ERROR("Reach max window number,can not create!\n");
         return HI_ERR_VO_CREATE_ERR;
     }
-
-    // s1 创建window
+ 
     pstWin = (WINDOW_S *)DISP_MALLOC(sizeof(WINDOW_S));
     if (!pstWin)
     {
@@ -428,16 +783,7 @@ HI_S32 WinCreateDisplayWindow(HI_DRV_WIN_ATTR_S *pWinAttr, WINDOW_S **ppstWin)
     }
 
     DISP_MEMSET(pstWin, 0, sizeof(WINDOW_S));
-
-    // s2 initial parameters
-/*
-    nRet = DISP_GetDisplayInfo(pWinAttr->enDisp, &stDispInfo);
-    if (nRet)
-    {
-        WIN_ERROR("DISP_GetDisplayInfo failed in %s!\n", __FUNCTION__);
-        return HI_ERR_VO_CREATE_ERR;
-    }
-*/
+    
     /* attribute */
     pstWin->bEnable = HI_FALSE;
     pstWin->bMasked = HI_FALSE;
@@ -452,15 +798,18 @@ HI_S32 WinCreateDisplayWindow(HI_DRV_WIN_ATTR_S *pWinAttr, WINDOW_S **ppstWin)
     pstWin->stCfg.stAttrBuf = *pWinAttr;
     atomic_set(&pstWin->stCfg.bNewAttrFlag, 1);
 
+    pstWin->stCfg.enFrameCS = HI_DRV_CS_UNKNOWN;
+    pstWin->stCfg.u32Fidelity = 0;
+    pstWin->stCfg.enOutCS   = HI_DRV_CS_UNKNOWN;
+
     nRet = VideoLayer_GetFunction(&pstWin->stVLayerFunc);
     if (nRet)
     {
         WIN_ERROR("VideoLayer_GetFunction failed in %s!\n", __FUNCTION__);
         goto __ERR_GET_FUNC__;
     }
-
-    // s2 获取空闲视频层
-    //nRet = pstWin->stVLayerFunc.PF_AcquireLayerByDisplay(WinGetDispID(pstWin), &pstWin->eLayer);
+    
+    /*get free layer.*/
     nRet = pstWin->stVLayerFunc.PF_AcquireLayerByDisplay(pstWin->enDisp, &pstWin->u32VideoLayer);
     if (nRet)
     {
@@ -474,13 +823,10 @@ HI_S32 WinCreateDisplayWindow(HI_DRV_WIN_ATTR_S *pWinAttr, WINDOW_S **ppstWin)
         WIN_ERROR("PF_SetDefault failed in %s!\n", __FUNCTION__);
         goto __ERR_GET_FUNC__;
     }
-
-    // s3 将window置于最上层
+    
     pstWin->stVLayerFunc.PF_MovTop(pstWin->u32VideoLayer);
-
-    // s4 create buffer
-    //nRet = BP_Create(WIN_IN_FB_DEFAULT_NUMBER, HI_NULL, &pstWin->stBuffer.stBP);
-    nRet = WinBuf_Create(WIN_IN_FB_DEFAULT_NUMBER, WIN_BUF_MEM_SRC_SUPPLY, HI_NULL, &pstWin->stBuffer.stWinBP);
+    
+    nRet = WinBuf_Create(u32BufNum, WIN_BUF_MEM_SRC_SUPPLY, HI_NULL, &pstWin->stBuffer.stWinBP);
     if(nRet)
     {
         WIN_ERROR("Create buffer pool failed\n");
@@ -499,6 +845,12 @@ HI_S32 WinCreateDisplayWindow(HI_DRV_WIN_ATTR_S *pWinAttr, WINDOW_S **ppstWin)
     // initial stepmode flag
     pstWin->bStepMode = HI_FALSE;
 
+    //init delay info
+    pstWin->stDelayInfo.u32DispRate = 5000;
+    pstWin->stDelayInfo.bTBMatch = HI_TRUE;
+    pstWin->stDelayInfo.u32DisplayTime = 20;
+    pstWin->bInInterrupt = HI_FALSE;
+
     *ppstWin = pstWin;
 
     return HI_SUCCESS;
@@ -515,21 +867,7 @@ HI_S32 WinDestroyDisplayWindow(WINDOW_S *pstWin)
 {
     HI_DRV_VIDEO_FRAME_S *pstFrame;
     
-    // s0 flush frame
-#if 0
-    ISR_WinReleaseDisplayedFrame(pstWin);
-
-    ISR_WinReleaseFullFrame(pstWin);
-
-    ISR_WinReleaseUSLFrame(pstWin);
-
-    ISR_WinReleaseDisplayedFrame2(pstWin);
-    ISR_WinReleaseDisplayedFrame(pstWin);
-#endif
-
-    //ISR_WinReleaseDisplayedFrame(pstWin);
-    WinBuf_RlsAndUpdateUsingFrame(&pstWin->stBuffer.stWinBP);
-    
+    WinBuf_RlsAndUpdateUsingFrame(&pstWin->stBuffer.stWinBP);    
     ISR_WinReleaseUSLFrame(pstWin);
 
     // flush frame in full buffer pool
@@ -539,27 +877,20 @@ HI_S32 WinDestroyDisplayWindow(WINDOW_S *pstWin)
     // release current frame
     WinBuf_ForceReleaseFrame(&pstWin->stBuffer.stWinBP, pstFrame);
 
-
     // s1 derstoy buffer    
-    //BP_Destroy(&pstWin->stBuffer.stBP);
     WinBuf_Destroy(&pstWin->stBuffer.stWinBP);
 
-    // s2 释放空闲视频层
     pstWin->stVLayerFunc.PF_ReleaseLayer(pstWin->u32VideoLayer);
-
-    // s3 销毁window
-    DISP_FREE(pstWin);
+    DISP_FREE(pstWin);    
 
     return HI_SUCCESS;
-
 }
 
 HI_S32 WinRegCallback(WINDOW_S *pstWin)
 {
     HI_DRV_DISP_CALLBACK_S stCB;
-    HI_S32 nRet= HI_SUCCESS;
-    
-    // s1 注册回调函数
+    HI_S32 nRet= HI_SUCCESS;    
+
     stCB.hDst  = (HI_HANDLE)pstWin;
     stCB.pfDISP_Callback = ISR_CallbackForWinProcess;
     nRet = DISP_RegCallback(WinGetDispID(pstWin), HI_DRV_DISP_C_INTPOS_0_PERCENT, &stCB);
@@ -575,9 +906,8 @@ HI_S32 WinRegCallback(WINDOW_S *pstWin)
 HI_S32 WinUnRegCallback(WINDOW_S *pstWin)
 {
     HI_DRV_DISP_CALLBACK_S stCB;
-    HI_S32 nRet= HI_SUCCESS;
-    
-    // s1 注销回调函数
+    HI_S32 nRet= HI_SUCCESS;    
+
     stCB.hDst  = (HI_HANDLE)pstWin;
     stCB.pfDISP_Callback = ISR_CallbackForWinProcess;
     nRet = DISP_UnRegCallback(WinGetDispID(pstWin), HI_DRV_DISP_C_INTPOS_0_PERCENT, &stCB);
@@ -611,44 +941,6 @@ HI_BOOL WinTestBlackFrameFlag(WINDOW_S *pstWin)
     return HI_FALSE;
 }
 
-
-HI_S32 WinCreateVirtualWindow(HI_DRV_WIN_ATTR_S *pWinAttr, WINDOW_S **ppstWin)
-{
-    // s1 创建window
-#if 0
-        pWindow = kmalloc(sizeof(WINDOW_S));
-        if (!pWindow)
-        {
-            WIN_ERROR("WIN Malloc WINDOW_S failed in %s!\n", __FUNCTION__);
-            return HI_ERR_VO_CREATE_ERR;
-        }
-#endif
-
-    // s2 申请buffer
-
-
-
-HI_S32 VideoSurface_GetFunction(VIDEO_LAYER_FUNCTIONG_S *pstFunc);
-
-
-    return HI_SUCCESS;
-
-}
-
-HI_S32 WinDestroyVirtualWindow(WINDOW_S *pstWin)
-{
-
-    
-    // s2 释放buffer
-
-    // s1 销毁window
-
-    return HI_SUCCESS;
-
-}
-
-
-//固定参数保持
 HI_S32 WinCheckFixedAttr(HI_DRV_WIN_ATTR_S *pOldAttr, HI_DRV_WIN_ATTR_S *pNewAttr)
 {
     if (  (pOldAttr->enDisp != pNewAttr->enDisp)
@@ -672,22 +964,65 @@ HI_S32 WinCheckFixedAttr(HI_DRV_WIN_ATTR_S *pOldAttr, HI_DRV_WIN_ATTR_S *pNewAtt
 }
 
 HI_S32 WinCheckAttr(HI_DRV_WIN_ATTR_S *pstAttr)
-{
-    //HI_DISP_DISPLAY_INFO_S stInfo;
-    //DISP_GetDisplayInfo(pstAttr->eDisp, &stInfo);
+{  
+    HI_RECT_S virtual_screen;
+    HI_S32 ret = 0;
     
-    if (pstAttr->bVirtual)
-    {
-        WIN_FATAL("WIN do not support virtual window!\n");
-        return HI_ERR_VO_INVALID_PARA;
-    }
-
     if (pstAttr->enDisp > HI_DRV_DISPLAY_1)
     {
         WIN_FATAL("WIN only support HI_DRV_DISPLAY_0!\n");
         return HI_ERR_VO_INVALID_PARA;
     }
 
+    ret = DISP_GetVirtScreen(pstAttr->enDisp, &virtual_screen);
+    if (ret != HI_SUCCESS)
+    {
+        HI_ERR_WIN("Get Virtual SCREEN error!\n");
+        return HI_FAILURE;
+    }
+
+    if (pstAttr->bVirtual == HI_TRUE)
+    {
+        if (   (pstAttr->stOutRect.s32Height > WIN_VIRTUAL_OUTRECT_MAX_HEIGHT)
+            || (pstAttr->stOutRect.s32Width  > WIN_VIRTUAL_OUTRECT_MAX_WIDTH))
+        {
+            HI_ERR_WIN("Virtual win outrect is larger max width and height!\n");
+            return HI_FAILURE;
+        }
+    }
+    else
+    {
+        if (   (pstAttr->stOutRect.s32Height > virtual_screen.s32Height)
+            || (pstAttr->stOutRect.s32Width > virtual_screen.s32Width))
+        {
+            HI_ERR_WIN("Win outrect is larger than virtual screen!\n");
+            return HI_FAILURE;
+        }
+    }
+
+    if ( ((pstAttr->stOutRect.s32Height == 0)
+              && (pstAttr->stOutRect.s32Width != 0))
+         || ((pstAttr->stOutRect.s32Height != 0)
+              && (pstAttr->stOutRect.s32Width == 0)))
+    {
+        HI_ERR_WIN("win outrect error, one of w/h is zero.!\n");
+        return HI_FAILURE;        
+    } 
+    else if ((!(pstAttr->stOutRect.s32Height | pstAttr->stOutRect.s32Width))
+         && (pstAttr->stOutRect.s32X | pstAttr->stOutRect.s32Y))
+    {
+        HI_ERR_WIN("when w/h is zero, x/y should be zero too.!\n");
+        return HI_FAILURE;        
+    }
+    else if((pstAttr->stOutRect.s32Height | pstAttr->stOutRect.s32Width)
+        && ((pstAttr->stOutRect.s32Width   < WIN_OUTRECT_MIN_WIDTH)
+            || (pstAttr->stOutRect.s32Height  < WIN_OUTRECT_MIN_HEIGHT))            
+            )
+    {
+        WIN_FATAL("The Min WIN OutRect supported is 64*64 !\n");
+        return HI_ERR_VO_INVALID_PARA;
+    }
+    
     if (   ( pstAttr->stCustmAR.u8ARw > (pstAttr->stCustmAR.u8ARh * WIN_MAX_ASPECT_RATIO) )
         || ( (pstAttr->stCustmAR.u8ARw * WIN_MAX_ASPECT_RATIO) < pstAttr->stCustmAR.u8ARh)
         )
@@ -704,7 +1039,7 @@ HI_S32 WinCheckAttr(HI_DRV_WIN_ATTR_S *pstAttr)
             || (pstAttr->stCropRect.u32RightOffset  > WIN_CROPRECT_MAX_OFFSET_RIGHT)
            )
         {
-            WIN_FATAL("WIN OutRect/InRect support 128*64 ~ 1920*1920!\n");
+            WIN_FATAL("WIN CropRec support less than 128!\n");
             return HI_ERR_VO_INVALID_PARA;
         }
     }
@@ -714,30 +1049,17 @@ HI_S32 WinCheckAttr(HI_DRV_WIN_ATTR_S *pstAttr)
         {
             DISP_MEMSET(&pstAttr->stInRect, 0, sizeof(HI_RECT_S));
         }
-        else if(   (pstAttr->stInRect.s32Width   < WIN_INRECT_MIN_WIDTH)
-                || (pstAttr->stInRect.s32Height  < WIN_INRECT_MIN_HEIGHT)
-                || (pstAttr->stInRect.s32Width   > WIN_INRECT_MAX_WIDTH)
-                || (pstAttr->stInRect.s32Height  > WIN_INRECT_MAX_HEIGHT)
+        else if(   (pstAttr->stInRect.s32Width   < WIN_FRAME_MIN_WIDTH)
+                || (pstAttr->stInRect.s32Height  < WIN_FRAME_MIN_HEIGHT)
+                || (pstAttr->stInRect.s32Width   > WIN_FRAME_MAX_WIDTH)
+                || (pstAttr->stInRect.s32Height  > WIN_FRAME_MAX_HEIGHT)
                 )
         {
-            WIN_FATAL("WIN InRect support 128*64 ~ 1920*1920!\n");
+            WIN_FATAL("WIN InRect support 64*64 ~ 2560*1600!\n");
             return HI_ERR_VO_INVALID_PARA;
         }
     }
-
-    if ( !pstAttr->stOutRect.s32Height || !pstAttr->stOutRect.s32Width)
-    {
-        DISP_MEMSET(&pstAttr->stOutRect, 0, sizeof(HI_RECT_S));
-    }
-    else if(   (pstAttr->stOutRect.s32Width   < WIN_OUTRECT_MIN_WIDTH)
-            || (pstAttr->stOutRect.s32Height  < WIN_OUTRECT_MIN_HEIGHT)
-            || (pstAttr->stOutRect.s32Width   > WIN_OUTRECT_MAX_WIDTH)
-            || (pstAttr->stOutRect.s32Height  > WIN_OUTRECT_MAX_HEIGHT)
-            )
-    {
-        WIN_FATAL("WIN OutRect support 128*64 ~ 1920*1920!\n");
-        return HI_ERR_VO_INVALID_PARA;
-    }
+    
 
     /* may change when window lives */
     pstAttr->stInRect.s32X = pstAttr->stInRect.s32X & HI_WIN_IN_RECT_X_ALIGN;
@@ -750,10 +1072,10 @@ HI_S32 WinCheckAttr(HI_DRV_WIN_ATTR_S *pstAttr)
     pstAttr->stCropRect.u32TopOffset    = pstAttr->stCropRect.u32TopOffset    & HI_WIN_IN_RECT_Y_ALIGN;
     pstAttr->stCropRect.u32BottomOffset = pstAttr->stCropRect.u32BottomOffset & HI_WIN_IN_RECT_Y_ALIGN;
 
-    pstAttr->stOutRect.s32X = pstAttr->stOutRect.s32X & HI_WIN_IN_RECT_X_ALIGN;
-    pstAttr->stOutRect.s32Y = pstAttr->stOutRect.s32Y & HI_WIN_IN_RECT_Y_ALIGN;
-    pstAttr->stOutRect.s32Width  = pstAttr->stOutRect.s32Width  & HI_WIN_IN_RECT_WIDTH_ALIGN;
-    pstAttr->stOutRect.s32Height = pstAttr->stOutRect.s32Height & HI_WIN_IN_RECT_HEIGHT_ALIGN;
+    pstAttr->stOutRect.s32X = pstAttr->stOutRect.s32X & HI_WIN_OUT_RECT_X_ALIGN;
+    pstAttr->stOutRect.s32Y = pstAttr->stOutRect.s32Y & HI_WIN_OUT_RECT_Y_ALIGN;
+    pstAttr->stOutRect.s32Width  = pstAttr->stOutRect.s32Width  & HI_WIN_OUT_RECT_WIDTH_ALIGN;
+    pstAttr->stOutRect.s32Height = pstAttr->stOutRect.s32Height & HI_WIN_OUT_RECT_HEIGHT_ALIGN;
     
 
     return HI_SUCCESS;
@@ -779,29 +1101,18 @@ HI_S32 WinSendAttrToSource(WINDOW_S *pstWin, HI_DISP_DISPLAY_INFO_S *pstDispInfo
         
         DISP_MEMSET(&stInfo, 0, sizeof(HI_DRV_WIN_PRIV_INFO_S));
 
-        pstAttr = &pstWin->stUsingAttr;
-
-        //stInfo.ePixFmt      = pstAttr->enDataFormat;
+        pstAttr = &pstWin->stUsingAttr;        
+        
         stInfo.ePixFmt      = HI_DRV_PIX_FMT_NV21;
         stInfo.bUseCropRect = pstAttr->bUseCropRect;
-        stInfo.stInRect     = pstAttr->stInRect;
-
-        /*
-        stInfo.stInRect.s32X = 0;
-        stInfo.stInRect.s32Y = 0;
-        stInfo.stInRect.s32Width  = 0;
-        stInfo.stInRect.s32Height = 0;
-        */
+        stInfo.stInRect     = pstAttr->stInRect;        
         stInfo.stCropRect   = pstAttr->stCropRect;
 
-        if (!pstAttr->stOutRect.s32Width || !pstAttr->stOutRect.s32Height)
-        {
-            stInfo.stOutRect = pstDispInfo->stRefRect;
-        }
-        else
-        {
+        if (!pstAttr->stOutRect.s32Width || !pstAttr->stOutRect.s32Height)        
+            stInfo.stOutRect = pstDispInfo->stFmtResolution;        
+        else        
             stInfo.stOutRect = pstAttr->stOutRect;
-        }
+        
 
         stInfo.stScreenAR      = pstDispInfo->stAR;
         
@@ -815,30 +1126,22 @@ HI_S32 WinSendAttrToSource(WINDOW_S *pstWin, HI_DISP_DISPLAY_INFO_S *pstDispInfo
                  (pstDispInfo->u32RefreshRate / 2 ) : pstDispInfo->u32RefreshRate;
 
         stInfo.bInterlaced = pstDispInfo->bInterlace;
-        stInfo.stScreen    = pstDispInfo->stRefRect;
-        //stInfo.u32Rate     = pstDispInfo->u32RefreshRate;
-
-        /*
-        SET TEST 1
-        */
-        #if 0
-        stInfo.stInRect.s32Height = 476;
-        stInfo.stInRect.s32Width  = 720;
-        stInfo.stInRect.s32X      = 0;
-        stInfo.stInRect.s32Y      = 50;
-        stInfo.bUseCropRect = HI_FALSE;
-        stInfo.stCropRect   = pstAttr->stCropRect; 
-        #endif
-        /*
-            SET TEST 2
-          */
-         #if 0
-        stInfo.stCropRect.u32BottomOffset = 0;
-        stInfo.stCropRect.u32TopOffset    = 0;
-        stInfo.stCropRect.u32LeftOffset   = 0;
-        stInfo.stCropRect.u32RightOffset  = 0;
-        stInfo.bUseCropRect = HI_TRUE;
-        #endif
+        
+       // stInfo.stScreen    = pstDispInfo->stFmtResolution; 
+        if ((pstDispInfo->eDispMode != DISP_STEREO_NONE)
+            &&(pstDispInfo->eDispMode < DISP_STEREO_BUTT))
+        {
+            stInfo.bIn3DMode = HI_TRUE;
+        }
+        else
+        {
+            stInfo.bIn3DMode = HI_FALSE;
+        }
+        
+        /*when 3d mode ,set screen and OutRect as one eys*/
+        pstWin->stVLayerFunc.PF_Get3DOutRect(pstDispInfo->eDispMode, &pstDispInfo->stFmtResolution, &stInfo.stScreen);
+        pstWin->stVLayerFunc.PF_Get3DOutRect(pstDispInfo->eDispMode, &stInfo.stOutRect, &stInfo.stOutRect);
+        
         DISP_PRINT(">>>>>>>>>>>>>>>>>>>>>>>>>>>will send info to source .............\n");
         pstWin->stCfg.stSource.pfSendWinInfo(pstWin->stCfg.stSource.hSrc, &stInfo);
     }
@@ -855,10 +1158,20 @@ HI_S32 WinCalcDispRectBaseRefandRel(HI_RECT_S *pRef, HI_RECT_S *pRel,
     pO->s32Y      = (pI->s32Y* pRel->s32Height) / pRef->s32Height;
     pO->s32Height = (pI->s32Height* pRel->s32Height) / pRef->s32Height;
 
-    pO->s32X      = pO->s32X & HI_WIN_IN_RECT_X_ALIGN;
-    pO->s32Width  = pO->s32Width & HI_WIN_IN_RECT_WIDTH_ALIGN;
-    pO->s32Y      = pO->s32Y & HI_WIN_IN_RECT_Y_ALIGN;
-    pO->s32Height = pO->s32Height & HI_WIN_IN_RECT_HEIGHT_ALIGN;
+    pO->s32X      = pO->s32X & HI_WIN_OUT_RECT_X_ALIGN;
+    pO->s32Width  = pO->s32Width & HI_WIN_OUT_RECT_WIDTH_ALIGN;
+    pO->s32Y      = pO->s32Y & HI_WIN_OUT_RECT_Y_ALIGN;
+    pO->s32Height = pO->s32Height & HI_WIN_OUT_RECT_HEIGHT_ALIGN;
+
+    if ( pO->s32Width && (pO->s32Width < WIN_OUTRECT_MIN_WIDTH))
+    {
+        pO->s32Width = WIN_OUTRECT_MIN_WIDTH;
+    }
+
+    if ( pO->s32Height && (pO->s32Height < WIN_OUTRECT_MIN_HEIGHT))
+    {
+        pO->s32Height = WIN_OUTRECT_MIN_HEIGHT;
+    }
 
     return HI_SUCCESS;
 }
@@ -883,7 +1196,6 @@ HI_S32 WinCalcCropRectBaseRefandRel(HI_RECT_S *pRef, HI_RECT_S *pRel,
 HI_S32 WinGetSlaveWinAttr(HI_DRV_WIN_ATTR_S *pWinAttr, 
                                HI_DRV_WIN_ATTR_S *pSlvWinAttr)
 {
-    HI_DISP_DISPLAY_INFO_S stM, stS;
     HI_S32 nRet;
 
     DISP_MEMSET(pSlvWinAttr, 0, sizeof(HI_DRV_WIN_ATTR_S));
@@ -908,18 +1220,12 @@ HI_S32 WinGetSlaveWinAttr(HI_DRV_WIN_ATTR_S *pWinAttr,
     /* may change when window lives */
     pSlvWinAttr->stCustmAR = pWinAttr->stCustmAR;
     pSlvWinAttr->enARCvrs  = pWinAttr->enARCvrs;
-
-    nRet = DISP_GetDisplayInfo(pWinAttr->enDisp, &stM);
-    nRet = DISP_GetDisplayInfo(pSlvWinAttr->enDisp, &stS);
-
+    
     pSlvWinAttr->bUseCropRect = pWinAttr->bUseCropRect;
     pSlvWinAttr->stInRect   = pWinAttr->stInRect;
+    
     pSlvWinAttr->stCropRect = pWinAttr->stCropRect;
-
-    WinCalcDispRectBaseRefandRel(&stM.stRefRect,
-                                 &stS.stRefRect, 
-                                 &pWinAttr->stOutRect,
-                                 &pSlvWinAttr->stOutRect);
+    pSlvWinAttr->stOutRect  = pWinAttr->stOutRect;
 
     return HI_SUCCESS;
 }
@@ -929,25 +1235,15 @@ HI_S32 WinGetSlaveWinAttr2(WINDOW_S *pstWin,
                                  HI_DRV_WIN_ATTR_S *pWinAttr, 
                                  HI_DRV_WIN_ATTR_S *pSlvWinAttr)
 {
-    HI_DISP_DISPLAY_INFO_S stM, stS;
-    WINDOW_S *pstSlvWin = WinGetWindow(pstWin->hSlvWin);
-    HI_S32 nRet;
-
     /* may change when window lives */
     pSlvWinAttr->stCustmAR = pWinAttr->stCustmAR;
     pSlvWinAttr->enARCvrs  = pWinAttr->enARCvrs;
-
-    nRet = DISP_GetDisplayInfo(pstWin->enDisp, &stM);
-    nRet = DISP_GetDisplayInfo(pstSlvWin->enDisp, &stS);
-
+ 
     pSlvWinAttr->bUseCropRect = pWinAttr->bUseCropRect;
     pSlvWinAttr->stInRect   = pWinAttr->stInRect;
+    
     pSlvWinAttr->stCropRect = pWinAttr->stCropRect;
-
-    WinCalcDispRectBaseRefandRel(&stM.stRefRect,
-                                 &stS.stRefRect, 
-                                 &pWinAttr->stOutRect,
-                                 &pSlvWinAttr->stOutRect);
+    pSlvWinAttr->stOutRect  = pWinAttr->stOutRect;
 
     return HI_SUCCESS;
 }
@@ -977,37 +1273,30 @@ HI_S32 WinTestZero(volatile HI_U32 *pLock, HI_U32 u32MaxTimeIn10ms)
 
 HI_S32 WinCheckFrame(HI_DRV_VIDEO_FRAME_S *pFrameInfo)
 {
-	HI_DRV_VIDEO_PRIVATE_S *pstPriv = (HI_DRV_VIDEO_PRIVATE_S*)&(pFrameInfo->u32Priv[0]);
+    HI_DRV_VIDEO_PRIVATE_S *pstPriv = (HI_DRV_VIDEO_PRIVATE_S*)&(pFrameInfo->u32Priv[0]);
 
-/*printk("typ2=%d, fmt=%d, w=%d,h=%d, time=%d\n",   
-	pFrameInfo->eFrmType,
-	pFrameInfo->ePixFormat,
-	pFrameInfo->u32Width,
-	pFrameInfo->u32Height,
-    pFrameInfo->u32PlayTime);
-*/
-	pstPriv->u32PlayTime = 1;
+    pstPriv->u32PlayTime = 1;
 
     if (pFrameInfo->eFrmType >  HI_DRV_FT_BUTT)
     {
         WIN_FATAL("Q Frame type error : %d\n", pFrameInfo->eFrmType);
-    	return HI_ERR_VO_INVALID_PARA;
+        return HI_ERR_VO_INVALID_PARA;
     }
 
     if (!(    (HI_DRV_PIX_FMT_NV12 == pFrameInfo->ePixFormat)
-		    || (HI_DRV_PIX_FMT_NV21 == pFrameInfo->ePixFormat)
-		  )
-	   )
+            || (HI_DRV_PIX_FMT_NV21 == pFrameInfo->ePixFormat)
+          )
+       )
     {
         WIN_FATAL("Q Frame pixformat error : %d\n", pFrameInfo->ePixFormat);
-    	return HI_ERR_VO_INVALID_PARA;
+        return HI_ERR_VO_INVALID_PARA;
     }
    
     if (    (pFrameInfo->u32Width < WIN_FRAME_MIN_WIDTH)
-		 || (pFrameInfo->u32Width > WIN_FRAME_MAX_WIDTH)
-		 || (pFrameInfo->u32Height < WIN_FRAME_MIN_HEIGHT)
-		 || (pFrameInfo->u32Height > WIN_FRAME_MAX_HEIGHT)
-		)
+         || (pFrameInfo->u32Width > WIN_FRAME_MAX_WIDTH)
+         || (pFrameInfo->u32Height < WIN_FRAME_MIN_HEIGHT)
+         || (pFrameInfo->u32Height > WIN_FRAME_MAX_HEIGHT)
+        )
     {
         WIN_FATAL("Q Frame resolution error : w=%d,h=%d\n", 
                      pFrameInfo->u32Width, pFrameInfo->u32Height);
@@ -1021,44 +1310,44 @@ HI_S32 WinCheckFrame(HI_DRV_VIDEO_FRAME_S *pFrameInfo)
 
 /*
     if (   (pFrameInfo->stDispRect.s32X < 0)
-		|| (pFrameInfo->stDispRect.s32Width <  0)
-		|| ((pFrameInfo->stDispRect.s32Width + pFrameInfo->stDispRect.s32X) >  pFrameInfo->u32Width)
-		|| (pFrameInfo->stDispRect.s32Y < 0)
-		|| (pFrameInfo->stDispRect.s32Height < 0)
-		|| ((pFrameInfo->stDispRect.s32Height + pFrameInfo->stDispRect.s32Y) >  pFrameInfo->u32Height)
-		)
+        || (pFrameInfo->stDispRect.s32Width <  0)
+        || ((pFrameInfo->stDispRect.s32Width + pFrameInfo->stDispRect.s32X) >  pFrameInfo->u32Width)
+        || (pFrameInfo->stDispRect.s32Y < 0)
+        || (pFrameInfo->stDispRect.s32Height < 0)
+        || ((pFrameInfo->stDispRect.s32Height + pFrameInfo->stDispRect.s32Y) >  pFrameInfo->u32Height)
+        )
     {
-    	return HI_ERR_VO_INVALID_PARA;
+        return HI_ERR_VO_INVALID_PARA;
     }
 
     if (  (pFrameInfo->stDispAR.u8ARh > (pFrameInfo->stDispAR.u8ARw * WIN_MAX_ASPECT_RATIO))
-		||(pFrameInfo->stDispAR.u8ARw > (pFrameInfo->stDispAR.u8ARh  * WIN_MAX_ASPECT_RATIO))
-		)
+        ||(pFrameInfo->stDispAR.u8ARw > (pFrameInfo->stDispAR.u8ARh  * WIN_MAX_ASPECT_RATIO))
+        )
     {
-    	return HI_ERR_VO_INVALID_PARA;
+        return HI_ERR_VO_INVALID_PARA;
     }
 
     if (pFrameInfo->u32FrameRate >  WIN_MAX_FRAME_RATE)
     {
-    	return HI_ERR_VO_INVALID_PARA;
+        return HI_ERR_VO_INVALID_PARA;
     }
 
     if (pFrameInfo->eColorSpace >  HI_DRV_CS_SMPT240M)
     {
-    	return HI_ERR_VO_INVALID_PARA;
+        return HI_ERR_VO_INVALID_PARA;
     }
 
     if (pFrameInfo->u32PlayTime >  WIN_MAX_FRAME_PLAY_TIME)
     {
-    	return HI_ERR_VO_INVALID_PARA;
+        return HI_ERR_VO_INVALID_PARA;
     }
 
     // stBufAddr[1] is right eye for stereo video 
     if (    (pFrameInfo->stBufAddr[0].u32Stride_Y < pFrameInfo->stDispRect.s32Width)
-		||  (pFrameInfo->stBufAddr[0].u32Stride_C < pFrameInfo->stDispRect.s32Width)
-		)
+        ||  (pFrameInfo->stBufAddr[0].u32Stride_C < pFrameInfo->stDispRect.s32Width)
+        )
     {
-    	return HI_ERR_VO_INVALID_PARA;
+        return HI_ERR_VO_INVALID_PARA;
     }
 */
 
@@ -1068,20 +1357,7 @@ HI_S32 WinCheckFrame(HI_DRV_VIDEO_FRAME_S *pFrameInfo)
 /* window buffer manager */
 HI_S32 WinBufferReset(WIN_BUFFER_S *pstBuffer)
 {
-    HI_S32 i;
-
-    pstBuffer->u32UsingFbNum = WIN_USING_FB_MAX_NUMBER;
-    for(i=0; i<(HI_S32)pstBuffer->u32UsingFbNum; i++)
-    {
-        pstBuffer->stUsingBufNode[i].bIdle  = HI_TRUE;
-        pstBuffer->stUsingBufNode[i].enType = WIN_FRAME_NORMAL;
-    }
-
-    pstBuffer->u32DispIndex = 0;
-    pstBuffer->u32CfgIndex  = pstBuffer->u32DispIndex + 1;
-
-    pstBuffer->bWaitRelease = HI_FALSE;
-
+    
     DISP_MEMSET(&pstBuffer->stUselessFrame, 0, 
                 sizeof(HI_DRV_VIDEO_FRAME_S)*WIN_USELESS_FRAME_MAX_NUMBER);
 
@@ -1138,106 +1414,76 @@ HI_S32 WIN_Create(HI_DRV_WIN_ATTR_S *pWinAttr, HI_HANDLE *phWin)
 {
     HI_S32 nRet = HI_SUCCESS;
     WINDOW_S *pWindow = HI_NULL;
-
+    
     WinCheckDeviceOpen();
     WinCheckNullPointer(pWinAttr);
     WinCheckNullPointer(phWin);
 
-//printk(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  001 \n");
-    //pWinAttr->enDisp = HI_DRV_DISPLAY_0;
-    // s1 检查参数合法性
+    // s1 check attribute
     nRet = WinCheckAttr(pWinAttr);
     if (nRet)
     {
         WIN_ERROR("WinAttr is invalid!\n");
         return nRet;
     }
-
-//printk(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  002 \n");
-    // 根据是否为虚拟窗口，走不同分支
+    
     if (pWinAttr->bVirtual != HI_TRUE)
     {
         //HI_DRV_DISPLAY_E enSlave;
         HI_DRV_WIN_ATTR_S stSlvWinAttr;
         WINDOW_S *pSlaveWindow = HI_NULL;
         
-        // 非虚拟窗口
-//printk(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  003 \n");
-        // s1 检查disp是否打开
+        // if this is a display window that will be shown on screen
         if (DISP_IsOpened(pWinAttr->enDisp) != HI_TRUE)
         {
             WIN_ERROR("DISP is not opened!\n");
             return HI_ERR_DISP_NOT_EXIST;
         }
 
-        if ( DISP_IsFollowed(pWinAttr->enDisp))
-        {
-            // s4.1 构造slave window参数
-            nRet = WinGetSlaveWinAttr(pWinAttr, &stSlvWinAttr);
-            if (nRet)
-            {
-                WIN_ERROR("WinAttr is invalid!\n");
-                return nRet;
-            }
-
-            nRet = WinCheckAttr(pWinAttr);
-            if (nRet)
-            {
-                WIN_ERROR("WinAttr is invalid!\n");
-                return nRet;
-            }
-        }
-
-        // s2.1 创建window
-        nRet = WinCreateDisplayWindow(pWinAttr, &pWindow);
+        // s2.1 create window
+        nRet = WinCreateDisplayWindow(pWinAttr, &pWindow, WIN_IN_FB_DEFAULT_NUMBER);
         if (nRet)
         {
             goto __ERR_RET__;
         }
 
-        // s3 注册回调函数
         nRet = WinRegCallback(pWindow);
         if (nRet)
         {
             goto __ERR_RET_DESTROY__;
         }
 
-        // s3 disp是否有slave
         if ( DISP_IsFollowed(pWinAttr->enDisp))
         {
-            // s4.2 创建slave window
-            nRet = WinCreateDisplayWindow(&stSlvWinAttr, &pSlaveWindow);
+            nRet = WinGetSlaveWinAttr(pWinAttr, &stSlvWinAttr);
+            if (nRet)
+            {
+                WIN_ERROR("WinAttr is invalid!\n");
+                goto __ERR_RET_UNREG_CB__;
+            }
+
+            nRet = WinCreateDisplayWindow(&stSlvWinAttr, &pSlaveWindow, WIN_IN_FB_DEFAULT_NUMBER+4);
             if (nRet)
             {
                 goto __ERR_RET_UNREG_CB__;
             }
             
-            // s4.3 注册slave window callback
-            WinRegCallback(pSlaveWindow);
+            nRet = WinRegCallback(pSlaveWindow);
             if (nRet)
             {
                 goto __ERR_RET_DESTROY_SL__;
             }
 
-            // s5 建立绑定关系
             pSlaveWindow->enType = HI_DRV_WIN_ACTIVE_SLAVE ;
-
-            // s4 添加到win设备
-            WinAddWindow(pSlaveWindow->enDisp, pSlaveWindow);
-
+            WinAddWindow(pSlaveWindow->enDisp, pSlaveWindow);            
             pWindow->hSlvWin = (HI_HANDLE)(pSlaveWindow->u32Index);
             pSlaveWindow->pstMstWin = (HI_HANDLE)pWindow;
+            pWindow->enType = HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE;
+        } else {
+            pWindow->enType = HI_DRV_WIN_ACTIVE_SINGLE;
         }
-
-        pWindow->enType = HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE;
-        //pWindow->enType = HI_DRV_WIN_ACTIVE_SINGLE;
-
-        // s4 添加到win设备
+        
         WinAddWindow(pWindow->enDisp, pWindow);
-
-        //printk("Win create hwin = 0x%x\n", (HI_U32)pWindow);
-
-        // s8 返回window句柄
         *phWin = (HI_HANDLE)(pWindow->u32Index);
         return HI_SUCCESS;    
 
@@ -1255,95 +1501,72 @@ __ERR_RET__:
     }
     else
     {
+        VIRTUAL_S *pstVirWindow;
 
-        // 虚拟窗口
-        // s1 创建window
-        nRet = WinCreateVirtualWindow(pWinAttr, &pWindow);
-        if (nRet)
-        {
+        nRet = WIN_VIR_Create(pWinAttr, &pstVirWindow);
+        if (nRet)        
             return nRet;
+
+        pstVirWindow->enType = HI_DRV_WIN_VITUAL_SINGLE;
+
+        // add to virtual window array, if win_deinit, auto destory it
+        nRet = WinAddVirWindow(pstVirWindow);
+        if (nRet) 
+        {
+            WIN_VIR_Destroy(pstVirWindow);
+            return HI_FAILURE;
         }
-
-        // s2 添加到win设备
-        //WinAddWindow(, pWindow);
-
-        // s3 返回window句柄
-        *phWin = (HI_HANDLE)pWindow;
-        return HI_SUCCESS;
+        else
+        {
+            *phWin = (HI_HANDLE)(pstVirWindow->u32Index);
+            return HI_SUCCESS;
+        }
+        
     }
-
 }
 
 HI_S32 WIN_Destroy(HI_HANDLE hWin)
 {
     WINDOW_S *pstWin;
     HI_S32 nRet = HI_SUCCESS;
-    //HI_U32 t;
+    HI_BOOL bVirtual;
 
     WinCheckDeviceOpen();
+    bVirtual = WinCheckVirtual(hWin);
 
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-
-    //HI_DRV_SYS_GetTimeStampMs((HI_U32 *)&t);
-    //printk("Start Destroy = 0X%x\n", t);
-    
-    // s2 关闭window
-    //if (pstWin->bEnable == HI_TRUE)
+    if (!bVirtual)
     {
-        nRet = WIN_SetEnable(hWin, HI_FALSE);
-
-        DISP_MSLEEP(50);
-    }
-    
-    // 非虚拟窗口
-    if (pstWin->enType != HI_DRV_WIN_VITUAL_SINGLE)
-    {
-
-        if (pstWin->hSlvWin)
+        WinCheckWindow(hWin, pstWin);
+        if (pstWin->bEnable == HI_TRUE)
         {
-            WIN_Destroy(pstWin->hSlvWin);
-#if 0
-            // s0 stop window
-            nRet = WIN_SetEnable(pstWin->hSlvWin, HI_FALSE);
-
-            DISP_MSLEEP(50);
-
-            // s2 unregister
-            WinUnRegCallback((WINDOW_S *)(pstWin->hSlvWin));
-
-            // s3 删除window
-            WinDelWindow((WINDOW_S *)(pstWin->hSlvWin));
-
-            // s3 销毁window
-            WinDestroyDisplayWindow((WINDOW_S *)(pstWin->hSlvWin));
-#endif
+            nRet = WIN_SetEnable(hWin, HI_FALSE);
         }
 
-        // s2 unregister
-        WinUnRegCallback(pstWin);
+        if (pstWin->enType != HI_DRV_WIN_VITUAL_SINGLE)
+        {
 
-        // s1 删除window
-        WinDelWindow(pstWin->u32Index);
+            if (pstWin->hSlvWin)
+            {
+                WIN_Destroy(pstWin->hSlvWin);
+            }
 
-        // s3 销毁window
-        WinDestroyDisplayWindow(pstWin);
+
+            WinUnRegCallback(pstWin);
+            WinDelWindow(pstWin->u32Index);
+            WinDestroyDisplayWindow(pstWin);
+        }
     }
     else
     {
+        VIRTUAL_S *pstVirWin;
+        
+        WinCheckVirWindow(hWin, pstVirWin);
+        
+        WinDelVirWindow(hWin);
 
-        // 虚拟窗口
-
-        // s1 销毁window
-        //WinDestroyVirtualWindow(pstWin);
-
-        // s2 删除window
-        //WinDelWindow(pstWin);
+        nRet = WIN_VIR_Destroy(pstVirWin);
     }
-
-    //HI_DRV_SYS_GetTimeStampMs((HI_U32 *)&t);
-    //printk("end Destroy = 0X%x\n", t);
-
+    
     return HI_SUCCESS;
 }
 
@@ -1354,83 +1577,76 @@ HI_S32 WIN_SetAttr(HI_HANDLE hWin, HI_DRV_WIN_ATTR_S *pWinAttr)
     HI_DISP_DISPLAY_INFO_S stDispInfo;
     HI_S32 nRet = HI_SUCCESS;
     HI_S32 t;
-
+    HI_BOOL bVirtual;
+    
     WinCheckDeviceOpen();
     WinCheckNullPointer(pWinAttr);
 
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-
-    // s1 检查参数合法性
-    nRet = WinCheckFixedAttr(&pstWin->stCfg.stAttr, pWinAttr);
-    if (nRet)
+    bVirtual = WinCheckVirtual(hWin);
+    if (!bVirtual)
     {
-        return nRet;
-    }
-
-    nRet = WinCheckAttr(pWinAttr);
-    if (nRet)
-    {
-        return nRet;
-    }
-
-    if (pstWin->hSlvWin)
-    {
-        WIN_GetAttr(pstWin->hSlvWin, &stSlvWinAttr);
-
-        WinGetSlaveWinAttr2(pstWin, pWinAttr, &stSlvWinAttr);
-
-        nRet = WinCheckAttr(&stSlvWinAttr);
+        WinCheckWindow(hWin, pstWin);     
+        nRet = WinCheckFixedAttr(&pstWin->stCfg.stAttr, pWinAttr);
         if (nRet)
         {
-            WIN_ERROR("The new attr cannot use on SD window!\n");
             return nRet;
         }
-    }
 
-    // s2 initial parameters
-    nRet = DISP_GetDisplayInfo(pstWin->enDisp, &stDispInfo);
-    if (nRet)
-    {
-        WIN_ERROR("DISP_GetDisplayInfo failed in %s!\n", __FUNCTION__);
-        return HI_ERR_VO_CREATE_ERR;
-    }
-
-    // s3 设置属性变化标志位
-   
-    // down
-    atomic_set(&pstWin->stCfg.bNewAttrFlag, 0);
-    
-    pstWin->stCfg.stAttrBuf = *pWinAttr;
-
-    // up
-    atomic_set(&pstWin->stCfg.bNewAttrFlag, 1);
-
-    // s4 阻塞，等待生效
-    t = 0;
-    while( atomic_read(&pstWin->stCfg.bNewAttrFlag) )
-    {
-        DISP_MSLEEP(5);
-        t++;
-
-        if (t > 10)
+        nRet = WinCheckAttr(pWinAttr);
+        if (nRet)
         {
-            break;
+            return nRet;
+        }
+        
+        nRet = DISP_GetDisplayInfo(pstWin->enDisp, &stDispInfo);
+        if (nRet)
+        {
+            WIN_ERROR("DISP_GetDisplayInfo failed in %s!\n", __FUNCTION__);
+            return HI_ERR_VO_CREATE_ERR;
+        }        
+
+        atomic_set(&pstWin->stCfg.bNewAttrFlag, 0);        
+        pstWin->stCfg.stAttrBuf = *pWinAttr;
+        atomic_set(&pstWin->stCfg.bNewAttrFlag, 1);
+
+        t = 0;
+        while( atomic_read(&pstWin->stCfg.bNewAttrFlag) )
+        {
+            DISP_MSLEEP(5);
+            t++;
+
+            if (t > 10)
+            {
+                break;
+            }
+        }
+        
+        if (pstWin->hSlvWin)
+        {
+            WIN_GetAttr(pstWin->hSlvWin, &stSlvWinAttr);
+
+            WinGetSlaveWinAttr2(pstWin, pWinAttr, &stSlvWinAttr);
+
+            nRet = WIN_SetAttr(pstWin->hSlvWin, &stSlvWinAttr);
+        }
+
+        if (atomic_read(&pstWin->stCfg.bNewAttrFlag) )
+        {
+            atomic_set(&pstWin->stCfg.bNewAttrFlag, 0);
+            WIN_ERROR("WIN Set Attr timeout in %s\n", __FUNCTION__);
+            return HI_ERR_VO_TIMEOUT;
         }
     }
+    else
+    {
+        //VIRTUAL_S *pstVirWindow;
+        
+        //WinCheckVirWindow(hWin, pstVirWindow);
+
+        //nRet = WIN_VIR_SetAttr(pstVirWindow, pWinAttr);        
+        return HI_ERR_VO_INVALID_OPT;
+    }
     
-    if (pstWin->hSlvWin)
-    {
-        nRet = WIN_SetAttr(pstWin->hSlvWin, &stSlvWinAttr);
-    }
-
-    if (atomic_read(&pstWin->stCfg.bNewAttrFlag) )
-    {
-        atomic_set(&pstWin->stCfg.bNewAttrFlag, 0);
-        WIN_ERROR("WIN Set Attr timeout in %s\n", __FUNCTION__);
-        return HI_ERR_VO_TIMEOUT;
-    }
-
     return HI_SUCCESS;
 }
 
@@ -1438,18 +1654,27 @@ HI_S32 WIN_SetAttr(HI_HANDLE hWin, HI_DRV_WIN_ATTR_S *pWinAttr)
 
 HI_S32 WIN_GetAttr(HI_HANDLE hWin, HI_DRV_WIN_ATTR_S *pWinAttr)
 {
-    WINDOW_S *pstWin;
-//    HI_S32 nRet = HI_SUCCESS;
-
+    HI_BOOL bVirtual;
+    
     WinCheckDeviceOpen();
     WinCheckNullPointer(pWinAttr);
+    bVirtual = WinCheckVirtual(hWin);
 
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
+    if (!bVirtual)
+    {
+        WINDOW_S *pstWin; 
 
-    // s3 返回参数
-    *pWinAttr = pstWin->stCfg.stAttr;
-
+        WinCheckWindow(hWin, pstWin);
+        *pWinAttr = pstWin->stCfg.stAttr;
+    }
+    else
+    {
+        VIRTUAL_S *pstVirWindow;
+        
+        WinCheckVirWindow(hWin, pstVirWindow);
+        *pWinAttr = pstVirWindow->stAttrBuf;
+    }
+    
     return HI_SUCCESS;
 }
 
@@ -1458,23 +1683,29 @@ HI_S32 WIN_GetAttr(HI_HANDLE hWin, HI_DRV_WIN_ATTR_S *pWinAttr)
 HI_S32 WIN_GetInfo(HI_HANDLE hWin, HI_DRV_WIN_INFO_S * pstInfo)
 {
     WINDOW_S *pstWin;
-//    HI_S32 nRet = HI_SUCCESS;
-
+    HI_BOOL bVirtual;    
+    
     WinCheckDeviceOpen();
     WinCheckNullPointer(pstInfo);
 
-    //printk("Win get info hwin = 0x%x\n", (HI_U32)hWin);
+    bVirtual = WinCheckVirtual(hWin);
+    if (!bVirtual)
+    {
+        WinCheckWindow(hWin, pstWin);
+        pstInfo->eType = WinGetType(pstWin);
+        pstInfo->hPrim = (HI_HANDLE)(pstWin->u32Index);
+        pstInfo->hSec  = (HI_HANDLE)(pstWin->hSlvWin);
+    }
+    else
+    {
+        VIRTUAL_S *pstVirWin;
+        WinCheckVirWindow(hWin, pstVirWin);
 
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-
-    // s2 配置参数
-    pstInfo->eType = WinGetType(pstWin);
-    pstInfo->hPrim = (HI_HANDLE)(pstWin->u32Index);
-    pstInfo->hSec  = (HI_HANDLE)(pstWin->hSlvWin);
-
-    //pstInfo->eType = HI_DRV_WIN_ACTIVE_SINGLE;
-
+        pstInfo->eType = pstVirWin->enType;
+        pstInfo->hPrim = (HI_HANDLE)(pstVirWin->u32Index);
+        pstInfo->hSec  = HI_INVALID_HANDLE;
+    }
+    
     return HI_SUCCESS;
 }
 
@@ -1483,38 +1714,51 @@ HI_S32 WIN_SetSource(HI_HANDLE hWin, HI_DRV_WIN_SRC_INFO_S *pstSrc)
     HI_DISP_DISPLAY_INFO_S stDispInfo;
     WB_SOURCE_INFO_S stSrc2Buf;
     WINDOW_S *pstWin;
+    HI_BOOL bVirtual;
+    
     HI_S32 nRet = HI_SUCCESS;
 
     WinCheckDeviceOpen();
     WinCheckNullPointer(pstSrc);
 
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-
-    // s2 检查参数合法性
-    nRet = DISP_GetDisplayInfo(WinGetDispID(pstWin), &stDispInfo);
-    if (nRet)
+    bVirtual = WinCheckVirtual(hWin);
+    if (!bVirtual)
     {
-        return nRet;
+        WinCheckWindow(hWin, pstWin);
+        
+        nRet = DISP_GetDisplayInfo(WinGetDispID(pstWin), &stDispInfo);
+        if (nRet)
+        {
+            return nRet;
+        }
+
+        pstWin->stCfg.stSource = *pstSrc;
+
+        stSrc2Buf.hSrc = pstSrc->hSrc;
+        stSrc2Buf.pfAcqFrame = pstSrc->pfAcqFrame;
+        stSrc2Buf.pfRlsFrame = pstSrc->pfRlsFrame;
+        nRet =  WinBuf_SetSource(&pstWin->stBuffer.stWinBP, &stSrc2Buf);
+        if (nRet)
+        {
+            return nRet;
+        }
+        // send attr to source
+        WinSendAttrToSource(pstWin, &stDispInfo);
+
+        DISP_PRINT("WIN_SetSource :s=0x%x, info=0x%x, g=0x%x,==0x%x\n",
+                (HI_U32)pstSrc->hSrc, (HI_U32)pstSrc->pfSendWinInfo,
+                (HI_U32)pstSrc->pfAcqFrame, (HI_U32)pstSrc->pfRlsFrame);
     }
-
-    pstWin->stCfg.stSource = *pstSrc;
-
-    stSrc2Buf.hSrc = pstSrc->hSrc;
-    stSrc2Buf.pfAcqFrame = pstSrc->pfAcqFrame;
-    stSrc2Buf.pfRlsFrame = pstSrc->pfRlsFrame;
-    nRet =  WinBuf_SetSource(&pstWin->stBuffer.stWinBP, &stSrc2Buf);
-    if (nRet)
+    else
     {
-        return nRet;
+        VIRTUAL_S *pstVirWin;
+
+        WinCheckVirWindow(hWin, pstVirWin);
+
+        pstVirWin->stSrcInfo = *pstSrc;
+        
+        WIN_VIR_SendAttrToSource(pstVirWin);
     }
-    // send attr to source
-    WinSendAttrToSource(pstWin, &stDispInfo);
-
-    DISP_PRINT("WIN_SetSource :s=0x%x, info=0x%x, g=0x%x,==0x%x\n",
-            (HI_U32)pstSrc->hSrc, (HI_U32)pstSrc->pfSendWinInfo,
-            (HI_U32)pstSrc->pfAcqFrame, (HI_U32)pstSrc->pfRlsFrame);
-
     return HI_SUCCESS;
 }
 
@@ -1525,18 +1769,14 @@ HI_S32 WIN_GetSource(HI_HANDLE hWin, HI_DRV_WIN_SRC_INFO_S *pstSrc)
 
     WinCheckDeviceOpen();
     WinCheckNullPointer(pstSrc);
-
-    // s1 检查句柄合法性
     WinCheckWindow(hWin, pstWin);
 
-    // s2 检查参数合法性
     nRet = WinCheckSourceInfo(pstSrc);
     if (nRet)
     {
         return nRet;
     }
 
-    // s3 change source information
     *pstSrc = pstWin->stCfg.stSource;
 
     return HI_SUCCESS;
@@ -1545,57 +1785,94 @@ HI_S32 WIN_GetSource(HI_HANDLE hWin, HI_DRV_WIN_SRC_INFO_S *pstSrc)
 HI_S32 WIN_SetEnable(HI_HANDLE hWin, HI_BOOL bEnable)
 {
     WINDOW_S *pstWin;
-
+    HI_BOOL bVirtual;
+    
     WinCheckDeviceOpen();
-
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-    //WinCheckSlaveWindow(pstWin);
-
-    // s2 set enable
-    pstWin->bEnable = bEnable;
-
-    if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinGetType(pstWin))
+    
+    bVirtual = WinCheckVirtual(hWin);
+    if (!bVirtual)
     {
-        if (pstWin->hSlvWin)
+        WinCheckWindow(hWin, pstWin);
+        pstWin->bEnable = bEnable;
+
+        if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinGetType(pstWin))
         {
-            WIN_SetEnable(pstWin->hSlvWin, bEnable);
+            if (pstWin->hSlvWin)
+            {
+                WINDOW_S *pstSlvWin;
+                WinCheckWindow(pstWin->hSlvWin, pstSlvWin);
+                pstSlvWin->bEnable = bEnable;
+            }
+        }
+
+        if (pstWin->bEnable == HI_FALSE)
+        {
+            if (pstWin->stDelayInfo.T)
+            {
+                DISP_MSLEEP(2*pstWin->stDelayInfo.T);
+            }
+            else
+            {
+                DISP_MSLEEP(2* 20);
+            }
         }
     }
-
+    else
+    {
+        VIRTUAL_S *pstVirWindow;
+        
+        WinCheckVirWindow(hWin, pstVirWindow);
+        
+        pstVirWindow->bEnable = bEnable;
+        
+    }
     return HI_SUCCESS;
 }
 
 HI_S32 WIN_GetEnable(HI_HANDLE hWin, HI_BOOL *pbEnable)
 {
     WINDOW_S *pstWin;
-//    HI_S32 nRet = HI_SUCCESS;
-
+    HI_BOOL bVirtual;
+    
     WinCheckDeviceOpen();
 
     WinCheckNullPointer(pbEnable);
+    
+    bVirtual = WinCheckVirtual(hWin);
+    if (!bVirtual)
+    {
+        WinCheckWindow(hWin, pstWin);
+        *pbEnable = pstWin->bEnable;
+    }
+    else
+    {
+        VIRTUAL_S *pstVirWindow;
+        
+        WinCheckVirWindow(hWin, pstVirWindow);
 
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-
-    // s2 get state
-    *pbEnable = pstWin->bEnable;
-
+        *pbEnable = pstVirWindow->bEnable;
+        
+    }
     return HI_SUCCESS;
 }
 
 
-#define WIN_PROCESS_TIME_CIRCLE_THRESHOLD 0xF0000ul
-#define WIN_PROCESS_CALC_TIME_THRESHOLD 3
-#define WIN_DELAY_TIME_MAX_CIRCLE 100
+
+#define WIN_PROCESS_CALC_TIME_THRESHOLD 10
+#define WIN_DELAY_TIME_MAX_CIRCLE 50
 HI_S32 WIN_CalcDelayTime(WINDOW_S *pstWin, HI_U32 *pu32BufNum, HI_U32 *pu32DelayMs)
 {
-    HI_U32 u32Num, T, Dt, Ct, Delta, Delay;
+    HI_U32 u32Num, u32NumNew, T, Dt, Ct, LstCt, Delay;
     HI_U32 L = 0;
 
 __WIN_CALC_DELAY__:
     L++;
-
+    if (L > WIN_PROCESS_CALC_TIME_THRESHOLD)
+    {
+        goto __WIN_CALC_DELAY_ERROR__;
+    }
+    
+    LstCt = pstWin->stDelayInfo.u32CfgTime;
     T = pstWin->stDelayInfo.T;
 
     WinBuf_GetFullBufNum(&pstWin->stBuffer.stWinBP, &u32Num);
@@ -1603,62 +1880,67 @@ __WIN_CALC_DELAY__:
 
     HI_DRV_SYS_GetTimeStampMs(&Ct);
     
-    if (Ct <= pstWin->stDelayInfo.u32CfgTime)
+    if (Ct >= LstCt)
     {
-        Delta = pstWin->stDelayInfo.u32CfgTime - Ct;
-        if ( (Delta < WIN_PROCESS_TIME_CIRCLE_THRESHOLD) && (L < WIN_PROCESS_CALC_TIME_THRESHOLD))
-        {
-            //printk("[GP1]");
-            // interrupt happen, 'pstWin->stDelayInfo.u32CfgTime > Ct' but does not pass zero
-            goto __WIN_CALC_DELAY__;
-        }
-        else
-        {
-            // circle happen, Ct pass zero
-            Delay = (u32Num + 1) * T;
-            Delay = Delay + T - Dt;
-            Delay = Delay - (0xFFFFFFFFul - pstWin->stDelayInfo.u32CfgTime + Ct + 1);
-            //printk("[GP2]");
-        }
+        Delay = Ct - LstCt;
     }
     else
     {
-        Delta = Ct - pstWin->stDelayInfo.u32CfgTime;
-        if ( (Delta > WIN_PROCESS_TIME_CIRCLE_THRESHOLD) && (L < WIN_PROCESS_CALC_TIME_THRESHOLD))
-        {
-            //printk("[GP3]");
-            // circle happen, pstWin->stDelayInfo.u32CfgTime pass zero
-            goto __WIN_CALC_DELAY__;
-        }
-        else
-        {
-            // calc
-            //printk("[GP4]");
-            Delay = (u32Num + 1) * T;
-            Delay = Delay + T - Dt;
-            Delay = Delay - (Ct - pstWin->stDelayInfo.u32CfgTime);
-        }
+        // circle happen, Ct across zero
+        Delay = 0xFFFFFFFFul - LstCt + Ct;
+    }
+
+#if 0
+    if (Delay > ((T*3)/2) )
+    {
+        printk("Delay=%d, T = %d\n", Delay, T);
+        goto __WIN_CALC_DELAY__;
+    }
+#endif
+    //printk("Delay=%d, Dt = %d\n", Delay, Dt);
+    if (T <= (Dt + Delay))
+    {
+        Delay = 0;
+    }
+    else
+    {
+        Delay = T - Dt - Delay;
+    }
+    
+    Delay = (u32Num + 1) * T + Delay;
+
+    WinBuf_GetFullBufNum(&pstWin->stBuffer.stWinBP, &u32NumNew);
+    if (  (LstCt != pstWin->stDelayInfo.u32CfgTime)
+        ||(u32NumNew != u32Num)
+        ||(HI_TRUE == pstWin->bInInterrupt)
+       )
+    {
+        udelay(100);
+        goto __WIN_CALC_DELAY__;
     }
 
     if (Delay > (T * WIN_DELAY_TIME_MAX_CIRCLE))
     {
-        //printk("[GP5]");
-        //todo
-        Delay = 0;
         DISP_ASSERT(!Delay);
+        goto __WIN_CALC_DELAY_ERROR__;
     }
 
     *pu32BufNum = u32Num;
     *pu32DelayMs= Delay;
-   
+    return HI_SUCCESS;
+
+__WIN_CALC_DELAY_ERROR__:
+    
+    *pu32BufNum = 0;
+    *pu32DelayMs= 0;
+
     return HI_SUCCESS;
 }
 
 HI_BOOL WinGetTBMatchInfo(HI_HANDLE hWin)
 {
     WINDOW_S *pstWin;
-
-    // s1 检查句柄合法性
+    
     WinCheckWindow(hWin, pstWin);
 
     return pstWin->stDelayInfo.bTBMatch;
@@ -1669,16 +1951,8 @@ HI_S32 WIN_GetPlayInfo(HI_HANDLE hWin, HI_DRV_WIN_PLAY_INFO_S *pstInfo)
     WINDOW_S *pstWin;
 
     WinCheckDeviceOpen();
-
     WinCheckNullPointer(pstInfo);
-
-    // s1 检查句柄合法性
     WinCheckWindow(hWin, pstWin);
-
-    //stPlayInfo = pstWin->stPlay;
-
-    //BP_GetFullBufNum(&pstWin->stBuffer.stBP, &u32Num);
-    //WinUpdatePlayInfo2(&stPlayInfo, HI_TRUE, u32Num+1);
 
     if (!pstWin->bEnable || !pstWin->stDelayInfo.u32DispRate)
     {
@@ -1686,197 +1960,188 @@ HI_S32 WIN_GetPlayInfo(HI_HANDLE hWin, HI_DRV_WIN_PLAY_INFO_S *pstInfo)
         return HI_ERR_VO_INVALID_OPT;
     }
 
-    if (!pstWin->stDelayInfo.u32DispRate)
-    {
-        pstInfo->u32DispRate = 5000;
-        pstInfo->u32DelayTime = 20;
-        pstInfo->bTBMatch = HI_TRUE;
-        return HI_SUCCESS;
-    }
 
     WIN_CalcDelayTime(pstWin, &(pstInfo->u32FrameNumInBufQn), &(pstInfo->u32DelayTime));
-
     pstInfo->u32DispRate = pstWin->stDelayInfo.u32DispRate;
-    //printk("Get Match=%d\n", pstInfo->bTBMatch);
+    
+    return HI_SUCCESS;
+}
 
-#if 0
-    if (pstWin->stDelayInfo.bInterlace == HI_FALSE)
+HI_S32 WinQueueFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameInfo)
+{
+    WINDOW_S *pstWin;
+    HI_DRV_WIN_SRC_INFO_S *pstSource;
+    //HI_U32 u32BufId;
+    HI_S32 nRet = HI_SUCCESS;
+    HI_BOOL bVirtual;
+    
+    WinCheckDeviceOpen();
+
+    WinCheckNullPointer(pFrameInfo);
+    // s2 get state
+    nRet = WinCheckFrame(pFrameInfo);
+    if (nRet)
     {
-        // if master window work at progress output mode, get slave window match info
-        if (pstWin->enType == HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE)
+        WIN_ERROR("win frame parameters invalid\n");
+        return HI_ERR_VO_FRAME_INFO_ERROR;
+    }
+    bVirtual = WinCheckVirtual(hWin);
+    if (!bVirtual)
+    {
+        WinCheckWindow(hWin, pstWin);
+        pstSource = &pstWin->stCfg.stSource;
+        
+        nRet = WinBuf_PutNewFrame(&pstWin->stBuffer.stWinBP, pFrameInfo);
+        if (nRet)
         {
-            pstInfo->bTBMatch = WinGetTBMatchInfo(pstWin->hSlvWin);
-
-            //printk("...........m=%d    ", pstInfo->bTBMatch);
-        }
+            return HI_ERR_VO_BUFQUE_FULL;
+        }        
     }
     else
     {
-        // if master window work at interlace output mode, return match info
-        pstInfo->bTBMatch = pstWin->stDelayInfo.bTBMatch;
+        VIRTUAL_S *pstVirWin;
+
+        WinCheckVirWindow(hWin, pstVirWin);
+
+        // update sink acquire frame count
+        pstVirWin->stFrameStat.u32SrcQTry++;
+
+        nRet = WIN_VIR_AddNewFrm(pstVirWin, pFrameInfo);
+        if (nRet)
+        {
+            return HI_ERR_VO_BUFQUE_FULL;
+        }
+
+        pstVirWin->stFrameStat.u32SrcQOK++;
     }
-#endif
 
     return HI_SUCCESS;
 }
 
 HI_S32 WIN_QueueFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameInfo)
 {
-    WINDOW_S *pstWin;
-    HI_DRV_WIN_SRC_INFO_S *pstSource;
-    //HI_U32 u32BufId;
-    HI_S32 nRet = HI_SUCCESS;
-
-    WinCheckDeviceOpen();
-
     WinCheckNullPointer(pFrameInfo);
-
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-
-    // s2 get state
-    nRet = WinCheckFrame(pFrameInfo);
-    if (nRet)
-    {
-        WIN_ERROR("win frame parameters invalid\n");
-        return HI_ERR_VO_FRAME_INFO_ERROR;
-    }
-
-    pstSource = &pstWin->stCfg.stSource;
-
-   // if (pstWin->enType == HI_DRV_WIN_ACTIVE_SLAVE)
-   //     printk("q fid=%d\n", pFrameInfo->u32FrameIndex);
-
-    nRet = WinBuf_PutNewFrame(&pstWin->stBuffer.stWinBP, pFrameInfo);
-    if (nRet)
-    {
-        return HI_ERR_VO_BUFQUE_FULL;
-    }
-
-    //if (pstWin->enType == HI_DRV_WIN_ACTIVE_SLAVE)
-    //    printk("q ok\n");
-
-    return HI_SUCCESS;
+    
+    pFrameInfo->bStillFrame =  HI_FALSE;
+    return WinQueueFrame(hWin, pFrameInfo);
 }
 
 HI_S32 WIN_QueueUselessFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameInfo)
 {
     WINDOW_S *pstWin;
     HI_S32 nRet = HI_SUCCESS;
+    HI_BOOL bVirtual;
 
+    
     WinCheckDeviceOpen();
 
     WinCheckNullPointer(pFrameInfo);
 
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
+    bVirtual = WinCheckVirtual(hWin);
 
-    // s2 get state
-    nRet = WinCheckFrame(pFrameInfo);
-    if (nRet)
+    if (!bVirtual)
     {
-        WIN_ERROR("win frame parameters invalid\n");
-        return HI_ERR_VO_FRAME_INFO_ERROR;
-    }
+        WinCheckWindow(hWin, pstWin);
+        nRet = WinCheckFrame(pFrameInfo);
+        if (nRet)
+        {
+            WIN_ERROR("win frame parameters invalid\n");
+            return HI_ERR_VO_FRAME_INFO_ERROR;
+        }
 
-    nRet = WinBufferPutULSFrame(&pstWin->stBuffer, pFrameInfo);
-    if (nRet)
+        nRet = WinBufferPutULSFrame(&pstWin->stBuffer, pFrameInfo);
+        if (nRet)
+        {
+            WIN_WARN("quls failed\n");
+            return HI_ERR_VO_BUFQUE_FULL;
+        }
+    }
+    else
     {
-        WIN_WARN("quls failed\n");
-        return HI_ERR_VO_BUFQUE_FULL;
+        VIRTUAL_S *pstVirWindow;
+        WinCheckVirWindow(hWin, pstVirWindow);
+
+        nRet = WinCheckFrame(pFrameInfo);
+        if (nRet)
+        {
+            WIN_ERROR("win frame parameters invalid\n");
+            return HI_ERR_VO_FRAME_INFO_ERROR;
+        }
+
+        nRet = WIN_VIR_AddUlsFrm(pstVirWindow, pFrameInfo);
+        if (nRet)
+        {
+            WIN_WARN("quls failed\n");
+            return HI_ERR_VO_BUFQUE_FULL;
+        }
     }
-
-    //printk("quls fid=%d\n", pFrameInfo->u32FrmCnt);
-
+    
     return HI_SUCCESS;
 }
 
 HI_S32 WIN_DequeueFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameInfo)
 {
     WINDOW_S *pstWin;
-    //HI_U32 u32BufId;    
-    //HI_S32 nRet = HI_SUCCESS;
 
     WinCheckDeviceOpen();
-
     WinCheckNullPointer(pFrameInfo);
-
-    // s1 检查句柄合法性
     WinCheckWindow(hWin, pstWin);
-
-#if 0
-    // s2 get state
-    // get frame and release it
-    nRet = BP_GetDoneBuf(&pstWin->stBuffer.stBP, &u32BufId);
-    if (nRet)
-    {
-        WIN_INFO("Window has no frame to release!\n");
-        return HI_ERR_VO_NO_FRAME_TO_RELEASE;
-    }
-
-    nRet = BP_GetFrame(&pstWin->stBuffer.stBP, u32BufId, pFrameInfo);
-    if (nRet)
-    {
-        WIN_FATAL("BP_SetFrame failed!\n");
-        return HI_FAILURE;
-    }
-
-    nRet = BP_SetBufEmpty(&pstWin->stBuffer.stBP, u32BufId);
-    if (nRet)
-    {
-        WIN_FATAL("BP_DelEmptyBuf failed!\n");
-        return HI_FAILURE;
-    }
-#endif
 
     return HI_SUCCESS;
 }
-
 
 HI_S32 WIN_SetZorder(HI_HANDLE hWin, HI_DRV_DISP_ZORDER_E enZFlag)
 {
     WINDOW_S *pstWin;
     HI_S32 nRet = HI_SUCCESS;
-
+    HI_BOOL bVirtual;
+    
     WinCheckDeviceOpen();
-
+    
     if (enZFlag >= HI_DRV_DISP_ZORDER_BUTT)
     {
         WIN_FATAL("HI_DRV_DISP_ZORDER_E invalid!\n");
         return HI_ERR_VO_INVALID_PARA;
     }
-
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-
-    switch(enZFlag)
+    
+    bVirtual = WinCheckVirtual(hWin);
+    if (!bVirtual)
     {
-        case HI_DRV_DISP_ZORDER_MOVETOP:
-            nRet = pstWin->stVLayerFunc.PF_MovTop(pstWin->u32VideoLayer);
-            break;
-        case HI_DRV_DISP_ZORDER_MOVEUP:
-            nRet = pstWin->stVLayerFunc.PF_MovUp(pstWin->u32VideoLayer);
-            break;
-        case HI_DRV_DISP_ZORDER_MOVEBOTTOM:
-            nRet = pstWin->stVLayerFunc.PF_MovBottom(pstWin->u32VideoLayer);
-            break;
-        case HI_DRV_DISP_ZORDER_MOVEDOWN:
-            nRet = pstWin->stVLayerFunc.PF_MovDown(pstWin->u32VideoLayer);
-            break;
-        default :
-            nRet = HI_ERR_VO_INVALID_OPT;
-            break;
-    }
+        // s1 检查句柄合法性
+        WinCheckWindow(hWin, pstWin);
 
-
-    if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinGetType(pstWin))
-    {
-        if (pstWin->hSlvWin)
+        switch(enZFlag)
         {
-            WIN_SetZorder(pstWin->hSlvWin, enZFlag);
+            case HI_DRV_DISP_ZORDER_MOVETOP:
+                nRet = pstWin->stVLayerFunc.PF_MovTop(pstWin->u32VideoLayer);
+                break;
+            case HI_DRV_DISP_ZORDER_MOVEUP:
+                nRet = pstWin->stVLayerFunc.PF_MovUp(pstWin->u32VideoLayer);
+                break;
+            case HI_DRV_DISP_ZORDER_MOVEBOTTOM:
+                nRet = pstWin->stVLayerFunc.PF_MovBottom(pstWin->u32VideoLayer);
+                break;
+            case HI_DRV_DISP_ZORDER_MOVEDOWN:
+                nRet = pstWin->stVLayerFunc.PF_MovDown(pstWin->u32VideoLayer);
+                break;
+            default :
+                nRet = HI_ERR_VO_INVALID_OPT;
+                break;
         }
-    }  
 
+
+        if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinGetType(pstWin))
+        {
+            if (pstWin->hSlvWin)
+            {
+                WIN_SetZorder(pstWin->hSlvWin, enZFlag);
+            }
+        }  
+    }
+    else
+    {
+        return HI_ERR_VO_WIN_UNSUPPORT;
+    }
     return nRet;
 }
 
@@ -1884,15 +2149,22 @@ HI_S32 WIN_GetZorder(HI_HANDLE hWin, HI_U32 *pu32Zorder)
 {
     WINDOW_S *pstWin;
     HI_S32 nRet = HI_SUCCESS;
-
+    HI_BOOL bVirtual;
     WinCheckDeviceOpen();
     WinCheckNullPointer(pu32Zorder);
 
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
+    bVirtual = WinCheckVirtual(hWin);
+    if (!bVirtual)
+    {
+        // s1 检查句柄合法性
+        WinCheckWindow(hWin, pstWin);
 
-   nRet = pstWin->stVLayerFunc.PF_GetZorder(pstWin->u32VideoLayer, pu32Zorder);
-
+        nRet = pstWin->stVLayerFunc.PF_GetZorder(pstWin->u32VideoLayer, pu32Zorder);
+    }
+    else
+    {
+        return HI_ERR_VO_WIN_UNSUPPORT;
+    }
    return nRet;
 }
 
@@ -1900,50 +2172,72 @@ HI_S32 WIN_GetZorder(HI_HANDLE hWin, HI_U32 *pu32Zorder)
 HI_S32 WIN_Freeze(HI_HANDLE hWin, HI_BOOL bEnable, HI_DRV_WIN_SWITCH_E enFrz)
 {
     WINDOW_S *pstWin;
+    HI_BOOL bVirtual;
+    HI_U32  u = 0;
 
+    
     WinCheckDeviceOpen();
 
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-    //WinCheckSlaveWindow(pstWin);
-
-    if (enFrz >= HI_DRV_WIN_SWITCH_BUTT)
+    bVirtual = WinCheckVirtual(hWin);
+    if (!bVirtual)
     {
-        WIN_ERROR("Freeze mode is invalid!\n");
-        return HI_ERR_VO_INVALID_PARA;
-    }
+        // s1 检查句柄合法性
+        WinCheckWindow(hWin, pstWin);
+        //WinCheckSlaveWindow(pstWin);
 
-    // s2 set enable
-    if (pstWin->bUpState && pstWin->bEnable)
-    {
-        WIN_ERROR("Window is changing, can't set pause now!\n");
-        return HI_ERR_VO_INVALID_OPT;
-    }
-
-    if (!pstWin->bEnable || pstWin->bReset)
-    {
-        WIN_ERROR("Window is DISABLE, can't set pause now!\n");
-        return HI_ERR_VO_INVALID_OPT;
-    }
-
-
-    pstWin->bUpState = HI_FALSE;
-
-    pstWin->enStateNew = bEnable ? WIN_STATE_FREEZE : WIN_STATE_UNFREEZE;
-    if (bEnable)
-    {
-        pstWin->stFrz.enFreezeMode = enFrz;
-    }
-    pstWin->bUpState = HI_TRUE;
-
-    if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinGetType(pstWin))
-    {
-        if (pstWin->hSlvWin)
+        if (enFrz >= HI_DRV_WIN_SWITCH_BUTT)
         {
-            WIN_Freeze(pstWin->hSlvWin, bEnable, enFrz);
+            WIN_ERROR("Freeze mode is invalid!\n");
+            return HI_ERR_VO_INVALID_PARA;
         }
-    }  
 
+        // s2 set enable
+        if (pstWin->bUpState && pstWin->bEnable)
+        {
+            WIN_ERROR("Window is changing, can't set pause now!\n");
+            return HI_ERR_VO_INVALID_OPT;
+        }
+
+        if (!pstWin->bEnable || pstWin->bReset)
+        {
+            WIN_ERROR("Window is DISABLE, can't set pause now!\n");
+            return HI_ERR_VO_INVALID_OPT;
+        }
+
+
+        pstWin->bUpState = HI_FALSE;
+
+        pstWin->enStateNew = bEnable ? WIN_STATE_FREEZE : WIN_STATE_UNFREEZE;
+        if (bEnable)
+        {
+            pstWin->stFrz.enFreezeMode = enFrz;
+        }
+        pstWin->bUpState = HI_TRUE;
+
+        if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinGetType(pstWin))
+        {
+            if (pstWin->hSlvWin)
+            {
+                WIN_Freeze(pstWin->hSlvWin, bEnable, enFrz);
+            }
+        }
+        
+        u = 0;
+        while(pstWin->bUpState && (u<10))
+        {
+            DISP_MSLEEP(5);
+            u++;
+        }
+        
+        if (u >= 10)
+        {
+            DISP_WARN("############ freeze TIMEOUT#########\n");
+        }
+    }
+    else
+    {
+        return HI_ERR_VO_WIN_UNSUPPORT;
+    }
     return HI_SUCCESS;
 }
 
@@ -1953,61 +2247,68 @@ HI_S32 WIN_Reset(HI_HANDLE hWin, HI_DRV_WIN_SWITCH_E enRst)
     WINDOW_S *pstWin;
     HI_DRV_VIDEO_FRAME_S *pstFrame;
     HI_U32 u = 0;
-
+    HI_BOOL bVirtual;
+    
     WinCheckDeviceOpen();
-
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-    //WinCheckSlaveWindow(pstWin);
-
-    if (enRst >= HI_DRV_WIN_SWITCH_BUTT)
+    bVirtual = WinCheckVirtual(hWin);
+    if (!bVirtual)
     {
-        WIN_ERROR("Reset mode is invalid!\n");
-        return HI_ERR_VO_INVALID_PARA;
-    }
+        // s1 检查句柄合法性
+        WinCheckWindow(hWin, pstWin);
+        //WinCheckSlaveWindow(pstWin);
 
-    // s2 set enable
-    if (pstWin->bReset || pstWin->bUpState)
-    {
-        //WIN_ERROR("Last reset is not finished!\n");
-        return HI_ERR_VO_INVALID_OPT;
-    }
-
-    if (pstWin->bEnable)
-    {
-        //printk("01 enter win reset........\n");
-        pstWin->stRst.enResetMode = enRst;
-        pstWin->bReset = HI_TRUE;
-
-        while(pstWin->bReset && (u<10))
+        if (enRst >= HI_DRV_WIN_SWITCH_BUTT)
         {
-            DISP_MSLEEP(20);
-            u++;
+            WIN_ERROR("Reset mode is invalid!\n");
+            return HI_ERR_VO_INVALID_PARA;
         }
 
-        if (u >= 5)
+        // s2 set enable
+        if (pstWin->bReset || pstWin->bUpState)
         {
-            DISP_WARN("############ RESET TIMEOUT#########\n");
+            //WIN_ERROR("Last reset is not finished!\n");
+            return HI_ERR_VO_INVALID_OPT;
         }
-        //printk("01 exit win reset\n");
+
+        if (pstWin->bEnable)
+        {
+            //printk("01 enter win reset........\n");
+            pstWin->stRst.enResetMode = enRst;
+            pstWin->bReset = HI_TRUE;
+
+            while(pstWin->bReset && (u<10))
+            {
+                DISP_MSLEEP(20);
+                u++;
+            }
+
+            if (u >= 5)
+            {
+                DISP_WARN("############ RESET TIMEOUT#########\n");
+            }
+            //printk("01 exit win reset\n");
+        }
+        else
+        {
+            //printk("02 enter win reset........\n");
+            //ISR_WinReleaseDisplayedFrame(pstWin);
+            WinBuf_RlsAndUpdateUsingFrame(&pstWin->stBuffer.stWinBP);
+            
+            ISR_WinReleaseUSLFrame(pstWin);
+
+            // flush frame in full buffer pool
+            pstFrame = WinBuf_GetDisplayedFrame(&pstWin->stBuffer.stWinBP);
+            WinBuf_FlushWaitingFrame(&pstWin->stBuffer.stWinBP, pstFrame);
+
+            pstWin->bReset = HI_FALSE;
+
+            //printk("02 exit win reset\n");
+        }
     }
     else
     {
-        //printk("02 enter win reset........\n");
-        //ISR_WinReleaseDisplayedFrame(pstWin);
-        WinBuf_RlsAndUpdateUsingFrame(&pstWin->stBuffer.stWinBP);
-        
-        ISR_WinReleaseUSLFrame(pstWin);
-
-        // flush frame in full buffer pool
-        pstFrame = WinBuf_GetDisplayedFrame(&pstWin->stBuffer.stWinBP);
-        WinBuf_FlushWaitingFrame(&pstWin->stBuffer.stWinBP, pstFrame);
-
-        pstWin->bReset = HI_FALSE;
-
-        //printk("02 exit win reset\n");
+        return HI_ERR_VO_WIN_UNSUPPORT;
     }
-
     return HI_SUCCESS;
 }
 
@@ -2016,67 +2317,85 @@ HI_S32 WIN_Pause(HI_HANDLE hWin, HI_BOOL bEnable)
 {
     WINDOW_S *pstWin;
     HI_U32 u;
-
+    HI_BOOL bVirtual;
+    
     WinCheckDeviceOpen();
-
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-    //WinCheckSlaveWindow(pstWin);
-
-    // s2 set enable
-    if (pstWin->bUpState && pstWin->bEnable)
+    bVirtual = WinCheckVirtual(hWin);
+    
+    if (!bVirtual)
     {
-        WIN_ERROR("Window is changing, can't set pause now!\n");
-        return HI_ERR_VO_INVALID_OPT;
+        // s1 检查句柄合法性
+        WinCheckWindow(hWin, pstWin);
+        //WinCheckSlaveWindow(pstWin);
+
+        // s2 set enable
+        if (pstWin->bUpState && pstWin->bEnable)
+        {
+            WIN_ERROR("Window is changing, can't set pause now!\n");
+            return HI_ERR_VO_INVALID_OPT;
+        }
+
+        pstWin->bUpState = HI_FALSE;
+
+        pstWin->enStateNew = bEnable ? WIN_STATE_PAUSE : WIN_STATE_RESUME;
+
+        pstWin->bUpState = HI_TRUE;
+
+        u = 0;
+        while(pstWin->bUpState && (u<10))
+        {
+            DISP_MSLEEP(5);
+            u++;
+        }
+
+        if (u >= 10)
+        {
+            DISP_WARN("############ PAUSE TIMEOUT#########\n");
+        }
     }
-
-    pstWin->bUpState = HI_FALSE;
-
-    pstWin->enStateNew = bEnable ? WIN_STATE_PAUSE : WIN_STATE_RESUME;
-
-    pstWin->bUpState = HI_TRUE;
-
-    u = 0;
-    while(pstWin->bUpState && (u<10))
+    else
     {
-        DISP_MSLEEP(5);
-        u++;
+        return HI_ERR_VO_WIN_UNSUPPORT;
     }
-
-    if (u >= 10)
-    {
-        DISP_WARN("############ PAUSE TIMEOUT#########\n");
-    }
-
     return HI_SUCCESS;
 }
 
 HI_S32 WIN_SetStepMode(HI_HANDLE hWin, HI_BOOL bStepMode)
 {
     WINDOW_S *pstWin;
-
+    HI_BOOL bVirtual;
+    
     WinCheckDeviceOpen();
-
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-
-    // s2 set enable
-    if (pstWin->bUpState && pstWin->bEnable)
+    
+    bVirtual = WinCheckVirtual(hWin);
+    
+    if (!bVirtual)
     {
-        WIN_ERROR("Window is changing, can't set pause now!\n");
-        return HI_ERR_VO_INVALID_OPT;
-    }
+        // s1 检查句柄合法性
+        WinCheckWindow(hWin, pstWin);
 
-    // set stepmode flag
-    pstWin->bStepMode = bStepMode;
-
-    if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinGetType(pstWin))
-    {
-        if (pstWin->hSlvWin)
+        // s2 set enable
+        if (pstWin->bUpState && pstWin->bEnable)
         {
-            WIN_SetStepMode(pstWin->hSlvWin, bStepMode);
+            WIN_ERROR("Window is changing, can't set pause now!\n");
+            return HI_ERR_VO_INVALID_OPT;
         }
-    }  
+
+        // set stepmode flag
+        pstWin->bStepMode = bStepMode;
+
+        if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinGetType(pstWin))
+        {
+            if (pstWin->hSlvWin)
+            {
+                WIN_SetStepMode(pstWin->hSlvWin, bStepMode);
+            }
+        }  
+    }
+    else
+    {
+        return HI_ERR_VO_WIN_UNSUPPORT;
+    }
     return HI_SUCCESS;
 }
 
@@ -2121,40 +2440,190 @@ HI_S32 WIN_SetQuick(HI_HANDLE hWin, HI_BOOL bEnable)
 
 
 /* only for virtual window */
+
+
 HI_S32 WIN_SetExtBuffer(HI_HANDLE hWin, HI_DRV_VIDEO_BUFFER_POOL_S* pstBuf)
 {
 
 
     return HI_SUCCESS;
 }
+HI_S32 WIN_AttachSink(HI_HANDLE hWin, HI_HANDLE hSink)
+{
+    VIRTUAL_S *pstVirWin;
+    HI_S32 s32Ret;
+    
+    WinCheckVirWindow(hWin, pstVirWin);
 
+    s32Ret = WIN_VIR_AttachSink(pstVirWin, hSink);
+    
+    return s32Ret;
+}
+
+HI_S32 WIN_DetachSink(HI_HANDLE hWin, HI_HANDLE hSink)
+{
+    VIRTUAL_S *pstVirWin;
+    HI_S32 s32Ret;
+    
+    WinCheckVirWindow(hWin, pstVirWin);
+
+    s32Ret = WIN_VIR_DetachSink(pstVirWin, hSink);
+    
+    return s32Ret;
+}
+
+HI_S32 WIN_SetVirtualAttr(HI_HANDLE hWin, HI_U32 u32Width,HI_U32 u32Height)
+{
+    VIRTUAL_S *pstVirWin;
+    HI_S32 s32Ret;
+    
+    WinCheckVirWindow(hWin, pstVirWin);
+
+    s32Ret = WIN_VIR_SetSize(pstVirWin, u32Width,u32Height);
+
+    return s32Ret;
+}
 HI_S32 WIN_AcquireFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameinfo)
 {
+    VIRTUAL_S *pstVirWin;
+    HI_S32 s32Ret;
+    
+    WinCheckVirWindow(hWin, pstVirWin);
 
+    s32Ret = WIN_VIR_GetFrm(pstVirWin, pFrameinfo);
 
-    return HI_SUCCESS;
+    // update sink acquire frame count
+    pstVirWin->stFrameStat.u32SinkAcqTry++;
+    if (s32Ret == HI_SUCCESS)
+    {
+        pstVirWin->stFrameStat.u32SinkAcqOK++;
+    }    
+
+    return s32Ret;
 }
 
 HI_S32 WIN_ReleaseFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameinfo)
 {
+    VIRTUAL_S *pstVirWin;
+    HI_S32 s32Ret;
+    
+    WinCheckVirWindow(hWin, pstVirWin);
+
+    s32Ret = WIN_VIR_RelFrm(pstVirWin, pFrameinfo);
+
+    // update sink release frame count
+    pstVirWin->stFrameStat.u32SinkRlsTry++;
+    if (s32Ret == HI_SUCCESS)
+    {
+        pstVirWin->stFrameStat.u32SinkRlsOK++;
+    }
+
+    return s32Ret;
+}
+
+HI_S32 WIN_CreatStillFrame(HI_DRV_VIDEO_FRAME_S *pFrameinfo,HI_DRV_VIDEO_FRAME_S *pStillFrameInfo)
+{
+    HI_VDEC_PRIV_FRAMEINFO_S *pstPrivInfo = HI_NULL;
+    HI_U32 datalen = 0, y_stride = 0, height = 0 ;
+    DISP_MMZ_BUF_S  stMMZ_StillFrame;
+    DISP_MMZ_BUF_S  stMMZ_Frame;
+ 
+    pstPrivInfo = (HI_VDEC_PRIV_FRAMEINFO_S *)(pFrameinfo->u32Priv);    
+    
+    memset(&stMMZ_StillFrame,0,sizeof(DISP_MMZ_BUF_S));
+    memset(&stMMZ_Frame,0,sizeof(DISP_MMZ_BUF_S));
+    
+    /*1:calculate alloc mem*/
+    y_stride = pFrameinfo->stBufAddr[0].u32Stride_Y;
+    height   = (HI_TRUE == pstPrivInfo->stCompressInfo.u32CompressFlag)
+                     ? pstPrivInfo->stCompressInfo.s32CompFrameHeight : pFrameinfo->u32Height;        
+    
+    if ( HI_DRV_PIX_FMT_NV21 == pFrameinfo->ePixFormat) 
+        datalen = height * y_stride * 3 / 2 + height * 4;
+    else 
+        datalen = height * y_stride * 2 + height * 4;        
+    
+    if(HI_SUCCESS != DISP_OS_MMZ_Alloc("VDP_StillFrame", HI_NULL, datalen, 16, &stMMZ_StillFrame))
+    {
+        WIN_ERROR(" Alloc StillFrame  failid(%x)\n",datalen);
+        return HI_FAILURE;
+    }
+
+    /*2: creat still frame*/
+    /*not support  Compress info*/
+    stMMZ_Frame.u32StartPhyAddr = pFrameinfo->stBufAddr[0].u32PhyAddr_Y;
+        
+    DISP_OS_MMZ_Map(&stMMZ_StillFrame);
+    DISP_OS_MMZ_Map(&stMMZ_Frame);
+    
 
 
+
+    memcpy(pStillFrameInfo,pFrameinfo,sizeof(HI_DRV_VIDEO_FRAME_S));
+    memcpy((void *)stMMZ_StillFrame.u32StartVirAddr, (void *)stMMZ_Frame.u32StartVirAddr,datalen);
+
+
+    /*3: calculate still frame addr*/
+    pStillFrameInfo->stBufAddr[0].u32PhyAddr_YHead = stMMZ_StillFrame.u32StartPhyAddr +(pFrameinfo->stBufAddr[0].u32PhyAddr_YHead - stMMZ_Frame.u32StartPhyAddr );
+    pStillFrameInfo->stBufAddr[0].u32Stride_Y =  pFrameinfo->stBufAddr[0].u32Stride_Y;
+    
+    pStillFrameInfo->stBufAddr[0].u32PhyAddr_Y = stMMZ_StillFrame.u32StartPhyAddr +(stMMZ_Frame.u32StartPhyAddr - pFrameinfo->stBufAddr[0].u32PhyAddr_Y );
+
+    pStillFrameInfo->stBufAddr[0].u32PhyAddr_C = stMMZ_StillFrame.u32StartPhyAddr + (pStillFrameInfo->u32Height*pStillFrameInfo->stBufAddr[0].u32Stride_Y);
+
+    pStillFrameInfo->stBufAddr[0].u32PhyAddr_CrHead = stMMZ_StillFrame.u32StartPhyAddr +( pFrameinfo->stBufAddr[0].u32PhyAddr_CrHead - stMMZ_Frame.u32StartPhyAddr);
+    pStillFrameInfo->stBufAddr[0].u32PhyAddr_Cr = stMMZ_StillFrame.u32StartPhyAddr +( pFrameinfo->stBufAddr[0].u32PhyAddr_Cr - stMMZ_Frame.u32StartPhyAddr );
+    pStillFrameInfo->stBufAddr[0].u32Stride_Cr = pFrameinfo->stBufAddr[0].u32Stride_Cr;
+
+    pStillFrameInfo->bStillFrame = HI_TRUE;
+    
+    DISP_OS_MMZ_UnMap(&stMMZ_StillFrame);
+    DISP_OS_MMZ_UnMap(&stMMZ_Frame);
     return HI_SUCCESS;
 }
 
-//todo
-HI_S32 WIN_Set3DMode(HI_HANDLE hWin, HI_BOOL b3DEnable,HI_DRV_DISP_STEREO_E eMode)
+HI_S32 WinReleaseStillFrame(HI_DRV_VIDEO_FRAME_S *pStillFrameInfo)
 {
-
-
-    return HI_SUCCESS;
+    DISP_MMZ_BUF_S  stMMZ_StillFrame;
+    HI_VDEC_PRIV_FRAMEINFO_S *pstPrivInfo = HI_NULL;
+    
+    WinCheckNullPointer(pStillFrameInfo);
+    if (pStillFrameInfo->bStillFrame)
+    {
+        memset((void*)&stMMZ_StillFrame, 0, sizeof(DISP_MMZ_BUF_S));    
+        pstPrivInfo = (HI_VDEC_PRIV_FRAMEINFO_S *)(pStillFrameInfo->u32Priv);    
+        if (HI_TRUE == pstPrivInfo->stCompressInfo.u32CompressFlag)
+        {
+            stMMZ_StillFrame.u32StartPhyAddr = pStillFrameInfo->stBufAddr[0].u32PhyAddr_YHead;
+        }
+        else
+        {
+            stMMZ_StillFrame.u32StartPhyAddr = pStillFrameInfo->stBufAddr[0].u32PhyAddr_Y;
+        }
+        //printk("release 0x%x\n",stMMZ_StillFrame.u32StartPhyAddr);
+         DISP_OS_MMZ_Release(&stMMZ_StillFrame);
+         return HI_SUCCESS;
+    }
+   
+    return HI_FAILURE;
 }
 
-HI_S32 WIN_SendFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameinfo)
+
+
+HI_S32 WIN_SendFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pFrameInfo)
 {
-
-
-    return HI_SUCCESS;
+    HI_S32 nRet;
+    HI_DRV_VIDEO_FRAME_S StillFrameInfo;
+    WinCheckNullPointer(pFrameInfo);
+    
+    nRet = WIN_CreatStillFrame(pFrameInfo,&StillFrameInfo);
+    if ( HI_SUCCESS != nRet )
+    {
+        WIN_ERROR(" WIN_CreatStillFrame  failid(%x)\n",nRet);
+        return nRet;
+    }
+    
+    return WinQueueFrame( hWin,  &StillFrameInfo);
 }
 
 HI_S32 Win_DebugGetHandle(HI_DRV_DISPLAY_E enDisp, WIN_HANDLE_ARRAY_S *pstWin)
@@ -2196,8 +2665,8 @@ HI_S32 WinUpdatePlayInfo(HI_DRV_WIN_PLAY_INFO_S *ptPlay, HI_U32 u32Rate)
 HI_S32 WinAcquireFrame(WINDOW_S *pstWin)
 {
 #if 0
-	HI_DRV_VIDEO_FRAME_S stNewFrame;
-	HI_U32 u32BufId;
+    HI_DRV_VIDEO_FRAME_S stNewFrame;
+    HI_U32 u32BufId;
     HI_S32 nRet = HI_SUCCESS;
 
     nRet = BQ_GetWriteNode(&pstWin->stBuffer.stBP, &u32BufId);
@@ -2206,15 +2675,15 @@ HI_S32 WinAcquireFrame(WINDOW_S *pstWin)
         return HI_ERR_VO_BUFQUE_FULL;
     }
 
-	if (pstWin->stSource.pfAcqFrame)
-	{
-		nRet = pstWin->stSource.pfAcqFrame(pstWin->stSource.hSrc, &stNewFrame);
+    if (pstWin->stSource.pfAcqFrame)
+    {
+        nRet = pstWin->stSource.pfAcqFrame(pstWin->stSource.hSrc, &stNewFrame);
         if (nRet)
         {
             WIN_ERROR("WIN Release Frame failid\n");
             return HI_ERR_VO_FRAME_RELEASE_FAILED;
         }
-	}
+    }
 
     // s2 get state
     nRet = WinCheckFrame(&stNewFrame);
@@ -2225,20 +2694,20 @@ HI_S32 WinAcquireFrame(WINDOW_S *pstWin)
 
     if (!stNewFrame.u32PlayTime)
     {
-    	if (pstWin->stSource.pfRlsFrame && stNewFrame.bToRelease)
-    	{
-	        nRet = pstWin->stSource.pfRlsFrame(pstWin->stSource.hSrc, &stNewFrame);
-	        if (nRet)
-	        {
-	            WIN_ERROR("WIN Release Frame failid\n");
-	        }
+        if (pstWin->stSource.pfRlsFrame && stNewFrame.bToRelease)
+        {
+            nRet = pstWin->stSource.pfRlsFrame(pstWin->stSource.hSrc, &stNewFrame);
+            if (nRet)
+            {
+                WIN_ERROR("WIN Release Frame failid\n");
+            }
 
             BQ_ReleaseRecoder(&pstWin->stBufQue, BQ_RELEASE_DISCARD);
-    	}
-		else
-		{
-			// todo
-		}
+        }
+        else
+        {
+            // todo
+        }
     }
 
     nRet = BQ_PutWriteNode(&pstWin->stBufQue, &stNewFrame, BUF_FRAME_SRC_NORMAL);
@@ -2262,7 +2731,11 @@ HI_VOID ISR_WinReleaseUSLFrame(WINDOW_S *pstWin)
     nRet = WinBufferGetULSFrame(&pstWin->stBuffer, &stRlsFrm);
     while(!nRet)
     {
-        if (pstSource->pfRlsFrame)
+        if (stRlsFrm.bStillFrame)
+        {
+            WIN_DestroyStillFrame(&stRlsFrm);
+        }
+        else if (pstSource->pfRlsFrame)
         {
             pstSource->pfRlsFrame(pstSource->hSrc, &stRlsFrm);
 #ifdef WIN_DEBUG_PRINT_RELEASE
@@ -2282,103 +2755,140 @@ HI_VOID ISR_WinReleaseUSLFrame(WINDOW_S *pstWin)
 }
 
 HI_DRV_VIDEO_FRAME_S *ISR_SlaveWinGetConfigFrame(WINDOW_S *pstWin)
-{
-    HI_U32 RefID;
+{
     WINDOW_S *pstMstWin = (WINDOW_S *)(pstWin->pstMstWin);
-    HI_DRV_VIDEO_FRAME_S *pstRefF, *pstDisp, *pstNew;
+    HI_DRV_VIDEO_FRAME_S *pstDstF, *pstRefF, *pstNew;
 
-    pstRefF = WinBuf_GetConfigedFrame(&pstMstWin->stBuffer.stWinBP);
-    if (pstRefF)
+    // get master window crrent configed frame
+    pstDstF = WinBuf_GetConfigedFrame(&pstMstWin->stBuffer.stWinBP);
+    if (!pstDstF)
     {
-        RefID = pstRefF->u32FrameIndex;
-    }
-    else
-    {
-        RefID = 0;
+        return HI_NULL;
     }
 
-    pstDisp = WinBuf_GetDisplayedFrame(&pstWin->stBuffer.stWinBP);
+    // get slave window displayed frame
+    pstRefF = WinBuf_GetDisplayedFrame(&pstWin->stBuffer.stWinBP);
 
-    pstNew = WinBuf_GetFrameByMaxID(&pstWin->stBuffer.stWinBP, pstDisp, RefID);
+    //pstNew = WinBuf_GetFrameByMaxID(&pstWin->stBuffer.stWinBP, pstRefF, RefID, enDstField);
+    pstNew = WinBuf_GetFrameByDstFrame(&pstWin->stBuffer.stWinBP, pstDstF, pstRefF);
+
+#if 0
+    if (pstNew)
+    {
+        pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstNew->u32Priv[0]);
+        printk("S:d=%d,f=%d,F:id =%d,f=%d\n",  RefID, enDstField, pstNew->u32FrameIndex, pstPriv->eOriginField);
+    }
+#endif
 
     return pstNew;
 }
 
-HI_VOID WinTestFrameMatch(WINDOW_S *pstWin, HI_DRV_VIDEO_FRAME_S *pstFrame, const HI_DRV_DISP_CALLBACK_INFO_S *pstInfo)
+HI_VOID WinUpdateDispInfo(WINDOW_S *pstWin, HI_DISP_DISPLAY_INFO_S * pstDsipInfo)
 {
-    //HI_DRV_WIN_ATTR_S *pstAttr = &pstWin->stUsingAttr;
-    HI_DRV_VIDEO_PRIVATE_S *pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstFrame->u32Priv[0]);
-
-    pstWin->stDelayInfo.bTBMatch = HI_TRUE;
-
-    if (pstInfo->stDispInfo.bInterlace == HI_TRUE)
-    {
-         if(  (  (pstPriv->eOriginField == HI_DRV_FIELD_TOP) 
-                &&(pstInfo->stDispInfo.bIsBottomField == HI_FALSE) )
-            ||(   (pstPriv->eOriginField == HI_DRV_FIELD_BOTTOM) 
-                 &&(pstInfo->stDispInfo.bIsBottomField == HI_TRUE) )
-            )
-        {
-            pstWin->stDelayInfo.bTBMatch = HI_FALSE;
-            pstWin->u32TBNotMatchCount++;
-        }
-    }
-#if 0
-    if (pstWin->enDisp == HI_DRV_DISPLAY_0)
-    {
-        printk("slv f=%d, tb=%d, M=%d\n", 
-                                     pstPriv->eOriginField, 
-                                     pstInfo->stDispInfo.bIsBottomField, 
-                                     pstWin->stDelayInfo.bTBMatch);
-    }
-    if (pstWin->enDisp == HI_DRV_DISPLAY_1)
-    {
-        printk("mst f=%d, tb=%d, M=%d\n", 
-                                     pstPriv->eOriginField, 
-                                     pstInfo->stDispInfo.bIsBottomField, 
-                                     pstWin->stDelayInfo.bTBMatch);
-    }
-#endif
-    //if (pstWin->u32TBTestCount < (pstInfo->stDispInfo.u32RefreshRate / 100))
-    if (pstWin->u32TBTestCount < (pstWin->stBuffer.stWinBP.u32BufNumber))
-    {
-        // inform user match-info per second.
-        //pstWin->stDelayInfo.bTBMatch = HI_TRUE;
-        pstWin->u32TBTestCount++;
-    }
-    else
-    {
-        // inform TB match info this time and reset test count
-        pstWin->u32TBTestCount = 0;
-    }
-
-    //pstWin->stDelayInfo.bTBMatch = HI_FALSE;
+    pstWin->stDispInfo.u32RefreshRate = pstDsipInfo->u32RefreshRate;
+    pstWin->stDispInfo.bIsInterlace   = pstDsipInfo->bInterlace;
+    pstWin->stDispInfo.bIsBtm         = pstDsipInfo->bIsBottomField;
 
     return;
 }
 
+WIN_DISP_INFO_S *WinGetDispInfoByHandle(HI_HANDLE hWin)
+{
+    WINDOW_S *pstWin;
+
+    pstWin = WinGetWindow(hWin);
+
+    if (pstWin)
+    {
+        return &pstWin->stDispInfo;
+    }
+
+    return HI_NULL;
+}
+
+HI_VOID WinTestFrameMatch(WINDOW_S *pstWin, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_DISP_DISPLAY_INFO_S * pstDsipInfo)
+{
+    //HI_DRV_WIN_ATTR_S *pstAttr = &pstWin->stUsingAttr;
+    HI_DRV_VIDEO_PRIVATE_S *pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstFrame->u32Priv[0]);
+
+    // if display work at interlace mode and frame rate equale to display refresh rate, 
+    // dectect whether top-field video frame output at top-field time
+    if (pstDsipInfo->bInterlace == HI_TRUE)
+    {
+         if(  (  (pstPriv->eOriginField == HI_DRV_FIELD_TOP) 
+                &&(pstDsipInfo->bIsBottomField == HI_FALSE) )
+            ||(   (pstPriv->eOriginField == HI_DRV_FIELD_BOTTOM) 
+                 &&(pstDsipInfo->bIsBottomField == HI_TRUE) )
+            )
+        {
+            pstWin->u32TBNotMatchCount++;
+#if 0
+            if (pstWin->enDisp == HI_DRV_DISPLAY_0)
+            {
+                printk(">>>>>>>Disp=%d, fid=%d, f=%d, btm=%d\n", 
+                              pstWin->enDisp,
+                              pstFrame->u32FrameIndex,
+                              pstPriv->eOriginField, 
+                              pstDsipInfo->bIsBottomField);
+            }
+#endif
+
+        }
+#if 0
+        else
+        {
+            if (pstWin->enDisp == HI_DRV_DISPLAY_0)
+            {
+                printk("Disp=%d, fid=%d, f=%d, btm=%d\n", 
+                                  pstWin->enDisp,
+                                  pstFrame->u32FrameIndex,
+                                  pstPriv->eOriginField, 
+                                  pstDsipInfo->bIsBottomField);
+            }
+        }
+#endif
+    }
+
+    return;
+}
+
+#define FIDELITY_033            1
+#define FIDELITY_18             2
+#define FIDELITY_576I_YPBPR     3
+#define FIDELITY_480I_YPBPR     4 
+#define FIDELITY_CBAR_75        8
+#define FIDELITY_MX625          10
+#define FIDELITY_BOWTIE         18
+#define FIDELITY_SKN            20
+#define FIDELITY_ZDN            22
+#define FIDELITY_MOTO_CVBS      25
+
+#define VIDEO_TEST_SATURATION_OFFSET   (3)
+#define VIDEO_MOTO_SATURATION_OFFSET    (3)
 HI_VOID ISR_WinConfigFrame(WINDOW_S *pstWin, HI_DRV_VIDEO_FRAME_S *pstFrame, const HI_DRV_DISP_CALLBACK_INFO_S *pstInfo)
 {
     HI_DRV_WIN_ATTR_S *pstAttr = &pstWin->stUsingAttr;
     WIN_HAL_PARA_S stLayerPara;
     HI_DRV_DISP_COLOR_SETTING_S stColor;
+    HI_U32 u32Fidelity;
     HI_S32 nRet;
+    VIDEO_LAYER_CAPABILITY_S  stVideoLayerCap;
+    DISP_INTF_OPERATION_S *pstDispOpt;
 
 #if 0
-    struct timeval tv;
-    HI_U32 Ct;
+    HI_U32 Ct = 0;
+    HI_DRV_VIDEO_PRIVATE_S *pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstFrame->u32Priv[0]);
 
-    do_gettimeofday(&tv);
-    Ct = (HI_U32)(tv.tv_sec * 1000 + (tv.tv_usec/1000));
-
+    HI_DRV_SYS_GetTimeStampMs((HI_U32 *)&Ct);
 
     if (pstWin->enType == HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE)
     {
-        printk("master Fid=0x%x, Ct=0x%x\n", pstFrame->u32FrameIndex, Ct);
+        printk("m id=0x%x, f=%d,Ct=%d\n", pstFrame->u32FrameIndex, pstPriv->eOriginField,Ct);
     }
     else
     {
-        printk("slave  Fid=0x%x, Ct=0x%x\n", pstFrame->u32FrameIndex, Ct);
+        printk("s id=0x%x, f=%d,Ct=%d\n", pstFrame->u32FrameIndex, pstPriv->eOriginField,Ct);
+        //mdelay(3);
     }
 #endif
 
@@ -2386,7 +2896,7 @@ HI_VOID ISR_WinConfigFrame(WINDOW_S *pstWin, HI_DRV_VIDEO_FRAME_S *pstFrame, con
     pstWin->stCfg.bRightEyeFirst = pstInfo->stDispInfo.bRightEyeFirst;
     
 //printk("     cfg Id=%d\n", pstFrame->u32FrameIndex);
-    pstAttr->stInRect  = pstFrame->stDispRect;
+    //pstAttr->stInRect  = pstFrame->stDispRect;
     //printk("fw=%d, fh=%d\n", pstFrame->stDispRect.s32Width, pstFrame->stDispRect.s32Height);
     //pstWin->stUsingAttr.stInRect.s32Width = 720;
     //pstWin->stUsingAttr.stInRect.s32Height = 576;
@@ -2394,12 +2904,33 @@ HI_VOID ISR_WinConfigFrame(WINDOW_S *pstWin, HI_DRV_VIDEO_FRAME_S *pstFrame, con
     stLayerPara.en3Dmode = pstInfo->stDispInfo.eDispMode;
     stLayerPara.bRightEyeFirst = pstInfo->stDispInfo.bRightEyeFirst;
     stLayerPara.pstFrame = pstFrame;
+
+    
+    pstWin->stVLayerFunc.PF_GetCapability(pstWin->u32VideoLayer,&stVideoLayerCap);
     stLayerPara.bZmeUpdate = HI_TRUE;
-    stLayerPara.stIn    = pstAttr->stInRect;
-    stLayerPara.stDisp  = pstAttr->stOutRect;
-    stLayerPara.stVideo = pstAttr->stOutRect;
+    stLayerPara.bZmeSupport = stVideoLayerCap.bZme;
+    
+    if (stLayerPara.bZmeSupport)
+    {
+        stLayerPara.stDisp  = pstAttr->stOutRect;
+        stLayerPara.stVideo = pstAttr->stOutRect;
+    }
+    else
+    {
+        /*if not support zme ,config frame as frame info*/
+        stLayerPara.stDisp  = pstFrame->stDispRect;
+        stLayerPara.stVideo = pstFrame->stDispRect;
+        stLayerPara.stVideo.s32X = pstAttr->stOutRect.s32X;
+        stLayerPara.stVideo.s32Y = pstAttr->stOutRect.s32Y;
+        stLayerPara.stDisp.s32X = pstAttr->stOutRect.s32X;
+        stLayerPara.stDisp.s32Y = pstAttr->stOutRect.s32Y;
+    }
+    
+    stLayerPara.stIn    = pstFrame->stDispRect; //pstAttr->stInRect;
+    stLayerPara.stInOrigin = pstFrame->stDispRect;
+
     stLayerPara.pstDispInfo = (HI_DISP_DISPLAY_INFO_S *)&(pstInfo->stDispInfo);
-    stLayerPara.eField = pstInfo->eField;
+    //stLayerPara.eField = pstInfo->stDispInfo.bIsBottomField ? ;
 //printk("$=%d.", pstWin->eLayer);
     nRet = pstWin->stVLayerFunc.PF_SetFramePara(pstWin->u32VideoLayer, &stLayerPara);
     if (nRet)
@@ -2411,16 +2942,86 @@ HI_VOID ISR_WinConfigFrame(WINDOW_S *pstWin, HI_DRV_VIDEO_FRAME_S *pstFrame, con
         pstWin->stVLayerFunc.PF_SetEnable(pstWin->u32VideoLayer, HI_TRUE);
     }
 
-    pstWin->stVLayerFunc.PF_Update(pstWin->u32VideoLayer);
+    stColor.enInCS  = ((HI_DRV_VIDEO_PRIVATE_S *)&pstFrame->u32Priv[0])->eColorSpace;
+    u32Fidelity     = ((HI_DRV_VIDEO_PRIVATE_S *)&pstFrame->u32Priv[0])->u32Fidelity;
+    stColor.enOutCS = pstInfo->stDispInfo.eColorSpace;
 
-    if (pstWin->bDispInfoChange)
+    // special process for special pattern
+    if (pstWin->enDisp == HI_DRV_DISPLAY_0)
     {
-        //stColor.enInCS  = ((HI_DRV_VIDEO_PRIVATE_S *)&pstFrame->u32Priv[0])->eColorSpace;
-        stColor.enInCS  = HI_DRV_CS_BT601_YUV_LIMITED;
-        stColor.enOutCS = pstInfo->stDispInfo.eColorSpace;
+        if ((u32Fidelity == FIDELITY_SKN) || (u32Fidelity == FIDELITY_ZDN) )
+        {
+            stColor.enOutCS = HI_DRV_CS_BT709_YUV_LIMITED;
+        }
+    }
+
+    if (  pstWin->bDispInfoChange
+        ||(stColor.enOutCS != pstWin->stCfg.enOutCS)
+        ||(stColor.enInCS  != pstWin->stCfg.enFrameCS)
+        ||(u32Fidelity     != pstWin->stCfg.u32Fidelity)
+        ||(stColor.enInCS   == HI_DRV_CS_UNKNOWN)
+        ||(stColor.enOutCS  == HI_DRV_CS_UNKNOWN)
+        )
+    {
+        if (stColor.enInCS == HI_DRV_CS_UNKNOWN)
+        {
+            stColor.enInCS = HI_DRV_CS_BT709_YUV_LIMITED;
+        }
+
+        if (stColor.enOutCS == HI_DRV_CS_UNKNOWN)
+        {
+            stColor.enOutCS = HI_DRV_CS_BT709_YUV_LIMITED;
+        }        
+
+        pstWin->stCfg.enFrameCS = stColor.enInCS;
+        pstWin->stCfg.enOutCS   = stColor.enOutCS;
+        pstWin->stCfg.u32Fidelity = u32Fidelity;
+        
         stColor.u32Bright = pstInfo->stDispInfo.u32Bright;
         stColor.u32Hue    = pstInfo->stDispInfo.u32Hue;
-        stColor.u32Satur  = pstInfo->stDispInfo.u32Satur;
+#if 0
+        if (  (pstWin->enDisp == HI_DRV_DISPLAY_0)
+            &&(   (u32Fidelity == FIDELITY_033) 
+                ||( (u32Fidelity >= FIDELITY_CBAR_75) && ((u32Fidelity <= FIDELITY_MX625)))
+                ||(u32Fidelity >= FIDELITY_SKN)
+               )
+           )
+#endif
+        if (  (pstWin->enDisp == HI_DRV_DISPLAY_0)
+            &&(u32Fidelity > 0)
+            &&(u32Fidelity != FIDELITY_BOWTIE)
+            &&(u32Fidelity != FIDELITY_576I_YPBPR)
+            &&(u32Fidelity != FIDELITY_480I_YPBPR)
+            &&(u32Fidelity != FIDELITY_MOTO_CVBS)
+           )
+        {
+            stColor.u32Satur  = (HI_U32)(pstInfo->stDispInfo.u32Satur + VIDEO_TEST_SATURATION_OFFSET);
+        }
+        else if (u32Fidelity == FIDELITY_MOTO_CVBS)
+        {
+            stColor.u32Satur  = (HI_U32)(pstInfo->stDispInfo.u32Satur + VIDEO_MOTO_SATURATION_OFFSET);
+        }
+        else
+        {
+            stColor.u32Satur  = pstInfo->stDispInfo.u32Satur;
+        }
+
+        /*t00177539 for 480i/576i multiburst   */
+        pstDispOpt = DISP_HAL_GetOperationPtr();
+        if (pstWin->enDisp == HI_DRV_DISPLAY_0)
+        {
+            if ((u32Fidelity == FIDELITY_576I_YPBPR)
+                    || (u32Fidelity == FIDELITY_480I_YPBPR))
+            {
+                pstDispOpt->PF_DATE_SetCoef(HI_DRV_DISPLAY_0, HI_FALSE);
+            }
+            else
+            {
+                pstDispOpt->PF_DATE_SetCoef(HI_DRV_DISPLAY_0, HI_TRUE);
+            }
+        }
+
+        //stColor.u32Satur  = (HI_U32)(pstInfo->stDispInfo.u32Satur);
         stColor.u32Contrst = pstInfo->stDispInfo.u32Contrst;
         stColor.u32Kr = pstInfo->stDispInfo.u32Kr;
         stColor.u32Kg = pstInfo->stDispInfo.u32Kg;
@@ -2432,10 +3033,11 @@ HI_VOID ISR_WinConfigFrame(WINDOW_S *pstWin, HI_DRV_VIDEO_FRAME_S *pstFrame, con
         pstWin->bDispInfoChange = HI_FALSE;
     }
 
-    //if (pstWin->enDisp == HI_DRV_DISPLAY_0)
-    {
-        WinTestFrameMatch(pstWin, pstFrame, pstInfo);
-    }
+    pstWin->stVLayerFunc.PF_Update(pstWin->u32VideoLayer);
+
+    WinTestFrameMatch(pstWin, pstFrame, (HI_DISP_DISPLAY_INFO_S *)&pstInfo->stDispInfo);
+
+    WinUpdateDispInfo(pstWin, (HI_DISP_DISPLAY_INFO_S *)&pstInfo->stDispInfo);
 
     return;
 }
@@ -2450,7 +3052,7 @@ HI_VOID ISR_WinUpdatePlayInfo(WINDOW_S *pstWin, const HI_DRV_DISP_CALLBACK_INFO_
     //BP_GetFullBufNum(&pstWin->stBuffer.stBP, &u32Num);
 
     DISP_ASSERT(pstInfo->stDispInfo.u32RefreshRate);
-    DISP_ASSERT(pstInfo->stDispInfo.stRefRect.s32Height);
+    DISP_ASSERT(pstInfo->stDispInfo.stFmtResolution.s32Height);
 
     pstWin->stDelayInfo.u32DispRate = pstInfo->stDispInfo.u32RefreshRate;
     pstWin->stDelayInfo.T = (1*1000*100)/pstInfo->stDispInfo.u32RefreshRate;
@@ -2463,25 +3065,20 @@ HI_VOID ISR_WinUpdatePlayInfo(WINDOW_S *pstWin, const HI_DRV_DISP_CALLBACK_INFO_
 
     if (pstInfo->stDispInfo.bInterlace)
     {
-        pstWin->stDelayInfo.u32DisplayTime = (pstInfo->stDispInfo.u32Vline *2*T)/pstInfo->stDispInfo.stOrgRect.s32Height;
+        pstWin->stDelayInfo.u32DisplayTime = (pstInfo->stDispInfo.u32Vline *2*T)/pstInfo->stDispInfo.stPixelFmtResolution.s32Height;
     }
     else
     {
-        pstWin->stDelayInfo.u32DisplayTime = (pstInfo->stDispInfo.u32Vline *T)/pstInfo->stDispInfo.stOrgRect.s32Height;
+        pstWin->stDelayInfo.u32DisplayTime = (pstInfo->stDispInfo.u32Vline *T)/pstInfo->stDispInfo.stPixelFmtResolution.s32Height;
     }
-
-    //do_gettimeofday(&tv);
-    //pstWin->stDelayInfo.u32CfgTime = (HI_U32)(tv.tv_sec *1000 + (tv.tv_usec/1000));
+    
     HI_DRV_SYS_GetTimeStampMs((HI_U32 *)&pstWin->stDelayInfo.u32CfgTime);
-
     return;
 }
 
 
 HI_VOID ISR_WinStateTransfer(WINDOW_S *pstWin)
 {
-    //printk("Enter ISR_WinStateTransfer......\n");
-
     if (pstWin->enState == WIN_STATE_WORK)
     {
         switch(pstWin->enStateNew)
@@ -2547,55 +3144,134 @@ HI_VOID ISR_WinResetState(WINDOW_S *pstWin)
 {
     pstWin->enState = WIN_STATE_WORK;
     pstWin->bReset  = HI_FALSE;
-
+    
     return;
 }
 
-HI_DRV_VIDEO_FRAME_S * WinGetFrameToConfig(WINDOW_S *pstWin)
+
+HI_DRV_VIDEO_FRAME_S *WinSearchMatchFrame(WINDOW_S *pstWin)
+{
+    WIN_DISP_INFO_S *pstDispInfo;
+    HI_DRV_FIELD_MODE_E enDstField;
+    HI_DRV_VIDEO_FRAME_S *pstDispFrame, *pstNewFrame;
+
+    // if display work at interlace mode
+    pstDispInfo = &pstWin->stDispInfo;
+    if(!pstDispInfo)
+    {
+         WIN_ERROR("WIN  null pointer in %s!\n", __FUNCTION__);
+         return HI_NULL;
+    }
+
+#if 0
+    if (pstDispInfo->bIsInterlace != HI_TRUE)
+    {
+        if(pstWin->enType == HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE)
+        {
+            pstDispInfo = WinGetDispInfoByHandle(pstWin->hSlvWin);
+        }
+    }
+#else
+
+    if (pstDispInfo->bIsInterlace != HI_TRUE)
+    {
+        // if master window output progressive frame, get slave window info
+        if(pstWin->enType == HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE)
+        {
+            WIN_DISP_INFO_S *pstSlvDispInfo;
+            
+            pstSlvDispInfo = WinGetDispInfoByHandle(pstWin->hSlvWin);
+            if (pstSlvDispInfo)
+            {
+                if (   (pstSlvDispInfo->bIsInterlace == HI_TRUE)
+                     &&(pstDispInfo->u32RefreshRate == pstSlvDispInfo->u32RefreshRate)
+                    )
+                {
+                    pstDispInfo = pstSlvDispInfo;
+                }
+            }
+         }
+    }
+#endif
+
+    
+    if (!pstDispInfo || (pstDispInfo->bIsInterlace != HI_TRUE) )
+    {
+        // if output progressive picture, need not to search top/bottom field
+        return WinBuf_GetConfigFrame(&pstWin->stBuffer.stWinBP);;
+    }
+
+    // if display work at interlace mode and frame rate equale to display refresh rate, 
+    // dectect whether top-field video frame output at top-field time
+    pstDispFrame = WinBuf_GetDisplayedFrame(&pstWin->stBuffer.stWinBP);
+    enDstField = pstDispInfo->bIsBtm ? HI_DRV_FIELD_BOTTOM : HI_DRV_FIELD_TOP;
+
+
+    pstNewFrame = WinBuf_GetFrameByDisplayInfo(&pstWin->stBuffer.stWinBP,
+                                            pstDispFrame,
+                                            pstDispInfo->u32RefreshRate,
+                                            enDstField);
+    return pstNewFrame;
+}
+
+
+HI_DRV_VIDEO_FRAME_S * WinGetFrameToConfig(WINDOW_S *pstWin, const HI_DRV_DISP_CALLBACK_INFO_S *pstInfo)
 {
     HI_DRV_VIDEO_FRAME_S *pstFrame;
-
-#if 1
+    
     if (pstWin->enType == HI_DRV_WIN_ACTIVE_SLAVE)
     {
         pstFrame = ISR_SlaveWinGetConfigFrame(pstWin);
     }
     else
-#endif
     {
         if (pstWin->bQuickMode)
         {
             HI_DRV_VIDEO_FRAME_S *pstDispFrame;
+            
             pstDispFrame = WinBuf_GetDisplayedFrame(&pstWin->stBuffer.stWinBP);
             pstFrame = WinBuf_GetNewestFrame(&pstWin->stBuffer.stWinBP, pstDispFrame);
         }
         else
         {
-            //pstFrame = ISR_WinGetConfigFrame(&(pstWin->stBuffer));
-            pstFrame = WinBuf_GetConfigFrame(&pstWin->stBuffer.stWinBP);
+            pstFrame = WinSearchMatchFrame(pstWin);
         }
     }
+
     
     if (!pstFrame)
     {
+        /*if not  receive frame*/
         pstWin->stBuffer.u32UnderLoad++;
 
         if (WinTestBlackFrameFlag(pstWin) != HI_TRUE)
         {
+            /*
+            1 :  if first config frame ,config nothing.
+            2 :  if last config is not black frame, repeat last config frame*/
             WinBuf_RepeatDisplayedFrame(&pstWin->stBuffer.stWinBP);
             pstFrame = WinBuf_GetConfigedFrame(&pstWin->stBuffer.stWinBP);
+        }
+        else
+        {
+            /*if last config is black frame, repeat black frame*/
+            pstFrame = BP_GetBlackFrameInfo();
+            WinSetBlackFrameFlag(pstWin);
         }
     }
     else
     {
+        /*if received frame*/
         WinClearBlackFrameFlag(pstWin);
     }
 
+/*
     if(!pstFrame)
     {
         pstFrame = BP_GetBlackFrameInfo();
         WinSetBlackFrameFlag(pstWin);
     }
+*/
 
     return pstFrame;
 }
@@ -2604,8 +3280,6 @@ HI_DRV_VIDEO_FRAME_S * WinGetFrameToConfig(WINDOW_S *pstWin)
 HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INFO_S *pstInfo)
 {
     WINDOW_S *pstWin;
-//    HI_U32 u32BufId;
-    //HI_S32 nRet;
     HI_BOOL bUpDispInof = HI_FALSE;
 
     if (!hDst || !pstInfo )
@@ -2613,15 +3287,9 @@ HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INF
         WIN_ERROR("WIN Input null pointer in %s!\n", __FUNCTION__);
         return;
     }
-
-    //printk("t=%d.", pstInfo->eEventType);
-    //return;
-
-    //printk("[%d]", pstInfo->stDispInfo.bIsBottomField);
-
+    
     pstWin = (WINDOW_S *)hDst;
-
-
+    
     if (pstInfo->eEventType != HI_DRV_DISP_C_VT_INT)
     {
         DISP_PRINT("@@@@@@@ DISP HI_DRV_DISP_C_event= %d, disp=%d\n", pstInfo->eEventType, pstWin->enDisp);
@@ -2638,16 +3306,13 @@ HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INF
     else
     {
         pstWin->bMasked = HI_FALSE;
-        //DISP_PRINT(">>>>>>>>>  mask 002\n");
     }
 
-    if (  (pstInfo->eEventType == HI_DRV_DISP_C_DISPLAY_SETTING_CHANGE)
-        ||(pstInfo->eEventType == HI_DRV_DISP_C_ADJUCT_SCREEN_AREA)
-        )
+    if (pstInfo->eEventType == HI_DRV_DISP_C_DISPLAY_SETTING_CHANGE)
+        
     {
         pstWin->bDispInfoChange = HI_TRUE;
         bUpDispInof = HI_TRUE;
-        //DISP_PRINT(">>>>>>>>> DISP HI_DRV_DISP_C_DISPLAY_SETTING_CHANGE event= %d\n", pstInfo->eEventType);;
     }
 
 
@@ -2655,8 +3320,6 @@ HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INF
         ||(pstInfo->eEventType == HI_DRV_DISP_C_RESUME)
        )
     {
-        //DISP_PRINT(">>>>>>>>> DISP HI_DRV_DISP_C_OPEN event= %d\n", pstInfo->eEventType);
-
         bUpDispInof = HI_TRUE;
         pstWin->bDispInfoChange = HI_TRUE;
     }
@@ -2664,13 +3327,8 @@ HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INF
     if (atomic_read(&pstWin->stCfg.bNewAttrFlag))
     {
         pstWin->stCfg.stAttr = pstWin->stCfg.stAttrBuf;
-
-        pstWin->stCfg.stRefOutRect = pstWin->stCfg.stAttr.stOutRect;
-        pstWin->stCfg.stRefScreen  = pstInfo->stDispInfo.stRefRect;
-
-        atomic_set(&pstWin->stCfg.bNewAttrFlag, 0);
-
-        //printk(" process new window attr!\n");
+        
+        atomic_set(&pstWin->stCfg.bNewAttrFlag, 0);        
 
         bUpDispInof = HI_TRUE;
         pstWin->bDispInfoChange = HI_TRUE;
@@ -2679,17 +3337,49 @@ HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INF
     if (bUpDispInof)
     {
         pstWin->stUsingAttr = pstWin->stCfg.stAttr;
+        
+        if (!pstWin->stCfg.stAttr.stOutRect.s32Width || !pstWin->stCfg.stAttr.stOutRect.s32Height)
+        {
+            pstWin->stCfg.stAttr.stOutRect = pstInfo->stDispInfo.stVirtaulScreen;
+        }
 
-        WinUpdateRectBaseRect(&pstWin->stCfg.stRefScreen, 
-                                (HI_RECT_S *)&(pstInfo->stDispInfo.stRefRect),
-                                &pstWin->stCfg.stRefOutRect,
-                                &pstWin->stUsingAttr.stOutRect);
+#if 0
+        printk("VS=%d,%d, FR=%d,%d, PFR=%d,%d, O=%d,%d, U=%d,%d\n", 
+                  pstInfo->stDispInfo.stVirtaulScreen.s32Width,
+                  pstInfo->stDispInfo.stVirtaulScreen.s32Height,
+                  pstInfo->stDispInfo.stFmtResolution.s32Width,
+                  pstInfo->stDispInfo.stFmtResolution.s32Height,
+                  pstInfo->stDispInfo.stPixelFmtResolution.s32Width,
+                  pstInfo->stDispInfo.stPixelFmtResolution.s32Height,
+                  pstWin->stCfg.stAttr.stOutRect.s32Width,
+                  pstWin->stCfg.stAttr.stOutRect.s32Height,
+                  pstWin->stUsingAttr.stOutRect.s32Width,
+                  pstWin->stUsingAttr.stOutRect.s32Height);
+#endif
 
-        // TODO: 超出屏幕的处理
+        Win_ReviseOutRect(&pstInfo->stDispInfo.stVirtaulScreen,
+                          &pstInfo->stDispInfo.stOffsetInfo,
+                          &pstInfo->stDispInfo.stFmtResolution,
+                          &pstWin->stCfg.stAttr.stOutRect,
+                          &pstWin->stUsingAttr.stOutRect);  
+#if 0
+        printk("   VS=%d,%d, FR=%d,%d, PFR=%d,%d, O=%d,%d, U=%d,%d\n", 
+                  pstInfo->stDispInfo.stVirtaulScreen.s32Width,
+                  pstInfo->stDispInfo.stVirtaulScreen.s32Height,
+                  pstInfo->stDispInfo.stFmtResolution.s32Width,
+                  pstInfo->stDispInfo.stFmtResolution.s32Height,
+                  pstInfo->stDispInfo.stPixelFmtResolution.s32Width,
+                  pstInfo->stDispInfo.stPixelFmtResolution.s32Height,
+                  pstWin->stCfg.stAttr.stOutRect.s32Width,
+                  pstWin->stCfg.stAttr.stOutRect.s32Height,
+                  pstWin->stUsingAttr.stOutRect.s32Width,
+                  pstWin->stUsingAttr.stOutRect.s32Height);
+#endif
 
+        // TODO:  if outrect is outide screen, 
         if (!pstWin->stUsingAttr.stOutRect.s32Width || !pstWin->stUsingAttr.stOutRect.s32Height)
         {
-            pstWin->stUsingAttr.stOutRect = pstInfo->stDispInfo.stRefRect;
+            pstWin->stUsingAttr.stOutRect = pstInfo->stDispInfo.stFmtResolution;
         }
 
         WinSendAttrToSource(pstWin, (HI_DISP_DISPLAY_INFO_S *)&pstInfo->stDispInfo);
@@ -2704,37 +3394,26 @@ HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INF
                 pstInfo->stDispInfo.eDispMode,
                 pstInfo->stDispInfo.bRightEyeFirst,
                 pstInfo->stDispInfo.bInterlace, 
-                pstInfo->stDispInfo.stOrgRect.s32Width,
-                pstInfo->stDispInfo.stOrgRect.s32Height,
+                pstInfo->stDispInfo.stPixelFmtResolution.s32Width,
+                pstInfo->stDispInfo.stPixelFmtResolution.s32Height,
                 pstInfo->stDispInfo.stAR.u8ARw,
                 pstInfo->stDispInfo.stAR.u8ARh,
                 pstInfo->stDispInfo.u32RefreshRate,
                 pstInfo->stDispInfo.eColorSpace);
-
-        //pstWin->bToUpDispInof = HI_FALSE;
-        //pstWin->stVLayerFunc.PF_SetDispMode(pstWin->u32VideoLayer, pstInfo->stDispInfo.eDispMode);
     }
 
-    // window attr info changed
-/*
-    if (pstWin->bToUpdateAttr)
-    {
-        pstWin->stUsingAttr = pstWin->stNewAttr;
-        pstWin->bToUpdateAttr = HI_FALSE;
-    }
-*/
     if (!pstWin->bEnable || pstWin->bMasked)
     {
         pstWin->stVLayerFunc.PF_SetEnable(pstWin->u32VideoLayer, HI_FALSE);
         pstWin->stVLayerFunc.PF_Update(pstWin->u32VideoLayer);
-//printk("win001,");
         return;
     }
 
-//printk(".");
+    pstWin->bInInterrupt = HI_TRUE;
 
     // window process
-    if (pstInfo->eEventType == HI_DRV_DISP_C_VT_INT)
+    if ( (HI_DRV_DISP_C_VT_INT == pstInfo->eEventType) 
+        || (HI_DRV_DISP_C_DISPLAY_SETTING_CHANGE == pstInfo->eEventType))
     {
         HI_DRV_VIDEO_FRAME_S *pstFrame = HI_NULL;
 
@@ -2761,6 +3440,12 @@ HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INF
                 //ISR_WinReleaseDisplayedFrame2(pstWin);
                 // get and config black frame
                 pstFrame = BP_GetBlackFrameInfo();
+                
+                if (!pstFrame)
+                {
+                    DISP_ERROR("get black frame null \n");
+                    return;
+                }
                 WinSetBlackFrameFlag(pstWin);
                 
                 ISR_WinConfigFrame(pstWin, pstFrame, pstInfo);
@@ -2774,7 +3459,13 @@ HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INF
                 //DISP_PRINT("RESET Frame addr=0x%x\n", pstFrame->stBufAddr[0].u32PhyAddr_Y);
                 if (!pstFrame)
                 {
-                    pstFrame = BP_GetBlackFrameInfo();
+                        pstFrame = BP_GetBlackFrameInfo();
+                }
+                
+                if (!pstFrame)
+                {
+                    DISP_ERROR("get black frame null \n");
+                    return;
                 }
 
                 ISR_WinConfigFrame(pstWin, pstFrame, pstInfo);
@@ -2811,7 +3502,7 @@ HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INF
                     
                     ISR_WinReleaseUSLFrame(pstWin);
 
-                    pstFrame = WinGetFrameToConfig(pstWin);
+                    pstFrame = WinGetFrameToConfig(pstWin, pstInfo);
 
                     if(pstFrame)
                     {
@@ -2891,6 +3582,8 @@ HI_VOID ISR_CallbackForWinProcess(HI_HANDLE hDst, const HI_DRV_DISP_CALLBACK_INF
 
     ISR_WinUpdatePlayInfo(pstWin, pstInfo);
 
+    pstWin->bInInterrupt = HI_FALSE;
+
     return;
 }
 
@@ -2903,10 +3596,28 @@ HI_S32 WinGetProcIndex(HI_HANDLE hWin, HI_U32 *p32Index)
 
     WinCheckNullPointer(p32Index);
 
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-
-    *p32Index = pstWin->u32Index;
+    // s1 get window pointer
+    pstWin = WinGetWindow(hWin);
+    if (pstWin)
+    {
+        // return active windwo index
+        *p32Index = pstWin->u32Index;
+    }
+    else
+    {
+        VIRTUAL_S *pstVirWin;
+        
+        pstVirWin = WinGetVirWindow(hWin);
+        if (pstVirWin)
+        {
+            //return virtual window index
+            *p32Index = pstVirWin->u32Index;
+        }
+        else
+        {
+            return HI_ERR_VO_WIN_NOT_EXIST;
+        }
+    }
 
     return HI_SUCCESS;
 }
@@ -2919,47 +3630,84 @@ HI_S32 WinGetProcInfo(HI_HANDLE hWin, WIN_PROC_INFO_S *pstInfo)
 
     WinCheckNullPointer(pstInfo);
 
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-
     DISP_MEMSET(pstInfo, 0, sizeof(WIN_PROC_INFO_S));
 
-    pstInfo->enType     = pstWin->enType;
-    pstInfo->u32Index   = pstWin->u32Index;
-    pstInfo->u32LayerId = (HI_U32)pstWin->u32VideoLayer;
-    pstWin->stVLayerFunc.PF_GetZorder(pstWin->u32VideoLayer, &pstInfo->u32Zorder);
-    pstInfo->bEnable   = (HI_U32)pstWin->bEnable;
-    pstInfo->bMasked   = (HI_U32)pstWin->bMasked;
-    pstInfo->u32WinState = (HI_U32)pstWin->enState;
+    // s1 get active window pointer
+    pstWin = WinGetWindow(hWin);
+    if (pstWin)
+    {
+        // get window proc info
+        pstInfo->enType     = pstWin->enType;
+        pstInfo->u32Index   = pstWin->u32Index;
+        pstInfo->u32LayerId = (HI_U32)pstWin->u32VideoLayer;
+        pstWin->stVLayerFunc.PF_GetZorder(pstWin->u32VideoLayer, &pstInfo->u32Zorder);
+        pstInfo->bEnable   = (HI_U32)pstWin->bEnable;
+        pstInfo->bMasked   = (HI_U32)pstWin->bMasked;
+        pstInfo->u32WinState = (HI_U32)pstWin->enState;
+        
+        pstInfo->bReset = pstWin->bReset;
+        pstInfo->enResetMode = pstWin->stRst.enResetMode;
+        pstInfo->enFreezeMode = pstWin->stFrz.enFreezeMode;
+        
+        pstInfo->bQuickMode = pstWin->bQuickMode;
+        pstInfo->bStepMode  = pstWin->bStepMode;
 
-    pstInfo->bReset = pstWin->bReset;
-    pstInfo->enResetMode = pstWin->stRst.enResetMode;
-    pstInfo->enFreezeMode = pstWin->stFrz.enFreezeMode;
+        pstInfo->hSrc          = (HI_U32)pstWin->stCfg.stSource.hSrc;
+        pstInfo->pfAcqFrame    = (HI_U32)pstWin->stCfg.stSource.pfAcqFrame;
+        pstInfo->pfRlsFrame    = (HI_U32)pstWin->stCfg.stSource.pfRlsFrame;
+        pstInfo->pfSendWinInfo = (HI_U32)pstWin->stCfg.stSource.pfSendWinInfo;
 
-    pstInfo->bQuickMode = pstWin->bQuickMode;
-    pstInfo->bStepMode  = pstWin->bStepMode;
+        pstInfo->stAttr  = pstWin->stCfg.stAttr;
 
-    pstInfo->hSrc          = (HI_U32)pstWin->stCfg.stSource.hSrc;
-    pstInfo->pfAcqFrame    = (HI_U32)pstWin->stCfg.stSource.pfAcqFrame;
-    pstInfo->pfRlsFrame    = (HI_U32)pstWin->stCfg.stSource.pfRlsFrame;
-    pstInfo->pfSendWinInfo = (HI_U32)pstWin->stCfg.stSource.pfSendWinInfo;
+        pstInfo->u32TBNotMatchCount = pstWin->u32TBNotMatchCount;
 
-    pstInfo->stAttr  = pstWin->stCfg.stAttr;
+        pstInfo->eDispMode = pstWin->stCfg.eDispMode;
+        pstInfo->bRightEyeFirst = pstWin->stCfg.bRightEyeFirst;
 
-    pstInfo->u32TBNotMatchCount = pstWin->u32TBNotMatchCount;
+        pstInfo->hSlvWin  = (HI_U32)pstWin->hSlvWin;
+        pstInfo->bDebugEn = (HI_U32)pstWin->bDebugEn;
 
-    pstInfo->eDispMode = pstWin->stCfg.eDispMode;
-    pstInfo->bRightEyeFirst = pstWin->stCfg.bRightEyeFirst;
+        pstInfo->u32ULSIn  = pstWin->stBuffer.u32ULSIn;
+        pstInfo->u32ULSOut = pstWin->stBuffer.u32ULSOut;
+        pstInfo->u32UnderLoad = pstWin->stBuffer.u32UnderLoad;
 
-    pstInfo->hSlvWin  = (HI_U32)pstWin->hSlvWin;
-    pstInfo->bDebugEn = (HI_U32)pstWin->bDebugEn;
+        //BP_GetBufState(&pstWin->stBuffer.stBP, (BUF_STT_S *)&(pstInfo->stBufState));
+        WinBuf_GetStateInfo(&pstWin->stBuffer.stWinBP, (WB_STATE_S *)&(pstInfo->stBufState));
+    }
+    else
+    {
+        VIRTUAL_S *pstVirWin;
+        
+        pstVirWin = WinGetVirWindow(hWin);
+        if (pstVirWin)
+        {
+            // get virtual proc info
+            pstInfo->enType     = pstVirWin->enType;
+            pstInfo->u32Index   = pstVirWin->u32Index;
+            pstInfo->u32LayerId = 0xFFFFul;  // not use video layer
+            pstInfo->bEnable   = (HI_U32)pstVirWin->bEnable;
+            pstInfo->bMasked   = (HI_U32)pstVirWin->bMasked;
+            pstInfo->u32WinState = 0;  // 0 means work
 
-    pstInfo->u32ULSIn  = pstWin->stBuffer.u32ULSIn;
-    pstInfo->u32ULSOut = pstWin->stBuffer.u32ULSOut;
-    pstInfo->u32UnderLoad = pstWin->stBuffer.u32UnderLoad;
+            pstInfo->hSrc          = (HI_U32)pstVirWin->stSrcInfo.hSrc;
+            pstInfo->pfAcqFrame    = (HI_U32)pstVirWin->stSrcInfo.pfAcqFrame;
+            pstInfo->pfRlsFrame    = (HI_U32)pstVirWin->stSrcInfo.pfRlsFrame;
+            pstInfo->pfSendWinInfo = (HI_U32)pstVirWin->stSrcInfo.pfSendWinInfo;
 
-    //BP_GetBufState(&pstWin->stBuffer.stBP, (BUF_STT_S *)&(pstInfo->stBufState));
-    WinBuf_GetStateInfo(&pstWin->stBuffer.stWinBP, (WB_STATE_S *)&(pstInfo->stBufState));
+            pstInfo->stAttr = pstVirWin->stAttrBuf;
+
+
+            pstInfo->stBufState.stRecord.u32TryQueueFrame = pstVirWin->stFrameStat.u32SrcQTry;
+            pstInfo->stBufState.stRecord.u32QueueFrame    = pstVirWin->stFrameStat.u32SrcQOK;
+
+            pstInfo->stBufState.stRecord.u32Release = pstVirWin->stFrameStat.u32SinkRlsOK;
+        }
+        else
+        {
+            WIN_ERROR("WIN is not exist!\n");
+            return HI_ERR_VO_WIN_NOT_EXIST;
+        }
+    } 
 
     return HI_SUCCESS;
 }
@@ -2967,20 +3715,257 @@ HI_S32 WinGetProcInfo(HI_HANDLE hWin, WIN_PROC_INFO_S *pstInfo)
 HI_S32 WinGetCurrentImg(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pstFrame)
 {
     WINDOW_S *pstWin;
-
+    HI_DRV_VIDEO_FRAME_S *pstFrmTmp = NULL;
+    
     WinCheckDeviceOpen();
-
     WinCheckNullPointer(pstFrame);
-
-    // s1 检查句柄合法性
-    WinCheckWindow(hWin, pstWin);
-
+    WinCheckWindow(hWin, pstWin);    
     DISP_MEMSET(pstFrame, 0, sizeof(HI_DRV_VIDEO_FRAME_S));
-
-    *pstFrame = *(WinBuf_GetDisplayedFrame(&pstWin->stBuffer.stWinBP));
+    
+    pstFrmTmp = WinBuf_GetDisplayedFrame(&pstWin->stBuffer.stWinBP);    
+    if (NULL == pstFrmTmp)
+    {   
+        if (pstWin->latest_display_frame_valid)
+        {
+            *pstFrame = pstWin->latest_display_frame;
+        } 
+        else
+        {        
+            return HI_FAILURE;
+        }
+    }
+    else
+    {
+         *pstFrame = *(pstFrmTmp);
+         pstWin->latest_display_frame = *(pstFrmTmp);
+         pstWin->latest_display_frame_valid = 1;
+    }
     
     return HI_SUCCESS;
 }
+
+HI_S32 WinCaptureFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_U32 *stMMZPhyAddr, HI_U32 *stMMZlen)
+{
+    WINDOW_S *pstWin;
+    HI_DRV_VIDEO_FRAME_S *pstFrmTmp = NULL;
+    HI_VDEC_PRIV_FRAMEINFO_S *pstPrivInfo = HI_NULL;
+    HI_U32 datalen = 0, y_stride = 0, height = 0;
+   
+    WinCheckDeviceOpen();
+    WinCheckNullPointer(pstFrame);
+    WinCheckNullPointer(stMMZPhyAddr);
+    WinCheckNullPointer(stMMZlen);
+    WinCheckWindow(hWin, pstWin);    
+    DISP_MEMSET(pstFrame, 0, sizeof(HI_DRV_VIDEO_FRAME_S));
+    
+    if (pstWin->enType == HI_DRV_WIN_VITUAL_SINGLE)
+        return HI_FAILURE;
+
+    if(HI_SUCCESS != WinBuf_SetCaptureFrame(&pstWin->stBuffer.stWinBP, pstWin->u32WinCapMMZvalid))    
+        return HI_FAILURE;
+    
+    pstFrmTmp = WinBuf_GetCapturedFrame(&pstWin->stBuffer.stWinBP);    
+    if (HI_NULL == pstFrmTmp)
+    {
+        pstFrmTmp = BP_GetBlackFrameInfo();
+    }
+    
+    if (HI_NULL == pstFrmTmp)
+    {
+        return HI_FAILURE;
+    }
+    
+    *pstFrame = *(pstFrmTmp);         
+    
+    pstPrivInfo = (HI_VDEC_PRIV_FRAMEINFO_S *)(pstFrame->u32Priv);    
+
+    y_stride = pstFrame->stBufAddr[0].u32Stride_Y;
+    height   = (HI_TRUE == pstPrivInfo->stCompressInfo.u32CompressFlag)
+                     ? pstPrivInfo->stCompressInfo.s32CompFrameHeight : pstFrame->u32Height;        
+    
+    /*don't know why there exists these two branches, do we condidered gstreamer?*/
+    if ( HI_DRV_PIX_FMT_NV21 == pstFrame->ePixFormat) 
+        datalen = height * y_stride * 3 / 2 + height * 4;
+    else 
+        datalen = height * y_stride * 2 + height * 4;        
+    
+    
+    if(HI_SUCCESS != DISP_OS_MMZ_Alloc("VDP_Capture", HI_NULL, datalen, 16, &pstWin->stWinCaptureMMZ))
+    {
+        WinBuf_ReleaseCaptureFrame(&pstWin->stBuffer.stWinBP,pstFrame,HI_FALSE);
+        return HI_FAILURE;
+    }
+    
+    pstWin->u32WinCapMMZvalid  = 1;
+    *stMMZPhyAddr = pstWin->stWinCaptureMMZ.u32StartPhyAddr;
+    *stMMZlen     = pstWin->stWinCaptureMMZ.u32Size;
+    
+    return HI_SUCCESS;
+}
+
+HI_S32 WinReleaseCaptureFrame(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *pstFrame)
+{
+    WINDOW_S *pstWin;
+    
+    WinCheckDeviceOpen();
+    WinCheckNullPointer(pstFrame);
+    WinCheckWindow(hWin, pstWin);    
+
+    if (pstWin->enType == HI_DRV_WIN_VITUAL_SINGLE)
+        return HI_FAILURE;
+
+    if(HI_SUCCESS != WinBuf_ReleaseCaptureFrame(&pstWin->stBuffer.stWinBP,pstFrame, HI_FALSE))    
+        return HI_FAILURE;
+    
+    return HI_SUCCESS;    
+}
+
+
+HI_S32 WinFreeCaptureMMZBuf(HI_HANDLE hWin, HI_DRV_VIDEO_FRAME_S *cap_frame)
+{
+    WINDOW_S *pstWin;    
+    
+    WinCheckDeviceOpen();
+    WinCheckWindow(hWin, pstWin);
+
+    if (cap_frame->stBufAddr[0].u32PhyAddr_Y 
+        != pstWin->stWinCaptureMMZ.u32StartPhyAddr)
+    {
+        WIN_ERROR("capture release addr:%x,%x!\n", cap_frame->stBufAddr[0].u32PhyAddr_Y, 
+            pstWin->stWinCaptureMMZ.u32StartPhyAddr);
+        return HI_FAILURE;
+    }   
+
+    if (pstWin->u32WinCapMMZvalid == 1) {
+        DISP_OS_MMZ_Release(&pstWin->stWinCaptureMMZ);
+        pstWin->stWinCaptureMMZ.u32StartPhyAddr = 0;
+        pstWin->u32WinCapMMZvalid = 0;
+    }
+    else {
+        WIN_WARN("warning: when free mmz, null refcnt occurs.!\n");
+        return HI_FAILURE;
+    }
+    
+    return HI_SUCCESS;
+}
+
+
+HI_S32 WinFreeCaptureMMZBuf2(WINDOW_S *pstWin)
+{   
+    
+    if (pstWin->u32WinCapMMZvalid == 1) {
+        DISP_OS_MMZ_Release(&pstWin->stWinCaptureMMZ);
+        pstWin->stWinCaptureMMZ.u32StartPhyAddr = 0;
+        pstWin->u32WinCapMMZvalid = 0;
+    }
+    else {
+        WIN_WARN("warning: when free mmz, null refcnt occurs.!\n");
+    }
+    
+    return HI_SUCCESS;
+}
+
+
+HI_S32 WinForceClearCapture(HI_HANDLE hWin)
+{
+    HI_DRV_VIDEO_FRAME_S *pstFrmTmp = NULL;
+    WINDOW_S *pstWin = HI_NULL;
+
+    WinCheckDeviceOpen();     
+    WinCheckWindow(hWin, pstWin);   
+
+    pstFrmTmp = WinBuf_GetCapturedFrame(&pstWin->stBuffer.stWinBP);    
+    if (NULL != pstFrmTmp)
+    {  
+        if(HI_SUCCESS != WinBuf_ReleaseCaptureFrame(&pstWin->stBuffer.stWinBP,pstFrmTmp, HI_TRUE))
+            return HI_FAILURE;
+    }    
+    if( HI_SUCCESS != WinFreeCaptureMMZBuf2(pstWin))
+        return HI_FAILURE;
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 WinCapturePause(HI_HANDLE hWin, HI_BOOL bCaptureStart)
+{
+    WINDOW_S *pstWin = HI_NULL, *pstWinAttach = HI_NULL;
+    HI_S32 Ret = 0;
+    HI_HANDLE  attach_handle = 0;
+    
+    pstWin = WinGetWindow(hWin);     
+    if (!pstWin)                      
+    {
+        return HI_FAILURE;
+    }
+    
+    if (bCaptureStart && ((pstWin->enState == WIN_STATE_PAUSE)
+        || (pstWin->enState == WIN_STATE_FREEZE)))
+    {
+        pstWin->bRestoreFlag = 0; 
+        return HI_SUCCESS;
+    }
+
+    if (pstWin->enType == HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE) 
+    {
+        /*attach mode , need  pasue salve window too*/
+        attach_handle = pstWin->hSlvWin;
+        pstWinAttach = WinGetWindow(attach_handle);   
+         
+        if (!pstWinAttach)                      
+        { 
+            attach_handle = 0;
+        }    
+    }
+    else if (pstWin->enType == HI_DRV_WIN_ACTIVE_SINGLE)
+    {
+        /*not attach mode only need  pasue self window*/
+        attach_handle = 0;      
+    }
+    else if (pstWin->enType == HI_DRV_WIN_ACTIVE_SLAVE)
+    {          
+        /*attach mode only  mce capture slave window*/
+        attach_handle = 0;    
+    }
+    
+    if (bCaptureStart)
+    {
+        Ret = WIN_Pause(hWin, bCaptureStart);       
+        if (Ret != HI_SUCCESS)
+            return HI_FAILURE;
+        
+        if (attach_handle)
+        {
+            Ret = WIN_Pause(attach_handle, bCaptureStart);    
+            if (Ret != HI_SUCCESS)             
+            {
+                (HI_VOID)WIN_Pause(hWin, !bCaptureStart);
+                return HI_FAILURE;
+            }   
+        }
+
+        pstWin->bRestoreFlag = 1;        
+    }
+    else
+    {   
+        if (pstWin->bRestoreFlag) {
+
+            Ret = WIN_Pause(hWin, 0);
+            if (attach_handle)
+            {
+                Ret |= WIN_Pause(attach_handle, 0); 
+            }
+            pstWin->bRestoreFlag = 0;        
+
+            if (Ret != HI_SUCCESS) 
+                return HI_FAILURE;
+
+        }
+    }
+   
+    return HI_SUCCESS;
+}
+
 
 #ifdef __cplusplus
  #if __cplusplus

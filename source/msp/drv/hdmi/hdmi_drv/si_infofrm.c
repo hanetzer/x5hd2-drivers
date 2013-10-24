@@ -42,7 +42,7 @@ static Bool WaitBuffReady(HI_U16 CtrInfoBits)
         {
             if( !(ReadWordHDMITXP1( INF_CTRL1) & EnBitMask))
                 break;
-            DelayMS(1);
+            //DelayMS(1);
         }      
         if(TimeOutCount)
             Result = TRUE; // ready to rewrite data buffer
@@ -514,7 +514,7 @@ void SI_SendCP_Packet(HI_U8 bMuteAv)
 {
 	//5次循环CP Packet ERR产生原因还未定位出来，后续需要继续跟终
     //HI_U8 RegVal, TimeOutCount = 5;
-    HI_U8 RegVal, TimeOutCount = 20;
+    HI_U8 RegVal, TimeOutCount = 5;
     HI_U8 BlankValue[3];
 
     HI_INFO_HDMI("MUTE=%u.\n", bMuteAv);
@@ -558,10 +558,12 @@ void SI_SendCP_Packet(HI_U8 bMuteAv)
                 
             DelayMS(1);
         }
+        
         if(TimeOutCount == 0)
         {
-            HI_ERR_HDMI("CP_Packet do not DiSable before setting\n");
+            HI_WARN_HDMI("CP_Packet do not DiSable before setting\n");
         }
+        
         WriteByteHDMITXP1(INF_CTRL2, RegVal | BIT_CP_ENABLE | BIT_CP_REPEAT);
     }
 #if defined (DVI_SUPPORT)
@@ -766,7 +768,7 @@ HI_U8 SI_Set_VSI_3D_FramePacking(void)
     HI_U8 VendorBody[20], offset = 0;
     HI_U8 U8HDMI_Video_Format = 0, u83D_Structure = 0;
     
-    DEBUG_PRINTK("3D FramePacking Mode\n");
+    HI_INFO_HDMI("3D FramePacking Mode\n");
     offset = 0;
     //IEEE
     VendorBody[offset++] = 0x03;
@@ -846,7 +848,7 @@ HI_U8 SI_Set_VSI_3D_TopandBottom_Half(void)
     HI_U8 U8HDMI_Video_Format = 0, u83D_Structure = 0;
     
     //HI_INFO_HDMI("3D Top-and-Bottom Mode\n");
-    DEBUG_PRINTK("3D Top-and-Bottom Mode\n");
+    HI_INFO_HDMI("3D Top-and-Bottom Mode\n");
     offset = 0;
     //IEEE
     VendorBody[offset++] = 0x03;
@@ -868,7 +870,8 @@ HI_U8 SI_Set_VSI_3D_SidebySide_Half(void)
     HI_U8 VendorBody[20], offset = 0;
     HI_U8 U8HDMI_Video_Format = 0, U8HDMI_VIC = 0, u83D_Structure = 0;
     HI_U8 u83D_Meta_present = 0, u83D_Metadat_type = 0, u83D_Ext_Data = 0;
-    HI_U8 index, u83D_Metadata_Length = 0, u83D_Metadat[32];
+    //HI_U8 index, u83D_Metadata_Length = 0, u83D_Metadat[32];
+    HI_U8 u83D_Metadata_Length = 0, u83D_Metadat[32];
     
     HI_INFO_HDMI("3D side-by-side Mode\n");
     offset = 0;
@@ -892,10 +895,15 @@ HI_U8 SI_Set_VSI_3D_SidebySide_Half(void)
     VendorBody[offset++] = ((u83D_Structure & 0x0f) << 4) | ((u83D_Meta_present & 0x01) << 3);
     VendorBody[offset++] = ((u83D_Ext_Data & 0x0f) << 4);
     VendorBody[offset++] = ((u83D_Metadat_type & 0x7) << 5) | (u83D_Metadata_Length & 0x1f);
+
+/*-- we are not using Metadataextend now.if need set it,then open the remark-*/  
+/*-- don't delete it -*/  
+#if 0 
     for(index = 0; index < u83D_Metadata_Length; index ++)
     {
         VendorBody[offset++] = u83D_Metadat[index];
     }
+#endif
 
     SI_TX_SendInfoFramex(VENDORSPEC_TYPE, VendorBody, offset);
     

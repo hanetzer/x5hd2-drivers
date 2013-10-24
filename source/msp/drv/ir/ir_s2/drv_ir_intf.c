@@ -37,7 +37,7 @@
 #include <linux/miscdevice.h>
 #include <linux/platform_device.h>
 
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "hi_drv_ir.h"
 #include "drv_ir_ioctl.h"
 #include "drv_ir_protocol.h"
@@ -45,10 +45,12 @@
 #include "drv_ir_register.h"
 
 #include "hi_common.h"
-#include "drv_module_ext.h"
-#include "drv_mem_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
+#include "hi_drv_module.h"
+#include "hi_drv_mem.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
+
+#include "hi_osal.h"
 
 #define IR_DEVICE_NAME UMAP_DEVNAME_IR
 /*************************** public parameters ********************/
@@ -58,7 +60,7 @@ static u32 ir_work_mode = IR_MODE_SYMBOL; /* default mode symbol. */
 static u32 ir_frequence = DFT_FREQ;
 module_param_named(freq, ir_frequence, uint, S_IRUGO);
 
-static u32 ir_keyhold_timeout = 200; /*ms*/
+static u32 ir_keyhold_timeout = 300; /*ms*/
 module_param_named(key_hold_timeout, ir_keyhold_timeout, uint, S_IRUGO);
 
 /************************** symbol mode parameters ****************/
@@ -122,7 +124,7 @@ static int ir_config(struct ir_priv *ir)
 
     while (((readl(ir->base + IR_BUSY)) & 0x1) && val++ < 1000)
     {
-        schedule_timeout(10);
+        (void)schedule_timeout(10);
     }
 
     if (val >= 1000)
@@ -328,8 +330,8 @@ static void ir_symbol_timer_proc(unsigned long data)
 
                 if (IR_MATCH_MATCH == r)
                 {
-                     spin_unlock_irqrestore(&irlock, flag);
-                    ir_symbol_proc(ir);
+                    spin_unlock_irqrestore(&irlock, flag);
+                    (void)ir_symbol_proc(ir);
                     deadline = 0;
                     return;
                 }
@@ -709,7 +711,7 @@ static long ir_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
         ip = ir_prot_first();
         while (ip && ip->ir_code_name && ip->idx != IR_PROT_BUTT)
         {
-            if (!strcmp(ip->ir_code_name, name))
+            if (!HI_OSAL_Strncmp(ip->ir_code_name, name, strlen(ip->ir_code_name)))
             {
                 ip->disabled = 0;
                 return 0;
@@ -738,7 +740,7 @@ static long ir_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
         ip = ir_prot_first();
         while (ip && ip->ir_code_name && ip->idx != IR_PROT_BUTT)
         {
-            if (!strcmp(ip->ir_code_name, name))
+            if (!HI_OSAL_Strncmp(ip->ir_code_name, name, strlen(ip->ir_code_name)))
             {
                 ip->disabled = 1;
                 return 0;
@@ -765,7 +767,7 @@ static long ir_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
         ip = ir_prot_first();
         while (ip && ip->ir_code_name && ip->idx != IR_PROT_BUTT)
         {
-            if (!strcmp(ip->ir_code_name, name))
+            if (!HI_OSAL_Strncmp(ip->ir_code_name, name, strlen(ip->ir_code_name)))
             {
                 if (copy_to_user((void*)arg, &ip->disabled, sizeof(int)))
                 {
@@ -820,6 +822,8 @@ static ssize_t ir_read(struct file *filp, char __user *buf,
     {
         return -EAGAIN;
     }
+
+    ir->key_debug_trycount++;
 
     /* NOTE: writer may run over reader,
      * in these case should increase buffer more large.
@@ -886,6 +890,8 @@ static ssize_t ir_read(struct file *filp, char __user *buf,
             ret = -EFAULT;
             goto out;
         }
+        
+        ir->key_debug_succeedcount++;
 
         memset(key, 0, sizeof(*key));
         ret += sizeof(*key);
@@ -945,7 +951,7 @@ static int ir_request_resource(struct ir_priv *ir)
     sema_init(&ir->sem, 1);
 
     ret = -EFAULT;
-    if (request_irq(ir->irq, ir->callbacks.isr_handle, IRQF_DISABLED, "hi_ir", (void *)ir))
+    if (request_irq(ir->irq, ir->callbacks.isr_handle, IRQF_DISABLED, "hi_ir_s2_irq", (void *)ir))
     {
         goto irq;
     }
@@ -966,8 +972,8 @@ symbol_buf:
 
 static void ir_adjust_freq(void)
 {
-    HI_CHIP_TYPE_E chip_type;
-    HI_CHIP_VERSION_E chip_version;
+    HI_CHIP_TYPE_E chip_type = HI_CHIP_TYPE_BUTT;
+    HI_CHIP_VERSION_E chip_version = HI_CHIP_VERSION_BUTT;
 
     /* get chip version and adjust frequence. */
     HI_DRV_SYS_GetChipVersion(&chip_type, &chip_version);
@@ -1076,9 +1082,9 @@ static int ir_plat_driver_probe(struct platform_device *pdev)
 
     ir_init_callbacks(ir);
 
-    strncpy(ir->dev_name, IR_DEVICE_NAME,
-            strlen(IR_DEVICE_NAME) > IR_DEVICE_NAME_SZ ?
-            IR_DEVICE_NAME_SZ : strlen(IR_DEVICE_NAME));
+    HI_OSAL_Strncpy(ir->dev_name, IR_DEVICE_NAME,
+            strlen(IR_DEVICE_NAME) >= (IR_DEVICE_NAME_SZ - 1) ?
+            IR_DEVICE_NAME_SZ : (strlen(IR_DEVICE_NAME) + 1));
 
     ir->irq	 = IR_IRQ_NO;
     ir->base = (void *)IO_ADDRESS(IR_IO_BASE);
@@ -1108,10 +1114,9 @@ static int ir_plat_driver_probe(struct platform_device *pdev)
     devfs_mk_cdev(MKDEV(ir->major, 0),
                   S_IFCHR | S_IRUGO | S_IWUSR, ir->dev_name);
 #endif
+
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_ir.ko success.  \t(%s)\n", VERSION_STRING);
-#endif
+    HI_PRINT("Load hi_ir.ko success.  \t(%s)\n", VERSION_STRING);
 #endif
     return 0;
 reg_dev:
@@ -1148,31 +1153,31 @@ static HI_S32 IrProcRead(struct seq_file *p, HI_VOID *v)
     unsigned long flag;
 
     u32RegVal = readl(ir->base + IR_EN);
-    p += seq_printf(p, "---------Hisilicon IR Info---------\n");
-    p += seq_printf(p,
-                    "IR   Enable             \t :%d\n"
+    PROC_PRINT(p, "---------Hisilicon IR Info---------\n");
+    PROC_PRINT(p,
+                    "IR   Enable             \t :%s\n"
                     "IR   Code               \t :%s\n"
-                    "IR   WorkMode           \t :%d\n"
-                    "IR   FetchMode          \t :%d\n"
-                    "IR   bKeyUp             \t :%d\n"
-                    "IR   UpEventDelay       \t :%d\n"
-                    "IR   bRepkey            \t :%d\n"
-                    "IR   RepkeyDelayTime    \t :%d\n"
-                    "IR   IrBlockTime        \t :%d\n"
-                    "IR   IrFrequence        \t :%d\n",
+                    "IR   WorkMode           \t :%s\n"
+                    "IR   FetchMode          \t :%s\n"
+                    "IR   KeyUpEnable        \t :%s\n"
+                    "IR   UpEventDelay       \t :%d(ms)\n"
+                    "IR   RepeatkeyEnable    \t :%s\n"
+                    "IR   RepkeyDelayTime    \t :%d(ms)\n"
+                    "IR   ReportKeyBlockTime \t :%d(ms)\n"
+                    "IR   ModuleFrequence    \t :%d(MHz)\n",
 
-                    (u32RegVal == 1) ? 1 : 0,
+                    (u32RegVal == 1) ? "Enable" : "Disable",
                     "IR_S2",
-                    ir->chip_param.work_mode,
-                    ir->key_fetch,
-                    ir->key_up_event,
+                    (ir->chip_param.work_mode == 0) ? "Chip Report Keys" : "Chip Report Symbols",
+                    (ir->key_fetch) ? "Drive Report Raw Symbols" : "Drive Report Parsed Symbols",
+                    (ir->key_up_event) ? "Enable" : "Disable",
                     ir->key_hold_timeout_time,
-                    ir->key_repeat_event,
+                    (ir->key_repeat_event) ? "Enable" : "Disable",
                     ir->key_repeat_interval,
                     ir->key_read_timeout,
-                    ir->chip_param.ir_freq);
+                    (ir->chip_param.ir_freq + 1));
 
-    p += seq_printf(p, "\nRegistered Protocols info:\n");
+    PROC_PRINT(p, "\nRegistered Protocols info:\n");
 
     spin_lock_irqsave(&irlock, flag);
 
@@ -1180,27 +1185,32 @@ static HI_S32 IrProcRead(struct seq_file *p, HI_VOID *v)
 
     while (ir_prot_valid(ip))
     {
-        p += seq_printf(p, "No.%d:\tStatus:%12s, \tName: \t%s \n",
+        PROC_PRINT(p, "No.%d:\tStatus:%12s, \tName: \t%s \n",
                         i++, ip->disabled ? "Disabled" : "Enabled", ip->ir_code_name);
         ip = ir_prot_next(ip);
     }
 
     spin_unlock_irqrestore(&irlock, flag);
+
+    PROC_PRINT(p, "\nKey getting info:\n");
+    PROC_PRINT(p, 
+                    "Get(Try/OK) \t :%d/%d\n",
+                    ir->key_debug_trycount, ir->key_debug_succeedcount);
     
     if (ir->key_buf)
     {
-        p += seq_printf(p, "\nKey buffer info:\n");
-        p += seq_printf(p, "\tBuffer size:  \t%d keys \n", MAX_SYMBOL_NUM);
-        p += seq_printf(p, "\tReader at:	 \t%d\n", ir->key_buf->reader);
-        p += seq_printf(p, "\tWriter at:	 \t%d\n", ir->key_buf->writer);
+        PROC_PRINT(p, "\nKey buffer info:\n");
+        PROC_PRINT(p, "\tBuffer size:  \t%d keys \n", MAX_SYMBOL_NUM);
+        PROC_PRINT(p, "\tReader at:	 \t%d\n", ir->key_buf->reader);
+        PROC_PRINT(p, "\tWriter at:	 \t%d\n", ir->key_buf->writer);
     }
 
     if ((ir->chip_param.work_mode == IR_MODE_SYMBOL) && ir->symbol_buf)
     {
-        p += seq_printf(p, "\nSymbol buffer info:\n");
-        p += seq_printf(p, "\tBuffer size: \t%d symbols\n", MAX_SYMBOL_NUM);
-        p += seq_printf(p, "\tReader at:	\t%d\n", ir->symbol_buf->reader);
-        p += seq_printf(p, "\tWriter at:	\t%d\n", ir->symbol_buf->writer);
+        PROC_PRINT(p, "\nSymbol buffer info:\n");
+        PROC_PRINT(p, "\tBuffer size: \t%d symbols\n", MAX_SYMBOL_NUM);
+        PROC_PRINT(p, "\tReader at:	\t%d\n", ir->symbol_buf->reader);
+        PROC_PRINT(p, "\tWriter at:	\t%d\n", ir->symbol_buf->writer);
     }
 
     return HI_SUCCESS;
@@ -1219,10 +1229,15 @@ static int ir_plat_driver_suspend(struct platform_device *pdev, \
 static int ir_plat_driver_resume(struct platform_device *pdev)
 {
     struct ir_priv *ir = &ir_local;
+    int ret;
 
     ir_reset(ir);
 
-    ir_config(ir);
+    ret = ir_config(ir);
+    if (ret)
+    {
+        hiir_error(" Fail to set ir configuration. ret = 0x%x \n", ret);
+    }
 
     ir_clear_fifo(ir);
     memset(ir->key_buf, 0, sizeof(struct ir_buffer));
@@ -1289,10 +1304,14 @@ int IR_DRV_ModInit(void)
 {
     int ret = 0;
     DRV_PROC_ITEM_S *item;
+    DRV_PROC_EX_S stFnOpt =
+    {
+         .fnRead = IrProcRead,
+    };
 
     (HI_VOID)HI_DRV_MODULE_Register(HI_ID_IR, "HI_IR", HI_NULL);
 
-    item = HI_DRV_PROC_AddModule(HI_MOD_IR, IrProcRead, NULL);
+    item = HI_DRV_PROC_AddModule(HI_MOD_IR, &stFnOpt, NULL);
     if (!item)
     {
         hiir_error("add proc ir failed\n");

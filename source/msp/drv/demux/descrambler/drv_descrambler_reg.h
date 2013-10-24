@@ -43,7 +43,8 @@ typedef union
         HI_U32  dis_novel           : 1;    // [11]
         HI_U32  dis_csa3            : 1;    // [12]
         HI_U32  dis_others          : 1;    // [13]
-        HI_U32  reserved2           : 16;   // [29:14]
+        HI_U32  dis_tdes            : 1;    // [14]
+        HI_U32  reserved2           : 15;   // [29:15]
         HI_U32  ca_tsout_dis        : 1;    // [30]
         HI_U32  cainfo_dbg_dis      : 1;    // [31]
     } bits;

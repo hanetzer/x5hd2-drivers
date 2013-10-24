@@ -15,6 +15,7 @@
 
 LOCAL_PATH := $(call my-dir)
 
+########### shared lib
 include $(CLEAR_VARS)
 
 include $(SDK_DIR)/Android.def
@@ -51,3 +52,41 @@ LOCAL_C_INCLUDES += device/hisilicon/bigfish/hardware/gpu/android/gralloc
 LOCAL_SRC_FILES := $(sort $(call all-c-files-under, ./))
 
 include $(BUILD_SHARED_LIBRARY)
+
+########### static lib
+include $(CLEAR_VARS)
+
+include $(SDK_DIR)/Android.def
+
+LOCAL_PRELINK_MODULE := false
+
+LOCAL_MODULE := libOMX.hisi.video.decoder
+ALL_DEFAULT_INSTALLED_MODULES += $(LOCAL_MODULE)
+
+LOCAL_MODULE_TAGS := optional
+
+LOCAL_CFLAGS := $(CFG_HI_CFLAGS)
+LOCAL_CFLAGS += -DLOG_TAG=\"$(LOCAL_MODULE)\"
+#LOCAL_CFLAGS += -DDEBUG
+#LOCAL_CFLAGS += -DDEBUG_STREAM
+#LOCAL_CFLAGS += -DDEBUG_STATE
+LOCAL_CFLAGS += -DUSE_MMZ
+LOCAL_CFLAGS += -pthread
+
+LOCAL_SHARED_LIBRARIES := libdl libutils liblog libhi_common
+
+LOCAL_C_INCLUDES := $(LOCAL_PATH)/../inc/
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../drv/omxvdec
+LOCAL_C_INCLUDES += $(LOCAL_PATH)/../../../drv/vfmw/vfmw_release
+LOCAL_C_INCLUDES += $(COMMON_UNF_INCLUDE)
+LOCAL_C_INCLUDES += $(COMMON_DRV_INCLUDE)
+LOCAL_C_INCLUDES += $(COMMON_API_INCLUDE)
+LOCAL_C_INCLUDES += $(MSP_UNF_INCLUDE)
+LOCAL_C_INCLUDES += $(MSP_DRV_INCLUDE)
+LOCAL_C_INCLUDES += $(MSP_API_INCLUDE)
+LOCAL_C_INCLUDES += frameworks/native/include/media/hardware
+LOCAL_C_INCLUDES += device/hisilicon/bigfish/hardware/gpu/android/gralloc
+
+LOCAL_SRC_FILES := $(sort $(call all-c-files-under, ./))
+
+include $(BUILD_STATIC_LIBRARY)

@@ -1,5 +1,5 @@
 #include "hi_module.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 #include "drv_tde_ext.h"
 #include "hifb_drv.h"
 #include "hifb_comm.h"
@@ -55,7 +55,10 @@ HI_S32 HIFB_DRV_TdeOpen(HI_VOID)
         return HI_SUCCESS;
     }
 	   
-    HI_DRV_MODULE_GetFunction(HI_ID_TDE, (HI_VOID**)&ps_TdeExportFuncs);
+    if (HI_SUCCESS != HI_DRV_MODULE_GetFunction(HI_ID_TDE, (HI_VOID**)&ps_TdeExportFuncs))
+    {
+    	return HI_FAILURE;
+    }
 
     if(HI_NULL == ps_TdeExportFuncs)
     {
@@ -143,6 +146,16 @@ TDE2_COLOR_FMT_E HIFB_DRV_ConvFmt(HIFB_COLOR_FMT_E Fmt)
     }
 }
 
+HI_BOOL HIFB_IsTdeColorFmtClut(TDE2_COLOR_FMT_E enColorFmt)
+{
+	if (enColorFmt >= TDE2_COLOR_FMT_CLUT1
+		&& enColorFmt <= TDE2_COLOR_FMT_ACLUT88)
+	{
+		return HI_TRUE;
+	}
+	
+	return HI_FALSE;
+}
 
 HI_S32 HIFB_DRV_Blit(HIFB_BUFFER_S *pSrcImg, HIFB_BUFFER_S *pDstImg,  HIFB_BLIT_OPT_S *pstOpt, HI_BOOL bRefreshScreen)
 {
@@ -199,7 +212,8 @@ HI_S32 HIFB_DRV_Blit(HIFB_BUFFER_S *pSrcImg, HIFB_BUFFER_S *pDstImg,  HIFB_BLIT_
 
 
     stOpt.bResize = pstOpt->bScale;
-    if ((stSrcSur.enColorFmt >= HIFB_FMT_1BPP) && (stSrcSur.enColorFmt <= HIFB_FMT_ACLUT88))
+    //if (((HI_U32)stSrcSur.enColorFmt >= (HI_U32)HIFB_FMT_1BPP) && ((HI_U32)stSrcSur.enColorFmt <= (HI_U32)HIFB_FMT_ACLUT88))
+    if (HIFB_IsTdeColorFmtClut(stSrcSur.enColorFmt))
     {
         stOpt.bClutReload = HI_TRUE;
         stSrcSur.pu8ClutPhyAddr = (HI_U8 *)pstOpt->u32CmapAddr;
@@ -254,7 +268,8 @@ HI_S32 HIFB_DRV_Blit(HIFB_BUFFER_S *pSrcImg, HIFB_BUFFER_S *pDstImg,  HIFB_BLIT_
 
     if (pstOpt->stCKey.bKeyEnable)
     {
-        if ((stSrcSur.enColorFmt >= HIFB_FMT_1BPP) && (stSrcSur.enColorFmt <= HIFB_FMT_ACLUT88))
+        //if (((HIFB_COLOR_FMT_E)(stSrcSur.enColorFmt) >= HIFB_FMT_1BPP) && ((HIFB_COLOR_FMT_E)(stSrcSur.enColorFmt) <= HIFB_FMT_ACLUT88))
+		if (HIFB_IsTdeColorFmtClut(stSrcSur.enColorFmt))
         {
             stOpt.enColorKeyMode = TDE2_COLORKEY_MODE_FOREGROUND;
             stOpt.unColorKeyValue.struCkClut.stAlpha.bCompIgnore = HI_TRUE;

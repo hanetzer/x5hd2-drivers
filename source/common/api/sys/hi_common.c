@@ -27,13 +27,17 @@
 #include "hi_type.h"
 #include "hi_common.h"
 #include "hi_module.h"
+#include "hi_osal.h"
+
 #include "mpi_mmz.h"
 #include "hi_mpi_mem.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "mpi_module.h"
 #include "mpi_log.h"
 #include "drv_sys_ioctl.h"
 #include "hi_mpi_stat.h"
+#include "mpi_memdev.h"
+#include "mpi_userproc.h"
 
 //////////////////////////////////////////////////////////////////////////////////////
 /// STATIC CONST Variable
@@ -60,7 +64,7 @@ do{                                                         \
         {                                                   \
             perror("open");                                 \
             HI_SYS_UNLOCK();                                \
-            return errno;                                   \
+            return HI_FAILURE;                                   \
         }                                                   \
     }                                                       \
 }while(0)
@@ -68,6 +72,8 @@ do{                                                         \
 #define HI_SYS_LOCK()     (void)pthread_mutex_lock(&s_SysMutex);
 #define HI_SYS_UNLOCK()   (void)pthread_mutex_unlock(&s_SysMutex);
 
+#define IS_CHIP_TYPE(type) (type == SysVer.enChipTypeHardWare)
+#define IS_CHIP(type, ver) ((type == SysVer.enChipTypeHardWare) && (ver == SysVer.enChipVersion))
 
 HI_S32 HI_SYS_Init(HI_VOID)
 {
@@ -82,14 +88,14 @@ HI_S32 HI_SYS_Init(HI_VOID)
         s32Ret = HI_MPI_LogInit();
         if (HI_SUCCESS != s32Ret)
         {
-            HI_FATAL_SYS("HI_MPI_LogInit failure, line:%d\n", __LINE__);
+            HI_FATAL_SYS("HI_MPI_LogInit failure: %d\n", s32Ret);
             goto LogErrExit;
         }
 
         s32Ret = HI_MODULE_Init();
         if (HI_SUCCESS != s32Ret)
         {
-            HI_FATAL_SYS("HI_ModuleMGR_Init failure, line:%d\n", __LINE__);
+            HI_FATAL_SYS("HI_ModuleMGR_Init failure: %d\n", s32Ret);
             goto ModuleErrExit;
         }
 
@@ -99,8 +105,22 @@ HI_S32 HI_SYS_Init(HI_VOID)
         s32Ret = HI_MPI_STAT_Init();
         if (HI_SUCCESS != s32Ret)
         {
-            HI_FATAL_SYS("HI_MPI_STAT_Init failure, line:%d\n", __LINE__);
+            HI_FATAL_SYS("HI_MPI_STAT_Init failure: %d\n", s32Ret);
             goto StatErrExit;
+        }
+
+        s32Ret = MPI_MEMDEV_Init();
+        if (HI_SUCCESS != s32Ret)
+        {
+            HI_FATAL_SYS("MPI_MEMDEV_Init failure: %d\n", s32Ret);
+            goto MemdevErrExit;
+        }
+
+        s32Ret = MPI_UPROC_Init();
+        if (HI_SUCCESS != s32Ret)
+        {
+            HI_FATAL_SYS("MPI_UPROC_Init failure: %d\n", s32Ret);
+            goto UprocErrExit;
         }
 
         HI_SYS_LOCK();
@@ -113,14 +133,22 @@ HI_S32 HI_SYS_Init(HI_VOID)
     HI_SYS_UNLOCK();
 
     return (HI_S32)HI_SUCCESS;
+    
+UprocErrExit:
+    (HI_VOID)MPI_MEMDEV_DeInit();
+
+MemdevErrExit:
+    (HI_VOID)HI_MPI_STAT_DeInit();
 
 StatErrExit:
-    HI_MPI_LogDeInit();
-
-LogErrExit:
+    /* Lock for access of s_s32SysInitTimes */
+    HI_SYS_LOCK();
     (HI_VOID)HI_MODULE_DeInit();
 
 ModuleErrExit:
+    HI_MPI_LogDeInit();
+    
+LogErrExit:
     if (s_s32SysFd != -1)
     {
         close(s_s32SysFd);
@@ -140,6 +168,10 @@ HI_S32 HI_SYS_DeInit(HI_VOID)
 
     if (0 != s_s32SysInitTimes)
     {
+        (HI_VOID)MPI_UPROC_DeInit();
+        
+        (HI_VOID)MPI_MEMDEV_DeInit();
+        
         (HI_VOID)HI_MPI_STAT_DeInit();
 
         (HI_VOID)HI_MODULE_DeInit();
@@ -174,11 +206,11 @@ HI_S32 HI_SYS_GetBuildTime(struct tm * pstTime)
 
     /* month */
     memset(szTmp, 0, sizeof(szTmp));
-    strncpy(szTmp, szData, 3);
+    (HI_VOID)HI_OSAL_Strncpy(szTmp, szData, 3);
 
     for(i=0; i<12; i++)
     {
-            if(!strcmp((const char*)s_szMonth[i], szTmp))
+            if(!HI_OSAL_Strncmp((const char*)s_szMonth[i], szTmp, sizeof(s_szMonth[i])))
             {
                 pstTime->tm_mon = i + 1;
                 break;
@@ -187,28 +219,28 @@ HI_S32 HI_SYS_GetBuildTime(struct tm * pstTime)
 
     /* day */
     memset(szTmp, 0, sizeof(szTmp));
-    strncpy(szTmp, szData+4, 2);
+    (HI_VOID)HI_OSAL_Strncpy(szTmp, szData+4, 2);
     pstTime->tm_mday = atoi(szTmp);
 
     /* year */
     memset(szTmp, 0, sizeof(szTmp));
-    strncpy(szTmp, szData+7, 4);
+    (HI_VOID)HI_OSAL_Strncpy(szTmp, szData+7, 4);
     pstTime->tm_year = atoi(szTmp);
 
     /* hour */
     memset(szTmp, 0, sizeof(szTmp));
-    strncpy(szTmp, szTime, 2);
+    (HI_VOID)HI_OSAL_Strncpy(szTmp, szTime, 2);
     pstTime->tm_hour = atoi(szTmp);
 
     /* minute */
     memset(szTmp, 0, sizeof(szTmp));
-    strncpy(szTmp, szTime+3, 2);
+    (HI_VOID)HI_OSAL_Strncpy(szTmp, szTime+3, 2);
     pstTime->tm_min = atoi(szTmp);
 
 
     /* second */
     memset(szTmp, 0, sizeof(szTmp));
-    strncpy(szTmp, szTime+6, 2);
+    (HI_VOID)HI_OSAL_Strncpy(szTmp, szTime+6, 2);
     pstTime->tm_sec = atoi(szTmp);
 
     return HI_SUCCESS;
@@ -232,7 +264,7 @@ HI_S32 HI_SYS_GetVersion(HI_SYS_VERSION_S *pstVersion)
     }
 
     s32Ret = ioctl(s_s32SysFd, SYS_GET_SYS_VERSION, pstVersion);
-    if(s32Ret != 0)
+    if (s32Ret != 0)
     {
         HI_SYS_UNLOCK();
 
@@ -240,34 +272,65 @@ HI_S32 HI_SYS_GetVersion(HI_SYS_VERSION_S *pstVersion)
         return HI_FAILURE;
     }
 
-    sprintf(pstVersion->aVersion, "%s", s_szVersion);
-    #if defined(CHIP_TYPE_hi3716h)
-        pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3716H;
-    #elif defined(CHIP_TYPE_hi3716m) || defined(CHIP_TYPE_hi3716mv300_fpga)
-        pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3716M;
-    #elif defined(CHIP_TYPE_hi3716c)
-        pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3716C;
-    #elif defined(CHIP_TYPE_hi3720)
-        pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3720;
-    #elif defined(CHIP_TYPE_hi3712)
-        pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3712;
-    #elif defined(CHIP_TYPE_hi3716cv200)
-        pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3716C;
-    #elif defined(CHIP_TYPE_hi3716cv200es)
-        pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3716CES;
-    #else
-        #error  YOU MUST DEFINE  CHIP_TYPE!
-    #endif
+    (HI_VOID)HI_OSAL_Snprintf(pstVersion->aVersion, sizeof(pstVersion->aVersion), "%s", s_szVersion);
+
+    /* for detect soft and chip dismatch */
+#if defined(CHIP_TYPE_hi3716cv200)
+    pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3716C;
+#elif defined(CHIP_TYPE_hi3716cv200es)
+    pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3716CES;
+#elif defined(CHIP_TYPE_hi3718cv100)
+    pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3718C;
+#elif defined(CHIP_TYPE_hi3718mv100)
+    pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3718M;
+#elif defined(CHIP_TYPE_hi3719cv100)
+    pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3719C;
+#elif defined(CHIP_TYPE_hi3719mv100)
+    pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3719M;
+#elif defined(CHIP_TYPE_hi3719mv100_a)
+    pstVersion->enChipTypeSoft = HI_CHIP_TYPE_HI3719M_A;
+#else
+    pstVersion->enChipTypeSoft = HI_CHIP_TYPE_BUTT;
+#endif
 
     HI_SYS_UNLOCK();
 
     return HI_SUCCESS;
 }
 
+static HI_S32 GetDolbySupportHelper(HI_U32 *pu32Support)
+{
+    	HI_S32 s32Ret;
+
+	if (!pu32Support)
+		return HI_FAILURE;
+
+	HI_SYS_LOCK();
+	if (s_s32SysFd < 0)
+	{
+		HI_SYS_UNLOCK();
+		return HI_FAILURE;
+	}
+
+	s32Ret = ioctl(s_s32SysFd, SYS_GET_DOLBYSUPPORT, pu32Support);
+	if(-1 == s32Ret )
+	{
+		HI_SYS_UNLOCK();
+
+		HI_ERR_SYS("ioctl SYS_GET_DOLBYSUPPORT error!\n");
+		return HI_FAILURE;
+	}
+
+	HI_SYS_UNLOCK();
+
+	return HI_SUCCESS;
+}
+
 HI_S32 HI_SYS_GetChipAttr(HI_SYS_CHIP_ATTR_S *pstChipAttr)
 {
-    HI_S32              ret;
+    HI_S32              s32Ret;
     HI_SYS_VERSION_S    SysVer;
+    HI_U32              u32DolbySupport = 0;
 
     if (!pstChipAttr)
     {
@@ -275,28 +338,24 @@ HI_S32 HI_SYS_GetChipAttr(HI_SYS_CHIP_ATTR_S *pstChipAttr)
         return HI_FAILURE;
     }
 
-    ret = HI_SYS_GetVersion(&SysVer);
-    if (HI_SUCCESS != ret)
+    memset(&SysVer, 0, sizeof(SysVer));
+    
+    s32Ret = HI_SYS_GetVersion(&SysVer);
+    if (HI_SUCCESS != s32Ret)
     {
         return HI_FAILURE;
     }
 
-    if (   (HI_CHIP_TYPE_HI3712 == SysVer.enChipTypeHardWare)
-        || (HI_CHIP_TYPE_HI3716CES == SysVer.enChipTypeHardWare)
-        || ((HI_CHIP_TYPE_HI3716M == SysVer.enChipTypeHardWare) && (HI_CHIP_VERSION_V300 == SysVer.enChipVersion)) )
+    s32Ret =GetDolbySupportHelper(&u32DolbySupport);
+    if (HI_SUCCESS != s32Ret)
     {
-        HI_U32 Val;
-
-        ret = HI_SYS_ReadRegister(HI_DOLBY_REG, &Val);
-        if (HI_SUCCESS == ret)
-        {
-            pstChipAttr->bDolbySupport = (Val & HI_DOLBY_BIT) ? HI_FALSE : HI_TRUE;
-        }
-
-        return ret;
+        return HI_FAILURE;
     }
 
-    return HI_FAILURE;
+    pstChipAttr->bDolbySupport = (HI_BOOL)u32DolbySupport;
+    
+    return HI_SUCCESS;
+
 }
 
 HI_S32 HI_SYS_SetConf(const HI_SYS_CONF_S *pstSysConf)
@@ -353,52 +412,22 @@ HI_S32 HI_SYS_GetConf(HI_SYS_CONF_S *pstSysConf)
 
 HI_S32 HI_SYS_WriteRegister(HI_U32 u32RegAddr, HI_U32 u32Value)
 {
-    HI_U32 *pu32VirAddr;
-
-    HI_SYS_LOCK();
-
-    pu32VirAddr = (HI_U32*)HI_MMAP(u32RegAddr, 4);
-    if (NULL == pu32VirAddr)
-    {
-        HI_ERR_SYS("HI_MMAP failed\n");
-
-        HI_SYS_UNLOCK();
-
-        return HI_FAILURE;
-    }
-
-    *pu32VirAddr = u32Value;
-
-    HI_MUNMAP((void*)pu32VirAddr);
-
-    HI_SYS_UNLOCK();
-
-    return HI_SUCCESS;
+    return MPI_MEMDEV_WriteRegister(u32RegAddr, u32Value);
 }
 
 HI_S32 HI_SYS_ReadRegister(HI_U32 u32RegAddr, HI_U32 *pu32Value)
 {
-    HI_U32 *pu32VirAddr;
+    return MPI_MEMDEV_ReadRegister(u32RegAddr, pu32Value);
+}
 
-    HI_SYS_LOCK();
+HI_S32 HI_SYS_MapRegister(HI_U32 u32RegAddr, HI_U32 u32Length, HI_VOID *pVirAddr)
+{
+    return MPI_MEMDEV_MapRegister(u32RegAddr, u32Length, pVirAddr);
+}
 
-    pu32VirAddr = (HI_U32*)HI_MMAP(u32RegAddr, 4);
-    if (NULL == pu32VirAddr)
-    {
-        HI_ERR_SYS("HI_MMAP failed\n");
-
-        HI_SYS_UNLOCK();
-
-        return HI_FAILURE;
-    }
-
-    *pu32Value = *pu32VirAddr;
-
-    HI_MUNMAP((void*)pu32VirAddr);
-
-    HI_SYS_UNLOCK();
-
-    return HI_SUCCESS;
+HI_S32 HI_SYS_UnmapRegister(HI_VOID * pVirAddr)
+{
+    return MPI_MEMDEV_UnmapRegister(pVirAddr);
 }
 
 HI_S32 HI_SYS_GetTimeStampMs(HI_U32 *pu32TimeMs)
@@ -439,6 +468,53 @@ HI_S32 HI_SYS_SetLogPath(const HI_CHAR* pszLogPath)
 HI_S32 HI_SYS_SetStorePath(const HI_CHAR* pszPath)
 {
     return HI_MPI_StorePathSet(pszPath);
+}
+
+HI_S32 HI_PROC_AddDir(const HI_CHAR * pszName)
+{
+    return MPI_UPROC_AddDir(pszName);
+}
+
+HI_S32 HI_PROC_RemoveDir(const HI_CHAR *pszName)
+{
+    return MPI_UPROC_RemoveDir(pszName);
+}
+
+HI_S32 HI_PROC_AddEntry(HI_U32 u32ModuleID, const HI_PROC_ENTRY_S* pstEntry)
+{
+    return MPI_UPROC_AddEntry(u32ModuleID, pstEntry);
+}
+
+HI_S32 HI_PROC_RemoveEntry(HI_U32 u32ModuleID, const HI_PROC_ENTRY_S* pstEntry)
+{
+    return MPI_UPROC_RemoveEntry(u32ModuleID, pstEntry);
+}
+
+HI_S32 HI_PROC_Printf(HI_PROC_SHOW_BUFFER_S *pstBuf, const HI_CHAR *pFmt, ...)
+{
+    HI_U32 u32Len = 0;  
+    va_list args = {0};
+
+    if ((HI_NULL == pstBuf) || (HI_NULL == pstBuf->pu8Buf) || (HI_NULL == pFmt))
+    {
+        return HI_FAILURE;  
+    }
+
+    /* log buffer overflow */
+    if (pstBuf->u32Offset >= pstBuf->u32Size)
+    {
+        HI_ERR_SYS("userproc log buffer(size:%d) overflow.\n", pstBuf->u32Size);
+        return HI_FAILURE;
+    }
+
+    va_start(args, pFmt);
+    u32Len = (HI_U32)HI_OSAL_Vsnprintf((HI_CHAR*)pstBuf->pu8Buf + pstBuf->u32Offset, 
+                            pstBuf->u32Size - pstBuf->u32Offset, pFmt, args);   
+    va_end(args);
+	
+    pstBuf->u32Offset += u32Len;
+
+    return HI_SUCCESS;
 }
 
 HI_S32 HI_MMZ_Malloc(HI_MMZ_BUF_S *pstBuf)
@@ -513,28 +589,29 @@ HI_VOID* HI_MEM_Realloc(HI_U32 u32ModuleID, HI_VOID *pMemAddr, HI_U32 u32Size)
 }
 
 #ifdef MMZ_V2_SUPPORT
-HI_VOID *HI_MMZ_New_Share(HI_U32 size , HI_U32 align, HI_CHAR *mmz_name, HI_CHAR *mmb_name)
+HI_VOID *HI_MMZ_New_Share(HI_U32 u32Size , HI_U32 u32Align, HI_CHAR *ps8MMZName, HI_CHAR *ps8MMBName)
 {
-    return HI_MPI_MMZ_New_Share(size, align, mmz_name, mmb_name);
+    return HI_MPI_MMZ_New_Share(u32Size, u32Align, ps8MMZName, ps8MMBName);
 }
 
-HI_VOID *HI_MMZ_New_Shm_Com(HI_U32 size , HI_U32 align, HI_CHAR *mmz_name, HI_CHAR *mmb_name)
+HI_VOID *HI_MMZ_New_Shm_Com(HI_U32 u32Size , HI_U32 u32Align, HI_CHAR *ps8MMZName, HI_CHAR *ps8MMBName)
 {
-    return HI_MPI_MMZ_New_Shm_Com(size, align, mmz_name, mmb_name);
+    return HI_MPI_MMZ_New_Shm_Com(u32Size, u32Align, ps8MMZName, ps8MMBName);
 }
 
-HI_S32 HI_MMZ_Get_Shm_Com(HI_U32 *phyaddr, HI_U32 *size)
+HI_S32 HI_MMZ_Get_Shm_Com(HI_U32 *pu32PhysAddr, HI_U32 *pu32Size)
 {
-    return HI_MPI_MMZ_Get_Shm_Com(phyaddr, size);
-}
-HI_S32 HI_MMZ_Force_Delete(HI_U32 phys_addr)
-{
-    return HI_MPI_MMZ_Force_Delete(phys_addr);
+    return HI_MPI_MMZ_Get_Shm_Com(pu32PhysAddr, pu32Size);
 }
 
-HI_S32 HI_MMZ_Flush_Dirty(HI_U32 phys_addr, HI_U32 virt_addr, HI_U32 size)
+HI_S32 HI_MMZ_Force_Delete(HI_U32 u32PhysAddr)
 {
-    return HI_MPI_MMZ_Flush_Dirty(phys_addr, virt_addr, size);
+    return HI_MPI_MMZ_Force_Delete(u32PhysAddr);
+}
+
+HI_S32 HI_MMZ_Flush_Dirty(HI_U32 u32PhysAddr, HI_U32 u32VirtAddr, HI_U32 u32Size)
+{
+    return HI_MPI_MMZ_Flush_Dirty(u32PhysAddr, u32VirtAddr, u32Size);
 }
 
 HI_S32 HI_MMZ_open(HI_VOID)

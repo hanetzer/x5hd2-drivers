@@ -7,7 +7,7 @@ extern "C"{
 #endif
 
 /************************************************************************/
-/* 文件tell position                                                    */
+/* file operation                                                       */
 /************************************************************************/
 
 struct file *VPSS_OSAL_fopen(const char *filename, int flags, int mode)
@@ -59,8 +59,10 @@ int VPSS_OSAL_fwrite(char *buf, int len, struct file *filp)
 
         return writelen;
 }
+
+
 /************************************************************************/
-/* 初始化事件                                                           */
+/* event operation                                                      */
 /************************************************************************/
 HI_S32 VPSS_OSAL_InitEvent( OSAL_EVENT *pEvent, HI_S32 InitVal1, HI_S32 InitVal2)
 {
@@ -70,49 +72,35 @@ HI_S32 VPSS_OSAL_InitEvent( OSAL_EVENT *pEvent, HI_S32 InitVal1, HI_S32 InitVal2
     return OSAL_OK;
 }
 
-/************************************************************************/
-/* 发出事件                                                             */
-/************************************************************************/
 HI_S32 VPSS_OSAL_GiveEvent( OSAL_EVENT *pEvent, HI_S32 InitVal1, HI_S32 InitVal2)
 {
     pEvent->flag_1 = InitVal1;
     pEvent->flag_2 = InitVal2;
     
-	
-    wake_up_interruptible(&(pEvent->queue_head));
+    wake_up(&(pEvent->queue_head));
 	return OSAL_OK;
 }
 
-/************************************************************************/
-/* 等待事件                                                             */
-/* 事件发生返回OSAL_OK，超时返回OSAL_ERR 若condition不满足就阻塞等待    */
-/************************************************************************/
 HI_S32 VPSS_OSAL_WaitEvent( OSAL_EVENT *pEvent, HI_S32 s32WaitTime )
 {
-	long unsigned int l_ret;
+	int l_ret;
     long unsigned int time;
     time = jiffies;
-    l_ret = wait_event_interruptible_timeout( pEvent->queue_head, 
+    l_ret = wait_event_timeout( pEvent->queue_head, 
                                 (pEvent->flag_1 != 0 || pEvent->flag_2 != 0), 
                                 s32WaitTime );
-    /*
-    驱动等待超时 || 逻辑上报超时中断
-    */
-    if(l_ret == 0 || pEvent->flag_2 == 1)
+    if(l_ret == 0 
+       || pEvent->flag_2 == 1
+       || l_ret < 0)
     {
-        //printk("\nl_ret = %ld s32WaitTime=%d T =%ld jiffies=%ld",l_ret,s32WaitTime,jiffies - time,jiffies);
         return OSAL_ERR;
     }
     else
     {   
-        //printk("\nl_ret = %ld s32WaitTime=%d T =%ld jiffies=%ld",l_ret,s32WaitTime,jiffies - time,jiffies);
         return OSAL_OK;
     }
 }
 
-/************************************************************************/
-/* 重置事件                                                             */
-/************************************************************************/
 HI_S32 VPSS_OSAL_ResetEvent( OSAL_EVENT *pEvent, HI_S32 InitVal1, HI_S32 InitVal2)
 {
     pEvent->flag_1 = InitVal1;
@@ -122,9 +110,8 @@ HI_S32 VPSS_OSAL_ResetEvent( OSAL_EVENT *pEvent, HI_S32 InitVal1, HI_S32 InitVal
 }
 
 
-
 /************************************************************************/
-/* 初始化互斥锁                                                         */
+/* mutux lock operation                                                 */
 /************************************************************************/
 HI_S32 VPSS_OSAL_InitLOCK(VPSS_OSAL_LOCK *pLock, HI_U32 u32InitVal)
 {
@@ -132,37 +119,41 @@ HI_S32 VPSS_OSAL_InitLOCK(VPSS_OSAL_LOCK *pLock, HI_U32 u32InitVal)
     return HI_SUCCESS;
 }
 
-/************************************************************************/
-/* 抢占互斥锁                                                             */
-/************************************************************************/
 HI_S32 VPSS_OSAL_DownLock(VPSS_OSAL_LOCK *pLock)
 {
-    if(down_interruptible(pLock))
+    HI_S32 s32Ret;
+    s32Ret = down_interruptible(pLock);
+
+    if (s32Ret < 0) 
     {
+		return HI_FAILURE;
+	}
+    else if (s32Ret == 0)
+    {
+        return HI_SUCCESS;
+    }
+    else
+    {
+        VPSS_FATAL("DownLock Error! ret = %d\n",s32Ret);
         return HI_FAILURE;
     }
     return HI_SUCCESS;
 }
 
-/************************************************************************/
-/* 尝试抢占互斥锁                                                       */
-/* 若互斥锁已经被占用，返回HI_FAILURE                                   */
-/* 抢占成功，返回HI_SUCCESS                                             */
-/************************************************************************/
 HI_S32 VPSS_OSAL_TryLock(VPSS_OSAL_LOCK *pLock)
 {
-    if(down_trylock(pLock))
-    {
-        return HI_FAILURE;
-    }
-    else
+    HI_S32 s32Ret;
+    s32Ret = down_trylock(pLock);
+    if (s32Ret == 0)
     {
         return HI_SUCCESS;
     }
+    else
+    {
+        return HI_FAILURE;
+    }
 }
-/************************************************************************/
-/* 释放互斥锁                                                           */
-/************************************************************************/
+
 HI_S32 VPSS_OSAL_UpLock(VPSS_OSAL_LOCK *pLock)
 {
     up(pLock);
@@ -172,7 +163,7 @@ HI_S32 VPSS_OSAL_UpLock(VPSS_OSAL_LOCK *pLock)
 
 
 /************************************************************************/
-/* 初始化自旋锁                                                         */
+/* spin lock operation                                                  */
 /************************************************************************/
 HI_S32 VPSS_OSAL_InitSpin(VPSS_OSAL_SPIN *pLock, HI_U32 u32InitVal)
 {
@@ -183,14 +174,11 @@ HI_S32 VPSS_OSAL_InitSpin(VPSS_OSAL_SPIN *pLock, HI_U32 u32InitVal)
     }
     else
     {
-        VPSS_FATAL("\nDownSpin Error\n");
+        VPSS_FATAL("DownSpin Error\n");
     }
 	return HI_SUCCESS;
 }
 
-/************************************************************************/
-/* 抢占自旋锁                                                        */
-/************************************************************************/
 HI_S32 VPSS_OSAL_DownSpin(VPSS_OSAL_SPIN *pLock)
 {
     if(pLock->isInit == HI_TRUE)
@@ -199,14 +187,11 @@ HI_S32 VPSS_OSAL_DownSpin(VPSS_OSAL_SPIN *pLock)
     }
     else
     {
-        VPSS_FATAL("\nDownSpin Error\n");
+        VPSS_FATAL("DownSpin Error\n");
     }
     return HI_SUCCESS;
 }
 
-/************************************************************************/
-/* 释放自旋锁                                                        */
-/************************************************************************/
 HI_S32 VPSS_OSAL_UpSpin(VPSS_OSAL_SPIN *pLock)
 {
     spin_unlock_irqrestore(&(pLock->irq_lock), pLock->irq_lockflags);
@@ -226,7 +211,9 @@ HI_S32 VPSS_OSAL_TryLockSpin(VPSS_OSAL_SPIN *pLock)
    }
 }
 
-
+/************************************************************************/
+/* debug operation                                                      */
+/************************************************************************/
 HI_S32 VPSS_OSAL_GetProcArg(HI_CHAR*  chCmd,HI_CHAR*  chArg,HI_U32 u32ArgIdx)
 {
     HI_U32 u32Count;
@@ -238,7 +225,7 @@ HI_S32 VPSS_OSAL_GetProcArg(HI_CHAR*  chCmd,HI_CHAR*  chArg,HI_U32 u32ArgIdx)
     HI_CHAR chArg3[DEF_FILE_NAMELENGTH] = {0};
     u32CmdCount = 0;
 
-    /*清除前面的空格*/
+    /*clear empty space*/
     u32Count = 0;
     u32CmdCount = 0;
     u32LogCount = 1;
@@ -331,97 +318,273 @@ HI_S32 VPSS_OSAL_WRITEYUV(HI_DRV_VIDEO_FRAME_S *pstFrame,HI_CHAR* pchFile)
     HI_U8 *pu8Udata;
     HI_U8 *pu8Vdata;
     HI_U8 *pu8Ydata;
-    HI_S8  s_VpssSavePath[64] = {'/','m','n','t',0};
+    HI_S8  s_VpssSavePath[DEF_FILE_NAMELENGTH];
     HI_U32 i,j;
-
-    ptr = (unsigned char *)phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_Y);
     
-    pu8Udata = VPSS_VMALLOC(pstFrame->u32Width * pstFrame->u32Height / 2 /2);
-    pu8Vdata = VPSS_VMALLOC(pstFrame->u32Width * pstFrame->u32Height / 2 /2);
-    pu8Ydata = VPSS_VMALLOC(pstFrame->stBufAddr[0].u32Stride_Y);
+    HI_DRV_LOG_GetStorePath(s_VpssSavePath, DEF_FILE_NAMELENGTH);
+    HI_OSAL_Snprintf(str, 50, "%s/%s", s_VpssSavePath,pchFile);
 
-
-	if (!ptr)
-	{
-        VPSS_FATAL("address is not valid!\n");
-	}
-	else
-	{   
-	    sprintf(str, "%s/%s", s_VpssSavePath,pchFile);
-
-        fp = VPSS_OSAL_fopen(str, O_RDWR | O_CREAT|O_APPEND, 0);
-
-        if (fp == HI_NULL)
+    if (pstFrame->ePixFormat == HI_DRV_PIX_FMT_NV21
+        || pstFrame->ePixFormat == HI_DRV_PIX_FMT_NV12)
+    {
+        pu8Udata = VPSS_VMALLOC(pstFrame->u32Width * pstFrame->u32Height / 2 /2);
+        if (pu8Udata == HI_NULL)
         {
-            VPSS_FATAL("open file '%s' fail!\n", str);
+            return HI_FAILURE;
+        }
+        pu8Vdata = VPSS_VMALLOC(pstFrame->u32Width * pstFrame->u32Height / 2 /2);
+        if (pu8Vdata == HI_NULL)
+        {
+            VPSS_VFREE(pu8Udata);
+            return HI_FAILURE;
+        }
+        pu8Ydata = VPSS_VMALLOC(pstFrame->stBufAddr[0].u32Stride_Y);
+        if (pu8Ydata == HI_NULL)
+        {
+            VPSS_VFREE(pu8Udata);
+            VPSS_VFREE(pu8Vdata);
             return HI_FAILURE;
         }
         
-        /*写 Y 数据*/
-        for (i=0; i<pstFrame->u32Height; i++)
-        {
-            memcpy(pu8Ydata,ptr,sizeof(HI_U8)*pstFrame->stBufAddr[0].u32Stride_Y);
-
-            /*
-                    HI_S32 VPSS_FB_WRITELOGO(HI_U8 *pu8Ydata,
-                            HI_U32 u32ImgH,HI_U32 u32ImgW,HI_U32 u32line)
-                    if(i>100 && i < 110 )
-                    {   
-                        for(j = 0; j < pstFrame->u32Width;j++)
-                        {
-                            pu8Ydata[j] = 200;
-                        }
-                    }
-                */
-            
-      	    //if(pstFrame->u32Width != klib_fwrite(ptr,pstFrame->u32Width, fp))
-            if(pstFrame->u32Width != VPSS_OSAL_fwrite(pu8Ydata,pstFrame->u32Width, fp))
-      	    {
-                VPSS_FATAL("line %d: fwrite fail!\n",__LINE__);
-            }
-            ptr += pstFrame->stBufAddr[0].u32Stride_Y;
-        }
-        /*
-        ptr = pstMMZ->u32StartVirAddr 
-            + (pstFrame->stBufAddr[0].u32PhyAddr_C 
-            - pstFrame->stBufAddr[0].u32PhyAddr_Y);
-            */
-        ptr = (unsigned char *)phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_C);
-        /* U V 数据 转存*/
-        for (i=0; i<pstFrame->u32Height/2; i++)
-        {
-            for (j=0; j<pstFrame->u32Width/2; j++)
-            {
-                if(pstFrame->ePixFormat == HI_DRV_PIX_FMT_NV21)
-                {
-                    pu8Vdata[i*pstFrame->u32Width/2+j] = ptr[2*j];
-                    pu8Udata[i*pstFrame->u32Width/2+j] = ptr[2*j+1];
-                }
-                else
-                {
-                    pu8Udata[i*pstFrame->u32Width/2+j] = ptr[2*j];
-                    pu8Vdata[i*pstFrame->u32Width/2+j] = ptr[2*j+1];
-                }
-            }
-            ptr += pstFrame->stBufAddr[0].u32Stride_C;
-        }
-        /*写 U */
-        VPSS_OSAL_fwrite(pu8Udata, pstFrame->u32Width * pstFrame->u32Height / 2 /2, fp);
-
-        /*写 V */
-        VPSS_OSAL_fwrite(pu8Vdata, pstFrame->u32Width * pstFrame->u32Height / 2 /2, fp);
+        ptr = (unsigned char *)phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_Y);
         
+    	if (!ptr)
+    	{
+            VPSS_FATAL("address is not valid!\n");
+    	}
+    	else
+    	{   
+            fp = VPSS_OSAL_fopen(str, O_RDWR | O_CREAT|O_APPEND, 0);
 
-        VPSS_OSAL_fclose(fp);
-        VPSS_FATAL("2d image has been saved to '%s' W=%d H=%d Format=%d \n", 
-                    str,pstFrame->u32Width,pstFrame->u32Height,pstFrame->ePixFormat);
+            if (fp == HI_NULL)
+            {
+                VPSS_FATAL("open file '%s' fail!\n", str);
+                VPSS_VFREE(pu8Udata);
+                VPSS_VFREE(pu8Vdata);
+                VPSS_VFREE(pu8Ydata);
+                return HI_FAILURE;
+            }
+            
+            /*write Y data*/
+            for (i=0; i<pstFrame->u32Height; i++)
+            {
+                memcpy(pu8Ydata,ptr,sizeof(HI_U8)*pstFrame->stBufAddr[0].u32Stride_Y);
 
+                if(pstFrame->u32Width != VPSS_OSAL_fwrite(pu8Ydata,pstFrame->u32Width, fp))
+          	    {
+                    VPSS_FATAL("line %d: fwrite fail!\n",__LINE__);
+                }
+                ptr += pstFrame->stBufAddr[0].u32Stride_Y;
+            }
+            
+            ptr = (unsigned char *)phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_C);
+            /*write UV data */
+            for (i=0; i<pstFrame->u32Height/2; i++)
+            {
+                for (j=0; j<pstFrame->u32Width/2; j++)
+                {
+                    if(pstFrame->ePixFormat == HI_DRV_PIX_FMT_NV21)
+                    {
+                        pu8Vdata[i*pstFrame->u32Width/2+j] = ptr[2*j];
+                        pu8Udata[i*pstFrame->u32Width/2+j] = ptr[2*j+1];
+                    }
+                    else
+                    {
+                        pu8Udata[i*pstFrame->u32Width/2+j] = ptr[2*j];
+                        pu8Vdata[i*pstFrame->u32Width/2+j] = ptr[2*j+1];
+                    }
+                }
+                ptr += pstFrame->stBufAddr[0].u32Stride_C;
+            }
+            VPSS_OSAL_fwrite(pu8Udata, pstFrame->u32Width * pstFrame->u32Height / 2 /2, fp);
+
+            VPSS_OSAL_fwrite(pu8Vdata, pstFrame->u32Width * pstFrame->u32Height / 2 /2, fp);
+            
+
+            VPSS_OSAL_fclose(fp);
+            VPSS_FATAL("2d image has been saved to '%s' W=%d H=%d Format=%d \n", 
+                        str,pstFrame->u32Width,pstFrame->u32Height,pstFrame->ePixFormat);
+
+            
+    	}
         VPSS_VFREE(pu8Udata);
         VPSS_VFREE(pu8Vdata);
         VPSS_VFREE(pu8Ydata);
-	}
-    iounmap(ptr);
-   
+    }
+    else if (pstFrame->ePixFormat == HI_DRV_PIX_FMT_NV21_TILE
+            || pstFrame->ePixFormat == HI_DRV_PIX_FMT_NV12_TILE)
+    {
+        HI_U8 *s8YuvArray;
+        HI_U8 *s8UArray;
+        HI_U8 *s8VArray;
+        HI_U8 *dst;
+        HI_U8 *src;
+        HI_U8 *tmp;
+        HI_U32 Stride;
+        HI_U8 *Caddress ;	
+        s8YuvArray = VPSS_VMALLOC(pstFrame->u32Width * pstFrame->u32Height);
+        if (HI_NULL == s8YuvArray)
+        {
+    		return HI_FAILURE;
+        }
+    	s8UArray = VPSS_VMALLOC(pstFrame->u32Width * pstFrame->u32Height / 2);
+        if (HI_NULL == s8UArray)
+        {
+            VPSS_VFREE(s8YuvArray);
+    		return HI_FAILURE;
+        }
+    	s8VArray = VPSS_VMALLOC(pstFrame->u32Width * pstFrame->u32Height / 2);
+        if (HI_NULL == s8VArray)
+        {
+            VPSS_VFREE(s8YuvArray);
+            VPSS_VFREE(s8UArray);
+    		return HI_FAILURE;
+        }
+
+        fp = VPSS_OSAL_fopen(str, O_RDWR | O_CREAT|O_APPEND, 0);
+        if (fp == HI_NULL)
+        {
+            VPSS_FATAL("open file '%s' fail!\n", str);
+            VPSS_VFREE(s8YuvArray);
+            VPSS_VFREE(s8UArray);
+            VPSS_VFREE(s8VArray);
+            return HI_FAILURE;
+        }
+        Stride = ((pstFrame->u32Width + (64*4 -1))&(~(64*4 -1)))*16;
+        for(i=0;i<pstFrame->u32Height;i++)
+        {
+            for(j=0;j<pstFrame->u32Width;j+=256)
+            {
+                dst  = (unsigned char*)(s8YuvArray+ pstFrame->u32Width*i + j);
+                src =  (unsigned char*)phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_Y) + Stride*(i/16)+(i%16)*256 + (j/256)*256*16;
+        	    memcpy(dst,src,256);
+            }
+        }
+        VPSS_OSAL_fwrite(s8YuvArray,pstFrame->u32Width*pstFrame->u32Height, fp);        
+         
+        Caddress = phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_Y) + ((pstFrame->u32Width + (64*4 -1))&(~(64*4 -1)))*((pstFrame->u32Height + 31)/32)*32
+                + ((pstFrame->u32Width  + 127) / 128 + 15) / 16 * 16*((pstFrame->u32Height + 31)/32)*32;
+        for(i=0;i<pstFrame->u32Height/2;i++)
+        {
+            for(j=0;j<pstFrame->u32Width;j+=256)
+            {
+               dst  = (unsigned char*)(s8YuvArray + pstFrame->u32Width*i + j);
+               src =  (unsigned char*)Caddress + (Stride/2)*(i/8)+(i%8)*256 +  (j/256)*256*8;
+        	   memcpy(dst,src,256);
+            }
+        }
+        tmp = s8YuvArray;
+        for (i=0;i<pstFrame->u32Height/2;i++)
+        {
+            for (j=0;j<pstFrame->u32Width/2;j++)
+            {
+                s8VArray[i*pstFrame->u32Width/2+j] = tmp[2*j];
+                s8UArray[i*pstFrame->u32Width/2+j] = tmp[2*j+1];
+            }
+            tmp+= pstFrame->u32Width;
+        }
+        VPSS_OSAL_fwrite(s8UArray,pstFrame->u32Width*pstFrame->u32Height/4, fp);     
+        VPSS_OSAL_fwrite(s8VArray,pstFrame->u32Width*pstFrame->u32Height/4, fp);      
+       
+		VPSS_OSAL_fclose(fp);
+        VPSS_FATAL("Tile image has been saved to '%s' W=%d H=%d Format=%d \n", 
+                    str,pstFrame->u32Width,pstFrame->u32Height,pstFrame->ePixFormat);
+        VPSS_VFREE(s8YuvArray);
+        VPSS_VFREE(s8UArray);
+        VPSS_VFREE(s8VArray);
+	}   
+	else if (pstFrame->ePixFormat == HI_DRV_PIX_FMT_NV61_2X1
+            || pstFrame->ePixFormat == HI_DRV_PIX_FMT_NV16_2X1)
+    {
+        pu8Udata = VPSS_VMALLOC(pstFrame->u32Width * pstFrame->u32Height / 2 );
+        if (pu8Udata == HI_NULL)
+        {
+            return HI_FAILURE;
+        }
+        pu8Vdata = VPSS_VMALLOC(pstFrame->u32Width * pstFrame->u32Height / 2 );
+        if (pu8Vdata == HI_NULL)
+        {
+            VPSS_VFREE(pu8Udata);
+            return HI_FAILURE;
+        }
+        pu8Ydata = VPSS_VMALLOC(pstFrame->stBufAddr[0].u32Stride_Y);
+        if (pu8Ydata == HI_NULL)
+        {
+            VPSS_VFREE(pu8Udata);
+            VPSS_VFREE(pu8Vdata);
+            return HI_FAILURE;
+        }
+        
+        ptr = (unsigned char *)phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_Y);
+        
+    	if (!ptr)
+    	{
+            VPSS_FATAL("address is not valid!\n");
+    	}
+    	else
+    	{   
+
+            fp = VPSS_OSAL_fopen(str, O_RDWR | O_CREAT|O_APPEND, 0);
+
+            if (fp == HI_NULL)
+            {
+                VPSS_FATAL("open file '%s' fail!\n", str);
+                VPSS_VFREE(pu8Udata);
+                VPSS_VFREE(pu8Vdata);
+                VPSS_VFREE(pu8Ydata);
+                return HI_FAILURE;
+            }
+            
+            /*write Y data*/
+            for (i=0; i<pstFrame->u32Height; i++)
+            {
+                memcpy(pu8Ydata,ptr,sizeof(HI_U8)*pstFrame->stBufAddr[0].u32Stride_Y);
+
+                if(pstFrame->u32Width != VPSS_OSAL_fwrite(pu8Ydata,pstFrame->u32Width, fp))
+          	    {
+                    VPSS_FATAL("line %d: fwrite fail!\n",__LINE__);
+                }
+                ptr += pstFrame->stBufAddr[0].u32Stride_Y;
+            }
+            
+            ptr = (unsigned char *)phys_to_virt(pstFrame->stBufAddr[0].u32PhyAddr_C);
+            /*write UV data */
+            for (i=0; i<pstFrame->u32Height; i++)
+            {
+                for (j=0; j<pstFrame->u32Width/2; j++)
+                {
+                    if(pstFrame->ePixFormat == HI_DRV_PIX_FMT_NV61_2X1)
+                    {
+                        pu8Vdata[i*pstFrame->u32Width/2+j] = ptr[2*j];
+                        pu8Udata[i*pstFrame->u32Width/2+j] = ptr[2*j+1];
+                    }
+                    else
+                    {
+                        pu8Udata[i*pstFrame->u32Width/2+j] = ptr[2*j];
+                        pu8Vdata[i*pstFrame->u32Width/2+j] = ptr[2*j+1];
+                    }
+                }
+                ptr += pstFrame->stBufAddr[0].u32Stride_C;
+            }
+            VPSS_OSAL_fwrite(pu8Udata, pstFrame->u32Width * pstFrame->u32Height  /2, fp);
+
+            VPSS_OSAL_fwrite(pu8Vdata, pstFrame->u32Width * pstFrame->u32Height  /2, fp);
+            
+
+            VPSS_OSAL_fclose(fp);
+            VPSS_FATAL("2d image has been saved to '%s' W=%d H=%d Format=%d \n", 
+                        str,pstFrame->u32Width,pstFrame->u32Height,pstFrame->ePixFormat);
+            
+    	}
+        VPSS_VFREE(pu8Udata);
+        VPSS_VFREE(pu8Vdata);
+        VPSS_VFREE(pu8Ydata);
+    }
+    else
+    {
+        VPSS_FATAL("PixFormat %d can't saveyuv\n",pstFrame->ePixFormat);
+    }
+    
     return HI_SUCCESS;
 }
 #ifdef __cplusplus

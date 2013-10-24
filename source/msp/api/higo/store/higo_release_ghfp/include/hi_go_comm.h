@@ -61,6 +61,15 @@ typedef struct
     HI_S32 b;
 } HI_REGION;
 
+/**Mode of adjusting the window z-order*//**CNcomment:Z序调整方式*/
+typedef enum
+{
+    HIGO_ZORDER_MOVETOP = 0,  /**<Move to the top*//**<CNcomment:移到最顶部*/
+    HIGO_ZORDER_MOVEUP,       /**<Move upwards*//**<CNcomment:向上移*/
+    HIGO_ZORDER_MOVEBOTTOM,   /**<Move to the bottom*//**<CNcomment:移到最底部*/
+    HIGO_ZORDER_MOVEDOWN,     /**<Move downwards*//**<CNcomment:向下移*/
+    HIGO_ZORDER_BUTT
+} HIGO_ZORDER_E;
 
 #define HIGO_INVALID_HANDLE 0x0
 
@@ -127,7 +136,7 @@ CNcomment:主要是CURSOR和TEXT模块。CNend
 \see \n
 ::HI_GO_DeInitExt
 */
-HI_S32 HI_GO_InitExt();
+HI_S32 HI_GO_InitExt(HI_VOID);
 
 /**
 \brief Deinitializes the extended library of the HiGo.CNcomment: HiGo扩展库去初始化 CNend
@@ -142,7 +151,7 @@ If the HiGo is not used, you need to call this API to release resources.CNcommen
 \see \n
 ::HI_GO_InitExt
 */
-HI_S32 HI_GO_DeInitExt();
+HI_S32 HI_GO_DeInitExt(HI_VOID);
 
 /** 
 \brief Obtains the version information.CNcomment:获取版本信息 CNend

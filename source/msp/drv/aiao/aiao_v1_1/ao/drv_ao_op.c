@@ -12,18 +12,18 @@
 #include <linux/interrupt.h>
 
 #include "hi_type.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
 
 #include "hi_module.h"
-#include "drv_mmz_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_module_ext.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_module.h"
+#include "hi_drv_mem.h"
 #include "hi_error_mpi.h"
 
 #include "drv_ao_op.h"
@@ -133,7 +133,7 @@ HI_VOID SND_GetDelayMs(SND_CARD_STATE_S *pCard, HI_U32 *pdelayms)
     return ;
 }
 
-static HI_S32 SndOpCreateAop(SND_OP_STATE_S *state, HI_UNF_SND_OUTPORT_S *pstAttr, SND_AOP_TYPE_E enType)
+static HI_S32 SndOpCreateAop(SND_OP_STATE_S *state,HI_UNF_SND_OUTPORT_S *pstAttr, SND_AOP_TYPE_E enType,AO_ALSA_I2S_Param_S* pstAoI2sParam)
 {
     HI_S32 Ret;
     AIAO_PORT_USER_CFG_S stHwPortAttr;
@@ -145,6 +145,14 @@ static HI_S32 SndOpCreateAop(SND_OP_STATE_S *state, HI_UNF_SND_OUTPORT_S *pstAtt
     AIAO_RBUF_ATTR_S stRbfAttr;
     HI_U32 u32AopId;
     HI_UNF_SND_OUTPUTPORT_E enOutPort;
+   HI_BOOL bAlsaI2sUse = HI_FALSE;//HI_ALSA_I2S_ONLY_SUPPORT
+    if(pstAoI2sParam != NULL)
+      bAlsaI2sUse  = pstAoI2sParam->bAlsaI2sUse;//HI_ALSA_I2S_ONLY_SUPPORT
+
+    if(enType >= SND_AOP_TYPE_CAST)
+    {
+        goto SndReturn_ERR_EXIT;
+    }
 
     enOutPort = pstAttr->enOutPort;
     switch(enOutPort)
@@ -157,14 +165,45 @@ static HI_S32 SndOpCreateAop(SND_OP_STATE_S *state, HI_UNF_SND_OUTPORT_S *pstAtt
             Ret = HI_DRV_MMZ_AllocAndMap("AO_Adac", MMZ_OTHERS, AO_DAC_MMZSIZE_MAX, AIAO_BUFFER_ADDR_ALIGN, &stRbfMmz);
             break;
             
+#if defined (HI_I2S0_SUPPORT)
         case HI_UNF_SND_OUTPUTPORT_I2S0:
-            enPort = AIAO_PORT_TX0;
-            HAL_AIAO_P_GetTxI2SDfAttr(enPort, &stHwPortAttr);
+            HI_ASSERT(pstAttr->unAttr.stI2sAttr.stAttr.enChannel==HI_UNF_I2S_CHNUM_2);
+            HI_ASSERT(pstAttr->unAttr.stI2sAttr.stAttr.enBitDepth==HI_UNF_I2S_BIT_DEPTH_16);
+            HAL_AIAO_P_GetBorardTxI2SDfAttr(0,&pstAttr->unAttr.stI2sAttr.stAttr,&enPort,&stHwPortAttr);
+           if(bAlsaI2sUse == HI_TRUE)
+            {
+                 stRbfMmz.u32Size                          = pstAoI2sParam->stBuf.u32BufSize;
+                 u32BufSize                                = pstAoI2sParam->stBuf.u32BufSize;
+                 HI_ASSERT(u32BufSize < AO_DAC_MMZSIZE_MAX);
+                 stRbfMmz.u32StartPhyAddr                  = pstAoI2sParam->stBuf.u32BufPhyAddr;
+                 stRbfMmz.u32StartVirAddr                  = pstAoI2sParam->stBuf.u32BufVirAddr;  
+                 stHwPortAttr.pIsrFunc                     = (AIAO_IsrFunc *)pstAoI2sParam->IsrFunc;
+                 stHwPortAttr.substream                    = pstAoI2sParam->substream;
+				 stHwPortAttr.stIfAttr.enRate              = (AIAO_SAMPLE_RATE_E)pstAoI2sParam->enRate;
+                 stHwPortAttr.stBufConfig.u32PeriodBufSize = pstAoI2sParam->stBuf.u32PeriodByteSize;
+                 stHwPortAttr.stBufConfig.u32PeriodNumber  = pstAoI2sParam->stBuf.u32Periods;
+                 Ret = HI_SUCCESS;
+            }
+            else
+            {
             u32BufSize = stHwPortAttr.stBufConfig.u32PeriodBufSize * stHwPortAttr.stBufConfig.u32PeriodNumber;
             HI_ASSERT(u32BufSize < AO_I2S_MMZSIZE_MAX);
-            Ret = HI_DRV_MMZ_AllocAndMap("AO_I2s", MMZ_OTHERS, AO_I2S_MMZSIZE_MAX, AIAO_BUFFER_ADDR_ALIGN, &stRbfMmz);
+            Ret = HI_DRV_MMZ_AllocAndMap("AO_I2s0", MMZ_OTHERS, AO_I2S_MMZSIZE_MAX, AIAO_BUFFER_ADDR_ALIGN, &stRbfMmz);
+            }    
             break;  
-            
+#endif
+
+#if defined (HI_I2S1_SUPPORT)
+        case HI_UNF_SND_OUTPUTPORT_I2S1:
+            HI_ASSERT(pstAttr->unAttr.stI2sAttr.stAttr.enChannel==HI_UNF_I2S_CHNUM_2);
+            HI_ASSERT(pstAttr->unAttr.stI2sAttr.stAttr.enBitDepth==HI_UNF_I2S_BIT_DEPTH_16);
+            HAL_AIAO_P_GetBorardTxI2SDfAttr(1,&pstAttr->unAttr.stI2sAttr.stAttr,&enPort,&stHwPortAttr);
+            u32BufSize = stHwPortAttr.stBufConfig.u32PeriodBufSize * stHwPortAttr.stBufConfig.u32PeriodNumber;
+            HI_ASSERT(u32BufSize < AO_I2S_MMZSIZE_MAX);
+            Ret = HI_DRV_MMZ_AllocAndMap("AO_I2s1", MMZ_OTHERS, AO_I2S_MMZSIZE_MAX, AIAO_BUFFER_ADDR_ALIGN, &stRbfMmz);
+            break;  
+#endif
+
         case HI_UNF_SND_OUTPUTPORT_SPDIF0:
             enPort = AIAO_PORT_SPDIF_TX1;
             HAL_AIAO_P_GetTxSpdDfAttr(enPort, &stHwPortAttr);
@@ -178,9 +217,28 @@ static HI_S32 SndOpCreateAop(SND_OP_STATE_S *state, HI_UNF_SND_OUTPORT_S *pstAtt
             {
                 enPort = AIAO_PORT_TX3;
                 HAL_AIAO_P_GetHdmiI2SDfAttr(enPort, &stHwPortAttr);
+#if 0//def HI_ALSA_HDMI_ONLY_SUPPORT
+                if(bAlsaI2sUse == HI_TRUE)
+                 {
+                      stRbfMmz.u32Size                          = pstAoI2sParam->stBuf.u32BufSize;
+                      u32BufSize                                = pstAoI2sParam->stBuf.u32BufSize;
+                      HI_ASSERT(u32BufSize < AO_DAC_MMZSIZE_MAX);
+                      stRbfMmz.u32StartPhyAddr                  = pstAoI2sParam->stBuf.u32BufPhyAddr;
+                      stRbfMmz.u32StartVirAddr                  = pstAoI2sParam->stBuf.u32BufVirAddr;  
+                      stHwPortAttr.pIsrFunc                     = (AIAO_IsrFunc *)pstAoI2sParam->IsrFunc;
+                      stHwPortAttr.substream                    = pstAoI2sParam->substream;
+     				  stHwPortAttr.stIfAttr.enRate              = pstAoI2sParam->enRate;
+                      stHwPortAttr.stBufConfig.u32PeriodBufSize = pstAoI2sParam->stBuf.u32PeriodByteSize;
+                      stHwPortAttr.stBufConfig.u32PeriodNumber  = pstAoI2sParam->stBuf.u32Periods;
+                      Ret = HI_SUCCESS;
+                 }
+                 else
+#endif
+                 {
                 u32BufSize = stHwPortAttr.stBufConfig.u32PeriodBufSize * stHwPortAttr.stBufConfig.u32PeriodNumber * 32;  //verify considerate from 48k 2ch 16bit to 192k 8ch 32bit for example 24bit LPCM
                 HI_ASSERT(u32BufSize < AO_HDMI_MMZSIZE_MAX);
                 Ret = HI_DRV_MMZ_AllocAndMap("AO_HdmiI2s", MMZ_OTHERS, AO_HDMI_MMZSIZE_MAX, AIAO_BUFFER_ADDR_ALIGN, &stRbfMmz);
+                  }
             }
             else
             {
@@ -263,7 +321,7 @@ static HI_S32 SndOpCreateAop(SND_OP_STATE_S *state, HI_UNF_SND_OUTPORT_S *pstAtt
     return HI_SUCCESS;
     
 SndStopPort_ERR_EXIT:
-    HAL_AIAO_P_Stop(enPort, AIAO_STOP_IMMEDIATE);
+    (HI_VOID)HAL_AIAO_P_Stop(enPort, AIAO_STOP_IMMEDIATE);
 SndDestroyAOP_ERR_EXIT:
     HAL_AOE_AOP_Destroy(enAOP);
 SndClosePort_ERR_EXIT:
@@ -281,125 +339,86 @@ SND_ENGINE_TYPE_E SND_OpGetEngineType(HI_HANDLE hSndOp)
     return state->enEngineType[state->ActiveId];
 }
 #ifdef HI_SND_CAST_SUPPORT
-static HI_S32 SndOpCreateCast(HI_HANDLE *phSndOp, HI_HANDLE *phCast,  HI_UNF_SND_CAST_ATTR_S *pstUserCastAttr, HI_U32 *pu32PhyAddr)
+static HI_S32 SndOpCreateCast(HI_HANDLE *phSndOp, HI_HANDLE *phCast, HI_UNF_SND_CAST_ATTR_S *pstUserCastAttr,
+                              MMZ_BUFFER_S *pstMMz)
 {
     HI_S32 Ret;
     AOE_AOP_ID_E enAOP;
     AOE_AOP_CHN_ATTR_S stAopAttr;
-    MMZ_BUFFER_S stRbfMmz;
     HI_U32 uBufSize, uFrameSize;
     AIAO_CAST_ATTR_S stCastAttr;
     AIAO_CAST_ID_E enCast;
-    AIAO_CAST_RBUF_ATTR_S stRbfAttr;
     SND_OP_STATE_S *state = HI_NULL;
     HI_UNF_SND_CAST_ATTR_S stUserCastAttr;
-    
-    state = HI_KMALLOC(HI_ID_AO, sizeof(SND_OP_STATE_S), GFP_KERNEL);
+
+    state = AUTIL_AO_MALLOC(HI_ID_AO, sizeof(SND_OP_STATE_S), GFP_KERNEL);
     if (state == HI_NULL)
     {
-        HI_FATAL_AIAO("HI_KMALLOC SndOpCreate failed\n");
+        HI_FATAL_AIAO("malloc SndOpCreate failed\n");
         return HI_FAILURE;
     }
-    memset(state, 0, sizeof(SND_OP_STATE_S));
-    
-#if 1    
-    memcpy(&stUserCastAttr, pstUserCastAttr, sizeof(HI_UNF_SND_CAST_ATTR_S));
 
+    memset(state, 0, sizeof(SND_OP_STATE_S));
+    memcpy(&stUserCastAttr, pstUserCastAttr, sizeof(HI_UNF_SND_CAST_ATTR_S));
     stCastAttr.u32BufChannels = 2;
     stCastAttr.u32BufBitPerSample = 16;
     stCastAttr.u32BufSampleRate = 48000;
-#endif    
-    //stCastAttr->u32BufLatencyThdMs =  stUserCastAttr.u32LatencyThdMs;;
+    stCastAttr.u32BufDataFormat = 0;
 
     uFrameSize = AUTIL_CalcFrameSize(stCastAttr.u32BufChannels, stCastAttr.u32BufBitPerSample);
-    //uBufSize = AUTIL_LatencyMs2ByteSize(stCastAttr.u32BufLatencyThdMs, uFrameSize, stCastAttr.u32BufSampleRate);
     uBufSize = stUserCastAttr.u32PcmFrameMaxNum * stUserCastAttr.u32PcmSamplesPerFrame * uFrameSize;
-
-
     stCastAttr.u32BufLatencyThdMs = AUTIL_ByteSize2LatencyMs(uBufSize, uFrameSize, stCastAttr.u32BufSampleRate);
-    
-#if 0    
-    HI_ERR_AO("stCastAttr->u32BufChannels = 0x%x\n", stCastAttr.u32BufChannels);
-    HI_ERR_AO("stCastAttr->s32BitPerSample = 0x%x\n", stCastAttr.u32BufBitPerSample);
-    HI_ERR_AO("stCastAttr->u32BufSampleRate = 0x%x\n", stCastAttr.u32BufSampleRate);
-    HI_ERR_AO("stCastAttr->u32BufLatencyThdMs = 0x%x\n", stCastAttr.u32BufLatencyThdMs);
 
-    HI_ERR_AO("uBufSize(0x%x) = u32PcmFrameMaxNum(0x%x), * u32PcmSamplesPerFrame(0x%x) * uFrameSize(0x%x)\n", 
-            uBufSize, stUserCastAttr.u32PcmFrameMaxNum, stUserCastAttr.u32PcmSamplesPerFrame, uFrameSize);
-#endif
+    HI_ASSERT((uBufSize) < AO_CAST_MMZSIZE_MAX);
 
-
-    HI_ASSERT((uBufSize + CAST_DMABUF_RESERVED_SIZE)< AO_CAST_MMZSIZE_MAX);
-    Ret = HI_DRV_MMZ_AllocAndMap("sound_cast", MMZ_OTHERS, AO_CAST_MMZSIZE_MAX, AIAO_BUFFER_ADDR_ALIGN, &stRbfMmz);
-    if (HI_SUCCESS != Ret)
-    {
-        return HI_FAILURE;
-    }
-
-    stCastAttr.extDmaMem.u32BufPhyAddr = stRbfMmz.u32StartPhyAddr;
-    stCastAttr.extDmaMem.u32BufVirAddr = stRbfMmz.u32StartVirAddr;
-    stCastAttr.extDmaMem.u32BufSize = uBufSize;
-    Ret = HAL_CAST_Create(&enCast, &stCastAttr);
-    if (HI_SUCCESS != Ret)
-    {
-        HI_DRV_MMZ_UnmapAndRelease(&stRbfMmz);
-        return HI_FAILURE;
-    }
-
-    HAL_CAST_GetRbfAttr(enCast, &stRbfAttr);
-    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufPhyAddr = stRbfAttr.u32BufPhyAddr;
-    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufVirAddr = stRbfAttr.u32BufVirAddr;
-    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufPhyWptr = stRbfAttr.u32BufPhyWptr;
-    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufVirWptr = stRbfAttr.u32BufVirWptr;
-    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufPhyRptr = stRbfAttr.u32BufPhyRptr;
-    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufVirRptr = stRbfAttr.u32BufVirRptr;
-    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufWptrRptrFlag = 1;
-    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufSize = stRbfAttr.u32BufSize;
+    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufPhyAddr = pstMMz->u32StartPhyAddr;
+    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufVirAddr = pstMMz->u32StartVirAddr;
+    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufSize = uBufSize;
+    stAopAttr.stRbfOutAttr.stRbfAttr.u32BufWptrRptrFlag = 0;  /* cast use aop Wptr&Rptr avoid dsp cache problem */
     stAopAttr.stRbfOutAttr.u32BufBitPerSample = stCastAttr.u32BufBitPerSample;
     stAopAttr.stRbfOutAttr.u32BufChannels   = stCastAttr.u32BufChannels;
     stAopAttr.stRbfOutAttr.u32BufSampleRate = stCastAttr.u32BufSampleRate;
     stAopAttr.stRbfOutAttr.u32BufDataFormat = 0;
-#if 1    
     stAopAttr.stRbfOutAttr.bRbfHwPriority = HI_FALSE;
-#else
-    stAopAttr.stRbfOutAttr.bRbfHwPriority = HI_TRUE;
-#endif
-#if   0  
-    stAopAttr.stRbfOutAttr.u32BufLatencyThdMs = stCastAttr.u32BufLatencyThdMs;
-#else
     stAopAttr.stRbfOutAttr.u32BufLatencyThdMs = AOE_AOP_BUFF_LATENCYMS_DF;
-#endif
     Ret = HAL_AOE_AOP_Create(&enAOP, &stAopAttr);
     if (HI_SUCCESS != Ret)
     {
-        HAL_CAST_Destroy(enCast);
-        HI_DRV_MMZ_UnmapAndRelease(&stRbfMmz);
+        HI_ERR_AIAO("AOP_Create failed\n");
+        AUTIL_AO_FREE(HI_ID_AO, (HI_VOID *)state);
+        return HI_FAILURE;
+    }
+
+    stCastAttr.extDmaMem.u32BufPhyAddr = pstMMz->u32StartPhyAddr;
+    stCastAttr.extDmaMem.u32BufVirAddr = pstMMz->u32StartVirAddr;
+    stCastAttr.extDmaMem.u32BufSize = uBufSize;
+    iHAL_AOE_AOP_GetRptrAndWptrRegAddr(enAOP, &stCastAttr.extDmaMem.u32WptrAddr, &stCastAttr.extDmaMem.u32RptrAddr);
+    Ret = HAL_CAST_Create(&enCast, &stCastAttr);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_ERR_AIAO("Cast_Create failed\n");
+	    HAL_AOE_AOP_Destroy(enAOP);
+        AUTIL_AO_FREE(HI_ID_AO, (HI_VOID *)state);
         return HI_FAILURE;
     }
 
     state->u32OpMask |= 1<<SND_AOP_TYPE_CAST;
     state->ActiveId = 0;
     state->enAOP[0] = enAOP;
-    
-    //state->stRbfMmz[0]  = stRbfMmz;
-    //state->stCastAttr = stCastAttr;
-    memcpy(&state->stRbfMmz[0], &stRbfMmz, sizeof(MMZ_BUFFER_S));
+
     memcpy(&state->stCastAttr, &stCastAttr, sizeof(AIAO_CAST_ATTR_S));
-    
+
     state->CastId = enCast;
     state->enEngineType[0] = SND_ENGINE_TYPE_PCM;
     state->enCurnStatus = SND_OP_STATUS_STOP;
     state->enOutType = SND_OUTPUT_TYPE_CAST;
 
-    //HI_ERR_AO("Cast enAOP = 0x%x\n", enAOP);
-    *pu32PhyAddr = stRbfAttr.u32BufPhyAddr;
-    //HI_ERR_AO("pstUserCastAttr->u32PhyAddr = 0x%x\n", pstUserCastAttr->u32PhyAddr);
-
-    *phCast = (HI_HANDLE )enCast;
+    *phCast  = (HI_HANDLE )enCast;
     *phSndOp = (HI_HANDLE )state;
-    
+
     return HI_SUCCESS;
 }
+
 #endif
 
 static HI_VOID SndOpGetSubFormatAttr(SND_OP_STATE_S *state, SND_OP_ATTR_S *pstSndPortAttr)
@@ -542,7 +561,7 @@ static HI_VOID SndOpDestroyAop(SND_OP_STATE_S *state, SND_AOP_TYPE_E enType)
     return;
 }
 
-static HI_VOID SndOpDestroy(HI_HANDLE hSndOp)
+static HI_VOID SndOpDestroy(HI_HANDLE hSndOp, HI_BOOL bSndDestoryFlag)
 {
     SND_OP_STATE_S *state = (SND_OP_STATE_S *)hSndOp;
     SND_AOP_TYPE_E type;
@@ -559,7 +578,6 @@ static HI_VOID SndOpDestroy(HI_HANDLE hSndOp)
 #ifdef HI_SND_CAST_SUPPORT
         HAL_AOE_AOP_Destroy(state->enAOP[0]);
         HAL_CAST_Destroy(state->CastId);
-        HI_DRV_MMZ_UnmapAndRelease(&state->stRbfMmz[0]);
 #endif
     }
     else
@@ -573,12 +591,12 @@ static HI_VOID SndOpDestroy(HI_HANDLE hSndOp)
         }
         if(state->enOutType == SND_OUTPUT_TYPE_DAC)
         {
-            ADAC_TIANLAI_DeInit();
+            ADAC_TIANLAI_DeInit(bSndDestoryFlag);
         }
     }
 
     memset(state, 0, sizeof(SND_OP_STATE_S));
-    HI_KFREE(HI_ID_AO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     return;
 }
 
@@ -596,16 +614,68 @@ static HI_VOID SndOpInitState(SND_OP_STATE_S *state)
     
     return;
 }
-static HI_S32 SndOpCreate(HI_HANDLE *phSndOp, HI_UNF_SND_OUTPORT_S *pstAttr)
+#if 1//def HI_ALSA_I2S_ONLY_SUPPORT
+HI_S32 AlsaHwSndOpStart(HI_HANDLE hSndOp, HI_VOID *pstParams)
+{
+    SND_OP_STATE_S *state = (SND_OP_STATE_S *)hSndOp;
+    AIAO_PORT_ID_E enPort = state->enPortID[state->ActiveId];
+    HI_S32 Ret;
+    if (SND_OP_STATUS_START == state->enCurnStatus)
+    {
+        return HI_SUCCESS;
+    }
+    #if 0//def HI_ALSA_HDMI_ONLY_SUPPORT
+     if((SND_OUTPUT_TYPE_I2S == state->enOutType)||(SND_OUTPUT_TYPE_HDMI == state->enOutType))
+    #else
+    if(SND_OUTPUT_TYPE_I2S == state->enOutType)     
+    #endif
+       {
+           Ret = HAL_AIAO_P_Start(enPort);
+           if (HI_SUCCESS != Ret)
+           {
+               HI_ERR_AO("HAL_AIAO_P_Start(%d) failed\n", enPort);
+               return HI_FAILURE;
+           }
+       }
+     state->enCurnStatus = SND_OP_STATUS_START;
+     return HI_SUCCESS;
+}
+HI_S32 AlsaHwSndOpStop(HI_HANDLE hSndOp, HI_VOID *pstParams)
+{
+    SND_OP_STATE_S *state = (SND_OP_STATE_S *)hSndOp;
+    AIAO_PORT_ID_E enPort = state->enPortID[state->ActiveId];
+    HI_S32 Ret;
+    if (SND_OP_STATUS_STOP == state->enCurnStatus)
+    {
+        return HI_SUCCESS;
+    }
+    #if 0//def HI_ALSA_HDMI_ONLY_SUPPORT
+    if((SND_OUTPUT_TYPE_I2S == state->enOutType)||(SND_OUTPUT_TYPE_HDMI == state->enOutType))
+    #else
+    if(SND_OUTPUT_TYPE_I2S == state->enOutType)  
+    #endif
+    {
+        Ret = HAL_AIAO_P_Stop(enPort, AIAO_STOP_IMMEDIATE);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_AO("HAL_AIAO_P_Stop(%d) failed\n", enPort);
+            return HI_FAILURE;
+        }
+    }
+    state->enCurnStatus = SND_OP_STATUS_STOP;
+    return HI_SUCCESS;
+}
+#endif
+static HI_S32 SndOpCreate(HI_HANDLE *phSndOp,HI_UNF_SND_OUTPORT_S *pstAttr,AO_ALSA_I2S_Param_S* pstAoI2sParam)
 {
     SND_OP_STATE_S *state = HI_NULL;
     HI_S32 Ret = HI_FAILURE;
     SND_AOP_TYPE_E AopType;
 
-    state = HI_KMALLOC(HI_ID_AO, sizeof(SND_OP_STATE_S), GFP_KERNEL);
+    state = AUTIL_AO_MALLOC(HI_ID_AO, sizeof(SND_OP_STATE_S), GFP_KERNEL);
     if (state == HI_NULL)
     {
-        HI_FATAL_AIAO("HI_KMALLOC SndOpCreate failed\n");
+        HI_FATAL_AIAO("malloc SndOpCreate failed\n");
         return HI_FAILURE;
     }
 
@@ -623,7 +693,7 @@ static HI_S32 SndOpCreate(HI_HANDLE *phSndOp, HI_UNF_SND_OUTPORT_S *pstAttr)
             continue;
         }
         
-        if(HI_SUCCESS != SndOpCreateAop(state, pstAttr, AopType))
+        if(HI_SUCCESS != SndOpCreateAop(state,pstAttr, AopType,pstAoI2sParam))
         {
             goto SndCreatePort_ERR_EXIT;
         }
@@ -671,8 +741,8 @@ static HI_S32 SndOpCreate(HI_HANDLE *phSndOp, HI_UNF_SND_OUTPORT_S *pstAttr)
     
 SndCreatePort_ERR_EXIT:
     *phSndOp = (HI_HANDLE)HI_NULL;
-    SndOpDestroy((HI_HANDLE)state);
-    HI_KFREE(HI_ID_AO, (HI_VOID*)state);
+    SndOpDestroy((HI_HANDLE)state, AO_SND_DESTORY_NORMAL);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     return Ret;
 }
 
@@ -921,7 +991,7 @@ HI_S32 SndOpSetTrackMode(HI_HANDLE hSndOp, HI_UNF_TRACK_MODE_E enMode)
         enPort = state->enPortID[idx];
         if(enPort < AIAO_PORT_BUTT)
         {
-            Ret = HAL_AIAO_P_SetTrackMode(enPort, (AIAO_TRACK_MODE_E)enMode);
+            Ret = HAL_AIAO_P_SetTrackMode(enPort, AUTIL_TrackModeTransform(enMode));
             if (HI_SUCCESS != Ret)
             {
                 HI_FATAL_AIAO("HAL_AIAO_P_SetTrackMode port:%d\n", (HI_U32)enPort);
@@ -974,6 +1044,20 @@ HI_S32 SndOpGetMute(HI_HANDLE hSndOp)
     return state->u32UserMute;
 }
 
+#ifdef HI_SND_MUTECTL_SUPPORT
+static HI_VOID SndOpDisableMuteCtrl(SND_CARD_STATE_S *pCard)
+{
+    if (pCard->pstGpioFunc && pCard->pstGpioFunc->pfnGpioDirSetBit)
+    {
+        (pCard->pstGpioFunc->pfnGpioDirSetBit)(HI_SND_MUTECTL_GPIO, 0); //output
+    }
+    if (pCard->pstGpioFunc && pCard->pstGpioFunc->pfnGpioWriteBit)
+    { 
+        (pCard->pstGpioFunc->pfnGpioWriteBit)(HI_SND_MUTECTL_GPIO, ((0 == HI_SND_MUTECTL_LEVEL) ? 1 : 0));
+    }
+    return;
+}
+#endif
 
 HI_VOID SND_DestroyOp(SND_CARD_STATE_S *pCard)	
 {
@@ -983,7 +1067,7 @@ HI_VOID SND_DestroyOp(SND_CARD_STATE_S *pCard)
     {
         if (pCard->hSndOp[u32PortNum])
         {
-            SndOpDestroy(pCard->hSndOp[u32PortNum]);
+            SndOpDestroy(pCard->hSndOp[u32PortNum], pCard->bSndDestoryFlag);
             pCard->hSndOp[u32PortNum] = HI_NULL;
         }
     }
@@ -991,19 +1075,39 @@ HI_VOID SND_DestroyOp(SND_CARD_STATE_S *pCard)
     return;
 }
 
-HI_S32 SND_CreateOp(SND_CARD_STATE_S *pCard, HI_UNF_SND_ATTR_S *pstAttr)
+HI_S32 SND_CreateOp(SND_CARD_STATE_S *pCard, HI_UNF_SND_ATTR_S *pstAttr,AO_ALSA_I2S_Param_S* pstAoI2sParam)
 {
     HI_U32 u32PortNum;
     HI_HANDLE hSndOp;
 
     for (u32PortNum = 0; u32PortNum < pstAttr->u32PortNum; u32PortNum++)
     {
-        if (HI_SUCCESS != SndOpCreate(&hSndOp, &pstAttr->stOutport[u32PortNum]))
+        if (HI_SUCCESS != SndOpCreate(&hSndOp,&pstAttr->stOutport[u32PortNum],pstAoI2sParam))
         {
             goto SND_CreateOp_ERR_EXIT;
         }
-
+#ifdef HI_SND_MUTECTL_SUPPORT
+        if(HI_UNF_SND_OUTPUTPORT_DAC0 == pstAttr->stOutport[u32PortNum].enOutPort)
+        {
+            SndOpDisableMuteCtrl(pCard);
+        }
+#endif
         pCard->hSndOp[u32PortNum] = hSndOp;
+    }
+    if(pstAoI2sParam != NULL )//for i2s only card resume HI_ALSA_I2S_ONLY_SUPPORT
+{
+    if(pstAoI2sParam->bAlsaI2sUse == HI_TRUE)
+    {
+        memcpy(&pCard->stUserOpenParamI2s, pstAoI2sParam, sizeof(AO_ALSA_I2S_Param_S));
+    }
+    else
+    {
+        memset(&pCard->stUserOpenParamI2s,0,sizeof(AO_ALSA_I2S_Param_S));   
+    }
+}
+else
+{
+     memset(&pCard->stUserOpenParamI2s,0,sizeof(AO_ALSA_I2S_Param_S));  
     }
 
     memcpy(&pCard->stUserOpenParam, pstAttr, sizeof(HI_UNF_SND_ATTR_S));
@@ -1108,6 +1212,29 @@ HI_S32 SND_SetOpHdmiMode(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutP
     return Ret;
 }
 
+HI_S32 SND_GetOpHdmiMode(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_HDMI_MODE_E *penMode)
+{
+    HI_S32 Ret = HI_SUCCESS;
+    if(!SNDGetOpHandleByOutPort(pCard, enOutPort))
+    {
+        HI_ERR_AO("OutPort(%d) not attatch this card", (HI_U32)enOutPort);
+        return HI_ERR_AO_OUTPORT_NOT_ATTATCH;
+    }
+
+    switch (enOutPort)
+    {
+    case HI_UNF_SND_OUTPUTPORT_HDMI0:
+        *penMode = pCard->enUserHdmiMode;
+        break;
+    default:
+       HI_ERR_AO("Get hdmi mode don't support OutPort(%d)", (HI_U32)enOutPort);
+       return HI_FAILURE;
+    }
+
+    return Ret;
+}
+
+
 HI_S32 SND_SetOpSpdifMode(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_SPDIF_MODE_E enMode)
 {
     HI_S32 Ret = HI_SUCCESS;
@@ -1129,6 +1256,29 @@ HI_S32 SND_SetOpSpdifMode(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOut
 
     return Ret;
 }
+
+HI_S32 SND_GetOpSpdifMode(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_SPDIF_MODE_E *penMode)
+{
+    HI_S32 Ret = HI_SUCCESS;
+    if(!SNDGetOpHandleByOutPort(pCard, enOutPort))
+    {
+        HI_ERR_AO("OutPort(%d) not attatch this card", (HI_U32)enOutPort);
+        return HI_ERR_AO_OUTPORT_NOT_ATTATCH;
+    }
+
+    switch (enOutPort)
+    {
+    case HI_UNF_SND_OUTPUTPORT_SPDIF0:
+        *penMode = pCard->enUserSpdifMode;
+        break;
+    default:
+       HI_ERR_AO("Get spdif mode don't support OutPort(%d)", (HI_U32)enOutPort);
+       return HI_FAILURE;
+    }
+
+    return Ret;
+}
+
 
 HI_S32 SND_SetOpVolume(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_GAIN_ATTR_S stGain)
 {
@@ -1169,7 +1319,7 @@ HI_S32 SND_GetOpVolume(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPor
 
     if(HI_UNF_SND_OUTPUTPORT_ALL == enOutPort)
     {
-        HI_ERR_AO("Don't support get trackmode of allport!\n");
+        HI_ERR_AO("Don't support get volume of allport!\n");
         return HI_ERR_AO_INVALID_PARA;
     }
 
@@ -1292,7 +1442,6 @@ HI_S32 SND_SetOpAttr(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort,
 HI_S32 SND_GetOpAttr(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort, SND_OP_ATTR_S *pstSndPortAttr)
 {
     HI_HANDLE hSndOp = SNDGetOpHandleByOutPort(pCard, enOutPort);
-
     if (hSndOp)
     {
         return SndOpGetAttr(hSndOp, pstSndPortAttr);
@@ -1300,7 +1449,7 @@ HI_S32 SND_GetOpAttr(SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enOutPort,
     else
     {
         return HI_ERR_AO_OUTPORT_NOT_ATTATCH;
-    }
+    } 
 }
 
 #if 0
@@ -1382,11 +1531,11 @@ HI_S32 SND_StartCastOp(SND_CARD_STATE_S *pCard, HI_S32 s32CastID)
     return Ret;
 }
 
-HI_S32 SND_CreateCastOp(SND_CARD_STATE_S *pCard,  HI_S32 *ps32CastId, HI_UNF_SND_CAST_ATTR_S *pstAttr, HI_U32 *pu32PhyAddr)
+HI_S32 SND_CreateCastOp(SND_CARD_STATE_S *pCard,  HI_S32 *ps32CastId, HI_UNF_SND_CAST_ATTR_S *pstAttr, MMZ_BUFFER_S *pstMMz)
 {
     HI_HANDLE hSndOp;
 
-   if (HI_SUCCESS != SndOpCreateCast(&hSndOp,  ps32CastId, pstAttr, pu32PhyAddr))
+   if (HI_SUCCESS != SndOpCreateCast(&hSndOp,  ps32CastId, pstAttr, pstMMz))
     {
         HI_ERR_AIAO("SndOpCreateCast Failed\n");
         return HI_FAILURE;
@@ -1402,7 +1551,7 @@ HI_S32 SND_DestoryCastOp(SND_CARD_STATE_S *pCard,  HI_U32 CastId)
 
     if (pCard->hCastOp[CastId])
     {
-        SndOpDestroy(pCard->hCastOp[CastId]);
+        SndOpDestroy(pCard->hCastOp[CastId], AO_SND_DESTORY_NORMAL);
         pCard->hCastOp[CastId] = HI_NULL;
     }
     else
@@ -1501,6 +1650,10 @@ HI_S32 SND_GetSetting(SND_CARD_STATE_S *pCard, SND_CARD_SETTINGS_S* pstSndSettin
     pstSndSettings->enUserHdmiMode = pCard->enUserHdmiMode;
     pstSndSettings->enUserSpdifMode = pCard->enUserSpdifMode;
     memcpy(&pstSndSettings->stUserOpenParam, &pCard->stUserOpenParam, sizeof(HI_UNF_SND_ATTR_S));
+    if(&pCard->stUserOpenParamI2s != HI_NULL )//for i2s only card resume HI_ALSA_I2S_ONLY_SUPPORT
+    {
+       memcpy(&pstSndSettings->stUserOpenParamI2s, &pCard->stUserOpenParamI2s, sizeof(AO_ALSA_I2S_Param_S));
+    }
     for(u32Port = 0; u32Port < pCard->stUserOpenParam.u32PortNum; u32Port++)
     {
         Snd_GetOpSetting(pCard, pCard->stUserOpenParam.stOutport[u32Port].enOutPort, &pstSndSettings->stPortAttr[u32Port]);
@@ -1538,6 +1691,11 @@ HI_S32 SND_RestoreSetting(SND_CARD_STATE_S *pCard, SND_CARD_SETTINGS_S* pstSndSe
         
     pCard->enUserHdmiMode = pstSndSettings->enUserHdmiMode;
     pCard->enUserSpdifMode = pstSndSettings->enUserSpdifMode;
+    if(&pstSndSettings->stUserOpenParam != HI_NULL ) //for i2s only card resume HI_ALSA_I2S_ONLY_SUPPORT
+        {
+           memcpy(&pCard->stUserOpenParamI2s, &pstSndSettings->stUserOpenParamI2s, sizeof(AO_ALSA_I2S_Param_S));
+        }
+    memcpy(&pCard->stUserOpenParam, &pstSndSettings->stUserOpenParam, sizeof(HI_UNF_SND_ATTR_S));
     for(u32Port = 0; u32Port < pstSndSettings->stUserOpenParam.u32PortNum; u32Port++)
     {
         SND_RestoreOpSetting(pCard, pstSndSettings->stUserOpenParam.stOutport[u32Port].enOutPort, &pstSndSettings->stPortAttr[u32Port]);
@@ -1567,7 +1725,7 @@ static inline const HI_CHAR *AOPort2Name(HI_UNF_SND_OUTPUTPORT_E enPort)
     return "UnknownPort";
 }
 
-HI_S32 SND_ShowOpProc(struct seq_file* p, SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enPort)
+HI_S32 SND_ReadOpProc(struct seq_file* p, SND_CARD_STATE_S *pCard, HI_UNF_SND_OUTPUTPORT_E enPort)
 {
     AIAO_PORT_STAUTS_S stStatus;
     HI_HANDLE hSndOp;
@@ -1589,28 +1747,27 @@ HI_S32 SND_ShowOpProc(struct seq_file* p, SND_CARD_STATE_S *pCard, HI_UNF_SND_OU
         return HI_FAILURE;
     }
 #endif
-    seq_printf(p,
-               "%s: status(%s), Mute(%s/0x%x), Vol(%.2ddB), TrackMode(%s), Fs(%.6d), Ch(%.2d), Bit(%2d)\n",
+    PROC_PRINT(p,
+               "%s: Status(%s), Mute(%s), Vol(%d%s), TrackMode(%s)\n",
                 AUTIL_Port2Name(enPort),
                (HI_CHAR*)((AIAO_PORT_STATUS_START == stStatus.enStatus) ? "start" : ((AIAO_PORT_STATUS_STOP == stStatus.enStatus) ? "stop" : "stopping")),
-               (HI_TRUE == stStatus.stUserConfig.bMute)?"on":"off",
-               state->u32UserMute,
-               (HI_S32)stStatus.stUserConfig.u32VolumedB - VOLUME_0dB,
-                AUTIL_TrackMode2Name(stStatus.stUserConfig.enTrackMode),
-                stStatus.stUserConfig.stIfAttr.enRate,
-                stStatus.stUserConfig.stIfAttr.enChNum,
-                stStatus.stUserConfig.stIfAttr.enBitDepth);
-    seq_printf(p,
-                  "      Engine(%s), AOP(0x%x), PortID(0x%x)\n",
+               (0 == state->u32UserMute)?"off":"on",
+                state->stUserGain.s32Gain,
+                (HI_TRUE == state->stUserGain.bLinearMode)?"":"dB",
+                AUTIL_TrackMode2Name(state->enUserTrackMode));
+    PROC_PRINT(p,
+               "      SampleRate(%.6d), Channel(%.2d), BitWidth(%2d), Engine(%s), AOP(0x%x), PortID(0x%x)\n",
+                   stStatus.stUserConfig.stIfAttr.enRate,
+                   stStatus.stUserConfig.stIfAttr.enChNum,
+                   stStatus.stUserConfig.stIfAttr.enBitDepth,
                    AUTIL_Engine2Name(state->enEngineType[state->ActiveId]),
                    (HI_U32)state->enAOP[state->ActiveId],
                    (HI_U32)state->enPortID[state->ActiveId]);
             
-    seq_printf(p,
-               "      DmaCnt(%.6u), BufEmptyCnt(%.6u), BufEmptyWarningCnt(%.6u), IfFiFoEmptyCnt(%.6u)\n\n",
+    PROC_PRINT(p,
+               "      DmaCnt(%.6u), BufEmptyCnt(%.6u), FiFoEmptyCnt(%.6u)\n\n",
                stStatus.stProcStatus.uDMACnt,
                stStatus.stProcStatus.uBufEmptyCnt, 
-               stStatus.stProcStatus.uBufEmptyWarningCnt, 
                stStatus.stProcStatus.uInfFiFoEmptyCnt);
     
     return HI_SUCCESS;

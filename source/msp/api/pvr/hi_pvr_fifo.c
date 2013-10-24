@@ -77,24 +77,24 @@ HI_U64 g_u64PVR_FileNodeMaxSize = 4000LLU*1024*1024;
 #define PVRFileGetRealFNameHisi(fileName, realName, nodeIdx) do {\
         if (0 == nodeIdx)\
         {\
-            sprintf(realName, "%s", fileName); \
+            snprintf(realName, PVR_MAX_FILENAME_LEN,"%s", fileName); \
         }\
         else\
         {\
-            sprintf(realName, "%s.%04d", fileName, nodeIdx); \
+            snprintf(realName, PVR_MAX_FILENAME_LEN,"%s.%04d", fileName, nodeIdx); \
         }\
     }while(0)
 
 #define PVRFileGetRealFNameXxTs(fileName, realName, nodeIdx) do {\
-        sprintf(realName, "%s%02d.ts", fileName, nodeIdx); \
+        snprintf(realName,PVR_MAX_FILENAME_LEN, "%s%02d.ts", fileName, nodeIdx); \
     }while(0)
 
 #define PVRFileGetRealFNameXxEncTs(fileName, realName, nodeIdx) do {\
-        sprintf(realName, "%s%02d.enc.ts", fileName, nodeIdx); \
+        snprintf(realName, PVR_MAX_FILENAME_LEN,"%s%02d.enc.ts", fileName, nodeIdx); \
     }while(0)
 
 #define PVRFileGetRealFNameXxAdTs(fileName, realName, nodeIdx) do {\
-        sprintf(realName, "%s%02d.ad.ts", fileName, nodeIdx); \
+        snprintf(realName, PVR_MAX_FILENAME_LEN,"%s%02d.ad.ts", fileName, nodeIdx); \
     }while(0)
 
 
@@ -102,9 +102,10 @@ HI_U64 g_u64PVR_FileNodeMaxSize = 4000LLU*1024*1024;
 static PVR_FILE_NAME_FMT_E PVR_Check_FileType(const HI_CHAR *filename)
 {
     HI_CHAR  fNameReal[PVR_MAX_FILENAME_LEN + 5];
-    HI_U32   u32Index = 0;
 
-    PVRFileGetRealFNameHisi(filename, fNameReal, u32Index);
+    //lint -e506 -e774
+    PVRFileGetRealFNameHisi(filename, fNameReal, 0);
+    //lint +e506 +e774
     if (PVR_CHECK_FILE_EXIST(fNameReal))
     {
         return PVR_FILE_NAME_FMT_HISI;
@@ -273,16 +274,20 @@ ssize_t PVR_READALL(void *buf, size_t size, PVR_FILE fd,  off_t offset)
     do {
         if ((n = (ssize_t)PVR_READ((void*)(&((char *)buf)[nread]), ((size) - (size_t)nread), fd, offset + (off_t)nread)) == (-1))
         {
-            perror("PVR_READ...111...");
-            if (EINTR == errno)
+            //lint -e774
+            if (NULL != &errno)
             {
-                HI_WARN_PVR("read err @EINTR\n");
-                continue;
+                if (EINTR == errno)
+                {
+                    HI_WARN_PVR("read err @EINTR\n");
+                    continue;
+                }
+                else
+                {
+                    return -1;
+                }
             }
-            else
-            {
-                return -1;
-            }
+            //lint +e774
         }
 
         if (0 == n) /* EOF */
@@ -315,15 +320,19 @@ ssize_t PVR_WRITEALL(const void *buf, size_t len, PVR_FILE fd, off_t offset)
                 len - (size_t)sizeWriten, fd, offset + (off_t)sizeWriten);
         if (-1 == n)
         {
-            perror("pwrite/PVR_WRITE..111..");
-            if (EINTR == errno)
+            //lint -e774
+            if (NULL != &errno)
             {
-                continue;
+                if (EINTR == errno)
+                {
+                    continue;
+                }
+                else
+                {
+                    return -1;
+                }
             }
-            else
-            {
-                return -1;
-            }
+            //lint +e774
         }
 
         sizeWriten += n;
@@ -394,7 +403,7 @@ HI_VOID PVR_REMOVE_FILE64(const HI_CHAR *pszFileName)
 
         nodeIdx++;
         PVRFileGetRealFName(pszFileName, fNameReal, nodeIdx);
-    }
+    };
 
     //system("rm -rf ");
     /*
@@ -414,9 +423,9 @@ HI_U64 PVR_FILE_GetFileSize(const HI_CHAR *pszFileName)
     if (PVR_FILE_INVALID_FILE != fd)
     {
         size = (HI_S64)pvr_lseek(fd, 0, SEEK_END);
+		pvr_close(fd);
     }
 
-    pvr_close(fd);
     return (HI_U64)size;
 }
 
@@ -444,9 +453,9 @@ HI_U64 PVR_FILE_GetFileSize64(const HI_CHAR *pszFileName)
     {
         size += (HI_S64)pvr_lseek(fd, 0, (int)SEEK_END);
         size -= (HI_S64)nodeSize;
+        pvr_close(fd);
     }
 
-    pvr_close(fd);
 
     return (HI_U64)size;
 }
@@ -505,28 +514,17 @@ PVR_FILE64 PVR_OPEN64(const HI_CHAR *filename, int mode)
 
     sysFd = PVR_OPEN(fNameOpen, mode);
 
-#ifdef PVR_USE_FILE_CACHE
-    /*if(!strcmp((filename+strlen(filename)-2),"ts"))
-    {
-        HI_ERR_PVR("*******filename %s\n",filename+strlen(filename)-2);
-        PVR_FC_SET_DAT_ATTR(sysFd);
-    }
-    else if(!strcmp((filename+strlen(filename)-3),"idx"))
-    {
-        HI_ERR_PVR("*******filename %s\n",filename+strlen(filename)-3);
-        PVR_FC_SET_IDX_ATTR(sysFd);
-    }*/
-#endif
     if (-1 == sysFd)
     {
         g_stPvrFiles[pvrFd].bOpened = HI_FALSE;
         g_stPvrFiles[pvrFd].systemFd = PVR_FILE_INVALID_FILE;
         HI_ERR_PVR("PVR file: can NOT open '%s', mode:%#x.\n", fNameOpen, mode);
-        perror("PVR can't open file:");
         return -1;
     }
 
-    strcpy(g_stPvrFiles[pvrFd].szFileName, filename);
+    memset(g_stPvrFiles[pvrFd].szFileName, '\0', sizeof(g_stPvrFiles[pvrFd].szFileName));
+    strncpy(g_stPvrFiles[pvrFd].szFileName, filename,strlen(filename));
+
     g_stPvrFiles[pvrFd].systemFd = sysFd;
     g_stPvrFiles[pvrFd].openMode = mode;
     g_stPvrFiles[pvrFd].u64StartOfCurFd = 0;
@@ -626,7 +624,7 @@ ssize_t PVR_PREAD64(HI_U8 *pMem, HI_U32 size, PVR_FILE64 file, HI_U64 offset)
             if(readed > 0)
             {
                 pPvrFile->u64SeekOffset = offset +  (HI_U64)readed;
-                //usleep(100000);
+                usleep(100000);
             }
             return (ssize_t)readed;
         }
@@ -646,7 +644,6 @@ ssize_t PVR_PREAD64(HI_U8 *pMem, HI_U32 size, PVR_FILE64 file, HI_U64 offset)
         {
             HI_ERR_PVR("[%s] PVR can't open file:'%s' for read.offset=%lld, u64FileNodeSize=%lld.\n",
                 __FUNCTION__, fNameOpen, offset, pPvrFile->u64FileNodeSize);
-            perror("open error:");
             return (ssize_t)readLen1;
         }
         pPvrFile->systemFd = sysFd;
@@ -689,7 +686,7 @@ ssize_t PVR_TS_PREAD64(HI_U8 *pMem, HI_U32 size, PVR_FILE64 file, HI_U64 offset)
     readed = (HI_S64)PVR_READ((void *)pMem, (size_t)size, pPvrFile->systemFd, (off_t)offset);
     if (readed < 0)
     {
-        perror("[PVR_TS_PREAD64] PVR_READ error");
+        HI_ERR_PVR("[PVR_TS_PREAD64] PVR_READ error");
     }
     else if (readed > 0)
     {
@@ -736,7 +733,6 @@ ssize_t PVR_PWRITE64(const void *pMem,  HI_U32 size, PVR_FILE64 file, HI_U64 off
         if(writen < 0)
         {
             HI_ERR_PVR("%s file:%d, want to write %d,  acturally %d,  offset:%lld,  u64StartOfCurFd: %lld \n",__func__, sysFd, readLen1, writen, offset, pPvrFile->u64StartOfCurFd);
-            perror("pwrite/PVR_WRITE...222...");
             return -1;
         }
         else if(writen == 0)
@@ -765,7 +761,6 @@ ssize_t PVR_PWRITE64(const void *pMem,  HI_U32 size, PVR_FILE64 file, HI_U64 off
         if (-1 == sysFd)
         {
             HI_ERR_PVR("PVR can't open file:'%s' for write.\n", fNameOpen);
-            perror("open error:");
             return -1;
         }
         pPvrFile->systemFd = sysFd;
@@ -774,10 +769,8 @@ ssize_t PVR_PWRITE64(const void *pMem,  HI_U32 size, PVR_FILE64 file, HI_U64 off
 
         readLen2 = size - readLen1;
         writen = (HI_S64)PVR_WRITE((void*)((size_t)pMem+readLen1), readLen2, sysFd, (off_t)(offset - pPvrFile->u64StartOfCurFd));
-        printf(">>writen:%llx\n",writen);
         if ( writen < 0)
         {
-            perror("PVR_WRITE...333...");
             return -1;
         }
         else if(writen == 0)
@@ -868,15 +861,26 @@ int PVR_Mount(const char *source, const char *target,
                  const void *data)
 {
     int ret = -1;
-#ifdef SUPPORT_HIMOUNT
+    HI_BOOL bVFAT = HI_TRUE;
+    /*HI_BOOL bNTFS = HI_FALSE;*/ 
     HI_BOOL bHIFAT = HI_FALSE;
+#ifdef SUPPORT_HIMOUNT
     if (HI_NULL != strcasestr(filesystemtype, "HIFAT"))
     {
         bHIFAT = HI_TRUE;
     }
 #endif
+    //lint -e774
+	/* not supported */
+	/*
+    if (HI_TRUE == bNTFS && HI_TRUE == bHIFAT)  
+    {
+        bVFAT = HI_TRUE;
+        bNTFS = HI_FALSE;
+    }*/
 
-
+    if (HI_TRUE == bVFAT)
+    {
 #ifdef SUPPORT_HIMOUNT
     if (HI_TRUE == bHIFAT)
     {
@@ -895,8 +899,13 @@ int PVR_Mount(const char *source, const char *target,
     ret = mount(source, target, "vfat", 0, NULL);
     HI_INFO_PVR("mount(%s,%s, \"vfat\") return %d.\n", source, target, ret);
 #endif
+    }
+    mountflags = 0;
+    data = NULL;
+    //lint +e774
 
     HI_INFO_PVR("filesystemtype =%s\n",filesystemtype);
+    UNUSED(bHIFAT);
     UNUSED(data);
     UNUSED(mountflags);
     return ret;

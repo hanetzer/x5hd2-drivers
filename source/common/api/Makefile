@@ -7,8 +7,6 @@ SDK_DIR ?= $(CURDIR)/../../..
 include $(SDK_DIR)/base.mak
 endif
 
-HI_FLASH_DIR=flash
-
 #===============================================================================
 # local variable
 #===============================================================================
@@ -41,7 +39,19 @@ OBJS := ./sys/hi_common.o     \
         ./mem/mpi_mmgr.o      \
         ./module/mpi_module.o \
         ./log/mpi_log.o       \
-        ./stat/mpi_stat.o
+        ./stat/mpi_stat.o     \
+        ./memdev/mpi_memdev.o \
+        ./userproc/mpi_userproc.o \
+        ./osal/hi_osal.o
+
+HIFLASH_DIR := ./flash
+CFG_HI_CFLAGS += -I$(HIFLASH_DIR)/include
+OBJS += $(HIFLASH_DIR)/src/hi_flash.o \
+        $(HIFLASH_DIR)/src/nand.o \
+        $(HIFLASH_DIR)/src/spi_raw.o \
+        $(HIFLASH_DIR)/src/nand_raw.o \
+        $(HIFLASH_DIR)/src/emmc_raw.o \
+        $(HIFLASH_DIR)/src/cmdline_parts.o
 
 DEPENDS := $(patsubst %.o, %.d, $(OBJS))
 
@@ -49,7 +59,11 @@ ifeq (y,$(CFG_HI_TEST_SUPPORT))
 CFG_HI_CFLAGS += -DCMN_TEST_SUPPORTED
 OBJS   += ./test/mpi_test.o
 endif
-PUB_HEADERS  := $(wildcard $(COMMON_DIR)/include/*.h)
+
+PUB_HEADERS  := $(COMMON_DIR)/include/hi_common.h \
+                $(COMMON_DIR)/include/hi_debug.h \
+                $(COMMON_DIR)/include/hi_module.h \
+                $(COMMON_DIR)/include/hi_type.h
 
 ifeq ("$(origin V)", "command line")
 ifeq ($V,0)
@@ -65,44 +79,45 @@ endif
 .PHONY: all clean install uninstall
 
 all: $(DEPENDS) $(LIBS)
-	make -C $(HI_FLASH_DIR) all
 
 clean:
-	rm -f $(LIBS).a
-	rm -f $(LIBS).so
-	find $(COMMON_DIR)/ -name "*.[dios]" -exec rm {} \;
-	make -C $(HI_FLASH_DIR) clean
+	$(AT)-rm -f $(LIBS).a
+	$(AT)-rm -f $(LIBS).so
+	$(AT)find $(COMMON_DIR)/ -name "*.[dios]" -exec rm {} \;
+	$(AT)find $(COMMON_DIR)/ -name "*.d.*" -exec rm {} \;
 	
 install:all
-	@cp -f $(PUB_HEADERS) $(INCLUDE_DIR)/
-	@cp -f $(LIBS).a  $(STATIC_LIB_DIR)
-	@cp -f $(LIBS).so $(SHARED_LIB_DIR)
-	@echo "Install common resources completed."
-	make -C $(HI_FLASH_DIR) install 
+	$(AT)cp -f $(PUB_HEADERS) $(INCLUDE_DIR)/
+	$(AT)cp -f $(LIBS).a  $(STATIC_LIB_DIR)
+	$(AT)-cp -f $(LIBS).so $(SHARED_LIB_DIR)
+	$(AT)cp -f $(HIFLASH_DIR)/include/hi_flash.h $(INCLUDE_DIR)/
+	$(AT)echo "Install common resources completed."
 	
 uninstall:
 	$(AT)cd $(INCLUDE_DIR) && rm -f $(notdir $(PUB_HEADERS)) ; cd - 1>/dev/null
 	$(AT)rm -f $(STATIC_LIB_DIR)/$(LIBS).a
-	$(AT)rm -f $(SHARED_LIB_DIR)/$(LIBS).so
-	make -C $(HI_FLASH_DIR) uninstall 
+	$(AT)-rm -f $(SHARED_LIB_DIR)/$(LIBS).so
+	$(AT)rm -f $(INCLUDE_DIR)/hi_flash.h
 	$(AT)echo "Uninstall common resources completed."
 
 #################################################################################
 ## Building library
 $(LIBS): $(OBJS)
 	$(AT)$(AR) -rcs $@.a $^
-	$(AT)$(CC) -shared -fPIC -o $@.so $^
+ifndef CFG_HI_STATIC_LIB_ONLY
+	$(AT)$(CC) -shared -o $@.so $^
+endif
 	$(AT)echo "Build $@ has completed."
 
 ## Building api objects
 ## using: -save-temps for temporary files
 ${OBJS}: %.o : %.c
-	echo "Compiling $@..."
-	$(CC) $(CFLAGS) $(CFG_HI_CFLAGS) -c $< -o $@
+	$(AT)echo "Compiling $@..."
+	$(AT)$(CC) $(CFG_HI_CFLAGS) $(CFLAGS) -c $< -o $@
 
 $(DEPENDS):%.d:%.c
-	@echo "[$(CC)] $@..."
-	@set -e; rm -f $@; \
+	$(AT)echo "[$(CC)] $@..."
+	$(AT)set -e; rm -f $@; \
 	$(CC) -MM $(CFLAGS) $(CFG_HI_CFLAGS) $< > $@.$$$$; \
 	sed 's,\($(notdir $*)\)\.o[ :]*,$(dir $@)\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$

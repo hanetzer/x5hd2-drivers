@@ -20,6 +20,8 @@
 #include "tde_hal.h"
 #include "wmalloc.h"
 #include "tde_proc.h"
+#include "tde_config.h"
+
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -2151,11 +2153,12 @@ STATIC INLINE HI_S32 TdeOsiSetMbPara(TDE_HANDLE s32Handle, TDE_HWNode_S* pHWNode
         }
         else
         {
+            TDE2_DEFLICKER_MODE_E enDeflickerMode = ((pMbOpt->bDeflicker)?(TDE2_DEFLICKER_MODE_RGB):(TDE2_DEFLICKER_MODE_NONE));
             TDE_FILLUP_RECT_BY_DRVSURFACE(stInRect, stDrvS1);
             TdeOsiCalcMbFilterOpt(&stFilterOpt, pstMB->enMbFmt, TDE2_MB_COLOR_FMT_JPG_YCbCr444MBP, 
                                   pstMbRect, pstDstRect, HI_FALSE, HI_FALSE, TDE_FRAME_PIC_MODE);
             stFilterOpt.stAdjInfo.enScaleMode = TDE_CHILD_SCALE_MBY;
-            return TdeOsiSetFilterChildNode(s32Handle, pHWNode, &stInRect, pstDstRect, pMbOpt->bDeflicker,
+            return TdeOsiSetFilterChildNode(s32Handle, pHWNode, &stInRect, pstDstRect, enDeflickerMode,
                                             &stFilterOpt);
         }
     }
@@ -2186,6 +2189,7 @@ STATIC INLINE HI_S32 TdeOsiSetMbPara(TDE_HANDLE s32Handle, TDE_HWNode_S* pHWNode
     {
         case TDE2_MBRESIZE_QUALITY_HIGH:
         {
+            TDE2_DEFLICKER_MODE_E enDeflickerMode = ((pMbOpt->bDeflicker)?(TDE2_DEFLICKER_MODE_RGB):(TDE2_DEFLICKER_MODE_NONE));
             TDE_TRACE(TDE_KERN_DEBUG, "High Quality Mb Resize!\n");
             /* pass1. brightness zoom at first(deflicker) */
             TdeHalNodeInitNd(pHWNode, HI_FALSE);
@@ -2199,7 +2203,7 @@ STATIC INLINE HI_S32 TdeOsiSetMbPara(TDE_HANDLE s32Handle, TDE_HWNode_S* pHWNode
             TDE_FILLUP_RECT_BY_DRVSURFACE(stInRect, stDrvS1);
             TDE_FILLUP_RECT_BY_DRVSURFACE(stOutRect, stDrvS1Tmp);
             TdeOsiSetFilterOptAdjInfo(&stDrvS1, &stDrvS1Tmp, &stFilterOpt, TDE_CHILD_SCALE_MBY);
-            if ((s32Ret = TdeOsiSetFilterChildNode(s32Handle, pHWNode, &stInRect, &stOutRect, pMbOpt->bDeflicker,
+            if ((s32Ret = TdeOsiSetFilterChildNode(s32Handle, pHWNode, &stInRect, &stOutRect, enDeflickerMode,
                                               &stFilterOpt)) < 0)
             {
                 tde_osr_disableirq();
@@ -2269,6 +2273,8 @@ STATIC INLINE HI_S32 TdeOsiSetMbPara(TDE_HANDLE s32Handle, TDE_HWNode_S* pHWNode
         }
         case TDE2_MBRESIZE_QUALITY_MIDDLE:
         {
+            TDE2_DEFLICKER_MODE_E enDeflickerMode = ((pMbOpt->bDeflicker)?(TDE2_DEFLICKER_MODE_RGB):(TDE2_DEFLICKER_MODE_NONE));
+
             TDE_TRACE(TDE_KERN_DEBUG, "Middle Quality Mb Resize!\n");
             /* pass1. chroma up-sample */
             TdeHalNodeInitNd(pHWNode, HI_FALSE);
@@ -2323,7 +2329,7 @@ STATIC INLINE HI_S32 TdeOsiSetMbPara(TDE_HANDLE s32Handle, TDE_HWNode_S* pHWNode
             stFilterOpt.u32WorkBufNum = u32WorkBufNum;
             TdeOsiSetFilterOptAdjInfo(&stDrvS1, &stDrvDst, &stFilterOpt, TDE_CHILD_SCALE_MB_CONCA_M);
             if((s32Ret = TdeOsiSetFilterChildNode(s32Handle, pHWNode, &stInRect, pstDstRect, 
-                                            pMbOpt->bDeflicker, &stFilterOpt)) < 0)
+                                            enDeflickerMode, &stFilterOpt)) < 0)
             {
                 tde_osr_disableirq();
                 TdeOsiListPutPhyBuff(u32WorkBufNum);
@@ -2335,6 +2341,7 @@ STATIC INLINE HI_S32 TdeOsiSetMbPara(TDE_HANDLE s32Handle, TDE_HWNode_S* pHWNode
         }
         case TDE2_MBRESIZE_QUALITY_LOW:
         {
+            TDE2_DEFLICKER_MODE_E enDeflickerMode = ((pMbOpt->bDeflicker)?(TDE2_DEFLICKER_MODE_RGB):(TDE2_DEFLICKER_MODE_NONE));
             TDE_TRACE(TDE_KERN_DEBUG, "Low Quality Mb Resize!\n");
             /* pass1. first connection and then zoom */
             TdeHalNodeInitNd(pHWNode, HI_FALSE);
@@ -2362,7 +2369,7 @@ STATIC INLINE HI_S32 TdeOsiSetMbPara(TDE_HANDLE s32Handle, TDE_HWNode_S* pHWNode
             TDE_FILLUP_RECT_BY_DRVSURFACE(stInRect, stDrvS1);
             TdeOsiSetFilterOptAdjInfo(&stDrvS1, &stDrvDst, &stFilterOpt, TDE_CHILD_SCALE_MB_CONCA_L);
             if((s32Ret = TdeOsiSetFilterChildNode(s32Handle, pHWNode, &stInRect, pstDstRect, 
-                                            pMbOpt->bDeflicker, &stFilterOpt)) < 0)
+                                            enDeflickerMode, &stFilterOpt)) < 0)
             {
                 tde_osr_disableirq();
                 TdeOsiListPutPhyBuff(u32WorkBufNum);
@@ -2374,6 +2381,7 @@ STATIC INLINE HI_S32 TdeOsiSetMbPara(TDE_HANDLE s32Handle, TDE_HWNode_S* pHWNode
         }
         default:     /*TDE_MBRESIZE_NONE*/
         {
+            TDE2_DEFLICKER_MODE_E enDeflickerMode = ((pMbOpt->bDeflicker)?(TDE2_DEFLICKER_MODE_RGB):(TDE2_DEFLICKER_MODE_NONE));
             TDE_TRACE(TDE_KERN_DEBUG, "Mb CUS by Filter!\n");
             TDE_TRACE(TDE_KERN_DEBUG, "Mb CUS by Filter!\n");
             /* first up-sample, then connection */
@@ -2400,7 +2408,7 @@ STATIC INLINE HI_S32 TdeOsiSetMbPara(TDE_HANDLE s32Handle, TDE_HWNode_S* pHWNode
             TDE_FILLUP_RECT_BY_DRVSURFACE(stInRect, stDrvS2);
             TdeOsiSetFilterOptAdjInfo(&stDrvS1, &stDrvDst, &stFilterOpt, TDE_CHILD_SCALE_MB_CONCA_CUS);
             if((s32Ret = TdeOsiSetFilterChildNode(s32Handle, pHWNode, &stInRect, pstDstRect, 
-                                            pMbOpt->bDeflicker, &stFilterOpt)) < 0)
+                                            enDeflickerMode, &stFilterOpt)) < 0)
             {
                 tde_osr_disableirq();
                 TdeOsiListPutPhyBuff(u32WorkBufNum);
@@ -4152,6 +4160,7 @@ STATIC HI_S32 TdeOsi1SourceFill(TDE_HANDLE s32Handle, TDE2_SURFACE_S *pstDst,
             if (pstFillColor->enColorFmt == pstDst->enColorFmt)
             {
                 enBaseMode = TDE_QUIKE_FILL;
+
             }
             else
             {
@@ -4198,6 +4207,7 @@ STATIC HI_S32 TdeOsi1SourceFill(TDE_HANDLE s32Handle, TDE2_SURFACE_S *pstDst,
         stDrvColorFill.u32FillData = pstFillColor->u32FillColor;
 	
 	stDrvColorFill.enDrvColorFmt = g_enTdeCommonDrvColorFmt[pstFillColor->enColorFmt];
+
     }
 
 
@@ -4222,7 +4232,6 @@ STATIC HI_S32 TdeOsi1SourceFill(TDE_HANDLE s32Handle, TDE2_SURFACE_S *pstDst,
 
     TdeOsiSetExtAlpha(pstDst, NULL, &stHWNode); /* AI7D02681 */
     
-   
     return TdeOsiSetNodeFinish(s32Handle, &stHWNode, 0, TDE_NODE_SUBM_ALONE);
 }
 
@@ -4686,7 +4695,6 @@ STATIC TDE_OPERATION_CATEGORY_E  TdeOsiGetOptCategory(TDE2_SURFACE_S * pstBackGr
             return TDE_OPERATION_BUTT;
         }
 
-        
         if (TdeOsiCheckSurface(pstBackGround, pstBackGroundRect) < 0)
         {
             TDE_TRACE(TDE_KERN_INFO, "\n");
@@ -4699,7 +4707,6 @@ STATIC TDE_OPERATION_CATEGORY_E  TdeOsiGetOptCategory(TDE2_SURFACE_S * pstBackGr
             return TDE_OPERATION_BUTT;
         }
 
-        
         if ((pstBackGroundRect->u32Height != pstDstRect->u32Height)
             || (pstBackGroundRect->u32Width != pstDstRect->u32Width))
         {
@@ -4728,7 +4735,6 @@ STATIC TDE_OPERATION_CATEGORY_E  TdeOsiGetOptCategory(TDE2_SURFACE_S * pstBackGr
         return TDE_OPERATION_DOUBLE_SRC;
     }
 
-    
     if ((HI_NULL != pstBackGround) && (HI_NULL == pstForeGround))
     {
         pTmpSrc2 = pstBackGround;
@@ -4758,7 +4764,7 @@ STATIC TDE_OPERATION_CATEGORY_E  TdeOsiGetOptCategory(TDE2_SURFACE_S * pstBackGr
         return TDE_OPERATION_BUTT;
     }
 
-    if ((HI_NULL == pstOpt) || !pstOpt->bResize)
+    if ((HI_NULL == pstOpt) || (!pstOpt->bResize))
     {
         TDE_UNIFY_RECT(pTmpSrc2Rect, pstDstRect);
     }
@@ -5467,13 +5473,6 @@ STATIC INLINE HI_VOID TdeOsiSetDeflickerPara(TDE_HWNode_S* pstHwNode, TDE2_DEFLI
     {
         stFlickerCmd.enDfeMode = TDE_DRV_AUTO_FILTER;
     }
-    else if (2 == bDeflicker)
-    {
-        stFlickerCmd.enDfeMode = TDE_DRV_FIXED_COEF0;
-        u8DefTable[0] = 16;
-        u8DefTable[1] = 32;
-        u8DefTable[2] = 16;
-    }
     
     memcpy((HI_VOID*)&stFlickerCmd.u8Coef0LastLine, (const HI_VOID *)u8DefTable, sizeof(u8DefTable));
 
@@ -6087,6 +6086,11 @@ STATIC HI_S32 TdeOsiSingleSrc1Blit(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstBack
     TDE_SCANDIRECTION_S stSrcScanInfo = {0};
     TDE_SCANDIRECTION_S stDstScanInfo = {0};
 
+    if ((NULL == pstBackGround) || (NULL == pstBackGroundRect)
+        || (NULL == pstDst) || (NULL == pstDstRect))
+    {
+        return HI_ERR_TDE_NULL_PTR;
+    }
    
     TdeHalNodeInitNd(&stHWNode, HI_FALSE);
 
@@ -6130,10 +6134,12 @@ STATIC HI_S32 TdeOsiSingleSrc1Blit(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstBack
 * Return:        success/fail
 * Others:        none
 *****************************************************************************/
-STATIC HI_S32 TdeOsiSingleSrc2Blit(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstForeGround, TDE2_RECT_S  *pstForeGroundRect,
-                                   TDE2_SURFACE_S* pstDst,
-                                   TDE2_RECT_S  *pstDstRect,
-                                   TDE2_OPT_S* pstOpt)
+STATIC HI_S32 TdeOsiSingleSrc2Blit(TDE_HANDLE s32Handle,
+                                                                TDE2_SURFACE_S* pstForeGround,
+                                                                TDE2_RECT_S  *pstForeGroundRect,
+                                                                TDE2_SURFACE_S* pstDst,
+                                                                TDE2_RECT_S  *pstDstRect,
+                                                                TDE2_OPT_S* pstOpt)
 {
     TDE_HWNode_S stHWNode = {0};
     TDE_DRV_SURFACE_S stSrcDrvSurface = {0};
@@ -6155,6 +6161,12 @@ STATIC HI_S32 TdeOsiSingleSrc2Blit(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstFore
 	TDE2_SURFACE_S stTempForeGround;
 #endif
     TDE_ASSERT(NULL != pstOpt);
+
+    if ((NULL == pstDst) || (NULL == pstDstRect) || (NULL == pstOpt)
+        || (NULL == pstForeGround) || (NULL == pstForeGroundRect))
+    {
+        return HI_ERR_TDE_NULL_PTR;
+    }
     
     if (TdeOsiCheckSingleSrc2Opt(pstForeGround->enColorFmt, pstDst->enColorFmt, pstOpt) < 0)
     {
@@ -6308,8 +6320,14 @@ STATIC HI_S32 TdeOsiDoubleSrcBlit(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstBackG
 #if defined (TDE_VERSION_PILOT) || defined (TDE_VERSION_FPGA) 
 	TDE2_SURFACE_S stTempForeGround;
 #endif
-    TDE_ASSERT(pstOpt != HI_NULL);
 
+    if ((NULL == pstBackGround) || (NULL == pstBackGroundRect)
+        || (NULL == pstForeGround) || (NULL == pstForeGroundRect)
+        || (NULL == pstDst) || (NULL == pstDstRect)
+        || (NULL == pstOpt))
+    {
+        return HI_ERR_TDE_NULL_PTR;
+    }
 
     memcpy(&stForeRect, pstForeGroundRect, sizeof(TDE2_RECT_S));
     memcpy(&stBackRect, pstBackGroundRect, sizeof(TDE2_RECT_S));
@@ -6448,7 +6466,11 @@ STATIC HI_S32 TdeOsiDoubleSrcBlit(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstBackG
 
             
             enFmtCategory = TdeOsiGetFmtCategory(pstBackGround->enColorFmt);
-
+            if (enFmtCategory >= TDE_COLORFMT_CATEGORY_BUTT)
+            {
+                TDE_TRACE(TDE_KERN_ERR, "Unknown fmt category!\n");
+                return HI_ERR_TDE_INVALID_PARA;
+            }
             
             TdeHalNodeSetColorKey(&stHWNode, enFmtCategory, &stColorkey);
 
@@ -6468,8 +6490,12 @@ STATIC HI_S32 TdeOsiDoubleSrcBlit(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstBackG
 
             
             enFmtCategory = TdeOsiGetFmtCategory(pstForeGround->enColorFmt);
+            if (enFmtCategory >= TDE_COLORFMT_CATEGORY_BUTT)
+            {
+                TDE_TRACE(TDE_KERN_ERR, "Unknown fmt category!\n");
+                return HI_ERR_TDE_INVALID_PARA;
+            }
 
-           
             TdeHalNodeSetColorKey(&stHWNode, enFmtCategory, &stColorkey);
             break;
 
@@ -6479,12 +6505,9 @@ STATIC HI_S32 TdeOsiDoubleSrcBlit(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstBackG
         }
     }
 
-    //TdeOsiSetBaseOptParaForBlit(pstOpt, pstBackGround, pstForeGround, TDE_OPERATION_DOUBLE_SRC, &stHWNode);
-    //TdeOsiSetExtAlpha(pstBackGround, pstForeGround, &stHWNode);
     TdeOsiSetBaseOptParaForBlit(pstOpt, &stTempSur, pstForeGround, TDE_OPERATION_DOUBLE_SRC, &stHWNode);
     TdeOsiSetExtAlpha(&stTempSur, pstForeGround, &stHWNode);
     
-    //if ((pstOpt->bResize) || (pstOpt->bDeflicker))
     if ((pstOpt->bResize) || (TDE2_DEFLICKER_MODE_NONE != pstOpt->enDeflickerMode))
     {
         TDE_DOUBLESRC_ADJ_INFO_S stDSAdjInfo;
@@ -6553,7 +6576,12 @@ STATIC HI_S32 TdeOsiYC422TmpOpt(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstForeGro
     HI_S32 s32Ret = HI_FAILURE;
     HI_BOOL bDeflicker;
 
-    
+    if ((NULL == pstDst) || (NULL == pstDstRect) || (NULL == pstOpt)
+        || (NULL == pstForeGround) || (NULL == pstForeGroundRect))
+    {
+        return HI_ERR_TDE_NULL_PTR;
+    }
+        
     if (((pstOpt->enDeflickerMode != TDE2_DEFLICKER_MODE_NONE)|| (pstOpt->bResize)) && (pstOpt->enMirror))
     {
         TDE_TRACE(TDE_KERN_INFO, "Could not support VF/FF/HF and Mirror\n!");
@@ -6577,8 +6605,18 @@ STATIC HI_S32 TdeOsiYC422TmpOpt(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstForeGro
         return HI_ERR_TDE_UNSUPPORTED_OPERATION;
     }
 
-    TdeOsiCheckSurface(pstForeGround, pstForeGroundRect);
-    TdeOsiCheckSurface(pstDst, pstDstRect);
+    s32Ret = TdeOsiCheckSurface(pstForeGround, pstForeGroundRect);
+    if (s32Ret < 0)
+    {
+        return HI_ERR_TDE_INVALID_PARA;
+    }
+
+    s32Ret = TdeOsiCheckSurface(pstDst, pstDstRect);
+    if (s32Ret < 0)
+    {
+        return HI_ERR_TDE_INVALID_PARA;
+    }
+
     if (!pstOpt->bResize)
     {
         TDE_UNIFY_RECT(pstForeGroundRect, pstDstRect);
@@ -6630,7 +6668,6 @@ HI_S32     TdeOsiBlit(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstBackGround, TDE2_
     TDE_OPERATION_CATEGORY_E enOptCategory;
     HI_S32 s32Ret = 0;
 
-    
     enOptCategory = TdeOsiGetOptCategory(pstBackGround, pstBackGroundRect, pstForeGround, pstForeGroundRect, pstDst,
                                          pstDstRect, pstOpt);
 
@@ -6741,7 +6778,7 @@ HI_S32     TdeOsiMbBlit(TDE_HANDLE s32Handle, TDE2_MB_S* pstMB, TDE2_RECT_S  *ps
     #endif
 
     TDE_CHECK_NOT_MB(pstDst->enColorFmt);
-
+    TDE_CHECK_MBCOLORFMT(pstMB->enMbFmt);
     
     if (TdeOsiCheckSurface(pstDst, pstDstRect) < 0
         || TdeOsiCheckMbSurface(pstMB, pstMbRect) < 0)
@@ -7224,6 +7261,11 @@ HI_S32  TdeOsiSolidDraw(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstSrc, TDE2_RECT_
     {
         HI_S32 s32Ret;
 
+        if ((NULL == pstSrc) || (NULL == pstDst) || (NULL == pstFillColor))
+        {
+            return HI_ERR_TDE_NULL_PTR;
+        }
+        
         TDE_CHECK_NOT_MB(pstSrc->enColorFmt);
         TDE_CHECK_NOT_MB(pstDst->enColorFmt);
         TDE_CHECK_NOT_MB(pstFillColor->enColorFmt);
@@ -7358,8 +7400,7 @@ HI_S32 TdeOsiCheckSingleSrcPatternOpt(TDE2_COLOR_FMT_E enSrcFmt,
         }
         if(TDE_COLORFMT_TRANSFORM_CLUT_CLUT == enColorTransType)
         {
-           
-            if ((pstOpt != HI_NULL) || (pstOpt->enAluCmd != TDE2_ALUCMD_NONE))
+            if ((pstOpt->enAluCmd != TDE2_ALUCMD_NONE))
             {
                 TDE_TRACE(TDE_KERN_INFO, "It doesn't ROP/Blend/Colorize!\n");
                 return -1;
@@ -7758,6 +7799,12 @@ HI_S32 TdeOsiSingleSrcPatternFill(TDE_HANDLE s32Handle, TDE2_SURFACE_S *pstSrc,
     TDE_CLUT_USAGE_E enClutUsage = TDE_CLUT_USAGE_BUTT;
     HI_S32 s32Ret;
 
+    if ((NULL == pstSrc) || (NULL == pstSrcRect)
+        || (NULL == pstDst) || (NULL == pstDstRect))
+    {
+        return HI_ERR_TDE_NULL_PTR;
+    }
+
     if (TdeOsiCheckSingleSrcPatternOpt(pstSrc->enColorFmt, pstDst->enColorFmt, pstOpt) < 0)
     {
         return HI_ERR_TDE_INVALID_PARA;
@@ -7921,7 +7968,10 @@ HI_S32 TdeOsiDoubleSrcPatternFill(TDE_HANDLE s32Handle, TDE2_SURFACE_S *pstBackG
     TDE_DRV_CONV_MODE_CMD_S stConv = {0};
     HI_S32 s32Ret;
 
-    if (HI_NULL == pstOpt)
+    if ((HI_NULL == pstBackGround) || (HI_NULL == pstBackGroundRect)
+        || (HI_NULL == pstForeGround) || (HI_NULL == pstForeGroundRect)
+        || (HI_NULL == pstDst) || (HI_NULL == pstDstRect)
+        || (HI_NULL == pstOpt))
     {
         return HI_ERR_TDE_INVALID_PARA;
     }
@@ -8064,7 +8114,11 @@ HI_S32 TdeOsiDoubleSrcPatternFill(TDE_HANDLE s32Handle, TDE2_SURFACE_S *pstBackG
 
             
             enFmtCategory = TdeOsiGetFmtCategory(pstBackGround->enColorFmt);
-
+            if (enFmtCategory >= TDE_COLORFMT_CATEGORY_BUTT)
+            {
+                TDE_TRACE(TDE_KERN_ERR, "Unknown fmt category!\n");
+                return HI_ERR_TDE_INVALID_PARA;
+            }
             
             TdeHalNodeSetColorKey(&stHWNode, enFmtCategory, &stColorkey);
 
@@ -8084,8 +8138,12 @@ HI_S32 TdeOsiDoubleSrcPatternFill(TDE_HANDLE s32Handle, TDE2_SURFACE_S *pstBackG
 
             
             enFmtCategory = TdeOsiGetFmtCategory(pstForeGround->enColorFmt);
+            if (enFmtCategory >= TDE_COLORFMT_CATEGORY_BUTT)
+            {
+                TDE_TRACE(TDE_KERN_ERR, "Unknown fmt category!\n");
+                return HI_ERR_TDE_INVALID_PARA;
+            }
 
-            
             TdeHalNodeSetColorKey(&stHWNode, enFmtCategory, &stColorkey);
             break;
 
@@ -8122,7 +8180,6 @@ HI_S32 TdeOsiPatternFill(TDE_HANDLE s32Handle, TDE2_SURFACE_S * pstBackGround,
     TDE2_RECT_S * pstDstRect, TDE2_PATTERN_FILL_OPT_S *pstOpt)
 {
     TDE_PATTERN_OPERATION_CATEGORY_E enOptCategory;
-    
     
     enOptCategory = TdeOsiGetPatternOptCategory(pstBackGround, pstBackGroundRect, pstForeGround, pstForeGroundRect, pstDst,
                                          pstDstRect, pstOpt);

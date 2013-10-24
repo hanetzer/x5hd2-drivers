@@ -39,6 +39,15 @@
 #include "alsa_aiao_proc_func.h"
 #include "alsa_aiao_comm.h"
 #include "hi_drv_ao.h"
+#ifdef HI_ALSA_AI_SUPPORT
+#include "hi_drv_ai.h"
+#include "drv_ai_ioctl.h"
+#include "drv_ai_func.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_dev.h"
+#include "drv_ai_private.h"
+#endif
 
 #define DSP0TOA9_IRQ_NUM  51
 #define AO_BUFFER_SIZE    1024*8
@@ -47,7 +56,7 @@
 
 //#define AIAO_ALSA_DEBUG
 #ifdef AIAO_ALSA_DEBUG
-#define ATRP()    printk(KERN_ALERT"\nfunc:%s line:%d ", __func__, __LINE__)
+#define ATRP()    printk(KERN_ALERT"\nfunc:%s line:%d \n", __func__, __LINE__)
 #define ATRC    printk
 #else
 #define ATRP() 
@@ -56,11 +65,14 @@
 
 //#define ALSA_TIME_DEBUG
 #ifdef  ALSA_TIME_DEBUG
-struct timespec curtime;
+static struct timespec curtime;
 #endif
 
 #ifdef CONFIG_AIAO_ALSA_PROC_SUPPORT
-#define ALSA_PROC_NAME "hi_aiao_data"
+#define ALSA_PROC_AO_NAME "hi_ao_data"
+#ifdef HI_ALSA_AI_SUPPORT
+#define ALSA_PROC_AI_NAME "hi_ai_data"
+#endif
 #endif
 
 static const struct snd_pcm_hardware aiao_hardware = {
@@ -82,6 +94,30 @@ static const struct snd_pcm_hardware aiao_hardware = {
 };
 
 extern HI_U32 aiao_isr_num;
+#ifdef HI_ALSA_AI_SUPPORT
+static AI_ALSA_Param_S stAIAlsaAttr;
+static irqreturn_t IsrAIFunc(AIAO_PORT_ID_E enPortID,HI_U32 u32IntRawStatus,void * dev_id)
+{
+    struct snd_pcm_substream *substream = dev_id;
+    struct snd_soc_pcm_runtime *soc_rtd = substream->private_data;
+    struct snd_soc_platform *platform = soc_rtd->platform;
+    struct hiaudio_data *had = snd_soc_platform_get_drvdata(platform);
+    unsigned int readpos = AIAO_DF_PeriodBufSize;
+    had->isr_total_cnt_c++;
+    hi_ai_alsa_query_writepos(had->ai_handle,&(had->ai_writepos));
+    hi_ai_alsa_query_readpos(had->ai_handle,&(had->ai_readpos));
+    hi_ai_alsa_update_readptr(had->ai_handle, &(readpos));
+    #ifdef AIAO_ALSA_DEBUG
+    if(had->isr_total_cnt_c <= 8)
+    {
+        printk(KERN_ALERT" get write pos is %d,and get readpos is %d,update read ptr is %d\n ",had->ai_writepos,had->ai_readpos,readpos);
+    }
+    #endif
+    snd_pcm_period_elapsed(substream);     
+     had->IsrProc(enPortID,u32IntRawStatus,NULL);
+	return IRQ_HANDLED;
+}
+#endif
 static irqreturn_t dsp0Isr(int irq, void * dev_id)
 {
     struct snd_pcm_substream *substream = dev_id;
@@ -163,6 +199,20 @@ static int hi_dma_prepare(struct snd_pcm_substream *substream)
 
     ATRP();
 
+#ifdef HI_ALSA_AI_SUPPORT	 
+	if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+	{
+		had->last_c_pos = 0;
+        had->current_c_pos = 0;
+		had->ai_writepos = 0;
+        had->ai_readpos = 0;
+        had->isr_total_cnt_c = 0;
+        had->ack_c_cnt = 0;
+        return hi_ai_alsa_flush_buffer(had->ai_handle);
+	}
+	else
+ #endif
+	{
     had->local_isr_num = 0;
     had->isr_total_cnt = 0;
     had->isr_discard_cnt = 0;
@@ -184,7 +234,7 @@ static int hi_dma_prepare(struct snd_pcm_substream *substream)
     aoe_dma_flushbuf(had->dma_index);   //prepare to restart dma buf
     return aoe_dma_prepare(had->dma_index, NULL);
 }
-
+}
 static int hi_dma_trigger(struct snd_pcm_substream *substream, int cmd)
 {
     struct snd_soc_pcm_runtime *soc_rtd = substream->private_data;
@@ -213,10 +263,16 @@ static int hi_dma_trigger(struct snd_pcm_substream *substream, int cmd)
                 ATRC("AIAO ALSA start dma Fail \n");
             }
         }
+#ifdef HI_ALSA_AI_SUPPORT		
         if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
         {
-            //TODO CAPTURE
+          ret =  hi_ai_alsa_setEnable(had->ai_handle,&had->cfile,HI_TRUE);
+          if(ret)
+          {   
+               ATRC("AI ALSA start dma Fail \n");
         }
+        }
+#endif
         break;
     case SNDRV_PCM_TRIGGER_STOP:
     case SNDRV_PCM_TRIGGER_SUSPEND:
@@ -229,10 +285,16 @@ static int hi_dma_trigger(struct snd_pcm_substream *substream, int cmd)
                 ATRC("AIAO ALSA stop dma Fail \n");
             }
         }
+#ifdef HI_ALSA_AI_SUPPORT
         if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
         {
-            //TODO CAPTURE
+            ret = hi_ai_alsa_setEnable(had->ai_handle,&had->cfile,HI_FALSE);
+            if(ret)
+            {   
+               ATRC("AI ALSA stop dma Fail \n");
         }
+        }
+#endif
         break;
         
     default:
@@ -246,7 +308,7 @@ static int hi_dma_mmap(struct snd_pcm_substream *substream,
 	struct vm_area_struct *vma)
 {
     //TODO 
-#if 0
+#if 1
     //struct snd_soc_pcm_runtime *soc_rtd = substream->private_data;
     //struct snd_soc_platform *platform = soc_rtd->platform;
     //struct hiaudio_data *had = snd_soc_platform_get_drvdata(platform);
@@ -290,42 +352,137 @@ static snd_pcm_uframes_t hi_dma_pointer(struct snd_pcm_substream *substream)
 	ATRC("\n----pointer--:%d . %u\n", tmp.tv_sec, tmp.tv_nsec);
 #endif
 
+#ifdef HI_ALSA_AI_SUPPORT
+	if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+	{
+		bytes_offset = had->ai_writepos;
+	}
+	else
+#endif
+	{
     bytes_offset = had->hw_readpos;
+	}
     if(bytes_offset >= snd_pcm_lib_buffer_bytes(substream))
  		bytes_offset = 0;
      
     frame_offset = bytes_to_frames(runtime, bytes_offset);
     //ATRC("\npointer return frame :0x%x   hw_readpos : 0x%x\n", frame_offset, bytes_offset);
     
+	if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
     had->pointer_frame_offset = frame_offset;
 
     return frame_offset;
 }
+#ifdef HI_ALSA_AI_SUPPORT
+static void hi_ai_set_params(struct snd_pcm_substream *substream,
+    struct snd_pcm_hw_params *params,struct snd_pcm_runtime *runtime)
+{
+     if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+     {
+        stAIAlsaAttr.IsrFunc                 =(AIAO_IsrFunc*)IsrAIFunc;
+        stAIAlsaAttr.substream               =(void*)substream;
+        stAIAlsaAttr.stBuf.u32BufPhyAddr     = runtime->dma_addr;    // for dma buffer
+        stAIAlsaAttr.stBuf.u32BufVirAddr     = (int)runtime->dma_area;
+        stAIAlsaAttr.stBuf.u32BufSize        = runtime->dma_bytes;
+        stAIAlsaAttr.stBuf.u32PeriodByteSize = params_buffer_bytes(params)/params_periods(params);
+        stAIAlsaAttr.stBuf.u32Periods        = params_periods(params);
+     }
+}
+#endif
 
 static int hi_dma_hwparams(struct snd_pcm_substream *substream,
     struct snd_pcm_hw_params *params)
 {
+    unsigned int buffer_bytes;
     struct snd_soc_pcm_runtime *soc_rtd = substream->private_data;
     struct snd_pcm_runtime *runtime = substream->runtime;
     struct snd_soc_platform *platform = soc_rtd->platform;
     struct hiaudio_data *had = snd_soc_platform_get_drvdata(platform);
     //int stream = substream->stream;
-    int buffer_bytes = params_buffer_bytes(params);
     //int period_bytes = params_period_bytes(params);
     int dma_index;
     AO_BUF_ATTR_S stDmaAttr;
     HI_UNF_SND_ATTR_S stAttr;
     int ret = 0;
+#ifdef HI_ALSA_AI_SUPPORT
+	HI_UNF_AI_ATTR_S pstAiAttr;
+	AI_Create_Param_S stAiParam;
+#endif
     
     ATRP();
 
+    buffer_bytes = params_buffer_bytes(params);
     dma_index = INITIAL_VALUE;
     if(snd_pcm_lib_malloc_pages(substream, buffer_bytes) < 0)
         return -ENOMEM;
 
+#ifdef HI_ALSA_AI_SUPPORT
+   if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+   	{   
+   		memset(&pstAiAttr,0,sizeof(pstAiAttr));
+		memset(&stAiParam,0,sizeof(stAiParam));
+   		ret = hi_ai_alsa_get_attr(HI_UNF_AI_I2S0,&pstAiAttr);
+		if(HI_SUCCESS != ret)
+		{
+			ret = -EINVAL;
+			goto err_AllocateDma;
+		}  
+        pstAiAttr.enSampleRate =  params_rate(params);
+        pstAiAttr.unAttr.stI2sAttr.stAttr.enChannel = params_channels(params);
+         switch (params_format(params)) {
+         case SNDRV_PCM_FORMAT_S16_LE:
+         	pstAiAttr.unAttr.stI2sAttr.stAttr.enBitDepth = HI_UNF_I2S_BIT_DEPTH_16;
+         	break;
+         case SNDRV_PCM_FMTBIT_S24_LE:
+         	pstAiAttr.unAttr.stI2sAttr.stAttr.enBitDepth = HI_UNF_I2S_BIT_DEPTH_24;
+         	break;
+         default:
+             break;
+         }
+       #ifdef AIAO_ALSA_DEBUG
+       printk("rate : %d\n", pstAiAttr.enSampleRate);
+       printk("channel : %d\n", pstAiAttr.unAttr.stI2sAttr.stAttr.enChannel);
+       printk("bitdepth : %d\n", pstAiAttr.unAttr.stI2sAttr.stAttr.enBitDepth);
+       #endif
+       ret = hi_ai_alsa_get_proc_func(&had->IsrProc);//get proc func
+       if(HI_SUCCESS != ret)
+       {
+            ret = -EINVAL;
+            goto err_AllocateDma;
+       }
+
+        hi_ai_set_params(substream,params,runtime);
+        stAiParam.pAlsaPara = (void *)&stAIAlsaAttr;
+        stAiParam.enAiPort = HI_UNF_AI_I2S0;
+//		pstAiAttr.enAiPort = HI_UNF_AI_I2S0;
+        memcpy(&stAiParam.stAttr, &pstAiAttr, sizeof(HI_UNF_AI_ATTR_S));    
+		ret = hi_ai_alsa_open(&stAiParam,&had->cfile);
+		if(HI_SUCCESS != ret)
+		{
+			ret = -EINVAL;
+            goto err_AllocateDma;
+		}
+		had->ai_handle = stAiParam.hAi; 
+		#ifdef AIAO_ALSA_DEBUG
+		ATRC("\nbuffer_bytes : 0x%x \n", buffer_bytes);
+		ATRC("\n pstAiAttr.enSampleRate : 0x%d \n", (int)pstAiAttr.enSampleRate);
+		ATRC("\n pstAiAttr.u32PcmFrameMaxNum : 0x%d \n", pstAiAttr.u32PcmFrameMaxNum);
+		ATRC("\n pstAiAttr.u32PcmSamplesPerFrame : 0x%d \n", pstAiAttr.u32PcmSamplesPerFrame);
+		ATRC("\n pstAiAttr.enAiPort : 0x%d \n", (int)pstAiAttr.enAiPort);
+        ATRC("\n pstAiAttr.bAlsaUse : 0x%d \n", stAiParam.bAlsaUse);
+		ATRC("\nruntime->dma_addr : %d \n", runtime->dma_addr);
+		ATRC("\(int)runtime->dma_area : %d \n", (int)runtime->dma_area);
+		ATRC("\nruntime->dma_bytes : %d \n", runtime->dma_bytes);
+		ATRC("\nhad->ai_handle is %d\n", had->ai_handle);
+		#endif
+   	}
+   else
+#endif
+   	{
     //STEP 1 open snd device 
     if(!had->open_cnt)
     {
+        memset(&stAttr,0,sizeof(HI_UNF_SND_ATTR_S));
         ret = aoe_dma_getopendefparam(&stAttr);
         if(HI_SUCCESS != ret)
         {
@@ -362,6 +519,7 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
     }
    
     had->dma_index = dma_index;
+   }
     had->sthwparam.channels = params_channels(params);
     had->sthwparam.rate = params_rate(params);
     had->sthwparam.format = params_format(params);
@@ -391,6 +549,8 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
     printk("\nhad->sthwparam.frame_size : 0x%x", had->sthwparam.frame_size);
 #endif
 
+    if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+    {
 #ifdef USE_DSP_ISR    
     if(had->irq_num == INITIAL_VALUE)
     {
@@ -402,6 +562,7 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
         had->irq_num = DSP0TOA9_IRQ_NUM;
     }
 #endif
+    }
 
     return ret;
     //ret = aoe_dma_releasechan(dma_index);
@@ -432,6 +593,8 @@ static int hi_dma_open(struct snd_pcm_substream *substream)
 
     //interrupt by step
     ret = snd_pcm_hw_constraint_integer(substream->runtime, SNDRV_PCM_HW_PARAM_PERIODS);
+    if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+    {
 
     had->irq_num = INITIAL_VALUE;
     had->dma_index= INITIAL_VALUE;
@@ -457,7 +620,7 @@ static int hi_dma_open(struct snd_pcm_substream *substream)
 #ifdef CONFIG_AIAO_ALSA_PROC_SUPPORT
    had->pointer_frame_offset = 0;
 #endif
-    
+    }
     return ret;
 }
 
@@ -469,7 +632,23 @@ static int hi_dma_close(struct snd_pcm_substream *substream)
     int ret;
 
     ATRP();
+#ifdef HI_ALSA_AI_SUPPORT
+	if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
+	{
+        if(INITIAL_VALUE != had->ai_handle)
+		{
+            ret = hi_ai_alsa_destroy(had->ai_handle,&had->cfile); //jiaxi check
+			if(ret)
+                ATRC("ai destroy fail  num =%d fail !\n", had->ai_handle);
+			else 
+                had->ai_handle = INITIAL_VALUE;
+		}
 
+        had->isr_total_cnt_c = 0;
+	}		
+    else
+#endif
+    {
     if(INITIAL_VALUE != had->dma_index)
     {
         ret = aoe_dma_releasechan(had->dma_index);
@@ -496,6 +675,7 @@ static int hi_dma_close(struct snd_pcm_substream *substream)
     had->isr_total_cnt = 0;
     had->isr_discard_cnt = 0;
 #endif
+    }
 
     snd_pcm_lib_free_pages(substream);
 
@@ -513,6 +693,8 @@ static int hi_dma_ack(struct snd_pcm_substream *substream)
 
     //ATRP();
     
+   if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
+  {
     current_pos = runtime->control->appl_ptr;
     real_size = (current_pos - had->last_pos)*had->sthwparam.frame_size;
 
@@ -544,6 +726,7 @@ static int hi_dma_ack(struct snd_pcm_substream *substream)
     aoe_update_writeptr(had->dma_index, &(real_size));
 
     had->last_pos = current_pos;
+ }
     return 0;
 }
 
@@ -589,13 +772,19 @@ static int hi_dma_probe(struct snd_soc_platform *soc_platform)
     
 #ifdef CONFIG_AIAO_ALSA_PROC_SUPPORT
     struct hiaudio_data *had = dev_get_drvdata(soc_platform->dev);
-    ret = hiaudio_proc_init(soc_platform->card->snd_card, ALSA_PROC_NAME, had);
+    ret = hiaudio_ao_proc_init(soc_platform->card->snd_card, ALSA_PROC_AO_NAME, had);
     if(ret < 0)
     {
         //ATRC("had_init_debugfs fail %d", ret);
     }
+#ifdef HI_ALSA_AI_SUPPORT
+    ret = hiaudio_ai_proc_init(soc_platform->card->snd_card, ALSA_PROC_AI_NAME, had);
+    if(ret < 0)
+    {
+    }
 #endif
     
+#endif    
     return ret;
 }
 
@@ -641,7 +830,15 @@ static int __devinit soc_snd_platform_probe(struct platform_device *pdev)
     had->aoe_write_ptr = 0;
     had->aoe_updatewptr_offset = 0;
     had->pointer_frame_offset = 0;
-
+#ifdef HI_ALSA_AI_SUPPORT
+    had->ack_c_cnt = 0;
+	had->last_c_pos = 0;
+    had->current_c_pos = 0;
+	had->ai_writepos = 0;
+    had->ai_readpos = 0;
+	had->ai_handle = INITIAL_VALUE;
+    had->isr_total_cnt_c = 0;
+#endif
     memset(&had->sthwparam, 0, sizeof(struct hisi_aiao_hwparams));
 
 #ifdef CONFIG_AIAO_ALSA_PROC_SUPPORT

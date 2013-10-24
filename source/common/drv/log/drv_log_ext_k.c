@@ -28,21 +28,18 @@
 #include <linux/proc_fs.h>
 #include <asm/uaccess.h>
 #include <linux/sched.h>
-//#include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #include <linux/delay.h>
-
 #include "hi_kernel_adapt.h"
-
 #include "hi_type.h"
 #include "hi_debug.h"
-
-//#include "drv_dev_ext.h"
+#include "hi_osal.h"
 #include "hi_drv_log.h"
+#include "hi_drv_proc.h"
 #include "drv_log.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
 #include "drv_log_ioctl.h"
-#include "drv_file_ext.h"
+#include "hi_drv_file.h"
 
 
 MMZ_BUFFER_S   g_LogConfigBuf;
@@ -61,7 +58,7 @@ HI_DECLARE_MUTEX(g_LogMutex);
 #define MAX_FILENAME_LENTH 256
 
 /* this variable will be used by /kmod/load script */
-static int LogBufSize = 16 * DEBUG_MSG_BUF_RESERVE;
+static int LogBufSize = 256 * DEBUG_MSG_BUF_RESERVE;
 
 static char g_szPathBuf[MAX_FILENAME_LENTH] = {0};
 static char *UdiskLogFile = g_szPathBuf;
@@ -153,7 +150,7 @@ HI_S32 HI_DRV_LOG_BufferRead(HI_U8 *Buf,  HI_U32 BufLen, HI_U32 *pCopyLen, HI_BO
         {
             if(copy_to_user(Buf, (MsgInfoNow.u32ReadAddr+MsgInfoNow.pu8StartAddrVir), CopyLen))
             {
-                printk("%s %d:copy_to_user error\n", __FUNCTION__, __LINE__);
+                HI_ERR_LOG("copy_to_user error\n");
                 return HI_FAILURE;
             }
         }
@@ -170,7 +167,7 @@ HI_S32 HI_DRV_LOG_BufferRead(HI_U8 *Buf,  HI_U32 BufLen, HI_U32 *pCopyLen, HI_BO
         {
             if(copy_to_user(Buf, (MsgInfoNow.u32ReadAddr+MsgInfoNow.pu8StartAddrVir), DataLen1))
             {
-                printk("%s %d:copy_to_user error\n", __FUNCTION__, __LINE__);
+                HI_ERR_LOG("copy_to_user error\n");
                 return HI_FAILURE;
             }
         }
@@ -183,7 +180,7 @@ HI_S32 HI_DRV_LOG_BufferRead(HI_U8 *Buf,  HI_U32 BufLen, HI_U32 *pCopyLen, HI_BO
         {
             if(copy_to_user((Buf + DataLen1), MsgInfoNow.pu8StartAddrVir, (CopyLen - DataLen1)))
             {
-                printk("%s %d:copy_to_user error\n", __FUNCTION__, __LINE__);
+                HI_ERR_LOG("copy_to_user error\n");
                 return HI_FAILURE;
             }
         }
@@ -269,7 +266,7 @@ HI_S32 HI_DRV_LOG_BufferWrite(HI_U8 *Buf,  HI_U32 MsgLen, HI_U32 UserOrKer)
             if(copy_from_user((g_MsgBufInfo.u32WriteAddr+g_MsgBufInfo.pu8StartAddrVir),
                     Buf, CopyLen1))
             {
-                printk("%s %d:copy_from_user error\n", __FUNCTION__, __LINE__);
+                HI_ERR_LOG("copy_from_user error\n");
             }
         }
     }
@@ -284,7 +281,7 @@ HI_S32 HI_DRV_LOG_BufferWrite(HI_U8 *Buf,  HI_U32 MsgLen, HI_U32 UserOrKer)
             if(copy_from_user(g_MsgBufInfo.pu8StartAddrVir,
                     (Buf + CopyLen1), CopyLen2))
             {
-                printk("%s %d:copy_from_user error\n", __FUNCTION__, __LINE__);
+                HI_ERR_LOG("copy_from_user error\n");
             }
         }
     }
@@ -317,7 +314,7 @@ static HI_S32 LOGPrintToBuf(const char *format, ...)
     }
 
     va_start(args, format);
-    MsgLen = vsnprintf(log_str, LOG_MAX_TRACE_LEN-1, format, args);
+    MsgLen = HI_OSAL_Vsnprintf(log_str, LOG_MAX_TRACE_LEN-1, format, args);
     va_end(args);
 
     if (MsgLen >= (LOG_MAX_TRACE_LEN-1))
@@ -350,27 +347,47 @@ HI_S32 LOGAddModule(HI_PCHAR szProcName, HI_MOD_ID_E u32ItemID)
         return HI_FAILURE;
     }
 
-    g_pLogConfigInfo[u32ItemID].u32LogLevel = HI_LOG_LEVEL_DEFAULT;
-    snprintf(g_pLogConfigInfo[u32ItemID].ModName, 16, szProcName);
+    g_pLogConfigInfo[u32ItemID].u8LogLevel = HI_LOG_LEVEL_DEFAULT;
+    HI_OSAL_Snprintf(g_pLogConfigInfo[u32ItemID].ModName, sizeof(g_pLogConfigInfo[u32ItemID].ModName), szProcName);
 
     return HI_SUCCESS;
 }
 
+/* remove a module*/
+HI_S32 LOGRemoveModule(HI_PCHAR szProcName, HI_MOD_ID_E u32ItemID)
+{
+
+    if (NULL == g_pLogConfigInfo || u32ItemID >= LOG_CONFIG_BUF_SIZE/sizeof(LOG_CONFIG_INFO_S))
+    {
+        return HI_FAILURE;
+    }
+
+    g_pLogConfigInfo[u32ItemID].u8LogLevel = HI_LOG_LEVEL_DEFAULT;
+    HI_OSAL_Snprintf(g_pLogConfigInfo[u32ItemID].ModName, sizeof(g_pLogConfigInfo[u32ItemID].ModName), "Invalid");
+
+    return HI_SUCCESS;
+}
 
 /* HI_TRUE: need print ;  HI_FALSE: not print */
 static HI_BOOL LOGLevelChk(HI_S32 s32Levle, HI_U32 enModId)
 {
-    if (0 == g_LogModInit)
+    if (enModId < LOG_CONFIG_BUF_SIZE/sizeof(LOG_CONFIG_INFO_S))
     {
-        return HI_TRUE;
+        /* log module has Initialized yet */
+        if (g_LogModInit && s32Levle <= g_pLogConfigInfo[enModId].u8LogLevel)
+        {
+            return HI_TRUE;
+        }
+
+        /* log module has not Initialized yet */
+        if(!g_LogModInit && s32Levle <= HI_LOG_LEVEL_DEFAULT)
+        {
+            return HI_TRUE;
+        }
+        
     }
 
-    if ((enModId >= LOG_CONFIG_BUF_SIZE/sizeof(LOG_CONFIG_INFO_S)) ||
-        (s32Levle > g_pLogConfigInfo[enModId].u32LogLevel))
-    {
-        return HI_FALSE;
-    }
-    return HI_TRUE;
+    return HI_FALSE;
 }
 
 
@@ -398,7 +415,7 @@ static HI_U32 LOGPrintPosGet(HI_MOD_ID_E enModId)
     }
     else
     {
-        u32Pos = g_pLogConfigInfo[enModId].u32LogPrintPos;
+        u32Pos = g_pLogConfigInfo[enModId].u8LogPrintPos;
     }
 
     //LOG_FILE_UNLOCK();
@@ -443,7 +460,7 @@ int LogUdiskWriteThread(void* pArg)
 
         bSetFileFlag = g_bSetLogFileFlag;
 
-        snprintf(szFileName, sizeof(szFileName)-1, "%s/stb.log", (const HI_S8*)UdiskLogFile);
+        HI_OSAL_Snprintf(szFileName, sizeof(szFileName)-1, "%s/stb.log", (const HI_S8*)UdiskLogFile);
 
         LOG_FILE_UNLOCK();
         
@@ -488,7 +505,7 @@ HI_S32 LogUdiskInit(const HI_U8* pDiskFolder)
         log_udisk_task = kthread_create(LogUdiskWriteThread, (void*)pDiskFolder, "log_udisk_task");
         if(IS_ERR(log_udisk_task))
         {
-            printk(KERN_NOTICE "create new kernel thread failed\n");
+            HI_ERR_LOG("create new kernel thread failed\n");
 
             err = PTR_ERR(log_udisk_task);
             log_udisk_task = NULL;
@@ -522,18 +539,14 @@ HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId, HI_U8 *pFuncName, HI_U32
     HI_BOOL bLevel = HI_FALSE;
     char    log_str[LOG_MAX_TRACE_LEN]={'a'};
 
-    if (0 != g_LogModInit)
-    {
-        bLevel = LOGLevelChk(u32Level, enModId);
-    }
-
-    if ((0 == g_LogModInit) || bLevel)
+    bLevel = LOGLevelChk(u32Level, enModId);
+    if (bLevel)
     {
         log_str[LOG_MAX_TRACE_LEN-1] = 'b';
         log_str[LOG_MAX_TRACE_LEN-2] = 'c';
 
         va_start(args, format);
-        MsgLen = vsnprintf(log_str, LOG_MAX_TRACE_LEN, format, args);
+        MsgLen = HI_OSAL_Vsnprintf(log_str, LOG_MAX_TRACE_LEN, format, args);
         va_end(args);
 
         if (MsgLen >= LOG_MAX_TRACE_LEN)
@@ -545,14 +558,8 @@ HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId, HI_U8 *pFuncName, HI_U32
             log_str[LOG_MAX_TRACE_LEN-5] = '.';
         }
 
-        if (0 == g_LogModInit)
-        {
-            HI_PRINT("[%s-Unknow]: %s[%d]:%s", DebugLevelName[u32Level],  pFuncName,
-                        u32LineNum, log_str);
-            return;
-        }
-
-        if (bLevel)
+        /* log module has Initialized. */
+        if (g_LogModInit)
         {
             int nPos = LOGPrintPosGet(enModId);
 
@@ -564,20 +571,26 @@ HI_VOID HI_LogOut(HI_U32 u32Level, HI_MOD_ID_E enModId, HI_U8 *pFuncName, HI_U32
                 case LOG_OUTPUT_SERIAL:
                 if ( (enModId != HI_ID_VSYNC) && (enModId != HI_ID_ASYNC) )
                 {
-                    HI_PRINT PRINT_FMT;
+                    HI_PRINT(PRINT_FMT);
                 }
                 break;
+				
                 case LOG_OUTPUT_NETWORK:
                 case LOG_OUTPUT_UDISK:
-                #if defined(LOG_NETWORK_SUPPORT) || defined(LOG_UDISK_SUPPORT)
-                    LOGPrintToBuf PRINT_FMT;
-                #endif
+#if defined(LOG_NETWORK_SUPPORT) || defined(LOG_UDISK_SUPPORT)
+                    LOGPrintToBuf(PRINT_FMT);
+#endif
                 break;
             }
-            return;
+
+        }
+        else /* log module has not Initialized. */
+        {
+            HI_PRINT("[%s-Unknow]: %s[%d]:%s", DebugLevelName[u32Level],  pFuncName,
+                        u32LineNum, log_str);
+
         }
     }
-
 
 }
 
@@ -604,10 +617,10 @@ static int SearchInArray(char *array[], int array_size, char *s)
 static int SearchMod(char *s)
 {
     int i= 0;
-    int cnt = HI_ID_BUTT&0xff;
+    int cnt = LOG_CONFIG_BUF_SIZE/sizeof(LOG_CONFIG_INFO_S);
 
     for (i = 0; i < cnt; i++){
-        if (!strcmp(g_pLogConfigInfo[i].ModName, s))
+        if (!HI_OSAL_Strncasecmp(g_pLogConfigInfo[i].ModName, s, sizeof(g_pLogConfigInfo[i].ModName)))
             return i;
     }
     return -1;
@@ -645,46 +658,36 @@ static int SeperateString(char *s, char **left, char **right)
 HI_S32 HI_DRV_LOG_ProcRead(struct seq_file *s, HI_VOID *pArg)
 {
     HI_U32 i;
-    HI_U32 u32Level;
+    HI_U8 u8Level;
     HI_U32 u32Total = LOG_CONFIG_BUF_SIZE/sizeof(LOG_CONFIG_INFO_S);
 
     if (0 == g_LogModInit)
     {
-        seq_printf(s,"    Log module not init\n");
+        PROC_PRINT(s,"    Log module not init\n");
         return 0;
     }
+    PROC_PRINT(s, "---------------- Log Path ------------------------\n");
+    PROC_PRINT(s, "log path:  %s\n", UdiskLogFile);
 
+    PROC_PRINT(s, "---------------- Store Path ----------------------\n");
+    PROC_PRINT(s, "store path:  %s\n", StorePath);
 
-    seq_printf(s,"Log module\t  Level\n");
+    PROC_PRINT(s, "---------------- Module Log Level ----------------\n");
+    PROC_PRINT(s,"Log module\t  Level\n");
+    PROC_PRINT(s, "--------------------------\n");
     for (i = 0; i < u32Total; i++)
     {
-        if (strcmp(g_pLogConfigInfo[i].ModName, "Invalid"))
+        if (HI_OSAL_Strncmp(g_pLogConfigInfo[i].ModName, "Invalid", 8))
         {
-            u32Level = g_pLogConfigInfo[i].u32LogLevel;
-            seq_printf(s,"%-16s  %d(%s)\n",
-                g_pLogConfigInfo[i].ModName, u32Level, DebugLevelName[u32Level]);
+            u8Level = (HI_U32)g_pLogConfigInfo[i].u8LogLevel;
+            PROC_PRINT(s,"%-16s  %d(%s)\n",
+                g_pLogConfigInfo[i].ModName, u8Level, DebugLevelName[u8Level]);
         }
     }
 
-    seq_printf(s, "\nlog path = %s\n", UdiskLogFile);
-    seq_printf(s, "store path = %s\n", StorePath);
-
-    seq_printf(s, "\nTo modify the level, use command line in shell: \n");
-    seq_printf(s, "    echo module_name = level_number > /proc/msp/log\n");
-    seq_printf(s, "    level_number: 0-fatal, 1-error, 2-warning, 3-info\n");
-    seq_printf(s, "    example: 'echo demux=3 > /proc/msp/log'\n");
-    seq_printf(s, "    will change log levle of module \"DEMUX\" to 3, then, \n");
-    seq_printf(s, "all message with level higher than \"info\" will be printed.\n");
-    seq_printf(s, "Use 'echo \"all = x\" > /proc/msp/log' to change all modules.\n");
-
-    seq_printf(s, "\n\nTo modify the log path, use command line in shell: \n");
-    seq_printf(s, "Use 'echo \"log = x\" > /proc/msp/log' to set log path.\n");
-    seq_printf(s, "Use 'echo \"log = /dev/null\" > /proc/msp/log' to close log udisk output.\n");
-    seq_printf(s, "    example: 'echo log=/home > /proc/msp/log'\n");
-    
-    seq_printf(s, "\n\nTo modify the debug file store path, use command line in shell: \n");
-    seq_printf(s, "Use 'echo \"storepath = x\" > /proc/msp/log' to set debug file path.\n");
-    seq_printf(s, "    example: 'echo storepath=/tmp > /proc/msp/log'\n");
+    PROC_PRINT(s, "\necho hi_avplay=2 > /proc/msp/log\n");
+    PROC_PRINT(s, "echo log=/mnt > /proc/msp/log\n");
+    PROC_PRINT(s, "echo storepath=/mnt > /proc/msp/log\n");
 
     return 0;
 }
@@ -692,15 +695,14 @@ HI_S32 HI_DRV_LOG_ProcRead(struct seq_file *s, HI_VOID *pArg)
 HI_S32 HI_DRV_LOG_ProcWrite( struct file * file,  const char __user * buf, 
 					 size_t count, loff_t *ppos)
 {
-	#define TMP_BUF_LEN 32
-    char m[TMP_BUF_LEN];
-    char d[TMP_BUF_LEN] = {[0 ... TMP_BUF_LEN-1] = '\0'};
-    size_t len = TMP_BUF_LEN;
+    char m[MAX_FILENAME_LENTH] = {0};
+    char d[MAX_FILENAME_LENTH] = {0};
+    size_t len = MAX_FILENAME_LENTH;
     char *left, *right;
     int idx, level;
     int nRet = 0;
 
-    if (*ppos >= TMP_BUF_LEN)
+    if (*ppos >= MAX_FILENAME_LENTH)
         return -EFBIG;
 
     len = min(len, count);
@@ -714,12 +716,34 @@ HI_S32 HI_DRV_LOG_ProcWrite( struct file * file,  const char __user * buf,
     }
 
     StripString(m, d);
+
+    /* echo help info to current terinmal */
+    if (!HI_OSAL_Strncasecmp("help", m, 4))
+    {
+        HI_DRV_PROC_EchoHelper("To modify the level, use command line in shell: \n");
+        HI_DRV_PROC_EchoHelper("    echo module_name = level_number > /proc/msp/log\n");
+        HI_DRV_PROC_EchoHelper("    level_number: 0-fatal, 1-error, 2-warning, 3-info\n");
+        HI_DRV_PROC_EchoHelper("    example: 'echo HI_DEMUX=3 > /proc/msp/log'\n");
+        HI_DRV_PROC_EchoHelper("    will change log levle of module \"HI_DEMUX\" to 3, then, \n");
+        HI_DRV_PROC_EchoHelper("all message with level higher than \"info\" will be printed.\n");
+        HI_DRV_PROC_EchoHelper("Use 'echo \"all = x\" > /proc/msp/log' to change all modules.\n");
+
+        HI_DRV_PROC_EchoHelper("\n\nTo modify the log path, use command line in shell: \n");
+        HI_DRV_PROC_EchoHelper("Use 'echo \"log = x\" > /proc/msp/log' to set log path.\n");
+        HI_DRV_PROC_EchoHelper("Use 'echo \"log = /dev/null\" > /proc/msp/log' to close log udisk output.\n");
+        HI_DRV_PROC_EchoHelper("    example: 'echo log=/home > /proc/msp/log'\n");
+        
+        HI_DRV_PROC_EchoHelper("\n\nTo modify the debug file store path, use command line in shell: \n");
+        HI_DRV_PROC_EchoHelper("Use 'echo \"storepath = x\" > /proc/msp/log' to set debug file path.\n");
+        HI_DRV_PROC_EchoHelper("    example: 'echo storepath=/tmp > /proc/msp/log'\n");
+    }
+    
     if (SeperateString(d, &left, &right)){
         HI_WARN_LOG("string is unkown!\n");
         goto out;
     }
 
-    if (!strcmp("log", left))
+    if (!HI_OSAL_Strncasecmp("log", left, 4))
     {        
         if (strlen(right) >= sizeof(g_szPathBuf))
         {
@@ -741,7 +765,7 @@ HI_S32 HI_DRV_LOG_ProcWrite( struct file * file,  const char __user * buf,
             g_bSetLogFileFlag = HI_FALSE;
         }
 
-        g_pLogConfigInfo->bUdiskFlag = g_bSetLogFileFlag;
+        g_pLogConfigInfo->u8UdiskFlag = (HI_U8)g_bSetLogFileFlag;
     
         UdiskLogFile = g_szPathBuf;
 
@@ -751,7 +775,7 @@ HI_S32 HI_DRV_LOG_ProcWrite( struct file * file,  const char __user * buf,
     
         goto out;
     }
-    else if (!strcmp("storepath", left))
+    else if (!HI_OSAL_Strncasecmp("storepath", left, strlen("storepath")+1))
     {
         if (strlen(right) >= sizeof(g_szStorePathBuf))
         {
@@ -779,11 +803,11 @@ HI_S32 HI_DRV_LOG_ProcWrite( struct file * file,  const char __user * buf,
             HI_WARN_LOG("invalid value!\n");
             goto out;
         }
-        if (!strcmp("all", left)){
+        if (!HI_OSAL_Strncasecmp("all", left, 4)){
             int i = 0;
-            HI_U32 u32Total = HI_ID_BUTT&0xff;
+            HI_U32 u32Total = LOG_CONFIG_BUF_SIZE/sizeof(LOG_CONFIG_INFO_S);
             for (i = 0; i < u32Total; i++)
-                g_pLogConfigInfo[i].u32LogLevel = level;
+                g_pLogConfigInfo[i].u8LogLevel = (HI_U8)level;
             goto out;
         }
         
@@ -792,10 +816,10 @@ HI_S32 HI_DRV_LOG_ProcWrite( struct file * file,  const char __user * buf,
             HI_WARN_LOG("%s not found in array!\n", left);
             return count;
         }
-        g_pLogConfigInfo[idx].u32LogLevel = level;
+        g_pLogConfigInfo[idx].u8LogLevel = (HI_U8)level;
     }
     
-    //printk("\n\tMoudle '%s' level change to:%d(%s)\n", g_pLogConfigInfo[idx].ModName,
+    //HI_PRINT("\n\tMoudle '%s' level change to:%d(%s)\n", g_pLogConfigInfo[idx].ModName,
     //       level,  DebugLevelName[level]);
 
 out:
@@ -832,7 +856,7 @@ HI_S32 HI_DRV_LOG_SetPath(LOG_PATH_S *pstPath)
         g_bSetLogFileFlag = HI_TRUE;
     }
 
-    g_pLogConfigInfo->bUdiskFlag = g_bSetLogFileFlag;
+    g_pLogConfigInfo->u8UdiskFlag = (HI_U8)g_bSetLogFileFlag;
     
     UdiskLogFile = g_szPathBuf;
 
@@ -913,20 +937,20 @@ static HI_S32 LOGConfigInfoInit(HI_VOID)
 {
     HI_U32 i;
     
-    if (HI_SUCCESS == HI_DRV_MMZ_AllocAndMap("LOGInfoBuf", MMZ_OTHERS,
+    if (HI_SUCCESS == HI_DRV_MMZ_AllocAndMap("CMN_LogInfo", MMZ_OTHERS,
             LOG_CONFIG_BUF_SIZE, 0, &g_LogConfigBuf))
     {
         memset((HI_U8 *)g_LogConfigBuf.u32StartVirAddr, 0, LOG_CONFIG_BUF_SIZE);
         g_pLogConfigInfo = (LOG_CONFIG_INFO_S*)g_LogConfigBuf.u32StartVirAddr;
 
-        g_pLogConfigInfo->bUdiskFlag = HI_FALSE;
+        g_pLogConfigInfo->u8UdiskFlag = 0;
 
         /* max debug module number: 8192/28 = 341/292 */           
         for (i = 0; i < LOG_CONFIG_BUF_SIZE/sizeof(LOG_CONFIG_INFO_S); i++)
         {
-            g_pLogConfigInfo[i].u32LogLevel = HI_LOG_LEVEL_DEFAULT;
-            g_pLogConfigInfo[i].u32LogPrintPos = LOG_OUTPUT_SERIAL;
-            snprintf(g_pLogConfigInfo[i].ModName, 16, "Invalid");
+            g_pLogConfigInfo[i].u8LogLevel = HI_LOG_LEVEL_DEFAULT;
+            g_pLogConfigInfo[i].u8LogPrintPos = LOG_OUTPUT_SERIAL;
+            HI_OSAL_Snprintf(g_pLogConfigInfo[i].ModName, sizeof(g_pLogConfigInfo[i].ModName), "Invalid");
         }
     }
     else
@@ -970,7 +994,7 @@ static HI_S32 LOGBufferInit(HI_U32 u32BufSize)
         }
 
         /*init memory*/
-        if (HI_SUCCESS == HI_DRV_MMZ_AllocAndMap("LOGTraceBuf", MMZ_OTHERS, u32BufSize, 0, &mmzBuf))
+        if (HI_SUCCESS == HI_DRV_MMZ_AllocAndMap("CMN_LogTrace", MMZ_OTHERS, u32BufSize, 0, &mmzBuf))
         {
             g_MsgBufInfo.u32StartAddrPhy = mmzBuf.u32StartPhyAddr;
             g_MsgBufInfo.pu8StartAddrVir = (HI_U8*)mmzBuf.u32StartVirAddr;
@@ -1023,7 +1047,7 @@ HI_S32 LOG_GetLevel(HI_U32 enModId, HI_U8* u8Buf, HI_U32 u32Length)
         return 0;
     }
 
-    u32Level = g_pLogConfigInfo[enModId].u32LogLevel;
+    u32Level = g_pLogConfigInfo[enModId].u8LogLevel;
     
     memset(u8Buf, 0, u32Length);
     if (u32Length <= strlen(DebugLevelName[u32Level]) )
@@ -1092,7 +1116,7 @@ HI_VOID HI_DRV_LOG_KExit(HI_VOID)
 static int __init get_logbufsize(char *str)
 {
 	LogBufSize = simple_strtol(str, NULL, 0);
-	printk("aaaaaa LogBufSize = 0x%x aaaaaa \n", LogBufSize);
+	HI_INFO_LOG("LogBufSize = 0x%x\n", LogBufSize);
 	return 1;
 }
 __setup("LogBufSize=", get_logbufsize);

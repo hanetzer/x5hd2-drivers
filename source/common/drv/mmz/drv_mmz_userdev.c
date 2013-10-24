@@ -21,13 +21,11 @@
 #include <linux/proc_fs.h>
 #include <linux/delay.h>
 #include <linux/sched.h>
-
 #include <asm/uaccess.h>
 #include <asm/cacheflush.h>
-
-#include "drv_dev_ext.h"
+#include "hi_drv_dev.h"
 #include "drv_media_mem.h"
-#include "drv_mmz_userdev_ioctl.h"
+#include "drv_mmz_ioctl.h"
 #include "hi_kernel_adapt.h"
 
 #define error(s...) do{ PRINTK_CA(KERN_ERR "mmz_userdev:%s: ", __FUNCTION__); PRINTK_CA(s); }while(0)
@@ -73,7 +71,11 @@ static int mmz_flush_dcache_mmb(struct mmb_info *pmi)
 static int mmz_flush_dcache_all(void)
 {
 	/* flush l1 all cache */
+#ifdef CONFIG_SMP
+	on_each_cpu(__cpuc_flush_kern_all, NULL, 1);
+#else
 	__cpuc_flush_kern_all();
+#endif
 	/* flush l2 all cache */
 	outer_flush_all();
 	return 0;
@@ -123,6 +125,7 @@ static int ioctl_mmb_alloc(struct file *file, unsigned int iocmd, struct mmb_inf
 	new_mmbinfo->mmb = mmb;
 	new_mmbinfo->prot = PROT_READ;
 	new_mmbinfo->flags = MAP_SHARED;
+	new_mmbinfo->pid = current->pid;
 	list_add_tail(&new_mmbinfo->list, &pmu->list);
 
 	pmi->phys_addr = new_mmbinfo->phys_addr;
@@ -159,6 +162,7 @@ static int ioctl_mmb_alloc_v2(struct file *file, unsigned int iocmd, struct mmb_
 	new_mmbinfo->mmb = mmb;
 	new_mmbinfo->prot = PROT_READ;
 	new_mmbinfo->flags = MAP_SHARED;
+	new_mmbinfo->pid = current->pid;
 	list_add_tail(&new_mmbinfo->list, &pmu->list);
 
 	pmi->phys_addr = new_mmbinfo->phys_addr;
@@ -376,7 +380,8 @@ static struct mmb_info* get_mmbinfo_byusraddr(unsigned long addr, struct mmz_use
 
 	list_for_each_entry(p, &pmu->list, list) {
 		if( ((unsigned long)p->mapped <= addr) && 
-			((unsigned long)p->mapped + p->size > addr) )
+			((unsigned long)p->mapped + p->size > addr) &&
+			(p->pid == current->pid) )
 				break;
 	}
 	if( &p->list == &pmu->list)
@@ -562,7 +567,7 @@ long mmz_userdev_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 			goto __error_exit;
 		}
 
-		ret = mmz_userdev_ioctl_t(file->f_dentry->d_inode, file, cmd, &mi);
+		ret = mmz_userdev_ioctl_t(file->f_dentry->d_inode, file, cmd, pmi);
 	} else {
 		ret = -EINVAL;
 	}
@@ -600,6 +605,7 @@ int mmz_userdev_mmap(struct file *file, struct vm_area_struct *vma)
 		return -EINVAL;
 	}
 #endif
+
 #if defined(pgprot_noncached)
 	if (file->f_flags & O_SYNC) {
 		vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
@@ -611,7 +617,7 @@ int mmz_userdev_mmap(struct file *file, struct vm_area_struct *vma)
 			vma->vm_page_prot = __pgprot(pgprot_val(vma->vm_page_prot) | L_PTE_PRESENT | L_PTE_YOUNG | L_PTE_DIRTY | L_PTE_RDONLY | L_PTE_MT_DEV_CACHED);
 #endif
 		else
-			vma->vm_page_prot = pgprot_noncached(vma->vm_page_prot);
+			vma->vm_page_prot = pgprot_writecombine(vma->vm_page_prot);
 	}
 #endif
 
@@ -668,6 +674,7 @@ static struct file_operations mmz_userdev_fops = {
 #define MEDIA_MEM_NAME  "media-mem"
 static int media_mem_proc_init(void)
 {
+#if !(0 == HI_PROC_SUPPORT)
 	struct proc_dir_entry *p;
 
 //	p = create_proc_entry(MEDIA_MEM_NAME, 0644, &proc_root);
@@ -677,14 +684,16 @@ static int media_mem_proc_init(void)
 	p->read_proc = mmz_read_proc;
 //	p->write_proc = mmz_write_proc;
 	p->write_proc = NULL;
-
+#endif
         return 0;
 }
 
 
 static void media_mem_proc_exit(void)
 {
+#if !(0 == HI_PROC_SUPPORT)
 	remove_proc_entry(MEDIA_MEM_NAME, NULL);
+#endif
 }
 
 
@@ -717,10 +726,9 @@ int DRV_MMZ_ModInit(void)
     }
 
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_mmz.ko success.\t\t(%s)\n", VERSION_STRING);
+    HI_PRINT("Load hi_mmz.ko success.\t\t(%s)\n", VERSION_STRING);
 #endif
-#endif
+
 	return 0;
 }
 

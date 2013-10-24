@@ -84,6 +84,8 @@ static char *tComponentName[MAXCOMP][2] = {
 	{"OMX.hisi.video.decoder", "video_decoder.avs"},
 	{"OMX.hisi.video.decoder", "video_decoder.divx3"},
 	{"OMX.hisi.video.decoder", "video_decoder.h263"},
+
+    {"OMX.hisi.video.encoder", "video_encoder.avc"},
 	/* terminate the table */
 	{NULL, NULL},
 	
@@ -126,17 +128,18 @@ static OMX_ERRORTYPE OMX_BuildComponentTable()
 
 		    if (j == numFiles)
 		    {
-			/* new component */
+			    /* new component */
 		        if (tComponentName[i][1] != NULL)
-			 {
+			    {
 		            componentTable[numFiles].pRoleArray[0] = tComponentName[i][1];
 		            componentTable[numFiles].nRoles = 1;
 		        }
 
-		        strcpy(compName[numFiles], tComponentName[i][0]);
+		        strncpy(compName[numFiles], tComponentName[i][0], sizeof(compName[numFiles]));
+                compName[numFiles][sizeof(compName[numFiles])-1] = '\0';
 		        componentTable[numFiles].name = compName[numFiles];
 		        componentTable[numFiles].refCount = 0; //initialize reference counter.
-		        numFiles ++;
+		        numFiles++;
 		    }
 		}
 	}
@@ -310,9 +313,9 @@ OMX_ERRORTYPE OMX_GetHandle(
 		/* the lengths are defined herein or have been
 		* checked already, so strcpy and strcat are
 		* are safe to use in this context. */
-		strcpy(buf, prefix);
-		strcat(buf, cComponentName);
-		strcat(buf, postfix);
+		strncpy(buf, prefix, sizeof(prefix));
+		strncat(buf, cComponentName, strlen(cComponentName));
+		strncat(buf, postfix, sizeof(postfix));
 
 		DEBUG_PRINT("%s :: prepare to load  %s\n", __func__, buf);
 
@@ -373,7 +376,7 @@ OMX_ERRORTYPE OMX_GetHandle(
 
 		/* finally, OMX_ComponentInit() was successful and
 		   SetCallbacks was successful, we have a valid instance,
-		   so no we increment refCount */
+		   so now we increase refCount */
 		componentTable[refIndex].pHandle[componentTable[refIndex].refCount] = *pHandle;
 		componentTable[refIndex].refCount += 1;
 		goto UNLOCK_MUTEX;  // Component is found, and thus we are done

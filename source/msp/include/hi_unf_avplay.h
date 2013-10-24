@@ -161,6 +161,7 @@ typedef enum hiUNF_AVPLAY_EVENT_E
     HI_UNF_AVPLAY_EVENT_SYNC_STAT_CHANGE,      /**<Synchronization status change, HI_UNF_SYNC_STAT_PARAM_S * *//**<CNcomment: 同步状态变更, HI_UNF_SYNC_STAT_PARAM_S * .*/
     HI_UNF_AVPLAY_EVENT_VID_BUF_STATE,         /**<Status change of the media buffer queue, HI_UNF_AVPLAY_EVENT_VID_BUF_STATE*//**<CNcomment: 视频缓存队列状态变化, HI_UNF_AVPLAY_EVENT_VID_BUF_STATE */
     HI_UNF_AVPLAY_EVENT_AUD_BUF_STATE,         /**<Status change of the media buffer queue, HI_UNF_AVPLAY_EVENT_AUD_BUF_STATE*//**<CNcomment: 音频缓存队列状态变化, HI_UNF_AVPLAY_EVENT_AUD_BUF_STATE */
+    HI_UNF_AVPLAY_EVENT_VID_UNSUPPORT,         /**<The video stream is unsupport*//**<CNcomment: 视频码流不支持*/
 
     HI_UNF_AVPLAY_EVENT_BUTT
 } HI_UNF_AVPLAY_EVENT_E;
@@ -198,8 +199,16 @@ typedef enum hiUNF_AVPLAY_ATTR_ID_E
     HI_UNF_AVPLAY_ATTR_ID_MULTIAUD,          /**<Multiple audio attribute,  HI_UNF_AVPLAY_MULTIAUD_ATTR_S **//**<CNcomment: 多音轨属性, HI_UNF_AVPLAY_MULTIAUD_ATTR_S * .*/
     HI_UNF_AVPLAY_ATTR_ID_FRMRATE_PARAM,     /**<Frame Rate Parameter, HI_UNF_AVPLAY_FRMRATE_PARAM_S * *//**<CNcomment:帧率参数,HI_UNF_AVPLAY_FRMRATE_PARAM_S * .*/
     HI_UNF_AVPLAY_ATTR_ID_FRMPACK_TYPE,      /**<3D Frame Packing Type, HI_UNF_VIDEO_FRAME_PACKING_TYPE_E * *//**<CNcomment:3D帧的打包类型,HI_UNF_VIDEO_FRAME_PACKING_TYPE_E * .*/
+     HI_UNF_AVPLAY_ATTR_ID_LOW_DELAY,        /**<Low Delay Attr, HI_UNF_AVPLAY_LOW_DELAY_ATTR_S * *//**<CNcomment: 低延时属性 , HI_UNF_AVPLAY_LOW_DELAY_ATTR_S * .*/
     HI_UNF_AVPLAY_ATTR_ID_BUTT
 } HI_UNF_AVPLAY_ATTR_ID_E;
+
+/**Defines the attribute of low delay.*/
+/**CNcomment: 定义低延时属性结构体*/
+typedef struct hiUNF_AVPLAY_LOW_DELAY_ATTR_S
+{
+    HI_BOOL               bEnable;  /**<Is low delay enable or not*//**<CNcomment: 低延时是否使能*/
+}HI_UNF_AVPLAY_LOW_DELAY_ATTR_S;
 
 /**Defines the audio/video synchronization .*/
 /**CNcomment: 定义音视频同步调整区间 */
@@ -446,23 +455,28 @@ typedef struct hiUNF_AVPLAY_FRMRATE_PARAM_S
     HI_UNF_VCODEC_FRMRATE_S         stSetFrmRate;   /**<Setting frame rate*//**<CNcomment: 设置的帧率 */
 }HI_UNF_AVPLAY_FRMRATE_PARAM_S;
 
-/**Defines commond to get vdec information.*/
-/**CNcomment: 获取解码器信息命令 */
+/**Defines commond to get vdec information, the parameter is HI_UNF_AVPLAY_VDEC_INFO_S.*/
+/**CNcomment: 获取解码器信息命令，参数对应类型为HI_UNF_AVPLAY_VDEC_INFO_S */
 #define HI_UNF_AVPLAY_GET_VDEC_INFO_CMD         0x20
-/**Defines commond to set TPLAY parameter.*/
-/**CNcomment: 设置TPLAY参数命令 */
+/**Defines commond to set TPLAY parameter, the parameter is HI_UNF_AVPLAY_TPLAY_OPT_S.*/
+/**CNcomment: 设置TPLAY参数命令，参数对应类型为HI_UNF_AVPLAY_TPLAY_OPT_S*/
 #define HI_UNF_AVPLAY_SET_TPLAY_PARA_CMD        0x21
 /**Defines commond to set special control information of stream, the parameter is HI_UNF_AVPLAY_CONTROL_INFO_S*/
 /**CNcomment: 用来设置一些码流的特殊控制信息，参数对应类型为HI_UNF_AVPLAY_CONTROL_INFO_S*/
 #define HI_UNF_AVPLAY_SET_CTRL_INFO_CMD         0x22
+
+/**Defines commond to set video sample type, HI_BOOL *, HI_TRUE: Progressive, HI_FALSE: Interlance */
+/**CNcomment: 设置视频逐行信息, HI_TRUE: 逐行, HI_FALSE: 隔行*/
+#define HI_UNF_AVPLAY_SET_PROGRESSIVE_CMD       0x23
 
 /**Defines the type of AVPLAY invoke.*/
 /**CNcomment: 定义AVPLAY Invoke调用类型的枚举 */
 typedef enum hiUNF_AVPLAY_INVOKE_E
 {
     HI_UNF_AVPLAY_INVOKE_ACODEC  = 0,   /**<Invoke commond to control audio codec*//**<CNcomment: 控制音频解码器的Invoke调用 */
-    HI_UNF_AVPLAY_INVOKE_VCODEC,        /**<Invoke commond to control video codec*//**<CNcomment: 控制视频解码器的Invoke调用 */
+    HI_UNF_AVPLAY_INVOKE_VCODEC,        /**<Invoke commond to control video codec, HI_CODEC_VIDEO_CMD_S*//**<CNcomment: 控制视频解码器的Invoke调用 */
     HI_UNF_AVPLAY_INVOKE_GET_PRIV_PLAYINFO, /**<Invoke commond to get private play infomation,the parameter is HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S*//**<CNcomment: 获取私有播放信息的Invoke调用， 参数为HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S * */
+    HI_UNF_AVPLAY_INVOKE_SET_DISP_OPTIMIZE_FLAG, /**Defines commond to set Display Optimize Flag, The Parameter is HI_U32, 1: Enable, 0: Disable */
     HI_UNF_AVPLAY_INVOKE_BUTT
 } HI_UNF_AVPLAY_INVOKE_E; 
 
@@ -482,6 +496,7 @@ typedef struct hiUNF_AVPLAY_PRIVATE_STATUS_INFO_S
 {
     HI_U32 u32LastPts;   /**<PTS of the last audio or video frame*/ /**<CNcomment: 最近播放的一个音频帧 PTS或视频PTS*/ 
     HI_U32 u32LastPlayTime; /**< PlayTime of the last audio or video frame */ /**<CNcomment: 最近播放的一个音频帧 PlayTime或视PlayTime  */	
+    HI_U32 u32DispOptimizeFlag; /**<Display Optimize Flag,1: Enable, 0: Disable*//**<CNcomment: 显示优化标志*/
 } HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S;
 
 /**Defines the special control information of stream.*/
@@ -491,6 +506,8 @@ typedef struct hiUNF_AVPLAY_CONTROL_INFO_S
     HI_U32 u32IDRFlag;               /**<IDR frame Flag, 1 means IDR(instantaneous decoding refresh) frame.*/ /**<CNcomment: 是否是IDR(此帧前后无参考关系)帧，1表示是*/ 
     HI_U32 u32BFrmRefFlag;           /**<Whether B frame is refer frame, 1 means B frame is refer frame.*/ /**<CNcomment: B帧是否是参考帧，1表示是*/ 
     HI_U32 u32ContinuousFlag;        /**<Whether send frame is continusous. 1 means continusous*/ /**<CNcomment: 帧是否连续，1表示连续*/ 
+    HI_U32 u32BackwardOptimizeFlag;  /**<The Backward Optimize Flag*//**<CNcomment: 快退优化使能标志.*/
+    HI_U32 u32DispOptimizeFlag;      /**<Display Optimize Flag,1: Enable, 0: Disable*//**<CNcomment: 显示优化标志*/
 }HI_UNF_AVPLAY_CONTROL_INFO_S;
 
 /**Defines the parameter when the stream is send by HI_UNF_AVPLAY_PutBufEx.*/
@@ -1179,6 +1196,38 @@ N/A
 */
 HI_S32 HI_UNF_AVPLAY_Invoke(HI_HANDLE hAvplay, HI_UNF_AVPLAY_INVOKE_E enInvokeType, HI_VOID *pPara);
 
+/**
+\brief Accquire user dada. CNcomment: 获取用户数据 CNend
+\attention \n
+Only support Closed Caption Data.
+CNcomment: 仅支持CC数据 CNend
+\param[in] hAvplay       AVPLAY handle CNcomment: AV播放句柄 CNend
+\param[out] pstUserData  user data.CNcomment:用户数据 CNend
+\param[out] penType      user data type. CNcomment:用户数据类型 CNend
+\retval ::HI_SUCCESS Success  CNcomment:成功 CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAY未初始化 CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:输入指针为空 CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:输入参数非法 CNend
+\see \n
+N/A
+*/
+HI_S32 HI_UNF_AVPLAY_AcqUserData(HI_HANDLE hAvplay, HI_UNF_VIDEO_USERDATA_S *pstUserData, HI_UNF_VIDEO_USERDATA_TYPE_E *penType);
+
+/**
+\brief Accquire user dada. CNcomment: 释放用户数据 CNend
+\attention \n
+Only support Closed Caption Data.
+CNcomment: 仅支持CC数据 CNend
+\param[in] hAvplay       AVPLAY handle CNcomment: AV播放句柄 CNend
+\param[in] pstUserData  user data.CNcomment:用户数据 CNend
+\retval ::HI_SUCCESS Success  CNcomment:成功 CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAY未初始化 CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:输入指针为空 CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:输入参数非法 CNend
+\see \n
+N/A
+*/
+HI_S32 HI_UNF_AVPLAY_RlsUserData(HI_HANDLE hAvplay, HI_UNF_VIDEO_USERDATA_S* pstUserData);
 
 /** @} */  /** <!-- ==== API declaration end ==== */
 

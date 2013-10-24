@@ -22,8 +22,12 @@
      Author      : z00213260
      Modification: Add new interface.
 ******************************************************************************/
+#include "hi_debug.h"
 #include "hi_mpi_otp.h"
 
+static const HI_U8 s_szOTPVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 HI_S32 HI_UNF_OTP_Init(HI_VOID)
 {

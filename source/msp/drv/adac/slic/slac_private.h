@@ -43,7 +43,7 @@
 //#include "vp_api_types.h"
 //#include "vp_api_common.h"
 
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 
 #define DEBUG_LEVEL 1                   /*Print Switch*/
 /*****************************************************************************************

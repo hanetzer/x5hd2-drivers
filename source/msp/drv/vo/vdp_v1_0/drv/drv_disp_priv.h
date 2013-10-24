@@ -67,7 +67,7 @@ typedef struct tagDISP_SETTING_S
 {
     HI_U32  u32Version;
     HI_U32  u32BootVersion;
-    HI_BOOL bSelfStart;
+    //HI_BOOL bSelfStart;
     HI_BOOL bGetPDMParam;
     
     /* output format */
@@ -100,13 +100,19 @@ typedef struct tagDISP_SETTING_S
     HI_U32 u32LayerNumber;
     HI_DRV_DISP_LAYER_E enLayer[HI_DRV_DISP_LAYER_BUTT]; /* Z-order is from bottom to top */
 
-    /* about sink display screen */
-    HI_BOOL bAdjRect;
-    HI_RECT_S stRefAdjRect;
-    HI_BOOL bRefScreenIsSet;
-    HI_RECT_S stRefScreen;
-    HI_RECT_S stUsingAdjRect;
 
+    /*we define a vitual format size, all the size settings  users can see are referenced to this rect.
+     *      * so users can make a fixed setting not according to the real format size such as 1280*720 50hz.
+     *           * it's manual-kindly. When setting to devices, we make a transfer according the real resolution.
+     *                */     
+    HI_RECT_S stVirtaulScreen;
+
+    /*as a result of cutting off by crt tv, we make a offset setting to make sure
+     *      * that the display is complete, not cut by tv.*/
+    HI_DRV_DISP_OFFSET_S stOffsetInfo;
+
+
+    
     HI_BOOL bCustomRatio;
     HI_U32 u32CustomRatioWidth;
     HI_U32 u32CustomRatioHeight;
@@ -132,7 +138,6 @@ typedef struct tagDISP_S
 
     DISP_SETTING_S stSetting;
     HI_BOOL bDispSettingChange;
-    HI_BOOL bDispAreaChange;
 
     volatile DISP_PRIV_STATE_E eState;
     HI_U32 u32Underflow;
@@ -141,14 +146,10 @@ typedef struct tagDISP_S
     // for other module get
     //HI_BOOL bDispInfoValid;
     HI_DISP_DISPLAY_INFO_S stDispInfo;
-
-
-    //vbi
-
-    //isr
-
+    
     //mirrorcast
     HI_HANDLE hCast;
+    HI_HANDLE Cast_ptr;
 
     //algrithm operation
     //HI_HANDLE hAlgOpt;
@@ -167,7 +168,7 @@ typedef struct tagDISP_ATTACH_ID_S
 typedef struct tagDISP_DEV_S
 {
     HI_BOOL bHwReseted;
-    DISP_S  stDisp[HI_DRV_DISPLAY_BUTT];
+    DISP_S  stDisp[HI_DRV_DISPLAY_BUTT+1];
 
     HI_BOOL bAttachEnable;
     DISP_ATTACH_ID_S stAttchDisp;

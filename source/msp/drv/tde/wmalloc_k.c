@@ -213,17 +213,19 @@ HI_S32 wmeminit(void)
     //    TDE_TRACE(TDE_KERN_ERR, "new MMB failed!\n");
     //    return HI_FAILURE;
     //}
-    TDE_GET_PHYADDR_MMB(g_pstruMemPool, "TDE_MEMPOOL_MMB", TDE_MEMPOOL_SIZE, g_u32MemPoolPhyAddr);
+    g_u32MemPoolPhyAddr = HI_GFX_AllocMem("TDE_MemPool",NULL,TDE_MEMPOOL_SIZE + 0x200000);
     if(0 == g_u32MemPoolPhyAddr)
     {
         TDE_TRACE(TDE_KERN_INFO, "malloc mempool buffer failed!\n");
-        TDE_FREE_MMB(g_pstruMemPool, 0);
+        HI_GFX_FreeMem(0);
         return HI_FAILURE;
     }
-
-    TDE_REMAP_MMB(g_pstruMemPool, g_u32MemPoolPhyAddr, g_u32MemPoolVrtAddr);
+    g_u32MemPoolVrtAddr = (HI_U32 )HI_GFX_Map(g_u32MemPoolPhyAddr);
     
-    MemoryBlockInit(UNIT_SIZE_64, HI_TDE_UNIT64_NUM, (HI_VOID *)g_u32MemPoolVrtAddr);
+    g_u32MemPoolVrtAddr += 0x100000;
+    g_u32MemPoolPhyAddr += 0x100000;
+
+    MemoryBlockInit(UNIT_SIZE_64, HI_TDE_UNIT64_NUM, (HI_VOID *)(g_u32MemPoolVrtAddr));
     MemoryBlockInit(UNIT_SIZE_128, HI_TDE_UNIT128_NUM, (HI_VOID *)(g_u32MemPoolVrtAddr + TDE_UNIT128_OFFSET));
 
     MemoryBlockInit(UNIT_SIZE_1024, HI_TDE_UNIT1024_NUM, (HI_VOID *)(g_u32MemPoolVrtAddr + TDE_UNIT1024_OFFSET));
@@ -237,8 +239,8 @@ HI_S32 wmeminit(void)
 HI_VOID wmemterm(void)
 {
     PRINTMEMINFO();
-    TDE_UNMAP_MMB(g_pstruMemPool, g_u32MemPoolVrtAddr);
-    TDE_FREE_MMB(g_pstruMemPool, g_u32MemPoolPhyAddr);
+    HI_GFX_Unmap ((HI_VOID *)(g_u32MemPoolVrtAddr - 0x100000));
+    HI_GFX_FreeMem( g_u32MemPoolPhyAddr - 0x100000);
 
     g_u32MemPoolPhyAddr = 0;
     g_u32MemPoolVrtAddr = 0;
@@ -286,7 +288,6 @@ HI_U32 wgetfreenum(HI_VOID)
 
 struct seq_file * wprintinfo(struct seq_file *page)
 {
-    HI_U32 len = 0;
 #if HI_TDE_MEMCOUNT_SUPPORT
     HI_U32 u32MaxUsed64    = g_struMemBlock[UNIT_SIZE_64].nMaxUsed;
     HI_U32 u32MaxUsed128   = g_struMemBlock[UNIT_SIZE_128].nMaxUsed;
@@ -296,20 +297,23 @@ struct seq_file * wprintinfo(struct seq_file *page)
     HI_U32 u32Free128   = g_struMemBlock[UNIT_SIZE_128].nFree;
     HI_U32 u32Free1024  = g_struMemBlock[UNIT_SIZE_1024].nFree;
  #endif
-    page += seq_printf(page, "--------- Hisilicon TDE Memory Pool Info ---------\n");
-#if HI_TDE_MEMCOUNT_SUPPORT
-     page += seq_printf(page + len, "     Type         Total       MaxUsed\n");
-    page += seq_printf(page + len, "[Unit 64  ]   %8u  %8u\n", HI_TDE_UNIT64_NUM, u32MaxUsed64);
-    page += seq_printf(page + len, "[Unit 128 ]   %8u  %8u\n", HI_TDE_UNIT128_NUM, u32MaxUsed128);
-    page += seq_printf(page + len, "[Unit 1024]   %8u  %8u\n", HI_TDE_UNIT1024_NUM, u32MaxUsed1024);
-    page += seq_printf(page + len, "[Total    ]   %8uK %8uK\n", TDE_MEMPOOL_SIZE/1024, (64 * u32MaxUsed64 + 128 * u32MaxUsed128 + 1024 * u32MaxUsed1024)/1024);
-#else
-    page += seq_printf(page + len, "     Type         Total       Used\n");
-    page += seq_printf(page + len, "[Unit 64  ]   %8u  %8u\n", HI_TDE_UNIT64_NUM, HI_TDE_UNIT64_NUM - u32Free64);
-    page += seq_printf(page + len, "[Unit 128 ]   %8u  %8u\n", HI_TDE_UNIT128_NUM, HI_TDE_UNIT128_NUM - u32Free128);
-    page += seq_printf(page + len, "[Unit 1024]   %8u  %8u\n", HI_TDE_UNIT1024_NUM, HI_TDE_UNIT1024_NUM - u32Free1024);
-    page += seq_printf(page + len, "[Total    ]   %8uK %8uK\n", TDE_MEMPOOL_SIZE/1024, (TDE_MEMPOOL_SIZE - (64 * u32Free64 + 128 * u32Free128 + 1024 * u32Free1024))/1024);
- #endif
+
+ #ifndef CONFIG_TDE_STR_DISABLE
+    PROC_PRINT(page, "--------- Hisilicon TDE Memory Pool Info ---------\n");
+    #if HI_TDE_MEMCOUNT_SUPPORT
+    PROC_PRINT(page, "     Type         Total       MaxUsed\n");
+    PROC_PRINT(page, "[Unit 64  ]   %8u  %8u\n", HI_TDE_UNIT64_NUM, u32MaxUsed64);
+    PROC_PRINT(page, "[Unit 128 ]   %8u  %8u\n", HI_TDE_UNIT128_NUM, u32MaxUsed128);
+    PROC_PRINT(page, "[Unit 1024]   %8u  %8u\n", HI_TDE_UNIT1024_NUM, u32MaxUsed1024);
+    PROC_PRINT(page, "[Total    ]   %8uK %8uK\n", TDE_MEMPOOL_SIZE/1024, (64 * u32MaxUsed64 + 128 * u32MaxUsed128 + 1024 * u32MaxUsed1024)/1024);
+    #else
+    PROC_PRINT(page, "     Type         Total       Used\n");
+    PROC_PRINT(page, "[Unit 64  ]   %8u  %8u\n", HI_TDE_UNIT64_NUM, HI_TDE_UNIT64_NUM - u32Free64);
+    PROC_PRINT(page, "[Unit 128 ]   %8u  %8u\n", HI_TDE_UNIT128_NUM, HI_TDE_UNIT128_NUM - u32Free128);
+    PROC_PRINT(page, "[Unit 1024]   %8u  %8u\n", HI_TDE_UNIT1024_NUM, HI_TDE_UNIT1024_NUM - u32Free1024);
+    PROC_PRINT(page, "[Total    ]   %8uK %8uK\n", TDE_MEMPOOL_SIZE/1024, (TDE_MEMPOOL_SIZE - (64 * u32Free64 + 128 * u32Free128 + 1024 * u32Free1024))/1024);
+    #endif
+#endif
     return page;
 }
 

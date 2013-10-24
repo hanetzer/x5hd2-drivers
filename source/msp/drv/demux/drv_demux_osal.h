@@ -4,7 +4,7 @@
 #include "hi_type.h"
 #include "hi_debug.h"
 #include "hi_kernel_adapt.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 
 #ifndef WIN32
 #include <linux/vmalloc.h>

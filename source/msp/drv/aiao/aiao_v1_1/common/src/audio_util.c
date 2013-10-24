@@ -6,8 +6,111 @@
  #include <string.h>
  #include <stdlib.h>
 #endif
-
 #include "audio_util.h"
+
+
+//#define AO_MEM_TRACE_DEBUG            /* HI_ID_AO   memory debug trace  */
+//#define AIAO_MEM_TRACE_DEBUG          /* HI_ID_AIAO memory debug trace  */  
+
+#ifdef AIAO_MEM_TRACE_DEBUG          
+static int g_u32MallocCount_AIAO = 0;
+#endif
+
+#ifdef AIAO_MEM_TRACE_DEBUG
+static int g_u32MallocCount_AO = 0;
+#endif
+
+HI_VOID* AUTIL_AIAO_MALLOC(HI_U32 u32ModuleID, HI_U32 u32Size, HI_S32 flag)
+{
+    HI_VOID* pMemAddr = NULL;
+
+#ifdef __KERNEL__
+    pMemAddr = HI_KMALLOC(u32ModuleID, u32Size, flag);
+#else
+    pMemAddr = malloc(u32Size);
+#endif
+
+#ifdef AIAO_MEM_TRACE_DEBUG
+    if (HI_ID_AIAO != u32ModuleID)
+    {
+        HI_ERR_AO("u32ModuleID(0x%x) should be(0x%x) \n", u32ModuleID, HI_ID_AIAO);
+    }
+
+    HI_ERR_AO("malloc u32ModuleID(0x%.4x), size(0x%.6x),pMemAddr(%p), aiao_cnt(%d) \n", u32ModuleID, u32Size, pMemAddr,g_u32MallocCount_AIAO);
+    g_u32MallocCount_AIAO++;
+#endif
+
+    return pMemAddr;
+}
+
+HI_VOID AUTIL_AIAO_FREE(HI_U32 u32ModuleID, HI_VOID* pMemAddr)
+{
+    if (NULL != pMemAddr)
+    {
+#ifdef AIAO_MEM_TRACE_DEBUG
+        g_u32MallocCount_AIAO--;
+        if (HI_ID_AIAO != u32ModuleID)
+        {
+            HI_ERR_AO("u32ModuleID(0x%x) should be(0x%x) \n", u32ModuleID, HI_ID_AIAO);
+        }
+
+        HI_ERR_AO("free u32ModuleID(0x%x), pMemAddr(%p), aiao_cnt(%d) \n", u32ModuleID, pMemAddr,g_u32MallocCount_AIAO);
+#endif
+#ifdef __KERNEL__
+        HI_KFREE(u32ModuleID, pMemAddr);
+#else
+        free(pMemAddr);
+#endif
+    }
+
+    return;
+}
+
+HI_VOID* AUTIL_AO_MALLOC(HI_U32 u32ModuleID, HI_U32 u32Size, HI_S32 flag)
+{
+    HI_VOID* pMemAddr = NULL;
+
+#ifdef __KERNEL__
+    pMemAddr = HI_KMALLOC(u32ModuleID, u32Size, flag);
+#else
+    pMemAddr = malloc(u32Size);
+#endif
+
+#ifdef AO_MEM_TRACE_DEBUG
+    if (HI_ID_AO != u32ModuleID)
+    {
+        HI_ERR_AO("u32ModuleID(0x%x) should be(0x%x) \n", u32ModuleID, HI_ID_AO);
+    }
+
+    HI_ERR_AO("malloc u32ModuleID(0x%.4x), size(0x%.6x),pMemAddr(%p), ao_cnt(%d) \n", u32ModuleID, u32Size, pMemAddr,g_u32MallocCount_AO);
+    g_u32MallocCount_AO++;    
+#endif
+
+    return pMemAddr;
+}
+
+HI_VOID AUTIL_AO_FREE(HI_U32 u32ModuleID, HI_VOID* pMemAddr)
+{
+    if (NULL != pMemAddr)
+    {
+#ifdef AO_MEM_TRACE_DEBUG
+        g_u32MallocCount_AO--;    
+        if (HI_ID_AO != u32ModuleID)
+        {
+            HI_ERR_AO("u32ModuleID(0x%x) should be(0x%x) \n", u32ModuleID, HI_ID_AO);
+        }
+
+        HI_ERR_AO("free u32ModuleID(0x%x), pMemAddr(%p), ao_cnt(%d) \n", u32ModuleID, pMemAddr,g_u32MallocCount_AO);
+#endif
+#ifdef __KERNEL__
+        HI_KFREE(u32ModuleID, pMemAddr);
+#else
+        free(pMemAddr);
+#endif
+    }
+
+    return;
+}
 
 #if 0
  #define AOE_VOL_MAXDB_COEF g_u16VolCoef[0]
@@ -138,7 +241,7 @@ HI_U32 AUTIL_LatencyMs2ByteSize(HI_U32 u32LatencyMs, HI_U32 u32FrameSize, HI_U32
 
 HI_U32 AUTIL_ByteSize2LatencyMs(HI_U32 u32DataBytes, HI_U32 u32FrameSize, HI_U32 u32SampleRate)
 {
-    if(!u32FrameSize || !u32SampleRate)
+    if (!u32FrameSize || !u32SampleRate)
     {
         return 0;
     }
@@ -373,7 +476,7 @@ HI_S32 AUTIL_SetBitZeroOrOne(HI_U32* pu32Val, HI_U32 u32Bit, HI_U32 u32ZeroOrOne
 
 const HI_CHAR *AUTIL_Port2Name(HI_UNF_SND_OUTPUTPORT_E enPort)
 {
-    const HI_CHAR *apcName[HI_UNF_SND_OUTPUTPORT_ARC0 + 1] = 
+    const HI_CHAR *apcName[HI_UNF_SND_OUTPUTPORT_ARC0 + 1] =
     {
         "ADAC0",
         "I2S0",
@@ -387,13 +490,13 @@ const HI_CHAR *AUTIL_Port2Name(HI_UNF_SND_OUTPUTPORT_E enPort)
     {
         return apcName[enPort];
     }
-    
+
     return "UnknownPort";
 }
 
 const HI_CHAR *AUTIL_TrackMode2Name(HI_UNF_TRACK_MODE_E enMode)
 {
-    const HI_CHAR *apcName[HI_UNF_TRACK_MODE_BUTT] = 
+    const HI_CHAR *apcName[HI_UNF_TRACK_MODE_BUTT] =
     {
         "STEREO",
         "DOULBE MONO",
@@ -409,13 +512,46 @@ const HI_CHAR *AUTIL_TrackMode2Name(HI_UNF_TRACK_MODE_E enMode)
     {
         return apcName[enMode];
     }
-    
+
     return "Unknown";
+}
+
+const AIAO_TRACK_MODE_E AUTIL_TrackModeTransform(HI_UNF_TRACK_MODE_E enMode)
+{
+    switch (enMode)
+    {
+       case HI_UNF_TRACK_MODE_STEREO:
+           return AIAO_TRACK_MODE_STEREO; 
+           
+       case HI_UNF_TRACK_MODE_DOUBLE_MONO:
+           return AIAO_TRACK_MODE_DOUBLE_MONO;
+           
+       case HI_UNF_TRACK_MODE_DOUBLE_LEFT:
+           return AIAO_TRACK_MODE_DOUBLE_LEFT; 
+           
+      case HI_UNF_TRACK_MODE_DOUBLE_RIGHT:
+           return AIAO_TRACK_MODE_DOUBLE_RIGHT;
+           
+       case HI_UNF_TRACK_MODE_EXCHANGE:
+           return AIAO_TRACK_MODE_EXCHANGE;
+           
+       case HI_UNF_TRACK_MODE_ONLY_RIGHT:
+           return AIAO_TRACK_MODE_ONLY_RIGHT;
+           
+       case HI_UNF_TRACK_MODE_ONLY_LEFT:
+           return AIAO_TRACK_MODE_ONLY_LEFT;
+           
+       case HI_UNF_TRACK_MODE_MUTED:
+           return AIAO_TRACK_MODE_MUTED;
+
+       default:
+           return (AIAO_TRACK_MODE_E)enMode;       
+    } 
 }
 
 const HI_CHAR *AUTIL_HdmiMode2Name(HI_UNF_SND_HDMI_MODE_E enMode)
 {
-    const HI_CHAR *apcName[HI_UNF_SND_HDMI_MODE_BUTT] = 
+    const HI_CHAR *apcName[HI_UNF_SND_HDMI_MODE_BUTT] =
     {
         "PCM",
         "RAW",
@@ -427,13 +563,13 @@ const HI_CHAR *AUTIL_HdmiMode2Name(HI_UNF_SND_HDMI_MODE_E enMode)
     {
         return apcName[enMode];
     }
-    
+
     return "Unknown";
 }
 
 const HI_CHAR *AUTIL_SpdifMode2Name(HI_UNF_SND_SPDIF_MODE_E enMode)
 {
-    const HI_CHAR *apcName[HI_UNF_SND_SPDIF_MODE_BUTT] = 
+    const HI_CHAR *apcName[HI_UNF_SND_SPDIF_MODE_BUTT] =
     {
         "PCM",
         "RAW",
@@ -449,7 +585,7 @@ const HI_CHAR *AUTIL_SpdifMode2Name(HI_UNF_SND_SPDIF_MODE_E enMode)
 
 const HI_CHAR *AUTIL_Engine2Name(SND_ENGINE_TYPE_E enEngine)
 {
-    const HI_CHAR *apcName[SND_ENGINE_TYPE_BUTT] = 
+    const HI_CHAR *apcName[SND_ENGINE_TYPE_BUTT] =
     {
         "PCM",
         "SPDIF RAW",
@@ -460,13 +596,13 @@ const HI_CHAR *AUTIL_Engine2Name(SND_ENGINE_TYPE_E enEngine)
     {
         return apcName[enEngine];
     }
-    
+
     return "Unknown";
 }
 
 const HI_CHAR *AUTIL_Format2Name(HI_U32 u32Format)
 {
-    switch(u32Format)
+    switch (u32Format)
     {
         case IEC61937_DATATYPE_NULL:
             return "PCM";
@@ -496,6 +632,43 @@ const HI_CHAR *AUTIL_Format2Name(HI_U32 u32Format)
             return "Unknown";       
     }
 }
+
+HI_U32 AUTIL_FclkDiv(HI_UNF_I2S_MCLK_SEL_E enMclkSel, HI_UNF_I2S_BCLK_SEL_E enBclkSel)
+{
+    HI_U32 u32Mclk_DIV;
+
+    switch (enMclkSel)
+    {
+    case HI_UNF_I2S_MCLK_128_FS:
+        u32Mclk_DIV = 128;
+        break;
+    case HI_UNF_I2S_MCLK_256_FS:
+        u32Mclk_DIV = 256;
+        break;
+    case HI_UNF_I2S_MCLK_384_FS:
+        u32Mclk_DIV = 384;
+        break;
+    case HI_UNF_I2S_MCLK_512_FS:
+        u32Mclk_DIV = 512;
+        break;
+    case HI_UNF_I2S_MCLK_768_FS:
+        u32Mclk_DIV = 768;
+        break;
+    case HI_UNF_I2S_MCLK_1024_FS:
+        u32Mclk_DIV = 1024;
+        break;
+    default:
+        return 0;
+    }
+
+    if (!(u32Mclk_DIV % enBclkSel))
+    {
+        return u32Mclk_DIV / enBclkSel;
+    }
+
+    return 0;
+}
+
 
 HI_VOID AUTIL_OS_GetTime(HI_U32 *t_ms)
 {

@@ -31,6 +31,8 @@ typedef enum
     HIGO_LAYER_SD_1, 
     HIGO_LAYER_HD_0,
     HIGO_LAYER_HD_1,
+    HIGO_LAYER_HD_2,    
+    HIGO_LAYER_HD_3,    
     HIGO_LAYER_AD_0, 
     HIGO_LAYER_AD_1, 
     HIGO_LAYER_BUTT,
@@ -44,6 +46,7 @@ typedef enum
 /** CNcomment:标清图形叠加层1 */
 #define HIGO_LAYER_RGB1 HIGO_LAYER_SD_1
 
+#define GRAPHICS_LAYER_MAX_NUM 4
 /** The following macro defines the buffer mode of each graphics layer of the HiGo. The canvas buffer is used for drawing,
 and the display buffer is used for display output.*/
 /** CNcomment:下面宏定义了higo的每个图层的buffer模式，其中canvas buffer是供用户绘制的buffer, display buffer是用于显示输出的buffer.*/
@@ -75,15 +78,7 @@ typedef enum
     HIGO_LAYER_DEFLICKER_BUTT
 }HIGO_LAYER_DEFLICKER_E;
 
-/**Frame encode format*/
-/** CNcomment:帧编码传输格式*/
-typedef enum
-{
-    HIGO_ENCPICFRM_MONO   = 0x0,       /**<Normal display, no 3D TV*//**<CNcomment:正常输出，非3D 电视*/
-    HIGO_ENCPICFRM_STEREO_SIDEBYSIDE_HALF,   /**< L/R frames are downscaled horizontally by 2 andpacked side-by-side into a single frame, left on lefthalf of frame*//**<CNcomment:将L/R帧水平缩放到单帧中*/
-    HIGO_ENCPICFRM_STEREO_TOPANDBOTTOM,    /**< L/R frames are downscaled vertically by 2 andpacked into a single frame, left on top*//**<CNcomment:将L/R帧垂直缩放到单帧中*/
-    HIGO_ENCPICFRM_BUTT
-}HIGO_ENCPICFRM_E;
+
 
 /**3D STEREO mode*/
 /** CNcomment:3D STEREO模式*/
@@ -94,17 +89,6 @@ typedef enum
     HIGO_STEREO_MODE_SW_EMUL,              /**<3d stereo function use software emulation */
     HIGO_STEREO_MODE_BUTT
 }HIGO_STEREO_MODE_E;
-
-/**Z order enum*/
-/** CNcomment:Z序枚举*/
-typedef enum 
-{
-    HIGO_LAYER_ZORDER_MOVETOP = 0,  /**<Move to the top*/ /**<CNcomment:  移到最顶部 */
-    HIGO_LAYER_ZORDER_MOVEUP,       /**<Move up*/ /**<CNcomment:  向上移动 */
-    HIGO_LAYER_ZORDER_MOVEBOTTOM,   /**<Move to the bottom*/ /**<CNcomment:  移到最底部 */
-    HIGO_LAYER_ZORDER_MOVEDOWN,     /**<Move down*/ /**<CNcomment:  向下移动 */
-    HIGO_LAYER_ZORDER_BUTT
-} HIGO_LAYER_ZORDER_E;
 
 /**Layer attribute parameters*/
 /** CNcomment:图层属性参数*/
@@ -143,6 +127,17 @@ typedef struct
     HI_U8   Alpha1;         /**<Alpha1 value. It is valid in ARGB1555 format.*//**<CNcomment:alpha1值,在ARGB1555格式下生效 */
     HI_U8   GlobalAlpha;    /**<Global alpha. This value is valid only when the alpha channel is valid.*//**<CNcomment:全局alpha，该值只有在alpha通道有效的时候才有意义 */
 }HIGO_LAYER_ALPHA_S;
+#if 0
+/**Frame encode format*/
+/**CNcomment:帧编码传输格式*/
+typedef enum
+{
+    HIGO_STEREO_MONO   = 0x0,             /**< Normal display, no 3D TV*//**<CNcomment:正常输出，非3D 电视*/
+    HIGO_STEREO_SIDEBYSIDE_HALF,          /**< L/R frames are downscaled horizontally by 2 andpacked side-by-side into a single frame, left on lefthalf of frame*//**<CNcomment:将L/R帧水平缩放到单帧中*/
+    HIGO_STEREO_TOPANDBOTTOM,             /**< L/R frames are downscaled vertically by 2 andpacked into a single frame, left on top*//**<CNcomment:将L/R帧垂直缩放到单帧中*/
+    HIGO_STEREO_BUTT
+}HIGO_STEREO_MODE_E;
+#endif
 
 typedef struct
 {
@@ -423,42 +418,6 @@ CNcomment:图层surface，不能使用HI_GO_FreeSurface来释放。只有在销毁图层的时候才会
 N/A. CNcomment:无 CNend
 */
 HI_S32 HI_GO_GetLayerSurface(HI_HANDLE Layer, HI_HANDLE *pSurface);
-
-/** 
-\brief Set layer Zorder. CNcomment:设置图层Z序 CNend
-\attention \n
-The value takes effect at once, and you do not need to refresh it.
-CNcomment:立即生效，无需刷新 CNend
-\param[in] Layer Layer handle. CNcomment:图层句柄 CNend
-\param[in] enZFlag Zorder flag. 
-
-\retval ::HI_SUCCESS
-\retval ::HIGO_ERR_NOTINIT
-\retval ::HIGO_ERR_INVHANDLE
-\retval ::HIGO_ERR_DEPEND_FB
-
-\see \n
-N/A. CNcomment:无 CNend
-*/
-HI_S32 HI_GO_SetLayerZorder(HI_HANDLE Layer, HIGO_LAYER_ZORDER_E enZFlag);
-
-/** 
-\brief Get layer Zorder. CNcomment:获取图层Z序 CNend
-\attention \n
-The value takes effect at once, and you do not need to refresh it.
-CNcomment:立即生效，无需刷新 CNend
-\param[in] Layer Layer handle. CNcomment:图层句柄 CNend
-\param[in] enZFlag Zorder flag.  
-
-\retval ::HI_SUCCESS
-\retval ::HIGO_ERR_NOTINIT
-\retval ::HIGO_ERR_INVHANDLE
-\retval ::HIGO_ERR_DEPEND_FB
-
-\see \n
-N/A. CNcomment:无 CNend
-*/
-HI_S32 HI_GO_GetLayerZorder(HI_HANDLE Layer, HI_U32* u32ZFlag);
 
 /**
 \brief Shows or hides a graphics layer. CNcomment:显示或隐藏图层 CNend
@@ -800,56 +759,50 @@ N/A. CNcomment:无 CNend
 */
 HI_S32 HI_GO_GetLayerAlphaEx(HI_HANDLE Layer,  HIGO_LAYER_ALPHA_S *pAlphaInfo);
 
-/**
-\brief Sets frame encode mode of a graphic layer. CNcomment:设置图层帧传输格式 CNend
+/** 
+\brief set the Z order of graphics layer in the sample display. CNcomment:改变同一显示设备上图形层的Z序。CNend
 \attention \n
-MONO is the default mode.HIGO_ENCPICFRM_STEREO_TOPANDBOTTOM is not supported when
-stereo mode is HIGO_STEREO_MODE_HW_FULL.
-CNcomment:默认为MONO格式，即普通非3D Stereo格式,其中HIGO_STEREO_MODE_HW_FULL不支持HIGO_ENCPICFRM_STEREO_TOPANDBOTTOM CNend
-
-\param[in] Layer       Layer handle. CNcomment:图层句柄  CNend            
-\param[in] EncPicFrm  Frame encode mode.The value cannot be empty. CNcomment:图层帧传输编码格式，不可为空 CNend  
+this function make effect imediately. CNcomment:该功能需要硬件支持Z序的修改，立即生效，无需刷新 CNend
+\param[in] Layer Layer handle. CNcomment:图层句柄  CNend     
+\param[in] ZFlag zorder flag. CNcomment:修改Z序标志 CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
-\retval ::HIGO_ERR_INVHANDLE 
-\retval ::HIGO_ERR_DEPEND_FB
+\retval ::HIGO_ERR_INVORDERFLAG
+\retval ::HIGO_ERR_INVHANDLE
+\retval ::HIGO_ERR_CANNOTCHANGE
 
 \see \n
-    ::HI_GO_GetEncPicFrm
+::HI_GO_GetLayerZorder
 */
-HI_S32 HI_GO_SetEncPicFrm(HI_HANDLE Layer,  HIGO_ENCPICFRM_E EncPicFrm);
+HI_S32 HI_GO_SetLayerZorder(HI_HANDLE Layer, HIGO_ZORDER_E enZOrder);
+
+/** 
+\brief get the Z order of graphics layer in the sample display. CNcomment:获取同一显示设备上图形层的Z序。CNend
+\attention \n
+Z序越小的图层越靠下 CNend
+\param[in] Layer    Layer handle. CNcomment:图层句柄  CNend
+\param[out] pZOrder Z Order Information. CNcomment:图层Z序信息。CNend
 
 
+\retval ::HI_SUCCESS
+\retval ::HIGO_ERR_NOTINIT
+\retval ::HIGO_ERR_NULLPTR
+\retval ::HIGO_ERR_INVHANDLE
+
+\see \n
+::HI_GO_ChangeLayerZorder
+*/
+HI_S32 HI_GO_GetLayerZorder(HI_HANDLE Layer, HI_U32* pu32ZOrder);
 
 /**
-\brief Obtains frame encode mode of a graphic layer. CNcomment:获取图层帧传输格式 CNend
+\brief Sets frame input encode mode of a graphic layer. CNcomment:设置图形层输入3D格式，输出格式自动跟随VO进行设置。CNend
 \attention \n
-N/A. CNcomment:无 CNend
+MONO is the default mode.
+CNcomment:默认为MONO格式，即普通非3D Stereo格式. CNend
 
 \param[in] Layer       Layer handle. CNcomment:图层句柄 CNend             
-\param[out] pEncPicFrm  Frame encode mode.The value cannot be empty. CNcomment:图层帧传输编码格式，不可为空 CNend   
-
-\retval ::HI_SUCCESS
-\retval ::HIGO_ERR_NOTINIT
-\retval ::HIGO_ERR_INVHANDLE 
-\retval ::HIGO_ERR_DEPEND_FB
-
-\see \n
-    ::HI_GO_SetEncPicFrm
-*/
-HI_S32 HI_GO_GetEncPicFrm(HI_HANDLE Layer,  HIGO_ENCPICFRM_E* pEncPicFrm);
-
-
-
-/**
-\brief Sets stereo mode of a graphics layer. CNcomment:设置3D Stereo的模式 CNend
-\attention \n
-HIGO_ENCPICFRM_STEREO_TOPANDBOTTOM is not supported when stereo mode is HIGO_STEREO_MODE_HW_FULL.
-CNcomment:其中HIGO_STEREO_MODE_HW_FULL不支持HIGO_ENCPICFRM_STEREO_TOPANDBOTTOM CNend
-
-\param[in] Layer       Layer handle. CNcomment:图层句柄 CNend              
-\param[in] StereoMode  Stereo mode, the value cannot be empty. CNcomment:3d stereo模式，不可为空 CNend
+\param[in] EncPicFrm  Frame encode mode.The value cannot be empty. CNcomment:图层帧传输编码格式，不可为空 CNend  
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -859,16 +812,17 @@ CNcomment:其中HIGO_STEREO_MODE_HW_FULL不支持HIGO_ENCPICFRM_STEREO_TOPANDBOTTOM C
 \see \n
     ::HI_GO_GetStereoMode
 */
-HI_S32 HI_GO_SetStereoMode(HI_HANDLE Layer,  HIGO_STEREO_MODE_E StereoMode);
+HI_S32 HI_GO_SetStereoMode(HI_HANDLE Layer,  HIGO_STEREO_MODE_E InputEnc);
 
 
 
 /**
-\brief Sets stereo mode of a graphics layer. CNcomment:获取3D Stereo的模式 CNend
+\brief Obtains frame encode mode of a graphic layer. CNcomment:获取图形层3D格式。CNend
 \attention \n
-N/A. CNcomment:无 CNend
+无 CNend
+
 \param[in] Layer       Layer handle. CNcomment:图层句柄 CNend             
-\param[out] pStereoMode  Stereo mode, the value cannot be empty. CNcomment:3d stereo模式，不可为空 CNend  
+\param[out] pInputEnc  Frame encode mode.The value cannot be empty. CNcomment:图层帧传输编码格式，不可为空 CNend  
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -878,9 +832,45 @@ N/A. CNcomment:无 CNend
 \see \n
     ::HI_GO_SetStereoMode
 */
-HI_S32 HI_GO_GetStereoMode(HI_HANDLE Layer,  HIGO_STEREO_MODE_E* pStereoMode);
+HI_S32 HI_GO_GetStereoMode(HI_HANDLE Layer,  HIGO_STEREO_MODE_E *pInputEnc);
 
 
+/**
+\brief set the 3d depth, only support depth in Horizontal . CNcomment:设置景深,只支持水平方向景深 CNend
+\attention \n
+无 CNend
+
+\param[in]  Layer       Layer handle. CNcomment:图层句柄 CNend             
+\param[out] StereoDepth  3D depth. CNcomment:景深 CNend
+
+\retval ::HI_SUCCESS
+\retval ::HIGO_ERR_NOTINIT
+\retval ::HIGO_ERR_INVHANDLE 
+\retval ::HIGO_ERR_DEPEND_FB
+
+\see \n
+    ::HI_GO_GetStereoDepth
+*/
+HI_S32 HI_GO_SetStereoDepth(HI_HANDLE Layer,  HI_S32  s32StereoDepth);
+
+
+/**
+\brief get the 3d depth, only support depth in Horizontal . CNcomment:获取景深,只支持水平方向景深 CNend
+\attention \n
+无 CNend
+
+\param[in]  Layer       Layer handle. CNcomment:图层句柄 CNend              
+\param[out] pStereoDepth  3D depth. CNcomment:景深 CNend
+
+\retval ::HI_SUCCESS
+\retval ::HIGO_ERR_NOTINIT
+\retval ::HIGO_ERR_INVHANDLE 
+\retval ::HIGO_ERR_DEPEND_FB
+
+\see \n
+    ::HI_GO_GetStereoDepth
+*/
+HI_S32 HI_GO_GetStereoDepth(HI_HANDLE Layer,  HI_S32  *ps32StereoDepth);
 
 /**
 \brief Sets compress mode of a graphic layer. CNcomment:设置使能压缩模式 CNend

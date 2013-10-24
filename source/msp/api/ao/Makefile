@@ -40,7 +40,9 @@ clean:
 
 install:all
 	$(AT)cp -f  $(LIBS).a           $(STATIC_LIB_DIR)/
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)cp -f  $(LIBS).so          $(SHARED_LIB_DIR)/
+endif
 	$(AT)cp -f  $(HEADER_FILES)     $(INCLUDE_DIR)/
 
 uninstall:
@@ -50,4 +52,6 @@ uninstall:
 
 $(LIBS) : $(OBJS)
 	$(AT)$(AR) -rsv $@.a $^
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)$(CC) -shared -o $@.so $^
+endif

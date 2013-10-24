@@ -41,7 +41,7 @@ extern "C" {
 
 #define VDEC_USERDATA_TYPE_DVB1_CC      (0x03)
 #define VDEC_USERDATA_TYPE_DVB1_BAR     (0x06)
-
+#define VDEC_USERDATA_NEED_ARRANGE (1)
 /*************************** Structure Definition ****************************/
 
 /********************** Global Variable declaration **************************/

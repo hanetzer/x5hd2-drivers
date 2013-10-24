@@ -22,17 +22,7 @@ extern "C"{
 #endif /* End of #ifdef __cplusplus */
 
 #include "hi_debug.h"
-
-#if defined(CHIP_TYPE_hi3712)
-#define HI_DOLBY_REG    0x10180084
-#define HI_DOLBY_BIT    (1 << 21)
-#elif defined(CHIP_TYPE_hi3716cv200es)
-#define HI_DOLBY_REG    0xf8a201e0
-#define HI_DOLBY_BIT    (1)
-#else
-#define HI_DOLBY_REG    0x10180084
-#define HI_DOLBY_BIT    (1 << 21)
-#endif
+#include "hi_drv_sys.h"
 
 typedef enum hiIOC_NR_SYS_E
 {
@@ -41,7 +31,8 @@ typedef enum hiIOC_NR_SYS_E
     IOC_NR_SYS_SETCONFIG,
     IOC_NR_SYS_GETCONFIG,
     IOC_NR_SYS_GETVERSION,
-    IOC_NR_SYS_GETTIMESTAMPMS
+    IOC_NR_SYS_GETTIMESTAMPMS,
+    IOC_NR_SYS_GETDOLBYSUPPORT
 } IOC_NR_SYS_E;
 
 
@@ -51,14 +42,7 @@ typedef enum hiIOC_NR_SYS_E
 #define SYS_GET_CONFIG_CTRL   _IOR(HI_ID_SYS, IOC_NR_SYS_GETCONFIG, HI_SYS_CONF_S)
 #define SYS_GET_SYS_VERSION   _IOR(HI_ID_SYS, IOC_NR_SYS_GETVERSION, HI_SYS_VERSION_S)
 #define SYS_GET_TIMESTAMPMS   _IOR(HI_ID_SYS, IOC_NR_SYS_GETTIMESTAMPMS, HI_U32)
-
-
-/* Define Debug Level For SYS */
-#define HI_FATAL_SYS(fmt...) HI_FATAL_PRINT(HI_ID_SYS, fmt)
-#define HI_ERR_SYS(  fmt...) HI_ERR_PRINT(HI_ID_SYS, fmt)
-#define HI_WARN_SYS( fmt...) HI_WARN_PRINT(HI_ID_SYS, fmt)
-#define HI_INFO_SYS( fmt...) HI_INFO_PRINT(HI_ID_SYS, fmt)
-
+#define SYS_GET_DOLBYSUPPORT   _IOR(HI_ID_SYS, IOC_NR_SYS_GETDOLBYSUPPORT, HI_U32)
 
 #ifdef __cplusplus
 }

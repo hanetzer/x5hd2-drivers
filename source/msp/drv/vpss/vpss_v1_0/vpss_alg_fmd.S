@@ -13,31 +13,34 @@
 @	compiled by GNU C version 4.1.1 20061011 (Red Hat 4.1.1-30), GMP version 4.3.1, MPFR version 2.4.2.
 @ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 @ options passed:  -nostdinc
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/include
 @ -Iarch/arm/include/generated -Iinclude
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vpss
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vpss
 @ -Idrivers/msp/vpss
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/drv/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/include
 @ -imultilib armv7a_soft -iprefix
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/
 @ -isysroot /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../target
-@ -D__KERNEL__ -D__LINUX_ARM_ARCH__=7 -Uarm -DCHIP_TYPE_hi3716cv200es
-@ -DSDK_VERSION=HiSTBLinuxV100R002C00SPC011 -DCFG_HI_LOG_LEVEL=4
-@ -DHI_KEYLED_SUPPORT -DHI_SCI_SUPPORT -DHI_VENC_SUPPORT -DHI_AENC_SUPPORT
-@ -DKBUILD_STR(s)=#s -DKBUILD_BASENAME=KBUILD_STR(vpss_alg_fmd)
+@ -D__KERNEL__ -D__LINUX_ARM_ARCH__=7 -Uarm -DCHIP_TYPE_hi3716cv200
+@ -DSDK_VERSION=HiSTBLinuxV100R002C00SPC020 -DHI_GPIOI2C_SUPPORT
+@ -DHI_LOG_SUPPORT=1 -DHI_LOG_LEVEL=4 -DHI_PROC_SUPPORT=1
+@ -DHI_KEYLED_SUPPORT -DHI_HDCP_SUPPORT -DHI_SCI_SUPPORT -DHI_VI_SUPPORT
+@ -DHI_VENC_SUPPORT -DHI_AENC_SUPPORT -DHI_VPSS_MAX_BUFFER_NUMB=6
+@ -DHI_VPSS_DRV_VER_CV200 -DKBUILD_STR(s)=#s
+@ -DKBUILD_BASENAME=KBUILD_STR(vpss_alg_fmd)
 @ -DKBUILD_MODNAME=KBUILD_STR(hi_vpss) -isystem
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/include
 @ -include
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include/linux/kconfig.h
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include/linux/kconfig.h
 @ -MD drivers/msp/vpss/vpss_v1_0/.vpss_alg_fmd.o.d
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vpss/vpss_v1_0/vpss_alg_fmd.c
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vpss/vpss_v1_0/vpss_alg_fmd.c
 @ -mlittle-endian -marm -mapcs -mno-sched-prolog -mabi=aapcs-linux
 @ -mno-thumb-interwork -march=armv7-a -msoft-float -auxbase-strip
 @ drivers/msp/vpss/vpss_v1_0/vpss_alg_fmd.o -O2 -Wall -Wundef
@@ -82,7 +85,7 @@
 	.type	DetectStillBlk, %function
 DetectStillBlk:
 	.fnstart
-.LFB580:
+.LFB1246:
 	@ args = 0, pretend = 0, frame = 8
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -518,7 +521,7 @@ DetectStillBlk:
 	.type	DetectFieldOrder, %function
 DetectFieldOrder:
 	.fnstart
-.LFB581:
+.LFB1247:
 	@ args = 0, pretend = 0, frame = 32
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -532,15 +535,15 @@ DetectFieldOrder:
 	sub	sp, sp, #36	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
-	ldr	r5, [r1, #8]	@ D.13680, <variable>.s32DeiMdLum
+	ldr	r5, [r1, #8]	@ D.27219, <variable>.s32DeiMdLum
 	mov	r4, r2	@ pstFmdCtx, pstFmdCtx
-	ldr	ip, [r1, #40]	@ Width, <variable>.s32FrmWidth
-	cmp	r5, #2	@ D.13680,
-	ldr	r2, [r1, #36]	@ Height, <variable>.s32FrmHeight
-	streq	r5, [r4, #196]	@ D.13680, <variable>.FieldOrder
-	moveq	r0, r5	@ D.13683, D.13680
+	ldr	ip, [r1, #44]	@ Width, <variable>.s32FrmWidth
+	cmp	r5, #2	@ D.27219,
+	ldr	r2, [r1, #40]	@ Height, <variable>.s32FrmHeight
+	streq	r5, [r4, #196]	@ D.27219, <variable>.FieldOrder
+	moveq	r0, r5	@ D.27222, D.27219
 	beq	.L38	@,
-	cmp	r5, #1	@ D.13680,
+	cmp	r5, #1	@ D.27219,
 	beq	.L75	@,
 .L39:
 	ldr	r1, [r4, #0]	@ <variable>.Is2ndFld, <variable>.Is2ndFld
@@ -560,42 +563,42 @@ DetectFieldOrder:
 	movgt	r7, r1, asr #31	@ tmp179, biggerintwo,
 	movwgt	r0, #:lower16:1717986919	@ tmp177,
 	movtgt	r0, #:upper16:1717986919	@ tmp177,
-	movle	sl, #50	@ iftmp.245,
+	movle	sl, #50	@ iftmp.404,
 	smullgt	r8, sl, r0, r1	@, tmp176, tmp177, biggerintwo
-	rsbgt	sl, r7, sl, asr #1	@, iftmp.245, tmp179, tmp176,
-	add	sl, sl, r1	@ tmp180, iftmp.245, biggerintwo
+	rsbgt	sl, r7, sl, asr #1	@, iftmp.404, tmp179, tmp176,
+	add	sl, sl, r1	@ tmp180, iftmp.404, biggerintwo
 	cmp	lr, r6	@ z34, z14
-	movge	r1, lr	@ biggerintwo.551, z34
-	movlt	r1, r6	@ biggerintwo.551, z14
+	movge	r1, lr	@ biggerintwo.712, z34
+	movlt	r1, r6	@ biggerintwo.712, z14
 	cmp	sl, r6	@ tmp180, z14
 	movge	sl, #0	@, islasi14biggest
 	movlt	sl, #1	@, islasi14biggest
-	cmp	r1, #254	@ biggerintwo.551,
-	movgt	r8, r1, asr #31	@ tmp185, biggerintwo.551,
+	cmp	r1, #254	@ biggerintwo.712,
+	movgt	r8, r1, asr #31	@ tmp185, biggerintwo.712,
 	movwgt	r7, #:lower16:1717986919	@ tmp183,
 	movtgt	r7, #:upper16:1717986919	@ tmp183,
-	movle	r0, #50	@ iftmp.246,
-	smullgt	r9, r0, r7, r1	@, tmp182, tmp183, biggerintwo.551
-	rsbgt	r0, r8, r0, asr #1	@, iftmp.246, tmp185, tmp182,
-	add	r0, r0, r1	@ tmp186, iftmp.246, biggerintwo.551
+	movle	r0, #50	@ iftmp.405,
+	smullgt	r9, r0, r7, r1	@, tmp182, tmp183, biggerintwo.712
+	rsbgt	r0, r8, r0, asr #1	@, iftmp.405, tmp185, tmp182,
+	add	r0, r0, r1	@ tmp186, iftmp.405, biggerintwo.712
 	cmp	r6, r5	@ z14, z32
-	movge	r1, r6	@ biggerintwo.552, z14
-	movlt	r1, r5	@ biggerintwo.552, z32
+	movge	r1, r6	@ biggerintwo.713, z14
+	movlt	r1, r5	@ biggerintwo.713, z32
 	cmp	r0, r5	@ tmp186, z32
 	movge	r0, #0	@,
 	movlt	r0, #1	@,
-	cmp	r1, #254	@ biggerintwo.552,
+	cmp	r1, #254	@ biggerintwo.713,
 	str	r0, [fp, #-48]	@, %sfp
-	movgt	r7, r1, asr #31	@ tmp191, biggerintwo.552,
+	movgt	r7, r1, asr #31	@ tmp191, biggerintwo.713,
 	movwgt	r0, #:lower16:1717986919	@ tmp189,
 	movtgt	r0, #:upper16:1717986919	@ tmp189,
-	movle	r9, #50	@ iftmp.247,
-	smullgt	r8, r9, r0, r1	@, tmp188, tmp189, biggerintwo.552
-	rsbgt	r9, r7, r9, asr #1	@, iftmp.247, tmp191, tmp188,
+	movle	r9, #50	@ iftmp.406,
+	smullgt	r8, r9, r0, r1	@, tmp188, tmp189, biggerintwo.713
+	rsbgt	r9, r7, r9, asr #1	@, iftmp.406, tmp191, tmp188,
 	cmp	lr, r5	@ z34, z32
 	movlt	r0, lr	@ smallerintwo, z34
 	movge	r0, r5	@ smallerintwo, z32
-	add	r9, r9, r1	@ tmp192, iftmp.247, biggerintwo.552
+	add	r9, r9, r1	@ tmp192, iftmp.406, biggerintwo.713
 	cmp	r9, lr	@ tmp192, z34
 	movge	r9, #0	@,
 	movlt	r9, #1	@,
@@ -604,40 +607,40 @@ DetectFieldOrder:
 	movgt	r8, r0, asr #31	@ tmp197, smallerintwo,
 	movwgt	r7, #:lower16:1717986919	@ tmp195,
 	movtgt	r7, #:upper16:1717986919	@ tmp195,
-	movle	r9, #50	@ iftmp.248,
+	movle	r9, #50	@ iftmp.407,
 	smullgt	r9, r7, r7, r0	@, tmp194, tmp195, smallerintwo
-	rsbgt	r9, r8, r7, asr #1	@, iftmp.248, tmp197, tmp194,
-	rsb	r9, r9, r0	@ tmp198, iftmp.248, smallerintwo
+	rsbgt	r9, r8, r7, asr #1	@, iftmp.407, tmp197, tmp194,
+	rsb	r9, r9, r0	@ tmp198, iftmp.407, smallerintwo
 	cmp	lr, r6	@ z34, z14
-	movlt	r0, lr	@ smallerintwo.553, z34
-	movge	r0, r6	@ smallerintwo.553, z14
+	movlt	r0, lr	@ smallerintwo.714, z34
+	movge	r0, r6	@ smallerintwo.714, z14
 	cmp	r9, r6	@ tmp198, z14
 	movle	r9, #0	@,
 	movgt	r9, #1	@,
-	cmp	r0, #254	@ smallerintwo.553,
+	cmp	r0, #254	@ smallerintwo.714,
 	str	r9, [fp, #-72]	@, %sfp
-	movgt	r9, r0, asr #31	@ tmp203, smallerintwo.553,
+	movgt	r9, r0, asr #31	@ tmp203, smallerintwo.714,
 	movwgt	r7, #:lower16:1717986919	@ tmp201,
 	movtgt	r7, #:upper16:1717986919	@ tmp201,
-	movle	r7, #50	@ iftmp.249,
-	smullgt	r8, r7, r7, r0	@, tmp200, tmp201, smallerintwo.553
-	rsbgt	r7, r9, r7, asr #1	@, iftmp.249, tmp203, tmp200,
-	rsb	r7, r7, r0	@ tmp204, iftmp.249, smallerintwo.553
+	movle	r7, #50	@ iftmp.408,
+	smullgt	r8, r7, r7, r0	@, tmp200, tmp201, smallerintwo.714
+	rsbgt	r7, r9, r7, asr #1	@, iftmp.408, tmp203, tmp200,
+	rsb	r7, r7, r0	@ tmp204, iftmp.408, smallerintwo.714
 	cmp	r6, r5	@ z14, z32
-	movlt	r0, r6	@ smallerintwo.554, z14
-	movge	r0, r5	@ smallerintwo.554, z32
+	movlt	r0, r6	@ smallerintwo.715, z14
+	movge	r0, r5	@ smallerintwo.715, z32
 	cmp	r7, r5	@ tmp204, z32
 	movle	r7, #0	@, islasi32smallest
 	movgt	r7, #1	@, islasi32smallest
-	cmp	r0, #254	@ smallerintwo.554,
+	cmp	r0, #254	@ smallerintwo.715,
 	movle	r9, #50	@,
 	strle	r9, [fp, #-56]	@, %sfp
 	ble	.L56	@,
 	movw	r8, #:lower16:1717986919	@,
 	movt	r8, #:upper16:1717986919	@,
-	mov	r9, r0, asr #31	@, smallerintwo.554,
+	mov	r9, r0, asr #31	@, smallerintwo.715,
 	str	r9, [fp, #-56]	@, %sfp
-	smull	r9, r8, r8, r0	@,,, smallerintwo.554
+	smull	r9, r8, r8, r0	@,,, smallerintwo.715
 	ldr	r9, [fp, #-56]	@, %sfp
 	str	r8, [fp, #-64]	@, %sfp
 	rsb	r8, r9, r8, asr #1	@,,,,
@@ -646,7 +649,7 @@ DetectFieldOrder:
 	mul	r9, ip, r2	@ tmp213, Width, Height
 	ldr	ip, [fp, #-56]	@, %sfp
 	rsb	r3, r3, #16	@ tmp212, StllBlkCnt,
-	rsb	r8, ip, r0	@ tmp210,, smallerintwo.554
+	rsb	r8, ip, r0	@ tmp210,, smallerintwo.715
 	cmp	r8, lr	@ tmp210, z34
 	movle	r8, #0	@, islasi34smallest
 	movgt	r8, #1	@, islasi34smallest
@@ -665,9 +668,9 @@ DetectFieldOrder:
 	mov	r3, r3, asr #1	@ zthr, tmp228,
 	cmp	r3, #6	@ zthr,
 	movlt	r3, #6	@ zthr,
-	cmp	r1, #100	@ biggerintwo.552,
+	cmp	r1, #100	@ biggerintwo.713,
 	ble	.L58	@,
-	rsb	r0, r0, r1	@ tmp230, smallerintwo.554, biggerintwo.552
+	rsb	r0, r0, r1	@ tmp230, smallerintwo.715, biggerintwo.713
 	mov	r2, #100	@ tmp232,
 	str	r3, [fp, #-60]	@,
 	mul	r0, r2, r0	@, tmp232, tmp230
@@ -686,9 +689,9 @@ DetectFieldOrder:
 	movgt	r3, #500	@ fac,
 	ble	.L76	@,
 .L61:
-	uxtb	r2, sl	@ D.13750, islasi14biggest
+	uxtb	r2, sl	@ D.27289, islasi14biggest
 	eor	lr, r7, #1	@ tmp244, islasi32smallest,
-	tst	r2, lr	@ D.13750, tmp244
+	tst	r2, lr	@ D.27289, tmp244
 	beq	.L62	@,
 .L78:
 	cmp	r3, #50	@ fac,
@@ -699,7 +702,7 @@ DetectFieldOrder:
 	ldr	lr, [fp, #-52]	@, %sfp
 	cmp	lr, #0	@,
 	bne	.L65	@,
-	tst	r2, r7	@ D.13750, islasi32smallest
+	tst	r2, r7	@ D.27289, islasi32smallest
 	bne	.L64	@,
 	ldr	r0, [fp, #-72]	@, %sfp
 	ldr	r2, [fp, #-48]	@, %sfp
@@ -716,36 +719,36 @@ DetectFieldOrder:
 	orrs	r7, r7, r8	@, tmp268, islasi34smallest
 	bne	.L66	@,
 	cmp	r3, #50	@ fac,
-	movge	r3, #50	@ fac.559,
+	movge	r3, #50	@ fac.720,
 	mvn	r1, #49	@ tmp270,
-	cmp	r3, r1	@ fac.559, tmp270
+	cmp	r3, r1	@ fac.720, tmp270
 	movlt	r3, r1	@ fac, tmp270
 .L66:
 	ldr	lr, [r4, #192]	@ <variable>.SADDiffAcc, <variable>.SADDiffAcc
-	add	r3, r3, lr	@ D.13787, fac, <variable>.SADDiffAcc
-	str	r3, [r4, #192]	@ D.13787, <variable>.SADDiffAcc
-	cmp	r3, #1000	@ D.13787,
+	add	r3, r3, lr	@ D.27326, fac, <variable>.SADDiffAcc
+	str	r3, [r4, #192]	@ D.27326, <variable>.SADDiffAcc
+	cmp	r3, #1000	@ D.27326,
 	movgt	r3, #1000	@ tmp272,
 	strgt	r3, [r4, #192]	@ tmp272, <variable>.SADDiffAcc
 	bgt	.L68	@,
-	cmn	r3, #1000	@ D.13787,
+	cmn	r3, #1000	@ D.27326,
 	movw	r2, #:lower16:-1000	@ tmp273,
 	movt	r2, #:upper16:-1000	@ tmp273,
 	strlt	r2, [r4, #192]	@ tmp273, <variable>.SADDiffAcc
 	blt	.L70	@,
-	cmp	r3, #200	@ D.13787,
+	cmp	r3, #200	@ D.27326,
 	bgt	.L68	@,
-	cmn	r3, #200	@ D.13787,
+	cmn	r3, #200	@ D.27326,
 	blt	.L70	@,
 .L74:
-	ldr	r0, [r4, #196]	@ D.13683, <variable>.FieldOrder
+	ldr	r0, [r4, #196]	@ D.27222, <variable>.FieldOrder
 .L38:
 	sub	sp, fp, #40
 	ldmfd	sp, {r4, r5, r6, r7, r8, r9, sl, fp, sp, pc}
 .L59:
-	uxtb	r2, sl	@ D.13750, islasi14biggest
+	uxtb	r2, sl	@ D.27289, islasi14biggest
 	eor	lr, r7, #1	@ tmp244, islasi32smallest,
-	tst	r2, lr	@ D.13750, tmp244
+	tst	r2, lr	@ D.27289, tmp244
 	mov	r3, #0	@ fac,
 	bne	.L78	@,
 .L62:
@@ -763,15 +766,15 @@ DetectFieldOrder:
 	str	r0, [r4, #196]	@ tmp275, <variable>.FieldOrder
 	b	.L38	@
 .L75:
-	ldr	r1, [r4, #8]	@ D.13688, <variable>.BtMode
-	cmp	r1, #0	@ D.13688,
+	ldr	r1, [r4, #8]	@ D.27227, <variable>.BtMode
+	cmp	r1, #0	@ D.27227,
 	beq	.L79	@,
-	cmp	r1, #1	@ D.13688,
+	cmp	r1, #1	@ D.27227,
 	bne	.L39	@,
 	ldr	r1, [r4, #12]	@ <variable>.RefFld, <variable>.RefFld
 	cmp	r1, #1	@ <variable>.RefFld,
 	bne	.L39	@,
-	ldr	r0, [r4, #196]	@ D.13683, <variable>.FieldOrder
+	ldr	r0, [r4, #196]	@ D.27222, <variable>.FieldOrder
 	b	.L38	@
 .L77:
 	orrs	r0, r7, r0	@, islasi32smallest,
@@ -787,7 +790,7 @@ DetectFieldOrder:
 	ldr	r1, [r4, #12]	@ <variable>.RefFld, <variable>.RefFld
 	cmp	r1, #0	@ <variable>.RefFld,
 	bne	.L39	@,
-	ldr	r0, [r4, #196]	@ D.13683, <variable>.FieldOrder
+	ldr	r0, [r4, #196]	@ D.27222, <variable>.FieldOrder
 	b	.L38	@
 .L76:
 	movw	r1, #:lower16:-500	@ tmp242,
@@ -803,7 +806,7 @@ DetectFieldOrder:
 	.type	DetectSceneChange, %function
 DetectSceneChange:
 	.fnstart
-.LFB582:
+.LFB1248:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -821,55 +824,55 @@ DetectSceneChange:
 	movw	r7, #:lower16:200000	@ tmp189,
 	ldr	r4, [r0, #12]	@ tmp170,
 	cmp	r6, r2	@ tmp168, MinSad
-	movlt	sl, r6	@ MinSad.600, tmp168
-	movge	sl, r2	@ MinSad.600, MinSad
-	add	ip, r6, r2	@ SadMean.602, tmp168, MinSad
-	cmp	r5, sl	@ tmp169, MinSad.600
-	movlt	r8, r5	@ MinSad.606, tmp169
-	movge	r8, sl	@ MinSad.606, MinSad.600
+	movlt	sl, r6	@ MinSad.761, tmp168
+	movge	sl, r2	@ MinSad.761, MinSad
+	add	ip, r6, r2	@ SadMean.763, tmp168, MinSad
+	cmp	r5, sl	@ tmp169, MinSad.761
+	movlt	r8, r5	@ MinSad.767, tmp169
+	movge	r8, sl	@ MinSad.767, MinSad.761
 	cmp	r6, r2	@ tmp168, MinSad
-	movge	r9, r6	@ MaxSad.601, tmp168
-	movlt	r9, r2	@ MaxSad.601, MinSad
-	add	r0, r5, ip	@ SadMean.608, tmp169, SadMean.602
+	movge	r9, r6	@ MaxSad.762, tmp168
+	movlt	r9, r2	@ MaxSad.762, MinSad
+	add	r0, r5, ip	@ SadMean.769, tmp169, SadMean.763
 	ldr	ip, [r3, #16]	@ tmp171,
-	cmp	r5, r9	@ tmp169, MaxSad.601
-	movge	sl, r5	@ MaxSad.607, tmp169
-	movlt	sl, r9	@ MaxSad.607, MaxSad.601
+	cmp	r5, r9	@ tmp169, MaxSad.762
+	movge	sl, r5	@ MaxSad.768, tmp169
+	movlt	sl, r9	@ MaxSad.768, MaxSad.762
 	ldr	r2, [r3, #20]	@ tmp172,
-	cmp	r4, r8	@ tmp170, MinSad.606
-	movlt	r9, r4	@ MinSad.612, tmp170
-	movge	r9, r8	@ MinSad.612, MinSad.606
-	add	r0, r4, r0	@ SadMean.614, tmp170, SadMean.608
-	cmp	ip, r9	@ tmp171, MinSad.612
-	movlt	r8, ip	@ MinSad.618, tmp171
-	movge	r8, r9	@ MinSad.618, MinSad.612
-	cmp	r4, sl	@ tmp170, MaxSad.607
-	movge	sl, r4	@ MaxSad.613, tmp170
-	movlt	sl, sl	@ MaxSad.613, MaxSad.607
-	add	r9, ip, r0	@ SadMean.620, tmp171, SadMean.614
-	cmp	r2, r8	@ tmp172, MinSad.618
+	cmp	r4, r8	@ tmp170, MinSad.767
+	movlt	r9, r4	@ MinSad.773, tmp170
+	movge	r9, r8	@ MinSad.773, MinSad.767
+	add	r0, r4, r0	@ SadMean.775, tmp170, SadMean.769
+	cmp	ip, r9	@ tmp171, MinSad.773
+	movlt	r8, ip	@ MinSad.779, tmp171
+	movge	r8, r9	@ MinSad.779, MinSad.773
+	cmp	r4, sl	@ tmp170, MaxSad.768
+	movge	sl, r4	@ MaxSad.774, tmp170
+	movlt	sl, sl	@ MaxSad.774, MaxSad.768
+	add	r9, ip, r0	@ SadMean.781, tmp171, SadMean.775
+	cmp	r2, r8	@ tmp172, MinSad.779
 	movlt	r8, r2	@ tmp174, tmp172
-	movge	r8, r8	@ tmp174, MinSad.618
-	cmp	ip, sl	@ tmp171, MaxSad.613
-	movge	sl, ip	@ MaxSad.619, tmp171
-	movlt	sl, sl	@ MaxSad.619, MaxSad.613
-	add	r0, r2, r9	@ tmp173, tmp172, SadMean.620
+	movge	r8, r8	@ tmp174, MinSad.779
+	cmp	ip, sl	@ tmp171, MaxSad.774
+	movge	sl, ip	@ MaxSad.780, tmp171
+	movlt	sl, sl	@ MaxSad.780, MaxSad.774
+	add	r0, r2, r9	@ tmp173, tmp172, SadMean.781
 	ldr	r9, [r1, #132]	@ <variable>.frmHstBin.HISTOGRAM_BIN_4, <variable>.frmHstBin.HISTOGRAM_BIN_4
-	cmp	r2, sl	@ tmp172, MaxSad.619
+	cmp	r2, sl	@ tmp172, MaxSad.780
 	movge	sl, r2	@ tmp176, tmp172
-	movlt	sl, sl	@ tmp176, MaxSad.619
+	movlt	sl, sl	@ tmp176, MaxSad.780
 	rsb	r0, r8, r0	@ tmp175, tmp174, tmp173
 	ldr	r8, [r1, #128]	@ <variable>.frmHstBin.HISTOGRAM_BIN_3, <variable>.frmHstBin.HISTOGRAM_BIN_3
-	rsb	r0, sl, r0	@ D.13831, tmp176, tmp175
+	rsb	r0, sl, r0	@ D.27370, tmp176, tmp175
 	ldr	r1, [r1, #124]	@ <variable>.frmHstBin.HISTOGRAM_BIN_2, <variable>.frmHstBin.HISTOGRAM_BIN_2
-	add	sl, r0, #3	@ tmp180, D.13831,
-	cmp	r0, #0	@ D.13831,
+	add	sl, r0, #3	@ tmp180, D.27370,
+	cmp	r0, #0	@ D.27370,
 	add	r8, r8, r9, asl #1	@, tmp163, <variable>.frmHstBin.HISTOGRAM_BIN_3, <variable>.frmHstBin.HISTOGRAM_BIN_4,
 	movt	r7, #:upper16:200000	@ tmp189,
 	str	r6, [r3, #0]	@ tmp168,* SadBuf
-	movlt	r0, sl	@ D.13831, tmp180
+	movlt	r0, sl	@ D.27370, tmp180
 	add	r1, r1, r8, asl #1	@, tmp166, <variable>.frmHstBin.HISTOGRAM_BIN_2, tmp163,
-	mov	r0, r0, asr #2	@ tmp181, D.13831,
+	mov	r0, r0, asr #2	@ tmp181, D.27370,
 	str	r5, [r3, #4]	@ tmp169,
 	mov	r1, r1, asl #1	@ CurSad, tmp166,
 	str	r4, [r3, #8]	@ tmp170,
@@ -890,7 +893,7 @@ DetectSceneChange:
 	.type	OverLapedTitleCheck, %function
 OverLapedTitleCheck:
 	.fnstart
-.LFB583:
+.LFB1249:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -917,7 +920,7 @@ OverLapedTitleCheck:
 	.type	Check32PdPattern, %function
 Check32PdPattern:
 	.fnstart
-.LFB584:
+.LFB1250:
 	@ args = 4, pretend = 0, frame = 104
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -953,16 +956,16 @@ Check32PdPattern:
 	ldr	r0, [r6, #0]	@ tmp159,* Sads
 	ldr	ip, [r3, #4]	@ tmp163,
 	cmp	r8, r0, asl #5	@ MaxSad, tmp159,
-	movge	r2, #0	@, PatCnt.678
-	movlt	r2, #1	@, PatCnt.678
+	movge	r2, #0	@, PatCnt.839
+	movlt	r2, #1	@, PatCnt.839
 	cmp	ip, #0	@ tmp163,
 	beq	.L89	@,
 .L98:
 	ldr	r0, [r6, #4]	@ tmp165,
 	mov	lr, r0, asl #5	@ tmp167, tmp165,
 	cmp	lr, r8	@ tmp167, MaxSad
-	movle	r0, r2	@, PatCnt.686, PatCnt.678
-	addgt	r0, r2, #1	@,, PatCnt.686, PatCnt.678
+	movle	r0, r2	@, PatCnt.847, PatCnt.839
+	addgt	r0, r2, #1	@,, PatCnt.847, PatCnt.839
 	ldr	r2, [r3, #8]	@ tmp171,
 	cmp	r2, #0	@ tmp171,
 	beq	.L91	@,
@@ -970,8 +973,8 @@ Check32PdPattern:
 	ldr	lr, [r6, #8]	@ tmp173,
 	mov	ip, lr, asl #5	@ tmp175, tmp173,
 	cmp	ip, r8	@ tmp175, MaxSad
-	movle	r1, r0	@, PatCnt.696, PatCnt.686
-	addgt	r1, r0, #1	@,, PatCnt.696, PatCnt.686
+	movle	r1, r0	@, PatCnt.857, PatCnt.847
+	addgt	r1, r0, #1	@,, PatCnt.857, PatCnt.847
 	ldr	r0, [r3, #12]	@ tmp179,
 	cmp	r0, #0	@ tmp179,
 	beq	.L93	@,
@@ -980,15 +983,15 @@ Check32PdPattern:
 	ldr	r3, [r3, #16]	@ tmp187,
 	mov	r2, ip, asl #5	@ tmp183, tmp181,
 	cmp	r2, r8	@ tmp183, MaxSad
-	movle	r2, r1	@, PatCnt.706, PatCnt.696
-	addgt	r2, r1, #1	@,, PatCnt.706, PatCnt.696
+	movle	r2, r1	@, PatCnt.867, PatCnt.857
+	addgt	r2, r1, #1	@,, PatCnt.867, PatCnt.857
 	cmp	r3, #0	@ tmp187,
 	bne	.L95	@,
 .L101:
 	ldr	r1, [r6, #16]	@ tmp189,
 	cmp	r1, r7	@ tmp189, MinSad
-	movne	r0, r2	@, PatCnt, PatCnt.706
-	addeq	r0, r2, #1	@,, PatCnt, PatCnt.706
+	movne	r0, r2	@, PatCnt, PatCnt.867
+	addeq	r0, r2, #1	@,, PatCnt, PatCnt.867
 .L96:
 	cmp	r0, #4	@ PatCnt,
 	movle	r0, #0	@, RetFlag
@@ -1000,23 +1003,23 @@ Check32PdPattern:
 	ldr	r1, [r6, #0]	@ tmp161,* Sads
 	ldr	ip, [r3, #4]	@ tmp163,
 	cmp	r1, r7	@ tmp161, MinSad
-	movne	r2, #0	@, PatCnt.678
-	moveq	r2, #1	@, PatCnt.678
+	movne	r2, #0	@, PatCnt.839
+	moveq	r2, #1	@, PatCnt.839
 	cmp	ip, #0	@ tmp163,
 	bne	.L98	@,
 .L89:
 	ldr	r1, [r6, #4]	@ tmp169,
 	cmp	r1, r7	@ tmp169, MinSad
-	movne	r0, r2	@, PatCnt.686, PatCnt.678
-	addeq	r0, r2, #1	@,, PatCnt.686, PatCnt.678
+	movne	r0, r2	@, PatCnt.847, PatCnt.839
+	addeq	r0, r2, #1	@,, PatCnt.847, PatCnt.839
 	ldr	r2, [r3, #8]	@ tmp171,
 	cmp	r2, #0	@ tmp171,
 	bne	.L99	@,
 .L91:
 	ldr	r1, [r6, #8]	@ tmp177,
 	cmp	r1, r7	@ tmp177, MinSad
-	movne	r1, r0	@, PatCnt.696, PatCnt.686
-	addeq	r1, r0, #1	@,, PatCnt.696, PatCnt.686
+	movne	r1, r0	@, PatCnt.857, PatCnt.847
+	addeq	r1, r0, #1	@,, PatCnt.857, PatCnt.847
 	ldr	r0, [r3, #12]	@ tmp179,
 	cmp	r0, #0	@ tmp179,
 	bne	.L100	@,
@@ -1024,16 +1027,16 @@ Check32PdPattern:
 	ldr	lr, [r6, #12]	@ tmp185,
 	ldr	r3, [r3, #16]	@ tmp187,
 	cmp	lr, r7	@ tmp185, MinSad
-	movne	r2, r1	@, PatCnt.706, PatCnt.696
-	addeq	r2, r1, #1	@,, PatCnt.706, PatCnt.696
+	movne	r2, r1	@, PatCnt.867, PatCnt.857
+	addeq	r2, r1, #1	@,, PatCnt.867, PatCnt.857
 	cmp	r3, #0	@ tmp187,
 	beq	.L101	@,
 .L95:
 	ldr	ip, [r6, #16]	@ tmp192,
 	mov	r0, ip, asl #5	@ tmp194, tmp192,
 	cmp	r0, r8	@ tmp194, MaxSad
-	movle	r0, r2	@, PatCnt, PatCnt.706
-	addgt	r0, r2, #1	@,, PatCnt, PatCnt.706
+	movle	r0, r2	@, PatCnt, PatCnt.867
+	addgt	r0, r2, #1	@,, PatCnt, PatCnt.867
 	b	.L96	@
 	.fnend
 	.size	Check32PdPattern, .-Check32PdPattern
@@ -1042,7 +1045,7 @@ Check32PdPattern:
 	.type	Calc32PLD, %function
 Calc32PLD:
 	.fnstart
-.LFB585:
+.LFB1251:
 	@ args = 4, pretend = 0, frame = 72
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -1057,126 +1060,126 @@ Calc32PLD:
 	push	{lr}
 	bl	__gnu_mcount_nc
 	ldr	r4, [fp, #4]	@ pstFmdCtx, pstFmdCtx
-	str	r0, [fp, #-76]	@ D.15583, %sfp
+	str	r0, [fp, #-76]	@ D.29194, %sfp
 	str	r1, [fp, #-112]	@ pstFrmPcc, %sfp
 	add	r0, r4, #80	@, pstFmdCtx,
 	str	r3, [fp, #-84]	@ IsSceneChange, %sfp
 	str	r0, [fp, #-96]	@, %sfp
 	ldr	r1, [r4, #92]	@ <variable>.pSadWt, <variable>.pSadWt
-	ldr	r3, [r4, #88]	@ pRd.752, <variable>.pSadRd
+	ldr	r3, [r4, #88]	@ pRd.913, <variable>.pSadRd
 	str	r2, [r1, #0]	@ Sad,* <variable>.pSadWt
 	ldr	ip, [r4, #92]	@ <variable>.pSadWt, <variable>.pSadWt
 	ldr	r2, [r4, #84]	@ <variable>.SadCnt, <variable>.SadCnt
-	add	r1, ip, #4	@ iftmp.258, <variable>.pSadWt,
-	cmp	r1, r0	@ iftmp.258,
-	add	r2, r2, #1	@ D.13926, <variable>.SadCnt,
-	addhi	r1, r4, #20	@ iftmp.258, pstFmdCtx,
-	cmp	r2, #4	@ D.13926,
-	str	r1, [r4, #92]	@ iftmp.258, <variable>.pSadWt
-	str	r2, [r4, #84]	@ D.13926, <variable>.SadCnt
+	add	r1, ip, #4	@ iftmp.417, <variable>.pSadWt,
+	cmp	r1, r0	@ iftmp.417,
+	add	r2, r2, #1	@ D.27465, <variable>.SadCnt,
+	addhi	r1, r4, #20	@ iftmp.417, pstFmdCtx,
+	cmp	r2, #4	@ D.27465,
+	str	r1, [r4, #92]	@ iftmp.417, <variable>.pSadWt
+	str	r2, [r4, #84]	@ D.27465, <variable>.SadCnt
 	ble	.L169	@,
-	ldr	ip, [r3, #0]	@ MinSad,* pRd.752
+	ldr	ip, [r3, #0]	@ MinSad,* pRd.913
 	add	r6, r4, #20	@, pstFmdCtx,
 	ldr	r5, [fp, #-96]	@, %sfp
 	str	r6, [fp, #-104]	@, %sfp
-	mov	r1, r6	@ pRd.754,
+	mov	r1, r6	@ pRd.925,
 	str	ip, [fp, #-64]	@ MinSad, Sads
-	ldr	r7, [r3], #4	@ MinSad.767,
+	ldr	r7, [r3], #4	@ MinSad.928,
 	ldr	lr, [fp, #-96]	@, %sfp
-	cmp	r5, r3	@, pRd.754
+	cmp	r5, r3	@, pRd.925
 	ldr	r9, [fp, #-104]	@, %sfp
-	movcs	r1, r3	@ pRd.754, pRd.754
-	cmp	ip, r7	@ MinSad, MinSad.767
-	movlt	r5, ip	@ MinSad.760, MinSad
-	movge	r5, r7	@ MinSad.760, MinSad.767
-	ldr	r3, [r1, #0]	@ tmp205,* pRd.754
-	cmp	r7, ip	@ MinSad.767, MinSad
-	movlt	r7, ip	@ MaxSad.766, MinSad
-	add	r8, r1, #4	@ pRd.765, pRd.754,
+	movcs	r1, r3	@ pRd.925, pRd.925
+	cmp	ip, r7	@ MinSad, MinSad.928
+	movlt	r5, ip	@ MinSad.920, MinSad
+	movge	r5, r7	@ MinSad.920, MinSad.928
+	ldr	r3, [r1, #0]	@ tmp205,* pRd.925
+	cmp	r7, ip	@ MinSad.928, MinSad
+	movlt	r7, ip	@ MaxSad.927, MinSad
+	add	r8, r1, #4	@ pRd.916, pRd.925,
 	ldr	ip, [fp, #-96]	@, %sfp
 	str	r3, [fp, #-60]	@ tmp205, Sads
-	ldr	r0, [r1, #0]	@ MinSad.756,* pRd.754
-	cmp	r0, r5	@ MinSad.756, MinSad.760
-	movlt	r3, #1	@ MinPos,
-	movge	r3, #0	@ MinPos,
-	movlt	r5, r0	@ MinSad.760, MinSad.756
-	cmp	r7, r0	@ MaxSad.766, MinSad.756
-	movlt	r7, r0	@ MaxSad.764, MinSad.756
-	cmp	lr, r8	@, pRd.765
+	ldr	r0, [r1, #0]	@ MinSad.924,* pRd.925
+	cmp	r5, r0	@ MinSad.920, MinSad.924
+	movgt	r3, #1	@ MinPos,
+	movle	r3, #0	@ MinPos,
+	movgt	r5, r0	@ MinSad.920, MinSad.924
+	cmp	r7, r0	@ MaxSad.927, MinSad.924
+	movlt	r7, r0	@ MaxSad.926, MinSad.924
+	cmp	lr, r8	@, pRd.916
 	ldr	r0, [fp, #-104]	@, %sfp
-	movcc	r8, r9	@ pRd.765,
-	add	r1, r8, #4	@ pRd.770, pRd.765,
-	ldr	sl, [r8, #0]	@ tmp206,* pRd.765
+	movcc	r8, r9	@ pRd.916,
+	add	r1, r8, #4	@ pRd.931, pRd.916,
+	ldr	sl, [r8, #0]	@ tmp206,* pRd.916
 	str	sl, [fp, #-56]	@ tmp206, Sads
-	ldr	r6, [r8, #0]	@ MinSad.768,* pRd.765
+	ldr	r6, [r8, #0]	@ MinSad.929,* pRd.916
 	ldr	sl, [fp, #-96]	@, %sfp
-	cmp	r5, r6	@ MinSad.760, MinSad.768
+	cmp	r5, r6	@ MinSad.920, MinSad.929
 	ldr	r8, [fp, #-104]	@, %sfp
 	movgt	r3, #2	@ MinPos,
-	movgt	r5, r6	@ MinSad.760, MinSad.768
-	cmp	r7, r6	@ MaxSad.764, MinSad.768
-	movlt	r7, r6	@ MaxSad.769, MinSad.768
-	cmp	ip, r1	@, pRd.770
-	movcc	r1, r0	@ pRd.770,
-	add	r6, r1, #4	@ pRd.774, pRd.770,
-	ldr	r9, [r1, #0]	@ tmp207,* pRd.770
-	sub	r0, r2, #1	@, D.13926,
-	ldr	r2, [fp, #-56]	@ MinSad2nd.784, Sads
+	movgt	r5, r6	@ MinSad.920, MinSad.929
+	cmp	r7, r6	@ MaxSad.926, MinSad.929
+	movlt	r7, r6	@ MaxSad.930, MinSad.929
+	cmp	ip, r1	@, pRd.931
+	movcc	r1, r0	@ pRd.931,
+	add	r6, r1, #4	@ pRd.935, pRd.931,
+	ldr	r9, [r1, #0]	@ tmp207,* pRd.931
+	sub	r0, r2, #1	@, D.27465,
+	ldr	r2, [fp, #-56]	@ MinSad2nd.945, Sads
 	str	r9, [fp, #-52]	@ tmp207, Sads
-	ldr	lr, [r1, #0]	@ MinSad.772,* pRd.770
+	ldr	lr, [r1, #0]	@ MinSad.933,* pRd.931
 	ldr	r9, [fp, #-52]	@, Sads
-	cmp	r5, lr	@ MinSad.760, MinSad.772
-	ldr	r1, [fp, #-60]	@ MinSad2nd.780, Sads
+	cmp	r5, lr	@ MinSad.920, MinSad.933
+	ldr	r1, [fp, #-60]	@ MinSad2nd.941, Sads
 	movgt	r3, #3	@ MinPos,
-	movgt	r5, lr	@ MinSad.760, MinSad.772
-	cmp	r7, lr	@ MaxSad.769, MinSad.772
-	movlt	r7, lr	@ MaxSad.773, MinSad.772
-	cmp	sl, r6	@, pRd.774
-	movcc	r6, r8	@ pRd.774,
-	ldr	r8, [r6, #0]	@ MinSad2nd,* pRd.774
+	movgt	r5, lr	@ MinSad.920, MinSad.933
+	cmp	r7, lr	@ MaxSad.930, MinSad.933
+	movlt	r7, lr	@ MaxSad.934, MinSad.933
+	cmp	sl, r6	@, pRd.935
+	movcc	r6, r8	@ pRd.935,
+	ldr	r8, [r6, #0]	@ MinSad2nd,* pRd.935
 	str	r8, [fp, #-48]	@ MinSad2nd, Sads
-	ldr	ip, [r6, #0]	@ MinSad.755,* pRd.774
-	ldr	r6, [fp, #-64]	@ MinSad2nd.775, Sads
-	cmp	ip, r5	@ MinSad.755, MinSad.760
+	ldr	ip, [r6, #0]	@ MinSad.915,* pRd.935
+	ldr	r6, [fp, #-64]	@ MinSad2nd.936, Sads
+	cmp	ip, r5	@ MinSad.915, MinSad.920
 	str	r0, [fp, #-88]	@, %sfp
 	str	r9, [fp, #-80]	@, %sfp
 	sub	r9, fp, #64	@ tmp329,,
 	movlt	r3, #4	@ MinPos,
-	movlt	r5, ip	@ MinSad.760, MinSad.755
-	cmp	ip, r7	@ MinSad.755, MaxSad.773
-	movge	r7, ip	@ MaxSad, MinSad.755
-	movlt	r7, r7	@ MaxSad, MaxSad.773
+	movlt	r5, ip	@ MinSad.920, MinSad.915
+	cmp	ip, r7	@ MinSad.915, MaxSad.934
+	movge	r7, ip	@ MaxSad, MinSad.915
+	movlt	r7, r7	@ MaxSad, MaxSad.934
 	ldr	ip, [fp, #-88]	@, %sfp
 	cmp	r3, #0	@ MinPos,
-	cmpne	r7, r6	@, MaxSad, MinSad2nd.775
+	cmpne	r7, r6	@, MaxSad, MinSad2nd.936
 	ldr	lr, [r4, #88]	@ <variable>.pSadRd, <variable>.pSadRd
 	mov	r0, #0	@,
-	movle	r6, r7	@, MinSad2nd.775, MaxSad
+	movle	r6, r7	@, MinSad2nd.936, MaxSad
 	cmp	r3, #1	@ MinPos,
-	cmpne	r6, r1	@, MinSad2nd.775, MinSad2nd.780
+	cmpne	r6, r1	@, MinSad2nd.936, MinSad2nd.941
 	add	sl, lr, #4	@, <variable>.pSadRd,
 	str	sl, [fp, #-72]	@, %sfp
 	str	ip, [r4, #84]	@, <variable>.SadCnt
-	movgt	r6, r1	@, MinSad2nd.780, MinSad2nd.780
+	movgt	r6, r1	@, MinSad2nd.941, MinSad2nd.941
 	ldr	r1, [fp, #-80]	@, %sfp
 	cmp	r3, #2	@ MinPos,
-	cmpne	r6, r2	@, MinSad2nd.780, MinSad2nd.784
+	cmpne	r6, r2	@, MinSad2nd.941, MinSad2nd.945
 	ldr	lr, [fp, #-80]	@, %sfp
-	movgt	sl, r2	@, MinSad2nd.784, MinSad2nd.784
-	movle	sl, r6	@, MinSad2nd.784, MinSad2nd.780
+	movgt	sl, r2	@, MinSad2nd.945, MinSad2nd.945
+	movle	sl, r6	@, MinSad2nd.945, MinSad2nd.941
 	cmp	r3, #3	@ MinPos,
-	cmpne	sl, r1	@, MinSad2nd.784,
+	cmpne	sl, r1	@, MinSad2nd.945,
 	ldr	r6, [fp, #-72]	@, %sfp
 	mov	r1, r9	@, tmp329
-	movgt	sl, lr	@, MinSad2nd.790,
+	movgt	sl, lr	@, MinSad2nd.951,
 	cmp	r3, #4	@ MinPos,
-	cmpne	r8, sl	@, MinSad2nd, MinSad2nd.790
+	cmpne	r8, sl	@, MinSad2nd, MinSad2nd.951
 	ldr	ip, [fp, #-96]	@, %sfp
 	mov	r2, r7	@, MaxSad
-	movge	r8, sl	@, MinSad2nd, MinSad2nd.790
+	movge	r8, sl	@, MinSad2nd, MinSad2nd.951
 	ldr	sl, [fp, #-104]	@, %sfp
 	cmp	ip, r6	@,
-	mov	r3, r5	@, MinSad.760
+	mov	r3, r5	@, MinSad.920
 	movcs	sl, r6	@,
 	str	sl, [r4, #88]	@, <variable>.pSadRd
 	ldr	r6, [fp, #-112]	@, %sfp
@@ -1191,7 +1194,7 @@ Calc32PLD:
 	str	lr, [fp, #-80]	@, %sfp
 	str	lr, [r4, #160]	@, <variable>.PdInfo.WithOvlpTitle
 	bl	Check32PdPattern	@
-	cmp	r0, #0	@ ValidFlag.796
+	cmp	r0, #0	@ ValidFlag.957
 	mvneq	sl, #0	@ ValidPhase,
 	bne	.L170	@,
 .L122:
@@ -1202,10 +1205,10 @@ Calc32PLD:
 	mov	r0, #1	@,
 	mov	r1, r9	@, tmp329
 	mov	r2, r7	@, MaxSad
-	mov	r3, r5	@, MinSad.760
+	mov	r3, r5	@, MinSad.920
 	str	r8, [sp, #0]	@ MinSad2nd,
 	bl	Check32PdPattern	@
-	cmp	r0, #0	@ ValidFlag.763
+	cmp	r0, #0	@ ValidFlag.923
 	bne	.L129	@,
 .L130:
 	add	r6, r6, #1	@ InValidCnt, InValidCnt,
@@ -1213,10 +1216,10 @@ Calc32PLD:
 	mov	r0, #2	@,
 	mov	r1, r9	@, tmp329
 	mov	r2, r7	@, MaxSad
-	mov	r3, r5	@, MinSad.760
+	mov	r3, r5	@, MinSad.920
 	str	r8, [sp, #0]	@ MinSad2nd,
 	bl	Check32PdPattern	@
-	cmp	r0, #0	@ ValidFlag.808
+	cmp	r0, #0	@ ValidFlag.969
 	bne	.L137	@,
 .L138:
 	add	r6, r6, #1	@ InValidCnt, InValidCnt,
@@ -1224,17 +1227,17 @@ Calc32PLD:
 	mov	r0, #3	@,
 	mov	r1, r9	@, tmp329
 	mov	r2, r7	@, MaxSad
-	mov	r3, r5	@, MinSad.760
+	mov	r3, r5	@, MinSad.920
 	str	r8, [sp, #0]	@ MinSad2nd,
 	bl	Check32PdPattern	@
-	cmp	r0, #0	@ ValidFlag.814
+	cmp	r0, #0	@ ValidFlag.975
 	bne	.L145	@,
 .L146:
 	add	r6, r6, #1	@ InValidCnt, InValidCnt,
 .L147:
 	mov	r1, r9	@, tmp329
 	mov	r2, r7	@, MaxSad
-	mov	r3, r5	@, MinSad.760
+	mov	r3, r5	@, MinSad.920
 	mov	r0, #4	@,
 	str	r8, [sp, #0]	@ MinSad2nd,
 	bl	Check32PdPattern	@
@@ -1256,9 +1259,9 @@ Calc32PLD:
 	beq	.L160	@,
 .L162:
 	ldrsb	r3, [r4, #164]	@ <variable>.PdInfo.PdState, <variable>.PdInfo.PdState
-	sxtb	lr, r2	@ prephitmp.732, prephitmp.732
+	sxtb	lr, r2	@ prephitmp.893, prephitmp.893
 	mov	r2, #0	@ tmp306,
-	str	lr, [r4, #168]	@ prephitmp.732, <variable>.Count
+	str	lr, [r4, #168]	@ prephitmp.893, <variable>.Count
 	strb	r2, [r4, #165]	@ tmp306, <variable>.PdInfo.RptFlag
 	str	r3, [r4, #184]	@ <variable>.PdInfo.PdState, <variable>.Count
 	str	r3, [r4, #172]	@ <variable>.PdInfo.PdState, <variable>.Count
@@ -1267,10 +1270,10 @@ Calc32PLD:
 	str	r2, [r4, #156]	@ tmp306, <variable>.PdInfo.Pd32Det
 	strb	r2, [r4, #166]	@ tmp306, <variable>.PdInfo.PdSubState
 .L163:
-	uxtb	sl, sl	@ iftmp.271, ValidPhase
+	uxtb	sl, sl	@ iftmp.430, ValidPhase
 .L166:
 	add	lr, r4, #156	@ tmp326, pstFmdCtx,
-	strb	sl, [r4, #188]	@ iftmp.271, <variable>.Last32Phase
+	strb	sl, [r4, #188]	@ iftmp.430, <variable>.Last32Phase
 	ldr	ip, [fp, #-76]	@, %sfp
 	ldmia	lr, {r0, r1, r2}	@ tmp326,,,
 	stmia	ip, {r0, r1, r2}	@,,,
@@ -1286,60 +1289,60 @@ Calc32PLD:
 	cmp	r0, #4	@ tmp296,
 	movge	r0, #4	@ tmp298,
 	bic	lr, r0, r0, asr #31	@ tmp299, tmp298
-	uxtb	r2, lr	@ prephitmp.732, tmp299
-	strb	r2, [r4, #164]	@ prephitmp.732, <variable>.PdInfo.PdState
+	uxtb	r2, lr	@ prephitmp.893, tmp299
+	strb	r2, [r4, #164]	@ prephitmp.893, <variable>.PdInfo.PdState
 	b	.L162	@
 .L171:
 	cmp	r0, #1	@ ValidFlag,
 	bne	.L154	@,
-	ldrsb	r3, [r4, #188]	@ D.13963, <variable>.Last32Phase
-	cmp	r3, #3	@ D.13963,
+	ldrsb	r3, [r4, #188]	@ D.27502, <variable>.Last32Phase
+	cmp	r3, #3	@ D.27502,
 	beq	.L155	@,
-	cmp	r3, #8	@ D.13963,
+	cmp	r3, #8	@ D.27502,
 	beq	.L155	@,
 .L154:
 	mov	sl, #4	@ ValidPhase,
 	b	.L153	@
 .L145:
-	cmp	r0, #1	@ ValidFlag.814,
+	cmp	r0, #1	@ ValidFlag.975,
 	bne	.L148	@,
-	ldrsb	r3, [r4, #188]	@ temp.816, <variable>.Last32Phase
-	cmp	r3, #2	@ temp.816,
+	ldrsb	r3, [r4, #188]	@ temp.977, <variable>.Last32Phase
+	cmp	r3, #2	@ temp.977,
 	beq	.L152	@,
-	cmp	r3, #7	@ temp.816,
+	cmp	r3, #7	@ temp.977,
 	beq	.L152	@,
 .L148:
 	mov	sl, #3	@ ValidPhase,
 	b	.L146	@
 .L137:
-	cmp	r0, #1	@ ValidFlag.808,
+	cmp	r0, #1	@ ValidFlag.969,
 	bne	.L140	@,
-	ldrsb	r3, [r4, #188]	@ temp.810, <variable>.Last32Phase
-	cmp	r3, #1	@ temp.810,
+	ldrsb	r3, [r4, #188]	@ temp.971, <variable>.Last32Phase
+	cmp	r3, #1	@ temp.971,
 	beq	.L144	@,
-	cmp	r3, #6	@ temp.810,
+	cmp	r3, #6	@ temp.971,
 	beq	.L144	@,
 .L140:
 	mov	sl, #2	@ ValidPhase,
 	b	.L138	@
 .L170:
-	cmp	r0, #1	@ ValidFlag.796,
+	cmp	r0, #1	@ ValidFlag.957,
 	bne	.L124	@,
-	ldrsb	r3, [r4, #188]	@ temp.794, <variable>.Last32Phase
-	cmn	r3, #1	@ temp.794,
+	ldrsb	r3, [r4, #188]	@ temp.955, <variable>.Last32Phase
+	cmn	r3, #1	@ temp.955,
 	beq	.L128	@,
-	cmp	r3, #4	@ temp.794,
+	cmp	r3, #4	@ temp.955,
 	beq	.L128	@,
 .L124:
 	mov	sl, #0	@ ValidPhase,
 	b	.L122	@
 .L129:
-	cmp	r0, #1	@ ValidFlag.763,
+	cmp	r0, #1	@ ValidFlag.923,
 	bne	.L132	@,
-	ldrsb	r3, [r4, #188]	@ temp.804, <variable>.Last32Phase
-	cmp	r3, #0	@ temp.804,
+	ldrsb	r3, [r4, #188]	@ temp.965, <variable>.Last32Phase
+	cmp	r3, #0	@ temp.965,
 	beq	.L136	@,
-	cmp	r3, #5	@ temp.804,
+	cmp	r3, #5	@ temp.965,
 	beq	.L136	@,
 .L132:
 	mov	sl, #1	@ ValidPhase,
@@ -1375,27 +1378,27 @@ Calc32PLD:
 	addne	r2, r6, #5	@ tmp320,,
 	ldreq	ip, [fp, #-72]	@, %sfp
 	ldr	r0, [fp, #-72]	@, %sfp
-	uxtbne	r2, r2	@ iftmp.269, tmp320
-	uxtbeq	r2, ip	@ iftmp.269,
+	uxtbne	r2, r2	@ iftmp.428, tmp320
+	uxtbeq	r2, ip	@ iftmp.428,
 	rsbs	r1, r0, #1	@ tmp322,
 	movcc	r1, #0	@ tmp322
 	cmn	r0, #1	@,
-	strb	r2, [r4, #166]	@ iftmp.269, <variable>.PdInfo.PdSubState
+	strb	r2, [r4, #166]	@ iftmp.428, <variable>.PdInfo.PdSubState
 	strb	r1, [r4, #165]	@ tmp322, <variable>.PdInfo.RptFlag
-	uxtbne	sl, r0	@ iftmp.271,
+	uxtbne	sl, r0	@ iftmp.430,
 	bne	.L166	@,
 	b	.L163	@
 .L155:
 	ldr	sl, [r4, #184]	@ <variable>.Count, <variable>.Count
-	add	r3, sl, #1	@ D.13969, <variable>.Count,
-	str	r3, [r4, #184]	@ D.13969, <variable>.Count
-	cmp	r3, #0	@ D.13969,
+	add	r3, sl, #1	@ D.27508, <variable>.Count,
+	str	r3, [r4, #184]	@ D.27508, <variable>.Count
+	cmp	r3, #0	@ D.27508,
 	ble	.L156	@,
-	cmp	r3, #5	@ D.13969,
-	movge	r3, #5	@ iftmp.266,
+	cmp	r3, #5	@ D.27508,
+	movge	r3, #5	@ iftmp.425,
 	mov	sl, #4	@ ValidPhase,
-	cmp	r3, #3	@ iftmp.266,
-	str	r3, [r4, #184]	@ iftmp.266, <variable>.Count
+	cmp	r3, #3	@ iftmp.425,
+	str	r3, [r4, #184]	@ iftmp.425, <variable>.Count
 	strle	sl, [fp, #-72]	@ ValidPhase, %sfp
 	movgt	r3, #3	@ tmp280,
 	strgt	r3, [r4, #180]	@ tmp280, <variable>.Count
@@ -1406,14 +1409,14 @@ Calc32PLD:
 	b	.L158	@
 .L136:
 	ldr	r0, [r4, #172]	@ <variable>.Count, <variable>.Count
-	add	r3, r0, #1	@ temp.806, <variable>.Count,
-	str	r3, [r4, #172]	@ temp.806, <variable>.Count
-	cmp	r3, #0	@ temp.806,
+	add	r3, r0, #1	@ temp.967, <variable>.Count,
+	str	r3, [r4, #172]	@ temp.967, <variable>.Count
+	cmp	r3, #0	@ temp.967,
 	ble	.L174	@,
-	cmp	r3, #5	@ temp.806,
-	movge	r3, #5	@ iftmp.807,
-	str	r3, [r4, #172]	@ iftmp.807, <variable>.Count
-	cmp	r3, #3	@ iftmp.807,
+	cmp	r3, #5	@ temp.967,
+	movge	r3, #5	@ iftmp.968,
+	str	r3, [r4, #172]	@ iftmp.968, <variable>.Count
+	cmp	r3, #3	@ iftmp.968,
 	movle	sl, #1	@ ValidPhase,
 	strle	sl, [fp, #-72]	@ ValidPhase, %sfp
 	ble	.L131	@,
@@ -1427,14 +1430,14 @@ Calc32PLD:
 	b	.L131	@
 .L152:
 	ldr	r0, [r4, #180]	@ <variable>.Count, <variable>.Count
-	add	r3, r0, #1	@ temp.818, <variable>.Count,
-	str	r3, [r4, #180]	@ temp.818, <variable>.Count
-	cmp	r3, #0	@ temp.818,
+	add	r3, r0, #1	@ temp.979, <variable>.Count,
+	str	r3, [r4, #180]	@ temp.979, <variable>.Count
+	cmp	r3, #0	@ temp.979,
 	ble	.L175	@,
-	cmp	r3, #5	@ temp.818,
-	movge	r3, #5	@ iftmp.819,
-	str	r3, [r4, #180]	@ iftmp.819, <variable>.Count
-	cmp	r3, #3	@ iftmp.819,
+	cmp	r3, #5	@ temp.979,
+	movge	r3, #5	@ iftmp.980,
+	str	r3, [r4, #180]	@ iftmp.980, <variable>.Count
+	cmp	r3, #3	@ iftmp.980,
 	movle	sl, #3	@ ValidPhase,
 	strle	sl, [fp, #-72]	@ ValidPhase, %sfp
 	ble	.L147	@,
@@ -1448,14 +1451,14 @@ Calc32PLD:
 	b	.L147	@
 .L128:
 	ldr	r2, [r4, #168]	@ <variable>.Count, <variable>.Count
-	add	r3, r2, #1	@ temp.788, <variable>.Count,
-	str	r3, [r4, #168]	@ temp.788, <variable>.Count
-	cmp	r3, #0	@ temp.788,
+	add	r3, r2, #1	@ temp.949, <variable>.Count,
+	str	r3, [r4, #168]	@ temp.949, <variable>.Count
+	cmp	r3, #0	@ temp.949,
 	ble	.L176	@,
-	cmp	r3, #5	@ temp.788,
-	movge	r3, #5	@ iftmp.779,
-	str	r3, [r4, #168]	@ iftmp.779, <variable>.Count
-	cmp	r3, #3	@ iftmp.779,
+	cmp	r3, #5	@ temp.949,
+	movge	r3, #5	@ iftmp.940,
+	str	r3, [r4, #168]	@ iftmp.940, <variable>.Count
+	cmp	r3, #3	@ iftmp.940,
 	movle	sl, #0	@ ValidPhase,
 	strle	sl, [fp, #-72]	@ ValidPhase, %sfp
 	movle	r6, sl	@ InValidCnt, ValidPhase
@@ -1471,14 +1474,14 @@ Calc32PLD:
 	b	.L123	@
 .L144:
 	ldr	r3, [r4, #176]	@ <variable>.Count, <variable>.Count
-	add	r3, r3, #1	@ temp.812, <variable>.Count,
-	str	r3, [r4, #176]	@ temp.812, <variable>.Count
-	cmp	r3, #0	@ temp.812,
+	add	r3, r3, #1	@ temp.973, <variable>.Count,
+	str	r3, [r4, #176]	@ temp.973, <variable>.Count
+	cmp	r3, #0	@ temp.973,
 	ble	.L177	@,
-	cmp	r3, #5	@ temp.812,
-	movge	r3, #5	@ iftmp.813,
-	str	r3, [r4, #176]	@ iftmp.813, <variable>.Count
-	cmp	r3, #3	@ iftmp.813,
+	cmp	r3, #5	@ temp.973,
+	movge	r3, #5	@ iftmp.974,
+	str	r3, [r4, #176]	@ iftmp.974, <variable>.Count
+	cmp	r3, #3	@ iftmp.974,
 	movle	sl, #2	@ ValidPhase,
 	strle	sl, [fp, #-72]	@ ValidPhase, %sfp
 	ble	.L139	@,
@@ -1527,7 +1530,7 @@ Calc32PLD:
 	.type	GetPlayBackConfig, %function
 GetPlayBackConfig:
 	.fnstart
-.LFB586:
+.LFB1252:
 	@ args = 20, pretend = 0, frame = 56
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -1643,7 +1646,7 @@ GetPlayBackConfig:
 	.type	Calc22PLD_STB, %function
 Calc22PLD_STB:
 	.fnstart
-.LFB587:
+.LFB1253:
 	@ args = 0, pretend = 0, frame = 136
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -1665,37 +1668,36 @@ Calc22PLD_STB:
 	sub	r0, fp, #144	@,,
 	mov	r7, r3	@ s32DeiMdLum, s32DeiMdLum
 	bl	memcpy	@
-	ldr	r3, [fp, #-120]	@, pcc_stat.PCC_BWD_TKR
+	ldr	r9, [fp, #-120]	@, pcc_stat.PCC_BWD_TKR
 	ldr	r0, [fp, #-136]	@, pcc_stat.PCC_BWD
 	rsbs	r6, r6, #1	@ phase, Is2ndFld
 	movcc	r6, #0	@ phase
 	ldr	r2, [r5, #0]	@ Frame_IT_diff, <variable>.frmITDiff
 	cmp	r6, #1	@ phase,
-	str	r3, [fp, #-152]	@, %sfp
+	str	r9, [fp, #-152]	@, %sfp
 	str	r0, [fp, #-172]	@, %sfp
-	ldr	ip, [r5, #16]	@, <variable>.frmUm.nonmatch_UM2
-	ldr	r9, [fp, #-144]	@ pcc_stat$PCC_FFWD, pcc_stat.PCC_FFWD
-	ldr	r8, [fp, #-140]	@ pcc_stat$PCC_FWD, pcc_stat.PCC_FWD
-	str	ip, [fp, #-180]	@, %sfp
-	ldr	r1, [r5, #12]	@, <variable>.frmUm.match_UM2
+	ldr	r1, [r5, #16]	@, <variable>.frmUm.nonmatch_UM2
+	ldr	sl, [fp, #-144]	@ pcc_stat$PCC_FFWD, pcc_stat.PCC_FFWD
+	ldr	ip, [fp, #-140]	@ pcc_stat$PCC_FWD, pcc_stat.PCC_FWD
+	str	r1, [fp, #-180]	@, %sfp
+	ldr	r8, [r5, #12]	@, <variable>.frmUm.match_UM2
 	ldr	r0, [fp, #-132]	@ pcc_stat$PCC_CRSS, pcc_stat.PCC_CRSS
-	ldr	r3, [fp, #-124]	@ pcc_stat$PCC_FWD_TKR, pcc_stat.PCC_FWD_TKR
-	str	r1, [fp, #-176]	@, %sfp
-	ldr	sl, [r5, #8]	@, <variable>.frmUm.nonmatch_UM
-	str	sl, [fp, #-168]	@, %sfp
-	ldr	ip, [r5, #124]	@, <variable>.frmHstBin.HISTOGRAM_BIN_2
-	ldr	sl, [r5, #4]	@ um_stat$match_UM, <variable>.frmUm.match_UM
-	str	ip, [fp, #-164]	@, %sfp
-	ldr	r1, [r5, #132]	@, <variable>.frmHstBin.HISTOGRAM_BIN_4
-	str	r1, [fp, #-156]	@, %sfp
+	ldr	r9, [fp, #-124]	@ pcc_stat$PCC_FWD_TKR, pcc_stat.PCC_FWD_TKR
+	str	r8, [fp, #-176]	@, %sfp
+	ldr	r3, [r5, #8]	@, <variable>.frmUm.nonmatch_UM
+	str	r3, [fp, #-168]	@, %sfp
+	ldr	r1, [r5, #124]	@, <variable>.frmHstBin.HISTOGRAM_BIN_2
+	ldr	r8, [r5, #4]	@ um_stat$match_UM, <variable>.frmUm.match_UM
+	str	r1, [fp, #-164]	@, %sfp
+	ldr	r3, [r5, #132]	@, <variable>.frmHstBin.HISTOGRAM_BIN_4
+	str	r3, [fp, #-156]	@, %sfp
 	ldr	r1, [r5, #128]	@, <variable>.frmHstBin.HISTOGRAM_BIN_3
 	str	r1, [fp, #-160]	@, %sfp
-	ldr	ip, [r5, #120]	@ hist_stat$HISTOGRAM_BIN_1, <variable>.frmHstBin.HISTOGRAM_BIN_1
+	ldr	r5, [r5, #120]	@ hist_stat$HISTOGRAM_BIN_1, <variable>.frmHstBin.HISTOGRAM_BIN_1
 	beq	.L246	@,
 	cmp	r7, #0	@ s32DeiMdLum,
-	moveq	r5, r3	@ match_tkr, pcc_stat$PCC_FWD_TKR
 	moveq	r1, r0	@ pcc_stat$PCC_CRSS, pcc_stat$PCC_CRSS
-	moveq	r3, r9	@ nonmatch_weave, pcc_stat$PCC_FFWD
+	moveq	r3, sl	@ nonmatch_weave, pcc_stat$PCC_FFWD
 	beq	.L201	@,
 	cmp	r7, #1	@ s32DeiMdLum,
 	beq	.L247	@,
@@ -1707,125 +1709,125 @@ Calc22PLD_STB:
 	beq	.L248	@,
 	cmp	r7, #1	@ s32DeiMdLum,
 	bne	.L244	@,
-	ldr	r5, [fp, #-152]	@ match_tkr, %sfp
+	ldr	r9, [fp, #-152]	@ match_tkr, %sfp
 	ldr	r1, [r4, #40]	@ pcc_stat$PCC_CRSS, <variable>.lstPcc_Crss
 	ldr	r3, [r4, #44]	@ nonmatch_weave, <variable>.lstnonmatch_weave
-	ldr	r8, [fp, #-172]	@ match_weave, %sfp
+	ldr	ip, [fp, #-172]	@ match_weave, %sfp
 .L201:
 	cmp	r1, r3	@ pcc_stat$PCC_CRSS, nonmatch_weave
 	movlt	r0, r1	@ tmp182, pcc_stat$PCC_CRSS
 	movge	r0, r3	@ tmp182, nonmatch_weave
-	cmp	r8, #80	@ match_weave,
+	cmp	ip, #80	@ match_weave,
 	cmple	r3, #80	@, nonmatch_weave,
 	mov	lr, r0, asl #1	@, tmp182,
 	str	lr, [fp, #-152]	@, %sfp
 	ble	.L204	@,
 .L253:
-	add	r7, r8, r8, asl #1	@, tmp192, match_weave, match_weave,
+	add	r7, ip, ip, asl #1	@, tmp192, match_weave, match_weave,
 	mov	r0, r3, asl #1	@ tmp475, nonmatch_weave,
 	cmp	r7, r0	@ tmp192, tmp475
 	ble	.L205	@,
 .L218:
-	add	r3, r6, r4	@ tmp309, phase, pCntxt22
-	mov	r1, #1	@ anomalFlg,
+	add	r1, r6, r4	@ tmp309, phase, pCntxt22
+	mov	r3, #1	@ anomalFlg,
 	mov	r0, #0	@ tmp311,
-	strb	r0, [r3, #88]	@ tmp311, <variable>.phaseCnt
+	strb	r0, [r1, #88]	@ tmp311, <variable>.phaseCnt
 .L206:
-	mov	r5, r5, asl #5	@ tmp415, match_tkr,
-	cmp	r5, #127	@ tmp415,
+	mov	r9, r9, asl #5	@ tmp415, match_tkr,
+	cmp	r9, #127	@ tmp415,
 	addgt	r6, r6, r4	@ tmp417, phase, pCntxt22
-	ldrgtb	r3, [r6, #88]	@ zero_extendqisi2	@ tmp423, <variable>.phaseCnt
-	subgt	r3, r3, #5	@ tmp424, tmp423,
-	strgtb	r3, [r6, #88]	@ tmp424, <variable>.phaseCnt
-	cmp	r1, #1	@ anomalFlg,
+	ldrgtb	r1, [r6, #88]	@ zero_extendqisi2	@ tmp423, <variable>.phaseCnt
+	subgt	r1, r1, #5	@ tmp424, tmp423,
+	strgtb	r1, [r6, #88]	@ tmp424, <variable>.phaseCnt
+	cmp	r3, #1	@ anomalFlg,
 	movne	r0, #0	@ tmp474,
 	strne	r0, [r4, #36]	@ tmp474, <variable>.anomalCnt
 	beq	.L249	@,
 .L235:
-	ldrsb	r7, [r4, #88]	@ <variable>.phaseCnt, <variable>.phaseCnt
-	ldrsb	sl, [r4, #89]	@ <variable>.phaseCnt, <variable>.phaseCnt
-	cmp	r7, #32	@ <variable>.phaseCnt,
-	movge	r7, #32	@ iftmp.954,
-	str	r0, [r4, #36]	@ iftmp.276, <variable>.anomalCnt
-	bic	lr, r7, r7, asr #31	@ tmp432, iftmp.954
-	cmp	sl, #32	@ <variable>.phaseCnt,
-	movge	sl, #32	@ iftmp.955,
-	bic	r1, sl, sl, asr #31	@ tmp439, iftmp.955
-	uxtb	r3, lr	@ iftmp.277, tmp432
-	strb	r3, [r4, #88]	@ iftmp.277, <variable>.phaseCnt
-	uxtb	r1, r1	@ iftmp.278, tmp439
-	strb	r1, [r4, #89]	@ iftmp.278, <variable>.phaseCnt
-	sxtb	r3, r3	@ iftmp.277, iftmp.277
-	cmp	r3, #24	@ iftmp.277,
+	ldrsb	ip, [r4, #88]	@ <variable>.phaseCnt, <variable>.phaseCnt
+	ldrsb	r8, [r4, #89]	@ <variable>.phaseCnt, <variable>.phaseCnt
+	cmp	ip, #32	@ <variable>.phaseCnt,
+	movge	ip, #32	@ iftmp.1115,
+	str	r0, [r4, #36]	@ iftmp.435, <variable>.anomalCnt
+	bic	lr, ip, ip, asr #31	@ tmp432, iftmp.1115
+	cmp	r8, #32	@ <variable>.phaseCnt,
+	movge	r8, #32	@ iftmp.1116,
+	bic	r1, r8, r8, asr #31	@ tmp439, iftmp.1116
+	uxtb	r3, lr	@ iftmp.436, tmp432
+	strb	r3, [r4, #88]	@ iftmp.436, <variable>.phaseCnt
+	uxtb	r1, r1	@ iftmp.437, tmp439
+	strb	r1, [r4, #89]	@ iftmp.437, <variable>.phaseCnt
+	sxtb	r3, r3	@ iftmp.436, iftmp.436
+	cmp	r3, #24	@ iftmp.436,
 	ble	.L236	@,
-	sxtb	r1, r1	@ iftmp.278, iftmp.278
-	cmp	r1, #24	@ iftmp.278,
+	sxtb	r1, r1	@ iftmp.437, iftmp.437
+	cmp	r1, #24	@ iftmp.437,
 	movgt	r3, #1	@ tmp443,
 	strgt	r3, [r4, #92]	@ tmp443, <variable>.pld22Lock
 	ble	.L237	@,
 .L238:
-	ldr	r7, [r4, #12]	@ D.14279, <variable>.histFrmITDiff
-	movw	lr, #:lower16:1717986919	@ tmp452,
-	ldr	r6, [r4, #8]	@ D.14280, <variable>.histFrmITDiff
-	movt	lr, #:upper16:1717986919	@ tmp452,
-	ldr	r5, [r4, #4]	@ D.14281, <variable>.histFrmITDiff
-	add	sl, r7, r2	@ tmp447, D.14279, Frame_IT_diff
-	add	r9, sl, r6	@ tmp448, tmp447, D.14280
-	ldr	r1, [r4, #0]	@, <variable>.histFrmITDiff
-	add	r3, r9, r5	@ tmp449, tmp448, D.14281
-	ldr	sl, [r4, #28]	@, <variable>.meanFrmITDiffAcc
-	add	r8, r3, r1	@ tmp450, tmp449,
+	ldr	r7, [r4, #12]	@ D.27818, <variable>.histFrmITDiff
+	movw	sl, #:lower16:1717986919	@ tmp452,
+	ldr	r6, [r4, #8]	@ D.27819, <variable>.histFrmITDiff
+	movt	sl, #:upper16:1717986919	@ tmp452,
+	ldr	lr, [r4, #4]	@ D.27820, <variable>.histFrmITDiff
+	add	ip, r7, r2	@ tmp447, D.27818, Frame_IT_diff
+	add	r9, ip, r6	@ tmp448, tmp447, D.27819
+	ldr	r3, [r4, #0]	@, <variable>.histFrmITDiff
+	add	r1, r9, lr	@ tmp449, tmp448, D.27820
+	ldr	ip, [r4, #28]	@, <variable>.meanFrmITDiffAcc
+	add	r8, r1, r3	@ tmp450, tmp449,
 	ldr	r0, [r4, #20]	@, <variable>.lstFrmITDiffMean
 	movw	r3, #:lower16:-2999	@ tmp458,
 	movt	r3, #:upper16:-2999	@ tmp458,
-	smull	r9, r1, lr, r8	@, tmp451, tmp452, tmp450
+	smull	r9, r1, sl, r8	@, tmp451, tmp452, tmp450
 	mov	r8, r8, asr #31	@ tmp454, tmp450,
-	rsb	lr, r0, sl	@ tmp455,,
+	rsb	sl, r0, ip	@ tmp455,,
 	ldr	r9, [r4, #0]	@, <variable>.histFrmITDiff
-	str	r7, [r4, #16]	@ D.14279, <variable>.histFrmITDiff
-	str	r6, [r4, #12]	@ D.14280, <variable>.histFrmITDiff
-	str	r5, [r4, #8]	@ D.14281, <variable>.histFrmITDiff
-	rsb	r1, r8, r1, asr #1	@, D.14288, tmp454, tmp451,
+	str	r7, [r4, #16]	@ D.27818, <variable>.histFrmITDiff
+	str	r6, [r4, #12]	@ D.27819, <variable>.histFrmITDiff
+	str	lr, [r4, #8]	@ D.27820, <variable>.histFrmITDiff
+	rsb	r1, r8, r1, asr #1	@, D.27827, tmp454, tmp451,
 	str	r9, [r4, #4]	@, <variable>.histFrmITDiff
-	add	sl, lr, r1	@ D.14293, tmp455, D.14288
+	add	sl, sl, r1	@ D.27832, tmp455, D.27827
 	str	r2, [r4, #0]	@ Frame_IT_diff, <variable>.histFrmITDiff
-	cmp	sl, r3	@ D.14293, tmp458
-	str	r1, [r4, #24]	@ D.14288, <variable>.curFrmITDiffMean
-	movwlt	sl, #:lower16:-3000	@ iftmp.279,
-	movtlt	sl, #:upper16:-3000	@ iftmp.279,
+	cmp	sl, r3	@ D.27832, tmp458
+	str	r1, [r4, #24]	@ D.27827, <variable>.curFrmITDiffMean
+	movwlt	sl, #:lower16:-3000	@ iftmp.438,
+	movtlt	sl, #:upper16:-3000	@ iftmp.438,
 	blt	.L241	@,
 	movw	r2, #3000	@ tmp459,
-	cmp	sl, r2	@ D.14293, tmp459
-	movge	sl, r2	@ iftmp.279, tmp459
+	cmp	sl, r2	@ D.27832, tmp459
+	movge	sl, r2	@ iftmp.438, tmp459
 .L241:
 	ldr	r3, [r4, #92]	@ <variable>.pld22Lock, <variable>.pld22Lock
-	str	sl, [r4, #28]	@ iftmp.279, <variable>.meanFrmITDiffAcc
+	str	sl, [r4, #28]	@ iftmp.438, <variable>.meanFrmITDiffAcc
 	cmp	r3, #0	@ <variable>.pld22Lock,
-	str	r1, [r4, #20]	@ D.14288, <variable>.lstFrmITDiffMean
+	str	r1, [r4, #20]	@ D.27827, <variable>.lstFrmITDiffMean
 	streq	r3, [r4, #28]	@ <variable>.pld22Lock, <variable>.meanFrmITDiffAcc
 	beq	.L243	@,
-	cmp	sl, #1000	@ iftmp.279,
+	cmp	sl, #1000	@ iftmp.438,
 	movge	r3, #0	@ tmp463,
 	strge	r3, [r4, #92]	@ tmp463, <variable>.pld22Lock
 	strgeb	r3, [r4, #88]	@ tmp463, <variable>.phaseCnt
 	strgeb	r3, [r4, #89]	@ tmp463, <variable>.phaseCnt
 .L243:
-	ldr	r1, [fp, #-156]	@, %sfp
-	ldr	r3, [fp, #-160]	@, %sfp
+	ldr	r3, [fp, #-156]	@, %sfp
+	ldr	r1, [fp, #-160]	@, %sfp
 	ldr	r9, [fp, #-164]	@, %sfp
-	add	lr, r3, r1, asl #1	@, tmp469,,,
-	add	r0, r9, lr, asl #1	@, tmp471,, tmp469,
-	add	ip, ip, r0, asl #1	@, tmp473, hist_stat$HISTOGRAM_BIN_1, tmp471,
-	str	ip, [r4, #32]	@ tmp473, <variable>.lstRepfMotion
+	add	r0, r1, r3, asl #1	@, tmp469,,,
+	add	lr, r9, r0, asl #1	@, tmp471,, tmp469,
+	add	r5, r5, lr, asl #1	@, tmp473, hist_stat$HISTOGRAM_BIN_1, tmp471,
+	str	r5, [r4, #32]	@ tmp473, <variable>.lstRepfMotion
 	b	.L244	@
 .L204:
 	movw	lr, #5499	@,
-	cmp	sl, lr	@ um_stat$match_UM,
+	cmp	r8, lr	@ um_stat$match_UM,
 	bgt	.L218	@,
 	ldr	r0, [fp, #-168]	@ nonmatch_UM, %sfp
-	cmp	r0, #0	@ tmp9,
+	cmp	r0, #0	@ tmp10,
 	moveq	r0, #20	@ nonmatch_UM,
-	cmp	r0, sl	@ nonmatch_UM, um_stat$match_UM
+	cmp	r0, r8	@ nonmatch_UM, um_stat$match_UM
 	blt	.L218	@,
 	ldr	r0, [fp, #-176]	@, %sfp
 	movw	lr, #5499	@,
@@ -1835,7 +1837,7 @@ Calc22PLD_STB:
 	cmp	r7, #0	@ s32DeiMdLum,
 	beq	.L218	@,
 .L222:
-	cmp	r8, #39	@ match_weave,
+	cmp	ip, #39	@ match_weave,
 	bgt	.L251	@,
 .L223:
 	cmp	r1, #80	@ pcc_stat$PCC_CRSS,
@@ -1847,39 +1849,39 @@ Calc22PLD_STB:
 	rsblt	r3, r3, #0	@ tmp314, tmp313
 	cmp	r3, r0	@ tmp314, tmp315
 	ble	.L224	@,
-	ldr	r3, [r4, #32]	@ temp.922, <variable>.lstRepfMotion
-	cmp	r3, #10	@ temp.922,
+	ldr	r1, [r4, #32]	@ temp.1083, <variable>.lstRepfMotion
+	cmp	r1, #10	@ temp.1083,
 	ble	.L224	@,
-	ldr	r1, [r4, #92]	@ <variable>.pld22Lock, <variable>.pld22Lock
-	cmp	r1, #1	@ <variable>.pld22Lock,
+	ldr	r3, [r4, #92]	@ <variable>.pld22Lock, <variable>.pld22Lock
+	cmp	r3, #1	@ <variable>.pld22Lock,
 	beq	.L252	@,
-	movw	r9, #5000	@ tmp331,
-	cmp	r3, r9	@ temp.922, tmp331
+	movw	sl, #5000	@ tmp331,
+	cmp	r1, sl	@ temp.1083, tmp331
 	ble	.L216	@,
 .L230:
-	add	r3, r6, r4	@ tmp382, phase, pCntxt22
-	ldr	r8, [r4, #36]	@ <variable>.anomalCnt, <variable>.anomalCnt
-	mov	r1, #1	@ anomalFlg,
-	ldrb	r7, [r3, #88]	@ zero_extendqisi2	@ tmp391, <variable>.phaseCnt
-	mvn	sl, r8	@ tmp389, <variable>.anomalCnt
-	add	r0, r7, sl	@ tmp393, tmp391, tmp389
-	strb	r0, [r3, #88]	@ tmp393, <variable>.phaseCnt
+	add	r1, r6, r4	@ tmp382, phase, pCntxt22
+	ldr	r7, [r4, #36]	@ <variable>.anomalCnt, <variable>.anomalCnt
+	mov	r3, #1	@ anomalFlg,
+	ldrb	ip, [r1, #88]	@ zero_extendqisi2	@ tmp391, <variable>.phaseCnt
+	mvn	r8, r7	@ tmp389, <variable>.anomalCnt
+	add	r0, ip, r8	@ tmp393, tmp391, tmp389
+	strb	r0, [r1, #88]	@ tmp393, <variable>.phaseCnt
 	b	.L206	@
 .L236:
-	cmp	r3, #19	@ iftmp.277,
+	cmp	r3, #19	@ iftmp.436,
 	ble	.L239	@,
-	sxtb	r1, r1	@ iftmp.278, iftmp.278
+	sxtb	r1, r1	@ iftmp.437, iftmp.437
 .L237:
-	cmp	r1, #19	@ iftmp.278,
+	cmp	r1, #19	@ iftmp.437,
 	bgt	.L238	@,
 .L239:
 	mov	r0, #0	@ tmp446,
 	str	r0, [r4, #92]	@ tmp446, <variable>.pld22Lock
 	b	.L238	@
 .L205:
-	add	r9, r3, r3, asl #2	@, tmp201, nonmatch_weave, nonmatch_weave,
-	add	sl, r9, r9, lsr #31	@, tmp204, tmp201, tmp201,
-	cmp	r1, sl, asr #1	@ pcc_stat$PCC_CRSS, tmp204,
+	add	sl, r3, r3, asl #2	@, tmp201, nonmatch_weave, nonmatch_weave,
+	add	r8, sl, sl, lsr #31	@, tmp204, tmp201, tmp201,
+	cmp	r1, r8, asr #1	@ pcc_stat$PCC_CRSS, tmp204,
 	bgt	.L226	@,
 	cmp	r1, #1000	@ pcc_stat$PCC_CRSS,
 	ble	.L208	@,
@@ -1888,115 +1890,114 @@ Calc22PLD_STB:
 	cmp	r7, lr	@ tmp208, tmp211
 	blt	.L208	@,
 .L226:
-	add	r3, r6, r4	@ tmp406, phase, pCntxt22
-	mov	r1, #1	@ anomalFlg,
-	ldrb	r9, [r3, #88]	@ zero_extendqisi2	@ tmp412, <variable>.phaseCnt
-	sub	r0, r9, #1	@ tmp413, tmp412,
-	strb	r0, [r3, #88]	@ tmp413, <variable>.phaseCnt
+	add	r1, r6, r4	@ tmp406, phase, pCntxt22
+	mov	r3, #1	@ anomalFlg,
+	ldrb	sl, [r1, #88]	@ zero_extendqisi2	@ tmp412, <variable>.phaseCnt
+	sub	r0, sl, #1	@ tmp413, tmp412,
+	strb	r0, [r1, #88]	@ tmp413, <variable>.phaseCnt
 	b	.L206	@
 .L248:
-	mov	r3, r8	@ nonmatch_weave, pcc_stat$PCC_FWD
+	mov	r3, ip	@ nonmatch_weave, pcc_stat$PCC_FWD
 	mov	r1, r0	@ pcc_stat$PCC_CRSS, pcc_stat$PCC_CRSS
-	mov	r8, r9	@ match_weave, pcc_stat$PCC_FFWD
+	mov	ip, sl	@ match_weave, pcc_stat$PCC_FFWD
 	cmp	r1, r3	@ pcc_stat$PCC_CRSS, nonmatch_weave
 	movlt	r0, r1	@ tmp182, pcc_stat$PCC_CRSS
 	movge	r0, r3	@ tmp182, nonmatch_weave
-	cmp	r8, #80	@ match_weave,
+	cmp	ip, #80	@ match_weave,
 	cmple	r3, #80	@, nonmatch_weave,
-	ldr	r5, [fp, #-152]	@ match_tkr, %sfp
+	ldr	r9, [fp, #-152]	@ match_tkr, %sfp
 	mov	lr, r0, asl #1	@, tmp182,
 	str	lr, [fp, #-152]	@, %sfp
 	ble	.L204	@,
 	b	.L253	@
 .L208:
-	cmp	r8, #99	@ match_weave,
+	cmp	ip, #99	@ match_weave,
 	bgt	.L254	@,
-	mov	sl, r8, asl #3	@ D.14143, match_weave,
-	cmp	r3, sl	@ nonmatch_weave, D.14143
+	mov	r8, ip, asl #3	@ D.27682, match_weave,
+	cmp	r3, r8	@ nonmatch_weave, D.27682
 	blt	.L210	@,
-	cmp	r8, #10	@ match_weave,
-	movge	r9, r8	@ tmp238, match_weave
-	movlt	r9, #10	@ tmp238,
-	mov	r7, r1, asl #1	@ tmp240, pcc_stat$PCC_CRSS,
-	cmp	r7, r9, asl #3	@ tmp240, tmp238,
+	cmp	ip, #10	@ match_weave,
+	movge	r7, ip	@ tmp238, match_weave
+	movlt	r7, #10	@ tmp238,
+	mov	lr, r1, asl #1	@ tmp240, pcc_stat$PCC_CRSS,
+	cmp	lr, r7, asl #3	@ tmp240, tmp238,
 	bge	.L211	@,
 .L210:
-	ldr	r9, [fp, #-152]	@ tmp243, %sfp
-	rsb	lr, r1, r3	@ tmp241, pcc_stat$PCC_CRSS, nonmatch_weave
-	cmp	r9, #150	@ tmp243,
-	movlt	r9, #150	@ tmp243,
-	cmp	lr, #0	@ tmp241,
-	rsblt	lr, lr, #0	@, tmp241
-	str	lr, [fp, #-168]	@, %sfp
-	ldr	r7, [fp, #-168]	@, %sfp
-	add	lr, r9, #50	@ tmp244, tmp243,
-	cmp	r7, lr	@, tmp244
+	ldr	sl, [fp, #-152]	@ tmp243, %sfp
+	rsb	r7, r1, r3	@ tmp241, pcc_stat$PCC_CRSS, nonmatch_weave
+	cmp	sl, #150	@ tmp243,
+	movlt	sl, #150	@ tmp243,
+	cmp	r7, #0	@ tmp241,
+	rsblt	r7, r7, #0	@, tmp241
+	str	r7, [fp, #-168]	@, %sfp
+	add	lr, sl, #50	@ tmp244, tmp243,
+	ldr	sl, [fp, #-168]	@, %sfp
+	cmp	sl, lr	@, tmp244
 	ble	.L211	@,
-	ldr	r7, [r4, #32]	@ <variable>.lstRepfMotion, <variable>.lstRepfMotion
-	cmp	r7, #10	@ <variable>.lstRepfMotion,
+	ldr	lr, [r4, #32]	@ <variable>.lstRepfMotion, <variable>.lstRepfMotion
+	cmp	lr, #10	@ <variable>.lstRepfMotion,
 	ble	.L211	@,
-	add	r3, r6, r4	@ tmp247, phase, pCntxt22
-	mov	r1, #1	@ anomalFlg,
-	ldrb	sl, [r3, #88]	@ zero_extendqisi2	@ tmp253, <variable>.phaseCnt
-	sub	r0, sl, #5	@ tmp254, tmp253,
-	strb	r0, [r3, #88]	@ tmp254, <variable>.phaseCnt
+	add	r1, r6, r4	@ tmp247, phase, pCntxt22
+	mov	r3, #1	@ anomalFlg,
+	ldrb	r0, [r1, #88]	@ zero_extendqisi2	@ tmp253, <variable>.phaseCnt
+	sub	r0, r0, #5	@ tmp254, tmp253,
+	strb	r0, [r1, #88]	@ tmp254, <variable>.phaseCnt
 	b	.L206	@
 .L249:
 	ldr	r6, [r4, #36]	@ <variable>.anomalCnt, <variable>.anomalCnt
-	add	r0, r6, #1	@ iftmp.275, <variable>.anomalCnt,
-	str	r0, [r4, #36]	@ iftmp.275, <variable>.anomalCnt
-	cmp	r0, #0	@ iftmp.275,
-	movle	r0, #0	@ iftmp.276,
+	add	r0, r6, #1	@ iftmp.434, <variable>.anomalCnt,
+	str	r0, [r4, #36]	@ iftmp.434, <variable>.anomalCnt
+	cmp	r0, #0	@ iftmp.434,
+	movle	r0, #0	@ iftmp.435,
 	ble	.L235	@,
-	cmp	r0, #50	@ iftmp.275,
-	movge	r0, #50	@ iftmp.276,
+	cmp	r0, #50	@ iftmp.434,
+	movge	r0, #50	@ iftmp.435,
 	b	.L235	@
 .L247:
-	mov	r5, r3	@ match_tkr, pcc_stat$PCC_FWD_TKR
 	ldr	r3, [fp, #-172]	@ nonmatch_weave, %sfp
-	str	r0, [r4, #40]	@ pcc_stat$PCC_CRSS, <variable>.lstPcc_Crss
 	mov	r1, r0	@ pcc_stat$PCC_CRSS, pcc_stat$PCC_CRSS
-	ldr	r9, [fp, #-172]	@, %sfp
+	str	r0, [r4, #40]	@ pcc_stat$PCC_CRSS, <variable>.lstPcc_Crss
+	ldr	sl, [fp, #-172]	@, %sfp
 	cmp	r1, r3	@ pcc_stat$PCC_CRSS, nonmatch_weave
 	movlt	r0, r1	@ tmp182, pcc_stat$PCC_CRSS
 	movge	r0, r3	@ tmp182, nonmatch_weave
-	cmp	r8, #80	@ match_weave,
+	cmp	ip, #80	@ match_weave,
 	cmple	r3, #80	@, nonmatch_weave,
 	mov	lr, r0, asl #1	@, tmp182,
-	str	r9, [r4, #44]	@, <variable>.lstnonmatch_weave
+	str	sl, [r4, #44]	@, <variable>.lstnonmatch_weave
 	str	lr, [fp, #-152]	@, %sfp
 	ble	.L204	@,
 	b	.L253	@
 .L250:
 	ldr	lr, [fp, #-180]	@, %sfp
-	ldr	r9, [fp, #-176]	@, %sfp
+	ldr	sl, [fp, #-176]	@, %sfp
 	add	r0, lr, #150	@ tmp306,,
-	cmp	r9, r0	@, tmp306
+	cmp	sl, r0	@, tmp306
 	ble	.L222	@,
 	b	.L221	@
 .L254:
-	movw	r1, #:lower16:1374389535	@ tmp230,
-	movt	r1, #:upper16:1374389535	@ tmp230,
-	add	r3, r6, r4	@ tmp223, phase, pCntxt22
-	mov	lr, r8, asr #31	@ tmp232, match_weave,
-	smull	sl, r9, r1, r8	@, tmp229, tmp230, match_weave
-	ldrb	r0, [r3, #88]	@ zero_extendqisi2	@ tmp234, <variable>.phaseCnt
-	mov	r1, #1	@ anomalFlg,
-	rsb	r8, lr, r9, asr #5	@, tmp228, tmp232, tmp229,
-	rsb	r0, r8, r0	@ tmp236, tmp228, tmp234
-	strb	r0, [r3, #88]	@ tmp236, <variable>.phaseCnt
+	movw	r3, #:lower16:1374389535	@ tmp230,
+	movt	r3, #:upper16:1374389535	@ tmp230,
+	add	r1, r6, r4	@ tmp223, phase, pCntxt22
+	mov	sl, ip, asr #31	@ tmp232, match_weave,
+	smull	r0, r8, r3, ip	@, tmp229, tmp230, match_weave
+	ldrb	r0, [r1, #88]	@ zero_extendqisi2	@ tmp234, <variable>.phaseCnt
+	mov	r3, #1	@ anomalFlg,
+	rsb	ip, sl, r8, asr #5	@, tmp228, tmp232, tmp229,
+	rsb	r0, ip, r0	@ tmp236, tmp228, tmp234
+	strb	r0, [r1, #88]	@ tmp236, <variable>.phaseCnt
 	b	.L206	@
 .L251:
-	cmp	r8, r3, asl #1	@ match_weave, nonmatch_weave,
+	cmp	ip, r3, asl #1	@ match_weave, nonmatch_weave,
 	blt	.L223	@,
 	b	.L218	@
 .L224:
 	ldr	r3, [fp, #-168]	@, %sfp
 	cmp	r3, #1000	@,
 	ble	.L226	@,
-	mov	sl, sl, asl #4	@ D.14228, um_stat$match_UM,
-	mov	r1, r3, asl #1	@ D.14227,,
-	cmp	r1, sl	@ D.14227, D.14228
+	mov	r8, r8, asl #4	@ D.27767, um_stat$match_UM,
+	mov	r1, r3, asl #1	@ D.27766,,
+	cmp	r1, r8	@ D.27766, D.27767
 	ble	.L227	@,
 	cmp	r7, #0	@ s32DeiMdLum,
 	bne	.L228	@,
@@ -2010,82 +2011,82 @@ Calc22PLD_STB:
 	cmp	r1, r3	@, tmp352
 	ble	.L216	@,
 .L245:
-	add	r3, r6, r4	@ tmp354, phase, pCntxt22
-	mov	r1, #0	@ anomalFlg,
-	ldrb	r0, [r3, #88]	@ zero_extendqisi2	@ tmp360, <variable>.phaseCnt
+	add	r1, r6, r4	@ tmp354, phase, pCntxt22
+	mov	r3, #0	@ anomalFlg,
+	ldrb	r0, [r1, #88]	@ zero_extendqisi2	@ tmp360, <variable>.phaseCnt
 	add	r0, r0, #1	@ tmp361, tmp360,
-	strb	r0, [r3, #88]	@ tmp361, <variable>.phaseCnt
+	strb	r0, [r1, #88]	@ tmp361, <variable>.phaseCnt
 	b	.L206	@
 .L211:
-	cmp	sl, r0	@ D.14143, tmp475
+	cmp	r8, r0	@ D.27682, tmp475
 	bge	.L212	@,
-	cmp	sl, r1, asl #1	@ D.14143, pcc_stat$PCC_CRSS,
+	cmp	r8, r1, asl #1	@ D.27682, pcc_stat$PCC_CRSS,
 	blt	.L213	@,
 	ldr	r1, [r4, #32]	@ <variable>.lstRepfMotion, <variable>.lstRepfMotion
 	cmp	r1, #9	@ <variable>.lstRepfMotion,
 	bgt	.L212	@,
 .L213:
-	ldr	r0, [fp, #-156]	@, %sfp
-	add	r3, r0, #100	@ tmp260,,
-	cmp	r3, r8, asl #2	@ tmp260, match_weave,
+	ldr	r3, [fp, #-156]	@, %sfp
+	add	r8, r3, #100	@ tmp260,,
+	cmp	r8, ip, asl #2	@ tmp260, match_weave,
 	bge	.L245	@,
-	add	r3, r6, r4	@ tmp262, phase, pCntxt22
-	mov	r1, #1	@ anomalFlg,
-	ldrb	r8, [r3, #88]	@ zero_extendqisi2	@ tmp268, <variable>.phaseCnt
-	sub	r0, r8, #15	@ tmp269, tmp268,
-	strb	r0, [r3, #88]	@ tmp269, <variable>.phaseCnt
+	add	r1, r6, r4	@ tmp262, phase, pCntxt22
+	mov	r3, #1	@ anomalFlg,
+	ldrb	ip, [r1, #88]	@ zero_extendqisi2	@ tmp268, <variable>.phaseCnt
+	sub	r0, ip, #15	@ tmp269, tmp268,
+	strb	r0, [r1, #88]	@ tmp269, <variable>.phaseCnt
 	b	.L206	@
 .L212:
-	add	r9, r3, #150	@ tmp281, nonmatch_weave,
-	cmp	r8, r9	@ match_weave, tmp281
+	add	sl, r3, #150	@ tmp281, nonmatch_weave,
+	cmp	ip, sl	@ match_weave, tmp281
 	bgt	.L215	@,
-	ldr	r0, [fp, #-172]	@, %sfp
-	add	r3, r0, #150	@ tmp282,,
-	cmp	r8, r3	@ match_weave, tmp282
+	ldr	r1, [fp, #-172]	@, %sfp
+	add	r7, r1, #150	@ tmp282,,
+	cmp	ip, r7	@ match_weave, tmp282
 	ble	.L216	@,
 .L215:
-	ldr	r1, [r4, #92]	@ <variable>.pld22Lock, <variable>.pld22Lock
-	add	r3, r6, r4	@ tmp285, phase, pCntxt22
-	cmp	r1, #1	@ <variable>.pld22Lock,
-	ldreqb	r0, [r3, #88]	@ zero_extendqisi2	@ tmp291, <variable>.phaseCnt
-	movne	r1, #1	@ anomalFlg,
-	ldrneb	r0, [r3, #88]	@ zero_extendqisi2	@ tmp301, <variable>.phaseCnt
+	ldr	r3, [r4, #92]	@ <variable>.pld22Lock, <variable>.pld22Lock
+	add	r1, r6, r4	@ tmp285, phase, pCntxt22
+	cmp	r3, #1	@ <variable>.pld22Lock,
+	ldreqb	r0, [r1, #88]	@ zero_extendqisi2	@ tmp291, <variable>.phaseCnt
+	movne	r3, #1	@ anomalFlg,
+	ldrneb	r0, [r1, #88]	@ zero_extendqisi2	@ tmp301, <variable>.phaseCnt
 	subeq	r0, r0, #1	@ tmp292, tmp291,
 	subne	r0, r0, #3	@ tmp302, tmp301,
-	strb	r0, [r3, #88]	@ tmp302, <variable>.phaseCnt
+	strb	r0, [r1, #88]	@ tmp302, <variable>.phaseCnt
 	b	.L206	@
 .L216:
-	mov	r1, #1	@ anomalFlg,
+	mov	r3, #1	@ anomalFlg,
 	b	.L206	@
 .L227:
-	ldr	r3, [r4, #92]	@ <variable>.pld22Lock, <variable>.pld22Lock
-	cmp	r3, #1	@ <variable>.pld22Lock,
+	ldr	ip, [r4, #92]	@ <variable>.pld22Lock, <variable>.pld22Lock
+	cmp	ip, #1	@ <variable>.pld22Lock,
 	bne	.L226	@,
-	cmp	r1, sl	@ D.14227, D.14228
+	cmp	r1, r8	@ D.27766, D.27767
 	bge	.L230	@,
 	cmp	r7, #0	@ s32DeiMdLum,
 	bne	.L231	@,
-	ldr	r8, [fp, #-176]	@, %sfp
-	ldr	sl, [fp, #-180]	@, %sfp
-	mov	r7, r8, asl #4	@ tmp365,,
-	cmp	r7, sl, asl #1	@ tmp365,,
+	ldr	r7, [fp, #-176]	@, %sfp
+	ldr	r1, [fp, #-180]	@, %sfp
+	mov	r8, r7, asl #4	@ tmp365,,
+	cmp	r8, r1, asl #1	@ tmp365,,
 	ble	.L230	@,
 .L231:
-	add	r3, r6, r4	@ tmp367, phase, pCntxt22
+	add	r1, r6, r4	@ tmp367, phase, pCntxt22
 	ldr	r0, [r4, #36]	@ <variable>.anomalCnt, <variable>.anomalCnt
-	mov	r1, #1	@ anomalFlg,
-	ldrb	lr, [r3, #88]	@ zero_extendqisi2	@ tmp377, <variable>.phaseCnt
-	mvn	r9, r0	@ tmp372, <variable>.anomalCnt
-	add	r0, lr, r9, asl #1	@, tmp379, tmp377, tmp372,
-	strb	r0, [r3, #88]	@ tmp379, <variable>.phaseCnt
+	mov	r3, #1	@ anomalFlg,
+	ldrb	lr, [r1, #88]	@ zero_extendqisi2	@ tmp377, <variable>.phaseCnt
+	mvn	sl, r0	@ tmp372, <variable>.anomalCnt
+	add	r0, lr, sl, asl #1	@, tmp379, tmp377, tmp372,
+	strb	r0, [r1, #88]	@ tmp379, <variable>.phaseCnt
 	b	.L206	@
 .L252:
-	add	r3, r6, r4	@ tmp318, phase, pCntxt22
-	ldr	r8, [r4, #36]	@ <variable>.anomalCnt, <variable>.anomalCnt
-	ldrb	r7, [r3, #88]	@ zero_extendqisi2	@ tmp327, <variable>.phaseCnt
-	mvn	sl, r8	@ tmp325, <variable>.anomalCnt
-	add	r0, r7, sl	@ tmp329, tmp327, tmp325
-	strb	r0, [r3, #88]	@ tmp329, <variable>.phaseCnt
+	add	r1, r6, r4	@ tmp318, phase, pCntxt22
+	ldr	r7, [r4, #36]	@ <variable>.anomalCnt, <variable>.anomalCnt
+	ldrb	ip, [r1, #88]	@ zero_extendqisi2	@ tmp327, <variable>.phaseCnt
+	mvn	r8, r7	@ tmp325, <variable>.anomalCnt
+	add	r0, ip, r8	@ tmp329, tmp327, tmp325
+	strb	r0, [r1, #88]	@ tmp329, <variable>.phaseCnt
 	b	.L206	@
 	.fnend
 	.size	Calc22PLD_STB, .-Calc22PLD_STB
@@ -2094,7 +2095,7 @@ Calc22PLD_STB:
 	.type	Calc22PLD, %function
 Calc22PLD:
 	.fnstart
-.LFB588:
+.LFB1254:
 	@ args = 0, pretend = 0, frame = 48
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -2127,15 +2128,15 @@ Calc22PLD:
 	ldr	r1, [r0, #24]	@ <variable>.frmPcc.PCC_FWD, <variable>.frmPcc.PCC_FWD
 	ldr	r3, [r2, #48]	@ <variable>.field_match_weave, <variable>.field_match_weave
 	ldr	sl, [r2, #52]	@ <variable>.field_nonmatch_weave, <variable>.field_nonmatch_weave
-	add	r1, r1, r3	@ prephitmp.987, <variable>.frmPcc.PCC_FWD, <variable>.field_match_weave
-	str	r1, [r2, #68]	@ prephitmp.987, <variable>.frame_match_weave
+	add	r1, r1, r3	@ prephitmp.1148, <variable>.frmPcc.PCC_FWD, <variable>.field_match_weave
+	str	r1, [r2, #68]	@ prephitmp.1148, <variable>.frame_match_weave
 	ldr	ip, [r0, #28]	@ <variable>.frmPcc.PCC_BWD, <variable>.frmPcc.PCC_BWD
 	ldr	r8, [r2, #56]	@ <variable>.field_pcc_crss, <variable>.field_pcc_crss
-	add	ip, ip, sl	@ prephitmp.1150, <variable>.frmPcc.PCC_BWD, <variable>.field_nonmatch_weave
-	str	ip, [r2, #72]	@ prephitmp.1150, <variable>.frame_nonmatch_weave
+	add	ip, ip, sl	@ prephitmp.1311, <variable>.frmPcc.PCC_BWD, <variable>.field_nonmatch_weave
+	str	ip, [r2, #72]	@ prephitmp.1311, <variable>.frame_nonmatch_weave
 	ldr	r6, [r0, #32]	@ <variable>.frmPcc.PCC_CRSS, <variable>.frmPcc.PCC_CRSS
-	add	r6, r6, r8	@ prephitmp.1151, <variable>.frmPcc.PCC_CRSS, <variable>.field_pcc_crss
-	str	r6, [r2, #76]	@ prephitmp.1151, <variable>.frame_pcc_crss
+	add	r6, r6, r8	@ prephitmp.1312, <variable>.frmPcc.PCC_CRSS, <variable>.field_pcc_crss
+	str	r6, [r2, #76]	@ prephitmp.1312, <variable>.frame_pcc_crss
 	ldr	r3, [r0, #24]	@ <variable>.frmPcc.PCC_FWD, <variable>.frmPcc.PCC_FWD
 	ldr	r7, [r0, #40]	@, <variable>.frmPcc.PCC_FWD_TKR
 	str	r7, [fp, #-48]	@, %sfp
@@ -2146,9 +2147,9 @@ Calc22PLD:
 	str	r8, [r2, #56]	@ <variable>.frmPcc.PCC_CRSS, <variable>.field_pcc_crss
 .L258:
 	ldr	sl, [r0, #16]	@, <variable>.frmUm.nonmatch_UM2
-	cmp	r6, ip	@ prephitmp.1151, prephitmp.1150
-	movge	r3, r6	@ max_crss_nonmatch, prephitmp.1151
-	movlt	r3, ip	@ max_crss_nonmatch, prephitmp.1150
+	cmp	r6, ip	@ prephitmp.1312, prephitmp.1311
+	movge	r3, r6	@ max_crss_nonmatch, prephitmp.1312
+	movlt	r3, ip	@ max_crss_nonmatch, prephitmp.1311
 	str	sl, [fp, #-88]	@, %sfp
 	ldmib	r0, {r7, r8}	@ phole ldm
 	str	r8, [fp, #-92]	@, %sfp
@@ -2159,7 +2160,7 @@ Calc22PLD:
 	cmp	sl, r0	@, match_UM2
 	movlt	sl, r0	@, match_UM2
 	cmp	r3, #4	@ max_crss_nonmatch,
-	cmple	r1, #4	@, prephitmp.987,
+	cmple	r1, #4	@, prephitmp.1148,
 	str	sl, [fp, #-72]	@, %sfp
 	bgt	.L261	@,
 	cmp	sl, #500	@,
@@ -2169,15 +2170,15 @@ Calc22PLD:
 	cmp	sl, #1	@,
 	ble	.L331	@,
 .L262:
-	cmp	r1, #120	@ prephitmp.987,
+	cmp	r1, #120	@ prephitmp.1148,
 	cmple	r3, #120	@, max_crss_nonmatch,
 	ble	.L264	@,
-	cmp	r1, #10	@ prephitmp.987,
-	movge	r8, r1	@ match_weave, prephitmp.987
+	cmp	r1, #10	@ prephitmp.1148,
+	movge	r8, r1	@ match_weave, prephitmp.1148
 	movlt	r8, #10	@ match_weave,
-	cmp	r6, ip	@ prephitmp.1151, prephitmp.1150
-	movlt	r0, r6	@ min_crss_nonmatch, prephitmp.1151
-	movge	r0, ip	@ min_crss_nonmatch, prephitmp.1150
+	cmp	r6, ip	@ prephitmp.1312, prephitmp.1311
+	movlt	r0, r6	@ min_crss_nonmatch, prephitmp.1312
+	movge	r0, ip	@ min_crss_nonmatch, prephitmp.1311
 	mov	r7, r8, asl #2	@ tmp843, match_weave,
 	mov	r1, r0, asl #1	@ tmp842, min_crss_nonmatch,
 	cmp	r7, r1	@ tmp843, tmp842
@@ -2211,7 +2212,7 @@ Calc22PLD:
 	sub	sp, fp, #40
 	ldmfd	sp, {r4, r5, r6, r7, r8, r9, sl, fp, sp, pc}
 .L261:
-	cmp	r1, #800	@ prephitmp.987,
+	cmp	r1, #800	@ prephitmp.1148,
 	ble	.L262	@,
 	add	r7, r4, r2	@ tmp214, phase, pCntxt22
 	mov	r3, #1	@ anomalFlg,
@@ -2229,39 +2230,39 @@ Calc22PLD:
 	cmp	r3, #1	@ anomalFlg,
 	ldrsb	r6, [r2, #88]	@ <variable>.phaseCnt, <variable>.phaseCnt
 	ldreq	ip, [r2, #36]	@ <variable>.anomalCnt, <variable>.anomalCnt
-	movne	ip, #0	@ iftmp.281,
+	movne	ip, #0	@ iftmp.440,
 	ldrsb	r8, [r2, #89]	@ <variable>.phaseCnt, <variable>.phaseCnt
-	addeq	ip, ip, #1	@ iftmp.281, <variable>.anomalCnt,
+	addeq	ip, ip, #1	@ iftmp.440, <variable>.anomalCnt,
 	cmp	r6, #32	@ <variable>.phaseCnt,
-	movge	r6, #32	@ iftmp.282,
-	bic	r7, r6, r6, asr #31	@ tmp784, iftmp.282
+	movge	r6, #32	@ iftmp.441,
+	bic	r7, r6, r6, asr #31	@ tmp784, iftmp.441
 	cmp	r8, #32	@ <variable>.phaseCnt,
-	movge	r8, #32	@ iftmp.283,
-	str	ip, [r2, #36]	@ iftmp.281, <variable>.anomalCnt
-	bic	ip, r8, r8, asr #31	@ tmp791, iftmp.283
-	uxtb	r4, r7	@ iftmp.1147, tmp784
-	strb	r4, [r2, #88]	@ iftmp.1147, <variable>.phaseCnt
-	uxtb	r0, ip	@ iftmp.1149, tmp791
-	strb	r0, [r2, #89]	@ iftmp.1149, <variable>.phaseCnt
-	sxtb	r1, r4	@ iftmp.1147, iftmp.1147
-	cmp	r1, #24	@ iftmp.1147,
+	movge	r8, #32	@ iftmp.442,
+	str	ip, [r2, #36]	@ iftmp.440, <variable>.anomalCnt
+	bic	ip, r8, r8, asr #31	@ tmp791, iftmp.442
+	uxtb	r4, r7	@ iftmp.1308, tmp784
+	strb	r4, [r2, #88]	@ iftmp.1308, <variable>.phaseCnt
+	uxtb	r0, ip	@ iftmp.1310, tmp791
+	strb	r0, [r2, #89]	@ iftmp.1310, <variable>.phaseCnt
+	sxtb	r1, r4	@ iftmp.1308, iftmp.1308
+	cmp	r1, #24	@ iftmp.1308,
 	ble	.L312	@,
-	sxtb	r0, r0	@ iftmp.1149, iftmp.1149
-	cmp	r0, #24	@ iftmp.1149,
+	sxtb	r0, r0	@ iftmp.1310, iftmp.1310
+	cmp	r0, #24	@ iftmp.1310,
 	movgt	r1, #1	@ tmp795,
 	strgt	r1, [r2, #92]	@ tmp795, <variable>.pld22Lock
 	ble	.L313	@,
 .L314:
-	ldr	r6, [r2, #12]	@ D.14633, <variable>.histFrmITDiff
+	ldr	r6, [r2, #12]	@ D.28172, <variable>.histFrmITDiff
 	movw	sl, #:lower16:1717986919	@ tmp804,
-	ldr	r4, [r2, #8]	@ D.14634, <variable>.histFrmITDiff
+	ldr	r4, [r2, #8]	@ D.28173, <variable>.histFrmITDiff
 	movt	sl, #:upper16:1717986919	@ tmp804,
 	ldr	ip, [r2, #4]	@, <variable>.histFrmITDiff
-	add	r8, r6, r5	@ tmp799, D.14633, Frame_IT_diff
-	add	r7, r8, r4	@ tmp800, tmp799, D.14634
+	add	r8, r6, r5	@ tmp799, D.28172, Frame_IT_diff
+	add	r7, r8, r4	@ tmp800, tmp799, D.28173
 	ldr	r1, [r2, #0]	@, <variable>.histFrmITDiff
 	add	r0, r7, ip	@ tmp801, tmp800,
-	str	r6, [r2, #16]	@ D.14633, <variable>.histFrmITDiff
+	str	r6, [r2, #16]	@ D.28172, <variable>.histFrmITDiff
 	add	r8, r0, r1	@ tmp802, tmp801,
 	ldr	r0, [r2, #28]	@, <variable>.meanFrmITDiffAcc
 	ldr	r6, [r2, #4]	@, <variable>.histFrmITDiff
@@ -2273,21 +2274,21 @@ Calc22PLD:
 	str	r6, [r2, #8]	@, <variable>.histFrmITDiff
 	rsb	r7, ip, r0	@ tmp807,,
 	ldr	r6, [r2, #0]	@, <variable>.histFrmITDiff
-	str	r4, [r2, #12]	@ D.14634, <variable>.histFrmITDiff
-	rsb	r8, r8, sl, asr #1	@, D.14642, tmp806, tmp803,
+	str	r4, [r2, #12]	@ D.28173, <variable>.histFrmITDiff
+	rsb	r8, r8, sl, asr #1	@, D.28181, tmp806, tmp803,
 	movw	sl, #3000	@ tmp811,
-	add	ip, r7, r8	@ iftmp.1148, tmp807, D.14642
-	str	r8, [r2, #20]	@ D.14642, <variable>.lstFrmITDiffMean
-	cmp	ip, r1	@ iftmp.1148, tmp810
-	movlt	ip, r1	@ iftmp.1148, tmp810
+	add	ip, r7, r8	@ iftmp.1309, tmp807, D.28181
+	str	r8, [r2, #20]	@ D.28181, <variable>.lstFrmITDiffMean
+	cmp	ip, r1	@ iftmp.1309, tmp810
+	movlt	ip, r1	@ iftmp.1309, tmp810
 	str	r6, [r2, #4]	@, <variable>.histFrmITDiff
-	cmp	ip, sl	@ iftmp.1148, tmp811
-	movge	ip, sl	@ iftmp.284, tmp811
+	cmp	ip, sl	@ iftmp.1309, tmp811
+	movge	ip, sl	@ iftmp.443, tmp811
 	str	r5, [r2, #0]	@ Frame_IT_diff, <variable>.histFrmITDiff
-	cmp	ip, #1000	@ iftmp.284,
+	cmp	ip, #1000	@ iftmp.443,
 	cmpge	r9, #1	@, <variable>.pld22Lock,
-	str	r8, [r2, #24]	@ D.14642, <variable>.curFrmITDiffMean
-	str	ip, [r2, #28]	@ iftmp.284, <variable>.meanFrmITDiffAcc
+	str	r8, [r2, #24]	@ D.28181, <variable>.curFrmITDiffMean
+	str	ip, [r2, #28]	@ iftmp.443, <variable>.meanFrmITDiffAcc
 	bne	.L316	@,
 	cmp	r3, #0	@ anomalFlg,
 	bne	.L333	@,
@@ -2308,11 +2309,11 @@ Calc22PLD:
 	str	r0, [r2, #32]	@ tmp839, <variable>.lstRepfMotion
 	b	.L318	@
 .L312:
-	cmp	r1, #19	@ iftmp.1147,
+	cmp	r1, #19	@ iftmp.1308,
 	ble	.L315	@,
-	sxtb	r0, r0	@ iftmp.1149, iftmp.1149
+	sxtb	r0, r0	@ iftmp.1310, iftmp.1310
 .L313:
-	cmp	r0, #19	@ iftmp.1149,
+	cmp	r0, #19	@ iftmp.1310,
 	bgt	.L314	@,
 .L315:
 	mov	r0, #0	@ tmp798,
@@ -2324,11 +2325,11 @@ Calc22PLD:
 	cmp	r3, #1	@ s32DeiMdLum,
 	bne	.L318	@,
 	ldr	r7, [r0, #28]	@ <variable>.frmPcc.PCC_BWD, <variable>.frmPcc.PCC_BWD
-	ldr	r1, [r2, #68]	@ prephitmp.987, <variable>.frame_match_weave
-	ldr	ip, [r2, #72]	@ prephitmp.1150, <variable>.frame_nonmatch_weave
+	ldr	r1, [r2, #68]	@ prephitmp.1148, <variable>.frame_match_weave
+	ldr	ip, [r2, #72]	@ prephitmp.1311, <variable>.frame_nonmatch_weave
 	str	r7, [r2, #48]	@ <variable>.frmPcc.PCC_BWD, <variable>.field_match_weave
 	ldr	r3, [r0, #24]	@ <variable>.frmPcc.PCC_FWD, <variable>.frmPcc.PCC_FWD
-	ldr	r6, [r2, #76]	@ prephitmp.1151, <variable>.frame_pcc_crss
+	ldr	r6, [r2, #76]	@ prephitmp.1312, <variable>.frame_pcc_crss
 	str	r3, [r2, #52]	@ <variable>.frmPcc.PCC_FWD, <variable>.field_nonmatch_weave
 	ldr	sl, [r0, #32]	@ <variable>.frmPcc.PCC_CRSS, <variable>.frmPcc.PCC_CRSS
 	str	sl, [r2, #56]	@ <variable>.frmPcc.PCC_CRSS, <variable>.field_pcc_crss
@@ -2346,9 +2347,9 @@ Calc22PLD:
 	cmp	r7, r6	@ match_UM, tmp398
 	cmple	r0, r6	@, match_UM2, tmp398
 	bgt	.L322	@,
-	cmp	r1, #39	@ prephitmp.987,
+	cmp	r1, #39	@ prephitmp.1148,
 	ble	.L281	@,
-	cmp	r1, ip, asl #1	@ prephitmp.987, prephitmp.1150,
+	cmp	r1, ip, asl #1	@ prephitmp.1148, prephitmp.1311,
 	bge	.L322	@,
 .L281:
 	ldr	sl, [fp, #-92]	@, %sfp
@@ -2407,11 +2408,11 @@ Calc22PLD:
 	b	.L263	@
 .L334:
 	ldr	r6, [r0, #20]	@ <variable>.frmPcc.PCC_FFWD, <variable>.frmPcc.PCC_FFWD
-	ldr	r1, [r2, #68]	@ prephitmp.987, <variable>.frame_match_weave
-	ldr	ip, [r2, #72]	@ prephitmp.1150, <variable>.frame_nonmatch_weave
+	ldr	r1, [r2, #68]	@ prephitmp.1148, <variable>.frame_match_weave
+	ldr	ip, [r2, #72]	@ prephitmp.1311, <variable>.frame_nonmatch_weave
 	str	r6, [r2, #48]	@ <variable>.frmPcc.PCC_FFWD, <variable>.field_match_weave
 	ldr	r7, [r0, #24]	@ <variable>.frmPcc.PCC_FWD, <variable>.frmPcc.PCC_FWD
-	ldr	r6, [r2, #76]	@ prephitmp.1151, <variable>.frame_pcc_crss
+	ldr	r6, [r2, #76]	@ prephitmp.1312, <variable>.frame_pcc_crss
 	str	r7, [r2, #52]	@ <variable>.frmPcc.PCC_FWD, <variable>.field_nonmatch_weave
 	ldr	r3, [r0, #32]	@ <variable>.frmPcc.PCC_CRSS, <variable>.frmPcc.PCC_CRSS
 	str	r3, [r2, #56]	@ <variable>.frmPcc.PCC_CRSS, <variable>.field_pcc_crss
@@ -2432,15 +2433,15 @@ Calc22PLD:
 	ldr	r1, [r0, #24]	@ <variable>.frmPcc.PCC_FWD, <variable>.frmPcc.PCC_FWD
 	ldr	r3, [r2, #48]	@ <variable>.field_match_weave, <variable>.field_match_weave
 	ldr	sl, [r2, #52]	@ <variable>.field_nonmatch_weave, <variable>.field_nonmatch_weave
-	add	r1, r1, r3	@ prephitmp.987, <variable>.frmPcc.PCC_FWD, <variable>.field_match_weave
-	str	r1, [r2, #68]	@ prephitmp.987, <variable>.frame_match_weave
+	add	r1, r1, r3	@ prephitmp.1148, <variable>.frmPcc.PCC_FWD, <variable>.field_match_weave
+	str	r1, [r2, #68]	@ prephitmp.1148, <variable>.frame_match_weave
 	ldr	ip, [r0, #28]	@ <variable>.frmPcc.PCC_BWD, <variable>.frmPcc.PCC_BWD
 	ldr	r8, [r2, #56]	@ <variable>.field_pcc_crss, <variable>.field_pcc_crss
-	add	ip, ip, sl	@ prephitmp.1150, <variable>.frmPcc.PCC_BWD, <variable>.field_nonmatch_weave
-	str	ip, [r2, #72]	@ prephitmp.1150, <variable>.frame_nonmatch_weave
+	add	ip, ip, sl	@ prephitmp.1311, <variable>.frmPcc.PCC_BWD, <variable>.field_nonmatch_weave
+	str	ip, [r2, #72]	@ prephitmp.1311, <variable>.frame_nonmatch_weave
 	ldr	r6, [r0, #32]	@ <variable>.frmPcc.PCC_CRSS, <variable>.frmPcc.PCC_CRSS
-	add	r6, r6, r8	@ prephitmp.1151, <variable>.frmPcc.PCC_CRSS, <variable>.field_pcc_crss
-	str	r6, [r2, #76]	@ prephitmp.1151, <variable>.frame_pcc_crss
+	add	r6, r6, r8	@ prephitmp.1312, <variable>.frmPcc.PCC_CRSS, <variable>.field_pcc_crss
+	str	r6, [r2, #76]	@ prephitmp.1312, <variable>.frame_pcc_crss
 	ldr	r7, [r0, #40]	@, <variable>.frmPcc.PCC_FWD_TKR
 	str	r7, [fp, #-48]	@, %sfp
 	b	.L258	@
@@ -2473,7 +2474,7 @@ Calc22PLD:
 	add	r7, r1, r0	@ tmp341, tmp842, min_crss_nonmatch
 	cmp	r3, r7	@ max_crss_nonmatch, tmp341
 	bgt	.L322	@,
-	rsb	r1, ip, r6	@ tmp347, prephitmp.1150, prephitmp.1151
+	rsb	r1, ip, r6	@ tmp347, prephitmp.1311, prephitmp.1312
 	cmp	r1, #0	@ tmp347,
 	rsblt	r1, r1, #0	@ diff_crss_nonmatch, tmp347
 	cmp	r1, #40	@ diff_crss_nonmatch,
@@ -2612,7 +2613,7 @@ Calc22PLD:
 	.type	Detect22Pld, %function
 Detect22Pld:
 	.fnstart
-.LFB589:
+.LFB1255:
 	@ args = 4, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -2637,15 +2638,15 @@ Detect22Pld:
 	mov	r0, r1	@, pstFmdStatInfo
 	mov	r1, lr	@, Is2ndFld
 	bl	Calc22PLD	@
-	ldr	r0, [r5, #92]	@ D.14679, <variable>.pld22Lock
-	str	r0, [r4, #8]	@ D.14679,
+	ldr	r0, [r5, #92]	@ D.28218, <variable>.pld22Lock
+	str	r0, [r4, #8]	@ D.28218,
 	ldmfd	sp, {r3, r4, r5, r6, fp, sp, pc}	@
 .L340:
 	mov	r0, r1	@, pstFmdStatInfo
 	mov	r1, lr	@, Is2ndFld
 	bl	Calc22PLD_STB	@
-	ldr	r0, [r5, #92]	@ D.14679, <variable>.pld22Lock
-	str	r0, [r4, #8]	@ D.14679,
+	ldr	r0, [r5, #92]	@ D.28218, <variable>.pld22Lock
+	str	r0, [r4, #8]	@ D.28218,
 	ldmfd	sp, {r3, r4, r5, r6, fp, sp, pc}	@
 	.fnend
 	.size	Detect22Pld, .-Detect22Pld
@@ -2654,7 +2655,7 @@ Detect22Pld:
 	.type	GetPlaybackState, %function
 GetPlaybackState:
 	.fnstart
-.LFB591:
+.LFB1257:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -2667,9 +2668,9 @@ GetPlaybackState:
 	push	{lr}
 	bl	__gnu_mcount_nc
 	mov	r3, r0	@ Pd32Det, Pd32Det
-	ldrb	r0, [r2, #432]	@ zero_extendqisi2	@ D.14754, <variable>.MainState
+	ldrb	r0, [r2, #432]	@ zero_extendqisi2	@ D.28293, <variable>.MainState
 	ldrb	ip, [r2, #433]	@ zero_extendqisi2	@, <variable>.PrevMainState
-	sxtb	r0, r0	@ MainState, D.14754
+	sxtb	r0, r0	@ MainState, D.28293
 	cmp	r0, #1	@ MainState,
 	sxtb	ip, ip	@ PrevMainState, <variable>.PrevMainState
 	beq	.L343	@,
@@ -2678,113 +2679,199 @@ GetPlaybackState:
 	cmp	r3, #1	@ Pd32Det,
 	beq	.L355	@,
 	cmp	r1, #1	@ Pd22Det,
-	uxtbne	ip, ip	@ prephitmp.1200, PrevMainState
-	uxtbne	r3, r0	@ prephitmp.1189, MainState
+	uxtbne	ip, ip	@ prephitmp.1361, PrevMainState
+	uxtbne	r3, r0	@ prephitmp.1350, MainState
 	beq	.L358	@,
 .L346:
-	strb	ip, [r2, #433]	@ prephitmp.1200, <variable>.PrevMainState
-	strb	r3, [r2, #432]	@ prephitmp.1189, <variable>.MainState
+	strb	ip, [r2, #433]	@ prephitmp.1361, <variable>.PrevMainState
+	strb	r3, [r2, #432]	@ prephitmp.1350, <variable>.MainState
 	ldmfd	sp, {fp, sp, pc}	@
 .L357:
 	cmp	r1, #1	@ Pd22Det,
 	beq	.L354	@,
 	cmp	r3, #1	@ Pd32Det,
-	moveq	ip, r0	@ prephitmp.1200, MainState
-	moveq	r0, r3	@ MainState, prephitmp.1189
+	moveq	ip, r0	@ prephitmp.1361, MainState
+	moveq	r0, r3	@ MainState, prephitmp.1350
 	beq	.L346	@,
-	mov	r3, #0	@ prephitmp.1189,
-	mov	ip, r0	@ prephitmp.1200, MainState
-	mov	r0, r3	@ MainState, prephitmp.1189
+	mov	r3, #0	@ prephitmp.1350,
+	mov	ip, r0	@ prephitmp.1361, MainState
+	mov	r0, r3	@ MainState, prephitmp.1350
 .L359:
-	strb	ip, [r2, #433]	@ prephitmp.1200, <variable>.PrevMainState
-	strb	r3, [r2, #432]	@ prephitmp.1189, <variable>.MainState
+	strb	ip, [r2, #433]	@ prephitmp.1361, <variable>.PrevMainState
+	strb	r3, [r2, #432]	@ prephitmp.1350, <variable>.MainState
 	ldmfd	sp, {fp, sp, pc}	@
 .L343:
 	cmp	r3, #1	@ Pd32Det,
 	beq	.L354	@,
 	cmp	r1, #1	@ Pd22Det,
-	moveq	r3, #2	@ prephitmp.1189,
-	moveq	ip, r0	@ prephitmp.1200, MainState
-	moveq	r0, r3	@ MainState, prephitmp.1189
+	moveq	r3, #2	@ prephitmp.1350,
+	moveq	ip, r0	@ prephitmp.1361, MainState
+	moveq	r0, r3	@ MainState, prephitmp.1350
 	beq	.L346	@,
-	mov	r3, #0	@ prephitmp.1189,
-	mov	ip, r0	@ prephitmp.1200, MainState
-	mov	r0, r3	@ MainState, prephitmp.1189
+	mov	r3, #0	@ prephitmp.1350,
+	mov	ip, r0	@ prephitmp.1361, MainState
+	mov	r0, r3	@ MainState, prephitmp.1350
 	b	.L359	@
 .L358:
-	mov	r3, #2	@ prephitmp.1189,
+	mov	r3, #2	@ prephitmp.1350,
 .L355:
-	mov	ip, #0	@ prephitmp.1200,
-	mov	r0, r3	@ MainState, prephitmp.1189
-	strb	ip, [r2, #433]	@ prephitmp.1200, <variable>.PrevMainState
-	strb	r3, [r2, #432]	@ prephitmp.1189, <variable>.MainState
+	mov	ip, #0	@ prephitmp.1361,
+	mov	r0, r3	@ MainState, prephitmp.1350
+	strb	ip, [r2, #433]	@ prephitmp.1361, <variable>.PrevMainState
+	strb	r3, [r2, #432]	@ prephitmp.1350, <variable>.MainState
 	ldmfd	sp, {fp, sp, pc}	@
 .L354:
-	uxtb	ip, ip	@ prephitmp.1200, PrevMainState
-	mov	r3, r0	@ prephitmp.1189, MainState
-	strb	ip, [r2, #433]	@ prephitmp.1200, <variable>.PrevMainState
-	strb	r3, [r2, #432]	@ prephitmp.1189, <variable>.MainState
+	uxtb	ip, ip	@ prephitmp.1361, PrevMainState
+	mov	r3, r0	@ prephitmp.1350, MainState
+	strb	ip, [r2, #433]	@ prephitmp.1361, <variable>.PrevMainState
+	strb	r3, [r2, #432]	@ prephitmp.1350, <variable>.MainState
 	ldmfd	sp, {fp, sp, pc}	@
 	.fnend
 	.size	GetPlaybackState, .-GetPlaybackState
+	.align	2
+	.global	FmdThdParaInitDefault
+	.type	FmdThdParaInitDefault, %function
+FmdThdParaInitDefault:
+	.fnstart
+.LFB1259:
+	@ args = 0, pretend = 0, frame = 0
+	@ frame_needed = 1, uses_anonymous_args = 0
+	.movsp ip
+	mov	ip, sp	@,
+	stmfd	sp!, {r3, r4, r5, r6, fp, ip, lr, pc}	@,
+	.pad #4
+	.save {r3, r4, r5, r6, fp, ip, lr}
+	.setfp fp, ip, #-4
+	sub	fp, ip, #4	@,,
+	push	{lr}
+	bl	__gnu_mcount_nc
+	movw	r3, #:lower16:.LANCHOR1	@ tmp133,
+	movt	r3, #:upper16:.LANCHOR1	@ tmp133,
+	mov	r1, #16	@ tmp146,
+	mov	r2, #32	@ tmp148,
+	mov	r0, #1	@ tmp134,
+	mov	r5, #8	@ tmp144,
+	mov	r4, #64	@ tmp150,
+	mov	ip, #20	@ tmp162,
+	mov	r6, #4	@ tmp152,
+	str	r1, [r3, #80]	@ tmp146, g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd0
+	str	r6, [r3, #132]	@ tmp152, g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd0
+	mov	r6, #15	@ tmp160,
+	str	r2, [r3, #20]	@ tmp148, g_stFmdPara.stPqFmdCtrl.u32Edge_smooth_ratio
+	str	r6, [r3, #156]	@ tmp160, g_stFmdPara.stPqFmdLashThd.u32Edge_thd
+	mov	r6, #90	@ tmp170,
+	str	r0, [r3, #12]	@ tmp134, g_stFmdPara.stPqFmdCtrl.u32Pd22_mode
+	str	r6, [r3, #72]	@ tmp170, g_stFmdPara.stPqFmdPccThd.u32Coring_tkr
+	mov	r6, #128	@ tmp180,
+	str	r5, [r3, #120]	@ tmp144, g_stFmdPara.stPqFmdUmThd.u32Um_thd0
+	str	r6, [r3, #92]	@ tmp180, g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd3
+	mov	r6, #50	@ tmp182,
+	str	r4, [r3, #128]	@ tmp150, g_stFmdPara.stPqFmdUmThd.u32Um_thd2
+	str	r6, [r3, #64]	@ tmp182, g_stFmdPara.stPqFmdPccThd.u32Mov_coring_tkr
+	mov	r6, #30	@ tmp198,
+	str	ip, [r3, #60]	@ tmp162, g_stFmdPara.stPqFmdPccThd.u32Mov_coring_norm
+	str	r6, [r3, #52]	@ tmp198, g_stFmdPara.stPqFmdHistbinThd.u32Diff_movblk_thd
+	mov	r6, #6	@ tmp194,
+	str	r0, [r3, #8]	@ tmp134, g_stFmdPara.stPqFmdCtrl.u32Fod_en_mode
+	str	r6, [r3, #24]	@ tmp194, g_stFmdPara.stPqFmdCtrl.u32Bitsmov2r
+	str	r0, [r3, #4]	@ tmp134, g_stFmdPara.stPqFmdCtrl.u32Pd22_en
+	str	r0, [r3, #0]	@ tmp134, g_stFmdPara.stPqFmdCtrl.u32Pd32_en
+	str	r0, [r3, #16]	@ tmp134, g_stFmdPara.stPqFmdCtrl.u32Edge_smooth_en
+	str	r5, [r3, #28]	@ tmp144, g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd0
+	str	r1, [r3, #32]	@ tmp146, g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd1
+	str	r2, [r3, #36]	@ tmp148, g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd2
+	str	r4, [r3, #40]	@ tmp150, g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd3
+	str	r5, [r3, #136]	@ tmp144, g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd1
+	str	r1, [r3, #140]	@ tmp146, g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd2
+	str	r2, [r3, #144]	@ tmp148, g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd3
+	str	ip, [r3, #152]	@ tmp162, g_stFmdPara.stPqFmdLashThd.u32Lasi_thd
+	str	r2, [r3, #160]	@ tmp148, g_stFmdPara.stPqFmdLashThd.u32Lasi_mov_thr
+	str	r1, [r3, #116]	@ tmp146, g_stFmdPara.stPqFmdPccBlk.u32Coring_blk
+	str	r1, [r3, #68]	@ tmp146, g_stFmdPara.stPqFmdPccThd.u32Coring_norm
+	str	r1, [r3, #76]	@ tmp146, g_stFmdPara.stPqFmdPccThd.u32Pcc_hthd
+	str	r2, [r3, #84]	@ tmp148, g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd1
+	str	r4, [r3, #88]	@ tmp150, g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd2
+	str	ip, [r3, #112]	@ tmp162, g_stFmdPara.stPqFmdPccBlk.u32Mov_coring_blk
+	str	r2, [r3, #124]	@ tmp148, g_stFmdPara.stPqFmdUmThd.u32Um_thd1
+	ldmfd	sp, {r3, r4, r5, r6, fp, sp, pc}	@
+	.fnend
+	.size	FmdThdParaInitDefault, .-FmdThdParaInitDefault
 	.align	2
 	.global	FmdThdParaInit
 	.type	FmdThdParaInit, %function
 FmdThdParaInit:
 	.fnstart
-.LFB593:
+.LFB1260:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
 	mov	ip, sp	@,
-	stmfd	sp!, {r4, r5, fp, ip, lr, pc}	@,
+	stmfd	sp!, {fp, ip, lr, pc}	@,
 	.pad #4
-	.save {r4, r5, fp, ip, lr}
+	.save {fp, ip, lr}
 	.setfp fp, ip, #-4
 	sub	fp, ip, #4	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
-	mov	r2, #16	@ tmp136,
-	mov	r3, #32	@ tmp138,
-	mov	r4, #8	@ tmp134,
-	mov	ip, #64	@ tmp140,
-	mov	r1, #20	@ tmp152,
-	mov	r5, #4	@ tmp142,
-	strb	r2, [r0, #19]	@ tmp136, <variable>.PccCtrl.V_THR
-	strb	r5, [r0, #26]	@ tmp142, <variable>.ItdiffCtrl.THR
-	mov	r5, #15	@ tmp150,
-	strb	r3, [r0, #0]	@ tmp138, <variable>.EdgeSmoothRatio
-	strb	r5, [r0, #31]	@ tmp150, <variable>.LasiCtrl.EDGE_THR
-	mov	r5, #90	@ tmp160,
-	strb	r4, [r0, #12]	@ tmp134, <variable>.UmCtrl.THR
-	strb	r5, [r0, #16]	@ tmp160, <variable>.PccCtrl.CORING_TKR
-	mvn	r5, #127	@ tmp170,
-	strb	ip, [r0, #14]	@ tmp140, <variable>.UmCtrl.THR
-	strb	r5, [r0, #22]	@ tmp170, <variable>.PccCtrl.V_THR
-	mov	r5, #50	@ tmp172,
-	strb	r1, [r0, #23]	@ tmp152, <variable>.PccCtrl.MOV_CORING_NORM
-	strb	r5, [r0, #24]	@ tmp172, <variable>.PccCtrl.MOV_CORING_TKR
-	mov	r5, #6	@ tmp184,
-	strb	r4, [r0, #8]	@ tmp134, <variable>.HistogramCtrl.THR
-	str	r5, [r0, #36]	@ tmp184, <variable>.ScenChgCtrl.BITSMOV2R
-	mov	r5, #30	@ tmp187,
-	strb	r2, [r0, #9]	@ tmp136, <variable>.HistogramCtrl.THR
-	str	r5, [r0, #4]	@ tmp187, <variable>.DIFF_MOVBLK_THR
-	strb	r3, [r0, #10]	@ tmp138, <variable>.HistogramCtrl.THR
-	strb	ip, [r0, #11]	@ tmp140, <variable>.HistogramCtrl.THR
-	strb	r4, [r0, #27]	@ tmp134, <variable>.ItdiffCtrl.THR
-	strb	r2, [r0, #28]	@ tmp136, <variable>.ItdiffCtrl.THR
-	strb	r3, [r0, #29]	@ tmp138, <variable>.ItdiffCtrl.THR
-	strb	r1, [r0, #30]	@ tmp152, <variable>.LasiCtrl.THR
-	strb	r3, [r0, #32]	@ tmp138, <variable>.LasiCtrl.LASI_MOV_THR
-	strb	r2, [r0, #17]	@ tmp136, <variable>.PccCtrl.CORING_BLK
-	strb	r2, [r0, #15]	@ tmp136, <variable>.PccCtrl.CORING_NORM
-	strb	r2, [r0, #18]	@ tmp136, <variable>.PccCtrl.H_THR
-	strb	r3, [r0, #20]	@ tmp138, <variable>.PccCtrl.V_THR
-	strb	ip, [r0, #21]	@ tmp140, <variable>.PccCtrl.V_THR
-	strb	r1, [r0, #25]	@ tmp152, <variable>.PccCtrl.MOV_CORING_BLK
-	strb	r3, [r0, #13]	@ tmp138, <variable>.UmCtrl.THR
-	ldmfd	sp, {r4, r5, fp, sp, pc}	@
+	movw	r1, #:lower16:.LANCHOR1	@ tmp134,
+	movt	r1, #:upper16:.LANCHOR1	@ tmp134,
+	ldr	r3, [r1, #28]	@ g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd0, g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd0
+	strb	r3, [r0, #8]	@ g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd0, <variable>.HistogramCtrl.THR
+	ldr	ip, [r1, #32]	@ g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd1, g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd1
+	strb	ip, [r0, #9]	@ g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd1, <variable>.HistogramCtrl.THR
+	ldr	r2, [r1, #36]	@ g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd2, g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd2
+	strb	r2, [r0, #10]	@ g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd2, <variable>.HistogramCtrl.THR
+	ldr	r3, [r1, #40]	@ g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd3, g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd3
+	strb	r3, [r0, #11]	@ g_stFmdPara.stPqFmdHistbinThd.u32Hist_thd3, <variable>.HistogramCtrl.THR
+	ldr	ip, [r1, #132]	@ g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd0, g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd0
+	strb	ip, [r0, #26]	@ g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd0, <variable>.ItdiffCtrl.THR
+	ldr	r2, [r1, #136]	@ g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd1, g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd1
+	strb	r2, [r0, #27]	@ g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd1, <variable>.ItdiffCtrl.THR
+	ldr	r3, [r1, #140]	@ g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd2, g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd2
+	strb	r3, [r0, #28]	@ g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd2, <variable>.ItdiffCtrl.THR
+	ldr	ip, [r1, #144]	@ g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd3, g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd3
+	strb	ip, [r0, #29]	@ g_stFmdPara.stPqFmdItdiffThd.u32Itdiff_vthd3, <variable>.ItdiffCtrl.THR
+	ldr	r2, [r1, #156]	@ g_stFmdPara.stPqFmdLashThd.u32Edge_thd, g_stFmdPara.stPqFmdLashThd.u32Edge_thd
+	strb	r2, [r0, #31]	@ g_stFmdPara.stPqFmdLashThd.u32Edge_thd, <variable>.LasiCtrl.EDGE_THR
+	ldr	r3, [r1, #152]	@ g_stFmdPara.stPqFmdLashThd.u32Lasi_thd, g_stFmdPara.stPqFmdLashThd.u32Lasi_thd
+	strb	r3, [r0, #30]	@ g_stFmdPara.stPqFmdLashThd.u32Lasi_thd, <variable>.LasiCtrl.THR
+	ldr	ip, [r1, #160]	@ g_stFmdPara.stPqFmdLashThd.u32Lasi_mov_thr, g_stFmdPara.stPqFmdLashThd.u32Lasi_mov_thr
+	strb	ip, [r0, #32]	@ g_stFmdPara.stPqFmdLashThd.u32Lasi_mov_thr, <variable>.LasiCtrl.LASI_MOV_THR
+	ldr	r2, [r1, #116]	@ g_stFmdPara.stPqFmdPccBlk.u32Coring_blk, g_stFmdPara.stPqFmdPccBlk.u32Coring_blk
+	strb	r2, [r0, #17]	@ g_stFmdPara.stPqFmdPccBlk.u32Coring_blk, <variable>.PccCtrl.CORING_BLK
+	ldr	r3, [r1, #68]	@ g_stFmdPara.stPqFmdPccThd.u32Coring_norm, g_stFmdPara.stPqFmdPccThd.u32Coring_norm
+	strb	r3, [r0, #15]	@ g_stFmdPara.stPqFmdPccThd.u32Coring_norm, <variable>.PccCtrl.CORING_NORM
+	ldr	ip, [r1, #72]	@ g_stFmdPara.stPqFmdPccThd.u32Coring_tkr, g_stFmdPara.stPqFmdPccThd.u32Coring_tkr
+	strb	ip, [r0, #16]	@ g_stFmdPara.stPqFmdPccThd.u32Coring_tkr, <variable>.PccCtrl.CORING_TKR
+	ldr	r2, [r1, #76]	@ g_stFmdPara.stPqFmdPccThd.u32Pcc_hthd, g_stFmdPara.stPqFmdPccThd.u32Pcc_hthd
+	strb	r2, [r0, #18]	@ g_stFmdPara.stPqFmdPccThd.u32Pcc_hthd, <variable>.PccCtrl.H_THR
+	ldr	r3, [r1, #80]	@ g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd0, g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd0
+	strb	r3, [r0, #19]	@ g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd0, <variable>.PccCtrl.V_THR
+	ldr	ip, [r1, #84]	@ g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd1, g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd1
+	strb	ip, [r0, #20]	@ g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd1, <variable>.PccCtrl.V_THR
+	ldr	r2, [r1, #88]	@ g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd2, g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd2
+	strb	r2, [r0, #21]	@ g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd2, <variable>.PccCtrl.V_THR
+	ldr	r3, [r1, #92]	@ g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd3, g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd3
+	strb	r3, [r0, #22]	@ g_stFmdPara.stPqFmdPccThd.u32Pcc_vthd3, <variable>.PccCtrl.V_THR
+	ldr	ip, [r1, #64]	@ g_stFmdPara.stPqFmdPccThd.u32Mov_coring_tkr, g_stFmdPara.stPqFmdPccThd.u32Mov_coring_tkr
+	strb	ip, [r0, #24]	@ g_stFmdPara.stPqFmdPccThd.u32Mov_coring_tkr, <variable>.PccCtrl.MOV_CORING_TKR
+	ldr	r2, [r1, #112]	@ g_stFmdPara.stPqFmdPccBlk.u32Mov_coring_blk, g_stFmdPara.stPqFmdPccBlk.u32Mov_coring_blk
+	strb	r2, [r0, #25]	@ g_stFmdPara.stPqFmdPccBlk.u32Mov_coring_blk, <variable>.PccCtrl.MOV_CORING_BLK
+	ldr	r3, [r1, #60]	@ g_stFmdPara.stPqFmdPccThd.u32Mov_coring_norm, g_stFmdPara.stPqFmdPccThd.u32Mov_coring_norm
+	strb	r3, [r0, #23]	@ g_stFmdPara.stPqFmdPccThd.u32Mov_coring_norm, <variable>.PccCtrl.MOV_CORING_NORM
+	ldr	ip, [r1, #120]	@ g_stFmdPara.stPqFmdUmThd.u32Um_thd0, g_stFmdPara.stPqFmdUmThd.u32Um_thd0
+	strb	ip, [r0, #12]	@ g_stFmdPara.stPqFmdUmThd.u32Um_thd0, <variable>.UmCtrl.THR
+	ldr	r2, [r1, #124]	@ g_stFmdPara.stPqFmdUmThd.u32Um_thd1, g_stFmdPara.stPqFmdUmThd.u32Um_thd1
+	strb	r2, [r0, #13]	@ g_stFmdPara.stPqFmdUmThd.u32Um_thd1, <variable>.UmCtrl.THR
+	ldr	r3, [r1, #128]	@ g_stFmdPara.stPqFmdUmThd.u32Um_thd2, g_stFmdPara.stPqFmdUmThd.u32Um_thd2
+	strb	r3, [r0, #14]	@ g_stFmdPara.stPqFmdUmThd.u32Um_thd2, <variable>.UmCtrl.THR
+	ldr	ip, [r1, #24]	@ g_stFmdPara.stPqFmdCtrl.u32Bitsmov2r, g_stFmdPara.stPqFmdCtrl.u32Bitsmov2r
+	str	ip, [r0, #36]	@ g_stFmdPara.stPqFmdCtrl.u32Bitsmov2r, <variable>.ScenChgCtrl.BITSMOV2R
+	ldr	r2, [r1, #20]	@ g_stFmdPara.stPqFmdCtrl.u32Edge_smooth_ratio, g_stFmdPara.stPqFmdCtrl.u32Edge_smooth_ratio
+	strb	r2, [r0, #0]	@ g_stFmdPara.stPqFmdCtrl.u32Edge_smooth_ratio, <variable>.EdgeSmoothRatio
+	ldr	r3, [r1, #52]	@ g_stFmdPara.stPqFmdHistbinThd.u32Diff_movblk_thd, g_stFmdPara.stPqFmdHistbinThd.u32Diff_movblk_thd
+	str	r3, [r0, #4]	@ g_stFmdPara.stPqFmdHistbinThd.u32Diff_movblk_thd, <variable>.DIFF_MOVBLK_THR
+	ldmfd	sp, {fp, sp, pc}	@
 	.fnend
 	.size	FmdThdParaInit, .-FmdThdParaInit
 	.align	2
@@ -2792,7 +2879,7 @@ FmdThdParaInit:
 	.type	ALG_FmdDeInit, %function
 ALG_FmdDeInit:
 	.fnstart
-.LFB595:
+.LFB1262:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -2813,7 +2900,7 @@ ALG_FmdDeInit:
 	.type	ALG_FodReset, %function
 ALG_FodReset:
 	.fnstart
-.LFB597:
+.LFB1264:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -2831,11 +2918,60 @@ ALG_FodReset:
 	.fnend
 	.size	ALG_FodReset, .-ALG_FodReset
 	.align	2
+	.global	ALG_SetFmdDbgPara
+	.type	ALG_SetFmdDbgPara, %function
+ALG_SetFmdDbgPara:
+	.fnstart
+.LFB1266:
+	@ args = 0, pretend = 0, frame = 0
+	@ frame_needed = 1, uses_anonymous_args = 0
+	.movsp ip
+	mov	ip, sp	@,
+	stmfd	sp!, {fp, ip, lr, pc}	@,
+	.pad #4
+	.save {fp, ip, lr}
+	.setfp fp, ip, #-4
+	sub	fp, ip, #4	@,,
+	push	{lr}
+	bl	__gnu_mcount_nc
+	mov	r2, #164	@,
+	mov	r1, r0	@ pstPqFmdCoef, pstPqFmdCoef
+	movw	r0, #:lower16:.LANCHOR1	@,
+	movt	r0, #:upper16:.LANCHOR1	@,
+	bl	memcpy	@
+	ldmfd	sp, {fp, sp, pc}	@
+	.fnend
+	.size	ALG_SetFmdDbgPara, .-ALG_SetFmdDbgPara
+	.align	2
+	.global	ALG_GetFmdDbgPara
+	.type	ALG_GetFmdDbgPara, %function
+ALG_GetFmdDbgPara:
+	.fnstart
+.LFB1267:
+	@ args = 0, pretend = 0, frame = 0
+	@ frame_needed = 1, uses_anonymous_args = 0
+	.movsp ip
+	mov	ip, sp	@,
+	stmfd	sp!, {fp, ip, lr, pc}	@,
+	.pad #4
+	.save {fp, ip, lr}
+	.setfp fp, ip, #-4
+	sub	fp, ip, #4	@,,
+	push	{lr}
+	bl	__gnu_mcount_nc
+	movw	r1, #:lower16:.LANCHOR1	@,
+	mov	r2, #164	@,
+	movt	r1, #:upper16:.LANCHOR1	@,
+	bl	memcpy	@
+	ldmfd	sp, {fp, sp, pc}	@
+	.fnend
+	.size	ALG_GetFmdDbgPara, .-ALG_GetFmdDbgPara
+	.align	2
 	.global	ALG_FmdInit
 	.type	ALG_FmdInit, %function
 ALG_FmdInit:
 	.fnstart
-.LFB594:
+.LFB1261:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -2848,7 +2984,7 @@ ALG_FmdInit:
 	push	{lr}
 	bl	__gnu_mcount_nc
 	subs	r4, r0, #0	@ pstFmdSoftInfo, pstFmdSoftInfo
-	mvneq	r0, #0	@ D.14879,
+	mvneq	r0, #0	@ D.28483,
 	ldmeqfd	sp, {r4, r5, fp, sp, pc}	@
 	mov	r0, r4	@ tmp138, pstFmdSoftInfo
 	mov	r5, #0	@ tmp137,
@@ -2856,16 +2992,16 @@ ALG_FmdInit:
 	str	r5, [r0], #12	@ tmp137, <variable>.u32InitFlag
 	bl	__memzero	@
 	mvn	r3, #0	@ tmp140,
-	add	r2, r4, #32	@ D.14885, pstFmdSoftInfo,
+	add	r2, r4, #32	@ D.28489, pstFmdSoftInfo,
 	mov	ip, #2	@ tmp143,
 	mov	r1, #1	@ tmp144,
-	mov	r0, r5	@ D.14879, tmp137
+	mov	r0, r5	@ D.28483, tmp137
 	str	r5, [r4, #472]	@ tmp137, <variable>.StillBlkCtrl.STILLBLK_THR
 	strb	r3, [r4, #9]	@ tmp140, <variable>.stBtMode.g_nxtbtmode
-	str	r2, [r4, #100]	@ D.14885, <variable>.stFmdCtx.pSadRd
+	str	r2, [r4, #100]	@ D.28489, <variable>.stFmdCtx.pSadRd
 	str	ip, [r4, #208]	@ tmp143, <variable>.stFmdCtx.FieldOrder
 	strb	r1, [r4, #446]	@ tmp144, <variable>.stFmdCtx.init_symbol
-	str	r2, [r4, #104]	@ D.14885, <variable>.stFmdCtx.pSadWt
+	str	r2, [r4, #104]	@ D.28489, <variable>.stFmdCtx.pSadWt
 	str	r5, [r4, #96]	@ tmp137, <variable>.stFmdCtx.SadCnt
 	strb	r3, [r4, #200]	@ tmp140, <variable>.stFmdCtx.Last32Phase
 	str	r5, [r4, #204]	@ tmp137, <variable>.stFmdCtx.SADDiffAcc
@@ -2888,7 +3024,7 @@ ALG_FmdInit:
 	.type	ALG_FmdReset, %function
 ALG_FmdReset:
 	.fnstart
-.LFB596:
+.LFB1263:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -2906,7 +3042,7 @@ ALG_FmdReset:
 	moveq	r3, #1	@, tmp143
 	moveq	r0, #0	@ s32Ret,
 	ldmeqfd	sp, {fp, sp, pc}	@
-	ldr	ip, [r1, #36]	@ <variable>.s32FrmHeight, <variable>.s32FrmHeight
+	ldr	ip, [r1, #40]	@ <variable>.s32FrmHeight, <variable>.s32FrmHeight
 	mov	r2, #1	@ tmp144,
 	str	r2, [r1, #32]	@ tmp144, <variable>.EdgeSmoothEn
 	cmp	ip, #720	@ <variable>.s32FrmHeight,
@@ -2925,7 +3061,7 @@ ALG_FmdReset:
 	.type	Detect32Pld, %function
 Detect32Pld:
 	.fnstart
-.LFB590:
+.LFB1256:
 	@ args = 4, pretend = 0, frame = 24
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -2942,15 +3078,15 @@ Detect32Pld:
 	ldr	r4, [fp, #4]	@ pstFmdCtx, pstFmdCtx
 	mov	r5, r1	@ pPd32Inf, pPd32Inf
 	mov	r6, r3	@ s32PbDelay, s32PbDelay
-	ldr	ip, [r0, #124]	@ D.14696, <variable>.frmHstBin.HISTOGRAM_BIN_2
+	ldr	ip, [r0, #124]	@ D.28235, <variable>.frmHstBin.HISTOGRAM_BIN_2
 	ldr	r7, [r4, #436]	@ <variable>.stRepeatHist.lst_repeat, <variable>.stRepeatHist.lst_repeat
-	ldr	r1, [r0, #132]	@ D.14697, <variable>.frmHstBin.HISTOGRAM_BIN_4
+	ldr	r1, [r0, #132]	@ D.28236, <variable>.frmHstBin.HISTOGRAM_BIN_4
 	cmp	r7, #0	@ <variable>.stRepeatHist.lst_repeat,
-	ldr	r3, [r0, #128]	@ D.14699, <variable>.frmHstBin.HISTOGRAM_BIN_3
-	bne	.L377	@,
+	ldr	r3, [r0, #128]	@ D.28238, <variable>.frmHstBin.HISTOGRAM_BIN_3
+	bne	.L383	@,
 	ldr	lr, [r4, #448]	@ <variable>.stDropHist.lst_drop, <variable>.stDropHist.lst_drop
 	cmp	lr, #1	@ <variable>.stDropHist.lst_drop,
-	ble	.L378	@,
+	ble	.L384	@,
 	add	r6, r4, #96	@ tmp146, pstFmdCtx,
 	mov	r1, #60	@,
 	mov	r0, r6	@, tmp146
@@ -2961,16 +3097,16 @@ Detect32Pld:
 	str	r7, [r5, #0]	@ <variable>.stRepeatHist.lst_repeat, <variable>.Pd32Det
 	mov	r1, #20	@,
 	bl	__memzero	@
-	mov	r0, r7	@ D.14719, <variable>.stRepeatHist.lst_repeat
-.L379:
+	mov	r0, r7	@ D.28258, <variable>.stRepeatHist.lst_repeat
+.L385:
 	sub	sp, fp, #40
 	ldmfd	sp, {r4, r5, r6, r7, r8, r9, sl, fp, sp, pc}
-.L378:
-	add	r7, r3, r1, asl #1	@, tmp154, D.14699, D.14697,
+.L384:
+	add	r7, r3, r1, asl #1	@, tmp154, D.28238, D.28236,
 	sub	r9, fp, #56	@ tmp213,,
 	mov	r3, r2	@, IsSceneChange
 	add	r1, r0, #20	@, pStatInfo,
-	add	ip, ip, r7, asl #1	@, tmp156, D.14696, tmp154,
+	add	ip, ip, r7, asl #1	@, tmp156, D.28235, tmp154,
 	mov	r0, r9	@, tmp213
 	str	r4, [sp, #0]	@ pstFmdCtx,
 	mov	r2, ip, asl #1	@, tmp156,
@@ -2978,8 +3114,8 @@ Detect32Pld:
 	ldr	r3, [r4, #132]	@ <variable>.Pd32Det, <variable>.Pd32Det
 	ldr	sl, [fp, #-56]	@ NewPdInf$Pd32Det, NewPdInf.Pd32Det
 	cmp	r3, #1	@ <variable>.Pd32Det,
-	beq	.L386	@,
-.L380:
+	beq	.L392	@,
+.L386:
 	add	ip, r4, #108	@ tmp172, pstFmdCtx,
 	add	r1, r4, #96	@, pstFmdCtx,
 	str	r1, [fp, #-64]	@, %sfp
@@ -2998,39 +3134,39 @@ Detect32Pld:
 	stmia	r8, {r0, r1, r2}	@ tmp176,,,
 	ldmia	r9, {r0, r1, r2}	@ tmp213,,,
 	stmia	r3, {r0, r1, r2}	@ tmp178,,,
-.L377:
+.L383:
 	ldr	r2, [r4, #444]	@ <variable>.stRepeatHist.nxt_repeat, <variable>.stRepeatHist.nxt_repeat
 	cmp	r2, #0	@ <variable>.stRepeatHist.nxt_repeat,
-	beq	.L381	@,
+	beq	.L387	@,
 	ldr	r0, [r4, #440]	@ <variable>.stRepeatHist.cur_repeat, <variable>.stRepeatHist.cur_repeat
 	cmp	r0, #0	@ <variable>.stRepeatHist.cur_repeat,
-	bne	.L387	@,
-.L382:
+	bne	.L393	@,
+.L388:
 	sub	r6, r6, #1	@ tmp193, s32PbDelay,
-.L384:
+.L390:
 	add	r6, r6, r6, asl #1	@, tmp206, s32PbDelay, s32PbDelay,
 	add	ip, r4, r6, asl #2	@, tmp208, pstFmdCtx, tmp206,
 	add	r4, ip, #96	@ tmp209, tmp208,
 	ldmia	r4, {r0, r1, r2}	@ tmp209,,,
 	stmia	r5, {r0, r1, r2}	@ pPd32Inf,,,
-	ldr	r0, [r5, #0]	@ D.14719, <variable>.Pd32Det
-	b	.L379	@
-.L381:
+	ldr	r0, [r5, #0]	@ D.28258, <variable>.Pd32Det
+	b	.L385	@
+.L387:
 	ldr	r3, [r4, #440]	@ <variable>.stRepeatHist.cur_repeat, <variable>.stRepeatHist.cur_repeat
 	cmp	r3, #0	@ <variable>.stRepeatHist.cur_repeat,
-	beq	.L384	@,
-	b	.L382	@
-.L387:
+	beq	.L390	@,
+	b	.L388	@
+.L393:
 	add	r6, r6, r6, asl #1	@, tmp186, s32PbDelay, s32PbDelay,
 	add	r4, r4, r6, asl #2	@, tmp188, pstFmdCtx, tmp186,
 	add	r4, r4, #72	@ tmp189, tmp188,
 	ldmia	r4, {r0, r1, r2}	@ tmp189,,,
 	stmia	r5, {r0, r1, r2}	@ pPd32Inf,,,
-	ldr	r0, [r5, #0]	@ D.14719, <variable>.Pd32Det
-	b	.L379	@
-.L386:
+	ldr	r0, [r5, #0]	@ D.28258, <variable>.Pd32Det
+	b	.L385	@
+.L392:
 	cmp	sl, #0	@ NewPdInf$Pd32Det,
-	bne	.L380	@,
+	bne	.L386	@,
 	mov	r0, #2	@ tmp159,
 	str	sl, [r4, #144]	@ NewPdInf$Pd32Det, <variable>.Pd32Det
 	strb	r0, [r4, #116]	@ tmp159, <variable>.PdState
@@ -3040,7 +3176,7 @@ Detect32Pld:
 	strb	r0, [r4, #128]	@ tmp159, <variable>.PdState
 	str	sl, [r4, #120]	@ NewPdInf$Pd32Det, <variable>.Pd32Det
 	str	sl, [r4, #108]	@ NewPdInf$Pd32Det, <variable>.Pd32Det
-	b	.L380	@
+	b	.L386	@
 	.fnend
 	.size	Detect32Pld, .-Detect32Pld
 	.align	2
@@ -3048,7 +3184,7 @@ Detect32Pld:
 	.type	Optm_Alg_GetPlayBackConfig, %function
 Optm_Alg_GetPlayBackConfig:
 	.fnstart
-.LFB592:
+.LFB1258:
 	@ args = 0, pretend = 0, frame = 24
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -3062,76 +3198,74 @@ Optm_Alg_GetPlayBackConfig:
 	sub	sp, sp, #52	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
-	ldr	r6, [r2, #36]	@ <variable>.s32FrmHeight, <variable>.s32FrmHeight
-	ldr	lr, [r2, #40]	@ <variable>.s32FrmWidth, <variable>.s32FrmWidth
+	ldr	r6, [r2, #40]	@ <variable>.s32FrmHeight, <variable>.s32FrmHeight
+	ldr	lr, [r2, #44]	@ <variable>.s32FrmWidth, <variable>.s32FrmWidth
 	sub	r9, fp, #56	@ tmp196,,
 	add	r8, r1, #12	@ pstFmdCtx, pstFmdSoftInfo,
 	add	ip, r9, #4	@ tmp197, tmp196,
 	mov	r4, r1	@ pstFmdSoftInfo, pstFmdSoftInfo
 	mov	r5, r2	@ pstDeiDrvPara, pstDeiDrvPara
-	mul	sl, lr, r6	@ tmp153, <variable>.s32FrmWidth, <variable>.s32FrmHeight
+	mul	sl, lr, r6	@ tmp154, <variable>.s32FrmWidth, <variable>.s32FrmHeight
 	mov	r7, r0	@ pstFmdStatInfo, pstFmdStatInfo
 	mov	r2, r8	@, pstFmdCtx
 	add	r0, r0, #148	@, pstFmdStatInfo,
 	mov	r6, r3	@ pstFmdRtlOutPara, pstFmdRtlOutPara
-	mov	r3, #0	@ tmp150,
-	str	r3, [ip], #4	@ tmp150, Pld32Info
-	str	r3, [fp, #-56]	@ tmp150, Pld32Info
-	str	r3, [ip, #0]	@ tmp150, Pld32Info
-	mov	lr, sl, asr #11	@ tmp156, tmp153,
-	str	lr, [r1, #472]!	@ tmp156, <variable>.StillBlkCtrl.STILLBLK_THR
+	mov	r3, #0	@ tmp151,
+	str	r3, [ip], #4	@ tmp151, Pld32Info
+	str	r3, [fp, #-56]	@ tmp151, Pld32Info
+	str	r3, [ip, #0]	@ tmp151, Pld32Info
+	mov	lr, sl, asr #11	@ tmp157, tmp154,
+	str	lr, [r1, #472]!	@ tmp157, <variable>.StillBlkCtrl.STILLBLK_THR
 	ldr	sl, [r4, #12]	@ Is2ndFld, <variable>.stFmdCtx.Is2ndFld
 	bl	DetectStillBlk	@
-	ldr	r3, [r5, #20]	@ <variable>.FodEnable, <variable>.FodEnable
-	cmp	r3, #0	@ <variable>.FodEnable,
-	beq	.L389	@,
-	ldr	r0, [r4, #448]	@ <variable>.stFmdCtx.stRepeatHist.lst_repeat, <variable>.stFmdCtx.stRepeatHist.lst_repeat
-	cmp	r0, #0	@ <variable>.stFmdCtx.stRepeatHist.lst_repeat,
-	beq	.L406	@,
-.L389:
-	mov	r1, #2	@,
-	str	r1, [fp, #-68]	@, %sfp
-.L390:
-	add	r0, r4, #216	@, pstFmdSoftInfo,
-	mov	r1, r7	@, pstFmdStatInfo
-	bl	DetectSceneChange	@
-	add	r2, sl, r4	@ tmp165, Is2ndFld, pstFmdSoftInfo
-	cmp	sl, #0	@ Is2ndFld,
-	strb	r0, [r2, #212]	@, <variable>.stFmdCtx.SceneChange
-	beq	.L391	@,
-	ldrsb	r3, [r4, #212]	@ <variable>.stFmdCtx.SceneChange, <variable>.stFmdCtx.SceneChange
-	cmp	r3, #0	@ <variable>.stFmdCtx.SceneChange,
-	bne	.L407	@,
-.L391:
-	mov	r1, #0	@,
-	str	r1, [fp, #-64]	@, %sfp
-.L392:
-	ldr	r2, [r5, #24]	@ <variable>.Pld22Enable, <variable>.Pld22Enable
-	cmp	r2, #0	@ <variable>.Pld22Enable,
-	moveq	sl, r2	@ IsProgressive, <variable>.Pld22Enable
-	beq	.L394	@,
-	ldr	r3, [r5, #72]	@ <variable>.stVdecInfo.IsProgressiveFrm, <variable>.stVdecInfo.IsProgressiveFrm
-	cmp	r3, #1	@ <variable>.stVdecInfo.IsProgressiveFrm,
-	beq	.L408	@,
-.L395:
-	ldr	r1, [r5, #36]	@ <variable>.s32FrmHeight, <variable>.s32FrmHeight
-	cmp	r1, #288	@ <variable>.s32FrmHeight,
-	bgt	.L397	@,
-	ldr	r2, [r5, #68]	@ <variable>.stVdecInfo.IsProgressiveSeq, <variable>.stVdecInfo.IsProgressiveSeq
-	cmp	r2, #1	@ <variable>.stVdecInfo.IsProgressiveSeq,
-	beq	.L396	@,
+	ldr	r3, [r5, #20]	@ D.28338, <variable>.FodEnable
+	cmp	r3, #1	@ D.28338,
+	beq	.L415	@,
+	cmp	r3, #0	@ D.28338,
+	bne	.L398	@,
+.L414:
+	str	r3, [fp, #-68]	@, %sfp
 .L397:
-	ldr	r3, [r4, #448]	@ <variable>.stFmdCtx.stRepeatHist.lst_repeat, <variable>.stFmdCtx.stRepeatHist.lst_repeat
-	cmp	r3, #0	@ <variable>.stFmdCtx.stRepeatHist.lst_repeat,
+	mov	r1, r7	@, pstFmdStatInfo
+	add	r0, r4, #216	@, pstFmdSoftInfo,
+	bl	DetectSceneChange	@
+	add	r1, sl, r4	@ tmp165, Is2ndFld, pstFmdSoftInfo
+	cmp	sl, #0	@ Is2ndFld,
+	strb	r0, [r1, #212]	@, <variable>.stFmdCtx.SceneChange
+	beq	.L399	@,
+	ldrsb	r2, [r4, #212]	@ <variable>.stFmdCtx.SceneChange, <variable>.stFmdCtx.SceneChange
+	cmp	r2, #0	@ <variable>.stFmdCtx.SceneChange,
+	bne	.L416	@,
+.L399:
+	mov	lr, #0	@,
+	str	lr, [fp, #-64]	@, %sfp
+.L400:
+	ldr	r1, [r5, #24]	@ <variable>.Pld22Enable, <variable>.Pld22Enable
+	cmp	r1, #0	@ <variable>.Pld22Enable,
+	moveq	sl, r1	@ IsProgressive, <variable>.Pld22Enable
+	beq	.L402	@,
+	ldr	r2, [r5, #76]	@ <variable>.stVdecInfo.IsProgressiveFrm, <variable>.stVdecInfo.IsProgressiveFrm
+	cmp	r2, #1	@ <variable>.stVdecInfo.IsProgressiveFrm,
+	beq	.L417	@,
+.L403:
+	ldr	r3, [r5, #40]	@ <variable>.s32FrmHeight, <variable>.s32FrmHeight
+	cmp	r3, #288	@ <variable>.s32FrmHeight,
+	bgt	.L405	@,
+	ldr	r1, [r5, #72]	@ <variable>.stVdecInfo.IsProgressiveSeq, <variable>.stVdecInfo.IsProgressiveSeq
+	cmp	r1, #1	@ <variable>.stVdecInfo.IsProgressiveSeq,
+	beq	.L404	@,
+.L405:
+	ldr	r2, [r4, #448]	@ <variable>.stFmdCtx.stRepeatHist.lst_repeat, <variable>.stFmdCtx.stRepeatHist.lst_repeat
+	cmp	r2, #0	@ <variable>.stFmdCtx.stRepeatHist.lst_repeat,
 	ldrne	sl, [r4, #248]	@ IsProgressive, <variable>.stFmdCtx.Pld22LockState
-	beq	.L409	@,
-.L394:
+	beq	.L418	@,
+.L402:
 	ldr	lr, [r5, #28]	@ <variable>.Pld32Enable, <variable>.Pld32Enable
 	cmp	lr, #0	@ <variable>.Pld32Enable,
 	streq	lr, [fp, #-56]	@ <variable>.Pld32Enable, Pld32Info.Pd32Det
 	moveq	r0, lr	@ Is32Pld, <variable>.Pld32Enable
-	bne	.L410	@,
-.L400:
+	bne	.L419	@,
+.L408:
 	mov	r2, r8	@, pstFmdCtx
 	mov	r1, sl	@, IsProgressive
 	bl	GetPlaybackState	@
@@ -3153,56 +3287,67 @@ Optm_Alg_GetPlayBackConfig:
 	moveq	r2, #1	@ s32FilmType,
 	ldr	r3, [fp, #-64]	@, %sfp
 	str	r3, [r6, #16]	@, <variable>.SceneChange
-	beq	.L402	@,
+	beq	.L410	@,
 	cmp	r7, #1	@ PbState,
-	mvnne	r3, #0	@ s32FilmType.1399,
-	beq	.L411	@,
-.L404:
-	str	r3, [r6, #24]	@ s32FilmType.1399, <variable>.s32FilmType
+	mvnne	r3, #0	@ s32FilmType.1628,
+	beq	.L420	@,
+.L412:
+	str	r3, [r6, #24]	@ s32FilmType.1628, <variable>.s32FilmType
 	sub	sp, fp, #40
 	ldmfd	sp, {r4, r5, r6, r7, r8, r9, sl, fp, sp, pc}
-.L407:
-	ldrsb	lr, [r4, #213]	@ <variable>.stFmdCtx.SceneChange, <variable>.stFmdCtx.SceneChange
-	subs	ip, lr, #0	@, <variable>.stFmdCtx.SceneChange,
-	movne	ip, #1	@
-	str	ip, [fp, #-64]	@, %sfp
-	b	.L392	@
-.L410:
+.L398:
+	cmp	r3, #2	@ D.28338,
+	moveq	r3, #1	@,
+	streq	r3, [fp, #-68]	@, %sfp
+	beq	.L397	@,
+.L396:
+	mov	r3, #2	@,
+	b	.L414	@
+.L416:
+	ldrsb	ip, [r4, #213]	@ <variable>.stFmdCtx.SceneChange, <variable>.stFmdCtx.SceneChange
+	subs	r3, ip, #0	@, <variable>.stFmdCtx.SceneChange,
+	movne	r3, #1	@
+	str	r3, [fp, #-64]	@, %sfp
+	b	.L400	@
+.L419:
 	ldr	r3, [r4, #28]	@ <variable>.stFmdCtx.s32PbDelay, <variable>.stFmdCtx.s32PbDelay
 	mov	r0, r7	@, pstFmdStatInfo
 	mov	r1, r9	@, tmp196
 	ldr	r2, [fp, #-64]	@, %sfp
 	str	r8, [sp, #0]	@ pstFmdCtx,
 	bl	Detect32Pld	@
-	b	.L400	@
-.L411:
+	b	.L408	@
+.L420:
 	mov	r2, #0	@ s32FilmType,
-.L402:
-	movw	r3, #:lower16:.LANCHOR0	@ tmp191,
-	movt	r3, #:upper16:.LANCHOR0	@ tmp191,
-	add	r1, r3, r2, asl #2	@, tmp194, tmp191, s32FilmType,
-	ldr	r3, [r1, #140]	@ s32FilmType.1399, g_u32PDTypeNum
-	b	.L404	@
-.L406:
+.L410:
+	movw	r1, #:lower16:.LANCHOR0	@ tmp191,
+	movt	r1, #:upper16:.LANCHOR0	@ tmp191,
+	add	r3, r1, r2, asl #2	@, tmp194, tmp191, s32FilmType,
+	ldr	r3, [r3, #140]	@ s32FilmType.1628, g_u32PDTypeNum
+	b	.L412	@
+.L415:
+	ldr	r0, [r4, #448]	@ <variable>.stFmdCtx.stRepeatHist.lst_repeat, <variable>.stFmdCtx.stRepeatHist.lst_repeat
+	cmp	r0, #0	@ <variable>.stFmdCtx.stRepeatHist.lst_repeat,
+	bne	.L396	@,
 	add	r0, r7, #136	@, pstFmdStatInfo,
 	mov	r1, r5	@, pstDeiDrvPara
 	mov	r2, r8	@, pstFmdCtx
 	ldr	r3, [r7, #148]	@, <variable>.StillBlkInfo.StillBlkCnt
 	bl	DetectFieldOrder	@
 	str	r0, [fp, #-68]	@, %sfp
-	b	.L390	@
-.L408:
-	ldr	r3, [r5, #76]	@ D.14829, <variable>.stVdecInfo.RealFrmRate
+	b	.L397	@
+.L417:
+	ldr	r3, [r5, #80]	@ D.28374, <variable>.stVdecInfo.RealFrmRate
 	movw	ip, #2379	@ tmp174,
-	cmp	r3, ip	@ D.14829, tmp174
-	ble	.L395	@,
+	cmp	r3, ip	@ D.28374, tmp174
+	ble	.L403	@,
 	movw	lr, #2419	@ tmp175,
-	cmp	r3, lr	@ D.14829, tmp175
-	bgt	.L395	@,
-.L396:
+	cmp	r3, lr	@ D.28374, tmp175
+	bgt	.L403	@,
+.L404:
 	mov	sl, #1	@ IsProgressive,
-	b	.L394	@
-.L409:
+	b	.L402	@
+.L418:
 	ldr	ip, [r5, #8]	@ <variable>.s32DeiMdLum, <variable>.s32DeiMdLum
 	mov	r0, sl	@, Is2ndFld
 	mov	r1, r7	@, pstFmdStatInfo
@@ -3211,7 +3356,7 @@ Optm_Alg_GetPlayBackConfig:
 	str	ip, [sp, #0]	@ <variable>.s32DeiMdLum,
 	bl	Detect22Pld	@
 	mov	sl, r0	@ IsProgressive,
-	b	.L394	@
+	b	.L402	@
 	.fnend
 	.size	Optm_Alg_GetPlayBackConfig, .-Optm_Alg_GetPlayBackConfig
 	.align	2
@@ -3219,7 +3364,7 @@ Optm_Alg_GetPlayBackConfig:
 	.type	ALG_FmdSet, %function
 ALG_FmdSet:
 	.fnstart
-.LFB598:
+.LFB1265:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -3237,65 +3382,65 @@ ALG_FmdSet:
 	cmp	r3, #0	@ <variable>.u32InitFlag,
 	mov	r6, r2	@ pstFmdRtlOutPara, pstFmdRtlOutPara
 	ldr	r7, [r1, #8]	@ s32DeiMdLum, <variable>.s32DeiMdLum
-	beq	.L444	@,
+	beq	.L451	@,
 	mov	r0, r2	@, pstFmdRtlOutPara
 	mov	r1, #28	@,
 	bl	__memzero	@
-	ldr	r3, [r5, #64]	@ <variable>.bPreInfo, <variable>.bPreInfo
+	ldr	r3, [r5, #68]	@ <variable>.bPreInfo, <variable>.bPreInfo
 	cmp	r3, #1	@ <variable>.bPreInfo,
-	beq	.L445	@,
+	beq	.L452	@,
 	ldrb	r8, [r4, #7]	@ zero_extendqisi2	@ <variable>.stBtMode.g_lstbtmode, <variable>.stBtMode.g_lstbtmode
 	cmp	r8, #255	@ <variable>.stBtMode.g_lstbtmode,
-	beq	.L416	@,
+	beq	.L425	@,
 	ldrb	ip, [r4, #8]	@ zero_extendqisi2	@ <variable>.stBtMode.g_curbtmode, <variable>.stBtMode.g_curbtmode
 	cmp	ip, #255	@ <variable>.stBtMode.g_curbtmode,
-	beq	.L416	@,
+	beq	.L425	@,
 	ldrb	r2, [r4, #9]	@ zero_extendqisi2	@ <variable>.stBtMode.g_nxtbtmode, <variable>.stBtMode.g_nxtbtmode
 	cmp	r2, #255	@ <variable>.stBtMode.g_nxtbtmode,
-	beq	.L416	@,
+	beq	.L425	@,
 	ldrb	ip, [r4, #4]	@ zero_extendqisi2	@ <variable>.stRefFld.g_lstreffld, <variable>.stRefFld.g_lstreffld
 	cmp	ip, #255	@ <variable>.stRefFld.g_lstreffld,
-	beq	.L418	@,
-.L447:
+	beq	.L427	@,
+.L455:
 	ldrb	r2, [r4, #5]	@ zero_extendqisi2	@ <variable>.stRefFld.g_curreffld, <variable>.stRefFld.g_curreffld
 	cmp	r2, #255	@ <variable>.stRefFld.g_curreffld,
-	beq	.L418	@,
-.L419:
-	ldr	r3, [r5, #44]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
+	beq	.L427	@,
+.L428:
+	ldr	r3, [r5, #48]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
 	cmp	r3, #0	@ <variable>.bOfflineMode,
-	ldrneb	r1, [r4, #9]	@ zero_extendqisi2	@ iftmp.299, <variable>.stBtMode.g_nxtbtmode
-	ldreqb	r1, [r4, #8]	@ zero_extendqisi2	@ iftmp.299, <variable>.stBtMode.g_curbtmode
-	str	r1, [r4, #20]	@ iftmp.299, <variable>.stFmdCtx.BtMode
-	ldr	r2, [r5, #44]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
+	ldrneb	r1, [r4, #9]	@ zero_extendqisi2	@ iftmp.458, <variable>.stBtMode.g_nxtbtmode
+	ldreqb	r1, [r4, #8]	@ zero_extendqisi2	@ iftmp.458, <variable>.stBtMode.g_curbtmode
+	str	r1, [r4, #20]	@ iftmp.458, <variable>.stFmdCtx.BtMode
+	ldr	r2, [r5, #48]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
 	cmp	r2, #0	@ <variable>.bOfflineMode,
-	ldrneb	r0, [r4, #6]	@ zero_extendqisi2	@ iftmp.300, <variable>.stRefFld.g_nxtreffld
-	ldreqb	r0, [r4, #5]	@ zero_extendqisi2	@ iftmp.300, <variable>.stRefFld.g_curreffld
-	str	r0, [r4, #24]	@ iftmp.300, <variable>.stFmdCtx.RefFld
-	ldr	ip, [r5, #44]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
+	ldrneb	r0, [r4, #6]	@ zero_extendqisi2	@ iftmp.459, <variable>.stRefFld.g_nxtreffld
+	ldreqb	r0, [r4, #5]	@ zero_extendqisi2	@ iftmp.459, <variable>.stRefFld.g_curreffld
+	str	r0, [r4, #24]	@ iftmp.459, <variable>.stFmdCtx.RefFld
+	ldr	ip, [r5, #48]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
 	cmp	ip, #0	@ <variable>.bOfflineMode,
-	movne	ip, #1	@ iftmp.301,
-	moveq	ip, #2	@ iftmp.301,
-	str	ip, [r4, #28]	@ iftmp.301, <variable>.stFmdCtx.s32PbDelay
-	ldr	r3, [r5, #44]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
+	movne	ip, #1	@ iftmp.460,
+	moveq	ip, #2	@ iftmp.460,
+	str	ip, [r4, #28]	@ iftmp.460, <variable>.stFmdCtx.s32PbDelay
+	ldr	r3, [r5, #48]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
 	cmp	r3, #0	@ <variable>.bOfflineMode,
-	ldrne	r2, [r5, #60]	@ nxt_ref_fld, <variable>.RefFld
-	ldrne	r3, [r5, #56]	@ nxt_btmode, <variable>.BtMode
+	ldrne	r2, [r5, #64]	@ nxt_ref_fld, <variable>.RefFld
+	ldrne	r3, [r5, #60]	@ nxt_btmode, <variable>.BtMode
 	ldreqb	r2, [r4, #6]	@ zero_extendqisi2	@ nxt_ref_fld, <variable>.stRefFld.g_nxtreffld
 	ldreqb	r3, [r4, #9]	@ zero_extendqisi2	@ nxt_btmode, <variable>.stBtMode.g_nxtbtmode
-	cmp	r1, #0	@ iftmp.299,
-	bne	.L434	@,
-	subs	r0, r0, #0	@ Is2ndFld, iftmp.300,
+	cmp	r1, #0	@ iftmp.458,
+	bne	.L443	@,
+	subs	r0, r0, #0	@ Is2ndFld, iftmp.459,
 	movne	r0, #1	@ Is2ndFld
-.L435:
-	orrs	r1, r2, r3	@ tmp199, nxt_ref_fld, nxt_btmode
-	moveq	r3, r1	@ NxtIs2ndFld, tmp199
-	beq	.L438	@,
+.L444:
+	orrs	r1, r2, r3	@ tmp198, nxt_ref_fld, nxt_btmode
+	moveq	r3, r1	@ NxtIs2ndFld, tmp198
+	beq	.L447	@,
 	cmp	r2, #1	@ nxt_ref_fld,
 	cmpeq	r3, #1	@, nxt_btmode,
-	movne	lr, #0	@, tmp204
-	moveq	lr, #1	@, tmp204
-	eor	r3, lr, #1	@ NxtIs2ndFld, tmp204,
-.L438:
+	movne	lr, #0	@, tmp203
+	moveq	lr, #1	@, tmp203
+	eor	r3, lr, #1	@ NxtIs2ndFld, tmp203,
+.L447:
 	ldr	r1, [r4, #452]	@ <variable>.stFmdCtx.stRepeatHist.cur_repeat, <variable>.stFmdCtx.stRepeatHist.cur_repeat
 	cmp	r7, #1	@ s32DeiMdLum,
 	ldr	r2, [r4, #456]	@ <variable>.stFmdCtx.stRepeatHist.nxt_repeat, <variable>.stFmdCtx.stRepeatHist.nxt_repeat
@@ -3304,130 +3449,129 @@ ALG_FmdSet:
 	str	r1, [r4, #448]	@ <variable>.stFmdCtx.stRepeatHist.cur_repeat, <variable>.stFmdCtx.stRepeatHist.lst_repeat
 	str	r2, [r4, #452]	@ <variable>.stFmdCtx.stRepeatHist.nxt_repeat, <variable>.stFmdCtx.stRepeatHist.cur_repeat
 	ldr	ip, [r4, #464]	@ <variable>.stFmdCtx.stDropHist.cur_drop, <variable>.stFmdCtx.stDropHist.cur_drop
-	ldr	r8, [r5, #48]	@ <variable>.s32Repeat, <variable>.s32Repeat
+	ldr	r8, [r5, #52]	@ <variable>.s32Repeat, <variable>.s32Repeat
 	ldr	r0, [r4, #468]	@ <variable>.stFmdCtx.stDropHist.nxt_drop, <variable>.stFmdCtx.stDropHist.nxt_drop
 	str	ip, [r4, #460]	@ <variable>.stFmdCtx.stDropHist.cur_drop, <variable>.stFmdCtx.stDropHist.lst_drop
 	str	r8, [r4, #456]	@ <variable>.s32Repeat, <variable>.stFmdCtx.stRepeatHist.nxt_repeat
 	str	r0, [r4, #464]	@ <variable>.stFmdCtx.stDropHist.nxt_drop, <variable>.stFmdCtx.stDropHist.cur_drop
-	ldr	r7, [r5, #52]	@ <variable>.s32Drop, <variable>.s32Drop
+	ldr	r7, [r5, #56]	@ <variable>.s32Drop, <variable>.s32Drop
 	str	r7, [r4, #468]	@ <variable>.s32Drop, <variable>.stFmdCtx.stDropHist.nxt_drop
-	bls	.L446	@,
-.L439:
-	ldrb	lr, [r4, #8]	@ zero_extendqisi2	@ <variable>.stBtMode.g_curbtmode, <variable>.stBtMode.g_curbtmode
-	ldrb	ip, [r4, #9]	@ zero_extendqisi2	@ <variable>.stBtMode.g_nxtbtmode, <variable>.stBtMode.g_nxtbtmode
-	strb	lr, [r4, #7]	@ <variable>.stBtMode.g_curbtmode, <variable>.stBtMode.g_lstbtmode
-	strb	ip, [r4, #8]	@ <variable>.stBtMode.g_nxtbtmode, <variable>.stBtMode.g_curbtmode
+	bls	.L453	@,
+.L448:
+	ldrb	r7, [r4, #8]	@ zero_extendqisi2	@ <variable>.stBtMode.g_curbtmode, <variable>.stBtMode.g_curbtmode
+	ldrb	lr, [r4, #9]	@ zero_extendqisi2	@ <variable>.stBtMode.g_nxtbtmode, <variable>.stBtMode.g_nxtbtmode
+	strb	r7, [r4, #7]	@ <variable>.stBtMode.g_curbtmode, <variable>.stBtMode.g_lstbtmode
+	strb	lr, [r4, #8]	@ <variable>.stBtMode.g_nxtbtmode, <variable>.stBtMode.g_curbtmode
 	ldr	r3, [r5, #20]	@ <variable>.FodEnable, <variable>.FodEnable
-	cmp	r3, #0	@ <variable>.FodEnable,
-	beq	.L441	@,
-	ldr	r7, [r6, #20]	@ D.15024, <variable>.s32FieldOrder
-	cmp	r7, #2	@ D.15024,
-	uxtbne	ip, r7	@ prephitmp.1418, D.15024
-	strneb	ip, [r4, #9]	@ prephitmp.1418, <variable>.stBtMode.g_nxtbtmode
-.L441:
-	mov	r8, r6	@ pstFmdRtlOutPara, pstFmdRtlOutPara
-	ldmia	r8!, {r0, r1, r2, r3}	@ pstFmdRtlOutPara,,,,
-	str	ip, [r6, #20]	@ prephitmp.1418, <variable>.s32FieldOrder
-	add	ip, r4, #476	@ tmp220, pstFmdSoftInfo,
-	ldrb	r6, [r4, #5]	@ zero_extendqisi2	@ <variable>.stRefFld.g_curreffld, <variable>.stRefFld.g_curreffld
-	ldrb	r7, [r4, #6]	@ zero_extendqisi2	@ <variable>.stRefFld.g_nxtreffld, <variable>.stRefFld.g_nxtreffld
-	stmia	ip!, {r0, r1, r2, r3}	@ tmp220,,,,
-	ldmia	r8, {r0, r1, r2}	@ pstFmdRtlOutPara,,,
-	strb	r6, [r4, #4]	@ <variable>.stRefFld.g_curreffld, <variable>.stRefFld.g_lstreffld
-	strb	r7, [r4, #5]	@ <variable>.stRefFld.g_nxtreffld, <variable>.stRefFld.g_curreffld
-	stmia	ip, {r0, r1, r2}	@ tmp221,,,
-	ldr	r0, [r5, #60]	@ <variable>.RefFld, <variable>.RefFld
-	strb	r0, [r4, #6]	@ <variable>.RefFld, <variable>.stRefFld.g_nxtreffld
-.L414:
+	cmp	r3, #1	@ <variable>.FodEnable,
+	beq	.L454	@,
+.L449:
+	ldmia	r6!, {r0, r1, r2, r3}	@ pstFmdRtlOutPara,,,,
+	add	lr, r4, #476	@ tmp219, pstFmdSoftInfo,
+	ldrb	r7, [r4, #5]	@ zero_extendqisi2	@ <variable>.stRefFld.g_curreffld, <variable>.stRefFld.g_curreffld
+	ldrb	r8, [r4, #6]	@ zero_extendqisi2	@ <variable>.stRefFld.g_nxtreffld, <variable>.stRefFld.g_nxtreffld
+	stmia	lr!, {r0, r1, r2, r3}	@ tmp219,,,,
+	ldmia	r6, {r0, r1, r2}	@ pstFmdRtlOutPara,,,
+	strb	r7, [r4, #4]	@ <variable>.stRefFld.g_curreffld, <variable>.stRefFld.g_lstreffld
+	strb	r8, [r4, #5]	@ <variable>.stRefFld.g_nxtreffld, <variable>.stRefFld.g_curreffld
+	stmia	lr, {r0, r1, r2}	@ tmp220,,,
+	ldr	ip, [r5, #64]	@ <variable>.RefFld, <variable>.RefFld
+	strb	ip, [r4, #6]	@ <variable>.RefFld, <variable>.stRefFld.g_nxtreffld
+.L423:
 	mov	r0, #0	@,
 	ldmfd	sp, {r3, r4, r5, r6, r7, r8, fp, sp, pc}	@
-.L416:
-	ldr	r8, [r5, #56]	@ <variable>.BtMode, <variable>.BtMode
+.L425:
+	ldr	r8, [r5, #60]	@ <variable>.BtMode, <variable>.BtMode
 	ldrb	ip, [r4, #4]	@ zero_extendqisi2	@ <variable>.stRefFld.g_lstreffld, <variable>.stRefFld.g_lstreffld
 	strb	r8, [r4, #7]	@ <variable>.BtMode, <variable>.stBtMode.g_lstbtmode
 	cmp	ip, #255	@ <variable>.stRefFld.g_lstreffld,
-	ldr	lr, [r5, #56]	@ <variable>.BtMode, <variable>.BtMode
+	ldr	lr, [r5, #60]	@ <variable>.BtMode, <variable>.BtMode
 	strb	lr, [r4, #8]	@ <variable>.BtMode, <variable>.stBtMode.g_curbtmode
-	ldr	r3, [r5, #56]	@ <variable>.BtMode, <variable>.BtMode
+	ldr	r3, [r5, #60]	@ <variable>.BtMode, <variable>.BtMode
 	strb	r3, [r4, #9]	@ <variable>.BtMode, <variable>.stBtMode.g_nxtbtmode
-	bne	.L447	@,
-.L418:
-	ldr	r3, [r5, #44]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
+	bne	.L455	@,
+.L427:
+	ldr	r3, [r5, #48]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
 	cmp	r3, #0	@ <variable>.bOfflineMode,
-	ldreqb	r3, [r5, #56]	@ zero_extendqisi2	@ iftmp.296, <variable>.BtMode
-	beq	.L421	@,
-	ldr	r3, [r5, #56]	@ <variable>.BtMode, <variable>.BtMode
-	rsbs	r3, r3, #1	@ iftmp.296, <variable>.BtMode
-	movcc	r3, #0	@ iftmp.296
-.L421:
-	strb	r3, [r4, #4]	@ iftmp.296, <variable>.stRefFld.g_lstreffld
-	ldr	r3, [r5, #44]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
+	ldreqb	r3, [r5, #60]	@ zero_extendqisi2	@ iftmp.455, <variable>.BtMode
+	beq	.L430	@,
+	ldr	r3, [r5, #60]	@ <variable>.BtMode, <variable>.BtMode
+	rsbs	r3, r3, #1	@ iftmp.455, <variable>.BtMode
+	movcc	r3, #0	@ iftmp.455
+.L430:
+	strb	r3, [r4, #4]	@ iftmp.455, <variable>.stRefFld.g_lstreffld
+	ldr	r3, [r5, #48]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
 	cmp	r3, #0	@ <variable>.bOfflineMode,
-	ldrneb	r3, [r5, #56]	@ zero_extendqisi2	@ iftmp.297, <variable>.BtMode
-	bne	.L423	@,
-	ldr	lr, [r5, #56]	@ <variable>.BtMode, <variable>.BtMode
-	rsbs	r3, lr, #1	@ iftmp.297, <variable>.BtMode
-	movcc	r3, #0	@ iftmp.297
-.L423:
-	strb	r3, [r4, #5]	@ iftmp.297, <variable>.stRefFld.g_curreffld
-	ldr	r3, [r5, #44]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
+	ldrneb	r3, [r5, #60]	@ zero_extendqisi2	@ iftmp.456, <variable>.BtMode
+	bne	.L432	@,
+	ldr	lr, [r5, #60]	@ <variable>.BtMode, <variable>.BtMode
+	rsbs	r3, lr, #1	@ iftmp.456, <variable>.BtMode
+	movcc	r3, #0	@ iftmp.456
+.L432:
+	strb	r3, [r4, #5]	@ iftmp.456, <variable>.stRefFld.g_curreffld
+	ldr	r3, [r5, #48]	@ <variable>.bOfflineMode, <variable>.bOfflineMode
 	cmp	r3, #0	@ <variable>.bOfflineMode,
-	ldreqb	r3, [r5, #56]	@ zero_extendqisi2	@ iftmp.298, <variable>.BtMode
-	beq	.L425	@,
-	ldr	r8, [r5, #56]	@ <variable>.BtMode, <variable>.BtMode
-	rsbs	r3, r8, #1	@ iftmp.298, <variable>.BtMode
-	movcc	r3, #0	@ iftmp.298
-.L425:
-	strb	r3, [r4, #6]	@ iftmp.298, <variable>.stRefFld.g_nxtreffld
-	b	.L419	@
-.L444:
+	ldreqb	r3, [r5, #60]	@ zero_extendqisi2	@ iftmp.457, <variable>.BtMode
+	beq	.L434	@,
+	ldr	r8, [r5, #60]	@ <variable>.BtMode, <variable>.BtMode
+	rsbs	r3, r8, #1	@ iftmp.457, <variable>.BtMode
+	movcc	r3, #0	@ iftmp.457
+.L434:
+	strb	r3, [r4, #6]	@ iftmp.457, <variable>.stRefFld.g_nxtreffld
+	b	.L428	@
+.L451:
 	str	r3, [r2, #12]	@ <variable>.u32InitFlag, <variable>.EdgeSmoothEn
-	mov	ip, r0	@ tmp158, pstFmdSoftInfo
+	mov	ip, r0	@ tmp157, pstFmdSoftInfo
 	str	r3, [r2, #0]	@ <variable>.u32InitFlag, <variable>.DirMch
 	str	r3, [r2, #8]	@ <variable>.u32InitFlag, <variable>.DieOutSelChr
 	str	r3, [r2, #4]	@ <variable>.u32InitFlag, <variable>.DieOutSelLum
-	ldr	r2, [r1, #56]	@ <variable>.BtMode, <variable>.BtMode
+	ldr	r2, [r1, #60]	@ <variable>.BtMode, <variable>.BtMode
 	str	r2, [r6, #20]	@ <variable>.BtMode, <variable>.s32FieldOrder
 	ldr	r1, [r0, #0]	@ <variable>.u32InitFlag, <variable>.u32InitFlag
-	add	r0, r1, #1	@ tmp157, <variable>.u32InitFlag,
-	str	r0, [ip], #476	@ tmp157, <variable>.u32InitFlag
+	add	r0, r1, #1	@ tmp156, <variable>.u32InitFlag,
+	str	r0, [ip], #476	@ tmp156, <variable>.u32InitFlag
 	ldmia	r6!, {r0, r1, r2, r3}	@ pstFmdRtlOutPara,,,,
-	stmia	ip!, {r0, r1, r2, r3}	@ tmp158,,,,
+	stmia	ip!, {r0, r1, r2, r3}	@ tmp157,,,,
 	ldmia	r6, {r0, r1, r2}	@ pstFmdRtlOutPara,,,
-	stmia	ip, {r0, r1, r2}	@ tmp159,,,
+	stmia	ip, {r0, r1, r2}	@ tmp158,,,
 	mov	r0, #0	@,
 	ldmfd	sp, {r3, r4, r5, r6, r7, r8, fp, sp, pc}	@
-.L434:
-	cmp	r1, #1	@ iftmp.299,
+.L443:
+	cmp	r1, #1	@ iftmp.458,
 	movne	r0, #1	@ Is2ndFld,
-	bne	.L435	@,
-	subs	r0, r0, #1	@ Is2ndFld, iftmp.300,
+	bne	.L444	@,
+	subs	r0, r0, #1	@ Is2ndFld, iftmp.459,
 	movne	r0, #1	@ Is2ndFld
-	b	.L435	@
-.L446:
-	add	r0, r5, #80	@, pstDeiDrvPara,
+	b	.L444	@
+.L454:
+	ldr	r0, [r6, #20]	@ D.28628, <variable>.s32FieldOrder
+	cmp	r0, #2	@ D.28628,
+	strneb	r0, [r4, #9]	@ D.28628, <variable>.stBtMode.g_nxtbtmode
+	b	.L449	@
+.L453:
+	add	r0, r5, #84	@, pstDeiDrvPara,
 	mov	r1, r4	@, pstFmdSoftInfo
 	mov	r2, r5	@, pstDeiDrvPara
 	mov	r3, r6	@, pstFmdRtlOutPara
 	bl	Optm_Alg_GetPlayBackConfig	@
-	b	.L439	@
-.L445:
-	add	r4, r4, #476	@ tmp162, pstFmdSoftInfo,
-	ldmia	r4!, {r0, r1, r2, r3}	@ tmp164,,,,
+	b	.L448	@
+.L452:
+	add	r4, r4, #476	@ tmp161, pstFmdSoftInfo,
+	ldmia	r4!, {r0, r1, r2, r3}	@ tmp163,,,,
 	stmia	r6!, {r0, r1, r2, r3}	@ pstFmdRtlOutPara,,,,
 	mov	lr, r6	@ pstFmdRtlOutPara, pstFmdRtlOutPara
-	ldmia	r4, {r0, r1, r2}	@ tmp164,,,
+	ldmia	r4, {r0, r1, r2}	@ tmp163,,,
 	stmia	r6, {r0, r1, r2}	@ pstFmdRtlOutPara,,,
-	b	.L414	@
+	b	.L423	@
 	.fnend
 	.size	ALG_FmdSet, .-ALG_FmdSet
 	.global	g_u32PDTypeNum
 	.section	.rodata
 	.align	2
 .LANCHOR0 = . + 0
-	.type	C.254.13862, %object
-	.size	C.254.13862, 100
-C.254.13862:
+	.type	C.413.27401, %object
+	.size	C.413.27401, 100
+C.413.27401:
 	.word	1
 	.word	1
 	.word	1
@@ -3453,9 +3597,9 @@ C.254.13862:
 	.word	1
 	.word	1
 	.word	1
-	.type	C.272.14028, %object
-	.size	C.272.14028, 40
-C.272.14028:
+	.type	C.431.27567, %object
+	.size	C.431.27567, 40
+C.431.27567:
 	.word	0
 	.word	1
 	.word	0
@@ -3471,5 +3615,12 @@ C.272.14028:
 g_u32PDTypeNum:
 	.word	32
 	.word	22
+	.bss
+	.align	2
+.LANCHOR1 = . + 0
+	.type	g_stFmdPara, %object
+	.size	g_stFmdPara, 164
+g_stFmdPara:
+	.space	164
 	.ident	"GCC: (Hisilicon_v200(gcc4.4-290+glibc-2.11+eabi+nptl)) 4.4.1"
 	.section	.note.GNU-stack,"",%progbits

@@ -31,7 +31,7 @@
 
 #include "hi_type.h"
 #include "hi_module.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
 
 //#include "hi_common_id.h"
 //#include "common_mem_drv.h"
@@ -75,7 +75,7 @@
 #include <linux/semaphore.h>
 //#include "hi_mmz.h"
 //#include "drv_mmz.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
 /*======================================================================*/
 /*                            常数定义                                  */
 /*======================================================================*/
@@ -170,7 +170,7 @@ typedef struct{
 	wait_queue_head_t   queue_head;
 	int                 flag;
 }KLIB_SEM;
-
+typedef struct semaphore OSAL_SEMA;
 /*======================================================================*/
 /*                           操作抽象                                   */
 /*======================================================================*/
@@ -275,6 +275,11 @@ SINT32 OSAL_SpinLock( OSAL_IRQ_SPIN_LOCK *pIntrMutex );
 SINT32 OSAL_SpinUnLock( OSAL_IRQ_SPIN_LOCK *pIntrMutex );
 
 /************************************************************************/
+/* 锁初始化                                                             */
+/************************************************************************/
+VOID OSAL_SpinLockIRQInit( OSAL_IRQ_SPIN_LOCK *pIntrMutex );
+
+/************************************************************************/
 /* 中断互斥加锁(关中断且加锁)                                           */
 /************************************************************************/
 SINT32 OSAL_SpinLockIRQ( OSAL_IRQ_SPIN_LOCK *pIntrMutex );
@@ -353,7 +358,9 @@ UINT8 *KernelMmap(UINT32 phyaddr, UINT32 len);
 UINT8 *KernelMmapCache(UINT32 phyaddr, UINT32 len);
 VOID KernelMunmap(UINT8 *p );
 VOID KernelFlushCache(VOID *ptr, UINT32 phy_addr, UINT32 len);
-
+SINT32 OSAL_DOWN_INTERRUPTIBLE(VOID);
+VOID OSAL_UP(VOID);
+VOID OSAL_SEMA_INTIT(VOID);
 #endif
 
 

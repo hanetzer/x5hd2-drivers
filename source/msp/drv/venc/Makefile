@@ -26,6 +26,18 @@ ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200)
 EXTRA_CFLAGS += -D__VENC_3716CV200_CONFIG__
 endif
 
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719cv100)
+EXTRA_CFLAGS += -D__VENC_3716CV200_CONFIG__ 
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3718cv100)
+EXTRA_CFLAGS += -D__VENC_3716CV200_CONFIG__ 
+endif
+
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719mv100_a)
+EXTRA_CFLAGS += -D__VENC_3716CV200_CONFIG__ 
+endif
+
 
 EXTRA_CFLAGS += -I$(COMMON_UNF_INCLUDE)                 \
                 -I$(COMMON_API_INCLUDE)                 \
@@ -47,8 +59,11 @@ $(MOD_NAME)-y   :=  drv_venc_osal.o      \
                     drv_venc_intf.o      \
                     drv_venc.o           \
                     drv_venc_efl.o       \
+                    drv_omxvenc.o        \
+                    drv_omxvenc_efl.o    \
                     drv_venc_buf_mng.o   \
-                    drv_venc_intf.o      \
+                    drv_venc_queue_mng.o \
+                    drv_venc_proc.o      \
                     hal_venc.o      
 
 #===============================================================================

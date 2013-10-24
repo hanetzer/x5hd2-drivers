@@ -3,6 +3,7 @@
 
 #include "hi_type.h"
 #include "hi_debug.h"
+#include "hi_unf_ir.h"
 
 #define HI_FATAL_IR(fmt ...) \
     HI_FATAL_PRINT(HI_ID_IR, fmt)
@@ -68,7 +69,10 @@
     || defined (CHIP_TYPE_hi3712)
  #define  IR_IRQ_NO (55 + 32)
  #define IR_IO_BASE (0x101e1000)
-#elif defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
+#elif defined (CHIP_TYPE_hi3716cv200) || defined (CHIP_TYPE_hi3716cv200es)\
+             || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+             || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+             || defined (CHIP_TYPE_hi3718mv100)
  #define IR_IRQ_NO (47 + 32)
  #define IR_IO_BASE (0xf8001000)
 #else
@@ -169,6 +173,15 @@ struct key_attr
     enum KEY_STATUS key_stat;
 };
 
+/* for ir_std */
+typedef struct
+{
+    HI_U32               IrKeyDataH;
+    HI_U32               IrKeyDataL;
+    HI_UNF_IR_PROTOCOL_E IrProtocol;
+    HI_UNF_KEY_STATUS_E  IrKeyState;
+}IR_KEY_S;
+
 #ifdef __KERNEL__
 
 struct ir_buffer
@@ -231,6 +244,13 @@ struct ir_priv
 
     /* repeat key receive interval. */
     int key_repeat_interval;
+
+    /* count of tring to get key */
+    u32 key_debug_trycount;
+
+    /* count of succeed to get key */
+    u32 key_debug_succeedcount;
+        
 };
 #endif
 

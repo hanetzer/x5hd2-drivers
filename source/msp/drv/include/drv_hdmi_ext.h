@@ -9,6 +9,10 @@ extern "C"{
 #endif
 #endif /* __cplusplus */
 
+HI_S32 HDMI_DRV_ModInit(HI_VOID);
+HI_VOID HDMI_DRV_ModExit(HI_VOID);
+
+
 typedef HI_S32  (*FN_HDMI_Init)(HI_VOID);
 typedef HI_VOID (*FN_HDMI_Deinit)(HI_VOID);
 typedef HI_S32  (*FN_HDMI_Open)(HI_UNF_HDMI_ID_E enHdmi);
@@ -21,8 +25,8 @@ typedef HI_S32  (*FN_HDMI_GetAudioCapability)(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDI
 typedef HI_S32  (*FN_HDMI_AudioChange)(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
 
 typedef HI_S32  (*FN_HDMI_PreFormat)(HI_UNF_HDMI_ID_E enHdmi, HI_DRV_DISP_FMT_E enEncodingFormat);
-typedef HI_S32  (*FN_HDMI_SetFormat)(HI_UNF_HDMI_ID_E enHdmi, HI_DRV_DISP_FMT_E enEncodingFormat);
-typedef HI_S32  (*FN_HDMI_Set3DMode)(HI_UNF_HDMI_ID_E enHdmi, HI_BOOL b3DEnable,HI_U8 u83Dmode);
+typedef HI_S32  (*FN_HDMI_SetFormat)(HI_UNF_HDMI_ID_E enHdmi, HI_DRV_DISP_FMT_E enFmt, HI_DRV_DISP_STEREO_E enStereo);
+//typedef HI_S32  (*FN_HDMI_Set3DMode)(HI_UNF_HDMI_ID_E enHdmi, HI_BOOL b3DEnable,HI_U8 u83Dmode);
 
 
 typedef struct
@@ -38,32 +42,10 @@ typedef struct
     FN_HDMI_AudioChange         pfnHdmiAudioChange;
     FN_HDMI_PreFormat           pfnHdmiPreFormat;
     FN_HDMI_SetFormat           pfnHdmiSetFormat;
-    FN_HDMI_Set3DMode           pfnHdmiSet3DMode;
+//  FN_HDMI_Set3DMode           pfnHdmiSet3DMode;
 }HDMI_EXPORT_FUNC_S;
 
 
-
-HI_S32 HDMI_DRV_ModInit(HI_VOID);
-HI_VOID HDMI_DRV_ModExit(HI_VOID);
-
-
-#if 1 /*-- 后续要去掉 --*/
-HI_S32  HI_DRV_HDMI_Init(HI_VOID);
-HI_VOID  HI_DRV_HDMI_Deinit(HI_VOID);
-HI_S32 HI_DRV_HDMI_Open(HI_UNF_HDMI_ID_E enHdmi);
-HI_S32 HI_DRV_HDMI_Close(HI_UNF_HDMI_ID_E enHdmi);
-
-HI_S32 HI_DRV_HDMI_PlayStus(HI_UNF_HDMI_ID_E enHdmi, HI_U32 *pu32Stutus);
-HI_S32 HI_DRV_AO_HDMI_GetAttr(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
-HI_S32 HI_DRV_HDMI_GetSinkCapability(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_SINK_CAPABILITY_S *pstSinkCap);
-HI_S32 HI_DRV_HDMI_GetAudioCapability(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_CAPABILITY_S *pstAudCap);
-HI_S32 HI_DRV_HDMI_AudioChange(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
-
-HI_S32 HI_DRV_HDMI_PreFormat(HI_UNF_HDMI_ID_E enHdmi, HI_DRV_DISP_FMT_E enEncodingFormat);
-HI_S32 HI_DRV_HDMI_SetFormat(HI_UNF_HDMI_ID_E enHdmi, HI_DRV_DISP_FMT_E enEncodingFormat);
-HI_S32 HI_DRV_HDMI_Set3DMode(HI_UNF_HDMI_ID_E enHdmi, HI_BOOL b3DEnable,HI_U8 u83Dmode);
-
-#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
 
 
 #ifdef __cplusplus

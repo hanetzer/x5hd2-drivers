@@ -30,6 +30,7 @@ Date				Author        		Modification
 
 #include "hi_jpeg_config.h"
 
+#include "hi_common.h"
 
 /***************************** Macro Definition ******************************/
 
@@ -74,7 +75,8 @@ typedef union hiJPG_START_U
     struct
     {
         HI_U32 Start     : 1;
-        HI_U32 Reserve   : 31;
+        HI_U32  Reset    : 1;
+        HI_U32  Reserve   : 30; 
     } struBits;
 
     HI_U32 All;
@@ -107,10 +109,15 @@ typedef union hiJPG_STRIDE_U
 {
     struct
     {
-        HI_U32 Reserve0   : 6;
-        HI_U32 YStride   : 10;
-        HI_U32 Reserve1   : 6;
-        HI_U32 UVStride  : 10;
+#ifdef CHIP_TYPE_hi3716cv200es
+        HI_U32  Reserve0   : 6;  
+        HI_U32  YStride   : 10; 
+        HI_U32  Reserve1   : 6;  
+        HI_U32  UVStride  : 10; 
+#else
+        HI_U32  YStride   : 16; 
+        HI_U32  UVStride  : 16; 
+#endif
     } struBits;
 
     HI_U32 All;
@@ -217,7 +224,8 @@ typedef union hiJPG_SCALE_U
     struct
     {
         HI_U32 Scale   : 2;
-        HI_U32 Reserve0 : 2;
+        HI_U32  jidct_emar_en : 1;
+        HI_U32  ck_gt_en : 1;
         HI_U32 Outstanding : 4;
         HI_U32 Reserve : 24;
     } struBits;
@@ -799,7 +807,7 @@ HI_S32 JPGHDEC_ResetJpgHW(JPGHD_CTX_S*  pstHdCtx)
     extern HI_VOID *s_pRegReset;
 
     JPG_INTMASK_U IntMask;
-    JPG_RESET_U Reset;
+      JPG_RESET_U Reset;
     JPG_STADDR_U BufStAddr;
     JPG_ENDADDR_U BufEndAddr;
 
@@ -915,7 +923,7 @@ HI_S32 JPGHDEC_CreateInstance(JPG_HANDLE *pHandle, HI_U32 u32FileLen)
     //u32BufLen = JPG_ALIGN2MUL(u32FileLen, JPG_ALIGN_LEN);
     u32BufLen = X5_JPGHDEC_BUFLEN;
 
-    PhysAddr = (HI_U32)JPG_MMB_Alloc(u32BufLen, JPG_ALIGN_LEN, (HI_U8*)"Hdec", JPG_UNCACHED, &pVirtAddr);
+    PhysAddr = (HI_U32)JPG_MMB_Alloc(u32BufLen, JPG_ALIGN_LEN, (HI_U8*)"JPEG_HDEC", JPG_UNCACHED, &pVirtAddr);
     if (0 == PhysAddr)
     {
         Ret = HI_ERR_JPG_NO_MEM;
@@ -944,6 +952,14 @@ HI_S32 JPGHDEC_CreateInstance(JPG_HANDLE *pHandle, HI_U32 u32FileLen)
     pHDecCtx->pVirtAddr = pVirtAddr;
     pHDecCtx->PhysAddr = PhysAddr;
     pHDecCtx->bFirstStart = HI_TRUE;
+
+#if defined(CHIP_TYPE_hi3716cv200) || defined(CHIP_TYPE_hi3718cv100) \
+	|| defined(CHIP_TYPE_hi3719cv100) || defined(CHIP_TYPE_hi3719mv100_a)
+	pHDecCtx->pStremPhyBuf	= NULL;
+	pHDecCtx->pStremVirBuf	= NULL;
+	pHDecCtx->u32StremSize	= 0;
+	pHDecCtx->bAllocStrem	= HI_FALSE;
+#endif
 
     pHDecCtx->ResetRegOffset = (HI_U32)pRstRegAddr;
     Dat32 = *(volatile HI_U32 *)((HI_U32)pRegAddr + X5_JPGREG_INT);
@@ -993,6 +1009,19 @@ HI_S32 JPGHDEC_DestroyInstance(JPG_HANDLE Handle)
     //VCOS_free(pHDecCtx);
     //    JPGFMW_MemReset(&s_DecCtrlMem.s_HDecMem, 0);
     JPGFMW_Handle_Free(Handle);
+
+#if defined(CHIP_TYPE_hi3716cv200) || defined(CHIP_TYPE_hi3718cv100) \
+	|| defined(CHIP_TYPE_hi3719cv100) || defined(CHIP_TYPE_hi3719mv100_a)
+	if(HI_TRUE == pHDecCtx->bAllocStrem)
+	{
+		HI_MMZ_Unmap((HI_U32)pHDecCtx->pStremPhyBuf);
+		HI_MMZ_Delete((HI_U32)pHDecCtx->pStremPhyBuf);
+		pHDecCtx->pStremPhyBuf = NULL;
+		pHDecCtx->pStremVirBuf = NULL;
+		pHDecCtx->u32StremSize = 0;
+		pHDecCtx->bAllocStrem  = HI_FALSE;
+	}
+#endif
 
     return HI_SUCCESS;
 }
@@ -1193,11 +1222,21 @@ HI_S32 JPGHDEC_SetDecodeInfo(JPG_HANDLE           Handle,
     BufEndAddr.All = BufStAddr.All + pstHdCtx->HDecBuf.u32BufLen;
     JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_ENDADDR, BufEndAddr.All);
 
+#ifdef CHIP_TYPE_hi3716cv200es
     YStAddr.struBits.YStaddr = DstYPhyAddr >> 6;
+#else
+    YStAddr.All = DstYPhyAddr;
+#endif
     JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_YSTADDR, YStAddr.All);
 
-    Stride.struBits.YStride  = YStride >> 6;
+#ifdef CHIP_TYPE_hi3716cv200es
+    Stride.struBits.YStride = YStride >> 6;
     Stride.struBits.UVStride = UVStride >> 6;
+#else
+    Stride.struBits.YStride = YStride;
+    Stride.struBits.UVStride = UVStride;
+#endif
+
     JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_STRIDE, Stride.All);
 
     PicSize.All = 0;
@@ -1210,11 +1249,19 @@ HI_S32 JPGHDEC_SetDecodeInfo(JPG_HANDLE           Handle,
     PicType.struBits.PicStr = 0;
     JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_PICTYPE, PicType.All);
 
+#ifdef CHIP_TYPE_hi3716cv200es
     UvStAddr.struBits.UVStaddr = DstCbCrPhyAddr >> 6;
+#else
+    UvStAddr.All = DstCbCrPhyAddr;
+#endif
     JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_UVSTADDR, UvStAddr.All);
 
     Scale.struBits.Scale = u32Scale;
-    Scale.struBits.Outstanding = 7;
+    Scale.struBits.Outstanding = 3;
+#if defined(CHIP_TYPE_hi3716cv200) || defined(CHIP_TYPE_hi3718cv100) \
+	|| defined(CHIP_TYPE_hi3719cv100) || defined(CHIP_TYPE_hi3719mv100_a)
+    Scale.struBits.jidct_emar_en = 1;
+#endif
 
 
     JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_SCALE, Scale.All);
@@ -1309,6 +1356,12 @@ HI_S32 JPGHDEC_Start(JPG_HANDLE Handle)
     HI_U32 Len;
     HI_VOID*     pAddrEnd;
 
+#if defined(CHIP_TYPE_hi3716cv200) || defined(CHIP_TYPE_hi3718cv100) \
+	|| defined(CHIP_TYPE_hi3719cv100) || defined(CHIP_TYPE_hi3719mv100_a)
+	HI_U32 u32TmpSize    = 0;
+	HI_U32 u32BufStAddr  = 0;
+	HI_U32 u32BufEndAddr = 0;
+#endif
     pstHdCtx = (JPGHD_CTX_S*)JPGFMW_Handle_GetInstance(Handle);
     JPG_CHECK_HANDLE(pstHdCtx);
 
@@ -1348,15 +1401,56 @@ HI_S32 JPGHDEC_Start(JPG_HANDLE Handle)
     }
 
     StrmStAddr.All = 0;
+    StrmStAddr.All = GET_PA(pstHdCtx->pVirtAddr, pstHdCtx->PhysAddr, stRdInfo.pAddr[0]);
+	StrmEndAddr.All = 0;
+	StrmEndAddr.All = GET_PA(pstHdCtx->pVirtAddr, pstHdCtx->PhysAddr, pAddrEnd);
 
-    StrmStAddr.struBits.StAdd
-    = GET_PA(pstHdCtx->pVirtAddr, pstHdCtx->PhysAddr, stRdInfo.pAddr[0]);
-    JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_STADD, StrmStAddr.All);
+#if defined(CHIP_TYPE_hi3716cv200) || defined(CHIP_TYPE_hi3718cv100) \
+	|| defined(CHIP_TYPE_hi3719cv100) || defined(CHIP_TYPE_hi3719mv100_a)
+	u32TmpSize = StrmEndAddr.All - StrmStAddr.All;
 
-    StrmEndAddr.All = 0;
-    StrmEndAddr.struBits.EndAdd
-    = GET_PA(pstHdCtx->pVirtAddr, pstHdCtx->PhysAddr, pAddrEnd);
-    JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_ENDADD, StrmEndAddr.All);
+	if( (0 != StrmStAddr.All % 4 ) && (HI_TRUE == pstHdCtx->bAllocStrem) && (u32TmpSize > pstHdCtx->u32StremSize) )
+	{
+		HI_MMZ_Unmap((HI_U32)pstHdCtx->pStremPhyBuf);
+		HI_MMZ_Delete((HI_U32)pstHdCtx->pStremPhyBuf);
+		pstHdCtx->pStremPhyBuf = NULL;
+		pstHdCtx->pStremVirBuf = NULL;
+		pstHdCtx->bAllocStrem  = HI_FALSE;
+	}
+	
+	if( (0 != StrmStAddr.All % 4 ) && (HI_FALSE == pstHdCtx->bAllocStrem) )
+	{
+		
+		pstHdCtx->pStremPhyBuf = (HI_CHAR*)HI_MMZ_New(u32TmpSize,4,NULL,(HI_CHAR*)"JPEG_STREAM_BUF");
+		if(NULL == pstHdCtx->pStremPhyBuf )
+		{
+			return HI_FAILURE;
+		}
+		pstHdCtx->pStremVirBuf = (HI_CHAR*)HI_MMZ_Map((HI_U32)pstHdCtx->pStremPhyBuf,HI_TRUE);
+		if(NULL == pstHdCtx->pStremVirBuf)
+		{
+			return HI_FAILURE;
+		}
+		memcpy(pstHdCtx->pStremVirBuf,stRdInfo.pAddr[0],u32TmpSize);
+		HI_MMZ_Flush(0);
+		
+		u32BufStAddr  = ((HI_U32)pstHdCtx->pStremPhyBuf - 64 + 64 - 1) & (~(64 - 1));
+		u32BufEndAddr = (HI_U32)pstHdCtx->pStremPhyBuf + u32TmpSize + 64;
+		
+		pstHdCtx->bAllocStrem  = HI_TRUE;
+		pstHdCtx->u32StremSize = u32TmpSize;
+		JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_STADDR, u32BufStAddr );
+		JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_ENDADDR,u32BufEndAddr);
+		JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_STADD,  (HI_U32)pstHdCtx->pStremPhyBuf);
+		JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_ENDADD, (HI_U32)(pstHdCtx->pStremPhyBuf + u32TmpSize));
+		
+	}
+	else
+#endif
+	{
+		JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_STADD, StrmStAddr.All);
+		JPGHDEC_WRITE_REG(pstHdCtx->RegOffset, X5_JPGREG_ENDADD, StrmEndAddr.All);
+	}
 
     if (pstHdCtx->bFirstStart)
     {
@@ -1408,7 +1502,7 @@ HI_S32  JPGHDEC_Status(JPG_HANDLE Handle, HI_VOID **pBuf, HI_U32 *pBufLen,
     JPG_CHECK_NULLPTR(pBufLen);
     JPG_CHECK_NULLPTR(pHdState);
 
-    Ret = JPGDRV_GetIntStatus(&IntType, 0);
+    Ret = JPGDRV_GetIntStatus(&IntType, 1000);
 
     /* AI7D02596 Modify */
     if (HI_ERR_JPG_DEV_NOOPEN == Ret)
@@ -1425,7 +1519,7 @@ HI_S32  JPGHDEC_Status(JPG_HANDLE Handle, HI_VOID **pBuf, HI_U32 *pBufLen,
         }
         else
         {
-            Ret = JPGDRV_GetIntStatus(&IntType, 10);
+            Ret = JPGDRV_GetIntStatus(&IntType, 1000);
             if (HI_SUCCESS != Ret)
             {
                 IntType = JPG_INTTYPE_NONE;

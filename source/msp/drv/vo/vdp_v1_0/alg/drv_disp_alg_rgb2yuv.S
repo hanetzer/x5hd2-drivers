@@ -13,42 +13,44 @@
 @	compiled by GNU C version 4.1.1 20061011 (Red Hat 4.1.1-30), GMP version 4.3.1, MPFR version 2.4.2.
 @ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 @ options passed:  -nostdinc
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/include
 @ -Iarch/arm/include/generated -Iinclude
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vo
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vo
 @ -Idrivers/msp/vo
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/drv/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/higo/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/api/vo
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/hal_cv200es
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/alg
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/com
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/drv
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/higo/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/vo
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/hal/common
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/hal/cv200
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/alg
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/com
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/drv
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/include
 @ -imultilib armv7a_soft -iprefix
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/
 @ -isysroot /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../target
 @ -D__KERNEL__ -D__LINUX_ARM_ARCH__=7 -Uarm -DHI_DISP_BUILD_FULL
 @ -D__DISP_PLATFORM_SDK__ -D__DISP_D0_FOLLOW_D1__ -D__DISP_SELF_START__
-@ -DHI_VO_SHARPNESS_SUPPORT -DHI_VO_HD_VIDEO_DO_DEI
-@ -DCHIP_TYPE_hi3716cv200es -DSDK_VERSION=HiSTBLinuxV100R002C00SPC011
-@ -DCFG_HI_LOG_LEVEL=4 -DHI_KEYLED_SUPPORT -DHI_SCI_SUPPORT
+@ -DHI_VO_SHARPNESS_SUPPORT -DHI_VO_HD_VIDEO_DO_DEI -DCHIP_TYPE_hi3716cv200
+@ -DSDK_VERSION=HiSTBLinuxV100R002C00SPC020 -DHI_GPIOI2C_SUPPORT
+@ -DHI_LOG_SUPPORT=1 -DHI_LOG_LEVEL=4 -DHI_PROC_SUPPORT=1
+@ -DHI_KEYLED_SUPPORT -DHI_HDCP_SUPPORT -DHI_SCI_SUPPORT -DHI_VI_SUPPORT
 @ -DHI_VENC_SUPPORT -DHI_AENC_SUPPORT -DKBUILD_STR(s)=#s
 @ -DKBUILD_BASENAME=KBUILD_STR(drv_disp_alg_rgb2yuv)
 @ -DKBUILD_MODNAME=KBUILD_STR(hi_vou) -isystem
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/include
 @ -include
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include/linux/kconfig.h
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include/linux/kconfig.h
 @ -MD drivers/msp/vo/./vdp_v1_0/alg/.drv_disp_alg_rgb2yuv.o.d
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vo/./vdp_v1_0/alg/drv_disp_alg_rgb2yuv.c
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vo/./vdp_v1_0/alg/drv_disp_alg_rgb2yuv.c
 @ -mlittle-endian -marm -mapcs -mno-sched-prolog -mabi=aapcs-linux
 @ -mno-thumb-interwork -march=armv7-a -msoft-float -auxbase-strip
 @ drivers/msp/vo/./vdp_v1_0/alg/drv_disp_alg_rgb2yuv.o -O2 -Wall -Wundef
@@ -107,31 +109,31 @@ DISP_ALG_CscRgb2Yuv:
 	sub	sp, sp, #28	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
-	ldrb	r2, [r0, #2]	@ zero_extendqisi2	@ D.1721, <variable>.u8Blue
-	ldrb	ip, [r0, #0]	@ zero_extendqisi2	@ D.1712, <variable>.u8Red
+	ldrb	r2, [r0, #2]	@ zero_extendqisi2	@ D.1742, <variable>.u8Blue
+	ldrb	ip, [r0, #0]	@ zero_extendqisi2	@ D.1733, <variable>.u8Red
 	movw	r6, #439	@ tmp181,
-	ldrb	r0, [r0, #1]	@ zero_extendqisi2	@ D.1716, <variable>.u8Green
+	ldrb	r0, [r0, #1]	@ zero_extendqisi2	@ D.1737, <variable>.u8Green
 	mov	r7, #368	@ tmp211,
-	mul	r8, r6, r2	@ tmp180, tmp181, D.1721
+	mul	r8, r6, r2	@ tmp180, tmp181, D.1742
 	mvn	r5, #147	@ tmp174,
-	mul	sl, r7, r0	@, tmp211, D.1716
+	mul	sl, r7, r0	@, tmp211, D.1737
 	movw	r3, #:lower16:274877907	@ tmp145,
-	mul	r7, r6, ip	@, tmp181, D.1712
+	mul	r7, r6, ip	@, tmp181, D.1733
 	movt	r3, #:upper16:274877907	@ tmp145,
-	mul	r5, r5, ip	@ tmp173, tmp174, D.1712
+	mul	r5, r5, ip	@ tmp173, tmp174, D.1733
 	movw	r9, #291	@ tmp193,
-	mul	r9, r9, r0	@ tmp192, tmp193, D.1716
-	rsb	r4, r0, r0, asl #6	@, tmp150, D.1716, D.1716,
+	mul	r9, r9, r0	@ tmp192, tmp193, D.1737
+	rsb	r4, r0, r0, asl #6	@, tmp150, D.1737, D.1737,
 	str	r7, [fp, #-48]	@, %sfp
-	add	ip, ip, ip, asl #8	@, tmp142, D.1712, D.1712,
+	add	ip, ip, ip, asl #8	@, tmp142, D.1733, D.1733,
 	smull	r7, r6, r3, r8	@,, tmp145, tmp180
 	mov	r4, r4, asl #3	@ tmp151, tmp150,
 	str	sl, [fp, #-64]	@, %sfp
 	mov	r7, #98	@ tmp163,
 	smull	r0, sl, r3, r5	@, tmp176, tmp145, tmp173
-	add	r0, r2, r2, asl #3	@, tmp222, D.1721, D.1721,
-	mul	r8, r7, r2	@ tmp162, tmp163, D.1721
-	rsb	r0, r2, r0, asl #3	@, tmp224, D.1721, tmp222,
+	add	r0, r2, r2, asl #3	@, tmp222, D.1742, D.1742,
+	mul	r8, r7, r2	@ tmp162, tmp163, D.1742
+	rsb	r0, r2, r0, asl #3	@, tmp224, D.1742, tmp222,
 	str	r6, [fp, #-56]	@, %sfp
 	smull	r2, r9, r3, r9	@, tmp195, tmp145, tmp192
 	mov	r2, r5, asr #31	@ tmp179, tmp173,
@@ -149,13 +151,13 @@ DISP_ALG_CscRgb2Yuv:
 	sub	r9, r6, r9, lsr #6	@ tmp201, tmp191, tmp195,
 	mov	r7, r7, lsr #6	@ tmp212, tmp213,
 	smull	r6, r8, r3, r8	@, tmp165, tmp145, tmp162
-	uxtb	r9, r9	@ D.1738, tmp201
+	uxtb	r9, r9	@ D.1759, tmp201
 	smull	r5, sl, r3, r5	@, tmp206, tmp145,
-	cmp	r9, #15	@ D.1738,
+	cmp	r9, #15	@ D.1759,
 	smull	r6, r5, r3, r0	@, tmp226, tmp145, tmp224
 	mov	r0, r0, asr #31	@ tmp229, tmp224,
 	add	r2, r4, ip, lsr #6	@, tmp159, tmp152, tmp144,
-	strb	r9, [r1, #4]	@ D.1738, <variable>.u8Cb
+	strb	r9, [r1, #4]	@ D.1759, <variable>.u8Cb
 	rsb	r7, r7, sl, lsr #6	@, tmp219, tmp212, tmp206,
 	add	ip, r2, #16	@ tmp161, tmp159,
 	add	r8, ip, r8, lsr #6	@, tmp171, tmp161, tmp165,
@@ -167,16 +169,16 @@ DISP_ALG_CscRgb2Yuv:
 	sub	r5, r5, #128	@ tmp234, tmp232,
 	strb	r5, [r1, #5]	@ tmp234, <variable>.u8Cr
 	bls	.L3	@,
-	cmp	r9, #240	@ D.1738,
+	cmp	r9, #240	@ D.1759,
 	mvnhi	r3, #15	@ tmp238,
 	strhib	r3, [r1, #4]	@ tmp238, <variable>.u8Cb
 .L3:
-	ldrb	r3, [r1, #5]	@ zero_extendqisi2	@ D.1761, <variable>.u8Cr
-	cmp	r3, #15	@ D.1761,
+	ldrb	r3, [r1, #5]	@ zero_extendqisi2	@ D.1782, <variable>.u8Cr
+	cmp	r3, #15	@ D.1782,
 	movls	r3, #16	@ tmp240,
 	strlsb	r3, [r1, #5]	@ tmp240, <variable>.u8Cr
 	bls	.L6	@,
-	cmp	r3, #240	@ D.1761,
+	cmp	r3, #240	@ D.1782,
 	mvnhi	r3, #15	@ tmp242,
 	strhib	r3, [r1, #5]	@ tmp242, <variable>.u8Cr
 .L6:

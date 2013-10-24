@@ -16,7 +16,8 @@
 #include "hi_type.h"
 #include "alsa_aiao_comm.h"
 
-int hiaudio_proc_init(void * card, const char * name, struct hiaudio_data *had);
+int hiaudio_ao_proc_init(void * card, const char * name, struct hiaudio_data *had);
+int hiaudio_ai_proc_init(void * card, const char * name, struct hiaudio_data *had);
 
 void hiaudio_proc_cleanup(void);
 

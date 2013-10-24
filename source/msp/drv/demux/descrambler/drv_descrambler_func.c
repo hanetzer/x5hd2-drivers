@@ -12,7 +12,7 @@
 
 #include "hi_type.h"
 #include "hi_module.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 #include "hi_kernel_adapt.h"
 
 #include "hi_unf_descrambler.h"
@@ -131,7 +131,7 @@ HI_S32 DMXDescramblerCreate0(HI_U32 *KeyId, HI_UNF_DMX_DESCRAMBLER_ATTR_S *Attr)
     switch (Attr->enDescramblerType)
     {
         case HI_UNF_DMX_DESCRAMBLER_TYPE_CSA2 :
-            KeyLen = DMX_KEY_MIN_LEN / sizeof(HI_U32);
+ //           KeyLen = DMX_KEY_MIN_LEN / sizeof(HI_U32);
             break;
 
     #ifdef DMX_DESCRAMBLER_TYPE_CSA3_SUPPORT
@@ -358,12 +358,12 @@ HI_S32 DMXDescramblerCreate1(HI_U32 *KeyId, HI_UNF_DMX_DESCRAMBLER_ATTR_S *Attr)
                 return HI_ERR_DMX_NOT_SUPPORT;
             }
 
-            KeyLen = DMX_KEY_MIN_LEN / sizeof(HI_U32);
+            //KeyLen = DMX_KEY_MIN_LEN / sizeof(HI_U32);
 
             break;
 
-    #ifdef DMX_DESCRAMBLER_TYPE_CSA3_SUPPORT
         case HI_UNF_DMX_DESCRAMBLER_TYPE_CSA3 :
+        #ifdef DMX_DESCRAMBLER_TYPE_CSA3_SUPPORT
             if (CaInfo.bits.dis_csa3)
             {
                 HI_WARN_DEMUX("disable CSA3\n");
@@ -375,14 +375,15 @@ HI_S32 DMXDescramblerCreate1(HI_U32 *KeyId, HI_UNF_DMX_DESCRAMBLER_ATTR_S *Attr)
             {
                 return HI_ERR_DMX_NOT_SUPPORT;
             }
-
+        #else
+            return HI_ERR_DMX_NOT_SUPPORT;
+        #endif
             break;
-    #endif
 
-    #ifdef DMX_DESCRAMBLER_TYPE_SPE_SUPPORT
         case HI_UNF_DMX_DESCRAMBLER_TYPE_AES_IPTV :
         case HI_UNF_DMX_DESCRAMBLER_TYPE_AES_ECB :
         case HI_UNF_DMX_DESCRAMBLER_TYPE_AES_CI :
+        #ifdef DMX_DESCRAMBLER_TYPE_SPE_SUPPORT
             if (CaInfo.bits.dis_spe)
             {
                 HI_WARN_DEMUX("disable SPE\n");
@@ -394,13 +395,15 @@ HI_S32 DMXDescramblerCreate1(HI_U32 *KeyId, HI_UNF_DMX_DESCRAMBLER_ATTR_S *Attr)
             {
                 return HI_ERR_DMX_NOT_SUPPORT;
             }
-
+        #else
+            return HI_ERR_DMX_NOT_SUPPORT;
+        #endif
             break;
-    #endif
 
-    #ifdef DMX_DESCRAMBLER_TYPE_DES_SUPPORT
         case HI_UNF_DMX_DESCRAMBLER_TYPE_DES_CI :
         case HI_UNF_DMX_DESCRAMBLER_TYPE_DES_CBC :
+        {
+        #ifdef DMX_DESCRAMBLER_TYPE_DES_SUPPORT
             if (CaInfo.bits.dis_des)
             {
                 HI_WARN_DEMUX("disable DES\n");
@@ -414,13 +417,31 @@ HI_S32 DMXDescramblerCreate1(HI_U32 *KeyId, HI_UNF_DMX_DESCRAMBLER_ATTR_S *Attr)
                 return HI_ERR_DMX_NOT_SUPPORT;
             }
 
-            KeyLen = DMX_KEY_MIN_LEN / sizeof(HI_U32);
+            //KeyLen = DMX_KEY_MIN_LEN / sizeof(HI_U32);
 
             break;
-    #endif
+        #else
+            return HI_ERR_DMX_NOT_SUPPORT;
+        #endif
+        }
 
-    #ifdef DMX_DESCRAMBLER_TYPE_AES_NS_SUPPORT
+        case HI_UNF_DMX_DESCRAMBLER_TYPE_DES_IPTV :
+        {
+        #ifdef DMX_DESCRAMBLER_TYPE_DES_IPTV_SUPPORT
+            if (   (HI_UNF_DMX_CA_NORMAL == Attr->enCaType)
+                && (DMX_KEY_HARDONLY_FLAG == DmxDevOsi->KeyOtherHardFlag) )
+            {
+                return HI_ERR_DMX_NOT_SUPPORT;
+            }
+
+            break;
+        #else
+            return HI_ERR_DMX_NOT_SUPPORT;
+        #endif
+        }
+
         case HI_UNF_DMX_DESCRAMBLER_TYPE_AES_NS :
+        #ifdef DMX_DESCRAMBLER_TYPE_AES_NS_SUPPORT
             if (CaInfo.bits.dis_novel)
             {
                 HI_WARN_DEMUX("disable novel\n");
@@ -433,12 +454,13 @@ HI_S32 DMXDescramblerCreate1(HI_U32 *KeyId, HI_UNF_DMX_DESCRAMBLER_ATTR_S *Attr)
             {
                 return HI_ERR_DMX_NOT_SUPPORT;
             }
-
+        #else
+            return HI_ERR_DMX_NOT_SUPPORT;
+        #endif
             break;
-    #endif
 
-    #ifdef DMX_DESCRAMBLER_TYPE_SMS4_NS_SUPPORT
         case HI_UNF_DMX_DESCRAMBLER_TYPE_SMS4_NS :
+        #ifdef DMX_DESCRAMBLER_TYPE_SMS4_NS_SUPPORT
             if (CaInfo.bits.dis_novel)
             {
                 HI_WARN_DEMUX("disable novel\n");
@@ -451,12 +473,13 @@ HI_S32 DMXDescramblerCreate1(HI_U32 *KeyId, HI_UNF_DMX_DESCRAMBLER_ATTR_S *Attr)
             {
                 return HI_ERR_DMX_NOT_SUPPORT;
             }
-
+        #else
+            return HI_ERR_DMX_NOT_SUPPORT;
+        #endif
             break;
-    #endif
 
-    #ifdef DMX_DESCRAMBLER_TYPE_SMS4_IPTV_SUPPORT
         case HI_UNF_DMX_DESCRAMBLER_TYPE_SMS4_IPTV :
+        #ifdef DMX_DESCRAMBLER_TYPE_SMS4_IPTV_SUPPORT
             if (CaInfo.bits.dis_others)
             {
                 HI_WARN_DEMUX("disable others\n");
@@ -469,12 +492,13 @@ HI_S32 DMXDescramblerCreate1(HI_U32 *KeyId, HI_UNF_DMX_DESCRAMBLER_ATTR_S *Attr)
             {
                 return HI_ERR_DMX_NOT_SUPPORT;
             }
-
+        #else
+            return HI_ERR_DMX_NOT_SUPPORT;
+        #endif
             break;
-    #endif
 
-    #ifdef DMX_DESCRAMBLER_TYPE_SMS4_ECB_SUPPORT
         case HI_UNF_DMX_DESCRAMBLER_TYPE_SMS4_ECB :
+        #ifdef DMX_DESCRAMBLER_TYPE_SMS4_ECB_SUPPORT
             if (CaInfo.bits.dis_others)
             {
                 HI_WARN_DEMUX("disable others\n");
@@ -487,12 +511,13 @@ HI_S32 DMXDescramblerCreate1(HI_U32 *KeyId, HI_UNF_DMX_DESCRAMBLER_ATTR_S *Attr)
             {
                 return HI_ERR_DMX_NOT_SUPPORT;
             }
-
+        #else
+            return HI_ERR_DMX_NOT_SUPPORT;
+        #endif
             break;
-    #endif
 
-    #ifdef DMX_DESCRAMBLER_TYPE_SMS4_CBC_SUPPORT
         case HI_UNF_DMX_DESCRAMBLER_TYPE_SMS4_CBC :
+        #ifdef DMX_DESCRAMBLER_TYPE_SMS4_CBC_SUPPORT
             if (CaInfo.bits.dis_others)
             {
                 HI_WARN_DEMUX("disable others\n");
@@ -505,12 +530,13 @@ HI_S32 DMXDescramblerCreate1(HI_U32 *KeyId, HI_UNF_DMX_DESCRAMBLER_ATTR_S *Attr)
             {
                 return HI_ERR_DMX_NOT_SUPPORT;
             }
-
+        #else
+            return HI_ERR_DMX_NOT_SUPPORT;
+        #endif
             break;
-    #endif
 
-    #ifdef DMX_DESCRAMBLER_TYPE_AES_CBC_SUPPORT
         case HI_UNF_DMX_DESCRAMBLER_TYPE_AES_CBC :
+        #ifdef DMX_DESCRAMBLER_TYPE_AES_CBC_SUPPORT
             if (CaInfo.bits.dis_others)
             {
                 HI_WARN_DEMUX("disable others\n");
@@ -523,9 +549,34 @@ HI_S32 DMXDescramblerCreate1(HI_U32 *KeyId, HI_UNF_DMX_DESCRAMBLER_ATTR_S *Attr)
             {
                 return HI_ERR_DMX_NOT_SUPPORT;
             }
+        #else
+            return HI_ERR_DMX_NOT_SUPPORT;
+        #endif
+            break;
+
+        case HI_UNF_DMX_DESCRAMBLER_TYPE_TDES_IPTV :
+        case HI_UNF_DMX_DESCRAMBLER_TYPE_TDES_ECB :
+        case HI_UNF_DMX_DESCRAMBLER_TYPE_TDES_CBC :
+        {
+        #ifdef DMX_DESCRAMBLER_TYPE_TDES_SUPPORT
+            if (CaInfo.bits.dis_tdes)
+            {
+                HI_WARN_DEMUX("disable tdes\n");
+
+                return HI_ERR_DMX_NOT_SUPPORT;
+            }
+
+            if (   (HI_UNF_DMX_CA_NORMAL == Attr->enCaType)
+                && (CaInfo.bits.hardonly_others || (DMX_KEY_HARDONLY_FLAG == DmxDevOsi->KeyOtherHardFlag)) )
+            {
+                return HI_ERR_DMX_NOT_SUPPORT;
+            }
 
             break;
-    #endif
+        #else
+            return HI_ERR_DMX_NOT_SUPPORT;
+        #endif
+        }
 
         default :
             HI_WARN_DEMUX("Invalid DescramblerType %d\n", Attr->enDescramblerType);
@@ -729,8 +780,9 @@ HI_S32 DMX_OsiDescramblerDestroy(HI_U32 KeyId)
 
 HI_S32 DMX_OsiDescramblerSetKey(HI_U32 KeyId, DMX_KEY_TYPE_E KeyType, HI_U8 *Key)
 {
-    DMX_KeyInfo_S  *KeyInfo = &g_pDmxDevOsi->DmxKeyInfo[KeyId];
-    HI_U32          i;
+    DMX_KeyInfo_S *KeyInfo = &g_pDmxDevOsi->DmxKeyInfo[KeyId];
+    HI_U32 i;
+    DRV_ADVCA_EXTFUNC_PARAM_S stAdvcaFuncParam = {0};
 
     if (HI_UNF_DMX_CA_BUTT == KeyInfo->CaType)
     {
@@ -777,37 +829,37 @@ HI_S32 DMX_OsiDescramblerSetKey(HI_U32 KeyId, DMX_KEY_TYPE_E KeyType, HI_U8 *Key
     }
     else
     {
-        if (HI_NULL == g_pAdvcaFunc)
-        {
-            HI_S32 ret;
+        /*change as get the function pointer every time when setting CW*/
+        HI_S32 ret;
 
-            ret = HI_DRV_MODULE_GetFunction(HI_ID_CA, (HI_VOID**)&g_pAdvcaFunc);
-            if (HI_SUCCESS != ret)
-            {
-                return HI_ERR_DMX_NOT_SUPPORT;
-            }
+        ret = HI_DRV_MODULE_GetFunction(HI_ID_CA, (HI_VOID**)&g_pAdvcaFunc);
+        if (HI_SUCCESS != ret)
+        {
+            return HI_ERR_DMX_NOT_SUPPORT;
         }
 
-        if (HI_UNF_DMX_DESCRAMBLER_TYPE_CSA2 == KeyInfo->DescType)
+        if (g_pAdvcaFunc && g_pAdvcaFunc->pfnAdvcaCrypto)
         {
-            if (g_pAdvcaFunc && g_pAdvcaFunc->pfnAdvcaDecryptCws)
+            memset(&stAdvcaFuncParam, 0, sizeof(stAdvcaFuncParam));
+            if (HI_UNF_DMX_DESCRAMBLER_TYPE_CSA2 == KeyInfo->DescType)
             {
-                (g_pAdvcaFunc->pfnAdvcaDecryptCws)(KeyId, KeyType, Key);
+                stAdvcaFuncParam.enCAType = HI_UNF_CIPHER_CA_TYPE_CSA2;
             }
-        }
-        else if (HI_UNF_DMX_DESCRAMBLER_TYPE_CSA3 == KeyInfo->DescType)
-        {
-            if (g_pAdvcaFunc && g_pAdvcaFunc->pfnAdvcaDecryptCsa3s)
+            else if (HI_UNF_DMX_DESCRAMBLER_TYPE_CSA3 == KeyInfo->DescType)
             {
-                (g_pAdvcaFunc->pfnAdvcaDecryptCsa3s)(KeyId, KeyType, Key);
+                stAdvcaFuncParam.enCAType = HI_UNF_CIPHER_CA_TYPE_CSA3;
             }
-        }
-        else
-        {
-            if (g_pAdvcaFunc && g_pAdvcaFunc->pfnAdvcaDecryptSP)
+            else
             {
-                (g_pAdvcaFunc->pfnAdvcaDecryptSP)(KeyId, KeyType, Key);
+                stAdvcaFuncParam.enCAType = HI_UNF_CIPHER_CA_TYPE_SP;
             }
+
+            stAdvcaFuncParam.AddrID = KeyId;
+            stAdvcaFuncParam.EvenOrOdd = KeyType;
+            stAdvcaFuncParam.pu8Data = (HI_U8 *)Key;
+            stAdvcaFuncParam.bIsDeCrypt = HI_TRUE;
+            stAdvcaFuncParam.enTarget = DRV_ADVCA_CA_TARGET_DEMUX;
+            return (g_pAdvcaFunc->pfnAdvcaCrypto)(stAdvcaFuncParam);
         }
     }
 

@@ -29,7 +29,7 @@ History       	:
 #include "hi_unf_frontend.h"
 //#include "drv_tuner_ext.h"
 #include "drv_tuner_ioctl.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 
 #define QAM_RF_MIN 45000  /*kHz*/
 #define QAM_RF_MAX 870000 /*kHz*/
@@ -38,7 +38,7 @@ History       	:
 #define TER_BW_MIN 1700  //KHz
 #define TER_BW_MAX 10000 //KHz
 #define     PI     3.14159265
-#define UNF_TUNER_NUM 3
+#define UNF_TUNER_NUM 5
 
 #define MAX_BLINDSCAN_TIMES (4)
 
@@ -90,7 +90,9 @@ History       	:
             } \
         } \
     }
-
+static const HI_CHAR s_szTunerVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 typedef struct
 {
     HI_U32                        u32Port;
@@ -142,6 +144,23 @@ static HI_UNF_TUNER_ATTR_S s_strDeftTunerAttr[UNF_TUNER_NUM];
 static HI_UNF_TUNER_ATTR_S s_strCurTunerAttr[UNF_TUNER_NUM];
 static HI_UNF_TUNER_CONNECT_PARA_S s_strCurTunerConnectPara[UNF_TUNER_NUM];
 static TUNER_STATUS_SAT_S s_stSatPara[UNF_TUNER_NUM];
+
+static pthread_mutex_t g_stTunerMutex = PTHREAD_MUTEX_INITIALIZER;
+
+#define HI_TUNER_LOCK()        (void)pthread_mutex_lock(&g_stTunerMutex);
+#define HI_TUNER_UNLOCK()      (void)pthread_mutex_unlock(&g_stTunerMutex);
+
+#define CHECK_TUNER_OPEN()\
+do{\
+    HI_TUNER_LOCK();\
+    if ( !s_bTunerOpened )\
+    {\
+        HI_ERR_TUNER("tuner not opened\n");\
+        HI_TUNER_UNLOCK();\
+        return HI_ERR_TUNER_NOT_OPEN;\
+    }\
+    HI_TUNER_UNLOCK();\
+}while(0)
 
 HI_VOID SET_BLINDSCAN_CTRL_COND(HI_U32 u32TunerId, BLINDSCAN_CTRL_T *pstBlindScanCtrl, HI_S32 i, HI_UNF_TUNER_FE_LNB_22K_E LNB22K, HI_UNF_TUNER_FE_POLARIZATION_E polar, HI_S32 startFreqMHz, HI_S32 stopFreqMHz)
 {
@@ -225,6 +244,42 @@ static TUNER_SIGNAL_LEVEL_SAT_S s_astSignalLevelSHARP7903[100] =
         {53257, 108}, {53601, 109}, {53985, 110}, {54323, 111}, {54642, 112}, {54947, 113}, {55242, 114}, {55477, 116}, {55465, 118}, {55451, 120}
     };
 
+static HI_S32  s_s32TunerFreq = 0;
+typedef struct
+{
+    HI_S32 s32SignalFreq;
+    HI_S32 s32SignalLevel;
+} TUNER_SIGNAL_LEVEL_S;
+
+static TUNER_SIGNAL_LEVEL_S s_SignalLevelTda18250[] = 
+    {       
+        {52, 5},    {60, 5},    {68, 5},    {76, 5},   {84, 5},    {92, 5},   {100, 5},
+	    {108, 5},  {115, 5},  {123, 5},  {131, 4},  {139, 5},  {147, 5},  {155, 5},  {163, 5},  {171, 5}, 
+        {179, 5},  {187, 5},  {195, 4},  {203, 4},  {211, 4},  {219, 5},  {227, 4},  {235, 4},  {243, 4},  {251, 4}, 
+        {259, 4},  {267, 4},  {275, 4},  {283, 4},  {291, 4},  {299, 4},  {307, 4},  {315, 4},  {323, 4},  {331, 5}, 
+        {339, 5},  {347, 5},  {355, 4},  {363, 5},  {371, 5},  {379, 5},  {387, 5},  {395, 4},  {411, 5},  {419, 5}, 
+        {427, 5},  {435, 4},  {443, 5},  {451, 5},  {459, 5},  {467, 5},  {474, 5},  {482, 5},  {490, 5},  {498, 5}, 
+        {506, 5},  {514, 4},  {522, 5},  {530, 4},  {538, 5},  {546, 4},  {554, 4},  {562, 4},  {570, 4},  {578, 4}, 
+        {586, 4},  {594, 4},  {602, 4},  {610, 4},  {618, 4},  {626, 4},  {634, 4},  {642, 4},  {650, 5},  {658, 4}, 
+        {666, 4},  {674, 4},  {682, 4},  {690, 5},  {698, 4},  {706, 4},  {714, 4},  {722, 5},  {730, 4},  {738, 4}, 
+        {746, 4},  {754, 5},  {762, 5},  {770, 5},  {778, 5},  {786, 5},  {794, 5},  {802, 5},  {810, 5},  {818, 5}, 
+        {826, 5},  {834, 5},  {842, 5},  {850, 6},  {858, 7}
+    };
+/*    //tda18250 soft filter open
+static TUNER_SIGNAL_LEVEL_S s_SignalLevelTda18250[] = 
+    {       
+        {52, 5},    {60, 5},    {68, 5},    {76, 5},   {84, 5},    {92, 5},   {100, 5},
+	    {108, 3},  {115, 2},  {123, 3},  {131, 3},  {139, 3},  {147, 3},  {155,3},  {163, 3},  {171, 2}, 
+        {179, 2},  {187, 2},  {195, 3},  {203, 3},  {211, 3},  {219, 4},  {227, 4},  {235, 4},  {243, 4},  {251, 4}, 
+        {259, 4},  {267, 5},  {275, 5},  {283, 4},  {291, 5},  {299, 5},  {307, 5},  {315, 5},  {323, 5},  {331, 5}, 
+        {339, 5},  {347, 5},  {355, 4},  {363, 7},  {371, 6},  {379, 6},  {387, 6},  {395, 6},  {411, 6},  {419, 6}, 
+        {427, 6},  {435, 6},  {443, 6},  {451, 6},  {459, 6},  {467, 6},  {474, 5},  {482, 5},  {490, 6},  {498, 5}, 
+        {506, 7},  {514, 7},  {522, 7},  {530, 8},  {538, 8},  {546, 8},  {554, -1},  {562, -1},  {570, -1},  {578, 0}, 
+        {586, -1},  {594, -1},  {602, -1},  {610, -1},  {618, -1},  {626, -1},  {634, -1},  {642, -1},  {650, -1},  {658, -1}, 
+        {666, -1},  {674, -1},  {682, -1},  {690, -1},  {698, -1},  {706, -1},  {714, -1},  {722, -1},  {730, -2},  {738, -3}, 
+        {746, -2},  {754, -3},  {762, -2},  {770, -2},  {778, -2},  {786, -3},  {794, -2},  {802, -2},  {810, -2},  {818, -2}, 
+        {826, -2},  {834, -2},  {842, -1},  {850, -1},  {858, 0}
+    }; */
 static HI_VOID	TUNER_DownlinkFreqToIF(HI_UNF_TUNER_FE_LNB_CONFIG_S* pstLNBConfig,
                                        HI_UNF_TUNER_FE_POLARIZATION_E enPolar, HI_U32 u32DownlinkFreq,
                                        HI_U32* pu32IF, HI_UNF_TUNER_FE_LNB_22K_E *penLNB22K);
@@ -593,12 +648,7 @@ static HI_S32 hi_tuner_tpverify(HI_U32  u32tunerId , const TUNER_TP_VERIFY_PARAM
     TUNER_TP_VERIFY_INFO_S stTPVerifyInfo;
     HI_UNF_TUNER_FE_LNB_22K_E enLNB22K;
 
-    if( !s_bTunerOpened )
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n",u32tunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
-
+    CHECK_TUNER_OPEN();
     //stTunerData.u32Data = 0;
     //stTunerData.u32Port = u32tunerId;
 
@@ -1360,12 +1410,8 @@ HI_S32 TUNER_DISEQC_SendRecvMessage(HI_U32 u32TunerId,
     HI_U32 u32RepeatTime = 0;
     HI_BOOL bSendTone = HI_FALSE;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
 
+    CHECK_TUNER_OPEN();
     if (UNF_TUNER_NUM <= u32TunerId)
     {
         HI_ERR_TUNER("Input parameter(u32TunerId) invalid,invalid tunerId is: %d\n", u32TunerId);
@@ -1775,11 +1821,7 @@ HI_S32 HI_UNF_TUNER_SetAttr(HI_U32	u32tunerId , const HI_UNF_TUNER_ATTR_S *pstTu
     HI_TunerAttr_S stTuner = {HI_UNF_TUNER_DEV_TYPE_BUTT, 0};
     HI_DemodAttr_S stDemod = {HI_UNF_DEMOD_DEV_TYPE_BUTT, 0};
 
-    if( !s_bTunerOpened )
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n",u32tunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if(UNF_TUNER_NUM <= u32tunerId)
     {
@@ -1916,12 +1958,7 @@ HI_S32 HI_UNF_TUNER_SetSatAttr(HI_U32   u32tunerId , const HI_UNF_TUNER_SAT_ATTR
     HI_S32 s32Ret;
     TUNER_DATA_S stTunerData;
 
-    if( !s_bTunerOpened )
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n",u32tunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
-
+    CHECK_TUNER_OPEN();
     if(UNF_TUNER_NUM <= u32tunerId)
     {
         HI_ERR_TUNER("Input parameter(u32tunerId)invalid,invalid tunerId is: %d\n",u32tunerId);
@@ -2017,6 +2054,11 @@ HI_S32 HI_UNF_TUNER_Open (HI_U32  u32tunerId)
 {
     HI_S32  s32TunerFd = 0;
 
+     if( !s_bTunerInited )
+    {
+        HI_ERR_TUNER("TUNER UNF hasn't been Inited\n");
+        return HI_ERR_TUNER_NOT_INIT;
+    }
 
     if(UNF_TUNER_NUM <= u32tunerId)
     {
@@ -2029,21 +2071,30 @@ HI_S32 HI_UNF_TUNER_Open (HI_U32  u32tunerId)
         return HI_SUCCESS;
     }
 
+    HI_TUNER_LOCK();
     s32TunerFd = open("/dev/"UMAP_DEVNAME_TUNER, O_RDWR, 0);
     if (s32TunerFd < 0)
     {
         HI_ERR_TUNER("open %s tuner failed\n", "/dev/"UMAP_DEVNAME_TUNER);
+	    HI_TUNER_UNLOCK();
+
         return HI_ERR_TUNER_FAILED_INIT;
     }
     s_s32TunerFd = s32TunerFd;
     s_bTunerOpened = HI_TRUE;
-    
+    HI_TUNER_UNLOCK();
     return HI_SUCCESS;
 
 }
 
 HI_S32 HI_UNF_TUNER_Close(HI_U32	u32tunerId)
 {
+     if( !s_bTunerInited )
+    {
+        HI_ERR_TUNER("TUNER UNF hasn't been Inited\n");
+        return HI_ERR_TUNER_NOT_INIT;
+    }
+	 
     if(UNF_TUNER_NUM <= u32tunerId)
     {
         HI_ERR_TUNER("Input parameter(u32tunerId) invalid,invalid tunerId is: %d\n",u32tunerId);
@@ -2054,8 +2105,9 @@ HI_S32 HI_UNF_TUNER_Close(HI_U32	u32tunerId)
     {
         return HI_SUCCESS;
     }
-
+    HI_TUNER_LOCK();
     close (s_s32TunerFd);
+    HI_TUNER_UNLOCK();
     s_s32TunerFd = 0;
     s_bTunerOpened = HI_FALSE;
 
@@ -2167,11 +2219,7 @@ HI_S32 HI_UNF_TUNER_GetDefaultTimeout(HI_U32  u32tunerId, const HI_UNF_TUNER_CON
 {
     HI_U32 u32SymbRate_kHz = 0;
 
-    if( !s_bTunerOpened )
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n",u32tunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if(UNF_TUNER_NUM <= u32tunerId)
     {
@@ -2324,12 +2372,7 @@ HI_S32 HI_UNF_TUNER_Connect(HI_U32  u32tunerId, const HI_UNF_TUNER_CONNECT_PARA_
     TUNER_DATA_S stTmpTunerData;
     HI_U8 u8ParamNOK = 0;
 
-    if( !s_bTunerOpened )
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n",u32tunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
-
+    CHECK_TUNER_OPEN();
 
     stTunerData.u32Data = 0;
     stTunerData.u32Port = u32tunerId;
@@ -2357,6 +2400,7 @@ HI_S32 HI_UNF_TUNER_Connect(HI_U32  u32tunerId, const HI_UNF_TUNER_CONNECT_PARA_
     /* Cable */
     if (HI_UNF_TUNER_SIG_TYPE_CAB == pstConnectPara->enSigType)
     {
+        s_s32TunerFreq = pstConnectPara->unConnectPara.stCab.u32Freq;	      
         stTunerPara.u32Frequency = pstConnectPara->unConnectPara.stCab.u32Freq;
         stTunerPara.unSRBW.u32SymbolRate = pstConnectPara->unConnectPara.stCab.u32SymbolRate;
         stTunerPara.bSI = pstConnectPara->unConnectPara.stCab.bReverse;
@@ -2690,11 +2734,7 @@ HI_S32 HI_UNF_TUNER_GetStatus(HI_U32	u32tunerId , HI_UNF_TUNER_STATUS_S  *pstTun
     stTunerData.u32Data = 0;
     stTunerData.u32Port = u32tunerId;
 
-    if( !s_bTunerOpened )
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n",u32tunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }    
+    CHECK_TUNER_OPEN(); 
 
     if(UNF_TUNER_NUM <= u32tunerId)
     {
@@ -2769,11 +2809,7 @@ HI_S32 HI_UNF_TUNER_GetBER(HI_U32	u32tunerId , HI_U32 *pu32BER)
     stTunerDataBuf.u32Port= u32tunerId;
     memset(stTunerDataBuf.u32DataBuf, 0, sizeof(stTunerDataBuf.u32DataBuf));
 
-    if( !s_bTunerOpened )
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n",u32tunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }    
+    CHECK_TUNER_OPEN();   
 
     if(UNF_TUNER_NUM <= u32tunerId)
     {
@@ -2886,11 +2922,7 @@ HI_S32 HI_UNF_TUNER_GetSNR(HI_U32	u32tunerId , HI_U32 *pu32SNR)				/* range : 0-
     stTunerData.u32Data = 0;
     stTunerData.u32Port = u32tunerId;
 
-    if( !s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n",u32tunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }    
+    CHECK_TUNER_OPEN();   
 
     if(UNF_TUNER_NUM <= u32tunerId)
     {
@@ -2942,162 +2974,27 @@ HI_S32 HI_UNF_TUNER_GetSNR(HI_U32	u32tunerId , HI_U32 *pu32SNR)				/* range : 0-
     {
         case QAM_TYPE_16:           
             dSnrEva = 10.0 * log10((5.0 / 18.0) / dTmp);
-            if(dSnrEva < 12.62 )
-            {
-                u32Snr = 2.7 * dSnrEva - 23.11;
-            }
-            else if (dSnrEva < 13.08)
-            {
-                u32Snr = 2.17 * dSnrEva - 16.435;
-            }
-            else if (dSnrEva < 13.67)
-            {
-                u32Snr = 1.70 * dSnrEva - 10.17;
-            }
-            else if (dSnrEva < 14.37)
-            {
-                u32Snr = 1.43 * dSnrEva - 6.53;
-            }
-            else if (dSnrEva < 15.18)
-            {
-                u32Snr = 1.24 * dSnrEva - 3.74;
-            }
-            else  if (dSnrEva < 16.06)
-            {
-                u32Snr = 1.14 * dSnrEva - 2.25;
-            }
-            else if (dSnrEva < 17.01)
-            {
-                u32Snr = 1.05 * dSnrEva - 0.905;
-            }
-            else
-            {
-                u32Snr = dSnrEva;
-            }
+            u32Snr = dSnrEva;
             break;
 
         case QAM_TYPE_32:
             dSnrEva = 10.0 * log10(0.2 / dTmp);
-            if(dSnrEva < 14.32)
-            {
-                u32Snr = 4.167 * dSnrEva - 48.67;
-            }
-            else if (dSnrEva < 14.85)
-            {
-                u32Snr = 3.774 * dSnrEva - 43.04;
-            }
-            else if (dSnrEva < 15.91)
-            {
-                u32Snr = 1.887 * dSnrEva - 15.0;
-            }
-            else if (dSnrEva < 17.3)
-            {
-                u32Snr = 1.439 * dSnrEva - 7.89;
-            }
-            else if (dSnrEva < 19.05)
-            {
-                u32Snr = 1.143 * dSnrEva - 2.77;
-            }
-            else if (dSnrEva < 20.01)
-            {
-                u32Snr = 1.04 * dSnrEva - 0.84;
-            }
-            else
-            {
-                u32Snr = dSnrEva;
-            }
+            u32Snr = dSnrEva;
             break;
 
         case QAM_TYPE_64:
             dSnrEva = 10.0 * log10(((42.0 / 14.0) / 14.0) / dTmp);
-            if(dSnrEva < 16.70)
-            {
-                u32Snr = 3.704 * dSnrEva - 49.85;
-            }
-            else if (dSnrEva < 17.35)
-            {
-                u32Snr = 3.077 * dSnrEva - 39.38;
-            }
-            else if (dSnrEva < 18.06)
-            {
-                u32Snr = 2.817 * dSnrEva - 34.87;
-            }
-            else if (dSnrEva < 18.44)
-            {
-                u32Snr = 2.632 * dSnrEva - 31.53;
-            }
-            else if (dSnrEva < 20.36)
-            {
-                u32Snr = 1.563 * dSnrEva - 11.813;
-            }
-            else if (dSnrEva < 60)
-            {
-                u32Snr = 1.124 * dSnrEva - 0.876;
-            }
-            else
-            {
-                u32Snr = dSnrEva;
-            }
+            u32Snr = dSnrEva;
             break;
 
         case QAM_TYPE_128:
             dSnrEva = 10.0 * log10(((82.0 / 22.0) / 22.0) / dTmp);
-            if(dSnrEva < 19.32)
-            {
-                u32Snr = 2.439 * dSnrEva - 35.12;
-            }
-            else if (dSnrEva < 19.95)
-            {
-                u32Snr = 3.175 * dSnrEva - 49.33;
-            }
-            else if (dSnrEva < 20.85)
-            {
-                u32Snr = 4.444 * dSnrEva - 74.67;
-            }
-            else if (dSnrEva < 21.55)
-            {
-                u32Snr = 2.857 * dSnrEva - 41.57;
-            }
-            else if (dSnrEva < 22.67)
-            {
-                u32Snr = 1.786 * dSnrEva - 18.48;
-            }
-            else if (dSnrEva < 27.06)
-            {
-                u32Snr = 1.14 * dSnrEva - 3.82;
-            }
-            else
-            {
-                u32Snr = dSnrEva;
-            }
+            u32Snr = dSnrEva;
             break;
 
         case QAM_TYPE_256:
             dSnrEva = 10.0 * log10(((170.0 / 32.0) / 32.0) / dTmp);
-            if(dSnrEva < 21.99)
-            {
-                u32Snr = 1.61 * dSnrEva - 21.325;
-            }
-            else if (dSnrEva < 22.81)
-            {
-                u32Snr = 2.44 * dSnrEva - 39.634;
-            }
-            else if (dSnrEva < 23.77)
-            {
-                u32Snr = 4.17 * dSnrEva - 79.042;
-            }
-            else if (dSnrEva < 24.67)
-            {
-                u32Snr = 3.33 * dSnrEva - 57.233;
-            }
-            else if (dSnrEva < 26.45)
-            {
-                u32Snr = 1.685 * dSnrEva - 16.579;
-            }
-            else
-            {
-                u32Snr = 1.06 * dSnrEva;
-            }
+            u32Snr = dSnrEva;
             break;
 
         default:
@@ -3150,7 +3047,8 @@ HI_S32 HI_UNF_TUNER_GetSignalStrength(HI_U32   u32tunerId , HI_U32 *pu32SignalSt
     TUNER_DATA_S stTunerData;
     TUNER_DATABUF_S stTunerDataBuf;
     HI_S32 s32Agc = 0;
-    HI_S32 i = 0;
+    HI_U32 i = 0;
+    HI_S32 s32levelcorrect = 0;
     TUNER_SIGNAL_LEVEL_SAT_S* pstSignalLevel = HI_NULL;
 
     stTunerData.u32Port = u32tunerId;
@@ -3158,11 +3056,7 @@ HI_S32 HI_UNF_TUNER_GetSignalStrength(HI_U32   u32tunerId , HI_U32 *pu32SignalSt
     stTunerDataBuf.u32Port= u32tunerId;
     memset(stTunerDataBuf.u32DataBuf,0,sizeof(stTunerDataBuf.u32DataBuf));
 
-    if( !s_bTunerOpened )
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n",u32tunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }    
+    CHECK_TUNER_OPEN();   
 
     if(UNF_TUNER_NUM <= u32tunerId)
     {
@@ -3290,9 +3184,37 @@ HI_S32 HI_UNF_TUNER_GetSignalStrength(HI_U32   u32tunerId , HI_U32 *pu32SignalSt
                 {
                     s32Agc = 0- s32Agc;
                 }
-    
-                *pu32SignalStrength = (HI_U32)(s32Agc / 100.00 + 66);
-                break;
+                 for(i = 0;i<(sizeof(s_SignalLevelTda18250)/sizeof(TUNER_SIGNAL_LEVEL_S));i++)
+                 {
+                    if(s_s32TunerFreq < (s_SignalLevelTda18250[i].s32SignalFreq *1000))
+                    {  
+                    	if(0 == i)
+                    	{
+                    		s32levelcorrect = s_SignalLevelTda18250[i].s32SignalLevel;
+                    		break;
+                    	}
+                    	s32levelcorrect = (s_SignalLevelTda18250[i].s32SignalLevel+ s_SignalLevelTda18250[i-1].s32SignalLevel)/2;			 
+                    	break;
+                    }
+                    else if(( s_SignalLevelTda18250[i].s32SignalFreq *1000) == s_s32TunerFreq)			   
+                    {
+                    	s32levelcorrect = s_SignalLevelTda18250[i].s32SignalLevel;
+                    	break;
+                    }
+                    else 
+                    {
+                    
+                    	if(((sizeof(s_SignalLevelTda18250)/sizeof(TUNER_SIGNAL_LEVEL_S)) -1) == i )
+                    	{
+                    		s32levelcorrect = s_SignalLevelTda18250[i].s32SignalLevel;
+                    		break;
+                    	}
+						
+                    }          
+                 }	
+							   
+                 *pu32SignalStrength = (HI_U32)(s32Agc / 100.00 + 60 + s32levelcorrect);
+                 break;
         	}
         	case HI_UNF_TUNER_DEV_TYPE_TDA18250B:
         	{
@@ -3646,11 +3568,7 @@ HI_S32 HI_UNF_TUNER_GetSignalQuality(HI_U32 u32TunerId, HI_U32 *pu32SignalQualit
 
     stTunerSignalInfo.u32Port = u32TunerId;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -3833,11 +3751,7 @@ HI_S32 HI_UNF_TUNER_GetRealFreqSymb( HI_U32 u32TunerId, HI_U32 *pu32Freq, HI_U32
     stTunerData.u32Port= u32TunerId;
     stTunerData.u32Data = 0;	
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if(UNF_TUNER_NUM <= u32TunerId)
     {
@@ -3984,11 +3898,7 @@ HI_S32 HI_UNF_TUNER_GetSignalInfo(HI_U32 u32TunerId, HI_UNF_TUNER_SIGNALINFO_S *
 
     stTunerSignalInfo.u32Port = u32TunerId;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4056,11 +3966,7 @@ HI_S32 HI_UNF_TUNER_GetSignalInfo(HI_U32 u32TunerId, HI_UNF_TUNER_SIGNALINFO_S *
 
 HI_S32 HI_UNF_TUNER_SetLNBConfig( HI_U32 u32TunerId, const HI_UNF_TUNER_FE_LNB_CONFIG_S *pstLNB)
 {
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
     
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4158,11 +4064,7 @@ HI_S32 HI_UNF_TUNER_SetLNBPower(HI_U32 u32TunerId, HI_UNF_TUNER_FE_LNB_POWER_E e
     TUNER_LNB_OUT_S stLNBOut;
     HI_S32 s32Ret;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4212,11 +4114,7 @@ HI_S32 HI_UNF_TUNER_SetPLPID(HI_U32 u32TunerId, HI_U8 u8PLPID)
     TUNER_DATA_S stTunerData = {0};
     HI_S32 s32Ret;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
     
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4242,11 +4140,7 @@ HI_S32 HI_UNF_TUNER_GetPLPNum(HI_U32 u32TunerId, HI_U8 *pu8PLPNum)
     TUNER_DATA_S stTunerData = {0};
     HI_S32 s32Ret;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
     
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4280,11 +4174,7 @@ HI_S32 HI_UNF_TUNER_GetCurrentPLPType(HI_U32 u32TunerId, HI_UNF_TUNER_T2_PLP_TYP
     TUNER_DATA_S stTunerData = {0};
     HI_S32 s32Ret;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
     
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4319,11 +4209,7 @@ HI_S32 HI_UNF_TUNER_BlindScanStart( HI_U32 u32TunerId, const HI_UNF_TUNER_BLINDS
 
     HI_S32 s32Result = HI_FAILURE;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4440,11 +4326,7 @@ HI_S32 HI_UNF_TUNER_BlindScanStop( HI_U32 u32TunerId)
     stTunerData.u32Port = u32TunerId;
     stTunerData.u32Data = 0;*/    /* Reserve */
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4466,11 +4348,7 @@ HI_S32 HI_UNF_TUNER_BlindScanStop( HI_U32 u32TunerId)
 
 HI_S32 HI_UNF_TUNER_Switch22K(HI_U32 u32TunerId, HI_UNF_TUNER_SWITCH_22K_E enPort)
 {
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4503,11 +4381,7 @@ HI_S32 HI_UNF_TUNER_Switch22K(HI_U32 u32TunerId, HI_UNF_TUNER_SWITCH_22K_E enPor
 
 HI_S32 HI_UNF_TUNER_Switch012V( HI_U32 u32TunerId, HI_UNF_TUNER_SWITCH_0_12V_E enPort)
 {
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4529,11 +4403,7 @@ HI_S32 HI_UNF_TUNER_SwitchToneBurst(HI_U32 u32TunerId, HI_UNF_TUNER_SWITCH_TONEB
     TUNER_DATA_S stTunerData;
     HI_S32 s32Ret = HI_FAILURE;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4587,11 +4457,7 @@ HI_S32 HI_UNF_TUNER_Standby(HI_U32 u32TunerId)
     TUNER_DATA_S stTunerData;
     HI_S32 s32Ret = HI_FAILURE;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4617,11 +4483,7 @@ HI_S32 HI_UNF_TUNER_WakeUp( HI_U32 u32TunerId)
     TUNER_DATA_S stTunerData;
     HI_S32 s32Ret = HI_FAILURE;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4647,11 +4509,7 @@ HI_S32 HI_UNF_TUNER_SetTSOUT(HI_U32 u32TunerId, HI_UNF_TUNER_TSOUT_SET_S *pstTSO
     TUNER_DATA_S stTunerData;
     HI_S32 s32Ret = HI_FAILURE;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4686,11 +4544,7 @@ HI_S32 HI_UNF_TUNER_GetConstellationData(HI_U32 u32TunerId, HI_UNF_TUNER_SAMPLE_
     TUNER_DATA_S stTunerData = {0};
     HI_S32 s32Ret = HI_FAILURE;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {
@@ -4760,11 +4614,7 @@ HI_S32 HI_UNF_TUNER_GetSpectrumData(HI_U32 u32TunerId, HI_UNF_TUNER_SAMPLE_DATAL
     HI_S32 s32Ret = HI_FAILURE;
     HI_U8 u8LenPow = 0;
 
-    if (!s_bTunerOpened)
-    {
-        HI_ERR_TUNER("tuner not opened, tunerId is: %d\n", u32TunerId);
-        return HI_ERR_TUNER_NOT_OPEN;
-    }
+    CHECK_TUNER_OPEN();
 
     if (UNF_TUNER_NUM <= u32TunerId)
     {

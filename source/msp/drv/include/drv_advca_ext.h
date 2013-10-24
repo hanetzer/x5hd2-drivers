@@ -1,29 +1,53 @@
-#ifndef __ADVCA_EXT_H_
-#define __ADVCA_EXT_H_
+/******************************************************************************
+
+  Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
+
+ ******************************************************************************
+  File Name     : drv_advca_ext.h
+  Version       : Initial Draft
+  Author        : Hisilicon hisecurity team
+  Created       : 
+  Last Modified :
+  Description   : 
+  Function List :
+  History       :
+******************************************************************************/
+#ifndef __DRV_ADVCA_EXT_H_
+#define __DRV_ADVCA_EXT_H_
 
 #include "hi_type.h"
+#include "hi_unf_cipher.h"
 
 #ifdef __cplusplus
 extern "C"{
 #endif /* __cplusplus */
 
-typedef HI_S32  (*FN_ADVCA_DecryptCipher)(HI_U32 AddrID, HI_U32 *pDataIn);
-typedef HI_S32  (*FN_ADVCA_DecryptSP)(HI_U32 AddrID,HI_U32 EvenOrOdd, HI_U8 *pData);
-typedef HI_S32  (*FN_ADVCA_DecryptCws)(HI_U32 AddrID,HI_U32 EvenOrOdd, HI_U8 *pData);
-typedef HI_S32  (*FN_ADVCA_DecryptCsa3s)(HI_U32 AddrID,HI_U32 EvenOrOdd, HI_U8 *pData);
-
-typedef struct
+typedef enum hiDRV_ADVCA_CA_TARGET_E
 {
-    FN_ADVCA_DecryptCipher       pfnAdvcaDecryptCipher;
-    FN_ADVCA_DecryptSP           pfnAdvcaDecryptSP;
-    FN_ADVCA_DecryptCws          pfnAdvcaDecryptCws;
-    FN_ADVCA_DecryptCsa3s        pfnAdvcaDecryptCsa3s;
-} ADVCA_EXPORT_FUNC_S;
+	DRV_ADVCA_CA_TARGET_DEMUX         = 0,
+	DRV_ADVCA_CA_TARGET_MULTICIPHER,
+}DRV_ADVCA_CA_TARGET_E;
 
+typedef struct hiDRV_ADVCA_EXTFUNC_PARAM_S
+{
+    HI_UNF_CIPHER_CA_TYPE_E enCAType;
+    DRV_ADVCA_CA_TARGET_E enTarget;
+    HI_U32 AddrID;
+    HI_U32 EvenOrOdd;
+    HI_U8 *pu8Data;
+    HI_BOOL bIsDeCrypt;
+}DRV_ADVCA_EXTFUNC_PARAM_S;
+
+typedef HI_S32  (*FN_CA_Crypto)(DRV_ADVCA_EXTFUNC_PARAM_S stParam);
+
+typedef struct s_ADVCA_RegisterFunctionlist
+{
+    FN_CA_Crypto pfnAdvcaCrypto;
+}ADVCA_EXPORT_FUNC_S;
 
 #ifdef __cplusplus
 }
 #endif /* __cplusplus */
 
-#endif   /* __ADVCA_EXT_H_ */
+#endif   /* _DRV_ADVCA_EXT_H_ */
 

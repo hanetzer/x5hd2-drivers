@@ -31,7 +31,7 @@
 #include "hi_mpi_sync.h"
 #include "hi_module.h"
 #include "hi_mpi_mem.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -55,7 +55,9 @@ void SYNC_Mutex_UnLock(pthread_mutex_t *ss)
     pthread_mutex_unlock(ss);
 }
 
-
+static const HI_U8 s_szSyncVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 static HI_S32            g_SyncDevFd    = -1;
 static const HI_CHAR     g_SyncDevName[] ="/dev/"UMAP_DEVNAME_SYNC;
@@ -259,7 +261,7 @@ HI_S32 HI_MPI_SYNC_Init(HI_VOID)
 HI_S32 HI_MPI_SYNC_DeInit(HI_VOID)
 {
     HI_S32  Ret;
-    HI_U32  SyncNum;
+    HI_U32  SyncNum = 0;
 
     HI_SYNC_LOCK();
 
@@ -318,7 +320,7 @@ HI_S32 HI_MPI_SYNC_Create(HI_UNF_SYNC_ATTR_S *pstSyncAttr, HI_HANDLE *phSync)
 {
     SYNC_S               *pSync = HI_NULL;
     SYNC_CREATE_S        SyncCreate;
-    SYNC_USR_ADDR_S      SyncUsrAddr;
+    SYNC_USR_ADDR_S      SyncUsrAddr = {0};
     HI_S32                 Ret = 0;
 
     if (!phSync)
@@ -339,17 +341,15 @@ HI_S32 HI_MPI_SYNC_Create(HI_UNF_SYNC_ATTR_S *pstSyncAttr, HI_HANDLE *phSync)
     Ret = ioctl(g_SyncDevFd, CMD_SYNC_CREATE, &SyncCreate);
     if (Ret != HI_SUCCESS)
     {
-        return Ret;
+        goto RET;
     }
 
     /* map the memories allocated in kernel space to user space */
     pSync = (SYNC_S *)(HI_MMAP(SyncCreate.SyncPhyAddr, 0x1000));
     if (!pSync)
     {
-        HI_ERR_SYNC("SYNC memmap failed.\n");
-        (HI_VOID)ioctl(g_SyncDevFd, CMD_SYNC_DESTROY, &(SyncCreate.SyncId));
-
-         return HI_ERR_AVPLAY_CREATE_ERR;
+         Ret = HI_ERR_AVPLAY_CREATE_ERR;
+         goto SYNC_DESTROY;
     }
 
     SyncUsrAddr.SyncId = SyncCreate.SyncId;
@@ -358,21 +358,20 @@ HI_S32 HI_MPI_SYNC_Create(HI_UNF_SYNC_ATTR_S *pstSyncAttr, HI_HANDLE *phSync)
     Ret = ioctl(g_SyncDevFd, CMD_SYNC_SET_USRADDR, &SyncUsrAddr);
     if (Ret != HI_SUCCESS)
     {
-        (HI_VOID)ioctl(g_SyncDevFd, CMD_SYNC_DESTROY, &(SyncCreate.SyncId));
-
-         return HI_ERR_SYNC_CREATE_ERR;
+         Ret = HI_ERR_SYNC_CREATE_ERR;
+         goto SYNC_UNMAP;
     }
-    
     pSync->pSyncMutex = (pthread_mutex_t *)HI_MALLOC(HI_ID_SYNC, sizeof(pthread_mutex_t));
     if (pSync->pSyncMutex == HI_NULL)
     {
-        HI_ERR_SYNC("SYNC malloc failed.\n");
-        (HI_VOID)ioctl(g_SyncDevFd, CMD_SYNC_DESTROY, &(SyncCreate.SyncId));
-
-         return HI_ERR_SYNC_CREATE_ERR;
+         Ret = HI_ERR_SYNC_CREATE_ERR;
+         goto SYNC_UNMAP;
     }
+
     (HI_VOID)pthread_mutex_init(pSync->pSyncMutex, NULL);
 
+    SYNC_Mutex_Lock(pSync->pSyncMutex);
+    
     pSync->SyncAttr = *pstSyncAttr;
 
     pSync->VidEnable = HI_FALSE;
@@ -395,13 +394,24 @@ HI_S32 HI_MPI_SYNC_Create(HI_UNF_SYNC_ATTR_S *pstSyncAttr, HI_HANDLE *phSync)
 
     *phSync = (HI_ID_SYNC << 16) | SyncCreate.SyncId;
 
-    return     HI_SUCCESS ;
+    SYNC_Mutex_UnLock(pSync->pSyncMutex);
+
+    return     HI_SUCCESS;
+    
+SYNC_UNMAP:
+    (HI_VOID)HI_MUNMAP((HI_VOID *)SyncUsrAddr.SyncUsrAddr);
+    
+SYNC_DESTROY:
+    (HI_VOID)ioctl(g_SyncDevFd, CMD_SYNC_DESTROY, &(SyncCreate.SyncId));
+    
+RET:
+    return Ret;
 }
 
 HI_S32 HI_MPI_SYNC_Destroy(HI_HANDLE hSync)
 {
     SYNC_S               *pSync = HI_NULL;
-    SYNC_USR_ADDR_S    SyncUsrAddr;
+    SYNC_USR_ADDR_S    SyncUsrAddr = {0};
     HI_S32             Ret;
 
     if (!hSync)
@@ -420,20 +430,15 @@ HI_S32 HI_MPI_SYNC_Destroy(HI_HANDLE hSync)
 
     pSync = (SYNC_S *)SyncUsrAddr.SyncUsrAddr;
 
-    SYNC_Mutex_Lock((pthread_mutex_t *)pSync->pSyncMutex);
+    (HI_VOID)pthread_mutex_destroy(pSync->pSyncMutex);
+
+    HI_FREE(HI_ID_SYNC, (HI_VOID*)(pSync->pSyncMutex));    
 
     Ret = ioctl(g_SyncDevFd, CMD_SYNC_DESTROY, &SyncUsrAddr.SyncId);
     if (Ret != HI_SUCCESS)
     {
-        SYNC_Mutex_UnLock((pthread_mutex_t *)pSync->pSyncMutex);
         return Ret;
     }
-
-    SYNC_Mutex_UnLock((pthread_mutex_t *)pSync->pSyncMutex);
-    
-    (HI_VOID)pthread_mutex_destroy(pSync->pSyncMutex);
-
-    HI_FREE(HI_ID_SYNC, (HI_VOID*)(pSync->pSyncMutex));
 
     (HI_VOID)HI_MUNMAP((HI_VOID *)SyncUsrAddr.SyncUsrAddr);
 

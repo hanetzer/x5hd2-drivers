@@ -12,6 +12,7 @@
 #define _GPIO_I2C_EXT_H
 
 #include <linux/kernel.h>
+#include <linux/fs.h>
 #include "hi_type.h"
 
 HI_S32 GPIOI2C_DRV_ModInit(HI_VOID);

@@ -26,7 +26,7 @@
 #include "hi_drv_pvr.h"
 
 /*!@attention :define the following macro if you want PTS be set to I frames only */
-#define  PUT_PTS_ON_I_FRAME_ONLY
+#undef  PUT_PTS_ON_I_FRAME_ONLY
 
 /*!=======================================================================
                               constants
@@ -49,7 +49,7 @@
 //#define  FIDX_SLICE_TYPE_BB    6
 //#define  FIDX_SLICE_TYPE_II    7
 
-
+static HI_U32 gu32DirectFlag = 0;
 /*!=======================================================================
                                data structures
   =======================================================================*/
@@ -138,7 +138,7 @@ static FIDX_CTX_S  s_FidxIIS[FIDX_MAX_CTX_NUM];
 
 
 /*! callback, used to output infomation */
-static HI_S32 (*s_OutputFramePosition)(HI_U32 InstIdx, FRAME_POS_S *pstScInfo);
+static HI_S32 (*s_OutputFramePosition)(HI_U32 InstIdx, FRAME_POS_S *pstScInfo,HI_U32 u32DirectFlag);
 
 /*=======================================================================
                            function declaration
@@ -206,7 +206,7 @@ do {                                                                    \
 do{                                                                     \
     if( NULL != s_OutputFramePosition )                                 \
     {                                                                   \
-        (HI_VOID)s_OutputFramePosition((HI_U32)InstIdx, &pstCtx->stNewFramePos );       \
+        (HI_VOID)s_OutputFramePosition((HI_U32)InstIdx, &pstCtx->stNewFramePos,gu32DirectFlag); 		\
     }                                                                   \
     memset(&pstCtx->stNewFramePos, 0, sizeof(FRAME_POS_S));             \
     pstCtx->stNewFramePos.eFrameType = FIDX_FRAME_TYPE_UNKNOWN;         \
@@ -237,7 +237,7 @@ do{                                                                     \
 /*!***********************************************************************
     @brief global init, clear context, and register call back
  ************************************************************************/
-HI_VOID FIDX_Init(HI_S32 (*OutputFramePosition)(HI_U32 InstIdx, FRAME_POS_S *pstScInfo))
+HI_VOID FIDX_Init(HI_S32 (*OutputFramePosition)(HI_U32 InstIdx, FRAME_POS_S *pstScInfo,HI_U32 u32DirectFlag))
 {
     HI_S32 i;
 
@@ -318,7 +318,7 @@ static HI_S32 IsPesSC(HI_U8 Code, VIDSTD_E eVidStd )
     }
     else
     {
-        if( Code >= 0xc0 && Code <= 0xcf )
+		if( Code >= 0xc0 && Code <= 0xdf )
         {
             ret = 1;
         }
@@ -368,7 +368,7 @@ static HI_VOID DoPesHeader(HI_S32 InstID)
     PesFrame.u32PTS = ThisPTS;
     if( NULL != s_OutputFramePosition )
     {
-        (HI_VOID)s_OutputFramePosition((HI_U32)InstID, &PesFrame );
+        (HI_VOID)s_OutputFramePosition((HI_U32)InstID, &PesFrame,gu32DirectFlag);
     }
 
     return;
@@ -1320,13 +1320,14 @@ HI_S32 ProcessSC_H264(HI_S32 InstIdx)
     2. feed start code. In this method, the start code must be scanned outside,
        This call this function to create index.
  ************************************************************************/
-HI_VOID  FIDX_FeedStartCode(HI_S32 InstIdx, const FINDEX_SCD_S *pstSC)
+HI_VOID  FIDX_FeedStartCode(HI_S32 InstIdx, const FINDEX_SCD_S *pstSC,HI_U32 u32DirectFlag)
 {
     FIDX_CTX_S *pstCtx;
     FRAME_POS_S PesFrame;
 
     FIDX_ASSERT( InstIdx < FIDX_MAX_CTX_NUM, "InstIdx out of range");
     FIDX_ASSERT( pstSC != NULL, "pstSC is NULL");
+    gu32DirectFlag = u32DirectFlag;
 
     pstCtx = &s_FidxIIS[InstIdx];
 
@@ -1358,7 +1359,7 @@ HI_VOID  FIDX_FeedStartCode(HI_S32 InstIdx, const FINDEX_SCD_S *pstSC)
         PesFrame.u32PTS = pstSC->u32PtsMs;
         if( NULL != s_OutputFramePosition )
         {
-            (HI_VOID)s_OutputFramePosition( (HI_U32)InstIdx, &PesFrame );
+	        (HI_VOID)s_OutputFramePosition( (HI_U32)InstIdx, &PesFrame,u32DirectFlag);
         }
 
         pstCtx->s32ThisSCValid = 0;

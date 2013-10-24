@@ -6,7 +6,6 @@ extern "C"{
 #endif
 #endif
 
-/*寄存器读写操作*/
 HI_S32 VPSS_REG_RegWrite(volatile HI_U32 *a, HI_U32 b)
 {
     *a = b;      
@@ -18,24 +17,25 @@ HI_U32 VPSS_REG_RegRead(volatile HI_U32* a)
 }
 
 
-/*寄存器复位*/
 HI_S32 VPSS_REG_ReSetCRG(HI_VOID)
-{
-    HI_U32 *g_pSysHdClkRegVirAddr;
-    HI_U32 u32Count;
+{   
+    U_PERI_CRG60 PERI_CRG60;
     
-    g_pSysHdClkRegVirAddr = (HI_U32 *)IO_ADDRESS(VPSS_CRG_ADDR);
-
-    *g_pSysHdClkRegVirAddr = 0x11;
-
-    for(u32Count = 0;u32Count < 100;u32Count++)
-
-    *g_pSysHdClkRegVirAddr = 0x1;
-
+    PERI_CRG60.u32 = g_pstRegCrg->PERI_CRG60.u32;
+    PERI_CRG60.bits.vpss_cken = 1;
+    PERI_CRG60.bits.vpss_srst_req = 1;
+    g_pstRegCrg->PERI_CRG60.u32 = PERI_CRG60.u32;
+    /*wait for reg ready*/
+    udelay(1);
+    PERI_CRG60.u32 = g_pstRegCrg->PERI_CRG60.u32;
+    PERI_CRG60.bits.vpss_cken = 1;
+    PERI_CRG60.bits.vpss_srst_req = 0;
+    g_pstRegCrg->PERI_CRG60.u32 = PERI_CRG60.u32;
+    udelay(1);
+    
     return HI_SUCCESS;
 }
 
-/*寄存器物理地址映射*/
 HI_S32 VPSS_REG_BaseRegInit(VPSS_REG_S **ppstPhyReg)
 {
     *ppstPhyReg = (VPSS_REG_S * )IO_ADDRESS(VPSS_BASE_ADDR);
@@ -44,7 +44,6 @@ HI_S32 VPSS_REG_BaseRegInit(VPSS_REG_S **ppstPhyReg)
 }
 
 
-/*载入配置结点地址映射*/
 HI_S32 VPSS_REG_AppRegInit(VPSS_REG_S **ppstAppReg,HI_U32 u32VirAddr)
 {
     *ppstAppReg = (VPSS_REG_S * )u32VirAddr;
@@ -52,7 +51,6 @@ HI_S32 VPSS_REG_AppRegInit(VPSS_REG_S **ppstAppReg,HI_U32 u32VirAddr)
     return HI_SUCCESS;
 }
 
-/*配置结点重置*/
 HI_S32 VPSS_REG_ResetAppReg(HI_U32 u32AppAddr)
 {
     VPSS_REG_S *pstReg;
@@ -61,10 +59,6 @@ HI_S32 VPSS_REG_ResetAppReg(HI_U32 u32AppAddr)
     
     memset((void*)pstReg, 0, sizeof(VPSS_REG_S)); 
 
-    VPSS_REG_RegWrite(&(pstReg->VPSS_TIMEOUT), 0xf);
-    
-    // TODO:VPSS_MISCELLANEOUS.bit.ck_gt_en_calc待确认
-     
     VPSS_REG_RegWrite(&(pstReg->VPSS_MISCELLANEOUS.u32), 0x1003244);
     VPSS_REG_RegWrite(&(pstReg->VPSS_PNEXT), 0x0);
     VPSS_REG_RegWrite(&(pstReg->VPSS_INTMASK.u32), 0xf);
@@ -73,11 +67,9 @@ HI_S32 VPSS_REG_ResetAppReg(HI_U32 u32AppAddr)
 }
 
 
-/*中断寄存器相关操作*/
-/********************************/
 HI_S32 VPSS_REG_SetIntMask(HI_U32 u32AppAddr,HI_U32 u32Mask)
 {
-    
+     // TODO:新增解压错误、TUNNEL中断
     U_VPSS_INTMASK VPSS_INTMASK;
     
     VPSS_REG_S *pstReg;
@@ -85,7 +77,7 @@ HI_S32 VPSS_REG_SetIntMask(HI_U32 u32AppAddr,HI_U32 u32Mask)
     pstReg = (VPSS_REG_S *)u32AppAddr;
     
 
-    VPSS_INTMASK.u32 = u32Mask;
+    VPSS_INTMASK.u32 = u32Mask;    
     
     VPSS_REG_RegWrite(&(pstReg->VPSS_INTMASK.u32), VPSS_INTMASK.u32); 
 
@@ -99,7 +91,6 @@ HI_S32 VPSS_REG_GetIntMask(HI_U32 u32AppAddr,HI_U32 *pu32Mask)
     
     pstReg = (VPSS_REG_S *)u32AppAddr;
 
-    // TODO:新增解压错误、TUNNEL中断
     VPSS_INTMASK.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_INTMASK.u32));
 
 
@@ -115,7 +106,6 @@ HI_S32 VPSS_REG_GetIntState(HI_U32 u32AppAddr,HI_U32 *pu32Int)
     
     pstReg = (VPSS_REG_S *)u32AppAddr;
     
-    // TODO:新增解压错误、TUNNEL中断
     VPSS_INTSTATE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_INTSTATE.u32));
 
     *pu32Int = VPSS_INTSTATE.u32;
@@ -151,7 +141,6 @@ HI_S32 VPSS_REG_ClearIntState(HI_U32 u32AppAddr,HI_U32 u32Data)
 /********************************/
 
 
-/*逻辑超时设置*/
 HI_S32 VPSS_REG_SetTimeOut(HI_U32 u32AppAddr,HI_U32 u32Data)
 { 
     HI_U32 VPSS_TIMEOUT;
@@ -166,7 +155,6 @@ HI_S32 VPSS_REG_SetTimeOut(HI_U32 u32AppAddr,HI_U32 u32Data)
     return HI_SUCCESS;
 }
 
-/*配置结点地址载入，启动逻辑*/
 HI_S32 VPSS_REG_StartLogic(HI_U32 u32AppAddr,HI_U32 u32PhyAddr)
 {
     U_VPSS_START VPSS_START;
@@ -180,8 +168,32 @@ HI_S32 VPSS_REG_StartLogic(HI_U32 u32AppAddr,HI_U32 u32PhyAddr)
     VPSS_REG_RegWrite(&(pstReg->VPSS_START.u32), VPSS_START.u32);
     return HI_SUCCESS;
 }
-
-/*输出PORT使能*/
+HI_S32 VPSS_REG_CloseClock(HI_VOID)
+{  
+    U_PERI_CRG60 PERI_CRG60;
+    
+    PERI_CRG60.u32 = g_pstRegCrg->PERI_CRG60.u32;
+    PERI_CRG60.bits.vpss_cken = 0;
+    g_pstRegCrg->PERI_CRG60.u32 = PERI_CRG60.u32;
+    /*wait for reg ready*/
+    udelay(1);
+    
+    return HI_SUCCESS;
+    
+}
+HI_S32 VPSS_REG_OpenClock(HI_VOID)
+{  
+    U_PERI_CRG60 PERI_CRG60;
+    
+    PERI_CRG60.u32 = g_pstRegCrg->PERI_CRG60.u32;
+    PERI_CRG60.bits.vpss_cken = 1;
+    g_pstRegCrg->PERI_CRG60.u32 = PERI_CRG60.u32;
+    /*wait for reg ready*/
+    udelay(1);
+    
+    return HI_SUCCESS;
+    
+}
 HI_S32 VPSS_REG_EnPort(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL bEnable)
 {
     U_VPSS_CTRL VPSS_CTRL;
@@ -210,7 +222,7 @@ HI_S32 VPSS_REG_EnPort(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL bEnable)
 
     return HI_SUCCESS;
 }
-/*输入Image相关操作*/
+
 /********************************/
 HI_S32 VPSS_REG_SetImgSize(HI_U32 u32AppAddr,HI_U32 u32Height,HI_U32 u32Width,HI_BOOL bProgressive)
 {
@@ -221,7 +233,6 @@ HI_S32 VPSS_REG_SetImgSize(HI_U32 u32AppAddr,HI_U32 u32Height,HI_U32 u32Width,HI
     pstReg = (VPSS_REG_S *)u32AppAddr;
     VPSS_IMGSIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_IMGSIZE.u32));
 
-    // TODO:确认CV200 的输出IMG 高度是否还需要区分帧/场
     if(bProgressive)
     {
         VPSS_IMGSIZE.bits.imgheight = u32Height -1;
@@ -236,18 +247,19 @@ HI_S32 VPSS_REG_SetImgSize(HI_U32 u32AppAddr,HI_U32 u32Height,HI_U32 u32Width,HI
     VPSS_REG_RegWrite(&(pstReg->VPSS_IMGSIZE.u32), VPSS_IMGSIZE.u32);
     return HI_SUCCESS;
 }
-HI_S32 VPSS_REG_SetImgAddr(HI_U32 u32AppAddr,REG_FIELDPOS_E ePos,HI_U32 u32Yaddr,HI_U32 u32Caddr)
+HI_S32 VPSS_REG_SetImgAddr(HI_U32 u32AppAddr,REG_FIELDPOS_E ePos,HI_U32 u32Yaddr,HI_U32 u32Cbaddr,HI_U32 u32Craddr)
 {
-
-    // TODO:CV200读入地址不再按场区分，需要确认DEI时的配置
     HI_U32 VPSS_CURYADDR;
     HI_U32 VPSS_CURCBADDR;
+    HI_U32 VPSS_CURCRADDR;
     
     HI_U32 VPSS_LASTYADDR;
     HI_U32 VPSS_LASTCBADDR;
+    HI_U32 VPSS_LASTCRADDR;
 
     HI_U32 VPSS_NEXTYADDR;
     HI_U32 VPSS_NEXTCBADDR;
+    HI_U32 VPSS_NEXTCRADDR;
     
     VPSS_REG_S *pstReg;
     
@@ -258,33 +270,45 @@ HI_S32 VPSS_REG_SetImgAddr(HI_U32 u32AppAddr,REG_FIELDPOS_E ePos,HI_U32 u32Yaddr
         case LAST_FIELD:
             VPSS_LASTYADDR = VPSS_REG_RegRead(&(pstReg->VPSS_LASTYADDR));
             VPSS_LASTCBADDR = VPSS_REG_RegRead(&(pstReg->VPSS_LASTCBADDR));
-
-            VPSS_LASTYADDR = u32Yaddr;
-            VPSS_LASTCBADDR = u32Caddr;
+            VPSS_LASTCRADDR = VPSS_REG_RegRead(&(pstReg->VPSS_LASTCRADDR));
+            
+            VPSS_LASTYADDR    = u32Yaddr;
+            VPSS_LASTCBADDR = u32Cbaddr;
+            VPSS_LASTCRADDR = u32Craddr;
 
             VPSS_REG_RegWrite(&(pstReg->VPSS_LASTYADDR), VPSS_LASTYADDR);
             VPSS_REG_RegWrite(&(pstReg->VPSS_LASTCBADDR), VPSS_LASTCBADDR);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_LASTCRADDR), VPSS_LASTCRADDR);
             break;
+            
         case CUR_FIELD:
             VPSS_CURYADDR = VPSS_REG_RegRead(&(pstReg->VPSS_CURYADDR));
             VPSS_CURCBADDR = VPSS_REG_RegRead(&(pstReg->VPSS_CURCBADDR));
+            VPSS_CURCRADDR = VPSS_REG_RegRead(&(pstReg->VPSS_CURCRADDR));
+            
+            VPSS_CURYADDR     = u32Yaddr;
+            VPSS_CURCBADDR  = u32Cbaddr;
+            VPSS_CURCRADDR  = u32Craddr;
 
-            VPSS_CURYADDR = u32Yaddr;
-            VPSS_CURCBADDR = u32Caddr;
-
+            
             VPSS_REG_RegWrite(&(pstReg->VPSS_CURYADDR), VPSS_CURYADDR);
             VPSS_REG_RegWrite(&(pstReg->VPSS_CURCBADDR), VPSS_CURCBADDR);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CURCRADDR), VPSS_CURCRADDR);
             break;
         case NEXT1_FIELD:
             VPSS_NEXTYADDR = VPSS_REG_RegRead(&(pstReg->VPSS_NEXTYADDR));
             VPSS_NEXTCBADDR = VPSS_REG_RegRead(&(pstReg->VPSS_NEXTCBADDR));
+            VPSS_NEXTCRADDR = VPSS_REG_RegRead(&(pstReg->VPSS_NEXTCRADDR));
 
             VPSS_NEXTYADDR = u32Yaddr;
-            VPSS_NEXTCBADDR = u32Caddr;
-
+            VPSS_NEXTCBADDR = u32Cbaddr;
+            VPSS_NEXTCRADDR = u32Craddr;
+            
             VPSS_REG_RegWrite(&(pstReg->VPSS_NEXTYADDR), VPSS_NEXTYADDR);
             VPSS_REG_RegWrite(&(pstReg->VPSS_NEXTCBADDR), VPSS_NEXTCBADDR);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_NEXTCRADDR), VPSS_NEXTCRADDR);
             break;
+            
         default:
             VPSS_FATAL("FIELD ERROR\n");
     }
@@ -315,7 +339,7 @@ HI_S32 VPSS_REG_SetImgStride(HI_U32 u32AppAddr,REG_FIELDPOS_E ePos,HI_U32 u32YSt
             
             VPSS_CURSTRIDE.bits.curry_stride = u32YStride;
             VPSS_CURSTRIDE.bits.currc_stride = u32CStride;
-
+            
             VPSS_REG_RegWrite(&(pstReg->VPSS_CURSTRIDE.u32), VPSS_CURSTRIDE.u32);
             break;
         case NEXT1_FIELD:
@@ -340,17 +364,85 @@ HI_S32 VPSS_REG_SetImgFormat(HI_U32 u32AppAddr,HI_DRV_PIX_FORMAT_E eFormat)
     pstReg = (VPSS_REG_S *)u32AppAddr;
     VPSS_CTRL2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL2.u32));
 
-    // TODO:后续确认支持全格式的枚举名
     switch(eFormat)
     {
+        case HI_DRV_PIX_FMT_NV21:
         case HI_DRV_PIX_FMT_NV12:
+        case HI_DRV_PIX_FMT_NV12_CMP:
+        case HI_DRV_PIX_FMT_NV21_CMP:
             VPSS_CTRL2.bits.in_format = 0x0;
             break;
-        case HI_DRV_PIX_FMT_NV16:
+        case HI_DRV_PIX_FMT_NV12_TILE:
+        case HI_DRV_PIX_FMT_NV21_TILE:
+        case HI_DRV_PIX_FMT_NV21_TILE_CMP:
+        case HI_DRV_PIX_FMT_NV12_TILE_CMP:
+            VPSS_CTRL2.bits.in_format = 0x1;
+            break;
+        case HI_DRV_PIX_FMT_NV16_2X1:
+        case HI_DRV_PIX_FMT_NV61_2X1:
             VPSS_CTRL2.bits.in_format = 0x2;
             break;
+        case HI_DRV_PIX_FMT_NV16:
+        case HI_DRV_PIX_FMT_NV61:
+            VPSS_CTRL2.bits.in_format = 0x3;
+            break;
+        case HI_DRV_PIX_FMT_YUV400:
+            VPSS_CTRL2.bits.in_format = 0x4;
+            break; 
+        case HI_DRV_PIX_FMT_YUV_444:
+            VPSS_CTRL2.bits.in_format = 0x5;
+            break;  
+        case HI_DRV_PIX_FMT_YUV422_2X1:
+            VPSS_CTRL2.bits.in_format = 0x6;
+            break;         
+        case HI_DRV_PIX_FMT_YUV422_1X2:
+            VPSS_CTRL2.bits.in_format = 0x7;
+            break;          
+        case HI_DRV_PIX_FMT_YUV420p:
+            VPSS_CTRL2.bits.in_format = 0x8;
+            break;  
+        case HI_DRV_PIX_FMT_YUV411:
+            VPSS_CTRL2.bits.in_format = 0x9;
+            break;  
+        case HI_DRV_PIX_FMT_YUV410p:
+            VPSS_CTRL2.bits.in_format = 0xa;
+            break;  
+        case HI_DRV_PIX_FMT_YUYV:
+            VPSS_CTRL2.bits.in_format = 0xb;
+            break;  
+        case HI_DRV_PIX_FMT_YVYU:
+            VPSS_CTRL2.bits.in_format = 0xc;
+            break;  
+        case HI_DRV_PIX_FMT_UYVY:
+            VPSS_CTRL2.bits.in_format = 0xd;
+            break; 
+        case HI_DRV_PIX_FMT_ARGB8888:
+            VPSS_CTRL2.bits.in_format = 0xe;
+            break; 
+        case HI_DRV_PIX_FMT_ABGR8888:
+            VPSS_CTRL2.bits.in_format = 0xf;
+            break; 
+        case HI_DRV_PIX_FMT_ARGB1555:
+            VPSS_CTRL2.bits.in_format = 0x10;
+            break; 
+        case HI_DRV_PIX_FMT_ABGR1555:
+            VPSS_CTRL2.bits.in_format = 0x11;
+            break; 
+        case HI_DRV_PIX_FMT_RGB565:
+            VPSS_CTRL2.bits.in_format = 0x12;
+            break; 
+        #if 0
+        case HI_DRV_PIX_FMT_BGR565:
+            VPSS_CTRL2.bits.in_format = 0x13;
+            break; 
+        case HI_DRV_PIX_FMT_YUV400_TILE:
+        case HI_DRV_PIX_FMT_YUV400_TILE_CMP:
+            VPSS_CTRL2.bits.in_format = 0x14;
+            break;
+        #endif
+        
         default:
-            VPSS_FATAL("REG ERROR\n");
+            VPSS_FATAL("REG ERROR %d\n",eFormat);
     }
     
     VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL2.u32), VPSS_CTRL2.u32);
@@ -370,7 +462,7 @@ HI_S32 VPSS_REG_SetImgReadMod(HI_U32 u32AppAddr,HI_BOOL bField)
 }
 /********************************/
 
-/*输出Frame相关操作*/
+
 /********************************/
 HI_S32 VPSS_REG_SetFrmSize(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32Height,HI_U32 u32Width)
 {
@@ -408,17 +500,18 @@ HI_S32 VPSS_REG_SetFrmSize(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32Hei
     return HI_SUCCESS;
 }
 
-// TODO:函数原型增加传入压缩信息头地址
+
 HI_S32 VPSS_REG_SetFrmAddr(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32Yaddr,HI_U32 u32Caddr)
 {
     VPSS_REG_S *pstReg;
 
     pstReg = (VPSS_REG_S *)u32AppAddr;
+    //printk("REG : u32Yaddr :0x%x, u32Caddr : 0x%x \n", u32Yaddr, u32Caddr);
     switch(ePort)
     {
         case VPSS_REG_HD:
             VPSS_REG_RegWrite(&(pstReg->VPSS_VHDYADDR), u32Yaddr);
-            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCADDR), u32Caddr);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCADDR), u32Caddr);            
             break;
         case VPSS_REG_STR://STR
             VPSS_REG_RegWrite(&(pstReg->VPSS_STRYADDR), u32Yaddr);
@@ -473,22 +566,50 @@ HI_S32 VPSS_REG_SetFrmStride(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32Y
 HI_S32 VPSS_REG_SetFrmFormat(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_DRV_PIX_FORMAT_E eFormat)
 {
     U_VPSS_CTRL2 VPSS_CTRL2;
-    HI_U32 u32Format;
+    HI_U32 u32Format = 0;
     VPSS_REG_S *pstReg;
 
     
     pstReg = (VPSS_REG_S *)u32AppAddr;
 
-
-    // TODO: 增加各PORT输出格式检查
     switch(eFormat)
     {
+        case HI_DRV_PIX_FMT_NV21:
         case HI_DRV_PIX_FMT_NV12:
+        case HI_DRV_PIX_FMT_NV12_CMP:
+        case HI_DRV_PIX_FMT_NV21_CMP:
             u32Format = 0x0;
             break;
-        case HI_DRV_PIX_FMT_NV16:
+        case HI_DRV_PIX_FMT_NV61_2X1:
+        case HI_DRV_PIX_FMT_NV16_2X1:
+        case HI_DRV_PIX_FMT_NV16_2X1_CMP:
+        case HI_DRV_PIX_FMT_NV61_2X1_CMP:
             u32Format = 0x1;
             break;
+        case HI_DRV_PIX_FMT_YUYV:
+        //case HI_DRV_PIX_FMT_YUYV_CMP:
+            u32Format= 0x2;
+            break;  
+        case HI_DRV_PIX_FMT_YVYU:
+        //case HI_DRV_PIX_FMT_YVYU_CMP:
+            u32Format = 0x3;
+            break;  
+        case HI_DRV_PIX_FMT_UYVY:
+        //case HI_DRV_PIX_FMT_UYVY_CMP:
+            u32Format= 0x4;
+            break; 
+        case HI_DRV_PIX_FMT_ARGB8888:
+        //case HI_DRV_PIX_FMT_ARGB8888_CMP:
+            u32Format = 0x5;
+            break; 
+        case HI_DRV_PIX_FMT_ABGR8888:
+        //case HI_DRV_PIX_FMT_ABGR8888_CMP:
+            u32Format = 0x6;
+            break;             
+        //case HI_DRV_PIX_FMT_KBGR8888:
+        //case HI_DRV_PIX_FMT_KBGR8888_CMP:
+        //    u32Format = 0x7;
+        //    break;             
         default:
             VPSS_FATAL("REG ERROR\n");
             return HI_FAILURE;
@@ -517,7 +638,6 @@ HI_S32 VPSS_REG_SetFrmFormat(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_DRV_PIX_
 }
 /********************************/
 
-/*ZME相关操作*/
 /********************************/
 HI_S32 VPSS_REG_SetZmeEnable(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,REG_ZME_MODE_E eMode,HI_BOOL bEnable)
 {
@@ -627,13 +747,14 @@ HI_S32 VPSS_REG_SetZmeInSize(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32H
     pstReg = (VPSS_REG_S *)u32AppAddr;
     switch(ePort)
     {
+        case VPSS_REG_STR:
         case VPSS_REG_HD:
             VPSS_VHD_ZMEIRESO.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_ZMEIRESO.u32));
             VPSS_VHD_ZMEIRESO.bits.ih = u32Height - 1;
             VPSS_VHD_ZMEIRESO.bits.iw = u32Width - 1;
             VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_ZMEIRESO.u32), VPSS_VHD_ZMEIRESO.u32);
             break;
-        case VPSS_REG_SD://SD
+        case VPSS_REG_SD:
             VPSS_VSD_ZMEIRESO.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_ZMEIRESO.u32));
             VPSS_VSD_ZMEIRESO.bits.ih = u32Height - 1;
             VPSS_VSD_ZMEIRESO.bits.iw = u32Width - 1;
@@ -1070,7 +1191,11 @@ HI_S32 VPSS_REG_SetZmeRatio(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,
 }                                    
 HI_S32 VPSS_REG_SetZmeHfirOrder(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL bVfirst)
 {
+    U_VPSS_VHD_HSP VPSS_VHD_HSP;
+
     U_VPSS_VSD_HSP VPSS_VSD_HSP;
+
+    U_VPSS_STR_HSP VPSS_STR_HSP;
 
     VPSS_REG_S *pstReg;
     
@@ -1078,10 +1203,21 @@ HI_S32 VPSS_REG_SetZmeHfirOrder(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL 
     
     switch(ePort)
     {
+        case VPSS_REG_HD:
+            VPSS_VHD_HSP.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_HSP.u32));
+            //VPSS_VHD_HSP.bits.hfir_order = bVfirst;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_HSP.u32), VPSS_VHD_HSP.u32); 
+            
+            break;
         case VPSS_REG_SD://SD
             VPSS_VSD_HSP.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_HSP.u32));
             VPSS_VSD_HSP.bits.hfir_order = bVfirst;
             VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_HSP.u32), VPSS_VSD_HSP.u32); 
+            break;
+        case VPSS_REG_STR://STR
+            VPSS_STR_HSP.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_HSP.u32));
+            //VPSS_STR_HSP.bits.hfir_order = bVfirst;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_HSP.u32), VPSS_STR_HSP.u32); 
             break;
         default:
             VPSS_FATAL("REG ERROR\n");
@@ -1104,19 +1240,38 @@ HI_S32 VPSS_REG_SetZmeInFmt(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_DRV_PIX_F
 
     switch(eFormat)
     {
+        case HI_DRV_PIX_FMT_NV21_TILE_CMP:
+        case HI_DRV_PIX_FMT_NV12_TILE_CMP:
+        case HI_DRV_PIX_FMT_NV21_TILE:
+        case HI_DRV_PIX_FMT_NV12_TILE:
+        case HI_DRV_PIX_FMT_NV21:
         case HI_DRV_PIX_FMT_NV12:
+        case HI_DRV_PIX_FMT_NV61:
+        case HI_DRV_PIX_FMT_NV16:
+        case HI_DRV_PIX_FMT_YUV400:
+        case HI_DRV_PIX_FMT_YUV422_1X2:
+        case HI_DRV_PIX_FMT_YUV420p:
+        case HI_DRV_PIX_FMT_YUV410p:
             u32Format = 0x1;
             break;
-        case HI_DRV_PIX_FMT_NV16:
+        case HI_DRV_PIX_FMT_NV61_2X1:
+        case HI_DRV_PIX_FMT_NV16_2X1:
+        case HI_DRV_PIX_FMT_YUV_444:
+        case HI_DRV_PIX_FMT_YUV422_2X1:
+        case HI_DRV_PIX_FMT_YUV411:
+        case HI_DRV_PIX_FMT_YUYV:
+        case HI_DRV_PIX_FMT_YVYU:
+        case HI_DRV_PIX_FMT_UYVY:  
             u32Format = 0x0;
             break;
         default:
-            VPSS_FATAL("REG ERROR\n");
+            VPSS_FATAL("REG ERROR format %d\n",eFormat);
             return HI_FAILURE;
     }
     
     switch(ePort)
     {
+        case VPSS_REG_STR:
         case VPSS_REG_HD:
             VPSS_VHD_VSP.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_VSP.u32));
             VPSS_VHD_VSP.bits.zme_in_fmt = u32Format;
@@ -1151,14 +1306,30 @@ HI_S32 VPSS_REG_SetZmeOutFmt(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_DRV_PIX_
 
     switch(eFormat)
     {
+        case HI_DRV_PIX_FMT_NV21:
         case HI_DRV_PIX_FMT_NV12:
+        case HI_DRV_PIX_FMT_NV21_CMP:
+        case HI_DRV_PIX_FMT_NV12_CMP:
+        case HI_DRV_PIX_FMT_NV12_TILE:
+        case HI_DRV_PIX_FMT_NV21_TILE:
+        case HI_DRV_PIX_FMT_NV12_TILE_CMP:
+        case HI_DRV_PIX_FMT_NV21_TILE_CMP:
             u32Format = 0x1;
             break;
-        case HI_DRV_PIX_FMT_NV16:
+        case HI_DRV_PIX_FMT_NV61_2X1:
+        case HI_DRV_PIX_FMT_NV16_2X1:
+        case HI_DRV_PIX_FMT_NV61_2X1_CMP:
+        case HI_DRV_PIX_FMT_NV16_2X1_CMP:
+        case HI_DRV_PIX_FMT_YUYV:
+        case HI_DRV_PIX_FMT_YVYU:
+        case HI_DRV_PIX_FMT_UYVY:  
+        case HI_DRV_PIX_FMT_ARGB8888:   //sp420->sp422->csc->rgb
+        case HI_DRV_PIX_FMT_ABGR8888:
+        //case HI_DRV_PIX_FMT_KBGR8888:
             u32Format = 0x0;
             break;
         default:
-            VPSS_FATAL("REG ERROR\n");
+            VPSS_FATAL("REG ERROR format %d\n",eFormat);
             return HI_FAILURE;
     }
     
@@ -1311,7 +1482,6 @@ HI_S32 VPSS_REG_SetZmeCoefAddr(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,
                                     
 /********************************/
 
-/*入网指标DET相关操作*/
 /********************************/
 HI_VOID VPSS_REG_SetDetEn(HI_U32 u32AppAddr,HI_BOOL bEnable)
 {
@@ -1454,7 +1624,7 @@ HI_VOID VPSS_REG_GetDetPixel(HI_U32 u32AppAddr,HI_U32 BlkNum, HI_U8* pstData)
 }
 /********************************/
 
-/*DEI相关操作*/
+
 /*************************************************************************************************/
 
 /*DEI*/
@@ -1498,34 +1668,56 @@ HI_S32 VPSS_REG_SetDeiFieldMode(HI_U32 u32AppAddr,HI_BOOL bBottom)
     return HI_SUCCESS;
     
 }
-HI_S32 VPSS_REG_SetDeiAddr(HI_U32 u32AppAddr,REG_FIELDPOS_E eField,HI_U32 u32YAddr,HI_U32 u32CAddr)
+HI_S32 VPSS_REG_SetDeiAddr(HI_U32 u32AppAddr,REG_FRAMEPOS_E eField,HI_U32 u32YAddr,HI_U32 u32CAddr, HI_U32 u32CrAddr)
 {
-
-    // TODO: 确认DEI时，前后几场地址怎么配
     HI_U32 VPSS_LASTYADDR;
-    HI_U32 VPSS_LASTCBADDR;
+    HI_U32 VPSS_LASTCADDR;
+    HI_U32 VPSS_LASTCRADDR;
+    
+    HI_U32 VPSS_CURYADDR;
+    HI_U32 VPSS_CURCADDR;
+    HI_U32 VPSS_CURCRADDR;
+    
     
     HI_U32 VPSS_NEXTYADDR;
-    HI_U32 VPSS_NEXTCBADDR;
+    HI_U32 VPSS_NEXTCADDR;
+    HI_U32 VPSS_NEXTCRADDR;
     
     VPSS_REG_S *pstReg;
 
     pstReg = (VPSS_REG_S*)u32AppAddr;
-
+    
     switch(eField)
     {   
-        case LAST_FIELD:
+        case LAST_FRAME:
+        //printk("efield %d, u32YAddr :0x%x, u32CAddr 0x%x \n", eField, u32YAddr, u32CAddr);
             VPSS_LASTYADDR = u32YAddr;
-            VPSS_LASTCBADDR = u32CAddr;
+            VPSS_LASTCADDR = u32CAddr;
+            VPSS_LASTCRADDR = u32CrAddr;
             VPSS_REG_RegWrite(&(pstReg->VPSS_LASTYADDR), VPSS_LASTYADDR); 
-            VPSS_REG_RegWrite(&(pstReg->VPSS_LASTCBADDR), VPSS_LASTCBADDR); 
+            VPSS_REG_RegWrite(&(pstReg->VPSS_LASTCBADDR), VPSS_LASTCADDR); 
+            VPSS_REG_RegWrite(&(pstReg->VPSS_LASTCRADDR), VPSS_LASTCRADDR);
             break;
-        case NEXT1_FIELD:
+
+        case CUR_FRAME:
+            VPSS_CURYADDR = u32YAddr;
+            VPSS_CURCADDR = u32CAddr;
+            VPSS_CURCRADDR = u32CrAddr;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CURYADDR), VPSS_CURYADDR); 
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CURCBADDR), VPSS_CURCADDR); 
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CURCRADDR), VPSS_CURCRADDR); 
+            break;
+            
+        case NEXT_FRAME:
             VPSS_NEXTYADDR = u32YAddr;
-            VPSS_NEXTCBADDR = u32CAddr;
+            VPSS_NEXTCADDR = u32CAddr;
+            VPSS_NEXTCRADDR = u32CrAddr;
             VPSS_REG_RegWrite(&(pstReg->VPSS_NEXTYADDR), VPSS_NEXTYADDR); 
-            VPSS_REG_RegWrite(&(pstReg->VPSS_NEXTCBADDR), VPSS_NEXTCBADDR); 
+            VPSS_REG_RegWrite(&(pstReg->VPSS_NEXTCBADDR), VPSS_NEXTCADDR); 
+            VPSS_REG_RegWrite(&(pstReg->VPSS_NEXTCRADDR), VPSS_NEXTCRADDR); 
             break;
+
+            
         default:
             VPSS_FATAL("REG ERROR\n");
 
@@ -1533,9 +1725,10 @@ HI_S32 VPSS_REG_SetDeiAddr(HI_U32 u32AppAddr,REG_FIELDPOS_E eField,HI_U32 u32YAd
 
     return HI_SUCCESS;
 }
-HI_S32 VPSS_REG_SetDeiStride(HI_U32 u32AppAddr,REG_FIELDPOS_E eField,HI_U32 u32YStride,HI_U32 u32CStride)
+HI_S32 VPSS_REG_SetDeiStride(HI_U32 u32AppAddr,REG_FRAMEPOS_E eField,HI_U32 u32YStride,HI_U32 u32CStride)
 {
     U_VPSS_LASTSTRIDE   VPSS_LASTSTRIDE;
+    U_VPSS_CURSTRIDE   VPSS_CURSTRIDE;
     U_VPSS_NEXTSTRIDE VPSS_NEXTSTRIDE;
     
     VPSS_REG_S *pstReg;
@@ -1544,12 +1737,19 @@ HI_S32 VPSS_REG_SetDeiStride(HI_U32 u32AppAddr,REG_FIELDPOS_E eField,HI_U32 u32Y
 
     switch(eField)
     {   
-        case LAST_FIELD:
+        case LAST_FRAME:
             VPSS_LASTSTRIDE.bits.lasty_stride= u32YStride;
             VPSS_LASTSTRIDE.bits.lastc_stride= u32CStride;
             VPSS_REG_RegWrite(&(pstReg->VPSS_LASTSTRIDE.u32), VPSS_LASTSTRIDE.u32); 
             break;
-        case NEXT1_FIELD:
+            
+        case CUR_FRAME:
+            VPSS_CURSTRIDE.bits.curry_stride = u32YStride;
+            VPSS_CURSTRIDE.bits.currc_stride= u32CStride;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CURSTRIDE.u32), VPSS_CURSTRIDE.u32); 
+            break;
+         
+        case NEXT_FRAME:
             VPSS_NEXTSTRIDE.bits.nexty_stride= u32YStride;
             VPSS_NEXTSTRIDE.bits.nextc_stride= u32CStride;
 
@@ -1564,7 +1764,6 @@ HI_S32 VPSS_REG_SetDeiStride(HI_U32 u32AppAddr,REG_FIELDPOS_E eField,HI_U32 u32Y
 }
 HI_S32 VPSS_REG_SetModeEn(HI_U32 u32AppAddr,REG_DIE_MODE_E eDieMode,HI_BOOL bEnMode)
 {
-    // TODO: CV200逻辑去掉了色度和亮度的开关，只保留了总开关
     #if 0
     U_VPSS_DIECTRL VPSS_DIECTRL;
     VPSS_REG_S *pstReg;
@@ -1844,14 +2043,14 @@ HI_S32 VPSS_REG_SetCcDetThd(HI_U32 u32AppAddr,HI_S32 s32Thd)
 }
 HI_S32 VPSS_REG_SetSimiMax(HI_U32 u32AppAddr,HI_S32 s32SimiMax)
 {
-    U_VPSS_CCRSCLR0 VPSS_CCRSCLR0;
+    U_VPSS_CCRSCLR1 VPSS_CCRSCLR1;
     VPSS_REG_S *pstReg;
 
     pstReg = (VPSS_REG_S*)u32AppAddr;
 
-    VPSS_CCRSCLR0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CCRSCLR0.u32));
-    VPSS_CCRSCLR0.bits.no_ccr_detect_thd = s32SimiMax;
-    VPSS_REG_RegWrite(&(pstReg->VPSS_CCRSCLR0.u32), VPSS_CCRSCLR0.u32);
+    VPSS_CCRSCLR1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CCRSCLR1.u32));
+    VPSS_CCRSCLR1.bits.similar_max = s32SimiMax;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CCRSCLR1.u32), VPSS_CCRSCLR1.u32);
 
     return HI_SUCCESS;
 
@@ -2472,6 +2671,70 @@ HI_S32 VPSS_REG_SetHisUseMode(HI_U32 u32AppAddr,HI_BOOL bHisMtnUseMd)
     return HI_SUCCESS;
 
 }
+HI_S32 VPSS_REG_SetMorFlt(HI_U32 u32AppAddr,HI_BOOL bEnflt,HI_S8 s8FltSize,HI_S8 s8FltThd)
+{
+  U_VPSS_DIEMORFLT VPSS_DIEMORFLT;
+  VPSS_REG_S *pstReg;
+
+  pstReg = (VPSS_REG_S*)u32AppAddr;
+
+  VPSS_DIEMORFLT.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DIEMORFLT.u32));
+
+  VPSS_DIEMORFLT.bits.mor_flt_en   = bEnflt;
+  VPSS_DIEMORFLT.bits.mor_flt_size = s8FltSize;
+  VPSS_DIEMORFLT.bits.mor_flt_thd  = s8FltThd;
+  
+  VPSS_REG_RegWrite(&(pstReg->VPSS_DIEMORFLT.u32), VPSS_DIEMORFLT.u32);
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetBlendEn(HI_U32 u32AppAddr,HI_BOOL bEnBlend)
+{
+  U_VPSS_DIEMORFLT VPSS_DIEMORFLT;
+  VPSS_REG_S *pstReg;
+
+  pstReg = (VPSS_REG_S*)u32AppAddr;
+
+  VPSS_DIEMORFLT.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DIEMORFLT.u32));
+  VPSS_DIEMORFLT.bits.med_blend_en = bEnBlend;
+  VPSS_REG_RegWrite(&(pstReg->VPSS_DIEMORFLT.u32), VPSS_DIEMORFLT.u32);
+
+  return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetDeflickerEn(HI_U32 u32AppAddr,HI_BOOL bEnDeflicker)
+{
+  U_VPSS_DIEMORFLT VPSS_DIEMORFLT;
+  VPSS_REG_S *pstReg;
+
+  pstReg = (VPSS_REG_S*)u32AppAddr;
+
+  VPSS_DIEMORFLT.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DIEMORFLT.u32));
+  VPSS_DIEMORFLT.bits.deflicker_en = bEnDeflicker;
+  VPSS_REG_RegWrite(&(pstReg->VPSS_DIEMORFLT.u32), VPSS_DIEMORFLT.u32);
+
+  return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_AdjustGain(HI_U32 u32AppAddr,HI_S8 s8Gain)
+{
+  U_VPSS_DIEMORFLT VPSS_DIEMORFLT;
+  VPSS_REG_S *pstReg;
+
+  pstReg = (VPSS_REG_S*)u32AppAddr;
+
+  VPSS_DIEMORFLT.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DIEMORFLT.u32));
+  VPSS_DIEMORFLT.bits.adjust_gain = s8Gain;
+  VPSS_REG_RegWrite(&(pstReg->VPSS_DIEMORFLT.u32), VPSS_DIEMORFLT.u32);
+
+  return HI_SUCCESS;
+}
+
+
+
+
+
+
 HI_S32 VPSS_REG_SetHisPreEn(HI_U32 u32AppAddr,HI_BOOL bEnPre)
 {
     U_VPSS_DIEHISMODE VPSS_DIEHISMODE;
@@ -2621,7 +2884,2569 @@ HI_S32 VPSS_REG_SetDeiParaAddr(HI_U32 u32AppAddr,HI_U32 u32ParaPhyAddr)
     return HI_SUCCESS;
 
 }
+HI_S32 VPSS_REG_GetHisBin(HI_U32 u32AppAddr,HI_S32 *pstData)
+{   
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    pstData[0] = VPSS_REG_RegRead(&(pstReg->VPSS_PDHISTBIN[0]));
+    pstData[1] = VPSS_REG_RegRead(&(pstReg->VPSS_PDHISTBIN[1]));
+    pstData[2] = VPSS_REG_RegRead(&(pstReg->VPSS_PDHISTBIN[2]));
+    pstData[3] = VPSS_REG_RegRead(&(pstReg->VPSS_PDHISTBIN[3]));
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_GetItDiff(HI_U32 u32AppAddr,HI_S32 *pstData)
+{
+    HI_S32 VPSS_PDFRMITDIFF;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    
+    VPSS_PDFRMITDIFF = VPSS_REG_RegRead(&(pstReg->VPSS_PDFRMITDIFF));
+
+    *pstData = VPSS_PDFRMITDIFF;
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_GetPdMatch(HI_U32 u32AppAddr,
+                            HI_S32 *ps32Match0,HI_S32 *ps32UnMatch0,
+                            HI_S32 *ps32Match1,HI_S32 *ps32UnMatch1)
+{
+    HI_S32 VPSS_PDUMMATCH0;
+    HI_S32 VPSS_PDUMNOMATCH0;
+    HI_S32 VPSS_PDUMMATCH1;
+    HI_S32 VPSS_PDUMNOMATCH1;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    
+    VPSS_PDUMMATCH0 = VPSS_REG_RegRead(&(pstReg->VPSS_PDUMMATCH0));
+    VPSS_PDUMNOMATCH0 = VPSS_REG_RegRead(&(pstReg->VPSS_PDUMNOMATCH0));
+    VPSS_PDUMMATCH1 = VPSS_REG_RegRead(&(pstReg->VPSS_PDUMMATCH1));
+    VPSS_PDUMNOMATCH1 = VPSS_REG_RegRead(&(pstReg->VPSS_PDUMNOMATCH1));
+
+    *ps32Match0 = VPSS_PDUMMATCH0;
+    *ps32UnMatch0 = VPSS_PDUMNOMATCH0;
+    *ps32Match1 = VPSS_PDUMMATCH1;
+    *ps32UnMatch1 = VPSS_PDUMNOMATCH1;
+    return HI_SUCCESS;
+}                       
+
+
+HI_S32 VPSS_REG_GetLasiCnt(HI_U32 u32AppAddr,
+                            HI_S32 *ps32Cnt14,HI_S32 *ps32Cnt32,
+                            HI_S32 *ps32Cnt34)
+{
+    HI_S32 VPSS_PDLASICNT14;
+    HI_S32 VPSS_PDLASICNT32;
+    HI_S32 VPSS_PDLASICNT34;
+    
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_PDLASICNT14 = VPSS_REG_RegRead(&(pstReg->VPSS_PDLASICNT14));
+    VPSS_PDLASICNT32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDLASICNT32));
+    VPSS_PDLASICNT34 = VPSS_REG_RegRead(&(pstReg->VPSS_PDLASICNT34));
+
+    *ps32Cnt14 = VPSS_PDLASICNT14;
+    *ps32Cnt32 = VPSS_PDLASICNT32;
+    *ps32Cnt34 = VPSS_PDLASICNT34;
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_GetPdIchd(HI_U32 u32AppAddr,HI_S32 *pstData)
+{
+    HI_S32 VPSS_PDICHD;
+    
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_PDICHD = VPSS_REG_RegRead(&(pstReg->VPSS_PDICHD));
+
+    *pstData = VPSS_PDICHD;
+    
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_GetBlkSad(HI_U32 u32AppAddr,HI_S32 *pstData)
+{
+    HI_S32  VPSS_PDSTLBLKSAD[16];
+    HI_U32 u32Count;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    for(u32Count = 0; u32Count < 16; u32Count ++)
+    {
+        VPSS_PDSTLBLKSAD[u32Count] = VPSS_REG_RegRead(&(pstReg->VPSS_PDSTLBLKSAD[u32Count]));
+        pstData[u32Count] = VPSS_PDSTLBLKSAD[u32Count];
+    }
+    
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_GetPccData(HI_U32 u32AppAddr,HI_S32 *ps32FFWD,
+                             HI_S32 *ps32FWD,HI_S32 *ps32BWD,HI_S32 *ps32CRSS,
+                             HI_S32 *ps32PW,HI_S32 *ps32FWDTKR,HI_S32 *ps32WDTKR)
+{
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    *ps32FFWD = VPSS_REG_RegRead(&(pstReg->VPSS_PDPCCFFWD));
+    *ps32FWD = VPSS_REG_RegRead(&(pstReg->VPSS_PDPCCFWD));
+    *ps32BWD = VPSS_REG_RegRead(&(pstReg->VPSS_PDPCCBWD));
+    *ps32CRSS = VPSS_REG_RegRead(&(pstReg->VPSS_PDPCCCRSS));
+    *ps32PW = VPSS_REG_RegRead(&(pstReg->VPSS_PDPCCPW));
+    *ps32FWDTKR = VPSS_REG_RegRead(&(pstReg->VPSS_PDPCCFWDTKR));
+    *ps32WDTKR = VPSS_REG_RegRead(&(pstReg->VPSS_PDPCCBWDTKR));
+
+    return HI_SUCCESS;
+}
+
+/**FMD */
+HI_S32 VPSS_REG_SetDeiEdgeSmoothRatio(HI_U32 u32AppAddr,HI_S8 u8Data)
+{
+    U_VPSS_PDCTRL VPSS_PDCTRL;
+    VPSS_REG_S *pstReg;
+
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDCTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDCTRL.u32));
+    VPSS_PDCTRL.bits.edge_smooth_ratio = u8Data;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDCTRL.u32), VPSS_PDCTRL.u32); 
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetDeiStillBlkThd(HI_U32 u32AppAddr,HI_S8 u8Data)
+{
+    U_VPSS_PDBLKTHD VPSS_PDBLKTHD;
+    VPSS_REG_S *pstReg;
+
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDBLKTHD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDBLKTHD.u32));
+    VPSS_PDBLKTHD.bits.diff_movblk_thd = u8Data;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDBLKTHD.u32), VPSS_PDBLKTHD.u32); 
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetDeiHistThd(HI_U32 u32AppAddr,HI_S8 *pu8Data)
+{
+    U_VPSS_PDPHISTTHD1  VPSS_PDPHISTTHD1;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_PDPHISTTHD1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDPHISTTHD1.u32));
+    VPSS_PDPHISTTHD1.bits.hist_thd0 = pu8Data[0];
+    VPSS_PDPHISTTHD1.bits.hist_thd1 = pu8Data[1];
+    VPSS_PDPHISTTHD1.bits.hist_thd2 = pu8Data[2];
+    VPSS_PDPHISTTHD1.bits.hist_thd3 = pu8Data[3];
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDPHISTTHD1.u32), VPSS_PDPHISTTHD1.u32); 
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetDeiUmThd(HI_U32 u32AppAddr,HI_S8 *pu8Data)
+{
+    U_VPSS_PDUMTHD VPSS_PDUMTHD;
+    VPSS_REG_S *pstReg;
+
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDUMTHD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDUMTHD.u32));
+    VPSS_PDUMTHD.bits.um_thd0 = pu8Data[0];
+    VPSS_PDUMTHD.bits.um_thd1 = pu8Data[1];
+    VPSS_PDUMTHD.bits.um_thd2 = pu8Data[2];
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDUMTHD.u32), VPSS_PDUMTHD.u32); 
+    
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetDeiCoring(HI_U32 u32AppAddr,HI_S8 s8CorBlk,HI_S8 s8CorNorm,HI_S8 s8CorTkr)
+{
+    U_VPSS_PDPCCCORING VPSS_PDPCCCORING;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDPCCCORING.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDPCCCORING.u32));
+    VPSS_PDPCCCORING.bits.coring_blk = s8CorBlk;
+    VPSS_PDPCCCORING.bits.coring_norm = s8CorNorm;
+    VPSS_PDPCCCORING.bits.coring_tkr = s8CorTkr;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDPCCCORING.u32), VPSS_PDPCCCORING.u32); 
+    
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetDeiMovCoring(HI_U32 u32AppAddr,HI_S8 s8Blk,HI_S8 s8Norm,HI_S8 s8Tkr)
+{
+    U_VPSS_PDPCCMOV VPSS_PDPCCMOV;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDPCCMOV.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDPCCMOV.u32));
+    VPSS_PDPCCMOV.bits.mov_coring_blk = s8Blk;
+    VPSS_PDPCCMOV.bits.mov_coring_norm = s8Norm;
+    VPSS_PDPCCMOV.bits.mov_coring_tkr = s8Tkr;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDPCCMOV.u32), VPSS_PDPCCMOV.u32);
+    //printk("\n VPSS_PDPCCCORING.u32 = %x\n",pstReg->VPSS_PDPCCMOV.u32);
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetDeiPccHThd(HI_U32 u32AppAddr,HI_S8 s8Data)
+{
+    U_VPSS_PDPCCHTHD VPSS_PDPCCHTHD;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDPCCHTHD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDPCCHTHD.u32));
+    VPSS_PDPCCHTHD.bits.pcc_hthd = s8Data;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDPCCHTHD.u32), VPSS_PDPCCHTHD.u32); 
+    
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetDeiPccVThd(HI_U32 u32AppAddr,HI_S8 *ps8Data)
+{
+    U_VPSS_PDPCCVTHD VPSS_PDPCCVTHD;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDPCCVTHD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDPCCVTHD.u32));
+    VPSS_PDPCCVTHD.bits.pcc_vthd0 = ps8Data[0];
+    VPSS_PDPCCVTHD.bits.pcc_vthd1 = ps8Data[1];
+    VPSS_PDPCCVTHD.bits.pcc_vthd2 = ps8Data[2];
+    VPSS_PDPCCVTHD.bits.pcc_vthd3 = ps8Data[3];
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDPCCVTHD.u32), VPSS_PDPCCVTHD.u32); 
+    
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetDeiItDiff(HI_U32 u32AppAddr,HI_S8 *ps8Data)
+{
+    U_VPSS_PDITDIFFVTHD VPSS_PDITDIFFVTHD;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDITDIFFVTHD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDITDIFFVTHD.u32));
+    VPSS_PDITDIFFVTHD.bits.itdiff_vthd0 = ps8Data[0];
+    VPSS_PDITDIFFVTHD.bits.itdiff_vthd1 = ps8Data[1];
+    VPSS_PDITDIFFVTHD.bits.itdiff_vthd2 = ps8Data[2];
+    VPSS_PDITDIFFVTHD.bits.itdiff_vthd3 = ps8Data[3];
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDITDIFFVTHD.u32), VPSS_PDITDIFFVTHD.u32); 
+    
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetDeiLasiCtrl(HI_U32 u32AppAddr,HI_S8 s8Thr,HI_S8 s8EdgeThr,HI_S8 s8lasiThr)
+{
+    U_VPSS_PDLASITHD VPSS_PDLASITHD;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDLASITHD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDLASITHD.u32));
+    VPSS_PDLASITHD.bits.lasi_mov_thr = s8lasiThr;
+    VPSS_PDLASITHD.bits.edge_thd = s8EdgeThr;
+    VPSS_PDLASITHD.bits.lasi_thd = s8Thr;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDLASITHD.u32),VPSS_PDLASITHD.u32);
+    
+    return HI_SUCCESS; 
+}
+
+HI_S32 VPSS_REG_SetDeiPdBitMove(HI_U32 u32AppAddr,HI_S32  s32Data)
+{
+    U_VPSS_PDCTRL VPSS_PDCTRL;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDCTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDCTRL.u32));
+    VPSS_PDCTRL.bits.bitsmov2r = s32Data + 6;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDCTRL.u32),VPSS_PDCTRL.u32); 
+    
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetDeiDirMch(HI_U32 u32AppAddr,HI_BOOL  bNext)
+{
+    U_VPSS_PDCTRL VPSS_PDCTRL;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDCTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDCTRL.u32));
+    VPSS_PDCTRL.bits.dir_mch_l = bNext;
+    VPSS_PDCTRL.bits.dir_mch_c = bNext;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDCTRL.u32),VPSS_PDCTRL.u32); 
+  //  printk("\ndir_mch_l %x\n",pstReg->VPSS_PDCTRL.bits.dir_mch_l);
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetEdgeSmooth(HI_U32 u32AppAddr,HI_BOOL  bEdgeSmooth)
+{
+    U_VPSS_PDCTRL VPSS_PDCTRL;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_PDCTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_PDCTRL.u32));
+    VPSS_PDCTRL.bits.edge_smooth_en = bEdgeSmooth;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_PDCTRL.u32),VPSS_PDCTRL.u32);
+    
+    return HI_SUCCESS;
+}
+
+
 /*************************************************************************************************/
+
+
+HI_S32 VPSS_REG_SetVc1En(HI_U32 u32AppAddr,HI_U32 u32EnVc1)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+
+    VPSS_CTRL.bits.vc1_en = u32EnVc1;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetVc1Profile(HI_U32 u32AppAddr,REG_FRAMEPOS_E ePos,HI_U32 u32Profile)
+{
+    U_VPSS_VC1_CTRL VPSS_VC1_CTRL;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_VC1_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VC1_CTRL[ePos].u32));
+    VPSS_VC1_CTRL.bits.vc1_profile = u32Profile;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_VC1_CTRL[ePos].u32), VPSS_VC1_CTRL.u32); 
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetVc1Map(HI_U32 u32AppAddr,REG_FRAMEPOS_E ePos,HI_U32 u32MapY,HI_U32 u32MapC,
+                            HI_U32 u32BMapY,HI_U32 u32BMapC)
+{
+    U_VPSS_VC1_CTRL VPSS_VC1_CTRL;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_VC1_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VC1_CTRL[ePos].u32));
+    VPSS_VC1_CTRL.bits.vc1_mapy = u32MapY;
+    VPSS_VC1_CTRL.bits.vc1_mapc = u32MapC;
+    VPSS_VC1_CTRL.bits.vc1_bmapy = u32BMapY;
+    VPSS_VC1_CTRL.bits.vc1_bmapc= u32BMapC;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_VC1_CTRL[ePos].u32), VPSS_VC1_CTRL.u32); 
+    return HI_SUCCESS;
+}                            
+HI_S32 VPSS_REG_SetVc1MapFlag(HI_U32 u32AppAddr,REG_FRAMEPOS_E ePos,HI_U32 u32YFlag,HI_U32 u32CFlag,
+                            HI_U32 u32BYFlag,HI_U32 u32BCFlag)
+{
+    U_VPSS_VC1_CTRL VPSS_VC1_CTRL;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_VC1_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VC1_CTRL[ePos].u32));
+    VPSS_VC1_CTRL.bits.vc1_mapyflg = u32YFlag;
+    VPSS_VC1_CTRL.bits.vc1_mapcflg = u32CFlag;
+    VPSS_VC1_CTRL.bits.vc1_bmapyflg = u32BYFlag;
+    VPSS_VC1_CTRL.bits.vc1_bmapcflg = u32BCFlag;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_VC1_CTRL[ePos].u32), VPSS_VC1_CTRL.u32); 
+    return HI_SUCCESS;
+}                            
+HI_S32 VPSS_REG_SetVc1RangeEn(HI_U32 u32AppAddr,REG_FRAMEPOS_E ePos,HI_U32 u32EnVc1)
+{
+    U_VPSS_VC1_CTRL VPSS_VC1_CTRL;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_VC1_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VC1_CTRL[ePos].u32));
+    VPSS_VC1_CTRL.bits.vc1_rangedfrm = u32EnVc1;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_VC1_CTRL[ePos].u32), VPSS_VC1_CTRL.u32); 
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetUVConvertEn(HI_U32 u32AppAddr,HI_U32 u32EnUV)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+    VPSS_CTRL.bits.uv_invert = u32EnUV;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetDREn(HI_U32 u32AppAddr,HI_BOOL  bEnDR)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+   // U_VPSS_DNR_CTRL VPSS_DNR_CTRL;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+    VPSS_CTRL.bits.dr_en = bEnDR;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+
+/*
+    VPSS_DNR_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DNR_CTRL.u32));
+    VPSS_DNR_CTRL.bits.dr_en = bEnDR;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DNR_CTRL.u32), VPSS_DNR_CTRL.u32); 
+*/
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetDRPara(HI_U32 u32AppAddr,HI_S32  s32FlatThd,HI_S32  s32SimiThd,
+                            HI_S32 s32AlphaScale,HI_S32 s32BetaScale)
+{
+    U_VPSS_DR_CFG0 VPSS_DR_CFG0;
+    U_VPSS_DR_CFG1 VPSS_DR_CFG1;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DR_CFG0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DR_CFG0.u32));
+    VPSS_DR_CFG0.bits.drthrflat3x3zone = s32FlatThd;    
+    VPSS_DR_CFG0.bits.drthrmaxsimilarpixdiff = s32SimiThd;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DR_CFG0.u32), VPSS_DR_CFG0.u32); 
+    
+    VPSS_DR_CFG1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DR_CFG1.u32));
+    VPSS_DR_CFG1.bits.dralphascale = s32AlphaScale;    
+    VPSS_DR_CFG1.bits.drbetascale = s32BetaScale;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DR_CFG1.u32), VPSS_DR_CFG1.u32); 
+    return HI_SUCCESS;
+    
+}               
+/*DB*/                          
+HI_S32 VPSS_REG_SetDBEn(HI_U32 u32AppAddr,HI_BOOL  bEnDB)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+  //  U_VPSS_DNR_CTRL VPSS_DNR_CTRL;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+    VPSS_CTRL.bits.db_en = bEnDB;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+/*    
+    VPSS_DNR_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DNR_CTRL.u32));
+    VPSS_DNR_CTRL.bits.db_en = bEnDB;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DNR_CTRL.u32), VPSS_DNR_CTRL.u32); 
+*/
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetDBVH(HI_U32 u32AppAddr,HI_BOOL  bEnVert, HI_BOOL bEnHor)
+{
+    U_VPSS_DB_CFG0 VPSS_DB_CFG0;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    
+    VPSS_DB_CFG0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG0.u32));
+    VPSS_DB_CFG0.bits.dbenvert = bEnVert;    
+    VPSS_DB_CFG0.bits.dbenhor = bEnHor;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG0.u32), VPSS_DB_CFG0.u32); 
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetEdgeThd(HI_U32 u32AppAddr,HI_S32  s32Thd)
+{
+    U_VPSS_DB_CFG0 VPSS_DB_CFG0;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DB_CFG0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG0.u32));
+    VPSS_DB_CFG0.bits.thrdbedgethr = s32Thd;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG0.u32), VPSS_DB_CFG0.u32); 
+    return HI_SUCCESS;
+}
+
+#if 0
+HI_S32 VPSS_REG_SetVerProg(HI_U32 u32AppAddr,HI_BOOL  bProg)
+{
+    U_VPSS_DB_CFG0 VPSS_DB_CFG0;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DB_CFG0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG0.u32));
+    VPSS_DB_CFG0.bits.dbvertasprog = bProg;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG0.u32), VPSS_DB_CFG0.u32); 
+    return HI_SUCCESS;
+}
+#endif 
+
+HI_S32 VPSS_REG_SetThrGrad(HI_U32 u32AppAddr,HI_BOOL  bgrad)
+{
+    U_VPSS_DB_CFG0 VPSS_DB_CFG0;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DB_CFG0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG0.u32));
+    VPSS_DB_CFG0.bits.dbthrmaxgrad = bgrad;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG0.u32), VPSS_DB_CFG0.u32); 
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetTextEn(HI_U32 u32AppAddr,HI_BOOL  btexten)
+{
+    U_VPSS_DB_CFG0 VPSS_DB_CFG0;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DB_CFG0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG0.u32));
+    VPSS_DB_CFG0.bits.dbtexten = btexten;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG0.u32), VPSS_DB_CFG0.u32); 
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetWeakFlt(HI_U32 u32AppAddr,HI_BOOL  bWeak)
+{
+    U_VPSS_DB_CFG0 VPSS_DB_CFG0;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DB_CFG0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG0.u32));
+    VPSS_DB_CFG0.bits.dbuseweakflt = bWeak;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG0.u32), VPSS_DB_CFG0.u32); 
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetMaxDiff(HI_U32 u32AppAddr,HI_S32  s32VerMax,HI_S32  s32HorMax)
+{
+    U_VPSS_DB_CFG1 VPSS_DB_CFG1;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DB_CFG1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG1.u32));
+    VPSS_DB_CFG1.bits.dbthrmaxdiffvert = s32VerMax;    
+    VPSS_DB_CFG1.bits.dbthrmaxdiffhor = s32HorMax;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG1.u32), VPSS_DB_CFG1.u32); 
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetLeastDiff(HI_U32 u32AppAddr,HI_S32  s32VerLeast,HI_S32  s32HorLeast)
+{
+    U_VPSS_DB_CFG1 VPSS_DB_CFG1;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DB_CFG1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG1.u32));
+    VPSS_DB_CFG1.bits.dbthrleastblkdiffvert = s32VerLeast;    
+    VPSS_DB_CFG1.bits.dbthrleastblkdiffhor = s32HorLeast;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG1.u32), VPSS_DB_CFG1.u32); 
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetScale(HI_U32 u32AppAddr,HI_S32  s32Alpha,HI_S32  s32Beta)
+{
+    U_VPSS_DB_CFG2 VPSS_DB_CFG2;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DB_CFG2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG2.u32));
+    VPSS_DB_CFG2.bits.dbalphascale = s32Alpha;    
+    VPSS_DB_CFG2.bits.dbbetascale = s32Beta;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG2.u32), VPSS_DB_CFG2.u32); 
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetSmoothThd(HI_U32 u32AppAddr,HI_S32  s32Thd)
+{
+    U_VPSS_DB_CFG2 VPSS_DB_CFG2;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DB_CFG2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG2.u32));
+    VPSS_DB_CFG2.bits.thrdblargesmooth = s32Thd;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG2.u32), VPSS_DB_CFG2.u32); 
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetQpThd(HI_U32 u32AppAddr,HI_S32  s32Thd)
+{
+    U_VPSS_DB_CFG2 VPSS_DB_CFG2;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DB_CFG2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG2.u32));
+    VPSS_DB_CFG2.bits.detailimgqpthr = s32Thd;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG2.u32), VPSS_DB_CFG2.u32); 
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetPicestQp(HI_U32 u32AppAddr,HI_S32  s32Picest)
+{
+    U_VPSS_DB_CFG0 VPSS_DB_CFG0;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DB_CFG0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DB_CFG0.u32));
+    VPSS_DB_CFG0.bits.picestqp = s32Picest;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DB_CFG0.u32), VPSS_DB_CFG0.u32); 
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetDnrInfo(HI_U32 u32AppAddr,HI_U32  u32Rcnt,HI_U32  u32Bcnt,HI_U32  u32MaxGrad,HI_U32  u32Cntrst8)
+{
+    U_VPSS_DNR_INFO VPSS_DNR_INFO;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_DNR_INFO.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DNR_INFO.u32));
+    VPSS_DNR_INFO.bits.thdcntrst8 = u32Cntrst8;    
+    VPSS_DNR_INFO.bits.thdmaxgrad = u32MaxGrad;    
+    VPSS_DNR_INFO.bits.thrintlcnt = u32Rcnt;    
+    VPSS_DNR_INFO.bits.thrintlcolcnt = u32Bcnt;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DNR_INFO.u32), VPSS_DNR_INFO.u32); 
+    return HI_SUCCESS;
+}
+
+
+
+
+/*LTI/CTI*/
+HI_S32 VPSS_REG_SetLTIEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL  bEnLTI)
+{
+    U_VPSS_VHD_LTI_CTRL VPSS_VHD_LTI_CTRL;
+    U_VPSS_VSD_LTI_CTRL VPSS_VSD_LTI_CTRL;
+    U_VPSS_STR_LTI_CTRL VPSS_STR_LTI_CTRL;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_LTI_CTRL.u32));
+            VPSS_VHD_LTI_CTRL.bits.lti_en = bEnLTI;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_LTI_CTRL.u32), VPSS_VHD_LTI_CTRL.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_LTI_CTRL.u32));
+            VPSS_VSD_LTI_CTRL.bits.lti_en = bEnLTI;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_LTI_CTRL.u32), VPSS_VSD_LTI_CTRL.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_LTI_CTRL.u32));
+            VPSS_STR_LTI_CTRL.bits.lti_en = bEnLTI;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_CTRL.u32), VPSS_STR_LTI_CTRL.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetLGainRatio(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s32Ratio)
+{
+    U_VPSS_VHD_LTI_CTRL VPSS_VHD_LTI_CTRL;
+    U_VPSS_VSD_LTI_CTRL VPSS_VSD_LTI_CTRL;
+    U_VPSS_STR_LTI_CTRL VPSS_STR_LTI_CTRL;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_LTI_CTRL.u32));
+            VPSS_VHD_LTI_CTRL.bits.lgain_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_LTI_CTRL.u32), VPSS_VHD_LTI_CTRL.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_LTI_CTRL.u32));
+            VPSS_VSD_LTI_CTRL.bits.lgain_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_LTI_CTRL.u32), VPSS_VSD_LTI_CTRL.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_LTI_CTRL.u32));
+            VPSS_STR_LTI_CTRL.bits.lgain_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_CTRL.u32), VPSS_STR_LTI_CTRL.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetLGainCoef(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S8  *ps8Coef)
+{
+    U_VPSS_VHD_LGAIN_COEF VPSS_VHD_LGAIN_COEF;
+    U_VPSS_VSD_LGAIN_COEF VPSS_VSD_LGAIN_COEF;
+    U_VPSS_STR_LGAIN_COEF VPSS_STR_LGAIN_COEF;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_LGAIN_COEF.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_LGAIN_COEF.u32));
+            VPSS_VHD_LGAIN_COEF.bits.lgain_coef0 = ps8Coef[0];    
+            VPSS_VHD_LGAIN_COEF.bits.lgain_coef1 = ps8Coef[1];    
+            VPSS_VHD_LGAIN_COEF.bits.lgain_coef2 = ps8Coef[2];    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_LGAIN_COEF.u32), VPSS_VHD_LGAIN_COEF.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_LGAIN_COEF.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_LGAIN_COEF.u32));
+            VPSS_VSD_LGAIN_COEF.bits.lgain_coef0 = ps8Coef[0];    
+            VPSS_VSD_LGAIN_COEF.bits.lgain_coef1 = ps8Coef[1];    
+            VPSS_VSD_LGAIN_COEF.bits.lgain_coef2 = ps8Coef[2];    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_LGAIN_COEF.u32), VPSS_VSD_LGAIN_COEF.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_LGAIN_COEF.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_LGAIN_COEF.u32));
+            VPSS_STR_LGAIN_COEF.bits.lgain_coef0 = ps8Coef[0];    
+            VPSS_STR_LGAIN_COEF.bits.lgain_coef1 = ps8Coef[1];    
+            VPSS_STR_LGAIN_COEF.bits.lgain_coef2 = ps8Coef[2];    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LGAIN_COEF.u32), VPSS_STR_LGAIN_COEF.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetLMixingRatio(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s32Ratio)
+{
+    U_VPSS_VHD_LTI_CTRL VPSS_VHD_LTI_CTRL;
+    U_VPSS_VSD_LTI_CTRL VPSS_VSD_LTI_CTRL;
+    U_VPSS_STR_LTI_CTRL VPSS_STR_LTI_CTRL;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_LTI_CTRL.u32));
+            VPSS_VHD_LTI_CTRL.bits.lmixing_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_LTI_CTRL.u32), VPSS_VHD_LTI_CTRL.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_LTI_CTRL.u32));
+            VPSS_VSD_LTI_CTRL.bits.lmixing_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_LTI_CTRL.u32), VPSS_VSD_LTI_CTRL.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_LTI_CTRL.u32));
+            VPSS_STR_LTI_CTRL.bits.lmixing_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_CTRL.u32), VPSS_STR_LTI_CTRL.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetLCoringThd(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s32Thd)
+{
+    U_VPSS_VHD_LTI_THD VPSS_VHD_LTI_THD;
+    U_VPSS_VSD_LTI_THD VPSS_VSD_LTI_THD;
+    U_VPSS_STR_LTI_THD VPSS_STR_LTI_THD;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_LTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_LTI_THD.u32));
+            VPSS_VHD_LTI_THD.bits.lcoring_thd = s32Thd;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_LTI_THD.u32), VPSS_VHD_LTI_THD.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_LTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_LTI_THD.u32));
+            VPSS_VSD_LTI_THD.bits.lcoring_thd = s32Thd;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_LTI_THD.u32), VPSS_VSD_LTI_THD.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_LTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_LTI_THD.u32));
+            VPSS_STR_LTI_THD.bits.lcoring_thd = s32Thd;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_THD.u32), VPSS_STR_LTI_THD.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetLSwing(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s32Under,HI_S32  s32Over)
+{
+    U_VPSS_VHD_LTI_THD VPSS_VHD_LTI_THD;
+    U_VPSS_VSD_LTI_THD VPSS_VSD_LTI_THD;
+    U_VPSS_STR_LTI_THD VPSS_STR_LTI_THD;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_LTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_LTI_THD.u32));
+            VPSS_VHD_LTI_THD.bits.lunder_swing = s32Under;    
+            VPSS_VHD_LTI_THD.bits.lover_swing = s32Over;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_LTI_THD.u32), VPSS_VHD_LTI_THD.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_LTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_LTI_THD.u32));
+            VPSS_VSD_LTI_THD.bits.lunder_swing = s32Under;    
+            VPSS_VSD_LTI_THD.bits.lover_swing = s32Over;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_LTI_THD.u32), VPSS_VSD_LTI_THD.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_LTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_LTI_THD.u32));
+            VPSS_STR_LTI_THD.bits.lunder_swing = s32Under;    
+            VPSS_STR_LTI_THD.bits.lover_swing = s32Over;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_THD.u32), VPSS_STR_LTI_THD.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetLHpassCoef(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S8  *ps8Coef)
+{
+    U_VPSS_VHD_LTI_CTRL VPSS_VHD_LTI_CTRL;
+    U_VPSS_VHD_LHPASS_COEF VPSS_VHD_LHPASS_COEF;
+    
+    U_VPSS_VSD_LTI_CTRL VPSS_VSD_LTI_CTRL;
+    U_VPSS_VSD_LHPASS_COEF VPSS_VSD_LHPASS_COEF;
+
+    
+    U_VPSS_STR_LTI_CTRL VPSS_STR_LTI_CTRL;
+    U_VPSS_STR_LHPASS_COEF VPSS_STR_LHPASS_COEF;
+    
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_LHPASS_COEF.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_LHPASS_COEF.u32));
+            VPSS_VHD_LHPASS_COEF.bits.lhpass_coef0 = ps8Coef[0];    
+            VPSS_VHD_LHPASS_COEF.bits.lhpass_coef1 = ps8Coef[1];      
+            VPSS_VHD_LHPASS_COEF.bits.lhpass_coef2 = ps8Coef[2];     
+            VPSS_VHD_LHPASS_COEF.bits.lhpass_coef3 = ps8Coef[3];   
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_LHPASS_COEF.u32), VPSS_VHD_LHPASS_COEF.u32); 
+
+            VPSS_VHD_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_LTI_CTRL.u32));
+            VPSS_VHD_LTI_CTRL.bits.lhpass_coef4 = ps8Coef[4];   
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_LTI_CTRL.u32), VPSS_VHD_LTI_CTRL.u32);
+            
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_LHPASS_COEF.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_LHPASS_COEF.u32));
+            VPSS_VSD_LHPASS_COEF.bits.lhpass_coef0 = ps8Coef[0];    
+            VPSS_VSD_LHPASS_COEF.bits.lhpass_coef1 = ps8Coef[1];      
+            VPSS_VSD_LHPASS_COEF.bits.lhpass_coef2 = ps8Coef[2];     
+            VPSS_VSD_LHPASS_COEF.bits.lhpass_coef3 = ps8Coef[3];   
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_LHPASS_COEF.u32), VPSS_VSD_LHPASS_COEF.u32); 
+
+            VPSS_VSD_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_LTI_CTRL.u32));
+            VPSS_VSD_LTI_CTRL.bits.lhpass_coef4 = ps8Coef[4];   
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_LTI_CTRL.u32), VPSS_VSD_LTI_CTRL.u32);
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_LHPASS_COEF.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_LHPASS_COEF.u32));
+            VPSS_STR_LHPASS_COEF.bits.lhpass_coef0 = ps8Coef[0];    
+            VPSS_STR_LHPASS_COEF.bits.lhpass_coef1 = ps8Coef[1];      
+            VPSS_STR_LHPASS_COEF.bits.lhpass_coef2 = ps8Coef[2];     
+            VPSS_STR_LHPASS_COEF.bits.lhpass_coef3 = ps8Coef[3];   
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LHPASS_COEF.u32), VPSS_STR_LHPASS_COEF.u32); 
+
+            VPSS_STR_LTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_LTI_CTRL.u32));
+            VPSS_STR_LTI_CTRL.bits.lhpass_coef4 = ps8Coef[4];   
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LTI_CTRL.u32), VPSS_STR_LTI_CTRL.u32);
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetLHfreqThd(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S16  *ps16Thd)
+{
+    U_VPSS_VHD_LHFREQ_THD VPSS_VHD_LHFREQ_THD;
+    U_VPSS_VSD_LHFREQ_THD VPSS_VSD_LHFREQ_THD;
+    U_VPSS_STR_LHFREQ_THD VPSS_STR_LHFREQ_THD;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_LHFREQ_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_LHFREQ_THD.u32));
+            VPSS_VHD_LHFREQ_THD.bits.lhfreq_thd0 = ps16Thd[0];    
+            VPSS_VHD_LHFREQ_THD.bits.lhfreq_thd1 = ps16Thd[1];    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_LHFREQ_THD.u32), VPSS_VHD_LHFREQ_THD.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_LHFREQ_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_LHFREQ_THD.u32));
+            VPSS_VSD_LHFREQ_THD.bits.lhfreq_thd0 = ps16Thd[0];    
+            VPSS_VSD_LHFREQ_THD.bits.lhfreq_thd1 = ps16Thd[1];    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_LHFREQ_THD.u32), VPSS_VSD_LHFREQ_THD.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_LHFREQ_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_LHFREQ_THD.u32));
+            VPSS_STR_LHFREQ_THD.bits.lhfreq_thd0 = ps16Thd[0];    
+            VPSS_STR_LHFREQ_THD.bits.lhfreq_thd1 = ps16Thd[1];    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_LHFREQ_THD.u32), VPSS_STR_LHFREQ_THD.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCTIEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL  bEnCTI)
+{
+    U_VPSS_VHD_CTI_CTRL VPSS_VHD_CTI_CTRL;
+    U_VPSS_VSD_CTI_CTRL VPSS_VSD_CTI_CTRL;
+    U_VPSS_STR_CTI_CTRL VPSS_STR_CTI_CTRL;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_CTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_CTI_CTRL.u32));
+            VPSS_VHD_CTI_CTRL.bits.cti_en = bEnCTI;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_CTI_CTRL.u32), VPSS_VHD_CTI_CTRL.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_CTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_CTI_CTRL.u32));
+            VPSS_VSD_CTI_CTRL.bits.cti_en = bEnCTI;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_CTI_CTRL.u32), VPSS_VSD_CTI_CTRL.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_CTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_CTI_CTRL.u32));
+            VPSS_STR_CTI_CTRL.bits.cti_en = bEnCTI;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CTI_CTRL.u32), VPSS_STR_CTI_CTRL.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetCGainRatio(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s32Ratio)
+{
+    U_VPSS_VHD_CTI_CTRL VPSS_VHD_CTI_CTRL;
+    U_VPSS_VSD_CTI_CTRL VPSS_VSD_CTI_CTRL;
+    U_VPSS_STR_CTI_CTRL VPSS_STR_CTI_CTRL;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_CTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_CTI_CTRL.u32));
+            VPSS_VHD_CTI_CTRL.bits.cgain_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_CTI_CTRL.u32), VPSS_VHD_CTI_CTRL.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_CTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_CTI_CTRL.u32));
+            VPSS_VSD_CTI_CTRL.bits.cgain_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_CTI_CTRL.u32), VPSS_VSD_CTI_CTRL.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_CTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_CTI_CTRL.u32));
+            VPSS_STR_CTI_CTRL.bits.cgain_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CTI_CTRL.u32), VPSS_STR_CTI_CTRL.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetCMixingRatio(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s32Ratio)
+{
+    U_VPSS_VHD_CTI_CTRL VPSS_VHD_CTI_CTRL;
+    U_VPSS_VSD_CTI_CTRL VPSS_VSD_CTI_CTRL;
+    U_VPSS_STR_CTI_CTRL VPSS_STR_CTI_CTRL;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_CTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_CTI_CTRL.u32));
+            VPSS_VHD_CTI_CTRL.bits.cmixing_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_CTI_CTRL.u32), VPSS_VHD_CTI_CTRL.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_CTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_CTI_CTRL.u32));
+            VPSS_VSD_CTI_CTRL.bits.cmixing_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_CTI_CTRL.u32), VPSS_VSD_CTI_CTRL.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_CTI_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_CTI_CTRL.u32));
+            VPSS_STR_CTI_CTRL.bits.cmixing_ratio = s32Ratio;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CTI_CTRL.u32), VPSS_STR_CTI_CTRL.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetCCoringThd(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s32Thd)
+{
+    U_VPSS_VHD_CTI_THD VPSS_VHD_CTI_THD;
+    U_VPSS_VSD_CTI_THD VPSS_VSD_CTI_THD;
+    U_VPSS_STR_CTI_THD VPSS_STR_CTI_THD;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_CTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_CTI_THD.u32));
+            VPSS_VHD_CTI_THD.bits.ccoring_thd = s32Thd;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_CTI_THD.u32), VPSS_VHD_CTI_THD.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_CTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_CTI_THD.u32));
+            VPSS_VSD_CTI_THD.bits.ccoring_thd = s32Thd;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_CTI_THD.u32), VPSS_VSD_CTI_THD.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_CTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_CTI_THD.u32));
+            VPSS_STR_CTI_THD.bits.ccoring_thd = s32Thd;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CTI_THD.u32), VPSS_STR_CTI_THD.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetCSwing(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s32Under,HI_S32  s32Over)
+{
+    U_VPSS_VHD_CTI_THD VPSS_VHD_CTI_THD;
+    U_VPSS_VSD_CTI_THD VPSS_VSD_CTI_THD;
+    U_VPSS_STR_CTI_THD VPSS_STR_CTI_THD;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_CTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_CTI_THD.u32));
+            VPSS_VHD_CTI_THD.bits.cunder_swing = s32Under;    
+            VPSS_VHD_CTI_THD.bits.cover_swing = s32Over;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_CTI_THD.u32), VPSS_VHD_CTI_THD.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_CTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_CTI_THD.u32));
+            VPSS_VSD_CTI_THD.bits.cunder_swing = s32Under;    
+            VPSS_VSD_CTI_THD.bits.cover_swing = s32Over;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_CTI_THD.u32), VPSS_VSD_CTI_THD.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_CTI_THD.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_CTI_THD.u32));
+            VPSS_STR_CTI_THD.bits.cunder_swing = s32Under;    
+            VPSS_STR_CTI_THD.bits.cover_swing = s32Over;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CTI_THD.u32), VPSS_STR_CTI_THD.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetCHpassCoef(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S8  *ps8Coef)
+{
+    U_VPSS_VHD_CHPASS_COEF VPSS_VHD_CHPASS_COEF;
+    U_VPSS_VSD_CHPASS_COEF VPSS_VSD_CHPASS_COEF;
+    U_VPSS_STR_CHPASS_COEF VPSS_STR_CHPASS_COEF;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHD_CHPASS_COEF.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_CHPASS_COEF.u32));
+            VPSS_VHD_CHPASS_COEF.bits.chpass_coef0 = ps8Coef[0];    
+            VPSS_VHD_CHPASS_COEF.bits.chpass_coef1 = ps8Coef[1];    
+            VPSS_VHD_CHPASS_COEF.bits.chpass_coef2 = ps8Coef[2];     
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_CHPASS_COEF.u32), VPSS_VHD_CHPASS_COEF.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_CHPASS_COEF.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_CHPASS_COEF.u32));
+            VPSS_VSD_CHPASS_COEF.bits.chpass_coef0 = ps8Coef[0];    
+            VPSS_VSD_CHPASS_COEF.bits.chpass_coef1 = ps8Coef[1];    
+            VPSS_VSD_CHPASS_COEF.bits.chpass_coef2 = ps8Coef[2];     
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_CHPASS_COEF.u32), VPSS_VSD_CHPASS_COEF.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_CHPASS_COEF.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STR_CHPASS_COEF.u32));
+            VPSS_STR_CHPASS_COEF.bits.chpass_coef0 = ps8Coef[0];    
+            VPSS_STR_CHPASS_COEF.bits.chpass_coef1 = ps8Coef[1];    
+            VPSS_STR_CHPASS_COEF.bits.chpass_coef2 = ps8Coef[2];     
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_CHPASS_COEF.u32), VPSS_STR_CHPASS_COEF.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetLBAEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL bEnLba)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_CTRL.bits.vhd_lba_en = bEnLba;
+            break;
+        case VPSS_REG_SD:
+            VPSS_CTRL.bits.vsd_lba_en = bEnLba;
+            break;
+        case VPSS_REG_STR:
+            VPSS_CTRL.bits.str_lba_en = bEnLba;
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+            return HI_FAILURE;
+    }
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32);
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetLBABg(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32Color,HI_U32 u32Alpha)
+{
+    U_VPSS_VSDLBA_BK VPSS_VSDLBA_BK;
+    U_VPSS_VHDLBA_BK VPSS_VHDLBA_BK;
+    U_VPSS_STRLBA_BK VPSS_STRLBA_BK;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDLBA_BK.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDLBA_BK.u32));
+            VPSS_VHDLBA_BK.bits.vbk_alpha = u32Alpha;
+            VPSS_VHDLBA_BK.bits.vbk_y = (u32Color & 0xff0000) >> 16;
+            VPSS_VHDLBA_BK.bits.vbk_cb = (u32Color & 0xff00) >> 8;
+            VPSS_VHDLBA_BK.bits.vbk_cr = u32Color & 0xff;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDLBA_BK.u32), VPSS_VHDLBA_BK.u32);
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSDLBA_BK.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSDLBA_BK.u32));
+            VPSS_VSDLBA_BK.bits.vbk_alpha = u32Alpha;
+            VPSS_VSDLBA_BK.bits.vbk_y = (u32Color & 0xff0000) >> 16;
+            VPSS_VSDLBA_BK.bits.vbk_cb = (u32Color & 0xff00) >> 8;
+            VPSS_VSDLBA_BK.bits.vbk_cr = u32Color & 0xff;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDLBA_BK.u32), VPSS_VSDLBA_BK.u32);
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRLBA_BK.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRLBA_BK.u32));
+            VPSS_STRLBA_BK.bits.vbk_alpha = u32Alpha;
+            VPSS_STRLBA_BK.bits.vbk_y = (u32Color & 0xff0000) >> 16;
+            VPSS_STRLBA_BK.bits.vbk_cb = (u32Color & 0xff00) >> 8;
+            VPSS_STRLBA_BK.bits.vbk_cr = u32Color & 0xff;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRLBA_BK.u32), VPSS_STRLBA_BK.u32);
+            break;
+        default:
+            VPSS_FATAL("Reg Error\n");
+            return HI_FAILURE;
+    }
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetLBADispPos(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32XFPos,HI_U32 u32YFPos,
+                            HI_U32 u32Height,HI_U32 u32Width)
+{
+    VPSS_REG_S *pstReg;
+    U_VPSS_VSDLBA_DFPOS VPSS_VSDLBA_DFPOS;
+    U_VPSS_VSDLBA_DSIZE VPSS_VSDLBA_DSIZE;
+    
+    U_VPSS_VHDLBA_DFPOS VPSS_VHDLBA_DFPOS;
+    U_VPSS_VHDLBA_DSIZE VPSS_VHDLBA_DSIZE;
+    
+    U_VPSS_STRLBA_DFPOS VPSS_STRLBA_DFPOS;
+    U_VPSS_STRLBA_DSIZE VPSS_STRLBA_DSIZE;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDLBA_DFPOS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDLBA_DFPOS.u32));
+            VPSS_VHDLBA_DSIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDLBA_DSIZE.u32));
+
+            VPSS_VHDLBA_DFPOS.bits.disp_xfpos = u32XFPos;
+            VPSS_VHDLBA_DFPOS.bits.disp_yfpos = u32YFPos;
+            
+            VPSS_VHDLBA_DSIZE.bits.disp_width = u32Width -1;
+            VPSS_VHDLBA_DSIZE.bits.disp_height = u32Height -1;
+                
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDLBA_DFPOS.u32), VPSS_VHDLBA_DFPOS.u32);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDLBA_DSIZE.u32), VPSS_VHDLBA_DSIZE.u32);
+            
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSDLBA_DFPOS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSDLBA_DFPOS.u32));
+            VPSS_VSDLBA_DSIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSDLBA_DSIZE.u32));
+
+            VPSS_VSDLBA_DFPOS.bits.disp_xfpos = u32XFPos;
+            VPSS_VSDLBA_DFPOS.bits.disp_yfpos = u32YFPos;
+            
+            VPSS_VSDLBA_DSIZE.bits.disp_width = u32Width -1;
+            VPSS_VSDLBA_DSIZE.bits.disp_height = u32Height -1;
+                
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDLBA_DFPOS.u32), VPSS_VSDLBA_DFPOS.u32);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDLBA_DSIZE.u32), VPSS_VSDLBA_DSIZE.u32);
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRLBA_DFPOS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRLBA_DFPOS.u32));
+            VPSS_STRLBA_DSIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRLBA_DSIZE.u32));
+
+            VPSS_STRLBA_DFPOS.bits.disp_xfpos = u32XFPos;
+            VPSS_STRLBA_DFPOS.bits.disp_yfpos = u32YFPos;
+            
+            VPSS_STRLBA_DSIZE.bits.disp_width = u32Width -1;
+            VPSS_STRLBA_DSIZE.bits.disp_height = u32Height -1;
+                
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRLBA_DFPOS.u32), VPSS_STRLBA_DFPOS.u32);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRLBA_DSIZE.u32), VPSS_STRLBA_DSIZE.u32);
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+    
+}
+HI_S32 VPSS_REG_SetLBAVidPos(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32XFPos,HI_U32 u32YFPos,
+                            HI_U32 u32Height,HI_U32 u32Width)
+{
+    U_VPSS_VSDLBA_VFPOS VPSS_VSDLBA_VFPOS;
+    U_VPSS_VSDLBA_VSIZE  VPSS_VSDLBA_VSIZE;
+    U_VPSS_VHDLBA_VFPOS VPSS_VHDLBA_VFPOS;
+    U_VPSS_VHDLBA_VSIZE  VPSS_VHDLBA_VSIZE;
+    U_VPSS_STRLBA_VFPOS VPSS_STRLBA_VFPOS;
+    U_VPSS_STRLBA_VSIZE  VPSS_STRLBA_VSIZE;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDLBA_VFPOS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDLBA_VFPOS.u32));
+            VPSS_VHDLBA_VSIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDLBA_VSIZE.u32));
+            
+            VPSS_VHDLBA_VFPOS.bits.video_xfpos = u32XFPos;
+            VPSS_VHDLBA_VFPOS.bits.video_yfpos = u32YFPos;
+            VPSS_VHDLBA_VSIZE.bits.video_width =  u32Width -1;
+            VPSS_VHDLBA_VSIZE.bits.video_height = u32Height - 1;
+
+            
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDLBA_VFPOS.u32), VPSS_VHDLBA_VFPOS.u32);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDLBA_VSIZE.u32), VPSS_VHDLBA_VSIZE.u32);
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSDLBA_VFPOS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSDLBA_VFPOS.u32));
+            VPSS_VSDLBA_VSIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSDLBA_VSIZE.u32));
+            
+            VPSS_VSDLBA_VFPOS.bits.video_xfpos = u32XFPos;
+            VPSS_VSDLBA_VFPOS.bits.video_yfpos = u32YFPos;
+            VPSS_VSDLBA_VSIZE.bits.video_width = u32Width -1;
+            VPSS_VSDLBA_VSIZE.bits.video_height = u32Height- 1;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDLBA_VFPOS.u32), VPSS_VSDLBA_VFPOS.u32);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDLBA_VSIZE.u32), VPSS_VSDLBA_VSIZE.u32);
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRLBA_VFPOS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRLBA_VFPOS.u32));
+            VPSS_STRLBA_VSIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRLBA_VSIZE.u32));
+            
+            VPSS_STRLBA_VFPOS.bits.video_xfpos = u32XFPos;
+            VPSS_STRLBA_VFPOS.bits.video_yfpos = u32YFPos;
+            VPSS_STRLBA_VSIZE.bits.video_width = u32Width -1;
+            VPSS_STRLBA_VSIZE.bits.video_height = u32Height -1;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRLBA_VFPOS.u32), VPSS_STRLBA_VFPOS.u32);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRLBA_VSIZE.u32), VPSS_STRLBA_VSIZE.u32);
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+    
+}
+
+HI_S32 VPSS_REG_SetOutCropVidPos(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,
+                            HI_U32 u32XFPos,HI_U32 u32YFPos,
+                            HI_U32 u32Height,HI_U32 u32Width)
+{
+    U_VPSS_VHDCROP_POS VPSS_VHDCROP_POS;
+    U_VPSS_VHDCROP_SIZE  VPSS_VHDCROP_SIZE;
+    U_VPSS_VSDCROP_POS VPSS_VSDCROP_POS;
+    U_VPSS_VSDCROP_SIZE  VPSS_VSDCROP_SIZE;
+    U_VPSS_STRCROP_POS VPSS_STRCROP_POS;
+    U_VPSS_STRCROP_SIZE  VPSS_STRCROP_SIZE;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCROP_POS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCROP_POS.u32));
+            VPSS_VHDCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCROP_SIZE.u32));
+            
+            VPSS_VHDCROP_POS.bits.vhd_crop_x = u32XFPos;
+            VPSS_VHDCROP_POS.bits.vhd_crop_y = u32YFPos;
+            VPSS_VHDCROP_SIZE.bits.vhd_crop_en = HI_TRUE;
+            VPSS_VHDCROP_SIZE.bits.vhd_crop_width =  u32Width -1;
+            VPSS_VHDCROP_SIZE.bits.vhd_crop_height = u32Height - 1;
+
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCROP_POS.u32), VPSS_VHDCROP_POS.u32);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCROP_SIZE.u32), VPSS_VHDCROP_SIZE.u32);
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSDCROP_POS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSDCROP_POS.u32));
+            VPSS_VSDCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSDCROP_SIZE.u32));
+            
+            VPSS_VSDCROP_POS.bits.vsd_crop_x = u32XFPos;
+            VPSS_VSDCROP_POS.bits.vsd_crop_y = u32YFPos;
+            VPSS_VSDCROP_SIZE.bits.vsd_crop_en = HI_TRUE;
+            VPSS_VSDCROP_SIZE.bits.vsd_crop_width =  u32Width -1;
+            VPSS_VSDCROP_SIZE.bits.vsd_crop_height = u32Height - 1;
+
+            
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDCROP_POS.u32), VPSS_VSDCROP_POS.u32);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDCROP_SIZE.u32), VPSS_VSDCROP_SIZE.u32);
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCROP_POS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCROP_POS.u32));
+            VPSS_STRCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCROP_SIZE.u32));
+            
+            VPSS_STRCROP_POS.bits.str_crop_x = u32XFPos;
+            VPSS_STRCROP_POS.bits.str_crop_y = u32YFPos;
+            VPSS_STRCROP_SIZE.bits.str_crop_en = HI_TRUE;
+            VPSS_STRCROP_SIZE.bits.str_crop_width =  u32Width -1;
+            VPSS_STRCROP_SIZE.bits.str_crop_height = u32Height - 1;
+
+            
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCROP_POS.u32), VPSS_STRCROP_POS.u32);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCROP_SIZE.u32), VPSS_STRCROP_SIZE.u32);
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+    
+}                            
+
+HI_S32 VPSS_REG_SetVhdCmpEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL  bEnVhdCmp)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+            VPSS_CTRL.bits.vhd_cmp_en = bEnVhdCmp;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+            break;
+        default:
+            break;
+    }
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetVhdCmpAddr(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort, HI_U32 u32YHeadaddr,HI_U32 u32CHeadaddr)
+{
+    HI_U32 VPSS_VHD_YHeadAddr;
+    HI_U32 VPSS_VHD_CHeadAddr;
+   
+    VPSS_REG_S *pstReg;
+    
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            pstReg = (VPSS_REG_S *)u32AppAddr;
+
+            VPSS_VHD_YHeadAddr = VPSS_REG_RegRead(&(pstReg->VPSS_VHDY_HEAD_ADDR));
+            VPSS_VHD_CHeadAddr = VPSS_REG_RegRead(&(pstReg->VPSS_VHDC_HEAD_ADDR));
+
+            VPSS_VHD_YHeadAddr = u32YHeadaddr;
+            VPSS_VHD_CHeadAddr = u32CHeadaddr;
+
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDY_HEAD_ADDR), VPSS_VHD_YHeadAddr);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDC_HEAD_ADDR), VPSS_VHD_CHeadAddr);
+            break;
+            
+         default:
+            break;
+    }
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetVhdCmpDrr(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort, HI_U32 u32VhdCmpDrr)
+{
+    U_VPSS_VHD_CMP_CTRL VPSS_VHD_CMP_CTRL;
+   
+    VPSS_REG_S *pstReg;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            pstReg = (VPSS_REG_S *)u32AppAddr;
+
+            VPSS_VHD_CMP_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_CMP_CTRL.u32));
+
+            VPSS_VHD_CMP_CTRL.bits.vhd_cmp_drr= u32VhdCmpDrr;
+
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_CMP_CTRL.u32), VPSS_VHD_CMP_CTRL.u32);
+            break;
+            
+         default:
+            break;
+    }
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetVhdCmpLossyEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort, HI_BOOL  bEnVhdCmpLossy)
+{
+    U_VPSS_VHD_CMP_CTRL VPSS_VHD_CMP_CTRL;
+   
+    VPSS_REG_S *pstReg;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            pstReg = (VPSS_REG_S *)u32AppAddr;
+
+            VPSS_VHD_CMP_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_CMP_CTRL.u32));
+
+            VPSS_VHD_CMP_CTRL.bits.vhd_cmp_lossy_en = bEnVhdCmpLossy;
+
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_CMP_CTRL.u32), VPSS_VHD_CMP_CTRL.u32);
+            break;
+            
+         default:
+            break;
+    }
+    return HI_SUCCESS;
+}
+
+
+
+
+
+
+HI_S32 VPSS_REG_SetDcmpEn(HI_U32 u32AppAddr,HI_BOOL  bEnDcmp)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+    VPSS_CTRL.bits.in_dcmp_en = bEnDcmp;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetDcmpHeadAddr(HI_U32 u32AppAddr,REG_FIELDPOS_E ePos,HI_U32 u32YHeadaddr,HI_U32 u32CHeadaddr)
+{
+    
+    HI_U32 VPSS_LASTYHEADADDR;
+    HI_U32 VPSS_LASTCHEADADDR;
+
+    HI_U32 VPSS_CURYHEADADDR;
+    HI_U32 VPSS_CURCHEADADDR;
+
+    HI_U32 VPSS_NEXTYHEADADDR;
+    HI_U32 VPSS_NEXTCHEADADDR;
+    
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S *)u32AppAddr;
+
+    switch(ePos)
+    {   
+        case LAST_FIELD:
+            VPSS_LASTYHEADADDR = VPSS_REG_RegRead(&(pstReg->VPSS_LASTY_HEAD_ADDR));
+            VPSS_LASTCHEADADDR = VPSS_REG_RegRead(&(pstReg->VPSS_LASTC_HEAD_ADDR));
+            
+            VPSS_LASTYHEADADDR    = u32YHeadaddr;
+            VPSS_LASTCHEADADDR = u32CHeadaddr;
+
+            VPSS_REG_RegWrite(&(pstReg->VPSS_LASTY_HEAD_ADDR), VPSS_LASTYHEADADDR);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_LASTC_HEAD_ADDR), VPSS_LASTCHEADADDR);
+            break;
+            
+        case CUR_FIELD:
+            VPSS_CURYHEADADDR = VPSS_REG_RegRead(&(pstReg->VPSS_CURY_HEAD_ADDR));
+            VPSS_CURCHEADADDR = VPSS_REG_RegRead(&(pstReg->VPSS_CURC_HEAD_ADDR));
+            
+            VPSS_CURYHEADADDR     = u32YHeadaddr;
+            VPSS_CURCHEADADDR  = u32CHeadaddr;
+
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CURY_HEAD_ADDR), VPSS_CURYHEADADDR);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CURC_HEAD_ADDR), VPSS_CURCHEADADDR);           
+            break;
+        case NEXT1_FIELD:
+            VPSS_NEXTYHEADADDR = VPSS_REG_RegRead(&(pstReg->VPSS_NEXTY_HEAD_ADDR));
+            VPSS_NEXTCHEADADDR = VPSS_REG_RegRead(&(pstReg->VPSS_NEXTC_HEAD_ADDR));
+
+            VPSS_NEXTYHEADADDR = u32YHeadaddr;
+            VPSS_NEXTCHEADADDR = u32CHeadaddr;
+            
+            VPSS_REG_RegWrite(&(pstReg->VPSS_NEXTY_HEAD_ADDR), VPSS_NEXTYHEADADDR);
+            VPSS_REG_RegWrite(&(pstReg->VPSS_NEXTC_HEAD_ADDR), VPSS_NEXTCHEADADDR);
+            break;
+            
+        default:
+            VPSS_FATAL("FIELD ERROR\n");
+    }
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetTunlEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL  bEnTunl)
+{
+    U_VPSS_TUNL_CTRL0  VPSS_TUNL_CTRL0;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_TUNL_CTRL0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_TUNL_CTRL0.u32));
+            VPSS_TUNL_CTRL0.bits.vhd_tunl_en = bEnTunl;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_TUNL_CTRL0.u32), VPSS_TUNL_CTRL0.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_TUNL_CTRL0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_TUNL_CTRL0.u32));
+            VPSS_TUNL_CTRL0.bits.str_tunl_en = bEnTunl;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_TUNL_CTRL0.u32), VPSS_TUNL_CTRL0.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_TUNL_CTRL0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_TUNL_CTRL0.u32));
+            VPSS_TUNL_CTRL0.bits.vsd_tunl_en = bEnTunl;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_TUNL_CTRL0.u32), VPSS_TUNL_CTRL0.u32); 
+            break;
+       default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetTunlFinishLine(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_S32  s32FinishLine)
+{
+    U_VPSS_TUNL_CTRL0  VPSS_TUNL_CTRL0;
+    U_VPSS_TUNL_CTRL1  VPSS_TUNL_CTRL1;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_TUNL_CTRL0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_TUNL_CTRL0.u32));
+            VPSS_TUNL_CTRL0.bits.vhd_tunl_finish_line = s32FinishLine;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_TUNL_CTRL0.u32), VPSS_TUNL_CTRL0.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_TUNL_CTRL1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_TUNL_CTRL1.u32));
+            VPSS_TUNL_CTRL1.bits.str_tunl_finish_line = s32FinishLine;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_TUNL_CTRL1.u32), VPSS_TUNL_CTRL1.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_TUNL_CTRL0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_TUNL_CTRL0.u32));
+            VPSS_TUNL_CTRL0.bits.vsd_tunl_finish_line = s32FinishLine;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_TUNL_CTRL0.u32), VPSS_TUNL_CTRL0.u32); 
+            break;
+       default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetTunlMode(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort, REG_TUNLPOS_E  s32TunlMode)
+{
+    U_VPSS_TUNL_CTRL1  VPSS_TUNL_CTRL1;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {  
+        case VPSS_REG_HD:
+            VPSS_TUNL_CTRL1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_TUNL_CTRL1.u32));
+            VPSS_TUNL_CTRL1.bits.vhd_tunl_mode = s32TunlMode;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_TUNL_CTRL1.u32), VPSS_TUNL_CTRL1.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_TUNL_CTRL1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_TUNL_CTRL1.u32));
+            VPSS_TUNL_CTRL1.bits.str_tunl_mode = s32TunlMode;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_TUNL_CTRL1.u32), VPSS_TUNL_CTRL1.u32); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_TUNL_CTRL1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_TUNL_CTRL1.u32));
+            VPSS_TUNL_CTRL1.bits.vsd_tunl_mode = s32TunlMode;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_TUNL_CTRL1.u32), VPSS_TUNL_CTRL1.u32); 
+            break;
+       default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetTunlAddr(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32TunlAddr)
+{
+    HI_U32  VPSS_VHD_TUNL_ADDR;
+    HI_U32  VPSS_VSD_TUNL_ADDR;
+    HI_U32  VPSS_STR_TUNL_ADDR;
+    
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+    
+    //printk("  ==u32TunlAddr %x == \n", u32TunlAddr);
+    switch(ePort)
+    {  
+        case VPSS_REG_HD:
+            VPSS_VHD_TUNL_ADDR = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_TUNL_ADDR));
+            VPSS_VHD_TUNL_ADDR = u32TunlAddr;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHD_TUNL_ADDR), VPSS_VHD_TUNL_ADDR); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STR_TUNL_ADDR = VPSS_REG_RegRead(&(pstReg->VPSS_STR_TUNL_ADDR));
+            VPSS_STR_TUNL_ADDR = u32TunlAddr;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STR_TUNL_ADDR), VPSS_STR_TUNL_ADDR); 
+            break;
+        case VPSS_REG_SD:
+            VPSS_VSD_TUNL_ADDR = VPSS_REG_RegRead(&(pstReg->VPSS_VSD_TUNL_ADDR));
+            VPSS_VSD_TUNL_ADDR = u32TunlAddr;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSD_TUNL_ADDR), VPSS_VSD_TUNL_ADDR); 
+            break;
+       default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+   // VPSS_VHD_TUNL_ADDR = VPSS_REG_RegRead(&(pstReg->VPSS_VHD_TUNL_ADDR));
+    //printk(" ===VPSS_VHD_TUNL_ADDR %x ===\n", VPSS_VHD_TUNL_ADDR);
+
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCurTunlAddr(HI_U32 u32AppAddr,REG_FRAMEPOS_E  ePort,HI_U32 u32TunlAddr)
+{
+    HI_U32  VPSS_CUR_TUNL_ADDR;
+    
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {  
+        case CUR_FRAME:
+            VPSS_CUR_TUNL_ADDR = VPSS_REG_RegRead(&(pstReg->VPSS_CUR_TUNL_ADDR));
+            VPSS_CUR_TUNL_ADDR = u32TunlAddr;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CUR_TUNL_ADDR), VPSS_CUR_TUNL_ADDR); 
+            break;
+       default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetCurTunlEn(HI_U32 u32AppAddr,HI_BOOL u32CurTunlEn)
+{
+    U_VPSS_TUNL_CTRL0  VPSS_TUNL_CTRL0;
+    
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_TUNL_CTRL0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_TUNL_CTRL0.u32));
+    VPSS_TUNL_CTRL0.bits.cur_tunl_en = u32CurTunlEn;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_TUNL_CTRL0.u32), VPSS_TUNL_CTRL0.u32); 
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCurTunlInterval(HI_U32 u32AppAddr,REG_FRAMEPOS_E ePort,HI_S32  s32CurTunlInterval)
+{
+    U_VPSS_TUNL_CTRL1  VPSS_TUNL_CTRL1;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    /*
+        s32CurTunlInterval meas every s32CurTunlInterval  * cycle *1000 to read CUR_TUNL_ADDR
+    */
+    switch(ePort)
+    {  
+        case CUR_FRAME:
+            VPSS_TUNL_CTRL1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_TUNL_CTRL1.u32));
+            VPSS_TUNL_CTRL1.bits.cur_tunl_rd_interval = s32CurTunlInterval;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_TUNL_CTRL1.u32), VPSS_TUNL_CTRL1.u32); 
+            break;
+       default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+
+
+/*CSC*/
+HI_S32 VPSS_REG_SetCscEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL  bEnCSC)
+{
+    U_VPSS_STRCSCIDC VPSS_STRCSCIDC;
+    U_VPSS_VHDCSCIDC VPSS_VHDCSCIDC;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCIDC.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCIDC.u32));
+            VPSS_VHDCSCIDC.bits.csc_en = bEnCSC;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCIDC.u32), VPSS_VHDCSCIDC.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCIDC.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCIDC.u32));
+            VPSS_STRCSCIDC.bits.csc_en = bEnCSC;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCIDC.u32), VPSS_STRCSCIDC.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCscIdc(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CscIdc0,HI_U32 u32CscIdc1,HI_U32 u32CscIdc2)
+{
+    U_VPSS_STRCSCIDC VPSS_STRCSCIDC;
+    U_VPSS_VHDCSCIDC VPSS_VHDCSCIDC;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCIDC.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCIDC.u32));
+            VPSS_VHDCSCIDC.bits.cscidc0 = u32CscIdc0;  
+            VPSS_VHDCSCIDC.bits.cscidc1 = u32CscIdc1;
+            VPSS_VHDCSCIDC.bits.cscidc2 = u32CscIdc2;
+            
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCIDC.u32), VPSS_VHDCSCIDC.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCIDC.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCIDC.u32));
+            VPSS_STRCSCIDC.bits.cscidc0 = u32CscIdc0;  
+            VPSS_STRCSCIDC.bits.cscidc1 = u32CscIdc1;
+            VPSS_STRCSCIDC.bits.cscidc2 = u32CscIdc2;   
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCIDC.u32), VPSS_STRCSCIDC.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetCscOdc(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CscOdc0,HI_U32 u32CscOdc1,HI_U32 u32CscOdc2)
+{
+    U_VPSS_STRCSCODC VPSS_STRCSCODC;
+    U_VPSS_VHDCSCODC VPSS_VHDCSCODC;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCODC.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCODC.u32));
+            VPSS_VHDCSCODC.bits.cscodc0 = u32CscOdc0;
+            VPSS_VHDCSCODC.bits.cscodc1 = u32CscOdc1;
+            VPSS_VHDCSCODC.bits.cscodc2 = u32CscOdc2;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCODC.u32), VPSS_VHDCSCODC.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCODC.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCODC.u32));
+            VPSS_STRCSCODC.bits.cscodc0 = u32CscOdc0;
+            VPSS_STRCSCODC.bits.cscodc1 = u32CscOdc1; 
+            VPSS_STRCSCODC.bits.cscodc2 = u32CscOdc2; 
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCODC.u32), VPSS_STRCSCODC.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCscP00(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CscP00)
+{
+    U_VPSS_VHDCSCP0 VPSS_VHDCSCP0;
+    U_VPSS_STRCSCP0 VPSS_STRCSCP0;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCP0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCP0.u32));
+            VPSS_VHDCSCP0.bits.cscp00 = u32CscP00;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCP0.u32), VPSS_VHDCSCP0.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCP0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCP0.u32));
+            VPSS_STRCSCP0.bits.cscp00 = u32CscP00;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCP0.u32), VPSS_STRCSCP0.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCscP01(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CscP01)
+{
+    U_VPSS_VHDCSCP0 VPSS_VHDCSCP0;
+    U_VPSS_STRCSCP0 VPSS_STRCSCP0;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCP0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCP0.u32));
+            VPSS_VHDCSCP0.bits.cscp01 = u32CscP01;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCP0.u32), VPSS_VHDCSCP0.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCP0.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCP0.u32));
+            VPSS_STRCSCP0.bits.cscp01 = u32CscP01;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCP0.u32), VPSS_STRCSCP0.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCscP02(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CscP02)
+{
+    U_VPSS_VHDCSCP1 VPSS_VHDCSCP1;
+    U_VPSS_STRCSCP1 VPSS_STRCSCP1;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCP1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCP1.u32));
+            VPSS_VHDCSCP1.bits.cscp02 = u32CscP02;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCP1.u32), VPSS_VHDCSCP1.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCP1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCP1.u32));
+            VPSS_STRCSCP1.bits.cscp02 = u32CscP02;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCP1.u32), VPSS_STRCSCP1.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCscP10(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CscP10)
+{
+    U_VPSS_VHDCSCP1 VPSS_VHDCSCP1;
+    U_VPSS_STRCSCP1 VPSS_STRCSCP1;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCP1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCP1.u32));
+            VPSS_VHDCSCP1.bits.cscp10 = u32CscP10;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCP1.u32), VPSS_VHDCSCP1.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCP1.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCP1.u32));
+            VPSS_STRCSCP1.bits.cscp10 = u32CscP10;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCP1.u32), VPSS_STRCSCP1.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCscP11(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CscP11)
+{
+    U_VPSS_VHDCSCP2 VPSS_VHDCSCP2;
+    U_VPSS_STRCSCP2 VPSS_STRCSCP2;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCP2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCP2.u32));
+            VPSS_VHDCSCP2.bits.cscp11 = u32CscP11;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCP2.u32), VPSS_VHDCSCP2.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCP2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCP2.u32));
+            VPSS_STRCSCP2.bits.cscp11 = u32CscP11;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCP2.u32), VPSS_STRCSCP2.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCscP12(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CscP12)
+{
+    U_VPSS_VHDCSCP2 VPSS_VHDCSCP2;
+    U_VPSS_STRCSCP2 VPSS_STRCSCP2;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCP2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCP2.u32));
+            VPSS_VHDCSCP2.bits.cscp12 = u32CscP12;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCP2.u32), VPSS_VHDCSCP2.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCP2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCP2.u32));
+            VPSS_STRCSCP2.bits.cscp12 = u32CscP12;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCP2.u32), VPSS_STRCSCP2.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCscP20(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CscP20)
+{
+    U_VPSS_VHDCSCP3 VPSS_VHDCSCP3;
+    U_VPSS_STRCSCP3 VPSS_STRCSCP3;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCP3.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCP3.u32));
+            VPSS_VHDCSCP3.bits.cscp20 = u32CscP20;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCP3.u32), VPSS_VHDCSCP3.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCP3.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCP3.u32));
+            VPSS_STRCSCP3.bits.cscp20 = u32CscP20;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCP3.u32), VPSS_STRCSCP3.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCscP21(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CscP21)
+{
+    U_VPSS_VHDCSCP3 VPSS_VHDCSCP3;
+    U_VPSS_STRCSCP3 VPSS_STRCSCP3;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCP3.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCP3.u32));
+            VPSS_VHDCSCP3.bits.cscp21 = u32CscP21;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCP3.u32), VPSS_VHDCSCP3.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCP3.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCP3.u32));
+            VPSS_STRCSCP3.bits.cscp21 = u32CscP21;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCP3.u32), VPSS_STRCSCP3.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetCscP22(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CscP22)
+{
+    U_VPSS_VHDCSCP4 VPSS_VHDCSCP4;
+    U_VPSS_STRCSCP4 VPSS_STRCSCP4;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_HD:
+            VPSS_VHDCSCP4.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCSCP4.u32));
+            VPSS_VHDCSCP4.bits.cscp22 = u32CscP22;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCSCP4.u32), VPSS_VHDCSCP4.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCSCP4.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCSCP4.u32));
+            VPSS_STRCSCP4.bits.cscp22 = u32CscP22;    
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCSCP4.u32), VPSS_STRCSCP4.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+
+#if 1
+
+
+HI_S32 VPSS_REG_SetInCropPos(HI_U32 u32AppAddr,HI_U32 u32InCropY,HI_U32 u32InCropX)
+{
+    U_VPSS_INCROP_POS VPSS_INCROP_POS;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_INCROP_POS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_INCROP_POS.u32));
+    VPSS_INCROP_POS.bits.in_crop_y = u32InCropY;
+    VPSS_INCROP_POS.bits.in_crop_x = u32InCropX;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_INCROP_POS.u32), VPSS_INCROP_POS.u32); 
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetInCropEn(HI_U32 u32AppAddr,HI_BOOL bInCropEn)
+{
+    U_VPSS_INCROP_SIZE VPSS_INCROP_SIZE;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_INCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_INCROP_SIZE.u32));
+    VPSS_INCROP_SIZE.bits.in_crop_en = bInCropEn;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_INCROP_SIZE.u32), VPSS_INCROP_SIZE.u32); 
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetInCropMode(HI_U32 u32AppAddr,HI_BOOL bInCropMode)
+{
+    U_VPSS_INCROP_SIZE VPSS_INCROP_SIZE;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_INCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_INCROP_SIZE.u32));
+    VPSS_INCROP_SIZE.bits.in_crop_mode= bInCropMode;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_INCROP_SIZE.u32), VPSS_INCROP_SIZE.u32); 
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetInCropSize(HI_U32 u32AppAddr,HI_U32 u32InCropHeight,HI_U32 u32InCropWidth)
+{
+    U_VPSS_INCROP_SIZE VPSS_INCROP_SIZE;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_INCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_INCROP_SIZE.u32));
+    VPSS_INCROP_SIZE.bits.in_crop_height = u32InCropHeight -1;
+    VPSS_INCROP_SIZE.bits.in_crop_width  = u32InCropWidth -1;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_INCROP_SIZE.u32), VPSS_INCROP_SIZE.u32); 
+
+    return HI_SUCCESS;
+}
+
+
+/****PORT CROP*****/
+
+HI_S32 VPSS_REG_SetPortCropPos(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CropY,HI_U32 u32CropX)
+{
+    U_VPSS_VSDCROP_POS VPSS_VSDCROP_POS;
+    U_VPSS_VHDCROP_POS VPSS_VHDCROP_POS;
+    U_VPSS_STRCROP_POS VPSS_STRCROP_POS;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_SD:
+            VPSS_VSDCROP_POS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSDCROP_POS.u32));
+            VPSS_VSDCROP_POS.bits.vsd_crop_y = u32CropY;
+            VPSS_VSDCROP_POS.bits.vsd_crop_x = u32CropX;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDCROP_POS.u32), VPSS_VSDCROP_POS.u32); 
+            break;
+        case VPSS_REG_HD:
+            VPSS_VHDCROP_POS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCROP_POS.u32));
+            VPSS_VHDCROP_POS.bits.vhd_crop_y = u32CropY;
+            VPSS_VHDCROP_POS.bits.vhd_crop_x = u32CropX;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCROP_POS.u32), VPSS_VHDCROP_POS.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCROP_POS.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCROP_POS.u32));
+            VPSS_STRCROP_POS.bits.str_crop_y = u32CropY;
+            VPSS_STRCROP_POS.bits.str_crop_x = u32CropX;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_STRCROP_POS.u32), VPSS_STRCROP_POS.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetPortCropSize(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_U32 u32CropHeight,HI_U32 u32CropWidth)
+{
+    U_VPSS_VSDCROP_SIZE VPSS_VSDCROP_SIZE;
+    U_VPSS_VHDCROP_SIZE VPSS_VHDCROP_SIZE;
+    U_VPSS_STRCROP_SIZE VPSS_STRCROP_SIZE;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_SD:
+            VPSS_VSDCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSDCROP_SIZE.u32));
+            VPSS_VSDCROP_SIZE.bits.vsd_crop_height = u32CropHeight - 1;
+            VPSS_VSDCROP_SIZE.bits.vsd_crop_width = u32CropWidth - 1;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDCROP_SIZE.u32), VPSS_VSDCROP_SIZE.u32); 
+            break;
+        case VPSS_REG_HD:
+            VPSS_VHDCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCROP_SIZE.u32));
+            VPSS_VHDCROP_SIZE.bits.vhd_crop_height  = u32CropHeight - 1;
+            VPSS_VHDCROP_SIZE.bits.vhd_crop_width = u32CropWidth - 1;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCROP_SIZE.u32), VPSS_VHDCROP_SIZE.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCROP_SIZE.u32));
+            VPSS_STRCROP_SIZE.bits.str_crop_height = u32CropHeight - 1;
+            VPSS_STRCROP_SIZE.bits.str_crop_width = u32CropWidth -1;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDCROP_SIZE.u32), VPSS_STRCROP_SIZE.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetPortCropEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL bPortCropEn)
+{
+    U_VPSS_VSDCROP_SIZE VPSS_VSDCROP_SIZE;
+    U_VPSS_VHDCROP_SIZE VPSS_VHDCROP_SIZE;
+    U_VPSS_STRCROP_SIZE VPSS_STRCROP_SIZE;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_SD:
+            VPSS_VSDCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VSDCROP_SIZE.u32));
+            VPSS_VSDCROP_SIZE.bits.vsd_crop_en = bPortCropEn;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDCROP_SIZE.u32), VPSS_VSDCROP_SIZE.u32); 
+            break;
+        case VPSS_REG_HD:
+            VPSS_VHDCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_VHDCROP_SIZE.u32));
+            VPSS_VHDCROP_SIZE.bits.vhd_crop_en = bPortCropEn;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VHDCROP_SIZE.u32), VPSS_VHDCROP_SIZE.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_STRCROP_SIZE.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_STRCROP_SIZE.u32));
+            VPSS_STRCROP_SIZE.bits.str_crop_en = bPortCropEn;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_VSDCROP_SIZE.u32), VPSS_STRCROP_SIZE.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+#endif
+
+
+#if 1
+
+
+HI_S32 VPSS_REG_SetPortMirrorEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort, HI_BOOL bMirrorEn)
+{
+    U_VPSS_CTRL2 VPSS_CTRL2;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_SD:
+            VPSS_CTRL2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL2.u32));
+            VPSS_CTRL2.bits.vsd_mirror = bMirrorEn;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL2.u32), VPSS_CTRL2.u32); 
+            break;
+        case VPSS_REG_HD:
+            VPSS_CTRL2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL2.u32));
+            VPSS_CTRL2.bits.vhd_mirror = bMirrorEn;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL2.u32), VPSS_CTRL2.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_CTRL2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL2.u32));
+            VPSS_CTRL2.bits.str_mirror = bMirrorEn;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL2.u32), VPSS_CTRL2.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetPortFlipEn(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort, HI_BOOL bFlipEn)
+{
+    U_VPSS_CTRL2 VPSS_CTRL2;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    switch(ePort)
+    {
+        case VPSS_REG_SD:
+            VPSS_CTRL2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL2.u32));
+            VPSS_CTRL2.bits.vsd_flip = bFlipEn;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL2.u32), VPSS_CTRL2.u32); 
+            break;
+        case VPSS_REG_HD:
+            VPSS_CTRL2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL2.u32));
+            VPSS_CTRL2.bits.vhd_flip = bFlipEn;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL2.u32), VPSS_CTRL2.u32); 
+            break;
+        case VPSS_REG_STR:
+            VPSS_CTRL2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL2.u32));
+            VPSS_CTRL2.bits.str_flip = bFlipEn;
+            VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL2.u32), VPSS_CTRL2.u32); 
+            break;
+        default:
+            VPSS_FATAL("\nReg Error\n");
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetPreHfirEn(HI_U32 u32AppAddr,HI_BOOL bHfirEn)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+    VPSS_CTRL.bits.pre_hfir_en = bHfirEn;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetPreHfirMode(HI_U32 u32AppAddr, HI_U32 u32HfirMode)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+    VPSS_CTRL.bits.pre_hfir_mode = u32HfirMode;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+
+    return HI_SUCCESS;
+}
+
+
+HI_S32 VPSS_REG_SetPreVfirEn(HI_U32 u32AppAddr,HI_BOOL bVfirEn)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+    VPSS_CTRL.bits.pre_vfir_en = bVfirEn;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetPreVfirMode(HI_U32 u32AppAddr,HI_U32 u32VfirMode)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+    VPSS_CTRL.bits.pre_vfir_mode = u32VfirMode;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+
+    return HI_SUCCESS;
+}
+
+#endif
+
+HI_S32 VPSS_REG_SetRotation(HI_U32 u32AppAddr,HI_U32 u32Angle)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S*)u32AppAddr;
+
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+    VPSS_CTRL.bits.rotate_en = 0x1;
+    VPSS_CTRL.bits.rotate_angle = u32Angle;
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_GetReg(HI_U32 u32AppAddr,HI_U32 *pu32Int)
+{
+    HI_U32  VPSS_PFCNT;
+    
+    VPSS_REG_S *pstReg;
+    
+    pstReg = (VPSS_REG_S *)u32AppAddr;
+    
+    VPSS_PFCNT = VPSS_REG_RegRead(&(pstReg->VPSS_RAWINT.u32));
+
+    *pu32Int = VPSS_PFCNT;
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetFidelity(HI_U32 u32AppVAddr,HI_BOOL bEnFidelity)
+{
+    VPSS_REG_S *pstReg;
+    U_VPSS_CTRL VPSS_CTRL;
+    
+    pstReg = (VPSS_REG_S *)u32AppVAddr;
+
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+    VPSS_CTRL.bits.vsd_mux = bEnFidelity;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+
+    return HI_SUCCESS;
+}
+HI_S32 VPSS_REG_SetStMode(HI_U32 u32AppVAddr,HI_BOOL bLumaMax,HI_BOOL bChromaMax)
+{
+    VPSS_REG_S *pstReg;
+    U_VPSS_DIELMA2 VPSS_DIELMA2;
+    
+    pstReg = (VPSS_REG_S *)u32AppVAddr;
+
+    VPSS_DIELMA2.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_DIELMA2.u32));
+    VPSS_DIELMA2.bits.chroma_mf_max = bChromaMax;    
+    VPSS_DIELMA2.bits.luma_mf_max = bLumaMax;    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_DIELMA2.u32), VPSS_DIELMA2.u32); 
+
+    return HI_SUCCESS;
+}
+
+HI_S32 VPSS_REG_SetPreZme(HI_U32 u32AppVAddr,VPSS_REG_PORT_E ePort,
+                            VPSS_REG_PREZME_E enHor,VPSS_REG_PREZME_E enVer)
+{
+    U_VPSS_CTRL VPSS_CTRL;
+    VPSS_REG_S *pstReg;
+
+    pstReg = (VPSS_REG_S *)u32AppVAddr;
+    VPSS_CTRL.u32 = VPSS_REG_RegRead(&(pstReg->VPSS_CTRL.u32));
+
+    switch(enHor)
+    {
+        case PREZME_DISABLE:
+            VPSS_CTRL.bits.pre_hfir_en = 0x0;
+            break;
+        case PREZME_2X:
+            VPSS_CTRL.bits.pre_hfir_en = 0x1;
+            VPSS_CTRL.bits.pre_hfir_mode = 0x0;
+            break;
+        case PREZME_4X:
+            VPSS_CTRL.bits.pre_hfir_en = 0x1;
+            VPSS_CTRL.bits.pre_hfir_mode = 0x1;
+            break;
+        case PREZME_8X:
+            VPSS_CTRL.bits.pre_hfir_en = 0x1;
+            VPSS_CTRL.bits.pre_hfir_mode = 0x2;
+            break;
+        case PREZME_BUTT:
+            VPSS_CTRL.bits.pre_hfir_en = 0x0;
+            break;
+         default:
+            VPSS_CTRL.bits.pre_hfir_en = 0x0;
+            break;
+    }
+
+    switch(enVer)
+    {
+        case PREZME_DISABLE:
+            VPSS_CTRL.bits.pre_vfir_en = 0x0;
+            break;
+        case PREZME_2X:
+            VPSS_CTRL.bits.pre_vfir_en = 0x1;
+            VPSS_CTRL.bits.pre_vfir_mode = 0x0;
+            break;
+        case PREZME_4X:
+            VPSS_CTRL.bits.pre_vfir_en = 0x1;
+            VPSS_CTRL.bits.pre_vfir_mode = 0x1;
+            break;
+        case PREZME_8X:
+            VPSS_CTRL.bits.pre_vfir_en = 0x1;
+            VPSS_CTRL.bits.pre_vfir_mode = 0x2;
+            break;
+        case PREZME_BUTT:
+            VPSS_CTRL.bits.pre_vfir_en = 0x0;
+            break;
+         default:
+            VPSS_CTRL.bits.pre_vfir_en = 0x0;
+            break;
+    }
+    
+    VPSS_REG_RegWrite(&(pstReg->VPSS_CTRL.u32), VPSS_CTRL.u32); 
+
+    return HI_SUCCESS;
+}
+
 #ifdef __cplusplus
  #if __cplusplus
 }

@@ -22,7 +22,6 @@
 #include "hi_unf_hdmi.h"
 #include "hi_unf_disp.h"
 #include "hi_drv_hdmi.h"
-#include "hi_mpi_hiao.h"
 #include "hi_drv_disp.h"
 
 #ifdef __cplusplus
@@ -55,21 +54,18 @@ HI_S32 HI_MPI_HDMI_SetAVMute(HI_UNF_HDMI_ID_E enHdmi, HI_BOOL bAvMute);
 
 HI_S32 HI_MPI_HDMI_AVMute(void);
 HI_S32 HI_MPI_HDMI_AVUnMute(void);
-#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
-HI_S32 HI_MPI_HDMI_Pre_SetFormat(HI_DRV_DISP_FMT_E enEncodingFormat);
-HI_S32 HI_MPI_HDMI_SetFormat(HI_DRV_DISP_FMT_E enEncodingFormat);
-
-HI_S32 HI_MPI_HDMI_AudioChange(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
-HI_S32 HI_MPI_HDMI_PlayStus(HI_UNF_HDMI_ID_E enHdmi, HI_U32 *pu32Stutus);
-#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
+//HI_S32 HI_MPI_HDMI_Pre_SetFormat(HI_DRV_DISP_FMT_E enEncodingFormat);
+//HI_S32 HI_MPI_HDMI_SetFormat(HI_DRV_DISP_FMT_E enEncodingFormat);
+//HI_S32 HI_MPI_HDMI_AudioChange(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
+//HI_S32 HI_MPI_HDMI_PlayStus(HI_UNF_HDMI_ID_E enHdmi, HI_U32 *pu32Stutus);
 HI_S32 HI_MPI_HDMI_Force_GetEDID(HI_UNF_HDMI_ID_E enHdmi, HI_U8 *u8Edid, HI_U32 *u32EdidLength);
 HI_S32 HI_MPI_HDMI_ReadEDID(HI_U8 *u8Edid, HI_U32 *u32EdidLength);
 HI_S32 HI_MPI_HDMI_RegCallbackFunc(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_CALLBACK_FUNC_S *pstCallbackFunc);
 HI_S32 HI_MPI_HDMI_UnRegCallbackFunc(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_CALLBACK_FUNC_S *pstCallbackFunc);
 HI_S32 HI_MPI_HDMI_LoadHDCPKey(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_LOAD_KEY_S *pstLoadKey);
 
-HI_S32 HI_MPI_AO_HDMI_SetAttr(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
-HI_S32 HI_MPI_AO_HDMI_GetAttr(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
+//HI_S32 HI_MPI_AO_HDMI_SetAttr(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
+//HI_S32 HI_MPI_AO_HDMI_GetAttr(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
 #ifdef __cplusplus
 #if __cplusplus
 }

@@ -1,9 +1,19 @@
 #include <linux/interrupt.h>
 #include <linux/kthread.h>
 #include <linux/delay.h>
+#include <linux/wait.h>
+#include <linux/sched.h>
+#include <linux/semaphore.h>
+#include <linux/spinlock.h>
+#include <linux/fs.h>
+#include <linux/mm.h>
+#include <linux/rwlock.h>
 
-#include "drv_mem_ext.h"
-#include "drv_struct_ext.h"
+#include <linux/module.h>
+#include <linux/init.h>
+#include <linux/uaccess.h>
+#include "hi_drv_mem.h"
+#include "hi_drv_struct.h"
 #include "drv_venc_osal.h"
 
 #ifdef __cplusplus
@@ -27,7 +37,7 @@ HI_S32 VENC_DRV_OsalIrqInit( HI_U32 Irq, HI_VOID (*ptrCallBack)(HI_VOID))
     if (Irq == VEDU_IRQ_ID)
     {
         ptrVencCallBack = ptrCallBack;
-        ret = request_irq(Irq, VENC_DRV_OsalVencISR, IRQF_DISABLED, HI_MOD_VENC, NULL);
+        ret = request_irq(Irq, VENC_DRV_OsalVencISR, IRQF_DISABLED, "hi_venc_irq", NULL);
     }
     else
     {
@@ -148,10 +158,59 @@ HI_S32 VENC_DRV_OsalWaitEvent( VEDU_OSAL_EVENT *pEvent, HI_U32 msWaitTime )
 	}
 }
 #endif
+/************************************************************************/
+/* ÎÄ¼þtell position                                                    */
+/************************************************************************/
 
+struct file *VENC_DRV_OsalFopen(const char *filename, int flags, int mode)
+{
+        struct file *filp = filp_open(filename, flags, mode);
+        return (IS_ERR(filp)) ? NULL : filp;
+}
 
+void VENC_DRV_OsalFclose(struct file *filp)
+{
+        if (filp)
+            filp_close(filp, NULL);
+}
 
+int VENC_DRV_OsalFread(char *buf, unsigned int len, struct file *filp)
+{
+        int readlen;
+        mm_segment_t oldfs;
 
+        if (filp == NULL)
+                return -ENOENT;
+        if (filp->f_op->read == NULL)
+                return -ENOSYS;
+        if (((filp->f_flags & O_ACCMODE) & (O_RDONLY | O_RDWR)) == 0)
+                return -EACCES;
+        oldfs = get_fs();
+        set_fs(KERNEL_DS);
+        readlen = filp->f_op->read(filp, buf, len, &filp->f_pos);
+        set_fs(oldfs);
+
+        return readlen;
+}
+
+int VENC_DRV_OsalFwrite(char *buf, int len, struct file *filp)
+{
+        int writelen;
+        mm_segment_t oldfs;
+
+        if (filp == NULL)
+                return -ENOENT;
+        if (filp->f_op->write == NULL)
+                return -ENOSYS;
+        if (((filp->f_flags & O_ACCMODE) & (O_WRONLY | O_RDWR)) == 0)
+                return -EACCES;
+        oldfs = get_fs();
+        set_fs(KERNEL_DS);
+        writelen = filp->f_op->write(filp, buf, len, &filp->f_pos);
+        set_fs(oldfs);
+
+        return writelen;
+}
 #ifdef __cplusplus
  #if __cplusplus
 }

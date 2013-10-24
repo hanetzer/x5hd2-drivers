@@ -66,7 +66,6 @@ HI_VOID         HI_DRV_ADEC_DeInit(HI_VOID);
 
 HI_S32			ADEC_DRV_ModInit(HI_VOID);
 HI_VOID			ADEC_DRV_ModExit(HI_VOID);
-HI_S32			ADEC_DRV_Proc(struct seq_file *p, HI_VOID *v);
 
 #ifdef __cplusplus
  #if __cplusplus

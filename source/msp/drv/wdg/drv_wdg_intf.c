@@ -43,11 +43,12 @@
 #include "drv_wdg_ioctl.h"
 #include "drv_wdg.h"
 #include "hi_common.h"
+#include "hi_reg_common.h"
 
 #include "hi_module.h"
-#include "drv_module_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_dev_ext.h"
+#include "hi_drv_module.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_dev.h"
 
 #define WDG_MAX_NUM    (3)
 
@@ -58,21 +59,18 @@
     || defined (CHIP_TYPE_hi3716m)	\
     || defined (CHIP_TYPE_hi3712)
  #define HIWDG0_BASE 0x10201000
- #define SC_WDG_RST_CTRL 0x101E0050 //SC_WDG_RST_CTRL
- #define WDG_CRG_REG	0x101F50FC
 
  static unsigned int g_au32RegBase[WDG_MAX_NUM] = 
  {
 	HIWDG0_BASE,
  };
-#elif defined (CHIP_TYPE_hi3716cv200es)	\
-    || defined (CHIP_TYPE_hi3716cv200)
+#elif defined (CHIP_TYPE_hi3716cv200es)	|| defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
  #define HIWDG0_BASE 0xF8A2C000
  #define HIWDG1_BASE 0xF8A2D000
  #define HIWDG2_BASE 0xF8A2E000
-
- #define SC_WDG_RST_CTRL 0xF8000050 //SC_WDG_RST_CTRL
- #define WDG_CRG_REG	0x101F50FC
 
  static unsigned int g_au32RegBase[WDG_MAX_NUM] = 
  {
@@ -183,8 +181,8 @@ static void hidog_feed(unsigned int wdgindex)
 static void hidog_reset_board(unsigned int wdgindex)
 {
     unsigned long flags;
-    HI_CHIP_TYPE_E enChipType;
-    HI_CHIP_VERSION_E enChipID;
+    HI_CHIP_TYPE_E enChipType = HI_CHIP_TYPE_BUTT;
+    HI_CHIP_VERSION_E enChipID = HI_CHIP_VERSION_BUTT;
 
 	/* add by z00149549 for DTS2012123104700 in MV300  */
     HI_DRV_SYS_GetChipVersion(&enChipType, &enChipID);
@@ -263,7 +261,6 @@ static void hidog_start(unsigned int wdgindex)
     /* use soft to control WDG reset, can not open
        0: not send reset signal, 1: send reset signal by WDG_RST pin */
 
-    //writel(0x1, IO_ADDRESS(SC_WDG_RST_CTRL));
     spin_unlock_irqrestore(&hidog_lock, flags);
 
     options[wdgindex] = WDIOS_ENABLECARD;
@@ -272,13 +269,16 @@ static void hidog_start(unsigned int wdgindex)
 static void hidog_stop(unsigned int wdgindex)
 {
     unsigned long flags;
+	U_SC_WDG_RST_CTRL uTmpValue;
 
     //	unsigned long t;
 
     spin_lock_irqsave(&hidog_lock, flags);
 
     /* disable watchdog clock */
-    writel(0x0, IO_ADDRESS(SC_WDG_RST_CTRL));
+	uTmpValue.u32 = g_pstRegSysCtrl->SC_WDG_RST_CTRL.u32;
+    uTmpValue.bits.wdg_rst_ctrl = 0;
+	g_pstRegSysCtrl->SC_WDG_RST_CTRL.u32 = uTmpValue.u32;
 
     /* unlock watchdog registers */
     hiwdt_writel(HIWDG_UNLOCK_VAL, wdgindex, HIWDG_LOCK);
@@ -321,7 +321,12 @@ static int hidog_open(struct inode *inode, struct file *file)
 static int hidog_release(struct inode *inode, struct file *file)
 {
     clear_bit(0, &driver_open);
+	unsigned int wdgindex;
 
+	for (wdgindex = 0; wdgindex < HI_WDG_NUM; wdgindex++)
+	{
+    	hidog_stop(wdgindex);
+	}
     return 0;
 }
 
@@ -374,6 +379,11 @@ static long hidog_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	            return -EFAULT;
 	        }
 
+			if (stTimeout.u32WdgIndex >= WDG_MAX_NUM)
+			{
+				return HI_FAILURE; 
+			}
+			
 			stTimeout.s32Timeout = cur_margin[stTimeout.u32WdgIndex];
 
 			return copy_to_user((WDG_TIMEOUT_S*)arg, &stTimeout, sizeof(WDG_TIMEOUT_S));
@@ -388,10 +398,16 @@ static long hidog_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	            return -EFAULT;
 	        }
 
+			if (stOption.u32WdgIndex >= WDG_MAX_NUM)
+			{
+				return HI_FAILURE; 
+			}
+
 			if (stOption.s32Option == WDIOS_ENABLECARD)
 	        {
+				hidog_set_heartbeat(stOption.u32WdgIndex, cur_margin[stOption.u32WdgIndex]);
 	            hidog_start(stOption.u32WdgIndex);
-	            hidog_set_heartbeat(stOption.u32WdgIndex, cur_margin[stOption.u32WdgIndex]);
+	            
 	            return 0;
 	        }
 	        else if (stOption.s32Option == WDIOS_DISABLECARD)
@@ -401,6 +417,11 @@ static long hidog_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
 	        }
 	        else if (stOption.s32Option == WDIOS_RESET_BOARD)
 	        {
+	        	if (options[stOption.u32WdgIndex] != WDIOS_ENABLECARD)
+	        	{
+					return HI_FAILURE;
+				}
+				
 	            hidog_reset_board(stOption.u32WdgIndex);
 	            return 0;
 	        }
@@ -514,7 +535,7 @@ HI_S32 WDG_DRV_ModInit(HI_VOID)
 	    hidog_set_heartbeat(wdgindex, default_margin);
 	}    
 
-	sprintf(g_WdgRegisterData.devfs_name, UMAP_DEVNAME_WDG);
+	snprintf(g_WdgRegisterData.devfs_name, sizeof(g_WdgRegisterData.devfs_name), UMAP_DEVNAME_WDG);
     g_WdgRegisterData.minor = UMAP_MIN_MINOR_WDG;
     g_WdgRegisterData.owner = THIS_MODULE;
     g_WdgRegisterData.fops   = &hidog_fops;
@@ -524,7 +545,11 @@ HI_S32 WDG_DRV_ModInit(HI_VOID)
         //printk (KERN_ERR HIDOG_PFX "HI_DRV_DEV_Register err (err=%d)\n", ret);
         return HI_FAILURE;
     }
-	printk("Load hi_wdg.ko success!\n");
+
+#ifdef MODULE
+	HI_PRINT("Load hi_wdg.ko success   \t(%s)\n", VERSION_STRING);
+#endif
+
     return ret;
 }
 

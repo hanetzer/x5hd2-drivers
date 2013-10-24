@@ -431,13 +431,6 @@ static HI_S32 JPGParsingDHT(HI_VOID *pBuf, HI_U32 BufLen,
             }
         }
 
-        if (Length < 17)
-        {
-            //VCOS_free (*pHtblptr);
-            *pHtblptr = NULL;
-            return HI_FAILURE;
-        }
-
         JPGVCOS_memcpy(&((*pHtblptr)->Bits[1]), pTmp, 16);
         pTmp   += 16;
         Length -= 17;
@@ -577,10 +570,12 @@ static HI_S32 JPGParsingDQT (HI_VOID *pBuf, HI_U32 BufLen, JPG_PICPARSEINFO_S *p
 STATIC_FUNC HI_VOID JPGPARSESkipData(JPG_CYCLEBUF_S *pParseBuf, HI_U32* pLen)
 {
     JPGBUF_DATA_S BufInfo;
-    HI_U32 ReqSkipLen = *pLen;
+    HI_U32 ReqSkipLen;
     HI_U32 DataLen;
-
+    
     jpg_assert((NULL != pParseBuf) && (NULL != pLen), return );
+
+    ReqSkipLen = *pLen;
 
     /* skip '*pLen' bytes*/
     (HI_VOID)JPGBUF_GetDataBtwWhRh(pParseBuf, &BufInfo);
@@ -763,7 +758,7 @@ STATIC_FUNC HI_S32 JPGPARSEParseMarker (HI_U8 Marker, HI_VOID *pBuf, HI_U32 BufL
     JPG_CHECK_NULLPTR(pBuf);
     JPG_CHECK_NULLPTR(pImage);
     JPG_CHECK_LEN(BufLen);
-	HI_BOOL bAssert = HI_FALSE;
+    //HI_BOOL bAssert = HI_FALSE;
 	
     jpg_assert(((Marker >= SOF0) && (Marker <= SOF3))
                || (Marker == DQT) || (Marker == DHT) || (Marker == SOS),
@@ -772,32 +767,27 @@ STATIC_FUNC HI_S32 JPGPARSEParseMarker (HI_U8 Marker, HI_VOID *pBuf, HI_U32 BufL
     /*call the corresponding functions to parse the markers*/
     switch (Marker)
     {
-    case DQT:
-    {
-        return JPGParsingDQT(pBuf, BufLen, pImage);
+        case DQT:
+        {
+            return JPGParsingDQT(pBuf, BufLen, pImage);
+        }
+        case DHT:
+        {
+            return JPGParsingDHT(pBuf, BufLen, pImage);
+        }
+        case SOF0:
+        case SOF1:
+        case SOF2:
+        case SOF3:
+        {
+            return JPGParsingSOF(Marker, pBuf, BufLen, pImage);
+        }
+        case SOS:
+        default:
+        {
+            return JPGParsingSOS(pBuf, BufLen, pImage);
+        }
     }
-    case DHT:
-    {
-        return JPGParsingDHT(pBuf, BufLen, pImage);
-    }
-    case SOF0:
-    case SOF1:
-    case SOF2:
-    case SOF3:
-    {
-        return JPGParsingSOF(Marker, pBuf, BufLen, pImage);
-    }
-    case SOS:
-    {
-        return JPGParsingSOS(pBuf, BufLen, pImage);
-    }
-    default:
-    {
-        jpg_assert((HI_FALSE!=bAssert), return HI_FAILURE);
-    }
-    }
-
-    return HI_SUCCESS;
 }
 
 /******************************************************************************
@@ -849,6 +839,7 @@ HI_VOID JPGPARSEInitApp1(const JPG_CYCLEBUF_S* pParseBuf, JPGPARSE_APP1_S* pstAP
 	
     jpg_assert((NULL != pParseBuf) && (NULL != pstAPP1) && (0 != MarkLen), return );
 
+    memset(&stData, 0, sizeof(JPGBUF_DATA_S));
     s32Ret = JPGBUF_GetBufInfo(pParseBuf, &BufAddr, &BufLen);
 	if(HI_SUCCESS!=s32Ret)
 	{

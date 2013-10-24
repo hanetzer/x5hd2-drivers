@@ -21,19 +21,15 @@
     Modification: add the control of output way, it can output log info to network by add log buffer
 
 ******************************************************************************/
-#include "hi_type.h"
-
 #include <linux/seq_file.h>
-
+#include "hi_type.h"
 #include "hi_debug.h"
-#include "hi_drv_log.h"
-
-//#include "common_sys.h"
-#include "drv_dev_ext.h"
-#include "drv_mmz_ext.h"
+#include "hi_osal.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_mmz.h"
 #include "drv_log.h"
-#include "drv_proc_ext.h"
-
+#include "hi_drv_proc.h"
+#include "hi_drv_log.h"
 #include "drv_log_ioctl.h"
 
 
@@ -128,7 +124,7 @@ HI_S32 HI_DRV_LOG_Init(HI_VOID)
 {
     DRV_PROC_ITEM_S *item = NULL;
 	// 0
-	sprintf(g_srtuDbgDev.devfs_name, "%s", UMAP_DEVNAME_LOG);
+	HI_OSAL_Snprintf(g_srtuDbgDev.devfs_name, sizeof(g_srtuDbgDev.devfs_name), "%s", UMAP_DEVNAME_LOG);
     g_srtuDbgDev.fops = &DRV_log_Fops;
     g_srtuDbgDev.minor = UMAP_MIN_MINOR_LOG;
 	g_srtuDbgDev.owner  = THIS_MODULE;

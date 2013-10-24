@@ -24,6 +24,7 @@ HEADER_FILES += $(MSP_DIR)/api/$(TARGET)/include/VG
 .PHONY: all clean install uninstall
 
 all: 
+ifeq ($(CFG_HI_GPU), y)
 	$(AT)rm -rf lib/lib*
 ifeq ($(CFG_HI_EGL_TYPE), fb)
 	$(AT)cp include/EGL/platform_fbdev/EGL/eglplatform.h include/EGL/ -rf
@@ -35,7 +36,6 @@ ifeq ($(CFG_HI_EGL_TYPE), higo)
 	$(AT)cp lib/platform_higo/libMali.so lib/ -rf
 endif
 
-ifneq ($(findstring $(CFG_HI_CHIP_TYPE),hi3716cv200es hi3719m), )
 	$(AT)cd lib;\
 	ln -sf libMali.so       libEGL.so.1.4;\
 	ln -sf libEGL.so.1.4    libEGL.so.1;\
@@ -56,13 +56,13 @@ clean:
 
 
 install: all
-ifneq ($(findstring $(CFG_HI_CHIP_TYPE),hi3716cv200es hi3719m), )
+ifeq ($(CFG_HI_GPU), y)
 	$(AT)cp -rf  $(HEADER_FILES)     $(INCLUDE_DIR)/
 	$(AT)cp -ralf lib/* $(SHARED_LIB_DIR)/
 endif
 
 uninstall:
-ifneq ($(findstring $(CFG_HI_CHIP_TYPE),hi3716cv200es hi3719m), )
+ifeq ($(CFG_HI_GPU), y)
 	$(AT)rm -rf $(SHARED_LIB_DIR)/libMali.so
 	$(AT)rm -rf $(SHARED_LIB_DIR)/libGLES*
 	$(AT)rm -rf $(SHARED_LIB_DIR)/libEGL*

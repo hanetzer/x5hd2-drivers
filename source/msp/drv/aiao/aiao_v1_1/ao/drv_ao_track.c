@@ -12,18 +12,17 @@
 #include <linux/interrupt.h>
 
 #include "hi_type.h"
-#include "drv_struct_ext.h"
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_stat_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
 
 #include "hi_module.h"
-#include "drv_mmz_ext.h"
-#include "drv_stat_ext.h"
-#include "drv_sys_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_module_ext.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_file.h"
+#include "hi_drv_module.h"
+#include "hi_drv_mem.h"
 #include "hi_error_mpi.h"
 
 #include "hi_drv_hdmi.h"
@@ -41,6 +40,9 @@
 #include "hal_aiao.h"
 #include "hal_tianlai_adac.h"
 
+
+/* test hdmi pass-through autio without hdmi device , only work at HI_UNF_SND_HDMI_MODE_RAW*/
+#define HDMI_AUDIO_PASSTHROUGH_DEBUG   
 
 #if !defined(HI_SND_DRV_TEMPLATE_OPT)
 static HI_U32 g_u32SndTrackRS = 0;
@@ -98,7 +100,7 @@ static HI_VOID TrackDestroyEngine(HI_HANDLE hSndEngine)
 
     HAL_AOE_ENGINE_Stop(state->enEngine);
     HAL_AOE_ENGINE_Destroy(state->enEngine);
-    HI_KFREE(HI_ID_AO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
 }
 
 HI_VOID TRACK_DestroyEngine(SND_CARD_STATE_S *pCard)
@@ -124,10 +126,10 @@ HI_S32 TrackCreateEngine(HI_HANDLE *phSndEngine, AOE_ENGINE_CHN_ATTR_S *pstAttr,
 
     *phSndEngine = HI_NULL;
 
-    state = HI_KMALLOC(HI_ID_AO, sizeof(SND_ENGINE_STATE_S), GFP_KERNEL);
+    state = AUTIL_AO_MALLOC(HI_ID_AO, sizeof(SND_ENGINE_STATE_S), GFP_KERNEL);
     if (state == HI_NULL)
     {
-        HI_FATAL_AIAO("HI_KMALLOC CreateEngine failed\n");
+        HI_FATAL_AIAO("malloc CreateEngine failed\n");
         goto CreateEngine_ERR_EXIT;
     }
 
@@ -148,7 +150,7 @@ HI_S32 TrackCreateEngine(HI_HANDLE *phSndEngine, AOE_ENGINE_CHN_ATTR_S *pstAttr,
 
 CreateEngine_ERR_EXIT:
     *phSndEngine = (HI_HANDLE)HI_NULL;
-    HI_KFREE(HI_ID_AO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     return Ret;
 }
 
@@ -341,6 +343,15 @@ HI_VOID TrackBuildPcmAttr(HI_UNF_AO_FRAMEINFO_S *pstAOFrame, SND_TRACK_STREAM_AT
             pstStreamAttr->u32PcmBytesPerFrame = pstStreamAttr->u32PcmSamplesPerFrame*pstStreamAttr->u32PcmChannels*u32BitWidth;
             pstStreamAttr->pPcmDataBuf = (HI_VOID*)HI_NULL;
         }
+        else
+        {
+            pstStreamAttr->u32PcmSampleRate = HI_UNF_SAMPLE_RATE_48K;
+            pstStreamAttr->u32PcmBitDepth = AO_TRACK_BITDEPTH_LOW;
+            pstStreamAttr->u32PcmChannels = AO_TRACK_NORMAL_CHANNELNUM;
+            pstStreamAttr->u32PcmBytesPerFrame = 0;
+            pstStreamAttr->u32PcmSamplesPerFrame = 0;
+            pstStreamAttr->pPcmDataBuf = (HI_VOID*)HI_NULL;
+        }
     }
 }
 
@@ -362,7 +373,14 @@ HI_VOID TRACKBuildStreamAttr(SND_CARD_STATE_S *pCard, HI_UNF_AO_FRAMEINFO_S *pst
     memset(pstStreamAttr, 0, sizeof(SND_TRACK_STREAM_ATTR_S));
 
     // lbr
-    u32IEC61937DataType = AUTIL_IEC61937DataType((HI_U16*)TrackGetLbrBufAddr(pstAOFrame), TrackGetLbrSize(pstAOFrame));
+    if(pstAOFrame->u32IEC61937DataType & 0xff)
+    {
+		u32IEC61937DataType = pstAOFrame->u32IEC61937DataType & 0xff;/*0~8bit : datatype*/
+	}
+	else
+	{
+		u32IEC61937DataType = AUTIL_IEC61937DataType((HI_U16*)TrackGetLbrBufAddr(pstAOFrame), TrackGetLbrSize(pstAOFrame));
+	}
     pstStreamAttr->u32LbrFormat = IEC61937_DATATYPE_NULL;
     if (u32IEC61937DataType && !(AUTIL_isIEC61937Hbr(u32IEC61937DataType, pstAOFrame->u32SampleRate)))
     {
@@ -378,17 +396,45 @@ HI_VOID TRACKBuildStreamAttr(SND_CARD_STATE_S *pCard, HI_UNF_AO_FRAMEINFO_S *pst
     if(pCard->pstHdmiFunc && pCard->pstHdmiFunc->pfnHdmiGetPlayStus)
     {
         (pCard->pstHdmiFunc->pfnHdmiGetPlayStus)(HI_UNF_HDMI_ID_0, &u32Status);
+#if defined(HDMI_AUDIO_PASSTHROUGH_DEBUG) 
+        if(HI_TRUE == pCard->bHdmiDebug)
+        {
+            if(HI_UNF_SND_HDMI_MODE_RAW == pCard->enUserHdmiMode)
+            {
+                u32Status = HI_TRUE; /* cheat SND work at hdmi plun-in status without hdmi device */
+            }
+        }
+#endif
     }
     if (u32Status == HI_TRUE)
     {
-        u32IEC61937DataType = AUTIL_IEC61937DataType((HI_U16*)TrackGetHbrBufAddr(pstAOFrame), TrackGetHbrSize(pstAOFrame));
+		if(pstAOFrame->u32IEC61937DataType & 0xff)
+    	{
+			u32IEC61937DataType = pstAOFrame->u32IEC61937DataType & 0xff;/*0~8bit : datatype*/
+		}
+		else
+		{
+			u32IEC61937DataType = AUTIL_IEC61937DataType((HI_U16*)TrackGetHbrBufAddr(pstAOFrame), TrackGetHbrSize(pstAOFrame));
+		}
+        
         pstStreamAttr->u32HbrFormat = IEC61937_DATATYPE_NULL;
         if ((AUTIL_isIEC61937Hbr(u32IEC61937DataType, pstAOFrame->u32SampleRate)))
         {
             pstStreamAttr->u32HbrBitDepth = AO_TRACK_BITDEPTH_LOW;
             pstStreamAttr->u32HbrChannels = ((IEC61937_DATATYPE_DOLBY_DIGITAL_PLUS==u32IEC61937DataType)?2:8);
             pstStreamAttr->u32HbrFormat = u32IEC61937DataType;
+			if(pstAOFrame->u32SampleRate <= HI_UNF_SAMPLE_RATE_48K)
+			{
             pstStreamAttr->u32HbrSampleRate = pstAOFrame->u32SampleRate * 4;  /* hbr 4*samplerate */
+			}
+			else if(pstAOFrame->u32SampleRate == HI_UNF_SAMPLE_RATE_88K || pstAOFrame->u32SampleRate == HI_UNF_SAMPLE_RATE_96K)
+			{
+				pstStreamAttr->u32HbrSampleRate = pstAOFrame->u32SampleRate * 2;
+			}
+			else
+			{
+				pstStreamAttr->u32HbrSampleRate = pstAOFrame->u32SampleRate;  /* hbr samplerate */
+			}
             pstStreamAttr->u32HbrBytesPerFrame = TrackGetHbrSize(pstAOFrame);
             pstStreamAttr->pHbrDataBuf = (HI_VOID*)TrackGetHbrBufAddr(pstAOFrame);
         }
@@ -400,6 +446,16 @@ HI_VOID TRACKBuildStreamAttr(SND_CARD_STATE_S *pCard, HI_UNF_AO_FRAMEINFO_S *pst
             {
                 s32Ret = (pCard->pstHdmiFunc->pfnHdmiGetSinkCapability)(HI_UNF_HDMI_ID_0, &stSinkCap);
             }
+#if defined(HDMI_AUDIO_PASSTHROUGH_DEBUG) 
+            if(HI_TRUE == pCard->bHdmiDebug)
+            {
+                if(HI_UNF_SND_HDMI_MODE_RAW == pCard->enUserHdmiMode)
+                {
+                    s32Ret = HI_SUCCESS; /* cheat SND work at hdmi plun-in status without hdmi device */
+                    stSinkCap.u32MaxPcmChannels = AO_TRACK_MUTILPCM_CHANNELNUM;
+                }
+            }
+#endif
             if(HI_SUCCESS == s32Ret)
             {
                 if (stSinkCap.u32MaxPcmChannels > AO_TRACK_NORMAL_CHANNELNUM)
@@ -649,6 +705,55 @@ TRACK_STREAMMODE_CHANGE_E GetSpdifChangeMode(SND_CARD_STATE_S *pCard, SND_TRACK_
     return enChange;
 }
 
+HI_VOID DetectTrueHDModeChange(SND_CARD_STATE_S *pCard, SND_TRACK_STREAM_ATTR_S *pstAttr)
+{
+	if(IEC61937_DATATYPE_DOLBY_TRUE_HD == pstAttr->u32HbrFormat)
+	{
+		if(SND_HDMI_MODE_HBR == pCard->enHdmiPassthrough)
+		{
+			HI_U32 u32PcmBitWidth,u32SampleRateWidth,u32HbrBitWidth;
+			HI_U32 u32HbrSamplesPerFrame;
+	        if(16 == pstAttr->u32PcmBitDepth)
+	        {
+	            u32PcmBitWidth = sizeof(HI_U16);
+	        }
+	        else
+	        {
+	            u32PcmBitWidth = sizeof(HI_U32);
+	        }
+
+	        if(16 == pstAttr->u32HbrBitDepth)
+	        {
+	            u32HbrBitWidth = sizeof(HI_U16);
+	        }
+	        else
+	        {
+	            u32HbrBitWidth = sizeof(HI_U32);
+	        }
+			
+			if(pstAttr->u32PcmSampleRate <= HI_UNF_SAMPLE_RATE_48K)
+			{
+				u32SampleRateWidth = 2;
+			}
+			else if((HI_UNF_SAMPLE_RATE_88K == pstAttr->u32PcmSampleRate) || (HI_UNF_SAMPLE_RATE_96K == pstAttr->u32PcmSampleRate))
+			{
+				u32SampleRateWidth = 1;
+			}
+			else
+			{
+				u32SampleRateWidth = 0;
+			}
+			
+			u32HbrSamplesPerFrame = pstAttr->u32HbrBytesPerFrame/pstAttr->u32HbrChannels/u32HbrBitWidth;
+            pstAttr->u32PcmSamplesPerFrame = u32HbrSamplesPerFrame >> u32SampleRateWidth;
+            pstAttr->u32PcmChannels = AO_TRACK_NORMAL_CHANNELNUM;
+            pstAttr->u32PcmBytesPerFrame = pstAttr->u32PcmSamplesPerFrame*pstAttr->u32PcmChannels * u32PcmBitWidth;
+            pstAttr->pPcmDataBuf = (HI_VOID*)HI_NULL;
+		}
+	}
+}
+
+
 HI_VOID DetectStreamModeChange(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrack, SND_TRACK_STREAM_ATTR_S *pstAttr,
                                STREAMMODE_CHANGE_ATTR_S *pstChange)
 {
@@ -875,6 +980,7 @@ HI_VOID SndProcHdmifRoute(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrack, TR
         SND_SetOpAttr(pCard, SND_GetOpOutputport(hSndOp), &stOpAttr);
         Aop = SND_OpGetAopId(hSndOp);  //verify
         state = (SND_ENGINE_STATE_S *)hEngineNew;//verify
+        HAL_AOE_ENGINE_Stop(state->enEngine);
 		HAL_AOE_ENGINE_AttachAop(state->enEngine, Aop);
         SND_StartOp(pCard, SND_GetOpOutputport(hSndOp));
 
@@ -885,13 +991,11 @@ HI_VOID SndProcHdmifRoute(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrack, TR
         stAipAttr.stBufInAttr.u32BufChannels   = pstAttr->u32LbrChannels;
         stAipAttr.stBufInAttr.u32BufDataFormat = pstAttr->u32LbrFormat;
         HAL_AOE_AIP_SetAttr(pTrack->enAIP[enEngineNew], &stAipAttr);
-		state = (SND_ENGINE_STATE_S *)hEngineNew;//verify
 		HAL_AOE_ENGINE_AttachAip(state->enEngine, pTrack->enAIP[enEngineNew]);
 
         pCard->u32HdmiDataFormat = stAipAttr.stBufInAttr.u32BufDataFormat;
         //set engine
-        state = (SND_ENGINE_STATE_S *)hEngineNew;
-		HAL_AOE_ENGINE_Stop(state->enEngine);
+
         stEngineAttr.u32BitPerSample = pstAttr->u32LbrBitDepth;
         stEngineAttr.u32Channels   = pstAttr->u32LbrChannels;
         stEngineAttr.u32SampleRate = pstAttr->u32LbrSampleRate;
@@ -923,6 +1027,7 @@ HI_VOID SndProcHdmifRoute(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrack, TR
         SND_SetOpAttr(pCard, SND_GetOpOutputport(hSndOp), &stOpAttr);
         Aop = SND_OpGetAopId(hSndOp); //verify
         state = (SND_ENGINE_STATE_S *)hEngineNew;//verify
+        HAL_AOE_ENGINE_Stop(state->enEngine);
 		HAL_AOE_ENGINE_AttachAop(state->enEngine, Aop);
         SND_StartOp(pCard, SND_GetOpOutputport(hSndOp));
 
@@ -933,13 +1038,10 @@ HI_VOID SndProcHdmifRoute(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrack, TR
         stAipAttr.stBufInAttr.u32BufChannels   = pstAttr->u32HbrChannels;
         stAipAttr.stBufInAttr.u32BufDataFormat = pstAttr->u32HbrFormat;
         HAL_AOE_AIP_SetAttr(pTrack->enAIP[enEngineNew], &stAipAttr);
-		state = (SND_ENGINE_STATE_S *)hEngineNew;//verify
 		HAL_AOE_ENGINE_AttachAip(state->enEngine, pTrack->enAIP[enEngineNew]);
 
         pCard->u32HdmiDataFormat = stAipAttr.stBufInAttr.u32BufDataFormat;
         //set engine
-        state = (SND_ENGINE_STATE_S *)hEngineNew;//verify
-		HAL_AOE_ENGINE_Stop(state->enEngine);
         stEngineAttr.u32BitPerSample = pstAttr->u32HbrBitDepth;
         stEngineAttr.u32Channels   = pstAttr->u32HbrChannels;
         stEngineAttr.u32SampleRate = pstAttr->u32HbrSampleRate;
@@ -1063,6 +1165,7 @@ HI_VOID SndProcSpidfRoute(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrack, TR
         TranslateOpAttr(&stOpAttr,enMode,pstAttr);
         SND_SetOpAttr(pCard, SND_GetOpOutputport(hSndOp), &stOpAttr);
 		state = (SND_ENGINE_STATE_S *)hEngineNew;//verify
+		HAL_AOE_ENGINE_Stop(state->enEngine);
 		HAL_AOE_ENGINE_AttachAop(state->enEngine, Aop);
         SND_StartOp(pCard, SND_GetOpOutputport(hSndOp));
 
@@ -1073,14 +1176,11 @@ HI_VOID SndProcSpidfRoute(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrack, TR
         stAipAttr.stBufInAttr.u32BufChannels   = pstAttr->u32LbrChannels;
         stAipAttr.stBufInAttr.u32BufDataFormat = pstAttr->u32LbrFormat;
         HAL_AOE_AIP_SetAttr(pTrack->enAIP[enEngineNew], &stAipAttr);
-		state = (SND_ENGINE_STATE_S *)hEngineNew;//verify
 		HAL_AOE_ENGINE_AttachAip(state->enEngine, pTrack->enAIP[enEngineNew]);
 
         pCard->u32SpdifDataFormat = stAipAttr.stBufInAttr.u32BufDataFormat;
             
         //set engine
-        state = (SND_ENGINE_STATE_S *)hEngineNew;
-		HAL_AOE_ENGINE_Stop(state->enEngine);
         stEngineAttr.u32BitPerSample = pstAttr->u32LbrBitDepth;
         stEngineAttr.u32Channels   = pstAttr->u32LbrChannels;
         stEngineAttr.u32SampleRate = pstAttr->u32LbrSampleRate;
@@ -1279,6 +1379,40 @@ HI_VOID TRACKPcmUnifyProcess(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrack,
     // step 2,  7.1+2.0 PCM  
 }
 
+static HI_VOID TRACKSavePcmData(SND_TRACK_STATE_S *pTrack, SND_TRACK_STREAM_ATTR_S * pstStreamAttr)
+{ 
+    if(SND_DEBUG_CMD_CTRL_START == pTrack->enSaveState)
+    {
+        if(pstStreamAttr->pPcmDataBuf)
+        {
+            if(16 == pstStreamAttr->u32PcmBitDepth)
+            {
+                if(pTrack->fileHandle)
+                {
+                    HI_U32 u32FrameSize = AUTIL_CalcFrameSize(pstStreamAttr->u32PcmChannels, pstStreamAttr->u32PcmBitDepth);;
+                    HI_DRV_FILE_Write(pTrack->fileHandle, pstStreamAttr->pPcmDataBuf, pstStreamAttr->u32PcmSamplesPerFrame * u32FrameSize);
+                    //pTrack->fileHandle->f_op->write(pTrack->fileHandle, pstStreamAttr->pPcmDataBuf, pstStreamAttr->u32PcmSamplesPerFrame * u32FrameSize, &pTrack->fileHandle->f_pos);
+                }
+            }
+            else if(24 == pstStreamAttr->u32PcmBitDepth)
+            {
+                HI_U32 i;
+                HI_U32 u32TotalSample = pstStreamAttr->u32PcmSamplesPerFrame * pstStreamAttr->u32PcmChannels;
+                HI_VOID *ps8Src = pstStreamAttr->pPcmDataBuf;
+                for(i = 0; i < u32TotalSample; i++)
+                {
+                    if(pTrack->fileHandle)
+                    {
+                        HI_DRV_FILE_Write(pTrack->fileHandle, ps8Src+i*4+1, 3);
+                    }
+                }
+            }
+        }
+    }
+
+    return;
+}
+
 static HI_VOID TRACKWriteFrame(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrack, SND_TRACK_STREAM_ATTR_S * pstStreamAttr)
 {
     HI_U32 Write = 0;
@@ -1286,6 +1420,7 @@ static HI_VOID TRACKWriteFrame(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrac
     HI_U32 SpdifRawBytes = 0;
     HI_U32 HdmiRawBytes = 0;
 
+    TRACKSavePcmData(pTrack, pstStreamAttr);
     TRACKPcmUnifyProcess(pCard,pTrack, pstStreamAttr);
 
     PcmFrameBytes = pstStreamAttr->u32PcmBytesPerFrame;
@@ -1347,7 +1482,7 @@ static HI_VOID TRACKWriteMuteFrame(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *p
         return;
     }
 
-    if (SND_SPDIF_MODE_PCM >= pCard->enSpdifPassthrough && SND_SPDIF_MODE_PCM >= pCard->enHdmiPassthrough)
+    if (SND_SPDIF_MODE_PCM >= pCard->enSpdifPassthrough && SND_HDMI_MODE_PCM >= pCard->enHdmiPassthrough)
     {
         return;
     }
@@ -1508,19 +1643,12 @@ HI_S32 TrackCreateMaster(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *state, HI_U
     AOE_AIP_CHN_ATTR_S stAipAttr;
     MMZ_BUFFER_S stRbfMmz;
 
-    Ret = HI_DRV_MMZ_AllocAndMap("AO_MAipPcm", MMZ_OTHERS, AO_TRACK_PCM_BUFSIZE_BYTE_MAX, AIAO_BUFFER_ADDR_ALIGN,
-                                 &stRbfMmz);
-    if (HI_SUCCESS != Ret)
-    {
-        HI_ERR_AO("MMZ_AllocAndMap failed\n");
-        goto ALLOC_PCM_ERR_EXIT;
-    }
-
+    stRbfMmz = pCard->stTrackRbfMmz[SND_ENGINE_TYPE_PCM];
     TrackGetAipPcmDfAttr(&stAipAttr, &stRbfMmz, pstAttr);
     Ret = HAL_AOE_AIP_Create(&enAIP, &stAipAttr);
     if (HI_SUCCESS != Ret)
     {
-        HI_ERR_AO("HAL_AOE_AIP_Create(%d) failed\n", enAIP);
+        HI_ERR_AO("HAL_AOE_AIP_Create failed\n");
         goto CREATE_PCM_ERR_EXIT;
     }
 
@@ -1530,19 +1658,12 @@ HI_S32 TrackCreateMaster(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *state, HI_U
 
     if(SND_SPDIF_MODE_NONE != pCard->enSpdifPassthrough)
     {
-        Ret = HI_DRV_MMZ_AllocAndMap("AO_MAipSpdRaw", MMZ_OTHERS, AO_TRACK_LBR_BUFSIZE_BYTE_MAX, AIAO_BUFFER_ADDR_ALIGN,
-                                     &stRbfMmz);
-        if (HI_SUCCESS != Ret)
-        {
-            HI_ERR_AO("MMZ_AllocAndMap failed\n");
-            goto ALLOC_SPDIF_ERR_EXIT;
-        }
-
+        stRbfMmz = pCard->stTrackRbfMmz[SND_ENGINE_TYPE_SPDIF_RAW];
         TrackGetAipLbrDfAttr(&stAipAttr, &stRbfMmz, pstAttr);
         Ret = HAL_AOE_AIP_Create(&enAIP, &stAipAttr);
         if (HI_SUCCESS != Ret)
         {
-            HI_ERR_AO("HAL_AOE_AIP_Create(%d) failed\n", enAIP);
+            HI_ERR_AO("HAL_AOE_AIP_Create failed\n");
             goto CREATE_SPDIF_ERR_EXIT;
         }
 
@@ -1553,14 +1674,7 @@ HI_S32 TrackCreateMaster(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *state, HI_U
 
     if(SND_HDMI_MODE_NONE != pCard->enHdmiPassthrough)
     {
-        Ret = HI_DRV_MMZ_AllocAndMap("AO_MAipHdmiRaw", MMZ_OTHERS, AO_TRACK_HBR_BUFSIZE_BYTE_MAX, AIAO_BUFFER_ADDR_ALIGN,
-                                     &stRbfMmz);
-        if (HI_SUCCESS != Ret)
-        {
-            HI_ERR_AO("MMZ_AllocAndMap failed\n");
-            goto ALLOC_HDMI_ERR_EXIT;
-        }
-
+        stRbfMmz = pCard->stTrackRbfMmz[SND_ENGINE_TYPE_HDMI_RAW];
         TrackGetAipHbrDfAttr(&stAipAttr, &stRbfMmz, pstAttr);
         Ret = HAL_AOE_AIP_Create(&enAIP, &stAipAttr);
         if (HI_SUCCESS != Ret)
@@ -1578,25 +1692,13 @@ HI_S32 TrackCreateMaster(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *state, HI_U
     return HI_SUCCESS;
 
 CREATE_HDMI_ERR_EXIT: 
-    if(SND_HDMI_MODE_NONE != pCard->enHdmiPassthrough)
-    {
-        HI_DRV_MMZ_UnmapAndRelease(&state->stAipRbfMmz[SND_ENGINE_TYPE_HDMI_RAW]);
-    }
-ALLOC_HDMI_ERR_EXIT: 
     if(SND_SPDIF_MODE_NONE != pCard->enSpdifPassthrough)
     {
         HAL_AOE_AIP_Destroy(state->enAIP[SND_ENGINE_TYPE_SPDIF_RAW]);
     }
-CREATE_SPDIF_ERR_EXIT:   
-    if(SND_SPDIF_MODE_NONE != pCard->enSpdifPassthrough)
-    {
-        HI_DRV_MMZ_UnmapAndRelease(&state->stAipRbfMmz[SND_ENGINE_TYPE_SPDIF_RAW]);
-    }
-ALLOC_SPDIF_ERR_EXIT:    
+CREATE_SPDIF_ERR_EXIT:     
     HAL_AOE_AIP_Destroy(state->enAIP[SND_ENGINE_TYPE_PCM]);  
 CREATE_PCM_ERR_EXIT:
-    HI_DRV_MMZ_UnmapAndRelease(&state->stAipRbfMmz[SND_ENGINE_TYPE_PCM]);    
-ALLOC_PCM_ERR_EXIT:
     return HI_FAILURE;
 }
 
@@ -1802,10 +1904,10 @@ HI_S32 TRACK_Create(SND_CARD_STATE_S *pCard, HI_UNF_AUDIOTRACK_ATTR_S *pstAttr,
         return HI_FAILURE;
     }
 
-    state = HI_KMALLOC(HI_ID_AO, sizeof(SND_TRACK_STATE_S), GFP_KERNEL);
+    state = AUTIL_AO_MALLOC(HI_ID_AO, sizeof(SND_TRACK_STATE_S), GFP_KERNEL);
     if (state == HI_NULL)
     {
-        HI_FATAL_AO("HI_KMALLOC TRACK_Create failed\n");
+        HI_FATAL_AO("malloc TRACK_Create failed\n");
         goto SndTrackCreate_ERR_EXIT;
     }
 
@@ -1855,7 +1957,7 @@ HI_S32 TRACK_Create(SND_CARD_STATE_S *pCard, HI_UNF_AUDIOTRACK_ATTR_S *pstAttr,
     
 SndTrackCreate_ERR_EXIT:
     *phTrack = HI_NULL;
-    HI_KFREE(HI_ID_AO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     return Ret;
 }
 #endif
@@ -1866,12 +1968,6 @@ HI_S32 TRACK_CreateNew(SND_CARD_STATE_S *pCard, HI_UNF_AUDIOTRACK_ATTR_S *pstAtt
 {
     SND_TRACK_STATE_S *state = HI_NULL;
     HI_S32 Ret = HI_FAILURE;
-
-    if (!pCard)
-    {
-        HI_ERR_AO("pCard is null!\n");
-        return HI_FAILURE;
-    }
 
     if(pstAttr->enTrackType >= HI_UNF_SND_TRACK_TYPE_BUTT)
     {
@@ -1887,10 +1983,10 @@ HI_S32 TRACK_CreateNew(SND_CARD_STATE_S *pCard, HI_UNF_AUDIOTRACK_ATTR_S *pstAtt
     }
 
 
-    state = HI_KMALLOC(HI_ID_AO, sizeof(SND_TRACK_STATE_S), GFP_KERNEL);
+    state = AUTIL_AO_MALLOC(HI_ID_AO, sizeof(SND_TRACK_STATE_S), GFP_KERNEL);
     if (state == HI_NULL)
     {
-        HI_FATAL_AO("HI_KMALLOC TRACK_Create failed\n");
+        HI_FATAL_AO("malloc TRACK_Create failed\n");
         goto SndTrackCreate_ERR_EXIT;
     }
 
@@ -1934,6 +2030,9 @@ HI_S32 TRACK_CreateNew(SND_CARD_STATE_S *pCard, HI_UNF_AUDIOTRACK_ATTR_S *pstAtt
     state->u32AddMuteFrameNum = 0;
     state->bEosFlag = HI_FALSE;
     state->bAlsaTrack = bAlsaTrack;
+    state->enSaveState = SND_DEBUG_CMD_CTRL_STOP;
+    state->u32SaveCnt = 0;
+    state->fileHandle = HI_NULL;
     pCard->hSndTrack[TrackId] = (HI_HANDLE)state;
     pCard->uSndTrackInitFlag |= ((HI_U32)1L << TrackId);
     TrackBing2Engine(pCard, pCard->hSndTrack[TrackId]);
@@ -1941,7 +2040,7 @@ HI_S32 TRACK_CreateNew(SND_CARD_STATE_S *pCard, HI_UNF_AUDIOTRACK_ATTR_S *pstAtt
     return HI_SUCCESS;
     
 SndTrackCreate_ERR_EXIT:
-    HI_KFREE(HI_ID_AO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     return Ret;
 }
 #endif
@@ -1950,8 +2049,7 @@ SndTrackCreate_ERR_EXIT:
 HI_S32 TRACK_Destroy(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID)
 {
     SND_TRACK_STATE_S *state;
-
-
+    SND_ENGINE_STATE_S *pstEngineState;
 
     state = (SND_TRACK_STATE_S *)pCard->hSndTrack[u32TrackID];
     if (HI_NULL == state)
@@ -1962,26 +2060,29 @@ HI_S32 TRACK_Destroy(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID)
     switch (state->stUserTrackAttr.enTrackType)
     {
     case HI_UNF_SND_TRACK_TYPE_MASTER:
+        pstEngineState = (SND_ENGINE_STATE_S *)TrackGetEngineHandlebyType(pCard, SND_ENGINE_TYPE_PCM);
+        HAL_AOE_ENGINE_DetachAip(pstEngineState->enEngine, state->enAIP[SND_ENGINE_TYPE_PCM]);
         HAL_AOE_AIP_Destroy(state->enAIP[SND_ENGINE_TYPE_PCM]);
-        HI_DRV_MMZ_UnmapAndRelease(&state->stAipRbfMmz[SND_ENGINE_TYPE_PCM]);
 
         if(SND_SPDIF_MODE_NONE != pCard->enSpdifPassthrough)
         {
+            pstEngineState = (SND_ENGINE_STATE_S *)TrackGetEngineHandlebyType(pCard, SND_ENGINE_TYPE_SPDIF_RAW);
+            HAL_AOE_ENGINE_DetachAip(pstEngineState->enEngine, state->enAIP[SND_ENGINE_TYPE_SPDIF_RAW]);
             HAL_AOE_AIP_Destroy(state->enAIP[SND_ENGINE_TYPE_SPDIF_RAW]);
-            HI_DRV_MMZ_UnmapAndRelease(&state->stAipRbfMmz[SND_ENGINE_TYPE_SPDIF_RAW]);
         }
 
         if(SND_HDMI_MODE_NONE != pCard->enHdmiPassthrough)
         {
+            pstEngineState = (SND_ENGINE_STATE_S *)TrackGetEngineHandlebyType(pCard, SND_ENGINE_TYPE_HDMI_RAW);
+            HAL_AOE_ENGINE_DetachAip(pstEngineState->enEngine, state->enAIP[SND_ENGINE_TYPE_HDMI_RAW]);
             HAL_AOE_AIP_Destroy(state->enAIP[SND_ENGINE_TYPE_HDMI_RAW]);
-            HI_DRV_MMZ_UnmapAndRelease(&state->stAipRbfMmz[SND_ENGINE_TYPE_HDMI_RAW]);
         }
         break;
 
     case HI_UNF_SND_TRACK_TYPE_SLAVE:
-
+        pstEngineState = (SND_ENGINE_STATE_S *)TrackGetEngineHandlebyType(pCard, SND_ENGINE_TYPE_PCM);
+        HAL_AOE_ENGINE_DetachAip(pstEngineState->enEngine, state->enAIP[SND_ENGINE_TYPE_PCM]);
         HAL_AOE_AIP_Destroy(state->enAIP[SND_ENGINE_TYPE_PCM]);
-
         if (HI_TRUE != state->bAipRbfExtDmaMem[SND_ENGINE_TYPE_PCM])
         {
             HI_DRV_MMZ_UnmapAndRelease(&state->stAipRbfMmz[SND_ENGINE_TYPE_PCM]);
@@ -1998,7 +2099,7 @@ HI_S32 TRACK_Destroy(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID)
     TRACK_RS_DeRegisterId(state->TrackId);
 #endif
     pCard->hSndTrack[state->TrackId] = HI_NULL;
-    HI_KFREE(HI_ID_AO, (HI_VOID*)state);
+    AUTIL_AO_FREE(HI_ID_AO, (HI_VOID*)state);
     return HI_SUCCESS;
 }
 
@@ -2007,6 +2108,7 @@ HI_S32 TRACK_SendData(SND_CARD_STATE_S *pCard,HI_U32 u32TrackID, HI_UNF_AO_FRAME
     SND_TRACK_STATE_S *pTrack;
     SND_TRACK_STREAM_ATTR_S stStreamAttr;
     STREAMMODE_CHANGE_ATTR_S stChange;
+    AOE_AIP_STATUS_E eAipStatus = AOE_AIP_STATUS_STOP;
 
     if (HI_NULL == pstAOFrame)
     {
@@ -2033,41 +2135,50 @@ HI_S32 TRACK_SendData(SND_CARD_STATE_S *pCard,HI_U32 u32TrackID, HI_UNF_AO_FRAME
         return HI_FAILURE;
     }
 
+    //if it is not standard samplerate, discard audio frame and return HI_SUCCESS(avoid printing).
+    CHECK_AO_FRAME_SAMPLERATE(pstAOFrame->u32SampleRate);  
     TRACKDbgCountTrySendData(pTrack);
 
     TRACKBuildStreamAttr(pCard, (HI_UNF_AO_FRAMEINFO_S *)pstAOFrame, &stStreamAttr);
     DetectStreamModeChange(pCard, pTrack, &stStreamAttr, &stChange);
-    
-    TRACKStartAip(pTrack);
 
     if(HI_UNF_SND_TRACK_TYPE_MASTER == pTrack->stUserTrackAttr.enTrackType)
     {
         if (stChange.enPcmChange || stChange.enSpdifChange || stChange.enHdmiChnage)
         {
-            HAL_AOE_AIP_Stop(pTrack->enAIP[SND_ENGINE_TYPE_PCM]);
-            if(SND_SPDIF_MODE_NONE != pCard->enSpdifPassthrough)
-                HAL_AOE_AIP_Stop(pTrack->enAIP[SND_ENGINE_TYPE_SPDIF_RAW]);
-            if(SND_HDMI_MODE_NONE != pCard->enHdmiPassthrough)
-                HAL_AOE_AIP_Stop(pTrack->enAIP[SND_ENGINE_TYPE_HDMI_RAW]);
+            HAL_AOE_AIP_GetStatus(pTrack->enAIP[SND_ENGINE_TYPE_PCM], &eAipStatus); //master don't immediately start, so get start/stop status firstly
+            if(AOE_AIP_STATUS_START == eAipStatus)
+            {
+                HAL_AOE_AIP_Stop(pTrack->enAIP[SND_ENGINE_TYPE_PCM]);
+                if(SND_SPDIF_MODE_NONE != pCard->enSpdifPassthrough)
+                    HAL_AOE_AIP_Stop(pTrack->enAIP[SND_ENGINE_TYPE_SPDIF_RAW]);
+                if(SND_HDMI_MODE_NONE != pCard->enHdmiPassthrough)
+                    HAL_AOE_AIP_Stop(pTrack->enAIP[SND_ENGINE_TYPE_HDMI_RAW]);
+            }
             
             SndProcPcmRoute(pCard, pTrack, stChange.enPcmChange, &stStreamAttr);
             if(SND_SPDIF_MODE_NONE != pCard->enSpdifPassthrough)
                 SndProcSpidfRoute(pCard, pTrack, stChange.enSpdifChange, &stStreamAttr);
             if(SND_HDMI_MODE_NONE != pCard->enHdmiPassthrough)
                 SndProcHdmifRoute(pCard, pTrack, stChange.enHdmiChnage, &stStreamAttr);
-            
-            HAL_AOE_AIP_Start(pTrack->enAIP[SND_ENGINE_TYPE_PCM]);
-            if(SND_SPDIF_MODE_NONE != pCard->enSpdifPassthrough)
-                HAL_AOE_AIP_Start(pTrack->enAIP[SND_ENGINE_TYPE_SPDIF_RAW]);
-            if(SND_HDMI_MODE_NONE != pCard->enHdmiPassthrough)
-                HAL_AOE_AIP_Start(pTrack->enAIP[SND_ENGINE_TYPE_HDMI_RAW]);
+
+            if(AOE_AIP_STATUS_START == eAipStatus)
+            {
+                HAL_AOE_AIP_Start(pTrack->enAIP[SND_ENGINE_TYPE_PCM]);
+                if(SND_SPDIF_MODE_NONE != pCard->enSpdifPassthrough)
+                    HAL_AOE_AIP_Start(pTrack->enAIP[SND_ENGINE_TYPE_SPDIF_RAW]);
+                if(SND_HDMI_MODE_NONE != pCard->enHdmiPassthrough)
+                    HAL_AOE_AIP_Start(pTrack->enAIP[SND_ENGINE_TYPE_HDMI_RAW]);
+            }
         }
+        DetectTrueHDModeChange(pCard,&stStreamAttr);
+
     }
     else if (HI_UNF_SND_TRACK_TYPE_SLAVE == pTrack->stUserTrackAttr.enTrackType)
     {
         if (stChange.enPcmChange)
         {
-            HAL_AOE_AIP_Stop(pTrack->enAIP[SND_ENGINE_TYPE_PCM]);
+            HAL_AOE_AIP_Stop(pTrack->enAIP[SND_ENGINE_TYPE_PCM]);   //slave immediately start, so we don't need get start/stop status
             SndProcPcmRoute(pCard, pTrack, stChange.enPcmChange, &stStreamAttr);
             HAL_AOE_AIP_Start(pTrack->enAIP[SND_ENGINE_TYPE_PCM]);
         }
@@ -2079,6 +2190,7 @@ HI_S32 TRACK_SendData(SND_CARD_STATE_S *pCard,HI_U32 u32TrackID, HI_UNF_AO_FRAME
 
     if (HI_FALSE == TrackisBufFree(pCard, pTrack, &stStreamAttr))
     {
+        TRACKStartAip(pTrack);
         return HI_ERR_AO_OUT_BUF_FULL;
     }
 
@@ -2088,6 +2200,8 @@ HI_S32 TRACK_SendData(SND_CARD_STATE_S *pCard,HI_U32 u32TrackID, HI_UNF_AO_FRAME
     {
         TRACKWriteMuteFrame(pCard, pTrack, &stStreamAttr);
     }
+    
+    TRACKStartAip(pTrack);
     
     TRACKDbgCountSendData(pTrack);
 
@@ -2482,7 +2596,7 @@ HI_S32 TRACK_RestoreSetting(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID, SND_TRAC
 }
 #endif
 
-HI_S32 Track_ShowProc( struct seq_file* p, SND_CARD_STATE_S *pCard )
+HI_S32 Track_ReadProc( struct seq_file* p, SND_CARD_STATE_S *pCard )
 {
     SND_TRACK_STATE_S *pTrack;
     SND_ENGINE_TYPE_E enEngine;
@@ -2495,8 +2609,8 @@ HI_S32 Track_ShowProc( struct seq_file* p, SND_CARD_STATE_S *pCard )
         if(pCard->uSndTrackInitFlag & ((HI_U32)1L << i))
         {
             pTrack = (SND_TRACK_STATE_S *)pCard->hSndTrack[i];
-            seq_printf(p,
-               "Track(%d): Type(%s), Status(%s), Vol(%.3d%s), SpeedRate(%.2d), AddMuteFrames(%.4d), SendCnt(Try/OK)(%.6u/%.6u)\n",
+            PROC_PRINT(p,
+               "Track(%d): Type(%s), Status(%s), Weight(%d%s), SpeedRate(%.2d), AddMuteFrames(%.4d), SendCnt(Try/OK)(%.6u/%.6u)\n",
                 pTrack->TrackId,
                (HI_CHAR*)((HI_UNF_SND_TRACK_TYPE_MASTER == pTrack->stUserTrackAttr.enTrackType) ? "master" : ((HI_UNF_SND_TRACK_TYPE_SLAVE == pTrack->stUserTrackAttr.enTrackType) ? "slave" : "virtual")),
                (HI_CHAR*)((SND_TRACK_STATUS_START == pTrack->enCurnStatus) ? "start" : ((SND_TRACK_STATUS_STOP == pTrack->enCurnStatus) ? "stop" : "pause")),
@@ -2517,8 +2631,8 @@ HI_S32 Track_ShowProc( struct seq_file* p, SND_CARD_STATE_S *pCard )
                         continue;
                     }
                     HAL_AOE_AIP_GetAttr(pTrack->enAIP[enEngine], &stAipAttr);
-                    seq_printf(p,
-                       "AIP(%x): Engine(%s), Fs(%.6d), Ch(%.2d), Bit(%2d), Format(%s)\n",
+                    PROC_PRINT(p,
+                       "AIP(%x): Engine(%s), SampleRate(%.6d), Channel(%.2d), BitWidth(%2d), DataFormat(%s)\n",
                        (HI_U32)pTrack->enAIP[enEngine],
                         AUTIL_Engine2Name(enEngine),
                         stAipAttr.stBufInAttr.u32BufSampleRate,
@@ -2527,7 +2641,7 @@ HI_S32 Track_ShowProc( struct seq_file* p, SND_CARD_STATE_S *pCard )
                         AUTIL_Format2Name(stAipAttr.stBufInAttr.u32BufDataFormat));
 
                     HAL_AOE_AIP_GetBufDelayMs(pTrack->enAIP[enEngine], &u32DelayMs);
-                    seq_printf(p,
+                    PROC_PRINT(p,
                        "        EmptyCnt(%.6u), EmptyWarningCnt(%.6u), Latency/Threshold(%.3dms/%.3dms)\n",
                         0,  //verify
                         0,  //verify
@@ -2535,12 +2649,56 @@ HI_S32 Track_ShowProc( struct seq_file* p, SND_CARD_STATE_S *pCard )
                         stAipAttr.stBufInAttr.u32BufLatencyThdMs);
                  }  
             }
-            seq_printf(p,"\n");
+            PROC_PRINT(p,"\n");
          }
     }
     
     return HI_SUCCESS;
 }
+
+HI_S32 TRACK_WriteProc(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID, SND_DEBUG_CMD_CTRL_E enCmd)
+{
+    SND_TRACK_STATE_S *pTrack;
+    HI_CHAR szPath[AO_TRACK_PATH_NAME_MAXLEN + AO_TRACK_FILE_NAME_MAXLEN] = {0};
+
+    pTrack = (SND_TRACK_STATE_S *)pCard->hSndTrack[u32TrackID];
+    if(!pTrack)
+    {
+        HI_ERR_AO("Track %d don't attach this sound\n");
+        return HI_FAILURE;
+    }
+
+    if(SND_DEBUG_CMD_CTRL_START == enCmd && SND_DEBUG_CMD_CTRL_STOP == pTrack->enSaveState)
+    {
+        if(HI_SUCCESS != HI_DRV_FILE_GetStorePath(szPath, AO_TRACK_PATH_NAME_MAXLEN))
+        {
+            HI_ERR_AO("get store path failed\n");
+            return HI_FAILURE;
+        }
+        
+        snprintf(szPath, sizeof(szPath), "%s/track%d_%.2d.pcm", szPath, u32TrackID, pTrack->u32SaveCnt);
+        pTrack->fileHandle = HI_DRV_FILE_Open(szPath, 1);
+        if (!pTrack->fileHandle)
+        {
+            HI_ERR_AO("open %s error\n", szPath);
+            return HI_FAILURE;
+        }
+        pTrack->u32SaveCnt++;
+    }
+    if(SND_DEBUG_CMD_CTRL_STOP == enCmd && SND_DEBUG_CMD_CTRL_START == pTrack->enSaveState)
+    {
+        if(pTrack->fileHandle)
+        {
+            HI_DRV_FILE_Close(pTrack->fileHandle);
+            pTrack->fileHandle = HI_NULL;
+        }
+    }
+    
+    pTrack->enSaveState = enCmd;
+
+    return HI_SUCCESS;
+}
+
 
 HI_S32 TRACK_UpdateWptrPos(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID, HI_U32 *pu32WptrLen)    //for alsa
 {

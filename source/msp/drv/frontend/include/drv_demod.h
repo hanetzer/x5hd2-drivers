@@ -14,12 +14,8 @@
 #include <linux/seq_file.h>
 #include "hi_type.h"
 #include "drv_tuner_ioctl.h"
-
-#if defined (CHIP_TYPE_hi3716cv200es)||defined (CHIP_TYPE_hi3716cv200)
-#define PERI_CRG57 (0xF8A220E4)     //QAM clock & soft reset control register
-#define PERI_CRG58 (0xF8A220E8)     //QAMADC clock & soft reset control register
-#define PERI_QAM    (0xF8A20100)     //QAM contrl register
-#endif
+#include "hi_reg_common.h"
+#include "hi_drv_reg.h"
 
 typedef struct tagHI3136_CFG_ITEM_S
 {
@@ -53,6 +49,16 @@ HI_VOID hi3136_config_i2c_out(HI_U32 u32TunerPort, HI_BOOL bTuner);
 #define  LDPC_ITER_MAX      50
 #define  LDPC_ITER_ADDR     0x82
 #define  LDPC_ITER_DEFAULT  0x50
+
+#define HI_TUNER_CHECKPOINTER(ptr)                                   \
+    do                                                      \
+    {                                                       \
+        if (!(ptr))                                         \
+        {                                                   \
+            HI_INFO_TUNER("pointer is null\n");             \
+            return HI_ERR_TUNER_INVALID_POINT;                     \
+        }                                                   \
+    } while (0)
 
 #if 0
 #define          POLAR_SWITCH					0     /*0 level for 18V,1 level for 13V*/
@@ -196,6 +202,8 @@ HI_VOID hi3136_config_i2c_out(HI_U32 u32TunerPort, HI_BOOL bTuner);
 #define		QAM_DEBUG_ADDR			0xc0
 #define		DAGC_BASE_ADDR			0xd0
 
+#define	       J83B_MCTRL5_ADDR	              EQU_BASE_ADDR + 0x00  //20130305 J83B                                                                        
+#define	       EQU_CTRL_2_ADDR		       EQU_BASE_ADDR + 0x01  //20130305
 #define		EQU_CTRL_3_ADDR			EQU_BASE_ADDR + 0x02
 #define		EQU_CTRL_4_ADDR			EQU_BASE_ADDR + 0x03
 #define		EQU_CTRL_6_ADDR			EQU_BASE_ADDR + 0x04
@@ -257,12 +265,13 @@ HI_VOID hi3136_config_i2c_out(HI_U32 u32TunerPort, HI_BOOL bTuner);
 #define		MCTRL_1_ADDR	      MC_BASE_ADDR + 0x00
 #define		MCTRL_2_ADDR	      MC_BASE_ADDR + 0x01
 #define		MCTRL_3_ADDR	      MC_BASE_ADDR + 0x02
-#define          MCTRL_4_ADDR 	      (MC_BASE_ADDR + 0x03)
+#define     MCTRL_4_ADDR 	      MC_BASE_ADDR + 0x03
 #define		MCTRL_5_ADDR	      MC_BASE_ADDR + 0x04
 #define		MCTRL_6_ADDR	      MC_BASE_ADDR + 0x05
 #define		MCTRL_7_ADDR	      MC_BASE_ADDR + 0x06
 #define		MCTRL_8_ADDR	      MC_BASE_ADDR + 0x07
 #define		MCTRL_9_ADDR	      MC_BASE_ADDR + 0x08
+#define		MCTRL_10_ADDR	      MC_BASE_ADDR + 0x09     //20130723                                                                       
 #define		MCTRL_11_ADDR 	    MC_BASE_ADDR + 0x0A  
 //above addr belong to MCTRL
 
@@ -384,6 +393,7 @@ HI_VOID hi3136_config_i2c_out(HI_U32 u32TunerPort, HI_BOOL bTuner);
 /*******************add by huyupeng 2010.05.19 for X5HD***************/
 #define     DEPHASE_BASE_ADDR			    0xe0
 #define     DEPHASE_CTRL_ADDR		    	DEPHASE_BASE_ADDR + 0x0a
+#define     FOUR_REG_SEL_ADDR               DEPHASE_BASE_ADDR + 0x00       //20130723                                                      
 #define     DEPHASE_GAIN_K_HI_ADDR			DEPHASE_BASE_ADDR + 0x01
 #define     DEPHASE_GAIN_K_LO_ADDR			DEPHASE_BASE_ADDR + 0x02
 #define     DEPHASE_STA_NUM_BASE_HI_ADDR	DEPHASE_BASE_ADDR + 0x03
@@ -428,13 +438,15 @@ HI_VOID hi3136_config_i2c_out(HI_U32 u32TunerPort, HI_BOOL bTuner);
 #define     SFREQ_CR_LOST_COUNT_ADDR		SFREQ_ERR_BASE_ADDR + 0x05   // CR Lost Counter
 #define     SFREQ_ERR_SCALE_ADDR            SFREQ_ERR_BASE_ADDR + 0x06   // [7:4] SCALE1 [3:0] SCALE2 
 
+#define SFREQ_SCALE55_ADDR SFREQ_SCALE77_ADDR
 #define     SFREQ_AGC1_INIT_ADDR            SFREQ_ERR_BASE_ADDR + 0x07
 #define     SFREQ_AGC_BIT_SELECT_ADDR       SFREQ_ERR_BASE_ADDR + 0x08
-#define     SFREQ_SCALE55_ADDR              SFREQ_ERR_BASE_ADDR + 0x09
+#define     SFREQ_SCALE77_ADDR              SFREQ_ERR_BASE_ADDR + 0x09  //20130305
 #define     SFREQ_PHASE_LARGE_ADDR          SFREQ_ERR_BASE_ADDR + 0x0a
 #define     SFREQ_PHASE_SMALL_ADDR          SFREQ_ERR_BASE_ADDR + 0x0b
 #define     SFREQ_HOLD_COUNT_ADDR           SFREQ_ERR_BASE_ADDR + 0x0c
 #define     SFREQ_STA_COUNT_ADDR            SFREQ_ERR_BASE_ADDR + 0x0d
+#define     SFREQ_SCALE88_ADDR              SFREQ_ERR_BASE_ADDR + 0x0e  //20130305
 #define     SFREQ_FREQ_JIT_ADDR             SFREQ_ERR_BASE_ADDR + 0x0f
 #define     SFREQ_COUNT_OUT_1_ADDR          DP_BASE_ADDR + 0x12
 #define     SFREQ_COUNT_OUT_2_ADDR          DP_BASE_ADDR + 0x13
@@ -478,6 +490,40 @@ HI_VOID hi3136_config_i2c_out(HI_U32 u32TunerPort, HI_BOOL bTuner);
 
 #define     DATA_COLLECT_0_ADDR        (QAM_DEBUG_ADDR + 0x08)
 #define     DATA_COLLECT_1_ADDR        (QAM_DEBUG_ADDR + 0x09)
+
+/*hi3130v200 hard*/                                                                                                        
+#define     CRG_CTRL_0_ADDR          0x00                                                                                           
+#define     CRG_CTRL_1_ADDR          0x01                                                                                           
+#define     CRG_CTRL_2_ADDR          0x02                                                                                           
+#define     CRG_CTRL_3_ADDR          0x03                                                                                           
+#define     CRG_CTRL_4_ADDR          0x04                                                                                           
+#define     CRG_CTRL_5_ADDR          0x05                                                                                           
+#define     HARD_CTRL_0_ADDR         0x10                                                                                           
+#define     HARD_CTRL_1_ADDR         0x11                                                                                           
+#define     HARD_CTRL_2_ADDR         0x12                                                                                           
+#define     HARD_CTRL_3_ADDR         0x13                                                                                           
+#define     HARD_CTRL_4_ADDR         0x14                                                                                           
+#define     HARD_CTRL_5_ADDR         0x15                                                                                           
+#define     HARD_CTRL_6_ADDR         0x16                                                                                           
+#define     HARD_CTRL_7_ADDR         0x17                                                                                           
+#define     HARD_CTRL_8_ADDR         0x18                                                                                           
+#define     HARD_CTRL_9_ADDR         0x19                                                                                           
+#define     HARD_CTRL_10_ADDR        0x1a                                                                                           
+#define     HARD_CTRL_11_ADDR        0x1b                                                                                           
+#define     HARD_CTRL_12_ADDR        0x1c                                                                                           
+#define     HARD_CTRL_13_ADDR        0x1d                                                                                           
+#define     HARD_CTRL_14_ADDR        0x1e                                                                                           
+#define     IOSHARE_CTRL_0_ADDR      0x20      
+#define     IOSHARE_CTRL_1_ADDR        0x21
+#define     IOSHARE_CTRL_2_ADDR        0x22
+#define     IOSHARE_CTRL_3_ADDR        0x23
+#define     IOSHARE_CTRL_4_ADDR        0x24
+#define     IOSHARE_CTRL_5_ADDR        0x25
+#define     IOSHARE_CTRL_6_ADDR        0x26
+#define     IOSHARE_CTRL_7_ADDR        0x27
+#define     IOSHARE_CTRL_8_ADDR        0x28
+#define     IOSHARE_CTRL_9_ADDR         0x29
+
 
 #define INVALID_QAM_ADDR 0x00	
 #define QAM_REL_REG_NUM_MAX		200	/* register number whose value related with qam type: hi3130, x5hdqam eg */
@@ -593,6 +639,72 @@ extern HI_VOID j83b_manage_after_chipreset(HI_U32 u32TunerPort);
 extern HI_VOID j83b_get_registers(HI_U32 u32TunerPort, void *p);
 extern HI_VOID j83b_connect_timeout(HI_U32 u32ConnectTimeout);
 
+
+/*for hi3130v200*/
+
+extern HI_VOID hi3130v200_set_hard_reg_value(HI_U32 u32TunerPort);
+extern HI_S32 hi3130v200_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel);
+extern HI_S32 hi3130v200_get_status (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *penTunerStatus);
+extern HI_S32 hi3130v200_get_signal_strength(HI_U32 u32TunerPort, HI_U32 *pu32SignalStrength);
+extern HI_S32 hi3130v200_get_ber(HI_U32 u32TunerPort, HI_U32* pu32ber);
+extern HI_S32 hi3130v200_get_snr(HI_U32 u32TunerPort, HI_U32* pu32SNR);
+extern HI_S32 hi3130v200_set_ts_type(HI_U32 u32TunerPort, HI_UNF_TUNER_OUPUT_MODE_E enTsType);
+extern HI_S32 hi3130v200_config_tuner(HI_U32 u32TunerPort, HI_U32 dbRFfreq, HI_S32 times);
+extern HI_S32 hi3130v200_get_freq_symb_offset(HI_U32 u32TunerPort, HI_U32 * pu32Freq, HI_U32 * pu32Symb );
+extern HI_S32 hi3130v200_get_rs(HI_U32 u32TunerPort, HI_U32 *pu32Rs);
+extern HI_VOID hi3130v200_test_single_agc( HI_U32 u32TunerPort, AGC_TEST_S * pstAgcTest );
+extern HI_VOID hi3130v200_manage_after_chipreset(HI_U32 u32TunerPort);
+extern HI_VOID hi3130v200_get_registers(HI_U32 u32TunerPort, void *p);
+extern HI_VOID hi3130v200_connect_timeout(HI_U32 u32ConnectTimeout);
+extern HI_S32 hi3130v200_set_ts_out(HI_U32 u32TunerPort, HI_UNF_TUNER_TSOUT_SET_S *pstTSOut);
+/*for hi3130v200j83b*/
+extern HI_VOID hi3130j83b_set_hard_reg_value(HI_U32 u32TunerPort);
+extern HI_S32 hi3130j83b_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel);
+extern HI_S32 hi3130j83b_get_status (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *penTunerStatus);
+extern HI_S32 hi3130j83b_get_signal_strength(HI_U32 u32TunerPort, HI_U32 *pu32SignalStrength);
+extern HI_S32 hi3130j83b_get_ber(HI_U32 u32TunerPort, HI_U32* pu32ber);
+extern HI_S32 hi3130j83b_get_snr(HI_U32 u32TunerPort, HI_U32* pu32SNR);
+extern HI_S32 hi3130j83b_set_ts_type(HI_U32 u32TunerPort, HI_UNF_TUNER_OUPUT_MODE_E enTsType);
+extern HI_S32 hi3130j83b_config_tuner(HI_U32 u32TunerPort, HI_U32 dbRFfreq, HI_S32 times);
+extern HI_S32 hi3130j83b_get_freq_symb_offset(HI_U32 u32TunerPort, HI_U32 * pu32Freq, HI_U32 * pu32Symb );
+extern HI_S32 hi3130j83b_get_rs(HI_U32 u32TunerPort, HI_U32 *pu32Rs);
+extern HI_VOID hi3130j83b_test_single_agc( HI_U32 u32TunerPort, AGC_TEST_S * pstAgcTest );
+extern HI_VOID hi3130j83b_manage_after_chipreset(HI_U32 u32TunerPort);
+extern HI_VOID hi3130j83b_get_registers(HI_U32 u32TunerPort, void *p);
+extern HI_VOID hi3130j83b_connect_timeout(HI_U32 u32ConnectTimeout);
+extern HI_S32 hi3130j83b_set_ts_out(HI_U32 u32TunerPort, HI_UNF_TUNER_TSOUT_SET_S *pstTSOut);
+
+/*for hi3716cv200*/
+//extern HI_VOID hi3716cv200_set_hard_reg_value(HI_U32 u32TunerPort);
+extern HI_S32 hi3716cv200_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel);
+extern HI_S32 hi3716cv200_get_status (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *penTunerStatus);
+extern HI_S32 hi3716cv200_get_signal_strength(HI_U32 u32TunerPort, HI_U32 *pu32SignalStrength);
+extern HI_S32 hi3716cv200_get_ber(HI_U32 u32TunerPort, HI_U32* pu32ber);
+extern HI_S32 hi3716cv200_get_snr(HI_U32 u32TunerPort, HI_U32* pu32SNR);
+extern HI_S32 hi3716cv200_set_ts_type(HI_U32 u32TunerPort, HI_UNF_TUNER_OUPUT_MODE_E enTsType);
+extern HI_S32 hi3716cv200_config_tuner(HI_U32 u32TunerPort, HI_U32 dbRFfreq, HI_S32 times);
+extern HI_S32 hi3716cv200_get_freq_symb_offset(HI_U32 u32TunerPort, HI_U32 * pu32Freq, HI_U32 * pu32Symb );
+extern HI_S32 hi3716cv200_get_rs(HI_U32 u32TunerPort, HI_U32 *pu32Rs);
+extern HI_VOID hi3716cv200_test_single_agc( HI_U32 u32TunerPort, AGC_TEST_S * pstAgcTest );
+extern HI_VOID hi3716cv200_manage_after_chipreset(HI_U32 u32TunerPort);
+extern HI_VOID hi3716cv200_get_registers(HI_U32 u32TunerPort, void *p);
+extern HI_VOID hi3716cv200_connect_timeout(HI_U32 u32ConnectTimeout);
+
+/*for hi3130v200j83b*/
+//extern HI_VOID hi3716cv200_j83b_set_hard_reg_value(HI_U32 u32TunerPort);
+extern HI_S32 hi3716cv200_j83b_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel);
+extern HI_S32 hi3716cv200_j83b_get_status (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *penTunerStatus);
+extern HI_S32 hi3716cv200_j83b_get_signal_strength(HI_U32 u32TunerPort, HI_U32 *pu32SignalStrength);
+extern HI_S32 hi3716cv200_j83b_get_ber(HI_U32 u32TunerPort, HI_U32* pu32ber);
+extern HI_S32 hi3716cv200_j83b_get_snr(HI_U32 u32TunerPort, HI_U32* pu32SNR);
+extern HI_S32 hi3716cv200_j83b_set_ts_type(HI_U32 u32TunerPort, HI_UNF_TUNER_OUPUT_MODE_E enTsType);
+extern HI_S32 hi3716cv200_j83b_config_tuner(HI_U32 u32TunerPort, HI_U32 dbRFfreq, HI_S32 times);
+extern HI_S32 hi3716cv200_j83b_get_freq_symb_offset(HI_U32 u32TunerPort, HI_U32 * pu32Freq, HI_U32 * pu32Symb );
+extern HI_S32 hi3716cv200_j83b_get_rs(HI_U32 u32TunerPort, HI_U32 *pu32Rs);
+extern HI_VOID hi3716cv200_j83b_test_single_agc( HI_U32 u32TunerPort, AGC_TEST_S * pstAgcTest );
+extern HI_VOID hi3716cv200_j83b_manage_after_chipreset(HI_U32 u32TunerPort);
+extern HI_VOID hi3716cv200_j83b_get_registers(HI_U32 u32TunerPort, void *p);
+extern HI_VOID hi3716cv200_j83b_connect_timeout(HI_U32 u32ConnectTimeout);
 /* for av6211 */
 extern HI_S32 avl6211_init(HI_U32 u32TunerPort, HI_U8 enI2cChannel, HI_UNF_TUNER_DEV_TYPE_E enTunerDevType);
 extern HI_S32 avl6211_set_sat_attr(HI_U32 u32TunerPort, HI_UNF_TUNER_SAT_ATTR_S *pstSatTunerAttr);

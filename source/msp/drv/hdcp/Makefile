@@ -38,7 +38,10 @@ $(MOD_NAME)-y := drv_hdcp.o ./drv_hdcp_intf.o
 .PHONY: all clean install uninstall
 
 all:
-	$(AT)make -C $(LINUX_DIR) ARCH=arm CROSS_COMPILE=$(CFG_HI_TOOLCHAINS_NAME)- M=$(CURDIR) modules
+	$(AT)make -C $(LINUX_DIR) M=$(CURDIR) modules
+
+modules_install: all
+	$(AT)make -C $(LINUX_DIR) M=$(CURDIR) modules_install
 
 clean:
 	$(AT)make -C $(LINUX_DIR) M=$(CURDIR) clean

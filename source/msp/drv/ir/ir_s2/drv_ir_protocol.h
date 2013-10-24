@@ -161,6 +161,9 @@ struct ir_protocol
 	frame_parser handle;
 	match_error_handle match_error;
 	parse_error_handle parse_error;
+
+    unsigned int key_hold_timeout_time;
+    
 	/* Is this protocol disabled ?*/
 	int disabled;
 };

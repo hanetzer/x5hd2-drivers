@@ -26,7 +26,7 @@
 #include <linux/vmalloc.h>
 
 #include "drv_lnbctrl.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_mem.h"
 #include "hi_kernel_adapt.h"
 
 /*--------------------------- MACRO DECLARATIONS ---------------------------------------*/

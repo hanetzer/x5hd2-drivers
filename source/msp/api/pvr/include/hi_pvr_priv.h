@@ -55,19 +55,19 @@ extern "C" {
 #define PVR_UNLOCK(p_mutex)     (void)pthread_mutex_unlock(p_mutex)
 #endif
 
+/* length of TS package                                                     */
+#define PVR_TS_LEN           188
 
 /**  */
-#define PVR_REC_MIN_DAV_BUF  (188*1024)
+#define PVR_REC_MIN_DAV_BUF  (PVR_TS_LEN*1024)
 /** */
-#define PVR_REC_MAX_DAV_BUF  (188*60*1024)
+#define PVR_REC_MAX_DAV_BUF  (PVR_TS_LEN*60*1024)
 /** */
 #define PVR_REC_MIN_SC_BUF   (7*4*1024)
 /** */
 #define PVR_REC_MAX_SC_BUF   (7*32*1024)
 
 
-/* length of TS package                                                     */
-#define PVR_TS_LEN                      188
 #define PVR_SC_SIZE                     4         /* Byte */
 #define PVR_TS_HEAD_SIZE                4
 #define PVR_TS_PD_SIZE_POS              4         /* the fifth byte in TS header of the length area of padding */
@@ -91,6 +91,14 @@ value   description
 #define PVR_TS_ADAPT_HAVE_PLD(flag)   (flag & PVR_TS_ADAPT_PLD_ONLY)
 #define PVR_TS_ADAPT_HAVE_ADAPT(flag) (flag & PVR_TS_ADAPT_ADAPT_ONLY)
 
+#define PVR_TIME_CTRL_TIMEBASE_NS      64000000
+
+#define PVR_PROC_SUPPORT
+#ifdef PVR_PROC_SUPPORT
+#define PVR_USR_PROC_DIR "pvr"
+#define PVR_USR_PROC_REC_ENTRY_NAME "pvr_rec"
+#define PVR_USR_PROC_PLAY_ENTRY_NAME "pvr_play"
+#endif
 
 /* cipher buffer for decrypt                                                */
 typedef struct hiPVR_PHY_BUF_S

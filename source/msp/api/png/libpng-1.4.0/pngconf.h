@@ -26,6 +26,9 @@
 #  include <limits.h>
 #endif
 
+#include "hi_png_config.h"
+
+
 /* Added at libpng-1.2.9 */
 
 /* config.h is created by and PNG_CONFIGURE_LIBPNG is set by the "configure" script. */
@@ -532,9 +535,9 @@
 #  ifndef PNG_NO_READ_RGB_TO_GRAY
 #    define PNG_READ_RGB_TO_GRAY_SUPPORTED
 #  endif
-#  ifndef PNG_NO_DO_PREMULTI_TO_ALPHA
-#    define PNG_DO_PREMULTI_TO_ALPHA   
-#  endif
+#    ifdef CONFIG_PNG_PREMULTIALPHA_ENABLE
+#   define PNG_DO_PREMULTI_TO_ALPHA   
+#   endif
 
 #endif /* PNG_READ_TRANSFORMS_SUPPORTED */
 

@@ -3,12 +3,12 @@
   Copyright (C), 2011-2021, Hisilicon Tech. Co., Ltd.
 
  ******************************************************************************
-  File Name     : otp_reg_v200.h
+  File Name     : drv_otp_reg_v100.h
   Version       : Initial Draft
-  Author        : 
+  Author        : Hisilicon hisecurity team
   Created       : 
   Last Modified :
-  Description   : OTP REG DEFINE
+  Description   : 
   Function List :
   History       :
 ******************************************************************************/
@@ -19,18 +19,8 @@
 #include "hi_type.h"
 #include "drv_otp_common.h"
 
-/* CRG Address */
-#ifndef CHIP_TYPE_hi3716cv200es
-#define OTP_V200_CRG_BASE_OFFSET    (0x101F5000)
-#define OTP_V200_CRG_CA_ADDR       	(OTP_V200_CRG_BASE_OFFSET + 0x00B4)		//PERI_CRG29, using for cipher/ca, clock
-#define OTP_V200_CRG_HDMI_ADDR      (OTP_V200_CRG_BASE_OFFSET + 0x0048)		//PERI_CRG2, Using for otp reseting
-#else
-#define OTP_V200_CRG_BASE_OFFSET    (0xF8A22000)
-#define OTP_V200_CRG_CA_ADDR       	(OTP_V200_CRG_BASE_OFFSET + 0x00C0)     //PERI_CRG48, Using for otp/cipehr/keyladder/ca/trng/sha
-#endif
-
 /* OTP Address */
-#ifndef CHIP_TYPE_hi3716cv200es
+#ifdef CHIP_TYPE_hi3716mv300
 #define OTP_V200_BASE_OFFSET        (0x10180000)
 #else
 #define OTP_V200_BASE_OFFSET        (0xF8AB0000)
@@ -44,6 +34,7 @@
 #define OTP_V200_RADDR              (OTP_V200_BASE_OFFSET + 0x18)
 #define OTP_V200_WADDR              (OTP_V200_BASE_OFFSET + 0x1C)
 #define OTP_V200_MODE               (OTP_V200_BASE_OFFSET + 0x20)
+
 
 /* OTP Structure */
 typedef union
@@ -120,8 +111,7 @@ typedef union
 {
     struct
     {
-        HI_U32 raddr              : 10; // [0-9]
-        HI_U32 reserved           : 22; // [10-31]
+        HI_U32 raddr              : 32;
     } bits;
     HI_U32 u32;
 } OTP_V200_RADDR_U;//Offset:0x18
@@ -130,8 +120,7 @@ typedef union
 {
     struct
     {
-        HI_U32 waddr              : 10; // [0-9]
-        HI_U32 reserved           : 22; // [10-31]
+        HI_U32 waddr              : 32;
     } bits;
     HI_U32 u32;
 } OTP_V200_WADDR_U;//Offset:0x1C
@@ -156,10 +145,6 @@ typedef union
 #define OTP_V200_INTERNAL_PV_1                 (0X04)
 #define OTP_V200_INTERNAL_DATALOCK_0           (0X10)
 #define OTP_V200_INTERNAL_DATALOCK_1           (0X14)
-#define OTP_V200_INTERNAL_ESCK_0               (0X70)
-#define OTP_V200_INTERNAL_ESCK_1               (0X74)
-#define OTP_V200_INTERNAL_ESCK_2               (0X78)
-#define OTP_V200_INTERNAL_ESCK_3               (0X7C)
 #define OTP_V200_INTERNAL_STB_ROOTKEY_0        (0X80)
 #define OTP_V200_INTERNAL_STB_ROOTKEY_1        (0X84)
 #define OTP_V200_INTERNAL_STB_ROOTKEY_2        (0X88)
@@ -167,7 +152,15 @@ typedef union
 #define OTP_V200_INTERNAL_STB_SN_1             (0X94)
 #define OTP_V200_INTERNAL_STB_SN_2             (0X98)
 #define OTP_V200_INTERNAL_STB_SN_3             (0X9C)
+#define OTP_V200_INTERNAL_HDCP_ROOTKEY_0       (0XC0)
+#define OTP_V200_INTERNAL_HDCP_ROOTKEY_1       (0XC4)
+#define OTP_V200_INTERNAL_HDCP_ROOTKEY_2       (0XC8)
+#define OTP_V200_INTERNAL_HDCP_ROOTKEY_3       (0XCC)
 #define OTP_V200_INTERNAL_HDCP_DATA_BASE       (0X100)
+#define OTP_V200_INTERNAL_CHECKSUMLOCK         (0x430)
+
+#define OTP_V200_INTERNAL_CHECKSUM_STB_ROOT_KEY         (0x426)
+#define OTP_V200_INTERNAL_CHECKSUM_HDCP_ROOT_KEY        (0x428)
 
 typedef union
 {
@@ -227,50 +220,32 @@ typedef union
         HI_U32 rsv8_1_lock	      : 1;//	0x11[5]
         HI_U32 rsv8_2_lock        : 1;//	0x11[6]
         HI_U32 misc_rootkey_lock  : 1;//	0x11[7]
-        HI_U32 lot_info_lock      : 1;//	0x12[0]
-        HI_U32 rsv_data_0_lock 	  : 1;//	0x12[1]
+        HI_U32 HDCP_RootKey_lock  : 1;//	0x12[0]
+        HI_U32 OEM_RootKey_lock   : 1;//	0x12[1]
         HI_U32 rsv_data_1_lock	  : 1;//	0x12[2]
         HI_U32 rsv_data_2_lock	  : 1;//	0x12[3]
         HI_U32 hdcp_lock	      : 1;//	0x12[4]
         HI_U32 rsv_hdcp_lock	  : 1;//	0x12[5]
         HI_U32 rsv_data_3to10_lock :8;//	0x12[6]~0x13[5]
         HI_U32 rsv_rsa_0_lock	  :1;//	    0x13[6]
-        HI_U32 rsv_rsa_1_lock	  :1;//	    0x13[7]        
+        HI_U32 rsv_rsa_1_lock	  :1;//	    0x13[7]
     } bits;
     HI_U32 u32;
 } OTP_V200_INTERNAL_DATALOCK_0_U;
 
-#ifndef CHIP_TYPE_hi3716cv200es
-typedef union
-{
-    struct 
-    {
-        HI_U32 reserved_0       : 1; //[0]
-        HI_U32 otp_reset        : 1; //[1]
-        HI_U32 reserved_1       : 30; //[31:2]
-    }bits;
-    HI_U32 u32;
-}OTP_V200_CRG_HDMI_CTRL_U;      //PERI_CRG2, Using for otp reseting
-#else
 typedef union
 {
     struct
     {
-        HI_U32 ca_kl_bus_cken  : 1; //[0]
-        HI_U32 ca_ci_bus_cken  : 1; //[1]
-        HI_U32 ca_ci_cken      : 1; //[2]
-        HI_U32 otp_bus_cken    : 1; //[3]
-        HI_U32 reserved0       : 4; //[7:4]
-        HI_U32 ca_kl_srst_req  : 1; //[8]
-        HI_U32 ca_ci_srst_req  : 1; //[9]
-        HI_U32 otp_srst_req    : 1; //[10]
-        HI_U32 reserved        : 1; //[11]
-        HI_U32 ca_clk_sel      : 1; //[12]
-        HI_U32 reserved1       : 19; //[31:13]
+        HI_U32 reserved1                :6;// 0x430[0~5]
+        HI_U32 locker_STB_RootKey       :1;// 0x430[6]
+        HI_U32 reserved2                :1;// 0x430[7]
+        HI_U32 locker_HDCP_RootKey      :1;// 0x431[0]
+        HI_U32 reserved3                :23;// 0x431[2] ~
     }bits;
     HI_U32 u32;
-}OTP_V200_CRG_CA_CTRL_U;        //PERI_CRG48
-#endif
+}OTP_V200_INTERNAL_CHECKSUMLOCK_U;
 
 #endif/* __OTP_V200_REG_V200_H__ */
 /*--------------------------------------END------------------------------------*/
+

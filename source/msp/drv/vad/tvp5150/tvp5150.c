@@ -46,7 +46,7 @@
 #include "drv_i2c_ext.h"
 #include "drv_gpio_ext.h"
 #include "drv_gpioi2c_ext.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 #include "tvp5150.h"
 #include "hi_kernel_adapt.h"
 
@@ -562,9 +562,10 @@ static int __init TVP5150_DRV_ModInit(void)
         //HI_I2C_Open();
     }
 
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_tvp5150.ko success.\t(%s)\n", VERSION_STRING);
+#ifdef MODULE
+    HI_PRINT("Load hi_tvp5150.ko success.\t(%s)\n", VERSION_STRING);
 #endif
+
     return ret;
 }
 
@@ -586,8 +587,8 @@ static void __exit TVP5150_DRV_ModExit(void)
 
     HI_DRV_MODULE_UnRegister(HI_ID_TVP5150);
 
-#ifndef CFG_ADVCA_RELEASE
-    printk("Unload hi_tvp5150.ko success.  \t(%s)\n", VERSION_STRING);
+#ifdef MODULE
+    HI_PRINT("Unload hi_tvp5150.ko success.\t(%s)\n", VERSION_STRING);
 #endif
 }
 

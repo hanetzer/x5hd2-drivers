@@ -14,6 +14,8 @@ History       :
 
 #include "drv_win_buffer.h"
 #include "drv_disp_bufcore.h"
+#include "drv_disp_buffer.h"
+#include "drv_window.h"
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -126,6 +128,7 @@ HI_S32 WinBuf_Create(HI_U32 u32BufNum, HI_U32 u32MemType, WIN_BUF_ALLOC_PARA_S *
         return HI_FAILURE;
     }
 
+#ifdef _WIN_BUF_MEM_FB_SUPPLY_
     if(u32MemType == WIN_BUF_MEM_FB_SUPPLY)
     {
         DISP_BUF_NODE_S *pstNode;
@@ -140,12 +143,10 @@ HI_S32 WinBuf_Create(HI_U32 u32BufNum, HI_U32 u32MemType, WIN_BUF_ALLOC_PARA_S *
         // TODO
         pstWinBP->u32MemType = WIN_BUF_MEM_FB_SUPPLY;
     }
+#endif
 
     pstWinBP->pstDisplay = HI_NULL;
     pstWinBP->pstConfig  = HI_NULL;
-
-    pstWinBP->u32RlsWrite = 0;
-    pstWinBP->u32RlsRead  = 0;
 
     pstWinBP->pstDebugInfo = WinBuf_DebugCreate(WB_BUFFER_DEBUG_FRAME_RECORD_NUMBER);
     if (!pstWinBP->pstDebugInfo)
@@ -203,20 +204,11 @@ HI_S32 WinBuf_Destroy(WB_POOL_S *pstWinBP)
 
 HI_S32 WinBuf_Reset(WB_POOL_S *pstWinBP)
 {
-//    HI_S32 nRet;
-    
     WIN_CHECK_NULL_RETURN(pstWinBP);
 
-    // todo
-    
-
-    
     pstWinBP->pstDisplay = HI_NULL;
     pstWinBP->pstConfig  = HI_NULL;
-
-    pstWinBP->u32RlsWrite = 0;
-    pstWinBP->u32RlsRead  = 0;
-
+    
     return HI_SUCCESS;
 }
 
@@ -289,6 +281,60 @@ HI_DRV_VIDEO_FRAME_S *WinBuf_GetConfigFrame(WB_POOL_S *pstWinBP)
     return  pstFrm;
 }
 
+HI_S32 WinBuf_SetCaptureFrame(WB_POOL_S *pstWinBP, HI_U32 u32InvalidFlag)
+{    
+    WIN_CHECK_NULL_RETURN_NULL(pstWinBP);
+    if ((pstWinBP->pstCapture) || (u32InvalidFlag == 1))
+    {
+        WIN_FATAL("do not support continous capturing.\n");            
+        return HI_FAILURE;
+    }
+    pstWinBP->pstCapture =  pstWinBP->pstDisplay;
+    if (!pstWinBP->pstCapture)
+        WIN_WARN("-capture should not be null ptr.\n");
+    
+    return HI_SUCCESS;  
+}
+
+
+HI_S32 WinBuf_ReleaseCaptureFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_BOOL bForceFlag)
+{
+    HI_DRV_VIDEO_FRAME_S *pstCaptureFrame = HI_NULL;
+    WIN_CHECK_NULL_RETURN(pstWinBP);
+    WIN_CHECK_NULL_RETURN(pstFrame);
+
+    /*we may capture normal frame or black frame, so there exists a branch. */
+    if (pstWinBP->pstCapture)
+        pstCaptureFrame = (HI_DRV_VIDEO_FRAME_S *)pstWinBP->pstCapture->u32Data;
+    else
+        pstCaptureFrame =   BP_GetBlackFrameInfo();
+
+    /* when release, if capture not equal to capture frame nor equal to black
+       frame,return error.
+    */
+    WIN_CHECK_NULL_RETURN(pstCaptureFrame);
+    
+    if (pstFrame->stBufAddr[0].u32PhyAddr_Y != pstCaptureFrame->stBufAddr[0].u32PhyAddr_Y)
+    {
+        WIN_FATAL("-you release wrong capture frame.\n"); 
+        return HI_FAILURE;
+    }
+    
+    pstWinBP->pstCapture = NULL;       
+    return HI_SUCCESS;
+}
+
+HI_DRV_VIDEO_FRAME_S *WinBuf_GetCapturedFrame(WB_POOL_S *pstWinBP)
+{
+    WIN_CHECK_NULL_RETURN_NULL(pstWinBP);
+
+    if (pstWinBP->pstCapture != HI_NULL)
+    {
+        return (HI_DRV_VIDEO_FRAME_S *)pstWinBP->pstCapture->u32Data;
+    }
+
+    return HI_NULL;
+}
 
 // release frame that has been displayed and set configed frame as displayed frame.
 HI_S32 WinBuf_RlsAndUpdateUsingFrame(WB_POOL_S *pstWinBP)
@@ -298,56 +344,69 @@ HI_S32 WinBuf_RlsAndUpdateUsingFrame(WB_POOL_S *pstWinBP)
     
     WIN_CHECK_NULL_RETURN(pstWinBP);
 
-    if (pstWinBP->pstDisplay == pstWinBP->pstConfig)
-    {
-        pstWinBP->pstConfig  = HI_NULL;
-    }
-
     if (pstWinBP->pstDisplay != HI_NULL)
-    {
-        // get displayed frame
+    {        
         pstDispFrame = (HI_DRV_VIDEO_FRAME_S *)pstWinBP->pstDisplay->u32Data;
-        
-        if (pstWinBP->pstConfig != HI_NULL)
+
+        /*1) display not null, and config == display,this
+          means repeate-playing  controlled by vdp itself.
+          2) not the same with repeate-playing controlled by avplay
+          : pstDisplay != pstconfig, but the ptr points the same frame.
+         */
+        if (pstWinBP->pstDisplay == pstWinBP->pstConfig)
         {
-            // get last config frame, the frame is being displayed.
+            pstWinBP->pstConfig  = HI_NULL;
+        } 
+        else if (pstWinBP->pstConfig != HI_NULL)
+        {   
+            /*this branch means normal playing:  
+              we get new config node, and if not repeated by avplay ,we 
+              will release the display node and  move forward.*/
             pstCfgFrame = (HI_DRV_VIDEO_FRAME_S *)pstWinBP->pstConfig->u32Data;
-            
-            // check whether disp-frame and conf-frame are same one.
-            if (   pstWinBP->stSrcInfo.pfRlsFrame 
+
+            /*if display and config not points the same frame, we will release display node.*/
+            if ((pstDispFrame->bStillFrame) && ( pstDispFrame->stBufAddr[0].u32PhyAddr_Y
+                    != pstCfgFrame->stBufAddr[0].u32PhyAddr_Y))
+            {
+                WIN_DestroyStillFrame(pstDispFrame);
+                WinBuf_DebugAddRls(pstWinBP->pstDebugInfo, pstDispFrame->u32FrameIndex);
+            }
+            else if (   pstWinBP->stSrcInfo.pfRlsFrame 
                 && (   pstDispFrame->stBufAddr[0].u32PhyAddr_Y
                     != pstCfgFrame->stBufAddr[0].u32PhyAddr_Y)
                 )
-            {
-                // if disp-frame and conf-frame are not same, release disp-frame
+            {                
                 pstWinBP->stSrcInfo.pfRlsFrame(pstWinBP->stSrcInfo.hSrc, pstDispFrame);
                 WinBuf_DebugAddRls(pstWinBP->pstDebugInfo, pstDispFrame->u32FrameIndex);
             }
 
-            // release disp buffer
+            /* release disp buffer*/
             nRet = DispBuf_AddEmptyNode(&pstWinBP->stBuffer, pstWinBP->pstDisplay);
             DISP_ASSERT(nRet == HI_SUCCESS);
 
+            /*move forward.*/
             pstWinBP->pstDisplay = pstWinBP->pstConfig;
-
             pstWinBP->pstConfig  = HI_NULL;
         }
-#if 0
         else
         {
-            if ( pstWinBP->stSrcInfo.pfRlsFrame )
+            /*this branch means: in last intr,we undergo a reset, and in black frame mode. so we did 
+              not receive new frame from avplay, in this intr, we should release it.
+             */
+            if (pstDispFrame->bStillFrame)
             {
-                // if not configed frame, may be EOS, release, release disp-frame
+                WIN_DestroyStillFrame(pstDispFrame);
+            }
+            else if ( pstWinBP->stSrcInfo.pfRlsFrame )
+            {                
                 pstWinBP->stSrcInfo.pfRlsFrame(pstWinBP->stSrcInfo.hSrc, pstDispFrame);
             }
-
-            // release disp buffer
+            
             nRet = DispBuf_AddEmptyNode(&pstWinBP->stBuffer, pstWinBP->pstDisplay);
             DISP_ASSERT(nRet == HI_SUCCESS);
-
             pstWinBP->pstDisplay = HI_NULL;
         }
-#endif
+        
     }
     else if (pstWinBP->pstConfig != HI_NULL)
     {
@@ -395,11 +454,19 @@ HI_DRV_VIDEO_FRAME_S *WinBuf_GetConfigedFrame(WB_POOL_S *pstWinBP)
 HI_S32 WinBuf_ForceReleaseFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstFrame)
 {
     WIN_CHECK_NULL_RETURN(pstWinBP);
-    
-   if (    (pstWinBP->stSrcInfo.pfRlsFrame != HI_NULL) && pstFrame)
+
+    if (pstFrame)
     {
-        pstWinBP->stSrcInfo.pfRlsFrame(pstWinBP->stSrcInfo.hSrc, pstFrame);
-        WinBuf_DebugAddRls(pstWinBP->pstDebugInfo, pstFrame->u32FrameIndex);
+       if (pstFrame->bStillFrame )
+        {
+            WIN_DestroyStillFrame(pstFrame);
+            WinBuf_DebugAddRls(pstWinBP->pstDebugInfo, pstFrame->u32FrameIndex);
+        }
+        else if (pstWinBP->stSrcInfo.pfRlsFrame != HI_NULL)
+        {
+            pstWinBP->stSrcInfo.pfRlsFrame(pstWinBP->stSrcInfo.hSrc, pstFrame);
+            WinBuf_DebugAddRls(pstWinBP->pstDebugInfo, pstFrame->u32FrameIndex);
+        }
     }
 
     return HI_SUCCESS;
@@ -437,8 +504,15 @@ HI_S32 WinBuf_ReleaseOneFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstPreF
 
     pstCurrFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNode->u32Data;
     pstNextFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNextNode->u32Data;
-    
-    if (   (pstWinBP->stSrcInfo.pfRlsFrame != HI_NULL)
+
+    if ((pstCurrFrame->bStillFrame)&&(pstCurrFrame->stBufAddr[0].u32PhyAddr_Y != u32UsingAddrY)
+         &&(pstCurrFrame->stBufAddr[0].u32PhyAddr_Y !=
+            pstNextFrame->stBufAddr[0].u32PhyAddr_Y))
+    {
+        WIN_DestroyStillFrame(pstCurrFrame);
+        WinBuf_DebugAddRls(pstWinBP->pstDebugInfo, pstCurrFrame->u32FrameIndex);
+    }
+    else if (   (pstWinBP->stSrcInfo.pfRlsFrame != HI_NULL)
          &&(pstCurrFrame->stBufAddr[0].u32PhyAddr_Y != u32UsingAddrY)
          &&(pstCurrFrame->stBufAddr[0].u32PhyAddr_Y !=
             pstNextFrame->stBufAddr[0].u32PhyAddr_Y)
@@ -501,8 +575,13 @@ HI_S32 WinBuf_FlushWaitingFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstPr
     // all node is clean exept the last one, now release it.
 
     pstCurrFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNode->u32Data;
-    
-    if (   (pstWinBP->stSrcInfo.pfRlsFrame != HI_NULL)
+
+    if ((pstCurrFrame->bStillFrame) && (pstCurrFrame->stBufAddr[0].u32PhyAddr_Y != u32UsingAddrY))
+    {
+        WIN_DestroyStillFrame(pstCurrFrame);
+        WinBuf_DebugAddRls(pstWinBP->pstDebugInfo, pstCurrFrame->u32FrameIndex);
+    }
+    else if (   (pstWinBP->stSrcInfo.pfRlsFrame != HI_NULL)
          &&(pstCurrFrame->stBufAddr[0].u32PhyAddr_Y != u32UsingAddrY)
         )
     {
@@ -519,23 +598,141 @@ HI_S32 WinBuf_FlushWaitingFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstPr
     return HI_SUCCESS;
 }
 
-HI_DRV_VIDEO_FRAME_S * WinBuf_GetFrameByMaxID(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstRefFrame,HI_U32 u32RefID)
+
+HI_BOOL WinBuf_FindDstFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstDstFrame)
 {
-    DISP_BUF_NODE_S *pstWBNode, *pstWBNextNode;
-    HI_DRV_VIDEO_FRAME_S *pstCurrFrame, *pstNextFrame;
+    DISP_BUF_NODE_S *pstWBNode;
+    HI_DRV_VIDEO_FRAME_S *pstCurrFrame;
+    HI_DRV_VIDEO_PRIVATE_S *pstDstPriv, *pstPriv;
+    HI_S32 nRet;
+    HI_U32 u;
+
+    if (!pstDstFrame)
+    {
+        return HI_FALSE;
+    }
+
+    // get dst frame private information.
+    pstDstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstDstFrame->u32Priv[0]);
+
+    for (u=0; u<pstWinBP->u32BufNumber; u++)
+    {
+        // get next new frame node
+        nRet = DispBuf_GetFullNodeByIndex(&pstWinBP->stBuffer, u, &pstWBNode);
+        if (nRet != HI_SUCCESS)
+        {
+            return HI_FALSE;
+        }
+
+        // get frame info of new node.
+        pstCurrFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNode->u32Data;
+        pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstCurrFrame->u32Priv[0]);
+
+        // check whether frame information is matchable
+        if (  (pstCurrFrame->u32FrameIndex == pstDstFrame->u32FrameIndex)
+            &&(pstCurrFrame->u32Pts        == pstDstFrame->u32Pts)
+            &&(pstPriv->eOriginField       == pstDstPriv->eOriginField)
+            )
+        {
+            return HI_TRUE;
+        }
+    }
+
+    return HI_FALSE;
+}
+
+//#define WIN_BUF_GetFrameByMaxID_PRINT
+HI_DRV_VIDEO_FRAME_S * WinBuf_GetFrameByDstFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstDstFrame, HI_DRV_VIDEO_FRAME_S *pstRefFrame)
+{
+    DISP_BUF_NODE_S *pstWBNode = HI_NULL;
+    HI_DRV_VIDEO_FRAME_S *pstCurrFrame;
+    HI_DRV_VIDEO_PRIVATE_S *pstDstPriv, *pstPriv;
     HI_S32 nRet;
     
     WIN_CHECK_NULL_RETURN_NULL(pstWinBP);
 
-    nRet = DispBuf_GetFullNode(&pstWinBP->stBuffer, &pstWBNode);
-    if (nRet != HI_SUCCESS)
+    // 1 search destination frame
+    if (WinBuf_FindDstFrame(pstWinBP, pstDstFrame) != HI_TRUE)
     {
         return HI_NULL;
     }
 
-    pstCurrFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNode->u32Data;
+    // 2 get private information of dst frame
+    pstDstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstDstFrame->u32Priv[0]);
 
-    if ( (u32RefID == 0) || ((pstCurrFrame->u32FrameIndex == u32RefID)))
+    // 3 search dst frame
+    do{
+        // update position, 'pstWBNextNode' becomes current node, and get new next node
+        nRet = DispBuf_GetFullNode(&pstWinBP->stBuffer, &pstWBNode);
+        DISP_ASSERT(nRet == HI_SUCCESS);
+
+        pstCurrFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNode->u32Data;
+        pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstCurrFrame->u32Priv[0]);
+        
+        if (  (pstCurrFrame->u32FrameIndex == pstDstFrame->u32FrameIndex)
+            &&(pstCurrFrame->u32Pts        == pstDstFrame->u32Pts)
+            &&(pstPriv->eOriginField       == pstDstPriv->eOriginField)
+            )
+        {
+            break;
+        }
+
+        // release current frame
+        nRet = WinBuf_ReleaseOneFrame(pstWinBP, pstRefFrame);
+        DISP_ASSERT(nRet == HI_SUCCESS);
+    }while(nRet == HI_SUCCESS);
+
+    // get node
+    nRet = DispBuf_DelFullNode(&pstWinBP->stBuffer, pstWBNode);
+    DISP_ASSERT(nRet == HI_SUCCESS);
+
+    // all node is clean exept the last one, now release it.
+    pstWinBP->pstConfig = pstWBNode;
+
+    pstCurrFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNode->u32Data;
+    WinBuf_DebugAddCfg(pstWinBP->pstDebugInfo, pstCurrFrame->u32FrameIndex);
+
+#ifdef WIN_BUF_GetFrameByMaxID_PRINT 
+    pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstCurrFrame->u32Priv[0]);
+
+    HI_PRINT("02 Dest=%d,tb=%d,ID=%d, tb=%d\n",
+                                  pstDstFrame->u32FrameIndex,
+                                  pstDstPriv->eOriginField,
+                                  pstCurrFrame->u32FrameIndex,
+                                  pstPriv->eOriginField);
+#endif
+    return pstCurrFrame;
+}
+
+
+
+//#define WIN_BUF_GetFrameByMaxID_PRINT
+HI_DRV_VIDEO_FRAME_S * WinBuf_GetFrameByMaxID(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstRefFrame,HI_U32 u32RefID, HI_DRV_FIELD_MODE_E enDstField)
+{
+    DISP_BUF_NODE_S *pstWBNode, *pstWBNextNode;
+    HI_DRV_VIDEO_FRAME_S *pstCurrFrame, *pstNextFrame;
+    HI_DRV_VIDEO_PRIVATE_S *pstPriv;
+    HI_S32 nRet;
+    
+    WIN_CHECK_NULL_RETURN_NULL(pstWinBP);
+
+#ifdef WIN_BUF_GetFrameByMaxID_PRINT
+    //printk("Dest ID=%d, tb=%d,", u32RefID, enDstField);
+#endif
+
+    nRet = DispBuf_GetFullNode(&pstWinBP->stBuffer, &pstWBNode);
+    if (nRet != HI_SUCCESS)
+    {
+#ifdef WIN_BUF_GetFrameByMaxID_PRINT 
+        //printk(".x.");
+#endif
+        return HI_NULL;
+    }
+
+    pstCurrFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNode->u32Data;
+    pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstCurrFrame->u32Priv[0]);
+
+    if(u32RefID == 0) 
     {
         // release node of current frame and add to empty array.
         nRet = DispBuf_DelFullNode(&pstWinBP->stBuffer, pstWBNode);
@@ -548,10 +745,36 @@ HI_DRV_VIDEO_FRAME_S * WinBuf_GetFrameByMaxID(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_
         
         return pstCurrFrame;
     }
+    
+    if (   (pstCurrFrame->u32FrameIndex == u32RefID)
+         &&(pstPriv->eOriginField == enDstField)
+        )
+    {
+        // release node of current frame and add to empty array.
+        nRet = DispBuf_DelFullNode(&pstWinBP->stBuffer, pstWBNode);
+        DISP_ASSERT(nRet == HI_SUCCESS);
+
+        pstWinBP->pstConfig = pstWBNode;
+
+        // add to debug record array
+        WinBuf_DebugAddCfg(pstWinBP->pstDebugInfo, pstCurrFrame->u32FrameIndex);
+
+#ifdef WIN_BUF_GetFrameByMaxID_PRINT
+        //printk("Find 01 ID=%d, tb=%d\n", pstCurrFrame->u32FrameIndex, pstPriv->eOriginField);
+#endif
+        return pstCurrFrame;
+    }
 
     // if current frame ID is bigger than refID, reserve and not use now.
     if (pstCurrFrame->u32FrameIndex > u32RefID)
     {
+#ifdef WIN_BUF_GetFrameByMaxID_PRINT 
+        printk("02 Dest=%d,tb=%d,ID=%d, tb=%d\n",
+                                  u32RefID,
+                                  enDstField,
+                                  pstCurrFrame->u32FrameIndex,
+                                  pstPriv->eOriginField);
+#endif
         return HI_NULL;
     }
 
@@ -559,17 +782,32 @@ HI_DRV_VIDEO_FRAME_S * WinBuf_GetFrameByMaxID(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_
     while(nRet == HI_SUCCESS)
     {
         pstNextFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNextNode->u32Data;
-        
         if (pstNextFrame->u32FrameIndex > u32RefID)
         {
+#ifdef WIN_BUF_GetFrameByMaxID_PRINT
+            printk("N.");
+#endif
             break;
         }
 
+        // release current frame
         WinBuf_ReleaseOneFrame(pstWinBP, pstRefFrame);
 
-        // update position, 'pstWBNextNode' becomes current node, and get new next node
         pstWBNode = pstWBNextNode;
 
+        pstCurrFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNode->u32Data;
+        pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstCurrFrame->u32Priv[0]);
+        if (  (pstCurrFrame->u32FrameIndex == u32RefID)
+            &&(pstPriv->eOriginField == enDstField)
+            )
+        {
+#ifdef WIN_BUF_GetFrameByMaxID_PRINT
+            printk("Y.");
+#endif
+            break;
+        }
+
+        // update position, 'pstWBNextNode' becomes current node, and get new next node
         nRet = DispBuf_GetNextFullNode(&pstWinBP->stBuffer, &pstWBNextNode);        
     }
 
@@ -581,11 +819,138 @@ HI_DRV_VIDEO_FRAME_S * WinBuf_GetFrameByMaxID(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_
     pstWinBP->pstConfig = pstWBNode;
 
     pstCurrFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNode->u32Data;
+    pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstCurrFrame->u32Priv[0]);
 
     WinBuf_DebugAddCfg(pstWinBP->pstDebugInfo, pstCurrFrame->u32FrameIndex);
-    
+
+#ifdef WIN_BUF_GetFrameByMaxID_PRINT 
+    printk("02 Dest=%d,tb=%d,ID=%d, tb=%d\n",
+                                  u32RefID,
+                                  enDstField,
+                                  pstCurrFrame->u32FrameIndex,
+                                  pstPriv->eOriginField);
+#endif
     return pstCurrFrame;
 }
+
+//#define WIN_BUF_GetFrameByDisplayInfo_PRINT
+HI_DRV_VIDEO_FRAME_S *WinBuf_GetFrameByDisplayInfo(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstRefFrame, HI_U32 u32RefRate, HI_DRV_FIELD_MODE_E enDstField)
+{
+    DISP_BUF_NODE_S *pstWBNode, *pstWBNextNode;
+    HI_DRV_VIDEO_FRAME_S *pstCurrFrame;
+    HI_DRV_VIDEO_PRIVATE_S *pstPriv;
+    HI_S32 nRet;
+    
+    WIN_CHECK_NULL_RETURN_NULL(pstWinBP);
+
+#ifdef WIN_BUF_GetFrameByDisplayInfo_PRINT 
+    printk("[df=%d]", enDstField);
+#endif
+
+    do
+    {
+        // get new frame
+        nRet = DispBuf_GetFullNode(&pstWinBP->stBuffer, &pstWBNode);
+        if (nRet != HI_SUCCESS)
+        {
+#ifdef WIN_BUF_GetFrameByDisplayInfo_PRINT
+            printk("U.");
+#endif
+            return HI_NULL;
+        }
+
+        pstCurrFrame = (HI_DRV_VIDEO_FRAME_S *)pstWBNode->u32Data;
+        pstPriv = (HI_DRV_VIDEO_PRIVATE_S *)&(pstCurrFrame->u32Priv[0]);
+
+        // compare field and frame rate
+
+#if 0
+        if (pstPriv->eOriginField == HI_DRV_FIELD_ALL)
+        {
+            // need not to search and return current frame
+#ifdef WIN_BUF_GetFrameByDisplayInfo_PRINT 
+            printk("ok1.");
+#endif
+            return WinBuf_GetConfigFrame(pstWinBP);
+        }
+
+        if (pstPriv->eOriginField == enDstField)
+        {
+            // need not to search and return current frame
+#ifdef WIN_BUF_GetFrameByDisplayInfo_PRINT 
+            printk("ok2.");
+#endif
+            return WinBuf_GetConfigFrame(pstWinBP);
+        }
+
+        if (abs((HI_S32)(pstCurrFrame->u32FrameRate/10) - (HI_S32)u32RefRate) >= 100)
+        {
+            // need not to search and return current frame
+#ifdef WIN_BUF_GetFrameByDisplayInfo_PRINT 
+            printk("ok3.f=%d, r=%d.", pstCurrFrame->u32FrameRate, u32RefRate);
+#endif
+            return WinBuf_GetConfigFrame(pstWinBP);
+        }
+#else
+        if ( (pstPriv->eOriginField == HI_DRV_FIELD_ALL)
+            ||(pstPriv->eOriginField == enDstField)
+            ||(abs((HI_S32)(pstCurrFrame->u32FrameRate/10) - (HI_S32)u32RefRate) >= 100)
+            )
+        {
+            // need not to search and return current frame
+#ifdef WIN_BUF_GetFrameByDisplayInfo_PRINT
+            printk("@");
+#endif
+            return WinBuf_GetConfigFrame(pstWinBP);
+        }
+#endif
+        // process current frame according to sync info
+        switch(pstCurrFrame->enTBAdjust)
+        {
+            case HI_DRV_VIDEO_TB_REPEAT:
+                // this frame may delay than audio
+                pstCurrFrame->enTBAdjust = HI_DRV_VIDEO_TB_PLAY;
+#ifdef WIN_BUF_GetFrameByDisplayInfo_PRINT 
+                printk("R.");
+#endif
+                return HI_NULL;
+
+            case HI_DRV_VIDEO_TB_DISCARD:
+                // this frame may advacne than audio, so get next
+                nRet = DispBuf_GetNextFullNode(&pstWinBP->stBuffer, &pstWBNextNode);
+#ifdef WIN_BUF_GetFrameByDisplayInfo_PRINT
+                printk("D.");
+#endif
+                if (nRet == HI_SUCCESS)
+                {
+#ifdef WIN_BUF_GetFrameByDisplayInfo_PRINT
+                    printk("DR.");
+#endif
+                    WinBuf_ReleaseOneFrame(pstWinBP, pstRefFrame); 
+                    break;
+                }
+                else
+                {
+#ifdef WIN_BUF_GetFrameByDisplayInfo_PRINT
+                    printk("DC.");
+#endif
+                    return WinBuf_GetConfigFrame(pstWinBP);
+                }
+            case HI_DRV_VIDEO_TB_PLAY:
+            default:
+                // this frame should not adjust
+#ifdef WIN_BUF_GetFrameByDisplayInfo_PRINT
+                printk("P.");
+#endif
+                return WinBuf_GetConfigFrame(pstWinBP);
+        }
+
+    }while(1);
+    
+    return HI_NULL;
+}
+
+
 
 
 HI_DRV_VIDEO_FRAME_S * WinBuf_GetNewestFrame(WB_POOL_S *pstWinBP, HI_DRV_VIDEO_FRAME_S *pstRefFrame)

@@ -36,11 +36,6 @@ extern "C"{
 /*CNcomment:PNG寄存器大小*/
 #define PNG_REG_SIZE        0x120
 
-/*Address of PNG reset regioster*/
-/*CNcomment:PNG复位寄存器基地址 */
-//#define PNG_REG_RESET 0xf8a22084
-
-
 /*PNG interrupt num*/
 /*CNcomment:PNG中断号*/
 //#define PNG_INTNUM 128

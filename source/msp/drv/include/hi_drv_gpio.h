@@ -42,7 +42,10 @@
 #define     HI_GPIO_GROUP_NUM 13
 #elif defined (CHIP_TYPE_hi3712)
 #define     HI_GPIO_GROUP_NUM 6
-#elif defined (CHIP_TYPE_hi3716cv200es) || (CHIP_TYPE_hi3716cv200)
+#elif defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
 #define     HI_GPIO_GROUP_NUM 18
 #else
  #error YOU MUST DEFINE  CHIP_TYPE!
@@ -57,7 +60,10 @@
 
 #define     HI_GPIO_SPACE_SIZE 0x1000
 
-#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
 
 #define 	HI_GPIO_MAX_GROUP_NUM	18
 #define     HI_GPIO_IRQ_NO (108 + 32)

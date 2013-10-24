@@ -38,6 +38,16 @@ extern "C" {
 /** \addtogroup      DISPLAY */
 /** @{ */  /** <!-- [DISPLAY] */
 
+/**enum define about DISPLAY channel*/
+/**CNcomment:定义DISPLAY通道枚举*/
+typedef enum hiUNF_DISP_E
+{
+    HI_UNF_DISPLAY0 = 0x0,  /**< DISPLAY0,Compatible with SD */ /**<CNcomment:高清DISPLAY0，兼容标清 */
+    HI_UNF_DISPLAY1,        /**< DISPLAY1 *//**<CNcomment: 高清DISPLAY1 */
+    HI_UNF_DISPLAY2,        /**< DISPLAY2 *//**<CNcomment: 高清DISPLAY2 */
+    HI_UNF_DISPLAY_BUTT
+}HI_UNF_DISP_E;
+
 /**max DAC count*/
 /**CNcomment:最大的DAC数目*/
 #define MAX_DAC_NUM ( 6 )
@@ -63,16 +73,6 @@ typedef enum hiUNF_DISP_INTF_DATA_WIDTH_E
     HI_UNF_DISP_INTF_DATA_WIDTH24,          /**<24 bits*//**<CNcomment:24位*/
     HI_UNF_DISP_INTF_DATA_WIDTH_BUTT
 }HI_UNF_DISP_INTF_DATA_WIDTH_E;
-
-/**enum define about DISPLAY channel*/
-/**CNcomment:定义DISPLAY通道枚举*/
-typedef enum hiUNF_DISP_E
-{
-    HI_UNF_DISPLAY0 = 0x0,  /**< DISPLAY0,Compatible with SD */ /**<CNcomment:高清DISPLAY0，兼容标清 */
-    HI_UNF_DISPLAY1,        /**< DISPLAY1 *//**<CNcomment: 高清DISPLAY1 */
-    HI_UNF_DISPLAY2,        /**< DISPLAY2 *//**<CNcomment: 高清DISPLAY2 */
-    HI_UNF_DISPLAY_BUTT
-}HI_UNF_DISP_E;
 
 /**define LCD timing */
 /**CNcomment:定义LCD的时序参数*/
@@ -111,15 +111,8 @@ typedef struct hiUNF_DISP_TIMING_S
 /**CNcomment:视频和图形层*/
 typedef enum hiUNF_DISP_LAYER_E
 {
-    HI_UNF_DISP_LAYER_VIDEO0 = 0,                   /**<video layer 0*//**<CNcomment:视频层0*/
-    HI_UNF_DISP_LAYER_VIDEO1,                       /**<video layer 1*//**<CNcomment:视频层1*/
-    HI_UNF_DISP_LAYER_VIDEO2,                       /**<video layer 2*//**<CNcomment:视频层2*/
-
-    HI_UNF_DISP_LAYER_GFX0 = 0x80,                  /**<graphics layer 0*//**<CNcomment:图形层0*/
-    HI_UNF_DISP_LAYER_GFX1,                         /**<graphics layer 1*//**<CNcomment:图形层1*/
-    HI_UNF_DISP_LAYER_GFX2,                         /**<graphics layer 2*//**<CNcomment:图形层2*/
-    HI_UNF_DISP_LAYER_GFX3,                         /**<graphics layer 3*//**<CNcomment:图形层3*/
-
+    HI_UNF_DISP_LAYER_VIDEO = 0,                   /**<video layer *//**<CNcomment:视频层*/
+    HI_UNF_DISP_LAYER_GFX,                  /**<graphics layer *//**<CNcomment:图形层*/
     HI_UNF_DISP_LAYER_BUTT
 }HI_UNF_DISP_LAYER_E;
 
@@ -391,7 +384,7 @@ typedef enum hiUNF_DISP_3D_E
     HI_UNF_DISP_3D_SIDE_BY_SIDE_HALF,               /**<3d type:Side by side half*//**<CNcomment:3d 模式:并排式 左右半边*/
     HI_UNF_DISP_3D_TOP_AND_BOTTOM,                  /**<3d type:Top and Bottom*//**<CNcomment:3d 模式:上下模式*/
     HI_UNF_DISP_3D_FIELD_ALTERNATIVE,               /**<3d type:Field alternative*//**<CNcomment:3d 模式:场交错*/
-    HI_UNF_DISP_3D_LINE_ALTERNATIVE,                /**<3d type:Field alternative*//**<CNcomment:3d 模式:场交错*/
+    HI_UNF_DISP_3D_LINE_ALTERNATIVE,                /**<3d type:Field alternative*//**<CNcomment:3d 模式:行交错*/
     HI_UNF_DISP_3D_SIDE_BY_SIDE_FULL,               /**<3d type:Side by side full*//**<CNcomment:3d 模式:并排式 左右全场*/
     HI_UNF_DISP_3D_L_DEPTH,                         /**<3d type:L+depth*//**<CNcomment:3d 模式:L+DEPTH*/
     HI_UNF_DISP_3D_L_DEPTH_GRAPHICS_GRAPHICS_DEPTH, /**<3d type:L+depth+Graphics+Graphics-depth*//**<CNcomment:3d 模式:L+depth+Graphics+Graphics-depth*/
@@ -1067,40 +1060,19 @@ HI_S32 HI_UNF_DISP_DestroyVBI( HI_HANDLE hVbi );
  */
 HI_S32 HI_UNF_DISP_SendVBIData( HI_HANDLE hVbi, HI_UNF_DISP_VBI_DATA_S *pstVbiData );
 
-
 /**
-   \brief set screen size of display channel.CNcomment: 设置显示通道屏幕大小 CNend
-   \attention \n
-   Only used for SD. Zoom SD image to display on the region which is set;
-   CNcomment:仅用于标清，使标清图像显示在设置区域内。 CNend
-   \param[in] enDisp      display channel.CNcomment:显示通路 CNend
-   \param[in] pstDispRect      pointer of display region.CNcomment:指针，显示区域设置 CNend
-   \retval ::HI_SUCCESS CNcomment: success.成功 CNend
-   \retval ::HI_ERR_DISP_DEV_NO_INIT    DISP uninitialization.CNcomment:DISP未初始化 CNend
-   \retval ::HI_ERR_DISP_NULL_PTR          Input pointer is NULL.CNcomment:输入指针为空 CNend
-   \retval ::HI_ERR_DISP_INVALID_PARA   invalid input parameter.CNcomment:输入参数非法 CNend
-   \retval ::HI_ERR_DISP_INVALID_OPT    invalid operation. CNcomment:操作非法 CNend
-   \see \n
-   none.CNcomment:无 CNend
- */
-HI_S32 HI_UNF_DISP_SetScreenArea( HI_UNF_DISP_E enDisp, HI_RECT_S *pstDispRect );
-
-
-/**
-   \brief get screen size of display channel.CNcomment: 获得显示通道屏幕大小 CNend
+   \brief Get default attributes of screen share channel.CNcomment: 获取屏幕投影通道的默认属性 CNend
    \attention \n
    none. CNcomment:无 CNend
    \param[in] enDisp      display channel.CNcomment:显示通路 CNend
-   \param[out] pstDispRect      pointer of display region.CNcomment:指针，显示区域设置 CNend
+   \param[out]pstAttr     pointer of parameter .CNcomment:指针,配置参数 CNend
    \retval ::HI_SUCCESS CNcomment: success.成功 CNend
-   \retval ::HI_ERR_DISP_DEV_NO_INIT    DISP uninitialization.CNcomment:DISP未初始化 CNend
    \retval ::HI_ERR_DISP_NULL_PTR          Input pointer is NULL.CNcomment:输入指针为空 CNend
    \retval ::HI_ERR_DISP_INVALID_PARA   invalid input parameter.CNcomment:输入参数非法 CNend
-   \retval ::HI_ERR_DISP_INVALID_OPT    invalid operation. CNcomment:操作非法 CNend
    \see \n
    none.CNcomment:无 CNend
  */
-HI_S32 HI_UNF_DISP_GetScreenArea( HI_UNF_DISP_E enDisp, HI_RECT_S *pstDispRect );
+HI_S32 HI_UNF_DISP_GetDefaultCastAttr(HI_UNF_DISP_E enDisp,HI_UNF_DISP_CAST_ATTR_S *pstAttr);
 
 
 /**
@@ -1305,6 +1277,21 @@ HI_S32 HI_UNF_DISP_SetDefaultPara( HI_UNF_DISP_E enDisp);
 HI_S32 HI_UNF_DISP_Set3DMode(HI_UNF_DISP_E enDisp, HI_UNF_DISP_3D_E en3D, HI_UNF_ENC_FMT_E enEncFormat);
 
 /**
+   \brief get DISP 3D format.CNcomment:查询DISP的3D制式 CNend
+   \attention \n
+   none. CNcomment:无 CNend
+   \param[in] enDisp           DISP channel ID.CNcomment:DISP通道号 CNend
+   \param[out] pen3D           DISP 3D mode.CNcomment:DISP 3D模式 CNend
+   \param[out] penEncFormat    DISP format.CNcomment:DISP的制式 CNend
+   \retval ::HI_SUCCESS  success.CNcomment:成功 CNend
+   \retval ::HI_ERR_DISP_DEV_NO_INIT    DISP uninitialization.CNcomment:DISP未初始化 CNend
+   \retval ::HI_ERR_DISP_INVALID_PARA   invalid input parameter.CNcomment:输入参数非法 CNend
+   \see \n
+   none.CNcomment:无 CNend
+ */
+HI_S32 HI_UNF_DISP_Get3DMode(HI_UNF_DISP_E enDisp, HI_UNF_DISP_3D_E *pen3D, HI_UNF_ENC_FMT_E *penEncFormat);
+
+/**
    \brief set right eye first for 3D output.CNcomment:设置3D输出右眼优先 CNend
    \attention \n
    Only take effect in 3D output mode. CNcomment: 仅在3D输出时有效 CNend
@@ -1321,7 +1308,7 @@ HI_S32 HI_UNF_DISP_SetRightEyeFirst(HI_UNF_DISP_E enDisp, HI_BOOL bEnable);
 /**
    \brief set virtual screen size of display.CNcomment:设置显示通道的虚拟屏幕大小 CNend
    \attention \n
-   none. CNcomment: 无 CNend
+   if not set ,default value is 1280*720. CNcomment: 如果不设置此函数，默认的虚拟屏幕大小是720p. CNend
    \param[in] enDisp   DISP channel ID.CNcomment:DISP通道号 CNend
    \param[in] u32Width  virtual screen width, the range is [480, 3840].CNcomment:虚拟屏幕宽度，取值范围为[480, 3840]. CNend
    \param[in] u32Height  virtual screen height, the range is [480, 3840].CNcomment:虚拟屏幕高度，取值范围为[480, 3840]. CNend
@@ -1334,11 +1321,27 @@ HI_S32 HI_UNF_DISP_SetRightEyeFirst(HI_UNF_DISP_E enDisp, HI_BOOL bEnable);
 HI_S32 HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISP_E enDisp, HI_U32 u32Width, HI_U32 u32Height);
 
 /**
-   \brief set offset of display area in real screen.CNcomment:设置显示区域在实体屏幕上的偏移量 CNend
+   \brief get virtual screen size of display.CNcomment:获取显示通道的虚拟屏幕大小 CNend
    \attention \n
    none. CNcomment: 无 CNend
    \param[in] enDisp   DISP channel ID.CNcomment:DISP通道号 CNend
-   \param[in] pstOffset  offset in pixel, the range is [0, 120].CNcomment:偏移像素数目，取值范围为[0, 120]. CNend
+   \param[out] u32Width  virtual screen width, the range is [480, 3840].CNcomment:虚拟屏幕宽度，取值范围为[480, 3840]. CNend
+   \param[out] u32Height  virtual screen height, the range is [480, 3840].CNcomment:虚拟屏幕高度，取值范围为[480, 3840]. CNend
+   \retval ::HI_SUCCESS  success.CNcomment:成功 CNend
+   \retval ::HI_ERR_DISP_DEV_NO_INIT    DISP uninitialization.CNcomment:DISP未初始化 CNend
+   \retval ::HI_ERR_DISP_INVALID_PARA   invalid input parameter.CNcomment:输入参数非法 CNend
+   \see \n
+   none.CNcomment:无 CNend
+ */
+HI_S32 HI_UNF_DISP_GetVirtualScreen(HI_UNF_DISP_E enDisp, HI_U32 *u32Width, HI_U32 *u32Height);
+
+
+/**
+   \brief set offset of display area in real screen.CNcomment:设置显示区域在实体屏幕上的偏移量,为物理像素点 CNend
+   \attention \n
+   must be 4 pixels aligned,if not set, the default value is 0. CNcomment: offset 值必须是4对齐,如果不设置默认的值为0. CNend
+   \param[in] enDisp   DISP channel ID.CNcomment:DISP通道号 CNend
+   \param[in] pstOffset  offset in pixel, the range is [0, 200].CNcomment:偏移像素数目，取值范围为[0, 200]. CNend
    \retval ::HI_SUCCESS  success.CNcomment:成功 CNend
    \retval ::HI_ERR_DISP_DEV_NO_INIT    DISP uninitialization.CNcomment:DISP未初始化 CNend
    \retval ::HI_ERR_DISP_INVALID_PARA   invalid input parameter.CNcomment:输入参数非法 CNend
@@ -1347,6 +1350,19 @@ HI_S32 HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISP_E enDisp, HI_U32 u32Width, HI_U3
  */
 HI_S32 HI_UNF_DISP_SetScreenOffset(HI_UNF_DISP_E enDisp, HI_UNF_DISP_OFFSET_S *pstOffset);
 
+/**
+   \brief get offset of display area in real screen.CNcomment:获取显示区域在实体屏幕上的偏移量,为物理像素点 CNend
+   \attention \n
+   none. CNcomment: 无 CNend
+   \param[in] enDisp   DISP channel ID.CNcomment:DISP通道号 CNend
+   \param[out] pstOffset  offset in pixel, the range is [0, 200].CNcomment:偏移像素数目，取值范围为[0, 200]. CNend
+   \retval ::HI_SUCCESS  success.CNcomment:成功 CNend
+   \retval ::HI_ERR_DISP_DEV_NO_INIT    DISP uninitialization.CNcomment:DISP未初始化 CNend
+   \retval ::HI_ERR_DISP_INVALID_PARA   invalid input parameter.CNcomment:输入参数非法 CNend
+   \see \n
+   none.CNcomment:无 CNend
+ */
+HI_S32 HI_UNF_DISP_GetScreenOffset(HI_UNF_DISP_E enDisp, HI_UNF_DISP_OFFSET_S *pstOffset);
 
 /** @} */  /** <!-- ==== API declaration end ==== */
 #ifdef __cplusplus

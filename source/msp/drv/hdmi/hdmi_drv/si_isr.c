@@ -281,7 +281,7 @@ HI_U32 SI_RSEN_Status( void )
 
 void SI_InterruptHandler( void )
 {
-    HI_U8 IntReg[4], IntStatus;
+    HI_U8 IntReg[4] = {0}, IntStatus;
     //HI_U8 IntRegTemp[4] ;
     /* Read HDMI Interrupt Status Register */
     //if(0 != ReadByteHDMITXP0(HDMI_INT_STATE))
@@ -352,6 +352,9 @@ void SI_InterruptHandler( void )
        
             /* Change AuthState from REPEATER_AUTH_REQ to REQ_SHA_CALC */
             AuthState = REQ_SHA_CALC;
+#ifdef _9032_SHA_
+            AuthState = REQ_SHA_HW_CALC;
+#endif
         }
         
         if (IntReg[2] & MASK_AUTO_RI_9134_SPECIFIC)
@@ -372,11 +375,14 @@ void SI_InterruptHandler( void )
 
 void SI_EnableInterrupts(void)
 {
-    //HI_U8 intAddr = 0;
+    HI_U8 intAddr = 0;
     //HI_U8 intMask = 0;
     
     //intAddr = ReadByteHDMITXP0(HDMI_INT_ADDR);
-    //intMask = ReadByteHDMITXP0(HDMI_INT_MASK_ADDR);
+    //intMask = ReadByteHDMITXP0(HDMI_INT_MASK_ADDR);        
     WriteByteHDMITXP0( HDMI_INT_ADDR, CLR_MASK);
     WriteByteHDMITXP0( HDMI_INT_MASK_ADDR, CLR_MASK);
+    
+    intAddr = ReadByteHDMITXP0(HDMI_INT_ADDR);
+    HI_INFO_HDMI("Clear Interrupts 0x%02x \n",intAddr);
 }

@@ -445,40 +445,56 @@ HI_S32 tda18250b_set_tuner (HI_U32 u32TunerPort, HI_U8 enI2cChannel, HI_U32 u32P
     tmErrorCode_t err = ( CUInt32 )TM_OK;
 
     tmbslFrontEndState_t PLLLockMaster = tmbslFrontEndStateUnknown;
-    TDA18250AIF_Output_Level_t IFLevelMstar = TDA18250A_IF_Output_Level_1Vpp_min_6_24dB;
+    TDA18250AIF_Output_Level_t IFLevelMstar = TDA18250A_IF_Output_Level_0_85Vpp_min_7_5_22_5dB;
     TDA18250AStandardMode_t stdModeMaster = TDA18250A_QAM_8MHz;
 
     UInt32 uRFMaster = u32PuRF * 1000;
     s_u32Tda18250ATunerPort = u32TunerPort;
     if (HI_UNF_DEMOD_DEV_TYPE_J83B == g_stTunerOps[u32TunerPort].enDemodDevType)
     {
-        IFLevelMstar = TDA18250A_IF_Output_Level_1Vpp_min_6_24dB;
-        stdModeMaster = TDA18250A_QAM_6MHz;
+        //IFLevelMstar = TDA18250A_IF_Output_Level_1Vpp_min_6_24dB;
+       
+	 switch(g_stTunerOps[u32TunerPort].u32CurrQamMode)
+        {
+	        case QAM_TYPE_64:                         /*64QAM*/
+	            IFLevelMstar = TDA18250A_IF_Output_Level_0_85Vpp_min_7_5_22_5dB;
+		        stdModeMaster = TDA18250A_QAM_6MHz_64QAM;
+			
+	            break;	       
+	        case QAM_TYPE_256:                         /*256QAM*/	            
+	            IFLevelMstar = TDA18250A_IF_Output_Level_1Vpp_min_6_24dB;
+		        stdModeMaster = TDA18250A_QAM_6MHz_256QAM;
+	            break;
+	        default:
+	            stdModeMaster = TDA18250A_QAM_6MHz_64QAM;
+	            IFLevelMstar = TDA18250A_IF_Output_Level_1Vpp_min_6_24dB;
+	            break;
+        }
     }
     else
     {
         switch(g_stTunerOps[u32TunerPort].u32CurrQamMode)
         {
 	        case QAM_TYPE_64:                         /*64QAM*/
-	            stdModeMaster = TDA18250A_QAM_8MHz;
+	            stdModeMaster = TDA18250A_QAM_8MHz_64QAM;
 	            uRFMaster += PLL_STEP * 1 / 2;
 	            IFLevelMstar = TDA18250A_IF_Output_Level_1Vpp_min_6_24dB;
+	            //IFLevelMstar = TDA18250A_IF_Output_Level_0_85Vpp_min_7_5_22_5dB;
 	            break;
 	        case QAM_TYPE_128:                         /*128QAM*/
-	            stdModeMaster = TDA18250A_QAM_8MHz; /*if it is not good then try tmTDA18250_DIG_9MHz_64QAM*/                
+	            stdModeMaster = TDA18250A_QAM_8MHz_64QAM; /*if it is not good then try tmTDA18250_DIG_9MHz_64QAM*/                
 	            IFLevelMstar = TDA18250A_IF_Output_Level_1Vpp_min_6_24dB;
 	            break;
 	        case QAM_TYPE_256:                         /*256QAM*/
-	            stdModeMaster = TDA18250A_QAM_8MHz; 
-	            IFLevelMstar = TDA18250A_IF_Output_Level_0_5Vpp_min_12_18dB;
-	            break;
-	        default:
-	            stdModeMaster = TDA18250A_QAM_8MHz;
+	            stdModeMaster = TDA18250A_QAM_8MHz_256QAM; 
 	            IFLevelMstar = TDA18250A_IF_Output_Level_1Vpp_min_6_24dB;
 	            break;
+	        default:
+	            stdModeMaster = TDA18250A_QAM_8MHz_64QAM;
+	            IFLevelMstar = TDA18250A_IF_Output_Level_0_85Vpp_min_7_5_22_5dB;
+	            break;
         }
-	}
-
+	} 
     err = tmbslTDA18250A_SetStandardMode (u32TunerPort, stdModeMaster);
     if (err != TM_OK)
     {

@@ -26,12 +26,11 @@ EXTRA_CFLAGS += -I$(COMMON_UNF_INCLUDE)                 \
                 -I$(MSP_DRV_INCLUDE)                    \
                 -I$(COMPONENT_DIR)/ha_codec/include
 
+KBUILD_EXTRA_SYMBOLS += $(COMMON_DIR)/drv/Module.symvers
 
 MOD_NAME := hi_sync
 
-
 obj-$(CFG_MSP_BUILDTYPE) += $(MOD_NAME).o
-
 
 $(MOD_NAME)-y   :=  drv_sync.o           \
                     drv_sync_intf.o      \

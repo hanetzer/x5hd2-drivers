@@ -330,7 +330,7 @@ HI_VOID HI_PVR_RemoveFile(const HI_CHAR *pFileName)
         return;
     }
     PVR_REMOVE_FILE64(pFileName);
-    sprintf(idxFileName, "%s.idx", pFileName);
+    snprintf(idxFileName, sizeof(idxFileName),"%s.idx", pFileName);
     remove(idxFileName);
 }
 

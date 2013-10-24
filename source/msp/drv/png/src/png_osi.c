@@ -32,8 +32,8 @@ Date				Author        		Modification
 #include "hi_tde_type.h"
 #include "drv_tde_ext.h"
 #include "png_proc.h"
-
 #include "hi_png_config.h"
+
 
 /* rle window size, can't be changed */
 #define PNG_RDCBUF_SIZE (32 * 1024)
@@ -52,7 +52,7 @@ static HI_S32 PngOsiClutToRgb(HI_PNG_HANDLE s32Handle);
 PNG_DECLARE_WAITQUEUE(g_PngWaitQueue);
 
 /* png device lock*/
-PNG_DECLARE_MUTEX(g_DevMutex);
+HI_DECLARE_MUTEX(g_DevMutex);
 
 /* activ handle,hardware handle */
 static HI_PNG_HANDLE g_ActiveHandle = 0;
@@ -91,7 +91,7 @@ HI_S32 PngOsiInit(HI_VOID)
     HI_S32 s32Ret = HI_SUCCESS;
     
     /* alloc rle window buf */
-    s32Ret = PngOsiResAllocMem("PNG_RDC_BUF", PNG_RDCBUF_SIZE, 16, &g_u32RdcBufPhyaddr);
+    s32Ret = PngOsiResAllocMem("PNG_RdcBuf", PNG_RDCBUF_SIZE, 16, &g_u32RdcBufPhyaddr);
     if (s32Ret < 0)
     {
     	return s32Ret;
@@ -132,16 +132,17 @@ static TDE_EXPORT_FUNC_S *ps_TdeExportFuncs;
 
 HI_S32 PngOsiOpen(HI_VOID)
 {
-    //atomic_inc(&g_PngRef);
+    HI_S32 s32Ret;
+    
     if (atomic_inc_return(&g_PngRef) == 1)
     {
-		ps_TdeExportFuncs = HI_NULL;
-	    HI_DRV_MODULE_GetFunction(HI_ID_TDE, (HI_VOID**)&ps_TdeExportFuncs);
-	    if(NULL == ps_TdeExportFuncs)
-	    {
-	        HIPNG_TRACE("Tde is not available!\n");
-	        return -1;
-	    }
+        ps_TdeExportFuncs = HI_NULL;
+        s32Ret = HI_DRV_MODULE_GetFunction(HI_ID_TDE, (HI_VOID**)&ps_TdeExportFuncs);
+        if((NULL == ps_TdeExportFuncs) || (HI_SUCCESS != s32Ret))
+        {
+            HIPNG_TRACE("Tde is not available!\n");
+            return -1;
+        }
     }
     return 0;
 }
@@ -194,7 +195,7 @@ HI_S32 PngOsiCreateDecoder(HI_PNG_HANDLE *ps32Handle)
 
     PNG_CHECK_OPEN();
     
-    return PngOsiResAllocHandle(ps32Handle);;
+    return PngOsiResAllocHandle(ps32Handle);
 }
 
 EXPORT_SYMBOL(PngOsiCreateDecoder);
@@ -635,7 +636,7 @@ HI_S32 PngOsiDecode(HI_PNG_HANDLE s32Handle, HI_PNG_DECINFO_S *pstDecInfo)
     PNG_GETROWBYTES(u32RowBytes, pstDecInfo->stPngInfo.u32Width, u8PixelDepth);
     u32RowBytes = (u32RowBytes + 0xf) & ~0xf;
 
-    s32Ret = PngOsiResAllocMem("PNG_FILTER_BUF", u32RowBytes, 16, &u32FltPhyaddr);
+    s32Ret = PngOsiResAllocMem("PNG_FilterBuf", u32RowBytes, 16, &u32FltPhyaddr);
     if (s32Ret < 0)
     {
         return s32Ret;
@@ -729,7 +730,7 @@ HI_S32 PngOsiDecode(HI_PNG_HANDLE s32Handle, HI_PNG_DECINFO_S *pstDecInfo)
     ((PNG_BUF_HEAD_S *)(pstInstance->pHwUseBufVir))->u32StreamLen);
 
     g_bAddTimer = HI_FALSE;
-
+    #ifndef  CONFIG_PNG_PROC_DISABLE
     if (PNG_IsProcOn())
     {
         s_stPngProcInfo.eColorFmt = pstInstance->stPngInfo.eColorFmt;
@@ -749,6 +750,7 @@ HI_S32 PngOsiDecode(HI_PNG_HANDLE s32Handle, HI_PNG_DECINFO_S *pstDecInfo)
         s_stPngProcInfo.u16TrnsColorBlue = pstDecInfo->stTransform.sTrnsInfo.u16Blue;
         s_stPngProcInfo.u16Filler = pstDecInfo->stTransform.u16Filler;
     }
+   #endif
 
     /* start to decoder*/
     PngHalStartDecode();
@@ -987,11 +989,13 @@ HI_VOID PngOsiIntHandle(HI_U32 u32Int)
     if (u32Int & PNG_INT_FINISH_MASK)
     { 
         pstInstance->eState = HI_PNG_STATE_FINISH;
+        #ifndef  CONFIG_PNG_PROC_DISABLE
         if (PNG_IsProcOn())
         {
             s_stPngProcInfo.eState = HI_PNG_STATE_FINISH;
         }
-
+        #endif
+        
         PngHalReset();
         
         if (pstInstance->bSync || pstInstance->bInBlockQuery)
@@ -1014,12 +1018,13 @@ HI_VOID PngOsiIntHandle(HI_U32 u32Int)
     if (u32Int & PNG_INT_ERR_MASK)
     {
         pstInstance->eState = HI_PNG_STATE_ERR;
-        
+        #ifndef  CONFIG_PNG_PROC_DISABLE
         if (PNG_IsProcOn())
         {
             s_stPngProcInfo.eState = HI_PNG_STATE_ERR;
         }
-
+        #endif
+        
         /* hard reset  */
         PngHalReset();
         
@@ -1183,11 +1188,12 @@ static void PngTimerFunc(unsigned long data)
     }
 
     pstInstance->eState = HI_PNG_STATE_ERR;
+    #ifndef  CONFIG_PNG_PROC_DISABLE
     if (PNG_IsProcOn())
     {
         s_stPngProcInfo.eState = HI_PNG_STATE_ERR;
     }
-
+    #endif
     PngHalReset();
     
     if (pstInstance->bSync || pstInstance->bInBlockQuery)

@@ -27,6 +27,18 @@
 #define _MDDC_FIFO_FULL  5
 #define IIC_OK 0
 
+typedef struct {
+
+    HI_U8 Bus;
+    HI_U8 SlaveAddr;
+    HI_U8 Flags;
+    HI_U8 NBytes;
+    HI_U8 RegAddrL;
+    HI_U8 RegAddrH;
+} I2CShortCommandType;
+
+
+
 HI_U8 BlockRead_8BAS(I2CShortCommandType * , HI_U8 * );
 HI_U8 BlockWrite_8BAS( I2CShortCommandType * , HI_U8 * );
 HI_U8 ReadByte_8BA(HI_U8, HI_U8, HI_U8);

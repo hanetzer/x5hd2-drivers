@@ -13,31 +13,34 @@
 @	compiled by GNU C version 4.1.1 20061011 (Red Hat 4.1.1-30), GMP version 4.3.1, MPFR version 2.4.2.
 @ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 @ options passed:  -nostdinc
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/include
 @ -Iarch/arm/include/generated -Iinclude
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vpss
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vpss
 @ -Idrivers/msp/vpss
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/drv/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/include
 @ -imultilib armv7a_soft -iprefix
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/
 @ -isysroot /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../target
-@ -D__KERNEL__ -D__LINUX_ARM_ARCH__=7 -Uarm -DCHIP_TYPE_hi3716cv200es
-@ -DSDK_VERSION=HiSTBLinuxV100R002C00SPC011 -DCFG_HI_LOG_LEVEL=4
-@ -DHI_KEYLED_SUPPORT -DHI_SCI_SUPPORT -DHI_VENC_SUPPORT -DHI_AENC_SUPPORT
-@ -DKBUILD_STR(s)=#s -DKBUILD_BASENAME=KBUILD_STR(vpss_alg_ratio)
+@ -D__KERNEL__ -D__LINUX_ARM_ARCH__=7 -Uarm -DCHIP_TYPE_hi3716cv200
+@ -DSDK_VERSION=HiSTBLinuxV100R002C00SPC020 -DHI_GPIOI2C_SUPPORT
+@ -DHI_LOG_SUPPORT=1 -DHI_LOG_LEVEL=4 -DHI_PROC_SUPPORT=1
+@ -DHI_KEYLED_SUPPORT -DHI_HDCP_SUPPORT -DHI_SCI_SUPPORT -DHI_VI_SUPPORT
+@ -DHI_VENC_SUPPORT -DHI_AENC_SUPPORT -DHI_VPSS_MAX_BUFFER_NUMB=6
+@ -DHI_VPSS_DRV_VER_CV200 -DKBUILD_STR(s)=#s
+@ -DKBUILD_BASENAME=KBUILD_STR(vpss_alg_ratio)
 @ -DKBUILD_MODNAME=KBUILD_STR(hi_vpss) -isystem
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/include
 @ -include
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include/linux/kconfig.h
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include/linux/kconfig.h
 @ -MD drivers/msp/vpss/vpss_v1_0/.vpss_alg_ratio.o.d
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vpss/vpss_v1_0/vpss_alg_ratio.c
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vpss/vpss_v1_0/vpss_alg_ratio.c
 @ -mlittle-endian -marm -mapcs -mno-sched-prolog -mabi=aapcs-linux
 @ -mno-thumb-interwork -march=armv7-a -msoft-float -auxbase-strip
 @ drivers/msp/vpss/vpss_v1_0/vpss_alg_ratio.o -O2 -Wall -Wundef
@@ -83,7 +86,7 @@
 	.type	ALG_RATIO_CorrectAspectRatioW_H, %function
 ALG_RATIO_CorrectAspectRatioW_H:
 	.fnstart
-.LFB580:
+.LFB593:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -138,7 +141,7 @@ ALG_RATIO_CorrectAspectRatioW_H:
 	.type	ALG_RATIO_CropedAspect, %function
 ALG_RATIO_CropedAspect:
 	.fnstart
-.LFB581:
+.LFB594:
 	@ args = 0, pretend = 0, frame = 8
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -157,11 +160,11 @@ ALG_RATIO_CropedAspect:
 	mov	r6, r1	@ pCropedWnd, pCropedWnd
 	ldr	lr, [r0, #8]	@ <variable>.s32Width, <variable>.s32Width
 	mov	r5, r3	@ AspectRatioH, AspectRatioH
-	ldr	r1, [r3, #0]	@ a_h.245,* AspectRatioH
-	ldr	r0, [r4, #0]	@ a_w.244,* AspectRatioW
+	ldr	r1, [r3, #0]	@ a_h.246,* AspectRatioH
+	ldr	r0, [r4, #0]	@ a_w.245,* AspectRatioW
 	mov	r3, r2, asl #10	@ tmp139, <variable>.s32Height,
-	mul	r1, lr, r1	@, <variable>.s32Width, a_h.245
-	mul	r0, r0, r3	@, a_w.244, tmp139
+	mul	r1, lr, r1	@, <variable>.s32Width, a_h.246
+	mul	r0, r0, r3	@, a_w.245, tmp139
 	bl	__aeabi_uidiv	@
 	ldr	r3, [r6, #8]	@ <variable>.s32Width, <variable>.s32Width
 	ldr	ip, [r6, #12]	@ <variable>.s32Height, <variable>.s32Height
@@ -185,7 +188,7 @@ ALG_RATIO_CropedAspect:
 	.type	ALG_RATIO_LetterBox, %function
 ALG_RATIO_LetterBox:
 	.fnstart
-.LFB582:
+.LFB595:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -197,31 +200,31 @@ ALG_RATIO_LetterBox:
 	sub	fp, ip, #4	@,,
 	push	{lr}
 	bl	__gnu_mcount_nc
-	ldr	r5, [r2, #12]	@ D.13486, <variable>.s32Height
+	ldr	r5, [r2, #12]	@ D.14054, <variable>.s32Height
 	mul	r1, r1, r3	@, AspectRatioH, pixr1_out
 	mov	r4, r2	@ pOutWnd, pOutWnd
-	mov	r3, r5, asl #10	@ tmp145, D.13486,
+	mov	r3, r5, asl #10	@ tmp145, D.14054,
 	mul	r0, r0, r3	@, AspectRatioW, tmp145
 	bl	__aeabi_uidiv	@
 	mov	r1, r0	@ tmp150,
-	ldr	r0, [r4, #8]	@ D.13492, <variable>.s32Width
-	cmp	r1, r0	@ tmp150, D.13492
+	ldr	r0, [r4, #8]	@ D.14060, <variable>.s32Width
+	cmp	r1, r0	@ tmp150, D.14060
 	bls	.L20	@,
-	mul	r0, r5, r0	@, D.13486, D.13492
+	mul	r0, r5, r0	@, D.14054, D.14060
 	bl	__aeabi_uidiv	@
 	ldr	r1, [r4, #4]	@ <variable>.s32Y, <variable>.s32Y
-	bic	r2, r0, #3	@ v_h.350,,
-	str	r2, [r4, #12]	@ v_h.350, <variable>.s32Height
-	rsb	r5, r2, r5	@ tmp160, v_h.350, D.13486
+	bic	r2, r0, #3	@ v_h.354,,
+	str	r2, [r4, #12]	@ v_h.354, <variable>.s32Height
+	rsb	r5, r2, r5	@ tmp160, v_h.354, D.14054
 	add	r0, r1, r5, lsr #1	@, tmp162, <variable>.s32Y, tmp160,
 	bic	r3, r0, #3	@ tmp164, tmp162,
 	str	r3, [r4, #4]	@ tmp164, <variable>.s32Y
 	ldmfd	sp, {r4, r5, fp, sp, pc}	@
 .L20:
-	bic	lr, r1, #1	@ v_w.349, tmp150,
+	bic	lr, r1, #1	@ v_w.353, tmp150,
 	ldr	ip, [r4, #0]	@ <variable>.s32X, <variable>.s32X
-	rsb	r2, lr, r0	@ tmp151, v_w.349, D.13492
-	str	lr, [r4, #8]	@ v_w.349, <variable>.s32Width
+	rsb	r2, lr, r0	@ tmp151, v_w.353, D.14060
+	str	lr, [r4, #8]	@ v_w.353, <variable>.s32Width
 	add	r1, ip, r2, lsr #1	@, tmp153, <variable>.s32X, tmp151,
 	bic	r0, r1, #1	@ tmp155, tmp153,
 	str	r0, [r4, #0]	@ tmp155, <variable>.s32X
@@ -234,14 +237,14 @@ ALG_RATIO_LetterBox:
 	.type	ALG_RATIO_RatioProcess, %function
 ALG_RATIO_RatioProcess:
 	.fnstart
-.LFB583:
-	@ args = 0, pretend = 0, frame = 16
+.LFB596:
+	@ args = 0, pretend = 0, frame = 24
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
 	mov	ip, sp	@,
-	stmfd	sp!, {r4, fp, ip, lr, pc}	@,
+	stmfd	sp!, {r4, r5, r6, r7, r8, r9, sl, fp, ip, lr, pc}	@,
 	.pad #4
-	.save {r4, fp, ip, lr}
+	.save {r4, r5, r6, r7, r8, r9, sl, fp, ip, lr}
 	.setfp fp, ip, #-4
 	sub	fp, ip, #4	@,,
 	.pad #28
@@ -249,93 +252,179 @@ ALG_RATIO_RatioProcess:
 	push	{lr}
 	bl	__gnu_mcount_nc
 	ldr	r3, [r0, #16]	@ <variable>.eAspMode, <variable>.eAspMode
-	mov	r4, r0	@ pstDrvPara, pstDrvPara
+	mov	r5, r0	@ pstDrvPara, pstDrvPara
+	mov	r6, r1	@ pstOutPara, pstOutPara
 	cmp	r3, #7	@ <variable>.eAspMode,
 	beq	.L22	@,
 	ldr	r0, [r0, #20]	@ <variable>.stUsrAsp.bUserDefAspectRatio, <variable>.stUsrAsp.bUserDefAspectRatio
 	cmp	r0, #1	@ <variable>.stUsrAsp.bUserDefAspectRatio,
-	beq	.L28	@,
+	beq	.L34	@,
 .L23:
-	ldr	lr, [r4, #0]	@ ar_w.257, <variable>.AspectWidth
-	ldr	ip, [r4, #4]	@ ar_h.258, <variable>.AspectHeight
-	cmp	lr, #0	@ ar_w.257,
-	cmpne	ip, #0	@, ar_h.258,
-	str	lr, [fp, #-32]	@ ar_w.257, ar_w
-	str	ip, [fp, #-36]	@ ar_h.258, ar_h
-	ldreq	lr, [r4, #40]	@ <variable>.stInWnd.s32Width, <variable>.stInWnd.s32Width
-	ldreq	ip, [r4, #44]	@ <variable>.stInWnd.s32Height, <variable>.stInWnd.s32Height
-	streq	lr, [fp, #-32]	@ <variable>.stInWnd.s32Width, ar_w
-	streq	ip, [fp, #-36]	@ <variable>.stInWnd.s32Height, ar_h
+	ldr	r7, [r5, #0]	@ ar_w.258, <variable>.AspectWidth
+	ldr	r4, [r5, #4]	@ ar_h.259, <variable>.AspectHeight
+	cmp	r7, #0	@ ar_w.258,
+	cmpne	r4, #0	@, ar_h.259,
+	str	r7, [fp, #-56]	@ ar_w.258, ar_w
+	str	r4, [fp, #-60]	@ ar_h.259, ar_h
+	ldreq	r7, [r5, #40]	@ <variable>.stInWnd.s32Width, <variable>.stInWnd.s32Width
+	ldreq	r4, [r5, #44]	@ <variable>.stInWnd.s32Height, <variable>.stInWnd.s32Height
+	streq	r7, [fp, #-56]	@ <variable>.stInWnd.s32Width, ar_w
+	streq	r4, [fp, #-60]	@ <variable>.stInWnd.s32Height, ar_h
 .L24:
-	sub	r0, fp, #32	@,,
-	sub	r1, fp, #36	@,,
+	sub	r0, fp, #56	@,,
+	sub	r1, fp, #60	@,,
 	bl	ALG_RATIO_CorrectAspectRatioW_H	@
-	ldr	r1, [r4, #8]	@ sr_w.263, <variable>.DeviceWidth
-	ldr	r0, [r4, #12]	@ sr_h.264, <variable>.DeviceHeight
-	cmp	r1, #0	@ sr_w.263,
-	cmpne	r0, #0	@, sr_h.264,
-	str	r1, [fp, #-24]	@ sr_w.263, sr_w
-	str	r0, [fp, #-28]	@ sr_h.264, sr_h
-	ldreq	r1, [r4, #72]	@ <variable>.stScreen.s32Width, <variable>.stScreen.s32Width
-	ldreq	r0, [r4, #76]	@ <variable>.stScreen.s32Height, <variable>.stScreen.s32Height
-	streq	r1, [fp, #-24]	@ <variable>.stScreen.s32Width, sr_w
-	sub	r1, fp, #28	@,,
-	streq	r0, [fp, #-28]	@ <variable>.stScreen.s32Height, sr_h
-	sub	r0, fp, #24	@,,
+	ldr	r7, [r5, #8]	@ sr_w.264, <variable>.DeviceWidth
+	ldr	r4, [r5, #12]	@ sr_h.265, <variable>.DeviceHeight
+	sub	r0, fp, #48	@,,
+	sub	r1, fp, #52	@,,
+	cmp	r7, #0	@ sr_w.264,
+	cmpne	r4, #0	@, sr_h.265,
+	str	r7, [fp, #-48]	@ sr_w.264, sr_w
+	str	r4, [fp, #-52]	@ sr_h.265, sr_h
+	ldreq	r7, [r5, #72]	@ <variable>.stScreen.s32Width, <variable>.stScreen.s32Width
+	ldreq	r4, [r5, #76]	@ <variable>.stScreen.s32Height, <variable>.stScreen.s32Height
+	streq	r7, [fp, #-48]	@ <variable>.stScreen.s32Width, sr_w
+	streq	r4, [fp, #-52]	@ <variable>.stScreen.s32Height, sr_h
 	bl	ALG_RATIO_CorrectAspectRatioW_H	@
-	ldr	r3, [r4, #16]	@ <variable>.eAspMode, <variable>.eAspMode
-	ldr	r1, [r4, #72]	@ f_w, <variable>.stScreen.s32Width
-	cmp	r3, #1	@ <variable>.eAspMode,
-	ldr	r2, [r4, #76]	@ f_h, <variable>.stScreen.s32Height
-	ldr	r0, [fp, #-24]	@ sr_w.265, sr_w
-	ldr	r3, [fp, #-28]	@ sr_h.266, sr_h
-	beq	.L29	@,
-	movw	r2, #:lower16:.LANCHOR0	@,
-	mov	r0, #0	@,
-	movt	r2, #:upper16:.LANCHOR0	@,
-	mov	r1, #37	@,
-	mov	r3, #145	@,
-	movw	lr, #:lower16:.LC0	@ tmp191,
-	movt	lr, #:upper16:.LC0	@ tmp191,
-	str	lr, [sp, #0]	@ tmp191,
-	bl	HI_LogOut	@
+	ldr	r2, [r5, #76]	@ <variable>.stScreen.s32Height, <variable>.stScreen.s32Height
+	ldr	r0, [fp, #-48]	@ sr_w, sr_w
+	ldr	r3, [fp, #-52]	@ sr_h, sr_h
+	ldr	r1, [r5, #72]	@ <variable>.stScreen.s32Width, <variable>.stScreen.s32Width
+	mul	ip, r0, r2	@ tmp194, sr_w, <variable>.stScreen.s32Height
+	mul	r1, r1, r3	@, <variable>.stScreen.s32Width, sr_h
+	mov	r0, ip, asl #10	@, tmp194,
+	bl	__aeabi_idiv	@
+	ldr	r7, [r5, #16]	@ temp.390, <variable>.eAspMode
+	cmp	r7, #1	@ temp.390,
+	mov	r4, r0	@ tmp203,
+	beq	.L35	@,
+	ldr	lr, [r5, #56]	@, <variable>.stOutWnd.s32Width
+	ldr	r9, [fp, #-60]	@ ar_h.391, ar_h
+	ldr	sl, [fp, #-56]	@ ar_w.392, ar_w
+	str	lr, [fp, #-64]	@, %sfp
+	mul	r8, lr, r9	@ tmp207,, ar_h.391
+	mov	r1, sl	@, ar_w.392
+	mul	r0, r0, r8	@, tmp203, tmp207
+	bl	__aeabi_idiv	@
+	ldr	r8, [r5, #60]	@ D.14154, <variable>.stOutWnd.s32Height
+	cmp	r0, r8, asl #10	@ tmp211, D.14154,
+	bhi	.L36	@,
+	mul	r0, r8, sl	@ tmp223, D.14154, ar_w.392
+	mov	r1, r4	@, tmp203
+	mov	r0, r0, asl #10	@, tmp223,
+	bl	__aeabi_idiv	@
+	mov	r1, r9	@, ar_h.391
+	bl	__aeabi_idiv	@
+	cmp	r7, #3	@ temp.390,
+	movne	r7, r8	@ u32ZmeH, D.14154
+	movne	r8, r0	@ u32ZmeW, tmp231
+	beq	.L37	@,
+.L29:
+	bic	r8, r8, #7	@ D.14181, u32ZmeW,
+	bic	r7, r7, #7	@ D.14182, u32ZmeH,
+	cmp	r8, #4096	@ D.14181,
+	movcs	r8, #4096	@ u32ZmeW.398,
+	cmp	r7, #4096	@ D.14182,
+	movcs	r7, #4096	@ u32ZmeH.399,
+	str	r8, [r6, #52]	@ u32ZmeW.398, <variable>.u32ZmeW
+	str	r7, [r6, #48]	@ u32ZmeH.399, <variable>.u32ZmeH
+	ldr	r3, [r5, #60]	@ <variable>.stOutWnd.s32Height, <variable>.stOutWnd.s32Height
+	cmp	r7, r3	@ u32ZmeH.399, <variable>.stOutWnd.s32Height
+	bls	.L31	@,
+	rsb	r0, r3, r7	@ tmp242, <variable>.stOutWnd.s32Height, u32ZmeH.399
+	mov	r2, #0	@ tmp241,
+	str	r8, [r6, #8]	@ u32ZmeW.398, <variable>.stCropWnd.s32Width
+	mov	r3, r0, lsr #1	@ tmp244, tmp242,
+	str	r2, [r6, #0]	@ tmp241, <variable>.stCropWnd.s32X
+	add	ip, r3, #8	@ tmp245, tmp244,
+	bic	r4, ip, #7	@ D.14188, tmp245,
+	str	r4, [r6, #4]	@ D.14188, <variable>.stCropWnd.s32Y
+	sub	r1, r7, r4, asl #1	@ tmp250, u32ZmeH.399, D.14188,
+	str	r1, [r6, #12]	@ tmp250, <variable>.stCropWnd.s32Height
+.L32:
+	ldr	r1, [r6, #8]	@ <variable>.stCropWnd.s32Width, <variable>.stCropWnd.s32Width
+	mov	r3, #1	@ tmp261,
+	ldr	r2, [r6, #12]	@ <variable>.stCropWnd.s32Height, <variable>.stCropWnd.s32Height
+	mov	lr, #0	@ tmp274,
+	str	r3, [r6, #60]	@ tmp261, <variable>.bEnCrop
+	str	r1, [r6, #24]	@ <variable>.stCropWnd.s32Width, <variable>.stOutWnd.s32Width
+	str	r2, [r6, #28]	@ <variable>.stCropWnd.s32Height, <variable>.stOutWnd.s32Height
+	ldr	r7, [r5, #56]	@ <variable>.stOutWnd.s32Width, <variable>.stOutWnd.s32Width
+	ldr	r4, [r5, #60]	@ <variable>.stOutWnd.s32Height, <variable>.stOutWnd.s32Height
+	ldr	ip, [r5, #72]	@ <variable>.stScreen.s32Width, <variable>.stScreen.s32Width
+	bic	r7, r7, #7	@ tmp264, <variable>.stOutWnd.s32Width,
+	bic	r4, r4, #7	@ tmp269, <variable>.stOutWnd.s32Height,
+	ldr	r3, [r5, #76]	@ <variable>.stScreen.s32Height, <variable>.stScreen.s32Height
+	rsb	r0, r1, r7	@ tmp266, <variable>.stCropWnd.s32Width, tmp264
+	rsb	r2, r2, r4	@ tmp271, <variable>.stCropWnd.s32Height, tmp269
+	str	ip, [r6, #40]	@ <variable>.stScreen.s32Width, <variable>.stOutScreen.s32Width
+	mov	r1, r0, lsr #1	@ tmp268, tmp266,
+	str	lr, [r6, #36]	@ tmp274, <variable>.stOutScreen.s32Y
+	mov	r0, r2, lsr #1	@ tmp273, tmp271,
+	str	r3, [r6, #44]	@ <variable>.stScreen.s32Height, <variable>.stOutScreen.s32Height
+	str	r1, [r6, #16]	@ tmp268, <variable>.stOutWnd.s32X
+	str	r0, [r6, #20]	@ tmp273, <variable>.stOutWnd.s32Y
+	str	lr, [r6, #32]	@ tmp274, <variable>.stOutScreen.s32X
 .L22:
 	mov	r0, #0	@,
-	sub	sp, fp, #16
-	ldmfd	sp, {r4, fp, sp, pc}
-.L28:
-	ldr	r2, [r4, #24]	@ ar_w.253, <variable>.stUsrAsp.u32UserAspectWidth
-	ldr	r1, [r4, #28]	@ ar_h.254, <variable>.stUsrAsp.u32UserAspectHeight
-	cmp	r2, #0	@ ar_w.253,
-	cmpne	r1, #0	@, ar_h.254,
-	str	r2, [fp, #-32]	@ ar_w.253, ar_w
-	str	r1, [fp, #-36]	@ ar_h.254, ar_h
+	sub	sp, fp, #40
+	ldmfd	sp, {r4, r5, r6, r7, r8, r9, sl, fp, sp, pc}
+.L36:
+	cmp	r7, #3	@ temp.390,
+	mov	r7, r0, lsr #10	@ u32ZmeH, tmp211,
+	ldrne	r8, [fp, #-64]	@ u32ZmeW, %sfp
+	bne	.L29	@,
+	rsb	r3, r8, r7	@ tmp213, D.14154, u32ZmeH
+	mov	ip, sl, asl #10	@ tmp214, ar_w.392,
+	mov	r1, r4	@, tmp203
+	add	r7, r8, r3, lsr #1	@, u32ZmeH, D.14154, tmp213,
+	mul	r0, r7, ip	@, u32ZmeH, tmp214
+	bl	__aeabi_uidiv	@
+	mov	r1, r9	@, ar_h.391
+	bl	__aeabi_uidiv	@
+	mov	r8, r0	@ u32ZmeW,
+	b	.L29	@
+.L31:
+	ldr	r3, [r5, #56]	@ <variable>.stOutWnd.s32Width, <variable>.stOutWnd.s32Width
+	mov	ip, #0	@ tmp255,
+	str	r7, [r6, #12]	@ u32ZmeH.399, <variable>.stCropWnd.s32Height
+	rsb	r4, r3, r8	@ tmp251, <variable>.stOutWnd.s32Width, u32ZmeW.398
+	str	ip, [r6, #4]	@ tmp255, <variable>.stCropWnd.s32Y
+	mov	r1, r4, lsr #1	@ tmp253, tmp251,
+	add	lr, r1, #8	@ tmp254, tmp253,
+	bic	r7, lr, #7	@ D.14198, tmp254,
+	str	r7, [r6, #0]	@ D.14198, <variable>.stCropWnd.s32X
+	sub	r8, r8, r7, asl #1	@ tmp260, u32ZmeW.398, D.14198,
+	str	r8, [r6, #8]	@ tmp260, <variable>.stCropWnd.s32Width
+	b	.L32	@
+.L34:
+	ldr	r2, [r5, #24]	@ ar_w.254, <variable>.stUsrAsp.u32UserAspectWidth
+	ldr	r1, [r5, #28]	@ ar_h.255, <variable>.stUsrAsp.u32UserAspectHeight
+	cmp	r2, #0	@ ar_w.254,
+	cmpne	r1, #0	@, ar_h.255,
+	str	r2, [fp, #-56]	@ ar_w.254, ar_w
+	str	r1, [fp, #-60]	@ ar_h.255, ar_h
 	bne	.L24	@,
 	b	.L23	@
-.L29:
-	mul	ip, r0, r2	@ tmp183, sr_w.265, f_h
-	add	r4, r4, #48	@ tmp182, pstDrvPara,
-	mul	r1, r1, r3	@, f_w, sr_h.266
-	mov	r0, ip, asl #10	@, tmp183,
-	bl	__aeabi_idiv	@
-	ldr	r1, [fp, #-36]	@, ar_h
-	mov	r2, r4	@, tmp182
-	mov	r3, r0	@ tmp189,
-	ldr	r0, [fp, #-32]	@, ar_w
+.L37:
+	ldr	lr, [fp, #-64]	@, %sfp
+	mov	r1, sl	@, ar_w.392
+	mul	r2, r9, r4	@ tmp234, ar_h.391, tmp203
+	rsb	r7, lr, r0	@ tmp232,, tmp231
+	add	r8, lr, r7, lsr #1	@, u32ZmeW,, tmp232,
+	mul	r0, r8, r2	@, u32ZmeW, tmp234
+	bl	__aeabi_uidiv	@
+	mov	r7, r0, lsr #10	@ u32ZmeH,,
+	b	.L29	@
+.L35:
+	mov	r3, r0	@, tmp203
+	add	r2, r5, #48	@, pstDrvPara,
+	ldr	r0, [fp, #-56]	@, ar_w
+	ldr	r1, [fp, #-60]	@, ar_h
 	bl	ALG_RATIO_LetterBox	@
 	b	.L22	@
 	.fnend
 	.size	ALG_RATIO_RatioProcess, .-ALG_RATIO_RatioProcess
-	.section	.rodata
-	.align	2
-.LANCHOR0 = . + 0
-	.type	__func__.13526, %object
-	.size	__func__.13526, 23
-__func__.13526:
-	.ascii	"ALG_RATIO_RatioProcess\000"
-	.section	.rodata.str1.4,"aMS",%progbits,1
-	.align	2
-.LC0:
-	.ascii	"eAspMode Error\012\000"
 	.ident	"GCC: (Hisilicon_v200(gcc4.4-290+glibc-2.11+eabi+nptl)) 4.4.1"
 	.section	.note.GNU-stack,"",%progbits

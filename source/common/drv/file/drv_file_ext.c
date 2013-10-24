@@ -7,7 +7,7 @@
 
 #include "hi_type.h"
 #include "hi_drv_log.h"
-#include "drv_file_ext.h"
+#include "hi_drv_file.h"
 #include "drv_log.h"
 
 struct file* HI_DRV_FILE_Open(const HI_S8* ps8FileName, HI_S32 s32Flags)

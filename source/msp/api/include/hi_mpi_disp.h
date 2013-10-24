@@ -20,6 +20,7 @@
 #define __MPI_DISP_H__
 
 #include "hi_drv_disp.h"
+#include "hi_error_mpi.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -28,6 +29,18 @@ extern "C"
 #endif
 #endif
 
+#define CHECK_DISP_INIT()\
+do{\
+    HI_DISP_LOCK();\
+    if (g_DispDevFd < 0)\
+    {\
+        HI_ERR_DISP("DISP is not init.\n");\
+        HI_DISP_UNLOCK();\
+        return HI_ERR_DISP_NO_INIT;\
+    }\
+    HI_DISP_UNLOCK();\
+}while(0)
+
 
 HI_S32 HI_MPI_DISP_Init(HI_VOID);
 HI_S32 HI_MPI_DISP_DeInit(HI_VOID);
@@ -35,12 +48,15 @@ HI_S32 HI_MPI_DISP_DeInit(HI_VOID);
 HI_S32 HI_MPI_DISP_Attach(HI_DRV_DISPLAY_E enMaster, HI_DRV_DISPLAY_E enSlave);
 HI_S32 HI_MPI_DISP_Detach(HI_DRV_DISPLAY_E enMaster, HI_DRV_DISPLAY_E enSlave);
 
-HI_S32 HI_MPI_DISP_SetFormat(HI_DRV_DISPLAY_E enDisp, 
-                                    HI_DRV_DISP_STEREO_MODE_E enStereo, 
-                                    HI_DRV_DISP_FMT_E enFormat);
-HI_S32 HI_MPI_DISP_GetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_FMT_E *penEncFmt);
+HI_S32 HI_MPI_DISP_SetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_STEREO_MODE_E enStereo, HI_DRV_DISP_FMT_E enFormat);
+HI_S32 HI_MPI_DISP_GetFormat(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_STEREO_MODE_E *penStereo,HI_DRV_DISP_FMT_E *penFormat);
 
 HI_S32 HI_MPI_DISP_SetRightEyeFirst(HI_DRV_DISPLAY_E enDisp, HI_BOOL bRFirst);
+HI_S32 HI_MPI_DISP_SetVirtualScreen(HI_DRV_DISPLAY_E enDisp, HI_U32 u32Width, HI_U32 u32Height);
+HI_S32 HI_MPI_DISP_GetVirtualScreen(HI_DRV_DISPLAY_E enDisp, HI_U32 *u32Width, HI_U32 *u32Height);
+    
+HI_S32 HI_MPI_DISP_SetScreenOffset(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_OFFSET_S *pstOffset);
+HI_S32 HI_MPI_DISP_GetScreenOffset(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_OFFSET_S *pstOffset);
 
 HI_S32 HI_MPI_DISP_SetTiming(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_TIMING_S *pstTiming);
 HI_S32 HI_MPI_DISP_GetTiming(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_TIMING_S *pstTiming);
@@ -68,10 +84,6 @@ HI_S32 HI_MPI_DISP_GetColor(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_COLOR_SETTING_S
 HI_S32 HI_MPI_DISP_SetAspectRatio(HI_DRV_DISPLAY_E enDisp, HI_U32 u32Ratio_h, HI_U32 u32Ratio_v);
 HI_S32 HI_MPI_DISP_GetAspectRatio(HI_DRV_DISPLAY_E enDisp, HI_U32 *pu32Ratio_h, HI_U32 *pu32Ratio_v);
 
-/* set Display output window  */
-HI_S32 HI_MPI_DISP_GetScreen(HI_DRV_DISPLAY_E enDisp, HI_RECT_S *pstRect);
-HI_S32 HI_MPI_DISP_SetScreen(HI_DRV_DISPLAY_E enDisp, HI_RECT_S *pstRect);
-
 HI_S32 HI_MPI_DISP_SetLayerZorder(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_LAYER_E enLayer, HI_DRV_DISP_ZORDER_E enZFlag);
 HI_S32 HI_MPI_DISP_GetLayerZorder(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_LAYER_E enLayer, HI_U32 *pu32Zorder);
 
@@ -83,9 +95,12 @@ HI_S32 HI_MPI_DISP_GetCastEnable(HI_HANDLE hCast, HI_BOOL *pbEnable);
 
 HI_S32 HI_MPI_DISP_AcquireCastFrame(HI_HANDLE hCast, HI_DRV_VIDEO_FRAME_S *pstCastFrame);
 HI_S32 HI_MPI_DISP_ReleaseCastFrame(HI_HANDLE hCast, HI_DRV_VIDEO_FRAME_S *pstCastFrame);
+HI_S32 HI_MPI_DISP_ExtAttach(HI_HANDLE hCast, HI_HANDLE hSink);
+HI_S32 HI_MPI_DISP_ExtDeAttach(HI_HANDLE hCast, HI_HANDLE hSink);
 
 //snapshot
-HI_S32 HI_MPI_DISP_Snapshot(HI_DRV_DISPLAY_E enDisp, HI_DRV_VIDEO_FRAME_S * pstFrame);
+HI_S32 HI_MPI_DISP_Snapshot_Acquire(HI_DRV_DISPLAY_E enDisp, HI_DRV_VIDEO_FRAME_S * pstFrame);
+HI_S32 HI_MPI_DISP_Snapshot_Release(HI_DRV_DISPLAY_E enDisp, HI_DRV_VIDEO_FRAME_S * pstFrame);
 
 //Macrovision
 HI_S32 HI_MPI_DISP_TestMacrovisionSupport(HI_DRV_DISPLAY_E enDisp, HI_BOOL *pbSupport);

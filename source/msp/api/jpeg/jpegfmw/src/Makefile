@@ -29,13 +29,21 @@ CFLAGS  +=  -I$(COMMON_UNF_INCLUDE)                 \
             -I$(MSP_DIR)/api/jpeg/$(TARGET)/src/include  \
             -I$(CURDIR)
 
+ifndef CFG_HI_STATIC_LIB_ONLY
+CFLAGS  += -fPIC
+endif
+
 #===============================================================================
 # compile
 #===============================================================================
 SRC   = $(wildcard *.c)
 APP= $(SRC:%.c=%.o)
 
+ifndef CFG_HI_STATIC_LIB_ONLY
 all: $(ALIB) $(SLIB)
+else
+all: $(ALIB)
+endif
 
 $(SLIB): ${APP}
 	$(CC) -shared -o $@ $(APP)
@@ -45,6 +53,6 @@ $(ALIB): ${APP}
 	$(AR)  -rc -o $@ $(APP)
 
 %.o : %.c
-	$(CC) $(CFLAGS)  $(LDFLAGS)  -c -fPIC -o $@ $^
+	$(CC) $(CFLAGS)  $(LDFLAGS) -c -o $@ $^
 clean:
 	rm -rf  *.o

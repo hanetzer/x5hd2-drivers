@@ -11,7 +11,22 @@
 #ifdef CONFIG_ALSA_VOLUMN_SUPPORT
 #include "alsa_aiao_volume_func.h"
 #endif
+#ifdef HI_ALSA_TLV320_SUPPORT 
+#include "alsa_i2c.h"
 
+int aiao_codec_init(void)
+{
+    int ret = 0;
+
+	godbox_aic31_reset();
+	init_i2c();
+    return ret;
+}
+void aiao_codec_deinit(void)
+{
+	remove_i2c();
+}
+#else
 static int aiao_hw_params(struct snd_pcm_substream *substream,
 				struct snd_pcm_hw_params *params,
 				struct snd_soc_dai *dai)
@@ -48,12 +63,14 @@ static struct snd_soc_dai_driver aiao_dai = {
 		.channels_max = 2,
 		.rates = AIAO_RATES,
 		.formats = AIAO_FORMATS,},
+	#ifdef HI_ALSA_AI_SUPPORT      //only support alsa AI to creae capture
 	.capture = {
 		.stream_name = "Capture",
 		.channels_min = 1,
 		.channels_max = 2,
 		.rates = AIAO_RATES,
 		.formats = AIAO_FORMATS,},
+	#endif
 	.ops = &aiao_dai_ops,
 };
 
@@ -146,6 +163,7 @@ void aiao_codec_deinit(void)
     platform_device_unregister(aiao_codec_device);
     platform_driver_unregister(&aiao_codec_driver);
 }
+#endif
 
 //module_platform_driver(aiao_codec_driver);
 //MODULE_DESCRIPTION("aiao ALSA soc codec driver");

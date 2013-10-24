@@ -25,7 +25,7 @@ HI_S32 BP_Create(HI_U32 u32BufNum, BUF_ALLOC_S *pstAlloc, BUF_POOL_S *pstBP)
     HI_U32 u, BufStride;
     HI_S32 nRet;
     
-    if (!pstBP)
+    if ((!pstBP) || (!pstAlloc))
     {
         return HI_ERR_DISP_INVALID_PARA;
     }
@@ -41,78 +41,70 @@ HI_S32 BP_Create(HI_U32 u32BufNum, BUF_ALLOC_S *pstAlloc, BUF_POOL_S *pstBP)
 
 	pstBP->enMemType = BUF_MEM_SRC_SUPPLY;
     
-    if (pstAlloc)
+  
+    
+    if (  (pstAlloc->eDataFormat != HI_DRV_PIX_FMT_NV21)
+        &&(pstAlloc->eDataFormat != HI_DRV_PIX_FMT_NV12)
+        &&(pstAlloc->eDataFormat != HI_DRV_PIX_FMT_YUYV)
+        &&(pstAlloc->eDataFormat != HI_DRV_PIX_FMT_YVYU)
+        &&(pstAlloc->eDataFormat != HI_DRV_PIX_FMT_UYVY)
+       )
     {
-        if (  (pstAlloc->eDataFormat != HI_DRV_PIX_FMT_NV21)
-            &&(pstAlloc->eDataFormat != HI_DRV_PIX_FMT_NV12)
-            &&(pstAlloc->eDataFormat != HI_DRV_PIX_FMT_YUYV)
-            &&(pstAlloc->eDataFormat != HI_DRV_PIX_FMT_YVYU)
-            &&(pstAlloc->eDataFormat != HI_DRV_PIX_FMT_UYVY)
-           )
-        {
-            return HI_ERR_DISP_INVALID_PARA;
-        }
-
-        if (  (pstAlloc->u32BufWidth < WIN_BUFFER_MIN_W)
-            ||(pstAlloc->u32BufWidth > WIN_BUFFER_MAX_W)
-            ||(pstAlloc->u32BufHeight < WIN_BUFFER_MIN_H)
-            ||(pstAlloc->u32BufHeight > WIN_BUFFER_MAX_H)
-            )
-        {
-            return HI_ERR_DISP_INVALID_PARA;
-        }
-
-		pstBP->stAlloc = *pstAlloc;
-
-		if (!pstAlloc->bFbAllocMem)
-		{
-	        if (  (pstAlloc->u32BufStride < pstAlloc->u32BufWidth)
-				||((pstAlloc->u32BufStride & 0xful) != 0)
-				)
-	        {
-	            return HI_ERR_DISP_INVALID_PARA;
-	        }
-		}
-		else
-		{
-	        if (  (pstAlloc->eDataFormat == HI_DRV_PIX_FMT_NV21)
-	            ||(pstAlloc->eDataFormat == HI_DRV_PIX_FMT_NV12)
-	           )
-	        {
-	            BufStride = (pstAlloc->u32BufWidth + 15) & 0xFFFFFFF0ul;
-	        }
-			else if (  (pstAlloc->eDataFormat == HI_DRV_PIX_FMT_YUYV)
-			         ||(pstAlloc->eDataFormat == HI_DRV_PIX_FMT_YVYU)
-			         ||(pstAlloc->eDataFormat == HI_DRV_PIX_FMT_UYVY)
-			        )
-	        {
-	            BufStride = ( (pstAlloc->u32BufWidth * 2) + 15) & 0xFFFFFFF0ul;
-	        }
-			else
-			{
-			    BufStride =  (pstAlloc->u32BufWidth + 15) & 0xFFFFFFF0ul;
-			}
-
-			pstBP->stAlloc.u32BufStride = BufStride;
-		}
-
-		if (pstAlloc->bFbAllocMem)
-		{
-        	//pstBP->bAllocMemory = HI_TRUE;
-			pstBP->enMemType = BUF_MEM_FB_SUPPLY;
-		}
-		else
-		{
-			// TODO:
-			pstBP->enMemType = BUF_MEM_USER_SUPPLY;
-		}
-
-
+        return HI_ERR_DISP_INVALID_PARA;
     }
 
-    pstBP->pstBufQueue = DISP_MALLOC(sizeof(BUF_S) * u32BufNum);
-    pstBP->pstEmptyQueue = DISP_MALLOC(sizeof(BUF_ID_S) * u32BufNum);
-    pstBP->pstFullQueue = DISP_MALLOC(sizeof(BUF_ID_S) * u32BufNum);
+    if (  (pstAlloc->u32BufWidth < WIN_BUFFER_MIN_W)
+        ||(pstAlloc->u32BufWidth > WIN_BUFFER_MAX_W)
+        ||(pstAlloc->u32BufHeight < WIN_BUFFER_MIN_H)
+        ||(pstAlloc->u32BufHeight > WIN_BUFFER_MAX_H)
+        )
+    {
+        return HI_ERR_DISP_INVALID_PARA;
+    }
+
+	pstBP->stAlloc = *pstAlloc;
+
+	if (!pstAlloc->bFbAllocMem)
+	{
+        if (  (pstAlloc->u32BufStride < pstAlloc->u32BufWidth)
+			||((pstAlloc->u32BufStride & 0xful) != 0)
+			)
+        {
+            return HI_ERR_DISP_INVALID_PARA;
+        }
+	}
+	else
+	{
+        if (  (pstAlloc->eDataFormat == HI_DRV_PIX_FMT_NV21)
+            ||(pstAlloc->eDataFormat == HI_DRV_PIX_FMT_NV12)
+           )
+        {
+            BufStride = (pstAlloc->u32BufWidth + 15) & 0xFFFFFFF0ul;
+        }
+		else if (  (pstAlloc->eDataFormat == HI_DRV_PIX_FMT_YUYV)
+		         ||(pstAlloc->eDataFormat == HI_DRV_PIX_FMT_YVYU)
+		         ||(pstAlloc->eDataFormat == HI_DRV_PIX_FMT_UYVY)
+		        )
+        {
+            BufStride = ( (pstAlloc->u32BufWidth * 2) + 15) & 0xFFFFFFF0ul;
+        }
+		else
+		{
+		    BufStride =  (pstAlloc->u32BufWidth + 15) & 0xFFFFFFF0ul;
+		}
+
+		pstBP->stAlloc.u32BufStride = BufStride;
+	}
+
+	if (pstAlloc->bFbAllocMem)
+		pstBP->enMemType = BUF_MEM_FB_SUPPLY;
+	else
+		pstBP->enMemType = BUF_MEM_USER_SUPPLY;
+    
+
+    pstBP->pstBufQueue = (BUF_S *) DISP_MALLOC(sizeof(BUF_S) * u32BufNum);
+    pstBP->pstEmptyQueue = (BUF_ID_S *)DISP_MALLOC(sizeof(BUF_ID_S) * u32BufNum);
+    pstBP->pstFullQueue = (BUF_ID_S *)DISP_MALLOC(sizeof(BUF_ID_S) * u32BufNum);
 
     if (!pstBP->pstBufQueue || !pstBP->pstEmptyQueue || !pstBP->pstFullQueue)
     {
@@ -122,7 +114,7 @@ HI_S32 BP_Create(HI_U32 u32BufNum, BUF_ALLOC_S *pstAlloc, BUF_POOL_S *pstBP)
     if (pstBP->enMemType == BUF_MEM_FB_SUPPLY)
     {
         HI_U32 BufSize = 0;
-        HI_CHAR BufName[6] = {'D', 'I', 'S', 'P', '0', '\0'};
+        HI_CHAR BufName[10] = {'V', 'D', 'P', '_','C','a','s','t','0', '\0'};
 
         if (   (pstAlloc->eDataFormat == HI_DRV_PIX_FMT_NV21)
             || (pstAlloc->eDataFormat == HI_DRV_PIX_FMT_NV12)
@@ -141,17 +133,13 @@ HI_S32 BP_Create(HI_U32 u32BufNum, BUF_ALLOC_S *pstAlloc, BUF_POOL_S *pstBP)
 
         for(u=0; u<u32BufNum; u++)
         {
-            BufName[4] = (HI_CHAR)('0' + u);
+            BufName[8] = (HI_CHAR)('0' + u);
 
             nRet = DISP_OS_MMZ_Alloc((const char *)BufName, HI_NULL, BufSize, 16, &pstBP->pstBufQueue[u].stMem);
             if (nRet)
             {
                 break;
             }
-
-            //printk("buf[%d] addr=0x%x,size=%d\n", 
-            //	    pstBP->pstBufQueue[u].stMem.u32StartPhyAddr,
-            //	    pstBP->pstBufQueue[u].stMem.u32Size);
         }
 
         if (u<u32BufNum)
@@ -168,6 +156,10 @@ HI_S32 BP_Create(HI_U32 u32BufNum, BUF_ALLOC_S *pstAlloc, BUF_POOL_S *pstBP)
 
     pstBP->u32BufNum = u32BufNum;
 
+    /*this is just for storing the buffer size passed by user, not allocated buffer.*/
+    pstBP->u32BufSize = pstAlloc->u32BufSize;
+    pstBP->u32BufStride = pstAlloc->u32BufStride;
+    
     BP_Reset(pstBP);
 
     return HI_SUCCESS;
@@ -727,7 +719,7 @@ HI_S32 BP_GetBufState(BUF_POOL_S *pstBP, BUF_STT_S *pstBufState)
 
     if (!BP_GetFullBuf(pstBP, &BufId))
     {
-        BP_GetFrame(pstBP, BufId, &pstBufState->stFrame);
+        (HI_VOID)BP_GetFrame(pstBP, BufId, &pstBufState->stFrame);
     }
 
     return HI_SUCCESS;
@@ -756,7 +748,7 @@ HI_S32 BP_CreateBlackFrame(HI_VOID)
     }
 
     DISP_MEMSET(&s_stBlackFrame, 0, sizeof(BUF_S));
-    nRet = DISP_OS_MMZ_AllocAndMap((const char *)"Black", HI_NULL, BufSize, 16, &s_stBlackFrame.stMem);
+    nRet = DISP_OS_MMZ_AllocAndMap((const char *)"VDP_BlackFrame", HI_NULL, BufSize, 16, &s_stBlackFrame.stMem);
     if (nRet)
     {
         DISP_ERROR("Alloc black frame memory failed\n");
@@ -764,9 +756,9 @@ HI_S32 BP_CreateBlackFrame(HI_VOID)
     }
 
     pY  = (HI_UCHAR *)(s_stBlackFrame.stMem.u32StartVirAddr);
-    DISP_MEMSET(pY, 0x10, BufSize);
+    DISP_MEMSET(pY, 0x10, BufSize/2);
     pUV = (HI_UCHAR *)(s_stBlackFrame.stMem.u32StartVirAddr + BLACK_FRAME_WIDTH*BLACK_FRAME_HEIGHT);
-    DISP_MEMSET(pUV, 0x80, BufSize);
+    DISP_MEMSET(pUV, 0x80, BufSize/2);
 
     pstFrame->u32FrameIndex = 0;
     pstFrame->stBufAddr[0].u32PhyAddr_Y = s_stBlackFrame.stMem.u32StartPhyAddr;  

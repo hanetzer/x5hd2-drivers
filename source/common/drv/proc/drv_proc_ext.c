@@ -17,19 +17,24 @@
 #include <linux/module.h>
 #include <linux/proc_fs.h>
 #include <asm/uaccess.h>
-
-#include "drv_proc_ext.h"
+#include <linux/ctype.h>
+#include "hi_drv_proc.h"
+#include "hi_drv_userproc.h"
+#include "hi_osal.h"
 
 #define MAX_PROC_ENTRIES 256
 
-static struct proc_dir_entry *s_pCMPI_proc = NULL;
-static struct proc_dir_entry *s_pHisi_proc = NULL;
+struct proc_dir_entry *g_pCMPI_proc = NULL;
+struct proc_dir_entry *g_pHisi_proc = NULL;
 static DRV_PROC_ITEM_S s_proc_items[MAX_PROC_ENTRIES];
 
 static int CMPI_proc_open(struct inode *inode, struct file *file)
 {
-        DRV_PROC_ITEM_S *item = PDE(inode)->data;
+    DRV_PROC_ITEM_S *item = PDE(inode)->data;
+    
+    if (item->read)
         return single_open(file, item->read, item);
+    return -ENOSYS;
 }
 
 static ssize_t CMPI_ProcWrite(struct file * file,
@@ -120,14 +125,19 @@ static HI_S32 String2Digit(unsigned char  *ptr, HI_U32 *pu32Para)
 
 HI_S32 CMPI_PROC_PaserCommand(char *ptr, HI_U32 *pu32Para1, HI_U32 *pu32Para2)
 {
-	int i;
-    HI_CHAR the_args[2][40];
+    int i;
+    HI_CHAR the_args[2][64];
 
+    while(*ptr==' ' && *ptr++ != '\0');
 
-	while(*ptr==' ' && *ptr++ != '\0');
+    /* covert into lowercase string */
+    for (i = 0; i < strlen(ptr); i++)
+    {
+        ptr[i] = tolower(ptr[i]);
+    }
 
-	for(i=strlen(ptr);i>0;i--)
-	{
+    for(i=strlen(ptr);i>0;i--)
+    {
 		if((*(ptr+i-1) < '0') || (*(ptr+i-1) > 'f'))
 		{
 			*(ptr+i-1) = '\0';
@@ -138,10 +148,10 @@ HI_S32 CMPI_PROC_PaserCommand(char *ptr, HI_U32 *pu32Para1, HI_U32 *pu32Para2)
 		}
 		else
 			break;
-	}
+    }
 
-	for(i=0;i<2;i++)
-	{
+    for(i=0;i<2;i++)
+    {
 		int j = 0;
 		while(*ptr==' ' && *ptr++ != '\0');
 		while((*ptr !=' ') && (*ptr!='\0'))
@@ -155,57 +165,57 @@ HI_S32 CMPI_PROC_PaserCommand(char *ptr, HI_U32 *pu32Para1, HI_U32 *pu32Para2)
 			break;
 		}
 		the_args[i][j] = '\0';
-	}
+    }
 
-	if(('0' != the_args[0][0]) ||('x' != the_args[0][1]) ||
+    if(('0' != the_args[0][0]) ||('x' != the_args[0][1]) ||
 		('0' != the_args[1][0]) ||('x' != the_args[1][1]))
-	{
+    {
 		return -1;
-	}
-	if((!IsHex(the_args[0])) || (!IsHex(the_args[1])))
-	{
+    }
+    if((!IsHex(the_args[0])) || (!IsHex(the_args[1])))
+    {
 		return -1;
-	}
+    }
 
-	if(HI_SUCCESS != String2Digit(the_args[0], pu32Para1))
+    if(HI_SUCCESS != String2Digit(the_args[0], pu32Para1))
     {
         return -1;
     }
 
-	if(HI_SUCCESS != String2Digit(the_args[1], pu32Para2))
+    if(HI_SUCCESS != String2Digit(the_args[1], pu32Para2))
     {
         return -1;
     }
 
-	return i;
+    return i;
 }
 
 static HI_VOID WriteProcShowHelp(HI_VOID)
 {
-	printk("\nPLS type \"echo 0xxxxxxxxx 0xxxxxxxxx > /proc/msp/demux\"\n");
-	printk("E.g.: \"echo 0x40002 0x4010 > /proc/msp/demux\"\n");
+	HI_PRINT("\nPLS type \"echo 0xxxxxxxxx 0xxxxxxxxx > /proc/msp/demux\"\n");
+	HI_PRINT("E.g.: \"echo 0x40002 0x4010 > /proc/msp/demux\"\n");
 }
 
 ssize_t HI_DRV_PROC_ModuleWrite(struct file * file,
     const char __user *buf, size_t count, loff_t *ppos, PROC_CTRL fun_ctl)
 {
-	HI_CHAR szBuffer[41];
-	HI_U32 para1, para2;
+    char szBuffer[64];
+    char *ptrBuf = szBuffer;
+    HI_U32 para1, para2;
 
-    if (*ppos >= 41)
-        return -EFBIG;
+    if(count >= sizeof(szBuffer))
+    {
+        WriteProcShowHelp();
+        goto out;
+    }
 
-	if(count >= 40)
-	{
-		WriteProcShowHelp();
-		goto out;
-	}
-
-    if(copy_from_user(szBuffer, buf, count))
+    memset(szBuffer, 0, sizeof(szBuffer));
+    
+    if(copy_from_user(ptrBuf, buf, count))
         return -EFAULT;
-
+    szBuffer[count -1] = '\0';
+    
     //printk("proc command:%s\n", szBuffer);
-
     if (CMPI_PROC_PaserCommand(szBuffer, &para1, &para2) > 0)
     {
         //printk("value:0x%x, 0x%x\n", para1,  para2);
@@ -224,8 +234,15 @@ out:
 
 static DRV_PROC_ITEM_S *proc_addModule(char *entry_name, DRV_PROC_EX_S* pFnOp, void * data)
 {
+#if !(0 == HI_PROC_SUPPORT)
     struct proc_dir_entry *entry;
     int i;
+
+    if ((HI_NULL == entry_name) || (strlen(entry_name) > MAX_ENTRY_NAME_LEN))
+    {
+        return NULL;
+    }
+    
     for (i = 0; i < MAX_PROC_ENTRIES; i++)
         if (! s_proc_items[i].entry)
             break;
@@ -233,12 +250,12 @@ static DRV_PROC_ITEM_S *proc_addModule(char *entry_name, DRV_PROC_EX_S* pFnOp, v
     if (MAX_PROC_ENTRIES == i)
         return NULL;
 
-    entry = create_proc_entry(entry_name, 0, s_pCMPI_proc);
+    entry = create_proc_entry(entry_name, 0, g_pCMPI_proc);
     if (!entry)
         return NULL;
 
     entry->proc_fops = &CMPI_proc_ops;
-    strcpy(s_proc_items[i].entry_name, entry_name);
+    HI_OSAL_Strncpy(s_proc_items[i].entry_name, entry_name, sizeof(s_proc_items[i].entry_name)-1);
     s_proc_items[i].entry = entry;
 
     if (pFnOp != NULL)
@@ -255,19 +272,25 @@ static DRV_PROC_ITEM_S *proc_addModule(char *entry_name, DRV_PROC_EX_S* pFnOp, v
     }
     s_proc_items[i].data = data;
     entry->data = &s_proc_items[i];
+
     return &s_proc_items[i];
+#else
+    return &s_proc_items[0];
+#endif
 }
 
 static HI_VOID proc_removeModule(char *entry_name)
 {
+#if !(0 == HI_PROC_SUPPORT)
     int i;
     for (i = 0; i < MAX_PROC_ENTRIES; i++)
-        if (! strcmp(s_proc_items[i].entry_name, entry_name))
+        if (! HI_OSAL_Strncmp(s_proc_items[i].entry_name, entry_name, sizeof(s_proc_items[i].entry_name)))
             break;
     if (MAX_PROC_ENTRIES == i)
         return ;
-    remove_proc_entry(s_proc_items[i].entry_name, s_pCMPI_proc);
+    remove_proc_entry(s_proc_items[i].entry_name, g_pCMPI_proc);
     s_proc_items[i].entry = NULL;
+#endif
 }
 
 static DRV_PROC_INTFPARAM  procparam = {
@@ -278,15 +301,17 @@ static DRV_PROC_INTFPARAM  procparam = {
 
 HI_S32 HI_DRV_PROC_Init(HI_VOID)
 {
-    s_pHisi_proc = proc_mkdir("hisi", NULL);
-	s_pCMPI_proc = proc_mkdir("msp", s_pHisi_proc);
 	memset(s_proc_items, 0x00, sizeof(s_proc_items));
-
 	HI_DRV_PROC_RegisterParam(&procparam);
+    
+#if !(0 == HI_PROC_SUPPORT)
+    g_pHisi_proc = proc_mkdir("hisi", NULL);
+	g_pCMPI_proc = proc_mkdir("msp", g_pHisi_proc);
 
-    proc_mkdir("graphics", s_pHisi_proc);
+    proc_mkdir("graphics", g_pHisi_proc);
     proc_symlink("msp", NULL, "hisi/msp");
     proc_symlink("graphics", NULL, "hisi/graphics");
+#endif
 	return HI_SUCCESS;
 }
 
@@ -294,11 +319,13 @@ HI_VOID HI_DRV_PROC_Exit(HI_VOID)
 {
 	HI_DRV_PROC_UnRegisterParam();
 
+#if !(0 == HI_PROC_SUPPORT)
     remove_proc_entry("msp", NULL);
     remove_proc_entry("graphics", NULL);
-    remove_proc_entry("msp", s_pHisi_proc);
-    remove_proc_entry("graphics", s_pHisi_proc);
+    remove_proc_entry("msp", g_pHisi_proc);
+    remove_proc_entry("graphics", g_pHisi_proc);
     remove_proc_entry("hisi", NULL);
+#endif
     return;
 }
 

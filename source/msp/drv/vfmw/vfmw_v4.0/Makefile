@@ -19,14 +19,23 @@ endif
 EXTRA_CFLAGS += -I$(COMMON_UNF_INCLUDE)                 \
                 -I$(COMMON_DRV_INCLUDE)                 
 
-#ifeq ($(CFG_HI_CHIP_TYPE),hi3712)
-#-include $(MSP_DIR)/drv/vfmw/vfmw_v4.0/firmware/product/HiX6V300/vfmw_make.cfg
-#endif
-#ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200es)
+ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200es)
 -include $(MSP_DIR)/drv/vfmw/vfmw_v4.0/firmware/product/HiS40V200/vfmw_make.cfg
-#else
-#-include $(MSP_DIR)/drv/vfmw/vfmw_v4.0/firmware/product/HiX5HD/vfmw_make.cfg
-#endif
+endif
+ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200)
+-include $(MSP_DIR)/drv/vfmw/vfmw_v4.0/firmware/product/Hi3716CV200/vfmw_make.cfg
+endif
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719cv100)
+-include $(MSP_DIR)/drv/vfmw/vfmw_v4.0/firmware/product/Hi3716CV200/vfmw_make.cfg
+endif
+ifeq ($(CFG_HI_CHIP_TYPE),hi3718cv100)
+-include $(MSP_DIR)/drv/vfmw/vfmw_v4.0/firmware/product/Hi3716CV200/vfmw_make.cfg
+endif
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719mv100_a)
+-include $(MSP_DIR)/drv/vfmw/vfmw_v4.0/firmware/product/Hi3716CV200/vfmw_make.cfg
+endif
+
+
 
 
 EXTRA_CFLAGS += $(VFMW_CFLAGS)
@@ -50,6 +59,18 @@ all:
 
 modules_install:
 	$(AT)make -C $(LINUX_DIR) M=$(CURDIR) modules_install
+ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200)
+#	$(AT)cp -f $(MSP_DIR)/drv/vfmw/hi_vfmw_avsp.bin $(MODULE_DIR)/
+endif
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719cv100)
+	$(AT)cp -f $(MSP_DIR)/drv/vfmw/hi_vfmw_avsp.bin $(MODULE_DIR)/
+endif
+ifeq ($(CFG_HI_CHIP_TYPE),hi3718cv100)
+	$(AT)cp -f $(MSP_DIR)/drv/vfmw/hi_vfmw_avsp.bin $(MODULE_DIR)/
+endif
+ifeq ($(CFG_HI_CHIP_TYPE),hi3719mv100_a)
+	$(AT)cp -f $(MSP_DIR)/drv/vfmw/hi_vfmw_avsp.bin $(MODULE_DIR)/
+endif
 	
 clean:
 	$(AT)make -C $(LINUX_DIR) M=$(CURDIR) clean

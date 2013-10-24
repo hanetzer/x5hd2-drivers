@@ -12,8 +12,9 @@ endif
 #===============================================================================
 CFLAGS  +=  $(CFG_HI_CFLAGS)
 
-CFLAGS  += -D_GNU_SOURCE -D_XOPEN_SOURCE=600 
-CFLAGS  += -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+
+CFLAGS += -D_GNU_SOURCE -D_XOPEN_SOURCE=600 
+CFLAGS += -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
 CFLAGS  +=  -I$(COMMON_UNF_INCLUDE)         \
             -I$(COMMON_API_INCLUDE)         \
@@ -22,6 +23,8 @@ CFLAGS  +=  -I$(COMMON_UNF_INCLUDE)         \
             -I$(MSP_API_INCLUDE)            \
             -I$(MSP_DRV_INCLUDE)            \
             -I$(MSP_DIR)/api/pvr/include
+
+PVR_SMOOTH_LIB = $(CURDIR)/lib/libhi_pvrsmooth.a
 
 LIBS := libhi_pvr
 
@@ -35,6 +38,12 @@ OBJS := unf_pvr.o           \
         pvr_index.o         \
         pvr_scd.o
 
+ifeq (hi_pvr_smooth_ctrl.c, $(wildcard hi_pvr_smooth_ctrl.c)) 
+OBJS += hi_pvr_smooth_ctrl.o
+else
+SMOOTH_OBJS := hi_pvr_smooth_ctrl.o
+endif
+
 HEADER_FILES := $(MSP_DIR)/include/hi_unf_pvr.h 
 
 #===============================================================================
@@ -45,13 +54,15 @@ HEADER_FILES := $(MSP_DIR)/include/hi_unf_pvr.h
 all: $(LIBS)
 
 clean:
-	$(AT)rm -rf $(OBJS)
+	$(AT)rm -rf $(OBJS) hi_pvr_smooth_ctrl.o
 	$(AT)rm -rf $(LIBS).a
 	$(AT)rm -rf $(LIBS).so
 
 install: all
 	$(AT)cp -f  $(LIBS).a           $(STATIC_LIB_DIR)/
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)cp -f  $(LIBS).so          $(SHARED_LIB_DIR)/
+endif
 	$(AT)cp -f  $(HEADER_FILES)     $(INCLUDE_DIR)/
 
 uninstall:
@@ -60,6 +71,10 @@ uninstall:
 	$(foreach file, $(HEADER_FILES), $(AT)rm -rf $(INCLUDE_DIR)/$(notdir $(file)))
 
 $(LIBS) : $(OBJS)
-	$(AT)$(AR) -rsv $@.a $^
-	$(AT)$(CC) -shared -o $@.so $^
+	$(shell [ -e hi_pvr_smooth_ctrl.c ] || $(AR) -x $(PVR_SMOOTH_LIB))
+	$(AT)$(AR) -rsv $(CURDIR)/lib/libhi_pvrsmooth.a  $(CURDIR)/hi_pvr_smooth_ctrl.o  > /dev/null
+	$(AT)$(AR) -rsv $@.a $^ $(SMOOTH_OBJS)
+ifndef CFG_HI_STATIC_LIB_ONLY
+	$(AT)$(CC) -shared -o $@.so $^ $(SMOOTH_OBJS)
+endif
 

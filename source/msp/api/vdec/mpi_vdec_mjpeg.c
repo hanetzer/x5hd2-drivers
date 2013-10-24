@@ -225,8 +225,8 @@ HI_S32  CheckJpgFileAvail(HI_U8 *pu8Stream, HI_U32 u32StreamSize)
 HI_VOID SendStream(JPG_HANDLE Handle, HI_U8 *pu8Stream, HI_S32 s32StreamSize, HI_S32 *ps32DatOfst)
 {
     JPGDEC_WRITESTREAM_S StreamInfo;
-    HI_U32 CopyLen;
-    HI_U32 FreeSize;
+    HI_U32 CopyLen = 0;
+    HI_U32 FreeSize = 0;
     HI_BOOL EndFlag = HI_FALSE;
     HI_VOID *pAddr = HI_NULL_PTR;
     HI_S32 Ret;
@@ -469,7 +469,7 @@ HI_S32  MJPEG_DecodeFrame(HI_HANDLE hInst, HI_CODEC_STREAM_S * pstIn, HI_CODEC_F
         HI_U8 *pBufAddr;
         HI_U32 BufSize;
         
-        JPG_IsNeedStream(Handle, (HI_VOID**)&pBufAddr, &BufSize);
+        s32Ret = JPG_IsNeedStream(Handle, (HI_VOID**)&pBufAddr, &BufSize);
         s32Ret = JPG_GetStatus(Handle, &State, &StateIndex);
         if(State == JPG_STATE_DECODEERR || State == JPG_STATE_DECODED)  
         {

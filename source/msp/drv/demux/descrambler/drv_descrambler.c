@@ -17,7 +17,7 @@
 #include <asm/atomic.h>
 
 #include "hi_type.h"
-#include "drv_stat_ext.h"
+#include "hi_drv_stat.h"
 #include "hi_kernel_adapt.h"
 
 #include "hi_unf_descrambler.h"
@@ -178,7 +178,7 @@ HI_S32 DMXKeyProcRead(struct seq_file *p, HI_VOID *v)
 {
     HI_U32 KeyId;
 
-    seq_printf(p, "Id ChanCnt EvenKey                             OddKey\n");
+    PROC_PRINT(p, "Id ChanCnt EvenKey                             OddKey\n");
 
     for (KeyId = 0; KeyId < DMX_KEY_CNT; KeyId++)
     {
@@ -190,7 +190,7 @@ HI_S32 DMXKeyProcRead(struct seq_file *p, HI_VOID *v)
             continue;
         }
 
-        seq_printf(p, "%2u   %2u    %08x %08x %08x %08x %08x %08x %08x %08x\n",
+        PROC_PRINT(p, "%2u   %2u    %08x %08x %08x %08x %08x %08x %08x %08x\n",
                 KeyId,
                 KeyInfo->ChanCount,
                 KeyInfo->EvenKey[0],

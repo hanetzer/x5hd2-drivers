@@ -35,16 +35,17 @@
 #include <linux/ioport.h>
 #include <linux/string.h>
 
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_mmz.h"
 
 #include "drv_sync.h"
 #include "drv_sync_intf.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 #include "hi_module.h"
 #include "drv_sync_ext.h"
 #include "hi_kernel_adapt.h"
+#include "hi_osal.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -84,7 +85,7 @@ static HI_S32 SYNC_InitUsedProc(HI_VOID)
     {
         if (g_SyncGlobalState.SyncInfo[i].pSync)
         {
-            sprintf(ProcName, "%s%02d", HI_MOD_SYNC, i);
+            HI_OSAL_Snprintf(ProcName, sizeof(ProcName), "%s%02d", HI_MOD_SYNC, i);
             pProcItem = HI_DRV_PROC_AddModule(ProcName, HI_NULL, HI_NULL);
             if (!pProcItem)
             {
@@ -94,7 +95,7 @@ static HI_S32 SYNC_InitUsedProc(HI_VOID)
                 {
                     if (g_SyncGlobalState.SyncInfo[j].pSync)
                     {
-                        sprintf(ProcName, "%s%02d", HI_MOD_SYNC, j);
+                        HI_OSAL_Snprintf(ProcName, sizeof(ProcName), "%s%02d", HI_MOD_SYNC, j);
                         HI_DRV_PROC_RemoveModule(ProcName);
                     }
                 }
@@ -118,7 +119,7 @@ static HI_VOID SYNC_DeInitUsedProc(HI_VOID)
     {
         if (g_SyncGlobalState.SyncInfo[i].pSync)
         {
-            sprintf(ProcName, "%s%02d", HI_MOD_SYNC, i);
+            HI_OSAL_Snprintf(ProcName, sizeof(ProcName),  "%s%02d", HI_MOD_SYNC, i);
             HI_DRV_PROC_RemoveModule(ProcName);
         }
     }
@@ -160,6 +161,7 @@ HI_S32 SYNC_Create(SYNC_CREATE_S *pSyncCreate, struct file *file)
     MMZ_BUFFER_S      MemBuf;  
     HI_S32            Ret;
     HI_U32            i;
+    HI_CHAR           BufName[32];
 
     if (SYNC_MAX_NUM == g_SyncGlobalState.SyncCount)
     {
@@ -175,14 +177,16 @@ HI_S32 SYNC_Create(SYNC_CREATE_S *pSyncCreate, struct file *file)
         }
     }
        
-    sprintf(ProcName, "%s%02d", HI_MOD_SYNC, i);
+    HI_OSAL_Snprintf(BufName, sizeof(BufName), "SYNC_Inst%02d", i);
 
-    Ret = HI_DRV_MMZ_AllocAndMap(ProcName, MMZ_OTHERS, 0x1000, 0, &MemBuf);
+    Ret = HI_DRV_MMZ_AllocAndMap(BufName, MMZ_OTHERS, 0x1000, 0, &MemBuf);
     if (Ret != HI_SUCCESS)
     {
-        HI_FATAL_SYNC("malloc %s mmz failed.\n", ProcName);
+        HI_FATAL_SYNC("malloc %s mmz failed.\n", BufName);
         return Ret;
     }
+
+    HI_OSAL_Snprintf(ProcName, sizeof(ProcName), "%s%02d", HI_MOD_SYNC, i);
 
     if (g_pSyncProcPara)
     {
@@ -222,7 +226,7 @@ HI_S32 SYNC_Destroy(HI_U32 SyncId)
     if (g_pSyncProcPara)
     {
         memset(ProcName, 0, sizeof(ProcName));    
-        sprintf(ProcName, "%s%02d", HI_MOD_SYNC, SyncId);
+        HI_OSAL_Snprintf(ProcName, sizeof(ProcName), "%s%02d", HI_MOD_SYNC, SyncId);
         HI_DRV_PROC_RemoveModule(ProcName);
     }
 
@@ -1041,6 +1045,24 @@ HI_S32 HI_DRV_SYNC_AudJudge(HI_HANDLE hSync, SYNC_AUD_INFO_S *pAudInfo, SYNC_AUD
     }
     
     SYNC_AudProc(hSync, pAudInfo, pAudOpt);
+    
+    return HI_SUCCESS;
+}
+
+HI_S32 HI_DRV_SYNC_VidJudge(HI_HANDLE hSync, SYNC_VID_INFO_S *pVidInfo, SYNC_VID_OPT_S *pVidOpt)
+{  
+    HI_S32      Ret;
+    SYNC_S      *pSync = HI_NULL;
+    HI_U32      SyncID;
+
+    Ret = DRV_SYNC_CheckHandle(hSync, &pSync, &SyncID);
+    if(HI_SUCCESS != Ret)
+    {
+        HI_ERR_SYNC("ERR: DRV_SYNC_CheckHandle.\n");
+        return HI_FAILURE;    
+    }
+    
+    SYNC_VidProc(hSync, pVidInfo, pVidOpt);
     
     return HI_SUCCESS;
 }

@@ -13,7 +13,9 @@
 
 #include <sound/soc.h>
 #include <sound/pcm.h>
-
+#ifdef HI_ALSA_AI_SUPPORT
+#include "hal_aiao_common.h"
+#endif
 //TODO 
 #define CONFIG_AIAO_ALSA_PROC_SUPPORT
 #define USE_DSP_ISR
@@ -79,7 +81,17 @@ struct hiaudio_data {
     unsigned int aoe_write_ptr;
     unsigned int aoe_write_offset;
     unsigned int aoe_updatewptr_offset;
-    
+#ifdef HI_ALSA_AI_SUPPORT
+    int ai_handle;
+    struct file cfile;
+    unsigned int ack_c_cnt;    
+    unsigned int ai_writepos;
+    unsigned int ai_readpos;
+    unsigned int last_c_pos;
+    unsigned int current_c_pos;
+    AIAO_IsrFunc *IsrProc;     //ISR func for alsa
+    unsigned int isr_total_cnt_c;
+#endif   
 
 #ifdef CONFIG_AIAO_ALSA_PROC_SUPPORT
     //pointer

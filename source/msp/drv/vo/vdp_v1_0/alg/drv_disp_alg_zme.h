@@ -71,6 +71,14 @@ typedef struct
     HI_U32 u32ZmeCoefAddrVL4C4_025;
     HI_U32 u32ZmeCoefAddrVL4C4_0;
 
+    HI_U32 u32ZmeCoefAddrVL4_1;
+    HI_U32 u32ZmeCoefAddrVL4_E1;
+    HI_U32 u32ZmeCoefAddrVL4_075;
+    HI_U32 u32ZmeCoefAddrVL4_05;
+    HI_U32 u32ZmeCoefAddrVL4_033;
+    HI_U32 u32ZmeCoefAddrVL4_025;
+    HI_U32 u32ZmeCoefAddrVL4_0;
+
 } ALG_VZME_COEF_ADDR_S;
 
 
@@ -230,6 +238,7 @@ HI_VOID ALG_VZmeVdpComnDeInit(ALG_VZME_MEM_S *pstVZmeCoefMem);
 
 HI_VOID ALG_VZmeVdpHQSet(ALG_VZME_MEM_S *pstMem, ALG_VZME_DRV_PARA_S *pstZmeDrvPara, ALG_VZME_RTL_PARA_S *pstZmeRtlPara);
 HI_VOID ALG_VZmeVdpSQSet(ALG_VZME_MEM_S *pstMem, ALG_VZME_DRV_PARA_S *pstZmeDrvPara, ALG_VZME_RTL_PARA_S *pstZmeRtlPara);
+HI_VOID ALG_VZmeVdpSQSetSptAddr(ALG_VZME_MEM_S *pstMem, ALG_VZME_DRV_PARA_S *pstZmeDrvPara, ALG_VZME_RTL_PARA_S *pstZmeRtlPara);
 
 
 #endif  /* endif of '__DRV_DISP_ALG_ZME_H__' */

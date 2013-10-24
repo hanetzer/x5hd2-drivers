@@ -17,9 +17,13 @@
 #include "drv_wdg_ioctl.h"
 #include "hi_type.h"
 #include "hi_error_mpi.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 
 static HI_S32 g_s32WDGDevFd = 0;
+
+static const HI_U8 s_szWDGVersion[] = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 #define WATCHDOG_TIMEOUT_MAX 356000
 #define WATCHDOG_TIMEOUT_MIN 1000
@@ -74,13 +78,22 @@ Others:         NA
 *******************************************/
 HI_S32 HI_UNF_WDG_DeInit(HI_VOID)
 {
+    HI_S32 Ret;
+
     if (g_s32WDGDevFd <= 0)
     {
         return HI_SUCCESS;
     }
     else
     {
-        close (g_s32WDGDevFd);
+		Ret = close(g_s32WDGDevFd);
+
+	    if (HI_SUCCESS != Ret)
+	    {
+	        HI_FATAL_WDG("DeInit WDG err.\n");
+	        return HI_ERR_WDG_FAILED_DEINIT;
+	    }
+		
         g_s32WDGDevFd = 0;
         return HI_SUCCESS;
     }

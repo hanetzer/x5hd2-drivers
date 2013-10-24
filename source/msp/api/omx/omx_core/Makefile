@@ -10,7 +10,9 @@ endif
 #===============================================================================
 # local variable
 #===============================================================================
-CFLAGS  +=  -I$(CURDIR)/../inc/ -fPIC
+CFLAGS  +=  $(CFG_HI_CFLAGS)
+
+CFLAGS  +=  -I$(CURDIR)/../inc/
 
 LIBS := libOMX_Core
 OBJS := omx_core.o
@@ -22,20 +24,20 @@ OBJS := omx_core.o
 
 all: $(LIBS)
 
-clean:
+clean: uninstall
 	$(AT)rm -rf $(OBJS)
-	$(AT)rm -rf $(LIBS).a
 	$(AT)rm -rf $(LIBS).so
 
 install: all
-	$(AT)cp -f  $(LIBS).a           $(STATIC_LIB_DIR)/
-	$(AT)cp -f  $(LIBS).so          $(SHARED_LIB_DIR)/
+ifndef CFG_HI_STATIC_LIB_ONLY
+	$(AT)cp -f  $(LIBS).so          $(EXTERN_LIB_DIR)/
+endif
 
 uninstall:
-	$(AT)rm -rf $(STATIC_LIB_DIR)/$(LIBS).a
-	$(AT)rm -rf $(SHARED_LIB_DIR)/$(LIBS).so
+	$(AT)rm -rf $(EXTERN_LIB_DIR)/$(LIBS).so
 
 $(LIBS) : $(OBJS)
-	$(AT)$(AR) -rsv $@.a $^
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)$(CC) -shared -o $@.so $^
+endif
 

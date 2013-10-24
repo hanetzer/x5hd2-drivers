@@ -21,7 +21,7 @@
 //#include "mpi_priv_hdmi.h"
 #include "hi_drv_hdmi.h"
 #include "hi_drv_disp.h"
-
+#include "drv_hdmi_ioctl.h"
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -50,7 +50,7 @@ HI_U32 DRV_HDMI_GetDeepColor(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_DEEP_COLOR_E *
 HI_U32 DRV_HDMI_SetxvYCCMode(HI_UNF_HDMI_ID_E enHdmi, HI_BOOL bEnable);
 HI_U32 DRV_HDMI_SetAVMute(HI_UNF_HDMI_ID_E enHdmi, HI_BOOL bAvMute);
 HI_U32 DRV_HDMI_PreFormat(HI_UNF_HDMI_ID_E enHdmi, HI_DRV_DISP_FMT_E enEncodingFormat);
-HI_U32 DRV_HDMI_SetFormat(HI_UNF_HDMI_ID_E enHdmi, HI_DRV_DISP_FMT_E enEncodingFormat);
+HI_U32 DRV_HDMI_SetFormat(HI_UNF_HDMI_ID_E enHdmi, HI_DRV_DISP_FMT_E enFmt, HI_DRV_DISP_STEREO_E enStereo);
 HI_U32 DRV_HDMI_Force_GetEDID(HDMI_EDID_S *pEDID);
 HI_U32 DRV_HDMI_GetPlayStatus(HI_UNF_HDMI_ID_E enHdmi, HI_U32 *pu32Stutus);
 HI_U32 DRV_HDMI_GetCECAddress(HI_U8 *pPhyAddr, HI_U8 *pLogicalAddr);
@@ -61,15 +61,27 @@ HI_S32 DRV_HDMI_ReleaseProcID(HI_UNF_HDMI_ID_E enHdmi, HI_U32 u32ProcID);
 
 HI_S32 DRV_HDMI_AudioChange(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
 HI_S32 DRV_HDMI_GetAOAttr(HI_UNF_HDMI_ID_E enHdmi, HDMI_AUDIO_ATTR_S *pstHDMIAOAttr);
-HI_S32 DRV_HDMI_AdjustInfoFrame(HI_UNF_HDMI_ID_E enHdmi,HI_UNF_HDMI_INFOFRAME_S *pstInfoFrame);
+//HI_S32 DRV_HDMI_AdjustInfoFrame(HI_UNF_HDMI_ID_E enHdmi,HI_UNF_HDMI_INFOFRAME_S *pstInfoFrame);
 
 HI_S32 DRV_HDMI_InitNum(HI_UNF_HDMI_ID_E enHdmi);
 HI_S32 DRV_HDMI_ProcNum(HI_UNF_HDMI_ID_E enHdmi);
-HI_S32 DRV_HDMI_IsGreenChannel(HI_UNF_HDMI_ID_E enHdmi);
-HI_S32 DRV_Get_Def_HDMIMode(HI_VOID);
+
+HI_S32 DRV_HDMI_SetAPPAttr(HI_UNF_HDMI_ID_E enHdmi,HDMI_APP_ATTR_S *pstHDMIAppAttr,HI_BOOL UpdateFlag);
+HI_S32 DRV_HDMI_SetAOAttr(HI_UNF_HDMI_ID_E enHdmi,HDMI_AUDIO_ATTR_S *pstHDMIAOAttr,HI_BOOL UpdateFlag);
+HI_S32 DRV_HDMI_SetVOAttr(HI_UNF_HDMI_ID_E enHdmi,HDMI_VIDEO_ATTR_S *pstHDMIVOAttr,HI_BOOL UpdateFlag);
+//HI_S32 DRV_HDMI_SetHDMIAttr(HI_UNF_HDMI_ID_E enHdmi,HI_UNF_HDMI_ATTR_S *pstHDMIAttr);
+//HI_S32 DRV_HDMI_ConfigAttr(HI_UNF_HDMI_ID_E enHdmi);
+
+HI_UNF_ENC_FMT_E hdmi_Disp2EncFmt(HI_DRV_DISP_FMT_E SrcFmt);
+HI_DRV_DISP_FMT_E hdmi_ENC2DispFmt(HI_UNF_ENC_FMT_E SrcFmt);
+
+
 
 void HDMI_IRQ_Setup(void);
 void HDMI_IRQ_Exit(void);
+HI_S32 DRV_HDMI_Register(HI_VOID);
+HI_S32 DRV_HDMI_UnRegister(HI_VOID);
+
 
 
 typedef enum VIDEO_SAMPLE_TYPE_E_S
@@ -87,6 +99,7 @@ enum hdmi_switch_state {
 };
 
 
+#if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
 #define MAX_PROCESS_NUM 10
 #define PROC_EVENT_NUM 5
 
@@ -95,6 +108,7 @@ typedef struct
     HI_U32      bUsed;
     HI_U32      CurEventNo;
     HI_U32      Event[PROC_EVENT_NUM];
+    HI_U32      u32ProcHandle;
 }HDMI_PROC_EVENT_S;
 
 typedef struct
@@ -102,8 +116,8 @@ typedef struct
     HI_BOOL            bOpen;
     HI_BOOL            bStart;
     HDMI_PROC_EVENT_S  eventList[MAX_PROCESS_NUM];
-    //HI_U32             Event[5];        /*Current Event Array, sequence will be change */
-    HDMI_ATTR_S stHDMIAttr;          /*HDMI implement parameter*//*CNcomment:HDMI 运行参数 */
+    //HI_U32           Event[5];        /*Current Event Array, sequence will be change */
+    HDMI_ATTR_S        stHDMIAttr;          /*HDMI implement parameter*//*CNcomment:HDMI 运行参数 */
     HI_UNF_HDMI_AVI_INFOFRAME_VER2_S   stAVIInfoFrame;
     HI_UNF_HDMI_AUD_INFOFRAME_VER1_S   stAUDInfoFrame;
 
@@ -111,11 +125,17 @@ typedef struct
     HI_U8                              u8CECCheckCount;
     HI_UNF_HDMI_CEC_STATUS_S           stCECStatus;
 }HDMI_CHN_ATTR_S;
+#endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
 
                                                                   
-
+//internal dubug option
 //#define DEBUG_EVENTLIST
 #define DEBUG_NOTIFY_COUNT
+//#define DEBUG_NEED_RESET
+
+//#define DEBUG_TIMER
+//#define DEBUG_PROCID
+//#define DEBUG_EDID
 //#define ANDROID_SUPPORT
 
 #ifdef __cplusplus

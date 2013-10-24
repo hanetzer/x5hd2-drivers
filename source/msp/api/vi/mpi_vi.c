@@ -25,10 +25,14 @@
 #include <fcntl.h>
 #include <pthread.h>
 
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "hi_drv_vi.h"
 #include "hi_mpi_vi.h"
+#include "hi_mpi_win.h"
+#include "hi_mpi_venc.h"
 #include "hi_mpi_mem.h"
+#include "hi_drv_win.h"
+#include "drv_venc_ext.h"
 
 #ifdef __cplusplus
  #if __cplusplus
@@ -39,8 +43,9 @@ extern "C"
 
 static HI_S32 g_ViDevFd = -1;
 static const HI_CHAR g_ViDevName[] = "/dev/" UMAP_DEVNAME_VI;
+static VI_S g_Vi[MAX_VI_PORT][MAX_VI_CHN];
+static HI_U32 portLoop, chnLoop;
 static pthread_mutex_t g_ViMutex = PTHREAD_MUTEX_INITIALIZER;
-//static HI_UNF_VI_BUF_S struViBuf[VIU_FB_MAX_NUM][MAX_VI_CHN];
 
 #define HI_VI_LOCK() (HI_VOID)pthread_mutex_lock(&g_ViMutex);
 #define HI_VI_UNLOCK() (HI_VOID)pthread_mutex_unlock(&g_ViMutex);
@@ -65,34 +70,333 @@ static pthread_mutex_t g_ViMutex = PTHREAD_MUTEX_INITIALIZER;
         } \
     } while (0)
 
-//todo, get port and channel ID
-#define CHECK_VI_HANDLE_AND_GET_VIPORT(hVi, enViPort) \
+#define CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, ViChn) \
     do { \
-        enViPort = (HI_UNF_VI_E)((hVi) & 0xffff); \
-        if ((HI_INVALID_HANDLE == hVi) || (HI_NULL == hVi))\
-        {\
-            HI_ERR_VI("VI handle(%#x) is invalid.\n", hVi); \
+        ViChn  = ((hVi) & 0xff); \
+        enPort = (HI_UNF_VI_E)(((hVi) & 0xff00) >> 8); \
+        if (MAX_VI_CHN <= ViChn) \
+        { \
+            HI_ERR_VI("VI handle(%#x) is invalid, channel error.\n", (hVi)); \
             return HI_ERR_VI_CHN_NOT_EXIST; \
         } \
-        if ((HI_UNF_VI_PORT0 > enViPort) || (HI_UNF_VI_BUTT <= enViPort))\
+        if ((HI_UNF_VI_PORT0 > enPort) || (HI_UNF_VI_BUTT <= enPort))\
         {\
-            HI_ERR_VI("VI handle(%#x) is invalid, port error.\n", hVi); \
+            HI_ERR_VI("VI handle(%#x) is invalid, port error.\n", (hVi)); \
+            return HI_ERR_VI_CHN_NOT_EXIST; \
+        } \
+        if ((HI_INVALID_HANDLE == (hVi)) || (HI_NULL == (hVi)))\
+        {\
+            HI_ERR_VI("VI handle(%#x) is invalid.\n", (hVi)); \
             return HI_ERR_VI_CHN_NOT_EXIST; \
         } \
         if (HI_ID_VI != ((hVi) >> 16)) \
         {\
-            HI_ERR_VI("VI handle(%#x) is invalid, modID error.\n", hVi); \
+            HI_ERR_VI("VI handle(%#x) is invalid, modID error.\n", (hVi)); \
+            return HI_ERR_VI_CHN_NOT_EXIST; \
+        } \
+        for (portLoop = 0; portLoop < MAX_VI_PORT; portLoop++) \
+        {\
+            for (chnLoop = 0; chnLoop < MAX_VI_CHN; chnLoop++) \
+            {\
+                if (g_Vi[portLoop][chnLoop].hVi == (hVi)) \
+                { \
+                    goto FIND_VI_HANDLE; \
+                } \
+            } \
+        } \
+FIND_VI_HANDLE: \
+        if ((MAX_VI_PORT == portLoop) && (MAX_VI_CHN == chnLoop)) \
+        {\
             return HI_ERR_VI_CHN_NOT_EXIST; \
         } \
     } while (0)
 
+static HI_S32 VI_CheckAttr(HI_UNF_VI_E enPort, const HI_UNF_VI_ATTR_S *pstAttr)
+{
+    CHECK_VI_NULL_PTR(pstAttr);
+
+#if defined(CHIP_TYPE_hi3718mv100) || defined(CHIP_TYPE_hi3719mv100) || defined(CHIP_TYPE_hi3719mv100_a)
+    if (pstAttr->bVirtual == HI_FALSE)
+    {
+        HI_ERR_VI("not support REAL VI.\n");
+        return HI_ERR_VI_NOT_SUPPORT;
+    }
+#endif
+
+    if (pstAttr->bVirtual == HI_FALSE)
+    {
+        if (HI_UNF_VI_PORT0 != enPort)
+        {
+            HI_ERR_VI("Only support REAL VI by port0.\n");
+            return HI_ERR_VI_INVALID_PARA;
+        }
+
+        if ((pstAttr->stInputRect.s32X < 0)
+            || (pstAttr->stInputRect.s32Y < 0)
+            || (pstAttr->stInputRect.s32Width <= 0)
+            || (pstAttr->stInputRect.s32Height <= 0))
+        {
+            HI_ERR_VI("invalid vi input rect x(%d) y(%d) width(%d) height(%d).\n",
+                      pstAttr->stInputRect.s32X, pstAttr->stInputRect.s32Y,
+                      pstAttr->stInputRect.s32Width, pstAttr->stInputRect.s32Height);
+            return HI_ERR_VI_INVALID_PARA;
+        }
+
+        if (pstAttr->enInputMode >= HI_UNF_VI_MODE_BUTT)
+        {
+            HI_ERR_VI("invalid vi input mode %d.\n", pstAttr->enInputMode);
+            return HI_ERR_VI_INVALID_PARA;
+        }
+
+        if ((pstAttr->enInputMode >= HI_UNF_VI_MODE_BT601_576I)
+            && (pstAttr->enInputMode <= HI_UNF_VI_MODE_BT601_480I))
+        {
+            HI_ERR_VI("not support BT601 mode %d\n", pstAttr->enInputMode);
+            return HI_ERR_VI_INVALID_PARA;
+        }
+
+        if (((HI_UNF_VI_MODE_BT656_576I == pstAttr->enInputMode)
+             || (HI_UNF_VI_MODE_BT601_576I == pstAttr->enInputMode)
+             || (HI_UNF_VI_MODE_BT1120_576P == pstAttr->enInputMode))
+            && ((pstAttr->stInputRect.s32X + pstAttr->stInputRect.s32Width > 720)
+                || (pstAttr->stInputRect.s32Y + pstAttr->stInputRect.s32Height > 576)))
+        {
+            HI_ERR_VI("input rect out of range, x(%d), y(%d), width(%d), height(%d).\n",
+                      pstAttr->stInputRect.s32X, pstAttr->stInputRect.s32Y,
+                      pstAttr->stInputRect.s32Width, pstAttr->stInputRect.s32Height);
+            return HI_ERR_VI_INVALID_PARA;
+        }
+
+        if (((HI_UNF_VI_MODE_BT656_480I == pstAttr->enInputMode)
+             || (HI_UNF_VI_MODE_BT601_480I == pstAttr->enInputMode)
+             || (HI_UNF_VI_MODE_BT1120_480P == pstAttr->enInputMode))
+            && ((pstAttr->stInputRect.s32X + pstAttr->stInputRect.s32Width > 720)
+                || (pstAttr->stInputRect.s32Y + pstAttr->stInputRect.s32Height > 480)))
+        {
+            HI_ERR_VI("input rect out of range, x(%d), y(%d), width(%d), height(%d).\n",
+                      pstAttr->stInputRect.s32X, pstAttr->stInputRect.s32Y,
+                      pstAttr->stInputRect.s32Width, pstAttr->stInputRect.s32Height);
+            return HI_ERR_VI_INVALID_PARA;
+        }
+
+        if (((HI_UNF_VI_MODE_BT1120_720P_50 == pstAttr->enInputMode)
+             || (HI_UNF_VI_MODE_BT1120_720P_60 == pstAttr->enInputMode))
+            && ((pstAttr->stInputRect.s32X + pstAttr->stInputRect.s32Width > 1280)
+                || (pstAttr->stInputRect.s32Y + pstAttr->stInputRect.s32Height > 720)))
+        {
+            HI_ERR_VI("input rect out of range, x(%d), y(%d), width(%d), height(%d).\n",
+                      pstAttr->stInputRect.s32X, pstAttr->stInputRect.s32Y,
+                      pstAttr->stInputRect.s32Width, pstAttr->stInputRect.s32Height);
+            return HI_ERR_VI_INVALID_PARA;
+        }
+
+        if (((pstAttr->enInputMode >= HI_UNF_VI_MODE_BT1120_1080I_50)
+             && (pstAttr->enInputMode <= HI_UNF_VI_MODE_BT1120_1080P_60))
+            && ((pstAttr->stInputRect.s32X + pstAttr->stInputRect.s32Width > 1920)
+                || (pstAttr->stInputRect.s32Y + pstAttr->stInputRect.s32Height > 1080)))
+        {
+            HI_ERR_VI("input rect out of range, x(%d), y(%d), width(%d), height(%d).\n",
+                      pstAttr->stInputRect.s32X, pstAttr->stInputRect.s32Y,
+                      pstAttr->stInputRect.s32Width, pstAttr->stInputRect.s32Height);
+            return HI_ERR_VI_INVALID_PARA;
+        }
+
+        if (HI_UNF_FORMAT_YUV_SEMIPLANAR_420 != pstAttr->enVideoFormat)
+        {
+            HI_ERR_VI("only support SP420 now!\n");
+            return HI_ERR_VI_INVALID_PARA;
+        }
+
+        if ((HI_UNF_FORMAT_YUV_SEMIPLANAR_422 != pstAttr->enVideoFormat)
+            && (HI_UNF_FORMAT_YUV_SEMIPLANAR_420 != pstAttr->enVideoFormat))
+        {
+            HI_ERR_VI("invalid vi store format %d.\n", pstAttr->enVideoFormat);
+            return HI_ERR_VI_INVALID_PARA;
+        }
+
+        if ((HI_UNF_VI_BUF_ALLOC != pstAttr->enBufMgmtMode)
+            && (HI_UNF_VI_BUF_MMAP != pstAttr->enBufMgmtMode))
+        {
+            HI_ERR_VI("invalid vi buf management mode %d.\n", pstAttr->enBufMgmtMode);
+            return HI_ERR_VI_INVALID_PARA;
+        }
+    }
+
+    if ((pstAttr->u32BufNum < MIN_VI_FB_NUM)
+        || (pstAttr->u32BufNum > MAX_VI_FB_NUM))
+    {
+        HI_ERR_VI("invalid vi buf number %d.\n", pstAttr->u32BufNum);
+        return HI_ERR_VI_INVALID_PARA;
+    }
+
+    return HI_SUCCESS;
+}
+
+static HI_S32 VI_AttachToVpss(HI_HANDLE hVi, HI_HANDLE hDst)
+{
+    HI_S32 Ret = HI_FAILURE;
+    HI_DRV_WIN_SRC_INFO_S stWinSrc;
+    HI_DRV_VENC_SRC_INFO_S stVencSrc;
+    VI_VPSS_PORT_S stVpssPort;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
+    HI_U32 i;
+
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
+
+    for (i = 0; i < VI_MAX_VPSS_PORT; i++)
+    {
+        if (HI_INVALID_HANDLE == g_Vi[enPort][u32Chn].stPortParam[i].hPort)
+        {
+            break;
+        }
+    }
+
+    if (i == VI_MAX_VPSS_PORT)
+    {
+        HI_ERR_VI("create vpss port failed, max number reached!\n");
+        return HI_FAILURE;
+    }
+
+    stVpssPort.hVi   = g_Vi[enPort][u32Chn].hVi;
+    stVpssPort.hVpss = g_Vi[enPort][u32Chn].hVpss;
+    stVpssPort.stPortParam.hDst = hDst;
+    Ret = ioctl(g_ViDevFd, CMD_VI_CREATE_VPSS_PORT, &stVpssPort);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_ERR_VI("create vpss port failed, ret = 0x%08x\n", Ret);
+        return HI_FAILURE;
+    }
+
+    memcpy(&g_Vi[enPort][u32Chn].stPortParam[i], &stVpssPort.stPortParam, sizeof(VI_VPSS_PORT_PARAM_S));
+
+    switch ((hDst >> 16) & 0xff)
+    {
+    case HI_ID_VO:
+    {
+        memset(&stWinSrc, 0, sizeof(HI_DRV_WIN_SRC_INFO_S));
+        stWinSrc.hSrc = g_Vi[enPort][u32Chn].stPortParam[i].hPort;
+        stWinSrc.pfAcqFrame = HI_NULL;
+        stWinSrc.pfRlsFrame = (PFN_PUT_FRAME_CALLBACK)g_Vi[enPort][u32Chn].stPortParam[i].pfRlsImage;
+        stWinSrc.pfSendWinInfo = (PFN_GET_WIN_INFO_CALLBACK)g_Vi[enPort][u32Chn].stPortParam[i].pfChangeWinInfo;
+
+        Ret = HI_MPI_WIN_SetSource(hDst, &stWinSrc);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_VI("HI_MPI_WIN_SetSource failed, ret = 0x%08x\n", Ret);
+            return HI_FAILURE;
+        }
+
+        break;
+    }
+#ifdef HI_VENC_SUPPORT
+    case HI_ID_VENC:
+    {
+        memset(&stVencSrc, 0, sizeof(HI_DRV_VENC_SRC_INFO_S));
+        stVencSrc.hSrc = g_Vi[enPort][u32Chn].stPortParam[i].hPort;
+        stVencSrc.pfAcqFrame   = HI_NULL;
+        stVencSrc.pfRlsFrame   = (FN_VENC_PUT_FRAME)g_Vi[enPort][u32Chn].stPortParam[i].pfRlsImage;
+        stVencSrc.pfChangeInfo = (FN_VENC_CHANGE_INFO)g_Vi[enPort][u32Chn].stPortParam[i].pfChangeVencInfo;
+
+        Ret = HI_MPI_VENC_SetSource(hDst, &stVencSrc);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_VI("HI_MPI_VENC_SetSource failed, ret = 0x%08x\n", Ret);
+            return HI_FAILURE;
+        }
+
+        break;
+    }
+#endif
+    default:
+    {
+        HI_ERR_VI("unrecognized handle[0x%08x]\n", hDst);
+        return HI_FAILURE;
+    }
+    }
+
+    return HI_SUCCESS;
+}
+
+static HI_S32 VI_DetachFromVpss(HI_HANDLE hVi, HI_HANDLE hDst)
+{
+    HI_S32 Ret = HI_SUCCESS;
+    HI_DRV_WIN_SRC_INFO_S stWinSrc;
+    VI_VPSS_PORT_S stVpssPort;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
+    HI_U32 i;
+
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
+
+    for (i = 0; i < VI_MAX_VPSS_PORT; i++)
+    {
+        if (hDst == g_Vi[enPort][u32Chn].stPortParam[i].hDst)
+        {
+            break;
+        }
+    }
+
+    if (i == VI_MAX_VPSS_PORT)
+    {
+        HI_ERR_VI("this is not a attached window.\n");
+        return HI_FAILURE;
+    }
+
+    stVpssPort.hVi = hVi;
+    stVpssPort.stPortParam.hDst = hDst;
+    Ret = ioctl(g_ViDevFd, CMD_VI_DESTROY_VPSS_PORT, &stVpssPort);
+    if (HI_SUCCESS != Ret)
+    {
+        HI_ERR_VI("CMD_VI_CREATE_VPSS_PORT failed, ret = 0x%08x\n", Ret);
+        return HI_FAILURE;
+    }
+
+    switch ((hDst >> 16) & 0xff)
+    {
+    case HI_ID_VO:
+    {
+        memset(&stWinSrc, 0, sizeof(HI_DRV_WIN_SRC_INFO_S));
+        stWinSrc.hSrc = g_Vi[enPort][u32Chn].stPortParam[i].hPort;
+        stWinSrc.pfAcqFrame = HI_NULL;
+        stWinSrc.pfRlsFrame = HI_NULL;
+        stWinSrc.pfSendWinInfo = HI_NULL;
+
+        Ret = HI_MPI_WIN_SetSource(hDst, &stWinSrc);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_VI("ERR: HI_MPI_WIN_SetSource.\n");
+        }
+
+        break;
+    }
+    case HI_ID_VENC:
+    {
+        /* no need to set source */
+        break;
+    }
+    default:
+    {
+        HI_ERR_VI("unrecognized handle[0x%08x]\n", hDst);
+        return HI_FAILURE;
+    }
+    }
+
+    memset(&g_Vi[enPort][u32Chn].stPortParam[i], 0, sizeof(VI_VPSS_PORT_PARAM_S));
+    g_Vi[enPort][u32Chn].stPortParam[i].hDst  = HI_INVALID_HANDLE;
+    g_Vi[enPort][u32Chn].stPortParam[i].hPort = HI_INVALID_HANDLE;
+
+    return HI_SUCCESS;
+}
+
 HI_S32 HI_MPI_VI_Init(HI_VOID)
 {
     struct stat st;
+    HI_U32 iPort, iChn;
 
     HI_VI_LOCK();
 
-    /* Already Opened in the process*/
+    /* Already opened in the process */
     if (g_ViDevFd > 0)
     {
         HI_VI_UNLOCK();
@@ -114,12 +418,19 @@ HI_S32 HI_MPI_VI_Init(HI_VOID)
     }
 
     g_ViDevFd = open(g_ViDevName, O_RDWR | O_NONBLOCK, 0);
-
     if (g_ViDevFd < 0)
     {
         HI_FATAL_VI("open VI err.\n");
         HI_VI_UNLOCK();
         return HI_FAILURE;
+    }
+
+    for (iPort = 0; iPort < MAX_VI_PORT; iPort++)
+    {
+        for (iChn = 0; iChn < MAX_VI_CHN; iChn++)
+        {
+            g_Vi[iPort][iChn].hVi = HI_INVALID_HANDLE;
+        }
     }
 
     HI_VI_UNLOCK();
@@ -144,682 +455,666 @@ HI_S32 HI_MPI_VI_DeInit(HI_VOID)
     return HI_SUCCESS;
 }
 
-HI_S32 HI_MPI_VI_SetAttr(HI_HANDLE handle, const HI_UNF_VI_ATTR_S *pstAttr)
+HI_S32 HI_MPI_VI_Create(HI_UNF_VI_E enPort, HI_UNF_VI_ATTR_S *pstAttr, HI_HANDLE *phVi)
 {
-    HI_S32 Ret;
-    VI_ATTR_S stViAttr;
-    HI_UNF_VI_E enVi;
-
-    CHECK_VI_INIT();
-    CHECK_VI_NULL_PTR(pstAttr);
-    CHECK_VI_HANDLE_AND_GET_VIPORT(handle, enVi);
-
-    stViAttr.enVi = enVi;
-    memcpy(&(stViAttr.stAttr), pstAttr, sizeof(HI_UNF_VI_ATTR_S));
-
-    Ret = ioctl(g_ViDevFd, CMD_VI_SET_ATTR, &stViAttr);
-    return Ret;
-}
-
-HI_S32 HI_MPI_VI_GetAttr(HI_HANDLE handle, HI_UNF_VI_ATTR_S *pstAttr)
-{
-    HI_S32 Ret;
-    VI_ATTR_S stViAttr;
-    HI_UNF_VI_E enVi;
-
-    CHECK_VI_INIT();
-    CHECK_VI_NULL_PTR(pstAttr);
-    CHECK_VI_HANDLE_AND_GET_VIPORT(handle, enVi);
-
-    stViAttr.enVi = enVi;
-
-    Ret = ioctl(g_ViDevFd, CMD_VI_GET_ATTR, &stViAttr);
-    if (HI_SUCCESS == Ret)
-    {
-        memcpy(pstAttr, &(stViAttr.stAttr), sizeof(HI_UNF_VI_ATTR_S));
-    }
-
-    return Ret;
-}
-
-//HI_S32 HI_MPI_VI_Create(HI_UNF_VI_ATTR_S *pstAttr, HI_HANDLE *phVi)
-HI_S32 HI_MPI_VI_Create(HI_UNF_VI_E enViPort, HI_UNF_VI_ATTR_S *pstAttr, HI_HANDLE *phVi)
-{
-//    HI_U32 i;
-    HI_S32 Ret;
-    VI_CREATE_INFO stCreateInfo;
-    HI_SYS_VERSION_S stVersion;
-//    HI_VOID *pViVirAddr = NULL;
+    HI_S32 Ret = HI_FAILURE;
+    VI_CREATE_S stCreate;
+    HI_U32 u32Chn;
+    HI_U32 i;
 
     CHECK_VI_INIT();
     CHECK_VI_NULL_PTR(phVi);
     CHECK_VI_NULL_PTR(pstAttr);
 
-#if 0
-    if ((HI_UNF_VI_PORT0 > pstAttr->enViPort) || (HI_UNF_VI_PORT1 < pstAttr->enViPort))
+    if ((HI_UNF_VI_PORT0 != enPort) && (HI_UNF_VI_PORT1 != enPort))
     {
-        HI_ERR_VI("invalid vi port %d.\n", pstAttr->enViPort);
-        return HI_ERR_VI_INVALID_PARA;
-    }
-#endif
-    if ((HI_UNF_VI_PORT0 > enViPort) || (HI_UNF_VI_PORT1 < enViPort))
-    {
-        HI_ERR_VI("invalid vi port %d.\n", enViPort);
+        HI_ERR_VI("invalid vi port %d.\n", enPort);
         return HI_ERR_VI_INVALID_PARA;
     }
 
-    if ((pstAttr->stInputRect.s32X < 0)
-        || (pstAttr->stInputRect.s32Y < 0)
-        || (pstAttr->stInputRect.s32Width <= 0)
-        || (pstAttr->stInputRect.s32Height <= 0))
-    {
-        HI_ERR_VI("invalid vi input rect x(%d) y(%d) width(%d) height(%d).\n", pstAttr->stInputRect.s32X,
-                  pstAttr->stInputRect.s32Y, pstAttr->stInputRect.s32Width, pstAttr->stInputRect.s32Height);
-        return HI_ERR_VI_INVALID_PARA;
-    }
-
-    if ((pstAttr->stInputRect.s32X > VIU_WIDTH_MAX)
-        || (pstAttr->stInputRect.s32Y > VIU_HIGHT_MAX)
-        || (pstAttr->stInputRect.s32Width >= VIU_WIDTH_MAX)
-        || (pstAttr->stInputRect.s32Height >= VIU_HIGHT_MAX))
-    {
-        HI_ERR_VI("invalid vi input rect x(%d) y(%d) width(%d) height(%d).\n", pstAttr->stInputRect.s32X,
-                  pstAttr->stInputRect.s32Y, pstAttr->stInputRect.s32Width, pstAttr->stInputRect.s32Height);
-        return HI_ERR_VI_INVALID_PARA;
-    }
-
-    if ((pstAttr->enInputMode > HI_UNF_VI_MODE_BT1120_1080P_60) || (pstAttr->enInputMode < HI_UNF_VI_MODE_BT656_576I))
-    {
-        HI_ERR_VI("invalid vi input mode %d.\n", pstAttr->enInputMode);
-        return HI_ERR_VI_INVALID_PARA;
-    }
-#if 0
-    if ((pstAttr->enInputMode >= HI_UNF_VI_MODE_BT1120_480P) && (pstAttr->enChnYC == HI_UNF_VI_CHN_YC_SEL_C))
-    {
-        HI_ERR_VI("invalid vi input mode %d with YC selcet mode.\n", pstAttr->enInputMode);
-        return HI_ERR_VI_INVALID_PARA;
-    }
-#endif
-    if (HI_SUCCESS == HI_SYS_GetVersion(&stVersion))
-    {
-/*
-        if (((HI_CHIP_TYPE_HI3716M == stVersion.enChipTypeSoft) && (pstAttr->enInputMode >= HI_UNF_VI_MODE_BT656_576I)
-             && (pstAttr->enInputMode <= HI_UNF_VI_MODE_BT601))
-            || ((HI_CHIP_TYPE_HI3716M == stVersion.enChipTypeSoft)
-                && (pstAttr->enInputMode >= HI_UNF_VI_MODE_BT1120_480P)
-                && (pstAttr->enInputMode <= HI_UNF_VI_MODE_BT1120_1080P)))
-        {
-            HI_ERR_VI("HI3716M does not support BT656/BT1120 input mode.\n");
-            return HI_ERR_VI_INVALID_PARA;
-        }
-*/
-        if ((HI_CHIP_TYPE_HI3716M == stVersion.enChipTypeSoft) && (HI_FALSE == pstAttr->bVirtual))
-        {
-            HI_ERR_VI("HI3716M does not support BT656/BT601/BT1120 input mode.\n");
-            return HI_ERR_VI_INVALID_PARA;
-        }
-        if ((HI_CHIP_TYPE_HI3716H == stVersion.enChipTypeSoft) && (pstAttr->enInputMode >= HI_UNF_VI_MODE_BT1120_480P)
-            && (pstAttr->enInputMode <= HI_UNF_VI_MODE_BT1120_1080P_60))
-        {
-            HI_ERR_VI("HI3716H does not support BT1120 input mode.\n");
-            return HI_ERR_VI_INVALID_PARA;
-        }
-    }
-    else
-    {
-        HI_ERR_VI("HI_SYS_GetVersion failed.\n");
-        return HI_ERR_VI_INVALID_PARA;
-    }
-	
-#if 0
-    if ((pstAttr->enInputMode >= HI_UNF_VI_MODE_BT1120_480P) && (pstAttr->enViPort == HI_UNF_VI_PORT1))
-    {
-        HI_ERR_VI("invalid vi port with bt1120 mode.\n");
-        return HI_ERR_VI_INVALID_PARA;
-    }
-
-    if (pstAttr->enStoreMethod >= HI_UNF_VI_STORE_METHOD_BUTT)
-    {
-        HI_ERR_VI("invalid vi store method %d.\n", pstAttr->enStoreMethod);
-        return HI_ERR_VI_INVALID_PARA;
-    }
-
-    if (pstAttr->enStoreMode >= HI_UNF_VI_STORE_BUTT)
-    {
-        HI_ERR_VI("invalid vi store mode %d.\n", pstAttr->enStoreMode);
-        return HI_ERR_VI_INVALID_PARA;
-    }
-#endif
-    if (pstAttr->enVideoFormat >= HI_UNF_FORMAT_YUV_BUTT)
-    {
-        HI_ERR_VI("invalid vi video format %d.\n", pstAttr->enVideoFormat);
-        return HI_ERR_VI_INVALID_PARA;
-    }
-#if 0
-    if (pstAttr->enFieldMode >= HI_UNF_VIDEO_FIELD_BUTT)
-    {
-        HI_ERR_VI("invalid vi filed mode %d.\n", pstAttr->enFieldMode);
-        return HI_ERR_VI_INVALID_PARA;
-    }
-    if (pstAttr->enCapSel >= HI_UNF_VI_CAPSEL_BUTT)
-    {
-        HI_ERR_VI("invalid vi capture select mode %d.\n", pstAttr->enCapSel);
-        return HI_ERR_VI_INVALID_PARA;
-    }
-#endif
-
-    if (pstAttr->enBufMgmtMode >= HI_UNF_VI_BUF_BUTT)
-    {
-        HI_ERR_VI("invalid vi buf management mode %d.\n", pstAttr->enBufMgmtMode);
-        return HI_ERR_VI_INVALID_PARA;
-    }
-#if 0
-    if ((pstAttr->enBufMgmtMode == HI_UNF_VI_BUF_BUTT) && (pstAttr->enInputMode != HI_UNF_VI_MODE_USB_CAM))
-    {
-        HI_ERR_VI("not support vi input mode %d with buf management mode %d.\n", pstAttr->enInputMode,
-                  pstAttr->enBufMgmtMode);
-        return HI_ERR_VI_NOT_SUPPORT;
-    }
-#endif
-    memcpy(&(stCreateInfo.stViAttr), pstAttr, sizeof(HI_UNF_VI_ATTR_S));
-	stCreateInfo.enViPort = enViPort;
-
-    Ret = ioctl(g_ViDevFd, CMD_VI_OPEN, &stCreateInfo);
+    Ret = VI_CheckAttr(enPort, pstAttr);
     if (Ret != HI_SUCCESS)
     {
         return Ret;
     }
 
-    memcpy(pstAttr, &(stCreateInfo.stViAttr), sizeof(HI_UNF_VI_ATTR_S));
+    stCreate.enPort = enPort;
+    stCreate.hVi   = HI_INVALID_HANDLE;
+    stCreate.hVpss = VPSS_INVALID_HANDLE;
+    memcpy(&(stCreate.stViAttr), pstAttr, sizeof(HI_UNF_VI_ATTR_S));
 
-//    *phVi = ((HI_ID_VI << 16) | stCreateInfo.enViPort); //todo, viport and channel ID
-	*phVi = ((HI_ID_VI << 16) | enViPort);
-
-	/* delete virtual address, because the frame info do not use virtual addr, use phyaddr instead */
-#if 0	
-    /* save vi buffer addr, for user use */
-    if (HI_UNF_VI_BUF_ALLOC == pstAttr->enBufMgmtMode)
+    Ret = ioctl(g_ViDevFd, CMD_VI_CREATE, &stCreate);
+    if (Ret != HI_SUCCESS)
     {
-        pViVirAddr = HI_MMAP(pstAttr->u32ViBufAddr, pstAttr->u32BufSize);
-        HI_INFO_VI("pViVirAddr = 0x%08x\n", pViVirAddr);
-        if (!pViVirAddr)
-        {
-            HI_ERR_VI("vibuf HI_MMAP() failed, size=%d , PhyAddr=%x\r\n",
-                      pstAttr->u32BufSize,
-                      pstAttr->u32ViBufAddr);
-
-            ioctl(g_ViDevFd, CMD_VI_CLOSE, *phVi);
-
-            return HI_ERR_VI_CHN_INIT_BUF_ERR;
-        }
-
-        HI_INFO_VI("vi frame size=%d, bufsize=%d, PhyAddr=%x, VirAddr=%x, YStride=%d, CStride=%d\r\n",
-                   pstAttr->u32FrameSize,
-                   pstAttr->u32BufSize,
-                   pstAttr->u32ViBufAddr,
-                   (HI_U32)pViVirAddr,
-                   pstAttr->u32YStride,
-                   pstAttr->u32CStride);
-
-        for (i = 0; i < pstAttr->u32BufNum; i++)
-        {
-            HI_INFO_VI("Y addr %x ,C addr %x\n", pstAttr->u32ViBufAddr + i * pstAttr->u32FrameSize,
-                       pstAttr->u32BufNum + i * pstAttr->u32FrameSize);
-
-            if (pstAttr->enInputMode >= HI_UNF_VI_MODE_BT1120_480P)
-            {
-                struViBuf[i][pstAttr->enViPort].pVirAddr[0] = (HI_U32*)(pstAttr->u32ViBufAddr + i
-                                                                        * pstAttr->u32FrameSize);
-                struViBuf[i][pstAttr->enViPort].pVirAddr[1] = (HI_U32*)(pstAttr->u32BufSize + i * pstAttr->u32FrameSize);
-                struViBuf[i][pstAttr->enViPort].pVirAddr[2] = HI_NULL;
-            }
-            else
-            {
-                struViBuf[i][pstAttr->enViPort].pVirAddr[0] = (HI_U32*)pViVirAddr + i * pstAttr->u32FrameSize;
-                struViBuf[i][pstAttr->enViPort].pVirAddr[1] = HI_NULL;
-                struViBuf[i][pstAttr->enViPort].pVirAddr[2] = HI_NULL;
-            }
-
-            if ((HI_UNF_VI_STORE_METHOD_PNYUV == pstAttr->enStoreMethod)
-                || (HI_UNF_VI_STORE_METHOD_SPNYC == pstAttr->enStoreMethod))
-            {
-                struViBuf[i][pstAttr->enViPort].pVirAddr[1] = (HI_U8*)struViBuf[i][pstAttr->enViPort].pVirAddr[0]
-                                                              + (HI_U32)pstAttr->stInputRect.s32Height
-                                                              * pstAttr->u32YStride;
-            }
-
-            if (HI_UNF_VI_STORE_METHOD_PNYUV == pstAttr->enStoreMethod)
-            {
-                struViBuf[i][pstAttr->enViPort].pVirAddr[2] = (HI_U8*)struViBuf[i][pstAttr->enViPort].pVirAddr[1]
-                                                              + (HI_U32)pstAttr->stInputRect.s32Height
-                                                              * pstAttr->u32CStride;
-            }
-        }
+        return Ret;
     }
-    else
+
+    *phVi  = stCreate.hVi;
+    u32Chn = (stCreate.hVi) & 0xFF;
+    g_Vi[enPort][u32Chn].hVi   = stCreate.hVi;
+    g_Vi[enPort][u32Chn].hVpss = stCreate.hVpss;
+    memcpy(&g_Vi[enPort][u32Chn].stAttr, pstAttr, sizeof(HI_UNF_VI_ATTR_S));
+
+    for (i = 0; i < VI_MAX_VPSS_PORT; i++)
     {
-        for (i = 0; i < pstAttr->u32BufNum; i++)
-        {
-            struViBuf[0][pstAttr->enViPort].pVirAddr[0] = HI_NULL;
-            struViBuf[0][pstAttr->enViPort].pVirAddr[1] = HI_NULL;
-            struViBuf[0][pstAttr->enViPort].pVirAddr[2] = HI_NULL;
-        }
+        g_Vi[enPort][u32Chn].stPortParam[i].hDst  = HI_INVALID_HANDLE;
+        g_Vi[enPort][u32Chn].stPortParam[i].hPort = HI_INVALID_HANDLE;
     }
-#endif
+
     return HI_SUCCESS;
 }
 
 HI_S32 HI_MPI_VI_Destroy(HI_HANDLE hVi)
 {
-    HI_S32 Ret;
-
-    HI_UNF_VI_E enVi = HI_UNF_VI_BUTT;
+    HI_S32 Ret = HI_FAILURE;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
+    HI_U32 j;
 
     CHECK_VI_INIT();
-    CHECK_VI_HANDLE_AND_GET_VIPORT(hVi, enVi);
-#if 0
-    if (struViBuf[0][enVi].pVirAddr[0])
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
+    if (VI_ENGINE_STARTED & g_Vi[enPort][u32Chn].u32State)
     {
-        HI_MUNMAP(struViBuf[0][enVi].pVirAddr[0]);
+        HI_ERR_VI("VI is still started, stop first.\n");
+        return HI_ERR_VI_CHN_INVALID_STAT;
     }
-#endif
-    Ret = ioctl(g_ViDevFd, CMD_VI_CLOSE, &enVi);
+
+    Ret = ioctl(g_ViDevFd, CMD_VI_DESTROY, &hVi);
     if (Ret != HI_SUCCESS)
     {
         return Ret;
     }
+
+    memset(&g_Vi[enPort][u32Chn], 0x0, sizeof(VI_S));
+    g_Vi[enPort][u32Chn].hVi   = HI_INVALID_HANDLE;
+    g_Vi[enPort][u32Chn].hVpss = VPSS_INVALID_HANDLE;
+    for (j = 0; j < VI_MAX_VPSS_PORT; j++)
+    {
+        g_Vi[enPort][u32Chn].stPortParam[j].hDst  = HI_INVALID_HANDLE;
+        g_Vi[enPort][u32Chn].stPortParam[j].hPort = HI_INVALID_HANDLE;
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 HI_MPI_VI_SetAttr(HI_HANDLE hVi, const HI_UNF_VI_ATTR_S *pstAttr)
+{
+    HI_S32 Ret = HI_FAILURE;
+    VI_ATTR_S stViAttr;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
+
+    CHECK_VI_INIT();
+    CHECK_VI_NULL_PTR(pstAttr);
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
+
+    Ret = VI_CheckAttr(enPort, pstAttr);
+    if (Ret != HI_SUCCESS)
+    {
+        return Ret;
+    }
+
+    if (VI_ENGINE_STARTED & g_Vi[enPort][u32Chn].u32State)
+    {
+        HI_ERR_VI("unsupport set attributes in start mode\n");
+        return HI_ERR_VI_CHN_INVALID_STAT;
+    }
+
+    stViAttr.hVi = hVi;
+    memcpy(&(stViAttr.stAttr), pstAttr, sizeof(HI_UNF_VI_ATTR_S));
+
+    Ret = ioctl(g_ViDevFd, CMD_VI_SET_ATTR, &stViAttr);
+    if (Ret != HI_SUCCESS)
+    {
+        return Ret;
+    }
+
+    memcpy(&g_Vi[enPort][u32Chn].stAttr, pstAttr, sizeof(HI_UNF_VI_ATTR_S));
+
+    return HI_SUCCESS;
+}
+
+HI_S32 HI_MPI_VI_GetAttr(HI_HANDLE hVi, HI_UNF_VI_ATTR_S *pstAttr)
+{
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
+
+    CHECK_VI_INIT();
+    CHECK_VI_NULL_PTR(pstAttr);
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
+
+    memcpy(pstAttr, &g_Vi[enPort][u32Chn].stAttr, sizeof(HI_UNF_VI_ATTR_S));
+
+    return HI_SUCCESS;
+}
+
+HI_S32 HI_MPI_VI_Attach(HI_HANDLE hVi, HI_HANDLE hDst)
+{
+    HI_S32 Ret = HI_FAILURE;
+    HI_DRV_WIN_INFO_S stWinInfo;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
+    HI_U32 i;
+
+    CHECK_VI_INIT();
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
+
+    if (HI_INVALID_HANDLE == hDst)
+    {
+        HI_ERR_VI("para hDst is invalid.\n");
+        return HI_ERR_VI_INVALID_PARA;
+    }
+
+    switch ((hDst >> 16) & 0xff)
+    {
+    case HI_ID_VO:
+    {
+        Ret = HI_MPI_WIN_GetInfo(hDst, &stWinInfo);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_VI("HI_MPI_WIN_GetInfo failed, ret = 0x%08x\n", Ret);
+            return Ret;
+        }
+
+        if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == stWinInfo.eType)
+        {
+            for (i = 0; i < VI_MAX_VPSS_PORT; i++)
+            {
+                if ((g_Vi[enPort][u32Chn].stPortParam[i].hDst == stWinInfo.hPrim)
+                    || (g_Vi[enPort][u32Chn].stPortParam[i].hDst == stWinInfo.hSec))
+                {
+                    HI_ERR_VI("this window is already attached.\n");
+                    return HI_FAILURE;
+                }
+            }
+
+            Ret = VI_AttachToVpss(hVi, stWinInfo.hPrim);
+            if (HI_SUCCESS != Ret)
+            {
+                HI_ERR_VI("VI_AttachToVpss failed, ret = 0x%08x\n", Ret);
+                return Ret;
+            }
+
+            Ret = VI_AttachToVpss(hVi, stWinInfo.hSec);
+            if (HI_SUCCESS != Ret)
+            {
+                HI_ERR_VI("VI_AttachToVpss failed, ret = 0x%08x\n", Ret);
+                return Ret;
+            }
+        }
+        else if (HI_DRV_WIN_ACTIVE_SINGLE == stWinInfo.eType)
+        {
+            for (i = 0; i < VI_MAX_VPSS_PORT; i++)
+            {
+                if (g_Vi[enPort][u32Chn].stPortParam[i].hDst == hDst)
+                {
+                    HI_ERR_VI("this window is already attached.\n");
+                    return HI_FAILURE;
+                }
+            }
+
+            Ret = VI_AttachToVpss(hVi, hDst);
+            if (HI_SUCCESS != Ret)
+            {
+                HI_ERR_VI("VI_AttachToVpss failed, ret = 0x%08x\n", Ret);
+                return Ret;
+            }
+        }
+        else
+        {
+            HI_ERR_VI("vi does not support attach virtual window.\n");
+            return HI_ERR_VI_NOT_SUPPORT;
+        }
+
+        break;
+    }
+    case HI_ID_VENC:
+    {
+        for (i = 0; i < VI_MAX_VPSS_PORT; i++)
+        {
+            if (g_Vi[enPort][u32Chn].stPortParam[i].hDst == hDst)
+            {
+                HI_ERR_VI("this VENC is already attached.\n");
+                return HI_FAILURE;
+            }
+        }
+
+        Ret = VI_AttachToVpss(hVi, hDst);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_VI("VI_AttachToVpss failed, ret = 0x%08x\n", Ret);
+            return Ret;
+        }
+
+        break;
+    }
+    default:
+    {
+        HI_ERR_VI("vi only support attach to win or venc.\n");
+        return HI_ERR_VI_NOT_SUPPORT;
+    }
+    }
+
+    g_Vi[enPort][u32Chn].u32State |= VI_ENGINE_ATTACHED;
+
+    return HI_SUCCESS;
+}
+
+HI_S32 HI_MPI_VI_Detach(HI_HANDLE hVi, HI_HANDLE hDst)
+{
+    HI_S32 Ret = HI_FAILURE;
+    HI_DRV_WIN_INFO_S WinInfo;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
+    HI_U32 i, j;
+
+    CHECK_VI_INIT();
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
+
+    if (HI_INVALID_HANDLE == hDst)
+    {
+        HI_ERR_VI("para hDst is invalid.\n");
+        return HI_ERR_VI_INVALID_PARA;
+    }
+
+    switch ((hDst >> 16) & 0xff)
+    {
+    case HI_ID_VO:
+    {
+        Ret = HI_MPI_WIN_GetInfo(hDst, &WinInfo);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_VI("HI_MPI_WIN_GetInfo failed, ret = 0x%08x\n", Ret);
+            return Ret;
+        }
+
+        if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinInfo.eType)
+        {
+            for (i = 0; i < VI_MAX_VPSS_PORT; i++)
+            {
+                if (g_Vi[enPort][u32Chn].stPortParam[i].hDst == WinInfo.hPrim)
+                {
+                    break;
+                }
+            }
+
+            if (i == VI_MAX_VPSS_PORT)
+            {
+                HI_ERR_VI("this is not a attached window.\n");
+                return HI_FAILURE;
+            }
+
+            for (j = 0; j < VI_MAX_VPSS_PORT; j++)
+            {
+                if (g_Vi[enPort][u32Chn].stPortParam[j].hDst == WinInfo.hSec)
+                {
+                    break;
+                }
+            }
+
+            if (j == VI_MAX_VPSS_PORT)
+            {
+                HI_ERR_VI("this is not a attached window.\n");
+                return HI_FAILURE;
+            }
+
+            Ret = VI_DetachFromVpss(hVi, WinInfo.hPrim);
+            if (HI_SUCCESS != Ret)
+            {
+                HI_ERR_VI("vi detach window failed, ret = 0x%08x.\n", Ret);
+                return Ret;
+            }
+
+            Ret = VI_DetachFromVpss(hVi, WinInfo.hSec);
+            if (HI_SUCCESS != Ret)
+            {
+                HI_ERR_VI("vi detach window failed, ret = 0x%08x.\n", Ret);
+                return Ret;
+            }
+        }
+        else if (HI_DRV_WIN_ACTIVE_SINGLE == WinInfo.eType)
+        {
+            for (i = 0; i < VI_MAX_VPSS_PORT; i++)
+            {
+                if (g_Vi[enPort][u32Chn].stPortParam[i].hDst == hDst)
+                {
+                    break;
+                }
+            }
+
+            if (i == VI_MAX_VPSS_PORT)
+            {
+                HI_ERR_VI("this is not a attached window.\n");
+                return HI_FAILURE;
+            }
+
+            Ret = VI_DetachFromVpss(hVi, hDst);
+            if (HI_SUCCESS != Ret)
+            {
+                HI_ERR_VI("vi detach window failed, ret = 0x%08x.\n", Ret);
+                return Ret;
+            }
+        }
+        else
+        {
+            HI_ERR_VI("vi does not support detach virtual window.\n");
+            return HI_FAILURE;
+        }
+
+        break;
+    }
+    case HI_ID_VENC:
+    {
+        for (i = 0; i < VI_MAX_VPSS_PORT; i++)
+        {
+            if (g_Vi[enPort][u32Chn].stPortParam[i].hDst == hDst)
+            {
+                break;
+            }
+        }
+
+        if (i == VI_MAX_VPSS_PORT)
+        {
+            HI_ERR_VI("this is not a attached window.\n");
+            return HI_FAILURE;
+        }
+
+        Ret = VI_DetachFromVpss(hVi, hDst);
+        if (HI_SUCCESS != Ret)
+        {
+            HI_ERR_VI("vi detach window failed, ret = 0x%08x.\n", Ret);
+            return Ret;
+        }
+
+        break;
+    }
+    default:
+    {
+        HI_ERR_VI("vi only support detach from win or venc.\n");
+        return HI_ERR_VI_NOT_SUPPORT;
+    }
+    }
+
+    for (i = 0; i < VI_MAX_VPSS_PORT; i++)
+    {
+        if (g_Vi[enPort][u32Chn].stPortParam[i].hDst != HI_INVALID_HANDLE)
+        {
+            break;
+        }
+    }
+
+    if (i == VI_MAX_VPSS_PORT)
+    {
+        g_Vi[enPort][u32Chn].u32State &= ~VI_ENGINE_ATTACHED;
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 HI_MPI_VI_SetExternBuffer(HI_HANDLE hVi, HI_UNF_VI_BUFFER_ATTR_S* pstBufAttr)
+{
+    HI_S32 Ret = HI_FAILURE;
+    VI_BUF_ATTR_S stViBufAttr;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
+    HI_U32 i;
+
+    CHECK_VI_INIT();
+    CHECK_VI_NULL_PTR(pstBufAttr);
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
+
+    if ((pstBufAttr->u32BufNum > MAX_VI_FB_NUM) || (pstBufAttr->u32BufNum < MIN_VI_FB_NUM))
+    {
+        HI_ERR_VI("invalid buffer number %d.\n", pstBufAttr->u32BufNum);
+        return HI_ERR_VI_INVALID_PARA;
+    }
+
+#if 0
+    if (pstBufAttr->u32Stride)
+    {
+        HI_ERR_VI("invalid stride 0.\n");
+        return HI_ERR_VI_INVALID_PARA;
+    }
+#endif
+
+
+    for (i = 0; i < pstBufAttr->u32BufNum; i++)
+    {
+        if (!pstBufAttr->u32PhyAddr[i])
+        {
+            HI_ERR_VI("invalid u32PhyAddr[%d] 0.\n", i);
+            return HI_ERR_VI_INVALID_PARA;
+        }
+    }
+
+    if ((HI_TRUE == g_Vi[enPort][u32Chn].stAttr.bVirtual)
+        || ((HI_FALSE == g_Vi[enPort][u32Chn].stAttr.bVirtual)
+            && (HI_UNF_VI_BUF_MMAP != g_Vi[enPort][u32Chn].stAttr.enBufMgmtMode)))
+    {
+        HI_ERR_VI("only support in MMAP mode of REAL VI\n");
+        return HI_ERR_VI_NOT_SUPPORT;
+    }
+
+    if (VI_ENGINE_BUFSET & g_Vi[enPort][u32Chn].u32State)
+    {
+        return HI_SUCCESS;
+    }
+
+    if (VI_ENGINE_STARTED & g_Vi[enPort][u32Chn].u32State)
+    {
+        HI_ERR_VI("unsupport set ext buffer in start mode\n");
+        return HI_ERR_VI_CHN_INVALID_STAT;
+    }
+
+    stViBufAttr.hVi = hVi;
+    memcpy(&(stViBufAttr.stBufAttr), pstBufAttr, sizeof(HI_UNF_VI_BUFFER_ATTR_S));
+    Ret = ioctl(g_ViDevFd, CMD_VI_SET_BUF, &stViBufAttr);
+    if (Ret != HI_SUCCESS)
+    {
+        return Ret;
+    }
+
+    g_Vi[enPort][u32Chn].u32State |= VI_ENGINE_BUFSET;
 
     return HI_SUCCESS;
 }
 
 HI_S32 HI_MPI_VI_Start(HI_HANDLE hVi)
 {
-    HI_S32 Ret;
-
-    HI_UNF_VI_E enVi = HI_UNF_VI_BUTT;
+    HI_S32 Ret = HI_FAILURE;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
 
     CHECK_VI_INIT();
-    CHECK_VI_HANDLE_AND_GET_VIPORT(hVi, enVi);
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
 
-    Ret = ioctl(g_ViDevFd, CMD_VI_START, &enVi);
+    if (VI_ENGINE_STARTED & g_Vi[enPort][u32Chn].u32State)
+    {
+        return HI_SUCCESS;
+    }
+
+    if ((!(VI_ENGINE_BUFSET & g_Vi[enPort][u32Chn].u32State)) && (HI_FALSE == g_Vi[enPort][u32Chn].stAttr.bVirtual)
+        && (HI_UNF_VI_BUF_MMAP == g_Vi[enPort][u32Chn].stAttr.enBufMgmtMode))
+    {
+        HI_ERR_VI("external buffer should be set in MMAP mode of REAL VI\n");
+        return HI_ERR_VI_CHN_INVALID_STAT;
+    }
+
+    Ret = ioctl(g_ViDevFd, CMD_VI_START, &hVi);
     if (Ret != HI_SUCCESS)
     {
         return Ret;
     }
+
+    g_Vi[enPort][u32Chn].u32State |= VI_ENGINE_STARTED;
 
     return HI_SUCCESS;
 }
 
 HI_S32 HI_MPI_VI_Stop(HI_HANDLE hVi)
 {
-    HI_S32 Ret;
-
-    HI_UNF_VI_E enVi = HI_UNF_VI_BUTT;
+    HI_S32 Ret = HI_FAILURE;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
 
     CHECK_VI_INIT();
-    CHECK_VI_HANDLE_AND_GET_VIPORT(hVi, enVi);
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
 
-    Ret = ioctl(g_ViDevFd, CMD_VI_STOP, &enVi);
+    if (!(VI_ENGINE_STARTED & g_Vi[enPort][u32Chn].u32State))
+    {
+        HI_ERR_VI("VI is not started.\n");
+        return HI_ERR_VI_CHN_INVALID_STAT;
+    }
+
+    Ret = ioctl(g_ViDevFd, CMD_VI_STOP, &hVi);
     if (Ret != HI_SUCCESS)
     {
         return Ret;
     }
 
+    g_Vi[enPort][u32Chn].u32State &= ~VI_ENGINE_STARTED;
+
     return HI_SUCCESS;
 }
 
-HI_S32 HI_MPI_VI_SetExternBuffer(HI_HANDLE handle, HI_UNF_VI_BUFFER_ATTR_S* pstBufAttr)
+HI_S32 HI_MPI_VI_QueueFrame(HI_HANDLE hVi, HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo)
 {
-	HI_S32 Ret;
-	VI_BUF_ATTR_S stViBufAttr;
-	HI_UNF_VI_E enVi;
-
-	CHECK_VI_INIT();
-	CHECK_VI_NULL_PTR(pstBufAttr);
-	CHECK_VI_HANDLE_AND_GET_VIPORT(handle, enVi);
-
-	stViBufAttr.enVi = enVi;
-	memcpy(&(stViBufAttr.stBufAttr), pstBufAttr, sizeof(HI_UNF_VI_BUFFER_ATTR_S));
-
-	Ret = ioctl(g_ViDevFd, CMD_VI_SET_BUF, &stViBufAttr);
-	return Ret;
-}
-#if 1
-HI_S32 HI_MPI_VI_QueueFrame(HI_HANDLE hVI, HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo)
-{
-    HI_S32 Ret;
-    VI_FRAME_INFO_S ViFrame;
-    HI_UNF_VI_E enVi;
+    HI_S32 Ret = HI_FAILURE;
+    VI_FRAME_S ViFrame;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
 
     CHECK_VI_INIT();
     CHECK_VI_NULL_PTR(pFrameInfo);
-    CHECK_VI_HANDLE_AND_GET_VIPORT(hVI, enVi);
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
 
-    ViFrame.enVi   = enVi;
-    ViFrame.u32Uid = 0;
+    if (HI_FALSE == g_Vi[enPort][u32Chn].stAttr.bVirtual)
+    {
+        HI_ERR_VI("not support in real VI scene\n");
+        return HI_ERR_VI_NOT_SUPPORT;
+    }
+
+    if (!(VI_ENGINE_STARTED & g_Vi[enPort][u32Chn].u32State))
+    {
+        HI_WARN_VI("VI is not started.\n");
+        return HI_ERR_VI_CHN_INVALID_STAT;
+    }
+
+    ViFrame.hVi = hVi;
     memcpy(&(ViFrame.stViFrame), pFrameInfo, sizeof(HI_UNF_VIDEO_FRAME_INFO_S));
-
     Ret = ioctl(g_ViDevFd, CMD_VI_Q_FRAME, &ViFrame);
-
-    return Ret;
-}
-HI_S32 HI_MPI_VI_DequeueFrame(HI_HANDLE hVI, HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo)
-{
-    HI_S32 Ret;
-    VI_FRAME_INFO_S stViFrameInfo;
-    HI_UNF_VI_E enVi;
-
-    CHECK_VI_INIT();
-    CHECK_VI_NULL_PTR(pFrameInfo);
-    CHECK_VI_HANDLE_AND_GET_VIPORT(hVI, enVi);
-
-    stViFrameInfo.enVi   = enVi;
-    stViFrameInfo.u32Uid = 0;
-    Ret = ioctl(g_ViDevFd, CMD_VI_DQ_FRAME, &stViFrameInfo);
     if (Ret != HI_SUCCESS)
     {
         return Ret;
     }
 
-    memcpy(pFrameInfo, &(stViFrameInfo.stViFrame), sizeof(HI_UNF_VIDEO_FRAME_INFO_S));
-
-    if (pFrameInfo->u32FrameIndex >= VIU_FB_MAX_NUM)
-    {
-        return HI_ERR_VI_INVALID_PARA;
-    }
-
     return HI_SUCCESS;
 }
-#else
 
-HI_S32 HI_MPI_VI_GetFrame(HI_HANDLE handle, HI_UNF_VI_BUF_S * pViBuf)
+HI_S32 HI_MPI_VI_DequeueFrame(HI_HANDLE hVi, HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo)
 {
-    HI_S32 Ret;
-    VI_FRAME_INFO_S stViFrameInfo;
-    HI_UNF_VI_E enVi;
+    HI_S32 Ret = HI_FAILURE;
+    VI_FRAME_S ViFrame;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
 
     CHECK_VI_INIT();
-    CHECK_VI_NULL_PTR(pViBuf);
-    CHECK_VI_HANDLE_AND_GET_VIPORT(handle, enVi);
+    CHECK_VI_NULL_PTR(pFrameInfo);
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
 
-    stViFrameInfo.enVi   = enVi;
-    stViFrameInfo.u32Uid = 0;
-    Ret = ioctl(g_ViDevFd, CMD_VI_GET_FRAME, &stViFrameInfo);
+    if (HI_FALSE == g_Vi[enPort][u32Chn].stAttr.bVirtual)
+    {
+        HI_ERR_VI("not support in real VI scene\n");
+        return HI_ERR_VI_NOT_SUPPORT;
+    }
+
+    if (!(VI_ENGINE_STARTED & g_Vi[enPort][u32Chn].u32State))
+    {
+        HI_WARN_VI("VI is not started.\n");
+        return HI_ERR_VI_CHN_INVALID_STAT;
+    }
+
+    ViFrame.hVi = hVi;
+    Ret = ioctl(g_ViDevFd, CMD_VI_DQ_FRAME, &ViFrame);
     if (Ret != HI_SUCCESS)
     {
         return Ret;
     }
 
-    memcpy(pViBuf, &(stViFrameInfo.stViBuf), sizeof(HI_UNF_VI_BUF_S));
-
-    if (pViBuf->u32FrameIndex >= VIU_FB_MAX_NUM)
-    {
-        return HI_ERR_VI_INVALID_PARA;
-    }
-
-    if (HI_UNF_VI_BUF_ALLOC == pViBuf->enBufMode)
-    {
-        pViBuf->pVirAddr[0] = struViBuf[pViBuf->u32FrameIndex][enVi].pVirAddr[0];
-        pViBuf->pVirAddr[1] = struViBuf[pViBuf->u32FrameIndex][enVi].pVirAddr[1];
-        pViBuf->pVirAddr[2] = struViBuf[pViBuf->u32FrameIndex][enVi].pVirAddr[2];
-    }
-
+    memcpy(pFrameInfo, &(ViFrame.stViFrame), sizeof(HI_UNF_VIDEO_FRAME_INFO_S));
     return HI_SUCCESS;
 }
 
-HI_S32 HI_MPI_VI_PutFrame(HI_HANDLE handle, const HI_UNF_VI_BUF_S * pViBuf)
+HI_S32 HI_MPI_VI_AcquireFrame(HI_HANDLE hVi, HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo, HI_U32 u32TimeoutMs)
 {
-    HI_S32 Ret;
-    VI_FRAME_INFO_S ViFrame;
-    HI_UNF_VI_E enVi;
-
-    CHECK_VI_INIT();
-    CHECK_VI_NULL_PTR(pViBuf);
-    CHECK_VI_HANDLE_AND_GET_VIPORT(handle, enVi);
-
-    ViFrame.enVi   = enVi;
-    ViFrame.u32Uid = 0;
-    memcpy(&(ViFrame.stViBuf), pViBuf, sizeof(HI_UNF_VI_BUF_S));
-
-    Ret = ioctl(g_ViDevFd, CMD_VI_PUT_FRAME, &ViFrame);
-
-    return Ret;
-}
-#endif
-
-HI_S32 HI_MPI_VI_AcquireFrame(HI_HANDLE handle, HI_U32 u32Uid, HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo, HI_U32 u32TimeoutMs)
-{
-    HI_S32 Ret;
-    VI_FRAME_INFO_S stViFrameInfo;
-    HI_UNF_VI_E enVi;
+    HI_S32 Ret = HI_FAILURE;
+    VI_FRAME_S ViFrame;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
 
     CHECK_VI_INIT();
     CHECK_VI_NULL_PTR(pFrameInfo);
-    CHECK_VI_HANDLE_AND_GET_VIPORT(handle, enVi);
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
 
-    stViFrameInfo.enVi   = enVi;
-    stViFrameInfo.u32Uid = u32Uid;
-    Ret = ioctl(g_ViDevFd, CMD_VI_ACQUIRE_FRAME, &stViFrameInfo);
+    if (!(VI_ENGINE_STARTED & g_Vi[enPort][u32Chn].u32State))
+    {
+        HI_WARN_VI("VI is not started.\n");
+        return HI_ERR_VI_CHN_INVALID_STAT;
+    }
+
+    if (VI_ENGINE_ATTACHED & g_Vi[enPort][u32Chn].u32State)
+    {
+        HI_ERR_VI("unsupport acquire frame in attach mode\n");
+        return HI_ERR_VI_CHN_INVALID_STAT;
+    }
+
+    ViFrame.hVi = hVi;
+    ViFrame.u32TimeoutMs = u32TimeoutMs;
+    Ret = ioctl(g_ViDevFd, CMD_VI_ACQUIRE_FRAME, &ViFrame);
     if (Ret != HI_SUCCESS)
     {
         return Ret;
     }
 
-    memcpy(pFrameInfo, &(stViFrameInfo.stViFrame), sizeof(HI_UNF_VIDEO_FRAME_INFO_S));
-
-    if (pFrameInfo->u32FrameIndex >= VIU_FB_MAX_NUM)
-    {
-        return HI_ERR_VI_INVALID_PARA;
-    }
-	
+    memcpy(pFrameInfo, &(ViFrame.stViFrame), sizeof(HI_UNF_VIDEO_FRAME_INFO_S));
     return HI_SUCCESS;
 }
 
-HI_S32 HI_MPI_VI_ReleaseFrame(HI_HANDLE handle, HI_U32 u32Uid, const HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo)
+HI_S32 HI_MPI_VI_ReleaseFrame(HI_HANDLE hVi, const HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo)
 {
-    HI_S32 Ret;
-    VI_FRAME_INFO_S ViFrame;
-    HI_UNF_VI_E enVi;
+    HI_S32 Ret = HI_FAILURE;
+    VI_FRAME_S ViFrame;
+    HI_UNF_VI_E enPort;
+    HI_U32 u32Chn;
 
     CHECK_VI_INIT();
     CHECK_VI_NULL_PTR(pFrameInfo);
-    CHECK_VI_HANDLE_AND_GET_VIPORT(handle, enVi);
+    CHECK_HANDLE_AND_GET_PORT_CHN(hVi, enPort, u32Chn);
 
-    ViFrame.enVi   = enVi;
-    ViFrame.u32Uid = u32Uid;
+    if (!(VI_ENGINE_STARTED & g_Vi[enPort][u32Chn].u32State))
+    {
+        HI_WARN_VI("VI is not started.\n");
+        return HI_ERR_VI_CHN_INVALID_STAT;
+    }
+
+    if (VI_ENGINE_ATTACHED & g_Vi[enPort][u32Chn].u32State)
+    {
+        HI_ERR_VI("unsupport release frame in attach mode\n");
+        return HI_ERR_VI_CHN_INVALID_STAT;
+    }
+
+    ViFrame.hVi = hVi;
     memcpy(&(ViFrame.stViFrame), pFrameInfo, sizeof(HI_UNF_VIDEO_FRAME_INFO_S));
 
     Ret = ioctl(g_ViDevFd, CMD_VI_RELEASE_FRAME, &ViFrame);
-
-    return Ret;
-}
-
-HI_S32 HI_MPI_VI_GetUsrID(HI_HANDLE handle, HI_U32 *pu32UId)
-{
-    HI_S32 s32Ret = HI_FAILURE;
-    VI_UID_INFO_S stUidInfo;
-    HI_UNF_VI_E enVi;
-
-    CHECK_VI_INIT();
-    CHECK_VI_NULL_PTR(pu32UId);
-    CHECK_VI_HANDLE_AND_GET_VIPORT(handle, enVi);
-
-    stUidInfo.enVi = enVi;
-    s32Ret = ioctl(g_ViDevFd, CMD_VI_GET_UID, &stUidInfo);
-    if (HI_SUCCESS != s32Ret)
+    if (Ret != HI_SUCCESS)
     {
-        return s32Ret;
-    }
-
-    *pu32UId = stUidInfo.u32UsrID;
-    return HI_SUCCESS;
-}
-
-HI_S32 HI_MPI_VI_PutUsrID(HI_HANDLE handle, HI_U32 u32UId)
-{
-    HI_S32 s32Ret = HI_FAILURE;
-    VI_UID_INFO_S stUidInfo;
-    HI_UNF_VI_E enVi;
-
-    CHECK_VI_INIT();
-    CHECK_VI_HANDLE_AND_GET_VIPORT(handle, enVi);
-
-    s32Ret = ioctl(g_ViDevFd, CMD_VI_PUT_UID, &stUidInfo);
-    if (HI_SUCCESS != s32Ret)
-    {
-        return s32Ret;
+        return Ret;
     }
 
     return HI_SUCCESS;
 }
 
-//follow functions are for testing
-static FILE *g_pVpDumpFile = NULL;
-
-HI_S32 yuv_dump_start(char *filename)
-{
-    if (filename == NULL)
-    {
-        HI_ERR_VI("yuv_dump_start: filename == NULL!\n");
-        return HI_FAILURE;
-    }
-
-    g_pVpDumpFile = fopen(filename, "wb");
-    if (g_pVpDumpFile == NULL)
-    {
-        HI_ERR_VI("Error create file '%s'.\n", filename);
-        return HI_FAILURE;
-    }
-
-    HI_INFO_VI("open dump file[%s] ok\r\n", filename);
-
-    return HI_SUCCESS;
-}
-
-HI_S32 yuv_dump_end(HI_VOID)
-{
-    if (g_pVpDumpFile)
-    {
-        fclose(g_pVpDumpFile);
-        g_pVpDumpFile = NULL;
-    }
-
-    return HI_SUCCESS;
-}
-#if 0
-/* this functin shows HOW TO save YUV file form VIDEO_BUFFER_S */
-/*only support HI_UNF_VI_STORE_METHOD_SPNYC*/
-HI_S32 yuv_dump(const HI_UNF_VI_BUF_S * pVBuf)
-{
-    HI_S32 s32Ret = HI_FAILURE;
-    unsigned int w, h;
-    char * pVBufVirt_Y;
-    char * pVBufVirt_C;
-    char * pMemContent;
-    char TmpBuff[1024];
-
-    if (NULL == g_pVpDumpFile)
-    {
-        return HI_FAILURE;
-    }
-
-    memset(TmpBuff, 0, 1024);
-    pVBufVirt_Y = (char *)HI_MMAP(pVBuf->u32PhyAddr[0], pVBuf->u32Height * pVBuf->u32Stride[0] );
-    pVBufVirt_C = (char *)HI_MMAP(pVBuf->u32PhyAddr[1], pVBuf->u32Height * pVBuf->u32Stride[1] );
-
-    if (!pVBufVirt_Y || !pVBufVirt_C)
-    {
-        HI_ERR_VI("can NOT map mem for YUV dump.\n");
-
-        if (pVBufVirt_Y)
-        {
-            if (HI_SUCCESS != HI_MUNMAP(pVBufVirt_Y))
-            {
-                HI_ERR_VI("VI HI_MUNMAP failed.\n");
-                return HI_FAILURE;
-            }
-        }
-
-        if (pVBufVirt_C)
-        {
-            if (HI_SUCCESS != HI_MUNMAP(pVBufVirt_C))
-            {
-                HI_ERR_VI("VI HI_MUNMAP failed.\n");
-                return HI_FAILURE;
-            }
-        }
-
-        return HI_FAILURE;
-    }
-
-    //    printf("index=%d, w=%d, h=%d\tYVirtA=0x%08x, CVirtA=0x%08x\r\n",pVBuf->u32FrameIndex,pVBuf->u32Width,pVBuf->u32Height,pVBufVirt_Y,pVBufVirt_C);
-
-    //    printf("saving......Y......");
-    for (h = 0; h < pVBuf->u32Height; h++)
-    {
-        pMemContent = pVBufVirt_Y + h * pVBuf->u32Stride[0];
-        fwrite(pMemContent, pVBuf->u32Width, 1, g_pVpDumpFile);
-    }
-
-    s32Ret = fflush(g_pVpDumpFile);
-
-    //    printf("U......");
-    for (h = 0; h < pVBuf->u32Height / 2; h++)
-    {
-        pMemContent = pVBufVirt_C + h * pVBuf->u32Stride[1];
-
-        pMemContent += 1;
-
-        for (w = 0; w < pVBuf->u32Width / 2; w++)
-        {
-            TmpBuff[w]   = *pMemContent;
-            pMemContent += 2;
-        }
-
-        fwrite(TmpBuff, pVBuf->u32Width / 2, 1, g_pVpDumpFile);
-    }
-
-    s32Ret = fflush(g_pVpDumpFile);
-
-    //    printf("V......");
-    for (h = 0; h < pVBuf->u32Height / 2; h++)
-    {
-        pMemContent = pVBufVirt_C + h * pVBuf->u32Stride[1];
-
-        for (w = 0; w < pVBuf->u32Width / 2; w++)
-        {
-            TmpBuff[w]   = *pMemContent;
-            pMemContent += 2;
-        }
-
-        fwrite(TmpBuff, pVBuf->u32Width / 2, 1, g_pVpDumpFile);
-    }
-
-    s32Ret = fflush(g_pVpDumpFile);
-
-    if (HI_SUCCESS != HI_MUNMAP(pVBufVirt_Y))
-    {
-        HI_ERR_VI("VI HI_MUNMAP failed.\n");
-        return HI_FAILURE;
-    }
-
-    if (HI_SUCCESS != HI_MUNMAP(pVBufVirt_C))
-    {
-        HI_ERR_VI("VI HI_MUNMAP failed.\n");
-        return HI_FAILURE;
-    }
-
-    //    printf("done!\n");
-    if (s32Ret < 0)
-    {
-        return s32Ret;
-    }
-
-    return HI_SUCCESS;
-}
-
-//test end
-#endif
 #ifdef __cplusplus
  #if __cplusplus
 }

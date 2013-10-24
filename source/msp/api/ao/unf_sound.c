@@ -31,7 +31,7 @@
         if (NULL == ptr)\
         {\
             HI_ERR_AO("PTR is NULL!\n");\
-            return HI_ERR_SND_NULL_PTR;\
+            return HI_ERR_AO_NULL_PTR;\
         }\
     }while(0)
     
@@ -39,7 +39,7 @@
         if (HI_UNF_SND_BUTT <= u32SndId)\
         {\
             HI_ERR_AO("Sound ID(%#x) is Invalid!\n", u32SndId);\
-            return HI_ERR_SND_INVALID_ID;\
+            return HI_ERR_AO_INVALID_ID;\
         }\
     }while(0)
 
@@ -47,7 +47,7 @@
         if (enInterface >= HI_UNF_SND_INTERFACE_BUTT) \
     	{ \
     		HI_ERR_AO("intf(%d) is invalid\n", enInterface); \
-    		return HI_ERR_SND_INVALID_PARA; \
+    		return HI_ERR_AO_INVALID_PARA; \
     	}\
 	}while(0)
 
@@ -83,7 +83,7 @@ HI_S32   HI_UNF_SND_SendTrackData(HI_HANDLE hTrack, const HI_UNF_AO_FRAMEINFO_S 
     }
     else if (Ret != HI_SUCCESS)
     {
-        return HI_ERR_SND_INVALID_PARA;
+        return HI_ERR_AO_INVALID_PARA;
     }
     return HI_SUCCESS;
 }
@@ -281,15 +281,22 @@ HI_S32 HI_UNF_SND_ReleaseCastFrame(HI_HANDLE hCast, HI_UNF_AO_FRAMEINFO_S *pstCa
 HI_S32 HI_UNF_SND_Attach(HI_HANDLE hTrack, HI_HANDLE hSource)
 {
     HI_S32 s32Ret;
+
+    CHECK_AO_TRACK_ID(hTrack);
     
-#if 0 /* temp remove dependency. this function is not used in rdk */
-    s32Ret = HI_MPI_AVPLAY_AttachSnd(hSource, hTrack);
+    //s32Ret = HI_MPI_AVPLAY_AttachSnd(hSource, hTrack);
     if (s32Ret != HI_SUCCESS)
     {
         HI_ERR_AO("call HI_MPI_AVPLAY_AttachSnd failed.\n");            
         return s32Ret;
     }
-#endif
+  
+    s32Ret = HI_MPI_AO_Track_Start(hTrack);
+    if (s32Ret != HI_SUCCESS)
+    {
+        HI_ERR_AO("call HI_MPI_AO_Track_Start failed.\n");            
+        return s32Ret;
+    }
 
     return HI_SUCCESS;
 }
@@ -298,14 +305,22 @@ HI_S32 HI_UNF_SND_Detach(HI_HANDLE hTrack, HI_HANDLE hSource)
 {
     HI_S32 ret;
 
-#if 0 /* temp remove dependency. this function is not used in rdk */
-    ret = HI_MPI_AVPLAY_DetachSnd(hSource, hTrack);
+    CHECK_AO_TRACK_ID(hTrack);
+    
+    //ret = HI_MPI_AVPLAY_DetachSnd(hSource, hTrack);
     if (ret != HI_SUCCESS)
     {
         HI_ERR_AO("call HI_MPI_AVPLAY_DetachSnd failed.\n");            
         return ret;
     }
-#endif
+
+    ret = HI_MPI_AO_Track_Stop(hTrack);
+    if (ret != HI_SUCCESS)
+    {
+        HI_ERR_AO("call HI_MPI_AO_Track_Stop failed.\n");            
+        return ret;
+    }
+    
     return HI_SUCCESS;
 }
 
@@ -344,6 +359,13 @@ HI_S32   HI_UNF_SND_SetHdmiMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E en
     return HI_MPI_AO_SND_SetHdmiMode(enSound, enOutPort, enHdmiMode);
 }
 
+HI_S32   HI_UNF_SND_GetHdmiMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_HDMI_MODE_E *penHdmiMode)
+{
+    API_SND_CheckId(enSound);
+
+    return HI_MPI_AO_SND_GetHdmiMode(enSound, enOutPort, penHdmiMode);
+}
+
 HI_S32   HI_UNF_SND_SetSpdifMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort,
                                            HI_UNF_SND_SPDIF_MODE_E enSpdifMode)
 
@@ -352,6 +374,16 @@ HI_S32   HI_UNF_SND_SetSpdifMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E e
 
     return HI_MPI_AO_SND_SetSpdifMode(enSound, enOutPort, enSpdifMode);
 }
+
+HI_S32   HI_UNF_SND_GetSpdifMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort,
+                                           HI_UNF_SND_SPDIF_MODE_E *penSpdifMode)
+
+{
+    API_SND_CheckId(enSound);
+
+    return HI_MPI_AO_SND_GetSpdifMode(enSound, enOutPort, penSpdifMode);
+}
+
 
 HI_S32   HI_UNF_SND_GetDefaultTrackAttr(HI_UNF_SND_TRACK_TYPE_E enTrackType, HI_UNF_AUDIOTRACK_ATTR_S *pstAttr)
 {

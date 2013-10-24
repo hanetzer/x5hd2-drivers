@@ -51,8 +51,7 @@ STATIC HI_U32  TDE_AllocPhysicBuff(HI_U32 u32CbCrOffset)
 
         spin_unlock_irqrestore(&s_TDEBuffLock, s_TDEBuffLockFlags);
         
-        TDE_NEW_MMB(s_TDEPhyBlock);
-        TDE_GET_PHYADDR_MMB(s_TDEPhyBlock, "TDE_TEMP_BUFFER", CFG_HI_TDE_CSCTMPBUFFER_SIZE, u32PhyAddr);
+        u32PhyAddr = HI_GFX_AllocMem("TDE_TEMP_BUFFER",NULL,CFG_HI_TDE_CSCTMPBUFFER_SIZE);
         if(0 == u32PhyAddr)
         {
             return 0;
@@ -68,7 +67,7 @@ STATIC HI_U32  TDE_AllocPhysicBuff(HI_U32 u32CbCrOffset)
         {
             s_u32TDEBuffRef++;
             spin_unlock_irqrestore(&s_TDEBuffLock, s_TDEBuffLockFlags);
-            TDE_FREE_MMB(s_TDEPhyBlock, u32PhyAddr);
+            HI_GFX_FreeMem(u32PhyAddr);
             return s_u32TDEPhyBuff + u32CbCrOffset;
         }
         
@@ -95,7 +94,7 @@ STATIC HI_VOID TDE_FreePhysicBuff(HI_VOID)
         HI_U32 u32PhyBuff = s_u32TDEPhyBuff;
         s_u32TDEPhyBuff = 0;
         spin_unlock_irqrestore(&s_TDEBuffLock, s_TDEBuffLockFlags);
-        TDE_FREE_MMB(s_TDEPhyBlock, u32PhyBuff);
+        HI_GFX_FreeMem(u32PhyBuff);
         return;
     }
     spin_unlock_irqrestore(&s_TDEBuffLock, s_TDEBuffLockFlags);

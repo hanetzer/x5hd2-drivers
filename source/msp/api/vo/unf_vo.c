@@ -21,11 +21,10 @@
 #include <pthread.h>
 
 #include "hi_mpi_win.h"
-//#include "hi_unf_vi.h"
+#include "hi_mpi_vi.h"
 #include "hi_error_mpi.h"
 #include "mpi_disp_tran.h"
 #include "hi_mpi_avplay.h"
-
 
 HI_S32 HI_UNF_VO_Init(HI_UNF_VO_DEV_MODE_E enDevMode)
 {
@@ -43,7 +42,7 @@ HI_S32 HI_UNF_VO_DeInit(HI_VOID)
     return HI_MPI_WIN_DeInit();
 }
 
-HI_S32 VO_ConvertWinAttrToMPI(HI_UNF_WINDOW_ATTR_S *pUnfAttr, HI_DRV_WIN_ATTR_S *pstMpiAttr)
+HI_S32 VO_ConvertWinAttrToMPI(HI_UNF_WINDOW_ATTR_S* pUnfAttr, HI_DRV_WIN_ATTR_S* pstMpiAttr)
 {
     if (!pstMpiAttr)
     {
@@ -62,26 +61,32 @@ HI_S32 VO_ConvertWinAttrToMPI(HI_UNF_WINDOW_ATTR_S *pUnfAttr, HI_DRV_WIN_ATTR_S 
 
     pstMpiAttr->bVirtual = pUnfAttr->bVirtual;
 
+    if (HI_UNF_VO_ASPECT_CVRS_BUTT <= pUnfAttr->stWinAspectAttr.enAspectCvrs && (!pUnfAttr->stWinAspectAttr.bUserDefAspectRatio))
+    {
+        HI_ERR_WIN("para enAspectCvrs is invalid.\n");
+        return HI_ERR_VO_INVALID_PARA;
+    }
+
+
     if (pUnfAttr->stWinAspectAttr.bUserDefAspectRatio)
     {
+        pstMpiAttr->enARCvrs = HI_DRV_ASP_RAT_MODE_CUSTOMER;
         pstMpiAttr->stCustmAR.u8ARw = pUnfAttr->stWinAspectAttr.u32UserAspectWidth;
         pstMpiAttr->stCustmAR.u8ARh = pUnfAttr->stWinAspectAttr.u32UserAspectHeight;
     }
     else
     {
         pstMpiAttr->stCustmAR.u8ARw = 0;
-        pstMpiAttr->stCustmAR.u8ARh = 0;    
-    }
-    Transfe_ARConvert(&pUnfAttr->stWinAspectAttr.enAspectCvrs, &pstMpiAttr->enARCvrs, HI_TRUE);
-    pstMpiAttr->enARCvrs = (HI_DRV_ASP_RAT_MODE_E)(pUnfAttr->stWinAspectAttr.enAspectCvrs);
+        pstMpiAttr->stCustmAR.u8ARh = 0;
 
-    if (pUnfAttr->bUseCropRect)
-    {
-        pstMpiAttr->stCropRect.u32LeftOffset = pUnfAttr->stCropRect.u32LeftOffset;
+        Transfe_ARConvert(&pUnfAttr->stWinAspectAttr.enAspectCvrs, &pstMpiAttr->enARCvrs, HI_TRUE);
+    }
+
+    pstMpiAttr->bUseCropRect = pUnfAttr->bUseCropRect;
+    pstMpiAttr->stCropRect.u32LeftOffset = pUnfAttr->stCropRect.u32LeftOffset;
         pstMpiAttr->stCropRect.u32TopOffset  = pUnfAttr->stCropRect.u32TopOffset;
         pstMpiAttr->stCropRect.u32RightOffset  = pUnfAttr->stCropRect.u32RightOffset;
         pstMpiAttr->stCropRect.u32BottomOffset = pUnfAttr->stCropRect.u32BottomOffset;
-    }
 
     pstMpiAttr->stInRect = pUnfAttr->stInputRect;
     pstMpiAttr->stOutRect = pUnfAttr->stOutputRect;
@@ -89,12 +94,18 @@ HI_S32 VO_ConvertWinAttrToMPI(HI_UNF_WINDOW_ATTR_S *pUnfAttr, HI_DRV_WIN_ATTR_S 
     if (pUnfAttr->bVirtual)
     {
         Transfer_VideoFormat(&pUnfAttr->enVideoFormat, &pstMpiAttr->enDataFormat, HI_TRUE);
+        if (pstMpiAttr->enDataFormat != HI_DRV_PIX_FMT_NV21
+           && pstMpiAttr->enDataFormat != HI_DRV_PIX_FMT_NV61_2X1)
+        {
+            HI_ERR_WIN("para enVideoFormat can't be supported.\n");
+            return HI_ERR_VO_INVALID_PARA;
+        }
     }
-
+    
     return HI_SUCCESS;
 }
 
-HI_S32 VO_ConvertWinAttrToUNF(HI_DRV_WIN_ATTR_S *pstMpiAttr, HI_UNF_WINDOW_ATTR_S *pUnfAttr)
+HI_S32 VO_ConvertWinAttrToUNF(HI_DRV_WIN_ATTR_S* pstMpiAttr, HI_UNF_WINDOW_ATTR_S* pUnfAttr)
 {
     if (!pstMpiAttr)
     {
@@ -112,7 +123,7 @@ HI_S32 VO_ConvertWinAttrToUNF(HI_DRV_WIN_ATTR_S *pstMpiAttr, HI_UNF_WINDOW_ATTR_
     Transfer_DispID(&pUnfAttr->enDisp, &pstMpiAttr->enDisp, HI_FALSE);
 
     pUnfAttr->bVirtual = pstMpiAttr->bVirtual;
-
+#if 0
     if (pstMpiAttr->stCustmAR.u8ARw && pstMpiAttr->stCustmAR.u8ARh)
     {
         pUnfAttr->stWinAspectAttr.bUserDefAspectRatio = HI_TRUE;
@@ -123,14 +134,21 @@ HI_S32 VO_ConvertWinAttrToUNF(HI_DRV_WIN_ATTR_S *pstMpiAttr, HI_UNF_WINDOW_ATTR_
 
     Transfe_ARConvert(&pUnfAttr->stWinAspectAttr.enAspectCvrs, &pstMpiAttr->enARCvrs, HI_FALSE);
     pUnfAttr->stWinAspectAttr.enAspectCvrs = (HI_UNF_VO_ASPECT_CVRS_E)pstMpiAttr->enARCvrs;
+#else
 
-    if (   pstMpiAttr->stCropRect.u32TopOffset || pstMpiAttr->stCropRect.u32LeftOffset
-        || pstMpiAttr->stCropRect.u32BottomOffset || pstMpiAttr->stCropRect.u32RightOffset
-        )
+    if (HI_DRV_ASP_RAT_MODE_CUSTOMER == pstMpiAttr->enARCvrs)
     {
-        pUnfAttr->bUseCropRect = HI_TRUE;
+        pUnfAttr->stWinAspectAttr.bUserDefAspectRatio = HI_TRUE;
+        pUnfAttr->stWinAspectAttr.u32UserAspectWidth  = pstMpiAttr->stCustmAR.u8ARw;
+        pUnfAttr->stWinAspectAttr.u32UserAspectHeight = pstMpiAttr->stCustmAR.u8ARh;
     }
+    else
+    {
+        Transfe_ARConvert(&pUnfAttr->stWinAspectAttr.enAspectCvrs, &pstMpiAttr->enARCvrs, HI_FALSE);
+    }
+#endif
 
+    pUnfAttr->bUseCropRect = pstMpiAttr->bUseCropRect ;
     pUnfAttr->stCropRect.u32LeftOffset   = pstMpiAttr->stCropRect.u32LeftOffset;
     pUnfAttr->stCropRect.u32TopOffset    = pstMpiAttr->stCropRect.u32TopOffset;
     pUnfAttr->stCropRect.u32RightOffset  = pstMpiAttr->stCropRect.u32RightOffset;
@@ -149,11 +167,11 @@ HI_S32 VO_ConvertWinAttrToUNF(HI_DRV_WIN_ATTR_S *pstMpiAttr, HI_UNF_WINDOW_ATTR_
 }
 
 
-HI_S32 HI_UNF_VO_CreateWindow(const HI_UNF_WINDOW_ATTR_S *pWinAttr, HI_HANDLE *phWindow)
+HI_S32 HI_UNF_VO_CreateWindow(const HI_UNF_WINDOW_ATTR_S* pWinAttr, HI_HANDLE* phWindow)
 {
     HI_DRV_WIN_ATTR_S stMpiAttr;
     HI_S32 s32Ret;
-    
+
     if (!pWinAttr)
     {
         HI_ERR_WIN("para pWinAttr is null.\n");
@@ -166,7 +184,12 @@ HI_S32 HI_UNF_VO_CreateWindow(const HI_UNF_WINDOW_ATTR_S *pWinAttr, HI_HANDLE *p
         return HI_ERR_VO_NULL_PTR;
     }
 
-    VO_ConvertWinAttrToMPI((HI_UNF_WINDOW_ATTR_S *)pWinAttr, &stMpiAttr);
+    s32Ret = VO_ConvertWinAttrToMPI((HI_UNF_WINDOW_ATTR_S*)pWinAttr, &stMpiAttr);
+    if (HI_SUCCESS != s32Ret)
+    {
+        HI_ERR_WIN("para pWinAttr is err.\n");
+        return s32Ret;
+    }
 
     s32Ret = HI_MPI_WIN_Create(&stMpiAttr, phWindow);
 
@@ -191,7 +214,7 @@ HI_S32 HI_UNF_VO_SetWindowEnable(HI_HANDLE hWindow, HI_BOOL bEnable)
     return s32Ret;
 }
 
-HI_S32 HI_UNF_VO_GetWindowEnable(HI_HANDLE hWindow, HI_BOOL *pbEnable)
+HI_S32 HI_UNF_VO_GetWindowEnable(HI_HANDLE hWindow, HI_BOOL* pbEnable)
 {
     HI_S32 s32Ret;
 
@@ -200,7 +223,7 @@ HI_S32 HI_UNF_VO_GetWindowEnable(HI_HANDLE hWindow, HI_BOOL *pbEnable)
     return s32Ret;
 }
 
-HI_S32 HI_UNF_VO_SetWindowAttr(HI_HANDLE hWindow, const HI_UNF_WINDOW_ATTR_S *pWinAttr)
+HI_S32 HI_UNF_VO_SetWindowAttr(HI_HANDLE hWindow, const HI_UNF_WINDOW_ATTR_S* pWinAttr)
 {
     HI_DRV_WIN_ATTR_S stMpiAttr;
     HI_S32 s32Ret;
@@ -210,18 +233,23 @@ HI_S32 HI_UNF_VO_SetWindowAttr(HI_HANDLE hWindow, const HI_UNF_WINDOW_ATTR_S *pW
         HI_ERR_WIN("para pWinAttr is null.\n");
         return HI_ERR_VO_NULL_PTR;
     }
-    VO_ConvertWinAttrToMPI((HI_UNF_WINDOW_ATTR_S *)pWinAttr, &stMpiAttr);
+    s32Ret = VO_ConvertWinAttrToMPI((HI_UNF_WINDOW_ATTR_S*)pWinAttr, &stMpiAttr);
+    if (HI_SUCCESS != s32Ret)
+    {
+        HI_ERR_WIN("para pWinAttr is err.\n");
+        return s32Ret;
+    }
 
     s32Ret = HI_MPI_WIN_SetAttr(hWindow, &stMpiAttr);
 
     return s32Ret;
 }
 
-HI_S32 HI_UNF_VO_GetWindowAttr(HI_HANDLE hWindow, HI_UNF_WINDOW_ATTR_S *pWinAttr)
+HI_S32 HI_UNF_VO_GetWindowAttr(HI_HANDLE hWindow, HI_UNF_WINDOW_ATTR_S* pWinAttr)
 {
     HI_DRV_WIN_ATTR_S stMpiAttr;
     HI_S32 s32Ret;
-    
+
     if (!pWinAttr)
     {
         HI_ERR_WIN("para pWinAttr is null.\n");
@@ -238,11 +266,11 @@ HI_S32 HI_UNF_VO_GetWindowAttr(HI_HANDLE hWindow, HI_UNF_WINDOW_ATTR_S *pWinAttr
 }
 
 
-HI_S32 HI_UNF_VO_AcquireFrame(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S *pstFrameinfo, HI_U32 u32TimeoutMs)
+HI_S32 HI_UNF_VO_AcquireFrame(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S* pstFrameinfo, HI_U32 u32TimeoutMs)
 {
     HI_DRV_VIDEO_FRAME_S stMpi;
     HI_S32 s32Ret;
-    
+
     if (!pstFrameinfo)
     {
         HI_ERR_WIN("para pstFrameinfo is null.\n");
@@ -258,11 +286,11 @@ HI_S32 HI_UNF_VO_AcquireFrame(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S *pstF
     return s32Ret;
 }
 
-HI_S32 HI_UNF_VO_ReleaseFrame(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S *pstFrameinfo)
+HI_S32 HI_UNF_VO_ReleaseFrame(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S* pstFrameinfo)
 {
     HI_DRV_VIDEO_FRAME_S stMpi;
     HI_S32 s32Ret;
-    
+
     if (!pstFrameinfo)
     {
         HI_ERR_WIN("para pstFrameinfo is null.\n");
@@ -293,7 +321,7 @@ HI_S32 HI_UNF_VO_SetWindowZorder(HI_HANDLE hWindow, HI_LAYER_ZORDER_E enZFlag)
     return s32Ret;
 }
 
-HI_S32 HI_UNF_VO_GetWindowZorder(HI_HANDLE hWindow, HI_U32 *pu32Zorder)
+HI_S32 HI_UNF_VO_GetWindowZorder(HI_HANDLE hWindow, HI_U32* pu32Zorder)
 {
     HI_S32 s32Ret;
     if (!pu32Zorder)
@@ -309,15 +337,29 @@ HI_S32 HI_UNF_VO_GetWindowZorder(HI_HANDLE hWindow, HI_U32 *pu32Zorder)
 HI_S32 HI_UNF_VO_AttachWindow(HI_HANDLE hWindow, HI_HANDLE hSrc)
 {
     HI_S32 s32Ret = HI_SUCCESS;
-
-#if 0 /* temp remove depedency. this function is not needed here */
-    s32Ret = HI_MPI_AVPLAY_AttachWindow(hSrc, hWindow);
-    if (s32Ret)
+    HI_U8 u8Handle = (hSrc >> 16) & 0xFF;
+    
+    if(HI_ID_AVPLAY == u8Handle)
     {
-        HI_ERR_WIN("HI_MPI_AVPLAY_AttachWindow failed!\n");
-        return s32Ret;
+        //s32Ret = HI_MPI_AVPLAY_AttachWindow(hSrc, hWindow);
+    }
+#ifdef HI_VI_SUPPORT
+    else if(HI_ID_VI == u8Handle)
+    {
+        s32Ret = HI_MPI_VI_Attach(hSrc, hWindow);
     }
 #endif
+    else
+    {
+        HI_ERR_WIN("invalid handle!\n");
+        s32Ret = HI_FAILURE;
+    }
+        
+    if (s32Ret)
+    {
+        HI_ERR_WIN("Vo AttachWindow failed!\n");
+        return s32Ret;
+    }
 
     return HI_SUCCESS;
 }
@@ -325,15 +367,30 @@ HI_S32 HI_UNF_VO_AttachWindow(HI_HANDLE hWindow, HI_HANDLE hSrc)
 HI_S32 HI_UNF_VO_DetachWindow(HI_HANDLE hWindow, HI_HANDLE hSrc)
 {
     HI_S32 s32Ret = HI_SUCCESS;
-
-#if 0 /* temp remove depedency. this function is not needed here */
-    s32Ret = HI_MPI_AVPLAY_DetachWindow(hSrc, hWindow);
-	if (s32Ret)
-	{
-		HI_ERR_WIN("HI_MPI_AVPLAY_DettachWindow failed!\n");
-		return s32Ret;
-	}
+    HI_U8 u8Handle = (hSrc >> 16) & 0xFF;
+    
+    if(HI_ID_AVPLAY == u8Handle)
+    {
+        //s32Ret = HI_MPI_AVPLAY_DetachWindow(hSrc, hWindow);
+    }
+#ifdef HI_VI_SUPPORT    
+    else if(HI_ID_VI == u8Handle)
+    {
+        s32Ret = HI_MPI_VI_Detach(hSrc, hWindow);
+    }
 #endif
+    else
+    {
+        HI_ERR_WIN("invalid handle!\n");
+        s32Ret = HI_FAILURE;
+    }
+    
+    if (s32Ret)
+    {
+       HI_ERR_WIN("Vo AVPLAY_DettachWindow failed!\n");
+       return s32Ret;
+    }
+
     return HI_SUCCESS;
 }
 
@@ -361,19 +418,48 @@ HI_S32 HI_UNF_VO_SetWindowFieldMode(HI_HANDLE hWindow, HI_BOOL bEnable)
 HI_S32 HI_UNF_VO_ResetWindow(HI_HANDLE hWindow, HI_UNF_WINDOW_FREEZE_MODE_E enWinFreezeMode)
 {
     HI_DRV_WIN_SWITCH_E eRstMode;
-    HI_S32 s32Ret;
+    HI_S32 s32Ret = HI_SUCCESS;
+    HI_DRV_WIN_INFO_S  stWinInfo;
 
     Transfe_SwitchMode(&enWinFreezeMode, &eRstMode, HI_TRUE);
 
-    s32Ret = HI_MPI_WIN_Reset(hWindow, eRstMode);
+    s32Ret = HI_MPI_WIN_GetInfo(hWindow, &stWinInfo);
+    if (s32Ret != HI_SUCCESS)
+        return s32Ret;
 
+    /*if in same-source mode, reset two wins.*/
+    if (stWinInfo.eType == HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE) {
+        
+        s32Ret = HI_MPI_WIN_Reset(stWinInfo.hPrim, eRstMode);        
+        if (s32Ret != HI_SUCCESS)
+            return s32Ret;
+
+        s32Ret = HI_MPI_WIN_Reset(stWinInfo.hSec, eRstMode);        
+        if (s32Ret != HI_SUCCESS)
+            return s32Ret;
+    }/*in non-same-source mode, reset itself.*/
+    else if ((stWinInfo.eType == HI_DRV_WIN_ACTIVE_SINGLE)
+             || (stWinInfo.eType == HI_DRV_WIN_ACTIVE_SLAVE))
+    {   
+        
+        s32Ret = HI_MPI_WIN_Reset(hWindow, eRstMode);        
+        if (s32Ret != HI_SUCCESS)
+            return s32Ret;
+    }else {
+    
+        /*do not support reset a virtual window now.*/
+        return HI_ERR_VO_WIN_UNSUPPORT;
+    }
+    
     return s32Ret;
 }
 
-HI_S32 HI_UNF_VO_AttachExternBuffer(HI_HANDLE hWindow,HI_UNF_BUFFER_ATTR_S* pstBufAttr)
+HI_S32 HI_UNF_VO_AttachExternBuffer(HI_HANDLE hWindow, HI_UNF_BUFFER_ATTR_S* pstBufAttr)
 {
     HI_DRV_VIDEO_BUFFER_POOL_S stBufPool;
     HI_S32 s32Ret;
+
+    memset(&stBufPool, 0, sizeof(HI_DRV_VIDEO_BUFFER_POOL_S));
     if (!pstBufAttr)
     {
         HI_ERR_WIN("para pstBufAttr is null.\n");
@@ -389,40 +475,48 @@ HI_S32 HI_UNF_VO_AttachExternBuffer(HI_HANDLE hWindow,HI_UNF_BUFFER_ATTR_S* pstB
 HI_S32 HI_UNF_VO_SetQuickOutputEnable(HI_HANDLE hWindow, HI_BOOL bQuickOutputEnable)
 {
     HI_S32 s32Ret;
-
+    if ((HI_TRUE != bQuickOutputEnable) && (HI_FALSE != bQuickOutputEnable))
+    {
+        HI_ERR_WIN("para bQuickOutputEnable is invalid.\n");
+        return HI_ERR_VO_INVALID_PARA; 
+    }
     s32Ret = HI_MPI_WIN_SetQuickOutput(hWindow, bQuickOutputEnable);
     return s32Ret;
 }
 
 
-HI_S32 HI_UNF_VO_CapturePicture(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S *pstCapPicture)
+HI_S32 HI_UNF_VO_CapturePicture(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S* pstCapPicture)
 {
-//    HI_DRV_VIDEO_FRAME_S stMpi;
-    //HI_S32 s32Ret;
+    HI_DRV_VIDEO_FRAME_S stMpi;
+    HI_S32 s32Ret = HI_SUCCESS;
+    
     if (!pstCapPicture)
     {
         HI_ERR_WIN("para pstCapPicture is null.\n");
         return HI_ERR_VO_NULL_PTR;
     }
-    //s32Ret = HI_MPI_WIN_CapturePicture(hWindow, &stMpi);
-#if 0
-    if (s32Ret)
+    
+    memset((void*)&stMpi, 0, sizeof(HI_DRV_VIDEO_FRAME_S));    
+    s32Ret = HI_MPI_WIN_CapturePicture(hWindow, &stMpi);
+    if (s32Ret == HI_SUCCESS)
     {
         Transfer_Frame(pstCapPicture, &stMpi, HI_FALSE);
     }
-#endif
-    return HI_ERR_VO_MV300_UNSUPPORT;
+    
+    return s32Ret;
 }
 
-HI_S32 HI_UNF_VO_CapturePictureRelease(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S *pstCapPicture)
+HI_S32 HI_UNF_VO_CapturePictureRelease(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S* pstCapPicture)
 {
     HI_DRV_VIDEO_FRAME_S stMpi;
-    HI_S32 s32Ret;
+    HI_S32 s32Ret = HI_SUCCESS;
+
     if (!pstCapPicture)
     {
         HI_ERR_WIN("para pstCapPicture is null.\n");
         return HI_ERR_VO_NULL_PTR;
     }
+
     Transfer_Frame(pstCapPicture, &stMpi, HI_TRUE);
     s32Ret = HI_MPI_WIN_CapturePictureRelease(hWindow, &stMpi);
 
@@ -431,7 +525,7 @@ HI_S32 HI_UNF_VO_CapturePictureRelease(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INF
 
 HI_S32 HI_UNF_VO_SetRotation(HI_HANDLE hWindow, HI_UNF_VO_ROTATION_E enRotation)
 {
-    HI_DRV_ROT_ANGLE_E eRot;
+    HI_DRV_ROT_ANGLE_E eRot = HI_DRV_ROT_ANGLE_BUTT;
     HI_S32 s32Ret;
 
     Transfe_Rotate(&enRotation, &eRot, HI_TRUE);
@@ -439,7 +533,7 @@ HI_S32 HI_UNF_VO_SetRotation(HI_HANDLE hWindow, HI_UNF_VO_ROTATION_E enRotation)
     return s32Ret;
 }
 
-HI_S32 HI_UNF_VO_GetRotation(HI_HANDLE hWindow, HI_UNF_VO_ROTATION_E *penRotation)
+HI_S32 HI_UNF_VO_GetRotation(HI_HANDLE hWindow, HI_UNF_VO_ROTATION_E* penRotation)
 {
     HI_DRV_ROT_ANGLE_E eRot;
     HI_S32 s32Ret;
@@ -449,7 +543,7 @@ HI_S32 HI_UNF_VO_GetRotation(HI_HANDLE hWindow, HI_UNF_VO_ROTATION_E *penRotatio
         return HI_ERR_VO_NULL_PTR;
     }
     s32Ret = HI_MPI_WIN_GetRotation(hWindow, &eRot);
-    if(!s32Ret)
+    if (!s32Ret)
     {
         Transfe_Rotate(penRotation, &eRot, HI_FALSE);
     }
@@ -464,7 +558,7 @@ HI_S32 HI_UNF_VO_SetFlip(HI_HANDLE hWindow, HI_BOOL bHoriFlip, HI_BOOL bVertFlip
     return s32Ret;
 }
 
-HI_S32 HI_UNF_VO_GetFlip(HI_HANDLE hWindow, HI_BOOL *pbHoriFlip, HI_BOOL *pbVertFlip)
+HI_S32 HI_UNF_VO_GetFlip(HI_HANDLE hWindow, HI_BOOL* pbHoriFlip, HI_BOOL* pbVertFlip)
 {
     HI_S32 s32Ret;
     if (!pbVertFlip)

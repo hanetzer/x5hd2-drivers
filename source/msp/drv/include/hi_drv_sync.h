@@ -19,6 +19,7 @@
 
 #include "hi_unf_avplay.h"
 #include "hi_error_mpi.h"
+#include "hi_drv_video.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -133,7 +134,7 @@ typedef struct hiSYNC_VID_INFO_S
     HI_U32   DispTime;
     HI_BOOL  bProgressive;
 	HI_U32   DelayTime;   /* delay time from sync judge to display */
-    HI_BOOL  bTBMatch;  
+	HI_U32   DispRate;
 }SYNC_VID_INFO_S;
 
 typedef struct hiSYNC_VID_OPT_S
@@ -142,6 +143,7 @@ typedef struct hiSYNC_VID_OPT_S
     HI_U32          Repeat;
     HI_U32          Discard;
     HI_U32          VdecDiscardTime;
+    HI_DRV_VIDEO_TB_ADJUST_E    enTBAdjust;
 }SYNC_VID_OPT_S;
 
 typedef struct hiSYNC_AUD_INFO_S
@@ -168,6 +170,7 @@ HI_S32 HI_DRV_SYNC_Start(HI_HANDLE hSync, SYNC_CHAN_E enChn);
 HI_S32 HI_DRV_SYNC_Stop(HI_HANDLE hSync, SYNC_CHAN_E enChn);
 HI_S32 HI_DRV_SYNC_Play(HI_HANDLE hSync);
 HI_S32 HI_DRV_SYNC_AudJudge(HI_HANDLE hSync, SYNC_AUD_INFO_S *pAudInfo, SYNC_AUD_OPT_S *pAudOpt);
+HI_S32 HI_DRV_SYNC_VidJudge(HI_HANDLE hSync, SYNC_VID_INFO_S *pVidInfo, SYNC_VID_OPT_S *pVidOpt);
 HI_S32 HI_DRV_SYNC_GetAttr(HI_HANDLE hSync, HI_UNF_SYNC_ATTR_S *pstSyncAttr);
 HI_S32 HI_DRV_SYNC_SetAttr(HI_HANDLE hSync, HI_UNF_SYNC_ATTR_S *pSyncAttr);
 #endif

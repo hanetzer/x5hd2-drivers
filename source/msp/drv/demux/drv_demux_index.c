@@ -28,7 +28,7 @@
 #include "drv_demux_index.h"
 
 /*!@attention :define the following macro if you want PTS be set to I frames only */
-#define  PUT_PTS_ON_I_FRAME_ONLY
+//#define  PUT_PTS_ON_I_FRAME_ONLY
 
 /*!=======================================================================
                               constants

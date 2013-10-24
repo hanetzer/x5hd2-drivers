@@ -312,7 +312,7 @@ int sony_frame_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
 		goto out;
 	} else {
 		if (fail) {
-			symbol = ir_next_reader_clr_inc(rd);
+			(HI_VOID)ir_next_reader_clr_inc(rd);
 			goto out;
 		}
 		/* if a repeat key. */
@@ -326,7 +326,7 @@ int sony_frame_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
 
 				last_key->key_stat = KEY_STAT_HOLD;
 				ir_insert_key_tail(wr, last_key);
-				symbol = ir_next_reader_clr_inc(rd);
+				(HI_VOID)ir_next_reader_clr_inc(rd);
 				sony_repeat_next_time[idx] = jiffies + 
 					msecs_to_jiffies(
 						ir->key_repeat_interval);
@@ -354,7 +354,7 @@ int sony_frame_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
 
 		key.key_stat = KEY_STAT_DOWN;
 		ir_insert_key_tail(wr, &key);
-		symbol = ir_next_reader_clr_inc(rd);
+		(HI_VOID)ir_next_reader_clr_inc(rd);
 		sony_repeat_next_time[idx] = jiffies + 
 			msecs_to_jiffies(ir->key_repeat_interval);
 
@@ -363,8 +363,18 @@ int sony_frame_full_parse(struct ir_priv *ir, struct ir_protocol *ip,
 	}
 start_timer_out:
 	del_timer(&sony_timer[idx]);
-	sony_timer[idx].expires = jiffies +
-		msecs_to_jiffies(ir->key_hold_timeout_time);
+
+    if (0 == ip->key_hold_timeout_time)
+    {
+        sony_timer[idx].expires = jiffies +
+                             msecs_to_jiffies(ir->key_hold_timeout_time);
+    }
+    else
+    {
+        sony_timer[idx].expires = jiffies +
+                             msecs_to_jiffies(ip->key_hold_timeout_time);
+    }
+	
 	sony_timer[idx].data = idx;
 	add_timer(&sony_timer[idx]);
 

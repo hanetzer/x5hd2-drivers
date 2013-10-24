@@ -31,14 +31,23 @@ extern "C"{
 #include "hi_kernel_adapt.h"
 
 #include "hi_png_config.h"
+#include "hi_gfx_comm_k.h"
 
-#define PNG_FATAL(fmt...)      HI_FATAL_PRINT(HI_ID_PNG, fmt)
-#define PNG_ERROR(fmt...)      HI_ERR_PRINT(HI_ID_PNG, fmt)
-#define PNG_WARNING(fmt...)    HI_WARN_PRINT(HI_ID_PNG, fmt)
-#define PNG_INFO(fmt...)       HI_INFO_PRINT(HI_ID_PNG, fmt)
+#ifndef CONFIG_PNG_DEBUG_DISABLE
+#define PNG_FATAL(fmt...)	    HI_GFX_COMM_LOG_FATAL(HIGFX_PNG_ID, fmt)   
+#define PNG_ERROR(fmt...)	    HI_GFX_COMM_LOG_ERROR(HIGFX_PNG_ID,fmt)    
+#define PNG_WARNING(fmt...)	     HI_GFX_COMM_LOG_WARNING(HIGFX_PNG_ID,fmt)  
+#define PNG_INFO(fmt...) 	     HI_GFX_COMM_LOG_INFO(HIGFX_PNG_ID,fmt)     
+#define HIPNG_TRACE(fmt, args... )   HI_GFX_COMM_LOG_INFO(HIGFX_PNG_ID, fmt)
+#else 
+#define PNG_FATAL(fmt...)
+#define PNG_ERROR(fmt...)
+#define PNG_WARNING(fmt...)
+#define PNG_INFO(fmt...)
+#define HIPNG_TRACE(fmt, args... )
+#endif
 
-
-#ifdef DEBUG
+#ifndef CONFIG_PNG_DEBUG_DISABLE
 #define PNG_ASSERT(EXP)  do {\
     if(!(EXP))\
     {\
@@ -50,8 +59,6 @@ extern "C"{
 #define PNG_ASSERT(EXP)
 #endif
 
-//#define PNG_DECLARE_MUTEX(mutex)    DECLARE_MUTEX(mutex)
-#define PNG_DECLARE_MUTEX(mutex)    HI_DECLARE_MUTEX(mutex)
 
 
 #define PNG_DOWN_INTERRUPTIBLE(pmutex)	do\

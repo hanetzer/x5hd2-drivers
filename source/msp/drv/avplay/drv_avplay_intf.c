@@ -35,16 +35,18 @@
 #include <linux/ioport.h>
 #include <linux/string.h>
 
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_mmz.h"
 #include "hi_drv_avplay.h"
 #include "hi_error_mpi.h"
-#include "drv_module_ext.h"
+#include "hi_drv_module.h"
 #include "hi_module.h"
 #include "drv_avplay_ext.h"
 #include "hi_kernel_adapt.h"
 #include "drv_avplay_ioctl.h"
+#include "hi_osal.h"
+#include "hi_debug.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -163,6 +165,11 @@ static HI_S32 AVPLAY_ProcRead(struct seq_file *p, HI_VOID *v)
     HI_U32            AvplayId;
     AVPLAY_S          *pAvplay;
     HI_U32            i;
+    HI_CHAR           szFrcInRate[16]   = {0};
+    HI_CHAR           szFrcOutRate[16]  = {0};
+    HI_CHAR           szTplaySpeed[16]  = {0};
+    HI_CHAR           szSyncID[16]      = {0};
+    HI_CHAR           szDemuxID[16]     = {0};
 
     pProcItem = p->private;
 
@@ -170,113 +177,212 @@ static HI_S32 AVPLAY_ProcRead(struct seq_file *p, HI_VOID *v)
 
     pAvplay = g_AvplayGlobalState.AvplayInfo[AvplayId].pAvplay;
 
-    p += seq_printf(p,"----------------------Hisilicon AVPLAY%d Out Info-------------------\n", AvplayId);
+    HI_OSAL_Snprintf(szFrcInRate, sizeof(szFrcInRate), "%d.%d", 
+        pAvplay->FrcParamCfg.u32InRate/100, pAvplay->FrcParamCfg.u32InRate%100);
+    
+    HI_OSAL_Snprintf(szFrcOutRate, sizeof(szFrcOutRate), "%d.%d", 
+        pAvplay->FrcParamCfg.u32OutRate/100, pAvplay->FrcParamCfg.u32OutRate%100);
 
-    p += seq_printf(p,
-                    "Stream Type           :%-10s   |DmxId                 :%d\n"
+    HI_OSAL_Snprintf(szTplaySpeed, sizeof(szTplaySpeed), "%d.%d", 
+        pAvplay->FrcParamCfg.u32PlayRate/256, pAvplay->FrcParamCfg.u32PlayRate % 256 * 100 / 256);
+
+    HI_OSAL_Snprintf(szSyncID, sizeof(szSyncID), "sync%02d", pAvplay->hSync & 0xff);
+
+    if (HI_UNF_AVPLAY_STREAM_TYPE_ES == pAvplay->AvplayAttr.stStreamAttr.enStreamType)
+    {
+        HI_OSAL_Snprintf(szDemuxID, sizeof(szDemuxID), "INVALID");
+    }
+    else
+    {
+        HI_OSAL_Snprintf(szDemuxID, sizeof(szDemuxID), "%d", pAvplay->AvplayAttr.u32DemuxId);
+    }
+
+    PROC_PRINT(p,"----------------------Hisilicon AVPLAY%d Out Info-------------------\n", AvplayId);
+
+    PROC_PRINT(p,
+                    "Stream Type           :%-10s   |DmxId                 :%s\n"
                     "CurStatus             :%-10s   |OverflowProc          :%s\n"
-                    "Vid Enable            :%-10s   |Vdec Type             :%s\n"
-                    "Vdec Mode             :%-10s   |DmxVidPid             :0x%x\n"
-                    "Aud Enable            :%-10s   |Adec Type             :%#x\n"
-                    "DmxAudPid             :0x%-10x |DmxAudChnNum          :%u\n"
-                    "VidOverflowNum        :%-10d   |AudOverflowNum        :%d\n"
-                    "FrcEnable             :%-10s   |FrcPlayRate           :%u\n"
-                    "FrcInRate(1/100HZ)    :%-10u   |FrcOutRate(1/100HZ)   :%u\n"
-                    "FrcNeedPlayCnt        :%-10u   |FrcCurPlayCnt         :%u\n",
+                    "Sync ID               :%-10s   |ThreadID              :%d\n"
+                    "ThreadScheTimeOutCnt  :%-10u   |ThreadExeTimeOutCnt   :%u\n",
                     g_pAvplayStreamTypeString[pAvplay->AvplayAttr.stStreamAttr.enStreamType],
-                    pAvplay->AvplayAttr.u32DemuxId,
+                    szDemuxID,
                     g_pAvplayStatusString[pAvplay->CurStatus],
                     g_pAvplayOverflowString[pAvplay->OverflowProc],
+                    szSyncID,
+                    pAvplay->ThreadID,
+                    pAvplay->DebugInfo.ThreadScheTimeOutCnt,
+                    pAvplay->DebugInfo.ThreadExeTimeOutCnt
+                    );
+
+    PROC_PRINT(p,
+                    "------------------------------VID CHANNEL--------------------------\n"
+                    "Vid Enable            :%-10s   |Vdec Type             :%s\n"
+                    "VidOverflowNum        :%-10d   |Vdec Mode             :%s\n"
+                    "VidPid                :0x%-10x |FrcEnable             :%s\n"
+                    "FrcInRate             :%-10s   |FrcOutRate            :%s\n"
+                    "TplaySpeed            :%-10s   |LowDelayEnable        :%s\n"
+                    "Vdec ID               :vdec%02d\n",
                     (pAvplay->VidEnable) ? "TRUE" : "FALSE",
                     g_pAvplayVdecType[pAvplay->VdecAttr.enType],
+                    pAvplay->DebugInfo.VidOverflowNum,
                     g_pAvplayVdecMode[pAvplay->VdecAttr.enMode],
                     pAvplay->DmxVidPid,
-                    (pAvplay->AudEnable) ? "TRUE" : "FALSE",
-                    pAvplay->AdecType,
-                    pAvplay->DmxAudPid[pAvplay->CurDmxAudChn],
-                    pAvplay->DmxAudChnNum,
-                    pAvplay->AvplayStatisticsInfo.VidOverflowNum,
-                    pAvplay->AvplayStatisticsInfo.AudOverflowNum,
                     (pAvplay->bFrcEnable) ? "TRUE" : "FALSE",
-                    pAvplay->FrcParamCfg.u32PlayRate,
-                    pAvplay->FrcParamCfg.u32InRate,
-                    pAvplay->FrcParamCfg.u32OutRate,
-                    pAvplay->FrcNeedPlayCnt,
-                    pAvplay->FrcCurPlayCnt
+                    szFrcInRate,
+                    szFrcOutRate,
+                    szTplaySpeed,
+                    (pAvplay->LowDelayAttr.bEnable) ? "TRUE" : "FALSE",
+                    pAvplay->hVdec & 0xff
                     );
 
-    p += seq_printf(p, "\n");
-
-    p += seq_printf(p, "hDmxPcr               :%#x\n", pAvplay->hDmxPcr);
-    p += seq_printf(p, "hSync                 :%#x\n", pAvplay->hSync);
-    p += seq_printf(p, "hVdec                 :%#x\n", pAvplay->hVdec);
-    p += seq_printf(p, "hDmxVid               :%#x\n", pAvplay->hDmxVid);
-
-    p += seq_printf(p, "hWindow               :%#x(master)", pAvplay->MasterFrmChn.hWindow);
-    for (i=0; i<pAvplay->SlaveChnNum; i++)
-    {
-        p += seq_printf(p, ",%#x(slave)", pAvplay->SlaveFrmChn[i].hWindow);
+    if (HI_INVALID_HANDLE != pAvplay->MasterFrmChn.hWindow)
+    {    
+        PROC_PRINT(p, "FrameChanID           :port%04x->win%04x(master)\n",
+                        pAvplay->MasterFrmChn.hPort & 0xffff,
+                        pAvplay->MasterFrmChn.hWindow & 0xffff);
+                        
     }
-    for (i=0; i<pAvplay->VirChnNum; i++)
+
+    for (i = 0; i < pAvplay->SlaveChnNum; i++)
     {
-        p += seq_printf(p, ",%#x(virtual)", pAvplay->VirFrmChn[i].hWindow);
+        PROC_PRINT(p, "FrameChanID           :port%04x->win%04d(slave%02d)\n",
+                        pAvplay->SlaveFrmChn[i].hPort & 0xffff,
+                        pAvplay->SlaveFrmChn[i].hWindow & 0xffff,
+                        i);
     }
-    p += seq_printf(p, "\n");
 
-    p += seq_printf(p, "hAdec                 :%#x\n", pAvplay->hAdec);
-
-    
-    p += seq_printf(p, "hDmxAud               :%#x", pAvplay->hDmxAud[pAvplay->CurDmxAudChn]);
-    for (i=0; (i<pAvplay->DmxAudChnNum) && (i!=pAvplay->CurDmxAudChn); i++)
+    for (i = 0; i < pAvplay->VirChnNum; i++)
     {
-        p += seq_printf(p, ",%#x", pAvplay->hDmxAud[i]);
+        PROC_PRINT(p, "FrameChanID           :port%04x->win%04d(virtual%02d)\n",
+                        pAvplay->VirFrmChn[i].hPort & 0xffff,
+                        pAvplay->VirFrmChn[i].hWindow & 0xffff,
+                        i);
     }
-    p += seq_printf(p, "\n");
 
-    p += seq_printf(p, "hTrack                :%#x", pAvplay->hSyncTrack);
-    for (i=0; (i<pAvplay->TrackNum) && (pAvplay->hTrack[i] != pAvplay->hSyncTrack); i++)
+    PROC_PRINT(p, 
+                    "AcquireFrame(Try/OK)  :%u/%u\n",
+                    pAvplay->DebugInfo.AcquireVidFrameNum,
+                    pAvplay->DebugInfo.AcquiredVidFrameNum
+                    );
+                        
+    if (HI_INVALID_HANDLE != pAvplay->MasterFrmChn.hWindow)
     {
-        p += seq_printf(p, ",%#x", pAvplay->hTrack[i]);
+        PROC_PRINT(p,
+                        "SendFrame(Try/OK)     :%u/%u(master)\n", 
+                        pAvplay->DebugInfo.MasterVidStat.SendNum,
+                        pAvplay->DebugInfo.MasterVidStat.PlayNum + 
+                        pAvplay->DebugInfo.MasterVidStat.RepeatNum +
+                        pAvplay->DebugInfo.MasterVidStat.DiscardNum
+                        );
     }
-    p += seq_printf(p, "\n");
 
-    p += seq_printf(p, "\n");
+    for (i = 0; i < pAvplay->SlaveChnNum; i++)
+    {
+        PROC_PRINT(p,
+                        "SendFrame(Try/OK)     :%u/%u(slave%02d)\n", 
+                        pAvplay->DebugInfo.SlaveVidStat[i].SendNum,
+                        pAvplay->DebugInfo.SlaveVidStat[i].PlayNum + 
+                        pAvplay->DebugInfo.SlaveVidStat[i].RepeatNum +
+                        pAvplay->DebugInfo.SlaveVidStat[i].DiscardNum,
+                        i
+                        );
+    }
 
-    p += seq_printf(p, 
-                    "-------------Aud Es Data Proc-------------\n"
-                    "Acquire(Try/OK)    Send(Try/OK)\n"
-                    "%10u/%u  \t%u/%u\n"
-                    "--------------Aud Frame Proc--------------\n"
-                    "Acquire(Try/OK)    Send(Try/OK)\n"
-                    "%10u/%u  \t%u/%u\n",
+    for (i = 0; i < pAvplay->VirChnNum; i++)
+    {
+        PROC_PRINT(p,
+                        "SendFrame(Try/OK)     :%u/%u(virtual%02d)\n", 
+                        pAvplay->DebugInfo.VirVidStat[i].SendNum,
+                        pAvplay->DebugInfo.VirVidStat[i].PlayNum + 
+                        pAvplay->DebugInfo.VirVidStat[i].RepeatNum +
+                        pAvplay->DebugInfo.VirVidStat[i].DiscardNum,
+                        i
+                        );
+    }
+
+    //PROC_PRINT(p, "\n");
+
+    PROC_PRINT(p,
+                  "------------------------------AUD CHANNEL--------------------------\n"
+                  "Aud Enable            :%-10s   |Adec Type             :%s\n"
+                  "AudOverflowNum        :%-10d   |AdecDelayMs           :%u\n"
+                  "DmxAudChnNum          :%-10d\n",
+                  (pAvplay->AudEnable) ? "TRUE" : "FALSE",
+                  pAvplay->AdecNameInfo.szHaCodecName,
+                  pAvplay->DebugInfo.AudOverflowNum,
+                  pAvplay->AdecDelayMs,
+                  pAvplay->DmxAudChnNum
+                  );
                     
-                    pAvplay->AvplayStatisticsInfo.AcquireAudEsNum, 
-                    pAvplay->AvplayStatisticsInfo.AcquiredAudEsNum,
-                    pAvplay->AvplayStatisticsInfo.SendAudEsNum,
-                    pAvplay->AvplayStatisticsInfo.SendedAudEsNum,
-                    pAvplay->AvplayStatisticsInfo.AcquireAudFrameNum,
-                    pAvplay->AvplayStatisticsInfo.AcquiredAudFrameNum,
-                    pAvplay->AvplayStatisticsInfo.SendAudFrameNum, 
-                    pAvplay->AvplayStatisticsInfo.SendedAudFrameNum
+    PROC_PRINT(p, "DmxAudPid             :");
+
+    for (i = 0; i < pAvplay->DmxAudChnNum; i++)
+    {
+        PROC_PRINT(p, "%#x", pAvplay->DmxAudPid[i]);
+
+        if ((pAvplay->DmxAudChnNum > 1) && (i == pAvplay->CurDmxAudChn))
+        {
+            PROC_PRINT(p, "(play)");
+        }
+
+        if (i < pAvplay->DmxAudChnNum - 1)
+        {
+            PROC_PRINT(p, ",");
+        }
+    }
+
+    PROC_PRINT(p, "\n");
+
+    PROC_PRINT(p, "Adec ID               :adec%02d\n", pAvplay->hAdec & 0xff);
+
+    for (i = 0; i < pAvplay->TrackNum; i++)
+    {
+        PROC_PRINT(p, "Track ID              :track%02d", pAvplay->hTrack[i] & 0xff);
+
+        if (pAvplay->hSyncTrack == pAvplay->hTrack[i])
+        {
+            PROC_PRINT(p, "(master)");
+        }
+
+        PROC_PRINT(p, "\n");
+    }
+
+    PROC_PRINT(p, 
+                    "AcquireStream(Try/OK) :%u/%u\n"
+                    "SendStream(Try/OK)    :%u/%u\n"
+                    "AcquireFrame(Try/OK)  :%u/%u\n",
+                    pAvplay->DebugInfo.AcquireAudEsNum, 
+                    pAvplay->DebugInfo.AcquiredAudEsNum,
+                    pAvplay->DebugInfo.SendAudEsNum, 
+                    pAvplay->DebugInfo.SendedAudEsNum,
+                    pAvplay->DebugInfo.AcquireAudFrameNum,
+                    pAvplay->DebugInfo.AcquiredAudFrameNum
                     );
 
-    p += seq_printf(p,
-                    "--------------Vid Frame Proc--------------\n"
-                    "Acquire(Try/OK)    Send(Try/OK)\n"
-                    "%10u/%u  \t%u/%u\n",
-                    pAvplay->AvplayStatisticsInfo.AcquireVidFrameNum, 
-                    pAvplay->AvplayStatisticsInfo.AcquiredVidFrameNum,
-                    pAvplay->AvplayStatisticsInfo.SendVidFrameNum, 
-                    pAvplay->AvplayStatisticsInfo.SendedVidFrameNum
-                    );
-                                        
+    for (i = 0; i < pAvplay->TrackNum; i++)
+    {
+        PROC_PRINT(p,
+                        "SendFrame(Try/OK)     :%u/%u",
+                        pAvplay->DebugInfo.SendAudFrameNum, 
+                        pAvplay->DebugInfo.SendedAudFrameNum
+                        );
+
+        if (pAvplay->hSyncTrack == pAvplay->hTrack[i]) 
+        {
+            PROC_PRINT(p, "(master)");
+        }
+
+        PROC_PRINT(p, "\n");
+    }
+
+    PROC_PRINT(p, "\n");
+
     return HI_SUCCESS;
 }
 
 static HI_VOID AVPLAY_ProcPrintHelp(HI_VOID)
 {
-    printk("echo FrcEnable=true/false > /proc/msp/avplayxx, enable or disable frc\n"
-           "echo FrcPlayRate=xx > /proc/msp/avplayxx, set the FrcPlayRate(base is 256)\n"
+    HI_PRINT("echo FrcEnable=true|false > /proc/msp/avplayxx, enable or disable frc\n"
           );
           
     return;
@@ -319,13 +425,13 @@ static HI_S32 AVPLAY_ProcWrite(struct file * file,
         return -EFAULT;
     }
 
-    if (0 == strncmp(pItemName, "FrcEnable", strlen("FrcEnable")))
+    if (0 == HI_OSAL_Strncmp(pItemName, "FrcEnable", strlen("FrcEnable")))
     {
-        if (0 == strncmp(pItemValue, "true", strlen("true")))
+        if (0 == HI_OSAL_Strncmp(pItemValue, "true", strlen("true")))
         {
             pAvplay->bFrcEnable = HI_TRUE;
         }
-        else if (0 == strncmp(pItemValue, "false", strlen("false")))
+        else if (0 == HI_OSAL_Strncmp(pItemValue, "false", strlen("false")))
         {
             pAvplay->bFrcEnable = HI_FALSE;
         }
@@ -333,10 +439,6 @@ static HI_S32 AVPLAY_ProcWrite(struct file * file,
         {
             AVPLAY_ProcPrintHelp();
         }
-    }
-    else if (0 == strncmp(pItemName, "FrcPlayRate", strlen("FrcPlayRate")))
-    {
-        pAvplay->FrcParamCfg.u32PlayRate = simple_strtol(pItemValue, NULL, 10);
     }
     else
     {
@@ -353,6 +455,7 @@ HI_S32 AVPLAY_Create(AVPLAY_CREATE_S *pAvplayCreate, struct file *file)
     MMZ_BUFFER_S      MemBuf;
     HI_S32            Ret;
     HI_U32            i;
+    HI_CHAR           BufName[32];
 
     if (AVPLAY_MAX_NUM == g_AvplayGlobalState.AvplayCount)
     {
@@ -368,14 +471,23 @@ HI_S32 AVPLAY_Create(AVPLAY_CREATE_S *pAvplayCreate, struct file *file)
         }
     }
 
-    sprintf(ProcName, "%s%02d", HI_MOD_AVPLAY, i);
-    Ret = HI_DRV_MMZ_AllocAndMap(ProcName, MMZ_OTHERS, 0x2000, 0, &MemBuf);
+    if (i == AVPLAY_MAX_NUM)
+    {
+        HI_ERR_AVPLAY("the avplay num is max.\n");
+        return HI_ERR_AVPLAY_CREATE_ERR;        
+    }
+	
+    HI_OSAL_Snprintf(BufName, sizeof(BufName), "AVPLAY_Inst%02d", i);
+    
+    Ret = HI_DRV_MMZ_AllocAndMap(BufName, MMZ_OTHERS, 0x2000, 0, &MemBuf);
     if (Ret != HI_SUCCESS)
     {
-        HI_FATAL_AVPLAY("malloc %s mmz failed.\n", ProcName);
+        HI_FATAL_AVPLAY("malloc %s mmz failed.\n", BufName);
 
         return Ret;
     }
+
+    HI_OSAL_Snprintf(ProcName, sizeof(ProcName), "%s%02d", HI_MOD_AVPLAY, i);
 
     pProcItem = HI_DRV_PROC_AddModule(ProcName, HI_NULL, HI_NULL);
     if (!pProcItem)
@@ -414,7 +526,7 @@ HI_S32 AVPLAY_Destroy(HI_U32 AvplayId)
 
     memset(ProcName, 0, sizeof(ProcName));    
 
-    sprintf(ProcName, "%s%02d", HI_MOD_AVPLAY, AvplayId);
+    HI_OSAL_Snprintf(ProcName, sizeof(ProcName), "%s%02d", HI_MOD_AVPLAY, AvplayId);
     HI_DRV_PROC_RemoveModule(ProcName);
 
     MemBuf.u32StartVirAddr = (HI_U32)g_AvplayGlobalState.AvplayInfo[AvplayId].pAvplay;
@@ -684,7 +796,7 @@ HI_S32 AVPLAY_DRV_ModInit(HI_VOID)
         g_AvplayGlobalState.AvplayInfo[i].AvplayUsrAddr = HI_NULL;
     }
 
-    sprintf(g_AvplayRegisterData.devfs_name, UMAP_DEVNAME_AVPLAY);
+    HI_OSAL_Snprintf(g_AvplayRegisterData.devfs_name, sizeof(g_AvplayRegisterData.devfs_name), UMAP_DEVNAME_AVPLAY);
 
     g_AvplayRegisterData.fops = &AVPLAY_FOPS;
     g_AvplayRegisterData.minor = UMAP_MIN_MINOR_AVPLAY;

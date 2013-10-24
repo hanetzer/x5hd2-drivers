@@ -116,6 +116,21 @@ typedef enum hiADEC_ATTR
         }                                               \
     } while (0)
 
+
+#define CHECK_ADEC_STATEARG2(bEnable, adecMutex1,adecMutex2) \
+		do                                                  \
+{                                                   \
+		if (HI_FALSE == bEnable)                             \
+		{                                               \
+				HI_ERR_ADEC(" adec state invalid\n");          \
+				ADEC_UNLOCK(adecMutex1);\
+				ADEC_UNLOCK(adecMutex2);\
+				return HI_FAILURE; \
+		}                                               \
+} while (0)
+
+
+
 #define CHECK_ADEC_OUTBUF_NUMBER(number) \
     do                                                  \
     {                                                   \
@@ -157,6 +172,19 @@ typedef enum hiADEC_ATTR
         }                                               \
     } while (0)
 
+
+#define  HI_MPI_ADEC_RetUserErrARG2(DrvErrCode, adecMutex1,adecMutex2)  \
+		do                                                  \
+{                                                   \
+		if (HI_SUCCESS != DrvErrCode)                   \
+		{                                               \
+				HI_ERR_ADEC(" ErrCode =0x%x\n",DrvErrCode); \
+				ADEC_UNLOCK(adecMutex1); \
+				ADEC_UNLOCK(adecMutex2); \
+				return DrvErrCode; \
+		}                                               \
+} while (0)
+
 #define  HI_MPI_ADEC_RetUserErr2(DrvErrCode, adecMutex) \
     do                                                  \
     {                                                   \
@@ -164,6 +192,32 @@ typedef enum hiADEC_ATTR
         ADEC_UNLOCK(adecMutex); \
         return DrvErrCode; \
     } while (0)		
+
+#define  HI_MPI_ADEC_RetUserErr2ARG2(DrvErrCode, adecMutex1,adecMutex2) \
+		do                                                  \
+{                                                   \
+		HI_ERR_ADEC(" ErrCode =0x%x\n",DrvErrCode); \
+		ADEC_UNLOCK(adecMutex1); \
+		ADEC_UNLOCK(adecMutex2); \
+		return DrvErrCode; \
+} while (0)
+
+
+typedef enum
+{
+    ADEC_CMD_CTRL_START = 0,
+    ADEC_CMD_CTRL_STOP,
+    ADEC_CMD_CTRL_BUTT
+} ADEC_CMD_CTRL_E;     
+
+
+typedef enum
+{
+    ADEC_CMD_PROC_SAVE_PCM = 0,
+    ADEC_CMD_PROC_SAVE_ES,
+    ADEC_CMD_PROC_BUTT
+} ADEC_CMD_SAVE_E;     
+
 
 /* Buffer 												*/
 typedef struct hiADEC_OUTPUTBUF_S
@@ -234,6 +288,8 @@ typedef struct hiADEC_PROC_ITEM_S
     HI_U32           u32FrameWrite;
     HI_U32           u32PtsLost;
     HI_U32           u32Volume;
+	HI_U32           u32OutChannels;
+	HI_U32           u32BitsOutBytesPerFrame;
     HI_U32           u32DbgGetBufCount_Try;
     HI_U32           u32DbgGetBufCount;
     HI_U32           u32DbgPutBufCount_Try;
@@ -245,6 +301,18 @@ typedef struct hiADEC_PROC_ITEM_S
     HI_U32           u32DbgTryDecodeCount;
     HI_U32           u32FrameConsumedBytes;
     HI_U32           u32LastCorrectFrameNum;
+    HI_U32           u32ThreadId;
+
+    ADEC_CMD_CTRL_E    enPcmCtrlState;
+    ADEC_CMD_CTRL_E    enEsCtrlState;
+    HI_U32                  u32SavePcmCnt;
+    HI_U32                  u32SaveEsCnt;
+    HI_CHAR              filePath[512];   
+
+    HI_U32           ThreadBeginTime;
+    HI_U32           ThreadEndTime;
+    HI_U32           ThreadScheTimeOutCnt;
+    HI_U32           ThreadExeTimeOutCnt;
 } ADEC_PROC_ITEM_S;
 
 #define ADEC_LOCK_DECLARE(p_mutex) ;                 \
@@ -293,6 +361,7 @@ HI_S32	ADEC_GetBufferStatus (HI_HANDLE hAdec, ADEC_BUFSTATUS_S *ptsBufStatus);
 HI_S32	ADEC_GetDebugInfo(HI_HANDLE hAdec, ADEC_DEBUGINFO_S *pstDebuginfo);
 HI_S32	ADEC_GetStatusInfo(HI_HANDLE hAdec, ADEC_STATUSINFO_S *pstStatusinfo);
 HI_S32	ADEC_GetStreamInfo(HI_HANDLE hAdec, ADEC_STREAMINFO_S * pstStreaminfo);
+HI_S32  ADEC_GetHaSzNameInfo(HI_HANDLE hAdec,ADEC_SzNameINFO_S *pHaSznameInfo);
 
 HI_S32 ADEC_GetAnalysisPcmData(HI_HANDLE hAdec);
 HI_S32 ADEC_GetAudSpectrum(HI_U16 *pSpectrum ,HI_U32 u32BandNum);

@@ -3,10 +3,8 @@
 #include <stdlib.h>
 
 #include "hi_type.h"
-#include "mpi_debug.h"
-
+#include "hi_drv_mem.h"
 #include "mpi_mutils.h"
-
 #include "drv_module_ioctl.h"
 #include "mpi_mmgr.h"
 #include "mpi_mem_base.h"
@@ -24,7 +22,7 @@ HI_HANDLE Mem_Utils_Init(HI_U32 u32Count, MEM_UTILS_S stMem)
 
     if (NULL == pUtils)
     {
-       THIS_ERR_PRINT("malloc %d size failure!\n", u32Count * u32ItemSize);
+       HI_ERR_MEM("malloc %d size failure!\n", u32Count * u32ItemSize);
 
         return 0;
     }
@@ -52,14 +50,15 @@ HI_HANDLE Mem_Utils_Init(HI_U32 u32Count, MEM_UTILS_S stMem)
     pUtils->pMemBaseAddr = malloc(u32ItemSize);
     if (NULL == pUtils->pMemBaseAddr)
     {
-        THIS_ERR_PRINT("failed to request %s memory size %d\n", g_szPoolName[pUtils->enType], u32ItemSize);
+        HI_ERR_MEM("failed to request %s memory size %d\n", g_szPoolName[pUtils->enType], u32ItemSize);
+        free(pUtils);
     }
     else
     {
         memset(pUtils->pMemBaseAddr, 0, u32ItemSize);
         hResult = (HI_HANDLE)pUtils;
         
-        THIS_INFO_PRINT("successfully, request %s, and base address is 0x%08x\n", g_szPoolName[pUtils->enType], pUtils->pMemBaseAddr);
+        HI_INFO_MEM("successfully, request %s, and base address is 0x%08x\n", g_szPoolName[pUtils->enType], pUtils->pMemBaseAddr);
     }
     
     return hResult;
@@ -73,7 +72,7 @@ HI_VOID Mem_Utils_DeInit(HI_HANDLE hUtils)
     {
         if (NULL != pUtils->pMemBaseAddr)
         {
-            THIS_INFO_PRINT("free %s memory, and address is 0x%08x\n", g_szPoolName[pUtils->enType], pUtils->pMemBaseAddr);
+            HI_INFO_MEM("free %s memory, and address is 0x%08x\n", g_szPoolName[pUtils->enType], pUtils->pMemBaseAddr);
             free(pUtils->pMemBaseAddr);
         }
         
@@ -139,7 +138,7 @@ HI_VOID* Mem_Utils_MALLOC(HI_HANDLE hUtils)
 
                 pUtils->u32HasCount++;
                 
-                THIS_INFO_PRINT("request %s and address[%d] is 0x%08x!\n", g_szPoolName[pUtils->enType], u32Index, pResult);
+                HI_INFO_MEM("request %s and address[%d] is 0x%08x!\n", g_szPoolName[pUtils->enType], u32Index, pResult);
                 break;
             }
 
@@ -151,7 +150,7 @@ HI_VOID* Mem_Utils_MALLOC(HI_HANDLE hUtils)
 
                 pUtils->u32HasCount++;
                 
-                THIS_INFO_PRINT("request %s and address[%d] is 0x%08x!\n", g_szPoolName[pUtils->enType], u32Index, pResult);
+                HI_INFO_MEM("request %s and address[%d] is 0x%08x!\n", g_szPoolName[pUtils->enType], u32Index, pResult);
                 break;
             }
 
@@ -163,7 +162,7 @@ HI_VOID* Mem_Utils_MALLOC(HI_HANDLE hUtils)
 
                 pUtils->u32HasCount++;
                 
-                THIS_INFO_PRINT("request %s and address[%d] is 0x%08x!\n", g_szPoolName[pUtils->enType], u32Index, pResult);
+                HI_INFO_MEM("request %s and address[%d] is 0x%08x!\n", g_szPoolName[pUtils->enType], u32Index, pResult);
                 break;
             }
         }
@@ -172,7 +171,7 @@ HI_VOID* Mem_Utils_MALLOC(HI_HANDLE hUtils)
     }
 
 
-    THIS_ERR_PRINT("param is invalid!\n");
+    HI_ERR_MEM("param is invalid!\n");
     
     return NULL;
 }
@@ -220,7 +219,7 @@ HI_VOID Mem_Utils_FREE(HI_HANDLE hUtils, HI_VOID* pAddr)
 
                 pUtils->u32HasCount--;
                 
-                THIS_INFO_PRINT("idle %s and address is 0x%08x, successfully!\n", g_szPoolName[pUtils->enType], pAddr);
+                HI_INFO_MEM("idle %s and address is 0x%08x, successfully!\n", g_szPoolName[pUtils->enType], pAddr);
                 break;
             }
 
@@ -232,7 +231,7 @@ HI_VOID Mem_Utils_FREE(HI_HANDLE hUtils, HI_VOID* pAddr)
 
                 pUtils->u32HasCount--;
                 
-                THIS_INFO_PRINT("idle %s and address is 0x%08x, successfully!\n", g_szPoolName[pUtils->enType], pAddr);
+                HI_INFO_MEM("idle %s and address is 0x%08x, successfully!\n", g_szPoolName[pUtils->enType], pAddr);
                 break;
             }
 
@@ -244,7 +243,7 @@ HI_VOID Mem_Utils_FREE(HI_HANDLE hUtils, HI_VOID* pAddr)
 
                 pUtils->u32HasCount--;
                 
-                THIS_INFO_PRINT("idle %s and address is 0x%08x, successfully!\n", g_szPoolName[pUtils->enType], pAddr);
+                HI_INFO_MEM("idle %s and address is 0x%08x, successfully!\n", g_szPoolName[pUtils->enType], pAddr);
                 break;
             }
 
@@ -254,7 +253,7 @@ HI_VOID Mem_Utils_FREE(HI_HANDLE hUtils, HI_VOID* pAddr)
     }
 
 
-    THIS_ERR_PRINT("idle %s and address is 0x%08x, failure!!!\n", g_szPoolName[pUtils->enType], pAddr);
+    HI_ERR_MEM("idle %s and address is 0x%08x, failure!!!\n", pUtils ? g_szPoolName[pUtils->enType] : g_szPoolName[MEM_POOL_TYPE_BUTT], pAddr);
     
     return;
 }

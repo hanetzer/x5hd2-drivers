@@ -18,9 +18,6 @@ date:      16, 03, 2013.
 #include "vdec_drv_ctx.h"
 #include "omx_dbg.h"
 
-extern FILE* pYuvFile;
-OMX_U8 ul[2*1024*1024];
-OMX_U8 vl[2*1024*1024];
 
 OMX_S32 channel_create(vdec_drv_context *drv_ctx)
 {
@@ -57,7 +54,7 @@ OMX_S32 channel_create(vdec_drv_context *drv_ctx)
 	}
 
 	drv_ctx->chan_handle = chan_handle;
-	DEBUG_PRINT("create channel %d ok\n",chan_handle);
+	DEBUG_PRINT("create channel %ld ok\n",chan_handle);
 
 	return 0;
 }
@@ -199,9 +196,16 @@ OMX_S32 channel_get_msg(vdec_drv_context *drv_ctx, struct vdec_msginfo *msginfo)
 	OMX_S32 vdec_fd = -1;
 	struct vdec_ioctl_msg msg = {0, NULL, NULL};
 
-	if (NULL == drv_ctx || !msginfo || (drv_ctx->chan_handle < 0))
+	if (NULL == drv_ctx || NULL == msginfo)
 	{
-		DEBUG_PRINT_ERROR("%s() failed", __func__);
+		DEBUG_PRINT_ERROR("%s() param invalid! drv_ctx(%p), msginfo(%p)", 
+                          __func__, drv_ctx, msginfo);
+		return -1;
+	}
+
+	if (drv_ctx->chan_handle < 0)
+	{
+		DEBUG_PRINT_ERROR("%s() chan_handle(%d) invalid!", __func__, drv_ctx->chan_handle);
 		return -1;
 	}
 
@@ -236,7 +240,7 @@ OMX_S32 channel_submit_stream(vdec_drv_context *drv_ctx, struct vdec_user_buf_de
 	OMX_S32 vdec_fd = -1;
 	struct vdec_ioctl_msg msg = {0, NULL, NULL};
 
-	if (NULL == drv_ctx || !puser_buf || drv_ctx->chan_handle < 0)
+	if (NULL == drv_ctx || NULL == puser_buf || drv_ctx->chan_handle < 0)
 	{
 		DEBUG_PRINT_ERROR("%s() failed", __func__);
 		return -1;
@@ -256,7 +260,7 @@ OMX_S32 channel_submit_frame(vdec_drv_context *drv_ctx, struct vdec_user_buf_des
 	OMX_S32 vdec_fd = -1;
 	struct vdec_ioctl_msg msg = {0, NULL, NULL};
 
-	if (NULL == drv_ctx || !puser_buf || drv_ctx->chan_handle < 0)
+	if (NULL == drv_ctx || NULL == puser_buf || drv_ctx->chan_handle < 0)
 	{
 		DEBUG_PRINT_ERROR("%s() failed", __func__);
 		return -1;
@@ -276,7 +280,7 @@ OMX_S32 channel_bind_buffer(vdec_drv_context *drv_ctx, struct vdec_user_buf_desc
 	OMX_S32 vdec_fd = -1;
 	struct vdec_ioctl_msg msg = {0, NULL, NULL};
 
-	if (NULL == drv_ctx || drv_ctx->chan_handle < 0 || !puser_buf)
+	if (NULL == drv_ctx || NULL == puser_buf || drv_ctx->chan_handle < 0)
 	{
 		DEBUG_PRINT_ERROR("%s() invalid param.", __func__);
 		return -1;
@@ -296,7 +300,7 @@ OMX_S32 channel_unbind_buffer(vdec_drv_context *drv_ctx, struct vdec_user_buf_de
 	OMX_S32 vdec_fd = -1;
 	struct vdec_ioctl_msg msg = {0, NULL, NULL};
 
-	if (NULL == drv_ctx || !puser_buf || drv_ctx->chan_handle < 0)
+	if (NULL == drv_ctx || NULL == puser_buf || drv_ctx->chan_handle < 0)
 	{
 		DEBUG_PRINT_ERROR("%s() failed", __func__);
 		return -1;
@@ -328,12 +332,20 @@ void vdec_deinit_drv_context(vdec_drv_context  *drv_ctx)
 		close(drv_ctx->video_driver_fd);
 		drv_ctx->video_driver_fd = -1;
 	}
+
+    if (drv_ctx->yuv_fp != NULL)
+    {
+        fclose(drv_ctx->yuv_fp);
+        drv_ctx->yuv_fp = NULL;
+    }
+	
+    if (drv_ctx->chrom_l != NULL)
+    {
+        free(drv_ctx->chrom_l);
+        drv_ctx->chrom_l = NULL;
+        drv_ctx->chrom_l_size = 0;
+    }
     
-       if(pYuvFile)
-       {
-              fclose(pYuvFile);
-              pYuvFile = NULL;
-       }
 }
 
 
@@ -368,58 +380,70 @@ OMX_S32 vdec_init_drv_context(vdec_drv_context *drv_ctx)
 	pchan_cfg->s32DnrDispOutEnable = 0;
 	pchan_cfg->s32DnrTfEnable = 0;
 
-       pchan_cfg->s32ChanStrmOFThr = 0;
-       pchan_cfg->s32VcmpEn = 0;
-       pchan_cfg->s32VcmpWmStartLine = 0;
-       pchan_cfg->s32WmEn = 0;
-       pchan_cfg->s32VcmpWmEndLine = 0;
-       pchan_cfg->s32Btl1Dt2DEnable = 1;
-       pchan_cfg->s32BtlDbdrEnable = 1;
+    pchan_cfg->s32ChanStrmOFThr = 0;
+    pchan_cfg->s32VcmpEn = 1;
+    pchan_cfg->s32VcmpWmStartLine = 0;
+    pchan_cfg->s32WmEn = 0;
+    pchan_cfg->s32VcmpWmEndLine = 0;
+    pchan_cfg->s32Btl1Dt2DEnable = 1;
+    pchan_cfg->s32BtlDbdrEnable = 1;
 
 	return 0;
 }
 
 
-void debug_save_yuv(FILE* pFile, OMX_U8 *Yaddress, OMX_U8 *Caddress, OMX_U32 Width, OMX_U32 Height,  OMX_U32 Stride)
+OMX_S8 debug_save_yuv(FILE* pFile, OMX_U8* pstChroml, OMX_U8 *Yaddress, OMX_U8 *Caddress, OMX_U32 Width, OMX_U32 Height,  OMX_U32 Stride)
 {
     OMX_U32 i, j;
     OMX_U32 chrom_width = Width/2;
     OMX_U32 chrom_height = Height/2;
-	
-    if (pFile)
-    {
-		/*write y*/
-        for (i=0; i<Height; i++)
-        {
-            if(Width != fwrite(Yaddress, 1, Width, pFile))
-            {
-                DEBUG_PRINT_ERROR("Y line %d: fwrite fail!\n",__LINE__);
-            }
-            Yaddress += Stride;
-        }
-        for (i=0; i<chrom_height; i++)
-        {
-            for (j=0; j<chrom_width; j++)
-            {
-                 vl[i*chrom_width+j] = Caddress[2*j];
-                 ul[i*chrom_width+j] = Caddress[2*j+1];
-            }
+    OMX_U8* ul = NULL;
+    OMX_U8* vl = NULL;
 
-            Caddress += Stride;
-        }
-        if(chrom_width*chrom_height != fwrite(ul, 1, chrom_width*chrom_height, pFile))
-        {
-            DEBUG_PRINT_ERROR("U line %d: fwrite fail!\n",__LINE__);
-        }
-        
-        if(chrom_width*chrom_height != fwrite(vl, 1, chrom_width*chrom_height, pFile))
-        {
-            DEBUG_PRINT_ERROR("V line %d: fwrite fail!\n",__LINE__);
-        }
-            
-        
-        fflush(pFile);
+    if (!pFile || !pstChroml || !Yaddress || !Caddress)
+    {
+        DEBUG_PRINT_ERROR("%s: INVALID PARAM!\n", __func__);
+        return -1;
     }
+	
+	/*write y*/
+    for (i=0; i<Height; i++)
+    {
+        if(Width != fwrite(Yaddress, 1, Width, pFile))
+        {
+            DEBUG_PRINT_ERROR("Y line %d: fwrite fail!\n",__LINE__);
+            return -1;
+        }
+        Yaddress += Stride;
+    }
+
+    ul = pstChroml;
+    vl = pstChroml + chrom_height*chrom_width;
+    for (i=0; i<chrom_height; i++)
+    {
+        for (j=0; j<chrom_width; j++)
+        {
+             vl[i*chrom_width+j] = Caddress[2*j];
+             ul[i*chrom_width+j] = Caddress[2*j+1];
+        }
+        Caddress += Stride;
+    }
+    if(chrom_width*chrom_height != fwrite(ul, 1, chrom_width*chrom_height, pFile))
+    {
+        DEBUG_PRINT_ERROR("U line %d: fwrite fail!\n",__LINE__);
+        return -1;
+    }
+    
+    if(chrom_width*chrom_height != fwrite(vl, 1, chrom_width*chrom_height, pFile))
+    {
+        DEBUG_PRINT_ERROR("V line %d: fwrite fail!\n",__LINE__);
+        return -1;
+    }
+        
+    fflush(pFile);
+
+    return 0;
+        
 }
 
 

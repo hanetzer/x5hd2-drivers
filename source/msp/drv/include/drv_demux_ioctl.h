@@ -32,7 +32,7 @@ History       :
         if (   (DMX_CHANID(ChanHandle) >= DMX_CHANNEL_CNT)              \
             || (((ChanHandle) & 0xffffff00) != DMX_CHANHANDLE(0)) )     \
         {                                                               \
-            HI_WARN_DEMUX("Invalid Handle 0x%x\n", ChanHandle);         \
+            HI_ERR_DEMUX("Invalid Handle 0x%x\n", ChanHandle);         \
             return HI_ERR_DMX_INVALID_PARA;                             \
         }                                                               \
     } while (0)
@@ -47,7 +47,7 @@ History       :
         if (   (DMX_RECID(RecHandle) >= DMX_CNT)                        \
             || (((RecHandle) & 0xffffff00) != DMX_RECHANDLE(0)) )       \
         {                                                               \
-            HI_WARN_DEMUX("Invalid Handle 0x%x\n", RecHandle);          \
+            HI_ERR_DEMUX("Invalid Handle 0x%x\n", RecHandle);          \
             return HI_ERR_DMX_INVALID_PARA;                             \
         }                                                               \
     } while (0)
@@ -387,6 +387,9 @@ typedef struct hiDMX_SetChan_ExtAttr_S
 /* global */
 #define CMD_DEMUX_GET_POOLBUF_ADDR          _IOR (HI_ID_DEMUX, 0x00, DMX_MMZ_BUF_S)
 #define CMD_DEMUX_GET_CAPABILITY            _IOR (HI_ID_DEMUX, 0x01, HI_UNF_DMX_CAPABILITY_S)
+#define CMD_DEMUX_SET_PUSI              _IOW (HI_ID_DEMUX, 0x02, HI_UNF_DMX_PUSI_SET_S)
+#define CMD_DEMUX_SET_TEI                    _IOW (HI_ID_DEMUX, 0x03, HI_UNF_DMX_TEI_SET_S)
+
 
 /* TS PORT */
 #define CMD_DEMUX_PORT_GET_ATTR             _IOWR(HI_ID_DEMUX, 0x10, DMX_Port_GetAttr_S)        /* get port attr */

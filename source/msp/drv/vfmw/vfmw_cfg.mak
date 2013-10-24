@@ -1,16 +1,16 @@
 #===============================================================================
 #  include chip type from SDK cfg.mak file   
 #===============================================================================
-include $(PWD)/../../../../../../../base.mak
+#include $(PWD)/../../../../../../../base.mak
 
 #===============================================================================
 #  set chip type by yourself   
 #===============================================================================
-#CFG_HI_CHIP_TYPE = hi3716cv200
+CFG_HI_CHIP_TYPE = hi3716cv200
 #CFG_HI_CHIP_TYPE = hi3716cv200es
 #CFG_HI_CHIP_TYPE = hi3719
 #CFG_HI_CHIP_TYPE = hi3535
-CFG_HI_CHIP_TYPE = hi3712v100
+#CFG_HI_CHIP_TYPE = hi3712v100
 #CFG_HI_CHIP_TYPE = hi3716m
 #CFG_HI_CHIP_TYPE = hi3716c
 #CFG_HI_CHIP_TYPE = hi3716h

@@ -17,13 +17,14 @@ CFLAGS  +=  -I$(COMMON_UNF_INCLUDE)                 \
             -I$(COMMON_DRV_INCLUDE)                 \
             -I$(MSP_UNF_INCLUDE)                    \
             -I$(MSP_API_INCLUDE)                    \
-            -I$(MSP_DRV_INCLUDE)                    \
+            -I$(MSP_DRV_INCLUDE)                                
             #-I$(COMPONENT_DIR)/ha_codec/include
 
 LIBS := libhi_hdmi
 
 OBJS := mpi_hdmi.o	    \
-        unf_hdmi.o
+        unf_hdmi.o	    \
+        mpi_hdmi_fmt.o
 
 HEADER_FILES := $(MSP_DIR)/include/hi_unf_hdmi.h
 
@@ -41,7 +42,9 @@ clean:
 
 install: all
 	$(AT)cp -f  $(LIBS).a           $(STATIC_LIB_DIR)/
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)cp -f  $(LIBS).so          $(SHARED_LIB_DIR)/
+endif
 	$(AT)cp -f  $(HEADER_FILES)     $(INCLUDE_DIR)/
 
 uninstall:
@@ -51,5 +54,7 @@ uninstall:
 
 $(LIBS) : $(OBJS)
 	$(AT)$(AR) -rsv $@.a $^
+ifndef CFG_HI_STATIC_LIB_ONLY
 	$(AT)$(CC) -shared -o $@.so $^
+endif
 

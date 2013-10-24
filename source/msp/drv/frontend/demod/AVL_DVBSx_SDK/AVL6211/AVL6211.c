@@ -47,7 +47,7 @@
 
 #include "drv_tuner_ioctl.h"
 #include "drv_demod.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_mem.h"
 
 //#include "hi_gpio.h"
 #include "hi_drv_gpio.h"
@@ -408,7 +408,7 @@ HI_S32 avl6211_set_sat_attr(HI_U32 u32TunerPort, HI_UNF_TUNER_SAT_ATTR_S *pstSat
     AVL_DVBSx_ErrorCode r = AVL_DVBSx_EC_OK;
     HI_UNF_TUNER_SAT_ATTR_S* pstAttr;
 
-    HI_ASSERT(HI_NULL != pstSatTunerAttr);
+    HI_TUNER_CHECKPOINTER( pstSatTunerAttr);
 
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -640,7 +640,7 @@ HI_S32 avl6211_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S * pstChannel)
     struct AVL_Tuner * pTuner = HI_NULL;
     AVL6211_DEMOD_PARA_S* pstParam;
 
-    HI_ASSERT(HI_NULL != pstChannel);
+    HI_TUNER_CHECKPOINTER( pstChannel);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
@@ -767,7 +767,7 @@ HI_S32 avl6211_get_status (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *pen
     AVL_DVBSx_ErrorCode r = AVL_DVBSx_EC_OK;
     AVL6211_DEMOD_PARA_S* pstParam;
 
-    HI_ASSERT(HI_NULL != penTunerStatus);
+    HI_TUNER_CHECKPOINTER( penTunerStatus);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
@@ -813,7 +813,7 @@ HI_S32 avl6211_get_ber(HI_U32 u32TunerPort, HI_U32* pu32ber)
     HI_U32 u32Exponent;
     AVL6211_DEMOD_PARA_S* pstParam;
 
-    HI_ASSERT(HI_NULL != pu32ber);
+    HI_TUNER_CHECKPOINTER( pu32ber);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
@@ -858,7 +858,7 @@ HI_S32 avl6211_get_snr(HI_U32 u32TunerPort, HI_U32* pu32SNR)
 {
     AVL6211_DEMOD_PARA_S* pstParam;
 
-    HI_ASSERT(HI_NULL != pu32SNR);
+    HI_TUNER_CHECKPOINTER( pu32SNR);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
@@ -893,7 +893,7 @@ HI_S32 avl6211_get_signal_strength(HI_U32 u32TunerPort, HI_U32* pu32SignalStreng
     HI_U16 u16Strength = 0;
     AVL6211_DEMOD_PARA_S* pstParam;
 
-    HI_ASSERT(HI_NULL != pu32SignalStrength);
+    HI_TUNER_CHECKPOINTER( pu32SignalStrength);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
@@ -929,8 +929,8 @@ HI_S32 avl6211_get_freq_symb_offset(HI_U32 u32TunerPort, HI_U32 * pu32Freq, HI_U
     HI_S16 s16FreqOffset;
     AVL6211_DEMOD_PARA_S* pstParam;
 
-    HI_ASSERT(HI_NULL != pu32Freq);
-    HI_ASSERT(HI_NULL != pu32Symb);
+    HI_TUNER_CHECKPOINTER( pu32Freq);
+    HI_TUNER_CHECKPOINTER( pu32Symb);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
@@ -992,7 +992,7 @@ HI_S32 avl6211_get_signal_info(HI_U32 u32TunerPort, HI_UNF_TUNER_SIGNALINFO_S *p
         HI_UNF_TUNER_FE_FEC_8_9, HI_UNF_TUNER_FE_FEC_9_10
     };
 
-    HI_ASSERT(HI_NULL != pstInfo);
+    HI_TUNER_CHECKPOINTER( pstInfo);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
@@ -1103,8 +1103,8 @@ static void ChannelFilter(HI_UNF_TUNER_SAT_TPINFO_S *pstTPValidList, HI_U8 *pu8V
     HI_U8 i, j;
     HI_U8 u8Num;
 
-    HI_ASSERT(HI_NULL != pstTPValidList);
-    HI_ASSERT(HI_NULL != pu8ValidNum);
+    HI_TUNER_CHECKPOINTER( pstTPValidList);
+    HI_TUNER_CHECKPOINTER( pu8ValidNum);
 
     u8Num = *pu8ValidNum;
 
@@ -1163,7 +1163,7 @@ HI_S32 avl6211_blindscan_init(HI_U32 u32TunerPort, TUNER_BLINDSCAN_INITPARA_S *p
     AVL6211_DEMOD_PARA_S* pstParam;
     struct AVL_DVBSx_Chip *pAVLChip = HI_NULL;
 
-    HI_ASSERT(HI_NULL != pstPara);
+    HI_TUNER_CHECKPOINTER( pstPara);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
@@ -1210,7 +1210,7 @@ HI_S32 avl6211_blindscan_action(HI_U32 u32TunerPort, TUNER_BLINDSCAN_PARA_S *pst
     HI_U8 i = 0, j = 0;
     AVL6211_DEMOD_PARA_S* pstParam = HI_NULL;
 
-    HI_ASSERT(HI_NULL != pstPara);
+    HI_TUNER_CHECKPOINTER( pstPara);
 
     /* Set 0 */
     r = copy_to_user(&(pstPara->u16Count), &u16FindTPNum, sizeof(pstPara->u16Count));
@@ -1540,7 +1540,7 @@ HI_S32 avl6211_DiSEqC_send_msg(HI_U32 u32TunerPort, HI_UNF_TUNER_DISEQC_SENDMSG_
     AVL6211_DEMOD_PARA_S* pstParam;
     struct AVL_DVBSx_Chip * pAVLChip = HI_NULL;
 
-    HI_ASSERT(HI_NULL != pstSendMsg);
+    HI_TUNER_CHECKPOINTER( pstSendMsg);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
@@ -1601,7 +1601,7 @@ HI_S32 avl6211_DiSEqC_recv_msg(HI_U32 u32TunerPort, HI_UNF_TUNER_DISEQC_RECVMSG_
     AVL6211_DEMOD_PARA_S* pstParam;
     struct AVL_DVBSx_Chip * pAVLChip = HI_NULL;
 
-    HI_ASSERT(HI_NULL != pstRecvMsg);
+    HI_TUNER_CHECKPOINTER( pstRecvMsg);
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)

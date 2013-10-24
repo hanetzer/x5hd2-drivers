@@ -12,11 +12,18 @@
 #include "hi_drv_pdm.h"
 #include "hi_unf_pdm.h"
 #include "hi_mpi_mem.h"
+#include "hi_osal.h"
 
 
 #define PDM_BASE_DEF_NAME         "baseparam"
 #define PDM_LOGO_DEF_NAME         "logo"
 #define PDM_FASTPLAY_DEF_NAME     "fastplay"
+
+
+static const HI_U8 s_szPDMVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
+
 
 
 static HI_UNF_DISP_TIMING_S g_stTiming = 
@@ -42,49 +49,18 @@ static HI_UNF_DISP_TIMING_S g_stTiming =
     //.InRectHeight = 768,
 };
 
-HI_VOID MCE_GetDefDispParam(HI_UNF_PDM_DISP_PARAM_S *pDispParam)
+static HI_VOID MCE_GetDefDispParam(HI_UNF_PDM_DISP_PARAM_S *pDispParam)
 {
     HI_UNF_DISP_INTF_S              stDacMode[HI_UNF_DISP_INTF_TYPE_BUTT];
     HI_UNF_DISP_BG_COLOR_S          stBgcolor;
     HI_U32                          i;
+
+	memset(pDispParam, 0, sizeof(HI_UNF_PDM_DISP_PARAM_S));
     
-    pDispParam->enFormat                    = HI_UNF_ENC_FMT_1080i_50;
-    pDispParam->stDispTiming                = g_stTiming;
-    pDispParam->u32HuePlus                  = 50;
-    pDispParam->u32Saturation               = 50;
-    pDispParam->u32Contrast                 = 50;
-    pDispParam->u32Brightness               = 50;
-
-    stBgcolor.u8Red                         = 0x00;
-    stBgcolor.u8Green                       = 0x00;
-    stBgcolor.u8Blue                        = 0xFF;
-    pDispParam->stBgColor                   = stBgcolor;
-
-    pDispParam->stIntf[HI_UNF_DISP_INTF_TYPE_YPBPR].enIntfType = HI_UNF_DISP_INTF_TYPE_YPBPR;
-	pDispParam->stIntf[HI_UNF_DISP_INTF_TYPE_YPBPR].unIntf.stYPbPr.u8DacY = 1;
-	pDispParam->stIntf[HI_UNF_DISP_INTF_TYPE_YPBPR].unIntf.stYPbPr.u8DacPb = 0;
-	pDispParam->stIntf[HI_UNF_DISP_INTF_TYPE_YPBPR].unIntf.stYPbPr.u8DacPr = 2;
-
-	pDispParam->stIntf[HI_UNF_DISP_INTF_TYPE_CVBS].enIntfType = HI_UNF_DISP_INTF_TYPE_CVBS;
-	pDispParam->stIntf[HI_UNF_DISP_INTF_TYPE_CVBS].unIntf.stCVBS.u8Dac = 3;
-
     for (i=0; i<HI_UNF_DISP_INTF_TYPE_BUTT; i++)
     {
-        if ((i != HI_UNF_DISP_INTF_TYPE_YPBPR) && (i != HI_UNF_DISP_INTF_TYPE_CVBS))
-        {
-            pDispParam->stIntf[i].enIntfType = HI_UNF_DISP_INTF_TYPE_BUTT;
-        }
+        pDispParam->stIntf[i].enIntfType = HI_UNF_DISP_INTF_TYPE_BUTT;
     }
-   
-    pDispParam->enPixelFormat               = HIGO_PF_8888;
-    pDispParam->u32DisplayWidth             = 1280;
-    pDispParam->u32DisplayHeight            = 720;
-    pDispParam->u32ScreenXpos               = 0;
-    pDispParam->u32ScreenYpos               = 0;
-    pDispParam->u32ScreenWidth              = 1920;
-    pDispParam->u32ScreenHeight             = 1080;  
-    
-    pDispParam->stAspectRatio.enDispAspectRatio      = HI_UNF_DISP_ASPECT_RATIO_4TO3;
 
     return;  
 }
@@ -104,8 +80,16 @@ HI_S32 PDM_GetDispParam(HI_U8 *pBuf, HI_UNF_DISP_E enDisp, HI_UNF_PDM_DISP_PARAM
     }
  
     MCE_GetDefDispParam(&stDefDispParam);
-    
-    Ret = HI_DB_GetTableByName(&BaseDB, MCE_BASE_TABLENAME_HD0, &stTable);
+
+	if (HI_UNF_DISPLAY0 == enDisp)
+	{
+		Ret = HI_DB_GetTableByName(&BaseDB, MCE_BASE_TABLENAME_DISP0, &stTable);
+	}
+	else
+	{
+		Ret = HI_DB_GetTableByName(&BaseDB, MCE_BASE_TABLENAME_DISP1, &stTable);
+	}
+	
     if(HI_SUCCESS != Ret)
     {
         return HI_FAILURE;
@@ -139,6 +123,12 @@ HI_S32 PDM_GetDispParam(HI_U8 *pBuf, HI_UNF_DISP_E enDisp, HI_UNF_PDM_DISP_PARAM
     else
     {
         pstDispParam->stIntf[HI_UNF_DISP_INTF_TYPE_CVBS] = stDefDispParam.stIntf[HI_UNF_DISP_INTF_TYPE_CVBS];
+    }
+
+	Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_INTF_HDMI, &stKey);
+    if(HI_SUCCESS == Ret)
+    {
+        pstDispParam->stIntf[HI_UNF_DISP_INTF_TYPE_HDMI] = *(HI_UNF_DISP_INTF_S *)(stKey.pValue);
     }
 
     Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_INTF_RGB, &stKey);
@@ -231,14 +221,10 @@ HI_S32 PDM_GetDispParam(HI_U8 *pBuf, HI_UNF_DISP_E enDisp, HI_UNF_PDM_DISP_PARAM
         pstDispParam->bGammaEnable = stDefDispParam.bGammaEnable;
     } 
 
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_ASP_R, &stKey);
-    if (HI_SUCCESS == Ret)
+	Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_ASPECT, &stKey);
+    if(HI_SUCCESS == Ret)
     {
         pstDispParam->stAspectRatio = *(HI_UNF_DISP_ASPECT_RATIO_S *)(stKey.pValue);
-    }
-    else
-    {
-        pstDispParam->stAspectRatio = stDefDispParam.stAspectRatio;
     }
 
     Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_PF, &stKey);
@@ -251,64 +237,70 @@ HI_S32 PDM_GetDispParam(HI_U8 *pBuf, HI_UNF_DISP_E enDisp, HI_UNF_PDM_DISP_PARAM
         pstDispParam->enPixelFormat = stDefDispParam.enPixelFormat;
     }
 
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISPW, &stKey);
+	Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_SRC_DISP, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        pstDispParam->u32DisplayWidth = *(HI_U32 *)(stKey.pValue);
+        pstDispParam->enSrcDisp = *(HI_UNF_DISP_E *)(stKey.pValue);
+    }
+	
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_VIRSCW, &stKey);
+    if(HI_SUCCESS == Ret)
+    {
+        pstDispParam->u32VirtScreenWidth = *(HI_U32 *)(stKey.pValue);
     }
     else
     {
-        pstDispParam->u32DisplayWidth = stDefDispParam.u32DisplayWidth;
+        pstDispParam->u32VirtScreenWidth = stDefDispParam.u32VirtScreenWidth;
     }   
 
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISPH, &stKey);
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_VIRSCH, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        pstDispParam->u32DisplayHeight = *(HI_U32 *)(stKey.pValue);
+        pstDispParam->u32VirtScreenHeight = *(HI_U32 *)(stKey.pValue);
     }
     else
     {
-        pstDispParam->u32DisplayHeight = stDefDispParam.u32DisplayHeight;
+        pstDispParam->u32VirtScreenHeight = stDefDispParam.u32VirtScreenHeight;
     }    
     
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_SCRX, &stKey);
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISP_L, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        pstDispParam->u32ScreenXpos = *(HI_U32 *)(stKey.pValue);
+        pstDispParam->stDispOffset.u32Left = *(HI_U32 *)(stKey.pValue);
     }
     else
     {
-        pstDispParam->u32ScreenXpos = stDefDispParam.u32ScreenXpos;
+        pstDispParam->stDispOffset.u32Left = stDefDispParam.stDispOffset.u32Left;
     }   
 
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_SCRY, &stKey);
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISP_T, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        pstDispParam->u32ScreenYpos = *(HI_U32 *)(stKey.pValue);
+        pstDispParam->stDispOffset.u32Top = *(HI_U32 *)(stKey.pValue);
     }
     else
     {
-        pstDispParam->u32ScreenYpos = stDefDispParam.u32ScreenYpos;
+        pstDispParam->stDispOffset.u32Top = stDefDispParam.stDispOffset.u32Top;
     }   
 
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_SCRW, &stKey);
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISP_R, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        pstDispParam->u32ScreenWidth = *(HI_U32 *)(stKey.pValue);
+        pstDispParam->stDispOffset.u32Right = *(HI_U32 *)(stKey.pValue);
     }
     else
     {
-        pstDispParam->u32ScreenWidth = stDefDispParam.u32ScreenWidth;
+        pstDispParam->stDispOffset.u32Right = stDefDispParam.stDispOffset.u32Right;
     }   
 
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_SCRH, &stKey);
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISP_B, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        pstDispParam->u32ScreenHeight = *(HI_U32 *)(stKey.pValue);
+        pstDispParam->stDispOffset.u32Bottom = *(HI_U32 *)(stKey.pValue);
     }
     else
     {
-        pstDispParam->u32ScreenHeight = stDefDispParam.u32ScreenHeight;
+        pstDispParam->stDispOffset.u32Bottom = stDefDispParam.stDispOffset.u32Bottom;
     } 
 
     return HI_SUCCESS;    
@@ -414,7 +406,15 @@ HI_S32 PDM_UpdateDispParam(HI_UNF_DISP_E enDisp, HI_UNF_PDM_DISP_PARAM_S *pstDis
         return Ret;
     } 
 
-    Ret = HI_DB_GetTableByName(&stBaseDB, MCE_BASE_TABLENAME_HD0, &stTable);
+	if (HI_UNF_DISPLAY0 == enDisp)
+	{
+		Ret = HI_DB_GetTableByName(&stBaseDB, MCE_BASE_TABLENAME_DISP0, &stTable);
+	}
+	else
+	{
+		Ret = HI_DB_GetTableByName(&stBaseDB, MCE_BASE_TABLENAME_DISP1, &stTable);
+	}
+
     if(HI_SUCCESS != Ret)
     {
         HI_ERR_PDM("ERR: HI_DB_GetTableByName!");
@@ -425,6 +425,12 @@ HI_S32 PDM_UpdateDispParam(HI_UNF_DISP_E enDisp, HI_UNF_PDM_DISP_PARAM_S *pstDis
     if(HI_SUCCESS == Ret)
     {
         memcpy(stKey.pValue, &(pstDispParam->enFormat), stKey.u32ValueSize);
+    }
+
+	Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_INTF_HDMI, &stKey);
+    if(HI_SUCCESS == Ret)
+    {
+        memcpy(stKey.pValue, &(pstDispParam->stIntf[HI_UNF_DISP_INTF_TYPE_HDMI]), stKey.u32ValueSize);
     }
     
     Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_INTF_YPBPR, &stKey);
@@ -456,35 +462,42 @@ HI_S32 PDM_UpdateDispParam(HI_UNF_DISP_E enDisp, HI_UNF_PDM_DISP_PARAM_S *pstDis
     {
         memcpy(stKey.pValue, &(pstDispParam->enPixelFormat), stKey.u32ValueSize);
     }
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISPW, &stKey);
+
+	Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_SRC_DISP, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        memcpy(stKey.pValue, &(pstDispParam->u32DisplayWidth), stKey.u32ValueSize);
+        memcpy(stKey.pValue, &(pstDispParam->enSrcDisp), stKey.u32ValueSize);
     }
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISPH, &stKey);
+	
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_VIRSCW, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        memcpy(stKey.pValue, &(pstDispParam->u32DisplayHeight), stKey.u32ValueSize);
+        memcpy(stKey.pValue, &(pstDispParam->u32VirtScreenWidth), stKey.u32ValueSize);
     }
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_SCRX, &stKey);
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_VIRSCH, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        memcpy(stKey.pValue, &(pstDispParam->u32ScreenXpos), stKey.u32ValueSize);
+        memcpy(stKey.pValue, &(pstDispParam->u32VirtScreenHeight), stKey.u32ValueSize);
     }
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_SCRY, &stKey);
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISP_L, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        memcpy(stKey.pValue, &(pstDispParam->u32ScreenYpos), stKey.u32ValueSize);
+        memcpy(stKey.pValue, &(pstDispParam->stDispOffset.u32Left), stKey.u32ValueSize);
     }
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_SCRW, &stKey);
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISP_T, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        memcpy(stKey.pValue, &(pstDispParam->u32ScreenWidth), stKey.u32ValueSize);
+        memcpy(stKey.pValue, &(pstDispParam->stDispOffset.u32Top), stKey.u32ValueSize);
     }
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_SCRH, &stKey);
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISP_R, &stKey);
     if(HI_SUCCESS == Ret)
     {
-        memcpy(stKey.pValue, &(pstDispParam->u32ScreenHeight), stKey.u32ValueSize);
+        memcpy(stKey.pValue, &(pstDispParam->stDispOffset.u32Right), stKey.u32ValueSize);
+    }
+    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_DISP_B, &stKey);
+    if(HI_SUCCESS == Ret)
+    {
+        memcpy(stKey.pValue, &(pstDispParam->stDispOffset.u32Bottom), stKey.u32ValueSize);
     }
     Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_HULEP, &stKey);
     if(HI_SUCCESS == Ret)
@@ -510,16 +523,17 @@ HI_S32 PDM_UpdateDispParam(HI_UNF_DISP_E enDisp, HI_UNF_PDM_DISP_PARAM_S *pstDis
     if(HI_SUCCESS == Ret)
     {
         memcpy(stKey.pValue, &(pstDispParam->stBgColor), stKey.u32ValueSize);
-    }    
-    Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_ASP_R, &stKey);
-    if(HI_SUCCESS == Ret)
-    {
-        memcpy(stKey.pValue, &(pstDispParam->stAspectRatio), stKey.u32ValueSize);
-    }    
+    }
     Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_TIMING, &stKey);
     if(HI_SUCCESS == Ret)
     {
         memcpy(stKey.pValue, &(pstDispParam->stDispTiming), stKey.u32ValueSize);
+    }
+
+	Ret = HI_DB_GetKeyByName(&stTable, MCE_BASE_KEYNAME_ASPECT, &stKey);
+    if(HI_SUCCESS == Ret)
+    {
+        memcpy(stKey.pValue, &(pstDispParam->stAspectRatio), stKey.u32ValueSize);
     }
 
     return HI_SUCCESS;
@@ -591,6 +605,14 @@ HI_S32 PDM_UpdatePlayParam(HI_UNF_MCE_PLAY_PARAM_S *pstPlayParam,HI_U8 *pBuf)
     else if(HI_UNF_MCE_TYPE_PLAY_TSFILE == pstPlayParam->enPlayType)
     {
         stMceParam.u32PlayDataLen = pstPlayParam->unParam.stTsParam.u32ContentLen;
+    }
+	else if(HI_UNF_MCE_TYPE_PLAY_ANI == pstPlayParam->enPlayType)
+    {
+        stMceParam.u32PlayDataLen = pstPlayParam->unParam.stAniParam.u32ContentLen;
+    }
+	else
+	{
+        stMceParam.u32PlayDataLen = 0;
     }
 
     stMceParam.stPlayParam = *pstPlayParam;
@@ -800,27 +822,26 @@ HI_S32 PDM_DispParamCheck(HI_UNF_PDM_DISP_PARAM_S *pDispParam)
         HI_ERR_PDM("pDispParam->u32HuePlus is invalid!"); 
         return HI_ERR_PDM_PARAM_INVALID;        
     }
-    if ((pDispParam->u32DisplayWidth > 1920)
-        || (pDispParam->u32DisplayHeight > 1080)
+
+    if ((pDispParam->u32VirtScreenWidth > 3840)
+        || (pDispParam->u32VirtScreenWidth < 480)
+        || (pDispParam->u32VirtScreenHeight > 3840)
+        || (pDispParam->u32VirtScreenHeight < 480)
         )
     {
-        HI_ERR_PDM("u32DisplayWidth or u32DisplayHeight is invalid!"); 
+        HI_ERR_PDM("u32VirtScreenWidth or u32VirtScreenHeight is invalid!"); 
         return HI_ERR_PDM_PARAM_INVALID;        
     }
 
-    PDM_GetMaxScreenSize(pDispParam->enFormat, &MaxScreenW, &MaxScreenH);
-
-    if (pDispParam->u32ScreenXpos + pDispParam->u32ScreenWidth > MaxScreenW)
+    if ((pDispParam->stDispOffset.u32Left > 200)
+        || (pDispParam->stDispOffset.u32Top > 200)
+        || (pDispParam->stDispOffset.u32Right > 200)
+        || (pDispParam->stDispOffset.u32Bottom > 200)
+        )
     {
-        pDispParam->u32ScreenXpos = 0;
-        pDispParam->u32ScreenWidth = MaxScreenW;
+        HI_ERR_PDM("stDispOffset is invalid!"); 
+        return HI_ERR_PDM_PARAM_INVALID;        
     }
-    
-    if (pDispParam->u32ScreenYpos + pDispParam->u32ScreenHeight > MaxScreenH)
-    {
-        pDispParam->u32ScreenYpos = 0;
-        pDispParam->u32ScreenHeight = MaxScreenH;
-    }    
 
     return HI_SUCCESS;
 
@@ -839,6 +860,11 @@ static HI_U32 str_to_flashsize(HI_CHAR *strsize)
     {
         return 0;
     }
+
+	if (sizeof(tmp) < strlen(strsize))
+	{
+		return 0;
+	}
 
     memset(tmp, 0x0, sizeof(tmp));
     
@@ -869,6 +895,7 @@ HI_S32 PDM_GetFlashInfo(HI_CHAR *DataName, PDM_FLASH_INFO_S *pstInfo)
     FILE            *pf = HI_NULL;
     HI_CHAR         *p, *q;
     HI_CHAR         tmp[32];
+    HI_S32          ReadLen = 0;
 
     pf = fopen("/proc/cmdline", "r");
     if (HI_NULL == pf)
@@ -877,12 +904,21 @@ HI_S32 PDM_GetFlashInfo(HI_CHAR *DataName, PDM_FLASH_INFO_S *pstInfo)
     }
 
     memset(Bootargs, 0x0, 512);
-    fread(Bootargs, sizeof(HI_CHAR), 512, pf);
+    
+    ReadLen = fread(Bootargs, sizeof(HI_CHAR), 512, pf);
+    if (ReadLen <=0)
+    {
+        fclose(pf);
+        pf = HI_NULL;    
+        return HI_FAILURE;
+    }
 
     fclose(pf);
     pf = HI_NULL;
 
-    sprintf(tmp, "(%s)", DataName);
+    Bootargs[511] = '\0';
+
+    HI_OSAL_Snprintf(tmp, sizeof(tmp), "(%s)", DataName);
 
     p = strstr(Bootargs, tmp);
     if (0 != p)
@@ -896,18 +932,26 @@ HI_S32 PDM_GetFlashInfo(HI_CHAR *DataName, PDM_FLASH_INFO_S *pstInfo)
         }
 
         memset(tmp, 0, sizeof(tmp));
+
+		if ((HI_U32)(p-q-1) >= sizeof(tmp))
+		{
+			return HI_FAILURE;
+		}
+		
         memcpy(tmp, q + 1, p-q-1);
+		tmp[sizeof(tmp)-1] = '\0';
         
         memset(pstInfo->Name, 0x0, sizeof(pstInfo->Name));
         
         memcpy(pstInfo->Name, DataName, strlen(DataName));
         pstInfo->u32Size = str_to_flashsize(tmp);
         pstInfo->u32Offset = 0;
+		pstInfo->bShared = HI_FALSE;
         
         return HI_SUCCESS;
     }
 
-    sprintf(tmp, " %s", DataName);
+    HI_OSAL_Snprintf(tmp, sizeof(tmp), " %s", DataName);
 
     p = strstr(Bootargs, tmp);
     if (0 == p)
@@ -956,6 +1000,7 @@ HI_S32 PDM_GetFlashInfo(HI_CHAR *DataName, PDM_FLASH_INFO_S *pstInfo)
     memcpy(tmp, p, q-p);
     
     pstInfo->u32Size = strtoul(tmp, HI_NULL, 16);
+	pstInfo->bShared = HI_TRUE;
 
     return HI_SUCCESS;
 }
@@ -968,6 +1013,7 @@ HI_S32  HI_UNF_PDM_GetBaseParam(HI_UNF_PDM_BASEPARAM_TYPE_E enType, HI_VOID *pDa
     HI_U8                       *pBuf = HI_NULL;
     HI_S32                      Size;
     PDM_FLASH_INFO_S            BaseFlashInfo;
+	HI_U32                      u32ReadLen;
     
     if ((enType >= HI_UNF_PDM_BASEPARAM_BUTT) || (pData == HI_NULL))
     {
@@ -989,7 +1035,16 @@ HI_S32  HI_UNF_PDM_GetBaseParam(HI_UNF_PDM_BASEPARAM_TYPE_E enType, HI_VOID *pDa
         goto ERR0;
     }
 
-    pBuf = (HI_U8 *)HI_MALLOC(HI_ID_FASTPLAY, BaseFlashInfo.u32Size);
+	Ret = HI_Flash_GetInfo(hFlash, &FlashInfo);
+	if (HI_SUCCESS != Ret)
+	{
+		HI_ERR_PDM("ERR: HI_Flash_Open!");
+        Ret = HI_ERR_PDM_MTD_GETINFO;
+        goto ERR1;
+	}
+
+	u32ReadLen = FlashInfo.PageSize > MCE_DEF_BASEPARAM_SIZE ? FlashInfo.PageSize : MCE_DEF_BASEPARAM_SIZE;
+    pBuf = (HI_U8 *)HI_MALLOC(HI_ID_FASTPLAY, u32ReadLen);
     if (HI_NULL == pBuf)
     {
         HI_ERR_PDM("malloc buf err!");
@@ -997,9 +1052,9 @@ HI_S32  HI_UNF_PDM_GetBaseParam(HI_UNF_PDM_BASEPARAM_TYPE_E enType, HI_VOID *pDa
         goto ERR1;
     }
 
-    memset(pBuf, 0x0, BaseFlashInfo.u32Size);
+    memset(pBuf, 0x0, u32ReadLen);
 
-    Size = HI_Flash_Read(hFlash, (HI_U64)BaseFlashInfo.u32Offset, pBuf, BaseFlashInfo.u32Size, HI_FLASH_RW_FLAG_RAW);
+    Size = HI_Flash_Read(hFlash, (HI_U64)BaseFlashInfo.u32Offset, pBuf, u32ReadLen, HI_FLASH_RW_FLAG_RAW);
     if(Size <= 0)
     {
         HI_ERR_PDM("ERR: HI_Flash_Read!\n");
@@ -1077,19 +1132,28 @@ HI_S32  HI_UNF_PDM_UpdateBaseParam(HI_UNF_PDM_BASEPARAM_TYPE_E enType, HI_VOID *
         goto ERR1;
     }
 
-    StartPos = BaseFlashInfo.u32Offset - BaseFlashInfo.u32Offset % FlashInfo.BlockSize;
+	if (!BaseFlashInfo.bShared)
+	{
+		StartPos = 0;
+		EndPos = FlashInfo.PageSize > MCE_DEF_BASEPARAM_SIZE ? FlashInfo.PageSize : MCE_DEF_BASEPARAM_SIZE;
+	}
+	else
+	{
+		StartPos = BaseFlashInfo.u32Offset - BaseFlashInfo.u32Offset % FlashInfo.BlockSize;
 
-    if (0 == (BaseFlashInfo.u32Offset + BaseFlashInfo.u32Size) % FlashInfo.BlockSize)
-    {
-        EndPos = BaseFlashInfo.u32Offset + BaseFlashInfo.u32Size;
-    }
-    else
-    {
-        EndPos = BaseFlashInfo.u32Offset + BaseFlashInfo.u32Size + FlashInfo.BlockSize -
-                 (BaseFlashInfo.u32Offset + BaseFlashInfo.u32Size) % FlashInfo.BlockSize;
-    }
+	    if (0 == (BaseFlashInfo.u32Offset + BaseFlashInfo.u32Size) % FlashInfo.BlockSize)
+	    {
+	        EndPos = BaseFlashInfo.u32Offset + BaseFlashInfo.u32Size;
+	    }
+	    else
+	    {
+	        EndPos = BaseFlashInfo.u32Offset + BaseFlashInfo.u32Size + FlashInfo.BlockSize -
+	                 (BaseFlashInfo.u32Offset + BaseFlashInfo.u32Size) % FlashInfo.BlockSize;
+	    }
+	}
 
-    pBuf = malloc(EndPos - StartPos);
+	pBuf = (HI_U8 *)HI_MALLOC(HI_ID_FASTPLAY, (EndPos-StartPos));
+
     if(HI_NULL == pBuf)
     {
         HI_ERR_PDM("ERR: malloc!");
@@ -1123,13 +1187,24 @@ HI_S32  HI_UNF_PDM_UpdateBaseParam(HI_UNF_PDM_BASEPARAM_TYPE_E enType, HI_VOID *
         Ret = HI_ERR_PDM_INVALID_OPT;
         goto ERR2;
     }
-    
-    Size = HI_Flash_Erase(hFlash, StartPos, EndPos - StartPos);
-    if(Size <= 0)
+
+    if (HI_FLASH_TYPE_EMMC_0 != FlashInfo.FlashType)
     {
-        HI_ERR_PDM("ERR: HI_Flash_Erase!");
-        Ret = HI_ERR_PDM_MTD_ERASE;
-        goto ERR2;    
+        if (!BaseFlashInfo.bShared)
+        {
+            Size = HI_Flash_Erase(hFlash, 0, BaseFlashInfo.u32Size);
+        }
+        else
+        {
+            Size = HI_Flash_Erase(hFlash, StartPos, EndPos - StartPos);
+        }
+        
+        if(Size <= 0)
+        {
+            HI_ERR_PDM("ERR: HI_Flash_Erase!");
+            Ret = HI_ERR_PDM_MTD_ERASE;
+            goto ERR2;    
+        }
     }
     
     Size = HI_Flash_Write(hFlash, StartPos, pBuf, EndPos - StartPos, HI_FLASH_RW_FLAG_RAW);
@@ -1141,7 +1216,7 @@ HI_S32  HI_UNF_PDM_UpdateBaseParam(HI_UNF_PDM_BASEPARAM_TYPE_E enType, HI_VOID *
     } 
     
 ERR2:
-    free(pBuf);
+    HI_FREE(HI_ID_FASTPLAY, pBuf);
 ERR1:
     HI_Flash_Close(hFlash);
 ERR0:    
@@ -1157,6 +1232,8 @@ HI_S32  HI_UNF_PDM_GetLogoParam(HI_UNF_MCE_LOGO_PARAM_S *pstLogoParam)
     HI_U8                       *pBuf = HI_NULL;
     HI_S32                      Size;
     PDM_FLASH_INFO_S            LogoFlashInfo;
+	HI_Flash_InterInfo_S 		FlashInfo;
+	HI_U32						u32ReadLenth = 0;
 
     if(HI_NULL == pstLogoParam)
     {
@@ -1178,8 +1255,16 @@ HI_S32  HI_UNF_PDM_GetLogoParam(HI_UNF_MCE_LOGO_PARAM_S *pstLogoParam)
         goto ERR0;
     }
 
+	Ret = HI_Flash_GetInfo(hFlash, &FlashInfo);
+	if (HI_SUCCESS != Ret)
+    {
+        goto ERR1;
+    }
+
+	u32ReadLenth = FlashInfo.PageSize > MCE_DEF_LOGOPARAM_SIZE ? FlashInfo.PageSize : MCE_DEF_LOGOPARAM_SIZE;
+
     /*only need malloc the param size*/
-    pBuf = (HI_U8 *)HI_MALLOC(HI_ID_FASTPLAY, MCE_DEF_LOGOPARAM_SIZE);
+    pBuf = (HI_U8 *)HI_MALLOC(HI_ID_FASTPLAY, u32ReadLenth);
     if(HI_NULL == pBuf)
     {
         HI_ERR_PDM("ERR: malloc!");
@@ -1187,7 +1272,7 @@ HI_S32  HI_UNF_PDM_GetLogoParam(HI_UNF_MCE_LOGO_PARAM_S *pstLogoParam)
         goto ERR1;    
     }
     
-    Size = HI_Flash_Read(hFlash, (HI_U64)LogoFlashInfo.u32Offset, pBuf, MCE_DEF_LOGOPARAM_SIZE, HI_FLASH_RW_FLAG_RAW);
+    Size = HI_Flash_Read(hFlash, (HI_U64)LogoFlashInfo.u32Offset, pBuf, u32ReadLenth, HI_FLASH_RW_FLAG_RAW);
     if(Size <= 0)
     {
         HI_ERR_PDM("ERR: HI_Flash_Read!");
@@ -1221,6 +1306,7 @@ HI_S32  HI_UNF_PDM_UpdateLogoParam(HI_UNF_MCE_LOGO_PARAM_S *pstLogoParam)
     HI_S32                      Size;
     PDM_FLASH_INFO_S            LogoFlashInfo;
     HI_U32                      StartPos, EndPos;
+	HI_U32						u32ReadLenth = 0;
     
     if(HI_NULL == pstLogoParam)
     {
@@ -1250,16 +1336,18 @@ HI_S32  HI_UNF_PDM_UpdateLogoParam(HI_UNF_MCE_LOGO_PARAM_S *pstLogoParam)
         goto ERR1;
     }
 
+	u32ReadLenth = FlashInfo.PageSize > MCE_DEF_LOGOPARAM_SIZE ? FlashInfo.PageSize : MCE_DEF_LOGOPARAM_SIZE;
+
     StartPos = LogoFlashInfo.u32Offset - LogoFlashInfo.u32Offset % FlashInfo.BlockSize;
 
-    if (0 == (LogoFlashInfo.u32Offset + MCE_DEF_LOGOPARAM_SIZE) % FlashInfo.BlockSize)
+    if (0 == (LogoFlashInfo.u32Offset + u32ReadLenth) % FlashInfo.BlockSize)
     {
-        EndPos = LogoFlashInfo.u32Offset + MCE_DEF_LOGOPARAM_SIZE;
+        EndPos = LogoFlashInfo.u32Offset + u32ReadLenth;
     }
     else
     {
-        EndPos = LogoFlashInfo.u32Offset + MCE_DEF_LOGOPARAM_SIZE + FlashInfo.BlockSize -
-                 (LogoFlashInfo.u32Offset + MCE_DEF_LOGOPARAM_SIZE) % FlashInfo.BlockSize;
+        EndPos = LogoFlashInfo.u32Offset + u32ReadLenth + FlashInfo.BlockSize -
+                 (LogoFlashInfo.u32Offset + u32ReadLenth) % FlashInfo.BlockSize;
     }
 
     pBuf = (HI_U8 *)HI_MALLOC(HI_ID_FASTPLAY, EndPos - StartPos);
@@ -1287,12 +1375,15 @@ HI_S32  HI_UNF_PDM_UpdateLogoParam(HI_UNF_MCE_LOGO_PARAM_S *pstLogoParam)
     }
     
     /* need erase by block */
-    Size = HI_Flash_Erase(hFlash, StartPos, EndPos - StartPos);
-    if(Size <= 0)
+    if (HI_FLASH_TYPE_EMMC_0 != FlashInfo.FlashType)
     {
-        HI_ERR_PDM("ERR: HI_Flash_Erase!");
-        Ret = HI_ERR_PDM_MTD_ERASE;
-        goto ERR2;    
+        Size = HI_Flash_Erase(hFlash, StartPos, EndPos - StartPos);
+        if(Size <= 0)
+        {
+            HI_ERR_PDM("ERR: HI_Flash_Erase!");
+            Ret = HI_ERR_PDM_MTD_ERASE;
+            goto ERR2;    
+        }
     }
     
     Size = HI_Flash_Write(hFlash, StartPos, pBuf, EndPos - StartPos, HI_FLASH_RW_FLAG_RAW);
@@ -1318,6 +1409,7 @@ HI_S32  HI_UNF_PDM_GetLogoContent(HI_U8 *pu8Content, HI_U32 u32Size)
     HI_HANDLE                   hFlash;
     HI_S32                      Size;
     PDM_FLASH_INFO_S            LogoFlashInfo;
+	HI_U8                       *pBuf = HI_NULL;
 
     if(HI_NULL == pu8Content)
     {
@@ -1339,13 +1431,25 @@ HI_S32  HI_UNF_PDM_GetLogoContent(HI_U8 *pu8Content, HI_U32 u32Size)
         goto ERR0;
     }
 
-    Size = HI_Flash_Read(hFlash, (LogoFlashInfo.u32Offset + MCE_DEF_LOGOPARAM_SIZE), pu8Content, u32Size, HI_FLASH_RW_FLAG_RAW);
+	pBuf = HI_MALLOC(HI_ID_FASTPLAY, u32Size + MCE_DEF_LOGOPARAM_SIZE);
+	if(HI_NULL == pBuf)
+    {
+        HI_ERR_PDM("ERR: malloc!");
+        Ret = HI_ERR_PDM_MEM_ALLC;
+        goto ERR1;    
+    }
+
+    Size = HI_Flash_Read(hFlash, (LogoFlashInfo.u32Offset), pBuf, u32Size + MCE_DEF_LOGOPARAM_SIZE, HI_FLASH_RW_FLAG_RAW);
     if(Size <= 0)
     {
         HI_ERR_PDM("ERR: HI_Flash_Read!");
+		HI_FREE(HI_ID_FASTPLAY, pBuf);
         Ret = HI_ERR_PDM_MTD_READ;
         goto ERR1;
     } 
+
+	memcpy(pu8Content, pBuf+MCE_DEF_LOGOPARAM_SIZE, u32Size);
+	HI_FREE(HI_ID_FASTPLAY, pBuf);
 
 ERR1:
     HI_Flash_Close(hFlash);
@@ -1445,12 +1549,15 @@ HI_S32  HI_UNF_PDM_UpdateLogoContent(HI_U8 *pu8Content, HI_U32 u32Size)
     memcpy(pLogoDataPos, pu8Content, u32Size);
 
     /*erase logo param and data, erase by block*/
-    Size = HI_Flash_Erase(hFlash, StartPos, EndPos - StartPos);
-    if(Size <= 0)
+    if (HI_FLASH_TYPE_EMMC_0 != FlashInfo.FlashType)
     {
-        HI_ERR_PDM("ERR: HI_Flash_Erase, Size = %u\n!", Size);
-        Ret = HI_ERR_PDM_MTD_ERASE;
-        goto ERR2;    
+        Size = HI_Flash_Erase(hFlash, StartPos, EndPos - StartPos);
+        if(Size <= 0)
+        {
+            HI_ERR_PDM("ERR: HI_Flash_Erase, Size = %u\n!", Size);
+            Ret = HI_ERR_PDM_MTD_ERASE;
+            goto ERR2;    
+        }
     }
 
     /* write the new data, write by block */
@@ -1607,12 +1714,15 @@ HI_S32  HI_UNF_PDM_UpdatePlayParam(HI_UNF_MCE_PLAY_PARAM_S *pstPlayParam)
         goto ERR2;
     }
 
-    Size = HI_Flash_Erase(hFlash, StartPos, EndPos - StartPos);
-    if(Size <= 0)
+    if (HI_FLASH_TYPE_EMMC_0 != FlashInfo.FlashType)
     {
-        HI_ERR_PDM("ERR: HI_Flash_Erase!");
-        Ret = HI_ERR_PDM_MTD_ERASE;
-        goto ERR2;    
+        Size = HI_Flash_Erase(hFlash, StartPos, EndPos - StartPos);
+        if(Size <= 0)
+        {
+            HI_ERR_PDM("ERR: HI_Flash_Erase!");
+            Ret = HI_ERR_PDM_MTD_ERASE;
+            goto ERR2;    
+        }
     }
 
     Size = HI_Flash_Write(hFlash, StartPos, pBuf, EndPos - StartPos, HI_FLASH_RW_FLAG_RAW);
@@ -1761,12 +1871,15 @@ HI_S32  HI_UNF_PDM_UpdatePlayContent(HI_U8 *pu8Content, HI_U32 u32Size)
     memcpy(pPlayDataPos, pu8Content, u32Size);
 
     /*erase play param and data, erase by block*/
-    Size = HI_Flash_Erase(hFlash, StartPos, EndPos - StartPos);
-    if(Size <= 0)
+    if (HI_FLASH_TYPE_EMMC_0 != FlashInfo.FlashType)
     {
-        HI_ERR_PDM("ERR: HI_Flash_Erase, Size = %u\n!", Size);
-        Ret = HI_ERR_PDM_MTD_ERASE;
-        goto ERR2;    
+        Size = HI_Flash_Erase(hFlash, StartPos, EndPos - StartPos);
+        if(Size <= 0)
+        {
+            HI_ERR_PDM("ERR: HI_Flash_Erase, Size = %u\n!", Size);
+            Ret = HI_ERR_PDM_MTD_ERASE;
+            goto ERR2;    
+        }
     }
 
     /* write the new data, write by block */

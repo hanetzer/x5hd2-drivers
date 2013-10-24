@@ -15,8 +15,10 @@
 #include "si_defstx.h"
 #include "si_hdmitx.h"
 #include "si_timer.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_sys.h"
 #include "si_phy.h"
+#include "hi_reg_common.h"
+#include "drv_reg_proc.h"
 
 static int g_ulHdmiFileHandle = -1;
 
@@ -153,6 +155,8 @@ void SI_CloseHdmiDevice(void)
 void SI_PoweDownHdmiDevice(void)
 {
     //HI_U32 Ret;
+    U_PERI_CRG67 PeriCrg67;
+    U_PERI_CRG68 PeriCrg68;
 
      /* powerdown HDMI PHY Output:TMDS CNTL3 Register:Powerdown Control */
     //Ret = DRV_HDMI_WriteRegister((HI_U32)0x10171808, (HI_U32)0x00);      
@@ -163,9 +167,29 @@ void SI_PoweDownHdmiDevice(void)
     /* powedown HDMI Controller:Diagnostic Power Down Register:(0x7A,0x3D) */
     WriteByteHDMITXP1(DIAG_PD_ADDR, 0x00);  //Power down everything; INT source is RSEN
 
-    DRV_HDMI_WriteRegister(0xf8a2210c,0x300);
-    DRV_HDMI_WriteRegister(0xf8a22110,0x10);
+    PeriCrg67.u32 = g_pstRegCrg->PERI_CRG67.u32;
     
+    PeriCrg67.bits.hdmitx_ctrl_bus_cken     = 0;
+    PeriCrg67.bits.hdmitx_ctrl_cec_cken     = 0;
+    PeriCrg67.bits.hdmitx_ctrl_id_cken      = 0;
+    PeriCrg67.bits.hdmitx_ctrl_mhl_cken     = 0;
+    PeriCrg67.bits.hdmitx_ctrl_os_cken      = 0;
+    PeriCrg67.bits.hdmitx_ctrl_as_cken      = 0;
+    PeriCrg67.bits.hdmitx_ctrl_bus_srst_req = 1;
+    PeriCrg67.bits.hdmitx_ctrl_srst_req     = 1;
+    PeriCrg67.bits.hdmitx_ctrl_cec_clk_sel  = 0;
+    PeriCrg67.bits.hdmitx_ctrl_osclk_sel    = 0;
+    PeriCrg67.bits.hdmitx_ctrl_asclk_sel    = 0;
+
+    g_pstRegCrg->PERI_CRG67.u32 = PeriCrg67.u32;
+
+    PeriCrg68.u32 = g_pstRegCrg->PERI_CRG68.u32;
+    
+    PeriCrg68.bits.hdmitx_phy_bus_cken = 0;
+    PeriCrg68.bits.hdmitx_phy_srst_req = 1;
+
+    g_pstRegCrg->PERI_CRG68.u32 = PeriCrg68.u32;
+
     return;
 }
 

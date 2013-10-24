@@ -16,26 +16,14 @@
 ******************************************************************************/
 #include <linux/version.h>
 #include <linux/seq_file.h>
-
 #include "hi_type.h"
-
 #include "hi_drv_log.h"
-
-#include "drv_dev_ext.h"
-#include "drv_log.h"
-#include "drv_proc_ext.h"
-
-#include "drv_stat_ext.h"
-
-#include "drv_sys_ext.h"
-
-#include "drv_stat_ioctl.h"
-
-#include "drv_sys_ioctl.h"
-
-#include "drv_media_mem.h"
-
-#include "drv_module.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
+#include "hi_drv_stat.h"
+#include "hi_drv_sys.h"
+#include "hi_drv_mmz.h"
+#include "hi_drv_module.h"
 
 
 /* Use "strings hi_xx.ko | grep "SDK_VERSION"" to get the version */
@@ -85,7 +73,7 @@ HI_S32 HI_DRV_CommonInit(HI_VOID)
     }
 
 
-    ret = HI_DRV_MMNGR_Init(KMODULE_MAX_COUNT, KMODULE_MEM_MAX_COUNT);
+    ret = HI_DRV_MMNGR_Init(HI_KMODULE_MAX_COUNT, HI_KMODULE_MEM_MAX_COUNT);
     if(HI_SUCCESS != ret)
     {
         HI_ERR_SYS("KModuleMgr_Init failed:%#x!\n", ret);

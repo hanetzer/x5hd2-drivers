@@ -28,26 +28,28 @@
  * Structures containing HI voltage supported and various
  * voltage dependent data for each VDD.
  */
-#define HI_VDD_MPU_OPP1_UV 1150
+#if defined (CHIP_TYPE_hi3716cv200es)
+#define HI_VDD_MPU_OPP1_UV 1200
 #define HI_VDD_MPU_OPP2_UV 1200
 #define HI_VDD_MPU_OPP3_UV 1250
 #define HI_VDD_MPU_OPP4_UV 1315
 #define HI_VDD_MPU_OPP5_UV 1315
-
-/*
-profile0    1.2GHz  1.35V    BPLL 1.2GHz£ª
-profile1    1GHz    1.30V   WPLL£ª
-profile2    750MHz  1.20V   APLL 750MHz£ª
-profile3    600MHz  1.15V    BPLL 1.2GHz DIV2£ª;
-profile4    400MHz  1.10V   400MHz∑÷÷ß£ª
-*/
-
+#elif defined (CHIP_TYPE_hi3716cv200)  \
+            || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+            || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+            || defined (CHIP_TYPE_hi3718mv100)
+#define HI_VDD_MPU_OPP1_UV 1000
+#define HI_VDD_MPU_OPP2_UV 1000
+#define HI_VDD_MPU_OPP3_UV 1060
+#define HI_VDD_MPU_OPP4_UV 1180
+#define HI_VDD_MPU_OPP5_UV 1300
+#endif
 static struct hi_opp_def __initdata hi_opp_def_list[] = {
     OPP_INITIALIZER(true,  400000, HI_VDD_MPU_OPP1_UV),
     OPP_INITIALIZER(true,  600000, HI_VDD_MPU_OPP2_UV),
     OPP_INITIALIZER(true,  800000, HI_VDD_MPU_OPP3_UV),
     OPP_INITIALIZER(true, 1000000, HI_VDD_MPU_OPP4_UV),
-    //OPP_INITIALIZER(true, 1200000, HI_VDD_MPU_OPP5_UV),
+    OPP_INITIALIZER(true, 1200000, HI_VDD_MPU_OPP5_UV),
 };
 
 /**

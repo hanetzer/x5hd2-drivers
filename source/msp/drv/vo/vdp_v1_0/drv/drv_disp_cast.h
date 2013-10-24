@@ -59,13 +59,36 @@ typedef struct tagDISP_CAST_PRIV_FRAME_S
 {
     HI_DRV_VIDEO_PRIVATE_S stPrivInfo;
 
-	HI_HANDLE hCast;
+	HI_HANDLE cast_ptr;
 	HI_U32    u32Pts0;  /* create PTS */
 	HI_U32    u32Pts1;  /* acquire PTS */
 
 }DISP_CAST_PRIV_FRAME_S;
 
+typedef struct tagDISP_SNAPSHOT_PRIV_FRAME_S
+{
+    HI_DRV_VIDEO_PRIVATE_S stPrivInfo;
+	HI_U32 u32Magic;
+	HI_U32 u32BPAddr;
+}DISP_SNAPSHOT_PRIV_FRAME_S;
 
+typedef enum
+{
+    MIRA_SET_CREATE_PTS = 0,
+    MIRA_SET_AQUIRE_PTS,
+    MIRA_FLAG_BUTT
+}MIRA_GET_PTS_E;
+
+typedef struct tagDISP_Attach_PAIR_S
+{
+    /*push mode, get the func ptr from back mode.*/
+    HI_HANDLE hSink;
+    HI_VOID* pfnQueueFrm;
+    HI_VOID* pfnDequeueFrame;
+}DISP_Attach_PAIR_S;
+
+
+#define DISPLAY_ATTACH_CNT_MAX   3
 
 typedef struct tagDISP_CAST_S
 {
@@ -73,7 +96,13 @@ typedef struct tagDISP_CAST_S
     HI_BOOL bOpen;
     HI_BOOL bEnable;
     HI_BOOL bMasked;
-
+	HI_U32 u32Ref;
+    
+    HI_BOOL bLowDelay;
+	/* wbc controll between cast and snapshot. */
+	/* Should cast shedule wbc? default no.  */
+	volatile HI_BOOL	bScheduleWbc;	
+	volatile HI_BOOL	bScheduleWbcStatus;
     // cfg
     HI_DRV_DISP_CAST_CFG_S stConfig;
 
@@ -106,23 +135,42 @@ typedef struct tagDISP_CAST_S
     //component operation
     DISP_INTF_OPERATION_S stIntfOpt;
 
+    DISP_Attach_PAIR_S attach_pairs[DISPLAY_ATTACH_CNT_MAX];
+
+    /*for cast proc infor stastics.*/
+    HI_U32 u32CastAcquireTryCnt;
+    HI_U32 u32CastAcquireOkCnt;    
+    HI_U32 u32CastReleaseTryCnt;
+    HI_U32 u32CastReleaseOkCnt;    
 }DISP_CAST_S;
 
 
+typedef struct tagDISP_SNAPSHOT_S
+{
+    HI_BOOL bWork;
+    BUF_POOL_S stBP;    
+}DISP_SNAPSHOT_S;
 
-HI_S32 DISP_CastCreate(HI_DRV_DISPLAY_E enDisp, HI_DRV_DISP_CAST_CFG_S * pstCfg, HI_HANDLE *phCast);
+
+HI_S32 DISP_CastCreate(HI_DRV_DISPLAY_E enDisp, HI_DISP_DISPLAY_INFO_S *pstInfo, HI_DRV_DISP_CAST_CFG_S *pstCfg, HI_HANDLE *cast_ptr);
 HI_S32 DISP_CastDestroy(HI_HANDLE hCast);
 HI_S32 DISP_CastSetEnable(HI_HANDLE hCast, HI_BOOL bEnable);
 HI_S32 DISP_CastGetEnable(HI_HANDLE hCast, HI_BOOL *pbEnable);
 HI_S32 DISP_CastAcquireFrame(HI_HANDLE hCast, HI_DRV_VIDEO_FRAME_S *pstCastFrame);
 HI_S32 DISP_CastReleaseFrame(HI_HANDLE hCast, HI_DRV_VIDEO_FRAME_S *pstCastFrame);
+HI_S32 DISP_Cast_AttachSink(HI_HANDLE cast_ptr, HI_HANDLE hSink);
+HI_S32 DISP_Cast_DeAttachSink(HI_HANDLE cast_ptr, HI_HANDLE hSink);
+
+HI_S32 DISP_Cast_SetAttr(HI_HANDLE cast_ptr, HI_DRV_DISP_Cast_Attr_S *castAttr);
+HI_S32 DISP_Cast_GetAttr(HI_HANDLE cast_ptr, HI_DRV_DISP_Cast_Attr_S *castAttr);
+
+HI_S32 DISP_Acquire_Snapshot(HI_DRV_DISPLAY_E enDisp, HI_HANDLE *snapshotHandle, HI_DRV_VIDEO_FRAME_S *pstFrame);
+HI_S32 DISP_Release_Snapshot(HI_DRV_DISPLAY_E enDisp, HI_HANDLE snapshotHandle, HI_DRV_VIDEO_FRAME_S *pstFrame);
+HI_S32 DISP_SnapshotDestroy(HI_HANDLE snapshot_ptr);
 
 
 HI_VOID DISP_CastCBSetDispMode(HI_HANDLE hCast, const HI_DRV_DISP_CALLBACK_INFO_S *pstInfo);
 HI_VOID DISP_CastCBWork(HI_HANDLE hCast, const HI_DRV_DISP_CALLBACK_INFO_S *pstInfo);
-
-
-
 
 #ifdef __cplusplus
  #if __cplusplus

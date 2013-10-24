@@ -9,11 +9,10 @@
 #include <errno.h>
 #include <linux/types.h>
 
+#include "hi_debug.h"
 #include "hi_jpge_api.h"
 #include "hi_jpge_ioctl.h"
 #include "hi_jpge_errcode.h"
-
-#include "hi_jpge_config.h"
 
 #ifdef __cplusplus
 #if __cplusplus
@@ -21,12 +20,10 @@ extern "C" {
 #endif  /* __cplusplus */
 #endif  /* __cplusplus */
 
-
 #define JPGE_CHECK_FD() \
     do {                                         \
         if (-1 == g_s32JPGEFd)                    \
         {                                        \
-            HIJPGE_TRACE("jpge doesn't open!\n");       \
             return HI_ERR_JPGE_DEV_NOT_OPEN;      \
         }                                        \
     } while (0)
@@ -37,34 +34,21 @@ static HI_S32 g_s32JPGEFd = -1;              /* jpge device handle */
 
 static HI_S32 g_s32JPGERef = 0;
 
+static const HI_U8 s_szJPGEVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 HI_S32 HI_JPGE_Open(HI_VOID)
 {
-    struct stat st;
-
     if (-1 != g_s32JPGEFd)
     {
         g_s32JPGERef++;
         return HI_SUCCESS;
     }
 
-    if (HI_FAILURE == stat (g_pszJPGEDevName, &st))
-    {
-        HIJPGE_TRACE("Cannot identify '%s': %d, %s\n",
-               g_pszJPGEDevName, errno, strerror (errno));
-        return HI_ERR_JPGE_DEV_OPEN_FAILED;
-    }
-
-    if (!S_ISCHR (st.st_mode))
-    {
-        HIJPGE_TRACE("%s is no device\n", g_pszJPGEDevName);
-        return HI_ERR_JPGE_DEV_OPEN_FAILED;
-    }
-
     g_s32JPGEFd = open(g_pszJPGEDevName, O_RDWR, 0);
     if (-1 == g_s32JPGEFd)
     {
-        HIJPGE_TRACE("Cannot open '%s': %d, %s\n", g_pszJPGEDevName, errno, strerror (errno));
         return HI_ERR_JPGE_DEV_OPEN_FAILED;
     }
     g_s32JPGERef++;

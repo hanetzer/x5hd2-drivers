@@ -1,7 +1,8 @@
 #=======================================
 #	local variable
 #======================================
-objects := gpio ir cipher pdm hdmi vo hifb tde jpeg
+#objects := gpio ir cipher pdm pq hdmi vo hifb tde jpeg advca
+objects := gpio ir pdm pq hdmi vo hifb tde jpeg advca
 
 ifeq ($(CFG_HI_LOADER_RECOVERY),y)
 objects += png
@@ -13,6 +14,10 @@ ifneq ($(CFG_HI_LOADER_APPLOADER),y)
 ifneq ($(CFG_HI_LOADER_RECOVERY),y)
 objects += pm avplay pvr sync adsp aiao adec vfmw vdec vpss wdg mce png jpge omxvdec
 endif
+endif
+
+ifeq ($(CFG_HI_GPU),y)
+objects += gpu
 endif
 
 ifeq ($(CFG_HI_HDMI_SUPPORT_HDCP),y)
@@ -51,11 +56,8 @@ objects += ssp
 endif
 
 ifeq ($(CFG_HI_VI_SUPPORT),y)
-objects += vi vad
-endif
-
-ifeq ($(CFG_HI_VOIP_SUPPORT),y)
-objects += ndpt
+objects += vi
+objects += vad
 endif
 
 ifeq ($(CFG_MSP_BUILDTYPE),y)
@@ -67,8 +69,14 @@ objects :=
 
 endif
 
+ifeq ($(CFG_HI_VOIP_SUPPORT),y)
+objects += ndpt
+endif
+
 objects_clean:=${addsuffix _clean,${objects}}
 objects_install:=${addsuffix _install,${objects}}
+objects_uninstall:=${addsuffix _uninstall,${objects}}
+objects_prepare:=${addsuffix _prepare,${objects}}
 
 
 #=================================================================

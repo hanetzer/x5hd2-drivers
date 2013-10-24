@@ -17,7 +17,7 @@
 #include "hi_type.h"
 #include "hi_drv_i2c.h"
 #include "hi_debug.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "drv_i2c_ext.h"
 #include "hi_drv_tuner.h"
 #include "hi_unf_frontend.h"
@@ -30,12 +30,16 @@
 #define QAM_PORT0_ADDR 0xA0
 #define QAM_PORT1_ADDR 0xA2
 #define QAM_PORT2_ADDR 0xA0
+#define QAM_PORT3_ADDR 0xA2
+#define QAM_PORT4_ADDR 0xA0
 #define TUNER_PORT0_ADDR 0xC0
 #define TUNER_PORT1_ADDR 0xC0
 #define TUNER_PORT2_ADDR 0xC0
+#define TUNER_PORT3_ADDR 0xC0
+#define TUNER_PORT4_ADDR 0xC0
 #define XTAL_CLK 28800
 
-#define TUNER_NUM 3
+#define TUNER_NUM 5
 
 typedef enum hiTUNER_DATA_SRC_E
 {

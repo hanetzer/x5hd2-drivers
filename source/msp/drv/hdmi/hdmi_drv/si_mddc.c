@@ -254,7 +254,7 @@ HI_U8 SI_BlockRead_MDDC(MDDCType * MDDCCmd)
     //SI_DDC_Debug();  
     if(0 != Err)
     {
-        HI_ERR_HDMI("Read DDC fifo err!\n");
+        HI_WARN_HDMI("Read DDC fifo err!\n");
         goto FAILE_RETURN;
     }
     /* After transfer, check DDC status */

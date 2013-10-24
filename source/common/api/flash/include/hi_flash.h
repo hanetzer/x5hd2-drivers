@@ -27,14 +27,11 @@
 #ifndef __HI_FLASH__H__
 #define __HI_FLASH__H__
 #include "hi_type.h"
-#include "hi_debug.h"
 
 /*************************** Structure Definition ****************************/
 /** \addtogroup      FLASH*/
 /** @{ */  /** <!-- [FLASH] */
 
-#define MAX_PARTS  32           /** Flash max partition number*/
-#define MAX_HANDLE 32           /** Flash max handle number */
 #define FLASH_NAME_LEN 32       /** Flash Name max length */
 
 /** flash type */
@@ -47,7 +44,6 @@ typedef enum hiHI_FLASH_TYPE_E
 } HI_FLASH_TYPE_E;
 
 #define  INVALID_FD -1
-#define  SPAN_PART_HANDLE 1000  /** Expand hiflash handle fd, only HI_Flash_OpenByTypeAndName() use it */
 
 #define  HI_FLASH_RW_FLAG_RAW           0x0   /** read and write without OOB,for example: kernel/uboot/ubi/cramfs.. */
 #define  HI_FLASH_RW_FLAG_WITH_OOB      0x1   /** read and write with OOB, example: yaffs2 filesystem image */
@@ -108,12 +104,6 @@ typedef struct hiFlash_InterInfo_S
 
 /** @} */  /** <!-- ==== Structure Definition end ==== */
 
-#define HI_ERR_FLASH(fmt...) \
-             HI_ERR_PRINT(HI_ID_FLASH, fmt)
-
-#define HI_INFO_FLASH(fmt...) \
-             HI_INFO_PRINT(HI_ID_FLASH, fmt)
-
 /******************************* API declaration *****************************/
 /** \addtogroup      FLASH */
 /** @{ */  /** <!-- [FLASH] */
@@ -135,7 +125,7 @@ HI_HANDLE HI_Flash_Open(HI_FLASH_TYPE_E enFlashType, HI_CHAR *pPartitionName, HI
 /**
 \brief:  open flash patition by name
 \attention \n
-\param[in] pPartitionName   patition name CNcomment:非EMMC器件(如SPI/NAND),只能用/dev/mtdx作为分区名。EMMC器件只能用bootargs里mtdparts=hi_emmc:中设定的分区名字，不能用/dev/mmcblk0px作为分区名
+\param[in] pPartitionName   patition name CNcomment:非EMMC器件(如SPI/NAND),只能用/dev/mtdx作为分区名。EMMC器件只能用bootargs里blkdevparts=mmcblk0:中设定的分区名字，不能用/dev/mmcblk0px作为分区名
 \retval    fd               Flash hande
 \retval    INVALID_FD       invaild fd
 \see \n

@@ -19,13 +19,50 @@
 
 #include "drv_pmoc_ioctl.h"
 #include "hi_drv_pmoc.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
+#include "hi_osal.h"
+
+#include <sys/socket.h>
+#include <net/if.h>
+
+/* socket ioctl */
+#define SIOCDEVPRIVATE  0x89F0  /* to 89FF, copy from include/linux/sockios.h */
+#define SIOCGETMODE     (SIOCDEVPRIVATE)        /* get work mode */
+#define SIOCSETMODE     (SIOCDEVPRIVATE + 1)    /* set work mode */
+#define SIOCGETFWD      (SIOCDEVPRIVATE + 2)    /* get forcing forward config */
+#define SIOCSETFWD      (SIOCDEVPRIVATE + 3)    /* set forcing forward config */
+#define SIOCSETPM       (SIOCDEVPRIVATE + 4)    /* set pmt wake up config */
+#define SIOCSETSUSPEND  (SIOCDEVPRIVATE + 5)    /* call dev->suspend, debug only */
+#define SIOCSETRESUME   (SIOCDEVPRIVATE + 6)    /* call dev->resume, debug only */
+
+struct pm_config {
+	char index;             /* bit0--eth0 bit1--eth1 */
+	char uc_pkts_enable;
+	char magic_pkts_enable;
+	char wakeup_pkts_enable;
+	struct {
+		unsigned int    mask_bytes;
+		unsigned char   offset; /* >= 12 */
+		unsigned char   value[FILTER_VALUE_COUNT];/* byte string */
+		char            valid;  /* valid filter */
+	} filter[FILTER_COUNT];
+};
+
+static const HI_U8 s_szPMOCVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
+
 
 #define GPIO5_NO_MAX   (47)
 #define GPIO5_NO_MIN    (40)
 
 static HI_S32 g_u32C51Fd = -1;
+static HI_S32 g_Netfd = -1;
+static HI_U32 g_u32PmocInitCount = 0;
 
+
+extern int get_remotewakeup_devnum(unsigned char * intmask);
+extern int set_remotewakeup(void);
 
 /*---- pm ----*/
 
@@ -42,19 +79,26 @@ static HI_S32 g_u32C51Fd = -1;
 ***********************************************************************************/
 HI_S32 HI_UNF_PMOC_Init(HI_VOID)
 {
-    HI_S32 s32DevFd = 0;
+    g_u32PmocInitCount++;
 
     if (g_u32C51Fd < 0)
     {
-        s32DevFd = open("/dev/"UMAP_DEVNAME_PM, O_RDWR, 0);
-        if (s32DevFd < 0)
+        g_u32C51Fd = open("/dev/"UMAP_DEVNAME_PM, O_RDWR, 0);
+        if (g_u32C51Fd < 0)
         {
             HI_ERR_PM("pmoc open err. \n");
             return HI_ERR_PMOC_FAILED_INIT;
         }
-
-        g_u32C51Fd = s32DevFd;
     }
+
+	if (g_Netfd < 0)
+	{
+        g_Netfd = socket(AF_INET, SOCK_DGRAM, 0);
+        if (g_Netfd < 0)
+        {
+		    HI_ERR_PM("open socket failed \n");
+        }
+	}	
 
     return HI_SUCCESS;
 }
@@ -72,14 +116,32 @@ HI_S32 HI_UNF_PMOC_Init(HI_VOID)
 ***********************************************************************************/
 HI_S32 HI_UNF_PMOC_DeInit(HI_VOID)
 {
+    HI_S32 s32Ret = 0;
+    
     if (g_u32C51Fd < 0)
     {
         HI_ERR_PM("pmoc not init\n");
         return HI_ERR_PMOC_NOT_INIT;
     }
 
-    close(g_u32C51Fd);
-    g_u32C51Fd = -1;
+    g_u32PmocInitCount--;
+
+    if (0 == g_u32PmocInitCount)
+    {
+        s32Ret = close(g_u32C51Fd);
+        if (HI_SUCCESS != s32Ret)
+        {
+            HI_ERR_PM("DeInit KEYLED err. \n");
+            return HI_FAILURE;
+        }
+        g_u32C51Fd = -1;
+
+        if (g_Netfd >= 0)
+        {
+            close(g_Netfd);
+            g_Netfd = -1;
+        }
+    }  
 	
     return HI_SUCCESS;
 }
@@ -199,6 +261,9 @@ HI_S32 HI_UNF_PMOC_SetWakeUpAttr(HI_UNF_PMOC_WKUP_S_PTR pstAttr)
     HI_U32 i;
     HI_S32 ret;
     C51_PMOC_VAL_S pmocVal;
+    HI_U8 u8IntMask = 0, u8FilterNumber;
+    struct pm_config pm;
+    struct ifreq ifr;
 
     if (HI_NULL == pstAttr)
     {
@@ -218,6 +283,14 @@ HI_S32 HI_UNF_PMOC_SetWakeUpAttr(HI_UNF_PMOC_WKUP_S_PTR pstAttr)
         return HI_ERR_PMOC_INVALID_PARA;
     }
 
+    if (pstAttr->stNetwork.enEthIndex >= HI_UNF_PMOC_ETH_BUTT)
+     {
+        HI_ERR_PM("Eth index not support \n");
+        return HI_ERR_PMOC_INVALID_PARA;
+    }
+
+    memset(&pmocVal, 0, sizeof(pmocVal));
+
     pmocVal.irnum = pstAttr->u32IrPmocNum;
     for (i = 0; i < pmocVal.irnum; i++)
     {
@@ -227,7 +300,92 @@ HI_S32 HI_UNF_PMOC_SetWakeUpAttr(HI_UNF_PMOC_WKUP_S_PTR pstAttr)
 
     pmocVal.keyVal  = pstAttr->u32KeypadPowerKey;
     pmocVal.timeVal = pstAttr->u32WakeUpTime;
-    ret = ioctl(g_u32C51Fd, HI_PMOC_SET_WAKEUP_CMD, (unsigned long)(&pmocVal));
+
+    if (pstAttr->bMouseKeyboardEnable == HI_TRUE)
+    {
+        ret = get_remotewakeup_devnum(&u8IntMask);
+        HI_INFO_PM("\n mouse wakeup dev num = %d mask = %d\n", ret, u8IntMask);
+        if (ret == HI_FAILURE)
+        {
+            HI_ERR_PM(" pm get usb wakeup dev number error ret = 0x%x \n", ret);
+            return HI_ERR_PMOC_FAILED_STANDBY;            
+        }
+        ret = set_remotewakeup();
+        if (ret == HI_FAILURE)
+        {
+            HI_ERR_PM(" pm set usb wakeup error ret = 0x%x \n", ret);
+            return HI_ERR_PMOC_FAILED_STANDBY;            
+        }
+
+        pmocVal.usbWakeupMask = u8IntMask;
+    }
+    else
+    {
+        pmocVal.usbWakeupMask = 0;
+    }
+
+    if (pstAttr->stNetwork.bUcPacketEnable || pstAttr->stNetwork.bMagicPacketEnable
+            || pstAttr->stNetwork.bWakeupFrameEnable)
+    {
+        memset(&ifr, 0, sizeof(ifr));
+
+	    /* for gmac driver, we don't care use eth0 or eth1 */
+	    HI_OSAL_Strncpy(ifr.ifr_name, "eth0", IFNAMSIZ);
+
+        pm.index = pstAttr->stNetwork.enEthIndex;
+        pm.uc_pkts_enable = pstAttr->stNetwork.bUcPacketEnable;
+        pm.magic_pkts_enable = pstAttr->stNetwork.bMagicPacketEnable;
+        pm.wakeup_pkts_enable = pstAttr->stNetwork.bWakeupFrameEnable;
+
+        if (pm.wakeup_pkts_enable == 1)
+        {            
+            for (u8FilterNumber = 0; u8FilterNumber < FILTER_COUNT; u8FilterNumber++) 
+            {
+		        pm.filter[u8FilterNumber].valid = pstAttr->stNetwork.stFrame[u8FilterNumber].bFilterValid;
+
+                if (pstAttr->stNetwork.stFrame[u8FilterNumber].u8Offset < 12)
+                {
+                    HI_ERR_PM(" Filter Offset less than 12, force it to be 12 \n");
+                    pm.filter[u8FilterNumber].offset = 12;
+                }
+                else
+                {
+                    pm.filter[u8FilterNumber].offset = pstAttr->stNetwork.stFrame[u8FilterNumber].u8Offset;
+                }
+    		    pm.filter[u8FilterNumber].mask_bytes = pstAttr->stNetwork.stFrame[u8FilterNumber].u32MaskBytes;
+                
+    		    for (i = 0; i < FILTER_VALUE_COUNT; i++) 
+                {
+    			    pm.filter[u8FilterNumber].value[i] = pstAttr->stNetwork.stFrame[u8FilterNumber].u8Value[i];
+    		    }
+    	    }
+
+            for (u8FilterNumber = 0; u8FilterNumber < FILTER_COUNT; u8FilterNumber++) 
+            {
+        		HI_INFO_PM("filter[%d]: ", u8FilterNumber);
+        		HI_INFO_PM("valid: %d, ", pm.filter[u8FilterNumber].valid);
+        		HI_INFO_PM("offset: %d, ", pm.filter[u8FilterNumber].offset);
+        		HI_INFO_PM("mask_bytes: %x \n", pm.filter[u8FilterNumber].mask_bytes);
+        		for (i = 0; i < FILTER_VALUE_COUNT; i++) 
+                {
+        			HI_INFO_PM("%02hhx ", pm.filter[u8FilterNumber].value[i]);
+        		}
+        		HI_INFO_PM("\n");
+            }
+        }
+
+        ifr.ifr_data = (caddr_t)&pm;
+                    
+        ret = ioctl(g_Netfd, SIOCSETPM, &ifr);
+        if (ret != HI_SUCCESS)	
+		{
+			HI_ERR_PM(" pm set network wake-up error ret = 0x%x \n", ret);
+		}
+        
+        pmocVal.ethWakeupFlag = 0x1;
+    }
+    
+    ret = ioctl(g_u32C51Fd, HI_PMOC_SET_WAKEUP_CMD, &pmocVal);
     if (ret != HI_SUCCESS)
     {
         HI_ERR_PM(" pm HI_PMOC_SET_WAKEUP_CMD error ret = 0x%x \n", ret);
@@ -386,7 +544,9 @@ HI_S32 HI_UNF_PMOC_SwitchSystemMode(HI_UNF_PMOC_MODE_E enSystemMode, HI_UNF_PMOC
 HI_S32 HI_UNF_PMOC_SetScene(HI_UNF_PMOC_SCENE_E eScene)
 {
 	HI_S32 s32Ret;
-	
+    struct ifreq ifr;
+    int need_forward;
+
 	if (eScene >= HI_UNF_PMOC_SCENE_BUTT)
 	{
 		HI_ERR_PM(" eScene = %d  err ! \n", eScene);
@@ -404,7 +564,26 @@ HI_S32 HI_UNF_PMOC_SetScene(HI_UNF_PMOC_SCENE_E eScene)
 		case HI_UNF_PMOC_SCENE_STANDARD:
 		case HI_UNF_PMOC_SCENE_ETH:
 		{
-			s32Ret = ioctl(g_u32C51Fd, HI_PMOC_SET_SCENE_CMD, &eScene);
+            if (HI_UNF_PMOC_SCENE_ETH == eScene)
+            {
+                memset(&ifr, 0, sizeof(ifr));
+
+            	/* for gmac driver, we don't care use eth0 or eth1 */
+            	HI_OSAL_Strncpy(ifr.ifr_name, "eth0", IFNAMSIZ);
+
+                need_forward = 1;
+                ifr.ifr_data = (caddr_t)&need_forward;
+
+                HI_INFO_PM("\n HI_UNF_PMOC_SCENE_ETH  \n");
+
+                s32Ret = ioctl(g_Netfd, SIOCSETFWD, &ifr);
+                if (s32Ret != HI_SUCCESS)	
+    			{
+    				HI_ERR_PM(" pm HI_PMOC_SET_SCENE_CMD error ret = 0x%x \n", s32Ret);
+    			}
+            }
+            
+            s32Ret = ioctl(g_u32C51Fd, HI_PMOC_SET_SCENE_CMD, &eScene);
 			if (s32Ret != HI_SUCCESS)	
 			{
 				HI_ERR_PM(" pm HI_PMOC_SET_SCENE_CMD error ret = 0x%x \n", s32Ret);
@@ -458,6 +637,16 @@ HI_S32 HI_UNF_PMOC_SetDevType(HI_UNF_PMOC_DEV_TYPE_S_PTR pdevType)
     }
     else
     {
+#if defined (CHIP_TYPE_hi3716cv200)  \
+                    || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+                    || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+                    || defined (CHIP_TYPE_hi3718mv100)
+        if (HI_UNF_KEYLED_TYPE_74HC164 == pdevType->kltype)
+        {
+            HI_ERR_PM("Don't support this keyled type.\n");
+            return HI_ERR_PMOC_INVALID_PARA;
+        }
+#endif        
         dev.kltype = pdevType->kltype;
     }
 #endif

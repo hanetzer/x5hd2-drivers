@@ -13,42 +13,44 @@
 @	compiled by GNU C version 4.1.1 20061011 (Red Hat 4.1.1-30), GMP version 4.3.1, MPFR version 2.4.2.
 @ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 @ options passed:  -nostdinc
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/include
 @ -Iarch/arm/include/generated -Iinclude
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vo
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vo
 @ -Idrivers/msp/vo
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/drv/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/higo/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/api/vo
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/hal_cv200es
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/alg
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/com
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/drv
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/higo/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/vo
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/hal/common
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/hal/cv200
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/alg
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/com
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/drv
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/vo/vdp_v1_0/include
 @ -imultilib armv7a_soft -iprefix
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/
 @ -isysroot /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../target
 @ -D__KERNEL__ -D__LINUX_ARM_ARCH__=7 -Uarm -DHI_DISP_BUILD_FULL
 @ -D__DISP_PLATFORM_SDK__ -D__DISP_D0_FOLLOW_D1__ -D__DISP_SELF_START__
-@ -DHI_VO_SHARPNESS_SUPPORT -DHI_VO_HD_VIDEO_DO_DEI
-@ -DCHIP_TYPE_hi3716cv200es -DSDK_VERSION=HiSTBLinuxV100R002C00SPC011
-@ -DCFG_HI_LOG_LEVEL=4 -DHI_KEYLED_SUPPORT -DHI_SCI_SUPPORT
+@ -DHI_VO_SHARPNESS_SUPPORT -DHI_VO_HD_VIDEO_DO_DEI -DCHIP_TYPE_hi3716cv200
+@ -DSDK_VERSION=HiSTBLinuxV100R002C00SPC020 -DHI_GPIOI2C_SUPPORT
+@ -DHI_LOG_SUPPORT=1 -DHI_LOG_LEVEL=4 -DHI_PROC_SUPPORT=1
+@ -DHI_KEYLED_SUPPORT -DHI_HDCP_SUPPORT -DHI_SCI_SUPPORT -DHI_VI_SUPPORT
 @ -DHI_VENC_SUPPORT -DHI_AENC_SUPPORT -DKBUILD_STR(s)=#s
 @ -DKBUILD_BASENAME=KBUILD_STR(drv_disp_alg_csc)
 @ -DKBUILD_MODNAME=KBUILD_STR(hi_vou) -isystem
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/include
 @ -include
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include/linux/kconfig.h
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include/linux/kconfig.h
 @ -MD drivers/msp/vo/./vdp_v1_0/alg/.drv_disp_alg_csc.o.d
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vo/./vdp_v1_0/alg/drv_disp_alg_csc.c
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vo/./vdp_v1_0/alg/drv_disp_alg_csc.c
 @ -mlittle-endian -marm -mapcs -mno-sched-prolog -mabi=aapcs-linux
 @ -mno-thumb-interwork -march=armv7-a -msoft-float -auxbase-strip
 @ drivers/msp/vo/./vdp_v1_0/alg/drv_disp_alg_csc.o -O2 -Wall -Wundef
@@ -203,7 +205,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	ldr	r9, [fp, #-80]	@, %sfp
 	str	r8, [fp, #-96]	@, %sfp
 	ldr	sl, [fp, #-100]	@, %sfp
-	mul	r8, r7, r9	@ D.2164,,
+	mul	r8, r7, r9	@ D.2185,,
 	ldr	r7, [fp, #-116]	@, %sfp
 	rsb	r9, sl, r7, asr #6	@, tmp233,,,
 	ldr	r7, [fp, #-56]	@, %sfp
@@ -223,11 +225,11 @@ CalcCscCoef_YCbCrtoYCbCr:
 	ldr	r7, [fp, #-64]	@, %sfp
 	ldr	sl, [fp, #-56]	@, %sfp
 	add	r9, sl, r9	@ tmp266,, tmp261
-	mul	sl, r8, r7	@ tmp211, D.2164,
+	mul	sl, r8, r7	@ tmp211, D.2185,
 	ldr	r7, [fp, #-80]	@, %sfp
-	mul	r7, r8, r7	@, D.2164,
+	mul	r7, r8, r7	@, D.2185,
 	str	r7, [fp, #-64]	@, %sfp
-	mul	r7, r8, r9	@, D.2164, tmp266
+	mul	r7, r8, r9	@, D.2185, tmp266
 	str	r7, [fp, #-80]	@, %sfp
 	smull	r7, r9, r4, sl	@,, tmp546, tmp211
 	mov	sl, sl, asr #31	@ tmp215, tmp211,
@@ -327,16 +329,16 @@ CalcCscCoef_YCbCrtoYCbCr:
 	ldr	r9, [fp, #-84]	@, %sfp
 	rsb	r1, r5, r1	@ tmp350, tmp345, tmp332
 	ldr	r7, [fp, #-76]	@, %sfp
-	mul	r1, r8, r1	@ tmp351, D.2164, tmp350
+	mul	r1, r8, r1	@ tmp351, D.2185, tmp350
 	mul	r5, r9, sl	@ tmp176,,
 	mov	r9, r7, asr #31	@,,
 	ldr	r7, [fp, #-68]	@, %sfp
 	str	r9, [fp, #-48]	@, %sfp
 	ldr	r9, [fp, #-52]	@, %sfp
 	mul	sl, r7, sl	@ tmp182,,
-	mul	r7, r8, r9	@ tmp295, D.2164,
+	mul	r7, r8, r9	@ tmp295, D.2185,
 	mov	r9, r5, asr #31	@, tmp176,
-	mul	r8, r8, r6	@ tmp323, D.2164, tmp322
+	mul	r8, r8, r6	@ tmp323, D.2185, tmp322
 	str	r9, [fp, #-72]	@, %sfp
 	mov	r6, r1, asr #31	@, tmp351,
 	str	r6, [fp, #-64]	@, %sfp
@@ -451,13 +453,13 @@ CalcCscCoef_YCbCrtoYCbCr:
 	smull	r8, r6, r3, r8	@, tmp376, tmp544,
 	smull	r8, r1, r3, r5	@,, tmp544, tmp384
 	ldr	r5, [fp, #-64]	@, %sfp
-	rsb	r7, r5, r7, asr #5	@, D.2622,, tmp367,
+	rsb	r7, r5, r7, asr #5	@, D.2643,, tmp367,
 	ldr	r5, [fp, #-88]	@, %sfp
 	str	r1, [fp, #-120]	@, %sfp
 	mvn	r1, #202	@ tmp437,
 	mla	r8, r1, r0, sl	@, tmp437, s32Bgain, tmp438
 	ldr	sl, [fp, #-116]	@, %sfp
-	rsb	r6, r5, r6, asr #5	@, D.2618,, tmp376,
+	rsb	r6, r5, r6, asr #5	@, D.2639,, tmp376,
 	movw	r1, #701	@ tmp446,
 	mvn	r5, #99	@ tmp430,
 	mla	r4, r1, r4, sl	@ tmp449, tmp446, s32Rgain,
@@ -467,7 +469,7 @@ CalcCscCoef_YCbCrtoYCbCr:
 	ldr	r1, [fp, #-96]	@, %sfp
 	mla	r0, r5, r0, r8	@ tmp431, tmp430, s32Bgain,
 	ldr	r8, [fp, #-128]	@, %sfp
-	rsb	r5, r1, sl, asr #5	@, D.2614,,,
+	rsb	r5, r1, sl, asr #5	@, D.2635,,,
 	smull	sl, r1, r3, r8	@, tmp397, tmp544,
 	ldr	sl, [fp, #-132]	@, %sfp
 	mov	r8, sl, asr #31	@,,
@@ -479,123 +481,123 @@ CalcCscCoef_YCbCrtoYCbCr:
 	str	sl, [fp, #-68]	@, %sfp
 	smull	sl, r8, r3, r9	@,, tmp544, tmp414
 	ldr	r9, [fp, #-100]	@, %sfp
-	rsb	sl, r9, r1, asr #5	@, D.2608,, tmp397,
+	rsb	sl, r9, r1, asr #5	@, D.2629,, tmp397,
 	ldr	r9, [fp, #-104]	@, %sfp
 	str	r8, [fp, #-112]	@, %sfp
 	smull	r1, r8, r3, r4	@,, tmp544, tmp449
 	mov	r4, r4, asr #31	@ tmp453, tmp449,
 	ldr	r1, [fp, #-96]	@, %sfp
 	str	r8, [fp, #-88]	@, %sfp
-	rsb	r8, r9, r1, asr #5	@, D.2604,,,
+	rsb	r8, r9, r1, asr #5	@, D.2625,,,
 	smull	r1, r9, r3, r0	@,, tmp544, tmp431
 	ldr	r1, [fp, #-112]	@, %sfp
 	ldr	r0, [fp, #-108]	@, %sfp
 	str	r9, [fp, #-100]	@, %sfp
-	rsb	r9, r0, r1, asr #5	@, D.2600,,,
+	rsb	r9, r0, r1, asr #5	@, D.2621,,,
 	ldr	r0, [fp, #-132]	@, %sfp
 	smull	r1, r0, r3, r0	@,, tmp544,
 	str	r0, [fp, #-104]	@, %sfp
 	ldr	r1, [fp, #-52]	@, %sfp
 	ldr	r3, [fp, #-100]	@, %sfp
-	mul	r0, r5, r1	@, D.2614,
+	mul	r0, r5, r1	@, D.2635,
 	ldr	r1, [fp, #-68]	@, %sfp
 	str	r0, [fp, #-96]	@, %sfp
-	rsb	r0, r1, r3, asr #5	@, D.2594,,,
+	rsb	r0, r1, r3, asr #5	@, D.2615,,,
 	ldr	r3, [fp, #-84]	@, %sfp
-	mul	r1, r3, r5	@,, D.2614
+	mul	r1, r3, r5	@,, D.2635
 	ldr	r3, [fp, #-88]	@, %sfp
-	rsb	r4, r4, r3, asr #5	@, D.2586, tmp453,,
+	rsb	r4, r4, r3, asr #5	@, D.2607, tmp453,,
 	str	r1, [fp, #-68]	@, %sfp
 	ldr	r1, [fp, #-80]	@, %sfp
-	mul	r3, r5, r1	@, D.2614,
+	mul	r3, r5, r1	@, D.2635,
 	ldr	r1, [fp, #-104]	@, %sfp
 	ldr	r5, [fp, #-64]	@, %sfp
 	str	r3, [fp, #-88]	@, %sfp
-	rsb	r3, r5, r1, asr #5	@, D.2590,,,
+	rsb	r3, r5, r1, asr #5	@, D.2611,,,
 	ldr	r1, [fp, #-52]	@, %sfp
-	mul	r5, r7, r1	@, D.2622,
+	mul	r5, r7, r1	@, D.2643,
 	ldr	r1, [fp, #-52]	@, %sfp
 	str	r5, [fp, #-100]	@, %sfp
-	mul	r5, r6, r1	@, D.2618,
+	mul	r5, r6, r1	@, D.2639,
 	ldr	r1, [fp, #-84]	@, %sfp
 	str	r5, [fp, #-104]	@, %sfp
-	mul	r5, r1, r7	@,, D.2622
+	mul	r5, r1, r7	@,, D.2643
 	ldr	r1, [fp, #-84]	@, %sfp
 	str	r5, [fp, #-52]	@, %sfp
-	mul	r5, r1, r6	@,, D.2618
+	mul	r5, r1, r6	@,, D.2639
 	ldr	r1, [fp, #-80]	@, %sfp
-	mul	r6, r6, r1	@ tmp495, D.2618,
+	mul	r6, r6, r1	@ tmp495, D.2639,
 	str	r5, [fp, #-84]	@, %sfp
-	mul	r7, r7, r1	@ tmp485, D.2622,
+	mul	r7, r7, r1	@ tmp485, D.2643,
 	ldr	r5, [fp, #-96]	@, %sfp
 	ldr	r1, [fp, #-48]	@, %sfp
-	mla	r1, r9, r1, r5	@, D.2600,,
+	mla	r1, r9, r1, r5	@, D.2621,,
 	ldr	r5, [fp, #-68]	@, %sfp
 	str	r1, [fp, #-64]	@, %sfp
 	ldr	r1, [fp, #-92]	@, %sfp
-	mla	r1, r1, r9, r5	@,, D.2600,
+	mla	r1, r1, r9, r5	@,, D.2621,
 	ldr	r5, [fp, #-88]	@, %sfp
 	str	r1, [fp, #-80]	@, %sfp
 	ldr	r1, [fp, #-60]	@, %sfp
-	mla	r9, r9, r1, r5	@ tmp506, D.2600,,
+	mla	r9, r9, r1, r5	@ tmp506, D.2621,,
 	ldr	r5, [fp, #-100]	@, %sfp
 	ldr	r1, [fp, #-48]	@, %sfp
-	mla	r1, sl, r1, r5	@, D.2608,,
+	mla	r1, sl, r1, r5	@, D.2629,,
 	ldr	r5, [fp, #-104]	@, %sfp
 	str	r1, [fp, #-68]	@, %sfp
 	ldr	r1, [fp, #-48]	@, %sfp
-	mla	r1, r8, r1, r5	@, D.2604,,
+	mla	r1, r8, r1, r5	@, D.2625,,
 	str	r1, [fp, #-96]	@, %sfp
 	ldr	r5, [fp, #-52]	@, %sfp
 	ldr	r1, [fp, #-92]	@, %sfp
-	mla	r1, r1, sl, r5	@,, D.2608,
+	mla	r1, r1, sl, r5	@,, D.2629,
 	ldr	r5, [fp, #-84]	@, %sfp
 	str	r1, [fp, #-48]	@, %sfp
 	ldr	r1, [fp, #-92]	@, %sfp
-	mla	r1, r1, r8, r5	@,, D.2604,
+	mla	r1, r1, r8, r5	@,, D.2625,
 	str	r1, [fp, #-52]	@, %sfp
 	ldr	r1, [fp, #-60]	@, %sfp
-	mla	r7, sl, r1, r7	@, D.2608,, tmp485
+	mla	r7, sl, r1, r7	@, D.2629,, tmp485
 	ldr	sl, [fp, #-64]	@, %sfp
-	mla	r5, r8, r1, r6	@, D.2604,, tmp495
+	mla	r5, r8, r1, r6	@, D.2625,, tmp495
 	ldr	r6, [fp, #-76]	@, %sfp
 	ldr	r1, [fp, #-80]	@, %sfp
 	str	r7, [fp, #-92]	@, %sfp
 	ldr	r7, [fp, #-72]	@, %sfp
 	str	r5, [fp, #-84]	@, %sfp
 	ldr	r5, [fp, #-56]	@, %sfp
-	mla	r8, r4, r7, sl	@ tmp538, D.2586,,
+	mla	r8, r4, r7, sl	@ tmp538, D.2607,,
 	ldr	sl, [fp, #-68]	@, %sfp
-	mla	r7, r6, r4, r1	@ tmp478,, D.2586,
+	mla	r7, r6, r4, r1	@ tmp478,, D.2607,
 	ldr	r6, [fp, #-72]	@, %sfp
-	mla	r4, r4, r5, r9	@ tmp508, D.2586,, tmp506
+	mla	r4, r4, r5, r9	@ tmp508, D.2607,, tmp506
 	ldr	r9, [fp, #-96]	@, %sfp
-	mla	r1, r0, r6, sl	@, D.2594,,
+	mla	r1, r0, r6, sl	@, D.2615,,
 	ldr	sl, [fp, #-72]	@, %sfp
 	mov	r5, r8, asr #31	@, tmp538,
 	str	r5, [fp, #-68]	@, %sfp
 	mov	r6, r7, asr #31	@, tmp478,
 	str	r6, [fp, #-60]	@, %sfp
-	mla	r5, r3, sl, r9	@ tmp528, D.2590,,
+	mla	r5, r3, sl, r9	@ tmp528, D.2611,,
 	ldr	sl, [fp, #-76]	@, %sfp
 	str	r1, [fp, #-88]	@, %sfp
 	mov	r9, r4, asr #31	@, tmp508,
 	ldr	r1, [fp, #-48]	@, %sfp
 	str	r9, [fp, #-80]	@, %sfp
 	ldr	r9, [fp, #-88]	@, %sfp
-	mla	r6, sl, r0, r1	@ tmp458,, D.2594,
+	mla	r6, sl, r0, r1	@ tmp458,, D.2615,
 	ldr	r1, [fp, #-52]	@, %sfp
-	mla	sl, sl, r3, r1	@ tmp468,, D.2590,
+	mla	sl, sl, r3, r1	@ tmp468,, D.2611,
 	mov	r1, r9, asr #31	@,,
 	ldr	r9, [fp, #-92]	@, %sfp
 	str	r1, [fp, #-52]	@, %sfp
 	ldr	r1, [fp, #-56]	@, %sfp
-	mla	r0, r0, r1, r9	@ tmp488, D.2594,,
+	mla	r0, r0, r1, r9	@ tmp488, D.2615,,
 	mov	r1, r5, asr #31	@, tmp528,
 	ldr	r9, [fp, #-56]	@, %sfp
 	str	r1, [fp, #-76]	@, %sfp
 	ldr	r1, [fp, #-84]	@, %sfp
-	mla	r3, r3, r9, r1	@ tmp498, D.2590,,
+	mla	r3, r3, r9, r1	@ tmp498, D.2611,,
 	mov	r9, r6, asr #31	@, tmp458,
 	str	r9, [fp, #-64]	@, %sfp
 	smull	r9, r1, ip, r8	@,, tmp545, tmp538
@@ -819,13 +821,13 @@ DISP_ALG_CscCoefSet:
 	mov	r1, r6	@, tmp895
 	ldr	r0, [r5, #4]	@, <variable>.eOutputCS
 	bl	VDPGetCscType	@
-	ldr	r1, [fp, #-52]	@ D.2784, stAlgCSIn.eCsType
-	ldr	r0, [fp, #-60]	@ D.2783, stAlgCSOut.eCsType
-	cmp	r1, #2	@ D.2784,
-	add	r6, r0, r1, asl #2	@, tmp321, D.2783, D.2784,
+	ldr	r1, [fp, #-52]	@ D.2805, stAlgCSIn.eCsType
+	ldr	r0, [fp, #-60]	@ D.2804, stAlgCSOut.eCsType
+	cmp	r1, #2	@ D.2805,
+	add	r6, r0, r1, asl #2	@, tmp321, D.2804, D.2805,
 	ldr	r1, [r8, r6, asl #2]	@ pCSCMatrixOri, CSC_MatrixTbl
 	bls	.L48	@,
-	cmp	r0, #2	@ D.2783,
+	cmp	r0, #2	@ D.2804,
 	bls	.L49	@,
 	ldr	r3, [r5, #20]	@ <variable>.u32Hue, <variable>.u32Hue
 	movw	r2, #:lower16:1374389535	@ tmp330,
@@ -852,7 +854,7 @@ DISP_ALG_CscCoefSet:
 	ldr	r2, [sl, r0, asl #2]	@ tmp339, VDPCOS_TABLE
 	mov	r0, #146	@ tmp512,
 	mul	sl, r0, r3	@ tmp511, tmp512, s32SatAdj
-	ldr	r0, [r1, #244]	@ D.2889, VDPSIN_TABLE
+	ldr	r0, [r1, #244]	@ D.2910, VDPSIN_TABLE
 	mul	r1, ip, r3	@ tmp395,, s32SatAdj
 	rsb	ip, r3, r9, asl #5	@,, s32SatAdj, tmp436,
 	movw	r9, #394	@ tmp462,
@@ -860,60 +862,60 @@ DISP_ALG_CscCoefSet:
 	mul	ip, r9, r3	@, tmp462, s32SatAdj
 	mov	r9, #760	@ tmp495,
 	mul	r6, r6, r3	@ tmp417, tmp418, s32SatAdj
-	mul	r1, r0, r1	@ tmp397, D.2889, tmp395
+	mul	r1, r0, r1	@ tmp397, D.2910, tmp395
 	str	ip, [fp, #-120]	@, %sfp
 	mul	ip, r9, r3	@, tmp495, s32SatAdj
 	ldr	r9, [fp, #-108]	@, %sfp
-	mul	r8, r0, r8	@ tmp344, D.2889, tmp342
-	mul	r7, r0, r7	@ tmp374, D.2889, tmp372
+	mul	r8, r0, r8	@ tmp344, D.2910, tmp342
+	mul	r7, r0, r7	@ tmp374, D.2910, tmp372
 	str	ip, [fp, #-104]	@, %sfp
-	mul	ip, r0, r9	@ tmp479, D.2889,
-	mul	r9, r0, sl	@, D.2889, tmp511
+	mul	ip, r0, r9	@ tmp479, D.2910,
+	mul	r9, r0, sl	@, D.2910, tmp511
 	ldr	sl, [fp, #-112]	@, %sfp
-	mul	r6, r0, r6	@ tmp419, D.2889, tmp417
-	mul	r2, r2, r3	@ D.2882, tmp339, s32SatAdj
+	mul	r6, r0, r6	@ tmp419, D.2910, tmp417
+	mul	r2, r2, r3	@ D.2903, tmp339, s32SatAdj
 	movw	r3, #:lower16:351843721	@ tmp347,
 	str	r9, [fp, #-116]	@, %sfp
 	movt	r3, #:upper16:351843721	@ tmp347,
-	mul	r9, r0, sl	@ tmp439, D.2889,
+	mul	r9, r0, sl	@ tmp439, D.2910,
 	ldr	sl, [fp, #-120]	@, %sfp
-	mul	sl, r0, sl	@, D.2889,
+	mul	sl, r0, sl	@, D.2910,
 	str	sl, [fp, #-120]	@, %sfp
 	ldr	sl, [fp, #-104]	@, %sfp
-	mul	r0, r0, sl	@, D.2889,
+	mul	r0, r0, sl	@, D.2910,
 	str	r0, [fp, #-128]	@, %sfp
 	ldr	sl, [r5, #16]	@, <variable>.u32Contrst
 	mov	r0, sl, asl #1	@ s32ContrstAdj,,
 	movw	sl, #907	@ tmp521,
-	mul	sl, sl, r2	@, tmp521, D.2882
+	mul	sl, sl, r2	@, tmp521, D.2903
 	str	sl, [fp, #-132]	@, %sfp
 	ldr	sl, [r5, #32]	@, <variable>.u32Kg
 	mov	sl, sl, asl #1	@,,
 	str	sl, [fp, #-152]	@, %sfp
 	movw	sl, #601	@ tmp367,
-	mul	sl, sl, r2	@, tmp367, D.2882
+	mul	sl, sl, r2	@, tmp367, D.2903
 	str	sl, [fp, #-104]	@, %sfp
 	ldr	sl, [r5, #36]	@, <variable>.u32Kb
 	mov	sl, sl, asl #1	@,,
 	str	sl, [fp, #-140]	@, %sfp
 	mov	sl, #117	@ tmp390,
-	mul	sl, sl, r2	@, tmp390, D.2882
+	mul	sl, sl, r2	@, tmp390, D.2903
 	str	sl, [fp, #-112]	@, %sfp
 	ldr	sl, [r5, #28]	@, <variable>.u32Kr
 	mov	sl, sl, asl #1	@,,
 	str	sl, [fp, #-144]	@, %sfp
 	movw	sl, #306	@ tmp412,
-	mul	sl, sl, r2	@, tmp412, D.2882
+	mul	sl, sl, r2	@, tmp412, D.2903
 	str	sl, [fp, #-124]	@, %sfp
 	mov	sl, r8, asr #31	@, tmp344,
 	str	sl, [fp, #-148]	@, %sfp
 	movw	sl, #423	@ tmp448,
-	mul	sl, sl, r2	@, tmp448, D.2882
+	mul	sl, sl, r2	@, tmp448, D.2903
 	str	sl, [fp, #-136]	@, %sfp
 	mov	sl, r7, asr #31	@, tmp374,
 	str	sl, [fp, #-160]	@, %sfp
 	movw	sl, #718	@,
-	mul	r2, sl, r2	@,, D.2882
+	mul	r2, sl, r2	@,, D.2903
 	smull	sl, r8, r3, r8	@, tmp346, tmp347, tmp344
 	mov	sl, ip, asr #31	@, tmp479,
 	str	sl, [fp, #-164]	@, %sfp
@@ -996,9 +998,9 @@ DISP_ALG_CscCoefSet:
 	ldr	r6, [fp, #-160]	@, %sfp
 	str	r8, [fp, #-120]	@, %sfp
 	add	r8, ip, #304	@ tmp350,,
-	mul	ip, r0, sl	@ D.2877, s32ContrstAdj,
+	mul	ip, r0, sl	@ D.2898, s32ContrstAdj,
 	ldr	sl, [fp, #-124]	@, %sfp
-	mul	r0, r0, r7	@ D.2866, s32ContrstAdj,
+	mul	r0, r0, r7	@ D.2887, s32ContrstAdj,
 	mov	r7, r1, asr #31	@ tmp371,,
 	add	r1, r6, #600	@ tmp380,,
 	mov	r6, r3, asr #31	@ tmp394,,
@@ -1021,13 +1023,13 @@ DISP_ALG_CscCoefSet:
 	add	r2, r2, #2	@ tmp485, tmp485,
 	str	r9, [fp, #-104]	@, %sfp
 	ldr	r9, [fp, #-156]	@, %sfp
-	rsb	r7, r7, sl, asr #13	@, D.2868, tmp371,,
+	rsb	r7, r7, sl, asr #13	@, D.2889, tmp371,,
 	ldr	sl, [fp, #-168]	@, %sfp
-	rsb	r6, r6, r9, asr #13	@, D.2857, tmp394,,
+	rsb	r6, r6, r9, asr #13	@, D.2878, tmp394,,
 	ldr	r9, [fp, #-128]	@, %sfp
-	rsb	r3, r3, sl, asr #13	@, D.2846, tmp416,,
+	rsb	r3, r3, sl, asr #13	@, D.2867, tmp416,,
 	ldr	sl, [fp, #-108]	@, %sfp
-	rsb	r2, r3, r2	@ tmp487, D.2846, tmp485
+	rsb	r2, r3, r2	@ tmp487, D.2867, tmp485
 	rsb	sl, sl, r9, asr #13	@,,,,
 	ldr	r9, [fp, #-180]	@, %sfp
 	str	sl, [fp, #-108]	@, %sfp
@@ -1063,20 +1065,20 @@ DISP_ALG_CscCoefSet:
 	add	r9, r9, r8	@, tmp446,
 	ldr	r8, [fp, #-128]	@, %sfp
 	str	r9, [fp, #-124]	@, %sfp
-	rsb	r9, r6, sl	@, D.2857,
+	rsb	r9, r6, sl	@, D.2878,
 	ldr	sl, [fp, #-132]	@, %sfp
 	str	r9, [fp, #-136]	@, %sfp
-	rsb	r9, r7, r8	@ tmp504, D.2868,
+	rsb	r9, r7, r8	@ tmp504, D.2889,
 	ldr	r8, [fp, #-116]	@, %sfp
-	rsb	r7, r7, r1	@ tmp382, D.2868, tmp380
-	mul	r1, ip, r2	@, D.2877, tmp487
+	rsb	r7, r7, r1	@ tmp382, D.2889, tmp380
+	mul	r1, ip, r2	@, D.2898, tmp487
 	add	r8, r8, sl	@,,
 	ldr	sl, [fp, #-104]	@, %sfp
 	str	r8, [fp, #-116]	@, %sfp
-	rsb	r6, r6, sl	@ tmp404, D.2857,
+	rsb	r6, r6, sl	@ tmp404, D.2878,
 	ldr	r8, [fp, #-112]	@, %sfp
-	mla	sl, r9, r0, r0	@, tmp504, D.2866, D.2866
-	rsb	r3, r3, r8	@, D.2846,
+	mla	sl, r9, r0, r0	@, tmp504, D.2887, D.2887
+	rsb	r3, r3, r8	@, D.2867,
 	ldr	r9, [fp, #-120]	@, %sfp
 	ldr	r8, [fp, #-116]	@, %sfp
 	str	r1, [fp, #-140]	@, %sfp
@@ -1085,9 +1087,9 @@ DISP_ALG_CscCoefSet:
 	ldr	r1, [fp, #-140]	@, %sfp
 	mul	sl, r9, r8	@ tmp528,,
 	str	r3, [fp, #-104]	@, %sfp
-	mul	r8, ip, r2	@ tmp360, D.2877,
+	mul	r8, ip, r2	@ tmp360, D.2898,
 	mov	r9, r1, asr #31	@,,
-	mul	r7, r0, r7	@ tmp383, D.2866, tmp382
+	mul	r7, r0, r7	@ tmp383, D.2887, tmp382
 	ldr	r2, [fp, #-144]	@, %sfp
 	str	r9, [fp, #-128]	@, %sfp
 	movw	r3, #:lower16:1759218605	@ tmp362,
@@ -1101,9 +1103,9 @@ DISP_ALG_CscCoefSet:
 	str	r2, [fp, #-132]	@, %sfp
 	mov	r9, r8, asr #31	@, tmp360,
 	ldr	r2, [fp, #-124]	@, %sfp
-	mul	ip, ip, r1	@ tmp428, D.2877,
+	mul	ip, ip, r1	@ tmp428, D.2898,
 	str	r9, [fp, #-108]	@, %sfp
-	mla	r0, r2, r0, r0	@ tmp455,, D.2866, D.2866
+	mla	r0, r2, r0, r0	@ tmp455,, D.2887, D.2887
 	mov	r1, r7, asr #31	@, tmp383,
 	str	r1, [fp, #-104]	@, %sfp
 	ldr	r2, [fp, #-120]	@, %sfp
@@ -1180,7 +1182,7 @@ DISP_ALG_CscCoefSet:
 	sub	sp, fp, #40
 	ldmfd	sp, {r4, r5, r6, r7, r8, r9, sl, fp, sp, pc}
 .L48:
-	cmp	r0, #2	@ D.2783,
+	cmp	r0, #2	@ D.2804,
 	bls	.L51	@,
 	ldr	r3, [r5, #20]	@ <variable>.u32Hue, <variable>.u32Hue
 	movw	r2, #:lower16:1374389535	@ tmp710,
@@ -1201,9 +1203,9 @@ DISP_ALG_CscCoefSet:
 	mov	r8, r6, lsr #5	@ u32Hue, tmp709,
 	movw	r0, #:lower16:351843721	@ tmp740,
 	movt	r0, #:upper16:351843721	@ tmp740,
-	ldr	r6, [ip, r8, asl #2]	@ D.3107, VDPCOS_TABLE
+	ldr	r6, [ip, r8, asl #2]	@ D.3128, VDPCOS_TABLE
 	add	ip, ip, r8, asl #2	@, tmp726, tmp722, u32Hue,
-	ldr	ip, [ip, #244]	@ D.3102, VDPSIN_TABLE
+	ldr	ip, [ip, #244]	@ D.3123, VDPSIN_TABLE
 	str	r2, [fp, #-124]	@, %sfp
 	movw	r2, #:lower16:1759218605	@ tmp718,
 	ldr	r9, [r5, #36]	@ <variable>.u32Kb, <variable>.u32Kb
@@ -1217,13 +1219,13 @@ DISP_ALG_CscCoefSet:
 	mov	r9, sl, asl #1	@,,
 	str	r9, [fp, #-136]	@, %sfp
 	ldr	r8, [r1, #28]	@, <variable>.s32C21
-	mul	sl, r8, r6	@,, D.3107
+	mul	sl, r8, r6	@,, D.3128
 	str	sl, [fp, #-104]	@, %sfp
 	ldr	r9, [r1, #32]	@, <variable>.s32C22
-	mul	r8, r9, ip	@,, D.3102
+	mul	r8, r9, ip	@,, D.3123
 	str	r8, [fp, #-156]	@, %sfp
 	ldr	sl, [r1, #4]	@, <variable>.s32C01
-	mul	r9, sl, r6	@,, D.3107
+	mul	r9, sl, r6	@,, D.3128
 	str	r9, [fp, #-128]	@, %sfp
 	ldr	r9, [fp, #-104]	@, %sfp
 	ldr	r8, [r5, #28]	@, <variable>.u32Kr
@@ -1233,19 +1235,19 @@ DISP_ALG_CscCoefSet:
 	ldr	r9, [fp, #-124]	@, %sfp
 	movw	r8, #:lower16:1125899907	@,
 	str	r8, [fp, #-108]	@, %sfp
-	mul	r8, ip, r9	@, D.3102,
+	mul	r8, ip, r9	@, D.3123,
 	ldr	r9, [fp, #-156]	@, %sfp
 	str	r8, [fp, #-104]	@, %sfp
 	mov	r8, r9, asr #31	@,,
 	str	r8, [fp, #-172]	@, %sfp
 	ldr	r9, [r1, #16]	@, <variable>.s32C11
-	mul	r8, r9, r6	@,, D.3107
+	mul	r8, r9, r6	@,, D.3128
 	ldr	r9, [fp, #-128]	@, %sfp
 	str	r8, [fp, #-124]	@, %sfp
 	mov	r8, r9, asr #31	@,,
 	ldr	r9, [fp, #-132]	@, %sfp
 	str	r8, [fp, #-148]	@, %sfp
-	mul	r8, r9, ip	@,, D.3102
+	mul	r8, r9, ip	@,, D.3123
 	mov	r9, sl, asr #31	@, tmp832,
 	str	r8, [fp, #-116]	@, %sfp
 	str	r9, [fp, #-144]	@, %sfp
@@ -1328,7 +1330,7 @@ DISP_ALG_CscCoefSet:
 	movt	r9, #:upper16:1125899907	@,
 	str	r9, [fp, #-108]	@, %sfp
 	ldr	r8, [r1, #8]	@, <variable>.s32C02
-	mul	r9, r8, r6	@,, D.3107
+	mul	r9, r8, r6	@,, D.3128
 	str	r9, [fp, #-140]	@, %sfp
 	ldr	r9, [fp, #-104]	@, %sfp
 	ldr	r8, [r1, #0]	@, <variable>.s32C00
@@ -1379,22 +1381,22 @@ DISP_ALG_CscCoefSet:
 	ldr	r9, [r1, #32]	@, <variable>.s32C22
 	ldr	sl, [r1, #24]	@, <variable>.s32C20
 	ldr	r1, [fp, #-140]	@, %sfp
-	mul	r8, r9, r6	@ tmp860,, D.3107
+	mul	r8, r9, r6	@ tmp860,, D.3128
 	ldr	r9, [fp, #-160]	@, %sfp
 	str	sl, [fp, #-152]	@, %sfp
 	mul	r7, r7, r1	@ tmp752, s32SatAdj,
-	mul	sl, ip, r9	@ tmp854, D.3102,
+	mul	sl, ip, r9	@ tmp854, D.3123,
 	ldr	r9, [fp, #-116]	@, %sfp
-	mul	r1, r9, ip	@,, D.3102
+	mul	r1, r9, ip	@,, D.3123
 	mov	r9, r8, asr #31	@, tmp860,
 	str	r9, [fp, #-148]	@, %sfp
 	mov	r9, sl, asr #31	@, tmp854,
 	str	r1, [fp, #-168]	@, %sfp
 	ldr	r1, [fp, #-132]	@, %sfp
 	str	r9, [fp, #-132]	@, %sfp
-	mul	r6, r1, r6	@ tmp802,, D.3107
+	mul	r6, r1, r6	@ tmp802,, D.3128
 	ldr	r1, [fp, #-156]	@, %sfp
-	mul	r9, r1, ip	@ tmp809,, D.3102
+	mul	r9, r1, ip	@ tmp809,, D.3123
 	mov	ip, r7, asr #31	@, tmp752,
 	str	ip, [fp, #-156]	@, %sfp
 	smull	ip, r1, r0, sl	@,, tmp740, tmp854
@@ -1546,22 +1548,22 @@ DISP_ALG_CscCoefSet:
 	str	r9, [fp, #-120]	@, %sfp
 	mov	r6, r7, asl #1	@ s32SatAdj, <variable>.u32Satur,
 	add	r7, r0, ip, asl #2	@, tmp574, tmp570, u32Hue,
-	ldr	ip, [r0, ip, asl #2]	@ D.2987, VDPCOS_TABLE
-	ldr	r0, [r7, #244]	@ D.2982, VDPSIN_TABLE
+	ldr	ip, [r0, ip, asl #2]	@ D.3008, VDPCOS_TABLE
+	ldr	r0, [r7, #244]	@ D.3003, VDPSIN_TABLE
 	str	r8, [fp, #-108]	@, %sfp
-	mul	r7, sl, ip	@, <variable>.s32C10, D.2987
+	mul	r7, sl, ip	@, <variable>.s32C10, D.3008
 	ldr	r9, [r5, #32]	@ <variable>.u32Kg, <variable>.u32Kg
-	mul	r6, r8, r6	@ D.2978,, s32SatAdj
+	mul	r6, r8, r6	@ D.2999,, s32SatAdj
 	str	r7, [fp, #-148]	@, %sfp
 	ldr	r8, [r1, #16]	@, <variable>.s32C11
 	ldr	r7, [r5, #36]	@ <variable>.u32Kb, <variable>.u32Kb
-	mul	sl, r8, ip	@,, D.2987
+	mul	sl, r8, ip	@,, D.3008
 	str	sl, [fp, #-144]	@, %sfp
 	ldr	r8, [r5, #28]	@, <variable>.u32Kr
 	mov	sl, r8, asl #1	@,,
 	str	sl, [fp, #-136]	@, %sfp
 	ldr	r8, [r1, #20]	@, <variable>.s32C12
-	mul	sl, r8, ip	@,, D.2987
+	mul	sl, r8, ip	@,, D.3008
 	mov	r8, r9, asl #1	@, <variable>.u32Kg,
 	mov	r9, r7, asl #1	@, <variable>.u32Kb,
 	str	r8, [fp, #-128]	@, %sfp
@@ -1569,13 +1571,13 @@ DISP_ALG_CscCoefSet:
 	str	r9, [fp, #-116]	@, %sfp
 	str	sl, [fp, #-104]	@, %sfp
 	ldr	sl, [fp, #-132]	@, %sfp
-	mul	r9, r7, r0	@ tmp604,, D.2982
-	mul	r8, sl, r0	@ tmp583,, D.2982
+	mul	r9, r7, r0	@ tmp604,, D.3003
+	mul	r8, sl, r0	@ tmp583,, D.3003
 	ldr	sl, [fp, #-148]	@, %sfp
 	mov	r7, sl, asr #31	@,,
 	ldr	sl, [fp, #-140]	@, %sfp
 	str	r7, [fp, #-124]	@, %sfp
-	mul	r7, sl, r0	@,, D.2982
+	mul	r7, sl, r0	@,, D.3003
 	ldr	sl, [fp, #-144]	@, %sfp
 	str	r7, [fp, #-112]	@, %sfp
 	mov	r7, sl, asr #31	@,,
@@ -1617,20 +1619,20 @@ DISP_ALG_CscCoefSet:
 	str	r8, [fp, #-188]	@, %sfp
 	ldr	r8, [fp, #-116]	@, %sfp
 	ldr	r9, [fp, #-160]	@, %sfp
-	mul	r7, r8, r6	@,, D.2978
+	mul	r7, r8, r6	@,, D.2999
 	rsb	r8, r9, sl, asr #6	@,,,,
 	ldr	r9, [fp, #-156]	@, %sfp
 	str	r8, [fp, #-160]	@, %sfp
 	ldr	r8, [fp, #-164]	@, %sfp
 	str	r7, [fp, #-124]	@, %sfp
 	ldr	r7, [fp, #-136]	@, %sfp
-	mul	sl, r7, r6	@,, D.2978
+	mul	sl, r7, r6	@,, D.2999
 	rsb	r7, r8, r9, asr #6	@,,,,
 	str	r7, [fp, #-156]	@, %sfp
 	ldr	r7, [fp, #-168]	@, %sfp
 	str	sl, [fp, #-104]	@, %sfp
 	ldr	sl, [fp, #-128]	@, %sfp
-	mul	r8, sl, r6	@,, D.2978
+	mul	r8, sl, r6	@,, D.2999
 	ldr	r6, [fp, #-172]	@, %sfp
 	rsb	r9, r6, r7, asr #6	@,,,,
 	str	r8, [fp, #-112]	@, %sfp
@@ -1681,16 +1683,16 @@ DISP_ALG_CscCoefSet:
 	ldr	r6, [r1, #16]	@ <variable>.s32C11, <variable>.s32C11
 	ldr	sl, [r1, #20]	@ <variable>.s32C12, <variable>.s32C12
 	ldr	r9, [fp, #-132]	@, %sfp
-	mul	r1, r8, ip	@ tmp681,, D.2987
-	mul	sl, sl, r0	@ tmp688, <variable>.s32C12, D.2982
-	mul	r8, r9, ip	@ tmp639,, D.2987
+	mul	r1, r8, ip	@ tmp681,, D.3008
+	mul	sl, sl, r0	@ tmp688, <variable>.s32C12, D.3003
+	mul	r8, r9, ip	@ tmp639,, D.3008
 	mov	r9, r1, asr #31	@, tmp681,
 	str	r9, [fp, #-140]	@, %sfp
 	ldr	r9, [fp, #-152]	@, %sfp
-	mul	r7, r7, r0	@ tmp646, <variable>.s32C10, D.2982
-	mul	ip, r9, ip	@ tmp660,, D.2987
+	mul	r7, r7, r0	@ tmp646, <variable>.s32C10, D.3003
+	mul	ip, r9, ip	@ tmp660,, D.3008
 	mov	r9, sl, asr #31	@, tmp688,
-	mul	r0, r6, r0	@ tmp667, <variable>.s32C11, D.2982
+	mul	r0, r6, r0	@ tmp667, <variable>.s32C11, D.3003
 	str	r9, [fp, #-164]	@, %sfp
 	mov	r6, r8, asr #31	@, tmp639,
 	str	r6, [fp, #-132]	@, %sfp
@@ -1836,10 +1838,10 @@ DISP_ALG_CscCoefSet:
 	cmp	r9, #0	@ tmp282,
 	movlt	r9, r1	@ tmp284, tmp285
 	mov	r2, r9, asr #8	@ tmp286, tmp284,
-	add	r7, r2, #16	@ D.2724, tmp286,
-	str	r7, [r4, #12]	@ D.2724, <variable>.s32CscDcOut_0
-	str	r7, [r4, #20]	@ D.2724, <variable>.s32CscDcOut_2
-	str	r7, [r4, #16]	@ D.2724, <variable>.s32CscDcOut_1
+	add	r7, r2, #16	@ D.2745, tmp286,
+	str	r7, [r4, #12]	@ D.2745, <variable>.s32CscDcOut_0
+	str	r7, [r4, #20]	@ D.2745, <variable>.s32CscDcOut_2
+	str	r7, [r4, #16]	@ D.2745, <variable>.s32CscDcOut_1
 	b	.L25	@
 .L67:
 	mov	r3, #16	@ tmp267,

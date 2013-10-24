@@ -60,7 +60,6 @@
 #include "drv_media_mem.h"
 #include "hi_kernel_adapt.h"
 
-
 #define DEFAULT_ALLOC 0
 #define SLAB_ALLOC 1
 #define EQ_BLOCK_ALLOC 2
@@ -111,7 +110,6 @@ static int mmz_total_size = 0;
 
 int zone_number = 0;
 int block_number = 0;
-unsigned int mmb_number=0; /*for mmb id*/
 
 //the following 3 definations are duplicate from kernel 
 //because no where to locate them
@@ -365,7 +363,7 @@ static hil_mmb_t *__mmb_alloc(const char *name, unsigned long size, unsigned lon
     {
 		if (mmz_name == NULL)
 		{
-			PRINTK_CA(KERN_ERR" Alloc mmb '%s' failed, size %d bytes.\n", name, size);
+			PRINTK_CA(KERN_ERR" Alloc mmb '%s' failed, size %lu bytes.\n", name, size);
 			dump_mmz_mem();
 		}
 		return NULL;
@@ -376,19 +374,21 @@ static hil_mmb_t *__mmb_alloc(const char *name, unsigned long size, unsigned lon
 	__dma_clear_buffer(page,size);
 
     mmb = kmalloc(sizeof(hil_mmb_t), GFP_KERNEL);
+    if (!mmb) {
+        return NULL;
+    }
 
     memset(mmb, 0, sizeof(hil_mmb_t));
     mmb->zone = fixed_mmz;
     mmb->phys_addr = fixed_start;
     mmb->length = size;
-    mmb->id = ++mmb_number; 
     if (name)
     {
         strlcpy(mmb->name, name, HIL_MMB_NAME_LEN);
     }
     else
     {
-        strcpy(mmb->name, "<null>");
+        strncpy(mmb->name, "<null>", sizeof(mmb->name)-1);
     }
 
     if (_do_mmb_alloc(mmb))
@@ -589,15 +589,27 @@ static void __dma_remap(struct page *page, size_t size, pgprot_t prot)
 static void __dma_clear_buffer(struct page *page, size_t size)
 {
 	void *ptr;
+#define L2_CACHE_SIZE	(512 * 1024)
 	/*
 	 * Ensure that the allocated pages are zeroed, and that any data
 	 * lurking in the kernel direct-mapped region is invalidated.
 	 */
 	ptr = page_address(page);
 	if (ptr) {
+		/*  remove memset for speed
 		memset(ptr, 0, size);
-		dmac_flush_range(ptr, ptr + size);
-		outer_flush_range(__pa(ptr), __pa(ptr) + size);
+		*/
+		if (size < L2_CACHE_SIZE) {
+			dmac_flush_range(ptr, ptr + size);
+			outer_flush_range(__pa(ptr), __pa(ptr) + size);
+		} else {
+#ifdef CONFIG_SMP
+			on_each_cpu(__cpuc_flush_kern_all, NULL, 1);
+#else
+			__cpuc_flush_kern_all();
+#endif
+			outer_flush_all();
+		}
 	}
 }
 
@@ -622,20 +634,15 @@ static void *_mmb_map2kern(hil_mmb_t *mmb, int cached)
         return mmb->kvirt;
     }
 
-    if (cached)
-    {
-        mmb->flags |= HIL_MMB_MAP2KERN_CACHED;
-       // mmb->kvirt = ioremap_cached(mmb->phys_addr, mmb->length);
-	 prot = pgprot_kernel;
-    }
-    else
-    {
-        mmb->flags &= ~HIL_MMB_MAP2KERN_CACHED;
-        //mmb->kvirt = ioremap_nocache(mmb->phys_addr, mmb->length);
-	 prot = pgprot_noncached(pgprot_kernel);
+    if (cached) {
+	    mmb->flags |= HIL_MMB_MAP2KERN_CACHED;
+	    prot = pgprot_kernel;
+    } else {
+	    mmb->flags &= ~HIL_MMB_MAP2KERN_CACHED;
+	    prot = pgprot_writecombine(pgprot_kernel);
     }
 
-    __dma_clear_buffer(page, mmb->length);
+    /* FIXME: invalid all the cache here? */
     __dma_remap(page, mmb->length, prot);
     mmb->kvirt = __va(mmb->phys_addr);
 
@@ -685,12 +692,14 @@ static int _mmb_free(hil_mmb_t *mmb);
 int hil_mmb_unmap(hil_mmb_t *mmb)
 {
     int ref;
-    struct page* page = phys_to_page(mmb->phys_addr);
+    struct page* page = NULL;
 
     if (mmb == NULL)
     {
         return -1;
     }
+
+    page = phys_to_page(mmb->phys_addr);
 
     down(&mmz_lock);
 
@@ -1090,6 +1099,7 @@ int mmz_read_proc(char *page, char **start, off_t off,
                   int count, int *eof, void *data)
 {
 	unsigned long ret = 0;
+#if !(0 == HI_PROC_SUPPORT)
     int nZoneCnt = 0;
 	hil_mmz_t *p;
 	unsigned int used_size = 0, free_size = 0;
@@ -1197,6 +1207,7 @@ int mmz_read_proc(char *page, char **start, off_t off,
 	up(&mmz_lock);
 
 	free_pages((unsigned long)mmz_info_buf, get_order(MAX_MMZ_INFO_LEN) );
+#endif
 
 	return ret;
 }

@@ -92,6 +92,9 @@ typedef enum
     VFMW_CMD_GETINFO = 0x20,    /* Get vdec info, the param is HI_UNF_AVPLAY_VDEC_INFO_S* */
     VFMW_CMD_SETTPLAYOPT = 0x21,/* Set T play, the param is HI_UNF_AVPLAY_TPLAY_OPT_S* */
     VFMW_CMD_SETCTRLINFO = 0x22,/* Set control info, the param is HI_UNF_AVPLAY_CONTROL_INFO_S* */
+    /**Defines commond to set video sample type, HI_BOOL *, HI_TRUE: Progressive, HI_FALSE: Interlance */
+    /**CNcomment: 设置视频逐行信息, HI_TRUE: 逐行, HI_FALSE: 隔行*/
+    VFMW_CMD_SET_PROGRESSIVE = 0x23,
     
     VFMW_CMD_BUTT
 }VFMW_CMD_E;
@@ -109,12 +112,14 @@ typedef enum
 	VPSS_CMD_DISABLEPORT,
 	VPSS_CMD_RESETVPSS,
 	VPSS_CMD_GETSTATUSINFO,
-	VPSS_CMD_SETMAINPORT,
+	VPSS_CMD_SETPORTTYPE,
 	VPSS_CMD_CANCLEMAINPORT,
 	VPSS_CMD_SETCHAN_FRMPACKTYPE,
 	VPSS_CMD_GETCHAN_FRMPACKTYPE,
 	VPSS_CMD_SENDEOS,
 	VPSS_CMD_GETPORTSTATE,
+	VPSS_CMD_GETPORTATTR,
+	VPSS_CMD_SETPORTATTR
 		
 }VPSS_CMD_E;
 /******************************* API declaration *****************************/
@@ -137,6 +142,7 @@ HI_S32 VDEC_GetStreamBuf(HI_HANDLE hBuf, HI_U32 u32RequestSize, VDEC_ES_BUF_S *p
 HI_S32 VDEC_PutStreamBuf(HI_HANDLE hBuf, const VDEC_ES_BUF_S *pstBuf);
 HI_S32 VDEC_ResetStreamBuf(HI_HANDLE hBuf);
 HI_S32 VDEC_GetStreamBufStatus(HI_HANDLE hBuf, HI_DRV_VDEC_STREAMBUF_STATUS_S* pstStatus);
+HI_S32 VPSS_ReleaseFrm(HI_HANDLE hPort, HI_DRV_VIDEO_FRAME_S *pVideoFrame);
 
 #if (HI_VDEC_REG_CODEC_SUPPORT == 1) || (HI_VDEC_MJPEG_SUPPORT == 1)
 HI_S32 VDEC_RecvStream(HI_HANDLE hBuf, VDEC_ES_BUF_S *pstBuf);

@@ -276,7 +276,7 @@ void rc5_parse_error_handle(struct ir_priv *ir,
 				|| data_fallin(symbol->upper,
 					ip->attr.burst.mins,
 					ip->attr.burst.maxs)) {
-			symbol = ir_next_reader_clr_inc(symb_head);
+			(HI_VOID)ir_next_reader_clr_inc(symb_head);
 			break;
 		}
 		symbol = ir_next_reader_clr_inc(symb_head);
@@ -351,9 +351,11 @@ int parse_rc5(struct ir_priv *ir, struct ir_protocol *ip,
 	struct rc5_ir *rc5; 
 	struct key_attr *symbol;
 	int ret, i, fail, cnt = 0;
-#ifdef HIIR_DEBUG
+
+#if (HI_LOG_LEVEL > HI_TRACE_LEVEL_INFO)
 	int syms = 0;
 #endif
+
 	if (ip->priv >= MAX_RC5_INFR_NR) {
 		hiir_error("ip->pirv > MAX_RC5_INFR_NR!\n");
 		return -1;
@@ -433,8 +435,17 @@ out:
 	rc5->has_last_key = 1;
 	memcpy(&rc5->last_key, &rc5->this_key, sizeof(struct key_attr));
 
-	rc5_timer[ip->priv].expires = jiffies +
-		msecs_to_jiffies(ir->key_hold_timeout_time);
+    if (0 == ip->key_hold_timeout_time)
+    {
+        rc5_timer[ip->priv].expires = jiffies +
+                             msecs_to_jiffies(ir->key_hold_timeout_time);
+    }
+    else
+    {
+        rc5_timer[ip->priv].expires = jiffies +
+                             msecs_to_jiffies(ip->key_hold_timeout_time);
+    }
+    
 	rc5_timer[ip->priv].data = ip->priv;
 	add_timer(&rc5_timer[ip->priv]);
 
@@ -450,9 +461,10 @@ int parse_extended_rc5(struct ir_priv *ir, struct ir_protocol *ip,
     struct key_attr *symbol;
     int ret, i, fail, cnt = 0;
 
-#ifdef HIIR_DEBUG
+#if (HI_LOG_LEVEL > HI_TRACE_LEVEL_INFO)
     int syms = 0;
 #endif
+
     if (ip->priv >= MAX_RC5_INFR_NR)
     {
         hiir_error("ip->pirv > MAX_RC5_INFR_NR!\n");
@@ -550,8 +562,17 @@ out:
     rc5->has_last_key = 1;
     memcpy(&rc5->last_key, &rc5->this_key, sizeof(struct key_attr));
 
-    rc5_timer[ip->priv].expires = jiffies +
-                                  msecs_to_jiffies(ir->key_hold_timeout_time);
+    if (0 == ip->key_hold_timeout_time)
+    {
+        rc5_timer[ip->priv].expires = jiffies +
+                             msecs_to_jiffies(ir->key_hold_timeout_time);
+    }
+    else
+    {
+        rc5_timer[ip->priv].expires = jiffies +
+                             msecs_to_jiffies(ip->key_hold_timeout_time);
+    }
+    
     rc5_timer[ip->priv].data = ip->priv;
     add_timer(&rc5_timer[ip->priv]);
 
@@ -811,7 +832,7 @@ void extended_rc5_parse_error_handle(struct ir_priv *ir,
                            ip->attr.burst.mins,
                            ip->attr.burst.maxs))
         {
-            symbol = ir_next_reader_clr_inc(symb_head);
+            (HI_VOID)ir_next_reader_clr_inc(symb_head);
             break;
         }
 

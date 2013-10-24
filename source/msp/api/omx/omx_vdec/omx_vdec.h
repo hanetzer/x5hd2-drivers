@@ -20,35 +20,32 @@ This module contains the class definition for openMAX decoder component.
 
 //specific-version NO.1.1
 #define KHRONOS_1_1
-#define OMX_SPEC_VERSION			       0x00000101
+#define OMX_SPEC_VERSION                   (0x00000101)
 
-#define MAX_PORT_NUM				       2
-#define MAX_BUF_NUM					30
+#define MAX_PORT_NUM                       (2)
+#define MAX_BUF_NUM                        (30)
 
-#define DEFAULT_FPS				              30
-#define DEFAULT_ALIGN_SIZE		       	4096
+#define DEFAULT_FPS                        (30)
+#define DEFAULT_ALIGN_SIZE                 (4096)
 
-#define DEF_MAX_IN_BUF_CNT			6
-#define DEF_MIN_IN_BUF_CNT                     4 //4
+#define DEF_MAX_IN_BUF_CNT                 (6)
+#define DEF_MIN_IN_BUF_CNT                 (4) //4
 
-#define DEF_MAX_OUT_BUF_CNT			6  
-#define DEF_MIN_OUT_BUF_CNT			1
+#define DEF_MAX_OUT_BUF_CNT                (10) 
+#define DEF_MIN_OUT_BUF_CNT                (8)
 
-#define OMX_VDEC_COMP_NAME			"OMX.hisi.video.decoder"
+#define OMX_VDEC_COMP_NAME                 "OMX.hisi.video.decoder"
 
-#define OMX_COMPONENTROLES_H263		"video_decoder.h263"
-#define OMX_COMPONENTROLES_H264		"video_decoder.avc"
-#define OMX_COMPONENTROLES_MPEG2	"video_decoder.mpeg2"
-#define OMX_COMPONENTROLES_MPEG4	"video_decoder.mpeg4"
+#define OMX_COMPONENTROLES_H263            "video_decoder.h263"
+#define OMX_COMPONENTROLES_H264            "video_decoder.avc"
+#define OMX_COMPONENTROLES_MPEG2           "video_decoder.mpeg2"
+#define OMX_COMPONENTROLES_MPEG4           "video_decoder.mpeg4"
 
-#define BITS_PER_LONG				       32
+#define BITS_PER_LONG                      (32)
 
-#define ESHUTDOWN					       108
-#define ERESTARTSYS					       512
+#define COUNTOF(x)                         (sizeof(x)/sizeof(x[0]))
 
-#define COUNTOF(x) (sizeof(x)/sizeof(x[0]))
-
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MAX(a, b)                          ((a) > (b) ? (a) : (b))
 
 #define OMX_CHECK_ARG_RETURN(x) \
 	if ((x)) \
@@ -57,11 +54,10 @@ This module contains the class definition for openMAX decoder component.
 	     return OMX_ErrorBadParameter;\
 	}
 
-#define ALIGN_UP(val, align)                        (((val) + ((align)-1)) & ~((align)-1))
+#define ALIGN_UP(val, align)               (((val) + ((align)-1)) & ~((align)-1))
 
-#define FRAME_SIZE(w, h)                            (((w) * (h) * 3) / 2)
+#define FRAME_SIZE(w, h)                   (((w) * (h) * 3) / 2)
 
-#define COMTRACE()                                      printf("fun:%s, line: %d\n", __func__, __LINE__)
 
 // state transactions pending bits
 enum flags_bit_positions{
@@ -69,9 +65,9 @@ enum flags_bit_positions{
 	OMX_STATE_IDLE_PENDING				= 0x1,
 	OMX_STATE_LOADING_PENDING			= 0x2,
 	OMX_STATE_INPUT_ENABLE_PENDING		= 0x3,
-	OMX_STATE_OUTPUT_ENABLE_PENDING	= 0x4,
-	OMX_STATE_OUTPUT_DISABLE_PENDING	= 0x5,
-	OMX_STATE_INPUT_DISABLE_PENDING	= 0x6,
+	OMX_STATE_OUTPUT_ENABLE_PENDING	    = 0x4,
+	OMX_STATE_OUTPUT_DISABLE_PENDING    = 0x5,
+	OMX_STATE_INPUT_DISABLE_PENDING	    = 0x6,
 	OMX_STATE_OUTPUT_FLUSH_PENDING		= 0x7,
 	OMX_STATE_INPUT_FLUSH_PENDING		= 0x8,
 	OMX_STATE_PAUSE_PENDING				= 0x9,
@@ -83,19 +79,19 @@ enum flags_bit_positions{
 enum {
 
 	OMX_GENERATE_COMMAND_DONE			= 0x1,
-	OMX_GENERATE_FTB					       = 0x2,
-	OMX_GENERATE_ETB					       = 0x3,
+	OMX_GENERATE_FTB					= 0x2,
+	OMX_GENERATE_ETB					= 0x3,
 	OMX_GENERATE_COMMAND				= 0x4,
-	OMX_GENERATE_EBD					       = 0x5,
-	OMX_GENERATE_FBD					       = 0x6,
+	OMX_GENERATE_EBD					= 0x5,
+	OMX_GENERATE_FBD					= 0x6,
 	OMX_GENERATE_FLUSH_INPUT_DONE		= 0x7,
-	OMX_GENERATE_FLUSH_OUTPUT_DONE	= 0x8,
+	OMX_GENERATE_FLUSH_OUTPUT_DONE	    = 0x8,
 	OMX_GENERATE_START_DONE				= 0x9,
 	OMX_GENERATE_PAUSE_DONE				= 0xA,
 	OMX_GENERATE_RESUME_DONE			= 0xB,
 	OMX_GENERATE_STOP_DONE				= 0xC,
 	OMX_GENERATE_EOS_DONE				= 0xD,
-	OMX_GENERATE_HARDWARE_ERROR		= 0xE,
+	OMX_GENERATE_HARDWARE_ERROR		    = 0xE,
 	OMX_GENERATE_IMAGE_SIZE_CHANGE		= 0xF,
 	OMX_GENERATE_UNUSED					= 0x10,
 	

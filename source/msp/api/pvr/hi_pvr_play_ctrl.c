@@ -16,8 +16,10 @@
 ******************************************************************************/
 
 #include <malloc.h>
+#include <time.h>
 #include <sys/time.h>
 #include <pthread.h>
+#include <signal.h>
 
 #include "hi_type.h"
 
@@ -30,6 +32,7 @@
 #include "hi_pvr_rec_ctrl.h"
 #include "hi_pvr_intf.h"
 #include "hi_pvr_priv.h"
+#include "hi_pvr_smooth_ctrl.h"
 #include "hi_mpi_demux.h"
 #include "hi_drv_pvr.h"
 
@@ -52,13 +55,12 @@ STATIC PVR_PLAY_COMM_S g_stPlayInit;
 
 /* all information of play channel                                          */
 STATIC PVR_PLAY_CHN_S g_stPvrPlayChns[PVR_PLAY_MAX_CHN_NUM];
-
 #ifdef PVR_PROC_SUPPORT
-static PVR_PLAY_CHN_PROC_S *paPlayProcInfo[PVR_PLAY_MAX_CHN_NUM];  /* PROC info pointer of record channel*/
+static HI_PROC_ENTRY_S g_stPvrPlayProcEntry;
 #endif
-
 static FILE *g_pvrfpSend = NULL; /* handle of file */
-
+static HI_BOOL g_bPlayTimerInitFlag = HI_FALSE;
+static timer_t g_stPlayTimer;
 extern HI_S32 HI_MPI_VO_GetWindowDelay(HI_HANDLE hWindow, HI_DRV_WIN_PLAY_INFO_S *pDelay);
 
 
@@ -91,6 +93,7 @@ do {\
         case HI_UNF_PVR_PLAY_SPEED_8X_SLOW_FORWARD  :\
         case HI_UNF_PVR_PLAY_SPEED_16X_SLOW_FORWARD :\
         case HI_UNF_PVR_PLAY_SPEED_32X_SLOW_FORWARD :\
+		case HI_UNF_PVR_PLAY_SPEED_64X_SLOW_FORWARD :\
             state = HI_UNF_PVR_PLAY_STATE_SF;\
             break;\
         case HI_UNF_PVR_PLAY_SPEED_2X_SLOW_BACKWARD :\
@@ -98,6 +101,7 @@ do {\
         case HI_UNF_PVR_PLAY_SPEED_8X_SLOW_BACKWARD :\
         case HI_UNF_PVR_PLAY_SPEED_16X_SLOW_BACKWARD:\
         case HI_UNF_PVR_PLAY_SPEED_32X_SLOW_BACKWARD:\
+		case HI_UNF_PVR_PLAY_SPEED_64X_SLOW_BACKWARD:\
             state = HI_UNF_PVR_PLAY_STATE_INVALID;\
             break;\
         default:\
@@ -129,23 +133,222 @@ do {\
           )))
 
 
+static void PVRPlayCalcTime(union sigval unSig)
+{
+    HI_U32 i = 0;
+    HI_S32 s32SeedRatio = 0;
+    PVR_PLAY_CHN_S *pChnAttr;
+
+    unSig = unSig;
+
+    for(i = 0; i < PVR_PLAY_MAX_CHN_NUM; i++)
+    {
+        pChnAttr = &g_stPvrPlayChns[i];
+
+        if ((HI_UNF_PVR_PLAY_STATE_PAUSE == pChnAttr->enState) ||
+            (HI_UNF_PVR_PLAY_STATE_STEPF == pChnAttr->enState) ||
+            (pChnAttr->bEndOfFile) ||  
+            (pChnAttr->bTsBufReset == HI_TRUE) ||
+            pChnAttr->bQuickUpdateStatus)
+        {
+            usleep(1000);
+            continue;
+        }
+        
+        if (!(HI_UNF_PVR_PLAY_STATE_STOP == pChnAttr->enState
+          || HI_UNF_PVR_PLAY_STATE_INVALID == pChnAttr->enState))
+        {
+            /* normal or fast mode */
+            if (abs(pChnAttr->enSpeed) >= HI_UNF_PVR_PLAY_SPEED_NORMAL)
+            {
+                s32SeedRatio = pChnAttr->enSpeed/HI_UNF_PVR_PLAY_SPEED_NORMAL;
+                pChnAttr->u32CurPlayTimeMs += (s32SeedRatio*((HI_S32)PVR_TIME_CTRL_TIMEBASE_NS))/1000000;
+            }
+            else/* slow mode */
+            {
+                s32SeedRatio = (HI_S32)HI_UNF_PVR_PLAY_SPEED_NORMAL/pChnAttr->enSpeed;
+                pChnAttr->u32CurPlayTimeMs += (((HI_S32)PVR_TIME_CTRL_TIMEBASE_NS)/s32SeedRatio)/1000000;
+            }
+        }
+
+        if((HI_S32)pChnAttr->u32CurPlayTimeMs < 0)
+        {
+            pChnAttr->u32CurPlayTimeMs = 0;
+        }
+    }
+}
+
+#ifdef PVR_PROC_SUPPORT
+static HI_S32 PVRPlayShowProc(HI_PROC_SHOW_BUFFER_S * pstBuf, HI_VOID *pPrivData)
+{    
+    HI_U32 i=0;
+    HI_U32 u32VidType=0;
+    PVR_PLAY_CHN_S *pChnAttr = g_stPvrPlayChns;
+    HI_S8 pStreamType[][32] = {"MPEG2", "MPEG4 DIVX4 DIVX5", "AVS", "H263", "H264",
+                             "REAL8", "REAL9", "VC-1", "VP6", "VP6F", "VP6A", "MJPEG",
+                             "SORENSON SPARK", "DIVX3", "RAW", "JPEG", "VP8", "MSMPEG4V1",
+                             "MSMPEG4V2", "MSVIDEO1", "WMV1", "WMV2", "RV10", "RV20",
+                             "SVQ1", "SVQ3", "H261", "VP3", "VP5", "CINEPAK", "INDEO2",
+                             "INDEO3", "INDEO4", "INDEO5", "MJPEGB", "MVC", "HEVC", "DV", "INVALID"};
+    HI_S8 pPlayStats[][16] = { "INVALID", "INIT", "PLAY", "PAUSE", "FF", "FB", "SF", "STEPF",
+                             "STEPB", "STOP", "BUTT"};
+    
+    HI_PROC_Printf(pstBuf, "\n---------Hisilicon PVR Playing channel Info---------\n");
+
+    for(i = 0; i < PVR_PLAY_MAX_CHN_NUM; i++)
+    {
+        if ((pChnAttr[i].enState != HI_UNF_PVR_PLAY_STATE_INVALID) &&
+            (pChnAttr[i].enState != HI_UNF_PVR_PLAY_STATE_STOP) &&
+            (pChnAttr[i].enState != HI_UNF_PVR_PLAY_STATE_BUTT))
+        {
+            u32VidType = PVR_Index_GetVtype(pChnAttr[i].IndexHandle)-100;
+            u32VidType = (u32VidType > HI_UNF_VCODEC_TYPE_BUTT) ? HI_UNF_VCODEC_TYPE_BUTT : u32VidType;
+        
+            HI_PROC_Printf(pstBuf, "chan %d infomation\n", i);
+            HI_PROC_Printf(pstBuf, "\tPlay filename     \t:%s\n", pChnAttr[i].stUserCfg.szFileName);
+            HI_PROC_Printf(pstBuf, "\tStram type        \t:%s\n", pStreamType[u32VidType]);
+            HI_PROC_Printf(pstBuf, "\tDemuxID           \t:%d\n", pChnAttr[i].u32chnID);
+            HI_PROC_Printf(pstBuf, "\tTsBuffer handle   \t:%#x\n", pChnAttr[i].hTsBuffer);
+            HI_PROC_Printf(pstBuf, "\tAvplay handle     \t:%#x\n", pChnAttr[i].hAvplay);
+            HI_PROC_Printf(pstBuf, "\tCipher handle     \t:%#x\n", pChnAttr[i].hCipher);
+            HI_PROC_Printf(pstBuf, "\tPlay State        \t:%s\n", pPlayStats[pChnAttr[i].enState]);
+            HI_PROC_Printf(pstBuf, "\tPlay Speed        \t:%d\n", pChnAttr[i].enSpeed);
+            HI_PROC_Printf(pstBuf, "\tStream Read Pos   \t:%#llx\n", pChnAttr[i].u64CurReadPos);
+            HI_PROC_Printf(pstBuf, "\tIndex Start       \t:%d\n", pChnAttr[i].IndexHandle->stCycMgr.u32StartFrame);
+            HI_PROC_Printf(pstBuf, "\tIndex End         \t:%d\n", pChnAttr[i].IndexHandle->stCycMgr.u32EndFrame);
+            HI_PROC_Printf(pstBuf, "\tIndex Last        \t:%d\n", pChnAttr[i].IndexHandle->stCycMgr.u32LastFrame);
+            HI_PROC_Printf(pstBuf, "\tIDR flag          \t:%d\n", pChnAttr[i].stVdecCtrlInfo.u32IDRFlag);
+            HI_PROC_Printf(pstBuf, "\tB frame ref flag  \t:%d\n", pChnAttr[i].stVdecCtrlInfo.u32BFrmRefFlag);
+            HI_PROC_Printf(pstBuf, "\tContinuous flag   \t:%d\n", pChnAttr[i].stVdecCtrlInfo.u32ContinuousFlag);
+            HI_PROC_Printf(pstBuf, "\tDispOptimize flag \t:%d\n", pChnAttr[i].stVdecCtrlInfo.u32DispOptimizeFlag);
+            HI_PROC_Printf(pstBuf, "\tStart Frm&GOP num \t:%d %d\n", (pChnAttr[i].u32GopNumOfStart)>>16, (pChnAttr[i].u32GopNumOfStart)&0xffff);
+            HI_PROC_Printf(pstBuf, "\tTotal GOP num     \t:%d\n", pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopTotalNum);
+            HI_PROC_Printf(pstBuf, "\tMax GOP size      \t:%d\n", pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32MaxGopSize);
+            HI_PROC_Printf(pstBuf, "\tAverage GOP size  \t:%d\n", 
+                           (pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32FrameTotalNum)/(pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopTotalNum));
+            HI_PROC_Printf(pstBuf, "\tIndex GOP distr   \t:%d %d %d %d %d %d %d %d %d %d %d %d %d\n", 
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[0],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[1],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[2],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[3],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[4],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[5],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[6],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[7],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[8],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[9],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[10],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[11],
+                           pChnAttr[i].IndexHandle->stRecIdxInfo.stIdxInfo.u32GopSizeInfo[12]);
+            HI_PROC_Printf(pstBuf, "\tIndex Read Now    \t:%d\n", pChnAttr->IndexHandle->u32ReadFrame);
+
+            if ((HI_UNF_PVR_PLAY_STATE_FF == pChnAttr[i].enState) || 
+                (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr[i].enState))
+            {
+                HI_PROC_Printf(pstBuf, "\n");
+                HI_PROC_Printf(pstBuf, "\t------ Trick play para ------\n");
+                
+                HI_PROC_Printf(pstBuf, "\tChip ID                   :%d\n", pChnAttr[i].stPlayProcInfo.u32ChipId);
+                HI_PROC_Printf(pstBuf, "\tChip Ver                  :%x\n", pChnAttr[i].stPlayProcInfo.u32ChipVer);
+                HI_PROC_Printf(pstBuf, "\tWidth                     :%d\n", pChnAttr[i].stPlayProcInfo.u32Width);
+                HI_PROC_Printf(pstBuf, "\tHeigth                    :%d\n", pChnAttr[i].stPlayProcInfo.u32Heigth);
+                HI_PROC_Printf(pstBuf, "\tFrame buffer              :%d\n", pChnAttr[i].u32FrmNum);                
+                HI_PROC_Printf(pstBuf, "\tDecodec ablity            :%d\n", pChnAttr[i].stPlayProcInfo.u32DecAblity);
+                HI_PROC_Printf(pstBuf, "\tOri frame rate            :%d\n", pChnAttr[i].stPlayProcInfo.u32OrigFrmRate);
+                HI_PROC_Printf(pstBuf, "\tField flag                :%d\n", pChnAttr[i].stPlayProcInfo.u32FieldFlg);
+                HI_PROC_Printf(pstBuf, "\tSetup frame rate int      :%d\n", pChnAttr[i].stPlayProcInfo.u32SetFrmRateInt);
+                HI_PROC_Printf(pstBuf, "\tSetup frame rate dec      :%d\n", pChnAttr[i].stPlayProcInfo.u32SetFrmRateDec);
+                if (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr[i].enState)
+                {
+                    HI_PROC_Printf(pstBuf, "\t-------- FB control --------\n");
+                    HI_PROC_Printf(pstBuf, "\tOptimize flag             :%d\n", pChnAttr[i].stPlayProcInfo.stFBCtrlParameter.u32OptimizeFlg);
+                    HI_PROC_Printf(pstBuf, "\tDisplay distance          :%d\n", pChnAttr[i].stPlayProcInfo.stFBCtrlParameter.u32DispDistance);
+                    HI_PROC_Printf(pstBuf, "\tSupported max gop size    :%d\n", pChnAttr[i].stPlayProcInfo.stFBCtrlParameter.u32SupportMaxGopSize);
+                    HI_PROC_Printf(pstBuf, "\tFirst frame num           :%d\n", pChnAttr[i].stPlayProcInfo.stFBCtrlParameter.u32FirstFrm);
+                    HI_PROC_Printf(pstBuf, "\tTotal frame num           :%d\n", pChnAttr[i].stPlayProcInfo.stFBCtrlParameter.u32TotalFrmNum);
+                    HI_PROC_Printf(pstBuf, "\tTotal GOP num             :%d\n", pChnAttr[i].stPlayProcInfo.stFBCtrlParameter.u32TotalGopNum);
+                    HI_PROC_Printf(pstBuf, "\tTotal P frame num         :%d\n", pChnAttr[i].stPlayProcInfo.stFBCtrlParameter.u32TotalPFrmNum);
+                    HI_PROC_Printf(pstBuf, "\tTotal B frame num         :%d\n", pChnAttr[i].stPlayProcInfo.stFBCtrlParameter.u32TotalBFrmNum);
+                    HI_PROC_Printf(pstBuf, "\t-----------------------------\n");
+                }
+                else
+                {
+                    HI_PROC_Printf(pstBuf, "\t-------- FF control --------\n");
+                    HI_PROC_Printf(pstBuf, "\tTime control next frame   :%d\n", pChnAttr[i].stPlayProcInfo.stFFCtrlParameter.u32TimeCtrlFindFrm);
+                    HI_PROC_Printf(pstBuf, "\tTime control cur frame    :%d\n", pChnAttr[i].stPlayProcInfo.stFFCtrlParameter.u32TimeCtrlCurFrm);
+                    HI_PROC_Printf(pstBuf, "\tFirst frame num           :%d\n", pChnAttr[i].stPlayProcInfo.stFFCtrlParameter.u32FirstFrm);
+                    HI_PROC_Printf(pstBuf, "\tTry frame num             :%d\n", pChnAttr[i].stPlayProcInfo.stFFCtrlParameter.u32TryFrmNum);
+                    HI_PROC_Printf(pstBuf, "\tTotal frame num           :%d\n", pChnAttr[i].stPlayProcInfo.stFFCtrlParameter.u32TotalFrmNum);
+                    HI_PROC_Printf(pstBuf, "\tTotal I frame num         :%d\n", pChnAttr[i].stPlayProcInfo.stFFCtrlParameter.u32TotalIFrmNum);
+                    HI_PROC_Printf(pstBuf, "\tTotal P frame num         :%d\n", pChnAttr[i].stPlayProcInfo.stFFCtrlParameter.u32TotalPFrmNum);
+                    HI_PROC_Printf(pstBuf, "\tTotal B frame num         :%d\n", pChnAttr[i].stPlayProcInfo.stFFCtrlParameter.u32TotalBFrmNum);
+                    HI_PROC_Printf(pstBuf, "\tNext I frame              :%d\n", pChnAttr[i].stPlayProcInfo.stFFCtrlParameter.u32NextIFrm);
+                    HI_PROC_Printf(pstBuf, "\tNext time start frame     :%d\n", pChnAttr[i].stPlayProcInfo.stFFCtrlParameter.u32NextTimeStartFrm);
+                    HI_PROC_Printf(pstBuf, "\t-----------------------------\n");
+                }
+            }
+        }
+    }
+
+    return HI_SUCCESS;
+}
+
+HI_S32 PVRPlaySetProc(HI_PROC_SHOW_BUFFER_S * pstBuf, HI_U32 u32Argc, HI_U8 *pu8Argv[], HI_VOID *pPrivData)
+{
+    HI_U32 u32ChnNum = 0, u32PrintFlg = 0;
+    PVR_PLAY_CHN_S *pChnAttr = g_stPvrPlayChns;
+    
+    if (2 != u32Argc)
+    {
+        HI_ERR_PVR("echo pvr_play argc is incorrect.\n");
+        return HI_FAILURE;
+    }
+
+    u32ChnNum = strtoul((HI_CHAR *)pu8Argv[0], HI_NULL, 10);
+
+    if (u32ChnNum >= PVR_PLAY_MAX_CHN_NUM)
+    {
+        HI_ERR_PVR("invalid channel number %d\n.", u32ChnNum);
+        return HI_FAILURE;
+    }
+
+    if ((pChnAttr[u32ChnNum].enState == HI_UNF_PVR_PLAY_STATE_INVALID) ||
+            (pChnAttr[u32ChnNum].enState == HI_UNF_PVR_PLAY_STATE_STOP) ||
+            (pChnAttr[u32ChnNum].enState == HI_UNF_PVR_PLAY_STATE_BUTT))
+    {
+        HI_ERR_PVR("channel status is invalid.\n");
+        return HI_FAILURE;
+    }
+
+    if ((HI_UNF_PVR_PLAY_STATE_FF == pChnAttr[u32ChnNum].enState) ||  
+        (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr[u32ChnNum].enState))
+    {
+        u32PrintFlg = strtoul((HI_CHAR *)pu8Argv[1], HI_NULL, 10);
+
+        if(1 == u32PrintFlg)
+        {
+            g_stPvrPlayChns[u32ChnNum].stPlayProcInfo.u32PrintFlg = 1;
+        }
+        else if (0 == u32PrintFlg)
+        {
+            g_stPvrPlayChns[u32ChnNum].stPlayProcInfo.u32PrintFlg = 0;
+        }
+    }
+    
+    return HI_SUCCESS;
+}
+
+#endif
+
 STATIC INLINE HI_S32 PVRPlayDevInit(HI_VOID)
 {
     int fd;
-
-#ifdef PVR_PROC_SUPPORT
-    HI_S32 ret;
-    HI_U32 PhyAddr;
-    HI_U32 u32BufSize;
-    HI_U32 u32VirAddr;
-    HI_U32 i;
-#endif
 
     if (g_s32PvrFd == -1)
     {
         fd = open (api_pathname_pvr, O_RDWR , 0);
 
-        if(fd <= 0)
+        if(fd < 0)
         {
             HI_FATAL_PVR("Cannot open '%s'\n", api_pathname_pvr);
             return HI_FAILURE;
@@ -153,32 +356,7 @@ STATIC INLINE HI_S32 PVRPlayDevInit(HI_VOID)
         g_s32PvrFd = fd;
 
     }
-
-#ifdef PVR_PROC_SUPPORT
-    ret = ioctl(g_s32PvrFd, CMD_PVR_INIT_PLAY, (HI_S32)&PhyAddr);
-    if (HI_SUCCESS != ret)
-    {
-        HI_FATAL_PVR("pvr play init error\n");
-        return HI_FAILURE;
-    }
-
-
-    u32BufSize = sizeof(PVR_PLAY_CHN_PROC_S) * PVR_PLAY_MAX_CHN_NUM;
-    u32BufSize = (u32BufSize%4096 == 0) ? u32BufSize : (u32BufSize / 4096 + 1) * 4096;
-
-    u32VirAddr = (HI_U32)HI_MMAP(PhyAddr, u32BufSize);
-    if (0 == u32VirAddr)
-    {
-        HI_FATAL_PVR("play proc buffer mmap error\n");
-        return HI_FAILURE;
-    }
-
-    for (i = 0 ; i < PVR_PLAY_MAX_CHN_NUM; i++)
-    {
-        paPlayProcInfo[i] = (PVR_PLAY_CHN_PROC_S*)(u32VirAddr + sizeof(PVR_PLAY_CHN_PROC_S)*i);
-    }
-#endif
-
+    
     return HI_SUCCESS;
 }
 
@@ -317,7 +495,7 @@ STATIC INLINE HI_BOOL PVRPlayIsEOS(PVR_PLAY_CHN_S  *pChnAttr)
     }
 
     /* pts invariable, whether size is invariable or not or es buffer size less than some byte */
-    if ((stTsBufStat.u32UsedSize < (188 + PVR_DMX_TS_BUFFER_GAP))
+    if ((stTsBufStat.u32UsedSize < (PVR_TS_LEN + PVR_DMX_TS_BUFFER_GAP))
         && (pChnAttr->u32LastPtsMs == u32CurPts)
         && ((info.stBufStatus[bufID].u32UsedSize == pChnAttr->u32LastEsBufSize)
           || (info.stBufStatus[bufID].u32UsedSize < u32BufLowSize)))
@@ -397,9 +575,11 @@ STATIC INLINE PVR_PLAY_CHN_S * PVRPlayFindFreeChn(HI_VOID)
 
     HI_ASSERT(g_stPvrPlayChns[ChanId].enState == HI_UNF_PVR_PLAY_STATE_INVALID);
     pChnAttr = &g_stPvrPlayChns[ChanId];
+
+    PVR_LOCK(&(pChnAttr->stMutex));
     pChnAttr->enState = HI_UNF_PVR_PLAY_STATE_INIT;
     pChnAttr->enLastState = HI_UNF_PVR_PLAY_STATE_INIT;
-
+    PVR_UNLOCK(&(pChnAttr->stMutex));
 #endif
 
     return pChnAttr;
@@ -437,7 +617,7 @@ STATIC INLINE HI_S32 PVRPlayCheckUserCfg(const HI_UNF_PVR_PLAY_ATTR_S *pUserCfg,
         HI_ERR_PVR("Stream file %s doesn't exist!\n", pUserCfg->szFileName);
         return HI_ERR_PVR_FILE_NOT_EXIST;
     }
-    sprintf(szIndexName, "%s.%s", pUserCfg->szFileName, "idx");
+    snprintf(szIndexName, PVR_MAX_FILENAME_LEN,"%s.%s", pUserCfg->szFileName, "idx");
     if (!PVR_CHECK_FILE_EXIST(szIndexName))
     {
         HI_ERR_PVR("can NOT find index file for '%s'!\n", pUserCfg->szFileName);
@@ -449,8 +629,8 @@ STATIC INLINE HI_S32 PVRPlayCheckUserCfg(const HI_UNF_PVR_PLAY_ATTR_S *pUserCfg,
         /* check whether demux id is used or not */
         if (HI_UNF_PVR_PLAY_STATE_INVALID != g_stPvrPlayChns[i].enState)
         {
-            /* check whether the same file is playing or not*/
-            if (0 == strcmp(g_stPvrPlayChns[i].stUserCfg.szFileName, pUserCfg->szFileName))
+			/* check whether the same file is playing or not*/
+            if (0 == strncmp(g_stPvrPlayChns[i].stUserCfg.szFileName, pUserCfg->szFileName,sizeof(pUserCfg->szFileName)))
             {
                 HI_ERR_PVR("file %s was exist to be playing.\n", pUserCfg->szFileName);
                 return HI_ERR_PVR_FILE_EXIST;
@@ -478,18 +658,16 @@ STATIC INLINE HI_S32 PVRPlayCheckUserCfg(const HI_UNF_PVR_PLAY_ATTR_S *pUserCfg,
     }
     if (StatusInfo.enRunStatus != HI_UNF_AVPLAY_STATUS_STOP)
     {
-        HI_U32 u32Stop = HI_UNF_AVPLAY_MEDIA_CHAN_VID;
-
-        u32Stop |= HI_UNF_AVPLAY_MEDIA_CHAN_AUD;
-        
         HI_WARN_PVR("the hAvplay is not stopped\n");
 
-        ret = HI_UNF_AVPLAY_Stop(hAvplay, (HI_UNF_AVPLAY_MEDIA_CHAN_E)u32Stop, NULL);
+        //lint -e655
+        ret = HI_UNF_AVPLAY_Stop(hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_VID | HI_UNF_AVPLAY_MEDIA_CHAN_AUD, NULL);
         if (ret != HI_SUCCESS)
         {
             HI_ERR_PVR("can NOT stop hAvplay for pvr replay\n");
             return ret;
         }
+        //lint +e655
     }
 
     ret = HI_UNF_AVPLAY_GetAttr(hAvplay, HI_UNF_AVPLAY_ATTR_ID_STREAM_MODE, &AVPlayAttr);
@@ -1139,6 +1317,9 @@ STATIC INLINE HI_S32 PVRPlaySendToTsBuffer(PVR_PLAY_CHN_S *pChnAttr, HI_U64 u64R
     HI_U64            u64LenAdp = 0;
     HI_U64            u64OffsetAdp = 0;
 
+    memset(&stStartFrame, 0, sizeof(PVR_INDEX_ENTRY_S));
+    memset(&stEndFrame, 0, sizeof(PVR_INDEX_ENTRY_S));
+    
     /*find out ts buffer size u32ReadOnce*/
     ret = HI_MPI_DMX_GetTSBuffer(pChnAttr->hTsBuffer, u32BytesSend, &demuxBuf, &u32PhyAddr, 0);
     while (HI_SUCCESS != ret)
@@ -1169,7 +1350,9 @@ STATIC INLINE HI_S32 PVRPlaySendToTsBuffer(PVR_PLAY_CHN_S *pChnAttr, HI_U64 u64R
     }
 
     /* read ts to buffer */
+    //lint -e774
     PVR_PLAY_READ_FILE(demuxBuf.pu8Data, u64ReadOffset, u32BytesSend, pChnAttr);
+    //lint +e774
 
     if (NULL != pChnAttr->readCallBack)
     {
@@ -1391,6 +1574,61 @@ STATIC INLINE HI_S32 PVRPlaySendData(PVR_PLAY_CHN_S *pChnAttr, HI_U64 offSet, HI
 
 #endif
 
+STATIC HI_S32 PVRPlaySendPrivatePacketToTsBuffer(PVR_PLAY_CHN_S *pChnAttr, HI_U32 u32DisPlayTime, HI_U32 u32Pid)
+{
+    HI_S32 ret;
+    HI_U32 u32Bytes2Send = PVR_TS_LEN;
+    HI_U32 u32PhyAddr;
+    HI_UNF_STREAM_BUF_S DataBuf;
+    HI_U8 u8PesPacket[41] = {0x00, 0x00, 0x01, 0xee, 0x00, 0x00, 0x80, 0x00, 0x00, 
+                             0x00, 0x00, 0x01, 0x1E, 0x70, 0x76, 0x72, 0x63, 0x75, 0x72, 0x74, 0x6d, 
+                             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    
+    ret = HI_MPI_DMX_GetTSBuffer(pChnAttr->hTsBuffer, u32Bytes2Send, &DataBuf, &u32PhyAddr, 0);
+    while (HI_SUCCESS != ret)
+    {
+        if ((pChnAttr->bQuickUpdateStatus) || (pChnAttr->bPlayMainThreadStop))
+        {
+            return HI_FAILURE;
+        }
+
+        if (HI_ERR_DMX_NOAVAILABLE_BUF != ret)
+        {
+            HI_ERR_PVR("HI_MPI_DMX_GetTSBuffer failed:%#x!\n", ret);
+            return HI_FAILURE;
+        }
+        else
+        {
+            usleep(40000);
+            if ((pChnAttr->bQuickUpdateStatus) || (pChnAttr->bPlayMainThreadStop))
+            {
+                return HI_FAILURE;
+            }
+
+            ret = HI_MPI_DMX_GetTSBuffer(pChnAttr->hTsBuffer, u32Bytes2Send, &DataBuf, &u32PhyAddr, 0);
+        }
+    }
+    
+    memset(DataBuf.pu8Data, 0xff, DataBuf.u32Size);
+    DataBuf.pu8Data[0] = 0x47;
+    DataBuf.pu8Data[1] = (HI_U8)(((u32Pid & 0x1f00) >> 8) | 0x40);
+    DataBuf.pu8Data[2] = (HI_U8)(u32Pid & 0xff);
+    DataBuf.pu8Data[3] = 0x10;
+    memcpy((void *)((HI_U32)u8PesPacket + 21), &u32DisPlayTime, sizeof(u32DisPlayTime));
+    memcpy((void *)((HI_U32)u8PesPacket + 25), &(pChnAttr->stFrmTag), sizeof(PVR_FRAME_TAG_S));
+    memcpy((void *)((HI_U32)DataBuf.pu8Data+4), u8PesPacket, sizeof(u8PesPacket));
+
+    ret = HI_MPI_DMX_PutTSBuffer(pChnAttr->hTsBuffer, u32Bytes2Send, 0);
+    if (ret != HI_SUCCESS)
+    {
+        HI_ERR_PVR("HI_MPI_DMX_PutTSBuffer failed:%#x!\n", ret);
+        return HI_FAILURE;
+    }
+
+    return HI_SUCCESS;
+}
+
+
 /*****************************************************************************
  Prototype       : PVRPlaySendAframe
  Description     : send one frame data to demux
@@ -1407,13 +1645,13 @@ STATIC INLINE HI_S32 PVRPlaySendData(PVR_PLAY_CHN_S *pChnAttr, HI_U64 offSet, HI
     Modification : Created function
 
 *****************************************************************************/
-STATIC INLINE HI_S32 PVRPlaySendAframe(PVR_PLAY_CHN_S  *pChnAttr, const PVR_INDEX_ENTRY_S *pframe)
+HI_S32 PVRPlaySendAframe(PVR_PLAY_CHN_S  *pChnAttr, const PVR_INDEX_ENTRY_S *pframe)
 {
     HI_S32 ret = HI_SUCCESS;
-
     HI_U64 before_pos;
     HI_U32 size1;
     HI_U32 size2= 0;
+    HI_U32 u32VidPid = 0x1fff;
 
     HI_ASSERT_RET(NULL != pframe);
     HI_ASSERT_RET(NULL != pChnAttr);
@@ -1431,6 +1669,32 @@ STATIC INLINE HI_S32 PVRPlaySendAframe(PVR_PLAY_CHN_S  *pChnAttr, const PVR_INDE
         HI_WARN_PVR("Frame size too large, drop it(Size:%u, offset=%llu).\n",
                     pframe->u32FrameSize, pframe->u64Offset);
         return HI_SUCCESS;
+    }
+    
+    /* At present, only video support disptime TS packet */
+    if (HI_SUCCESS == HI_UNF_AVPLAY_GetAttr(pChnAttr->hAvplay, HI_UNF_AVPLAY_ATTR_ID_VID_PID, &u32VidPid))
+    {
+        if (0x1fff != u32VidPid)
+        {
+#ifdef PVR_PROC_SUPPORT
+            if ((1 == pChnAttr->stPlayProcInfo.u32PrintFlg) && 
+                ((HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState) ||
+                 (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState)))
+            {
+                HI_ERR_PVR("Send frame disptime=%d frmtype=%d enableflg=%d distance=%d beforefirstfrm=%d gopnum=%d\n",  
+                    pframe->u32DisplayTimeMs,
+                    ((pframe->u16FrameTypeAndGop >> 14) & 0x3UL),
+                    pChnAttr->stFrmTag.u32DispEnableFlag,
+                    pChnAttr->stFrmTag.u32DispFrameDistance,
+                    pChnAttr->stFrmTag.u32DistanceBeforeFirstFrame,
+                    pChnAttr->stFrmTag.u32GopNum);
+            }
+#endif
+            if (HI_SUCCESS != PVRPlaySendPrivatePacketToTsBuffer(pChnAttr, pframe->u32DisplayTimeMs, u32VidPid))  
+            {
+                HI_ERR_PVR("Send playing time packet fail.\n");
+            }
+        }
     }
 
 #if 0  /* not need it, meanless to check it */
@@ -1479,7 +1743,7 @@ STATIC INLINE HI_S32 PVRPlaySendAframe(PVR_PLAY_CHN_S  *pChnAttr, const PVR_INDE
 STATIC HI_S32 PVRPlaySendEmptyPacketToTsBuffer(PVR_PLAY_CHN_S *pChnAttr)
 {
     HI_S32 ret;
-    HI_U32 u32Bytes2Send = 188 * 10;
+    HI_U32 u32Bytes2Send = PVR_TS_LEN * 10;
     HI_U32 u32PhyAddr;
     HI_UNF_STREAM_BUF_S DataBuf;
     HI_U32 i;
@@ -1510,12 +1774,12 @@ STATIC HI_S32 PVRPlaySendEmptyPacketToTsBuffer(PVR_PLAY_CHN_S *pChnAttr)
     }
 
     memset(DataBuf.pu8Data, 0xff, DataBuf.u32Size);
-    for (i = 0; i < (u32Bytes2Send / 188); i++)
+    for (i = 0; i < (u32Bytes2Send / PVR_TS_LEN); i++)
     {
-        DataBuf.pu8Data[i * 188] = 0x47;
-        DataBuf.pu8Data[i * 188 + 1] = 0x1f;
-        DataBuf.pu8Data[i * 188 + 2] = 0xff;
-        DataBuf.pu8Data[i * 188 + 3] = 0x10;
+        DataBuf.pu8Data[i * PVR_TS_LEN] = 0x47;
+        DataBuf.pu8Data[i * PVR_TS_LEN + 1] = 0x1f;
+        DataBuf.pu8Data[i * PVR_TS_LEN + 2] = 0xff;
+        DataBuf.pu8Data[i * PVR_TS_LEN + 3] = 0x10;
     }
 
     ret = HI_MPI_DMX_PutTSBuffer(pChnAttr->hTsBuffer, u32Bytes2Send, 0);
@@ -1565,10 +1829,12 @@ STATIC INLINE HI_VOID PVRPlayCheckError(const PVR_PLAY_CHN_S  *pChnAttr,  HI_S32
             if (PVR_Rec_IsFileSaving(pChnAttr->stUserCfg.szFileName))
             {
                 PVR_Intf_DoEventCallback(pChnAttr->u32chnID, HI_UNF_PVR_EVENT_PLAY_REACH_REC, 0);
+                pChnAttr->IndexHandle->u32TimeShiftTillEndCnt = 0;
             }
             else
             {
                 PVR_Intf_DoEventCallback(pChnAttr->u32chnID, HI_UNF_PVR_EVENT_PLAY_EOF, 0);
+                pChnAttr->IndexHandle->u32TimeShiftTillEndCnt = 0;
             }
             break;
         case HI_ERR_PVR_FILE_TILL_START:
@@ -1633,18 +1899,18 @@ STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_IN
     /* when next frame is the first frame, not need to wait, and set next frame to the reference frame */
     if (PVR_INDEX_INVALID_PTSMS == pChnAttr->stTplayCtlInfo.u32RefFrmPtsMs)
     {
-        PVR_LOCK(&pChnAttr->IndexHandle->stMutex);
+        PVR_INDEX_LOCK(&pChnAttr->IndexHandle->stMutex);
         pChnAttr->stTplayCtlInfo.u32RefFrmSysTimeMs = pNextFrame->u32DisplayTimeMs;///PVRIndexGetCurTimeMs();
         pChnAttr->stTplayCtlInfo.u32RefFrmPtsMs = pNextFrame->u32PtsMs;
         pChnAttr->IndexHandle->u32FrameDistance = 0;
-        PVR_UNLOCK(&pChnAttr->IndexHandle->stMutex);
+        PVR_INDEX_UNLOCK(&pChnAttr->IndexHandle->stMutex);
         return 0;
     }
 
     /* fast forward state */
     if (HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState)
     {
-        PVR_LOCK(&pChnAttr->IndexHandle->stMutex);
+        PVR_INDEX_LOCK(&pChnAttr->IndexHandle->stMutex);
         speedx = pChnAttr->enSpeed / HI_UNF_PVR_PLAY_SPEED_NORMAL;
         u32NextPlayTimeMs = (pChnAttr->IndexHandle->u32FrameDistance*PVR_TPLAY_MIN_FRAME_RATE)/(HI_U32)speedx;
         if(u32NextPlayTimeMs < PVR_TPLAY_FRAME_SHOW_TIME)
@@ -1656,7 +1922,7 @@ STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_IN
                 pChnAttr->IndexHandle->u32ReadFrame);
 
             //pChnAttr->IndexHandle->u32FrameDistance = 0;
-            PVR_UNLOCK(&pChnAttr->IndexHandle->stMutex);
+	        PVR_INDEX_UNLOCK(&pChnAttr->IndexHandle->stMutex);
             return -1;
         }
         else
@@ -1668,7 +1934,7 @@ STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_IN
                 pChnAttr->IndexHandle->u32ReadFrame);
 
             pChnAttr->IndexHandle->u32FrameDistance = pChnAttr->IndexHandle->u32FrameDistance % (HI_U32)speedx;
-            PVR_UNLOCK(&pChnAttr->IndexHandle->stMutex);
+	        PVR_INDEX_UNLOCK(&pChnAttr->IndexHandle->stMutex);
             return (HI_S32)u32NextPlayTimeMs;
         }
     }
@@ -1676,7 +1942,7 @@ STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_IN
     /*fast backward state */
     if (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState)
     {
-        PVR_LOCK(&pChnAttr->IndexHandle->stMutex);
+        PVR_INDEX_LOCK(&pChnAttr->IndexHandle->stMutex);
         speedx = (0 - pChnAttr->enSpeed) / HI_UNF_PVR_PLAY_SPEED_NORMAL;
         u32NextPlayTimeMs = (pChnAttr->IndexHandle->u32FrameDistance*PVR_TPLAY_MIN_FRAME_RATE)/(HI_U32)speedx;
         if(u32NextPlayTimeMs < PVR_TPLAY_FRAME_SHOW_TIME)
@@ -1688,7 +1954,7 @@ STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_IN
                 pChnAttr->IndexHandle->u32ReadFrame);
 
             //pChnAttr->IndexHandle->u32FrameDistance = 0;
-            PVR_UNLOCK(&pChnAttr->IndexHandle->stMutex);
+	        PVR_INDEX_UNLOCK(&pChnAttr->IndexHandle->stMutex);
             return -1;
         }
         else
@@ -1700,7 +1966,7 @@ STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_IN
                 pChnAttr->IndexHandle->u32ReadFrame);
 
             pChnAttr->IndexHandle->u32FrameDistance = pChnAttr->IndexHandle->u32FrameDistance % (HI_U32)speedx;
-            PVR_UNLOCK(&pChnAttr->IndexHandle->stMutex);
+	        PVR_INDEX_UNLOCK(&pChnAttr->IndexHandle->stMutex);
             return (HI_S32)u32NextPlayTimeMs;
         }
     }
@@ -1784,13 +2050,28 @@ STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_IN
 STATIC INLINE HI_S32 PVRPlaySeekToCurFrame(PVR_INDEX_HANDLE handle, PVR_PLAY_CHN_S  *pChnAttr,
             HI_UNF_PVR_PLAY_STATE_E enCurState, HI_UNF_PVR_PLAY_STATE_E enNextState)
 {
-    HI_UNF_AVPLAY_STATUS_INFO_S stInfo;
     HI_S32 ret;
+    HI_U32 u32SeekToPTS;
+    HI_U32 u32SeekToTime;
     HI_U32 IsForword;
     HI_U32 IsNextForword;
-    HI_U32 u32SeekToPTS;
+    HI_UNF_AVPLAY_STATUS_INFO_S stInfo;
+    HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S stAvplayPrivInfo;
 
-    /* if current play to the start or end of file, seek it to start or end directly. no longer find it by current frame. */
+    memset(&stAvplayPrivInfo, 0, sizeof(HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S));
+	memset(&stInfo, 0, sizeof(HI_UNF_AVPLAY_STATUS_INFO_S));
+    if (HI_UNF_PVR_PLAY_STATE_INVALID == pChnAttr->enState)
+    {
+        HI_ERR_PVR("Can not seek to current play frame when state is invalid!\n");
+        return HI_FAILURE;
+    }
+
+    if (HI_UNF_PVR_PLAY_STATE_STEPF == pChnAttr->enState)
+    {
+        PVRPlaySyncTrickPlayTime(pChnAttr);
+    }
+
+	/* if current play to the start or end of file, seek it to start or end directly. no longer find it by current frame. */
     if (pChnAttr->bEndOfFile)
     {
         if (pChnAttr->bTillStartOfFile)
@@ -1802,54 +2083,76 @@ STATIC INLINE HI_S32 PVRPlaySeekToCurFrame(PVR_INDEX_HANDLE handle, PVR_PLAY_CHN
             return PVR_Index_SeekToEnd(handle);
         }
     }
-
-    if ((HI_UNF_PVR_PLAY_STATE_FB == enCurState)
-        || (HI_UNF_PVR_PLAY_STATE_STEPB == enCurState))
+        
+    if (PVR_Rec_IsFileSaving(pChnAttr->stUserCfg.szFileName) && 
+        (HI_UNF_PVR_PLAY_STATE_INIT == pChnAttr->enLastState))
     {
-        IsForword = 1;
+        if ((HI_UNF_PVR_PLAY_STATE_FB == enCurState)
+            || (HI_UNF_PVR_PLAY_STATE_STEPB == enCurState))
+        {
+            IsForword = 1;
+        }
+        else
+        {
+            IsForword = 0;
+        }
+
+        if ((HI_UNF_PVR_PLAY_STATE_FB == enNextState)
+            || (HI_UNF_PVR_PLAY_STATE_STEPB == enNextState))
+        {
+            IsNextForword = 1;
+        }
+        else
+        {
+            IsNextForword = 0;
+        }
+
+        ret = HI_UNF_AVPLAY_GetStatusInfo(pChnAttr->hAvplay, &stInfo);
+        if (HI_SUCCESS != ret)
+        {
+            HI_ERR_PVR("HI_UNF_AVPLAY_GetStatusInfo failed!\n");
+            return HI_FAILURE;
+        }
+
+        if (PVR_INDEX_IS_TYPE_AUDIO(handle))
+        {
+             u32SeekToPTS = stInfo.stSyncStatus.u32LocalTime;
+        }
+        else
+        {
+             u32SeekToPTS = stInfo.stSyncStatus.u32LastVidPts;
+        }
+    	/* evade case */
+        if ((PVR_INDEX_INVALID_PTSMS == u32SeekToPTS)||((stInfo.stSyncStatus.u32LastVidPts-stInfo.stSyncStatus.u32FirstVidPts)<500))
+        {
+            HI_WARN_PVR("current pts invalid(-1), do not seek to it!\n");
+            return HI_SUCCESS;
+        }
+
+        ret = PVR_Index_SeekToPTS(handle, u32SeekToPTS, IsForword, IsNextForword);
+        if (HI_SUCCESS != ret)
+        {
+            HI_ERR_PVR("PVR_Index_SeekToPTS not found the PTS failed!\n");
+            return HI_FAILURE;
+        }
     }
     else
     {
-        IsForword = 0;
-    }
+        ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_GET_PRIV_PLAYINFO, (void *)&stAvplayPrivInfo);
+        if (HI_SUCCESS != ret)
+        {
+            HI_ERR_PVR("Get Avplay private info fail.\n");
+        }
+        u32SeekToTime = stAvplayPrivInfo.u32LastPlayTime;
+        pChnAttr->u32CurPlayTimeMs = stAvplayPrivInfo.u32LastPlayTime;
 
-    if ((HI_UNF_PVR_PLAY_STATE_FB == enNextState)
-        || (HI_UNF_PVR_PLAY_STATE_STEPB == enNextState))
-    {
-        IsNextForword = 1;
-    }
-    else
-    {
-        IsNextForword = 0;
-    }
-
-    ret = HI_MPI_AVPLAY_GetStatusInfo(pChnAttr->hAvplay, &stInfo);
-    if (HI_SUCCESS != ret)
-    {
-        HI_ERR_PVR("HI_MPI_AVPLAY_GetStatusInfo failed!\n");
-        return HI_FAILURE;
-    }
-
-    if (PVR_INDEX_IS_TYPE_AUDIO(handle))
-    {
-         u32SeekToPTS = stInfo.stSyncStatus.u32LocalTime;
-    }
-    else
-    {
-         u32SeekToPTS = stInfo.stSyncStatus.u32LastVidPts;
-    }
-    /* evade case */
-    if ((PVR_INDEX_INVALID_PTSMS == u32SeekToPTS)||((stInfo.stSyncStatus.u32LastVidPts-stInfo.stSyncStatus.u32FirstVidPts)<500))
-    {
-        HI_WARN_PVR("current pts invalid(-1), do not seek to it!\n");
-        return HI_SUCCESS;
-    }
-
-    ret = PVR_Index_SeekToPTS(handle, u32SeekToPTS, IsForword, IsNextForword);
-    if (HI_SUCCESS != ret)
-    {
-        HI_ERR_PVR("PVR_Index_SeekToPTS not found the PTS failed!\n");
-        return HI_FAILURE;
+        ret = PVR_Index_SeekToTime(handle, u32SeekToTime);
+        
+        if (HI_SUCCESS != ret)
+        {
+            HI_ERR_PVR("PVR_Index_SeekToTime not found the time failed!\n");
+            return HI_FAILURE;
+        }
     }
 
     return HI_SUCCESS;
@@ -1864,14 +2167,15 @@ STATIC INLINE HI_S32 PVRPlayResetToCurFrame(PVR_INDEX_HANDLE handle, PVR_PLAY_CH
     /* failed to get current frame, no longer reset player and ts buffer, imply has reset it already*/
     if (HI_UNF_PVR_PLAY_STATE_PAUSE == pChnAttr->enState)
     {
-        enPreState = pChnAttr->enLastState;
+        //enPreState = pChnAttr->enLastState;        
+        ret = HI_SUCCESS;
     }
     else
     {
         enPreState = pChnAttr->enState;
+        ret = PVRPlaySeekToCurFrame(pChnAttr->IndexHandle, pChnAttr, enPreState, enNextState);
     }
 
-    ret = PVRPlaySeekToCurFrame(pChnAttr->IndexHandle, pChnAttr, enPreState, enNextState);
     if (HI_SUCCESS == ret)
     {
         HI_INFO_PVR("to reset buffer and player.\n");
@@ -1894,7 +2198,68 @@ STATIC INLINE HI_S32 PVRPlayResetToCurFrame(PVR_INDEX_HANDLE handle, PVR_PLAY_CH
         }
     }
 
+    pChnAttr->IndexHandle->u32TimeShiftTillEndCnt = 0;
+
     UNUSED(handle);
+    return HI_SUCCESS;
+}
+
+STATIC INLINE HI_S32 PVRPlayAvplaySyncCtrl(PVR_PLAY_CHN_S  *pChnAttr, HI_U32 u32AVSyncEnFlag)
+{
+    HI_UNF_SYNC_ATTR_S          stSyncAttr;
+    HI_UNF_AVPLAY_STOP_OPT_S    stStopOpt;
+    HI_U32 u32VidPid = 0x1fff;
+    HI_U32 u32AudPid = 0x1fff;
+    HI_UNF_AVPLAY_MEDIA_CHAN_E enMediaChn = (HI_UNF_AVPLAY_MEDIA_CHAN_E)0;
+    
+    stStopOpt.enMode = HI_UNF_AVPLAY_STOP_MODE_STILL;
+    stStopOpt.u32TimeoutMs = 0;
+
+    //lint -e655
+    if (HI_SUCCESS == HI_UNF_AVPLAY_GetAttr(pChnAttr->hAvplay, HI_UNF_AVPLAY_ATTR_ID_VID_PID, &u32VidPid))
+    {
+        if (0x1fff != u32VidPid)
+        {
+            enMediaChn |= HI_UNF_AVPLAY_MEDIA_CHAN_VID;
+        }
+    }
+    if (HI_SUCCESS == HI_UNF_AVPLAY_GetAttr(pChnAttr->hAvplay, HI_UNF_AVPLAY_ATTR_ID_AUD_PID, &u32AudPid))
+    {
+        if (0x1fff != u32AudPid)
+        {
+            enMediaChn |= HI_UNF_AVPLAY_MEDIA_CHAN_AUD;
+        }
+    }
+    //lint +e655
+    
+    if ((HI_UNF_AVPLAY_MEDIA_CHAN_E)0 == enMediaChn)
+    {
+        HI_ERR_PVR("No Vpid and Apid!\n");
+        return HI_FAILURE;
+    }
+    
+    if (HI_SUCCESS != HI_UNF_AVPLAY_GetAttr(pChnAttr->hAvplay, HI_UNF_AVPLAY_ATTR_ID_SYNC, &stSyncAttr))
+        return HI_FAILURE;
+
+    if((0 == u32AVSyncEnFlag)&&(HI_UNF_SYNC_REF_NONE == stSyncAttr.enSyncRef))
+        return HI_SUCCESS;
+    if((1 == u32AVSyncEnFlag)&&(HI_UNF_SYNC_REF_AUDIO == stSyncAttr.enSyncRef))
+        return HI_SUCCESS;
+    
+    if (HI_SUCCESS != HI_UNF_AVPLAY_Stop(pChnAttr->hAvplay, enMediaChn, &stStopOpt))
+        return HI_FAILURE;
+    
+    stSyncAttr.enSyncRef = (0 == u32AVSyncEnFlag) ? HI_UNF_SYNC_REF_NONE : HI_UNF_SYNC_REF_AUDIO;
+    
+    if (HI_SUCCESS != HI_UNF_AVPLAY_SetAttr(pChnAttr->hAvplay, HI_UNF_AVPLAY_ATTR_ID_SYNC, &stSyncAttr))
+    {
+        (void)HI_UNF_AVPLAY_Start(pChnAttr->hAvplay, enMediaChn, HI_NULL);
+        return HI_FAILURE;
+    }
+    
+    if (HI_SUCCESS != HI_UNF_AVPLAY_Start(pChnAttr->hAvplay, enMediaChn, HI_NULL))
+        return HI_FAILURE;
+    
     return HI_SUCCESS;
 }
 
@@ -1973,6 +2338,423 @@ STATIC INLINE HI_BOOL PVRPlayIsTsSaved(PVR_PLAY_CHN_S *pChnAttr, PVR_INDEX_ENTRY
     }
 }
 
+STATIC INLINE HI_S32 PVRPlayGetCurPlayPts(PVR_PLAY_CHN_S  *pChnAttr, HI_U32 *pu32CurPlayPts)
+{
+    HI_UNF_AVPLAY_STATUS_INFO_S stInfo;
+    PVR_INDEX_ENTRY_S  frame_tmp ={0}; 
+    HI_U32 u32LoopTime = 0;
+    HI_S32 ret = 0;
+    do
+    {
+        ret = HI_UNF_AVPLAY_GetStatusInfo(pChnAttr->hAvplay, &stInfo);
+        if (HI_SUCCESS != ret)
+        {
+            HI_ERR_PVR("HI_UNF_AVPLAY_GetStatusInfo failed!\n");
+           
+            return HI_FAILURE;
+        }
+        
+        if (PVR_INDEX_IS_TYPE_AUDIO(pChnAttr->IndexHandle))  
+            *pu32CurPlayPts = stInfo.stSyncStatus.u32LocalTime;
+        else
+            *pu32CurPlayPts = stInfo.stSyncStatus.u32LastVidPts;
+        
+        u32LoopTime ++;  
+        if (PVR_INDEX_INVALID_PTSMS == *pu32CurPlayPts)
+        {
+            if (u32LoopTime > 10)
+            {
+                HI_WARN_PVR("Get invalid current pts %d from HI_UNF_AVPLAY_GetStatusInfo\n", *pu32CurPlayPts);
+                break;
+            }
+            usleep(100*1000);
+        }
+        
+    } while(PVR_INDEX_INVALID_PTSMS == *pu32CurPlayPts);
+
+    if (PVR_INDEX_INVALID_PTSMS == *pu32CurPlayPts)
+    {
+        ret = PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &frame_tmp, pChnAttr->IndexHandle->u32ReadFrame);
+        if(HI_SUCCESS != ret)
+        {
+            if(HI_ERR_PVR_FILE_TILL_END == ret)
+            {
+                if(HI_SUCCESS != PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &frame_tmp, --pChnAttr->IndexHandle->u32ReadFrame))
+                {
+                    HI_INFO_PVR("get the %d entry fail.\n", pChnAttr->IndexHandle->u32ReadFrame);
+                    return HI_FAILURE;
+                }
+            }
+        }
+        *pu32CurPlayPts = frame_tmp.u32PtsMs;
+    }
+
+    return HI_SUCCESS;
+}
+
+void PVRPlaySyncTrickPlayTime(PVR_PLAY_CHN_S *pChnAttr)
+{
+    HI_S32 ret = 0;
+    HI_U32 u32CurFrmTimeMs = 0;
+    HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S stAvplayPrivInfo = {0};
+
+    ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_GET_PRIV_PLAYINFO, &stAvplayPrivInfo);
+    if (HI_SUCCESS != ret)
+    {
+        HI_ERR_PVR("Get Avplay private info fail.\n");
+        return;
+    }
+
+    u32CurFrmTimeMs = stAvplayPrivInfo.u32LastPlayTime;
+                        
+    if(u32CurFrmTimeMs > pChnAttr->u32CurPlayTimeMs)
+    {
+        if ((u32CurFrmTimeMs - pChnAttr->u32CurPlayTimeMs)>1000)
+        {
+            pChnAttr->u32CurPlayTimeMs = u32CurFrmTimeMs;
+        }
+    }
+    else if(u32CurFrmTimeMs < pChnAttr->u32CurPlayTimeMs)
+    {
+        if ((pChnAttr->u32CurPlayTimeMs - u32CurFrmTimeMs)>1000)
+        {
+            pChnAttr->u32CurPlayTimeMs = u32CurFrmTimeMs;
+        }
+    }
+}
+
+static INLINE void PVRPlayAnalysisStream(PVR_PLAY_CHN_S *pChnAttr)
+{
+    HI_U32 u32VideoType = 0;
+    HI_U32 u32PreReadCnt = 0x400;
+    HI_U32 u32StartFrm=0, u32EndFrm=0, u32LastFrm=0, u32TotalFrm=0;
+    HI_U32 i = 0;
+    HI_U32 u32NalHeader;
+    PVR_INDEX_ENTRY_S stEntry;
+
+    memset(&stEntry,0 ,sizeof(PVR_INDEX_ENTRY_S));
+	
+    u32VideoType = PVR_Index_GetVtype(pChnAttr->IndexHandle);
+    u32VideoType -= 100;
+
+    if(HI_UNF_VCODEC_TYPE_H264 != u32VideoType)
+    {
+        return;
+    }
+
+    u32StartFrm = pChnAttr->IndexHandle->stCycMgr.u32StartFrame;
+    u32EndFrm = pChnAttr->IndexHandle->stCycMgr.u32EndFrame;
+    u32LastFrm = pChnAttr->IndexHandle->stCycMgr.u32LastFrame;
+
+    if(u32StartFrm > u32EndFrm)
+    {
+	    u32TotalFrm = u32EndFrm + u32LastFrm - u32StartFrm;
+    }
+    else
+    {
+	    u32TotalFrm = u32LastFrm - u32StartFrm;
+    }
+
+    if (u32TotalFrm < u32PreReadCnt)
+    {
+        u32PreReadCnt = u32TotalFrm;
+    }
+
+    pChnAttr->u32GopNumOfStart = (u32PreReadCnt << 16);
+    for(i = u32StartFrm; i < (u32StartFrm + u32PreReadCnt); i++)
+    {
+        u32NalHeader = 0;
+        
+        if (HI_SUCCESS != PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stEntry, i))
+        {
+            HI_ERR_PVR("Get IndexEntry fail, Can't Analysis anymore.\n");
+            return;
+        }
+
+        if (PVR_INDEX_is_Pframe(&stEntry))
+        {
+            continue;
+        }
+    
+        if (sizeof(u32NalHeader) != PVR_PREAD64((HI_U8 *)&u32NalHeader, sizeof(u32NalHeader), pChnAttr->s32DataFile, stEntry.u64Offset))
+        {
+            HI_ERR_PVR("Get Stream ES head fail, Can't Analysis anymore.\n");
+            return;
+        }
+
+        u32NalHeader = (u32NalHeader >> 24);
+
+        if (PVR_INDEX_is_Iframe(&stEntry))
+        {
+            if(1 != pChnAttr->stVdecCtrlInfo.u32IDRFlag)
+            {
+                if (5 == (u32NalHeader & 0x1f))
+                {
+                    pChnAttr->stVdecCtrlInfo.u32IDRFlag = 1;
+                    HI_WARN_PVR("The playing stream's I frame has IDR\n");
+                }
+            }
+
+            pChnAttr->u32GopNumOfStart++;
+        }
+        
+        if ((PVR_INDEX_is_Bframe(&stEntry)) && (1 != pChnAttr->stVdecCtrlInfo.u32BFrmRefFlag))
+        {
+            if (0 != ((u32NalHeader >> 5) & 3))
+            {
+                pChnAttr->stVdecCtrlInfo.u32BFrmRefFlag = 1;
+                HI_WARN_PVR("The playing stream's B frame can be reference\n");
+            }
+        }
+
+        /*if((0 != pChnAttr->stVdecCtrlInfo.u32IDRFlag) && (0 != pChnAttr->stVdecCtrlInfo.u32BFrmRefFlag))  
+        {
+            break;
+        }*/
+        
+        if((u32StartFrm > u32EndFrm) && ((u32StartFrm + u32PreReadCnt) > u32LastFrm) && (i == (u32LastFrm - 1)))
+        {
+            u32PreReadCnt = u32PreReadCnt - (u32LastFrm - u32StartFrm);
+            i = 0;
+            u32StartFrm = 0;
+        }
+    }
+}
+
+STATIC INLINE HI_BOOL  PVRPlayCheckFBTillStartInRewind(PVR_PLAY_CHN_S  *pChnAttr)
+{
+    PVR_INDEX_ENTRY_S stStartFrame = {0};
+    HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S stAvplayPrivInfo = {0};
+    HI_U32 u32CurFrmTimeMs=0;
+    HI_S32 s32Ret = 0;
+    
+    memset(&stStartFrame, 0, sizeof(PVR_INDEX_ENTRY_S));
+
+    s32Ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_GET_PRIV_PLAYINFO, &stAvplayPrivInfo);
+    if (HI_SUCCESS != s32Ret)
+    {
+        HI_ERR_PVR("Get Avplay private info fail.\n");
+        return HI_FALSE;
+    }
+    else
+    {
+        u32CurFrmTimeMs = stAvplayPrivInfo.u32LastPlayTime;
+    }
+        
+    s32Ret = PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stStartFrame, pChnAttr->IndexHandle->stCycMgr.u32StartFrame);
+    if (HI_SUCCESS != s32Ret)
+    {
+        HI_ERR_PVR("Can't get EndFrame:%d\n", pChnAttr->IndexHandle->u32ReadFrame);
+        return HI_FALSE;
+    }
+
+    if (u32CurFrmTimeMs <= stStartFrame.u32DisplayTimeMs)
+    {
+        return HI_TRUE;
+    }
+
+    return HI_FALSE;
+}
+
+
+STATIC INLINE HI_BOOL PVRPlayCheckFFTillEnd(PVR_PLAY_CHN_S *pChnAttr)
+{
+	PVR_INDEX_ENTRY_S stEndFrame = {0}, stStartFrame = {0};
+	HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S stAvplayPrivInfo = {0};
+	HI_U32 u32CurFrmTimeMs = 0;
+	HI_S32 s32Ret = 0;
+    HI_U32 u32EndTimeGap = 2000;
+
+	memset(&stEndFrame, 0, sizeof(PVR_INDEX_ENTRY_S));
+
+    s32Ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_GET_PRIV_PLAYINFO, &stAvplayPrivInfo);
+	if (HI_SUCCESS != s32Ret)
+	{
+		HI_ERR_PVR("Get Avplay private info fail.\n");
+		return HI_FALSE;
+	}
+	else
+	{
+		u32CurFrmTimeMs = stAvplayPrivInfo.u32LastPlayTime;
+	}
+
+	s32Ret = PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stEndFrame, pChnAttr->IndexHandle->stCycMgr.u32EndFrame);
+	if (HI_SUCCESS != s32Ret)
+	{
+		 if(HI_ERR_PVR_FILE_TILL_END == s32Ret)
+		 {
+		 	if (HI_SUCCESS != PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stEndFrame, (pChnAttr->IndexHandle->stCycMgr.u32EndFrame - 1)))
+		    {
+				HI_ERR_PVR("Can't get EndFrame:%d\n", (pChnAttr->IndexHandle->stCycMgr.u32EndFrame - 1));
+				return HI_FALSE;
+		    }
+		 }
+	}
+    
+    if (pChnAttr->IndexHandle->stCycMgr.u32EndFrame <= pChnAttr->IndexHandle->stCycMgr.u32StartFrame) 
+    {
+        (void)PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stStartFrame, pChnAttr->IndexHandle->stCycMgr.u32StartFrame);
+        if (stEndFrame.u32DisplayTimeMs < stStartFrame.u32DisplayTimeMs)
+        {
+		 	if (HI_SUCCESS != PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stEndFrame, (pChnAttr->IndexHandle->stCycMgr.u32EndFrame - 1)))
+		    {
+				HI_ERR_PVR("Can't get EndFrame:%d\n", (pChnAttr->IndexHandle->stCycMgr.u32EndFrame - 1));
+				return HI_FALSE;
+		    }
+        }
+    }
+
+    switch(pChnAttr->enSpeed)
+    {
+        case HI_UNF_PVR_PLAY_SPEED_2X_FAST_FORWARD:
+            u32EndTimeGap = 1000;
+            break;
+        case HI_UNF_PVR_PLAY_SPEED_4X_FAST_FORWARD:
+            u32EndTimeGap = 2000;
+            break;
+        case HI_UNF_PVR_PLAY_SPEED_8X_FAST_FORWARD:
+            u32EndTimeGap = 2000;
+            break;
+        case HI_UNF_PVR_PLAY_SPEED_16X_FAST_FORWARD:
+            u32EndTimeGap = 4000;
+            break;
+        case HI_UNF_PVR_PLAY_SPEED_32X_FAST_FORWARD:
+            u32EndTimeGap = 4000;
+            break;
+        default:
+            break;
+    };
+
+	pChnAttr->IndexHandle->u32TimeShiftTillEndCnt++;
+
+    HI_WARN_PVR("EndTime=%d CurTime=%d TimeGap=%d TillEndCnt=%d\n", 
+                 stEndFrame.u32DisplayTimeMs, u32CurFrmTimeMs, u32EndTimeGap, pChnAttr->IndexHandle->u32TimeShiftTillEndCnt);
+	if(((u32CurFrmTimeMs+u32EndTimeGap) >= stEndFrame.u32DisplayTimeMs) || 
+        (pChnAttr->IndexHandle->u32TimeShiftTillEndCnt >= 5))
+	{
+		return HI_TRUE;
+	}
+
+	return HI_FALSE;
+}
+
+STATIC INLINE void PVRPlayProcessLastPlayingFrames(PVR_PLAY_CHN_S *pChnAttr)
+{
+    HI_S32 s32Ret = 0;
+    HI_U32 i = 0;
+    HI_U32 u32FirstFrmNum = 0,u32EndFrmNum = 0;
+    HI_U32 u32LastGopSize = 0;
+    HI_U32 u32FirstFrmMoveCnt = 0;
+    PVR_INDEX_ENTRY_S stEndEntry = {0},stLastIEntry = {0},stFirstIEntry = {0};
+    PVR_INDEX_ENTRY_S *pSendEntryTmp = (PVR_INDEX_ENTRY_S *)NULL;
+
+    if (0 < pChnAttr->enSpeed)
+    {
+        u32EndFrmNum = pChnAttr->IndexHandle->stCycMgr.u32EndFrame;
+
+        s32Ret = PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stEndEntry, u32EndFrmNum);
+        if (HI_SUCCESS != s32Ret)
+        {
+            if(HI_ERR_PVR_FILE_TILL_END == s32Ret)
+            {
+                if (HI_SUCCESS != PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stEndEntry, --u32EndFrmNum))
+                {
+                    HI_WARN_PVR("Can't get the end index entry.");
+                    return;
+                }
+            }
+            else
+            {
+                HI_WARN_PVR("Can't get the end index entry.");
+                return;
+            }
+        }
+
+        u32LastGopSize = stEndEntry.u16FrameTypeAndGop & 0x3fff;
+
+        if ((u32LastGopSize < 6) || 
+            (PVR_INDEX_is_Pframe(&pChnAttr->IndexHandle->stCurPlayFrame)) ||
+            (HI_UNF_PVR_PLAY_SPEED_4X_FAST_FORWARD <= pChnAttr->enSpeed))
+        {
+            s32Ret = PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stLastIEntry, (u32EndFrmNum - u32LastGopSize));
+            if (HI_SUCCESS == s32Ret)
+            {
+                pSendEntryTmp = &stLastIEntry;
+            }
+            else
+            {
+                HI_ERR_PVR("Can't get Last I frame's Entry.\n");
+            }
+        }
+        else
+        {
+            pSendEntryTmp = &pChnAttr->IndexHandle->stCurPlayFrame;
+        }
+    }
+    else
+    {
+        u32FirstFrmNum = pChnAttr->IndexHandle->stCycMgr.u32StartFrame;
+
+        do
+        {
+            if (u32FirstFrmMoveCnt > 1000)
+            {
+                HI_WARN_PVR("Can't find the first I frame, Do not send the first I frame when backward till start.\n");
+                return;
+            }
+            
+            s32Ret = PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stFirstIEntry, u32FirstFrmNum);
+            if (HI_SUCCESS != s32Ret)
+            {
+                HI_WARN_PVR("Can't get the end index entry.");
+                return;
+            }
+            u32FirstFrmNum++;
+            u32FirstFrmMoveCnt++;
+            if (pChnAttr->IndexHandle->stCycMgr.u32StartFrame >= pChnAttr->IndexHandle->stCycMgr.u32EndFrame)
+            {
+                if (u32FirstFrmNum > pChnAttr->IndexHandle->stCycMgr.u32LastFrame)
+                {
+                    u32FirstFrmNum = 0;
+                }
+				
+				if ((u32FirstFrmNum > pChnAttr->IndexHandle->stCycMgr.u32EndFrame) && 
+                    (u32FirstFrmNum < pChnAttr->IndexHandle->stCycMgr.u32StartFrame))
+				{
+					HI_WARN_PVR("Can't find the first I frame, Do not send the first I frame when backward till start.\n");
+                	return;
+				}
+            }
+			else
+			{
+				if (u32FirstFrmNum > pChnAttr->IndexHandle->stCycMgr.u32LastFrame)
+				{
+					HI_WARN_PVR("Can't find the first I frame, Do not send the first I frame when backward till start.\n");
+                	return;
+				}
+			}
+        }
+        while(!PVR_INDEX_is_Iframe(&stFirstIEntry));
+
+        pSendEntryTmp = &stFirstIEntry;
+    }
+
+    PVR_LOCK(&(pChnAttr->stMutex));
+    if (HI_FALSE == pChnAttr->bTsBufReset)
+    {
+        for(i = 0; i < 6; i++)
+        {
+            s32Ret = PVRPlaySendAframe(pChnAttr, pSendEntryTmp);
+            if (HI_SUCCESS != s32Ret)
+            {
+                HI_ERR_PVR("======== send a frame err:%x ==========\n", s32Ret);
+            }
+        }
+    }
+    PVR_UNLOCK(&(pChnAttr->stMutex));
+}
+
+
 /*****************************************************************************
  Prototype       : PVRPlayMainRoute
  Description     : the main control thread of player
@@ -1994,10 +2776,16 @@ STATIC void* PVRPlayMainRoute(void *args)
     HI_S32              ret_sent = HI_SUCCESS;
     PVR_INDEX_ENTRY_S   frame ={0};
     PVR_PLAY_CHN_S      *pChnAttr = (PVR_PLAY_CHN_S*)args;
-    HI_S32              s32StayTimeMs;
     HI_U32              waittime = 200000; /*200ms*/
     HI_BOOL             bCallBack = HI_FALSE;
     HI_BOOL             bLastFrameSent = HI_TRUE;
+    HI_HANDLE hWindow;
+    HI_PVR_SEND_RESULT_S *pstSendFrame = (HI_PVR_SEND_RESULT_S *)NULL;
+    HI_PVR_FETCH_RESULT_S *pPvrFetchRes = (HI_PVR_FETCH_RESULT_S *)NULL;
+    HI_CODEC_VIDEO_CMD_S  stVdecCmdPara = {0};
+    HI_UNF_AVPLAY_TPLAY_OPT_S stTplayOpts;
+
+    memset(&stTplayOpts, 0, sizeof(HI_UNF_AVPLAY_TPLAY_OPT_S));
 
     if (!pChnAttr)
     {
@@ -2012,6 +2800,13 @@ STATIC void* PVRPlayMainRoute(void *args)
         //g_pvrfpSend = fopen(saveName, "wb");
     }
 
+    ret = HI_MPI_AVPLAY_GetWindowHandle(pChnAttr->hAvplay, &hWindow);
+    if (HI_SUCCESS != ret)
+    {
+        HI_ERR_PVR("AVPLAY get window handle failed!\n");
+        return HI_NULL;
+    }
+    
     while (!pChnAttr->bPlayMainThreadStop)
     {
         /* read file to the end, so wait until new comman incomming */
@@ -2022,7 +2817,23 @@ STATIC void* PVRPlayMainRoute(void *args)
             continue;
         }
 
-        PVR_LOCK(&(pChnAttr->stMutex));
+        if(!((HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState) || 
+             (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState)))
+        {
+            if((HI_PVR_FETCH_RESULT_S *)NULL != pPvrFetchRes)
+            {
+                HI_FREE(HI_ID_PVR, pPvrFetchRes);
+                pPvrFetchRes = (HI_PVR_FETCH_RESULT_S *)NULL;
+            }
+
+            if((HI_PVR_SEND_RESULT_S *)NULL != pstSendFrame)
+            {
+                HI_FREE(HI_ID_PVR, pstSendFrame);
+                pstSendFrame = (HI_PVR_SEND_RESULT_S *)NULL;
+            }
+        }
+
+        PVR_LOCK(&(pChnAttr->stMutex));
 
         ret = PVRPlayCheckIfTsOverByRec(pChnAttr);
         if (HI_SUCCESS != ret)
@@ -2033,6 +2844,7 @@ STATIC void* PVRPlayMainRoute(void *args)
         }
 
         pChnAttr->bTsBufReset = HI_FALSE;
+        pChnAttr->bTillStartOfFile = HI_FALSE;
         switch (pChnAttr->enState)
         {
             case HI_UNF_PVR_PLAY_STATE_PLAY:
@@ -2103,7 +2915,9 @@ STATIC void* PVRPlayMainRoute(void *args)
                 }
                 else
                 {
-                    ret = PVR_Index_GetNextIFrame(pChnAttr->IndexHandle, &frame);
+                    memcpy((void *)&frame, 
+                           (void *)&(pChnAttr->IndexHandle->stCurPlayFrame), 
+                           sizeof(PVR_INDEX_ENTRY_S));
                 }
                 break;
             }
@@ -2121,7 +2935,9 @@ STATIC void* PVRPlayMainRoute(void *args)
                 }
                 else
                 {
-                    ret = PVR_Index_GetPreIFrame(pChnAttr->IndexHandle, &frame);
+                    memcpy((void *)&frame, 
+                           (void *)&(pChnAttr->IndexHandle->stCurPlayFrame), 
+                           sizeof(PVR_INDEX_ENTRY_S));
                 }
                 break;
             }
@@ -2158,14 +2974,6 @@ STATIC void* PVRPlayMainRoute(void *args)
         {
             pChnAttr->bEndOfFile = HI_FALSE;
             pChnAttr->u64CurReadPos = frame.u64Offset + (HI_U64)frame.u32FrameSize;
-
-#ifdef PVR_PROC_SUPPORT
-            paPlayProcInfo[pChnAttr->u32chnID]->u64CurReadPos = pChnAttr->u64CurReadPos;
-            paPlayProcInfo[pChnAttr->u32chnID]->u32StartFrame = pChnAttr->IndexHandle->stCycMgr.u32StartFrame;
-            paPlayProcInfo[pChnAttr->u32chnID]->u32EndFrame = pChnAttr->IndexHandle->stCycMgr.u32EndFrame;
-            paPlayProcInfo[pChnAttr->u32chnID]->u32LastFrame = pChnAttr->IndexHandle->stCycMgr.u32LastFrame;
-            paPlayProcInfo[pChnAttr->u32chnID]->u32ReadFrame = pChnAttr->IndexHandle->u32ReadFrame;
-#endif
         }
         else /* read index error */
         {
@@ -2185,65 +2993,78 @@ STATIC void* PVRPlayMainRoute(void *args)
 
         PVR_UNLOCK(&(pChnAttr->stMutex));
 
-        /* successfully read frame, send it to ts buffer */
-        if (HI_SUCCESS == ret)
+        if (pChnAttr->bPlayMainThreadStop)
         {
-            if (pChnAttr->bPlayMainThreadStop)
-            {
-                break;
-            }
+            break;
+        }
 
-            /* for fast forward and backward, by waiting the control the speed of playing, no matter of timeshift play, event if rewind rewrite the reference frame, still can reference the time */
-            if ((HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState)
-                || (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState))
+        if (!(pChnAttr->bPlayingTsNoIdx) && 
+            ((HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState) || 
+             (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState)))
+        {
+            if ((HI_FALSE == pChnAttr->bTsBufReset) && (HI_FALSE == pChnAttr->bQuickUpdateStatus))
             {
-                s32StayTimeMs = PVRPlayCalcCurFrmStayTime(pChnAttr, &frame);
-                if (-1 == s32StayTimeMs)
+                if ((HI_PVR_FETCH_RESULT_S *)NULL == pPvrFetchRes)
                 {
-                    if (PVRPlayIsVoEmpty(pChnAttr))
+                    if((HI_PVR_FETCH_RESULT_S *)NULL == (pPvrFetchRes = (HI_PVR_FETCH_RESULT_S *)HI_MALLOC(HI_ID_PVR, sizeof(HI_PVR_FETCH_RESULT_S))))
                     {
-                        HI_INFO_PVR("VO empty now, send the frame directly.\n");
-                    }
-                    else
-                    {
-                        HI_INFO_PVR("Not send the frame.\n");
-                        continue;
+                        HI_ERR_PVR("alloc pPvrFetchRes err!\n");
+                        ret = HI_FAILURE;
                     }
                 }
-                else if (s32StayTimeMs != 0)
-                {
-                    HI_INFO_PVR("TPLAY delay %d ms, to play next frame.\n", s32StayTimeMs);
-                    s32StayTimeMs = (s32StayTimeMs > 1000) ? 1000 : s32StayTimeMs;
-                    usleep((HI_U32)s32StayTimeMs*1000);
-                }
-                else
-                {
-                    HI_INFO_PVR("s32StayTimeMs:%d. send.\n", s32StayTimeMs);
-                }
-            }
-            //getchar();
-            PVR_LOCK(&(pChnAttr->stMutex));
-            if (HI_FALSE == pChnAttr->bTsBufReset)
-            {
-                ret_sent = PVRPlaySendAframe(pChnAttr, &frame);
-                if (HI_SUCCESS != ret_sent)
-                {
-                    HI_ERR_PVR("======== send a frame err:%x ==========\n", ret);
-                }
-                bLastFrameSent = HI_TRUE;
-            }
-            PVR_UNLOCK(&(pChnAttr->stMutex));
 
-            /* send all the frame case, send one frame wait a moment, so that make a sleep for other schedule */
-            if ((HI_SUCCESS == ret_sent)
-              && ((HI_UNF_PVR_PLAY_STATE_PLAY == pChnAttr->enState)
-                || (HI_UNF_PVR_PLAY_STATE_SF == pChnAttr->enState)
-                || (HI_UNF_PVR_PLAY_STATE_STEPF == pChnAttr->enState)))
-            {
-                //usleep(100);
+                if ((HI_PVR_SEND_RESULT_S *)NULL == pstSendFrame)
+                {
+                    if ((HI_PVR_SEND_RESULT_S *)NULL == (pstSendFrame = (HI_PVR_SEND_RESULT_S *)HI_MALLOC(HI_ID_PVR, sizeof(HI_PVR_SEND_RESULT_S))))
+            	    {
+            	        HI_ERR_PVR("alloc pstSendFrame fail.\n");
+            	        ret = HI_FAILURE;
+            	    }
+                }
+                
+                stTplayOpts.enTplayDirect = (pChnAttr->enSpeed >= 0) ? HI_UNF_AVPLAY_TPLAY_DIRECT_FORWARD : HI_UNF_AVPLAY_TPLAY_DIRECT_BACKWARD;
+                stTplayOpts.u32SpeedInteger = abs(pChnAttr->enSpeed/HI_UNF_PVR_PLAY_SPEED_NORMAL);
+                stTplayOpts.u32SpeedDecimal = 0;
+                stVdecCmdPara.u32CmdID = HI_UNF_AVPLAY_SET_TPLAY_PARA_CMD;
+                stVdecCmdPara.pPara = &stTplayOpts;
+                ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_VCODEC, (void *)&stVdecCmdPara);
+
+                if ((HI_SUCCESS == ret) && (pstSendFrame != NULL)) //remove pc-lint warning
+                {
+                    memset((void *)pstSendFrame, 0, sizeof(HI_PVR_SEND_RESULT_S));
+                    ret = PVRPlaySmoothFBward(pChnAttr, hWindow, pstSendFrame, pPvrFetchRes);
+                    if (HI_SUCCESS == ret)
+                    {
+                        pChnAttr->IndexHandle->u32TimeShiftTillEndCnt = 0;
+                    }
+                }
             }
         }
         else
+        {
+            if(HI_SUCCESS == ret)
+            {
+                PVR_LOCK(&(pChnAttr->stMutex));
+                pChnAttr->IndexHandle->u32TimeShiftTillEndCnt = 0;
+                if (HI_FALSE == pChnAttr->bTsBufReset)
+                {
+                    ret_sent = PVRPlaySendAframe(pChnAttr, &frame);
+                    if (HI_SUCCESS != ret_sent)
+                    {
+                        HI_ERR_PVR("======== send a frame err:%x ==========\n", ret_sent);
+                    }
+                    pChnAttr->IndexHandle->u32PlayFrame = pChnAttr->IndexHandle->u32ReadFrame;
+                    bLastFrameSent = HI_TRUE;
+                }
+                PVR_UNLOCK(&(pChnAttr->stMutex));
+
+                /* send all the frame case, send one frame wait a moment, so that make a sleep for other schedule */
+                if (HI_SUCCESS == ret_sent)
+                    usleep(100);
+            }
+        }
+
+        if (HI_SUCCESS != ret)
         {
             if (HI_ERR_PVR_FILE_TILL_START == ret)
             {
@@ -2259,50 +3080,97 @@ STATIC void* PVRPlayMainRoute(void *args)
             {
                 if ( ((HI_UNF_PVR_PLAY_STATE_PLAY == pChnAttr->enState)
                       || ( HI_UNF_PVR_PLAY_STATE_STEPF == pChnAttr->enState)
-                      || ( HI_UNF_PVR_PLAY_STATE_SF == pChnAttr->enState))
+                      || ( HI_UNF_PVR_PLAY_STATE_SF == pChnAttr->enState)
+					  || ( HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState))
                       && (HI_ERR_PVR_FILE_TILL_END == ret)) /* NO EOF when play speed < 1x */
                 {
                     bCallBack = HI_FALSE;
                     ret = HI_SUCCESS;
+
+					if(HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState)
+					{
+						if (HI_TRUE == PVRPlayCheckFFTillEnd(pChnAttr))
+						{
+							bCallBack = HI_TRUE;
+							ret = HI_ERR_PVR_FILE_TILL_END;
+						}
+					}
+					else
+					{
+                    	if (pChnAttr->IndexHandle->u32TimeShiftTillEndTimeMs != pChnAttr->IndexHandle->stCurRecFrame.u32DisplayTimeMs)
+                    	{
+                        	pChnAttr->IndexHandle->u32TimeShiftTillEndCnt = 0;
+                    	}
+                    	else
+                    	{
+                        	pChnAttr->IndexHandle->u32TimeShiftTillEndCnt++;
+                    	}
+                    	
+                    	if (pChnAttr->IndexHandle->u32TimeShiftTillEndCnt >= 10)
+                    	{
+                        	bCallBack = HI_TRUE;
+                        	ret = HI_ERR_PVR_FILE_TILL_END;
+                    	}
+                    	
+                    	pChnAttr->IndexHandle->u32TimeShiftTillEndTimeMs = pChnAttr->IndexHandle->stCurRecFrame.u32DisplayTimeMs;
+					}
                 }
                 else
                 {
                     bCallBack = HI_TRUE;
                 }
 
-                if (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState)
+                if ((HI_ERR_PVR_FILE_TILL_END == ret) || (HI_ERR_PVR_FILE_TILL_START == ret))
                 {
-                    pChnAttr->bEndOfFile = HI_TRUE;
+                    if ((HI_ERR_PVR_FILE_TILL_START == ret) && ( HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState))
+                    {
+                        PVRPlayProcessLastPlayingFrames(pChnAttr);
+                    }
+                    
+                    while (HI_TRUE != PVRPlayWaitForEndOfFile(pChnAttr, 200))
+                    {
+                        if ((HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState) && (0 != pChnAttr->IndexHandle->stCycMgr.s32CycTimes))
+                        {
+                            if (HI_FALSE ==  PVRPlayCheckFBTillStartInRewind(pChnAttr))
+                            {
+                                continue;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                        }
+                        
+                        if ((pChnAttr->bQuickUpdateStatus) || (pChnAttr->bPlayMainThreadStop))
+                        {
+                            bCallBack = HI_FALSE;
+                            break;
+                        }
+                    }
+                    
+                    if((HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState) || 
+                       (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState))
+                    {
+                        if (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState)
+                        {
+                            pChnAttr->bEndOfFile = HI_TRUE;
+                        }
+                        
+                        PVRPlaySyncTrickPlayTime(pChnAttr);
+                        usleep(200000);
+                    }
                 }
+
                 usleep(waittime);
             }
             else  /* NOT timeshift, playback only */
             {
-                /* notice the complete event after waiting Vid/Aud play over */
+				/* notice the complete event after waiting Vid/Aud play over */
                 if ((HI_ERR_PVR_FILE_TILL_END == ret) || (HI_ERR_PVR_FILE_TILL_START == ret))
                 {
-#if 1 /* not do this, wait the automatic exit of decoder, otherwise, the last frame will shake */
-                    /* for fast forward and backward, send the first frame or the last frame multi-times, prevent it from being not output , that make sure it will output the first or the last frame */
-                    if ((HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState)
-                        || (HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState))
-                    {
-                        PVR_LOCK(&(pChnAttr->stMutex));
-                        if (HI_FALSE == pChnAttr->bTsBufReset)
-                        {
-                            ret_sent = PVRPlaySendAframe(pChnAttr, &pChnAttr->IndexHandle->stCurPlayFrame);
-                            ret_sent |= PVRPlaySendAframe(pChnAttr, &pChnAttr->IndexHandle->stCurPlayFrame);
-                            ret_sent |= PVRPlaySendAframe(pChnAttr, &pChnAttr->IndexHandle->stCurPlayFrame);
-                            ret_sent |= PVRPlaySendAframe(pChnAttr, &pChnAttr->IndexHandle->stCurPlayFrame);
-                            ret_sent |= PVRPlaySendAframe(pChnAttr, &pChnAttr->IndexHandle->stCurPlayFrame);
-                            if (HI_SUCCESS != ret_sent)
-                            {
-                                HI_ERR_PVR("======== send a frame err:%x ==========\n", ret_sent);
-                            }
-                        }
-                        PVR_UNLOCK(&(pChnAttr->stMutex));
-                    }
-#endif
-                    /*after finishing send ts, all the way, check whether play over or not, not finished, switch state and not callback */
+                    PVRPlayProcessLastPlayingFrames(pChnAttr);
+                        
+					/*after finishing send ts, all the way, check whether play over or not, not finished, switch state and not callback */
                     bCallBack = HI_TRUE;
                     pChnAttr->u32LastPtsMs = 0; /* prevent from the first frame -1 being abnormal exit */
                     pChnAttr->u32LastEsBufSize = 0;
@@ -2315,6 +3183,13 @@ STATIC void* PVRPlayMainRoute(void *args)
                             bCallBack = HI_FALSE;
                             break;
                         }
+                    }
+
+                    if((HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState) || 
+                     (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState))
+                    {
+                        PVRPlaySyncTrickPlayTime(pChnAttr);
+                        usleep(200000);
                     }
 
                     if (bCallBack)
@@ -2341,7 +3216,16 @@ STATIC void* PVRPlayMainRoute(void *args)
 
         g_pvrfpSend = NULL;
     }
-
+    if ((HI_PVR_SEND_RESULT_S *)NULL != pstSendFrame)
+    {
+        HI_FREE(HI_ID_PVR, pstSendFrame);
+        pstSendFrame = (HI_PVR_SEND_RESULT_S *)NULL;
+    }
+    if ((HI_PVR_FETCH_RESULT_S *)NULL != pPvrFetchRes)
+    {
+        HI_FREE(HI_ID_PVR, pPvrFetchRes);
+        pPvrFetchRes = (HI_PVR_FETCH_RESULT_S *)NULL;
+    }
     UNUSED(bLastFrameSent);
     return NULL;
 }
@@ -2352,6 +3236,12 @@ HI_BOOL PVR_Play_IsFilePlayingSlowPauseBack(const HI_CHAR *pFileName)
 {
     HI_U32 i;
 
+    if(NULL == pFileName)
+    {
+        HI_PRINT("\n<%s %d>: Input pointer parameter is NULL!\n", __FUNCTION__, __LINE__);
+        return HI_FALSE;   
+    }
+
     for (i = 0; i < PVR_PLAY_MAX_CHN_NUM; i++)
     {
         if (( g_stPvrPlayChns[i].enState == HI_UNF_PVR_PLAY_STATE_PAUSE)
@@ -2359,7 +3249,7 @@ HI_BOOL PVR_Play_IsFilePlayingSlowPauseBack(const HI_CHAR *pFileName)
             || ( g_stPvrPlayChns[i].enState == HI_UNF_PVR_PLAY_STATE_STEPB)
             || ( g_stPvrPlayChns[i].enState == HI_UNF_PVR_PLAY_STATE_STEPF))
         {
-            if  ( !strcmp(g_stPvrPlayChns[i].stUserCfg.szFileName, pFileName) )
+            if  ( !strncmp(g_stPvrPlayChns[i].stUserCfg.szFileName, pFileName,strlen(pFileName)) )
             {
                 return HI_TRUE;
             }
@@ -2368,6 +3258,12 @@ HI_BOOL PVR_Play_IsFilePlayingSlowPauseBack(const HI_CHAR *pFileName)
 
     return HI_FALSE;
 }
+
+HI_BOOL PVR_Play_IsPlaying(void)
+{
+    return g_stPlayInit.bInit;
+}
+
 
 /*****************************************************************************
  Prototype       : HI_PVR_PlayInit
@@ -2408,6 +3304,7 @@ HI_S32 HI_PVR_PlayInit(HI_VOID)
         ret = PVRIntfInitEvent();
         if (HI_SUCCESS != ret)
         {
+            close(g_s32PvrFd);
             return ret;
         }
 
@@ -2415,6 +3312,20 @@ HI_S32 HI_PVR_PlayInit(HI_VOID)
         for (i = 0 ; i < PVR_PLAY_MAX_CHN_NUM; i++)
         {
             pChnAttr = &g_stPvrPlayChns[i];
+            
+            if(0 != pthread_mutex_init(&(pChnAttr->stMutex), NULL))
+            {
+                close(g_s32PvrFd);
+                for(i = 0; i < PVR_PLAY_MAX_CHN_NUM; i++)
+                {
+                    (void)pthread_mutex_destroy(&(g_stPvrPlayChns[i].stMutex));
+                }
+                PVRIntfDeInitEvent();
+                HI_ERR_PVR("init mutex lock for PVR play chn%d failed \n", i);
+                return HI_FAILURE;
+            }
+
+            PVR_LOCK(&(pChnAttr->stMutex));
             pChnAttr->enState = HI_UNF_PVR_PLAY_STATE_INVALID;
             pChnAttr->enLastState = HI_UNF_PVR_PLAY_STATE_INVALID;
             pChnAttr->bPlayMainThreadStop = HI_TRUE;
@@ -2429,14 +3340,42 @@ HI_S32 HI_PVR_PlayInit(HI_VOID)
             pChnAttr->readCallBack = NULL;
             memset(&pChnAttr->stUserCfg, 0, sizeof(HI_UNF_PVR_PLAY_ATTR_S));
             memset(&pChnAttr->stCipherBuf, 0, sizeof(PVR_PHY_BUF_S));
-
-            if(-1 == pthread_mutex_init(&(pChnAttr->stMutex), NULL))
+            memset(&pChnAttr->stSmoothPara, 0, sizeof(PVR_SMOOTH_PARA_S));
+            pChnAttr->stSmoothPara.enBackwardLastSpeed = HI_UNF_PVR_PLAY_SPEED_NORMAL;
+            pChnAttr->stSmoothPara.enSmoothLastSpeed = HI_UNF_PVR_PLAY_SPEED_BUTT;
+            PVR_UNLOCK(&(pChnAttr->stMutex));
+        }
+        
+#ifdef PVR_PROC_SUPPORT
+        if (!PVR_Rec_IsRecording())
+        {
+            HI_SYS_Init();
+            ret = HI_MODULE_Register(HI_ID_PVR, PVR_USR_PROC_DIR);
+            if (HI_SUCCESS != ret)
             {
-                PVRIntfDeInitEvent();
-                HI_ERR_PVR("init mutex lock for PVR play chn%d failed \n", i);
-                return HI_FAILURE;
+                HI_ERR_PVR("HI_MODULE_Register(\"%s\") return %d\n", PVR_USR_PROC_DIR, ret);
+            }
+    
+            /* Add proc dir */
+            ret = HI_PROC_AddDir(PVR_USR_PROC_DIR);
+            if (HI_SUCCESS != ret)
+            {
+                HI_ERR_PVR("HI_PROC_AddDir(\"%s\") return %d\n", PVR_USR_PROC_DIR, ret);
             }
         }
+    
+        /* Will be added at /proc/hisi/${DIRNAME} directory */
+        g_stPvrPlayProcEntry.pszDirectory = PVR_USR_PROC_DIR;
+        g_stPvrPlayProcEntry.pszEntryName = PVR_USR_PROC_PLAY_ENTRY_NAME;
+        g_stPvrPlayProcEntry.pfnShowProc = PVRPlayShowProc;
+        g_stPvrPlayProcEntry.pfnCmdProc = PVRPlaySetProc;
+        g_stPvrPlayProcEntry.pPrivData = g_stPvrPlayChns;
+        ret = HI_PROC_AddEntry(HI_ID_PVR, &g_stPvrPlayProcEntry);
+        if (HI_SUCCESS != ret)
+        {
+            HI_ERR_PVR("HI_PROC_AddEntry(\"%s\") return %d\n", PVR_USR_PROC_PLAY_ENTRY_NAME, ret);
+        }
+#endif
 
         g_stPlayInit.bInit = HI_TRUE;
 
@@ -2480,6 +3419,16 @@ HI_S32 HI_PVR_PlayDeInit(HI_VOID)
 
             (HI_VOID)pthread_mutex_destroy(&(g_stPvrPlayChns[i].stMutex));
         }
+
+#ifdef PVR_PROC_SUPPORT
+        HI_PROC_RemoveEntry(HI_ID_PVR, &g_stPvrPlayProcEntry);
+        if (!PVR_Rec_IsRecording())
+        {
+            HI_PROC_RemoveDir(PVR_USR_PROC_DIR);
+            HI_MODULE_UnRegister(HI_ID_PVR);
+            HI_SYS_DeInit();
+        }
+#endif
 
         g_stPlayInit.bInit = HI_FALSE;
         PVRIntfDeInitEvent();
@@ -2576,15 +3525,7 @@ HI_S32 HI_PVR_PlayCreateChn(HI_U32 *pChn, const HI_UNF_PVR_PLAY_ATTR_S *pAttr, H
     *pChn = pChnAttr->u32chnID;
 
 #ifdef PVR_PROC_SUPPORT
-    /* proc information initialize */
-    strcpy(paPlayProcInfo[pChnAttr->u32chnID]->szFileName, pAttr->szFileName);
-    paPlayProcInfo[pChnAttr->u32chnID]->u32DmxId = pChnAttr->u32chnID;
-    paPlayProcInfo[pChnAttr->u32chnID]->hAvplay = pChnAttr->hAvplay;
-    paPlayProcInfo[pChnAttr->u32chnID]->hTsBuffer = pChnAttr->hTsBuffer;
-    paPlayProcInfo[pChnAttr->u32chnID]->hCipher = pChnAttr->hCipher;
-    paPlayProcInfo[pChnAttr->u32chnID]->enState = pChnAttr->enState;
-    paPlayProcInfo[pChnAttr->u32chnID]->enSpeed = pChnAttr->enSpeed;
-    paPlayProcInfo[pChnAttr->u32chnID]->u64CurReadPos = pChnAttr->u64CurReadPos;
+    memset(&(pChnAttr->stPlayProcInfo), 0, sizeof(PVR_PLAY_PROC_S));
 #endif
 
     PVR_UNLOCK(&(pChnAttr->stMutex));
@@ -2668,7 +3609,7 @@ HI_S32 HI_PVR_PlayDestroyChn(HI_U32 u32Chn)
     pChnAttr->PlayStreamThread = 0;
 
 #ifdef PVR_PROC_SUPPORT
-    memset(paPlayProcInfo[u32Chn], 0, sizeof(PVR_PLAY_CHN_PROC_S));
+    memset(&(pChnAttr->stPlayProcInfo), 0, sizeof(PVR_PLAY_PROC_S));
 #endif
 
     PVR_UNLOCK(&(pChnAttr->stMutex));
@@ -2760,7 +3701,14 @@ HI_S32 HI_PVR_PlayStartChn(HI_U32 u32ChnID) /* pause when end of file */
     HI_S32                      ret;
     PVR_PLAY_CHN_S              *pChnAttr;
     HI_U32                      pid;
+    HI_U32                      u32DispOptimizeFlag;
     HI_HANDLE                   hWindow;
+    HI_CODEC_VIDEO_CMD_S    stVdecCmd;
+    HI_UNF_AVPLAY_VDEC_INFO_S stVdecInfo = {0};
+	HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S stAvplayPrivInfo = {0};
+    struct sigevent stSigEvt;  
+    struct itimerspec stTimeSpec;  
+    PVR_INDEX_ENTRY_S stStartEntry = {0};
 
     PVR_PLAY_CHECK_CHN(u32ChnID);
     pChnAttr = &g_stPvrPlayChns[u32ChnID];
@@ -2857,7 +3805,18 @@ HI_S32 HI_PVR_PlayStartChn(HI_U32 u32ChnID) /* pause when end of file */
     pChnAttr->bQuickUpdateStatus = HI_TRUE;
     pChnAttr->u64LastSeqHeadOffset = PVR_INDEX_INVALID_SEQHEAD_OFFSET;
     pChnAttr->bEndOfFile = HI_FALSE;
+    
+    if (HI_SUCCESS == PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stStartEntry, pChnAttr->IndexHandle->stCycMgr.u32StartFrame))
+    {
+        pChnAttr->u32CurPlayTimeMs = stStartEntry.u32DisplayTimeMs;
+    }
+    else
+    {
+        pChnAttr->u32CurPlayTimeMs = 0;
+    }
+    
     memset(&pChnAttr->stLastStatus, 0, sizeof(HI_UNF_PVR_PLAY_STATUS_S));
+    memset(&pChnAttr->stVdecCtrlInfo, 0, sizeof(HI_UNF_AVPLAY_CONTROL_INFO_S));
 
     PVR_Index_ResetPlayAttr(pChnAttr->IndexHandle);
 
@@ -2866,19 +3825,96 @@ HI_S32 HI_PVR_PlayStartChn(HI_U32 u32ChnID) /* pause when end of file */
         HI_ERR_PVR("find endframe failed!\n");
     }*/
 
-    if (HI_SUCCESS != PVR_Index_SeekToPauseOrStart(pChnAttr->IndexHandle))
+    if ((pChnAttr->IndexHandle->u64PauseOffset != 0) &&
+       (pChnAttr->IndexHandle->u64PauseOffset != PVR_INDEX_PAUSE_INVALID_OFFSET))
     {
-        HI_ERR_PVR("seek to pause frame failed!\n");
+        HI_S32 s32Ret = 0;
+        if (HI_SUCCESS != PVR_Index_SeekToPauseOrStart(pChnAttr->IndexHandle))
+        {
+            HI_ERR_PVR("seek to pause frame failed!\n");
+        }
+
+        s32Ret = PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &(pChnAttr->IndexHandle->stCurPlayFrame), pChnAttr->IndexHandle->u32ReadFrame);
+        if((HI_ERR_PVR_FILE_TILL_END == s32Ret) || (pChnAttr->IndexHandle->stCurPlayFrame.u64GlobalOffset < pChnAttr->IndexHandle->u64FileSizeGlobal))
+        {
+            s32Ret = PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &(pChnAttr->IndexHandle->stCurPlayFrame), --pChnAttr->IndexHandle->u32ReadFrame);
+            if (HI_SUCCESS != s32Ret)
+            {
+                HI_ERR_PVR("get the %d entry fail.\n", pChnAttr->IndexHandle->u32ReadFrame);
+            }
+        }
+        pChnAttr->u32CurPlayTimeMs = pChnAttr->IndexHandle->stCurPlayFrame.u32DisplayTimeMs;
     }
+    else
+    {
+        if (HI_SUCCESS != PVR_Index_SeekToStart(pChnAttr->IndexHandle))
+        {
+            HI_ERR_PVR("seek to start frame failed!\n");
+        }
+    }
+
+    PVR_Index_GetRecIdxInfo(pChnAttr->IndexHandle);
+
+    if (PVR_REC_INDEX_MAGIC_WORD != pChnAttr->IndexHandle->stRecIdxInfo.u32MagicWord)
+    {
+        PVR_Index_GetIdxInfo(pChnAttr->IndexHandle);
+    }
+
+    stVdecCmd.u32CmdID = HI_UNF_AVPLAY_GET_VDEC_INFO_CMD;
+    stVdecCmd.pPara = &stVdecInfo;
+    if (HI_SUCCESS != HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_VCODEC, &stVdecCmd))
+    {
+        HI_ERR_PVR("HI_UNF_AVPLAY_Invoke get vdec info fail\n");
+        pChnAttr->u32FrmNum = PVR_DEFAULT_FRAME_BUFF_NUM;
+    }
+    else
+    {
+        pChnAttr->u32FrmNum = stVdecInfo.u32DispFrmBufNum;
+
+        ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_GET_PRIV_PLAYINFO, &stAvplayPrivInfo);
+        if (HI_SUCCESS != ret)
+        {
+            HI_ERR_PVR("HI_UNF_AVPLAY_Invoke get private info fail\n");
+        }
+        u32DispOptimizeFlag = stAvplayPrivInfo.u32DispOptimizeFlag;
+
+        if (1 == u32DispOptimizeFlag)
+        {
+            if ((pChnAttr->IndexHandle->stRecIdxInfo.stIdxInfo.u32MaxGopSize + PVR_VO_FRMBUFF_NUM_OF_ENABLE_DEI) <= stVdecInfo.u32DispFrmBufNum)
+            {
+                pChnAttr->u32VoFrmNum = PVR_VO_FRMBUFF_NUM_OF_ENABLE_DEI;
+                pChnAttr->stVdecCtrlInfo.u32DispOptimizeFlag = PVR_ENABLE_DISP_OPTIMIZE;
+            }
+            else
+            {
+                HI_ERR_PVR("Can not enable display optimize, max gop size=%d but frame buffer=%d.\n", 
+                    pChnAttr->IndexHandle->stRecIdxInfo.stIdxInfo.u32MaxGopSize,
+                    stVdecInfo.u32DispFrmBufNum);
+                //lint -e655
+                HI_UNF_AVPLAY_Stop(pChnAttr->hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_AUD | HI_UNF_AVPLAY_MEDIA_CHAN_VID, NULL);
+                //lint +e655
+                pChnAttr->enState = HI_UNF_PVR_PLAY_STATE_INIT ;
+                pChnAttr->enLastState = HI_UNF_PVR_PLAY_STATE_INIT ;
+                PVR_UNLOCK(&(pChnAttr->stMutex));
+                return HI_FAILURE;
+            }
+        }
+        else
+        {
+            pChnAttr->u32VoFrmNum = PVR_VO_FRMBUFF_NUM_OF_DISABLE_DEI;
+            pChnAttr->stVdecCtrlInfo.u32DispOptimizeFlag = PVR_DISABLE_DISP_OPTIMIZE;
+        }        
+    }
+    pChnAttr->enFBTimeCtrlLastSpeed = HI_UNF_PVR_PLAY_SPEED_BUTT;
+    
+    PVRPlayAnalysisStream(pChnAttr);
 
     if (pthread_create(&pChnAttr->PlayStreamThread, NULL, PVRPlayMainRoute, pChnAttr))
     {
-        HI_U32 u32Stop = HI_UNF_AVPLAY_MEDIA_CHAN_VID;
-
-        u32Stop |= HI_UNF_AVPLAY_MEDIA_CHAN_AUD;
-        
         HI_ERR_PVR("create play thread failed!\n");
-        HI_UNF_AVPLAY_Stop(pChnAttr->hAvplay, (HI_UNF_AVPLAY_MEDIA_CHAN_E)u32Stop, NULL);
+        //lint -e655
+        (void)HI_UNF_AVPLAY_Stop(pChnAttr->hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_AUD | HI_UNF_AVPLAY_MEDIA_CHAN_VID, NULL);
+        //lint +e655
         /* and also reset play state to init                                      */
         pChnAttr->enState = HI_UNF_PVR_PLAY_STATE_INIT ;
         pChnAttr->enLastState = HI_UNF_PVR_PLAY_STATE_INIT ;
@@ -2886,10 +3922,31 @@ HI_S32 HI_PVR_PlayStartChn(HI_U32 u32ChnID) /* pause when end of file */
         return HI_FAILURE;
     }
 
-#ifdef PVR_PROC_SUPPORT
-    paPlayProcInfo[u32ChnID]->enState = pChnAttr->enState;
-    paPlayProcInfo[u32ChnID]->enSpeed = pChnAttr->enSpeed;
-#endif
+    /* init timer only once */
+    if (HI_FALSE == g_bPlayTimerInitFlag)
+    {
+        memset (&stSigEvt, 0, sizeof (struct sigevent));  
+        stSigEvt.sigev_value.sival_ptr = &g_stPlayTimer;            
+        stSigEvt.sigev_notify = SIGEV_THREAD;  
+        stSigEvt.sigev_notify_function = PVRPlayCalcTime;  
+        
+        if(HI_SUCCESS != timer_create(CLOCK_REALTIME, &stSigEvt, &g_stPlayTimer))
+        {
+            HI_ERR_PVR("Create play timer failed!\n");
+        }
+        
+        stTimeSpec.it_interval.tv_sec = 0;  
+        stTimeSpec.it_interval.tv_nsec = PVR_TIME_CTRL_TIMEBASE_NS;  
+        stTimeSpec.it_value.tv_sec = 0;  
+        stTimeSpec.it_value.tv_nsec = PVR_TIME_CTRL_TIMEBASE_NS;  
+        
+        if(HI_SUCCESS != timer_settime(g_stPlayTimer, 0,/*TIMER_ABSTIME,*/ &stTimeSpec, NULL))
+        {
+            HI_ERR_PVR("Start play timer failed!\n");
+        }
+        
+        g_bPlayTimerInitFlag = HI_TRUE;
+    }
 
     PVR_UNLOCK(&(pChnAttr->stMutex));
 
@@ -2917,10 +3974,18 @@ HI_S32 HI_PVR_PlayStopChn(HI_U32 u32Chn, const HI_UNF_AVPLAY_STOP_OPT_S *pstStop
     HI_S32 ret;
     PVR_PLAY_CHN_S  *pChnAttr;
     HI_HANDLE       hWindow;
-    HI_U32 u32Stop = 0;
+    HI_U32 i = 0;
+    HI_U32 u32VidPid = 0x1fff;
+    HI_UNF_AVPLAY_FRMRATE_PARAM_S stFrmRateAttr;
+    HI_CODEC_VIDEO_CMD_S  stVdecCmdPara = {0};
+    HI_UNF_AVPLAY_TPLAY_OPT_S stTplayOpts;
+    HI_UNF_AVPLAY_STATUS_INFO_S stAvplayStatus;
 
     PVR_PLAY_CHECK_CHN(u32Chn);
 
+    memset(&stFrmRateAttr, 0, sizeof(HI_UNF_AVPLAY_FRMRATE_PARAM_S));
+    memset(&stTplayOpts, 0, sizeof(HI_UNF_AVPLAY_TPLAY_OPT_S));
+    memset(&stAvplayStatus, 0, sizeof(HI_UNF_AVPLAY_STATUS_INFO_S));
     pChnAttr = &g_stPvrPlayChns[u32Chn];
     PVR_LOCK(&(pChnAttr->stMutex));
     PVR_PLAY_CHECK_CHN_INIT_UNLOCK(pChnAttr);
@@ -2933,14 +3998,60 @@ HI_S32 HI_PVR_PlayStopChn(HI_U32 u32Chn, const HI_UNF_AVPLAY_STOP_OPT_S *pstStop
         return HI_ERR_PVR_ALREADY;
     }
 
-    PVR_UNLOCK(&(pChnAttr->stMutex));
-
     HI_INFO_PVR("wait Play thread.\n");
     pChnAttr->bPlayMainThreadStop = HI_TRUE;
+    
+    PVR_UNLOCK(&(pChnAttr->stMutex));
+
     (HI_VOID)pthread_join(pChnAttr->PlayStreamThread, NULL);
     HI_INFO_PVR("wait Play thread OK.\n");
 
     PVR_LOCK(&(pChnAttr->stMutex));
+
+    stFrmRateAttr.enFrmRateType = HI_UNF_AVPLAY_FRMRATE_TYPE_PTS; 
+    stFrmRateAttr.stSetFrmRate.u32fpsInteger = 0;
+    stFrmRateAttr.stSetFrmRate.u32fpsDecimal = 0;
+    ret = HI_UNF_AVPLAY_SetAttr(pChnAttr->hAvplay, HI_UNF_AVPLAY_ATTR_ID_FRMRATE_PARAM, &stFrmRateAttr);
+    if (HI_SUCCESS != ret)  
+    {
+        HI_ERR_PVR("set frame to VO fail.\n");
+        PVR_UNLOCK(&(pChnAttr->stMutex));
+        return HI_FAILURE;
+    }
+
+    if (HI_SUCCESS == HI_UNF_AVPLAY_GetAttr(pChnAttr->hAvplay, HI_UNF_AVPLAY_ATTR_ID_VID_PID, &u32VidPid))
+    {
+        if (0x1fff != u32VidPid)
+        {
+            if (HI_SUCCESS == HI_UNF_AVPLAY_GetStatusInfo(pChnAttr->hAvplay, &stAvplayStatus))
+            {
+                if (HI_UNF_AVPLAY_STATUS_STOP != stAvplayStatus.enRunStatus)
+                {
+            		stTplayOpts.enTplayDirect = HI_UNF_AVPLAY_TPLAY_DIRECT_FORWARD;
+                    stTplayOpts.u32SpeedInteger = 1;
+                    stTplayOpts.u32SpeedDecimal = 0;
+                    stVdecCmdPara.u32CmdID = HI_UNF_AVPLAY_SET_TPLAY_PARA_CMD;
+                    stVdecCmdPara.pPara = &stTplayOpts;
+                    ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_VCODEC, (void *)&stVdecCmdPara);
+                    
+            		if (HI_SUCCESS != ret)
+            		{
+                		HI_ERR_PVR("Resume Avplay trick mode to normal fail.\n");
+                		PVR_UNLOCK(&(pChnAttr->stMutex));
+                		return HI_FAILURE;
+                    }
+                }
+            }
+        }
+    }
+
+    ret = HI_MPI_AVPLAY_SetWindowRepeat(pChnAttr->hAvplay, 1);
+    if (HI_SUCCESS != ret)
+    {
+        HI_ERR_PVR("AVPLAY set window repeat failed!\n");
+        PVR_UNLOCK(&(pChnAttr->stMutex));
+        return HI_FAILURE;
+    }
 
     ret = HI_MPI_AVPLAY_GetWindowHandle(pChnAttr->hAvplay, &hWindow);
     if (HI_SUCCESS != ret)
@@ -2967,15 +4078,13 @@ HI_S32 HI_PVR_PlayStopChn(HI_U32 u32Chn, const HI_UNF_AVPLAY_STOP_OPT_S *pstStop
         return HI_FAILURE;
     }
 
-    u32Stop = HI_UNF_AVPLAY_MEDIA_CHAN_VID;
-
-    u32Stop |= HI_UNF_AVPLAY_MEDIA_CHAN_AUD;
-
-    ret = HI_UNF_AVPLAY_Stop(pChnAttr->hAvplay, (HI_UNF_AVPLAY_MEDIA_CHAN_E)u32Stop, pstStopOpt);
+    //lint -e655
+    ret = HI_UNF_AVPLAY_Stop(pChnAttr->hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_AUD | HI_UNF_AVPLAY_MEDIA_CHAN_VID, pstStopOpt);
     if (HI_SUCCESS != ret)
     {
         HI_ERR_PVR("HI_UNF_AVPLAY_Stop failed:%#x, force PVR stop!\n", ret);
     }
+    //lint +e655
 
     ret = HI_UNF_DMX_ResetTSBuffer(pChnAttr->hTsBuffer);
     if (HI_SUCCESS != ret)
@@ -2987,18 +4096,33 @@ HI_S32 HI_PVR_PlayStopChn(HI_U32 u32Chn, const HI_UNF_AVPLAY_STOP_OPT_S *pstStop
 
     pChnAttr->enLastState = HI_UNF_PVR_PLAY_STATE_STOP;
     pChnAttr->enState = HI_UNF_PVR_PLAY_STATE_STOP;
+    pChnAttr->enSpeed = HI_UNF_PVR_PLAY_SPEED_BUTT;
     pChnAttr->bPlayMainThreadStop = HI_FALSE;
     pChnAttr->bQuickUpdateStatus = HI_FALSE;
     pChnAttr->u64LastSeqHeadOffset = PVR_INDEX_INVALID_SEQHEAD_OFFSET;
     pChnAttr->bEndOfFile = HI_FALSE;
     memset(&pChnAttr->stLastStatus, 0, sizeof(HI_UNF_PVR_PLAY_STATUS_S));
 
-#ifdef PVR_PROC_SUPPORT
-    paPlayProcInfo[u32Chn]->enState = pChnAttr->enState;
-    paPlayProcInfo[u32Chn]->enSpeed = pChnAttr->enSpeed;
-#endif
-
     PVR_Index_ResetPlayAttr(pChnAttr->IndexHandle);
+
+    for(i = 0; i < PVR_PLAY_MAX_CHN_NUM; i++)
+    {
+        if ((HI_UNF_PVR_PLAY_STATE_STOP != g_stPvrPlayChns[i].enState) &&
+            (HI_UNF_PVR_PLAY_STATE_INVALID != g_stPvrPlayChns[i].enState) &&
+            (HI_UNF_PVR_PLAY_STATE_BUTT != g_stPvrPlayChns[i].enState))
+        {
+            break;
+        }
+    }
+    if (i == PVR_PLAY_MAX_CHN_NUM)
+    {
+        if(HI_SUCCESS != timer_delete(g_stPlayTimer))
+        {
+            HI_ERR_PVR("Delete play timer failed!\n");
+        }
+
+        g_bPlayTimerInitFlag = HI_FALSE;
+    }
 
     PVR_UNLOCK(&(pChnAttr->stMutex));
     return HI_SUCCESS;
@@ -3024,7 +4148,7 @@ HI_S32 HI_PVR_PlayStopChn(HI_U32 u32Chn, const HI_UNF_AVPLAY_STOP_OPT_S *pstStop
 HI_S32 HI_PVR_PlayStartTimeShift(HI_U32 *pu32PlayChnID, HI_U32 u32RecChnID, HI_HANDLE hAvplay, HI_HANDLE hTsBuffer)
 {
     HI_S32 ret;
-    HI_U32 u32PlayChnID;
+    HI_U32 u32PlayChnID = 0;
     HI_UNF_PVR_REC_ATTR_S RecAttr;
     HI_UNF_PVR_PLAY_ATTR_S PlayAttr;
 
@@ -3041,7 +4165,8 @@ HI_S32 HI_PVR_PlayStartTimeShift(HI_U32 *pu32PlayChnID, HI_U32 u32RecChnID, HI_H
     PlayAttr.enStreamType = RecAttr.enStreamType;
     PlayAttr.u32FileNameLen = RecAttr.u32FileNameLen;
     PlayAttr.bIsClearStream = RecAttr.bIsClearStream;
-    strcpy(PlayAttr.szFileName, RecAttr.szFileName);
+    memset(PlayAttr.szFileName, 0, sizeof(PlayAttr.szFileName));
+    strncpy(PlayAttr.szFileName, RecAttr.szFileName, strlen(RecAttr.szFileName));
     PlayAttr.stDecryptCfg.bDoCipher = RecAttr.stEncryptCfg.bDoCipher;
     PlayAttr.stDecryptCfg.enType = RecAttr.stEncryptCfg.enType;
     PlayAttr.stDecryptCfg.u32KeyLen = RecAttr.stEncryptCfg.u32KeyLen;
@@ -3101,7 +4226,7 @@ HI_S32 HI_PVR_PlayStopTimeShift(HI_U32 u32PlayChnID, const HI_UNF_AVPLAY_STOP_OP
     ret = HI_PVR_PlayDestroyChn(u32PlayChnID);
     if (HI_SUCCESS != ret)
     {
-        HI_ERR_PVR("free play chn failed:%#x!\n", ret);
+        HI_ERR_PVR("destroy play chn failed:%#x!\n", ret);
         return ret;
     }
  
@@ -3152,6 +4277,8 @@ HI_S32 HI_PVR_PlayPauseChn(HI_U32 u32Chn)
         PVR_UNLOCK(&(pChnAttr->stMutex));
         return HI_ERR_PVR_PLAY_INVALID_STATE;
     }
+    
+    (void)PVRPlaySeekToCurFrame(pChnAttr->IndexHandle, pChnAttr, pChnAttr->enState, HI_UNF_PVR_PLAY_STATE_PLAY);
 
     ret = HI_UNF_AVPLAY_Pause(pChnAttr->hAvplay, NULL);
     if (HI_SUCCESS != ret)
@@ -3165,11 +4292,6 @@ HI_S32 HI_PVR_PlayPauseChn(HI_U32 u32Chn)
     pChnAttr->enLastState = pChnAttr->enState;
     pChnAttr->enState = HI_UNF_PVR_PLAY_STATE_PAUSE;
     pChnAttr->enSpeed = HI_UNF_PVR_PLAY_SPEED_NORMAL;
-
-#ifdef PVR_PROC_SUPPORT
-    paPlayProcInfo[u32Chn]->enState = pChnAttr->enState;
-    paPlayProcInfo[u32Chn]->enSpeed = pChnAttr->enSpeed;
-#endif
 
     HI_WARN_PVR("pause OK!\n");
     PVR_UNLOCK(&(pChnAttr->stMutex));
@@ -3198,8 +4320,14 @@ HI_S32 HI_PVR_PlayResumeChn(HI_U32 u32Chn)
     PVR_PLAY_CHN_S  *pChnAttr;
     HI_HANDLE hWindow;
     HI_U32  pid;
+    HI_UNF_AVPLAY_FRMRATE_PARAM_S stFrmRateAttr;    
+    HI_CODEC_VIDEO_CMD_S  stVdecCmdPara = {0};
+    HI_UNF_AVPLAY_TPLAY_OPT_S stTplayOpts;
 
     PVR_PLAY_CHECK_CHN(u32Chn);
+    
+    memset(&stFrmRateAttr, 0, sizeof(HI_UNF_AVPLAY_FRMRATE_PARAM_S));
+    memset(&stTplayOpts, 0, sizeof(HI_UNF_AVPLAY_TPLAY_OPT_S));
 
     pChnAttr = &g_stPvrPlayChns[u32Chn];
     PVR_LOCK(&(pChnAttr->stMutex));
@@ -3215,7 +4343,6 @@ HI_S32 HI_PVR_PlayResumeChn(HI_U32 u32Chn)
     if ((pChnAttr->bEndOfFile) && (PVR_IS_PLAY_FORWARD(pChnAttr->enState, pChnAttr->enLastState)))
     {
         HI_WARN_PVR("need not start main rout, laststate=%d!\n", pChnAttr->enState);
-        PVR_Intf_DoEventCallback(pChnAttr->u32chnID, HI_UNF_PVR_EVENT_PLAY_EOF, 0);
         PVR_UNLOCK(&(pChnAttr->stMutex));
         return HI_SUCCESS;
     }
@@ -3238,6 +4365,12 @@ HI_S32 HI_PVR_PlayResumeChn(HI_U32 u32Chn)
     }
 #endif
     ret = HI_UNF_AVPLAY_Resume(pChnAttr->hAvplay, NULL);
+	if (HI_SUCCESS != ret)
+    {
+        HI_ERR_PVR("Resume avplay failed!\n");
+        PVR_UNLOCK(&(pChnAttr->stMutex));
+        return HI_FAILURE;
+    }
 
     //ret = PVRPlaySetWinRate(hWindow, (HI_UNF_PVR_PLAY_SPEED_E)(HI_UNF_PVR_PLAY_SPEED_NORMAL/4));
     //HI_INFO_PVR("resume play PVRPlaySetWinRate result is %d\n", ret);
@@ -3254,13 +4387,15 @@ HI_S32 HI_PVR_PlayResumeChn(HI_U32 u32Chn)
     if (HI_SUCCESS != ret)
     {
         PVR_UNLOCK(&(pChnAttr->stMutex));
+        HI_ERR_PVR("PVRPlayCheckIfTsOverByRec fail.\n");
         return HI_FAILURE;
     }
 
-    /*except of pause state, all the other state switch to play need to reset it to current playing frame */
+    /*on n->p-n situation, it's will appear repeat play issue, normal play also need to reset buffer*/
+    /*except of pause state, all the other state switch to play need to reset it to current playing frame 
     else if ((HI_UNF_PVR_PLAY_STATE_PAUSE != pChnAttr->enState)
       || ((HI_UNF_PVR_PLAY_STATE_PAUSE == pChnAttr->enState)
-        && (HI_UNF_PVR_PLAY_STATE_PLAY != pChnAttr->enLastState)))
+        && (HI_UNF_PVR_PLAY_STATE_PLAY != pChnAttr->enLastState)))*/
     {
         HI_INFO_PVR("to reset buffer and player.\n");
 
@@ -3269,6 +4404,8 @@ HI_S32 HI_PVR_PlayResumeChn(HI_U32 u32Chn)
         {
             HI_ERR_PVR("reset to current frame failed!\n");
         }
+        
+        pChnAttr->enFBTimeCtrlLastSpeed = HI_UNF_PVR_PLAY_SPEED_BUTT;
     }
 
     ret = HI_UNF_AVPLAY_GetAttr(pChnAttr->hAvplay, HI_UNF_AVPLAY_ATTR_ID_AUD_PID, &pid);
@@ -3304,11 +4441,37 @@ HI_S32 HI_PVR_PlayResumeChn(HI_U32 u32Chn)
     pChnAttr->enState = HI_UNF_PVR_PLAY_STATE_PLAY;
     pChnAttr->enSpeed = HI_UNF_PVR_PLAY_SPEED_NORMAL;
 
-#ifdef PVR_PROC_SUPPORT
-    paPlayProcInfo[u32Chn]->enState = pChnAttr->enState;
-    paPlayProcInfo[u32Chn]->enSpeed = pChnAttr->enSpeed;
-#endif
+    stFrmRateAttr.enFrmRateType = HI_UNF_AVPLAY_FRMRATE_TYPE_PTS; 
+    stFrmRateAttr.stSetFrmRate.u32fpsInteger = 0;
+    stFrmRateAttr.stSetFrmRate.u32fpsDecimal = 0;
+    if (HI_SUCCESS != HI_UNF_AVPLAY_SetAttr(pChnAttr->hAvplay, HI_UNF_AVPLAY_ATTR_ID_FRMRATE_PARAM, &stFrmRateAttr))  
+    {
+        PVR_UNLOCK(&(pChnAttr->stMutex));
+        HI_ERR_PVR("set frame to VO fail.\n");
+        return HI_FAILURE;
+    }
 
+    if (HI_SUCCESS != PVRPlayAvplaySyncCtrl(pChnAttr, 1))
+    {
+        PVR_UNLOCK(&(pChnAttr->stMutex));
+        HI_ERR_PVR("Resume Avplay sync fail.\n");
+        return HI_FAILURE;
+    }
+
+    stTplayOpts.enTplayDirect = HI_UNF_AVPLAY_TPLAY_DIRECT_FORWARD;
+    stTplayOpts.u32SpeedInteger = 1;
+    stTplayOpts.u32SpeedDecimal = 0;
+    stVdecCmdPara.u32CmdID = HI_UNF_AVPLAY_SET_TPLAY_PARA_CMD;
+    stVdecCmdPara.pPara = &stTplayOpts;
+    ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_VCODEC, (void *)&stVdecCmdPara);
+    
+    if (HI_SUCCESS != ret)
+    {
+        PVR_UNLOCK(&(pChnAttr->stMutex));
+        HI_ERR_PVR("Resume Avplay trick mode to normal fail.\n");
+        return HI_FAILURE;
+    }
+    
     HI_WARN_PVR("resume OK!\n");
     PVR_UNLOCK(&(pChnAttr->stMutex));
     return HI_SUCCESS;
@@ -3335,12 +4498,16 @@ HI_S32 HI_PVR_PlayTrickMode(HI_U32 u32Chn, const HI_UNF_PVR_PLAY_MODE_S *pTrickM
     HI_S32 ret;
     PVR_PLAY_CHN_S  *pChnAttr;
     HI_UNF_PVR_PLAY_STATE_E stateToSet;
-
+    HI_CODEC_VIDEO_CMD_S  stVdecCmdPara = {0};
     HI_UNF_AVPLAY_TPLAY_OPT_S stTPlayOpt;
-    
+    HI_UNF_AVPLAY_FRMRATE_PARAM_S stFrmRateAttr;
+
     PVR_CHECK_POINTER(pTrickMode);
     PVR_PLAY_CHECK_CHN(u32Chn);
 
+    memset(&stTPlayOpt, 0, sizeof(HI_UNF_AVPLAY_TPLAY_OPT_S));
+    memset(&stFrmRateAttr, 0, sizeof(HI_UNF_AVPLAY_FRMRATE_PARAM_S));
+    
     /*set the mode is rate one, that should be equal to resume */
     if (HI_UNF_PVR_PLAY_SPEED_NORMAL == pTrickMode->enSpeed) /* switch to the normal mode */
     {
@@ -3348,17 +4515,24 @@ HI_S32 HI_PVR_PlayTrickMode(HI_U32 u32Chn, const HI_UNF_PVR_PLAY_MODE_S *pTrickM
     }
 
     pChnAttr = &g_stPvrPlayChns[u32Chn];
-    PVR_LOCK(&(pChnAttr->stMutex));
-    PVR_PLAY_CHECK_CHN_INIT_UNLOCK(pChnAttr);
 
-    /* not support slow backward play */
     PVR_GET_STATE_BY_SPEED(stateToSet, pTrickMode->enSpeed);
     if (HI_UNF_PVR_PLAY_STATE_INVALID == stateToSet)
     {
         HI_ERR_PVR("NOT support this trick mode.\n");
-        PVR_UNLOCK(&(pChnAttr->stMutex));
         return HI_ERR_PVR_NOT_SUPPORT;
     }
+
+    /* resume first, switch every module to normal state */
+    (void)HI_PVR_PlayResumeChn(u32Chn);
+    
+    PVR_LOCK(&(pChnAttr->stMutex));
+    PVR_PLAY_CHECK_CHN_INIT_UNLOCK(pChnAttr);
+
+    if (HI_UNF_PVR_PLAY_STATE_PAUSE == pChnAttr->enLastState)
+    {
+        pChnAttr->enState = HI_UNF_PVR_PLAY_STATE_PAUSE;
+    }  
 
     /* after playing, any play state can be switched to Tplay */
     if ((pChnAttr->enState < HI_UNF_PVR_PLAY_STATE_PLAY)
@@ -3392,31 +4566,77 @@ HI_S32 HI_PVR_PlayTrickMode(HI_U32 u32Chn, const HI_UNF_PVR_PLAY_MODE_S *pTrickM
         return HI_ERR_PVR_NOT_SUPPORT;
     }
 
-    if ((pChnAttr->enState == stateToSet)
-        && (pChnAttr->enSpeed == pTrickMode->enSpeed))
+    if ((pChnAttr->enState == stateToSet) && (pChnAttr->enSpeed == pTrickMode->enSpeed))
     {
         HI_WARN_PVR("Set the same speed: %d\n", pTrickMode->enSpeed);
         PVR_UNLOCK(&(pChnAttr->stMutex));
         return HI_SUCCESS;
     }
+    
+	if ((pChnAttr->enState != stateToSet) || (pChnAttr->enSpeed != pTrickMode->enSpeed))
+    {
+        /* set VO frame rate auto detect */
+        stFrmRateAttr.enFrmRateType = HI_UNF_AVPLAY_FRMRATE_TYPE_PTS; 
+        stFrmRateAttr.stSetFrmRate.u32fpsInteger = 0;
+        stFrmRateAttr.stSetFrmRate.u32fpsDecimal = 0;
+        ret = HI_UNF_AVPLAY_SetAttr(pChnAttr->hAvplay, HI_UNF_AVPLAY_ATTR_ID_FRMRATE_PARAM, &stFrmRateAttr);
+        if (HI_SUCCESS != ret)  
+        {
+            HI_ERR_PVR("set VO frame rate auto detect fail.\n");
+        }
+    
+        ret = PVRPlayResetToCurFrame(pChnAttr->IndexHandle, pChnAttr, stateToSet);
+        if (HI_SUCCESS != ret)
+        {
+            HI_ERR_PVR("reset to current frame failed!\n");
+        }
+    }
+    
+	stTPlayOpt.enTplayDirect = (pChnAttr->enSpeed >= 0) ? HI_UNF_AVPLAY_TPLAY_DIRECT_FORWARD : HI_UNF_AVPLAY_TPLAY_DIRECT_BACKWARD;
+    stTPlayOpt.u32SpeedInteger = abs(pChnAttr->enSpeed/HI_UNF_PVR_PLAY_SPEED_NORMAL);
+    stTPlayOpt.u32SpeedDecimal = 0;
+    stVdecCmdPara.u32CmdID = HI_UNF_AVPLAY_SET_TPLAY_PARA_CMD;
+    stVdecCmdPara.pPara = &stTPlayOpt;
+    ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_VCODEC, (void *)&stVdecCmdPara);
+    if (HI_SUCCESS != ret)
+    {
+        HI_ERR_PVR("AVPLAY Tplay failed!\n");
+        PVR_UNLOCK(&(pChnAttr->stMutex));
+        return HI_FAILURE;
+    }
+    
+    if ((pChnAttr->enState == (HI_UNF_PVR_PLAY_STATE_E)HI_UNF_PVR_PLAY_STATE_PLAY) &&
+        ((stateToSet == HI_UNF_PVR_PLAY_STATE_FB) || 
+         (stateToSet == HI_UNF_PVR_PLAY_STATE_FF) ||
+         (stateToSet == HI_UNF_PVR_PLAY_STATE_SF)))
+    {
+        if (HI_SUCCESS != PVRPlayAvplaySyncCtrl(pChnAttr, 0))
+        {
+            HI_ERR_PVR("Close avplay sync fail!\n");
+            PVR_UNLOCK(&(pChnAttr->stMutex));
+            return HI_FAILURE;
+        }
+    }
 
     /* between forward play and  backword play, just notice the event when reach to the start, not switch status  */
-    if ((pChnAttr->bEndOfFile)
-        && (PVR_IS_PLAY_BACKWARD(pChnAttr->enState, pChnAttr->enLastState))
-        && (HI_UNF_PVR_PLAY_STATE_FB == stateToSet))
+    if (((pChnAttr->bEndOfFile) && (pChnAttr->bTillStartOfFile == HI_TRUE))
+        /*&& (PVR_IS_PLAY_BACKWARD(pChnAttr->enState, pChnAttr->enLastState))  */
+        && ((HI_UNF_PVR_PLAY_STATE_FB == stateToSet) || (HI_UNF_PVR_PLAY_STATE_STEPB == stateToSet)))
     {
         HI_INFO_PVR("need not start main rout, state=%d, laststate=%d!\n", stateToSet, pChnAttr->enState);
-        PVR_Intf_DoEventCallback(pChnAttr->u32chnID, HI_UNF_PVR_EVENT_PLAY_SOF, 0);
+        pChnAttr->bQuickUpdateStatus = HI_FALSE;
         PVR_UNLOCK(&(pChnAttr->stMutex));
         return HI_SUCCESS;
     }
-    else if ((pChnAttr->bEndOfFile)
-        && (PVR_IS_PLAY_FORWARD(pChnAttr->enState, pChnAttr->enLastState))
+    else if (((pChnAttr->bEndOfFile) && (pChnAttr->bTillStartOfFile == HI_FALSE))
+        /*&& (PVR_IS_PLAY_FORWARD(pChnAttr->enState, pChnAttr->enLastState))  */
         && ((HI_UNF_PVR_PLAY_STATE_FF == stateToSet)
-            || (HI_UNF_PVR_PLAY_STATE_SF == stateToSet)))
+            || (HI_UNF_PVR_PLAY_STATE_SF == stateToSet)
+            || (HI_UNF_PVR_PLAY_STATE_PLAY == stateToSet)
+            || (HI_UNF_PVR_PLAY_STATE_STEPF == stateToSet)))
     {
         HI_INFO_PVR("need not start main rout, state=%d, laststate=%d!\n", stateToSet, pChnAttr->enState);
-        PVR_Intf_DoEventCallback(pChnAttr->u32chnID, HI_UNF_PVR_EVENT_PLAY_EOF, 0);
+        pChnAttr->bQuickUpdateStatus = HI_FALSE;
         PVR_UNLOCK(&(pChnAttr->stMutex));
         return HI_SUCCESS;
     }
@@ -3469,20 +4689,19 @@ HI_S32 HI_PVR_PlayTrickMode(HI_U32 u32Chn, const HI_UNF_PVR_PLAY_MODE_S *pTrickM
         }
     }
 
+    /* video trick mode, stop the audio */
+    ret = HI_UNF_AVPLAY_Stop(pChnAttr->hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_AUD, NULL);
+    if (HI_SUCCESS != ret)
+    {
+        HI_ERR_PVR("AVPLAY stop audio failed!\n");
+        PVR_UNLOCK(&(pChnAttr->stMutex));
+        return HI_FAILURE;
+    }
     /* forward or backward trick mode need to set I frame mode */
     if ((HI_UNF_PVR_PLAY_STATE_FF == stateToSet)
         || (HI_UNF_PVR_PLAY_STATE_FB == stateToSet))
     {
-
-        if (HI_UNF_PVR_PLAY_STATE_FB == stateToSet)
-        {
-            stTPlayOpt.enTplayDirect = HI_UNF_AVPLAY_TPLAY_DIRECT_BACKWARD;
-        }
-        else
-        {
-            stTPlayOpt.enTplayDirect = HI_UNF_AVPLAY_TPLAY_DIRECT_FORWARD;
-        }
-
+        stTPlayOpt.enTplayDirect = (pTrickMode->enSpeed >= 0) ? HI_UNF_AVPLAY_TPLAY_DIRECT_FORWARD : HI_UNF_AVPLAY_TPLAY_DIRECT_BACKWARD;
         stTPlayOpt.u32SpeedInteger = abs(pTrickMode->enSpeed/HI_UNF_PVR_PLAY_SPEED_NORMAL);
         stTPlayOpt.u32SpeedDecimal = 0;
         
@@ -3496,6 +4715,17 @@ HI_S32 HI_PVR_PlayTrickMode(HI_U32 u32Chn, const HI_UNF_PVR_PLAY_MODE_S *pTrickM
     }
     else if (HI_UNF_PVR_PLAY_STATE_SF == stateToSet)
     {
+        /* set VO frame rate auto detect */
+        stFrmRateAttr.enFrmRateType = HI_UNF_AVPLAY_FRMRATE_TYPE_PTS; 
+        stFrmRateAttr.stSetFrmRate.u32fpsInteger = 0;
+        stFrmRateAttr.stSetFrmRate.u32fpsDecimal = 0;
+        ret = HI_UNF_AVPLAY_SetAttr(pChnAttr->hAvplay, HI_UNF_AVPLAY_ATTR_ID_FRMRATE_PARAM, &stFrmRateAttr);
+        if (HI_SUCCESS != ret)  
+        {
+            HI_ERR_PVR("set VO frame rate auto detect fail.\n");
+            PVR_UNLOCK(&(pChnAttr->stMutex));
+            return HI_FAILURE;
+        }
         /* set none I frame mode */
         ret = HI_UNF_AVPLAY_SetDecodeMode(pChnAttr->hAvplay, HI_UNF_VCODEC_MODE_NORMAL);
         if (HI_SUCCESS != ret)
@@ -3505,9 +4735,7 @@ HI_S32 HI_PVR_PlayTrickMode(HI_U32 u32Chn, const HI_UNF_PVR_PLAY_MODE_S *pTrickM
             return HI_FAILURE;
         }
 
-        /* set frame repeat number */
         stTPlayOpt.enTplayDirect = HI_UNF_AVPLAY_TPLAY_DIRECT_FORWARD;
-
         stTPlayOpt.u32SpeedInteger = 0;
         stTPlayOpt.u32SpeedDecimal = (pTrickMode->enSpeed *1000) / HI_UNF_PVR_PLAY_SPEED_NORMAL;
 
@@ -3533,11 +4761,6 @@ HI_S32 HI_PVR_PlayTrickMode(HI_U32 u32Chn, const HI_UNF_PVR_PLAY_MODE_S *pTrickM
     pChnAttr->enState = stateToSet;
     pChnAttr->enSpeed = pTrickMode->enSpeed;
 
-#ifdef PVR_PROC_SUPPORT
-    paPlayProcInfo[u32Chn]->enState = pChnAttr->enState;
-    paPlayProcInfo[u32Chn]->enSpeed = pChnAttr->enSpeed;
-#endif
-
     HI_WARN_PVR("set trickMode Ok: speed=%d!\n", pTrickMode->enSpeed);
     PVR_UNLOCK(&(pChnAttr->stMutex));
     return ret;
@@ -3562,10 +4785,15 @@ HI_S32 HI_PVR_PlayTrickMode(HI_U32 u32Chn, const HI_UNF_PVR_PLAY_MODE_S *pTrickM
 HI_S32 HI_PVR_PlaySeek(HI_U32 u32Chn, const HI_UNF_PVR_PLAY_POSITION_S *pPosition)
 {
     HI_S32 ret = HI_SUCCESS;
-    PVR_PLAY_CHN_S  *pChnAttr;
+    PVR_PLAY_CHN_S  *pChnAttr;    
+    HI_U32 u32CurPlayTime = 0;
+    HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S stAvplayPrivInfo;
 
     PVR_CHECK_POINTER(pPosition);
     PVR_PLAY_CHECK_CHN(u32Chn);
+	
+    memset(&stAvplayPrivInfo, 0 ,sizeof(HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S));
+	
     pChnAttr = &g_stPvrPlayChns[u32Chn];
 
     PVR_LOCK(&(pChnAttr->stMutex));
@@ -3620,13 +4848,30 @@ HI_S32 HI_PVR_PlaySeek(HI_U32 u32Chn, const HI_UNF_PVR_PLAY_POSITION_S *pPositio
         WHENCE_STRING(pPosition->s32Whence),
         pPosition->s64Offset);
 
-    if ((HI_UNF_PVR_PLAY_STATE_PLAY == pChnAttr->enState)
+    if (HI_UNF_PVR_PLAY_POS_TYPE_TIME == pPosition->enPositionType)
+    {        
+        ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_GET_PRIV_PLAYINFO, (void *)&stAvplayPrivInfo);
+        if (HI_SUCCESS != ret)
+        {
+            //PVR_UNLOCK(&(pChnAttr->stMutex));
+            HI_ERR_PVR("Can't get current play frame time, use default time 0!\n");
+            //return HI_ERR_PVR_INVALID_PARA;
+            u32CurPlayTime = 0;
+        }
+        else
+        {
+            u32CurPlayTime = stAvplayPrivInfo.u32LastPlayTime;
+        }
+    }
+
+    if (((HI_UNF_PVR_PLAY_STATE_PLAY == pChnAttr->enState)
         || (HI_UNF_PVR_PLAY_STATE_PAUSE == pChnAttr->enState)
         || (HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState)
         || (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState)
         || (HI_UNF_PVR_PLAY_STATE_SF == pChnAttr->enState)
         || (HI_UNF_PVR_PLAY_STATE_STEPF == pChnAttr->enState)
         || (HI_UNF_PVR_PLAY_STATE_STEPB == pChnAttr->enState))
+        && (0 != u32CurPlayTime))
     {
         HI_INFO_PVR("to reset buffer and player.\n");
         pChnAttr->stTplayCtlInfo.u32RefFrmPtsMs = PVR_INDEX_INVALID_PTSMS;
@@ -3661,12 +4906,35 @@ HI_S32 HI_PVR_PlaySeek(HI_U32 u32Chn, const HI_UNF_PVR_PLAY_POSITION_S *pPositio
             */
             ret = HI_ERR_PVR_NOT_SUPPORT;
             break;
-        case HI_UNF_PVR_PLAY_POS_TYPE_TIME:
-            ret = PVR_Index_SeekByTime(pChnAttr->IndexHandle, pPosition->s64Offset, pPosition->s32Whence);
-            if(ret==HI_SUCCESS)
+        case HI_UNF_PVR_PLAY_POS_TYPE_TIME:            
+            ret = PVR_Index_SeekByTime(pChnAttr->IndexHandle, pPosition->s64Offset, pPosition->s32Whence, u32CurPlayTime);
+            if(ret == HI_SUCCESS)
             {
-                if(pChnAttr->bEndOfFile==HI_TRUE)
-                    pChnAttr->bEndOfFile = HI_FALSE;
+                PVR_INDEX_ENTRY_S stReadFrame;
+
+                memset(&stReadFrame, 0 ,sizeof(PVR_INDEX_ENTRY_S));
+                
+				ret = PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stReadFrame, pChnAttr->IndexHandle->u32ReadFrame);
+                if (HI_SUCCESS != ret)
+                {
+					if (HI_ERR_PVR_FILE_TILL_END == ret)
+                    {
+                        ret = PVR_Index_GetFrameByNum(pChnAttr->IndexHandle, &stReadFrame, pChnAttr->IndexHandle->u32ReadFrame-1);
+                        if (HI_SUCCESS != ret)
+                        {
+                            PVR_UNLOCK(&(pChnAttr->stMutex));
+                            HI_ERR_PVR("Can't get EndFrame:%d\n", pChnAttr->IndexHandle->u32ReadFrame);
+                            return ret;
+                        }
+                    }
+                    else
+                    {
+                        PVR_UNLOCK(&(pChnAttr->stMutex));
+                        HI_ERR_PVR("Can't get EndFrame:%d\n", pChnAttr->IndexHandle->u32ReadFrame);
+                        return ret;
+                    }
+               	}
+                pChnAttr->u32CurPlayTimeMs = stReadFrame.u32DisplayTimeMs;
             }
             break;
         default:
@@ -3702,9 +4970,13 @@ HI_S32 HI_PVR_PlayStep(HI_U32 u32Chn, HI_S32 direction)
     HI_S32 ret = HI_SUCCESS;
     PVR_PLAY_CHN_S  *pChnAttr;
     HI_HANDLE hWindow;
+    HI_CODEC_VIDEO_CMD_S  stVdecCmdPara = {0};
+    HI_UNF_AVPLAY_TPLAY_OPT_S stTPlayOpt;
 
     PVR_PLAY_CHECK_CHN(u32Chn);
     pChnAttr = &g_stPvrPlayChns[u32Chn];
+
+    memset(&stTPlayOpt, 0, sizeof(HI_UNF_AVPLAY_TPLAY_OPT_S));
 
     PVR_LOCK(&(pChnAttr->stMutex));
     PVR_PLAY_CHECK_CHN_INIT_UNLOCK(pChnAttr);
@@ -3830,10 +5102,19 @@ HI_S32 HI_PVR_PlayStep(HI_U32 u32Chn, HI_S32 direction)
         pChnAttr->enLastState = pChnAttr->enState;
         pChnAttr->enState = HI_UNF_PVR_PLAY_STATE_STEPF;
 
-#ifdef PVR_PROC_SUPPORT
-        paPlayProcInfo[u32Chn]->enState = pChnAttr->enState;
-        paPlayProcInfo[u32Chn]->enSpeed = pChnAttr->enSpeed;
-#endif
+		//set play speed to normal
+    	stTPlayOpt.enTplayDirect = HI_UNF_AVPLAY_TPLAY_DIRECT_FORWARD;
+        stTPlayOpt.u32SpeedInteger = HI_UNF_PVR_PLAY_SPEED_NORMAL;
+        stTPlayOpt.u32SpeedDecimal = 0;
+        stVdecCmdPara.u32CmdID = HI_UNF_AVPLAY_SET_TPLAY_PARA_CMD;
+        stVdecCmdPara.pPara = &stTPlayOpt;
+        ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_VCODEC, (void *)&stVdecCmdPara);
+        if (HI_SUCCESS != ret)
+        {
+            HI_ERR_PVR("AVPLAY Tplay failed!\n");
+            PVR_UNLOCK(&(pChnAttr->stMutex));
+            return HI_FAILURE;
+        }
     }
     
     /* on step mode forward one frame */
@@ -3903,17 +5184,25 @@ HI_S32 HI_PVR_PlayUnRegisterReadCallBack(HI_U32 u32Chn)
 HI_S32 HI_PVR_PlayGetStatus(HI_U32 u32Chn, HI_UNF_PVR_PLAY_STATUS_S *pStatus)
 {
     PVR_PLAY_CHN_S  *pChnAttr;
-    HI_UNF_AVPLAY_STATUS_INFO_S stInfo;
     HI_S32 ret;
-    HI_U32 u32SearchPTS;
     HI_UNF_PVR_PLAY_STATE_E enCurState;
-    HI_U32 IsForword;
     PVR_INDEX_ENTRY_S    stCurPlayFrame;   /* the current displaying frame info  */
     HI_U32 u32PtsPos;
-    HI_U32 u32LoopTime = 0;
+    HI_U32 u32CurFrmTimeMs = 0;
+    HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S stAvplayPrivInfo;
 
     PVR_PLAY_CHECK_CHN(u32Chn);
+	
+    memset(&stAvplayPrivInfo, 0, sizeof(HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S));
+	
     pChnAttr = &g_stPvrPlayChns[u32Chn];
+    
+    ret = HI_UNF_AVPLAY_Invoke(pChnAttr->hAvplay, HI_UNF_AVPLAY_INVOKE_GET_PRIV_PLAYINFO, (void *)&stAvplayPrivInfo);
+    if (HI_SUCCESS != ret)
+    {
+        HI_ERR_PVR("Get Avplay private info fail.\n");
+    }
+    u32CurFrmTimeMs = stAvplayPrivInfo.u32LastPlayTime;
 
     PVR_LOCK(&(pChnAttr->stMutex));
     PVR_PLAY_CHECK_CHN_INIT_UNLOCK(pChnAttr);
@@ -3927,75 +5216,53 @@ HI_S32 HI_PVR_PlayGetStatus(HI_U32 u32Chn, HI_UNF_PVR_PLAY_STATUS_S *pStatus)
         memcpy(pStatus, &pChnAttr->stLastStatus, sizeof(HI_UNF_PVR_PLAY_STATUS_S));
         pStatus->enState = pChnAttr->enState;
         pStatus->enSpeed = pChnAttr->enSpeed;
+        if ((pChnAttr->enState == HI_UNF_PVR_PLAY_STATE_STEPF) ||
+            (pChnAttr->enState == HI_UNF_PVR_PLAY_STATE_STEPB) ||
+            (abs(pChnAttr->enSpeed)/HI_UNF_PVR_PLAY_SPEED_NORMAL >= 8))
+        {
+            pStatus->u32CurPlayTimeInMs = u32CurFrmTimeMs;
+        }
+        else
+        {
+            pStatus->u32CurPlayTimeInMs = pChnAttr->u32CurPlayTimeMs;
+        }
         PVR_UNLOCK(&(pChnAttr->stMutex));
 
         return HI_SUCCESS;
     }
 
-    if ((HI_UNF_PVR_PLAY_STATE_FB == enCurState)
-        || (HI_UNF_PVR_PLAY_STATE_STEPB == enCurState))
+    if (HI_SUCCESS == PVR_Index_QueryFrameByTime(pChnAttr->IndexHandle, u32CurFrmTimeMs, &stCurPlayFrame, &u32PtsPos))
     {
-        IsForword = 1;
-    }
-    else
-    {
-        IsForword = 0;
-    }
-    PVR_UNLOCK(&(pChnAttr->stMutex));
-    do
-    {
-        ret = HI_MPI_AVPLAY_GetStatusInfo(pChnAttr->hAvplay, &stInfo);
-        if (HI_SUCCESS != ret)
+        pStatus->u32CurPlayFrame = u32PtsPos;
+        pStatus->u64CurPlayPos =  stCurPlayFrame.u64Offset;
+        if ((pChnAttr->enState == HI_UNF_PVR_PLAY_STATE_STEPF) ||
+            (pChnAttr->enState == HI_UNF_PVR_PLAY_STATE_STEPB) ||
+            (abs(pChnAttr->enSpeed)/HI_UNF_PVR_PLAY_SPEED_NORMAL >= 8))
         {
-            HI_ERR_PVR("HI_MPI_AVPLAY_GetStatusInfo failed!\n");
-
-            return HI_FAILURE;
-        }
-
-        if (PVR_INDEX_IS_TYPE_AUDIO(pChnAttr->IndexHandle))
-        {
-            u32SearchPTS = stInfo.stSyncStatus.u32LocalTime;
-            HI_INFO_PVR("====audio cur pts:%d!\n", u32SearchPTS);
+            pStatus->u32CurPlayTimeInMs = u32CurFrmTimeMs;
         }
         else
         {
-            u32SearchPTS = stInfo.stSyncStatus.u32LastVidPts;
-            HI_INFO_PVR("====video cur pts:%d!\n", u32SearchPTS);
+            pStatus->u32CurPlayTimeInMs = pChnAttr->u32CurPlayTimeMs;
         }
-        u32LoopTime ++;
-        if (PVR_INDEX_INVALID_PTSMS == u32SearchPTS)
-        {
-            if (u32LoopTime > 10)
-            {
-                break;
-            }
-            usleep(100*1000);
-        }
-
-    } while(PVR_INDEX_INVALID_PTSMS == u32SearchPTS);
-    PVR_LOCK(&(pChnAttr->stMutex));
-
-    if (PVR_INDEX_INVALID_PTSMS == u32SearchPTS)
+    }
+    else
     {
         memcpy(pStatus, &pChnAttr->stLastStatus, sizeof(HI_UNF_PVR_PLAY_STATUS_S));
         pStatus->enState = pChnAttr->enState;
         pStatus->enSpeed = pChnAttr->enSpeed;
-    }
-    else
-    {
-        if (HI_SUCCESS == PVR_Index_QueryFrameByPTS(pChnAttr->IndexHandle, u32SearchPTS, &stCurPlayFrame, &u32PtsPos, IsForword))
+        if ((pChnAttr->enState == HI_UNF_PVR_PLAY_STATE_STEPF) ||
+            (pChnAttr->enState == HI_UNF_PVR_PLAY_STATE_STEPB) ||
+            (abs(pChnAttr->enSpeed)/HI_UNF_PVR_PLAY_SPEED_NORMAL >= 8))
         {
-            pStatus->u32CurPlayFrame = u32PtsPos;
-            pStatus->u64CurPlayPos =  stCurPlayFrame.u64Offset;
-            pStatus->u32CurPlayTimeInMs = stCurPlayFrame.u32DisplayTimeMs;
+            pStatus->u32CurPlayTimeInMs = u32CurFrmTimeMs;
         }
         else
         {
-            memcpy(pStatus, &pChnAttr->stLastStatus, sizeof(HI_UNF_PVR_PLAY_STATUS_S));
-            pStatus->enState = pChnAttr->enState;
-            pStatus->enSpeed = pChnAttr->enSpeed;
+            pStatus->u32CurPlayTimeInMs = pChnAttr->u32CurPlayTimeMs;
         }
     }
+    
     pStatus->enState = pChnAttr->enState;
     pStatus->enSpeed = pChnAttr->enSpeed;
 
@@ -4018,6 +5285,11 @@ HI_S32 HI_PVR_PlayGetFileAttr(HI_U32 u32Chn, HI_UNF_PVR_FILE_ATTR_S *pAttr)
     PVR_PLAY_CHECK_CHN(u32Chn);
     pChnAttr = &g_stPvrPlayChns[u32Chn];
 
+    if(PVR_Rec_IsFileSaving(pChnAttr->stUserCfg.szFileName))
+    {
+        PVR_Index_FlushIdxWriteCache(pChnAttr->IndexHandle);
+    }
+
     PVR_LOCK(&(pChnAttr->stMutex));
     PVR_PLAY_CHECK_CHN_INIT_UNLOCK(pChnAttr);
 
@@ -4030,7 +5302,18 @@ HI_S32 HI_PVR_PlayGetFileAttr(HI_U32 u32Chn, HI_UNF_PVR_FILE_ATTR_S *pAttr)
 HI_S32 HI_PVR_GetFileAttrByFileName(const HI_CHAR *pFileName, HI_UNF_PVR_FILE_ATTR_S *pAttr)
 {
     HI_S32 ret;
+    PVR_REC_CHN_S*  pstChnAttr = NULL;
 
+    if(PVR_Rec_IsFileSaving(pFileName))
+    {
+        pstChnAttr = PVRRecGetChnAttrByName(pFileName);
+        
+        if (pstChnAttr != NULL)
+        {
+             PVR_Index_FlushIdxWriteCache(pstChnAttr->IndexHandle);
+        }
+    }
+ 
     ret = PVR_Index_PlayGetFileAttrByFileName(pFileName, pAttr);
     if (HI_SUCCESS != ret)
     {

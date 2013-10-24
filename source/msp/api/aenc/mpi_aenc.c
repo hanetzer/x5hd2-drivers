@@ -19,69 +19,32 @@ extern "C" {
 #include "hi_type.h"
 #include "hi_debug.h"
 #include "hi_drv_aenc.h"
-#include "mpi_aenc.h"
 #include "hi_error_mpi.h"
 
-static HI_S32 g_s32MPIAencInitCnt = 0;
 
 #define AENCGetRealChn(hAdec) do {hAenc = hAenc & 0xffff;} while (0)
 
 HI_S32 HI_MPI_AENC_Init(const HI_CHAR* pszCodecNameTable[])
 {
-    HI_S32 retval;
-
-    if (!g_s32MPIAencInitCnt)
-    {
-        retval = AENC_Init(pszCodecNameTable);
-        if (retval != HI_SUCCESS)
-        {
-            return retval;
-        }
-    }
-
-    g_s32MPIAencInitCnt++;
-    return HI_SUCCESS;
+    return AENC_Init(pszCodecNameTable);
 }
 
 HI_S32 HI_MPI_AENC_RegisterEncoder(const HI_CHAR *pszCodecDllName)
 {
-    HI_S32 retval;
-
-    retval = AENC_RegisterEncoder(pszCodecDllName);
-
-    return retval;
+    return AENC_RegisterEncoder(pszCodecDllName);
 }
 
 HI_S32 HI_MPI_AENC_ShowRegisterEncoder(HI_VOID)
 {
-    HI_S32 retval;
-
-    retval = AENC_ShowRegisterEncoder();
-
-    return retval;
+    return AENC_ShowRegisterEncoder();
 }
 
 HI_S32 HI_MPI_AENC_DeInit(HI_VOID)
-{
-    HI_S32 retval;
-
-    if (!g_s32MPIAencInitCnt)
-    {
-        return HI_SUCCESS;
-    }
-
-    g_s32MPIAencInitCnt--;
-
-    if (!g_s32MPIAencInitCnt)
-    {
-        retval = AENC_deInit();
-        return retval;
-    }
-
-    return HI_SUCCESS;
+{ 
+    return AENC_deInit();
 }
 
-HI_S32 HI_MPI_AENC_Open(HI_HANDLE *phAenc, const AENC_ATTR_S *pstAencAttr)
+HI_S32 HI_MPI_AENC_Open(HI_HANDLE *phAenc, const HI_UNF_AENC_ATTR_S *pstAencAttr)
 {
     HI_S32 retval;
 
@@ -103,18 +66,6 @@ HI_S32 HI_MPI_AENC_Close(HI_HANDLE hAenc)
     return retval;
 }
 
-#if 0
-HI_S32 HI_MPI_AENC_Reset(HI_HANDLE hAenc)
-{
-    HI_S32 retval;
-
-    AENCGetRealChn(hAenc);
-    retval = AENC_Reset(hAenc);
-
-    return retval;
-}
-
-#endif
 HI_S32 HI_MPI_AENC_SendBuffer(HI_U32 hAenc, const HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
 {
     HI_S32 retval;
@@ -124,34 +75,13 @@ HI_S32 HI_MPI_AENC_SendBuffer(HI_U32 hAenc, const HI_UNF_AO_FRAMEINFO_S *pstAOFr
     return retval;
 }
 
-HI_S32 HI_MPI_AENC_Pull(HI_HANDLE hAenc)
+
+HI_S32 HI_MPI_AENC_ReceiveStream(HI_HANDLE hAenc, AENC_STREAM_S *pstStream, HI_U32 u32TimeoutMs)
 {
     HI_S32 retval;
 
     AENCGetRealChn(hAenc);
-    retval = AENC_Pull(hAenc);
-    return retval;
-}
-
-HI_S32 HI_MPI_AENC_ReceiveStream(HI_HANDLE hAenc, AENC_STREAM_S *pstStream)
-{
-    HI_S32 retval;
-    HI_U32 u32InBufDataSize = 0;
-    HI_U32 u32EncodeInDataSize = 0;
-
-    AENCGetRealChn(hAenc);
-    retval = AENC_ReceiveStream(hAenc, pstStream);
-
-    if (HI_ERR_AENC_OUT_BUF_EMPTY == retval)
-    {
-        u32InBufDataSize = AENC_GetInBufDataSize(hAenc);
-        u32EncodeInDataSize = AENC_GetEncodeInDataSize(hAenc);
-        HI_INFO_AENC("u32InBufDataSize=%d, u32EncodeInDataSize=%d\n", u32InBufDataSize, u32EncodeInDataSize);
-        if (u32InBufDataSize > u32EncodeInDataSize) //if equal, can not exit when AENC_IN_PACKET_SIZE=1024
-        {
-            retval = HI_ERR_AENC_IN_BUF_UNEMPTY;
-        }
-    }
+    retval = AENC_ReceiveStream(hAenc, pstStream, u32TimeoutMs);
 
     return retval;
 }
@@ -159,20 +89,9 @@ HI_S32 HI_MPI_AENC_ReceiveStream(HI_HANDLE hAenc, AENC_STREAM_S *pstStream)
 HI_S32 HI_MPI_AENC_ReleaseStream(HI_HANDLE hAenc, const AENC_STREAM_S *pstStream)
 {
     HI_S32 retval;
-    HI_U32 u32InBufDataSize = 0;
-    HI_U32 u32EncodeInDataSize = 0;
 
     AENCGetRealChn(hAenc);
     retval = AENC_ReleaseStream (hAenc, pstStream);
-    if (HI_SUCCESS == retval)
-    {
-        u32InBufDataSize = AENC_GetInBufDataSize(hAenc);
-        u32EncodeInDataSize = AENC_GetEncodeInDataSize(hAenc);
-        if (u32InBufDataSize >= u32EncodeInDataSize)
-        {
-            AENC_Pull(hAenc);
-        }
-    }
         
     return retval;
 }
@@ -195,39 +114,59 @@ HI_S32 HI_MPI_AENC_SetConfigEncoder(HI_HANDLE hAenc, HI_VOID *pstConfigStructure
     return retval;
 }
 
-HI_S32 HI_MPI_AENC_ResetBuf(HI_HANDLE hAenc, HI_U32 u32BufType)
+HI_S32 HI_MPI_AENC_SetEnable(HI_HANDLE hAenc, HI_BOOL bEnable)
 {
     HI_S32 retval;
 
     AENCGetRealChn(hAenc);
-    retval = AENC_ResetBuf(hAenc, u32BufType);
+    retval = AENC_SetEnable(hAenc,bEnable);
     return retval;
 }
 
-HI_S32 HI_MPI_AENC_EncodeFrame( HI_HANDLE hAenc, const HI_UNF_AO_FRAMEINFO_S *pstAoFrame, AENC_STREAM_S *pstAencFrame)
+HI_S32 HI_MPI_AENC_AttachInput(HI_HANDLE hAenc, HI_HANDLE hSource)
 {
-    HI_S32 nRet;
+    HI_S32 retval;
 
     AENCGetRealChn(hAenc);
-    nRet = AENC_SendBuffer(hAenc, pstAoFrame);
-    if (HI_SUCCESS != nRet)
+    retval = AENC_AttachInput(hAenc, hSource);
+    if(HI_SUCCESS != retval)
     {
-        return nRet;
+        return retval;
     }
-
-    nRet = AENC_Pull(hAenc);
-
-    nRet = AENC_ReceiveStream (hAenc, pstAencFrame);
-    if (HI_SUCCESS == nRet)
-    {
-        nRet = AENC_ReleaseStream (hAenc, pstAencFrame);
-    }
-    else
-    {
-        AENC_ResetBuf(hAenc, 0x3);    /* reset input and output buffer */
-    }
-    return nRet;
+    return AENC_SetEnable(hAenc, HI_TRUE);
 }
+
+HI_S32 HI_MPI_AENC_DetachInput(HI_HANDLE hAenc)
+{
+    HI_S32 retval;
+
+    AENCGetRealChn(hAenc);
+    retval = AENC_DetachInput(hAenc);
+    if(HI_SUCCESS != retval)
+    {
+        return retval;
+    }
+    return AENC_SetEnable(hAenc, HI_FALSE);
+}
+
+HI_S32 HI_MPI_AENC_SetAttr(HI_HANDLE hAenc, const HI_UNF_AENC_ATTR_S *pstAencAttr)
+{
+    HI_S32 retval;
+
+    AENCGetRealChn(hAenc);
+    retval = AENC_SetAttr(hAenc, pstAencAttr);
+    return retval;
+}
+
+HI_S32 HI_MPI_AENC_GetAttr(HI_HANDLE hAenc, HI_UNF_AENC_ATTR_S *pstAencAttr)
+{
+    HI_S32 retval;
+
+    AENCGetRealChn(hAenc);
+    retval = AENC_GetAttr(hAenc, pstAencAttr);
+    return retval;
+}
+
 
 #ifdef __cplusplus
  #if __cplusplus

@@ -20,14 +20,16 @@
 #include <string.h>
 #include <semaphore.h>
 
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "drv_ir_ioctl.h"
 #include "hi_drv_ir.h"
 #include "hi_unf_ir.h"
+#include "hi_osal.h"
 
 static HI_S32 g_IrDevFd = -1;
 //static HI_UNF_IR_PROTOCOL_E g_IrProtocol = -1;
 static HI_CHAR g_szLastProtocolName[PROTOCOL_NAME_SZ];
+static HI_U32 g_u32IrInitCount = 0;
 
 static pthread_mutex_t   g_IrMutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -46,6 +48,9 @@ do{\
     HI_IR_UNLOCK();\
 }while(0)
 
+static const HI_U8 s_szIRVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
 
 
 /*************************************************************
@@ -64,6 +69,8 @@ HI_S32 HI_UNF_IR_Init(HI_VOID)
 {
     HI_IR_LOCK();
 
+    g_u32IrInitCount++;
+    
     /* if had opened will return success*/
     if (g_IrDevFd > 0)
     {
@@ -80,6 +87,7 @@ HI_S32 HI_UNF_IR_Init(HI_VOID)
     }
 
     HI_IR_UNLOCK();
+    
     return HI_SUCCESS;
 }
 
@@ -107,16 +115,21 @@ HI_S32 HI_UNF_IR_DeInit(HI_VOID)
         return HI_SUCCESS;
     }
 
-    Ret = close(g_IrDevFd);
+    g_u32IrInitCount--;
 
-    if(HI_SUCCESS != Ret)
+    if (0 == g_u32IrInitCount)
     {
-        HI_FATAL_IR("Close IR err.\n");
-        HI_IR_UNLOCK();
-        return HI_ERR_IR_CLOSE_ERR;
-    }
+        Ret = close(g_IrDevFd);
 
-    g_IrDevFd = -1;
+        if(HI_SUCCESS != Ret)
+        {
+            HI_FATAL_IR("Close IR err.\n");
+            HI_IR_UNLOCK();
+            return HI_ERR_IR_CLOSE_ERR;
+        }
+
+        g_IrDevFd = -1;
+    }
 
     HI_IR_UNLOCK();
     
@@ -133,7 +146,7 @@ Input:
 Output:         
 Return:         HI_SUCCESS
                 HI_ERR_IR_INVALID_PARA
-                HI_ERR_IR_IOCTL_FAILED
+                HI_ERR_IR_ENABLE_FAILED
                 HI_ERR_IR_NOT_INIT
 Others:         NA
 *************************************************************/
@@ -154,11 +167,12 @@ HI_S32 HI_UNF_IR_Enable (HI_BOOL bEnable)
 
     if (Ret != HI_SUCCESS)
     {
-        return HI_ERR_IR_IOCTL_FAILED;
+        return HI_ERR_IR_ENABLE_FAILED;
     }
     
     return HI_SUCCESS;
 }
+
 /*************************************************************
 Function:       HI_UNF_IR_GetProtocol
 Description:    get the type of ir protocol
@@ -196,19 +210,19 @@ Description:    get the value and status of key
 Calls:          
 Data Accessed:   
 Data Updated:   NA
-Input:          u32TimeOut: overtime value with unit of ms : 0 means no block while 0xFFFFFFFF means block forever
-                name_sz, buffer size of protocol_name.
+Input:          u32TimeoutMs: overtime value with unit of ms : 0 means no block while 0xFFFFFFFF means block forever
+                s32NameSize: buffer size of protocol_name.
 Output:         pu32PressStatus:    status of the key
                    0:  means press
                    1:  means hold
                    2:  means release
-                pu32KeyId:          value of the key
+                pu64KeyId:          value of the key
 
-                protocol_name: ir protocol name.
+                pszProtocolName: ir protocol name.
 
 Return:         HI_ERR_IR_NULL_PTR
                 HI_ERR_IR_INVALID_PARA
-                HI_ERR_IR_IOCTL_FAILED
+                HI_ERR_IR_SET_BLOCKTIME_FAILED
                 HI_ERR_IR_READ_FAILED
                 HI_ERR_IR_NOT_INIT
                 HI_SUCCESS
@@ -239,10 +253,12 @@ HI_S32 HI_UNF_IR_GetValueWithProtocol(HI_UNF_KEY_STATUS_E *penPressStatus, HI_U6
     }
     CHECK_IR_OPEN();
 
+    memset(&Irkey, 0, sizeof(Irkey));
+
     Ret = ioctl(g_IrDevFd, CMD_IR_SET_BLOCKTIME, u32TimeoutMs);
     if (Ret != HI_SUCCESS)
     {
-        return HI_ERR_IR_IOCTL_FAILED;
+        return HI_ERR_IR_SET_BLOCKTIME_FAILED;
     }
 
     Ret = read(g_IrDevFd, &Irkey, sizeof(struct key_attr));
@@ -254,7 +270,7 @@ HI_S32 HI_UNF_IR_GetValueWithProtocol(HI_UNF_KEY_STATUS_E *penPressStatus, HI_U6
                 pszProtocolName[s32NameSize - 1] = '\0';
         }
 
-        strcpy(g_szLastProtocolName, Irkey.protocol_name);
+        HI_OSAL_Strncpy(g_szLastProtocolName, Irkey.protocol_name, sizeof(Irkey.protocol_name));
         g_szLastProtocolName[PROTOCOL_NAME_SZ - 1] = '\0';
 
         *penPressStatus = (HI_UNF_KEY_STATUS_E)Irkey.key_stat;
@@ -284,7 +300,7 @@ Output:
 Return:         HI_SUCCESS
                 HI_ERR_IR_NOT_INIT
                 HI_ERR_IR_INVALID_PARA
-                HI_ERR_IR_IOCTL_FAILED
+                HI_ERR_IR_SET_FETCHMETHOD_FAILED
 Others:         NA
 *************************************************************/
 HI_S32 HI_UNF_IR_SetFetchMode(HI_S32 s32Mode)
@@ -301,7 +317,7 @@ HI_S32 HI_UNF_IR_SetFetchMode(HI_S32 s32Mode)
     if ((Ret = ioctl(g_IrDevFd, CMD_IR_SET_FETCH_METHOD, s32Mode)) != HI_SUCCESS)
     {
         HI_ERR_IR("Fail to set symbol mode, ret = 0x%x!\n", Ret);
-        return HI_ERR_IR_IOCTL_FAILED;
+        return HI_ERR_IR_SET_FETCHMETHOD_FAILED;
     }
     return HI_SUCCESS;
 }
@@ -311,12 +327,13 @@ Description:    get one raw symbols from ir module.
 Calls:            
 Data Accessed:   
 Data Updated:   NA
-Input:          u32TimeoutMs: npars of symbols including pu64First and pu64Second
+Input:          u32TimeoutMs: read timeout in ms.
 Output:         pu64lower, pu64upper.
 Return:         HI_SUCCESS
                 HI_ERR_IR_NULL_PTR
                 HI_ERR_IR_NOT_INIT
-                HI_ERR_IR_IOCTL_FAILED
+                HI_ERR_IR_SET_BLOCKTIME_FAILED
+                HI_ERR_IR_READ_FAILED
 Others:         NA
 *************************************************************/
 HI_S32 HI_UNF_IR_GetSymbol(HI_U64 *pu64First, HI_U64* pu64Second, HI_U32 u32TimeoutMs)
@@ -335,7 +352,7 @@ HI_S32 HI_UNF_IR_GetSymbol(HI_U64 *pu64First, HI_U64* pu64Second, HI_U32 u32Time
     Ret = ioctl(g_IrDevFd, CMD_IR_SET_BLOCKTIME, u32TimeoutMs);
     if (Ret != HI_SUCCESS)
     {
-        return HI_ERR_IR_IOCTL_FAILED;
+        return HI_ERR_IR_SET_BLOCKTIME_FAILED;
     }
 
     Ret = read(g_IrDevFd, &key, sizeof(struct key_attr));
@@ -359,7 +376,7 @@ Input:
 Output:         
 Return:         HI_SUCCESS
                 HI_ERR_IR_INVALID_PARA
-                HI_ERR_IR_IOCTL_FAILED
+                HI_ERR_IR_SET_KEYUP_FAILED
                 HI_ERR_IR_NOT_INIT
 Others:         NA
 *************************************************************/
@@ -375,12 +392,11 @@ HI_S32 HI_UNF_IR_EnableKeyUp(HI_BOOL bEnable)
     }
 
     CHECK_IR_OPEN();
-	
-    
+	    
     Ret = ioctl(g_IrDevFd, CMD_IR_ENABLE_KEYUP, bEnable);
     if (Ret != HI_SUCCESS)
     {
-        return HI_ERR_IR_IOCTL_FAILED;
+        return HI_ERR_IR_SET_KEYUP_FAILED;
     }
     
     return HI_SUCCESS;
@@ -397,7 +413,7 @@ Input:
 Output:         
 Return:         HI_SUCCESS
                 HI_ERR_IR_INVALID_PARA
-                HI_ERR_IR_IOCTL_FAILED
+                HI_ERR_IR_SET_REPEAT_FAILED
                 HI_ERR_IR_NOT_INIT
 Others:         NA
 *************************************************************/
@@ -417,7 +433,7 @@ HI_S32 HI_UNF_IR_EnableRepKey(HI_BOOL bEnable)
     Ret = ioctl(g_IrDevFd, CMD_IR_ENABLE_REPKEY, bEnable);
     if (Ret != HI_SUCCESS)
     {
-        return HI_ERR_IR_IOCTL_FAILED;
+        return HI_ERR_IR_SET_REPEAT_FAILED;
     }
 
     return HI_SUCCESS;
@@ -433,7 +449,7 @@ Input:          u32TimeoutMs  The minimum interval to report repeat key
 Output:         
 Return:         HI_SUCCESS
                 HI_ERR_IR_NOT_INIT
-                HI_ERR_IR_IOCTL_FAILED
+                HI_ERR_IR_SET_REPKEYTIMEOUT_FAILED
 Others:         NA
 *************************************************************/
 HI_S32 HI_UNF_IR_SetRepKeyTimeoutAttr(HI_U32 u32TimeoutMs)
@@ -461,7 +477,7 @@ HI_S32 HI_UNF_IR_SetRepKeyTimeoutAttr(HI_U32 u32TimeoutMs)
     Ret = ioctl(g_IrDevFd, CMD_IR_SET_REPKEY_TIMEOUT, u32TimeoutMs);
     if (Ret != HI_SUCCESS)
     {
-        return HI_ERR_IR_IOCTL_FAILED;
+        return HI_ERR_IR_SET_REPKEYTIMEOUT_FAILED;
     }
 
     return HI_SUCCESS;
@@ -493,7 +509,7 @@ Data Updated:   NA
 Input:          
 Output:         
 Return:         HI_SUCCESS
-                HI_ERR_IR_IOCTL_FAILED
+                HI_ERR_IR_RESET_FAILED
                 HI_ERR_IR_NOT_INIT
 Others:         NA
 *************************************************************/
@@ -506,14 +522,14 @@ HI_S32 HI_UNF_IR_Reset(HI_VOID)
     Ret = ioctl(g_IrDevFd, CMD_IR_RESET);
     if (Ret != HI_SUCCESS)
     {
-        return HI_ERR_IR_IOCTL_FAILED;
+        return HI_ERR_IR_RESET_FAILED;
     }
 
     return HI_SUCCESS;
 }
 /*************************************************************
 Function:       HI_UNF_IR_EnableProtocol 
-Description:    enable a infrared code specified by @prot_name
+Description:    enable an infrared code specified by @prot_name
 Calls:            
 Data Accessed:   
 Data Updated:   NA
@@ -521,7 +537,7 @@ Input:          pszProtocolName: infrared code name.
 Output:         
 Return:         HI_SUCCESS
                 HI_ERR_IR_INVALID_PARA
-                HI_ERR_IR_IOCTL_FAILED
+                HI_ERR_IR_ENABLE_PROT_FAILED
                 HI_ERR_IR_NOT_INIT
 Others:         NA
 *************************************************************/
@@ -544,7 +560,7 @@ HI_S32 HI_UNF_IR_EnableProtocol(HI_CHAR* pszProtocolName)
     ret = ioctl(g_IrDevFd, CMD_IR_SET_PROT_ENABLE, pszProtocolName);
     if (ret)
     {
-        return HI_ERR_IR_IOCTL_FAILED;
+        return HI_ERR_IR_ENABLE_PROT_FAILED;
     }
     return HI_SUCCESS;
 }
@@ -559,7 +575,7 @@ Input:          pszProtocolName: infrared code name.
 Output:         
 Return:         HI_SUCCESS
                 HI_ERR_IR_INVALID_PARA
-                HI_ERR_IR_IOCTL_FAILED
+                HI_ERR_IR_DISABLE_PROT_FAILED
                 HI_ERR_IR_NOT_INIT
 Others:         NA
 *************************************************************/
@@ -582,7 +598,7 @@ HI_S32 HI_UNF_IR_DisableProtocol(HI_CHAR* pszProtocolName)
     ret = ioctl (g_IrDevFd, CMD_IR_SET_PROT_DISABLE, pszProtocolName);
     if (ret)
     {
-        return HI_ERR_IR_IOCTL_FAILED;
+        return HI_ERR_IR_DISABLE_PROT_FAILED;
     }
 
     return HI_SUCCESS;
@@ -590,15 +606,15 @@ HI_S32 HI_UNF_IR_DisableProtocol(HI_CHAR* pszProtocolName)
 
 /*************************************************************
 Function:       HI_UNF_IR_GetProtocolEnabled
-Description:    get the enable status of a infrared code specified by @prot_name
+Description:    get the enable status of an infrared code specified by @prot_name
 Calls:            
 Data Accessed:   
 Data Updated:   NA
 Input:          pszProtocolName: infrared code name.
-Output:         pbEnabled: 1 means protocol effative, can received keys.
+Output:         pbEnabled: 1 means protocol effective, can receive keys.
 Return:         HI_SUCCESS
                 HI_ERR_IR_INVALID_PARA
-                HI_ERR_IR_IOCTL_FAILED
+                HI_ERR_IR_GET_PROTENABLE_FAILED
                 HI_ERR_IR_NOT_INIT
                 HI_FAILURE
 Others:         NA
@@ -625,12 +641,12 @@ HI_S32 HI_UNF_IR_GetProtocolEnabled(HI_CHAR* pszProtocolName, HI_BOOL *pbEnabled
 
     CHECK_IR_OPEN();
 
-    strcpy(uNameEnable.szname, pszProtocolName);
+    HI_OSAL_Strncpy(uNameEnable.szname, pszProtocolName, strlen(pszProtocolName));
 
     ret = ioctl(g_IrDevFd, CMD_IR_GET_PROT_ENABLED, uNameEnable.szname);
     if (ret)
     {
-        return HI_ERR_IR_IOCTL_FAILED;
+        return HI_ERR_IR_GET_PROTENABLE_FAILED;
     }
 
     if (0 == uNameEnable.enable)

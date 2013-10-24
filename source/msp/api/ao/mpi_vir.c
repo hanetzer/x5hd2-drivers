@@ -37,7 +37,7 @@ static HI_VOID VIRResetPTSQue(VIR_PTS_QUE_S *pstPTSQue)
     memset(pstPTSQue->stPTSArry, 0, sizeof(VIR_PTS_S) * VIR_MAX_STORED_PTS_NUM);
     pstPTSQue->u32PTSreadIdx  = 0;
     pstPTSQue->u32PTSwriteIdx = 0;
-    pstPTSQue->u32LastPtsMs = 0;
+    pstPTSQue->u32LastPtsMs = (HI_U32)-1;
     return;
 }
 static HI_VOID VIRFindPTS(VIR_BUFFUR_S *pstBuf, HI_U32 *pu32FoundPts, HI_U32 *pu32FoundPos)
@@ -97,9 +97,20 @@ static HI_U32 VIRAcquirePTS(VIR_BUFFUR_S *pstBuf, HI_U32 u32PcmSamplesPerFrame,
     if (((HI_U32)-1) == u32FoundPts)
     {
         /*can not find a valid PTS*/
-        HI_U32 u32Delta;
-        u32Delta = (u32PcmSamplesPerFrame * 1000) / u32PcmSampleRate;
-        u32PtsMs = pstPTSQue->u32LastPtsMs + u32Delta;
+        if (((HI_U32)-1) != pstPTSQue->u32LastPtsMs)
+        {
+            HI_U32 u32Delta;
+            u32Delta = (u32PcmSamplesPerFrame * 1000) / u32PcmSampleRate;
+            u32PtsMs = pstPTSQue->u32LastPtsMs + u32Delta;
+            if (((HI_U32)-1) == u32PtsMs)
+            {
+               u32PtsMs = 0;
+            }  
+        }
+        else
+        {
+            u32PtsMs = (HI_U32)-1;
+        }
     }
     else
     {
@@ -109,8 +120,7 @@ static HI_U32 VIRAcquirePTS(VIR_BUFFUR_S *pstBuf, HI_U32 u32PcmSamplesPerFrame,
     return u32PtsMs;
 }
 
-static HI_VOID VIRReleasePTS(VIR_BUFFUR_S *pstBuf, HI_U32 u32PcmSamplesPerFrame,
-                               HI_U32 u32PcmSampleRate)
+static HI_VOID VIRReleasePTS(VIR_BUFFUR_S *pstBuf, HI_U32 u32PtsMs)
 
 {
     HI_U32 u32FoundPos, u32FoundPts;
@@ -119,27 +129,13 @@ static HI_VOID VIRReleasePTS(VIR_BUFFUR_S *pstBuf, HI_U32 u32PcmSamplesPerFrame,
 
     pstPTSQue = &(pstBuf->stPTSQue);
     pstPTS = pstPTSQue->stPTSArry;
+    pstPTSQue->u32LastPtsMs = u32PtsMs;
     VIRFindPTS(pstBuf, &u32FoundPts, &u32FoundPos);
-
-    if (((HI_U32)-1) == u32FoundPts)
+    if((HI_U32)-1 != u32FoundPos)
     {
-        /*can not find a valid PTS*/
-        HI_U32 u32Delta;
-        u32Delta = (u32PcmSamplesPerFrame * 1000) / u32PcmSampleRate;
-        pstPTSQue->u32LastPtsMs += u32Delta;
-        if((HI_U32)-1 != u32FoundPos)
-        {
-            pstPTSQue->u32PTSreadIdx = (u32FoundPos + 1) % VIR_MAX_STORED_PTS_NUM;
-        }
-    }
-    else
-    {
-        /* Found a valid PTS */
-        pstPTSQue->u32LastPtsMs = u32FoundPts;
         pstPTS[u32FoundPos].u32PtsMs = (HI_U32)(-1);
         pstPTSQue->u32PTSreadIdx = (u32FoundPos + 1) % VIR_MAX_STORED_PTS_NUM;
     }
-
     return;
 }
 
@@ -416,8 +412,16 @@ HI_S32  VIR_SendData(HI_HANDLE hTrack, const HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
         pstBuf->s32BitPerSample = pstAOFrame->s32BitPerSample;
         pstBuf->u32SampleRate = pstAOFrame->u32SampleRate;
     }
+
+    if(16 == pstAOFrame->s32BitPerSample)
+    {
+        u32Size  = pstAOFrame->u32PcmSamplesPerFrame * pstAOFrame->u32Channels * sizeof(HI_S16);
+    }
+    else
+    {
+        u32Size  = pstAOFrame->u32PcmSamplesPerFrame * pstAOFrame->u32Channels * sizeof(HI_S32);
+    }
     
-    u32Size  = pstAOFrame->u32PcmSamplesPerFrame * pstAOFrame->u32Channels * pstAOFrame->s32BitPerSample / 8;
     u32Idle  = VIRGetIdleSize(pstBuf);
     if(u32Idle <= u32Size)
     {
@@ -450,6 +454,7 @@ HI_S32  VIR_SendData(HI_HANDLE hTrack, const HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
         memcpy((HI_VOID *)pstBuf->pu8BufBase, (HI_VOID *)(pu8Src + u32TailSpace), u32Size - u32TailSpace);
     }
 
+    VIRStorePTS(pstBuf, pstAOFrame->u32PtsMs, u32Size);
     /* update WritePtr */
     pstBuf->u32Write += u32Size;
     if (pstBuf->u32Write >= pstBuf->u32End)
@@ -457,7 +462,6 @@ HI_S32  VIR_SendData(HI_HANDLE hTrack, const HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
         pstBuf->u32Write -= (pstBuf->u32End - pstBuf->u32Start);
     }
 
-    VIRStorePTS(pstBuf, pstAOFrame->u32PtsMs, u32Size);
     return HI_SUCCESS;
 }
 
@@ -481,7 +485,15 @@ HI_S32  VIR_AcquireFrame(HI_HANDLE hTrack, HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
     pstAOFrame->u32Channels = pstBuf->u32Channel;
     pstAOFrame->u32PcmSamplesPerFrame = pstBuf->u32PcmSamplesPerFrame;
     //pstAOFrame->u32PcmSamplesPerFrame = pstAOFrame->u32SampleRate * 10 / 1000; //default 10ms
-    u32AcqSize = pstAOFrame->u32PcmSamplesPerFrame * pstAOFrame->u32Channels * pstAOFrame->s32BitPerSample / 8;  
+    if(16 == pstAOFrame->s32BitPerSample)
+    {
+        u32AcqSize = pstAOFrame->u32PcmSamplesPerFrame * pstAOFrame->u32Channels * sizeof(HI_S16);
+    }
+    else
+    {
+        u32AcqSize = pstAOFrame->u32PcmSamplesPerFrame * pstAOFrame->u32Channels * sizeof(HI_S32);
+    }
+    
     u32DataSize = VIRGetDataSize(pstBuf);
     if(u32AcqSize > u32DataSize)
     {
@@ -509,6 +521,7 @@ HI_S32  VIR_AcquireFrame(HI_HANDLE hTrack, HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
     pstAOFrame->u32FrameIndex = u32FrameIdx++;
     pstAOFrame->u32BitsBytesPerFrame = 0;
     pstAOFrame->ps32BitsBuffer = HI_NULL;
+    pstAOFrame->u32IEC61937DataType = 0;
     return HI_SUCCESS;
 }
 
@@ -531,14 +544,23 @@ HI_S32  VIR_ReleaseFrame(HI_HANDLE hTrack, HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
     {
         return HI_SUCCESS; //verify
     }
+
+    VIRReleasePTS(pstBuf, pstAOFrame->u32PtsMs);  
     /* update ReadPtr */
-    pstBuf->u32Read += pstAOFrame->u32PcmSamplesPerFrame * pstAOFrame->u32Channels * pstAOFrame->s32BitPerSample / 8;
+    if(16 == pstAOFrame->s32BitPerSample)
+    {
+        pstBuf->u32Read += pstAOFrame->u32PcmSamplesPerFrame * pstAOFrame->u32Channels * sizeof(HI_S16);
+    }
+    else
+    {
+        pstBuf->u32Read += pstAOFrame->u32PcmSamplesPerFrame * pstAOFrame->u32Channels * sizeof(HI_S32);
+    }
     if (pstBuf->u32Read >= pstBuf->u32End)
     {
         pstBuf->u32Read -= (pstBuf->u32End - pstBuf->u32Start);
     }
     pstAOFrame->ps32PcmBuffer = HI_NULL;
-    VIRReleasePTS(pstBuf, pstAOFrame->u32PcmSamplesPerFrame,pstAOFrame->u32SampleRate);  
+
     return HI_SUCCESS;
 }
 

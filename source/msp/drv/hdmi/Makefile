@@ -43,9 +43,14 @@ EXTRA_CFLAGS += $(CFG_HI_KMOD_CFLAGS)
 #endif
 
 #S40v2 Don't support DVI
-#EXTRA_CFLAGS += -DDVI_SUPPORT
+EXTRA_CFLAGS += -DDVI_SUPPORT
 
-ifeq ($(CFG_HI_BUILD_WITH_ANDROID), y)
+#ifeq ($(CFG_HI_BUILD_WITH_ANDROID), y)
+#EXTRA_CFLAGS += -DANDROID_SUPPORT
+#endif
+
+
+ifeq ($(CFG_PRODUCT_TYPE), android)
 EXTRA_CFLAGS += -DANDROID_SUPPORT
 endif
 
@@ -53,9 +58,9 @@ ifeq ($(CFG_HI_HDMI_SUPPORT_DVI), y)
 EXTRA_CFLAGS += -DDVI_SUPPORT
 endif
 
-#ifeq ($(CFG_HI_HDMI_SUPPORT_HDCP), y)
-#EXTRA_CFLAGS += -DHDCP_SUPPORT
-#endif
+ifeq ($(CFG_HI_HDMI_SUPPORT_HDCP), y)
+EXTRA_CFLAGS += -DHDCP_SUPPORT
+endif
 
 ifeq ($(CFG_HI_HDMI_SUPPORT_3D), y)
 EXTRA_CFLAGS += -DSUPPORT_3D
@@ -80,6 +85,9 @@ endif
 $(MOD_NAME)-y   :=  hdmi_intf_k.o                      \
 		hdmi_intf.o				     \
 		drv_hdmi.o                         \
+		drv_global.o			   \
+		drv_reg_proc.o			   \
+		drv_compatibility.o		   \
 		hdmi_drv/drv_hlviic.o              \
 		hdmi_drv/si_audio.o                \
 		hdmi_drv/si_cec.o                  \

@@ -18,8 +18,8 @@ extern struct semaphore it9170_sem;
 HI_S32 it9170_init(HI_U32 u32TunerPort, HI_U8 enI2cChannel, HI_UNF_TUNER_DEV_TYPE_E enTunerDevType)
 {
     Dword error = Error_NO_ERROR;
-    DefaultDemodulator *demod;
-    StreamType streamType;
+    DefaultDemodulator *demod = HI_NULL;
+    StreamType streamType = 0 ;
 
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
@@ -69,7 +69,7 @@ HI_S32 it9170_init(HI_U32 u32TunerPort, HI_U8 enI2cChannel, HI_UNF_TUNER_DEV_TYP
 
 HI_S32 it9170_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel)
 {
-    DefaultDemodulator *demod;
+    DefaultDemodulator *demod = HI_NULL;
     Dword error = Error_NO_ERROR;
     //Dword linkFirmwareVersion;  // Used to store LINK firmware version.
     //Dword ofdmFirmwareVersion;  // Used to store OFDM firmware version.
@@ -77,7 +77,7 @@ HI_S32 it9170_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel)
     Word bandwidth = 0;   // Bandwidth is 6000 KHz.
     //Bool locked;     // The output paramter to check if the channel is locked.
 
-    HI_ASSERT(HI_NULL != pstChannel);
+    HI_TUNER_CHECKPOINTER( pstChannel);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -109,11 +109,11 @@ HI_S32 it9170_set_ts_type(HI_U32 u32TunerPort, HI_UNF_TUNER_OUPUT_MODE_E enTsTyp
 
 HI_S32 it9170_get_status (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *penTunerStatus)
 {
-    DefaultDemodulator *demod;
+    DefaultDemodulator *demod= HI_NULL;
     Bool locked = False;
-    HI_S32 s32Ret;
+    HI_S32 s32Ret = 0;
 
-    HI_ASSERT(HI_NULL != penTunerStatus);
+    HI_TUNER_CHECKPOINTER( penTunerStatus);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -143,13 +143,13 @@ HI_S32 it9170_get_status (HI_U32 u32TunerPort, HI_UNF_TUNER_LOCK_STATUS_E  *penT
 
 HI_S32 it9170_get_ber(HI_U32 u32TunerPort, HI_U32* pu32ber)
 {
-    DefaultDemodulator *demod;
-    HI_S32 s32Ret;
-    Dword postErrorCount;
-    Dword postBitCount;
-    Word aboutCount;
+    DefaultDemodulator *demod= HI_NULL;
+    HI_S32 s32Ret = 0;
+    Dword postErrorCount = 0;
+    Dword postBitCount = 0;
+    Word aboutCount = 0;
 
-    HI_ASSERT(HI_NULL != pu32ber);
+    HI_TUNER_CHECKPOINTER( pu32ber);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -172,11 +172,11 @@ HI_S32 it9170_get_ber(HI_U32 u32TunerPort, HI_U32* pu32ber)
 
 HI_S32 it9170_get_snr(HI_U32 u32TunerPort, HI_U32* pu32SNR)
 {
-    DefaultDemodulator *demod;
-    HI_S32 s32Ret;
-    HI_U32 u32SNR;
+    DefaultDemodulator *demod= HI_NULL;
+    HI_S32 s32Ret = 0;
+    HI_U32 u32SNR = 0;
 
-    HI_ASSERT(HI_NULL != pu32SNR);
+    HI_TUNER_CHECKPOINTER( pu32SNR);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -198,11 +198,11 @@ HI_S32 it9170_get_snr(HI_U32 u32TunerPort, HI_U32* pu32SNR)
 
 HI_S32 it9170_get_signal_strength(HI_U32 u32TunerPort, HI_U32* pu32SignalStrength)
 {
-    DefaultDemodulator *demod;
-    HI_S32 s32Ret;
-    HI_U32 u32SignalStrength;
+    DefaultDemodulator *demod= HI_NULL;
+    HI_S32 s32Ret=0;
+    HI_U32 u32SignalStrength=0;
 
-    HI_ASSERT(HI_NULL != pu32SignalStrength);
+    HI_TUNER_CHECKPOINTER( pu32SignalStrength);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -224,11 +224,11 @@ HI_S32 it9170_get_signal_strength(HI_U32 u32TunerPort, HI_U32* pu32SignalStrengt
 
 HI_S32 it9170_get_signal_info(HI_U32 u32TunerPort, HI_UNF_TUNER_SIGNALINFO_S *pstInfo)
 {
-    DefaultDemodulator *demod;
-    HI_S32 s32Ret;
-    ChannelModulation CM;
+    DefaultDemodulator *demod= HI_NULL;
+    HI_S32 s32Ret=0;
+    ChannelModulation CM = {0} ;
 
-    HI_ASSERT(HI_NULL != pstInfo);
+    HI_TUNER_CHECKPOINTER( pstInfo);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {
@@ -361,16 +361,16 @@ HI_S32 it9170_get_signal_info(HI_U32 u32TunerPort, HI_UNF_TUNER_SIGNALINFO_S *ps
 
 HI_S32 it9170_get_freq_symb_offset(HI_U32 u32TunerPort, HI_U32 * pu32Freq, HI_U32 * pu32Symb)
 {
-    DefaultDemodulator *demod;
-    HI_S32 s32Ret;
+    DefaultDemodulator *demod= HI_NULL;
+    HI_S32 s32Ret = 0;
     //ChannelModulation CM;
     HI_U8 u8RBFSFCW[3] = {0};
     HI_U8 u8PREGBFSFCW[3] = {0};
     HI_U32 u32CurFreq = 0;
     HI_U32 u32BaseFreq = 0;
 
-    HI_ASSERT(HI_NULL != pu32Freq);
-    HI_ASSERT(HI_NULL != pu32Symb);
+    HI_TUNER_CHECKPOINTER( pu32Freq);
+    HI_TUNER_CHECKPOINTER( pu32Symb);
     /* Check tuner port and init. */
     if (u32TunerPort >= MAX_TUNER)
     {

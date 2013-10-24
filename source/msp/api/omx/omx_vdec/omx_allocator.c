@@ -37,11 +37,11 @@ OMX_S32 alloc_contigous_buffer(OMX_U32 buf_size, OMX_U32 align, struct vdec_user
 	buffer.bufsize = buf_size;
        if (0 == puser_buf->dir)
        {
-	    strcpy(buffer.bufname, "OMX_VDEC_IN");
+	    strncpy(buffer.bufname, "OMX_VDEC_IN", sizeof(buffer.bufname));
        }
        else
        {
-	    strcpy(buffer.bufname, "OMX_VDEC_OUT");
+	    strncpy(buffer.bufname, "OMX_VDEC_OUT", sizeof(buffer.bufname));
        }
 
 	ret = HI_MMZ_Malloc(&buffer);
@@ -73,8 +73,8 @@ void free_contigous_buffer(struct vdec_user_buf_desc *puser_buf)
 		return;
 	}
 
-       buffer.phyaddr = puser_buf->phyaddr;
-       buffer.user_viraddr = puser_buf->bufferaddr;
+    buffer.phyaddr = puser_buf->phyaddr;
+    buffer.user_viraddr = puser_buf->bufferaddr;
 	HI_MMZ_Free(&buffer);
 }
 

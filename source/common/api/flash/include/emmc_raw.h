@@ -38,13 +38,6 @@ typedef struct emmc_flast_s
     /* None ext area size. In Byte */
     HI_U64 u64RawAreaSize;
 
-    /* Extend area start address.
-     * Absolutely offset from emmc flash start.
-     */
-    HI_U64 u64ExtAreaStart;
-    /* Extend area size. In Byte */
-    HI_U64 u64ExtAreaSize;
-
     /* Block size. Default is 512B */
     HI_U32 u32EraseSize;
 }EMMC_FLASH_S;
@@ -60,7 +53,7 @@ typedef struct emmc_cb_s
 } EMMC_CB_S;
 
 ///////////////////////////////////////////////////
-HI_S32 emmc_raw_init(void);
+HI_S32 emmc_raw_init(char *bootargs);
 EMMC_CB_S *emmc_raw_open(HI_U64 u64Addr,
                          HI_U64 u64Length);
 EMMC_CB_S *emmc_node_open(const HI_U8 *pu8Node);

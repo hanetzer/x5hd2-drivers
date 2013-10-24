@@ -552,6 +552,12 @@ HI_S32 HI_MPI_ADEC_GetInfo(HI_HANDLE hAdec, HI_MPI_ADEC_INFO_E enAdecInfo, void 
 			HI_INFO_ADEC("HI_MPI_ADEC_GetAttrInfo CMD: ADEC_DEBUGINFO");
 			retval = ADEC_GetDebugInfo(hAdec, (ADEC_DEBUGINFO_S *)pstAdecInfo);
 			break;
+
+		case HI_MPI_ADEC_HaSzNameInfo:
+			HI_INFO_ADEC("ADEC_GetHaSzNameInfo CMD: ADEC_HaSzNameInfo");
+			retval = ADEC_GetHaSzNameInfo(hAdec, (ADEC_SzNameINFO_S *)pstAdecInfo);
+			break;	
+			
 			
 		default:
 			HI_ERR_ADEC(" HI_MPI_ADEC_GetAttrInfo  fail: INVALID PARAM = 0x%x\n", enAdecInfo);

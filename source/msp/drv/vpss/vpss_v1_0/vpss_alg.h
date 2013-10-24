@@ -9,11 +9,13 @@
 #include"vpss_alg_dei.h"
 #include"vpss_alg_fmd.h"
 #include"vpss_alg_rwzb.h"
+#include"vpss_alg_csc.h"
 
 #include"vpss_alg_ratio.h"
 #include"vpss_alg_dnr.h"
 #include"vpss_alg_sharp.h"
 #include"vpss_reg_struct.h"
+#include "hi_drv_module.h"
 #ifdef __cplusplus
 #if __cplusplus
 extern "C"{
@@ -48,9 +50,17 @@ typedef struct hiVPSS_ALG_FRMCFG_S{
 	HI_DRV_FIELD_MODE_E  enFieldMode;
     HI_BOOL bTopFieldFirst;
 
-    HI_DRV_ASPECT_RATIO_S stDispPixAR;
+    HI_BOOL bReadField;
+    
+    HI_U32 u32AspectWidth;    
+    HI_U32 u32AspectHeight; 
 
     HI_RECT_S stCropRect;
+    #if DEF_VPSS_VERSION_2_0
+    #if DEF_TUNNEL_EN
+	HI_DRV_VIDEO_TUNNEL_S stTunnelInfo;
+	#endif
+	#endif
 }VPSS_ALG_FRMCFG_S;
 
 typedef struct hiVPSS_ALG_DEICFG_S{
@@ -89,6 +99,16 @@ typedef struct hiVPSS_ALG_VC1INFO_S{
     HI_U8 u8BtmRangeMapUV;
 }VPSS_ALG_VC1INFO_S;
 
+typedef struct hiVPSS_ALG_INCROPCFG_S{
+
+    HI_BOOL bInCropEn;
+    HI_BOOL bInCropMode;
+    HI_U32 u32InCropY;
+    HI_U32 u32InCropX;
+    HI_U32 u32InCropHeight;
+    HI_U32 u32InCropWidth;
+
+}VPSS_ALG_INCROPCFG_S;
 typedef struct hiVPSS_ALG_VC1CFG_S{
     HI_U32 u32EnVc1;
 
@@ -106,33 +126,47 @@ typedef struct hiVPSS_ALG_TUNNELCFG_S{
     VPSS_ALG_RWZBCFG_S stRwzbCfg;
     VPSS_ALG_VC1CFG_S stVC1Cfg;
     HI_U32 u32EnUVCovert;
+    VPSS_ALG_INCROPCFG_S stInCropCfg;
 }VPSS_ALG_TUNNELCFG_S;
 
+typedef struct hiVPSS_ALG_OUTTUNNEL_S{
+    HI_BOOL bTunnel;
+    HI_U32 u32TunnelAddr;
+    HI_U32 u32TunnelLevel;
+}VPSS_ALG_OUTTUNNEL_S;
 
 typedef struct hiVPSS_ALG_PortCFG_S{
     VPSS_REG_PORT_E eRegPort;
     
     HI_BOOL bFidelity;
     
+    ALG_CSC_RTL_PARA_S stCscCfg;
+
+    HI_DRV_VPSS_ROTATION_E eRotation;
+    
     VPSS_ALG_FRMCFG_S stDstFrmInfo;
 
     ALG_VZME_RTL_PARA_S stZmeCfg;
     ALG_VTI_RTL_PARA_S stSharpCfg;
-	
+
+	VPSS_REG_PREZME_E enHorPreZme;
+	VPSS_REG_PREZME_E enVerPreZme;
 	
     ALG_RATIO_OUT_PARA_S stAspCfg;
-    
+
+    VPSS_ALG_OUTTUNNEL_S stTunnelCfg;
+
+    HI_BOOL bNeedFlip;
 }VPSS_ALG_PortCFG_S;
 
 typedef struct hiVPSS_ALG_CFG_S{
-    /*输入输出信息*/
+    /*InImage Info*/
     VPSS_ALG_FRMCFG_S stSrcImgInfo;
 
     VPSS_ALG_TUNNELCFG_S stAuTunnelCfg;
     
     VPSS_ALG_PortCFG_S stAuPortCfg[DEF_HI_DRV_VPSS_PORT_MAX_NUMBER];
     
-    /*算法配置*/
 }VPSS_ALG_CFG_S;
 
 typedef struct hiVPSS_ALG_INFO_S{
@@ -140,34 +174,31 @@ typedef struct hiVPSS_ALG_INFO_S{
     /*DET info*/
     DET_INFO_S stDetInfo;
 
-    /*DEI 历史计算信息*/
+    /*DEI history Info*/
     ALG_DEI_MEM_S  stDeiMem;
 
-    /*DEI 历史逻辑统计信息*/
-    ALG_FMD_RTL_STATPARA_S stFmdRtlStatPara; /*需要从逻辑读的统计信息*/
+    /*DEI info from logic*/
+    ALG_FMD_RTL_STATPARA_S stFmdRtlStatPara; 
     HI_U32 reserve1;
 }VPSS_ALG_INFO_S;
 
 typedef struct hiVPSS_ALG_CTRL_S{
     /*
-     算法公共资源管理
-     1.算法保留信息
-     2.算法开辟的资源
-     3.算法能力集
-     4.算法接口
+     alg ctrl module:
+     1.resource manage
+     2.interface
+     3.capability
      */
-     /*zme 系数*/
     ALG_VZME_MEM_S stZmeMem; 
     
-    /*dei 默认配置水线*/
     ALG_DEI_RTL_PARA_S stDeiRtlPara;
 }VPSS_ALG_CTRL_S;
 
-/*算法公共资源的初始化和销毁*/
+/*alg common resource init and DelInit*/
 HI_S32 VPSS_ALG_Init(VPSS_ALG_CTRL_S *pstAlgCtrl);
 HI_S32 VPSS_ALG_DelInit(VPSS_ALG_CTRL_S *pstAlgCtrl);
 
-/*单个实例算法处理信息的初始化和销毁*/
+/*instance alg info init and Deinit*/
 HI_S32 VPSS_ALG_InitAuInfo(HI_U32 u32InfoAddr);
 HI_S32 VPSS_ALG_DeInitAuInfo(HI_U32 u32InfoAddr);
 
@@ -177,22 +208,34 @@ HI_S32 VPSS_ALG_SetFrameInfo(VPSS_ALG_FRMCFG_S* pstFrmCfg,HI_DRV_VIDEO_FRAME_S *
 HI_S32 VPSS_ALG_GetRwzbCfg(HI_U32 u32InfoAddr,VPSS_ALG_RWZBCFG_S *pstDeiCfg,
                                 VPSS_ALG_FRMCFG_S *pstImgCfg);
 
-HI_S32 VPSS_ALG_GetDeiCfg(HI_DRV_VPSS_DIE_MODE_E eDeiMode,  /*DEI模式*/
-                            HI_U32 u32AuInfoAddr,        /*DEI历史信息*/
-                            VPSS_ALG_DEICFG_S *pstDeiCfg,    /*DEI配置*/
-                            VPSS_ALG_CTRL_S   *pstAlgCtrl);  /*DEI默认配置*/
-
-HI_S32 VPSS_ALG_GetZmeCfg(VPSS_ALG_FRMCFG_S *pstSrcImg,VPSS_ALG_FRMCFG_S *pstDstFrm,
-                        ALG_VZME_RTL_PARA_S *pstZmeCfg,VPSS_ALG_CTRL_S   *pstAlgCtrl);   
+HI_S32 VPSS_ALG_GetDeiCfg(HI_DRV_VPSS_DIE_MODE_E eDeiMode,  /*DEI mode*/
+                            HI_U32 u32AuInfoAddr,        /*DEI history calculate info*/
+                            VPSS_ALG_DEICFG_S *pstDeiCfg,    /*DEI config*/
+                            VPSS_ALG_CTRL_S   *pstAlgCtrl);  /*DEI default config*/
+HI_S32 VPSS_ALG_GetZmeCfg(ALG_VZME_DRV_PARA_S *pstZmeDrvPara,
+                        ALG_VZME_RTL_PARA_S *pstZmeCfg,VPSS_ALG_CTRL_S   *pstAlgCtrl,HI_BOOL bFirst);
+  
                         
 HI_S32 VPSS_ALG_GetAspCfg(ALG_RATIO_DRV_PARA_S *pstAspDrvPara,
                         HI_DRV_ASP_RAT_MODE_E eAspMode,HI_RECT_S *pstScreen,
                         ALG_RATIO_OUT_PARA_S *pstAspCfg);
 HI_U32 VPSS_ALG_GetRwzbInfo(HI_U32 u32InfoAddr);
 
+HI_S32 VPSS_ALG_GetCscCfg(VPSS_ALG_FRMCFG_S *pstImgCfg, HI_DRV_COLOR_SPACE_E eDstCS, ALG_CSC_RTL_PARA_S   *pstCscRtlPara);
 HI_U32 VPSS_ALG_StoreDeiData(HI_U32 u32InfoAddr,ALG_FMD_RTL_STATPARA_S *pstDeiData);
 
 HI_U32 VPSS_ALG_GetDeiData(HI_U32 u32InfoAddr,ALG_FMD_RTL_STATPARA_S *pstDeiData);
+
+
+
+
+HI_S32 VPSS_ALG_GetInCropCfg(HI_DRV_VIDEO_FRAME_S *pstImg,
+                                VPSS_ALG_FRMCFG_S *pstImgCfg,
+                                HI_RECT_S stInRect,
+                                VPSS_ALG_INCROPCFG_S *pstInCropCfg);
+
+HI_VOID VPSS_ALG_SetPqDebug(HI_BOOL bDebugMode);
+HI_VOID VPSS_ALG_GetPqDebug(HI_BOOL *pbDebugMode);
 #ifdef __cplusplus
 #if __cplusplus
 }

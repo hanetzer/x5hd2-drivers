@@ -142,7 +142,7 @@ STATIC INLINE HI_VOID PVR_SCDIndexCalcGlobalOffset(PVR_INDEX_HANDLE handle,
         return;
     }
 
-    offset = ((pScData->u64TSCnt - pScData->u32OffsetInDavBuf - 1) * 188ULL);
+    offset = ((pScData->u64TSCnt - pScData->u32OffsetInDavBuf - 1) * PVR_TS_LEN);
     offset = offset + pScData->u16OffsetInTs;
 
     /*
@@ -182,7 +182,7 @@ HI_S32 PVR_SCD_Scd2Idx(PVR_INDEX_HANDLE handle, const DMX_IDX_DATA_S *pDmxIndexD
     HI_ASSERT_RET(pDmxIndexData != NULL);
     HI_ASSERT_RET(pstFidx != NULL);
 
-
+    memset(&stPvrIndexData, 0, sizeof(PVR_INDEX_SCD_S));
     PVR_SCDDmxIdxToPvrIdx(pDmxIndexData, &stPvrIndexData);
 
 /*
@@ -261,6 +261,8 @@ HI_S32 PVR_SCD_Scd2AudioFrm(PVR_INDEX_HANDLE handle, const DMX_IDX_DATA_S *pDmxI
     HI_ASSERT_RET(pDmxIndexData != NULL);
     HI_ASSERT_RET(pstFrmInfo != NULL);
 
+    memset(&stPvrIndexData, 0, sizeof(PVR_INDEX_SCD_S));
+	
     HI_INFO_PVR("DEMUX scd:%#x, %#x, %#x, %#x, %#x  \n",
         pDmxIndexData->u32Chn_Ovflag_IdxType_Flags,
         pDmxIndexData->u32ScType_Byte12AfterSc_OffsetInTs,

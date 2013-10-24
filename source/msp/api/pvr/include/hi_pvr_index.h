@@ -38,7 +38,8 @@ extern "C" {
 
 #define PVR_INDEX_REC                0
 #define PVR_INDEX_PLAY               1
-
+#define PVR_IDX_CACHE_LOCK(p_mutex)       (void)pthread_mutex_lock(p_mutex)
+#define PVR_IDX_CACHE_UNLOCK(p_mutex)     (void)pthread_mutex_unlock(p_mutex)
 
 #if 0
 #define PVR_INDEX_LOCK(p_mutex)        HI_INFO_PVR("==>\n");(void)pthread_mutex_lock(p_mutex);HI_INFO_PVR("==|\n")
@@ -48,6 +49,7 @@ extern "C" {
 #define PVR_INDEX_UNLOCK(p_mutex)     (void)pthread_mutex_unlock(p_mutex)
 #endif
 
+#define PVR_INDEX_ERR_INVALID    (-2)
 
 /* frame type definition                                                    */
     /*
@@ -72,6 +74,8 @@ extern "C" {
 
 #define PVR_INDEX_HEADER_CODE        0x5A5A5A5A
 #define PVR_DFT_RESERVED_REC_SIZE    (1024*1024)
+#define PVR_DFT_IDX_WRITECACHE_SIZE      (4*1024)
+#define PVR_DFT_IDX_READCACHE_SIZE       (16*1024)
 
 #define PVR_MIN_CYC_SIZE (50 * 1024 * 1024LLU)
 #define PVR_MIN_CYC_TIMEMS (60 *1000)
@@ -81,9 +85,16 @@ extern "C" {
 #define PVR_INDEX_PAUSE_INVALID_OFFSET      ((HI_U32)(-1))
 #define PVR_INDEX_STEPBACK_INVALID_OFFSET   ((HI_U32)(-1))
 #define PVR_INDEX_INVALID_PTSMS             ((HI_U32)(-1))
+#define PVR_INDEX_DEFFRAME_PTSMS            (40)
 #define PVR_INDEX_INVALID_SEQHEAD_OFFSET    ((HI_U64)(-1))
 #define PVR_INDEX_INVALID_I_FRAME_OFFSET    (0x3fffU)
 #define PVR_INDEX_PAUSE_SEQHEAD_OFFSET      ((HI_U64)(-2))
+#define PVR_INDEX_SCD_WRAP_MS               (47721858)/*scd Wrap-around value in MS:0xffffffff/90*/
+
+#define MAX_FRAME_NUM_ONCE_FETCH 256
+#define MAX_GOP_NUM_ONCE_FETCH 256
+
+#define PVR_REC_INDEX_MAGIC_WORD  0x696E6478 //ASCII code of "indx"
 
 /* rewind record or not */
 #define PVR_INDEX_IS_REWIND(handle)         ((handle)->stCycMgr.bIsRewind)
@@ -148,6 +159,13 @@ typedef enum hiPVR_INDEX_USER_E
     PVR_INDEX_USER_BUTT
 } PVR_INDEX_USER_E;
 
+typedef enum hiPVR_INDEX_REWIND_TYPE_E
+{
+    PVR_INDEX_REWIND_BY_SIZE = 0x00,                   /* rewind by size */
+    PVR_INDEX_REWIND_BY_TIME = 0x01,                   /* rewind by time */
+    PVR_INDEX_REWIND_BUTT
+} PVR_INDEX_REWIND_TYPE_E;
+
 /* rewind record control info */
 typedef struct hiPVR_CYC_MGR_S
 {
@@ -160,8 +178,35 @@ typedef struct hiPVR_CYC_MGR_S
     HI_U32  u32Reserve;         /* u64 aligned */
     HI_U64  u64MaxCycSize;      /* max file size of cycle record */
     HI_U64  u64MaxCycTimeInMs;  /* max time length of cycle record */
+    PVR_INDEX_REWIND_TYPE_E enRewindType;  /* rewind type */
 }PVR_CYC_MGR_S;
 
+/*idx cache buffer*/
+typedef struct
+{
+    HI_U8* pu8Addr;                              /*buffer addr*/
+    HI_U32 u32BufferLen;                         /*buffer length*/
+    HI_U32 u32UsedSize;                          /*used size of buffer*/
+    HI_U32 u32StartOffset;                       /*start offset*/
+    pthread_mutex_t stCacheMutex;                /*cache lock*/
+} HIPVR_IDX_BUF_S;
+
+/* the gop info struction of index */
+typedef struct hiPVR_INDEX_INFO
+{
+    HI_U32          u32GopTotalNum;     
+    HI_U32          u32FrameTotalNum;  
+    HI_U32          u32MaxGopSize;          /* the max size of GOP in history */
+    HI_U32          u32GopSizeInfo[13];    /* gopnum of gopsize in 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120 */
+} PVR_INDEX_INFO_S;
+
+typedef struct hiPVR_REC_INDEX_INFO
+{
+    HI_U32 u32MagicWord;
+    HI_U32 u32LastGopSize;
+    HI_U32 u32Reserved[14];
+    PVR_INDEX_INFO_S stIdxInfo;
+}PVR_REC_INDEX_INFO_S;
 
 /* pvr index handle descriptor                                              */
 typedef struct hiPVR_INDEXER_S
@@ -196,6 +241,7 @@ typedef struct hiPVR_INDEXER_S
 
     HI_U32               u32WriteFrame;          /* the write pointer, frame number of index file on recording */
     HI_U32               u32ReadFrame;           /* the read porinter, frame number of index file on playing */
+    HI_U32               u32PlayFrame;           /* the current playing frame, frame number of index file*/
     PVR_INDEX_ENTRY_S    stCurRecFrame;          /* the current frame info of recording */
     PVR_INDEX_ENTRY_S    stCurPlayFrame;         /* the current frame info of outputing */
     HI_BOOL 			 bIsFristIframe;		 /* flag the first I frame or not on ff and rw trick mode */
@@ -204,12 +250,73 @@ typedef struct hiPVR_INDEXER_S
 
 	HI_U32 				 u32FflushTime;			 /* fresh time pointer flag */
     HI_U32               u32DmxClkTimeMs;
+    HI_U32               u32FRollTime;
 
     HI_UNF_PVR_FILE_ATTR_S    stIndexFileAttr;   /* for pure play, the file attribute of the exist index file, and just only assigned on creating play channel */
 
     HI_CHAR              szIdxFileName[PVR_MAX_FILENAME_LEN+4];
     pthread_mutex_t      stMutex;
+    HIPVR_IDX_BUF_S      stIdxWriteCache;
+    HIPVR_IDX_BUF_S      stIdxReadCache;
+    
+    HI_U32 u32LastDispTime;                      /* the latest recording disptime */
+    HI_U32 u32DeltaDispTimeMs;                   /* the delta value of disptime after the signal lose */
+    HI_U32 u32TimeShiftTillEndTimeMs;            /* the recording disptime when timeshift till end */
+    HI_U32 u32TimeShiftTillEndCnt;               /* the counter of timeshift till end */
+    PVR_REC_INDEX_INFO_S   stRecIdxInfo;
+    HI_BOOL            bTimeRewindFlg;
 }PVR_INDEX_S, *PVR_INDEX_HANDLE;
+
+typedef struct
+{
+    HI_U32  u32FrameNum;  
+    HI_U32  u32PTS;
+    HI_U32  u32FrameSize;
+    HI_U32  u32FrameType;
+    PVR_INDEX_ENTRY_S stIndexEntry;
+} HI_PVR_FETCH_FRAME_S;
+
+typedef struct
+{
+    HI_U32  u32TotalFrameNum; 
+    HI_U32  u32FirstFrameNum;
+    HI_U32  u32LastFrameNum;
+    HI_U32  u32PFrameNum;
+    HI_U32  u32BFrameNum;
+    HI_U32  u32WithoutBLargerSize;  /* the max gopsize value, except B frames */ 
+    HI_PVR_FETCH_FRAME_S  sFrame[MAX_FRAME_NUM_ONCE_FETCH];  /* the description of every frame, contains 256 frames */
+} HI_PVR_FETCH_GOP_S;
+
+typedef struct
+{
+    HI_U32  u32TotalFrameNum;    /* total frame numbers */
+    HI_U32  u32IFrameNum;        /* total I frame numbers */
+    HI_U32  u32PFrameNum;        /* total P frame numbers */
+    HI_U32  u32BFrameNum;        /* total B frame numbers */
+	HI_U32  u32GopNum;          /* total GOP numbers */
+    HI_PVR_FETCH_FRAME_S  sFrame[MAX_FRAME_NUM_ONCE_FETCH];  /* the description of every frame, contains 256 frames */
+	HI_PVR_FETCH_GOP_S sGop[MAX_GOP_NUM_ONCE_FETCH];         /* the description of every GOP, contains 256 GOPs */
+
+} HI_PVR_FETCH_RESULT_S;
+
+typedef struct
+{
+    HI_U32  u32TotalFrameNum;        /* total frame numbers */
+    HI_PVR_FETCH_FRAME_S  sFrame[MAX_FRAME_NUM_ONCE_FETCH];  /* the description of every frame, contains 256 frames */
+} HI_PVR_SEND_RESULT_S;
+
+typedef struct
+{
+    HI_UNF_PVR_PLAY_SPEED_E  enSpeed;     /* trick mode speed */
+    HI_UNF_VCODEC_TYPE_E  enVideoType;    /* vedio type */
+    HI_U32               enChipID;        /* chip ID */
+    HI_U32               enChipVer;       /* chip version */
+    HI_U32               u32Width;        /* width */
+    HI_U32               u32Height;       /* heigth */
+    HI_U32               u32VoRate;       /* frame rate of VO */
+    HI_U32               u32VoDropFrame;  /* flag of VO drop frame */  
+}HI_PVR_FAST_FORWARD_BACKWARD_S;
+
 
 
 HI_U32 PVRIndexGetCurTimeMs(HI_VOID);
@@ -232,24 +339,29 @@ HI_VOID PVR_Index_ResetPlayAttr(PVR_INDEX_HANDLE handle);
 HI_S32 PVR_Index_ChangePlayMode(PVR_INDEX_HANDLE handle);
 
 /***** save frame *****/
-HI_S32 PVR_Index_SaveFramePosition(HI_U32 InstIdx, FRAME_POS_S *pstScInfo);
-
+HI_S32 PVR_Index_SaveFramePosition(HI_U32 InstIdx, FRAME_POS_S *pstScInfo,HI_U32 u32DirectFlag);
+HI_S32 PVR_Index_FlushIdxWriteCache(PVR_INDEX_HANDLE    handle);
+HI_S32 PVR_Index_IfOffsetInWriteCache(PVR_INDEX_HANDLE    handle,HI_U32 u32Offset,HI_U32 u32Size);
 
 /* get frame opration    */
+HI_S32 PVRIndexGetPlayNextEntry(PVR_INDEX_HANDLE handle, PVR_INDEX_ENTRY_S *pEntry);
 HI_S32 PVR_Index_GetNextFrame(PVR_INDEX_HANDLE handle, PVR_INDEX_ENTRY_S *pstFrame);
 HI_S32 PVR_Index_GetNextIFrame(PVR_INDEX_HANDLE handle, PVR_INDEX_ENTRY_S *pstFrame);
 HI_S32 PVR_Index_GetPreIFrame(PVR_INDEX_HANDLE handle, PVR_INDEX_ENTRY_S *pstFrame);
 HI_S32 PVR_Index_GetCurrentFrame(const PVR_INDEX_HANDLE handle,  PVR_INDEX_ENTRY_S *pEntry);
 HI_S32 PVR_Index_QueryFrameByPTS(const PVR_INDEX_HANDLE handle, HI_U32 u32SearchPTS, PVR_INDEX_ENTRY_S *pEntry, HI_U32 *pu32Pos, HI_U32 IsForword);
+HI_S32 PVR_Index_QueryFrameByTime(const PVR_INDEX_HANDLE handle, HI_U32 u32SearchTime, PVR_INDEX_ENTRY_S *pEntry, HI_U32 *pu32Pos);
 HI_S32 PVR_Index_GetFrameByNum(const PVR_INDEX_HANDLE handle,  PVR_INDEX_ENTRY_S *pEntry, HI_U32 num);
+HI_U32 PVRIndexFindFrameByPTS(PVR_INDEX_HANDLE handle, HI_U32 u32PtsSearched, HI_U32 u32FrmPos, HI_U32 IsForword);
 
 
 /* seek opration */
 HI_S32 PVR_Index_SeekToPTS(PVR_INDEX_HANDLE handle, HI_U32 u32PtsMs, HI_U32 IsForword, HI_U32 IsNextForword);
+HI_S32 PVR_Index_SeekToTime(PVR_INDEX_HANDLE handle, HI_U32 u32TimeMs);
 HI_S32 PVR_Index_SeekToStart(PVR_INDEX_HANDLE handle);
 HI_S32 PVR_Index_SeekToEnd(PVR_INDEX_HANDLE handle);
 HI_S32 PVR_Index_SeekToPauseOrStart(PVR_INDEX_HANDLE handle);
-HI_S32 PVR_Index_SeekByTime(PVR_INDEX_HANDLE handle, HI_S64 offset, HI_S32 whence);
+HI_S32 PVR_Index_SeekByTime(PVR_INDEX_HANDLE handle, HI_S64 offset, HI_S32 whence, HI_U32 curplaytime);
 HI_S32 PVR_Index_SeekByFrame2I(PVR_INDEX_HANDLE handle, HI_S32 offset, HI_S32 whence);
 
 
@@ -259,14 +371,30 @@ HI_S32 PVR_Index_MarkPausePos(PVR_INDEX_HANDLE handle);
 /*file opration*/
 HI_S32 PVR_Index_PlayGetFileAttrByFileName(const HI_CHAR *pFileName, HI_UNF_PVR_FILE_ATTR_S *pAttr);
 HI_VOID PVR_Index_GetIdxFileName(HI_CHAR* pIdxFileName, HI_CHAR* pSrcFileName);
-HI_S32 PVR_Index_PrepareHeaderInfo(PVR_INDEX_HANDLE handle, HI_U32 u32UsrDataLen);
+HI_S32 PVR_Index_PrepareHeaderInfo(PVR_INDEX_HANDLE handle, HI_U32 u32UsrDataLen, HI_U32 u32Vtype);
 HI_S32 PVR_Index_GetUsrDataInfo(HI_S32 s32Fd, HI_U8* pBuff, HI_U32 u32BuffSize);
 HI_S32 PVR_Index_SetUsrDataInfo(HI_S32 s32Fd, HI_U8* pBuff, HI_U32 u32UsrDataLen);
 HI_S32 PVR_Index_GetCADataInfo(HI_S32 s32Fd, HI_U8* pBuff, HI_U32 u32BuffSize);
 HI_S32 PVR_Index_SetCADataInfo(HI_S32 s32Fd, HI_U8* pBuff, HI_U32 u32CADataLen);
+HI_VOID PVR_Index_GetIdxInfo(PVR_INDEX_HANDLE handle);
+HI_VOID PVR_Index_GetRecIdxInfo(PVR_INDEX_HANDLE handle);
+HI_VOID PVR_Index_RecIdxInfo(PVR_INDEX_HANDLE handle, PVR_INDEX_ENTRY_S *pstIdxEntry);
+HI_VOID PVR_Index_UpdateIdxInfoWhenRewind(PVR_INDEX_HANDLE handle);
+HI_VOID PVR_Index_RecLastIdxInfo(PVR_INDEX_HANDLE handle);
 HI_BOOL PVR_Index_CheckSetRecReachPlay(PVR_INDEX_HANDLE handle);
 HI_BOOL PVR_Index_QureyClearRecReachPlay(PVR_INDEX_HANDLE handle);
 
+HI_S32 PVR_Index_GetVtype(PVR_INDEX_HANDLE handle);
+HI_S32 PVR_Index_GetMaxBitrate(PVR_INDEX_HANDLE piIndexHandle);
+HI_S32 PVR_Index_GetStreamBitRate(PVR_INDEX_HANDLE piIndexHandle,HI_U32 *pBitRate,HI_U32 u32StartFrameNum,HI_U32 u32EndFrameNum);
+HI_S32 PVR_Index_GetFBwardIPBFrameNum(PVR_INDEX_HANDLE handle, HI_U32 u32Direction, HI_U32 u32FrameType, HI_U32 u32CurFrameNum, HI_U32 *pu32NextFrameNum);
+HI_S32 PVR_Index_GetCurGOPAttr(PVR_INDEX_HANDLE piIndexHandle, HI_PVR_FETCH_GOP_S *pPvrGopAttr, HI_U32 u32StartIFrameNum);
+HI_S32 PVR_Index_GetForwardGOPAttr(PVR_INDEX_HANDLE piIndexHandle, HI_PVR_FETCH_RESULT_S *pPvrFetchRes, HI_U32 u32StartFrameNum, HI_U32 u32FrameNum);
+HI_S32 PVR_Index_GetBackwardGOPAttr(PVR_INDEX_HANDLE piIndexHandle, HI_PVR_FETCH_RESULT_S *pPvrFetchRes, HI_U32 u32StartFrameNum, HI_U32 u32FrameNum);
+HI_S32 PVR_Index_GetNextGOPAttr(PVR_INDEX_HANDLE piIndexHandle, HI_PVR_FETCH_GOP_S *pPvrGopAttr, HI_U32 u32StartIFrameNum);
+HI_S32 PVR_Index_GetPreGOPAttr(PVR_INDEX_HANDLE piIndexHandle, HI_PVR_FETCH_GOP_S *pPvrGopAttr, HI_U32 u32StartIFrameNum);
+HI_S32 PVR_Index_GetFrmNumByEntry(PVR_INDEX_HANDLE pstIndexHandle, PTR_PVR_INDEX_ENTRY pstIndexEntry, HI_S32 *ps32FrmNum);
+HI_S32 PVR_Index_GetFrameRate(PVR_INDEX_HANDLE piIndexHandle, HI_U32 *pFrameRate);
 
 #ifdef __cplusplus
 #if __cplusplus

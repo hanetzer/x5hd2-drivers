@@ -18,13 +18,15 @@
 #include <linux/hardirq.h>
 
 #include "hi_type.h"
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
 #include "hi_debug.h"
-#include "drv_dev_ext.h"
+#include "hi_drv_dev.h"
 #include "wmalloc.h"
 #include "tde_osr.h"
 #include "hi_kernel_adapt.h"
 
+#include "hi_gfx_comm_k.h"
+#include "tde_config.h"
 #ifdef __cplusplus
 #if __cplusplus
 extern "C" {
@@ -99,20 +101,23 @@ typedef enum hiTDE_NOTIFY_MODE_E
 #define TDE_KERN_INFO       3   
 #define TDE_KERN_DEBUG      4  
 
-#define TDE_TRACE( level, fmt, args... )    \
+#ifndef CONFIG_TDE_DEBUG_DISABLE  
+#define TDE_TRACE( level, fmt...)    \
  do {                                       \
         if(TDE_KERN_ERR == level)           \
-            HI_FATAL_PRINT(HI_ID_TDE, fmt); \
+            HI_GFX_COMM_LOG_FATAL(HIGFX_TDE_ID, fmt); \
         else if(TDE_KERN_WARNING == level)  \
-            HI_ERR_PRINT(HI_ID_TDE, fmt);   \
+            HI_GFX_COMM_LOG_ERROR(HIGFX_TDE_ID, fmt);   \
         else if(TDE_KERN_INFO == level)     \
-            HI_WARN_PRINT(HI_ID_TDE, fmt);  \
+            HI_GFX_COMM_LOG_WARNING(HIGFX_TDE_ID, fmt);  \
         else                                \
-            HI_INFO_PRINT(HI_ID_TDE, fmt);  \
+            HI_GFX_COMM_LOG_INFO(HIGFX_TDE_ID, fmt);  \
     } while (0)
+#else 
+#define TDE_TRACE( level, fmt... )  
+#endif
 
-
-#ifdef  TDE_DEBUG
+#ifndef CONFIG_TDE_DEBUG_DISABLE  
 #define TDE_ASSERT(expr)  do {      \
             if(!(expr)) { \
                 TDE_TRACE(TDE_KERN_ERR, "Assertion [%s] failed! %s:%s(line=%d)\n",\
@@ -122,57 +127,6 @@ typedef enum hiTDE_NOTIFY_MODE_E
 #else
 #define TDE_ASSERT(expr)
 #endif
-
-#define TDE_REG_MAP(base, size)  \
-     ioremap_nocache((base), (size))
-
-#define TDE_REG_UNMAP(base)  \
-    iounmap((HI_VOID*)(base))
-
-#define TDE_NEW_MMB(pmmb) 
-
-#define TDE_FREE_MMB(pmmb, phyaddr) \
-    do{\
-        MMZ_BUFFER_S stBuffer;                              \
-        stBuffer.u32StartPhyAddr = phyaddr;                 \
-        HI_DRV_MMZ_Release(&stBuffer);                      \
-    }while(0)
-
-#define TDE_GET_PHYADDR_MMB(pmmb, name, size, phyaddr) \
-    do{\
-        MMZ_BUFFER_S stBuffer;                              \
-        if(HI_SUCCESS == HI_DRV_MMZ_Alloc(name, NULL, size, 16, &stBuffer))   \
-        {                                                           \
-            phyaddr = stBuffer.u32StartPhyAddr;                     \
-        }                                                           \
-        else                                                        \
-        {                                                           \
-            TDE_TRACE(TDE_KERN_ERR, "new_mmb failed!");             \
-            phyaddr = 0;                                            \
-        }                                                           \
-    }while(0)
-
-#define TDE_REMAP_MMB(pmmb, phyaddr, virtaddr) \
-    do{\
-        MMZ_BUFFER_S stBuffer;                              \
-        stBuffer.u32StartPhyAddr = phyaddr;                 \
-        if(HI_SUCCESS == HI_DRV_MMZ_Map(&stBuffer))         \
-        {                                                   \
-            virtaddr = stBuffer.u32StartVirAddr;            \
-        }                                                   \
-        else                                                \
-        {                                                   \
-            TDE_FREE_MMB(pmmb, phyaddr);                    \
-            return -1;                                      \
-        }                                                   \
-    }while(0)
-
-#define TDE_UNMAP_MMB(pmmb, virtaddr) \
-do{\
-    MMZ_BUFFER_S stBuffer;                              \
-    stBuffer.u32StartVirAddr = virtaddr;                \
-    HI_DRV_MMZ_Unmap(&stBuffer);                        \
-}while(0)
 
 STATIC INLINE HI_VOID * TDE_MALLOC(HI_U32 size) 
 {
@@ -194,9 +148,6 @@ STATIC INLINE HI_VOID TDE_FREE(HI_VOID* ptr)
 #define TDE_WAIT_EVENT_INTERRUPTIBLE_TIMEOUT(queue, condition, timeout) wait_event_interruptible_timeout(queue, condition, timeout)
 
 #define TDE_WAKEUP_INTERRUPTIBLE(pqueue) wake_up_interruptible(pqueue)
-
-//#define TDE_DECLARE_MUTEX(mutex)    DECLARE_MUTEX(mutex)
-#define TDE_DECLARE_MUTEX(mutex)    HI_DECLARE_MUTEX(mutex)
 
 #ifdef TDE_USE_SPINLOCK
 #define TDE_DOWN_INTERRUPTIBLE(pmutex)

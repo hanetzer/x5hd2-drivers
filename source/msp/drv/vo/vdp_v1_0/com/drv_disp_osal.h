@@ -33,7 +33,10 @@ History       :
 
 
 // for HI_KMALLOC
-#include "drv_mem_ext.h"
+#include "hi_drv_mem.h"
+
+#include "hi_drv_sys.h"
+
 
 // for HI_ID_DISP
 #include "hi_module.h"
@@ -55,7 +58,9 @@ History       :
 #include <asm/io.h>
 
 // for MMZ
-#include "drv_mmz_ext.h"
+#include "hi_drv_mmz.h"
+
+//for snprintf
 
 /*
 #include <asm/system.h>
@@ -125,7 +130,13 @@ do{    \
 
 #define DISP_IOADDRESS(a) IO_ADDRESS(a)
 
-#define DISP_MALLOC(a) HI_KMALLOC(HI_ID_DISP, a, GFP_KERNEL)
+#define DISP_MALLOC(a) ({         \
+             HI_U32 b = 0; \
+             b = (HI_U32) HI_KMALLOC(HI_ID_DISP, a, GFP_KERNEL); \
+             memset((void*)b, 0, a); \
+             b; \
+})
+                 
 #define DISP_FREE(a)   HI_KFREE(HI_ID_DISP, a)
 #define DISP_MEMSET(a, b, c) memset(a, b, c)
 
@@ -161,7 +172,14 @@ do{    \
 
 #define DISP_IOADDRESS(a) 
 
-#define DISP_MALLOC(a) malloc(a)
+#define DISP_MALLOC(a) ({         \
+             HI_U32 b = 0; \
+             b = (HI_U32) malloc(a); \
+             memset((void*)b, 0, a); \
+             b; \
+})
+
+
 #define DISP_FREE(a)   free(a)
 #define DISP_MEMSET(a, b, c) memset(a, b, c)
 
@@ -176,23 +194,18 @@ do{    \
 #elif defined(__DISP_PLATFORM_BOOT__)
 
 #include  <uboot.h>
-//#include  "stdio.h"
-// for error code
 #include "hi_error_mpi.h"
+#include "hi_common.h"
 
-#define DISP_PRINT printf
+#define DISP_PRINT(fmt...)       HI_INFO_PRINT(HI_ID_DISP, fmt)
 
-#define DISP_FATAL(fmt...) \
-            printf(fmt)
+#define DISP_FATAL(fmt...)       HI_ERR_PRINT(HI_ID_DISP, fmt)            
 
-#define DISP_ERROR(fmt...) \
-            printf(fmt)
+#define DISP_ERROR(fmt...)       HI_ERR_PRINT(HI_ID_DISP, fmt)
 
-#define DISP_WARN(fmt...) \
-            printf(fmt)
+#define DISP_WARN(fmt...)        HI_INFO_PRINT(HI_ID_DISP, fmt)
 
-#define DISP_INFO(fmt...) \
-            printf(fmt)
+#define DISP_INFO(fmt...)        HI_INFO_PRINT(HI_ID_DISP, fmt)
 
 #define DISP_FATAL_RETURN() \
 do{    \
@@ -232,6 +245,9 @@ typedef struct hiDISP_MMZ_BUF_S
 
 HI_S32  DISP_OS_MMZ_Alloc(const char *bufname, char *zone_name, HI_U32 size, int align, DISP_MMZ_BUF_S *pstMBuf);
 HI_VOID DISP_OS_MMZ_Release(DISP_MMZ_BUF_S *pstMBuf);
+
+HI_S32 DISP_OS_MMZ_Map(DISP_MMZ_BUF_S *pstMBuf);
+HI_S32 DISP_OS_MMZ_UnMap(DISP_MMZ_BUF_S *pstMBuf);
 
 HI_S32 DISP_OS_MMZ_AllocAndMap(const char *bufname, char *zone_name, HI_U32 size, int align, DISP_MMZ_BUF_S *pstMBuf);
 HI_VOID DISP_OS_MMZ_UnmapAndRelease(DISP_MMZ_BUF_S *pstMBuf);

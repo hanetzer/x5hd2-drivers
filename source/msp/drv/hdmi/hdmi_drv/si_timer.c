@@ -127,6 +127,7 @@ HI_U32 SI_timer_count(void)
     time_now = si_time_now();
     time_used = 1000000 * ( time_now.tv_sec - pretick.tv_sec ) + time_now.tv_usec - pretick.tv_usec;
     time_used = time_used/1000;
+
     HI_INFO_HDMI("duration:%u ms\n", time_used);
     //pretick = time_now;
     return time_used;
@@ -431,7 +432,7 @@ HI_S32 SI_EDIDProcessing( void )
     if (HI_SUCCESS != SI_PrepareEDID(HI_FALSE))
     {
         /* We should set this status to DVI Mode */
-        HI_ERR_HDMI("come to here force setting EDID,Try Read EDID Again\n");
+        HI_WARN_HDMI("come to here force setting EDID,Try Read EDID Again\n");
         SI_EDID_Force_Setting();
         return HI_FAILURE;
     }
@@ -488,7 +489,7 @@ HI_U8 SI_TimerHandler(void)
             	HI_ERR_HDMI("Read EDID Fail.Read %d times\n",u32Count);
             	break;
             }
-            HI_ERR_HDMI("Read EDID times:%d\n",u32Count);
+            HI_WARN_HDMI("Read EDID times:%d\n",u32Count);
         }
         HI_INFO_HDMI("Read EDID successed times :%d\n",u32Count);
         SI_timer_count();

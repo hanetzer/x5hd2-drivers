@@ -34,7 +34,7 @@ extern "C" {
 #include "hi_debug.h"
 #include "hi_module.h"
 #include "hi_mpi_mem.h"
-#include "drv_struct_ext.h"
+#include "hi_drv_struct.h"
 #include "hi_error_mpi.h"
 
 #include "hi_mpi_ao.h"
@@ -144,6 +144,25 @@ HI_S32   HI_MPI_AO_SND_SetHdmiMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E
     return ioctl(g_s32AOFd, CMD_AO_SND_SETHDMIMODE, &stHdmiMode);
 }
 
+HI_S32   HI_MPI_AO_SND_GetHdmiMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort,
+                                              HI_UNF_SND_HDMI_MODE_E *penHdmiMode)
+{
+    HI_S32 s32Ret;
+    AO_SND_HdmiMode_Param_S stHdmiMode;
+
+    CHECK_AO_NULL_PTR(penHdmiMode);
+    stHdmiMode.enSound = enSound;
+    stHdmiMode.enOutPort = enOutPort;
+    
+    s32Ret = ioctl(g_s32AOFd, CMD_AO_SND_SETHDMIMODE, &stHdmiMode);
+    if(HI_SUCCESS == s32Ret)
+    {
+        *penHdmiMode = stHdmiMode.enMode;
+    }
+    
+    return s32Ret;
+}
+
 HI_S32   HI_MPI_AO_SND_SetSpdifMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort,
                                               HI_UNF_SND_SPDIF_MODE_E enSpdifMode)
 {
@@ -156,10 +175,31 @@ HI_S32   HI_MPI_AO_SND_SetSpdifMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_
     return ioctl(g_s32AOFd, CMD_AO_SND_SETSPDIFMODE, &stSpdifMode);
 }
 
+HI_S32   HI_MPI_AO_SND_GetSpdifMode(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort,
+                                              HI_UNF_SND_SPDIF_MODE_E *penSpdifMode)
+{
+    HI_S32 s32Ret;
+    AO_SND_SpdifMode_Param_S stSpdifMode;
+    
+    CHECK_AO_NULL_PTR(penSpdifMode);
+    stSpdifMode.enSound = enSound;
+    stSpdifMode.enOutPort = enOutPort;
+    
+    s32Ret = ioctl(g_s32AOFd, CMD_AO_SND_GETSPDIFMODE, &stSpdifMode);
+    if(HI_SUCCESS == s32Ret)
+    {
+        *penSpdifMode = stSpdifMode.enMode;
+    }
+    
+    return s32Ret;
+}
+
+
 HI_S32   HI_MPI_AO_SND_SetVolume(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort,
                                  const HI_UNF_SND_GAIN_ATTR_S *pstGain)
 {
     AO_SND_Volume_Param_S stVolume;
+    CHECK_AO_NULL_PTR(pstGain);
 
     stVolume.enSound = enSound;
     stVolume.enOutPort = enOutPort;
@@ -384,8 +424,8 @@ HI_S32   HI_MPI_AO_Track_Flush(HI_HANDLE hTrack)
 
 HI_S32   HI_MPI_AO_Track_SendData(HI_HANDLE hTrack, const HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
 {
-    CHECK_AO_TRACK_ID(hTrack);
     CHECK_AO_NULL_PTR(pstAOFrame);
+    CHECK_AO_TRACK_ID(hTrack);
     
     if((hTrack & AO_TRACK_CHNID_MASK) >= AO_MAX_REAL_TRACK_NUM)
     {
@@ -401,6 +441,7 @@ HI_S32   HI_MPI_AO_Track_SendData(HI_HANDLE hTrack, const HI_UNF_AO_FRAMEINFO_S 
 
 HI_S32   HI_MPI_AO_Track_SetWeight(HI_HANDLE hTrack, const HI_UNF_SND_GAIN_ATTR_S *pstTrackGain)
 {
+    CHECK_AO_NULL_PTR(pstTrackGain);
     CHECK_AO_TRACK_ID(hTrack);
     CHECK_VIRTUAL_Track(hTrack);
 
@@ -413,6 +454,7 @@ HI_S32   HI_MPI_AO_Track_SetWeight(HI_HANDLE hTrack, const HI_UNF_SND_GAIN_ATTR_
 
 HI_S32   HI_MPI_AO_Track_GetWeight(HI_HANDLE hTrack, HI_UNF_SND_GAIN_ATTR_S* pstTrackGain)
 {
+    CHECK_AO_NULL_PTR(pstTrackGain);
     CHECK_AO_TRACK_ID(hTrack);
     CHECK_VIRTUAL_Track(hTrack);
     
@@ -437,6 +479,7 @@ HI_S32   HI_MPI_AO_Track_GetWeight(HI_HANDLE hTrack, HI_UNF_SND_GAIN_ATTR_S* pst
 // HI_UNF_SND_TRACK_TYPE_VIRTUAL only
 HI_S32   HI_MPI_AO_Track_AcquireFrame(HI_HANDLE hTrack, HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
 {
+    CHECK_AO_NULL_PTR(pstAOFrame);
     CHECK_AO_TRACK_ID(hTrack);
     CHECK_REAL_Track(hTrack);
     
@@ -444,9 +487,10 @@ HI_S32   HI_MPI_AO_Track_AcquireFrame(HI_HANDLE hTrack, HI_UNF_AO_FRAMEINFO_S *p
 }
 HI_S32   HI_MPI_AO_Track_ReleaseFrame(HI_HANDLE hTrack, HI_UNF_AO_FRAMEINFO_S *pstAOFrame)
 {
+    CHECK_AO_NULL_PTR(pstAOFrame);
     CHECK_AO_TRACK_ID(hTrack);
     CHECK_REAL_Track(hTrack);
-    
+
     return VIR_ReleaseFrame(hTrack, pstAOFrame);
 }
 /******************************* MPI Track for MPI_AVPlay only **********************/
@@ -656,7 +700,10 @@ HI_S32   HI_MPI_AO_SND_AcquireCastFrame(HI_HANDLE hCast, HI_UNF_AO_FRAMEINFO_S *
 
     memcpy(pstCastFrame, &stCastData.stAOFrame, sizeof(HI_UNF_AO_FRAMEINFO_S));
     pstCastFrame->ps32PcmBuffer = (HI_S32 *)(stCastInfo.u32UserVirtAddr + stCastData.u32DataOffset);
-    
+    if(0 == pstCastFrame->u32PcmSamplesPerFrame)
+	{
+        return HI_ERR_AO_CAST_TIMEOUT;
+    }
     return HI_SUCCESS;
 }
 HI_S32   HI_MPI_AO_SND_ReleaseCastFrame(HI_HANDLE hCast, HI_UNF_AO_FRAMEINFO_S *pstCastFrame)

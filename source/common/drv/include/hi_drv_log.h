@@ -18,6 +18,9 @@
 #ifndef __HI_DRV_LOG_H__
 #define __HI_DRV_LOG_H__
 
+#include "hi_type.h"
+#include "hi_module.h"
+
 #ifdef __cplusplus
 extern "C"{
 #endif /* End of #ifdef __cplusplus */
@@ -25,6 +28,12 @@ extern "C"{
 extern char* StorePath;
 
 #define STORE_PATH StorePath
+
+/*Define Debug Level For LOG                 */
+#define HI_FATAL_LOG(fmt...)    HI_FATAL_PRINT(HI_ID_LOG, fmt)
+#define HI_ERR_LOG(fmt...)      HI_ERR_PRINT(HI_ID_LOG, fmt)
+#define HI_WARN_LOG(fmt...)     HI_WARN_PRINT(HI_ID_LOG, fmt)
+#define HI_INFO_LOG(fmt...)     HI_INFO_PRINT(HI_ID_LOG, fmt)
 
 typedef struct hiLOG_PATH_S
 {
@@ -39,6 +48,9 @@ typedef struct hiSTORE_PATH_S
 }STORE_PATH_S;
 
 #ifdef __KERNEL__
+
+#include <linux/seq_file.h>
+
 HI_S32 HI_DRV_LOG_Init(HI_VOID);
 HI_VOID HI_DRV_LOG_Exit(HI_VOID);
 

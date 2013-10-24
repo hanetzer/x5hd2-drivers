@@ -6,19 +6,9 @@
 
 #include "hi_type.h"
 #include "hi_debug.h"
-
+#include "hi_drv_mem.h"
 #include "drv_mmgr.h"
-
 #include "drv_mem.h"
-
-
-#if 0
-#define THIS_INFO_PRINT( fmt, arg...) printk(fmt, ##arg)
-#define THIS_ERROR_PRINT(fmt, arg...) printk(fmt, ##arg)
-#else
-#define THIS_INFO_PRINT( fmt, arg...)
-#define THIS_ERROR_PRINT(fmt, arg...)
-#endif
 
 typedef struct tagKMEM_INFO_S
 {
@@ -79,7 +69,7 @@ HI_S32 KMEM_Pool_Init(HI_U32 u32Count)
 
         if (NULL == g_KMemBaseAddr)
         {
-            THIS_ERROR_PRINT("<%s> malloc %d size failure!\n", __func__, u32Count * sizeof(KMEM_POOL_S));
+            HI_ERR_MEM("<%s> malloc %d size failure!\n", __func__, u32Count * sizeof(KMEM_POOL_S));
 
             return HI_FAILURE;
         }
@@ -155,7 +145,7 @@ HI_S32 KMEM_FindNode(KMEM_ITEM_S* pNodeHeader, HI_VOID* pAddr, KMEM_INFO_S** pst
 
     if (NULL == pNodeHeader || pstNode == NULL)
     {
-        THIS_ERROR_PRINT("<%s>: find node failure, node header is NULL\n", __func__);
+        HI_ERR_MEM("<%s>: find node failure, node header is NULL\n", __func__);
 
         return HI_FAILURE;
     }
@@ -191,7 +181,7 @@ HI_S32 KMEM_AddNode(KMEM_ITEM_S* pNodeHeader, KMEM_ITEM_S* pstNode)
 
     if (NULL == pNodeHeader || pstNode == NULL)
     {
-        THIS_ERROR_PRINT("<%s>: add node failure, node header is NULL\n", __func__);
+        HI_ERR_MEM("<%s>: add node failure, node header is NULL\n", __func__);
 
         return HI_FAILURE;
     }
@@ -199,7 +189,7 @@ HI_S32 KMEM_AddNode(KMEM_ITEM_S* pNodeHeader, KMEM_ITEM_S* pstNode)
     pstAddNode = (KMEM_ITEM_S*)KMEM_POOL_MALLOC(sizeof(KMEM_ITEM_S));
     if ( NULL == pstAddNode)
     {
-        THIS_ERROR_PRINT("<%s>: add node failure, malloc node failure.\n", __func__);
+        HI_ERR_MEM("<%s>: add node failure, malloc node failure.\n", __func__);
         return HI_FAILURE;
     }
 
@@ -229,7 +219,7 @@ HI_S32 KMEM_DelNode(KMEM_ITEM_S* pNodeHeader, KMEM_ITEM_S* pstNode)
 
     if (NULL == pNodeHeader || pNodeHeader->pNext == NULL)
     {
-        THIS_ERROR_PRINT("<%s>:delete node failure, node header is NULL\n", __func__);
+        HI_ERR_MEM("<%s>:delete node failure, node header is NULL\n", __func__);
 
         return HI_FAILURE;
     }
@@ -246,7 +236,7 @@ HI_S32 KMEM_DelNode(KMEM_ITEM_S* pNodeHeader, KMEM_ITEM_S* pstNode)
             pDelNode = pItrNode;
             pItrNode = pItrNode->pNext;
 
-            THIS_INFO_PRINT("<%s>: delete module addr:%p\n", __func__, pDelNode->stMemInfo.pMemAddr);
+            HI_INFO_MEM("<%s>: delete module addr:%p\n", __func__, pDelNode->stMemInfo.pMemAddr);
 
             KMEM_POOL_FREE(pDelNode);
         }
@@ -271,7 +261,7 @@ HI_S32 KMEM_DelNode(KMEM_ITEM_S* pNodeHeader, KMEM_ITEM_S* pstNode)
         pDelNode = pItrNode->pNext;
         pItrNode->pNext = pItrNode->pNext->pNext;
 
-        THIS_INFO_PRINT("<%s>: delete module node:%p\n", __func__, pDelNode->stMemInfo.pMemAddr);
+        HI_INFO_MEM("<%s>: delete module node:%p\n", __func__, pDelNode->stMemInfo.pMemAddr);
 
         KMEM_POOL_FREE(pDelNode);
 

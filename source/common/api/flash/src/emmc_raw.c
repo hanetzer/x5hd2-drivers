@@ -34,14 +34,45 @@ EMMC_FLASH_S g_stEmmcFlash;
 #define EMMC_RAW_ASSERT(fmt...)
 #endif
 
+#define EMMC_RAW_AREA_START 0//EMMC_SECTOR_SIZE
 
-HI_S32 emmc_raw_init(void)
+extern int cmdline_parts_init(char *bootargs);
+extern HI_S32 get_part_info(HI_U8 partindex, HI_U64 *start, HI_U64 *size);
+
+HI_S32 find_part_from_devname(char *media_name, char *bootargs, 
+			      char *devname, HI_U64 *start, HI_U64 *size)
+{
+	HI_U8 partnum = 0;
+	char *tmp;
+
+	if (!(tmp = strstr(bootargs, "blkdevparts=")))
+		return HI_FAILURE;
+	tmp += strlen("blkdevparts=");
+
+	if (!strstr(bootargs, media_name))
+		return HI_FAILURE;
+
+	if (!(tmp = strstr(devname, "mmcblk0p")))
+		return HI_FAILURE;
+	tmp += strlen("mmcblk0p");
+	partnum = (HI_U8)strtol(tmp, NULL, 10);
+
+	if (get_part_info(partnum, start, size))
+		return HI_FAILURE;
+
+	return HI_SUCCESS;
+}
+
+HI_S32 emmc_raw_init(char *bootargs)
 {
     HI_U8  aucBuf[512];
     HI_S32  dev_fd;
-    HI_U8 *pcStr;
-    HI_U32 u32Sectors;
-    HI_U8  ucLoop;
+    HI_S32  tmp_fd = -1;
+
+    if (0 > cmdline_parts_init(bootargs))
+    {
+        return HI_FAILURE;
+    }
 
 #if defined (ANDROID)
     if ((dev_fd = open("/dev/block/mmcblk0", O_RDWR)) == -1)
@@ -63,57 +94,28 @@ HI_S32 emmc_raw_init(void)
 
     close(dev_fd);
 
-    if( EMMC_SECTOR_TAIL != *(HI_U16*)&aucBuf[510])
-    {
-        EMMC_RAW_ASSERT("Record Tag[%x] is wrong.", *(HI_U16*)&aucBuf[510]);
-    }
-
-    pcStr = &aucBuf[446];
-
     /* Raw area start from 512, after MBR.. */
-    g_stEmmcFlash.u64RawAreaStart = 512;
-    for( ucLoop = 0; ucLoop < 4; ucLoop++)
-    {
-        pcStr += ucLoop*16;
-        if(0 == pcStr[4])
-        {
-            continue;
-        }
-        else if( EMMC_EXT_PART_ID != pcStr[4])
-        {
-            EMMC_RAW_ASSERT("Unknown main partition type 0x%x.", pcStr[4]);
-            return HI_FAILURE;
-        }
-
-        /* Get raw area size from MBR */
-        u32Sectors = pcStr[8]| pcStr[9]<<8 | pcStr[10] <<16 | pcStr[11];
-        if( 16 > u32Sectors)
-        {
-            EMMC_RAW_ASSERT("The emmc hasn't been fdisked.");
-            return HI_FAILURE;
-        }
-
-        g_stEmmcFlash.u64ExtAreaStart = g_stEmmcFlash.u64RawAreaSize = (HI_U64)u32Sectors * EMMC_SECTOR_SIZE;
-
-        /* Get extend area size from MBR */
-        u32Sectors = pcStr[0xc]| pcStr[0xd]<<8 | pcStr[0xe] <<16 | pcStr[0xf];
-        if( 16 > u32Sectors)
-        {
-            EMMC_RAW_ASSERT("The emmc hasn't been fdisked.");
-            return HI_FAILURE;
-        }
-
-        g_stEmmcFlash.u64ExtAreaSize = (HI_U64)u32Sectors * EMMC_SECTOR_SIZE;
-
-        break;
-    }
-
-    if( 4 <= ucLoop )
-    {
-        EMMC_RAW_ASSERT("No found extention partition.");
+    g_stEmmcFlash.u64RawAreaStart = EMMC_RAW_AREA_START;
+	tmp_fd = open("/sys/block/mmcblk0/size", O_RDONLY);
+	if (tmp_fd < 0)
+	{
+		EMMC_RAW_ASSERT("Fail to open the size of mmcblk0\n");
+		return HI_FAILURE;
+	}
+	
+	memset(aucBuf, 0, sizeof(aucBuf));
+	if (0 > read(tmp_fd, aucBuf, sizeof(aucBuf)))
+	{
+        EMMC_RAW_ASSERT("Failed to read the size of mmcblk0\n");
+        close(tmp_fd);
         return HI_FAILURE;
     }
-
+	aucBuf[sizeof(aucBuf)-1] = '\0';
+	close(tmp_fd);
+	
+	g_stEmmcFlash.u64RawAreaSize  = (HI_U64)strtoull((char *)aucBuf, NULL, 10) 
+									* EMMC_SECTOR_SIZE - EMMC_RAW_AREA_START;
+	
     return HI_SUCCESS;
 }
 
@@ -121,9 +123,9 @@ static HI_S32 emmc_flash_probe(void)
 {
     int dev;
 #if defined (ANDROID)
-    if ((dev = open("/dev/block/mmcblk0", O_RDWR)) == -1)
+    if ((dev = open("/dev/block/mmcblk0", O_RDWR | O_SYNC)) == -1)
 #else
-    if ((dev = open("/dev/mmcblk0", O_RDWR)) == -1)
+    if ((dev = open("/dev/mmcblk0", O_RDWR | O_SYNC)) == -1)
 #endif
     {
         EMMC_RAW_ASSERT("Failed to open device '/dev/mmcblk0'.");
@@ -159,13 +161,13 @@ EMMC_CB_S *emmc_raw_open(HI_U64 u64Addr,
         return NULL;
     }
 
-    if ((u64Addr > g_stEmmcFlash.u64ExtAreaStart + g_stEmmcFlash.u64ExtAreaSize)
-            || (u64Length > g_stEmmcFlash.u64ExtAreaStart + g_stEmmcFlash.u64ExtAreaSize)
-            || ((u64Addr + u64Length) > g_stEmmcFlash.u64ExtAreaStart + g_stEmmcFlash.u64ExtAreaSize))
+    if ((u64Addr > g_stEmmcFlash.u64RawAreaStart + g_stEmmcFlash.u64RawAreaSize)
+            || (u64Length > g_stEmmcFlash.u64RawAreaStart + g_stEmmcFlash.u64RawAreaSize)
+            || ((u64Addr + u64Length) > g_stEmmcFlash.u64RawAreaStart + g_stEmmcFlash.u64RawAreaSize))
     {
         EMMC_RAW_ASSERT("Attempt to open outside the flash area, "
                 "eMMC chipsize: 0x%08llx, address: 0x%08llx, length: 0x%08llx\n",
-                g_stEmmcFlash.u64ExtAreaStart + g_stEmmcFlash.u64ExtAreaSize,
+                g_stEmmcFlash.u64RawAreaStart + g_stEmmcFlash.u64RawAreaSize,
                 u64Addr,
                 u64Length);
         close(fd);
@@ -233,6 +235,9 @@ HI_S32 emmc_block_read(HI_S32 fd,
     }
 
     s32Ret = read(fd, buff, u32Len);
+    if (s32Ret < 0)
+        return HI_FAILURE;
+
     return s32Ret;
 }
 
@@ -249,6 +254,9 @@ HI_S32 emmc_block_write(HI_S32 fd,
     }
 
     s32Ret = write(fd, buff, u32Len);
+    if (s32Ret < 0)
+        return HI_FAILURE;
+
     return s32Ret;
 }
 

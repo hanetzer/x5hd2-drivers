@@ -36,7 +36,7 @@
 #include <linux/string.h>
 #include <linux/sched.h>
 
-#include "drv_stat_ext.h"
+#include "hi_drv_stat.h"
 
 #include "hi_drv_ao.h"
 #include "drv_sync.h"
@@ -409,15 +409,15 @@ HI_VOID SYNC_CalcDiffTime(SYNC_S *pSync, SYNC_CHAN_E enChn)
         pSync->ScrInitFlag = HI_FALSE;
     }
 
-    HI_ERR_VSYNC(enChn, "SysTime %d Aud LastSysTime %d Aud LocatTime %d Aud LstPts %d, Aud LstBufTime %3d Vid LocatTime %d Vid LstPts %d VidAudDiff %d\n",
+    HI_INFO_VSYNC(enChn, "SysTime %d Aud LastSysTime %d Aud LocatTime %d Aud LstPts %d, Aud LstBufTime %3d Vid LocatTime %d Vid LstPts %d VidAudDiff %d\n",
                       CurSysTime,pSync->AudLastSysTime,AudLocalTime, pSync->AudLastPts, pSync->AudLastBufTime,VidLocalTime, pSync->VidLastPts, VidAudDiff);
 
-    HI_ERR_ASYNC(enChn, "SysTime %d Aud LastSysTime %d Aud LocatTime %d Aud LstPts %d, Aud LstBufTime %3d Vid LocatTime %d Vid LstPts %d VidAudDiff %d\n",
+    HI_INFO_ASYNC(enChn, "SysTime %d Aud LastSysTime %d Aud LocatTime %d Aud LstPts %d, Aud LstBufTime %3d Vid LocatTime %d Vid LstPts %d VidAudDiff %d\n",
     CurSysTime,pSync->AudLastSysTime,AudLocalTime, pSync->AudLastPts, pSync->AudLastBufTime,VidLocalTime, pSync->VidLastPts, VidAudDiff);
 
     if(HI_UNF_SYNC_REF_PCR == pSync->SyncAttr.enSyncRef)
     {
-        HI_ERR_VSYNC(enChn, ">>>>PcrLocalTime %d  AudPcrDiff %d VidPcrDiff %d VidAudDiff %d\n",
+        HI_INFO_VSYNC(enChn, ">>>>PcrLocalTime %d  AudPcrDiff %d VidPcrDiff %d VidAudDiff %d\n",
                           PcrLocalTime, AudPcrDiff, VidPcrDiff, VidAudDiff);
     }
 
@@ -541,6 +541,19 @@ HI_VOID SYNC_PreSync(SYNC_S *pSync, SYNC_CHAN_E enChn)
 
     CostSysTime = SYNC_GetSysTimeCost(pSync->PreSyncStartSysTime);
 
+    /* do not do presync if video or audio is disable */
+    if ( (!pSync->AudEnable) || (!pSync->VidEnable) )
+    {
+        pSync->PreSyncEndSysTime = SYNC_GetSysTime();
+        pSync->PreSyncFinish = HI_TRUE;
+        pSync->VidOpt.SyncProc = SYNC_PROC_CONTINUE;
+        pSync->AudOpt.SyncProc = SYNC_PROC_CONTINUE;
+
+        HI_DRV_STAT_Event(STAT_EVENT_PRESYNC,0);
+
+        return;        
+    }
+
     /* presync timeout*/
     if (CostSysTime >= pSync->SyncAttr.u32PreSyncTimeoutMs)
     {
@@ -590,13 +603,13 @@ HI_VOID SYNC_PreSync(SYNC_S *pSync, SYNC_CHAN_E enChn)
         if (SYNC_CHAN_VID == enChn)
         {
             pSync->VidOpt.SyncProc = SYNC_PROC_REPEAT;
-            VidAudDiff = pSync->VidPreSyncTargetTime - pSync->AudInfo.Pts - pSync->VidInfo.DelayTime;
+            VidAudDiff = pSync->VidPreSyncTargetTime - pSync->AudInfo.Pts;
             pSync->VidAudDiff = VidAudDiff;
         }
         else
         {
             pSync->AudOpt.SyncProc = SYNC_PROC_REPEAT;
-            VidAudDiff = pSync->VidInfo.Pts - pSync->AudPreSyncTargetTime - pSync->VidInfo.DelayTime;
+            VidAudDiff = pSync->VidInfo.Pts - pSync->AudPreSyncTargetTime;
             pSync->VidAudDiff = VidAudDiff;
         }
     }
@@ -605,7 +618,7 @@ HI_VOID SYNC_PreSync(SYNC_S *pSync, SYNC_CHAN_E enChn)
         /* audio wait for video*/
         if (SYNC_CHAN_VID == enChn)
         {
-            VidAudDiff = pSync->VidInfo.Pts - pSync->AudPreSyncTargetTime - pSync->VidInfo.DelayTime;
+            VidAudDiff = pSync->VidInfo.Pts - pSync->AudPreSyncTargetTime;
             pSync->VidAudDiff = VidAudDiff;
         
             /* the difference between video and audio is too large*/
@@ -619,10 +632,18 @@ HI_VOID SYNC_PreSync(SYNC_S *pSync, SYNC_CHAN_E enChn)
             }
             else
             {
-                /* Video is lag behind audio before adjusting.It may be impossible to adjust the difference
-                          into sync range [a,b] as result of stream property.So we will stop adjusting once the difference
-                           is bigger than a*/
-                if (VidAudDiff >= pSync->SyncAttr.stSyncStartRegion.s32VidNegativeTime)
+                HI_S32 MaxWinDelay;
+
+                if (pSync->VidInfo.DispRate == 0)
+                {
+                    MaxWinDelay = 40;
+                }
+                else
+                {
+                    MaxWinDelay = 2 * 1000 * 100 / pSync->VidInfo.DispRate;
+                }
+                
+                if (VidAudDiff >= pSync->SyncAttr.stSyncStartRegion.s32VidNegativeTime + MaxWinDelay)
                 {
                     pSync->PreSyncEndSysTime = SYNC_GetSysTime();
                     pSync->PreSyncFinish = HI_TRUE;
@@ -634,7 +655,7 @@ HI_VOID SYNC_PreSync(SYNC_S *pSync, SYNC_CHAN_E enChn)
                             PcrLocalTime = SYNC_GetLocalTime(pSync, SYNC_CHAN_PCR);
                                      
                             AudPcrDiff = pSync->AudPreSyncTargetTime - PcrLocalTime;
-                            VidPcrDiff = pSync->VidInfo.Pts - PcrLocalTime - pSync->VidInfo.DelayTime;
+                            VidPcrDiff = pSync->VidInfo.Pts - PcrLocalTime;
                             
                              //adjust pcr to this one which is more behind
                              pSync->PcrSyncInfo.PcrDelta += (VidAudDiff > 0) ? AudPcrDiff : VidPcrDiff;
@@ -661,7 +682,7 @@ HI_VOID SYNC_PreSync(SYNC_S *pSync, SYNC_CHAN_E enChn)
         /* video wait for audio*/
         else
         {
-            VidAudDiff = pSync->VidPreSyncTargetTime - pSync->AudInfo.Pts - pSync->VidInfo.DelayTime;
+            VidAudDiff = pSync->VidPreSyncTargetTime - pSync->AudInfo.Pts;
             pSync->VidAudDiff = VidAudDiff;
             
             /* the difference between video and audio is too large*/
@@ -688,7 +709,7 @@ HI_VOID SYNC_PreSync(SYNC_S *pSync, SYNC_CHAN_E enChn)
                             PcrLocalTime = SYNC_GetLocalTime(pSync, SYNC_CHAN_PCR);
                                      
                             AudPcrDiff = pSync->AudPreSyncTargetTime - PcrLocalTime;
-                            VidPcrDiff = pSync->VidInfo.Pts - PcrLocalTime - pSync->VidInfo.DelayTime;
+                            VidPcrDiff = pSync->VidInfo.Pts - PcrLocalTime;
                             
                              //adjust pcr to this one which is more behind
                              pSync->PcrSyncInfo.PcrDelta += (VidAudDiff > 0) ? AudPcrDiff : VidPcrDiff;
@@ -714,7 +735,6 @@ HI_VOID SYNC_PreSync(SYNC_S *pSync, SYNC_CHAN_E enChn)
         }
     }
 
-   //SYNC_AudPreSync(pSync, enChn);
     return;
 }
 
@@ -759,10 +779,7 @@ HI_VOID SYNC_BufFund(SYNC_S *pSync)
 
     if (pSync->VidEnable && pSync->AudEnable)
     {
-        if ((pSync->VidInfo.DelayTime>= 40)
-          &&(pSync->AudInfo.BufTime >= ((AO_PCM_DF_UNSTALL_THD_FRAMENUM - 1)*pSync->AudInfo.FrameTime))
-          &&(pSync->AudInfo.FrameNum >= 1)
-           )
+        if (pSync->AudInfo.BufTime + pSync->AudInfo.FrameTime >= AO_TRACK_AIP_START_LATENCYMS)
         {
             pSync->BufFundEndSysTime = SYNC_GetSysTime();
             pSync->BufFundFinish = HI_TRUE;
@@ -776,22 +793,14 @@ HI_VOID SYNC_BufFund(SYNC_S *pSync)
         else
         {
             pSync->VidOpt.SyncProc = SYNC_PROC_REPEAT;
-            
-            if (pSync->AudInfo.BufTime >= ((AO_PCM_DF_UNSTALL_THD_FRAMENUM - 1)*pSync->AudInfo.FrameTime))
-            {
-                pSync->AudOpt.SyncProc = SYNC_PROC_REPEAT;
-            }
-            else
-            {
-                pSync->AudOpt.SyncProc = SYNC_PROC_PLAY;
+            pSync->AudOpt.SyncProc = SYNC_PROC_PLAY;
 
-                if (HI_UNF_SYNC_REF_PCR == pSync->SyncAttr.enSyncRef)
-                {
-                     if ((HI_FALSE == pSync->VidFirstCome) && (HI_FALSE== SYNC_CheckAudTimeout(pSync)))
-                     {
-                         pSync->AudOpt.SyncProc = SYNC_PROC_REPEAT;
-                     }
-                }
+            if (HI_UNF_SYNC_REF_PCR == pSync->SyncAttr.enSyncRef)
+            {
+                 if ((HI_FALSE == pSync->VidFirstCome) && (HI_FALSE== SYNC_CheckAudTimeout(pSync)))
+                 {
+                     pSync->AudOpt.SyncProc = SYNC_PROC_REPEAT;
+                 }
             }
 
             HI_INFO_ASYNC(SYNC_CHAN_AUD, "BufFund %d AudBufTime %d AudFrameNum %d VidDelayTime %d\n", CostSysTime, pSync->AudInfo.BufTime, pSync->AudInfo.FrameNum, pSync->VidInfo.DelayTime);
@@ -800,24 +809,16 @@ HI_VOID SYNC_BufFund(SYNC_S *pSync)
     }
     else if (pSync->VidEnable && (!pSync->AudEnable))
     {
-        if (pSync->VidInfo.DelayTime>= 40)
-        {
-            pSync->BufFundEndSysTime = SYNC_GetSysTime();
-            pSync->BufFundFinish = HI_TRUE;
-            pSync->VidOpt.SyncProc = SYNC_PROC_CONTINUE;
-            HI_DRV_STAT_Event(STAT_EVENT_BUFREADY,1);
-            HI_INFO_VSYNC(SYNC_CHAN_VID, "BufFund Ok\n");
-        }
-        else
-        {
-            pSync->VidOpt.SyncProc = SYNC_PROC_REPEAT;
-        }
+
+        pSync->BufFundEndSysTime = SYNC_GetSysTime();
+        pSync->BufFundFinish = HI_TRUE;
+        pSync->VidOpt.SyncProc = SYNC_PROC_CONTINUE;
+        HI_DRV_STAT_Event(STAT_EVENT_BUFREADY,1);
+        HI_INFO_VSYNC(SYNC_CHAN_VID, "BufFund Ok\n");
     }
     else if ((!pSync->VidEnable) && pSync->AudEnable)
     {
-        if ((pSync->AudInfo.BufTime >= ((AO_PCM_DF_UNSTALL_THD_FRAMENUM - 1)*pSync->AudInfo.FrameTime))
-          &&(pSync->AudInfo.FrameNum >= 2)
-           )
+        if (pSync->AudInfo.BufTime + pSync->AudInfo.FrameTime >= AO_TRACK_AIP_START_LATENCYMS)        
         {
             pSync->BufFundEndSysTime = SYNC_GetSysTime();
             pSync->BufFundFinish = HI_TRUE;
@@ -827,14 +828,7 @@ HI_VOID SYNC_BufFund(SYNC_S *pSync)
         }
         else
         {
-            if (pSync->AudInfo.BufTime >= ((AO_PCM_DF_UNSTALL_THD_FRAMENUM - 1)*pSync->AudInfo.FrameTime))
-            {
-                pSync->AudOpt.SyncProc = SYNC_PROC_REPEAT;
-            }
-            else
-            {
-                pSync->AudOpt.SyncProc = SYNC_PROC_PLAY;
-            }
+            pSync->AudOpt.SyncProc = SYNC_PROC_PLAY;
         }
     }
 
@@ -882,8 +876,7 @@ HI_VOID SYNC_AudReSync(SYNC_S *pSync)
 
     VidLocalTime = SYNC_GetLocalTime(pSync, SYNC_CHAN_VID);
 
-    /*There are 6 frame data cumulated in ao buffer*/
-    VidAudDiff = VidLocalTime - pSync->AudInfo.Pts + (AO_PCM_DF_UNSTALL_THD_FRAMENUM  * pSync->AudInfo.FrameTime);
+    VidAudDiff = VidLocalTime - pSync->AudInfo.Pts + AO_TRACK_AIP_START_LATENCYMS;
 
     /* The difference is too large */
     if (abs(VidAudDiff) > AUD_RESYNC_ADJUST_THRESHOLD)
@@ -952,9 +945,7 @@ HI_VOID SYNC_AudReBufFund(SYNC_S *pSync)
         return;
     }
 
-    if ((pSync->AudInfo.BufTime >= ((AO_PCM_DF_UNSTALL_THD_FRAMENUM - 1)*pSync->AudInfo.FrameTime))
-      &&(pSync->AudInfo.FrameNum >= 2)
-       )
+    if (pSync->AudInfo.BufTime + pSync->AudInfo.FrameTime >= AO_TRACK_AIP_START_LATENCYMS)
     {
         pSync->AudReBufFund = HI_FALSE;
         pSync->AudOpt.SyncProc = SYNC_PROC_CONTINUE;
@@ -962,14 +953,7 @@ HI_VOID SYNC_AudReBufFund(SYNC_S *pSync)
     }
     else
     {
-        if (pSync->AudInfo.BufTime >= ((AO_PCM_DF_UNSTALL_THD_FRAMENUM - 1)*pSync->AudInfo.FrameTime))
-        {
-            pSync->AudOpt.SyncProc = SYNC_PROC_REPEAT;
-        }
-        else
-        {
-            pSync->AudOpt.SyncProc = SYNC_PROC_PLAY;
-        }
+        pSync->AudOpt.SyncProc = SYNC_PROC_PLAY;
     }
 
     return;
@@ -994,6 +978,7 @@ HI_VOID SYNC_PcrSyncRepeatAud(SYNC_S *pSync, SYNC_CHAN_E enChn, HI_S32 VidAudDif
 
     if (SYNC_BUF_STATE_HIGH != pSync->CrtBufStatus.AudBufState)
     {
+        #if 0
         if (SYNC_BUF_STATE_EMPTY == pSync->CrtBufStatus.AudBufState)
         {
              pSync->AudOpt.SpeedAdjust = SYNC_AUD_SPEED_ADJUST_MUTE_REPEAT; 
@@ -1002,6 +987,10 @@ HI_VOID SYNC_PcrSyncRepeatAud(SYNC_S *pSync, SYNC_CHAN_E enChn, HI_S32 VidAudDif
         {
             pSync->AudOpt.SyncProc = SYNC_PROC_REPEAT; 
         }
+        #else
+        pSync->AudOpt.SyncProc = SYNC_PROC_REPEAT; 
+        #endif
+        
         pSync->AudRepeatCnt++;
         HI_INFO_ASYNC(enChn, ">>>>AudPcrDiff %d , VidAudDiff: %d, Aud Repeat\n", pSync->PcrSyncInfo.AudPcrDiff, VidAudDiff);   
     }
@@ -1102,6 +1091,7 @@ HI_VOID SYNC_PcrSyncAudLeadAdjust(SYNC_S *pSync, SYNC_CHAN_E enChn, HI_S32 AudPc
 
     if (SYNC_BUF_STATE_HIGH != pSync->CrtBufStatus.AudBufState)
     {
+        #if 0
         if (SYNC_BUF_STATE_EMPTY == pSync->CrtBufStatus.AudBufState)
         {
              pSync->AudOpt.SpeedAdjust = SYNC_AUD_SPEED_ADJUST_MUTE_REPEAT; 
@@ -1110,6 +1100,9 @@ HI_VOID SYNC_PcrSyncAudLeadAdjust(SYNC_S *pSync, SYNC_CHAN_E enChn, HI_S32 AudPc
         {
             pSync->AudOpt.SyncProc = SYNC_PROC_REPEAT; 
         }
+        #else
+            pSync->AudOpt.SyncProc = SYNC_PROC_REPEAT; 
+        #endif
         pSync->AudRepeatCnt++;
         HI_INFO_ASYNC(enChn, ">>>>Pcr Lag Aud, AudPcrDiff %d, Aud Repeat\n", AudPcrDiff);   
     }
@@ -1497,7 +1490,7 @@ HI_VOID SYNC_AudSyncVidLagAdjust(SYNC_S *pSync, SYNC_CHAN_E enChn, HI_S32 VidAud
 {
     pSync->AudOpt.SyncProc = SYNC_PROC_PLAY;
 
-    if(SYNC_BUF_STATE_LOW == pSync->CrtBufStatus.VidBufState)
+    if(SYNC_BUF_STATE_EMPTY == pSync->CrtBufStatus.VidBufState)
     {
         pSync->VidOpt.SyncProc = SYNC_PROC_PLAY;
         
@@ -1519,9 +1512,17 @@ HI_VOID SYNC_AudSyncVidLagAdjust(SYNC_S *pSync, SYNC_CHAN_E enChn, HI_S32 VidAud
 #endif
         }
 
-        HI_ERR_VSYNC(enChn, "Vid Buf Low, VidAudDiff: %d, Vid Play\n", VidAudDiff);  
+        HI_INFO_VSYNC(enChn, "Vid Buf Low, VidAudDiff: %d, Vid Play\n", VidAudDiff);  
 
         return;
+    }
+    else if (SYNC_BUF_STATE_LOW == pSync->CrtBufStatus.VidBufState)
+    {
+        if (SYNC_BUF_STATE_HIGH != pSync->CrtBufStatus.AudBufState)
+        {
+            pSync->AudOpt.SpeedAdjust = SYNC_AUD_SPEED_ADJUST_DOWN;
+            HI_INFO_ASYNC(enChn, "Vid Buf Low, VidAudDiff: %d, Aud Speed Down\n", VidAudDiff);   
+        }
     }
 
     if (VidAudDiff < pSync->SyncAttr.stSyncNovelRegion.s32VidNegativeTime)
@@ -1916,7 +1917,6 @@ HI_VOID SYNC_ScrSyncAdjust(SYNC_S *pSync, SYNC_CHAN_E enChn, HI_S32 VidAudDiff, 
 
 HI_VOID SYNC_SyncAdjust(SYNC_S *pSync, SYNC_CHAN_E enChn)
 {
-    HI_S32      VidAudDiff = 0;
     HI_S32      AudPcrDiff = 0;
     HI_S32      VidPcrDiff = 0;
 
@@ -2114,7 +2114,7 @@ HI_VOID SYNC_SyncAdjust(SYNC_S *pSync, SYNC_CHAN_E enChn)
                 if (HI_TRUE == pSync->PcrSyncInfo.PcrAdjustDeltaOK)
                 {
                     /*3.1 adjust pcr to this one which is more behind */
-                    pSync->PcrSyncInfo.PcrDelta += (VidAudDiff > 0) ? AudPcrDiff : VidPcrDiff;
+                    pSync->PcrSyncInfo.PcrDelta += (pSync->VidAudDiff > 0) ? AudPcrDiff : VidPcrDiff;
 
                     pSync->PcrSyncInfo.PcrAdjustDeltaOK = HI_FALSE;
 
@@ -2223,11 +2223,12 @@ HI_VOID SYNC_CheckEvent(SYNC_S *pSync, SYNC_CHAN_E enChn)
             return;
         }
 
-        HI_INFO_ASYNC(SYNC_CHAN_AUD, "AudLastPts %d, AuddPts %d, u32FirstValidPts %d, ErrDelta %d\n",
-            pSync->AudInfo.Pts, pSync->AudLastPts, pSync->AudFirstValidPts, ErrDelta);
-
         if (abs(pSync->AudInfo.Pts - pSync->AudLastPts) > ErrDelta)
         {
+
+            HI_INFO_ASYNC(SYNC_CHAN_AUD, "AudLastPts %d, AuddPts %d, u32FirstValidPts %d, ErrDelta %d\n",
+                pSync->AudLastPts, pSync->AudInfo.Pts, pSync->AudFirstValidPts, ErrDelta);
+            
             pSync->SyncEvent.bAudPtsJump = HI_TRUE;
             pSync->SyncEvent.AudPtsJumpParam.enPtsChan = HI_UNF_SYNC_PTS_CHAN_AUD;
             pSync->SyncEvent.AudPtsJumpParam.u32CurPts = pSync->AudInfo.Pts;
@@ -2314,33 +2315,25 @@ HI_VOID SYNC_CheckEvent(SYNC_S *pSync, SYNC_CHAN_E enChn)
     return;
 }
 
-HI_VOID SYNC_AdjustTBMatch(SYNC_S *pSync)
+HI_VOID SYNC_CheckTBMatchAdjust(SYNC_S *pSync)
 {
     SYNC_REGION_STAT_E      enSyncRegion;
     
-    if (pSync->VidInfo.bTBMatch)
-    {
-        //printk("match!\n");
-        return;
-    }
-
     enSyncRegion = SYNC_CheckRegion(pSync, pSync->VidAudDiff);
 
     if (enSyncRegion != SYNC_REGION_STAT_IN_START)
     {
-        //printk("in start region!\n");
+        pSync->VidOpt.enTBAdjust = HI_DRV_VIDEO_TB_PLAY;
         return;    
     }
 
     if (pSync->VidAudDiff >= 0)
     {
-        //printk("no match ,repeat: %u\n", pSync->VidAudDiff);
-        pSync->VidOpt.SyncProc = SYNC_PROC_REPEAT;
+        pSync->VidOpt.enTBAdjust = HI_DRV_VIDEO_TB_REPEAT;
     }
     else
     {
-        //printk("no match ,discard: %u\n", pSync->VidAudDiff);
-        pSync->VidOpt.SyncProc = SYNC_PROC_DISCARD;
+        pSync->VidOpt.enTBAdjust = HI_DRV_VIDEO_TB_DISCARD;    
     }
 
     return;
@@ -2370,7 +2363,7 @@ HI_VOID SYNC_VidProc(HI_HANDLE hSync, SYNC_VID_INFO_S *pVidInfo, SYNC_VID_OPT_S 
  
     SysTime = SYNC_GetSysTime();
 
-    HI_ERR_VSYNC(SYNC_CHAN_VID, "VidInfo SrcPts %-8d,Pts %-8d,FrameTime %d, DelayTime %d,SysTime %d\n",
+    HI_INFO_VSYNC(SYNC_CHAN_VID, "VidInfo SrcPts %-8d,Pts %-8d,FrameTime %d, DelayTime %d,SysTime %d\n",
                                  pVidInfo->SrcPts, pVidInfo->Pts, pVidInfo->FrameTime,pVidInfo->DelayTime,SysTime);
 
     /*pcr timeout, we used aud adjust scr*/
@@ -2403,7 +2396,7 @@ HI_VOID SYNC_VidProc(HI_HANDLE hSync, SYNC_VID_INFO_S *pVidInfo, SYNC_VID_OPT_S 
         pSync->VidFirstSysTime = pSync->VidFirstPlayTime;
         pSync->VidFirstPts = pVidInfo->Pts;
 
-        HI_DRV_STAT_Event(STAT_EVENT_FRAMEDISP, 0);
+        HI_DRV_STAT_Event(STAT_EVENT_FRAMESYNCOK, 0);
 
         pSync->VidOpt.SyncProc = SYNC_PROC_QUICKOUTPUT;
         *pVidOpt = pSync->VidOpt;
@@ -2462,8 +2455,6 @@ HI_VOID SYNC_VidProc(HI_HANDLE hSync, SYNC_VID_INFO_S *pVidInfo, SYNC_VID_OPT_S 
             pSync->ScrInitFlag = HI_TRUE;
             pSync->ScrFirstLocalTime = pVidInfo->Pts - pSync->VidInfo.DelayTime;
             pSync->ScrFirstSysTime = SYNC_GetSysTime();
-
-            HI_INFO_VSYNC(SYNC_CHAN_VID, "Scr First SetLocalTime %d\n", (pVidInfo->Pts - pSync->VidInfo.DelayTime));
         }
     }
 
@@ -2536,6 +2527,8 @@ HI_VOID SYNC_VidProc(HI_HANDLE hSync, SYNC_VID_INFO_S *pVidInfo, SYNC_VID_OPT_S 
 
     SYNC_CheckEvent(pSync, SYNC_CHAN_VID);
 
+    SYNC_CheckTBMatchAdjust(pSync);
+
     pSync->VidLastPts = pVidInfo->Pts;
     pSync->VidLastSrcPts = pVidInfo->SrcPts;
 
@@ -2569,7 +2562,7 @@ HI_VOID SYNC_VidProc(HI_HANDLE hSync, SYNC_VID_INFO_S *pVidInfo, SYNC_VID_OPT_S 
         {
             pSync->VidFirstPlay = HI_TRUE;
             pSync->VidFirstPlayTime = SYNC_GetSysTime();
-            HI_DRV_STAT_Event(STAT_EVENT_FRAMEDISP, 0);
+            HI_DRV_STAT_Event(STAT_EVENT_FRAMESYNCOK, 0);
         }
         
         pSync->VidOpt.SyncProc = SYNC_PROC_PLAY;       
@@ -2584,8 +2577,6 @@ HI_VOID SYNC_VidProc(HI_HANDLE hSync, SYNC_VID_INFO_S *pVidInfo, SYNC_VID_OPT_S 
     {
         SYNC_SyncAdjust(pSync, SYNC_CHAN_VID);
     }
-
-    SYNC_AdjustTBMatch(pSync);
 
     /* get information , need to change VidOpt.SyncProc to SYNC_PROC_PLAY , then adjust pcr*/
     if ((SYNC_PROC_DISCARD == pSync->VidOpt.SyncProc) 
@@ -2615,12 +2606,12 @@ HI_VOID SYNC_VidProc(HI_HANDLE hSync, SYNC_VID_INFO_S *pVidInfo, SYNC_VID_OPT_S 
         {
             pSync->VidFirstPlay = HI_TRUE;
             pSync->VidFirstPlayTime = SYNC_GetSysTime();
-            HI_DRV_STAT_Event(STAT_EVENT_FRAMEDISP, 0);
+            HI_DRV_STAT_Event(STAT_EVENT_FRAMESYNCOK, 0);
         }
     }
     
-    HI_ERR_VSYNC(SYNC_CHAN_VID, "--------Vid Sync Proc %d--------\n", pVidOpt->SyncProc);
-    HI_ERR_VSYNC(SYNC_CHAN_VID, "\n");
+    HI_INFO_VSYNC(SYNC_CHAN_VID, "--------Vid Sync Proc %d--------\n", pVidOpt->SyncProc);
+    HI_INFO_VSYNC(SYNC_CHAN_VID, "\n");
 
     return;
 }
@@ -2648,7 +2639,7 @@ HI_VOID SYNC_AudProc(HI_HANDLE hSync, SYNC_AUD_INFO_S *pAudInfo, SYNC_AUD_OPT_S 
 
     SysTime = SYNC_GetSysTime();
 
-    HI_ERR_ASYNC(SYNC_CHAN_AUD, "AudInfo SrcPts %-8d, Pts %-8d, FrameTime %d, BufTime %-4d, FrameNum %d, SysTime %d\n", pAudInfo->SrcPts, pAudInfo->Pts, pAudInfo->FrameTime, pAudInfo->BufTime, pAudInfo->FrameNum, SysTime);
+    HI_INFO_ASYNC(SYNC_CHAN_AUD, "AudInfo SrcPts %-8d, Pts %-8d, FrameTime %d, BufTime %-4d, FrameNum %d, SysTime %d\n", pAudInfo->SrcPts, pAudInfo->Pts, pAudInfo->FrameTime, pAudInfo->BufTime, pAudInfo->FrameNum, SysTime);
 
     if (SYNC_SCR_ADJUST_BUTT == pSync->PcrSyncInfo.enPcrAdjust)
     {
@@ -2708,9 +2699,7 @@ HI_VOID SYNC_AudProc(HI_HANDLE hSync, SYNC_AUD_INFO_S *pAudInfo, SYNC_AUD_OPT_S 
             SYNC_SetLocalTime(pSync, SYNC_CHAN_SCR, (pAudInfo->Pts - pAudInfo->BufTime));
             pSync->ScrInitFlag = HI_TRUE;
             pSync->ScrFirstLocalTime = pAudInfo->Pts - pAudInfo->BufTime;
-            pSync->ScrFirstSysTime = SYNC_GetSysTime();
-        
-            HI_INFO_ASYNC(SYNC_CHAN_AUD, "Scr First SetLocalTime %d\n", pSync->ScrLastLocalTime);
+            pSync->ScrFirstSysTime = SYNC_GetSysTime();        
         }
     }
  
@@ -2930,6 +2919,11 @@ HI_VOID SYNC_PcrProc(HI_HANDLE hSync, HI_U32 PcrTime)
 {
     SYNC_S    *pSync;
     HI_U32    PcrDelta;
+
+    if (HI_FALSE == SYNC_VerifyHandle(hSync))
+    {
+        return;
+    }
 
     pSync = g_SyncGlobalState.SyncInfo[hSync&0xff].pSync;
 

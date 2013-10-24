@@ -8,6 +8,7 @@
 #include "si_typedefs.h"
 #include "si_hlviic.h"
 #include "si_globdefs.h"
+#include "si_mddc.h"
 
 typedef union TmpData {
     HI_U8 FuncRes[16];

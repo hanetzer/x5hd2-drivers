@@ -87,10 +87,17 @@ typedef struct hiWIN_FRAME_S
     HI_DRV_VIDEO_FRAME_S stFrame;
 }WIN_FRAME_S;
 
+typedef struct hiWIN_CAPTURE_DRIVER_SUPPLY_ADDR_S
+{
+    HI_U32        startPhyAddr;
+    HI_U32        length;    
+}WIN_CAPTURE_DRIVER_SUPPLY_ADDR_S;
+
 typedef struct hiVO_WIN_CAPTURE_FREE_S
 {
-    HI_HANDLE               hWindow;
-    HI_DRV_VIDEO_FRAME_S CapPicture;
+    HI_HANDLE                        hWindow;
+    HI_DRV_VIDEO_FRAME_S             CapPicture; 
+    WIN_CAPTURE_DRIVER_SUPPLY_ADDR_S driver_supply_addr;
 }WIN_CAPTURE_S;
 
 typedef struct hiWIN_PAUSE_S
@@ -107,10 +114,9 @@ typedef struct hiWIN_STEP_S
 
 typedef struct hiWIN_STATE_S
 {
-//    HI_BOOL   bDisp0Open;
-//    HI_BOOL   bDisp1Open;
-//    HI_BOOL   bDisp2Open;
     HI_HANDLE hWin[HI_DRV_DISPLAY_BUTT][DEF_MAX_WIN_NUM_ON_SINGLE_DISP];
+    HI_HANDLE hVirtualWin[DEF_MAX_WIN_NUM_ON_VIRTUAL_DISP];
+    HI_HANDLE hCapture[HI_DRV_DISPLAY_BUTT][DEF_MAX_WIN_NUM_ON_SINGLE_DISP];
 }WIN_STATE_S;
 
 /*
@@ -141,6 +147,26 @@ typedef struct hiWIN_GET_HANDLE_S
     HI_HANDLE ahWinHandle[DEF_MAX_WIN_NUM_ON_SINGLE_DISP];
 }WIN_GET_HANDLE_S;
 
+typedef enum hiWIN_ATTACH_TYPE_E
+{
+    ATTACH_TYPE_SRC = 0,
+    ATTACH_TYPE_SINK,
+    ATTACH_TYPE_BUTT
+}WIN_ATTACH_TYPE_E;
+
+typedef struct hiWIN_ATTACH_S
+{
+    WIN_ATTACH_TYPE_E enType;
+    HI_HANDLE hWindow;
+    HI_HANDLE hMutual;
+}WIN_ATTACH_S;
+
+typedef struct hiWIN_INTF_S
+{
+    HI_VOID* pfAcqFrame;
+    HI_VOID* pfRlsFrame;
+    HI_VOID* pfSetWinAttr;
+}WIN_INTF_S;
 
 typedef enum hiIOC_VO_E
 {
@@ -154,6 +180,7 @@ typedef enum hiIOC_VO_E
     IOC_WIN_GET_ATTR,
 
     IOC_WIN_SET_SOURCE,
+    IOC_WIN_GET_SOURCE,
 
     IOC_WIN_GET_INFO,
     IOC_WIN_GET_PLAY_INFO,
@@ -184,7 +211,15 @@ typedef enum hiIOC_VO_E
 
     IOC_WIN_SUSPEND,
     IOC_WIN_RESUME,
-
+    
+    IOC_WIN_ATTACH,
+    IOC_WIN_DETACH,
+    
+    IOC_WIN_GET_INTF,
+    IOC_WIN_GET_LATESTFRAME_INFO,
+    IOC_VO_WIN_CAPTURE_START,
+    IOC_VO_WIN_CAPTURE_RELEASE,
+    IOC_VO_WIN_CAPTURE_FREE,
     IOC_WIN_DEBUG_GET_HANDLE,
 
     IOC_WIN_BUTT
@@ -201,6 +236,7 @@ typedef enum hiIOC_VO_E
 #define CMD_WIN_GET_ATTR           _IOWR(HI_ID_VO, IOC_WIN_GET_ATTR, WIN_CREATE_S)
 
 #define CMD_WIN_SET_SOURCE         _IOW(HI_ID_VO, IOC_WIN_SET_SOURCE, WIN_SOURCE_S)
+#define CMD_WIN_GET_SOURCE         _IOW(HI_ID_VO, IOC_WIN_GET_SOURCE, WIN_SOURCE_S)
 
 #define CMD_WIN_GET_INFO          _IOWR(HI_ID_VO, IOC_WIN_GET_INFO, WIN_PRIV_INFO_S)
 #define CMD_WIN_GET_PLAY_INFO      _IOWR(HI_ID_VO, IOC_WIN_GET_PLAY_INFO, WIN_PLAY_INFO_S)
@@ -236,9 +272,15 @@ typedef enum hiIOC_VO_E
 
 #define CMD_WIN_GET_HANDLE         _IOWR(HI_ID_VO,IOC_WIN_DEBUG_GET_HANDLE, WIN_GET_HANDLE_S)
 
+#define CMD_WIN_ATTACH             _IOWR(HI_ID_VO,IOC_WIN_ATTACH, WIN_ATTACH_S)
+#define CMD_WIN_DETACH             _IOWR(HI_ID_VO,IOC_WIN_DETACH, WIN_ATTACH_S)
 
+#define CMD_WIN_GET_INTF             _IOWR(HI_ID_VO,IOC_WIN_GET_INTF, WIN_INTF_S)
 
-
+#define CMD_WIN_GET_LATESTFRAME_INFO _IOWR(HI_ID_VO,IOC_WIN_GET_LATESTFRAME_INFO, WIN_FRAME_S)
+#define CMD_VO_WIN_CAPTURE_START     _IOWR(HI_ID_VO,IOC_VO_WIN_CAPTURE_START, WIN_CAPTURE_S)
+#define CMD_VO_WIN_CAPTURE_RELEASE   _IOWR(HI_ID_VO,IOC_VO_WIN_CAPTURE_RELEASE, WIN_CAPTURE_S)
+#define CMD_VO_WIN_CAPTURE_FREE      _IOWR(HI_ID_VO,IOC_VO_WIN_CAPTURE_FREE, WIN_CAPTURE_S)
 
 #ifdef __cplusplus
 #if __cplusplus

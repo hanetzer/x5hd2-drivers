@@ -19,7 +19,7 @@ LIBPATH += -L${CURDIR}/../../../../../pub/lib/share
 LIB = -Wl,--start-group -lpthread -ldl -lOMX_Core -lOMX.hisi.video.decoder -lhi_common -lhi_otp -Wl,--end-group
 
 		  
-APP = sample_omx
+APP = sample_omxvdec
 OBJS = sample_omx.o sample_queue.o
 
 #===============================================================================

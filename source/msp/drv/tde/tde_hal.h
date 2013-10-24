@@ -24,8 +24,6 @@ extern "C" {
 
 #define TDE_INTNUM  123//68
 #define TDE_REG_BASEADDR 0xf8c10000//0x10120000
-#define TDE_REG_CLOCK 0xf8a22094
-
 /****************************************************************************/
 /*                             TDE hal types define                         */
 /****************************************************************************/
@@ -743,16 +741,6 @@ HI_VOID TdeHalCtlReset(HI_VOID);
 * Others:        None
 *****************************************************************************/
 HI_VOID TdeHalCtlIntClear(TDE_LIST_TYPE_E enListType, HI_U32 u32Stats);
-
-/*****************************************************************************
-* Function:      TdeHalCtlGetRunningSwNode
-* Description:   Get current software node;if list is not running, return NULL
-* Input:         enListType: List type current executed
-* Output:        None
-* Return:        Software node pointer that current executed
-* Others:        None
-*****************************************************************************/
-HI_BOOL TdeHalCtlGetRunningSwNode(TDE_LIST_TYPE_E enListType, HI_S32 *ps32Handle, HI_VOID **ppstSwNode);
 
 /*****************************************************************************
 *Description: Query working queue if is synchronous or asynchronous  

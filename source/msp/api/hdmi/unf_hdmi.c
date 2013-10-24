@@ -20,6 +20,11 @@
 //#include "mpi_hdmi.h"
 #include "hi_mpi_hdmi.h"
 
+static const HI_U8 s_szHDMIVersion[]__attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
+
+
 
 HI_S32 HI_UNF_HDMI_Init(void)
 {

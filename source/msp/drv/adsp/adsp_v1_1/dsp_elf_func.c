@@ -23,6 +23,7 @@
 #include "dsp_elf_func.h"
 //#include "klib.h"
 #include "hi_audsp_common.h"
+#include "hi_reg_common.h"
 
 #if 0
 #define DSP0_PRIM_VECTOR	(HI_U32*)0x101E0FC0
@@ -86,14 +87,18 @@ HI_S32 CopyELFSection(HI_UCHAR *pElfAddr)
 #if 0
             vAddr = ioremap_nocache( ppdr[j].p_paddr , ppdr[j].p_filesz + 3 );
 #else
-            if(ppdr[j].p_paddr > ELF_IO_SECTIONS_ADDR)
+            if(ppdr[j].p_paddr > HI_PERI_BASE_ADDR)
             	vAddr = ioremap_nocache( ppdr[j].p_paddr , ppdr[j].p_filesz + 3 );
 	    else
                 vAddr = phys_to_virt(ppdr[j].p_paddr);
 #endif
-            ELF_PRINT("Phy addr: 0x%x;size: 0x%x\n",ppdr[j].p_paddr,ppdr[j].p_filesz);
+			if(HI_NULL == vAddr)
+			{
+				return HI_FAILURE;
+			}
+            ELF_PRINT("Phy addr: 0x%.8x;size: 0x%.8x, flag(%d)\n",ppdr[j].p_paddr,ppdr[j].p_filesz,ppdr[j].p_paddr > HI_PERI_BASE_ADDR);
             MemcpySection((HI_U32*)vAddr , (HI_U32 *)(pElfAddr + ppdr[j].p_offset) , ppdr[j].p_filesz);
-            if(ppdr[j].p_paddr > ELF_IO_SECTIONS_ADDR)
+            if(ppdr[j].p_paddr > HI_PERI_BASE_ADDR)
                 iounmap(vAddr);
         }
     }
@@ -129,23 +134,28 @@ HI_S32 CheckELFPaser(HI_UCHAR* pElfAddr)
 #if 0
             vAddr = ioremap_nocache( ppdr[j].p_paddr , ppdr[j].p_filesz + 3 );
 #else
-            if(ppdr[j].p_paddr > ELF_IO_SECTIONS_ADDR)
+            if(ppdr[j].p_paddr > HI_PERI_BASE_ADDR)
                 vAddr = ioremap_nocache( ppdr[j].p_paddr , ppdr[j].p_filesz + 3 );
             else
                 vAddr = phys_to_virt( ppdr[j].p_paddr);
 #endif
+			if(HI_NULL == vAddr)
+			{
+				return HI_FAILURE;
+			}
+			
             for (i=0;(i<ppdr[j].p_filesz>>2);i++)
             {
                     //虚拟地址对应的值，与ELF中解析的值比较
                     if (vAddr[i]!=((HI_U32 *)(pElfAddr + ppdr[j].p_offset))[i])
                     {
                         ELF_PRINT("Error addr 0x%x: 0x%x - 0x%x:0x%x \r\n",ppdr[j].p_paddr ,vAddr[i],((HI_U32 *)(pElfAddr + ppdr[j].p_offset))[i],((HI_U32 *)(pElfAddr + ppdr[j].p_offset))[i]);
-                        if(ppdr[j].p_paddr > ELF_IO_SECTIONS_ADDR)
+                        if(ppdr[j].p_paddr > HI_PERI_BASE_ADDR)
                             iounmap(vAddr);
                         return HI_FAILURE;
                     }
             }
-            if(ppdr[j].p_paddr > ELF_IO_SECTIONS_ADDR)
+            if(ppdr[j].p_paddr > HI_PERI_BASE_ADDR)
                 iounmap(vAddr);
 
         }

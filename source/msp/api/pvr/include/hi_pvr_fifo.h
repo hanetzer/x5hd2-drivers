@@ -18,6 +18,8 @@
 #ifndef __HI_PVR_H__
 #define __HI_PVR_H__
 
+#include "hi_type.h"
+
 #if HI_OS_TYPE == HI_OS_LINUX
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -61,7 +63,7 @@ extern "C"
 #else
 #define PVR_FOPEN_MODE_INDEX_BOTH   (O_CREAT | O_RDWR|  O_LARGEFILE/*| O_APPEND*/ )
 #define PVR_FOPEN_MODE_INDEX_WRITE  (O_CREAT | O_RDWR| O_LARGEFILE /*| O_APPEND*/ )
-#define PVR_FOPEN_MODE_INDEX_READ   (O_RDWR  | O_LARGEFILE )
+#define PVR_FOPEN_MODE_INDEX_READ   (O_RDONLY  | O_LARGEFILE )
 #endif
 
 
@@ -315,6 +317,7 @@ extern ssize_t PVR_SEEK64(PVR_FILE64 file, HI_S64 offset, int whence);
 HI_S32 PVRFileGetOffsetFName(PVR_FILE64 file, HI_U64 offset, HI_CHAR *pRealName);
 //HI_S32 PVRFileGetRealOffset(PVR_FILE64 file, HI_U64 *offset);
 HI_S32 PVRFileGetRealOffset(PVR_FILE64 file, HI_U64 *offset, HI_U64 *pu64OffsetLen);
+
 
 #ifdef __cplusplus
 #if __cplusplus

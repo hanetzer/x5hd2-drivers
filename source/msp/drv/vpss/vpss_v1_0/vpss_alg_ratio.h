@@ -26,9 +26,13 @@ typedef struct{
 
 
 typedef struct{
+    HI_RECT_S stCropWnd;
     HI_RECT_S stOutWnd;
     HI_RECT_S stOutScreen;
+    HI_U32 u32ZmeH;
+    HI_U32 u32ZmeW;
     HI_BOOL bEnAsp;
+    HI_BOOL bEnCrop;
     HI_U32 u32BgColor;
     HI_U32 u32BgAlpha;
 }ALG_RATIO_OUT_PARA_S;

@@ -11,6 +11,9 @@
 
 #include "hi_tde_api.h"
 #include "hi_drv_tde.h"
+#include "tde_config.h"
+#include "hi_debug.h"
+
 #ifdef __cplusplus
 #if __cplusplus
 extern "C" {
@@ -31,28 +34,20 @@ static HI_S32 g_s32TdeFd = -1;              /* tde device handle */
 
 static HI_S32 g_s32TDeRef = 0;
 
+static const HI_U8 s_szTDEVersion[] __attribute__((used)) = "SDK_VERSION:["\
+                            MKMARCOTOSTR(SDK_VERSION)"] Build Time:["\
+                            __DATE__", "__TIME__"]";
+
 HI_S32 HI_TDE2_Open(HI_VOID)
 {
-    struct stat st;
-
     if (-1 != g_s32TdeFd)
     {
         g_s32TDeRef++;
         return HI_SUCCESS;
     }
 
-    if (HI_FAILURE == stat (g_pszTdeDevName, &st))
-    {
-        return HI_ERR_TDE_DEV_OPEN_FAILED;
-    }
-
-    if (!S_ISCHR (st.st_mode))
-    {
-        return HI_ERR_TDE_DEV_OPEN_FAILED;
-    }
-
     g_s32TdeFd = open(g_pszTdeDevName, O_RDWR, 0);
-    if (-1 == g_s32TdeFd)
+    if (g_s32TdeFd < 0)
     {
         return HI_ERR_TDE_DEV_OPEN_FAILED;
     }

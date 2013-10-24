@@ -15,7 +15,8 @@
 #include "MN_I2C.h"
 #include "drv_i2c_ext.h"
 #include "drv_tuner_ext.h"
-#include "drv_sys_ext.h"
+#include "hi_drv_sys.h"
+#include "drv_demod.h"
 
 /* **************************************************** */
 /* **************************************************** */

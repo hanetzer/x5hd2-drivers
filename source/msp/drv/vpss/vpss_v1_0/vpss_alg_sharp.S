@@ -13,31 +13,34 @@
 @	compiled by GNU C version 4.1.1 20061011 (Red Hat 4.1.1-30), GMP version 4.3.1, MPFR version 2.4.2.
 @ GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 @ options passed:  -nostdinc
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/include
 @ -Iarch/arm/include/generated -Iinclude
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vpss
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vpss
 @ -Idrivers/msp/vpss
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/common/drv/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/api/include
-@ -I/home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/../../../source/msp/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/arch/arm/mach-s40/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/common/drv/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/api/include
+@ -I/home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/../../../source/msp/drv/include
 @ -imultilib armv7a_soft -iprefix
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/
 @ -isysroot /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../target
-@ -D__KERNEL__ -D__LINUX_ARM_ARCH__=7 -Uarm -DCHIP_TYPE_hi3716cv200es
-@ -DSDK_VERSION=HiSTBLinuxV100R002C00SPC011 -DCFG_HI_LOG_LEVEL=4
-@ -DHI_KEYLED_SUPPORT -DHI_SCI_SUPPORT -DHI_VENC_SUPPORT -DHI_AENC_SUPPORT
-@ -DKBUILD_STR(s)=#s -DKBUILD_BASENAME=KBUILD_STR(vpss_alg_sharp)
+@ -D__KERNEL__ -D__LINUX_ARM_ARCH__=7 -Uarm -DCHIP_TYPE_hi3716cv200
+@ -DSDK_VERSION=HiSTBLinuxV100R002C00SPC020 -DHI_GPIOI2C_SUPPORT
+@ -DHI_LOG_SUPPORT=1 -DHI_LOG_LEVEL=4 -DHI_PROC_SUPPORT=1
+@ -DHI_KEYLED_SUPPORT -DHI_HDCP_SUPPORT -DHI_SCI_SUPPORT -DHI_VI_SUPPORT
+@ -DHI_VENC_SUPPORT -DHI_AENC_SUPPORT -DHI_VPSS_MAX_BUFFER_NUMB=6
+@ -DHI_VPSS_DRV_VER_CV200 -DKBUILD_STR(s)=#s
+@ -DKBUILD_BASENAME=KBUILD_STR(vpss_alg_sharp)
 @ -DKBUILD_MODNAME=KBUILD_STR(hi_vpss) -isystem
 @ /opt/hisi-linux/x86-arm/arm-hisiv200-linux/bin/../lib/gcc/arm-hisiv200-linux-gnueabi/4.4.1/include
 @ -include
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/include/linux/kconfig.h
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/include/linux/kconfig.h
 @ -MD drivers/msp/vpss/vpss_v1_0/.vpss_alg_sharp.o.d
-@ /home/release/HiSTBLinuxV100R002C00SPC011/source/kernel/linux-3.4.y/drivers/msp/vpss/vpss_v1_0/vpss_alg_sharp.c
+@ /home/x57522/X5HD/04.Locals/STBLinuxV1R2/Build/HiSTBLinuxV100R002C00SPC020/source/kernel/linux-3.4.y/drivers/msp/vpss/vpss_v1_0/vpss_alg_sharp.c
 @ -mlittle-endian -marm -mapcs -mno-sched-prolog -mabi=aapcs-linux
 @ -mno-thumb-interwork -march=armv7-a -msoft-float -auxbase-strip
 @ drivers/msp/vpss/vpss_v1_0/vpss_alg_sharp.o -O2 -Wall -Wundef
@@ -82,7 +85,7 @@
 	.type	ALG_VtiInit, %function
 ALG_VtiInit:
 	.fnstart
-.LFB580:
+.LFB593:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -136,7 +139,7 @@ ALG_VtiInit:
 	.type	ALG_VtiDeInit, %function
 ALG_VtiDeInit:
 	.fnstart
-.LFB581:
+.LFB594:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -156,7 +159,7 @@ ALG_VtiDeInit:
 	.type	ALG_VtiReset, %function
 ALG_VtiReset:
 	.fnstart
-.LFB582:
+.LFB595:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -177,7 +180,7 @@ ALG_VtiReset:
 	.type	ALG_VtiSet, %function
 ALG_VtiSet:
 	.fnstart
-.LFB583:
+.LFB596:
 	@ args = 0, pretend = 0, frame = 0
 	@ frame_needed = 1, uses_anonymous_args = 0
 	.movsp ip
@@ -191,27 +194,27 @@ ALG_VtiSet:
 	bl	__gnu_mcount_nc
 	ldr	r7, [r0, #0]	@ <variable>.bEnLTI, <variable>.bEnLTI
 	mov	r5, r0	@ pstSharpDrvPara, pstSharpDrvPara
-	ldr	r6, [r0, #36]	@ D.13445, <variable>.u32ZmeHIn
-	ldr	r3, [r0, #32]	@ D.13446, <variable>.u32ZmeWIn
+	ldr	r6, [r0, #36]	@ D.14009, <variable>.u32ZmeHIn
+	ldr	r3, [r0, #32]	@ D.14010, <variable>.u32ZmeWIn
 	mov	r4, r1	@ pstSharpRtlPara, pstSharpRtlPara
-	ldr	r0, [r0, #24]	@ D.13447, <variable>.u32ZmeWOut
-	ldr	sl, [r5, #28]	@ D.13449, <variable>.u32ZmeHOut
-	ldrh	r8, [r5, #40]	@ D.13452, <variable>.s16LTICTIStrengthRatio
+	ldr	r0, [r0, #24]	@ D.14011, <variable>.u32ZmeWOut
+	ldr	sl, [r5, #28]	@ D.14013, <variable>.u32ZmeHOut
+	ldrh	r8, [r5, #40]	@ D.14016, <variable>.s16LTICTIStrengthRatio
 	str	r7, [r1, #0]	@ <variable>.bEnLTI, <variable>.bEnLTI
 	ldr	r1, [r5, #4]	@ <variable>.bEnCTI, <variable>.bEnCTI
 	str	r1, [r4, #28]	@ <variable>.bEnCTI, <variable>.bEnCTI
 	ldr	r2, [r5, #12]	@ <variable>.RwzbFlag, <variable>.RwzbFlag
 	cmp	r2, #1	@ <variable>.RwzbFlag,
 	beq	.L33	@,
-	mov	r1, r3	@, D.13446
-	mov	r0, r0, asl #12	@, D.13447,
-	cmp	r3, r6	@ D.13446, D.13445
-	movlt	r9, r3	@ s32InMinWh, D.13446
-	movge	r9, r6	@ s32InMinWh, D.13445
+	mov	r1, r3	@, D.14010
+	mov	r0, r0, asl #12	@, D.14011,
+	cmp	r3, r6	@ D.14010, D.14009
+	movlt	r9, r3	@ s32InMinWh, D.14010
+	movge	r9, r6	@ s32InMinWh, D.14009
 	bl	__aeabi_idiv	@
-	mov	r1, r6	@, D.13445
+	mov	r1, r6	@, D.14009
 	mov	r7, r0	@ tmp164,
-	mov	r0, sl, asl #12	@, D.13449,
+	mov	r0, sl, asl #12	@, D.14013,
 	bl	__aeabi_idiv	@
 	cmp	r0, r7	@ tmp168, tmp164
 	movge	r2, r0	@ s32MaxRatio, tmp168
@@ -247,25 +250,25 @@ ALG_VtiSet:
 	cmp	r0, #0	@ <variable>.bDeiEnLum,
 	mov	r6, #127	@ tmp230,
 	strb	r6, [r4, #18]	@ tmp230, <variable>.u8LTIMixingRatio
-	movne	r0, #153	@ prephitmp.337,
-	moveq	r0, #180	@ prephitmp.337,
-	strh	r0, [r4, #10]	@ movhi	@ prephitmp.337, <variable>.s16LTICompsatRatio
+	movne	r0, #153	@ prephitmp.338,
+	moveq	r0, #180	@ prephitmp.338,
+	strh	r0, [r4, #10]	@ movhi	@ prephitmp.338, <variable>.s16LTICompsatRatio
 .L9:
-	sxth	r8, r8	@ D.13452, D.13452
+	sxth	r8, r8	@ D.14016, D.14016
 	ldrh	r5, [r4, #14]	@ <variable>.u16LTIUnderSwingThrsh, <variable>.u16LTIUnderSwingThrsh
-	cmp	r8, #30	@ D.13452,
+	cmp	r8, #30	@ D.14016,
 	movge	r8, #30	@ s16DtiStrengthRatio,
 	ldrh	r1, [r4, #16]	@ <variable>.u16LTIOverSwingThrsh, <variable>.u16LTIOverSwingThrsh
-	bic	r9, r8, r8, asr #31	@ D.13522, s16DtiStrengthRatio
+	bic	r9, r8, r8, asr #31	@ D.14086, s16DtiStrengthRatio
 	movw	r3, #:lower16:-2004318071	@ tmp270,
 	movt	r3, #:upper16:-2004318071	@ tmp270,
 	mov	r2, #4	@ movhi	@,
-	mul	r0, r9, r0	@ tmp267, D.13522, prephitmp.337
-	mov	ip, r9, asl #2	@ tmp301, D.13522,
-	mul	r8, r5, r9	@ tmp283, <variable>.u16LTIUnderSwingThrsh, D.13522
+	mul	r0, r9, r0	@ tmp267, D.14086, prephitmp.338
+	mov	ip, r9, asl #2	@ tmp301, D.14086,
+	mul	r8, r5, r9	@ tmp283, <variable>.u16LTIUnderSwingThrsh, D.14086
 	strh	r2, [r4, #38]	@ movhi	@, <variable>.u16CTICoringThrsh
-	mul	r1, r1, r9	@ tmp275, <variable>.u16LTIOverSwingThrsh, D.13522
-	mov	r2, r9, asl #8	@ tmp294, D.13522,
+	mul	r1, r1, r9	@ tmp275, <variable>.u16LTIOverSwingThrsh, D.14086
+	mov	r2, r9, asl #8	@ tmp294, D.14086,
 	smull	r5, sl, r3, ip	@, tmp303, tmp270, tmp301
 	mov	r6, ip, asr #31	@ tmp307, tmp301,
 	smull	r9, r7, r3, r0	@, tmp269, tmp270, tmp267
@@ -285,16 +288,16 @@ ALG_VtiSet:
 	rsb	r0, r5, r9, asr #3	@, tmp268, tmp273, tmp271,
 	rsb	sl, r1, sl, asr #3	@, tmp276, tmp281, tmp279,
 	rsb	r9, r2, r3, asr #3	@, tmp295, tmp300, tmp298,
-	uxth	r1, ip	@ D.13545, tmp302
+	uxth	r1, ip	@ D.14109, tmp302
 	rsb	r8, r8, r6, asr #3	@, tmp284, tmp289, tmp287,
 	mov	r3, #127	@ tmp292,
 	strh	r0, [r4, #10]	@ movhi	@ tmp268, <variable>.s16LTICompsatRatio
 	strh	sl, [r4, #16]	@ movhi	@ tmp276, <variable>.u16LTIOverSwingThrsh
-	strh	r1, [r4, #40]	@ movhi	@ D.13545, <variable>.u16CTIUnderSwingThrsh
+	strh	r1, [r4, #40]	@ movhi	@ D.14109, <variable>.u16CTIUnderSwingThrsh
 	strh	r8, [r4, #14]	@ movhi	@ tmp284, <variable>.u16LTIUnderSwingThrsh
 	strb	r3, [r4, #44]	@ tmp292, <variable>.u8CTIMixingRatio
 	strh	r9, [r4, #36]	@ movhi	@ tmp295, <variable>.s16CTICompsatRatio
-	strh	r1, [r4, #42]	@ movhi	@ D.13545, <variable>.u16CTIOverSwingThrsh
+	strh	r1, [r4, #42]	@ movhi	@ D.14109, <variable>.u16CTIOverSwingThrsh
 	ldmfd	sp, {r3, r4, r5, r6, r7, r8, r9, sl, fp, sp, pc}	@
 .L10:
 	cmp	r9, #720	@ s32InMinWh,
@@ -312,9 +315,9 @@ ALG_VtiSet:
 	cmp	r0, #0	@ <variable>.bDeiEnLum,
 	mov	r2, #127	@ tmp259,
 	strb	r2, [r4, #18]	@ tmp259, <variable>.u8LTIMixingRatio
-	movne	r0, #128	@ prephitmp.337,
-	moveq	r0, #153	@ prephitmp.337,
-	strh	r0, [r4, #10]	@ movhi	@ prephitmp.337, <variable>.s16LTICompsatRatio
+	movne	r0, #128	@ prephitmp.338,
+	moveq	r0, #153	@ prephitmp.338,
+	strh	r0, [r4, #10]	@ movhi	@ prephitmp.338, <variable>.s16LTICompsatRatio
 	b	.L9	@
 .L35:
 	ldr	r3, [r5, #16]	@ <variable>.bZmeFrmFmtIn, <variable>.bZmeFrmFmtIn
@@ -323,15 +326,15 @@ ALG_VtiSet:
 	bne	.L21	@,
 .L14:
 	cmp	r2, #4096	@ s32MaxRatio,
-	movlt	r3, #0	@, prephitmp.336
-	movge	r3, #1	@, prephitmp.336
+	movlt	r3, #0	@, prephitmp.337
+	movge	r3, #1	@, prephitmp.337
 	cmp	r7, #3072	@ s32MinRatio,
 	cmpge	r2, #4096	@, s32MaxRatio,
 	bge	.L37	@,
 .L22:
 	cmp	r7, #3840	@ s32MinRatio,
 	movlt	r9, #0	@, tmp242
-	andge	r9, r3, #1	@,, tmp242, prephitmp.336
+	andge	r9, r3, #1	@,, tmp242, prephitmp.337
 	cmp	r9, #0	@ tmp242,
 	beq	.L21	@,
 	ldr	r0, [r5, #8]	@ <variable>.bDeiEnLum, <variable>.bDeiEnLum
@@ -359,7 +362,7 @@ ALG_VtiSet:
 	b	.L30	@
 .L33:
 	mov	r3, #0	@ tmp159,
-	ldrsh	r0, [r4, #10]	@ prephitmp.337, <variable>.s16LTICompsatRatio
+	ldrsh	r0, [r4, #10]	@ prephitmp.338, <variable>.s16LTICompsatRatio
 	str	r3, [r4, #28]	@ tmp159, <variable>.bEnCTI
 	str	r3, [r4, #0]	@ tmp159, <variable>.bEnLTI
 	b	.L9	@
@@ -376,8 +379,8 @@ ALG_VtiSet:
 	cmp	r0, #1	@ <variable>.bZmeFrmFmtIn,
 	bne	.L21	@,
 	cmp	r2, #4096	@ s32MaxRatio,
-	movlt	r3, #0	@, prephitmp.336
-	movge	r3, #1	@, prephitmp.336
+	movlt	r3, #0	@, prephitmp.337
+	movge	r3, #1	@, prephitmp.337
 	b	.L22	@
 	.fnend
 	.size	ALG_VtiSet, .-ALG_VtiSet

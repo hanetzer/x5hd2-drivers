@@ -809,7 +809,7 @@ void png_read_image_sw(png_structp png_ptr, png_bytepp image);
 void png_select_decmode(png_structp png_ptr, png_bytepp image)
 {
     hipng_struct_hwctl_s *pstHwStruct = (hipng_struct_hwctl_s *)(png_ptr->private_ptr);
-    HI_U32 u32Phyaddr;
+    HI_U32 u32Phyaddr = 0;
     HI_U32 u32Size;
     HI_U32 u32Stride = 0;
     HI_S32 s32Ret;

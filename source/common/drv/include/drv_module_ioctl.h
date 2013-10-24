@@ -25,7 +25,7 @@ extern "C"{
 typedef struct tagMODULE_ALLOC
 {
     HI_U32 u32ModuleID;
-    HI_U8  u8ModuleName[MAX_MODULE_NAME];
+    HI_U8  u8ModuleName[MAX_MODULE_NAME+12];      /* '_' 1 + pid 10 */
     HI_S32 s32Status;
 }MODULE_ALLOC_S;
 
@@ -33,10 +33,11 @@ typedef struct tagMODULE_ALLOC
 typedef struct tagMODULE_INFO
 {
     HI_U32 u32ModuleID;
-    HI_U8  u8ModuleName[MAX_MODULE_NAME];
-
+    HI_U8  u8ModuleName[MAX_MODULE_NAME+12];      /* '_' 1 + pid 10 */
     HI_VOID* pFnCallback;
     
+    HI_S32 s32RegCount;
+    HI_U32 u32File;
 }MODULE_INFO_S;
 
 // !! Bytes:24
@@ -44,7 +45,6 @@ typedef struct tagMODULE
 {
     MODULE_INFO_S       stModuleInfo;
     HI_U32              u32ItemCnt;
-
     struct tagMODULE* pNextModule;
 }MODULE_S;
 

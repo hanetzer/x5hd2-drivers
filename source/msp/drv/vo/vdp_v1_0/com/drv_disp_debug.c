@@ -26,6 +26,7 @@ History       :
 #include "drv_disp_com.h"
 #include "hi_drv_win.h"
 #include "drv_window.h"
+#include "hi_osal.h"
 
 
 #ifdef __cplusplus
@@ -144,66 +145,6 @@ int vdp_k_fwrite(char *buf, int len, struct file *filp)
 }
 
 
-static char str[256];
-static HI_CHAR s_VdpSavePath[64] = {'/','m','n','t',0};
-HI_S32 vdp_WinSaveDispImg(HI_HANDLE hWin, char *buffer, HI_U32 count)
-{
-    struct file *pfYUV;
-    HI_DRV_VIDEO_FRAME_S stCurFrame;
-    int i,j;
-    HI_S32 nRet = HI_SUCCESS;
-
-    i = 0;
-    j = 0;
-    for(; i < count; i++)
-    {
-        if(j==0 && buffer[i]==' ')continue;
-        if(buffer[i] > ' ')str[j++] = buffer[i];
-        if(j>0 && buffer[i]<=' ')break;
-    }
-    str[j] = 0;
-
-    if (str[0] == '/')
-    {
-        if(str[j-1] == '/')
-        {
-            str[j-1] = 0; 
-        }
-        printk("******* VDP save path: %s ********\n", str);
-        strcpy(s_VdpSavePath, str);
-    }
-
-    // get current display frame
-    nRet = WinGetCurrentImg(hWin, &stCurFrame);
-    if (nRet)
-    {
-        HI_ERR_WIN("call WinGetCurrentImg failed\n");
-        return nRet;
-    }
-
-    // open file in kernel
-    sprintf(str, "%s/vdp_0x%x_%d_%d.yuv", s_VdpSavePath, 
-                                          stCurFrame.stBufAddr[0].u32PhyAddr_Y,
-                                          stCurFrame.u32Width, 
-                                          stCurFrame.u32Height);
-
-    pfYUV = vdp_k_fopen(str, O_RDWR|O_CREAT|O_APPEND, 0);
-    if (pfYUV)
-    {
-        // save yuv data
-        nRet = vdp_k_SaveYUVImg(pfYUV, &stCurFrame, 1);
-        vdp_k_fclose(pfYUV);
-        printk("save image '%s' = 0x%x\n", str, nRet);
-    }
-    else
-    {
-        HI_ERR_WIN("open file '%s' fail!\n", str);
-        nRet = HI_FAILURE;
-    }
-
-    return nRet;
-}
-
 //#define VDP_DEBUG_USE_IOREMAP 1
 
 HI_S32 vdp_k_SaveYUVImg(struct file *pfYUV, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_S32 num)
@@ -215,8 +156,15 @@ HI_S32 vdp_k_SaveYUVImg(struct file *pfYUV, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_S
     HI_U8 *pu8Ydata;
     HI_U32 i,j;
     HI_S32 nRet = HI_SUCCESS;
+    
+    if ((!pstFrame) || (!pfYUV) )
+    {
+        HI_ERR_WIN("pstFrame is null!\n");
+        return HI_FAILURE;
+    }
 
-    // map frame physical address for store data
+    memset((void*)&stMBuf, 0, sizeof(MMZ_BUFFER_S));
+    
     stMBuf.u32StartPhyAddr = pstFrame->stBufAddr[0].u32PhyAddr_Y;
     if (!stMBuf.u32StartPhyAddr)
     {
@@ -228,8 +176,12 @@ HI_S32 vdp_k_SaveYUVImg(struct file *pfYUV, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_S
     ptr = ioremap_nocache(stMBuf.u32StartPhyAddr, 5*1024*1024);
     nRet = ptr ? HI_SUCCESS : HI_FAILURE;
 #else
-    nRet = HI_DRV_MMZ_Map(&stMBuf);
-    ptr = (HI_U8 *)stMBuf.u32StartVirAddr;
+    printk("========================map phy addr =0x%x\n", stMBuf.u32StartPhyAddr);
+
+    //nRet = HI_DRV_MMZ_Map(&stMBuf);
+    //ptr = (HI_U8 *)stMBuf.u32StartVirAddr);
+    ptr = (HI_U8 *)phys_to_virt(stMBuf.u32StartPhyAddr);
+    nRet = ptr ? HI_SUCCESS : HI_FAILURE;
 #endif
     if (nRet)
     {
@@ -237,10 +189,17 @@ HI_S32 vdp_k_SaveYUVImg(struct file *pfYUV, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_S
         return HI_FAILURE;
     }
 
-    pu8Udata = DISP_MALLOC(pstFrame->u32Width * pstFrame->u32Height / 2 /2);
-    pu8Vdata = DISP_MALLOC(pstFrame->u32Width * pstFrame->u32Height / 2 /2);
-    pu8Ydata = DISP_MALLOC(pstFrame->stBufAddr[0].u32Stride_Y);
-        
+    pu8Udata = (HI_U8 *)DISP_MALLOC(pstFrame->u32Width * pstFrame->u32Height / 2 /2);
+    if (!pu8Udata)
+        goto EXIT3;
+    pu8Vdata = (HI_U8 *)DISP_MALLOC(pstFrame->u32Width * pstFrame->u32Height / 2 /2);
+    if ( !pu8Vdata)
+        goto EXIT2;
+    pu8Ydata = (HI_U8 *)DISP_MALLOC(pstFrame->stBufAddr[0].u32Stride_Y);
+    if (!pu8Ydata)
+       goto EXIT1;
+
+	
     /*write Y*/
     for (i=0; i<pstFrame->u32Height; i++)
     {
@@ -277,10 +236,13 @@ HI_S32 vdp_k_SaveYUVImg(struct file *pfYUV, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_S
 
     /*write V */
     vdp_k_fwrite(pu8Vdata, pstFrame->u32Width * pstFrame->u32Height / 2 /2, pfYUV);
-    
-    DISP_FREE(pu8Udata);
+	
+EXIT1:
+   DISP_FREE(pu8Ydata);
+EXIT2:
     DISP_FREE(pu8Vdata);
-    DISP_FREE(pu8Ydata);
+EXIT3:
+    DISP_FREE(pu8Udata);
 
 #ifdef VDP_DEBUG_USE_IOREMAP
     iounmap(ptr);
@@ -293,8 +255,57 @@ HI_S32 vdp_k_SaveYUVImg(struct file *pfYUV, HI_DRV_VIDEO_FRAME_S *pstFrame, HI_S
 
 
 
+static HI_CHAR u8VdpDebugStr[256];
+static HI_CHAR s_VdpSavePath[64] = {'/','m','n','t',0};
 
+HI_S32 vdp_DebugSaveYUVImg(HI_DRV_VIDEO_FRAME_S *pstCurFrame, HI_CHAR *buffer, HI_U32 count)
+{
+    struct file *pfYUV;
+    int i,j;
+    HI_S32 nRet = HI_SUCCESS;
 
+    i = 0;
+    j = 0;
+    for(; i < count; i++)
+    {
+        if(j==0 && buffer[i]==' ')continue;
+        if(buffer[i] > ' ')u8VdpDebugStr[j++] = buffer[i];
+        if(j>0 && buffer[i]<=' ')break;
+    }
+    u8VdpDebugStr[j] = 0;
+
+    if (u8VdpDebugStr[0] == '/')
+    {
+        if(u8VdpDebugStr[j-1] == '/')
+        {
+            u8VdpDebugStr[j-1] = 0; 
+        }
+        printk("******* VDP save path: %s ********\n", u8VdpDebugStr);
+        HI_OSAL_Strncpy(s_VdpSavePath, u8VdpDebugStr, j);
+    }
+
+    // open file in kernel
+    HI_OSAL_Snprintf(u8VdpDebugStr, 256, "%s/vdp_0x%x_%d_%d.yuv", s_VdpSavePath, 
+                                          pstCurFrame->stBufAddr[0].u32PhyAddr_Y,
+                                          pstCurFrame->u32Width, 
+                                          pstCurFrame->u32Height);
+
+    pfYUV = vdp_k_fopen(u8VdpDebugStr, O_RDWR|O_CREAT|O_APPEND, 0);
+    if (pfYUV)
+    {
+        // save yuv data
+        nRet = vdp_k_SaveYUVImg(pfYUV, pstCurFrame, 1);
+        vdp_k_fclose(pfYUV);
+        HI_PRINT("save image '%s' = 0x%x\n", u8VdpDebugStr, nRet);
+    }
+    else
+    {
+        HI_ERR_WIN("open file '%s' fail!\n", u8VdpDebugStr);
+        nRet = HI_FAILURE;
+    }
+
+    return nRet;
+}
 
 #ifdef __cplusplus
  #if __cplusplus

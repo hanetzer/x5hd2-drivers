@@ -31,13 +31,14 @@ KBUILD_EXTRA_SYMBOLS += $(COMMON_DIR)/drv/Module.symvers
 
 MOD_NAME := hi_vi
 
-obj-m += $(MOD_NAME).o
+obj-$(CFG_MSP_BUILDTYPE) += $(MOD_NAME).o
 
-
-$(MOD_NAME)-y   :=  optm_vi.o      \
-                    vi_intf.o      \
-                    viu_buf.o      \
-                    viu_utils.o
+$(MOD_NAME)-y   :=  hal_vi.o          \
+                    drv_vi_intf.o     \
+                    drv_vi_proc.o     \
+                    drv_vi.o          \
+                    drv_vi_buf.o      \
+                    drv_vi_utils.o
 
 #===============================================================================
 #   rules

@@ -12,6 +12,9 @@ extern "C"{
 #include "hi_drv_vdec.h"
 #include "hi_mpi_vdec.h"
 
+#define PRE_ALLOC_VDEC_VDH_MMZ (1)
+#define PRE_ALLOC_VDEC_SCD_MMZ (0)
+#define PRE_ALLOC_VDEC_ESBUF_MMZ (0)
 
 /**Compress Info*/
 typedef struct hiVDEC_COMPRESS_INFO_S
@@ -70,6 +73,7 @@ typedef struct hiVDEC_PRIV_FRAMEINFO_S
     HI_U32                      u32SeqFrameCnt;     /**<Picture ID in a video sequence. The ID of the first frame in each sequence is numbered 0*/ /**<CNcomment: 视频序列中的图像编号，每个序列中第一帧编号为0*/
 	HI_U32                      u32DispTime;        /**<PVR Display time*/
 	HI_U32                      image_id;
+	HI_U32                      image_id_1;
 	HI_S32                      s32InterPtsDelta;   /*interleaved source, VPSS module swtich field to frame, need to adjust pts*/
 	HI_U8                       u8Repeat;           /**<Times of playing a video frame*/ /**<CNcomment: 视频帧播放次数.*/
     HI_U8                       u8EndFrame;         /**<0 Not end frame; 1 Current frame is the end frame; 2 Prior frame is the end frame */
@@ -78,6 +82,11 @@ typedef struct hiVDEC_PRIV_FRAMEINFO_S
                                                         Bit1: 1 close deinterlace 
                                                     */
     HI_U32                      u32OriFrameRate;  /* 1000*rate */ 
+	HI_S32                      s32GopNum;
+	HI_S32                      s32FrameFormat;
+	HI_S32                      s32TopFieldFrameFormat;
+	HI_S32                      s32BottomFieldFrameFormat;
+	HI_S32                      s32FieldFlag;
 }HI_VDEC_PRIV_FRAMEINFO_S;
 
 

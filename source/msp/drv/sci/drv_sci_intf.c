@@ -10,14 +10,15 @@
 #include <linux/interrupt.h>
 #include <linux/slab.h>
 
-#include "drv_dev_ext.h"
-#include "drv_proc_ext.h"
+#include "hi_drv_dev.h"
+#include "hi_drv_proc.h"
 #include "drv_sci.h"
 #include "hi_kernel_adapt.h"
 
 #include "hi_module.h"
-#include "drv_module_ext.h"
-#include "drv_mem_ext.h"
+#include "hi_drv_module.h"
+#include "hi_drv_mem.h"
+#include "hi_osal.h"
 
 #define PROC_NAME_LEN (8)
 
@@ -46,40 +47,40 @@ HI_VOID SCI_DspProc(struct seq_file *p, SCI_PARA_S *pSciPara, ATR_BUF_S *pSciAtr
     HI_U8 AtrMask = 0x0, AtrFi = 0x1, AtrDi = 0x1;
     HI_U32 AtrNum = 0, ActualSciClk;
 
-    p += seq_printf(p, "%-20s:", "ATR");
+    PROC_PRINT(p, "%-20s:", "ATR");
     for (AtrNum = 0; AtrNum <= pSciAtrBuf->DataLen - 1; AtrNum++)
     {
-        p += seq_printf(p, "0x%x ", pSciAtrBuf->DataBuf[AtrNum]);
+        PROC_PRINT(p, "0x%x ", pSciAtrBuf->DataBuf[AtrNum]);
     }
 
     AtrNum = 0;
-    p += seq_printf(p, "\n%-20s:0x%x\n", "TS", pSciAtrBuf->DataBuf[AtrNum++]);
-    p += seq_printf(p, "%-20s:0x%x\n", "T0", pSciAtrBuf->DataBuf[AtrNum]);
+    PROC_PRINT(p, "\n%-20s:0x%x\n", "TS", pSciAtrBuf->DataBuf[AtrNum++]);
+    PROC_PRINT(p, "%-20s:0x%x\n", "T0", pSciAtrBuf->DataBuf[AtrNum]);
 
     /*interface byte*/
     AtrMask = (pSciAtrBuf->DataBuf[AtrNum] & 0xf0) >> 3;
     if ((AtrMask >> 1) & 0x01)
     {
-        p += seq_printf(p, "%-20s:0x%x", "TA1", pSciAtrBuf->DataBuf[++AtrNum]);
+        PROC_PRINT(p, "%-20s:0x%x", "TA1", pSciAtrBuf->DataBuf[++AtrNum]);
         AtrDi = pSciAtrBuf->DataBuf[AtrNum] & 0x0f;
         AtrFi = (pSciAtrBuf->DataBuf[AtrNum] & 0xf0) >> 4;
-        p += seq_printf(p, " (FI = %u,DI = %u)\n", SCI_ClkRate[AtrFi], SCI_BitRate[AtrDi]);
+        PROC_PRINT(p, " (FI = %u,DI = %u)\n", SCI_ClkRate[AtrFi], SCI_BitRate[AtrDi]);
     }
 
     if ((AtrMask >> 2) & 0x01)
     {
-        p += seq_printf(p, "%-20s:0x%x\n", "TB1", pSciAtrBuf->DataBuf[++AtrNum]);
+        PROC_PRINT(p, "%-20s:0x%x\n", "TB1", pSciAtrBuf->DataBuf[++AtrNum]);
     }
 
     if ((AtrMask >> 3) & 0x01)
     {
         ++AtrNum;
-        p += seq_printf(p, "%-20s:0x%x (N = %d)\n", "TC1", pSciAtrBuf->DataBuf[AtrNum], pSciAtrBuf->DataBuf[AtrNum]);
+        PROC_PRINT(p, "%-20s:0x%x (N = %d)\n", "TC1", pSciAtrBuf->DataBuf[AtrNum], pSciAtrBuf->DataBuf[AtrNum]);
     }
 
     if ((AtrMask >> 4) & 0x01)
     {
-        p += seq_printf(p, "%-20s:0x%x\n", "TD1", pSciAtrBuf->DataBuf[++AtrNum]);
+        PROC_PRINT(p, "%-20s:0x%x\n", "TD1", pSciAtrBuf->DataBuf[++AtrNum]);
         AtrMask = (pSciAtrBuf->DataBuf[AtrNum] & 0xf0) >> 3;
     }
     else
@@ -89,23 +90,23 @@ HI_VOID SCI_DspProc(struct seq_file *p, SCI_PARA_S *pSciPara, ATR_BUF_S *pSciAtr
 
     if ((AtrMask >> 1) & 0x01)
     {
-        p += seq_printf(p, "%-20s:0x%x (present indicate is specific mode)\n", "TA2", pSciAtrBuf->DataBuf[++AtrNum]);
+        PROC_PRINT(p, "%-20s:0x%x (present indicate is specific mode)\n", "TA2", pSciAtrBuf->DataBuf[++AtrNum]);
     }
 
     if ((AtrMask >> 2) & 0x01)
     {
-        p += seq_printf(p, "%-20s:0x%x\n", "TB2", pSciAtrBuf->DataBuf[++AtrNum]);
+        PROC_PRINT(p, "%-20s:0x%x\n", "TB2", pSciAtrBuf->DataBuf[++AtrNum]);
     }
 
     if ((AtrMask >> 3) & 0x01)
     {
-        p += seq_printf(p, "%-20s:0x%x (noly for T0 show IC card max char timeout)\n", "TC2",
+        PROC_PRINT(p, "%-20s:0x%x (noly for T0 show IC card max char timeout)\n", "TC2",
                         pSciAtrBuf->DataBuf[++AtrNum]);
     }
 
     if ((AtrMask >> 4) & 0x01)
     {
-        p += seq_printf(p, "%-20s:0x%x\n", "TD2", pSciAtrBuf->DataBuf[++AtrNum]);
+        PROC_PRINT(p, "%-20s:0x%x\n", "TD2", pSciAtrBuf->DataBuf[++AtrNum]);
         AtrMask = (pSciAtrBuf->DataBuf[AtrNum] & 0xf0) >> 3;
     }
     else
@@ -115,66 +116,66 @@ HI_VOID SCI_DspProc(struct seq_file *p, SCI_PARA_S *pSciPara, ATR_BUF_S *pSciAtr
 
     if ((AtrMask >> 1) & 0x01)
     {
-        p += seq_printf(p, "%-20s:0x%x (INF length)\n", "TA3", pSciAtrBuf->DataBuf[++AtrNum]);
+        PROC_PRINT(p, "%-20s:0x%x (INF length)\n", "TA3", pSciAtrBuf->DataBuf[++AtrNum]);
     }
 
     if ((AtrMask >> 2) & 0x01)
     {
-        p += seq_printf(p, "%-20s:0x%x (b5¡«b8:BWI  b1¡«b4:CWI)\n", "TB3", pSciAtrBuf->DataBuf[++AtrNum]);
+        PROC_PRINT(p, "%-20s:0x%x (b5¡«b8:BWI  b1¡«b4:CWI)\n", "TB3", pSciAtrBuf->DataBuf[++AtrNum]);
     }
 
     if ((AtrMask >> 3) & 0x01)
     {
-        p += seq_printf(p, "%-20s:0x%x\n", "TC3", pSciAtrBuf->DataBuf[++AtrNum]);
+        PROC_PRINT(p, "%-20s:0x%x\n", "TC3", pSciAtrBuf->DataBuf[++AtrNum]);
     }
 
     /*History Byte*/
     ++AtrNum;
     if (HI_UNF_SCI_PROTOCOL_T0 == pSciPara->SciAttr.enSciProtocol)
     {
-        p += seq_printf(p, "%-20s:", "HistoryByte");
+        PROC_PRINT(p, "%-20s:", "HistoryByte");
         while (AtrNum <= pSciAtrBuf->DataLen - 1)
         {
-            p += seq_printf(p, "0x%x ", pSciAtrBuf->DataBuf[AtrNum++]);
+            PROC_PRINT(p, "0x%x ", pSciAtrBuf->DataBuf[AtrNum++]);
         }
 
-        p += seq_printf(p, "\n");
+        PROC_PRINT(p, "\n");
     }
     else
     {
-        p += seq_printf(p, "%-20s:", "HistoryByte");
+        PROC_PRINT(p, "%-20s:", "HistoryByte");
         while (AtrNum <= pSciAtrBuf->DataLen - 2)
         {
-            p += seq_printf(p, " 0x%x", pSciAtrBuf->DataBuf[AtrNum++]);
+            PROC_PRINT(p, " 0x%x", pSciAtrBuf->DataBuf[AtrNum++]);
         }
 
-        p += seq_printf(p, "\n%-20s:0x%x\n", "TCK", pSciAtrBuf->DataBuf[AtrNum]);
+        PROC_PRINT(p, "\n%-20s:0x%x\n", "TCK", pSciAtrBuf->DataBuf[AtrNum]);
     }
 
     ActualSciClk = pSciPara->u32SysClk / (pSciPara->SciState.SciSetupPara.ClockIcc + 1) / 2;
 
-    p += seq_printf(p, "%-20s:%u\n", "ActualSciClk", ActualSciClk);
-    p += seq_printf(p, "%-20s:%u\n", "ExpectBaudRate", pSciPara->SciState.SciSetupPara.BitRate
+    PROC_PRINT(p, "%-20s:%u\n", "ActualSciClk", ActualSciClk);
+    PROC_PRINT(p, "%-20s:%u\n", "ExpectBaudRate", pSciPara->SciState.SciSetupPara.BitRate
                     * pSciPara->SciAttr.Frequency * 1000
                     / pSciPara->SciState.SciSetupPara.ClkRate);
-    p += seq_printf(p, "%-20s:%u \n", "CalcBaudFlag", pSciPara->SciState.bForceFlag);
-    p += seq_printf(p, "%-20s:%u \n", "bSetExtBaudFlag", pSciPara->SciState.bSetExtBaudFlag);
-    p += seq_printf(p, "%-20s:%u\n", "ClkRate(F)", pSciPara->SciState.SciSetupPara.ClkRate);
-    p += seq_printf(p, "%-20s:%u\n", "BitRate(D)", pSciPara->SciState.SciSetupPara.BitRate);
-    p += seq_printf(p, "%-20s:%u\n", "BaudRate", pSciPara->SciState.SciSetupPara.BitRate * ActualSciClk * 1000 \
+    PROC_PRINT(p, "%-20s:%u \n", "CalcBaudFlag", pSciPara->SciState.bForceFlag);
+    PROC_PRINT(p, "%-20s:%u \n", "bSetExtBaudFlag", pSciPara->SciState.bSetExtBaudFlag);
+    PROC_PRINT(p, "%-20s:%u\n", "ClkRate(F)", pSciPara->SciState.SciSetupPara.ClkRate);
+    PROC_PRINT(p, "%-20s:%u\n", "BitRate(D)", pSciPara->SciState.SciSetupPara.BitRate);
+    PROC_PRINT(p, "%-20s:%u\n", "BaudRate", pSciPara->SciState.SciSetupPara.BitRate * ActualSciClk * 1000 \
                     / pSciPara->SciState.SciSetupPara.ClkRate);
-    p += seq_printf(p, "%-20s:%u etu\n", "AddCharGuard", pSciPara->SciState.SciArtPara.ChGuard);
-    p += seq_printf(p, "%-20s:%u etu\n", "BlockGuard", pSciPara->SciState.SciSetupPara.BlockGuard);
-    p += seq_printf(p, "%-20s:%u \n", "Value", pSciPara->SciState.SciSetupPara.EtuValue);
-    p += seq_printf(p, "%-20s:%u \n", "Baud", pSciPara->SciState.SciSetupPara.BaudValue);
+    PROC_PRINT(p, "%-20s:%u etu\n", "AddCharGuard", pSciPara->SciState.SciArtPara.ChGuard);
+    PROC_PRINT(p, "%-20s:%u etu\n", "BlockGuard", pSciPara->SciState.SciSetupPara.BlockGuard);
+    PROC_PRINT(p, "%-20s:%u \n", "Value", pSciPara->SciState.SciSetupPara.EtuValue);
+    PROC_PRINT(p, "%-20s:%u \n", "Baud", pSciPara->SciState.SciSetupPara.BaudValue);
     if (HI_UNF_SCI_PROTOCOL_T1 == pSciPara->SciAttr.enSciProtocol)
     {
-        p += seq_printf(p, "%-20s:%u \n", "CharTimeout", pSciPara->SciState.SciSetupPara.CharTimeout);
-        p += seq_printf(p, "%-20s:%u \n", "BlockTimeout", pSciPara->SciState.SciSetupPara.BlockTimeout);
+        PROC_PRINT(p, "%-20s:%u \n", "CharTimeout", pSciPara->SciState.SciSetupPara.CharTimeout);
+        PROC_PRINT(p, "%-20s:%u \n", "BlockTimeout", pSciPara->SciState.SciSetupPara.BlockTimeout);
     }
     else
     {
-        p += seq_printf(p, "%-20s:%u \n", "CharTimeout", pSciPara->SciState.SciSetupPara.CharTimeout);
+        PROC_PRINT(p, "%-20s:%u \n", "CharTimeout", pSciPara->SciState.SciSetupPara.CharTimeout);
     }
 
     return;
@@ -195,7 +196,7 @@ HI_S32 SCI_ProcRead(struct seq_file *p, HI_VOID *v)
     for (ii = HI_UNF_SCI_PORT0; ii < HI_SCI_PORT_NUM; ii++)
     {
         memset(s8Buff, 0, sizeof(s8Buff));
-        sprintf(s8Buff, "sci%d", ii);
+        HI_OSAL_Snprintf(s8Buff, PROC_NAME_LEN, "sci%d", ii);
 
         if (0 == strcmp(pProcItem->entry_name, s8Buff))
         {
@@ -204,7 +205,7 @@ HI_S32 SCI_ProcRead(struct seq_file *p, HI_VOID *v)
         }
     }
 
-    p += seq_printf(p, "---------Hisilicon SCI%d Info---------\n", enSciPort);
+    PROC_PRINT(p, "---------Hisilicon SCI%d Info---------\n", enSciPort);
 
     if (0 != g_SciOpenNum[enSciPort])
     {
@@ -215,12 +216,14 @@ HI_S32 SCI_ProcRead(struct seq_file *p, HI_VOID *v)
             return Ret;
         }
 
-        p += seq_printf(p, "%-20s:%s\n", "Sci State", g_CardStateString[SciPara.SciState.enSciCrtState]);
-        p += seq_printf(p, "%-20s:%d\n", "SetFrequency", SciPara.SciAttr.Frequency);
-        p += seq_printf(p, "%-20s:%s\n", "Protocol", g_ProtocolString[SciPara.SciAttr.enSciProtocol]);
-        p += seq_printf(p, "%-20s:%d\n", "VccEnLevel", SciPara.SciAttr.enSciVcc);
-        p += seq_printf(p, "%-20s:%d\n", "DetectLevel", SciPara.SciAttr.enSciDetect);
-        p += seq_printf(p, "%-20s:%s\n", "ClockMode", g_ClockModeString[SciPara.SciAttr.enClkMode]);
+        PROC_PRINT(p, "%-20s:%s\n", "Sci State", g_CardStateString[SciPara.SciState.enSciCrtState]);
+        PROC_PRINT(p, "%-20s:%d\n", "SetFrequency", SciPara.SciAttr.Frequency);
+        PROC_PRINT(p, "%-20s:%s\n", "Protocol", g_ProtocolString[SciPara.SciAttr.enSciProtocol]);
+        PROC_PRINT(p, "%-20s:%d\n", "VccEnLevel", SciPara.SciAttr.enSciVcc);
+        PROC_PRINT(p, "%-20s:%d\n", "DetectLevel", SciPara.SciAttr.enSciDetect);
+        PROC_PRINT(p, "%-20s:%s\n", "ClockMode", g_ClockModeString[SciPara.SciAttr.enClkMode]);
+	PROC_PRINT(p, "%-20s:%s\n", "ResetMode", g_ClockModeString[SciPara.SciAttr.enResetMode]);
+        PROC_PRINT(p, "%-20s:%s\n", "VccMode", g_ClockModeString[SciPara.SciAttr.enVccEnMode]);
 
         if (SciPara.SciState.enSciCrtState >= HI_UNF_SCI_STATUS_READATR)
         {
@@ -238,7 +241,7 @@ HI_S32 SCI_ProcRead(struct seq_file *p, HI_VOID *v)
     }
     else
     {
-        p += seq_printf(p, "SCI%d is not open\n", enSciPort);
+        PROC_PRINT(p, "SCI%d is not open\n", enSciPort);
         return HI_SUCCESS;
     }
 }
@@ -428,13 +431,28 @@ HI_S32 SCI_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_VO
         break;
     }
 
-    case CMD_SCI_CONF_CLK_MODE:
+    case CMD_SCI_CONF_MODE:
     {
-        SCI_CLK_S   *pSciClk;
+        SCI_IO_OUTPUTTYPE_S   *pSciIO;
 
-        pSciClk = (SCI_CLK_S *)arg;
+        pSciIO = (SCI_IO_OUTPUTTYPE_S *)arg;
 
-        Ret = SCI_ConfClkMode(pSciClk->enSciPort, pSciClk->enClkMode);
+		if (SCI_IO_CLK == pSciIO->enIO)
+		{
+			Ret = SCI_ConfClkMode(pSciIO->enSciPort, pSciIO->enOutputType);
+		}
+        else if (SCI_IO_RESET == pSciIO->enIO)
+		{
+			Ret = SCI_ConfResetMode(pSciIO->enSciPort, pSciIO->enOutputType);
+		}
+		else if (SCI_IO_VCC_EN == pSciIO->enIO)
+		{
+			Ret = SCI_ConfVccEnMode(pSciIO->enSciPort, pSciIO->enOutputType);
+		}
+		else
+		{
+			Ret = HI_ERR_SCI_NOTSUPPORT;
+		}
 
         break;
     }
@@ -731,7 +749,7 @@ HI_S32 SCI_DRV_ModInit(HI_VOID)
 
     (HI_VOID)HI_DRV_MODULE_Register(HI_ID_SCI, "HI_SCI", HI_NULL);
 
-    sprintf(g_SciRegisterData.devfs_name, UMAP_DEVNAME_SCI);
+    HI_OSAL_Snprintf(g_SciRegisterData.devfs_name, sizeof(g_SciRegisterData.devfs_name), UMAP_DEVNAME_SCI);
     g_SciRegisterData.minor  = UMAP_MIN_MINOR_SCI;
     g_SciRegisterData.owner  = THIS_MODULE;
     g_SciRegisterData.drvops = &sci_drvops;
@@ -748,7 +766,7 @@ HI_S32 SCI_DRV_ModInit(HI_VOID)
     for (ii = 0; ii < HI_SCI_PORT_NUM; ii++)
     {
         memset(s8Buff[ii], 0, sizeof(s8Buff[ii]));
-        sprintf(s8Buff[ii], "sci%d", ii);
+        HI_OSAL_Snprintf(s8Buff[ii], PROC_NAME_LEN, "sci%d", ii);
 
         pProcItem = HI_DRV_PROC_AddModule(s8Buff[ii], HI_NULL, HI_NULL);
         if (!pProcItem)
@@ -764,9 +782,7 @@ HI_S32 SCI_DRV_ModInit(HI_VOID)
         g_SciOpenNum[ii] = 0;
     }
 #ifdef MODULE
-#ifndef CONFIG_SUPPORT_CA_RELEASE
-    printk("Load hi_sci.ko success.   \t(%s)\n", VERSION_STRING);
-#endif
+    HI_PRINT("Load hi_sci.ko success.   \t(%s)\n", VERSION_STRING);
 #endif
     return HI_SUCCESS;
 }

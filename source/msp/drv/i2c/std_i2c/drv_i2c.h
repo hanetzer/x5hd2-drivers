@@ -16,17 +16,10 @@ extern "C" {
 //#define I2C_DFT_RATE      (100000)
 #define I2C_DFT_RATE      (400000)
 
-#if    defined (CHIP_TYPE_hi3716h)  \
-    || defined (CHIP_TYPE_hi3716c)  \
-    || defined (CHIP_TYPE_hi3716m)	\
-    || defined (CHIP_TYPE_hi3712)
-#define I2C0_PHY_ADDR     (0x101F7000)
-#define I2C1_PHY_ADDR     (0x101F8000)
-#define I2C2_PHY_ADDR     (0x101F9000)
-#define I2C3_PHY_ADDR     (0x101FA000)
-#define I2C4_PHY_ADDR     (0x101F6000)
-
-#elif  defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200)
+#if defined (CHIP_TYPE_hi3716cv200es) || defined (CHIP_TYPE_hi3716cv200) \
+	|| defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
+	|| defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+	|| defined (CHIP_TYPE_hi3718mv100) 
 
 #define I2C0_PHY_ADDR     (0xF8B10000)
 #define I2C1_PHY_ADDR     (0xF8B11000)
@@ -101,6 +94,7 @@ extern "C" {
 #define I2C_ARBITRATE_INTR (1 << 1)
 #define I2C_OVER_INTR (1 << 0)
 
+HI_VOID I2C_DRV_SetRate(HI_U32 I2cNum, HI_U32 I2cRate);
 //#define I2C_START_END (I2C_START_INTR | I2C_OVER_INTR)
 //#define I2C_STOP_END (I2C_END_INTR | I2C_OVER_INTR)
 

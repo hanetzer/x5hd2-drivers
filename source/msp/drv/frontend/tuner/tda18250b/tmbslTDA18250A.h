@@ -52,8 +52,26 @@ extern "C"
 /*============================================================================*/
 /* Types and defines:                                                         */
 /*============================================================================*/
+#define TDA18250A_DVBC_SUPPORTED
+#define TDA18250A_DVBT_SUPPORTED
+#define TDA18250A_DTMB_SUPPORTED
+#define TDA18250A_ISDBT_SUPPORTED
+#define TDA18250A_ATSC_SUPPORTED
 
-#define TDA18250A_CONFIG_STD_FREQ_NUM 2
+#define TDA18250A_CONFIG_STD_FREQ_NUM 8
+
+typedef enum _TDA18250AVersion_t {
+    TDA18250A_VersionES1 = 0,                                       /* ES1 */
+    TDA18250A_VersionES2,                                           /* ES2 */
+    TDA18250A_VersionES3,                                           /* ES3 */
+    TDA18250A_VersionES4,                                           /* ES4 */
+    TDA18250A_VersionMax
+} TDA18250AVersion_t, *pTDA18250AVersion_t;
+
+typedef struct _TDA18250A_AdditionnalData_t
+{
+    tmUnitSelect_t tOtherUnit; /* tUnit of the instance containing the tUnit of the other path */
+}TDA18250A_AdditionnalData_t;
 
 typedef enum _TDA18250APowerState_t {
     TDA18250A_PowerNormalMode = 0,                                 /* Device normal mode */
@@ -61,6 +79,9 @@ typedef enum _TDA18250APowerState_t {
     TDA18250A_PowerStandbyWithLtOnWithXtalOn,                      /* Device standby mode with LT on and with Xtal Output */
     TDA18250A_PowerStandbyWithPllOnWithXtalOn,                     /* Device standby mode with PLL on and with Xtal Output */
     TDA18250A_PowerStandbyWithLtOnWithPllOnWithXtalOn,             /* Device standby mode with LT on with PLL on and with Xtal Output */
+    TDA18250A_PowerStandbySmoothLTOnXtOutOn,
+    TDA18250A_PowerStandbySmoothLTOffXtOutOff,
+    TDA18250A_PowerStandbySmoothLTOffLNAOnXtOutOn,
     TDA18250A_PowerMax
 } TDA18250APowerState_t, *pTDA18250APowerState_t;
 
@@ -72,8 +93,41 @@ typedef enum  _TDA18250AModeInUse_t {
 
 typedef enum _TDA18250AStandardMode_t {
     TDA18250A_StandardMode_Unknown = 0,                  /* Unknown standard */
+#ifdef TDA18250A_DVBC_SUPPORTED
     TDA18250A_QAM_6MHz,                                  /* Digital TV QAM 6MHz */
     TDA18250A_QAM_8MHz,                                  /* Digital TV QAM 8MHz */
+    TDA18250A_QAM_6MHz_64QAM,
+    TDA18250A_QAM_6MHz_256QAM,
+    TDA18250A_QAM_8MHz_64QAM,
+    TDA18250A_QAM_8MHz_256QAM,
+#endif
+#ifdef TDA18250A_DVBT_SUPPORTED
+    TDA18250A_DVBT_1_7MHz,                               /* Digital TV DVB-T/T2 6MHz */
+    TDA18250A_DVBT_6MHz,                                 /* Digital TV DVB-T/T2 6MHz */
+    TDA18250A_DVBT_7MHz,                                 /* Digital TV DVB-T/T2 7MHz */
+    TDA18250A_DVBT_8MHz,                                 /* Digital TV DVB-T/T2 8MHz */
+    TDA18250A_DVBT_10MHz,                                /* Digital TV DVB-T/T2 10MHz */
+#endif
+#ifdef TDA18250A_DTMB_SUPPORTED
+    TDA18250A_DTMB_8MHz,                                 /* Digital TV DMB-T 8MHz */
+#endif
+#ifdef TDA18250A_ISDBT_SUPPORTED
+    TDA18250A_ISDBT_6MHz,                                /* Digital TV ISDB-T 6MHz*/
+#endif
+#ifdef TDA18250A_ANALOG_SUPPORTED
+    TDA18250A_FM_Radio,                                  /* Analog FM Radio */
+    TDA18250A_ANLG_MN,                                   /* Analog TV M/N */
+    TDA18250A_ANLG_B,                                    /* Analog TV B */
+    TDA18250A_ANLG_GH,                                   /* Analog TV G/H */
+    TDA18250A_ANLG_I,                                    /* Analog TV I */
+    TDA18250A_ANLG_DK,                                   /* Analog TV D/K */
+    TDA18250A_ANLG_L,                                    /* Analog TV L */
+    TDA18250A_ANLG_LL,                                   /* Analog TV L' */
+    TDA18250A_Scanning,                                  /* Analog Preset Blind Scanning */
+#endif
+#ifdef TDA18250A_ATSC_SUPPORTED
+    TDA18250A_ATSC_6MHz,
+#endif
     TDA18250A_StandardMode_Max
 } TDA18250AStandardMode_t, *pTDA18250AStandardMode_t;
 
@@ -87,21 +141,12 @@ typedef struct _TDA18250A_BitField_t
 }
 TDA18250A_BitField_t, *pTDA18250A_BitField_t;
 
-//typedef enum _TDA18250APowerSavingMode_t {
-//    TDA18250APowerSavingMode_Normal,   /* Set of normal powersaving blocks */
-//    TDA18250APowerSavingMode_Low       /* Set of good powersaving blocks   */
-//} TDA18250APowerSavingMode_t, *pTDA18250APowerSavingMode_t;
-
 typedef enum _TDA18250AXtalFreq_t {
 	TDA18250A_XtalFreq_Unknown,
 	TDA18250A_XtalFreq_16000000,
 	TDA18250A_XtalFreq_24000000,
 	TDA18250A_XtalFreq_25000000,
-	TDA18250A_XtalFreq_26000000,
 	TDA18250A_XtalFreq_27000000,
-	TDA18250A_XtalFreq_28800000,
-	TDA18250A_XtalFreq_28920000,
-	TDA18250A_XtalFreq_29000000,
 	TDA18250A_XtalFreq_30000000
 } TDA18250AXtalFreq_t, *pTDA18250AXtalFreq_t;
 
@@ -177,6 +222,12 @@ tmErrorCode_t
 tmbslTDA18250A_GetPowerLevel(
     tmUnitSelect_t  tUnit,      /* I: Unit number */
     Int32*          pPowerLevel /* O: Power Level in (x100) dBµVrms */
+);
+
+tmErrorCode_t
+tmbslTDA18250A_CheckHWVersion(
+    tmUnitSelect_t  tUnit,      /* I: Unit number */
+    pTDA18250AVersion_t pEsVersion  /*  o: ES version of the HW */
 );
 
 #ifdef __cplusplus

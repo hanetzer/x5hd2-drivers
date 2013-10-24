@@ -26,11 +26,11 @@ extern "C" {
 #define DISP_DRVIER_VERSION 0x20130417UL
 #define DISP_PLAT_FPGA
 
-/* define X5HD2 MPW */
-#define DISP_X5HD2_MPW_VERSION_L 0x76756F76UL
-#define DISP_X5HD2_MPW_VERSION_H 0x30313134UL
+/* define CV200_ES */
+#define DISP_CV200_ES_VERSION_L 0x76756F76UL
+#define DISP_CV200_ES_VERSION_H 0x30313134UL
 
-#define DISP_X5HD2_MPW_BASE 0xf8cc0000UL
+#define DISP_CV200_ES_BASE 0xf8cc0000UL
 
 /*=============================================================================
 BIT[   31] = reserved          <=
@@ -61,20 +61,16 @@ BIT[    2] = vo_sd_cken        <= 0,dis; 1, en;
 BIT[    1] = vo_cken           <= 0,dis; 1, en;
 BIT[    0] = vo_bus_cken       <= 0,dis; 1, en;
 =============================================================================*/
-#define DISP_X5HD2_MPW_SYSCTRL_BASE        0xF8A220D8UL
-//#define DISP_X5HD2_MPW_SYSCTRL_RESET_VALUE 0x05E107FFul
 // for hd div 1, bit[19,18] = 10b
-#define DISP_X5HD2_MPW_SYSCTRL_RESET_VALUE 0x05F147FFUL
+#define DISP_CV200_ES_SYSCTRL_RESET_VALUE 0x05F147FFUL
 
-#define DISP_X5HD2_MPW_SYSCTRL_RESET_BIT   0x40000000UL
+#define DISP_CV200_ES_SYSCTRL_RESET_BIT   0x40000000UL
 
-#define DISP_X5HD2_MPW_PLL0_BASE          0xF8A22028UL
-#define DISP_X5HD2_MPW_PLL0_RESET_VALUE_A 0x0
-#define DISP_X5HD2_MPW_PLL0_RESET_VALUE_B 0x0
+#define DISP_CV200_ES_PLL0_RESET_VALUE_A 0x0
+#define DISP_CV200_ES_PLL0_RESET_VALUE_B 0x0
 
-#define DISP_X5HD2_MPW_PLL1_BASE          0xF8A22140UL
-#define DISP_X5HD2_MPW_PLL1_RESET_VALUE_A 0x0
-#define DISP_X5HD2_MPW_PLL1_RESET_VALUE_B 0x0
+#define DISP_CV200_ES_PLL1_RESET_VALUE_A 0x0
+#define DISP_CV200_ES_PLL1_RESET_VALUE_B 0x0
 
 /*=============================================================================
 BIT[31-20] = reserved         <= 
@@ -93,21 +89,14 @@ BIT[  3-2] = reserved         <=
 BIT[    1] = vdac_bg_cken     <= 0,dis; 1,en
 BIT[    0] = vdac_rct_cken    <= 0,dis; 1,en
 =============================================================================*/
-#define DISP_X5HD2_MPW_VDAC_BASE                0xF8A2211CUL
-#define DISP_X5HD2_MPW_VDAC_SYSCTRL_RESET_VALUE 0x000000F3UL
-
-
 
 #ifdef DISP_PLAT_FPGA
 #define DISP_X5HD2_MPW_INT_NUMBER (32 + 90)
-
-
 #else
 #define DISP_X5HD2_MPW_INT_NUMBER (32 + 90)
-
 #endif
 
-#define DISP_BASE_ADDRESS DISP_X5HD2_MPW_BASE
+#define DISP_BASE_ADDRESS DISP_CV200_ES_BASE
 #define DISP_INT_NUMBER   DISP_X5HD2_MPW_INT_NUMBER
 
 

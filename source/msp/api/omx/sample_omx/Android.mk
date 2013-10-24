@@ -18,7 +18,7 @@ LOCAL_PATH := $(call my-dir)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE_TAGS		:= eng
-LOCAL_MODULE			:= sample_omx
+LOCAL_MODULE			:= sample_omxvdec
 LOCAL_CFLAGS			:= -pthread -ldl
 LOCAL_C_INCLUDES		:= $(LOCAL_PATH)/../inc/
 LOCAL_C_INCLUDES		+= $(LOCAL_PATH)/../../../../common/include/

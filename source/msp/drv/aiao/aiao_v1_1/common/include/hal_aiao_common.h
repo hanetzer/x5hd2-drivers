@@ -21,6 +21,8 @@ History       :
 
 #include "hi_unf_common.h"
 
+#include "circ_buf.h"
+
 
 #define AIAO_ASSERT(x, param1, param2)
 #define AIAO_ASSERT_NULL(ptr)
@@ -36,15 +38,22 @@ History       :
 #endif
 #endif
 
-#ifdef HI_SND_FPGA
-#define AIAO_PLL_297MHZ 1                     /* aiao_replace, fpag only */
-#elif defined (CHIP_TYPE_hi3716cv200)		  /* cv200  asic&fpga  */
-#define AIAO_PLL_307MHZ 1
+#if defined (CHIP_TYPE_hi3716cv200)   /* cv200  asic&fpga  */ \
+        || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100) \
+        || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\
+        || defined (CHIP_TYPE_hi3718mv100) 
+//#define AIAO_PLL_307MHZ 1             /* cv200 fpga */
+#define AIAO_PLL_492MHZ 1               /* cv200 asic, default*/  /*491.52M*/
+//#define AIAO_PLL_600MHZ 1               /* cv200 asic*/
+//#define AIAO_PLL_750MHZ 1               /* cv200 asic*/
+
+#elif defined (CHIP_TYPE_hi3716cv200es)   /* S40V200 asic */
+#define AIAO_PLL_600MHZ 1
 #else
-#define AIAO_PLL_600MHZ 1              			/* asic */
+#error YOU MUST DEFINE  CHIP_TYPE!
 #endif
 
-#define AIAO_SYSCRG_REGBASE (0xf8a22000+0x0118)        
+#define AIAO_SYSCRG_REGOFFSET (0x0118)    
 #define AIAO_CBB_REGBASE    (0xf8cd0000)
 
 #define AIAO_COM_OFFSET      0x0000
@@ -61,6 +70,9 @@ History       :
 #define AIAO_TX_REG_BANDSIZE 0x100
 #define AIAO_TXSPDIF_REG_BANDSIZE 0x100
 #define AIAO_SPDIFER_REG_BANDSIZE 0x1000  /* special */
+
+/* hardware board i2s port */
+#define AIAO_MAX_EXT_I2S_NUMBER (2)   /* rx/tx */
 
 /* AIAO TX/RX Port */
 #define AIAO_MAX_RX_PORT_NUMBER (8)
@@ -234,6 +246,8 @@ typedef enum
 {
     AIAO_MODE_I2S = 0,
     AIAO_MODE_PCM = 1,
+
+    AIAO_MODE_BUTT
 } AIAO_I2S_MODE_E;
 
 typedef enum
@@ -357,6 +371,8 @@ typedef enum
     AIAO_SAMPLE_RATE_96K  = 96000,
     AIAO_SAMPLE_RATE_176K = 176400,
     AIAO_SAMPLE_RATE_192K = 192000,
+
+    AIAO_SAMPLE_RATE_BUTT
 } AIAO_SAMPLE_RATE_E;
 
 /* SPDIF output mode */
@@ -367,7 +383,7 @@ typedef enum
     AIAO_SPDIF_MODE_BUTT
 } AIAO_SPDIF_MODE_E;
 
-typedef HI_VOID AIAO_IsrFunc (AIAO_PORT_ID_E enPortID, HI_U32 u32IntRawStatus);
+typedef HI_VOID AIAO_IsrFunc (AIAO_PORT_ID_E enPortID, HI_U32 u32IntRawStatus,void *);//HI_ALSA_AI_SUPPORT
 
 typedef struct
 {
@@ -439,6 +455,7 @@ typedef struct
     AIAO_MEM_ATTR_S   stExtMem;
     
     AIAO_IsrFunc      *pIsrFunc;
+	void *substream;  //only for alsa isr HI_ALSA_AI_SUPPORT
 } AIAO_PORT_USER_CFG_S;
 
 typedef struct
@@ -494,12 +511,33 @@ typedef struct
     AIAO_PROC_STAUTS_S   stProcStatus;
     AIAO_PORT_USER_CFG_S stUserConfig;
     AIAO_BufInfo_S       stBuf;
+    CIRC_BUF_S           stCircBuf;
     AIAO_PORT_STATUS_E   enStatus;
 } AIAO_PORT_STAUTS_S;
 
 typedef HI_VOID AIAO_ISR (HI_VOID * handle, HI_U32 status);
 
-#define PORT2CHID(x) (((HI_U32)(x)) & 0x0f)
+//#define PORT2CHID(x) (((HI_U32)(x)) & 0x0f)
+
+static inline HI_U32 PORT2CHID(AIAO_PORT_ID_E enPortID)
+{
+    if (enPortID <= AIAO_PORT_RX7)
+    {
+        return (enPortID&0x0f);
+    }
+    else if (enPortID<=AIAO_PORT_TX7 && enPortID>=AIAO_PORT_TX0)
+    {
+        return (enPortID&0x0f);
+    }
+    else if (enPortID<=AIAO_PORT_SPDIF_TX3&& enPortID>=AIAO_PORT_SPDIF_TX0)
+    {
+        return (enPortID&0x0f);
+    }
+    else
+    {
+        return 0;  /* avoid TQE */
+    }
+}
 
 static inline HI_U32 AIAOFrameSize(AIAO_I2S_CHNUM_E enCh, AIAO_BITDEPTH_E enBitDepth)
 {
@@ -539,7 +577,7 @@ static inline HI_U32  PORT2ID(AIAO_PORT_ID_E enPortID)
     }
     else
     {
-        ChnId = AIAO_INT_BUTT;
+        ChnId = 0;   /* avoid TQE */
     }
 
     return ChnId;  /* convert to golbal ID */
@@ -736,5 +774,20 @@ typedef struct
     HI_VOID *pAddr;
 } AIAO_DAC_STATUS;
 
+typedef struct 
+{
+    HI_U32 u32InitFlag; /* bit0: rx, bit1: tx */   //HI_BOOL u32InitFlag;  
+    AIAO_PORT_ID_E     enTxPortID;
+    AIAO_I2S_SOURCE_E  enTxSource;
+    AIAO_CRG_MODE_E    enTxCrgMode;
+    AIAO_CRG_SOURCE_E  enTxCrgSource;
+
+    AIAO_PORT_ID_E     enRxPortID;
+    AIAO_I2S_SOURCE_E  enRxSource;
+    AIAO_CRG_MODE_E    enRxCrgMode;
+    AIAO_CRG_SOURCE_E  enRxCrgSource;
+    
+    AIAO_IfAttr_S      stIfCommonAttr;
+} AIAO_I2S_BOARD_CONFIG;
 
 #endif  // __HI_HAL_AIAO_COMMON_H__
