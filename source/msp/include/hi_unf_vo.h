@@ -14,11 +14,11 @@
     Modification: Created file
 
 *******************************************************************************/
-/** 
+/**
  * \file
  * \brief  supply info of vo module.
  */
- 
+
 #ifndef  __HI_UNF_VO_H__
 #define  __HI_UNF_VO_H__
 
@@ -53,7 +53,7 @@ typedef enum hiUNF_VO_ROTATION_E
 /**CNcomment:宽高比转换模式*/
 typedef enum hiUNF_VO_ASPECT_CVRS_E
 {
-    HI_UNF_VO_ASPECT_CVRS_IGNORE = 0x0,   
+    HI_UNF_VO_ASPECT_CVRS_IGNORE = 0x0,
     HI_UNF_VO_ASPECT_CVRS_LETTERBOX,      /**<Add black borders*//**<CNcomment: 加黑边*/
     HI_UNF_VO_ASPECT_CVRS_PAN_SCAN,      /**<Clip the picture*//**<CNcomment: 裁减*/
     HI_UNF_VO_ASPECT_CVRS_COMBINED,       /**<Add black borders and clip the picture*//**<CNcomment: 加黑边和裁减混合*/
@@ -139,21 +139,21 @@ typedef struct hiUNF_BUFFER_ATTR_S
 /**CNcomment:VO设备的运行模式 */
 typedef enum hiUNF_VO_DEV_MODE_E
 {
-    HI_UNF_VO_DEV_MODE_NORMAL,  /**<normal mode: 
+    HI_UNF_VO_DEV_MODE_NORMAL,  /**<normal mode:
                                   3716 V100/V200 :no more than 2 windows to be created.
                                   3716 v300:no more than 3 windows to be created.
                                   3712 v300:no more than 1 windows to be created.*/
                                   /**<CNcomment: 正常模式，
-                                   3716 V100/V200:只能创建2个WINDOW 
+                                   3716 V100/V200:只能创建2个WINDOW
                                    3716 v300: 只能创建3个WINDOW
                                    3712 v300: 只能创建1个WINDOW*/
     HI_UNF_VO_DEV_MODE_MOSAIC,  /**<mosaic mode: can create more than 2 windows.
                                  3712 v300: not support*/
-                                /**<CNcomment: 马赛克模式，可以创建多个WINDOW 
+                                /**<CNcomment: 马赛克模式，可以创建多个WINDOW
                                  3712 v300: 不支持*/
     HI_UNF_VO_DEV_MODE_STANDALONE,  /**<seperate mode,only 1 window can be created,and  the aspect ratio set seperately.
                                         3716 v300: not support*/
-                                    /**<CNcomment: standalone模式，高标清显示宽高比转换单独处理模式 
+                                    /**<CNcomment: standalone模式，高标清显示宽高比转换单独处理模式
                                      3716 v300 : 不支持*/
     HI_UNF_VO_DEV_MODE_BUTT
 } HI_UNF_VO_DEV_MODE_E;
@@ -342,6 +342,16 @@ CNcomment:无 CNend
 CNcomment:无 CNend
 */
 HI_S32 HI_UNF_VO_ReleaseFrame(HI_HANDLE hWindow,HI_UNF_VIDEO_FRAME_INFO_S *pstFrameinfo);
+
+/**
+\brief send frame to a window.
+*/
+HI_S32 HI_UNF_VO_QueueFrame(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S* pstFrameinfo);
+
+/**
+\brief getback a frame from window after display.
+*/
+HI_S32 HI_UNF_VO_DequeueFrame(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S* pstFrameinfo);
 
 /**
 \brief set the zorder of the given window.CNcomment:设置WINDOW的Z序 CNend

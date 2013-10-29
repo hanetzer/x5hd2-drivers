@@ -23,6 +23,8 @@ CFLAGS  +=  -I$(COMMON_UNF_INCLUDE)                 \
             -I$(MSP_API_INCLUDE)                    \
             -I$(MSP_DRV_INCLUDE)                    
 
+LDFLAGS = -L$(COMMON_DIR)/api
+LDLIBS = -lhi_common
 
 LIBS := libOMX.hisi.video.decoder
 OBJS := omx_allocator.o omx_event_queue.o omx_vdec.o vdec_drv_ctx.o
@@ -48,6 +50,6 @@ uninstall:
 
 $(LIBS) : $(OBJS)
 ifndef CFG_HI_STATIC_LIB_ONLY
-	$(AT)$(CC) -shared -o $@.so $^
+	$(AT)$(CC) -shared $(LDFLAGS) $(LDLIBS)  -o $@.so $^
 endif
 
