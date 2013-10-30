@@ -17,7 +17,7 @@
 #define DEBUG_STREAM              0  
 #else     
 // ENABLE PRINT IN LINUX 
-#define PRN_ENABLE                1
+#define PRN_ENABLE                0
 #define DEBUG                     PRN_ENABLE
 #define DEBUG_WARN                PRN_ENABLE
 #define DEBUG_STREAM              PRN_ENABLE
