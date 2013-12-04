@@ -59,8 +59,8 @@
 #define ATRP()    printk(KERN_ALERT"\nfunc:%s line:%d \n", __func__, __LINE__)
 #define ATRC    printk
 #else
-#define ATRP() 
-#define ATRC(fmt, ...) 
+#define ATRP()
+#define ATRC(fmt, ...)
 #endif
 
 //#define ALSA_TIME_DEBUG
@@ -86,8 +86,8 @@ static const struct snd_pcm_hardware aiao_hardware = {
 				  SNDRV_PCM_FMTBIT_S24_LE,
 	.channels_min		= 2,
 	.channels_max	= 2,
-	.period_bytes_min	= 0x3c0,     
-       .period_bytes_max	= 0xf00,    
+	.period_bytes_min	= 0x3c0,
+       .period_bytes_max	= 0xf00,
 	.periods_min		= 4,
 	.periods_max		= 16,
 	.buffer_bytes_max	= 0xf000,
@@ -113,7 +113,7 @@ static irqreturn_t IsrAIFunc(AIAO_PORT_ID_E enPortID,HI_U32 u32IntRawStatus,void
         printk(KERN_ALERT" get write pos is %d,and get readpos is %d,update read ptr is %d\n ",had->ai_writepos,had->ai_readpos,readpos);
     }
     #endif
-    snd_pcm_period_elapsed(substream);     
+    snd_pcm_period_elapsed(substream);
      had->IsrProc(enPortID,u32IntRawStatus,NULL);
 	return IRQ_HANDLED;
 }
@@ -126,7 +126,7 @@ static irqreturn_t dsp0Isr(int irq, void * dev_id)
     struct hiaudio_data *had = snd_soc_platform_get_drvdata(platform);
     HI_U32 isr_cnt;
     HI_U32 hw_readpos = 0;
-    
+
     //ATRP();
     had->isr_total_cnt++;
 
@@ -136,7 +136,7 @@ static irqreturn_t dsp0Isr(int irq, void * dev_id)
     	pr_err("%s: null substream\n", __func__);
     	return IRQ_HANDLED;
     }
-    
+
     if(1 == had->first_irq)
     {
         ATRP();
@@ -145,18 +145,34 @@ static irqreturn_t dsp0Isr(int irq, void * dev_id)
     }
     else
         isr_cnt = aiao_isr_num  - had->local_isr_num - had->isr_discard_cnt + 1;
-    
+
     if((isr_cnt%had->sthwparam.periods))
         hw_readpos = (isr_cnt  * AIAO_DF_PeriodBufSize) % (AIAO_DF_PeriodBufSize * had->sthwparam.periods);
     else
         hw_readpos = had->sthwparam.periods * AIAO_DF_PeriodBufSize;
 
     had->aiao_isr_num = aiao_isr_num;
-    had->first_irq = 0;
 
 #if 1
     aoe_get_AipReadPos(had->dma_index, &had->aoe_readpos);
     //ATRC("\naoe_get_AipReadPos 0x%x", had->aoe_readpos);
+    /*************************
+           | hw_write = 0
+           --------------------
+           | aoe_read = 0
+    *************************/
+    if(1 == had->first_irq)
+    {
+        if(had->aoe_readpos < AIAO_DF_PeriodBufSize)
+        {
+            return IRQ_HANDLED;
+        }
+        else
+        {
+            had->first_irq = 0;
+        }
+    }
+
 /*************************
                      | hw_write
        --------------------
@@ -187,7 +203,7 @@ static irqreturn_t dsp0Isr(int irq, void * dev_id)
 
     had->hw_readpos = hw_readpos;
     snd_pcm_period_elapsed(substream);
-    
+
     return IRQ_HANDLED;
 }
 
@@ -199,7 +215,7 @@ static int hi_dma_prepare(struct snd_pcm_substream *substream)
 
     ATRP();
 
-#ifdef HI_ALSA_AI_SUPPORT	 
+#ifdef HI_ALSA_AI_SUPPORT
 	if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
 	{
 		had->last_c_pos = 0;
@@ -222,12 +238,12 @@ static int hi_dma_prepare(struct snd_pcm_substream *substream)
     had->last_pos = 0;
     had->runtime_appl_ptr = 0;
     had->aoe_write_ptr = 0;
-    had->aoe_write_offset = 0;   
-    had->runtime_appl_offset = 0;   
+    had->aoe_write_offset = 0;
+    had->runtime_appl_offset = 0;
     had->aoe_updatewptr_offset = 0;
 
     had->pointer_frame_offset = 0;
-    //To Test 
+    //To Test
     had->hw_readpos = 0;
     //TO DO
     aiao_isr_num = 0;       //reset state to create state
@@ -243,13 +259,13 @@ static int hi_dma_trigger(struct snd_pcm_substream *substream, int cmd)
     int ret = 0;
 
     ATRP();
-    
+
 #ifdef  ALSA_TIME_DEBUG
 	getnstimeofday(&curtime);
 	ATRC("\n----trigger--:%d . %u\n", tmp.tv_sec, tmp.tv_nsec);
 #endif
 
-    switch(cmd) 
+    switch(cmd)
     {
     case SNDRV_PCM_TRIGGER_START:
     case SNDRV_PCM_TRIGGER_RESUME:
@@ -259,16 +275,16 @@ static int hi_dma_trigger(struct snd_pcm_substream *substream, int cmd)
             had->local_isr_num = aiao_isr_num;   //when pause  to start in time without prepare
             ret = aoe_dma_start(had->dma_index, NULL);
             if(ret)
-            {   
+            {
                 ATRC("AIAO ALSA start dma Fail \n");
             }
         }
-#ifdef HI_ALSA_AI_SUPPORT		
+#ifdef HI_ALSA_AI_SUPPORT
         if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
         {
           ret =  hi_ai_alsa_setEnable(had->ai_handle,&had->cfile,HI_TRUE);
           if(ret)
-          {   
+          {
                ATRC("AI ALSA start dma Fail \n");
         }
         }
@@ -290,13 +306,13 @@ static int hi_dma_trigger(struct snd_pcm_substream *substream, int cmd)
         {
             ret = hi_ai_alsa_setEnable(had->ai_handle,&had->cfile,HI_FALSE);
             if(ret)
-            {   
+            {
                ATRC("AI ALSA stop dma Fail \n");
         }
         }
 #endif
         break;
-        
+
     default:
         ret = -EINVAL;
         break;
@@ -307,12 +323,12 @@ static int hi_dma_trigger(struct snd_pcm_substream *substream, int cmd)
 static int hi_dma_mmap(struct snd_pcm_substream *substream,
 	struct vm_area_struct *vma)
 {
-    //TODO 
+    //TODO
 #if 1
     //struct snd_soc_pcm_runtime *soc_rtd = substream->private_data;
     //struct snd_soc_platform *platform = soc_rtd->platform;
     //struct hiaudio_data *had = snd_soc_platform_get_drvdata(platform);
-    
+
     struct snd_pcm_runtime *runtime = substream->runtime;
     //hw base addr
     //unsigned long hw_base;
@@ -328,7 +344,7 @@ static int hi_dma_mmap(struct snd_pcm_substream *substream,
     ret = io_remap_pfn_range(vma,
                 vma->vm_start,
                 runtime->dma_addr >> PAGE_SHIFT,
-                size, 
+                size,
                 vma->vm_page_prot);
 
     if (ret)
@@ -364,10 +380,10 @@ static snd_pcm_uframes_t hi_dma_pointer(struct snd_pcm_substream *substream)
 	}
     if(bytes_offset >= snd_pcm_lib_buffer_bytes(substream))
  		bytes_offset = 0;
-     
+
     frame_offset = bytes_to_frames(runtime, bytes_offset);
     //ATRC("\npointer return frame :0x%x   hw_readpos : 0x%x\n", frame_offset, bytes_offset);
-    
+
 	if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
     had->pointer_frame_offset = frame_offset;
 
@@ -408,7 +424,7 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
 	HI_UNF_AI_ATTR_S pstAiAttr;
 	AI_Create_Param_S stAiParam;
 #endif
-    
+
     ATRP();
 
     buffer_bytes = params_buffer_bytes(params);
@@ -418,7 +434,7 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
 
 #ifdef HI_ALSA_AI_SUPPORT
    if(substream->stream == SNDRV_PCM_STREAM_CAPTURE)
-   	{   
+   	{
    		memset(&pstAiAttr,0,sizeof(pstAiAttr));
 		memset(&stAiParam,0,sizeof(stAiParam));
    		ret = hi_ai_alsa_get_attr(HI_UNF_AI_I2S0,&pstAiAttr);
@@ -426,7 +442,7 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
 		{
 			ret = -EINVAL;
 			goto err_AllocateDma;
-		}  
+		}
         pstAiAttr.enSampleRate =  params_rate(params);
         pstAiAttr.unAttr.stI2sAttr.stAttr.enChannel = params_channels(params);
          switch (params_format(params)) {
@@ -455,14 +471,14 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
         stAiParam.pAlsaPara = (void *)&stAIAlsaAttr;
         stAiParam.enAiPort = HI_UNF_AI_I2S0;
 //		pstAiAttr.enAiPort = HI_UNF_AI_I2S0;
-        memcpy(&stAiParam.stAttr, &pstAiAttr, sizeof(HI_UNF_AI_ATTR_S));    
+        memcpy(&stAiParam.stAttr, &pstAiAttr, sizeof(HI_UNF_AI_ATTR_S));
 		ret = hi_ai_alsa_open(&stAiParam,&had->cfile);
 		if(HI_SUCCESS != ret)
 		{
 			ret = -EINVAL;
             goto err_AllocateDma;
 		}
-		had->ai_handle = stAiParam.hAi; 
+		had->ai_handle = stAiParam.hAi;
 		#ifdef AIAO_ALSA_DEBUG
 		ATRC("\nbuffer_bytes : 0x%x \n", buffer_bytes);
 		ATRC("\n pstAiAttr.enSampleRate : 0x%d \n", (int)pstAiAttr.enSampleRate);
@@ -479,7 +495,7 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
    else
 #endif
    	{
-    //STEP 1 open snd device 
+    //STEP 1 open snd device
     if(!had->open_cnt)
     {
         memset(&stAttr,0,sizeof(HI_UNF_SND_ATTR_S));
@@ -494,16 +510,16 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
         //ATRC("\nperiod_bytes : 0x%x \n", period_bytes);
         ATRC("\nstAttr.enSampleRate : 0x%x \n", (int)stAttr.enSampleRate);
         ATRC("\nstAttr.u32PortNum : 0x%x \n", stAttr.u32PortNum);
- #endif      
+ #endif
         ret = aoe_dma_open(&stAttr, &had->file);
         if(HI_SUCCESS != ret)
         {
-            ret =  -EINVAL;             //TODO  different sample rete  
+            ret =  -EINVAL;             //TODO  different sample rete
             goto err_AllocateDma;
         }
       had->open_cnt++;
     }
-       
+
     if(INITIAL_VALUE == had->dma_index)
     {
         stDmaAttr.u32BufPhyAddr = runtime->dma_addr;    //to check addr attr
@@ -517,7 +533,7 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
         }
         //ATRC("\nAOE request new track dma %d \n", dma_index);
     }
-   
+
     had->dma_index = dma_index;
    }
     had->sthwparam.channels = params_channels(params);
@@ -539,7 +555,7 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
     default:
         break;
     }
-    
+
 #ifdef AIAO_ALSA_DEBUG
     printk("\nhad->sthwparam.channels : 0x%x", had->sthwparam.channels);
     printk("\nhad->sthwparam.rate : 0x%x", had->sthwparam.rate);
@@ -551,10 +567,10 @@ static int hi_dma_hwparams(struct snd_pcm_substream *substream,
 
     if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
     {
-#ifdef USE_DSP_ISR    
+#ifdef USE_DSP_ISR
     if(had->irq_num == INITIAL_VALUE)
     {
-        if (request_irq(DSP0TOA9_IRQ_NUM, dsp0Isr, IRQF_DISABLED, "DSP0TOA9", substream) != 0)  
+        if (request_irq(DSP0TOA9_IRQ_NUM, dsp0Isr, IRQF_DISABLED, "DSP0TOA9", substream) != 0)
         {
             HI_FATAL_AO("DSP0TOA9 request_irq failed irq num =%d!\n", DSP0TOA9_IRQ_NUM);
             //goto err_RequestChan;
@@ -585,7 +601,7 @@ static int hi_dma_open(struct snd_pcm_substream *substream)
     struct snd_soc_platform *platform = soc_rtd->platform;
     struct hiaudio_data *had = snd_soc_platform_get_drvdata(platform);
     int ret = 0;
- 
+
     ATRP();
     ret = snd_soc_set_runtime_hwparams(substream, &aiao_hardware);
     if(ret)
@@ -610,13 +626,13 @@ static int hi_dma_open(struct snd_pcm_substream *substream)
     had->isr_discard_cnt= 0;
 
     had->ack_cnt = 0;
-    had->last_pos = 0;   
+    had->last_pos = 0;
     had->runtime_appl_ptr = 0;
     had->aoe_write_ptr = 0;
-    had->aoe_write_offset = 0;   
-    had->runtime_appl_offset = 0;   
+    had->aoe_write_offset = 0;
+    had->runtime_appl_offset = 0;
     had->aoe_updatewptr_offset = 0;
-    
+
 #ifdef CONFIG_AIAO_ALSA_PROC_SUPPORT
    had->pointer_frame_offset = 0;
 #endif
@@ -640,12 +656,12 @@ static int hi_dma_close(struct snd_pcm_substream *substream)
             ret = hi_ai_alsa_destroy(had->ai_handle,&had->cfile); //jiaxi check
 			if(ret)
                 ATRC("ai destroy fail  num =%d fail !\n", had->ai_handle);
-			else 
+			else
                 had->ai_handle = INITIAL_VALUE;
 		}
 
         had->isr_total_cnt_c = 0;
-	}		
+	}
     else
 #endif
     {
@@ -654,7 +670,7 @@ static int hi_dma_close(struct snd_pcm_substream *substream)
         ret = aoe_dma_releasechan(had->dma_index);
         if(ret)
             ATRC("aoe_dma_releasechan dma  num =%d fail !\n", had->dma_index);
-        else 
+        else
             had->dma_index = INITIAL_VALUE;
     }
     if(had->open_cnt)
@@ -666,7 +682,7 @@ static int hi_dma_close(struct snd_pcm_substream *substream)
              had->open_cnt--;
     }
 
-#ifdef USE_DSP_ISR    
+#ifdef USE_DSP_ISR
     if(had->irq_num != INITIAL_VALUE)
     {
         free_irq(DSP0TOA9_IRQ_NUM, substream);
@@ -692,7 +708,7 @@ static int hi_dma_ack(struct snd_pcm_substream *substream)
     int current_pos = 0;
 
     //ATRP();
-    
+
    if(substream->stream == SNDRV_PCM_STREAM_PLAYBACK)
   {
     current_pos = runtime->control->appl_ptr;
@@ -711,9 +727,9 @@ static int hi_dma_ack(struct snd_pcm_substream *substream)
     had->ack_cnt++;
 
     had->runtime_appl_ptr = runtime->control->appl_ptr * had->sthwparam.frame_size;
-    had->aoe_write_ptr += real_size;   
+    had->aoe_write_ptr += real_size;
     had->runtime_appl_offset = had->runtime_appl_ptr % had->sthwparam.buffer_bytes;
-    had->aoe_write_offset = had->aoe_write_ptr % had->sthwparam.buffer_bytes;   
+    had->aoe_write_offset = had->aoe_write_ptr % had->sthwparam.buffer_bytes;
     had->aoe_updatewptr_offset= real_size;
 #if 0
     aoe_get_AipReadPos(had->dma_index, &had->aoe_readpos);
@@ -722,7 +738,7 @@ static int hi_dma_ack(struct snd_pcm_substream *substream)
     {
         had->aoe_overwrite_cnt++;
     }
-#endif    
+#endif
     aoe_update_writeptr(had->dma_index, &(real_size));
 
     had->last_pos = current_pos;
@@ -747,7 +763,7 @@ static int hi_dma_pcm_new(struct snd_soc_pcm_runtime *rtd)
 {
     struct snd_pcm *pcm = rtd->pcm;
     int ret = 0;
-    if(pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream || 
+    if(pcm->streams[SNDRV_PCM_STREAM_PLAYBACK].substream ||
         pcm->streams[SNDRV_PCM_STREAM_CAPTURE].substream)
     {
         ret = snd_pcm_lib_preallocate_pages_for_all(pcm, SNDRV_DMA_TYPE_DEV,NULL,
@@ -769,7 +785,7 @@ static void hi_dma_pcm_free(struct snd_pcm *pcm)
 static int hi_dma_probe(struct snd_soc_platform *soc_platform)
 {
     int ret = 0;
-    
+
 #ifdef CONFIG_AIAO_ALSA_PROC_SUPPORT
     struct hiaudio_data *had = dev_get_drvdata(soc_platform->dev);
     ret = hiaudio_ao_proc_init(soc_platform->card->snd_card, ALSA_PROC_AO_NAME, had);
@@ -783,8 +799,8 @@ static int hi_dma_probe(struct snd_soc_platform *soc_platform)
     {
     }
 #endif
-    
-#endif    
+
+#endif
     return ret;
 }
 
@@ -885,13 +901,13 @@ static struct platform_device *hiaudio_dma_device;
 int hiaudio_dma_init(void)
 {
     int ret =0;
-    
+
     hiaudio_dma_device = platform_device_alloc("hisi-audio", -1);
     if (!hiaudio_dma_device) {
     	HI_FATAL_AO(KERN_ERR "hiaudio-dma SoC platform device: Unable to register\n");
     	return -ENOMEM;
     }
-    
+
     ret = platform_device_add(hiaudio_dma_device);
     if (ret) {
     	HI_FATAL_AO(KERN_ERR "hiaudio-dma SoC platform device: Unable to add\n");
