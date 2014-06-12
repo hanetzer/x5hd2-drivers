@@ -380,12 +380,15 @@ static struct mmb_info* get_mmbinfo_byusraddr(unsigned long addr, struct mmz_use
 
 	list_for_each_entry(p, &pmu->list, list) {
 		if( ((unsigned long)p->mapped <= addr) && 
-			((unsigned long)p->mapped + p->size > addr) &&
-			(p->pid == current->pid) )
+			((unsigned long)p->mapped + p->size > addr) ) {
+			/*&&(p->pid == current->pid) )*/
 				break;
+		}
 	}
-	if( &p->list == &pmu->list)
+	if( &p->list == &pmu->list){
+		printk("get_mmbinfo_buusraddr:(null):%ld\n",addr);
 		return NULL;
+	}
 
 	return p;
 }
