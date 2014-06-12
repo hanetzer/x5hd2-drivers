@@ -186,6 +186,7 @@ static OMX_BOOL port_full(OMX_COMPONENT_PRIVATE *pcom_priv, OMX_U32  port)
     {
         if (bit_absent(&port_priv->m_buf_cnt, i))
         {
+            DEBUG_PRINT("port_full->bit_absent->OMX_FALSE %s[%d]\n",__FILE__,__LINE__); 
             return OMX_FALSE;
         }
     }
@@ -877,7 +878,7 @@ static OMX_ERRORTYPE update_picture_info(
     OMX_U32 align_height        = 0;
     OMX_PORT_PRIVATE *port_priv = NULL;
 
-    if ((height > DEFAULT_FRAME_HEIGHT) || (width > DEFAULT_FRAME_WIDTH))
+    if (/*(height > DEFAULT_FRAME_HEIGHT) ||*/ (width > DEFAULT_FRAME_WIDTH))
     {
         DEBUG_PRINT_ERROR("%s(): picture w/h(%ldx%ld) exceed! thred: width(%d), height(%d)\n", __func__, width, height, DEFAULT_FRAME_WIDTH, DEFAULT_FRAME_HEIGHT);
         return OMX_ErrorUnsupportedSetting;
@@ -2096,7 +2097,7 @@ static OMX_ERRORTYPE handle_command_port_disable(
 
         if ((ret == OMX_ErrorNone) && flag)
         {
-            post_event(pcom_priv, OMX_CommandPortDisable, INPUT_PORT_INDEX, OMX_GENERATE_COMMAND_DONE);
+            post_event(pcom_priv, OMX_CommandPortDisable, OUTPUT_PORT_INDEX, OMX_GENERATE_COMMAND_DONE);
         }
 
     }
@@ -2115,7 +2116,7 @@ static OMX_ERRORTYPE handle_command_port_enable(
 
     if ((port == INPUT_PORT_INDEX) || (port == OMX_ALL))
     {
-        port_priv = &pcom_priv->m_port[OUTPUT_PORT_INDEX];
+        port_priv = &pcom_priv->m_port[INPUT_PORT_INDEX];
         if (!port_priv->m_port_enabled)
         {
             port_priv->m_port_enabled = OMX_TRUE;
@@ -2346,7 +2347,7 @@ static void event_process(OMX_COMPONENT_PRIVATE *pcom_priv, OMX_U32 id)
                 omx_report_event(pcom_priv, OMX_EventCmdComplete, OMX_CommandFlush, INPUT_PORT_INDEX, NULL);
             }
 
-            port_priv = &pcom_priv->m_port[OUTPUT_PORT_INDEX];
+            port_priv = &pcom_priv->m_port[INPUT_PORT_INDEX];
             if (!port_priv->m_port_flushing && bit_present(&pcom_priv->m_flags, OMX_STATE_IDLE_PENDING))
             {
                 DEBUG_PRINT_STATE("[OmxState] Idle_Pending --> Idle\n");
@@ -2384,7 +2385,7 @@ static void event_process(OMX_COMPONENT_PRIVATE *pcom_priv, OMX_U32 id)
                 omx_report_event(pcom_priv, OMX_EventCmdComplete, OMX_CommandFlush, OUTPUT_PORT_INDEX, NULL);
             }
 
-            port_priv = &pcom_priv->m_port[INPUT_PORT_INDEX];
+            port_priv = &pcom_priv->m_port[OUTPUT_PORT_INDEX];
             if (!port_priv->m_port_flushing && bit_present(&pcom_priv->m_flags, OMX_STATE_IDLE_PENDING))
             {
                 DEBUG_PRINT_STATE("[OmxState] Idle_Pending --> Idle\n");
