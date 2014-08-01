@@ -27,7 +27,7 @@ LDFLAGS = -L$(COMMON_DIR)/api
 LDLIBS = -lhi_common
 
 LIBS := libOMX.hisi.video.decoder
-OBJS := omx_allocator.o omx_event_queue.o omx_vdec.o vdec_drv_ctx.o
+OBJS := omx_allocator.o omx_event_queue.o omx_vdec.o vdec_drv_ctx.o omx_vdec_interface.o
 
 #===============================================================================
 # rules
