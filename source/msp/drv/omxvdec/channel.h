@@ -22,7 +22,9 @@
 #include "hi_type.h"
 #include "msg.h"
 
-#define MAX_BUFF_NUM			20
+/*#define MAX_BUFF_NUM			20*/
+/*NUM=30, to support gstreamer omx decoder plugin*/
+#define MAX_BUFF_NUM			30
 #define QUEUE_DEFAULT_DEPTH		50
 
 #define  LAST_FRAME_FLAG_NULL               0
