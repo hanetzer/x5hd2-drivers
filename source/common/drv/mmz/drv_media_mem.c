@@ -55,10 +55,11 @@
 #include <asm/highmem.h>
 #include <asm/tlbflush.h>
 #include <asm/pgtable.h>
-
+#include <linux/seq_file.h>
 
 #include "drv_media_mem.h"
 #include "hi_kernel_adapt.h"
+#include  "hi_debug.h"
 
 #define DEFAULT_ALLOC 0
 #define SLAB_ALLOC 1
@@ -93,11 +94,11 @@
         if (gfp == 0 ? 0 : (p)->gfp != (gfp)) \
             continue;\
         if (mmz_name != NULL) { \
-            if ((*mmz_name != '\0') && strcmp(mmz_name, p->name)) \
+            if ((*mmz_name != '\0') && strncmp(mmz_name, p->name,HIL_MMZ_NAME_LEN)) \
                 continue;\
         } \
         if ((mmz_name == NULL) && (anony == 1)){ \
-            if (strcmp("anonymous", p->name)) \
+            if (strncmp("anonymous", p->name,HIL_MMZ_NAME_LEN)) \
                 continue;\
         } \
         mmz_trace(1, HIL_MMZ_FMT_S, hil_mmz_fmt_arg(p));
@@ -135,7 +136,11 @@ static int mmz_info_phys_start = -1;
 
 module_param(anony, int, S_IRUGO);
 
-
+struct cma {
+	unsigned long base_pfn;
+	unsigned long count;
+	unsigned long *bitmap;
+};
 static void dump_mmz_mem(void);
 static void __dma_clear_buffer(struct page *page, size_t size);
 
@@ -511,6 +516,9 @@ hil_mmb_t *hil_mmb_alloc(const char *name, unsigned long size, unsigned long ali
 
     down(&mmz_lock);
     mmb = __mmb_alloc(name, size, align, gfp, mmz_name, NULL);
+    if(mmb)
+	mmb->kphy_ref ++;
+
     up(&mmz_lock);
 
     return mmb;
@@ -600,11 +608,11 @@ static void __dma_clear_buffer(struct page *page, size_t size)
 		memset(ptr, 0, size);
 		*/
 		if (size < L2_CACHE_SIZE) {
-			dmac_flush_range(ptr, ptr + size);
+			__cpuc_flush_dcache_area(ptr,size);
 			outer_flush_range(__pa(ptr), __pa(ptr) + size);
 		} else {
 #ifdef CONFIG_SMP
-			on_each_cpu(__cpuc_flush_kern_all, NULL, 1);
+			on_each_cpu((smp_call_func_t)__cpuc_flush_kern_all, NULL, 1);
 #else
 			__cpuc_flush_kern_all();
 #endif
@@ -764,6 +772,13 @@ static int _mmb_free(hil_mmb_t *mmb)
     struct page *page = phys_to_page(mmb->phys_addr);	
 
     hil_mmz_t *mmz = mmb->zone;	
+
+    if(!mmb->kphy_ref)
+    {
+    	return 0;
+    }
+
+    mmb->kphy_ref --;
 
     if (mmb->flags & HIL_MMB_MAP2KERN_CACHED)
     {
@@ -1036,6 +1051,8 @@ int get_mmz_info_phys_start(void)
 }
 
 #define MAX_MMZ_INFO_LEN 20*1024
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 #define CHECK_BUFF_OVERFLOW() \
 do{\
 	if (p_mmz_info_buf + len - mmz_info_buf > MAX_MMZ_INFO_LEN){\
@@ -1043,6 +1060,15 @@ do{\
 		break;\
 	};\
 }while(0)
+#else
+#define CHECK_BUFF_OVERFLOW() \
+do{\
+	if (m->count > MAX_MMZ_INFO_LEN){\
+		PRINTK_CA(KERN_ERR"mmz_info_buff overflow(%d), more than 20k data!\n", m->count);\
+		break;\
+	};\
+}while(0)
+#endif
 
 #define SPLIT_LINE "-------------------------------------------------------------------------------------------------------\n"
 
@@ -1083,6 +1109,20 @@ static void dump_mmz_mem(void)
 	printk("|  MMZ Total Size  |      Used      |     Idle        |  Zone Number  |   BLock Number                 |\n");
 	printk(SPLIT_LINE);
 
+	/*
+	 * fix the wrong usage statistic
+	 */
+	if (zone_number == 1) {
+		struct cma *cma;
+
+		p = list_first_entry(&mmz_list, hil_mmz_t, list);
+		if (p->cma_dev) {
+			cma = p->cma_dev->cma_area;
+			if (cma && cma->count)
+				used_size = bitmap_weight(cma->bitmap, cma->count) * 4;
+		}
+	}
+
 	if(0 != mmz_total_size){
 		free_size = mmz_total_size - used_size;
 		printk("|       %d%-8s       %d%-8s      %d%-6s          %d                  %d                      |\n",
@@ -1091,10 +1131,10 @@ static void dump_mmz_mem(void)
 		zone_number = 0;
 		block_number = 0;
 	}
-
 	printk(SPLIT_LINE);
 }
 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 int mmz_read_proc(char *page, char **start, off_t off,
                   int count, int *eof, void *data)
 {
@@ -1211,7 +1251,80 @@ int mmz_read_proc(char *page, char **start, off_t off,
 
 	return ret;
 }
+#else
+int mmz_read_proc(struct seq_file *m, void *v) {
+	int nZoneCnt = 0;
+	hil_mmz_t *p;
+	unsigned int used_size = 0, free_size = 0;
+	unsigned int u32Number = 0;
 
+	#if !(0 == HI_PROC_SUPPORT)
+	down(&mmz_lock);
+	seq_puts(m,SPLIT_LINE);
+	seq_puts(m, "|                   PHYS           |  ID  |   KVIRT   |    FLAGS    |  LENGTH(KB)  |       NAME        |\n");
+	seq_puts(m,SPLIT_LINE);
+
+	// Collect all mmb info into mmz_info_buff
+	list_for_each_entry(p, &mmz_list, list){
+		hil_mmb_t *mmb;
+
+		list_for_each_entry(mmb, &p->mmb_list, list){
+			u32Number++;
+		}
+
+		seq_printf(m, "|ZONE[%d]: (0x%08lx, 0x%08lx)   %d                 0x%08lx      %-10lu   \"%s%-14s|\n",nZoneCnt, \
+                       (p)->phys_start,(p)->phys_start+(p)->nbytes-1, u32Number, (p)->gfp,(p)->nbytes/SZ_1K,(p)->name, "\"");
+		CHECK_BUFF_OVERFLOW();
+
+		nZoneCnt++;
+
+		mmz_total_size += p->nbytes / 1024;
+		zone_number++;
+
+		list_for_each_entry(mmb, &p->mmb_list, list){
+			seq_printf(m, "|" HIL_MMB_FMT_S "|\n", hil_mmb_fmt_arg(mmb));
+                        CHECK_BUFF_OVERFLOW();
+			used_size += mmb->length/1024;
+			block_number++;
+		}
+	}
+
+	seq_puts(m, SPLIT_LINE);
+	seq_printf(m, "|%-102s|\n", "Summary:");
+	seq_puts(m, SPLIT_LINE);
+	seq_puts(m, "|  MMZ Total Size  |      Used      |     Idle        |  Zone Number  |   BLock Number                 |\n");
+	seq_puts(m, SPLIT_LINE);
+
+	if (zone_number == 1) {
+		struct cma *cma;
+
+		p = list_first_entry(&mmz_list, hil_mmz_t, list);
+		if (p->cma_dev) {
+			cma = p->cma_dev->cma_area;
+			if (cma && cma->count)
+				used_size = bitmap_weight(cma->bitmap, cma->count) * 4;
+		}
+	}
+
+	if(0 != mmz_total_size){
+		free_size = mmz_total_size - used_size;
+		seq_printf(m, "|       %d%-8s       %d%-8s      %d%-6s          %d                  %d                      |\n",
+				 mmz_total_size/1024, "MB", used_size/1024, "MB", free_size/1024, "MB", zone_number, block_number);
+		CHECK_BUFF_OVERFLOW();
+
+		mmz_total_size = 0;
+		zone_number = 0;
+		block_number = 0;
+	}
+
+	seq_puts(m, SPLIT_LINE);
+
+	up(&mmz_lock);
+
+	#endif
+	return 0;
+}
+#endif
 
 #define MMZ_SETUP_CMDLINE_LEN 256
 static char __initdata setup_zones[MMZ_SETUP_CMDLINE_LEN] = "ddr,0,0,160M";
@@ -1228,12 +1341,17 @@ static void mmz_exit_check(void)
     }
 }
 
+static int init_done = 0;
+
 int HI_DRV_MMZ_Init(void)
 {
     char *s;
     char *p = NULL;
     char *q;
  //   int len;
+
+    if (init_done)
+        return 0;
 
     //PRINTK_CA(KERN_INFO "Hisilicon Media Memory Zone Manager state 0\n");
 
@@ -1257,12 +1375,16 @@ int HI_DRV_MMZ_Init(void)
     }
 
     media_mem_parse_cmdline(setup_zones);
+
+    init_done = 1;
+
     return 0;
 }
 
 void HI_DRV_MMZ_Exit(void)
 {
     mmz_exit_check();
+    init_done = 0;
     return;
 }
 

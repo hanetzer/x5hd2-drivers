@@ -21,8 +21,11 @@
 #include <linux/proc_fs.h>
 #include <linux/delay.h>
 #include <linux/sched.h>
+#include <linux/seq_file.h>
 #include <asm/uaccess.h>
 #include <asm/cacheflush.h>
+#include <linux/version.h>
+#include <linux/slab.h>
 #include "hi_drv_dev.h"
 #include "drv_media_mem.h"
 #include "drv_mmz_ioctl.h"
@@ -72,7 +75,7 @@ static int mmz_flush_dcache_all(void)
 {
 	/* flush l1 all cache */
 #ifdef CONFIG_SMP
-	on_each_cpu(__cpuc_flush_kern_all, NULL, 1);
+	on_each_cpu((smp_call_func_t)__cpuc_flush_kern_all, NULL, 1);
 #else
 	__cpuc_flush_kern_all();
 #endif
@@ -256,12 +259,14 @@ static int ioctl_mmb_user_remap(struct file *file, unsigned int iocmd, struct mm
 {
 	struct mmz_userdev_info *pmu = file->private_data;
 	struct mmb_info *p;
+#if !(LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0))
+	unsigned long round_up_len;
+#endif
 
 	unsigned long addr, len, prot, flags, pgoff;
 
 	if ( (p=get_mmbinfo_safe(pmi->phys_addr, pmu)) ==NULL)
 		return -EPERM;
-	
 	if( p->mapped && p->map_ref>0) {
 		if(cached != p->map_cached) {
 			error("mmb<%s> already mapped %s, can not be remap to %s.\n", p->mmb->name, 
@@ -299,7 +304,13 @@ static int ioctl_mmb_user_remap(struct file *file, unsigned int iocmd, struct mm
     down_write(&current->mm->mmap_sem);
 	pmu->mmap_pid = current->pid;
 	p->map_cached = cached;
+
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
 	addr = do_mmap_pgoff(file, addr, len, prot, flags, pgoff);
+#else
+	addr = do_mmap_pgoff(file, addr, len, prot, flags, pgoff,&round_up_len);
+#endif
+
 	pmu->mmap_pid = 0;
 	up_write(&current->mm->mmap_sem);
 
@@ -380,22 +391,19 @@ static struct mmb_info* get_mmbinfo_byusraddr(unsigned long addr, struct mmz_use
 
 	list_for_each_entry(p, &pmu->list, list) {
 		if( ((unsigned long)p->mapped <= addr) && 
-			((unsigned long)p->mapped + p->size > addr) ) {
-			/*&&(p->pid == current->pid) )*/
+			((unsigned long)p->mapped + p->size > addr) &&
+			(p->pid == current->pid) )
 				break;
-		}
 	}
-	if( &p->list == &pmu->list){
-		printk("get_mmbinfo_buusraddr:(null):%ld\n",addr);
+	if( &p->list == &pmu->list)
 		return NULL;
-	}
 
 	return p;
 }
 
 /*To make sure ref get and release, both get and put interface shoude be exist, 
 	but customers make sure theirselves, will not release in using */
-/*CNcomment: 应当有 get/put两个接口，保证ref的获取释放，不过用户对该接口暂时自己确认，使用中不进行释放*/
+/*CNcomment: 应锟斤拷锟斤拷 get/put锟斤拷锟斤拷锟接口ｏ拷锟斤拷证ref锟侥伙拷取锟酵放ｏ拷锟斤拷锟斤拷锟矫伙拷锟皆该接匡拷锟斤拷时锟皆硷拷确锟较ｏ拷使锟斤拷锟叫诧拷锟斤拷锟斤拷锟酵凤拷*/
 static int ioctl_mmb_user_getphyaddr(struct file *file, unsigned int iocmd, struct mmb_info *pmi)
 {
 	struct mmb_info *p;
@@ -672,6 +680,21 @@ static struct file_operations mmz_userdev_fops = {
 	.mmap	= mmz_userdev_mmap,
 };
 
+#if !(LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0))
+static int proc_mmz_read(struct inode *inode, struct file *file)
+{
+	return single_open(file, mmz_read_proc, PDE_DATA(inode));
+}
+
+static struct file_operations proc_mmz_fops = {
+	.owner		= THIS_MODULE,
+	.open		= proc_mmz_read,
+	.read           = seq_read,
+        .llseek         = seq_lseek,
+	.write		= NULL,
+        .release        = single_release,
+};
+#endif
 
 /****************************proc**********************************/
 #define MEDIA_MEM_NAME  "media-mem"
@@ -679,14 +702,18 @@ static int media_mem_proc_init(void)
 {
 #if !(0 == HI_PROC_SUPPORT)
 	struct proc_dir_entry *p;
-
-//	p = create_proc_entry(MEDIA_MEM_NAME, 0644, &proc_root);
-	p = create_proc_entry(MEDIA_MEM_NAME, 0444,NULL); 
+#if LINUX_VERSION_CODE < KERNEL_VERSION(3, 10, 0)
+	p = create_proc_entry(MEDIA_MEM_NAME, 0444,NULL);
 	if(p == NULL)
 		return -1;
 	p->read_proc = mmz_read_proc;
-//	p->write_proc = mmz_write_proc;
 	p->write_proc = NULL;
+#else
+	p = proc_create(MEDIA_MEM_NAME, 0444, NULL,&proc_mmz_fops);
+	if(p == NULL)
+		return -1;
+#endif
+
 #endif
         return 0;
 }

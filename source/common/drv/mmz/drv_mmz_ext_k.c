@@ -27,7 +27,7 @@ HI_S32 HI_DRV_MMZ_AllocAndMap(const char *bufname, char *zone_name, HI_U32 size,
     {
         //mmz_name = MMZ_OTHERS;
         /*alloc once again from others buffer*/
-        /*CNcomment:ÔÙ´Óothers »º³åÇø·ÖÅäÒ»´Î*/
+        /*CNcomment:ï¿½Ù´ï¿½others ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½*/
         phyaddr = new_mmb(bufname, size, align, NULL);
         if (phyaddr == MMB_ADDR_INVALID)
         {
@@ -75,7 +75,7 @@ HI_S32 HI_DRV_MMZ_Alloc(const char *bufname, char *zone_name, HI_U32 size, int a
     {
         //mmz_name = MMZ_OTHERS;
         /*alloc once again from others buffer*/
-        /*CNcomment:ÔÙ´Óothers »º³åÇø·ÖÅäÒ»´Î*/
+        /*CNcomment:ï¿½Ù´ï¿½others ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½*/
         phyaddr = new_mmb(bufname, size, align, NULL);
         if (phyaddr == MMB_ADDR_INVALID)
         {
@@ -119,13 +119,13 @@ HI_S32 HI_DRV_MMZ_Flush(MMZ_BUFFER_S *psMBuf)
 	     * but flush_cache_all include I+BTB cache
 	     */
 #ifdef CONFIG_SMP
-	    on_each_cpu(__cpuc_flush_kern_all, NULL, 1);
+    	on_each_cpu((smp_call_func_t)__cpuc_flush_kern_all, NULL, 1);
 #else
 	    __cpuc_flush_kern_all();
 #endif
     else
 	    /* __cpuc_flush_dcache_area have the same effect with dmac_flush_range */
-	    dmac_flush_range((const void *)viraddr, (const void *)(viraddr + len));
+    	__cpuc_flush_dcache_area((void *)viraddr,(size_t)len);
 
     /* l2x0 already optimise the range based operations, see commit 444457c1f5 */
     outer_flush_range(phyaddr, phyaddr + len);
