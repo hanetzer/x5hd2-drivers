@@ -42,14 +42,14 @@ av_cold int ff_h263_decode_init(AVCodecContext *avctx)
 {
     MpegEncContext *s = avctx->priv_data;
 	/* 2010/06/18 18:30:00 liuxw+00139685 */
-	/* Ôö¼Ó·µ»ØÂë */
+	/* å¢åŠ è¿”å›ç  */
 	int iRet = 0;
 
     s->avctx = avctx;
     s->out_format = FMT_H263;
 
 	/* 2010/09/14 15:30:00 liuxw+00139685 */
-	/* ½«avctxÖĞ±£´æµÄ¾²Ì¬²ÎÊıÖĞµÄ¿í¡¢¸ß¸³¸øs */
+	/* å°†avctxä¸­ä¿å­˜çš„é™æ€å‚æ•°ä¸­çš„å®½ã€é«˜èµ‹ç»™s */
     //s->width  = avctx->coded_width;
     //s->height = avctx->coded_height;
 	s->width  = avctx->usSourceWidth;
@@ -77,7 +77,7 @@ av_cold int ff_h263_decode_init(AVCodecContext *avctx)
         s->low_delay = 0; //default, might be overridden in the vol header during header parsing
         break;
 	/*guoshan + 00101841 20100415*/
-	/*ÒÔÏÂ½âÂë¸ñÊ½²»Ö§³Ö£¬¸ÄÎª±¨´í´¦Àí*/
+	/*ä»¥ä¸‹è§£ç æ ¼å¼ä¸æ”¯æŒï¼Œæ”¹ä¸ºæŠ¥é”™å¤„ç†*/
 //   case CODEC_ID_MSMPEG4V1:
 //         s->h263_msmpeg4 = 1;
 //         s->h263_pred = 1;
@@ -116,7 +116,7 @@ av_cold int ff_h263_decode_init(AVCodecContext *avctx)
         break;
     default:
 		{
-		   //guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		   //guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		   //av_log(avctx, AV_LOG_ERROR, "unsupported codec_id[%d] !\n",avctx->codec->id);
 			av_log(avctx, AV_LOG_WARNING, "unsupported codec_id[%d] !\n",avctx->codec->id);
            return -1;
@@ -124,17 +124,17 @@ av_cold int ff_h263_decode_init(AVCodecContext *avctx)
         
     }
     s->codec_id= avctx->codec->id;
-    avctx->hwaccel= ff_find_hwaccel(avctx->codec->id, avctx->pix_fmt);   //guoshan+00101841 20100510: (give a guess)ÕÒÒÑÓĞµÄcodec,¼ÓËÙ½âÂë×¼±¸¹ı³Ì
+    avctx->hwaccel= ff_find_hwaccel(avctx->codec->id, avctx->pix_fmt);   //guoshan+00101841 20100510: (give a guess)æ‰¾å·²æœ‰çš„codec,åŠ é€Ÿè§£ç å‡†å¤‡è¿‡ç¨‹
 
 	/* 2010/06/12 10:30:00 liuxw+00139685 */
-	/* ½«ÅĞ¶ÏÌõ¼şÔö¼ÓÒ»¸ö£ºÈç¹ûÊÇwmv3»òvc1Ê±£¬Ò²ÊÇ²»ÓÃµ÷ÓÃMPV_common_init */
+	/* å°†åˆ¤æ–­æ¡ä»¶å¢åŠ ä¸€ä¸ªï¼šå¦‚æœæ˜¯wmv3æˆ–vc1æ—¶ï¼Œä¹Ÿæ˜¯ä¸ç”¨è°ƒç”¨MPV_common_init */
     /* for h263, we allocate the images after having read the header */
-//	if (avctx->codec->id != CODEC_ID_H263 && avctx->codec->id != CODEC_ID_MPEG4) //guoshan+00101841 20100510: Ã»ÕÒµ½h.263||mpeg-4 codec¾ÍÖØĞÂ³õÊ¼»¯
+//	if (avctx->codec->id != CODEC_ID_H263 && avctx->codec->id != CODEC_ID_MPEG4) //guoshan+00101841 20100510: æ²¡æ‰¾åˆ°h.263||mpeg-4 codecå°±é‡æ–°åˆå§‹åŒ–
 	/* 2010/09/14 15:30:00 liuxw+00139685 */
-	/* ÈôÊÇh263£¬ÔòÏÈµ÷ÓÃMPV_common_init */
+	/* è‹¥æ˜¯h263ï¼Œåˆ™å…ˆè°ƒç”¨MPV_common_init */
   //if (avctx->codec->id != CODEC_ID_H263 && avctx->codec->id != CODEC_ID_MPEG4 && avctx->codec->id != CODEC_ID_VC1 && avctx->codec->id != CODEC_ID_WMV3 && avctx->codec->id != CODEC_ID_FLV1)
 	if (avctx->codec->id != CODEC_ID_MPEG4 && avctx->codec->id != CODEC_ID_VC1 && avctx->codec->id != CODEC_ID_WMV3)
-		if (MPV_common_init(s) < 0)  /* liuxiaowei+00139685 20100612: ³ıÁËh63/mpeg4/vc1/wmv3(MPV_common_initÔÚdecode_frameÖĞµ÷ÓÃ)µÄcodecÍâ£¬¶¼ÔÚÕâÀïÏÈµ÷ÓÃMPV_common_init */
+		if (MPV_common_init(s) < 0)  /* liuxiaowei+00139685 20100612: é™¤äº†h63/mpeg4/vc1/wmv3(MPV_common_initåœ¨decode_frameä¸­è°ƒç”¨)çš„codecå¤–ï¼Œéƒ½åœ¨è¿™é‡Œå…ˆè°ƒç”¨MPV_common_init */
 			return -1;
 
 #if CONFIG_MSMPEG4_DECODER
@@ -151,7 +151,7 @@ av_cold int ff_h263_decode_init(AVCodecContext *avctx)
 	    h263_decode_init_vlc(s);
 
 	/* 2010/09/14 15:30:00 liuxw+00139685 */
-	/* Ôö¼Ó³õÊ¼»¯º¯Êı£ºÎªÃ¿¸öpicture·ÖÅäyuv¿Õ¼ä¼°Ïà¹ØµÄ¿Õ¼ä */
+	/* å¢åŠ åˆå§‹åŒ–å‡½æ•°ï¼šä¸ºæ¯ä¸ªpictureåˆ†é…yuvç©ºé—´åŠç›¸å…³çš„ç©ºé—´ */
 	{
 		unsigned int i;
 		avctx->width  = avctx->usSourceWidth;
@@ -216,8 +216,8 @@ static int decode_slice(MpegEncContext *s)
     s->resync_mb_x= s->mb_x;
     s->resync_mb_y= s->mb_y;
 
-	/*guoshan+00101841 20100428 ÉèÖÃqscale,Í¬Ê±¼ì²âºÍĞŞÕıqscaleµÄºÏ·¨·¶Î§*/
-	/*ËùÒÔÔÚheader½âÎö¹ı³ÌÖĞÃ»ÖØ¸´¼ì²â*/
+	/*guoshan+00101841 20100428 è®¾ç½®qscale,åŒæ—¶æ£€æµ‹å’Œä¿®æ­£qscaleçš„åˆæ³•èŒƒå›´*/
+	/*æ‰€ä»¥åœ¨headerè§£æè¿‡ç¨‹ä¸­æ²¡é‡å¤æ£€æµ‹*/
     ff_set_qscale(s, s->qscale);
 
     if (s->avctx->hwaccel) 
@@ -235,7 +235,7 @@ static int decode_slice(MpegEncContext *s)
         if(s->codec_id==CODEC_ID_MPEG4)
         {
 			/*guoshan+00101841 20100512*/
-			/*ÏÂÁĞº¯ÊıÖ»ÊÇÌáÈ¡¸÷¸öpartitionÖĞµÄÏà¹Ø½âÂëĞÅÏ¢¸³¸ø½á¹¹ÌåsµÄ³ÉÔ±£¬¾ßÌåµÄ½âÂë¹ı³ÌÈ«ÔÚºóÃæµÄdecode_mb()¹ı³ÌÖĞ*/
+			/*ä¸‹åˆ—å‡½æ•°åªæ˜¯æå–å„ä¸ªpartitionä¸­çš„ç›¸å…³è§£ç ä¿¡æ¯èµ‹ç»™ç»“æ„ä½“sçš„æˆå‘˜ï¼Œå…·ä½“çš„è§£ç è¿‡ç¨‹å…¨åœ¨åé¢çš„decode_mb()è¿‡ç¨‹ä¸­*/
             if(ff_mpeg4_decode_partitions(s) < 0)  
                 return -1;
         }
@@ -298,7 +298,7 @@ static int decode_slice(MpegEncContext *s)
                 {
                     MPV_decode_mb(s, s->block);
                     if(s->loop_filter)
-						/*guoshan+00101841 20101011 Ôö¼Óh263_loop_filterÊ±¼äÍ³¼Æ*/
+						/*guoshan+00101841 20101011 å¢åŠ h263_loop_filteræ—¶é—´ç»Ÿè®¡*/
 //						UINT64 ullTime = IMedia_OS_Milliseconds();
                         ff_h263_loop_filter(s);
 //						s->avctx->loop_filter_time += IMedia_OS_Milliseconds() - ullTime;
@@ -318,13 +318,13 @@ static int decode_slice(MpegEncContext *s)
                 }
 				else if(ret==SLICE_NOEND)
 				{
-					//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+					//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 					//av_log(s->avctx, AV_LOG_ERROR, "Slice mismatch at MB: %d\n", xy);
 					av_log(s->avctx, AV_LOG_WARNING, "Slice mismatch at MB: %d\n", xy);
 					ff_er_add_slice(s, s->resync_mb_x, s->resync_mb_y, s->mb_x+1, s->mb_y, (AC_END|DC_END|MV_END)&part_mask);
 					return -1;
 				}
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "Error at MB: %d\n", xy);
 				av_log(s->avctx, AV_LOG_WARNING, "Error at MB: %d\n", xy);
 				ff_er_add_slice(s, s->resync_mb_x, s->resync_mb_y, s->mb_x, s->mb_y, (AC_ERROR|DC_ERROR|MV_ERROR)&part_mask);
@@ -335,7 +335,7 @@ static int decode_slice(MpegEncContext *s)
             MPV_decode_mb(s, s->block);
 
             if(s->loop_filter)
-				/*guoshan+00101841 20101011 Ôö¼Óh263_loop_filterÊ±¼äÍ³¼Æ*/
+				/*guoshan+00101841 20101011 å¢åŠ h263_loop_filteræ—¶é—´ç»Ÿè®¡*/
 //				UINT64 ullTime = IMedia_OS_Milliseconds();
                 ff_h263_loop_filter(s);
 //				s->avctx->loop_filter_time += IMedia_OS_Milliseconds() - ullTime;
@@ -404,13 +404,13 @@ static int decode_slice(MpegEncContext *s)
 
 		if(left>max_extra)
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "discarding %d junk bits at end, next would be %X\n", left, show_bits(&s->gb, 24));
 			av_log(s->avctx, AV_LOG_WARNING, "discarding %d junk bits at end, next would be %X\n", left, show_bits(&s->gb, 24));
 		}
 		else if(left<0)
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "overreading %d bits\n", -left);
 			av_log(s->avctx, AV_LOG_WARNING, "overreading %d bits\n", -left);
 		}
@@ -420,7 +420,7 @@ static int decode_slice(MpegEncContext *s)
 		return 0;
 	}
 
-	//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+	//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 	//     av_log(s->avctx, AV_LOG_ERROR, "slice end not reached but screenspace end (%d left %06X, score= %d)\n",
 	//             s->gb.size_in_bits - get_bits_count(&s->gb),
 	//             show_bits(&s->gb, 24), s->padding_bug_score);
@@ -484,7 +484,7 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
 		}
 		else
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "this codec does not support truncated bitstreams\n");
 			av_log(s->avctx, AV_LOG_WARNING, "this codec does not support truncated bitstreams\n");
 			return AVCODEC_RET_DECODE_ABORT;
@@ -503,12 +503,12 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
     s->bitstream_buffer_size=0;
 
 	/* 2010/09/14 16:30:00 liuxw+00139685 */
-	/* ½á¹¹µ÷Õû£¬²»µ÷ÓÃÒÔÏÂ´úÂë */
+	/* ç»“æ„è°ƒæ•´ï¼Œä¸è°ƒç”¨ä»¥ä¸‹ä»£ç  */
 #if 0
 	if (!s->context_initialized) 
 	{
 		/*guoshan + 00101841 20100611*/
-		/*ff_h263_decode_frameº¯Êı·µ»Ø¸ºÊı»áµ¼ÖÂ½Ó¿Ú²ãÍ£Ö¹µ÷ÓÃ½âÂëº¯Êı£¬½âÎö´íÎóºóÖ»ÓÃ·µ»Ø£¬ÖØĞÂµ÷ÓÃÏÂÒ»Ö¡*/
+		/*ff_h263_decode_frameå‡½æ•°è¿”å›è´Ÿæ•°ä¼šå¯¼è‡´æ¥å£å±‚åœæ­¢è°ƒç”¨è§£ç å‡½æ•°ï¼Œè§£æé”™è¯¯ååªç”¨è¿”å›ï¼Œé‡æ–°è°ƒç”¨ä¸‹ä¸€å¸§*/
 		if (MPV_common_init(s) < 0) //we need the idct permutation for reading a custom matrix
 			// return -1;
 			return GOTO_NEXT_FRAME; 
@@ -517,7 +517,7 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
     /* We need to set current_picture_ptr before reading the header,
      * otherwise we cannot store anything in there */
 	/* 2010/09/14 15:30:00 liuxw+00139685 */
-	/* ÓÉÓÚ½á¹¹µ÷Õû£¬ÒÔÏÂ´úÂëµÄÊµÏÖ½«µ÷Õûµ½MPV_Frame_start */
+	/* ç”±äºç»“æ„è°ƒæ•´ï¼Œä»¥ä¸‹ä»£ç çš„å®ç°å°†è°ƒæ•´åˆ°MPV_Frame_start */
  //   if(s->current_picture_ptr==NULL || s->current_picture_ptr->data[0])
 	//{
  //       int i= ff_find_unused_picture(s, 0);
@@ -527,7 +527,7 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
     /* let's go :-) */
 
 	/*guoshan + 00101841 20100415*/
-	/*²»Ö§³Öwmv2,msmpet4,×¢ÊÍµô*/
+	/*ä¸æ”¯æŒwmv2,msmpet4,æ³¨é‡Šæ‰*/
 //     if (CONFIG_WMV2_DECODER && s->msmpeg4_version==5) 
 //     {
 //         ret= ff_wmv2_decode_picture_header(s);
@@ -539,7 +539,7 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
     /*else */if (s->h263_pred)  //vicky 20100414: mpeg4, msmpegv1, msmpegv2
     {
 		/*guoshan + 00101841 20100415*/
-		/*Õâ¸ö±äÁ¿±»ĞŞ¸Ä³ÉÊı×é*/
+		/*è¿™ä¸ªå˜é‡è¢«ä¿®æ”¹æˆæ•°ç»„*/
 		int ii = 0;
       //  if(s->avctx->extradata_size && s->picture_number==0)
 
@@ -577,7 +577,7 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
 		av_log(s->avctx, AV_LOG_WARNING, "header damaged(ret code:%d)\n",ret);
  //       return -1;
 		/*guoshan + 00101841 20100610*/
-		/*ff_h263_decode_frameº¯Êı·µ»Ø¸ºÊı»áµ¼ÖÂ½Ó¿Ú²ãÍ£Ö¹µ÷ÓÃ½âÂëº¯Êı£¬½âÎö´íÎóºóÖ»ÓÃ·µ»Ø£¬ÖØĞÂµ÷ÓÃÏÂÒ»Ö¡*/
+		/*ff_h263_decode_frameå‡½æ•°è¿”å›è´Ÿæ•°ä¼šå¯¼è‡´æ¥å£å±‚åœæ­¢è°ƒç”¨è§£ç å‡½æ•°ï¼Œè§£æé”™è¯¯ååªç”¨è¿”å›ï¼Œé‡æ–°è°ƒç”¨ä¸‹ä¸€å¸§*/
 		return ret; 
     }
 
@@ -687,7 +687,7 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
 #endif
     }
 
-	/*ÄÚºËÌ¬±àÒëÕ»¿Õ¼ä¹ı´ó x00141957 20101230*/
+	/*å†…æ ¸æ€ç¼–è¯‘æ ˆç©ºé—´è¿‡å¤§ x00141957 20101230*/
 #if 0
     if(s->workaround_bugs& FF_BUG_STD_QPEL)
      {
@@ -732,7 +732,7 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
         /* FIXME: By the way H263 decoder is evolving it should have */
         /* an H263EncContext                                         */
 	/* 2010/09/14 15:30:00 liuxw+00139685 */
-	/* ½á¹¹µ÷Õû£¬²»ĞèÒªÒÔÏÂ´úÂë */
+	/* ç»“æ„è°ƒæ•´ï¼Œä¸éœ€è¦ä»¥ä¸‹ä»£ç  */
     //if (   s->width  != avctx->coded_width || s->height != avctx->coded_height) 
     //{
     //    /* H.263 could change picture size any time */
@@ -746,11 +746,11 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
         avcodec_set_dimensions(avctx, s->width, s->height);
 
 		/*guoshan + 00101841 20100416*/
-		/*ĞÂÔöº¯Êı£¬ÉèÖÃavcodecµÄchroma_format*/
+		/*æ–°å¢å‡½æ•°ï¼Œè®¾ç½®avcodecçš„chroma_format*/
 		avcodec_set_chroma_format(avctx, s->chroma_format);
 
 		/* 2010/09/14 15:30:00 liuxw+00139685 */
-		/* ¸ù¾İµ±Ç°ĞòÁĞÊµ¼ÊµÄ¿í¸ß¸üĞÂ¾ä±úsÖĞËùÓĞºÍ¿í¸ßÏà¹ØµÄ±äÁ¿ */
+		/* æ ¹æ®å½“å‰åºåˆ—å®é™…çš„å®½é«˜æ›´æ–°å¥æŸ„sä¸­æ‰€æœ‰å’Œå®½é«˜ç›¸å…³çš„å˜é‡ */
 		MPV_common_update(s);
 		s->context_initialized = 1;
 //      goto retry;
@@ -763,42 +763,42 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
     s->current_picture.pict_type= s->pict_type;
     s->current_picture.key_frame= s->pict_type == FF_I_TYPE;
 
-	/*guoshan + 00101841 20100609Ôö¼Ó¶Ô½âÂëÖ¡ÀàĞÍµÄÍ³¼Æ*/
+	/*guoshan + 00101841 20100609å¢åŠ å¯¹è§£ç å¸§ç±»å‹çš„ç»Ÿè®¡*/
 	switch(s->pict_type)
 	{
 	case FF_I_TYPE: 
 		{
-			/*guoshan+00101841 2010609 Ôö¼ÓÖ¡ÀàĞÍÍ³¼Æ*/
+			/*guoshan+00101841 2010609 å¢åŠ å¸§ç±»å‹ç»Ÿè®¡*/
 			s->avctx->uiDecIFrames++;
 			break;
 		}
 	case FF_P_TYPE: 
 	case FF_S_TYPE: 
 		{
-			/*guoshan+00101841 2010609 Ôö¼ÓÖ¡ÀàĞÍÍ³¼Æ*/
+			/*guoshan+00101841 2010609 å¢åŠ å¸§ç±»å‹ç»Ÿè®¡*/
 			s->avctx->uiDecPFrames++;
 			break;
 		}
 	case FF_B_TYPE: 
 		{
-			/*guoshan+00101841 2010609 Ôö¼ÓÖ¡ÀàĞÍÍ³¼Æ*/
+			/*guoshan+00101841 2010609 å¢åŠ å¸§ç±»å‹ç»Ÿè®¡*/
 			s->avctx->uiDecBFrames++;
 			break;
 		}
 	//case FF_S_TYPE: 
 	//	{
-	//		/*guoshan+00101841 2010609 Ôö¼ÓSÖ¡ÀàĞÍÍ³¼Æ,¹éÈëPÖ¡ÀàĞÍ*/
+	//		/*guoshan+00101841 2010609 å¢åŠ Så¸§ç±»å‹ç»Ÿè®¡,å½’å…¥På¸§ç±»å‹*/
 	//		s->avctx->uiDecPFrames++;
 	//		break;
 	//	}
 	default:
 		{
-			/*guoshan+00101841 20100423Ìí¼ÓlogºÍ´íÎóÂë*/
+			/*guoshan+00101841 20100423æ·»åŠ logå’Œé”™è¯¯ç */
 			av_log(s->avctx, AV_LOG_WARNING, "pic_type[%d] invalid\n", s->pict_type);
 			IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_FRAME_TYPE);
 			s->avctx->iTotalError++;
 			/*guoshan + 00101841 20100610*/
-			/*ff_h263_decode_frameº¯Êı·µ»Ø¸ºÊı»áµ¼ÖÂ½Ó¿Ú²ãÍ£Ö¹µ÷ÓÃ½âÂëº¯Êı£¬½âÎö´íÎóºóÖ»ÓÃ·µ»Ø£¬ÖØĞÂµ÷ÓÃÏÂÒ»Ö¡*/
+			/*ff_h263_decode_frameå‡½æ•°è¿”å›è´Ÿæ•°ä¼šå¯¼è‡´æ¥å£å±‚åœæ­¢è°ƒç”¨è§£ç å‡½æ•°ï¼Œè§£æé”™è¯¯ååªç”¨è¿”å›ï¼Œé‡æ–°è°ƒç”¨ä¸‹ä¸€å¸§*/
 			return AVCODEC_RET_DECODE_FAILURE; 
 	//		return -1;
 		}
@@ -821,7 +821,7 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
     if(avctx->hurry_up>=5) 
 		return get_consumed_bytes(s, buf_size);
 
-    if(s->next_p_frame_damaged)   //20100510 guoshan+00101841: s->next_p_frame_damagedÕâ¸ö²ÎÊıÃ»ÓĞÔÚÄÄ¸öµØ·½±»³õÊ¼»¯¹ı
+    if(s->next_p_frame_damaged)   //20100510 guoshan+00101841: s->next_p_frame_damagedè¿™ä¸ªå‚æ•°æ²¡æœ‰åœ¨å“ªä¸ªåœ°æ–¹è¢«åˆå§‹åŒ–è¿‡
 	{
         if(s->pict_type==FF_B_TYPE)
             return get_consumed_bytes(s, buf_size);
@@ -847,14 +847,14 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
 
 //    if(MPV_frame_start(s, avctx) < 0)
 		/*guoshan + 00101841 20100610*/
-		/*ff_h263_decode_frameº¯Êı·µ»Ø¸ºÊı»áµ¼ÖÂ½Ó¿Ú²ãÍ£Ö¹µ÷ÓÃ½âÂëº¯Êı£¬½âÎö´íÎóºóÖ»ÓÃ·µ»Ø£¬ÖØĞÂµ÷ÓÃÏÂÒ»Ö¡*/
+		/*ff_h263_decode_frameå‡½æ•°è¿”å›è´Ÿæ•°ä¼šå¯¼è‡´æ¥å£å±‚åœæ­¢è°ƒç”¨è§£ç å‡½æ•°ï¼Œè§£æé”™è¯¯ååªç”¨è¿”å›ï¼Œé‡æ–°è°ƒç”¨ä¸‹ä¸€å¸§*/
         //return -1;
 	ret = MPV_frame_start(s, avctx);
 	if(ret < 0)
 		return ret;
 
 	/* 2010/09/14 11:30:00 liuxw+00139685 */
-	/* ±£´æµ±Ç°Ö¡µÄpts */
+	/* ä¿å­˜å½“å‰å¸§çš„pts */
 	s->current_picture_ptr->iPts = s->avctx->iPts;
 
     if (avctx->hwaccel) 
@@ -892,7 +892,7 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
         }
         else
         {
-            if(ff_h263_resync(s)<0)   //guoshan+00101841 20100504 Ã»ÕÒµ½ÕıÈ·µÄÍ¬²½Î»ÖÃ(°´GOBÍ¬²½)
+            if(ff_h263_resync(s)<0)   //guoshan+00101841 20100504 æ²¡æ‰¾åˆ°æ­£ç¡®çš„åŒæ­¥ä½ç½®(æŒ‰GOBåŒæ­¥)
                 break;
         }
 
@@ -951,9 +951,9 @@ int ff_h263_decode_frame(AVCodecContext *avctx,
             return AVCODEC_RET_DECODE_FAILURE;
     }
 
-    MPV_frame_end(s); //guoshan+00101841 2010510:½âÂëÍê³Éºó£¬°Ñcurrent_pic_ptr´«µİ¸øs->avctx->coded_frame
+    MPV_frame_end(s); //guoshan+00101841 2010510:è§£ç å®Œæˆåï¼ŒæŠŠcurrent_pic_pträ¼ é€’ç»™s->avctx->coded_frame
 	/* 2010/09/13 19:30:00 liuxw+00139685 */
-	/* ½«µ±Ç°Ö¡´æ·ÅYUVµÄµÚ4¸ö¿Õ¼ä´æ·Åµ±Ç°picµÄÖ¸Õë */
+	/* å°†å½“å‰å¸§å­˜æ”¾YUVçš„ç¬¬4ä¸ªç©ºé—´å­˜æ”¾å½“å‰picçš„æŒ‡é’ˆ */
 //	s->current_picture_ptr->data[3] = s->current_picture_ptr;
 	s->current_picture_ptr->isbusy = 1;
 

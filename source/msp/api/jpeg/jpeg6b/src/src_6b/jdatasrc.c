@@ -21,13 +21,13 @@
 
 /**
  ** add the include file about the functions that hard decode needed
- ** CNcomment: Ôö¼ÓÓ²¼þ½âÂëÐèÒªµÄÍ·ÎÄ¼þ CNend\n
+ ** CNcomment: å¢žåŠ ç¡¬ä»¶è§£ç éœ€è¦çš„å¤´æ–‡ä»¶ CNend\n
  **/
  #include "jpeg_hdec_api.h"
  #include "hi_jpeg_config.h"
  /**
   ** this file is added
-  ** CNcomment: Õâ¸öÍ·ÎÄ¼þÊÇÐÂÔöµÄ CNend\n
+  ** CNcomment: è¿™ä¸ªå¤´æ–‡ä»¶æ˜¯æ–°å¢žçš„ CNend\n
   **/
  #include "jdatasrc.h"
 
@@ -50,7 +50,7 @@ init_source (j_decompress_ptr cinfo)
 
 /**
  ** added function to init the mem source
- ** CNcomment:ÐÂÔö´¦Àí³õÊ¼»¯ÄÚ´æÂëÁ÷µÄº¯Êý CNend\n
+ ** CNcomment:æ–°å¢žå¤„ç†åˆå§‹åŒ–å†…å­˜ç æµçš„å‡½æ•° CNend\n
  **/
 METHODDEF(void)
 init_mem_source (j_decompress_ptr cinfo)
@@ -111,7 +111,7 @@ fill_input_buffer (j_decompress_ptr cinfo)
 	 if(HI_TRUE == pJpegHandle->stHDecDataBuf.bReadToDataBuf)
 	 {   /**
 		  ** read date from file to the stream buffer immediacy
-		  ** CNcomment:Ö±½Ó½«ÎÄ¼þÖÐµÄÂëÁ÷¶Áµ½ÂëÁ÷bufferÖÐ CNend\n
+		  ** CNcomment:ç›´æŽ¥å°†æ–‡ä»¶ä¸­çš„ç æµè¯»åˆ°ç æµbufferä¸­ CNend\n
 		  **/
 		   nbytes = JFREAD(src->infile, 						          \
 						   pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf,  \
@@ -154,7 +154,7 @@ fill_input_buffer (j_decompress_ptr cinfo)
 
 /**
  ** added function to fill the physics memory input buffer
- ** CNcomment:ÐÂÔö´ÓÎïÀíÄÚ´æÂëÁ÷»ñÈ¡Êý¾ÝµÄº¯Êý CNend\n
+ ** CNcomment:æ–°å¢žä»Žç‰©ç†å†…å­˜ç æµèŽ·å–æ•°æ®çš„å‡½æ•° CNend\n
  **/
 METHODDEF(boolean)
 fill_mem_input_buffer (j_decompress_ptr cinfo)
@@ -178,14 +178,14 @@ fill_mem_input_buffer (j_decompress_ptr cinfo)
             				
  		   /**
 			** do not need copy the file data
-			** CNcomment:Èí¼þ½âÂë²»ÒªÊ¹ÓÃmemcpy£¬ÕâÑù¿ÉÒÔÊ¡ÁËcpyµÄÊ±¼ä CNend\n
+			** CNcomment:è½¯ä»¶è§£ç ä¸è¦ä½¿ç”¨memcpyï¼Œè¿™æ ·å¯ä»¥çœäº†cpyçš„æ—¶é—´ CNend\n
 			**/
 		    src->buffer = (JOCTET *)(src->stBufStream.img_buffer+src->stBufStream.pos);
 				    	
 		    src->stBufStream.pos += nbytes;
 			/**
 			 ** consume the stream bytes
-			 ** CNcomment:ÏûºÄÁË¶àÉÙÂëÁ÷ CNend\n
+			 ** CNcomment:æ¶ˆè€—äº†å¤šå°‘ç æµ CNend\n
 			 **/
 	        pJpegHandle->stHDecDataBuf.u32ConsumeDataSize += nbytes;
 	  }
@@ -237,7 +237,7 @@ skip_input_data (j_decompress_ptr cinfo, long num_bytes)
 	  /**
 	   ** use call back function, because we may want to use other 
 	   ** type function.
-	   ** CNcomment: ´Ë´¦ÐÞ¸Äbug£¬ÓÐ¿ÉÄÜÊ¹ÓÃÍâ²¿µÄ»Øµ÷º¯Êý CNend\n
+	   ** CNcomment: æ­¤å¤„ä¿®æ”¹bugï¼Œæœ‰å¯èƒ½ä½¿ç”¨å¤–éƒ¨çš„å›žè°ƒå‡½æ•° CNend\n
 	   **/
 	  (void) src->pub.fill_input_buffer(cinfo);
       /* note we assume that fill_input_buffer will never return FALSE,
@@ -316,7 +316,7 @@ jpeg_stdio_src (j_decompress_ptr cinfo, FILE * infile)
 	  src->pub.next_input_byte   = NULL; /* until buffer loaded */
 	  /**
 	   ** use the stream data from inside dispose method.
-	   ** CNcomment: Ê¹ÓÃÄÚ²¿´¦ÀíµÄÂëÁ÷Êý¾Ý CNend\n
+	   ** CNcomment: ä½¿ç”¨å†…éƒ¨å¤„ç†çš„ç æµæ•°æ® CNend\n
 	   **/
 	   pJpegHandle->stHDecDataBuf.bUseInsideData = HI_TRUE;
 	   pJpegHandle->stHDecDataBuf.bUseFileData   = HI_TRUE;
@@ -364,7 +364,7 @@ jpeg_mem_src (j_decompress_ptr cinfo,
 	  {
 	   /**
 	    ** the mem may be physics mem though not call the set mem type function.
-	    ** CNcomment: Ã»ÓÐµ÷ÓÃÉèÖÃÄÚ´æ½Ó¿ÚÒ²ÓÐ¿ÉÄÜÊÇÎïÀíÄÚ´æ CNend\n
+	    ** CNcomment: æ²¡æœ‰è°ƒç”¨è®¾ç½®å†…å­˜æŽ¥å£ä¹Ÿæœ‰å¯èƒ½æ˜¯ç‰©ç†å†…å­˜ CNend\n
 	    **/
         JPEG_HDEC_CheckStreamMemType(cinfo,inbuffer);
 	  }
@@ -389,7 +389,7 @@ jpeg_mem_src (j_decompress_ptr cinfo,
 	  
 	  /**
 	   ** use the stream data from inside dispose method.
-	   ** CNcomment: Ê¹ÓÃÄÚ²¿´¦ÀíµÄÂëÁ÷Êý¾Ý CNend\n
+	   ** CNcomment: ä½¿ç”¨å†…éƒ¨å¤„ç†çš„ç æµæ•°æ® CNend\n
 	   **/
 	  pJpegHandle->stHDecDataBuf.bUseInsideData = HI_TRUE;
 

@@ -33,7 +33,7 @@ HI_S32 tda6651_set_tuner(HI_U32 u32TunerPort, HI_U8 enI2cChannel, HI_U32 u32PuRF
 	szBuffer[3] = 0x49;
     }
 
-    /**The problem of adjacent interference of coolech*//**CNcomment¿áÀÖ³ÈÁÚÆµ¸ÉÈÅÖ¸±êÎÊÌâ*/
+    /**The problem of adjacent interference of coolech*//**CNcommenté…·ä¹æ©™é‚»é¢‘å¹²æ‰°æŒ‡æ ‡é—®é¢˜*/
     szBuffer[3] &= 0x07;
     switch( g_stTunerOps[u32TunerPort].enSigType )
     {

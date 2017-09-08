@@ -69,7 +69,7 @@ static inline int get_ue_golomb(GetBitContext *gb){
 	else
 	{
 	/* 2010/08/09 11:00:00 liuxw+00139685 */
-	/* µ±¶ÁÈ¡µÄÎ»Êý´óÓÚ25£¨2M+1£©Î»Ê±£¬¾Í»á³ö´í */
+	/* å½“è¯»å–çš„ä½æ•°å¤§äºŽ25ï¼ˆ2M+1ï¼‰ä½æ—¶ï¼Œå°±ä¼šå‡ºé”™ */
 #if 0
         log= 2*av_log2(buf) - 31;
         buf>>= log;
@@ -199,7 +199,7 @@ static inline int get_se_golomb(GetBitContext *gb){
 
         if(buf&1) 
 			/* 2010/03/11 14:22:00 liuxw+00139685 */
-			/* ÎªÁËÈ¥µô¾¯¸æËù×÷ÈçÏÂÐÞ¸Ä */
+			/* ä¸ºäº†åŽ»æŽ‰è­¦å‘Šæ‰€ä½œå¦‚ä¸‹ä¿®æ”¹ */
 			//buf= -(buf>>1);
 			buf = ~(buf>>1) + 1;
         else      buf=  (buf>>1);
@@ -270,7 +270,7 @@ static inline int get_se_golomb(GetBitContext *gb){
         if(buf&1) 
         {
 			/* 2010/03/11 14:22:00 liuxw+00139685 */
-			/* ÎªÁËÈ¥µô¾¯¸æËù×÷ÈçÏÂÐÞ¸Ä */
+			/* ä¸ºäº†åŽ»æŽ‰è­¦å‘Šæ‰€ä½œå¦‚ä¸‹ä¿®æ”¹ */
 			//buf= -(buf>>1);
 			buf = ~((buf-1)>>1) + 1;
 			//buf=  ((buf+1)>>1);
@@ -315,7 +315,7 @@ static inline int svq3_get_se_golomb(GetBitContext *gb){
         LAST_SKIP_BITS(re, gb, 63 - 2*log - 8);
         CLOSE_READER(re, gb);
 		/* 2010/03/11 14:22:00 liuxw+00139685 */
-		/* ÎªÁËÈ¥µô¾¯¸æËù×÷ÈçÏÂÐÞ¸Ä */
+		/* ä¸ºäº†åŽ»æŽ‰è­¦å‘Šæ‰€ä½œå¦‚ä¸‹ä¿®æ”¹ */
         //return (signed) (((((buf << log) >> log) - 1) ^ -(buf & 0x1)) + 1) >> 1;
 		return (signed) (((((buf << log) >> log) - 1) ^ (~(buf & 0x1)+1)) + 1) >> 1;
     }

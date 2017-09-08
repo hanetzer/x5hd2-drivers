@@ -56,7 +56,7 @@ extern HI_S32 KEYLED_LED_SetFlashFreq_CT1642(HI_UNF_KEYLED_LEVEL_E enLevel);
 HI_U8 sNumTbl[]={0xfc, 0x60, 0xda, 0xf2, 0x66, 0xb6, 0xbe, 0xe0, 0xfe, 0xf6};//ok  
 
 /*only 9 of the capital letters are effective ('C' 'E' 'F' 'H' 'L' 'O' 'P' 'S' 'U')*/
-/*CNcomment:´óĞ´×ÖÄ¸Ö»ÏÔÊ¾9¸öÓĞĞ§('C'¡¢'E'¡¢'F'¡¢'H'¡¢'L'¡¢'O'¡¢'P'¡¢'S'¡¢'U')*/
+/*CNcomment:å¤§å†™å­—æ¯åªæ˜¾ç¤º9ä¸ªæœ‰æ•ˆ('C'ã€'E'ã€'F'ã€'H'ã€'L'ã€'O'ã€'P'ã€'S'ã€'U')*/
 HI_U8 sChrTblUp[]={       
     0xee, 0xfe, 0x9c, 0xfc, 0x9e, 0x8e, 0x00, 
     0x6e, 0x00, 0x00, 0x00, 0x1c, 0x00, 0x00, 
@@ -65,7 +65,7 @@ HI_U8 sChrTblUp[]={
 };
 
 /*only 15 of the smalll letters are effective (b c d E, g h i, l n o, P q S(5) t, u)*/
-/*CNcomment:Ğ¡Ğ´×ÖÄ¸Ö»ÏÔÊ¾15¸öÓĞĞ§(b c d E, g h i, l n o, P q S(5) t, u) */
+/*CNcomment:å°å†™å­—æ¯åªæ˜¾ç¤º15ä¸ªæœ‰æ•ˆ(b c d E, g h i, l n o, P q S(5) t, u) */
 HI_U8 sChrTblLow[]={   
     0x00, 0x3e, 0x1a, 0x7a, 0xde, 0x00, 0xf6, 
     0x2e, 0x20, 0x00, 0x00, 0x60, 0x00, 0x2a, 

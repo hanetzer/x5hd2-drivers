@@ -18,7 +18,7 @@
 
 /**
  ** this file is added
- ** CNcomment: Õâ¸öÍ·ÎÄ¼þÊÇÐÂÔöµÄ CNend\n
+ ** CNcomment: è¿™ä¸ªå¤´æ–‡ä»¶æ˜¯æ–°å¢žçš„ CNend\n
  **/
 #include "jpeg_hdec_api.h"
 
@@ -208,7 +208,7 @@ get_soi (j_decompress_ptr cinfo)
 
    #if 0
   /** revise by y00181162
-   ** CNcomment:Á½¸öSOIµÄÇé¿öÕÕÑù¿ÉÒÔ½â£¬ÕâÀïÓÐ´ýÈ·ÈÏ²âÊÔ CNend\n
+   ** CNcomment:ä¸¤ä¸ªSOIçš„æƒ…å†µç…§æ ·å¯ä»¥è§£ï¼Œè¿™é‡Œæœ‰å¾…ç¡®è®¤æµ‹è¯• CNend\n
    **/
   if (cinfo->marker->saw_SOI)
     ERREXIT(cinfo, JERR_SOI_DUPLICATE);
@@ -303,7 +303,7 @@ get_sof (j_decompress_ptr cinfo, boolean is_prog, boolean is_arith)
 
   /**
    ** get jpeg color format
-   ** CNcomment: »ñÈ¡jpegÏñËØ¸ñÊ½ CNend\n
+   ** CNcomment: èŽ·å–jpegåƒç´ æ ¼å¼ CNend\n
    **/
   if (cinfo->num_components==1)
   {

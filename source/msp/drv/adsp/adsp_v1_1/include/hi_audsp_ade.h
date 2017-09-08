@@ -173,15 +173,15 @@ typedef enum
 {
     HI_ADE_ErrorNone = 0,
 
-    HI_ADE_ErrorInsufficientResources = (HI_S32) 0x80001000, /**<The device fails to be created due to insufficient resources.*/ /**<CNcomment:×ÊÔ´²»¹»£¬´´½¨Éè±¸Ê§°Ü */
+    HI_ADE_ErrorInsufficientResources = (HI_S32) 0x80001000, /**<The device fails to be created due to insufficient resources.*/ /**<CNcomment:èµ„æºä¸å¤Ÿï¼Œåˆ›å»ºè®¾å¤‡å¤±è´¥ */
 
-    HI_ADE_ErrorInvalidParameter = (HI_S32) 0x80001001, /**<The input parameter is invalid.*/ /**<CNcomment:ÊäÈë²ÎÊý·Ç·¨ */
+    HI_ADE_ErrorInvalidParameter = (HI_S32) 0x80001001, /**<The input parameter is invalid.*/ /**<CNcomment:è¾“å…¥å‚æ•°éžæ³• */
 
-    HI_ADE_ErrorStreamCorrupt = (HI_S32) 0x80001002, /**<The decoding fails due to incorrect input streams.*/ /**<CNcomment:ÊäÈëÂëÁ÷´íÎó£¬½âÂëÊ§°Ü */
+    HI_ADE_ErrorStreamCorrupt = (HI_S32) 0x80001002, /**<The decoding fails due to incorrect input streams.*/ /**<CNcomment:è¾“å…¥ç æµé”™è¯¯ï¼Œè§£ç å¤±è´¥ */
 
-    HI_ADE_ErrorNotEnoughData = (HI_S32) 0x80001003, /**<The decoding ends due to insufficient streams.*/ /**<CNcomment:ÊäÈëÂëÁ÷²»¹»£¬ÍË³ö½âÂë */
+    HI_ADE_ErrorNotEnoughData = (HI_S32) 0x80001003, /**<The decoding ends due to insufficient streams.*/ /**<CNcomment:è¾“å…¥ç æµä¸å¤Ÿï¼Œé€€å‡ºè§£ç  */
 
-    HI_ADE_ErrorDecodeMode = (HI_S32) 0x80001004, /**<The decoding mode is not supported.*/ /**<CNcomment:½âÂëÄ£Ê½²»Ö§³Ö */
+    HI_ADE_ErrorDecodeMode = (HI_S32) 0x80001004, /**<The decoding mode is not supported.*/ /**<CNcomment:è§£ç æ¨¡å¼ä¸æ”¯æŒ */
 
     HI_ADE_ErrorNotSupportCodec = (HI_S32) 0x80001005,/**<The codec is not supported.*/
 
@@ -190,9 +190,9 @@ typedef enum
 
 typedef enum
 {
-    HI_ADE_DEC_MODE_RAWPCM = 0, /**<PCM decoding mode*/ /**<CNcomment:PCM ½âÂëÄ£Ê½ */
-    HI_ADE_DEC_MODE_THRU, /**<SPIDF61937 passthrough decoding mode only, such as AC3/DTS */ /**<CNcomment:Í¸´«½âÂëÄ£Ê½ */
-    HI_ADE_DEC_MODE_SIMUL, /**<PCM and passthrough decoding mode*/ /**<CNcomment:PCM + Í¸´«½âÂëÄ£Ê½ */
+    HI_ADE_DEC_MODE_RAWPCM = 0, /**<PCM decoding mode*/ /**<CNcomment:PCM è§£ç æ¨¡å¼ */
+    HI_ADE_DEC_MODE_THRU, /**<SPIDF61937 passthrough decoding mode only, such as AC3/DTS */ /**<CNcomment:é€ä¼ è§£ç æ¨¡å¼ */
+    HI_ADE_DEC_MODE_SIMUL, /**<PCM and passthrough decoding mode*/ /**<CNcomment:PCM + é€ä¼ è§£ç æ¨¡å¼ */
     HI_ADE_DEC_MODE_BUTT = 0x7FFFFFFF
 } HI_ADE_DEC_MODE_E;
 
@@ -261,7 +261,7 @@ typedef struct
 } HI_ADE_FRMAE_PRIV_INFO_S;
 
 /**
- *Definition of the HAD decoder. CNcomment:HAD ½âÂëÆ÷Éè±¸¶¨Òå
+ *Definition of the HAD decoder. CNcomment:HAD è§£ç å™¨è®¾å¤‡å®šä¹‰
  *
  */
 typedef struct

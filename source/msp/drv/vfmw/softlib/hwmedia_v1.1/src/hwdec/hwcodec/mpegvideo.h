@@ -122,10 +122,10 @@ typedef struct Picture{
                                      pic_num & max_pic_num; long -> long_pic_num) */
     int long_ref;               ///< 1->long term reference 0->short term reference
 	/* 2010/03/16 20:30:00 liuxw+00139685 */
-	/* ½«ref_pocµÚÈıÎ¬µÄ´óĞ¡¸ÄÎª32 */
+	/* å°†ref_pocç¬¬ä¸‰ç»´çš„å¤§å°æ”¹ä¸º32 */
 //  int ref_poc[2][2][16];      ///< h264 POCs of the frames used as reference (FIXME need per slice)
 	/* 2010/08/24 14:00:00 liuxw+00139685 */
-	/* ½«Ôö¼ÓÒ»¸öÎ¬¶È±íÊ¾slice_num */
+	/* å°†å¢åŠ ä¸€ä¸ªç»´åº¦è¡¨ç¤ºslice_num */
 //	int ref_poc[2][2][32];      ///< h264 POCs of the frames used as reference (FIXME need per slice)
 //  int ref_count[2][2];        ///< number of entries in ref_poc              (FIXME need per slice)
 	int ref_poc[2][MAX_SLICES][2][32];      ///< h264 POCs of the frames used as reference (FIXME need per slice)
@@ -140,11 +140,11 @@ typedef struct Picture{
     int32_t *mb_cmp_score;      ///< Table for MB cmp scores, for mb decision FIXME remove
     int b_frame_score;          /* */
 	/* 2010/06/29 18:30:00 liuxw+00139685 */
-	/* Ôö¼ÓÒ»¸ö³ÉÔ±£º±íÊ¾µ±Ç°Ö¡ÊÇÒªÊä³öµÄ */
+	/* å¢åŠ ä¸€ä¸ªæˆå‘˜ï¼šè¡¨ç¤ºå½“å‰å¸§æ˜¯è¦è¾“å‡ºçš„ */
 	int is_output;
 
 	/* 2010/08/24 11:00:00 liuxw+00139685 */
-	/* Îª±£Ö¤BÖ¡×öÖ±½ÓÔ¤²âµÄÕıÈ·ĞÔ£¬Ìí¼ÓÒÔÏÂÓï·¨ÔªËØ */
+	/* ä¸ºä¿è¯Bå¸§åšç›´æ¥é¢„æµ‹çš„æ­£ç¡®æ€§ï¼Œæ·»åŠ ä»¥ä¸‹è¯­æ³•å…ƒç´  */
 	uint16_t *slice_table_base;
 	int slice_table_base_size;
 	uint16_t *slice_table;
@@ -693,35 +693,35 @@ typedef struct MpegEncContext {
     void (*denoise_dct)(struct MpegEncContext *s, DCTELEM *block);
 
 	/*guoshan+0010841 20100628*/
-	/*ÉèÖÃMPEG-4 VOLÍ·½âÎö±êÖ¾£¬VOLÍ·½âÎö´íÎóÊ±£¬ÖÃÎ»¸Ã±êÖ¾Î»*/
+	/*è®¾ç½®MPEG-4 VOLå¤´è§£ææ ‡å¿—ï¼ŒVOLå¤´è§£æé”™è¯¯æ—¶ï¼Œç½®ä½è¯¥æ ‡å¿—ä½*/
 	int iNotFoundVOLFlag;
 
-	/*xiongfeiÌí¼ÓÓÃÀ´±ê¼Ç²Î¿¼Ö¡·½Ïò 20100401*/
+	/*xiongfeiæ·»åŠ ç”¨æ¥æ ‡è®°å‚è€ƒå¸§æ–¹å‘ 20100401*/
 	int iMvFlag;
-	int iExtFlag; //À©Õ¹±êÖ¾Î» x00141957 20100511
+	int iExtFlag; //æ‰©å±•æ ‡å¿—ä½ x00141957 20100511
 	/* 2010/04/08 14:30:00 liuxw+00139685 */
-	/* Ôö¼ÓÊı¾İ³ÉÔ±£¬ÒÔ±ãÓÚÄ³Ğ©º¯ÊıÔÚ½âÎöµ½´íÎóµÄÊ±ºò¿ÉÒÔÖ±½ÓÍË³ö(avoid segment) */
+	/* å¢åŠ æ•°æ®æˆå‘˜ï¼Œä»¥ä¾¿äºæŸäº›å‡½æ•°åœ¨è§£æåˆ°é”™è¯¯çš„æ—¶å€™å¯ä»¥ç›´æ¥é€€å‡º(avoid segment) */
 	int iRet;
 
-	/*x00141957 20100726Ìí¼Ó ¸ømpeg2ËùÊ¹ÓÃÍ¼ÏñÏÔÊ¾¸ß¿í´óĞ¡*/
+	/*x00141957 20100726æ·»åŠ  ç»™mpeg2æ‰€ä½¿ç”¨å›¾åƒæ˜¾ç¤ºé«˜å®½å¤§å°*/
 	int iDisplayHeight;
 	int iDisplayWeight;
 
 	/* 2010/08/13 11:30:00 liuxw+00139685 */
-	/* ÓÉÓÚ¾Ö²¿º¯Êı±äÁ¿ÎŞ·¨ÔÚ¸´Î»Ê±½«ÆäÇå0£¬µ¼ÖÂ¸´Î»ºóÔÙµ÷ÓÃÊ±Ò»Ğ©ÄÚ´æÃ»ÓĞ·ÖÅä£¬µ¼ÖÂËÀ»ú */
+	/* ç”±äºå±€éƒ¨å‡½æ•°å˜é‡æ— æ³•åœ¨å¤ä½æ—¶å°†å…¶æ¸…0ï¼Œå¯¼è‡´å¤ä½åå†è°ƒç”¨æ—¶ä¸€äº›å†…å­˜æ²¡æœ‰åˆ†é…ï¼Œå¯¼è‡´æ­»æœº */
 //	int done;
 
 } MpegEncContext;
 
-/* ĞÂÔöº¯Êı */
+/* æ–°å¢å‡½æ•° */
 int MPV_common_reset(MpegEncContext *s);
-/* ½áÊø£¨ĞÂÔöº¯Êı) */
+/* ç»“æŸï¼ˆæ–°å¢å‡½æ•°) */
 void MPV_decode_defaults(MpegEncContext *s);
 int MPV_common_init(MpegEncContext *s);
 void MPV_common_end(MpegEncContext *s);
-/* ĞÂÔöº¯Êı */
+/* æ–°å¢å‡½æ•° */
 av_cold int MPV_common_update(MpegEncContext *s);
-/* ½áÊø£¨ĞÂÔöº¯Êı£©*/
+/* ç»“æŸï¼ˆæ–°å¢å‡½æ•°ï¼‰*/
 void MPV_decode_mb(MpegEncContext *s, DCTELEM block[12][64]);
 int MPV_frame_start(MpegEncContext *s, AVCodecContext *avctx);
 void MPV_frame_end(MpegEncContext *s);

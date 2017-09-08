@@ -43,7 +43,7 @@ enum {
 	OMX_STATE_EXECUTE_PENDING
 };
 // Deferred callback identifiers
-enum {                                                        //ÓÃÓÚ±íÊ¾¸÷¸ö CMD ÀàĞÍ,ÒÔ±ãÔÚ²åÈë¶ÓÁĞµÄÊ±ºòÅĞ¶ÏÒª°ÑÏûÏ¢µÄ´¦ÀíÊÇÒª²åÈëÄÄ¸ö¶ÓÁĞ
+enum {                                                        //ç”¨äºè¡¨ç¤ºå„ä¸ª CMD ç±»å‹,ä»¥ä¾¿åœ¨æ’å…¥é˜Ÿåˆ—çš„æ—¶å€™åˆ¤æ–­è¦æŠŠæ¶ˆæ¯çš„å¤„ç†æ˜¯è¦æ’å…¥å“ªä¸ªé˜Ÿåˆ—
 	OMX_GENERATE_COMMAND_DONE			= 0x1,                               
 	OMX_GENERATE_FTB					= 0x2,
 	OMX_GENERATE_ETB					= 0x3,
@@ -64,7 +64,7 @@ enum {                                                        //ÓÃÓÚ±íÊ¾¸÷¸ö CMD
 };
 
 
-/*±àÂëÀàĞÍÁĞ±í: *//*ÔªËØËµÃ÷:×Ô¶¨ÒåĞ­ÒéÃû³Æ£¬omx±ê×¼Ğ­ÒéÃ¶¾ÙµÄÄÚÈİ£¬Ô­À´unf½Ó¿Ú¶ÔÓ¦µÄÃ¶¾Ù*/
+/*ç¼–ç ç±»å‹åˆ—è¡¨: *//*å…ƒç´ è¯´æ˜:è‡ªå®šä¹‰åè®®åç§°ï¼Œomxæ ‡å‡†åè®®æšä¸¾çš„å†…å®¹ï¼ŒåŸæ¥unfæ¥å£å¯¹åº”çš„æšä¸¾*/
 static const struct codec_info codec_trans_list[] = {
 	{OMX_COMPONENTROLES_H264,	OMX_VIDEO_CodingAVC,	HI_UNF_VCODEC_TYPE_H264}, 
     {OMX_COMPONENTROLES_H263,	OMX_VIDEO_CodingH263,	HI_UNF_VCODEC_TYPE_H263},            
@@ -258,7 +258,7 @@ static OMX_BOOL ports_all_empty(OMX_COMPONENT_PRIVATE *pcom_priv)
 
 
 static OMX_ERRORTYPE post_event(OMX_COMPONENT_PRIVATE *pcom_priv,
-		OMX_U32 param1, OMX_U32 param2, OMX_U8 id)                //Ñ¹Èë¶ÓÁĞ£¬Ğ´Èë¹ÜµÀ
+		OMX_U32 param1, OMX_U32 param2, OMX_U8 id)                //å‹å…¥é˜Ÿåˆ—ï¼Œå†™å…¥ç®¡é“
 {
 	OMX_ERRORTYPE ret = OMX_ErrorNone;
 	OMX_S32 n = -1;
@@ -269,7 +269,7 @@ static OMX_ERRORTYPE post_event(OMX_COMPONENT_PRIVATE *pcom_priv,
 	}
 	else if ((id == OMX_GENERATE_ETB) || (id == OMX_GENERATE_EBD))
 	{
-		push_entry(&pcom_priv->m_etb_q, param1, param2, id);                       //param1:¶ÔÓ¦ÃüÁî £¬param2:¸ÃÃüÁîËù´ø²ÎÊı
+		push_entry(&pcom_priv->m_etb_q, param1, param2, id);                       //param1:å¯¹åº”å‘½ä»¤ ï¼Œparam2:è¯¥å‘½ä»¤æ‰€å¸¦å‚æ•°
     }
 	else
 	{
@@ -542,7 +542,7 @@ static OMX_ERRORTYPE allocate_buffer_internal(OMX_COMPONENT_PRIVATE *pcom_priv,
     /*DEBUG_PRINT("XXX [AllocBuf] pBuffer_virAddr: 0x%x, len = %d, buf_heard(=client_data) :0x%x,vir2phy_offset = 0x%x\n", pvenc_buf->bufferaddr, pvenc_buf->buffer_size,pvenc_buf->client_data,pvenc_buf->vir2phy_offset);*/
 
     
-#if 0       //ĞèÒª°Ñ¶Ë¿ÚÓëbuffer°ó¶¨?
+#if 0       //éœ€è¦æŠŠç«¯å£ä¸bufferç»‘å®š?
                          /* bind this buffer to vdec driver */
                     	if (channel_bind_buffer(&pcom_priv->drv_ctx, pvenc_buf) < 0)
                     	{
@@ -554,8 +554,8 @@ static OMX_ERRORTYPE allocate_buffer_internal(OMX_COMPONENT_PRIVATE *pcom_priv,
 
 	/* init buffer head */
 	CONFIG_VERSION_SIZE(pomx_buf,OMX_BUFFERHEADERTYPE);
-	pomx_buf->pBuffer				= pvenc_buf->bufferaddr;  //ÓÃ»§Ì¬ĞéÄâµØÖ·
-	pomx_buf->nAllocLen			    = pvenc_buf->buffer_size;  //ÉêÇë³¤¶È  
+	pomx_buf->pBuffer				= pvenc_buf->bufferaddr;  //ç”¨æˆ·æ€è™šæ‹Ÿåœ°å€
+	pomx_buf->nAllocLen			    = pvenc_buf->buffer_size;  //ç”³è¯·é•¿åº¦  
 	pomx_buf->nOffset				= 0;
 	pomx_buf->pAppPrivate			= app_data;
 
@@ -642,7 +642,7 @@ static OMX_ERRORTYPE free_buffer_internal(OMX_COMPONENT_PRIVATE *pcom_priv,
 		puser_buf = (venc_user_buf*)(omx_bufhdr->pInputPortPrivate);
 	}
     
-#if 0       //È¡Ïû buffer¶ÔÍ¨µÀµÄ°ó¶¨ /* unbind venc user buffer */
+#if 0       //å–æ¶ˆ bufferå¯¹é€šé“çš„ç»‘å®š /* unbind venc user buffer */
         	if (channel_unbind_buffer(&pcom_priv->drv_ctx, puser_buf) < 0)
         	{
         		DEBUG_PRINT_ERROR("[FB] unbind buffer failed\n");
@@ -756,7 +756,7 @@ static OMX_ERRORTYPE update_picture_info(OMX_COMPONENT_PRIVATE *pcomp_priv,
 	OMX_U32 align_width, align_height;
 	OMX_PORT_PRIVATE *port_priv = NULL;
 
-	align_width = ALIGN_UP(width, 16);                 //¶àÉÙ¶ÔÆë?            
+	align_width = ALIGN_UP(width, 16);                 //å¤šå°‘å¯¹é½?            
 	align_height = ALIGN_UP(height, 16);
 
 	if ((align_height > MAX_FRAME_HEIGHT) || (align_width > MAX_FRAME_WIDTH))
@@ -1251,7 +1251,7 @@ static OMX_S32 message_process (OMX_COMPONENT_PRIVATE  *pcom_priv, void* message
 #if 0
 			if (puser_buf->timestamp < 0)
 			{
-				long long interval = 1e6 / pcom_priv->m_frame_rate;    /* 1*10µÄ6´Î·½ *//*¼ÆËãÃ¿Ö¡¼ä¸ô¶àÉÙÎ¢Ãë us*/
+				long long interval = 1e6 / pcom_priv->m_frame_rate;    /* 1*10çš„6æ¬¡æ–¹ *//*è®¡ç®—æ¯å¸§é—´éš”å¤šå°‘å¾®ç§’ us*/
 				pomx_buf->nTimeStamp =
 					pcom_priv->m_pre_timestamp + interval;
 				pcom_priv->m_pre_timestamp = pomx_buf->nTimeStamp;
@@ -1759,7 +1759,7 @@ static OMX_ERRORTYPE handle_command_state_set(
 event_post:
 	if (flag)
 	{
-		if (ret != OMX_ErrorNone)                     //Òì³£ÍË³ö´¦Àí·ÖÖ§
+		if (ret != OMX_ErrorNone)                     //å¼‚å¸¸é€€å‡ºå¤„ç†åˆ†æ”¯
 		{
 			omx_report_error(pcom_priv, ret);
 		}
@@ -1833,7 +1833,7 @@ static OMX_ERRORTYPE handle_command_port_disable(
 		{
 			port_priv->port_def.bEnabled = OMX_FALSE;
 
-			if (!port_empty(pcom_priv, INPUT_PORT_INDEX)) //port buffer ·Ç¿Õ
+			if (!port_empty(pcom_priv, INPUT_PORT_INDEX)) //port buffer éç©º
 			{
 				DEBUG_PRINT_STATE("in port disable->enable pending!\n");
 				bit_set(&pcom_priv->m_flags,
@@ -2366,14 +2366,14 @@ static void *event_thread(void *input)
 					(OMX_COMPONENT_PRIVATE *)input;
 	OMX_U8 id;
 	OMX_S32 n = -1;
-	sem_wait(&pcom_priv->m_async_sem);                                  //µÈÍâ²¿ÊÍ·Åm_async_semĞÅºÅÁ¿²ÅÕıÊ½Ö´ĞĞÏß³Ì
+	sem_wait(&pcom_priv->m_async_sem);                                  //ç­‰å¤–éƒ¨é‡Šæ”¾m_async_semä¿¡å·é‡æ‰æ­£å¼æ‰§è¡Œçº¿ç¨‹
 	DEBUG_PRINT("Event thread start!\n");
 	while (!pcom_priv->event_thread_exit)
 	{
 	    sem_post(&pcom_priv->m_async_sem);
 		n = read(pcom_priv->m_pipe_in, &id, 1);
         DEBUG_PRINT("\n\n %s,%d,id = %d\n",__func__,__LINE__,id);
-		if (((n < 0) && (errno != EINTR)) || (n == 0))                   //errno!=EINTR -- Èç¹û´íÎóºÅÂë²»µÈÓÚ £¨ÖĞ¶Ï£©ÊÂ¼ş·¢Éú£¬¼´Èç¹ûÊÇÓÉÓÚÖĞ¶ÏÒıÆğµÄ´íÎó£¬¼ÌĞøÖ´ĞĞ
+		if (((n < 0) && (errno != EINTR)) || (n == 0))                   //errno!=EINTR -- å¦‚æœé”™è¯¯å·ç ä¸ç­‰äº ï¼ˆä¸­æ–­ï¼‰äº‹ä»¶å‘ç”Ÿï¼Œå³å¦‚æœæ˜¯ç”±äºä¸­æ–­å¼•èµ·çš„é”™è¯¯ï¼Œç»§ç»­æ‰§è¡Œ
 		{
 			DEBUG_PRINT_ERROR("read from pipe failed, ret:%ld\n", n);
 			break;
@@ -2424,7 +2424,7 @@ static OMX_S32 ports_init(OMX_COMPONENT_PRIVATE *pcom_priv)
     in_port->port_def.eDir                              = OMX_DirInput;
     in_port->port_def.nBufferCountActual                = DEF_MAX_IN_BUF_CNT;
     in_port->port_def.nBufferCountMin                   = DEF_MIN_IN_BUF_CNT;
-    in_port->port_def.nBufferSize                       = FRAME_SIZE(MAX_FRAME_WIDTH, MAX_FRAME_HEIGHT);   //ÔİÊ±¿ª±ÙÁË±àÂë×î´óĞÔÄÜµÄbuffer_size
+    in_port->port_def.nBufferSize                       = FRAME_SIZE(MAX_FRAME_WIDTH, MAX_FRAME_HEIGHT);   //æš‚æ—¶å¼€è¾Ÿäº†ç¼–ç æœ€å¤§æ€§èƒ½çš„buffer_size
     in_port->port_def.bEnabled                          = OMX_TRUE;
     in_port->port_def.bPopulated                        = OMX_FALSE;
     in_port->port_def.eDomain                           = OMX_PortDomainVideo;
@@ -2461,7 +2461,7 @@ static OMX_S32 ports_init(OMX_COMPONENT_PRIVATE *pcom_priv)
     out_port->port_def.eDir                              = OMX_DirOutput;
     out_port->port_def.nBufferCountActual                = DEF_MAX_OUT_BUF_CNT;
     out_port->port_def.nBufferCountMin                   = DEF_MIN_OUT_BUF_CNT;
-    out_port->port_def.nBufferSize                       = FRAME_SIZE(MAX_FRAME_WIDTH, MAX_FRAME_HEIGHT);   //ÔİÊ±¿ª±ÙÁË±àÂë×î´óĞÔÄÜµÄbuffer_size
+    out_port->port_def.nBufferSize                       = FRAME_SIZE(MAX_FRAME_WIDTH, MAX_FRAME_HEIGHT);   //æš‚æ—¶å¼€è¾Ÿäº†ç¼–ç æœ€å¤§æ€§èƒ½çš„buffer_size
     out_port->port_def.bEnabled                          = OMX_TRUE;
     out_port->port_def.bPopulated                        = OMX_FALSE;
     out_port->port_def.eDomain                           = OMX_PortDomainVideo;
@@ -2536,7 +2536,7 @@ static OMX_ERRORTYPE  get_component_version(
 	pcomp = (OMX_COMPONENTTYPE *)phandle;
 	pcom_priv = (OMX_COMPONENT_PRIVATE *)pcomp->pComponentPrivate;
 
-	if (pcom_priv->m_state == OMX_StateInvalid)    //OMX_StateInvalid×´Ì¬ÖĞ£¬´ËÊ±²»ÄÜ¶Ô×é¼ş½øĞĞ²Ù×÷
+	if (pcom_priv->m_state == OMX_StateInvalid)    //OMX_StateInvalidçŠ¶æ€ä¸­ï¼Œæ­¤æ—¶ä¸èƒ½å¯¹ç»„ä»¶è¿›è¡Œæ“ä½œ
 	{
 		DEBUG_PRINT_ERROR("get_component_version: Invalid State\n");
 		return OMX_ErrorInvalidState;
@@ -2585,7 +2585,7 @@ static OMX_ERRORTYPE  send_command(
 		return OMX_ErrorInvalidState;
 	}
 	post_event(pcom_priv,
-			(OMX_U32)cmd, (OMX_U32)param1, OMX_GENERATE_COMMAND);      //°ÑÓÃ»§Õâ¸öÃüÁîÑ¹Èë¶ÓÁĞºÍ¹ÜµÀ£¬Êµ¼Ê´¦ÀíÊÇÓÉÄÚ²¿µÄ send_command_proxyÀ´´¦ÀíµÄ,µÈµ½ÄÚ²¿send_command_proxy´¦ÀíÍê£¬ÊÍ·ÅĞÅºÅÁ¿£¬´Ë´¦»ñµÃĞÅºÅÁ¿£¬²Ù×÷³É¹¦¡£
+			(OMX_U32)cmd, (OMX_U32)param1, OMX_GENERATE_COMMAND);      //æŠŠç”¨æˆ·è¿™ä¸ªå‘½ä»¤å‹å…¥é˜Ÿåˆ—å’Œç®¡é“ï¼Œå®é™…å¤„ç†æ˜¯ç”±å†…éƒ¨çš„ send_command_proxyæ¥å¤„ç†çš„,ç­‰åˆ°å†…éƒ¨send_command_proxyå¤„ç†å®Œï¼Œé‡Šæ”¾ä¿¡å·é‡ï¼Œæ­¤å¤„è·å¾—ä¿¡å·é‡ï¼Œæ“ä½œæˆåŠŸã€‚
 	DEBUG_PRINT("send_command : cmd =%d\n", cmd);
 	sem_wait(&pcom_priv->m_cmd_lock);
 	return OMX_ErrorNone;
@@ -2626,7 +2626,7 @@ static OMX_ERRORTYPE  get_parameter(OMX_IN OMX_HANDLETYPE phandle,
 
 	switch (param_index)
 	{
-		case OMX_IndexParamPortDefinition:                                          //×¢Òâ:´ËÊ±ÊäÈë²ÎÊıÓ¦¸ÃÒÑ¾­°ÑÊäÈë²ÎÊıparam_dataÖĞ¶ÔÓ¦¶Ë¿ÚÊôĞÔµÄnPortIndexÉèÖÃºÃ£¬±íÊ¾»ñÈ¡ÄÄ¸öportµÄÊôĞÔ
+		case OMX_IndexParamPortDefinition:                                          //æ³¨æ„:æ­¤æ—¶è¾“å…¥å‚æ•°åº”è¯¥å·²ç»æŠŠè¾“å…¥å‚æ•°param_dataä¸­å¯¹åº”ç«¯å£å±æ€§çš„nPortIndexè®¾ç½®å¥½ï¼Œè¡¨ç¤ºè·å–å“ªä¸ªportçš„å±æ€§
 		{
 			OMX_PARAM_PORTDEFINITIONTYPE *portDefn =
 					(OMX_PARAM_PORTDEFINITIONTYPE *)param_data;
@@ -2654,16 +2654,16 @@ static OMX_ERRORTYPE  get_parameter(OMX_IN OMX_HANDLETYPE phandle,
             portDefn->bBuffersContiguous        = 1;
             portDefn->nBufferAlignment          = port_priv->port_pro.;
             
-			if (INPUT_PORT_INDEX == portDefn->nPortIndex) //ÊäÈë¶Ë¿Ú,yuv
+			if (INPUT_PORT_INDEX == portDefn->nPortIndex) //è¾“å…¥ç«¯å£,yuv
 			{
 			   portDefn->eDir                            = OMX_DirInput;
-			   portDefn->format.video.eColorFormat       = OMX_COLOR_FormatYUV420SemiPlanar;       //Ğ´ËÀÁË??
+			   portDefn->format.video.eColorFormat       = OMX_COLOR_FormatYUV420SemiPlanar;       //å†™æ­»äº†??
 			   portDefn->format.video.eCompressionFormat = OMX_VIDEO_CodingUnused;                 //pcomp_priv->m_dec_fmt;
 			   portDefn->nBufferCountActual              = port_priv->port_pro.max_count;
 			   portDefn->nBufferCountMin                 = port_priv->port_pro.min_count;
 			   portDefn->nBufferSize                     = port_priv->port_pro.buffer_size;
 			}
-			else if (OUTPUT_PORT_INDEX == portDefn->nPortIndex) //Êä³ö¶Ë¿Ú£¬stream
+			else if (OUTPUT_PORT_INDEX == portDefn->nPortIndex) //è¾“å‡ºç«¯å£ï¼Œstream
 			{
 			   portDefn->eDir                            = OMX_DirOutput;
 			   portDefn->format.video.eColorFormat       = OMX_COLOR_FormatUnused;
@@ -2706,7 +2706,7 @@ static OMX_ERRORTYPE  get_parameter(OMX_IN OMX_HANDLETYPE phandle,
 		   if (INPUT_PORT_INDEX == portFmt->nPortIndex)
 		    {
 			    DEBUG_PRINT("Input Port, nIndex %d\n", portFmt->nIndex);
-			    if (0 == portFmt->nIndex)                                                //´Ë¶Î´úÂë½ö¶ÔÓ¦×é¼şÒ»¸öÊäÈëÒ»¸öÊä³ö¶Ë¿ÚµÄÇé¿ö
+			    if (0 == portFmt->nIndex)                                                //æ­¤æ®µä»£ç ä»…å¯¹åº”ç»„ä»¶ä¸€ä¸ªè¾“å…¥ä¸€ä¸ªè¾“å‡ºç«¯å£çš„æƒ…å†µ
 			    {
 				    portFmt->eColorFormat       = OMX_COLOR_FormatYUV420SemiPlanar;
 				    portFmt->eCompressionFormat = OMX_VIDEO_CodingUnused;//pcomp_priv->m_dec_fmt;/**/
@@ -2739,7 +2739,7 @@ static OMX_ERRORTYPE  get_parameter(OMX_IN OMX_HANDLETYPE phandle,
 		    }
 #else
 
-            if ( 0  == portFmt->nIndex )       //ÊäÈë&Êä³ö¶Ë¿ÚÒ»ÖÂ
+            if ( 0  == portFmt->nIndex )       //è¾“å…¥&è¾“å‡ºç«¯å£ä¸€è‡´
             {
                 portFmt->eColorFormat       = pcomp_priv->m_port[portFmt->nPortIndex].port_def.format.video.eColorFormat;
 				portFmt->eCompressionFormat = pcomp_priv->m_port[portFmt->nPortIndex].port_def.format.video.eCompressionFormat;
@@ -2768,7 +2768,7 @@ static OMX_ERRORTYPE  get_parameter(OMX_IN OMX_HANDLETYPE phandle,
 			break;
 		}
 #endif
-		case OMX_IndexParamVideoProfileLevelQuerySupported:                     //Õâ¸ö·ÖÖ§ĞèÒªÏÈÊäÈëÉèÖÃºÃprofileLevelType->nProfileIndexºÍnPortIndex¡£
+		case OMX_IndexParamVideoProfileLevelQuerySupported:                     //è¿™ä¸ªåˆ†æ”¯éœ€è¦å…ˆè¾“å…¥è®¾ç½®å¥½profileLevelType->nProfileIndexå’ŒnPortIndexã€‚
 		{
 			OMX_VIDEO_PARAM_PROFILELEVELTYPE *profileLevelType =
 			    (OMX_VIDEO_PARAM_PROFILELEVELTYPE *)param_data;
@@ -3512,7 +3512,7 @@ static OMX_ERRORTYPE  allocate_buffer(OMX_IN OMX_HANDLETYPE  phandle,
 	if((pcom_priv->m_state == OMX_StateIdle) ||
 		(pcom_priv->m_state == OMX_StateExecuting) ||
 		((pcom_priv->m_state == OMX_StateLoaded) &&
-				bit_present(&pcom_priv->m_flags, OMX_STATE_IDLE_PENDING)))                      //Ö»ÓĞÕâÈıÖÖÇé¿öÏÂ²ÅÄÜÉêÇëÄÚ´æ?
+				bit_present(&pcom_priv->m_flags, OMX_STATE_IDLE_PENDING)))                      //åªæœ‰è¿™ä¸‰ç§æƒ…å†µä¸‹æ‰èƒ½ç”³è¯·å†…å­˜?
 	{
 		DEBUG_PRINT("[AB] Current State %d\n", pcom_priv->m_state);
 	}
@@ -3522,7 +3522,7 @@ static OMX_ERRORTYPE  allocate_buffer(OMX_IN OMX_HANDLETYPE  phandle,
 		return OMX_ErrorInvalidState;
 	}
 
-	ret = allocate_buffer_internal(                                                             //ÄÚ²¿ÉêÇëbufferº¯Êı
+	ret = allocate_buffer_internal(                                                             //å†…éƒ¨ç”³è¯·bufferå‡½æ•°
 			pcom_priv, omx_bufhdr, app_data, port, bytes);
 	if (ret != OMX_ErrorNone)
 	{
@@ -3541,7 +3541,7 @@ static OMX_ERRORTYPE  allocate_buffer(OMX_IN OMX_HANDLETYPE  phandle,
 		{
 			bit_clear(&pcom_priv->m_flags,OMX_STATE_INPUT_ENABLE_PENDING);
 
-			post_event(pcom_priv,                                                        //°Ñ ÃüÁî:OMX_CommandPortEnable Ñ¹Èë¶ÓÁĞ£¬Ğ´Èë¹ÜµÀ
+			post_event(pcom_priv,                                                        //æŠŠ å‘½ä»¤:OMX_CommandPortEnable å‹å…¥é˜Ÿåˆ—ï¼Œå†™å…¥ç®¡é“
 				OMX_CommandPortEnable, INPUT_PORT_INDEX,OMX_GENERATE_COMMAND_DONE);
 		}
 	}

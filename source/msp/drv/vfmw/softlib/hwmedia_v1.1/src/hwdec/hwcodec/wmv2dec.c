@@ -85,7 +85,7 @@ static int decode_ext_header(Wmv2Context *w){
     int code;
 
 	/* 2010/05/31 19:00:00 liuxw+00139685 */
-	/* extradataÓÉÖ¸Õë±ä³ÉÖ¸ÕëÊı×é£¬ËùÒÔº¯ÊıµÄ²ÎÊıÒ²Òª½øĞĞÏàÓ¦µÄ¸Ä±ä */
+	/* extradataç”±æŒ‡é’ˆå˜æˆæŒ‡é’ˆæ•°ç»„ï¼Œæ‰€ä»¥å‡½æ•°çš„å‚æ•°ä¹Ÿè¦è¿›è¡Œç›¸åº”çš„æ”¹å˜ */
 //  if(s->avctx->extradata_size<4) return -1;
 	if(s->avctx->extradata_size[0] < 4) return -1;
 //  init_get_bits(&gb, s->avctx->extradata, s->avctx->extradata_size*8);
@@ -487,7 +487,7 @@ static av_cold int wmv2_decode_end(AVCodecContext *avctx)
 }
 
 /* 2010/05/31 19:00:00 liuxw+00139685 */
-/* ÓÉÓÚ²»Ö§³Öwmv2£¬ËùÒÔÔİÊ±½«Æä×¢ÊÍµô */
+/* ç”±äºä¸æ”¯æŒwmv2ï¼Œæ‰€ä»¥æš‚æ—¶å°†å…¶æ³¨é‡Šæ‰ */
 //AVCodec wmv2_decoder = {
 //    "wmv2",
 //    CODEC_TYPE_VIDEO,

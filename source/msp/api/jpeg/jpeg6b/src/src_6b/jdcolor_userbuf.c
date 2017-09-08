@@ -10,10 +10,10 @@ Created		    : 2013/06/20
 Description	    : add the color convert to user buffer,the reason add this file is
                   because call these function should check how to output everytime.
                   cost much time
-                  CNcomment: µ±Êä³öbufferÎªÓÃ»§bufferµÄÊ±ºòÊ¹ÓÃ¸ÃÎÄ¼ş½øĞĞÊµÏÖ¡£
-                             ÖØĞ´µÄÔ­ÒòÔÚÓÚ²»ÓÃÔÚ×ª»»µÄ¹ı³ÌÖĞÃ¿´Î¶¼×öÅĞ¶ÏÒªÊä³öµ½
-                             ÄÄ¸öbufferÖĞ,ÕâÑùºÜºÄÊ±¼ä,ËùÒÔÍ³Ò»ÔÚ³õÊ¼»¯µÄÊ±ºò¾Í×öÅĞ¶Ï¡£
-                             ²Ã¼ôºÍ·Ç²Ã¼ôµÄÇø±ğÔÚÓÚrectµÄ´óĞ¡£¬ËùÒÔÈ«µ±²Ã¼ô´¦ÀíÁË CNend\n
+                  CNcomment: å½“è¾“å‡ºbufferä¸ºç”¨æˆ·bufferçš„æ—¶å€™ä½¿ç”¨è¯¥æ–‡ä»¶è¿›è¡Œå®ç°ã€‚
+                             é‡å†™çš„åŸå› åœ¨äºä¸ç”¨åœ¨è½¬æ¢çš„è¿‡ç¨‹ä¸­æ¯æ¬¡éƒ½åšåˆ¤æ–­è¦è¾“å‡ºåˆ°
+                             å“ªä¸ªbufferä¸­,è¿™æ ·å¾ˆè€—æ—¶é—´,æ‰€ä»¥ç»Ÿä¸€åœ¨åˆå§‹åŒ–çš„æ—¶å€™å°±åšåˆ¤æ–­ã€‚
+                             è£å‰ªå’Œéè£å‰ªçš„åŒºåˆ«åœ¨äºrectçš„å¤§å°ï¼Œæ‰€ä»¥å…¨å½“è£å‰ªå¤„ç†äº† CNend\n
 Function List 	: 
 History       	:
 Date				Author        		Modification
@@ -29,7 +29,7 @@ Date				Author        		Modification
 
 /**
  ** add the include file about the init function
- ** CNcomment: Ôö¼ÓÓ²¼ş½âÂëĞèÒªµÄÍ·ÎÄ¼ş CNend\n
+ ** CNcomment: å¢åŠ ç¡¬ä»¶è§£ç éœ€è¦çš„å¤´æ–‡ä»¶ CNend\n
  **/
 #include "jpeg_hdec_api.h"
 #include "hi_jpeg_config.h"
@@ -40,7 +40,7 @@ Date				Author        		Modification
  * 
  * We use 4x4 ordered dither array packed into 32 bits. This array is
  * sufficent for dithering RGB_888 to RGB_565.
- ** CNcomment:ÑÕÉ«¿Õ¼ä×ª»»³ÉRGBÔö¼ÓµÄ²ÎÊı CNend\n
+ ** CNcomment:é¢œè‰²ç©ºé—´è½¬æ¢æˆRGBå¢åŠ çš„å‚æ•° CNend\n
  **/
 #define DITHER_MASK         0x3
 #define DITHER_ROTATE(x)    (((x)<<24) | (((x)>>8)&0x00FFFFFF))
@@ -444,7 +444,7 @@ ycc_rgb_565_convert (j_decompress_ptr cinfo,
 		HI_S32 s32RowYNum  = 0;
 		HI_U32 u32Count = 0;
 		
-		/** ÎŞ¿¹¶¶¶¯ **/
+		/** æ— æŠ—æŠ–åŠ¨ **/
 		my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
 		register int y, cb, cr;
 		register JSAMPROW inptr0, inptr1, inptr2;
@@ -516,7 +516,7 @@ ycc_bgr_565_convert (j_decompress_ptr cinfo,
 		HI_U32 u32Count = 0;
 
 		 
-		 /** ÎŞ¿¹¶¶¶¯ **/
+		 /** æ— æŠ—æŠ–åŠ¨ **/
 		 my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
 		 register int y, cb, cr;
 		 register JSAMPROW inptr0, inptr1, inptr2;
@@ -587,7 +587,7 @@ ycc_rgb_565D_convert (j_decompress_ptr cinfo,
 		HI_U32 u32Count = 0;
 
 
-		/** ¿¹¶¶¶¯ **/
+		/** æŠ—æŠ–åŠ¨ **/
 		my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
 		register int y, cb, cr;
 		register JSAMPROW inptr0, inptr1, inptr2;
@@ -728,8 +728,8 @@ ycc_abgr_1555_convert (j_decompress_ptr cinfo,
 
  
 		 /**
-		   **ÒªÊÇÉèÖÃalph0ÖµÔò A = 0;	A8Î» = 0
-		   **ÒªÊÇÉèÖÃalph1ÖµÔò A = 1;	A8Î» = 255
+		   **è¦æ˜¯è®¾ç½®alph0å€¼åˆ™ A = 0;	A8ä½ = 0
+		   **è¦æ˜¯è®¾ç½®alph1å€¼åˆ™ A = 1;	A8ä½ = 255
 		   **/
 		   my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
 		   register int y, cb, cr;
@@ -803,8 +803,8 @@ ycc_argb_1555_convert (j_decompress_ptr cinfo,
 {
 
 	     /**
-	      **ÒªÊÇÉèÖÃalph0ÖµÔò A = 0;   A8Î» = 0
-	      **ÒªÊÇÉèÖÃalph1ÖµÔò A = 1;   A8Î» = 255
+	      **è¦æ˜¯è®¾ç½®alph0å€¼åˆ™ A = 0;   A8ä½ = 0
+	      **è¦æ˜¯è®¾ç½®alph1å€¼åˆ™ A = 1;   A8ä½ = 255
 	      **/
 		  JPEG_HDEC_HANDLE_S_PTR	pJpegHandle = (JPEG_HDEC_HANDLE_S_PTR)(cinfo->client_data);
 		
@@ -1161,8 +1161,8 @@ rgb_argb_1555_convert (j_decompress_ptr cinfo,
 
  
 	 /**
-		**ÒªÊÇÉèÖÃalph0ÖµÔò A = 0;	 A8Î» = 0
-		**ÒªÊÇÉèÖÃalph1ÖµÔò A = 1;	 A8Î» = 255
+		**è¦æ˜¯è®¾ç½®alph0å€¼åˆ™ A = 0;	 A8ä½ = 0
+		**è¦æ˜¯è®¾ç½®alph1å€¼åˆ™ A = 1;	 A8ä½ = 255
 		**/
 		register JSAMPROW inptr0, inptr1, inptr2;
 		register HI_S32 col;
@@ -1225,8 +1225,8 @@ rgb_abgr_1555_convert (j_decompress_ptr cinfo,
 
 	
          /**
-	      **ÒªÊÇÉèÖÃalph0ÖµÔò A = 0;   A8Î» = 0
-	      **ÒªÊÇÉèÖÃalph1ÖµÔò A = 1;   A8Î» = 255
+	      **è¦æ˜¯è®¾ç½®alph0å€¼åˆ™ A = 0;   A8ä½ = 0
+	      **è¦æ˜¯è®¾ç½®alph1å€¼åˆ™ A = 1;   A8ä½ = 255
 	      **/
 		  register JSAMPROW inptr0, inptr1, inptr2;
 		  register HI_S32 col;
@@ -1610,8 +1610,8 @@ gray_argb_1555_convert (j_decompress_ptr cinfo,
 {
 
 	     /**
-	      **ÒªÊÇÉèÖÃalph0ÖµÔò A = 0;   A8Î» = 0
-	      **ÒªÊÇÉèÖÃalph1ÖµÔò A = 1;   A8Î» = 255
+	      **è¦æ˜¯è®¾ç½®alph0å€¼åˆ™ A = 0;   A8ä½ = 0
+	      **è¦æ˜¯è®¾ç½®alph1å€¼åˆ™ A = 1;   A8ä½ = 255
 	      **/
 		  register JSAMPROW inptr;
 		  register HI_S32 col;
@@ -1748,9 +1748,9 @@ ycck_cmyk_convert (j_decompress_ptr cinfo,
  ** G = Y - 0.34414*Cb - 0.71414*Cr + 135.45984
  ** B = Y + 1.772*Cb - 226.816
  ** After that, conversion to CMYK image is performed as follows:
- ** C = 255 ¨C R
- ** M = 255 ¨C G
- ** Y = 255 ¨C B
+ ** C = 255 â€“ R
+ ** M = 255 â€“ G
+ ** Y = 255 â€“ B
  **/
 METHODDEF(void)
 ycck_rgb_convert (j_decompress_ptr cinfo,
@@ -1959,7 +1959,7 @@ output_crcby_convert (j_decompress_ptr cinfo,
 
 /**
  ** csc output yuv semi-planer
- ** CNcomment: ½âÂëÊä³öyuv semi-planer CNend\n
+ ** CNcomment: è§£ç è¾“å‡ºyuv semi-planer CNend\n
  **/
 METHODDEF(void)
 yuv400_sp_convert (j_decompress_ptr cinfo,
@@ -2157,7 +2157,7 @@ yuv420_sp_convert (j_decompress_ptr cinfo,
 				   continue;
 				}
 				/**
-				** ¼¯ÖĞÁËYUV422 21 ºÍ YUV422 12µÄÌØµã
+				** é›†ä¸­äº†YUV422 21 å’Œ YUV422 12çš„ç‰¹ç‚¹
 				**/
 				s32RowCbCrNum = (pJpegHandle->stOutDesc.stOutSurface.u32OutStride[1]) * cinfo->output_scanline/2;
 				for (col = 0; col < (HI_S32)num_cols; col++) 
@@ -2291,8 +2291,8 @@ yuv422_12_sp_convert (j_decompress_ptr cinfo,
 				}
 				
 				/**
-				 ** ¸ß¶ÈÊÇYµÄÒ»°ë
-				 ** È¡Ò»ĞĞ¶ªÒ»ĞĞ 
+				 ** é«˜åº¦æ˜¯Yçš„ä¸€åŠ
+				 ** å–ä¸€è¡Œä¸¢ä¸€è¡Œ 
 				 **/
 				s32RowCbCrNum = (pJpegHandle->stOutDesc.stOutSurface.u32OutStride[1]) * cinfo->output_scanline/2;
 				for (col = 0; col < (HI_S32)num_cols; col++) 
@@ -2357,8 +2357,8 @@ yuv422_21_to_yuv420_sp_convert (j_decompress_ptr cinfo,
 				{			
 					if(0==s32Tmp)
 					{/**
-					  ** ¿í¶ÈÊÇYµÄÒ»°ë
-					  ** UV½»Ìæ×ÅÈ¡
+					  ** å®½åº¦æ˜¯Yçš„ä¸€åŠ
+					  ** UVäº¤æ›¿ç€å–
 					  **/
 					   retCbCrBuf[s32RowCbCrNum+col] = GETJSAMPLE(inptr2[col]);
 					   s32Tmp = 1;
@@ -2421,8 +2421,8 @@ yuv422_21_sp_convert (j_decompress_ptr cinfo,
 				    #endif
 					if(0==s32Tmp)
 					{/**
-					  ** ¿í¶ÈÊÇYµÄÒ»°ë
-					  ** UV½»Ìæ×ÅÈ¡
+					  ** å®½åº¦æ˜¯Yçš„ä¸€åŠ
+					  ** UVäº¤æ›¿ç€å–
 					  **/
 					   retCbCrBuf[s32RowCbCrNum+col] = GETJSAMPLE(inptr2[col]);
 					   s32Tmp = 1;

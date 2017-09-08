@@ -29,13 +29,13 @@ typedef struct queue_info {
 	spinlock_t msg_lock;
 	wait_queue_head_t wait;
 
-	HI_VOID* alloc_data;              //Êµ¼ÊÎª  queue_data_s* ÀàĞÍ     
+	HI_VOID* alloc_data;              //å®é™…ä¸º  queue_data_s* ç±»å‹     
 	HI_U32   queue_num;
 	HI_S32   stop;
 	struct list_head head;
 	struct list_head free;
 
-	HI_BOOL bToOMX;                   //±êÖ¾¸Ã¶ÓÁĞÊÇ²»ÊÇfor omxvenc
+	HI_BOOL bToOMX;                   //æ ‡å¿—è¯¥é˜Ÿåˆ—æ˜¯ä¸æ˜¯for omxvenc
 } queue_info_s;
 
 queue_info_s* VENC_DRV_MngQueueInit( HI_U32 depth,HI_BOOL bOMX);

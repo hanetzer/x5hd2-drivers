@@ -47,7 +47,7 @@ void  ImediaMsgOutput(int level, const char *msg)
 }
 
 /******************************************************************************
-    ´´½¨ÊµÀı
+    åˆ›å»ºå®ä¾‹
  ******************************************************************************/
 SINT32 iMediaSoftDEC_Create(iMediaSDEC_CTX_S  *pCtx, MEM_DESC_S *pstInstMem, VID_STD_E eVidStd)
 {
@@ -147,7 +147,7 @@ SINT32 iMediaSoftDEC_Create(iMediaSDEC_CTX_S  *pCtx, MEM_DESC_S *pstInstMem, VID
 }
 
 /******************************************************************************
-    Ïú»ÙÊµÀı
+    é”€æ¯å®ä¾‹
  ******************************************************************************/
 SINT32 iMediaSoftDEC_Destroy(iMediaSDEC_CTX_S  *pCtx)
 {
@@ -163,7 +163,7 @@ SINT32 iMediaSoftDEC_Destroy(iMediaSDEC_CTX_S  *pCtx)
 
 
 /******************************************************************************
-    ³õÊ¼»¯£¬¼´¸´Î»
+    åˆå§‹åŒ–ï¼Œå³å¤ä½
  ******************************************************************************/
 SINT32 iMediaSoftDEC_Init(iMediaSDEC_CTX_S  *pCtx, SYNTAX_EXTRA_DATA_S *pstExtraData)
 {
@@ -172,7 +172,7 @@ SINT32 iMediaSoftDEC_Init(iMediaSDEC_CTX_S  *pCtx, SYNTAX_EXTRA_DATA_S *pstExtra
     VID_STD_E eVidStd;
 
 #ifdef CALL_IMEDIA_LIB
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     Handle = pCtx->CodecInstHandle;
     eVidStd = pCtx->eVidStd;
 
@@ -197,7 +197,7 @@ SINT32 iMediaSoftDEC_Init(iMediaSDEC_CTX_S  *pCtx, SYNTAX_EXTRA_DATA_S *pstExtra
 
 #define UP_ALIGN_16(dat) (((dat) + 15) & (~15))
 /******************************************************************************
-    ½âÂëÒ»Ö¡
+    è§£ç ä¸€å¸§
  ******************************************************************************/
 SINT32 iMediaSoftDEC_Decode(iMediaSDEC_CTX_S  *pCtx, DEC_STREAM_PACKET_S *pPacket)
 {
@@ -210,10 +210,10 @@ SINT32 iMediaSoftDEC_Decode(iMediaSDEC_CTX_S  *pCtx, DEC_STREAM_PACKET_S *pPacke
 	UINT8 *pu8Luma;
 	UINT8 *pu8Chrom;
 	UINT32 u32AspectRatio = 0;   // aspect_ratio
-	UINT32 u32FldFirst    = 0;   // ³¡Ğò: 0=top first, 1=bottom first
-	UINT32 u32SrcFmt      = 0;   // ÖğĞĞ/¸ôĞĞ: 0=progressive, 1=interlaced
-	UINT32 u32VideoFmt    = 1;   // ÖÆÊ½: 1=pal, 2=ntsc
-	UINT32 u32CodType     = 0;   // Ö¡ÀàĞÍ: 0=I, 1=P, 2=B
+	UINT32 u32FldFirst    = 0;   // åœºåº: 0=top first, 1=bottom first
+	UINT32 u32SrcFmt      = 0;   // é€è¡Œ/éš”è¡Œ: 0=progressive, 1=interlaced
+	UINT32 u32VideoFmt    = 1;   // åˆ¶å¼: 1=pal, 2=ntsc
+	UINT32 u32CodType     = 0;   // å¸§ç±»å‹: 0=I, 1=P, 2=B
 	/*UINT32 time1, time2, time3;
 	UINT32 hit0,hit1, req0, req1;;	*/
 
@@ -229,22 +229,22 @@ SINT32 iMediaSoftDEC_Decode(iMediaSDEC_CTX_S  *pCtx, DEC_STREAM_PACKET_S *pPacke
       	    }
            return iMediaSDEC_NOT_DEC;
       	}
-/*	y00226912  Ë«ºËÇé¿öÏÂ£¬²»¶Ï±¨¾¯£¬ÔİÊ±È¥µô²»Ó°Ïì½âÂë£¨ĞŞÕı£¿£©
+/*	y00226912  åŒæ ¸æƒ…å†µä¸‹ï¼Œä¸æ–­æŠ¥è­¦ï¼Œæš‚æ—¶å»æ‰ä¸å½±å“è§£ç ï¼ˆä¿®æ­£ï¼Ÿï¼‰
 	if (p1 == 0)
 	{
 	    MEM_RECORD_S MemRec;
-	    (pVfmwToSvdecFun->pfnVfmwMemMapRegisterAddr)(0x16800600, 0x400, &MemRec);  // ²é¿´L2 cacheÃüÖĞÂÊ
-//	    MEM_MapRegisterAddr(0x16800600, 0x400, &MemRec);  // ²é¿´L2 cacheÃüÖĞÂÊ
+	    (pVfmwToSvdecFun->pfnVfmwMemMapRegisterAddr)(0x16800600, 0x400, &MemRec);  // æŸ¥çœ‹L2 cacheå‘½ä¸­ç‡
+//	    MEM_MapRegisterAddr(0x16800600, 0x400, &MemRec);  // æŸ¥çœ‹L2 cacheå‘½ä¸­ç‡
 		p1 = (UINT32*)MemRec.VirAddr;
 	}
 */
 
-    /* ½âÂëÊäÈë²ÎÊı */
+    /* è§£ç è¾“å…¥å‚æ•° */
 	stStream.pucBuf = pPacket->StreamPack[0].VirAddr;
 	stStream.uiNumBytes = pPacket->StreamPack[0].LenInByte;
 	stStream.iPTS = (UINT32)pPacket->StreamPack[0].Pts;
 
-    /* µ÷ÓÃiMedia¿â½âÂëÒ»Ö¡ÂëÁ÷ */
+    /* è°ƒç”¨iMediaåº“è§£ç ä¸€å¸§ç æµ */
     memset(&stDecOutArgs, 0, sizeof(stDecOutArgs));
     s32Ret = IMedia_Viddec_FrameDecode(pCtx->CodecInstHandle, &stStream, &stDecOutArgs);
 #if 0
@@ -271,12 +271,12 @@ SINT32 iMediaSoftDEC_Decode(iMediaSDEC_CTX_S  *pCtx, DEC_STREAM_PACKET_S *pPacke
     OSAL_MSLEEP(500);
 #endif
 
-	/* Èç¹ûiMediaÓĞÍ¼ÏñÊä³ö£¬Ôò½«´ËÍ¼Ïñ¶Á³ö£¬×ª»»¸ñÊ½ºóĞ´Èëµ½ÏÔÊ¾Í¼Ïñ¿Õ¼äÈ¥£¬µÈ´ıVO¶ÁÈ¡ */
+	/* å¦‚æœiMediaæœ‰å›¾åƒè¾“å‡ºï¼Œåˆ™å°†æ­¤å›¾åƒè¯»å‡ºï¼Œè½¬æ¢æ ¼å¼åå†™å…¥åˆ°æ˜¾ç¤ºå›¾åƒç©ºé—´å»ï¼Œç­‰å¾…VOè¯»å– */
 	if (stDecOutArgs.stPicture.apucBuf[0] && stDecOutArgs.stPicture.apucBuf[1] && stDecOutArgs.stPicture.apucBuf[2] && 0==s32Ret)
 	{
         UINT32 bReversed = 0;
 
-	    /* ×ª»»É«É«¶È¸ñÊ½, Ê¹UV¼ä²å´æ·Å */
+	    /* è½¬æ¢è‰²è‰²åº¦æ ¼å¼, ä½¿UVé—´æ’å­˜æ”¾ */
 	    pstPic = &stDecOutArgs.stPicture;
 		pu8Chrom = pstPic->apucBuf[0] + pstPic->usWidthPitch * (UP_ALIGN_16(pstPic->usHeight) + 16);
 
@@ -307,7 +307,7 @@ SINT32 iMediaSoftDEC_Decode(iMediaSDEC_CTX_S  *pCtx, DEC_STREAM_PACKET_S *pPacke
 //        klib_flush_cache(pu8Chrom, MEM_Vir2Phy(pu8Chrom), pstPic->usWidthPitch * pstPic->usHeight / 2);
 #endif
 
-		/* Ñ°ÕÒÒ»¸ö¿ÕÏĞµÄIMAGE²ÛÎ»´æ·Å¸Õ¸Õ½âÂëµÄÖ¡ĞÅÏ¢ */
+		/* å¯»æ‰¾ä¸€ä¸ªç©ºé—²çš„IMAGEæ§½ä½å­˜æ”¾åˆšåˆšè§£ç çš„å¸§ä¿¡æ¯ */
 		for (i = 0; i < iMediaSDEC_MAX_IMAGE_NUM; i++)
 		{
             if (0 == pCtx->ImageUsedFlag[i])
@@ -316,7 +316,7 @@ SINT32 iMediaSoftDEC_Decode(iMediaSDEC_CTX_S  *pCtx, DEC_STREAM_PACKET_S *pPacke
 			}
 		}
 
-        /* Èç¹û²ÛÎ»Õ¼Âú: ½«ËùÓĞÖ¡ÊÍ·Å¸ø½âÂë¿â£¬È»ºóÇå¿ÕIMAGE¼¯ */
+        /* å¦‚æœæ§½ä½å æ»¡: å°†æ‰€æœ‰å¸§é‡Šæ”¾ç»™è§£ç åº“ï¼Œç„¶åæ¸…ç©ºIMAGEé›† */
 		if (i >= iMediaSDEC_MAX_IMAGE_NUM)
 		{
 			for (i = 0; i < iMediaSDEC_MAX_IMAGE_NUM; i++)
@@ -345,7 +345,7 @@ SINT32 iMediaSoftDEC_Decode(iMediaSDEC_CTX_S  *pCtx, DEC_STREAM_PACKET_S *pPacke
 		pstImg->chrom_2d_phy_addr  = pstImg->top_chrom_phy_addr;
 		pstImg->chrom_2d_vir_addr  = pu8Chrom;
 
-		/* ÉèÖÃ¿í¸ß±ÈµÄÁ½¸ö²ÎÊı */
+		/* è®¾ç½®å®½é«˜æ¯”çš„ä¸¤ä¸ªå‚æ•° */
 		SetAspectRatio(pstImg, (VDEC_DAR_E) u32AspectRatio);
 
         pstImg->format = ((u32AspectRatio&7)<<14)
@@ -368,7 +368,7 @@ SINT32 iMediaSoftDEC_Decode(iMediaSDEC_CTX_S  *pCtx, DEC_STREAM_PACKET_S *pPacke
 		pstImg->error_level = 0;
 		pstImg->ImageDnr.video_standard = pCtx->eVidStd;
 
-        /* ½«´ËÍ¼Ïñ²åÈëÊä³ö¶ÓÁĞ */
+        /* å°†æ­¤å›¾åƒæ’å…¥è¾“å‡ºé˜Ÿåˆ— */
         pCtx->ImageUsedFlag[i] = 1;
 		memcpy(&pCtx->stVidPics[i], pstPic, sizeof(STRU_IVIDEO_PICTURE));
 //        if( VF_OK != InsertImgToVoQueue(pCtx->ChanID, pCtx->eVidStd, pCtx, &pCtx->ImageQue, pstImg))
@@ -393,7 +393,7 @@ SINT32 iMediaSoftDEC_Decode(iMediaSDEC_CTX_S  *pCtx, DEC_STREAM_PACKET_S *pPacke
 }
 
 /******************************************************************************
-    »ØÊÕÍ¼Ïñ
+    å›æ”¶å›¾åƒ
  ******************************************************************************/
 SINT32 iMediaSoftDEC_RecycleImage(iMediaSDEC_CTX_S  *pCtx, UINT32 img_id)
 {
@@ -411,7 +411,7 @@ SINT32 iMediaSoftDEC_RecycleImage(iMediaSDEC_CTX_S  *pCtx, UINT32 img_id)
 
 
 /******************************************************************************
-    ÈçÏÂĞèÒªÊµÏÖ·ñ?
+    å¦‚ä¸‹éœ€è¦å®ç°å¦?
  ******************************************************************************/
 SINT32 iMediaSoftDEC_GetRemainImg(iMediaSDEC_CTX_S  *pCtx)
 {
@@ -425,9 +425,9 @@ SINT32 iMediaSoftDEC_GetImageBuffer(iMediaSDEC_CTX_S  *pCtx)
 
 
 /******************************************************************************
-    ×ª»»¸ñÊ½: °Ñplanar×ª»»Îªsemi-planar.
-              ¾ßÌåµØ£¬°Ñpu/pvËùÖ¸ÏòµÄÁ½Æ¬¶ÀÁ¢É«¶È¿Õ¼äºÏ²¢ÆğÀ´£¬´æ·Åµ½pChromËù
-              Ö¸µÄ¿Õ¼äÖĞÈ¥. ºÏ²¢µÄ·½·¨ÊÇ¼ä²å£¬¼´Ã¿ĞĞ¶ÔÓ¦µÄu,v¼ä²å£¬ĞÎ³Évuvu....
+    è½¬æ¢æ ¼å¼: æŠŠplanarè½¬æ¢ä¸ºsemi-planar.
+              å…·ä½“åœ°ï¼ŒæŠŠpu/pvæ‰€æŒ‡å‘çš„ä¸¤ç‰‡ç‹¬ç«‹è‰²åº¦ç©ºé—´åˆå¹¶èµ·æ¥ï¼Œå­˜æ”¾åˆ°pChromæ‰€
+              æŒ‡çš„ç©ºé—´ä¸­å». åˆå¹¶çš„æ–¹æ³•æ˜¯é—´æ’ï¼Œå³æ¯è¡Œå¯¹åº”çš„u,vé—´æ’ï¼Œå½¢æˆvuvu....
  ******************************************************************************/
 VOID  ConvFormat( UINT32 UVWidth, UINT32 UVHeight, UINT32 UVStride, UINT8 *pY, UINT8 *pU, UINT8 *pV, UINT8 *pLuma, UINT8 *pChrom, UINT32 bReversed)
 {

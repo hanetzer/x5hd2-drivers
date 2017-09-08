@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : y00181162
 Created		    : 2013/06/20
 Description	    : dispose the inside stream
-                  CNcomment: ÂëÁ÷µÄ´¦Àí·½Ê½ CNend\n
+                  CNcomment: ç æµçš„å¤„ç†æ–¹å¼ CNend\n
 Function List 	:
 
 			  		  
@@ -82,10 +82,10 @@ JPEG_TRACE("====================================================================
 /*****************************************************************************
 * func			: JPEG_HDEC_GetIntStatus
 * description	: get interrupt status
-				  CNcomment:  »ñÈ¡ÖĞ¶Ï×´Ì¬             CNend\n
-* param[in]	    : *pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú CNend\n
-* retval		: HI_SUCCESS  CNcomment:  ³É¹¦		   CNend\n
-* retval		: HI_FAILURE  CNcomment:  Ê§°Ü		   CNend\n
+				  CNcomment:  è·å–ä¸­æ–­çŠ¶æ€             CNend\n
+* param[in]	    : *pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„ CNend\n
+* retval		: HI_SUCCESS  CNcomment:  æˆåŠŸ		   CNend\n
+* retval		: HI_FAILURE  CNcomment:  å¤±è´¥		   CNend\n
 * others:		: NA
 *****************************************************************************/
 static HI_S32 JPEG_HDEC_GetIntStatus(const JPEG_HDEC_HANDLE_S *pJpegHandle, JPG_INTTYPE_E *pIntType, HI_U32 u32TimeOut)
@@ -113,17 +113,17 @@ static HI_S32 JPEG_HDEC_GetIntStatus(const JPEG_HDEC_HANDLE_S *pJpegHandle, JPG_
 /*****************************************************************************
 * func			: JPEG_HDEC_SendStreamFromPhyMem
 * description	: get the stream from physics memory
-				  CNcomment:  ÂëÁ÷À´Ô´Á¬ĞøµÄÎïÀíÄÚ´æµÄ´¦Àí·½Ê½	 CNend\n
-* param[in] 	: cinfo 	  CNcomment:  ½âÂë¶ÔÏó	   CNend\n
-* retval		: HI_SUCCESS  CNcomment:  ³É¹¦		   CNend\n
-* retval		: HI_FAILURE  CNcomment:  Ê§°Ü		   CNend\n
+				  CNcomment:  ç æµæ¥æºè¿ç»­çš„ç‰©ç†å†…å­˜çš„å¤„ç†æ–¹å¼	 CNend\n
+* param[in] 	: cinfo 	  CNcomment:  è§£ç å¯¹è±¡	   CNend\n
+* retval		: HI_SUCCESS  CNcomment:  æˆåŠŸ		   CNend\n
+* retval		: HI_FAILURE  CNcomment:  å¤±è´¥		   CNend\n
 * others:		: NA
 *****************************************************************************/
 
 #ifdef CONFIG_JPEG_STREAMBUF_4ALIGN
 /**
  ** before 3716CV200,the save buffer should 4bytes align
- ** CNcomment:3716CV200Ö®Ç°µÄ´æ´¢ÂëÁ÷bufferÆğÊ¼µØÖ·ĞèÒª4×Ö½Ú¶ÔÆë CNend\n
+ ** CNcomment:3716CV200ä¹‹å‰çš„å­˜å‚¨ç æµbufferèµ·å§‹åœ°å€éœ€è¦4å­—èŠ‚å¯¹é½ CNend\n
  **/
 HI_S32 JPEG_HDEC_SendStreamFromPhyMem(j_decompress_ptr cinfo)
 {
@@ -144,7 +144,7 @@ HI_S32 JPEG_HDEC_SendStreamFromPhyMem(j_decompress_ptr cinfo)
 		HI_S32 s32Ret = HI_SUCCESS;
 
 		HI_BOOL bReachEOF = HI_FALSE;
-		HI_BOOL b4Align   = HI_FALSE;/**< whether 4bytes align *//**<CNcomment:ÊÇ·ñ4×Ö½Ú¶ÔÆë*/
+		HI_BOOL b4Align   = HI_FALSE;/**< whether 4bytes align *//**<CNcomment:æ˜¯å¦4å­—èŠ‚å¯¹é½*/
 
 		JPEG_HDEC_HANDLE_S_PTR  pJpegHandle = (JPEG_HDEC_HANDLE_S_PTR)(cinfo->client_data);
 
@@ -152,7 +152,7 @@ HI_S32 JPEG_HDEC_SendStreamFromPhyMem(j_decompress_ptr cinfo)
 #ifdef CONFIG_JPEG_FPGA_TEST_SAVE_SCEN_ENABLE
 		/**
 		 ** output the scen message to file
-		 ** CNcomment:µ¼½âÂëÏÖ³¡ CNend\n
+		 ** CNcomment:å¯¼è§£ç ç°åœº CNend\n
 		 **/
 		if(HI_TRUE == pJpegHandle->bSaveScen)
 		{
@@ -162,7 +162,7 @@ HI_S32 JPEG_HDEC_SendStreamFromPhyMem(j_decompress_ptr cinfo)
 
 		/**
 		** calc the consume stream size
-		** CNcomment:½øÈëÓ²¼şÖ®Ç°ÏûºÄµÄÂëÁ÷ÊıµÈÓÚÃ¿´Î¶ÁÂëÁ÷ÀÛ¼Ó-4096ÖĞÊ£ÓàµÄÂëÁ÷Êı CNend\n
+		** CNcomment:è¿›å…¥ç¡¬ä»¶ä¹‹å‰æ¶ˆè€—çš„ç æµæ•°ç­‰äºæ¯æ¬¡è¯»ç æµç´¯åŠ -4096ä¸­å‰©ä½™çš„ç æµæ•° CNend\n
 		**/	 
 		u32ConsumSize = pJpegHandle->stHDecDataBuf.u32ConsumeDataSize - cinfo->src->bytes_in_buffer;
 		u64LeaveSize  = pJpegHandle->stHDecDataBuf.u64DataSize - ((HI_U64)u32ConsumSize);
@@ -179,7 +179,7 @@ HI_S32 JPEG_HDEC_SendStreamFromPhyMem(j_decompress_ptr cinfo)
 		else
 		{
 	       /**
-            **µÚÒ»´Î½âÂëJPGD_HDEC_MMZ_ALIGN_64BYTES + 4×Ö½Ú¶ÔÆëÒª½âµÄÂëÁ÷´óĞ¡£¬ÒòÎªÒªÊÇÂëÁ÷Ì«ÉÙ½â²»ÁË
+            **ç¬¬ä¸€æ¬¡è§£ç JPGD_HDEC_MMZ_ALIGN_64BYTES + 4å­—èŠ‚å¯¹é½è¦è§£çš„ç æµå¤§å°ï¼Œå› ä¸ºè¦æ˜¯ç æµå¤ªå°‘è§£ä¸äº†
             **/
 		   pSaveStreamPhyAddr = (HI_CHAR*)(((HI_U32)pSaveStreamPhyAddr + JPGD_HDEC_MMZ_ALIGN_16BYTES + JPGD_HDEC_MMZ_ALIGN_4BYTES - 1) & (~(JPGD_HDEC_MMZ_ALIGN_4BYTES - 1)));
 		   pSaveStreamVirAddr = (HI_CHAR*)(((HI_U32)pSaveStreamVirAddr + JPGD_HDEC_MMZ_ALIGN_16BYTES + JPGD_HDEC_MMZ_ALIGN_4BYTES - 1) & (~(JPGD_HDEC_MMZ_ALIGN_4BYTES - 1)));
@@ -199,7 +199,7 @@ HI_S32 JPEG_HDEC_SendStreamFromPhyMem(j_decompress_ptr cinfo)
 		if(HI_FALSE == b4Align)
 		{
 			 memcpy(pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf,pDataVirAddr,u32DecSize);
-			 /** Ë¢ÂëÁ÷Êı¾İ **/
+			 /** åˆ·ç æµæ•°æ® **/
 #ifdef CONFIG_JPEG_USE_PRIVATE_MMZ
 			 s32Ret = HI_GFX_Flush(pJpegHandle->s32MMZDev,(HI_U32)pJpegHandle->stHDecDataBuf.pSaveStreamPhyBuf);
 #else
@@ -226,7 +226,7 @@ HARDDEC_TSTART();
 				  {
 				    /**
 				  	** should save scen before start decode
-				    ** CNcomment:ÒªÔÚ½âÂëÆô¶¯Ç°±£´æÏÖ³¡£¬·ñÔò½âÂë»áÊ§°Ü CNend\n
+				    ** CNcomment:è¦åœ¨è§£ç å¯åŠ¨å‰ä¿å­˜ç°åœºï¼Œå¦åˆ™è§£ç ä¼šå¤±è´¥ CNend\n
 				    **/
 					 HI_JPEG_OutScenData(cinfo,pJpegHandle->stHDecDataBuf.pSaveStreamPhyBuf,pJpegHandle->stHDecDataBuf.pSaveStreamPhyBuf + u32DecSize,pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf,(HI_U64)u32DecSize,HI_TRUE);
 				  }
@@ -242,7 +242,7 @@ HARDDEC_TSTART();
 				  if(HI_TRUE == pJpegHandle->bSaveScen)
 				  {/**
 				  	** should save scen before start decode
-				    ** CNcomment:ÒªÔÚ½âÂëÆô¶¯Ç°±£´æÏÖ³¡£¬·ñÔò½âÂë»áÊ§°Ü CNend\n
+				    ** CNcomment:è¦åœ¨è§£ç å¯åŠ¨å‰ä¿å­˜ç°åœºï¼Œå¦åˆ™è§£ç ä¼šå¤±è´¥ CNend\n
 				    **/
 					HI_JPEG_OutScenData(cinfo,pSaveStreamPhyAddr,pSaveStreamEndPhyAddr,pSaveStreamVirAddr,(HI_U64)u32DecSize,HI_TRUE);
 				  }
@@ -258,7 +258,7 @@ HARDDEC_TSTART();
 				if(HI_TRUE == pJpegHandle->bSaveScen)
 				{  /**
 				  	** should save scen before start decode
-				    ** CNcomment:ÒªÔÚ½âÂëÆô¶¯Ç°±£´æÏÖ³¡£¬·ñÔò½âÂë»áÊ§°Ü CNend\n
+				    ** CNcomment:è¦åœ¨è§£ç å¯åŠ¨å‰ä¿å­˜ç°åœºï¼Œå¦åˆ™è§£ç ä¼šå¤±è´¥ CNend\n
 				    **/
 					HI_JPEG_OutScenData(cinfo,pSaveStreamPhyAddr,pSaveStreamEndPhyAddr,pSaveStreamVirAddr,(HI_U64)(pSaveStreamEndPhyAddr - pSaveStreamPhyAddr),HI_FALSE);
 				}
@@ -299,7 +299,7 @@ HARDDEC_TSTART();
 #ifdef CONFIG_JPEG_TEST_HARD_DEC_CAPA
 HARDDEC_TEND();
 /** himd.l 0xf8c40018 **/
-/** ²Ğ²îµÄÖµ himd.l 0xf8c40008 **/
+/** æ®‹å·®çš„å€¼ himd.l 0xf8c40008 **/
 #endif
 
 		cinfo->output_scanline        = 0;
@@ -398,7 +398,7 @@ HI_S32 JPEG_HDEC_SendStreamFromPhyMem(j_decompress_ptr cinfo)
 #ifdef CONFIG_JPEG_FPGA_TEST_SAVE_SCEN_ENABLE
 		/**
 		** output the scen message to file
-		** CNcomment:µ¼½âÂëÏÖ³¡ CNend\n
+		** CNcomment:å¯¼è§£ç ç°åœº CNend\n
 		**/
 		if(HI_TRUE == pJpegHandle->bSaveScen)
 		{
@@ -408,12 +408,12 @@ HI_S32 JPEG_HDEC_SendStreamFromPhyMem(j_decompress_ptr cinfo)
 
 		/**
 		** no alloc the stream buffer, we can set in Makefile about JPGD_HARD_BUFFER
-		** CNcomment:ÕâÊ±ºò²»ÓÃ×Ô¼º·ÖÅäÂëÁ÷bufferÁË£¬¿ÉÒÔÔÚMakefileÖĞÉèÖÃJPGD_HARD_BUFFER = 0 CNend\n
+		** CNcomment:è¿™æ—¶å€™ä¸ç”¨è‡ªå·±åˆ†é…ç æµbufferäº†ï¼Œå¯ä»¥åœ¨Makefileä¸­è®¾ç½®JPGD_HARD_BUFFER = 0 CNend\n
 		**/
 
 		/**
 		** calc the consume stream size
-		** CNcomment:½øÈëÓ²¼şÖ®Ç°ÏûºÄµÄÂëÁ÷ÊıµÈÓÚÃ¿´Î¶ÁÂëÁ÷ÀÛ¼Ó-4096ÖĞÊ£ÓàµÄÂëÁ÷Êı CNend\n
+		** CNcomment:è¿›å…¥ç¡¬ä»¶ä¹‹å‰æ¶ˆè€—çš„ç æµæ•°ç­‰äºæ¯æ¬¡è¯»ç æµç´¯åŠ -4096ä¸­å‰©ä½™çš„ç æµæ•° CNend\n
 		**/	 
 		u32ConsumSize = pJpegHandle->stHDecDataBuf.u32ConsumeDataSize - cinfo->src->bytes_in_buffer;
 		pSaveStreamPhyAddr     =   pJpegHandle->stHDecDataBuf.pDataPhyBuf + u32ConsumSize;
@@ -426,7 +426,7 @@ HI_S32 JPEG_HDEC_SendStreamFromPhyMem(j_decompress_ptr cinfo)
 		if(HI_TRUE == pJpegHandle->bSaveScen)
 		{/**
 		** should save scen before start decode
-		** CNcomment:ÒªÔÚ½âÂëÆô¶¯Ç°±£´æÏÖ³¡£¬·ñÔò½âÂë»áÊ§°Ü CNend\n
+		** CNcomment:è¦åœ¨è§£ç å¯åŠ¨å‰ä¿å­˜ç°åœºï¼Œå¦åˆ™è§£ç ä¼šå¤±è´¥ CNend\n
 		**/
 			HI_JPEG_OutScenData(cinfo,pSaveStreamPhyAddr,pSaveStreamEndPhyAddr,pSaveStreamVirAddr,u64LeaveSize,HI_TRUE);
 		}
@@ -439,7 +439,7 @@ HARDDEC_TSTART();
 #endif
 		/**
 		** start the decode, no need resume
-		** CNcomment:Ö±½ÓÆô¶¯½âÂë£¬²»ĞèÒªĞøÂëÁ÷ CNend\n
+		** CNcomment:ç›´æ¥å¯åŠ¨è§£ç ï¼Œä¸éœ€è¦ç»­ç æµ CNend\n
 		**/
 		JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_STADD, (HI_S32)pSaveStreamPhyAddr);
 		JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_ENDADD,(HI_S32)pSaveStreamEndPhyAddr);
@@ -537,10 +537,10 @@ HARDDEC_TEND();
 /*****************************************************************************
 * func			: JPEG_HDEC_SendStreamFromVirMem
 * description	: get the stream from virtual memory
-                  CNcomment:  ÂëÁ÷À´Ô´ĞéÄâÄÚ´æµÄ´¦Àí·½Ê½   CNend\n
-* param[in]     : cinfo       CNcomment:  ½âÂë¶ÔÏó     CNend\n
-* retval	    : HI_SUCCESS  CNcomment:  ³É¹¦         CNend\n
-* retval	    : HI_FAILURE  CNcomment:  Ê§°Ü         CNend\n
+                  CNcomment:  ç æµæ¥æºè™šæ‹Ÿå†…å­˜çš„å¤„ç†æ–¹å¼   CNend\n
+* param[in]     : cinfo       CNcomment:  è§£ç å¯¹è±¡     CNend\n
+* retval	    : HI_SUCCESS  CNcomment:  æˆåŠŸ         CNend\n
+* retval	    : HI_FAILURE  CNcomment:  å¤±è´¥         CNend\n
 * others:	    : NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_SendStreamFromVirMem(j_decompress_ptr cinfo)
@@ -566,7 +566,7 @@ HI_S32 JPEG_HDEC_SendStreamFromVirMem(j_decompress_ptr cinfo)
 		HI_U32 u32ReadDataSize       = 0;
 		/**
 		 ** the continue stream size should big than 16bytes
-		 ** CNcomment:Ã¿Ò»¶ÎĞøÂëÁ÷±ØĞë´óÓÚ16¸ö×Ö½Ú£¬±£ÊØ CNend\n
+		 ** CNcomment:æ¯ä¸€æ®µç»­ç æµå¿…é¡»å¤§äº16ä¸ªå­—èŠ‚ï¼Œä¿å®ˆ CNend\n
 		 **/
 		HI_U32 u32NeedDecCnt		       = 0;
 		HI_U32 u32ConsumSize              = 0;
@@ -583,7 +583,7 @@ HI_S32 JPEG_HDEC_SendStreamFromVirMem(j_decompress_ptr cinfo)
 #ifdef CONFIG_JPEG_FPGA_TEST_SAVE_SCEN_ENABLE
 		/**
 		 ** output the scen message to file
-		 ** CNcomment:µ¼½âÂëÏÖ³¡ CNend\n
+		 ** CNcomment:å¯¼è§£ç ç°åœº CNend\n
 		 **/
 		if(HI_TRUE == pJpegHandle->bSaveScen)
 		{
@@ -593,8 +593,8 @@ HI_S32 JPEG_HDEC_SendStreamFromVirMem(j_decompress_ptr cinfo)
 
 		/**
 		** tell the hard the stream is end.
-		** CNcomment:Õâ¸öÊÇ±ØĞëµÄ£¬Òª¸æËßÓ²¼şÂëÁ÷ÒÑ¾­¶ÁÍêÁË£¬·ñÔòÓ²¼ş»áÒ»Ö±½â
-		**           Ó²¼ş±¾Ê¡ÎŞ·¨ÅĞ¶Ï¶ÁÂëÁ÷½áÊø CNend\n
+		** CNcomment:è¿™ä¸ªæ˜¯å¿…é¡»çš„ï¼Œè¦å‘Šè¯‰ç¡¬ä»¶ç æµå·²ç»è¯»å®Œäº†ï¼Œå¦åˆ™ç¡¬ä»¶ä¼šä¸€ç›´è§£
+		**           ç¡¬ä»¶æœ¬çœæ— æ³•åˆ¤æ–­è¯»ç æµç»“æŸ CNend\n
 		**/
 		bReachEOF = HI_FALSE;
 
@@ -607,14 +607,14 @@ HI_S32 JPEG_HDEC_SendStreamFromVirMem(j_decompress_ptr cinfo)
 		do {
 			/**
 			** the consume stream size
-			** CNcomment:ÏûºÄµÄÂëÁ÷Êı CNend\n
+			** CNcomment:æ¶ˆè€—çš„ç æµæ•° CNend\n
 			**/
 #ifdef CONFIG_JPEG_SUSPEND
 			if(HI_TRUE == bResumeOk)
 			{
 			  /**
 			   ** the consume stream size
-			   ** CNcomment:ÏûºÄµÄÂëÁ÷Êı CNend\n
+			   ** CNcomment:æ¶ˆè€—çš„ç æµæ•° CNend\n
 			   **/
 			   u32ResumeSize = u32NeedDecCnt - pJpegHandle->u32ResByteConsum;
 			   memcpy(pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf,    \
@@ -626,7 +626,7 @@ HI_S32 JPEG_HDEC_SendStreamFromVirMem(j_decompress_ptr cinfo)
 			   {
 			      /**
 			   	   ** the consume stream size
-			       ** CNcomment:²»ÊÇ×îºóÒ»Ö¡ÂëÁ÷²¢ÇÒÓ²¼şĞèÒªµÄÂëÁ÷²»¹» CNend\n
+			       ** CNcomment:ä¸æ˜¯æœ€åä¸€å¸§ç æµå¹¶ä¸”ç¡¬ä»¶éœ€è¦çš„ç æµä¸å¤Ÿ CNend\n
 			       **/
 			       memcpy(pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf + u32ResumeSize, \
 			              (pDataVirAddr + u32TotalSize),                                \
@@ -655,12 +655,12 @@ HI_S32 JPEG_HDEC_SendStreamFromVirMem(j_decompress_ptr cinfo)
 			{
 			   /**
 			    ** strengthen the condition check
-			    ** CNcomment:¼ÓÇ¿Ìõ¼şÅĞ¶Ï CNend\n
+			    ** CNcomment:åŠ å¼ºæ¡ä»¶åˆ¤æ–­ CNend\n
 			    **/
 			    bReachEOF = HI_TRUE;
 			}
 						
-			/** Ë¢ÂëÁ÷Êı¾İ **/
+			/** åˆ·ç æµæ•°æ® **/
 #ifdef CONFIG_JPEG_USE_PRIVATE_MMZ
 			s32Ret = HI_GFX_Flush(pJpegHandle->s32MMZDev,(HI_U32)pJpegHandle->stHDecDataBuf.pSaveStreamPhyBuf);
 #else
@@ -678,7 +678,7 @@ HI_S32 JPEG_HDEC_SendStreamFromVirMem(j_decompress_ptr cinfo)
 			if(HI_TRUE == pJpegHandle->bSaveScen)
 			{/**
 		  	  ** should save scen before start decode
-		      ** CNcomment:ÒªÔÚ½âÂëÆô¶¯Ç°±£´æÏÖ³¡£¬·ñÔò½âÂë»áÊ§°Ü CNend\n
+		      ** CNcomment:è¦åœ¨è§£ç å¯åŠ¨å‰ä¿å­˜ç°åœºï¼Œå¦åˆ™è§£ç ä¼šå¤±è´¥ CNend\n
 		      **/
 				HI_JPEG_OutScenData(cinfo,pSaveStreamStartPhyAddr,pSaveStreamEndPhyAddr,pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf,(HI_U64)u32NeedDecCnt,bStartFirst);
 				bStartFirst = HI_FALSE;
@@ -696,7 +696,7 @@ HI_S32 JPEG_HDEC_SendStreamFromVirMem(j_decompress_ptr cinfo)
 			{ 
 				 /**
 				  ** strengthen the condition check
-				  ** CNcomment:ÊÇ·ñÎªµ±Ç°Ö¡µÄ×îºóÒ»¶ÎĞøÂë¡£0£º²»ÊÇ£»1£ºÊÇ CNend\n
+				  ** CNcomment:æ˜¯å¦ä¸ºå½“å‰å¸§çš„æœ€åä¸€æ®µç»­ç ã€‚0ï¼šä¸æ˜¯ï¼›1ï¼šæ˜¯ CNend\n
 				  **/
 				  JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_RESUME,(bReachEOF ? JPG_EOF_VALUE : 0x0));
 				  JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_START, 0x1);
@@ -813,11 +813,11 @@ HI_S32 JPEG_HDEC_SendStreamFromVirMem(j_decompress_ptr cinfo)
 
 /*****************************************************************************
 * func			: JPEG_HDEC_SendStreamFromFile
-* description	: CNcomment:  ÂëÁ÷À´Ô´ÎÄ¼ş
-* param[in] 	: cinfo 	  CNcomment:  ½âÂë¶ÔÏó
+* description	: CNcomment:  ç æµæ¥æºæ–‡ä»¶
+* param[in] 	: cinfo 	  CNcomment:  è§£ç å¯¹è±¡
 * param[in] 	: NA
-* retval		: HI_SUCCESS  CNcomment:  ³É¹¦
-* retval		: HI_FAILURE  CNcomment:  Ê§°Ü
+* retval		: HI_SUCCESS  CNcomment:  æˆåŠŸ
+* retval		: HI_FAILURE  CNcomment:  å¤±è´¥
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
@@ -844,7 +844,7 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 		HI_U32 u32ResumeSize		   = 0;
 		/**
 		** the continue stream size should big than 16bytes
-		** CNcomment:Ã¿Ò»¶ÎĞøÂëÁ÷±ØĞë´óÓÚ16¸ö×Ö½Ú£¬±£ÊØ CNend\n
+		** CNcomment:æ¯ä¸€æ®µç»­ç æµå¿…é¡»å¤§äº16ä¸ªå­—èŠ‚ï¼Œä¿å®ˆ CNend\n
 		**/
 		HI_U32 u32NeedDecCnt		   = 0;
 		HI_CHAR* pStreamStartPhyAddr = NULL;
@@ -858,7 +858,7 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 #ifdef CONFIG_JPEG_FPGA_TEST_SAVE_SCEN_ENABLE
 		/**
 		** output the scen message to file
-		** CNcomment:µ¼½âÂëÏÖ³¡ CNend\n
+		** CNcomment:å¯¼è§£ç ç°åœº CNend\n
 		**/
 		if(HI_TRUE == pJpegHandle->bSaveScen)
 		{
@@ -868,8 +868,8 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 
 		/**
 		** tell the hard the stream is end.
-		** CNcomment:Õâ¸öÊÇ±ØĞëµÄ£¬Òª¸æËßÓ²¼şÂëÁ÷ÒÑ¾­¶ÁÍêÁË£¬·ñÔòÓ²¼ş»áÒ»Ö±½â
-		**           Ó²¼ş±¾Ê¡ÎŞ·¨ÅĞ¶Ï¶ÁÂëÁ÷½áÊø CNend\n
+		** CNcomment:è¿™ä¸ªæ˜¯å¿…é¡»çš„ï¼Œè¦å‘Šè¯‰ç¡¬ä»¶ç æµå·²ç»è¯»å®Œäº†ï¼Œå¦åˆ™ç¡¬ä»¶ä¼šä¸€ç›´è§£
+		**           ç¡¬ä»¶æœ¬çœæ— æ³•åˆ¤æ–­è¯»ç æµç»“æŸ CNend\n
 		**/
 		bReachEOF = HI_FALSE;
 
@@ -880,20 +880,20 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 		** if suspend happen before hard decode,here not deal with this instance.
 		** because this instance should check whether is suspend and set para again.
 		** it cost many times.it can return to soft decode,just ok to see the show.
-		** CNcomment:Èç¹ûÊÇ½âÂëÖ®Ç°½øĞĞ´ı»ú£¬ÕâÀï¾Í²»×ö´¦ÀíÁË£¬ÒòÎª»áºÄÊ±¼ä£¬Ó²¼ş½âÂëÒªÊÇÊ§°Ü
-		**           »á×Ô¶¯ÍË»ØÈí¼ş½âÂë£¬ÕÕÑù¿ÉÒÔÕı³£ÏÔÊ¾ CNend\n
+		** CNcomment:å¦‚æœæ˜¯è§£ç ä¹‹å‰è¿›è¡Œå¾…æœºï¼Œè¿™é‡Œå°±ä¸åšå¤„ç†äº†ï¼Œå› ä¸ºä¼šè€—æ—¶é—´ï¼Œç¡¬ä»¶è§£ç è¦æ˜¯å¤±è´¥
+		**           ä¼šè‡ªåŠ¨é€€å›è½¯ä»¶è§£ç ï¼Œç…§æ ·å¯ä»¥æ­£å¸¸æ˜¾ç¤º CNend\n
 		**/
 		do {
 			/**
 			** the consume stream size
-			** CNcomment:ÏûºÄµÄÂëÁ÷Êı CNend\n
+			** CNcomment:æ¶ˆè€—çš„ç æµæ•° CNend\n
 			**/
 #ifdef CONFIG_JPEG_SUSPEND
 			if(HI_TRUE == bResumeOk)
 			{
 				/**
 				** the consume stream size
-				** CNcomment:ÏûºÄµÄÂëÁ÷Êı CNend\n
+				** CNcomment:æ¶ˆè€—çš„ç æµæ•° CNend\n
 				**/
 				u32ResumeSize = u32NeedDecCnt - pJpegHandle->u32ResByteConsum;
 				memcpy(pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf,    \
@@ -905,7 +905,7 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 			{
 				/**
 				** copy the leave stream to save stream buffer and start decode
-				** CNcomment:¿½±´Ê£ÓàÂëÁ÷µ½ÂëÁ÷bufferÖĞ£¬È»ºóÆô¶¯½âÂë CNend\n
+				** CNcomment:æ‹·è´å‰©ä½™ç æµåˆ°ç æµbufferä¸­ï¼Œç„¶åå¯åŠ¨è§£ç  CNend\n
 				**/
 				u32NeedDecCnt = cinfo->src->bytes_in_buffer;
 				memcpy(pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf,   \
@@ -932,7 +932,7 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 
 					u32NeedDecCnt = u32NeedDecCnt + cinfo->src->bytes_in_buffer;
 
-					/** »¹Ô­ÂëÁ÷Ê×µØÖ· **/
+					/** è¿˜åŸç æµé¦–åœ°å€ **/
 					pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf     = pStreamStartVirAddr;
 					pJpegHandle->stHDecDataBuf.u32ReadDataSize = u32ReadDataSize;
 				}
@@ -944,7 +944,7 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
  
 				/**
 				** there is not stream,should read data to save stream buffer
-				** CNcomment:Ã»ÓĞÂëÁ÷ÁË£¬ĞèÒª¶ÁÂëÁ÷£¬ÕâÊ±ºòÖ±½Ó¶ÁÂëÁ÷´óĞ¡×Ö½Úµ½ÂëÁ÷bufferÖĞ CNend\n
+				** CNcomment:æ²¡æœ‰ç æµäº†ï¼Œéœ€è¦è¯»ç æµï¼Œè¿™æ—¶å€™ç›´æ¥è¯»ç æµå¤§å°å­—èŠ‚åˆ°ç æµbufferä¸­ CNend\n
 				**/
 				pJpegHandle->stHDecDataBuf.bReadToDataBuf  = HI_TRUE;
 				pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf = pStreamStartVirAddr + u32ResumeSize;
@@ -970,19 +970,19 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 			{
 				/**
 				** strengthen the condition check
-				** CNcomment:¼ÓÇ¿Ìõ¼şÅĞ¶Ï CNend\n
+				** CNcomment:åŠ å¼ºæ¡ä»¶åˆ¤æ–­ CNend\n
 				**/
 				bReachEOF = HI_TRUE;
 			}
 
 			/**
 			** dinit the para
-			** CNcomment:È¥³õÊ¼»¯Ïà¹Ø±äÁ¿ CNend\n
+			** CNcomment:å»åˆå§‹åŒ–ç›¸å…³å˜é‡ CNend\n
 			**/
 			u32ResumeSize = 0;
 			cinfo->src->bytes_in_buffer = 0;
 
-			/** Ë¢ÂëÁ÷Êı¾İ **/
+			/** åˆ·ç æµæ•°æ® **/
 #ifdef CONFIG_JPEG_USE_PRIVATE_MMZ
 			s32Ret = HI_GFX_Flush(pJpegHandle->s32MMZDev,(HI_U32)pJpegHandle->stHDecDataBuf.pSaveStreamPhyBuf);
 #else
@@ -1002,7 +1002,7 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 			if(HI_TRUE == pJpegHandle->bSaveScen)
 			{/**
 			** should save scen before start decode
-			** CNcomment:ÒªÔÚ½âÂëÆô¶¯Ç°±£´æÏÖ³¡£¬·ñÔò½âÂë»áÊ§°Ü CNend\n
+			** CNcomment:è¦åœ¨è§£ç å¯åŠ¨å‰ä¿å­˜ç°åœºï¼Œå¦åˆ™è§£ç ä¼šå¤±è´¥ CNend\n
 			**/
 				HI_JPEG_OutScenData(cinfo,pStreamStartPhyAddr,pStreamEndPhyAddr,pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf,(HI_U64)u32NeedDecCnt,bStartFirst);
 				bStartFirst = HI_FALSE;
@@ -1020,7 +1020,7 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 			{ 
 				/**
 				** strengthen the condition check
-				** CNcomment:ÊÇ·ñÎªµ±Ç°Ö¡µÄ×îºóÒ»¶ÎĞøÂë¡£0£º²»ÊÇ£»1£ºÊÇ CNend\n
+				** CNcomment:æ˜¯å¦ä¸ºå½“å‰å¸§çš„æœ€åä¸€æ®µç»­ç ã€‚0ï¼šä¸æ˜¯ï¼›1ï¼šæ˜¯ CNend\n
 				**/
 				JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_RESUME,(bReachEOF ? JPG_EOF_VALUE : 0x0));
 				JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_START, 0x1);
@@ -1035,7 +1035,7 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 			eIntStatus = JPG_INTTYPE_ERROR;
 			
 #ifdef CONFIG_JPEG_TEST_CHIP_RANDOM_RESET
-			/** Èí¸´Î»²âÊÔ³¬Ê±²»ÄÜÌ«³¤ **/
+			/** è½¯å¤ä½æµ‹è¯•è¶…æ—¶ä¸èƒ½å¤ªé•¿ **/
 			JPEG_TRACE("the waite up time is 1000ms\n");
 			s32Ret = JPEG_HDEC_GetIntStatus(pJpegHandle, &eIntStatus, 1000);
 			JPEG_TRACE("waite up now\n");
@@ -1152,7 +1152,7 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 			 cinfo->src->bytes_in_buffer  = 0;
 			 /**
 			  ** change the read stream dispose
-			  ** CNcomment:Ó²¼ş½âÂëÊ§°ÜÖ®ºó¶ÁÂëÁ÷»¹ÊÇ×ßÔ­ÏÈÈí½âµÄÂ·ÁË CNend\n
+			  ** CNcomment:ç¡¬ä»¶è§£ç å¤±è´¥ä¹‹åè¯»ç æµè¿˜æ˜¯èµ°åŸå…ˆè½¯è§£çš„è·¯äº† CNend\n
 			  **/
 			 pJpegHandle->stHDecDataBuf.bReadToDataBuf  = HI_FALSE;
 
@@ -1164,11 +1164,11 @@ HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo)
 }
 /*****************************************************************************
 * func			: JPEG_HDEC_SendStreamFromCallBack
-* description	: CNcomment:  ÂëÁ÷À´Ô´Íâ²¿´¦Àí
-* param[in] 	: cinfo 	  CNcomment:  ½âÂë¶ÔÏó
+* description	: CNcomment:  ç æµæ¥æºå¤–éƒ¨å¤„ç†
+* param[in] 	: cinfo 	  CNcomment:  è§£ç å¯¹è±¡
 * param[in] 	: NA
-* retval		: HI_SUCCESS  CNcomment:  ³É¹¦
-* retval		: HI_FAILURE  CNcomment:  Ê§°Ü
+* retval		: HI_SUCCESS  CNcomment:  æˆåŠŸ
+* retval		: HI_FAILURE  CNcomment:  å¤±è´¥
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_SendStreamFromCallBack(j_decompress_ptr cinfo)
@@ -1193,7 +1193,7 @@ HI_S32 JPEG_HDEC_SendStreamFromCallBack(j_decompress_ptr cinfo)
 		HI_U32 u32ReadDataSize       = 0;
 		/**
 		** the continue stream size should big than 16bytes
-		** CNcomment:Ã¿Ò»¶ÎĞøÂëÁ÷±ØĞë´óÓÚ16¸ö×Ö½Ú£¬±£ÊØ CNend\n
+		** CNcomment:æ¯ä¸€æ®µç»­ç æµå¿…é¡»å¤§äº16ä¸ªå­—èŠ‚ï¼Œä¿å®ˆ CNend\n
 		**/
 		HI_U32 u32ReadSize            = 0; /** every times read data bytes **/
 		HI_U32 u32ReadPos             = 0;
@@ -1209,7 +1209,7 @@ HI_S32 JPEG_HDEC_SendStreamFromCallBack(j_decompress_ptr cinfo)
 #ifdef CONFIG_JPEG_FPGA_TEST_SAVE_SCEN_ENABLE
 		/**
 		** output the scen message to file
-		** CNcomment:µ¼½âÂëÏÖ³¡ CNend\n
+		** CNcomment:å¯¼è§£ç ç°åœº CNend\n
 		**/
 		if(HI_TRUE == pJpegHandle->bSaveScen)
 		{
@@ -1219,8 +1219,8 @@ HI_S32 JPEG_HDEC_SendStreamFromCallBack(j_decompress_ptr cinfo)
 
 		/**
 		** tell the hard the stream is end.
-		** CNcomment:Õâ¸öÊÇ±ØĞëµÄ£¬Òª¸æËßÓ²¼şÂëÁ÷ÒÑ¾­¶ÁÍêÁË£¬·ñÔòÓ²¼ş»áÒ»Ö±½â
-		**           Ó²¼ş±¾Ê¡ÎŞ·¨ÅĞ¶Ï¶ÁÂëÁ÷½áÊø CNend\n
+		** CNcomment:è¿™ä¸ªæ˜¯å¿…é¡»çš„ï¼Œè¦å‘Šè¯‰ç¡¬ä»¶ç æµå·²ç»è¯»å®Œäº†ï¼Œå¦åˆ™ç¡¬ä»¶ä¼šä¸€ç›´è§£
+		**           ç¡¬ä»¶æœ¬çœæ— æ³•åˆ¤æ–­è¯»ç æµç»“æŸ CNend\n
 		**/
 		bReachEOF = HI_FALSE;
 
@@ -1231,14 +1231,14 @@ HI_S32 JPEG_HDEC_SendStreamFromCallBack(j_decompress_ptr cinfo)
 
 			/**
 			** the consume stream size
-			** CNcomment:ÏûºÄµÄÂëÁ÷Êı CNend\n
+			** CNcomment:æ¶ˆè€—çš„ç æµæ•° CNend\n
 			**/
 #ifdef CONFIG_JPEG_SUSPEND
 			if(HI_TRUE == bResumeOk)
 			{
 				/**
 				** the consume stream size
-				** CNcomment:ÏûºÄµÄÂëÁ÷Êı CNend\n
+				** CNcomment:æ¶ˆè€—çš„ç æµæ•° CNend\n
 				**/
 				u32NeedDecCnt = u32ReadDataSize - pJpegHandle->u32ResByteConsum;
 				memcpy(pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf,	\
@@ -1295,7 +1295,7 @@ HI_S32 JPEG_HDEC_SendStreamFromCallBack(j_decompress_ptr cinfo)
 				/**do nothing,cancle pc-lint warning **/
 			}
 			
-			/** Ë¢ÂëÁ÷Êı¾İ **/
+			/** åˆ·ç æµæ•°æ® **/
 #ifdef CONFIG_JPEG_USE_PRIVATE_MMZ
 			s32Ret = HI_GFX_Flush(pJpegHandle->s32MMZDev,(HI_U32)pJpegHandle->stHDecDataBuf.pSaveStreamPhyBuf);
 #else
@@ -1315,7 +1315,7 @@ HI_S32 JPEG_HDEC_SendStreamFromCallBack(j_decompress_ptr cinfo)
 			if(HI_TRUE == pJpegHandle->bSaveScen)
 			{	/**
 				** should save scen before start decode
-				** CNcomment:ÒªÔÚ½âÂëÆô¶¯Ç°±£´æÏÖ³¡£¬·ñÔò½âÂë»áÊ§°Ü CNend\n
+				** CNcomment:è¦åœ¨è§£ç å¯åŠ¨å‰ä¿å­˜ç°åœºï¼Œå¦åˆ™è§£ç ä¼šå¤±è´¥ CNend\n
 				**/
 				HI_JPEG_OutScenData(cinfo,pStreamStartPhyAddr,pStreamEndPhyAddr,pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf,(HI_U64)u32NeedDecCnt,bStartFirst);
 				bStartFirst = HI_FALSE;
@@ -1335,7 +1335,7 @@ HI_S32 JPEG_HDEC_SendStreamFromCallBack(j_decompress_ptr cinfo)
 			{ 
 				/**
 				** strengthen the condition check
-				** CNcomment:ÊÇ·ñÎªµ±Ç°Ö¡µÄ×îºóÒ»¶ÎĞøÂë¡£0£º²»ÊÇ£»1£ºÊÇ CNend\n
+				** CNcomment:æ˜¯å¦ä¸ºå½“å‰å¸§çš„æœ€åä¸€æ®µç»­ç ã€‚0ï¼šä¸æ˜¯ï¼›1ï¼šæ˜¯ CNend\n
 				**/
 				JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_RESUME,(bReachEOF ? JPG_EOF_VALUE : 0x0));
 				JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_START, 0x1);
@@ -1459,7 +1459,7 @@ HI_S32 JPEG_HDEC_SendStreamFromCallBack(j_decompress_ptr cinfo)
 		cinfo->src->bytes_in_buffer  = 0;
 		/**
 		** change the read stream dispose
-		** CNcomment:Ó²¼ş½âÂëÊ§°ÜÖ®ºó¶ÁÂëÁ÷»¹ÊÇ×ßÔ­ÏÈÈí½âµÄÂ·ÁË CNend\n
+		** CNcomment:ç¡¬ä»¶è§£ç å¤±è´¥ä¹‹åè¯»ç æµè¿˜æ˜¯èµ°åŸå…ˆè½¯è§£çš„è·¯äº† CNend\n
 		**/
 		pJpegHandle->stHDecDataBuf.bReadToDataBuf  = HI_FALSE;
 

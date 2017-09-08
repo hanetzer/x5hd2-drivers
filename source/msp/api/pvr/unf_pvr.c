@@ -35,7 +35,7 @@ extern "C"
 HI_S32 HI_UNF_PVR_RecInit(HI_VOID)
 {
     /*w37134 for AI7D05516 pvr need to call cipher function,cipher function is offered inner application not client application , it should be called by inner module  */
-      /*CNcomment:��Ҫʹ�ü��ܽӿڣ������ܽӿڲ��ṩ���ͻ�����Ҫ�ڲ���*/
+      /*CNcomment:需要使用加密接口，而加密接口不提供给客户，需要内部打开*/
     HI_UNF_CIPHER_Open();
 
     return HI_PVR_RecInit();
@@ -104,7 +104,7 @@ HI_S32 HI_UNF_PVR_RecGetStatus(HI_U32 u32ChnID, HI_UNF_PVR_REC_STATUS_S *pstRecS
 HI_S32 HI_UNF_PVR_PlayInit(HI_VOID)
 {
     /*w37134 for AI7D05516 pvr need to call cipher function,cipher function is offered inner application not client application , it should be called by inner module  */
-      /*CNcomment:��Ҫʹ�ü��ܽӿڣ������ܽӿڲ��ṩ���ͻ�����Ҫ�ڲ���*/
+      /*CNcomment:需要使用加密接口，而加密接口不提供给客户，需要内部打开*/
     HI_UNF_CIPHER_Open();
 
     return HI_PVR_PlayInit();

@@ -1170,12 +1170,12 @@ STATIC INLINE HI_S32 PVRPlaySendData(PVR_PLAY_CHN_S *pChnAttr, HI_U64 offSet, HI
     HI_U32   u32PhyAddr;
     HI_UNF_STREAM_BUF_S demuxBuf;
 
-    HI_U32 headToAdd;  /* the length from beginning of data to ts header *//*CNcomment:Êı¾İÆğÊ¼µ½TSÍ·µÄ¾àÀë */
-    HI_U32 endToAdd;   /* the length from end of data to ts end *//*CNcomment:Êı¾İ½áÎ²µ½TSÎ²µÄ¾àÀë */
-    HI_U32 cipherHead; /* from the first ts header to the lastest cipher array*//*CNcomment:ÆğÊ¼TSÍ·µ½ÏòÇ°µ½×î½üÒ»¸ö½âÃÜ·Ö×é(Í¬Ê±Ò²ÊÇO_DIRECT¶ÁÈ¡Î»ÖÃ)µÄ¾àÀë */
-    HI_U32 cipherEnd;  /* from the end of data to the lastest cipher array *//*CNcomment:Êı¾İ½áÎ²µ½Ïòºóµ½×î½üÒ»¸ö½âÃÜ·Ö×é(Í¬Ê±Ò²ÊÇO_DIRECT¶ÁÈ¡Î»ÖÃ)µÄ¾àÀë */
-    HI_U32 u32BytesRealSend;  /*real length be sent to buffer *//*CNcomment:ÕæÕıËÍµ½TS BufferÖĞµÄ³¤¶È*/
-    HI_U64 u64ReadOffset;     /*read offset address of stream file*//*CNcomment:ÂëÁ÷ÎÄ¼şµÄ¶ÁÆ«ÒÆµØÖ· */
+    HI_U32 headToAdd;  /* the length from beginning of data to ts header *//*CNcomment:æ•°æ®èµ·å§‹åˆ°TSå¤´çš„è·ç¦» */
+    HI_U32 endToAdd;   /* the length from end of data to ts end *//*CNcomment:æ•°æ®ç»“å°¾åˆ°TSå°¾çš„è·ç¦» */
+    HI_U32 cipherHead; /* from the first ts header to the lastest cipher array*//*CNcomment:èµ·å§‹TSå¤´åˆ°å‘å‰åˆ°æœ€è¿‘ä¸€ä¸ªè§£å¯†åˆ†ç»„(åŒæ—¶ä¹Ÿæ˜¯O_DIRECTè¯»å–ä½ç½®)çš„è·ç¦» */
+    HI_U32 cipherEnd;  /* from the end of data to the lastest cipher array *//*CNcomment:æ•°æ®ç»“å°¾åˆ°å‘ååˆ°æœ€è¿‘ä¸€ä¸ªè§£å¯†åˆ†ç»„(åŒæ—¶ä¹Ÿæ˜¯O_DIRECTè¯»å–ä½ç½®)çš„è·ç¦» */
+    HI_U32 u32BytesRealSend;  /*real length be sent to buffer *//*CNcomment:çœŸæ­£é€åˆ°TS Bufferä¸­çš„é•¿åº¦*/
+    HI_U64 u64ReadOffset;     /*read offset address of stream file*//*CNcomment:ç æµæ–‡ä»¶çš„è¯»åç§»åœ°å€ */
 
     if (0 == bytesToSend)
     {
@@ -1248,7 +1248,7 @@ STATIC INLINE HI_S32 PVRPlaySendData(PVR_PLAY_CHN_S *pChnAttr, HI_U64 offSet, HI
     memcpy(demuxBuf.pu8Data + u32BytesRead, pChnAttr->pu8DataBuf, alignSize - u32BytesRead);
     //pChnAttr->u64CurReadPos += (alignSize - u32BytesRead);
 
-    /*if decipher is necessary,do it *//*CNcomment:Èç¹ûĞèÒª½âÃÜÔò½øĞĞ½âÃÜ*/
+    /*if decipher is necessary,do it *//*CNcomment:å¦‚æœéœ€è¦è§£å¯†åˆ™è¿›è¡Œè§£å¯†*/
     if (pChnAttr->stUserCfg.stDecryptCfg.bDoCipher)
     {
         ret = HI_UNF_CIPHER_Decrypt(pChnAttr->hCipher, u32PhyAddr, u32PhyAddr, alignSize);
@@ -1259,7 +1259,7 @@ STATIC INLINE HI_S32 PVRPlaySendData(PVR_PLAY_CHN_S *pChnAttr, HI_U64 offSet, HI
         }
     }
 
-    /*if index file don't exist, checking is unnecessary *//*CNcomment:ÎŞË÷Òı²¥·Å²»ĞèÒª¼ì²é*/
+    /*if index file don't exist, checking is unnecessary *//*CNcomment:æ— ç´¢å¼•æ’­æ”¾ä¸éœ€è¦æ£€æŸ¥*/
     if (!pChnAttr->bPlayingTsNoIdx)
     {
         HI_ASSERT(demuxBuf.pu8Data[cipherHead] == 0x47);
@@ -1272,7 +1272,7 @@ STATIC INLINE HI_S32 PVRPlaySendData(PVR_PLAY_CHN_S *pChnAttr, HI_U64 offSet, HI
         PVRPlayAddTsEnd(demuxBuf.pu8Data, cipherHead + headToAdd + bytesToSend, endToAdd);
         u32BytesRealSend = headToAdd + bytesToSend + endToAdd;
     }
-    else /* normally or slow play,send whole of stream,do not add stream any more,only cut off the divicese between TS package*//*CNcomment:Õı³£²¥·ÅºÍÂı·Å£¬ËÍËùÓĞÂëÁ÷£¬²»ÔÙ²¹ÂëÁ÷£¬Ö»ÒªÔÚÕû°üµÄµØ·½ÇĞ¿ª¾Í¿ÉÒÔÁË*/
+    else /* normally or slow play,send whole of stream,do not add stream any more,only cut off the divicese between TS package*//*CNcomment:æ­£å¸¸æ’­æ”¾å’Œæ…¢æ”¾ï¼Œé€æ‰€æœ‰ç æµï¼Œä¸å†è¡¥ç æµï¼Œåªè¦åœ¨æ•´åŒ…çš„åœ°æ–¹åˆ‡å¼€å°±å¯ä»¥äº†*/
     {
         u32BytesRealSend = headToAdd + bytesToSend - ((offSet + bytesToSend) % PVR_TS_LEN);
     }
@@ -1699,7 +1699,7 @@ HI_S32 PVRPlaySendAframe(PVR_PLAY_CHN_S  *pChnAttr, const PVR_INDEX_ENTRY_S *pfr
 
 #if 0  /* not need it, meanless to check it */
     /* if playing,repeat sending the beginning of stream one time.If rewind back, do not play*/
-    /*CNcomment:´¦ÓÚ²¥·Å×´Ì¬£¬°ÑÂëÁ÷¿ªÊ¼µÄ²¿·Ö(µÚÒ»Ö¡Ö®Ç°)Ò²·¢Ò»ÏÂ£¬Ö»·¢Ò»´Î£¬»ØÍË»ØÀ´ÊÇ²»»áÔÙ²¥·ÅµÄ */
+    /*CNcomment:å¤„äºæ’­æ”¾çŠ¶æ€ï¼ŒæŠŠç æµå¼€å§‹çš„éƒ¨åˆ†(ç¬¬ä¸€å¸§ä¹‹å‰)ä¹Ÿå‘ä¸€ä¸‹ï¼Œåªå‘ä¸€æ¬¡ï¼Œå›é€€å›æ¥æ˜¯ä¸ä¼šå†æ’­æ”¾çš„ */
     if ((HI_UNF_PVR_PLAY_STATE_PLAY == pChnAttr->enState)
        // && (!PVR_INDEX_IS_REWIND(pChnAttr->IndexHandle))
         && (HI_FALSE == pChnAttr->bCAStreamHeadSent)
@@ -1707,7 +1707,7 @@ HI_S32 PVRPlaySendAframe(PVR_PLAY_CHN_S  *pChnAttr, const PVR_INDEX_ENTRY_S *pfr
     {
         HI_INFO_PVR("SEND:0->%llu.\n", pframe->u64Offset);
 
-        /*send stream from the beginning of file to the beginning of the first frame*//*CNcomment:´ÓÎÄ¼ş¿ªÍ·ËÍµ½µÚÒ»Ö¡¿ªÊ¼ */
+        /*send stream from the beginning of file to the beginning of the first frame*//*CNcomment:ä»æ–‡ä»¶å¼€å¤´é€åˆ°ç¬¬ä¸€å¸§å¼€å§‹ */
         ret |= PVRPlaySendData(pChnAttr, 0, (HI_U32)pframe->u64Offset);
         pChnAttr->bCAStreamHeadSent = HI_TRUE;
 
@@ -1977,7 +1977,7 @@ STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_IN
 #endif
 
 #if 0
-/*according to next frame, calculate the last time of current frame when forward play or rewind play *//*CNcomment:¿ì½øºÍ¿ìÍËÊ±¸ù¾İÏÂÒ»Ö¡Çé¿ö£¬¼ÆËãµ±Ç°Ö¡ĞèÒª³ÖĞøÊ±¼ä*/
+/*according to next frame, calculate the last time of current frame when forward play or rewind play *//*CNcomment:å¿«è¿›å’Œå¿«é€€æ—¶æ ¹æ®ä¸‹ä¸€å¸§æƒ…å†µï¼Œè®¡ç®—å½“å‰å¸§éœ€è¦æŒç»­æ—¶é—´*/
 
 STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_INDEX_ENTRY_S *pNextFrame)
 {
@@ -1985,7 +1985,7 @@ STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_IN
     HI_U32 u32NextPlayTimeMs;
     HI_S32 speedx;
 
-    /*if the next frame is the first frame,do not wait and set next frame to refrence frame*//*CNcomment:ÏÂÒ»Ö¡ÎªµÚÒ»Ö¡²»µÈ´ı£¬²¢½«ÏÂÒ»Ö¡ÉèÖÃÎª²Î¿¼Ö¡*/
+    /*if the next frame is the first frame,do not wait and set next frame to refrence frame*//*CNcomment:ä¸‹ä¸€å¸§ä¸ºç¬¬ä¸€å¸§ä¸ç­‰å¾…ï¼Œå¹¶å°†ä¸‹ä¸€å¸§è®¾ç½®ä¸ºå‚è€ƒå¸§*/
     if (PVR_INDEX_INVALID_PTSMS == pChnAttr->stTplayCtlInfo.u32RefFrmPtsMs)
     {
         pChnAttr->stTplayCtlInfo.u32RefFrmPtsMs = pNextFrame->u32DisplayTimeMs;
@@ -1993,17 +1993,17 @@ STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_IN
         return 0;
     }
 
-    /*system time of current program played already *//*CNcomment: µ±Ç°½ÚÄ¿ÒÑ¾­²¥·ÅµÄÏµÍ³Ê±¼ä*/
+    /*system time of current program played already *//*CNcomment: å½“å‰èŠ‚ç›®å·²ç»æ’­æ”¾çš„ç³»ç»Ÿæ—¶é—´*/
     u32CurPlayTimeMs = PVRIndexGetCurTimeMs() - pChnAttr->stTplayCtlInfo.u32RefFrmSysTimeMs;
 
-    /*forward *//*CNcomment:¿ì½ø×´Ì¬*/
+    /*forward *//*CNcomment:å¿«è¿›çŠ¶æ€*/
     if (HI_UNF_PVR_PLAY_STATE_FF == pChnAttr->enState)
     {
         speedx = pChnAttr->enSpeed / HI_UNF_PVR_PLAY_SPEED_NORMAL;
         u32NextPlayTimeMs = (pNextFrame->u32DisplayTimeMs - pChnAttr->stTplayCtlInfo.u32RefFrmPtsMs)
                 / speedx;
 
-        /* if frame's time less than 40ms,do not play *//*CNcomment: ÒÔÄÚµÄÖ¡¾Í²»²¥ÁË */
+        /* if frame's time less than 40ms,do not play *//*CNcomment: ä»¥å†…çš„å¸§å°±ä¸æ’­äº† */
         if (u32NextPlayTimeMs < (u32CurPlayTimeMs + PVR_TPLAY_MIN_DISTANCE))
         {
             HI_INFO_PVR("less than min distance, donn't send this frame, PTS=%u, playtime=%d, cur+%d=%d.\n",
@@ -2021,7 +2021,7 @@ STATIC INLINE HI_S32 PVRPlayCalcCurFrmStayTime(PVR_PLAY_CHN_S  *pChnAttr, PVR_IN
         }
     }
 
-    /*rewind  *//*CNcomment: ¿ìÍË×´Ì¬*/
+    /*rewind  *//*CNcomment: å¿«é€€çŠ¶æ€*/
     if (HI_UNF_PVR_PLAY_STATE_FB == pChnAttr->enState)
     {
         speedx = (0 - pChnAttr->enSpeed) / HI_UNF_PVR_PLAY_SPEED_NORMAL;

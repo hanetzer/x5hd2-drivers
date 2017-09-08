@@ -1,10 +1,10 @@
 /**
  \file
- \brief Describes the error codes of the HiGo. CNcomment:HiGo´íÎóÂëÎÄ¼ş CNend
+ \brief Describes the error codes of the HiGo. CNcomment:HiGoé”™è¯¯ç æ–‡ä»¶ CNend
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version 1.0
- \author ÔÚz00141204
+ \author åœ¨z00141204
  \date 2009-9-14
  */
 
@@ -23,7 +23,7 @@ extern "C" {
 /** @{ */  /** <!-- [HIGO_ERRCODE] */
 
 /**Error IDs of HiGo projects*/
-/** CNcomment:HiGo ÏîÄ¿´íÎóID */
+/** CNcomment:HiGo é¡¹ç›®é”™è¯¯ID */
 #define HIGO_ERR_APPID (0x80000000L + 0x30000000L)
 
 typedef enum hiGOLOG_ERRLEVEL_E
@@ -40,12 +40,12 @@ typedef enum hiGOLOG_ERRLEVEL_E
 } HIGO_LOG_ERRLEVEL_E;
 
 /**Macros for defining the error codes of the HiGo*/
-/** CNcomment:HiGo ´íÎóÂë¶¨Òåºê */
+/** CNcomment:HiGo é”™è¯¯ç å®šä¹‰å® */
 #define HIGO_DEF_ERR( module, errid) \
     ((HI_S32)((HIGO_ERR_APPID) | (((HI_U32)module) << 16) | (((HI_U32)HIGO_LOG_LEVEL_ERROR) << 13) | ((HI_U32)errid)))
 
 /**HiGo Module encoding*/
-/** CNcomment:HiGo Ä£¿é±àÂë */
+/** CNcomment:HiGo æ¨¡å—ç¼–ç  */
 typedef enum
 {
     HIGO_MOD_COMM = 0,
@@ -61,7 +61,7 @@ typedef enum
 } HIGO_MOD_E;
 
 /**Common error codes of the HiGo*/
-/** CNcomment:HiGo ¹«¹²´íÎóÂë */
+/** CNcomment:HiGo å…¬å…±é”™è¯¯ç  */
 typedef enum
 {
     ERR_COMM_NOTINIT = 0,
@@ -89,92 +89,92 @@ typedef enum
 } HIGO_ERR_E;
 
 /**The dependent module is not initialized (0xB0008000).*/
-/** CNcomment:ËùÒÀÀµµÄÄ£¿éÎ´³õÊ¼»¯ 0xB0008000 */
+/** CNcomment:æ‰€ä¾èµ–çš„æ¨¡å—æœªåˆå§‹åŒ– 0xB0008000 */
 #define HIGO_ERR_NOTINIT HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_NOTINIT)
 
 /*The module fails to be initialized (0xB0008001).*/
-/** CNcomment:Ä£¿é³õÊ¼»¯Ê§°Ü 0xB0008001 */
+/** CNcomment:æ¨¡å—åˆå§‹åŒ–å¤±è´¥ 0xB0008001 */
 #define HIGO_ERR_DEINITFAILED HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_INITFAILED)
 
 /**The module fails to be deinitialized (0xB0008002).*/
-/** CNcomment:Ä£¿éÈ¥³õÊ¼»¯Ê§°Ü 0xB0008002 */
+/** CNcomment:æ¨¡å—å»åˆå§‹åŒ–å¤±è´¥ 0xB0008002 */
 #define HIGO_ERR_INITFAILED HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_DEINITFAILED)
 
 /**The input pointer is null (0xB0008003).*/
-/** CNcomment:´«Èë²ÎÊıÎª¿ÕÖ¸Õë 0xB0008003 */
+/** CNcomment:ä¼ å…¥å‚æ•°ä¸ºç©ºæŒ‡é’ˆ 0xB0008003 */
 #define HIGO_ERR_NULLPTR HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_NULLPTR)
 
 /**The input handle is invalid (0xB0008004).*/
-/** CNcomment:´«ÈëÎŞĞ§µÄ¾ä±ú 0xB0008004 */
+/** CNcomment:ä¼ å…¥æ— æ•ˆçš„å¥æŸ„ 0xB0008004 */
 #define HIGO_ERR_INVHANDLE HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_INVHANDLE)
 
 /**The memory is insufficient (0xB0008005).*/
-/** CNcomment:ÄÚ´æ²»×ã 0xB0008005 */
+/** CNcomment:å†…å­˜ä¸è¶³ 0xB0008005 */
 #define HIGO_ERR_NOMEM HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_NOMEM)
 
 /**An internal error occurs (0xB0008006).*/
-/** CNcomment:ÄÚ²¿´íÎó 0xB0008006 */
+/** CNcomment:å†…éƒ¨é”™è¯¯ 0xB0008006 */
 #define HIGO_ERR_INTERNAL HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_INTERNAL)
 
 /**The I/O source is invalid (0xB0008007).*/
-/** CNcomment:ÎŞĞ§µÄIOÀ´Ô´ 0xB0008007 */
+/** CNcomment:æ— æ•ˆçš„IOæ¥æº 0xB0008007 */
 #define HIGO_ERR_INVSRCTYPE HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_INVSRCTYPE)
 
 /**The file operation fails because the file is invalid (0xB0008008).*/
-/** CNcomment:ÎŞĞ§µÄÎÄ¼ş£¬ÎÄ¼ş²Ù×÷Ê§°Ü 0xB0008008 */
+/** CNcomment:æ— æ•ˆçš„æ–‡ä»¶ï¼Œæ–‡ä»¶æ“ä½œå¤±è´¥ 0xB0008008 */
 #define HIGO_ERR_INVFILE HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_INVFILE)
 
 /**The parameter is invalid (0xB0008009).*/
-/** CNcomment:ÎŞĞ§µÄ²ÎÊı 0xB0008009*/
+/** CNcomment:æ— æ•ˆçš„å‚æ•° 0xB0008009*/
 #define HIGO_ERR_INVPARAM HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_INVPARAM)
 
 /**The handle is being used (0xB000800A).*/
-/** CNcomment:´Ë¾ä±úÕıÔÚ±»Ê¹ÓÃ 0xB000800A */
+/** CNcomment:æ­¤å¥æŸ„æ­£åœ¨è¢«ä½¿ç”¨ 0xB000800A */
 #define HIGO_ERR_INUSE HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_INUSE)
 
 /**The operation is invalid (0xB000800B).*/
-/** CNcomment:ÎŞĞ§µÄ²Ù×÷ 0xB000800B */
+/** CNcomment:æ— æ•ˆçš„æ“ä½œ 0xB000800B */
 #define HIGO_ERR_UNSUPPORTED HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_UNSUPPORTED)
 
 /**An error occurs when the APIs related to the TDE are called (0xB000800C).*/
-/** CNcomment:ÒÀÀµTDE³ö´í 0xB000800C*/
+/** CNcomment:ä¾èµ–TDEå‡ºé”™ 0xB000800C*/
 #define HIGO_ERR_DEPEND_TDE HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_DEPENDTDE)
 
 /**An error occurs when the APIs related to the FB are called (0xB000800D).*/
-/** CNcomment:ÒÀÀµFB³ö´í  0xB000800D*/
+/** CNcomment:ä¾èµ–FBå‡ºé”™  0xB000800D*/
 #define HIGO_ERR_DEPEND_FB HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_DEPENDFB)
 
 /**An error occurs when the APIs related to the MMZ are called (0xB000800E).*/
-/** CNcomment:ÒÀÀµMMZ³ö´í 0xB000800E*/
+/** CNcomment:ä¾èµ–MMZå‡ºé”™ 0xB000800E*/
 #define HIGO_ERR_DEPEND_MMZ HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_DEPENDMMZ)
 
 /**An error occurs when the APIs related to .jpeg decoding are called (0xB000800F).*/
-/** CNcomment:ÒÀÀµJPEG½âÂë³ö´í    0xB000800F*/
+/** CNcomment:ä¾èµ–JPEGè§£ç å‡ºé”™    0xB000800F*/
 #define HIGO_ERR_DEPEND_JPEG HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_DEPENDJPEG)
 
 /**An error occurs when the APIs related to .png decoding are called (0xB0008010).*/
-/** CNcomment:ÒÀÀµPNG½âÂë³ö´í 0xB0008010*/
+/** CNcomment:ä¾èµ–PNGè§£ç å‡ºé”™ 0xB0008010*/
 #define HIGO_ERR_DEPEND_PNG HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_DEPENDPNG)
 
 /**An error occurs when the APIs related to .bmp decoding are called (0xB0008011).*/
-/** CNcomment:ÒÀÀµBMP½âÂë³ö´í 0xB0008011*/
+/** CNcomment:ä¾èµ–BMPè§£ç å‡ºé”™ 0xB0008011*/
 #define HIGO_ERR_DEPEND_BMP HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_DEPENDBMP)
 
 /**An error occurs when the APIs related to .gif decoding are called (0xB0008012).*/
-/** CNcomment:ÒÀÀµGIF½âÂë³ö´í 0xB0008012*/
+/** CNcomment:ä¾èµ–GIFè§£ç å‡ºé”™ 0xB0008012*/
 #define HIGO_ERR_DEPEND_GIF HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_DEPENDGIF)
 
 /**An error occurs when the APIs related to the cursor are called (0xB0008013).*/
-/** CNcomment:ÒÀÀµCURSOR½âÂë³ö´í  0xB0008013*/
+/** CNcomment:ä¾èµ–CURSORè§£ç å‡ºé”™  0xB0008013*/
 #define HIGO_ERR_DEPEND_CURSOR HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_DEPENDCURSOR)
 
 /**An error occurs when the APIs related to .jpeg encoding are called (0xB0008014).*/
-/** CNcomment:ÒÀÀµjpeg±àÂëÊ§°Ü 0xB0008014*/
+/** CNcomment:ä¾èµ–jpegç¼–ç å¤±è´¥ 0xB0008014*/
 #define HIGO_ERR_DEPEND_JPGE HIGO_DEF_ERR(HIGO_MOD_COMM, ERR_COMM_DEPENDJPGENC)
 
 
 /**Error codes of the HiGo surface module*/
-/** CNcomment:HiGo surfaceÄ£¿é´íÎóÂë */
+/** CNcomment:HiGo surfaceæ¨¡å—é”™è¯¯ç  */
 typedef enum
 {
     ERR_SURFACE_INVSURFACESIZE = 0,
@@ -188,27 +188,27 @@ typedef enum
 #define SURFACE_DEF_ERR(err) HIGO_DEF_ERR(HIGO_MOD_SURFACE, err)
 
 /**The surface size is incorrect (0xB0018000).*/
-/** CNcomment:surface³ß´ç²»ÕıÈ· 0xB0018000 */
+/** CNcomment:surfaceå°ºå¯¸ä¸æ­£ç¡® 0xB0018000 */
 #define HIGO_ERR_INVSURFACESIZE SURFACE_DEF_ERR(ERR_SURFACE_INVSURFACESIZE)
 
 /**The pixel format of the surface is incorrect (0xB0018001).*/
-/** CNcomment:surfaceÏñËØ¸ñÊ½²»ÕıÈ· 0xB0018001 */
+/** CNcomment:surfaceåƒç´ æ ¼å¼ä¸æ­£ç¡® 0xB0018001 */
 #define HIGO_ERR_INVSURFACEPF SURFACE_DEF_ERR(ERR_SURFACE_INVSURFACEPF)
 
 /**The surface cannot be unlocked because it is not locked (0xB0018002).*/
-/** CNcomment:surfaceÎ´Ëø¶¨£¬²»ÄÜ½øĞĞsurface½âËø²Ù×÷ 0xB0018002 */
+/** CNcomment:surfaceæœªé”å®šï¼Œä¸èƒ½è¿›è¡Œsurfaceè§£é”æ“ä½œ 0xB0018002 */
 #define HIGO_ERR_NOTLOCKED SURFACE_DEF_ERR(ERR_SURFACE_NOTLOCKED)
 
 /**The surface cannot be written because it is locked (0xB0018003).*/
-/** CNcomment:surfaceÒÑËø¶¨£¬¶Ôsurface½øĞĞµÄĞ´²Ù×÷±»½ûÖ¹ 0xB0018003 */
+/** CNcomment:surfaceå·²é”å®šï¼Œå¯¹surfaceè¿›è¡Œçš„å†™æ“ä½œè¢«ç¦æ­¢ 0xB0018003 */
 #define HIGO_ERR_LOCKED SURFACE_DEF_ERR(ERR_SURFACE_LOCKED)
 
 /**The surface does not contain the colorkey value (0xB0018004).*/
-/** CNcomment:surface²»º¬ÓĞcolorKeyÖµ 0xB0018004 */
+/** CNcomment:surfaceä¸å«æœ‰colorKeyå€¼ 0xB0018004 */
 #define HIGO_ERR_NOCOLORKEY SURFACE_DEF_ERR(ERR_SURFACE_NOCOLORKEY)
 
 /**Error codes of the HiGo Gdev module*/
-/** CNcomment:HiGo gdevÄ£¿é´íÎóÂë*/
+/** CNcomment:HiGo gdevæ¨¡å—é”™è¯¯ç */
 typedef enum
 {
     ERR_LAYER_INVSIZE = 0,
@@ -234,67 +234,67 @@ typedef enum
 #define LAYER_DEF_ERR(err) HIGO_DEF_ERR(HIGO_MOD_LAYER, err)
 
 /**The layer size is invalid (0xB0038000).*/
-/** CNcomment:ÎŞĞ§µÄÍ¼²ã´óĞ¡ 0xB0038000 */
+/** CNcomment:æ— æ•ˆçš„å›¾å±‚å¤§å° 0xB0038000 */
 #define HIGO_ERR_INVSIZE LAYER_DEF_ERR(ERR_LAYER_INVSIZE)
 
 /**The hardware layer ID is invalid (0xB0038001).*/
-/** CNcomment:ÎŞĞ§µÄÓ²¼şÍ¼²ãID 0xB0038001 */
+/** CNcomment:æ— æ•ˆçš„ç¡¬ä»¶å›¾å±‚ID 0xB0038001 */
 #define HIGO_ERR_INVLAYERID LAYER_DEF_ERR(ERR_LAYER_INVLAYERID)
 
 /**The pixel format is invalid (0xB0038002).*/
-/** CNcomment:ÎŞĞ§µÄÏñËØ¸ñÊ½ 0xB0038002 */
+/** CNcomment:æ— æ•ˆçš„åƒç´ æ ¼å¼ 0xB0038002 */
 #define HIGO_ERR_INVPIXELFMT LAYER_DEF_ERR(ERR_LAYER_INVPIXELFMT)
 
 /**The layer refresh mode is incorrect (0xB0038003).*/
-/** CNcomment:Í¼²ãË¢ĞÂÄ£Ê½´íÎó 0xB0038003 */
+/** CNcomment:å›¾å±‚åˆ·æ–°æ¨¡å¼é”™è¯¯ 0xB0038003 */
 #define HIGO_ERR_INVFLUSHTYPE LAYER_DEF_ERR(ERR_LAYER_FLUSHTYPE)
 
 /**The display buffer fails to be released (0xB0038004).*/
-/** CNcomment:ÊÍ·ÅÏÔ´æÊ§°Ü 0xB0038004 */
+/** CNcomment:é‡Šæ”¾æ˜¾å­˜å¤±è´¥ 0xB0038004 */
 #define HIGO_ERR_FREEMEM LAYER_DEF_ERR(ERR_LAYER_FREEMEM)
 
 /**The layer device fails to be stopped (0xB0038005).*/
-/** CNcomment:¹Ø±ÕÍ¼²ãÉè±¸Ê§°Ü 0xB0038005 */
+/** CNcomment:å…³é—­å›¾å±‚è®¾å¤‡å¤±è´¥ 0xB0038005 */
 #define HIGO_ERR_CLOSELAYERFAILED LAYER_DEF_ERR(ERR_LAYER_CLOSELAYER)
 
 /**The z-order of the graphics layer cannot be changed (0xB0038006).*/
-/** CNcomment:Í¼²ãZĞò²»¿É¸Ä±ä 0xB0038006 */
+/** CNcomment:å›¾å±‚Zåºä¸å¯æ”¹å˜ 0xB0038006 */
 #define HIGO_ERR_CANNOTCHANGE LAYER_DEF_ERR(ERR_LAYER_CANNOTCHANGE)
 
 /**The z-order change flag is invalid (0xB0038007).*/
-/** CNcomment:ÎŞĞ§µÄZĞòĞŞ¸Ä±êÖ¾ 0xB0038007 */
+/** CNcomment:æ— æ•ˆçš„Zåºä¿®æ”¹æ ‡å¿— 0xB0038007 */
 #define HIGO_ERR_INVORDERFLAG LAYER_DEF_ERR(ERR_LAYER_INVORDERFLAG)
 
 /**The surface alpha value fails to be set (0xB0038008).*/
-/** CNcomment:ÉèÖÃsurface alphaÊ§°Ü 0xB0038008 */
+/** CNcomment:è®¾ç½®surface alphaå¤±è´¥ 0xB0038008 */
 #define HIGO_ERR_SETALPHAFAILED LAYER_DEF_ERR(ERR_LAYER_SETALPHA)
 
 /**The graphics layer has been displayed (0xB0038009).*/
-/** CNcomment:Í¼²ãÒÑ¾­ÏÔÊ¾ 0xB0038009 */
+/** CNcomment:å›¾å±‚å·²ç»æ˜¾ç¤º 0xB0038009 */
 #define HIGO_ERR_ALREADYSHOW LAYER_DEF_ERR(ERR_LAYER_ALREADYSHOW)
 
 /**The graphics layer has been hidden (0xB003800A).*/
-/** CNcomment:Í¼²ãÒÑ¾­Òş²Ø 0xB003800A */
+/** CNcomment:å›¾å±‚å·²ç»éšè— 0xB003800A */
 #define HIGO_ERR_ALREADYHIDE LAYER_DEF_ERR(ERR_LAYER_ALREADYHIDE)
 
 /**The start position of the graphics layer is invalid (0xB003800B).*/
-/** CNcomment:ÎŞĞ§µÄÍ¼²ãÆğÊ¼Î»ÖÃ 0xB003800B*/
+/** CNcomment:æ— æ•ˆçš„å›¾å±‚èµ·å§‹ä½ç½® 0xB003800B*/
 #define HIGO_ERR_INVLAYERPOS LAYER_DEF_ERR(ERR_LAYER_INVLAYERPOS)
 
 /**Alignment fails because the surface is invalid (0xB003800C).*/
-/** CNcomment:ÎŞĞ§µÄsurface£¬±íÊ¾¶ÔÆëÊ§°Ü 0xB003800C*/
+/** CNcomment:æ— æ•ˆçš„surfaceï¼Œè¡¨ç¤ºå¯¹é½å¤±è´¥ 0xB003800C*/
 #define HIGO_ERR_INVLAYERSURFACE LAYER_DEF_ERR(ERR_LAYER_INVSURFACE)
 
 /**The anti-flicker level of the graphics layer is invalid (0xB003800F).*/
-/** CNcomment:ÎŞĞ§µÄÍ¼²ã¿¹ÉÁË¸¼¶±ğ 0xB003800F*/
+/** CNcomment:æ— æ•ˆçš„å›¾å±‚æŠ—é—ªçƒçº§åˆ« 0xB003800F*/
 #define HIGO_ERR_INVANILEVEL LAYER_DEF_ERR(ERR_LAYER_INVANILEVEL)
 
 /**The graphics layer is not started (0xB0038010).*/
-/** CNcomment:Í¼²ãÃ»ÓĞ´ò¿ª 0xB0038010*/
+/** CNcomment:å›¾å±‚æ²¡æœ‰æ‰“å¼€ 0xB0038010*/
 #define HIGO_ERR_NOTOPEN LAYER_DEF_ERR(ERR_LAYER_NOTOPEN)
 
 /**Error codes of the HiGo Bliter module*/
-/** CNcomment:HiGo bliterÄ£¿é´íÎóÂë */
+/** CNcomment:HiGo bliteræ¨¡å—é”™è¯¯ç  */
 typedef enum
 {
     ERR_BLITER_INVCOMPTYPE = 0,
@@ -311,43 +311,43 @@ typedef enum
 } HIGO_BLITER_ERR_S;
 
 /**The blending mode is incorrect (0xB0048000).*/
-/** CNcomment:´íÎóµÄ»ìºÏÄ£Ê½  0xB0048000 */
+/** CNcomment:é”™è¯¯çš„æ··åˆæ¨¡å¼  0xB0048000 */
 #define HIGO_ERR_INVCOMPTYPE HIGO_DEF_ERR(HIGO_MOD_BLITER, ERR_BLITER_INVCOMPTYPE)
 
 /**The colorkey operation is invalid (0xB0048001).*/
-/** CNcomment:ÎŞĞ§µÄcolorKey²Ù×÷ 0xB0048001 */
+/** CNcomment:æ— æ•ˆçš„colorKeyæ“ä½œ 0xB0048001 */
 #define HIGO_ERR_INVCKEYTYPE HIGO_DEF_ERR(HIGO_MOD_BLITER, ERR_BLITER_INVCKEYTYPE)
 
 /**The mirror operation is invalid (0xB0048002).*/
-/** CNcomment:ÎŞĞ§µÄ¾µÏñ²Ù×÷ 0xB0048002 */
+/** CNcomment:æ— æ•ˆçš„é•œåƒæ“ä½œ 0xB0048002 */
 #define HIGO_ERR_INVMIRRORTYPE HIGO_DEF_ERR(HIGO_MOD_BLITER, ERR_BLITER_INVMIRRORTYPE)
 
 /**The rotation operation is invalid (0xB0048003).*/
-/** CNcomment:ÎŞĞ§µÄĞı×ª²Ù×÷ 0xB0048003 */
+/** CNcomment:æ— æ•ˆçš„æ—‹è½¬æ“ä½œ 0xB0048003 */
 #define HIGO_ERR_INVROTATETYPE HIGO_DEF_ERR(HIGO_MOD_BLITER, ERR_BLITER_INVROTATETYPE)
 
 /**The ROP operation is invalid (0xB0048004).*/
-/** CNcomment:ÎŞĞ§µÄROP²Ù×÷ 0xB0048004 */
+/** CNcomment:æ— æ•ˆçš„ROPæ“ä½œ 0xB0048004 */
 #define HIGO_ERR_INVROPTYPE HIGO_DEF_ERR(HIGO_MOD_BLITER, ERR_BLITER_INVROPTYPE)
 
 /**The scaling is abnormal (0xB0048005).*/
-/** CNcomment:Ëõ·Å±ÈÀıÒì³£ 0xB0048005 */
+/** CNcomment:ç¼©æ”¾æ¯”ä¾‹å¼‚å¸¸ 0xB0048005 */
 #define HIGO_ERR_INVSCALING HIGO_DEF_ERR(HIGO_MOD_BLITER, ERR_BLITER_INVSCALING)
 
 /**The rectangle exceeds the boundary (0xB0048006).*/
-/** CNcomment:¾ØĞÎ³¬³ö±ß½ç 0xB0048006*/
+/** CNcomment:çŸ©å½¢è¶…å‡ºè¾¹ç•Œ 0xB0048006*/
 #define HIGO_ERR_OUTOFBOUNDS HIGO_DEF_ERR(HIGO_MOD_BLITER, ERR_BLITER_OUTOFBOUNDS)
 
 /**The rectangle is empty (0xB0048007).*/
-/** CNcomment:¿Õ¾ØĞÎ 0xB0048007*/
+/** CNcomment:ç©ºçŸ©å½¢ 0xB0048007*/
 #define HIGO_ERR_EMPTYRECT HIGO_DEF_ERR(HIGO_MOD_BLITER, ERR_BLITER_EMPTYRECT)
 
 /**The palette does not contain this color (0xB0048008).*/
-/** CNcomment:ÑÕÉ«²»ÔÚµ÷É«°åÖĞ 0xB0048008*/
+/** CNcomment:é¢œè‰²ä¸åœ¨è°ƒè‰²æ¿ä¸­ 0xB0048008*/
 #define HIGO_ERR_OUTOFPAL HIGO_DEF_ERR(HIGO_MOD_BLITER, ERR_BLITER_OUTOFPAL)
 
 /**Error codes of the HiGo decoder*/
-/** CNcomment:HiGo decodeÄ£¿é´íÎóÂë*/
+/** CNcomment:HiGo decodeæ¨¡å—é”™è¯¯ç */
 typedef enum
 {
     ERR_DEC_INVIMAGETYPE = 0, 
@@ -357,19 +357,19 @@ typedef enum
 } HIGO_ERR_DEC_E;
 
 /**<The picture format is invalid (0xB0058000).*/
-/**<CNcomment:ÎŞĞ§µÄÍ¼Æ¬ÀàĞÍ 0xB0058000 */
+/**<CNcomment:æ— æ•ˆçš„å›¾ç‰‡ç±»å‹ 0xB0058000 */
 #define HIGO_ERR_INVIMAGETYPE HIGO_DEF_ERR(HIGO_MOD_DEC, ERR_DEC_INVIMAGETYPE)
 
 /**<The picture index number is invalid (0xB0058001).*/
-/**<CNcomment:ÎŞĞ§Í¼Æ¬Ë÷ÒıºÅ 0xB0058001 */
+/**<CNcomment:æ— æ•ˆå›¾ç‰‡ç´¢å¼•å· 0xB0058001 */
 #define HIGO_ERR_INVINDEX HIGO_DEF_ERR(HIGO_MOD_DEC, ERR_DEC_INVINDEX)
 
 /**<The picture data is invalid (0xB0058002).*/
-/**<CNcomment:ÎŞĞ§Í¼Æ¬Êı¾İ 0xB0058002 */
+/**<CNcomment:æ— æ•ˆå›¾ç‰‡æ•°æ® 0xB0058002 */
 #define HIGO_ERR_INVIMGDATA HIGO_DEF_ERR(HIGO_MOD_DEC, ERR_DEC_INVIMGDATA)
 
 /**Error codes of the HiGo textout module*/
-/** CNcomment:HiGo textoutÄ£¿é´íÎóÂë */
+/** CNcomment:HiGo textoutæ¨¡å—é”™è¯¯ç  */
 typedef enum
 {
     ERR_TEXTOUT_INVRECT = 0,
@@ -379,56 +379,56 @@ typedef enum
 } HIGO_TEXTOUT_ERR_S;
 
 /**The rectangle region is invalid (0xB0068000).*/
-/** CNcomment:ÎŞĞ§µÄ¾ØĞÎÇøÓò 0xB0068000 */
+/** CNcomment:æ— æ•ˆçš„çŸ©å½¢åŒºåŸŸ 0xB0068000 */
 #define HIGO_ERR_INVRECT HIGO_DEF_ERR(HIGO_MOD_TEXTOUT,ERR_TEXTOUT_INVRECT)
 
 /**The character set is not supported (0xB0068001).*/
-/** CNcomment:²»Ö§³ÖµÄ×Ö·û¼¯ 0xB0068001*/
+/** CNcomment:ä¸æ”¯æŒçš„å­—ç¬¦é›† 0xB0068001*/
 #define HIGO_ERR_UNSUPPORT_CHARSET HIGO_DEF_ERR(HIGO_MOD_TEXTOUT,ERR_TEXTOUT_UNSUPPORT_CHARSET)
 
 /**The character set is not supported (0xB0068002).*/
-/** CNcomment:²»Ö§³ÖµÄ×Ö·û¼¯ 0xB0068002*/
+/** CNcomment:ä¸æ”¯æŒçš„å­—ç¬¦é›† 0xB0068002*/
 #define HIGO_ERR_ISUSING HIGO_DEF_ERR(HIGO_MOD_TEXTOUT,ERR_TEXTOUT_ISUSING)
 
 /**Error codes of the HiGo Winc module*/
-/** CNcomment:HiGo WincÄ£¿é´íÎóÂë */
+/** CNcomment:HiGo Wincæ¨¡å—é”™è¯¯ç  */
 typedef enum
 {
-    ERR_WINC_ALREADYBIND = 0, /**<The Winc module has been attached.*//**<CNcomment:ÒÑ¾­±»°ó¶¨ */
-    ERR_WINC_INVZORDERTYPE,   /**<The z-order adjustment mode is invalid.*//**<CNcomment:ÎŞĞ§µÄZĞòµ÷Õû·½Ê½ */
-    ERR_WINC_NOUPDATE,        /**<The desktop is not refreshed.*//**<CNcomment:×ÀÃæÎŞ¸üĞÂ */
-    ERR_WINC_INVPF,           /**<The pixel format is invalid.*//**<CNcomment:ÎŞĞ§µÄÏñËØ¸ñÊ½ */  
-    ERR_WINC_INVTREE,           /**<The window tree is invalid.*//**<CNcomment:ÎŞĞ§µÄ´°¿ÚÊ÷ */      
-    ERR_WINC_ALREADYSETMODE,    /**<The window already be set mode.*//**<CNcomment:ÒÑ¾­Éè¶¨´°¿ÚÄÚ´æÄ£Ê½*/
+    ERR_WINC_ALREADYBIND = 0, /**<The Winc module has been attached.*//**<CNcomment:å·²ç»è¢«ç»‘å®š */
+    ERR_WINC_INVZORDERTYPE,   /**<The z-order adjustment mode is invalid.*//**<CNcomment:æ— æ•ˆçš„Zåºè°ƒæ•´æ–¹å¼ */
+    ERR_WINC_NOUPDATE,        /**<The desktop is not refreshed.*//**<CNcomment:æ¡Œé¢æ— æ›´æ–° */
+    ERR_WINC_INVPF,           /**<The pixel format is invalid.*//**<CNcomment:æ— æ•ˆçš„åƒç´ æ ¼å¼ */  
+    ERR_WINC_INVTREE,           /**<The window tree is invalid.*//**<CNcomment:æ— æ•ˆçš„çª—å£æ ‘ */      
+    ERR_WINC_ALREADYSETMODE,    /**<The window already be set mode.*//**<CNcomment:å·²ç»è®¾å®šçª—å£å†…å­˜æ¨¡å¼*/
     ERR_WINC_BUTT
 } HIGO_ERR_WINC_E;
 
 /**The desktop has been attached to a graphics layer (0xB0078000).*/
-/** CNcomment:×ÀÃæÓëÍ¼²ãÒÑ¾­°ó¶¨ 0xB0078000 */
+/** CNcomment:æ¡Œé¢ä¸å›¾å±‚å·²ç»ç»‘å®š 0xB0078000 */
 #define HIGO_ERR_ALREADYBIND HIGO_DEF_ERR(HIGO_MOD_WINC, ERR_WINC_ALREADYBIND)
 
 /**The z-order adjustment mode is invalid (0xB0078001).*/
-/** CNcomment:ÎŞĞ§µÄZĞòµ÷Õû·½Ê½ 0xB0078001 */
+/** CNcomment:æ— æ•ˆçš„Zåºè°ƒæ•´æ–¹å¼ 0xB0078001 */
 #define HIGO_ERR_INVZORDERTYPE HIGO_DEF_ERR(HIGO_MOD_WINC, ERR_WINC_INVZORDERTYPE)
 
 /**The desktop is not refreshed (0xB0078002).*/
-/** CNcomment:×ÀÃæÎŞ¸üĞÂ 0xB0078002 */
+/** CNcomment:æ¡Œé¢æ— æ›´æ–° 0xB0078002 */
 #define HIGO_ERR_NOUPDATE HIGO_DEF_ERR(HIGO_MOD_WINC, ERR_WINC_NOUPDATE)
 
 /**The desktop is not refreshed (0xB0078003).*/
-/** CNcomment:×ÀÃæÎŞ¸üĞÂ 0xB0078003 */
+/** CNcomment:æ¡Œé¢æ— æ›´æ–° 0xB0078003 */
 #define HIGO_ERR_INVPF HIGO_DEF_ERR(HIGO_MOD_WINC, ERR_WINC_INVPF)
 
 /**The desktop is not refreshed (0xB0078004).*/
-/** CNcomment:×ÀÃæÎŞ¸üĞÂ 0xB0078004 */
+/** CNcomment:æ¡Œé¢æ— æ›´æ–° 0xB0078004 */
 #define HIGO_ERR_INVTREE HIGO_DEF_ERR(HIGO_MOD_WINC, ERR_WINC_INVTREE)
 
 /**The window already be set mode (0xB0078005).*/
-/** CNcomment:ÒÑ¾­Éè¶¨´°¿ÚÄÚ´æÄ£Ê½ 0xB0078005 */
+/** CNcomment:å·²ç»è®¾å®šçª—å£å†…å­˜æ¨¡å¼ 0xB0078005 */
 #define HIGO_ERR_ALREADYSETMODE HIGO_DEF_ERR(HIGO_MOD_WINC, ERR_WINC_ALREADYSETMODE)
 
 /**Error codes of the HiGo surface module*/
-/** CNcomment:HiGo CursorÄ£¿é´íÎóÂë */
+/** CNcomment:HiGo Cursoræ¨¡å—é”™è¯¯ç  */
 typedef enum
 {
     ERR_CURSOR_INVHOTSPOT = 0,  
@@ -437,11 +437,11 @@ typedef enum
 } HIGO_CURSOR_ERR_E;
 
 /**The hot spot coordinate of the cursor is invalid (0xB0088000).*/
-/** CNcomment:ÎŞĞ§µÄcursorÈÈµã×ø±ê 0xB0088000 */
+/** CNcomment:æ— æ•ˆçš„cursorçƒ­ç‚¹åæ ‡ 0xB0088000 */
 #define HIGO_ERR_INVHOTSPOT  HIGO_DEF_ERR(HIGO_MOD_CURSOR, ERR_CURSOR_INVHOTSPOT)
 
 /**The cursor information is not set (0xB0088001).*/
-/** CNcomment:Ã»ÓĞÉèÖÃcursorĞÅÏ¢ 0xB0088001 */
+/** CNcomment:æ²¡æœ‰è®¾ç½®cursorä¿¡æ¯ 0xB0088001 */
 #define HIGO_ERR_NOCURSORINF HIGO_DEF_ERR(HIGO_MOD_CURSOR, ERR_CURSOR_NOCURSORINFO)
 
 /** @} */  /*! <!-- Macro Definition end */

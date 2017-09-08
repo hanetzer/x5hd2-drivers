@@ -2191,7 +2191,7 @@ static void OPNAME ## qpel16_mc22_c(uint8_t *dst, uint8_t *src, int stride){\
 #define op_put(a, b) a = cm[((b) + 16)>>5]
 #define op_put_no_rnd(a, b) a = cm[((b) + 15)>>5]
 
-/*x00141957 20101229 ÄÚºËÌ¬±àÒëÊ±Õ»¿Õ¼ä¹ı´ó */
+/*x00141957 20101229 å†…æ ¸æ€ç¼–è¯‘æ—¶æ ˆç©ºé—´è¿‡å¤§ */
 //QPEL_MC(0, put_       , _       , op_put)
 //QPEL_MC(1, put_no_rnd_, _no_rnd_, op_put_no_rnd)
 //QPEL_MC(0, avg_       , _       , op_avg)
@@ -2625,7 +2625,7 @@ H264_MC(avg_, 16)
 #undef op2_put
 #endif
 /* 2010/30/08 9:20:00 liuxw+00139685 */
-/* ½«op_scale1ºÍop_scale2µÄ¶¨Òå°´ÕÕĞ­Òé½øĞĞÁËĞŞ¸Ä liuxw+00139685 */
+/* å°†op_scale1å’Œop_scale2çš„å®šä¹‰æŒ‰ç…§åè®®è¿›è¡Œäº†ä¿®æ”¹ liuxw+00139685 */
 //#define op_scale1(x)  block[x] = av_clip_uint8( (block[x]*weight + offset) >> log2_denom )
 #define op_scale1(x)  block[x] = log2_denom>=1 ? av_clip_uint8( ((block[x]*weight + (1<<(log2_denom-1))) >> log2_denom) + offset) : av_clip_uint8(block[x]*weight + offset)
 //#define op_scale2(x)  dst[x] = av_clip_uint8( (src[x]*weights + dst[x]*weightd + offset) >> (log2_denom+1))
@@ -2634,7 +2634,7 @@ H264_MC(avg_, 16)
 static void weight_h264_pixels ## W ## x ## H ## _c(uint8_t *block, int stride, int log2_denom, int weight, int offset){ \
     int y; \
 	/* 2010/30/10 11:44:00 liuxw+00139685 */ \
-	/* ½«ÒÔÏÂoffsetµÄ×ö·¨È«²¿È¥µô£¬ÆäÕıÈ·µÄ×ö·¨¼ûop_scale1µÄ¶¨Òå */ \
+	/* å°†ä»¥ä¸‹offsetçš„åšæ³•å…¨éƒ¨å»æ‰ï¼Œå…¶æ­£ç¡®çš„åšæ³•è§op_scale1çš„å®šä¹‰ */ \
     /* offset <<= log2_denom; */ \
     /* if(log2_denom) offset += 1<<(log2_denom-1); */ \
     for(y=0; y<H; y++, block += stride){ \
@@ -2662,7 +2662,7 @@ static void weight_h264_pixels ## W ## x ## H ## _c(uint8_t *block, int stride, 
 static void biweight_h264_pixels ## W ## x ## H ## _c(uint8_t *dst, uint8_t *src, int stride, int log2_denom, int weightd, int weights, int offset){ \
     int y; \
 	/* 2010/30/10 11:44:00 liuxw+00139685 */ \
-	/* ½«ÒÔÏÂoffsetµÄ×ö·¨È«²¿È¥µô£¬ÆäÕıÈ·µÄ×ö·¨¼ûop_scale2µÄ¶¨Òå */ \
+	/* å°†ä»¥ä¸‹offsetçš„åšæ³•å…¨éƒ¨å»æ‰ï¼Œå…¶æ­£ç¡®çš„åšæ³•è§op_scale2çš„å®šä¹‰ */ \
 	/* offset = ((offset + 1) | 1) << log2_denom; */ \
     for(y=0; y<H; y++, dst += stride, src += stride){ \
         op_scale2(0); \
@@ -4489,7 +4489,7 @@ void dsputil_init(DSPContext* c, AVCodecContext *avctx)
     dspfunc(avg, 3, 2);
 #undef dspfunc
 
-	/*x00141957 2010 1230 ÄÚºËÌ¬±àÒëÕ»¿Õ¼ä¹ı´ó*/
+	/*x00141957 2010 1230 å†…æ ¸æ€ç¼–è¯‘æ ˆç©ºé—´è¿‡å¤§*/
 #if 0
     c->put_no_rnd_pixels_l2[0]= put_no_rnd_pixels16_l2_c;
     c->put_no_rnd_pixels_l2[1]= put_no_rnd_pixels8_l2_c;
@@ -4669,7 +4669,7 @@ void dsputil_init(DSPContext* c, AVCodecContext *avctx)
     c->h264_v_loop_filter_chroma_intra= h264_v_loop_filter_chroma_intra_c;
     c->h264_h_loop_filter_chroma_intra= h264_h_loop_filter_chroma_intra_c;
     c->h264_loop_filter_strength= NULL;
-	/*ÄÚºËÌ¬±àÒëÕ»¿Õ¼ä¹ı´ó x00141957 20101230*/
+	/*å†…æ ¸æ€ç¼–è¯‘æ ˆç©ºé—´è¿‡å¤§ x00141957 20101230*/
 #endif
 	c->draw_edges = draw_edges_c;
 

@@ -370,7 +370,7 @@ static const uint8_t mb_type_b_tab[4][2] = {
  {1, 1}, {1, 2}, {1, 3}, {1, 4},
 };
 
-//guoshan+00101841 20100723 pixel_aspectÄ¬ÈÏÏÔÊ¾ÖµĞŞÕıÎª1£º1£¬¼´°´Ô­Ê¼±ÈÀıÏÔÊ¾
+//guoshan+00101841 20100723 pixel_aspecté»˜è®¤æ˜¾ç¤ºå€¼ä¿®æ­£ä¸º1ï¼š1ï¼Œå³æŒ‰åŸå§‹æ¯”ä¾‹æ˜¾ç¤º
 /*
 static const AVRational pixel_aspect[16]={
  {0, 1},

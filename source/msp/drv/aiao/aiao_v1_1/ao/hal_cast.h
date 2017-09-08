@@ -62,8 +62,8 @@ typedef struct
 {
     AIAO_CAST_MEM_ATTR_S extDmaMem;
     HI_U32 u32BufBitPerSample; /**<I/O, bit per sampling*//**<CNcomment:OUT. Bit per sample */
-    HI_U32 u32BufChannels; /**<I/O, number of channels*//**<CNcomment:OUT. Êä³öÉùµÀÊý  */
-    HI_U32 u32BufSampleRate; /**<I/O, sampling rate*//**<CNcomment:OUT. Êä³ö²ÉÑùÆµÂÊ */
+    HI_U32 u32BufChannels; /**<I/O, number of channels*//**<CNcomment:OUT. è¾“å‡ºå£°é“æ•°  */
+    HI_U32 u32BufSampleRate; /**<I/O, sampling rate*//**<CNcomment:OUT. è¾“å‡ºé‡‡æ ·é¢‘çŽ‡ */
     HI_U32 u32BufDataFormat;          /**<I/O, 0, linear pcm, 1, iec61937 */
     HI_U32 u32BufLatencyThdMs;   /* 40 ~ 1000 ms */
 

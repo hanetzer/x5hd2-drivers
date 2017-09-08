@@ -647,7 +647,7 @@ void venc_deinit_drv_context(venc_drv_context  *drv_ctx)
     {
         return;
     }
-	if (drv_ctx->venc_chan_attr.chan_handle != 0xffffffff)        //µ¥Í¨µÀ
+	if (drv_ctx->venc_chan_attr.chan_handle != 0xffffffff)        //å•é€šé“
 	{
 		if ( channel_destroy(drv_ctx)!= 0)
 		{
@@ -660,7 +660,7 @@ void venc_deinit_drv_context(venc_drv_context  *drv_ctx)
 }
 
 
-OMX_S32 venc_init_drv_context(venc_drv_context *drv_ctx)          //´ò¿ªÉè±¸ÎÄ¼ş£¬Çå¿ÕÉè±¸Í¨µÀ¾ä±ú¡¢Ë÷Òı
+OMX_S32 venc_init_drv_context(venc_drv_context *drv_ctx)          //æ‰“å¼€è®¾å¤‡æ–‡ä»¶ï¼Œæ¸…ç©ºè®¾å¤‡é€šé“å¥æŸ„ã€ç´¢å¼•
 {
 	OMX_S32 r = -1;
     OMX_S32 i = 0;
@@ -691,7 +691,7 @@ OMX_S32 venc_init_drv_context(venc_drv_context *drv_ctx)          //´ò¿ªÉè±¸ÎÄ¼ş
     return 0;
 }
 
-void venc_get_default_attr(venc_drv_context *drv_ctx)          //´ò¿ªÉè±¸ÎÄ¼ş£¬Çå¿ÕÉè±¸Í¨µÀ¾ä±ú¡¢Ë÷Òı
+void venc_get_default_attr(venc_drv_context *drv_ctx)          //æ‰“å¼€è®¾å¤‡æ–‡ä»¶ï¼Œæ¸…ç©ºè®¾å¤‡é€šé“å¥æŸ„ã€ç´¢å¼•
 {
 	if (!drv_ctx)
 	{

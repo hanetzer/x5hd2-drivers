@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : the adp realize in this file
-                  CNcomment: ÊÊÅäµÄÊµÏÖ¶¼ÔÚÕâ¸öÎÄ¼şÀï CNend\n
+                  CNcomment: é€‚é…çš„å®ç°éƒ½åœ¨è¿™ä¸ªæ–‡ä»¶é‡Œ CNend\n
 Function List 	: 
 
 			  		  
@@ -35,21 +35,21 @@ Date				Author        		Modification
 
 
 /** calculate the size according to the scale */
-/** CNcomment:¸ù¾İËõ·Å±ÈÀı¼ÆËã´óĞ¡ */
+/** CNcomment:æ ¹æ®ç¼©æ”¾æ¯”ä¾‹è®¡ç®—å¤§å° */
 #define JPEG_ALIGNED_SCALE(x, i)  (((x) + (1 << (i)) - 1) >> (i))
 
 /** calculate the size according to the scale */
-/** CNcomment:¸ù¾İËõ·Å±ÈÀı¼ÆËã´óĞ¡ */
+/** CNcomment:æ ¹æ®ç¼©æ”¾æ¯”ä¾‹è®¡ç®—å¤§å° */
 #define JPEG_ROUND_UP(a,b)          ( ((a) + (b) - (1L)) / (b) )
 
 /** the 128bytes align */
-/** CNcomment:128×Ö½Ú¶ÔÆë */
+/** CNcomment:128å­—èŠ‚å¯¹é½ */
 #define JPEG_MCU_128ALIGN	              128
 /** the 16bytes align */
-/** CNcomment:16×Ö½Ú¶ÔÆë */
+/** CNcomment:16å­—èŠ‚å¯¹é½ */
 #define JPEG_MCU_16ALIGN 	              16
 /** the 8bytes align */
-/** CNcomment:8×Ö½Ú¶ÔÆë */
+/** CNcomment:8å­—èŠ‚å¯¹é½ */
 #define JPEG_MCU_8ALIGN                  8
 
 
@@ -69,12 +69,12 @@ Date				Author        		Modification
 /*****************************************************************************
 * func          : JPEG_HDEC_GetOutSize
 * description	: get the out size
-                  CNcomment:  »ñÈ¡Êä³ö´óĞ¡ CNend\n
-* param[in]  	: s32Ration      CNcomment: Ëõ·Å±ÈÀı CNend\n
-* param[in]  	: u32InWidth     CNcomment: ÊäÈë¿í¶È CNend\n
-* param[in]  	: u32InHeight    CNcomment: ÊäÈë¸ß¶È CNend\n
-* param[out] 	: pu32OutWidth   CNcomment: Êä³ö¿í¶È CNend\n
-* param[out]	: pu32OutHeight  CNcomment: Êä³ö¸ß¶È CNend\n
+                  CNcomment:  è·å–è¾“å‡ºå¤§å° CNend\n
+* param[in]  	: s32Ration      CNcomment: ç¼©æ”¾æ¯”ä¾‹ CNend\n
+* param[in]  	: u32InWidth     CNcomment: è¾“å…¥å®½åº¦ CNend\n
+* param[in]  	: u32InHeight    CNcomment: è¾“å…¥é«˜åº¦ CNend\n
+* param[out] 	: pu32OutWidth   CNcomment: è¾“å‡ºå®½åº¦ CNend\n
+* param[out]	: pu32OutHeight  CNcomment: è¾“å‡ºé«˜åº¦ CNend\n
 * retval     	: NA
 * others:	 	: NA
 *****************************************************************************/
@@ -114,8 +114,8 @@ static HI_VOID JPEG_HDEC_GetOutSize(const HI_U32 u32Ration,    \
 /*****************************************************************************
 * func			: JPEG_HDEC_GetScale
 * description	: get the jpeg decode scale
-				  CNcomment:  »ñÈ¡jpeg½âÂëÒªËõ·ÅµÄ±ÈÀı CNend\n
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó	CNend\n
+				  CNcomment:  è·å–jpegè§£ç è¦ç¼©æ”¾çš„æ¯”ä¾‹ CNend\n
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡	CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -140,7 +140,7 @@ static HI_VOID JPEG_HDEC_GetScale(j_decompress_ptr cinfo)
 
 		/**
 		 ** the user set scale
-		 ** CNcomment: ÓÃ»§ÉèÖÃĞèÒªµÄËõ·Å±ÈÀı CNend\n
+		 ** CNcomment: ç”¨æˆ·è®¾ç½®éœ€è¦çš„ç¼©æ”¾æ¯”ä¾‹ CNend\n
 		 **/
 		if(cinfo->scale_num * 8 <= cinfo->scale_denom)
 		{
@@ -167,7 +167,7 @@ static HI_VOID JPEG_HDEC_GetScale(j_decompress_ptr cinfo)
 		JPEG_HDEC_GetOutSize(u32Ration,u32TmpWidth,u32TmpHeight,&u32TdeInWidth,&u32TdeInHeight);
 		/**
 		** if the picture size is 1*height or width*1,the scale is the same as no scale
-		** CNcomment: ÒªÊÇÍ¼Æ¬¿í¶È»ò¸ß¶ÈÎª1µÄÇé¿öËõ·ÅÓë²»Ëõ·ÅÊÇÒ»ÑùµÄ CNend\n
+		** CNcomment: è¦æ˜¯å›¾ç‰‡å®½åº¦æˆ–é«˜åº¦ä¸º1çš„æƒ…å†µç¼©æ”¾ä¸ä¸ç¼©æ”¾æ˜¯ä¸€æ ·çš„ CNend\n
 		**/
 		u32YWidth   = u32TdeInWidth;
 		u32YHeight  = u32TdeInHeight;
@@ -179,7 +179,7 @@ static HI_VOID JPEG_HDEC_GetScale(j_decompress_ptr cinfo)
 		    }
 		}
 
-		/*Èç¹û¿í¶ÈĞ¡ÓÚ8£¬ÔòËõ·ÅÏµÊıÓĞ¿ÉÄÜÖØ¸´,ÕâÊ±Òª¿´¸ß¶È*/
+		/*å¦‚æœå®½åº¦å°äº8ï¼Œåˆ™ç¼©æ”¾ç³»æ•°æœ‰å¯èƒ½é‡å¤,è¿™æ—¶è¦çœ‹é«˜åº¦*/
 		if(JPEG_ALIGNED_SCALE(cinfo->image_width, (u32Scale+1)) == u32YWidth)
 		{
 			for(u32Scale = JPEG_SCALEDOWN_1; u32Scale <= JPEG_SCALEDOWN_8; u32Scale++)
@@ -203,7 +203,7 @@ static HI_VOID JPEG_HDEC_GetScale(j_decompress_ptr cinfo)
 
 		/**
 		** check if the jpeg hard support decode to argb8888 or abgr8888
-		** CNcomment: ÅĞ¶ÏjpegÓ²¼şÊÇ·ñÖ§³Ö½âÂëÊä³öargb8888»òÕßabgr8888 CNend\n
+		** CNcomment: åˆ¤æ–­jpegç¡¬ä»¶æ˜¯å¦æ”¯æŒè§£ç è¾“å‡ºargb8888æˆ–è€…abgr8888 CNend\n
 		**/
 #ifdef CONFIG_JPEG_HARDDEC2ARGB
 		if(   (0 == u32TmpScale)
@@ -216,8 +216,8 @@ static HI_VOID JPEG_HDEC_GetScale(j_decompress_ptr cinfo)
 
 
 		/**
-		** the tde limit£¬the size must contain in (4095 4095)
-		** CNcomment: tde¹æ¸ñÏŞÖÆ£¬×ª»»´óĞ¡±ØĞëÔÚ(4095 4095)·¶Î§Ö®ÄÚ CNend\n
+		** the tde limitï¼Œthe size must contain in (4095 4095)
+		** CNcomment: tdeè§„æ ¼é™åˆ¶ï¼Œè½¬æ¢å¤§å°å¿…é¡»åœ¨(4095 4095)èŒƒå›´ä¹‹å†… CNend\n
 		**/
 #ifdef CONFIG_JPEG_HARDDEC2ARGB
 		while( ((u32TdeInWidth > 4095) || ( u32TdeInHeight > 4095 )) && (HI_FALSE == pJpegHandle->bDecARGB) && (HI_FALSE == pJpegHandle->bOutYCbCrSP) )
@@ -243,7 +243,7 @@ static HI_VOID JPEG_HDEC_GetScale(j_decompress_ptr cinfo)
 
 		/**
 		** the output size
-		** CNcomment: Êä³ö´óĞ¡ CNend\n
+		** CNcomment: è¾“å‡ºå¤§å° CNend\n
 		**/
 		cinfo->output_width  = u32TdeInWidth;
 		cinfo->output_height = u32TdeInHeight;
@@ -251,7 +251,7 @@ static HI_VOID JPEG_HDEC_GetScale(j_decompress_ptr cinfo)
 
 		/**
 		** set to hard register scale value
-		** CNcomment: Åä¸øÓ²¼şµÄËõ·Å±ÈÀı´óĞ¡ CNend\n
+		** CNcomment: é…ç»™ç¡¬ä»¶çš„ç¼©æ”¾æ¯”ä¾‹å¤§å° CNend\n
 		**/
 		pJpegHandle->u32ScalRation = u32TmpScale;
 				
@@ -262,8 +262,8 @@ static HI_VOID JPEG_HDEC_GetScale(j_decompress_ptr cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_GetImagInfo
 * description	: get jpeg picture information
-				  CNcomment:  »ñÈ¡Í¼Æ¬ĞÅÏ¢ CNend\n
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó	CNend\n
+				  CNcomment:  è·å–å›¾ç‰‡ä¿¡æ¯ CNend\n
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡	CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -293,7 +293,7 @@ HI_VOID JPEG_HDEC_GetImagInfo(j_decompress_ptr cinfo)
 		if(HI_TRUE == pJpegHandle->stOutDesc.bCrop && HI_TRUE == pJpegHandle->bDecARGB)
 		{/**
 		  **  if set HI_JPEG_SetOutDesc,the crop is change
-		  **  CNcomment: ÉèÖÃÍêÊä³ö²Ã¼ôµÄÊ±ºòËùĞèÒªµÄ´óĞ¡·¢Éú±ä»¯ÁË£¬ËùÒÔÖØĞÂ¼ÆËãÒ»´Î CNend\n
+		  **  CNcomment: è®¾ç½®å®Œè¾“å‡ºè£å‰ªçš„æ—¶å€™æ‰€éœ€è¦çš„å¤§å°å‘ç”Ÿå˜åŒ–äº†ï¼Œæ‰€ä»¥é‡æ–°è®¡ç®—ä¸€æ¬¡ CNend\n
 		  **/
 		    u32DecSize = (HI_U32)(pJpegHandle->stOutDesc.stCropRect.w * pJpegHandle->stOutDesc.stCropRect.h * 4);
 			pJpegHandle->stJpegSofInfo.u32YSize  =  u32DecSize;
@@ -308,8 +308,8 @@ HI_VOID JPEG_HDEC_GetImagInfo(j_decompress_ptr cinfo)
 		/**
 		 **  if out yuvsp,the output mem has two types,one from user, the other from inner. 
 		 **  if out others, we should alloc the yuvsp mem.
-		 ** CNcomment: ÒªÊÇÊä³öyuvsp ºÍ Ó²¼ş½âÂëÊä³öARGB£¬ÊÇ·ñĞèÒª·ÖÅäÓ²¼ş½âÂëµÄÖĞ¼äbufferÓĞÁ½ÖÖÇé¿ö£¬
-		 ** 		   ÒªÊÇÊä³öÆäËü¸ñÊ½ÔòĞèÒª·ÖÅäÖĞ¼äbuffer  CNend\n
+		 ** CNcomment: è¦æ˜¯è¾“å‡ºyuvsp å’Œ ç¡¬ä»¶è§£ç è¾“å‡ºARGBï¼Œæ˜¯å¦éœ€è¦åˆ†é…ç¡¬ä»¶è§£ç çš„ä¸­é—´bufferæœ‰ä¸¤ç§æƒ…å†µï¼Œ
+		 ** 		   è¦æ˜¯è¾“å‡ºå…¶å®ƒæ ¼å¼åˆ™éœ€è¦åˆ†é…ä¸­é—´buffer  CNend\n
 		 **/
 		if(  (JCS_YUV400_SP	  == cinfo->out_color_space)
 		   ||(JCS_YUV420_SP    == cinfo->out_color_space)
@@ -326,18 +326,18 @@ HI_VOID JPEG_HDEC_GetImagInfo(j_decompress_ptr cinfo)
 
 	    /**
 		 ** this function call should after check the bOutYCbCrSP
-		 ** CNcomment:Õâ¸öÒªÔÚÉÏÃæbOutYCbCrSPÅĞ¶ÏÖ®ºóµ÷ÓÃ CNend\n
+		 ** CNcomment:è¿™ä¸ªè¦åœ¨ä¸Šé¢bOutYCbCrSPåˆ¤æ–­ä¹‹åè°ƒç”¨ CNend\n
 		 **/
 		JPEG_HDEC_GetScale(cinfo);
 
 		/**
 		 ** the y stride should 128 bytes align
-		 ** CNcomment:ÁÁ¶ÈĞĞ¼ä¾à±ØĞëÊÇ128×Ö½Ú¶ÔÆë CNend\n
+		 ** CNcomment:äº®åº¦è¡Œé—´è·å¿…é¡»æ˜¯128å­—èŠ‚å¯¹é½ CNend\n
 		 **/
 	    u32YStride = (cinfo->output_width + JPEG_MCU_128ALIGN - 1) & (~(JPEG_MCU_128ALIGN - 1));
 
 		/** this to save data used
-		 ** CNcomment:ÕâÀïÊÇ±£´æÊµ¼ÊÊı¾İÊ¹ÓÃ CNend\n
+		 ** CNcomment:è¿™é‡Œæ˜¯ä¿å­˜å®é™…æ•°æ®ä½¿ç”¨ CNend\n
 		 **/
         u32YWidth   = cinfo->output_width;
 		u32YHeight  = cinfo->output_height;
@@ -401,7 +401,7 @@ HI_VOID JPEG_HDEC_GetImagInfo(j_decompress_ptr cinfo)
 	        {
 				/**
 				 ** the horizontal sample
-				 ** CNcomment:Ë®Æ½²ÉÑù CNend\n
+				 ** CNcomment:æ°´å¹³é‡‡æ · CNend\n
 				 **/
 	            YHeightTmp  = (cinfo->output_height + JPEG_MCU_8ALIGN - 1) & (~(JPEG_MCU_8ALIGN - 1));
 	            CHeightTmp  = YHeightTmp;
@@ -430,7 +430,7 @@ HI_VOID JPEG_HDEC_GetImagInfo(j_decompress_ptr cinfo)
 	        {
 				/**
 				 ** the vertical sample
-				 ** CNcomment:´¹Ö±²ÉÑù CNend\n
+				 ** CNcomment:å‚ç›´é‡‡æ · CNend\n
 				 **/
 	            YHeightTmp  = (cinfo->output_height + JPEG_MCU_16ALIGN - 1) & (~(JPEG_MCU_16ALIGN - 1));
 	            CHeightTmp  = YHeightTmp>>1;
@@ -481,12 +481,12 @@ HI_VOID JPEG_HDEC_GetImagInfo(j_decompress_ptr cinfo)
 	    }
 
 		/** the decode size, argb output
-		 ** CNcomment:½âÂë·Ö±æÂÊ´óĞ¡£¬ARGBÊä³öµÄ CNend\n
+		 ** CNcomment:è§£ç åˆ†è¾¨ç‡å¤§å°ï¼ŒARGBè¾“å‡ºçš„ CNend\n
 		 **/
 		if(HI_FALSE == pJpegHandle->stOutDesc.bCrop)
 		{	/**
 			 ** is dec width and height,if not set crop message,use this
-			 ** CNcomment:½âÂë·Ö±æÂÊ,Èç¹ûÃ»ÓĞÉèÖÃ²Ã¼ô·Ö±æÂÊÄÇÃ´¾ÍÊ¹ÓÃÄ¬ÈÏµÄÊä³ö´óĞ¡ CNend\n
+			 ** CNcomment:è§£ç åˆ†è¾¨ç‡,å¦‚æœæ²¡æœ‰è®¾ç½®è£å‰ªåˆ†è¾¨ç‡é‚£ä¹ˆå°±ä½¿ç”¨é»˜è®¤çš„è¾“å‡ºå¤§å° CNend\n
 			 **/
 			 pJpegHandle->stOutDesc.stCropRect.x = 0;
 			 pJpegHandle->stOutDesc.stCropRect.y = 0;
@@ -538,7 +538,7 @@ HI_VOID JPEG_HDEC_GetImagInfo(j_decompress_ptr cinfo)
 
 		/**
 		 ** the jpeg size info has calculated
-		 ** CNcomment:jpeg´óĞ¡ÒÑ¾­¼ÆËãÍêÁË£¬²»ĞèÒªÖØĞÂ¼ÆËãÁË CNend\n
+		 ** CNcomment:jpegå¤§å°å·²ç»è®¡ç®—å®Œäº†ï¼Œä¸éœ€è¦é‡æ–°è®¡ç®—äº† CNend\n
 		 **/
         pJpegHandle->stJpegSofInfo.bCalcSize       =  HI_TRUE;
 		pJpegHandle->stJpegSofInfo.u32YWidth       =  u32YWidth;
@@ -558,7 +558,7 @@ HI_VOID JPEG_HDEC_GetImagInfo(j_decompress_ptr cinfo)
 		pJpegHandle->stJpegSofInfo.u32McuWidth     =  u32McuWidth;
 		/**
 		 ** need 128 bytes align
-		 ** CNcomment:128×Ö½Ú¶ÔÆë CNend\n
+		 ** CNcomment:128å­—èŠ‚å¯¹é½ CNend\n
 		 **/
 		pJpegHandle->stJpegSofInfo.u32MINSize      =  u32McuWidth * 128;
 		pJpegHandle->stJpegSofInfo.u32MIN1Size     =  pJpegHandle->stJpegSofInfo.u32MINSize;

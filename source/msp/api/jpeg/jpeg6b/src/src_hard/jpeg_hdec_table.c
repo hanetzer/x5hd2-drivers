@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : y00181162
 Created		    : 2013/06/20
 Description	    : set dqt and dht message
-                  CNcomment: ÉèÖÃÁ¿»¯±íºÍ¹ş·òÂü±íĞÅÏ¢ CNend\n
+                  CNcomment: è®¾ç½®é‡åŒ–è¡¨å’Œå“ˆå¤«æ›¼è¡¨ä¿¡æ¯ CNend\n
 Function List 	:
 
 			  		  
@@ -33,17 +33,17 @@ Date				Author        		Modification
 /***************************** Macro Definition ******************************/
 
 /** luminance */
-/** CNcomment:ÁÁ¶È */
+/** CNcomment:äº®åº¦ */
 #define  LU         0
 /** chrominance */
-/** CNcomment:É«¶È */
+/** CNcomment:è‰²åº¦ */
 #define  CH         1
 /** luminance and chrominance */
-/** CNcomment:ÁÁ¶ÈºÍÉ«¶È±í */
+/** CNcomment:äº®åº¦å’Œè‰²åº¦è¡¨ */
 #define  MAX_TAB    2
 
 /** swap the two value */
-/** CNcomment:½»»»Á½¸öÖµ */	
+/** CNcomment:äº¤æ¢ä¸¤ä¸ªå€¼ */	
 #define CAI_JPEG_SWAP(a,b) do{ a=a+b; b=a-b; a=a-b; } while(0)
 
 /******************** to see which include file we want to use***************/
@@ -66,7 +66,7 @@ static const HI_U32 s_ZOrder[DCTSIZE2 + 16] = {
     29, 22, 15, 23, 30, 37, 44, 51,
     58, 59, 52, 45, 38, 31, 39, 46,
     53, 60, 61, 54, 47, 55, 62, 63,
-    63, 63, 63, 63, 63, 63, 63, 63, /**< extra entries for safety in decoder *//** CNcomment:¶îÍâµÄÖµ */
+    63, 63, 63, 63, 63, 63, 63, 63, /**< extra entries for safety in decoder *//** CNcomment:é¢å¤–çš„å€¼ */
     63, 63, 63, 63, 63, 63, 63, 63
 };
 #endif
@@ -79,8 +79,8 @@ static const HI_U32 s_ZOrder[DCTSIZE2 + 16] = {
 /*****************************************************************************
 * func			: JPEG_HDEC_SetDqt
 * description	: set the dqt
-                  CNcomment:  ÉèÖÃÁ¿»¯±íĞÅÏ¢          CNend\n
-* param[in] 	: cinfo        CNcomment:  ½âÂë¶ÔÏó   CNend\n
+                  CNcomment:  è®¾ç½®é‡åŒ–è¡¨ä¿¡æ¯          CNend\n
+* param[in] 	: cinfo        CNcomment:  è§£ç å¯¹è±¡   CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -94,12 +94,12 @@ HI_VOID	JPEG_HDEC_SetDqt(const struct jpeg_decompress_struct *cinfo)
 		HI_S32 Q[DCTSIZE2];
 
 		/** four dqt, about different part */
-		/** CNcomment:ËÄÕÅÁ¿±í£¬Õë¶Ô²»Í¬·ÖÁ¿  */
+		/** CNcomment:å››å¼ é‡è¡¨ï¼Œé’ˆå¯¹ä¸åŒåˆ†é‡  */
 		HI_S32 quant_tbl_no[NUM_QUANT_TBLS] = {0};
 
 #ifdef CONFIG_JPEG_MPG_DEC_ENABLE
 		/** LU DQT */
-		/** CNcomment:ÁÁ¶ÈÁ¿»¯±í */
+		/** CNcomment:äº®åº¦é‡åŒ–è¡¨ */
 		const HI_U16  QT_TABLE_Cy[DCTSIZE2]=
 		{
 		 16, 11, 10, 16, 24, 40, 51, 61,
@@ -113,7 +113,7 @@ HI_VOID	JPEG_HDEC_SetDqt(const struct jpeg_decompress_struct *cinfo)
 		};
 
 		/** CH DQT */
-		/** CNcomment:É«¶ÈÁ¿»¯±í */
+		/** CNcomment:è‰²åº¦é‡åŒ–è¡¨ */
 		const HI_U16  QT_TABLE_CbCr[DCTSIZE2]=
 		{
 		 17, 18, 24, 47, 99, 99, 99, 99,
@@ -144,7 +144,7 @@ HI_VOID	JPEG_HDEC_SetDqt(const struct jpeg_decompress_struct *cinfo)
 			for (s32Cnt = 0, compptr = cinfo->comp_info; s32Cnt < cinfo->num_components; s32Cnt++, compptr++)
 			{
 				 /** get dqt number */
-				 /** CNcomment:»ñÈ¡Á¿»¯±íºÅ  */
+				 /** CNcomment:è·å–é‡åŒ–è¡¨å·  */
 				 quant_tbl_no[s32Cnt] = compptr->quant_tbl_no;
 			}
 			if(NULL == cinfo->quant_tbl_ptrs[quant_tbl_no[0]])
@@ -157,14 +157,14 @@ HI_VOID	JPEG_HDEC_SetDqt(const struct jpeg_decompress_struct *cinfo)
 		}
 
 		/** translate to YCbCr format */
-		/** CNcomment:×ª»»³ÉYCbCr¸ñÊ½  */
+		/** CNcomment:è½¬æ¢æˆYCbCræ ¼å¼  */
 		for(s32Cnt = 0; s32Cnt < DCTSIZE2; s32Cnt++)
 		{
 			Q[s32Cnt] = QY[s32Cnt] + (QCb[s32Cnt]<<8) + (QCr[s32Cnt]<<16);
 		}
 
 		/** set dqt */
-		/** CNcomment:ÅäÖÃÁ¿»¯±í  */
+		/** CNcomment:é…ç½®é‡åŒ–è¡¨  */
 		JPEG_HDEC_CpyData2Reg(pJpegHandle->pJpegRegVirAddr, (HI_VOID *)Q, JPGD_REG_QUANT, sizeof(Q));
 
 
@@ -173,20 +173,20 @@ HI_VOID	JPEG_HDEC_SetDqt(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_DecHuff
 * description	: the huffman decode
-* 				  CNcomment:  ¹ş·òÂü½âÂë£¬¼ÆËã·½·¨ÈçÏÂ
-* 	              ibit[]×îºóÒ»¸ö·ÇÁãÖµËùÔÚµÄÎ»ÖÃ = 7
+* 				  CNcomment:  å“ˆå¤«æ›¼è§£ç ï¼Œè®¡ç®—æ–¹æ³•å¦‚ä¸‹
+* 	              ibit[]æœ€åä¸€ä¸ªéé›¶å€¼æ‰€åœ¨çš„ä½ç½® = 7
 * 	                           1   2   3   4   5   6   7   8   9  10  11  ..... 16
 * 	              ibit[16] = {0x0,0x2,0x2,0x3,0x1,0x1,0x1,0x0,0x0,0x0,0x0,.....,0x0}
-* 	              ´ËÊ± max_idx = 7;
-*                 ¸öÊı = 0x2 + 0x2 + 0x3 + 0x1 + 0x1 + 0x1 = 10;
-* 			       bit[]Ö»ÓĞ10¸öÊı£¬´Óbit[0]~bit[9]
+* 	              æ­¤æ—¶ max_idx = 7;
+*                 ä¸ªæ•° = 0x2 + 0x2 + 0x3 + 0x1 + 0x1 + 0x1 = 10;
+* 			       bit[]åªæœ‰10ä¸ªæ•°ï¼Œä»bit[0]~bit[9]
 * 			       bit[0] = 0  bit[1] = 1
 * 			       bit[2] = 4  bit[3] = 5
 * 			       bit[4] = 12 bit[5] = 13 bit[6] = 14
 * 			       bit[7] = 30
 * 			       bit[8] = 62
 * 			       bit[9] = 126
-* 			       bit[]¶ş½øÖÆÅÅÁĞ
+* 			       bit[]äºŒè¿›åˆ¶æ’åˆ—
 * 			       0000
 * 			       0001
 * 			       =========
@@ -203,9 +203,9 @@ HI_VOID	JPEG_HDEC_SetDqt(const struct jpeg_decompress_struct *cinfo)
 * 			       =========
 * 			       0111 1110
 * 			       =========                        CNend\n
-* param[in] 	: huff_tbl 	  CNcomment:  ¹ş·òÂü±í	CNend\n
-* param[in] 	: bit    	  CNcomment:  bitÎ»Öµ	CNend\n
-* retval		: max_idx     CNcomment:  Ë÷ÒıÖµ    CNend\n
+* param[in] 	: huff_tbl 	  CNcomment:  å“ˆå¤«æ›¼è¡¨	CNend\n
+* param[in] 	: bit    	  CNcomment:  bitä½å€¼	CNend\n
+* retval		: max_idx     CNcomment:  ç´¢å¼•å€¼    CNend\n
 * others:		: NA
 *****************************************************************************/
 static HI_U32 JPEG_HDEC_DecHuff(const JHUFF_TBL *huff_tbl, unsigned int bit[256])
@@ -219,16 +219,16 @@ static HI_U32 JPEG_HDEC_DecHuff(const JHUFF_TBL *huff_tbl, unsigned int bit[256]
 		  HI_U32 max_idx = 0;
 
 	      /** initial to zero */
-          /** CNcomment:³õÊ¼»¯Öµ */
+          /** CNcomment:åˆå§‹åŒ–å€¼ */
 		  memset(bit,0,sizeof(bit[0]));
 
 
-	      /** Ln£½16£¬from one, zero is ignore  */
-          /** CNcomment:HTÎ»±í ÓĞ16¸ö×Ö½Ú£¬huff_tbl->bits */
+	      /** Lnï¼16ï¼Œfrom one, zero is ignore  */
+          /** CNcomment:HTä½è¡¨ æœ‰16ä¸ªå­—èŠ‚ï¼Œhuff_tbl->bits */
 	      for(idx = 1; idx < 17; idx++)
 	      {
 			   /** calc the none zero  */
-               /** CNcomment:0 ÖµºöÂÔ£¬ÕâÑù¿ÉÒÔ¼õÉÙ¼ÆËã´ÎÊı£¬Ìá¸ßĞ§ÂÊ */
+               /** CNcomment:0 å€¼å¿½ç•¥ï¼Œè¿™æ ·å¯ä»¥å‡å°‘è®¡ç®—æ¬¡æ•°ï¼Œæé«˜æ•ˆç‡ */
 	           if(0 != huff_tbl->bits[idx])
 	           {
 	                  /** remember the temproary max index **/
@@ -240,8 +240,8 @@ static HI_U32 JPEG_HDEC_DecHuff(const JHUFF_TBL *huff_tbl, unsigned int bit[256]
 						  value++;
 	                  }
 	           }
-               /** CNcomment:ÏÂÒ»¸öibt[]Î»µÄÆğÊ¼Öµ½«ÊÇÉÏÒ»¸öibit[]µÄ½áÊøÖµ + 1 µÄÁ½±¶
-                             ±ÈÈçµÚ3¸öµÄÆğÊ¼Öµ½«ÊÇµÚ2¸ö½áÊøÖµ+1 µÄÁ½±¶ */
+               /** CNcomment:ä¸‹ä¸€ä¸ªibt[]ä½çš„èµ·å§‹å€¼å°†æ˜¯ä¸Šä¸€ä¸ªibit[]çš„ç»“æŸå€¼ + 1 çš„ä¸¤å€
+                             æ¯”å¦‚ç¬¬3ä¸ªçš„èµ·å§‹å€¼å°†æ˜¯ç¬¬2ä¸ªç»“æŸå€¼+1 çš„ä¸¤å€ */
 	           value<<=1;
 	          
 	      }
@@ -254,17 +254,17 @@ static HI_U32 JPEG_HDEC_DecHuff(const JHUFF_TBL *huff_tbl, unsigned int bit[256]
 /*****************************************************************************
 * func			: JPEG_HDEC_SetDC
 * description	: set the dc
-				  CNcomment:  ÉèÖÃ¹ş·òÂüDC±íĞÅÏ¢    CNend\n
-* param[in] 	: cinfo 	  CNcomment:  ½âÂë¶ÔÏó	CNend\n
-* retval		: HI_SUCCESS  CNcomment:  ³É¹¦		CNend\n
-* retval		: HI_FAILURE  CNcomment:  Ê§°Ü		CNend\n
+				  CNcomment:  è®¾ç½®å“ˆå¤«æ›¼DCè¡¨ä¿¡æ¯    CNend\n
+* param[in] 	: cinfo 	  CNcomment:  è§£ç å¯¹è±¡	CNend\n
+* retval		: HI_SUCCESS  CNcomment:  æˆåŠŸ		CNend\n
+* retval		: HI_FAILURE  CNcomment:  å¤±è´¥		CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 {
 
 		/** 2 Huff tables(DC/AC): 0--luminance,1--chrominance */
-		/** CNcomment:²î·Ö±í£¬´ÓÎÄ¼şÖĞ»ñÈ¡µ½µÄÊı¾İ */
+		/** CNcomment:å·®åˆ†è¡¨ï¼Œä»æ–‡ä»¶ä¸­è·å–åˆ°çš„æ•°æ® */
 		
 		HI_U32 cnt		  = 0;
 		HI_U32 u32Index   = 0;
@@ -274,17 +274,17 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 		HI_U32 index1	  = 0;
 
 		/** dht table,256 is limit value */
-		/** CNcomment:dht±í£¬256¸öÖµ */
+		/** CNcomment:dhtè¡¨ï¼Œ256ä¸ªå€¼ */
 		HI_U32 huffcode[MAX_TAB][256]  = {{0}};
-		/** dht lenght£¬YU table£¬12 is limit value */
-		/** CNcomment:dht±íµÄ³¤¶È */
+		/** dht lenghtï¼ŒYU tableï¼Œ12 is limit value */
+		/** CNcomment:dhtè¡¨çš„é•¿åº¦ */
 		HI_U32 dc_hufflen[MAX_TAB][12] = {{0}};
 		HI_U32 dc_sym[MAX_TAB][12]	    = {{0}};
 		HI_U32 max_idx[MAX_TAB] 	    = {0};
 		HI_U32 hdc_tab[12]             = {0};
 		
 		/** calc default value */
-		/** CNcomment:¼ÆËãºÃµÄÄ¬ÈÏDC±íµÄÖµ */
+		/** CNcomment:è®¡ç®—å¥½çš„é»˜è®¤DCè¡¨çš„å€¼ */
 #if defined(CONFIG_JPEG_MPG_DEC_ENABLE) && defined(CONFIG_JPEG_USE_CALC_DEFAULT_VALUE)
         HI_U32 u32TmpHdcTab[12] = {0x200200,0x201302,0x202303,0x306304,0x40e305,0x51e306,
 			                         0x63e40e,0x77e51e,0x8fe63e,0x9fe77e,0xafe8fe,0xbfe9fe};
@@ -293,10 +293,10 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 #if defined(CONFIG_JPEG_MPG_DEC_ENABLE) && !defined(CONFIG_JPEG_USE_CALC_DEFAULT_VALUE)
 		JHUFF_TBL huff_ptr[MAX_TAB];
 		const HI_U8 u8DefaultDCTable[] = {
-			/**< for luma DC *//** CNcomment:ÁÁ¶ÈDC */ 0x00,
+			/**< for luma DC *//** CNcomment:äº®åº¦DC */ 0x00,
 			0x00, 0x01, 0x05, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B,
-			/**< for chrom DC *//** CNcomment:É«¶ÈDC */ 0x01,
+			/**< for chrom DC *//** CNcomment:è‰²åº¦DC */ 0x01,
 			0x00, 0x03, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00,
 			0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B
 		};
@@ -311,16 +311,16 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 		 ** UINT8 bits[17];
 		 ** UINT8 huffval[256];
 		 ** boolean sent_table; */
-		/** CNcomment: DC±í½âÂë£¬±íµÄ¼¸¸ö²ÎÊı
+		/** CNcomment: DCè¡¨è§£ç ï¼Œè¡¨çš„å‡ ä¸ªå‚æ•°
 		 ** 		   UINT8 bits[17];
-		 ** 		   UINT8 huffval[256];	´ÓÎÄ¼ş¶Á³öµÄhuffvalµÄÖµ 
+		 ** 		   UINT8 huffval[256];	ä»æ–‡ä»¶è¯»å‡ºçš„huffvalçš„å€¼ 
 		 ** 		   boolean sent_table; */
 
 #if defined(CONFIG_JPEG_MPG_DEC_ENABLE) && !defined(CONFIG_JPEG_USE_CALC_DEFAULT_VALUE)
 		if ((NULL == cinfo->dc_huff_tbl_ptrs[0]) || (NULL != cinfo->dc_huff_tbl_ptrs[2]))
 		{
 			/** luminance DC */
-			/** CNcomment: ÁÁ¶ÈDC²î·Ö±í */
+			/** CNcomment: äº®åº¦DCå·®åˆ†è¡¨ */
 			pTmp+=1;
 			memset(&(huff_ptr[LU].bits[0]),0,17);
 			memcpy(&(huff_ptr[LU].bits[1]), pTmp, 16);
@@ -330,7 +330,7 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 			pTmp   += 12;
 			
 			/** chrominance DC */
-			/** CNcomment: É«¶ÈDC²î·Ö±í */
+			/** CNcomment: è‰²åº¦DCå·®åˆ†è¡¨ */
 			pTmp+=1;
 			memset(&(huff_ptr[CH].bits[0]),0,17);
 			memcpy(&(huff_ptr[CH].bits[1]), pTmp, 16);
@@ -342,10 +342,10 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 		else
 		{
 			/** luminance DC */
-			/** CNcomment: ÁÁ¶ÈDC²î·Ö±í */
+			/** CNcomment: äº®åº¦DCå·®åˆ†è¡¨ */
 			memcpy(&(huff_ptr[LU]), cinfo->dc_huff_tbl_ptrs[0], sizeof(huff_ptr[LU]));
 			/** chrominance DC */
-			/** CNcomment: É«¶ÈDC²î·Ö±í */
+			/** CNcomment: è‰²åº¦DCå·®åˆ†è¡¨ */
 			if(NULL == cinfo->dc_huff_tbl_ptrs[1])
 			{
 				memcpy(&(huff_ptr[CH]),cinfo->dc_huff_tbl_ptrs[0],sizeof(huff_ptr[LU]));
@@ -365,7 +365,7 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 		
 #elif defined(CONFIG_JPEG_MPG_DEC_ENABLE) && defined(CONFIG_JPEG_USE_CALC_DEFAULT_VALUE)
 		if ((NULL == cinfo->dc_huff_tbl_ptrs[0]) || (NULL != cinfo->dc_huff_tbl_ptrs[2]))
-		{/** ÕâÀïÒÑ¾­¼ÆËãºÃÁË **/
+		{/** è¿™é‡Œå·²ç»è®¡ç®—å¥½äº† **/
 			JPEG_HDEC_CpyData2Reg(pJpegHandle->pJpegRegVirAddr,u32TmpHdcTab,JPGD_REG_HDCTABLE,48);
 			return;
 		}
@@ -394,7 +394,7 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 		/** Store huff length and huff value number **/
 
 		/** two, one is luminance, the other is chrominance */
-		/** CNcomment: Á½¸ö±í£¬Ò»¸öÊÇÁÁ¶È±í£¬Ò»¸öÊÇÉ«¶È±í */
+		/** CNcomment: ä¸¤ä¸ªè¡¨ï¼Œä¸€ä¸ªæ˜¯äº®åº¦è¡¨ï¼Œä¸€ä¸ªæ˜¯è‰²åº¦è¡¨ */
 		for(cnt = 0; cnt < MAX_TAB; cnt++)
 		{
 
@@ -402,7 +402,7 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 			sum_syms = 0;
 			/** the largest value of iHuffsize**/
 			for(u32Index = 0; u32Index < max_idx[cnt]; u32Index++)
-			{/** ×î´óµÄ·ÇÁãÖµ **/
+			{/** æœ€å¤§çš„éé›¶å€¼ **/
 			    #if defined(CONFIG_JPEG_MPG_DEC_ENABLE) && !defined(CONFIG_JPEG_USE_CALC_DEFAULT_VALUE)
 				syms = huff_ptr[cnt].bits[u32Index+1];
 				#else
@@ -429,7 +429,7 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 			}
 
 			/** sort */
-			/** CNcomment: ÅÅĞò */
+			/** CNcomment: æ’åº */
 			/** from less to large about iHuffVal[] **/
 			for(u32Index = 0; u32Index < sum_syms; u32Index++)
 			{
@@ -449,7 +449,7 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 		  /** this table make up with iHuffVal[],iHuffSize,iHuffcode **/
 		  if(0 == cnt)
 		  {/** LU **/
-				/** sum_syms = ibit[] ºÍ µÄ´óĞ¡£¬Ò²¾ÍÊÇÓĞ¶àÉÙ¸öHuffÖµ **/
+				/** sum_syms = ibit[] å’Œ çš„å¤§å°ï¼Œä¹Ÿå°±æ˜¯æœ‰å¤šå°‘ä¸ªHuffå€¼ **/
 				for(u32Index = 0;u32Index < sum_syms; u32Index++)
 				{
 
@@ -457,7 +457,7 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 					{
 						ERREXIT(cinfo, JERR_BAD_HUFF_TABLE); /*lint !e740 ignore by y00181162, because this is needed */  
 					}
-					/** (~(0xfff)) = 0xfffff000 ÕâÀï¼ÆËãºÃ,Ê¡ÁË¼ÆËãµÄÊ±¼ä **/
+					/** (~(0xfff)) = 0xfffff000 è¿™é‡Œè®¡ç®—å¥½,çœäº†è®¡ç®—çš„æ—¶é—´ **/
 					*(hdc_tab + dc_sym[0][u32Index]) = \
 							  ( (*(hdc_tab + dc_sym[0][u32Index])) & 0xfffff000 ) \
 							| ( (dc_hufflen[0][u32Index] & 0xf)<<8 ) \
@@ -474,7 +474,7 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 						{
 							ERREXIT(cinfo, JERR_BAD_HUFF_TABLE); /*lint !e740 ignore by y00181162, because this is needed */  
 						}
-						/** (~(0xfff<<12)) = 0xff000fff ÕâÀï¼ÆËãºÃ,Ê¡ÁË¼ÆËãµÄÊ±¼ä **/
+						/** (~(0xfff<<12)) = 0xff000fff è¿™é‡Œè®¡ç®—å¥½,çœäº†è®¡ç®—çš„æ—¶é—´ **/
 						*(hdc_tab + dc_sym[cnt][u32Index]) = \
 							  ( (*(hdc_tab + dc_sym[1][u32Index])) & 0xff000fff ) \
 							| ( (dc_hufflen[1][u32Index] & 0xf)<<20 ) \
@@ -491,16 +491,16 @@ HI_VOID JPEG_HDEC_SetDC(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_SetAC
 * description	: set the ac
-				  CNcomment:  ÉèÖÃ¹ş·òÂüAC±íĞÅÏ¢    CNend\n
-* param[in] 	: cinfo 	  CNcomment:  ½âÂë¶ÔÏó	CNend\n
-* retval		: HI_SUCCESS  CNcomment:  ³É¹¦		CNend\n
-* retval		: HI_FAILURE  CNcomment:  Ê§°Ü		CNend\n
+				  CNcomment:  è®¾ç½®å“ˆå¤«æ›¼ACè¡¨ä¿¡æ¯    CNend\n
+* param[in] 	: cinfo 	  CNcomment:  è§£ç å¯¹è±¡	CNend\n
+* retval		: HI_SUCCESS  CNcomment:  æˆåŠŸ		CNend\n
+* retval		: HI_FAILURE  CNcomment:  å¤±è´¥		CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_VOID JPEG_HDEC_SetAC(const struct jpeg_decompress_struct *cinfo)
 {
 		/** 2 Huff tables(DC/AC): 0--luminance,1--chrominance */
-		/** CNcomment:²î·Ö±í£¬´ÓÎÄ¼şÖĞ»ñÈ¡µ½µÄÊı¾İ */	
+		/** CNcomment:å·®åˆ†è¡¨ï¼Œä»æ–‡ä»¶ä¸­è·å–åˆ°çš„æ•°æ® */	
 		HI_U32 cnt		  = 0;
 		HI_U32 u32Index   = 0;
 		HI_U32 pre_index  = 0;
@@ -508,10 +508,10 @@ HI_VOID JPEG_HDEC_SetAC(const struct jpeg_decompress_struct *cinfo)
 		HI_U32 syms 	  = 0;
 		
 		/** dht table,256 is limit value */
-		/** CNcomment:dht±í£¬256¸öÖµ */
+		/** CNcomment:dhtè¡¨ï¼Œ256ä¸ªå€¼ */
 		HI_U32 huffcode[MAX_TAB][256]  = {{0}};
-		/** dht lenght£¬YU table£¬12 is limit value */
-		/** CNcomment:dht±íµÄ³¤¶È */
+		/** dht lenghtï¼ŒYU tableï¼Œ12 is limit value */
+		/** CNcomment:dhtè¡¨çš„é•¿åº¦ */
 		HI_U32 min_tab[MAX_TAB][16]    = {{0}};
 		HI_U32 base_tab[MAX_TAB][16]   = {{0}};
 		HI_U32 max_idx[MAX_TAB] 	   = {0};
@@ -564,7 +564,7 @@ HI_VOID JPEG_HDEC_SetAC(const struct jpeg_decompress_struct *cinfo)
         JHUFF_TBL huff_ptr[MAX_TAB];
 
 		const HI_U8 u8DefaultACTable[] = {
-			/**< for luma AC *//** CNcomment:ÁÁ¶ÈAC */ 0x10,
+			/**< for luma AC *//** CNcomment:äº®åº¦AC */ 0x10,
 			0x00, 0x02, 0x01, 0x03, 0x03, 0x02, 0x04, 0x03, 0x05, 0x05, 0x04, 0x04, 0x00, 0x00, 0x01, 0x7D,
 			0x01, 0x02, 0x03, 0x00, 0x04, 0x11, 0x05, 0x12, 0x21, 0x31, 0x41, 0x06, 0x13, 0x51, 0x61, 0x07,
 			0x22, 0x71, 0x14, 0x32, 0x81, 0x91, 0xA1, 0x08, 0x23, 0x42, 0xB1, 0xC1, 0x15, 0x52, 0xD1, 0xF0,
@@ -577,7 +577,7 @@ HI_VOID JPEG_HDEC_SetAC(const struct jpeg_decompress_struct *cinfo)
 			0xC6, 0xC7, 0xC8, 0xC9, 0xCA, 0xD2, 0xD3, 0xD4, 0xD5, 0xD6, 0xD7, 0xD8, 0xD9, 0xDA, 0xE1, 0xE2,
 			0xE3, 0xE4, 0xE5, 0xE6, 0xE7, 0xE8, 0xE9, 0xEA, 0xF1, 0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8,
 			0xF9, 0xFA,
-			/**< for chrom AC *//** CNcomment:É«¶ÈAC */ 0x11,
+			/**< for chrom AC *//** CNcomment:è‰²åº¦AC */ 0x11,
 			0x00, 0x02, 0x01, 0x02, 0x04, 0x04, 0x03, 0x04, 0x07, 0x05, 0x04, 0x04, 0x00, 0x01, 0x02, 0x77,
 			0x00, 0x01, 0x02, 0x03, 0x11, 0x04, 0x05, 0x21, 0x31, 0x06, 0x12, 0x41, 0x51, 0x07, 0x61, 0x71,
 			0x13, 0x22, 0x32, 0x81, 0x08, 0x14, 0x42, 0x91, 0xA1, 0xB1, 0xC1, 0x09, 0x23, 0x33, 0x52, 0xF0,
@@ -599,7 +599,7 @@ HI_VOID JPEG_HDEC_SetAC(const struct jpeg_decompress_struct *cinfo)
 		JPEG_HDEC_HANDLE_S_PTR	pJpegHandle = (JPEG_HDEC_HANDLE_S_PTR)(cinfo->client_data);
 
 		/** AC Decode Begin */
-		/** CNcomment: ¿ªÊ¼AC±í½âÂë */
+		/** CNcomment: å¼€å§‹ACè¡¨è§£ç  */
 		/** Generate hac_min_table, hac_base_table **/
 #if defined(CONFIG_JPEG_MPG_DEC_ENABLE) && !defined(CONFIG_JPEG_USE_CALC_DEFAULT_VALUE)
 		if ((NULL == cinfo->ac_huff_tbl_ptrs[0]) || (NULL != cinfo->ac_huff_tbl_ptrs[2]))
@@ -621,9 +621,9 @@ HI_VOID JPEG_HDEC_SetAC(const struct jpeg_decompress_struct *cinfo)
 		}
 		else
 		{
-			/** ÁÁ¶ÈACÏµÊı±í **/
+			/** äº®åº¦ACç³»æ•°è¡¨ **/
 			memcpy(&(huff_ptr[LU]), cinfo->ac_huff_tbl_ptrs[0], sizeof(huff_ptr[LU]));
-			/** É«¶ÈACÏµÊı±í **/
+			/** è‰²åº¦ACç³»æ•°è¡¨ **/
 			if(NULL == cinfo->ac_huff_tbl_ptrs[1])
 			{
 				memcpy(&(huff_ptr[CH]),cinfo->ac_huff_tbl_ptrs[0],sizeof(huff_ptr[LU]));
@@ -662,7 +662,7 @@ HI_VOID JPEG_HDEC_SetAC(const struct jpeg_decompress_struct *cinfo)
 			for(u32Index = 0; u32Index < 16; u32Index++)
 			{
 				/** the ibit[] has sixteen value,read from jpeg file */
-				/** CNcomment: ibit[]ÓĞ16¸ö£¬´ÓjpegÎÄ¼ş¶Áµ½16¸öÖµ */
+				/** CNcomment: ibit[]æœ‰16ä¸ªï¼Œä»jpegæ–‡ä»¶è¯»åˆ°16ä¸ªå€¼ */
 				#if defined(CONFIG_JPEG_MPG_DEC_ENABLE) && !defined(CONFIG_JPEG_USE_CALC_DEFAULT_VALUE)
 				syms = huff_ptr[cnt].bits[u32Index+1];
 		        #else
@@ -722,7 +722,7 @@ HI_VOID JPEG_HDEC_SetAC(const struct jpeg_decompress_struct *cinfo)
 		}
 		
 		/** Conbine Luminnance and Chrominance */
-		/** CNcomment: ×éºÏÁÁ¶ÈºÍÉ«¶È±í */
+		/** CNcomment: ç»„åˆäº®åº¦å’Œè‰²åº¦è¡¨ */
 		for(u32Index=0;u32Index<8;u32Index++)
 		{
 		
@@ -739,11 +739,11 @@ HI_VOID JPEG_HDEC_SetAC(const struct jpeg_decompress_struct *cinfo)
 		}
 		
 		/** Write hac_min/base/symbol_table into  HW reisters */
-		/** CNcomment: ½«hac_min/baseÖµÅä¸øÓ²¼ş¼Ä´æÆ÷ */
+		/** CNcomment: å°†hac_min/baseå€¼é…ç»™ç¡¬ä»¶å¯„å­˜å™¨ */
 		JPEG_HDEC_CpyData2Reg(pJpegHandle->pJpegRegVirAddr, hac_min_tab,   JPGD_REG_HACMINTABLE,  32);
 		JPEG_HDEC_CpyData2Reg(pJpegHandle->pJpegRegVirAddr, hac_base_tab,  JPGD_REG_HACBASETABLE, 32);
 		/** 0x2c0 = ac_max_sum_syms * 4 */
-		/** CNcomment: Öµ0x2c0 = ac_max_sum_syms * 4¼ÆËãµÃÀ´ */
+		/** CNcomment: å€¼0x2c0 = ac_max_sum_syms * 4è®¡ç®—å¾—æ¥ */
 		JPEG_HDEC_CpyData2Reg(pJpegHandle->pJpegRegVirAddr, hac_symbol_tab,JPGD_REG_HACSYMTABLE,  0x2c0);
 
 }
@@ -752,9 +752,9 @@ HI_VOID JPEG_HDEC_SetAC(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_SetDht
 * description	: set the dht
-              	  CNcomment:  ÉèÖÃ¹ş·òÂü±íĞÅÏ¢,Õâ¸öµØ·½±ê×¼±íÊÇ¹Ì¶¨µÄ£¬
-							  ¿ÉÒÔÌáÇ°¼ÆËãºÃ£¬Ö±½ÓÅäÖÃ¼Ä´æÆ÷  CNend\n
-* param[in] 	: cinfo       CNcomment:  ½âÂë¶ÔÏó  CNend\n
+              	  CNcomment:  è®¾ç½®å“ˆå¤«æ›¼è¡¨ä¿¡æ¯,è¿™ä¸ªåœ°æ–¹æ ‡å‡†è¡¨æ˜¯å›ºå®šçš„ï¼Œ
+							  å¯ä»¥æå‰è®¡ç®—å¥½ï¼Œç›´æ¥é…ç½®å¯„å­˜å™¨  CNend\n
+* param[in] 	: cinfo       CNcomment:  è§£ç å¯¹è±¡  CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/

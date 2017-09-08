@@ -24,7 +24,7 @@
 #define EE_TX_DE_ENABLED_ADDR 0x91
 #define EE_TX_ICLK_ADDR       0x92
 #define EE_TX_MCLK_INDEX_ADDR 0x93
-#define EE_TX_INTERNAL_MCLK_ADDR 0x94 // s40 ÐÂÌØÐÔ ÄÚ²¿mclk
+#define EE_TX_INTERNAL_MCLK_ADDR 0x94 // s40 æ–°ç‰¹æ€§ å†…éƒ¨mclk
 #define EE_TX_VIDEO_MODE_ADDR 0xA0
 #define EE_TX_FPGA 0x95
 #define EE_TX_HDCP 0x96

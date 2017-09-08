@@ -32,368 +32,368 @@ extern "C" {
 /** @{ */  /** <!-- [HDMI] */
 
 
-/**the max audio capability count*//**CNcomment:×î´óÒôÆµÄÜÁ¦¼¯¸öÊý */
+/**the max audio capability count*//**CNcomment:æœ€å¤§éŸ³é¢‘èƒ½åŠ›é›†ä¸ªæ•° */
 #define HI_UNF_HDMI_MAX_AUDIO_CAP_COUNT     15 
 
-/**the max audio smprate count*//**CNcomment:×î´óÒôÆµ²ÉÑùÂÊ¸öÊý */
+/**the max audio smprate count*//**CNcomment:æœ€å¤§éŸ³é¢‘é‡‡æ ·çŽ‡ä¸ªæ•° */
 #define HI_UNF_HDMI_MAX_AUDIO_SMPRATE_COUNT 10 
 
-/**the max infoframe length*//**CNcomment:×î´óÐÅÏ¢Ö¡³¤¶È */
+/**the max infoframe length*//**CNcomment:æœ€å¤§ä¿¡æ¯å¸§é•¿åº¦ */
 #define HI_UNF_HDMI_MAX_INFOFRAME_LEN   0X20   
 
-/**HDMI default value*//**CNcomment:HDMI È±Ê¡Öµ */
+/**HDMI default value*//**CNcomment:HDMI ç¼ºçœå€¼ */
 #define HI_UNF_HDMI_DEFAULT_SETTING     0x00
 
-/**HDMI interface ID *//**CNcomment:HDMI½Ó¿ÚID  */
+/**HDMI interface ID *//**CNcomment:HDMIæŽ¥å£ID  */
 typedef enum hiUNF_HDMI_ID_E
 {
-    HI_UNF_HDMI_ID_0         = 0,          /**<HDMI interface 0*/ /**<CNcomment:HDMI½Ó¿Ú0 */
+    HI_UNF_HDMI_ID_0         = 0,          /**<HDMI interface 0*/ /**<CNcomment:HDMIæŽ¥å£0 */
     HI_UNF_HDMI_ID_BUTT
 } HI_UNF_HDMI_ID_E;
 
-/**HDMI event type*//**CNcomment: HDMIÊÂ¼þÀàÐÍ */
+/**HDMI event type*//**CNcomment: HDMIäº‹ä»¶ç±»åž‹ */
 typedef enum hiUNF_HDMI_EVENT_TYPE_E
 {
-    HI_UNF_HDMI_EVENT_HOTPLUG = 0x10,       /**<HDMI HotPlug event type*//**<CNcomment:<HDMIÈÈ²å°ÎÊÂ¼þ */
-    HI_UNF_HDMI_EVENT_NO_PLUG,              /**<HDMI unplug event type*//**<CNcomment:HDMI CableÃ»ÓÐÁ¬½Ó ÊÂ¼þ */
-    HI_UNF_HDMI_EVENT_EDID_FAIL,            /**<HDMI read edid fail event type*//**<CNcomment:HDMI EDID¶ÁÈ¡Ê§°ÜÊÂ¼þ */
-    HI_UNF_HDMI_EVENT_HDCP_FAIL,            /**<HDCP authentication fail event type *//**<CNcomment:HDCPÑéÖ¤Ê§°ÜÊÂ¼þ */
-    HI_UNF_HDMI_EVENT_HDCP_SUCCESS,         /**<HDCP authentication succeed event type*//**<CNcomment:HDCPÑéÖ¤³É¹¦ */
-    HI_UNF_HDMI_EVENT_RSEN_CONNECT,         /**<TMDS link is connected*//**<CNcomment:TMDSÁ´½Ó³É¹¦ */
-    HI_UNF_HDMI_EVENT_RSEN_DISCONNECT,      /**<TMDS link is disconnected*//**<CNcomment:TMDSÎ´Á´½Ó */    
-    HI_UNF_HDMI_EVENT_HDCP_USERSETTING,     /**<HDMI Reset *//**<CNcomment:HDCP ¸´Î»*/
+    HI_UNF_HDMI_EVENT_HOTPLUG = 0x10,       /**<HDMI HotPlug event type*//**<CNcomment:<HDMIçƒ­æ’æ‹”äº‹ä»¶ */
+    HI_UNF_HDMI_EVENT_NO_PLUG,              /**<HDMI unplug event type*//**<CNcomment:HDMI Cableæ²¡æœ‰è¿žæŽ¥ äº‹ä»¶ */
+    HI_UNF_HDMI_EVENT_EDID_FAIL,            /**<HDMI read edid fail event type*//**<CNcomment:HDMI EDIDè¯»å–å¤±è´¥äº‹ä»¶ */
+    HI_UNF_HDMI_EVENT_HDCP_FAIL,            /**<HDCP authentication fail event type *//**<CNcomment:HDCPéªŒè¯å¤±è´¥äº‹ä»¶ */
+    HI_UNF_HDMI_EVENT_HDCP_SUCCESS,         /**<HDCP authentication succeed event type*//**<CNcomment:HDCPéªŒè¯æˆåŠŸ */
+    HI_UNF_HDMI_EVENT_RSEN_CONNECT,         /**<TMDS link is connected*//**<CNcomment:TMDSé“¾æŽ¥æˆåŠŸ */
+    HI_UNF_HDMI_EVENT_RSEN_DISCONNECT,      /**<TMDS link is disconnected*//**<CNcomment:TMDSæœªé“¾æŽ¥ */    
+    HI_UNF_HDMI_EVENT_HDCP_USERSETTING,     /**<HDMI Reset *//**<CNcomment:HDCP å¤ä½*/
     HI_UNF_HDMI_EVENT_BUTT
 }HI_UNF_HDMI_EVENT_TYPE_E;
 
-/*Video color space mode*//**CNcomment:ÊÓÆµÑÕÉ«¿Õ¼äÀàÐÍ*/
+/*Video color space mode*//**CNcomment:è§†é¢‘é¢œè‰²ç©ºé—´ç±»åž‹*/
 typedef enum hiUNF_HDMI_VIDEO_MODE
 {
-    HI_UNF_HDMI_VIDEO_MODE_RGB444,          /**<RGB444 output mode*//**<CNcomment:RGB444Êä³öÄ£Ê½ */ 
-    HI_UNF_HDMI_VIDEO_MODE_YCBCR422,        /**<YCBCR422 output mode*//**<CNcomment:YCBCR422Êä³öÄ£Ê½ */ 
-    HI_UNF_HDMI_VIDEO_MODE_YCBCR444,        /**<YCBCR444 output mode*//**<CNcomment:YCBCR444Êä³öÄ£Ê½ */ 
+    HI_UNF_HDMI_VIDEO_MODE_RGB444,          /**<RGB444 output mode*//**<CNcomment:RGB444è¾“å‡ºæ¨¡å¼ */ 
+    HI_UNF_HDMI_VIDEO_MODE_YCBCR422,        /**<YCBCR422 output mode*//**<CNcomment:YCBCR422è¾“å‡ºæ¨¡å¼ */ 
+    HI_UNF_HDMI_VIDEO_MODE_YCBCR444,        /**<YCBCR444 output mode*//**<CNcomment:YCBCR444è¾“å‡ºæ¨¡å¼ */ 
         
     HI_UNF_HDMI_VIDEO_MODE_BUTT    
 }HI_UNF_HDMI_VIDEO_MODE_E;
 
-/*HDMI Output Aspect Ratio*//**CNcomment:HDMIÊä³ö¿í¸ß±È*/
+/*HDMI Output Aspect Ratio*//**CNcomment:HDMIè¾“å‡ºå®½é«˜æ¯”*/
 typedef enum hiUNF_HDMI_ASPECT_RATIO_E
 {
-    HI_UNF_HDMI_ASPECT_RATIO_UNKNOWN,        /**<Aspect Ratio unknown *//**<CNcomment:Î´Öª¿í¸ß±È */ 
-    HI_UNF_HDMI_ASPECT_RATIO_4TO3,           /**<Aspect Ratio 4:3  *//**<CNcomment:¿í¸ß±È4:3*/ 
-    HI_UNF_HDMI_ASPECT_RATIO_16TO9,          /**<Aspect Ratio 16:9 *//**<CNcomment:¿í¸ß±È16:9 */ 
+    HI_UNF_HDMI_ASPECT_RATIO_UNKNOWN,        /**<Aspect Ratio unknown *//**<CNcomment:æœªçŸ¥å®½é«˜æ¯” */ 
+    HI_UNF_HDMI_ASPECT_RATIO_4TO3,           /**<Aspect Ratio 4:3  *//**<CNcomment:å®½é«˜æ¯”4:3*/ 
+    HI_UNF_HDMI_ASPECT_RATIO_16TO9,          /**<Aspect Ratio 16:9 *//**<CNcomment:å®½é«˜æ¯”16:9 */ 
     HI_UNF_HDMI_ASPECT_RATIO_BUTT
 }HI_UNF_HDMI_ASPECT_RATIO_E;
 
 
-/**HDMI Deep color mode*//**CNcomment: HDMI ÉîÉ«Ä£Ê½ */
+/**HDMI Deep color mode*//**CNcomment: HDMI æ·±è‰²æ¨¡å¼ */
 typedef enum hiUNF_HDMI_DEEP_COLOR_E
 {
-    HI_UNF_HDMI_DEEP_COLOR_24BIT = 0x00,    /**<HDMI Deep color 24bit mode*//**<CNcomment:HDMI 24bit ÉîÉ«Ä£Ê½  */
-    HI_UNF_HDMI_DEEP_COLOR_30BIT,           /**<HDMI Deep color 30bit mode*//**<CNcomment:HDMI 30bit ÉîÉ«Ä£Ê½  */
-    HI_UNF_HDMI_DEEP_COLOR_36BIT,           /**<HDMI Deep color 36bit mode*//**<CNcomment:HDMI 36bit ÉîÉ«Ä£Ê½  */  
+    HI_UNF_HDMI_DEEP_COLOR_24BIT = 0x00,    /**<HDMI Deep color 24bit mode*//**<CNcomment:HDMI 24bit æ·±è‰²æ¨¡å¼  */
+    HI_UNF_HDMI_DEEP_COLOR_30BIT,           /**<HDMI Deep color 30bit mode*//**<CNcomment:HDMI 30bit æ·±è‰²æ¨¡å¼  */
+    HI_UNF_HDMI_DEEP_COLOR_36BIT,           /**<HDMI Deep color 36bit mode*//**<CNcomment:HDMI 36bit æ·±è‰²æ¨¡å¼  */  
     HI_UNF_HDMI_DEEP_COLOR_OFF   = 0xff,
     HI_UNF_HDMI_DEEP_COLOR_BUTT
 }HI_UNF_HDMI_DEEP_COLOR_E;
 
-/**HDMI AVI infoframe BarInfo enum*//**CNcomment: HDMI AVIÐÅÏ¢Ö¡ BarInfo Ã¶¾Ù */
+/**HDMI AVI infoframe BarInfo enum*//**CNcomment: HDMI AVIä¿¡æ¯å¸§ BarInfo æžšä¸¾ */
 typedef enum hiUNF_HDMI_BARINFO_E
 {
-   HDMI_BAR_INFO_NOT_VALID,                 /**<Bar Data not valid *//**<CNcomment:ÎÞÐ§BarÊý¾Ý  */
-   HDMI_BAR_INFO_V,                         /**<Vertical bar data valid *//**<CNcomment:´¹Ö±BarÊý¾ÝÓÐÐ§  */
-   HDMI_BAR_INFO_H,                         /**<Horizental bar data valid *//**<CNcomment:Ë®Æ½barÊý¾ÝÓÐÐ§  */
-   HDMI_BAR_INFO_VH                         /**<Horizental and Vertical bar data valid *//**<CNcomment:Ë®Æ½´¹Ö±BarÊý¾ÝÍ¬Ê±ÓÐÐ§ */
+   HDMI_BAR_INFO_NOT_VALID,                 /**<Bar Data not valid *//**<CNcomment:æ— æ•ˆBaræ•°æ®  */
+   HDMI_BAR_INFO_V,                         /**<Vertical bar data valid *//**<CNcomment:åž‚ç›´Baræ•°æ®æœ‰æ•ˆ  */
+   HDMI_BAR_INFO_H,                         /**<Horizental bar data valid *//**<CNcomment:æ°´å¹³baræ•°æ®æœ‰æ•ˆ  */
+   HDMI_BAR_INFO_VH                         /**<Horizental and Vertical bar data valid *//**<CNcomment:æ°´å¹³åž‚ç›´Baræ•°æ®åŒæ—¶æœ‰æ•ˆ */
 }HI_UNF_HDMI_BARINFO_E;
 
-/**HDMI AVI infofram ScanInfo enum*//**CNcomment: HDMI AVIÐÅÏ¢Ö¡ ScanInfo Ã¶¾Ù */
+/**HDMI AVI infofram ScanInfo enum*//**CNcomment: HDMI AVIä¿¡æ¯å¸§ ScanInfo æžšä¸¾ */
 typedef enum hiUNF_HDMI_SCANINFO_E
 {
-    HDMI_SCAN_INFO_NO_DATA      = 0,        /**< No Scan information*//**<CNcomment:ÎÞÉ¨ÃèÐÅÏ¢  */
-    HDMI_SCAN_INFO_OVERSCANNED  = 1,        /**< Scan information, Overscanned (for television) *//**<CNcomment:É¨ÃèÐÅÏ¢:È«»­ÃæÉ¨Ãè  */
-    HDMI_SCAN_INFO_UNDERSCANNED = 2,        /**< Scan information, Underscanned (for computer) *//**<CNcomment:É¨ÃèÐÅÏ¢: ·ÇÈ«»­ÃæÉ¨Ãè  */
+    HDMI_SCAN_INFO_NO_DATA      = 0,        /**< No Scan information*//**<CNcomment:æ— æ‰«æä¿¡æ¯  */
+    HDMI_SCAN_INFO_OVERSCANNED  = 1,        /**< Scan information, Overscanned (for television) *//**<CNcomment:æ‰«æä¿¡æ¯:å…¨ç”»é¢æ‰«æ  */
+    HDMI_SCAN_INFO_UNDERSCANNED = 2,        /**< Scan information, Underscanned (for computer) *//**<CNcomment:æ‰«æä¿¡æ¯: éžå…¨ç”»é¢æ‰«æ  */
     HDMI_SCAN_INFO_FUTURE
 }HI_UNF_HDMI_SCANINFO_E;
 
-/**HDMI AVI InfoFrame picture scale enum*//**CNcomment: HDMI AVIÐÅÏ¢Ö¡ Picture scale Ã¶¾Ù */
+/**HDMI AVI InfoFrame picture scale enum*//**CNcomment: HDMI AVIä¿¡æ¯å¸§ Picture scale æžšä¸¾ */
 typedef enum hiUNF_HDMI_PICTURE_SCALING_E
 {
-    HDMI_PICTURE_NON_UNIFORM_SCALING,       /**< No Known, non-uniform picture scaling  *//**<CNcomment:Í³Ò»Í¼Ïñ×ø±ê  */
-    HDMI_PICTURE_SCALING_H,                 /**< Picture has been scaled horizentally *//**<CNcomment:Í¼ÏñË®Æ½×ø±ê»¯  */
-    HDMI_PICTURE_SCALING_V,                 /**< Picture has been scaled Vertically *//**<CNcomment:Í¼Ïñ´¹Ö±×ø±ê»¯  */
-    HDMI_PICTURE_SCALING_HV                 /**< Picture has been scaled Horizentally and Vertically   *//**<CNcomment:Í¼ÏñË®Æ½´¹Ö±×ø±ê»¯  */
+    HDMI_PICTURE_NON_UNIFORM_SCALING,       /**< No Known, non-uniform picture scaling  *//**<CNcomment:ç»Ÿä¸€å›¾åƒåæ ‡  */
+    HDMI_PICTURE_SCALING_H,                 /**< Picture has been scaled horizentally *//**<CNcomment:å›¾åƒæ°´å¹³åæ ‡åŒ–  */
+    HDMI_PICTURE_SCALING_V,                 /**< Picture has been scaled Vertically *//**<CNcomment:å›¾åƒåž‚ç›´åæ ‡åŒ–  */
+    HDMI_PICTURE_SCALING_HV                 /**< Picture has been scaled Horizentally and Vertically   *//**<CNcomment:å›¾åƒæ°´å¹³åž‚ç›´åæ ‡åŒ–  */
  }HI_UNF_HDMI_PICTURE_SCALING_E;
 
-/**HDMI AVI InfoFrame colorimetry enum*//**CNcomment: HDMI AVIÐÅÏ¢Ö¡ É«¶È¿Õ¼ä Ã¶¾Ù */
+/**HDMI AVI InfoFrame colorimetry enum*//**CNcomment: HDMI AVIä¿¡æ¯å¸§ è‰²åº¦ç©ºé—´ æžšä¸¾ */
 typedef enum hiUNF_HDMI_COLORSPACE_E
 {
-    HDMI_COLORIMETRY_NO_DATA,               /**<Colorimetry No Data option*//**<CNcomment:Colorimetry No DataÑ¡Ïî */
-    HDMI_COLORIMETRY_ITU601,                /**<Colorimetry ITU601 option*//**<CNcomment:Colorimetry ITU601É«¶È¿Õ¼äÑ¡Ïî */
-    HDMI_COLORIMETRY_ITU709,                /**<Colorimetry ITU709 option*//**<CNcomment:Colorimetry ITU709É«¶È¿Õ¼äÑ¡Ïî */
-    HDMI_COLORIMETRY_EXTENDED,              /**<Colorimetry extended option*//**<CNcomment:Colorimetry À©Õ¹Ñ¡Ïî */
-    HDMI_COLORIMETRY_XVYCC_601,             /**<Colorimetry xvYCC601 extened option*//**<CNcomment:Colorimetry xvYCC601À©Õ¹Ñ¡Ïî */
-    HDMI_COLORIMETRY_XVYCC_709              /**<Colorimetry xvYCC709 extened option*//**<CNcomment:Colorimetry xvYCC709À©Õ¹Ñ¡Ïî */
+    HDMI_COLORIMETRY_NO_DATA,               /**<Colorimetry No Data option*//**<CNcomment:Colorimetry No Dataé€‰é¡¹ */
+    HDMI_COLORIMETRY_ITU601,                /**<Colorimetry ITU601 option*//**<CNcomment:Colorimetry ITU601è‰²åº¦ç©ºé—´é€‰é¡¹ */
+    HDMI_COLORIMETRY_ITU709,                /**<Colorimetry ITU709 option*//**<CNcomment:Colorimetry ITU709è‰²åº¦ç©ºé—´é€‰é¡¹ */
+    HDMI_COLORIMETRY_EXTENDED,              /**<Colorimetry extended option*//**<CNcomment:Colorimetry æ‰©å±•é€‰é¡¹ */
+    HDMI_COLORIMETRY_XVYCC_601,             /**<Colorimetry xvYCC601 extened option*//**<CNcomment:Colorimetry xvYCC601æ‰©å±•é€‰é¡¹ */
+    HDMI_COLORIMETRY_XVYCC_709              /**<Colorimetry xvYCC709 extened option*//**<CNcomment:Colorimetry xvYCC709æ‰©å±•é€‰é¡¹ */
 }HI_UNF_HDMI_COLORSPACE_E;
 
-/**HDMI AVI InfoFrame RGB range enum*//**CNcomment: HDMI AVIÐÅÏ¢Ö¡ RGBÉ«¶È·¶Î§ Ã¶¾Ù */
+/**HDMI AVI InfoFrame RGB range enum*//**CNcomment: HDMI AVIä¿¡æ¯å¸§ RGBè‰²åº¦èŒƒå›´ æžšä¸¾ */
 typedef enum hiUNF_HDMI_RGB_QUAN_RAGE_E
 {
-    HDMI_RGB_QUANTIZATION_DEFAULT_RANGE,    /**< Defaulr range, it depends on the video format *//**<CNcomment:Ä¬ÈÏÉ«¶È·¶Î§£¬ÒÀÀµÓÚÊÓÆµÖÆÊ½ */
-    HDMI_RGB_QUANTIZATION_LIMITED_RANGE,    /**< Limited quantization range of 220 levels when receiving a CE video format*//**<CNcomment:ÊÜÏÞÉ«¶È·¶Î§16-234 */
-    HDMI_RGB_QUANTIZATION_FULL_RANGE        /**< Full quantization range of 256 levels when receiving an IT video format*//**<CNcomment:È«É«¶È·¶Î§ 0-255 */
+    HDMI_RGB_QUANTIZATION_DEFAULT_RANGE,    /**< Defaulr range, it depends on the video format *//**<CNcomment:é»˜è®¤è‰²åº¦èŒƒå›´ï¼Œä¾èµ–äºŽè§†é¢‘åˆ¶å¼ */
+    HDMI_RGB_QUANTIZATION_LIMITED_RANGE,    /**< Limited quantization range of 220 levels when receiving a CE video format*//**<CNcomment:å—é™è‰²åº¦èŒƒå›´16-234 */
+    HDMI_RGB_QUANTIZATION_FULL_RANGE        /**< Full quantization range of 256 levels when receiving an IT video format*//**<CNcomment:å…¨è‰²åº¦èŒƒå›´ 0-255 */
 }HI_UNF_HDMI_RGB_QUAN_RAGE_E;
 
-/**HDMI AVI InfoFrame YCC quantization range enum *//**CNcomment:HDMI AVIÐÅÏ¢Ö¡ YCCÉ«¶È·¶Î§ Ã¶¾Ù */
+/**HDMI AVI InfoFrame YCC quantization range enum *//**CNcomment:HDMI AVIä¿¡æ¯å¸§ YCCè‰²åº¦èŒƒå›´ æžšä¸¾ */
 typedef enum hiUNF_HDMI_YCC_QUAN_RAGE_E
 {
-    HDMI_YCC_QUANTIZATION_LIMITED_RANGE,    /**< Limited quantization range of 220 levels when receiving a CE video format*//**<CNcomment:ÊÜÏÞÉ«¶È·¶Î§16-234 */
-    HDMI_YCC_QUANTIZATION_FULL_RANGE        /**< Full quantization range of 256 levels when receiving an IT video format*//**<CNcomment:È«É«¶È·¶Î§ 0-255 */
+    HDMI_YCC_QUANTIZATION_LIMITED_RANGE,    /**< Limited quantization range of 220 levels when receiving a CE video format*//**<CNcomment:å—é™è‰²åº¦èŒƒå›´16-234 */
+    HDMI_YCC_QUANTIZATION_FULL_RANGE        /**< Full quantization range of 256 levels when receiving an IT video format*//**<CNcomment:å…¨è‰²åº¦èŒƒå›´ 0-255 */
 }HI_UNF_HDMI_YCC_QUAN_RAGE_E;
 
-/**HDMI AVI InfoFrame AVI video content type enum*//**CNcomment:HDMI AVIÐÅÏ¢Ö¡ AVIÊÓÆµÄÚÈÝµÄÀàÐÍ Ã¶¾Ù */
+/**HDMI AVI InfoFrame AVI video content type enum*//**CNcomment:HDMI AVIä¿¡æ¯å¸§ AVIè§†é¢‘å†…å®¹çš„ç±»åž‹ æžšä¸¾ */
 typedef enum hiUNF_HDMI_CONTENT_TYPE_E
 {
-    HDMI_CONTNET_GRAPHIC,                   /**< Graphics type*//**<CNcomment:Í¼Ïñ */
-    HDMI_CONTNET_PHOTO,                     /**< Photo type*//**<CNcomment:ÕÕÆ¬ */
-    HDMI_CONTNET_CINEMA,                    /**< Cinema type*//**<CNcomment:µçÓ°Ôº */
-    HDMI_CONTNET_GAME                       /**< Game type*//**<CNcomment:ÓÎÏ· */
+    HDMI_CONTNET_GRAPHIC,                   /**< Graphics type*//**<CNcomment:å›¾åƒ */
+    HDMI_CONTNET_PHOTO,                     /**< Photo type*//**<CNcomment:ç…§ç‰‡ */
+    HDMI_CONTNET_CINEMA,                    /**< Cinema type*//**<CNcomment:ç”µå½±é™¢ */
+    HDMI_CONTNET_GAME                       /**< Game type*//**<CNcomment:æ¸¸æˆ */
 }HI_UNF_HDMI_CONTENT_TYPE_E;
 
-/**HDMI Audio InfoFrame Audio type enum*//**CNcomment:HDMI AUDÐÅÏ¢Ö¡ ÒôÆµÀàÐÍ Ã¶¾Ù */
+/**HDMI Audio InfoFrame Audio type enum*//**CNcomment:HDMI AUDä¿¡æ¯å¸§ éŸ³é¢‘ç±»åž‹ æžšä¸¾ */
 typedef enum hiUNF_HDMI_CODING_TYPE_E
 {
-    HDMI_AUDIO_CODING_REFER_STREAM_HEAD,  /**<Audio coding type, refer stream,default type*//**<CNcomment:ÒôÆµ±àÂëÀàÐÍ£¬²Î¿¼Êý¾ÝÁ÷£¬È±Ê¡¸ñÊ½ */
-    HDMI_AUDIO_CODING_PCM,                /**<Audio coding PCM type*//**<CNcomment:ÒôÆµ±àÂëPCM¸ñÊ½ */
-    HDMI_AUDIO_CODING_AC3,                /**<Audio coding AC3 type*//**<CNcomment:ÒôÆµ±àÂëAC3¸ñÊ½ */
-    HDMI_AUDIO_CODING_MPEG1,              /**<Audio coding MPEG1 type*//**<CNcomment:ÒôÆµ±àÂëMPEG1¸ñÊ½ */
-    HDMI_AUDIO_CODING_MP3,                /**<Audio coding MP3 type*//**<CNcomment:ÒôÆµ±àÂëMP3¸ñÊ½ */
-    HDMI_AUDIO_CODING_MPEG2,              /**<Audio coding MPEG2 type*//**<CNcomment:ÒôÆµ±àÂëMPEG2¸ñÊ½ */
-    HDMI_AUDIO_CODING_AAC,                /**<Audio coding AAC type*//**<CNcomment:ÒôÆµ±àÂëAAC¸ñÊ½ */
-    HDMI_AUDIO_CODING_DTS,                /**<Audio coding DTS type*//**<CNcomment:ÒôÆµ±àÂëDTS¸ñÊ½ */
-    HDMI_AUDIO_CODING_DDPLUS,             /**<Audio coding DDPLUS type*//**<CNcomment:ÒôÆµ±àÂëDDPLUS¸ñÊ½ */
-    HDMI_AUDIO_CODING_MLP,                /**<Audio coding MLP type*//**<CNcomment:ÒôÆµ±àÂëMLP¸ñÊ½ */
-    HDMI_AUDIO_CODING_WMA,                /**<Audio coding WMA type*//**<CNcomment:ÒôÆµ±àÂëWMA¸ñÊ½ */
+    HDMI_AUDIO_CODING_REFER_STREAM_HEAD,  /**<Audio coding type, refer stream,default type*//**<CNcomment:éŸ³é¢‘ç¼–ç ç±»åž‹ï¼Œå‚è€ƒæ•°æ®æµï¼Œç¼ºçœæ ¼å¼ */
+    HDMI_AUDIO_CODING_PCM,                /**<Audio coding PCM type*//**<CNcomment:éŸ³é¢‘ç¼–ç PCMæ ¼å¼ */
+    HDMI_AUDIO_CODING_AC3,                /**<Audio coding AC3 type*//**<CNcomment:éŸ³é¢‘ç¼–ç AC3æ ¼å¼ */
+    HDMI_AUDIO_CODING_MPEG1,              /**<Audio coding MPEG1 type*//**<CNcomment:éŸ³é¢‘ç¼–ç MPEG1æ ¼å¼ */
+    HDMI_AUDIO_CODING_MP3,                /**<Audio coding MP3 type*//**<CNcomment:éŸ³é¢‘ç¼–ç MP3æ ¼å¼ */
+    HDMI_AUDIO_CODING_MPEG2,              /**<Audio coding MPEG2 type*//**<CNcomment:éŸ³é¢‘ç¼–ç MPEG2æ ¼å¼ */
+    HDMI_AUDIO_CODING_AAC,                /**<Audio coding AAC type*//**<CNcomment:éŸ³é¢‘ç¼–ç AACæ ¼å¼ */
+    HDMI_AUDIO_CODING_DTS,                /**<Audio coding DTS type*//**<CNcomment:éŸ³é¢‘ç¼–ç DTSæ ¼å¼ */
+    HDMI_AUDIO_CODING_DDPLUS,             /**<Audio coding DDPLUS type*//**<CNcomment:éŸ³é¢‘ç¼–ç DDPLUSæ ¼å¼ */
+    HDMI_AUDIO_CODING_MLP,                /**<Audio coding MLP type*//**<CNcomment:éŸ³é¢‘ç¼–ç MLPæ ¼å¼ */
+    HDMI_AUDIO_CODING_WMA,                /**<Audio coding WMA type*//**<CNcomment:éŸ³é¢‘ç¼–ç WMAæ ¼å¼ */
     HDMI_AUDIO_CODING_MAX
 }HI_UNF_HDMI_CODING_TYPE_E;
 
-/**HDMI Priority judgments strategy enum*//**CNcomment:HDMI ÓÅÏÈÅÐ¶Ï²ßÂÔ Ã¶¾Ù*/
+/**HDMI Priority judgments strategy enum*//**CNcomment:HDMI ä¼˜å…ˆåˆ¤æ–­ç­–ç•¥ æžšä¸¾*/
 typedef enum hiUNF_HDMI_DEFAULT_ACTION_E
 {
-    HI_UNF_HDMI_DEFAULT_ACTION_NULL,   /**<Default action null*//**<CNcomment:ÎÞÄ¬ÈÏÓÅÏÈ²ßÂÔ */         
-    HI_UNF_HDMI_DEFAULT_ACTION_HDMI,   /**<Default action HDMI*//**<CNcomment:ÓÅÏÈÅÐ¶ÏHDMI */          
-    HI_UNF_HDMI_DEFAULT_ACTION_DVI,    /**<Default action DVI*//**<CNcomment:ÓÅÏÈÅÐ¶ÏDVI */          
+    HI_UNF_HDMI_DEFAULT_ACTION_NULL,   /**<Default action null*//**<CNcomment:æ— é»˜è®¤ä¼˜å…ˆç­–ç•¥ */         
+    HI_UNF_HDMI_DEFAULT_ACTION_HDMI,   /**<Default action HDMI*//**<CNcomment:ä¼˜å…ˆåˆ¤æ–­HDMI */          
+    HI_UNF_HDMI_DEFAULT_ACTION_DVI,    /**<Default action DVI*//**<CNcomment:ä¼˜å…ˆåˆ¤æ–­DVI */          
     HI_UNF_HDMI_DEFAULT_ACTION_BUTT   
 }HI_UNF_HDMI_DEFAULT_ACTION_E;
 
 /**The hotplug callback function interface */
-/**CNcomment: ½Ó¿ÚÈÈ²å°Î»Øµ÷º¯Êý */
+/**CNcomment: æŽ¥å£çƒ­æ’æ‹”å›žè°ƒå‡½æ•° */
 typedef void (*HI_UNF_HDMI_CALLBACK)(HI_UNF_HDMI_EVENT_TYPE_E event, HI_VOID *pPrivateData);
 
 /**HDMI Callback Struct*/
-/**CNcomment: HDMI»Øµ÷½á¹¹ */
+/**CNcomment: HDMIå›žè°ƒç»“æž„ */
 typedef struct hiUNF_HDMI_CALLBACK_FUNC_S
 {
-    HI_UNF_HDMI_CALLBACK pfnHdmiEventCallback;  /**<callback function pointer*//**<CNcomment:»Øµ÷º¯ÊýÖ¸Õë*/ 
-    HI_VOID             *pPrivateData;         /**<callback funtion param*//**<CNcomment:»Øµ÷º¯Êý²ÎÊý*/ 
+    HI_UNF_HDMI_CALLBACK pfnHdmiEventCallback;  /**<callback function pointer*//**<CNcomment:å›žè°ƒå‡½æ•°æŒ‡é’ˆ*/ 
+    HI_VOID             *pPrivateData;         /**<callback funtion param*//**<CNcomment:å›žè°ƒå‡½æ•°å‚æ•°*/ 
  }HI_UNF_HDMI_CALLBACK_FUNC_S;
 
 /**HDMI Open Param*/
-/**CNcomment: HDMI´ò¿ª²ÎÊý */
+/**CNcomment: HDMIæ‰“å¼€å‚æ•° */
 typedef struct hiUNF_HDMI_OPEN_PARA_S
 {
-    HI_UNF_HDMI_DEFAULT_ACTION_E enDefaultMode;/**HDMI Priority judgments strategy enum*//**CNcomment:HDMI ÓÅÏÈÅÐ¶Ï²ßÂÔ Ã¶¾Ù*/
+    HI_UNF_HDMI_DEFAULT_ACTION_E enDefaultMode;/**HDMI Priority judgments strategy enum*//**CNcomment:HDMI ä¼˜å…ˆåˆ¤æ–­ç­–ç•¥ æžšä¸¾*/
 }HI_UNF_HDMI_OPEN_PARA_S;
 
 /**HDMI sink capability of interface*/
-/**CNcomment: HDMI sink ½Ó¿ÚÄÜÁ¦¼¯ */
+/**CNcomment: HDMI sink æŽ¥å£èƒ½åŠ›é›† */
 typedef struct hiUNF_HDMI_SINK_CAPABILITY_S
 {
-    HI_BOOL             bConnected;               /**<The Device is connected or disconnected *//**<CNcomment:Éè±¸ÊÇ·ñÁ¬½Ó */
-    HI_BOOL             bSupportHdmi;             /**<The Device suppot HDMI or not,the device is DVI when nonsupport HDMI*//**<CNcomment:Éè±¸ÊÇ·ñÖ§³ÖHDMI£¬Èç¹û²»Ö§³Ö£¬ÔòÎªDVIÉè±¸.*/
-    HI_BOOL             bIsSinkPowerOn;           /**<The sink is PowerOn or not*//**<CNcomment:SinkÉè±¸ÊÇ·ñÉÏµç */
-    HI_BOOL             bIsRealEDID;              /**<The flag of the sink get real edid or not;HI_TRUE:the sink get real edid,HI_FALSE:force set flag*//**<CNcomment:EDIDÊÇ·ñÊÇÕæÕý´ÓsinkÉè±¸»ñÈ¡±êÖ¾£¬HI_TRUEÎªÕýÈ·¶ÁÈ¡£¬HI_FASEÎªÇ¿ÖÆÉèÖÃ½á¹û */
+    HI_BOOL             bConnected;               /**<The Device is connected or disconnected *//**<CNcomment:è®¾å¤‡æ˜¯å¦è¿žæŽ¥ */
+    HI_BOOL             bSupportHdmi;             /**<The Device suppot HDMI or not,the device is DVI when nonsupport HDMI*//**<CNcomment:è®¾å¤‡æ˜¯å¦æ”¯æŒHDMIï¼Œå¦‚æžœä¸æ”¯æŒï¼Œåˆ™ä¸ºDVIè®¾å¤‡.*/
+    HI_BOOL             bIsSinkPowerOn;           /**<The sink is PowerOn or not*//**<CNcomment:Sinkè®¾å¤‡æ˜¯å¦ä¸Šç”µ */
+    HI_BOOL             bIsRealEDID;              /**<The flag of the sink get real edid or not;HI_TRUE:the sink get real edid,HI_FALSE:force set flag*//**<CNcomment:EDIDæ˜¯å¦æ˜¯çœŸæ­£ä»Žsinkè®¾å¤‡èŽ·å–æ ‡å¿—ï¼ŒHI_TRUEä¸ºæ­£ç¡®è¯»å–ï¼ŒHI_FASEä¸ºå¼ºåˆ¶è®¾ç½®ç»“æžœ */
 
-    HI_UNF_ENC_FMT_E    enNativeVideoFormat;      /**<The sink native video format*//**<CNcomment:ÏÔÊ¾Éè±¸ÎïÀí·Ö±æÂÊ */
-    HI_BOOL             bVideoFmtSupported[HI_UNF_ENC_FMT_BUTT]; /**<video capability,HI_TRUE:support the video display format;HI_FALSE:nonsupport the video display foramt*//**<CNcomment:ÊÓÆµÄÜÁ¦¼¯,HI_TRUE±íÊ¾Ö§³ÖÕâÖÖÏÔÊ¾¸ñÊ½£¬HI_FALSE±íÊ¾²»Ö§³Ö */
-    HI_BOOL             bSupportYCbCr;            /**<The sink is support YCBCR or not flag;HI_FLASE:only support RGB*//**<CNcomment:< ÊÇ·ñÖ§³ÖYCBCRÏÔÊ¾£¬ Èç¹ûÎªHI_FALSE,±íÊ¾Ö»Ö§³ÖRGBÏÔÊ¾ */
+    HI_UNF_ENC_FMT_E    enNativeVideoFormat;      /**<The sink native video format*//**<CNcomment:æ˜¾ç¤ºè®¾å¤‡ç‰©ç†åˆ†è¾¨çŽ‡ */
+    HI_BOOL             bVideoFmtSupported[HI_UNF_ENC_FMT_BUTT]; /**<video capability,HI_TRUE:support the video display format;HI_FALSE:nonsupport the video display foramt*//**<CNcomment:è§†é¢‘èƒ½åŠ›é›†,HI_TRUEè¡¨ç¤ºæ”¯æŒè¿™ç§æ˜¾ç¤ºæ ¼å¼ï¼ŒHI_FALSEè¡¨ç¤ºä¸æ”¯æŒ */
+    HI_BOOL             bSupportYCbCr;            /**<The sink is support YCBCR or not flag;HI_FLASE:only support RGB*//**<CNcomment:< æ˜¯å¦æ”¯æŒYCBCRæ˜¾ç¤ºï¼Œ å¦‚æžœä¸ºHI_FALSE,è¡¨ç¤ºåªæ”¯æŒRGBæ˜¾ç¤º */
     
-    HI_BOOL             bSupportxvYCC601;         /**<The sink is support xcYCC601 or not flag*//**<CNcomment:ÊÇ·ñÖ§³ÖxvYCC601ÑÕÉ«¸ñÊ½ */
-    HI_BOOL             bSupportxvYCC709;         /**<The sink is support xvYCC709 or not flag*//**<CNcomment:ÊÇ·ñÖ§³ÖxvYCC709ÑÕÉ«¸ñÊ½ */
-    HI_U8               u8MDBit;                  /**<xvYCC601 support transmit profile;1:P0,2:P1,4:P2*//**<CNcomment:xvYCC601Ö§³ÖµÄ´«Êäprofile:1:P0,2:P1,4:P2 */
+    HI_BOOL             bSupportxvYCC601;         /**<The sink is support xcYCC601 or not flag*//**<CNcomment:æ˜¯å¦æ”¯æŒxvYCC601é¢œè‰²æ ¼å¼ */
+    HI_BOOL             bSupportxvYCC709;         /**<The sink is support xvYCC709 or not flag*//**<CNcomment:æ˜¯å¦æ”¯æŒxvYCC709é¢œè‰²æ ¼å¼ */
+    HI_U8               u8MDBit;                  /**<xvYCC601 support transmit profile;1:P0,2:P1,4:P2*//**<CNcomment:xvYCC601æ”¯æŒçš„ä¼ è¾“profile:1:P0,2:P1,4:P2 */
     
-    HI_BOOL             bAudioFmtSupported[HI_UNF_HDMI_MAX_AUDIO_CAP_COUNT]; /**<Audio capability,reference EIA-CEA-861-D,table 37,HI_TRUE:support this Audio type;HI_FALSE,nonsupport this Audio type*//**<CNcomment:ÒôÆµÄÜÁ¦¼¯, Çë²Î¿¼EIA-CEA-861-D ±í37;HI_TRUE±íÊ¾Ö§³ÖÕâÖÖÏÔÊ¾¸ñÊ½£¬HI_FALSE±íÊ¾²»Ö§³Ö */
-    HI_U32              u32AudioSampleRateSupported[HI_UNF_HDMI_MAX_AUDIO_SMPRATE_COUNT]; /**<PCM smprate capability,0: illegal value,other is support PCM smprate *//**<CNcomment:PCMÒôÆµ²ÉÑùÂÊÄÜÁ¦¼¯£¬0Îª·Ç·¨Öµ£¬ÆäËûÎªÖ§³ÖµÄÒôÆµ²ÉÑùÂÊ */
-    HI_U32              u32MaxPcmChannels;        /**<Audio max PCM Channels number*//**CNcomment:ÒôÆµ×î´óµÄPCMÍ¨µÀÊý */
-    HI_U8               u8Speaker;                /**<Speaker location,please reference EIA-CEA-D the definition of SpekearDATABlock*//**<CNcomment:ÑïÉùÆ÷Î»ÖÃ£¬Çë²Î¿¼EIA-CEA-861-DÖÐSpeakerDATABlockµÄ¶¨Òå */
+    HI_BOOL             bAudioFmtSupported[HI_UNF_HDMI_MAX_AUDIO_CAP_COUNT]; /**<Audio capability,reference EIA-CEA-861-D,table 37,HI_TRUE:support this Audio type;HI_FALSE,nonsupport this Audio type*//**<CNcomment:éŸ³é¢‘èƒ½åŠ›é›†, è¯·å‚è€ƒEIA-CEA-861-D è¡¨37;HI_TRUEè¡¨ç¤ºæ”¯æŒè¿™ç§æ˜¾ç¤ºæ ¼å¼ï¼ŒHI_FALSEè¡¨ç¤ºä¸æ”¯æŒ */
+    HI_U32              u32AudioSampleRateSupported[HI_UNF_HDMI_MAX_AUDIO_SMPRATE_COUNT]; /**<PCM smprate capability,0: illegal value,other is support PCM smprate *//**<CNcomment:PCMéŸ³é¢‘é‡‡æ ·çŽ‡èƒ½åŠ›é›†ï¼Œ0ä¸ºéžæ³•å€¼ï¼Œå…¶ä»–ä¸ºæ”¯æŒçš„éŸ³é¢‘é‡‡æ ·çŽ‡ */
+    HI_U32              u32MaxPcmChannels;        /**<Audio max PCM Channels number*//**CNcomment:éŸ³é¢‘æœ€å¤§çš„PCMé€šé“æ•° */
+    HI_U8               u8Speaker;                /**<Speaker location,please reference EIA-CEA-D the definition of SpekearDATABlock*//**<CNcomment:æ‰¬å£°å™¨ä½ç½®ï¼Œè¯·å‚è€ƒEIA-CEA-861-Dä¸­SpeakerDATABlockçš„å®šä¹‰ */
     
-    HI_U8               u8IDManufactureName[4];   /**<Manufacture name*//**<CNcomment:Éè±¸³§ÉÌ±êÊ¶ */
-    HI_U32              u32IDProductCode;         /**<Product code*//**<CNcomment:Éè±¸ID */
-    HI_U32              u32IDSerialNumber;        /**<Serial numeber of Manufacture*//**<CNcomment:Éè±¸ÐòÁÐºÅ */
-    HI_U32              u32WeekOfManufacture;     /**<the week of manufacture*//**<CNcomment:Éè±¸Éú²úÈÕÆÚ(ÖÜ) */
-    HI_U32              u32YearOfManufacture;     /**<the year of manufacture*//**<CNcomment:Éè±¸Éú²úÈÕÆÚ(Äê) */
-    HI_U8               u8Version;                /**<the version of manufacture*//**<CNcomment:Éè±¸°æ±¾ºÅ */
-    HI_U8               u8Revision;               /**<the revision of manufacture*//**<CNcomment:Éè±¸×Ó°æ±¾ºÅ */
-    HI_U8               u8EDIDExternBlockNum;     /**<the extern block number of EDID*//**<CNcomment:EDIDÀ©Õ¹¿éÊýÄ¿ */
+    HI_U8               u8IDManufactureName[4];   /**<Manufacture name*//**<CNcomment:è®¾å¤‡åŽ‚å•†æ ‡è¯† */
+    HI_U32              u32IDProductCode;         /**<Product code*//**<CNcomment:è®¾å¤‡ID */
+    HI_U32              u32IDSerialNumber;        /**<Serial numeber of Manufacture*//**<CNcomment:è®¾å¤‡åºåˆ—å· */
+    HI_U32              u32WeekOfManufacture;     /**<the week of manufacture*//**<CNcomment:è®¾å¤‡ç”Ÿäº§æ—¥æœŸ(å‘¨) */
+    HI_U32              u32YearOfManufacture;     /**<the year of manufacture*//**<CNcomment:è®¾å¤‡ç”Ÿäº§æ—¥æœŸ(å¹´) */
+    HI_U8               u8Version;                /**<the version of manufacture*//**<CNcomment:è®¾å¤‡ç‰ˆæœ¬å· */
+    HI_U8               u8Revision;               /**<the revision of manufacture*//**<CNcomment:è®¾å¤‡å­ç‰ˆæœ¬å· */
+    HI_U8               u8EDIDExternBlockNum;     /**<the extern block number of EDID*//**<CNcomment:EDIDæ‰©å±•å—æ•°ç›® */
 
     HI_U8               u8IEERegId[3];            /**< 24-bit IEEE Registration Identifier (0x000C03) */
-    HI_BOOL             bIsPhyAddrValid;          /**<the flag of phyiscs address is valid or not*//**<CNcomment:CECÎïÀíµØÖ·ÊÇ·ñÓÐÐ§±êÖ¾ */   
-    HI_U8               u8PhyAddr_A;              /**<phyiscs address A of CEC*//**<CNcomment:CECÎïÀíµØÖ·A */
-    HI_U8               u8PhyAddr_B;              /**<phyiscs address B of CEC*//**<CNcomment:CECÎïÀíµØÖ·B */  
-    HI_U8               u8PhyAddr_C;              /**<phyiscs address C of CEC*//**<CNcomment:CECÎïÀíµØÖ·C */  
-    HI_U8               u8PhyAddr_D;              /**<phyiscs address D of CEC*//**<CNcomment:CECÎïÀíµØÖ·D */  
-    HI_BOOL             bSupportDVIDual;          /**<the DVI support dual-link or not *//**<CNcomment:ÊÇ·ñÖ§³Ö DVI dual-link ²Ù×÷ */
-    HI_BOOL             bSupportDeepColorYCBCR444;/**<the Deep Color support YCBCR444 or not*//**<CNcomment:ÊÇ·ñÖ§³Ö YCBCR 4:4:4  Deep Color Ä£Ê½ */
-    HI_BOOL             bSupportDeepColor30Bit;   /**<the Deep Color support 30 bit  or not *//**<CNcomment:ÊÇ·ñÖ§³ÖDeep Color 30bit Ä£Ê½ */
-    HI_BOOL             bSupportDeepColor36Bit;   /**<the Deep Color support 36 bit  or not *//**<CNcomment:ÊÇ·ñÖ§³ÖDeep Color 36bit Ä£Ê½ */
-    HI_BOOL             bSupportDeepColor48Bit;   /**<the Deep Color support 48 bit  or not *//**<CNcomment:ÊÇ·ñÖ§³ÖDeep Color 48bit Ä£Ê½ */
-    HI_BOOL             bSupportAI;               /**<support AI or not *//**<CNcomment:ÊÇ·ñÖ§³Ö Supports_AI Ä£Ê½ */
-    HI_U32              u8MaxTMDSClock;           /**<the max TMDS clock*//**<CNcomment:×î´óTMDSÊ±ÖÓ */
-    HI_BOOL             bI_Latency_Fields_Present;/**<the flag of latency time*//**<CNcomment:ÑÓÊ±±êÖ¾Î» */
+    HI_BOOL             bIsPhyAddrValid;          /**<the flag of phyiscs address is valid or not*//**<CNcomment:CECç‰©ç†åœ°å€æ˜¯å¦æœ‰æ•ˆæ ‡å¿— */   
+    HI_U8               u8PhyAddr_A;              /**<phyiscs address A of CEC*//**<CNcomment:CECç‰©ç†åœ°å€A */
+    HI_U8               u8PhyAddr_B;              /**<phyiscs address B of CEC*//**<CNcomment:CECç‰©ç†åœ°å€B */  
+    HI_U8               u8PhyAddr_C;              /**<phyiscs address C of CEC*//**<CNcomment:CECç‰©ç†åœ°å€C */  
+    HI_U8               u8PhyAddr_D;              /**<phyiscs address D of CEC*//**<CNcomment:CECç‰©ç†åœ°å€D */  
+    HI_BOOL             bSupportDVIDual;          /**<the DVI support dual-link or not *//**<CNcomment:æ˜¯å¦æ”¯æŒ DVI dual-link æ“ä½œ */
+    HI_BOOL             bSupportDeepColorYCBCR444;/**<the Deep Color support YCBCR444 or not*//**<CNcomment:æ˜¯å¦æ”¯æŒ YCBCR 4:4:4  Deep Color æ¨¡å¼ */
+    HI_BOOL             bSupportDeepColor30Bit;   /**<the Deep Color support 30 bit  or not *//**<CNcomment:æ˜¯å¦æ”¯æŒDeep Color 30bit æ¨¡å¼ */
+    HI_BOOL             bSupportDeepColor36Bit;   /**<the Deep Color support 36 bit  or not *//**<CNcomment:æ˜¯å¦æ”¯æŒDeep Color 36bit æ¨¡å¼ */
+    HI_BOOL             bSupportDeepColor48Bit;   /**<the Deep Color support 48 bit  or not *//**<CNcomment:æ˜¯å¦æ”¯æŒDeep Color 48bit æ¨¡å¼ */
+    HI_BOOL             bSupportAI;               /**<support AI or not *//**<CNcomment:æ˜¯å¦æ”¯æŒ Supports_AI æ¨¡å¼ */
+    HI_U32              u8MaxTMDSClock;           /**<the max TMDS clock*//**<CNcomment:æœ€å¤§TMDSæ—¶é’Ÿ */
+    HI_BOOL             bI_Latency_Fields_Present;/**<the flag of latency time*//**<CNcomment:å»¶æ—¶æ ‡å¿—ä½ */
     HI_BOOL             bLatency_Fields_Present;  /**<whether Video_Latency and Audio_Latency fields are present */
-    HI_BOOL             bHDMI_Video_Present;      /**<special Video format*//**<CNcomment:ÌØÊâµÄÊÓÆµ¸ñÊ½ */
-    HI_U8               u8Video_Latency;          /**<the latency of video*//**<CNcomment:ÊÓÆµÑÓÊ± */
-    HI_U8               u8Audio_Latency;          /**<the latency of audio*//**<CNcomment:ÒôÆµÑÓÊ± */
-    HI_U8               u8Interlaced_Video_Latency;/**<the latency of interlaced video mode*//**<CNcomment:¸ôÐÐÊÓÆµÄ£Ê½ÏÂµÄÊÓÆµÑÓÊ± */
-    HI_U8               u8Interlaced_Audio_Latency;/**<the latency of interlaced audio mode*//**<CNcomment:¸ôÐÐÊÓÆµÄ£Ê½ÏÂµÄÒôÆµÑÓÊ± */
+    HI_BOOL             bHDMI_Video_Present;      /**<special Video format*//**<CNcomment:ç‰¹æ®Šçš„è§†é¢‘æ ¼å¼ */
+    HI_U8               u8Video_Latency;          /**<the latency of video*//**<CNcomment:è§†é¢‘å»¶æ—¶ */
+    HI_U8               u8Audio_Latency;          /**<the latency of audio*//**<CNcomment:éŸ³é¢‘å»¶æ—¶ */
+    HI_U8               u8Interlaced_Video_Latency;/**<the latency of interlaced video mode*//**<CNcomment:éš”è¡Œè§†é¢‘æ¨¡å¼ä¸‹çš„è§†é¢‘å»¶æ—¶ */
+    HI_U8               u8Interlaced_Audio_Latency;/**<the latency of interlaced audio mode*//**<CNcomment:éš”è¡Œè§†é¢‘æ¨¡å¼ä¸‹çš„éŸ³é¢‘å»¶æ—¶ */
 } HI_UNF_HDMI_SINK_CAPABILITY_S;
 
 /**the config parameter of HDMI interface*/
-/**CNcomment:HDMI ½Ó¿Ú²ÎÊýÅäÖÃ */
+/**CNcomment:HDMI æŽ¥å£å‚æ•°é…ç½® */
 typedef struct hiUNF_HDMI_ATTR_S
 {
-	HI_BOOL                 bEnableHdmi;         /**<force to HDMI or DVI,the value must set before HI_UNF_HDMI_Start or behind HI_UNF_HDMI_Stop*//**<CNcomment:ÊÇ·ñÇ¿ÖÆHDMI,·ñÔòÎªDVI.¸ÃÖµ±ØÐëÔÚ HI_UNF_HDMI_StartÖ®Ç°»òÕßHI_UNF_HDMI_StopÖ®ºóÉèÖÃ  */
+	HI_BOOL                 bEnableHdmi;         /**<force to HDMI or DVI,the value must set before HI_UNF_HDMI_Start or behind HI_UNF_HDMI_Stop*//**<CNcomment:æ˜¯å¦å¼ºåˆ¶HDMI,å¦åˆ™ä¸ºDVI.è¯¥å€¼å¿…é¡»åœ¨ HI_UNF_HDMI_Startä¹‹å‰æˆ–è€…HI_UNF_HDMI_Stopä¹‹åŽè®¾ç½®  */
 
-    HI_BOOL                 bEnableVideo;        /**<parameter must set HI_TRUE,or the HDMI diver will force to set HI_TRUE*//**<CNcomment:±ØÐëÊÇHI_TRUE, Èç¹ûÊÇHI_FALSE:HDMIÇý¶¯»áÇ¿ÖÆÉèÖÃÎªHI_TRUE */
-    HI_UNF_ENC_FMT_E        enVideoFmt;          /**<video fromat ,the format must consistent with display  config*//**<CNcomment:ÊÓÆµÖÆÊ½,´Ë²ÎÊýÐèÒªÓëDisplayÅäÖÃµÄÖÆÊ½±£³ÖÒ»ÖÂ */
+    HI_BOOL                 bEnableVideo;        /**<parameter must set HI_TRUE,or the HDMI diver will force to set HI_TRUE*//**<CNcomment:å¿…é¡»æ˜¯HI_TRUE, å¦‚æžœæ˜¯HI_FALSE:HDMIé©±åŠ¨ä¼šå¼ºåˆ¶è®¾ç½®ä¸ºHI_TRUE */
+    HI_UNF_ENC_FMT_E        enVideoFmt;          /**<video fromat ,the format must consistent with display  config*//**<CNcomment:è§†é¢‘åˆ¶å¼,æ­¤å‚æ•°éœ€è¦ä¸ŽDisplayé…ç½®çš„åˆ¶å¼ä¿æŒä¸€è‡´ */
     
-    HI_UNF_HDMI_VIDEO_MODE_E enVidOutMode;       /**<HDMI output vedio mode VIDEO_MODE_YCBCR,VIDEO_MODE_YCBCR444,VIDEO_MODE_YCBCR422,VIDEO_MODE_RGB444 *//**<CNcomment:HDMIÊä³öÊÓÆµÄ£Ê½£¬VIDEO_MODE_YCBCR444£¬VIDEO_MODE_YCBCR422£¬VIDEO_MODE_RGB444 */
-    HI_UNF_HDMI_DEEP_COLOR_E enDeepColorMode;    /**<Deep Color output mode,defualt: HI_UNF_HDMI_DEEP_COLOR_24BIT *//**<CNcomment:DeepColorÊä³öÄ£Ê½, Ä¬ÈÏÎªHI_UNF_HDMI_DEEP_COLOR_24BIT */
-    HI_BOOL                 bxvYCCMode;          /**<the xvYCC output mode,default:HI_FALSE*//**<CNcomment:< xvYCCÊä³öÄ£Ê½£¬Ä¬ÈÏÎªHI_FALSE */
+    HI_UNF_HDMI_VIDEO_MODE_E enVidOutMode;       /**<HDMI output vedio mode VIDEO_MODE_YCBCR,VIDEO_MODE_YCBCR444,VIDEO_MODE_YCBCR422,VIDEO_MODE_RGB444 *//**<CNcomment:HDMIè¾“å‡ºè§†é¢‘æ¨¡å¼ï¼ŒVIDEO_MODE_YCBCR444ï¼ŒVIDEO_MODE_YCBCR422ï¼ŒVIDEO_MODE_RGB444 */
+    HI_UNF_HDMI_DEEP_COLOR_E enDeepColorMode;    /**<Deep Color output mode,defualt: HI_UNF_HDMI_DEEP_COLOR_24BIT *//**<CNcomment:DeepColorè¾“å‡ºæ¨¡å¼, é»˜è®¤ä¸ºHI_UNF_HDMI_DEEP_COLOR_24BIT */
+    HI_BOOL                 bxvYCCMode;          /**<the xvYCC output mode,default:HI_FALSE*//**<CNcomment:< xvYCCè¾“å‡ºæ¨¡å¼ï¼Œé»˜è®¤ä¸ºHI_FALSE */
 
-    HI_BOOL                 bEnableAudio;        /**<Enable flag of Audio*//**CNcomment:ÊÇ·ñEnableÒôÆµ */
-//  HI_UNF_SND_INTERFACE_E  enSoundIntf;         /**<the origin of Sound,suggestion set HI_UNF_SND_INTERFACE_I2S,the parameter need consistent with Ao input *//**<CNcomment:HDMIÒôÆµÀ´Ô´, ½¨ÒéHI_UNF_SND_INTERFACE_I2S,´Ë²ÎÊýÐèÒªÓëAOÊäÈë±£³ÖÒ»ÖÂ */
-    HI_BOOL                 bIsMultiChannel;     /**<set mutiChannel or stereo ;0:stereo,1:mutichannel fixup 8 channel *//**<CNcomment:¶àÉùµÀ»¹ÊÇÁ¢ÌåÉù£¬0:Á¢ÌåÉù£¬1:¶àÉùµÀ¹Ì¶¨Îª8ÉùµÀ */
-    HI_UNF_SAMPLE_RATE_E    enSampleRate;        /**<the samplerate of audio,this parameter consistent with AO config *//**<CNcomment:PCMÒôÆµ²ÉÑùÂÊ,´Ë²ÎÊýÐèÒªÓëAOµÄÅäÖÃ±£³ÖÒ»ÖÂ */
-    HI_U8                   u8DownSampleParm;    /**<PCM parameter of dowmsample,default 0*//**CNcomment:PCMÒôÆµÏòÏÂdownsample²ÉÑùÂÊµÄ²ÎÊý£¬Ä¬ÈÏÎª0 */
+    HI_BOOL                 bEnableAudio;        /**<Enable flag of Audio*//**CNcomment:æ˜¯å¦EnableéŸ³é¢‘ */
+//  HI_UNF_SND_INTERFACE_E  enSoundIntf;         /**<the origin of Sound,suggestion set HI_UNF_SND_INTERFACE_I2S,the parameter need consistent with Ao input *//**<CNcomment:HDMIéŸ³é¢‘æ¥æº, å»ºè®®HI_UNF_SND_INTERFACE_I2S,æ­¤å‚æ•°éœ€è¦ä¸ŽAOè¾“å…¥ä¿æŒä¸€è‡´ */
+    HI_BOOL                 bIsMultiChannel;     /**<set mutiChannel or stereo ;0:stereo,1:mutichannel fixup 8 channel *//**<CNcomment:å¤šå£°é“è¿˜æ˜¯ç«‹ä½“å£°ï¼Œ0:ç«‹ä½“å£°ï¼Œ1:å¤šå£°é“å›ºå®šä¸º8å£°é“ */
+    HI_UNF_SAMPLE_RATE_E    enSampleRate;        /**<the samplerate of audio,this parameter consistent with AO config *//**<CNcomment:PCMéŸ³é¢‘é‡‡æ ·çŽ‡,æ­¤å‚æ•°éœ€è¦ä¸ŽAOçš„é…ç½®ä¿æŒä¸€è‡´ */
+    HI_U8                   u8DownSampleParm;    /**<PCM parameter of dowmsample,default 0*//**CNcomment:PCMéŸ³é¢‘å‘ä¸‹downsampleé‡‡æ ·çŽ‡çš„å‚æ•°ï¼Œé»˜è®¤ä¸º0 */
     
-    HI_UNF_BIT_DEPTH_E      enBitDepth;          /**<the audio bit depth,defualt 16,this parameter consistent with AO config*//**<CNcomment:ÒôÆµÎ»¿í£¬Ä¬ÈÏÎª16,´Ë²ÎÊýÐèÒªÓëAOµÄÅäÖÃ±£³ÖÒ»ÖÂ */
-    HI_U8                   u8I2SCtlVbit;        /**<reserve:config 0,I2S control(0x7A:0x1D)*//**CNcomment:±£Áô£¬ÇëÅäÖÃÎª0, I2S control (0x7A:0x1D) */
+    HI_UNF_BIT_DEPTH_E      enBitDepth;          /**<the audio bit depth,defualt 16,this parameter consistent with AO config*//**<CNcomment:éŸ³é¢‘ä½å®½ï¼Œé»˜è®¤ä¸º16,æ­¤å‚æ•°éœ€è¦ä¸ŽAOçš„é…ç½®ä¿æŒä¸€è‡´ */
+    HI_U8                   u8I2SCtlVbit;        /**<reserve:config 0,I2S control(0x7A:0x1D)*//**CNcomment:ä¿ç•™ï¼Œè¯·é…ç½®ä¸º0, I2S control (0x7A:0x1D) */
 
-    HI_BOOL                 bEnableAviInfoFrame; /**<Enable flag of AVI InfoFrame,suggestion:enable *//**<CNcomment:ÊÇ·ñÊ¹ÄÜ AVI InfoFrame£¬½¨ÒéÊ¹ÄÜ */
-    HI_BOOL                 bEnableAudInfoFrame; /**<Enable flag of Audio InfoFrame,suggestion:enable*//**<CNcomment:ÊÇ·ñÊ¹ÄÜ AUDIO InfoFrame£¬½¨ÒéÊ¹ÄÜ */
-    HI_BOOL                 bEnableSpdInfoFrame; /**<Enable flag of SPD info frame,suggestion:disable*//**<CNcomment:ÊÇ·ñÊ¹ÄÜ SPD InfoFrame£¬ ½¨Òé¹Ø±Õ */
-    HI_BOOL                 bEnableMpegInfoFrame;/**<Enable flag of MPEG info frame,suggestion:disable*//**<CNcomment:ÊÇ·ñÊ¹ÄÜ MPEG InfoFrame£¬ ½¨Òé¹Ø±Õ */
+    HI_BOOL                 bEnableAviInfoFrame; /**<Enable flag of AVI InfoFrame,suggestion:enable *//**<CNcomment:æ˜¯å¦ä½¿èƒ½ AVI InfoFrameï¼Œå»ºè®®ä½¿èƒ½ */
+    HI_BOOL                 bEnableAudInfoFrame; /**<Enable flag of Audio InfoFrame,suggestion:enable*//**<CNcomment:æ˜¯å¦ä½¿èƒ½ AUDIO InfoFrameï¼Œå»ºè®®ä½¿èƒ½ */
+    HI_BOOL                 bEnableSpdInfoFrame; /**<Enable flag of SPD info frame,suggestion:disable*//**<CNcomment:æ˜¯å¦ä½¿èƒ½ SPD InfoFrameï¼Œ å»ºè®®å…³é—­ */
+    HI_BOOL                 bEnableMpegInfoFrame;/**<Enable flag of MPEG info frame,suggestion:disable*//**<CNcomment:æ˜¯å¦ä½¿èƒ½ MPEG InfoFrameï¼Œ å»ºè®®å…³é—­ */
 
-    HI_U32                  bDebugFlag;          /**<the flag of hdmi dubug,suggestion:disable*//**<CNcomment:< ÊÇ·ñÊ¹ÄÜ ´ò¿ªhdmiÄÚ²¿debugÐÅÏ¢£¬ ½¨Òé¹Ø±Õ */
-    HI_BOOL                 bHDCPEnable;         /**<0:HDCP disable mode,1:eable HDCP mode*//**<CNcomment:< 0:HDCP²»¼¤»î£¬1:HDCPÄ£Ê½´ò¿ª */
+    HI_U32                  bDebugFlag;          /**<the flag of hdmi dubug,suggestion:disable*//**<CNcomment:< æ˜¯å¦ä½¿èƒ½ æ‰“å¼€hdmiå†…éƒ¨debugä¿¡æ¯ï¼Œ å»ºè®®å…³é—­ */
+    HI_BOOL                 bHDCPEnable;         /**<0:HDCP disable mode,1:eable HDCP mode*//**<CNcomment:< 0:HDCPä¸æ¿€æ´»ï¼Œ1:HDCPæ¨¡å¼æ‰“å¼€ */
     
-    HI_BOOL                 b3DEnable;           /**<0:disable 3d,1,enable 3d mode*//**<CNcomment:< 0:3D²»¼¤»î£¬1:3DÄ£Ê½´ò¿ª */
-    HI_U32                  u83DParam;           /**<3D Parameter,defualt HI_FALSE*//**<CNcomment:< 3D Parameter, Ä¬ÈÏÎªHI_FALSE */
+    HI_BOOL                 b3DEnable;           /**<0:disable 3d,1,enable 3d mode*//**<CNcomment:< 0:3Dä¸æ¿€æ´»ï¼Œ1:3Dæ¨¡å¼æ‰“å¼€ */
+    HI_U32                  u83DParam;           /**<3D Parameter,defualt HI_FALSE*//**<CNcomment:< 3D Parameter, é»˜è®¤ä¸ºHI_FALSE */
 } HI_UNF_HDMI_ATTR_S;
 
 /**HDMI infoFrame type definition*/
-/**CNcomment: HDMI ÐÅÏ¢Ö¡ÀàÐÍ¶¨Òå */
+/**CNcomment: HDMI ä¿¡æ¯å¸§ç±»åž‹å®šä¹‰ */
 typedef enum tagHI_UNF_HDMI_INFOFRAME_TYPE_E
 {
-    HI_INFOFRAME_TYPE_AVI,          /**<HDMI AVI InfoFrame type defintion*//**<CNcomment:HDMI AVI InfoFrame ÀàÐÍ¶¨Òå */
-    HI_INFOFRAME_TYPE_SPD,          /**<HDMI SPD InfoFrame type defintion*//**<CNcomment:HDMI SPD InfoFrame ÀàÐÍ¶¨Òå */
-    HI_INFOFRAME_TYPE_AUDIO,        /**<HDMI AUDIO InfoFrame type defintion*//**<CNcomment:HDMI AUDIO InfoFrame ÀàÐÍ¶¨Òå */    
-    HI_INFOFRAME_TYPE_MPEG,         /**<HDMI MPEG InfoFrame type defintion*//**<CNcomment:HDMI MPEG InfoFrame ÀàÐÍ¶¨Òå */
-    HI_INFOFRAME_TYPE_VENDORSPEC,   /**<HDMI Specific InfoFrame type defintion*//**<CNcomment:HDMI Vendor Specific InfoFrame ÀàÐÍ¶¨Òå */  
+    HI_INFOFRAME_TYPE_AVI,          /**<HDMI AVI InfoFrame type defintion*//**<CNcomment:HDMI AVI InfoFrame ç±»åž‹å®šä¹‰ */
+    HI_INFOFRAME_TYPE_SPD,          /**<HDMI SPD InfoFrame type defintion*//**<CNcomment:HDMI SPD InfoFrame ç±»åž‹å®šä¹‰ */
+    HI_INFOFRAME_TYPE_AUDIO,        /**<HDMI AUDIO InfoFrame type defintion*//**<CNcomment:HDMI AUDIO InfoFrame ç±»åž‹å®šä¹‰ */    
+    HI_INFOFRAME_TYPE_MPEG,         /**<HDMI MPEG InfoFrame type defintion*//**<CNcomment:HDMI MPEG InfoFrame ç±»åž‹å®šä¹‰ */
+    HI_INFOFRAME_TYPE_VENDORSPEC,   /**<HDMI Specific InfoFrame type defintion*//**<CNcomment:HDMI Vendor Specific InfoFrame ç±»åž‹å®šä¹‰ */  
     HI_INFOFRAME_TYPE_BUTT 
 }HI_UNF_HDMI_INFOFRAME_TYPE_E;
 
 /**HDMI AVI InfoFrame parameter struct,please reference EIA-CEA-861-D*/
-/**CNcomment: HDMI AVI ÐÅÏ¢Ö¡²ÎÊý½á¹¹, Çë²Î¿¼EIA-CEA-861-D */
+/**CNcomment: HDMI AVI ä¿¡æ¯å¸§å‚æ•°ç»“æž„, è¯·å‚è€ƒEIA-CEA-861-D */
 typedef struct hiUNF_HDMI_AVI_INFOFRAME_VER2_S
 {
-    HI_UNF_ENC_FMT_E               enTimingMode;            /**<AVI video timing format*//**<CNcomment:AVIÊÓÆµtiming¸ñÊ½ */
-    HI_UNF_HDMI_VIDEO_MODE_E       enOutputType;            /**<AVI video output color space*//**<CNcomment:AVIÊÓÆµÊä³öÑÕÉ«¸ñÊ½ */   
-    HI_BOOL                        bActive_Infor_Present;   /**<AVI video Active_Infor_Present flag*//**<CNcomment:AVIÊÓÆµActive_Infor_Present±êÖ¾Î» */
-    HI_UNF_HDMI_BARINFO_E          enBarInfo;               /**<AVI video BarInfo type*//**<CNcomment:AVIÊÓÆµBarInfoÀàÐÍ */
-    HI_UNF_HDMI_SCANINFO_E         enScanInfo;              /**<AVI video ScanInfo type*//**<CNcomment:AVIÊÓÆµScanInfoÀàÐÍ */
-    HI_UNF_HDMI_COLORSPACE_E       enColorimetry;           /**<AVI video Colorimetry type*//**<CNcomment:AVIÊÓÆµColorimetryÀàÐÍ */
-    HI_UNF_HDMI_ASPECT_RATIO_E          enAspectRatio;           /**<AVI video AspectRatio type*//**<CNcomment:AVIÊÓÆµ¿í¸ß±È¸ñÊ½ */
-    HI_UNF_HDMI_ASPECT_RATIO_E          enActiveAspectRatio;     /**<AVI video Active AspectRatio type*//**<CNcomment:AVIÊÓÆµÓÐÐ§¿í¸ß±È¸ñÊ½ */
-    HI_UNF_HDMI_PICTURE_SCALING_E  enPictureScaling;        /**<AVI video picture scaling type*//**<CNcomment:AVIÊÓÆµscaling¸ñÊ½ */
-    HI_UNF_HDMI_RGB_QUAN_RAGE_E    enRGBQuantization;       /**<AVI video RGB Quantization*//**<CNcomment:AVIÊÓÆµRGBÉ«¶È·¶Î§ */
-    HI_BOOL                        bIsITContent;            /**<AVI video ITContent flag*//**<CNcomment:AVIÊÓÆµITcontent */
-    HI_U32                         u32PixelRepetition;      /**<AVI video Pixel Repetition flag*//**<CNcomment:AVIÊÓÆµÏñËØÖØ´«±êÖ¾Î» */
+    HI_UNF_ENC_FMT_E               enTimingMode;            /**<AVI video timing format*//**<CNcomment:AVIè§†é¢‘timingæ ¼å¼ */
+    HI_UNF_HDMI_VIDEO_MODE_E       enOutputType;            /**<AVI video output color space*//**<CNcomment:AVIè§†é¢‘è¾“å‡ºé¢œè‰²æ ¼å¼ */   
+    HI_BOOL                        bActive_Infor_Present;   /**<AVI video Active_Infor_Present flag*//**<CNcomment:AVIè§†é¢‘Active_Infor_Presentæ ‡å¿—ä½ */
+    HI_UNF_HDMI_BARINFO_E          enBarInfo;               /**<AVI video BarInfo type*//**<CNcomment:AVIè§†é¢‘BarInfoç±»åž‹ */
+    HI_UNF_HDMI_SCANINFO_E         enScanInfo;              /**<AVI video ScanInfo type*//**<CNcomment:AVIè§†é¢‘ScanInfoç±»åž‹ */
+    HI_UNF_HDMI_COLORSPACE_E       enColorimetry;           /**<AVI video Colorimetry type*//**<CNcomment:AVIè§†é¢‘Colorimetryç±»åž‹ */
+    HI_UNF_HDMI_ASPECT_RATIO_E          enAspectRatio;           /**<AVI video AspectRatio type*//**<CNcomment:AVIè§†é¢‘å®½é«˜æ¯”æ ¼å¼ */
+    HI_UNF_HDMI_ASPECT_RATIO_E          enActiveAspectRatio;     /**<AVI video Active AspectRatio type*//**<CNcomment:AVIè§†é¢‘æœ‰æ•ˆå®½é«˜æ¯”æ ¼å¼ */
+    HI_UNF_HDMI_PICTURE_SCALING_E  enPictureScaling;        /**<AVI video picture scaling type*//**<CNcomment:AVIè§†é¢‘scalingæ ¼å¼ */
+    HI_UNF_HDMI_RGB_QUAN_RAGE_E    enRGBQuantization;       /**<AVI video RGB Quantization*//**<CNcomment:AVIè§†é¢‘RGBè‰²åº¦èŒƒå›´ */
+    HI_BOOL                        bIsITContent;            /**<AVI video ITContent flag*//**<CNcomment:AVIè§†é¢‘ITcontent */
+    HI_U32                         u32PixelRepetition;      /**<AVI video Pixel Repetition flag*//**<CNcomment:AVIè§†é¢‘åƒç´ é‡ä¼ æ ‡å¿—ä½ */
 
-    HI_UNF_HDMI_CONTENT_TYPE_E     enContentType;           /**<AVI video content type*//**<CNcomment:AVIÊÓÆµÄÚÈÝµÄÀàÐÍ */
-    HI_UNF_HDMI_YCC_QUAN_RAGE_E    enYCCQuantization;       /**<AVI video YCC Quantization*//**CNcomment:*< AVIÊÓÆµYCCÉ«¶È·¶Î§ */
+    HI_UNF_HDMI_CONTENT_TYPE_E     enContentType;           /**<AVI video content type*//**<CNcomment:AVIè§†é¢‘å†…å®¹çš„ç±»åž‹ */
+    HI_UNF_HDMI_YCC_QUAN_RAGE_E    enYCCQuantization;       /**<AVI video YCC Quantization*//**CNcomment:*< AVIè§†é¢‘YCCè‰²åº¦èŒƒå›´ */
     
-    HI_U32                         u32LineNEndofTopBar;     /**<AVI video EndofTopBar coordinate,defualt:0 *//**<CNcomment:AVIÊÓÆµEndofTopBar×ø±ê£¬È±Ê¡Îª0 */
-    HI_U32                         u32LineNStartofBotBar;   /**<AVI video StartofBotBar coordinate,defualt:0*//**<CNcomment:AVIÊÓÆµStartofBotBar×ø±ê£¬È±Ê¡Îª0 */
-    HI_U32                         u32PixelNEndofLeftBar;   /**<AVI video EndofLeft coordinate,defualt:0*//**<CNcomment:AVIÊÓÆµEndofLeft×ø±ê£¬È±Ê¡Îª0 */
-    HI_U32                         u32PixelNStartofRightBar;/**<AVI video StartofRightBar coordinate,defualt:0*//**<CNcomment:AVIÊÓÆµStartofRightBar×ø±ê£¬È±Ê¡Îª0 */ 
+    HI_U32                         u32LineNEndofTopBar;     /**<AVI video EndofTopBar coordinate,defualt:0 *//**<CNcomment:AVIè§†é¢‘EndofTopBaråæ ‡ï¼Œç¼ºçœä¸º0 */
+    HI_U32                         u32LineNStartofBotBar;   /**<AVI video StartofBotBar coordinate,defualt:0*//**<CNcomment:AVIè§†é¢‘StartofBotBaråæ ‡ï¼Œç¼ºçœä¸º0 */
+    HI_U32                         u32PixelNEndofLeftBar;   /**<AVI video EndofLeft coordinate,defualt:0*//**<CNcomment:AVIè§†é¢‘EndofLeftåæ ‡ï¼Œç¼ºçœä¸º0 */
+    HI_U32                         u32PixelNStartofRightBar;/**<AVI video StartofRightBar coordinate,defualt:0*//**<CNcomment:AVIè§†é¢‘StartofRightBaråæ ‡ï¼Œç¼ºçœä¸º0 */ 
 }HI_UNF_HDMI_AVI_INFOFRAME_VER2_S;
 
 /**HDMI AUDIO InfoFrame parameter struct ,please reference EIA-CEA-861-D*/
-/**CNcomment: HDMI ÒôÆµÐÅÏ¢Ö¡²ÎÊý½á¹¹, Çë²Î¿¼EIA-CEA-861-D */
+/**CNcomment: HDMI éŸ³é¢‘ä¿¡æ¯å¸§å‚æ•°ç»“æž„, è¯·å‚è€ƒEIA-CEA-861-D */
 typedef struct hiUNF_HDMI_AUD_INFOFRAME_VER1_S
 {
-    HI_U32                         u32ChannelCount;          /**<audio frequency channel count*//**<CNcomment:ÒôÆµ ÉùµÀÊý */
-    HI_UNF_HDMI_CODING_TYPE_E      enCodingType;             /**<audio frequency coding type,default 0;Refer to Stream Header*//**<CNcomment:ÒôÆµ ±àÂëÀàÐÍ£¬È±Ê¡Îª0£ºRefer to Stream Header */
-    HI_U32                         u32SampleSize;            /**<audio frequency sample size,default 0,Refer to Stream Header*//**<CNcomment:ÒôÆµ ²ÉÑù´óÐ¡£¬È±Ê¡Îª0£ºRefer to Stream Header */
-    HI_U32                         u32SamplingFrequency;     /**<audio frequency sampling frequency ,default 0,Refer to Stream Header*//**<CNcomment:ÒôÆµ ²ÉÑùÆµÂÊ£¬È±Ê¡Îª0£ºRefer to Stream Header */
-    HI_U32                         u32ChannelAlloc;          /**<audio frequency channel allocable ,default 0,Refer to Stream Header*//**<CNcomment:ÒôÆµ ÉùµÀ·ÖÅä£¬È±Ê¡Îª0£ºRefer to Stream Header */
-    HI_U32                         u32LevelShift;            /**<audio frequency Levelshift ,default 0,Refer to Stream Header*//**<CNcomment:ÒôÆµ Levelshift£¬È±Ê¡Îª0£ºRefer to Stream Header */
-    HI_BOOL                        u32DownmixInhibit;        /**<audio frequency DownmixInhibit ,default 0,Refer to Stream Header*//**<CNcomment:ÒôÆµ DownmixInhibit£¬È±Ê¡Îª0£ºRefer to Stream Header */
+    HI_U32                         u32ChannelCount;          /**<audio frequency channel count*//**<CNcomment:éŸ³é¢‘ å£°é“æ•° */
+    HI_UNF_HDMI_CODING_TYPE_E      enCodingType;             /**<audio frequency coding type,default 0;Refer to Stream Header*//**<CNcomment:éŸ³é¢‘ ç¼–ç ç±»åž‹ï¼Œç¼ºçœä¸º0ï¼šRefer to Stream Header */
+    HI_U32                         u32SampleSize;            /**<audio frequency sample size,default 0,Refer to Stream Header*//**<CNcomment:éŸ³é¢‘ é‡‡æ ·å¤§å°ï¼Œç¼ºçœä¸º0ï¼šRefer to Stream Header */
+    HI_U32                         u32SamplingFrequency;     /**<audio frequency sampling frequency ,default 0,Refer to Stream Header*//**<CNcomment:éŸ³é¢‘ é‡‡æ ·é¢‘çŽ‡ï¼Œç¼ºçœä¸º0ï¼šRefer to Stream Header */
+    HI_U32                         u32ChannelAlloc;          /**<audio frequency channel allocable ,default 0,Refer to Stream Header*//**<CNcomment:éŸ³é¢‘ å£°é“åˆ†é…ï¼Œç¼ºçœä¸º0ï¼šRefer to Stream Header */
+    HI_U32                         u32LevelShift;            /**<audio frequency Levelshift ,default 0,Refer to Stream Header*//**<CNcomment:éŸ³é¢‘ Levelshiftï¼Œç¼ºçœä¸º0ï¼šRefer to Stream Header */
+    HI_BOOL                        u32DownmixInhibit;        /**<audio frequency DownmixInhibit ,default 0,Refer to Stream Header*//**<CNcomment:éŸ³é¢‘ DownmixInhibitï¼Œç¼ºçœä¸º0ï¼šRefer to Stream Header */
 }HI_UNF_HDMI_AUD_INFOFRAME_VER1_S;
 
 /**HDMI SPD InfoFrame parameter struct,please reference EIA-CEA-861-D*/
-/**CNcomment: HDMI SPDÐÅÏ¢Ö¡²ÎÊý½á¹¹ , Çë²Î¿¼EIA-CEA-861-D */
+/**CNcomment: HDMI SPDä¿¡æ¯å¸§å‚æ•°ç»“æž„ , è¯·å‚è€ƒEIA-CEA-861-D */
 typedef struct hiUNF_HDMI_SPD_INFOFRAME_S
 {
-    HI_U8                          u8VendorName[8];          /**<vendor name*//**<CNcomment:Âô·½Ãû³Æ */
-    HI_U8                          u8ProductDescription[16]; /**<product Description*//**<CNcomment:²úÆ·ÃèÊö·û */  
+    HI_U8                          u8VendorName[8];          /**<vendor name*//**<CNcomment:å–æ–¹åç§° */
+    HI_U8                          u8ProductDescription[16]; /**<product Description*//**<CNcomment:äº§å“æè¿°ç¬¦ */  
 }HI_UNF_HDMI_SPD_INFOFRAME_S;
 
 /**HDMI Source HDMI MPEG InfoFrame parameter struct,please reference EIA-CEA-861-D*/
-/**CNcomment: HDMI MPEGÐÅÏ¢Ö¡²ÎÊý½á¹¹ , Çë²Î¿¼EIA-CEA-861-D */
+/**CNcomment: HDMI MPEGä¿¡æ¯å¸§å‚æ•°ç»“æž„ , è¯·å‚è€ƒEIA-CEA-861-D */
 typedef struct hiUNF_HDMI_MPEGSOURCE_INFOFRAME_S
 {
-    HI_U32                         u32MPEGBitRate;           /**<MPEG bit Rate*//**<CNcomment:MPEGÎ»ÂÊ */
-    HI_BOOL                        bIsFieldRepeated;         /**<FieldRepeater flag*//**<CNcomment:FieldRepeater±êÖ¾Î» */
+    HI_U32                         u32MPEGBitRate;           /**<MPEG bit Rate*//**<CNcomment:MPEGä½çŽ‡ */
+    HI_BOOL                        bIsFieldRepeated;         /**<FieldRepeater flag*//**<CNcomment:FieldRepeateræ ‡å¿—ä½ */
 }HI_UNF_HDMI_MPEGSOURCE_INFOFRAME_S;
 
 /**HDMI Vendor Specific InfoFrame parameter struct,please reference EIA-CEA-861-D*/
-/**CNcomment: HDMI VSIFÐÅÏ¢Ö¡ ²ÎÊý½á¹¹ , Çë²Î¿¼EIA-CEA-861-D */
+/**CNcomment: HDMI VSIFä¿¡æ¯å¸§ å‚æ•°ç»“æž„ , è¯·å‚è€ƒEIA-CEA-861-D */
 typedef struct hiUNF_HDMI_VENDORSPEC_INFOFRAME_S
 {
-    HI_U32                         u32RegistrationId;       /**<Registration Id*//**<CNcomment:×¢²áIDºÅ */
+    HI_U32                         u32RegistrationId;       /**<Registration Id*//**<CNcomment:æ³¨å†ŒIDå· */
 }HI_UNF_HDMI_VENDORSPEC_INFOFRAME_S;
 
 /**HDMI InfoFrame unit struct*/
-/**CNcomment: HDMI ÐÅÏ¢Ö¡ÁªºÏ¶¨ÒåÌå */
+/**CNcomment: HDMI ä¿¡æ¯å¸§è”åˆå®šä¹‰ä½“ */
 typedef union hiUNF_HDMI_INFOFRAME_UNIT_U
 {
-    HI_UNF_HDMI_AVI_INFOFRAME_VER2_S   stAVIInfoFrame;      /**<AVI FrameInfo*//**<CNcomment:AVIÐÅÏ¢Ö¡ */
-    HI_UNF_HDMI_AUD_INFOFRAME_VER1_S   stAUDInfoFrame;      /**<Audio FrameInfo*//**<CNcomment:AUDÐÅÏ¢Ö¡ */
-    HI_UNF_HDMI_SPD_INFOFRAME_S        stSPDInfoFrame;      /**<SPD FrameInfo*//**<CNcomment:SPDÐÅÏ¢Ö¡ */
-    HI_UNF_HDMI_MPEGSOURCE_INFOFRAME_S stMPEGSourceInfoFrame;/**<MPEGSource FrameInfo*//**<CNcomment:MPEGSourceÐÅÏ¢Ö¡ */
-    HI_UNF_HDMI_VENDORSPEC_INFOFRAME_S stVendorSpecInfoFrame;/**<VS FrameInfo*//**<CNcomment:VSÐÅÏ¢Ö¡ */
+    HI_UNF_HDMI_AVI_INFOFRAME_VER2_S   stAVIInfoFrame;      /**<AVI FrameInfo*//**<CNcomment:AVIä¿¡æ¯å¸§ */
+    HI_UNF_HDMI_AUD_INFOFRAME_VER1_S   stAUDInfoFrame;      /**<Audio FrameInfo*//**<CNcomment:AUDä¿¡æ¯å¸§ */
+    HI_UNF_HDMI_SPD_INFOFRAME_S        stSPDInfoFrame;      /**<SPD FrameInfo*//**<CNcomment:SPDä¿¡æ¯å¸§ */
+    HI_UNF_HDMI_MPEGSOURCE_INFOFRAME_S stMPEGSourceInfoFrame;/**<MPEGSource FrameInfo*//**<CNcomment:MPEGSourceä¿¡æ¯å¸§ */
+    HI_UNF_HDMI_VENDORSPEC_INFOFRAME_S stVendorSpecInfoFrame;/**<VS FrameInfo*//**<CNcomment:VSä¿¡æ¯å¸§ */
 }HI_UNF_HMDI_INFORFRAME_UNIT_U;
 
 /**HDMI InfoFrame struct */
-/**CNcomment: HDMI ÐÅÏ¢Ö¡Êý¾Ý½á¹¹ */
+/**CNcomment: HDMI ä¿¡æ¯å¸§æ•°æ®ç»“æž„ */
 typedef struct hiUNF_HDMI_INFOFRAME_S
 {
-    HI_UNF_HDMI_INFOFRAME_TYPE_E    enInfoFrameType;  /**<InfoFrame type*//**CNcomment:<InfoFrameÀàÐÍ */
-    HI_UNF_HMDI_INFORFRAME_UNIT_U   unInforUnit;      /**<InfoFrame unit data*//**CNcomment:<InfoFrameÊý¾Ý */  
+    HI_UNF_HDMI_INFOFRAME_TYPE_E    enInfoFrameType;  /**<InfoFrame type*//**CNcomment:<InfoFrameç±»åž‹ */
+    HI_UNF_HMDI_INFORFRAME_UNIT_U   unInforUnit;      /**<InfoFrame unit data*//**CNcomment:<InfoFrameæ•°æ® */  
 }HI_UNF_HDMI_INFOFRAME_S;
 
 /**HDMI InfoFrame struct type*/
-/**CNcomment: HDMI ÐÅÏ¢Ö¡Êý¾Ý½á¹¹ÀàÐÍ */
+/**CNcomment: HDMI ä¿¡æ¯å¸§æ•°æ®ç»“æž„ç±»åž‹ */
 typedef enum hiUNF_HDMI_3D_FORMAT_E
 {
-    HI_UNF_3D_FRAME_PACKETING                 = 0x00, /**<3d type:Frame Packing*//**<CNcomment:3d Ä£Ê½:Ö¡·â×°*/
-    HI_UNF_3D_FIELD_ALTERNATIVE               = 0x01, /**<3d type:Field alternative*//**<CNcomment:3d Ä£Ê½:³¡½»´í*/
-    HI_UNF_3D_LINE_ALTERNATIVE                = 0x02, /**<3d type:Line alternative*//**<CNcomment:3d Ä£Ê½:ÐÐ½»´í*/
-    HI_UNF_3D_SIDE_BY_SIDE_FULL               = 0x03, /**<3d type:Side by side full*//**<CNcomment:3d Ä£Ê½:²¢ÅÅÊ½ ×óÓÒÈ«³¡*/
-    HI_UNF_3D_L_DEPTH                         = 0x04, /**<3d type:L+depth*//**<CNcomment:3d Ä£Ê½:L+DEPTH*/
-    HI_UNF_3D_L_DEPTH_GRAPHICS_GRAPHICS_DEPTH = 0x05, /**<3d type:L+depth+Graphics+Graphics-depth*//**<CNcomment:3d Ä£Ê½:L+depth+Graphics+Graphics-depth*/
-    HI_UNF_3D_TOP_AND_BOTTOM                  = 0x06, /**<3d type:Top and Bottom*//**<CNcomment:3d Ä£Ê½:ÉÏÏÂÄ£Ê½*/
-    HI_UNF_3D_SIDE_BY_SIDE_HALF               = 0x08, /**<3d type:Side by side half*//**<CNcomment:3d Ä£Ê½:²¢ÅÅÊ½ ×óÓÒ°ë±ß*/
+    HI_UNF_3D_FRAME_PACKETING                 = 0x00, /**<3d type:Frame Packing*//**<CNcomment:3d æ¨¡å¼:å¸§å°è£…*/
+    HI_UNF_3D_FIELD_ALTERNATIVE               = 0x01, /**<3d type:Field alternative*//**<CNcomment:3d æ¨¡å¼:åœºäº¤é”™*/
+    HI_UNF_3D_LINE_ALTERNATIVE                = 0x02, /**<3d type:Line alternative*//**<CNcomment:3d æ¨¡å¼:è¡Œäº¤é”™*/
+    HI_UNF_3D_SIDE_BY_SIDE_FULL               = 0x03, /**<3d type:Side by side full*//**<CNcomment:3d æ¨¡å¼:å¹¶æŽ’å¼ å·¦å³å…¨åœº*/
+    HI_UNF_3D_L_DEPTH                         = 0x04, /**<3d type:L+depth*//**<CNcomment:3d æ¨¡å¼:L+DEPTH*/
+    HI_UNF_3D_L_DEPTH_GRAPHICS_GRAPHICS_DEPTH = 0x05, /**<3d type:L+depth+Graphics+Graphics-depth*//**<CNcomment:3d æ¨¡å¼:L+depth+Graphics+Graphics-depth*/
+    HI_UNF_3D_TOP_AND_BOTTOM                  = 0x06, /**<3d type:Top and Bottom*//**<CNcomment:3d æ¨¡å¼:ä¸Šä¸‹æ¨¡å¼*/
+    HI_UNF_3D_SIDE_BY_SIDE_HALF               = 0x08, /**<3d type:Side by side half*//**<CNcomment:3d æ¨¡å¼:å¹¶æŽ’å¼ å·¦å³åŠè¾¹*/
     HI_UNF_3D_MAX_BUTT
 }HI_UNF_HDMI_3D_FORMAT_E;
 
@@ -401,285 +401,285 @@ typedef enum hiUNF_HDMI_3D_FORMAT_E
 
 /* CEC */
 /** CEC interrelated Opcode:Please refer to CEC 15 Message Descriptions */
-/** CNcomment: CEC Ïà¹ØµÄ²Ù×÷Âë */
+/** CNcomment: CEC ç›¸å…³çš„æ“ä½œç  */
 
 /* General Protocol messages */
 
 /**"Feature Abort" Used as a response to indicate that the device does not support the requested message type, or that it cannot execute it at the present time. */
-/**CNcomment:"Feature Abort"ÏûÏ¢±íÃ÷Éè±¸²»Ö§³Ö¸ÃÐÅÏ¢µÄ»Ø¸´£¬»òµ±Ç°Ã»·¨´¦Àí*/
+/**CNcomment:"Feature Abort"æ¶ˆæ¯è¡¨æ˜Žè®¾å¤‡ä¸æ”¯æŒè¯¥ä¿¡æ¯çš„å›žå¤ï¼Œæˆ–å½“å‰æ²¡æ³•å¤„ç†*/
 #define CEC_OPCODE_FEATURE_ABORT                  0X00  
 /**"Abort" Message This message is reserved for testing purposes.*/
-/**CNcomment:"Abort"ÏûÏ¢ÊÇ×¨Îª²âÊÔ±£ÁôµÄ*/
+/**CNcomment:"Abort"æ¶ˆæ¯æ˜¯ä¸“ä¸ºæµ‹è¯•ä¿ç•™çš„*/
 #define CEC_OPCODE_ABORT_MESSAGE                  0XFF 
 
 /* One Touch Play Feature*/
 
 /**"Active Source" Used by a new source to indicate that it has started to transmit a stream OR used in response to a "Request Active Source"*/
-/**CNcomment:"Active Source"ÏûÏ¢ËµÃ÷Ô´¶ËÉè±¸ÕýÔÚ·¢ËÍÒ»ÌõÂëÁ÷»òÕß»Ø¸´"Request Active Source"ÏûÏ¢*/
+/**CNcomment:"Active Source"æ¶ˆæ¯è¯´æ˜Žæºç«¯è®¾å¤‡æ­£åœ¨å‘é€ä¸€æ¡ç æµæˆ–è€…å›žå¤"Request Active Source"æ¶ˆæ¯*/
 #define CEC_OPCODE_ACTIVE_SOURCE                  0X82  
 /**"Image View On" Sent by a source device to the TV whenever it enters the active state (alternatively it may send "Text View On").*/
-/**CNcomment:µ±Ô´¶ËÉè±¸½øÈë¼¤»î×´Ì¬Ê±£¬»á¸øTV·¢ËÍÒ»´Î"Image View On"ÏûÏ¢*/
+/**CNcomment:å½“æºç«¯è®¾å¤‡è¿›å…¥æ¿€æ´»çŠ¶æ€æ—¶ï¼Œä¼šç»™TVå‘é€ä¸€æ¬¡"Image View On"æ¶ˆæ¯*/
 #define CEC_OPCODE_IMAGE_VIEW_ON                  0X04  
 /**"Text View On" As "Image View On", but should also remove any text, menus and PIP windows from the TV's display.*/
-/**CNcomment:"Text View On" ºÍ"Image View On"Ö¸ÁîÏàËÆ£¬µ«Í¬Ê±»á´ÓTV»­ÃæÉÏ¹Ø±ÕÎÄ×Ö£¬²Ëµ¥ºÍ»­ÖÐ»­´°¿Ú*/
+/**CNcomment:"Text View On" å’Œ"Image View On"æŒ‡ä»¤ç›¸ä¼¼ï¼Œä½†åŒæ—¶ä¼šä»ŽTVç”»é¢ä¸Šå…³é—­æ–‡å­—ï¼Œèœå•å’Œç”»ä¸­ç”»çª—å£*/
 #define CEC_OPCODE_TEXT_VIEW_ON                   0X0D  
 
 /* Routing Control Feature*/
 
 /**"Inactive Source" Used by the currently active source to inform the TV that it has no video to be presented to the user, or is going into standby as the result of a local user command on the device. */
-/**CNcomment: "Inactive Source"ÏûÏ¢±íÃ÷µ±Ç°ÎÞÂëÁ÷²¥·Å»òÕßÒòÓÃ»§²Ù×÷£¬Éè±¸Òª½øÈë´ý»ú×´Ì¬*/
+/**CNcomment: "Inactive Source"æ¶ˆæ¯è¡¨æ˜Žå½“å‰æ— ç æµæ’­æ”¾æˆ–è€…å› ç”¨æˆ·æ“ä½œï¼Œè®¾å¤‡è¦è¿›å…¥å¾…æœºçŠ¶æ€*/
 #define CEC_OPCODE_INACTIVE_SOURCE                0X9D 
 /**"Request Active Source" Used by a new device to discover the status of the system.*/
-/**CNcomment: "Request Active Source"ÏûÏ¢ÓÃÓÚÍ¨ÖªÏµÍ³Ìí¼ÓÁËÒ»¸öÐÂÉè±¸*/
+/**CNcomment: "Request Active Source"æ¶ˆæ¯ç”¨äºŽé€šçŸ¥ç³»ç»Ÿæ·»åŠ äº†ä¸€ä¸ªæ–°è®¾å¤‡*/
 #define CEC_OPCODE_REQUEST_ACTIVE_SOURCE          0X85
 /**"Routing Change" Sent by a CEC Switch when it is manually switched to inform all other devices on the network that the active route below the switch has changed. */
-/**CNcomment: µ±CEC×ª½ÓÆ÷¼ì²âµ½×ÓÉè±¸ÁÐ±í·¢Éú±ä»¯Ê±£¬»áÍ¨ÖªËùÓÐ»î¶¯×ÓÉè±¸ "Routing Change"ÏûÏ¢*/
+/**CNcomment: å½“CECè½¬æŽ¥å™¨æ£€æµ‹åˆ°å­è®¾å¤‡åˆ—è¡¨å‘ç”Ÿå˜åŒ–æ—¶ï¼Œä¼šé€šçŸ¥æ‰€æœ‰æ´»åŠ¨å­è®¾å¤‡ "Routing Change"æ¶ˆæ¯*/
 #define CEC_OPCODE_ROUTING_CHANGE                 0X80  
 /**"Routing Information" Sent by a CEC Switch to indicate the active route below the switch.*/
-/**CNcomment: CEC×ª½ÓÆ÷·¢ËÍ"Routing Information"ÏûÏ¢À´¼ì²â×ÓÍøÂçÏÂ»î¶¯×ÓÉè±¸*/
+/**CNcomment: CECè½¬æŽ¥å™¨å‘é€"Routing Information"æ¶ˆæ¯æ¥æ£€æµ‹å­ç½‘ç»œä¸‹æ´»åŠ¨å­è®¾å¤‡*/
 #define CEC_OPCODE_ROUTING_INFORMATION            0X81  
 /**"Set Stream Path" Used by the TV to request a streaming path from the specified physical address.*/
-/**CNcomment: TV´ÓÒ»¸öÌØ¶¨µÄÉè±¸ÉÏ»ñÈ¡ÂëÁ÷Â·¾¶ */
+/**CNcomment: TVä»Žä¸€ä¸ªç‰¹å®šçš„è®¾å¤‡ä¸ŠèŽ·å–ç æµè·¯å¾„ */
 #define CEC_OPCODE_SET_STREAM_PATH                0X86  
 
 /* Standby Feature*/
 
 /**"Standby" Switches one or all devices into standby mode. Can be used as a broadcast message or be addressed to a specific device.See section CEC 13.3 for important notes on the use of this message */
-/**CNcomment: "Standby"ÏûÏ¢ÄÜÊ¹Ò»¸ö»ò¶à¸öÉè±¸½øÈë´ý»ú×´Ì¬¡£¿ÉÓÃ¹ã²¥»òÕß¸øÌØ¶¨µÄÉè±¸µ¥¶À·¢ËÍ*/
+/**CNcomment: "Standby"æ¶ˆæ¯èƒ½ä½¿ä¸€ä¸ªæˆ–å¤šä¸ªè®¾å¤‡è¿›å…¥å¾…æœºçŠ¶æ€ã€‚å¯ç”¨å¹¿æ’­æˆ–è€…ç»™ç‰¹å®šçš„è®¾å¤‡å•ç‹¬å‘é€*/
 #define CEC_OPCODE_STANDBY                        0X36  
 
 /* One Touch Record Feature*/
 
 /**"Record Off" Requests a device to stop a recording. */
-/**CNcomment: "Record Off"ÄÜÊ¹Ò»¸öÉè±¸Í£Ö¹Â¼Ïñ*/
+/**CNcomment: "Record Off"èƒ½ä½¿ä¸€ä¸ªè®¾å¤‡åœæ­¢å½•åƒ*/
 #define CEC_OPCODE_RECORD_OFF                     0X0B  
 /**"Record On" Attempt to record the specified source. */
-/**CNcomment: "Record On"ÏûÏ¢ÓÃÓÚ³¢ÊÔÈÃÒ»¸öÌØ¶¨µÄÔ´Â¼Ïñ*/
+/**CNcomment: "Record On"æ¶ˆæ¯ç”¨äºŽå°è¯•è®©ä¸€ä¸ªç‰¹å®šçš„æºå½•åƒ*/
 #define CEC_OPCODE_RECORD_ON                      0X09  
 /**"Record Status" Used by a Recording Device to inform the initiator of the message "Record On" about its status. */
-/**CNcomment: ¿ÉÂ¼ÏñÉè±¸·¢ËÍ"Record Status"ÏûÏ¢ºÍ×´Ì¬¸ø·¢Æð"Record On"ÏûÏ¢µÄµÄÉè±¸*/
+/**CNcomment: å¯å½•åƒè®¾å¤‡å‘é€"Record Status"æ¶ˆæ¯å’ŒçŠ¶æ€ç»™å‘èµ·"Record On"æ¶ˆæ¯çš„çš„è®¾å¤‡*/
 #define CEC_OPCODE_RECORD_STATUS                  0X0A  
 /**"Record TV Screen" Request by the Recording Device to record the presently displayed source. */
-/**CNcomment: "Record TV Screen"ÏûÏ¢ÓÃÓÚÇëÇóÂ¼ÏñÉè±¸¼ÇÂ¼µ±Ç°ÏÔÊ¾µÄ×ÊÔ´*/
+/**CNcomment: "Record TV Screen"æ¶ˆæ¯ç”¨äºŽè¯·æ±‚å½•åƒè®¾å¤‡è®°å½•å½“å‰æ˜¾ç¤ºçš„èµ„æº*/
 #define CEC_OPCODE_RECORD_TV_SCREEN               0X0F  
 
 /* Timer Programming Feature*/
 
 /**"Clear Analogue Timer" Used to clear an Analogue timer block of a device. */
-/**CNcomment: Çå¿ÕÄ£Äâ¶¨Ê±Æ÷Éè±¸*/
+/**CNcomment: æ¸…ç©ºæ¨¡æ‹Ÿå®šæ—¶å™¨è®¾å¤‡*/
 #define CEC_OPCODE_CLEAR_ANALOGUE_TIMER           0X33  
 /**"Clear Digital Timer" Used to clear a Digital timer block of a device. */
-/**CNcomment: Çå¿ÕÊý×Ö¶¨Ê±Æ÷Éè±¸*/
+/**CNcomment: æ¸…ç©ºæ•°å­—å®šæ—¶å™¨è®¾å¤‡*/
 #define CEC_OPCODE_CLEAR_DIGITAL_TIMER            0X99  
 /**"Clear External Timer" Used to clear an External timer block of a device. */
-/**CNcomment: Çå¿ÕÍâ²¿¶¨Ê±Æ÷Éè±¸*/
+/**CNcomment: æ¸…ç©ºå¤–éƒ¨å®šæ—¶å™¨è®¾å¤‡*/
 #define CEC_OPCODE_CLEAR_EXTERNAL_TIMER           0XA1  
 /**"Set Analogue Timer" Used to set a single timer block on an Analogue Recording Device. */
-/**CNcomment: ÔÚÄ£Äâ¶¨Ê±Æ÷Éè±¸ÉÏÉèÖÃ¶¨Ê±Æ÷*/
+/**CNcomment: åœ¨æ¨¡æ‹Ÿå®šæ—¶å™¨è®¾å¤‡ä¸Šè®¾ç½®å®šæ—¶å™¨*/
 #define CEC_OPCODE_SET_ANALOGUE_TIMER             0X34  
 /**"Set Digital Timer" Used to set a single timer block on a Digital Recording Device. */
-/**CNcomment: ÔÚÊý×Ö¶¨Ê±Æ÷Éè±¸ÉÏÉèÖÃ¶¨Ê±Æ÷*/
+/**CNcomment: åœ¨æ•°å­—å®šæ—¶å™¨è®¾å¤‡ä¸Šè®¾ç½®å®šæ—¶å™¨*/
 #define CEC_OPCODE_SET_DIGITAL_TIMER              0X97  
 /**"Set External Timer" Used to set a single timer block to record from an external device. */
-/**CNcomment: ÔÚÍâ²¿¶¨Ê±Æ÷Éè±¸ÉÏÉèÖÃ¶¨Ê±Æ÷*/
+/**CNcomment: åœ¨å¤–éƒ¨å®šæ—¶å™¨è®¾å¤‡ä¸Šè®¾ç½®å®šæ—¶å™¨*/
 #define CEC_OPCODE_SET_EXTERNAL_TIMER             0XA2  
 /**"Set Timer Program Title" Used to set the name of a program associated with a timer block. Sent directly after sending a "Set Analogue Timer" or "Set Digital Timer" message. The name is then associated with that timer block. */
-/**CNcomment: µ±·¢ËÍÍê"Set Analogue Timer" »ò"Set Digital Timer"ÏûÏ¢ºó·¢ËÍÒ»¸öÃû³ÆÓÃÓÚ³ÌÐòºÍ¶¨Ê±Æ÷Ä£¿é¹ØÁª */
+/**CNcomment: å½“å‘é€å®Œ"Set Analogue Timer" æˆ–"Set Digital Timer"æ¶ˆæ¯åŽå‘é€ä¸€ä¸ªåç§°ç”¨äºŽç¨‹åºå’Œå®šæ—¶å™¨æ¨¡å—å…³è” */
 #define CEC_OPCODE_SET_TIMER_PROGRAM_TITLE        0X67  
 /**"Timer Cleared Status" Used to give the status of a "Clear Analogue Timer", "Clear Digital Timer" or "Clear External Timer" message. */
-/**CNcomment: "Timer Cleared Status"ÏûÏ¢ÓÃÓÚ·¢ËÍ"Clear Analogue Timer"£¬"Clear Digital Timer"£¬"Clear External Timer"Ö®ºóµÄ×´Ì¬*/
+/**CNcomment: "Timer Cleared Status"æ¶ˆæ¯ç”¨äºŽå‘é€"Clear Analogue Timer"ï¼Œ"Clear Digital Timer"ï¼Œ"Clear External Timer"ä¹‹åŽçš„çŠ¶æ€*/
 #define CEC_OPCODE_TIMER_CLEARED_STATUS           0X43  
 /**"Timer Status" Used to send timer status to the initiator of a "Set Timer" message. */
-/**CNcomment: "Timer Status"ÏûÏ¢ÓÃÓÚ¸øSet Timer"ÏûÏ¢µÄ·¢ÆðÕß·¢ËÍ¶¨Ê±Æ÷×´Ì¬*/
+/**CNcomment: "Timer Status"æ¶ˆæ¯ç”¨äºŽç»™Set Timer"æ¶ˆæ¯çš„å‘èµ·è€…å‘é€å®šæ—¶å™¨çŠ¶æ€*/
 #define CEC_OPCODE_TIMER_STATUS                   0X35  
 
 /* System Information Feature*/
 
 /**"CEC Version" Used to indicate the supported CEC version, in response to a "Get CEC Version" */
-/**CNcomment: "CEC Version"ÏûÏ¢ÓÃÓÚ·¢ËÍÉè±¸ÉÏµÄCEC°æ±¾ÐÅÏ¢À´»Ø¸´"Get CEC Version"ÏûÏ¢*/
+/**CNcomment: "CEC Version"æ¶ˆæ¯ç”¨äºŽå‘é€è®¾å¤‡ä¸Šçš„CECç‰ˆæœ¬ä¿¡æ¯æ¥å›žå¤"Get CEC Version"æ¶ˆæ¯*/
 #define CEC_OPCODE_CEC_VERSION                    0X9E  
 /**"Get CEC Version" Used by a device to enquire which version of CEC the target supports */
-/**CNcomment: "Get CEC Version"ÓÃÓÚÒ»¸öÉè±¸»ñÈ¡´ÓÉè±¸µÄCEC°æ±¾ÐÅÏ¢*/
+/**CNcomment: "Get CEC Version"ç”¨äºŽä¸€ä¸ªè®¾å¤‡èŽ·å–ä»Žè®¾å¤‡çš„CECç‰ˆæœ¬ä¿¡æ¯*/
 #define CEC_OPCODE_GET_CEC_VERSION                0X9F  
 /**"Give Physical Address" A request to a device to return its physical address. */
-/**CNcomment: ÏòÒ»¸öÉè±¸ÇëÇó»ñÈ¡¸ÃÉè±¸µÄÎïÀíµØÖ·*/
+/**CNcomment: å‘ä¸€ä¸ªè®¾å¤‡è¯·æ±‚èŽ·å–è¯¥è®¾å¤‡çš„ç‰©ç†åœ°å€*/
 #define CEC_OPCODE_GIVE_PHYSICAL_ADDRESS          0X83  
 /**"Report Physical Address" Used to inform all other devices of the mapping between physical and logical address of the initiator.*/
-/**CNcomment: ÏòÍ¬Ò»ÍøÂçÏÂÆäËûËùÓÐÉè±¸·¢ËÍÎïÀíµØÖ·ºÍÂß¼­µØÖ·*/
+/**CNcomment: å‘åŒä¸€ç½‘ç»œä¸‹å…¶ä»–æ‰€æœ‰è®¾å¤‡å‘é€ç‰©ç†åœ°å€å’Œé€»è¾‘åœ°å€*/
 #define CEC_OPCODE_REPORT_PHYSICAL_ADDRESS        0X84  
 /**"Get Menu Language" Sent by a device capable of character generation (for OSD and Menus) to a TV in order to discover the currently selected Menu language.Also used by a TV during installation to discover the currently set menu language of other devices.*/
-/**CNcomment: "Get Menu Language"ÓÃÓÚ»ñÈ¡Tv¶ËÄÜÁ¦¼¯£¬ÓÃÓÚÌæ»»µ±Ç°µÄ²Ëµ¥ÓïÑÔÀàÐÍ£»Ò²¿ÉÓÃÓÚTVÉè±¸Æô¶¯Ê±£¬ÉèÖÃÆäËüÉè±¸µÄ²Ëµ¥ÓïÑÔ*/
+/**CNcomment: "Get Menu Language"ç”¨äºŽèŽ·å–Tvç«¯èƒ½åŠ›é›†ï¼Œç”¨äºŽæ›¿æ¢å½“å‰çš„èœå•è¯­è¨€ç±»åž‹ï¼›ä¹Ÿå¯ç”¨äºŽTVè®¾å¤‡å¯åŠ¨æ—¶ï¼Œè®¾ç½®å…¶å®ƒè®¾å¤‡çš„èœå•è¯­è¨€*/
 #define CEC_OPCODE_GET_MENU_LANGUAGE              0X91  
 /**"Set Menu Language" Used by a TV or another device to indicate the menu language. */
-/**CNcomment: "Set Menu Language"ÓÃÓÚTv»òÆäËûÉè±¸£¬ÉèÖÃ²Ëµ¥ÓïÑÔ*/
+/**CNcomment: "Set Menu Language"ç”¨äºŽTvæˆ–å…¶ä»–è®¾å¤‡ï¼Œè®¾ç½®èœå•è¯­è¨€*/
 #define CEC_OPCODE_SET_MENU_LANGUAGE              0X32  
 
 /*  Deck Control Feature*/
 
 /**"Deck Control" Used to control a device's media functions. */
-/**CNcomment: "Deck control"ÏûÏ¢ÓÃÓÚ¿ØÖÆÒ»¸öÉè±¸µÄ¶àÃ½Ìå¹¦ÄÜ*/
+/**CNcomment: "Deck control"æ¶ˆæ¯ç”¨äºŽæŽ§åˆ¶ä¸€ä¸ªè®¾å¤‡çš„å¤šåª’ä½“åŠŸèƒ½*/
 #define CEC_OPCODE_DECK_CONTROL                   0X42  
 /**"Deck Status" Used to provide a deck's status to the initiator of the "Give Deck Status" message. */
-/**CNcomment: "Deck Status "ÏûÏ¢ÓÃÓÚ»Ø¸´"Give Deck Status"ÏûÏ¢µÄ·¢ÆðÕßDeckµÄ×´Ì¬*/
+/**CNcomment: "Deck Status "æ¶ˆæ¯ç”¨äºŽå›žå¤"Give Deck Status"æ¶ˆæ¯çš„å‘èµ·è€…Deckçš„çŠ¶æ€*/
 #define CEC_OPCODE_DECK_STATUS                    0X1B  
 /**"Give Deck Status" Used to request the status of a device, regardless of whether or not it is the current active source. */
-/**CNcomment: "Give Deck Status"ÏûÏ¢ÇëÇó»ñÈ¡Ä¿±êÉè±¸µÄ×´Ì¬£¬¶ø²»¹ÜÄ¿±êÉè±¸Ä¿Ç°ÊÇ²»ÊÇ¼¤»îµÄ*/
+/**CNcomment: "Give Deck Status"æ¶ˆæ¯è¯·æ±‚èŽ·å–ç›®æ ‡è®¾å¤‡çš„çŠ¶æ€ï¼Œè€Œä¸ç®¡ç›®æ ‡è®¾å¤‡ç›®å‰æ˜¯ä¸æ˜¯æ¿€æ´»çš„*/
 #define CEC_OPCODE_GIVE_DECK_STATUS               0X1A  
 /**"Play" Used to control the playback behaviour of a source device. */
-/**CNcomment: "Play"ÏûÏ¢ÓÃÓÚ¿ØÖÆÔ´Éè±¸²¥·Å*/
+/**CNcomment: "Play"æ¶ˆæ¯ç”¨äºŽæŽ§åˆ¶æºè®¾å¤‡æ’­æ”¾*/
 #define CEC_OPCODE_PLAY                           0X41  
 
 /* Tuner Control Feature*/
 
 /**"Give Tuner Device Status" Used to request the status of a tuner device. */
-/**CNcomment: "Give Tuner Device Status"ÓÃÓÚ»ñÈ¡µçÊÓµ÷Ð³Æ÷µÄ×´Ì¬*/
+/**CNcomment: "Give Tuner Device Status"ç”¨äºŽèŽ·å–ç”µè§†è°ƒè°å™¨çš„çŠ¶æ€*/
 #define CEC_OPCODE_GIVE_TUNER_DEVICE_STATUS       0X08  
 /**"Select Analogue Service" Directly selects an Analogue TV service */
-/**CNcomment: "Select Analogue Service"ÏûÏ¢ÓÃÓÚÖ±½ÓÑ¡ÔñÒ»¸öÄ£ÄâµçÊÓµÄ·þÎñÏî*/
+/**CNcomment: "Select Analogue Service"æ¶ˆæ¯ç”¨äºŽç›´æŽ¥é€‰æ‹©ä¸€ä¸ªæ¨¡æ‹Ÿç”µè§†çš„æœåŠ¡é¡¹*/
 #define CEC_OPCODE_SELECT_ANALOGUE_SERVICE        0X92  
 /**"Select Digital Service" Directly selects a Digital TV, Radio or Data Broadcast Service */
-/**CNcomment: "Select Digital Service"ÏûÏ¢ÓÃÓÚÖ±½ÓÑ¡ÔñÒ»¸öÊý×ÖµçÊÓµÄ·þÎñÏî*/
+/**CNcomment: "Select Digital Service"æ¶ˆæ¯ç”¨äºŽç›´æŽ¥é€‰æ‹©ä¸€ä¸ªæ•°å­—ç”µè§†çš„æœåŠ¡é¡¹*/
 #define CEC_OPCODE_SELECT_DIGITAL_SERVICE         0X93  
 /**"Tuner Device Status" Use by a tuner device to provide its status to the initiator of the "Give Tuner Device Status" message. */
-/**CNcomment: "Tuner Device Status"ÏûÏ¢ÓÃÓÚµçÊÓµ÷Ð³Æ÷¸ø" Give Tuner Device Status"ÏûÏ¢µÄ·¢Æð¶Ë»Ø¸´*/
+/**CNcomment: "Tuner Device Status"æ¶ˆæ¯ç”¨äºŽç”µè§†è°ƒè°å™¨ç»™" Give Tuner Device Status"æ¶ˆæ¯çš„å‘èµ·ç«¯å›žå¤*/
 #define CEC_OPCODE_TUNER_DEVICE_STATUS            0X07  
 /**"Tuner Step Decrement" Used to tune to next lowest service in a tuner's service list. Can be used for PIP. */
-/**CNcomment: "Tuner Step Decrement"ÏûÏ¢ÓÃÓÚ°Ñ´ÎµÍµÄ·þÎñÏî·ÅÈëµ÷Ð³Æ÷µÄ·þÎñÁÐ±í£¬ÄÜÓÃÓÚ»­ÖÐ»­*/
+/**CNcomment: "Tuner Step Decrement"æ¶ˆæ¯ç”¨äºŽæŠŠæ¬¡ä½Žçš„æœåŠ¡é¡¹æ”¾å…¥è°ƒè°å™¨çš„æœåŠ¡åˆ—è¡¨ï¼Œèƒ½ç”¨äºŽç”»ä¸­ç”»*/
 #define CEC_OPCODE_TUNER_STEP_DECREMENT           0X06  
 /**"Tuner Step Increment" Used to tune to next highest service in a tuner's service list. Can be used for PIP. */
-/**CNcomment: "Tuner Step Decrement"ÏûÏ¢ÓÃÓÚ°Ñ´Î¸ßµÄ·þÎñÏî·ÅÈëµ÷Ð³Æ÷µÄ·þÎñÁÐ±í£¬ÄÜÓÃÓÚ»­ÖÐ»­*/
+/**CNcomment: "Tuner Step Decrement"æ¶ˆæ¯ç”¨äºŽæŠŠæ¬¡é«˜çš„æœåŠ¡é¡¹æ”¾å…¥è°ƒè°å™¨çš„æœåŠ¡åˆ—è¡¨ï¼Œèƒ½ç”¨äºŽç”»ä¸­ç”»*/
 #define CEC_OPCODE_TUNER_STEP_INCREMENT           0X05  
 
 /* Vendor Specific Command*/
 
 /**"Device Vendor ID" Reports the vendor ID of this device. */
-/**CNcomment: "Device Vendor ID"ÏûÏ¢ÓÃÓÚ±¨¸æ´ËÉè±¸µÄ¹©Ó¦ÉÌID*/
+/**CNcomment: "Device Vendor ID"æ¶ˆæ¯ç”¨äºŽæŠ¥å‘Šæ­¤è®¾å¤‡çš„ä¾›åº”å•†ID*/
 #define CEC_OPCODE_DEVICE_VENDOR_ID               0X87  
 /**"Give Device Vendor ID" Requests the Vendor ID from a device. */
-/**CNcomment: "Give Device Vendor ID"ÏûÏ¢ÓÃÓÚÇëÇó´ËÉè±¸µÄ¹©Ó¦ÉÌID*/
+/**CNcomment: "Give Device Vendor ID"æ¶ˆæ¯ç”¨äºŽè¯·æ±‚æ­¤è®¾å¤‡çš„ä¾›åº”å•†ID*/
 #define CEC_OPCODE_GIVE_DEVICE_VENDOR_ID          0X8C  
 /**"Vendor Command" Allows vendor specific commands to be sent between two devices. */
-/**CNcomment: "Vendor Command"ÓÃÓÚÁ½¸öÉè±¸Ö®¼ä»¥Ïà·¢ËÍ¹©Ó¦ÉÌ¶¨ÖÆÏûÏ¢*/
+/**CNcomment: "Vendor Command"ç”¨äºŽä¸¤ä¸ªè®¾å¤‡ä¹‹é—´äº’ç›¸å‘é€ä¾›åº”å•†å®šåˆ¶æ¶ˆæ¯*/
 #define CEC_OPCODE_VENDOR_COMMAND                 0X89  
 /**"Vendor Command With ID" Allows vendor specific commands to be sent between two devices or broadcast. */
-/**CNcomment: "Vendor Command With ID"ÓÃÓÚÁ½¸öÉè±¸Ö®¼ä»ò¹ã²¥ÐÎÊ½·¢ËÍ¹©Ó¦ÉÌ¶¨ÖÆÏûÏ¢*/
+/**CNcomment: "Vendor Command With ID"ç”¨äºŽä¸¤ä¸ªè®¾å¤‡ä¹‹é—´æˆ–å¹¿æ’­å½¢å¼å‘é€ä¾›åº”å•†å®šåˆ¶æ¶ˆæ¯*/
 #define CEC_OPCODE_VENDOR_COMMAND_WITH_ID         0XA0  
 /**"Vendor Remote Button Down" Indicates that a remote control button has been depressed. */
-/**CNcomment: "Vendor Remote Button Down"ÏûÏ¢±íÊ¾£¬Ò£¿ØÆ÷ÓÐ°´¼ü°´ÏÂÀ´*/
+/**CNcomment: "Vendor Remote Button Down"æ¶ˆæ¯è¡¨ç¤ºï¼Œé¥æŽ§å™¨æœ‰æŒ‰é”®æŒ‰ä¸‹æ¥*/
 #define CEC_OPCODE_VENDOR_REMOTE_BUTTON_DOWN      0X8A  
 /**"Vendor Remote Button Up" Indicates that a remote control button (the last button pressed indicated by the Vendor Remote Button Down message) has been released. */
-/**CNcomment: "Vendor Remote Button Up"ÏûÏ¢±íÊ¾ "Vendor Remote Button Down"ÏûÏ¢×îºóÒ»´Î±íÊ¾¹ýµÄ°´¼ü±»ÊÍ·ÅÁË*/
+/**CNcomment: "Vendor Remote Button Up"æ¶ˆæ¯è¡¨ç¤º "Vendor Remote Button Down"æ¶ˆæ¯æœ€åŽä¸€æ¬¡è¡¨ç¤ºè¿‡çš„æŒ‰é”®è¢«é‡Šæ”¾äº†*/
 #define CEC_OPCODE_VENDOR_REMOTE_BUTTON_UP        0X8B  
 
 /* OSD Display Feature*/
 
 /**"Set OSD String" Used to send a text message to output on a TV. */
-/**CNcomment: "Set OSD String"ÏûÏ¢¿ÉÒÔ·¢ËÍÒ»¶ÎÎÄ×ÖÏûÏ¢ÈÃËüÏÔÊ¾ÔÚµçÊÓ»úÉÏ*/
+/**CNcomment: "Set OSD String"æ¶ˆæ¯å¯ä»¥å‘é€ä¸€æ®µæ–‡å­—æ¶ˆæ¯è®©å®ƒæ˜¾ç¤ºåœ¨ç”µè§†æœºä¸Š*/
 #define CEC_OPCODE_SET_OSD_STRING                 0X64  
 /**"Give OSD Name" Used to request the preferred OSD name of a device for use in menus associated with that device. */
-/**CNcomment:ÇëÇóÊ×Ñ¡µÄ¹ØÁªÉè±¸²Ëµ¥ÏÔÊ¾µÄÃû×Ö */
+/**CNcomment:è¯·æ±‚é¦–é€‰çš„å…³è”è®¾å¤‡èœå•æ˜¾ç¤ºçš„åå­— */
 #define CEC_OPCODE_GIVE_OSD_NAME                  0X46  
 /**"Set OSD Name" Used to set the preferred OSD name of a device for use in menus associated with that device. */
-/**CNcomment:ÉèÖÃÊ×Ñ¡¹ØÁªÉè±¸²Ëµ¥ÏÔÊ¾µÄÃû×Ö */
+/**CNcomment:è®¾ç½®é¦–é€‰å…³è”è®¾å¤‡èœå•æ˜¾ç¤ºçš„åå­— */
 #define CEC_OPCODE_SET_OSD_NAME                   0X47  
 
 /* Device Menu Control Feature*/
 
 /**"Menu Request" A request from the TV for a device to show/remove a menu or to query if a device is currently showing a menu. */
-/**CNcomment: "Menu Request"ÏûÏ¢ÓÃÓÚµçÊÓÇëÇóÒ»¸öÉè±¸ÏÔÊ¾/¹Ø±Õ²Ëµ¥»òÑ¯ÎÊ¸ÃÉè±¸µ±Ç°ÓÐÃ»ÓÐ²Ëµ¥ÏÔÊ¾*/
+/**CNcomment: "Menu Request"æ¶ˆæ¯ç”¨äºŽç”µè§†è¯·æ±‚ä¸€ä¸ªè®¾å¤‡æ˜¾ç¤º/å…³é—­èœå•æˆ–è¯¢é—®è¯¥è®¾å¤‡å½“å‰æœ‰æ²¡æœ‰èœå•æ˜¾ç¤º*/
 #define CEC_OPCODE_MENU_REQUEST                   0X8D  
 /**"Menu Status" Used to indicate to the TV that the device is showing/has removed a menu and requests the remote control keys to be passed though. */
-/**CNcomment: "Menu Status"ÏûÏ¢ÓÃÓÚ»Ø¸´µçÊÓ¶Ëµ±Ç°ÕýÏÔÊ¾/ÒÆ³ýÁË²Ëµ¥£¬²¢Í¸´«Ò£¿ØÆ÷Ö¸Áî*/
+/**CNcomment: "Menu Status"æ¶ˆæ¯ç”¨äºŽå›žå¤ç”µè§†ç«¯å½“å‰æ­£æ˜¾ç¤º/ç§»é™¤äº†èœå•ï¼Œå¹¶é€ä¼ é¥æŽ§å™¨æŒ‡ä»¤*/
 #define CEC_OPCODE_MENU_STATUS                    0X8E  
 /**"User Control Pressed" Used to indicate that the user pressed a remote control button or switched from one remote control button to another. */
-/**CNcomment: "User Control Pressed"±íÊ¾ÓÃ»§°´ÁËÒ»¸öÒ£¿ØÆ÷°´¼ü»ò´ÓÄ³Ò»¸ö°´¼ü»»µ½ÁíÒ»¸ö°´¼ü.Ò²¿ÉÒÔÓÃÓÚÓÃ»§¼ä½Ó·¢ÆðµÄÖ¸Áî*/
+/**CNcomment: "User Control Pressed"è¡¨ç¤ºç”¨æˆ·æŒ‰äº†ä¸€ä¸ªé¥æŽ§å™¨æŒ‰é”®æˆ–ä»ŽæŸä¸€ä¸ªæŒ‰é”®æ¢åˆ°å¦ä¸€ä¸ªæŒ‰é”®.ä¹Ÿå¯ä»¥ç”¨äºŽç”¨æˆ·é—´æŽ¥å‘èµ·çš„æŒ‡ä»¤*/
 #define CEC_OPCODE_USER_CONTROL_PRESSED           0X44  
 /**"User Control Released" Indicates that user released a remote control button (the last one indicated by the "User Control Pressed" message) */
-/**CNcomment: "User Control Released"±íÊ¾ÓÃ»§ÊÍ·ÅÁË"User Control Released"ÏûÏ¢Ö¸¶¨µÄÒ£¿ØÆ÷°´¼ü.Ò²¿ÉÒÔÓÃÓÚÓÃ»§¼ä½Ó·¢ÆðµÄÖ¸Áî*/
+/**CNcomment: "User Control Released"è¡¨ç¤ºç”¨æˆ·é‡Šæ”¾äº†"User Control Released"æ¶ˆæ¯æŒ‡å®šçš„é¥æŽ§å™¨æŒ‰é”®.ä¹Ÿå¯ä»¥ç”¨äºŽç”¨æˆ·é—´æŽ¥å‘èµ·çš„æŒ‡ä»¤*/
 #define CEC_OPCODE_USER_CONTROL_RELEASED          0X45  
 
 /* Power Status Feature*/
 
 /**"Give Device Power Status" Used to determine the current power status of a target device */
-/**CNcomment: "Give Device Power Status"ÏûÏ¢ÓÃÓÚ»ñÈ¡Ä¿±êÉè±¸µ±Ç°µÄµçÔ´×´Ì¬*/
+/**CNcomment: "Give Device Power Status"æ¶ˆæ¯ç”¨äºŽèŽ·å–ç›®æ ‡è®¾å¤‡å½“å‰çš„ç”µæºçŠ¶æ€*/
 #define CEC_OPCODE_GIVE_DEVICE_POWER_STATUS       0X8F  
 /**"Report Power Status" Used to inform a requesting device of the current power status */
-/**CNcomment: "Report Power Status"ÏûÏ¢ÓÃÓÚ·¢ËÍµ±Ç°µÄµçÔ´×´Ì¬»Ø¸´ÇëÇóÉè±¸*/
+/**CNcomment: "Report Power Status"æ¶ˆæ¯ç”¨äºŽå‘é€å½“å‰çš„ç”µæºçŠ¶æ€å›žå¤è¯·æ±‚è®¾å¤‡*/
 #define CEC_OPCODE_REPORT_POWER_STATUS            0X90  
 
 /* System Audio Control Feature*/
 
 /**"Give Audio Status" Requests an amplifier to send its volume and mute status */
-/**CNcomment: "Give Audio Status"ÏûÏ¢ÇëÇó»ñÈ¡À©ÒôÆ÷µÄÒôÁ¿ºÍ¾²Òô×´Ì¬*/
+/**CNcomment: "Give Audio Status"æ¶ˆæ¯è¯·æ±‚èŽ·å–æ‰©éŸ³å™¨çš„éŸ³é‡å’Œé™éŸ³çŠ¶æ€*/
 #define CEC_OPCODE_GIVE_AUDIO_STATUS              0X71  
 /**"Give System Audio Mode Status" Requests the status of the System Audio Mode */
-/**CNcomment: "Give System Audio Mode Status"ÏûÏ¢ÇëÇóÏµÍ³ÒôÆµµÄ×´Ì¬*/
+/**CNcomment: "Give System Audio Mode Status"æ¶ˆæ¯è¯·æ±‚ç³»ç»ŸéŸ³é¢‘çš„çŠ¶æ€*/
 #define CEC_OPCODE_GIVE_SYSTEM_AUDIO_MODE_STATUS  0x7D  
 /**"Report Audio Status" Reports an amplifier's volume and mute status */
-/**CNcomment: "Report Audio Status"ÏûÏ¢ÓÃÓÚ·¢ËÍÀ©ÒôÆ÷µÄÒôÁ¿ºÍ¾²Òô×´Ì¬*/
+/**CNcomment: "Report Audio Status"æ¶ˆæ¯ç”¨äºŽå‘é€æ‰©éŸ³å™¨çš„éŸ³é‡å’Œé™éŸ³çŠ¶æ€*/
 #define CEC_OPCODE_REPORT_AUDIO_STATUS            0X7A  
 /**"Set System Audio Mode" Turns the System Audio Mode On or Off. */
-/**CNcomment: "Set System Audio Mode"ÏûÏ¢ÓÃÓÚ´ò¿ª/¹Ø±ÕÏµÍ³ÒôÆµ¹¦ÄÜ*/
+/**CNcomment: "Set System Audio Mode"æ¶ˆæ¯ç”¨äºŽæ‰“å¼€/å…³é—­ç³»ç»ŸéŸ³é¢‘åŠŸèƒ½*/
 #define CEC_OPCODE_SET_SYSTEM_AUDIO_MODE          0X72  
 /**"System Audio Mode Request" A device implementing System Audio Control and which has volume control RC buttons (eg TV or STB) requests to use System Audio Mode to the amplifier */
-/**CNcomment: Ê¹ÓÃÒôÁ¿¿ØÖÆ°´Å¥(stb»òÕßtv)ÐèÒªÑïÉùÆ÷½øÈë System Audio Mode*/
+/**CNcomment: ä½¿ç”¨éŸ³é‡æŽ§åˆ¶æŒ‰é’®(stbæˆ–è€…tv)éœ€è¦æ‰¬å£°å™¨è¿›å…¥ System Audio Mode*/
 #define CEC_OPCODE_SYSTEM_AUDIO_MODE_REQUEST      0X70  
 /**"System Audio Mode Status" Reports the current status of the System Audio Mode */
-/**CNcomment: "System Audio Mode Status"ÏûÏ¢ÓÃÓÚ·¢ËÍÏµÍ³ÒôÆµµ±Ç°µÄ×´Ì¬*/
+/**CNcomment: "System Audio Mode Status"æ¶ˆæ¯ç”¨äºŽå‘é€ç³»ç»ŸéŸ³é¢‘å½“å‰çš„çŠ¶æ€*/
 #define CEC_OPCODE_SYSTEM_AUDIO_MODE_STATUS       0X7E  
 
 /* Audio Rate Control Feature*/
 
 /**"Set Audio Rate" Used to control audio rate from Source Device. */
-/**CNcomment: "Set Audio Rate"ÏûÏ¢ÓÃÓÚ¿ØÖÆÔ´¶ËÉè±¸µÄÒôÆµ²ÉÑùÂÊ*/
+/**CNcomment: "Set Audio Rate"æ¶ˆæ¯ç”¨äºŽæŽ§åˆ¶æºç«¯è®¾å¤‡çš„éŸ³é¢‘é‡‡æ ·çŽ‡*/
 #define CEC_OPCODE_SET_AUDIO_RATE                 0X9A  
 
 /**POLL message have no opcode, So, we just use this value */
-/**CNcomment: "POLL"ÏûÏ¢Ã»ÓÐ²Ù×÷Âë£¬ÎÒÃÇ½ö½öÖ»ÊÇÊ¹ÓÃ¸ÃÖµ*/
+/**CNcomment: "POLL"æ¶ˆæ¯æ²¡æœ‰æ“ä½œç ï¼Œæˆ‘ä»¬ä»…ä»…åªæ˜¯ä½¿ç”¨è¯¥å€¼*/
 #define CEC_OPCODE_POLLING_MESSAGE                0XFE  
 
 /**HDMI CEC logical address,please reference  HDMI specification 1.4a*/
-/**CNcomment: HDMI CECÂß¼­µØÖ·£¬Çë²Î¿¼HDMI 1.4aÐ­Òé */
+/**CNcomment: HDMI CECé€»è¾‘åœ°å€ï¼Œè¯·å‚è€ƒHDMI 1.4aåè®® */
 typedef enum hiUNF_CEC_LOGICALADD_S
 {
-    HI_UNF_CEC_LOGICALADD_TV               = 0X00, /**<TV*//**CNcomment:<µçÊÓ */
-    HI_UNF_CEC_LOGICALADD_RECORDDEV_1      = 0X01, /**<Record device 1*//**CNcomment:<Â¼Ïñ»ú 1 */
-    HI_UNF_CEC_LOGICALADD_RECORDDEV_2      = 0X02, /**<Record device 2*//**CNcomment:<Â¼Ïñ»ú 2 */
-    HI_UNF_CEC_LOGICALADD_TUNER_1          = 0X03, /**<Tuner 1*//**CNcomment:<¸ßÆµÍ· 1*/
-    HI_UNF_CEC_LOGICALADD_PLAYDEV_1        = 0X04, /**<play device 1*//**CNcomment:<²¥·ÅÉè±¸ 1 */
-    HI_UNF_CEC_LOGICALADD_AUDIOSYSTEM      = 0X05, /**<audio system*//**CNcomment:<ÒôÆµÏµÍ³ */
-    HI_UNF_CEC_LOGICALADD_TUNER_2          = 0X06, /**<tuner 2*//**CNcomment:<¸ßÆµÍ· 2 */
-    HI_UNF_CEC_LOGICALADD_TUNER_3          = 0X07, /**<tuner 3*//**CNcomment:<¸ßÆµÍ· 3 */
-    HI_UNF_CEC_LOGICALADD_PLAYDEV_2        = 0X08, /**<play device 2*//**CNcomment:<²¥·ÅÉè±¸ 2 */
-    HI_UNF_CEC_LOGICALADD_RECORDDEV_3      = 0X09, /**<Record device 3*//**CNcomment:<Â¼Ïñ»ú 3 */
-    HI_UNF_CEC_LOGICALADD_TUNER_4          = 0X0A, /**<tuner 4*//**CNcomment:<¸ßÆµÍ· 4 */
-    HI_UNF_CEC_LOGICALADD_PLAYDEV_3        = 0X0B, /**<play device 3*//**CNcomment:<²¥·ÅÉè±¸ 3 */
-    HI_UNF_CEC_LOGICALADD_RESERVED_1       = 0X0C, /**<reserved 1*//**CNcomment:<±£ÁôÏî 1 */
-    HI_UNF_CEC_LOGICALADD_RESERVED_2       = 0X0D, /**<reserved 2*//**CNcomment:<±£ÁôÏî 2 */
-    HI_UNF_CEC_LOGICALADD_SPECIALUSE       = 0X0E, /**<special use*//**CNcomment:<ÌØÊâÓÃÍ¾ */
-    HI_UNF_CEC_LOGICALADD_BROADCAST        = 0X0F, /**<broadcast*//**CNcomment:<¹ã²¥ */
+    HI_UNF_CEC_LOGICALADD_TV               = 0X00, /**<TV*//**CNcomment:<ç”µè§† */
+    HI_UNF_CEC_LOGICALADD_RECORDDEV_1      = 0X01, /**<Record device 1*//**CNcomment:<å½•åƒæœº 1 */
+    HI_UNF_CEC_LOGICALADD_RECORDDEV_2      = 0X02, /**<Record device 2*//**CNcomment:<å½•åƒæœº 2 */
+    HI_UNF_CEC_LOGICALADD_TUNER_1          = 0X03, /**<Tuner 1*//**CNcomment:<é«˜é¢‘å¤´ 1*/
+    HI_UNF_CEC_LOGICALADD_PLAYDEV_1        = 0X04, /**<play device 1*//**CNcomment:<æ’­æ”¾è®¾å¤‡ 1 */
+    HI_UNF_CEC_LOGICALADD_AUDIOSYSTEM      = 0X05, /**<audio system*//**CNcomment:<éŸ³é¢‘ç³»ç»Ÿ */
+    HI_UNF_CEC_LOGICALADD_TUNER_2          = 0X06, /**<tuner 2*//**CNcomment:<é«˜é¢‘å¤´ 2 */
+    HI_UNF_CEC_LOGICALADD_TUNER_3          = 0X07, /**<tuner 3*//**CNcomment:<é«˜é¢‘å¤´ 3 */
+    HI_UNF_CEC_LOGICALADD_PLAYDEV_2        = 0X08, /**<play device 2*//**CNcomment:<æ’­æ”¾è®¾å¤‡ 2 */
+    HI_UNF_CEC_LOGICALADD_RECORDDEV_3      = 0X09, /**<Record device 3*//**CNcomment:<å½•åƒæœº 3 */
+    HI_UNF_CEC_LOGICALADD_TUNER_4          = 0X0A, /**<tuner 4*//**CNcomment:<é«˜é¢‘å¤´ 4 */
+    HI_UNF_CEC_LOGICALADD_PLAYDEV_3        = 0X0B, /**<play device 3*//**CNcomment:<æ’­æ”¾è®¾å¤‡ 3 */
+    HI_UNF_CEC_LOGICALADD_RESERVED_1       = 0X0C, /**<reserved 1*//**CNcomment:<ä¿ç•™é¡¹ 1 */
+    HI_UNF_CEC_LOGICALADD_RESERVED_2       = 0X0D, /**<reserved 2*//**CNcomment:<ä¿ç•™é¡¹ 2 */
+    HI_UNF_CEC_LOGICALADD_SPECIALUSE       = 0X0E, /**<special use*//**CNcomment:<ç‰¹æ®Šç”¨é€” */
+    HI_UNF_CEC_LOGICALADD_BROADCAST        = 0X0F, /**<broadcast*//**CNcomment:<å¹¿æ’­ */
     HI_UNF_CEC_LOGICALADD_BUTT
 }HI_UNF_CEC_LOGICALADD_S;
 
 /**HDMI CEC command type,please reference  HDMI specification 1.4a*/
-/**CNcomment: HDMI CECÃüÁîÀàÐÍ£¬Çë²Î¿¼HDMI 1.4aÐ­Òé */
+/**CNcomment: HDMI CECå‘½ä»¤ç±»åž‹ï¼Œè¯·å‚è€ƒHDMI 1.4aåè®® */
 typedef enum hiUNF_CEC_CMDTYPE_E
 {
-    HI_UNF_CEC_STRUCTCOMMAND,                    /**<CEC struct command*//**<CNcomment:CEC ½á¹¹ÃüÁî */
-    HI_UNF_CEC_RAWCOMMAND,                       /**<CEC raw command*//**<CNcomment:CEC Ô­Ê¼ÃüÁî */
+    HI_UNF_CEC_STRUCTCOMMAND,                    /**<CEC struct command*//**<CNcomment:CEC ç»“æž„å‘½ä»¤ */
+    HI_UNF_CEC_RAWCOMMAND,                       /**<CEC raw command*//**<CNcomment:CEC åŽŸå§‹å‘½ä»¤ */
     HI_UNF_CEC_BUTT
 }HI_UNF_CEC_CMDTYPE_E;
 
 /**HDMI CEC Raw Data struct,please reference  HDMI specification 1.4a*/
-/**CNcomment: HDMI CECÔ­Ê¼Êý¾Ý½á¹¹Ìå£¬Çë²Î¿¼HDMI 1.4aÐ­Òé */
+/**CNcomment: HDMI CECåŽŸå§‹æ•°æ®ç»“æž„ä½“ï¼Œè¯·å‚è€ƒHDMI 1.4aåè®® */
 typedef struct hiUNF_CEC_RAWDATA_S
 {
-    HI_U8                              u8Length;  /**<CEC raw data lengh*//**<CNcomment:cec ÓÐÐ§²ÎÊý¸öÊý */
-    HI_U8                              u8Data[15];     /**<CEC raw data*//**<CNcomment:CEC ²ÎÊý½á¹¹Ìå */
+    HI_U8                              u8Length;  /**<CEC raw data lengh*//**<CNcomment:cec æœ‰æ•ˆå‚æ•°ä¸ªæ•° */
+    HI_U8                              u8Data[15];     /**<CEC raw data*//**<CNcomment:CEC å‚æ•°ç»“æž„ä½“ */
 }HI_UNF_CEC_RAWDATA_S;
 
 /**HDMI CEC user Interface Command Opcode,please reference  HDMI specification 1.4a*/
-/**CNcomment: HDMI CEC ÓÃ»§½Ó¿Ú²Ù×÷Ö¸Áî£¬Çë²Î¿¼HDMI 1.4aÐ­Òé */
+/**CNcomment: HDMI CEC ç”¨æˆ·æŽ¥å£æ“ä½œæŒ‡ä»¤ï¼Œè¯·å‚è€ƒHDMI 1.4aåè®® */
 typedef enum hiUNF_CEC_UICMD_E                  
 {
     HI_UNF_CEC_UICMD_SELECT                      = 0x00,
@@ -763,39 +763,39 @@ typedef enum hiUNF_CEC_UICMD_E
 }HI_UNF_CEC_UICMD_E;                                    
 
 /**HDMI CEC operand command,please reference  HDMI specification 1.4a*/
-/**CNcomment: HDMI CEC ²Ù×÷Ö¸Áî£¬Çë²Î¿¼HDMI 1.4aÐ­Òé */
+/**CNcomment: HDMI CEC æ“ä½œæŒ‡ä»¤ï¼Œè¯·å‚è€ƒHDMI 1.4aåè®® */
 typedef union hiUNF_CEC_Operand_t
 {
-    HI_UNF_CEC_RAWDATA_S               stRawData;   /**<CEC raw date*//**<CNcomment:CEC Ô­Ê¼ÃüÁî */
-    HI_UNF_CEC_UICMD_E                 stUIOpcode;  /**<CEC user interface command*//**<CNcomment:CECÓÃ»§×Ô¶¨Òå²Ù×÷ */
+    HI_UNF_CEC_RAWDATA_S               stRawData;   /**<CEC raw date*//**<CNcomment:CEC åŽŸå§‹å‘½ä»¤ */
+    HI_UNF_CEC_UICMD_E                 stUIOpcode;  /**<CEC user interface command*//**<CNcomment:CECç”¨æˆ·è‡ªå®šä¹‰æ“ä½œ */
 }HI_UNF_CEC_Operand_t;
 
 /**HDMI CEC struct command*/
-/**CNcomment: HDMI CEC ÃüÁî½á¹¹ */
+/**CNcomment: HDMI CEC å‘½ä»¤ç»“æž„ */
 typedef struct hiUNF_HDMI_CEC_CMD_S
 {
-    HI_UNF_CEC_LOGICALADD_S  enSrcAdd;     /**<logical address of source *//**<CNcomment:Ô´¶ËÉè±¸µØÖ· */         
-    HI_UNF_CEC_LOGICALADD_S  enDstAdd;     /**<logical address of destination*//**<CNcomment:Ä¿±êÉè±¸µØÖ· */
-    HI_U8                    u8Opcode;     /**<opration code*//**<CNcomment:²Ù×÷Âë*/
-    HI_UNF_CEC_Operand_t     unOperand;    /**<operand*//**<CNcomment:²Ù×÷Êý*/
+    HI_UNF_CEC_LOGICALADD_S  enSrcAdd;     /**<logical address of source *//**<CNcomment:æºç«¯è®¾å¤‡åœ°å€ */         
+    HI_UNF_CEC_LOGICALADD_S  enDstAdd;     /**<logical address of destination*//**<CNcomment:ç›®æ ‡è®¾å¤‡åœ°å€ */
+    HI_U8                    u8Opcode;     /**<opration code*//**<CNcomment:æ“ä½œç */
+    HI_UNF_CEC_Operand_t     unOperand;    /**<operand*//**<CNcomment:æ“ä½œæ•°*/
 }HI_UNF_HDMI_CEC_CMD_S;
 
 /**HDMI CEC status struct*/
-/**CNcomment: HDMI CEC ×´Ì¬½á¹¹ */
+/**CNcomment: HDMI CEC çŠ¶æ€ç»“æž„ */
 typedef struct hiUNF_HDMI_CEC_STATUS_S
 {
-    HI_BOOL bEnable;                                 /**<the flag of CEC work,HI_TRUE:CEC work enable,HI_FALSE:CEC no work ,other parameter no effect*/ /**<CNcomment:CEC Õý³£¹¤×÷±ê¼ÇÎ»£¬Èç¹ûÎªHI_TRUE,CEC¿ÉÒÔÕý³£¹¤×÷£¬Èç¹ûÎªHI_FASLE,CECµÄÆäËû²ÎÊýÎÞÐ§£¬²¢ÇÒ²»ÄÜ¹¤×÷ */
-    HI_U8   u8PhysicalAddr[4];                       /**<CEC physics address*/ /**<CNcomment:CEC ÎïÀíµØÖ· */
-    HI_U8   u8LogicalAddr;                           /**<CEC logic address,defualt 0x03*//**<CNcomment:CEC Âß¼­µØÖ·£¬Ä¬ÈÏÎª£º0x03. */
-    HI_U8   u8Network[HI_UNF_CEC_LOGICALADD_BUTT];   /**<CEC network struct ,1:the device can response CEC command*/ /**<CNcomment:CEC ¹¹½¨µÄÍøÂ·½á¹¹£¬Îª1±íÊ¾¸ÃÉè±¸ÄÜ¹»ÏìÓ¦CECÃüÁî */
+    HI_BOOL bEnable;                                 /**<the flag of CEC work,HI_TRUE:CEC work enable,HI_FALSE:CEC no work ,other parameter no effect*/ /**<CNcomment:CEC æ­£å¸¸å·¥ä½œæ ‡è®°ä½ï¼Œå¦‚æžœä¸ºHI_TRUE,CECå¯ä»¥æ­£å¸¸å·¥ä½œï¼Œå¦‚æžœä¸ºHI_FASLE,CECçš„å…¶ä»–å‚æ•°æ— æ•ˆï¼Œå¹¶ä¸”ä¸èƒ½å·¥ä½œ */
+    HI_U8   u8PhysicalAddr[4];                       /**<CEC physics address*/ /**<CNcomment:CEC ç‰©ç†åœ°å€ */
+    HI_U8   u8LogicalAddr;                           /**<CEC logic address,defualt 0x03*//**<CNcomment:CEC é€»è¾‘åœ°å€ï¼Œé»˜è®¤ä¸ºï¼š0x03. */
+    HI_U8   u8Network[HI_UNF_CEC_LOGICALADD_BUTT];   /**<CEC network struct ,1:the device can response CEC command*/ /**<CNcomment:CEC æž„å»ºçš„ç½‘è·¯ç»“æž„ï¼Œä¸º1è¡¨ç¤ºè¯¥è®¾å¤‡èƒ½å¤Ÿå“åº”CECå‘½ä»¤ */
 }HI_UNF_HDMI_CEC_STATUS_S;
 
 /**HDMI HDCP key struct*/
-/**CNcomment: HDMI HDCP ÃÜÔ¿½á¹¹ */
+/**CNcomment: HDMI HDCP å¯†é’¥ç»“æž„ */
 typedef struct hiUNF_HDMI_LOAD_KEY_S
 {
-    HI_U8 *pu8InputEncryptedKey;            /**<Encrypted key pointer *//**<CNcomment:¼ÓÃÜµÄÃÜÔ¿Êý×éÍ·µØÖ· */
-    HI_U32 u32KeyLength;  					/**<Encrypted key length*//**<CNcomment:¼ÓÃÜµÄÃÜÔ¿³¤¶È */
+    HI_U8 *pu8InputEncryptedKey;            /**<Encrypted key pointer *//**<CNcomment:åŠ å¯†çš„å¯†é’¥æ•°ç»„å¤´åœ°å€ */
+    HI_U32 u32KeyLength;  					/**<Encrypted key length*//**<CNcomment:åŠ å¯†çš„å¯†é’¥é•¿åº¦ */
 }HI_UNF_HDMI_LOAD_KEY_S;
 
 
@@ -806,315 +806,315 @@ typedef struct hiUNF_HDMI_LOAD_KEY_S
 /** @{ */  /** <!-- [HDMI] */
 
 /** 
-\brief the whole initialization of the hdmi. CNcomment:HDMI½Ó¿ÚÇý¶¯Èí¼þ³õÊ¼»¯ CNend
-\attention  this func should be called before vo_init and after disp_init. CNcomment:±ØÐëÔÚDISPÇý¶¯SetupÖ®ºóºÍVOÇý¶¯SetupÖ®Ç°´ò¿ª CNend
-\param CNcomment:ÎÞ CNend
-\retval HI_SUCCESS  success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\brief the whole initialization of the hdmi. CNcomment:HDMIæŽ¥å£é©±åŠ¨è½¯ä»¶åˆå§‹åŒ– CNend
+\attention  this func should be called before vo_init and after disp_init. CNcomment:å¿…é¡»åœ¨DISPé©±åŠ¨Setupä¹‹åŽå’ŒVOé©±åŠ¨Setupä¹‹å‰æ‰“å¼€ CNend
+\param CNcomment:æ—  CNend
+\retval HI_SUCCESS  success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_Init(HI_VOID);
 
 
 /** 
-\brief deinit the hdmi. CNcomment:HDMI½Ó¿ÚÈ¥³õÊ¼»¯ CNend
-\attention  this must be called after vo exited and before disp  exited . CNcomment:±ØÐëÔÚVOÇý¶¯ExitÖ®ºóºÍDISPÇý¶¯ExitÖ®Ç°´ò¿ª CNend
-\param CNcomment:ÎÞ CNend
-\retval HI_SUCCESS      success.CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\brief deinit the hdmi. CNcomment:HDMIæŽ¥å£åŽ»åˆå§‹åŒ– CNend
+\attention  this must be called after vo exited and before disp  exited . CNcomment:å¿…é¡»åœ¨VOé©±åŠ¨Exitä¹‹åŽå’ŒDISPé©±åŠ¨Exitä¹‹å‰æ‰“å¼€ CNend
+\param CNcomment:æ—  CNend
+\retval HI_SUCCESS      success.CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_DeInit(HI_VOID);
 
 
 /** 
-\brief create hdmi device. CNcomment:´´½¨HDMIÉè±¸ CNend
+\brief create hdmi device. CNcomment:åˆ›å»ºHDMIè®¾å¤‡ CNend
 \attention \n
-\param[in] enHdmi  hdmi device id. CNcomment:Òª´ò¿ªµÄHDMIÉè±¸ CNend
-\param[in] pstOpenPara  When get GetSinkCapability failed,defalut set sink device to DVI/HDMI mode.CNcomment:Î´»ñÈ¡µ½¶Ô¶ËÄÜÁ¦¼¯Ê±£¬Ä¬ÈÏ°Ñ¶Ô¶Ëµ±³É(DVI/HDMI)Éè±¸ CNend
-\retval HI_SUCCESS     success.  CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi  hdmi device id. CNcomment:è¦æ‰“å¼€çš„HDMIè®¾å¤‡ CNend
+\param[in] pstOpenPara  When get GetSinkCapability failed,defalut set sink device to DVI/HDMI mode.CNcomment:æœªèŽ·å–åˆ°å¯¹ç«¯èƒ½åŠ›é›†æ—¶ï¼Œé»˜è®¤æŠŠå¯¹ç«¯å½“æˆ(DVI/HDMI)è®¾å¤‡ CNend
+\retval HI_SUCCESS     success.  CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_Open(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_OPEN_PARA_S *pstOpenPara);
 
 /** 
-\brief close the handler created by  HI_UNF_HDMI_Open. CNcomment:Ïú»ÙÓÉHI_UNF_HDMI_Open´´½¨µÄ¾ä±ú CNend
+\brief close the handler created by  HI_UNF_HDMI_Open. CNcomment:é”€æ¯ç”±HI_UNF_HDMI_Openåˆ›å»ºçš„å¥æŸ„ CNend
 \attention \n
-\param[in] enHdmi  hdmi device id. CNcomment:HDMIÉè±¸ID CNend
-\retval HI_SUCCESS     success.  CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi  hdmi device id. CNcomment:HDMIè®¾å¤‡ID CNend
+\retval HI_SUCCESS     success.  CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_Close(HI_UNF_HDMI_ID_E enHdmi);
 
 /** 
-\brief to get the capability of sink connect to stbbox. CNcomment:²éÑ¯»ñÈ¡HDMI SinkÉè±¸µÄÄÜÁ¦¼¯ CNend
+\brief to get the capability of sink connect to stbbox. CNcomment:æŸ¥è¯¢èŽ·å–HDMI Sinkè®¾å¤‡çš„èƒ½åŠ›é›† CNend
 \attention \n
-\param[in] enHdmi   hdmi device id.CNcomment:HDMIÉè±¸ID CNend
-\param[out] pCapability  the capability of the sink .CNcomment:SINKÄÜÁ¦¼¯ CNend
-\retval HI_SUCCESS       success.  CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi. CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi   hdmi device id.CNcomment:HDMIè®¾å¤‡ID CNend
+\param[out] pCapability  the capability of the sink .CNcomment:SINKèƒ½åŠ›é›† CNend
+\retval HI_SUCCESS       success.  CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi. CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see ::HI_UNF_HDMI_SINK_CAPABILITY_S\n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_GetSinkCapability(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_SINK_CAPABILITY_S *pCapability);
 
 /** 
-\brief set the attr of given hdmi interface. CNcomment:ÉèÖÃHDMI½Ó¿ÚÊôÐÔ¡£ CNend
+\brief set the attr of given hdmi interface. CNcomment:è®¾ç½®HDMIæŽ¥å£å±žæ€§ã€‚ CNend
 \attention \n
-\param[in] enHdmi      hdmi device id.CNcomment:HDMIÉè±¸ID CNend
-\param[in] pstAttr     the attr of given hdmi interface.CNcomment:HDMI½Ó¿ÚÊôÐÔ CNend
-\retval HI_SUCCESS     success.  CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi      hdmi device id.CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] pstAttr     the attr of given hdmi interface.CNcomment:HDMIæŽ¥å£å±žæ€§ CNend
+\retval HI_SUCCESS     success.  CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see ::HI_UNF_HDMI_ATTR_S\n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_SetAttr(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_ATTR_S *pstAttr);
 
 
 /** 
-\brief get the current attr of the give hdmi interface. CNcomment:²éÑ¯HDMI½Ó¿Úµ±Ç°ÊôÐÔ CNend
+\brief get the current attr of the give hdmi interface. CNcomment:æŸ¥è¯¢HDMIæŽ¥å£å½“å‰å±žæ€§ CNend
 \attention \n
-\param[in] enHdmi hdmi device id.CNcomment: HDMIÉè±¸ID CNend
-\param[out] pstAttr     the attr of given hdmi interface. CNcomment:HDMI½Ó¿ÚÊôÐÔ CNend
-\retval HI_SUCCESS      success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi hdmi device id.CNcomment: HDMIè®¾å¤‡ID CNend
+\param[out] pstAttr     the attr of given hdmi interface. CNcomment:HDMIæŽ¥å£å±žæ€§ CNend
+\retval HI_SUCCESS      success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see HI_UNF_HDMI_ATTR_S\n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_GetAttr(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_ATTR_S *pstAttr);
 
 
 /** 
-\brief get the cec working status. CNcomment:»ñÈ¡CEC×´Ì¬ CNend
-\attention  user can get the cec working status through this func. CNcomment:¿Í»§¿ÉÒÔÍ¨¹ý¸Ã½Ó¿Ú»ñÈ¡CEC¹¤×÷×´Ì¬\n CNend
-\param[in] enHdmi       hdmi device id.CNcomment:HDMIÉè±¸ID CNend
-\param[in] pStatus     get cec working status. CNcomment:CEC ×´Ì¬ CNend
-\retval HI_SUCCESS     success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\brief get the cec working status. CNcomment:èŽ·å–CECçŠ¶æ€ CNend
+\attention  user can get the cec working status through this func. CNcomment:å®¢æˆ·å¯ä»¥é€šè¿‡è¯¥æŽ¥å£èŽ·å–CECå·¥ä½œçŠ¶æ€\n CNend
+\param[in] enHdmi       hdmi device id.CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] pStatus     get cec working status. CNcomment:CEC çŠ¶æ€ CNend
+\retval HI_SUCCESS     success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see ::HI_UNF_HDMI_CEC_CMD_S\n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_CECStatus(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_CEC_STATUS_S  *pStatus);
 
 
 /** 
-\brief send the cec data. CNcomment:·¢ËÍCEC ÃüÁî CNend
+\brief send the cec data. CNcomment:å‘é€CEC å‘½ä»¤ CNend
 \attention \n
-\param[in] enHdmi   hdmi device id. CNcomment:HDMIÉè±¸ID CNend
-\param[in] pCECCmd      the cec cmd data.CNcomment:Cec Command ÄÚÈÝ CNend
-\retval HI_SUCCESS     success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi   hdmi device id. CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] pCECCmd      the cec cmd data.CNcomment:Cec Command å†…å®¹ CNend
+\retval HI_SUCCESS     success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see ::HI_UNF_HDMI_CEC_CMD_S\n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_SetCECCommand(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_CEC_CMD_S  *pCECCmd);
 
 
 /** 
-\brief get the cec data received. CNcomment:½ÓÊÕµÄCEC ÃüÁî CNend
+\brief get the cec data received. CNcomment:æŽ¥æ”¶çš„CEC å‘½ä»¤ CNend
 \attention \n
-\param[in] enHdmi   hdmi device id. CNcomment:HDMIÉè±¸ID CNend
-\param[in] pCECCmd    the cec cmd data. CNcomment:Cec Command ÄÚÈÝ CNend
+\param[in] enHdmi   hdmi device id. CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] pCECCmd    the cec cmd data. CNcomment:Cec Command å†…å®¹ CNend
 \param[in] timeout    timeout for getting cec cmd, unit: 10ms;
-\retval HI_SUCCESS      success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\retval HI_SUCCESS      success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see ::HI_UNF_HDMI_CEC_CMD_S\n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_GetCECCommand(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_CEC_CMD_S  *pCECCmd, HI_U32 timeout);
 
 /** 
-\brief enable the cec func. CNcomment:CEC Ê¹ÄÜ´ò¿ª CNend
+\brief enable the cec func. CNcomment:CEC ä½¿èƒ½æ‰“å¼€ CNend
 \attention \n
-\param[in] enHdmi   hdmi device id. CNcomment:HDMIÉè±¸ID CNend
-\retval HI_SUCCESS     success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi   hdmi device id. CNcomment:HDMIè®¾å¤‡ID CNend
+\retval HI_SUCCESS     success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_CEC_Enable(HI_UNF_HDMI_ID_E enHdmi);
 
 /** 
-\brief disable the cec func. CNcomment:CEC Ê¹ÄÜ¹Ø±Õ CNend
+\brief disable the cec func. CNcomment:CEC ä½¿èƒ½å…³é—­ CNend
 \attention \n
-\param[in] enHdmi   hdmi device id. CNcomment:HDMIÉè±¸ID CNend
-\retval HI_SUCCESS      success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi   hdmi device id. CNcomment:HDMIè®¾å¤‡ID CNend
+\retval HI_SUCCESS      success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_CEC_Disable(HI_UNF_HDMI_ID_E enHdmi);
 
 /** 
-\brief  set and send infoframe. CNcomment:ÉèÖÃ²¢·¢ËÍInfoFrame CNend
+\brief  set and send infoframe. CNcomment:è®¾ç½®å¹¶å‘é€InfoFrame CNend
 \attention \n
-\param[in] enHdmi       hdmi device id.CNcomment:HDMIÉè±¸ID CNend
-\param[in] pstInfoFrame the inforframe content.CNcomment:InfoFrameÄÚÈÝ CNend
-\retval HI_SUCCESS      success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi       hdmi device id.CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] pstInfoFrame the inforframe content.CNcomment:InfoFrameå†…å®¹ CNend
+\retval HI_SUCCESS      success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_SetInfoFrame(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_INFOFRAME_S *pstInfoFrame);
 
 /** 
-\brief get the infoframe infor. CNcomment:»ñÈ¡ÕýÔÚ·¢ËÍµÄInfoFrameµÄÐÅÏ¢ CNend
+\brief get the infoframe infor. CNcomment:èŽ·å–æ­£åœ¨å‘é€çš„InfoFrameçš„ä¿¡æ¯ CNend
 \attention \n
-\param[in] enHdmi       hdmi device id. CNcomment:HDMIÉè±¸ID CNend
-\param[in] enInfoFrameType the info frame type such as avi or audio or gcp etc. CNcomment:InfoFrameÀàÐÍ CNend
-\param[out] pstInfoFrame   the inforframe content.CNcomment:InfoFrameÄÚÈÝ CNend
-\retval HI_SUCCESS      success.CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi       hdmi device id. CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] enInfoFrameType the info frame type such as avi or audio or gcp etc. CNcomment:InfoFrameç±»åž‹ CNend
+\param[out] pstInfoFrame   the inforframe content.CNcomment:InfoFrameå†…å®¹ CNend
+\retval HI_SUCCESS      success.CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_GetInfoFrame(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_INFOFRAME_TYPE_E enInfoFrameType, HI_UNF_HDMI_INFOFRAME_S *pstInfoFrame);
 
 
 
 /** 
-\brief  start the hdmi works. CNcomment:HDMI¿ªÊ¼ CNend
+\brief  start the hdmi works. CNcomment:HDMIå¼€å§‹ CNend
 \attention \n
 this should be called after HI_UNF_HDMI_SetAttr.
-CNcomment:Æô¶¯HDMI½Ó¿Ú¡£Ò»°ãÔÚHI_UNF_HDMI_SetAttrÖ®ºóµ÷ÓÃ CNend
-\param[in] enHdmi   hdmi device id.CNcomment:HDMIÉè±¸ID CNend
-\retval HI_SUCCESS     success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+CNcomment:å¯åŠ¨HDMIæŽ¥å£ã€‚ä¸€èˆ¬åœ¨HI_UNF_HDMI_SetAtträ¹‹åŽè°ƒç”¨ CNend
+\param[in] enHdmi   hdmi device id.CNcomment:HDMIè®¾å¤‡ID CNend
+\retval HI_SUCCESS     success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_Start(HI_UNF_HDMI_ID_E enHdmi);
 
 /** 
-\brief stop  the hdmi. CNcomment:hdmiÍ£Ö¹ CNend
+\brief stop  the hdmi. CNcomment:hdmiåœæ­¢ CNend
 \attention \n
 this func should be called  when hdmi plug out.
-CNcomment:µ±HDMIÏß±»°Î³ýºó£¬HDMI»Øµ÷º¯ÊýÓ¦¸Ãµ÷ÓÃ¸Ãº¯Êý¡£ CNend
-\param[in] enHdmi  hdmi device id. CNcomment:HDMIÉè±¸ID CNend
-\retval HI_SUCCESS     success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+CNcomment:å½“HDMIçº¿è¢«æ‹”é™¤åŽï¼ŒHDMIå›žè°ƒå‡½æ•°åº”è¯¥è°ƒç”¨è¯¥å‡½æ•°ã€‚ CNend
+\param[in] enHdmi  hdmi device id. CNcomment:HDMIè®¾å¤‡ID CNend
+\retval HI_SUCCESS     success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_Stop(HI_UNF_HDMI_ID_E enHdmi);
 
 /** 
-\brief set the deep color mode. CNcomment:ÉèÖÃHDMI DeepColorÄ£Ê½ CNend
+\brief set the deep color mode. CNcomment:è®¾ç½®HDMI DeepColoræ¨¡å¼ CNend
 \attention \n
-\param[in] enHdmi   hdmi device id. CNcomment:HDMIÉè±¸ID CNend
-\param[in] enDeepColor deep color mode,please refer to the HI_UNF_HDMI_DEEP_COLOR_E definiton.CNcomment:DeepColorÄ£Ê½£¬Çë²Î¿¼::HI_UNF_HDMI_DEEP_COLOR_E  CNend 
-\retval HI_SUCCESS     success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi   hdmi device id. CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] enDeepColor deep color mode,please refer to the HI_UNF_HDMI_DEEP_COLOR_E definiton.CNcomment:DeepColoræ¨¡å¼ï¼Œè¯·å‚è€ƒ::HI_UNF_HDMI_DEEP_COLOR_E  CNend 
+\retval HI_SUCCESS     success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_SetDeepColor(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_DEEP_COLOR_E enDeepColor);
 
 /** 
-\brief switch the xvycc on or off. CNcomment:ÉèÖÃHDMI xvYCC Ä£Ê½ CNend
+\brief switch the xvycc on or off. CNcomment:è®¾ç½®HDMI xvYCC æ¨¡å¼ CNend
 \attention \n
-\param[in] enHdmi   hdmi device id.CNcomment:HDMIÉè±¸ID CNend
-\param[in] bEnalbe   whether to enable xvycc mode or not .CNcomment:ÊÇ·ñÊ¹ÄÜxvYCCÄ£Ê½ CNend
-\retval HI_SUCCESS    success.  CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi   hdmi device id.CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] bEnalbe   whether to enable xvycc mode or not .CNcomment:æ˜¯å¦ä½¿èƒ½xvYCCæ¨¡å¼ CNend
+\retval HI_SUCCESS    success.  CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_SetxvYCCMode(HI_UNF_HDMI_ID_E enHdmi, HI_BOOL bEnalbe);
 
 /** 
-\brief switch the mute of av  on or off. CNcomment:ÉèÖÃHDMI AV mute Ä£Ê½ CNend
+\brief switch the mute of av  on or off. CNcomment:è®¾ç½®HDMI AV mute æ¨¡å¼ CNend
 \attention \n
-\param[in] enHdmi   hdmi device id.CNcomment:HDMIÉè±¸ID CNend
-\param[in] bAvMute   whether to mute the av.CNcomment:ÊÇ·ñmute AV CNend
-\retval HI_SUCCESS     success. CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi   hdmi device id.CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] bAvMute   whether to mute the av.CNcomment:æ˜¯å¦mute AV CNend
+\retval HI_SUCCESS     success. CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_SetAVMute(HI_UNF_HDMI_ID_E enHdmi, HI_BOOL bAvMute);
 
 /** 
-\brief get the edid information forcelly. CNcomment:Ç¿ÖÆ»ñÈ¡EDIDÔ­Ê¼Êý¾Ý,¸Ã½Ó¿ÚÎªÌØ¶¨Æ½Ì¨ÐèÒª»ñÈ¡Ô­Ê¼EDIDµÄ½Ó¿Ú CNend
+\brief get the edid information forcelly. CNcomment:å¼ºåˆ¶èŽ·å–EDIDåŽŸå§‹æ•°æ®,è¯¥æŽ¥å£ä¸ºç‰¹å®šå¹³å°éœ€è¦èŽ·å–åŽŸå§‹EDIDçš„æŽ¥å£ CNend
 \attention \n
-\param[in] enHdmi   hdmi device id.CNcomment:HDMIÉè±¸ID CNend
-\param[in] *u8Edid  the buffer allocated externally, buffer size must be 512. CNcomment:»ñÈ¡Ô­Ê¼EDIDÊý¾Ýbuffer¡£EDID°æ±¾²»Í¬£¬¶Á³öÀ´µÄÊý¾Ý²»Í¬£¬È¡ÉÏÏÞbuffer ´óÐ¡Îª512,ÓÃ»§Ðè×Ô¼º·ÖÅäºÃ; CNend
-\param[in] *u32EdidLength  the data lenth of  original edid. CNcomment:»ñÈ¡Ô­Ê¼EDIDÊý¾Ý³¤¶È CNend
-\retval HI_SUCCESS   success.   CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi   hdmi device id.CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] *u8Edid  the buffer allocated externally, buffer size must be 512. CNcomment:èŽ·å–åŽŸå§‹EDIDæ•°æ®bufferã€‚EDIDç‰ˆæœ¬ä¸åŒï¼Œè¯»å‡ºæ¥çš„æ•°æ®ä¸åŒï¼Œå–ä¸Šé™buffer å¤§å°ä¸º512,ç”¨æˆ·éœ€è‡ªå·±åˆ†é…å¥½; CNend
+\param[in] *u32EdidLength  the data lenth of  original edid. CNcomment:èŽ·å–åŽŸå§‹EDIDæ•°æ®é•¿åº¦ CNend
+\retval HI_SUCCESS   success.   CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_Force_GetEDID(HI_UNF_HDMI_ID_E enHdmi, HI_U8 *u8Edid, HI_U32 *u32EdidLength);
 
 
 /** 
-\brief register callback function. CNcomment:×¢²á»Øµ÷º¯Êý CNend
+\brief register callback function. CNcomment:æ³¨å†Œå›žè°ƒå‡½æ•° CNend
 \attention \n
 this func should be called before HI_UNF_HDMI_Open and after HI_UNF_HDMI_Init
 because HI_UNF_HDMI_Open will trigger hotplug event.
 And this function can only register one function
 If call this func two times,then the 2nd callback function will cover 1st one.
-CNcomment:½¨ÒéÔÚHI_UNF_HDMI_InitÖ®ºóºÍHI_UNF_HDMI_OpenÖ®Ç°µ÷ÓÃ \n
-ÒòÎªOpenÊ±Èç¹ûÁ¬×Å½ÓÊÕ¶ËÉè±¸ÉÏ»á´¥·¢Ò»´ÎhotplugÏûÏ¢ \n
-¸Ãº¯ÊýÖ»ÄÜ×¢²áÒ»¸ö»Øµ÷º¯Êý£¬µÚ¶þ´Î×¢²áµÄ»Øµ÷º¯Êý»á¸²¸ÇÇ°ÃæµÄ»Øµ÷º¯Êý CNend
-\param CNcomment:ÎÞ CNend
-\param[in] enHdmi   hdmi device id.CNcomment:HDMIÉè±¸ID CNend
-\param[in] *HI_UNF_HDMI_CALLBACK_FUNC_S  callback function CNcomment:»Øµ÷º¯Êý CNend
-\retval HI_SUCCESS   success.   CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+CNcomment:å»ºè®®åœ¨HI_UNF_HDMI_Initä¹‹åŽå’ŒHI_UNF_HDMI_Openä¹‹å‰è°ƒç”¨ \n
+å› ä¸ºOpenæ—¶å¦‚æžœè¿žç€æŽ¥æ”¶ç«¯è®¾å¤‡ä¸Šä¼šè§¦å‘ä¸€æ¬¡hotplugæ¶ˆæ¯ \n
+è¯¥å‡½æ•°åªèƒ½æ³¨å†Œä¸€ä¸ªå›žè°ƒå‡½æ•°ï¼Œç¬¬äºŒæ¬¡æ³¨å†Œçš„å›žè°ƒå‡½æ•°ä¼šè¦†ç›–å‰é¢çš„å›žè°ƒå‡½æ•° CNend
+\param CNcomment:æ—  CNend
+\param[in] enHdmi   hdmi device id.CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] *HI_UNF_HDMI_CALLBACK_FUNC_S  callback function CNcomment:å›žè°ƒå‡½æ•° CNend
+\retval HI_SUCCESS   success.   CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_RegCallbackFunc(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_CALLBACK_FUNC_S *pstCallbackFunc);
 
 
 /** 
-\brief unregister CallbackFunc. CNcomment:×¢Ïú»Øµ÷º¯Êý CNend
+\brief unregister CallbackFunc. CNcomment:æ³¨é”€å›žè°ƒå‡½æ•° CNend
 \attention \n
 this func should be called before HI_UNF_HDMI_DeInit and after HI_UNF_HDMI_Close
-CNcomment:½¨ÒéÔÚHI_UNF_HDMI_CloseÖ®ºóºÍHI_UNF_HDMI_DeInitÖ®Ç°µ÷ÓÃ CNend
-\param[in] enHdmi   hdmi device id.CNcomment:HDMIÉè±¸ID CNend
-\param[in] *HI_UNF_HDMI_CALLBACK_FUNC_S  callback function CNcomment:»Øµ÷º¯Êý CNend
-\retval HI_SUCCESS   success.   CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+CNcomment:å»ºè®®åœ¨HI_UNF_HDMI_Closeä¹‹åŽå’ŒHI_UNF_HDMI_DeInitä¹‹å‰è°ƒç”¨ CNend
+\param[in] enHdmi   hdmi device id.CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] *HI_UNF_HDMI_CALLBACK_FUNC_S  callback function CNcomment:å›žè°ƒå‡½æ•° CNend
+\retval HI_SUCCESS   success.   CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_UnRegCallbackFunc(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_CALLBACK_FUNC_S *pstCallbackFunc);
 
 /** 
-\brief Load HDCP key. CNcomment:µ¼Èëhdcpkey CNend
+\brief Load HDCP key. CNcomment:å¯¼å…¥hdcpkey CNend
 \attention \n
-\param[in] enHdmi   hdmi device id.CNcomment:HDMIÉè±¸ID CNend
-\param[in] *pstLoadKey  key struct length and point CNcomment:key µÄ½á¹¹ ³¤¶ÈºÍÖ¸Õë CNend
-\retval HI_SUCCESS   success.   CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+\param[in] enHdmi   hdmi device id.CNcomment:HDMIè®¾å¤‡ID CNend
+\param[in] *pstLoadKey  key struct length and point CNcomment:key çš„ç»“æž„ é•¿åº¦å’ŒæŒ‡é’ˆ CNend
+\retval HI_SUCCESS   success.   CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_LoadHDCPKey(HI_UNF_HDMI_ID_E enHdmi, HI_UNF_HDMI_LOAD_KEY_S *pstLoadKey);
 
 /** 
-\brief get the edid information forcelly. CNcomment:´ÓEEPROM»ñÈ¡EDIDÊý¾Ý CNend
+\brief get the edid information forcelly. CNcomment:ä»ŽEEPROMèŽ·å–EDIDæ•°æ® CNend
 \attention \n
 Difference with two interface for get EDID
 HI_UNF_HDMI_Force_GetEDID : Reread EDID from Sink,and write it to EEPROM
 HI_UNF_HDMI_ReadEDID : read edid from EEPROM,not Real-time read from Sink
-CNcomment:Á½¸ö»ñÈ¡EDIDµÄ½Ó¿Ú²î±ð
-HI_UNF_HDMI_Force_GetEDID ÊÇÖØÐÂ´Ó½ÓÊÕ¶Ë¶ÁÈ¡Edid£¬²¢Ð´µ½EEPROM
-HI_UNF_HDMI_ReadEDID ÊÇ´ÓEEPROM¶ÁÈ¡Edid£¬¶ø²»ÊÇÊµÊ±µÄ½ÓÊÕ¶ËEDID CNend
-\param[in] *pstLoadKey  key struct length and point CNcomment:key µÄ½á¹¹ ³¤¶ÈºÍÖ¸Õë CNend
-\retval HI_SUCCESS   success.   CNcomment:³É¹¦ CNend
-\retval please refer to the err code definitino of mpi.CNcomment:Çë²Î¿¼MPI´íÎóÂë CNend
+CNcomment:ä¸¤ä¸ªèŽ·å–EDIDçš„æŽ¥å£å·®åˆ«
+HI_UNF_HDMI_Force_GetEDID æ˜¯é‡æ–°ä»ŽæŽ¥æ”¶ç«¯è¯»å–Edidï¼Œå¹¶å†™åˆ°EEPROM
+HI_UNF_HDMI_ReadEDID æ˜¯ä»ŽEEPROMè¯»å–Edidï¼Œè€Œä¸æ˜¯å®žæ—¶çš„æŽ¥æ”¶ç«¯EDID CNend
+\param[in] *pstLoadKey  key struct length and point CNcomment:key çš„ç»“æž„ é•¿åº¦å’ŒæŒ‡é’ˆ CNend
+\retval HI_SUCCESS   success.   CNcomment:æˆåŠŸ CNend
+\retval please refer to the err code definitino of mpi.CNcomment:è¯·å‚è€ƒMPIé”™è¯¯ç  CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_HDMI_ReadEDID(HI_U8 *u8Edid, HI_U32 *u32EdidLength);
 

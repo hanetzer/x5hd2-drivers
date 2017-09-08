@@ -30,47 +30,47 @@ extern "C" {
 /** @{ */  /** <!-- [IR] */
 
 /**status of key*/
-/**CNcomment:°´¼ü×´Ì¬*/
+/**CNcomment:æŒ‰é”®çŠ¶æ€*/
 typedef enum  hiUNF_KEY_STATUS_E
 {
-    HI_UNF_KEY_STATUS_DOWN = 0 ,   /**<Pressed*/   /**<CNcomment:°´ÏÂ°´¼ü */
-    HI_UNF_KEY_STATUS_HOLD ,       /**<Hold*/      /**<CNcomment:°´×¡²»¶¯ */
-    HI_UNF_KEY_STATUS_UP ,         /**<Released*/  /**<CNcomment:Ì§Æð°´¼ü */
+    HI_UNF_KEY_STATUS_DOWN = 0 ,   /**<Pressed*/   /**<CNcomment:æŒ‰ä¸‹æŒ‰é”® */
+    HI_UNF_KEY_STATUS_HOLD ,       /**<Hold*/      /**<CNcomment:æŒ‰ä½ä¸åŠ¨ */
+    HI_UNF_KEY_STATUS_UP ,         /**<Released*/  /**<CNcomment:æŠ¬èµ·æŒ‰é”® */
 
     HI_UNF_KEY_STATUS_BUTT
 }HI_UNF_KEY_STATUS_E ;
 
 /**Code type supported by the infrared (IR) module*/
-/**CNcomment:IRÖ§³ÖµÄÂëÐÍ*/
+/**CNcomment:IRæ”¯æŒçš„ç åž‹*/
 typedef enum hiUNF_IR_CODE_E
 {
-    HI_UNF_IR_CODE_NEC_SIMPLE = 0,  /**<NEC with simple repeat code*/   /**<CNcomment:NEC with simple repeat codeÂëÐÍ*/
-    HI_UNF_IR_CODE_TC9012,          /**<TC9012 code*/                   /**<CNcomment:TC9012ÂëÐÍ*/
-    HI_UNF_IR_CODE_NEC_FULL,        /**<NEC with full repeat code*/     /**<CNcomment:NEC with full repeat codeÂëÐÍ*/
-    HI_UNF_IR_CODE_SONY_12BIT,      /**<SONY 12-bit code */             /**<CNcomment:SONY 12BITÂëÐÍ*/
-    HI_UNF_IR_CODE_RAW,               /**<Raw code*/	                    /**<CNcomment:raw ÂëÐÍ*/
+    HI_UNF_IR_CODE_NEC_SIMPLE = 0,  /**<NEC with simple repeat code*/   /**<CNcomment:NEC with simple repeat codeç åž‹*/
+    HI_UNF_IR_CODE_TC9012,          /**<TC9012 code*/                   /**<CNcomment:TC9012ç åž‹*/
+    HI_UNF_IR_CODE_NEC_FULL,        /**<NEC with full repeat code*/     /**<CNcomment:NEC with full repeat codeç åž‹*/
+    HI_UNF_IR_CODE_SONY_12BIT,      /**<SONY 12-bit code */             /**<CNcomment:SONY 12BITç åž‹*/
+    HI_UNF_IR_CODE_RAW,               /**<Raw code*/	                    /**<CNcomment:raw ç åž‹*/
     HI_UNF_IR_CODE_BUTT
 }HI_UNF_IR_CODE_E;
 
 /**List of IR code type. For details about HI_UNF_IR_STD, see HI_UNF_IR_CODE_E.*/
-/**CNcomment:IRÂëÐÍÁÐ±í,HI_UNF_IR_STD²¿·ÖÇë²ÎÕÕHI_UNF_IR_CODE_E */
+/**CNcomment:IRç åž‹åˆ—è¡¨,HI_UNF_IR_STDéƒ¨åˆ†è¯·å‚ç…§HI_UNF_IR_CODE_E */
 typedef enum hiUNF_IR_PROTOCOL_E
 {
-    HI_UNF_IR_NEC,               /**<For NEC protocol*/                          /**<CNcomment:NECÂëÐÍ*/
-    HI_UNF_IR_RC6A = 10,         /**<For RC6A protocol*/                         /**<CNcomment:RC6AÂëÐÍ*/
-    HI_UNF_IR_RC5,               /**<For RC5 protocol*/                          /**<CNcomment:RC5ÂëÐÍ*/
+    HI_UNF_IR_NEC,               /**<For NEC protocol*/                          /**<CNcomment:NECç åž‹*/
+    HI_UNF_IR_RC6A = 10,         /**<For RC6A protocol*/                         /**<CNcomment:RC6Aç åž‹*/
+    HI_UNF_IR_RC5,               /**<For RC5 protocol*/                          /**<CNcomment:RC5ç åž‹*/
     HI_UNF_IR_LOW_LATENCY_PROTOCOL,
-    HI_UNF_IR_RC6_MODE0,         /**<For RC6 mode 0*/                            /**<CNcomment:RC6 mode0ÂëÐÍ*/
-    HI_UNF_IR_RCMM,              /**<For RCMM 24/32 protocol*/                   /**<CNcomment:RCMM 24/32ÂëÐÍ*/
-    HI_UNF_IR_RUWIDO,            /**<For Ruwido protocol*/                       /**<CNcomment:RuwidoÂëÐÍ*/
-    HI_UNF_IR_RCRF8,             /**<For RCRF8 protocol*/                        /**<CNcomment:RCRF8ÂëÐÍ*/
-    HI_UNF_IR_MULTIPLE,          /**<For multiple protocol support*/             /**<CNcomment:MultipleÂëÐÍ*/    
-    HI_UNF_IR_RMAP,              /**<For RMAP protocol with Mancester coding*/   /**<CNcomment:RMAP Âü³¹Ë¹ÌØÂëÐÍ*/
-    HI_UNF_IR_RSTEP,             /**<For RSTEP protocol*/                        /**<CNcomment:RSTEPÂëÐÍ*/
-    HI_UNF_IR_RMAP_DOUBLEBIT,    /**<For RMAP protocol with Double bit coding*/  /**<CNcomment:RMAP Ë«bitÂëÐÍ*/
+    HI_UNF_IR_RC6_MODE0,         /**<For RC6 mode 0*/                            /**<CNcomment:RC6 mode0ç åž‹*/
+    HI_UNF_IR_RCMM,              /**<For RCMM 24/32 protocol*/                   /**<CNcomment:RCMM 24/32ç åž‹*/
+    HI_UNF_IR_RUWIDO,            /**<For Ruwido protocol*/                       /**<CNcomment:Ruwidoç åž‹*/
+    HI_UNF_IR_RCRF8,             /**<For RCRF8 protocol*/                        /**<CNcomment:RCRF8ç åž‹*/
+    HI_UNF_IR_MULTIPLE,          /**<For multiple protocol support*/             /**<CNcomment:Multipleç åž‹*/    
+    HI_UNF_IR_RMAP,              /**<For RMAP protocol with Mancester coding*/   /**<CNcomment:RMAP æ›¼å½»æ–¯ç‰¹ç åž‹*/
+    HI_UNF_IR_RSTEP,             /**<For RSTEP protocol*/                        /**<CNcomment:RSTEPç åž‹*/
+    HI_UNF_IR_RMAP_DOUBLEBIT,    /**<For RMAP protocol with Double bit coding*/  /**<CNcomment:RMAP åŒbitç åž‹*/
     HI_UNF_IR_LOW_LATENCY_PRO_PROTOCOL,
-    HI_UNF_IR_XMP,               /**<For XMP protocol*/                          /**<CNcomment:XMPÂëÐÍ*/
-    HI_UNF_IR_USER_DEFINED,      /**<For user protocol*/                         /**<CNcomment:ÓÃ»§×Ô¶¨ÒåÂëÐÍ*/    
+    HI_UNF_IR_XMP,               /**<For XMP protocol*/                          /**<CNcomment:XMPç åž‹*/
+    HI_UNF_IR_USER_DEFINED,      /**<For user protocol*/                         /**<CNcomment:ç”¨æˆ·è‡ªå®šä¹‰ç åž‹*/    
     HI_UNF_IR_PROTOCOL_BUTT 
 } HI_UNF_IR_PROTOCOL_E;
 
@@ -83,15 +83,15 @@ typedef enum hiUNF_IR_PROTOCOL_E
 
 /**
 \brief Starts the IR device.
-CNcomment:\brief ´ò¿ªIRÉè±¸¡£CNend
+CNcomment:\brief æ‰“å¼€IRè®¾å¤‡ã€‚CNend
 
 \attention \n
 This API can be called repeatedly. Key IDs can be received only after you can start the IR device, and then call HI_UNF_IR_Enable. \n
-CNcomment:ÖØ¸´µ÷ÓÃ»á·µ»Ø³É¹¦£¬´ò¿ªÉè±¸ºó±ØÐëÔÙµ÷ÓÃHI_UNF_IR_Enable²ÅÄÜÕý³£½ÓÊÕ¼üÖµ¡£CNend
+CNcomment:é‡å¤è°ƒç”¨ä¼šè¿”å›žæˆåŠŸï¼Œæ‰“å¼€è®¾å¤‡åŽå¿…é¡»å†è°ƒç”¨HI_UNF_IR_Enableæ‰èƒ½æ­£å¸¸æŽ¥æ”¶é”®å€¼ã€‚CNend
 
-\param N/A                                                                   CNcomment:ÎÞ CNend
-\retval HI_SUCCESS Success                                                   CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_OPEN_ERR   The IR device fails to open                   CNcomment:IRÉè±¸´ò¿ªÊ§°Ü CNend
+\param N/A                                                                   CNcomment:æ—  CNend
+\retval HI_SUCCESS Success                                                   CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_OPEN_ERR   The IR device fails to open                   CNcomment:IRè®¾å¤‡æ‰“å¼€å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -101,15 +101,15 @@ HI_S32 HI_UNF_IR_Init(HI_VOID);
 
 /**
 \brief Stops the IR device.
-CNcomment:\brief ¹Ø±ÕIRÉè±¸¡£CNend
+CNcomment:\brief å…³é—­IRè®¾å¤‡ã€‚CNend
 
 \attention \n
 This API can be called repeatedly. \n
-CNcomment:ÖØ¸´µ÷ÓÃ¹Ø±Õ»á·µ»Ø³É¹¦¡£CNend
+CNcomment:é‡å¤è°ƒç”¨å…³é—­ä¼šè¿”å›žæˆåŠŸã€‚CNend
 
-\param  N/A                                                                  CNcomment:ÎÞ CNend
-\retval HI_SUCCESS Success                                                   CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_CLOSE_ERR  The IR device fails to close.                 CNcomment:IRÉè±¸¹Ø±ÕÊ§°Ü CNend
+\param  N/A                                                                  CNcomment:æ—  CNend
+\retval HI_SUCCESS Success                                                   CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_CLOSE_ERR  The IR device fails to close.                 CNcomment:IRè®¾å¤‡å…³é—­å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -119,14 +119,14 @@ HI_S32 HI_UNF_IR_DeInit(HI_VOID);
 
 /**
 \brief Enables the IR device.
-CNcomment:\brief Ê¹ÄÜIRÉè±¸¡£CNend
+CNcomment:\brief ä½¿èƒ½IRè®¾å¤‡ã€‚CNend
 \attention \n
 N/A
-\param[in] bEnable  IR enable. HI_TRUE: enabled; HI_FALSE: disabled           CNcomment:IR Ê¹ÄÜ¿ª¹Ø, HI_TRUE Ê¹ÄÜ, HI_FALSE ½ûÓÃ¡£CNend
-\retval HI_SUCCESS Success                                                    CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.               CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.                   CNcomment:²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_IR_ENABLE_FAILED It fails to enable IR device.               CNcomment:Ê¹ÄÜÉè±¸Ê§°Ü CNend
+\param[in] bEnable  IR enable. HI_TRUE: enabled; HI_FALSE: disabled           CNcomment:IR ä½¿èƒ½å¼€å…³, HI_TRUE ä½¿èƒ½, HI_FALSE ç¦ç”¨ã€‚CNend
+\retval HI_SUCCESS Success                                                    CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.               CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.                   CNcomment:å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_IR_ENABLE_FAILED It fails to enable IR device.               CNcomment:ä½¿èƒ½è®¾å¤‡å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -134,16 +134,16 @@ HI_S32 HI_UNF_IR_Enable ( HI_BOOL bEnable);
 
 /**
 \brief Obtains the protocol type of a remote control.
-CNcomment:\brief »ñÈ¡Ò£¿ØÆ÷µÄÐ­ÒéÀàÐÍ ¡£CNend
+CNcomment:\brief èŽ·å–é¥æŽ§å™¨çš„åè®®ç±»åž‹ ã€‚CNend
 
 \attention \n
 This interface is only supported in IR_STD mode. And it must be used after function "HI_UNF_IR_GetValueWithProtocol".\n
-CNcomment:´Ë½Ó¿ÚÖ»ÔÚIR_STDÄ£Ê½ÏÂÖ§³Ö¡£ÐèÒªÔÚHI_UNF_IR_GetValueWithProtocolº¯Êýºóµ÷ÓÃ¡£ CNend
+CNcomment:æ­¤æŽ¥å£åªåœ¨IR_STDæ¨¡å¼ä¸‹æ”¯æŒã€‚éœ€è¦åœ¨HI_UNF_IR_GetValueWithProtocolå‡½æ•°åŽè°ƒç”¨ã€‚ CNend
 
-\param[out]  penProtocol  protocol type pointer,reference HI_UNF_IR_PROTOCOL_E for detail   CNcomment:Ð­ÒéÀàÐÍÖ¸Õë  ¾ßÌåº¬ÒåÇë²Î¿¼::HI_UNF_IR_PROTOCOL_E CNend
-\retval HI_SUCCESS Success                                                            CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                       CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.                                 CNcomment: Ö¸ÕëÎª¿Õ CNend
+\param[out]  penProtocol  protocol type pointer,reference HI_UNF_IR_PROTOCOL_E for detail   CNcomment:åè®®ç±»åž‹æŒ‡é’ˆ  å…·ä½“å«ä¹‰è¯·å‚è€ƒ::HI_UNF_IR_PROTOCOL_E CNend
+\retval HI_SUCCESS Success                                                            CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                       CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.                                 CNcomment: æŒ‡é’ˆä¸ºç©º CNend
 \see \n
 N/A
 */
@@ -152,15 +152,15 @@ HI_S32 HI_UNF_IR_GetProtocol(HI_UNF_IR_PROTOCOL_E *penProtocol);
 
 /**
 \brief obtain name of remote control protocol
-CNcomment:\brief »ñÈ¡Ò£¿ØÆ÷µÄÐ­ÒéÃû³Æ ¡£CNend
+CNcomment:\brief èŽ·å–é¥æŽ§å™¨çš„åè®®åç§° ã€‚CNend
 
 \attention \n
 when IR_TYPE=IR_LIRC is effective, this interface is not supported now.
-CNcomment:µ±IR_TYPE=IR_LIRCÊ±ÓÐÐ§£¬´Ë½Ó¿ÚÔÝ²»Ö§³Ö CNend
+CNcomment:å½“IR_TYPE=IR_LIRCæ—¶æœ‰æ•ˆï¼Œæ­¤æŽ¥å£æš‚ä¸æ”¯æŒ CNend
 
-\param[out]  pProtocolName  used to save first address of the protocol name buffer    CNcomment:ÓÃÓÚ´æ´¢Ð­ÒéÃû³ÆµÄ»º³åÇøÊ×µØÖ· CNend
-\param[in]   s32BufLen      used to save length of the protocol name buffer           CNcomment:ÓÃÓÚ´æ´¢Ð­ÒéÃû³ÆµÄ»º³åÇø³¤¶È CNend
-\retval ::HI_ERR_IR_UNSUPPORT   It is not supported.                                  CNcomment:²Ù×÷²»Ö§³Ö CNend
+\param[out]  pProtocolName  used to save first address of the protocol name buffer    CNcomment:ç”¨äºŽå­˜å‚¨åè®®åç§°çš„ç¼“å†²åŒºé¦–åœ°å€ CNend
+\param[in]   s32BufLen      used to save length of the protocol name buffer           CNcomment:ç”¨äºŽå­˜å‚¨åè®®åç§°çš„ç¼“å†²åŒºé•¿åº¦ CNend
+\retval ::HI_ERR_IR_UNSUPPORT   It is not supported.                                  CNcomment:æ“ä½œä¸æ”¯æŒ CNend
 \see \n
 N/A
 */
@@ -168,21 +168,21 @@ HI_S32 HI_UNF_IR_GetProtocolName(HI_CHAR *pProtocolName, HI_S32 s32BufLen);
 
 /**
 \brief Obtains the key values and key status of the remote control.
-CNcomment:\brief »ñÈ¡Ò£¿ØÆ÷µÄ°´¼üÖµºÍ°´¼ü×´Ì¬ ¡£CNend
+CNcomment:\brief èŽ·å–é¥æŽ§å™¨çš„æŒ‰é”®å€¼å’ŒæŒ‰é”®çŠ¶æ€ ã€‚CNend
 
 \attention \n
 
-\param[out]  penPressStatus  Key status. For details about the definition, see the description of ::HI_UNF_KEY_STATUS_E.  CNcomment:°´¼ü×´Ì¬¡£¾ßÌåº¬ÒåÇë²Î¿¼::HI_UNF_KEY_STATUS_E CNend
-\param[out]  pu64KeyId  Key value                                                     CNcomment:°´¼üÖµ CNend
-\param[out]  pszProtocolName  used to save first address of the protocol name buffer    CNcomment:ÓÃÓÚ´æ´¢Ð­ÒéÃû³ÆµÄ»º³åÇøÊ×µØÖ· CNend
-\param[in]   s32NameSize      used to save length of the protocol name buffer           CNcomment:ÓÃÓÚ´æ´¢Ð­ÒéÃû³ÆµÄ»º³åÇø³¤¶È CNend
-\param[in] u32TimeoutMs  Timeout (in ms). 0: not blocked; 0xFFFFFFFF: infinite block  CNcomment:³¬Ê±Öµ, µ¥Î»ÊÇºÁÃë, 0 - ²»×èÈû, 0xFFFFFFFF-ÓÀ¾Ã×èÈû CNend
-\retval HI_SUCCESS Success                                                            CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                       CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.                                 CNcomment: Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.                           CNcomment:²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_IR_SET_BLOCKTIME_FAILED  The IR device fails to set block time.      CNcomment:ÉèÖÃ×èÈûÊ±¼äÊ§°Ü CNend
-\retval ::HI_ERR_IR_READ_FAILED  The IR device fails to read key.                     CNcomment:¶ÁÈ¡¼üÖµºÍ×´Ì¬Ê§°Ü CNend
+\param[out]  penPressStatus  Key status. For details about the definition, see the description of ::HI_UNF_KEY_STATUS_E.  CNcomment:æŒ‰é”®çŠ¶æ€ã€‚å…·ä½“å«ä¹‰è¯·å‚è€ƒ::HI_UNF_KEY_STATUS_E CNend
+\param[out]  pu64KeyId  Key value                                                     CNcomment:æŒ‰é”®å€¼ CNend
+\param[out]  pszProtocolName  used to save first address of the protocol name buffer    CNcomment:ç”¨äºŽå­˜å‚¨åè®®åç§°çš„ç¼“å†²åŒºé¦–åœ°å€ CNend
+\param[in]   s32NameSize      used to save length of the protocol name buffer           CNcomment:ç”¨äºŽå­˜å‚¨åè®®åç§°çš„ç¼“å†²åŒºé•¿åº¦ CNend
+\param[in] u32TimeoutMs  Timeout (in ms). 0: not blocked; 0xFFFFFFFF: infinite block  CNcomment:è¶…æ—¶å€¼, å•ä½æ˜¯æ¯«ç§’, 0 - ä¸é˜»å¡ž, 0xFFFFFFFF-æ°¸ä¹…é˜»å¡ž CNend
+\retval HI_SUCCESS Success                                                            CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                       CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.                                 CNcomment: æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.                           CNcomment:å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_IR_SET_BLOCKTIME_FAILED  The IR device fails to set block time.      CNcomment:è®¾ç½®é˜»å¡žæ—¶é—´å¤±è´¥ CNend
+\retval ::HI_ERR_IR_READ_FAILED  The IR device fails to read key.                     CNcomment:è¯»å–é”®å€¼å’ŒçŠ¶æ€å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -196,17 +196,17 @@ HI_S32 HI_UNF_IR_GetValueWithProtocol(HI_UNF_KEY_STATUS_E *penPressStatus, HI_U6
 
 /**
 \brief Set key fetch or symbol fetch from ir driver.
-CNcomment:\brief Éè¶¨´ÓºìÍâÇý¶¯»ñÈ¡µÄÊÇ¼üÖµ»¹ÊÇÂãµçÆ½ ¡£CNend
+CNcomment:\brief è®¾å®šä»Žçº¢å¤–é©±åŠ¨èŽ·å–çš„æ˜¯é”®å€¼è¿˜æ˜¯è£¸ç”µå¹³ ã€‚CNend
 
 \attention \n
 when IR_TYPE=IR_S2 is effective.
-CNcomment:µ±IR_TYPE=IR_S2Ê±ÓÐÐ§¡£CNend
+CNcomment:å½“IR_TYPE=IR_S2æ—¶æœ‰æ•ˆã€‚CNend
 
-\param[in] mode 0 means key mode. 1 means symbol mode                                 CNcomment:0»ñÈ¡¼üÖµ£¬1»ñÈ¡ÂãµçÆ½ CNend
-\retval HI_SUCCESS Success                                                            CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                       CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.                           CNcomment:²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_IR_SET_FETCHMETHOD_FAILED  The IR device fails to set fetch method.  CNcomment:ÉèÖÃ»ñÈ¡·½Ê½Ê§°Ü CNend
+\param[in] mode 0 means key mode. 1 means symbol mode                                 CNcomment:0èŽ·å–é”®å€¼ï¼Œ1èŽ·å–è£¸ç”µå¹³ CNend
+\retval HI_SUCCESS Success                                                            CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                       CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.                           CNcomment:å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_IR_SET_FETCHMETHOD_FAILED  The IR device fails to set fetch method.  CNcomment:è®¾ç½®èŽ·å–æ–¹å¼å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -214,21 +214,21 @@ HI_S32 HI_UNF_IR_SetFetchMode(HI_S32 s32Mode);
 
 /**
 \brief Obtains the raw symbols from ir driver.
-CNcomment:\brief »ñÈ¡Ò£¿ØÆ÷µÄÂãµçÆ½ ¡£CNend
+CNcomment:\brief èŽ·å–é¥æŽ§å™¨çš„è£¸ç”µå¹³ ã€‚CNend
 
 \attention \n
 when IR_TYPE=IR_S2 is effective.
-CNcomment:µ±IR_TYPE=IR_S2Ê±ÓÐÐ§¡£CNend
+CNcomment:å½“IR_TYPE=IR_S2æ—¶æœ‰æ•ˆã€‚CNend
 
-\param[out]  pu64lower  lower pluse value                                             CNcomment:ÂãµçÆ½¶ÔµÄµÍÎ» CNend
-\param[out]  pu64upper  upper space value                                             CNcomment:ÂãµçÆ½¶ÔµÄ¸ßÎ» CNend
-\param[in] s32TimeoutMs read timeout .                                                CNcomment:¶Á³¬Ê±Ê±¼ä¡£CNend
+\param[out]  pu64lower  lower pluse value                                             CNcomment:è£¸ç”µå¹³å¯¹çš„ä½Žä½ CNend
+\param[out]  pu64upper  upper space value                                             CNcomment:è£¸ç”µå¹³å¯¹çš„é«˜ä½ CNend
+\param[in] s32TimeoutMs read timeout .                                                CNcomment:è¯»è¶…æ—¶æ—¶é—´ã€‚CNend
 
-\retval HI_SUCCESS Success                                                            CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized. 					  CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.								  CNcomment: Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_IR_SET_BLOCKTIME_FAILED  The IR device fails to set block time.      CNcomment:ÉèÖÃ×èÈûÊ±¼äÊ§°Ü CNend
-\retval ::HI_ERR_IR_READ_FAILED  The IR device fails to read key.					  CNcomment:¶ÁÈ¡¼üÖµºÍ×´Ì¬Ê§°Ü CNend
+\retval HI_SUCCESS Success                                                            CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized. 					  CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.								  CNcomment: æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_IR_SET_BLOCKTIME_FAILED  The IR device fails to set block time.      CNcomment:è®¾ç½®é˜»å¡žæ—¶é—´å¤±è´¥ CNend
+\retval ::HI_ERR_IR_READ_FAILED  The IR device fails to read key.					  CNcomment:è¯»å–é”®å€¼å’ŒçŠ¶æ€å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -236,19 +236,19 @@ HI_S32 HI_UNF_IR_GetSymbol(HI_U64 *pu64First, HI_U64* pu64Second, HI_U32 u32Time
 
 /**
 \brief Enables or disables the function of reporting the released status of a key.
-CNcomment:\brief ÉèÖÃÊÇ·ñÉÏ±¨°´¼üµ¯Æð×´Ì¬¡£CNend
+CNcomment:\brief è®¾ç½®æ˜¯å¦ä¸ŠæŠ¥æŒ‰é”®å¼¹èµ·çŠ¶æ€ã€‚CNend
 
 \attention \n
 The function is enabled by default.
-CNcomment:Èç²»ÉèÖÃ£¬Ä¬ÈÏÎª´ò¿ª¡£CNend
+CNcomment:å¦‚ä¸è®¾ç½®ï¼Œé»˜è®¤ä¸ºæ‰“å¼€ã€‚CNend
 
-\param[in] bEnable      Key released enable.  CNcomment:°´¼üµ¯ÆðÓÐÐ§¡£CNend
-                        0: disabled           CNcomment:0£º¹Ø±Õ£»CNend
-                        1: enabled            CNcomment: 1£ºÊ¹ÄÜ¡£CNend
-\retval HI_SUCCESS  Success                                             CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.         CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.             CNcomment:²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_IR_SET_KEYUP_FAILED  It fails to enable released key.  CNcomment:ÉèÖÃÉÏ±¨°´¼üµ¯Æð×´Ì¬Ê§°Ü CNend
+\param[in] bEnable      Key released enable.  CNcomment:æŒ‰é”®å¼¹èµ·æœ‰æ•ˆã€‚CNend
+                        0: disabled           CNcomment:0ï¼šå…³é—­ï¼›CNend
+                        1: enabled            CNcomment: 1ï¼šä½¿èƒ½ã€‚CNend
+\retval HI_SUCCESS  Success                                             CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.         CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_INVALID_PARA  The parameter is invalid.             CNcomment:å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_IR_SET_KEYUP_FAILED  It fails to enable released key.  CNcomment:è®¾ç½®ä¸ŠæŠ¥æŒ‰é”®å¼¹èµ·çŠ¶æ€å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -256,24 +256,24 @@ HI_S32 HI_UNF_IR_EnableKeyUp(HI_BOOL bEnable);
 
 /**
 \brief Enables or disables the function of reporting the same key value. If keys are pressed and held down, data is continuously transmitted to the receive buffer. Therefore, you can enable or disable this function for applications as required.
-CNcomment:\brief ÉèÖÃÊÇ·ñÉÏ±¨ÖØ¸´°´¼ü¡£Ò»Ö±°´¼üÊ±£¬Êý¾Ý»áÔ´Ô´²»¶ÏµÄËÍÈëµ½½ÓÊÕ»º³åÇø£¬Òò´ËÓ¦ÓÃ³ÌÐò¿ÉÒÔ¸ù¾ÝÐèÒªÀ´ÉèÖÃÊÇ·ñÉÏ±¨ÖØ¸´°´¼ü¡£CNend
+CNcomment:\brief è®¾ç½®æ˜¯å¦ä¸ŠæŠ¥é‡å¤æŒ‰é”®ã€‚ä¸€ç›´æŒ‰é”®æ—¶ï¼Œæ•°æ®ä¼šæºæºä¸æ–­çš„é€å…¥åˆ°æŽ¥æ”¶ç¼“å†²åŒºï¼Œå› æ­¤åº”ç”¨ç¨‹åºå¯ä»¥æ ¹æ®éœ€è¦æ¥è®¾ç½®æ˜¯å¦ä¸ŠæŠ¥é‡å¤æŒ‰é”®ã€‚CNend
 
 \attention \n
 The function is enabled by default.\n
 This API must work with HI_UNF_IR_RepKeyTimeoutVal. The API HI_UNF_IR_RepKeyTimeoutVal is used to set the interval of reporting the same key value.\n
 If the function of reporting the same key value is enabled, the keys are pressed and held down, and the interval is set to 300 ms, data is reported once every 300 ms.
 If the function is disabled, data is reported only once regardless of how long the keys are held down.
-CNcomment:Èç²»ÉèÖÃ£¬Ä¬ÈÏÎª´ò¿ª\n 
-´Ë½Ó¿ÚÐèÒªºÍHI_UNF_IR_RepKeyTimeoutValº¯Êý½áºÏÊ¹ÓÃ£¬ÓÉHI_UNF_IR_RepKeyTimeoutValÉèÖÃÉÏ±¨ÖØ¸´°´¼üµÄ¼ä¸ô\n 
-Èç¹ûÊ¹ÄÜÁËÖØ¸´°´¼üÉÏ±¨£¬µ±°´¼üÒ»Ö±´¦ÓÚ°´ÏÂ×´Ì¬£¬¼ä¸ôÉèÎª300ºÁÃë£¬ÔòÃ¿300ºÁÃë»áÉÏ±¨Ò»´ÎÊý¾Ý\n 
-Èç¹û½ûÖ¹ÁËÖØ¸´°´¼üÉÏ±¨£¬Ôò²»ÂÛ°´ÏÂ¶à³¤Ê±¼ä£¬Ö»ÉÏ±¨Ò»´ÎÊý¾Ý¡£CNend
-\param[in] bEnable     Repeat key report enable.    CNcomment:°´¼ü²úÉúÖØ¸´°´¼ü¹¦ÄÜ¡£CNend
-                       0: disabled                  CNcomment:0£º¹Ø±Õ£»CNend
-                       1: enabled                   CNcomment:1£ºÊ¹ÄÜ¡£CNend
-\retval HI_SUCCESS Success                                                     CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT   The IR device is not initialized.               CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                   CNcomment:²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_IR_SET_REPEAT_FAILED   It fails to enable repeat key.         CNcomment:ÉèÖÃÉÏ±¨ÖØ¸´¼üÊ§°Ü CNend
+CNcomment:å¦‚ä¸è®¾ç½®ï¼Œé»˜è®¤ä¸ºæ‰“å¼€\n 
+æ­¤æŽ¥å£éœ€è¦å’ŒHI_UNF_IR_RepKeyTimeoutValå‡½æ•°ç»“åˆä½¿ç”¨ï¼Œç”±HI_UNF_IR_RepKeyTimeoutValè®¾ç½®ä¸ŠæŠ¥é‡å¤æŒ‰é”®çš„é—´éš”\n 
+å¦‚æžœä½¿èƒ½äº†é‡å¤æŒ‰é”®ä¸ŠæŠ¥ï¼Œå½“æŒ‰é”®ä¸€ç›´å¤„äºŽæŒ‰ä¸‹çŠ¶æ€ï¼Œé—´éš”è®¾ä¸º300æ¯«ç§’ï¼Œåˆ™æ¯300æ¯«ç§’ä¼šä¸ŠæŠ¥ä¸€æ¬¡æ•°æ®\n 
+å¦‚æžœç¦æ­¢äº†é‡å¤æŒ‰é”®ä¸ŠæŠ¥ï¼Œåˆ™ä¸è®ºæŒ‰ä¸‹å¤šé•¿æ—¶é—´ï¼Œåªä¸ŠæŠ¥ä¸€æ¬¡æ•°æ®ã€‚CNend
+\param[in] bEnable     Repeat key report enable.    CNcomment:æŒ‰é”®äº§ç”Ÿé‡å¤æŒ‰é”®åŠŸèƒ½ã€‚CNend
+                       0: disabled                  CNcomment:0ï¼šå…³é—­ï¼›CNend
+                       1: enabled                   CNcomment:1ï¼šä½¿èƒ½ã€‚CNend
+\retval HI_SUCCESS Success                                                     CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT   The IR device is not initialized.               CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                   CNcomment:å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_IR_SET_REPEAT_FAILED   It fails to enable repeat key.         CNcomment:è®¾ç½®ä¸ŠæŠ¥é‡å¤é”®å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -281,19 +281,19 @@ HI_S32 HI_UNF_IR_EnableRepKey(HI_BOOL bEnable);
 
 /**
 \brief Sets the interval (in ms) of reporting the same key value.
-CNcomment:\brief ÉèÖÃÉÏ±¨ÖØ¸´°´¼üµÄÊ±¼ä¼ä¸ô£¬µ¥Î»Îªms ¡£CNend
+CNcomment:\brief è®¾ç½®ä¸ŠæŠ¥é‡å¤æŒ‰é”®çš„æ—¶é—´é—´éš”ï¼Œå•ä½ä¸ºms ã€‚CNend
 
 \attention \n
 This API is unavailable if the function of reporting the same key value is disabled by calling HI_UNF_IR_IsRepKey.
-CNcomment:µ±HI_UNF_IR_IsRepKeyÅäÖÃÎª²»ÉÏ±¨ÖØ¸´°´¼üÊ±£¬´Ë½Ó¿ÚÉèÖÃÎÞÐ§¡£CNend
+CNcomment:å½“HI_UNF_IR_IsRepKeyé…ç½®ä¸ºä¸ä¸ŠæŠ¥é‡å¤æŒ‰é”®æ—¶ï¼Œæ­¤æŽ¥å£è®¾ç½®æ— æ•ˆã€‚CNend
 
 \param[in] u32TimeoutMs   Interval of reporting the same key value. The interval ranges from 0 ms to 65,536 ms.\n
 						  The value 0 will be set to 108, and the value bigger than 65536 will be set to 65536 \n
-                          CNcomment:ÉÏ±¨ÖØ¸´°´¼üµÄÊ±¼ä¼ä¸ô£¬ÉèÖÃ·¶Î§£º0ms¡«65536ms ¡£\n
-						  µÈÓÚ0µÄ²ÎÊý»á±»Ç¿ÖÆÉèÖÃ³É108£¬´óÓÚ65536µÄ²ÎÊý»á±»Ç¿ÖÆÉèÖÃ³É65536¡£CNend
-\retval HI_SUCCESS Success CNcomment:                                          CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_SET_REPKEYTIMEOUT_FAILED  It fails to set repeat key timeout.  CNcomment:ÉèÖÃÉÏ±¨ÖØ¸´°´¼ü¼ä¸ôÊ§°Ü CNend
+                          CNcomment:ä¸ŠæŠ¥é‡å¤æŒ‰é”®çš„æ—¶é—´é—´éš”ï¼Œè®¾ç½®èŒƒå›´ï¼š0msï½ž65536ms ã€‚\n
+						  ç­‰äºŽ0çš„å‚æ•°ä¼šè¢«å¼ºåˆ¶è®¾ç½®æˆ108ï¼Œå¤§äºŽ65536çš„å‚æ•°ä¼šè¢«å¼ºåˆ¶è®¾ç½®æˆ65536ã€‚CNend
+\retval HI_SUCCESS Success CNcomment:                                          CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_SET_REPKEYTIMEOUT_FAILED  It fails to set repeat key timeout.  CNcomment:è®¾ç½®ä¸ŠæŠ¥é‡å¤æŒ‰é”®é—´éš”å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -301,22 +301,22 @@ HI_S32 HI_UNF_IR_SetRepKeyTimeoutAttr(HI_U32 u32TimeoutMs);
 
 /**
 \brief Sets the code type of the remote control.
-CNcomment:\brief ÉèÖÃÒ£¿ØÆ÷ÂëÐÍ¡£CNend
+CNcomment:\brief è®¾ç½®é¥æŽ§å™¨ç åž‹ã€‚CNend
 
 \attention \n
 when IR_TYPE=IR_STD is effective.
-CNcomment:µ±IR_TYPE=IR_STDÊ±ÓÐÐ§¡£CNend
+CNcomment:å½“IR_TYPE=IR_STDæ—¶æœ‰æ•ˆã€‚CNend
 
 
-\param[in] enIRCode Four standard code types of the remote control are supported by default.  CNcomment:Ä¬ÈÏÖ§³Ö4ÖÖ±ê×¼Ò£¿ØÆ÷ÂëÐÍ£ºCNend
-                     HI_UNF_IR_CODE_NEC_SIMPLE£ºNec With Simple code type. CNcomment:Nec Simple ÂëÐÍ¡£ CNend
-                     HI_UNF_IR_CODE_TC9012£ºTC9012 code type.              CNcomment:TC9012 ÂëÐÍ¡£     CNend
-                     HI_UNF_IR_CODE_NEC_FULL£ºNec With Full code type.     CNcomment:Nec Full ÂëÐÍ¡£   CNend
-                     HI_UNF_IR_CODE_SONY_12BIT£ºSony 12 Bit code type.     CNcomment:Sony 12 bit ÂëÐÍ¡£CNend
-\retval HI_SUCCESS Success                                                 CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.            CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.               CNcomment:²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_IR_SETFORMAT_FAILED It fails to set IR code type.         CNcomment:ÉèÖÃIRÀàÐÍÊ§°Ü CNend
+\param[in] enIRCode Four standard code types of the remote control are supported by default.  CNcomment:é»˜è®¤æ”¯æŒ4ç§æ ‡å‡†é¥æŽ§å™¨ç åž‹ï¼šCNend
+                     HI_UNF_IR_CODE_NEC_SIMPLEï¼šNec With Simple code type. CNcomment:Nec Simple ç åž‹ã€‚ CNend
+                     HI_UNF_IR_CODE_TC9012ï¼šTC9012 code type.              CNcomment:TC9012 ç åž‹ã€‚     CNend
+                     HI_UNF_IR_CODE_NEC_FULLï¼šNec With Full code type.     CNcomment:Nec Full ç åž‹ã€‚   CNend
+                     HI_UNF_IR_CODE_SONY_12BITï¼šSony 12 Bit code type.     CNcomment:Sony 12 bit ç åž‹ã€‚CNend
+\retval HI_SUCCESS Success                                                 CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.            CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.               CNcomment:å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_IR_SETFORMAT_FAILED It fails to set IR code type.         CNcomment:è®¾ç½®IRç±»åž‹å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -324,16 +324,16 @@ HI_S32 HI_UNF_IR_SetCodeType(HI_UNF_IR_CODE_E enIRCode);
 
 /**
 \brief  Resets the IR device.
-CNcomment:\brief  ¸´Î»IRÉè±¸¡£CNend
+CNcomment:\brief  å¤ä½IRè®¾å¤‡ã€‚CNend
 
 \attention \n
 This API is used to delete the key values in the buffer.
-CNcomment:Ö»ÊÇ°ÑbufferÖÐµÄ¼üÖµÇåµô¡£CNend
+CNcomment:åªæ˜¯æŠŠbufferä¸­çš„é”®å€¼æ¸…æŽ‰ã€‚CNend
 
-\param N/A         CNcomment:ÎÞ CNend
-\retval HI_SUCCESS Success                                                      CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_RESET_FAILED  The IR device fails to reset.                 CNcomment:IRÉè±¸¸´Î»Ê§°Ü CNend
+\param N/A         CNcomment:æ—  CNend
+\retval HI_SUCCESS Success                                                      CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_RESET_FAILED  The IR device fails to reset.                 CNcomment:IRè®¾å¤‡å¤ä½å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -341,18 +341,18 @@ HI_S32 HI_UNF_IR_Reset(HI_VOID);
 
 /**
 \brief enable an infrared code.
-CNcomment:\brief  ¼¤»îÄ³ÀàºìÍâÒ£¿ØÆ÷Ð­Òé¡£CNend
+CNcomment:\brief  æ¿€æ´»æŸç±»çº¢å¤–é¥æŽ§å™¨åè®®ã€‚CNend
 
 \attention \n
 when IR_TYPE=IR_S2 is effective.
-CNcomment:µ±IR_TYPE=IR_S2Ê±ÓÐÐ§¡£CNend
+CNcomment:å½“IR_TYPE=IR_S2æ—¶æœ‰æ•ˆã€‚CNend
 
-\param N/A         CNcomment:ÎÞ CNend
-\retval HI_SUCCESS Success                                                      CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.							CNcomment: Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                    CNcomment:²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_IR_ENABLE_PROT_FAILED  It fails to enable an infrared code.    CNcomment:¼¤»îÒ£¿ØÐ­ÒéÊ§°Ü CNend
+\param N/A         CNcomment:æ—  CNend
+\retval HI_SUCCESS Success                                                      CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.							CNcomment: æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                    CNcomment:å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_IR_ENABLE_PROT_FAILED  It fails to enable an infrared code.    CNcomment:æ¿€æ´»é¥æŽ§åè®®å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -360,18 +360,18 @@ HI_S32 HI_UNF_IR_EnableProtocol(HI_CHAR* pszProtocolName);
 
 /**
 \brief disable an infrared code.
-CNcomment:\brief  ½ûÓÃÄ³ÀàºìÍâÒ£¿ØÆ÷Ð­Òé¡£CNend
+CNcomment:\brief  ç¦ç”¨æŸç±»çº¢å¤–é¥æŽ§å™¨åè®®ã€‚CNend
 
 \attention \n
 when IR_TYPE=IR_S2 is effective.
-CNcomment:µ±IR_TYPE=IR_S2Ê±ÓÐÐ§¡£CNend
+CNcomment:å½“IR_TYPE=IR_S2æ—¶æœ‰æ•ˆã€‚CNend
 
-\param N/A         CNcomment:ÎÞ CNend
-\retval HI_SUCCESS Success                                                      CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.							CNcomment: Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                    CNcomment:²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_IR_DISABLE_PROT_FAILED   It fails to disalbe an infrared code. CNcomment:½ûÓÃÒ£¿ØÐ­ÒéÊ§°Ü CNend
+\param N/A         CNcomment:æ—  CNend
+\retval HI_SUCCESS Success                                                      CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.							CNcomment: æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                    CNcomment:å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_IR_DISABLE_PROT_FAILED   It fails to disalbe an infrared code. CNcomment:ç¦ç”¨é¥æŽ§åè®®å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -379,19 +379,19 @@ HI_S32 HI_UNF_IR_DisableProtocol(HI_CHAR* pszProtocolName);
 
 /**
 \brief get the enable or disable status of  an infrared code.
-CNcomment:\brief  »ñÈ¡Ä³ÀàºìÍâÒ£¿ØÆ÷Ð­Òé¼¤»î×´Ì¬¡£CNend
+CNcomment:\brief  èŽ·å–æŸç±»çº¢å¤–é¥æŽ§å™¨åè®®æ¿€æ´»çŠ¶æ€ã€‚CNend
 
 \attention \n
 when IR_TYPE=IR_S2 is effective.
-CNcomment:µ±IR_TYPE=IR_S2Ê±ÓÐÐ§¡£CNend
+CNcomment:å½“IR_TYPE=IR_S2æ—¶æœ‰æ•ˆã€‚CNend
 
-\param N/A         CNcomment:ÎÞ CNend
-\retval HI_SUCCESS Success                                                      CNcomment:³É¹¦ CNend
-\retval HI_FAILURE Failure                                                      CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IRÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.							CNcomment: Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                    CNcomment:²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_IR_GET_PROTENABLE_FAILED It fails to get status of an infrared code.  CNcomment:»ñÈ¡Ò£¿ØÐ­Òé×´Ì¬Ê§°Ü CNend
+\param N/A         CNcomment:æ—  CNend
+\retval HI_SUCCESS Success                                                      CNcomment:æˆåŠŸ CNend
+\retval HI_FAILURE Failure                                                      CNcomment:å¤±è´¥ CNend
+\retval ::HI_ERR_IR_NOT_INIT  The IR device is not initialized.                 CNcomment:IRè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_IR_NULL_PTR  The pointer is invalid.							CNcomment: æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_IR_INVALID_PARA   The parameter is invalid.                    CNcomment:å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_IR_GET_PROTENABLE_FAILED It fails to get status of an infrared code.  CNcomment:èŽ·å–é¥æŽ§åè®®çŠ¶æ€å¤±è´¥ CNend
 \see \n
 N/A
 */

@@ -7,7 +7,7 @@ File Name	        : png_accelerate.c
 Version		: Initial Draft
 Author		: z00141204
 Created		: 2010/10/18
-Description	: libpngÊÊÅä²ãÊµÏÖ
+Description	: libpngé€‚é…å±‚å®ç°
 Function List 	: 
 			  		  
 History       	:
@@ -37,15 +37,15 @@ extern "C"{
 #define PNG_INFLEXION_SIZE (40*40)
 
 /*****************************************************************
-* func:	Create hardware decoder CNcomment:´´½¨Ó²¼ş½âÂëĞÅÏ¢½á¹¹Ìå
+* func:	Create hardware decoder CNcomment:åˆ›å»ºç¡¬ä»¶è§£ç ä¿¡æ¯ç»“æ„ä½“
 * in:	      user_png_ver,error_ptr,png_error_ptr and warn_fn are useless, only for keep
             the same style with hipng_create_read_struct
-            CNcomment:user_png_ver,error_ptr,png_error_ptr,warn_fn ÎŞÓÃ,
-            Ö»ÊÇÎªÁËºÍlibpngµÄĞÎÊ½±£³ÖÒ»ÖÂ
+            CNcomment:user_png_ver,error_ptr,png_error_ptr,warn_fn æ— ç”¨,
+            åªæ˜¯ä¸ºäº†å’Œlibpngçš„å½¢å¼ä¿æŒä¸€è‡´
 * out:	A pointer to struct hipng_struct_hwctl_s
-            CNcomment:½á¹¹ÌåÖ¸Õë
-* ret:	HI_SUCCESS	Success     CNcomment:´´½¨³É¹¦
-*		HI_FAILURE	Failure      CNcomment:´´½¨Ê§°Ü
+            CNcomment:ç»“æ„ä½“æŒ‡é’ˆ
+* ret:	HI_SUCCESS	Success     CNcomment:åˆ›å»ºæˆåŠŸ
+*		HI_FAILURE	Failure      CNcomment:åˆ›å»ºå¤±è´¥
 * others:	
 *****************************************************************/
 hipng_struct_hwctl_s *hipng_create_read_struct_hw(png_const_charp user_png_ver, png_voidp error_ptr,
@@ -56,7 +56,7 @@ hipng_struct_hwctl_s *hipng_create_read_struct_hw(png_const_charp user_png_ver, 
     hipng_struct_hwctl_s *pstPngStruct = NULL;
 
     /*Only for deleting compile warnings*/
-    /*CNcomment:Ïû³ı¸æ¾¯*/
+    /*CNcomment:æ¶ˆé™¤å‘Šè­¦*/
     user_png_ver = user_png_ver;
     error_ptr = error_ptr;
     error_fn = error_fn;
@@ -95,8 +95,8 @@ hipng_struct_hwctl_s *hipng_create_read_struct_hw(png_const_charp user_png_ver, 
 
 /*****************************************************************
 * func:	Destroy hardware decoder
-            CNcomment:Ïú»ÙÓ²¼ş½âÂëĞÅÏ¢½á¹¹Ìå
-* in:	pstHwctlStruct A pointer to decoder struct  CNcomment:½âÂëĞÅÏ¢½á¹¹Ìå
+            CNcomment:é”€æ¯ç¡¬ä»¶è§£ç ä¿¡æ¯ç»“æ„ä½“
+* in:	pstHwctlStruct A pointer to decoder struct  CNcomment:è§£ç ä¿¡æ¯ç»“æ„ä½“
 * out:	none
 * ret:   none
 * others:	
@@ -124,17 +124,17 @@ HI_VOID hipng_destroy_read_struct_hw(hipng_struct_hwctl_s *pstHwctlStruct)
 }
 
 /*Read stream into decoder buf*/
-/*CNcomment:ÏòÂëÁ÷bufÀïĞ´ÈëÂëÁ÷*/
+/*CNcomment:å‘ç æµbufé‡Œå†™å…¥ç æµ*/
 HI_S32 hipng_read_stream(png_structp png_ptr)
 {
     HI_PNG_BUF_S stBuf = {0, 0};
     HI_S32 s32Ret = HI_SUCCESS;
     hipng_struct_hwctl_s *pstHwStruct = (hipng_struct_hwctl_s *)(png_ptr->private_ptr);
     HI_UCHAR ucChunkHead[PNG_CHUNK_HEAD_LEN] = {0, 0, 0, 0, 'I', 'D', 'A', 'T'};
-    HI_UCHAR *pBuf = NULL;      /*Pointer point to buf head*//*CNcomment:ÂëÁ÷bufÍ·Ö¸Õë*/
-    HI_UCHAR *pWrite = NULL;    /*Pointer ponit to write position*//*CNcomment:ÂëÁ÷bufĞ´Ö¸Õë*/
-    HI_BOOL bNewChunk = HI_TRUE;    /*Write head data flag*//*CNcomment: ÊÇ·ñĞ´Í·²¿Êı¾İ*/
-    HI_U8 u8ReadHeadCount = 0;      /*Written length of chunk header*//*CNcomment:ÒÑĞ´ÈëbufµÄchunkÍ·³¤¶È */
+    HI_UCHAR *pBuf = NULL;      /*Pointer point to buf head*//*CNcomment:ç æµbufå¤´æŒ‡é’ˆ*/
+    HI_UCHAR *pWrite = NULL;    /*Pointer ponit to write position*//*CNcomment:ç æµbufå†™æŒ‡é’ˆ*/
+    HI_BOOL bNewChunk = HI_TRUE;    /*Write head data flag*//*CNcomment: æ˜¯å¦å†™å¤´éƒ¨æ•°æ®*/
+    HI_U8 u8ReadHeadCount = 0;      /*Written length of chunk header*//*CNcomment:å·²å†™å…¥bufçš„chunkå¤´é•¿åº¦ */
     HI_U32 u32IdatSize = png_ptr->idat_size + PNG_CHUNK_HEAD_LEN + PNG_CHUNK_TAIL_LEN;
     HI_U32 u32Len = 0;
 
@@ -168,7 +168,7 @@ HI_S32 hipng_read_stream(png_structp png_ptr)
         }
 
         /*Write IDAT header*/
-        /*CNcomment:Ğ´IDATÍ·²¿Êı¾İ*/
+        /*CNcomment:å†™IDATå¤´éƒ¨æ•°æ®*/
         if (bNewChunk)
         {
             u32Len = (PNG_CHUNK_HEAD_LEN - u8ReadHeadCount) < stBuf.u32Size ? (PNG_CHUNK_HEAD_LEN - u8ReadHeadCount):stBuf.u32Size;
@@ -184,7 +184,7 @@ HI_S32 hipng_read_stream(png_structp png_ptr)
         }
 
         /*Write IDAT data*/
-        /*CNcomment:Ğ´IDATÊı¾İ*/
+        /*CNcomment:å†™IDATæ•°æ®*/
         if (u32IdatSize)
         {
             u32Len = (u32IdatSize < stBuf.u32Size)?u32IdatSize:stBuf.u32Size;
@@ -196,8 +196,8 @@ HI_S32 hipng_read_stream(png_structp png_ptr)
 
         /*Before reading next chunk data, checking if these is enough buf to write chunk head
         is required.If buf is not enough, alloc buf.*/
-        /*CNcomment:ÔÚ¶ÁÏÂÒ»¸öchunkÇ°,±ØĞëÏÈ±£Ö¤ÓĞ×ã¹»µÄ¿Õ¼äĞ´Í·²¿;ËùÒÔÈç¹û
-        Ê£Óà¿Õ¼ä²»×ã,ĞèÉêÇëbuf*/
+        /*CNcomment:åœ¨è¯»ä¸‹ä¸€ä¸ªchunkå‰,å¿…é¡»å…ˆä¿è¯æœ‰è¶³å¤Ÿçš„ç©ºé—´å†™å¤´éƒ¨;æ‰€ä»¥å¦‚æœ
+        å‰©ä½™ç©ºé—´ä¸è¶³,éœ€ç”³è¯·buf*/
         else if ((stBuf.u32Size < PNG_CHUNK_HEAD_LEN) && (HI_NULL == stTempBuf.pVir))
         {
             s32Ret = HI_PNG_AllocBuf(pstHwStruct->s32Handle, &stTempBuf);
@@ -209,7 +209,7 @@ HI_S32 hipng_read_stream(png_structp png_ptr)
             }
         }
         /*Read next chunk*/
-        /*CNcomment:¶ÁÈ¡ÏÂÒ»¸öchunk */
+        /*CNcomment:è¯»å–ä¸‹ä¸€ä¸ªchunk */
         else
         {
             PNG_IDAT;
@@ -238,7 +238,7 @@ HI_S32 hipng_read_stream(png_structp png_ptr)
         }
 
         /*Set stream length*/
-        /*CNcomment:ÉèÖÃÂëÁ÷³¤¶È*/
+        /*CNcomment:è®¾ç½®ç æµé•¿åº¦*/
         if (0 == stBuf.u32Size)
         {
             //stBuf.u32Size = pWrite - pBuf;
@@ -262,8 +262,8 @@ HI_S32 hipng_set_transform(png_structp png_ptr, HI_PNG_TRANSFORM_S *pstTransform
 
     /*1.If image is gray with depth=1,2,4 bit, transform image to 8 bits;transparence process
         2.If image is palette, transform image to true color*/
-    /*CNcommetn:1.ÈôÊÇ1/2/4bitµÄ»Ò¶ÈÍ¼£¬À©Õ¹Îª8bit; Í¸Ã÷É«´¦Àí
-        2.ÈôÊÇµ÷É«°åÍ¼£¬×ªÎªRGBÍ¼ */
+    /*CNcommetn:1.è‹¥æ˜¯1/2/4bitçš„ç°åº¦å›¾ï¼Œæ‰©å±•ä¸º8bit; é€æ˜è‰²å¤„ç†
+        2.è‹¥æ˜¯è°ƒè‰²æ¿å›¾ï¼Œè½¬ä¸ºRGBå›¾ */
     if (png_ptr->transformations & PNG_EXPAND)
     {
         pstTransform->u32Transform |= HI_PNG_TRANSFORM_ADJUSTPIXELORDER;
@@ -272,7 +272,7 @@ HI_S32 hipng_set_transform(png_structp png_ptr, HI_PNG_TRANSFORM_S *pstTransform
         if (png_ptr->color_type & PNG_COLOR_MASK_PALETTE)
         {
             /*Alloc palette*/
-            /*CNcomment:·ÖÅäµ÷É«°å*/
+            /*CNcomment:åˆ†é…è°ƒè‰²æ¿*/
             pstTransform->u32ClutPhyaddr = (HI_U32)HI_MMZ_New(256 * 4, 16, HI_NULL, "PNG_PALETTE");
             if (0 == pstTransform->u32ClutPhyaddr)
             {
@@ -332,7 +332,7 @@ HI_S32 hipng_set_transform(png_structp png_ptr, HI_PNG_TRANSFORM_S *pstTransform
     }
 
     /*Swap pixels*/
-    /*CNcomment:½»»»ÏóËØË³Ğò*/
+    /*CNcomment:äº¤æ¢è±¡ç´ é¡ºåº*/
     if (png_ptr->transformations & PNG_PACKSWAP)
     {
         pstTransform->u32Transform |= HI_PNG_TRANSFORM_ADJUSTPIXELORDER;
@@ -428,11 +428,11 @@ HI_S32 hipng_set_transform(png_structp png_ptr, HI_PNG_TRANSFORM_S *pstTransform
 }
 
 /*****************************************************************
-* func:	Start hardware decode       CNcomment:pngÓ²¼ş½âÂë
-* in:	png_ptr png   decoder ptr     CNcomment:½âÂë½á¹¹Ìå
+* func:	Start hardware decode       CNcomment:pngç¡¬ä»¶è§£ç 
+* in:	png_ptr png   decoder ptr     CNcomment:è§£ç ç»“æ„ä½“
 * out:	none
-* ret:	HI_SUCCESS	Success     CNcomment:½âÂë³É¹¦
-*		HI_FAILURE	Failure     CNcomment:½âÂëÊ§°Ü
+* ret:	HI_SUCCESS	Success     CNcomment:è§£ç æˆåŠŸ
+*		HI_FAILURE	Failure     CNcomment:è§£ç å¤±è´¥
 * others:	
 *****************************************************************/
 HI_S32 hipng_read_image_hw(png_structp png_ptr)
@@ -442,7 +442,7 @@ HI_S32 hipng_read_image_hw(png_structp png_ptr)
     HI_PNG_DECINFO_S stInfo = {0};
 
     /*Read stream*/
-    /*CNcomment:¶ÁÈ¡ÂëÁ÷*/
+    /*CNcomment:è¯»å–ç æµ*/
     s32Ret = hipng_read_stream(png_ptr);
     if (s32Ret < 0)
     {

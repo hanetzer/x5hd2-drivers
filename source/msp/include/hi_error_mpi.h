@@ -16,7 +16,7 @@
 ******************************************************************************/
 /** 
 \file
-\brief Describes the information about common error codes. CNcomment: Ìá¹©¹«¹²´íÎóÂëµÄÏà¹ØĞÅÏ¢
+\brief Describes the information about common error codes. CNcomment: æä¾›å…¬å…±é”™è¯¯ç çš„ç›¸å…³ä¿¡æ¯
 */
 /* add include here */
 #ifndef __HI_UNF_MPI_ERRORCODE_H__
@@ -31,7 +31,7 @@ extern "C"
 
 /***************************** Macro Definition ******************************/
 /** \addtogroup      MSP_ERRCODE */
-/** @{ */  /** <!-- ¡¾MSP_ERRCODE¡¿ */
+/** @{ */  /** <!-- ã€MSP_ERRCODEã€‘ */
 
 #define HI_ERR_DISP_DEV_NOT_EXIST           (HI_S32)(0x80100001)
 #define HI_ERR_DISP_NOT_DEV_FILE            (HI_S32)(0x80100002)

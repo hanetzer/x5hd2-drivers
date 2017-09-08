@@ -101,7 +101,7 @@ dsp running(code&data) memory DSP_DDR_DMAREMAP_BEG_ADDR~DSP_DDR_DMAREMAP_END_ADD
 
 #define DSP_DDR_DMAREMAP_BEG_ADDR  0x00000000    /* 512M,(0x00000000~0x1fffffff) */
 #define DSP_DDR_DMAREMAP_END_ADDR  0x20000000    /* 512M, 0x20000000 */
-#define DSP_DDR_DMAREMAP_MAP_ADDR  0xc0000000    /* 6*512M£¬must sure dsp never use this phy addr(0xc0000000~0xdfffffff) */
+#define DSP_DDR_DMAREMAP_MAP_ADDR  0xc0000000    /* 6*512Mï¼Œmust sure dsp never use this phy addr(0xc0000000~0xdfffffff) */
 
 /* Define the union U_ADSP_ATTR */
 typedef union
@@ -182,7 +182,7 @@ typedef struct
 } S_ADSP_CHN_REGS_TYPE;
 
 /** Audio DSP Code definition*/
-/** CNcomment:ÒôÆµ´¦ÀíÆ÷Ä£¿é´úÂë±êÊ¶¶¨Òå */
+/** CNcomment:éŸ³é¢‘å¤„ç†å™¨æ¨¡å—ä»£ç æ ‡è¯†å®šä¹‰ */
 typedef enum hiADSP_CODEID_E
 {
     /* dsp manage module */

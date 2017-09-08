@@ -8,18 +8,18 @@ Version		    : Initial Draft
 Author		    : y00181162
 Created		    : 2013/06/20
 Description	    : the mem alloc realize in this file
-                  CNcomment: jpegÓ²¼ş½âÂëĞèÒªµÄÄÚ´æÔÚÕâ¸öÎÄ¼şÖĞÊµÏÖ.
-                  MMZÄÚ´æÊ¹ÓÃÔ­Ôò:
-                  (1)Ë¢¾Ö²¿cach¶ø²»ÊÇË¢È«¾Öcach£¬ÒªÊÇÄÚ´æĞ¡ÓÚcach´óĞ¡¾Ö²¿±ÈÈ«¾Ö¿ì 
-                  (2)ÒªÊÇÃ»ÓĞÓÃµ½ĞéÄâÄÚ´æ²»ĞèÒªÓ³ÉäÒÔ¼°ÓÃ·Çcach·½Ê½£¬ÒªÊÇÊ¹ÓÃcach·½Ê½
-                     ÔòÊ¹ÓÃÕâ¿éÄÚ´æÖ®Ç°ÒªË¢cach£¬²»È»cachÖĞ»áÓĞÊı¾İ²ĞÁôÒÔ¼°ÒªÊÇcachÂúÁË
-                     »áÏòÎïÀíÄÚ´æ»ØĞ´µ¼ÖÂÊı¾İ´íÎó£¬cachÖ»¶ÔĞéÄâÄÚ´æÓĞÓ°Ïì¡£
-                  (3)Ã¿´Î·ÖÅäYUVÄÚ´æ»áµ¼ÖÂĞÔÄÜÏÂ½µºÜ¶à£¬TCĞèÒªµÄÄÚ´æ±È½ÏĞ¡¿ÉÒÔ×Ô¼ºÎ¬»¤
-                     Õâ¿éÄÚ´æ£¬¹Ì¶¨·ÖÅäÒ»¿éÄÚ´æ£¬²»¹»µÄÊ±ºòÖØĞÂ·ÖÅä¡£ÒòÎªÕâÊ±ºòÊôÓÚÁÙ½ç
-                     ×ÊÔ´£¬»áÓ°Ïìµ½¶àÏß³ÌÒÔ¼°ÓÃ»§·ÖÅäÄÚ´æµÄÇé¿ö£¬¿¼ÂÇµ½Í¨ÓÃĞÔ²»×öÍ³Ò»Î¬»¤ÁË¡£
-                     ¶à½ø³ÌÃ¿·İ×ÊÔ´ÊÇ¶ÀÁ¢µÄ£¬ËûÃÇ×ÊÔ´Òª¹²Ïí¾ÍÊÇÍ¨ĞÅÁË
-                  (4)·ÖÅäÍêÁ¬ĞøÎïÀíÄÚ´æ²¢ÇÒÓ³Éä³Écach·½Ê½ÄÚ´æÖ®ºóÒªË¢Ò»´Îcach£¬¿ÉÒÔ²»ÓÃ³õÊ¼»¯£¬
-                     ·ñÔòcachÖĞÒÔÇ°µÄ²ĞÁô»áÓ°Ïìµ½ºóÃæµÄÊ¹ÓÃĞ§¹ûCNend\n
+                  CNcomment: jpegç¡¬ä»¶è§£ç éœ€è¦çš„å†…å­˜åœ¨è¿™ä¸ªæ–‡ä»¶ä¸­å®ç°.
+                  MMZå†…å­˜ä½¿ç”¨åŸåˆ™:
+                  (1)åˆ·å±€éƒ¨cachè€Œä¸æ˜¯åˆ·å…¨å±€cachï¼Œè¦æ˜¯å†…å­˜å°äºcachå¤§å°å±€éƒ¨æ¯”å…¨å±€å¿« 
+                  (2)è¦æ˜¯æ²¡æœ‰ç”¨åˆ°è™šæ‹Ÿå†…å­˜ä¸éœ€è¦æ˜ å°„ä»¥åŠç”¨écachæ–¹å¼ï¼Œè¦æ˜¯ä½¿ç”¨cachæ–¹å¼
+                     åˆ™ä½¿ç”¨è¿™å—å†…å­˜ä¹‹å‰è¦åˆ·cachï¼Œä¸ç„¶cachä¸­ä¼šæœ‰æ•°æ®æ®‹ç•™ä»¥åŠè¦æ˜¯cachæ»¡äº†
+                     ä¼šå‘ç‰©ç†å†…å­˜å›å†™å¯¼è‡´æ•°æ®é”™è¯¯ï¼Œcachåªå¯¹è™šæ‹Ÿå†…å­˜æœ‰å½±å“ã€‚
+                  (3)æ¯æ¬¡åˆ†é…YUVå†…å­˜ä¼šå¯¼è‡´æ€§èƒ½ä¸‹é™å¾ˆå¤šï¼ŒTCéœ€è¦çš„å†…å­˜æ¯”è¾ƒå°å¯ä»¥è‡ªå·±ç»´æŠ¤
+                     è¿™å—å†…å­˜ï¼Œå›ºå®šåˆ†é…ä¸€å—å†…å­˜ï¼Œä¸å¤Ÿçš„æ—¶å€™é‡æ–°åˆ†é…ã€‚å› ä¸ºè¿™æ—¶å€™å±äºä¸´ç•Œ
+                     èµ„æºï¼Œä¼šå½±å“åˆ°å¤šçº¿ç¨‹ä»¥åŠç”¨æˆ·åˆ†é…å†…å­˜çš„æƒ…å†µï¼Œè€ƒè™‘åˆ°é€šç”¨æ€§ä¸åšç»Ÿä¸€ç»´æŠ¤äº†ã€‚
+                     å¤šè¿›ç¨‹æ¯ä»½èµ„æºæ˜¯ç‹¬ç«‹çš„ï¼Œä»–ä»¬èµ„æºè¦å…±äº«å°±æ˜¯é€šä¿¡äº†
+                  (4)åˆ†é…å®Œè¿ç»­ç‰©ç†å†…å­˜å¹¶ä¸”æ˜ å°„æˆcachæ–¹å¼å†…å­˜ä¹‹åè¦åˆ·ä¸€æ¬¡cachï¼Œå¯ä»¥ä¸ç”¨åˆå§‹åŒ–ï¼Œ
+                     å¦åˆ™cachä¸­ä»¥å‰çš„æ®‹ç•™ä¼šå½±å“åˆ°åé¢çš„ä½¿ç”¨æ•ˆæœCNend\n
 Function List 	:
 
 			  		  
@@ -41,17 +41,17 @@ Date				Author        		Modification
 /***************************** Macro Definition ******************************/
 
 /** the first class is jpeg */
-/** CNcomment:µÚÒ»¼¶ÄÚ´æÎªjpeg·ÖÇø */
+/** CNcomment:ç¬¬ä¸€çº§å†…å­˜ä¸ºjpegåˆ†åŒº */
 #define MMZ_TAG          "jpeg"
 /** the second class is jpeg */
-/** CNcomment:µÚ¶ş¼¶ÄÚ´æÎªgraphics·ÖÇø */
+/** CNcomment:ç¬¬äºŒçº§å†…å­˜ä¸ºgraphicsåˆ†åŒº */
 //#define MMZ_TAG_1        "graphics"
 /** the last class is jpeg */
-/** CNcomment:×îºóÒ»¼¶ÄÚ´æÎªÕû¸öMMZ·ÖÇø */
+/** CNcomment:æœ€åä¸€çº§å†…å­˜ä¸ºæ•´ä¸ªMMZåˆ†åŒº */
 //#define MMZ_TAG_2        ""
 
 /** the module name */
-/** CNcomment:·ÖÅä¸øjpegÄ£¿éµÄÃû×Ö£¬ÕâÀï¿ÉÒÔÍ¨¹ımmz procÀ´²é¿´·ÖÅä¸øË­ÁË */
+/** CNcomment:åˆ†é…ç»™jpegæ¨¡å—çš„åå­—ï¼Œè¿™é‡Œå¯ä»¥é€šè¿‡mmz procæ¥æŸ¥çœ‹åˆ†é…ç»™è°äº† */
 #define MMZ_MODULE       "JPEG_STREAM_OUT_BUF"
 
 
@@ -72,12 +72,12 @@ Date				Author        		Modification
 /*****************************************************************************
 * func			: JPEG_HDEC_GetStreamMem
 * description	: alloc the stream buffer mem
-                  CNcomment: ·ÖÅäÂëÁ÷bufferÄÚ´æ CNend\n
-* param[in] 	: u32MemSize   CNcomment: Òª·ÖÅäµÄÄÚ´æ´óĞ¡    CNend\n
-* param[out]	: pOutPhyAddr  CNcomment: ·ÖÅäµÃµ½µÄÎïÀíµØÖ·  CNend\n
-* param[out]	: pOutVirAddr  CNcomment: ·ÖÅäµÃµ½µÄĞéÄâµØÖ·  CNend\n
-* retval		: HI_SUCCESS   CNcomment: ³É¹¦  CNend\n
-* retval		: HI_FAILURE   CNcomment: Ê§°Ü   CNend\n
+                  CNcomment: åˆ†é…ç æµbufferå†…å­˜ CNend\n
+* param[in] 	: u32MemSize   CNcomment: è¦åˆ†é…çš„å†…å­˜å¤§å°    CNend\n
+* param[out]	: pOutPhyAddr  CNcomment: åˆ†é…å¾—åˆ°çš„ç‰©ç†åœ°å€  CNend\n
+* param[out]	: pOutVirAddr  CNcomment: åˆ†é…å¾—åˆ°çš„è™šæ‹Ÿåœ°å€  CNend\n
+* retval		: HI_SUCCESS   CNcomment: æˆåŠŸ  CNend\n
+* retval		: HI_FAILURE   CNcomment: å¤±è´¥   CNend\n
 * others:		: NA
 *****************************************************************************/
 #ifdef CONFIG_JPEG_REALIZEFUNC_BEFORMAINFUNC
@@ -101,7 +101,7 @@ HI_S32	JPEG_HDEC_GetStreamMem(JPEG_HDEC_HANDLE_S_PTR	 pJpegHandle,const HI_U32 u
 		}
 		/**
 		** use the third class manage to alloc mem,the stream buffer should 64bytes align
-		** CNcomment: Ê¹ÓÃÈı¼¶·ÖÅä¹ÜÀíÀ´·ÖÅäÄÚ´æ CNend\n
+		** CNcomment: ä½¿ç”¨ä¸‰çº§åˆ†é…ç®¡ç†æ¥åˆ†é…å†…å­˜ CNend\n
 		**/
         #ifdef CONFIG_JPEG_USE_PRIVATE_MMZ
 		pPhyBuf = (HI_CHAR*)HI_GFX_AllocMem(pJpegHandle->s32MMZDev,u32MemSize, JPGD_HDEC_MMZ_ALIGN_64BYTES, (HI_CHAR*)MMZ_TAG, (HI_CHAR*)MMZ_MODULE);
@@ -126,7 +126,7 @@ HI_S32	JPEG_HDEC_GetStreamMem(JPEG_HDEC_HANDLE_S_PTR	 pJpegHandle,const HI_U32 u
 #if 0
 		/**
 		** when use this mem, should memset this mem
-		** CNcomment: ÔÚÊ¹ÓÃ¸ÃÄÚ´æµÄµØÖ·³õÊ¼»¯¸ÃÄÚ´æ£¬memsetĞèÒªÊ±¼ä£¬Ê¹ÓÃÓë·ñÉ÷ÓÃ CNend\n
+		** CNcomment: åœ¨ä½¿ç”¨è¯¥å†…å­˜çš„åœ°å€åˆå§‹åŒ–è¯¥å†…å­˜ï¼Œmemsetéœ€è¦æ—¶é—´ï¼Œä½¿ç”¨ä¸å¦æ…ç”¨ CNend\n
 		**/
 		memset(pVirAddr,0,u32MemSize);
 		HI_GFX_Flush((HI_U32)pPhyBuf);
@@ -141,7 +141,7 @@ HI_S32	JPEG_HDEC_GetStreamMem(JPEG_HDEC_HANDLE_S_PTR	 pJpegHandle,const HI_U32 u
 		pJpegHandle->stHDecDataBuf.pSaveStreamVirBuf      = pVirBuf;
 		/**
 		** use the virtual memory, every time should read data size
-		** CNcomment: ĞéÄâÄÚ´æÂëÁ÷µÄÊ±ºòÃ¿´ÎĞèÒª¶ÁÈ¡µÄÂëÁ÷´óĞ¡ CNend\n
+		** CNcomment: è™šæ‹Ÿå†…å­˜ç æµçš„æ—¶å€™æ¯æ¬¡éœ€è¦è¯»å–çš„ç æµå¤§å° CNend\n
 		**/
 		pJpegHandle->stHDecDataBuf.u32ReadDataSize	      = u32StreamSize;
 #endif
@@ -157,8 +157,8 @@ HI_S32	JPEG_HDEC_GetStreamMem(JPEG_HDEC_HANDLE_S_PTR	 pJpegHandle,const HI_U32 u
 /*****************************************************************************
 * func			: JPEG_HDEC_FreeStreamMem
 * description	: free the stream buffer mem
-                  CNcomment: ÊÍ·ÅÂëÁ÷bufferÄÚ´æ CNend\n
-* param[in] 	: pInPhyAddr    CNcomment: ÒªÊÍ·ÅµÄÂëÁ÷bufferÎïÀíµØÖ· CNend\n
+                  CNcomment: é‡Šæ”¾ç æµbufferå†…å­˜ CNend\n
+* param[in] 	: pInPhyAddr    CNcomment: è¦é‡Šæ”¾çš„ç æµbufferç‰©ç†åœ°å€ CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -216,10 +216,10 @@ HI_VOID JPEG_HDEC_FreeStreamMem(JPEG_HDEC_HANDLE_S_PTR pJpegHandle)
 /*****************************************************************************
 * func			: JPEG_HDEC_GetYUVMem
 * description	: get the hard decode output mem
-				  CNcomment: »ñÈ¡Ó²¼ş½âÂëÊä³öµÄÄÚ´æ CNend\n
-* param[in]	    : pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú CNend\n
-* retval		: HI_SUCCESS	CNcomment: ³É¹¦ CNend\n
-* retval		: HI_FAILURE	CNcomment: Ê§°Ü CNend\n
+				  CNcomment: è·å–ç¡¬ä»¶è§£ç è¾“å‡ºçš„å†…å­˜ CNend\n
+* param[in]	    : pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„ CNend\n
+* retval		: HI_SUCCESS	CNcomment: æˆåŠŸ CNend\n
+* retval		: HI_FAILURE	CNcomment: å¤±è´¥ CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_GetYUVMem(JPEG_HDEC_HANDLE_S_PTR	pJpegHandle)
@@ -233,7 +233,7 @@ HI_S32 JPEG_HDEC_GetYUVMem(JPEG_HDEC_HANDLE_S_PTR	pJpegHandle)
 		HI_S32 s32Ret = HI_SUCCESS;
 		/**
 		 ** check whether to alloc jpeg hard decode middle mem
-		 ** CNcomment: ÅĞ¶ÏÊÇ·ñ·ÖÅäÓ²¼ş½âÂëµÄÖĞ¼äbuffer CNend\n
+		 ** CNcomment: åˆ¤æ–­æ˜¯å¦åˆ†é…ç¡¬ä»¶è§£ç çš„ä¸­é—´buffer CNend\n
 		 **/
 #ifdef  CONFIG_JPEG_HARDDEC2ARGB
 		if(   (HI_TRUE == pJpegHandle->bOutYCbCrSP || HI_TRUE == pJpegHandle->bDecARGB)
@@ -244,7 +244,7 @@ HI_S32 JPEG_HDEC_GetYUVMem(JPEG_HDEC_HANDLE_S_PTR	pJpegHandle)
 #endif
 		{/**
 		  ** use user mem
-		  ** CNcomment: Ê¹ÓÃÓÃ»§ÄÚ´æ CNend\n
+		  ** CNcomment: ä½¿ç”¨ç”¨æˆ·å†…å­˜ CNend\n
 		  **/
 		      pJpegHandle->stMiddleSurface.pMiddlePhy[0] = pJpegHandle->stOutDesc.stOutSurface.pOutPhy[0];
 		      pJpegHandle->stMiddleSurface.pMiddlePhy[1] = pJpegHandle->stOutDesc.stOutSurface.pOutPhy[1];
@@ -261,7 +261,7 @@ HI_S32 JPEG_HDEC_GetYUVMem(JPEG_HDEC_HANDLE_S_PTR	pJpegHandle)
 		{
 		  /**
 		   ** 4bytes align just ok
-		   ** CNcomment: 4×Ö½Ú¶ÔÆë¾Í¿ÉÒÔÁË CNend\n
+		   ** CNcomment: 4å­—èŠ‚å¯¹é½å°±å¯ä»¥äº† CNend\n
 		   **/
 		   u32Align   = JPGD_HDEC_MMZ_ALIGN_4BYTES;
 		   u32MemSize = pJpegHandle->stJpegSofInfo.u32YSize;
@@ -274,7 +274,7 @@ HI_S32 JPEG_HDEC_GetYUVMem(JPEG_HDEC_HANDLE_S_PTR	pJpegHandle)
 		}
 		/**
 		 ** use the third class manage to alloc mem,the stream buffer should 128bytes align
-		 ** CNcomment: Ê¹ÓÃÈı¼¶·ÖÅä¹ÜÀíÀ´·ÖÅäÄÚ´æ,bufferÒª128×Ö½Ú¶ÔÆë CNend\n
+		 ** CNcomment: ä½¿ç”¨ä¸‰çº§åˆ†é…ç®¡ç†æ¥åˆ†é…å†…å­˜,bufferè¦128å­—èŠ‚å¯¹é½ CNend\n
 		 **/
 		#ifdef CONFIG_JPEG_USE_PRIVATE_MMZ
 		pYUVPhy = (HI_CHAR*)HI_GFX_AllocMem(pJpegHandle->s32MMZDev,u32MemSize,u32Align,(HI_CHAR*)MMZ_TAG,(HI_CHAR*)MMZ_MODULE);
@@ -308,7 +308,7 @@ HI_S32 JPEG_HDEC_GetYUVMem(JPEG_HDEC_HANDLE_S_PTR	pJpegHandle)
 			}
 			/**
 			** when use this mem, should memset this mem
-			** CNcomment: ÔÚÊ¹ÓÃ¸ÃÄÚ´æµÄµØÖ·³õÊ¼»¯¸ÃÄÚ´æ£¬memsetĞèÒªÊ±¼ä£¬Ê¹ÓÃÓë·ñÉ÷ÓÃ CNend\n
+			** CNcomment: åœ¨ä½¿ç”¨è¯¥å†…å­˜çš„åœ°å€åˆå§‹åŒ–è¯¥å†…å­˜ï¼Œmemsetéœ€è¦æ—¶é—´ï¼Œä½¿ç”¨ä¸å¦æ…ç”¨ CNend\n
 			**/
 			//memset(pYUVVir,0,u32MemSize);
 			#ifdef CONFIG_JPEG_USE_PRIVATE_MMZ
@@ -336,8 +336,8 @@ HI_S32 JPEG_HDEC_GetYUVMem(JPEG_HDEC_HANDLE_S_PTR	pJpegHandle)
 /*****************************************************************************
 * func			: JPEG_HDEC_FreeYUVMem
 * description	: free the hard decode output mem
-				  CNcomment: ÊÍ·ÅÓ²¼ş½âÂëÊä³öµÄµØÖ·  CNend\n
-* param[in]	    : pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú CNend\n
+				  CNcomment: é‡Šæ”¾ç¡¬ä»¶è§£ç è¾“å‡ºçš„åœ°å€  CNend\n
+* param[in]	    : pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„ CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -363,7 +363,7 @@ HI_VOID JPEG_HDEC_FreeYUVMem(JPEG_HDEC_HANDLE_S_PTR pJpegHandle)
 #endif
 		{/**
 		** use user mem
-		** CNcomment: Ê¹ÓÃÓÃ»§ÄÚ´æ CNend\n
+		** CNcomment: ä½¿ç”¨ç”¨æˆ·å†…å­˜ CNend\n
 		**/
 			return;
 		}
@@ -415,10 +415,10 @@ HI_VOID JPEG_HDEC_FreeYUVMem(JPEG_HDEC_HANDLE_S_PTR pJpegHandle)
 /*****************************************************************************
 * func			: JPEG_HDEC_GetMinMem
 * description	: get dec output argb min memory
-				  CNcomment: »ñÈ¡Ó²¼ş½âÂëÊä³öÎªARGBµÄĞĞbuffer CNend\n
-* param[in]	    : pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú CNend\n
-* retval		: HI_SUCCESS	CNcomment: ³É¹¦ CNend\n
-* retval		: HI_FAILURE	CNcomment: Ê§°Ü CNend\n
+				  CNcomment: è·å–ç¡¬ä»¶è§£ç è¾“å‡ºä¸ºARGBçš„è¡Œbuffer CNend\n
+* param[in]	    : pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„ CNend\n
+* retval		: HI_SUCCESS	CNcomment: æˆåŠŸ CNend\n
+* retval		: HI_FAILURE	CNcomment: å¤±è´¥ CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_GetMinMem(JPEG_HDEC_HANDLE_S_PTR pJpegHandle)
@@ -431,7 +431,7 @@ HI_S32 JPEG_HDEC_GetMinMem(JPEG_HDEC_HANDLE_S_PTR pJpegHandle)
 
 		/**
 	 	 ** use the third class manage to alloc mem,the min buffer should 128bytes align
-	     ** CNcomment: Ê¹ÓÃÈı¼¶·ÖÅä¹ÜÀíÀ´·ÖÅäÄÚ´æ,argbĞĞbufferÒª128×Ö½Ú¶ÔÆë CNend\n
+	     ** CNcomment: ä½¿ç”¨ä¸‰çº§åˆ†é…ç®¡ç†æ¥åˆ†é…å†…å­˜,argbè¡Œbufferè¦128å­—èŠ‚å¯¹é½ CNend\n
 	     **/
 	    #ifdef CONFIG_JPEG_USE_PRIVATE_MMZ
         pMinPhy = (HI_CHAR*)HI_GFX_AllocMem(pJpegHandle->s32MMZDev,u32MemSize,JPGD_HDEC_MMZ_ALIGN_128BYTES,(HI_CHAR*)MMZ_TAG,(HI_CHAR*)MMZ_MODULE);
@@ -454,8 +454,8 @@ HI_S32 JPEG_HDEC_GetMinMem(JPEG_HDEC_HANDLE_S_PTR pJpegHandle)
 /*****************************************************************************
 * func			: JPEG_HDEC_FreeMinMem
 * description	: free dec output argb min memory
-				  CNcomment: ÊÍ·ÅÓ²¼ş½âÂëÊä³öÎªARGBµÄĞĞbuffer  CNend\n
-* param[in]	    : pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú CNend\n
+				  CNcomment: é‡Šæ”¾ç¡¬ä»¶è§£ç è¾“å‡ºä¸ºARGBçš„è¡Œbuffer  CNend\n
+* param[in]	    : pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„ CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -494,10 +494,10 @@ HI_VOID JPEG_HDEC_FreeMinMem(JPEG_HDEC_HANDLE_S_PTR pJpegHandle)
 /*****************************************************************************
 * func			: JPEG_HDEC_GetOutMem
 * description	: get the output buffer
-				  CNcomment: ·ÖÅä×îÖÕÊä³öµÄÄÚ´æ 	 CNend\n
-* param[in]	    : cinfo         CNcomment: ½âÂë¶ÔÏó  CNend\n
-* retval		: HI_SUCCESS    CNcomment: ³É¹¦		  CNend\n
-* retval		: HI_FAILURE    CNcomment: Ê§°Ü		  CNend\n
+				  CNcomment: åˆ†é…æœ€ç»ˆè¾“å‡ºçš„å†…å­˜ 	 CNend\n
+* param[in]	    : cinfo         CNcomment: è§£ç å¯¹è±¡  CNend\n
+* retval		: HI_SUCCESS    CNcomment: æˆåŠŸ		  CNend\n
+* retval		: HI_FAILURE    CNcomment: å¤±è´¥		  CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_GetOutMem(const struct jpeg_decompress_struct *cinfo)
@@ -524,7 +524,7 @@ HI_S32 JPEG_HDEC_GetOutMem(const struct jpeg_decompress_struct *cinfo)
 		{
 		/**
 		** shoule not csc,so not alloc output mem
-		** CNcomment: ²»ĞèÒªÑÕÉ«¿Õ¼ä×ª»»£¬ËùÒÔ¾Í²»ĞèÒª·ÖÅäÊä³öbuffer CNend\n
+		** CNcomment: ä¸éœ€è¦é¢œè‰²ç©ºé—´è½¬æ¢ï¼Œæ‰€ä»¥å°±ä¸éœ€è¦åˆ†é…è¾“å‡ºbuffer CNend\n
 		**/
 			return HI_SUCCESS;
 		}
@@ -533,7 +533,7 @@ HI_S32 JPEG_HDEC_GetOutMem(const struct jpeg_decompress_struct *cinfo)
 		{  
 		/**
 		** use user mem
-		** CNcomment: Ê¹ÓÃÓÃ»§ÄÚ´æ CNend\n
+		** CNcomment: ä½¿ç”¨ç”¨æˆ·å†…å­˜ CNend\n
 		**/
 			pJpegHandle->stMiddleSurface.pOutPhy = pJpegHandle->stOutDesc.stOutSurface.pOutPhy[0];
 			pJpegHandle->stMiddleSurface.pOutVir = pJpegHandle->stOutDesc.stOutSurface.pOutVir[0];
@@ -544,9 +544,9 @@ HI_S32 JPEG_HDEC_GetOutMem(const struct jpeg_decompress_struct *cinfo)
 		
 		/**
 		** align depend the pixle
-		** CNcomment: °´ÕÕÏñËØ¶ÔÆë CNend\n
+		** CNcomment: æŒ‰ç…§åƒç´ å¯¹é½ CNend\n
 		**/
-		/** 3×Ö½Ú¶ÔÆëÊÇÓĞÎÊÌâµÄ£¬ÒòÎªmap²»ÉÏÀ´**/
+		/** 3å­—èŠ‚å¯¹é½æ˜¯æœ‰é—®é¢˜çš„ï¼Œå› ä¸ºmapä¸ä¸Šæ¥**/
 		#ifdef CONFIG_JPEG_USE_PRIVATE_MMZ
 		pOutPhy = (HI_CHAR*)HI_GFX_AllocMem(pJpegHandle->s32MMZDev,u32MemSize, JPGD_HDEC_MMZ_ALIGN_16BYTES, (HI_CHAR*)MMZ_TAG, (HI_CHAR*)MMZ_MODULE);
         #else
@@ -567,7 +567,7 @@ HI_S32 JPEG_HDEC_GetOutMem(const struct jpeg_decompress_struct *cinfo)
 			JPEG_TRACE("HI_GFX_MapCached FAILURE\n");
 			return HI_FAILURE;
 		}
-		/** memset Ò²ĞèÒªºÄÊ±¼ä£¬¼ÙÈç½âÂëÕı³£¾Í²»Òªmemset²Ù×÷ÁË **/
+		/** memset ä¹Ÿéœ€è¦è€—æ—¶é—´ï¼Œå‡å¦‚è§£ç æ­£å¸¸å°±ä¸è¦memsetæ“ä½œäº† **/
 		//memset(pOutVir,0,u32MemSize);
 		#ifdef CONFIG_JPEG_USE_PRIVATE_MMZ
 		s32Ret = HI_GFX_Flush(pJpegHandle->s32MMZDev,(HI_U32)pOutPhy);
@@ -579,7 +579,7 @@ HI_S32 JPEG_HDEC_GetOutMem(const struct jpeg_decompress_struct *cinfo)
 			return HI_FAILURE;
 		}
 		/**
-		** ÒªÊÇÓÃ»§Ã»ÓĞÉèÖÃÊä³öÍ¼Ïñ´óĞ¡Ôò¾ÍÊ¹ÓÃÄ¬ÈÏµÄÊä³ö£¬Ò²¾ÍÊÇÖ»ÄÜ1/2/4/8ËÄÖÖËõ·Å
+		** è¦æ˜¯ç”¨æˆ·æ²¡æœ‰è®¾ç½®è¾“å‡ºå›¾åƒå¤§å°åˆ™å°±ä½¿ç”¨é»˜è®¤çš„è¾“å‡ºï¼Œä¹Ÿå°±æ˜¯åªèƒ½1/2/4/8å››ç§ç¼©æ”¾
 		**/
 		pJpegHandle->stMiddleSurface.pOutPhy   =  pOutPhy;
 		pJpegHandle->stMiddleSurface.pOutVir   =  pOutVir;
@@ -592,8 +592,8 @@ HI_S32 JPEG_HDEC_GetOutMem(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_FreeOutMem
 * description	: free the output buf
-				  CNcomment: ÊÍ·Å×îÖÕÊä³öµÄÄÚ´æ 	   CNend\n
-* param[in]	    : pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú  CNend\n
+				  CNcomment: é‡Šæ”¾æœ€ç»ˆè¾“å‡ºçš„å†…å­˜ 	   CNend\n
+* param[in]	    : pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„  CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/

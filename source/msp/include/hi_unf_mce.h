@@ -40,122 +40,122 @@ extern "C" {
 
 
 /** Defines the logo parameter*/
-/** CNcomment:¿ª»úLogo²ÎÊı*/
+/** CNcomment:å¼€æœºLogoå‚æ•°*/
 typedef struct hiUNF_MCE_LOGO_PARAM_S
 {
-    HI_BOOL     bLogoEnable;    /**<Whether logo is enable*//**<CNcomment: LogoÊÇ·ñÊ¹ÄÜ*/   
-    HI_U32      u32LogoLen;     /**<Length of logo data*//**<CNcomment: LogoÊı¾İµÄ³¤¶È*/
+    HI_BOOL     bLogoEnable;    /**<Whether logo is enable*//**<CNcomment: Logoæ˜¯å¦ä½¿èƒ½*/   
+    HI_U32      u32LogoLen;     /**<Length of logo data*//**<CNcomment: Logoæ•°æ®çš„é•¿åº¦*/
 }HI_UNF_MCE_LOGO_PARAM_S;
 
 
-/*fastplay supports the decoding mode of ADEC*//**<CNcomment:fastplay Ö§³ÖµÄADEC½âÂë¸ñÊ½ */
+/*fastplay supports the decoding mode of ADEC*//**<CNcomment:fastplay æ”¯æŒçš„ADECè§£ç æ ¼å¼ */
 typedef enum hiUNF_MCE_ADEC_TYPE_E
 {
-    HI_UNF_MCE_ADEC_TYPE_MP2 = 0,		/**<MP2 format*//**<CNcomment:MP2 ÖÆÊ½ */
-    HI_UNF_MCE_ADEC_TYPE_MP3 = 1,		/**<MP3 format*//**<CNcomment:MP3 ÖÆÊ½ */
-    HI_UNF_MCE_ADEC_TYPE_BUTT			/**<Invalid format*//**<CNcomment:ÎŞĞ§ ÖÆÊ½ */
+    HI_UNF_MCE_ADEC_TYPE_MP2 = 0,		/**<MP2 format*//**<CNcomment:MP2 åˆ¶å¼ */
+    HI_UNF_MCE_ADEC_TYPE_MP3 = 1,		/**<MP3 format*//**<CNcomment:MP3 åˆ¶å¼ */
+    HI_UNF_MCE_ADEC_TYPE_BUTT			/**<Invalid format*//**<CNcomment:æ— æ•ˆ åˆ¶å¼ */
 }HI_UNF_MCE_ADEC_TYPE_E;
 
-/**fastplay supports the decoding mode of VDEC*//**<CNcomment:fastplay Ö§³ÖµÄVDEC½âÂë¸ñÊ½ */
+/**fastplay supports the decoding mode of VDEC*//**<CNcomment:fastplay æ”¯æŒçš„VDECè§£ç æ ¼å¼ */
 typedef enum hiUNF_MCE_VDEC_TYPE_E
 {
-    HI_UNF_MCE_VDEC_TYPE_MPEG2 = 0,		/**<MPEG2 format*//**<CNcomment:MPEG2  ÖÆÊ½ */
-    HI_UNF_MCE_VDEC_TYPE_MPEG4 = 1,		/**<MPEG4 format*//**<CNcomment:MPEG4  ÖÆÊ½ */
-    HI_UNF_MCE_VDEC_TYPE_H264  = 2,		/**<H264 format*//**<CNcomment:H264  ÖÆÊ½ */
-    HI_UNF_MCE_VDEC_TYPE_AVS   = 3,		/**<AVS format*//**<CNcomment:AVS   ÖÆÊ½ */
-    HI_UNF_MCE_VDEC_TYPE_BUTT			/**<Invalid format*//**<CNcomment:ÎŞĞ§ ÖÆÊ½ */
+    HI_UNF_MCE_VDEC_TYPE_MPEG2 = 0,		/**<MPEG2 format*//**<CNcomment:MPEG2  åˆ¶å¼ */
+    HI_UNF_MCE_VDEC_TYPE_MPEG4 = 1,		/**<MPEG4 format*//**<CNcomment:MPEG4  åˆ¶å¼ */
+    HI_UNF_MCE_VDEC_TYPE_H264  = 2,		/**<H264 format*//**<CNcomment:H264  åˆ¶å¼ */
+    HI_UNF_MCE_VDEC_TYPE_AVS   = 3,		/**<AVS format*//**<CNcomment:AVS   åˆ¶å¼ */
+    HI_UNF_MCE_VDEC_TYPE_BUTT			/**<Invalid format*//**<CNcomment:æ— æ•ˆ åˆ¶å¼ */
 }HI_UNF_MCE_VDEC_TYPE_E;
 
 
-/**Parameters for digital video broadcasting (DVB) play configuration*//**<CNcomment:DVBÅäÖÃĞÅÏ¢  */
+/**Parameters for digital video broadcasting (DVB) play configuration*//**<CNcomment:DVBé…ç½®ä¿¡æ¯  */
 typedef struct hiUNF_MCE_DVB_PARAM_S
 {
     HI_U32                      u32PcrPid;      /**<Program clock reference (PCR) packet ID (PID)*//**<CNcomment:pcr pid*/
-    HI_U32                      u32VideoPid;    /**<Video PID*//**<CNcomment:ÊÓÆµ pid*/
-    HI_U32                      u32AudioPid;    /**<Audio PID*//**<CNcomment:ÒôÆµ pid*/
-    HI_UNF_MCE_VDEC_TYPE_E      enVideoType;    /**<Video type*//**<CNcomment:ÊÓÆµ ÀàĞÍ*/
-    HI_UNF_MCE_ADEC_TYPE_E      enAudioType;    /**<Audio type*//**<CNcomment:ÒôÆµ ÀàĞÍ*/
-	HI_U32                      u32Volume;      /**<volume of output*//**<CNcomment:ÒôÁ¿ */
-	HI_UNF_TRACK_MODE_E         enTrackMode;    /**<Track mode. Only HI_UNF_TRACK_MODE_STEREO is supported.*//**<CNcomment:½öÖ§³ÖÁ¢ÌåÉù */
-	HI_UNF_VO_DEV_MODE_E        enDevMode;      /**<Working mode of the VO device*//**<CNcomment:dev µÄ vo Ä£Ê½  */
-    HI_UNF_TUNER_CONNECT_PARA_S stConnectPara;  /**<Tuner connect parameter*//**<CNcomment:TunerËøÆµ²ÎÊı.*/
-    HI_UNF_TUNER_FE_LNB_CONFIG_S    stLnbCfg;   /**<LNB config*//**<CNcomment:LNB ÅäÖÃ */
-    HI_UNF_TUNER_FE_LNB_POWER_E            enLNBPower;/**<LNB Power*//**<CNcomment:LNB¹©µç¿ØÖÆ */
-    HI_UNF_TUNER_DISEQC_SWITCH16PORT_S     st16Port;/**<Switch16 parameter*//**<CNcomment:Switch16¿ª¹Ø²ÎÊı */
-    HI_UNF_TUNER_DISEQC_SWITCH4PORT_S      st4Port;/**<Switch4 parameter*//**<CNcomment:Switch4¿ª¹Ø²ÎÊı */
-    HI_UNF_TUNER_SWITCH_22K_E              enSwitch22K; /**<22K switch parameter*//**<CNcomment:22K¿ª¹Ø²ÎÊı */
+    HI_U32                      u32VideoPid;    /**<Video PID*//**<CNcomment:è§†é¢‘ pid*/
+    HI_U32                      u32AudioPid;    /**<Audio PID*//**<CNcomment:éŸ³é¢‘ pid*/
+    HI_UNF_MCE_VDEC_TYPE_E      enVideoType;    /**<Video type*//**<CNcomment:è§†é¢‘ ç±»å‹*/
+    HI_UNF_MCE_ADEC_TYPE_E      enAudioType;    /**<Audio type*//**<CNcomment:éŸ³é¢‘ ç±»å‹*/
+	HI_U32                      u32Volume;      /**<volume of output*//**<CNcomment:éŸ³é‡ */
+	HI_UNF_TRACK_MODE_E         enTrackMode;    /**<Track mode. Only HI_UNF_TRACK_MODE_STEREO is supported.*//**<CNcomment:ä»…æ”¯æŒç«‹ä½“å£° */
+	HI_UNF_VO_DEV_MODE_E        enDevMode;      /**<Working mode of the VO device*//**<CNcomment:dev çš„ vo æ¨¡å¼  */
+    HI_UNF_TUNER_CONNECT_PARA_S stConnectPara;  /**<Tuner connect parameter*//**<CNcomment:Tuneré”é¢‘å‚æ•°.*/
+    HI_UNF_TUNER_FE_LNB_CONFIG_S    stLnbCfg;   /**<LNB config*//**<CNcomment:LNB é…ç½® */
+    HI_UNF_TUNER_FE_LNB_POWER_E            enLNBPower;/**<LNB Power*//**<CNcomment:LNBä¾›ç”µæ§åˆ¶ */
+    HI_UNF_TUNER_DISEQC_SWITCH16PORT_S     st16Port;/**<Switch16 parameter*//**<CNcomment:Switch16å¼€å…³å‚æ•° */
+    HI_UNF_TUNER_DISEQC_SWITCH4PORT_S      st4Port;/**<Switch4 parameter*//**<CNcomment:Switch4å¼€å…³å‚æ•° */
+    HI_UNF_TUNER_SWITCH_22K_E              enSwitch22K; /**<22K switch parameter*//**<CNcomment:22Kå¼€å…³å‚æ•° */
 }HI_UNF_MCE_DVB_PARAM_S;
 
-/**Play parameter configuration of transport stream (TS) files*//**<CNcomment:TSÎÄ¼şÅäÖÃĞÅÏ¢ */
+/**Play parameter configuration of transport stream (TS) files*//**<CNcomment:TSæ–‡ä»¶é…ç½®ä¿¡æ¯ */
 typedef struct hiUNF_MCE_TSFILE_PARAM_S
 {
-    HI_U32                      u32ContentLen;  /**File length*//**<CNcomment:ÎÄ¼ş³¤¶È  */
+    HI_U32                      u32ContentLen;  /**File length*//**<CNcomment:æ–‡ä»¶é•¿åº¦  */
     HI_U32                      u32PcrPid;      /**<pcr pid*//**<CNcomment:pcr pid  */
-    HI_U32                      u32VideoPid;    /**<Video PID*//**<CNcomment:ÊÓÆµ pid. */
-    HI_U32                      u32AudioPid;    /**<Audio PID*//**<CNcomment:ÒôÆµ pid. */
-    HI_UNF_MCE_VDEC_TYPE_E      enVideoType;    /**<Video type*//**<CNcomment:ÊÓÆµ ÀàĞÍ */
-    HI_UNF_MCE_ADEC_TYPE_E      enAudioType;    /**<Audio type*//**<CNcomment:ÒôÆµ ÀàĞÍ */
-    HI_U32                      u32Volume;      /**<volume of output *//**<CNcomment:ÒôÁ¿ */
-    HI_UNF_TRACK_MODE_E         enTrackMode;    /**<Track mode. Only HI_UNF_TRACK_MODE_STEREO is supported.*//**<CNcomment:½öÖ§³ÖÁ¢ÌåÉù */
-    HI_UNF_VO_DEV_MODE_E        enDevMode;      /**<mode of vo device  *//**<CNcomment:voÉè±¸µÄÄ£Ê½  */
+    HI_U32                      u32VideoPid;    /**<Video PID*//**<CNcomment:è§†é¢‘ pid. */
+    HI_U32                      u32AudioPid;    /**<Audio PID*//**<CNcomment:éŸ³é¢‘ pid. */
+    HI_UNF_MCE_VDEC_TYPE_E      enVideoType;    /**<Video type*//**<CNcomment:è§†é¢‘ ç±»å‹ */
+    HI_UNF_MCE_ADEC_TYPE_E      enAudioType;    /**<Audio type*//**<CNcomment:éŸ³é¢‘ ç±»å‹ */
+    HI_U32                      u32Volume;      /**<volume of output *//**<CNcomment:éŸ³é‡ */
+    HI_UNF_TRACK_MODE_E         enTrackMode;    /**<Track mode. Only HI_UNF_TRACK_MODE_STEREO is supported.*//**<CNcomment:ä»…æ”¯æŒç«‹ä½“å£° */
+    HI_UNF_VO_DEV_MODE_E        enDevMode;      /**<mode of vo device  *//**<CNcomment:voè®¾å¤‡çš„æ¨¡å¼  */
 }HI_UNF_MCE_TSFILE_PARAM_S;
 
 #define ANI_MAX_PIC_SUPPORT	(30)
 typedef struct hiUNF_MCE_ANI_PARAM_S
 {
-    HI_U32  u32ContentLen;  /**File length*//**<CNcomment:ÎÄ¼ş³¤¶È  */
+    HI_U32  u32ContentLen;  /**File length*//**<CNcomment:æ–‡ä»¶é•¿åº¦  */
 	HI_U32	u32PicCount;
 	HI_U32	au32PicTime[ANI_MAX_PIC_SUPPORT];
 }HI_UNF_MCE_ANI_PARAM_S;
 
-/**Play type*//**<CNcomment:²¥·ÅÀàĞÍ*/
+/**Play type*//**<CNcomment:æ’­æ”¾ç±»å‹*/
 typedef enum hiUNF_MCE_PLAY_TYPE_E
 {
-    HI_UNF_MCE_TYPE_PLAY_DVB	 = 0,   /**<DVB type*/ /**<CNcomment:DVB ÀàĞÍ */ 
-    HI_UNF_MCE_TYPE_PLAY_TSFILE  = 1,   /**<TS file type*/ /**<CNcomment:ts ÎÄ¼şÀàĞÍ */
-    HI_UNF_MCE_TYPE_PLAY_ANI     = 2,	/**<ES file type*/ /**<CNcomment:es ÎÄ¼şÀàĞÍ */
+    HI_UNF_MCE_TYPE_PLAY_DVB	 = 0,   /**<DVB type*/ /**<CNcomment:DVB ç±»å‹ */ 
+    HI_UNF_MCE_TYPE_PLAY_TSFILE  = 1,   /**<TS file type*/ /**<CNcomment:ts æ–‡ä»¶ç±»å‹ */
+    HI_UNF_MCE_TYPE_PLAY_ANI     = 2,	/**<ES file type*/ /**<CNcomment:es æ–‡ä»¶ç±»å‹ */
     HI_UNF_MCE_TYPE_PLAY_BUTT
 }HI_UNF_MCE_PLAY_TYPE_E;
 
 
-/**Play configuration*//**<CNcomment:²¥·ÅÅäÖÃĞÅÏ¢ */
+/**Play configuration*//**<CNcomment:æ’­æ”¾é…ç½®ä¿¡æ¯ */
 typedef struct hiUNF_MCE_PLAY_PARAM_S
 {
-    HI_UNF_MCE_PLAY_TYPE_E          enPlayType;     /**<Play type*//**<CNcomment:²¥·ÅÀàĞÍ*/
-    HI_BOOL                         bPlayEnable;    /**<Whether play is enable*//**<CNcomment: Ë²²¥ÊÇ·ñÊ¹ÄÜ*/
+    HI_UNF_MCE_PLAY_TYPE_E          enPlayType;     /**<Play type*//**<CNcomment:æ’­æ”¾ç±»å‹*/
+    HI_BOOL                         bPlayEnable;    /**<Whether play is enable*//**<CNcomment: ç¬æ’­æ˜¯å¦ä½¿èƒ½*/
 
     union 
     {
-        HI_UNF_MCE_DVB_PARAM_S     stDvbParam;      /**<dvb parameter*//**<CNcomment:dvb²ÎÊı*/
-        HI_UNF_MCE_TSFILE_PARAM_S  stTsParam;       /**<ts parameter*//**<CNcomment:ts²ÎÊı*/
-		HI_UNF_MCE_ANI_PARAM_S     stAniParam;		/**<es parameter*//**<CNcomment:es²ÎÊı*/
+        HI_UNF_MCE_DVB_PARAM_S     stDvbParam;      /**<dvb parameter*//**<CNcomment:dvbå‚æ•°*/
+        HI_UNF_MCE_TSFILE_PARAM_S  stTsParam;       /**<ts parameter*//**<CNcomment:tså‚æ•°*/
+		HI_UNF_MCE_ANI_PARAM_S     stAniParam;		/**<es parameter*//**<CNcomment:eså‚æ•°*/
 	}unParam;
 }HI_UNF_MCE_PLAY_PARAM_S;
 
-/**Mode of Play Control*//**CNcomment:²¥·Å¿ØÖÆÄ£Ê½ */
+/**Mode of Play Control*//**CNcomment:æ’­æ”¾æ§åˆ¶æ¨¡å¼ */
 typedef enum hiUNF_MCE_PLAYCTRL_MODE_E
 {
-    HI_UNF_MCE_PLAYCTRL_BY_TIME,    /**<play control by time*//**<CNcomment:Í¨¹ıÊ±¼ä¿ØÖÆ*/
-    HI_UNF_MCE_PLAYCTRL_BY_COUNT,   /**<play control by count*//**<CNcomment:Í¨¹ı²¥·Å´ÎÊı¿ØÖÆ*/
+    HI_UNF_MCE_PLAYCTRL_BY_TIME,    /**<play control by time*//**<CNcomment:é€šè¿‡æ—¶é—´æ§åˆ¶*/
+    HI_UNF_MCE_PLAYCTRL_BY_COUNT,   /**<play control by count*//**<CNcomment:é€šè¿‡æ’­æ”¾æ¬¡æ•°æ§åˆ¶*/
     HI_UNF_MCE_PLAYCTRL_BUTT
 }HI_UNF_MCE_PLAYCTRL_MODE_E;
 
-/**Defines the parameter of fastplay stop*//**CNcomment:Ë²²¥Í£Ö¹²ÎÊı */
+/**Defines the parameter of fastplay stop*//**CNcomment:ç¬æ’­åœæ­¢å‚æ•° */
 typedef struct hiUNF_MCE_STOPPARM_S
 {
-	HI_UNF_AVPLAY_STOP_MODE_E   enStopMode;     /**<Mode of Stop,see ::HI_UNF_AVPLAY_STOP_MODE_E*//**<CNcomment:Í£Ö¹Ä£Ê½£¬²Î¼û::HI_UNF_AVPLAY_STOP_MODE_E*/
-	HI_UNF_MCE_PLAYCTRL_MODE_E  enCtrlMode;     /**<Mode of Play Control*//**<CNcomment:²¥·Å¿ØÖÆÄ£Ê½ */
-	HI_U32                      u32PlayTimeMs;    /**<Play time*//**<CNcomment:²¥·ÅÊ±¼ä */
-	HI_U32                      u32PlayCount;   /**<Play count*//**<CNcomment:²¥·Å´ÎÊı */
+	HI_UNF_AVPLAY_STOP_MODE_E   enStopMode;     /**<Mode of Stop,see ::HI_UNF_AVPLAY_STOP_MODE_E*//**<CNcomment:åœæ­¢æ¨¡å¼ï¼Œå‚è§::HI_UNF_AVPLAY_STOP_MODE_E*/
+	HI_UNF_MCE_PLAYCTRL_MODE_E  enCtrlMode;     /**<Mode of Play Control*//**<CNcomment:æ’­æ”¾æ§åˆ¶æ¨¡å¼ */
+	HI_U32                      u32PlayTimeMs;    /**<Play time*//**<CNcomment:æ’­æ”¾æ—¶é—´ */
+	HI_U32                      u32PlayCount;   /**<Play count*//**<CNcomment:æ’­æ”¾æ¬¡æ•° */
 } HI_UNF_MCE_STOPPARM_S;
 
-/**Defines the parameter of fastplay exit*//**CNcomment:Ë²²¥ÍË³ö²ÎÊı */
+/**Defines the parameter of fastplay exit*//**CNcomment:ç¬æ’­é€€å‡ºå‚æ•° */
 typedef struct hiUNF_MCE_EXITPARAM_S
 {
-    HI_HANDLE   hNewWin;          /**<Handle of new window*//**<CNcomment:ĞÂ´°¿Ú¾ä±ú */
+    HI_HANDLE   hNewWin;          /**<Handle of new window*//**<CNcomment:æ–°çª—å£å¥æŸ„ */
 }HI_UNF_MCE_EXITPARAM_S;
 
-/**Defines the parameter of fastplay init*//**CNcomment:Ë²²¥³õÊ¼»¯²ÎÊı */
+/**Defines the parameter of fastplay init*//**CNcomment:ç¬æ’­åˆå§‹åŒ–å‚æ•° */
 typedef struct hiUNF_MCE_INIT_PARAM_S
 {
     HI_U32      u32Reserved;
@@ -169,52 +169,52 @@ typedef struct hiUNF_MCE_INIT_PARAM_S
 /** @{ */  /** <!-- [MCE]*/
 
 /** 
-\brief init mce  CNcomment:MCEÅäÖÃ³õÊ¼»¯½Ó¿Ú CNend
+\brief init mce  CNcomment:MCEé…ç½®åˆå§‹åŒ–æ¥å£ CNend
 \attention \n
 Initializes the media control engine (MCE) before call other MCE API.
-CNcomment:Ê¹ÓÃMCE½Ó¿ÚÇ°Ê×ÏÈµ÷ÓÃ¸Ã½Ó¿Ú CNend
-\param[in]  pstInitParam  Pointer to MCE init parameter, reserved. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòË²²¥³õÊ¼»¯²ÎÊı£¬±£Áô CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_MCE_DEV_NOT_EXIST      Device is not exist. CNcomment:Éè±¸²»´æÔÚ CNend
-\retval :: HI_ERR_MCE_NOT_DEVICE      Not a device. CNcomment:·ÇÉè±¸ CNend
-\retval :: HI_ERR_MCE_DEV_OPEN_ERR      Parameter is invalid. CNcomment:Éè±¸´ò¿ªÊ§°Ü CNend
+CNcomment:ä½¿ç”¨MCEæ¥å£å‰é¦–å…ˆè°ƒç”¨è¯¥æ¥å£ CNend
+\param[in]  pstInitParam  Pointer to MCE init parameter, reserved. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘ç¬æ’­åˆå§‹åŒ–å‚æ•°ï¼Œä¿ç•™ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_MCE_DEV_NOT_EXIST      Device is not exist. CNcomment:è®¾å¤‡ä¸å­˜åœ¨ CNend
+\retval :: HI_ERR_MCE_NOT_DEVICE      Not a device. CNcomment:éè®¾å¤‡ CNend
+\retval :: HI_ERR_MCE_DEV_OPEN_ERR      Parameter is invalid. CNcomment:è®¾å¤‡æ‰“å¼€å¤±è´¥ CNend
 \see \n
 N/A
 */
 HI_S32  HI_UNF_MCE_Init(HI_UNF_MCE_INIT_PARAM_S *pstInitParam);
 
 /** 
-\brief deinit mce  CNcomment:MCEÅäÖÃÈ¥³õÊ¼»¯½Ó¿Ú CNend
+\brief deinit mce  CNcomment:MCEé…ç½®å»åˆå§‹åŒ–æ¥å£ CNend
 \attention \n
-Destroys all MCE resources.  CNcomment:Íê³ÉMCEÅäÖÃ¹¤×÷×îÖÕµ÷ÓÃ¸Ã½Ó¿Ú CNend
+Destroys all MCE resources.  CNcomment:å®ŒæˆMCEé…ç½®å·¥ä½œæœ€ç»ˆè°ƒç”¨è¯¥æ¥å£ CNend
 \see \n
 N/A
 */
 HI_VOID HI_UNF_MCE_DeInit(HI_VOID);
 
 /** 
-\brief deinit mce  CNcomment:Çå¿Õ¿ª»ú»­Ãæ½Ó¿Ú CNend
+\brief deinit mce  CNcomment:æ¸…ç©ºå¼€æœºç”»é¢æ¥å£ CNend
 \attention \n
-Destroys the logo.  CNcomment:Çå¿Õ¿ª»ú»­Ãæ CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_MCE_DEV_NOT_INIT      Device is not init. CNcomment:Éè±¸Î´³õÊ¼»¯ CNend
-\retval :: HI_ERR_MCE_INVALID_OPT      The operation is invalid. CNcomment:ÎŞĞ§²Ù×÷ CNend
+Destroys the logo.  CNcomment:æ¸…ç©ºå¼€æœºç”»é¢ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_MCE_DEV_NOT_INIT      Device is not init. CNcomment:è®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval :: HI_ERR_MCE_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */
 HI_S32  HI_UNF_MCE_ClearLogo(HI_VOID);
 
 /**
-\brief  stop fastplay. CNcomment:Í£Ö¹fastplay CNend
+\brief  stop fastplay. CNcomment:åœæ­¢fastplay CNend
 \attention \n
 If enCtrlMode is HI_UNF_MCE_PLAYCTRL_BY_TIME, u32PlayTime is valid; if enCtrlMode is HI_UNF_MCE_PLAYCTRL_BY_COUNT, u32PlayCount is valid
-CNcomment: enCtrlModeÑ¡ÎªHI_UNF_MCE_PLAYCTRL_BY_TIMEÊ±£¬u32PlayTimeÉúĞ§, Ñ¡ÎªHI_UNF_MCE_PLAYCTRL_BY_COUNTÊ±£¬u32PlayCountÉúĞ§ CNend
-\param[in]  pstStopParam  Pointer to fastplay  stop parameter. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòË²²¥Í£Ö¹²ÎÊı CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_MCE_DEV_NOT_INIT      Device is not init. CNcomment:Éè±¸Î´³õÊ¼»¯ CNend
-\retval :: HI_ERR_MCE_PTR_NULL      Pointer is null. CNcomment:¿ÕÖ¸Õë CNend
-\retval :: HI_ERR_MCE_PARAM_INVALID      Parameter is invalid. CNcommentÎŞĞ§²ÎÊı CNend
-\retval :: HI_ERR_MCE_INVALID_OPT      The operation is invalid. CNcomment:ÎŞĞ§²Ù×÷ CNend
+CNcomment: enCtrlModeé€‰ä¸ºHI_UNF_MCE_PLAYCTRL_BY_TIMEæ—¶ï¼Œu32PlayTimeç”Ÿæ•ˆ, é€‰ä¸ºHI_UNF_MCE_PLAYCTRL_BY_COUNTæ—¶ï¼Œu32PlayCountç”Ÿæ•ˆ CNend
+\param[in]  pstStopParam  Pointer to fastplay  stop parameter. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘ç¬æ’­åœæ­¢å‚æ•° CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_MCE_DEV_NOT_INIT      Device is not init. CNcomment:è®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval :: HI_ERR_MCE_PTR_NULL      Pointer is null. CNcomment:ç©ºæŒ‡é’ˆ CNend
+\retval :: HI_ERR_MCE_PARAM_INVALID      Parameter is invalid. CNcommentæ— æ•ˆå‚æ•° CNend
+\retval :: HI_ERR_MCE_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */
@@ -222,14 +222,14 @@ HI_S32 HI_UNF_MCE_Stop(HI_UNF_MCE_STOPPARM_S *pstStopParam);
 
 
 /**
-\brief  Exit fastplay and destrory fastplay source CNcomment:ÍË³öfastplay,Ïú»Ùfastplay×ÊÔ´ CNend
+\brief  Exit fastplay and destrory fastplay source CNcomment:é€€å‡ºfastplay,é”€æ¯fastplayèµ„æº CNend
 \attention \n
 N/A
-\param[in]  pstExitParam  Pointer to fastplay  exit parameter. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòË²²¥ÍË³ö²ÎÊı CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_MCE_DEV_NOT_INIT      Device is not init. CNcomment:Éè±¸Î´³õÊ¼»¯ CNend
-\retval :: HI_ERR_MCE_PARAM_INVALID      Parameter is invalid. CNcommentÎŞĞ§²ÎÊı CNend
-\retval :: HI_ERR_MCE_INVALID_OPT      The operation is invalid. CNcomment:ÎŞĞ§²Ù×÷ CNend
+\param[in]  pstExitParam  Pointer to fastplay  exit parameter. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘ç¬æ’­é€€å‡ºå‚æ•° CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_MCE_DEV_NOT_INIT      Device is not init. CNcomment:è®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval :: HI_ERR_MCE_PARAM_INVALID      Parameter is invalid. CNcommentæ— æ•ˆå‚æ•° CNend
+\retval :: HI_ERR_MCE_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */

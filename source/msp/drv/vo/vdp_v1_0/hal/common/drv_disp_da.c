@@ -50,7 +50,7 @@ HI_S32 DISP_DA_Init(HI_DRV_DISP_VERSION_S *pstVersion)
         )
     {
 
-        // º¯ÊýÖ¸Õë¸³Öµ
+        // å‡½æ•°æŒ‡é’ˆèµ‹å€¼
         g_stDAFuntion.PFCscRgb2Yuv   = DISP_ALG_CscRgb2Yuv;
         g_stDAFuntion.pfCalcCscCoef  = DISP_ALG_CscCoefSet;
 

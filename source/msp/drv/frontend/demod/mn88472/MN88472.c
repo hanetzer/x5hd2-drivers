@@ -217,7 +217,7 @@ HI_S32 MN88472_SetTsType(HI_U32 u32TunerPort, HI_UNF_TUNER_OUPUT_MODE_E enTsType
     return HI_SUCCESS;
 }
 
-/*»ñÈ¡ÎóÂëÂÊ£¬pu32ber´¦´æ·Å´íÎóÊı£¬pu32ber+1´¦´æ·ÅÊÕµ½Êı¾İ×ÜÊı*/
+/*è·å–è¯¯ç ç‡ï¼Œpu32berå¤„å­˜æ”¾é”™è¯¯æ•°ï¼Œpu32ber+1å¤„å­˜æ”¾æ”¶åˆ°æ•°æ®æ€»æ•°*/
 HI_S32 MN88472_GetBer(HI_U32 u32TunerPort, HI_U32 *pu32ber)
 {
     DMD_PARAMETER_t * pstParaMeter;
@@ -252,7 +252,7 @@ HI_S32 MN88472_GetBer(HI_U32 u32TunerPort, HI_U32 *pu32ber)
     return HI_SUCCESS;
 }
 
-/*»ñÈ¡ĞÅÔë±È£¬½á¹ûÒÑ¾­×ª»»ÎªdB*/
+/*è·å–ä¿¡å™ªæ¯”ï¼Œç»“æœå·²ç»è½¬æ¢ä¸ºdB*/
 HI_S32 MN88472_GetSnr(HI_U32 u32TunerPort, HI_U32* pu32SNR)
 {
     DMD_PARAMETER_t * pstParaMeter;
@@ -273,7 +273,7 @@ HI_S32 MN88472_GetSnr(HI_U32 u32TunerPort, HI_U32* pu32SNR)
     {
        return HI_FAILURE;
     }
-    /*Ö»È¡ÕûÊı²¿·Ö*/
+    /*åªå–æ•´æ•°éƒ¨åˆ†*/
     *pu32SNR = ulCntInt;
     return HI_SUCCESS;
 }
@@ -657,8 +657,8 @@ HI_VOID MN88472_TunerResume(HI_VOID)
 
     DMD_PARAMETER_t * pstParaMeter;
 
-    /*±¾À´Ó¦¸ÃÒª¸ù¾İu32TunerPortÀ´Ñ¡ÔñÄÄ¸ötunerµÄ£¬µ«ÊÇÄ¿Ç°Õâ¸ö½Ó¿ÚÎŞ·¨ÖªµÀu32TunerPort,
-    Ä¿Ç°µÄÓ¦ÓÃÔİÊ±Ö»ÓĞÒ»¸ötuner£¬¾ÍÏÈÓÃ0,ºóĞø´Ë½Ó¿ÚÒª¿¼ÂÇ¶àtunerµÄÇé¿ö*/
+    /*æœ¬æ¥åº”è¯¥è¦æ ¹æ®u32TunerPortæ¥é€‰æ‹©å“ªä¸ªtunerçš„ï¼Œä½†æ˜¯ç›®å‰è¿™ä¸ªæ¥å£æ— æ³•çŸ¥é“u32TunerPort,
+    ç›®å‰çš„åº”ç”¨æš‚æ—¶åªæœ‰ä¸€ä¸ªtunerï¼Œå°±å…ˆç”¨0,åç»­æ­¤æ¥å£è¦è€ƒè™‘å¤štunerçš„æƒ…å†µ*/
     pstParaMeter = g_stMN88472Demod;
     *((volatile unsigned int *)(IO_ADDRESS(0x10203160))) = 0;
     DMD_init(pstParaMeter);

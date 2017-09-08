@@ -7,7 +7,7 @@ File Name	: png_hal.h
 Version		: Initial Draft
 Author		: z00141204
 Created		: 2010/10/12
-Description	: PNG Hal layer code    CNcomment:PNG hal²ãÊµÏÖ
+Description	: PNG Hal layer code    CNcomment:PNG halå±‚å®žçŽ°
 Function List 	: 
 	  		  		  
 History       	:

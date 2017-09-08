@@ -201,7 +201,7 @@ HI_S32 VPSS_FB_DelInit(VPSS_FB_INFO_S *pstFrameList)
 
     return HI_SUCCESS;
 }
-//Ïû·ÑÕßINSTANCE
+//æ¶ˆè´¹è€…INSTANCE
 HI_S32 VPSS_FB_GetFulFrmBuf(VPSS_FB_INFO_S *pstFrameList,HI_DRV_VIDEO_FRAME_S *pstFrame,HI_CHAR* pchFile)
 {
     VPSS_FB_NODE_S *pstFrmNode;

@@ -314,7 +314,7 @@ typedef enum hiDRV_BUF_ADDR_E
 #if 0
 typedef struct hiDRV_VIDEO_PRIV_INFO_S
 {
-    HI_U32 u32FrameIndex;  //ÓĞµİÔöÒªÇó
+    HI_U32 u32FrameIndex;  //æœ‰é€’å¢è¦æ±‚
     HI_U32 u32BufferID;
 
     //HI_U32 u32Is1D;
@@ -459,7 +459,7 @@ typedef struct hiDRV_VIDEO_FRAME_S
 typedef struct hiDRV_VIDEO_PRIVATE_S
 {
 	HI_BOOL bValid;
-	HI_U32 u32LastFlag;                  /*×îºóÒ»Ö¡±ê¼Ç*/
+	HI_U32 u32LastFlag;                  /*æœ€åä¸€å¸§æ ‡è®°*/
 	HI_DRV_COLOR_SPACE_E eColorSpace;    //?????????
 	HI_U32 u32BufferID;                    //?????????????ID
 	HI_U32 u32FrmCnt;

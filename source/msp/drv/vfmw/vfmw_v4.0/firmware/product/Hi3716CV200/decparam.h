@@ -1,21 +1,21 @@
 
 /******************************************************************************
 
-  °æÈ¨ËùÓĞ (C), 2001-2011, »ªÎª¼¼ÊõÓĞÏŞ¹«Ë¾
+  ç‰ˆæƒæ‰€æœ‰ (C), 2001-2011, åä¸ºæŠ€æœ¯æœ‰é™å…¬å¸
 
 ******************************************************************************
-    ÎÄ ¼ş Ãû   : vdmv300plus_hal.h
-    °æ ±¾ ºÅ   : ³õ¸å
-    ×÷    Õß   : 
-    Éú³ÉÈÕÆÚ   : 
-    ×î½üĞŞ¸Ä   :
-    ¹¦ÄÜÃèÊö   : VDMV300plusÓ²¼ş³éÏó
+    æ–‡ ä»¶ å   : vdmv300plus_hal.h
+    ç‰ˆ æœ¬ å·   : åˆç¨¿
+    ä½œ    è€…   : 
+    ç”Ÿæˆæ—¥æœŸ   : 
+    æœ€è¿‘ä¿®æ”¹   :
+    åŠŸèƒ½æè¿°   : VDMV300plusç¡¬ä»¶æŠ½è±¡
      
 
- ĞŞ¸ÄÀúÊ·   :
-    1.ÈÕ    ÆÚ : 2009-03-04
-    ×÷    Õß   : 
-    ĞŞ¸ÄÄÚÈİ   : 
+ ä¿®æ”¹å†å²   :
+    1.æ—¥    æœŸ : 2009-03-04
+    ä½œ    è€…   : 
+    ä¿®æ”¹å†…å®¹   : 
 
 ******************************************************************************/
 
@@ -28,7 +28,7 @@ extern "C" {
 
 #include "vfmw.h"
 /************************************************************************/
-/*   ³£Êı                                                               */
+/*   å¸¸æ•°                                                               */
 /************************************************************************/
 
 #define    MAX_FRAME_NUM                  64
@@ -98,7 +98,7 @@ typedef struct
     UINT32    StreamPhyAddr[2];
     UINT32    StreamBitOffset[2];
     SINT32    StreamLength[2];
-    //STREAM_SEG_PACKET_S *pSegMan;//ÎªPoliat°æ±¾Ğ´ÏÂĞĞÏûÏ¢³ØµÄÂëÁ÷½á¹¹Ìå
+    //STREAM_SEG_PACKET_S *pSegMan;//ä¸ºPoliatç‰ˆæœ¬å†™ä¸‹è¡Œæ¶ˆæ¯æ± çš„ç æµç»“æ„ä½“
 //    S_SEG_S   SSeg[512];
 //    SINT32    SegNum;
     AVS_SLCSTR_S SlcStr[MAX_AVS_SLICE_NUM];
@@ -111,8 +111,8 @@ typedef struct
     UINT32    CurPmvAddr;
     UINT32    ColPmvAddr;
 	
-	/* ÏÔÊ¾Í¼ÏóÊä³öµØÖ· */
-    UINT32    rcn_address; //¾ÍÊÇ DispFramePhyAddr
+	/* æ˜¾ç¤ºå›¾è±¡è¾“å‡ºåœ°å€ */
+    UINT32    rcn_address; //å°±æ˜¯ DispFramePhyAddr
 	UINT32    pmv_colmb_addr;
     UINT32    PmvConfigTab[32];
 	UINT32    cur_wq_matrix[64];
@@ -306,8 +306,8 @@ typedef H264_DEC_SLICE_PARAM_S       MVC_DEC_SLICE_PARAM_S;
 typedef H264_DEC_PIC_PARAM_S           MVC_DEC_PIC_PARAM_S;
 
 /*
-// ÖØÒª!!!!!
-//MVC ÏÂÃæ½á¹¹ÌåÒª±£³ÖºÍH264µÄÒ»ÖÂ£¬ÒòÎªÁ½Õß¹²ÓÃhal²ã½Ó¿Ú 
+// é‡è¦!!!!!
+//MVC ä¸‹é¢ç»“æ„ä½“è¦ä¿æŒå’ŒH264çš„ä¸€è‡´ï¼Œå› ä¸ºä¸¤è€…å…±ç”¨halå±‚æ¥å£ 
 typedef struct 
 {
     UINT8   list_structure;        // pic structure of this list element. 0: frame, 1: top_field, 2: bottom_field, 
@@ -465,9 +465,9 @@ typedef struct
 /************************************************************/
 /*****come from vdm_hal_mpeg2.h, by lkf56013*****************/
 /***********************************************************/
-/* MPEG2Ğ­ÒéµÄ½âÂë²ÎÊı½á¹¹ */
+/* MPEG2åè®®çš„è§£ç å‚æ•°ç»“æ„ */
 #ifdef VFMW_MPEG2_SUPPORT
-#define MP2_MAX_SLC_PARAM_NUM  1024//512  //×î´óSlice¸öÊı
+#define MP2_MAX_SLC_PARAM_NUM  1024//512  //æœ€å¤§Sliceä¸ªæ•°
 
 typedef struct
 {
@@ -498,7 +498,7 @@ typedef struct
     UINT8     NonIntraQuantTab[64];
     UINT8     IntraQuantTab[64];
 
-    /* ºó´¦ÀíÉèÖÃ */
+    /* åå¤„ç†è®¾ç½® */
     /* BEGIN: Added by y62639, 2010/9/13 */
     UINT8     EstmatedPicQp;
     /* END:   Added by y62639, 2010/9/13 */
@@ -514,7 +514,7 @@ typedef struct
     UINT32    Mpeg1Flag;
     UINT32    Dnr2DPicPhyAddr;
     UINT32    Dnr2DPicChAddr;
-    /* ½âÂëÍ¼Ïó(¼°Æä²Î¿¼Í¼)µÄµØÖ· */
+    /* è§£ç å›¾è±¡(åŠå…¶å‚è€ƒå›¾)çš„åœ°å€ */
     UINT32    BwdRefPhyAddr;
     UINT32    FwdRefPhyAddr;
     UINT32    CurPicPhyAddr;
@@ -522,11 +522,11 @@ typedef struct
     UINT32    BwdRefIsFldSave;
     UINT32    FwdRefIsFldSave;
 
-    /* ºó´¦ÀíÊ±ÓòÂË²¨Í¼ÏóµØÖ· */
+    /* åå¤„ç†æ—¶åŸŸæ»¤æ³¢å›¾è±¡åœ°å€ */
     UINT32    TfBwdPhyAddr;   
     UINT32    TfFwdPhyAddr;
     UINT32    TfCurPhyAddr;
-    /* ÏÔÊ¾Í¼ÏóÊä³öµØÖ· */
+    /* æ˜¾ç¤ºå›¾è±¡è¾“å‡ºåœ°å€ */
     UINT32    DispFramePhyAddr; 
 	#ifdef VFMW_MODULE_LOWDLY_SUPPORT
 	//add by l00225186 fordsp 2013-04-25
@@ -536,7 +536,7 @@ typedef struct
     UINT32    VahbStride;
     UINT32    DnrMbinfoStaddr;
     UINT32    PmvColmbPhyAddr;
-    //FRAME_POOL_S      *pFramePool;  /* ±ãÓÚÖ¡´æµØÖ·ÓëidÖ®¼ä»¥»» */
+    //FRAME_POOL_S      *pFramePool;  /* ä¾¿äºå¸§å­˜åœ°å€ä¸idä¹‹é—´äº’æ¢ */
 
     UINT32    AdjustQpDb;
     UINT32    AdjustQpDr;
@@ -551,8 +551,8 @@ typedef struct
 /************************************************************/
 /********come from vdm_hal_mpeg4.h, by lkf56013****************/
 /***********************************************************/
-#define MAX_SLICE_NUM_IN_VOP  512   //ËùÓö¼ûµÄ×î´óslice num Îª475
-//Âë±í³õÊ¼»¯£¬ÔÚCfg_Tabº¯Êı
+#define MAX_SLICE_NUM_IN_VOP  512   //æ‰€é‡è§çš„æœ€å¤§slice num ä¸º475
+//ç è¡¨åˆå§‹åŒ–ï¼Œåœ¨Cfg_Tabå‡½æ•°
 #ifdef VFMW_MPEG4_SUPPORT
 typedef struct 
 {
@@ -629,7 +629,7 @@ typedef struct
     UINT32      StreamBaseAddr;
     UINT32      StreamSegID;
     SINT32      StreamFirstIsLastFlag;
-    UINT32      StreamPhyAddr[2];         //g_BitsObj.phy_addr&(0xFFFFFFF0) »ò ptr_strm_para->StreamPack[1].PhyAddr &(0xFFFFFFF0)
+    UINT32      StreamPhyAddr[2];         //g_BitsObj.phy_addr&(0xFFFFFFF0) æˆ– ptr_strm_para->StreamPack[1].PhyAddr &(0xFFFFFFF0)
     UINT32      StreamBitOffset[2];
     SINT32      StreamLength[2]; 
     UINT32      Trb;                      //p_syntax_des->time_bp
@@ -650,11 +650,11 @@ typedef struct
     MP4_SLICE_INFO SlcPara[MAX_SLICE_NUM_IN_VOP];
     UINT32      SlcNum;
 
-    /* ºó´¦ÀíÊ±ÓòÂË²¨Í¼ÏóµØÖ· */
+    /* åå¤„ç†æ—¶åŸŸæ»¤æ³¢å›¾è±¡åœ°å€ */
     UINT32    TfBwdPhyAddr;   
     UINT32    TfFwdPhyAddr;
     UINT32    TfCurPhyAddr;
-    /* ÏÔÊ¾Í¼ÏóÊä³öµØÖ· */
+    /* æ˜¾ç¤ºå›¾è±¡è¾“å‡ºåœ°å€ */
     UINT32    DispFramePhyAddr; 
 
     UINT32    AdjustQpDb;
@@ -680,7 +680,7 @@ typedef struct
 /***come from vdm_hal_real8.h, by lkf56013******************/
 /*******************************************************/
 #ifdef VFMW_REAL8_SUPPORT
-#define RV8_MAX_SLC_PARAM_NUM  256  //×î´óSlice¸öÊı
+#define RV8_MAX_SLC_PARAM_NUM  256  //æœ€å¤§Sliceä¸ªæ•°
 
 typedef struct
 {
@@ -695,10 +695,10 @@ typedef struct
     SINT32    last_mb_in_slice;
 } RV8_SLC_PARAM_S;
 
-/* REAL8Ğ­ÒéµÄ½âÂë²ÎÊı½á¹¹ */
+/* REAL8åè®®çš„è§£ç å‚æ•°ç»“æ„ */
 typedef struct
 {
-    /* ºó´¦ÀíÉèÖÃ */
+    /* åå¤„ç†è®¾ç½® */
     UINT8     DnrDispOutEnable;
 
     UINT32    PicWidthInMb;
@@ -714,12 +714,12 @@ typedef struct
     UINT32    FstSlcGrp;
     SINT32    StreamBaseAddr;
     
-    /* ½âÂëÍ¼Ïó(¼°Æä²Î¿¼Í¼)µÄµØÖ· */
+    /* è§£ç å›¾è±¡(åŠå…¶å‚è€ƒå›¾)çš„åœ°å€ */
     UINT32    BwdRefPhyAddr;
     UINT32    FwdRefPhyAddr;
     UINT32    CurPicPhyAddr;
 
-    /* ÏÔÊ¾Í¼ÏóÊä³öµØÖ· */
+    /* æ˜¾ç¤ºå›¾è±¡è¾“å‡ºåœ°å€ */
     UINT32    DispFramePhyAddr;
 
     UINT32    DDRStride;
@@ -729,14 +729,14 @@ typedef struct
 
     RV8_SLC_PARAM_S   SliceParam[RV8_MAX_SLC_PARAM_NUM];
 	SINT32    Compress_en;
-    //FRAME_POOL_S      *pFramePool;  /* ±ãÓÚÖ¡´æµØÖ·ÓëidÖ®¼ä»¥»» */
+    //FRAME_POOL_S      *pFramePool;  /* ä¾¿äºå¸§å­˜åœ°å€ä¸idä¹‹é—´äº’æ¢ */
 } RV8_DEC_PARAM_S;
 #endif
 /**********************************************************/
 /******come from vdm_hal_real9.h, by lkf56013**************/
 /**********************************************************/
 #ifdef VFMW_REAL9_SUPPORT
-#define RV9_MAX_SLC_PARAM_NUM  256  //×î´óSlice¸öÊı
+#define RV9_MAX_SLC_PARAM_NUM  256  //æœ€å¤§Sliceä¸ªæ•°
 
 typedef struct
 {
@@ -751,10 +751,10 @@ typedef struct
     SINT32    last_mb_in_slice;
 } RV9_SLC_PARAM_S;
 
-/* REAL9Ğ­ÒéµÄ½âÂë²ÎÊı½á¹¹ */
+/* REAL9åè®®çš„è§£ç å‚æ•°ç»“æ„ */
 typedef struct
 {
-    /* ºó´¦ÀíÉèÖÃ */
+    /* åå¤„ç†è®¾ç½® */
     UINT8     DnrDispOutEnable;
     UINT8     PicCodingType;
 
@@ -770,12 +770,12 @@ typedef struct
     UINT32    FstSlcGrp;
     SINT32    StreamBaseAddr;
     
-    /* ½âÂëÍ¼Ïó(¼°Æä²Î¿¼Í¼)µÄµØÖ· */
+    /* è§£ç å›¾è±¡(åŠå…¶å‚è€ƒå›¾)çš„åœ°å€ */
     UINT32    BwdRefPhyAddr;
     UINT32    FwdRefPhyAddr;
     UINT32    CurPicPhyAddr;
 
-    /* ÏÔÊ¾Í¼ÏóÊä³öµØÖ· */
+    /* æ˜¾ç¤ºå›¾è±¡è¾“å‡ºåœ°å€ */
     UINT32    DispFramePhyAddr;
 
     UINT32    DDRStride;
@@ -785,15 +785,15 @@ typedef struct
 
     RV9_SLC_PARAM_S   SliceParam[RV9_MAX_SLC_PARAM_NUM];
     SINT32    Compress_en;
-    //FRAME_POOL_S      *pFramePool;  /* ±ãÓÚÖ¡´æµØÖ·ÓëidÖ®¼ä»¥»» */
+    //FRAME_POOL_S      *pFramePool;  /* ä¾¿äºå¸§å­˜åœ°å€ä¸idä¹‹é—´äº’æ¢ */
 } RV9_DEC_PARAM_S;
 #endif
 
 #ifdef VFMW_DIVX3_SUPPORT
-/* DIVX3Ğ­ÒéµÄ½âÂë²ÎÊı½á¹¹ */
+/* DIVX3åè®®çš„è§£ç å‚æ•°ç»“æ„ */
 typedef struct
 {
-    /* ºó´¦ÀíÉèÖÃ */
+    /* åå¤„ç†è®¾ç½® */
     UINT8  DnrDispOutEnable;
 
     UINT32 prediction_type;
@@ -822,11 +822,11 @@ typedef struct
     UINT32    StreamBitOffset[2];
     SINT32    StreamLength[2];
 
-    /* ½âÂëÍ¼Ïó(¼°Æä²Î¿¼Í¼)µÄµØÖ· */
+    /* è§£ç å›¾è±¡(åŠå…¶å‚è€ƒå›¾)çš„åœ°å€ */
     UINT32    FwdRefPhyAddr;
     UINT32    CurPicPhyAddr;
 
-    /* ÏÔÊ¾Í¼ÏóÊä³öµØÖ· */
+    /* æ˜¾ç¤ºå›¾è±¡è¾“å‡ºåœ°å€ */
     UINT32    DispFramePhyAddr;
 
     UINT32    DDRStride;
@@ -834,7 +834,7 @@ typedef struct
     UINT32    CurrPmvPhyAddr;
     UINT32    ColPmvPhyAddr;
 	SINT32    Compress_en;
-    //FRAME_POOL_S      *pFramePool;  /* ±ãÓÚÖ¡´æµØÖ·ÓëidÖ®¼ä»¥»» */
+    //FRAME_POOL_S      *pFramePool;  /* ä¾¿äºå¸§å­˜åœ°å€ä¸idä¹‹é—´äº’æ¢ */
 } DIVX3_DEC_PARAM_S;
 #endif
 
@@ -868,13 +868,13 @@ typedef struct
     SINT32 StreamID2;
 } VC1_SLCSTREAM_S;
 
-/* VC1Ğ­ÒéµÄ½âÂë²ÎÊı½á¹¹ */
+/* VC1åè®®çš„è§£ç å‚æ•°ç»“æ„ */
 typedef struct
 {
     UINT8 picstructure;
     UINT8 IsSkpicCopy;
 	UINT8 NoBitplaneFlag;
-    //PICÏÂĞĞÏûÏ¢
+    //PICä¸‹è¡Œæ¶ˆæ¯
     UINT8 ptype;
     UINT8 profile;
     UINT8 fcm;
@@ -939,7 +939,7 @@ typedef struct
     UINT8 *pIntensityConvertTab;   
     UINT8 ref_pic_type;
     UINT8 ff_apt_en;
-    //SLICEÏÂĞĞÏûÏ¢
+    //SLICEä¸‹è¡Œæ¶ˆæ¯
     UINT8 SlcNum;
     
     UINT16 totalslicenum   ;
@@ -969,14 +969,14 @@ typedef struct
     UINT32 FIELDTX_ADDR;
     UINT32 FORWARDMB_ADDR;
 	
-    //PICÆäËûÏûÏ¢
+    //PICå…¶ä»–æ¶ˆæ¯
     UINT32 PicCnt;
 
-    //BITPLANEÏÂĞĞÏûÏ¢
+    //BITPLANEä¸‹è¡Œæ¶ˆæ¯
     UINT32 BitPlaneNum;
     UINT32 vc1bitplane[VC1VFMW_MAX_PIC_MB];
     
-    //¼Ä´æÆ÷ 
+    //å¯„å­˜å™¨ 
 
     //reg tmp
     UINT32  vdh_start;

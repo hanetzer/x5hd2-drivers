@@ -30,19 +30,19 @@ extern "C" {
 #define HI_UNF_I2C_Open  HI_UNF_I2C_Init
 #define HI_UNF_I2C_Close HI_UNF_I2C_DeInit
 
-/**Maximum I2C channel ID*/ /**CNcomment:×î´óI2CÍ¨µÀºÅ*/
+/**Maximum I2C channel ID*/ /**CNcomment:æœ€å¤§I2Cé€šé“å·*/
 #define HI_I2C_MAX_NUM_USER (15)
 
 /**Rate type of the I2C module*/
-/**CNcomment:I2CµÄËÙÂÊÀàĞÍ */
+/**CNcomment:I2Cçš„é€Ÿç‡ç±»å‹ */
 typedef enum hiUNF_I2C_RATE_E
 {
-    HI_UNF_I2C_RATE_10K = 0, /**<Standard rate: 10 kbit/s*/         /**<CNcomment:±ê×¼ËÙÂÊ£º10kbit/s*/
-    HI_UNF_I2C_RATE_50K, /**<Standard rate: 50 kbit/s*/   /**<CNcomment:±ê×¼ËÙÂÊ£º50kbit/s*/
-    HI_UNF_I2C_RATE_100K, /**<Standard rate: 100 kbit/s*/  /**<CNcomment:±ê×¼ËÙÂÊ£º100kbit/s*/
-    HI_UNF_I2C_RATE_200K, /**<Standard rate: 200 kbit/s*/  /**<CNcomment:±ê×¼ËÙÂÊ£º200kbit/s*/
-    HI_UNF_I2C_RATE_300K, /**<Standard rate: 300 kbit/s*/  /**<CNcomment:±ê×¼ËÙÂÊ£º300kbit/s*/
-    HI_UNF_I2C_RATE_400K, /**<Fast rate: 400 kbit/s*/      /**<CNcomment:¿ìËÙËÙÂÊ£º400kbit/s*/
+    HI_UNF_I2C_RATE_10K = 0, /**<Standard rate: 10 kbit/s*/         /**<CNcomment:æ ‡å‡†é€Ÿç‡ï¼š10kbit/s*/
+    HI_UNF_I2C_RATE_50K, /**<Standard rate: 50 kbit/s*/   /**<CNcomment:æ ‡å‡†é€Ÿç‡ï¼š50kbit/s*/
+    HI_UNF_I2C_RATE_100K, /**<Standard rate: 100 kbit/s*/  /**<CNcomment:æ ‡å‡†é€Ÿç‡ï¼š100kbit/s*/
+    HI_UNF_I2C_RATE_200K, /**<Standard rate: 200 kbit/s*/  /**<CNcomment:æ ‡å‡†é€Ÿç‡ï¼š200kbit/s*/
+    HI_UNF_I2C_RATE_300K, /**<Standard rate: 300 kbit/s*/  /**<CNcomment:æ ‡å‡†é€Ÿç‡ï¼š300kbit/s*/
+    HI_UNF_I2C_RATE_400K, /**<Fast rate: 400 kbit/s*/      /**<CNcomment:å¿«é€Ÿé€Ÿç‡ï¼š400kbit/s*/
 
     HI_UNF_I2C_RATE_BUTT
 } HI_UNF_I2C_RATE_E;
@@ -58,11 +58,11 @@ typedef enum hiUNF_I2C_RATE_E
 
 /**
  \brief Init the I2C device.
-CNcomment:\brief ³õÊ¼»¯I2C£¨the Inter-Integrated Circuit£©Éè±¸¡£CNend
+CNcomment:\brief åˆå§‹åŒ–I2Cï¼ˆthe Inter-Integrated Circuitï¼‰è®¾å¤‡ã€‚CNend
 
- \param N/A                                                               CNcomment:ÎŞ¡£CNend
- \retval 0 Success                                                        CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_I2C_OPEN_ERR  Open I2c Error				  CNcomment:I2CÎŞĞ§²ÎÊı¡£CNend
+ \param N/A                                                               CNcomment:æ— ã€‚CNend
+ \retval 0 Success                                                        CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_I2C_OPEN_ERR  Open I2c Error				  CNcomment:I2Cæ— æ•ˆå‚æ•°ã€‚CNend
  \see \n
 N/A
  */
@@ -70,15 +70,15 @@ HI_S32 HI_UNF_I2C_Init (HI_VOID);
 
 /**
  \brief  DeInit the I2C device.
-CNcomment:\brief È¥³õÊ¼»¯I2CÉè±¸¡£CNend
+CNcomment:\brief å»åˆå§‹åŒ–I2Cè®¾å¤‡ã€‚CNend
 
  \attention \n
 This API is called after I2C operations are completed.\n
-CNcomment:ÔÚI2C²Ù×÷½áÊøºóµ÷ÓÃ´Ë½Ó¿Ú\n CNend
+CNcomment:åœ¨I2Cæ“ä½œç»“æŸåè°ƒç”¨æ­¤æ¥å£\n CNend
 
- \param N/A                                                        CNcomment:ÎŞ¡£CNend
- \retval 0 Success                                                 CNcomment: ³É¹¦¡£CNend
- \retval ::HI_ERR_I2C_CLOSE_ERR  Close I2c Error.	 	   CNcomment:I2CÉè±¸Î´³õÊ¼»¯¡£CNend
+ \param N/A                                                        CNcomment:æ— ã€‚CNend
+ \retval 0 Success                                                 CNcomment: æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_I2C_CLOSE_ERR  Close I2c Error.	 	   CNcomment:I2Cè®¾å¤‡æœªåˆå§‹åŒ–ã€‚CNend
  \see \n
 N/A
  */
@@ -86,14 +86,14 @@ HI_S32 HI_UNF_I2C_DeInit(HI_VOID);
 
 /**
  \brief  Get the number of I2C module.
-CNcomment:\brief È¥³õÊ¼»¯I2CÉè±¸¡£CNend
+CNcomment:\brief å»åˆå§‹åŒ–I2Cè®¾å¤‡ã€‚CNend
 
  \attention \n
 Call this API to get the number of I2C module befor read/write data.\n
-CNcomment:ÔÚÊ¹ÓÃI2C¶ÁĞ´Êı¾İÖ®Ç°µ÷ÓÃ´Ë½Ó¿Ú»ñÈ¡Ğ¾Æ¬µÄI2CÄ£¿éÊıÄ¿\n CNend
+CNcomment:åœ¨ä½¿ç”¨I2Cè¯»å†™æ•°æ®ä¹‹å‰è°ƒç”¨æ­¤æ¥å£è·å–èŠ¯ç‰‡çš„I2Cæ¨¡å—æ•°ç›®\n CNend
 
- \param N/A                                                        CNcomment:ÎŞ¡£CNend
- \retval 0 Success                                                 CNcomment: ³É¹¦¡£CNend
+ \param N/A                                                        CNcomment:æ— ã€‚CNend
+ \retval 0 Success                                                 CNcomment: æˆåŠŸã€‚CNend
  \retval ::	 
  \see \n
 N/A
@@ -102,19 +102,19 @@ HI_S32 HI_UNF_I2C_GetCapability(HI_U32 *pu32I2cNum);
 
 /**
 The I2C device is not initialized.
-CNcomment:\brief ´´½¨Ò»Â·GpioI2c¡£CNend
+CNcomment:\brief åˆ›å»ºä¸€è·¯GpioI2cã€‚CNend
 
  \attention \n
 If the specified GPIO pins are used, this API fails to be called.\n
-CNcomment:Èç¹ûGpioÒÑ±»Õ¼ÓÃ»áÊ§°Ü\n CNend
+CNcomment:å¦‚æœGpioå·²è¢«å ç”¨ä¼šå¤±è´¥\n CNend
 
- \param[out] u32I2cNum  ID of the obtained I2C bus                            CNcomment:µÃµ½I2C×ÜÏßºÅ¡£CNend
- \param[in] u32SCLGpioNo  SCL Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:¹Ü½ÅºÅ£¬È¡Öµ·¶Î§Îª0¡«103£¬²»Í¬µÄĞ¾Æ¬ÀàĞÍ·¶Î§²»Ò»Ñù¡£CNend
- \param[in] u32SDAGpioNo  SDA Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:¹Ü½ÅºÅ£¬È¡Öµ·¶Î§Îª0¡«103£¬²»Í¬µÄĞ¾Æ¬ÀàĞÍ·¶Î§²»Ò»Ñù¡£CNend
- \retval 0 Success                                                           CNcomment:³É¹¦¡£CNend
- \retval ::HI_FAILURE	Create gpioi2c failed								CNcomment:Ê§°Ü¡£CNend
- \retval ::HI_ERR_I2C_NULL_PTR 		The pointer parameter is NULL			CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
- \retval ::HI_ERR_GPIO_INVALID_PARA  The parameter is invalid.               CNcomment:²ÎÊı·Ç·¨¡£CNend
+ \param[out] u32I2cNum  ID of the obtained I2C bus                            CNcomment:å¾—åˆ°I2Cæ€»çº¿å·ã€‚CNend
+ \param[in] u32SCLGpioNo  SCL Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:ç®¡è„šå·ï¼Œå–å€¼èŒƒå›´ä¸º0ï½103ï¼Œä¸åŒçš„èŠ¯ç‰‡ç±»å‹èŒƒå›´ä¸ä¸€æ ·ã€‚CNend
+ \param[in] u32SDAGpioNo  SDA Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:ç®¡è„šå·ï¼Œå–å€¼èŒƒå›´ä¸º0ï½103ï¼Œä¸åŒçš„èŠ¯ç‰‡ç±»å‹èŒƒå›´ä¸ä¸€æ ·ã€‚CNend
+ \retval 0 Success                                                           CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_FAILURE	Create gpioi2c failed								CNcomment:å¤±è´¥ã€‚CNend
+ \retval ::HI_ERR_I2C_NULL_PTR 		The pointer parameter is NULL			CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+ \retval ::HI_ERR_GPIO_INVALID_PARA  The parameter is invalid.               CNcomment:å‚æ•°éæ³•ã€‚CNend
  \see \n
 N/A
  */
@@ -122,16 +122,16 @@ HI_S32 HI_UNF_I2C_CreateGpioI2c(HI_U32 *pu32I2cNum, HI_U32 u32SCLGpioNo, HI_U32 
 
 /**
  \brief Destroys a inter-integrated circuit (I2C) channel that simulates the general-purpose input/output (GPIO) function.
-CNcomment:\brief Ïú»ÙÒ»Â·GpioI2c¡£CNend
+CNcomment:\brief é”€æ¯ä¸€è·¯GpioI2cã€‚CNend
 
  \attention \n
 If the I2C channel is not used, a code indicating success is returned.\n
-CNcomment:Èç¹û¸ÃGpioI2cÎ´Ê¹ÓÃ£¬Ö±½Ó·µ»Ø³É¹¦\n CNend
+CNcomment:å¦‚æœè¯¥GpioI2cæœªä½¿ç”¨ï¼Œç›´æ¥è¿”å›æˆåŠŸ\n CNend
 
- \param[in] u32I2cNum ID of the I2C bus to be destroyed        CNcomment:ÒªÏú»ÙµÄI2C×ÜÏßºÅ¡£CNend
- \retval 0  Success                                            CNcomment:³É¹¦¡£CNend
- \retval ::HI_FAILURE	Destroy gpioi2c failed				  CNcomment:Ê§°Ü¡£CNend
- \retval ::HI_ERR_GPIO_INVALID_PARA  The parameter is invalid. CNcomment:²ÎÊı·Ç·¨¡£CNend
+ \param[in] u32I2cNum ID of the I2C bus to be destroyed        CNcomment:è¦é”€æ¯çš„I2Cæ€»çº¿å·ã€‚CNend
+ \retval 0  Success                                            CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_FAILURE	Destroy gpioi2c failed				  CNcomment:å¤±è´¥ã€‚CNend
+ \retval ::HI_ERR_GPIO_INVALID_PARA  The parameter is invalid. CNcomment:å‚æ•°éæ³•ã€‚CNend
  \see \n
 N/A
  */
@@ -139,27 +139,27 @@ HI_S32 HI_UNF_I2C_DestroyGpioI2c(HI_U32 u32I2cNum);
 
 /**
  \brief Reads data by using the I2C bus.
-CNcomment:\brief Í¨¹ıI2C¶ÁÊı¾İ¡£CNend
+CNcomment:\brief é€šè¿‡I2Cè¯»æ•°æ®ã€‚CNend
 
  \attention \n
 N/A
- \param[in] u32I2cNum  I2C bus of the device to be read           CNcomment:Ëù¶ÁÈ¡Éè±¸Ê¹ÓÃµÄI2C×ÜÏß¡£CNend
- \param[in] u8DevAddress  Address of a device on the I2C bus      CNcomment:Éè±¸ÔÚI2C×ÜÏßÉÏµÄµØÖ·¡£CNend
- \param[in] u32RegAddr  On-chip offset address of a device        CNcomment:Éè±¸µÄÆ¬ÄÚÆ«ÒÆµØÖ·¡£CNend
- \param[in] u32RegAddrCount  Length of an on-chip offset address. CNcomment:Æ¬ÄÚÆ«ÒÆµØÖ·µÄ³¤¶Èµ¥Î»¡£CNend
-                      1: 8-bit sub address                       CNcomment:1£º±íÊ¾8bit×ÓµØÖ·£»CNend
-                      2: 16-bit sub address                      CNcomment:2£º±íÊ¾16bit×ÓµØÖ·£»CNend
-                      3: 24-bit sub address                      CNcomment:3£º±íÊ¾24bit×ÓµØÖ·£»CNend
-                      4: 32-bit sub address                      CNcomment:4£º±íÊ¾32bit×ÓµØÖ·¡£CNend
+ \param[in] u32I2cNum  I2C bus of the device to be read           CNcomment:æ‰€è¯»å–è®¾å¤‡ä½¿ç”¨çš„I2Cæ€»çº¿ã€‚CNend
+ \param[in] u8DevAddress  Address of a device on the I2C bus      CNcomment:è®¾å¤‡åœ¨I2Cæ€»çº¿ä¸Šçš„åœ°å€ã€‚CNend
+ \param[in] u32RegAddr  On-chip offset address of a device        CNcomment:è®¾å¤‡çš„ç‰‡å†…åç§»åœ°å€ã€‚CNend
+ \param[in] u32RegAddrCount  Length of an on-chip offset address. CNcomment:ç‰‡å†…åç§»åœ°å€çš„é•¿åº¦å•ä½ã€‚CNend
+                      1: 8-bit sub address                       CNcomment:1ï¼šè¡¨ç¤º8bitå­åœ°å€ï¼›CNend
+                      2: 16-bit sub address                      CNcomment:2ï¼šè¡¨ç¤º16bitå­åœ°å€ï¼›CNend
+                      3: 24-bit sub address                      CNcomment:3ï¼šè¡¨ç¤º24bitå­åœ°å€ï¼›CNend
+                      4: 32-bit sub address                      CNcomment:4ï¼šè¡¨ç¤º32bitå­åœ°å€ã€‚CNend
 
- \param[out] pu8Buf   Buffer for storing the data to be read                            CNcomment:¶ÁBuffer£¬´æ·Å¶ÁÈ¡Êı¾İ¡£CNend
- \param[in] u32Length  Length of the data to be read                                    CNcomment:Òª¶ÁÈ¡µÄÊı¾İ³¤¶È¡£CNend
- \retval 0 Success                                                                      CNcomment:³É¹¦¡£CNend
- \retval ::HI_FAILURE	Read data failed					  	CNcomment:Ê§°Ü¡£CNend
- \retval ::HI_ERR_I2C_NOT_INIT  The I2C device is not initialized.                      CNcomment:I2CÉè±¸Î´³õÊ¼»¯¡£CNend
- \retval ::HI_ERR_I2C_NULL_PTR  The I2C pointer is invalid.                        	   CNcomment:I2CÎŞĞ§Ö¸Õë¡£CNend
- \retval ::HI_ERR_I2C_INVALID_PARA  The I2C parameter is invalid.                       CNcomment:I2CÎŞĞ§²ÎÊı¡£CNend
- \retval ::HI_ERR_I2C_FAILED_READ  Data fails to be read by using the I2C bus.          CNcomment:I2C¶ÁÊı¾İÊ§°Ü¡£CNend
+ \param[out] pu8Buf   Buffer for storing the data to be read                            CNcomment:è¯»Bufferï¼Œå­˜æ”¾è¯»å–æ•°æ®ã€‚CNend
+ \param[in] u32Length  Length of the data to be read                                    CNcomment:è¦è¯»å–çš„æ•°æ®é•¿åº¦ã€‚CNend
+ \retval 0 Success                                                                      CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_FAILURE	Read data failed					  	CNcomment:å¤±è´¥ã€‚CNend
+ \retval ::HI_ERR_I2C_NOT_INIT  The I2C device is not initialized.                      CNcomment:I2Cè®¾å¤‡æœªåˆå§‹åŒ–ã€‚CNend
+ \retval ::HI_ERR_I2C_NULL_PTR  The I2C pointer is invalid.                        	   CNcomment:I2Cæ— æ•ˆæŒ‡é’ˆã€‚CNend
+ \retval ::HI_ERR_I2C_INVALID_PARA  The I2C parameter is invalid.                       CNcomment:I2Cæ— æ•ˆå‚æ•°ã€‚CNend
+ \retval ::HI_ERR_I2C_FAILED_READ  Data fails to be read by using the I2C bus.          CNcomment:I2Cè¯»æ•°æ®å¤±è´¥ã€‚CNend
  \see \n
 N/A
  */
@@ -168,27 +168,27 @@ HI_S32 HI_UNF_I2C_Read(HI_U32 u32I2cNum, HI_U8 u8DevAddress, HI_U32 u32RegAddr,
 
 /**
  \brief Writes data by using the I2C bus. That is, you can call this API to write data to the device mounted on the I2C bus through the I2C channel.
-CNcomment:\brief Í¨¹ıI2CĞ´Êı¾İ¡£Í¨¹ıI2CÍ¨µÀ£¬ÏòI2C×ÜÏßÉÏ¹Ò½ÓµÄÉè±¸½øĞĞĞ´²Ù×÷¡£CNend
+CNcomment:\brief é€šè¿‡I2Cå†™æ•°æ®ã€‚é€šè¿‡I2Cé€šé“ï¼Œå‘I2Cæ€»çº¿ä¸ŠæŒ‚æ¥çš„è®¾å¤‡è¿›è¡Œå†™æ“ä½œã€‚CNend
 
  \attention \n
 N/A
- \param[in] u32I2cNum  I2C bus of the device to be written         CNcomment:´ıĞ´Éè±¸Ê¹ÓÃµÄI2C×ÜÏß¡£CNend
- \param[in] u8DevAddress  Address of a device on the I2C bus       CNcomment:Éè±¸ÔÚI2C×ÜÏßÉÏµÄµØÖ·¡£CNend
- \param[in] u32RegAddr  On-chip offset address of a device         CNcomment:Éè±¸µÄÆ¬ÄÚÆ«ÒÆµØÖ·¡£CNend
- \param[in] u32RegAddrCount Length of an on-chip offset address.   CNcomment:Æ¬ÄÚÆ«ÒÆµØÖ·µÄ³¤¶Èµ¥Î»¡£CNend
-                    1: 8-bit sub address                          CNcomment:1£º±íÊ¾8bit×ÓµØÖ·£»CNend
-                    2: 16-bit sub address                         CNcomment:2£º±íÊ¾16bit×ÓµØÖ·£»CNend
-                    3: 24-bit sub address                         CNcomment:3£º±íÊ¾24bit×ÓµØÖ·£»CNend
-                    4: 32-bit sub address                         CNcomment:4£º±íÊ¾32bit×ÓµØÖ·¡£CNend
+ \param[in] u32I2cNum  I2C bus of the device to be written         CNcomment:å¾…å†™è®¾å¤‡ä½¿ç”¨çš„I2Cæ€»çº¿ã€‚CNend
+ \param[in] u8DevAddress  Address of a device on the I2C bus       CNcomment:è®¾å¤‡åœ¨I2Cæ€»çº¿ä¸Šçš„åœ°å€ã€‚CNend
+ \param[in] u32RegAddr  On-chip offset address of a device         CNcomment:è®¾å¤‡çš„ç‰‡å†…åç§»åœ°å€ã€‚CNend
+ \param[in] u32RegAddrCount Length of an on-chip offset address.   CNcomment:ç‰‡å†…åç§»åœ°å€çš„é•¿åº¦å•ä½ã€‚CNend
+                    1: 8-bit sub address                          CNcomment:1ï¼šè¡¨ç¤º8bitå­åœ°å€ï¼›CNend
+                    2: 16-bit sub address                         CNcomment:2ï¼šè¡¨ç¤º16bitå­åœ°å€ï¼›CNend
+                    3: 24-bit sub address                         CNcomment:3ï¼šè¡¨ç¤º24bitå­åœ°å€ï¼›CNend
+                    4: 32-bit sub address                         CNcomment:4ï¼šè¡¨ç¤º32bitå­åœ°å€ã€‚CNend
 
- \param[in]  pu8Buf   Buffer for storing the data to be written                         CNcomment:Ğ´Buffer£¬´æ·Å´ıĞ´ÈëÊı¾İ¡£CNend
- \param[in] u32Length  Length of the data to be written                                 CNcomment:ÒªĞ´ÈëµÄÊı¾İµÄ³¤¶È¡£CNend
- \retval 0  Success                                                                     CNcomment:³É¹¦¡£CNend
- \retval ::HI_FAILURE	Write data failed					  	CNcomment:Ê§°Ü¡£CNend
- \retval ::HI_ERR_I2C_NOT_INIT  The I2C device is not initialized.                      CNcomment:I2CÉè±¸Î´³õÊ¼»¯¡£CNend
- \retval ::HI_ERR_I2C_NULL_PTR  The I2C pointer is invalid.                        	   CNcomment:I2CÎŞĞ§Ö¸Õë¡£CNend
- \retval ::HI_ERR_I2C_INVALID_PARA  The I2C parameter is invalid.                       CNcomment:I2CÎŞĞ§²ÎÊı¡£CNend
- \retval ::HI_ERR_I2C_FAILED_WRITE  Data fails to be written by using the I2C bus.      CNcomment:I2CĞ´Êı¾İÊ§°Ü¡£CNend
+ \param[in]  pu8Buf   Buffer for storing the data to be written                         CNcomment:å†™Bufferï¼Œå­˜æ”¾å¾…å†™å…¥æ•°æ®ã€‚CNend
+ \param[in] u32Length  Length of the data to be written                                 CNcomment:è¦å†™å…¥çš„æ•°æ®çš„é•¿åº¦ã€‚CNend
+ \retval 0  Success                                                                     CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_FAILURE	Write data failed					  	CNcomment:å¤±è´¥ã€‚CNend
+ \retval ::HI_ERR_I2C_NOT_INIT  The I2C device is not initialized.                      CNcomment:I2Cè®¾å¤‡æœªåˆå§‹åŒ–ã€‚CNend
+ \retval ::HI_ERR_I2C_NULL_PTR  The I2C pointer is invalid.                        	   CNcomment:I2Cæ— æ•ˆæŒ‡é’ˆã€‚CNend
+ \retval ::HI_ERR_I2C_INVALID_PARA  The I2C parameter is invalid.                       CNcomment:I2Cæ— æ•ˆå‚æ•°ã€‚CNend
+ \retval ::HI_ERR_I2C_FAILED_WRITE  Data fails to be written by using the I2C bus.      CNcomment:I2Cå†™æ•°æ®å¤±è´¥ã€‚CNend
  \see \n
 N/A
  */
@@ -197,20 +197,20 @@ HI_S32 HI_UNF_I2C_Write(HI_U32 u32I2cNum, HI_U8 u8DevAddress, HI_U32 u32RegAddr,
 
 /**
  \brief Sets the transfer rate of the I2C bus.
-CNcomment:\brief ÉèÖÃI2CµÄ´«ÊäËÙÂÊ¡£CNend
+CNcomment:\brief è®¾ç½®I2Cçš„ä¼ è¾“é€Ÿç‡ã€‚CNend
 
  \attention \n
 Call this API Only be effect in standard i2c, gpio simulate i2c is noneffective.\n 
 If you do not call this API to set the transfer rate, the rate 100 kbit/s is used by default.\n
-CNcomment:´Ë½Ó¿Ú½ö¶Ô±ê×¼µÄi2cÍ¨µÀÓĞĞ§£¬¶Ôgpio Ä£Äâ i2c ÎŞĞ§¡£\nCNend
-CNcomment:Èç¹û²»µ÷ÓÃ´Ë½Ó¿Ú£¬ÏµÍ³²ÉÓÃ400Kbit/s×÷ÎªÈ±Ê¡ËÙÂÊ¡£\n CNend
+CNcomment:æ­¤æ¥å£ä»…å¯¹æ ‡å‡†çš„i2cé€šé“æœ‰æ•ˆï¼Œå¯¹gpio æ¨¡æ‹Ÿ i2c æ— æ•ˆã€‚\nCNend
+CNcomment:å¦‚æœä¸è°ƒç”¨æ­¤æ¥å£ï¼Œç³»ç»Ÿé‡‡ç”¨400Kbit/sä½œä¸ºç¼ºçœé€Ÿç‡ã€‚\n CNend
 
- \param[in] u32I2cNum  D of channel corresponding to the device to be written on the I2C bus                         CNcomment:ËùĞ´Éè±¸ÔÚI2C×ÜÏßÉÏµÄÍ¨µÀºÅ¡£CNend
- \param[in] enI2cRate  I2C clock rate. For details about the definition, see the description of ::HI_UNF_I2C_RATE_E. CNcomment:I2CÊ±ÖÓËÙÂÊ¡£º¬ÒåÇë²Î¿¼::HI_UNF_I2C_RATE_E¡£CNend
- \retval 0  Success                                                                                                  CNcomment:³É¹¦¡£CNend
- \retval ::HI_FAILURE	Set rate failed									   	     CNcomment:Ê§°Ü¡£CNend
- \retval ::HI_ERR_I2C_NOT_INIT  The I2C device is not initialized.                                                   CNcomment:I2CÉè±¸Î´³õÊ¼»¯¡£CNend
- \retval ::HI_ERR_I2C_INVALID_PARA  The I2C parameter is invalid.                                                    CNcomment:I2CÎŞĞ§²ÎÊı¡£CNend
+ \param[in] u32I2cNum  D of channel corresponding to the device to be written on the I2C bus                         CNcomment:æ‰€å†™è®¾å¤‡åœ¨I2Cæ€»çº¿ä¸Šçš„é€šé“å·ã€‚CNend
+ \param[in] enI2cRate  I2C clock rate. For details about the definition, see the description of ::HI_UNF_I2C_RATE_E. CNcomment:I2Cæ—¶é’Ÿé€Ÿç‡ã€‚å«ä¹‰è¯·å‚è€ƒ::HI_UNF_I2C_RATE_Eã€‚CNend
+ \retval 0  Success                                                                                                  CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_FAILURE	Set rate failed									   	     CNcomment:å¤±è´¥ã€‚CNend
+ \retval ::HI_ERR_I2C_NOT_INIT  The I2C device is not initialized.                                                   CNcomment:I2Cè®¾å¤‡æœªåˆå§‹åŒ–ã€‚CNend
+ \retval ::HI_ERR_I2C_INVALID_PARA  The I2C parameter is invalid.                                                    CNcomment:I2Cæ— æ•ˆå‚æ•°ã€‚CNend
  \see \n
 N/A
  */
@@ -218,20 +218,20 @@ HI_S32 HI_UNF_I2C_SetRate(HI_U32 u32I2cNum, HI_UNF_I2C_RATE_E enI2cRate);
 
 /**
  \brief Sets the transfer rate of the I2C bus.
-CNcomment:\brief ÉèÖÃI2CµÄ´«ÊäËÙÂÊ¡£CNend
+CNcomment:\brief è®¾ç½®I2Cçš„ä¼ è¾“é€Ÿç‡ã€‚CNend
 
  \attention \n
 Call this API Only be effect in standard i2c, gpio simulate i2c is noneffective.\n 
 If you do not call this API to set the transfer rate, the rate 100 kbit/s is used by default.\n
-CNcomment:´Ë½Ó¿Ú½ö¶Ô±ê×¼µÄi2cÍ¨µÀÓĞĞ§£¬¶Ôgpio Ä£Äâ i2c ÎŞĞ§¡£\n
-Èç¹û²»µ÷ÓÃ´Ë½Ó¿Ú£¬ÏµÍ³²ÉÓÃ400Kbit/s×÷ÎªÈ±Ê¡ËÙÂÊ¡£\n CNend
+CNcomment:æ­¤æ¥å£ä»…å¯¹æ ‡å‡†çš„i2cé€šé“æœ‰æ•ˆï¼Œå¯¹gpio æ¨¡æ‹Ÿ i2c æ— æ•ˆã€‚\n
+å¦‚æœä¸è°ƒç”¨æ­¤æ¥å£ï¼Œç³»ç»Ÿé‡‡ç”¨400Kbit/sä½œä¸ºç¼ºçœé€Ÿç‡ã€‚\n CNend
 
- \param[in] u32I2cNum  D of channel corresponding to the device to be written on the I2C bus                         CNcomment:ËùĞ´Éè±¸ÔÚI2C×ÜÏßÉÏµÄÍ¨µÀºÅ¡£CNend
- \param[in] u32I2cRate  I2C clock rate.  CNcomment:I2CÊ±ÖÓËÙÂÊ¡£CNend
- \retval 0  Success                                                                                                  CNcomment:³É¹¦¡£CNend
- \retval ::HI_FAILURE	Set rate failed									   	     CNcomment:Ê§°Ü¡£CNend
- \retval ::HI_ERR_I2C_NOT_INIT  The I2C device is not initialized.                                                   CNcomment:I2CÉè±¸Î´³õÊ¼»¯¡£CNend
- \retval ::HI_ERR_I2C_INVALID_PARA  The I2C parameter is invalid.                                                    CNcomment:I2CÎŞĞ§²ÎÊı¡£CNend
+ \param[in] u32I2cNum  D of channel corresponding to the device to be written on the I2C bus                         CNcomment:æ‰€å†™è®¾å¤‡åœ¨I2Cæ€»çº¿ä¸Šçš„é€šé“å·ã€‚CNend
+ \param[in] u32I2cRate  I2C clock rate.  CNcomment:I2Cæ—¶é’Ÿé€Ÿç‡ã€‚CNend
+ \retval 0  Success                                                                                                  CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_FAILURE	Set rate failed									   	     CNcomment:å¤±è´¥ã€‚CNend
+ \retval ::HI_ERR_I2C_NOT_INIT  The I2C device is not initialized.                                                   CNcomment:I2Cè®¾å¤‡æœªåˆå§‹åŒ–ã€‚CNend
+ \retval ::HI_ERR_I2C_INVALID_PARA  The I2C parameter is invalid.                                                    CNcomment:I2Cæ— æ•ˆå‚æ•°ã€‚CNend
  \see \n
 N/A
  */

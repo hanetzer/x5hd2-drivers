@@ -32,10 +32,10 @@ extern "C"{
 
 typedef struct hiCIRC_BUF_S
 {
-    volatile HI_U32      *pu32Write;  //´æ·Å¶ÁÖ¸ÕëÆ«ÒÆÁ¿µØÖ·
-    volatile HI_U32      *pu32Read;   //´æ·ÅĞ´Ö¸ÕëÆ«ÒÆÁ¿µØÖ·
-    volatile HI_U8       *pu8Data;   //DDR»º´æÆğÊ¼µØÖ·(ĞéÄâµØÖ·)
-    HI_U32      u32Lenght;   //Ñ­»·buffer³¤¶È
+    volatile HI_U32      *pu32Write;  //å­˜æ”¾è¯»æŒ‡é’ˆåç§»é‡åœ°å€
+    volatile HI_U32      *pu32Read;   //å­˜æ”¾å†™æŒ‡é’ˆåç§»é‡åœ°å€
+    volatile HI_U8       *pu8Data;   //DDRç¼“å­˜èµ·å§‹åœ°å€(è™šæ‹Ÿåœ°å€)
+    HI_U32      u32Lenght;   //å¾ªç¯bufferé•¿åº¦
 } CIRC_BUF_S;
 
 static inline HI_VOID CIRC_BUF_Init(CIRC_BUF_S *pstCb, 
@@ -70,8 +70,8 @@ static inline HI_U32 CIRC_BUF_QueryBusy(CIRC_BUF_S *pstCb)
     //TODO++++++++++++++
     //HI_ASSERT(NULL != pstCb);
 
-    /* ÏÈ´Ó¹²ÏíÄÚ´æÖĞÈ¡³öÍ·ĞÅÏ¢£¬±ÜÃâÊ¹ÓÃ¹ı³ÌÖĞ·¢Éú±ä»¯ */
-    u32ReadPos  = *(pstCb->pu32Read);         //È¡³ö¼Ä´æÆ÷µØÖ·ÀïÃæµÄÄÚÈİ
+    /* å…ˆä»å…±äº«å†…å­˜ä¸­å–å‡ºå¤´ä¿¡æ¯ï¼Œé¿å…ä½¿ç”¨è¿‡ç¨‹ä¸­å‘ç”Ÿå˜åŒ– */
+    u32ReadPos  = *(pstCb->pu32Read);         //å–å‡ºå¯„å­˜å™¨åœ°å€é‡Œé¢çš„å†…å®¹
     u32WritePos = *(pstCb->pu32Write);
 
 
@@ -94,7 +94,7 @@ static inline HI_U32 CIRC_BUF_QueryFree(CIRC_BUF_S *pstCb)
     //TODO++++++++++++++
     //HI_ASSERT(NULL != pstCb);
 
-    /* ÏÈ´Ó¹²ÏíÄÚ´æÖĞÈ¡³öÍ·ĞÅÏ¢£¬±ÜÃâÊ¹ÓÃ¹ı³ÌÖĞ·¢Éú±ä»¯ */
+    /* å…ˆä»å…±äº«å†…å­˜ä¸­å–å‡ºå¤´ä¿¡æ¯ï¼Œé¿å…ä½¿ç”¨è¿‡ç¨‹ä¸­å‘ç”Ÿå˜åŒ– */
     u32ReadPos  = *(pstCb->pu32Read);
     u32WritePos = *(pstCb->pu32Write);
 
@@ -108,7 +108,7 @@ static inline HI_U32 CIRC_BUF_QueryFree(CIRC_BUF_S *pstCb)
     }
 
     u32FreeLen = (u32FreeLen <= SIMPLE_CB_GAP) ? 0 : u32FreeLen - SIMPLE_CB_GAP;
-    /* Ñ­»·Buffer±ÜÃâĞ´Âú£¬·ñÔò¶Á·½ÏòÈÏÎªBufferÎª¿Õ */
+    /* å¾ªç¯Bufferé¿å…å†™æ»¡ï¼Œå¦åˆ™è¯»æ–¹å‘è®¤ä¸ºBufferä¸ºç©º */
     if(u32FreeLen>0)
         u32FreeLen -= 1;
     return u32FreeLen;
@@ -125,12 +125,12 @@ static inline HI_U32 CIRC_BUF_QueryReadPos(CIRC_BUF_S *pstCb)
 
 /*****************************************************************************
  Prototype       : CIRC_BUF_Read
- Description     : ´Ó¹²ÏíCBÖĞ¶ÁÈ¡Ö¸¶¨³¤¶ÈµÄÊı¾İ
- Input           : pstCb     ** CBµÄ¹ÜÀí½á¹¹
-                   pDest   ** ÓÃ»§¿Õ¼äÉêÇëÄÚ´æºóĞéÄâµØÖ·(ÎÄ¼ş)
-                   u32Len  ** Ï£Íû¶ÁÈ¡µÄÊı¾İ³¤¶È
+ Description     : ä»å…±äº«CBä¸­è¯»å–æŒ‡å®šé•¿åº¦çš„æ•°æ®
+ Input           : pstCb     ** CBçš„ç®¡ç†ç»“æ„
+                   pDest   ** ç”¨æˆ·ç©ºé—´ç”³è¯·å†…å­˜åè™šæ‹Ÿåœ°å€(æ–‡ä»¶)
+                   u32Len  ** å¸Œæœ›è¯»å–çš„æ•°æ®é•¿åº¦
  Output          : None
- Return Value    : ·µ»Ø³É¹¦¶ÁÈ¡µ½µÄÊı¾İ³¤¶È
+ Return Value    : è¿”å›æˆåŠŸè¯»å–åˆ°çš„æ•°æ®é•¿åº¦
 *****************************************************************************/
 static inline HI_U32 CIRC_BUF_Read(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32 u32Len)
 {
@@ -149,7 +149,7 @@ static inline HI_U32 CIRC_BUF_Read(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32 u32Le
     printk("pstCb->u32Lenght = %d, ", pstCb->u32Lenght);
 #endif
 
-    /* ÏÈ´Ó¹²ÏíÄÚ´æÖĞÈ¡³öÍ·ĞÅÏ¢£¬±ÜÃâÊ¹ÓÃ¹ı³ÌÖĞ·¢Éú±ä»¯ */
+    /* å…ˆä»å…±äº«å†…å­˜ä¸­å–å‡ºå¤´ä¿¡æ¯ï¼Œé¿å…ä½¿ç”¨è¿‡ç¨‹ä¸­å‘ç”Ÿå˜åŒ– */
     u32ReadPos  = *(pstCb->pu32Read);
     u32WritePos = *(pstCb->pu32Write);
 
@@ -158,12 +158,12 @@ static inline HI_U32 CIRC_BUF_Read(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32 u32Le
     {
         if (u32WritePos >= u32ReadPos + u32Len)
         {
-            /* Èç¹ûÊ£ÓàÊı¾İ½Ï¶à£¬ÔòÖ»¶ÁÈ¡Ò»²¿·Ö */
+            /* å¦‚æœå‰©ä½™æ•°æ®è¾ƒå¤šï¼Œåˆ™åªè¯»å–ä¸€éƒ¨åˆ† */
             u32RdLen[0] = u32Len;
         }
         else
         {
-            /* Èç¹ûÊ£ÓàÊı¾İ²»×ã£¬ÔòÈ«²¿¶Á×ß */
+            /* å¦‚æœå‰©ä½™æ•°æ®ä¸è¶³ï¼Œåˆ™å…¨éƒ¨è¯»èµ° */
             u32RdLen[0] = u32WritePos - u32ReadPos;
         }
     }
@@ -171,20 +171,20 @@ static inline HI_U32 CIRC_BUF_Read(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32 u32Le
     {
         if ( u32ReadPos + u32Len <= pstCb->u32Lenght)
         {
-            /* Èç¹û²»ĞèÒªÕÛ·µ£¬ÔòÖ±½Ó¶ÁÈ¡ËùĞèµÄÊı¾İ */
+            /* å¦‚æœä¸éœ€è¦æŠ˜è¿”ï¼Œåˆ™ç›´æ¥è¯»å–æ‰€éœ€çš„æ•°æ® */
             u32RdLen[0] = u32Len;
         }
         else
         {
-            /* Èç¹ûĞèÒªÕÛ·µ£¬ÔòÏÈ¶ÁÈ¡Î²²¿µÄÊı¾İ */
+            /* å¦‚æœéœ€è¦æŠ˜è¿”ï¼Œåˆ™å…ˆè¯»å–å°¾éƒ¨çš„æ•°æ® */
             u32RdLen[0] = pstCb->u32Lenght - u32ReadPos;
 
-            /* ÖØĞÂÕÛ·µµ½Í·£¬¶ÁÈ¡Ê£ÓàµÄ²¿·ÖÊı¾İ */
+            /* é‡æ–°æŠ˜è¿”åˆ°å¤´ï¼Œè¯»å–å‰©ä½™çš„éƒ¨åˆ†æ•°æ® */
             u32RdPos[1] = 0;
             u32RdLen[1] = u32Len - u32RdLen[0];
             if(u32WritePos < u32RdLen[1])
             {
-                /* Èç¹ûÊ£ÓàÊı¾İ²»×ã£¬Ôò¶ÁÈ¡È«²¿Êı¾İ */
+                /* å¦‚æœå‰©ä½™æ•°æ®ä¸è¶³ï¼Œåˆ™è¯»å–å…¨éƒ¨æ•°æ® */
                 u32RdLen[1] = u32WritePos;
             }
         }
@@ -201,24 +201,24 @@ static inline HI_U32 CIRC_BUF_Read(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32 u32Le
         u32ReadPos = u32RdPos[i] + u32RdLen[i];
     }
 
-    /* ½«¶ÁÖ¸ÕëĞ´»ØBufferÍ· */
+    /* å°†è¯»æŒ‡é’ˆå†™å›Bufferå¤´ */
     if (u32ReadPos == pstCb->u32Lenght) u32ReadPos = 0;
     
     *(pstCb->pu32Read) = u32ReadPos;
 
-    /* ·µ»ØÊµ¼Ê¶ÁÈ¡µÄ³¤¶È */
+    /* è¿”å›å®é™…è¯»å–çš„é•¿åº¦ */
     return u32RdLen[0] + u32RdLen[1];
 }
 
 #ifdef HI_SND_CAST_SUPPORT
 /*****************************************************************************
  Prototype       : CIRC_BUF_CastRead
- Description     : ´Ó¹²ÏíCBÖĞ¶ÁÈ¡Ö¸¶¨³¤¶ÈµÄÊı¾İ
- Input           : pstCb     ** CBµÄ¹ÜÀí½á¹¹
-                   pu32DataOffset   ** »ñÈ¡Êı¾İµÄÆ«ÒÆ
-                   u32Len  ** Ï£Íû¶ÁÈ¡µÄÊı¾İ³¤¶È
+ Description     : ä»å…±äº«CBä¸­è¯»å–æŒ‡å®šé•¿åº¦çš„æ•°æ®
+ Input           : pstCb     ** CBçš„ç®¡ç†ç»“æ„
+                   pu32DataOffset   ** è·å–æ•°æ®çš„åç§»
+                   u32Len  ** å¸Œæœ›è¯»å–çš„æ•°æ®é•¿åº¦
  Output          : None
- Return Value    : ·µ»Ø³É¹¦¶ÁÈ¡µ½µÄÊı¾İ³¤¶È
+ Return Value    : è¿”å›æˆåŠŸè¯»å–åˆ°çš„æ•°æ®é•¿åº¦
 *****************************************************************************/
 static inline HI_U32 CIRC_BUF_CastRead(CIRC_BUF_S *pstCb, HI_U32 *pu32DataOffset, HI_U32 u32Len)
 {
@@ -232,7 +232,7 @@ static inline HI_U32 CIRC_BUF_CastRead(CIRC_BUF_S *pstCb, HI_U32 *pu32DataOffset
     printk("pstCb->u32Lenght = %d, ", pstCb->u32Lenght);
 #endif
 
-    /* ÏÈ´Ó¹²ÏíÄÚ´æÖĞÈ¡³öÍ·ĞÅÏ¢£¬±ÜÃâÊ¹ÓÃ¹ı³ÌÖĞ·¢Éú±ä»¯ */
+    /* å…ˆä»å…±äº«å†…å­˜ä¸­å–å‡ºå¤´ä¿¡æ¯ï¼Œé¿å…ä½¿ç”¨è¿‡ç¨‹ä¸­å‘ç”Ÿå˜åŒ– */
     u32ReadPos  = *(pstCb->pu32Read);
     u32WritePos = *(pstCb->pu32Write);
 
@@ -241,7 +241,7 @@ static inline HI_U32 CIRC_BUF_CastRead(CIRC_BUF_S *pstCb, HI_U32 *pu32DataOffset
     {
         if (u32WritePos >= u32ReadPos + u32Len)
         {
-            /* Èç¹ûÊ£ÓàÊı¾İ½Ï¶à£¬ÔòÖ»¶ÁÈ¡Ò»²¿·Ö */
+            /* å¦‚æœå‰©ä½™æ•°æ®è¾ƒå¤šï¼Œåˆ™åªè¯»å–ä¸€éƒ¨åˆ† */
             u32RdLen[0] = u32Len;
         }
         else
@@ -254,20 +254,20 @@ static inline HI_U32 CIRC_BUF_CastRead(CIRC_BUF_S *pstCb, HI_U32 *pu32DataOffset
     {
         if ( u32ReadPos + u32Len <= pstCb->u32Lenght)
         {
-            /* Èç¹û²»ĞèÒªÕÛ·µ£¬ÔòÖ±½Ó¶ÁÈ¡ËùĞèµÄÊı¾İ */
+            /* å¦‚æœä¸éœ€è¦æŠ˜è¿”ï¼Œåˆ™ç›´æ¥è¯»å–æ‰€éœ€çš„æ•°æ® */
             u32RdLen[0] = u32Len;
         }
         else
         {
-            /* Èç¹ûĞèÒªÕÛ·µ£¬ÔòÏÈ¶ÁÈ¡Î²²¿µÄÊı¾İ */
+            /* å¦‚æœéœ€è¦æŠ˜è¿”ï¼Œåˆ™å…ˆè¯»å–å°¾éƒ¨çš„æ•°æ® */
             u32RdLen[0] = pstCb->u32Lenght - u32ReadPos;
 
-            /* ÖØĞÂÕÛ·µµ½Í·£¬¶ÁÈ¡Ê£ÓàµÄ²¿·ÖÊı¾İ */
+            /* é‡æ–°æŠ˜è¿”åˆ°å¤´ï¼Œè¯»å–å‰©ä½™çš„éƒ¨åˆ†æ•°æ® */
             u32RdPos[1] = 0;
             u32RdLen[1] = u32Len - u32RdLen[0];
             if(u32WritePos < u32RdLen[1])
             {
-                /* Èç¹ûÊ£ÓàÊı¾İ²»×ã£¬Ôò¶ÁÈ¡È«²¿Êı¾İ */
+                /* å¦‚æœå‰©ä½™æ•°æ®ä¸è¶³ï¼Œåˆ™è¯»å–å…¨éƒ¨æ•°æ® */
                 *pu32DataOffset = 0;
                 return 0;
             }
@@ -281,11 +281,11 @@ static inline HI_U32 CIRC_BUF_CastRead(CIRC_BUF_S *pstCb, HI_U32 *pu32DataOffset
 
 /*****************************************************************************
  Prototype       : CIRC_BUF_CastRelese
- Description     : ´Ó¹²ÏíCBÖĞÊÍ·ÅÖ¸¶¨³¤¶ÈµÄÊı¾İ
- Input           : pstCb     ** CBµÄ¹ÜÀí½á¹¹
-                   u32Len  ** Ï£ÍûÊÍ·ÅµÄÊı¾İ³¤¶È
+ Description     : ä»å…±äº«CBä¸­é‡Šæ”¾æŒ‡å®šé•¿åº¦çš„æ•°æ®
+ Input           : pstCb     ** CBçš„ç®¡ç†ç»“æ„
+                   u32Len  ** å¸Œæœ›é‡Šæ”¾çš„æ•°æ®é•¿åº¦
  Output          : None
- Return Value    : ·µ»Ø³É¹¦ÊÍ·Åµ½µÄÊı¾İ³¤¶È
+ Return Value    : è¿”å›æˆåŠŸé‡Šæ”¾åˆ°çš„æ•°æ®é•¿åº¦
 *****************************************************************************/
 static inline HI_U32 CIRC_BUF_CastRelese(CIRC_BUF_S *pstCb, HI_U32 u32Len)
 {
@@ -303,7 +303,7 @@ static inline HI_U32 CIRC_BUF_CastRelese(CIRC_BUF_S *pstCb, HI_U32 u32Len)
     printk("pstCb->u32Lenght = %d, ", pstCb->u32Lenght);
 #endif
 
-    /* ÏÈ´Ó¹²ÏíÄÚ´æÖĞÈ¡³öÍ·ĞÅÏ¢£¬±ÜÃâÊ¹ÓÃ¹ı³ÌÖĞ·¢Éú±ä»¯ */
+    /* å…ˆä»å…±äº«å†…å­˜ä¸­å–å‡ºå¤´ä¿¡æ¯ï¼Œé¿å…ä½¿ç”¨è¿‡ç¨‹ä¸­å‘ç”Ÿå˜åŒ– */
     u32ReadPos  = *(pstCb->pu32Read);
     u32WritePos = *(pstCb->pu32Write);
     u32RdPos[0] = u32ReadPos;
@@ -311,12 +311,12 @@ static inline HI_U32 CIRC_BUF_CastRelese(CIRC_BUF_S *pstCb, HI_U32 u32Len)
     {
         if (u32WritePos >= u32ReadPos + u32Len)
         {
-            /* Èç¹ûÊ£ÓàÊı¾İ½Ï¶à£¬ÔòÖ»¶ÁÈ¡Ò»²¿·Ö */
+            /* å¦‚æœå‰©ä½™æ•°æ®è¾ƒå¤šï¼Œåˆ™åªè¯»å–ä¸€éƒ¨åˆ† */
             u32RdLen[0] = u32Len;
         }
         else
         {
-            /* Èç¹ûÊ£ÓàÊı¾İ²»×ã£¬ÔòÈ«²¿¶Á×ß */
+            /* å¦‚æœå‰©ä½™æ•°æ®ä¸è¶³ï¼Œåˆ™å…¨éƒ¨è¯»èµ° */
             u32RdLen[0] = u32WritePos - u32ReadPos;
         }
     }
@@ -325,20 +325,20 @@ static inline HI_U32 CIRC_BUF_CastRelese(CIRC_BUF_S *pstCb, HI_U32 u32Len)
 
         if ( u32ReadPos + u32Len <= pstCb->u32Lenght)
         {
-            /* Èç¹û²»ĞèÒªÕÛ·µ£¬ÔòÖ±½Ó¶ÁÈ¡ËùĞèµÄÊı¾İ */
+            /* å¦‚æœä¸éœ€è¦æŠ˜è¿”ï¼Œåˆ™ç›´æ¥è¯»å–æ‰€éœ€çš„æ•°æ® */
             u32RdLen[0] = u32Len;
         }
         else
         {
-            /* Èç¹ûĞèÒªÕÛ·µ£¬ÔòÏÈ¶ÁÈ¡Î²²¿µÄÊı¾İ */
+            /* å¦‚æœéœ€è¦æŠ˜è¿”ï¼Œåˆ™å…ˆè¯»å–å°¾éƒ¨çš„æ•°æ® */
             u32RdLen[0] = pstCb->u32Lenght - u32ReadPos;
             //printk("\nCIRC_BUF_CastRelese    7 \n");
-            /* ÖØĞÂÕÛ·µµ½Í·£¬¶ÁÈ¡Ê£ÓàµÄ²¿·ÖÊı¾İ */
+            /* é‡æ–°æŠ˜è¿”åˆ°å¤´ï¼Œè¯»å–å‰©ä½™çš„éƒ¨åˆ†æ•°æ® */
             u32RdPos[1] = 0;
             u32RdLen[1] = u32Len - u32RdLen[0];
             if(u32WritePos < u32RdLen[1])
             {
-                /* Èç¹ûÊ£ÓàÊı¾İ²»×ã£¬Ôò¶ÁÈ¡È«²¿Êı¾İ */
+                /* å¦‚æœå‰©ä½™æ•°æ®ä¸è¶³ï¼Œåˆ™è¯»å–å…¨éƒ¨æ•°æ® */
                 u32RdLen[1] = u32WritePos;
             }
         }
@@ -352,12 +352,12 @@ static inline HI_U32 CIRC_BUF_CastRelese(CIRC_BUF_S *pstCb, HI_U32 u32Len)
         u32ReadPos = u32RdPos[i] + u32RdLen[i];
     }
 
-    /* ½«¶ÁÖ¸ÕëĞ´»ØBufferÍ· */
+    /* å°†è¯»æŒ‡é’ˆå†™å›Bufferå¤´ */
     if (u32ReadPos == pstCb->u32Lenght) u32ReadPos = 0;
     
     *(pstCb->pu32Read) = u32ReadPos;
     //printk(" release : 0x%x\n", (u32RdLen[0] + u32RdLen[1]));
-    /* ·µ»ØÊµ¼Ê¶ÁÈ¡µÄ³¤¶È */
+    /* è¿”å›å®é™…è¯»å–çš„é•¿åº¦ */
     return u32RdLen[0] + u32RdLen[1];
 }
 #endif
@@ -375,7 +375,7 @@ static inline HI_U32 CIRC_BUF_Write(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32 u32L
     //HI_ASSERT(NULL != pstCb);
     //HI_ASSERT(NULL != pDest); 
 
-    /* ÏÈ´Ó¹²ÏíÄÚ´æÖĞÈ¡³öÍ·ĞÅÏ¢£¬±ÜÃâÊ¹ÓÃ¹ı³ÌÖĞ·¢Éú±ä»¯ */
+    /* å…ˆä»å…±äº«å†…å­˜ä¸­å–å‡ºå¤´ä¿¡æ¯ï¼Œé¿å…ä½¿ç”¨è¿‡ç¨‹ä¸­å‘ç”Ÿå˜åŒ– */
     u32ReadPos  = *(pstCb->pu32Read);
     u32WritePos = *(pstCb->pu32Write);
     
@@ -414,11 +414,11 @@ static inline HI_U32 CIRC_BUF_Write(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32 u32L
         u32WritePos = u32WtPos[i] + u32WtLen[i];
     }
 
-    /* ½«¶ÁÖ¸ÕëĞ´»ØBufferÍ· */
+    /* å°†è¯»æŒ‡é’ˆå†™å›Bufferå¤´ */
     if (u32WritePos == pstCb->u32Lenght) u32WritePos = 0;
     *(pstCb->pu32Write) = u32WritePos;
 
-    /* ·µ»ØÊµ¼Ê¶ÁÈ¡µÄ³¤¶È */
+    /* è¿”å›å®é™…è¯»å–çš„é•¿åº¦ */
     return u32WtLen[0] + u32WtLen[1];
 }
 
@@ -435,7 +435,7 @@ static inline HI_U32 CIRC_BUF_UpdateRptr(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32
     HI_U32  u32ReadPos, u32WritePos;
 
 
-    /* ÏÈ´Ó¹²ÏíÄÚ´æÖĞÈ¡³öÍ·ĞÅÏ¢£¬±ÜÃâÊ¹ÓÃ¹ı³ÌÖĞ·¢Éú±ä»¯ */
+    /* å…ˆä»å…±äº«å†…å­˜ä¸­å–å‡ºå¤´ä¿¡æ¯ï¼Œé¿å…ä½¿ç”¨è¿‡ç¨‹ä¸­å‘ç”Ÿå˜åŒ– */
     u32ReadPos  = *(pstCb->pu32Read);
     u32WritePos = *(pstCb->pu32Write);
 
@@ -444,12 +444,12 @@ static inline HI_U32 CIRC_BUF_UpdateRptr(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32
     {
         if (u32WritePos >= u32ReadPos + u32Len)
         {
-            /* Èç¹ûÊ£ÓàÊı¾İ½Ï¶à£¬ÔòÖ»¶ÁÈ¡Ò»²¿·Ö */
+            /* å¦‚æœå‰©ä½™æ•°æ®è¾ƒå¤šï¼Œåˆ™åªè¯»å–ä¸€éƒ¨åˆ† */
             u32RdLen[0] = u32Len;
         }
         else
         {
-            /* Èç¹ûÊ£ÓàÊı¾İ²»×ã£¬ÔòÈ«²¿¶Á×ß */
+            /* å¦‚æœå‰©ä½™æ•°æ®ä¸è¶³ï¼Œåˆ™å…¨éƒ¨è¯»èµ° */
             u32RdLen[0] = u32WritePos - u32ReadPos;
         }
     }
@@ -457,20 +457,20 @@ static inline HI_U32 CIRC_BUF_UpdateRptr(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32
     {
         if ( u32ReadPos + u32Len <= pstCb->u32Lenght)
         {
-            /* Èç¹û²»ĞèÒªÕÛ·µ£¬ÔòÖ±½Ó¶ÁÈ¡ËùĞèµÄÊı¾İ */
+            /* å¦‚æœä¸éœ€è¦æŠ˜è¿”ï¼Œåˆ™ç›´æ¥è¯»å–æ‰€éœ€çš„æ•°æ® */
             u32RdLen[0] = u32Len;
         }
         else
         {
-            /* Èç¹ûĞèÒªÕÛ·µ£¬ÔòÏÈ¶ÁÈ¡Î²²¿µÄÊı¾İ */
+            /* å¦‚æœéœ€è¦æŠ˜è¿”ï¼Œåˆ™å…ˆè¯»å–å°¾éƒ¨çš„æ•°æ® */
             u32RdLen[0] = pstCb->u32Lenght - u32ReadPos;
 
-            /* ÖØĞÂÕÛ·µµ½Í·£¬¶ÁÈ¡Ê£ÓàµÄ²¿·ÖÊı¾İ */
+            /* é‡æ–°æŠ˜è¿”åˆ°å¤´ï¼Œè¯»å–å‰©ä½™çš„éƒ¨åˆ†æ•°æ® */
             u32RdPos[1] = 0;
             u32RdLen[1] = u32Len - u32RdLen[0];
             if(u32WritePos < u32RdLen[1])
             {
-                /* Èç¹ûÊ£ÓàÊı¾İ²»×ã£¬Ôò¶ÁÈ¡È«²¿Êı¾İ */
+                /* å¦‚æœå‰©ä½™æ•°æ®ä¸è¶³ï¼Œåˆ™è¯»å–å…¨éƒ¨æ•°æ® */
                 u32RdLen[1] = u32WritePos;
             }
         }
@@ -483,12 +483,12 @@ static inline HI_U32 CIRC_BUF_UpdateRptr(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32
         u32ReadPos = u32RdPos[i] + u32RdLen[i];
     }
 
-    /* ½«¶ÁÖ¸ÕëĞ´»ØBufferÍ· */
+    /* å°†è¯»æŒ‡é’ˆå†™å›Bufferå¤´ */
     if (u32ReadPos == pstCb->u32Lenght) u32ReadPos = 0;
     
     *(pstCb->pu32Read) = u32ReadPos;
 
-    /* ·µ»ØÊµ¼Ê¶ÁÈ¡µÄ³¤¶È */
+    /* è¿”å›å®é™…è¯»å–çš„é•¿åº¦ */
     return u32RdLen[0] + u32RdLen[1];
 }
 
@@ -503,7 +503,7 @@ static inline HI_U32 CIRC_BUF_UpdateWptr(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32
     //TODO++++++++++++++
     //HI_ASSERT(NULL != pstCb);
 
-    /* ÏÈ´Ó¹²ÏíÄÚ´æÖĞÈ¡³öÍ·ĞÅÏ¢£¬±ÜÃâÊ¹ÓÃ¹ı³ÌÖĞ·¢Éú±ä»¯ */
+    /* å…ˆä»å…±äº«å†…å­˜ä¸­å–å‡ºå¤´ä¿¡æ¯ï¼Œé¿å…ä½¿ç”¨è¿‡ç¨‹ä¸­å‘ç”Ÿå˜åŒ– */
     u32ReadPos  = *(pstCb->pu32Read);
     u32WritePos = *(pstCb->pu32Write);
     
@@ -534,11 +534,11 @@ static inline HI_U32 CIRC_BUF_UpdateWptr(CIRC_BUF_S *pstCb, HI_U8 *pDest, HI_U32
         u32WritePos = u32WtPos[i] + u32WtLen[i];
     }
 
-    /* ½«¶ÁÖ¸ÕëĞ´»ØBufferÍ· */
+    /* å°†è¯»æŒ‡é’ˆå†™å›Bufferå¤´ */
     if (u32WritePos == pstCb->u32Lenght) u32WritePos = 0;
     *(pstCb->pu32Write) = u32WritePos;
 
-    /* ·µ»ØÊµ¼Ê¶ÁÈ¡µÄ³¤¶È */
+    /* è¿”å›å®é™…è¯»å–çš„é•¿åº¦ */
     return u32WtLen[0] + u32WtLen[1];
 }
 
@@ -555,7 +555,7 @@ static inline HI_U32 CIRC_BUF_ALSA_UpdateWptr(CIRC_BUF_S *pstCb, HI_U32 u32Len)
     //TODO++++++++++++++
     //HI_ASSERT(NULL != pstCb);
 
-    /* ÏÈ´Ó¹²ÏíÄÚ´æÖĞÈ¡³öÍ·ĞÅÏ¢£¬±ÜÃâÊ¹ÓÃ¹ı³ÌÖĞ·¢Éú±ä»¯ */
+    /* å…ˆä»å…±äº«å†…å­˜ä¸­å–å‡ºå¤´ä¿¡æ¯ï¼Œé¿å…ä½¿ç”¨è¿‡ç¨‹ä¸­å‘ç”Ÿå˜åŒ– */
     u32ReadPos  = *(pstCb->pu32Read);
     u32WritePos = *(pstCb->pu32Write);
  #if 1   
@@ -592,14 +592,14 @@ static inline HI_U32 CIRC_BUF_ALSA_UpdateWptr(CIRC_BUF_S *pstCb, HI_U32 u32Len)
         u32WritePos = u32WtPos[i] + u32WtLen[i];
     }
 
-    /* ½«¶ÁÖ¸ÕëĞ´»ØBufferÍ· */
+    /* å°†è¯»æŒ‡é’ˆå†™å›Bufferå¤´ */
     if (u32WritePos == pstCb->u32Lenght) u32WritePos = 0;
 #endif
     *(pstCb->pu32Write) = u32WritePos;
 
     //printk("\n\n  u32WritePos=0x%x   \n\n", u32WritePos);
 
-    /* ·µ»ØÊµ¼Ê¶ÁÈ¡µÄ³¤¶È */
+    /* è¿”å›å®é™…è¯»å–çš„é•¿åº¦ */
     return u32WtLen[0] + u32WtLen[1];
 }
 

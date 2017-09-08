@@ -87,7 +87,7 @@ static int h263_parse(AVCodecParserContext *s,
 #endif
 
 /*guoshan + 00101841 2010811*/
-/* ÐÂÔöº¯Êý£ºfind sorenson sparkÖ¡ */
+/* æ–°å¢žå‡½æ•°ï¼šfind sorenson sparkå¸§ */
 int sorenson_spark_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size){
 	int vop_found, i;
 	uint32_t state;
@@ -132,7 +132,7 @@ int sorenson_spark_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_
 
 
 /*guoshan + 00101841 20100415*/
-/* ÐÂÔöº¯Êý£º½âÎöÒ»Ö¡ÍêÕûµÄ263ÂëÁ÷ */
+/* æ–°å¢žå‡½æ•°ï¼šè§£æžä¸€å¸§å®Œæ•´çš„263ç æµ */
 int H263_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf, unsigned int *puiOutBufSize,const uint8_t *pucInBuf, unsigned int uiInBufSize, int *piLength)
 {
 	int iRet = IMEDIA_RET_SUCCESS;
@@ -192,7 +192,7 @@ int H263_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf
 		return iRet;
 	}
 
-	/* Èç¹ûµ±Ç°½âÎöÖ¡ÔÚÇ°Ò»¸öbufferµÄ±ß½ç£¬Ôòµ±Ç°bufferµÄ½âÎöÓÃµôµÄ×Ö½ÚÊýÎª0 */
+	/* å¦‚æžœå½“å‰è§£æžå¸§åœ¨å‰ä¸€ä¸ªbufferçš„è¾¹ç•Œï¼Œåˆ™å½“å‰bufferçš„è§£æžç”¨æŽ‰çš„å­—èŠ‚æ•°ä¸º0 */
 	if(0 > iBytesConsumed)
 	{
 		iBytesConsumed = 0;
@@ -207,7 +207,7 @@ int H263_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf
 
 
 /*guoshan + 00101841 20100811*/
-/* ÐÂÔöº¯Êý£º½âÎöÒ»Ö¡ÍêÕûµÄsorenson sparkÂëÁ÷*/
+/* æ–°å¢žå‡½æ•°ï¼šè§£æžä¸€å¸§å®Œæ•´çš„sorenson sparkç æµ*/
 int Sorenson_Spark_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf, unsigned int *puiOutBufSize,const uint8_t *pucInBuf, unsigned int uiInBufSize, int *piLength)
 {
 	int iRet = IMEDIA_RET_SUCCESS;
@@ -267,7 +267,7 @@ int Sorenson_Spark_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t *
 		return iRet;
 	}
 
-	/* Èç¹ûµ±Ç°½âÎöÖ¡ÔÚÇ°Ò»¸öbufferµÄ±ß½ç£¬Ôòµ±Ç°bufferµÄ½âÎöÓÃµôµÄ×Ö½ÚÊýÎª0 */
+	/* å¦‚æžœå½“å‰è§£æžå¸§åœ¨å‰ä¸€ä¸ªbufferçš„è¾¹ç•Œï¼Œåˆ™å½“å‰bufferçš„è§£æžç”¨æŽ‰çš„å­—èŠ‚æ•°ä¸º0 */
 	if(0 > iBytesConsumed)
 	{
 		iBytesConsumed = 0;

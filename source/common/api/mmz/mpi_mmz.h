@@ -28,34 +28,34 @@ extern "C" {
 
 /*malloc memory for mmz and map to user-state address, bufname and bufsize used to input,
 	physic address and user-state used to output*/
-/*CNcomment: ÉêÇëmmzÄÚ´æ£¬²¢Ó³ÉäÓÃ»§Ì¬µØÖ·,bufnameºÍbufsize×÷ÎªÊäÈë, ÎïÀíµØÖ·ºÍÓÃ»§Ì¬ĞéÄâµØÖ·×÷ÎªÊä³ö */
+/*CNcomment: ç”³è¯·mmzå†…å­˜ï¼Œå¹¶æ˜ å°„ç”¨æˆ·æ€åœ°å€,bufnameå’Œbufsizeä½œä¸ºè¾“å…¥, ç‰©ç†åœ°å€å’Œç”¨æˆ·æ€è™šæ‹Ÿåœ°å€ä½œä¸ºè¾“å‡º */
 HI_S32 HI_MPI_MMZ_Malloc(HI_MMZ_BUF_S *pstBuf);
 
 /*free user-state map, release mmz memory, make sure that physic address, user-state address and lengh is right*/
-/*CNcomment: ½â³ıÓÃ»§Ì¬µØÖ·µÄÓ³Éä£¬²¢ÊÍ·ÅmmzÄÚ´æ,±£Ö¤´«ÈëµÄÎïÀíµØÖ·¡¢ÓÃ»§Ì¬ĞéÄâµØÖ·ºÍ³¤¶ÈÕıÈ·*/
+/*CNcomment: è§£é™¤ç”¨æˆ·æ€åœ°å€çš„æ˜ å°„ï¼Œå¹¶é‡Šæ”¾mmzå†…å­˜,ä¿è¯ä¼ å…¥çš„ç‰©ç†åœ°å€ã€ç”¨æˆ·æ€è™šæ‹Ÿåœ°å€å’Œé•¿åº¦æ­£ç¡®*/
 HI_S32 HI_MPI_MMZ_Free(HI_MMZ_BUF_S *pstBuf);
 
 /*malloc mmz memory for appointed mmz name, return physic address*/
-/*CNcomment: Ö¸¶¨mmzµÄÃû×ÖÉêÇëmmzÄÚ´æ£¬·µ»ØÎïÀíµØÖ·*/
+/*CNcomment: æŒ‡å®šmmzçš„åå­—ç”³è¯·mmzå†…å­˜ï¼Œè¿”å›ç‰©ç†åœ°å€*/
 HI_VOID *HI_MPI_MMZ_New(HI_U32 u32Size , HI_U32 u32Align, HI_CHAR *ps8MMZName, HI_CHAR *ps8MMBName);
 
-/*CNcomment: ÊÍ·ÅmmzÄÚ´æ */
+/*CNcomment: é‡Šæ”¾mmzå†…å­˜ */
 HI_S32 HI_MPI_MMZ_Delete(HI_U32 u32PhysAddr);
 
 /*get physic address accordint to virtual address*/
-/**CNcomment:  ¸ù¾İĞéÄâµØÖ·£¬»ñÈ¡¶ÔÓ¦µÄÎïÀíµØÖ· */
+/**CNcomment:  æ ¹æ®è™šæ‹Ÿåœ°å€ï¼Œè·å–å¯¹åº”çš„ç‰©ç†åœ°å€ */
 HI_S32 HI_MPI_MMZ_GetPhyAddr(HI_VOID *pRefAddr, HI_U32 *pu32PhyAddr, HI_U32 *pu32Size);
 
 /*map physic address of mmz memory to user-state virtual address, can appoint whether cached*/
-/**CNcomment:  ½«mmzÉêÇëµÄÎïÀíµØÖ·Ó³Éä³ÉÓÃ»§Ì¬ĞéÄâµØÖ·£¬¿ÉÒÔÖ¸¶¨ÊÇ·ñcached*/
+/**CNcomment:  å°†mmzç”³è¯·çš„ç‰©ç†åœ°å€æ˜ å°„æˆç”¨æˆ·æ€è™šæ‹Ÿåœ°å€ï¼Œå¯ä»¥æŒ‡å®šæ˜¯å¦cached*/
 HI_VOID *HI_MPI_MMZ_Map(HI_U32 u32PhysAddr, HI_U32 u32Cached);
 
 /*unmap user-state address of mmz memory*/
-/**CNcomment:  ½â³ımmzÄÚ´æÓÃ»§Ì¬µØÖ·µÄÓ³Éä */
+/**CNcomment:  è§£é™¤mmzå†…å­˜ç”¨æˆ·æ€åœ°å€çš„æ˜ å°„ */
 HI_S32 HI_MPI_MMZ_Unmap(HI_U32 u32PhysAddr);
 
 /*for cached memory, flush cache to memory*/
-/**CNcomment:  ¶ÔÓÚcachedÄÚ´æ£¬Ë¢Dcacheµ½ÄÚ´æ */
+/**CNcomment:  å¯¹äºcachedå†…å­˜ï¼Œåˆ·Dcacheåˆ°å†…å­˜ */
 HI_S32 HI_MPI_MMZ_Flush(HI_U32 u32PhysAddr);
 
 

@@ -1,23 +1,23 @@
 /*****************************************************************************************************
 Copyright (C), 2009-2012, Huawei Tech. Co., Ltd.
 File name: imedia_common.h
-Author & ID: ��С��+00133955
+Author & ID: 宋小刚+00133955
 Version: 1.00
 Date:  2009-12-18
-Description: ���ļ�����������ģ��Ĺ������ݽṹ����
+Description: 本文件包括了所有模块的公共数据结构定义
 Function List:
 History:
 * Revision 1.00  2009/12/18 10:00:00  songxg+00133955
-* ��ʼ�汾�������
+* 初始版本编码完成
 *
 * Revision 1.01  2010/01/21 14:15:00  songxg+00133955
-* ������������޶�����淶���ӿ��޸ĵ�
+* 根据评审意见修定代码规范、接口修改等
 *
 * Revision 1.02  2010/03/05 15:25:00  guoshan+00101841
-* ����Resizeģ���Y,U,Vƽ���׵�ַ�����ƣ����Ӷ����롢���ͼ���ڴ��ַ��˵��
+* 根据Resize模块对Y,U,V平面首地址的限制，增加对输入、输出图像内存地址的说明
 *
 * Revision 1.03  2010/04/29 18:25:00  songxg+00101841
-* �޸Ļ���Ż�����ӿڣ�����CPUָ�������Ϣ�Ƶ�imedia_util.h�ļ��ж���
+* 修改汇编优化传入接口，并将CPU指令相关信息移到imedia_util.h文件中定义
 *
 *****************************************************************************************************/
 #ifndef __IMEDIA_COMMON_H__
@@ -61,7 +61,7 @@ extern "C" {
 #define strnicmp strncasecmp
 
 #if defined(ENV_ARMLINUX_KERNEL)
-//linux�ں�̬����
+//linux内核态定义
 #include <linux/kernel.h>	/* Needed for KERN_INFO */
 #include <linux/time.h>
 #include <linux/ctype.h>
@@ -106,43 +106,43 @@ extern "C" {
 #pragma pack(push, 1)
 
 /****************************************************************************************
- * �����������ݽṹ
+ * 公共部分数据结构
  ****************************************************************************************/
-/** ��ģ�鹫�����ñ�ǣ���1���ֽڣ��ɱ�ʾ8��״̬ */
-#define IMEDIA_FLAG_DISABLE_ASM         0x00000001 /**< ����Ż��رձ�ǣ�����ʱʹ�ã� .D.E.M */
-#define IMEDIA_FLAG_CALC_FPS            0x00000002 /**< ͨ������ͳ��ʹ�ܱ�ǣ���������Զ�ͳ����������FPS������ʱʹ�ã� .D.E */
+/** 各模块公共常用标记，第1个字节，可表示8种状态 */
+#define IMEDIA_FLAG_DISABLE_ASM         0x00000001 /**< 汇编优化关闭标记（调试时使用） .D.E.M */
+#define IMEDIA_FLAG_CALC_FPS            0x00000002 /**< 通道性能统计使能标记，开启后会自动统计性能数据FPS（调试时使用） .D.E */
 
-/** ����ģ�鳣�ñ�ǣ���2���ֽڣ��ɱ�ʾ8��״̬ */
-#define IMEDIA_FLAG_DEBLOCK_FILTER      0x00000100 /**< MPEG2�Ƚ���������Deblock�˲�ʹ�ܱ�ǣ�H264��������˹��ܣ������ֶ� .D */
-#define IMEDIA_FLAG_ERROR_RESILIENCE    0x00000200 /**< ��������������ʹ�ܱ�ǣ������ù��ܺ�������һ�����½��������ֶ� .D */
+/** 解码模块常用标记，第2个字节，可表示8种状态 */
+#define IMEDIA_FLAG_DEBLOCK_FILTER      0x00000100 /**< MPEG2等解码器后处理Deblock滤波使能标记，H264解码无需此功能，保留字段 .D */
+#define IMEDIA_FLAG_ERROR_RESILIENCE    0x00000200 /**< 解码器错误隐藏使能标记，开启该功能后性能有一定的下降，保留字段 .D */
 
-/** ����ģ�鳣�ñ�ǣ���3���ֽڣ��ɱ�ʾ8��״̬ */
-#define IMEDIA_FLAG_CALC_PSNR           0x00010000 /**< �������͹�����PSNRͳ�Ʊ�ǣ��ù��ܶ�����Ӱ��ϴ󣬽�����������ʱ�ſɿ���������ʱʹ�ã� .E */
+/** 编码模块常用标记，第3个字节，可表示8种状态 */
+#define IMEDIA_FLAG_CALC_PSNR           0x00010000 /**< 编码器客观质量PSNR统计标记，该功能对性能影响较大，仅在质量测试时才可开启（调试时使用） .E */
 
-/** ��������ö�����Ͷ��� */
+/** 控制命令枚举类型定义 */
 typedef enum ENUM_IMEDIA_CMD
 {
-    IMEDIA_GET_VERSION =0,         /**< ��ȡ�汾��Ϣ .D.E.M */
-    IMEDIA_GET_STATUS,             /**< ��ȡͨ��״̬��Ϣ .D.E */
-    IMEDIA_GET_STREAM_INFO,        /**< ��ȡ������Ϣ .D.E */
-    IMEDIA_GET_PARAMS,             /**< ��ȡ������Ϣ .D.E */
+    IMEDIA_GET_VERSION =0,         /**< 获取版本信息 .D.E.M */
+    IMEDIA_GET_STATUS,             /**< 获取通道状态信息 .D.E */
+    IMEDIA_GET_STREAM_INFO,        /**< 获取码流信息 .D.E */
+    IMEDIA_GET_PARAMS,             /**< 获取参数信息 .D.E */
 
-    /**< ��������ֻ�ڱ���ģ����Ч */
-    IMEDIA_GET_DYN_PARAMS,         /**< ��ȡ��̬���� .E */
-    IMEDIA_GET_SPS_PPS,            /**< ��ȡ����ͷͼ��ͷNALU���� .E */
-    IMEDIA_SET_DYN_PARAMS,         /**< ���ö�̬���� .E */
-    IMEDIA_SET_FUNCTION,           /**< ���ûص������������ֶΣ�һ��ûʵ�� */
+    /**< 以下命令只在编码模块有效 */
+    IMEDIA_GET_DYN_PARAMS,         /**< 获取动态参数 .E */
+    IMEDIA_GET_SPS_PPS,            /**< 获取序列头图像头NALU码流 .E */
+    IMEDIA_SET_DYN_PARAMS,         /**< 设置动态参数 .E */
+    IMEDIA_SET_FUNCTION,           /**< 设置回调函数，保留字段，一期没实现 */
 
-    /**< ��������ֻ�ڽ���ģ����Ч */
-    IMEDIA_SET_DEBUG_FLAG,         /**< ���õ�����Ϣ��� .D */
+    /**< 以下命令只在解码模块有效 */
+    IMEDIA_SET_DEBUG_FLAG,         /**< 设置调试信息标记 .D */
 
-    IMEDIA_FLUSH,                  /**< ����㷨ͨ����cache��Ϣ��֡YUV���ݣ� .D */
-    IMEDIA_RESET,                  /**< ��λ�㷨ͨ�� .D */
+    IMEDIA_FLUSH,                  /**< 清空算法通道的cache信息（帧YUV数据） .D */
+    IMEDIA_RESET,                  /**< 复位算法通道 .D */
 
-    IMEDIA_PICTURE_RELEASE,        /**< �ͷŽ���ģ�������YUV֡����Ȩ */
+    IMEDIA_PICTURE_RELEASE,        /**< 释放解码模块输出的YUV帧控制权 */
 } ENUM_IMEDIA_CMD;
 
-/** ���Լ���ö�����Ͷ��� */
+/** 调试级别枚举类型定义 */
 typedef enum ENUM_IMEDIA_MSG_LEVEL
 {
     IMEDIA_ERROR = 0,
@@ -154,43 +154,43 @@ typedef enum ENUM_IMEDIA_MSG_LEVEL
 typedef void* IMEDIA_CODEC_CTX;
 typedef void* IMEDIA_IMAGE_CTX;
 
-#define IMEDIA_VERSION_LENGTH  48    /* �汾���ַ������� */
-#define IMEDIA_TIME_LENGTH     28    /* ����ʱ���ַ������� */
+#define IMEDIA_VERSION_LENGTH  48    /* 版本号字符串长度 */
+#define IMEDIA_TIME_LENGTH     28    /* 发布时间字符串长度 */
 
-/*!�汾�ṹ*/
+/*!版本结构*/
 typedef struct STRU_IMEDIA_VERSION
 {
-    char cVersionChar[IMEDIA_VERSION_LENGTH];  /**< �汾���ַ�����ʾ */
-    char cReleaseTime[IMEDIA_TIME_LENGTH];     /**< �汾����ʱ���ַ�����ʾ */
-    UINT32 uiCompileVersion;                   /**< �������汾��4���ַ���� */
+    char cVersionChar[IMEDIA_VERSION_LENGTH];  /**< 版本号字符串表示 */
+    char cReleaseTime[IMEDIA_TIME_LENGTH];     /**< 版本发布时间字符串表示 */
+    UINT32 uiCompileVersion;                   /**< 编译器版本，4个字符组成 */
 } STRU_IMEDIA_VERSION;
 
 typedef void* funMalloc(unsigned int len);
 typedef void  funFree(void *ptr);
-typedef void  funMsgOutput(int level, const char *msg); /**< level�����ENUM_IMEDIA_MSG_LEVEL */
+typedef void  funMsgOutput(int level, const char *msg); /**< level定义见ENUM_IMEDIA_MSG_LEVEL */
 
-/*!ϵͳ��Ϣ�ṹ */
+/*!系统信息结构 */
 typedef struct STRU_IMEDIA_SYSINFO
 {
-    funMsgOutput*  pfnPrintf;       /**< ��־��Ϣ����ص���������Ϣ�ռ䳤�Ƚ���4096 Bytes */
-    funMalloc*     pfnMalloc;       /**< �ڴ����ص����� */
-    funFree*       pfnFree;         /**< �ڴ��ͷŻص����� */
+    funMsgOutput*  pfnPrintf;       /**< 日志消息输出回调函数，信息空间长度建议4096 Bytes */
+    funMalloc*     pfnMalloc;       /**< 内存分配回调函数 */
+    funFree*       pfnFree;         /**< 内存释放回调函数 */
 } STRU_IMEDIA_SYSINFO;
 
 #define MAX_BUF_NUM     64  /**< just a example ,will be set to the max buf num with codec's need */
 
-/*!������ṹ���� */
+/*!单缓存结构类型 */
 typedef struct STRU_IMEDIA_SINGLE_BUFFER
 {
-    UINT8  *pucBuf;        /**< �������ַ */
-    UINT32  uiSize;        /**< �����С */
+    UINT8  *pucBuf;        /**< 缓存基地址 */
+    UINT32  uiSize;        /**< 缓存大小 */
 } STRU_IMEDIA_SINGLE_BUFFER;
 
 typedef struct STRU_IMEDIA_MEMBUF
 {
-    UINT32  uiSize;        /**< �ڴ��С */
-    UINT32  uiAlignment;   /**< �ڴ�����С */
-    UINT8   *pucbase;      /**< �ڴ��ַ */
+    UINT32  uiSize;        /**< 内存大小 */
+    UINT32  uiAlignment;   /**< 内存对齐大小 */
+    UINT8   *pucbase;      /**< 内存地址 */
 } STRU_IMEDIA_MEMBUF;
 
 typedef struct STRU_IMEDIA_RESTAB
@@ -200,15 +200,15 @@ typedef struct STRU_IMEDIA_RESTAB
 } STRU_IMEDIA_RESTAB;
 
 /*****************************************************************************************
- * ��Ƶ���ֹ������ݽṹ
+ * 视频部分公共数据结构
  *****************************************************************************************/
 #define IVIDEO_PIXEL_ALIGN_VALUE 16
 
-/** ͼ����߶���ֵ��������Ϊ16�ı������߱���Ϊ2�ı��� */
+/** 图像宽高对齐值，宽必须为16的倍数，高必须为2的倍数 */
 #define IVIDEO_WIDTH_STRIDE(w)  ((((w)+15)>>4)<<4)
 #define IVIDEO_HEIGHT_STRIDE(h) ((((h)+1)>>1)<<1)
 
-/** ͼ��YUV��С���� */
+/** 图像YUV大小计算 */
 #define IVIDEO_YUV_SIZE(w, h)  ((IVIDEO_WIDTH_STRIDE(w) * IVIDEO_HEIGHT_STRIDE(h) * 3) >> 1)
 #define IVIDEO_Y_SIZE(w, h)     (IVIDEO_WIDTH_STRIDE(w) * IVIDEO_HEIGHT_STRIDE(h))
 #define IVIDEO_UV_SIZE(w, h)    (IVIDEO_Y_SIZE(w, h) >> 2)
@@ -220,16 +220,16 @@ typedef struct STRU_IMEDIA_RESTAB
 #define IVIDEO_MIN_HEIGHT 16  
 #define IVIDEO_MAX_HEIGHT 1088
 
-/** ��Ƶ�㷨ͨ������״̬ */
+/** 视频算法通道工作状态 */
 typedef enum ENUM_IVIDEO_CODEC_STATUS
 {
-    IVIDEO_CODEC_INVALID = 0,   /**< ��Ч״̬ */
-    IVIDEO_CODEC_READY,         /**< ׼��״̬��������׼��������ز�����δ���� */
-    IVIDEO_CODEC_RUNNING,       /**< ����״̬ */
-    IVIDEO_CODEC_STOPPED,       /**< ֹͣ״̬ */
+    IVIDEO_CODEC_INVALID = 0,   /**< 无效状态 */
+    IVIDEO_CODEC_READY,         /**< 准备状态，缓存已准备，但相关参数还未设置 */
+    IVIDEO_CODEC_RUNNING,       /**< 运行状态 */
+    IVIDEO_CODEC_STOPPED,       /**< 停止状态 */
 } ENUM_IVIDEO_CODEC_STATUS;
 
-/*!��Ƶ�㷨���� */
+/*!视频算法类型 */
 typedef enum ENUM_IVIDEO_CODEC_TYPE
 {
     IVIDEO_CODEC_UNKNOWN = -1,
@@ -237,15 +237,15 @@ typedef enum ENUM_IVIDEO_CODEC_TYPE
     IVIDEO_CODEC_MPEG2,
     IVIDEO_CODEC_H263,
     IVIDEO_CODEC_MPEG4,
-    IVIDEO_CODEC_WMV3,          /* VC1��simple profile��main profile */
-    IVIDEO_CODEC_VC1,           /* VC1��advanced profile */
-    IVIDEO_CODEC_VP6F,          /* On2 VP6 (Flash version), .flv/.f4v/.avi(strf.biCompression=VP6F)������ʹ�� */
-    IVIDEO_CODEC_VP6,           /* On2 VP6 (Flip version), .avi(strf.biCompression=VP60/VP61/VP62)������ʹ�� */
-    IVIDEO_CODEC_SORENSON,      /* ��������flv������*/
+    IVIDEO_CODEC_WMV3,          /* VC1的simple profile和main profile */
+    IVIDEO_CODEC_VC1,           /* VC1的advanced profile */
+    IVIDEO_CODEC_VP6F,          /* On2 VP6 (Flash version), .flv/.f4v/.avi(strf.biCompression=VP6F)等容器使用 */
+    IVIDEO_CODEC_VP6,           /* On2 VP6 (Flip version), .avi(strf.biCompression=VP60/VP61/VP62)等容器使用 */
+    IVIDEO_CODEC_SORENSON,      /* 码流常在flv容器中*/
 	IVIDEO_CODEC_VP6A,          /*vp6 with alpha channel*/
 } ENUM_IVIDEO_CODEC_TYPE;
 
-/*!��Ƶ�㷨profile���� */
+/*!视频算法profile类型 */
 typedef enum ENUM_IVIDEO_CODEC_PROFILE
 {
     IVIDEO_PROFILE_UNKNOWN = -1,
@@ -288,7 +288,7 @@ typedef enum ENUM_IVIDEO_CODEC_PROFILE
     IVIDEO_VERSION_1             = 1,
 } ENUM_IVIDEO_CODEC_PROFILE;
 
-/*!��Ƶ�㷨level���� */
+/*!视频算法level类型 */
 typedef enum ENUM_IVIDEO_CODEC_LEVEL
 {
     IVIDEO_LEVEL_UNKNOWN = -1,
@@ -350,20 +350,20 @@ typedef enum ENUM_IVIDEO_CODEC_LEVEL
     /**< VP6 */
 } ENUM_IVIDEO_CODEC_LEVEL;
 
-/*!��Ƶ���ݸ�ʽ */
+/*!视频内容格式 */
 typedef enum ENUM_IVIDEO_CONTENT_TYPE
 {
     IVIDEO_CONTENT_UNKNOW = -1,
-    IVIDEO_PROGRESSIVE = 0,         /**< ֡��Progressive frame. */
-    IVIDEO_INTERLACED,              /**< ����Interlaced frame, ��֯�洢. */
-    IVIDEO_AUTO,                    /**< ���ڱ���ģ��ʹ�� */
+    IVIDEO_PROGRESSIVE = 0,         /**< 帧，Progressive frame. */
+    IVIDEO_INTERLACED,              /**< 场，Interlaced frame, 交织存储. */
+    IVIDEO_AUTO,                    /**< 仅在编码模块使用 */
 } ENUM_IVIDEO_CONTENT_TYPE;
 
-/*!��Ƶ֡���� */
+/*!视频帧类型 */
 typedef enum ENUM_IVIDEO_FRAME_TYPE
 {
     IVIDEO_FRAME_UNKNOWN = -1,
-    IVIDEO_FRAME_P,     /*����MPEG-4�е�S(GMC)����*/
+    IVIDEO_FRAME_P,     /*包括MPEG-4中的S(GMC)类型*/
     IVIDEO_FRAME_B,
     IVIDEO_FRAME_I,
     IVIDEO_FRAME_SI,
@@ -372,7 +372,7 @@ typedef enum ENUM_IVIDEO_FRAME_TYPE
     IVIDEO_FRAME_BREF,
 } ENUM_IVIDEO_FRAME_TYPE;
 
-/*!��Ƶ���ʱ������� */
+/*!视频速率编码类型 */
 typedef enum ENUM_IVIDEO_FRAME_RATE_CODE
 {
     IVIDEO_FRAME_RATE_UNKNOWN = 0,
@@ -386,7 +386,7 @@ typedef enum ENUM_IVIDEO_FRAME_RATE_CODE
     IVIDEO_FRAME_RATE_60,
 } ENUM_IVIDEO_FRAME_RATE_CODE;
 
-/*!��Ƶɫ�ȸ�ʽ���� */
+/*!视频色度格式类型 */
 typedef enum ENUM_IVIDEO_COLOR_SPACE_TYPE
 {
     IVIDEO_CSP_UNKNOWN = -1,
@@ -421,7 +421,7 @@ typedef enum ENUM_IVIDEO_COLOR_SPACE_TYPE
     IVIDEO_CSP_YUYV   = IVIDEO_CSP_YUY2,
 } ENUM_IVIDEO_COLOR_SPACE_TYPE;
 
-/*!��Ƶɫ�ȸ�ʽ���� */
+/*!视频色度格式类型 */
 typedef enum ENUM_IVIDEO_YUV_BUF_ORDER
 {
     IVIDEO_Y = 0,
@@ -429,48 +429,48 @@ typedef enum ENUM_IVIDEO_YUV_BUF_ORDER
     IVIDEO_V,
 } ENUM_IVIDEO_YUV_BUF_ORDER;
 
-/*!ͼ�����ؿ��߱Ƚṹ��Ϣ */
+/*!图像像素宽高比结构信息 */
 typedef struct STRU_IVIDEO_ASPECT_RATIO
 {
-    UINT16  usSarWidth;         /**< ͼ�����ص��������Range[0-65535] */
-    UINT16  usSarHeight;        /**< ͼ�����ص�����ߣ�Range[0-65535] */
+    UINT16  usSarWidth;         /**< 图像像素的样点宽，Range[0-65535] */
+    UINT16  usSarHeight;        /**< 图像像素的样点高，Range[0-65535] */
 } STRU_IVIDEO_ASPECT_RATIO;
 
-/*!��Ƶͼ��ṹ��Ϣ */
+/*!视频图像结构信息 */
 typedef struct STRU_IVIDEO_PICTURE
 {
-    UINT16  usWidth;            /**< ͼ����ȵ�ʵ��ֵ����λ���أ�Range[32-1920] */
-    UINT16  usHeight;           /**< ͼ��߶ȵ�ʵ��ֵ����λ���أ�Range[16-1088] */
-    UINT16  usWidthPitch;       /**< ͼ����ȵ��ڴ��ȣ���λ���أ�Range[>=usWidth] (�м�ģ����resize�㷨��Ϊ16�ı���������ģ����Ϊ2�ı��������֧�ֵ�3840)  */
-    ENUM_IVIDEO_CONTENT_TYPE  eContentType;         /**< ͼ������ͣ�IVIDEO_PROGRESSIVE or IVIDEO_INTERLACED) */
-    STRU_IVIDEO_ASPECT_RATIO  stAspectRatio;        /**< ͼ�����ؿ��߱� */
-    //ENUM_IVIDEO_COLOR_SPACE_TYPE eColorSpaceType; /**< reserved, ���ͼ��ĸ�ʽ��Ĭ��ΪYUV420��ʽ */
-    UINT8  *apucBuf[4];         /**< ָ��ǰͼ�����ݵ�ָ��(0-Y 1-U 2-V 3-private)���м�ģ�飺Yƽ���ַ��16�ֽڶ��룬U��Vƽ���ַ��8�ֽڶ��룻����ģ�������� */
+    UINT16  usWidth;            /**< 图像宽度的实际值，单位像素，Range[32-1920] */
+    UINT16  usHeight;           /**< 图像高度的实际值，单位像素，Range[16-1088] */
+    UINT16  usWidthPitch;       /**< 图像宽度的内存跨度，单位像素，Range[>=usWidth] (中间模块中resize算法需为16的倍数，编码模块需为2的倍数且最大支持到3840)  */
+    ENUM_IVIDEO_CONTENT_TYPE  eContentType;         /**< 图像的类型（IVIDEO_PROGRESSIVE or IVIDEO_INTERLACED) */
+    STRU_IVIDEO_ASPECT_RATIO  stAspectRatio;        /**< 图像像素宽高比 */
+    //ENUM_IVIDEO_COLOR_SPACE_TYPE eColorSpaceType; /**< reserved, 输出图像的格式，默认为YUV420格式 */
+    UINT8  *apucBuf[4];         /**< 指向当前图像数据的指针(0-Y 1-U 2-V 3-private)，中间模块：Y平面地址需16字节对齐，U、V平面地址需8字节对齐；其他模块无限制 */
 } STRU_IVIDEO_PICTURE;
 
-/*!��Ƶ������Ϣ */
+/*!视频码流信息 */
 typedef struct STRU_IVIDEO_STREAM_INFO
 {
     ENUM_IVIDEO_CODEC_TYPE       eCodecType;
     ENUM_IVIDEO_CODEC_PROFILE    eProfile;         /**< profile idc */
     ENUM_IVIDEO_CODEC_LEVEL      eLevel;           /**< level idc */
-    ENUM_IVIDEO_CONTENT_TYPE     eContentType;     /**< ͼ������ (IVIDEO_PROGRESSIVE or IVIDEO_INTERLACED) */
-    ENUM_IVIDEO_COLOR_SPACE_TYPE eColorSpaceType;  /**< ͼ���ʽ (YUV420, YUV422, etc) */
+    ENUM_IVIDEO_CONTENT_TYPE     eContentType;     /**< 图像类型 (IVIDEO_PROGRESSIVE or IVIDEO_INTERLACED) */
+    ENUM_IVIDEO_COLOR_SPACE_TYPE eColorSpaceType;  /**< 图像格式 (YUV420, YUV422, etc) */
 
-    UINT16 usWidth;                                /**< ͼ����ȣ���λ���أ�Range[32-1920] */
-    UINT16 usHeight;                               /**< ͼ��߶ȣ���λ���أ�Range[16-1088] */
-    UINT32 uiRefFrameNum;                          /**< �ο�֡������������ Range[0-16]�������� Range[1-16] */
-    UINT32 uiFrameRate;                            /**< ����֡�� x 1000��Range[5000-60000]������������Ч */
-    UINT32 uiBitrate;                              /**< ���������ʣ���λkbps, Range[10-30000]������������Ч */
-    UINT32 uiVbvBuf;                               /**< VBV���棬��λms��Range[500-10000]������������Ч */
+    UINT16 usWidth;                                /**< 图像宽度，单位象素，Range[32-1920] */
+    UINT16 usHeight;                               /**< 图像高度，单位象素，Range[16-1088] */
+    UINT32 uiRefFrameNum;                          /**< 参考帧个数，解码器 Range[0-16]，编码器 Range[1-16] */
+    UINT32 uiFrameRate;                            /**< 码流帧率 x 1000，Range[5000-60000]，仅编码器有效 */
+    UINT32 uiBitrate;                              /**< 码流比特率，单位kbps, Range[10-30000]，仅编码器有效 */
+    UINT32 uiVbvBuf;                               /**< VBV缓存，单位ms，Range[500-10000]，仅编码器有效 */
 
-    STRU_IVIDEO_ASPECT_RATIO stAspectRatio;        /**< ͼ�����ؿ��߱� */
+    STRU_IVIDEO_ASPECT_RATIO stAspectRatio;        /**< 图像像素宽高比 */
 } STRU_IVIDEO_STREAM_INFO;
 
 /*****************************************************************************************
- * H264���ݽṹ
+ * H264数据结构
  *****************************************************************************************/
-/*!NALU������ */
+/*!NALU包类型 */
 typedef enum ENUM_H264_NALU_TYPE
 {
     H264_NAL_UNKNOWN     = 0,
@@ -486,7 +486,7 @@ typedef enum ENUM_H264_NALU_TYPE
     /* ref_idc == 0 for 6,9,10,11,12 */
 } ENUM_H264_NALU_TYPE; 
 
-/*!NALU�����ȼ� */
+/*!NALU包优先级 */
 typedef enum ENUM_H264_NALU_PRIORITY
 {
     H264_NAL_PRIORITY_DISPOSABLE = 0,  /* SEI,B-NoRef */
@@ -495,36 +495,36 @@ typedef enum ENUM_H264_NALU_PRIORITY
     H264_NAL_PRIORITY_HIGHEST    = 3   /* SPS, PPS, IDR */
 } ENUM_H264_NALU_PRIORITY;
  
-/*!H264 NALU�����ṹ */
+/*!H264 NALU码流结构 */
 typedef struct STRU_H264_NALU_STREAM
 {
-    UINT32  uiSize;                    /**< ��С */
-    UINT8  *pucData;                   /**< ��ַ */
-    ENUM_H264_NALU_TYPE     eType;     /**< ���� */
-    ENUM_H264_NALU_PRIORITY ePriority; /**< ���ȼ� */
+    UINT32  uiSize;                    /**< 大小 */
+    UINT8  *pucData;                   /**< 地址 */
+    ENUM_H264_NALU_TYPE     eType;     /**< 类型 */
+    ENUM_H264_NALU_PRIORITY ePriority; /**< 优先级 */
 } STRU_H264_NALU_STREAM;
 
 #define MAX_NALU_COUNT_OF_FRAME 200
 
-/*!H264 ֡�������ݽṹ */
+/*!H264 帧码流数据结构 */
 typedef struct STRU_H264_FRAME_STREAM
 {
-    UINT8  *pucStream;                 /**< ֡���ݻ��棬���һ��NALU��ַ��ͬ */
-    UINT32  uiDataSize;                /**< ֡���ݴ�С����ֱ�Ӵӵ�һ��NALU��ַ��ʼȡ�ô�С������ */
-    UINT32  uiFrameID;                 /**< ֡����˳���ţ��ɻ���ΪDTS��ÿ��segment��0��ʼ���� */
-    UINT32  uiDisplayID;               /**< ֡��ʾ˳���ţ��ɻ���ΪPTS��ÿ��segment��0��ʼ���� */
-    ENUM_IVIDEO_FRAME_TYPE eFrameType; /**< ��ǰ֡�������� */
-    BOOL16  bSkipFlag;                 /**< ��ǰ֡�Ƿ񱻶��� */
-    UINT16  usNaluCount;               /**< NALU���� */
-    STRU_H264_NALU_STREAM stNalu[MAX_NALU_COUNT_OF_FRAME]; /**< NALU���� */
+    UINT8  *pucStream;                 /**< 帧数据缓存，与第一个NALU地址相同 */
+    UINT32  uiDataSize;                /**< 帧数据大小，可直接从第一个NALU地址开始取该大小的数据 */
+    UINT32  uiFrameID;                 /**< 帧编码顺序编号，可换算为DTS，每个segment从0开始计数 */
+    UINT32  uiDisplayID;               /**< 帧显示顺序编号，可换算为PTS，每个segment从0开始计数 */
+    ENUM_IVIDEO_FRAME_TYPE eFrameType; /**< 当前帧编码类型 */
+    BOOL16  bSkipFlag;                 /**< 当前帧是否被丢弃 */
+    UINT16  usNaluCount;               /**< NALU个数 */
+    STRU_H264_NALU_STREAM stNalu[MAX_NALU_COUNT_OF_FRAME]; /**< NALU数据 */
 } STRU_H264_FRAME_STREAM;
 
-/*!������λ��״̬ */
+/*!比特流位置状态 */
 typedef enum ENUM_BITSTREAM_STATUS
 {
     BITSTREAM_UNKNOWN = 0,
-    BITSTREAM_SEGMENT_BEGIN,           /**< ��ǰ��Ƭ�ĵ�һ������ */
-    BITSTREAM_SEGMENT_END,             /**< ��ǰ��Ƭ�����һ������ */
+    BITSTREAM_SEGMENT_BEGIN,           /**< 当前分片的第一批数据 */
+    BITSTREAM_SEGMENT_END,             /**< 当前分片的最后一批数据 */
     BITSTREAM_OTHER,
 } ENUM_BITSTREAM_STATUS;
 

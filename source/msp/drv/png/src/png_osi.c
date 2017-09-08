@@ -6,7 +6,7 @@ File Name	: hi_png_api.c
 Version		: Initial Draft
 Author		: z00141204
 Created		: 2010/10/11
-Description	: png osi layer code        CNcomment:png osi²ãÊµÏÖ
+Description	: png osi layer code        CNcomment:png osiå±‚å®ç°
 Function List 	: 
 			  	  
 History       	:
@@ -1253,7 +1253,7 @@ int PngOsiSuspend(HI_VOID)
     HI_S32 s32Ret = HI_SUCCESS;
     
     /*if decoder is working then wiating, else suspend*/
-    /*CNcomment:ÅĞ¶ÏÊÇ·ñÓĞ½âÂëÆ÷ÕıÔÚ¹¤×÷£¬ÈôÊÇ£¬ÔòµÈ´ıµ±Ç°½âÂëÍê³É£¬ÔÙ½øÈë´ı»ú */
+    /*CNcomment:åˆ¤æ–­æ˜¯å¦æœ‰è§£ç å™¨æ­£åœ¨å·¥ä½œï¼Œè‹¥æ˜¯ï¼Œåˆ™ç­‰å¾…å½“å‰è§£ç å®Œæˆï¼Œå†è¿›å…¥å¾…æœº */
     s32Ret = PngOsiResGetInstance(g_ActiveHandle, &pstInstance);
     if (s32Ret < 0)
     {

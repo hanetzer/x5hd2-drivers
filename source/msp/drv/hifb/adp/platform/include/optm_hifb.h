@@ -87,67 +87,67 @@ typedef enum optm_COLOR_SPACE_E
 typedef struct
 {
 	/*gfx init*/
-	/*CNcomment:Í¼ĞÎ³õÊ¼»¯*/
+	/*CNcomment:å›¾å½¢åˆå§‹åŒ–*/
 	HI_S32 (*OPTM_GfxInit)(HI_VOID);
 
 	/*gfx deinit*/
-	/*CNcomment:Í¼ĞÎÈ¥³õÊ¼»¯*/
+	/*CNcomment:å›¾å½¢å»åˆå§‹åŒ–*/
 	HI_S32 (*OPTM_GfxDeInit)(HI_VOID);
 
 	/*open layer*/
-	/*CNcomment:Í¼²ã´ò¿ª*/
+	/*CNcomment:å›¾å±‚æ‰“å¼€*/
 	HI_S32 (*OPTM_GfxOpenLayer)(HIFB_LAYER_ID_E enLayerId);
 
 	/*close layer*/
-	/*CNcomment:Í¼²ã¹Ø±Õ*/
+	/*CNcomment:å›¾å±‚å…³é—­*/
 	HI_S32 (*OPTM_GfxCloseLayer)(HIFB_LAYER_ID_E enLayerId);
 
 	/*enable/disable layer*/
-	/*CNcomment:Í¼²ãÊ¹ÄÜ»òÕß·ÇÊ¹ÄÜ*/
+	/*CNcomment:å›¾å±‚ä½¿èƒ½æˆ–è€…éä½¿èƒ½*/
 	HI_S32 (*OPTM_GfxSetEnable)(HIFB_LAYER_ID_E enLayerId, HI_BOOL bEnable);
 
 	/*mask layer*/
-	/*CNcomment:ÊÇ·ñÆÁ±ÎÍ¼²ã*/
+	/*CNcomment:æ˜¯å¦å±è”½å›¾å±‚*/
 	HI_S32 (*OPTM_GfxMaskLayer)(HIFB_LAYER_ID_E enLayerId, HI_BOOL bMask);
 
 	/*set layer address*/
-	/*CNcomment:ÉèÖÃÍ¼²ãÏÔÊ¾µØÖ·*/
+	/*CNcomment:è®¾ç½®å›¾å±‚æ˜¾ç¤ºåœ°å€*/
 	HI_S32 (*OPTM_GfxSetLayerAddr)(HIFB_LAYER_ID_E enLayerId, HI_U32 u32Addr);
 
 	/*set layer stride*/
-	/*CNcomment:ÉèÖÃÍ¼²ãĞĞ¾à*/
+	/*CNcomment:è®¾ç½®å›¾å±‚è¡Œè·*/
 	HI_S32 (*OPTM_GfxSetLayerStride)(HIFB_LAYER_ID_E enLayerId, HI_U32 u32Stride);
 
 	/*set layer data format*/
-	/*CNcomment:ÉèÖÃÍ¼²ãÏñËØ¸ñÊ½*/
+	/*CNcomment:è®¾ç½®å›¾å±‚åƒç´ æ ¼å¼*/
 	HI_S32 (*OPTM_GfxSetLayerDataFmt)(HIFB_LAYER_ID_E enLayerId, HIFB_COLOR_FMT_E enDataFmt);
 
 	HI_S32 (*OPTM_GfxSetColorReg)(HIFB_LAYER_ID_E u32LayerId, HI_U32 u32OffSet, HI_U32 u32Color, HI_S32 UpFlag);
 
 	/*wait for vertical blank*/
-	/*CNcomment:µÈ´ı´¹Ö±ÏûÒş*/
+	/*CNcomment:ç­‰å¾…å‚ç›´æ¶ˆéš*/
 	HI_S32 (*OPTM_GfxWaitVBlank)(HIFB_LAYER_ID_E u32LayerId);
 
 	/*set layer deflick level*/
-	/*CNcomment:ÉèÖÃ¿¹ÉÁ¼¶±ğ*/
+	/*CNcomment:è®¾ç½®æŠ—é—ªçº§åˆ«*/
 	HI_S32 (*OPTM_GfxSetLayerDeFlicker)(HIFB_LAYER_ID_E enLayerId, HIFB_DEFLICKER_S *pstDeFlicker);
 
 	/*set layer alpha*/
-	/*CNcomment:ÉèÖÃÍ¼²ãalpha Öµ*/
+	/*CNcomment:è®¾ç½®å›¾å±‚alpha å€¼*/
 	HI_S32 (*OPTM_GfxSetLayerAlpha)(HIFB_LAYER_ID_E enLayerId, HIFB_ALPHA_S *pstAlpha);
 
 	/*set layer rect*/
-	/*CNcomment:ÉèÖÃÍ¼²ãÊäÈë¾ØĞÎ*/
+	/*CNcomment:è®¾ç½®å›¾å±‚è¾“å…¥çŸ©å½¢*/
 	HI_S32 (*OPTM_GfxSetLayerRect)(HIFB_LAYER_ID_E enLayerId, const HIFB_RECT *pstRect);
 
 	/*set graphics process device Inrect and Outrect*/
-	/*CNcomment:ÉèÖÃÍ¼²ã¹ÜÀíÆ÷ÊäÈëÊä³ö¾ØĞÎ*/
+	/*CNcomment:è®¾ç½®å›¾å±‚ç®¡ç†å™¨è¾“å…¥è¾“å‡ºçŸ©å½¢*/
 	HI_S32 (*OPTM_GfxSetGpRect)(OPTM_GFX_GP_E enGpId, const HIFB_RECT *pstInputRect);
 
 	HI_S32 (*OPTM_GfxSetGpInPutSize)(OPTM_GFX_GP_E enGpId, HI_U32 u32Width, HI_U32 u32Height);
 
 	/*set layer key mask*/
-	/*CNcomment:ÉèÖÃÍ¼²ãcolorkey mask*/
+	/*CNcomment:è®¾ç½®å›¾å±‚colorkey mask*/
 	HI_S32 (*OPTM_GfxSetLayKeyMask)(HIFB_LAYER_ID_E enLayerId, const HIFB_COLORKEYEX_S *pstColorkey);
 #if 0
 	/* set bit-extension mode */
@@ -155,45 +155,45 @@ typedef struct
 #endif
 
 	/*set layer pre mult*/
-	/*CNcomment:ÉèÖÃÍ¼²ãÔ¤³Ë*/
+	/*CNcomment:è®¾ç½®å›¾å±‚é¢„ä¹˜*/
 	HI_S32 (*OPTM_GfxSetLayerPreMult)(HIFB_LAYER_ID_E enLayerId, HI_BOOL bEnable);
 
 	/*set clut address*/
-	/*CNcomment:ÉèÖÃCLUT µØÖ·*/
+	/*CNcomment:è®¾ç½®CLUT åœ°å€*/
 	HI_S32 (*OPTM_GfxSetClutAddr)(HIFB_LAYER_ID_E enLayerId, HI_U32 u32PhyAddr);
 
 	HI_S32 (*OPTM_GfxGetOSDData)(HIFB_LAYER_ID_E enLayerId, HIFB_OSD_DATA_S *pstLayerData);
 
 	/*set call back*/
-	/*CNcomment:×¢²á»Øµ÷º¯Êı*/
+	/*CNcomment:æ³¨å†Œå›è°ƒå‡½æ•°*/
 	HI_S32 (*OPTM_GfxSetCallback)(HIFB_LAYER_ID_E enLayerId, IntCallBack pCallBack, HIFB_CALLBACK_TPYE_E eIntType);
 
 	/*update layer register*/
-	/*CNcomment:¸üĞÂ¼Ä´æÆ÷*/
+	/*CNcomment:æ›´æ–°å¯„å­˜å™¨*/
 	HI_S32 (*OPTM_GfxUpLayerReg)(HIFB_LAYER_ID_E enLayerId);
 
 	/*enable/disable stereo*/
-	/*CNcomment:ÉèÖÃ3D Ê¹ÄÜ»òÕß·ÇÊ¹ÄÜ*/
+	/*CNcomment:è®¾ç½®3D ä½¿èƒ½æˆ–è€…éä½¿èƒ½*/
 	HI_S32 (*OPTM_GfxSetTriDimEnable)(HIFB_LAYER_ID_E enLayerId, HI_U32 bEnable);
 
 	/*set stereo mode*/
-	/*CNcomment:ÉèÖÃ3D Ä£Ê½SBS/TB/MVC*/
+	/*CNcomment:è®¾ç½®3D æ¨¡å¼SBS/TB/MVC*/
 	HI_S32 (*OPTM_GfxSetTriDimMode)(HIFB_LAYER_ID_E enLayerId, HIFB_STEREO_MODE_E enMode);
 
 	/*set stereo address*/
-	/*CNcomment:ÉèÖÃ3D Ä£Ê½ÏÂÓÒÑÛµØÖ·*/
+	/*CNcomment:è®¾ç½®3D æ¨¡å¼ä¸‹å³çœ¼åœ°å€*/
 	HI_S32 (*OPTM_GfxSetTriDimAddr)(HIFB_LAYER_ID_E enLayerId, HI_U32 u32TriDimAddr);
 
 	/*enable/disable compression*/
-	/*CNcomment:ÉèÖÃÑ¹ËõÊ¹ÄÜ»òÕß·ÇÊ¹ÄÜ*/
+	/*CNcomment:è®¾ç½®å‹ç¼©ä½¿èƒ½æˆ–è€…éä½¿èƒ½*/
 	HI_S32 (*OPTM_GfxSetLayerDeCmpEnable)(HIFB_LAYER_ID_E enLayerId, HI_BOOL bEnable);
 
 	/*set gfx compression address*/
-	/*CNcomment:ÉèÖÃÑ¹ËõµØÖ·*/
+	/*CNcomment:è®¾ç½®å‹ç¼©åœ°å€*/
 	HI_S32 (*OPTM_GfxSetGfxCmpAddr)(HIFB_LAYER_ID_E enLayerId, HI_U32 u32CmpAddr);
 
 	/*set the compression rect*/
-	/*CNcomment:ÉèÖÃÑ¹Ëõ¸üĞÂÇøÓò*/
+	/*CNcomment:è®¾ç½®å‹ç¼©æ›´æ–°åŒºåŸŸ*/
 	HI_S32 (*OPTM_GfxSetGfxCmpRect)(HIFB_LAYER_ID_E enLayerId, const HIFB_RECT *pstRect);
 
 	/*handle compression to flip the compression address and uncompression address*/
@@ -201,34 +201,34 @@ typedef struct
 	HI_S32 (*OPTM_GfxGfxCmpHandle)(HIFB_LAYER_ID_E enLayerId);
 
 	/*pause compression*/
-	/*CNcomment:ÔİÍ£Ñ¹Ëõ*/
+	/*CNcomment:æš‚åœå‹ç¼©*/
 	HI_S32 (*OPTM_GfxPauseCompression)(HIFB_LAYER_ID_E u32LayerId);
 
 	/*resume compression*/
-	/*CNcomment:»Ö¸´Ñ¹Ëõ*/
+	/*CNcomment:æ¢å¤å‹ç¼©*/
 	HI_S32 (*OPTM_GfxResumeCompression)(HIFB_LAYER_ID_E u32LayerId);
 
 
 	/*set the priority of layer in gp*/
-	/*CNcomment:ÉèÖÃÍ¼²ãÔÚGP ÖĞµÄÓÅÏÈ¼¶*/
+	/*CNcomment:è®¾ç½®å›¾å±‚åœ¨GP ä¸­çš„ä¼˜å…ˆçº§*/
 	HI_S32 (*OPTM_GfxSetLayerPriority)(HIFB_LAYER_ID_E u32LayerId, HIFB_ZORDER_E enZOrder);
 
 	/*get the priority of layer in gp*/
-	/*CNcomment:»ñÈ¡Í¼²ãÔÚGP ÖĞµÄÓÅÏÈ¼¶*/
+	/*CNcomment:è·å–å›¾å±‚åœ¨GP ä¸­çš„ä¼˜å…ˆçº§*/
 	HI_S32 (*OPTM_GfxGetLayerPriority)(HIFB_LAYER_ID_E u32LayerId, HI_U32 *pU32Priority);
-	/*»ñÈ¡Í¼²ãµÄÄÜÁ¦¼¯*/
+	/*è·å–å›¾å±‚çš„èƒ½åŠ›é›†*/
 	HI_S32 (*OPTM_GFX_GetDevCap)(const HIFB_CAPABILITY_S **pstCap);
-	/*»ñÈ¡Í¼²ãµÄÊä³öÇøÓò´óĞ¡*/
+	/*è·å–å›¾å±‚çš„è¾“å‡ºåŒºåŸŸå¤§å°*/
 	HI_S32 (*OPTM_GfxGetOutRect)(OPTM_GFX_GP_E enGpId, HIFB_RECT * pstOutputRect);
-	/*»ñÈ¡Í¼²ãµÄÊäÈëÇøÓò´óĞ¡*/
+	/*è·å–å›¾å±‚çš„è¾“å…¥åŒºåŸŸå¤§å°*/
 	HI_S32 (*OPTM_GfxGetLayerRect)(HIFB_LAYER_ID_E enLayerId, HIFB_RECT *pstRect);
-	/*ÉèÖÃÓÃ»§ÉèÖÃGPÊäÈë·Ö±æÂÊ±êÖ¾*/
+	/*è®¾ç½®ç”¨æˆ·è®¾ç½®GPè¾“å…¥åˆ†è¾¨ç‡æ ‡å¿—*/
 	HI_S32 (*OPTM_GFX_SetGpInUsrFlag)(OPTM_GFX_GP_E enGpId, HI_BOOL bFlag);
-	/*»ñÈ¡ÓÃ»§ÉèÖÃGPÊäÈë·Ö±æÂÊ±êÖ¾*/
+	/*è·å–ç”¨æˆ·è®¾ç½®GPè¾“å…¥åˆ†è¾¨ç‡æ ‡å¿—*/
 	HI_S32 (*OPTM_GFX_GetGpInUsrFlag)(OPTM_GFX_GP_E enGpId);
-	/*ÉèÖÃÓÃ»§ÉèÖÃGPÊäÈë·Ö±æÂÊ±êÖ¾*/
+	/*è®¾ç½®ç”¨æˆ·è®¾ç½®GPè¾“å…¥åˆ†è¾¨ç‡æ ‡å¿—*/
 	HI_S32 (*OPTM_GFX_SetGpInInitFlag)(OPTM_GFX_GP_E enGpId, HI_BOOL bFlag);
-	/*»ñÈ¡ÓÃ»§ÉèÖÃGPÊäÈë·Ö±æÂÊ±êÖ¾*/
+	/*è·å–ç”¨æˆ·è®¾ç½®GPè¾“å…¥åˆ†è¾¨ç‡æ ‡å¿—*/
 	HI_S32 (*OPTM_GFX_GetGpInInitFlag)(OPTM_GFX_GP_E enGpId);
 	/*set gfx mask flag*/
 	HI_S32 (*OPTM_GFX_SetGfxMask)(OPTM_GFX_GP_E enGpId, HI_BOOL bFlag);

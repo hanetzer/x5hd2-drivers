@@ -2206,7 +2206,7 @@ static inline void ff_h264_weight_WxH_mmx2(uint8_t *dst, int stride, int log2_de
 {
     int x, y;
     /* 2010/07/05 19:30:00 liuxw+00139685 [AZ1D02187] */
-    /* ĞŞ¸ÄMMXµÄ´úÂë */
+    /* ä¿®æ”¹MMXçš„ä»£ç  */
 #if 0    
     offset <<= log2_denom;
     offset += (1 << log2_denom) >> 1;
@@ -2295,7 +2295,7 @@ static inline void ff_h264_biweight_WxH_mmx2(uint8_t *dst, uint8_t *src, int str
 {
     int x, y;
     /* 2010/07/05 19:30:00 liuxw+00139685 [AZ1D02187] */
-    /* ĞŞ¸ÄMMXµÄ´úÂë */
+    /* ä¿®æ”¹MMXçš„ä»£ç  */
     int tmp;
     offset = ((offset + 1) | 1) << log2_denom;
 #if 0    
@@ -2392,7 +2392,7 @@ H264_WEIGHT( 4, 4)
 H264_WEIGHT( 4, 2)
 
 /* 2010/07/05 16:00:00 liuxw+00139685 [AZ1D02187] */
-/* ĞÂÔöº¯Êı£ºÓÃsse4À´ÊµÏÖÏÔÊ¾¼ÓÈ¨(ËãÊõÔËËãÊÇ32Î»ÓĞ·ûºÅ²Ù×÷) */
+/* æ–°å¢å‡½æ•°ï¼šç”¨sse4æ¥å®ç°æ˜¾ç¤ºåŠ æƒ(ç®—æœ¯è¿ç®—æ˜¯32ä½æœ‰ç¬¦å·æ“ä½œ) */
 
 #undef H264_WEIGHT
 

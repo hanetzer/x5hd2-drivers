@@ -95,7 +95,7 @@ VFMW_MAX_SEG_NUM = 256
 VFMW_SCD_MSG_BUF = 64*1024 
 
 #################  product_stb_x6  ###########################
-## �������� scd_buffer ��ֵΪ 1024*1024; Ĭ��Ϊ 1024*1024*2 ## 
+## 用来控制 scd_buffer 阈值为 1024*1024; 默认为 1024*1024*2 ## 
 #VFMW_PRODUCT_STB_X6_SUPPORT = YES
 #VFMW_PRODUCT_STB_X6_SUPPORT = NO
 

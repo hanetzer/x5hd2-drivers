@@ -16,7 +16,7 @@ extern "C"{
 
 /***************************** Macro Definition ******************************/
 /** \addtogroup      H_3_5 */
-/** @{ */  /** <!¡ª[ECS error code]*/
+/** @{ */  /** <!â€”[ECS error code]*/
 #if 1
 #define SCROLLTEXT_CACHE_NUM 2
 #define SCROLLTEXT_NUM 2
@@ -41,7 +41,7 @@ typedef enum
 
 /*************************** Structure Definition ****************************/
 /** \addtogroup      H_2_3_2*/
-/** @{*/  /** <!¡ª[HiFB_SCROLLTEXT]*/
+/** @{*/  /** <!â€”[HiFB_SCROLLTEXT]*/
 
 /**Obtains the colorkey of a graphics layer.*/
 

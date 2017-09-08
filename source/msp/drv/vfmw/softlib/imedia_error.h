@@ -1,20 +1,20 @@
 /*******************************************************************************
 Copyright (C), 2009-2012, Huawei Tech. Co., Ltd.
 File name: imedia_error.h
-Author & ID: ËÎÐ¡¸Õ+00133955
+Author & ID: å®‹å°åˆš+00133955
 Version: 1.00
 Date:  2010-01-18
-Description: ±¾ÎÄ¼þ°üÀ¨ÁË·µ»ØÖµ¼°´íÎóÂë¶¨Òå
+Description: æœ¬æ–‡ä»¶åŒ…æ‹¬äº†è¿”å›žå€¼åŠé”™è¯¯ç å®šä¹‰
 Function List:
 History:
 * Revision 1.00  2009/12/18 10:00:00  songxg+00133955
-* ³õÊ¼°æ±¾±àÂëÍê³É
+* åˆå§‹ç‰ˆæœ¬ç¼–ç å®Œæˆ
 *
 * Revision 1.01  2010/01/21 14:15:00  songxg+00133955
-* ¸ù¾ÝÆÀÉóÒâ¼ûÐÞ¶¨´úÂë¹æ·¶¡¢½Ó¿ÚÐÞ¸ÄµÈ
+* æ ¹æ®è¯„å®¡æ„è§ä¿®å®šä»£ç è§„èŒƒã€æŽ¥å£ä¿®æ”¹ç­‰
 *
 * Revision 1.02  2010/04/29 16:10:00  guoshan+00101841
-* Ôö¼ÓH263/MPEG4´íÎóÀàÐÍ£¬²¢ÖØÐÂÕûÀí´íÎó·ÖÀà
+* å¢žåŠ H263/MPEG4é”™è¯¯ç±»åž‹ï¼Œå¹¶é‡æ–°æ•´ç†é”™è¯¯åˆ†ç±»
 *
 *******************************************************************************/
 #ifndef __IMEDIA_ERROR_H__
@@ -27,66 +27,66 @@ extern "C" {
 #endif    /* __cpluscplus*/
 #endif    /* __cpluscplus*/
 
-/** Ä£¿é·µ»ØÖµÃ¶¾ÙÀàÐÍ¶¨Òå */
+/** æ¨¡å—è¿”å›žå€¼æžšä¸¾ç±»åž‹å®šä¹‰ */
 typedef enum ENUM_IMEDIA_RETURN
 {
-    IMEDIA_RET_SUCCESS = 0,             /**< Õý³£·µ»Ø */
+    IMEDIA_RET_SUCCESS = 0,             /**< æ­£å¸¸è¿”å›ž */
     
-    /** ²ÎÊýÀàÎÊÌâ·µ»Ø */
-    IMEDIA_RET_PARAM_NULL = 0x0100,     /**< ²ÎÊýÖ¸ÕëÎª¿Õ */
-    IMEDIA_RET_PARAM_INVALID,           /**< ²ÎÊýÎÞÐ§ */
-    IMEDIA_RET_PARAM_IN_VALUE_NULL,     /**< ÊäÈë²ÎÊýÖµÖ¸ÕëÎª¿Õ */
-    IMEDIA_RET_PARAM_IN_VALUE_INVALID,  /**< ÊäÈë²ÎÊýÖµÎÞÐ§ */
-    IMEDIA_RET_PARAM_OUT_VALUE_NULL,    /**< Êä³ö²ÎÊýÖµÖ¸ÕëÎª¿Õ */
-    IMEDIA_RET_PARAM_OUT_VALUE_INVALID, /**< Êä³ö²ÎÊýÖµÎÞÐ§ */
-    IMEDIA_RET_PARAM_NOT_ENOUGH,        /**< ²ÎÊý²»×ã */
+    /** å‚æ•°ç±»é—®é¢˜è¿”å›ž */
+    IMEDIA_RET_PARAM_NULL = 0x0100,     /**< å‚æ•°æŒ‡é’ˆä¸ºç©º */
+    IMEDIA_RET_PARAM_INVALID,           /**< å‚æ•°æ— æ•ˆ */
+    IMEDIA_RET_PARAM_IN_VALUE_NULL,     /**< è¾“å…¥å‚æ•°å€¼æŒ‡é’ˆä¸ºç©º */
+    IMEDIA_RET_PARAM_IN_VALUE_INVALID,  /**< è¾“å…¥å‚æ•°å€¼æ— æ•ˆ */
+    IMEDIA_RET_PARAM_OUT_VALUE_NULL,    /**< è¾“å‡ºå‚æ•°å€¼æŒ‡é’ˆä¸ºç©º */
+    IMEDIA_RET_PARAM_OUT_VALUE_INVALID, /**< è¾“å‡ºå‚æ•°å€¼æ— æ•ˆ */
+    IMEDIA_RET_PARAM_NOT_ENOUGH,        /**< å‚æ•°ä¸è¶³ */
     
-    IMEDIA_RET_PARAM_OTHER = 0x01FF,    /**< ²ÎÊýÀàÆäËüÎÊÌâ */
+    IMEDIA_RET_PARAM_OTHER = 0x01FF,    /**< å‚æ•°ç±»å…¶å®ƒé—®é¢˜ */
     
-    /** ¶ÔÏóÀàÎÊÌâ·µ»Ø */
-    IMEDIA_RET_OBJ_NULL = 0x0200,       /**< ¶ÔÏóÖ¸ÕëÎª¿Õ */
-    IMEDIA_RET_OBJ_BAD_MASK,            /**< ¶ÔÏó·À´íÂë»Ù»µ */
-    IMEDIA_RET_OBJ_INVALID,             /**< ÎÞÐ§¶ÔÏó */
-    IMEDIA_RET_OBJ_NOT_FOUND,           /**< ¶ÔÏóÃ»ÕÒµ½ */
-    IMEDIA_RET_OBJ_CREATE_FAIL,         /**< ¶ÔÏó´´½¨Ê§°Ü */
-    IMEDIA_RET_OBJ_NOT_INIT,            /**< ¶ÔÏóÎ´³õÊ¼»¯ */
-    IMEDIA_RET_OBJ_DELETE_FAIL,         /**< ¶ÔÏóÉ¾³ýÊ§°Ü */
+    /** å¯¹è±¡ç±»é—®é¢˜è¿”å›ž */
+    IMEDIA_RET_OBJ_NULL = 0x0200,       /**< å¯¹è±¡æŒ‡é’ˆä¸ºç©º */
+    IMEDIA_RET_OBJ_BAD_MASK,            /**< å¯¹è±¡é˜²é”™ç æ¯å */
+    IMEDIA_RET_OBJ_INVALID,             /**< æ— æ•ˆå¯¹è±¡ */
+    IMEDIA_RET_OBJ_NOT_FOUND,           /**< å¯¹è±¡æ²¡æ‰¾åˆ° */
+    IMEDIA_RET_OBJ_CREATE_FAIL,         /**< å¯¹è±¡åˆ›å»ºå¤±è´¥ */
+    IMEDIA_RET_OBJ_NOT_INIT,            /**< å¯¹è±¡æœªåˆå§‹åŒ– */
+    IMEDIA_RET_OBJ_DELETE_FAIL,         /**< å¯¹è±¡åˆ é™¤å¤±è´¥ */
     
-    IMEDIA_RET_OBJ_OTHER = 0x02FF,      /**< ¶ÔÏóÀàÆäËûÎÊÌâ */
+    IMEDIA_RET_OBJ_OTHER = 0x02FF,      /**< å¯¹è±¡ç±»å…¶ä»–é—®é¢˜ */
     
-    /** »º´æ£¨ÂëÁ÷£©ÀàÎÊÌâ·µ»Ø */
-    IMEDIA_RET_MEM_MALLOC_FAIL = 0x0400,/**< ÄÚ´æ·ÖÅäÊ§°Ü */
-    IMEDIA_RET_MEM_FREE_FAIL,           /**< ÄÚ´æÊÍ·ÅÊ§°Ü */
-    IMEDIA_RET_BUF_NULL,                /**< »º´æÖ¸ÕëÎª¿Õ */
-    IMEDIA_RET_BUF_BAD_MASK,            /**< »º´æ·À´íÂë»Ù»µ */
-    IMEDIA_RET_BUF_INVALID,             /**< ÂëÁ÷ÎÞÐ§£¬ÎÞ·¨Ê¶±ð¸ñÊ½ */
-    IMEDIA_RET_BUF_OVER_FLOW,           /**< »º´æÒç³ö */
-    IMEDIA_RET_BUF_ADDR_NOT_ALIGN,      /**< »º´æµØÖ·Î´¶ÔÆë */
-    IMEDIA_RET_BUF_SIZE_NOT_ALIGN,      /**< »º´æ´óÐ¡Î´¶ÔÆë */
-    IMEDIA_RET_BUF_SIZE_NOT_ENOUGH,     /**< »º´æ´óÐ¡²»¹» */
+    /** ç¼“å­˜ï¼ˆç æµï¼‰ç±»é—®é¢˜è¿”å›ž */
+    IMEDIA_RET_MEM_MALLOC_FAIL = 0x0400,/**< å†…å­˜åˆ†é…å¤±è´¥ */
+    IMEDIA_RET_MEM_FREE_FAIL,           /**< å†…å­˜é‡Šæ”¾å¤±è´¥ */
+    IMEDIA_RET_BUF_NULL,                /**< ç¼“å­˜æŒ‡é’ˆä¸ºç©º */
+    IMEDIA_RET_BUF_BAD_MASK,            /**< ç¼“å­˜é˜²é”™ç æ¯å */
+    IMEDIA_RET_BUF_INVALID,             /**< ç æµæ— æ•ˆï¼Œæ— æ³•è¯†åˆ«æ ¼å¼ */
+    IMEDIA_RET_BUF_OVER_FLOW,           /**< ç¼“å­˜æº¢å‡º */
+    IMEDIA_RET_BUF_ADDR_NOT_ALIGN,      /**< ç¼“å­˜åœ°å€æœªå¯¹é½ */
+    IMEDIA_RET_BUF_SIZE_NOT_ALIGN,      /**< ç¼“å­˜å¤§å°æœªå¯¹é½ */
+    IMEDIA_RET_BUF_SIZE_NOT_ENOUGH,     /**< ç¼“å­˜å¤§å°ä¸å¤Ÿ */
     
-    IMEDIA_RET_BUF_OTHER = 0x04FF,      /**< ²ÎÊýÀàÆäËüÎÊÌâ */
+    IMEDIA_RET_BUF_OTHER = 0x04FF,      /**< å‚æ•°ç±»å…¶å®ƒé—®é¢˜ */
 
-    /** ÎÄ¼þ²Ù×÷ÀàÎÊÌâ·µ»Ø */
-    IMEDIA_RET_FILE_OPEN_FAIL = 0x0800, /**< ´ò¿ªÎÄ¼þÊ§°Ü */
-    IMEDIA_RET_FILE_READ_FAIL,          /**< ÎÄ¼þ¶ÁÈ¡Ê§°Ü */
-    IMEDIA_RET_FILE_WRITE_FAIL,         /**< ÎÄ¼þÐ´ÈëÊ§°Ü */
-    IMEDIA_RET_FILE_CLOSE_FAIL,         /**< ¹Ø±ÕÎÄ¼þÊ§°Ü */
+    /** æ–‡ä»¶æ“ä½œç±»é—®é¢˜è¿”å›ž */
+    IMEDIA_RET_FILE_OPEN_FAIL = 0x0800, /**< æ‰“å¼€æ–‡ä»¶å¤±è´¥ */
+    IMEDIA_RET_FILE_READ_FAIL,          /**< æ–‡ä»¶è¯»å–å¤±è´¥ */
+    IMEDIA_RET_FILE_WRITE_FAIL,         /**< æ–‡ä»¶å†™å…¥å¤±è´¥ */
+    IMEDIA_RET_FILE_CLOSE_FAIL,         /**< å…³é—­æ–‡ä»¶å¤±è´¥ */
 
-    IMEDIA_RET_FILE_OTHER = 0x08FF,     /**< ÎÄ¼þ²Ù×÷ÀàÆäËûÎÊÌâ */
+    IMEDIA_RET_FILE_OTHER = 0x08FF,     /**< æ–‡ä»¶æ“ä½œç±»å…¶ä»–é—®é¢˜ */
     
-    /** ¿ØÖÆÃüÁîÀàÎÊÌâ·µ»Ø */
+    /** æŽ§åˆ¶å‘½ä»¤ç±»é—®é¢˜è¿”å›ž */
     IMEDIA_RET_CMD_INVALID = 0x1000,
 
-    /** ÎÊÌâ·µ»Ø */
+    /** é—®é¢˜è¿”å›ž */
     IMEDIA_RET_DECODE_INTERRUPT = 0x2000,
     IMEDIA_RET_ENCODE_INTERRUPT,
     
-    /** ÆäËûÎÊÌâ·µ»Ø */
+    /** å…¶ä»–é—®é¢˜è¿”å›ž */
     IMEDIA_RET_OTHER = 0x8000,
 } ENUM_IMEDIA_RETURN;
 
-/** Ëã·¨´íÎóºÅÃ¶¾ÙÀàÐÍ¶¨Òå */
+/** ç®—æ³•é”™è¯¯å·æžšä¸¾ç±»åž‹å®šä¹‰ */
 /**
 typedef struct STRU_IMEDIA_ERROR_CODE
 {
@@ -130,85 +130,85 @@ typedef struct STRU_IMEDIA_ERROR_CODE
 #define IMEDIA_GET_ERR_RESIDUAL(e)    (((e) & IMEDIA_ERROR_MASK_RESIDUAL) >> IMEDIA_ERROR_BITS_RESIDUAL)
 #define IMEDIA_GET_ERR_RESERVED(e)     ((e) & IMEDIA_ERROR_MASK_RESERVED)
 
-/**ÐòÁÐÍ·´íÎóºÅÃ¶¾ÙÀàÐÍ*/
+/**åºåˆ—å¤´é”™è¯¯å·æžšä¸¾ç±»åž‹*/
 typedef enum ENUM_IMEDIA_ERROR_SEQ
 {
     IMEDIA_ERR_SEQ_NO_ERROR = 0,
-    IMEDIA_ERR_SEQ_PROFILE_LEVEL,          /**< ÎÞ´íÎó */
-    IMEDIA_ERR_SEQ_BIT_DEPTH,              /**< luma/chroma bit_depthÀà´íÎó */
-    IMEDIA_ERR_SEQ_FRAME_NUM,              /**< Í¼ÏñÖ¡ÊýÀà´íÎó£¬Èç½âÂëÖ¡Êý£¬²Î¿¼Ö¡ÊýµÈ */
-    IMEDIA_ERR_SEQ_SIZE,                   /**< Í¼Ïñ³ß´çÀà´íÎó */
-    IMEDIA_ERR_SEQ_TIME_FRAMERATE,         /**< Í¼ÏñÊ±¼ä´Á£¬Ö¡ÂÊÀà´íÎó */
-    IMEDIA_ERR_SEQ_COLOR_SPACE,            /**< É«¶È¿Õ¼ä´íÎó */
-    IMEDIA_ERR_SEQ_ID,                     /**< ÂëÁ÷ÖÐidÀà´íÎó */
-    IMEDIA_ERR_SEQ_QUANT,                  /**< Á¿»¯¾ØÕó£¬Á¿»¯¾«¶ÈÀà´íÎó */
-    IMEDIA_ERR_SEQ_MARKER,                 /**< ¹¦ÄÜ¿ª¹Ø£¬±ÈÌØÖÃÎ»Àà´íÎó */
-    IMEDIA_ERR_SEQ_SHAPE,                  /**< Í¼ÏñÐÎ×´Àà´íÎó */
+    IMEDIA_ERR_SEQ_PROFILE_LEVEL,          /**< æ— é”™è¯¯ */
+    IMEDIA_ERR_SEQ_BIT_DEPTH,              /**< luma/chroma bit_depthç±»é”™è¯¯ */
+    IMEDIA_ERR_SEQ_FRAME_NUM,              /**< å›¾åƒå¸§æ•°ç±»é”™è¯¯ï¼Œå¦‚è§£ç å¸§æ•°ï¼Œå‚è€ƒå¸§æ•°ç­‰ */
+    IMEDIA_ERR_SEQ_SIZE,                   /**< å›¾åƒå°ºå¯¸ç±»é”™è¯¯ */
+    IMEDIA_ERR_SEQ_TIME_FRAMERATE,         /**< å›¾åƒæ—¶é—´æˆ³ï¼Œå¸§çŽ‡ç±»é”™è¯¯ */
+    IMEDIA_ERR_SEQ_COLOR_SPACE,            /**< è‰²åº¦ç©ºé—´é”™è¯¯ */
+    IMEDIA_ERR_SEQ_ID,                     /**< ç æµä¸­idç±»é”™è¯¯ */
+    IMEDIA_ERR_SEQ_QUANT,                  /**< é‡åŒ–çŸ©é˜µï¼Œé‡åŒ–ç²¾åº¦ç±»é”™è¯¯ */
+    IMEDIA_ERR_SEQ_MARKER,                 /**< åŠŸèƒ½å¼€å…³ï¼Œæ¯”ç‰¹ç½®ä½ç±»é”™è¯¯ */
+    IMEDIA_ERR_SEQ_SHAPE,                  /**< å›¾åƒå½¢çŠ¶ç±»é”™è¯¯ */
 
-    IMEDIA_ERR_SEQ_OTHER = 0x0F,           /**< ÆäËüÎÊÌâ */
+    IMEDIA_ERR_SEQ_OTHER = 0x0F,           /**< å…¶å®ƒé—®é¢˜ */
 } ENUM_IMEDIA_ERROR_SEQ;
 
-/**Ö¡Í·´íÎóºÅÃ¶¾ÙÀàÐÍ*/
+/**å¸§å¤´é”™è¯¯å·æžšä¸¾ç±»åž‹*/
 typedef enum ENUM_IMEDIA_ERROR_PIC
 {
-    IMEDIA_ERR_PIC_NO_ERROR = 0,           /**< ÎÞ´íÎó */
-    IMEDIA_ERR_PIC_ID,                     /**< Í¼ÏñidÀà´íÎó */
-    IMEDIA_ERR_PIC_SLICE_GROUP_COUNT,      /**< pps ËùÖ¸Ïòslice group¸öÊý²»ºÏ·¨ */
-    IMEDIA_ERR_PIC_REF,                    /**< ²Î¿¼Ö¡Àà´íÎó */
-    IMEDIA_ERR_PIC_FRAME_TYPE,             /**< Í¼ÏñÀàÐÍÀà´íÎó */
-    IMEDIA_ERR_PIC_MARKER,                 /**< Í¼Ïñ¸÷±ÈÌØ±êÖ¾Î»Àà´íÎó */
-    IMEDIA_ERR_PIC_QP,                     /**< Í¼ÏñQPÀà´íÎó */
-    IMEDIA_ERR_PIC_FCODE,                  /**< Í¼ÏñF_CODEÀà´íÎó */
+    IMEDIA_ERR_PIC_NO_ERROR = 0,           /**< æ— é”™è¯¯ */
+    IMEDIA_ERR_PIC_ID,                     /**< å›¾åƒidç±»é”™è¯¯ */
+    IMEDIA_ERR_PIC_SLICE_GROUP_COUNT,      /**< pps æ‰€æŒ‡å‘slice groupä¸ªæ•°ä¸åˆæ³• */
+    IMEDIA_ERR_PIC_REF,                    /**< å‚è€ƒå¸§ç±»é”™è¯¯ */
+    IMEDIA_ERR_PIC_FRAME_TYPE,             /**< å›¾åƒç±»åž‹ç±»é”™è¯¯ */
+    IMEDIA_ERR_PIC_MARKER,                 /**< å›¾åƒå„æ¯”ç‰¹æ ‡å¿—ä½ç±»é”™è¯¯ */
+    IMEDIA_ERR_PIC_QP,                     /**< å›¾åƒQPç±»é”™è¯¯ */
+    IMEDIA_ERR_PIC_FCODE,                  /**< å›¾åƒF_CODEç±»é”™è¯¯ */
 
-    IMEDIA_ERR_PIC_OTHER = 0x0F,           /**< ÆäËüÎÊÌâ */
+    IMEDIA_ERR_PIC_OTHER = 0x0F,           /**< å…¶å®ƒé—®é¢˜ */
 } ENUM_IMEDIA_ERROR_PIC;
 
-/**sliceÍ·´íÎóºÅÃ¶¾ÙÀàÐÍ*/
+/**sliceå¤´é”™è¯¯å·æžšä¸¾ç±»åž‹*/
 typedef enum ENUM_IMEDIA_ERROR_SLICE
 {
     IMEDIA_ERR_SLICE_NO_ERROR = 0,
-    IMEDIA_ERR_SLICE_TYPE,                /**< slice typeÊÇ·ñºÏ·¨ */
-    IMEDIA_ERR_SLICE_ID,                  /**< slice idÀà´íÎó */
-    IMEDIA_ERR_SLICE_ADDR,                /**< sliceµØÖ·Àà´íÎó */       
-    IMEDIA_ERR_SLICE_REF,                 /**< sliceÖÐ²Î¿¼Ö¡ÀàÎÊÌâ */
-    IMEDIA_ERR_SLICE_VLC,                 /**< sliceìØ±àÂëÀàÎÊÌâ */
-    IMEDIA_ERR_SLICE_WEIGHTED,            /**< ¼ÓÈ¨Ïà¹Ø²ÎÊýÀà´íÎó */
-    IMEDIA_ERR_SLICE_QP,                  /**< slice qpÀà´íÎó */
-    IMEDIA_ERR_SLICE_DEBLOCKING,          /**< deblockingÀà´íÎó */
-    IMEDIA_ERR_SLICE_NUM,                 /**< sliceÖÐslice»òmbÊýÄ¿Àà´íÎó */
-    IMEDIA_ERR_SLICE_BITS,                /**< sliceÖÐËùºÄ·Ñ±ÈÌØÊý´íÎó */
-    IMEDIA_ERR_SLICE_MARKER,              /**< ±ê¼ÇÀà´íÎó */
+    IMEDIA_ERR_SLICE_TYPE,                /**< slice typeæ˜¯å¦åˆæ³• */
+    IMEDIA_ERR_SLICE_ID,                  /**< slice idç±»é”™è¯¯ */
+    IMEDIA_ERR_SLICE_ADDR,                /**< sliceåœ°å€ç±»é”™è¯¯ */       
+    IMEDIA_ERR_SLICE_REF,                 /**< sliceä¸­å‚è€ƒå¸§ç±»é—®é¢˜ */
+    IMEDIA_ERR_SLICE_VLC,                 /**< sliceç†µç¼–ç ç±»é—®é¢˜ */
+    IMEDIA_ERR_SLICE_WEIGHTED,            /**< åŠ æƒç›¸å…³å‚æ•°ç±»é”™è¯¯ */
+    IMEDIA_ERR_SLICE_QP,                  /**< slice qpç±»é”™è¯¯ */
+    IMEDIA_ERR_SLICE_DEBLOCKING,          /**< deblockingç±»é”™è¯¯ */
+    IMEDIA_ERR_SLICE_NUM,                 /**< sliceä¸­sliceæˆ–mbæ•°ç›®ç±»é”™è¯¯ */
+    IMEDIA_ERR_SLICE_BITS,                /**< sliceä¸­æ‰€è€—è´¹æ¯”ç‰¹æ•°é”™è¯¯ */
+    IMEDIA_ERR_SLICE_MARKER,              /**< æ ‡è®°ç±»é”™è¯¯ */
 
-    IMEDIA_ERR_SLICE_OTHER = 0x0F,        /**< ÆäËüÎÊÌâ */
+    IMEDIA_ERR_SLICE_OTHER = 0x0F,        /**< å…¶å®ƒé—®é¢˜ */
 } ENUM_IMEDIA_ERROR_SLICE;
 
-/**ºê¿éÍ·´íÎóºÅÃ¶¾ÙÀàÐÍ*/
+/**å®å—å¤´é”™è¯¯å·æžšä¸¾ç±»åž‹*/
 typedef enum ENUM_IMEDIA_ERROR_MB
 {
     IMEDIA_ERR_MB_NO_ERROR = 0, 
-    IMEDIA_ERR_MB_SKIP_MB_RUN,         /**< skip_mb_run²»ºÏ·¨ */
-    IMEDIA_ERR_MB_TYPE,                /**< mb typeÀà´íÎó */
-    IMEDIA_ERR_MB_MODE,                /**< Ô¤²âÄ£Ê½Àà´íÎó */
-    IMEDIA_ERR_MB_REF,                 /**< ²Î¿¼Ö¡Àà´íÎó */
-    IMEDIA_ERR_MB_CBP,                 /**< cbpÀà´íÎó */
-    IMEDIA_ERR_MB_QP,                  /**< qpÀà´íÎó */
-    IMEDIA_ERR_MB_MV,                  /**< mvÀà´íÎó */
-    IMEDIA_ERR_MB_MARKER,              /**< ±ê¼ÇÀà´íÎó */
+    IMEDIA_ERR_MB_SKIP_MB_RUN,         /**< skip_mb_runä¸åˆæ³• */
+    IMEDIA_ERR_MB_TYPE,                /**< mb typeç±»é”™è¯¯ */
+    IMEDIA_ERR_MB_MODE,                /**< é¢„æµ‹æ¨¡å¼ç±»é”™è¯¯ */
+    IMEDIA_ERR_MB_REF,                 /**< å‚è€ƒå¸§ç±»é”™è¯¯ */
+    IMEDIA_ERR_MB_CBP,                 /**< cbpç±»é”™è¯¯ */
+    IMEDIA_ERR_MB_QP,                  /**< qpç±»é”™è¯¯ */
+    IMEDIA_ERR_MB_MV,                  /**< mvç±»é”™è¯¯ */
+    IMEDIA_ERR_MB_MARKER,              /**< æ ‡è®°ç±»é”™è¯¯ */
 
-    IMEDIA_ERR_MB_OTHER = 0x0F,        /**< ºê¿éÖÐÆäËü´íÎó */
+    IMEDIA_ERR_MB_OTHER = 0x0F,        /**< å®å—ä¸­å…¶å®ƒé”™è¯¯ */
 } ENUM_IMEDIA_ERROR_MB;
 
-/**²Ð²îÊý¾Ý´íÎóºÅÃ¶¾ÙÀàÐÍ*/
+/**æ®‹å·®æ•°æ®é”™è¯¯å·æžšä¸¾ç±»åž‹*/
 typedef enum ENUM_IMEDIA_ERROR_RESIDUAL
 {
     IMEDIA_ERR_RESIDUAL_NO_ERROR = 0,
-    IMEDIA_ERR_RESIDUAL_DC,            /**< DC´íÎó */
-    IMEDIA_ERR_RESIDUAL_AC,            /**< AC´íÎó */
-    IMEDIA_ERR_RESIDUAL_TOTAL_COEFF,   /**< cavlc½âÂëÖÐtotal coeff²ÎÊý´íÎó */
-    IMEDIA_ERR_RESIDUAL_ZERO_LEFT,     /**< cavlc½âÂëÖÐzero left²ÎÊý´íÎó */
-    IMEDIA_ERR_RESIDUAL_LEVEL,         /**< ìØ½âÂëÖÐlevelÀà´íÎó */
+    IMEDIA_ERR_RESIDUAL_DC,            /**< DCé”™è¯¯ */
+    IMEDIA_ERR_RESIDUAL_AC,            /**< ACé”™è¯¯ */
+    IMEDIA_ERR_RESIDUAL_TOTAL_COEFF,   /**< cavlcè§£ç ä¸­total coeffå‚æ•°é”™è¯¯ */
+    IMEDIA_ERR_RESIDUAL_ZERO_LEFT,     /**< cavlcè§£ç ä¸­zero leftå‚æ•°é”™è¯¯ */
+    IMEDIA_ERR_RESIDUAL_LEVEL,         /**< ç†µè§£ç ä¸­levelç±»é”™è¯¯ */
 
-    IMEDIA_ERR_RESIDUAL_OTHER = 0x0F,  /**< ÆäËüÎÊÌâ */
+    IMEDIA_ERR_RESIDUAL_OTHER = 0x0F,  /**< å…¶å®ƒé—®é¢˜ */
 } ENUM_IMEDIA_ERROR_RESIDUAL;
 
 #ifdef __cplusplus

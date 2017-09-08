@@ -40,60 +40,60 @@
 #define NDPT_IP_TOS_DEFAULT     (46<<2)     //DSCP EF
 
 /*extern interface*/
-/*CNcomment:Íâ²¿½Ó¿Ú*/
+/*CNcomment:å¤–éƒ¨æŽ¥å£*/
 typedef enum
 {
     LOOPBACK_NONE   = 0,    
-    SEND_BACK,	          /*send-circle,data is neither sent to remote nor received from remote*/ /*CNcomment:·¢ËÍ»·»Ø£¬Êý¾Ý²»·¢ËÍµ½Ô¶¶Ë£¬Ò²²»½ÓÊÕÔ¶¶ËµÄÊý¾Ý*/
-    SEND_BACK_AND_OUT,    /*send-circle,data is sent to remote,but refuse data from remote*/ /*CNcomment:·¢ËÍ»·»Ø£¬Í¬Ê±Êý¾Ý·¢ËÍµ½Ô¶¶Ë£¬µ«²»½ÓÊÕÔ¶¶ËµÄÊý¾Ý*/
-    REV_BACK,             /*receive-circle,host neither send data to remote nor receive from remote*/ /*CNcomment:½ÓÊÕ»·»Ø£¬±¾»ú²»½ÓÊÕÔ¶¶ËÊý¾Ý£¬Ò²²»ÏòÔ¶¶Ë·¢ËÍÊý¾Ý*/
-    REV_BACK_AND_IN,      /*receive-circle,host receive data from remote , but will not send data to remote*/ /*CNcomment:½ÓÊÕ»·»Ø£¬±¾»ú½ÓÊÕÔ¶¶ËÊý¾Ý£¬µ«²»ÏòÔ¶¶Ë·¢ËÍÊý¾Ý*/
-    ALL_BACK,             /*nocircle for both send and receive,REV_BACK and SEND_BACK will be executing at the same time*/ /*CNcomment:·¢ËÍºÍ½ÓÊÕ¶¼»·»Ø£¬¼´SEND_BACK ºÍREV_BACKÍ¬Ê±Ö´ÐÐ*/
+    SEND_BACK,	          /*send-circle,data is neither sent to remote nor received from remote*/ /*CNcomment:å‘é€çŽ¯å›žï¼Œæ•°æ®ä¸å‘é€åˆ°è¿œç«¯ï¼Œä¹Ÿä¸æŽ¥æ”¶è¿œç«¯çš„æ•°æ®*/
+    SEND_BACK_AND_OUT,    /*send-circle,data is sent to remote,but refuse data from remote*/ /*CNcomment:å‘é€çŽ¯å›žï¼ŒåŒæ—¶æ•°æ®å‘é€åˆ°è¿œç«¯ï¼Œä½†ä¸æŽ¥æ”¶è¿œç«¯çš„æ•°æ®*/
+    REV_BACK,             /*receive-circle,host neither send data to remote nor receive from remote*/ /*CNcomment:æŽ¥æ”¶çŽ¯å›žï¼Œæœ¬æœºä¸æŽ¥æ”¶è¿œç«¯æ•°æ®ï¼Œä¹Ÿä¸å‘è¿œç«¯å‘é€æ•°æ®*/
+    REV_BACK_AND_IN,      /*receive-circle,host receive data from remote , but will not send data to remote*/ /*CNcomment:æŽ¥æ”¶çŽ¯å›žï¼Œæœ¬æœºæŽ¥æ”¶è¿œç«¯æ•°æ®ï¼Œä½†ä¸å‘è¿œç«¯å‘é€æ•°æ®*/
+    ALL_BACK,             /*nocircle for both send and receive,REV_BACK and SEND_BACK will be executing at the same time*/ /*CNcomment:å‘é€å’ŒæŽ¥æ”¶éƒ½çŽ¯å›žï¼Œå³SEND_BACK å’ŒREV_BACKåŒæ—¶æ‰§è¡Œ*/
     LOOPBACK_MAX,
 }NDPT_LOOPBACK_MODE_E;
 
 /*change-flags for net parameter struct*/
-/*CNcomment:ÍøÂç²ÎÊý½á¹¹±ä¸ü±êÖ¾Î» */
+/*CNcomment:ç½‘ç»œå‚æ•°ç»“æž„å˜æ›´æ ‡å¿—ä½ */
 typedef struct
 {
-   HI_U32   bit1SrcIP:1;    /*change-flag for source ip, 32SrcIPLen and u8SrcIP[16] have be changed*/ /*CNcomment:source ip±ä¸ü±ê¼Ç, 32SrcIPLenºÍu8SrcIP[16]ÓÐ¸ü¸Ä*/ 
-   HI_U32   bit1DstIP:1;    /*change-flag for dest ip, u32DstIPLen and u8DstIP[16] have be changed*/ /*CNcomment:dest ip±ä¸ü±ê¼Ç, u32DstIPLenºÍu8DstIP[16]ÓÐ¸ü¸Ä*/ 
-   HI_U32   bit1SrcPort:1;  /*change-flag for source port, u16SrcPort has be changed*/ /*CNcomment:source port ±ä¸ü±ê¼Ç,u16SrcPortÓÐ¸ü¸Ä*/ 
-   HI_U32   bit1DstPort:1;	/*change-flag for dest port, u16DstPort has be changed*/ /*CNcomment:dest port±ä¸ü±ê¼Ç,u16DstPortÓÐ¸ü¸Ä*/ 
-   HI_U32   bit1IPTos:1;	/*change-flag for IP service type,u32IPTos and u32Mask have be changed*/ /*CNcomment:IP·þÎñÀàÐÍ±ä¸ü±ê¼Ç,u32IPTosºÍu32MaskÓÐ¸ü¸Ä*/ 
-   HI_U32   bit1Vlan:1;		/*change-flag for Vlan, u32VlanEn,u32VlanPri,u32VlanPid have be changed, reserved*/ /*CNcomment:Vlan±ä¸ü±ê¼Ç,u32VlanEn,u32VlanPri,u32VlanPidÓÐ¸ü¸Ä£¬±£Áô*/ 
-   HI_U32   bit1Protocol:1;	/*change-flag for protocol type, only support IPV4, reserved*/ /*CNcomment:Ð­ÒéÀàÐÍ±ä¸ü±ê¼Ç£¬Ä¿Ç°Ö»Ö§³ÖIPV4,±£Áô*/ 
+   HI_U32   bit1SrcIP:1;    /*change-flag for source ip, 32SrcIPLen and u8SrcIP[16] have be changed*/ /*CNcomment:source ipå˜æ›´æ ‡è®°, 32SrcIPLenå’Œu8SrcIP[16]æœ‰æ›´æ”¹*/ 
+   HI_U32   bit1DstIP:1;    /*change-flag for dest ip, u32DstIPLen and u8DstIP[16] have be changed*/ /*CNcomment:dest ipå˜æ›´æ ‡è®°, u32DstIPLenå’Œu8DstIP[16]æœ‰æ›´æ”¹*/ 
+   HI_U32   bit1SrcPort:1;  /*change-flag for source port, u16SrcPort has be changed*/ /*CNcomment:source port å˜æ›´æ ‡è®°,u16SrcPortæœ‰æ›´æ”¹*/ 
+   HI_U32   bit1DstPort:1;	/*change-flag for dest port, u16DstPort has be changed*/ /*CNcomment:dest portå˜æ›´æ ‡è®°,u16DstPortæœ‰æ›´æ”¹*/ 
+   HI_U32   bit1IPTos:1;	/*change-flag for IP service type,u32IPTos and u32Mask have be changed*/ /*CNcomment:IPæœåŠ¡ç±»åž‹å˜æ›´æ ‡è®°,u32IPToså’Œu32Maskæœ‰æ›´æ”¹*/ 
+   HI_U32   bit1Vlan:1;		/*change-flag for Vlan, u32VlanEn,u32VlanPri,u32VlanPid have be changed, reserved*/ /*CNcomment:Vlanå˜æ›´æ ‡è®°,u32VlanEn,u32VlanPri,u32VlanPidæœ‰æ›´æ”¹ï¼Œä¿ç•™*/ 
+   HI_U32   bit1Protocol:1;	/*change-flag for protocol type, only support IPV4, reserved*/ /*CNcomment:åè®®ç±»åž‹å˜æ›´æ ‡è®°ï¼Œç›®å‰åªæ”¯æŒIPV4,ä¿ç•™*/ 
    HI_U32   bit25Resv:25;         
 }NDPT_NET_CHANGE_FLAG_S;
 
 /*net parameter config*/
-/*CNcomment:ÍøÂç²ÎÊýÅäÖÃ */
+/*CNcomment:ç½‘ç»œå‚æ•°é…ç½® */
 typedef struct
 {
-    HI_U32 sip_len;      /*length of source ip address, IPV4:4, IPV6:16, other length is invalid*/ /*CNcomment:ipµØÖ·³¤¶È£¬4(IPV4)»ò16(IPV6)£¬ÆäËüÖµÎÞÐ§*/
+    HI_U32 sip_len;      /*length of source ip address, IPV4:4, IPV6:16, other length is invalid*/ /*CNcomment:ipåœ°å€é•¿åº¦ï¼Œ4(IPV4)æˆ–16(IPV6)ï¼Œå…¶å®ƒå€¼æ— æ•ˆ*/
     HI_U8 sip[16];       /*source ip, IPV4:4 bytes, IPV6:16 bytes,ip can't be string, eg: 4 bytes order is 192,168,1,1 for source ip 192.168.1.1*/
-                         /*CNcomment:source ip£¬4×Ö½Ú(IPV4)»ò16×Ö½Ú(IPV6)£¬²»ÊÇ×Ö·û´®£¬ÒÔ192.168.1.1ÎªÀý£¬4×Ö½ÚÒÀ´ÎÎª192,168,1,1*/
-    HI_U32 dip_len;      /*length of dest ip address, IPV4:4, IPV6:16, other length is invalid*/ /*CNcomment:ipµØÖ·³¤¶È£¬4(IPV4)»ò16(IPV6)£¬ÆäËüÖµÎÞÐ§*/
+                         /*CNcomment:source ipï¼Œ4å­—èŠ‚(IPV4)æˆ–16å­—èŠ‚(IPV6)ï¼Œä¸æ˜¯å­—ç¬¦ä¸²ï¼Œä»¥192.168.1.1ä¸ºä¾‹ï¼Œ4å­—èŠ‚ä¾æ¬¡ä¸º192,168,1,1*/
+    HI_U32 dip_len;      /*length of dest ip address, IPV4:4, IPV6:16, other length is invalid*/ /*CNcomment:ipåœ°å€é•¿åº¦ï¼Œ4(IPV4)æˆ–16(IPV6)ï¼Œå…¶å®ƒå€¼æ— æ•ˆ*/
     HI_U8 dip[16];       /*dest ip, IPV4:4, IPV6:16, ip can't be string*/
-                         /*CNcomment:dest ip£¬4×Ö½Ú(IPV4)»ò16×Ö½Ú(IPV6)£¬²»ÊÇ×Ö·û´®*/
-    HI_U16 sport;        /*port number of source RTP, it should be even, the releated RTCP port number is sport+1*/ /*CNcomment:source RTP ¶Ë¿ÚºÅ£¬Ó¦ÎªÅ¼Êý£»¶ÔÓ¦RTCP¶Ë¿ÚºÅÎª¸ÃÊýÖµ+1 */
-    HI_U16 dport;        /*port number of dest RTP, it should be even, the releated RTCP port number is dport+1*/ /*CNcomment:dest RTP ¶Ë¿ÚºÅ£¬Ó¦ÎªÅ¼Êý£»¶ÔÓ¦RTCP¶Ë¿ÚºÅÎª¸ÃÊýÖµ+1 */
+                         /*CNcomment:dest ipï¼Œ4å­—èŠ‚(IPV4)æˆ–16å­—èŠ‚(IPV6)ï¼Œä¸æ˜¯å­—ç¬¦ä¸²*/
+    HI_U16 sport;        /*port number of source RTP, it should be even, the releated RTCP port number is sport+1*/ /*CNcomment:source RTP ç«¯å£å·ï¼Œåº”ä¸ºå¶æ•°ï¼›å¯¹åº”RTCPç«¯å£å·ä¸ºè¯¥æ•°å€¼+1 */
+    HI_U16 dport;        /*port number of dest RTP, it should be even, the releated RTCP port number is dport+1*/ /*CNcomment:dest RTP ç«¯å£å·ï¼Œåº”ä¸ºå¶æ•°ï¼›å¯¹åº”RTCPç«¯å£å·ä¸ºè¯¥æ•°å€¼+1 */
 
     HI_U32 mask;         /*bit0: u32IPTos valid;*/ /*CNcomment:bit0: u32IPTos valid;*/
-    HI_U32 ip_tos;       /*8 bits for IP server type*/ /*CNcomment:IP·þÎñÀàÐÍ,8bit*/
-    HI_U32 vlan_en;      /*1:enable vlan, 0:disable vlan, reserved*/ /*CNcomment:vlanÊ¹ÄÜ: 0--vlan ÎÞÐ§,1--vlan ÓÐÐ§,±£Áô*/
-    HI_U32 vlan_pri;     /*3 bits for priority of vlan, valid when u32VlanEn==1, reserved*/ /*CNcomment:vlanÓÅÏÈ¼¶,3bit, u32VlanEnÎª1Ê±ÓÐÐ§£¬±£Áô*/
-    HI_U32 vlan_pid;     /*vlan pid, 12bit, valid when u32VlanEn==1, reserved*/ /*CNcomment:vlan pid, 12bit, u32VlanEnÎª1Ê±ÓÐÐ§£¬±£Áô*/
-    HI_U32 protocol;     /*protocol type, 0x0800--IPV4, 0x86dd--IPV6, only support IPV4, reserved*/ /*CNcomment:Ð­ÒéÀàÐÍ,0x0800--IPV4, 0x86dd--IPV6£¬Ä¿Ç°Ö»Ö§³ÖIPV4£¬±£Áô*/
+    HI_U32 ip_tos;       /*8 bits for IP server type*/ /*CNcomment:IPæœåŠ¡ç±»åž‹,8bit*/
+    HI_U32 vlan_en;      /*1:enable vlan, 0:disable vlan, reserved*/ /*CNcomment:vlanä½¿èƒ½: 0--vlan æ— æ•ˆ,1--vlan æœ‰æ•ˆ,ä¿ç•™*/
+    HI_U32 vlan_pri;     /*3 bits for priority of vlan, valid when u32VlanEn==1, reserved*/ /*CNcomment:vlanä¼˜å…ˆçº§,3bit, u32VlanEnä¸º1æ—¶æœ‰æ•ˆï¼Œä¿ç•™*/
+    HI_U32 vlan_pid;     /*vlan pid, 12bit, valid when u32VlanEn==1, reserved*/ /*CNcomment:vlan pid, 12bit, u32VlanEnä¸º1æ—¶æœ‰æ•ˆï¼Œä¿ç•™*/
+    HI_U32 protocol;     /*protocol type, 0x0800--IPV4, 0x86dd--IPV6, only support IPV4, reserved*/ /*CNcomment:åè®®ç±»åž‹,0x0800--IPV4, 0x86dd--IPV6ï¼Œç›®å‰åªæ”¯æŒIPV4ï¼Œä¿ç•™*/
 }NDPT_NET_PARA_S;
 
 /*config net parameter struct*/
-/*CNcomment:ÅäÖÃÍøÂç²ÎÊý½á¹¹ */
+/*CNcomment:é…ç½®ç½‘ç»œå‚æ•°ç»“æž„ */
 typedef struct hiNDPT_NET_CONFIG_PARA_S
 {
-    NDPT_NET_CHANGE_FLAG_S stChange;  /*chang-flag*/ /*CNcomment:±ä¸ü±êÖ¾Î» */
+    NDPT_NET_CHANGE_FLAG_S stChange;  /*chang-flag*/ /*CNcomment:å˜æ›´æ ‡å¿—ä½ */
 
-    NDPT_NET_PARA_S stBody;           /*net parameter config*/ /*CNcomment:ÍøÂçÅäÖÃ²ÎÊý */ 
+    NDPT_NET_PARA_S stBody;           /*net parameter config*/ /*CNcomment:ç½‘ç»œé…ç½®å‚æ•° */ 
 }NDPT_NET_CONFIG_PARA_S;
 
 typedef struct
@@ -124,7 +124,7 @@ typedef struct
 //#define RTP_BUFF_OFFSET   1
 
 /*format definition of IP packet*/
-/*CNcomment:IPÊý¾Ý°ü¸ñÊ½¶¨Òå*/
+/*CNcomment:IPæ•°æ®åŒ…æ ¼å¼å®šä¹‰*/
 typedef struct _HDR_IP_
 {   
     HI_U8  ihl:4;  /*IP Header length in 32-bit*/
@@ -147,7 +147,7 @@ typedef struct _HDR_IP_
 
 
 /*format definition of UDP packet*/
-/*CNcomment:UDP°ü¸ñÊ½¶¨Òå*/
+/*CNcomment:UDPåŒ…æ ¼å¼å®šä¹‰*/
 typedef struct _HDR_UDP_
 {   
     HI_U16  S_Port;    /*UDP source port*/
@@ -158,7 +158,7 @@ typedef struct _HDR_UDP_
 
 
 
-typedef struct _HDR_RTP_     /*format definition of RTP packet header*/ /*CNcomment:RTPÊý¾Ý°üÍ·¸ñÊ½¶¨Òå*/
+typedef struct _HDR_RTP_     /*format definition of RTP packet header*/ /*CNcomment:RTPæ•°æ®åŒ…å¤´æ ¼å¼å®šä¹‰*/
 {   
     HI_U8  cc:4;       /*CSRC count */
     HI_U8  x:1;        /*header extension flag */
@@ -174,20 +174,20 @@ typedef struct _HDR_RTP_     /*format definition of RTP packet header*/ /*CNcomm
     HI_U32  uiSsrc;    /*8:synchronization source */
 }HDR_RTP;
 
-typedef struct _HDR_RTCP_        /*RTCP packet header*/ /*CNcomment:RTCPÊý¾Ý°üÍ· */
+typedef struct _HDR_RTCP_        /*RTCP packet header*/ /*CNcomment:RTCPæ•°æ®åŒ…å¤´ */
 {
-    HI_U8  RC:5;     /*numbers of received report or SDES struct*/ /*CNcomment:½ÓÊÕ±¨¸æ»òÕßSDES½á¹¹µÄÊýÄ¿ */
-    HI_U8  P:1;      /*extra data flag*/ /*CNcomment:¸½¼ÓÊý¾Ý±êÖ¾ */
-    HI_U8  ver:2;    /*protocol version*/ /*CNcomment:Ð­Òé°æ±¾ */
+    HI_U8  RC:5;     /*numbers of received report or SDES struct*/ /*CNcomment:æŽ¥æ”¶æŠ¥å‘Šæˆ–è€…SDESç»“æž„çš„æ•°ç›® */
+    HI_U8  P:1;      /*extra data flag*/ /*CNcomment:é™„åŠ æ•°æ®æ ‡å¿— */
+    HI_U8  ver:2;    /*protocol version*/ /*CNcomment:åè®®ç‰ˆæœ¬ */
 
-    HI_U8  pt;       /*type of RTCP packet*/ /*CNcomment:RTCPÊý¾Ý°üÀàÐÍ */
+    HI_U8  pt;       /*type of RTCP packet*/ /*CNcomment:RTCPæ•°æ®åŒ…ç±»åž‹ */
 
-    HI_U16  usLen;   /*length of message packet, unit: 32bit*/ /*CNcomment:ÏûÏ¢°üµÄ³¤¶È£¬µ¥Î»Îª32bit*/
+    HI_U16  usLen;   /*length of message packet, unit: 32bit*/ /*CNcomment:æ¶ˆæ¯åŒ…çš„é•¿åº¦ï¼Œå•ä½ä¸º32bit*/
 }HDR_RTCP;
 
 
 /*format definition of ARP packet*/
-/*CNcomment:ARP°ü¸ñÊ½¶¨Òå*/
+/*CNcomment:ARPåŒ…æ ¼å¼å®šä¹‰*/
 typedef struct _HDR_IPV4_ARP_
 {   
     HI_U16  hd_type;            /*hardware type*/
@@ -205,65 +205,65 @@ typedef struct _HDR_IPV4_ARP_
 #ifdef RTP_BUFF_OFFSET
 typedef struct
 {
-    HI_U8    *pucBufferHdr;  /*start address of datagram header*/ /*CNcomment:±¨ÎÄÍ·ÆðÊ¼µØÖ·*/
-    HI_U32    uiBufferLen;   /*length of buffer*/ /*CNcomment:bufferµÄ³¤¶È*/
-    HI_U32    uiOffset;      /*offset between datagram header and RTP header*/ /*CNcomment:±¨ÎÄÍ·µ½RTPÍ·µÄÆ«ÒÆ*/
+    HI_U8    *pucBufferHdr;  /*start address of datagram header*/ /*CNcomment:æŠ¥æ–‡å¤´èµ·å§‹åœ°å€*/
+    HI_U32    uiBufferLen;   /*length of buffer*/ /*CNcomment:bufferçš„é•¿åº¦*/
+    HI_U32    uiOffset;      /*offset between datagram header and RTP header*/ /*CNcomment:æŠ¥æ–‡å¤´åˆ°RTPå¤´çš„åç§»*/
 }RTP_NET_BUFFER_STRU;
 #else
 typedef struct
 {
-    HI_U8    *pucBufferHdr;  /*start address of RTP datagram header*/ /*CNcomment:RTP±¨ÎÄÍ·ÆðÊ¼µØÖ·*/
-    HI_U32    uiBufferLen;   /*length of RTP data*/ /*CNcomment:RTPÊý¾Ý³¤¶È*/
+    HI_U8    *pucBufferHdr;  /*start address of RTP datagram header*/ /*CNcomment:RTPæŠ¥æ–‡å¤´èµ·å§‹åœ°å€*/
+    HI_U32    uiBufferLen;   /*length of RTP data*/ /*CNcomment:RTPæ•°æ®é•¿åº¦*/
 }RTP_NET_BUFFER_STRU;
 #endif
 
 /*Note: This enum must be same as PORT_MODE in HME_NET_Device.h*/
 typedef enum
 {
-    PORT_EVEN   = 0,     /*wraped by even port of datalink config, carry RTP stream*/ /*CNcomment:Ê¹ÓÃÁ´Â·ÅäÖÃµÄÅ¼Êý¶Ë¿Ú·â×°£¬³ÐÔØRTPÁ÷*/
-    PORT_ODD    = 1,	 /*wraped by odd port of datalink config, carry RTP stream*/ /*CNcomment:Ê¹ÓÃÁ´Â·µÄÆæÊý¶Ë¿Ú·â×°£¬³ÐÔØRTCPÁ÷*/
-    PORT_CONFIG = 2      /*wraped by port number of datalink config*/ /*CNcomment:Ê¹ÓÃÁ´Â·ÅäÖÃµÄ¶Ë¿ÚºÅ·â×°*/
+    PORT_EVEN   = 0,     /*wraped by even port of datalink config, carry RTP stream*/ /*CNcomment:ä½¿ç”¨é“¾è·¯é…ç½®çš„å¶æ•°ç«¯å£å°è£…ï¼Œæ‰¿è½½RTPæµ*/
+    PORT_ODD    = 1,	 /*wraped by odd port of datalink config, carry RTP stream*/ /*CNcomment:ä½¿ç”¨é“¾è·¯çš„å¥‡æ•°ç«¯å£å°è£…ï¼Œæ‰¿è½½RTCPæµ*/
+    PORT_CONFIG = 2      /*wraped by port number of datalink config*/ /*CNcomment:ä½¿ç”¨é“¾è·¯é…ç½®çš„ç«¯å£å·å°è£…*/
 }PORT_MOD;
 
 typedef enum
 {
-    NDPT_PROC_CMD_LOOKBACK  = 0,    /*set cicle-mode, parameter set refer to NDPT_LOOPBACK_MODE_E*/ /*CNcomment:ÉèÖÃ»·»ØÄ£Ê½£¬²ÎÊýÇë²Î¿¼NDPT_LOOPBACK_MODE_E*/
-    NDPT_PROC_CMD_RESETCNT,	    /*statistic for RESET send and receive*/ /*CNcomment:RESET·¢ËÍºÍ½ÓÊÕÍ³¼Æ*/
-    NDPT_PROC_CMD_SETIPTOS,         /*set IP TOS*/ /*CNcomment:ÉèÖÃIP TOS*/
+    NDPT_PROC_CMD_LOOKBACK  = 0,    /*set cicle-mode, parameter set refer to NDPT_LOOPBACK_MODE_E*/ /*CNcomment:è®¾ç½®çŽ¯å›žæ¨¡å¼ï¼Œå‚æ•°è¯·å‚è€ƒNDPT_LOOPBACK_MODE_E*/
+    NDPT_PROC_CMD_RESETCNT,	    /*statistic for RESET send and receive*/ /*CNcomment:RESETå‘é€å’ŒæŽ¥æ”¶ç»Ÿè®¡*/
+    NDPT_PROC_CMD_SETIPTOS,         /*set IP TOS*/ /*CNcomment:è®¾ç½®IP TOS*/
 }NDPT_PROC_CMD;
 
 typedef struct _NDPT_SEND_ERR_CNT_S
 {
-   HI_U32   bit1DstIP:1;	/*unable to reach dest IP address*/ /*CNcomment:Ä¿±êIPµØÖ·ÎÞ·¨µ½´ï*/
-   HI_U32   bit1SameIP:1;       /*source and dest ip are the same*/ /*CNcomment:source Óëdest ipÏàÍ¬*/
-   HI_U32   bit1Long:1;         /*extra-packet*/ /*CNcomment:³¬³¤°ü*/
-   HI_U32   bit1Skb:1;	        /*malloc skb failure*/ /*CNcomment:·ÖÅäskbÊ§°Ü*/
-   HI_U32   bit1MacHd:1;	/*create mac header failure*/ /*CNcomment:´´½¨macÍ·Ê§°Ü*/
-   HI_U32   bit1Xmit:1;	        /*dev_queue_xmit failure*/ /*CNcomment:dev_queue_xmitÊ§°Ü*/
-   HI_U32   bit1Para:1;         /*invalid parameter for ndpt_rtp_sendto()*/ /*CNcomment:HI_DRV_NDPT_SendRtp()º¯Êý²ÎÊý´íÎó*/
-   HI_U32   bit1NotReady:1;     /*channel is not ready to receive and send data*/ /*CNcomment:Í¨µÀÎ´×¼±¸ºÃÊÕ·¢Êý¾Ý*/
+   HI_U32   bit1DstIP:1;	/*unable to reach dest IP address*/ /*CNcomment:ç›®æ ‡IPåœ°å€æ— æ³•åˆ°è¾¾*/
+   HI_U32   bit1SameIP:1;       /*source and dest ip are the same*/ /*CNcomment:source ä¸Ždest ipç›¸åŒ*/
+   HI_U32   bit1Long:1;         /*extra-packet*/ /*CNcomment:è¶…é•¿åŒ…*/
+   HI_U32   bit1Skb:1;	        /*malloc skb failure*/ /*CNcomment:åˆ†é…skbå¤±è´¥*/
+   HI_U32   bit1MacHd:1;	/*create mac header failure*/ /*CNcomment:åˆ›å»ºmacå¤´å¤±è´¥*/
+   HI_U32   bit1Xmit:1;	        /*dev_queue_xmit failure*/ /*CNcomment:dev_queue_xmitå¤±è´¥*/
+   HI_U32   bit1Para:1;         /*invalid parameter for ndpt_rtp_sendto()*/ /*CNcomment:HI_DRV_NDPT_SendRtp()å‡½æ•°å‚æ•°é”™è¯¯*/
+   HI_U32   bit1NotReady:1;     /*channel is not ready to receive and send data*/ /*CNcomment:é€šé“æœªå‡†å¤‡å¥½æ”¶å‘æ•°æ®*/
 }NDPT_SEND_ERR_FLAG_S;
 
-#define NDPT_REV_INTERVAL_NUM   1000   /*statistic of received RTP packets gap*/ /*CNcomment:½ÓÊÕµ½µÄRTP°ü¼ä¸ôÍ³¼Æ¸öÊý*/
+#define NDPT_REV_INTERVAL_NUM   1000   /*statistic of received RTP packets gap*/ /*CNcomment:æŽ¥æ”¶åˆ°çš„RTPåŒ…é—´éš”ç»Ÿè®¡ä¸ªæ•°*/
 
 typedef struct _NDPT_PACKET_INTERVAL_S
 {
     struct _NDPT_PACKET_INTERVAL_S *next;
-    HI_U32  u32Interval;                       /*gaps between received RTP packets, unit is us*/ /*CNcomment:½ÓÊÕµ½µÄRTP°ü¼ä¸ô,usÎªµ¥Î»*/
+    HI_U32  u32Interval;                       /*gaps between received RTP packets, unit is us*/ /*CNcomment:æŽ¥æ”¶åˆ°çš„RTPåŒ…é—´éš”,usä¸ºå•ä½*/
 }NDPT_PACKET_INTERVAL_S;
 
 /*Note: This type define must be same as ndpt_rtp_revfrom in HME_NET_Device.h*/
 typedef HI_S32 (*ndpt_rtp_revfrom)(HI_U32 TransId, PORT_MOD even_odd, RTP_NET_BUFFER_STRU *data_buffer);
 
-/*module NDPT channel control struct*/ /*CNcomment:NDPTÄ£¿éÍ¨µÀ¿ØÖÆ½á¹¹*/
+/*module NDPT channel control struct*/ /*CNcomment:NDPTæ¨¡å—é€šé“æŽ§åˆ¶ç»“æž„*/
 typedef struct _NDPT_CH_S
 {
     struct _NDPT_CH_S *prev;
     struct _NDPT_CH_S *next;
     
-    HI_U32  handle;	        /*handle of net adapter channel*/ /*CNcomment:ÍøÂçÊÊÅäÍ¨µÀ¾ä±ú*/
-    NDPT_NET_PARA_S stNetPara;  /*net config parameter*/ /*CNcomment:ÍøÂçÅäÖÃ²ÎÊý*/
-    NDPT_NET_CHANGE_FLAG_S  stNetFlag;  /*flag of net parameter config*/ /*CNcomment:ÍøÂç²ÎÊýÉèÖÃ±ê¼Ç*/
+    HI_U32  handle;	        /*handle of net adapter channel*/ /*CNcomment:ç½‘ç»œé€‚é…é€šé“å¥æŸ„*/
+    NDPT_NET_PARA_S stNetPara;  /*net config parameter*/ /*CNcomment:ç½‘ç»œé…ç½®å‚æ•°*/
+    NDPT_NET_CHANGE_FLAG_S  stNetFlag;  /*flag of net parameter config*/ /*CNcomment:ç½‘ç»œå‚æ•°è®¾ç½®æ ‡è®°*/
     
     HI_U8 ucSrc_mac[NDPT_ETH_ALEN];
     struct net_device *dev;
@@ -271,20 +271,20 @@ typedef struct _NDPT_CH_S
 
     NDPT_LOOPBACK_MODE_E    eLoopback;
 
-    HI_U32 TransId;      /*ID for AV module channel*/ /*CNcomment:ÒôÊÓÆµÄ£¿éÍ¨µÀID*/
-    ndpt_rtp_revfrom revfunc;    /*RTP data received function pointer of AV module*/ /*CNcomment:ÒôÊÓÆµÄ£¿éRTPÊý¾Ý½ÓÊÕº¯ÊýÖ¸Õë*/
+    HI_U32 TransId;      /*ID for AV module channel*/ /*CNcomment:éŸ³è§†é¢‘æ¨¡å—é€šé“ID*/
+    ndpt_rtp_revfrom revfunc;    /*RTP data received function pointer of AV module*/ /*CNcomment:éŸ³è§†é¢‘æ¨¡å—RTPæ•°æ®æŽ¥æ”¶å‡½æ•°æŒ‡é’ˆ*/
     
     NDPT_SEND_ERR_FLAG_S stSendErrFlag;
     HI_U32 uiSendTry;
     HI_U32 uiSendOkCnt;
     HI_U32 uiRevRtpCnt;
     HI_U16 usRtpSendSeq;
-    HI_U16 usRevFlag;       /*0:not begin to count*/ /*CNcomment:0--Î´¿ªÊ¼¼ÆÊý*/
+    HI_U16 usRevFlag;       /*0:not begin to count*/ /*CNcomment:0--æœªå¼€å§‹è®¡æ•°*/
     HI_U32 uiRevSeqMin;
     HI_U32 uiRevSeqMax;
     HI_U32 uiRevSeqCnt;
-    struct timeval stArriveLast;    /*previous RTP datagram arrived time*/ /*CNcomment:ÉÏÒ»¸öRTP±¨ÎÄµ½´ïÊ±¿Ì*/
-    struct _NDPT_PACKET_INTERVAL_S  *pstRevInterval;    /*interval array pointer of received RTP packets*/ /*CNcomment:½ÓÊÕµ½µÄRTP°ü¼ä¸ôÊý×éÖ¸Õë*/
+    struct timeval stArriveLast;    /*previous RTP datagram arrived time*/ /*CNcomment:ä¸Šä¸€ä¸ªRTPæŠ¥æ–‡åˆ°è¾¾æ—¶åˆ»*/
+    struct _NDPT_PACKET_INTERVAL_S  *pstRevInterval;    /*interval array pointer of received RTP packets*/ /*CNcomment:æŽ¥æ”¶åˆ°çš„RTPåŒ…é—´éš”æ•°ç»„æŒ‡é’ˆ*/
     struct _NDPT_PACKET_INTERVAL_S  *pstRevIntervalHead;
     struct _NDPT_PACKET_INTERVAL_S  *pstRevIntervalTail;
     HI_U32  u32RevIntervalCnt;
@@ -292,13 +292,13 @@ typedef struct _NDPT_CH_S
 }NDPT_CH_S;
 
 /*
-set circle mode for net adapter layer CNcomment:ÉèÖÃÍøÂçÊÊÅä²ãÍ¨µÀ»·»ØÄ£Ê½¡£
+set circle mode for net adapter layer CNcomment:è®¾ç½®ç½‘ç»œé€‚é…å±‚é€šé“çŽ¯å›žæ¨¡å¼ã€‚
 input parameter:
-      handle:handle of net adapter layer channel CNcomment:ÍøÂçÊÊÅä²ãÍ¨µÀ¾ä±ú¡£
-      eLoopbackMode:circle mode CNcomment:»·»ØÄ£Ê½¡£
+      handle:handle of net adapter layer channel CNcomment:ç½‘ç»œé€‚é…å±‚é€šé“å¥æŸ„ã€‚
+      eLoopbackMode:circle mode CNcomment:çŽ¯å›žæ¨¡å¼ã€‚
 return:
-      0:success CNcomment:³É¹¦
-      other:failure CNcomment:ÆäËü Ê§°Ü
+      0:success CNcomment:æˆåŠŸ
+      other:failure CNcomment:å…¶å®ƒ å¤±è´¥
 */    
 extern HI_S32 ndpt_set_loopback(HI_U32 handle,NDPT_LOOPBACK_MODE_E eLoopback);
 

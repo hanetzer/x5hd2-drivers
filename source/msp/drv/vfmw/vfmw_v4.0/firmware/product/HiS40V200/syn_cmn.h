@@ -8,14 +8,14 @@
 
 #define MAX_QUEUE_IMAGE_NUM    64
 
-/* �����������ѡ��, Ϊs32DecOrderOutput����ȡֵ */
+/* 解码序输出的选项, 为s32DecOrderOutput可能取值 */
 #define NOT_DEC_ORDER           0
 #define DEC_ORDER_NORMAL_DPB   1
 #define DEC_ORDER_SIMPLE_DPB   2
 
 #define IMG_ID_MAGIC_STEP      100
 
-/* MPEG2, MPEG4����ƴ����������ݽṹ */
+/* MPEG2, MPEG4码流拼接所需的数据结构 */
 typedef struct
 {
      STREAM_SEG_S    StreamPack[2];  // for vfmw decode
@@ -111,16 +111,16 @@ typedef struct hiSYNTAX_EXTRA_DATA_S
 	SINT32      luma_historgam[32];
     #endif
 	#if 0
-    SINT32    s32SupportBFrame;  /* ͨ���Ƿ�֧��B֡�����Ƿ�֧��B֡���� 0: ��֧�� 1: ֧��*/
-    SINT32    s32MaxRefFrameNum;  /*������֧�ֲο�֡���������ֵ,���ĳ�����ο�֡�������ڴ�ֵ������ܲ������
-                                      0:   ��ָʾͨ���ο�֡ϸ�ں��Ƿ�֧��B֡�� s32SupportBFrame��s32MaxRefFrameNum����Ч����ȫ������ǰ�ӿ�����ͨ��
-                                      ��0: ������֧�ֲο�֡���������ֵ��s32SupportBFrame��s32MaxRefFrameNum����Ч������ͨ��ʱ��ο�������Ԫ�ء�*/
+    SINT32    s32SupportBFrame;  /* 通道是否支持B帧解码是否支持B帧解码 0: 不支持 1: 支持*/
+    SINT32    s32MaxRefFrameNum;  /*解码所支持参考帧个数的最大值,如果某码流参考帧个数大于此值，则可能不予解码
+                                      0:   不指示通道参考帧细节和是否支持B帧， s32SupportBFrame和s32MaxRefFrameNum均无效，完全按照以前接口配置通道
+                                      非0: 解码所支持参考帧个数的最大值，s32SupportBFrame和s32MaxRefFrameNum均有效，配置通道时需参考这两个元素。*/
     #endif                                      
-    VDEC_CHAN_OPTION_S stChanOption;/*ͨ������ΪCAP_LEVEL_USER_DEFINE_WITH_OPTIONʱ���û�ָ��ѡ������*/	
+    VDEC_CHAN_OPTION_S stChanOption;/*通道类型为CAP_LEVEL_USER_DEFINE_WITH_OPTION时的用户指定选项配置*/	
 
 
     //add by z00222166, 2012.11.20
-    VDEC_DISPIC_PARAM_S stDisParams;  //��֡����
+    VDEC_DISPIC_PARAM_S stDisParams;  //丢帧参数
 } SYNTAX_EXTRA_DATA_S;
 
 

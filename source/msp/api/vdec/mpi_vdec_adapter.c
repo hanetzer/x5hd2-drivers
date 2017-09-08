@@ -1532,7 +1532,7 @@ HI_S32 VPSS_RecvFrm(HI_HANDLE hVpss, HI_DRV_VIDEO_FRAME_PACKAGE_S* pstFrameInfo)
         return HI_FAILURE;
     }
 
-    /* BEGIN: Deleted by z00111416, 2013/7/19 »Î≤Œ π”√æ÷≤ø±‰¡ø∏≥÷µ!!!!!*/
+    /* BEGIN: Deleted by z00111416, 2013/7/19 ÂÖ•ÂèÇ‰ΩøÁî®Â±ÄÈÉ®ÂèòÈáèËµãÂÄº!!!!!*/
     //*pstFrameInfo = stParam.stFrame;
     /* END:   Deleted by z00111416, 2013/7/19 */
     memcpy(pstFrameInfo, &(stParam.stFrame), sizeof(HI_DRV_VIDEO_FRAME_PACKAGE_S));

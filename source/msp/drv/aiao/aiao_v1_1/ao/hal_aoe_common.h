@@ -66,8 +66,8 @@ typedef enum
 /**Defines the  status of an AIP.*/
 typedef enum
 {
-    AOE_AIP_STATUS_STOP = 0, /**<Stop*//**<CNcomment: Í£Ö¹ */
-    AOE_AIP_STATUS_START, /**<Start*//**<CNcomment: ÔËÐÐ */
+    AOE_AIP_STATUS_STOP = 0, /**<Stop*//**<CNcomment: åœæ­¢ */
+    AOE_AIP_STATUS_START, /**<Start*//**<CNcomment: è¿è¡Œ */
     AOE_AIP_STATUS_PAUSE,
 
     AIP_STATUS_BUTT
@@ -76,8 +76,8 @@ typedef enum
 /**Defines the  status of an AOP.*/
 typedef enum
 {
-    AOE_AOP_STATUS_STOP = 0, /**<Stop*//**<CNcomment: Í£Ö¹ */
-    AOE_AOP_STATUS_START, /**<Start*//**<CNcomment: ÔËÐÐ */
+    AOE_AOP_STATUS_STOP = 0, /**<Stop*//**<CNcomment: åœæ­¢ */
+    AOE_AOP_STATUS_START, /**<Start*//**<CNcomment: è¿è¡Œ */
 
     AOE_AOP_STATUS_BUTT
 } AOE_AOP_STATUS_E;
@@ -85,8 +85,8 @@ typedef enum
 /**Defines the  status of an Engine.*/
 typedef enum
 {
-    AOE_ENGINE_STATUS_STOP = 0, /**<Stop*//**<CNcomment: Í£Ö¹ */
-    AOE_ENGINE_STATUS_START, /**<Start*//**<CNcomment: ÔËÐÐ */
+    AOE_ENGINE_STATUS_STOP = 0, /**<Stop*//**<CNcomment: åœæ­¢ */
+    AOE_ENGINE_STATUS_START, /**<Start*//**<CNcomment: è¿è¡Œ */
 
     AOE_ENGINE_STATUS_BUTT
 } AOE_ENGINE_STATUS_E;
@@ -107,8 +107,8 @@ typedef struct
 {
     AOE_RBUF_ATTR_S stRbfAttr;
     HI_U32 u32BufBitPerSample; /**<I/O, bit per sampling*//**<CNcomment:OUT. Bit per sample */
-    HI_U32 u32BufChannels; /**<I/O, number of channels*//**<CNcomment:OUT. Êä³öÉùµÀÊý  */
-    HI_U32 u32BufSampleRate; /**<I/O, sampling rate*//**<CNcomment:OUT. Êä³ö²ÉÑùÆµÂÊ */
+    HI_U32 u32BufChannels; /**<I/O, number of channels*//**<CNcomment:OUT. è¾“å‡ºå£°é“æ•°  */
+    HI_U32 u32BufSampleRate; /**<I/O, sampling rate*//**<CNcomment:OUT. è¾“å‡ºé‡‡æ ·é¢‘çŽ‡ */
     HI_U32 u32BufDataFormat;          /**<I/O, 0, linear pcm, 1, iec61937 */
     HI_U32 u32BufLatencyThdMs;   /* 40 ~ 1000 ms */
     HI_U32  u32FadeinMs;
@@ -121,8 +121,8 @@ typedef struct
 typedef struct
 {
     HI_U32 u32FifoBitPerSample; /**<I/O, bit per sampling*/ /**<CNcomment:OUT. Bit per sample */
-    HI_U32 u32FifoChannels; /**<I/O, number of channels*/ /**<CNcomment:OUT. Êä³öÉùµÀÊý  */
-    HI_U32 u32FifoSampleRate; /**<I/O, sampling rate*/ /**<CNcomment:OUT. Êä³ö²ÉÑùÆµÂÊ */
+    HI_U32 u32FifoChannels; /**<I/O, number of channels*/ /**<CNcomment:OUT. è¾“å‡ºå£°é“æ•°  */
+    HI_U32 u32FifoSampleRate; /**<I/O, sampling rate*/ /**<CNcomment:OUT. è¾“å‡ºé‡‡æ ·é¢‘çŽ‡ */
     HI_U32 u32FifoDataFormat;               /**<I/O, 0, linear pcm, 1, iec61937 */
     HI_U32 u32FiFoLatencyThdMs; /* 10 ~ 40 ms */
 } AOE_AIP_OUTFIFO_ATTR_S;
@@ -137,8 +137,8 @@ typedef struct
 {
     AOE_RBUF_ATTR_S stRbfAttr;
     HI_U32  u32BufBitPerSample; /**<I/O, bit per sampling*//**<CNcomment:OUT. Bit per sample */
-    HI_U32  u32BufChannels; /**<I/O, number of channels*//**<CNcomment:OUT. Êä³öÉùµÀÊý  */
-    HI_U32  u32BufSampleRate; /**<I/O, sampling rate*//**<CNcomment:OUT. Êä³ö²ÉÑùÆµÂÊ */
+    HI_U32  u32BufChannels; /**<I/O, number of channels*//**<CNcomment:OUT. è¾“å‡ºå£°é“æ•°  */
+    HI_U32  u32BufSampleRate; /**<I/O, sampling rate*//**<CNcomment:OUT. è¾“å‡ºé‡‡æ ·é¢‘çŽ‡ */
     HI_U32  u32BufDataFormat;          /**<I/O, 0, linear pcm, 1, iec61937 */
     HI_U32  u32BufLatencyThdMs;        /* 10 ~ 40 ms */
     HI_BOOL bRbfHwPriority; /* TRUE: high priority */
@@ -153,8 +153,8 @@ typedef struct
 typedef struct
 {
     HI_U32 u32BitPerSample; /**<I/O, bit per sampling*/ /**<CNcomment:OUT. Bit per sample */
-    HI_U32 u32Channels; /**<I/O, number of channels*/ /**<CNcomment:OUT. Êä³öÉùµÀÊý  */
-    HI_U32 u32SampleRate; /**<I/O, sampling rate*/ /**<CNcomment:OUT. Êä³ö²ÉÑùÆµÂÊ */
+    HI_U32 u32Channels; /**<I/O, number of channels*/ /**<CNcomment:OUT. è¾“å‡ºå£°é“æ•°  */
+    HI_U32 u32SampleRate; /**<I/O, sampling rate*/ /**<CNcomment:OUT. è¾“å‡ºé‡‡æ ·é¢‘çŽ‡ */
     HI_U32 u32DataFormat;               /**<I/O, 0, linear pcm, 1, iec61937 */
 } AOE_ENGINE_CHN_ATTR_S;
 

@@ -125,13 +125,13 @@ typedef struct hi_PQ_TOP_OFST_TABLE_S
 /////////////////////////////////////////////////define header///////////////////////////////////////////////////////////////
 typedef struct hi_PQ_FILE_HEADER_S
 {
-    HI_U32       u32FileCheckSum;  /* ²ÎÊýÎÄ¼þµÄÐ£ÑéºÍ£¬File Header£¨³ý´Ë±äÁ¿Íâ£©ºÍdataµÄËùÓÐÖð×Ö½ÚÐ£ÑéºÍ£¬ÓÃÓÚ¼ìÑé²ÎÊýÕýÈ·ÐÔºÍÅÐ¶ÏÊÇ·ñdirty */
-    HI_U32       u32ParamSize;  /* ²ÎÊýÎÄ¼þ´óÐ¡£¬°üÀ¨File headerºÍdata */
-    HI_CHAR        u8Version[STR_LEN_32];   /* °æ±¾ºÅ£¬×Ö·û´®±íÊ¾ */
-    HI_CHAR        u8Author[STR_LEN_32];    /* ²ÎÊýµ÷ÊÔÕßÇ©Ãû£¬×Ö·û´®±íÊ¾ */
-    HI_CHAR        u8Desc[STR_LEN_1024];   /* °æ±¾ÃèÊö£¬×Ö·û´®±íÊ¾ */
-    HI_CHAR       u8Time[STR_LEN_32];       /* ²ÎÊýÎÄ¼þÉú³É£¨ÉÕÐ´£©Ê±¼ä£¬[0] ~ [5]£ºyy mm dd hh mm ss£¬[6]~[7]±£Áô¡£¸ÃÊ±¼äÓÉPQ¹¤¾ß´ÓPCÉÏ×Ô¶¯»ñÈ¡£¬ÎÞÐèÓÃ»§ÊäÈë */
-    /* ÒÔÏÂÊÇ²ÎÊýÎÄ¼þÉú³ÉÊ±µÄChip¡¢SDK°æ±¾£¬µ±Õâ¸ö²ÎÊýÎÄ¼þ±»ÏÂÔØµ½ÆäËüºÐ×ÓÊ±£¬½ÓÊÜ²ÎÊýµÄºÐ×Ó¸ù¾ÝÕâÁ½¸ö²ÎÊýÅÐ¶ÏÊÇ·ñ¼æÈÝ */
+    HI_U32       u32FileCheckSum;  /* å‚æ•°æ–‡ä»¶çš„æ ¡éªŒå’Œï¼ŒFile Headerï¼ˆé™¤æ­¤å˜é‡å¤–ï¼‰å’Œdataçš„æ‰€æœ‰é€å­—èŠ‚æ ¡éªŒå’Œï¼Œç”¨äºŽæ£€éªŒå‚æ•°æ­£ç¡®æ€§å’Œåˆ¤æ–­æ˜¯å¦dirty */
+    HI_U32       u32ParamSize;  /* å‚æ•°æ–‡ä»¶å¤§å°ï¼ŒåŒ…æ‹¬File headerå’Œdata */
+    HI_CHAR        u8Version[STR_LEN_32];   /* ç‰ˆæœ¬å·ï¼Œå­—ç¬¦ä¸²è¡¨ç¤º */
+    HI_CHAR        u8Author[STR_LEN_32];    /* å‚æ•°è°ƒè¯•è€…ç­¾åï¼Œå­—ç¬¦ä¸²è¡¨ç¤º */
+    HI_CHAR        u8Desc[STR_LEN_1024];   /* ç‰ˆæœ¬æè¿°ï¼Œå­—ç¬¦ä¸²è¡¨ç¤º */
+    HI_CHAR       u8Time[STR_LEN_32];       /* å‚æ•°æ–‡ä»¶ç”Ÿæˆï¼ˆçƒ§å†™ï¼‰æ—¶é—´ï¼Œ[0] ~ [5]ï¼šyy mm dd hh mm ssï¼Œ[6]~[7]ä¿ç•™ã€‚è¯¥æ—¶é—´ç”±PQå·¥å…·ä»ŽPCä¸Šè‡ªåŠ¨èŽ·å–ï¼Œæ— éœ€ç”¨æˆ·è¾“å…¥ */
+    /* ä»¥ä¸‹æ˜¯å‚æ•°æ–‡ä»¶ç”Ÿæˆæ—¶çš„Chipã€SDKç‰ˆæœ¬ï¼Œå½“è¿™ä¸ªå‚æ•°æ–‡ä»¶è¢«ä¸‹è½½åˆ°å…¶å®ƒç›’å­æ—¶ï¼ŒæŽ¥å—å‚æ•°çš„ç›’å­æ ¹æ®è¿™ä¸¤ä¸ªå‚æ•°åˆ¤æ–­æ˜¯å¦å…¼å®¹ */
     HI_CHAR        u8ChipName[STR_LEN_32];
     HI_CHAR        u8SDKVersion[STR_LEN_80];
 } PQ_FILE_HEADER_S;
@@ -186,9 +186,9 @@ typedef struct hi_PQ_PARAM_S
 //////////////////////////////////////////////////define import///////////////////////////////////////////////////
 typedef struct hi_PQ_IMPORT_S
 {
-    HI_CHAR        u8Author[STR_LEN_32];    /* ²ÎÊýµ÷ÊÔÕßÇ©Ãû£¬×Ö·û´®±íÊ¾ */
-    HI_CHAR        u8Desc[STR_LEN_1024];   /* °æ±¾ÃèÊö£¬×Ö·û´®±íÊ¾ */
-    HI_CHAR       u8Time[STR_LEN_32];       /* ²ÎÊýÎÄ¼þÉú³É£¨ÉÕÐ´£©Ê±¼ä£¬[0] ~ [5]£ºyy mm dd hh mm ss£¬[6]~[7]±£Áô¡£¸ÃÊ±¼äÓÉPQ¹¤¾ß´ÓPCÉÏ×Ô¶¯»ñÈ¡£¬ÎÞÐèÓÃ»§ÊäÈë */
+    HI_CHAR        u8Author[STR_LEN_32];    /* å‚æ•°è°ƒè¯•è€…ç­¾åï¼Œå­—ç¬¦ä¸²è¡¨ç¤º */
+    HI_CHAR        u8Desc[STR_LEN_1024];   /* ç‰ˆæœ¬æè¿°ï¼Œå­—ç¬¦ä¸²è¡¨ç¤º */
+    HI_CHAR       u8Time[STR_LEN_32];       /* å‚æ•°æ–‡ä»¶ç”Ÿæˆï¼ˆçƒ§å†™ï¼‰æ—¶é—´ï¼Œ[0] ~ [5]ï¼šyy mm dd hh mm ssï¼Œ[6]~[7]ä¿ç•™ã€‚è¯¥æ—¶é—´ç”±PQå·¥å…·ä»ŽPCä¸Šè‡ªåŠ¨èŽ·å–ï¼Œæ— éœ€ç”¨æˆ·è¾“å…¥ */
 } PQ_IMPORT_S;
 
 

@@ -210,7 +210,7 @@ void dsputil_init_arm(DSPContext* c, AVCodecContext *avctx)
 		c->put_no_rnd_pixels_tab[1][2] = put_no_rnd_pixels8_y2_arm;
 		c->put_no_rnd_pixels_tab[1][3] = put_no_rnd_pixels8_xy2_arm;
 
-		//guoshan+00101841 20100820 增加h263滤波器的arm代码优化
+		//guoshan+00101841 20100820 澧炲姞h263婊ゆ尝鍣ㄧ殑arm浠ｇ爜浼樺寲
 #if HAVE_ARMV6
 		ff_dsputil_init_armv6(c, avctx);
 #endif

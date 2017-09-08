@@ -22,7 +22,7 @@
 
 /**
  ** add the include file about the init function
- ** CNcomment: Ôö¼ÓÓ²¼ş½âÂëĞèÒªµÄÍ·ÎÄ¼ş CNend\n
+ ** CNcomment: å¢åŠ ç¡¬ä»¶è§£ç éœ€è¦çš„å¤´æ–‡ä»¶ CNend\n
  **/
  #include "jpeg_hdec_api.h"
  #include "hi_jpeg_config.h"
@@ -44,7 +44,7 @@ jpeg_CreateDecompress (j_decompress_ptr cinfo, int version, size_t structsize)
   #if 0
  /**
   ** can not check these,because every version can use
-  ** CNcomment: ¿ÉÒÔ²»×ö´ËÅĞ¶Ï£¬Ã¿¸ö°æ±¾¶¼ÊÊÓÃ CNend\n
+  ** CNcomment: å¯ä»¥ä¸åšæ­¤åˆ¤æ–­ï¼Œæ¯ä¸ªç‰ˆæœ¬éƒ½é€‚ç”¨ CNend\n
   **/
   if (version != JPEG_LIB_VERSION)
     ERREXIT2(cinfo, JERR_BAD_LIB_VERSION, JPEG_LIB_VERSION, version);
@@ -79,7 +79,7 @@ jpeg_CreateDecompress (j_decompress_ptr cinfo, int version, size_t structsize)
   ** init the struct of hard decode needed,
   ** you must initial this function after jinit_memory_mgr, because the memmory
   ** should initial first, so that at this function can alloc memmory.
-  ** CNcomment: ³õÊ¼»¯Ó²¼ş½âÂëĞèÒªµÄ½á¹¹Ìå£¬±ØĞëÔÚ³õÊ¼»¯ÄÚ´æº¯ÊıÖ®ºó³õÊ¼»¯ CNend\n
+  ** CNcomment: åˆå§‹åŒ–ç¡¬ä»¶è§£ç éœ€è¦çš„ç»“æ„ä½“ï¼Œå¿…é¡»åœ¨åˆå§‹åŒ–å†…å­˜å‡½æ•°ä¹‹ååˆå§‹åŒ– CNend\n
   **/
   s32Ret  = JPEG_HDEC_Init((j_common_ptr)cinfo);
   if(HI_SUCCESS != s32Ret)

@@ -270,12 +270,12 @@ static HI_U32 OPTM_GZmeLoadSDCoefH(OPTM_GZME_COEF_RATIO_E enCoefRatio, HI_U8 *pu
     HI_U32 u32TableTmpSize;
 
 	memset(u16TableTmp,0,sizeof(u16TableTmp));
-    //ÁÁ¶È
+    //äº®åº¦
     u32TableTmpSize = OPTM_GZmeTransCoefAlign(g_pOPTMGfxSDZmeCoef[enCoefRatio][GZME_COEF_8T8P_LH],(HI_S16)(8 * 8), u16TableTmp);
     memcpy(pu8Addr, u16TableTmp, u32TableTmpSize);
     pu8Addr += u32TableTmpSize;
 
-    //É«¶È
+    //è‰²åº¦
     u32TableTmpSize = OPTM_GZmeTransCoefAlign(g_pOPTMGfxSDZmeCoef[enCoefRatio][GZME_COEF_8T8P_CH], (HI_S16)(8 * 8), u16TableTmp);
     memcpy(pu8Addr, u16TableTmp, u32TableTmpSize);
     pu8Addr += u32TableTmpSize;

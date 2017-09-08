@@ -58,7 +58,7 @@
 #include "internal.h"
 
 /* 2010/30/04 10:50:00 liuxw+00139685 */
-/* ����ͷ�ļ�����������codec error type */
+/* 增加头文件，方便设置codec error type */
 //#include "imedia_error.h"
 
 const uint8_t ff_reverse[256]={
@@ -129,7 +129,7 @@ void avcodec_set_dimensions(AVCodecContext *s, int width, int height){
 }
 
 /*guoshan + 00101841 20100416*/
-/*��������,����chroma_format*/
+/*新增函数,设置chroma_format*/
 void avcodec_set_chroma_format(AVCodecContext *s, int chroma_format)
 {
 	s->iChromaFormat = chroma_format;
@@ -245,7 +245,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
 //      s->internal_buffer= av_mallocz((INTERNAL_BUFFER_SIZE+1)*sizeof(InternalBuffer));
 		s->internal_buffer= av_malloc_hw(s,(INTERNAL_BUFFER_SIZE+1)*sizeof(InternalBuffer));
 		/* 2010/06/10 18:30:00 liuxw+00139685 */
-		/* ���Ӷ��ڴ����ʧ�ܵļ�⼰���� */
+		/* 增加对内存分配失败的检测及返回 */
 		if(NULL == s->internal_buffer)
 		{
 			av_log(s,AV_LOG_ERROR,"Malloc memory for internal buffer failed!\n");
@@ -327,8 +327,8 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
         memset(buf->base, 0, sizeof(buf->base));
         memset(buf->data, 0, sizeof(buf->data));
 
-		/*x00141957 20100914 ����size[0] ����y+0.5*y��С�ռ�*/
-		/*x00141957 20110726 ����size[0] ���ӷ���y��С�ռ�*/
+		/*x00141957 20100914 对于size[0] 分配y+0.5*y大小空间*/
+		/*x00141957 20110726 对于size[0] 增加分配y大小空间*/
 		size[0] = (size[0]<<1) + (size[0] >> 1);
 
         for(i=0; i<4 && size[i]; i++){
@@ -338,7 +338,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
             buf->linesize[i]= picture.linesize[i];
 	
 			/* 2010/30/06 9:30:00 liuxw+00139685 */
-			/* ��YUV buf�ķ����Ϊ����ʽ���� */
+			/* 将YUV buf的分配改为对齐式分配 */
 //          buf->base[i]= av_malloc(size[i]+16); //FIXME 16
 //			buf->base[i]= av_malloc_align(size[i], 16);
 			buf->base[i]= av_malloc_hw(s,size[i]); 
@@ -374,7 +374,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
     s->internal_buffer_count++;
 
 	/* 2010/30/06 9:30:00 liuxw+00139685 */
-	/* ͳ��ʹ��YUV buffer������ */
+	/* 统计使用YUV buffer的数量 */
 	s->uiInUsedBufNum = s->internal_buffer_count; /*  */
 	for(i=s->uiInUsedBufNum;i<INTERNAL_BUFFER_SIZE;i++)
 	{
@@ -384,7 +384,7 @@ int avcodec_default_get_buffer(AVCodecContext *s, AVFrame *pic){
 		}
 	}
 	/* 2010/30/06 9:30:00 liuxw+00139685 */
-	/* ͳ�ƿ���YUV buffer������ */
+	/* 统计空闲YUV buffer的数量 */
 	s->uiFreeBufNum = i - s->uiInUsedBufNum; /*  */
 
     pic->reordered_opaque= s->reordered_opaque;
@@ -512,7 +512,7 @@ int attribute_align_arg avcodec_open(AVCodecContext *avctx, AVCodec *codec)
 		avctx->priv_data = av_malloc_hw(avctx,codec->priv_data_size);
         if (!avctx->priv_data) {
 			/* 2010/30/04 10:46:00 liuxw+00139685 */
-			/* ������־�����ô����� */
+			/* 增加日志及设置错误码 */
 			av_log(avctx,AV_LOG_ERROR,"dec_ctx[%p] allocate %d byte memory for codec priv_data failed!\n",avctx,codec->priv_data_size);
 //          avctx->iErrorCode = IMEDIA_CODEC_ERR_MEM_MALLOC_FAIL;
 			ret = AVERROR(ENOMEM);
@@ -540,7 +540,7 @@ int attribute_align_arg avcodec_open(AVCodecContext *avctx, AVCodec *codec)
     avctx->codec_id = codec->id;
     avctx->frame_number = 0;
 	/* 2010/30/06 11:48:00 liuxw+00139685 */
-	/* ��ʼ���߳���ĿΪ1 */
+	/* 初始化线程数目为1 */
 	avctx->thread_count =1;   
     if(avctx->codec->init)
 	{
@@ -559,19 +559,19 @@ end:
     return ret;
 }
 
-/* ��������(l00139685)����λ����ʼ��AVCodecContext�ṹ����� */
+/* 新增函数(l00139685)：复位及初始化AVCodecContext结构体变量 */
 int attribute_align_arg avcodec_reset(AVCodecContext *avctx)
 {
 	int iRet = 0;
 
 	AVRational		av01		= {0,1};
 
-	/* ������������ʼ������ */
+	/* 分配变量保存初始化参数 */
 	AVCodec *		codec		= avctx->codec;  
 	void	*		priv_data	= avctx->priv_data;
 	AVClass	*		av_class	= (AVClass	*)avctx->av_class;
 
-	/* ����������澲̬���� */
+	/* 分配变量保存静态参数 */
 	unsigned short usSourceWidth	= avctx->usSourceWidth;  
 	unsigned short usSourceHeight	= avctx->usSourceHeight; 
 	unsigned int   uiRefFrame		= avctx->uiRefFrame;     
@@ -587,8 +587,8 @@ int attribute_align_arg avcodec_reset(AVCodecContext *avctx)
 	int			   iBufLength       = avctx->iBufLength;
 	unsigned int   uiCurPos         = avctx->uiCurPos;
 
-	/*guoshan+00101841 20100813 ���ⵥ��[AZ1D02261]*/
-	/*reset֮ǰ����dsp_mask��״̬*/
+	/*guoshan+00101841 20100813 问题单：[AZ1D02261]*/
+	/*reset之前保留dsp_mask的状态*/
 	unsigned int dsp_mask          = avctx->dsp_mask;
 	int			 eCodecType        = avctx->eCodecType;
 	int          flags             = avctx->flags;
@@ -596,10 +596,10 @@ int attribute_align_arg avcodec_reset(AVCodecContext *avctx)
 	void           *internal_buffer            = avctx->internal_buffer;
 //	int            internal_buffer_count       = avctx->internal_buffer_count;
 
-	/* ���AVCodecContext�ṹ����� */
+	/* 清空AVCodecContext结构体变量 */
 	memset(avctx, 0, sizeof(AVCodecContext));
 
-	/* ��Ĭ��ֵ(AVCodecContext�ṹ�����) */
+	/* 赋默认值(AVCodecContext结构体变量) */
 //	avctx->av_class				= &av_codec_context_class;
 	avctx->codec_type   		= CODEC_TYPE_UNKNOWN;
 	avctx->rc_eq				= "tex^qComp";
@@ -615,18 +615,18 @@ int attribute_align_arg avcodec_reset(AVCodecContext *avctx)
 	avctx->reget_buffer			= avcodec_default_reget_buffer;
 	avctx->iChromaFormat		= INT_MAX;
 	/* 2010/07/23 15:30:00 liuxw+00139685 */
-	/* ��sample_aspect_ratio��num��den�ĳ�ʼֵ��Ϊ1 */
+	/* 将sample_aspect_ratio的num和den的初始值设为1 */
 	avctx->sample_aspect_ratio.num = 1;
 	avctx->sample_aspect_ratio.den = 1;
 	/* 2010/07/14 14:30:00 liuxw+00139685 [AZ1D02219] */
-	/* ��profile��level����Чֵ�޸�Ϊ-1 */
+	/* 将profile和level的无效值修改为-1 */
 	avctx->iActualProfile = -1;
 	avctx->iActualLevel   = -1;
 
 	avctx->error_recognition = 1;
 	avctx->error_concealment = 3;
 
-	/* �ָ�֮ǰ����ı��� */
+	/* 恢复之前保存的变量 */
 	avctx->codec		= codec;   
 	avctx->priv_data	= priv_data;
 	avctx->av_class		= av_class;
@@ -634,8 +634,8 @@ int attribute_align_arg avcodec_reset(AVCodecContext *avctx)
 	avctx->frame_number = 0;
 	avctx->thread_count = 1;
 
-	/*guoshan+00101841 20100813 ���ⵥ��[AZ1D02261]*/
-	/*reset֮��ָ�֮ǰ��dsp_mask״̬*/
+	/*guoshan+00101841 20100813 问题单：[AZ1D02261]*/
+	/*reset之后恢复之前的dsp_mask状态*/
 	avctx->dsp_mask                    = dsp_mask;
     avctx->eCodecType                  = eCodecType;
 	avctx->internal_buffer             = internal_buffer;
@@ -646,7 +646,7 @@ int attribute_align_arg avcodec_reset(AVCodecContext *avctx)
 	avctx->iBufLength                  = iBufLength;
 	avctx->uiCurPos                    = uiCurPos;
 	
-	/* �ָ���̬������AVCodecContext�ṹ�������*/
+	/* 恢复静态参数（AVCodecContext结构体变量）*/
 	avctx->usSourceWidth		= usSourceWidth;	
 	avctx->usSourceHeight		= usSourceHeight;	
 	avctx->uiRefFrame			= uiRefFrame;		
@@ -659,7 +659,7 @@ int attribute_align_arg avcodec_reset(AVCodecContext *avctx)
 	avctx->iSourceChromaFormat  = iChromaFormat; 
 	avctx->uiBufNum             = uiBufNum;
 #if 0
-	/* ��ʼ������ͨ��������ĳЩ״̬��ͳ��ֵ */
+	/* 初始化解码通道变量的某些状态或统计值 */
 	avctx->pix_fmt			   = PIX_FMT_NONE;
 	avctx->coded_width		   = 0;
 	avctx->coded_height		   = 0;
@@ -682,10 +682,10 @@ int attribute_align_arg avcodec_reset(AVCodecContext *avctx)
 	avctx->refs					   = 0;
 	if(NULL != avctx->coded_frame)
 	{
-		memset(avctx->coded_frame��0, sizeof(AAVFrame));
+		memset(avctx->coded_frame，0, sizeof(AAVFrame));
 	}
 
-	/* ������״̬��Ϣ��λ */
+	/* 解码器状态信息复位 */
 	avctx->eCodecStatus		 = 0;
 	avctx->iErrorCode		 = 0;
 	avctx->uiDecIFrames		 = 0;
@@ -695,7 +695,7 @@ int attribute_align_arg avcodec_reset(AVCodecContext *avctx)
 	avctx->uiFreeBufNum		 = 0;
 	avctx->uiInUsedBufNum	 = 0;  
 
-	/* ������Ϣ��λ */
+	/* 码流信息复位 */
 //	avctx->eCodecType		 = 0;
 	avctx->eColorSpaceType	 = 0;
 	avctx->eContentType		 = 0;
@@ -706,7 +706,7 @@ int attribute_align_arg avcodec_reset(AVCodecContext *avctx)
 	avctx->uiRefFrame		 = 0;
 	avctx->uiVbvBufSize      = 0;
 
-	/* �������ͷ������ͷָ�� */
+	/* 清空序列头和码流头指针 */
 	for(i = 0; i < MAZX_EXTRADATA_NUM; i++)
 	{
 		avctx->extradata[i]		 = NULL;
@@ -849,7 +849,7 @@ int avcodec_close(AVCodecContext *avctx)
     if (HAVE_THREADS && avctx->thread_opaque)
         avcodec_thread_free(avctx);
 	/* 2010/03/26 16:30:00 liuxw+00139685 */
-	/* ��������һ���ж�����avctx->codec */
+	/* 多增加了一个判断条件avctx->codec */
     if (avctx->codec && avctx->codec->close)
         avctx->codec->close(avctx);
     avcodec_default_free_buffers(avctx);

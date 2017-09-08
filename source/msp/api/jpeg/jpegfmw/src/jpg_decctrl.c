@@ -644,7 +644,7 @@ STATIC_FUNC HI_S32 JPGConvert2DecInfo(const JPG_PICPARSEINFO_S* pParseInfo, JPG_
             pDecodeAttr->pQuanTbl[i]   = pParseInfo->pQuantTbl[i];
 			#else
 			/**
-			 **revise by y00181162,ÐÞ¸Ä½âÂëÊ§ÕæµÄÎÊÌâ£¬Òª¸ù¾ÝÍ¼Æ¬Ô­ÓÐµÄÁ¿»¯±íÀ´Ñ¡Ôñ
+			 **revise by y00181162,ä¿®æ”¹è§£ç å¤±çœŸçš„é—®é¢˜ï¼Œè¦æ ¹æ®å›¾ç‰‡åŽŸæœ‰çš„é‡åŒ–è¡¨æ¥é€‰æ‹©
 			 **/
             pDecodeAttr->pQuanTbl[i]   = pParseInfo->pQuantTbl[pParseInfo->ComponentInfo[i].QuantTblNo];
 			#endif
@@ -1383,7 +1383,7 @@ HI_S32  JPG_Decode(JPG_HANDLE Handle, JPG_SURFACE_S *pSurface, HI_U32 Index)
                  || (JPG_PICTYPE_PROGRESSIVE == pCurPicInfo->Profile))
         {
             /**
-             ** ¸Ã°æ±¾²»Ö§³ÖÈí¼þ½âÂë
+             ** è¯¥ç‰ˆæœ¬ä¸æ”¯æŒè½¯ä»¶è§£ç 
              **/
             //fprintf(stderr,"========== %s : %s : %d \n",__FILE__,__FUNCTION__,__LINE__);
             pstCtx->DecType = JPG_DECTYPE_SW;
@@ -1435,7 +1435,7 @@ HI_S32  JPG_Decode(JPG_HANDLE Handle, JPG_SURFACE_S *pSurface, HI_U32 Index)
 	            {
 	                pstCtx->DecType = JPG_DECTYPE_SW;
 	                /**
-		             ** ¸Ã°æ±¾²»Ö§³ÖÈí¼þ½âÂë
+		             ** è¯¥ç‰ˆæœ¬ä¸æ”¯æŒè½¯ä»¶è§£ç 
 		             **/
 					return HI_FAILURE;
 	            }
@@ -1446,7 +1446,7 @@ HI_S32  JPG_Decode(JPG_HANDLE Handle, JPG_SURFACE_S *pSurface, HI_U32 Index)
         {
             pstCtx->DecType = JPG_DECTYPE_SW;
             /**
-             ** ¸Ã°æ±¾²»Ö§³ÖÈí¼þ½âÂë
+             ** è¯¥ç‰ˆæœ¬ä¸æ”¯æŒè½¯ä»¶è§£ç 
              **/
 			return HI_FAILURE;
         }
@@ -1524,7 +1524,7 @@ HI_S32  JPG_Decode(JPG_HANDLE Handle, JPG_SURFACE_S *pSurface, HI_U32 Index)
         {
 
 	         /**
-             ** ¸Ã°æ±¾²»Ö§³ÖÈí¼þ½âÂë
+             ** è¯¥ç‰ˆæœ¬ä¸æ”¯æŒè½¯ä»¶è§£ç 
              **/
              #if 1
 			 return HI_FAILURE;
@@ -2236,7 +2236,7 @@ HI_S32  JPG_ResetDecoder1(JPG_HANDLE Handle)
         else
         {
             #if 1
-			/** ²»Ö§³ÖÈí¼þ½âÂë **/
+			/** ä¸æ”¯æŒè½¯ä»¶è§£ç  **/
             return HI_FAILURE;
 			#else
             s32Ret = pstCtx->pstruCurrentDec->JPGDEC_Reset1(pstCtx->HDecHandle);

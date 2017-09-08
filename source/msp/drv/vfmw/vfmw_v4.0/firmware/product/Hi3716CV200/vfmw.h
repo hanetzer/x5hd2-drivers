@@ -451,8 +451,8 @@ typedef struct hiCHAN_CFG_S
     SINT32    s32ChanPriority;   /* channel priority */
     SINT32    s32ChanErrThr;     /* channel error torlerance threshold. 0: zero torlerance; 100: display no matter how many error occured */
     SINT32    s32ChanStrmOFThr;  /* stream overflow control threshold, must >= 0, 0 means do not enable overflow control */ 
-    DEC_MODE_E    s32DecMode;         /* decode mode£¬0£ºIPB£¬ 1£ºIP£¬ 2£ºI */
-    SINT32    s32DecOrderOutput; /* 0: output by display order£¬1:output by decode order */
+    DEC_MODE_E    s32DecMode;         /* decode modeï¼Œ0ï¼šIPBï¼Œ 1ï¼šIPï¼Œ 2ï¼šI */
+    SINT32    s32DecOrderOutput; /* 0: output by display orderï¼Œ1:output by decode order */
     SINT32    s32DnrTfEnable;
     SINT32    s32DnrDispOutEnable;  
 	SINT32    s32BtlDbdrEnable;
@@ -689,7 +689,7 @@ typedef struct
     SINT32              s32LumaStride;
     
     SINT32              s32CbPhyAddr;    /* if semi-planar stand for the interlaced chrom addr; if planar stand for the Cb addr */
-    SINT32              s32CrPhyAddr;    /* if semi-planar do not care£¬if planar stand for the Cr addr */
+    SINT32              s32CrPhyAddr;    /* if semi-planar do not careï¼Œif planar stand for the Cr addr */
     SINT32              s32ChromStride;  
     SINT32              s32ChromCrStride;  
 } USRDEC_FRAME_DESC_S;
@@ -907,7 +907,7 @@ typedef struct hiEXTRA_ACCELERATOR_S
 } EXTRA_ACCELERATOR_S;
 
 
-/*Íâ²¿Ö¡´æ·ÖÅä½Ó¿ÚºÍ½á¹¹*/
+/*å¤–éƒ¨å¸§å­˜åˆ†é…æ¥å£å’Œç»“æ„*/
 typedef struct FSP_MEM_DESC_S
 {
 	SINT32      PhyAddr;

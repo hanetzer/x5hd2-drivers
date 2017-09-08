@@ -71,7 +71,7 @@ HI_U16 SI_GetPixelsForHSync(void)
     return  ReadWordHDMITXP0(HRES_L_ADDR);
 }
 
-//未被使用，modes为unf_format
+//鏈浣跨敤锛宮odes涓簎nf_format
 HI_U8 SI_GetVideoFormat(HI_U8 modes)
 {
     return VModeTables[modes].ModeId.Mode_C1;
@@ -82,7 +82,7 @@ HI_U8 SI_GetVideoFormat(HI_U8 modes)
     #define _4or16 1  // 4:3 or 16:9
     #define _16    2  // 16:9
 */
-//未被使用，modes为unf_format
+//鏈浣跨敤锛宮odes涓簎nf_format
 HI_U8 SI_GetPictureAspect(HI_U8 modes)
 {
     return VModeTables[modes].AspectRatio;

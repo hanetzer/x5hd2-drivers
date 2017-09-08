@@ -272,7 +272,7 @@ void mpeg_motion_internal(MpegEncContext *s,
     int dxy, uvdxy, mx, my, src_x, src_y,
         uvsrc_x, uvsrc_y, v_edge_pos, uvlinesize, linesize;
 
-	//guoshan + 00101841 20100421£ºMPEG-4Èç¹û½øĞĞÁËedge_mcµÄ¿½±´£¬ÄÚ´æ±ß½çÎŞÒâÒå¡£
+	//guoshan + 00101841 20100421ï¼šMPEG-4å¦‚æœè¿›è¡Œäº†edge_mcçš„æ‹·è´ï¼Œå†…å­˜è¾¹ç•Œæ— æ„ä¹‰ã€‚
 	int iEgdeMcFlag = 0;
 
 #if 0
@@ -346,7 +346,7 @@ if(s->quarter_sample)
         }
     }
 	
-	/*xiongfei Ôö¼ÓÅĞ¶Ï ref_pictureËùÖ¸ÏòµØÖ·ÊÇ·ñÓĞĞ§ 20100401*/
+	/*xiongfei å¢åŠ åˆ¤æ–­ ref_pictureæ‰€æŒ‡å‘åœ°å€æ˜¯å¦æœ‰æ•ˆ 20100401*/
 	if((NULL == ref_picture[0])||(NULL == ref_picture[1])||(NULL == ref_picture[2]))
 	{
 		av_log(s->avctx,AV_LOG_WARNING,
@@ -378,7 +378,7 @@ if(s->quarter_sample)
                                 s->h_edge_pos, s->v_edge_pos);
             ptr_y = s->edge_emu_buffer;
 
-			//guoshan + 00101841 20100421£ºMPEG-4Èç¹û½øĞĞÁËedge_mcµÄ¿½±´,±êÖ¾Î»ÖÃ1¡£
+			//guoshan + 00101841 20100421ï¼šMPEG-4å¦‚æœè¿›è¡Œäº†edge_mcçš„æ‹·è´,æ ‡å¿—ä½ç½®1ã€‚
 			iEgdeMcFlag = 1;
 
             if(!CONFIG_GRAY || !(s->flags&CODEC_FLAG_GRAY))
@@ -425,7 +425,7 @@ if(s->quarter_sample)
 			return;
 		}
 		{	
-			//guoshan +00101841 20100421 ptr_y = s->edge_emu_bufferÇĞ»»ºóÏÂÊöÅĞ¶ÏÎŞÒâÒå
+			//guoshan +00101841 20100421 ptr_y = s->edge_emu_bufferåˆ‡æ¢åä¸‹è¿°åˆ¤æ–­æ— æ„ä¹‰
 			if(!iEgdeMcFlag)
 			{
 				uint8_t *ptr = (s->iMvFlag == MV_DIR_FORWARD)?s->last_picture.data[0]:s->next_picture.data[0];
@@ -455,7 +455,7 @@ if(s->quarter_sample)
 
     if(!CONFIG_GRAY || !(s->flags&CODEC_FLAG_GRAY))
 	{
-		/*xiongfei Ìí¼Ó ÓÃÀ´ÅĞ¶ÏµØÖ·¿Õ¼äÊÇ·ñÓĞĞ§ 20100401*/
+		/*xiongfei æ·»åŠ  ç”¨æ¥åˆ¤æ–­åœ°å€ç©ºé—´æ˜¯å¦æœ‰æ•ˆ 20100401*/
 		if(( NULL == dest_cb ) || (NULL == ptr_cb))
 		{
 			av_log(s->avctx,AV_LOG_WARNING,
@@ -467,7 +467,7 @@ if(s->quarter_sample)
 		{	
 			uint8_t *ptr = (s->iMvFlag == MV_DIR_FORWARD)?s->last_picture.data[1]:s->next_picture.data[1];
 			int align = ALIGN((s->current_picture.linesize[1]*EDGE_WIDTH>>s->chroma_x_shift) + (EDGE_WIDTH>>s->chroma_y_shift), STRIDE_ALIGN);
-			//guoshan +00101841 20100421 ptr_cb = uvbufÇĞ»»ºóÏÂÊöÅĞ¶ÏÎŞÒâÒå
+			//guoshan +00101841 20100421 ptr_cb = uvbufåˆ‡æ¢åä¸‹è¿°åˆ¤æ–­æ— æ„ä¹‰
 			if(!iEgdeMcFlag)
 			{
 				if(ptr_cb < ptr)
@@ -689,7 +689,7 @@ static inline void qpel_motion(MpegEncContext *s,
     uvsrc_y = s->mb_y * (8 >> field_based) + my;
 
 	///* 2010/04/08 14:30:00 liuxw+00139685 */
-	///* Ôö¼Ó¶ÔY/U/VÖ¸ÕëºÏ·¨ĞÔµÄ·¶Î§£¬±ÜÃâÔÚÎóÂë»ò¶ª°üµÄÇé¿öÏÂËÀ»ú(avoid segment) */
+	///* å¢åŠ å¯¹Y/U/VæŒ‡é’ˆåˆæ³•æ€§çš„èŒƒå›´ï¼Œé¿å…åœ¨è¯¯ç æˆ–ä¸¢åŒ…çš„æƒ…å†µä¸‹æ­»æœº(avoid segment) */
 	if(NULL == ref_picture[0] || NULL == ref_picture[1] || NULL == ref_picture[2])
 	{
 		av_log(s->avctx,AV_LOG_WARNING,"Data pointer of Reference Picture is NULL!\n");
@@ -848,11 +848,11 @@ static av_always_inline void MPV_motion_internal(MpegEncContext *s,
     if(!is_mpeg12 && s->obmc && s->pict_type != FF_B_TYPE)
 	{
 		//guoshan+00101841 20100504 
-		/*mv_cache[column][row][mvx/mvy], columnÈ¡Öµ[0,3], rowÈ¡Öµ[0,3]*/
+		/*mv_cache[column][row][mvx/mvy], columnå–å€¼[0,3], rowå–å€¼[0,3]*/
         int16_t mv_cache[4][4][2]; 
         const int xy= s->mb_x + s->mb_y*s->mb_stride;
         const int mot_stride= s->b8_stride;
-        const int mot_xy= mb_x*2 + mb_y*2*mot_stride;  //guoshan+00101841 20100504 °´8x8¿éÎªµ¥Î»
+        const int mot_xy= mb_x*2 + mb_y*2*mot_stride;  //guoshan+00101841 20100504 æŒ‰8x8å—ä¸ºå•ä½
 
         assert(!s->mb_skipped);
 

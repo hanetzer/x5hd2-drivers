@@ -44,7 +44,7 @@ static VLC j_orient_vlc[2][4]; //[quant], [select]
 
 
 /* 2010/08/31 11:30:00 liuxw+00139685 [AZ1D02297] */
-/* ½«¶¯Ì¬·ÖÅäµÄVLC¿Õ¼äÈ«²¿×ª»»Îª¾²Ì¬Êý×é */
+/* å°†åŠ¨æ€åˆ†é…çš„VLCç©ºé—´å…¨éƒ¨è½¬æ¢ä¸ºé™æ€æ•°ç»„ */
 static av_cold void x8_vlc_init(void){
     int i;
     int offset = 0;
@@ -715,10 +715,10 @@ av_cold void ff_intrax8_common_init(IntraX8Context * w, MpegEncContext * const s
     ff_init_scantable(s->dsp.idct_permutation, &w->scantable[2], wmv1_scantable[3]);
 }
 /* 2010/08/31 11:30:00 liuxw+00139685 [AZ1D02297] */
-/* ÓÉÓÚÇ°Ãæ½«¶¯Ì¬·ÖÅäµÄ¿Õ¼äÈ«²¿×ª»»Îª±íÌ¬×é£¬ ËùÒÔ²»ÐèÒªÊÍ·Åº¯Êý */
+/* ç”±äºŽå‰é¢å°†åŠ¨æ€åˆ†é…çš„ç©ºé—´å…¨éƒ¨è½¬æ¢ä¸ºè¡¨æ€ç»„ï¼Œ æ‰€ä»¥ä¸éœ€è¦é‡Šæ”¾å‡½æ•° */
 #if 0
 /* 2010/06/18 15:30:00 liuxw+00139685 */
-/* ÐÂÔöº¯Êý£ºÊÍ·ÅµôVLC_TABLEËùÕ¼ÓÃµÄÄÚ´æ¿Õ¼ä */
+/* æ–°å¢žå‡½æ•°ï¼šé‡Šæ”¾æŽ‰VLC_TABLEæ‰€å ç”¨çš„å†…å­˜ç©ºé—´ */
 av_cold void x8_vcl_table_free()
 {
 	int i;
@@ -757,9 +757,9 @@ av_cold void x8_vcl_table_free()
 av_cold void ff_intrax8_common_end(IntraX8Context * w)
 {
 	/* 2010/06/18 15:30:00 liuxw+00139685 */
-	/* µ÷ÓÃÊÍ·Åvlc tableÄÚ´æµÄº¯Êý */
+	/* è°ƒç”¨é‡Šæ”¾vlc tableå†…å­˜çš„å‡½æ•° */
 	/* 2010/08/31 11:30:00 liuxw+00139685 [AZ1D02297] */
-/* ÓÉÓÚÇ°Ãæ½«¶¯Ì¬·ÖÅäµÄ¿Õ¼äÈ«²¿×ª»»Îª±íÌ¬×é£¬ ËùÒÔ²»ÐèÒªÊÍ·Åº¯Êý */
+/* ç”±äºŽå‰é¢å°†åŠ¨æ€åˆ†é…çš„ç©ºé—´å…¨éƒ¨è½¬æ¢ä¸ºè¡¨æ€ç»„ï¼Œ æ‰€ä»¥ä¸éœ€è¦é‡Šæ”¾å‡½æ•° */
 //	x8_vcl_table_free();
 
 	av_freep(&w->prediction_table);

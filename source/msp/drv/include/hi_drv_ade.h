@@ -49,9 +49,9 @@ extern "C" {
 
 typedef enum
 {
-    ADE_DEC_MODE_RAWPCM = 0, /**<PCM decoding mode*/ /**<CNcomment:PCM 解码模式 */
-    ADE_DEC_MODE_THRU, /**<SPIDF61937 passthrough decoding mode only, such as AC3/DTS */ /**<CNcomment:透传解码模式 */
-    ADE_DEC_MODE_SIMUL, /**<PCM and passthrough decoding mode*/ /**<CNcomment:PCM + 透传解码模式 */
+    ADE_DEC_MODE_RAWPCM = 0, /**<PCM decoding mode*/ /**<CNcomment:PCM 瑙ｇ爜妯″紡 */
+    ADE_DEC_MODE_THRU, /**<SPIDF61937 passthrough decoding mode only, such as AC3/DTS */ /**<CNcomment:閫忎紶瑙ｇ爜妯″紡 */
+    ADE_DEC_MODE_SIMUL, /**<PCM and passthrough decoding mode*/ /**<CNcomment:PCM + 閫忎紶瑙ｇ爜妯″紡 */
     ADE_DEC_MODE_BUTT = 0x7FFFFFFF
 } ADE_DEC_MODE_E;
 

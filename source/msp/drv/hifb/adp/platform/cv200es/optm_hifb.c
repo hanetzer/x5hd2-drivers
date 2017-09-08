@@ -3487,7 +3487,7 @@ HI_S32 OPTM_GfxChgCmp2Ncmp(HIFB_LAYER_ID_E enLayerId)
 
 
 /*set the priority of layer in gp*/
-/*CNcomment:ÉèÖÃÍ¼²ãÔÚGP ÖĞµÄÓÅÏÈ¼¶*/
+/*CNcomment:è®¾ç½®å›¾å±‚åœ¨GP ä¸­çš„ä¼˜å…ˆçº§*/
 HI_S32 OPTM_GfxGetLayerPriority(HIFB_LAYER_ID_E enLayerId, HI_U32 *pU32Priority)
 {
 	HI_U32 i;
@@ -3523,7 +3523,7 @@ HI_S32 OPTM_GfxGetLayerPriority(HIFB_LAYER_ID_E enLayerId, HI_U32 *pU32Priority)
 }
 
 /*set the priority of layer in gp*/
-/*CNcomment:ÉèÖÃÍ¼²ãÔÚGP ÖĞµÄÓÅÏÈ¼¶*/
+/*CNcomment:è®¾ç½®å›¾å±‚åœ¨GP ä¸­çš„ä¼˜å…ˆçº§*/
 HI_S32 OPTM_GfxSetLayerPriority(HIFB_LAYER_ID_E enLayerId, HIFB_ZORDER_E enZOrder)
 {
 	HI_S32  i;

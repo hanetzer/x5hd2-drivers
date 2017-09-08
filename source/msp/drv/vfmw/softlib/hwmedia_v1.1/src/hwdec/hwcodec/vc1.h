@@ -45,7 +45,7 @@ enum VC1Code{
 /** Available Profiles */
 //@{
 /* 2010/06/17 11:30:00 liuxw+00139685 */
-/* ½«PROFILE_MAINµÄÖµÉèÎª4£¬½«PROFILE_ADVANCEDµÄÖµÉèÎª3 */
+/* å°†PROFILE_MAINçš„å€¼è®¾ä¸º4ï¼Œå°†PROFILE_ADVANCEDçš„å€¼è®¾ä¸º3 */
 enum Profile {
     PROFILE_SIMPLE = 0,
 //  PROFILE_MAIN,
@@ -316,18 +316,18 @@ typedef struct VC1Context{
     uint8_t closed_entry;       ///< Closed entry point flag (CLOSED_ENTRY syntax element)
 
 	/* 2010/06/13 9:30:00 liuxw+00139685 */
-	/* ÐÂÔöÓï·¨ÔªËØ */
+	/* æ–°å¢žè¯­æ³•å…ƒç´  */
 	uint8_t *rbdu_buf;         ///< store the rbdu 
 	int seq_initialized;       ///< sequence header init flag
 	int ep_initialized;        ///< entyr point header init flag
 	int first_time;            ///< first time come in
 
 	/* 2010/08/13 11:30:00 liuxw+00139685 */
-	/* ÓÉÓÚÔÚ¸´Î»µÄÊ±ºòÓÐÐ©³õÊ¼»¯µÄº¯ÊýµÄ¾Ö²¿±äÁ¿ÎÞ·¨¸´Î»£¬ËùÒÔÐÞ¸ÄÎªÍ¨µÀ±äÁ¿ÖÐµÄ³ÉÔ± */
+	/* ç”±äºŽåœ¨å¤ä½çš„æ—¶å€™æœ‰äº›åˆå§‹åŒ–çš„å‡½æ•°çš„å±€éƒ¨å˜é‡æ— æ³•å¤ä½ï¼Œæ‰€ä»¥ä¿®æ”¹ä¸ºé€šé“å˜é‡ä¸­çš„æˆå‘˜ */
 //	int done;
 
 	/* 2010/08/31 19:00:00 liuxw+00139685 [AZ1D02293] */
-	/* ÅÐ¶Ïµ±Ç°MBµÄQPÊÇÓÉpic_qpµÃÀ´»¹ÊÇÓÉÆäËüµÄµÃÀ´µÄ£¬´Ó¶øÅÐ¶ÏÊÇ·ñÊ¹ÓÃhalfqp */
+	/* åˆ¤æ–­å½“å‰MBçš„QPæ˜¯ç”±pic_qpå¾—æ¥è¿˜æ˜¯ç”±å…¶å®ƒçš„å¾—æ¥çš„ï¼Œä»Žè€Œåˆ¤æ–­æ˜¯å¦ä½¿ç”¨halfqp */
 	int useAltQP; //0-> use pic_qp; 1-> use altqp
 } VC1Context;
 

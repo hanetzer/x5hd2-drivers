@@ -29,22 +29,22 @@ extern "C"{
 #include "hi_png_type.h"
 
 /*Base address of PNG register*/
-/*CNcomment:PNG¼Ä´æÆ÷»ùµØÖ·*/
+/*CNcomment:PNGå¯„å­˜å™¨åŸºåœ°å€*/
 //#define PNG_REG_BASEADDR   0xf8c70000
 
 /*Size of PNG register*/
-/*CNcomment:PNG¼Ä´æÆ÷´óĞ¡*/
+/*CNcomment:PNGå¯„å­˜å™¨å¤§å°*/
 #define PNG_REG_SIZE        0x120
 
 /*PNG interrupt num*/
-/*CNcomment:PNGÖĞ¶ÏºÅ*/
+/*CNcomment:PNGä¸­æ–­å·*/
 //#define PNG_INTNUM 128
 
 /*Interrupt mask*/
-/*CNcomment:ÖĞ¶ÏÑÚÂë*/
-#define PNG_INT_FINISH_MASK 0x1 /*Finish interrupt mask*//*CNcomment:Íê³ÉÖĞ¶Ï*/
-#define PNG_INT_RESUME_MASK 0x2 /*Resume stream interrupt mask*//*CNcomment:ĞøÂëÁ÷ÖĞ¶Ï*/
-#define PNG_INT_ERR_MASK 0x4    /*Decode err interrupt mask*//*CNcomment:´íÎóÖĞ¶Ï*/
+/*CNcomment:ä¸­æ–­æ©ç */
+#define PNG_INT_FINISH_MASK 0x1 /*Finish interrupt mask*//*CNcomment:å®Œæˆä¸­æ–­*/
+#define PNG_INT_RESUME_MASK 0x2 /*Resume stream interrupt mask*//*CNcomment:ç»­ç æµä¸­æ–­*/
+#define PNG_INT_ERR_MASK 0x4    /*Decode err interrupt mask*//*CNcomment:é”™è¯¯ä¸­æ–­*/
 
 typedef union tag_PNG_SIZE_U
 {
@@ -79,69 +79,69 @@ typedef union tag_PNG_TRANSFORM_U
     struct
     {
         /*Adjut pixel ordir when bpp(bit per pixel) = 1,2,4*/
-        /*CNcomment:µ÷Õû1£¬2£¬4bitµÄÏóËØË³Ğò*/
+        /*CNcomment:è°ƒæ•´1ï¼Œ2ï¼Œ4bitçš„è±¡ç´ é¡ºåº*/
         HI_U32 u32PixelOrderEn  :   1;
 
         /*Transform 1,2,4 bit to 8 bit if image type is gray*/
-        /*CNcomment:½«1£¬2£¬4bitµÄ»Ò¶ÈÍ¼×ª»»³É8bit */
+        /*CNcomment:å°†1ï¼Œ2ï¼Œ4bitçš„ç°åº¦å›¾è½¬æ¢æˆ8bit */
         HI_U32 u32PackByteEn    :   1;
 
         /*Transform gray image to true color*/
-        /*CNcomment:½«»Ò¶ÈÍ¼×ª»»Î»Õæ²ÊÉ«Í¼ */
+        /*CNcomment:å°†ç°åº¦å›¾è½¬æ¢ä½çœŸå½©è‰²å›¾ */
         HI_U32 u32Gray2BGREn    :   1;
 
         /*Add alpha channel*/
-        /*CNcomment:Ôö¼ÓalphaÍ¨µÀ */
+        /*CNcomment:å¢åŠ alphaé€šé“ */
         HI_U32 u32AddAlphaEn    :   1;
 
         /*Strip alpha channel*/
-        /*CNcomment:È¥³ıalphaÍ¨µÀ*/
+        /*CNcomment:å»é™¤alphaé€šé“*/
         HI_U32 u32StripAlphaEn  :   1;
 
         /*Transform BGR to RGB*/
-        /*CNcomment:BGR×ª»»ÎªRGB */
+        /*CNcomment:BGRè½¬æ¢ä¸ºRGB */
         HI_U32 u32BGR2RGBEn     :   1;
 
         /*Swap alpha channel and data channel*/
-        /*CNcomment:½»»»alphaºÍÍ¼ÏóÊı¾İµÄÎ»ÖÃ*/
+        /*CNcomment:äº¤æ¢alphaå’Œå›¾è±¡æ•°æ®çš„ä½ç½®*/
         HI_U32 u32SwapAlphaEn   :   1;
 
         /*Reserved*/
-        /*CNcomment:±£Áô*/
+        /*CNcomment:ä¿ç•™*/
         HI_U32 u32Reserved1     :   1;
 
         /*Trasnform image form 16 bit depth to 8 bit depth*/
-        /*CNcomment:16Î»×ª»»Î»8Î»*/
+        /*CNcomment:16ä½è½¬æ¢ä½8ä½*/
         HI_U32 u32Strip16En     :   1;
 
         /*Transform image from 8 bit depth to 4 bit depth*/
-        /*CNcomment:8Î»×ª»»Î»4Î»*/
+        /*CNcomment:8ä½è½¬æ¢ä½4ä½*/
         HI_U32 u32Strip4En      :   1;
 
         /*Reserved*/
-        /*CNcomment:±£Áô*/
+        /*CNcomment:ä¿ç•™*/
         HI_U32 u32Reserved2     :   6;
 
         /*The mode used when trasfomr 1,2,4 bit to 8 bit*/
-        /*CNcomment:1,2,4bit×ª»»Îª8bitÊ±µÄµÍÎ»Ìî³ä·½Ê½*/
+        /*CNcomment:1,2,4bitè½¬æ¢ä¸º8bitæ—¶çš„ä½ä½å¡«å……æ–¹å¼*/
         HI_U32 u32PackBypeMode  :   1;
 
         /*The mode used when strip 16 bit to 8 bit*/
-        /*CNcomment:16Î»×ª8Î»´¦ÀíÄ£Ê½*/
+        /*CNcomment:16ä½è½¬8ä½å¤„ç†æ¨¡å¼*/
         HI_U32 u32Streip16Mode  :   1;
 
         /*Enable transparent value*/
-        /*CNcomment:ÊÇ·ñÊ¹ÄÜÍ¸Ã÷É«ĞÅÏ¢*/
+        /*CNcomment:æ˜¯å¦ä½¿èƒ½é€æ˜è‰²ä¿¡æ¯*/
         HI_U32 u32TransInfoEn   :   1;
 
         /*Dst color format when trasform to 4 bit*/
-        /*CNcomment:×ª»»Îª4bitÊ±µÄÏóËØ¸ñÊ½*/
+        /*CNcomment:è½¬æ¢ä¸º4bitæ—¶çš„è±¡ç´ æ ¼å¼*/
         HI_U32 u32Strip4Fmt     :   3;
        
         HI_U32 u32PreMultiAlphaEn     :   1;
         HI_U32 u32PreMultiRoundMode     :   2;
         /*Reserved*/
-        /*CNcomment:±£Áô*/
+        /*CNcomment:ä¿ç•™*/
         HI_U32 u32Reserved3     :   7;
     }stBits;
     HI_U32 u32All;
@@ -177,67 +177,67 @@ typedef union tag_PNG_INT_U
         HI_U32 u32Reserved  :   13;
 
         /*Write out of bound when transforming image*/
-        /*CNcomment:¸ñÊ½×ª»»Ê±bufĞ´Ô½½ç*/
+        /*CNcomment:æ ¼å¼è½¬æ¢æ—¶bufå†™è¶Šç•Œ*/
         HI_U32 u32FmtBufErr  :   1;  
 
         /*Filter module write out of bound*/
-        /*CNcomment:filterÄ£¿éĞ´Ô½½ç*/
+        /*CNcomment:filteræ¨¡å—å†™è¶Šç•Œ*/
         HI_U32 u32FltBufErr :   1;
 
         /*RDC module write out of bound*/
-        /*CNcomment:rdcÄ£¿éĞ´bufÔ½½ç*/
+        /*CNcomment:rdcæ¨¡å—å†™bufè¶Šç•Œ*/
         HI_U32 u32RdcBufErr :   1;
 
         /*Filter type invalid*/
-        /*CNcomment:ÂË²¨ÀàĞÍ´íÎó */
+        /*CNcomment:æ»¤æ³¢ç±»å‹é”™è¯¯ */
         HI_U32 u32FltTypeErr    :   1;
 
         /*Copy counte is not equal to 0 when ending*/
-        /*CNcomment:cpyÊı½áÊøÊ±²»Îª0 */
+        /*CNcomment:cpyæ•°ç»“æŸæ—¶ä¸ä¸º0 */
         HI_U32 u32DecCpyErr :   1;
 
         /*Unkonwn Huffman code*/
-        /*CNcomment:Î´ÖªHuffmanÂë*/
+        /*CNcomment:æœªçŸ¥Huffmanç */
         HI_U32 u32HuffDecErr    :   1;
 
         /*Length of distance table is larger than 31*/
-        /*CNcomment:distance±í³¤´óÓÚ31*/
+        /*CNcomment:distanceè¡¨é•¿å¤§äº31*/
         HI_U32 u32ZlibHdisErr   :   1;
 
         /*Length of literal table is larger than 29*/
-        /*CNcomment:literal±í³¤´óÓÚ29 */
+        /*CNcomment:literalè¡¨é•¿å¤§äº29 */
         HI_U32 u32ZlibHlitErr   :   1;
 
         /*Length of no inflate data invalid*/
-        /*CNcomment:·ÇÑ¹ËõÊı¾İlenĞ£Ñé´íÎó*/
+        /*CNcomment:éå‹ç¼©æ•°æ®lenæ ¡éªŒé”™è¯¯*/
         HI_U32 u32ZlibLenErr    :   1;
 
         /*Block type err*/
-        /*CNcomment:¿éÀàĞÍ´íÎó*/
+        /*CNcomment:å—ç±»å‹é”™è¯¯*/
         HI_U32 u32ZlibBtypeErr  :   1;
 
         /*CMF check err*/
-        /*CNcomment:CMFĞ£Ñé´í*/
+        /*CNcomment:CMFæ ¡éªŒé”™*/
         HI_U32 u32ZlibFcheckErr :   1;
 
         /*Dictionary ID err*/
-        /*CNcomment:×Öµä±êÊ¶´íÎó*/
+        /*CNcomment:å­—å…¸æ ‡è¯†é”™è¯¯*/
         HI_U32 u32ZlibFdictErr  :   1;
 
         /*Size of window is larger than 32K byte*/
-        /*CNcomment:´°¿Ú´óĞ¡´óÓÚ32k*/
+        /*CNcomment:çª—å£å¤§å°å¤§äº32k*/
         HI_U32 u32ZlibCinfoErr  :   1;
 
         /*Inflate method of Zlib stream err*/
-        /*CNcomment:ZlibÁ÷Ñ¹Ëõ·½·¨´íÎó*/
+        /*CNcomment:Zlibæµå‹ç¼©æ–¹æ³•é”™è¯¯*/
         HI_U32 u32ZlibCmErr     :   1;
 
         /*Adler check err*/
-        /*CNcomment:AdlerĞ£Ñé´íÎó*/
+        /*CNcomment:Adleræ ¡éªŒé”™è¯¯*/
         HI_U32 u32AdlerErr      :   1;
 
         /*CRC check err*/
-        /*CNcomment:CRC´íÎó*/
+        /*CNcomment:CRCé”™è¯¯*/
         HI_U32 u32CrcErr        :   1;
     }stBits;
     HI_U32 u32All;
@@ -274,7 +274,7 @@ typedef union tag_PNG_ERR_MODE_U
 {
     struct 
     {
-        HI_U32 u32Reserved  :   16; /*Reserved*//*CNcomment:±£Áô*/
+        HI_U32 u32Reserved  :   16; /*Reserved*//*CNcomment:ä¿ç•™*/
         HI_U32 u32FmtBufStop    :   1;
         HI_U32 u32FltBufStop    :   1;
         HI_U32 u32RdcBufStop    :   1;
@@ -307,12 +307,12 @@ typedef union tag_PNG_ERR_STATICS_U
 }PNG_ERR_STATICS_U;
 
 /*Define PNG register structure*/
-/*CNcomment:png¼Ä´æÆ÷½á¹¹Ìå */
+/*CNcomment:pngå¯„å­˜å™¨ç»“æ„ä½“ */
 typedef struct tag_PNG_HAL_REGISTER_S
 {
     volatile HI_U32 u32DecStart;
     volatile HI_U32 u32ResumeStart;
-    volatile HI_U32 u32Stride;  /*4 byte aligned*//*CNcomment:4×Ö½Ú¶ÔÆë*/
+    volatile HI_U32 u32Stride;  /*4 byte aligned*//*CNcomment:4å­—èŠ‚å¯¹é½*/
     volatile PNG_SIZE_U uSize;
     volatile PNG_TYPE_U uType;
     volatile PNG_TRANSFORM_U uTransform;
@@ -348,11 +348,11 @@ typedef struct tag_PNG_HAL_REGISTER_S
     volatile HI_U32 u32FltEndAddr;
 
     /*Suggest value is 0x20441*/
-    /*CNcomment:0x90 ½¨ÒéÅäÖÃ³É0x20441*/
+    /*CNcomment:0x90 å»ºè®®é…ç½®æˆ0x20441*/
     volatile HI_U32 u32AXIConfig;
 
     /*Suggest value is 0x80008*/
-    /*CNcomment:0x94 ½¨ÒéÅäÖÃ³É0x80008*/
+    /*CNcomment:0x94 å»ºè®®é…ç½®æˆ0x80008*/
     volatile HI_U32 u32TimeOut;
     volatile HI_U32 u32Reserved6;   	/* 0x98 */
     volatile HI_U32 u32Reserved7;   	/* 0x9c*/
@@ -388,18 +388,18 @@ typedef struct tag_PNG_HAL_REGISTER_S
 }PNG_HAL_REGISTER_S;
 
 /********************************************************************************************
-* func:	Initialize Hal layerHal     CNcomment:²ã³õÊ¼»¯
+* func:	Initialize Hal layerHal     CNcomment:å±‚åˆå§‹åŒ–
 * in:	none
 * out:	none
-* ret:	HI_SUCCESS	Open dev success  CNcomment:³É¹¦´ò¿ªÉè±¸
+* ret:	HI_SUCCESS	Open dev success  CNcomment:æˆåŠŸæ‰“å¼€è®¾å¤‡
 * ret	HI_ERR_PNG_SYS	System err, such as map register failed
-                                 CNcomment:ÏµÍ³´íÎó,±ÈÈç¼Ä´æÆ÷Ó³ÉäÊ§°Ü
+                                 CNcomment:ç³»ç»Ÿé”™è¯¯,æ¯”å¦‚å¯„å­˜å™¨æ˜ å°„å¤±è´¥
 * others:
 *********************************************************************************************/
 HI_S32 PngHalInit(HI_VOID);
 
 /********************************************************************************************
-* func:	Delete initialize Hal layer     CNcomment:Hal²ãÈ¥³õÊ¼»¯
+* func:	Delete initialize Hal layer     CNcomment:Halå±‚å»åˆå§‹åŒ–
 * in:	none
 * out:	none
 * ret:	none
@@ -408,7 +408,7 @@ HI_S32 PngHalInit(HI_VOID);
 HI_VOID PngHalDeinit(HI_VOID);
 
 /********************************************************************************************
-* func:	Reset register      CNcomment:¼Ä´æÆ÷¸´Î»
+* func:	Reset register      CNcomment:å¯„å­˜å™¨å¤ä½
 * in:	none
 * out:	none
 * ret:	none
@@ -417,8 +417,8 @@ HI_VOID PngHalDeinit(HI_VOID);
 HI_VOID PngHalReset(HI_VOID);
 
 /********************************************************************************************
-* func:	Set base info of image      CNcomment:ÉèÖÃÍ¼Æ¬»ù±¾ĞÅÏ¢
-* in:	stImgInfo Structrue of image info   CNcomment:Í¼Æ¬ĞÅÏ¢½á¹¹Ìå
+* func:	Set base info of image      CNcomment:è®¾ç½®å›¾ç‰‡åŸºæœ¬ä¿¡æ¯
+* in:	stImgInfo Structrue of image info   CNcomment:å›¾ç‰‡ä¿¡æ¯ç»“æ„ä½“
 * out:	none
 * ret:	none
 * others:
@@ -426,8 +426,8 @@ HI_VOID PngHalReset(HI_VOID);
 HI_VOID PngHalSetImgInfo(HI_PNG_INFO_S stImgInfo);
 
 /********************************************************************************************
-* func:	Set data trasnformation     CNcomment:ÉèÖÃÊı¾İ×ª»»
-* in:	stTransform Structure for data trasnformation   CNcomment:Êı¾İ×ª»»½á¹¹Ìå
+* func:	Set data trasnformation     CNcomment:è®¾ç½®æ•°æ®è½¬æ¢
+* in:	stTransform Structure for data trasnformation   CNcomment:æ•°æ®è½¬æ¢ç»“æ„ä½“
 * out:	none
 * ret:	none
 * others:
@@ -436,8 +436,8 @@ HI_VOID PngHalSetTransform(HI_PNG_TRANSFORM_S stTransform);
 
 
 /********************************************************************************************
-* func:	Set start physical address of RDC window    CNcomment:ÉèÖÃÓÎ³Ì´°¿ÚÆğÊ¼ÎïÀíµØÖ·
-* in:	u32Phyaddr Physical address     CNcomment:ÎïÀíµØÖ·
+* func:	Set start physical address of RDC window    CNcomment:è®¾ç½®æ¸¸ç¨‹çª—å£èµ·å§‹ç‰©ç†åœ°å€
+* in:	u32Phyaddr Physical address     CNcomment:ç‰©ç†åœ°å€
 * out:	none
 * ret:	none
 * others:
@@ -445,18 +445,18 @@ HI_VOID PngHalSetTransform(HI_PNG_TRANSFORM_S stTransform);
 HI_VOID PngHalSetRdcAddr(HI_U32 u32Phyaddr);
 
 /********************************************************************************************
-* func:	Get start physical address of RDC window    CNcomment:»ñÈ¡ÓÎ³Ì´°¿ÚÆğÊ¼ÎïÀíµØÖ·
+* func:	Get start physical address of RDC window    CNcomment:è·å–æ¸¸ç¨‹çª—å£èµ·å§‹ç‰©ç†åœ°å€
 * in:	none
 * out:	none
-* ret:	Physical address        CNcomment:ÎïÀíµØÖ·
+* ret:	Physical address        CNcomment:ç‰©ç†åœ°å€
 * others:
 *********************************************************************************************/
 HI_U32 PngHalGetRdcAddr(HI_VOID);
 
 /********************************************************************************************
-* func:	Set start address and size of filter buf     CNcomment:ÉèÖÃÂË²¨bufÆğÊ¼¡¢½áÊøÎïÀíµØÖ·
-* in:	u32Phyaddr Physical address     CNcomment:ÎïÀíµØÖ·
-* in:	u32Size Size of buf     CNcomment:buf´óĞ¡
+* func:	Set start address and size of filter buf     CNcomment:è®¾ç½®æ»¤æ³¢bufèµ·å§‹ã€ç»“æŸç‰©ç†åœ°å€
+* in:	u32Phyaddr Physical address     CNcomment:ç‰©ç†åœ°å€
+* in:	u32Size Size of buf     CNcomment:bufå¤§å°
 * out:	none
 * ret:	none
 * others:
@@ -464,9 +464,9 @@ HI_U32 PngHalGetRdcAddr(HI_VOID);
 HI_VOID PngHalSetFltAddr(HI_U32 u32Phyaddr, HI_U32 u32Size);
 
 /********************************************************************************************
-* func:	Set target physical address and line length     CNcomment:ÉèÖÃÄ¿±êbuf
-* in:	u32Phyaddr Physical address     CNcomment:ÎïÀíµØÖ·
-* in:	u32Stride Line length of buf    CNcomment:Ä¿±êbufĞĞ¿í
+* func:	Set target physical address and line length     CNcomment:è®¾ç½®ç›®æ ‡buf
+* in:	u32Phyaddr Physical address     CNcomment:ç‰©ç†åœ°å€
+* in:	u32Stride Line length of buf    CNcomment:ç›®æ ‡bufè¡Œå®½
 * out:	none
 * ret:	none
 * others:
@@ -474,9 +474,9 @@ HI_VOID PngHalSetFltAddr(HI_U32 u32Phyaddr, HI_U32 u32Size);
 HI_VOID PngHalSetTgt(HI_U32 u32Phyaddr, HI_U32 u32Stride);
 
 /********************************************************************************************
-* func:	Set start physical address and size of stream buf   CNcomment:ÉèÖÃÂëÁ÷bufµØÖ·
-* in:	u32Phyaddr Start physical address   CNcomment:ÎïÀíµØÖ·
-* in:	u32Size Size of buf     CNcomment:buf´óĞ¡
+* func:	Set start physical address and size of stream buf   CNcomment:è®¾ç½®ç æµbufåœ°å€
+* in:	u32Phyaddr Start physical address   CNcomment:ç‰©ç†åœ°å€
+* in:	u32Size Size of buf     CNcomment:bufå¤§å°
 * out:	none
 * ret:	none
 * others:
@@ -484,9 +484,9 @@ HI_VOID PngHalSetTgt(HI_U32 u32Phyaddr, HI_U32 u32Stride);
 HI_VOID PngHalSetStreamBuf(HI_U32 u32Phyaddr, HI_U32 u32Size);
 	
 /********************************************************************************************
-* func:	Set start physical address and size of stream data      CNcomment:ÉèÖÃÂëÁ÷µØÖ·
-* in:	u32Phyaddr Start physical address of stream     CNcomment:ÎïÀíµØÖ·
-* in:	u32Size Size of stream      CNcomment:ÂëÁ÷´óĞ¡
+* func:	Set start physical address and size of stream data      CNcomment:è®¾ç½®ç æµåœ°å€
+* in:	u32Phyaddr Start physical address of stream     CNcomment:ç‰©ç†åœ°å€
+* in:	u32Size Size of stream      CNcomment:ç æµå¤§å°
 * out:	none
 * ret:	none
 * others:
@@ -494,7 +494,7 @@ HI_VOID PngHalSetStreamBuf(HI_U32 u32Phyaddr, HI_U32 u32Size);
 HI_VOID PngHalSetStreamAddr(HI_U32 u32Phyaddr, HI_U32 u32Size);
 
 /********************************************************************************************
-* func:	Start decoding      CNcomment:Æô¶¯½âÂë
+* func:	Start decoding      CNcomment:å¯åŠ¨è§£ç 
 * in:	none
 * out:	none
 * ret:	none
@@ -503,7 +503,7 @@ HI_VOID PngHalSetStreamAddr(HI_U32 u32Phyaddr, HI_U32 u32Size);
 HI_VOID PngHalStartDecode(HI_VOID);
 
 /********************************************************************************************
-* func:	Reusme decoding     CNcomment:ĞøÂëÁ÷»Ö¸´½âÂë
+* func:	Reusme decoding     CNcomment:ç»­ç æµæ¢å¤è§£ç 
 * in:	none
 * out:	none
 * ret:	none
@@ -512,16 +512,16 @@ HI_VOID PngHalStartDecode(HI_VOID);
 HI_VOID PngHalResumeDecode(HI_VOID);
 
 /********************************************************************************************
-* func:	Get interrupt value     CNcomment:¶ÁÈ¡ÖĞ¶Ï×´Ì¬²¢ÇåÖĞ¶Ï
+* func:	Get interrupt value     CNcomment:è¯»å–ä¸­æ–­çŠ¶æ€å¹¶æ¸…ä¸­æ–­
 * in:	none
-* out:	Interrupt value         CNcomment:ÖĞ¶Ï×´Ì¬Öµ
+* out:	Interrupt value         CNcomment:ä¸­æ–­çŠ¶æ€å€¼
 * ret:	none
 * others:
 *********************************************************************************************/
 HI_U32 PngHalGetIntStatus(HI_VOID);
 
 /********************************************************************************************
-* func:	Set port AXI and timeout        CNcomment:ÉèÖÃ¶Ë¿ÚAXIºÍ³¬Ê±
+* func:	Set port AXI and timeout        CNcomment:è®¾ç½®ç«¯å£AXIå’Œè¶…æ—¶
 * in:	none
 * out:	none
 * ret:	none
@@ -530,8 +530,8 @@ HI_U32 PngHalGetIntStatus(HI_VOID);
 HI_VOID PngHalSetAxiAndTimeout(HI_VOID);
 
 /********************************************************************************************
-* func:	Set interrupt mask value        CNcomment:ÉèÖÃÖĞ¶ÏÑÚÂë
-* in:	u32Value Interrupt mask value       CNcomment:ÑÚÂëÖµ
+* func:	Set interrupt mask value        CNcomment:è®¾ç½®ä¸­æ–­æ©ç 
+* in:	u32Value Interrupt mask value       CNcomment:æ©ç å€¼
 * out:	none
 * ret:	none
 * others:
@@ -539,8 +539,8 @@ HI_VOID PngHalSetAxiAndTimeout(HI_VOID);
 HI_VOID PngHalSetIntmask(HI_U32 u32Value);
 
 /********************************************************************************************
-* func:	Set mode of handling err        CNcomment:ÉèÖÃ´íÎó´¦ÀíÄ£Ê½
-* in:	u32Value Mode of handling err       CNcomment:´íÎó´¦ÀíÄ£Ê½
+* func:	Set mode of handling err        CNcomment:è®¾ç½®é”™è¯¯å¤„ç†æ¨¡å¼
+* in:	u32Value Mode of handling err       CNcomment:é”™è¯¯å¤„ç†æ¨¡å¼
 * out:	none
 * ret:	none
 * others:

@@ -719,7 +719,7 @@ static long hivdec_ioctl(struct file *fd, unsigned int code, unsigned long arg)
 	}
 	break;
 /*
-	case VDEC_IOCTL_CHAN_STOP_MSG:   // ²»Ê¹ÓÃ
+	case VDEC_IOCTL_CHAN_STOP_MSG:   // ä¸ä½¿ç”¨
 	{
 		if (!pchan->ops || !pchan->ops->stop_msg )
         {      

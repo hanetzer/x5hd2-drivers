@@ -424,7 +424,7 @@ void avcodec_get_context_defaults2(AVCodecContext *s, enum CodecType codec_type)
     //av_opt_set_defaults2(s, flags, flags);
 
 	/* 2010/03/11 18:19:00 liuxw+00139685 */
-	/* –ﬁ∏ƒ¡Àc99Ãÿ–‘µƒ∏≥÷µ */
+	/* ‰øÆÊîπ‰∫Üc99ÁâπÊÄßÁöÑËµãÂÄº */
 //  s->time_base= (AVRational){0,1};
 	s->time_base.num = 0;
 	s->time_base.den = 0;
@@ -433,10 +433,10 @@ void avcodec_get_context_defaults2(AVCodecContext *s, enum CodecType codec_type)
     s->get_format= avcodec_default_get_format;
     s->execute= avcodec_default_execute;
 	/* 2010/03/11 18:19:00 liuxw+00139685 */
-	/* –ﬁ∏ƒ¡Àc99Ãÿ–‘µƒ∏≥÷µ */
+	/* ‰øÆÊîπ‰∫Üc99ÁâπÊÄßÁöÑËµãÂÄº */
 //  s->sample_aspect_ratio= (AVRational){0,1};
 	/* 2010/07/23 15:30:00 liuxw+00139685 */
-	/* Ω´sample_aspect_ratioµƒnumµƒ≥ı º÷µ…ËŒ™1 */
+	/* Â∞Üsample_aspect_ratioÁöÑnumÁöÑÂàùÂßãÂÄºËÆæ‰∏∫1 */
 //	s->sample_aspect_ratio.num = 0; 
 	s->sample_aspect_ratio.num = 1;
 	s->sample_aspect_ratio.den = 1;
@@ -445,7 +445,7 @@ void avcodec_get_context_defaults2(AVCodecContext *s, enum CodecType codec_type)
 	s->iChromaFormat = INT_MAX;
 	s->iSourceChromaFormat = INT_MAX;
 	/* 2010/07/14 14:30:00 liuxw+00139685 [AZ1D02219] */
-	/* Ω´profile∫ÕlevelµƒŒﬁ–ß÷µ–ﬁ∏ƒŒ™-1 */
+	/* Â∞ÜprofileÂíålevelÁöÑÊó†ÊïàÂÄº‰øÆÊîπ‰∏∫-1 */
 	s->iActualProfile = -1;
 	s->iActualLevel   = -1;
 
@@ -458,7 +458,7 @@ void avcodec_get_context_defaults2(AVCodecContext *s, enum CodecType codec_type)
 
 AVCodecContext *avcodec_alloc_context2(enum CodecType codec_type){
 	/* 2010/03/12 15:39:00 liuxw+00139685 */
-	/* Ω´av_mallocªª≥…av_malloc_hw */
+	/* Â∞Üav_mallocÊç¢Êàêav_malloc_hw */
    AVCodecContext *avctx= av_malloc(sizeof(AVCodecContext));
 //	AVCodecContext *avctx= av_malloc_hw(sizeof(AVCodecContext));
 

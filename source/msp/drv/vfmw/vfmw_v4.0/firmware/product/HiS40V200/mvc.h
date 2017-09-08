@@ -82,7 +82,7 @@ do                               \
 
 
 #define   MVC_ERR_FS_OUT_AGAIN   (-3)
-#define   MVC_NOTDEC             (-2)    //±íÊ¾MVC_DEC_DecodePacket()ÀïÃæÓĞÒ»¸öNALÃ»ÓĞ½âÂë¾Í·µ»ØÁË£¬ÏÂ´Îµ÷ÓÃ²»ÓÃËÍÂëÁ÷ÁË
+#define   MVC_NOTDEC             (-2)    //è¡¨ç¤ºMVC_DEC_DecodePacket()é‡Œé¢æœ‰ä¸€ä¸ªNALæ²¡æœ‰è§£ç å°±è¿”å›äº†ï¼Œä¸‹æ¬¡è°ƒç”¨ä¸ç”¨é€ç æµäº†
 #define   MVC_ERR                (-1)
 #define   MVC_OK                  0
 #define   MVC_ALREADY_OUT   1
@@ -108,7 +108,7 @@ do                               \
 #define   MVC_START_FRAME                         0
 
 #define   MVC_MAX_BYTES_START                     (512*1024)    // 512*1024 bytes received, start VDM to dec
-#define   MVC_GET_ONE_NALU_SIZE                   (4*1024) //SCD_SEG_BLANK_LEN           // Æ´°üµÄ×îĞ¡³¤¶È
+#define   MVC_GET_ONE_NALU_SIZE                   (4*1024) //SCD_SEG_BLANK_LEN           // æ‹¼åŒ…çš„æœ€å°é•¿åº¦
 
 /***************************** define *****************************/
 #define   MVC_PIC_DECODING                        1
@@ -140,7 +140,7 @@ do                               \
 #define   MVC_MAX_PMV_STORE                       18   // 16 for max dpb + 1 for dec_pic+ 1 for interview pic
 #define   MVC_VO_HOLD_FRAME_NUM                   3    // vo hold the number of frames
 #define   MVC_MAX_MMCO_LEN                        100
-#define   MVC_MAX_NUM_VIEWS                       2     //×î´óÖ§³ÖviewÊı
+#define   MVC_MAX_NUM_VIEWS                       2     //æœ€å¤§æ”¯æŒviewæ•°
 
 #define   MVC_NALU_TYPE_SLICE      1
 #define   MVC_NALU_TYPE_DPA        2
@@ -163,7 +163,7 @@ do                               \
 #define   MVC_NALU_TYPE_TSTEND    31              // end test, start last pic
 
 
-/*¶¨Òå½âÂëÄ£Ê½*/
+/*å®šä¹‰è§£ç æ¨¡å¼*/
 #define  MVC_IMODE                2               // only dec I pic
 #define  MVC_IPMODE               1               // dec I pic, p pic and ref b pic, no ref b pic not dec
 #define  MVC_IPBMODE              0               // all pic dec
@@ -343,7 +343,7 @@ typedef struct
     UINT8   frame_cropping_flag;                   // u(1)
     UINT8   vui_parameters_present_flag;           // u(1)
     UINT8   is_valid;                              // the sps content of this sps_id is geted or not
-    UINT8   is_refreshed;                          // ÊÇ·ñ¸üĞÂ£¬³õÊ¼ÖµÎª0
+    UINT8   is_refreshed;                          // æ˜¯å¦æ›´æ–°ï¼Œåˆå§‹å€¼ä¸º0
     UINT8   seq_scaling_matrix_present_flag;
 
     MVC_VUI_SEQ_PARAMETERS_S  vui_seq_parameters;
@@ -353,8 +353,8 @@ typedef struct
     UINT32  chroma_format_idc;
     SINT32  ScalingList4x4[6][16];                 // se(v)
     SINT32  ScalingList8x8[6][64];                 // se(v)
-    UINT32  qmatrix4x4[6][4];                      // 16 ¸öbytesÆ´ÔÚ4wordsÖĞ
-    UINT32  qmatrix8x8[2][16];                     // 64 ¸öbytesÆ´ÔÚ16wordsÖĞ    
+    UINT32  qmatrix4x4[6][4];                      // 16 ä¸ªbytesæ‹¼åœ¨4wordsä¸­
+    UINT32  qmatrix8x8[2][16];                     // 64 ä¸ªbytesæ‹¼åœ¨16wordsä¸­    
     UINT32  log2_max_frame_num_minus4;             // ue(v)
     UINT32  pic_order_cnt_type;                    // ue(v)
     UINT32  log2_max_pic_order_cnt_lsb_minus4;     // ue(v)
@@ -467,8 +467,8 @@ typedef struct
     SINT32  ScalingList8x8[6][64];                  // se(v)
     SINT32  UseDefaultScalingMatrix4x4Flag[6];       
     SINT32  UseDefaultScalingMatrix8x8Flag[2]; 
-    UINT32  qmatrix4x4[6][4];                       // 16 ¸öbytesÆ´ÔÚ4wordsÖĞ
-    UINT32  qmatrix8x8[2][16];                      // 64 ¸öbytesÆ´ÔÚ16wordsÖĞ    
+    UINT32  qmatrix4x4[6][4];                       // 16 ä¸ªbytesæ‹¼åœ¨4wordsä¸­
+    UINT32  qmatrix8x8[2][16];                      // 64 ä¸ªbytesæ‹¼åœ¨16wordsä¸­    
 } MVC_PPS_S;
 
 typedef struct
@@ -531,8 +531,8 @@ typedef struct
     UINT32  disable_deblocking_filter_idc;
     SINT32  slice_alpha_c0_offset_div2;
     SINT32  slice_beta_offset_div2;
-    SINT32  picid_refidx0; // µ±Ç°sliceÔÚlist0ÖĞµÚÒ»¸öÔªËØ¶ÔÓ¦µÄÖ¡´æ²ÛÎ»ºÅ£¬¸ºÊıÎŞĞ§
-    SINT32  picid_nearpoc; // µ±Ç°sliceÔÚdpbÖĞÕÒµ½µÄpoc¾àÀë×î½üµÄÖ¡´æµÄ²ÛÎ»ºÅ£¬¸ºÊıÎŞĞ§
+    SINT32  picid_refidx0; // å½“å‰sliceåœ¨list0ä¸­ç¬¬ä¸€ä¸ªå…ƒç´ å¯¹åº”çš„å¸§å­˜æ§½ä½å·ï¼Œè´Ÿæ•°æ— æ•ˆ
+    SINT32  picid_nearpoc; // å½“å‰sliceåœ¨dpbä¸­æ‰¾åˆ°çš„pocè·ç¦»æœ€è¿‘çš„å¸§å­˜çš„æ§½ä½å·ï¼Œè´Ÿæ•°æ— æ•ˆ
     UINT64  PTS;
 
     SINT32 svc_extension_flag;
@@ -633,7 +633,7 @@ typedef struct
     UINT8  pic_struct;
     SINT32 cpb_removal_delay;
     SINT32 dpb_output_delay;
-    /* ºóÃæ»¹ÓĞĞí¶àÓï·¨ÔªËØ£¬ÔİÊ±ÓÃ²»µ½£¬²»ÁĞÁË */
+    /* åé¢è¿˜æœ‰è®¸å¤šè¯­æ³•å…ƒç´ ï¼Œæš‚æ—¶ç”¨ä¸åˆ°ï¼Œä¸åˆ—äº† */
 } MVC_PIC_TIMING_SEI_S;
 
 typedef struct
@@ -645,7 +645,7 @@ typedef struct
     SINT32  long_term_pic_num;
     SINT32  pic_num; 
     SINT32  poc;
-    SINT32  MVC_DecPOC;    //mvc¹æ±ÜÓÉÓÚlast_has_mmco_5¶ø½«base view pocĞÅÏ¢ÖØÖÃ¶øÕÒ²»µ½interview ref pic
+    SINT32  MVC_DecPOC;    //mvcè§„é¿ç”±äºlast_has_mmco_5è€Œå°†base view pocä¿¡æ¯é‡ç½®è€Œæ‰¾ä¸åˆ°interview ref pic
     
     UINT32  err_level;
     UINT32  pic_type;
@@ -665,11 +665,11 @@ typedef enum
 
 typedef struct MVC_FRAMESTORE_S
 {   
-    UINT8   non_existing;   // 1: ¸ÃfsÖĞÍ¼Ïñ²»´æÔÚ, 0: ´æÔÚ 
+    UINT8   non_existing;   // 1: è¯¥fsä¸­å›¾åƒä¸å­˜åœ¨, 0: å­˜åœ¨ 
     UINT8   is_used;        // 0: MVC_EMPTY, 1: top, 2: bottom, 3: both fields (or MVC_FRAME)--output
     UINT8   is_reference;   // 0: not used for ref, 1: top used, 2: bottom used,
     UINT8   mode_skip_flag; // 0: all dec, 1: top not dec, 2: bottom not dec, 3: both fields (or MVC_FRAME) not dec
-    UINT8   is_in_dpb;       // ÒÑ¾­³öÁËDPB, 0: already out from dpb, 1: still in dpb
+    UINT8   is_in_dpb;       // å·²ç»å‡ºäº†DPB, 0: already out from dpb, 1: still in dpb
     IMAGE   fs_image;
     
     MVC_STORABLEPIC_S  frame;
@@ -682,15 +682,15 @@ typedef struct MVC_FRAMESTORE_S
     SINT32  frame_num_wrap;
     UINT32  long_term_frame_idx;
     SINT32  poc;
-    SINT32  MVC_DecPOC;           //mvc¹æ±ÜÓÉÓÚlast_has_mmco_5¶ø½«base view pocĞÅÏ¢ÖØÖÃ¶øÕÒ²»µ½interview ref pic
-    MVC_FO_STATE_E  eFoState;  // ´¦ÀíµÚÒ»Ö¡¿ìËÙÊä³öÊ±Ê¹ÓÃ    
-    UINT32  is_displayed;    // VO ÊÇ·ñÏÔÊ¾£¬0: not display; 1: displayed
+    SINT32  MVC_DecPOC;           //mvcè§„é¿ç”±äºlast_has_mmco_5è€Œå°†base view pocä¿¡æ¯é‡ç½®è€Œæ‰¾ä¸åˆ°interview ref pic
+    MVC_FO_STATE_E  eFoState;  // å¤„ç†ç¬¬ä¸€å¸§å¿«é€Ÿè¾“å‡ºæ—¶ä½¿ç”¨    
+    UINT32  is_displayed;    // VO æ˜¯å¦æ˜¾ç¤ºï¼Œ0: not display; 1: displayed
     UINT32  MbaffFrameFlag;
     UINT32  pic_type;
     UINT32  err_level;
     UINT32  pmv_address_idc; 
     UINT32  apc_idc;
-    SINT32  as_first_out;    //mvcÎªÁË¼Ù×°µÚÒ»Ö¡¿ìËÙÊä³ö£¬Í¬Ê±¿ÉÒÔÅĞ¶ÏIDRFOUNDµÄÖÃÎ»Ê±»ú
+    SINT32  as_first_out;    //mvcä¸ºäº†å‡è£…ç¬¬ä¸€å¸§å¿«é€Ÿè¾“å‡ºï¼ŒåŒæ—¶å¯ä»¥åˆ¤æ–­IDRFOUNDçš„ç½®ä½æ—¶æœº
     SINT32 svc_extension_flag;
     SINT32 view_id;
     UINT32 voidx;
@@ -704,7 +704,7 @@ typedef struct
 {
     UINT8   state;
     UINT8   field_pair_flag;
-    UINT8   non_existing;  // 0£ºµ±Ç°Í¼Ïñ´æÔÚ, 1£ºµ±Ç°Í¼Ïñ²»´æÔÚ. Ö÷ÒªÓÃÓÚFrame_num gapµÄÇé¿öÏÂ.
+    UINT8   non_existing;  // 0ï¼šå½“å‰å›¾åƒå­˜åœ¨, 1ï¼šå½“å‰å›¾åƒä¸å­˜åœ¨. ä¸»è¦ç”¨äºFrame_num gapçš„æƒ…å†µä¸‹.
     UINT8   structure;     // 0: MVC_FRAME, 1: MVC_TOP_FIELD, 2: bottom_field, 3: reserved
     UINT8   is_long_term;  // 0: not long term ref,  1: long term ref 
     UINT8   is_short_term; // 0: not short term ref, 1: short term ref. BUT one pic cann't long and short.    
@@ -725,7 +725,7 @@ typedef struct
     SINT32  framepoc;
     SINT32  toppoc;
     SINT32  bottompoc;
-    SINT32  decthispoc;    //mvc¹æ±ÜÓÉÓÚlast_has_mmco_5¶ø½«base view pocĞÅÏ¢ÖØÖÃ¶øÕÒ²»µ½interview ref pic
+    SINT32  decthispoc;    //mvcè§„é¿ç”±äºlast_has_mmco_5è€Œå°†base view pocä¿¡æ¯é‡ç½®è€Œæ‰¾ä¸åˆ°interview ref pic
     SINT32  decframepoc;
     SINT32  dectoppoc;
     SINT32  decbottompoc;
@@ -748,7 +748,7 @@ typedef struct
 
 typedef struct
 {
-    UINT8   structure;    // Í¼Ïñ½á¹¹, 0: MVC_FRAME, 1: top field, 2:bottom field, 3: rsv
+    UINT8   structure;    // å›¾åƒç»“æ„, 0: MVC_FRAME, 1: top field, 2:bottom field, 3: rsv
     UINT32  nal_ref_idc;
     UINT32  frame_num;
     UINT32  pic_type;
@@ -813,7 +813,7 @@ typedef struct
 typedef struct 
 {      
     MVC_NALU_S *pSliceNal;
-} MVC_SLCINFO_S;  //SliceĞÅÏ¢, Ö÷ÒªÊÇ¼ÇÂ¼Î´ÊÍ·ÅµÄÂëÁ÷
+} MVC_SLCINFO_S;  //Sliceä¿¡æ¯, ä¸»è¦æ˜¯è®°å½•æœªé‡Šæ”¾çš„ç æµ
 
 typedef struct
 {
@@ -841,7 +841,7 @@ typedef struct
 
     MVC_NALU_S        *pCurrNal;
     MVC_NALU_S         NalArray[MAX_SLICE_SLOT_NUM+1]; 
-    BS                  BS;  // for bstream.cÖĞµÄµ÷ÓÃÖ®ÓÃ
+    BS                  BS;  // for bstream.cä¸­çš„è°ƒç”¨ä¹‹ç”¨
     UINT8               IsStreamEndFlag;
     SINT32              CurWidthInMb;
     SINT32              CurHeightInMb;
@@ -889,7 +889,7 @@ typedef struct
     MVC_FRAMESTORE_S  *pDirectOutBuf;
     MVC_FRAMESTORE_S  *pLastFieldBuf;
 
-    MVC_SLCINFO_S      SlcInfo[MAX_SLICE_SLOT_NUM];     //SliceĞÅÏ¢, Ö÷ÒªÊÇ¼ÇÂ¼Î´ÊÍ·ÅµÄÂëÁ÷
+    MVC_SLCINFO_S      SlcInfo[MAX_SLICE_SLOT_NUM];     //Sliceä¿¡æ¯, ä¸»è¦æ˜¯è®°å½•æœªé‡Šæ”¾çš„ç æµ
     UINT32              PmvStoreUsedFlag[MVC_MAX_PMV_STORE]; // pmv store memory allocate statistic 
     UINT32              TotalFsNum;      // change while g_DPB.size change
     UINT32              TotalPmvNum;     // change while g_DPB.size change      

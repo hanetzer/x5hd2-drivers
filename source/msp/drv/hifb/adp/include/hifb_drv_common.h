@@ -1,6 +1,6 @@
 /** 
  * \file
- * \brief Describes the common information about hifb drv. CNcomment:Ìá¹©hifb drv µÄ¹«¹²ĞÅÏ¢
+ * \brief Describes the common information about hifb drv. CNcomment:æä¾›hifb drv çš„å…¬å…±ä¿¡æ¯
  */
  
 #ifndef __HIFB_DRV_COMMON_H__
@@ -29,7 +29,7 @@ extern "C"{
 #endif 
 
 /*the point of callback function*/
-/*CNcomment:»Øµ÷º¯ÊıÖ¸Õë*/
+/*CNcomment:å›è°ƒå‡½æ•°æŒ‡é’ˆ*/
 typedef HI_S32 (* IntCallBack)(HI_VOID *pParaml, HI_VOID *pParamr);
 
 #define IS_HD_LAYER(enLayerId) (HIFB_LAYER_HD_3 >= enLayerId)
@@ -45,8 +45,8 @@ if (pStr == HI_NULL){\
 
 typedef struct
 {
-    HI_BOOL bKeyEnable;      /*colorkey enable flag*//*CNcomment:colorkey ÊÇ·ñÊ¹ÄÜ*/
-    HI_BOOL bMaskEnable;    /*key mask enable flag*//*CNcomment:key mask ÊÇ·ñÊ¹ÄÜ*/
+    HI_BOOL bKeyEnable;      /*colorkey enable flag*//*CNcomment:colorkey æ˜¯å¦ä½¿èƒ½*/
+    HI_BOOL bMaskEnable;    /*key mask enable flag*//*CNcomment:key mask æ˜¯å¦ä½¿èƒ½*/
     HI_U32 u32Key;              /*key value*/
     HI_U8 u8RedMask;          /*red mask*/
     HI_U8 u8GreenMask;       /*green mask*/
@@ -55,28 +55,28 @@ typedef struct
     HI_U32 u32KeyMode;	 /*0:In region; 1:Out region*/
 
     /*Max colorkey value of red component*/
-    /*CNcomment:colorkeyºìÉ«·ÖÁ¿×î´óÖµ*/
+    /*CNcomment:colorkeyçº¢è‰²åˆ†é‡æœ€å¤§å€¼*/
     HI_U8 u8RedMax;
 
     /*Max colorkey value of Green component*/
-    /*CNcomment:colorkeyÂÌÉ«·ÖÁ¿×î´óÖµ*/
+    /*CNcomment:colorkeyç»¿è‰²åˆ†é‡æœ€å¤§å€¼*/
     HI_U8 u8GreenMax; 
 
     /*Max colorkey value of blue component*/
-    /*CNcomment:colorkeyÀ¶É«·ÖÁ¿×î´óÖµ*/
+    /*CNcomment:colorkeyè“è‰²åˆ†é‡æœ€å¤§å€¼*/
     HI_U8 u8BlueMax;           
     HI_U8 u8Reserved1;
 
     /*Min colorkey value of red component*/
-    /*CNcomment:colorkeyºìÉ«·ÖÁ¿×îĞ¡Öµ*/
+    /*CNcomment:colorkeyçº¢è‰²åˆ†é‡æœ€å°å€¼*/
     HI_U8 u8RedMin;            
 
     /*Min colorkey value of Green component*/
-    /*CNcomment:colorkeyÂÌÉ«·ÖÁ¿×îĞ¡Öµ*/
+    /*CNcomment:colorkeyç»¿è‰²åˆ†é‡æœ€å°å€¼*/
     HI_U8 u8GreenMin;         
 
     /*Min colorkey value of blue component*/
-    /*CNcomment:colorkeyÀ¶É«·ÖÁ¿×îĞ¡Öµ*/
+    /*CNcomment:colorkeyè“è‰²åˆ†é‡æœ€å°å€¼*/
     HI_U8 u8BlueMin;            
     HI_U8 u8Reserved2;
 }HIFB_COLORKEYEX_S;
@@ -84,15 +84,15 @@ typedef struct
 typedef enum
 {
     /*VO vertical timing interrupt */
-    /*CNcomment:´¹Ö±Ê±ĞòÖĞ¶Ï*/
+    /*CNcomment:å‚ç›´æ—¶åºä¸­æ–­*/
     HIFB_CALLBACK_TYPE_VO = 0x1, 
 
 	/*3D Mode changed interrupt*/
-    /*CNcomment:3DÄ£Ê½¸Ä±äÖĞ¶Ï*/
+    /*CNcomment:3Dæ¨¡å¼æ”¹å˜ä¸­æ–­*/
     HIFB_CALLBACK_TYPE_3DMode_CHG = 0x2,
 
 	/*VO Register update completed interrupt */
-    /*CNcomment:¼Ä´æÆ÷¸üĞÂÍê³ÉÖĞ¶Ï*/
+    /*CNcomment:å¯„å­˜å™¨æ›´æ–°å®Œæˆä¸­æ–­*/
     HIFB_CALLBACK_TYPE_REGUP = 0x4, 
     
     HIFB_CALLBACK_TYPE_BUTT,
@@ -109,9 +109,9 @@ typedef enum
 /*layer state*/
 typedef enum 
 {
-    HIFB_LAYER_STATE_ENABLE = 0x0,  /*Layer enable*/ /*CNcomment:²ãÊ¹ÄÜ*/
-    HIFB_LAYER_STATE_DISABLE,          /*Layer disable*/ /*CNcomment:²ãÎ´Ê¹ÄÜ*/
-    HIFB_LAYER_STATE_INVALID,          /*Layer invalid*/ /*CNcomment:²ãÎŞĞ§,²»´æÔÚ*/
+    HIFB_LAYER_STATE_ENABLE = 0x0,  /*Layer enable*/ /*CNcomment:å±‚ä½¿èƒ½*/
+    HIFB_LAYER_STATE_DISABLE,          /*Layer disable*/ /*CNcomment:å±‚æœªä½¿èƒ½*/
+    HIFB_LAYER_STATE_INVALID,          /*Layer invalid*/ /*CNcomment:å±‚æ— æ•ˆ,ä¸å­˜åœ¨*/
     HIFB_LAYER_STATE_BUTT 
 } HIFB_LAYER_STATE_E;
 
@@ -131,17 +131,17 @@ typedef struct
 {
     HIFB_LAYER_STATE_E eState;
 	/*Layer work mode, same source mode or different source mode*/
-    /*CNcomment:Í¼²ã¹¤×÷Ä£Ê½£¬Í¬Ô´»ò·ÇÍ¬Ô´*/
+    /*CNcomment:å›¾å±‚å·¥ä½œæ¨¡å¼ï¼ŒåŒæºæˆ–éåŒæº*/
     HIFB_GFX_MODE_EN  eGfxWorkMode;
 	HI_BOOL bPreMul;
     HI_U32  u32BufferPhyAddr; 
     HI_U32  u32RegPhyAddr; 
     HI_U32  u32Stride;
 	/*Screen width in current format*/
-    /*CNcomment:µ±Ç°ÖÆÊ½ÏÂÆÁÄ»¿í*/
+    /*CNcomment:å½“å‰åˆ¶å¼ä¸‹å±å¹•å®½*/
     HI_U32 u32ScreenWidth;  
     /*Screen height in current format*/
-    /*CNcomment:µ±Ç°ÖÆÊ½ÏÂÆÁÄ»¸ß¶È*/
+    /*CNcomment:å½“å‰åˆ¶å¼ä¸‹å±å¹•é«˜åº¦*/
     HI_U32 u32ScreenHeight; 
     /**outRect size*/
 	HIFB_RECT stOutRect;

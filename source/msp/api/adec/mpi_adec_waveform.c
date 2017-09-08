@@ -570,11 +570,11 @@ static int xscale2[] =
 * Description: apply fft calc spectrum power
 *
 * Inputs:      PcmBuf: stereo data stored in  interlace mode
-*              i_band: band number £¬valid value: 20 80 512
-*              channels: 1 or 2£»
-* Outputs:     EnergyOut: band energy£¬(0~96),unit:dB
+*              i_band: band number ï¼Œvalid value: 20 80 512
+*              channels: 1 or 2ï¼›
+* Outputs:     EnergyOut: band energyï¼Œ(0~96),unit:dB
 *
-* Return:      SUCCESS 0£¬FAILURE:-1
+* Return:      SUCCESS 0ï¼ŒFAILURE:-1
 *
 * Notes:
 **************************************************************************************/

@@ -32,26 +32,26 @@ extern "C" {
 /** @{ */  /** <!-- [PDM] */
 
 /**Defines the base config parameter*/
-/** CNcomment:»ù±¾ÅäÖÃ²ÎÊý½á¹¹Ìå*/
+/** CNcomment:åŸºæœ¬é…ç½®å‚æ•°ç»“æž„ä½“*/
 typedef struct hiUNF_PDM_DISP_PARAM_S
 {
-	HI_UNF_DISP_E				enSrcDisp;			/**<source display*//**<CNcomment: Í¬Ô´displayÃ¶¾Ù*/
-    HI_UNF_ENC_FMT_E            enFormat;           /**<Format*//**<CNcomment: ÖÆÊ½*/
-    HI_U32                      u32Brightness;      /**<Brightness*//**<CNcomment: ÁÁ¶È*/ 
-    HI_U32                      u32Contrast;        /**<Contrast*//**<CNcomment: ¶Ô±È¶È*/ 
-    HI_U32                      u32Saturation;      /**<Saturation*//**<CNcomment: ±¥ºÍ¶È*/
-    HI_U32                      u32HuePlus;         /**<HuePlus*//**<CNcomment: É«¶È*/
-    HI_BOOL                     bGammaEnable;       /**<Is Gamma enable*//**<CNcomment: ÊÇ·ñÊ¹ÄÜgamma*/   
-    HI_UNF_DISP_BG_COLOR_S      stBgColor;          /**<Background Color*//**<CNcomment: ±³¾°É«*/
-    HI_UNF_DISP_INTF_S          stIntf[HI_UNF_DISP_INTF_TYPE_BUTT];     /**<configuration of display interface*//**<CNcomment: ÏÔÊ¾½Ó¿ÚÅäÖÃ*/
-    HI_UNF_DISP_TIMING_S        stDispTiming;       /**<Display timeing*//**<CNcomment: ÏÔÊ¾Ê±Ðò*/
+	HI_UNF_DISP_E				enSrcDisp;			/**<source display*//**<CNcomment: åŒæºdisplayæžšä¸¾*/
+    HI_UNF_ENC_FMT_E            enFormat;           /**<Format*//**<CNcomment: åˆ¶å¼*/
+    HI_U32                      u32Brightness;      /**<Brightness*//**<CNcomment: äº®åº¦*/ 
+    HI_U32                      u32Contrast;        /**<Contrast*//**<CNcomment: å¯¹æ¯”åº¦*/ 
+    HI_U32                      u32Saturation;      /**<Saturation*//**<CNcomment: é¥±å’Œåº¦*/
+    HI_U32                      u32HuePlus;         /**<HuePlus*//**<CNcomment: è‰²åº¦*/
+    HI_BOOL                     bGammaEnable;       /**<Is Gamma enable*//**<CNcomment: æ˜¯å¦ä½¿èƒ½gamma*/   
+    HI_UNF_DISP_BG_COLOR_S      stBgColor;          /**<Background Color*//**<CNcomment: èƒŒæ™¯è‰²*/
+    HI_UNF_DISP_INTF_S          stIntf[HI_UNF_DISP_INTF_TYPE_BUTT];     /**<configuration of display interface*//**<CNcomment: æ˜¾ç¤ºæŽ¥å£é…ç½®*/
+    HI_UNF_DISP_TIMING_S        stDispTiming;       /**<Display timeing*//**<CNcomment: æ˜¾ç¤ºæ—¶åº*/
 	
-    HIGO_PF_E                   enPixelFormat;      /**<Pixel format*//**<CNcomment: ÏñËØ¸ñÊ½*/
-    HI_UNF_DISP_OFFSET_S        stDispOffset;		/**<Display margin info*//**<CNcomment: ÏÔÊ¾¿Õ°×ÇøÓò*/
-    HI_U32                      u32VirtScreenWidth;	/**<Virtual screen width*//**<CNcomment: ÐéÄâÆÁÄ»¿í*/
-    HI_U32                      u32VirtScreenHeight;	/**<Virtual screen height*//**<CNcomment: ÐéÄâÆÁÄ»¸ß*/
+    HIGO_PF_E                   enPixelFormat;      /**<Pixel format*//**<CNcomment: åƒç´ æ ¼å¼*/
+    HI_UNF_DISP_OFFSET_S        stDispOffset;		/**<Display margin info*//**<CNcomment: æ˜¾ç¤ºç©ºç™½åŒºåŸŸ*/
+    HI_U32                      u32VirtScreenWidth;	/**<Virtual screen width*//**<CNcomment: è™šæ‹Ÿå±å¹•å®½*/
+    HI_U32                      u32VirtScreenHeight;	/**<Virtual screen height*//**<CNcomment: è™šæ‹Ÿå±å¹•é«˜*/
 	
-    HI_UNF_DISP_ASPECT_RATIO_S  stAspectRatio;      /**<The device aspect ratio*//**<CNcomment: Éè±¸¿í¸ß±È*/
+    HI_UNF_DISP_ASPECT_RATIO_S  stAspectRatio;      /**<The device aspect ratio*//**<CNcomment: è®¾å¤‡å®½é«˜æ¯”*/
 }HI_UNF_PDM_DISP_PARAM_S;
 
 
@@ -69,17 +69,17 @@ typedef enum hiUNF_PDM_BASEPARAM_TYPE_E
 /** \addtogroup      PDM */
 /** @{ */  /** <!-- [PDM] */
 /** 
-\brief Obtains the basic configuration information.  CNcomment:»ñÈ¡BASEÅäÖÃÇøÐÅÏ¢ CNend
+\brief Obtains the basic configuration information.  CNcomment:èŽ·å–BASEé…ç½®åŒºä¿¡æ¯ CNend
 \attention \n
 N/A
-\param[in]  pstBaseParam   Pointer to the basic parameters.  CNcomment:²ÎÊýÖ¸Õë CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:¿ÕÖ¸Õë CNend
-\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:»ñÈ¡Flash·ÖÇøÐÅÏ¢Ê§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:´ò¿ªFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:·ÖÅäÄÚ´æÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:¶ÁÈ¡Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:ÎÞÐ§²Ù×÷ CNend
+\param[in]  pstBaseParam   Pointer to the basic parameters.  CNcomment:å‚æ•°æŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:ç©ºæŒ‡é’ˆ CNend
+\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:èŽ·å–Flashåˆ†åŒºä¿¡æ¯å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:æ‰“å¼€Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:åˆ†é…å†…å­˜å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:è¯»å–Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */
@@ -87,19 +87,19 @@ HI_S32  HI_UNF_PDM_GetBaseParam(HI_UNF_PDM_BASEPARAM_TYPE_E enType, HI_VOID *pDa
 
 
 /** 
-\brief Modifies the basic configuration information.  CNcomment:¸üÐÂBASEÅäÖÃÇøÐÅÏ¢ CNend
+\brief Modifies the basic configuration information.  CNcomment:æ›´æ–°BASEé…ç½®åŒºä¿¡æ¯ CNend
 \attention \n
 N/A
-\param[in]  pstBaseParam Pointer to the basic parameters.  CNcomment:²ÎÊýÖ¸Õë CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:¿ÕÖ¸Õë CNend
-\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:»ñÈ¡Flash·ÖÇøÐÅÏ¢Ê§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:´ò¿ªFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:·ÖÅäÄÚ´æÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:¶ÁÈ¡Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_WRITE      Write flash pation error. CNcomment:Ð´Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_ERASE      Erase flash pation error. CNcomment:²Á³ýFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:ÎÞÐ§²Ù×÷ CNend
+\param[in]  pstBaseParam Pointer to the basic parameters.  CNcomment:å‚æ•°æŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:ç©ºæŒ‡é’ˆ CNend
+\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:èŽ·å–Flashåˆ†åŒºä¿¡æ¯å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:æ‰“å¼€Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:åˆ†é…å†…å­˜å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:è¯»å–Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_WRITE      Write flash pation error. CNcomment:å†™Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_ERASE      Erase flash pation error. CNcomment:æ“¦é™¤Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */
@@ -107,37 +107,37 @@ HI_S32  HI_UNF_PDM_UpdateBaseParam(HI_UNF_PDM_BASEPARAM_TYPE_E enType, HI_VOID *
 
 /** 
 \brief Obtains the basic configuration information from the flash memory.  
-CNcomment:»ñÈ¡LOGOÅäÖÃÇøÐÅÏ¢ CNend
+CNcomment:èŽ·å–LOGOé…ç½®åŒºä¿¡æ¯ CNend
 \attention \n
 N/A
-\param[in]  pstLogoParam   Pointer to the logo parameter  CNcomment:²ÎÊýÖ¸Õë CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:¿ÕÖ¸Õë CNend
-\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:»ñÈ¡Flash·ÖÇøÐÅÏ¢Ê§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:´ò¿ªFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:·ÖÅäÄÚ´æÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:¶ÁÈ¡Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:ÎÞÐ§²Ù×÷ CNend
+\param[in]  pstLogoParam   Pointer to the logo parameter  CNcomment:å‚æ•°æŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:ç©ºæŒ‡é’ˆ CNend
+\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:èŽ·å–Flashåˆ†åŒºä¿¡æ¯å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:æ‰“å¼€Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:åˆ†é…å†…å­˜å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:è¯»å–Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */
 HI_S32  HI_UNF_PDM_GetLogoParam(HI_UNF_MCE_LOGO_PARAM_S *pstLogoParam);
 
 /** 
-\brief Modifies the configuration of the logo parameter.  CNcomment:¸üÐÂLOGOÅäÖÃÇøÐÅÏ¢ CNend
+\brief Modifies the configuration of the logo parameter.  CNcomment:æ›´æ–°LOGOé…ç½®åŒºä¿¡æ¯ CNend
 \attention \n
 Update logo parameter, you must invoke this function befor update data of logo
-\CNcomment:¸üÐÂlogo²ÎÊý£¬ÔÚ¸üÐÂlogoÄÚÈÝÇ°±ØÐëÏÈµ÷ÓÃ´Ëº¯Êý CNend
-\param[in]  pstLogoParam   Pointer to the logo parameter  CNcomment:²ÎÊýÖ¸Õë CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:¿ÕÖ¸Õë CNend
-\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:»ñÈ¡Flash·ÖÇøÐÅÏ¢Ê§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:´ò¿ªFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:·ÖÅäÄÚ´æÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:¶ÁÈ¡Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_WRITE      Write flash pation error. CNcomment:Ð´Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_ERASE      Erase flash pation error. CNcomment:²Á³ýFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:ÎÞÐ§²Ù×÷ CNend
+\CNcomment:æ›´æ–°logoå‚æ•°ï¼Œåœ¨æ›´æ–°logoå†…å®¹å‰å¿…é¡»å…ˆè°ƒç”¨æ­¤å‡½æ•° CNend
+\param[in]  pstLogoParam   Pointer to the logo parameter  CNcomment:å‚æ•°æŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:ç©ºæŒ‡é’ˆ CNend
+\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:èŽ·å–Flashåˆ†åŒºä¿¡æ¯å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:æ‰“å¼€Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:åˆ†é…å†…å­˜å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:è¯»å–Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_WRITE      Write flash pation error. CNcomment:å†™Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_ERASE      Erase flash pation error. CNcomment:æ“¦é™¤Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */
@@ -145,18 +145,18 @@ HI_S32  HI_UNF_PDM_UpdateLogoParam(HI_UNF_MCE_LOGO_PARAM_S *pstLogoParam);
 
 
 /** 
-\brief Obtains the logo data from the flash memory. CNcomment:»ñÈ¡LOGOÄÚÈÝÇøÐÅÏ¢ CNend
+\brief Obtains the logo data from the flash memory. CNcomment:èŽ·å–LOGOå†…å®¹åŒºä¿¡æ¯ CNend
 \attention \n
 N/A
-\param[in]  pu8Content Pointer to the logo data that is written from the flash memory CNcomment:ÄÚÈÝbufÖ¸Õë CNend
-\param[in]  u32Size  Size of the logo data to be written  CNcomment:ÄÚÈÝ³¤¶È CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:¿ÕÖ¸Õë CNend
-\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:»ñÈ¡Flash·ÖÇøÐÅÏ¢Ê§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:´ò¿ªFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:·ÖÅäÄÚ´æÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:¶ÁÈ¡Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:ÎÞÐ§²Ù×÷ CNend
+\param[in]  pu8Content Pointer to the logo data that is written from the flash memory CNcomment:å†…å®¹bufæŒ‡é’ˆ CNend
+\param[in]  u32Size  Size of the logo data to be written  CNcomment:å†…å®¹é•¿åº¦ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:ç©ºæŒ‡é’ˆ CNend
+\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:èŽ·å–Flashåˆ†åŒºä¿¡æ¯å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:æ‰“å¼€Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:åˆ†é…å†…å­˜å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:è¯»å–Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */
@@ -164,76 +164,76 @@ HI_S32  HI_UNF_PDM_GetLogoContent(HI_U8 *pu8Content, HI_U32 u32Size);
 
 
 /** 
-\brief Modifies the logo data.  CNcomment:¸üÐÂLOGOÄÚÈÝÇøÐÅÏ¢ CNend
+\brief Modifies the logo data.  CNcomment:æ›´æ–°LOGOå†…å®¹åŒºä¿¡æ¯ CNend
 \attention \n
 Update data in logo partition, You must invoke HI_UNF_PDM_UpdateLogoParam to update logo parameter before invoke this function
-\CNcomment:¸üÐÂlogoÄÚÈÝ£¬ÔÚ´Ëº¯ÊýÖ®Ç°±ØÐëÏÈµ÷ÓÃHI_UNF_PDM_UpdateLogoParamº¯Êý¸üÐÂlogo²ÎÊý CNend
-\param[in]  pu8Content   Pointer to the logo data that is read from the flash memory  CNcomment:ÄÚÈÝbufÖ¸Õë CNend
-\param[in]  u32Size   Size of the logo data to be read  CNcomment:ÄÚÈÝ³¤¶È CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:¿ÕÖ¸Õë CNend
-\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:»ñÈ¡Flash·ÖÇøÐÅÏ¢Ê§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:´ò¿ªFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:·ÖÅäÄÚ´æÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:¶ÁÈ¡Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_WRITE      Write flash pation error. CNcomment:Ð´Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_ERASE      Erase flash pation error. CNcomment:²Á³ýFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:ÎÞÐ§²Ù×÷ CNend
+\CNcomment:æ›´æ–°logoå†…å®¹ï¼Œåœ¨æ­¤å‡½æ•°ä¹‹å‰å¿…é¡»å…ˆè°ƒç”¨HI_UNF_PDM_UpdateLogoParamå‡½æ•°æ›´æ–°logoå‚æ•° CNend
+\param[in]  pu8Content   Pointer to the logo data that is read from the flash memory  CNcomment:å†…å®¹bufæŒ‡é’ˆ CNend
+\param[in]  u32Size   Size of the logo data to be read  CNcomment:å†…å®¹é•¿åº¦ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:ç©ºæŒ‡é’ˆ CNend
+\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:èŽ·å–Flashåˆ†åŒºä¿¡æ¯å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:æ‰“å¼€Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:åˆ†é…å†…å­˜å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:è¯»å–Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_WRITE      Write flash pation error. CNcomment:å†™Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_ERASE      Erase flash pation error. CNcomment:æ“¦é™¤Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */
 HI_S32  HI_UNF_PDM_UpdateLogoContent(HI_U8 *pu8Content, HI_U32 u32Size);
 
 /** 
-\brief Obtains the playing configuration information.  CNcomment:»ñÈ¡PLAYÅäÖÃÇøÐÅÏ¢ CNend
+\brief Obtains the playing configuration information.  CNcomment:èŽ·å–PLAYé…ç½®åŒºä¿¡æ¯ CNend
 \attention \n
 N/A
-\param[in]  pstPlayParam   Playing configuration information  CNcomment:²ÎÊýÖ¸Õë CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:¿ÕÖ¸Õë CNend
-\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:»ñÈ¡Flash·ÖÇøÐÅÏ¢Ê§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:´ò¿ªFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:·ÖÅäÄÚ´æÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:¶ÁÈ¡Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:ÎÞÐ§²Ù×÷ CNend
+\param[in]  pstPlayParam   Playing configuration information  CNcomment:å‚æ•°æŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:ç©ºæŒ‡é’ˆ CNend
+\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:èŽ·å–Flashåˆ†åŒºä¿¡æ¯å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:æ‰“å¼€Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:åˆ†é…å†…å­˜å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:è¯»å–Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */
 HI_S32  HI_UNF_PDM_GetPlayParam(HI_UNF_MCE_PLAY_PARAM_S *pstPlayParam);
 
 /** 
-\brief   Modifies the playing configuration information.  CNcomment:¸üÐÂPLAYÅäÖÃÇøÐÅÏ¢ CNend
+\brief   Modifies the playing configuration information.  CNcomment:æ›´æ–°PLAYé…ç½®åŒºä¿¡æ¯ CNend
 \attention \n 
 Update play parameter, you must invoke this function befor update data of play
-\CNcomment:¸üÐÂplay²ÎÊý£¬ÔÚ¸üÐÂplayÄÚÈÝÇ°±ØÐëÏÈµ÷ÓÃ´Ëº¯Êý CNend
-\param[in]  pstPlayParam  Playing configuration information  CNcomment:²ÎÊýÖ¸Õë CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:¿ÕÖ¸Õë CNend
-\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:»ñÈ¡Flash·ÖÇøÐÅÏ¢Ê§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:´ò¿ªFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:·ÖÅäÄÚ´æÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:¶ÁÈ¡Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_WRITE      Write flash pation error. CNcomment:Ð´Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_ERASE      Erase flash pation error. CNcomment:²Á³ýFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:ÎÞÐ§²Ù×÷ CNend
+\CNcomment:æ›´æ–°playå‚æ•°ï¼Œåœ¨æ›´æ–°playå†…å®¹å‰å¿…é¡»å…ˆè°ƒç”¨æ­¤å‡½æ•° CNend
+\param[in]  pstPlayParam  Playing configuration information  CNcomment:å‚æ•°æŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:ç©ºæŒ‡é’ˆ CNend
+\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:èŽ·å–Flashåˆ†åŒºä¿¡æ¯å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:æ‰“å¼€Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:åˆ†é…å†…å­˜å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:è¯»å–Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_WRITE      Write flash pation error. CNcomment:å†™Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_ERASE      Erase flash pation error. CNcomment:æ“¦é™¤Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */
 HI_S32  HI_UNF_PDM_UpdatePlayParam(HI_UNF_MCE_PLAY_PARAM_S *pstPlayParam);
 
 /** 
-\brief Obtains the data being playing from the flash memory.  CNcomment:»ñÈ¡PLAYÄÚÈÝÇøÐÅÏ¢ CNend
+\brief Obtains the data being playing from the flash memory.  CNcomment:èŽ·å–PLAYå†…å®¹åŒºä¿¡æ¯ CNend
 \attention \n
 N/A
-\param[in]  pu8Content Pointer to the data that is read from the flash memory  CNcomment:ÄÚÈÝbufÖ¸Õë CNend
-\param[in]  u32Size  Size of the data being played that is read from the flash memory  CNcomment:ÄÚÈÝ³¤¶È CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:¿ÕÖ¸Õë CNend
-\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:»ñÈ¡Flash·ÖÇøÐÅÏ¢Ê§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:´ò¿ªFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:·ÖÅäÄÚ´æÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:¶ÁÈ¡Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:ÎÞÐ§²Ù×÷ CNend
+\param[in]  pu8Content Pointer to the data that is read from the flash memory  CNcomment:å†…å®¹bufæŒ‡é’ˆ CNend
+\param[in]  u32Size  Size of the data being played that is read from the flash memory  CNcomment:å†…å®¹é•¿åº¦ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:ç©ºæŒ‡é’ˆ CNend
+\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:èŽ·å–Flashåˆ†åŒºä¿¡æ¯å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:æ‰“å¼€Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:åˆ†é…å†…å­˜å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:è¯»å–Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */
@@ -241,21 +241,21 @@ HI_S32  HI_UNF_PDM_GetPlayContent(HI_U8 *pu8Content, HI_U32 u32Size);
 
 
 /** 
-\brief Updates the playing data part. CNcomment:¸üÐÂPLAYÄÚÈÝÇøÐÅÏ¢ CNend
+\brief Updates the playing data part. CNcomment:æ›´æ–°PLAYå†…å®¹åŒºä¿¡æ¯ CNend
 \attention \n
 Update data in play partition, You must invoke HI_UNF_PDM_UpdatePlayParam to update plat parameter before invoke this function
-\CNcomment:¸üÐÂplayÄÚÈÝ£¬ÔÚ´Ëº¯ÊýÖ®Ç°±ØÐëÏÈµ÷ÓÃHI_UNF_PDM_UpdatePlayParamº¯Êý¸üÐÂplay²ÎÊý CNend
-\param[in]  pu8Content  Pointer to the data that is written to the flash memroy  CNcomment:ÄÚÈÝbufÖ¸Õë CNend
-\param[in]  u32Size  Size of the data being played  CNcomment:ÄÚÈÝ³¤¶È CNend
-\retval ::HI_SUCCESS       Success. CNcomment:³É¹¦ CNend
-\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:¿ÕÖ¸Õë CNend
-\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:»ñÈ¡Flash·ÖÇøÐÅÏ¢Ê§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:´ò¿ªFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:·ÖÅäÄÚ´æÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:¶ÁÈ¡Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_WRITE      Write flash pation error. CNcomment:Ð´Flash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_MTD_ERASE      Erase flash pation error. CNcomment:²Á³ýFlash·ÖÇøÊ§°Ü CNend
-\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:ÎÞÐ§²Ù×÷ CNend
+\CNcomment:æ›´æ–°playå†…å®¹ï¼Œåœ¨æ­¤å‡½æ•°ä¹‹å‰å¿…é¡»å…ˆè°ƒç”¨HI_UNF_PDM_UpdatePlayParamå‡½æ•°æ›´æ–°playå‚æ•° CNend
+\param[in]  pu8Content  Pointer to the data that is written to the flash memroy  CNcomment:å†…å®¹bufæŒ‡é’ˆ CNend
+\param[in]  u32Size  Size of the data being played  CNcomment:å†…å®¹é•¿åº¦ CNend
+\retval ::HI_SUCCESS       Success. CNcomment:æˆåŠŸ CNend
+\retval :: HI_ERR_PDM_PTR_NULL      Pointer is null. CNcomment:ç©ºæŒ‡é’ˆ CNend
+\retval :: HI_ERR_PDM_GET_MTDINFO_ERR      Get flash pation infomation error. CNcomment:èŽ·å–Flashåˆ†åŒºä¿¡æ¯å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_OPEN      Open flash pation error. CNcomment:æ‰“å¼€Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MEM_ALLC      Alloc memory error. CNcomment:åˆ†é…å†…å­˜å¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_READ      Read flash pation error. CNcomment:è¯»å–Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_WRITE      Write flash pation error. CNcomment:å†™Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_MTD_ERASE      Erase flash pation error. CNcomment:æ“¦é™¤Flashåˆ†åŒºå¤±è´¥ CNend
+\retval :: HI_ERR_PDM_INVALID_OPT      The operation is invalid. CNcomment:æ— æ•ˆæ“ä½œ CNend
 \see \n
 N/A
 */

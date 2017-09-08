@@ -70,12 +70,12 @@ typedef struct hiVDEC_PRIV_FRAMEINFO_S
     HI_VDEC_VC1_RANGE_INFO_S    stVC1RangeInfo;
     HI_VDEC_BTL_INFO_S          stBTLInfo;
     HI_UNF_VCODEC_TYPE_E        entype;
-    HI_U32                      u32SeqFrameCnt;     /**<Picture ID in a video sequence. The ID of the first frame in each sequence is numbered 0*/ /**<CNcomment: ÊÓÆµÐòÁÐÖÐµÄÍ¼Ïñ±àºÅ£¬Ã¿¸öÐòÁÐÖÐµÚÒ»Ö¡±àºÅÎª0*/
+    HI_U32                      u32SeqFrameCnt;     /**<Picture ID in a video sequence. The ID of the first frame in each sequence is numbered 0*/ /**<CNcomment: è§†é¢‘åºåˆ—ä¸­çš„å›¾åƒç¼–å·ï¼Œæ¯ä¸ªåºåˆ—ä¸­ç¬¬ä¸€å¸§ç¼–å·ä¸º0*/
 	HI_U32                      u32DispTime;        /**<PVR Display time*/
 	HI_U32                      image_id;
 	HI_U32                      image_id_1;
 	HI_S32                      s32InterPtsDelta;   /*interleaved source, VPSS module swtich field to frame, need to adjust pts*/
-	HI_U8                       u8Repeat;           /**<Times of playing a video frame*/ /**<CNcomment: ÊÓÆµÖ¡²¥·Å´ÎÊý.*/
+	HI_U8                       u8Repeat;           /**<Times of playing a video frame*/ /**<CNcomment: è§†é¢‘å¸§æ’­æ”¾æ¬¡æ•°.*/
     HI_U8                       u8EndFrame;         /**<0 Not end frame; 1 Current frame is the end frame; 2 Prior frame is the end frame */
     HI_U8                       u8TestFlag;         /**<VDEC_OPTMALG_INFO_S.Rwzb*/ 
     HI_U8                       u8Marker;           /**<Bit0: 1 Resolution change 

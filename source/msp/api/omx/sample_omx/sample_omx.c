@@ -1448,7 +1448,7 @@ static void* fbd_thread(void* pArg)
 }
 
 /****************************************************************************/
-/* ²¶»ñctrl + c ÐÅºÅÁ¿                                                      */
+/* æ•èŽ·ctrl + c ä¿¡å·é‡                                                      */
 /****************************************************************************/
 void SignalHandle(int sig)
 {
@@ -1614,7 +1614,7 @@ int main(int argc, char **argv)
 		DEBUG_PRINT("Error - sem_init failed %d\n", errno);
 	}
 
-    /* ×¢²áctrl c º¯Êý */
+    /* æ³¨å†Œctrl c å‡½æ•° */
     //(void) signal(SIGINT, SignalHandle);
      
 	DEBUG_PRINT("%s %d\n", __func__, __LINE__);
@@ -1801,7 +1801,7 @@ static OMX_ERRORTYPE Use_Buffers ( OMX_COMPONENTTYPE *dec_handle,
               private_handle.ion_phy_addr = buffer[bufCnt].phyaddr;
 		error = OMX_UseBuffer(dec_handle, &((*pBufHdrs)[bufCnt]),
 	                           nPortIndex, NULL, bufSize, (OMX_U8*)&private_handle);
-              (*pBufHdrs)[bufCnt]->nTickCount = bufCnt;  //ÔÝÊ±ÕÒ¸öµØ·½´æÒ»ÏÂÎïÀíµØÖ·
+              (*pBufHdrs)[bufCnt]->nTickCount = bufCnt;  //æš‚æ—¶æ‰¾ä¸ªåœ°æ–¹å­˜ä¸€ä¸‹ç‰©ç†åœ°å€
 	}
 #endif
 

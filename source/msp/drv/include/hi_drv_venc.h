@@ -48,8 +48,8 @@ extern "C" {
 #define VENC_MSG_RESP_RESUME_DONE	    (VENC_MSG_RESP_BASE + 0x4)
 #define VENC_MSG_RESP_FLUSH_INPUT_DONE  (VENC_MSG_RESP_BASE + 0x5)
 #define VENC_MSG_RESP_FLUSH_OUTPUT_DONE (VENC_MSG_RESP_BASE + 0x6)
-#define VENC_MSG_RESP_INPUT_DONE        (VENC_MSG_RESP_BASE + 0x7)          //¸ÄÖ¡¿ÉÒÔ»¹
-#define VENC_MSG_RESP_OUTPUT_DONE       (VENC_MSG_RESP_BASE + 0x8)          //ÒÑ¾­ÌîÂú?
+#define VENC_MSG_RESP_INPUT_DONE        (VENC_MSG_RESP_BASE + 0x7)          //æ”¹å¸§å¯ä»¥è¿˜
+#define VENC_MSG_RESP_OUTPUT_DONE       (VENC_MSG_RESP_BASE + 0x8)          //å·²ç»å¡«æ»¡?
 #define VENC_MSG_RESP_MSG_STOP_DONE	    (VENC_MSG_RESP_BASE + 0x9)
 
 typedef struct venc_chan_cfg_s {
@@ -83,11 +83,11 @@ enum venc_port_dir {
 
 typedef struct venc_user_buf_s {
     
-	void  *bufferaddr;     //ĞéÄâµØÖ·
+	void  *bufferaddr;     //è™šæ‹Ÿåœ°å€
     HI_U32 bufferaddr_Phy;
 	HI_U32 vir2phy_offset;
 	HI_U32 buffer_size;    //buffer alloc size
-	HI_U32 offset_YC;    //YC·ÖÁ¿µÄÆ«ÒÆ
+	HI_U32 offset_YC;    //YCåˆ†é‡çš„åç§»
 
 	HI_U32 offset;         //
 	HI_U32 data_len;      //filled len
@@ -112,8 +112,8 @@ typedef struct venc_user_buf_s {
 }venc_user_buf;
 
 typedef struct venc_msginfo_s {
-	HI_U32 status_code;          //¼ÇÂ¼²Ù×÷µÄ·µ»ØÖµ(success/failure)
-	HI_U32 msgcode;              //×Ô¶¨ÒåµÄÉÏĞĞÏûÏ¢·µ»ØÖµ£¬¶¨ÒåÔÚ´Ë´¦
+	HI_U32 status_code;          //è®°å½•æ“ä½œçš„è¿”å›å€¼(success/failure)
+	HI_U32 msgcode;              //è‡ªå®šä¹‰çš„ä¸Šè¡Œæ¶ˆæ¯è¿”å›å€¼ï¼Œå®šä¹‰åœ¨æ­¤å¤„
 	venc_user_buf buf;     //
 	HI_U32 msgdatasize;
 }venc_msginfo;

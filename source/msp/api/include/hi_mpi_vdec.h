@@ -148,7 +148,7 @@ typedef int (*PFN_VDEC_Chan_VOChangeWinInfo)(HI_HANDLE,HI_DRV_WIN_PRIV_INFO_S*);
 //add by l00225186
 typedef struct tagVDEC_PORT_PARAM_S
 {
-   /*提供给VO,收帧，释放帧，处理窗口信息改变的函数*/
+   /*鎻愪緵缁橵O,鏀跺抚锛岄噴鏀惧抚锛屽鐞嗙獥鍙ｄ俊鎭敼鍙樼殑鍑芥暟*/
   PFN_VDEC_Chan_VOAcqFrame pfVOAcqFrame;
   PFN_VDEC_Chan_VORlsFrame pfVORlsFrame;
   PFN_VDEC_Chan_VOChangeWinInfo pfVOSendWinInfo;

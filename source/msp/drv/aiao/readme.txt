@@ -1,2 +1,2 @@
-aiao_sw_vx_x: arm ao ¿ª·¢·ÖÖ§
-aiao_hw_vx_x: dsp ao ¿ª·¢·ÖÖ§
+aiao_sw_vx_x: arm ao å¼€å‘åˆ†æ”¯
+aiao_hw_vx_x: dsp ao å¼€å‘åˆ†æ”¯

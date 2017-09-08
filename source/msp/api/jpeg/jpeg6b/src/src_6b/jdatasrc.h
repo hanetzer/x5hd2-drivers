@@ -9,9 +9,9 @@ Author		    :
 Created		    : 2013/06/20
 Description	    : this file is add, move the structure from jdatasrc.c to here.
                   because hard dec file of jpeg_hdec_api.c will use this struct data.
-                  CNcomment: Õâ¸öÎÄ¼şÊÇĞÂÔö£¬°Ñ¶ÔÂëÁ÷´¦ÀíµÄ½á¹¹´Ójdatasrc.cÎÄ¼şÖĞ
-                             ÒÆµ½Õâ¸öĞÂÔöµÄÍ·ÎÄ¼ş£¬ÒòÎªÔÚjpeg_hdec_api.cÊ¹ÓÃÁËÕâ¸ö
-                             ½á¹¹Ìå±äÁ¿¼°¶ÁÂëÁ÷µÄºê CNend\n
+                  CNcomment: è¿™ä¸ªæ–‡ä»¶æ˜¯æ–°å¢ï¼ŒæŠŠå¯¹ç æµå¤„ç†çš„ç»“æ„ä»jdatasrc.cæ–‡ä»¶ä¸­
+                             ç§»åˆ°è¿™ä¸ªæ–°å¢çš„å¤´æ–‡ä»¶ï¼Œå› ä¸ºåœ¨jpeg_hdec_api.cä½¿ç”¨äº†è¿™ä¸ª
+                             ç»“æ„ä½“å˜é‡åŠè¯»ç æµçš„å® CNend\n
 Function List 	: 
 
 			  		  

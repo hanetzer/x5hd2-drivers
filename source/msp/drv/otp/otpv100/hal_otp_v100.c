@@ -580,12 +580,12 @@ static UINT32 do_readback(UINT32 addr)
     if(addr<32)
     {
         do_redundant(); 
-        write_reg(ADDR_OTP_CTRL + 0x18, 0x4); //OTP_CHANGE_MODE, 100£ºÈßÓà¶ÁÄ£Ê½
+        write_reg(ADDR_OTP_CTRL + 0x18, 0x4); //OTP_CHANGE_MODE, 100ï¼šå†—ä½™è¯»æ¨¡å¼
     }
     else
     {
         do_differential();
-        write_reg(ADDR_OTP_CTRL + 0x18, 0x2); //OTP_CHANGE_MODE, 010£º²î·Ö¶ÁÄ£Ê½
+        write_reg(ADDR_OTP_CTRL + 0x18, 0x2); //OTP_CHANGE_MODE, 010ï¼šå·®åˆ†è¯»æ¨¡å¼
     }
     write_reg(ADDR_OTP_CTRL,0x2);
     write_reg(ADDR_OTP_RADDR,addr);

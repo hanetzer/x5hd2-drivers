@@ -38,15 +38,15 @@ typedef struct
     //HI_BOOL     bOnlySetAttr;             /*boot => mce : we only need set default param to attr(no config) and create thread*/
     HI_BOOL     bOpenedInBoot;             /*boot => mce : we only need set default param to attr(no config) and create thread*/
     //HI_BOOL     bReadEDIDOk;
-    HI_U32      enDefaultMode;            /*init parameter*//*CNcomment: ³õÊ¼»¯²ÎÊı */
-    struct task_struct  *kThreadTimer;    /*timer thread*//*CNcomment:¶¨Ê±Æ÷Ïß³Ì */
+    HI_U32      enDefaultMode;            /*init parameter*//*CNcomment: åˆå§‹åŒ–å‚æ•° */
+    struct task_struct  *kThreadTimer;    /*timer thread*//*CNcomment:å®šæ—¶å™¨çº¿ç¨‹ */
     HI_BOOL     kThreadTimerStop;
-    struct task_struct  *kCECRouter;      /*CEC thread*//*CNcomment: CECÏß³Ì */
+    struct task_struct  *kCECRouter;      /*CEC thread*//*CNcomment: CECçº¿ç¨‹ */
 #if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
-    HI_BOOL     bHdmiStarted;             /*HDMI Start Flag*//*CNcomment:HDMI ½Ó¿ÚÊÇ·ñÆô¶¯±êÖ¾ */
-    HI_BOOL     bHdmiExit;                /*HDMI exit flag*//*CNcomment:HDMI Ä£¿éÍË³ö±êÖ¾ */
+    HI_BOOL     bHdmiStarted;             /*HDMI Start Flag*//*CNcomment:HDMI æ¥å£æ˜¯å¦å¯åŠ¨æ ‡å¿— */
+    HI_BOOL     bHdmiExit;                /*HDMI exit flag*//*CNcomment:HDMI æ¨¡å—é€€å‡ºæ ‡å¿— */
 #endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
-    HI_UNF_HDMI_VIDEO_MODE_E enVidInMode; /*reservation,please setting VIDEO_MODE_YCBCR422 mode*//*CNcomment:±£Áô£¬ÇëÅäÖÃÎªVIDEO_MODE_YCBCR422 */
+    HI_UNF_HDMI_VIDEO_MODE_E enVidInMode; /*reservation,please setting VIDEO_MODE_YCBCR422 mode*//*CNcomment:ä¿ç•™ï¼Œè¯·é…ç½®ä¸ºVIDEO_MODE_YCBCR422 */
 }HDMI_COMM_ATTR_S;
 
 //void DRV_Get_CommAttr(HDMI_COMM_ATTR_S **pstCommAttr);
@@ -92,7 +92,7 @@ typedef struct
     HI_BOOL            bStart;
     HDMI_PROC_EVENT_S  eventList[MAX_PROCESS_NUM];
     //HI_U32           Event[5];        /*Current Event Array, sequence will be change */
-    HDMI_ATTR_S        stHDMIAttr;          /*HDMI implement parameter*//*CNcomment:HDMI ÔËĞĞ²ÎÊı */
+    HDMI_ATTR_S        stHDMIAttr;          /*HDMI implement parameter*//*CNcomment:HDMI è¿è¡Œå‚æ•° */
     HI_BOOL            ForceUpdateFlag;
     HI_BOOL            partUpdateFlag;
     HI_UNF_HDMI_AVI_INFOFRAME_VER2_S   stAVIInfoFrame;

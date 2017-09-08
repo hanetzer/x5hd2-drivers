@@ -67,58 +67,58 @@ typedef enum  hiHDMI_AUDIOINTERFACE_E
 
 typedef struct hiHDMI_AUDIO_ATTR_S
 {
-//  HI_BOOL                 bEnableAudio;        /**<Enable flag of Audio*//**CNcomment:ÊÇ·ñEnableÒôÆµ */
-    HDMI_AUDIOINTERFACE_E   enSoundIntf;         /**<the origin of Sound,suggestion set HI_UNF_SND_INTERFACE_I2S,the parameter need consistent with Ao input *//**<CNcomment:HDMIÒôÆµÀ´Ô´, ½¨ÒéHI_UNF_SND_INTERFACE_I2S,´Ë²ÎÊýÐèÒªÓëAOÊäÈë±£³ÖÒ»ÖÂ */
-    HI_BOOL                 bIsMultiChannel;     /**<set mutiChannel or stereo ;0:stereo,1:mutichannel fixup 8 channel *//**<CNcomment:¶àÉùµÀ»¹ÊÇÁ¢ÌåÉù£¬0:Á¢ÌåÉù£¬1:¶àÉùµÀ¹Ì¶¨Îª8ÉùµÀ */
-	HI_U32 					u32Channels;         //ÏÈchannelºÍmulty channel¶¼±£Áô£¬ºóÐøÔÚÄÚºËÌ¬¸Éµômulty channel
-    HI_UNF_SAMPLE_RATE_E    enSampleRate;        /**<the samplerate of audio,this parameter consistent with AO config *//**<CNcomment:PCMÒôÆµ²ÉÑùÂÊ,´Ë²ÎÊýÐèÒªÓëAOµÄÅäÖÃ±£³ÖÒ»ÖÂ */
-    HI_U8                   u8DownSampleParm;    /**<PCM parameter of dowmsample,default 0*//**CNcomment:PCMÒôÆµÏòÏÂdownsample²ÉÑùÂÊµÄ²ÎÊý£¬Ä¬ÈÏÎª0 */
+//  HI_BOOL                 bEnableAudio;        /**<Enable flag of Audio*//**CNcomment:æ˜¯å¦EnableéŸ³é¢‘ */
+    HDMI_AUDIOINTERFACE_E   enSoundIntf;         /**<the origin of Sound,suggestion set HI_UNF_SND_INTERFACE_I2S,the parameter need consistent with Ao input *//**<CNcomment:HDMIéŸ³é¢‘æ¥æº, å»ºè®®HI_UNF_SND_INTERFACE_I2S,æ­¤å‚æ•°éœ€è¦ä¸ŽAOè¾“å…¥ä¿æŒä¸€è‡´ */
+    HI_BOOL                 bIsMultiChannel;     /**<set mutiChannel or stereo ;0:stereo,1:mutichannel fixup 8 channel *//**<CNcomment:å¤šå£°é“è¿˜æ˜¯ç«‹ä½“å£°ï¼Œ0:ç«‹ä½“å£°ï¼Œ1:å¤šå£°é“å›ºå®šä¸º8å£°é“ */
+	HI_U32 					u32Channels;         //å…ˆchannelå’Œmulty channeléƒ½ä¿ç•™ï¼ŒåŽç»­åœ¨å†…æ ¸æ€å¹²æŽ‰multy channel
+    HI_UNF_SAMPLE_RATE_E    enSampleRate;        /**<the samplerate of audio,this parameter consistent with AO config *//**<CNcomment:PCMéŸ³é¢‘é‡‡æ ·çŽ‡,æ­¤å‚æ•°éœ€è¦ä¸ŽAOçš„é…ç½®ä¿æŒä¸€è‡´ */
+    HI_U8                   u8DownSampleParm;    /**<PCM parameter of dowmsample,default 0*//**CNcomment:PCMéŸ³é¢‘å‘ä¸‹downsampleé‡‡æ ·çŽ‡çš„å‚æ•°ï¼Œé»˜è®¤ä¸º0 */
     
-    HI_UNF_BIT_DEPTH_E      enBitDepth;          //Ä¿Ç°Ä¬ÈÏÅä16bit    /**<the audio bit depth,defualt 16,this parameter consistent with AO config*//**<CNcomment:ÒôÆµÎ»¿í£¬Ä¬ÈÏÎª16,´Ë²ÎÊýÐèÒªÓëAOµÄÅäÖÃ±£³ÖÒ»ÖÂ */
-    HI_U8                   u8I2SCtlVbit;        /**<reserve:config 0,I2S control(0x7A:0x1D)*//**CNcomment:±£Áô£¬ÇëÅäÖÃÎª0, I2S control (0x7A:0x1D) */
+    HI_UNF_BIT_DEPTH_E      enBitDepth;          //ç›®å‰é»˜è®¤é…16bit    /**<the audio bit depth,defualt 16,this parameter consistent with AO config*//**<CNcomment:éŸ³é¢‘ä½å®½ï¼Œé»˜è®¤ä¸º16,æ­¤å‚æ•°éœ€è¦ä¸ŽAOçš„é…ç½®ä¿æŒä¸€è‡´ */
+    HI_U8                   u8I2SCtlVbit;        /**<reserve:config 0,I2S control(0x7A:0x1D)*//**CNcomment:ä¿ç•™ï¼Œè¯·é…ç½®ä¸º0, I2S control (0x7A:0x1D) */
 
-//  HI_BOOL                 bEnableAudInfoFrame; /**<Enable flag of Audio InfoFrame,suggestion:enable*//**<CNcomment:ÊÇ·ñÊ¹ÄÜ AUDIO InfoFrame£¬½¨ÒéÊ¹ÄÜ */
+//  HI_BOOL                 bEnableAudInfoFrame; /**<Enable flag of Audio InfoFrame,suggestion:enable*//**<CNcomment:æ˜¯å¦ä½¿èƒ½ AUDIO InfoFrameï¼Œå»ºè®®ä½¿èƒ½ */
 }HDMI_AUDIO_ATTR_S;
 
 /*In order to extern ,so we define struct*/
 typedef struct hiHDMI_VIDEO_ATTR_S
 {
-//	HI_BOOL                 bEnableHdmi;         /**<force to HDMI or DVI,the value must set before HI_UNF_HDMI_Start or behind HI_UNF_HDMI_Stop*//**<CNcomment:ÊÇ·ñÇ¿ÖÆHDMI,·ñÔòÎªDVI.¸ÃÖµ±ØÐëÔÚ HI_UNF_HDMI_StartÖ®Ç°»òÕßHI_UNF_HDMI_StopÖ®ºóÉèÖÃ  */
-//  HI_BOOL                 bEnableVideo;        /**<parameter must set HI_TRUE,or the HDMI diver will force to set HI_TRUE*//**<CNcomment:±ØÐëÊÇHI_TRUE, Èç¹ûÊÇHI_FALSE:HDMIÇý¶¯»áÇ¿ÖÆÉèÖÃÎªHI_TRUE */
-    HI_DRV_DISP_FMT_E       enVideoFmt;          /**<video fromat ,the format must consistent with display  config*//**<CNcomment:ÊÓÆµÖÆÊ½,´Ë²ÎÊýÐèÒªÓëDisplayÅäÖÃµÄÖÆÊ½±£³ÖÒ»ÖÂ */
-//  HI_UNF_HDMI_VIDEO_MODE_E enVidOutMode;       /**<HDMI output vedio mode VIDEO_MODE_YCBCR,VIDEO_MODE_YCBCR444£¬VIDEO_MODE_YCBCR422£¬VIDEO_MODE_RGB444 *//**<CNcomment:HDMIÊä³öÊÓÆµÄ£Ê½£¬VIDEO_MODE_YCBCR444£¬VIDEO_MODE_YCBCR422£¬VIDEO_MODE_RGB444 */
-//  HI_UNF_HDMI_DEEP_COLOR_E enDeepColorMode;    /**<Deep Color output mode,defualt: HI_UNF_HDMI_DEEP_COLOR_24BIT *//**<CNcomment:DeepColorÊä³öÄ£Ê½, Ä¬ÈÏÎªHI_UNF_HDMI_DEEP_COLOR_24BIT */
-//  HI_BOOL                 bxvYCCMode;          /**<the xvYCC output mode,default:HI_FALSE*//**<CNcomment:< xvYCCÊä³öÄ£Ê½£¬Ä¬ÈÏÎªHI_FALSE */
+//	HI_BOOL                 bEnableHdmi;         /**<force to HDMI or DVI,the value must set before HI_UNF_HDMI_Start or behind HI_UNF_HDMI_Stop*//**<CNcomment:æ˜¯å¦å¼ºåˆ¶HDMI,å¦åˆ™ä¸ºDVI.è¯¥å€¼å¿…é¡»åœ¨ HI_UNF_HDMI_Startä¹‹å‰æˆ–è€…HI_UNF_HDMI_Stopä¹‹åŽè®¾ç½®  */
+//  HI_BOOL                 bEnableVideo;        /**<parameter must set HI_TRUE,or the HDMI diver will force to set HI_TRUE*//**<CNcomment:å¿…é¡»æ˜¯HI_TRUE, å¦‚æžœæ˜¯HI_FALSE:HDMIé©±åŠ¨ä¼šå¼ºåˆ¶è®¾ç½®ä¸ºHI_TRUE */
+    HI_DRV_DISP_FMT_E       enVideoFmt;          /**<video fromat ,the format must consistent with display  config*//**<CNcomment:è§†é¢‘åˆ¶å¼,æ­¤å‚æ•°éœ€è¦ä¸ŽDisplayé…ç½®çš„åˆ¶å¼ä¿æŒä¸€è‡´ */
+//  HI_UNF_HDMI_VIDEO_MODE_E enVidOutMode;       /**<HDMI output vedio mode VIDEO_MODE_YCBCR,VIDEO_MODE_YCBCR444ï¼ŒVIDEO_MODE_YCBCR422ï¼ŒVIDEO_MODE_RGB444 *//**<CNcomment:HDMIè¾“å‡ºè§†é¢‘æ¨¡å¼ï¼ŒVIDEO_MODE_YCBCR444ï¼ŒVIDEO_MODE_YCBCR422ï¼ŒVIDEO_MODE_RGB444 */
+//  HI_UNF_HDMI_DEEP_COLOR_E enDeepColorMode;    /**<Deep Color output mode,defualt: HI_UNF_HDMI_DEEP_COLOR_24BIT *//**<CNcomment:DeepColorè¾“å‡ºæ¨¡å¼, é»˜è®¤ä¸ºHI_UNF_HDMI_DEEP_COLOR_24BIT */
+//  HI_BOOL                 bxvYCCMode;          /**<the xvYCC output mode,default:HI_FALSE*//**<CNcomment:< xvYCCè¾“å‡ºæ¨¡å¼ï¼Œé»˜è®¤ä¸ºHI_FALSE */
 
-//  HI_BOOL                 bEnableAviInfoFrame; /**<Enable flag of AVI InfoFrame,suggestion:enable *//**<CNcomment:ÊÇ·ñÊ¹ÄÜ AVI InfoFrame£¬½¨ÒéÊ¹ÄÜ */
-//  HI_BOOL                 bEnableSpdInfoFrame; /**<Enable flag of SPD info frame,suggestion:disable*//**<CNcomment:ÊÇ·ñÊ¹ÄÜ SPD InfoFrame£¬ ½¨Òé¹Ø±Õ */
-//  HI_BOOL                 bEnableMpegInfoFrame;/**<Enable flag of MPEG info frame,suggestion:disable*//**<CNcomment:ÊÇ·ñÊ¹ÄÜ MPEG InfoFrame£¬ ½¨Òé¹Ø±Õ */
+//  HI_BOOL                 bEnableAviInfoFrame; /**<Enable flag of AVI InfoFrame,suggestion:enable *//**<CNcomment:æ˜¯å¦ä½¿èƒ½ AVI InfoFrameï¼Œå»ºè®®ä½¿èƒ½ */
+//  HI_BOOL                 bEnableSpdInfoFrame; /**<Enable flag of SPD info frame,suggestion:disable*//**<CNcomment:æ˜¯å¦ä½¿èƒ½ SPD InfoFrameï¼Œ å»ºè®®å…³é—­ */
+//  HI_BOOL                 bEnableMpegInfoFrame;/**<Enable flag of MPEG info frame,suggestion:disable*//**<CNcomment:æ˜¯å¦ä½¿èƒ½ MPEG InfoFrameï¼Œ å»ºè®®å…³é—­ */
 
-    HI_BOOL                 b3DEnable;           /**<0:disable 3d,1,enable 3d mode*//**<CNcomment:< 0:3D²»¼¤»î£¬1:3DÄ£Ê½´ò¿ª */
-    HI_U32                  u83DParam;           /**<3D Parameter,defualt HI_FALSE*//**<CNcomment:< 3D Parameter, Ä¬ÈÏÎªHI_FALSE */
+    HI_BOOL                 b3DEnable;           /**<0:disable 3d,1,enable 3d mode*//**<CNcomment:< 0:3Dä¸æ¿€æ´»ï¼Œ1:3Dæ¨¡å¼æ‰“å¼€ */
+    HI_U32                  u83DParam;           /**<3D Parameter,defualt HI_FALSE*//**<CNcomment:< 3D Parameter, é»˜è®¤ä¸ºHI_FALSE */
 
-//  HI_U32                  bDebugFlag;          /**<the flag of hdmi dubug,suggestion:disable*//**<CNcomment:< ÊÇ·ñÊ¹ÄÜ ´ò¿ªhdmiÄÚ²¿debugÐÅÏ¢£¬ ½¨Òé¹Ø±Õ */
-//  HI_BOOL                 bHDCPEnable;         /**<0:HDCP disable mode,1:eable HDCP mode*//**<CNcomment:< 0:HDCP²»¼¤»î£¬1:HDCPÄ£Ê½´ò¿ª */
+//  HI_U32                  bDebugFlag;          /**<the flag of hdmi dubug,suggestion:disable*//**<CNcomment:< æ˜¯å¦ä½¿èƒ½ æ‰“å¼€hdmiå†…éƒ¨debugä¿¡æ¯ï¼Œ å»ºè®®å…³é—­ */
+//  HI_BOOL                 bHDCPEnable;         /**<0:HDCP disable mode,1:eable HDCP mode*//**<CNcomment:< 0:HDCPä¸æ¿€æ´»ï¼Œ1:HDCPæ¨¡å¼æ‰“å¼€ */
 }HDMI_VIDEO_ATTR_S;
 
 /*In order to extern ,so we define struct*/
 typedef struct hiHDMI_APP_ATTR_S
 {
-	HI_BOOL                 bEnableHdmi;         /**<force to HDMI or DVI,the value must set before HI_UNF_HDMI_Start or behind HI_UNF_HDMI_Stop*//**<CNcomment:ÊÇ·ñÇ¿ÖÆHDMI,·ñÔòÎªDVI.¸ÃÖµ±ØÐëÔÚ HI_UNF_HDMI_StartÖ®Ç°»òÕßHI_UNF_HDMI_StopÖ®ºóÉèÖÃ  */
-    HI_BOOL                 bEnableVideo;        /**<parameter must set HI_TRUE,or the HDMI diver will force to set HI_TRUE*//**<CNcomment:±ØÐëÊÇHI_TRUE, Èç¹ûÊÇHI_FALSE:HDMIÇý¶¯»áÇ¿ÖÆÉèÖÃÎªHI_TRUE */
-    HI_BOOL                 bEnableAudio;        /**<Enable flag of Audio*//**CNcomment:ÊÇ·ñEnableÒôÆµ */
+	HI_BOOL                 bEnableHdmi;         /**<force to HDMI or DVI,the value must set before HI_UNF_HDMI_Start or behind HI_UNF_HDMI_Stop*//**<CNcomment:æ˜¯å¦å¼ºåˆ¶HDMI,å¦åˆ™ä¸ºDVI.è¯¥å€¼å¿…é¡»åœ¨ HI_UNF_HDMI_Startä¹‹å‰æˆ–è€…HI_UNF_HDMI_Stopä¹‹åŽè®¾ç½®  */
+    HI_BOOL                 bEnableVideo;        /**<parameter must set HI_TRUE,or the HDMI diver will force to set HI_TRUE*//**<CNcomment:å¿…é¡»æ˜¯HI_TRUE, å¦‚æžœæ˜¯HI_FALSE:HDMIé©±åŠ¨ä¼šå¼ºåˆ¶è®¾ç½®ä¸ºHI_TRUE */
+    HI_BOOL                 bEnableAudio;        /**<Enable flag of Audio*//**CNcomment:æ˜¯å¦EnableéŸ³é¢‘ */
 
-    HI_UNF_HDMI_VIDEO_MODE_E enVidOutMode;       /**<HDMI output vedio mode VIDEO_MODE_YCBCR,VIDEO_MODE_YCBCR444£¬VIDEO_MODE_YCBCR422£¬VIDEO_MODE_RGB444 *//**<CNcomment:HDMIÊä³öÊÓÆµÄ£Ê½£¬VIDEO_MODE_YCBCR444£¬VIDEO_MODE_YCBCR422£¬VIDEO_MODE_RGB444 */
-    HI_UNF_HDMI_DEEP_COLOR_E enDeepColorMode;    /**<Deep Color output mode,defualt: HI_UNF_HDMI_DEEP_COLOR_24BIT *//**<CNcomment:DeepColorÊä³öÄ£Ê½, Ä¬ÈÏÎªHI_UNF_HDMI_DEEP_COLOR_24BIT */
-    HI_BOOL                 bxvYCCMode;          /**<the xvYCC output mode,default:HI_FALSE*//**<CNcomment:< xvYCCÊä³öÄ£Ê½£¬Ä¬ÈÏÎªHI_FALSE */
+    HI_UNF_HDMI_VIDEO_MODE_E enVidOutMode;       /**<HDMI output vedio mode VIDEO_MODE_YCBCR,VIDEO_MODE_YCBCR444ï¼ŒVIDEO_MODE_YCBCR422ï¼ŒVIDEO_MODE_RGB444 *//**<CNcomment:HDMIè¾“å‡ºè§†é¢‘æ¨¡å¼ï¼ŒVIDEO_MODE_YCBCR444ï¼ŒVIDEO_MODE_YCBCR422ï¼ŒVIDEO_MODE_RGB444 */
+    HI_UNF_HDMI_DEEP_COLOR_E enDeepColorMode;    /**<Deep Color output mode,defualt: HI_UNF_HDMI_DEEP_COLOR_24BIT *//**<CNcomment:DeepColorè¾“å‡ºæ¨¡å¼, é»˜è®¤ä¸ºHI_UNF_HDMI_DEEP_COLOR_24BIT */
+    HI_BOOL                 bxvYCCMode;          /**<the xvYCC output mode,default:HI_FALSE*//**<CNcomment:< xvYCCè¾“å‡ºæ¨¡å¼ï¼Œé»˜è®¤ä¸ºHI_FALSE */
 
-    HI_BOOL                 bEnableAviInfoFrame; /**<Enable flag of AVI InfoFrame,suggestion:enable *//**<CNcomment:ÊÇ·ñÊ¹ÄÜ AVI InfoFrame£¬½¨ÒéÊ¹ÄÜ */
-    HI_BOOL                 bEnableSpdInfoFrame; /**<Enable flag of SPD info frame,suggestion:disable*//**<CNcomment:ÊÇ·ñÊ¹ÄÜ SPD InfoFrame£¬ ½¨Òé¹Ø±Õ */
-    HI_BOOL                 bEnableMpegInfoFrame;/**<Enable flag of MPEG info frame,suggestion:disable*//**<CNcomment:ÊÇ·ñÊ¹ÄÜ MPEG InfoFrame£¬ ½¨Òé¹Ø±Õ */
-    HI_BOOL                 bEnableAudInfoFrame; /**<Enable flag of Audio InfoFrame,suggestion:enable*//**<CNcomment:ÊÇ·ñÊ¹ÄÜ AUDIO InfoFrame£¬½¨ÒéÊ¹ÄÜ */
+    HI_BOOL                 bEnableAviInfoFrame; /**<Enable flag of AVI InfoFrame,suggestion:enable *//**<CNcomment:æ˜¯å¦ä½¿èƒ½ AVI InfoFrameï¼Œå»ºè®®ä½¿èƒ½ */
+    HI_BOOL                 bEnableSpdInfoFrame; /**<Enable flag of SPD info frame,suggestion:disable*//**<CNcomment:æ˜¯å¦ä½¿èƒ½ SPD InfoFrameï¼Œ å»ºè®®å…³é—­ */
+    HI_BOOL                 bEnableMpegInfoFrame;/**<Enable flag of MPEG info frame,suggestion:disable*//**<CNcomment:æ˜¯å¦ä½¿èƒ½ MPEG InfoFrameï¼Œ å»ºè®®å…³é—­ */
+    HI_BOOL                 bEnableAudInfoFrame; /**<Enable flag of Audio InfoFrame,suggestion:enable*//**<CNcomment:æ˜¯å¦ä½¿èƒ½ AUDIO InfoFrameï¼Œå»ºè®®ä½¿èƒ½ */
 
-    HI_U32                  bDebugFlag;          /**<the flag of hdmi dubug,suggestion:disable*//**<CNcomment:< ÊÇ·ñÊ¹ÄÜ ´ò¿ªhdmiÄÚ²¿debugÐÅÏ¢£¬ ½¨Òé¹Ø±Õ */
-    HI_BOOL                 bHDCPEnable;         /**<0:HDCP disable mode,1:eable HDCP mode*//**<CNcomment:< 0:HDCP²»¼¤»î£¬1:HDCPÄ£Ê½´ò¿ª */
+    HI_U32                  bDebugFlag;          /**<the flag of hdmi dubug,suggestion:disable*//**<CNcomment:< æ˜¯å¦ä½¿èƒ½ æ‰“å¼€hdmiå†…éƒ¨debugä¿¡æ¯ï¼Œ å»ºè®®å…³é—­ */
+    HI_BOOL                 bHDCPEnable;         /**<0:HDCP disable mode,1:eable HDCP mode*//**<CNcomment:< 0:HDCPä¸æ¿€æ´»ï¼Œ1:HDCPæ¨¡å¼æ‰“å¼€ */
 }HDMI_APP_ATTR_S;
 
 
@@ -133,12 +133,12 @@ typedef struct hiHDMI_ATTR_S
 
 typedef struct hiHDMI_AUDIO_CAPABILITY_S
 {
-    HI_BOOL             bSupportHdmi;             /**<The Device suppot HDMI or not,the device is DVI when nonsupport HDMI*//**<CNcomment:Éè±¸ÊÇ·ñÖ§³ÖHDMI£¬Èç¹û²»Ö§³Ö£¬ÔòÎªDVIÉè±¸.*/
-    HI_BOOL             bAudioFmtSupported[HI_UNF_HDMI_MAX_AUDIO_CAP_COUNT]; /**<Audio capability,reference EIA-CEA-861-D,table 37,HI_TRUE:support this Audio type;HI_FALSE,nonsupport this Audio type*//**<CNcomment:ÒôÆµÄÜÁ¦¼¯, Çë²Î¿¼EIA-CEA-861-D ±í37;HI_TRUE±íÊ¾Ö§³ÖÕâÖÖÏÔÊ¾¸ñÊ½£¬HI_FALSE±íÊ¾²»Ö§³Ö */
-    HI_U32              u32AudioSampleRateSupported[HI_UNF_HDMI_MAX_AUDIO_SMPRATE_COUNT]; /**<PCM smprate capability,0: illegal value,other is support PCM smprate *//**<CNcomment:PCMÒôÆµ²ÉÑùÂÊÄÜÁ¦¼¯£¬0Îª·Ç·¨Öµ£¬ÆäËûÎªÖ§³ÖµÄÒôÆµ²ÉÑùÂÊ */
-    HI_U32              u32MaxPcmChannels;        /**<Audio max PCM Channels number*//**CNcomment:ÒôÆµ×î´óµÄPCMÍ¨µÀÊý */
-    HI_U8               u8Speaker;                /**<Speaker location,please reference EIA-CEA-D the definition of SpekearDATABlock*//**<CNcomment:ÑïÉùÆ÷Î»ÖÃ£¬Çë²Î¿¼EIA-CEA-861-DÖÐSpeakerDATABlockµÄ¶¨Òå */
-    HI_U8               u8Audio_Latency;          /**<the latency of audio*//**<CNcomment:ÒôÆµÑÓÊ± */
+    HI_BOOL             bSupportHdmi;             /**<The Device suppot HDMI or not,the device is DVI when nonsupport HDMI*//**<CNcomment:è®¾å¤‡æ˜¯å¦æ”¯æŒHDMIï¼Œå¦‚æžœä¸æ”¯æŒï¼Œåˆ™ä¸ºDVIè®¾å¤‡.*/
+    HI_BOOL             bAudioFmtSupported[HI_UNF_HDMI_MAX_AUDIO_CAP_COUNT]; /**<Audio capability,reference EIA-CEA-861-D,table 37,HI_TRUE:support this Audio type;HI_FALSE,nonsupport this Audio type*//**<CNcomment:éŸ³é¢‘èƒ½åŠ›é›†, è¯·å‚è€ƒEIA-CEA-861-D è¡¨37;HI_TRUEè¡¨ç¤ºæ”¯æŒè¿™ç§æ˜¾ç¤ºæ ¼å¼ï¼ŒHI_FALSEè¡¨ç¤ºä¸æ”¯æŒ */
+    HI_U32              u32AudioSampleRateSupported[HI_UNF_HDMI_MAX_AUDIO_SMPRATE_COUNT]; /**<PCM smprate capability,0: illegal value,other is support PCM smprate *//**<CNcomment:PCMéŸ³é¢‘é‡‡æ ·çŽ‡èƒ½åŠ›é›†ï¼Œ0ä¸ºéžæ³•å€¼ï¼Œå…¶ä»–ä¸ºæ”¯æŒçš„éŸ³é¢‘é‡‡æ ·çŽ‡ */
+    HI_U32              u32MaxPcmChannels;        /**<Audio max PCM Channels number*//**CNcomment:éŸ³é¢‘æœ€å¤§çš„PCMé€šé“æ•° */
+    HI_U8               u8Speaker;                /**<Speaker location,please reference EIA-CEA-D the definition of SpekearDATABlock*//**<CNcomment:æ‰¬å£°å™¨ä½ç½®ï¼Œè¯·å‚è€ƒEIA-CEA-861-Dä¸­SpeakerDATABlockçš„å®šä¹‰ */
+    HI_U8               u8Audio_Latency;          /**<the latency of audio*//**<CNcomment:éŸ³é¢‘å»¶æ—¶ */
 }HDMI_AUDIO_CAPABILITY_S;
 
 

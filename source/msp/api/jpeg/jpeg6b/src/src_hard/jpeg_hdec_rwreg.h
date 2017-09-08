@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : the write and read about the register realize in this file
-                  CNcomment: ¶ÁĞ´¼Ä´æÆ÷²Ù×÷ÔÚ¸ÃÎÄ¼şÖĞÊµÏÖ CNend\n
+                  CNcomment: è¯»å†™å¯„å­˜å™¨æ“ä½œåœ¨è¯¥æ–‡ä»¶ä¸­å®ç° CNend\n
 Function List 	: 
 
 			  		  
@@ -39,7 +39,7 @@ Date				Author        		Modification
 
     /***************************** Macro Definition ******************************/
     /** \addtogroup 	 JPEG RWREG MACRO */
-    /** @{ */  /** <!-- ¡¾JPEG RWREG MACRO¡¿ */
+    /** @{ */  /** <!-- ã€JPEG RWREG MACROã€‘ */
 
 
 	 /** @} */	/*! <!-- Macro Definition end */
@@ -48,7 +48,7 @@ Date				Author        		Modification
 	 /*************************** Enum Definition ****************************/
 
 	/** \addtogroup      JPEG RWREG ENUM */
-    /** @{ */  /** <!-- ¡¾JPEG RWREG ENUM¡¿ */
+    /** @{ */  /** <!-- ã€JPEG RWREG ENUMã€‘ */
 
 
 	
@@ -57,7 +57,7 @@ Date				Author        		Modification
 	/*************************** Structure Definition ****************************/
 
 	/** \addtogroup      JPEG RWREG STRUCTURE */
-    /** @{ */  /** <!-- ¡¾JPEG RWREG STRUCTURE¡¿ */
+    /** @{ */  /** <!-- ã€JPEG RWREG STRUCTUREã€‘ */
 
 	/** @} */  /*! <!-- Structure Definition end */
 
@@ -67,16 +67,16 @@ Date				Author        		Modification
     /******************************* API declaration *****************************/
 
 	/** \addtogroup      JPEG RWREG API */
-    /** @{ */  /** <!-- ¡¾JPEG RWREG API¡¿ */
+    /** @{ */  /** <!-- ã€JPEG RWREG APIã€‘ */
 	
 	 
 	/*****************************************************************************
 	* func			: JPEG_HDEC_WriteReg
 	* description	: writd data to register
-	                  CNcomment:  Ğ´¼Ä´æÆ÷	                                CNend\n
-	* param[in]     : pJpegRegVirAddr  CNcomment:  ¼Ä´æÆ÷Ó³ÉäÉÏÀ´µÄĞéÄâµØÖ·	CNend\n
-	* param[in]     : s32PhyOff        CNcomment:  Æ«ÒÆµØÖ·             	CNend\n
-	* param[in]     : s32Val           CNcomment:  ÒªĞ´µÄ¼Ä´æÆ÷µÄÖµ     	CNend\n
+	                  CNcomment:  å†™å¯„å­˜å™¨	                                CNend\n
+	* param[in]     : pJpegRegVirAddr  CNcomment:  å¯„å­˜å™¨æ˜ å°„ä¸Šæ¥çš„è™šæ‹Ÿåœ°å€	CNend\n
+	* param[in]     : s32PhyOff        CNcomment:  åç§»åœ°å€             	CNend\n
+	* param[in]     : s32Val           CNcomment:  è¦å†™çš„å¯„å­˜å™¨çš„å€¼     	CNend\n
 	* retval	    : NA
 	* others:	    : NA
 	*****************************************************************************/
@@ -85,11 +85,11 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_ReadReg
 	* description	: read data from register
-	                  CNcomment:  ¶Á¼Ä´æÆ÷µÄÖµ	                                CNend\n
-	* param[out]    : pJpegRegVirAddr   CNcomment:  ¼Ä´æÆ÷Ó³ÉäÉÏÀ´µÄĞéÄâµØÖ·	CNend\n
-	* param[in]     : s32PhyOff         CNcomment:  Æ«ÒÆµØÖ·	                CNend\n
-	* retval	    : HI_SUCCESS        CNcomment:  ³É¹¦	                    CNend\n
-	* retval	    : HI_FAILURE        CNcomment:  Ê§°Ü	                    CNend\n
+	                  CNcomment:  è¯»å¯„å­˜å™¨çš„å€¼	                                CNend\n
+	* param[out]    : pJpegRegVirAddr   CNcomment:  å¯„å­˜å™¨æ˜ å°„ä¸Šæ¥çš„è™šæ‹Ÿåœ°å€	CNend\n
+	* param[in]     : s32PhyOff         CNcomment:  åç§»åœ°å€	                CNend\n
+	* retval	    : HI_SUCCESS        CNcomment:  æˆåŠŸ	                    CNend\n
+	* retval	    : HI_FAILURE        CNcomment:  å¤±è´¥	                    CNend\n
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_ReadReg(const volatile HI_CHAR *pJpegRegVirAddr, const HI_S32 s32PhyOff);
@@ -97,11 +97,11 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_CpyData2Reg
 	* description	: copy the mem data to register
-	                  CNcomment:  ½«bufÖĞµÄÖµĞ´µ½¼Ä´æÆ÷ÖĞ	                CNend\n
-	* param[in]     : pJpegRegVirAddr  CNcomment:  ¼Ä´æÆ÷Ó³ÉäÉÏÀ´µÄĞéÄâµØÖ·	CNend\n
-	* param[in]     : pInMem           CNcomment:  ÒªÊä³öµÄbufferµØÖ·	    CNend\n
-	* param[in]     : s32PhyOff        CNcomment:  Æ«ÒÆµØÖ·	                CNend\n
-	* param[in]     : u32Bytes         CNcomment:  ÒªĞ´µÄ×Ö½ÚÊı          	CNend\n
+	                  CNcomment:  å°†bufä¸­çš„å€¼å†™åˆ°å¯„å­˜å™¨ä¸­	                CNend\n
+	* param[in]     : pJpegRegVirAddr  CNcomment:  å¯„å­˜å™¨æ˜ å°„ä¸Šæ¥çš„è™šæ‹Ÿåœ°å€	CNend\n
+	* param[in]     : pInMem           CNcomment:  è¦è¾“å‡ºçš„bufferåœ°å€	    CNend\n
+	* param[in]     : s32PhyOff        CNcomment:  åç§»åœ°å€	                CNend\n
+	* param[in]     : u32Bytes         CNcomment:  è¦å†™çš„å­—èŠ‚æ•°          	CNend\n
 	* retval	    : NA
 	* others:	    : NA
 	*****************************************************************************/
@@ -111,13 +111,13 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_CpyData2Buf
 	* description	: copy the register data to mem
-	                  CNcomment:  ½«¼Ä´æÆ÷ÖĞµÄÖµĞ´µ½ÓÃ»§bufferÖĞ	            CNend\n
-	* param[in]     : pJpegRegVirAddr     CNcomment:  ¼Ä´æÆ÷Ó³ÉäÉÏÀ´µÄĞéÄâµØÖ·	CNend\n
-	* param[in]     : s32PhyOff           CNcomment:  Æ«ÒÆµØÖ·	          CNend\n
-	* param[in]     : u32Bytes            CNcomment:  ÒªÊä³öµÄ×Ö½ÚÊı	  CNend\n
-	* param[out]    : pOutMem             CNcomment:  Êä³öbufferµØÖ·	  CNend\n
-	* retval	    : HI_SUCCESS          CNcomment:  ³É¹¦	              CNend\n
-	* retval	    : HI_FAILURE          CNcomment:  Ê§°Ü	              CNend\n
+	                  CNcomment:  å°†å¯„å­˜å™¨ä¸­çš„å€¼å†™åˆ°ç”¨æˆ·bufferä¸­	            CNend\n
+	* param[in]     : pJpegRegVirAddr     CNcomment:  å¯„å­˜å™¨æ˜ å°„ä¸Šæ¥çš„è™šæ‹Ÿåœ°å€	CNend\n
+	* param[in]     : s32PhyOff           CNcomment:  åç§»åœ°å€	          CNend\n
+	* param[in]     : u32Bytes            CNcomment:  è¦è¾“å‡ºçš„å­—èŠ‚æ•°	  CNend\n
+	* param[out]    : pOutMem             CNcomment:  è¾“å‡ºbufferåœ°å€	  CNend\n
+	* retval	    : HI_SUCCESS          CNcomment:  æˆåŠŸ	              CNend\n
+	* retval	    : HI_FAILURE          CNcomment:  å¤±è´¥	              CNend\n
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_CpyData2Buf(const volatile HI_CHAR *pJpegRegVirAddr,const HI_S32 s32PhyOff,const HI_U32 u32Bytes,HI_VOID *pOutMem);

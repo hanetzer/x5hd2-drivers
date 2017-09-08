@@ -184,14 +184,14 @@ typedef struct  hiTUNER_SIGNAL_S
 
 typedef struct hiTUNER_TP_VERIFY_PARAMS_S
 {
-    HI_U32 *pu32Frequency;            /**<frequency kHz*/                            /**<CNcomment:ÆµÂÊ£¬µ¥Î»kHz*/
-    HI_U32 *pu32SymbolRate;           /**<symbolrate kBaud*/                         /**<CNcomment:·ûºÅÂÊ£¬µ¥Î»kBaud*/
-    HI_UNF_TUNER_FE_POLARIZATION_E enPolar; /**<TP polarization*/                    /**<CNcomment:TPµÄ¼«»¯·½Ê½*/
-    HI_U8 cbs_reliablity;                           /**<TP reliability*/             /**<CNcomment:TPµÄ¿É¿¿¶È*/
-    HI_S32 CBS_TH;                                   /**<blindscan threshold*/        /**<CNcomment:Ã¤É¨ãÐÖµ*/
+    HI_U32 *pu32Frequency;            /**<frequency kHz*/                            /**<CNcomment:é¢‘çŽ‡ï¼Œå•ä½kHz*/
+    HI_U32 *pu32SymbolRate;           /**<symbolrate kBaud*/                         /**<CNcomment:ç¬¦å·çŽ‡ï¼Œå•ä½kBaud*/
+    HI_UNF_TUNER_FE_POLARIZATION_E enPolar; /**<TP polarization*/                    /**<CNcomment:TPçš„æžåŒ–æ–¹å¼*/
+    HI_U8 cbs_reliablity;                           /**<TP reliability*/             /**<CNcomment:TPçš„å¯é åº¦*/
+    HI_S32 CBS_TH;                                   /**<blindscan threshold*/        /**<CNcomment:ç›²æ‰«é˜ˆå€¼*/
     HI_U8 fs_grade;
-    HI_U32 *fec_ok_cnt;                             /**<TP number of fec ok*/        /**<CNcomment:fec okµÄTPÊýÁ¿*/
-    HI_U32 *fec_no_ok_cnt;                          /**<TP number of fec  not ok*/   /**<CNcomment:fec not okµÄTPÊýÁ¿*/
+    HI_U32 *fec_ok_cnt;                             /**<TP number of fec ok*/        /**<CNcomment:fec okçš„TPæ•°é‡*/
+    HI_U32 *fec_no_ok_cnt;                          /**<TP number of fec  not ok*/   /**<CNcomment:fec not okçš„TPæ•°é‡*/
 }TUNER_TP_VERIFY_PARAMS_S;
 
 typedef struct  hiTUNER_TP_VERIFY_INFO_S
@@ -216,13 +216,13 @@ typedef enum hiTUNER_QAMINSIDE_E
 
 typedef struct tag_TunerAttr_S
 {
-    HI_UNF_TUNER_DEV_TYPE_E enTunerDevType;     /**<Tuner type*/                              /**<CNcomment:TUNERÀàÐÍ*/
+    HI_UNF_TUNER_DEV_TYPE_E enTunerDevType;     /**<Tuner type*/                              /**<CNcomment:TUNERç±»åž‹*/
     HI_U32 u32TunerAddr;
 } HI_TunerAttr_S;
 
 typedef struct tag_DemodAttr_S
 {
-    HI_UNF_DEMOD_DEV_TYPE_E enDemodDevType;     /**<QAM type*/                                /**<CNcomment:QAMÀàÐÍ*/
+    HI_UNF_DEMOD_DEV_TYPE_E enDemodDevType;     /**<QAM type*/                                /**<CNcomment:QAMç±»åž‹*/
     HI_U32 u32DemodAddr;
 } HI_DemodAttr_S;
 

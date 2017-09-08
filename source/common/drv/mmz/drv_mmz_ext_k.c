@@ -27,7 +27,7 @@ HI_S32 HI_DRV_MMZ_AllocAndMap(const char *bufname, char *zone_name, HI_U32 size,
     {
         //mmz_name = MMZ_OTHERS;
         /*alloc once again from others buffer*/
-        /*CNcomment:ÔÙ´Óothers »º³åÇø·ÖÅäÒ»´Î*/
+        /*CNcomment:å†ä»others ç¼“å†²åŒºåˆ†é…ä¸€æ¬¡*/
         phyaddr = new_mmb(bufname, size, align, NULL);
         if (phyaddr == MMB_ADDR_INVALID)
         {
@@ -75,7 +75,7 @@ HI_S32 HI_DRV_MMZ_Alloc(const char *bufname, char *zone_name, HI_U32 size, int a
     {
         //mmz_name = MMZ_OTHERS;
         /*alloc once again from others buffer*/
-        /*CNcomment:ÔÙ´Óothers »º³åÇø·ÖÅäÒ»´Î*/
+        /*CNcomment:å†ä»others ç¼“å†²åŒºåˆ†é…ä¸€æ¬¡*/
         phyaddr = new_mmb(bufname, size, align, NULL);
         if (phyaddr == MMB_ADDR_INVALID)
         {

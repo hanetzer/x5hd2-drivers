@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : the suspend dispose
-                  CNcomment: ´ı»ú´¦Àí CNend\n
+                  CNcomment: å¾…æœºå¤„ç† CNend\n
 Function List 	: 
 
 			  		  
@@ -50,7 +50,7 @@ static HI_U32 s_u32SuspendJpgRegAddr = 0;
 /*****************************************************************************
 * func			: JPG_SaveResumeInfo
 * description	: save the resume need information
-  CNcomment: ±£´æ´ı»ú»½ĞÑĞèÒªµÄĞÅÏ¢        CNend\n
+  CNcomment: ä¿å­˜å¾…æœºå”¤é†’éœ€è¦çš„ä¿¡æ¯        CNend\n
 * param[in] 	: NULL
 * retval		: NA
 * others:		: NA
@@ -71,7 +71,7 @@ static HI_VOID JPG_SaveResumeInfo(HI_VOID)
 /*****************************************************************************
 * func			: JPG_WaitDecTaskDone
 * description	: waite the jpeg decode task done
-		  CNcomment: µÈ´ı½âÂëÈÎÎñÍê³É  CNend\n
+		  CNcomment: ç­‰å¾…è§£ç ä»»åŠ¡å®Œæˆ  CNend\n
 * param[in] 	: NULL
 * retval		: NA
 * others:		: NA
@@ -80,7 +80,7 @@ HI_VOID JPG_WaitDecTaskDone(HI_VOID)
 {
 	/**
 	** delay, be sure the message has write the hard register.
-	** CNcomment:Ê±¼äÑÓ³Ù£¬µÈµ½Ïà¹ØĞÅÏ¢ÒÑ¾­Ğ´µ½Ó²¼şÖĞ£¬ÕâÑù²ÅÄÜ¶Áµ½ÕıÈ·Öµ CNend\n
+	** CNcomment:æ—¶é—´å»¶è¿Ÿï¼Œç­‰åˆ°ç›¸å…³ä¿¡æ¯å·²ç»å†™åˆ°ç¡¬ä»¶ä¸­ï¼Œè¿™æ ·æ‰èƒ½è¯»åˆ°æ­£ç¡®å€¼ CNend\n
 	**/
 	HI_U32 u32StartTimeMs = 0; /** ms **/
 	HI_U32 u32EndTimeMs   = 0;
@@ -109,7 +109,7 @@ HI_VOID JPG_WaitDecTaskDone(HI_VOID)
 /*****************************************************************************
 * func			: JPG_GetResumeValue
 * description	: get the value that resume need
-				  CNcomment: »ñÈ¡´ı»ú»½ĞÑĞèÒªµÄÖµ  CNend\n
+				  CNcomment: è·å–å¾…æœºå”¤é†’éœ€è¦çš„å€¼  CNend\n
 * param[in] 	: *pSaveInfo
 * retval		: NA
 * others:		: NA
@@ -133,7 +133,7 @@ HI_VOID JPG_GetResumeValue(HI_JPG_SAVEINFO_S *pSaveInfo)
 /*****************************************************************************
 * func			: JPG_SuspendInit
 * description	: suspend initial
-				  CNcomment: ´ı»ú³õÊ¼»¯  CNend\n
+				  CNcomment: å¾…æœºåˆå§‹åŒ–  CNend\n
 * param[in] 	: u32JpegRegBase
 * retval		: NA
 * others:		: NA
@@ -146,7 +146,7 @@ HI_VOID JPG_SuspendInit(HI_U32 u32JpegRegBase)
 /*****************************************************************************
 * func			: JPG_SuspendExit
 * description	: suspend exit
-				  CNcomment: ´ı»úÈ¥³õÊ¼»¯  CNend\n
+				  CNcomment: å¾…æœºå»åˆå§‹åŒ–  CNend\n
 * param[in] 	: u32JpegRegBase
 * retval		: NA
 * others:		: NA

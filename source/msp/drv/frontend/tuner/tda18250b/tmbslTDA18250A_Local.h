@@ -142,7 +142,7 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_ID_byte_2__Ident_2 = { 0x01, 0x
 static const TDA18250A_BitField_t gTDA18250A_Reg_ID_byte_3 = { 0x02, 0x00, 0x08, 0x00 };
 /* Major_rev bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_ID_byte_3__Major_rev = { 0x02, 0x04, 0x04, 0x00 };
-/* Minor_rev bit(s): frq04920: Metalefixableewitheivfix remettreeàe00 */
+/* Minor_rev bit(s): frq04920: Metalefixableewitheivfix remettree e00 */
 static const TDA18250A_BitField_t gTDA18250A_Reg_ID_byte_3__Minor_rev = { 0x02, 0x00, 0x04, 0x00 };
 
 
@@ -184,7 +184,7 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_Gpio_ctrl_byte__GPIO1 = { 0x07,
 
 /* TDA18250A Register IRQ_status 0x08 */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IRQ_status = { 0x08, 0x00, 0x08, 0x00 };
-/* IRQ_status bit(s): Interruptegénérée: -eàelaefinedesecalibrations -eàelaefinedue'newechanel'  */
+/* IRQ_status bit(s): Interrupteg?n?r?e: -e?elaefinedesecalibrations -e?elaefinedue'newechanel'  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IRQ_status__IRQ_status = { 0x08, 0x07, 0x01, 0x00 };
 /* XtalCal_End bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IRQ_status__XtalCal_End = { 0x08, 0x05, 0x01, 0x00 };
@@ -502,9 +502,9 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_IF_AGC_byte__IF_level = { 0x21,
 
 /* TDA18250A Register IF_Byte_1 0x22 */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_1 = { 0x22, 0x00, 0x08, 0x00 };
-/* IF_LPF_Offset bit(s): ValeuredeedécalageedeeRCCaleIF_LPFeenenonesigné 00:eNominal 01:e-4% 10:e-8% 11:-12% */
+/* IF_LPF_Offset bit(s): Valeuredeed?calageedeeRCCaleIF_LPFeenenonesign? 00:eNominal 01:e-4% 10:e-8% 11:-12% */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_1__IF_LPF_Offset = { 0x22, 0x05, 0x02, 0x00 };
-/* IF_LPF_sign bit(s): frq05249: '0':eshifteposiitfe(1eintroduitseparelaedroite) '1':eshiftenégatife(0eintroduitseparelaegauche) */
+/* IF_LPF_sign bit(s): frq05249: '0':eshifteposiitfe(1eintroduitseparelaedroite) '1':eshiften?gatife(0eintroduitseparelaegauche) */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_1__IF_LPF_sign = { 0x22, 0x04, 0x01, 0x00 };
 /* LP_Fc bit(s): IF_ATSC_NotchefrequencyecorrelatedewitheLPF  000e:e6MHz 001e:e7MHz 010e:e8MHz 011:e9MHzesieROWe(1),e8MHzesieUSe(0) 1xx:e1.5MHz */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_1__LP_Fc = { 0x22, 0x00, 0x03, 0x00 };
@@ -512,9 +512,9 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_1__LP_Fc = { 0x22, 0x00
 
 /* TDA18250A Register IF_Byte_2 0x23 */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_2 = { 0x23, 0x00, 0x08, 0x00 };
-/* IF_HPF_Offset bit(s): frq05249: ValeuredeedécalageedeeRCCaleIF_HPFeenenonesigné */
+/* IF_HPF_Offset bit(s): frq05249: Valeuredeed?calageedeeRCCaleIF_HPFeenenonesign? */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_2__IF_HPF_Offset = { 0x23, 0x05, 0x02, 0x00 };
-/* IF_HPF_sign bit(s): frq05249: '0':eshifteposiitfe(1eintroduitseparelaedroite) '1':eshiftenégatife(0eintroduitseparelaegauche) */
+/* IF_HPF_sign bit(s): frq05249: '0':eshifteposiitfe(1eintroduitseparelaedroite) '1':eshiften?gatife(0eintroduitseparelaegauche) */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_2__IF_HPF_sign = { 0x23, 0x04, 0x01, 0x00 };
 /* IF_HP_Fc bit(s): IFeHigh-PasseFilterefrequency */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_2__IF_HP_Fc = { 0x23, 0x01, 0x03, 0x00 };
@@ -524,9 +524,9 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_2__IF_HP_Enable = { 0x2
 
 /* TDA18250A Register IF_Byte_3 0x24 */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_3 = { 0x24, 0x00, 0x08, 0x00 };
-/* IF_Notch_Offset bit(s): frq05249: ValeuredeedécalageedeeRCCaleIF_Notcheenenonesigné */
+/* IF_Notch_Offset bit(s): frq05249: Valeuredeed?calageedeeRCCaleIF_Notcheenenonesign? */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_3__IF_Notch_Offset = { 0x24, 0x05, 0x02, 0x00 };
-/* IF_Notch_sign bit(s): frq05249: '0':eshifteposiitfe(1eintroduitseparelaedroite) '1':eshiftenégatife(0eintroduitseparelaegauche) */
+/* IF_Notch_sign bit(s): frq05249: '0':eshifteposiitfe(1eintroduitseparelaedroite) '1':eshiften?gatife(0eintroduitseparelaegauche) */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_3__IF_Notch_sign = { 0x24, 0x04, 0x01, 0x00 };
 /* IF_Notch_Freq bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_IF_Byte_3__IF_Notch_Freq = { 0x24, 0x01, 0x03, 0x00 };
@@ -540,7 +540,7 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_Reference_Byte = { 0x25, 0x00, 
 static const TDA18250A_BitField_t gTDA18250A_Reg_Reference_Byte__Dig_Clock = { 0x25, 0x06, 0x02, 0x00 };
 /* Xtout_Amp bit(s): jian: '000':e200emV '001':e400emV '010':e600emV '011':e800emV '100':e600emV '101':e800emV '110':e1000emV '111':e1200emV */
 static const TDA18250A_BitField_t gTDA18250A_Reg_Reference_Byte__Xtout_Amp = { 0x25, 0x03, 0x03, 0x00 };
-/* XTout bit(s): AllumerelaesortieeAsymeeteéteindreeSym 000,100e:eNoesignal 001eeeeeeee:eFdivePLL 010eeeeeeee:eDigClock:e eeeeeeeeeeeeeeeeSubLOeoreSDeoreXTeeeeeeeeforeXTeise16MHz eeeeeeeeeeeeeeeeSubLOeoreSDeoreXT/2eeeeforeXTeisenote16MHz 011,111e:e16-30MHzesinus 101,110e:e16-30eXTeerail-to-rail  */
+/* XTout bit(s): AllumerelaesortieeAsymeete?teindreeSym 000,100e:eNoesignal 001eeeeeeee:eFdivePLL 010eeeeeeee:eDigClock:e eeeeeeeeeeeeeeeeSubLOeoreSDeoreXTeeeeeeeeforeXTeise16MHz eeeeeeeeeeeeeeeeSubLOeoreSDeoreXT/2eeeeforeXTeisenote16MHz 011,111e:e16-30MHzesinus 101,110e:e16-30eXTeerail-to-rail  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_Reference_Byte__XTout = { 0x25, 0x00, 0x03, 0x00 };
 
 
@@ -640,7 +640,7 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_RSSI_byte_1__RSSI = { 0x2F, 0x0
 static const TDA18250A_BitField_t gTDA18250A_Reg_RSSI_byte_2 = { 0x30, 0x00, 0x08, 0x00 };
 /* RSSI_Gv bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_RSSI_byte_2__RSSI_Gv = { 0x30, 0x06, 0x02, 0x00 };
-/* RSSI_AV bit(s): RSSIeaverage e0e:elente:e5bits 1e:erapidee:e2bitse(noneconseilléeeneQAM)  */
+/* RSSI_AV bit(s): RSSIeaverage e0e:elente:e5bits 1e:erapidee:e2bitse(noneconseill?eeneQAM)  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_RSSI_byte_2__RSSI_AV = { 0x30, 0x05, 0x01, 0x00 };
 /* RSSI_Mode bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_RSSI_byte_2__RSSI_Mode = { 0x30, 0x04, 0x01, 0x00 };
@@ -686,7 +686,7 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_Test_byte__AGCK_Test = { 0x33, 
 static const TDA18250A_BitField_t gTDA18250A_Reg_Main_Post_Divider_byte = { 0x34, 0x00, 0x08, 0x00 };
 /* LOPostDiv bit(s): 1e:e1 2e:e2 3e:e4 4e:e8 5e:e16 6e:eTesteinput */
 static const TDA18250A_BitField_t gTDA18250A_Reg_Main_Post_Divider_byte__LOPostDiv = { 0x34, 0x04, 0x03, 0x00 };
-/* LOPresc bit(s): 7e:e7 8e:e8 ….. 15e:e15 */
+/* LOPresc bit(s): 7e:e7 8e:e8 ?.. 15e:e15 */
 static const TDA18250A_BitField_t gTDA18250A_Reg_Main_Post_Divider_byte__LOPresc = { 0x34, 0x00, 0x04, 0x00 };
 
 
@@ -858,7 +858,7 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_Charge_pump_byte__ICP_Force_Sin
 static const TDA18250A_BitField_t gTDA18250A_Reg_Charge_pump_byte__ICP_Force_Src = { 0x46, 0x05, 0x01, 0x00 };
 /* ICP_offset bit(s): DCeoffsetecurrent: 00e=e10% 01e=e5% 1xe=e0% */
 static const TDA18250A_BitField_t gTDA18250A_Reg_Charge_pump_byte__ICP_offset = { 0x46, 0x03, 0x02, 0x00 };
-/* ICP bit(s): Inenormalemode:einternalyecontrolede=ef(Ndiv)  00:e500µA 01:e150µA 10:e300µA 11:e100µA */
+/* ICP bit(s): Inenormalemode:einternalyecontrolede=ef(Ndiv)  00:e500?A 01:e150?A 10:e300?A 11:e100?A */
 static const TDA18250A_BitField_t gTDA18250A_Reg_Charge_pump_byte__ICP = { 0x46, 0x00, 0x03, 0x00 };
 
 
@@ -908,7 +908,7 @@ static const TDA18250A_BitField_t gTDA18250A_Reg_XtalOsc_byte_1__XT_Dac_Force = 
 static const TDA18250A_BitField_t gTDA18250A_Reg_XtalOsc_byte_2 = { 0x4C, 0x00, 0x08, 0x00 };
 /* XTSel bit(s):  */
 static const TDA18250A_BitField_t gTDA18250A_Reg_XtalOsc_byte_2__XTSel = { 0x4C, 0x04, 0x03, 0x00 };
-/* XT_Dac bit(s): RésultatsedeelaeCAL */
+/* XT_Dac bit(s): R?sultatsedeelaeCAL */
 static const TDA18250A_BitField_t gTDA18250A_Reg_XtalOsc_byte_2__XT_Dac = { 0x4C, 0x00, 0x04, 0x00 };
 
 

@@ -64,35 +64,35 @@ typedef struct hiMMZ_BUFFER_S
 
 /******************************* API declaration *****************************/
 /*alloc mmz memory, get physic address and map kernel-state address*/
-/*CNcomment:ÉêÇëmmzÄÚ´æ£¬µÃµ½ÎïÀíµØÖ·£¬²¢×öÄÚºËÌ¬µØÖ·µÄÓ³Éä*/
+/*CNcomment:ç”³è¯·mmzå†…å­˜ï¼Œå¾—åˆ°ç‰©ç†åœ°å€ï¼Œå¹¶åšå†…æ ¸æ€åœ°å€çš„æ˜ å°„*/
 HI_S32  HI_DRV_MMZ_AllocAndMap(const char *name, char *mmzzonename, HI_U32 size, int align, MMZ_BUFFER_S *psMBuf);
 
 /*unmap kernel-state address, release mmz memory*/
-/*CNcomment:½â³ıÄÚºËÌ¬µØÖ·µÄÓ³Éä£¬²¢ÊÍ·ÅmmzÄÚ´æ*/
+/*CNcomment:è§£é™¤å†…æ ¸æ€åœ°å€çš„æ˜ å°„ï¼Œå¹¶é‡Šæ”¾mmzå†…å­˜*/
 HI_VOID HI_DRV_MMZ_UnmapAndRelease(MMZ_BUFFER_S *psMBuf);
 
 /*Only alloc mmz memory, return physic address, but not map kernel-state address*/
-/*CNcomment:Ö»ÉêÇëmmzÄÚ´æ£¬·µ»ØÎïÀíµØÖ·£¬²»×öÄÚºËÌ¬µØÖ·µÄÓ³Éä*/
+/*CNcomment:åªç”³è¯·mmzå†…å­˜ï¼Œè¿”å›ç‰©ç†åœ°å€ï¼Œä¸åšå†…æ ¸æ€åœ°å€çš„æ˜ å°„*/
 HI_S32  HI_DRV_MMZ_Alloc(const char *bufname, char *zone_name, HI_U32 size, int align, MMZ_BUFFER_S *psMBuf);
 
 /*map kernel-state address after alloc mmz memory for cache, and flushing cache with HI_DRV_MMZ_Flush*/
-/*CNcomment:ÉêÇëmmz¿ÉCacheÄÚ´æºó£¬½øĞĞÄÚºËÌ¬µØÖ·µÄÓ³Éä, ²¢Ê¹ÓÃHI_DRV_MMZ_Flush½øĞĞcacheÍ¬²½ */
+/*CNcomment:ç”³è¯·mmzå¯Cacheå†…å­˜åï¼Œè¿›è¡Œå†…æ ¸æ€åœ°å€çš„æ˜ å°„, å¹¶ä½¿ç”¨HI_DRV_MMZ_Flushè¿›è¡ŒcacheåŒæ­¥ */
 HI_S32 HI_DRV_MMZ_MapCache(MMZ_BUFFER_S *psMBuf);
 
 /*flush cache data to memory, needed to call when map memory with HI_DRV_MMZ_MapCache*/
-/*CNcomment:Ê¹ÓÃHI_DRV_MMZ_MapCacheÊ±£¬ĞèÖ÷¶¯µ÷ÓÃHI_DRV_MMZ_Flush½øĞĞcacheÊı¾İÍ¬²½ */
+/*CNcomment:ä½¿ç”¨HI_DRV_MMZ_MapCacheæ—¶ï¼Œéœ€ä¸»åŠ¨è°ƒç”¨HI_DRV_MMZ_Flushè¿›è¡Œcacheæ•°æ®åŒæ­¥ */
 HI_S32 HI_DRV_MMZ_Flush(MMZ_BUFFER_S *psMBuf);
 
 /*alloc mmz memory, and map kernel-state address*/
-/*CNcomment:ÉêÇëmmzÄÚ´æºó£¬½øĞĞÄÚºËÌ¬µØÖ·µÄÓ³Éä*/
+/*CNcomment:ç”³è¯·mmzå†…å­˜åï¼Œè¿›è¡Œå†…æ ¸æ€åœ°å€çš„æ˜ å°„*/
 HI_S32  HI_DRV_MMZ_Map(MMZ_BUFFER_S *psMBuf);
 
 /*unmap kernel-state address*/
-/*CNcomment:½â³ıÄÚºËÌ¬µØÖ·µÄÓ³Éä*/
+/*CNcomment:è§£é™¤å†…æ ¸æ€åœ°å€çš„æ˜ å°„*/
 HI_VOID HI_DRV_MMZ_Unmap(MMZ_BUFFER_S *psMBuf);
 
 /*release unmapped mmz memory */
-/*CNcomment:½â³ıÓ³Éäºó£¬»òÃ»ÓĞ½øĞĞÄÚºËÌ¬Ó³ÉäµÄmmzÄÚ´æ½øĞĞÊÍ·Å*/
+/*CNcomment:è§£é™¤æ˜ å°„åï¼Œæˆ–æ²¡æœ‰è¿›è¡Œå†…æ ¸æ€æ˜ å°„çš„mmzå†…å­˜è¿›è¡Œé‡Šæ”¾*/
 HI_VOID HI_DRV_MMZ_Release(MMZ_BUFFER_S *psMBuf);
 
 /** @} */

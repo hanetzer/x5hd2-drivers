@@ -38,7 +38,7 @@
 
 /**
  ** add the include file about the init function
- ** CNcomment: Ôö¼ÓÓ²¼þ½âÂëÐèÒªµÄÍ·ÎÄ¼þ CNend\n
+ ** CNcomment: å¢žåŠ ç¡¬ä»¶è§£ç éœ€è¦çš„å¤´æ–‡ä»¶ CNend\n
  **/
  #include "jpeg_hdec_api.h"
 
@@ -115,7 +115,7 @@ start_pass_merged_upsample (j_decompress_ptr cinfo)
 
 
 //#ifdef CONFIG_JPEG_ADD_GOOGLEFUNCTION
-#if 0 /** ÐÞ¸ÄÇ°µÄ **/
+#if 0 /** ä¿®æ”¹å‰çš„ **/
 /*
  * Initialize tables for YCC->RGB colorspace conversion.
  * This is taken directly from jdcolor.c; see that file for more info.
@@ -706,7 +706,7 @@ h2v2_merged_upsample_565D (j_decompress_ptr cinfo,
 #endif /** CONFIG_JPEG_ADD_GOOGLEFUNCTION **/
 
 
-#else  /** ÐÞ¸ÄºóµÄ **/
+#else  /** ä¿®æ”¹åŽçš„ **/
 
 METHODDEF(void)
 jpeg_yuv400_getsample (j_decompress_ptr cinfo,
@@ -756,11 +756,11 @@ jpeg_yuv400_h2v2_getsample (j_decompress_ptr cinfo,
 		
 		unsigned int YOffset  = 0;
 		
-	    /** °´ÐÐÊä³ö **/
+	    /** æŒ‰è¡Œè¾“å‡º **/
 	    if (!upsample->spare_full)
 	    {
 	    
-	         /** Êä³öy·ÖÁ¿ **/
+	         /** è¾“å‡ºyåˆ†é‡ **/
 	         stride  = pJpegHandle->stOutDesc.stOutSurface.u32OutStride[0];
 			 YOffset = stride * cinfo->output_scanline;
 			 y_data += YOffset;
@@ -804,11 +804,11 @@ jpeg_yuv420_h2v2_getsample (j_decompress_ptr cinfo,
 	    unsigned int YOffset  = 0;
 	    unsigned int UVOffset = 0;
 
-	    /** °´ÐÐÊä³ö **/
+	    /** æŒ‰è¡Œè¾“å‡º **/
 		if (!upsample->spare_full)
 	    {
 
-			/** Êä³öy·ÖÁ¿ **/
+			/** è¾“å‡ºyåˆ†é‡ **/
 	        stride  = pJpegHandle->stOutDesc.stOutSurface.u32OutStride[0];
 			YOffset = stride * cinfo->output_scanline;
 			y_data += YOffset;
@@ -817,7 +817,7 @@ jpeg_yuv420_h2v2_getsample (j_decompress_ptr cinfo,
 	        y_data += stride;
 	        memcpy(y_data, input_buf[0][(*in_row_group_ctr)*2 + 1], sizeof(char)*stride);
 	    
-	        /** Êä³öu¡¢v·ÖÁ¿ **/
+	        /** è¾“å‡ºuã€våˆ†é‡ **/
 			if(0==cinfo->output_scanline%2)
 			{
 				stride   = pJpegHandle->stOutDesc.stOutSurface.u32OutStride[1];
@@ -908,11 +908,11 @@ jpeg_yuv422_h1v2_getsample (j_decompress_ptr cinfo,
 	    unsigned int YOffset  = 0;
 	    unsigned int UVOffset = 0;
 
-        /*°´ÐÐÊä³ö*/
+        /*æŒ‰è¡Œè¾“å‡º*/
 	    if (!upsample->spare_full)
 	    {
 	    
-	        /** Êä³öy·ÖÁ¿ **/
+	        /** è¾“å‡ºyåˆ†é‡ **/
 	        stride  = pJpegHandle->stOutDesc.stOutSurface.u32OutStride[0];
 			YOffset = stride * cinfo->output_scanline;
 			y_data += YOffset;
@@ -923,8 +923,8 @@ jpeg_yuv422_h1v2_getsample (j_decompress_ptr cinfo,
 			
             if(0==cinfo->output_scanline%2)
             {/**
-				  ** ¸ß¶ÈÊÇYµÄÒ»°ë
-				  ** È¡Ò»ÐÐ¶ªÒ»ÐÐ 
+				  ** é«˜åº¦æ˜¯Yçš„ä¸€åŠ
+				  ** å–ä¸€è¡Œä¸¢ä¸€è¡Œ 
 				  **/
 		        stride   = pJpegHandle->stOutDesc.stOutSurface.u32OutStride[1];
 				UVOffset = (stride * cinfo->output_scanline)/2;
@@ -972,11 +972,11 @@ jpeg_yuv422_h2v1_getsample (j_decompress_ptr cinfo,
 	    unsigned int YOffset  = 0;
 	    unsigned int UVOffset = 0;
 
-        /*°´ÐÐÊä³ö*/
+        /*æŒ‰è¡Œè¾“å‡º*/
 	    if (!upsample->spare_full)
 	    {
 	    
-	        /** Êä³öy·ÖÁ¿ **/
+	        /** è¾“å‡ºyåˆ†é‡ **/
 	        stride  = pJpegHandle->stOutDesc.stOutSurface.u32OutStride[0];
 			YOffset = stride * cinfo->output_scanline;
 			y_data += YOffset;
@@ -1032,7 +1032,7 @@ jinit_merged_upsampler (j_decompress_ptr cinfo)
   upsample->out_row_width = cinfo->output_width * cinfo->out_color_components;
 
   //#ifdef CONFIG_JPEG_ADD_GOOGLEFUNCTION
-#if 0 /** ÐÞ¸ÄÇ°µÄ **/
+#if 0 /** ä¿®æ”¹å‰çš„ **/
 	  if (cinfo->max_v_samp_factor == 2) {
 	    upsample->pub.upsample = merged_2v_upsample;
 	    upsample->upmethod = h2v2_merged_upsample;
@@ -1069,7 +1069,7 @@ jinit_merged_upsampler (j_decompress_ptr cinfo)
 
 	  build_ycc_rgb_table(cinfo);
 
-#else  /** ÐÞ¸ÄºóµÄ **/
+#else  /** ä¿®æ”¹åŽçš„ **/
 
 	  if(cinfo->jpeg_color_space == JCS_GRAYSCALE)
 	  {/** 400 **/

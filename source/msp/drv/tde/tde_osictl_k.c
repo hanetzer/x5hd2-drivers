@@ -3514,7 +3514,7 @@ STATIC void TdeOsiGetVUpdateInfo(UpdateConfig *reg, UpdateInfo *info, int scaler
 	HI_S32 ratio=(HI_S32)(4096*(reg->ori_in_height-1)/(reg->zme_out_height-1)+1/2);
 	HI_S32 dratio=4096*(reg->zme_out_height-1)/(reg->ori_in_height-1);
 	//TDE_ASSERT(update_vstart>=0 && update_vstop<reg->ori_in_height);
-	TDE_TRACE(TDE_KERN_DEBUG, "update_vstart:%d, update_vstop:%d, ori_in_height:%d, ratio:%d£¬dratio:%d\n",\
+	TDE_TRACE(TDE_KERN_DEBUG, "update_vstart:%d, update_vstop:%d, ori_in_height:%d, ratio:%dï¼Œdratio:%d\n",\
 	update_vstart, update_vstop, reg->ori_in_height, ratio, dratio);
 
 	if(scaler_en==0 && deflicker_en==1)

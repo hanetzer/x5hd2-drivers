@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : Describes the error codes of the Jpeg
-                  CNcomment: Jpeg´íÎóÂëÎÄ¼ş CNend\n
+                  CNcomment: Jpegé”™è¯¯ç æ–‡ä»¶ CNend\n
 Function List 	: 
 
 			  		  
@@ -39,40 +39,40 @@ Date				Author        		Modification
 	 /*************************** Enum Definition ****************************/
 	
 	/** \addtogroup      JPEG ERROR ENUM */
-    /** @{ */  /** <!-- ¡¾JPEG ERROR ENUM¡¿ */
+    /** @{ */  /** <!-- ã€JPEG ERROR ENUMã€‘ */
 
 
 	/** the error level */
-	/** CNcomment:´íÎóÂğ¼¶±ğ */
+	/** CNcomment:é”™è¯¯å—çº§åˆ« */
 	typedef enum tagJPEG_LOG_ERRLEVEL_E
 	{
-		JPEG_LOG_LEVEL_DEBUG    = 0,     /**< debug level                      *//**<CNcomment:µ÷ÊÔ¼¶±ğ       */
-		JPEG_LOG_LEVEL_INFO     = 1,	   /**< informational                    *//**<CNcomment:ĞÅÏ¢           */
-		JPEG_LOG_LEVEL_NOTICE   = 2,     /**< normal but significant condition *//**<CNcomment:Õı³£µ±ÖØÒªÌõ¼ş */
-		JPEG_LOG_LEVEL_WARNING  = 3,     /**< warning conditions               *//**<CNcomment:¸æ¾¯Ìõ¼ş       */
-		JPEG_LOG_LEVEL_ERROR    = 4,     /**< error conditions                 *//**<CNcomment:´íÎóÌõ¼ş       */
-		JPEG_LOG_LEVEL_CRIT     = 5,     /**< critical conditions              *//**<CNcomment:ÖØÒªÌõ¼ş       */
-		JPEG_LOG_LEVEL_ALERT    = 6,     /**< action must be taken immediately *//**<CNcomment:Ìõ¼şÅĞ¶Ï       */
-		JPEG_LOG_LEVEL_FATAL    = 7,     /**< just for compatibility with previous version *//**<CNcomment:ÓëÖ®Ç°°æ±¾¼æÈİĞÔ */
+		JPEG_LOG_LEVEL_DEBUG    = 0,     /**< debug level                      *//**<CNcomment:è°ƒè¯•çº§åˆ«       */
+		JPEG_LOG_LEVEL_INFO     = 1,	   /**< informational                    *//**<CNcomment:ä¿¡æ¯           */
+		JPEG_LOG_LEVEL_NOTICE   = 2,     /**< normal but significant condition *//**<CNcomment:æ­£å¸¸å½“é‡è¦æ¡ä»¶ */
+		JPEG_LOG_LEVEL_WARNING  = 3,     /**< warning conditions               *//**<CNcomment:å‘Šè­¦æ¡ä»¶       */
+		JPEG_LOG_LEVEL_ERROR    = 4,     /**< error conditions                 *//**<CNcomment:é”™è¯¯æ¡ä»¶       */
+		JPEG_LOG_LEVEL_CRIT     = 5,     /**< critical conditions              *//**<CNcomment:é‡è¦æ¡ä»¶       */
+		JPEG_LOG_LEVEL_ALERT    = 6,     /**< action must be taken immediately *//**<CNcomment:æ¡ä»¶åˆ¤æ–­       */
+		JPEG_LOG_LEVEL_FATAL    = 7,     /**< just for compatibility with previous version *//**<CNcomment:ä¸ä¹‹å‰ç‰ˆæœ¬å…¼å®¹æ€§ */
 		JPEG_LOG_LEVEL_BUTT
 	} JPEG_LOG_ERRLEVEL_E;
 
 
 	/**Jpeg Module encoding*/
-	/** CNcomment:jpeg Ä£¿é±àÂë */
+	/** CNcomment:jpeg æ¨¡å—ç¼–ç  */
 	typedef enum
 	{
-		JPEG_MOD_COMM      = 0,       /**< comm moduld  *//**<CNcomment:¹«¹²Ä£¿é      */
-		JPEG_MOD_MEM,                 /**< comm moduld  *//**<CNcomment:ÄÚ´æ¹ÜÀíÄ£¿é  */
+		JPEG_MOD_COMM      = 0,       /**< comm moduld  *//**<CNcomment:å…¬å…±æ¨¡å—      */
+		JPEG_MOD_MEM,                 /**< comm moduld  *//**<CNcomment:å†…å­˜ç®¡ç†æ¨¡å—  */
 		JPEG_MOD_BUTT
 	} HIGO_MOD_E;
 
 
 	/** Common error codes of the Jpeg */
-	/** CNcomment:Jpeg ¹«¹²´íÎóÂë */
+	/** CNcomment:Jpeg å…¬å…±é”™è¯¯ç  */
 	typedef enum tagJPEG_COMM_ERR_E
 	{
-		ERR_COMM_UNSUPPORT_SCALE   =  0,  /**< the scale can not support *//**<CNcomment:Ëõ·Å±ÈÀı²»Ö§³Ö */
+		ERR_COMM_UNSUPPORT_SCALE   =  0,  /**< the scale can not support *//**<CNcomment:ç¼©æ”¾æ¯”ä¾‹ä¸æ”¯æŒ */
         ERR_COMM_NOMEM,
 		ERR_COMM_BUTT
 	} JPEG_COMM_ERR_E;
@@ -82,10 +82,10 @@ Date				Author        		Modification
 
 	/***************************** Macro Definition ******************************/
 	/** \addtogroup 	 JPEG ERROR MACRO */
-	/** @{ */  /** <!-- ¡¾JPEG ERROR MACRO¡¿ */
+	/** @{ */  /** <!-- ã€JPEG ERROR MACROã€‘ */
 
     /** if some where failure,return */
-	/** CNcomment:ÅĞ¶ÏÊÇ·ñÍË³ö */
+	/** CNcomment:åˆ¤æ–­æ˜¯å¦é€€å‡º */
     #define JPEG_ASSERT(cond,retvalue) \
 	do  \
 	{   \
@@ -98,18 +98,18 @@ Date				Author        		Modification
 		
 
 	/** Error IDs of JPEG projects */
-	/** CNcomment:JPEG ÏîÄ¿´íÎóID = 0xB0000000 */
+	/** CNcomment:JPEG é¡¹ç›®é”™è¯¯ID = 0xB0000000 */
     #define JPEG_ERR_APPID           (0x80000000L + 0x30000000L)
 
 	/** Macros for defining the error codes of the Jpeg */
-	/** CNcomment:Jpeg ´íÎóÂë¶¨Òåºê£¬¸ß16Î»±íÊ¾JPEGÖĞÄ³¸öÄ³¿éID£¬ 13-16Î»±íÊ¾´íÎóµÈ¼¶£¬×îºóµÍ13Î»±íÊ¾´íÎóÂë*/
+	/** CNcomment:Jpeg é”™è¯¯ç å®šä¹‰å®ï¼Œé«˜16ä½è¡¨ç¤ºJPEGä¸­æŸä¸ªæŸå—IDï¼Œ 13-16ä½è¡¨ç¤ºé”™è¯¯ç­‰çº§ï¼Œæœ€åä½13ä½è¡¨ç¤ºé”™è¯¯ç */
     #define JPEG_DEF_ERR( module, errid) \
 		((HI_S32)((JPEG_ERR_APPID) | (((HI_U32)module) << 16) | (((HI_U32)JPEG_LOG_LEVEL_ERROR) << 13) | ((HI_U32)errid)))
 
 
 
 	/** the scale can not support (0xB0008000) */
-	/** CNcomment:Ëõ·Å±ÈÀı²»Ö§³Ö 0xB0008000 */
+	/** CNcomment:ç¼©æ”¾æ¯”ä¾‹ä¸æ”¯æŒ 0xB0008000 */
     #define JPEG_ERR_UNSUPPORT_SCALE      JPEG_DEF_ERR(JPEG_MOD_COMM, ERR_COMM_UNSUPPORT_SCALE)
 
 

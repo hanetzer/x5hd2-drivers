@@ -1,6 +1,6 @@
 /**
  \file
- \brief Describes the header file of the HiGo.CNcomment:CursorÄ£¿éÍ·ÎÄ¼ş CNend
+ \brief Describes the header file of the HiGo.CNcomment:Cursoræ¨¡å—å¤´æ–‡ä»¶ CNend
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version draft
@@ -24,15 +24,15 @@ extern "C" {
 typedef struct
 {
     HI_HANDLE hCursor;    /**<The maximum resolution is 128x128, and the minimum resolution is 16x16 for the cursor picture. Both pixel alpha and colorkey are supported.*/
-    						/**<CNcomment: ¹â±êÍ¼Æ¬×î´ó128*128,×îĞ¡16*16ÏñËØ, Ö§³ÖÏñËØalphaºÍcolorkey */
-    HI_U32    HotspotX;   /**<Horizontal coordinate of the cursor hot spot relative to the cursor picture*//**<CNcomment: ¹â±êÈÈµãX×ø±ê£¬Ïà¶ÔÓÚÍ¼Æ¬ */
-    HI_U32    HotspotY;   /**<Vertical coordinate of the cursor+ hot spot relative to the cursor picture*//**<CNcomment: ¹â±êÈÈµãY×ø±ê£¬Ïà¶ÔÓÚÍ¼Æ¬ */
+    						/**<CNcomment: å…‰æ ‡å›¾ç‰‡æœ€å¤§128*128,æœ€å°16*16åƒç´ , æ”¯æŒåƒç´ alphaå’Œcolorkey */
+    HI_U32    HotspotX;   /**<Horizontal coordinate of the cursor hot spot relative to the cursor picture*//**<CNcomment: å…‰æ ‡çƒ­ç‚¹Xåæ ‡ï¼Œç›¸å¯¹äºå›¾ç‰‡ */
+    HI_U32    HotspotY;   /**<Vertical coordinate of the cursor+ hot spot relative to the cursor picture*//**<CNcomment: å…‰æ ‡çƒ­ç‚¹Yåæ ‡ï¼Œç›¸å¯¹äºå›¾ç‰‡ */
 } HIGO_CURSOR_INFO_S;
 
-/**Status of the cursor layer*//** CNcomment: ¹â±ê²ã×´Ì¬½á¹¹ */
+/**Status of the cursor layer*//** CNcomment: å…‰æ ‡å±‚çŠ¶æ€ç»“æ„ */
 typedef struct 
 {
-    HI_BOOL bShow;             /**<Whether to display the cursor layer.*//**<CNcomment: ¹â±ê²ãÊÇ·ñÏÔÊ¾ */
+    HI_BOOL bShow;             /**<Whether to display the cursor layer.*//**<CNcomment: å…‰æ ‡å±‚æ˜¯å¦æ˜¾ç¤º */
 } HIGO_CURSOR_STATUS_S;
 /** @} */  /** <!-- ==== Structure Definition end ==== */
 
@@ -41,13 +41,13 @@ typedef struct
 /** @{ */  /** <!-- [HIGO_CURSOR] */
 
 /**
-\brief Initializes the cursor module.CNcomment:¹â±ê³õÊ¼»¯ CNend
+\brief Initializes the cursor module.CNcomment:å…‰æ ‡åˆå§‹åŒ– CNend
 \attention \n
 
-\param N/A.CNcomment:ÎŞ CNend
+\param N/A.CNcomment:æ—  CNend
 
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE The display fails.CNcomment: ÏÔÊ¾Ê§°Ü CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE The display fails.CNcomment: æ˜¾ç¤ºå¤±è´¥ CNend
 \retval ::HIGO_ERR_INITFAILED
 \retval ::HIGO_ERR_DEPEND_CURSOR
 
@@ -58,13 +58,13 @@ typedef struct
 HI_S32 HI_GO_InitCursor();
 
 /**
-\brief Deinitializes the cursor module.CNcomment:È¥³õÊ¼»¯¹â±ê³õÊ¼»¯ CNend
+\brief Deinitializes the cursor module.CNcomment:å»åˆå§‹åŒ–å…‰æ ‡åˆå§‹åŒ– CNend
 \attention \n
 
-\param N/A.CNcomment:ÎŞ CNend
+\param N/A.CNcomment:æ—  CNend
 
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE The display fails.CNcomment:ÏÔÊ¾Ê§°Ü CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE The display fails.CNcomment:æ˜¾ç¤ºå¤±è´¥ CNend
 \retval ::HIGO_ERR_NOTINIT
 
 \see \n
@@ -74,14 +74,14 @@ HI_S32 HI_GO_InitCursor();
 HI_S32 HI_GO_DeinitCursor();
 
 /**
-\brief  Displays the cursor layer.CNcomment:ÏÔÊ¾¹â±ê CNend
+\brief  Displays the cursor layer.CNcomment:æ˜¾ç¤ºå…‰æ ‡ CNend
 \attention \n
-1. The cursor of the output layer is located in the middle of the screen by default.CNcomment:1 Êä³ö²ãµÄ¹â±êÎ»ÖÃÄ¬ÈÏÔÚÆÁÄ»ÖĞ¼ä CNend
-2. You need set the cursor information before the cursor layer is displayed.CNcomment:2.show¹â±êµÄÊ±ºò£¬ĞèÒªÊ×ÏÈÉèÖÃ¹â±êµÄĞÅÏ¢¡£CNend
-\param[in] bVisible Visible status of the cursor layer. HI_TRUE: visible; HI_FASLE: invisible.CNcomment:¹â±ê²ã¿É¼û×´Ì¬£¬ HI_TRUE:¿É¼û£¬ HI_FASLE:¹â±ê²ã²»¿É¼û¡£CNend
+1. The cursor of the output layer is located in the middle of the screen by default.CNcomment:1 è¾“å‡ºå±‚çš„å…‰æ ‡ä½ç½®é»˜è®¤åœ¨å±å¹•ä¸­é—´ CNend
+2. You need set the cursor information before the cursor layer is displayed.CNcomment:2.showå…‰æ ‡çš„æ—¶å€™ï¼Œéœ€è¦é¦–å…ˆè®¾ç½®å…‰æ ‡çš„ä¿¡æ¯ã€‚CNend
+\param[in] bVisible Visible status of the cursor layer. HI_TRUE: visible; HI_FASLE: invisible.CNcomment:å…‰æ ‡å±‚å¯è§çŠ¶æ€ï¼Œ HI_TRUE:å¯è§ï¼Œ HI_FASLE:å…‰æ ‡å±‚ä¸å¯è§ã€‚CNend
 
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE The display fails.CNcomment:ÏÔÊ¾Ê§°Ü CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE The display fails.CNcomment:æ˜¾ç¤ºå¤±è´¥ CNend
 \retval ::HIGO_ERR_NOTINIT
 \retval ::HIGO_ERR_NOCURSORINF
 \retval ::HIGO_ERR_DEPEND_CURSOR
@@ -93,11 +93,11 @@ HI_S32 HI_GO_DeinitCursor();
 HI_S32 HI_GO_ShowCursor(HI_BOOL bVisible);
 
 /** 
-\brief Obtains the current status of the cursor layer.CNcomment:»ñÈ¡¹â±ê²ãµ±Ç°×´Ì¬ CNend
+\brief Obtains the current status of the cursor layer.CNcomment:è·å–å…‰æ ‡å±‚å½“å‰çŠ¶æ€ CNend
 \attention \n 
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 
-\param[out] pCursorStatus Pointer to the current status of the cursor layer. The value cannot be empty.CNcomment:¹â±ê²ãµ±Ç°×´Ì¬½á¹¹Ö¸Õë£¬²»¿ÉÎª¿Õ CNend
+\param[out] pCursorStatus Pointer to the current status of the cursor layer. The value cannot be empty.CNcomment:å…‰æ ‡å±‚å½“å‰çŠ¶æ€ç»“æ„æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -111,18 +111,18 @@ N/A.CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetCursorStatus( HIGO_CURSOR_STATUS_S* pCursorStatus);
 
 /**
-\brief Moves the cursor to a specified position on a specified screen.CNcomment:ÒÆ¶¯¹â±êµ½Ö¸¶¨ÆÁÄ»Ö¸¶¨Î»ÖÃ CNend
+\brief Moves the cursor to a specified position on a specified screen.CNcomment:ç§»åŠ¨å…‰æ ‡åˆ°æŒ‡å®šå±å¹•æŒ‡å®šä½ç½® CNend
 \attention \n
-The cursor position can be changed only when the cursor status is show.CNcomment:±ØĞëÔÚcursorÎªshowµÄÇé¿öÏÂ²ÅÄÜ¸Ä±ä¹â±êÎ»ÖÃ CNend
+The cursor position can be changed only when the cursor status is show.CNcomment:å¿…é¡»åœ¨cursorä¸ºshowçš„æƒ…å†µä¸‹æ‰èƒ½æ”¹å˜å…‰æ ‡ä½ç½® CNend
 
 \param[in] x Horizontal coordinate (in pixel) of the cursor on the screen relative to the canvas surface of a 
-graphics layer.CNcomment: ÆÁÄ»X×ø±ê,µ¥Î»ÏñËØ, Ïà¶ÔÓÚÍ¼²ãcanvas surface CNend
+graphics layer.CNcomment: å±å¹•Xåæ ‡,å•ä½åƒç´ , ç›¸å¯¹äºå›¾å±‚canvas surface CNend
 \param[in] y Vertical coordinate (in pixel) of the cursor on the screen relative to the canvas surface of a graphics 
-layer.CNcomment:ÆÁÄ»Y×ø±ê,µ¥Î»ÏñËØ, Ïà¶ÔÓÚÍ¼²ãcanvas surface CNend
+layer.CNcomment:å±å¹•Yåæ ‡,å•ä½åƒç´ , ç›¸å¯¹äºå›¾å±‚canvas surface CNend
 
 \retval ::HIGO_ERR_NOTINIT
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE The display fails.CNcomment:ÏÔÊ¾Ê§°Ü CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE The display fails.CNcomment:æ˜¾ç¤ºå¤±è´¥ CNend
 \retval ::HIGO_ERR_DEPEND_CURSOR 
 
 \see \n
@@ -130,14 +130,14 @@ layer.CNcomment:ÆÁÄ»Y×ø±ê,µ¥Î»ÏñËØ, Ïà¶ÔÓÚÍ¼²ãcanvas surface CNend
 HI_S32 HI_GO_SetCursorPos(HI_S32 x, HI_S32 y);
 
 /**
-\brief Obtains the coordinates of the cursor on the screen.CNcomment:È¡µÃ¹â±êµÄÆÁÄ»×ø±ê CNend
+\brief Obtains the coordinates of the cursor on the screen.CNcomment:å–å¾—å…‰æ ‡çš„å±å¹•åæ ‡ CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[out] pX Horizontal coordinate (in pixel) of the cursor on the screen.CNcomment:¹â±êµÄÆÁÄ»X×ø±ê,µ¥Î»ÏñËØ CNend
-\param[out] pY Vertical coordinate (in pixel) of the cursor on the screen.CNcomment:¹â±êµÄÆÁÄ»Y×ø±ê,µ¥Î»ÏñËØ CNend
+N/A.CNcomment:æ—  CNend
+\param[out] pX Horizontal coordinate (in pixel) of the cursor on the screen.CNcomment:å…‰æ ‡çš„å±å¹•Xåæ ‡,å•ä½åƒç´  CNend
+\param[out] pY Vertical coordinate (in pixel) of the cursor on the screen.CNcomment:å…‰æ ‡çš„å±å¹•Yåæ ‡,å•ä½åƒç´  CNend
 
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE The display fails.CNcomment:ÏÔÊ¾Ê§°Ü CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE The display fails.CNcomment:æ˜¾ç¤ºå¤±è´¥ CNend
 \retval ::HIGO_ERR_NOTINIT
 \retval ::HIGO_ERR_NULLPTR
 \retval ::HIGO_ERR_DEPEND_CURSOR
@@ -147,14 +147,14 @@ N/A.CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetCursorPos(HI_S32* pX, HI_S32* pY);
 
 /**
-\brief Sets the hot spot of the displayed cursor picture.CNcomment:ÉèÖÃ¹â±êµÄÏÔÊ¾Í¼Æ¬µÄÈÈµã CNend
+\brief Sets the hot spot of the displayed cursor picture.CNcomment:è®¾ç½®å…‰æ ‡çš„æ˜¾ç¤ºå›¾ç‰‡çš„çƒ­ç‚¹ CNend
 \attention \n
 The minimum resolution is 16x16, and the maximum resolution is 128x128 for the cursor picture. Both colorkey and 
-alpha are supported. CNcomment:Í¼Æ¬×îĞ¡16x16,×î´ó128x128ÏñËØ£¬Ö§³Öcolorkey, alpha¡£ CNend
-\param[in] pCursorInfo Information about the cursor picture and coordinates of the hot spot.CNcomment:¹â±êÍ¼Æ¬£¬ÈÈµã×ø±êĞÅÏ¢ CNend
+alpha are supported. CNcomment:å›¾ç‰‡æœ€å°16x16,æœ€å¤§128x128åƒç´ ï¼Œæ”¯æŒcolorkey, alphaã€‚ CNend
+\param[in] pCursorInfo Information about the cursor picture and coordinates of the hot spot.CNcomment:å…‰æ ‡å›¾ç‰‡ï¼Œçƒ­ç‚¹åæ ‡ä¿¡æ¯ CNend
 
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE The display fails.CNcomment:ÏÔÊ¾Ê§°Ü CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE The display fails.CNcomment:æ˜¾ç¤ºå¤±è´¥ CNend
 \retval ::HIGO_ERR_NOTINIT
 \retval ::HIGO_ERR_NULLPTR
 \retval ::HIGO_ERR_INVPARAM
@@ -169,12 +169,12 @@ alpha are supported. CNcomment:Í¼Æ¬×îĞ¡16x16,×î´ó128x128ÏñËØ£¬Ö§³Öcolorkey, alph
 HI_S32 HI_GO_SetCursorInfo(const HIGO_CURSOR_INFO_S* pCursorInfo);
 
 /**
-\brief Obtains the information about the displayed cursor picture.CNcomment:»ñÈ¡¹â±êµÄÏÔÊ¾Í¼Æ¬ĞÅÏ¢ CNend
+\brief Obtains the information about the displayed cursor picture.CNcomment:è·å–å…‰æ ‡çš„æ˜¾ç¤ºå›¾ç‰‡ä¿¡æ¯ CNend
 \attention \n
-\param[in] pCursorInfo Information about the cursor picture and coordinates of the hot spot.CNcomment:¹â±êÍ¼Æ¬£¬ÈÈµã×ø±êĞÅÏ¢ CNend
+\param[in] pCursorInfo Information about the cursor picture and coordinates of the hot spot.CNcomment:å…‰æ ‡å›¾ç‰‡ï¼Œçƒ­ç‚¹åæ ‡ä¿¡æ¯ CNend
 
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE The display fails.CNcomment:ÏÔÊ¾Ê§°Ü CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE The display fails.CNcomment:æ˜¾ç¤ºå¤±è´¥ CNend
 \retval ::HIGO_ERR_NOTINIT
 \retval ::HIGO_ERR_NULLPTR
 \retval ::HIGO_ERR_DEPEND_CURSOR
@@ -184,13 +184,13 @@ HI_S32 HI_GO_SetCursorInfo(const HIGO_CURSOR_INFO_S* pCursorInfo);
 HI_S32 HI_GO_GetCursorInfo(HIGO_CURSOR_INFO_S* pCursorInfo);
 
 /**
-\brief Attaches the cursor to one or more graphics layers.CNcomment:½«¹â±ê°ó¶¨µ½Í¼²ãÉÏ£¬Ö§³ÖÒ»¸ö¹â±ê°ó¶¨µ½¶à¸öÍ¼²ãÉÏ CNend
+\brief Attaches the cursor to one or more graphics layers.CNcomment:å°†å…‰æ ‡ç»‘å®šåˆ°å›¾å±‚ä¸Šï¼Œæ”¯æŒä¸€ä¸ªå…‰æ ‡ç»‘å®šåˆ°å¤šä¸ªå›¾å±‚ä¸Š CNend
 \attention \n
-The graphics layers to which the cursor is attached must be opened.CNcomment:±ØĞë½«¹â±ê°ó¶¨µ½Ò»¸öÒÑ¾­openµÄÍ¼²ãÉÏ¡£CNend
-\param[in] hLayer CNcomment:Í¼²ãID CNend
+The graphics layers to which the cursor is attached must be opened.CNcomment:å¿…é¡»å°†å…‰æ ‡ç»‘å®šåˆ°ä¸€ä¸ªå·²ç»opençš„å›¾å±‚ä¸Šã€‚CNend
+\param[in] hLayer CNcomment:å›¾å±‚ID CNend
 
-\retval ::HI_SUCCESS Layer ID.CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE Success.CNcomment:ÏÔÊ¾Ê§°Ü CNend
+\retval ::HI_SUCCESS Layer ID.CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE Success.CNcomment:æ˜¾ç¤ºå¤±è´¥ CNend
 \retval ::HIGO_ERR_NOTINIT
 \retval ::HIGO_ERR_INVLAYERID
 \retval ::HIGO_ERR_NOTOPEN
@@ -201,12 +201,12 @@ The graphics layers to which the cursor is attached must be opened.CNcomment:±ØĞ
 HI_S32  HI_GO_AttchCursorToLayer(HI_HANDLE hLayer);
 
 /**
-\brief Detaches the cursor from graphics layers.CNcomment:½«¹â±ê½â°ó¶¨Í¼²ã CNend
+\brief Detaches the cursor from graphics layers.CNcomment:å°†å…‰æ ‡è§£ç»‘å®šå›¾å±‚ CNend
 \attention \n
-\param[in] hLayer Layer ID.CNcomment:Í¼²ãID CNend
+\param[in] hLayer Layer ID.CNcomment:å›¾å±‚ID CNend
 
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE The display fails.CNcomment:ÏÔÊ¾Ê§°Ü CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE The display fails.CNcomment:æ˜¾ç¤ºå¤±è´¥ CNend
 \retval ::HIGO_ERR_INVLAYERID
 \retval ::HIGO_ERR_DEPEND_CURSOR
 

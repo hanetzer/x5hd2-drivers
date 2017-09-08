@@ -22,7 +22,7 @@
 
 /**
  ** add the include file about the functions that hard decode needed
- ** CNcomment: Ôö¼ÓÓ²¼ş½âÂëĞèÒªµÄÍ·ÎÄ¼ş CNend\n
+ ** CNcomment: å¢åŠ ç¡¬ä»¶è§£ç éœ€è¦çš„å¤´æ–‡ä»¶ CNend\n
  **/
 #include "jpeg_hdec_api.h"
 
@@ -63,7 +63,7 @@ jpeg_CreateCompress (j_compress_ptr cinfo, int version, size_t structsize)
   jinit_memory_mgr((j_common_ptr) cinfo);
   /**
    ** because alloc mem use mmz, and use the private struct,so should init it.
-   ** CNcomment: ÒòÎª·ÖÅäÄÚ´æµÄ·½Ê½¸ÄÓÃÎïÀíÄÚ´æ·ÖÅä,ÓÃµ½ÁËË½ÓĞ½á¹¹Ìå CNend\n
+   ** CNcomment: å› ä¸ºåˆ†é…å†…å­˜çš„æ–¹å¼æ”¹ç”¨ç‰©ç†å†…å­˜åˆ†é…,ç”¨åˆ°äº†ç§æœ‰ç»“æ„ä½“ CNend\n
    **/
   s32Ret  = JPEG_HDEC_Init((j_common_ptr)cinfo);
   if(HI_SUCCESS != s32Ret)

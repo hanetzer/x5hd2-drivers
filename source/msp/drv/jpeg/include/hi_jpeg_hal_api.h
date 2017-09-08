@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/07/01
 Description	    : the jpeg api use the hal information get from this file
-                  CNcomment: jpegÓ¦ÓÃ²ãÊ¹ÓÃµÄÏà¹ØĞÅÏ¢´Ó¸ÃÎÄ¼şÖĞ»ñÈ¡ CNend\n
+                  CNcomment: jpegåº”ç”¨å±‚ä½¿ç”¨çš„ç›¸å…³ä¿¡æ¯ä»è¯¥æ–‡ä»¶ä¸­è·å– CNend\n
 Function List 	: 
 
 			  		  
@@ -84,27 +84,27 @@ Date				Author        		Modification
 
 	
  	/** structure of jpeg decode state */
-    /** CNcomment:jpeg½âÂë×´Ì¬ */
+    /** CNcomment:jpegè§£ç çŠ¶æ€ */
 	typedef enum hiJPEG_DEC_STATE_E
     {
-        JPEG_DEC_FINISH_CREATE_DECOMPRESS  = 0, /**< create decompress finish   *//**<CNcomment:´´½¨½âÂëÆ÷½áÊø  */
-        JPEG_DEC_FINISH_STDIC               = 1, /**< stdio the stream  finish   *//**<CNcomment:¹ØÁªÂëÁ÷½áÊø    */
-        JPEG_DEC_FINISH_READ_HEADER        = 2,  /**< read header file finish   *//**<CNcomment:½âÎöÎÄ¼ş½áÊø    */
-        JPEG_DEC_FINISH_START_DECOMPRESS   = 3, /**< start decompress finish    *//**<CNcomment:½âÂë½áÊø        */
-        JPEG_DEC_FINISH_READ_SCANLINES     = 4, /**< read scanlines   finish    *//**<CNcomment:Êä³ö½áÊø        */
-        JPEG_DEC_FINISH_FINISH_DECOMPRESS  = 5, /**< finish decompress finish   *//**<CNcomment:Íê³É½áÊø        */
-        JPEG_DEC_FINISH_DESTORY_DECOMPRESS = 6, /**< destory decompress finish  *//**<CNcomment:Ïú»Ù½âÂëÆ÷½áÊø  */
-        JPEG_DEC_SUCCESS                     = 7, /**< decode success             *//**<CNcomment:½âÂë³É¹¦        */
+        JPEG_DEC_FINISH_CREATE_DECOMPRESS  = 0, /**< create decompress finish   *//**<CNcomment:åˆ›å»ºè§£ç å™¨ç»“æŸ  */
+        JPEG_DEC_FINISH_STDIC               = 1, /**< stdio the stream  finish   *//**<CNcomment:å…³è”ç æµç»“æŸ    */
+        JPEG_DEC_FINISH_READ_HEADER        = 2,  /**< read header file finish   *//**<CNcomment:è§£ææ–‡ä»¶ç»“æŸ    */
+        JPEG_DEC_FINISH_START_DECOMPRESS   = 3, /**< start decompress finish    *//**<CNcomment:è§£ç ç»“æŸ        */
+        JPEG_DEC_FINISH_READ_SCANLINES     = 4, /**< read scanlines   finish    *//**<CNcomment:è¾“å‡ºç»“æŸ        */
+        JPEG_DEC_FINISH_FINISH_DECOMPRESS  = 5, /**< finish decompress finish   *//**<CNcomment:å®Œæˆç»“æŸ        */
+        JPEG_DEC_FINISH_DESTORY_DECOMPRESS = 6, /**< destory decompress finish  *//**<CNcomment:é”€æ¯è§£ç å™¨ç»“æŸ  */
+        JPEG_DEC_SUCCESS                     = 7, /**< decode success             *//**<CNcomment:è§£ç æˆåŠŸ        */
         JPEG_DEC_STATE_BUTT
     }HI_JPEG_DEC_STATE_E;
 
  	/** structure of jpeg decode type */
-    /** CNcomment:jpeg½âÂëÀàĞÍ£¬ÊÇÓ²¼ş½âÂë»¹ÊÇÈí¼ş½âÂë */
+    /** CNcomment:jpegè§£ç ç±»å‹ï¼Œæ˜¯ç¡¬ä»¶è§£ç è¿˜æ˜¯è½¯ä»¶è§£ç  */
 	typedef enum hiJPEG_DEC_TYPE_E
     {
     
-        JPEG_DEC_HW = 0,    /**< hard decode   *//**<CNcomment:Ó²¼ş½âÂë  */
-        JPEG_DEC_SW = 1,    /**< soft decode   *//**<CNcomment:Èí¼ş½âÂë  */
+        JPEG_DEC_HW = 0,    /**< hard decode   *//**<CNcomment:ç¡¬ä»¶è§£ç   */
+        JPEG_DEC_SW = 1,    /**< soft decode   *//**<CNcomment:è½¯ä»¶è§£ç   */
         JPEG_DEC_BUTT
     }HI_JPEG_DEC_TYPE_E;
 
@@ -120,45 +120,45 @@ Date				Author        		Modification
 		HI_U32	 u32Pdcbcr;
 	}HI_JPG_SAVEINFO_S;
 
-	/** structure of the proc information£¬the user need proc, 
+	/** structure of the proc informationï¼Œthe user need proc, 
 	 ** echo proc on and we need echo proc on and then echo trace on */
-    /** CNcomment:procĞÅÏ¢½á¹¹Ìå£¬Ö»¸øÓÃ»§Ìá¹©µÄÖ»ĞèÒªecho proc on£¬ÒªÊÇ
-     ** ÒªÊÇ×Ô¼ºµ÷ÊÔÖ»ÒªÏÈecho proc on È»ºó echo trace on */
+    /** CNcomment:procä¿¡æ¯ç»“æ„ä½“ï¼Œåªç»™ç”¨æˆ·æä¾›çš„åªéœ€è¦echo proc onï¼Œè¦æ˜¯
+     ** è¦æ˜¯è‡ªå·±è°ƒè¯•åªè¦å…ˆecho proc on ç„¶å echo trace on */
     typedef struct hiJPEG_PROC_INFO_S
     {
              /** our need proc information */
-			 /** CNcomment:×Ô¼ºµÄµ÷ÊÔĞÅÏ¢  */
-			 HI_U32  u32YWidth;         /**< the lu width       *//**<CNcomment:ÁÁ¶È¿í¿í¶È */
-			 HI_U32  u32YHeight;        /**< the lu height      *//**<CNcomment:ÁÁ¶È¸ß¶È   */
-			 HI_U32  u32YSize;          /**< the lu size        *//**<CNcomment:ÁÁ¶È´óĞ¡   */
-			 HI_U32  u32CWidth;         /**< the ch width       *//**<CNcomment:É«¶È¿í¶È   */
-			 HI_U32  u32CHeight;        /**< the ch height      *//**<CNcomment:É«¶È¸ß¶È   */
-			 HI_U32  u32CSize;          /**< the ch size        *//**<CNcomment:É«¶È´óĞ¡   */
-			 HI_U32  u32YStride;        /**< the lu stride      *//**<CNcomment:ÁÁ¶ÈĞĞ¼ä¾à */
-			 HI_U32  u32CbCrStride;     /**< the ch stride      *//**<CNcomment:É«¶ÈĞĞ¼ä¾à */
-			 HI_U32  u32DisplayW;       /**< the display width  *//**<CNcomment:ÏÔÊ¾¿í¶È   */
-			 HI_U32  u32DisplayH;       /**< the display height *//**<CNcomment:ÏÔÊ¾¸ß¶È   */
-             HI_U32  u32DisplayStride; /**< the display stride *//**<CNcomment:ÏÔÊ¾ĞĞ¼ä¾à  */
-			 HI_U32  u32DecW;           /**< the dec width      *//**<CNcomment:½âÂë¿í¶È    */
-			 HI_U32  u32DecH;           /**< the dec height     *//**<CNcomment:½âÂë¸ß¶È    */
-			 HI_U32  u32DecStride;     /**< the dec stride     *//**<CNcomment:½âÂëĞĞ¼ä¾à  */
-			 HI_U32  u32DataStartAddr; /**< the stream start address     *//**<CNcomment:ÂëÁ÷bufferÆğÊ¼µØÖ·£¬Òª64×Ö½Ú¶ÔÆë      */
-			 HI_U32  u32DataEndAddr;   /**< the stream end address       *//**<CNcomment:ÂëÁ÷buffer½áÊøµØÖ·£¬Òª64×Ö½Ú¶ÔÆë      */
-			 HI_U32  u32SaveStartAddr; /**< the save data start address  *//**<CNcomment:´æ´¢ÂëÁ÷µÄÆğÊ¼µØÖ·(ÔÚÂëÁ÷µØÖ·ÇøÓòÄÚ)  */
-			 HI_U32  u32SaveEndAddr;   /**< the save data end address    *//**<CNcomment:´æ´¢ÂëÁ÷µÄ½áÊøµØÖ·(ÔÚÂëÁ÷µØÖ·ÇøÓòÄÚ)  */
+			 /** CNcomment:è‡ªå·±çš„è°ƒè¯•ä¿¡æ¯  */
+			 HI_U32  u32YWidth;         /**< the lu width       *//**<CNcomment:äº®åº¦å®½å®½åº¦ */
+			 HI_U32  u32YHeight;        /**< the lu height      *//**<CNcomment:äº®åº¦é«˜åº¦   */
+			 HI_U32  u32YSize;          /**< the lu size        *//**<CNcomment:äº®åº¦å¤§å°   */
+			 HI_U32  u32CWidth;         /**< the ch width       *//**<CNcomment:è‰²åº¦å®½åº¦   */
+			 HI_U32  u32CHeight;        /**< the ch height      *//**<CNcomment:è‰²åº¦é«˜åº¦   */
+			 HI_U32  u32CSize;          /**< the ch size        *//**<CNcomment:è‰²åº¦å¤§å°   */
+			 HI_U32  u32YStride;        /**< the lu stride      *//**<CNcomment:äº®åº¦è¡Œé—´è· */
+			 HI_U32  u32CbCrStride;     /**< the ch stride      *//**<CNcomment:è‰²åº¦è¡Œé—´è· */
+			 HI_U32  u32DisplayW;       /**< the display width  *//**<CNcomment:æ˜¾ç¤ºå®½åº¦   */
+			 HI_U32  u32DisplayH;       /**< the display height *//**<CNcomment:æ˜¾ç¤ºé«˜åº¦   */
+             HI_U32  u32DisplayStride; /**< the display stride *//**<CNcomment:æ˜¾ç¤ºè¡Œé—´è·  */
+			 HI_U32  u32DecW;           /**< the dec width      *//**<CNcomment:è§£ç å®½åº¦    */
+			 HI_U32  u32DecH;           /**< the dec height     *//**<CNcomment:è§£ç é«˜åº¦    */
+			 HI_U32  u32DecStride;     /**< the dec stride     *//**<CNcomment:è§£ç è¡Œé—´è·  */
+			 HI_U32  u32DataStartAddr; /**< the stream start address     *//**<CNcomment:ç æµbufferèµ·å§‹åœ°å€ï¼Œè¦64å­—èŠ‚å¯¹é½      */
+			 HI_U32  u32DataEndAddr;   /**< the stream end address       *//**<CNcomment:ç æµbufferç»“æŸåœ°å€ï¼Œè¦64å­—èŠ‚å¯¹é½      */
+			 HI_U32  u32SaveStartAddr; /**< the save data start address  *//**<CNcomment:å­˜å‚¨ç æµçš„èµ·å§‹åœ°å€(åœ¨ç æµåœ°å€åŒºåŸŸå†…)  */
+			 HI_U32  u32SaveEndAddr;   /**< the save data end address    *//**<CNcomment:å­˜å‚¨ç æµçš„ç»“æŸåœ°å€(åœ¨ç æµåœ°å€åŒºåŸŸå†…)  */
              /** user need proc information */
-			 /** CNcomment:ÓÃ»§Ïë¿´µ½µÄĞÅÏ¢ */
-			 HI_U32 u32InWidth;             /**< the input widht             *//**<CNcomment:ÊäÈë¿í¶È    */
-             HI_U32 u32InHeight;            /**< the input height            *//**<CNcomment:ÊäÈë¸ß¶È    */
-             HI_U32 u32OutWidth;            /**< the output width            *//**<CNcomment:Êä³ö¿í¶È    */
-             HI_U32 u32OutHeight;           /**< the output height           *//**<CNcomment:Êä³ö¸ß¶È    */
-			 HI_U32 u32OutStride;           /**< the output stride           *//**<CNcomment:Êä³öĞĞ¼ä¾à  */
-             HI_U32 u32InFmt;               /**< the input format            *//**<CNcomment:ÊäÈëÏñËØ¸ñÊ½ */
-			 HI_U32 u32OutFmt;              /**< the output format           *//**<CNcomment:Êä³öÏñËØ¸ñÊ½ */
-             HI_U32 u32OutPhyBuf;           /**< the output physics address  *//**<CNcomment:Êä³öÎïÀíµØÖ· */
-			 HI_U32 u32Scale;               /**< the decode scale            *//**<CNcomment:½âÂëËõ·Å±ÈÀı  */
-			 HI_JPEG_DEC_STATE_E eDecState; /**< the decode state            *//**<CNcomment:½âÂë×´Ì¬      */
-             HI_JPEG_DEC_TYPE_E eDecodeType;/**< the decode type             *//**<CNcomment:½âÂëÀàĞÍ      */
+			 /** CNcomment:ç”¨æˆ·æƒ³çœ‹åˆ°çš„ä¿¡æ¯ */
+			 HI_U32 u32InWidth;             /**< the input widht             *//**<CNcomment:è¾“å…¥å®½åº¦    */
+             HI_U32 u32InHeight;            /**< the input height            *//**<CNcomment:è¾“å…¥é«˜åº¦    */
+             HI_U32 u32OutWidth;            /**< the output width            *//**<CNcomment:è¾“å‡ºå®½åº¦    */
+             HI_U32 u32OutHeight;           /**< the output height           *//**<CNcomment:è¾“å‡ºé«˜åº¦    */
+			 HI_U32 u32OutStride;           /**< the output stride           *//**<CNcomment:è¾“å‡ºè¡Œé—´è·  */
+             HI_U32 u32InFmt;               /**< the input format            *//**<CNcomment:è¾“å…¥åƒç´ æ ¼å¼ */
+			 HI_U32 u32OutFmt;              /**< the output format           *//**<CNcomment:è¾“å‡ºåƒç´ æ ¼å¼ */
+             HI_U32 u32OutPhyBuf;           /**< the output physics address  *//**<CNcomment:è¾“å‡ºç‰©ç†åœ°å€ */
+			 HI_U32 u32Scale;               /**< the decode scale            *//**<CNcomment:è§£ç ç¼©æ”¾æ¯”ä¾‹  */
+			 HI_JPEG_DEC_STATE_E eDecState; /**< the decode state            *//**<CNcomment:è§£ç çŠ¶æ€      */
+             HI_JPEG_DEC_TYPE_E eDecodeType;/**< the decode type             *//**<CNcomment:è§£ç ç±»å‹      */
 			 
     }HI_JPEG_PROC_INFO_S;
 

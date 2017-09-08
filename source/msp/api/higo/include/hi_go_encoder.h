@@ -1,6 +1,6 @@
 /**
  \file
- \brief Describes the header file of the encoder module. CNcomment:encoderÍ·ÎÄ¼þ CNend
+ \brief Describes the header file of the encoder module. CNcomment:encoderå¤´æ–‡ä»¶ CNend
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version 1.0
@@ -24,11 +24,11 @@ extern "C" {
 /** @{ */  /** <!-- [HIGO_ENC] */
 
 /**Encoder attributes*/
-/** CNcomment:±àÂëÆ÷ÊôÐÔ*/
+/** CNcomment:ç¼–ç å™¨å±žæ€§*/
 typedef struct 
 {
-   HIGO_IMGTYPE_E ExpectType;   /**<Type of the encoded picture*//**<CNcomment:±àÂëÍ¼Æ¬ÀàÐÍ*/
-   HI_U32 QualityLevel;        /**<The quality level ranges from 1 to 99. The higher the level, the better the quality, and the greater the encoded picture or occupied memory. The QualityLevel parameter is valid for .jpeg pictures only.*//**<CNcomment:1-99¼¶, ¼¶±ðÔ½¸ß£¬ÖÊÁ¿Ô½ºÃ£¬±àÂë³öÀ´Í¼ÏñÎÄ¼þ»òÄÚ´æÒ²Ô½´ó£¬Ö»¶ÔJPEGÓÐÐ§*/ 	
+   HIGO_IMGTYPE_E ExpectType;   /**<Type of the encoded picture*//**<CNcomment:ç¼–ç å›¾ç‰‡ç±»åž‹*/
+   HI_U32 QualityLevel;        /**<The quality level ranges from 1 to 99. The higher the level, the better the quality, and the greater the encoded picture or occupied memory. The QualityLevel parameter is valid for .jpeg pictures only.*//**<CNcomment:1-99çº§, çº§åˆ«è¶Šé«˜ï¼Œè´¨é‡è¶Šå¥½ï¼Œç¼–ç å‡ºæ¥å›¾åƒæ–‡ä»¶æˆ–å†…å­˜ä¹Ÿè¶Šå¤§ï¼Œåªå¯¹JPEGæœ‰æ•ˆ*/ 	
 }HIGO_ENC_ATTR_S;
 /** @} */  /*! <!-- Structure Definition end */
 
@@ -36,10 +36,10 @@ typedef struct
 /** \addtogroup      HIGO_ENC */
 /** @{ */  /** <!-- [HIGO_ENC] */
  /** 
-\brief Initializes the encoder. CNcomment:±àÂëÆ÷³õÊ¼»¯ CNend
+\brief Initializes the encoder. CNcomment:ç¼–ç å™¨åˆå§‹åŒ– CNend
 \attention \n
 When ::HI_GO_Init is called, this application programming interface (API) is also called.
-CNcomment: ::HI_GO_InitÖÐÒÑ°üº¬¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
+CNcomment: ::HI_GO_Initä¸­å·²åŒ…å«å¯¹è¯¥æŽ¥å£çš„è°ƒç”¨ CNend
 \param  N/A
 
 \retval ::HI_SUCCESS 
@@ -55,10 +55,10 @@ HI_S32 HI_GO_InitEncoder(HI_VOID);
 
 
 /** 
-\brief Deinitializes the encoder. CNcomment:±àÂëÆ÷È¥³õÊ¼»¯ CNend
+\brief Deinitializes the encoder. CNcomment:ç¼–ç å™¨åŽ»åˆå§‹åŒ– CNend
 \attention \n
 When ::HI_GO_Deinit is called, this API is also called.
-CNcomment: ::HI_GO_DeinitÖÐÒÑ°üº¬¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
+CNcomment: ::HI_GO_Deinitä¸­å·²åŒ…å«å¯¹è¯¥æŽ¥å£çš„è°ƒç”¨ CNend
 \param  N/A
 
 \retval ::HI_SUCCESS 
@@ -73,17 +73,17 @@ HI_S32 HI_GO_DeinitEncoder(HI_VOID);
 
 /**
 \brief Encodes a surface in a specified format, and saves the encoded surface in a file. 
-CNcomment:½«Ò»¸ösurface±àÂëµ½Ö¸¶¨Í¼Ïñ¸ñÊ½²¢±£´æµ½ÎÄ¼þÖÐ CNend
+CNcomment:å°†ä¸€ä¸ªsurfaceç¼–ç åˆ°æŒ‡å®šå›¾åƒæ ¼å¼å¹¶ä¿å­˜åˆ°æ–‡ä»¶ä¸­ CNend
 \attention \n
 The .bmp encoding format is supported.
 The hardware platform determines whether the .jpeg encoding foramt is supported.
-CNcomment:Ö§³Ö±àÂë³Ébmp¸ñÊ½ÎÄ¼þ \n
-(ÊÇ·ñÖ§³Ö±àÂë³ÉJPEG,È¡¾öÓÚÓ²¼þÆ½Ì¨) CNend
+CNcomment:æ”¯æŒç¼–ç æˆbmpæ ¼å¼æ–‡ä»¶ \n
+(æ˜¯å¦æ”¯æŒç¼–ç æˆJPEG,å–å†³äºŽç¡¬ä»¶å¹³å°) CNend
 
-\param[in] hSurface  Surface to be encoded. CNcomment:ÐèÒª±àÂëµÄsurface, CNend
+\param[in] hSurface  Surface to be encoded. CNcomment:éœ€è¦ç¼–ç çš„surface, CNend
 \param[in] pFile    Name of the encoded file. This parameter can be empty. If this parameter is not set, the encoded file is named [year]-[month]-[date]-[hour]-[minute]-[second].  
-                        CNcomment:±àÂëºóµÄÎÄ¼þÃû£¬¿ÉÒÔÎª¿Õ£¬Îª¿ÕÔòÓÃµ±Ç°Ê±¼ä[Äê]-[ÔÂ]-[ÈÕ]-[Ê±]-[·Ö]-[Ãë]À´ÃüÃû CNend
-\param[in] pAttr    Encoding attributes. This parameter cannot be empty. CNcomment:±àÂëÉèÖÃµÄÊôÐÔ£¬²»¿ÉÎª¿Õ CNend
+                        CNcomment:ç¼–ç åŽçš„æ–‡ä»¶åï¼Œå¯ä»¥ä¸ºç©ºï¼Œä¸ºç©ºåˆ™ç”¨å½“å‰æ—¶é—´[å¹´]-[æœˆ]-[æ—¥]-[æ—¶]-[åˆ†]-[ç§’]æ¥å‘½å CNend
+\param[in] pAttr    Encoding attributes. This parameter cannot be empty. CNcomment:ç¼–ç è®¾ç½®çš„å±žæ€§ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS Success.
 \retval ::HI_FAILURE
@@ -116,19 +116,19 @@ HI_S32 HI_GO_EncodeToFile(HI_HANDLE hSurface, const HI_CHAR* pFile, const HIGO_E
 
 /**
 \brief Encodes a surface in a specified picture format and saves it in a memory. Ensure that the memory is sufficient.
-CNcomment:½«Ò»¸ösurface±àÂëµ½Ö¸¶¨Í¼Ïñ¸ñÊ½²¢±£´æµ½ÄÚ´æÖÐ£¬Çë×ÔÐÐ±£Ö¤Ö¸¶¨ÄÚ´æ¿é×ã¹»´ó CNend
+CNcomment:å°†ä¸€ä¸ªsurfaceç¼–ç åˆ°æŒ‡å®šå›¾åƒæ ¼å¼å¹¶ä¿å­˜åˆ°å†…å­˜ä¸­ï¼Œè¯·è‡ªè¡Œä¿è¯æŒ‡å®šå†…å­˜å—è¶³å¤Ÿå¤§ CNend
 \attention \n
 The data can be encoded as .bmp data, and saved in a specified memory.
 The hardware platform determines whether the .jpeg encoding format is supported.
-CNcomment:Ö§³Ö±àÂë³Ébmp¸ñÊ½Êý¾Ý´æ·Åµ½Ö¸¶¨µÄÄÚ´æÖÐ 
-(ÊÇ·ñÖ§³Ö±àÂë³ÉJPEG,È¡¾öÓÚÓ²¼þÆ½Ì¨) CNend
+CNcomment:æ”¯æŒç¼–ç æˆbmpæ ¼å¼æ•°æ®å­˜æ”¾åˆ°æŒ‡å®šçš„å†…å­˜ä¸­ 
+(æ˜¯å¦æ”¯æŒç¼–ç æˆJPEG,å–å†³äºŽç¡¬ä»¶å¹³å°) CNend
 
-\param[in] hSurface     Surface to be encoded. CNcomment:ÐèÒª±àÂëµÄsurface, CNend
-\param[in] pMem         Start address of the memory for storing the encoded pictures. CNcomment:±£´æ±àÂëºóµÄÍ¼ÏñÊý¾ÝÄÚ´æ¿éµÄÆðÊ¼µØÖ· CNend
-\param[in] MemLen       Size of a specified memory. CNcomment:Ö¸¶¨ÄÚ´æµÄ´óÐ¡ CNend
+\param[in] hSurface     Surface to be encoded. CNcomment:éœ€è¦ç¼–ç çš„surface, CNend
+\param[in] pMem         Start address of the memory for storing the encoded pictures. CNcomment:ä¿å­˜ç¼–ç åŽçš„å›¾åƒæ•°æ®å†…å­˜å—çš„èµ·å§‹åœ°å€ CNend
+\param[in] MemLen       Size of a specified memory. CNcomment:æŒ‡å®šå†…å­˜çš„å¤§å° CNend
 \param[out] pOutLen     Actual size of the used memory, indicating the length of encoded data. Ensure that the value of pOutLen is smaller than or equal to the value of MemLen. 
-                                CNcomment:Êµ¼ÊÊ¹ÓÃµÄÄÚ´æ´óÐ¡£¬±àÂëºóÊý¾Ý³¤¶È(×ÔÐÐÈ·±£pOutLen <= MemLen) CNend
-\param[in] pAttr        Encoding attributes. This parameter cannot be empty. CNcomment:±àÂëÉèÖÃµÄÊôÐÔ£¬²»¿ÉÎª¿Õ CNend
+                                CNcomment:å®žé™…ä½¿ç”¨çš„å†…å­˜å¤§å°ï¼Œç¼–ç åŽæ•°æ®é•¿åº¦(è‡ªè¡Œç¡®ä¿pOutLen <= MemLen) CNend
+\param[in] pAttr        Encoding attributes. This parameter cannot be empty. CNcomment:ç¼–ç è®¾ç½®çš„å±žæ€§ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE

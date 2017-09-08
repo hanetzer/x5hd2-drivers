@@ -1,8 +1,8 @@
 
 /********************************************
 NOTICE !!
-该文件同时被component 和driver 引用
-如修改，两边均需重新编译!!!!
+璇ユ枃浠跺悓鏃惰component 鍜宒river 寮曠敤
+濡備慨鏀癸紝涓よ竟鍧囬渶閲嶆柊缂栬瘧!!!!
 
 Description: common define used both in component and drivers
 Author:       y00226912
@@ -200,7 +200,7 @@ typedef struct vdec_driver_context {
 }vdec_drv_context;
 
 /* ========================================================
- * vdec internal struct. channel、vdec.eg
+ * vdec internal struct. channel銆乿dec.eg
  * ========================================================*/
 
 enum vdec_port_dir {

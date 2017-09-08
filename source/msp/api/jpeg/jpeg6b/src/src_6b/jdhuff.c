@@ -429,7 +429,7 @@ jpeg_fill_bit_buffer (bitread_working_state * state,
        * appears per data segment.
        */
       if (! cinfo->entropy->insufficient_data) {
-	/** revise by y0181162 ²»¼Ó´òÓ¡ **/
+	/** revise by y0181162 ä¸åŠ æ‰“å° **/
 	#if 0
 	WARNMS(cinfo, JWRN_HIT_MARKER);
 	#endif

@@ -15,7 +15,7 @@
 
 /**
  ** add the include file about the init function
- ** CNcomment: Ôö¼ÓÓ²¼ş½âÂëĞèÒªµÄÍ·ÎÄ¼ş CNend\n
+ ** CNcomment: å¢åŠ ç¡¬ä»¶è§£ç éœ€è¦çš„å¤´æ–‡ä»¶ CNend\n
  **/
 #include "jpeg_hdec_api.h"
 #include "hi_jpeg_config.h"
@@ -40,7 +40,7 @@ typedef my_color_deconverter * my_cconvert_ptr;
  * 
  * We use 4x4 ordered dither array packed into 32 bits. This array is
  * sufficent for dithering RGB_888 to RGB_565.
- ** CNcomment:ÑÕÉ«¿Õ¼ä×ª»»³ÉRGBÔö¼ÓµÄ²ÎÊı CNend\n
+ ** CNcomment:é¢œè‰²ç©ºé—´è½¬æ¢æˆRGBå¢åŠ çš„å‚æ•° CNend\n
  **/
 #define DITHER_MASK         0x3
 #define DITHER_ROTATE(x)    (((x)<<24) | (((x)>>8)&0x00FFFFFF))
@@ -644,14 +644,14 @@ ycc_bgr_565_convert (j_decompress_ptr cinfo,
 	  
 }
 #if 0
-/** ÕæÕıµÄ¿¹¶¶¶¯ **/
+/** çœŸæ­£çš„æŠ—æŠ–åŠ¨ **/
 METHODDEF(void)
 ycc_rgb_565D_convert (j_decompress_ptr cinfo,
          JSAMPIMAGE input_buf, JDIMENSION input_row,
          JSAMPARRAY output_buf, int num_rows)
 {
 
-	  /** ¿¹¶¶¶¯ **/
+	  /** æŠ—æŠ–åŠ¨ **/
 	  my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
 	  register int y, cb, cr;
 	  register JSAMPROW outptr;
@@ -747,7 +747,7 @@ ycc_bgr_565D_convert (j_decompress_ptr cinfo,
          JSAMPARRAY output_buf, int num_rows)
 {
 
-	  /** ¿¹¶¶¶¯ **/
+	  /** æŠ—æŠ–åŠ¨ **/
 	  my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
 	  register int y, cb, cr;
 	  register JSAMPROW outptr;
@@ -838,7 +838,7 @@ ycc_bgr_565D_convert (j_decompress_ptr cinfo,
 	  
 }
 #else
-/** ¼ÙµÄ¿¹¶¶¶¯ **/
+/** å‡çš„æŠ—æŠ–åŠ¨ **/
 METHODDEF(void)
 ycc_rgb_565D_convert (j_decompress_ptr cinfo,
          JSAMPIMAGE input_buf, JDIMENSION input_row,
@@ -846,7 +846,7 @@ ycc_rgb_565D_convert (j_decompress_ptr cinfo,
 {
 
         JPEG_HDEC_HANDLE_S_PTR	pJpegHandle = (JPEG_HDEC_HANDLE_S_PTR)(cinfo->client_data);
-		/** ¿¹¶¶¶¯ **/
+		/** æŠ—æŠ–åŠ¨ **/
 		my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
 		register int y, cb, cr;
 		register JSAMPROW outptr;
@@ -908,7 +908,7 @@ ycc_bgr_565D_convert (j_decompress_ptr cinfo,
 {
 
         JPEG_HDEC_HANDLE_S_PTR	pJpegHandle = (JPEG_HDEC_HANDLE_S_PTR)(cinfo->client_data);
-		/** ¿¹¶¶¶¯ **/
+		/** æŠ—æŠ–åŠ¨ **/
 		my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
 		register int y, cb, cr;
 		register JSAMPROW outptr;
@@ -974,8 +974,8 @@ ycc_argb_1555_convert (j_decompress_ptr cinfo,
 
     JPEG_HDEC_HANDLE_S_PTR	pJpegHandle = (JPEG_HDEC_HANDLE_S_PTR)(cinfo->client_data);
 	/**
-	 **ÒªÊÇÉèÖÃalph0ÖµÔò A = 0;   A8Î» = 0
-	 **ÒªÊÇÉèÖÃalph1ÖµÔò A = 1;   A8Î» = 255
+	 **è¦æ˜¯è®¾ç½®alph0å€¼åˆ™ A = 0;   A8ä½ = 0
+	 **è¦æ˜¯è®¾ç½®alph1å€¼åˆ™ A = 1;   A8ä½ = 255
 	 **/
 	 my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
 	 register int y, cb, cr;
@@ -1044,8 +1044,8 @@ ycc_abgr_1555_convert (j_decompress_ptr cinfo,
 {
       JPEG_HDEC_HANDLE_S_PTR	pJpegHandle = (JPEG_HDEC_HANDLE_S_PTR)(cinfo->client_data);
 	 /**
-	  **ÒªÊÇÉèÖÃalph0ÖµÔò A = 0;   A8Î» = 0
-	  **ÒªÊÇÉèÖÃalph1ÖµÔò A = 1;   A8Î» = 255
+	  **è¦æ˜¯è®¾ç½®alph0å€¼åˆ™ A = 0;   A8ä½ = 0
+	  **è¦æ˜¯è®¾ç½®alph1å€¼åˆ™ A = 1;   A8ä½ = 255
 	  **/
 	  my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
 	  register int y, cb, cr;
@@ -1115,8 +1115,8 @@ gray_argb_1555_convert (j_decompress_ptr cinfo,
 {
       JPEG_HDEC_HANDLE_S_PTR	pJpegHandle = (JPEG_HDEC_HANDLE_S_PTR)(cinfo->client_data);
      /**
-      **ÒªÊÇÉèÖÃalph0ÖµÔò A = 0;   A8Î» = 0
-      **ÒªÊÇÉèÖÃalph1ÖµÔò A = 1;   A8Î» = 255
+      **è¦æ˜¯è®¾ç½®alph0å€¼åˆ™ A = 0;   A8ä½ = 0
+      **è¦æ˜¯è®¾ç½®alph1å€¼åˆ™ A = 1;   A8ä½ = 255
       **/
 	  register JSAMPROW inptr, outptr;
 	  register HI_S32 col;
@@ -1454,8 +1454,8 @@ rgb_argb_1555_convert (j_decompress_ptr cinfo,
 {
 
      /**
-      **ÒªÊÇÉèÖÃalph0ÖµÔò A = 0;   A8Î» = 0
-      **ÒªÊÇÉèÖÃalph1ÖµÔò A = 1;   A8Î» = 255
+      **è¦æ˜¯è®¾ç½®alph0å€¼åˆ™ A = 0;   A8ä½ = 0
+      **è¦æ˜¯è®¾ç½®alph1å€¼åˆ™ A = 1;   A8ä½ = 255
       **/
 	  register JSAMPROW outptr;
 	  register JSAMPROW inptr0, inptr1, inptr2;
@@ -1501,8 +1501,8 @@ rgb_abgr_1555_convert (j_decompress_ptr cinfo,
 
 
 	    /**
-	      **ÒªÊÇÉèÖÃalph0ÖµÔò A = 0;   A8Î» = 0
-	      **ÒªÊÇÉèÖÃalph1ÖµÔò A = 1;   A8Î» = 255
+	      **è¦æ˜¯è®¾ç½®alph0å€¼åˆ™ A = 0;   A8ä½ = 0
+	      **è¦æ˜¯è®¾ç½®alph1å€¼åˆ™ A = 1;   A8ä½ = 255
 	      **/
 		  register JSAMPROW outptr;
 		  register JSAMPROW inptr0, inptr1, inptr2;
@@ -1813,7 +1813,7 @@ gray_rgb_565_convert (j_decompress_ptr cinfo,
   
 }
 #if 0
-/** ÕæÕıµÄ¿¹¶¶¶¯ **/
+/** çœŸæ­£çš„æŠ—æŠ–åŠ¨ **/
 METHODDEF(void)
 gray_rgb_565D_convert (j_decompress_ptr cinfo,
           JSAMPIMAGE input_buf, JDIMENSION input_row,
@@ -1991,9 +1991,9 @@ ycck_cmyk_convert (j_decompress_ptr cinfo,
  ** G = Y - 0.34414*Cb - 0.71414*Cr + 135.45984
  ** B = Y + 1.772*Cb - 226.816
  ** After that, conversion to CMYK image is performed as follows:
- ** C = 255 ¨C R
- ** M = 255 ¨C G
- ** Y = 255 ¨C B
+ ** C = 255 â€“ R
+ ** M = 255 â€“ G
+ ** Y = 255 â€“ B
  **/
 METHODDEF(void)
 ycck_rgb_convert (j_decompress_ptr cinfo,

@@ -836,7 +836,7 @@ void png_select_decmode(png_structp png_ptr, png_bytepp image)
         goto CHECKSOFT;
     }
 
-    /* ÅĞ¶ÏÄ¿±êÄÚ´æÊÇ·ñÎªÎïÀíÄÚ´æÇÒstrideÊÇ·ñÂú×ãÒªÇó */
+    /* åˆ¤æ–­ç›®æ ‡å†…å­˜æ˜¯å¦ä¸ºç‰©ç†å†…å­˜ä¸”strideæ˜¯å¦æ»¡è¶³è¦æ±‚ */
     s32Ret = HI_MMZ_GetPhyaddr(image[0], &u32Phyaddr, &u32Size);
     if (s32Ret < 0)
     {
@@ -947,11 +947,11 @@ void png_switch_swdec(png_structp png_ptr, png_bytepp image)
     }
 
     /*Start software decode*/
-    /*CNcomment:Æô¶¯Èí½âÂë*/
+    /*CNcomment:å¯åŠ¨è½¯è§£ç */
     png_read_image_sw(png_ptr, image);
 
     /*Resume original IO funciton after finishing decode*/
-    /*CNcomment:½âÂëÍê³Éºó£¬»Ö¸´Ô­À´µÄIO½Ó¿Ú */
+    /*CNcomment:è§£ç å®Œæˆåï¼Œæ¢å¤åŸæ¥çš„IOæ¥å£ */
     png_ptr->read_data_fn = pstHwStruct->read_data_fn;
 
     return;
@@ -1009,7 +1009,7 @@ void png_read_image_2(png_structp png_ptr, png_bytepp image)
     pstHwStruct->eState = HI_PNG_STATE_DECING;
     
     /*Select software or hareware decode*/
-    /*CNcomment:ÈíÓ²¼ş½âÂë²ßÂÔÑ¡Ôñ */
+    /*CNcomment:è½¯ç¡¬ä»¶è§£ç ç­–ç•¥é€‰æ‹© */
     png_select_decmode(png_ptr, image);
 
     if (pstHwStruct->u8DecMode & HIPNG_HWDEC_MASK)
@@ -1035,7 +1035,7 @@ void png_read_image_2(png_structp png_ptr, png_bytepp image)
     else
     {
         /*Start software decode*/
-        /*CNcomment:Æô¶¯Èí½âÂë */
+        /*CNcomment:å¯åŠ¨è½¯è§£ç  */
         png_read_image_sw(png_ptr, image);
 
         pstHwStruct->eState = HI_PNG_STATE_FINISH;    

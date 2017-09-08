@@ -108,7 +108,7 @@ void *av_malloc(unsigned int size)
 }
 
 /* 2010/30/06 9:12:00 liuxw+00139685 */
-/* 增加函数指针av_malloc_hw，用来代替av_malloc */
+/* 澧炲姞鍑芥暟鎸囬拡av_malloc_hw锛岀敤鏉ヤ唬鏇縜v_malloc */
 #if 0
 funAVMalloc* av_malloc_hw = av_malloc;
 #else
@@ -149,7 +149,7 @@ void av_free(void *ptr)
 }
 
 /* 2010/30/06 9:12:00 liuxw+00139685 */
-/* 增加函数指针av_free_hw，用来代替av_free */
+/* 澧炲姞鍑芥暟鎸囬拡av_free_hw锛岀敤鏉ヤ唬鏇縜v_free */
 #if 0
 funAVFree* av_free_hw = av_free;
 #else
@@ -163,7 +163,7 @@ void av_freep(void *arg)
 		return;
 
 	/* 2010/30/06 9:12:00 liuxw+00139685 */
-	/* 将av_free改为av_free_hw */
+	/* 灏哸v_free鏀逛负av_free_hw */
 	//av_free(*ptr);
     av_free_hw(*ptr);
     *ptr = NULL;
@@ -172,7 +172,7 @@ void av_freep(void *arg)
 void *av_mallocz(unsigned int size)
 {
 	/* 2010/30/06 9:12:00 liuxw+00139685 */
-	/* 将av_malloc改为av_malloc_hw */
+	/* 灏哸v_malloc鏀逛负av_malloc_hw */
 	void *ptr = av_malloc(size);
 	//void *ptr = av_malloc_hw(size);
     if (ptr)
@@ -187,7 +187,7 @@ char *av_strdup(const char *s)
     if(s){
         int len = strlen(s) + 1;
 		/* 2010/30/06 9:12:00 liuxw+00139685 */
-		/* 将av_malloc改为av_malloc_hw */
+		/* 灏哸v_malloc鏀逛负av_malloc_hw */
 		ptr = av_malloc(len);
         //ptr = av_malloc_hw(len);
         if (ptr)

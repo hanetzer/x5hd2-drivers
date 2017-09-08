@@ -14,7 +14,7 @@
 #include "jpeglib.h"
 /**
  ** add the include file about the functions that hard decode needed
- ** CNcomment: Ôö¼ÓÓ²¼ş½âÂëĞèÒªµÄÍ·ÎÄ¼ş CNend\n
+ ** CNcomment: å¢åŠ ç¡¬ä»¶è§£ç éœ€è¦çš„å¤´æ–‡ä»¶ CNend\n
  **/
  #include "jpeg_hdec_api.h"
 

@@ -1,5 +1,5 @@
 =============
-hdcp版本说明
+hdcp鐗堟湰璇存槑
 =============
-v100：适用于Hi3716MV300及之前的hdcp key方案
-v200：适用于Hi3712及之后的hdcp key方案
+v100锛氶�傜敤浜嶩i3716MV300鍙婁箣鍓嶇殑hdcp key鏂规
+v200锛氶�傜敤浜嶩i3712鍙婁箣鍚庣殑hdcp key鏂规

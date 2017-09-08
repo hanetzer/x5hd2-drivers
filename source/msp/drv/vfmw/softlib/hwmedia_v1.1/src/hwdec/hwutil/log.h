@@ -59,7 +59,7 @@ typedef struct AVCLASS {
 #define AV_LOG_ERROR 0
 #define AV_LOG_WARNING 1
 /* 2010/30/04 8:57:00 liuxw+00139685 */
-/* ½«AV_LOG_INFOµÄºê¶¨Òå¸ÄÎª2£¬½«AV_LOG_DEBUGµÄĞÅÏ¢¸ÄÎª3 */
+/* å°†AV_LOG_INFOçš„å®å®šä¹‰æ”¹ä¸º2ï¼Œå°†AV_LOG_DEBUGçš„ä¿¡æ¯æ”¹ä¸º3 */
 //#define AV_LOG_INFO 1
 #define AV_LOG_INFO 2
 #define AV_LOG_VERBOSE 1
@@ -121,7 +121,7 @@ extern int av_log_level;
  */
 #ifdef __GNUC__
 /* 2010/03/30 15:00:00 songxg+00133955 */
-/* ĞŞ¸Äav_logº¯Êı£¬ÔÚlinuxÆ½Ì¨ÏÂÔö¼ÓÎÄ¼şÃû¡¢ĞĞºÅÏÔÊ¾ */
+/* ä¿®æ”¹av_logå‡½æ•°ï¼Œåœ¨linuxå¹³å°ä¸‹å¢åŠ æ–‡ä»¶åã€è¡Œå·æ˜¾ç¤º */
 //void av_log(void*, int level, const char *fmt, ...) __attribute__ ((__format__ (__printf__, 3, 4)));
 void av_log_hw(const char *file, int line, const char *funcname, void*, int level, const char *fmt, ...);
 void av_vlog(const char *file, int line, const char *funcname, void*, int level, const char *fmt, va_list);

@@ -10,7 +10,7 @@
   Description   : common driver moudle define
   History       :
   1.Date        : 2010/01/25
-    Author      : jianglei¡¡
+    Author      : jiangleiã€€
     Modification: Created file
 
 ******************************************************************************/

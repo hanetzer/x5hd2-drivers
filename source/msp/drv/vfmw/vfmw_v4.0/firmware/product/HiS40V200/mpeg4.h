@@ -28,7 +28,7 @@
 #include "vdm_hal.h"
 #include "syntax.h"
 
-/* ·µ»Ø×´Ì¬ºê¶¨Òå*/
+/* è¿”å›çŠ¶æ€å®å®šä¹‰*/
 #define MPEG4_FAIL            -1
 #define MPEG4_OK              0
 #define MPEG4_NOTDEC          3
@@ -42,25 +42,25 @@
 #define FRAME_REQ_SUCCESS          0
 
 
-/*°´ÕÕ×î´ó¿Õ¼ä·ÖÅä */
+/*æŒ‰ç…§æœ€å¤§ç©ºé—´åˆ†é… */
 #define FRAME_ALLOC_NUM            8
                         
 
-/* Óï·¨ÓÃµ½µÄºê¶¨Òå*/
-//#define    OVERFLOW                       1          // ÂëÁ÷Ô½½ç
-#define    SYN_SHOK                       3          // ShortHeader½âÂëÕı³£
-#define    SYNTAX_OK                      1          // Óï·¨½âÎöÕıÈ·£¬·µ»ØÅäÖÃÓ²¼ş×´Ì¬
+/* è¯­æ³•ç”¨åˆ°çš„å®å®šä¹‰*/
+//#define    OVERFLOW                       1          // ç æµè¶Šç•Œ
+#define    SYN_SHOK                       3          // ShortHeaderè§£ç æ­£å¸¸
+#define    SYNTAX_OK                      1          // è¯­æ³•è§£ææ­£ç¡®ï¼Œè¿”å›é…ç½®ç¡¬ä»¶çŠ¶æ€
                                                     
-#define    NO_START_CODE                  0xc5       // Ã»ÓĞÕÒµ½ÆğÊ¼Âë
-#define    SHORT_HEADER                   0xc4       // ¶ÌÍ·¸ñÊ½ÆğÊ¼Âë
+#define    NO_START_CODE                  0xc5       // æ²¡æœ‰æ‰¾åˆ°èµ·å§‹ç 
+#define    SHORT_HEADER                   0xc4       // çŸ­å¤´æ ¼å¼èµ·å§‹ç 
                                                      
-#define    MARKER_THRESHOLD               6400          // markerµÄãĞÖµÎª4×Ö½Ú
-#define    SH_THRESHOLD                   18          // ShortHeaderÍ·±êÊ¶¼ÆÊı//modify by l57648 from 8 to 18,Because we found 13 Short Header in X-Men stream.
-#define    PEI_THRESHOLD                  16         // shortheaderÓï·¨ÔªËØpeiµÄãĞÖµ
+#define    MARKER_THRESHOLD               6400          // markerçš„é˜ˆå€¼ä¸º4å­—èŠ‚
+#define    SH_THRESHOLD                   18          // ShortHeaderå¤´æ ‡è¯†è®¡æ•°//modify by l57648 from 8 to 18,Because we found 13 Short Header in X-Men stream.
+#define    PEI_THRESHOLD                  16         // shortheaderè¯­æ³•å…ƒç´ peiçš„é˜ˆå€¼
                                           
 /* coding_mode */                         
-#define    ONLY_I_MODE                    1          // ½âÂëÄ£Ê½
-#define    NEXT_I_MODE                    2          // ½âÂëÄ£Ê½
+#define    ONLY_I_MODE                    1          // è§£ç æ¨¡å¼
+#define    NEXT_I_MODE                    2          // è§£ç æ¨¡å¼
 
 /*start_code */
 #define    SHORT_VIDEO_START_CODE         0x00008000
@@ -79,7 +79,7 @@
 #define    HISI_END_OF_FRAME              0x0000011e
 #define    HISI_MP4_STREAM_END_CODE       0x000001b600008000
 
-/* VOS²ã*/
+/* VOSå±‚*/
 #define    SP_LEVEL1        0x01
 #define    SP_LEVEL2        0x02
 #define    SP_LEVEL3        0x03
@@ -91,42 +91,42 @@
 #define    ASP_LEVEL4       0xF4
 #define    ASP_LEVEL5       0xF5
 
-#define    SYN_VOSOK        1              // VOS½âÂëÕı³£
-#define    SYN_VOSERR       0              // VOS½âÂë´íÎó
+#define    SYN_VOSOK        1              // VOSè§£ç æ­£å¸¸
+#define    SYN_VOSERR       0              // VOSè§£ç é”™è¯¯
 
-/*VO²ã*/
-#define    SYN_VOOK         1              // VO½âÂëÕı³£
-#define    SYN_VOERR        0              // VO½âÂë´íÎó
+/*VOå±‚*/
+#define    SYN_VOOK         1              // VOè§£ç æ­£å¸¸
+#define    SYN_VOERR        0              // VOè§£ç é”™è¯¯
 #define    VIDEO_ID         1              // Visual_Object_type Video ID
 
-/*GOP²ã*/
-#define    SYN_GOPOK        1              // GOP½âÂëÕı³£
-#define    SYN_GOPERR       0              // GOP½âÂë´íÎó
+/*GOPå±‚*/
+#define    SYN_GOPOK        1              // GOPè§£ç æ­£å¸¸
+#define    SYN_GOPERR       0              // GOPè§£ç é”™è¯¯
 
-/*VOL²ã*/
-#define    SYN_VOLOK                    1              // VOL½âÂëÕı³£
-#define    SYN_VOLERR                   0              // VOL½âÂë´íÎó
-#define    VO_Type_SP                   0x00000001     // video_object_typeÎªSP
-#define    VO_Type_ASP                  0x11           // video_object_typeÎªASP
-#define    VIDOBJLAY_AR_EXTPAR          15             // Aspect_ratio_infoÎªextended PAR
-#define    VIDOBJLAY_SHAPE_RECTANGULAR  0              // video_object_layer_shapeÎª¾ØĞÎ
+/*VOLå±‚*/
+#define    SYN_VOLOK                    1              // VOLè§£ç æ­£å¸¸
+#define    SYN_VOLERR                   0              // VOLè§£ç é”™è¯¯
+#define    VO_Type_SP                   0x00000001     // video_object_typeä¸ºSP
+#define    VO_Type_ASP                  0x11           // video_object_typeä¸ºASP
+#define    VIDOBJLAY_AR_EXTPAR          15             // Aspect_ratio_infoä¸ºextended PAR
+#define    VIDOBJLAY_SHAPE_RECTANGULAR  0              // video_object_layer_shapeä¸ºçŸ©å½¢
 #define    VIDOBJLAY_SHAPE_BINARY_ONLY  2
 #define    SPRITE_NONE    0
 #define    SPRITE_STATIC  1
 #define    SPRITE_GMC	     2
 
-/*VOP²ã*/
+/*VOPå±‚*/
 #define    I_VOP                 0
 #define    P_VOP                 1
 #define    B_VOP                 2
 #define    S_VOP                 3
 #define    N_VOP                 4
-#define    SYN_VOPOK             1              // VOP½âÂëÕı³£
-#define    SYN_VOPERR            0              // VOP½âÂë´íÎó
+#define    SYN_VOPOK             1              // VOPè§£ç æ­£å¸¸
+#define    SYN_VOPERR            0              // VOPè§£ç é”™è¯¯
 
 /*USERDATA*/
-#define    SYN_USERDATAOK        1              // USERDATA½âÂëÕı³£
-#define    SYN_USERDATAERR       0              // USERDATA½âÂë´íÎó
+#define    SYN_USERDATAOK        1              // USERDATAè§£ç æ­£å¸¸
+#define    SYN_USERDATAERR       0              // USERDATAè§£ç é”™è¯¯
 
 /* seg num in vop */
 #define    MAX_SEG_NUM_IN_VOP     1024          
@@ -170,7 +170,7 @@ typedef struct {
 	SINT32 sW, sH;
 	/* gradient, calculated from warp points */
 	SINT32 dU[2], dV[2], Uo, Vo, Uco, Vco;
-	/*Ğ­ÒéÖĞµÄº¬Òå
+	/*åè®®ä¸­çš„å«ä¹‰
 	  Uo: du[0]*s/2;
 	  Vo: dv[0]*s/2;	  
 	*/
@@ -324,7 +324,7 @@ typedef struct
 } MP4_SYNTAX_STATE;
 
 
-/* VDM Ïà¹ØÊı¾İ */
+/* VDM ç›¸å…³æ•°æ® */
 typedef struct
 {
     UINT8     *pmv_vir_addr;
@@ -344,13 +344,13 @@ typedef struct
     UINT32    pmv_backward_ref_addr;
 } MSG_AV_IMG2PMV_ADDR;
 
-/* ÂëÁ÷¹ÜÀíĞÅÏ¢*/
+/* ç æµç®¡ç†ä¿¡æ¯*/
 typedef struct
 {
     UINT8     *vir_addr;
     UINT32    phy_addr;   
     SINT32    len;  
-    UINT32    offset;        //×Ö½ÚµÚ¼¸±ÈÌØ¿ªÊ¼ÓĞĞ§
+    UINT32    offset;        //å­—èŠ‚ç¬¬å‡ æ¯”ç‰¹å¼€å§‹æœ‰æ•ˆ
 } BITS_OBJ;
 #if 0
 typedef struct
@@ -382,7 +382,7 @@ typedef struct
 	UINT8  BwdCodingType;
 	UINT8  CurCodingType;
     
-    UINT8  TmpUserData[MAX_USRDAT_SIZE+8]; /* +8 ÎªÁËÈ·±£°²È« */
+    UINT8  TmpUserData[MAX_USRDAT_SIZE+8]; /* +8 ä¸ºäº†ç¡®ä¿å®‰å…¨ */
     MP4_DEC_PARAM_S *pMp4DecParam;
     MP4_DEC_PARAM_S Mp4DecParam;
     DEC_STREAM_PACKET_S  stCurPacket;
@@ -394,7 +394,7 @@ typedef struct
 
     MP4_VOS MP4Vos;
     MP4_VOL MP4Vol;
-    MP4_VOL MP4VolLastBack; /* ¼ÇÂ¼×î½üÒ»´Î½âÎöOKµÄĞÅÏ¢ */
+    MP4_VOL MP4VolLastBack; /* è®°å½•æœ€è¿‘ä¸€æ¬¡è§£æOKçš„ä¿¡æ¯ */
     MP4_VOP MP4Vop;
     MP4_SYNTAX MP4Syntax;
     MP4_SYNTAX_STATE MP4SyntaxState;
@@ -423,7 +423,7 @@ typedef struct
     VDEC_USRDAT_S  *UsrData[4];
     VDEC_USRDAT_S  *CurUsrData;
 
-    /* Èç¹ûIP VOP³ö´í£¬Ñ°ÕÒÏÂÒ»¸öIVOPµÄ±êÊ¾£¬=1´ú±íIPVOP³ö´í*/
+    /* å¦‚æœIP VOPå‡ºé”™ï¼Œå¯»æ‰¾ä¸‹ä¸€ä¸ªIVOPçš„æ ‡ç¤ºï¼Œ=1ä»£è¡¨IPVOPå‡ºé”™*/
     UINT32 IPVopErr;
 
     IMAGE_VO_QUEUE     ImageQue;

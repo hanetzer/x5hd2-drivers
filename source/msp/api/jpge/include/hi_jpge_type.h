@@ -33,7 +33,7 @@ extern "C"{
 /****************************************************************************/
 
 /*JPEG handle define*/
-/*CNcomment:JPGE¾ä±ú¶¨Òå*/
+/*CNcomment:JPGEå¥æŸ„å®šä¹‰*/
 typedef HI_S32 JPGE_HANDLE;
 
 

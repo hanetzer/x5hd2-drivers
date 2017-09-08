@@ -58,7 +58,7 @@ void ff_vp6_filter_diag4_c(uint8_t *dst, uint8_t *src, int stride,
     }
 }
 
-/*vp6 4³éÍ·²åÖµÂË²¨º¯Êı x00141957 2010 1127*/
+/*vp6 4æŠ½å¤´æ’å€¼æ»¤æ³¢å‡½æ•° x00141957 2010 1127*/
 void vp6_filter_hv4(uint8_t *dst, uint8_t *src, int stride,						   int delta, const int16_t *weights)
 {	
 	int x, y;	

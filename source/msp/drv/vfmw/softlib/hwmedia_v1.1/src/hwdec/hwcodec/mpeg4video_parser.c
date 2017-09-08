@@ -81,8 +81,8 @@ static int av_mpeg4_decode_header(AVCodecParserContext *s1,
     s->current_picture_ptr = &s->current_picture;
 
 	/*guoshan + 00101841 20100415*/
-	/*Õâ¸ö±äÁ¿±»ÐÞ¸Ä³ÉÊý×é£¬µ«¶ÔÓÚH.263ÂëÁ÷£¬×î¶àÖ»»áÊ¹ÓÃÆäÖÐµÄÒ»¸ö£¬¼´µÚ0Î¬µÄÊý×é*/
-	/*¶ÔÓÚMPEG-4ÂëÁ÷£¬×î¶àÖ»»áÊ¹ÓÃÆäÖÐµÄÁ½¸ö£¬¼´µÚ0£¬1Î¬µÄÊý×é*/
+	/*è¿™ä¸ªå˜é‡è¢«ä¿®æ”¹æˆæ•°ç»„ï¼Œä½†å¯¹äºŽH.263ç æµï¼Œæœ€å¤šåªä¼šä½¿ç”¨å…¶ä¸­çš„ä¸€ä¸ªï¼Œå³ç¬¬0ç»´çš„æ•°ç»„*/
+	/*å¯¹äºŽMPEG-4ç æµï¼Œæœ€å¤šåªä¼šä½¿ç”¨å…¶ä¸­çš„ä¸¤ä¸ªï¼Œå³ç¬¬0ï¼Œ1ç»´çš„æ•°ç»„*/
 	for(ii = 0; ii<avctx->extradata_num; ii++)
 	{
 		// if (avctx->extradata_size && pc->first_picture)
@@ -144,7 +144,7 @@ static int mpeg4video_parse(AVCodecParserContext *s,
 }
 
 /*guoshan + 00101841 20100415*/
-/* ÐÂÔöº¯Êý£º½âÎöÒ»ÍêÕûÍ¼ÏñµÄmpeg4ÂëÁ÷ */
+/* æ–°å¢žå‡½æ•°ï¼šè§£æžä¸€å®Œæ•´å›¾åƒçš„mpeg4ç æµ */
 int MPEG4_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf, unsigned int *puiOutBufSize,const uint8_t *pucInBuf, unsigned int uiInBufSize, int *piLength)
 {
 	int iRet = IMEDIA_RET_SUCCESS;
@@ -190,7 +190,7 @@ int MPEG4_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBu
 		return iRet;
 	}
 
-	/* Èç¹ûµ±Ç°½âÎöÖ¡ÔÚÇ°Ò»¸öbufferµÄ±ß½ç£¬Ôòµ±Ç°bufferµÄ½âÎöÓÃµôµÄ×Ö½ÚÊýÎª0 */
+	/* å¦‚æžœå½“å‰è§£æžå¸§åœ¨å‰ä¸€ä¸ªbufferçš„è¾¹ç•Œï¼Œåˆ™å½“å‰bufferçš„è§£æžç”¨æŽ‰çš„å­—èŠ‚æ•°ä¸º0 */
 	if(0 > iBytesConsumed)
 	{
 		iBytesConsumed = 0;

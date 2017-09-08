@@ -107,7 +107,7 @@ HI_BOOL hi3136_Set_Ts_Out_Enable(HI_U32 u32TunerPort,HI_BOOL bTS_ON)
     return HI_SUCCESS;
 }
 
-HI3136_LOCK_STATUS_E hi3136_Read_Lock_Status(HI_U32 u32TunerPort)  //ÉèÖÃ×´Ì¬¼Ä´æÆ÷£¬
+HI3136_LOCK_STATUS_E hi3136_Read_Lock_Status(HI_U32 u32TunerPort)  //è®¾ç½®çŠ¶æ€å¯„å­˜å™¨ï¼Œ
 {
     HI_U8 u8Temp = 0;
     HI3136_LOCK_STATUS_E lockstatus;
@@ -609,7 +609,7 @@ HI_S32 hi3136_set_lnb_out(HI_U32 u32TunerPort, TUNER_LNB_OUT_E enOut)
     return HI_SUCCESS;
 }
 
-HI_S32 hi3136_send_continuous_22K(HI_U32 u32TunerPort,HI_BOOL b22k_on) // ÉèÖÃ22k,
+HI_S32 hi3136_send_continuous_22K(HI_U32 u32TunerPort,HI_BOOL b22k_on) // è®¾ç½®22k,
 {
     HI_U8   u8Temp = 0;
     HI_U32  diseqc_Ratio = 0;
@@ -1082,7 +1082,7 @@ HI_S32 hi3136_lock_TP_BS(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *tp)
 
     center_shift_KHz = (hi3136_cfg[u32TunerPort].enIQSpectrum) ? (-fc_true) : fc_true;
 
-    //fs_gradeÅĞ¶Ï£¬ unit Hz
+    //fs_gradeåˆ¤æ–­ï¼Œ unit Hz
     if         (fs_cur< 2000000)                    fs_grade=0;
     else if (fs_cur>=2000000 && fs_cur<3000000)     fs_grade=1;
     else if (fs_cur>=3000000 && fs_cur<4900000)     fs_grade=2;
@@ -1113,7 +1113,7 @@ HI_S32 hi3136_lock_TP_BS(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *tp)
     } while(!u8Temp && time_cnt < 300);
 
     temp_TPnum = 0;
-    if(u8Temp)  //cbs_finish ±êÖ¾Î»1±íÊ¾ÒÑÍê³É
+    if(u8Temp)  //cbs_finish æ ‡å¿—ä½1è¡¨ç¤ºå·²å®Œæˆ
     {
         qam_read_byte(u32TunerPort, CBS_R2_NUM, &tempL);
         temp_TPnum = tempL & 0x1f;
@@ -1123,7 +1123,7 @@ HI_S32 hi3136_lock_TP_BS(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *tp)
     {
         max_reliablity = 0;
         qam_read_byte(u32TunerPort, CBS_CTRL_RDADDR, &u8Temp);
-        for(j = 0; j < temp_TPnum; j++)     //ÒÑÖªFs FcÇé¿öÏÂ£¬¶ÁÃ¤É¨ĞÅÏ¢²ÎÊı£¬Í¬Ê±ÕÒ×î´ó×ÛºÏ¿É¿¿¶È
+        for(j = 0; j < temp_TPnum; j++)     //å·²çŸ¥Fs Fcæƒ…å†µä¸‹ï¼Œè¯»ç›²æ‰«ä¿¡æ¯å‚æ•°ï¼ŒåŒæ—¶æ‰¾æœ€å¤§ç»¼åˆå¯é åº¦
         {
             qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, (u8Temp & 0xe0) | j);
 
@@ -1131,7 +1131,7 @@ HI_S32 hi3136_lock_TP_BS(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *tp)
             qam_read_byte(u32TunerPort, CBS_FC_L, &tempL);
             qam_read_byte(u32TunerPort, CBS_FC_H, &tempH);
             cbs_fc = (HI_S16)(tempL + (tempH << 8));
-            reliablity = abs(cbs_fc) / 64 + read_reliable;      //¼ÆËã×ÛºÏ¿É¿¿¶È ? Òç³ö
+            reliablity = abs(cbs_fc) / 64 + read_reliable;      //è®¡ç®—ç»¼åˆå¯é åº¦ ? æº¢å‡º
 
             if(reliablity > max_reliablity)
             {
@@ -1143,7 +1143,7 @@ HI_S32 hi3136_lock_TP_BS(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *tp)
             }
         }
 
-        //½«Ã¤É¨µÄ½á¹ûÖÃÈëÅäÖÃ¼Ä´æÆ÷£¬ÔÙ¹Ø±ÕÃ¤É¨£¬¸´Î»
+        //å°†ç›²æ‰«çš„ç»“æœç½®å…¥é…ç½®å¯„å­˜å™¨ï¼Œå†å…³é—­ç›²æ‰«ï¼Œå¤ä½
         hi3136_set_symrate(u32TunerPort, cbs_fs_sel * 1000);
         fc_true += cbs_fc_sel;
         //printk("%s, %d, cbs_fc_sel=%d\n", __func__, __LINE__,  cbs_fc_sel);
@@ -1152,15 +1152,15 @@ HI_S32 hi3136_lock_TP_BS(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *tp)
         qam_write_byte(u32TunerPort, CENT_FREQ_L, fc_true & 0xff);
         qam_write_byte(u32TunerPort, CENT_FREQ_H, (fc_true >> 8) & 0xff);
 
-        qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, 0x00);    //¹Ø±ÕÃ¤É¨£¬RamµØÖ·Îª0
-        hi3136_setlpf(u32TunerPort, cbs_fs_sel * 1000 / 10 * 7 + abs(fc_true) * 1000 + 3500000);    //ÖĞĞÄ×¼È·ÒÑÖª£¬ÓàÁ¿Ğ¡Ğ©£¬¼Ó3.5M
+        qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, 0x00);    //å…³é—­ç›²æ‰«ï¼ŒRamåœ°å€ä¸º0
+        hi3136_setlpf(u32TunerPort, cbs_fs_sel * 1000 / 10 * 7 + abs(fc_true) * 1000 + 3500000);    //ä¸­å¿ƒå‡†ç¡®å·²çŸ¥ï¼Œä½™é‡å°äº›ï¼ŒåŠ 3.5M
 
-        mdelay(10); //Ã»ÓĞÃ¤É¨£¬¶ÔTUNERÊä³ö²»ÎÈ¶¨µÄµÖ¿¹Á¦Ç¿£¬¿ÉÒÔÉÙµÈ´ı¡£ÁíÍâtuner½ö¸Ä´ø¿í£¬Ó¦¸ÃºÜ¿ìÎÈ¶¨¡£
+        mdelay(10); //æ²¡æœ‰ç›²æ‰«ï¼Œå¯¹TUNERè¾“å‡ºä¸ç¨³å®šçš„æŠµæŠ—åŠ›å¼ºï¼Œå¯ä»¥å°‘ç­‰å¾…ã€‚å¦å¤–tunerä»…æ”¹å¸¦å®½ï¼Œåº”è¯¥å¾ˆå¿«ç¨³å®šã€‚
         hi3136_HotReset_CHIP(u32TunerPort);
 
         fec_ok_wait = (320 - fs_grade * 20) * 2 + 600;
         time_cnt = 0;
-        do      //µÈ´ıFEC-OK
+        do      //ç­‰å¾…FEC-OK
         {
             mdelay(2);
             time_cnt += 2;
@@ -1222,9 +1222,9 @@ HI_U32 hi3136_BS_one_Window(HI_U32 u32TunerPort, HI_U32 Fcenter/*MHz*/, HI_U32 L
         tuner_mdelay(5);
         time_cnt += 5;
         qam_read_bit(u32TunerPort, CBS_FINISH, 0, &u8Temp);
-    } while(!u8Temp && (time_cnt < 300));       //µÈ´ı¶ÁÈ¡CBS_FINISH ²Ù×÷,µ±Ç°ÑÓÊ±10000ms£¬ĞèÈ·ÈÏÑÓÊ±
+    } while(!u8Temp && (time_cnt < 300));       //ç­‰å¾…è¯»å–CBS_FINISH æ“ä½œ,å½“å‰å»¶æ—¶10000msï¼Œéœ€ç¡®è®¤å»¶æ—¶
 
-    if(u8Temp)  //cbs_finish ±êÖ¾Î»1±íÊ¾ÒÑÍê³É
+    if(u8Temp)  //cbs_finish æ ‡å¿—ä½1è¡¨ç¤ºå·²å®Œæˆ
     {
         qam_read_byte(u32TunerPort, CBS_R2_NUM, &tempL);
         TP_Num = tempL & 0x1f;
@@ -1242,7 +1242,7 @@ HI_U32 hi3136_BS_one_Window(HI_U32 u32TunerPort, HI_U32 Fcenter/*MHz*/, HI_U32 L
 
             if(hi3136_cfg[u32TunerPort].enIQSpectrum)
             {
-                Fc_offset_Bs = -Fc_offset_Bs;  //¾ßÌå¸ù¾İÊµ¼ÊÓ²¼şÅäÖÃÀ´
+                Fc_offset_Bs = -Fc_offset_Bs;  //å…·ä½“æ ¹æ®å®é™…ç¡¬ä»¶é…ç½®æ¥
             }
 
             pstChannel->u32Freq = (Fcenter * 1000) + Fc_offset_Bs;
@@ -1250,10 +1250,10 @@ HI_U32 hi3136_BS_one_Window(HI_U32 u32TunerPort, HI_U32 Fcenter/*MHz*/, HI_U32 L
             qam_read_byte(u32TunerPort, CBS_FS_L, &tempL);
             qam_read_byte(u32TunerPort, CBS_FS_H, &tempH);
             Fs_Bs = tempL + (tempH << 8);
-            pstChannel->u32SymbolRate = Fs_Bs * 1000;//·ûºÅÂÊ
+            pstChannel->u32SymbolRate = Fs_Bs * 1000;//ç¬¦å·ç‡
 
             qam_read_byte(u32TunerPort, CBS_RELIABLITY, &reliablity);
-            pstChannel->cbs_reliablity = reliablity;    //cbs ½á¹û¿É¿¿¶È£¬Ô½´óÔ½¿É¿¿
+            pstChannel->cbs_reliablity = reliablity;    //cbs ç»“æœå¯é åº¦ï¼Œè¶Šå¤§è¶Šå¯é 
             pstChannel++;
         }
     }
@@ -1291,7 +1291,7 @@ HI_S32 hi3136_blindscan_action(HI_U32 u32TunerPort, TUNER_BLINDSCAN_PARA_S *pstP
 
     qam_read_byte(u32TunerPort, CBS_CTRL_RDADDR, &u8Temp);
     u8Temp &= 0xe0;
-    qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, u8Temp);//½«cbs_rd_addr ÇåÁã
+    qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, u8Temp);//å°†cbs_rd_addr æ¸…é›¶
 
     return HI_SUCCESS;
 }
@@ -1379,7 +1379,7 @@ HI_S32 hi3136_set_sat_attr(HI_U32 u32TunerPort, HI_UNF_TUNER_SAT_ATTR_S *pstSatT
     hi3136_cfg[u32TunerPort].u16TunerLPF_100Khz = pstAttr->u16TunerMaxLPF * 10;
     hi3136_cfg[u32TunerPort].enIQSpectrum = pstAttr->enIQSpectrum;
 
-    //ĞŞ¸Äagc_inverse
+    //ä¿®æ”¹agc_inverse
     switch (pstAttr->enRFAGC)
     {
     case HI_UNF_TUNER_RFAGC_INVERT:
@@ -1511,7 +1511,7 @@ HI_S32 hi3136_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel)
     
     HI_TUNER_CHECKPOINTER( pstChannel);
 
-    s32FuncRet = hi3136_lock_TP_BS(u32TunerPort, pstChannel); //¸Ä³É¿ªååBS
+    s32FuncRet = hi3136_lock_TP_BS(u32TunerPort, pstChannel); //æ”¹æˆå¼€é‚‹BS
     if (HI_SUCCESS != s32FuncRet)
     {
         HI_ERR_TUNER( "set tuner error\n");
@@ -1519,7 +1519,7 @@ HI_S32 hi3136_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel)
     }
     if(u32TunerPort < TUNER_NUM)
     {
-          hi3136_config_IQ_swap(u32TunerPort, hi3136_cfg[u32TunerPort].enIQSpectrum);     /*ÅäÖÃIQ*/
+          hi3136_config_IQ_swap(u32TunerPort, hi3136_cfg[u32TunerPort].enIQSpectrum);     /*é…ç½®IQ*/
 
           hi3136_set_ts_type(u32TunerPort, g_stTunerOps[u32TunerPort].enTsType);
     }
@@ -1575,7 +1575,7 @@ HI_S32 hi3136_set_ts_type(HI_U32 u32TunerPort, HI_UNF_TUNER_OUPUT_MODE_E enTsTyp
         {
             qam_write_bit(u32TunerPort, TS_PARALL_CTRL, 5, 0);/*SERIAL MODE*/
             //qam_write_byte(u32TunerPort,TS_OUT98_SEL, 0x0f);/*config ts_out_9&8bit*/
-            //qam_write_byte(u32TunerPort,TS_OUT76_SEL,0x76 );/*config ts_out_7&6bit   ÔÚ´®ĞĞÅäÖÃ¾ßÌå¿Éµ÷Õû*/
+            //qam_write_byte(u32TunerPort,TS_OUT76_SEL,0x76 );/*config ts_out_7&6bit   åœ¨ä¸²è¡Œé…ç½®å…·ä½“å¯è°ƒæ•´*/
             //qam_write_bit(u32TunerPort, TS_CTRL0, 1, 1);
             break;
         }
@@ -1585,7 +1585,7 @@ HI_S32 hi3136_set_ts_type(HI_U32 u32TunerPort, HI_UNF_TUNER_OUPUT_MODE_E enTsTyp
             u8Temp = u8Temp | (1 << 5) | (1 << 4);
             qam_write_byte(u32TunerPort, TS_PARALL_CTRL, u8Temp);
             //qam_write_byte(u32TunerPort,TS_OUT98_SEL, 0x01);/*config ts_out_9&8bit*/
-            //qam_write_byte(u32TunerPort,TS_OUT76_SEL,0x76 );/*config ts_out_7&6bit   ÔÚ´®ĞĞÅäÖÃ¾ßÌå¿Éµ÷Õû*/
+            //qam_write_byte(u32TunerPort,TS_OUT76_SEL,0x76 );/*config ts_out_7&6bit   åœ¨ä¸²è¡Œé…ç½®å…·ä½“å¯è°ƒæ•´*/
             //qam_write_bit(u32TunerPort, TS_CTRL0, 1, 1);
             break;
         }
@@ -1610,10 +1610,10 @@ HI_S32 hi3136_DiSEqC_send_msg(HI_U32 u32TunerPort, HI_UNF_TUNER_DISEQC_SENDMSG_S
     diseqc_Ratio = (hi3136_cfg[u32TunerPort].u32CLK_DEMO_kHz / 22) & 0xffff;
     //printk("diseqc_mode = 0x%x, diseqc_Ratio = 0x%x\n", diseqc_mode, diseqc_Ratio);
     qam_write_byte(u32TunerPort, DSEC_RATIO_L, (HI_U8)(diseqc_Ratio & 0xff));
-    qam_write_byte(u32TunerPort, DSEC_RATIO_H, (HI_U8)((diseqc_Ratio & 0xff00) >> 8)); //ÉèÖÃ22K Ê±ÖÓ
+    qam_write_byte(u32TunerPort, DSEC_RATIO_H, (HI_U8)((diseqc_Ratio & 0xff00) >> 8)); //è®¾ç½®22K æ—¶é’Ÿ
 
 
-    u8Temp = diseqc_mode & 0x01;   /*diseqc ´¦ÓÚ¿ÕÏĞ×´Ì¬£¬¼´Ê¹diseqc module ¸´Î»£¬ÆÁ±ÎÒ²¿ÉÓÃ*/
+    u8Temp = diseqc_mode & 0x01;   /*diseqc å¤„äºç©ºé—²çŠ¶æ€ï¼Œå³ä½¿diseqc module å¤ä½ï¼Œå±è”½ä¹Ÿå¯ç”¨*/
     qam_write_byte(u32TunerPort, TX_CTRL, u8Temp);
 
 
@@ -1626,9 +1626,9 @@ HI_S32 hi3136_DiSEqC_send_msg(HI_U32 u32TunerPort, HI_UNF_TUNER_DISEQC_SENDMSG_S
 
     u8Temp =  (diseqc_mode & 0x01) | (1 << 3) | (((pstSendMsg->u8Length - 1) & 7) << 4);
     //printk("u8Temp = 0x%x\n", u8Temp);
-    qam_write_byte(u32TunerPort,TX_CTRL,u8Temp); /*·¢ËÍnum+1¸ö×Ö½Ú,²¢·¢ËÍÍêÕûdiseqcĞÅÏ¢*/
+    qam_write_byte(u32TunerPort,TX_CTRL,u8Temp); /*å‘é€num+1ä¸ªå­—èŠ‚,å¹¶å‘é€å®Œæ•´diseqcä¿¡æ¯*/
 
-    msleep_interruptible(60);   //ÖÁÉÙÑÓÊ±30ms
+    msleep_interruptible(60);   //è‡³å°‘å»¶æ—¶30ms
 
     return HI_SUCCESS;
 }
@@ -1859,15 +1859,15 @@ HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChann
 
         qam_write_byte(u32TunerPort, 0x58, bw_max_set);
 
-        for(m=0; m<average_num; m++) //¶à´ÎÃ¤É¨ÇóÔØ²¨Îó²î¾ùÖµ
+        for(m=0; m<average_num; m++) //å¤šæ¬¡ç›²æ‰«æ±‚è½½æ³¢è¯¯å·®å‡å€¼
         {
             //set key register
             if((m == 0) || (try_one != try_one_old))
             {
                 try_one_old = try_one;
-                qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, 0xc0);    //ÒÑÖªÆµµã¼°·ûºÅÂÊµÄÃ¤É¨
+                qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, 0xc0);    //å·²çŸ¥é¢‘ç‚¹åŠç¬¦å·ç‡çš„ç›²æ‰«
                 hi3136_set_symrate(u32TunerPort, fs_cur );
-                qam_write_byte(u32TunerPort, CENT_FREQ_L, 0x00);    //hi3136_set_symrateÖĞº¬ÔØ²¨ÖĞĞÄÆ«ÒÆ£¬µ«Ã¤É¨È·ÈÏÊ±²»Ó¦¼ÓÆ«ÒÆ
+                qam_write_byte(u32TunerPort, CENT_FREQ_L, 0x00);    //hi3136_set_symrateä¸­å«è½½æ³¢ä¸­å¿ƒåç§»ï¼Œä½†ç›²æ‰«ç¡®è®¤æ—¶ä¸åº”åŠ åç§»
                 qam_write_byte(u32TunerPort, CENT_FREQ_H, 0x00);
             }
 
@@ -1882,7 +1882,7 @@ HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChann
 
             //wait cbs finish
             time_cnt = 0;
-            do      //µÈ´ıÃ¤É¨Íê³É
+            do      //ç­‰å¾…ç›²æ‰«å®Œæˆ
             {
                 //tuner_mdelay(2);
                 //time_cnt += 2;
@@ -1894,26 +1894,26 @@ HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChann
 
             //read TP num
             temp_TPnum = 0;
-            if(u8Temp)  //cbs_finish ±êÖ¾Î»1±íÊ¾ÒÑÍê³É£¬ÔÙ¶ÁTP¸öÊı
+            if(u8Temp)  //cbs_finish æ ‡å¿—ä½1è¡¨ç¤ºå·²å®Œæˆï¼Œå†è¯»TPä¸ªæ•°
             {
                 qam_read_byte(u32TunerPort, CBS_R2_NUM, &tempL);
                 temp_TPnum = tempL & 0x1f;
             }
 
-            if(temp_TPnum != 0) //TP>=1 ¼´Ã¤É¨³É¹¦£¬²¢¿ªÊ¼ÒÑÖªFs Fc½øĞĞÃ¤É¨£¬¶ÁÈ¡ÏàÓ¦µÄTPÊı£¬ÕÒ¿É¿¿¶È×î¸ßµÄTP
+            if(temp_TPnum != 0) //TP>=1 å³ç›²æ‰«æˆåŠŸï¼Œå¹¶å¼€å§‹å·²çŸ¥Fs Fcè¿›è¡Œç›²æ‰«ï¼Œè¯»å–ç›¸åº”çš„TPæ•°ï¼Œæ‰¾å¯é åº¦æœ€é«˜çš„TP
             {
                 max_finded = 0;
                 max_reliablity = 0;
 
                 //find max reliable
-                for(j = 0; j < temp_TPnum; j++)     //ÒÑÖªFs FcÇé¿öÏÂ£¬Ã¤É¨ĞÅÏ¢²ÎÊı
+                for(j = 0; j < temp_TPnum; j++)     //å·²çŸ¥Fs Fcæƒ…å†µä¸‹ï¼Œç›²æ‰«ä¿¡æ¯å‚æ•°
                 {
-                    qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, 0xc0 | j);    //µÍ5Î»Ö¸¶¨ÁËÒª¶ÁÄÄ¸öTP
+                    qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, 0xc0 | j);    //ä½5ä½æŒ‡å®šäº†è¦è¯»å“ªä¸ªTP
                     qam_read_byte(u32TunerPort, CBS_RELIABLITY, &read_reliable);
                     qam_read_byte(u32TunerPort, CBS_FC_L, &tempL);
                     qam_read_byte(u32TunerPort, CBS_FC_H, &tempH);
                     cbs_fc = (HI_S16) (tempL + (tempH<<8));
-                    if((abs(cbs_fc) < (fs_kHz*25/100+700))  &&  (read_reliable > max_reliablity))   //Ç°Ìá£ºÔØ²¨Îó²îĞ¡ÓÚ0.25±¶·ûºÅÂÊ????
+                    if((abs(cbs_fc) < (fs_kHz*25/100+700))  &&  (read_reliable > max_reliablity))   //å‰æï¼šè½½æ³¢è¯¯å·®å°äº0.25å€ç¬¦å·ç‡????
                     {
                         max_finded = 1;
                         max_reliablity = read_reliable;
@@ -1942,7 +1942,7 @@ HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChann
                 if(max_finded && !try_one && (fs_kHz >= 3000 || may_sfu))
                 {
                     try_one = 1;
-                    qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, 0x00);    //¹Ø±ÕÃ¤É¨£¬RamµØÖ·Îª0
+                    qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, 0x00);    //å…³é—­ç›²æ‰«ï¼ŒRamåœ°å€ä¸º0
                     hi3136_set_symrate(u32TunerPort, mean_fs*1000);
                     qam_write_byte(u32TunerPort, CENT_FREQ_L, mean_fc & 0xff);
                     qam_write_byte(u32TunerPort, CENT_FREQ_H, (mean_fc>>8) & 0xff);
@@ -1950,7 +1950,7 @@ HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChann
 
                     //wait for timing ok
                     time_cnt = 0;
-                    do      //µÈ´ı¶¨Ê±OK
+                    do      //ç­‰å¾…å®šæ—¶OK
                     {
                         //tuner_mdelay(2);
                         //time_cnt +=2;
@@ -1962,7 +1962,7 @@ HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChann
                     if(tim_ok_bit)
                     {
                         time_cnt = 0;
-                        do      //µÈ´ıSCAN-OK
+                        do      //ç­‰å¾…SCAN-OK
                         {
                             tuner_mdelay(5);
                             time_cnt += 5;
@@ -2022,7 +2022,7 @@ HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChann
             //if is dvb-s2, needn't restart system,   else reset fs and fc, then restart
             if(!s2_sync_bit && !scan_ok_bit)
             {
-                qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, 0x00);    //¹Ø±ÕÃ¤É¨£¬RamµØÖ·Îª0
+                qam_write_byte(u32TunerPort, CBS_CTRL_RDADDR, 0x00);    //å…³é—­ç›²æ‰«ï¼ŒRamåœ°å€ä¸º0
                 hi3136_set_symrate(u32TunerPort, mean_fs*1000);
                 qam_write_byte(u32TunerPort, CENT_FREQ_L, mean_fc & 0xff);
                 qam_write_byte(u32TunerPort, CENT_FREQ_H, (mean_fc>>8) & 0xff);
@@ -2042,7 +2042,7 @@ HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChann
                 }
 
                 time_cnt = 0;
-                do      //µÈ´ı¶¨Ê±OK
+                do      //ç­‰å¾…å®šæ—¶OK
                 {
                     //tuner_mdelay(2);
                     //time_cnt +=2;
@@ -2058,7 +2058,7 @@ HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChann
                     scan_state_old = 0;
                     scan_st1_wait = 0;
                     time_cnt = 0;
-                    do      //µÈ´ıSCAN-OK
+                    do      //ç­‰å¾…SCAN-OK
                     {
                         tuner_mdelay(5);
                         time_cnt += 5;
@@ -2136,7 +2136,7 @@ HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChann
                         for(j=0; j<fec_num_true; j++)
                         {
                             time_cnt = 0;
-                            do      //µÈ´ıFEC-OK
+                            do      //ç­‰å¾…FEC-OK
                             {
                                 tuner_mdelay(10);
                                 time_cnt += 10;
@@ -2230,7 +2230,7 @@ HI_S32 hi3136_tp_verify(HI_U32 u32TunerPort, TUNER_TP_VERIFY_PARAMS_S * pstChann
         else                                 chance_2a = mean_reliable > (40 + find_up + low_cn_cnt);
 
         chance_2 = cr_ok_err || (!scan_ok_bit && chance_2a);
-        if(fec_ok_bit || ((i==0) && !hist_is_ok && !s1_high_cn && (low_cn  || try_enough ||may_sfu  || !chance_2)) || ((i==1) && (!s1_high_cn ||try_enough))) //²»Âú×ãÔÙÊÔÌõ¼ş
+        if(fec_ok_bit || ((i==0) && !hist_is_ok && !s1_high_cn && (low_cn  || try_enough ||may_sfu  || !chance_2)) || ((i==1) && (!s1_high_cn ||try_enough))) //ä¸æ»¡è¶³å†è¯•æ¡ä»¶
             break;
      }
 
@@ -2271,7 +2271,7 @@ return_proc:
         freq_err = mean_fc  + freq_tr;
 
         if(hi3136_cfg[u32TunerPort].enIQSpectrum)
-            freq_err = -freq_err;  //¾ßÌå¸ù¾İÊµ¼ÊÓ²¼şÅäÖÃÀ´
+            freq_err = -freq_err;  //å…·ä½“æ ¹æ®å®é™…ç¡¬ä»¶é…ç½®æ¥
         *(pstChannel->pu32Frequency)  += freq_err;
         *(pstChannel->pu32SymbolRate) = mean_fs*1000;
         if_cur = *(pstChannel->pu32Frequency);

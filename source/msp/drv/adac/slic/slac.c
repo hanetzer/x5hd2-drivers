@@ -89,7 +89,7 @@ static wait_queue_head_t WaitQueueSlacTick;
 static struct task_struct *pSlacTickThread = NULL;
 
 /*Modified for sometimes SLIC not responce when be called again and again*/
-/*CNcomment:ÎÊÌâµ¥ºÅ:¾ÅÁªVOIP·´¸´ºô½ĞSLICÅ¼¶ûÎŞ·´Ó¦ by FangZhonghua, 2011/3/28 */
+/*CNcomment:é—®é¢˜å•å·:ä¹è”VOIPåå¤å‘¼å«SLICå¶å°”æ— ååº” by FangZhonghua, 2011/3/28 */
 
 /* BEGIN: Modified for PN: initialize with audio error by f00172091, 2011/1/30 */
 int Slac_ProcRead(struct seq_file *p, void *v)
@@ -305,7 +305,7 @@ static unsigned int slac_select(struct file *filp, struct poll_table_struct *wai
 }    
 
 /*BEGIN: Modified for sometimes SLIC not responce when be called again and again*/
-/*CNcomment:ÎÊÌâµ¥ºÅ:¾ÅÁªVOIP·´¸´ºô½ĞSLICÅ¼¶ûÎŞ·´Ó¦ by FangZhonghua, 2011/3/29*/
+/*CNcomment:é—®é¢˜å•å·:ä¹è”VOIPåå¤å‘¼å«SLICå¶å°”æ— ååº” by FangZhonghua, 2011/3/29*/
 
 #if 0
 /*slac 10ms timer interrupt*/
@@ -430,7 +430,7 @@ static int slac_tick_proc(void * argv)
 }
 
 /*END: Modified for sometimes SLIC not responce when be called again and again*/
-/*CNcomment:ÎÊÌâµ¥ºÅ:¾ÅÁªVOIP·´¸´ºô½ĞSLICÅ¼¶ûÎŞ·´Ó¦ by FangZhonghua, 2011/3/29*/
+/*CNcomment:é—®é¢˜å•å·:ä¹è”VOIPåå¤å‘¼å«SLICå¶å°”æ— ååº” by FangZhonghua, 2011/3/29*/
 
 #if 0
 static void timeout_handler(unsigned long data);
@@ -470,15 +470,15 @@ static int slac_open(struct inode * inode, struct file * file)
             SLAC_UNLOCK();
 			
             /* BEGIN: Modified for kernel error when AIAO initialize since no SLIC chip*/
-			/*CNcomment: ÎÊÌâµ¥ºÅ:ÎŞSLIC¿Û°åAIAO³õÊ¼»¯ÄÚºË³ö´í by FangZhonghua, 2011/3/17*/
+			/*CNcomment: é—®é¢˜å•å·:æ— SLICæ‰£æ¿AIAOåˆå§‹åŒ–å†…æ ¸å‡ºé”™ by FangZhonghua, 2011/3/17*/
 			
             return -1;
             /* END: Modified for kernel error when AIAO initialize since no SLIC chip*/
-			/*CNcomment: ÎÊÌâµ¥ºÅ:ÎŞSLIC¿Û°åAIAO³õÊ¼»¯ÄÚºË³ö´í by FangZhonghua, 2011/3/17*/
+			/*CNcomment: é—®é¢˜å•å·:æ— SLICæ‰£æ¿AIAOåˆå§‹åŒ–å†…æ ¸å‡ºé”™ by FangZhonghua, 2011/3/17*/
         }
         
         /*BEGIN: Modified for sometimes SLIC not responce when be called again and again*/
-		/*CNcomment:ÎÊÌâµ¥ºÅ:¾ÅÁªVOIP·´¸´ºô½ĞSLICÅ¼¶ûÎŞ·´Ó¦ by FangZhonghua, 2011/3/29*/
+		/*CNcomment:é—®é¢˜å•å·:ä¹è”VOIPåå¤å‘¼å«SLICå¶å°”æ— ååº” by FangZhonghua, 2011/3/29*/
 		
         s32SlacTickWaitFlag = 0;
         init_waitqueue_head(&WaitQueueSlacTick);
@@ -493,7 +493,7 @@ static int slac_open(struct inode * inode, struct file * file)
         wake_up_process(pSlacTickThread);
 
 		/*END: Modified for sometimes SLIC not responce when be called again and again*/
-		/*CNcomment:ÎÊÌâµ¥ºÅ:¾ÅÁªVOIP·´¸´ºô½ĞSLICÅ¼¶ûÎŞ·´Ó¦ by FangZhonghua, 2011/3/29*/
+		/*CNcomment:é—®é¢˜å•å·:ä¹è”VOIPåå¤å‘¼å«SLICå¶å°”æ— ååº” by FangZhonghua, 2011/3/29*/
         
         init_timer(&slac_timer);
         slac_timer.function = &slac_timer_handle;
@@ -516,7 +516,7 @@ static int slac_release(struct inode *inode ,struct file *file)
         del_timer(&slac_timer);
 
 		/*BEGIN: Modified for sometimes SLIC not responce when be called again and again*/
-		/*CNcomment:ÎÊÌâµ¥ºÅ:¾ÅÁªVOIP·´¸´ºô½ĞSLICÅ¼¶ûÎŞ·´Ó¦ by FangZhonghua, 2011/3/29*/
+		/*CNcomment:é—®é¢˜å•å·:ä¹è”VOIPåå¤å‘¼å«SLICå¶å°”æ— ååº” by FangZhonghua, 2011/3/29*/
 		
         s32SlacTickWaitFlag = -1;
         wake_up_interruptible(&WaitQueueSlacTick);
@@ -524,7 +524,7 @@ static int slac_release(struct inode *inode ,struct file *file)
         pSlacTickThread = NULL;
 
 		/*END: Modified for sometimes SLIC not responce when be called again and again*/
-		/*CNcomment:ÎÊÌâµ¥ºÅ:¾ÅÁªVOIP·´¸´ºô½ĞSLICÅ¼¶ûÎŞ·´Ó¦ by FangZhonghua, 2011/3/29*/
+		/*CNcomment:é—®é¢˜å•å·:ä¹è”VOIPåå¤å‘¼å«SLICå¶å°”æ— ååº” by FangZhonghua, 2011/3/29*/
     }
 /* END:   Modified for PN: initialize with audio error by f00172091, 2011/1/30*/
     SLAC_UNLOCK();

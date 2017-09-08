@@ -156,7 +156,7 @@ static int build_table(VLC *vlc, int table_nb_bits,
 	avctx = (AVCodecContext *)(vlc->avctx);
     table_size = 1 << table_nb_bits;
 
-	if (NULL != avctx)/*vp6Â·¾¶*/
+	if (NULL != avctx)/*vp6è·¯å¾„*/
 	{
 		if (NULL == vlc->table)
 		{
@@ -168,7 +168,7 @@ static int build_table(VLC *vlc, int table_nb_bits,
 	 	}
 		memset(vlc->table,0,sizeof(VLC_TYPE) * 2 * vlc->table_allocated);	
 	}
-	else/*h263Á÷³Ì*/
+	else/*h263æµç¨‹*/
 	{
 		table_index = alloc_table(vlc, table_size, flags & (INIT_VLC_USE_STATIC|INIT_VLC_USE_NEW_STATIC));
 	}
@@ -307,7 +307,7 @@ int init_vlc_sparse(VLC *vlc, int nb_bits, int nb_codes,
             return 0;
         }else if(vlc->table_size){
 			/* 2010/30/04 10:51:00 liuxw+00139685 */
-			/* ½«abort()È¥µô£¬¸ÄÎªÔö¼ÓÈÕÖ¾ºÍ·µ»ØÂë */
+			/* å°†abort()åŽ»æŽ‰ï¼Œæ”¹ä¸ºå¢žåŠ æ—¥å¿—å’Œè¿”å›žç  */
             //abort(); // fatal error, we are called on a partially initialized table
 			av_log(NULL,AV_LOG_WARNING,"vlc table size[%d] is not equal table allocated size[%d]\n",vlc->table_size,vlc->table_allocated);
 			return -1;

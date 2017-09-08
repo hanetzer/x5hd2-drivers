@@ -35,8 +35,8 @@ extern "C" {
 /**Defines the  status of an ADSP.*/
 typedef enum 
 {
-    ADSP_SYSCOM_CMD_START = 0, /**<Stop*//**<CNcomment: 停止 */
-    ADSP_SYSCOM_CMD_STOP,     /**<Start*//**<CNcomment: 运行 */
+    ADSP_SYSCOM_CMD_START = 0, /**<Stop*//**<CNcomment: 鍋滄 */
+    ADSP_SYSCOM_CMD_STOP,     /**<Start*//**<CNcomment: 杩愯 */
   
     ADSP_SYSCOM_CMD_BUTT
 }ADSP_SYSCOM_CMD_E;
@@ -54,8 +54,8 @@ typedef enum
 
 typedef enum 
 {
-    ADSP_AOE_CMD_START = 0, /**<Stop*//**<CNcomment: 停止 */
-    ADSP_AOE_CMD_STOP,     /**<Start*//**<CNcomment: 运行 */
+    ADSP_AOE_CMD_START = 0, /**<Stop*//**<CNcomment: 鍋滄 */
+    ADSP_AOE_CMD_STOP,     /**<Start*//**<CNcomment: 杩愯 */
   
     ADSP_AOE_CMD_BUTT
 }ADSP_AOESYS_CMD_E;
@@ -101,8 +101,8 @@ typedef enum
 
 typedef enum
 {
-    AOE_AIP_CMD_START = 0, /**<Stop*//**<CNcomment: 停止 */
-    AOE_AIP_CMD_STOP,    /**<Start*//**<CNcomment: 运行 */
+    AOE_AIP_CMD_START = 0, /**<Stop*//**<CNcomment: 鍋滄 */
+    AOE_AIP_CMD_STOP,    /**<Start*//**<CNcomment: 杩愯 */
     AOE_AIP_CMD_PAUSE,
     AOE_AIP_CMD_FLUSH,
 
@@ -125,8 +125,8 @@ typedef enum
 /**Defines the  status of an ENGINE.*/
 typedef enum 
 {
-    AOE_ENGINE_CMD_START = 0, /**<Stop*//**<CNcomment: 停止 */
-    AOE_ENGINE_CMD_STOP,     /**<Start*//**<CNcomment: 运行 */
+    AOE_ENGINE_CMD_START = 0, /**<Stop*//**<CNcomment: 鍋滄 */
+    AOE_ENGINE_CMD_STOP,     /**<Start*//**<CNcomment: 杩愯 */
   
     AOE_ENGINE_CMD_BUTT
 }AOE_ENGINE_CMD_E;
@@ -147,8 +147,8 @@ typedef enum
 /**Defines the  status of an AOP.*/
 typedef enum
 {
-    AOE_AOP_CMD_START = 0, /**<Stop*//**<CNcomment: 停止 */
-    AOE_AOP_CMD_STOP, /**<Start*//**<CNcomment: 运行 */
+    AOE_AOP_CMD_START = 0, /**<Stop*//**<CNcomment: 鍋滄 */
+    AOE_AOP_CMD_STOP, /**<Start*//**<CNcomment: 杩愯 */
 
     AOE_AOP_CMD_BUTT
 } AOE_AOP_CMD_E;

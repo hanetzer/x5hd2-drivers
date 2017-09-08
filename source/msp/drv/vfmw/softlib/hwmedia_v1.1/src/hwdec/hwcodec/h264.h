@@ -52,7 +52,7 @@
 #define MAX_MMCO_COUNT 66
 
 /* 2010/04/06 14:30:00 liuxw+00139685 */
-/* ½«delay×î´óµÄÖ¡ÊıÔö¼Óµ½32 */
+/* å°†delayæœ€å¤§çš„å¸§æ•°å¢åŠ åˆ°32 */
 //#define MAX_DELAYED_PIC_COUNT 16
 #define MAX_DELAYED_PIC_COUNT (16+1)
 
@@ -74,7 +74,7 @@
 #define FRAME_MBAFF h->mb_aff_frame
 #define FIELD_PICTURE (s->picture_structure != PICT_FRAME)
 /* 2010/04/27 19:00:00 liuxw+00139685 */
-/* ¶¨ÒåÒ»¸öºê£¬ÓÃÓÚ¾ö¶¨h->implicit_weightµÄµÚÈıÎ¬µÄË÷Òı */
+/* å®šä¹‰ä¸€ä¸ªå®ï¼Œç”¨äºå†³å®šh->implicit_weightçš„ç¬¬ä¸‰ç»´çš„ç´¢å¼• */
 #define TOP_OR_BOT_FLD_MB (FRAME_MBAFF&&MB_FIELD&&(h->s.mb_y&1))
 #else
 #define MB_MBAFF 0
@@ -394,7 +394,7 @@ typedef struct H264Context{
     int chroma_weight[2][48][2];
     int chroma_offset[2][48][2];
 	/* 2010/04/27 19:00:00 liuxw+00139685 */
-	/* ½«¶şÎ¬µÄÊı×é×ª»»ÎªÈıÎ¬µÄÊı×é£ºÔÚMBAFFµÄÊ±ºò£¬¼ÆËãÒşÊ½¼ÓÈ¨Ô¤²âµÄÊ±ºò»áÓÃµ½(¶¥³¡Ò»¸ö£¬µ×³¡Ò»¸ö) */
+	/* å°†äºŒç»´çš„æ•°ç»„è½¬æ¢ä¸ºä¸‰ç»´çš„æ•°ç»„ï¼šåœ¨MBAFFçš„æ—¶å€™ï¼Œè®¡ç®—éšå¼åŠ æƒé¢„æµ‹çš„æ—¶å€™ä¼šç”¨åˆ°(é¡¶åœºä¸€ä¸ªï¼Œåº•åœºä¸€ä¸ª) */
 //  int implicit_weight[48][48];
 	int implicit_weight[2][48][48];
 
@@ -407,19 +407,19 @@ typedef struct H264Context{
 
     int direct_spatial_mv_pred;
 	/* 2010/03/16 19:30:00 liuxw+00139685 */
-	/* ½«dist_scale_factorÊı×éÓÉ16¸ÄÎª32 */
+	/* å°†dist_scale_factoræ•°ç»„ç”±16æ”¹ä¸º32 */
 //  int dist_scale_factor[16];
 	int dist_scale_factor[32];
     int dist_scale_factor_field[2][32];
 	/* 2010/04/20 9:30:00 liuxw+00139685 [AZ1D01992] */
-	/* ½«map_col_to_list0Ôö¼ÓÒ»¸öÎ¬¶È£¬±íÊ¾³¡(µ±Ç°Í¼ÏñÊÇÖ¡£¬ref1ÊÇ³¡µÄÇéĞÎ) */
+	/* å°†map_col_to_list0å¢åŠ ä¸€ä¸ªç»´åº¦ï¼Œè¡¨ç¤ºåœº(å½“å‰å›¾åƒæ˜¯å¸§ï¼Œref1æ˜¯åœºçš„æƒ…å½¢) */
 //  int map_col_to_list0[2][16+32];
 	/* 2010/08/24 11:00:00 liuxw+00139685 */
-	/* ÓÉÓÚref1¿ÉÄÜ»á´æÔÚ¶à¸öslice£¬¶øÇÒÃ¿¸ösliceµÄ²Î¿¼¶ÓÁĞÓĞ¿ÉÄÜ²»Í¬£¬ËùÒÔµ±²»Í¬µÄºê¿é´¦ÓÚ²»Í¬µÄsliceÊ±£¬Ó¦¸ÃÑ¡ÔñÕıÈ·µÄsliceÊ±µÄ²Î¿¼¶ÓÁĞ */
+	/* ç”±äºref1å¯èƒ½ä¼šå­˜åœ¨å¤šä¸ªsliceï¼Œè€Œä¸”æ¯ä¸ªsliceçš„å‚è€ƒé˜Ÿåˆ—æœ‰å¯èƒ½ä¸åŒï¼Œæ‰€ä»¥å½“ä¸åŒçš„å®å—å¤„äºä¸åŒçš„sliceæ—¶ï¼Œåº”è¯¥é€‰æ‹©æ­£ç¡®çš„sliceæ—¶çš„å‚è€ƒé˜Ÿåˆ— */
 //	int map_col_to_list0[2][2][16+32];
 //  int map_col_to_list0_field[2][2][16+32];
 	/* 2010/08/26 10:00:00 liuxw+00139685 */
-	/* ½«×î¸ßÎ¬µÄ¶şÎ¬¸Ä»ØÒ»Î¬£¬ÒòÎªÁ½Î¬²¢²»»áÍ¬Ê±Ê¹ÓÃ */
+	/* å°†æœ€é«˜ç»´çš„äºŒç»´æ”¹å›ä¸€ç»´ï¼Œå› ä¸ºä¸¤ç»´å¹¶ä¸ä¼šåŒæ—¶ä½¿ç”¨ */
 //	int map_col_to_list0[2][MAX_SLICES][2][16+32];
 	int map_col_to_list0[MAX_SLICES][2][16+32];
 	int map_col_to_list0_field[2][MAX_SLICES][2][16+32];
@@ -439,7 +439,7 @@ typedef struct H264Context{
     int ref2frm[MAX_SLICES][2][64];  ///< reference to frame number lists, used in the loop filter, the first 2 are for -2,-1
     Picture *delayed_pic[MAX_DELAYED_PIC_COUNT+2]; //FIXME size?
 	/* 2010/06/29 18:30:00 liuxw+00139685 */
-	/* Ôö¼ÓÒ»¸öÏÔÊ¾µÄbuf¹ÜÀí¡¢Ôö¼ÓÒ»¸ödelay_picµÄ¸öÊı£¬Ôö¼ÓÒ»¸ödisplay_picµÄ¸öÊı£¬Ôö¼ÓÒ»¸ödelay_picÖĞ²Î¿¼Ö¡µÄ¸öÊı£¬Ôö¼ÓÒ»¸ödisplay_picÖĞ²Î¿¼Ö¡µÄ¸öÊı */
+	/* å¢åŠ ä¸€ä¸ªæ˜¾ç¤ºçš„bufç®¡ç†ã€å¢åŠ ä¸€ä¸ªdelay_picçš„ä¸ªæ•°ï¼Œå¢åŠ ä¸€ä¸ªdisplay_picçš„ä¸ªæ•°ï¼Œå¢åŠ ä¸€ä¸ªdelay_picä¸­å‚è€ƒå¸§çš„ä¸ªæ•°ï¼Œå¢åŠ ä¸€ä¸ªdisplay_picä¸­å‚è€ƒå¸§çš„ä¸ªæ•° */
 	Picture *display_pic[MAX_DELAYED_PIC_COUNT+2]; 
 	int delay_pic_num;
 	int delay_pic_ref_num;
@@ -457,7 +457,7 @@ typedef struct H264Context{
     int long_ref_count;  ///< number of actual long term references
     int short_ref_count; ///< number of actual short term references
 	/* 2010/06/29 20:30:00 liuxw+00139685 */
-	/* Ôö¼ÓÒ»¸ö±äÁ¿£¬Í³¼ÆremarkingÖ®Ç°²Î¿¼Ö¡ÊıµÄ×ÜºÍ */
+	/* å¢åŠ ä¸€ä¸ªå˜é‡ï¼Œç»Ÿè®¡remarkingä¹‹å‰å‚è€ƒå¸§æ•°çš„æ€»å’Œ */
 	int total_ref_count;
 
     //data partitioning
@@ -603,7 +603,7 @@ int ff_h264_decode_rbsp_trailing(H264Context *h, const uint8_t *src);
 void decode_scaling_matrices(H264Context *h, SPS *sps, PPS *pps, int is_sps,
 							 uint8_t (*scaling_matrix4)[16], uint8_t (*scaling_matrix8)[64]);
 /* 2010/07/23 15:30:00 liuxw+00139685 */
-/* ½«¾²Ì¬º¯Êı¸ÄÎª·Ç¾²Ì¬º¯Êı£¬²¢½øĞĞÉùÃ÷£¬ÒÔ±ã±»ÆäËüÎÄ¼şÖĞµÄº¯ÊıÊ¹ÓÃ */
+/* å°†é™æ€å‡½æ•°æ”¹ä¸ºéé™æ€å‡½æ•°ï¼Œå¹¶è¿›è¡Œå£°æ˜ï¼Œä»¥ä¾¿è¢«å…¶å®ƒæ–‡ä»¶ä¸­çš„å‡½æ•°ä½¿ç”¨ */
 int decode_vui_parameters(H264Context *h, SPS *sps);
 
 #endif /* AVCODEC_H264_H */

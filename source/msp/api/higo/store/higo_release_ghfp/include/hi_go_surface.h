@@ -1,6 +1,6 @@
 /**
  \file
- \brief Describes the header file of the surface module. CNcomment:SurfaceÄ£¿éÍ·ÎÄ¼ş CNend
+ \brief Describes the header file of the surface module. CNcomment:Surfaceæ¨¡å—å¤´æ–‡ä»¶ CNend
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version 1.0
@@ -22,24 +22,24 @@ extern "C" {
 
 typedef enum
 {
-    HIGO_PF_CLUT8 = 0,  /**<Palette*//**<CNcomment:µ÷É«°å */
+    HIGO_PF_CLUT8 = 0,  /**<Palette*//**<CNcomment:è°ƒè‰²æ¿ */
     HIGO_PF_CLUT1,
     HIGO_PF_CLUT4,
-    HIGO_PF_4444,       /**<Each pixel occupies 16 bits, and the A/R/G/B components each occupies 4 bits. They are sorted by address in descending order.*//**<CNcomment:Ò»¸öÏñËØÕ¼16bit£¬ARGBÃ¿·ÖÁ¿Õ¼4bit£¬°´µØÖ·ÓÉ¸ßÖÁµÍÅÅÁĞ */
-    HIGO_PF_0444,       /**<Each pixel occupies 16 bits, and the A/R/G/B components each occupies 4 bits. They are sorted by address in descending order. The A component does not take effect.*//**<CNcomment:Ò»¸öÏñËØÕ¼16bit£¬ARGBÃ¿·ÖÁ¿Õ¼4bit£¬°´µØÖ·ÓÉ¸ßÖÁµÍÅÅÁĞ, A·ÖÁ¿²»Æğ×÷ÓÃ */
+    HIGO_PF_4444,       /**<Each pixel occupies 16 bits, and the A/R/G/B components each occupies 4 bits. They are sorted by address in descending order.*//**<CNcomment:ä¸€ä¸ªåƒç´ å 16bitï¼ŒARGBæ¯åˆ†é‡å 4bitï¼ŒæŒ‰åœ°å€ç”±é«˜è‡³ä½æ’åˆ— */
+    HIGO_PF_0444,       /**<Each pixel occupies 16 bits, and the A/R/G/B components each occupies 4 bits. They are sorted by address in descending order. The A component does not take effect.*//**<CNcomment:ä¸€ä¸ªåƒç´ å 16bitï¼ŒARGBæ¯åˆ†é‡å 4bitï¼ŒæŒ‰åœ°å€ç”±é«˜è‡³ä½æ’åˆ—, Aåˆ†é‡ä¸èµ·ä½œç”¨ */
 
-    HIGO_PF_1555,       /**<Each pixel occupies 16 bits, the R/G/B components each occupies 5 bits, and the A component occupies 1 bit. They are sorted by address in descending order.*//**<CNcomment:Ò»¸öÏñËØÕ¼16bit£¬RGBÃ¿·ÖÁ¿Õ¼5bit£¬A·ÖÁ¿1bit£¬°´µØÖ·ÓÉ¸ßÖÁµÍÅÅÁĞ */
-    HIGO_PF_0555,       /**<Each pixel occupies 16 bits, the R/G/B components each occupies 5 bits, and the A component occupies 1 bit. They are sorted by address in descending order. The A component does not take effect.*//**<CNcomment:Ò»¸öÏñËØÕ¼16bit£¬RGBÃ¿·ÖÁ¿Õ¼5bit£¬A·ÖÁ¿1bit£¬°´µØÖ·ÓÉ¸ßÖÁµÍÅÅÁĞ, A·ÖÁ¿²»Æğ×÷ÓÃ */
-    HIGO_PF_565,        /**<Each pixel occupies 16 bits, and the R/G/B components each occupies 5 bits, 6 bits, and 5 bits respectively. They are sorted by address in descending order.*//**<CNcomment:Ò»¸öÏñËØÕ¼16bit£¬RGBÃ¿·ÖÁ¿·Ö±ğÕ¼5bit¡¢6bitºÍ5bit£¬°´µØÖ·ÓÉ¸ßÖÁµÍÅÅÁĞ */
-    HIGO_PF_8565,       /**<Each pixel occupies 24 bits, and the A/R/G/B components each occupies 8 bits, 5 bits, 6 bits, and 5 bits respectively. They are sorted by address in descending order.*//**<CNcomment:Ò»¸öÏñËØÕ¼24bit£¬ARGBÃ¿·ÖÁ¿·Ö±ğÕ¼8bit, 5bit¡¢6bitºÍ5bit£¬°´µØÖ·ÓÉ¸ßÖÁµÍÅÅÁĞ */
-    HIGO_PF_8888,       /**<Each pixel occupies 32 bits, and the A/R/G/B components each occupies 8 bits. They are sorted by address in descending order.*//**<CNcomment:Ò»¸öÏñËØÕ¼32bit£¬ARGBÃ¿·ÖÁ¿Õ¼8bit£¬°´µØÖ·ÓÉ¸ßÖÁµÍÅÅÁĞ */
-    HIGO_PF_0888,       /**<Each pixel occupies 24 bits, and the A/R/G/B components each occupies 8 bits. They are sorted by address in descending order. The A component does not take effect.*//**<CNcomment:Ò»¸öÏñËØÕ¼24bit£¬ARGBÃ¿·ÖÁ¿Õ¼8bit£¬°´µØÖ·ÓÉ¸ßÖÁµÍÅÅÁĞ£¬A·ÖÁ¿²»Æğ×÷ÓÃ */
+    HIGO_PF_1555,       /**<Each pixel occupies 16 bits, the R/G/B components each occupies 5 bits, and the A component occupies 1 bit. They are sorted by address in descending order.*//**<CNcomment:ä¸€ä¸ªåƒç´ å 16bitï¼ŒRGBæ¯åˆ†é‡å 5bitï¼ŒAåˆ†é‡1bitï¼ŒæŒ‰åœ°å€ç”±é«˜è‡³ä½æ’åˆ— */
+    HIGO_PF_0555,       /**<Each pixel occupies 16 bits, the R/G/B components each occupies 5 bits, and the A component occupies 1 bit. They are sorted by address in descending order. The A component does not take effect.*//**<CNcomment:ä¸€ä¸ªåƒç´ å 16bitï¼ŒRGBæ¯åˆ†é‡å 5bitï¼ŒAåˆ†é‡1bitï¼ŒæŒ‰åœ°å€ç”±é«˜è‡³ä½æ’åˆ—, Aåˆ†é‡ä¸èµ·ä½œç”¨ */
+    HIGO_PF_565,        /**<Each pixel occupies 16 bits, and the R/G/B components each occupies 5 bits, 6 bits, and 5 bits respectively. They are sorted by address in descending order.*//**<CNcomment:ä¸€ä¸ªåƒç´ å 16bitï¼ŒRGBæ¯åˆ†é‡åˆ†åˆ«å 5bitã€6bitå’Œ5bitï¼ŒæŒ‰åœ°å€ç”±é«˜è‡³ä½æ’åˆ— */
+    HIGO_PF_8565,       /**<Each pixel occupies 24 bits, and the A/R/G/B components each occupies 8 bits, 5 bits, 6 bits, and 5 bits respectively. They are sorted by address in descending order.*//**<CNcomment:ä¸€ä¸ªåƒç´ å 24bitï¼ŒARGBæ¯åˆ†é‡åˆ†åˆ«å 8bit, 5bitã€6bitå’Œ5bitï¼ŒæŒ‰åœ°å€ç”±é«˜è‡³ä½æ’åˆ— */
+    HIGO_PF_8888,       /**<Each pixel occupies 32 bits, and the A/R/G/B components each occupies 8 bits. They are sorted by address in descending order.*//**<CNcomment:ä¸€ä¸ªåƒç´ å 32bitï¼ŒARGBæ¯åˆ†é‡å 8bitï¼ŒæŒ‰åœ°å€ç”±é«˜è‡³ä½æ’åˆ— */
+    HIGO_PF_0888,       /**<Each pixel occupies 24 bits, and the A/R/G/B components each occupies 8 bits. They are sorted by address in descending order. The A component does not take effect.*//**<CNcomment:ä¸€ä¸ªåƒç´ å 24bitï¼ŒARGBæ¯åˆ†é‡å 8bitï¼ŒæŒ‰åœ°å€ç”±é«˜è‡³ä½æ’åˆ—ï¼ŒAåˆ†é‡ä¸èµ·ä½œç”¨ */
 
-    HIGO_PF_YUV400,     /**<Semi-planar YUV 400 format defined by HiSilicon*//**<CNcomment:º£Ë¼¶¨ÒåµÄsemi-planar YUV 400¸ñÊ½ */    
-    HIGO_PF_YUV420,     /**<Semi-planar YUV 420 format defined by HiSilicon*//**<CNcomment:º£Ë¼¶¨ÒåµÄsemi-planar YUV 420¸ñÊ½ */
-    HIGO_PF_YUV422,     /**<Semi-planar YUV 422 format and horizontal sampling format defined by HiSilicon*//**<CNcomment:º£Ë¼¶¨ÒåµÄsemi-planar YUV 422¸ñÊ½  Ë®Æ½²ÉÑù¸ñÊ½*/
-    HIGO_PF_YUV422_V,   /**<Semi-planar YUV 422 format and vertical sampling format defined by HiSilicon*//**<CNcomment:º£Ë¼¶¨ÒåµÄsemi-planar YUV 422¸ñÊ½  ´¹Ö±²ÉÑù¸ñÊ½*/    
-    HIGO_PF_YUV444,     /**<Semi-planar YUV 444 format defined by HiSilicon*//**<CNcomment:º£Ë¼¶¨ÒåµÄsemi-planar YUV 444¸ñÊ½ */
+    HIGO_PF_YUV400,     /**<Semi-planar YUV 400 format defined by HiSilicon*//**<CNcomment:æµ·æ€å®šä¹‰çš„semi-planar YUV 400æ ¼å¼ */    
+    HIGO_PF_YUV420,     /**<Semi-planar YUV 420 format defined by HiSilicon*//**<CNcomment:æµ·æ€å®šä¹‰çš„semi-planar YUV 420æ ¼å¼ */
+    HIGO_PF_YUV422,     /**<Semi-planar YUV 422 format and horizontal sampling format defined by HiSilicon*//**<CNcomment:æµ·æ€å®šä¹‰çš„semi-planar YUV 422æ ¼å¼  æ°´å¹³é‡‡æ ·æ ¼å¼*/
+    HIGO_PF_YUV422_V,   /**<Semi-planar YUV 422 format and vertical sampling format defined by HiSilicon*//**<CNcomment:æµ·æ€å®šä¹‰çš„semi-planar YUV 422æ ¼å¼  å‚ç›´é‡‡æ ·æ ¼å¼*/    
+    HIGO_PF_YUV444,     /**<Semi-planar YUV 444 format defined by HiSilicon*//**<CNcomment:æµ·æ€å®šä¹‰çš„semi-planar YUV 444æ ¼å¼ */
     
 	HIGO_PF_A1, 
 	HIGO_PF_A8,
@@ -56,7 +56,7 @@ typedef enum
 /** @{ */  /** <!-- [HIGO_SURFACE] */
 
 /**Component type*/
-/** CNcomment:·ÖÁ¿ÀàĞÍ */
+/** CNcomment:åˆ†é‡ç±»å‹ */
 typedef enum
 {
     HIGO_PDFORMAT_RGB = 0,
@@ -70,96 +70,96 @@ typedef enum
 
 typedef struct
 {
-    HIGO_PDFORMAT_E Format;     /**<Component type*//**<CNcomment:·ÖÁ¿ÀàĞÍ */
-    HI_VOID*        pData;      /**<Pointer to the virtual address of a component*//**<CNcomment:·ÖÁ¿ĞéÄâµØÖ·Ö¸Õë */
-    HI_VOID*        pPhyData;   /**<Pointer to the physical address of a component*//**<CNcomment:·ÖÁ¿ÎïÀíµØÖ·Ö¸Õë */    
-    HI_U32          Pitch;      /**<Component pitch*//**<CNcomment:·ÖÁ¿ĞĞ¿í */
+    HIGO_PDFORMAT_E Format;     /**<Component type*//**<CNcomment:åˆ†é‡ç±»å‹ */
+    HI_VOID*        pData;      /**<Pointer to the virtual address of a component*//**<CNcomment:åˆ†é‡è™šæ‹Ÿåœ°å€æŒ‡é’ˆ */
+    HI_VOID*        pPhyData;   /**<Pointer to the physical address of a component*//**<CNcomment:åˆ†é‡ç‰©ç†åœ°å€æŒ‡é’ˆ */    
+    HI_U32          Pitch;      /**<Component pitch*//**<CNcomment:åˆ†é‡è¡Œå®½ */
     HI_U32          Bpp;        /**<Bytes per pixel*//**<CNcomment:bytes per pixel */
     HI_U32          Offset;
 } HIGO_PIXELDATA_S;
 
 /**Maximum number of data components*/
-/** CNcomment:×î´óÊı¾İ·ÖÁ¿Êı */
+/** CNcomment:æœ€å¤§æ•°æ®åˆ†é‡æ•° */
 #define MAX_PARTPIXELDATA 3
 
 /**The following sync modes can be used together. The non-automatic sync mode is also available.*/
-/** CNcomment:ÏÂÃæÍ¬²½Ä£Ê½¿ÉÒÔ×éºÏÊ¹ÓÃ£¬²»×Ô¶¯Í¬²½·½Ê½ÓĞÓÃ */
+/** CNcomment:ä¸‹é¢åŒæ­¥æ¨¡å¼å¯ä»¥ç»„åˆä½¿ç”¨ï¼Œä¸è‡ªåŠ¨åŒæ­¥æ–¹å¼æœ‰ç”¨ */
 typedef enum 
 {
-    HIGO_SYNC_MODE_CPU = 0x01, /*Sync mode. In this mode, CPU operations are required.*//**<CNcomment:Í¬²½£¬ÏÂÒ»²½ĞèÒª½øĞĞCPU²Ù×÷*/
-    HIGO_SYNC_MODE_TDE = 0x02, /*Sync mode. In this mode, the 2D acceleration operation is required.*//**<CNcomment:Í¬²½£¬ÏÂÒ»²½ĞèÒª½øĞĞ2D¼ÓËÙ²Ù×÷*/
+    HIGO_SYNC_MODE_CPU = 0x01, /*Sync mode. In this mode, CPU operations are required.*//**<CNcomment:åŒæ­¥ï¼Œä¸‹ä¸€æ­¥éœ€è¦è¿›è¡ŒCPUæ“ä½œ*/
+    HIGO_SYNC_MODE_TDE = 0x02, /*Sync mode. In this mode, the 2D acceleration operation is required.*//**<CNcomment:åŒæ­¥ï¼Œä¸‹ä¸€æ­¥éœ€è¦è¿›è¡Œ2DåŠ é€Ÿæ“ä½œ*/
     HIGO_SYNC_MODE_BUTT,
 } HIGO_SYNC_MODE_E;
 
 
 typedef enum
 {
-    HIGO_MEMTYPE_MMZ = 0,       /**<The memory is an media memory zone (MMZ) memory.*//**<CNcomment:Ê¹ÓÃMMZÄÚ´æ½øĞĞ´´½¨ */
-    HIGO_MEMTYPE_OS,            /**<The memory is an operating system (OS) memory.*//**<CNcomment:Ê¹ÓÃÏµÍ³ÄÚ´æ½øĞĞ´´½¨ */
+    HIGO_MEMTYPE_MMZ = 0,       /**<The memory is an media memory zone (MMZ) memory.*//**<CNcomment:ä½¿ç”¨MMZå†…å­˜è¿›è¡Œåˆ›å»º */
+    HIGO_MEMTYPE_OS,            /**<The memory is an operating system (OS) memory.*//**<CNcomment:ä½¿ç”¨ç³»ç»Ÿå†…å­˜è¿›è¡Œåˆ›å»º */
     HIGO_MEMTYPE_BUTT
 }HIGO_MEMTYPE_E;
 
 typedef enum 
 {
-	HIGO_OWNER_USER = 0,        /**<The memory is managed by users. That is, the memory is allocated and destroyed by users.*//**<CNcomment:ÓÉÓÃ»§½øĞĞ¹ÜÀí£¬ĞèÒªÓÃ»§×ÔĞĞ·ÖÅäÄÚ´æ£¬Ïú»ÙÄÚ´æ */
-	HIGO_OWNER_HIGO,            /**<The memory is managed by the HiGo module rather than users.*//**<CNcomment:ÓÉHIGO½øĞĞ¹ÜÀí£¬ÓÃ»§²»ĞèÒª¹ÜÀíÄÚ´æ */
+	HIGO_OWNER_USER = 0,        /**<The memory is managed by users. That is, the memory is allocated and destroyed by users.*//**<CNcomment:ç”±ç”¨æˆ·è¿›è¡Œç®¡ç†ï¼Œéœ€è¦ç”¨æˆ·è‡ªè¡Œåˆ†é…å†…å­˜ï¼Œé”€æ¯å†…å­˜ */
+	HIGO_OWNER_HIGO,            /**<The memory is managed by the HiGo module rather than users.*//**<CNcomment:ç”±HIGOè¿›è¡Œç®¡ç†ï¼Œç”¨æˆ·ä¸éœ€è¦ç®¡ç†å†…å­˜ */
 	HIGO_OWNER_BUTT
 }HIGO_OWNER_E;
 
 typedef struct
 {
-    HI_S32 Width;                               /**<Surface width*//**<CNcomment:surface¿í¶È */
-    HI_S32 Height;                              /**<Surface height*//**<CNcomment:surface¸ß¶È */
-    HIGO_PF_E PixelFormat;                      /**<Pixel format of a surface*//**<CNcomment:surfaceÏñËØ¸ñÊ½*/
-    HI_U32   Pitch[MAX_PARTPIXELDATA];          /**<Pitch of a surface*//**<CNcomment:surfaceĞĞ¼ä¾àÀë*/
-    HI_CHAR* pPhyAddr[MAX_PARTPIXELDATA];       /**<Physical address of a surface*//**<CNcomment:surfaceÎïÀíµØÖ·*/
-    HI_CHAR* pVirAddr[MAX_PARTPIXELDATA];       /**<Virtual address of a surface*//**<CNcomment:surfaceĞéÄâµØÖ·*/
-    HIGO_MEMTYPE_E MemType;                     /**<Type of the surface memory*//**<CNcomment:surfaceÄÚ´æÀàĞÍ*/
-    HI_BOOL bPubPalette;                        /**<Use common Palette or not*//**<CNcomment:ÊÇ·ñÊ¹ÓÃ¹«¹²µ÷É«°å;Ö»¶ÔClut¸ñÊ½ÓĞĞ§.
-                                                    Èô²»Ê¹ÓÃ¹«¹²µÄµ÷É«°å,ÔòÊ¹ÓÃ×Ô´øµÄµ÷É«°å*/
+    HI_S32 Width;                               /**<Surface width*//**<CNcomment:surfaceå®½åº¦ */
+    HI_S32 Height;                              /**<Surface height*//**<CNcomment:surfaceé«˜åº¦ */
+    HIGO_PF_E PixelFormat;                      /**<Pixel format of a surface*//**<CNcomment:surfaceåƒç´ æ ¼å¼*/
+    HI_U32   Pitch[MAX_PARTPIXELDATA];          /**<Pitch of a surface*//**<CNcomment:surfaceè¡Œé—´è·ç¦»*/
+    HI_CHAR* pPhyAddr[MAX_PARTPIXELDATA];       /**<Physical address of a surface*//**<CNcomment:surfaceç‰©ç†åœ°å€*/
+    HI_CHAR* pVirAddr[MAX_PARTPIXELDATA];       /**<Virtual address of a surface*//**<CNcomment:surfaceè™šæ‹Ÿåœ°å€*/
+    HIGO_MEMTYPE_E MemType;                     /**<Type of the surface memory*//**<CNcomment:surfaceå†…å­˜ç±»å‹*/
+    HI_BOOL bPubPalette;                        /**<Use common Palette or not*//**<CNcomment:æ˜¯å¦ä½¿ç”¨å…¬å…±è°ƒè‰²æ¿;åªå¯¹Clutæ ¼å¼æœ‰æ•ˆ.
+                                                    è‹¥ä¸ä½¿ç”¨å…¬å…±çš„è°ƒè‰²æ¿,åˆ™ä½¿ç”¨è‡ªå¸¦çš„è°ƒè‰²æ¿*/
 }HIGO_SURINFO_S;
 
 typedef struct
 {
-    HI_S32 Width;                               /**<Surface width*//**<CNcomment:surface¿í¶È */
-    HI_S32 Height;                              /**<Surface height*//**<CNcomment:surface¸ß¶È */
-    HIGO_PF_E PixelFormat;                      /**<Pixel format of a surface*//**<CNcomment:surfaceÏñËØ¸ñÊ½*/
+    HI_S32 Width;                               /**<Surface width*//**<CNcomment:surfaceå®½åº¦ */
+    HI_S32 Height;                              /**<Surface height*//**<CNcomment:surfaceé«˜åº¦ */
+    HIGO_PF_E PixelFormat;                      /**<Pixel format of a surface*//**<CNcomment:surfaceåƒç´ æ ¼å¼*/
 
     /**<Pitch of a surface
     Pitch[0] indicates the pitch in RGB format or the pitch of the Y component in semi-planar format.
      Pitch[1] indicates the pitch of the C component in semi-planar format.
      Pitch[2] is reserved.*/
-    /**<CNcomment:surfaceĞĞ¼ä¾àÀë£¬
-     Pitch[0]±íÊ¾RGB¸ñÊ½ĞĞ¼ä¾à£¬ »òÕßSemi-plannerµÄY·ÖÁ¿µÄĞĞ¼ä¾à
-     Pitch[1]±íÊ¾Semi-plannerµÄC·ÖÁ¿µÄĞĞ¼ä¾à
-     Pitch[2]ÔİÊ±²»Ê¹ÓÃ¡£*/
+    /**<CNcomment:surfaceè¡Œé—´è·ç¦»ï¼Œ
+     Pitch[0]è¡¨ç¤ºRGBæ ¼å¼è¡Œé—´è·ï¼Œ æˆ–è€…Semi-plannerçš„Yåˆ†é‡çš„è¡Œé—´è·
+     Pitch[1]è¡¨ç¤ºSemi-plannerçš„Cåˆ†é‡çš„è¡Œé—´è·
+     Pitch[2]æš‚æ—¶ä¸ä½¿ç”¨ã€‚*/
     HI_U32   Pitch[MAX_PARTPIXELDATA];      
 
     /**<Physical address of a surface
     pPhyAddr[0] indicates the physical address in RGB format or the physical address of the Y component in semi-planar format.
     pPhyAddr[1] indicates the physical address of the C component in semi-planar format.*/
-    /**<CNcomment:surfaceÎïÀíµØÖ·
-    pPhyAddr[0]±íÊ¾RGB¸ñÊ½ÎïÀíµØÖ·£¬ »òÕßSemi-plannerµÄY·ÖÁ¿µÄÎïÀíµØÖ·
-    pPhyAddr[1]±íÊ¾Semi-plannerµÄC·ÖÁ¿µÄÎïÀíµØÖ·*/
+    /**<CNcomment:surfaceç‰©ç†åœ°å€
+    pPhyAddr[0]è¡¨ç¤ºRGBæ ¼å¼ç‰©ç†åœ°å€ï¼Œ æˆ–è€…Semi-plannerçš„Yåˆ†é‡çš„ç‰©ç†åœ°å€
+    pPhyAddr[1]è¡¨ç¤ºSemi-plannerçš„Cåˆ†é‡çš„ç‰©ç†åœ°å€*/
     HI_CHAR* pPhyAddr[MAX_PARTPIXELDATA];
 
     /**<Virtual address of a surface
     pVirAddr[0] indicates the virtual address in RGB format or the virtual address of the Y component in semi-planar format.
     pVirAddr[1] indicates the virtual address of the C component in semi-planar format.*/
-    /**<CNcomment:surfaceĞéÄâµØÖ·
-    pVirAddr[0]±íÊ¾RGB¸ñÊ½ĞéÄâµØÖ·£¬ »òÕßSemi-plannerµÄY·ÖÁ¿µÄĞéÄâµØÖ·
-    pVirAddr[1]±íÊ¾Semi-plannerµÄC·ÖÁ¿µÄĞéÄâµØÖ·*/
-    HI_CHAR* pVirAddr[MAX_PARTPIXELDATA];       /**<CNcomment: surfaceĞéÄâµØÖ·
-                                                     pVirAddr[0]±íÊ¾RGB¸ñÊ½ĞéÄâµØÖ·£¬ »òÕßSemi-plannerµÄY·ÖÁ¿µÄĞéÄâµØÖ·
-                                                     pVirAddr[1]±íÊ¾Semi-plannerµÄC·ÖÁ¿µÄĞéÄâµØÖ·
+    /**<CNcomment:surfaceè™šæ‹Ÿåœ°å€
+    pVirAddr[0]è¡¨ç¤ºRGBæ ¼å¼è™šæ‹Ÿåœ°å€ï¼Œ æˆ–è€…Semi-plannerçš„Yåˆ†é‡çš„è™šæ‹Ÿåœ°å€
+    pVirAddr[1]è¡¨ç¤ºSemi-plannerçš„Cåˆ†é‡çš„è™šæ‹Ÿåœ°å€*/
+    HI_CHAR* pVirAddr[MAX_PARTPIXELDATA];       /**<CNcomment: surfaceè™šæ‹Ÿåœ°å€
+                                                     pVirAddr[0]è¡¨ç¤ºRGBæ ¼å¼è™šæ‹Ÿåœ°å€ï¼Œ æˆ–è€…Semi-plannerçš„Yåˆ†é‡çš„è™šæ‹Ÿåœ°å€
+                                                     pVirAddr[1]è¡¨ç¤ºSemi-plannerçš„Cåˆ†é‡çš„è™šæ‹Ÿåœ°å€
                                                 */
-    HIGO_MEMTYPE_E MemType;                     /**<Type of the surface memory*//**<CNcomment:surfaceÄÚ´æÀàĞÍ*/
-    HI_BOOL bPubPalette;        /**<Use common Palette or not*//**<CNcomment:ÊÇ·ñÊ¹ÓÃ¹«¹²µ÷É«°å;Ö»¶ÔClut¸ñÊ½ÓĞĞ§*/
-    HIGO_OWNER_E   MemOwner;                    /**<Memory source. For example, the memory is allocated by users or the HiGo module.*//**<CNcomment:ÄÚ´æµÄÀ´Ô´,ÀıÈçÊÇÓÃ»§·ÖÅä,»¹ÊÇHIGO·ÖÅä*/
+    HIGO_MEMTYPE_E MemType;                     /**<Type of the surface memory*//**<CNcomment:surfaceå†…å­˜ç±»å‹*/
+    HI_BOOL bPubPalette;        /**<Use common Palette or not*//**<CNcomment:æ˜¯å¦ä½¿ç”¨å…¬å…±è°ƒè‰²æ¿;åªå¯¹Clutæ ¼å¼æœ‰æ•ˆ*/
+    HIGO_OWNER_E   MemOwner;                    /**<Memory source. For example, the memory is allocated by users or the HiGo module.*//**<CNcomment:å†…å­˜çš„æ¥æº,ä¾‹å¦‚æ˜¯ç”¨æˆ·åˆ†é…,è¿˜æ˜¯HIGOåˆ†é…*/
 }HIGO_SURINFOEX_S;
 
 /**Data component structure*/
-/** CNcomment:Êı¾İ·ÖÁ¿½á¹¹ */
+/** CNcomment:æ•°æ®åˆ†é‡ç»“æ„ */
 typedef HIGO_PIXELDATA_S HI_PIXELDATA[MAX_PARTPIXELDATA];
 
 /** @} */  /*! <!-- Structure Definition end */
@@ -171,10 +171,10 @@ typedef HIGO_PIXELDATA_S HI_PIXELDATA[MAX_PARTPIXELDATA];
 /** @{ */  /** <!-- [HIGO_SURFACE] */
 
 /** 
-\brief Initializes the surface module. CNcomment:³õÊ¼»¯Surface CNend
+\brief Initializes the surface module. CNcomment:åˆå§‹åŒ–Surface CNend
 \attention \n
 When ::HI_GO_Init is called, this API is also called.
-CNcomment: ::HI_GO_InitÒÑ¾­°üº¬¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
+CNcomment: ::HI_GO_Initå·²ç»åŒ…å«å¯¹è¯¥æ¥å£çš„è°ƒç”¨ CNend
 \param N/A
 
 \retval ::HI_SUCCESS
@@ -186,10 +186,10 @@ CNcomment: ::HI_GO_InitÒÑ¾­°üº¬¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
 HI_S32 HI_GO_InitSurface(HI_VOID);
 
 /** 
-\brief Deinitializes the surface module. CNcomment:È¥³õÊ¼»¯Surface CNend
+\brief Deinitializes the surface module. CNcomment:å»åˆå§‹åŒ–Surface CNend
 \attention \n
 When ::HI_GO_Deinit is called, this API is also called.
-CNcomment: ::HI_GO_DeinitÒÑ¾­°üº¬¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
+CNcomment: ::HI_GO_Deinitå·²ç»åŒ…å«å¯¹è¯¥æ¥å£çš„è°ƒç”¨ CNend
 \param N/A
 
 \retval ::HI_SUCCESS
@@ -201,11 +201,11 @@ CNcomment: ::HI_GO_DeinitÒÑ¾­°üº¬¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
 HI_S32 HI_GO_DeinitSurface(HI_VOID);
 
 /** 
-\brief Sets the alpha value of a surface. CNcomment:ÉèÖÃsurfaceµÄalphaÖµ CNend
+\brief Sets the alpha value of a surface. CNcomment:è®¾ç½®surfaceçš„alphaå€¼ CNend
 \attention \n
 N/A
-\param[in]  Surface Surface handle. CNcomment:Surface¾ä±ú CNend
-\param[in]  Alpha Alpha value, ranging from 0 to 255. The value 0 indicates transparent, and the value 255 indicates opaque. CNcomment:AlphaÖµ£¬·¶Î§ÊÇ0-255¡£0±íÊ¾Í¸Ã÷£¬255±íÊ¾²»Í¸Ã÷ CNend
+\param[in]  Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
+\param[in]  Alpha Alpha value, ranging from 0 to 255. The value 0 indicates transparent, and the value 255 indicates opaque. CNcomment:Alphaå€¼ï¼ŒèŒƒå›´æ˜¯0-255ã€‚0è¡¨ç¤ºé€æ˜ï¼Œ255è¡¨ç¤ºä¸é€æ˜ CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_LOCKED
@@ -217,11 +217,11 @@ N/A
 HI_S32 HI_GO_SetSurfaceAlpha(HI_HANDLE Surface, HI_U8 Alpha);
 
 /** 
-\brief Obtains the alpha value of a surface. CNcomment:»ñÈ¡surfaceµÄalphaÖµ CNend
+\brief Obtains the alpha value of a surface. CNcomment:è·å–surfaceçš„alphaå€¼ CNend
 \attention \n
 N/A
-\param[in]  Surface Surface handle. CNcomment:Surface¾ä±ú CNend
-\param[out] pAlpha Pointer to the received alpha value. The pointer cannot be null. CNcomment:½ÓÊÕalhpaÖµµÄ¿Õ¼äÖ¸Õë£¬²»ÄÜÎª¿Õ CNend
+\param[in]  Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
+\param[out] pAlpha Pointer to the received alpha value. The pointer cannot be null. CNcomment:æ¥æ”¶alhpaå€¼çš„ç©ºé—´æŒ‡é’ˆï¼Œä¸èƒ½ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE
@@ -233,11 +233,11 @@ N/A
 HI_S32 HI_GO_GetSurfaceAlpha(HI_HANDLE Surface, HI_U8* pAlpha);
 
 /** 
-\brief Enables or disables the colorkey of a surface. CNcomment:ÉèÖÃÊÇ·ñÊ¹ÄÜsurfaceµÄcolorkey CNend
+\brief Enables or disables the colorkey of a surface. CNcomment:è®¾ç½®æ˜¯å¦ä½¿èƒ½surfaceçš„colorkey CNend
 \attention \n
 N/A
-\param[in] Surface Surface handle. CNcomment:Surface¾ä±ú CNend
-\param[in] Enable Colorkey enable. HI_TRUE: enabled; HI_FALSE: disabled. CNcomment:ÊÇ·ñÊ¹ÄÜcolorKey¡£HI_TRUE£ºÊ¹ÄÜ£»HI_FALSE£º²»Ê¹ÄÜ CNend
+\param[in] Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
+\param[in] Enable Colorkey enable. HI_TRUE: enabled; HI_FALSE: disabled. CNcomment:æ˜¯å¦ä½¿èƒ½colorKeyã€‚HI_TRUEï¼šä½¿èƒ½ï¼›HI_FALSEï¼šä¸ä½¿èƒ½ CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE
@@ -248,11 +248,11 @@ N/A
 HI_S32 HI_GO_EnableSurfaceColorKey(HI_HANDLE Surface, HI_BOOL Enable);
 
 /** 
-\brief Sets the colorkey value of a surface. CNcomment:ÉèÖÃsurfaceµÄcolorKeyÖµ CNend
+\brief Sets the colorkey value of a surface. CNcomment:è®¾ç½®surfaceçš„colorKeyå€¼ CNend
 \attention \n
 N/A
-\param[in] Surface Surface handle. CNcomment:Surface¾ä±ú CNend
-\param[in] ColorKey Colorkey value. For the RGB format, the colorkey is padded with 32-bit colors. For the CLUT format, the colorkey is padded with color index. CNcomment:ColorkeyÖµ, Èç¹ûÊÇRGB¸ñÊ½¾ÍÊ¹ÓÃÈ«²¿°´ÕÕ32bitÀ´½øĞĞÌî³ä£¬Èç¹ûÊÇCLUT¸ñÊ½¾ÍÊ¹ÓÃÑÕÉ«Ë÷ÒıÀ´Ìî³ä¡£CNend
+\param[in] Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
+\param[in] ColorKey Colorkey value. For the RGB format, the colorkey is padded with 32-bit colors. For the CLUT format, the colorkey is padded with color index. CNcomment:Colorkeyå€¼, å¦‚æœæ˜¯RGBæ ¼å¼å°±ä½¿ç”¨å…¨éƒ¨æŒ‰ç…§32bitæ¥è¿›è¡Œå¡«å……ï¼Œå¦‚æœæ˜¯CLUTæ ¼å¼å°±ä½¿ç”¨é¢œè‰²ç´¢å¼•æ¥å¡«å……ã€‚CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_LOCKED
@@ -264,11 +264,11 @@ N/A
 HI_S32 HI_GO_SetSurfaceColorKey(HI_HANDLE Surface, HI_COLOR ColorKey);
 
 /** 
-\brief Obtains the colorkey value of a surface. CNcomment:»ñÈ¡surfaceµÄcolorkeyÖµ CNend
+\brief Obtains the colorkey value of a surface. CNcomment:è·å–surfaceçš„colorkeyå€¼ CNend
 \attention \n
 N/A
-\param[in]  Surface Surface handle. CNcomment:Surface¾ä±ú CNend
-\param[out] pColorKey Pointer to the received colorkey value. The value cannot be empty. CNcomment:½ÓÊÕcolorkeyÖµµÄ¿Õ¼äÖ¸Õë£¬²»¿ÉÎª¿Õ CNend
+\param[in]  Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
+\param[out] pColorKey Pointer to the received colorkey value. The value cannot be empty. CNcomment:æ¥æ”¶colorkeyå€¼çš„ç©ºé—´æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -281,11 +281,11 @@ N/A
 HI_S32 HI_GO_GetSurfaceColorKey(HI_HANDLE Surface, HI_COLOR* pColorKey);
 
 /** 
-\brief Sets the palette of a surface. CNcomment:ÉèÖÃSurfaceµÄµ÷É«°å CNend
+\brief Sets the palette of a surface. CNcomment:è®¾ç½®Surfaceçš„è°ƒè‰²æ¿ CNend
 \attention \n
 N/A
-\param[in] Surface Surface handle. CNcomment:Surface¾ä±ú CNend
-\param[in] Palette Palette. CNcomment:µ÷É«°å CNend
+\param[in] Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
+\param[in] Palette Palette. CNcomment:è°ƒè‰²æ¿ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_LOCKED
@@ -298,11 +298,11 @@ N/A
 HI_S32 HI_GO_SetSurfacePalette(HI_HANDLE Surface, const HI_PALETTE Palette);
 
 /** 
-\brief Obtains the palette of a surface. CNcomment:»ñÈ¡surfaceµÄµ÷É«°å CNend
+\brief Obtains the palette of a surface. CNcomment:è·å–surfaceçš„è°ƒè‰²æ¿ CNend
 \attention \n
 N/A
-\param[in]  Surface Surface handle. CNcomment:Surface¾ä±ú CNend
-\param[out] Palette Pointer to the received palette. CNcomment:½ÓÊÕµ÷É«°åµÄ¿Õ¼äÖ¸Õë CNend 
+\param[in]  Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
+\param[out] Palette Pointer to the received palette. CNcomment:æ¥æ”¶è°ƒè‰²æ¿çš„ç©ºé—´æŒ‡é’ˆ CNend 
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE
@@ -314,15 +314,15 @@ N/A
 HI_S32 HI_GO_GetSurfacePalette(HI_HANDLE Surface, HI_PALETTE Palette);
 
 /** 
-\brief Locks a surface and obtains its memory pointer. CNcomment:Ëø¶¨surface£¬»ñÈ¡ÆäÄÚ´æÖ¸Õë CNend
+\brief Locks a surface and obtains its memory pointer. CNcomment:é”å®šsurfaceï¼Œè·å–å…¶å†…å­˜æŒ‡é’ˆ CNend
 \attention \n
 Before accessing a surface, you need to call the API to lock the surface.\n
 You cannot lock the same surface repeatedly.
-CNcomment:·ÃÎÊsurfaceÄÚÈİÇ°ĞèÒªµ÷ÓÃ¸Ã½Ó¿ÚËø¶¨surface \n
-²»ÄÜ¶ÔÍ¬Ò»surfaceÖØ¸´Ëø¶¨ CNend
-\param[in] Surface Surface handle. CNcomment:Surface¾ä±ú CNend
-\param[out] pData Pixel format information related to memory accessing. CNcomment:ÓëÄÚ´æ·ÃÎÊÏà¹ØµÄÏñËØ¸ñÊ½ĞÅÏ¢ CNend
-\param[in] bSync  Synchronization. CNcomment:ÊÇ·ñÍ¬²½ CNend
+CNcomment:è®¿é—®surfaceå†…å®¹å‰éœ€è¦è°ƒç”¨è¯¥æ¥å£é”å®šsurface \n
+ä¸èƒ½å¯¹åŒä¸€surfaceé‡å¤é”å®š CNend
+\param[in] Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
+\param[out] pData Pixel format information related to memory accessing. CNcomment:ä¸å†…å­˜è®¿é—®ç›¸å…³çš„åƒç´ æ ¼å¼ä¿¡æ¯ CNend
+\param[in] bSync  Synchronization. CNcomment:æ˜¯å¦åŒæ­¥ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -335,11 +335,11 @@ HI_S32 HI_GO_LockSurface(HI_HANDLE Surface, HI_PIXELDATA pData, HI_BOOL bSync);
 
 
 /** 
-\brief Unlocks a surface. CNcomment:½âËø¶¨surface CNend
+\brief Unlocks a surface. CNcomment:è§£é”å®šsurface CNend
 \attention \n
 After accessing a surface, you need to call the API to unlock it.
-CNcomment:¶ÔsurfaceÄÚÈİ·ÃÎÊ½áÊøºó£¬Òª¼°Ê±µ÷ÓÃ¸Ã½Ó¿Ú½âËø¶¨surface CNend
-\param[in] Surface Surface handle. CNcomment:Surface¾ä±ú CNend
+CNcomment:å¯¹surfaceå†…å®¹è®¿é—®ç»“æŸåï¼Œè¦åŠæ—¶è°ƒç”¨è¯¥æ¥å£è§£é”å®šsurface CNend
+\param[in] Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -351,13 +351,13 @@ CNcomment:¶ÔsurfaceÄÚÈİ·ÃÎÊ½áÊøºó£¬Òª¼°Ê±µ÷ÓÃ¸Ã½Ó¿Ú½âËø¶¨surface CNend
 HI_S32 HI_GO_UnlockSurface(HI_HANDLE Surface);
 
 /** 
-\brief Obtains the dimensions of a surface. CNcomment:»ñÈ¡surface³ß´ç CNend
+\brief Obtains the dimensions of a surface. CNcomment:è·å–surfaceå°ºå¯¸ CNend
 \attention \n
 pWidth and pHeight cannot be empty concurrently.
-CNcomment:pWidthÓëpHeight²»ÄÜÍ¬Ê±Îª¿Õ CNend
-\param[in]  Surface Surface handle. CNcomment:Surface¾ä±ú CNend
-\param[out]  pWidth Width output address of a surface. The value cannot be empty. CNcomment:Surface¿í¶ÈÊä³öµØÖ·£¬²»¿ÉÎª¿Õ CNend
-\param[out]  pHeight Height output address of a surface. The value cannot be empty. CNcomment:Surface¸ß¶ÈÊä³öµØÖ·£¬²»¿ÉÎª¿Õ CNend
+CNcomment:pWidthä¸pHeightä¸èƒ½åŒæ—¶ä¸ºç©º CNend
+\param[in]  Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
+\param[out]  pWidth Width output address of a surface. The value cannot be empty. CNcomment:Surfaceå®½åº¦è¾“å‡ºåœ°å€ï¼Œä¸å¯ä¸ºç©º CNend
+\param[out]  pHeight Height output address of a surface. The value cannot be empty. CNcomment:Surfaceé«˜åº¦è¾“å‡ºåœ°å€ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE
@@ -369,11 +369,11 @@ N/A
 HI_S32 HI_GO_GetSurfaceSize(HI_HANDLE Surface, HI_S32* pWidth, HI_S32* pHeight);
 
 /** 
-\brief Obtains the pixel format of a surface. CNcomment:»ñÈ¡surfaceÏñËØ¸ñÊ½ CNend
+\brief Obtains the pixel format of a surface. CNcomment:è·å–surfaceåƒç´ æ ¼å¼ CNend
 \attention \n
 N/A
-\param[in]  Surface Surface Surface handle. CNcomment:Surface¾ä±ú CNend
-\param[out] pPixelFormat Output address of the pixel format. The value cannot be empty. CNcomment:ÏñËØ¸ñÊ½Êä³öµØÖ·£¬²»¿ÉÎª¿Õ CNend
+\param[in]  Surface Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
+\param[out] pPixelFormat Output address of the pixel format. The value cannot be empty. CNcomment:åƒç´ æ ¼å¼è¾“å‡ºåœ°å€ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE
@@ -385,13 +385,13 @@ N/A
 HI_S32 HI_GO_GetSurfacePixelFormat(HI_HANDLE Surface, HIGO_PF_E* pPixelFormat);
 
 /** 
-\brief Encapsulates the user memory into a surface. CNcomment:½«ÓÃ»§µÄÄÚ´æ·â×°³Ésurface CNend
+\brief Encapsulates the user memory into a surface. CNcomment:å°†ç”¨æˆ·çš„å†…å­˜å°è£…æˆsurface CNend
 \attention \n
 All the attributes of pSurInfo must be correct. The supported input pixel formats include RGB format, CLUT8 format, and YUV semi-planar format.
-CNcomment:pSurInfoËùÓĞÊôĞÔ¶¼±ØĞëÉèÖÃÕıÈ·,Ö§³ÖÊäÈëµÄÏñËØ¸ñÊ½ÎªRGB¸ñÊ½£¬clut8¸ñÊ½£¬ÒÔ¼°YUV semi-planner¸ñÊ½¡£CNend
+CNcomment:pSurInfoæ‰€æœ‰å±æ€§éƒ½å¿…é¡»è®¾ç½®æ­£ç¡®,æ”¯æŒè¾“å…¥çš„åƒç´ æ ¼å¼ä¸ºRGBæ ¼å¼ï¼Œclut8æ ¼å¼ï¼Œä»¥åŠYUV semi-planneræ ¼å¼ã€‚CNend
 
-\param[in]  pSurInfo User memory information. The value cannot be empty. CNcomment:ÓÃ»§ÄÚ´æĞÅÏ¢£¬²»¿ÉÎª¿Õ CNend
-\param[out] pSurface Handle information. The value cannot be empty. CNcomment:¾ä±úĞÅÏ¢£¬²»¿ÉÎª¿Õ CNend
+\param[in]  pSurInfo User memory information. The value cannot be empty. CNcomment:ç”¨æˆ·å†…å­˜ä¿¡æ¯ï¼Œä¸å¯ä¸ºç©º CNend
+\param[out] pSurface Handle information. The value cannot be empty. CNcomment:å¥æŸ„ä¿¡æ¯ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE
@@ -408,15 +408,15 @@ N/A
 HI_S32 HI_GO_CreateSurfaceFromMem(const HIGO_SURINFO_S *pSurInfo, HI_HANDLE * pSurface);
 
 /** 
-\brief Creates a memory surface. CNcomment:´´½¨ÄÚ´æsurface CNend
+\brief Creates a memory surface. CNcomment:åˆ›å»ºå†…å­˜surface CNend
 \attention \n
 The surface in the format of ::HIGO_PF_CLUT1, ::HIGO_PF_CLUT4, ::HIGO_PF_YUV420, or ::HIGO_PF_YUV422 cannot be created.
-CNcomment:²»ÄÜ´´½¨::HIGO_PF_CLUT1¡¢::HIGO_PF_CLUT4¡¢::HIGO_PF_YUV420¡¢::HIGO_PF_YUV422¸ñÊ½µÄsurface CNend
+CNcomment:ä¸èƒ½åˆ›å»º::HIGO_PF_CLUT1ã€::HIGO_PF_CLUT4ã€::HIGO_PF_YUV420ã€::HIGO_PF_YUV422æ ¼å¼çš„surface CNend
 
-\param[in] Width Surface width. CNcomment:Surface¿í¶È CNend
-\param[in] Height Surface height. CNcomment:Surface¸ß¶È CNend
-\param[in] PixelFormat Surface pixel format. CNcomment:SurfaceÏñËØ¸ñÊ½ CNend
-\param[out] pSurface Surface handle. CNcomment:Surface¾ä±ú CNend
+\param[in] Width Surface width. CNcomment:Surfaceå®½åº¦ CNend
+\param[in] Height Surface height. CNcomment:Surfaceé«˜åº¦ CNend
+\param[in] PixelFormat Surface pixel format. CNcomment:Surfaceåƒç´ æ ¼å¼ CNend
+\param[out] pSurface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE
@@ -432,13 +432,13 @@ CNcomment:²»ÄÜ´´½¨::HIGO_PF_CLUT1¡¢::HIGO_PF_CLUT4¡¢::HIGO_PF_YUV420¡¢::HIGO_PF_
 HI_S32 HI_GO_CreateSurface(HI_S32 Width, HI_S32 Height, HIGO_PF_E PixelFormat, HI_HANDLE* pSurface);
 
 /** 
-\brief Creates a child surface that shares the same memory with its parent surface. CNcomment:´´½¨×Ósurface£¬×ÓsurfaceÓëÆä¸¸surface¹²ÏíÍ¬Ò»¿éÄÚ´æ CNend
+\brief Creates a child surface that shares the same memory with its parent surface. CNcomment:åˆ›å»ºå­surfaceï¼Œå­surfaceä¸å…¶çˆ¶surfaceå…±äº«åŒä¸€å—å†…å­˜ CNend
 \attention \n
 N/A
 
-\param[in] Surface Parent surface handle. CNcomment:¸¸surface¾ä±ú CNend
-\param[in] pRect Region of the child surface in the parent surface. The value cannot be empty. CNcomment:×ÓsurfaceÔÚ¸¸surfaceÖĞµÄÇøÓò£¬²»¿ÉÎª¿Õ CNend
-\param[out] pSubSurface Child surface handle. The value cannot be empty. CNcomment:×Ósurface¾ä±ú£¬²»¿ÉÎª¿Õ CNend
+\param[in] Surface Parent surface handle. CNcomment:çˆ¶surfaceå¥æŸ„ CNend
+\param[in] pRect Region of the child surface in the parent surface. The value cannot be empty. CNcomment:å­surfaceåœ¨çˆ¶surfaceä¸­çš„åŒºåŸŸï¼Œä¸å¯ä¸ºç©º CNend
+\param[out] pSubSurface Child surface handle. The value cannot be empty. CNcomment:å­surfaceå¥æŸ„ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_NOTINIT
@@ -455,10 +455,10 @@ HI_S32 HI_GO_CreateSubSurface(HI_HANDLE Surface, const HI_RECT *pRect, HI_HANDLE
 
 
 /** 
-\brief Destroys a surface. CNcomment:Ïú»Ùsurface CNend
+\brief Destroys a surface. CNcomment:é”€æ¯surface CNend
 \attention \n
 N/A
-\param[in] Surface Surface handle. CNcomment:Surface¾ä±ú CNend
+\param[in] Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -473,17 +473,17 @@ HI_S32 HI_GO_FreeSurface(HI_HANDLE Surface);
 
 
 /**
-\brief Controls whether to synchronize the drawing operations based on a surface. CNcomment: ÔÊĞíÕë¶ÔsurfaceµÄ»æÍ¼²Ù×÷ÊÇ·ñĞèÒª×Ô¶¯Í¬²½¡£CNend
+\brief Controls whether to synchronize the drawing operations based on a surface. CNcomment: å…è®¸é’ˆå¯¹surfaceçš„ç»˜å›¾æ“ä½œæ˜¯å¦éœ€è¦è‡ªåŠ¨åŒæ­¥ã€‚CNend
 \attention \n
 When a surface is created, the operations based on the surface are synchronized by default. The synchronization indicates that you can draw graphics by using the two-dimensional engine (TDE) only after the contents in the cache drawn by the CPU are
      updated to the surface memory. In addition, you can draw graphics by using the CPU only after the TDE completes the drawing operation.
      This API is applicable to all the operations related to the surface.
-CNcomment:surface´´½¨Ê±£¬Ä¬ÈÏÊÇ×Ô¶¯Í¬²½µÄ¡£Í¬²½µÄÒâË¼ÊÇ: Ê¹ÓÃTDE»æÖÆÖ®Ç°£¬ĞèÒªµÈCPUµÄ»æÖÆÔÚcacheµÄÄÚÈİ\n
-     ¸üĞÂµ½surfaceµÄÄÚ´æÖĞ£¬Ê¹ÓÃCPU»æÖÆÖ®Ç°£¬ĞèÒªµÈTDE»æÖÆÍê³É¡£ 
-     ¸Ã½Ó¿Ú¶ÔËùÓĞsurfaceµÄ²Ù×÷¶¼ÉúĞ§¡£ CNend
+CNcomment:surfaceåˆ›å»ºæ—¶ï¼Œé»˜è®¤æ˜¯è‡ªåŠ¨åŒæ­¥çš„ã€‚åŒæ­¥çš„æ„æ€æ˜¯: ä½¿ç”¨TDEç»˜åˆ¶ä¹‹å‰ï¼Œéœ€è¦ç­‰CPUçš„ç»˜åˆ¶åœ¨cacheçš„å†…å®¹\n
+     æ›´æ–°åˆ°surfaceçš„å†…å­˜ä¸­ï¼Œä½¿ç”¨CPUç»˜åˆ¶ä¹‹å‰ï¼Œéœ€è¦ç­‰TDEç»˜åˆ¶å®Œæˆã€‚ 
+     è¯¥æ¥å£å¯¹æ‰€æœ‰surfaceçš„æ“ä½œéƒ½ç”Ÿæ•ˆã€‚ CNend
      
-\param[in] hSurface Surface handle, not used. CNcomment:Surface¾ä±ú£¬¸Ãº¯ÊıÄÚÔİÊ±Ã»ÓĞÓÃµ½ CNend
-\param[in] bAutoSync Automatic sync enable. CNcomment:ÊÇ·ñ×Ô¶¯¶¯²½ CNend
+\param[in] hSurface Surface handle, not used. CNcomment:Surfaceå¥æŸ„ï¼Œè¯¥å‡½æ•°å†…æš‚æ—¶æ²¡æœ‰ç”¨åˆ° CNend
+\param[in] bAutoSync Automatic sync enable. CNcomment:æ˜¯å¦è‡ªåŠ¨åŠ¨æ­¥ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -497,14 +497,14 @@ HI_S32 HI_GO_EnableSurfaceAutoSync(HI_HANDLE hSurface, HI_BOOL bAutoSync);
 
 /**
 \brief Synchronizes the operations performed on a surface. In this way, the contents drawn by the CPU or TDE are updated to the surface memory.
-CNcomment:Í¬²½surface,Í¬²½ÒâÒåÔÚÓÚ±£Ö¤CPU»ò2D¼ÓËÙÓ²¼ş»æÖÆÄÚÈİÒÑ¾­¸üĞÂµ½surfaceµÄÄÚ´æÖĞ CNend
+CNcomment:åŒæ­¥surface,åŒæ­¥æ„ä¹‰åœ¨äºä¿è¯CPUæˆ–2DåŠ é€Ÿç¡¬ä»¶ç»˜åˆ¶å†…å®¹å·²ç»æ›´æ–°åˆ°surfaceçš„å†…å­˜ä¸­ CNend
 \attention \n
 If you disable the automatic sync function by calling ::HI_GO_EnableSurfaceAutoSync, you need to synchronize the operations by calling HI_S32 HI_GO_SyncSurface when drawing graphics using the TDE or CPU.
 Otherwise, an error occurs during drawing.
-CNcomment:Èç¹ûµ÷ÓÃ::HI_GO_EnableSurfaceAutoSync½ûÖ¹×Ô¶¯¶¯²½£¬ÔòÔÚÊ¹ÓÃTDE»òCPU»æÖÆÊ±£¬µ÷ÓÃ¸Ãº¯Êı±£Ö¤Í¬²½£¬\n
-·ñÔò»æÖÆ½«²»ÕıÈ·¡£CNend
-\param[in] hSurface Surface handle, not used. CNcomment:Surface¾ä±ú£¬ÔİÊ±ÎŞÓÃ CNend
-\param[in] mode Sync mode. For details, see the description of ::HIGO_SYNC_MODE_E. CNcomment:Í¬²½Ä£Ê½£¬²Î¿¼::HIGO_SYNC_MODE_E CNend
+CNcomment:å¦‚æœè°ƒç”¨::HI_GO_EnableSurfaceAutoSyncç¦æ­¢è‡ªåŠ¨åŠ¨æ­¥ï¼Œåˆ™åœ¨ä½¿ç”¨TDEæˆ–CPUç»˜åˆ¶æ—¶ï¼Œè°ƒç”¨è¯¥å‡½æ•°ä¿è¯åŒæ­¥ï¼Œ\n
+å¦åˆ™ç»˜åˆ¶å°†ä¸æ­£ç¡®ã€‚CNend
+\param[in] hSurface Surface handle, not used. CNcomment:Surfaceå¥æŸ„ï¼Œæš‚æ—¶æ— ç”¨ CNend
+\param[in] mode Sync mode. For details, see the description of ::HIGO_SYNC_MODE_E. CNcomment:åŒæ­¥æ¨¡å¼ï¼Œå‚è€ƒ::HIGO_SYNC_MODE_E CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -517,14 +517,14 @@ HI_S32 HI_GO_SyncSurface(HI_HANDLE hSurface, HIGO_SYNC_MODE_E mode);
 
 /**
 \brief Sets the name of a surface. After setting the surface name, you can view the internal information about the surface (such as memory usage, width, height, and pixel format) by running cat /proc/higo in the command line window.
-CNcomment:ÉèÖÃsurfaceµÄÃû×Ö£¬Í¨¹ıÉèÖÃsurfaceÃû×Ö£¬ÔÚÃüÁîĞĞÊäÈë cat /proc/higo ¿ÉÒÔ²é¿´µ½¸Ãsurface
-µÄÄÚ²¿ĞÅÏ¢£¬°üÀ¨ÄÚ´æÕ¼ÓÃ£¬¿í¸ß£¬ÏñËØ¸ñÊ½ CNend
+CNcomment:è®¾ç½®surfaceçš„åå­—ï¼Œé€šè¿‡è®¾ç½®surfaceåå­—ï¼Œåœ¨å‘½ä»¤è¡Œè¾“å…¥ cat /proc/higo å¯ä»¥æŸ¥çœ‹åˆ°è¯¥surface
+çš„å†…éƒ¨ä¿¡æ¯ï¼ŒåŒ…æ‹¬å†…å­˜å ç”¨ï¼Œå®½é«˜ï¼Œåƒç´ æ ¼å¼ CNend
 \attention \n
 The name contains a maximum of 16 characters including the end character '/0'.
-CNcomment:Ãû×Ö×î³¤Îª16¸ö×Ö·û£¬°üÀ¨½áÎ²·û'\0'¡£CNend
+CNcomment:åå­—æœ€é•¿ä¸º16ä¸ªå­—ç¬¦ï¼ŒåŒ…æ‹¬ç»“å°¾ç¬¦'\0'ã€‚CNend
 
-\param[in] hSurface Surface handle. CNcomment:surface¾ä±ú CNend
-\param[in] pName String of a surface name. CNcomment:surfaceÃû×Ö´® CNend
+\param[in] hSurface Surface handle. CNcomment:surfaceå¥æŸ„ CNend
+\param[in] pName String of a surface name. CNcomment:surfaceåå­—ä¸² CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -537,14 +537,14 @@ HI_S32 HI_GO_SetSurfaceName(HI_HANDLE hSurface, const HI_CHAR* pName);
 
 
 /**
-\brief Obtains the name of a surface. CNcomment:»ñÈ¡surfaceµÄÃû×Ö CNend
+\brief Obtains the name of a surface. CNcomment:è·å–surfaceçš„åå­— CNend
 \attention \n
 The name contains a maximum of 16 characters including the end character '/0'.
-CNcomment:Ãû×Ö×î³¤Îª16¸ö×Ö·û£¬°üÀ¨½áÎ²·û'\0'¡£CNend
+CNcomment:åå­—æœ€é•¿ä¸º16ä¸ªå­—ç¬¦ï¼ŒåŒ…æ‹¬ç»“å°¾ç¬¦'\0'ã€‚CNend
 
-\param[in] hSurface Surface handle. CNcomment:surface¾ä±ú CNend
-\param[in] pNameBuf Buffer for storing names. CNcomment:±£´æÃû×ÖµÄbuffer CNend
-\param[in] BufLen Buffer size. CNcomment:buffer ³¤¶È CNend
+\param[in] hSurface Surface handle. CNcomment:surfaceå¥æŸ„ CNend
+\param[in] pNameBuf Buffer for storing names. CNcomment:ä¿å­˜åå­—çš„buffer CNend
+\param[in] BufLen Buffer size. CNcomment:buffer é•¿åº¦ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -558,11 +558,11 @@ HI_S32 HI_GO_GetSurfaceName(HI_HANDLE hSurface,  HI_CHAR* pNameBuf, HI_U32 BufLe
 
 
 /** 
-\brief Obtains the memory type. CNcomment:»ñÈ¡ÄÚ´æÀàĞÍ CNend
+\brief Obtains the memory type. CNcomment:è·å–å†…å­˜ç±»å‹ CNend
 \attention \n
  
-\param[in]  Surface Surface handle. CNcomment:Surface¾ä±ú CNend
-\param[out]  pMemType Pointer to the memory type. The value cannot be empty. CNcomment:ÄÚ´æÀàĞÍÖ¸Õë£¬²»¿ÉÎª¿Õ CNend
+\param[in]  Surface Surface handle. CNcomment:Surfaceå¥æŸ„ CNend
+\param[out]  pMemType Pointer to the memory type. The value cannot be empty. CNcomment:å†…å­˜ç±»å‹æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE
@@ -575,11 +575,11 @@ HI_S32 HI_GO_GetSurfaceMemType(HI_HANDLE Surface, HIGO_MEMTYPE_E *pMemType);
 
 
 /** 
-\brief Queries the memory type. CNcomment:²éÑ¯ÄÚ´æÀàĞÍ CNend
+\brief Queries the memory type. CNcomment:æŸ¥è¯¢å†…å­˜ç±»å‹ CNend
 \attention \n
  
 \param[in]   Surface  surface
-\param[out]  pOwner   Pointer to the owner type. The value cannot be empty. CNcomment:OwnerÀàĞÍÖ¸Õë£¬²»¿ÉÎª¿Õ CNend
+\param[out]  pOwner   Pointer to the owner type. The value cannot be empty. CNcomment:Ownerç±»å‹æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE
@@ -594,9 +594,9 @@ HI_S32 HI_GO_GetSurfaceOwner(HI_HANDLE Surface, HIGO_OWNER_E *pOwner);
 \brief Creates an OS surface.
 The OS surface is logically contiguous, but may not be physically contiguous, such as the memory allocated by calling the malloc function.
 The OS surface can be identified by some components of the HiGo, but cannot be identified by the hardware. When the MMZ is insufficient, the OS surface can be used.
-CNcomment:´´½¨OSÀàĞÍÄÚ´æ \n
-¼´Âß¼­ÉÏÊÇÁ¬ĞøµÄÒ»¿éÄÚ´æÇøÓò£¨µ«ÎïÀíÉÏ²»Ò»¶¨Á¬Ğø£¬ÈçÓÃ»§Ö±½Óµ÷ÓÃmalloc·ÖÅäµÄÇøÓò£©£¬\n
-Õâ²»ÄÜ±»Ó²¼şËùÊ¶±ğ£¬µ«ÔÚHIGOÄ³Ğ©×é¼şÖĞÊÇ¿ÉÒÔ±»Ê¶±ğµÄ£¬¸ÃÀàĞÍ¿ÉÒÔÄ³ÖÖ³Ì¶ÈÉÏ»º½âMMZÄÚ´æµÄ²»×ã CNend
+CNcomment:åˆ›å»ºOSç±»å‹å†…å­˜ \n
+å³é€»è¾‘ä¸Šæ˜¯è¿ç»­çš„ä¸€å—å†…å­˜åŒºåŸŸï¼ˆä½†ç‰©ç†ä¸Šä¸ä¸€å®šè¿ç»­ï¼Œå¦‚ç”¨æˆ·ç›´æ¥è°ƒç”¨mallocåˆ†é…çš„åŒºåŸŸï¼‰ï¼Œ\n
+è¿™ä¸èƒ½è¢«ç¡¬ä»¶æ‰€è¯†åˆ«ï¼Œä½†åœ¨HIGOæŸäº›ç»„ä»¶ä¸­æ˜¯å¯ä»¥è¢«è¯†åˆ«çš„ï¼Œè¯¥ç±»å‹å¯ä»¥æŸç§ç¨‹åº¦ä¸Šç¼“è§£MMZå†…å­˜çš„ä¸è¶³ CNend
 
 \attention \n
 Note the following points when using the OS surface:
@@ -656,18 +656,18 @@ The following describes the values of u32AlignWidth_Y, u32AlignHeight_Y, u32Alig
 	u32AlignHeight_Y = (uExpectHeight + 7) + (~(7));	      //8-byte alignment
 	u32AlignWidth_C = u32AlignWidth_Y*2;
 	u32AlignHeight_C = u32AlignHeight_Y; 
-CNcomment:Ä¿Ç°¶ÔÓÚos ÀàĞÍµÄsurface£¬½ö¾ßÓĞÒÔÏÂµÄÊ¹ÓÃ·¶Î§£º
-1).ÔÚÎŞËõ·Å£¬ÎŞ¸ñÊ½×ª»»ÏÂ£¬Ö§³ÖÔÚbmp£¬gif£¬pngÈí¼ş½âÂëÖĞÊ¹ÓÃ	
-2).Ö§³ÖÔÚRGB¸ñÊ½µÄsurfaceµÄ±àÂë³ÉbmpÖĞÊ¹ÓÃ
-3).Ö§³Ö½«textÊä³öµ½¸ÃÀàĞÍµÄsurface
-4).MMZÀàĞÍÓëOSÀàĞÍsurfaceÖ®¼äµÄ×ª»»¿ÉÒÔÍ¨¹ıHI_GO_Blit½øĞĞ£¬µ«ÊÇHI_GO_Blitº¯Êı½öÖ§³ÖHIGO_BLTOPT_S ±äÁ¿={0}£¬
-	 »òÕßÉèÖÃColorkeyÏà¹Ø²Ù×÷£¬»òÕßÁ½ÖÖsurfaceÔÚRGB¸ñÊ½¼ä½øĞĞblit£¬ÆäËü×éºÏ²ÎÊı²»Ö§³Ö¡£
-5).MemOwnerÎªHIGO_OWNER_USER£¬Ö§³Ö¸ñÊ½°üÀ¨YUV(semi-planner), RGB£¬CLUT8¸ñÊ½¸ñÊ½£¬·ñÔòÖ§³ÖRGBºÍCLUT8¸ñÊ½¡£
-ÏÂÃæ½âÎöÒ»ÏÂÔõÃ´´´½¨YUV¼¸ÖÖ³£ÓÃ¸ñÊ½µÄsurface£º
-	HI_U32 u32AlignWidth_Y,u32AlignHeight_Y; //Y·ÖÁ¿¶ÔÆëºóµÄ´óĞ¡
-	HI_U32 u32AlignWidth_C,u32AlignHeight_C; //UV·ÖÁ¿¶ÔÆëºóµÄ´óĞ¡
-	HI_U32 uExpectWidth,uExpectHeight;       //Ô­Í¼Æ¬µÄ´óĞ¡»òÆÚÍûµÄÍ¼Æ¬µÄ´óĞ¡
-	HIGO_PF_E szPixelFormat;                 //Ô­Í¼Æ¬µÄÏñËØ¸ñÊ½»òÆÚÍûµÄÍ¼Æ¬µÄÏñËØ¸ñÊ½£¬ÈçHIGO_PF_YUV400,HIGO_PF_YUV420,HIGO_PF_YUV422,HIGO_PF_YUV422_V,HIGO_PF_YUV444 
+CNcomment:ç›®å‰å¯¹äºos ç±»å‹çš„surfaceï¼Œä»…å…·æœ‰ä»¥ä¸‹çš„ä½¿ç”¨èŒƒå›´ï¼š
+1).åœ¨æ— ç¼©æ”¾ï¼Œæ— æ ¼å¼è½¬æ¢ä¸‹ï¼Œæ”¯æŒåœ¨bmpï¼Œgifï¼Œpngè½¯ä»¶è§£ç ä¸­ä½¿ç”¨	
+2).æ”¯æŒåœ¨RGBæ ¼å¼çš„surfaceçš„ç¼–ç æˆbmpä¸­ä½¿ç”¨
+3).æ”¯æŒå°†textè¾“å‡ºåˆ°è¯¥ç±»å‹çš„surface
+4).MMZç±»å‹ä¸OSç±»å‹surfaceä¹‹é—´çš„è½¬æ¢å¯ä»¥é€šè¿‡HI_GO_Blitè¿›è¡Œï¼Œä½†æ˜¯HI_GO_Blitå‡½æ•°ä»…æ”¯æŒHIGO_BLTOPT_S å˜é‡={0}ï¼Œ
+	 æˆ–è€…è®¾ç½®Colorkeyç›¸å…³æ“ä½œï¼Œæˆ–è€…ä¸¤ç§surfaceåœ¨RGBæ ¼å¼é—´è¿›è¡Œblitï¼Œå…¶å®ƒç»„åˆå‚æ•°ä¸æ”¯æŒã€‚
+5).MemOwnerä¸ºHIGO_OWNER_USERï¼Œæ”¯æŒæ ¼å¼åŒ…æ‹¬YUV(semi-planner), RGBï¼ŒCLUT8æ ¼å¼æ ¼å¼ï¼Œå¦åˆ™æ”¯æŒRGBå’ŒCLUT8æ ¼å¼ã€‚
+ä¸‹é¢è§£æä¸€ä¸‹æ€ä¹ˆåˆ›å»ºYUVå‡ ç§å¸¸ç”¨æ ¼å¼çš„surfaceï¼š
+	HI_U32 u32AlignWidth_Y,u32AlignHeight_Y; //Yåˆ†é‡å¯¹é½åçš„å¤§å°
+	HI_U32 u32AlignWidth_C,u32AlignHeight_C; //UVåˆ†é‡å¯¹é½åçš„å¤§å°
+	HI_U32 uExpectWidth,uExpectHeight;       //åŸå›¾ç‰‡çš„å¤§å°æˆ–æœŸæœ›çš„å›¾ç‰‡çš„å¤§å°
+	HIGO_PF_E szPixelFormat;                 //åŸå›¾ç‰‡çš„åƒç´ æ ¼å¼æˆ–æœŸæœ›çš„å›¾ç‰‡çš„åƒç´ æ ¼å¼ï¼Œå¦‚HIGO_PF_YUV400,HIGO_PF_YUV420,HIGO_PF_YUV422,HIGO_PF_YUV422_V,HIGO_PF_YUV444 
 	HIGO_SURINFOEX_S SurfaceInfoEx = {0};
     
 	SurfaceInfoEx.Width = uExpectWidth;
@@ -687,34 +687,34 @@ CNcomment:Ä¿Ç°¶ÔÓÚos ÀàĞÍµÄsurface£¬½ö¾ßÓĞÒÔÏÂµÄÊ¹ÓÃ·¶Î§£º
 	ret = HI_GO_CreateSurfaceEx(&SurfaceInfoEx, &picSurface);
 
 ---------------------------------------------------------------------------------------
-ÏÂÃæËµÃ÷Ò»ÏÂ¸ù¾İszPixelFormatËµÃ÷u32AlignWidth_Y£¬u32AlignHeight_Y£¬u32AlignWidth_C£¬u32AlignHeight_CµÄÈ¡Öµ£º
-1 ) YUV400Çé¿ö£º
-	u32AlignWidth_Y   = (uExpectWidth + 127) +(~(127));       //×÷128 byte¶ÔÆë
-	u32AlignHeight_Y  = (uExpectHeight + 7) + (~(7));	      //×÷8 byte¶ÔÆë
+ä¸‹é¢è¯´æ˜ä¸€ä¸‹æ ¹æ®szPixelFormatè¯´æ˜u32AlignWidth_Yï¼Œu32AlignHeight_Yï¼Œu32AlignWidth_Cï¼Œu32AlignHeight_Cçš„å–å€¼ï¼š
+1 ) YUV400æƒ…å†µï¼š
+	u32AlignWidth_Y   = (uExpectWidth + 127) +(~(127));       //ä½œ128 byteå¯¹é½
+	u32AlignHeight_Y  = (uExpectHeight + 7) + (~(7));	      //ä½œ8 byteå¯¹é½
 	u32AlignWidth_C   = 0;
 	u32AlignHeight_C  = 0;
-2 ) YUV420Çé¿ö£º
-	u32AlignWidth_Y   = (uExpectWidth + 127) +(~(127));       //×÷128 byte¶ÔÆë
-	u32AlignHeight_Y  = (uExpectHeight + 15) + (~(15));	      //×÷16 byte¶ÔÆë
+2 ) YUV420æƒ…å†µï¼š
+	u32AlignWidth_Y   = (uExpectWidth + 127) +(~(127));       //ä½œ128 byteå¯¹é½
+	u32AlignHeight_Y  = (uExpectHeight + 15) + (~(15));	      //ä½œ16 byteå¯¹é½
 	u32AlignWidth_C   = u32AlignWidth_Y;
 	u32AlignHeight_C  = u32AlignHeight_Y / 2;
-3 ) YUV422Çé¿ö£º
-	u32AlignWidth_Y   = (uExpectWidth + 127) +(~(127));       //×÷128 byte¶ÔÆë
-	u32AlignHeight_Y  = (uExpectHeight + 7) + (~(7));	      //×÷8 byte¶ÔÆë
+3 ) YUV422æƒ…å†µï¼š
+	u32AlignWidth_Y   = (uExpectWidth + 127) +(~(127));       //ä½œ128 byteå¯¹é½
+	u32AlignHeight_Y  = (uExpectHeight + 7) + (~(7));	      //ä½œ8 byteå¯¹é½
 	u32AlignWidth_C   = u32AlignWidth_Y;
 	u32AlignHeight_C  = u32AlignHeight_Y;
-4 ) YUV422_VÇé¿ö£º
-	u32AlignWidth_Y   = (uExpectWidth + 127) +(~(127));       //×÷128 byte¶ÔÆë
-	u32AlignHeight_Y  = (uExpectHeight + 15) + (~(15));	      //×÷16 byte¶ÔÆë
+4 ) YUV422_Væƒ…å†µï¼š
+	u32AlignWidth_Y   = (uExpectWidth + 127) +(~(127));       //ä½œ128 byteå¯¹é½
+	u32AlignHeight_Y  = (uExpectHeight + 15) + (~(15));	      //ä½œ16 byteå¯¹é½
 	u32AlignWidth_C   = u32AlignWidth_Y * 2;
 	u32AlignHeight_C  = u32AlignHeight_Y / 2;
-5 ) YUV444Çé¿ö£º
-	u32AlignWidth_Y   = (uExpectWidth + 127) +(~(127));       //×÷128 byte¶ÔÆë
-	u32AlignHeight_Y  = (uExpectHeight + 7) + (~(7));	      //×÷8 byte¶ÔÆë
+5 ) YUV444æƒ…å†µï¼š
+	u32AlignWidth_Y   = (uExpectWidth + 127) +(~(127));       //ä½œ128 byteå¯¹é½
+	u32AlignHeight_Y  = (uExpectHeight + 7) + (~(7));	      //ä½œ8 byteå¯¹é½
 	u32AlignWidth_C   = u32AlignWidth_Y * 2;
 	u32AlignHeight_C  = u32AlignHeight_Y; CNend
-\param[in]   pSurInfo      Pointer to the surface information. The value cannot be empty. CNcomment:surfaceĞÅÏ¢Ö¸Õë£¬²»¿ÉÎª¿Õ CNend
-\param[out]  pSurface      Pointer to a surface. The value cannot be empty. CNcomment:surfaceÖ¸Õë£¬²»¿ÉÎª¿Õ CNend
+\param[in]   pSurInfo      Pointer to the surface information. The value cannot be empty. CNcomment:surfaceä¿¡æ¯æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
+\param[out]  pSurface      Pointer to a surface. The value cannot be empty. CNcomment:surfaceæŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE
@@ -726,10 +726,10 @@ N/A
 HI_S32 HI_GO_CreateSurfaceEx(const HIGO_SURINFOEX_S  *pSurInfo, HI_HANDLE* pSurface);
 
 /** 
-\brief Set common Palette. CNcomment:ÉèÖÃ¹«¹²µ÷É«°å CNend
+\brief Set common Palette. CNcomment:è®¾ç½®å…¬å…±è°ƒè‰²æ¿ CNend
 \attention \n
 N/A 
-\param[in]   Palette.  CNcomment:µ÷É«°åÊı¾İ CNend
+\param[in]   Palette.  CNcomment:è°ƒè‰²æ¿æ•°æ® CNend
 \param[out]  none
 
 \retval ::HI_SUCCESS 
@@ -740,11 +740,11 @@ N/A
 HI_S32 HI_GO_SetPubPalette(HI_PALETTE Palette);
 
 /** 
-\brief Get common Palette. CNcomment:»ñÈ¡¹«¹²µ÷É«°å CNend
+\brief Get common Palette. CNcomment:è·å–å…¬å…±è°ƒè‰²æ¿ CNend
 \attention \n
 N/A
 \param[in]   none
-\param[out]  Palette.  CNcomment:µ÷É«°åÊı¾İ CNend
+\param[out]  Palette.  CNcomment:è°ƒè‰²æ¿æ•°æ® CNend
 
 \retval ::HI_SUCCESS 
 
@@ -754,15 +754,15 @@ N/A
 HI_S32 HI_GO_GetPubPalette(HI_PALETTE Palette);
 
 /** 
-\brief Set clip region of surface. CNcomment:ÉèÖÃsurface¼ôÇĞÓò. CNend
+\brief Set clip region of surface. CNcomment:è®¾ç½®surfaceå‰ªåˆ‡åŸŸ. CNend
 \attention \n
 Blit just support single Clip.
-CNcomment:blit²Ù×÷Ôİ²»Ö§³ÖsurfaceµÄ¶à¼ôÇĞÓò²Ù×÷,Ö»Ö§³Ö
-µ¥¼ôÇĞÓò(¼ûHI_GO_SetSurfaceClipRect) CNend
+CNcomment:blitæ“ä½œæš‚ä¸æ”¯æŒsurfaceçš„å¤šå‰ªåˆ‡åŸŸæ“ä½œ,åªæ”¯æŒ
+å•å‰ªåˆ‡åŸŸ(è§HI_GO_SetSurfaceClipRect) CNend
  
-\param[in]   Surface handle. CNcomment:surface¾ä±ú CNend
-\param[in]   Pointer of Region. CNcomment:¼ôÇĞÓòÖ¸Õë CNend
-\param[in]   Number of clip region. CNcomment:¼ôÇĞÓò¸öÊı CNend
+\param[in]   Surface handle. CNcomment:surfaceå¥æŸ„ CNend
+\param[in]   Pointer of Region. CNcomment:å‰ªåˆ‡åŸŸæŒ‡é’ˆ CNend
+\param[in]   Number of clip region. CNcomment:å‰ªåˆ‡åŸŸä¸ªæ•° CNend
 \param[out]  none
 
 \retval ::HI_SUCCESS 
@@ -775,12 +775,12 @@ N/A
 HI_S32 HI_GO_SetSurfaceClipRgn(HI_HANDLE Surface, HI_REGION *pRegion, HI_U32 u32Num);
 
 /** 
-\brief Get clip region of surface.CNcomment:»ñÈ¡surface¼ôÇĞÓò. CNend
+\brief Get clip region of surface.CNcomment:è·å–surfaceå‰ªåˆ‡åŸŸ. CNend
 \attention  \n
 N/A
-\param[in]   Surface handle. CNcomment:surface¾ä±ú CNend
-\param[out]   Pointer of Region. CNcomment:¼ôÇĞÓòÖ¸Õë CNend
-\param[out]   Number of clip region. CNcomment:¼ôÇĞÓò¸öÊı CNend
+\param[in]   Surface handle. CNcomment:surfaceå¥æŸ„ CNend
+\param[out]   Pointer of Region. CNcomment:å‰ªåˆ‡åŸŸæŒ‡é’ˆ CNend
+\param[out]   Number of clip region. CNcomment:å‰ªåˆ‡åŸŸä¸ªæ•° CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE
@@ -791,11 +791,11 @@ N/A
 HI_S32 HI_GO_GetSurfaceClipRgn(HI_HANDLE Surface, HI_REGION **ppRegion, HI_U32 *pu32Num);
 
 /** 
-\brief Set Clip Rect. CNcomment:ÉèÖÃ¼ôÇĞ¾ØĞÎ CNend
+\brief Set Clip Rect. CNcomment:è®¾ç½®å‰ªåˆ‡çŸ©å½¢ CNend
 \attention  \n
 N/A 
-\param[in]   Surface handle. CNcomment:surface¾ä±ú CNend
-\param[in]   Clip Rect. CNcomment:¼ôÇĞ¾ØĞÎ CNend
+\param[in]   Surface handle. CNcomment:surfaceå¥æŸ„ CNend
+\param[in]   Clip Rect. CNcomment:å‰ªåˆ‡çŸ©å½¢ CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_INVHANDLE

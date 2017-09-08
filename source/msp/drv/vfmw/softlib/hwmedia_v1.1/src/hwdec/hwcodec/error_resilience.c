@@ -99,7 +99,7 @@ static void filter181(int16_t *data, int width, int height, int stride){
 
             dc= - prev_dc
                 + data[x     + y*stride]*8
-                - data[x + 1 + y*stride];     //guoshan+00101841 20100505 Ë®Æ½·½ÏòÏàÁÚÈı¸öDCÏµÊıÂË²¨£¬ÏµÊı(-1, 8, -1)
+                - data[x + 1 + y*stride];     //guoshan+00101841 20100505 æ°´å¹³æ–¹å‘ç›¸é‚»ä¸‰ä¸ªDCç³»æ•°æ»¤æ³¢ï¼Œç³»æ•°(-1, 8, -1)
             dc= (dc*10923 + 32768)>>16;
             prev_dc= data[x + y*stride];
             data[x + y*stride]= dc;
@@ -117,7 +117,7 @@ static void filter181(int16_t *data, int width, int height, int stride){
 
             dc= - prev_dc
                 + data[x +  y   *stride]*8
-                - data[x + (y+1)*stride];   //guoshan+00101841 20100505 ´¹Ö±·½ÏòÏàÁÚÈı¸öDCÏµÊıÂË²¨£¬ÏµÊı(-1, 8, -1)
+                - data[x + (y+1)*stride];   //guoshan+00101841 20100505 å‚ç›´æ–¹å‘ç›¸é‚»ä¸‰ä¸ªDCç³»æ•°æ»¤æ³¢ï¼Œç³»æ•°(-1, 8, -1)
             dc= (dc*10923 + 32768)>>16;
             prev_dc= data[x + y*stride];
             data[x + y*stride]= dc;
@@ -156,7 +156,7 @@ static void guess_dc(MpegEncContext *s, int16_t *dc, int w, int h, int stride, i
                 int mb_index_j= (j>>is_luma) + (b_y>>is_luma)*s->mb_stride;
                 int error_j= s->error_status_table[mb_index_j];
                 int intra_j= IS_INTRA(s->current_picture.mb_type[mb_index_j]);
-                if(intra_j==0 || !(error_j&DC_ERROR))   //guoshan+00101841 2010505£ºfind the nearest inter block on the right with no DC_ERROR
+                if(intra_j==0 || !(error_j&DC_ERROR))   //guoshan+00101841 2010505ï¼šfind the nearest inter block on the right with no DC_ERROR
 				{
                     color[0]= dc[j + b_y*stride];
                     distance[0]= j-b_x;
@@ -170,7 +170,7 @@ static void guess_dc(MpegEncContext *s, int16_t *dc, int w, int h, int stride, i
                 int mb_index_j= (j>>is_luma) + (b_y>>is_luma)*s->mb_stride;
                 int error_j= s->error_status_table[mb_index_j];
                 int intra_j= IS_INTRA(s->current_picture.mb_type[mb_index_j]);
-                if(intra_j==0 || !(error_j&DC_ERROR)) //guoshan+00101841 2010505£ºfind the nearest inter block on the left with no DC_ERROR
+                if(intra_j==0 || !(error_j&DC_ERROR)) //guoshan+00101841 2010505ï¼šfind the nearest inter block on the left with no DC_ERROR
 				{
                     color[1]= dc[j + b_y*stride];
                     distance[1]= b_x-j;
@@ -183,7 +183,7 @@ static void guess_dc(MpegEncContext *s, int16_t *dc, int w, int h, int stride, i
                 int mb_index_j= (b_x>>is_luma) + (j>>is_luma)*s->mb_stride;
                 int error_j= s->error_status_table[mb_index_j];
                 int intra_j= IS_INTRA(s->current_picture.mb_type[mb_index_j]);
-                if(intra_j==0 || !(error_j&DC_ERROR)) //guoshan+00101841 2010505£ºfind the nearest inter block at the bottom with no DC_ERROR
+                if(intra_j==0 || !(error_j&DC_ERROR)) //guoshan+00101841 2010505ï¼šfind the nearest inter block at the bottom with no DC_ERROR
 				{
                     color[2]= dc[b_x + j*stride];
                     distance[2]= j-b_y;
@@ -196,7 +196,7 @@ static void guess_dc(MpegEncContext *s, int16_t *dc, int w, int h, int stride, i
                 int mb_index_j= (b_x>>is_luma) + (j>>is_luma)*s->mb_stride;
                 int error_j= s->error_status_table[mb_index_j];
                 int intra_j= IS_INTRA(s->current_picture.mb_type[mb_index_j]);
-                if(intra_j==0 || !(error_j&DC_ERROR))  //guoshan+00101841 2010505£ºfind the nearest inter block at the top with no DC_ERROR
+                if(intra_j==0 || !(error_j&DC_ERROR))  //guoshan+00101841 2010505ï¼šfind the nearest inter block at the top with no DC_ERROR
 				{ 
                     color[3]= dc[b_x + j*stride];
                     distance[3]= b_y-j;
@@ -396,7 +396,7 @@ static void guess_mv(MpegEncContext *s)
                 const int mb_xy= mb_x + mb_y*s->mb_stride;
 
                 if(IS_INTRA(s->current_picture.mb_type[mb_xy]))  continue;
-                if(!(s->error_status_table[mb_xy]&MV_ERROR)) continue; //guoshan+00101841 20100505 ·ÇMV_ERROR
+                if(!(s->error_status_table[mb_xy]&MV_ERROR)) continue; //guoshan+00101841 20100505 éMV_ERROR
 
                 s->mv_dir = MV_DIR_FORWARD;
                 s->mb_intra=0;
@@ -449,14 +449,14 @@ static void guess_mv(MpegEncContext *s)
                     assert(!IS_INTRA(s->current_picture.mb_type[mb_xy]));
                     assert(s->last_picture_ptr && s->last_picture_ptr->data[0]);
 
-                    j=0;  //guoshan+00101841 20100505: ÉÏ£¬ÏÂ£¬×ó£¬ÓÒµÄmbÃ»ÓĞintra»òinter with undamaged MVÄ£Ê½£¬²»Òş²Ø
+                    j=0;  //guoshan+00101841 20100505: ä¸Šï¼Œä¸‹ï¼Œå·¦ï¼Œå³çš„mbæ²¡æœ‰intraæˆ–inter with undamaged MVæ¨¡å¼ï¼Œä¸éšè—
                     if(mb_x>0           && fixed[mb_xy-1        ]==MV_FROZEN) j=1;
                     if(mb_x+1<mb_width  && fixed[mb_xy+1        ]==MV_FROZEN) j=1;
                     if(mb_y>0           && fixed[mb_xy-mb_stride]==MV_FROZEN) j=1;
                     if(mb_y+1<mb_height && fixed[mb_xy+mb_stride]==MV_FROZEN) j=1;
                     if(j==0) continue;
 
-                    j=0; //guoshan+00101841 20100505: ÉÏ£¬ÏÂ£¬×ó£¬ÓÒµÄmbÃ»ÓĞ±»Òş²ØĞŞÕı¹ı£¬²»Òş²Ø
+                    j=0; //guoshan+00101841 20100505: ä¸Šï¼Œä¸‹ï¼Œå·¦ï¼Œå³çš„mbæ²¡æœ‰è¢«éšè—ä¿®æ­£è¿‡ï¼Œä¸éšè—
                     if(mb_x>0           && fixed[mb_xy-1        ]==MV_CHANGED) j=1;
                     if(mb_x+1<mb_width  && fixed[mb_xy+1        ]==MV_CHANGED) j=1;
                     if(mb_y>0           && fixed[mb_xy-mb_stride]==MV_CHANGED) j=1;
@@ -465,7 +465,7 @@ static void guess_mv(MpegEncContext *s)
 
                     none_left=0;
 
-					//guoshan+00101841 2010505£º·ÇµÚÒ»ĞĞ/ÁĞ»ò·Ç×îºóÒ»ĞĞ/ÁĞºê¿é×î¶à¿ÉÄÜ´æÔÚ4×émv_predictor
+					//guoshan+00101841 2010505ï¼šéç¬¬ä¸€è¡Œ/åˆ—æˆ–éæœ€åä¸€è¡Œ/åˆ—å®å—æœ€å¤šå¯èƒ½å­˜åœ¨4ç»„mv_predictor
                     if(mb_x>0 && fixed[mb_xy-1])
 					{
                         mv_predictor[pred_count][0]= s->current_picture.motion_val[0][mot_index - 2][0];
@@ -562,21 +562,21 @@ static void guess_mv(MpegEncContext *s)
 						{
                             int k;
                             for(k=0; k<16; k++)
-                                score += FFABS(src[k*s->linesize-1 ]-src[k*s->linesize   ]); //guoshan+00101841 20100505¼ÆËãmb×î×ó±ßÒ»ÁĞÓëÏàÁÚÁĞÏñËØµÄFFAB
+                                score += FFABS(src[k*s->linesize-1 ]-src[k*s->linesize   ]); //guoshan+00101841 20100505è®¡ç®—mbæœ€å·¦è¾¹ä¸€åˆ—ä¸ç›¸é‚»åˆ—åƒç´ çš„FFAB
                         }
                         if(mb_x+1<mb_width && fixed[mb_xy+1]){
                             int k;
                             for(k=0; k<16; k++)
-                                score += FFABS(src[k*s->linesize+15]-src[k*s->linesize+16]); //guoshan+00101841 20100505¼ÆËãmb×îÓÒ±ßÒ»ÁĞÓëÏàÁÚÁĞÏñËØµÄFFAB
+                                score += FFABS(src[k*s->linesize+15]-src[k*s->linesize+16]); //guoshan+00101841 20100505è®¡ç®—mbæœ€å³è¾¹ä¸€åˆ—ä¸ç›¸é‚»åˆ—åƒç´ çš„FFAB
                         }
-                        if(mb_y>0 && fixed[mb_xy-mb_stride]){ //guoshan+00101841 20100505¼ÆËãmb×îÉÏ±ßÒ»ĞĞÓëÏàÁÚĞĞÏñËØµÄFFAB
+                        if(mb_y>0 && fixed[mb_xy-mb_stride]){ //guoshan+00101841 20100505è®¡ç®—mbæœ€ä¸Šè¾¹ä¸€è¡Œä¸ç›¸é‚»è¡Œåƒç´ çš„FFAB
                             int k;
                             for(k=0; k<16; k++)
                                 score += FFABS(src[k-s->linesize   ]-src[k               ]);
                         }
                         if(mb_y+1<mb_height && fixed[mb_xy+mb_stride]){
                             int k;
-                            for(k=0; k<16; k++) //guoshan+00101841 20100505¼ÆËãmb×îÏÂ±ßÒ»ĞĞÓëÏàÁÚĞĞÏñËØµÄFFAB
+                            for(k=0; k<16; k++) //guoshan+00101841 20100505è®¡ç®—mbæœ€ä¸‹è¾¹ä¸€è¡Œä¸ç›¸é‚»è¡Œåƒç´ çš„FFAB
                                 score += FFABS(src[k+s->linesize*15]-src[k+s->linesize*16]);
                         }
 
@@ -627,7 +627,7 @@ static int is_intra_more_likely(MpegEncContext *s){
         const int mb_xy= s->mb_index2xy[i];
         const int error= s->error_status_table[mb_xy];
         if(!((error&DC_ERROR) && (error&MV_ERROR)))
-            undamaged_count++;  //guoshan+00101841 20100505 AC_ERROR¼ÆÊıÍ³¼Æ
+            undamaged_count++;  //guoshan+00101841 20100505 AC_ERRORè®¡æ•°ç»Ÿè®¡
     }
 
     if(undamaged_count < 5) return 0; //almost all MBs damaged -> use temporal prediction
@@ -647,7 +647,7 @@ static int is_intra_more_likely(MpegEncContext *s){
 
             error= s->error_status_table[mb_xy];
             if((error&DC_ERROR) && (error&MV_ERROR))
-                continue; //skip damaged   //guoshan+00101841 20100505 intraÄ£Ê½ÏÂÖ»¿¼ÂÇAC_ERROR
+                continue; //skip damaged   //guoshan+00101841 20100505 intraæ¨¡å¼ä¸‹åªè€ƒè™‘AC_ERROR
 
             j++;
             if((j%skip_amount) != 0) continue; //skip a few to speed things up
@@ -657,10 +657,10 @@ static int is_intra_more_likely(MpegEncContext *s){
                 uint8_t *mb_ptr     = s->current_picture.data[0] + mb_x*16 + mb_y*16*s->linesize;  
                 uint8_t *last_mb_ptr= s->last_picture.data   [0] + mb_x*16 + mb_y*16*s->linesize;
 
-                is_intra_likely += s->dsp.sad[0](NULL, last_mb_ptr, mb_ptr                    , s->linesize, 16);//guoshan+00101841 20100505 Çóµ±Ç°mbºÍÇ°Ö¡co-located mbµÄSAD
-                is_intra_likely -= s->dsp.sad[0](NULL, last_mb_ptr, last_mb_ptr+s->linesize*16, s->linesize, 16);//guoshan+00101841 20100505 ÇóÇ°Ö¡co-located mb¼°ÆäÏÂ±ßmbµÄSAD
+                is_intra_likely += s->dsp.sad[0](NULL, last_mb_ptr, mb_ptr                    , s->linesize, 16);//guoshan+00101841 20100505 æ±‚å½“å‰mbå’Œå‰å¸§co-located mbçš„SAD
+                is_intra_likely -= s->dsp.sad[0](NULL, last_mb_ptr, last_mb_ptr+s->linesize*16, s->linesize, 16);//guoshan+00101841 20100505 æ±‚å‰å¸§co-located mbåŠå…¶ä¸‹è¾¹mbçš„SAD
             }
-			else //guoshan+00101841 20100505 ·ÇIÖ¡½öÍ³¼ÆÆäÖĞµÄintra mb
+			else //guoshan+00101841 20100505 éIå¸§ä»…ç»Ÿè®¡å…¶ä¸­çš„intra mb
 			{
                 if(IS_INTRA(s->current_picture.mb_type[mb_xy]))
                    is_intra_likely++;
@@ -670,7 +670,7 @@ static int is_intra_more_likely(MpegEncContext *s){
         }
     }
 //printf("is_intra_likely: %d type:%d\n", is_intra_likely, s->pict_type);
-    return is_intra_likely > 0; //guoshan+00101841 20100505 ·ÇIÖ¡intra mb¸öÊıÕ¼°ëÊı¶à£¬·µ»Ø1
+    return is_intra_likely > 0; //guoshan+00101841 20100505 éIå¸§intra mbä¸ªæ•°å åŠæ•°å¤šï¼Œè¿”å›1
 }
 
 void ff_er_frame_start(MpegEncContext *s){
@@ -689,7 +689,7 @@ void ff_er_frame_start(MpegEncContext *s){
 void ff_er_add_slice(MpegEncContext *s, int startx, int starty, int endx, int endy, int status){
     const int start_i= av_clip(startx + starty * s->mb_width    , 0, s->mb_num-1);
     const int end_i  = av_clip(endx   + endy   * s->mb_width    , 0, s->mb_num);
-    const int start_xy= s->mb_index2xy[start_i]; //guoshan+00101841 20100504 °Ñstart_iÓ³Éäµ½x + y * s->mb_stride
+    const int start_xy= s->mb_index2xy[start_i]; //guoshan+00101841 20100504 æŠŠstart_iæ˜ å°„åˆ°x + y * s->mb_stride
     const int end_xy  = s->mb_index2xy[end_i];
     int mask= -1;
 
@@ -723,7 +723,7 @@ void ff_er_add_slice(MpegEncContext *s, int startx, int starty, int endx, int en
     if(status & (AC_ERROR|DC_ERROR|MV_ERROR)) s->error_count= INT_MAX;
 
     if(mask == ~0x7F)
-	{   //guoshan+00101841 µ±AC,DC, MVÈıÖÖ´íÎó¶¼´æÔÚÊ±£¬½øÈë¸ÃÌõ¼şÓï¾ä
+	{   //guoshan+00101841 å½“AC,DC, MVä¸‰ç§é”™è¯¯éƒ½å­˜åœ¨æ—¶ï¼Œè¿›å…¥è¯¥æ¡ä»¶è¯­å¥
         memset(&s->error_status_table[start_xy], 0, (end_xy - start_xy) * sizeof(uint8_t));
     }
 	else
@@ -743,7 +743,7 @@ void ff_er_add_slice(MpegEncContext *s, int startx, int starty, int endx, int en
         s->error_status_table[end_xy] |= status;
     }
 
-    s->error_status_table[start_xy] |= VP_START;  //°Ñ×îºóÒ»¸öbitÎ»ÖÃ1(VP_START)
+    s->error_status_table[start_xy] |= VP_START;  //æŠŠæœ€åä¸€ä¸ªbitä½ç½®1(VP_START)
 
     if(start_xy > 0 && s->avctx->thread_count <= 1 && s->avctx->skip_top*s->mb_width < start_i){
         int prev_status= s->error_status_table[ s->mb_index2xy[start_i - 1] ];
@@ -771,7 +771,7 @@ void ff_er_frame_end(MpegEncContext *s){
 //      av_log(s->avctx, AV_LOG_ERROR, "Warning MVs not available\n");
 		av_log(s->avctx, AV_LOG_WARNING, "Warning MVs not available\n");
 
-	//guoshan+00101841 20100504:Ç°ºóÏòµÄmotion_val, but why (size+4)?
+	//guoshan+00101841 20100504:å‰åå‘çš„motion_val, but why (size+4)?
         for(i=0; i<2; i++){
             pic->ref_index[i]= av_mallocz(size * sizeof(uint8_t));
             pic->motion_val_base[i]= av_mallocz((size+4) * 2 * sizeof(uint16_t));
@@ -807,7 +807,7 @@ void ff_er_frame_end(MpegEncContext *s){
             const int mb_xy= s->mb_index2xy[i];
             int error= s->error_status_table[mb_xy];
 
-			//guoshan+00101841 20100505 (AC_END || AC_ERROR)Ê±£¬end_ok =1
+			//guoshan+00101841 20100505 (AC_END || AC_ERROR)æ—¶ï¼Œend_ok =1
             if(error&(1<<error_type))  
                 end_ok=1;
             if(error&(8<<error_type))
@@ -845,14 +845,14 @@ void ff_er_frame_end(MpegEncContext *s){
     }
 #endif
     /* handle missing slices */
-    if(s->error_recognition>=4){  //guoshan+00101841 FF_ER_VERY_AGGRESSIVEÊ±½øÈë¸Ãº¯Êı
+    if(s->error_recognition>=4){  //guoshan+00101841 FF_ER_VERY_AGGRESSIVEæ—¶è¿›å…¥è¯¥å‡½æ•°
         int end_ok=1;
 
         for(i=s->mb_num-2; i>=s->mb_width+100; i--)
 		{ //FIXME +100 hack
             const int mb_xy= s->mb_index2xy[i];
-            int error1= s->error_status_table[mb_xy  ];  //guoshan+00101841 20100505 µ±Ç°mb
-            int error2= s->error_status_table[s->mb_index2xy[i+1]];//guoshan+00101841 20100505 ÓÒ±ßmb
+            int error1= s->error_status_table[mb_xy  ];  //guoshan+00101841 20100505 å½“å‰mb
+            int error2= s->error_status_table[s->mb_index2xy[i+1]];//guoshan+00101841 20100505 å³è¾¹mb
 
             if(error1&VP_START)
                 end_ok=1;
@@ -919,14 +919,14 @@ void ff_er_frame_end(MpegEncContext *s){
 		{
             const int mb_xy= s->mb_index2xy[i];
             error= s->error_status_table[mb_xy];
-            if(error&(AC_ERROR|DC_ERROR|MV_ERROR))   //guoshan+00101841 20100505Ö»Òª´æÔÚÖÁÉÙÒ»¸ö´íÎó£¬¾Í°ÑÈ«²¿´íÎóÖÃÎ»
+            if(error&(AC_ERROR|DC_ERROR|MV_ERROR))   //guoshan+00101841 20100505åªè¦å­˜åœ¨è‡³å°‘ä¸€ä¸ªé”™è¯¯ï¼Œå°±æŠŠå…¨éƒ¨é”™è¯¯ç½®ä½
                 error|= AC_ERROR|DC_ERROR|MV_ERROR;
             s->error_status_table[mb_xy]= error;
         }
     }
 #endif
 
-	//guoshan+00101841 20100505Í³¼Æ¸÷ÖÖ´íÎóµÄ¸öÊı
+	//guoshan+00101841 20100505ç»Ÿè®¡å„ç§é”™è¯¯çš„ä¸ªæ•°
     dc_error= ac_error= mv_error=0;
     for(i=0; i<s->mb_num; i++){
         const int mb_xy= s->mb_index2xy[i];
@@ -1022,7 +1022,7 @@ void ff_er_frame_end(MpegEncContext *s){
                     int time_pp= s->pp_time;
                     int time_pb= s->pb_time;
 
-                    s->mv[0][0][0] = s->next_picture.motion_val[0][xy][0]*time_pb/time_pp;  //guoshan+00101841 20100505:ÀàËÆÓÚdirect mvµÄÇó·¨
+                    s->mv[0][0][0] = s->next_picture.motion_val[0][xy][0]*time_pb/time_pp;  //guoshan+00101841 20100505:ç±»ä¼¼äºdirect mvçš„æ±‚æ³•
                     s->mv[0][0][1] = s->next_picture.motion_val[0][xy][1]*time_pb/time_pp;
                     s->mv[1][0][0] = s->next_picture.motion_val[0][xy][0]*(time_pb - time_pp)/time_pp;
                     s->mv[1][0][1] = s->next_picture.motion_val[0][xy][1]*(time_pb - time_pp)/time_pp;
@@ -1071,7 +1071,7 @@ void ff_er_frame_end(MpegEncContext *s){
             dest_cr= s->current_picture.data[2] + mb_x*8  + mb_y*8 *s->uvlinesize;
 
             dc_ptr= &s->dc_val[0][mb_x*2 + mb_y*2*s->b8_stride];
-            for(n=0; n<4; n++) //guoshan+00101841 20100505 4¸ö8x8¿éµÄdcÏµÊı
+            for(n=0; n<4; n++) //guoshan+00101841 20100505 4ä¸ª8x8å—çš„dcç³»æ•°
 			{
                 dc=0;
                 for(y=0; y<8; y++)
@@ -1079,7 +1079,7 @@ void ff_er_frame_end(MpegEncContext *s){
                     int x;
                     for(x=0; x<8; x++)
 					{
-                       dc+= dest_y[x + (n&1)*8 + (y + (n>>1)*8)*s->linesize];  //guoshan+00101841 20100505 8x8¿éÄÚËùÓĞÏµÊıÇóºÍ
+                       dc+= dest_y[x + (n&1)*8 + (y + (n>>1)*8)*s->linesize];  //guoshan+00101841 20100505 8x8å—å†…æ‰€æœ‰ç³»æ•°æ±‚å’Œ
                     }
                 }
                 dc_ptr[(n&1) + (n>>1)*s->b8_stride]= (dc+4)>>3; 
@@ -1127,7 +1127,7 @@ void ff_er_frame_end(MpegEncContext *s){
             dest_cb= s->current_picture.data[1] + mb_x*8  + mb_y*8 *s->uvlinesize;
             dest_cr= s->current_picture.data[2] + mb_x*8  + mb_y*8 *s->uvlinesize;
 
-            put_dc(s, dest_y, dest_cb, dest_cr, mb_x, mb_y);  //guoshan+00101841 20100505:Õû¸ö8x8¿éµÄÏµÊıÓÃdc/8´úÌæ
+            put_dc(s, dest_y, dest_cb, dest_cr, mb_x, mb_y);  //guoshan+00101841 20100505:æ•´ä¸ª8x8å—çš„ç³»æ•°ç”¨dc/8ä»£æ›¿
         }
     }
 #endif

@@ -81,7 +81,7 @@ int ff_vp6_find_frame_end(ParseContext *pc, const uint8_t *buf, int buf_size){
 }
 
 /*x00141957 20100629*/
-/* ĞÂÔöº¯Êı£º½âÎöÒ»ÍêÕûÍ¼ÏñµÄvp6ÂëÁ÷ */
+/* æ–°å¢å‡½æ•°ï¼šè§£æä¸€å®Œæ•´å›¾åƒçš„vp6ç æµ */
 int vp6_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf, unsigned int *puiOutBufSize,const uint8_t *pucInBuf, unsigned int uiInBufSize, int *piLength)
 {
 	int iRet = IMEDIA_RET_SUCCESS;
@@ -116,7 +116,7 @@ int vp6_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf,
 
 	pstVP6Context= (VP56Context *)pstAVCodecContext->priv_data;
 
-	/*ÄÚ´æÑÓ³Ù·ÖÅä x00141957 20100916*/
+	/*å†…å­˜å»¶è¿Ÿåˆ†é… x00141957 20100916*/
 	if(NULL == pstVP6Context->parse_context.buffer)
 	{
 		pstVP6Context->parse_context.buffer_size = pstAVCodecContext->usSourceWidth*pstAVCodecContext->usSourceHeight*2;
@@ -137,13 +137,13 @@ int vp6_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf,
 		return iRet;
 	}
 
-	/* Èç¹ûµ±Ç°½âÎöÖ¡ÔÚÇ°Ò»¸öbufferµÄ±ß½ç£¬Ôòµ±Ç°bufferµÄ½âÎöÓÃµôµÄ×Ö½ÚÊıÎª0 */
+	/* å¦‚æœå½“å‰è§£æå¸§åœ¨å‰ä¸€ä¸ªbufferçš„è¾¹ç•Œï¼Œåˆ™å½“å‰bufferçš„è§£æç”¨æ‰çš„å­—èŠ‚æ•°ä¸º0 */
 	if(0 > iBytesConsumed)
 	{
 		iBytesConsumed = 0;
 	}
 
-	/*x00141957 20100917Ôö¼Ó ¸ù¾İÕÒµ½µÄÒ»Ö¡´óĞ¡ È¥µôË½ÓĞÍ·ÒÔ¼°·À´íÂë*/
+	/*x00141957 20100917å¢åŠ  æ ¹æ®æ‰¾åˆ°çš„ä¸€å¸§å¤§å° å»æ‰ç§æœ‰å¤´ä»¥åŠé˜²é”™ç */
 	{
 		uint8_t *uiBuf = (uint8_t *)pucInBuf+3;
 		int bufsize = (int)uiInBufSize - 3;

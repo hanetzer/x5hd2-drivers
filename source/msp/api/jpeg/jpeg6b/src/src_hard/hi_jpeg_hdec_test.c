@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : y00181162
 Created		    : 2013/06/20
 Description	    : the test need some function
-                  CNcomment: ²âÊÔÓÃÀıĞèÒªµÄÒ»Ğ©¶ÔÍâº¯Êı CNend\n
+                  CNcomment: æµ‹è¯•ç”¨ä¾‹éœ€è¦çš„ä¸€äº›å¯¹å¤–å‡½æ•° CNend\n
 Function List 	:
 
 			  		  
@@ -50,7 +50,7 @@ static HI_S32 gs_s32SuspendDev = -1;
 
 
 #ifdef CONFIG_JPEG_TEST_CHIP_RANDOM_RESET
-static volatile HI_CHAR *g_pJpegRegVirAddr  = NULL; /** ¼Ä´æÆ÷»ùµØÖ· **/
+static volatile HI_CHAR *g_pJpegRegVirAddr  = NULL; /** å¯„å­˜å™¨åŸºåœ°å€ **/
 static HI_BOOL sg_bDecFinish       = HI_FALSE;
 static HI_S32  sg_s32JpegDev       = -1;
 #endif
@@ -74,8 +74,8 @@ static HI_S32  sg_s32JpegDev       = -1;
 /*****************************************************************************
 * func			: HI_JPEG_OpenScenFile
 * description	: open the scen file
-				  CNcomment: ´ò¿ªµ¼ÏÖ³¡µÄÎÄ¼ş CNend\n
-* param[in]	    : cinfo.       CNcomment:½âÂë¶ÔÏó     CNend\n
+				  CNcomment: æ‰“å¼€å¯¼ç°åœºçš„æ–‡ä»¶ CNend\n
+* param[in]	    : cinfo.       CNcomment:è§£ç å¯¹è±¡     CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -111,8 +111,8 @@ HI_S32 HI_JPEG_OpenScenFile(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: HI_JPEG_CloseScenFile
 * description	: close the scen file
-				  CNcomment: ¹Ø±Õµ¼ÏÖ³¡µÄÎÄ¼ş CNend\n
-* param[in]	    : cinfo.       CNcomment:½âÂë¶ÔÏó     CNend\n
+				  CNcomment: å…³é—­å¯¼ç°åœºçš„æ–‡ä»¶ CNend\n
+* param[in]	    : cinfo.       CNcomment:è§£ç å¯¹è±¡     CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -131,8 +131,8 @@ HI_VOID HI_JPEG_CloseScenFile(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: HI_JPEG_GetScenData
 * description	: get scen data.
-				  CNcomment: »ñÈ¡ÏÖ³¡Êı¾İ CNend\n
-* param[in]	    : cinfo.       CNcomment:½âÂë¶ÔÏó     CNend\n
+				  CNcomment: è·å–ç°åœºæ•°æ® CNend\n
+* param[in]	    : cinfo.       CNcomment:è§£ç å¯¹è±¡     CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -144,7 +144,7 @@ static HI_VOID HI_JPEG_GetScenData(const struct jpeg_decompress_struct *cinfo)
 
 	    JPEG_HDEC_HANDLE_S_PTR	pJpegHandle = (JPEG_HDEC_HANDLE_S_PTR)(cinfo->client_data);
 	
-		/* ¼Ä´æÆ÷(º¬±í)£¬´ÓVAHB_STRIDE¿ªÊ¼ */
+		/* å¯„å­˜å™¨(å«è¡¨)ï¼Œä»VAHB_STRIDEå¼€å§‹ */
 		for (offset = 0xc; offset <= 0x6bc; offset+=4)
 		{
 
@@ -168,10 +168,10 @@ static HI_VOID HI_JPEG_GetScenData(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: HI_JPEG_PrintScenData
 * description	: export the scen data.
-				  CNcomment: µ¼³öÏÖ³¡Êı¾İ CNend\n
-* param[in]	    : cinfo.                 CNcomment:½âÂë¶ÔÏó         CNend\n
-* param[in]	    : pStreamStartBuf.       CNcomment:ÂëÁ÷ÆğÊ¼µØÖ·     CNend\n
-* param[in]	    : pStreamEndBuf.         CNcomment:ÂëÁ÷½áÊøµØÖ·     CNend\n
+				  CNcomment: å¯¼å‡ºç°åœºæ•°æ® CNend\n
+* param[in]	    : cinfo.                 CNcomment:è§£ç å¯¹è±¡         CNend\n
+* param[in]	    : pStreamStartBuf.       CNcomment:ç æµèµ·å§‹åœ°å€     CNend\n
+* param[in]	    : pStreamEndBuf.         CNcomment:ç æµç»“æŸåœ°å€     CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -189,7 +189,7 @@ static HI_VOID HI_JPEG_PrintScenData(const struct jpeg_decompress_struct *cinfo,
 			SCEN_PRINT(pJpegHandle->pScenFile,"=====================================================\n");
 			SCEN_PRINT(pJpegHandle->pScenFile,"   the register data \n");
 			SCEN_PRINT(pJpegHandle->pScenFile,"=====================================================\n");
-			/* ¼Ä´æÆ÷(º¬±í)£¬´ÓVAHB_STRIDE¿ªÊ¼ */
+			/* å¯„å­˜å™¨(å«è¡¨)ï¼Œä»VAHB_STRIDEå¼€å§‹ */
 			for (offset = 0xc; offset <= 0x6bc; offset+=4)
 			{
 
@@ -200,7 +200,7 @@ static HI_VOID HI_JPEG_PrintScenData(const struct jpeg_decompress_struct *cinfo,
 				}
 				else if(JPGD_REG_ENDADD == offset)
 				{/**
-				  **Õâ¸öÊÇÂëÁ÷buffer,Ò»Ö±ÔÚ·¢Éú¸Ä±ä£¬ËùÒÔÕâ¸öÊı¾İ²»×¼È·
+				  **è¿™ä¸ªæ˜¯ç æµbuffer,ä¸€ç›´åœ¨å‘ç”Ÿæ”¹å˜ï¼Œæ‰€ä»¥è¿™ä¸ªæ•°æ®ä¸å‡†ç¡®
 				  **/
 					PRN_SCENE(pJpegHandle->pScenFile,CV200_JPEG_BASE + offset, (HI_U32)pStreamEndBuf);
 					cnt++;
@@ -219,13 +219,13 @@ static HI_VOID HI_JPEG_PrintScenData(const struct jpeg_decompress_struct *cinfo,
 /*****************************************************************************
 * func			: HI_JPEG_OutScenData
 * description	: get the scen data
-				  CNcomment: »ñÈ¡ÏÖ³¡Êı¾İ CNend\n
-* param[in]	    : cinfo.                 CNcomment:½âÂë¶ÔÏó         CNend\n
-* param[in]	    : pStreamStartBuf.       CNcomment:ÂëÁ÷ÆğÊ¼µØÖ·     CNend\n
-* param[in]	    : pStreamEndBuf.         CNcomment:ÂëÁ÷½áÊøµØÖ·     CNend\n
-* param[in]	    : pData.                 CNcomment:Êı¾İµØÖ·         CNend\n
-* param[in]	    : s32DataSize.           CNcomment:Êı¾İ´óĞ¡         CNend\n
-* param[in]     : bStartFirst            CNcomment:µÚÒ»´ÎÆô¶¯½âÂë   CNend\n
+				  CNcomment: è·å–ç°åœºæ•°æ® CNend\n
+* param[in]	    : cinfo.                 CNcomment:è§£ç å¯¹è±¡         CNend\n
+* param[in]	    : pStreamStartBuf.       CNcomment:ç æµèµ·å§‹åœ°å€     CNend\n
+* param[in]	    : pStreamEndBuf.         CNcomment:ç æµç»“æŸåœ°å€     CNend\n
+* param[in]	    : pData.                 CNcomment:æ•°æ®åœ°å€         CNend\n
+* param[in]	    : s32DataSize.           CNcomment:æ•°æ®å¤§å°         CNend\n
+* param[in]     : bStartFirst            CNcomment:ç¬¬ä¸€æ¬¡å¯åŠ¨è§£ç    CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -244,7 +244,7 @@ HI_VOID HI_JPEG_OutScenData(const struct jpeg_decompress_struct *cinfo, \
 
 		 /**
 		  ** output the scen message to file
-		  ** CNcomment:µ¼½âÂëÏÖ³¡ CNend\n
+		  ** CNcomment:å¯¼è§£ç ç°åœº CNend\n
 		  **/
 		  HI_JPEG_GetScenData(cinfo);
 		  HI_JPEG_PrintScenData(cinfo,pStreamStartBuf,pStreamEndBuf);
@@ -262,7 +262,7 @@ HI_VOID HI_JPEG_OutScenData(const struct jpeg_decompress_struct *cinfo, \
 			   
 			   PRN_SCENE(pJpegHandle->pScenFile,(HI_U32)(pStreamStartBuf+offset),data);
 			   /**
-				**ÏÖ³¡´Ó×óÍùÓÒ¶Á£¬ÕâÀï¿ÉÄÜ±ÈÊµ¼Ê¶à1»ò2»ò3¸ö×Ö½Ú
+				**ç°åœºä»å·¦å¾€å³è¯»ï¼Œè¿™é‡Œå¯èƒ½æ¯”å®é™…å¤š1æˆ–2æˆ–3ä¸ªå­—èŠ‚
 				**/
 		  
 		  }
@@ -283,13 +283,13 @@ HI_VOID HI_JPEG_OutScenData(const struct jpeg_decompress_struct *cinfo, \
 * func			: HI_JPEG_SetSaveScen
 * description	: if the decode failure, we want to debug should need the decode\n
                   scen,and use eda simulation.
-				  CNcomment: Èç¹û½âÂëÊ§°ÜÎÒÃÇÏ£ÍûÓÃEDA·ÂÕæ½øĞĞ¶¨Î»£¬ĞèÒª±£´æ½âÂëÏÖ\n
-				             ³¡ÓÃÀ´µ÷ÊÔÊ¹ÓÃ CNend\n
-* param[in]	    :cinfo.       CNcomment:½âÂë¶ÔÏó     CNend\n
-* param[in]	    :bSaveScen.   CNcomment:ÊÇ·ñ±£´æÏÖ³¡ CNend\n
-* param[in]     :pFileName    CNcomment:½âÂëÎÄ¼ş     CNend\n
-* retval		: HI_SUCCESS  CNcomment: ³É¹¦	     CNend\n
-* retval		: HI_FAILURE  CNcomment: Ê§°Ü	     CNend\n
+				  CNcomment: å¦‚æœè§£ç å¤±è´¥æˆ‘ä»¬å¸Œæœ›ç”¨EDAä»¿çœŸè¿›è¡Œå®šä½ï¼Œéœ€è¦ä¿å­˜è§£ç ç°\n
+				             åœºç”¨æ¥è°ƒè¯•ä½¿ç”¨ CNend\n
+* param[in]	    :cinfo.       CNcomment:è§£ç å¯¹è±¡     CNend\n
+* param[in]	    :bSaveScen.   CNcomment:æ˜¯å¦ä¿å­˜ç°åœº CNend\n
+* param[in]     :pFileName    CNcomment:è§£ç æ–‡ä»¶     CNend\n
+* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ	     CNend\n
+* retval		: HI_FAILURE  CNcomment: å¤±è´¥	     CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 HI_JPEG_SetSaveScen(const struct jpeg_decompress_struct *cinfo,HI_BOOL bSaveScen,HI_CHAR* pFileName)
@@ -310,7 +310,7 @@ HI_S32 HI_JPEG_SetSaveScen(const struct jpeg_decompress_struct *cinfo,HI_BOOL bS
 /*****************************************************************************
 * func			: HI_JPEG_OpenDev
 * description	: open the jpeg device.
-				  CNcomment: ´ò¿ªjpegÉè±¸£¬´ı»úÊ¹ÓÃµÄ CNend\n
+				  CNcomment: æ‰“å¼€jpegè®¾å¤‡ï¼Œå¾…æœºä½¿ç”¨çš„ CNend\n
 * param[in]	    : NA
 * retval		: NA
 * others:		: NA
@@ -331,7 +331,7 @@ HI_VOID HI_JPEG_OpenDev()
 /*****************************************************************************
 * func			: HI_JPEG_CloseDev
 * description	: close the jpeg device.
-				  CNcomment: ¹Ø±ÕjpegÉè±¸ CNend\n
+				  CNcomment: å…³é—­jpegè®¾å¤‡ CNend\n
 * param[in]	    : NA
 * retval		: NA
 * others:		: NA
@@ -347,7 +347,7 @@ HI_VOID HI_JPEG_CloseDev()
 /*****************************************************************************
 * func			: HI_JPEG_Suspend
 * description	: test suspend.
-				  CNcomment: ´ı»ú´¦Àí CNend\n
+				  CNcomment: å¾…æœºå¤„ç† CNend\n
 * param[in]	    : NA
 * retval		: HI_SUCCESS
 * retval		: HI_FAILURE
@@ -361,7 +361,7 @@ HI_S32 HI_JPEG_Suspend()
 /*****************************************************************************
 * func			: HI_JPEG_Resume
 * description	: test resume.
-				  CNcomment: ´ı»ú»½ĞÑ´¦Àí CNend\n
+				  CNcomment: å¾…æœºå”¤é†’å¤„ç† CNend\n
 * param[in]	    : NA
 * retval		: HI_SUCCESS
 * retval		: HI_FAILURE
@@ -377,8 +377,8 @@ HI_S32 HI_JPEG_Resume()
 /*****************************************************************************
 * func			: HI_JPEG_GetDev
 * description	: get the jpeg device.
-			      CNcomment: »ñÈ¡jpegÉè±¸ CNend\n
-* param[in] 	: s32JpegDev CNcomment: ´ò¿ªµÄjpeg½Úµã CNend\n
+			      CNcomment: è·å–jpegè®¾å¤‡ CNend\n
+* param[in] 	: s32JpegDev CNcomment: æ‰“å¼€çš„jpegèŠ‚ç‚¹ CNend\n
 * retval		: HI_SUCCESS
 * retval		: HI_FAILURE
 * others:		: NA
@@ -392,7 +392,7 @@ HI_S32 HI_JPEG_GetDev(HI_S32 s32JpegDev)
 /*****************************************************************************
 * func			: HI_JPEG_SaveBmp
 * description	: save the phy data to bmp picture.
-				  CNcomment: ±£´æ½âÂëºóµÄÊı¾İµ½bmpÍ¼Æ¬
+				  CNcomment: ä¿å­˜è§£ç åçš„æ•°æ®åˆ°bmpå›¾ç‰‡
 				             RGB565,ARGB4444,ARGB1555,RGB888 and ARGB8888 CNend\n
 * param[in]	    : u32DataPhy
 * param[in]	    : u32Width
@@ -451,8 +451,8 @@ HI_VOID HI_JPEG_SaveBmp(HI_U32 u32DataPhy,HI_U32 u32Width,HI_U32 u32Height,HI_U3
 		  	break;
 	 }
 	 /**
-	  **android¿ÉÒÔ·ÅÖÃµÄÂ·¾¶Îª cd /data/ mkdir bmp
-	  **Ôò /data/bmp/bmpGen, /data/bmp/.bmp
+	  **androidå¯ä»¥æ”¾ç½®çš„è·¯å¾„ä¸º cd /data/ mkdir bmp
+	  **åˆ™ /data/bmp/bmpGen, /data/bmp/.bmp
 	  **/
 	 snprintf(exec, 256, "./bmpGen 0x%x %d %d %d %s  %s/%s%d.bmp", 
               u32DataPhy,u32Width,u32Height,u32Stride,pColorSpace,BMP_DATA_FILE_DIR,pFile,u32Cnt);
@@ -480,7 +480,7 @@ HI_VOID HI_JPEG_SaveBmp(HI_U32 u32DataPhy,HI_U32 u32Width,HI_U32 u32Height,HI_U3
 /*****************************************************************************
 * func			: HI_JPEG_SaveYUVSP
 * description	: save the yuv semi-planer data
-		  		  CNcomment: ±£´æ½âÂëºóµÄyuvspÊı¾İ CNend\n
+		  		  CNcomment: ä¿å­˜è§£ç åçš„yuvspæ•°æ® CNend\n
 * param[in] 	: cinfo
 * retval		: NA
 * others:		: NA
@@ -536,7 +536,7 @@ HI_VOID HI_JPEG_SaveYUVSP(const struct jpeg_decompress_struct *cinfo)
 		eFmt       = pJpegHandle->enImageFmt;
 
 		/**===============================================================
-		±£´æYÁÁ¶ÈÊı¾İ
+		ä¿å­˜Yäº®åº¦æ•°æ®
 		===============================================================**/
 		if(0 != u32YWidth)
 		{
@@ -628,17 +628,17 @@ HI_VOID HI_JPEG_SaveYUVSP(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: HI_JPEG_GetIfHardDec2ARGB8888
 * description	: get if use jpeg hard decode to ARGB888,is not tde csc to ARGB8888
-				  CNcomment: »ñÈ¡ÊÇ·ñÊ¹ÓÃJPEGÓ²¼ş½âÂë½â³ÉARGB8888£¬Õâ¸öÊ±ºòÊÇÓÃ½âÂë·Ö±æÂÊµÄ
-							 ÕæÕıµÄÊı¾İÊÇÏÔÊ¾·Ö±æÂÊ£¬ËùÒÔJPEG½âÂëÒª²Ã¼ô³ÉÏÔÊ¾·Ö±æÂÊ´óĞ¡µÄ£¬
-							 ÕâÑùÊä³öÊı¾İ¾ÍÕıÈ·ÁË¡£·ñÔò²»ÉèÖÃ²Ã¼ô»áÓĞ¶àÓàÊı¾İµÄ CNend\n
-* param[in] 	: cinfo 				   ½âÂë¶ÔÏó
-* param[in] 	: pbJpegHardDecARGB8888    ÊÇ·ñÎªJPEGÓ²¼ş½âÂëÊä³öARGB8888
+				  CNcomment: è·å–æ˜¯å¦ä½¿ç”¨JPEGç¡¬ä»¶è§£ç è§£æˆARGB8888ï¼Œè¿™ä¸ªæ—¶å€™æ˜¯ç”¨è§£ç åˆ†è¾¨ç‡çš„
+							 çœŸæ­£çš„æ•°æ®æ˜¯æ˜¾ç¤ºåˆ†è¾¨ç‡ï¼Œæ‰€ä»¥JPEGè§£ç è¦è£å‰ªæˆæ˜¾ç¤ºåˆ†è¾¨ç‡å¤§å°çš„ï¼Œ
+							 è¿™æ ·è¾“å‡ºæ•°æ®å°±æ­£ç¡®äº†ã€‚å¦åˆ™ä¸è®¾ç½®è£å‰ªä¼šæœ‰å¤šä½™æ•°æ®çš„ CNend\n
+* param[in] 	: cinfo 				   è§£ç å¯¹è±¡
+* param[in] 	: pbJpegHardDecARGB8888    æ˜¯å¦ä¸ºJPEGç¡¬ä»¶è§£ç è¾“å‡ºARGB8888
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
 HI_VOID HI_JPEG_GetIfHardDec2ARGB8888(const struct jpeg_decompress_struct *cinfo,HI_BOOL *pbJpegHardDecARGB8888)
 {
-	/** ÊÇ·ñÊ¹ÓÃJPEGÓ²¼ş½âÂë **/
+	/** æ˜¯å¦ä½¿ç”¨JPEGç¡¬ä»¶è§£ç  **/
 	#ifdef CONFIG_JPEG_HARDDEC2ARGB
 	JPEG_HDEC_HANDLE_S_PTR	pJpegHandle = (JPEG_HDEC_HANDLE_S_PTR)(cinfo->client_data);
 	*pbJpegHardDecARGB8888 = pJpegHandle->bDecARGB;
@@ -651,9 +651,9 @@ HI_VOID HI_JPEG_GetIfHardDec2ARGB8888(const struct jpeg_decompress_struct *cinfo
 /*****************************************************************************
 * func			: HI_JPEG_IfHardDec
 * description	: whether is hard decode or soft decode
-				  CNcomment: ÊÇÓ²¼ş½âÂë»¹ÊÇÈí¼ş½âÂë CNend\n
-* param[in]	    : cinfo       ½âÂë¶ÔÏó
-* param[in]	    : pHardDec    ÊÇ·ñÎªÓ²¼ş½âÂë
+				  CNcomment: æ˜¯ç¡¬ä»¶è§£ç è¿˜æ˜¯è½¯ä»¶è§£ç  CNend\n
+* param[in]	    : cinfo       è§£ç å¯¹è±¡
+* param[in]	    : pHardDec    æ˜¯å¦ä¸ºç¡¬ä»¶è§£ç 
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -674,11 +674,11 @@ HI_VOID HI_JPEG_IfHardDec(const struct jpeg_decompress_struct *cinfo,HI_BOOL *pH
 
 
 #ifdef CONFIG_JPEG_TEST_CHIP_RANDOM_RESET
-/** Ëæ»úÈí¸´Î»²âÊÔ **/
+/** éšæœºè½¯å¤ä½æµ‹è¯• **/
 /*****************************************************************************
 * func			: HI_JPEG_HardDecNow
 * description	: whether has hard decode now
-		  CNcomment: ´Ë¿ÌÊÇ·ñÆô¶¯ÁËÓ²¼ş½âÂë CNend\n
+		  CNcomment: æ­¤åˆ»æ˜¯å¦å¯åŠ¨äº†ç¡¬ä»¶è§£ç  CNend\n
 * retval		: HI_SUCCESS;
 * retval		: HI_FAILURE;
 * others:		: NA
@@ -711,7 +711,7 @@ HI_S32 HI_JPEG_HardDecNow()
 /*****************************************************************************
 * func			: HI_JPEG_RandomReset
 * description	: reset the hard decode register
-		  CNcomment: ¸´Î»Ó²¼ş½âÂë¼Ä´æÆ÷ CNend\n
+		  CNcomment: å¤ä½ç¡¬ä»¶è§£ç å¯„å­˜å™¨ CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -720,7 +720,7 @@ HI_VOID HI_JPEG_RandomReset()
 	 if(sg_s32JpegDev >= 0)
 	 {
 	 	 JPEG_TRACE("================================================================\n");
-		 JPEG_TRACE("¿ªÊ¼¸´Î»\n");
+		 JPEG_TRACE("å¼€å§‹å¤ä½\n");
 		 JPEG_TRACE("================================================================\n");
          ioctl(sg_s32JpegDev, CMD_JPG_RESET);
 		 sleep(5);
@@ -729,7 +729,7 @@ HI_VOID HI_JPEG_RandomReset()
 /*****************************************************************************
 * func			: HI_JPEG_SetDecState
 * description	: set hard decode state
-				  CNcomment: ÉèÖÃ½âÂë×´Ì¬ CNend\n
+				  CNcomment: è®¾ç½®è§£ç çŠ¶æ€ CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -741,7 +741,7 @@ HI_VOID HI_JPEG_SetDecState(HI_BOOL bDecState)
 /*****************************************************************************
 * func			: HI_JPEG_SetJpegDev
 * description	: set Jpeg Dev
-				  CNcomment: ÉèÖÃ½âÂëÉè±¸Öµ CNend\n
+				  CNcomment: è®¾ç½®è§£ç è®¾å¤‡å€¼ CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -753,7 +753,7 @@ HI_VOID HI_JPEG_SetJpegDev(HI_S32 s32JpegDev)
  /*****************************************************************************
 * func			: HI_JPEG_SetJpegVir
 * description	: set Jpeg map virtual value
-				  CNcomment: ÉèÖÃÓ³ÉäĞéÄâµØÖ· CNend\n
+				  CNcomment: è®¾ç½®æ˜ å°„è™šæ‹Ÿåœ°å€ CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -765,7 +765,7 @@ HI_VOID HI_JPEG_SetJpegVir(volatile HI_CHAR *pRegisterVir)
 /*****************************************************************************
 * func			: HI_JPEG_RandomResetInit
 * description	: init the random reset valure
-			      CNcomment: ³õÊ¼»¯Ëæ»úÈí¸´Î»²âÊÔµÄÏà¹Ø²ÎÊıÖµ CNend\n
+			      CNcomment: åˆå§‹åŒ–éšæœºè½¯å¤ä½æµ‹è¯•çš„ç›¸å…³å‚æ•°å€¼ CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/

@@ -86,9 +86,9 @@ HI_S32 DRV_HDMI_UnRegister(HI_VOID);
 
 typedef enum VIDEO_SAMPLE_TYPE_E_S
 {
-    VIDEO_SAMPLE_TYPE_UNKNOWN,                  /**<Unknown*/ /**<CNcomment: Î´Öª²ÉÑù·½Ê½*/
-    VIDEO_SAMPLE_TYPE_PROGRESSIVE,              /**<Progressive*/ /**<CNcomment: ²ÉÑù·½Ê½ÎªÖðÐÐ*/
-    VIDEO_SAMPLE_TYPE_INTERLACE,                /**<Interlaced*/ /**<CNcomment: ²ÉÑù·½Ê½Îª¸ôÐÐ*/
+    VIDEO_SAMPLE_TYPE_UNKNOWN,                  /**<Unknown*/ /**<CNcomment: æœªçŸ¥é‡‡æ ·æ–¹å¼*/
+    VIDEO_SAMPLE_TYPE_PROGRESSIVE,              /**<Progressive*/ /**<CNcomment: é‡‡æ ·æ–¹å¼ä¸ºé€è¡Œ*/
+    VIDEO_SAMPLE_TYPE_INTERLACE,                /**<Interlaced*/ /**<CNcomment: é‡‡æ ·æ–¹å¼ä¸ºéš”è¡Œ*/
     VIDEO_SAMPLE_TYPE_BUTT
 }VIDEO_SAMPLE_TYPE_E;
 
@@ -117,7 +117,7 @@ typedef struct
     HI_BOOL            bStart;
     HDMI_PROC_EVENT_S  eventList[MAX_PROCESS_NUM];
     //HI_U32           Event[5];        /*Current Event Array, sequence will be change */
-    HDMI_ATTR_S        stHDMIAttr;          /*HDMI implement parameter*//*CNcomment:HDMI ÔËÐÐ²ÎÊý */
+    HDMI_ATTR_S        stHDMIAttr;          /*HDMI implement parameter*//*CNcomment:HDMI è¿è¡Œå‚æ•° */
     HI_UNF_HDMI_AVI_INFOFRAME_VER2_S   stAVIInfoFrame;
     HI_UNF_HDMI_AUD_INFOFRAME_VER1_S   stAUDInfoFrame;
 

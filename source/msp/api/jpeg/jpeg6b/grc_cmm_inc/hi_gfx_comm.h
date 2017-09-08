@@ -7,7 +7,7 @@ File Name	    : hi_gfx_comm.h
 Version		    : version 1.0
 Author		    : 
 Created		    : 2013/07/04
-Description	    : Describes adp file. CNcomment:APIøÁ∆ΩÃ®  ≈‰ CNend\n
+Description	    : Describes adp file. CNcomment:APIË∑®Âπ≥Âè∞ÈÄÇÈÖç CNend\n
 Function List 	: 
 
 History       	:
@@ -23,13 +23,13 @@ Date				Author        		Modification
 /***************************** SDK Version Macro Definition *********************/
 
 /** \addtogroup 	GFX COMM */
-/** @{ */  /** <!-- °æGFX COMM°ø */
+/** @{ */  /** <!-- „ÄêGFX COMM„Äë */
 
 /** choice the sdk type,CONFIG_GFX_ANDROID_SDK is defined in Android.mk */
-/** CNcomment:SDK∞Ê±æ,CONFIG_GFX_ANDROID_SDK’‚∏ˆ∫Íø™πÿ‘⁄Android.mk÷–∂®“Â CNend */
+/** CNcomment:SDKÁâàÊú¨,CONFIG_GFX_ANDROID_SDKËøô‰∏™ÂÆèÂºÄÂÖ≥Âú®Android.mk‰∏≠ÂÆö‰πâ CNend */
 #ifndef CONFIG_GFX_ANDROID_SDK
 	/** choice the sdk type */
-	/** CNcomment:SDK∞Ê±æ CNend */
+	/** CNcomment:SDKÁâàÊú¨ CNend */
 	#define  CONFIG_GFX_STB_SDK
 	//#define  CONFIG_GFX_BVT_SDK
 #endif
@@ -55,7 +55,7 @@ Date				Author        		Modification
 /***************************** Macro Definition ******************************/
 
 /** \addtogroup 	GFX COMM */
-/** @{ */  /** <!-- °æGFX COMM°ø */
+/** @{ */  /** <!-- „ÄêGFX COMM„Äë */
 /** this macro define at CFG_HI_CFLAGS,so Makefile should include CFG_HI_CFLAGS **/
 #ifdef HI_ADVCA_FUNCTION_RELEASE
 #define  CONFIG_GFX_ADVCA_RELEASE
@@ -63,15 +63,15 @@ Date				Author        		Modification
 
 #ifdef CONFIG_GFX_ADVCA_RELEASE
 /** char disable */
-/** CNcomment:char πƒ‹ CNend */
+/** CNcomment:char‰ΩøËÉΩ CNend */
 #define  CONFIG_GFX_COMM_STR_DISABLE
 #endif
 
 /** close the string function */
-/** CNcomment:πÿ±’◊÷∑˚¥Æπ¶ƒ‹,DEBUG±ÿ–Îπÿ±’ CNend */
+/** CNcomment:ÂÖ≥Èó≠Â≠óÁ¨¶‰∏≤ÂäüËÉΩ,DEBUGÂøÖÈ°ªÂÖ≥Èó≠ CNend */
 #ifdef   CONFIG_GFX_COMM_STR_DISABLE
 /** LOG disable */
-/** CNcomment:log πƒ‹ CNend */
+/** CNcomment:log‰ΩøËÉΩ CNend */
 #define  CONFIG_GFX_COMM_DEBUG_DISABLE
 #endif
 
@@ -170,10 +170,10 @@ Date				Author        		Modification
 /*************************** Enum Definition ****************************/
 
 /** \addtogroup 	 GFX COMM */
-/** @{ */  /** <!-- °æGFX COMM°ø */
+/** @{ */  /** <!-- „ÄêGFX COMM„Äë */
 
 /** enum of the module ID */
-/** CNcomment:√ø∏ˆƒ£øÈµƒID∫≈ CNend */
+/** CNcomment:ÊØè‰∏™Ê®°ÂùóÁöÑIDÂè∑ CNend */
 typedef enum tagHIGFX_MODE_ID_E
 {
 
@@ -193,7 +193,7 @@ typedef enum tagHIGFX_MODE_ID_E
 
 
 /** \addtogroup 	 GFX COMM */
-/** @{ */  /** <!-- °æGFX COMM°ø */
+/** @{ */  /** <!-- „ÄêGFX COMM„Äë */
 
 #ifdef CONFIG_GFX_ANDROID_SDK
 
@@ -234,15 +234,15 @@ typedef struct
 /******************************* API declaration *****************************/
 
 /** \addtogroup 	 GFX COMM */
-/** @{ */  /** <!-- °æGFX COMM°ø */
+/** @{ */  /** <!-- „ÄêGFX COMM„Äë */
 
 
 /** 
-\brief get the system time,not use gettimeofday to get time. CNcomment:ªÒ»°œµÕ≥ ±º‰£¨≤ª π”√gettimeofdayµƒ‘≠“Ú‘⁄”⁄’‚∏ˆ∫Ø ˝ªÒ»°µƒ ±º‰”–ø…ƒ‹±ªøÕªßµƒ∫ÛÃ®≥Ã–Ú–ﬁ∏ƒ CNend
+\brief get the system time,not use gettimeofday to get time. CNcomment:Ëé∑ÂèñÁ≥ªÁªüÊó∂Èó¥Ôºå‰∏ç‰ΩøÁî®gettimeofdayÁöÑÂéüÂõ†Âú®‰∫éËøô‰∏™ÂáΩÊï∞Ëé∑ÂèñÁöÑÊó∂Èó¥ÊúâÂèØËÉΩË¢´ÂÆ¢Êà∑ÁöÑÂêéÂè∞Á®ãÂ∫è‰øÆÊîπ CNend
 \attention \n
 
-\param[out] *pu32TimeMs  CNcomment:ªÒ»°µΩµƒ ±º‰ms CNend\n
-\param[out] *pu32TimeUs  CNcomment:ªÒ»°µΩµƒ ±º‰us CNend\n
+\param[out] *pu32TimeMs  CNcomment:Ëé∑ÂèñÂà∞ÁöÑÊó∂Èó¥ms CNend\n
+\param[out] *pu32TimeUs  CNcomment:Ëé∑ÂèñÂà∞ÁöÑÊó∂Èó¥us CNend\n
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
 
@@ -278,10 +278,10 @@ static inline HI_S32 HI_GFX_GetTimeStamp(HI_U32 *pu32TimeMs, HI_U32 *pu32TimeUs)
      
     
 /** 
-\brief free the mem that has alloced. CNcomment: Õ∑≈∑÷≈‰π˝µƒƒ⁄¥Ê CNend
+\brief free the mem that has alloced. CNcomment:ÈáäÊîæÂàÜÈÖçËøáÁöÑÂÜÖÂ≠ò CNend
 \attention \n
 
-\param[in]	u32Phyaddr. CNcomment:ŒÔ¿Ìµÿ÷∑ CNend\n
+\param[in]	u32Phyaddr. CNcomment:Áâ©ÁêÜÂú∞ÂùÄ CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -297,12 +297,12 @@ static inline HI_S32 HI_GFX_FreeMem(HI_U32 u32Phyaddr)
 
 
 /** 
-\brief alloc the mem that need. CNcomment:∑÷≈‰–Ë“™µƒƒ⁄¥Ê CNend\n
+\brief alloc the mem that need. CNcomment:ÂàÜÈÖçÈúÄË¶ÅÁöÑÂÜÖÂ≠ò CNend\n
 \attention \n
 
-\param[in]	pName.        CNcomment:ƒ£øÈ√˚   CNend\n
+\param[in]	pName.        CNcomment:Ê®°ÂùóÂêç   CNend\n
 \param[in]	pZoneName.
-\param[in]	u32LayerSize. CNcomment:ƒ⁄¥Ê¥Û–° CNend\n
+\param[in]	u32LayerSize. CNcomment:ÂÜÖÂ≠òÂ§ßÂ∞è CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -497,10 +497,10 @@ static inline HI_S32 GFX_MMZ_GetPhyaddr(HI_S32 mmz,HI_VOID * pVir, HI_U32 *pu32P
 
 
 /** 
-\brief free the mem that has alloced. CNcomment: Õ∑≈∑÷≈‰π˝µƒƒ⁄¥Ê CNend
+\brief free the mem that has alloced. CNcomment:ÈáäÊîæÂàÜÈÖçËøáÁöÑÂÜÖÂ≠ò CNend
 \attention \n
 
-\param[in]	u32Phyaddr. CNcomment:ŒÔ¿Ìµÿ÷∑ CNend\n
+\param[in]	u32Phyaddr. CNcomment:Áâ©ÁêÜÂú∞ÂùÄ CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -516,12 +516,12 @@ static inline HI_S32 HI_GFX_FreeMem(HI_S32 s32MMZDev,HI_U32 u32Phyaddr)
 
 
 /** 
-\brief alloc the mem that need. CNcomment:∑÷≈‰–Ë“™µƒƒ⁄¥Ê CNend\n
+\brief alloc the mem that need. CNcomment:ÂàÜÈÖçÈúÄË¶ÅÁöÑÂÜÖÂ≠ò CNend\n
 \attention \n
 
-\param[in]	pName.        CNcomment:ƒ£øÈ√˚   CNend\n
+\param[in]	pName.        CNcomment:Ê®°ÂùóÂêç   CNend\n
 \param[in]	pZoneName.
-\param[in]	u32LayerSize. CNcomment:ƒ⁄¥Ê¥Û–° CNend\n
+\param[in]	u32LayerSize. CNcomment:ÂÜÖÂ≠òÂ§ßÂ∞è CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -583,10 +583,10 @@ static inline HI_S32 HI_GFX_GetPhyaddr(HI_S32 s32MMZDev,HI_VOID * pVir, HI_U32 *
 
 
 /** 
-\brief free the mem that has alloced. CNcomment: Õ∑≈∑÷≈‰π˝µƒƒ⁄¥Ê CNend\n
+\brief free the mem that has alloced. CNcomment:ÈáäÊîæÂàÜÈÖçËøáÁöÑÂÜÖÂ≠ò CNend\n
 \attention \n
 
-\param[in]	u32Phyaddr. CNcomment:ŒÔ¿Ìµÿ÷∑ CNend\n
+\param[in]	u32Phyaddr. CNcomment:Áâ©ÁêÜÂú∞ÂùÄ CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -599,12 +599,12 @@ static HI_VOID HI_GFX_FreeMem(HI_U32 u32Phyaddr)
 }
 
 /** 
-\brief alloc the mem that need. CNcomment:∑÷≈‰–Ë“™µƒƒ⁄¥Ê CNend\n
+\brief alloc the mem that need. CNcomment:ÂàÜÈÖçÈúÄË¶ÅÁöÑÂÜÖÂ≠ò CNend\n
 \attention \n
 
-\param[in]	pName.        CNcomment:ƒ£øÈ√˚   CNend\n
+\param[in]	pName.        CNcomment:Ê®°ÂùóÂêç   CNend\n
 \param[in]	pZoneName.
-\param[in]	u32LayerSize. CNcomment:ƒ⁄¥Ê¥Û–° CNend\n
+\param[in]	u32LayerSize. CNcomment:ÂÜÖÂ≠òÂ§ßÂ∞è CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE

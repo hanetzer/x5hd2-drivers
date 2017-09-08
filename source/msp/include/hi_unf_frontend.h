@@ -28,821 +28,821 @@ extern "C"{
 #endif
 #endif /* __cplusplus */
 
-#define HI_I2C_MAX_NUM_USER (15)    /** Maximum I2C channel ID*/ /** CNcomment:×î´óI2CÍ¨µÀºÅ*/
+#define HI_I2C_MAX_NUM_USER (15)    /** Maximum I2C channel ID*/ /** CNcomment:æœ€å¤§I2Cé€šé“å·*/
 
-#define HI_UNF_DISEQC_MSG_MAX_LENGTH (6)    /** DiSEqC message length*/  /** CNcomment:DiSEqCÏûÏ¢³¤¶È*/
-#define HI_UNF_DISEQC_MAX_REPEAT_TIMES (4)  /** DiSEqC message max repeat times*/ /** CNcomment:DiSEqCÏûÏ¢×î´óÖØ¸´·¢ËÍ´ÎÊı*/
-#define MAX_TS_LINE 11                      /** The NO of ts lines that can be configured*/ /** CNcomment:¿ÉÅäÖÃµÄtsĞÅºÅÏßÊıÁ¿*/
+#define HI_UNF_DISEQC_MSG_MAX_LENGTH (6)    /** DiSEqC message length*/  /** CNcomment:DiSEqCæ¶ˆæ¯é•¿åº¦*/
+#define HI_UNF_DISEQC_MAX_REPEAT_TIMES (4)  /** DiSEqC message max repeat times*/ /** CNcomment:DiSEqCæ¶ˆæ¯æœ€å¤§é‡å¤å‘é€æ¬¡æ•°*/
+#define MAX_TS_LINE 11                      /** The NO of ts lines that can be configured*/ /** CNcomment:å¯é…ç½®çš„tsä¿¡å·çº¿æ•°é‡*/
 
 //#ifdef DISEQC_SUPPORT
-#define DISEQC_MAX_MOTOR_PISITION (255) /** DiSEqC motor max stored position*/ /** CNcomment:DiSEqCÂí´ï×î´ó´æ´¢ĞÇÎ»¸öÊı*/
+#define DISEQC_MAX_MOTOR_PISITION (255) /** DiSEqC motor max stored position*/ /** CNcomment:DiSEqCé©¬è¾¾æœ€å¤§å­˜å‚¨æ˜Ÿä½ä¸ªæ•°*/
 //#endif /* DISEQC_SUPPORT */
 /*************************** Structure Definition ****************************/
 /** \addtogroup      FRONTEND */
 /** @{ */  /** <!-- [FRONTEND] */
 
 /** Sample data, complex format*/
-/** CNcomment: ²É¼¯Êı¾İ, ¸´¸ñÊ½*/
+/** CNcomment: é‡‡é›†æ•°æ®, å¤æ ¼å¼*/
 typedef struct  hiUNF_TUNER_SAMPLE_DATA_S
 {
-   HI_S32 s32DataIP;    /*sample data, i component*/    /**<CNcomment:²É¼¯Êı¾İµÄI·ÖÁ¿*/
-   HI_S32 s32DataQP;    /*sample data, q component*/    /**<CNcomment:²É¼¯Êı¾İµÄQ·ÖÁ¿*/
+   HI_S32 s32DataIP;    /*sample data, i component*/    /**<CNcomment:é‡‡é›†æ•°æ®çš„Iåˆ†é‡*/
+   HI_S32 s32DataQP;    /*sample data, q component*/    /**<CNcomment:é‡‡é›†æ•°æ®çš„Qåˆ†é‡*/
 } HI_UNF_TUNER_SAMPLE_DATA_S;
 
 /** Sample data length*/
-/** CNcomment: ²ÉÊı³¤¶È*/
+/** CNcomment: é‡‡æ•°é•¿åº¦*/
 typedef enum hiUNF_TUNER_SAMPLE_DATALEN_E
 {
-    HI_UNF_TUNER_SAMPLE_DATALEN_512,              /*sample 512 pts*/        /**<CNcomment:²É¼¯512µã*/
-    HI_UNF_TUNER_SAMPLE_DATALEN_1024,             /*sample 1024 pts*/       /**<CNcomment:²É¼¯1024µã*/
-    HI_UNF_TUNER_SAMPLE_DATALEN_2048,             /*sample 2048 pts*/       /**<CNcomment:²É¼¯2048µã*/
-    HI_UNF_TUNER_SAMPLE_DATALEN_BUTT              /**<Invalid value*/       /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_SAMPLE_DATALEN_512,              /*sample 512 pts*/        /**<CNcomment:é‡‡é›†512ç‚¹*/
+    HI_UNF_TUNER_SAMPLE_DATALEN_1024,             /*sample 1024 pts*/       /**<CNcomment:é‡‡é›†1024ç‚¹*/
+    HI_UNF_TUNER_SAMPLE_DATALEN_2048,             /*sample 2048 pts*/       /**<CNcomment:é‡‡é›†2048ç‚¹*/
+    HI_UNF_TUNER_SAMPLE_DATALEN_BUTT              /**<Invalid value*/       /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_SAMPLE_DATALEN_E;
 
 /** Modulation mode*/
-/** CNcomment: µ÷ÖÆ·½Ê½*/
+/** CNcomment: è°ƒåˆ¶æ–¹å¼*/
 typedef enum hiUNF_QAM_TYPE_E
 {
-    HI_UNF_MOD_TYPE_DEFAULT,          /**<Default QAM mode. The default QAM mode is HI_UNF_MOD_TYPE_QAM_64 at present.*/                /**<CNcomment:Ä¬ÈÏµÄQAMÀàĞÍ, µ±Ç°ÏµÍ³Ä¬ÈÏÎªHI_UNF_MOD_TYPE_QAM_64 */
-    HI_UNF_MOD_TYPE_QAM_16 = 0x100,   /**<Enumeration corresponding to the 16QAM mode*/                                                 /**<CNcomment:16QAM¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
-    HI_UNF_MOD_TYPE_QAM_32,           /**<Enumeration corresponding to the 32QAM mode*/                                                 /**<CNcomment:32QAM¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
-    HI_UNF_MOD_TYPE_QAM_64,           /**<Enumeration corresponding to the 64QAM mode*/                                                 /**<CNcomment:64QAM¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
-    HI_UNF_MOD_TYPE_QAM_128,          /**<Enumeration corresponding to the 128QAM mode*/                                                /**<CNcomment:128QAM¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
-    HI_UNF_MOD_TYPE_QAM_256,          /**<Enumeration corresponding to the 256QAM mode*/                                                /**<CNcomment:256QAM¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
-    HI_UNF_MOD_TYPE_QAM_512,          /**<Enumeration corresponding to the 512QAM mode*/                                                /**<CNcomment:512QAM¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
+    HI_UNF_MOD_TYPE_DEFAULT,          /**<Default QAM mode. The default QAM mode is HI_UNF_MOD_TYPE_QAM_64 at present.*/                /**<CNcomment:é»˜è®¤çš„QAMç±»å‹, å½“å‰ç³»ç»Ÿé»˜è®¤ä¸ºHI_UNF_MOD_TYPE_QAM_64 */
+    HI_UNF_MOD_TYPE_QAM_16 = 0x100,   /**<Enumeration corresponding to the 16QAM mode*/                                                 /**<CNcomment:16QAMå¯¹åº”çš„æšä¸¾å€¼*/
+    HI_UNF_MOD_TYPE_QAM_32,           /**<Enumeration corresponding to the 32QAM mode*/                                                 /**<CNcomment:32QAMå¯¹åº”çš„æšä¸¾å€¼*/
+    HI_UNF_MOD_TYPE_QAM_64,           /**<Enumeration corresponding to the 64QAM mode*/                                                 /**<CNcomment:64QAMå¯¹åº”çš„æšä¸¾å€¼*/
+    HI_UNF_MOD_TYPE_QAM_128,          /**<Enumeration corresponding to the 128QAM mode*/                                                /**<CNcomment:128QAMå¯¹åº”çš„æšä¸¾å€¼*/
+    HI_UNF_MOD_TYPE_QAM_256,          /**<Enumeration corresponding to the 256QAM mode*/                                                /**<CNcomment:256QAMå¯¹åº”çš„æšä¸¾å€¼*/
+    HI_UNF_MOD_TYPE_QAM_512,          /**<Enumeration corresponding to the 512QAM mode*/                                                /**<CNcomment:512QAMå¯¹åº”çš„æšä¸¾å€¼*/
 
-    HI_UNF_MOD_TYPE_BPSK = 0x200,     /**<Enumeration corresponding to the binary phase shift keying (BPSK) mode. */                    /**<CNcomment:BPSK¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
-    HI_UNF_MOD_TYPE_QPSK = 0x300,     /**<Enumeration corresponding to the quaternary phase shift keying (QPSK) mode. */                /**<CNcomment:QPSK¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
+    HI_UNF_MOD_TYPE_BPSK = 0x200,     /**<Enumeration corresponding to the binary phase shift keying (BPSK) mode. */                    /**<CNcomment:BPSKå¯¹åº”çš„æšä¸¾å€¼*/
+    HI_UNF_MOD_TYPE_QPSK = 0x300,     /**<Enumeration corresponding to the quaternary phase shift keying (QPSK) mode. */                /**<CNcomment:QPSKå¯¹åº”çš„æšä¸¾å€¼*/
     HI_UNF_MOD_TYPE_DQPSK,
-    HI_UNF_MOD_TYPE_8PSK,             /**<Enumeration corresponding to the 8 phase shift keying (8PSK) mode*/                           /**<CNcomment:8PSK¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
-    HI_UNF_MOD_TYPE_16APSK,           /**<Enumeration corresponding to the 16-Ary Amplitude and Phase Shift Keying (16APSK) mode*/      /**<CNcomment:16APSK¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
-    HI_UNF_MOD_TYPE_32APSK,           /**<Enumeration corresponding to the 32-Ary Amplitude and Phase Shift Keying (32APSK) mode*/      /**<CNcomment:32APSK¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
-    HI_UNF_MOD_TYPE_8VSB,             /**<Enumeration corresponding to (8VSB) mode*/                                                    /**<CNcomment:8VSB¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
-    HI_UNF_MOD_TYPE_16VSB,            /**<Enumeration corresponding to (16VSB) mode*/                                                   /**<CNcomment:16VSB¶ÔÓ¦µÄÃ¶¾ÙÖµ*/
+    HI_UNF_MOD_TYPE_8PSK,             /**<Enumeration corresponding to the 8 phase shift keying (8PSK) mode*/                           /**<CNcomment:8PSKå¯¹åº”çš„æšä¸¾å€¼*/
+    HI_UNF_MOD_TYPE_16APSK,           /**<Enumeration corresponding to the 16-Ary Amplitude and Phase Shift Keying (16APSK) mode*/      /**<CNcomment:16APSKå¯¹åº”çš„æšä¸¾å€¼*/
+    HI_UNF_MOD_TYPE_32APSK,           /**<Enumeration corresponding to the 32-Ary Amplitude and Phase Shift Keying (32APSK) mode*/      /**<CNcomment:32APSKå¯¹åº”çš„æšä¸¾å€¼*/
+    HI_UNF_MOD_TYPE_8VSB,             /**<Enumeration corresponding to (8VSB) mode*/                                                    /**<CNcomment:8VSBå¯¹åº”çš„æšä¸¾å€¼*/
+    HI_UNF_MOD_TYPE_16VSB,            /**<Enumeration corresponding to (16VSB) mode*/                                                   /**<CNcomment:16VSBå¯¹åº”çš„æšä¸¾å€¼*/
 
     /**<Enumeration corresponding to the auto mode. For DVB-S/S2, if detect modulation type fail, it will return auto*/
-    /**<CNcomment:ÎÀĞÇĞÅºÅµ÷ÖÆ·½Ê½×Ô¶¯¼ì²â£¬Èç¹û¼ì²âÊ§°Ü·µ»ØAUTO*/
+    /**<CNcomment:å«æ˜Ÿä¿¡å·è°ƒåˆ¶æ–¹å¼è‡ªåŠ¨æ£€æµ‹ï¼Œå¦‚æœæ£€æµ‹å¤±è´¥è¿”å›AUTO*/
     HI_UNF_MOD_TYPE_AUTO,
 
-    HI_UNF_MOD_TYPE_BUTT              /**<Invalid Modulation mode*/       /**<CNcomment:·Ç·¨µÄµ÷ÖÆÀàĞÍÃ¶¾ÙÖµ*/
+    HI_UNF_MOD_TYPE_BUTT              /**<Invalid Modulation mode*/       /**<CNcomment:éæ³•çš„è°ƒåˆ¶ç±»å‹æšä¸¾å€¼*/
 }HI_UNF_MODULATION_TYPE_E;
 
 /** Frequency locking status of the tuner*/
-/** CNcomment:TUNERËøÆµ×´Ì¬*/
+/** CNcomment:TUNERé”é¢‘çŠ¶æ€*/
 typedef enum  hiUNF_TUNER_LOCK_STATUS_E
 {
-    HI_UNF_TUNER_SIGNAL_DROPPED = 0,       /**<The signal is not locked.*/  /**<CNcomment:ĞÅºÅÎ´Ëø¶¨*/
-    HI_UNF_TUNER_SIGNAL_LOCKED,            /**<The signal is locked.*/      /**<CNcomment:ĞÅºÅÒÑËø¶¨*/
-    HI_UNF_TUNER_SIGNAL_BUTT               /**<Invalid value*/              /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_SIGNAL_DROPPED = 0,       /**<The signal is not locked.*/  /**<CNcomment:ä¿¡å·æœªé”å®š*/
+    HI_UNF_TUNER_SIGNAL_LOCKED,            /**<The signal is locked.*/      /**<CNcomment:ä¿¡å·å·²é”å®š*/
+    HI_UNF_TUNER_SIGNAL_BUTT               /**<Invalid value*/              /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 }HI_UNF_TUNER_LOCK_STATUS_E;
 
 /** Output mode of the tuner*/
-/** CNcomment:TUNERÊä³öÄ£Ê½*/
+/** CNcomment:TUNERè¾“å‡ºæ¨¡å¼*/
 typedef enum hiUNF_TUNER_OUTPUT_MODE_E
 {
-    HI_UNF_TUNER_OUTPUT_MODE_DEFAULT ,            /**<Default mode*/                       /**<CNcomment:Ä¬ÈÏÄ£Ê½*/
-    HI_UNF_TUNER_OUTPUT_MODE_PARALLEL_MODE_A,     /**<Parallel mode A*/                    /**<CNcomment:²¢ĞĞÄ£Ê½A*/
-    HI_UNF_TUNER_OUTPUT_MODE_PARALLEL_MODE_B,     /**<Parallel mode B*/                    /**<CNcomment:²¢ĞĞÄ£Ê½B*/
-    HI_UNF_TUNER_OUTPUT_MODE_SERIAL,              /**<Serial mode 74.25M*/                 /**<CNcomment:´®ĞĞÄ£74.25M*/ 
-    HI_UNF_TUNER_OUTPUT_MODE_SERIAL_50,           /**<Serial mode 50M*/                    /**<CNcomment:´®ĞĞÄ£50M*/
-    HI_UNF_TUNER_OUTPUT_MODE_SERIAL_2BIT,         /**<Serial mode witch 2 bit data line*/  /**<CNcomment:2bit´®ĞĞ*/
-    HI_UNF_TUNER_OUTPUT_MODE_BUTT                 /**<Invalid value*/                      /**<CNcomment:·Ç·¨Öµ*/
+    HI_UNF_TUNER_OUTPUT_MODE_DEFAULT ,            /**<Default mode*/                       /**<CNcomment:é»˜è®¤æ¨¡å¼*/
+    HI_UNF_TUNER_OUTPUT_MODE_PARALLEL_MODE_A,     /**<Parallel mode A*/                    /**<CNcomment:å¹¶è¡Œæ¨¡å¼A*/
+    HI_UNF_TUNER_OUTPUT_MODE_PARALLEL_MODE_B,     /**<Parallel mode B*/                    /**<CNcomment:å¹¶è¡Œæ¨¡å¼B*/
+    HI_UNF_TUNER_OUTPUT_MODE_SERIAL,              /**<Serial mode 74.25M*/                 /**<CNcomment:ä¸²è¡Œæ¨¡74.25M*/ 
+    HI_UNF_TUNER_OUTPUT_MODE_SERIAL_50,           /**<Serial mode 50M*/                    /**<CNcomment:ä¸²è¡Œæ¨¡50M*/
+    HI_UNF_TUNER_OUTPUT_MODE_SERIAL_2BIT,         /**<Serial mode witch 2 bit data line*/  /**<CNcomment:2bitä¸²è¡Œ*/
+    HI_UNF_TUNER_OUTPUT_MODE_BUTT                 /**<Invalid value*/                      /**<CNcomment:éæ³•å€¼*/
 }HI_UNF_TUNER_OUPUT_MODE_E;
 
 /** Output order*/
-/** CNcomment:TUNERÊä³öÏßĞò */
+/** CNcomment:TUNERè¾“å‡ºçº¿åº */
 typedef enum hiUNF_TUNER_OUTPUT_TS_E
 {
-    HI_UNF_TUNER_OUTPUT_TSDAT0,        /**<data0*/                       /**<CNcomment:Êı¾İÏß0bit*/    
-    HI_UNF_TUNER_OUTPUT_TSDAT1,        /**<data1*/                       /**<CNcomment:Êı¾İÏß1bit*/ 
-    HI_UNF_TUNER_OUTPUT_TSDAT2,        /**<data2*/                       /**<CNcomment:Êı¾İÏß2bit*/ 
-    HI_UNF_TUNER_OUTPUT_TSDAT3,        /**<data3*/                       /**<CNcomment:Êı¾İÏß3bit*/ 
-    HI_UNF_TUNER_OUTPUT_TSDAT4,        /**<data4*/                       /**<CNcomment:Êı¾İÏß4bit*/ 
-    HI_UNF_TUNER_OUTPUT_TSDAT5,        /**<data5*/                       /**<CNcomment:Êı¾İÏß5bit*/ 
-    HI_UNF_TUNER_OUTPUT_TSDAT6,        /**<data6*/                       /**<CNcomment:Êı¾İÏß6bit*/ 
-    HI_UNF_TUNER_OUTPUT_TSDAT7,        /**<data7*/                       /**<CNcomment:Êı¾İÏß7bit*/ 
-    HI_UNF_TUNER_OUTPUT_TSVLD,         /**<valid*/                       /**<CNcomment:validĞÅºÅÏß*/ 
-    HI_UNF_TUNER_OUTPUT_TSSYNC,        /**<sync*/                        /**<CNcomment:syncĞÅºÅÏß*/ 
-    HI_UNF_TUNER_OUTPUT_TSERR,         /**<err*/                         /**<CNcomment:errĞÅºÅÏß*/ 
-    HI_UNF_TUNER_OUTPUT_BUTT           /**<Invalid value*/               /**<CNcomment:·Ç·¨Öµ*/
+    HI_UNF_TUNER_OUTPUT_TSDAT0,        /**<data0*/                       /**<CNcomment:æ•°æ®çº¿0bit*/    
+    HI_UNF_TUNER_OUTPUT_TSDAT1,        /**<data1*/                       /**<CNcomment:æ•°æ®çº¿1bit*/ 
+    HI_UNF_TUNER_OUTPUT_TSDAT2,        /**<data2*/                       /**<CNcomment:æ•°æ®çº¿2bit*/ 
+    HI_UNF_TUNER_OUTPUT_TSDAT3,        /**<data3*/                       /**<CNcomment:æ•°æ®çº¿3bit*/ 
+    HI_UNF_TUNER_OUTPUT_TSDAT4,        /**<data4*/                       /**<CNcomment:æ•°æ®çº¿4bit*/ 
+    HI_UNF_TUNER_OUTPUT_TSDAT5,        /**<data5*/                       /**<CNcomment:æ•°æ®çº¿5bit*/ 
+    HI_UNF_TUNER_OUTPUT_TSDAT6,        /**<data6*/                       /**<CNcomment:æ•°æ®çº¿6bit*/ 
+    HI_UNF_TUNER_OUTPUT_TSDAT7,        /**<data7*/                       /**<CNcomment:æ•°æ®çº¿7bit*/ 
+    HI_UNF_TUNER_OUTPUT_TSVLD,         /**<valid*/                       /**<CNcomment:validä¿¡å·çº¿*/ 
+    HI_UNF_TUNER_OUTPUT_TSSYNC,        /**<sync*/                        /**<CNcomment:syncä¿¡å·çº¿*/ 
+    HI_UNF_TUNER_OUTPUT_TSERR,         /**<err*/                         /**<CNcomment:errä¿¡å·çº¿*/ 
+    HI_UNF_TUNER_OUTPUT_BUTT           /**<Invalid value*/               /**<CNcomment:éæ³•å€¼*/
 }HI_UNF_TUNER_OUTPUT_TS_E;
 
 /** ts output port order*/
-/** CNcomment:ts½Ó¿ÚÊä³öÏßĞò */
+/** CNcomment:tsæ¥å£è¾“å‡ºçº¿åº */
 typedef struct hiUNF_TUNER_TSOUT_SET_S
 {
-    HI_UNF_TUNER_OUTPUT_TS_E enTSOutput[MAX_TS_LINE];   /**<ts output port order*/    /**<CNcomment:ts½Ó¿ÚÊä³öÏßĞò*/
+    HI_UNF_TUNER_OUTPUT_TS_E enTSOutput[MAX_TS_LINE];   /**<ts output port order*/    /**<CNcomment:tsæ¥å£è¾“å‡ºçº¿åº*/
 }HI_UNF_TUNER_TSOUT_SET_S;
 
 /** Signal type of the tuner*/
-/** CNcomment:TUNERĞÅºÅÀàĞÍ*/
+/** CNcomment:TUNERä¿¡å·ç±»å‹*/
 typedef enum    hiTUNER_SIG_TYPE_E
 {
-    HI_UNF_TUNER_SIG_TYPE_CAB = 0  ,   /**<Cable signal*/       /**<CNcomment:CABLEĞÅºÅ*/
-    HI_UNF_TUNER_SIG_TYPE_SAT ,        /**<Satellite signal*/   /**<CNcomment:ÎÀĞÇĞÅºÅ*/
-    HI_UNF_TUNER_SIG_TYPE_DVB_T  ,     /**<Terrestrial signal*/ /**<CNcomment:µØÃæĞÅºÅ*/
-    HI_UNF_TUNER_SIG_TYPE_DVB_T2  ,    /**<Terrestrial signal*/ /**<CNcomment:µØÃæĞÅºÅ*/
-    HI_UNF_TUNER_SIG_TYPE_ISDB_T  ,    /**<Terrestrial signal*/ /**<CNcomment:µØÃæĞÅºÅ*/
-    HI_UNF_TUNER_SIG_TYPE_ATSC_T  ,    /**<Terrestrial signal*/ /**<CNcomment:µØÃæĞÅºÅ*/
-    HI_UNF_TUNER_SIG_TYPE_DTMB  ,      /**<Terrestrial signal*/ /**<CNcomment:µØÃæĞÅºÅ*/
-    HI_UNF_TUNER_SIG_TYPE_BUTT         /**<Invalid value*/      /**<CNcomment:·Ç·¨Öµ*/
+    HI_UNF_TUNER_SIG_TYPE_CAB = 0  ,   /**<Cable signal*/       /**<CNcomment:CABLEä¿¡å·*/
+    HI_UNF_TUNER_SIG_TYPE_SAT ,        /**<Satellite signal*/   /**<CNcomment:å«æ˜Ÿä¿¡å·*/
+    HI_UNF_TUNER_SIG_TYPE_DVB_T  ,     /**<Terrestrial signal*/ /**<CNcomment:åœ°é¢ä¿¡å·*/
+    HI_UNF_TUNER_SIG_TYPE_DVB_T2  ,    /**<Terrestrial signal*/ /**<CNcomment:åœ°é¢ä¿¡å·*/
+    HI_UNF_TUNER_SIG_TYPE_ISDB_T  ,    /**<Terrestrial signal*/ /**<CNcomment:åœ°é¢ä¿¡å·*/
+    HI_UNF_TUNER_SIG_TYPE_ATSC_T  ,    /**<Terrestrial signal*/ /**<CNcomment:åœ°é¢ä¿¡å·*/
+    HI_UNF_TUNER_SIG_TYPE_DTMB  ,      /**<Terrestrial signal*/ /**<CNcomment:åœ°é¢ä¿¡å·*/
+    HI_UNF_TUNER_SIG_TYPE_BUTT         /**<Invalid value*/      /**<CNcomment:éæ³•å€¼*/
 }HI_UNF_TUNER_SIG_TYPE_E;
 
 /** type of TUNER device*/
-/** CNcomment:TUNERÉè±¸ÀàĞÍ*/
+/** CNcomment:TUNERè®¾å¤‡ç±»å‹*/
 typedef enum    hiUNF_TUNER_DEV_TYPE_E
 {
-    HI_UNF_TUNER_DEV_TYPE_XG_3BL,               /**<XG_3BL*/                     /**<CNcomment:Ö§³ÖĞñ¹â¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_CD1616,               /**<CD1616*/                     /**<CNcomment:Ö§³ÖCD1616¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_ALPS_TDAE,            /**<ALPS_TDAE*/                  /**<CNcomment:Ö§³ÖALPS_TDAE¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_TDCC,                 /**<TDCC*/                       /**<CNcomment:Ö§³ÖTDCC¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_TDA18250,             /**<TDA18250*/                   /**<CNcomment:Ö§³ÖTDA18250¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_CD1616_DOUBLE,        /**<CD1616 with double agc*/     /**<CNcomment:Ö§³ÖCD1616´øË«agc¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_MT2081,				/**<MT2081*/                     /**<CNcomment:Ö§³ÖMT2081¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_TMX7070X,             /**<THOMSON7070X*/               /**<CNcomment:Ö§³ÖTHOMSON7070X¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_R820C,                /**<R820C*/                      /**<CNcomment:Ö§³ÖR820C¸ßÆµÍ·*/
-	HI_UNF_TUNER_DEV_TYPE_MXL203,               /**<MXL203 */                    /**<CNcomment:Ö§³ÖMXL203¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_AV2011,               /**<AV2011*/                     /**<CNcomment:Ö§³ÖAV2011¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_SHARP7903,            /**<SHARP7903*/                  /**<CNcomment:Ö§³ÖSHARP7903¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_MXL101,               /**<MXL101*/                     /**<CNcomment:Ö§³ÖMXL101¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_MXL603,               /**<MXL603*/                     /**<CNcomment:Ö§³ÖMXL603¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_IT9170,               /**<IT9170*/                     /**<CNcomment:Ö§³ÖIT9170¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_IT9133,               /**<IT9133*/                     /**<CNcomment:Ö§³ÖIT9133¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_TDA6651,              /**<TDA6651*/                    /**<CNcomment:Ö§³ÖTDA6651¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_TDA18250B,            /**<TDA18250B*/                  /**<CNcomment:Ö§³ÖTDA18250B¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_M88TS2022,            /**<M88TS2022*/                  /**<CNcomment:Ö§³ÖM88TS2022¸ßÆµÍ·*/
-    HI_UNF_TUNER_DEV_TYPE_RDA5815,              /**<RDA5815*/                    /**<CNcomment:Ö§³ÖRDA5815¸ßÆµÍ·*/
+    HI_UNF_TUNER_DEV_TYPE_XG_3BL,               /**<XG_3BL*/                     /**<CNcomment:æ”¯æŒæ—­å…‰é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_CD1616,               /**<CD1616*/                     /**<CNcomment:æ”¯æŒCD1616é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_ALPS_TDAE,            /**<ALPS_TDAE*/                  /**<CNcomment:æ”¯æŒALPS_TDAEé«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_TDCC,                 /**<TDCC*/                       /**<CNcomment:æ”¯æŒTDCCé«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_TDA18250,             /**<TDA18250*/                   /**<CNcomment:æ”¯æŒTDA18250é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_CD1616_DOUBLE,        /**<CD1616 with double agc*/     /**<CNcomment:æ”¯æŒCD1616å¸¦åŒagcé«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_MT2081,				/**<MT2081*/                     /**<CNcomment:æ”¯æŒMT2081é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_TMX7070X,             /**<THOMSON7070X*/               /**<CNcomment:æ”¯æŒTHOMSON7070Xé«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_R820C,                /**<R820C*/                      /**<CNcomment:æ”¯æŒR820Cé«˜é¢‘å¤´*/
+	HI_UNF_TUNER_DEV_TYPE_MXL203,               /**<MXL203 */                    /**<CNcomment:æ”¯æŒMXL203é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_AV2011,               /**<AV2011*/                     /**<CNcomment:æ”¯æŒAV2011é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_SHARP7903,            /**<SHARP7903*/                  /**<CNcomment:æ”¯æŒSHARP7903é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_MXL101,               /**<MXL101*/                     /**<CNcomment:æ”¯æŒMXL101é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_MXL603,               /**<MXL603*/                     /**<CNcomment:æ”¯æŒMXL603é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_IT9170,               /**<IT9170*/                     /**<CNcomment:æ”¯æŒIT9170é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_IT9133,               /**<IT9133*/                     /**<CNcomment:æ”¯æŒIT9133é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_TDA6651,              /**<TDA6651*/                    /**<CNcomment:æ”¯æŒTDA6651é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_TDA18250B,            /**<TDA18250B*/                  /**<CNcomment:æ”¯æŒTDA18250Bé«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_M88TS2022,            /**<M88TS2022*/                  /**<CNcomment:æ”¯æŒM88TS2022é«˜é¢‘å¤´*/
+    HI_UNF_TUNER_DEV_TYPE_RDA5815,              /**<RDA5815*/                    /**<CNcomment:æ”¯æŒRDA5815é«˜é¢‘å¤´*/
 
-    HI_UNF_TUNER_DEV_TYPE_BUTT,                 /**<Invalid value*/              /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_DEV_TYPE_BUTT,                 /**<Invalid value*/              /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 }HI_UNF_TUNER_DEV_TYPE_E ;
 
 /** Type of the demod device*/
-/** CNcomment:demodÉè±¸ÀàĞÍ*/
+/** CNcomment:demodè®¾å¤‡ç±»å‹*/
 typedef enum    hiUNF_DEMOD_DEV_TYPE_E
 {
-    HI_UNF_DEMOD_DEV_TYPE_NONE,                /**<Not supported*/      /**<CNcomment:²»Ö§³Ö*/  
-    HI_UNF_DEMOD_DEV_TYPE_3130I= 0x100,        /**<Internal QAM*/       /**<CNcomment:ÄÚ²¿QAM*/
-    HI_UNF_DEMOD_DEV_TYPE_3130E,               /**<External Hi3130*/    /**<CNcomment:Íâ²¿QAM hi3130Ğ¾Æ¬*/
-    HI_UNF_DEMOD_DEV_TYPE_J83B,                /**<suppoort j83b*/      /**<CNcomment:Ö§³Öj83b*/
-    HI_UNF_DEMOD_DEV_TYPE_AVL6211,             /**<Avalink 6211*/       /**<CNcomment:Ö§³ÖAvalink 6211*/
-    HI_UNF_DEMOD_DEV_TYPE_MXL101,              /**<Maxlinear mxl101*/   /**<CNcomment:Ö§³ÖMaxlinear mxl101*/
-    HI_UNF_DEMOD_DEV_TYPE_MN88472,             /**<PANASONIC mn88472*/  /**<CNcomment:Ö§³ÖPANASONIC mn88472*/
-    HI_UNF_DEMOD_DEV_TYPE_IT9170,              /**<ITE it9170*/         /**<CNcomment:Ö§³ÖITE it9170*/
-    HI_UNF_DEMOD_DEV_TYPE_IT9133,              /**<ITE it9133*/         /**<CNcomment:Ö§³ÖITE it9133*/
-    HI_UNF_DEMOD_DEV_TYPE_3136,                /**<External Hi3136*/    /**<CNcomment:Íâ²¿hi3136Ğ¾Æ¬*/
-    HI_UNF_DEMOD_DEV_TYPE_3136I,               /**<Internal Hi3136*/    /**<CNcomment:ÄÚ²¿hi3136Ğ¾Æ¬*/
+    HI_UNF_DEMOD_DEV_TYPE_NONE,                /**<Not supported*/      /**<CNcomment:ä¸æ”¯æŒ*/  
+    HI_UNF_DEMOD_DEV_TYPE_3130I= 0x100,        /**<Internal QAM*/       /**<CNcomment:å†…éƒ¨QAM*/
+    HI_UNF_DEMOD_DEV_TYPE_3130E,               /**<External Hi3130*/    /**<CNcomment:å¤–éƒ¨QAM hi3130èŠ¯ç‰‡*/
+    HI_UNF_DEMOD_DEV_TYPE_J83B,                /**<suppoort j83b*/      /**<CNcomment:æ”¯æŒj83b*/
+    HI_UNF_DEMOD_DEV_TYPE_AVL6211,             /**<Avalink 6211*/       /**<CNcomment:æ”¯æŒAvalink 6211*/
+    HI_UNF_DEMOD_DEV_TYPE_MXL101,              /**<Maxlinear mxl101*/   /**<CNcomment:æ”¯æŒMaxlinear mxl101*/
+    HI_UNF_DEMOD_DEV_TYPE_MN88472,             /**<PANASONIC mn88472*/  /**<CNcomment:æ”¯æŒPANASONIC mn88472*/
+    HI_UNF_DEMOD_DEV_TYPE_IT9170,              /**<ITE it9170*/         /**<CNcomment:æ”¯æŒITE it9170*/
+    HI_UNF_DEMOD_DEV_TYPE_IT9133,              /**<ITE it9133*/         /**<CNcomment:æ”¯æŒITE it9133*/
+    HI_UNF_DEMOD_DEV_TYPE_3136,                /**<External Hi3136*/    /**<CNcomment:å¤–éƒ¨hi3136èŠ¯ç‰‡*/
+    HI_UNF_DEMOD_DEV_TYPE_3136I,               /**<Internal Hi3136*/    /**<CNcomment:å†…éƒ¨hi3136èŠ¯ç‰‡*/
 
-    HI_UNF_DEMOD_DEV_TYPE_BUTT,                /**<Invalid value*/      /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_DEMOD_DEV_TYPE_BUTT,                /**<Invalid value*/      /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 }HI_UNF_DEMOD_DEV_TYPE_E ;
 
 /** Defines the cable transmission signal.*/
-/** CNcomment:¶¨ÒåCABLE´«ÊäĞÅºÅ*/
+/** CNcomment:å®šä¹‰CABLEä¼ è¾“ä¿¡å·*/
 typedef struct  hiUNF_CAB_CONNECT_PARA_S
 {
-    HI_U32                      u32Freq;            /**<Frequency, in kHz*/      /**<CNcomment:ÆµÂÊ£¬µ¥Î»£ºkHz*/
-    HI_U32                      u32SymbolRate ;     /**<Symbol rate, in bit/s*/  /**<CNcomment:·ûºÅÂÊ£¬µ¥Î»bps */
-    HI_UNF_MODULATION_TYPE_E    enModType ;         /**<QAM mode*/               /**<CNcomment:QAMµ÷ÖÆ·½Ê½*/
-    HI_BOOL                     bReverse ;          /**<Spectrum reverse mode*/  /**<CNcomment:ÆµÆ×µ¹ÖÃ´¦Àí·½Ê½*/
+    HI_U32                      u32Freq;            /**<Frequency, in kHz*/      /**<CNcomment:é¢‘ç‡ï¼Œå•ä½ï¼škHz*/
+    HI_U32                      u32SymbolRate ;     /**<Symbol rate, in bit/s*/  /**<CNcomment:ç¬¦å·ç‡ï¼Œå•ä½bps */
+    HI_UNF_MODULATION_TYPE_E    enModType ;         /**<QAM mode*/               /**<CNcomment:QAMè°ƒåˆ¶æ–¹å¼*/
+    HI_BOOL                     bReverse ;          /**<Spectrum reverse mode*/  /**<CNcomment:é¢‘è°±å€’ç½®å¤„ç†æ–¹å¼*/
 }HI_UNF_CAB_CONNECT_PARA_S ;
 
 /** Guard interval of OFDM*/
-/** CNcomment:¶àÔØ²¨µ÷ÖÆÏÂµÄ±£»¤¼ä¸ô*/
+/** CNcomment:å¤šè½½æ³¢è°ƒåˆ¶ä¸‹çš„ä¿æŠ¤é—´éš”*/
 typedef enum hiUNF_TUNER_FE_GUARD_INTV_E
 {
-    HI_UNF_TUNER_FE_GUARD_INTV_DEFALUT = 0 ,       /**<default guard interval mode*/    /**<CNcomment:±£»¤¼ä¸ôÄ¬ÈÏÄ£Ê½*/
-    HI_UNF_TUNER_FE_GUARD_INTV_1_128       ,       /**<1/128*/                          /**<CNcomment:±£»¤¼ä¸ô1/128Ä£Ê½*/
-    HI_UNF_TUNER_FE_GUARD_INTV_1_32       ,        /**<1/32*/                           /**<CNcomment:±£»¤¼ä¸ô1/32Ä£Ê½*/
-    HI_UNF_TUNER_FE_GUARD_INTV_1_16       ,        /**<1/16*/                           /**<CNcomment:±£»¤¼ä¸ô1/16Ä£Ê½*/
-    HI_UNF_TUNER_FE_GUARD_INTV_1_8        ,        /**<1/8*/                            /**<CNcomment:±£»¤¼ä¸ô1/8Ä£Ê½*/
-    HI_UNF_TUNER_FE_GUARD_INTV_1_4        ,        /**<1/4*/                            /**<CNcomment:±£»¤¼ä¸ô1/4Ä£Ê½*/
-    HI_UNF_TUNER_FE_GUARD_INTV_19_128       ,      /**<19/128*/                         /**<CNcomment:±£»¤¼ä¸ô19/128Ä£Ê½*/
-    HI_UNF_TUNER_FE_GUARD_INTV_19_256       ,      /**<19/256*/                         /**<CNcomment:±£»¤¼ä¸ô19/256Ä£Ê½*/
-    HI_UNF_TUNER_FE_GUARD_INTV_BUTT     ,          /**<Invalid value*/                  /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_FE_GUARD_INTV_DEFALUT = 0 ,       /**<default guard interval mode*/    /**<CNcomment:ä¿æŠ¤é—´éš”é»˜è®¤æ¨¡å¼*/
+    HI_UNF_TUNER_FE_GUARD_INTV_1_128       ,       /**<1/128*/                          /**<CNcomment:ä¿æŠ¤é—´éš”1/128æ¨¡å¼*/
+    HI_UNF_TUNER_FE_GUARD_INTV_1_32       ,        /**<1/32*/                           /**<CNcomment:ä¿æŠ¤é—´éš”1/32æ¨¡å¼*/
+    HI_UNF_TUNER_FE_GUARD_INTV_1_16       ,        /**<1/16*/                           /**<CNcomment:ä¿æŠ¤é—´éš”1/16æ¨¡å¼*/
+    HI_UNF_TUNER_FE_GUARD_INTV_1_8        ,        /**<1/8*/                            /**<CNcomment:ä¿æŠ¤é—´éš”1/8æ¨¡å¼*/
+    HI_UNF_TUNER_FE_GUARD_INTV_1_4        ,        /**<1/4*/                            /**<CNcomment:ä¿æŠ¤é—´éš”1/4æ¨¡å¼*/
+    HI_UNF_TUNER_FE_GUARD_INTV_19_128       ,      /**<19/128*/                         /**<CNcomment:ä¿æŠ¤é—´éš”19/128æ¨¡å¼*/
+    HI_UNF_TUNER_FE_GUARD_INTV_19_256       ,      /**<19/256*/                         /**<CNcomment:ä¿æŠ¤é—´éš”19/256æ¨¡å¼*/
+    HI_UNF_TUNER_FE_GUARD_INTV_BUTT     ,          /**<Invalid value*/                  /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 }HI_UNF_TUNER_FE_GUARD_INTV_E;
 
 /** OFDM Mode, used in multi-carrier modulation*/
-/** CNcomment:OFDMÄ£Ê½£¬ÓÃÓÚ¶àÔØ²¨µ÷ÖÆÄ£Ê½ÏÂ*/
+/** CNcomment:OFDMæ¨¡å¼ï¼Œç”¨äºå¤šè½½æ³¢è°ƒåˆ¶æ¨¡å¼ä¸‹*/
 typedef enum hiUNF_TUNER_FE_FFT_E
 {
-    HI_UNF_TUNER_FE_FFT_DEFAULT = 0,   /**<default mode*/     /**<CNcomment:Ä¬ÈÏÄ£Ê½*/
-    HI_UNF_TUNER_FE_FFT_1K ,           /**<1k mode*/          /**<CNcomment:1kÄ£Ê½*/
-    HI_UNF_TUNER_FE_FFT_2K ,           /**<2k mode*/          /**<CNcomment:2kÄ£Ê½*/
-    HI_UNF_TUNER_FE_FFT_4K ,           /**<4k mode*/          /**<CNcomment:4kÄ£Ê½*/
-    HI_UNF_TUNER_FE_FFT_8K ,           /**<8k mode*/          /**<CNcomment:8kÄ£Ê½*/
-    HI_UNF_TUNER_FE_FFT_16K ,          /**<16k mode*/         /**<CNcomment:16kÄ£Ê½*/
-    HI_UNF_TUNER_FE_FFT_32K ,          /**<32k mode*/         /**<CNcomment:32kÄ£Ê½*/
-    HI_UNF_TUNER_FE_FFT_BUTT ,         /**<Invalid value*/    /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_FE_FFT_DEFAULT = 0,   /**<default mode*/     /**<CNcomment:é»˜è®¤æ¨¡å¼*/
+    HI_UNF_TUNER_FE_FFT_1K ,           /**<1k mode*/          /**<CNcomment:1kæ¨¡å¼*/
+    HI_UNF_TUNER_FE_FFT_2K ,           /**<2k mode*/          /**<CNcomment:2kæ¨¡å¼*/
+    HI_UNF_TUNER_FE_FFT_4K ,           /**<4k mode*/          /**<CNcomment:4kæ¨¡å¼*/
+    HI_UNF_TUNER_FE_FFT_8K ,           /**<8k mode*/          /**<CNcomment:8kæ¨¡å¼*/
+    HI_UNF_TUNER_FE_FFT_16K ,          /**<16k mode*/         /**<CNcomment:16kæ¨¡å¼*/
+    HI_UNF_TUNER_FE_FFT_32K ,          /**<32k mode*/         /**<CNcomment:32kæ¨¡å¼*/
+    HI_UNF_TUNER_FE_FFT_BUTT ,         /**<Invalid value*/    /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 }HI_UNF_TUNER_FE_FFT_E;
 
 /** Hierarchical modulation mode, only used in DVB-T*/
-/** CNcomment:½öÓÃÓÚDVB-T*/
+/** CNcomment:ä»…ç”¨äºDVB-T*/
 typedef enum hiUNF_TUNER_FE_HIERARCHY_E
 {
-    HI_UNF_TUNER_FE_HIERARCHY_DEFAULT = 0 ,   /**<hierarchical modulation default mode*/     /**<CNcomment:Ä¬ÈÏÄ£Ê½*/
-    HI_UNF_TUNER_FE_HIERARCHY_NO,             /**<no hierarchical modulation mode*/          /**<CNcomment:²»·Ö¼¶±ğÄ£Ê½*/
-    HI_UNF_TUNER_FE_HIERARCHY_ALHPA1,         /**<hierarchical mode, alpha = 1*/             /**<CNcomment:·Ö¼¶±ğÄ£Ê½, alpha = 1*/
-    HI_UNF_TUNER_FE_HIERARCHY_ALHPA2,         /**<hierarchical mode, alpha = 2*/             /**<CNcomment:·Ö¼¶±ğÄ£Ê½, alpha = 2*/
-    HI_UNF_TUNER_FE_HIERARCHY_ALHPA4,         /**<hierarchical mode, alpha = 4*/             /**<CNcomment:·Ö¼¶±ğÄ£Ê½, alpha = 4*/
-    HI_UNF_TUNER_FE_HIERARCHY_BUTT,           /**<Invalid value*/                            /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_FE_HIERARCHY_DEFAULT = 0 ,   /**<hierarchical modulation default mode*/     /**<CNcomment:é»˜è®¤æ¨¡å¼*/
+    HI_UNF_TUNER_FE_HIERARCHY_NO,             /**<no hierarchical modulation mode*/          /**<CNcomment:ä¸åˆ†çº§åˆ«æ¨¡å¼*/
+    HI_UNF_TUNER_FE_HIERARCHY_ALHPA1,         /**<hierarchical mode, alpha = 1*/             /**<CNcomment:åˆ†çº§åˆ«æ¨¡å¼, alpha = 1*/
+    HI_UNF_TUNER_FE_HIERARCHY_ALHPA2,         /**<hierarchical mode, alpha = 2*/             /**<CNcomment:åˆ†çº§åˆ«æ¨¡å¼, alpha = 2*/
+    HI_UNF_TUNER_FE_HIERARCHY_ALHPA4,         /**<hierarchical mode, alpha = 4*/             /**<CNcomment:åˆ†çº§åˆ«æ¨¡å¼, alpha = 4*/
+    HI_UNF_TUNER_FE_HIERARCHY_BUTT,           /**<Invalid value*/                            /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 }HI_UNF_TUNER_FE_HIERARCHY_E ;
 
 /** TS Priority, only used in DVB-T*/
-/** CNcomment:½öÓÃÓÚDVB-T*/
+/** CNcomment:ä»…ç”¨äºDVB-T*/
 typedef enum hiUNF_TUNER_TS_PRIORITY_E
 {
-    HI_UNF_TUNER_TS_PRIORITY_NONE = 0 ,      /**<no priority mode*/         /**<CNcomment:ÎŞÓÅÏÈ¼¶Ä£Ê½*/
-    HI_UNF_TUNER_TS_PRIORITY_HP,             /**<high priority mode*/       /**<CNcomment:¸ßÓÅÏÈ¼¶Ä£Ê½*/
-    HI_UNF_TUNER_TS_PRIORITY_LP,             /**<low priority mode*/        /**<CNcomment:µÍÓÅÏÈ¼¶Ä£Ê½*/
-    HI_UNF_TUNER_TS_PRIORITY_BUTT,           /**<Invalid value*/            /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_TS_PRIORITY_NONE = 0 ,      /**<no priority mode*/         /**<CNcomment:æ— ä¼˜å…ˆçº§æ¨¡å¼*/
+    HI_UNF_TUNER_TS_PRIORITY_HP,             /**<high priority mode*/       /**<CNcomment:é«˜ä¼˜å…ˆçº§æ¨¡å¼*/
+    HI_UNF_TUNER_TS_PRIORITY_LP,             /**<low priority mode*/        /**<CNcomment:ä½ä¼˜å…ˆçº§æ¨¡å¼*/
+    HI_UNF_TUNER_TS_PRIORITY_BUTT,           /**<Invalid value*/            /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 }HI_UNF_TUNER_TS_PRIORITY_E ;
 
 /** Terestrial connect param*/
-/** CNcomment:µØÃæĞÅºÅËøÌ¨²ÎÊı*/
+/** CNcomment:åœ°é¢ä¿¡å·é”å°å‚æ•°*/
 typedef struct  hiUNF_TER_CONNECT_PARA_S
 {
-    HI_U32          u32Freq     ;                    /**<freq in KHz*/           /**<CNcomment:ÆµÂÊ£¬µ¥Î»kHz*/
-    HI_U32          u32BandWidth    ;                /**<bandwidth in KHz*/      /**<CNcomment:´ø¿í£¬µ¥Î»kHz*/
-    HI_UNF_MODULATION_TYPE_E enModType  ;            /**<modulation type*/       /**<CNcomment:µ÷ÖÆ·½Ê½*/
-    HI_BOOL                     bReverse ;          /**<Spectrum reverse mode*/  /**<CNcomment:ÆµÆ×·­×ª´¦Àí·½Ê½*/
+    HI_U32          u32Freq     ;                    /**<freq in KHz*/           /**<CNcomment:é¢‘ç‡ï¼Œå•ä½kHz*/
+    HI_U32          u32BandWidth    ;                /**<bandwidth in KHz*/      /**<CNcomment:å¸¦å®½ï¼Œå•ä½kHz*/
+    HI_UNF_MODULATION_TYPE_E enModType  ;            /**<modulation type*/       /**<CNcomment:è°ƒåˆ¶æ–¹å¼*/
+    HI_BOOL                     bReverse ;          /**<Spectrum reverse mode*/  /**<CNcomment:é¢‘è°±ç¿»è½¬å¤„ç†æ–¹å¼*/
 }HI_UNF_TER_CONNECT_PARA_S ;
 
 /** TS clock polarization*/
-/** CNcomment:TSÊ±ÖÓ¼«ĞÔ*/
+/** CNcomment:TSæ—¶é’Ÿææ€§*/
 typedef enum hiUNF_TUNER_TSCLK_POLAR_E
 {
-    HI_UNF_TUNER_TSCLK_POLAR_FALLING,       /**<Falling edge*/      /**<CNcomment:ÏÂ½µÑØ*/
-    HI_UNF_TUNER_TSCLK_POLAR_RISING,        /**<Rising edge*/       /**<CNcomment:ÉÏÉıÑØ*/
-    HI_UNF_TUNER_TSCLK_POLAR_BUTT           /**<Invalid value*/     /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_TSCLK_POLAR_FALLING,       /**<Falling edge*/      /**<CNcomment:ä¸‹é™æ²¿*/
+    HI_UNF_TUNER_TSCLK_POLAR_RISING,        /**<Rising edge*/       /**<CNcomment:ä¸Šå‡æ²¿*/
+    HI_UNF_TUNER_TSCLK_POLAR_BUTT           /**<Invalid value*/     /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_TSCLK_POLAR_E;
 
 /** TS format*/
-/** CNcomment:TS¸ñÊ½*/
+/** CNcomment:TSæ ¼å¼*/
 typedef enum hiUNF_TUNER_TS_FORMAT_E
 {
-    HI_UNF_TUNER_TS_FORMAT_TS,              /**<188*/               /**<CNcomment:188×Ö½Ú¸ñÊ½*/
-    HI_UNF_TUNER_TS_FORMAT_TSP,             /**<204*/               /**<CNcomment:204×Ö½Ú¸ñÊ½*/
-    HI_UNF_TUNER_TS_FORMAT_BUTT             /**<Invalid value*/     /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_TS_FORMAT_TS,              /**<188*/               /**<CNcomment:188å­—èŠ‚æ ¼å¼*/
+    HI_UNF_TUNER_TS_FORMAT_TSP,             /**<204*/               /**<CNcomment:204å­—èŠ‚æ ¼å¼*/
+    HI_UNF_TUNER_TS_FORMAT_BUTT             /**<Invalid value*/     /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_TS_FORMAT_E;
 
 /** TS serial PIN*/
-/** CNcomment:´®ĞĞTSÊı¾İ¹Ü½Å*/
+/** CNcomment:ä¸²è¡ŒTSæ•°æ®ç®¡è„š*/
 typedef enum hiUNF_TUNER_TS_SERIAL_PIN_E
 {
-    HI_UNF_TUNER_TS_SERIAL_PIN_0,           /**<Serial pin 0, default*/  /**<CNcomment:´®ĞĞÄ£Ê½£¬Êı¾İÏßÊ¹ÓÃµÚ0bit*/
-    HI_UNF_TUNER_TS_SERIAL_PIN_7,           /**<Serial pin 7*/           /**<CNcomment:´®ĞĞÄ£Ê½£¬Êı¾İÏßÊ¹ÓÃµÚ7bit*/
-    HI_UNF_TUNER_TS_SERIAL_PIN_BUTT         /**<Invalid value*/          /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_TS_SERIAL_PIN_0,           /**<Serial pin 0, default*/  /**<CNcomment:ä¸²è¡Œæ¨¡å¼ï¼Œæ•°æ®çº¿ä½¿ç”¨ç¬¬0bit*/
+    HI_UNF_TUNER_TS_SERIAL_PIN_7,           /**<Serial pin 7*/           /**<CNcomment:ä¸²è¡Œæ¨¡å¼ï¼Œæ•°æ®çº¿ä½¿ç”¨ç¬¬7bit*/
+    HI_UNF_TUNER_TS_SERIAL_PIN_BUTT         /**<Invalid value*/          /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_TS_SERIAL_PIN_E;
 
 /** Tuner RF AGC mode*/
-/** CNcomment:agc¿ØÖÆÄ£Ê½*/
+/** CNcomment:agcæ§åˆ¶æ¨¡å¼*/
 typedef enum hiUNF_TUNER_RFAGC_MODE_E
 {
-    /**< Inverted polarization, default.This setting is used for a tuner whose gain decreases with increased AGC voltage*/   /**<CNcomment:agc·´Ïò¿ØÖÆÄ£Ê½*/
+    /**< Inverted polarization, default.This setting is used for a tuner whose gain decreases with increased AGC voltage*/   /**<CNcomment:agcåå‘æ§åˆ¶æ¨¡å¼*/
     HI_UNF_TUNER_RFAGC_INVERT, 
 
-    /**< Normal polarization. This setting is used for a tuner whose gain increases with increased AGC voltage*/             /**<CNcomment:agcÕıÏò¿ØÖÆÄ£Ê½*/
+    /**< Normal polarization. This setting is used for a tuner whose gain increases with increased AGC voltage*/             /**<CNcomment:agcæ­£å‘æ§åˆ¶æ¨¡å¼*/
     HI_UNF_TUNER_RFAGC_NORMAL,
-    HI_UNF_TUNER_RFAGC_BUTT                  /**<Invalid value*/                                                             /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_RFAGC_BUTT                  /**<Invalid value*/                                                             /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_RFAGC_MODE_E;
 
 /** Tuner IQ spectrum mode*/
-/** CNcomment:IQÄ£Ê½*/
+/** CNcomment:IQæ¨¡å¼*/
 typedef enum hiUNF_TUNER_IQSPECTRUM_MODE_E
 {
-    HI_UNF_TUNER_IQSPECTRUM_NORMAL,         /**<The received signal spectrum is not inverted*/    /**<CNcomment:IQ²»·´×ª*/
-    HI_UNF_TUNER_IQSPECTRUM_INVERT,         /**<The received signal spectrum is inverted*/        /**<CNcomment:IQ·´×ª*/
-    HI_UNF_TUNER_IQSPECTRUM_BUTT            /**<Invalid value*/                                   /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_IQSPECTRUM_NORMAL,         /**<The received signal spectrum is not inverted*/    /**<CNcomment:IQä¸åè½¬*/
+    HI_UNF_TUNER_IQSPECTRUM_INVERT,         /**<The received signal spectrum is inverted*/        /**<CNcomment:IQåè½¬*/
+    HI_UNF_TUNER_IQSPECTRUM_BUTT            /**<Invalid value*/                                   /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_IQSPECTRUM_MODE_E;
 
 /** DiSEqC Wave Mode*/
-/** CNcomment:DiSEqCÄ£Ê½*/
+/** CNcomment:DiSEqCæ¨¡å¼*/
 typedef enum hiUNF_TUNER_DISEQCWAVE_MODE_E
 {
-    HI_UNF_TUNER_DISEQCWAVE_NORMAL,         /**<Waveform produced by demod*/                 /**<CNcomment:²¨ĞÎÓÉdemod²úÉú*/
-    HI_UNF_TUNER_DISEQCWAVE_ENVELOPE,       /**<Waveform produced by LNB control device*/    /**<CNcomment:²¨ĞÎÓÉ¿ØÖÆĞ¾Æ¬²úÉú*/
-    HI_UNF_TUNER_DISEQCWAVE_BUTT            /**<Invalid value*/                              /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_DISEQCWAVE_NORMAL,         /**<Waveform produced by demod*/                 /**<CNcomment:æ³¢å½¢ç”±demodäº§ç”Ÿ*/
+    HI_UNF_TUNER_DISEQCWAVE_ENVELOPE,       /**<Waveform produced by LNB control device*/    /**<CNcomment:æ³¢å½¢ç”±æ§åˆ¶èŠ¯ç‰‡äº§ç”Ÿ*/
+    HI_UNF_TUNER_DISEQCWAVE_BUTT            /**<Invalid value*/                              /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_DISEQCWAVE_MODE_E;
 
 /** LNB power supply and control device*/
-/** CNcomment:LNB¹©µçºÍ¿ØÖÆĞ¾Æ¬*/
+/** CNcomment:LNBä¾›ç”µå’Œæ§åˆ¶èŠ¯ç‰‡*/
 typedef enum hiUNF_LNBCTRL_DEV_TYPE_E
 {
-    HI_UNF_LNBCTRL_DEV_TYPE_NONE,           /**<No LNB control device*/      /**<CNcomment:ÎŞ¿ØÖÆĞ¾Æ¬*/
+    HI_UNF_LNBCTRL_DEV_TYPE_NONE,           /**<No LNB control device*/      /**<CNcomment:æ— æ§åˆ¶èŠ¯ç‰‡*/
     HI_UNF_LNBCTRL_DEV_TYPE_MPS8125,        /**<MPS8125*/                    /**<CNcomment:MPS8125*/
     HI_UNF_LNBCTRL_DEV_TYPE_ISL9492,        /**<ISL9492*/                    /**<CNcomment:ISL9492*/
-    HI_UNF_LNBCTRL_DEV_TYPE_BUTT            /**<Invalid value*/              /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_LNBCTRL_DEV_TYPE_BUTT            /**<Invalid value*/              /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_LNBCTRL_DEV_TYPE_E;
 
 /** Satellite extended attribution*/
-/** CNcomment:ÎÀĞÇ»ú¸½¼ÓÊôĞÔ*/
+/** CNcomment:å«æ˜Ÿæœºé™„åŠ å±æ€§*/
 typedef struct  hiUNF_TUNER_SAT_ATTR_S
 {
-    HI_U32                         u32DemodClk;     /**<Demod reference clock frequency, KHz*/    /**<CNcomment:demod²Î¿¼Ê±ÖÓÆµÂÊ£¬µ¥Î»MHz*/
-    HI_U16                         u16TunerMaxLPF;  /**<Tuner max LPF, MHz*/                      /**<CNcomment:tunerµÍÍ¨ÂË²¨Æ÷Í¨´øÆµÂÊ£¬µ¥Î»MHz*/
-    HI_U16                         u16TunerI2CClk;  /**<Tuner I2C clock, kHz*/                    /**<CNcomment:tuner i2cÊ±ÖÓÆµÂÊ*/
-    HI_UNF_TUNER_RFAGC_MODE_E      enRFAGC;         /**<Tuner RF AGC mode*/                       /**<CNcomment:agcÄ£Ê½*/
-    HI_UNF_TUNER_IQSPECTRUM_MODE_E enIQSpectrum;    /**<Tuner IQ spectrum mode*/                  /**<CNcomment:IQÄ£Ê½*/
-    HI_UNF_TUNER_TSCLK_POLAR_E     enTSClkPolar;    /**<TS clock polarization*/                   /**<CNcomment:tsÊ±ÖÓ¼«ĞÔ*/
-    HI_UNF_TUNER_TS_FORMAT_E       enTSFormat;      /**<TS format*/                               /**<CNcomment:ts¸ñÊ½*/
-    HI_UNF_TUNER_TS_SERIAL_PIN_E   enTSSerialPIN;   /**<TS serial PIN*/                           /**<CNcomment:ts´®ĞĞÊı¾İÏß*/
-    HI_UNF_TUNER_DISEQCWAVE_MODE_E enDiSEqCWave;    /**<DiSEqC Wave Mode*/                        /**<CNcomment:DiSEqCÄ£Ê½*/
-    HI_UNF_LNBCTRL_DEV_TYPE_E      enLNBCtrlDev;    /**<LNB power supply and control device*/     /**<CNcomment:LNB¿ØÖÆĞ¾Æ¬*/
-    HI_U16                         u16LNBDevAddress;/**<LNB control device address*/              /**<CNcomment:LNB¿ØÖÆĞ¾Æ¬i2cµØÖ·*/
+    HI_U32                         u32DemodClk;     /**<Demod reference clock frequency, KHz*/    /**<CNcomment:demodå‚è€ƒæ—¶é’Ÿé¢‘ç‡ï¼Œå•ä½MHz*/
+    HI_U16                         u16TunerMaxLPF;  /**<Tuner max LPF, MHz*/                      /**<CNcomment:tunerä½é€šæ»¤æ³¢å™¨é€šå¸¦é¢‘ç‡ï¼Œå•ä½MHz*/
+    HI_U16                         u16TunerI2CClk;  /**<Tuner I2C clock, kHz*/                    /**<CNcomment:tuner i2cæ—¶é’Ÿé¢‘ç‡*/
+    HI_UNF_TUNER_RFAGC_MODE_E      enRFAGC;         /**<Tuner RF AGC mode*/                       /**<CNcomment:agcæ¨¡å¼*/
+    HI_UNF_TUNER_IQSPECTRUM_MODE_E enIQSpectrum;    /**<Tuner IQ spectrum mode*/                  /**<CNcomment:IQæ¨¡å¼*/
+    HI_UNF_TUNER_TSCLK_POLAR_E     enTSClkPolar;    /**<TS clock polarization*/                   /**<CNcomment:tsæ—¶é’Ÿææ€§*/
+    HI_UNF_TUNER_TS_FORMAT_E       enTSFormat;      /**<TS format*/                               /**<CNcomment:tsæ ¼å¼*/
+    HI_UNF_TUNER_TS_SERIAL_PIN_E   enTSSerialPIN;   /**<TS serial PIN*/                           /**<CNcomment:tsä¸²è¡Œæ•°æ®çº¿*/
+    HI_UNF_TUNER_DISEQCWAVE_MODE_E enDiSEqCWave;    /**<DiSEqC Wave Mode*/                        /**<CNcomment:DiSEqCæ¨¡å¼*/
+    HI_UNF_LNBCTRL_DEV_TYPE_E      enLNBCtrlDev;    /**<LNB power supply and control device*/     /**<CNcomment:LNBæ§åˆ¶èŠ¯ç‰‡*/
+    HI_U16                         u16LNBDevAddress;/**<LNB control device address*/              /**<CNcomment:LNBæ§åˆ¶èŠ¯ç‰‡i2cåœ°å€*/
 } HI_UNF_TUNER_SAT_ATTR_S;
 
 /** Polarization type*/
-/** CNcomment:¼«»¯·½Ê½*/
+/** CNcomment:æåŒ–æ–¹å¼*/
 typedef enum hiUNF_TUNER_FE_POLARIZATION_E
 {
-    HI_UNF_TUNER_FE_POLARIZATION_H,         /**<Horizontal Polarization*/           /**<CNcomment:Ë®Æ½¼«»¯*/
-    HI_UNF_TUNER_FE_POLARIZATION_V,         /**<Vertical Polarization*/             /**<CNcomment:´¹Ö±¼«»¯*/
-    HI_UNF_TUNER_FE_POLARIZATION_L,         /**<Left-hand circular Polarization*/   /**<CNcomment:×óĞıÔ²¼«»¯*/
-    HI_UNF_TUNER_FE_POLARIZATION_R,         /**<Right-hand circular Polarization*/  /**<CNcomment:ÓÒĞıÔ²¼«»¯*/
-    HI_UNF_TUNER_FE_POLARIZATION_BUTT,      /**<Invalid value*/                     /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_FE_POLARIZATION_H,         /**<Horizontal Polarization*/           /**<CNcomment:æ°´å¹³æåŒ–*/
+    HI_UNF_TUNER_FE_POLARIZATION_V,         /**<Vertical Polarization*/             /**<CNcomment:å‚ç›´æåŒ–*/
+    HI_UNF_TUNER_FE_POLARIZATION_L,         /**<Left-hand circular Polarization*/   /**<CNcomment:å·¦æ—‹åœ†æåŒ–*/
+    HI_UNF_TUNER_FE_POLARIZATION_R,         /**<Right-hand circular Polarization*/  /**<CNcomment:å³æ—‹åœ†æåŒ–*/
+    HI_UNF_TUNER_FE_POLARIZATION_BUTT,      /**<Invalid value*/                     /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_FE_POLARIZATION_E;
 
 /** FEC Type*/
-/** CNcomment:ÎÀĞÇ±ê×¼*/
+/** CNcomment:å«æ˜Ÿæ ‡å‡†*/
 typedef enum hiUNF_TUNER_FE_FECTYPE_E
 {
-    HI_UNF_TUNER_FE_DVBS,                 /**<DVB-S*/                      /**<CNcomment:DVB-S±ê×¼*/
-    HI_UNF_TUNER_FE_DVBS2,                /**<DVB-S2*/                     /**<CNcomment:DVB-S2±ê×¼*/
-    HI_UNF_TUNER_FE_DIRECTV,              /**<DIRECTV*/                    /**<CNcomment:DIRECTV±ê×¼*/
-    HI_UNF_TUNER_FE_BUTT                  /**<Invalid value*/              /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_FE_DVBS,                 /**<DVB-S*/                      /**<CNcomment:DVB-Sæ ‡å‡†*/
+    HI_UNF_TUNER_FE_DVBS2,                /**<DVB-S2*/                     /**<CNcomment:DVB-S2æ ‡å‡†*/
+    HI_UNF_TUNER_FE_DIRECTV,              /**<DIRECTV*/                    /**<CNcomment:DIRECTVæ ‡å‡†*/
+    HI_UNF_TUNER_FE_BUTT                  /**<Invalid value*/              /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_FE_FECTYPE_E;
 
 /** FEC code Rate*/
-/** CNcomment:FECÂëÂÊ*/
+/** CNcomment:FECç ç‡*/
 typedef enum hiUNF_TUNER_FE_FECRATE_E
 {
     HI_UNF_TUNER_FE_FEC_AUTO = 0,
-    HI_UNF_TUNER_FE_FEC_1_2,           /**<1/2*/           /**<CNcomment:1/2ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_2_3,           /**<2/3*/           /**<CNcomment:2/3ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_3_4,           /**<3/4*/           /**<CNcomment:3/4ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_4_5,           /**<4/5*/           /**<CNcomment:4/5ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_5_6,           /**<5/6*/           /**<CNcomment:5/6ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_6_7,           /**<6/7*/           /**<CNcomment:6/7ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_7_8,           /**<7/8*/           /**<CNcomment:7/8ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_8_9,           /**<8/9*/           /**<CNcomment:8/9ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_9_10,          /**<9/10*/          /**<CNcomment:9/10ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_1_4,           /**<1/4*/           /**<CNcomment:1/4ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_1_3,           /**<1/3*/           /**<CNcomment:1/3ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_2_5,           /**<2/5*/           /**<CNcomment:2/5ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FEC_3_5,           /**<3/5*/           /**<CNcomment:3/5ÂëÂÊ*/
-    HI_UNF_TUNER_FE_FECRATE_BUTT       /**<Invalid value*/ /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_FE_FEC_1_2,           /**<1/2*/           /**<CNcomment:1/2ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_2_3,           /**<2/3*/           /**<CNcomment:2/3ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_3_4,           /**<3/4*/           /**<CNcomment:3/4ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_4_5,           /**<4/5*/           /**<CNcomment:4/5ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_5_6,           /**<5/6*/           /**<CNcomment:5/6ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_6_7,           /**<6/7*/           /**<CNcomment:6/7ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_7_8,           /**<7/8*/           /**<CNcomment:7/8ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_8_9,           /**<8/9*/           /**<CNcomment:8/9ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_9_10,          /**<9/10*/          /**<CNcomment:9/10ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_1_4,           /**<1/4*/           /**<CNcomment:1/4ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_1_3,           /**<1/3*/           /**<CNcomment:1/3ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_2_5,           /**<2/5*/           /**<CNcomment:2/5ç ç‡*/
+    HI_UNF_TUNER_FE_FEC_3_5,           /**<3/5*/           /**<CNcomment:3/5ç ç‡*/
+    HI_UNF_TUNER_FE_FECRATE_BUTT       /**<Invalid value*/ /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_FE_FECRATE_E;
 
 /** LNB type*/
-/** CNcomment:LNBÀàĞÍ*/
+/** CNcomment:LNBç±»å‹*/
 typedef enum hiUNF_TUNER_FE_FE_LNBTYPE_E
 {
-    HI_UNF_TUNER_FE_LNB_SINGLE_FREQUENCY,   /**<Single LO frequency*/      /**<CNcomment:µ¥±¾Õñ*/
-    HI_UNF_TUNER_FE_LNB_DUAL_FREQUENCY,     /**<Dual LO frequency*/        /**<CNcomment:Ë«±¾Õñ*/
-    HI_UNF_TUNER_FE_LNB_UNICABLE,           /**<Unicable LNB */            /**<CNcomment:unicable¸ßÆµÍ·*/
-    HI_UNF_TUNER_FE_LNB_TYPE_BUTT           /**<Invalid value*/            /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_FE_LNB_SINGLE_FREQUENCY,   /**<Single LO frequency*/      /**<CNcomment:å•æœ¬æŒ¯*/
+    HI_UNF_TUNER_FE_LNB_DUAL_FREQUENCY,     /**<Dual LO frequency*/        /**<CNcomment:åŒæœ¬æŒ¯*/
+    HI_UNF_TUNER_FE_LNB_UNICABLE,           /**<Unicable LNB */            /**<CNcomment:unicableé«˜é¢‘å¤´*/
+    HI_UNF_TUNER_FE_LNB_TYPE_BUTT           /**<Invalid value*/            /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_FE_LNB_TYPE_E;
 
 /** LNB band type*/
-/** CNcomment:ÎÀĞÇĞÅºÅÆµ¶Î*/
+/** CNcomment:å«æ˜Ÿä¿¡å·é¢‘æ®µ*/
 typedef enum hiUNF_TUNER_FE_LNB_BAND_E
 {
-    HI_UNF_TUNER_FE_LNB_BAND_C,             /**<C */                    /**<CNcomment:C²¨¶Î*/
-    HI_UNF_TUNER_FE_LNB_BAND_KU,            /**<Ku */                   /**<CNcomment:Ku²¨¶Î*/
-    HI_UNF_TUNER_FE_LNB_BAND_BUTT           /**<Invalid value*/         /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_FE_LNB_BAND_C,             /**<C */                    /**<CNcomment:Cæ³¢æ®µ*/
+    HI_UNF_TUNER_FE_LNB_BAND_KU,            /**<Ku */                   /**<CNcomment:Kuæ³¢æ®µ*/
+    HI_UNF_TUNER_FE_LNB_BAND_BUTT           /**<Invalid value*/         /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_FE_LNB_BAND_E;
 
 /** LNB power control*/
-/** CNcomment:¸ßÆµÍ·¹©µç¿ØÖÆ*/
+/** CNcomment:é«˜é¢‘å¤´ä¾›ç”µæ§åˆ¶*/
 typedef enum hiUNF_TUNER_FE_LNB_POWER_E
 {
-    HI_UNF_TUNER_FE_LNB_POWER_OFF,          /**<LNB power off*/                                                     /**<CNcomment:¹Ø¶Ï*/
-    HI_UNF_TUNER_FE_LNB_POWER_ON,           /**<LNB power auto, 13V/18V, default*/                                  /**<CNcomment:Ä¬ÈÏµÄ13/18V¹©µç*/
-    HI_UNF_TUNER_FE_LNB_POWER_ENHANCED,     /**<LNB power auto, 14V/19V, some LNB control device can support.*/     /**<CNcomment:¼ÓÇ¿¹©µç*/
-    HI_UNF_TUNER_FE_LNB_POWER_BUTT          /**<Invalid value*/                                                     /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_FE_LNB_POWER_OFF,          /**<LNB power off*/                                                     /**<CNcomment:å…³æ–­*/
+    HI_UNF_TUNER_FE_LNB_POWER_ON,           /**<LNB power auto, 13V/18V, default*/                                  /**<CNcomment:é»˜è®¤çš„13/18Vä¾›ç”µ*/
+    HI_UNF_TUNER_FE_LNB_POWER_ENHANCED,     /**<LNB power auto, 14V/19V, some LNB control device can support.*/     /**<CNcomment:åŠ å¼ºä¾›ç”µ*/
+    HI_UNF_TUNER_FE_LNB_POWER_BUTT          /**<Invalid value*/                                                     /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_FE_LNB_POWER_E;
 
 /** LNB 22K tone status, for Ku band LNB*/
-/** CNcomment:22kĞÅºÅ×´Ì¬£¬ÓÃÓÚKuË«±¾Õñ*/
+/** CNcomment:22kä¿¡å·çŠ¶æ€ï¼Œç”¨äºKuåŒæœ¬æŒ¯*/
 typedef enum hiUNF_TUNER_FE_LNB_22K_E
 {
-    HI_UNF_TUNER_FE_LNB_22K_OFF,            /**<22k off*/                    /**<CNcomment:22kĞÅºÅ¹Ø£¬Ñ¡ÔñµÍ±¾Õñ*/
-    HI_UNF_TUNER_FE_LNB_22K_ON,             /**<22k on*/                     /**<CNcomment:22kĞÅºÅ¿ª£¬Ñ¡Ôñ¸ß±¾Õñ*/
-    HI_UNF_TUNER_FE_LNB_22K_BUTT            /**<Invalid value*/              /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_FE_LNB_22K_OFF,            /**<22k off*/                    /**<CNcomment:22kä¿¡å·å…³ï¼Œé€‰æ‹©ä½æœ¬æŒ¯*/
+    HI_UNF_TUNER_FE_LNB_22K_ON,             /**<22k on*/                     /**<CNcomment:22kä¿¡å·å¼€ï¼Œé€‰æ‹©é«˜æœ¬æŒ¯*/
+    HI_UNF_TUNER_FE_LNB_22K_BUTT            /**<Invalid value*/              /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_FE_LNB_22K_E;
 
 /** 0/12V switch*/
-/** CNcomment:0/12V¿ª¹Ø*/
+/** CNcomment:0/12Vå¼€å…³*/
 typedef enum hiUNF_TUNER_SWITCH_0_12V_E
 {
-    HI_UNF_TUNER_SWITCH_0_12V_NONE,         /**< None, default*/            /**<CNcomment:²»½Ó¿ª¹Ø×´Ì¬*/
-    HI_UNF_TUNER_SWITCH_0_12V_0,            /**< 0V*/                       /**<CNcomment:0V×´Ì¬*/
-    HI_UNF_TUNER_SWITCH_0_12V_12,           /**< 12V*/                      /**<CNcomment:12V×´Ì¬*/
-    HI_UNF_TUNER_SWITCH_0_12V_BUTT          /**<Invalid value*/             /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_SWITCH_0_12V_NONE,         /**< None, default*/            /**<CNcomment:ä¸æ¥å¼€å…³çŠ¶æ€*/
+    HI_UNF_TUNER_SWITCH_0_12V_0,            /**< 0V*/                       /**<CNcomment:0VçŠ¶æ€*/
+    HI_UNF_TUNER_SWITCH_0_12V_12,           /**< 12V*/                      /**<CNcomment:12VçŠ¶æ€*/
+    HI_UNF_TUNER_SWITCH_0_12V_BUTT          /**<Invalid value*/             /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_SWITCH_0_12V_E;
 
 /** 22KHz switch*/
-/** CNcomment:22K¿ª¹Ø*/
+/** CNcomment:22Kå¼€å…³*/
 typedef enum hiUNF_TUNER_SWITCH_22K_E
 {
-    HI_UNF_TUNER_SWITCH_22K_NONE,           /**< None, default*/            /**<CNcomment:²»½Ó¿ª¹Ø×´Ì¬*/
-    HI_UNF_TUNER_SWITCH_22K_0,              /**< 0*/                        /**<CNcomment:0kHz¶Ë¿Ú*/
-    HI_UNF_TUNER_SWITCH_22K_22,             /**< 22KHz*/                    /**<CNcomment:22kHz¶Ë¿Ú*/
-    HI_UNF_TUNER_SWITCH_22K_BUTT            /**<Invalid value*/             /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_SWITCH_22K_NONE,           /**< None, default*/            /**<CNcomment:ä¸æ¥å¼€å…³çŠ¶æ€*/
+    HI_UNF_TUNER_SWITCH_22K_0,              /**< 0*/                        /**<CNcomment:0kHzç«¯å£*/
+    HI_UNF_TUNER_SWITCH_22K_22,             /**< 22KHz*/                    /**<CNcomment:22kHzç«¯å£*/
+    HI_UNF_TUNER_SWITCH_22K_BUTT            /**<Invalid value*/             /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_SWITCH_22K_E;
 
 /** Tone burst switch*/
-/** CNcomment:Tone burst¿ª¹Ø*/
+/** CNcomment:Tone burstå¼€å…³*/
 typedef enum hiUNF_TUNER_SWITCH_TONEBURST_E
 {
-    HI_UNF_TUNER_SWITCH_TONEBURST_NONE,     /**< Don't send tone burst, default*/ /**<CNcomment:²»½Ó¿ª¹Ø×´Ì¬*/
+    HI_UNF_TUNER_SWITCH_TONEBURST_NONE,     /**< Don't send tone burst, default*/ /**<CNcomment:ä¸æ¥å¼€å…³çŠ¶æ€*/
     HI_UNF_TUNER_SWITCH_TONEBURST_0,        /**< Tone burst 0*/                   /**<CNcomment:0 port*/
     HI_UNF_TUNER_SWITCH_TONEBURST_1,        /**< Tone burst 1*/                   /**<CNcomment:1 port*/
-    HI_UNF_TUNER_SWITCH_TONEBURST_BUTT      /**<Invalid value*/                   /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_SWITCH_TONEBURST_BUTT      /**<Invalid value*/                   /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_SWITCH_TONEBURST_E;
 
 /** Structure of the satellite transmission signal.*/
-/** CNcomment:¶¨ÒåSatellite´«ÊäĞÅºÅ*/
+/** CNcomment:å®šä¹‰Satelliteä¼ è¾“ä¿¡å·*/
 typedef struct  hiUNF_SAT_CONNECT_PARA_S
 {
-    HI_U32                         u32Freq;         /**<Downlink frequency, in kHz*/ /**<CNcomment:ÏÂĞĞÆµÂÊ£¬µ¥Î»£ºkHz*/
-    HI_U32                         u32SymbolRate;   /**<Symbol rate, in Symb/s*/     /**<CNcomment:·ûºÅÂÊ£¬µ¥Î»£ºSymb/s */
-    HI_UNF_TUNER_FE_POLARIZATION_E enPolar;         /**<Polarization type*/          /**<CNcomment:¼«»¯·½Ê½*/
+    HI_U32                         u32Freq;         /**<Downlink frequency, in kHz*/ /**<CNcomment:ä¸‹è¡Œé¢‘ç‡ï¼Œå•ä½ï¼škHz*/
+    HI_U32                         u32SymbolRate;   /**<Symbol rate, in Symb/s*/     /**<CNcomment:ç¬¦å·ç‡ï¼Œå•ä½ï¼šSymb/s */
+    HI_UNF_TUNER_FE_POLARIZATION_E enPolar;         /**<Polarization type*/          /**<CNcomment:æåŒ–æ–¹å¼*/
 } HI_UNF_SAT_CONNECT_PARA_S;
 
 /** Structure of the satellite transmission signal's detailed information.*/
-/** CNcomment:ÎÀĞÇĞÅºÅÏêÏ¸ĞÅÏ¢*/
+/** CNcomment:å«æ˜Ÿä¿¡å·è¯¦ç»†ä¿¡æ¯*/
 typedef struct  hiUNF_TUNER_SAT_SIGNALINFO_S
 {
-    HI_U32                         u32Freq;         /**<Downlink frequency, in kHz*/              /**<CNcomment:ÏÂĞĞÆµÂÊ£¬µ¥Î»£ºkHz*/
-    HI_U32                         u32SymbolRate;   /**<Symbol rate, in Symb/s*/                  /**<CNcomment:·ûºÅÂÊ£¬µ¥Î»Symb/s*/
-    HI_UNF_MODULATION_TYPE_E       enModType;       /**<Modulation type*/                         /**<CNcomment:µ÷ÖÆ·½Ê½*/
-    HI_UNF_TUNER_FE_POLARIZATION_E enPolar;         /**<Polarization type*/                       /**<CNcomment:¼«»¯·½Ê½*/
-    HI_UNF_TUNER_FE_FECTYPE_E      enSATType;       /**<Saterllite standard, DVB-S/S2/DIRECTV*/   /**<CNcomment:ÎÀĞÇ±ê×¼£¬ Ö§³ÖDVB-S/S2/DIRECTV*/
-    HI_UNF_TUNER_FE_FECRATE_E      enFECRate;       /**<FEC rate*/                                /**<CNcomment:Ç°Ïò¾À´íÂëÂÊ*/
+    HI_U32                         u32Freq;         /**<Downlink frequency, in kHz*/              /**<CNcomment:ä¸‹è¡Œé¢‘ç‡ï¼Œå•ä½ï¼škHz*/
+    HI_U32                         u32SymbolRate;   /**<Symbol rate, in Symb/s*/                  /**<CNcomment:ç¬¦å·ç‡ï¼Œå•ä½Symb/s*/
+    HI_UNF_MODULATION_TYPE_E       enModType;       /**<Modulation type*/                         /**<CNcomment:è°ƒåˆ¶æ–¹å¼*/
+    HI_UNF_TUNER_FE_POLARIZATION_E enPolar;         /**<Polarization type*/                       /**<CNcomment:æåŒ–æ–¹å¼*/
+    HI_UNF_TUNER_FE_FECTYPE_E      enSATType;       /**<Saterllite standard, DVB-S/S2/DIRECTV*/   /**<CNcomment:å«æ˜Ÿæ ‡å‡†ï¼Œ æ”¯æŒDVB-S/S2/DIRECTV*/
+    HI_UNF_TUNER_FE_FECRATE_E      enFECRate;       /**<FEC rate*/                                /**<CNcomment:å‰å‘çº é”™ç ç‡*/
 } HI_UNF_TUNER_SAT_SIGNALINFO_S;
 
 /** PLP type of DVB-T2.*/
-/** CNcomment:T2ÏÂÎïÀí²ã¹ÜµÀÀàĞÍ*/
+/** CNcomment:T2ä¸‹ç‰©ç†å±‚ç®¡é“ç±»å‹*/
 typedef enum hiUNF_TUNER_T2_PLP_TYPE_E
 {   
-    HI_UNF_TUNER_T2_PLP_TYPE_COM=0,         /**<common type*/              /**<CNcomment:ÆÕÍ¨*/
-    HI_UNF_TUNER_T2_PLP_TYPE_DAT1,          /**<data1 type*/               /**<CNcomment:Êı¾İ1*/
-    HI_UNF_TUNER_T2_PLP_TYPE_DAT2,          /**<data2 type*/               /**<CNcomment:Êı¾İ2*/
-    HI_UNF_TUNER_T2_PLP_TYPE_BUTT           /**<Invalid value*/            /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_T2_PLP_TYPE_COM=0,         /**<common type*/              /**<CNcomment:æ™®é€š*/
+    HI_UNF_TUNER_T2_PLP_TYPE_DAT1,          /**<data1 type*/               /**<CNcomment:æ•°æ®1*/
+    HI_UNF_TUNER_T2_PLP_TYPE_DAT2,          /**<data2 type*/               /**<CNcomment:æ•°æ®2*/
+    HI_UNF_TUNER_T2_PLP_TYPE_BUTT           /**<Invalid value*/            /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_T2_PLP_TYPE_E;
 
 /** Structure of the terrestrial transmission signal's detailed information.*/
-/** CNcomment:µØÃæĞÅºÅÏêÏ¸ĞÅÏ¢*/
+/** CNcomment:åœ°é¢ä¿¡å·è¯¦ç»†ä¿¡æ¯*/
 typedef struct  hiUNF_TUNER_TER_SIGNALINFO_S
 {
-    HI_U32                         u32Freq;         /**<Frequency, in kHz*/          /**<CNcomment:ÆµÂÊ£¬µ¥Î»£ºkHz*/
-    HI_U32                         u32BandWidth;    /**<Band width, in KHz*/         /**<CNcomment:´ø¿í£¬µ¥Î»KHz */
-    HI_UNF_MODULATION_TYPE_E       enModType;       /**<Modulation type*/            /**<CNcomment:µ÷ÖÆ·½Ê½*/
-    HI_UNF_TUNER_FE_FECRATE_E      enFECRate;       /**<FEC rate*/                   /**<CNcomment:Ç°Ïò¾À´íÂëÂÊ*/
-    HI_UNF_TUNER_FE_GUARD_INTV_E enGuardIntv;       /**<GI mode*/                    /**<CNcomment:±£»¤¼ä¸ôÄ£Ê½*/
-    HI_UNF_TUNER_FE_FFT_E enFFTMode;                /**<FFT mode*/                   /**<CNcomment:FFTÄ£Ê½*/
+    HI_U32                         u32Freq;         /**<Frequency, in kHz*/          /**<CNcomment:é¢‘ç‡ï¼Œå•ä½ï¼škHz*/
+    HI_U32                         u32BandWidth;    /**<Band width, in KHz*/         /**<CNcomment:å¸¦å®½ï¼Œå•ä½KHz */
+    HI_UNF_MODULATION_TYPE_E       enModType;       /**<Modulation type*/            /**<CNcomment:è°ƒåˆ¶æ–¹å¼*/
+    HI_UNF_TUNER_FE_FECRATE_E      enFECRate;       /**<FEC rate*/                   /**<CNcomment:å‰å‘çº é”™ç ç‡*/
+    HI_UNF_TUNER_FE_GUARD_INTV_E enGuardIntv;       /**<GI mode*/                    /**<CNcomment:ä¿æŠ¤é—´éš”æ¨¡å¼*/
+    HI_UNF_TUNER_FE_FFT_E enFFTMode;                /**<FFT mode*/                   /**<CNcomment:FFTæ¨¡å¼*/
     HI_UNF_TUNER_FE_HIERARCHY_E enHierMod;          /**<Hierarchical Modulation and alpha, only used in DVB-T*/
-                                                                                     /**<CNcomment:hierachicalÄ£Ê½ºÍalphaÖµ*/
+                                                                                     /**<CNcomment:hierachicalæ¨¡å¼å’Œalphaå€¼*/
     HI_UNF_TUNER_TS_PRIORITY_E enTsPriority;        /**<The TS priority, only used in DVB-T*/
-                                                                                     /**<CNcomment:ts priority, ½öÓÃÓÚDVB-TÄ£Ê½ÏÂ*/
+                                                                                     /**<CNcomment:ts priority, ä»…ç”¨äºDVB-Tæ¨¡å¼ä¸‹*/
 } HI_UNF_TUNER_TER_SIGNALINFO_S;
 
 /** signal information.*/
-/** CNcomment:TUNERĞÅºÅÊôĞÔ*/
+/** CNcomment:TUNERä¿¡å·å±æ€§*/
 typedef struct hiUNF_TUNER_SIGNALINFO_S
 {
-    HI_UNF_TUNER_SIG_TYPE_E enSigType;              /**<Signal transmission type*/    /**<CNcomment:ĞÅºÅÀàĞÍ*/
+    HI_UNF_TUNER_SIG_TYPE_E enSigType;              /**<Signal transmission type*/    /**<CNcomment:ä¿¡å·ç±»å‹*/
 
     union
     {
-        HI_UNF_TUNER_SAT_SIGNALINFO_S stSat;        /**<Signal info of satellite*/    /**<CNcomment:ÎÀĞÇĞÅºÅĞÅÏ¢*/
-        HI_UNF_TUNER_TER_SIGNALINFO_S stTer;        /**<Signal info of terrestrial*/  /**<CNcomment:µØÃæĞÅºÅĞÅÏ¢*/
+        HI_UNF_TUNER_SAT_SIGNALINFO_S stSat;        /**<Signal info of satellite*/    /**<CNcomment:å«æ˜Ÿä¿¡å·ä¿¡æ¯*/
+        HI_UNF_TUNER_TER_SIGNALINFO_S stTer;        /**<Signal info of terrestrial*/  /**<CNcomment:åœ°é¢ä¿¡å·ä¿¡æ¯*/
     } unSignalInfo;
 } HI_UNF_TUNER_SIGNALINFO_S;
 
 /** unicable multi-switch port.*/
-/** CNcomment:unicable¿ª¹Ø¶Ë¿ÚÃ¶¾Ù*/
+/** CNcomment:unicableå¼€å…³ç«¯å£æšä¸¾*/
 typedef enum hiUNF_TUNER_SATPOSITION_E
 {
-    HI_UNF_TUNER_SATPOSN_A,    /**<unicable switch port A*/    /**<CNcomment:¶Ë¿ÚA*/
-    HI_UNF_TUNER_SATPOSN_B,    /**<unicable switch port B*/    /**<CNcomment:¶Ë¿ÚB*/
-    HI_UNF_TUNER_SATPOSN_BUT   /**<Invalid value*/             /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_SATPOSN_A,    /**<unicable switch port A*/    /**<CNcomment:ç«¯å£A*/
+    HI_UNF_TUNER_SATPOSN_B,    /**<unicable switch port B*/    /**<CNcomment:ç«¯å£B*/
+    HI_UNF_TUNER_SATPOSN_BUT   /**<Invalid value*/             /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_SATPOSITION_E;
 
 /** LNB configurating parameters*/
-/** CNcomment:LNBÅäÖÃ²ÎÊı*/
+/** CNcomment:LNBé…ç½®å‚æ•°*/
 typedef struct hiUNF_TUNER_FE_LNB_CONFIG_S
 {
-    HI_UNF_TUNER_FE_LNB_TYPE_E  enLNBType;      /**<LNB type*/                              /**<CNcomment:LNBÀàĞÍ*/
-    HI_U32                      u32LowLO;       /**< Low Local Oscillator Frequency, MHz */ /**<CNcomment:LNBµÍ±¾ÕñÆµÂÊ£¬µ¥Î»MHz*/
-    HI_U32                      u32HighLO;      /**< High Local Oscillator Frequency, MHz*/ /**<CNcomment:LNB¸ß±¾ÕñÆµÂÊ£¬µ¥Î»MHz*/
-    HI_UNF_TUNER_FE_LNB_BAND_E  enLNBBand;      /**< LNB band, C or Ku */                   /**<CNcomment:LNB²¨¶Î£ºC»òKu*/
-    HI_U8 u8UNIC_SCRNO;                         /**< SCR number, 0-7 */                     /**<CNcomment:SCRĞòºÅ£¬È¡ÖµÎª0-7*/
-    HI_U32 u32UNICIFFreqMHz;                    /**< SCR IF frequency, unit MHz */          /**<CNcomment:SCRÖĞÆµÆµÂÊ£¬ µ¥Î»MHz*/
-    HI_UNF_TUNER_SATPOSITION_E enSatPosn;       /**< unicable multi-switch port */          /**<CNcomment:unicable¿ª¹Ø¶Ë¿ÚºÅ*/
+    HI_UNF_TUNER_FE_LNB_TYPE_E  enLNBType;      /**<LNB type*/                              /**<CNcomment:LNBç±»å‹*/
+    HI_U32                      u32LowLO;       /**< Low Local Oscillator Frequency, MHz */ /**<CNcomment:LNBä½æœ¬æŒ¯é¢‘ç‡ï¼Œå•ä½MHz*/
+    HI_U32                      u32HighLO;      /**< High Local Oscillator Frequency, MHz*/ /**<CNcomment:LNBé«˜æœ¬æŒ¯é¢‘ç‡ï¼Œå•ä½MHz*/
+    HI_UNF_TUNER_FE_LNB_BAND_E  enLNBBand;      /**< LNB band, C or Ku */                   /**<CNcomment:LNBæ³¢æ®µï¼šCæˆ–Ku*/
+    HI_U8 u8UNIC_SCRNO;                         /**< SCR number, 0-7 */                     /**<CNcomment:SCRåºå·ï¼Œå–å€¼ä¸º0-7*/
+    HI_U32 u32UNICIFFreqMHz;                    /**< SCR IF frequency, unit MHz */          /**<CNcomment:SCRä¸­é¢‘é¢‘ç‡ï¼Œ å•ä½MHz*/
+    HI_UNF_TUNER_SATPOSITION_E enSatPosn;       /**< unicable multi-switch port */          /**<CNcomment:unicableå¼€å…³ç«¯å£å·*/
 } HI_UNF_TUNER_FE_LNB_CONFIG_S;
 
 /** tuner attribution.*/
-/** CNcomment:TUNERÊôĞÔ*/
+/** CNcomment:TUNERå±æ€§*/
 typedef struct  hiTUNER_ATTR_S
 {
-    HI_UNF_TUNER_SIG_TYPE_E	enSigType ;         /**<Signal type*/                             /**<CNcomment:ĞÅºÅÀàĞÍ*/
-    HI_UNF_TUNER_DEV_TYPE_E	enTunerDevType;     /**<Tuner type*/                                  /**<CNcomment:TUNERÀàĞÍ*/
+    HI_UNF_TUNER_SIG_TYPE_E	enSigType ;         /**<Signal type*/                             /**<CNcomment:ä¿¡å·ç±»å‹*/
+    HI_UNF_TUNER_DEV_TYPE_E	enTunerDevType;     /**<Tuner type*/                                  /**<CNcomment:TUNERç±»å‹*/
     HI_U32	u32TunerAddr;                                      /*The i2c address of tuner, if demod type is 3130I,3130E or J83B, you cannot set it*/
-    HI_UNF_DEMOD_DEV_TYPE_E	enDemodDevType;     /**<QAM type*/                                    /**<CNcomment:QAMÀàĞÍ*/
+    HI_UNF_DEMOD_DEV_TYPE_E	enDemodDevType;     /**<QAM type*/                                    /**<CNcomment:QAMç±»å‹*/
     HI_U32	u32DemodAddr;                                   /*The i2c address of demod, if demod type is 3130I,3130E or J83B, you cannot set it*/
-    HI_UNF_TUNER_OUPUT_MODE_E	enOutputMode ;      /**<Output mode of transport streams (TSs)*/  /**<CNcomment:TSÁ÷Êä³öÄ£Ê½*/
-    HI_U8	enI2cChannel;       /**<I2C channel used by the tuner*/                               /**<CNcomment:TUNERÊ¹ÓÃµÄI2CÍ¨µÀ*/
-    HI_U32	u32ResetGpioNo;  /**<Demod reset GPIO NO.*/                    /**<CNcomment:¸´Î»Ê¹ÓÃµÄgpio¹Ü½ÅºÅ*/
+    HI_UNF_TUNER_OUPUT_MODE_E	enOutputMode ;      /**<Output mode of transport streams (TSs)*/  /**<CNcomment:TSæµè¾“å‡ºæ¨¡å¼*/
+    HI_U8	enI2cChannel;       /**<I2C channel used by the tuner*/                               /**<CNcomment:TUNERä½¿ç”¨çš„I2Cé€šé“*/
+    HI_U32	u32ResetGpioNo;  /**<Demod reset GPIO NO.*/                    /**<CNcomment:å¤ä½ä½¿ç”¨çš„gpioç®¡è„šå·*/
 } HI_UNF_TUNER_ATTR_S ;
 
 /** Frequency locking parameters of the tuner*/
-/** CNcomment:TUNERËøÆµ²ÎÊı*/
+/** CNcomment:TUNERé”é¢‘å‚æ•°*/
 typedef struct  hiUNF_TUNER_CONNECT_PARA_S
 {
-    HI_UNF_TUNER_SIG_TYPE_E enSigType ;        /**<Signal type*/                      /**<CNcomment:ĞÅºÅÀàĞÍ*/
+    HI_UNF_TUNER_SIG_TYPE_E enSigType ;        /**<Signal type*/                      /**<CNcomment:ä¿¡å·ç±»å‹*/
 
     union
     {
-        HI_UNF_CAB_CONNECT_PARA_S   stCab ;   /**<Cable transmission signal*/         /**<CNcomment:CABLE´«ÊäĞÅºÅ*/
-        HI_UNF_TER_CONNECT_PARA_S stTer ;       /**<Terrestrial transmission signal*/ /**<CNcomment:µØÃæ´«ÊäĞÅºÅ*/
-        HI_UNF_SAT_CONNECT_PARA_S stSat;        /**<Satellite transmission signal*/   /**<CNcomment:ÎÀĞÇ´«ÊäĞÅºÅ*/
+        HI_UNF_CAB_CONNECT_PARA_S   stCab ;   /**<Cable transmission signal*/         /**<CNcomment:CABLEä¼ è¾“ä¿¡å·*/
+        HI_UNF_TER_CONNECT_PARA_S stTer ;       /**<Terrestrial transmission signal*/ /**<CNcomment:åœ°é¢ä¼ è¾“ä¿¡å·*/
+        HI_UNF_SAT_CONNECT_PARA_S stSat;        /**<Satellite transmission signal*/   /**<CNcomment:å«æ˜Ÿä¼ è¾“ä¿¡å·*/
     } unConnectPara;
 } HI_UNF_TUNER_CONNECT_PARA_S ;
 
 /** Frequency locking status and parameters of the tuner*/
-/** CNcomment:TUNERËøÆµ×´Ì¬ºÍËøÆµ²ÎÊı*/
+/** CNcomment:TUNERé”é¢‘çŠ¶æ€å’Œé”é¢‘å‚æ•°*/
 typedef struct  hiUNF_TUNER_STATUS_S
 {
-    HI_UNF_TUNER_LOCK_STATUS_E  enLockStatus ;  /**<Frequency locking status*/               /**<CNcomment:ËøÆµ×´Ì¬*/
-    HI_UNF_TUNER_CONNECT_PARA_S stConnectPara;  /**<Actual frequency locking parameters*/    /**<CNcomment:Êµ¼ÊËøÆµ²ÎÊı*/
+    HI_UNF_TUNER_LOCK_STATUS_E  enLockStatus ;  /**<Frequency locking status*/               /**<CNcomment:é”é¢‘çŠ¶æ€*/
+    HI_UNF_TUNER_CONNECT_PARA_S stConnectPara;  /**<Actual frequency locking parameters*/    /**<CNcomment:å®é™…é”é¢‘å‚æ•°*/
 } HI_UNF_TUNER_STATUS_S ;
 
 /** Tuner blind scan type*/
-/** CNcomment:TUNERÃ¤É¨·½Ê½*/
+/** CNcomment:TUNERç›²æ‰«æ–¹å¼*/
 typedef enum hiUNF_TUNER_BLINDSCAN_MODE_E
 {
-    HI_UNF_TUNER_BLINDSCAN_MODE_AUTO = 0,       /**<Blind scan automatically*/  /**<CNcomment:×Ô¶¯É¨Ãè*/
-    HI_UNF_TUNER_BLINDSCAN_MODE_MANUAL,         /**<Blind scan manually*/       /**<CNcomment:ÊÖ¶¯É¨Ãè*/
-    HI_UNF_TUNER_BLINDSCAN_MODE_BUTT            /**<Invalid value*/             /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_BLINDSCAN_MODE_AUTO = 0,       /**<Blind scan automatically*/  /**<CNcomment:è‡ªåŠ¨æ‰«æ*/
+    HI_UNF_TUNER_BLINDSCAN_MODE_MANUAL,         /**<Blind scan manually*/       /**<CNcomment:æ‰‹åŠ¨æ‰«æ*/
+    HI_UNF_TUNER_BLINDSCAN_MODE_BUTT            /**<Invalid value*/             /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_BLINDSCAN_MODE_E;
 
 /** Definition of blind scan event type*/
-/** CNcomment:TUNERÃ¤É¨ÊÂ¼ş*/
+/** CNcomment:TUNERç›²æ‰«äº‹ä»¶*/
 typedef enum hiUNF_TUNER_BLINDSCAN_EVT_E
 {
-    HI_UNF_TUNER_BLINDSCAN_EVT_STATUS,          /**<New status*/        /**<CNcomment:×´Ì¬±ä»¯*/
-    HI_UNF_TUNER_BLINDSCAN_EVT_PROGRESS,        /**<New Porgress */     /**<CNcomment:½ø¶È±ä»¯*/
-    HI_UNF_TUNER_BLINDSCAN_EVT_NEWRESULT,       /**<Find new channel*/  /**<CNcomment:ĞÂÆµµã*/
-    HI_UNF_TUNER_BLINDSCAN_EVT_BUTT             /**<Invalid value*/     /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_BLINDSCAN_EVT_STATUS,          /**<New status*/        /**<CNcomment:çŠ¶æ€å˜åŒ–*/
+    HI_UNF_TUNER_BLINDSCAN_EVT_PROGRESS,        /**<New Porgress */     /**<CNcomment:è¿›åº¦å˜åŒ–*/
+    HI_UNF_TUNER_BLINDSCAN_EVT_NEWRESULT,       /**<Find new channel*/  /**<CNcomment:æ–°é¢‘ç‚¹*/
+    HI_UNF_TUNER_BLINDSCAN_EVT_BUTT             /**<Invalid value*/     /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_BLINDSCAN_EVT_E;
 
 /** Definition of tuner blind scan status*/
-/** CNcomment:TUNERÃ¤É¨×´Ì¬*/
+/** CNcomment:TUNERç›²æ‰«çŠ¶æ€*/
 typedef enum hiUNF_TUNER_BLINDSCAN_STATUS_E
 {
-    HI_UNF_TUNER_BLINDSCAN_STATUS_IDLE,         /**<Idel*/              /**<CNcomment:¿ÕÏĞ*/
-    HI_UNF_TUNER_BLINDSCAN_STATUS_SCANNING,     /**<Scanning*/          /**<CNcomment:É¨ÃèÖĞ*/
-    HI_UNF_TUNER_BLINDSCAN_STATUS_FINISH,       /**<Finish*/            /**<CNcomment:³É¹¦Íê³É*/
-    HI_UNF_TUNER_BLINDSCAN_STATUS_QUIT,         /**<User quit*/         /**<CNcomment:ÓÃ»§ÍË³ö*/
-    HI_UNF_TUNER_BLINDSCAN_STATUS_FAIL,         /**<Scan fail*/         /**<CNcomment:É¨ÃèÊ§°Ü*/
-    HI_UNF_TUNER_BLINDSCAN_STATUS_BUTT          /**<Invalid value*/     /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_BLINDSCAN_STATUS_IDLE,         /**<Idel*/              /**<CNcomment:ç©ºé—²*/
+    HI_UNF_TUNER_BLINDSCAN_STATUS_SCANNING,     /**<Scanning*/          /**<CNcomment:æ‰«æä¸­*/
+    HI_UNF_TUNER_BLINDSCAN_STATUS_FINISH,       /**<Finish*/            /**<CNcomment:æˆåŠŸå®Œæˆ*/
+    HI_UNF_TUNER_BLINDSCAN_STATUS_QUIT,         /**<User quit*/         /**<CNcomment:ç”¨æˆ·é€€å‡º*/
+    HI_UNF_TUNER_BLINDSCAN_STATUS_FAIL,         /**<Scan fail*/         /**<CNcomment:æ‰«æå¤±è´¥*/
+    HI_UNF_TUNER_BLINDSCAN_STATUS_BUTT          /**<Invalid value*/     /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_BLINDSCAN_STATUS_E;
 
 /** Structure of satellite TP*/
-/** CNcomment:TUNERÉ¨³öTPĞÅÏ¢*/
+/** CNcomment:TUNERæ‰«å‡ºTPä¿¡æ¯*/
 typedef struct  hiUNF_TUNER_SAT_TPINFO_S
 {
-    HI_U32                         u32Freq;         /**<Downlink frequency, in kHz*/ /**<CNcomment:ÏÂĞĞÆµÂÊ£¬µ¥Î»£ºkHz*/
-    HI_U32                         u32SymbolRate;   /**<Symbol rate, in bit/s*/      /**<CNcomment:·ûºÅÂÊ£¬µ¥Î»bps */
-    HI_UNF_TUNER_FE_POLARIZATION_E enPolar;         /**<Polarization type*/          /**<CNcomment:¼«»¯·½Ê½*/
-    HI_U8 cbs_reliablity;                           /**<TP reliability*/             /**<CNcomment:TPµÄ¿É¿¿¶È*/
+    HI_U32                         u32Freq;         /**<Downlink frequency, in kHz*/ /**<CNcomment:ä¸‹è¡Œé¢‘ç‡ï¼Œå•ä½ï¼škHz*/
+    HI_U32                         u32SymbolRate;   /**<Symbol rate, in bit/s*/      /**<CNcomment:ç¬¦å·ç‡ï¼Œå•ä½bps */
+    HI_UNF_TUNER_FE_POLARIZATION_E enPolar;         /**<Polarization type*/          /**<CNcomment:æåŒ–æ–¹å¼*/
+    HI_U8 cbs_reliablity;                           /**<TP reliability*/             /**<CNcomment:TPçš„å¯é åº¦*/
 } HI_UNF_TUNER_SAT_TPINFO_S;
 
 /** Notify structure of tuner blind scan */
-/** CNcomment:TUNERÃ¤É¨Í¨ÖªĞÅÏ¢*/
+/** CNcomment:TUNERç›²æ‰«é€šçŸ¥ä¿¡æ¯*/
 typedef union hiUNF_TUNER_BLINDSCAN_NOTIFY_U
 {
-    HI_UNF_TUNER_BLINDSCAN_STATUS_E* penStatus;             /**<Scanning status*/            /**<CNcomment:Ã¤É¨×´Ì¬*/
-    HI_U16*                          pu16ProgressPercent;   /**<Scanning progress*/          /**<CNcomment:Ã¤É¨½ø¶È*/
-    HI_UNF_TUNER_SAT_TPINFO_S* pstResult;                   /**<Scanning result*/            /**<CNcomment:Ã¤É¨½á¹û*/
+    HI_UNF_TUNER_BLINDSCAN_STATUS_E* penStatus;             /**<Scanning status*/            /**<CNcomment:ç›²æ‰«çŠ¶æ€*/
+    HI_U16*                          pu16ProgressPercent;   /**<Scanning progress*/          /**<CNcomment:ç›²æ‰«è¿›åº¦*/
+    HI_UNF_TUNER_SAT_TPINFO_S* pstResult;                   /**<Scanning result*/            /**<CNcomment:ç›²æ‰«ç»“æœ*/
 } HI_UNF_TUNER_BLINDSCAN_NOTIFY_U;
 
 /** Parameter of the satellite tuner blind scan */
-/** CNcomment:ÎÀĞÇTUNERÃ¤É¨²ÎÊı*/
+/** CNcomment:å«æ˜ŸTUNERç›²æ‰«å‚æ•°*/
 typedef struct hiUNF_TUNER_SAT_BLINDSCAN_PARA_S
 {
     /**<LNB Polarization type, only take effect in manual blind scan mode*/
-    /**<CNcomment:LNB¼«»¯·½Ê½£¬×Ô¶¯É¨ÃèÄ£Ê½ÉèÖÃÎŞĞ§*/
+    /**<CNcomment:LNBæåŒ–æ–¹å¼ï¼Œè‡ªåŠ¨æ‰«ææ¨¡å¼è®¾ç½®æ— æ•ˆ*/
     HI_UNF_TUNER_FE_POLARIZATION_E enPolar;
     
     /**<LNB 22K signal status, for Ku band LNB which has dual LO, 22K ON will select high LO and 22K off select low LO,
         only take effect in manual blind scan mode*/
-    /**<CNcomment:LNB 22K×´Ì¬£¬¶ÔÓÚKu²¨¶ÎË«±¾ÕñLNB£¬ONÑ¡Ôñ¸ß±¾Õñ£¬OFFÑ¡ÔñµÍ±¾Õñ£¬×Ô¶¯É¨ÃèÄ£Ê½ÉèÖÃÎŞĞ§*/
+    /**<CNcomment:LNB 22KçŠ¶æ€ï¼Œå¯¹äºKuæ³¢æ®µåŒæœ¬æŒ¯LNBï¼ŒONé€‰æ‹©é«˜æœ¬æŒ¯ï¼ŒOFFé€‰æ‹©ä½æœ¬æŒ¯ï¼Œè‡ªåŠ¨æ‰«ææ¨¡å¼è®¾ç½®æ— æ•ˆ*/
     HI_UNF_TUNER_FE_LNB_22K_E      enLNB22K;
 
     /**<Blind scan start IF, in kHz, only take effect in manual blind scan mode */
-    /**<CNcomment:Ã¤É¨ÆğÊ¼ÆµÂÊ(ÖĞÆµ)£¬µ¥Î»£ºkHz£¬×Ô¶¯É¨ÃèÄ£Ê½ÉèÖÃÎŞĞ§*/
+    /**<CNcomment:ç›²æ‰«èµ·å§‹é¢‘ç‡(ä¸­é¢‘)ï¼Œå•ä½ï¼škHzï¼Œè‡ªåŠ¨æ‰«ææ¨¡å¼è®¾ç½®æ— æ•ˆ*/
     HI_U32                         u32StartFreq;   
 
     /**<Blind scan stop IF, in kHz, only take effect in manual blind scan mode */
-    /**<CNcomment:Ã¤É¨½áÊøÆµÂÊ(ÖĞÆµ)£¬µ¥Î»£ºkHz£¬×Ô¶¯É¨ÃèÄ£Ê½ÉèÖÃÎŞĞ§*/
+    /**<CNcomment:ç›²æ‰«ç»“æŸé¢‘ç‡(ä¸­é¢‘)ï¼Œå•ä½ï¼škHzï¼Œè‡ªåŠ¨æ‰«ææ¨¡å¼è®¾ç½®æ— æ•ˆ*/
     HI_U32                         u32StopFreq; 
 
     /**<The execution of the blind scan may change the 13/18V or 22K status. 
         If you use any DiSEqC device which need send command when 13/18V or 22K status change,
         you should registe a callback here. Otherwise, you can set NULL here.*/
-    /**<CNcomment:Ã¤É¨¹ı³Ì¿ÉÄÜ»áÇĞ»»¼«»¯·½Ê½ºÍ22K£¬Èç¹ûÄãÓÃÁËÄ³Ğ©DiSEqCÉè±¸ĞèÒªÉèÖÃ13/18VºÍ22KµÄ£¬
-        Çë×¢²áÕâ¸ö»Øµ÷£¬Èç¹ûÃ»ÓĞÓÃ£¬Çë¿É´«NULL */
+    /**<CNcomment:ç›²æ‰«è¿‡ç¨‹å¯èƒ½ä¼šåˆ‡æ¢æåŒ–æ–¹å¼å’Œ22Kï¼Œå¦‚æœä½ ç”¨äº†æŸäº›DiSEqCè®¾å¤‡éœ€è¦è®¾ç½®13/18Vå’Œ22Kçš„ï¼Œ
+        è¯·æ³¨å†Œè¿™ä¸ªå›è°ƒï¼Œå¦‚æœæ²¡æœ‰ç”¨ï¼Œè¯·å¯ä¼ NULL */
     HI_VOID (*pfnDISEQCSet)(HI_U32 u32TunerId, HI_UNF_TUNER_FE_POLARIZATION_E enPolar,
                             HI_UNF_TUNER_FE_LNB_22K_E enLNB22K);
 
     /**<Callback when scan status change, scan progress change or find new channel.*/
-    /**<CNcomment:É¨Ãè×´Ì¬»ò½ø¶È°Ù·Ö±È·¢Éú±ä»¯Ê±¡¢·¢ÏÖĞÂµÄÆµµãÊ±»Øµ÷*/
+    /**<CNcomment:æ‰«æçŠ¶æ€æˆ–è¿›åº¦ç™¾åˆ†æ¯”å‘ç”Ÿå˜åŒ–æ—¶ã€å‘ç°æ–°çš„é¢‘ç‚¹æ—¶å›è°ƒ*/
     HI_VOID (*pfnEVTNotify)(HI_U32 u32TunerId, HI_UNF_TUNER_BLINDSCAN_EVT_E enEVT, HI_UNF_TUNER_BLINDSCAN_NOTIFY_U * punNotify);
 } HI_UNF_TUNER_SAT_BLINDSCAN_PARA_S;
 
 /** Parameter of the tuner blind scan */
-/** CNcomment:TUNERÃ¤É¨²ÎÊı*/
+/** CNcomment:TUNERç›²æ‰«å‚æ•°*/
 typedef struct hiUNF_TUNER_BLINDSCAN_PARA_S
 {
-    HI_UNF_TUNER_BLINDSCAN_MODE_E enMode;            /**<Scanning mode*/                /**<CNcomment:Ã¤É¨Ä£Ê½*/
+    HI_UNF_TUNER_BLINDSCAN_MODE_E enMode;            /**<Scanning mode*/                /**<CNcomment:ç›²æ‰«æ¨¡å¼*/
     union
     {
-        HI_UNF_TUNER_SAT_BLINDSCAN_PARA_S stSat;    /**<Scanning parameter*/            /**<CNcomment:Ã¤É¨²ÎÊı*/
+        HI_UNF_TUNER_SAT_BLINDSCAN_PARA_S stSat;    /**<Scanning parameter*/            /**<CNcomment:ç›²æ‰«å‚æ•°*/
     } unScanPara;
 } HI_UNF_TUNER_BLINDSCAN_PARA_S;
 
 
 /** DiSEqC Level*/
-/** CNcomment:DiSEqCÉè±¸°æ±¾*/
+/** CNcomment:DiSEqCè®¾å¤‡ç‰ˆæœ¬*/
 typedef enum hiUNF_TUNER_DISEQC_LEVEL_E
 {
-    HI_UNF_TUNER_DISEQC_LEVEL_1_X,      /**<1.x, one way*/                  /**<CNcomment:1.x£¬µ¥Ïò */
-    HI_UNF_TUNER_DISEQC_LEVEL_2_X,      /**<2.x, two way, support reply*/   /**<CNcomment:2.x£¬Ë«Ïò£¬Ö§³ÖReply*/
-    HI_UNF_TUNER_DISEQC_LEVEL_BUTT      /**<Invalid value*/                 /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_DISEQC_LEVEL_1_X,      /**<1.x, one way*/                  /**<CNcomment:1.xï¼Œå•å‘ */
+    HI_UNF_TUNER_DISEQC_LEVEL_2_X,      /**<2.x, two way, support reply*/   /**<CNcomment:2.xï¼ŒåŒå‘ï¼Œæ”¯æŒReply*/
+    HI_UNF_TUNER_DISEQC_LEVEL_BUTT      /**<Invalid value*/                 /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_DISEQC_LEVEL_E;
 
 /** Receive status of DiSEqC reply massage*/
-/** CNcomment:DiSEqCÏûÏ¢½ÓÊÕ×´Ì¬*/
+/** CNcomment:DiSEqCæ¶ˆæ¯æ¥æ”¶çŠ¶æ€*/
 typedef enum hiUNF_TUNER_DISEQC_RECV_STATUS_E
 {
-    HI_UNF_TUNER_DISEQC_RECV_OK,        /**<Receive successfully*/          /**<CNcomment:½ÓÊÕ³É¹¦*/
-    HI_UNF_TUNER_DISEQC_RECV_UNSUPPORT, /**<Device don't support reply*/    /**<CNcomment:Éè±¸²»Ö§³Ö»Ø´«*/    
-    HI_UNF_TUNER_DISEQC_RECV_TIMEOUT,   /**<Receive timeout*/               /**<CNcomment:½ÓÊÕ³¬Ê±*/
-    HI_UNF_TUNER_DISEQC_RECV_ERROR,     /**<Receive fail*/                  /**<CNcomment:½ÓÊÕ³ö´í*/
-    HI_UNF_TUNER_DISEQC_RECV_BUTT       /**<Invalid value*/                 /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_DISEQC_RECV_OK,        /**<Receive successfully*/          /**<CNcomment:æ¥æ”¶æˆåŠŸ*/
+    HI_UNF_TUNER_DISEQC_RECV_UNSUPPORT, /**<Device don't support reply*/    /**<CNcomment:è®¾å¤‡ä¸æ”¯æŒå›ä¼ */    
+    HI_UNF_TUNER_DISEQC_RECV_TIMEOUT,   /**<Receive timeout*/               /**<CNcomment:æ¥æ”¶è¶…æ—¶*/
+    HI_UNF_TUNER_DISEQC_RECV_ERROR,     /**<Receive fail*/                  /**<CNcomment:æ¥æ”¶å‡ºé”™*/
+    HI_UNF_TUNER_DISEQC_RECV_BUTT       /**<Invalid value*/                 /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_DISEQC_RECV_STATUS_E;
 
 /** Structure of the DiSEqC send massage */
-/** CNcomment:DiSEqC·¢ËÍÏûÏ¢½á¹¹*/
+/** CNcomment:DiSEqCå‘é€æ¶ˆæ¯ç»“æ„*/
 typedef struct hiUNF_TUNER_DISEQC_SENDMSG_S
 {
-    HI_UNF_TUNER_DISEQC_LEVEL_E     enLevel;        /**<Device level*/                         /**<CNcomment:Æ÷¼ş°æ±¾*/
-    HI_UNF_TUNER_SWITCH_TONEBURST_E enToneBurst;    /**<Tone Burst */                          /**<CNcomment:toneĞÅºÅ×´Ì¬*/
-    HI_U8                           au8Msg[HI_UNF_DISEQC_MSG_MAX_LENGTH]; /**<Message data*/   /**<CNcomment:ÏûÏ¢×Ö*/
-    HI_U8                           u8Length;       /**<Message length*/                       /**<CNcomment:ĞÅÏ¢³¤¶È*/
-    HI_U8                           u8RepeatTimes;  /**<Message repeat times*/                 /**<CNcomment:ÖØ´«´ÎÊı*/
+    HI_UNF_TUNER_DISEQC_LEVEL_E     enLevel;        /**<Device level*/                         /**<CNcomment:å™¨ä»¶ç‰ˆæœ¬*/
+    HI_UNF_TUNER_SWITCH_TONEBURST_E enToneBurst;    /**<Tone Burst */                          /**<CNcomment:toneä¿¡å·çŠ¶æ€*/
+    HI_U8                           au8Msg[HI_UNF_DISEQC_MSG_MAX_LENGTH]; /**<Message data*/   /**<CNcomment:æ¶ˆæ¯å­—*/
+    HI_U8                           u8Length;       /**<Message length*/                       /**<CNcomment:ä¿¡æ¯é•¿åº¦*/
+    HI_U8                           u8RepeatTimes;  /**<Message repeat times*/                 /**<CNcomment:é‡ä¼ æ¬¡æ•°*/
 } HI_UNF_TUNER_DISEQC_SENDMSG_S;
 
 /** Structure of the DiSEqC reply massage */
-/** CNcomment:DiSEqC½ÓÊÕÏûÏ¢½á¹¹*/
+/** CNcomment:DiSEqCæ¥æ”¶æ¶ˆæ¯ç»“æ„*/
 typedef struct hiUNF_TUNER_DISEQC_RECVMSG_S
 {
-    HI_UNF_TUNER_DISEQC_RECV_STATUS_E enStatus;     /**<Recieve status*/                                 /**<CNcomment:½ÓÊÕ×´Ì¬*/
-    HI_U8                             au8Msg[HI_UNF_DISEQC_MSG_MAX_LENGTH]; /**<Recieve message data*/   /**<CNcomment:½ÓÊÕÊı¾İ»º´æ*/
-    HI_U8                             u8Length;     /**<Recieve message length*/                         /**<CNcomment:½ÓÊÕÊı¾İ³¤¶È*/
+    HI_UNF_TUNER_DISEQC_RECV_STATUS_E enStatus;     /**<Recieve status*/                                 /**<CNcomment:æ¥æ”¶çŠ¶æ€*/
+    HI_U8                             au8Msg[HI_UNF_DISEQC_MSG_MAX_LENGTH]; /**<Recieve message data*/   /**<CNcomment:æ¥æ”¶æ•°æ®ç¼“å­˜*/
+    HI_U8                             u8Length;     /**<Recieve message length*/                         /**<CNcomment:æ¥æ”¶æ•°æ®é•¿åº¦*/
 } HI_UNF_TUNER_DISEQC_RECVMSG_S;
 
 /** DiSEqC Switch port*/
-/** CNcomment:DiSEqC¿ª¹Ø¶Ë¿ÚÃ¶¾Ù*/
+/** CNcomment:DiSEqCå¼€å…³ç«¯å£æšä¸¾*/
 typedef enum hiUNF_TUNER_DISEQC_SWITCH_PORT_E
 {
-    HI_UNF_TUNER_DISEQC_SWITCH_NONE = 0,         /**<none*/                                 /**<CNcomment:²»½Ó¿ª¹Ø*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_1,           /**<port1*/                                /**<CNcomment:¶Ë¿Ú1*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_2,           /**<port2*/                                /**<CNcomment:¶Ë¿Ú2*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_3,           /**<port3*/                                /**<CNcomment:¶Ë¿Ú3*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_4,           /**<port4*/                                /**<CNcomment:¶Ë¿Ú4*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_5,           /**<port5*/                                /**<CNcomment:¶Ë¿Ú5*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_6,           /**<port6*/                                /**<CNcomment:¶Ë¿Ú6*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_7,           /**<port7*/                                /**<CNcomment:¶Ë¿Ú7*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_8,           /**<port8*/                                /**<CNcomment:¶Ë¿Ú8*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_9,           /**<port9*/                                /**<CNcomment:¶Ë¿Ú9*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_10,          /**<port10*/                               /**<CNcomment:¶Ë¿Ú10*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_11,          /**<port11*/                               /**<CNcomment:¶Ë¿Ú11*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_12,          /**<port12*/                               /**<CNcomment:¶Ë¿Ú12*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_13,          /**<port13*/                               /**<CNcomment:¶Ë¿Ú13*/   
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_14,          /**<port14*/                               /**<CNcomment:¶Ë¿Ú14*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_15,          /**<port15*/                               /**<CNcomment:¶Ë¿Ú15*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_16,          /**<port16*/                               /**<CNcomment:¶Ë¿Ú16*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_BUTT         /**<Invalid value*/                        /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_DISEQC_SWITCH_NONE = 0,         /**<none*/                                 /**<CNcomment:ä¸æ¥å¼€å…³*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_1,           /**<port1*/                                /**<CNcomment:ç«¯å£1*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_2,           /**<port2*/                                /**<CNcomment:ç«¯å£2*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_3,           /**<port3*/                                /**<CNcomment:ç«¯å£3*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_4,           /**<port4*/                                /**<CNcomment:ç«¯å£4*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_5,           /**<port5*/                                /**<CNcomment:ç«¯å£5*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_6,           /**<port6*/                                /**<CNcomment:ç«¯å£6*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_7,           /**<port7*/                                /**<CNcomment:ç«¯å£7*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_8,           /**<port8*/                                /**<CNcomment:ç«¯å£8*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_9,           /**<port9*/                                /**<CNcomment:ç«¯å£9*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_10,          /**<port10*/                               /**<CNcomment:ç«¯å£10*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_11,          /**<port11*/                               /**<CNcomment:ç«¯å£11*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_12,          /**<port12*/                               /**<CNcomment:ç«¯å£12*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_13,          /**<port13*/                               /**<CNcomment:ç«¯å£13*/   
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_14,          /**<port14*/                               /**<CNcomment:ç«¯å£14*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_15,          /**<port15*/                               /**<CNcomment:ç«¯å£15*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_16,          /**<port16*/                               /**<CNcomment:ç«¯å£16*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_BUTT         /**<Invalid value*/                        /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_DISEQC_SWITCH_PORT_E;
 
 /** Parameter for DiSEqC 1.0/2.0 switch
    Some DiSEqC device need set polarization(13/18V) and 22K, you can set them here. */
-/** CNcomment:DiSEqC 1.0/2.0 ¿ª¹Ø²ÎÊı
-   ÓĞĞ©DiSEqCÉè±¸ĞèÒªÉèÖÃ¼«»¯·½Ê½ºÍ22KµÄ£¬Èç¹ûÓÃÁËÕâÖÖÉè±¸£¬ĞèÒªÔÚÕâÀïÉèÖÃ */
+/** CNcomment:DiSEqC 1.0/2.0 å¼€å…³å‚æ•°
+   æœ‰äº›DiSEqCè®¾å¤‡éœ€è¦è®¾ç½®æåŒ–æ–¹å¼å’Œ22Kçš„ï¼Œå¦‚æœç”¨äº†è¿™ç§è®¾å¤‡ï¼Œéœ€è¦åœ¨è¿™é‡Œè®¾ç½® */
 typedef struct hiUNF_TUNER_DISEQC_SWITCH4PORT_S
 {
-    HI_UNF_TUNER_DISEQC_LEVEL_E       enLevel;  /**<DiSEqC device level*/           /**<CNcomment:Æ÷¼ş°æ±¾*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_E enPort;   /**<DiSEqC switch port*/            /**<CNcomment:Ñ¡Í¨¶Ë¿ÚºÅ*/
-    HI_UNF_TUNER_FE_POLARIZATION_E    enPolar;  /**<Polarization type */            /**<CNcomment:¼«»¯·½Ê½*/
-    HI_UNF_TUNER_FE_LNB_22K_E         enLNB22K; /**<22K status*/                    /**<CNcomment:22k×´Ì¬*/
+    HI_UNF_TUNER_DISEQC_LEVEL_E       enLevel;  /**<DiSEqC device level*/           /**<CNcomment:å™¨ä»¶ç‰ˆæœ¬*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_E enPort;   /**<DiSEqC switch port*/            /**<CNcomment:é€‰é€šç«¯å£å·*/
+    HI_UNF_TUNER_FE_POLARIZATION_E    enPolar;  /**<Polarization type */            /**<CNcomment:æåŒ–æ–¹å¼*/
+    HI_UNF_TUNER_FE_LNB_22K_E         enLNB22K; /**<22K status*/                    /**<CNcomment:22kçŠ¶æ€*/
 } HI_UNF_TUNER_DISEQC_SWITCH4PORT_S;
 
 /** Parameter for DiSEqC 1.1/2.1 switch */
-/** CNcomment:DiSEqC 1.1/2.1 ¿ª¹Ø²ÎÊı */
+/** CNcomment:DiSEqC 1.1/2.1 å¼€å…³å‚æ•° */
 typedef struct hiUNF_TUNER_DISEQC_SWITCH16PORT_S
 {
-    HI_UNF_TUNER_DISEQC_LEVEL_E       enLevel;  /**<DiSEqC device level*/            /**<CNcomment:Æ÷¼ş°æ±¾*/
-    HI_UNF_TUNER_DISEQC_SWITCH_PORT_E enPort;   /**<DiSEqC switch port*/             /**<CNcomment:Ñ¡Í¨¶Ë¿ÚºÅ*/
+    HI_UNF_TUNER_DISEQC_LEVEL_E       enLevel;  /**<DiSEqC device level*/            /**<CNcomment:å™¨ä»¶ç‰ˆæœ¬*/
+    HI_UNF_TUNER_DISEQC_SWITCH_PORT_E enPort;   /**<DiSEqC switch port*/             /**<CNcomment:é€‰é€šç«¯å£å·*/
 } HI_UNF_TUNER_DISEQC_SWITCH16PORT_S;
 
 /** DiSEqC motor limit setting*/
-/** CNcomment:DiSEqCÂí´ï¼«ÏŞÉèÖÃ*/
+/** CNcomment:DiSEqCé©¬è¾¾æé™è®¾ç½®*/
 typedef enum hiUNF_TUNER_DISEQC_LIMIT_E
 {
-    HI_UNF_TUNER_DISEQC_LIMIT_OFF,              /**<Disable Limits*/                /**<CNcomment:ÎŞÏŞÖÆ*/
-    HI_UNF_TUNER_DISEQC_LIMIT_EAST,             /**<Set East Limit*/                /**<CNcomment:¶«ÏòÏŞÖÆ*/
-    HI_UNF_TUNER_DISEQC_LIMIT_WEST,             /**<Set West Limit*/                /**<CNcomment:Î÷ÏòÏŞÖÆ*/
-    HI_UNF_TUNER_DISEQC_LIMIT_BUTT              /**<Invalid value*/                 /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_DISEQC_LIMIT_OFF,              /**<Disable Limits*/                /**<CNcomment:æ— é™åˆ¶*/
+    HI_UNF_TUNER_DISEQC_LIMIT_EAST,             /**<Set East Limit*/                /**<CNcomment:ä¸œå‘é™åˆ¶*/
+    HI_UNF_TUNER_DISEQC_LIMIT_WEST,             /**<Set West Limit*/                /**<CNcomment:è¥¿å‘é™åˆ¶*/
+    HI_UNF_TUNER_DISEQC_LIMIT_BUTT              /**<Invalid value*/                 /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_DISEQC_LIMIT_E;
 
 /** Difinition of DiSEqC motor move direction*/
-/** CNcomment:DiSEqCÂí´ïÒÆ¶¯·½Ïò*/
+/** CNcomment:DiSEqCé©¬è¾¾ç§»åŠ¨æ–¹å‘*/
 typedef enum hiUNF_TUNER_DISEQC_MOVE_DIR_E
 {
-    HI_UNF_TUNER_DISEQC_MOVE_DIR_EAST,          /**<Move east*/                     /**<CNcomment:Ïò¶«ÒÆ¶¯*/
-    HI_UNF_TUNER_DISEQC_MOVE_DIR_WEST,          /**<Move west*/                     /**<CNcomment:ÏòÎ÷ÒÆ¶¯*/
-    HI_UNF_TUNER_DISEQC_MOVE_DIR_BUTT           /**<Invalid value*/                 /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_DISEQC_MOVE_DIR_EAST,          /**<Move east*/                     /**<CNcomment:å‘ä¸œç§»åŠ¨*/
+    HI_UNF_TUNER_DISEQC_MOVE_DIR_WEST,          /**<Move west*/                     /**<CNcomment:å‘è¥¿ç§»åŠ¨*/
+    HI_UNF_TUNER_DISEQC_MOVE_DIR_BUTT           /**<Invalid value*/                 /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_DISEQC_MOVE_DIR_E;
 
 /** Difinition of DiSEqC motor move type*/
-/** CNcomment:DiSEqCÂí´ïÒÆ¶¯·½Ê½*/
+/** CNcomment:DiSEqCé©¬è¾¾ç§»åŠ¨æ–¹å¼*/
 typedef enum hiUNF_TUNER_DISEQC_MOVE_TYPE_E
 {
-    HI_UNF_TUNER_DISEQC_MOVE_STEP_SLOW,         /**<1 step one time, default*/      /**<CNcomment:»ºÂıÒÆ¶¯*/
-    HI_UNF_TUNER_DISEQC_MOVE_STEP_FAST,         /**<5 step one time*/               /**<CNcomment:¿ìËÙÒÆ¶¯*/
-    HI_UNF_TUNER_DISEQC_MOVE_CONTINUE,          /**<Continuous moving*/             /**<CNcomment:Á¬ĞøÒÆ¶¯*/
-    HI_UNF_TUNER_DISEQC_MOVE_TYPE_BUTT          /**<Invalid value*/                 /**<CNcomment:·Ç·¨±ß½çÖµ*/
+    HI_UNF_TUNER_DISEQC_MOVE_STEP_SLOW,         /**<1 step one time, default*/      /**<CNcomment:ç¼“æ…¢ç§»åŠ¨*/
+    HI_UNF_TUNER_DISEQC_MOVE_STEP_FAST,         /**<5 step one time*/               /**<CNcomment:å¿«é€Ÿç§»åŠ¨*/
+    HI_UNF_TUNER_DISEQC_MOVE_CONTINUE,          /**<Continuous moving*/             /**<CNcomment:è¿ç»­ç§»åŠ¨*/
+    HI_UNF_TUNER_DISEQC_MOVE_TYPE_BUTT          /**<Invalid value*/                 /**<CNcomment:éæ³•è¾¹ç•Œå€¼*/
 } HI_UNF_TUNER_DISEQC_MOVE_TYPE_E;
 
 /** Parameter for DiSEqC motor store position*/
-/** CNcomment:ÌìÏß´æ´¢Î»ÖÃ²ÎÊı*/
+/** CNcomment:å¤©çº¿å­˜å‚¨ä½ç½®å‚æ•°*/
 typedef struct hiUNF_TUNER_DISEQC_POSITION_S
 {
-    HI_UNF_TUNER_DISEQC_LEVEL_E enLevel;        /**<DiSEqC device level*/               /**<CNcomment:Æ÷¼ş°æ±¾*/
-    HI_U32                      u32Pos;         /**<Index of position, 0-255*/          /**<CNcomment:Î»ÖÃĞòºÅ*/
+    HI_UNF_TUNER_DISEQC_LEVEL_E enLevel;        /**<DiSEqC device level*/               /**<CNcomment:å™¨ä»¶ç‰ˆæœ¬*/
+    HI_U32                      u32Pos;         /**<Index of position, 0-255*/          /**<CNcomment:ä½ç½®åºå·*/
 } HI_UNF_TUNER_DISEQC_POSITION_S;
 
 /** Parameter for DiSEqC motor limit setting*/
-/** CNcomment:ÌìÏßLimitÉèÖÃ²ÎÊı*/
+/** CNcomment:å¤©çº¿Limitè®¾ç½®å‚æ•°*/
 typedef struct hiUNF_TUNER_DISEQC_LIMIT_S
 {
-    HI_UNF_TUNER_DISEQC_LEVEL_E enLevel;        /**<DiSEqC device level*/               /**<CNcomment:Æ÷¼ş°æ±¾*/
-    HI_UNF_TUNER_DISEQC_LIMIT_E enLimit;        /**<Limit setting*/                     /**<CNcomment:ÏŞÖÆÉè¶¨*/
+    HI_UNF_TUNER_DISEQC_LEVEL_E enLevel;        /**<DiSEqC device level*/               /**<CNcomment:å™¨ä»¶ç‰ˆæœ¬*/
+    HI_UNF_TUNER_DISEQC_LIMIT_E enLimit;        /**<Limit setting*/                     /**<CNcomment:é™åˆ¶è®¾å®š*/
 } HI_UNF_TUNER_DISEQC_LIMIT_S;
 
 /** Parameter for DiSEqC motor moving*/
-/** CNcomment:DiSEqCÂí´ïÒÆ¶¯²ÎÊı*/
+/** CNcomment:DiSEqCé©¬è¾¾ç§»åŠ¨å‚æ•°*/
 typedef struct hiUNF_TUNER_DISEQC_MOVE_S
 {
-    HI_UNF_TUNER_DISEQC_LEVEL_E     enLevel;    /**<DiSEqC device level*/           /**<CNcomment:Æ÷¼ş°æ±¾*/
-    HI_UNF_TUNER_DISEQC_MOVE_DIR_E  enDir;      /**<Moving direction*/              /**<CNcomment:ÒÆ¶¯·½Ïò*/
-    HI_UNF_TUNER_DISEQC_MOVE_TYPE_E enType;     /**<Moving type*/                   /**<CNcomment:ÒÆ¶¯ÀàĞÍ(ÂıËÙ£¬¿ìËÙ£¬Á¬Ğø)*/
+    HI_UNF_TUNER_DISEQC_LEVEL_E     enLevel;    /**<DiSEqC device level*/           /**<CNcomment:å™¨ä»¶ç‰ˆæœ¬*/
+    HI_UNF_TUNER_DISEQC_MOVE_DIR_E  enDir;      /**<Moving direction*/              /**<CNcomment:ç§»åŠ¨æ–¹å‘*/
+    HI_UNF_TUNER_DISEQC_MOVE_TYPE_E enType;     /**<Moving type*/                   /**<CNcomment:ç§»åŠ¨ç±»å‹(æ…¢é€Ÿï¼Œå¿«é€Ÿï¼Œè¿ç»­)*/
 } HI_UNF_TUNER_DISEQC_MOVE_S;
 
 /** Parameter for DiSEqC motor recalculate*/
-/** CNcomment:DiSEqCÌìÏßÖØ¼ÆËã²ÎÊı*/
+/** CNcomment:DiSEqCå¤©çº¿é‡è®¡ç®—å‚æ•°*/
 typedef struct hiUNF_TUNER_DISEQC_RECALCULATE_S
 {
-    HI_UNF_TUNER_DISEQC_LEVEL_E enLevel;        /**<DiSEqC device level*/           /**<CNcomment:Æ÷¼ş°æ±¾*/
-    HI_U8                       u8Para1;        /**<Parameter 1*/                   /**<CNcomment:²ÎÊı1*/
-    HI_U8                       u8Para2;        /**<Parameter 2*/                   /**<CNcomment:²ÎÊı2*/
-    HI_U8                       u8Para3;        /**<Parameter 3*/                   /**<CNcomment:²ÎÊı3*/
-    HI_U8                       u8Reserve;      /**<Reserve*/                       /**<CNcomment:±£Áô²ÎÊı*/
+    HI_UNF_TUNER_DISEQC_LEVEL_E enLevel;        /**<DiSEqC device level*/           /**<CNcomment:å™¨ä»¶ç‰ˆæœ¬*/
+    HI_U8                       u8Para1;        /**<Parameter 1*/                   /**<CNcomment:å‚æ•°1*/
+    HI_U8                       u8Para2;        /**<Parameter 2*/                   /**<CNcomment:å‚æ•°2*/
+    HI_U8                       u8Para3;        /**<Parameter 3*/                   /**<CNcomment:å‚æ•°3*/
+    HI_U8                       u8Reserve;      /**<Reserve*/                       /**<CNcomment:ä¿ç•™å‚æ•°*/
 } HI_UNF_TUNER_DISEQC_RECALCULATE_S;
 
 /** Parameter for USALS*/
-/** CNcomment:USALS ²ÎÊı*/
+/** CNcomment:USALS å‚æ•°*/
 typedef struct hiUNF_TUNER_DISEQC_USALS_PARA_S
 {
     HI_U16 u16LocalLongitude;   /**<local longitude, is 10*longitude, in param, E:0-1800, W:1800-3600(3600-longtitude)*/
-                                /**<CNcomment:±¾µØ¾­¶È£¬µ¥Î»0.1¶È£¬¶«¾­È¡Öµ·¶Î§0-1800£¬Î÷¾­È¡Öµ·¶Î§1800-3600£¬ÖµÎª3600-¾­¶ÈÖµ*/
+                                /**<CNcomment:æœ¬åœ°ç»åº¦ï¼Œå•ä½0.1åº¦ï¼Œä¸œç»å–å€¼èŒƒå›´0-1800ï¼Œè¥¿ç»å–å€¼èŒƒå›´1800-3600ï¼Œå€¼ä¸º3600-ç»åº¦å€¼*/
     HI_U16 u16LocalLatitude;    /**<local latitude, is 10*latitude, in param N:0-900, S:900-1800(1800-latitude)*/
-                                /**<CNcomment:±¾µØÎ³¶È£¬µ¥Î»0.1¶È£¬±±Î³È¡Öµ·¶Î§0-900£¬ÄÏÎ³È¡Öµ·¶Î§900-1800£¬ÖµÎª1800-Î³¶ÈÖµ*/
+                                /**<CNcomment:æœ¬åœ°çº¬åº¦ï¼Œå•ä½0.1åº¦ï¼ŒåŒ—çº¬å–å€¼èŒƒå›´0-900ï¼Œå—çº¬å–å€¼èŒƒå›´900-1800ï¼Œå€¼ä¸º1800-çº¬åº¦å€¼*/
     HI_U16 u16SatLongitude;     /**<sat longitude, is 10*longitude, in param, E:0-1800, W:1800-3600(3600-longtitude)*/
-                                /**<CNcomment:ÎÀĞÇ¾­¶È£¬µ¥Î»0.1¶È£¬¶«¾­È¡Öµ·¶Î§0-1800£¬Î÷¾­È¡Öµ·¶Î§1800-3600£¬ÖµÎª3600-¾­¶ÈÖµ*/
+                                /**<CNcomment:å«æ˜Ÿç»åº¦ï¼Œå•ä½0.1åº¦ï¼Œä¸œç»å–å€¼èŒƒå›´0-1800ï¼Œè¥¿ç»å–å€¼èŒƒå›´1800-3600ï¼Œå€¼ä¸º3600-ç»åº¦å€¼*/
     HI_U16 u16Angular;          /**<calculate result, out param*/
-                                /**<CNcomment:¼ÆËã½á¹û£¬Êä³ö²ÎÊı*/
+                                /**<CNcomment:è®¡ç®—ç»“æœï¼Œè¾“å‡ºå‚æ•°*/
 } HI_UNF_TUNER_DISEQC_USALS_PARA_S;
 
 /** Parameter for USALS goto angular*/
-/** CNcomment:USALS½Ç¶È²ÎÊı*/
+/** CNcomment:USALSè§’åº¦å‚æ•°*/
 typedef struct hiUNF_TUNER_DISEQC_USALS_ANGULAR_S
 {
-    HI_UNF_TUNER_DISEQC_LEVEL_E enLevel;        /**<DiSEqC device level*/                                       /**<CNcomment:Æ÷¼ş°æ±¾*/
-    HI_U16                      u16Angular;     /**<Angular, calculated by HI_UNF_TUNER_DISEQC_CalcAngular()*/  /**<CNcomment:½Ç¶ÈÖµ£¬¿ÉÍ¨¹ıº¯ÊıHI_UNF_TUNER_DISEQC_CalcAngular¼ÆËãµÃµ½*/
+    HI_UNF_TUNER_DISEQC_LEVEL_E enLevel;        /**<DiSEqC device level*/                                       /**<CNcomment:å™¨ä»¶ç‰ˆæœ¬*/
+    HI_U16                      u16Angular;     /**<Angular, calculated by HI_UNF_TUNER_DISEQC_CalcAngular()*/  /**<CNcomment:è§’åº¦å€¼ï¼Œå¯é€šè¿‡å‡½æ•°HI_UNF_TUNER_DISEQC_CalcAngularè®¡ç®—å¾—åˆ°*/
 } HI_UNF_TUNER_DISEQC_USALS_ANGULAR_S;
 //#endif /* DISEQC_SUPPORT */
 
@@ -855,14 +855,14 @@ typedef struct hiUNF_TUNER_DISEQC_USALS_ANGULAR_S
 /*---TUNER---*/
 /** 
 \brief Initializes the tuner.
-CNcomment:\brief ³õÊ¼»¯TUNERÉè±¸¡£CNend
+CNcomment:\brief åˆå§‹åŒ–TUNERè®¾å¤‡ã€‚CNend
 
 \attention \n
 The error code HI_SUCCESS is returned if this API is called repeatedly.
-CNcomment:Ö§³ÖÖØ¸´³õÊ¼»¯TUNERÉè±¸£¬´ËÊ±Ö±½Ó·µ»Ø³É¹¦¡£CNend
-\param N/A                                    CNcomment:ÎŞ CNend
-\retval ::HI_SUCCESS Success                  CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
+CNcomment:æ”¯æŒé‡å¤åˆå§‹åŒ–TUNERè®¾å¤‡ï¼Œæ­¤æ—¶ç›´æ¥è¿”å›æˆåŠŸã€‚CNend
+\param N/A                                    CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success                  CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -872,14 +872,14 @@ HI_S32 HI_UNF_TUNER_Init(HI_VOID);
 
 /** 
 \brief Deinitializes the tuner.
-CNcomment:\brief È¥³õÊ¼»¯TUNERÉè±¸¡£CNend
+CNcomment:\brief å»åˆå§‹åŒ–TUNERè®¾å¤‡ã€‚CNend
 
 \attention \n
 The error code HI_SUCCESS is returned if this API is called repeatedly.
-CNcomment:Ö§³ÖÖØ¸´È¥³õÊ¼»¯TUNERÉè±¸£¬´ËÊ±Ö±½Ó·µ»Ø³É¹¦¡£CNend
-\param  N/A                    CNcomment:ÎŞ CNend
-\retval ::HI_SUCCESS Success   CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
+CNcomment:æ”¯æŒé‡å¤å»åˆå§‹åŒ–TUNERè®¾å¤‡ï¼Œæ­¤æ—¶ç›´æ¥è¿”å›æˆåŠŸã€‚CNend
+\param  N/A                    CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success   CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -888,17 +888,17 @@ HI_S32 HI_UNF_TUNER_DeInit(HI_VOID);
 
 /**
 \brief  Obtains the default attributes of the tuner. 
-CNcomment:\brief  »ñÈ¡TUNERµÄÄ¬ÈÏÊôĞÔ¡£CNend
+CNcomment:\brief  è·å–TUNERçš„é»˜è®¤å±æ€§ã€‚CNend
 \attention \n
 This API is available only after the tuner is initialized.
-CNcomment:´Ë½Ó¿ÚÔÚTUNERÉè±¸³õÊ¼»¯ºó²ÅÄÜÊ¹ÓÃ¡£CNend
-\param[in] u32tunerId   tuner port ID. The port ID can be 0-2.             CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2¡£CNend
-\param[out] pstTunerAttr The default attributes of the tuner are returned. CNcomment:·µ»Øµ±Ç°TUNERµÄÄ¬ÈÏÊôĞÔ¡£CNend
-\retval ::HI_SUCCESS Success.									   CNcomment: ³É¹¦ CNend
-\retval ::HI_FAILURE Calling this API fails.                                               CNcomment: APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_INIT  The Frontend module is not initialized. CNcomment: Ä£¿éÃ»ÓĞ³õÊ¼»¯CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈëPORT ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈëPORT ²ÎÊı·Ç·¨ CNend
+CNcomment:æ­¤æ¥å£åœ¨TUNERè®¾å¤‡åˆå§‹åŒ–åæ‰èƒ½ä½¿ç”¨ã€‚CNend
+\param[in] u32tunerId   tuner port ID. The port ID can be 0-2.             CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2ã€‚CNend
+\param[out] pstTunerAttr The default attributes of the tuner are returned. CNcomment:è¿”å›å½“å‰TUNERçš„é»˜è®¤å±æ€§ã€‚CNend
+\retval ::HI_SUCCESS Success.									   CNcomment: æˆåŠŸ CNend
+\retval ::HI_FAILURE Calling this API fails.                                               CNcomment: APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_INIT  The Frontend module is not initialized. CNcomment: æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥PORT å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥PORT å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -907,18 +907,18 @@ HI_S32 HI_UNF_TUNER_GetDeftAttr(HI_U32  u32tunerId , HI_UNF_TUNER_ATTR_S *pstTun
 
 /** 
 \brief Sets the current attributes of the tuner.
-CNcomment:\brief ÉèÖÃTUNERµ±Ç°ÊôĞÔ¡£CNend
+CNcomment:\brief è®¾ç½®TUNERå½“å‰å±æ€§ã€‚CNend
 \attention \n
 N/A
-\param[in] u32tunerId   tuner port ID. The port ID can be 0-2.      CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstTunerAttr tuner attributes                            CNcomment:TUNERµÄÊôĞÔ¡£CNend
-\retval ::HI_SUCCESS Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails.                       CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_SELECTI2CCHANNEL The input I2C channel is invalid. CNcomment:ÊäÈëI2C Í¨µÀ·Ç·¨ CNend
+\param[in] u32tunerId   tuner port ID. The port ID can be 0-2.      CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstTunerAttr tuner attributes                            CNcomment:TUNERçš„å±æ€§ã€‚CNend
+\retval ::HI_SUCCESS Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails.                       CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_SELECTI2CCHANNEL The input I2C channel is invalid. CNcomment:è¾“å…¥I2C é€šé“éæ³• CNend
 \see \n
 N/A
 */
@@ -927,18 +927,18 @@ HI_S32 HI_UNF_TUNER_SetAttr(HI_U32  u32tunerId , const HI_UNF_TUNER_ATTR_S *pstT
 
 /** 
 \brief While using satellite channel, sets the current attributes of the tuner.
-CNcomment:\brief ÉèÖÃÎÀĞÇTUNER¸½¼ÓÊôĞÔ¡£CNend
+CNcomment:\brief è®¾ç½®å«æ˜ŸTUNERé™„åŠ å±æ€§ã€‚CNend
 \attention \n
 N/A
-\param[in] u32tunerId   tuner port ID. The port ID can be 0-2.      CNcomment:ÎÀĞÇTUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstSatTunerAttr tuner attributes                         CNcomment:ÎÀĞÇTUNERµÄ¸½¼ÓÊôĞÔ¡£CNend
-\retval ::HI_SUCCESS Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails.                       CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_SETSATATTR Tuner TUNER_SETSATATTR_CMD error. CNcomment:ÉèÖÃÊôĞÔÊ§°Ü CNend
+\param[in] u32tunerId   tuner port ID. The port ID can be 0-2.      CNcomment:å«æ˜ŸTUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstSatTunerAttr tuner attributes                         CNcomment:å«æ˜ŸTUNERçš„é™„åŠ å±æ€§ã€‚CNend
+\retval ::HI_SUCCESS Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails.                       CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_SETSATATTR Tuner TUNER_SETSATATTR_CMD error. CNcomment:è®¾ç½®å±æ€§å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -946,19 +946,19 @@ HI_S32 HI_UNF_TUNER_SetSatAttr(HI_U32	u32tunerId , const HI_UNF_TUNER_SAT_ATTR_S
 
 /** 
 \brief Obtains the attributes of the tuner.
-CNcomment:\brief »ñÈ¡TUNERµÄÊôĞÔ¡£CNend
+CNcomment:\brief è·å–TUNERçš„å±æ€§ã€‚CNend
 \attention \n
 N/A
 This API is available only after the tuner is initialized.
-CNcomment:´Ë½Ó¿ÚÔÚTUNERÉè±¸³õÊ¼»¯ºó²ÅÄÜÊ¹ÓÃ¡£CNend
+CNcomment:æ­¤æ¥å£åœ¨TUNERè®¾å¤‡åˆå§‹åŒ–åæ‰èƒ½ä½¿ç”¨ã€‚CNend
 
-\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.                CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[out] pstTunerAttr   The current attributes of the tuner are returned. CNcomment:·µ»Øµ±Ç°TUNERµÄÊôĞÔ¡£CNend
-\retval ::HI_SUCCESS Success                                                 CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails.                                CNcomment: APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_INIT  The TUNER module is not initialized. CNcomment: Ä£¿éÃ»ÓĞ³õÊ¼»¯CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.                CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[out] pstTunerAttr   The current attributes of the tuner are returned. CNcomment:è¿”å›å½“å‰TUNERçš„å±æ€§ã€‚CNend
+\retval ::HI_SUCCESS Success                                                 CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails.                                CNcomment: APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_INIT  The TUNER module is not initialized. CNcomment: æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -967,18 +967,18 @@ HI_S32 HI_UNF_TUNER_GetAttr(HI_U32  u32tunerId , HI_UNF_TUNER_ATTR_S *pstTunerAt
 
 /** 
 \brief Starts the tuner.
-CNcomment:\brief ´ò¿ªTUNERÉè±¸¡£CNend
+CNcomment:\brief æ‰“å¼€TUNERè®¾å¤‡ã€‚CNend
 
 \attention \n
 The error code HI_SUCCESS is returned if this API is called repeatedly.
-CNcomment:Ö§³ÖÖØ¸´´ò¿ªTUNERÉè±¸¡£´ËÊ±£¬Ö±½Ó·µ»Ø³É¹¦¡£CNend
+CNcomment:æ”¯æŒé‡å¤æ‰“å¼€TUNERè®¾å¤‡ã€‚æ­¤æ—¶ï¼Œç›´æ¥è¿”å›æˆåŠŸã€‚CNend
 
-\param[in] u32tunerId   tuner port ID. The port ID can be 0-2.      CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\retval ::HI_SUCCESS Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_INIT  The TUNER module is not initialized. CNcomment: Ä£¿éÃ»ÓĞ³õÊ¼»¯CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_INIT  Opening The TUNER module  fails. CNcomment:´ò¿ªÉè±¸Ê§°ÜCNend
+\param[in] u32tunerId   tuner port ID. The port ID can be 0-2.      CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\retval ::HI_SUCCESS Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_INIT  The TUNER module is not initialized. CNcomment: æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_INIT  Opening The TUNER module  fails. CNcomment:æ‰“å¼€è®¾å¤‡å¤±è´¥CNend
 \see \n
 N/A
 */
@@ -987,17 +987,17 @@ HI_S32 HI_UNF_TUNER_Open (HI_U32    u32tunerId);
 
 /** 
 \brief Stops the tuner.
-CNcomment:\brief ¹Ø±ÕTUNERÉè±¸¡£CNend
+CNcomment:\brief å…³é—­TUNERè®¾å¤‡ã€‚CNend
 
 \attention \n
 The error code HI_SUCCESS is returned if this API is called repeatedly.
-CNcomment:Ö§³ÖÖØ¸´¹Ø±ÕTUNERÉè±¸¡£´ËÊ±£¬Ö±½Ó·µ»Ø³É¹¦¡£CNend
+CNcomment:æ”¯æŒé‡å¤å…³é—­TUNERè®¾å¤‡ã€‚æ­¤æ—¶ï¼Œç›´æ¥è¿”å›æˆåŠŸã€‚CNend
 
-\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.     CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\retval ::HI_SUCCESS Success                                      CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails.                     CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_INIT  The TUNER module is not initialized. CNcomment: Ä£¿éÃ»ÓĞ³õÊ¼»¯CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.     CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\retval ::HI_SUCCESS Success                                      CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails.                     CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_INIT  The TUNER module is not initialized. CNcomment: æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 
 \see \n
 N/A
@@ -1007,22 +1007,22 @@ HI_S32 HI_UNF_TUNER_Close(HI_U32    u32tunerId);
 
 /** 
 \brief Locks the frequency of the tuner.
-CNcomment:\brief TUNERËøÆµ¡£CNend
+CNcomment:\brief TUNERé”é¢‘ã€‚CNend
 \attention \n
 N/A
-\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.             CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstConnectPara   Information about the frequency of the tuner  CNcomment:TUNERµÄÆµµãĞÅÏ¢¡£CNend
+\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.             CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstConnectPara   Information about the frequency of the tuner  CNcomment:TUNERçš„é¢‘ç‚¹ä¿¡æ¯ã€‚CNend
 \param[in] u32TimeOut  Wait timeout (in ms) when the frequency of the tuner \n
 is locked. The value 0 indicates no wait, and any other value indicates the \n
 maximum wait period.  
-                                                                          CNcomment:TUNERµÄËø¶¨µÈ´ı³¬Ê±Ê±¼ä£¬0Îª²»µÈ´ı£¬ÆäËûÎª×î³¤µÈ´ıÊ±¼ä£¬µ¥Î»ms¡£CNend
-\retval ::HI_SUCCESS Success                                              CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails.                             CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_CONNECT The signal is locked unsuccessfully . CNcomment:Ëø¶¨ÆµµãÊ§°ÜCNend
+                                                                          CNcomment:TUNERçš„é”å®šç­‰å¾…è¶…æ—¶æ—¶é—´ï¼Œ0ä¸ºä¸ç­‰å¾…ï¼Œå…¶ä»–ä¸ºæœ€é•¿ç­‰å¾…æ—¶é—´ï¼Œå•ä½msã€‚CNend
+\retval ::HI_SUCCESS Success                                              CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails.                             CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_CONNECT The signal is locked unsuccessfully . CNcomment:é”å®šé¢‘ç‚¹å¤±è´¥CNend
 
 \see \n
 N/A
@@ -1031,45 +1031,45 @@ HI_S32 HI_UNF_TUNER_Connect(HI_U32  u32tunerId , const HI_UNF_TUNER_CONNECT_PARA
 
 
 /**
-\brief  set TS out.CNcomment:ÉèÖÃTSÊä³ö CNend
+\brief  set TS out.CNcomment:è®¾ç½®TSè¾“å‡º CNend
 \attention \n
 \Please call this API to set TS out. \n
 \There are 12 signals in ts interface, ts_dat[0..7], ts_sync, ts_vld, ts_err, ts_clk.\n 
 \There're 12 pins in HI3136 or HI3130v200 chip, and each pin can be set to output ts_dat[0..7], ts_sync,\n
 \ts_vld or ts_err, but ts_clk is binded to one pin, cannot be setted.\n
-CNcomment:ts½Ó¿Ú¹²ÓĞ12¸ùĞÅºÅÏß£¬·Ö±ğÊÇts_dat[0..7], ts_sync, ts_vld, ts_err, ts_clk£¬HI3136/HI3130V200 Ğ¾Æ¬ÉÏÓĞ12¸öts¹Ü½Å£¬Ã¿¸ö¹Ü½Å¿ÉÒÔ\n
-ÅäÖÃ³É³ıts_clkÖ®ÍâµÄÈÎÒâÒ»¸ö¹Ü½Å£¬ts_clkÊÇ¹Ì¶¨µÄ£¬²»Ö§³ÖÅäÖÃ¡£CNend
+CNcomment:tsæ¥å£å…±æœ‰12æ ¹ä¿¡å·çº¿ï¼Œåˆ†åˆ«æ˜¯ts_dat[0..7], ts_sync, ts_vld, ts_err, ts_clkï¼ŒHI3136/HI3130V200 èŠ¯ç‰‡ä¸Šæœ‰12ä¸ªtsç®¡è„šï¼Œæ¯ä¸ªç®¡è„šå¯ä»¥\n
+é…ç½®æˆé™¤ts_clkä¹‹å¤–çš„ä»»æ„ä¸€ä¸ªç®¡è„šï¼Œts_clkæ˜¯å›ºå®šçš„ï¼Œä¸æ”¯æŒé…ç½®ã€‚CNend
 
-\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.             CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstTSOUT   pointer of ts pin.                                  CNcomment:Ö¸ÕëÀàĞÍ£¬ts¹Ü½Å¶¨Òå£¬Çë²Î¼û::HI_UNF_TUNER_TSOUT_SET_S CNend
-\retval ::HI_SUCCESS                                                      CNcomment: success.³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails.                             CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_SETTSOUT Setting tsout fails. CNcomment:ÉèÖÃts out Ê§°Ü CNend
+\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.             CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstTSOUT   pointer of ts pin.                                  CNcomment:æŒ‡é’ˆç±»å‹ï¼Œtsç®¡è„šå®šä¹‰ï¼Œè¯·å‚è§::HI_UNF_TUNER_TSOUT_SET_S CNend
+\retval ::HI_SUCCESS                                                      CNcomment: success.æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails.                             CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_SETTSOUT Setting tsout fails. CNcomment:è®¾ç½®ts out å¤±è´¥ CNend
 \see \n
-none.CNcomment:ÎŞ CNend
+none.CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_TUNER_SetTSOUT(HI_U32 u32TunerId, HI_UNF_TUNER_TSOUT_SET_S *pstTSOUT);
 
 /** 
 \brief Obtains the frequency locking status and parameters of the tuner.
-CNcomment:\brief »ñÈ¡TUNERËøÆµ×´Ì¬ºÍËøÆµ²ÎÊı¡£CNend
+CNcomment:\brief è·å–TUNERé”é¢‘çŠ¶æ€å’Œé”é¢‘å‚æ•°ã€‚CNend
 \attention \n
 N/A
-\param[in] u32tunerId tuner port ID. The port ID can be 0-2.             CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] u32TimeOut frequency locking timeout, unit: ms, frequency locking time is related to strength of signal CNcomment:ËøÆµµÄ³¬Ê±Ê±¼ä£¬µ¥Î»ÊÇºÁÃë£¬ËøÆµÊ±¼äºÍĞÅºÅÇ¿¶ÈÓĞ¹ØÏµ¡£CNend
+\param[in] u32tunerId tuner port ID. The port ID can be 0-2.             CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] u32TimeOut frequency locking timeout, unit: ms, frequency locking time is related to strength of signal CNcomment:é”é¢‘çš„è¶…æ—¶æ—¶é—´ï¼Œå•ä½æ˜¯æ¯«ç§’ï¼Œé”é¢‘æ—¶é—´å’Œä¿¡å·å¼ºåº¦æœ‰å…³ç³»ã€‚CNend
                if you want to get the state of locking, the u32TimeOut should be set 100ms at least;
                if the u32TimeOut is 0, just config register without locking state, return HI_SUCCESS
-               CNcomment: Èç¹ûÏëµÃµ½Ëø¶¨×´Ì¬£¬ËøÆµ³¬Ê±×îĞ¡ÉèÖÃÎª100ms£»
-                          Èç¹û³¬Ê±Ê±¼äÎª0£¬Ö»ÅäÖÃ¼Ä´æÆ÷£¬²»ÅĞ¶¨Ëø¶¨×´Ì¬£¬·µ»ØHI_SUCCESS¡£CNend
-\param[out] pstTunerStatus: The current frequency locking status and parameters of the tuner are returned. Note: This parameter is valid only when HI_SUCCESS is returned.  CNcomment: ·µ»Øµ±Ç°TUNERµÄËøÆµ×´Ì¬ºÍËøÆµ²ÎÊı¡£ ×¢Òâ£º´Ë²ÎÊıÖ»ÔÚº¯Êı·µ»Ø³É¹¦µÄÇé¿öÏÂ²ÅÓĞÒâÒå¡£CNend
-\retval ::HI_SUCCESS Success                    CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails.  CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+               CNcomment: å¦‚æœæƒ³å¾—åˆ°é”å®šçŠ¶æ€ï¼Œé”é¢‘è¶…æ—¶æœ€å°è®¾ç½®ä¸º100msï¼›
+                          å¦‚æœè¶…æ—¶æ—¶é—´ä¸º0ï¼Œåªé…ç½®å¯„å­˜å™¨ï¼Œä¸åˆ¤å®šé”å®šçŠ¶æ€ï¼Œè¿”å›HI_SUCCESSã€‚CNend
+\param[out] pstTunerStatus: The current frequency locking status and parameters of the tuner are returned. Note: This parameter is valid only when HI_SUCCESS is returned.  CNcomment: è¿”å›å½“å‰TUNERçš„é”é¢‘çŠ¶æ€å’Œé”é¢‘å‚æ•°ã€‚ æ³¨æ„ï¼šæ­¤å‚æ•°åªåœ¨å‡½æ•°è¿”å›æˆåŠŸçš„æƒ…å†µä¸‹æ‰æœ‰æ„ä¹‰ã€‚CNend
+\retval ::HI_SUCCESS Success                    CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails.  CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 
 \see \n
 N/A
@@ -1079,10 +1079,10 @@ HI_S32 HI_UNF_TUNER_GetStatus(HI_U32    u32tunerId , HI_UNF_TUNER_STATUS_S  *pst
 
 /** 
 \brief Obtains the current bit error rate (BER) of the tuner. The BER is expressed by using the scientific notation.
-CNcomment:\brief »ñÈ¡µ±Ç°TUNER µÄÎóÂëÂÊ£¬ÓÃ¿ÆÑ§¼ÆÊı·¨±íÊ¾¡£CNend
+CNcomment:\brief è·å–å½“å‰TUNER çš„è¯¯ç ç‡ï¼Œç”¨ç§‘å­¦è®¡æ•°æ³•è¡¨ç¤ºã€‚CNend
 \attention \n
 N/A
-\param[in] u32tunerId tuner port ID. The port ID can be 0-2.             CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
+\param[in] u32tunerId tuner port ID. The port ID can be 0-2.             CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
 \param[out] pu32BER  Pointer to the current BER of the tuner The error bit rate consists of three elements. Their definitions are as follows:
                       Their definitions are as follows:
                     pu32BER[0]: integral part of the base number of the BER
@@ -1093,20 +1093,20 @@ N/A
                     The three elements are valid only when HI_SUCCESS is returned.
                     Otherwise, the application layer sets a large value as required, for example, 0.5 (the values of the three elements are 5, 0, and 1 respectively).
                          0.5 (the values of the three elements are 5, 0, and 1 respectively).
-CNcomment:\param[out] pu32BER  Ö¸Ïòµ±Ç°TUNER ÎóÂëÂÊµÄÖ¸Õë¡£¸ÃÖ¸ÕëÖ¸ÏòÒ»¸ö°üº¬Èı¸öÔªËØµÄÊı×é£¬Èı¸öÔªËØº¬ÒåÈçÏÂ:
-                              pu32BER[0]:ÎóÂëÂÊµ×ÊıµÄÕûÊı²¿·Ö
-                              pu32BER[1]:ÎóÂëÂÊµ×ÊıµÄĞ¡Êı²¿·Ö³ËÒÔ1000
-                              pu32BER[2]:ÎóÂëÂÊÖ¸Êı²¿·ÖÈ¡¾ø¶ÔÖµ
-                              ÀıÈç:ÎóÂëÂÊÎª2.156E-7£¬ÄÇÃ´Èı¸öÔªËØµÄÈ¡Öµ·Ö±ğÎª 
-                              2¡¢156ºÍ7 
-                              ÕâÈı¸öÔªËØÖ»ÔÚº¯Êı·µ»Ø³É¹¦µÄÇé¿öÏÂ²ÅÓĞÒâÒå£¬
-                              ·ñÔòÓ¦ÓÃ²ã¿É¸ù¾İÊµ¼ÊÇé¿ö×ÔĞĞÉèÖÃÒ»¸ö½Ï´óÖµ(±ÈÈç0.5£¬¼´Èı¸öÔªËØ·Ö±ğÎª5¡¢0¡¢1)¡£CNend
-\retval ::HI_SUCCESS Success                  CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE Calling this API fails.  CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ĞÅºÅÎ´Ëø¶¨ CNend
+CNcomment:\param[out] pu32BER  æŒ‡å‘å½“å‰TUNER è¯¯ç ç‡çš„æŒ‡é’ˆã€‚è¯¥æŒ‡é’ˆæŒ‡å‘ä¸€ä¸ªåŒ…å«ä¸‰ä¸ªå…ƒç´ çš„æ•°ç»„ï¼Œä¸‰ä¸ªå…ƒç´ å«ä¹‰å¦‚ä¸‹:
+                              pu32BER[0]:è¯¯ç ç‡åº•æ•°çš„æ•´æ•°éƒ¨åˆ†
+                              pu32BER[1]:è¯¯ç ç‡åº•æ•°çš„å°æ•°éƒ¨åˆ†ä¹˜ä»¥1000
+                              pu32BER[2]:è¯¯ç ç‡æŒ‡æ•°éƒ¨åˆ†å–ç»å¯¹å€¼
+                              ä¾‹å¦‚:è¯¯ç ç‡ä¸º2.156E-7ï¼Œé‚£ä¹ˆä¸‰ä¸ªå…ƒç´ çš„å–å€¼åˆ†åˆ«ä¸º 
+                              2ã€156å’Œ7 
+                              è¿™ä¸‰ä¸ªå…ƒç´ åªåœ¨å‡½æ•°è¿”å›æˆåŠŸçš„æƒ…å†µä¸‹æ‰æœ‰æ„ä¹‰ï¼Œ
+                              å¦åˆ™åº”ç”¨å±‚å¯æ ¹æ®å®é™…æƒ…å†µè‡ªè¡Œè®¾ç½®ä¸€ä¸ªè¾ƒå¤§å€¼(æ¯”å¦‚0.5ï¼Œå³ä¸‰ä¸ªå…ƒç´ åˆ†åˆ«ä¸º5ã€0ã€1)ã€‚CNend
+\retval ::HI_SUCCESS Success                  CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE Calling this API fails.  CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ä¿¡å·æœªé”å®š CNend
 
 \see \n
 N/A
@@ -1116,23 +1116,23 @@ HI_S32 HI_UNF_TUNER_GetBER(HI_U32   u32tunerId , HI_U32 *pu32BER);
 
 /** 
 \brief Obtains the current signal-to-noise ratio (SNR) of the tuner.
-CNcomment:\brief »ñÈ¡µ±Ç°TUNER µÄĞÅÔë±È¡£CNend
+CNcomment:\brief è·å–å½“å‰TUNER çš„ä¿¡å™ªæ¯”ã€‚CNend
 \attention \n
 N/A
-\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
+\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
 \param[out] pu32SNR  Pointer to the current SNR of the tuner
                     This parameter is valid only when HI_SUCCESS is returned.
                    Otherwise, the application layer sets the parameter to a small value.
-CNcomment:\param[out] pu32SNR  Ö¸Ïòµ±Ç°TUNERĞÅÔë±ÈµÄÖ¸Õë¡£
-                              ´Ë²ÎÊıÖ»ÔÚº¯Êı·µ»Ø³É¹¦µÄÇé¿öÏÂ²ÅÓĞÒâÒå£¬
-                              ·ñÔò£¬Ó¦ÓÃ²ã¿É½«´ËÖµÉèÖÃÎª×îĞ¡Öµ¡£CNend
-\retval ::HI_SUCCESS Success                   CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails.  CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ĞÅºÅÎ´Ëø¶¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:»ñÈ¡ĞÅµÀËø¶¨×´Ì¬Ê§°Ü CNend
+CNcomment:\param[out] pu32SNR  æŒ‡å‘å½“å‰TUNERä¿¡å™ªæ¯”çš„æŒ‡é’ˆã€‚
+                              æ­¤å‚æ•°åªåœ¨å‡½æ•°è¿”å›æˆåŠŸçš„æƒ…å†µä¸‹æ‰æœ‰æ„ä¹‰ï¼Œ
+                              å¦åˆ™ï¼Œåº”ç”¨å±‚å¯å°†æ­¤å€¼è®¾ç½®ä¸ºæœ€å°å€¼ã€‚CNend
+\retval ::HI_SUCCESS Success                   CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails.  CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ä¿¡å·æœªé”å®š CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:è·å–ä¿¡é“é”å®šçŠ¶æ€å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -1142,28 +1142,28 @@ HI_S32 HI_UNF_TUNER_GetSNR(HI_U32   u32tunerId , HI_U32 *pu32SNR );             
 
 /** 
 \brief Obtains the current signal strength of the tuner.
-CNcomment:\brief »ñÈ¡µ±Ç°TUNERµÄĞÅºÅÇ¿¶È¡£CNend
+CNcomment:\brief è·å–å½“å‰TUNERçš„ä¿¡å·å¼ºåº¦ã€‚CNend
 \attention \n
 N/A
-\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
+\param[in] u32tunerId  tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
 \param[out] pu32SignalStrength  Pointer to the current signal strength of the tuner
                             For cable signal, the value of *pu32SignalStrength ranges from 20~120.
                             For satellite signal, the value is 15~130, unit in dBuv.
                   This parameter is valid only when HI_SUCCESS is returned.
                   Otherwise, the application layer sets the parameter to a small value.
-CNcomment:\param[out] pu32SignalStrength  Ö¸Ïòµ±Ç°TUNERĞÅºÅÇ¿¶ÈµÄÖ¸Õë¡£
-                            ¶ÔÓÚCableĞÅºÅ£¬*pu32SignalStrengthµÄÈ¡Öµ·¶Î§Îª20~120
-                            ¶ÔÓÚSatelliteĞÅºÅ£¬*pu32SignalStrengthµÄÈ¡Öµ·¶Î§Îª15~130£¬µ¥Î»ÎªdBuv
-                            ´Ë²ÎÊıÖ»ÔÚº¯Êı·µ»Ø³É¹¦µÄÇé¿öÏÂ²ÅÓĞÒâÒå£¬
-                            ·ñÔò£¬Ó¦ÓÃ²ã¿É½«´ËÖµÉèÖÃÎª×îĞ¡Öµ¡£CNend
-\retval ::HI_SUCCESS Success                  CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ĞÅºÅÎ´Ëø¶¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:»ñÈ¡ĞÅµÀËø¶¨×´Ì¬Ê§°Ü CNend
-\retval ::HI_ERR_TUNER_FAILED_GETSIGNALSTRENGTH Calling this CMD fails. CNcomment:ioctlÏµÍ³µ÷ÓÃÊ§°Ü CNend
+CNcomment:\param[out] pu32SignalStrength  æŒ‡å‘å½“å‰TUNERä¿¡å·å¼ºåº¦çš„æŒ‡é’ˆã€‚
+                            å¯¹äºCableä¿¡å·ï¼Œ*pu32SignalStrengthçš„å–å€¼èŒƒå›´ä¸º20~120
+                            å¯¹äºSatelliteä¿¡å·ï¼Œ*pu32SignalStrengthçš„å–å€¼èŒƒå›´ä¸º15~130ï¼Œå•ä½ä¸ºdBuv
+                            æ­¤å‚æ•°åªåœ¨å‡½æ•°è¿”å›æˆåŠŸçš„æƒ…å†µä¸‹æ‰æœ‰æ„ä¹‰ï¼Œ
+                            å¦åˆ™ï¼Œåº”ç”¨å±‚å¯å°†æ­¤å€¼è®¾ç½®ä¸ºæœ€å°å€¼ã€‚CNend
+\retval ::HI_SUCCESS Success                  CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ä¿¡å·æœªé”å®š CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:è·å–ä¿¡é“é”å®šçŠ¶æ€å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSIGNALSTRENGTH Calling this CMD fails. CNcomment:ioctlç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -1172,19 +1172,19 @@ HI_S32 HI_UNF_TUNER_GetSignalStrength(HI_U32   u32tunerId , HI_U32 *pu32SignalSt
 
 /**
 \brief Obtains the current signal quality of the tuner, returns a percentage value. 
-CNcomment:\brief »ñÈ¡µ±Ç°TUNERµÄĞÅºÅÖÊÁ¿£¬·µ»Ø°Ù·Ö±È( ´Ë½Ó¿Ú²»Ö§³ÖDVB_C ºÍJ83BÖÆÊ½)¡£CNend
+CNcomment:\brief è·å–å½“å‰TUNERçš„ä¿¡å·è´¨é‡ï¼Œè¿”å›ç™¾åˆ†æ¯”( æ­¤æ¥å£ä¸æ”¯æŒDVB_C å’ŒJ83Båˆ¶å¼)ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[out] pu32SignalQuality   Output pointer.                       CNcomment:Ö¸ÏòĞÅºÅÖÊÁ¿µÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ĞÅºÅÎ´Ëø¶¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:»ñÈ¡ĞÅµÀËø¶¨×´Ì¬Ê§°Ü CNend
-\retval ::HI_ERR_TUNER_FAILED_GETSIGNALQUALITY Calling this CMD fails. CNcomment:ioctlÏµÍ³µ÷ÓÃÊ§°Ü CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[out] pu32SignalQuality   Output pointer.                       CNcomment:æŒ‡å‘ä¿¡å·è´¨é‡çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ä¿¡å·æœªé”å®š CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:è·å–ä¿¡é“é”å®šçŠ¶æ€å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSIGNALQUALITY Calling this CMD fails. CNcomment:ioctlç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -1194,20 +1194,20 @@ HI_S32 HI_UNF_TUNER_GetSignalQuality(HI_U32 u32TunerId, HI_U32 *pu32SignalQualit
 /**
 \brief Obtains the actual frequency and symbol rate of the current tuner for cable and satellite
 signal, for terrestrial signal, symbol rate means nothing, ignore it. 
-CNcomment:\brief »ñÈ¡µ±Ç°TUNERµÄÊµ¼ÊÆµÂÊºÍ·ûºÅÂÊ¡£CNend
+CNcomment:\brief è·å–å½“å‰TUNERçš„å®é™…é¢‘ç‡å’Œç¬¦å·ç‡ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[out] pu32Freq   Pointer to the current frequency of the tuner. CNcomment:Ö¸Ïòµ±Ç°TUNERÆµµãµÄÖ¸Õë¡£CNend
-\param[out] pu32Symb   Points to the current symbol rate.             CNcomment:Ö¸Ïòµ±Ç°·ûºÅÂÊ CNend
-\retval ::HI_SUCCESS Success                                          CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling this API fails.                         CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ĞÅºÅÎ´Ëø¶¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:»ñÈ¡ĞÅµÀËø¶¨×´Ì¬Ê§°Ü CNend
-\retval ::HI_ERR_TUNER_FAILED_GETSIGNALSTRENGTH  Calling this CMD fails. CNcomment:ioctlÏµÍ³µ÷ÓÃÊ§°Ü CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[out] pu32Freq   Pointer to the current frequency of the tuner. CNcomment:æŒ‡å‘å½“å‰TUNERé¢‘ç‚¹çš„æŒ‡é’ˆã€‚CNend
+\param[out] pu32Symb   Points to the current symbol rate.             CNcomment:æŒ‡å‘å½“å‰ç¬¦å·ç‡ CNend
+\retval ::HI_SUCCESS Success                                          CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling this API fails.                         CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ä¿¡å·æœªé”å®š CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:è·å–ä¿¡é“é”å®šçŠ¶æ€å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSIGNALSTRENGTH  Calling this CMD fails. CNcomment:ioctlç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -1216,19 +1216,19 @@ HI_S32 HI_UNF_TUNER_GetRealFreqSymb( HI_U32 u32TunerId, HI_U32 *pu32Freq, HI_U32
 
 /**
 \brief Obtains current signal information of the TUNER, used in satellite and terrestrial, not necessary for cable. 
-CNcomment:\brief »ñÈ¡µ±Ç°TUNERµÄĞÅºÅĞÅÏ¢¡£CNend
+CNcomment:\brief è·å–å½“å‰TUNERçš„ä¿¡å·ä¿¡æ¯ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[out] pstSignalInfo Pointer to a signal info structure.         CNcomment:Ö¸ÏòĞÅºÅĞÅÏ¢½á¹¹ÌåµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ĞÅºÅÎ´Ëø¶¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:»ñÈ¡ĞÅµÀËø¶¨×´Ì¬Ê§°Ü CNend
-\retval ::HI_ERR_TUNER_FAILED_GETSIGNALINFO  Calling this CMD fails. CNcomment:ioctlÏµÍ³µ÷ÓÃÊ§°Ü CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[out] pstSignalInfo Pointer to a signal info structure.         CNcomment:æŒ‡å‘ä¿¡å·ä¿¡æ¯ç»“æ„ä½“çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_NOT_CONNECT The signal is droped. CNcomment:ä¿¡å·æœªé”å®š CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSTATUS Getting status fails. CNcomment:è·å–ä¿¡é“é”å®šçŠ¶æ€å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_FAILED_GETSIGNALINFO  Calling this CMD fails. CNcomment:ioctlç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -1237,17 +1237,17 @@ HI_S32 HI_UNF_TUNER_GetSignalInfo(HI_U32 u32TunerId, HI_UNF_TUNER_SIGNALINFO_S *
 
 /**
 \brief Sets the LNB parameter. 
-CNcomment:\brief ÉèÖÃLNB²ÎÊı¡£CNend
+CNcomment:\brief è®¾ç½®LNBå‚æ•°ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstLNB      Pointer to a LNB parameter structure.          CNcomment:Ö¸ÏòLNB²ÎÊı½á¹¹ÌåµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstLNB      Pointer to a LNB parameter structure.          CNcomment:æŒ‡å‘LNBå‚æ•°ç»“æ„ä½“çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1255,17 +1255,17 @@ HI_S32 HI_UNF_TUNER_SetLNBConfig(HI_U32 u32TunerId, const HI_UNF_TUNER_FE_LNB_CO
 
 /**
 \brief Sets the LNB power. 
-CNcomment:\brief ÉèÖÃLNB¹©µç¡£CNend
+CNcomment:\brief è®¾ç½®LNBä¾›ç”µã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] enLNBPower  The enumeration of the LNB power type.         CNcomment:LNB¹©µç·½Ê½Ã¶¾ÙÖµ¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] enLNBPower  The enumeration of the LNB power type.         CNcomment:LNBä¾›ç”µæ–¹å¼æšä¸¾å€¼ã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 
 \see \n
 N/A
@@ -1274,16 +1274,16 @@ HI_S32 HI_UNF_TUNER_SetLNBPower(HI_U32 u32TunerId, HI_UNF_TUNER_FE_LNB_POWER_E e
 
 /**
 \brief Sets PLP ID, only used in DVB-T2. 
-CNcomment:\brief ÉèÖÃÎïÀí²ã¹ÜµÀID¡£CNend
+CNcomment:\brief è®¾ç½®ç‰©ç†å±‚ç®¡é“IDã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] u8PLPID  The PLP ID.                                       CNcomment:ÎïÀí²ã¹ÜµÀID¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_SETPLPID  Calling this CMD fails. CNcomment:ioctlÏµÍ³µ÷ÓÃÊ§°Ü CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] u8PLPID  The PLP ID.                                       CNcomment:ç‰©ç†å±‚ç®¡é“IDã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_SETPLPID  Calling this CMD fails. CNcomment:ioctlç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -1293,17 +1293,17 @@ HI_S32 HI_UNF_TUNER_SetPLPID(HI_U32 u32TunerId, HI_U8 u8PLPID);
 
 /**
 \brief Gets PLP number, only used in DVB-T2. 
-CNcomment:\brief »ñÈ¡ÎïÀí²ã¹ÜµÀÊıÁ¿¡£CNend
+CNcomment:\brief è·å–ç‰©ç†å±‚ç®¡é“æ•°é‡ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[out] pu8PLPNum  The PLP number.                                CNcomment:ÎïÀí²ã¹ÜµÀÊıÁ¿¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_GETPLPNUM  Calling this CMD fails. CNcomment:ioctlÏµÍ³µ÷ÓÃÊ§°Ü CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[out] pu8PLPNum  The PLP number.                                CNcomment:ç‰©ç†å±‚ç®¡é“æ•°é‡ã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_GETPLPNUM  Calling this CMD fails. CNcomment:ioctlç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -1314,17 +1314,17 @@ HI_S32 HI_UNF_TUNER_GetPLPNum(HI_U32 u32TunerId, HI_U8 *pu8PLPNum);
 
 /**
 \brief Gets current PLP type, only used in DVB-T2. 
-CNcomment:\brief »ñÈ¡µ±Ç°ÎïÀí²ã¹ÜµÀÀàĞÍ¡£CNend
+CNcomment:\brief è·å–å½“å‰ç‰©ç†å±‚ç®¡é“ç±»å‹ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[out] penPLPType  The PLP type.                                 CNcomment:ÎïÀí²ã¹ÜµÀÀàĞÍ¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_GETPLPTYPE  Calling this CMD fails. CNcomment:ioctlÏµÍ³µ÷ÓÃÊ§°Ü CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[out] penPLPType  The PLP type.                                 CNcomment:ç‰©ç†å±‚ç®¡é“ç±»å‹ã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_GETPLPTYPE  Calling this CMD fails. CNcomment:ioctlç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -1335,18 +1335,18 @@ HI_S32 HI_UNF_TUNER_GetCurrentPLPType(HI_U32 u32TunerId, HI_UNF_TUNER_T2_PLP_TYP
 
 /**
 \brief Starts blind scan. 
-CNcomment:\brief ¿ªÊ¼Ã¤É¨¡£CNend
+CNcomment:\brief å¼€å§‹ç›²æ‰«ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstPara     The pointer to the blind scan parameter.       CNcomment:Ö¸ÏòÃ¤É¨²ÎÊıµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_BLINDSCAN Blind scan busy. CNcomment:Ã¤É¨ÕıÔÚÓ¦ÓÃ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstPara     The pointer to the blind scan parameter.       CNcomment:æŒ‡å‘ç›²æ‰«å‚æ•°çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_BLINDSCAN Blind scan busy. CNcomment:ç›²æ‰«æ­£åœ¨åº”ç”¨ CNend
 
 \see Please refer to definition of HI_UNF_TUNER_BLINDSCAN_PARA_S.
 N/A
@@ -1355,14 +1355,14 @@ HI_S32 HI_UNF_TUNER_BlindScanStart(HI_U32 u32TunerId, const HI_UNF_TUNER_BLINDSC
 
 /**
 \brief Stops blind scan. 
-CNcomment:\brief Í£Ö¹Ã¤É¨¡£CNend
+CNcomment:\brief åœæ­¢ç›²æ‰«ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 
 \see \n
 N/A
@@ -1371,15 +1371,15 @@ HI_S32 HI_UNF_TUNER_BlindScanStop(HI_U32 u32TunerId);
 
 /**
 \brief TUNER standby. 
-CNcomment:\brief TUNER´ı»ú(  ´Ë½Ó¿Ú²»Ö§³ÖDVB_C ºÍJ83BÖÆÊ½£¬´ËÁ½ÖÖÖÆÊ½´ı»úÇë²Î¼ûpmoc ´ı»ú½Ó¿Ú)  CNend
+CNcomment:\brief TUNERå¾…æœº(  æ­¤æ¥å£ä¸æ”¯æŒDVB_C å’ŒJ83Båˆ¶å¼ï¼Œæ­¤ä¸¤ç§åˆ¶å¼å¾…æœºè¯·å‚è§pmoc å¾…æœºæ¥å£)  CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_STANDBY  Calling this CMD fails. CNcomment:ioctlÏµÍ³µ÷ÓÃÊ§°Ü CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_STANDBY  Calling this CMD fails. CNcomment:ioctlç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -1388,15 +1388,15 @@ HI_S32 HI_UNF_TUNER_Standby(HI_U32 u32TunerId);
 
 /**
 \brief Wakes up TUNER. 
-CNcomment:\brief TUNER»½ĞÑ(  ´Ë½Ó¿Ú²»Ö§³ÖDVB_C ºÍJ83BÖÆÊ½£¬´ËÁ½ÖÖÖÆÊ½»½ĞÑÇë²Î¼ûpmoc »½ĞÑ»½ĞÑ½Ó¿Ú) CNend
+CNcomment:\brief TUNERå”¤é†’(  æ­¤æ¥å£ä¸æ”¯æŒDVB_C å’ŒJ83Båˆ¶å¼ï¼Œæ­¤ä¸¤ç§åˆ¶å¼å”¤é†’è¯·å‚è§pmoc å”¤é†’å”¤é†’æ¥å£) CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_WAKEUP  Calling this CMD fails. CNcomment:ioctlÏµÍ³µ÷ÓÃÊ§°Ü CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_WAKEUP  Calling this CMD fails. CNcomment:ioctlç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -1404,21 +1404,21 @@ HI_S32 HI_UNF_TUNER_WakeUp( HI_U32 u32TunerId);
 
 /**
 \brief Sends and receives DiSEqC message, only the devices supporting DiSEqC 2.x support receive message. 
-CNcomment:\brief ·¢ËÍ½ÓÊÕDiSEqCÏûÏ¢£¬½öÖ§³ÖDiSEqC 2.xµÄÉè±¸Ö§³Ö½ÓÊÕÏûÏ¢¡£CNend
+CNcomment:\brief å‘é€æ¥æ”¶DiSEqCæ¶ˆæ¯ï¼Œä»…æ”¯æŒDiSEqC 2.xçš„è®¾å¤‡æ”¯æŒæ¥æ”¶æ¶ˆæ¯ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ, È¡Öµ·¶Î§0-2 CNend
-\param[in] pstSendMsg  The pointer to a sending message structure.    CNcomment:Ö¸Ïò·¢ËÍÏûÏ¢½á¹¹ÌåµÄÖ¸Õë¡£CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·, å–å€¼èŒƒå›´0-2 CNend
+\param[in] pstSendMsg  The pointer to a sending message structure.    CNcomment:æŒ‡å‘å‘é€æ¶ˆæ¯ç»“æ„ä½“çš„æŒ‡é’ˆã€‚CNend
 \param[out] pstRecvMsg The pointer to a receiving message structure.If your device is DiSEqC 1.x, you can pass NULL here.
-CNcomment:\param[out] pstRecvMsg Ö¸Ïò½ÓÊÕÏûÏ¢½á¹¹ÌåµÄÖ¸Õë¡£Èç¹ûÊÇDiSEqC 1.xÉè±¸£¬ÕâÀï¿ÉÒÔ´«NULL¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_DISEQC Send DiSEqC message fail. CNcomment:·¢ËÍÏûÏ¢Ê§°Ü CNend
-\retval ::HI_ERR_TUNER_FAILED_DISEQC Recv DiSEqC message fail. CNcomment:½ÓÊÕÏûÏ¢Ê§°Ü CNend
+CNcomment:\param[out] pstRecvMsg æŒ‡å‘æ¥æ”¶æ¶ˆæ¯ç»“æ„ä½“çš„æŒ‡é’ˆã€‚å¦‚æœæ˜¯DiSEqC 1.xè®¾å¤‡ï¼Œè¿™é‡Œå¯ä»¥ä¼ NULLã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_DISEQC Send DiSEqC message fail. CNcomment:å‘é€æ¶ˆæ¯å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_FAILED_DISEQC Recv DiSEqC message fail. CNcomment:æ¥æ”¶æ¶ˆæ¯å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -1429,16 +1429,16 @@ HI_S32 HI_UNF_TUNER_DISEQC_SendRecvMessage(HI_U32 u32TunerId,
 
 /**
 \brief Sets 0/12V switch. Don't support now. 
-CNcomment:\brief ÉèÖÃ0/12V¿ª¹Ø×´Ì¬£¬Ôİ²»Ö§³Ö¡£CNend
+CNcomment:\brief è®¾ç½®0/12Vå¼€å…³çŠ¶æ€ï¼Œæš‚ä¸æ”¯æŒã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] enPort      The enumeration of the switch port.            CNcomment:¿ª¹ØÃ¶¾ÙÖµ¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] enPort      The enumeration of the switch port.            CNcomment:å¼€å…³æšä¸¾å€¼ã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1446,16 +1446,16 @@ HI_S32 HI_UNF_TUNER_Switch012V(HI_U32 u32TunerId, HI_UNF_TUNER_SWITCH_0_12V_E en
 
 /**
 \brief Sets 22KHz switch. 
-CNcomment:\brief ÉèÖÃ22KHz¿ª¹Ø×´Ì¬¡£CNend
+CNcomment:\brief è®¾ç½®22KHzå¼€å…³çŠ¶æ€ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] enPort      The enumeration of the switch port.            CNcomment:¿ª¹ØÃ¶¾ÙÖµ¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] enPort      The enumeration of the switch port.            CNcomment:å¼€å…³æšä¸¾å€¼ã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1463,17 +1463,17 @@ HI_S32 HI_UNF_TUNER_Switch22K(HI_U32 u32TunerId, HI_UNF_TUNER_SWITCH_22K_E enPor
 
 /**
 \brief Sets tone burst switch. 
-CNcomment:\brief ÉèÖÃTone burst¿ª¹Ø×´Ì¬¡£CNend
+CNcomment:\brief è®¾ç½®Tone burstå¼€å…³çŠ¶æ€ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] enStatus    The enumeration of the switch port.            CNcomment:¿ª¹ØÃ¶¾ÙÖµ¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_DISEQC  Calling this CMD fails. CNcomment:ioctlÏµÍ³µ÷ÓÃÊ§°Ü CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] enStatus    The enumeration of the switch port.            CNcomment:å¼€å…³æšä¸¾å€¼ã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_DISEQC  Calling this CMD fails. CNcomment:ioctlç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -1482,16 +1482,16 @@ HI_S32 HI_UNF_TUNER_SwitchToneBurst(HI_U32 u32TunerId, HI_UNF_TUNER_SWITCH_TONEB
 //#ifdef DISEQC_SUPPORT
 /**
 \brief Sets DiSEqC 1.0/2.0 switch, at most 4 port.
-CNcomment:\brief ÉèÖÃDiSEqC 1.0/2.0¿ª¹Ø£¬ÖÁ¶à4¿Ú¡£CNend
+CNcomment:\brief è®¾ç½®DiSEqC 1.0/2.0å¼€å…³ï¼Œè‡³å¤š4å£ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstPara     The pointer to a switch parameter structure.   CNcomment:Ö¸Ïò¿ª¹Ø²ÎÊıµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstPara     The pointer to a switch parameter structure.   CNcomment:æŒ‡å‘å¼€å…³å‚æ•°çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see Please refer to definition of HI_UNF_TUNER_DISEQC_SWITCH4PORT_S.
 N/A
 */
@@ -1499,16 +1499,16 @@ HI_S32 HI_UNF_TUNER_DISEQC_Switch4Port(HI_U32 u32TunerId, const HI_UNF_TUNER_DIS
 
 /**
 \brief Sets DiSEqC 1.1/2.1 switch, supports 8in1, 16in1 switches. 
-CNcomment:\brief ÉèÖÃDiSEqC 1.1/2.1¿ª¹Ø£¬Ö§³Ö8¿Ú£¬16¿Ú¿ª¹Ø¡£CNend
+CNcomment:\brief è®¾ç½®DiSEqC 1.1/2.1å¼€å…³ï¼Œæ”¯æŒ8å£ï¼Œ16å£å¼€å…³ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstPara     The pointer to a switch parameter structure.   CNcomment:Ö¸Ïò¿ª¹Ø²ÎÊıµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstPara     The pointer to a switch parameter structure.   CNcomment:æŒ‡å‘å¼€å…³å‚æ•°çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1516,16 +1516,16 @@ HI_S32 HI_UNF_TUNER_DISEQC_Switch16Port(HI_U32 u32TunerId, const HI_UNF_TUNER_DI
 
 /**
 \brief Lets the DiSEqC motor store current position. 
-CNcomment:\brief DiSEqCÂí´ï´æ´¢µ±Ç°Î»ÖÃ¡£CNend
+CNcomment:\brief DiSEqCé©¬è¾¾å­˜å‚¨å½“å‰ä½ç½®ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstPara     The pointer to a position parameter structure. CNcomment:Ö¸ÏòÎ»ÖÃ²ÎÊıµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstPara     The pointer to a position parameter structure. CNcomment:æŒ‡å‘ä½ç½®å‚æ•°çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1533,16 +1533,16 @@ HI_S32 HI_UNF_TUNER_DISEQC_StorePos(HI_U32 u32TunerId, const HI_UNF_TUNER_DISEQC
 
 /**
 \brief Lets the DiSEqC motor move to stored position. 
-CNcomment:\brief DiSEqCÂí´ï×ª¶¯ÖÁ´æ´¢Î»ÖÃ¡£CNend
+CNcomment:\brief DiSEqCé©¬è¾¾è½¬åŠ¨è‡³å­˜å‚¨ä½ç½®ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstPara     The pointer to a position parameter structure. CNcomment:Ö¸ÏòÎ»ÖÃ²ÎÊıµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstPara     The pointer to a position parameter structure. CNcomment:æŒ‡å‘ä½ç½®å‚æ•°çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1550,16 +1550,16 @@ HI_S32 HI_UNF_TUNER_DISEQC_GotoPos(HI_U32 u32TunerId, const HI_UNF_TUNER_DISEQC_
 
 /**
 \brief Enables or disables the DiSEqC motor's limit setting. 
-CNcomment:\brief ´ò¿ª¡¢¹Ø±ÕDiSEqCÂí´ïÈ¨ÏŞÉèÖÃ¡£CNend
+CNcomment:\brief æ‰“å¼€ã€å…³é—­DiSEqCé©¬è¾¾æƒé™è®¾ç½®ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstPara     The pointer to a limit parameter structure.    CNcomment:Ö¸Ïòlimit²ÎÊıµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstPara     The pointer to a limit parameter structure.    CNcomment:æŒ‡å‘limitå‚æ•°çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1567,16 +1567,16 @@ HI_S32 HI_UNF_TUNER_DISEQC_SetLimit(HI_U32 u32TunerId, const HI_UNF_TUNER_DISEQC
 
 /**
 \brief Drives DiSEqC motor. 
-CNcomment:\brief Çı¶¯DiSEqCÂí´ïÒÆ¶¯¡£CNend
+CNcomment:\brief é©±åŠ¨DiSEqCé©¬è¾¾ç§»åŠ¨ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstPara     The pointer to a movement parameter structure. CNcomment:Ö¸ÏòÒÆ¶¯²ÎÊıµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstPara     The pointer to a movement parameter structure. CNcomment:æŒ‡å‘ç§»åŠ¨å‚æ•°çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1584,15 +1584,15 @@ HI_S32 HI_UNF_TUNER_DISEQC_Move(HI_U32 u32TunerId, const HI_UNF_TUNER_DISEQC_MOV
 
 /**
 \brief Halts DiSEqC motor. 
-CNcomment:\brief Í£Ö¹DiSEqCÂí´ïÒÆ¶¯¡£CNend
+CNcomment:\brief åœæ­¢DiSEqCé©¬è¾¾ç§»åŠ¨ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] enLevel     The command level of the DiSEqC motor.         CNcomment:Âí´ïÖ§³ÖµÄÃüÁîµÈ¼¶¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] enLevel     The command level of the DiSEqC motor.         CNcomment:é©¬è¾¾æ”¯æŒçš„å‘½ä»¤ç­‰çº§ã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1600,17 +1600,17 @@ HI_S32 HI_UNF_TUNER_DISEQC_Stop(HI_U32 u32TunerId, const HI_UNF_TUNER_DISEQC_LEV
 
 /**
 \brief Lets the DiSEqC motor recalculate its stored positions. 
-CNcomment:\brief ÖØĞÂ¼ÆËãÂí´ï´æ´¢Î»ÖÃ¡£CNend
+CNcomment:\brief é‡æ–°è®¡ç®—é©¬è¾¾å­˜å‚¨ä½ç½®ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
 \param[in] pstPara     The pointer to a recaulculate parameter structure. 
-                                                                      CNcomment:Ö¸ÏòÖØ¼ÆËã²ÎÊıµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+                                                                      CNcomment:æŒ‡å‘é‡è®¡ç®—å‚æ•°çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1618,16 +1618,16 @@ HI_S32 HI_UNF_TUNER_DISEQC_Recalculate(HI_U32 u32TunerId, const HI_UNF_TUNER_DIS
 
 /**
 \brief Calculates the angular, basing on site-longitude, site-latitude and satellite-longitude. 
-CNcomment:\brief USALS¸ù¾İµ±µØ¾­Î³¶È¡¢ÎÀĞÇ¾­¶È¼ÆËãÎÀĞÇ½Ç¶È¡£CNend
+CNcomment:\brief USALSæ ¹æ®å½“åœ°ç»çº¬åº¦ã€å«æ˜Ÿç»åº¦è®¡ç®—å«æ˜Ÿè§’åº¦ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in/out] pstPara The pointer to a USALS parameter structure.    CNcomment:Ö¸ÏòUSALS¼ÆËã²ÎÊıµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in/out] pstPara The pointer to a USALS parameter structure.    CNcomment:æŒ‡å‘USALSè®¡ç®—å‚æ•°çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1635,16 +1635,16 @@ HI_S32 HI_UNF_TUNER_DISEQC_CalcAngular(HI_U32 u32TunerId, HI_UNF_TUNER_DISEQC_US
 
 /**
 \brief Gotos the indicated angular. 
-CNcomment:\brief USALSÉè±¸×ªÖÁÄ³½Ç¶È¡£CNend
+CNcomment:\brief USALSè®¾å¤‡è½¬è‡³æŸè§’åº¦ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] pstPara     The pointer to a USALS angular structure.      CNcomment:Ö¸ÏòUSALS½Ç¶È²ÎÊıµÄÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] pstPara     The pointer to a USALS angular structure.      CNcomment:æŒ‡å‘USALSè§’åº¦å‚æ•°çš„æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1652,15 +1652,15 @@ HI_S32 HI_UNF_TUNER_DISEQC_GotoAngular(HI_U32 u32TunerId, const HI_UNF_TUNER_DIS
 
 /**
 \brief Resets DiSEqC device. 
-CNcomment:\brief ¸´Î»DiSEqCÉè±¸¡£CNend
+CNcomment:\brief å¤ä½DiSEqCè®¾å¤‡ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] enLevel     The command level of the DiSEqC device.        CNcomment:Éè±¸Ö§³ÖµÄÃüÁîµÈ¼¶¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] enLevel     The command level of the DiSEqC device.        CNcomment:è®¾å¤‡æ”¯æŒçš„å‘½ä»¤ç­‰çº§ã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1668,15 +1668,15 @@ HI_S32 HI_UNF_TUNER_DISEQC_Reset(HI_U32 u32TunerId, HI_UNF_TUNER_DISEQC_LEVEL_E 
 
 /**
 \brief DiSEqC device standby. 
-CNcomment:\brief DiSEqCÉè±¸´ı»ú¡£CNend
+CNcomment:\brief DiSEqCè®¾å¤‡å¾…æœºã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] enLevel     The command level of the DiSEqC device.        CNcomment:Éè±¸Ö§³ÖµÄÃüÁîµÈ¼¶¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] enLevel     The command level of the DiSEqC device.        CNcomment:è®¾å¤‡æ”¯æŒçš„å‘½ä»¤ç­‰çº§ã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1684,15 +1684,15 @@ HI_S32 HI_UNF_TUNER_DISEQC_Standby(HI_U32 u32TunerId, HI_UNF_TUNER_DISEQC_LEVEL_
 
 /**
 \brief Wakes up DiSEqC device. 
-CNcomment:\brief »½ĞÑDiSEqCÉè±¸¡£CNend
+CNcomment:\brief å”¤é†’DiSEqCè®¾å¤‡ã€‚CNend
 \attention \n
 N/A
-\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in] enLevel     The command level of the DiSEqC device.        CNcomment:Éè±¸Ö§³ÖµÄÃüÁîµÈ¼¶¡£CNend
-\retval ::HI_SUCCESS   Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in] u32TunerId  Tuner port ID. The port ID can be 0-2.         CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in] enLevel     The command level of the DiSEqC device.        CNcomment:è®¾å¤‡æ”¯æŒçš„å‘½ä»¤ç­‰çº§ã€‚CNend
+\retval ::HI_SUCCESS   Success                                        CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                        CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
@@ -1700,18 +1700,18 @@ HI_S32 HI_UNF_TUNER_DISEQC_WakeUp(HI_U32 u32TunerId, HI_UNF_TUNER_DISEQC_LEVEL_E
 
 /**
 \brief Acquire data to display constellation.
-CNcomment:\brief »ñÈ¡ĞÇ×ùÍ¼Êı¾İ¡£CNend
+CNcomment:\brief è·å–æ˜Ÿåº§å›¾æ•°æ®ã€‚CNend
 \attention \n
 N/A
-\param[in]  u32TunerId    Tuner port ID. The port ID can be 0-2.             CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in]  enDataLen     The sample data length, can be 512, 1024 or 2048.  CNcomment:²É¼¯µÄÊı¾İ³¤¶È, Ö§³Ö512£¬1024ºÍ2048 3ÖÖ¡£CNend
-\param[out] pstData       The buffer to store data.                          CNcomment:Êı¾İ´æ´¢Çø¡£CNend
-\retval ::HI_SUCCESS   Success                                               CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                               CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_SAMPLEDATA Tuner sample data fail. CNcomment:»ñÈ¡Êı¾İÊ§°Ü CNend
+\param[in]  u32TunerId    Tuner port ID. The port ID can be 0-2.             CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in]  enDataLen     The sample data length, can be 512, 1024 or 2048.  CNcomment:é‡‡é›†çš„æ•°æ®é•¿åº¦, æ”¯æŒ512ï¼Œ1024å’Œ2048 3ç§ã€‚CNend
+\param[out] pstData       The buffer to store data.                          CNcomment:æ•°æ®å­˜å‚¨åŒºã€‚CNend
+\retval ::HI_SUCCESS   Success                                               CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                               CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_SAMPLEDATA Tuner sample data fail. CNcomment:è·å–æ•°æ®å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -1719,18 +1719,18 @@ HI_S32 HI_UNF_TUNER_GetConstellationData(HI_U32 u32TunerId, HI_UNF_TUNER_SAMPLE_
 
 /**
 \brief Acquire data to display spectrum.
-CNcomment:\brief »ñÈ¡ÆµÆ×Í¼Êı¾İ¡£CNend
+CNcomment:\brief è·å–é¢‘è°±å›¾æ•°æ®ã€‚CNend
 \attention \n
 N/A
-\param[in]  u32TunerId    Tuner port ID. The port ID can be 0-2.             CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in]  enDataLen     The sample data length, can be 512, 1024 or 2048.  CNcomment:²É¼¯µÄÊı¾İ³¤¶È, Ö§³Ö512£¬1024ºÍ2048 3ÖÖ¡£CNend
-\param[out] pu32Data      The buffer to store data.                          CNcomment:Êı¾İ´æ´¢Çø¡£CNend
-\retval ::HI_SUCCESS   Success                                               CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                               CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_FAILED_SAMPLEDATA Tuner sample data fail. CNcomment:»ñÈ¡Êı¾İÊ§°Ü CNend
+\param[in]  u32TunerId    Tuner port ID. The port ID can be 0-2.             CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in]  enDataLen     The sample data length, can be 512, 1024 or 2048.  CNcomment:é‡‡é›†çš„æ•°æ®é•¿åº¦, æ”¯æŒ512ï¼Œ1024å’Œ2048 3ç§ã€‚CNend
+\param[out] pu32Data      The buffer to store data.                          CNcomment:æ•°æ®å­˜å‚¨åŒºã€‚CNend
+\retval ::HI_SUCCESS   Success                                               CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                               CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_FAILED_SAMPLEDATA Tuner sample data fail. CNcomment:è·å–æ•°æ®å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -1738,18 +1738,18 @@ HI_S32 HI_UNF_TUNER_GetSpectrumData(HI_U32 u32TunerId, HI_UNF_TUNER_SAMPLE_DATAL
 
 /**
 \brief Get the upper limit time according to the connect parameter.
-CNcomment:\brief ¸ù¾İËøÆµ²ÎÊı»ñÈ¡×î´óËøÆµÊ±¼ä¡£CNend
+CNcomment:\brief æ ¹æ®é”é¢‘å‚æ•°è·å–æœ€å¤§é”é¢‘æ—¶é—´ã€‚CNend
 \attention \n
 N/A
-\param[in]  u32TunerId    Tuner port ID. The port ID can be 0-2.             CNcomment:TUNER¶Ë¿ÚºÅ£¬È¡ÖµÎª0-2 CNend
-\param[in]  pstConnectPara     The pointer to store the connect parameter.   CNcomment:ËøÆµ²ÎÊıÖ¸Õë¡£CNend
-\param[out] pu32TimeOutMs      The upper limit time.                         CNcomment:×î´óËøÌ¨Ê±¼ä¡£CNend
-\retval ::HI_SUCCESS   Success                                               CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE   Calling this API fails.                               CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: Ä£¿éÃ»ÓĞ´ò¿ªCNend
-\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:ÊäÈë ²ÎÊı·Ç·¨ CNend
+\param[in]  u32TunerId    Tuner port ID. The port ID can be 0-2.             CNcomment:TUNERç«¯å£å·ï¼Œå–å€¼ä¸º0-2 CNend
+\param[in]  pstConnectPara     The pointer to store the connect parameter.   CNcomment:é”é¢‘å‚æ•°æŒ‡é’ˆã€‚CNend
+\param[out] pu32TimeOutMs      The upper limit time.                         CNcomment:æœ€å¤§é”å°æ—¶é—´ã€‚CNend
+\retval ::HI_SUCCESS   Success                                               CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE   Calling this API fails.                               CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_TUNER_NOT_OPEN  The TUNER module is not opened. CNcomment: æ¨¡å—æ²¡æœ‰æ‰“å¼€CNend
+\retval ::HI_ERR_TUNER_INVALID_PORT  The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_POINT The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
+\retval ::HI_ERR_TUNER_INVALID_PARA The input parameter is invalid. CNcomment:è¾“å…¥ å‚æ•°éæ³• CNend
 \see \n
 N/A
 */

@@ -41,52 +41,52 @@ typedef struct
 typedef enum
 {
     /*Color format*/
-    /*CNcomment:ÑÕÉ«¸ñÊ½*/
+    /*CNcomment:é¢œè‰²æ ¼å¼*/
     HIFB_LAYER_PARAMODIFY_FMT = 0x1,
 
     /*Line length*/
-    /*CNcomment:ĞĞ¼ä¾à*/
+    /*CNcomment:è¡Œé—´è·*/
     HIFB_LAYER_PARAMODIFY_STRIDE = 0x2,
 
     /*Alpha value*/
-    /*CNcomment:alphaÖµ*/
+    /*CNcomment:alphaå€¼*/
     HIFB_LAYER_PARAMODIFY_ALPHA = 0x4,
 
     /*Colorkey value*/
-    /*CNcomment:colorkeyÖµ*/
+    /*CNcomment:colorkeyå€¼*/
     HIFB_LAYER_PARAMODIFY_COLORKEY = 0x8,
 
     /*Input rectangle*/
-    /*CNcomment:ÊäÈë¾ØĞÎ*/
+    /*CNcomment:è¾“å…¥çŸ©å½¢*/
     HIFB_LAYER_PARAMODIFY_INRECT = 0x10,
 
     /*Output rectangle*/
-    /*CNcomment:Êä³ö¾ØĞÎ*/
+    /*CNcomment:è¾“å‡ºçŸ©å½¢*/
     HIFB_LAYER_PARAMODIFY_OUTRECT = 0x20,
 
     /*Display buf address*/
-    /*CNcomment:ÏÔÊ¾bufferµØÖ·*/
+    /*CNcomment:æ˜¾ç¤ºbufferåœ°å€*/
     HIFB_LAYER_PARAMODIFY_DISPLAYADDR = 0x40,
 
     /*State of show or hide*/
-    /*CNcomment:ÏÔÊ¾Òş²Ø×´Ì¬*/
+    /*CNcomment:æ˜¾ç¤ºéšè—çŠ¶æ€*/
     HIFB_LAYER_PARAMODIFY_SHOW = 0x80,
 
     /*Whether premultiply data or not*/
-    /*CNcomment:ÊÇ·ñÎªÔ¤´æÊı¾İ*/
+    /*CNcomment:æ˜¯å¦ä¸ºé¢„å­˜æ•°æ®*/
     HIFB_LAYER_PARAMODIFY_BMUL = 0x100,
 
     /*Anti deflicker level*/
-    /*CNcomment:¿¹ÉÁË¸¼¶±ğ*/
+    /*CNcomment:æŠ—é—ªçƒçº§åˆ«*/
     HIFB_LAYER_PARAMODIFY_ANTIFLICKERLEVEL = 0x200,
 
 	/*refresh usr data*/
-    /*CNcomment:ÊÇ·ñË¢ĞÂ*/
+    /*CNcomment:æ˜¯å¦åˆ·æ–°*/
     HIFB_LAYER_PARAMODIFY_REFRESH = 0x400,  /**color format ,stride,display address only take effect when 
     												usr data was refreshed*/
 
 	/*param modify all*/
-	/*CNcomment:ËùÓĞĞŞ¸ÄÏî*/
+	/*CNcomment:æ‰€æœ‰ä¿®æ”¹é¡¹*/
 	HIFB_LAYER_PARAMODIFY_ALL = 0x1 | 0x2 | 0x4 | 0x8 | 0x10 | 0x20 | 0x40 | 0x80 | 0x100 | 0x200 | 0x400,
 	
     HIFB_LAYER_PARAMODIFY_BUTT
@@ -95,141 +95,141 @@ typedef enum
 typedef struct 
 {
 	 /* support how many layers*/
-	/*CNcomment:·µ»ØÖ§³ÖµÄÍ¼²ãÊı */
+	/*CNcomment:è¿”å›æ”¯æŒçš„å›¾å±‚æ•° */
 	//HI_U32 HIFB_DRV_GetSupportLayerCount();
 
 	/*set layer the default bit extenal mode*/
-	/*CNcomment:ÉèÖÃÄ¬ÈÏµÄÀ©Õ¹bit Ä£Ê½*/
+	/*CNcomment:è®¾ç½®é»˜è®¤çš„æ‰©å±•bit æ¨¡å¼*/
 	//HI_S32 (*HIFB_DRV_SetLayerBitExtMode)(HIFB_LAYER_ID_E enLayerID);
 
 	/*enable/disable the layer*/
-	/*CNcomment:Ê¹ÄÜÍ¼²ã*/
+	/*CNcomment:ä½¿èƒ½å›¾å±‚*/
 	HI_S32 (*HIFB_DRV_EnableLayer)(HIFB_LAYER_ID_E enLayerId,HI_BOOL bEnable);
 
 	/*set the address of layer*/
-	/*CNcomment:ÉèÖÃÍ¼²ãµÄÏÔÊ¾µØÖ·*/
+	/*CNcomment:è®¾ç½®å›¾å±‚çš„æ˜¾ç¤ºåœ°å€*/
 	HI_S32 (*HIFB_DRV_SetLayerAddr)(HIFB_LAYER_ID_E enLayerId,HI_U32 u32Addr);
 
 	/*set layer stride*/
-	/*CNcomment:ÉèÖÃÍ¼²ãĞĞ¼ä¾à*/
+	/*CNcomment:è®¾ç½®å›¾å±‚è¡Œé—´è·*/
 	HI_S32 (*HIFB_DRV_SetLayerStride)(HIFB_LAYER_ID_E enLayerId,HI_U32 u32Stride);
 
 	/*set layer pixel format*/
-	/*CNcomment:ÉèÖÃÍ¼²ãÏñËØ¸ñÊ½*/
+	/*CNcomment:è®¾ç½®å›¾å±‚åƒç´ æ ¼å¼*/
 	HI_S32 (*HIFB_DRV_SetLayerDataFmt)(HIFB_LAYER_ID_E enLayerId,HIFB_COLOR_FMT_E enDataFmt);
 
 	/*set color register*/
-	/*CNcomment:ÉèÖÃCLUT Êı×éÖµ*/
+	/*CNcomment:è®¾ç½®CLUT æ•°ç»„å€¼*/
 	HI_S32 (*HIFB_DRV_SetColorReg)(HIFB_LAYER_ID_E enLayerId, HI_U32 u32OffSet, HI_U32 u32Color, HI_S32 UpFlag);
 
 	/*wait until vblank, it's a block interface*/
-	/*CNcomment:µÈ´ı´¹Ö±Ê±ĞòÖĞ¶Ï£¬×èÈûĞÍ½Ó¿Ú*/
+	/*CNcomment:ç­‰å¾…å‚ç›´æ—¶åºä¸­æ–­ï¼Œé˜»å¡å‹æ¥å£*/
 	HI_S32 (*HIFB_DRV_WaitVBlank)(HIFB_LAYER_ID_E enLayerId);
 
 	/* set layer deflicker */
-	/*CNcomment:ÉèÖÃÍ¼²ã¿¹ÉÁ²ÎÊı*/
+	/*CNcomment:è®¾ç½®å›¾å±‚æŠ—é—ªå‚æ•°*/
 	HI_S32 (*HIFB_DRV_SetLayerDeFlicker)(HIFB_LAYER_ID_E enLayerId, HIFB_DEFLICKER_S *pstDeFlicker);
 
 	/*set layer alpha*/
-	/*CNcomment:ÉèÖÃÍ¼²ãalpha*/
+	/*CNcomment:è®¾ç½®å›¾å±‚alpha*/
 	HI_S32 (*HIFB_DRV_SetLayerAlpha)(HIFB_LAYER_ID_E enLayerId, HIFB_ALPHA_S *pstAlpha);
 
 	/*set layer start position and size*/
-	/*CNcomment:ÉèÖÃÍ¼²ãÆğÊ¼Î»ÖÃºÍ´óĞ¡*/
+	/*CNcomment:è®¾ç½®å›¾å±‚èµ·å§‹ä½ç½®å’Œå¤§å°*/
 	HI_S32 (*HIFB_DRV_SetLayerRect)(HIFB_LAYER_ID_E enLayerId, const HIFB_RECT *pstInputRect, const HIFB_RECT *pstOutputRect);
 	
 	/*set layer start position and size*/
-	/*CNcomment:ÉèÖÃÍ¼²ãÆğÊ¼Î»ÖÃºÍ´óĞ¡*/
+	/*CNcomment:è®¾ç½®å›¾å±‚èµ·å§‹ä½ç½®å’Œå¤§å°*/
 	HI_S32 (*HIFB_DRV_SetLayerInRect)(HIFB_LAYER_ID_E enLayerId, const HIFB_RECT *pstInputRect);
 
 	/*set layer output size*/
-	/*CNcomment:ÉèÖÃÍ¼²ãµÄÊä³öÇøÓò*/
+	/*CNcomment:è®¾ç½®å›¾å±‚çš„è¾“å‡ºåŒºåŸŸ*/
 	HI_S32 (*HIFB_DRV_SetLayerOutRect)(HIFB_LAYER_ID_E enLayerId, const HIFB_RECT *pstOutputRect);
 
 
 	/* set layer colorkey */
-	/* CNcomment:ÉèÖÃÍ¼²ãcolorkey*/
+	/* CNcomment:è®¾ç½®å›¾å±‚colorkey*/
 	HI_S32 (*HIFB_DRV_SetLayerKeyMask)(HIFB_LAYER_ID_E enLayerId, const HIFB_COLORKEYEX_S* pstColorkey);
 
 	/* update layer register */
-	/*CNcomment:¼Ä´æÆ÷¸üĞÂ*/
+	/*CNcomment:å¯„å­˜å™¨æ›´æ–°*/
 	HI_S32 (*HIFB_DRV_UpdataLayerReg)(HIFB_LAYER_ID_E enLayerId);
 
 	/*wait for the config register completed*/
-	/*CNcomment:µÈ´ı¼Ä´æÆ÷ÅäÖÃÍê³É*/
+	/*CNcomment:ç­‰å¾…å¯„å­˜å™¨é…ç½®å®Œæˆ*/
 	HI_S32 (*HIFB_DRV_WaitRegUpdateFinished)(HIFB_LAYER_ID_E enLayerId);
 
 	/*set premul data*/
-	/*CNcomment:ÉèÖÃÔ¤³Ë*/
+	/*CNcomment:è®¾ç½®é¢„ä¹˜*/
 	HI_S32 (*HIFB_DRV_SetLayerPreMult)(HIFB_LAYER_ID_E enLayerId, HI_BOOL bPreMul);
 
 	/*set clut address*/
-	/*CNcomment:ÉèÖÃCLUT µØÖ·*/
+	/*CNcomment:è®¾ç½®CLUT åœ°å€*/
 	HI_S32 (*HIFB_DRV_SetClutAddr)(HIFB_LAYER_ID_E enLayerId, HI_U32 u32PhyAddr);
 
 	/* get osd data */
-	/*CNcomment:»ñÈ¡Ó²¼şÊı¾İ*/
+	/*CNcomment:è·å–ç¡¬ä»¶æ•°æ®*/
 	HI_S32 (*HIFB_DRV_GetOSDData)(HIFB_LAYER_ID_E enLayerId, HIFB_OSD_DATA_S *pstLayerData);
   
 	/* register call back function*/
-	/*CNcomment:×¢²áÖĞ¶Ï»Øµ÷º¯Êı*/
+	/*CNcomment:æ³¨å†Œä¸­æ–­å›è°ƒå‡½æ•°*/
 	HI_S32 (*HIFB_DRV_SetIntCallback)(HIFB_CALLBACK_TPYE_E enCType, IntCallBack pCallback, HIFB_LAYER_ID_E enLayerId);
 
 	/*open layer*/
-	/*CNcomment:´ò¿ªÍ¼²ã*/
+	/*CNcomment:æ‰“å¼€å›¾å±‚*/
 	HI_S32 (*HIFB_DRV_OpenLayer)(HIFB_LAYER_ID_E enLayerId);
 
 	/*close layer*/
-	/*CNcomment:¹Ø±ÕÍ¼²ã*/
+	/*CNcomment:å…³é—­å›¾å±‚*/
 	HI_S32 (*HIFB_DRV_CloseLayer)(HIFB_LAYER_ID_E enLayerId);
 
 	/*get status of disp*/
-	/*CNcomment:»ñÈ¡DISP ´ò¿ª×´Ì¬*/
+	/*CNcomment:è·å–DISP æ‰“å¼€çŠ¶æ€*/
 	HI_S32 (*HIFB_DRV_GetHaltDispStatus)(HIFB_LAYER_ID_E enLayerId,HI_BOOL *pbDispInit);
 
 	/*enable/disable compression*/
-	/*CNcomment:Ê¹ÄÜ/ ·ÇÊ¹ÄÜÑ¹Ëõ*/
+	/*CNcomment:ä½¿èƒ½/ éä½¿èƒ½å‹ç¼©*/
 	HI_S32 (*HIFB_DRV_EnableCompression)(HIFB_LAYER_ID_E enLayerId, HI_BOOL bCompressionEnable);
 
 	/*set update rect of compression*/
-	/*CNcomment:ÉèÖÃÑ¹Ëõ¸üĞÂ¾ØĞÎ*/
+	/*CNcomment:è®¾ç½®å‹ç¼©æ›´æ–°çŸ©å½¢*/
 	HI_S32 (*HIFB_DRV_SetCompressionRect)(HIFB_LAYER_ID_E enLayerId, const HIFB_RECT *pstRect);
 
 	/*handle the compression job*/
-	/*CNcomment:´¦ÀíÑ¹Ëõ¸üĞÂ*/
+	/*CNcomment:å¤„ç†å‹ç¼©æ›´æ–°*/
 	HI_S32 (*HIFB_DRV_CompressionHandle)(HIFB_LAYER_ID_E enLayerId);
 
 	/*set 3D mode*/
-	/*CNcomment:ÉèÖÃ3D Ä£Ê½*/
+	/*CNcomment:è®¾ç½®3D æ¨¡å¼*/
 	HI_S32 (*HIFB_DRV_SetTriDimMode)(HIFB_LAYER_ID_E enLayerId, HIFB_STEREO_MODE_E enStereoMode);  
 
 	
 	/*set 3D address*/
-	/*CNcomment:ÉèÖÃ3D Êı¾İµØÖ·*/
+	/*CNcomment:è®¾ç½®3D æ•°æ®åœ°å€*/
 	HI_S32 (*HIFB_DRV_SetTriDimAddr)(HIFB_LAYER_ID_E enLayerId, HI_U32 u32StereoAddr);  
 
 	/*get capability of gfx*/
-	/*CNcomment:»ñÈ¡Í¼²ãÄÜÁ¦¼¯*/
+	/*CNcomment:è·å–å›¾å±‚èƒ½åŠ›é›†*/
 	HI_S32 (*HIFB_DRV_GetGFXCap)(const HIFB_CAPABILITY_S **pstCap);
 
 	/*pause compression*/
-	/*CNcomment:ÔİÍ£Ñ¹Ëõ*/
+	/*CNcomment:æš‚åœå‹ç¼©*/
 	HI_S32 (*HIFB_DRV_PauseCompression)(HIFB_LAYER_ID_E enLayerId);
 
 	/*resume compression*/
-	/*CNcomment:»Ö¸´Ñ¹Ëõ*/
+	/*CNcomment:æ¢å¤å‹ç¼©*/
 	HI_S32 (*HIFB_DRV_ResumeCompression)(HIFB_LAYER_ID_E enLayerId);
 
 	/*set the priority of layer in gp*/
-	/*CNcomment:ÉèÖÃÍ¼²ãÔÚGP ÖĞµÄÓÅÏÈ¼¶*/
+	/*CNcomment:è®¾ç½®å›¾å±‚åœ¨GP ä¸­çš„ä¼˜å…ˆçº§*/
 	HI_S32 (*HIFB_DRV_SetLayerPriority)(HIFB_LAYER_ID_E enLayerId, HIFB_ZORDER_E enZOrder);
 
 	/*get the priority of layer in gp*/
-	/*CNcomment:»ñÈ¡Í¼²ãÔÚGP ÖĞµÄÓÅÏÈ¼¶*/
+	/*CNcomment:è·å–å›¾å±‚åœ¨GP ä¸­çš„ä¼˜å…ˆçº§*/
 	HI_S32 (*HIFB_DRV_GetLayerPriority)(HIFB_LAYER_ID_E enLayerId, HI_U32 *pU32Priority);
 
 	/*mask layer,  prevent user to operating the layer in  the period of display format changing*/
-	/*CNcomment:ÆÁ±ÎÍ¼²ã£¬×èÖ¹ÓÃ»§¶ÔÍ¼²ãµÄÓ²¼şÉèÖÃ²Ù×÷*/
+	/*CNcomment:å±è”½å›¾å±‚ï¼Œé˜»æ­¢ç”¨æˆ·å¯¹å›¾å±‚çš„ç¡¬ä»¶è®¾ç½®æ“ä½œ*/
 	HI_S32 (*HIFB_DRV_MaskLayer)(HIFB_LAYER_ID_E enLayerId, HI_BOOL bFlag);	
   
 	HI_S32 (*HIFB_DRV_ColorConvert)(const struct fb_var_screeninfo *pstVar, HIFB_COLORKEYEX_S *pCkey);	
@@ -240,26 +240,26 @@ typedef struct
 	HI_S32 (*HIFB_DRV_GetLayerOutRect)(HIFB_LAYER_ID_E enLayerId, HIFB_RECT *pstOutputRect);
 	HI_S32 (*HIFB_DRV_GetLayerInRect)(HIFB_LAYER_ID_E enLayerId, HIFB_RECT *pstOutputRect);  
 	/*set layer screen size*/
-	/*CNcomment:ÉèÖÃÍ¼²ãµÄÊä³öÇøÓò*/
+	/*CNcomment:è®¾ç½®å›¾å±‚çš„è¾“å‡ºåŒºåŸŸ*/
 	HI_S32 (*HIFB_DRV_SetLayerScreenSize)(HIFB_LAYER_ID_E enLayerId, HI_U32 u32Width, HI_U32 u32Height);
 	/*set flag of screensize modified by usr*/
-	/*CNcomment:ÉèÖÃÓÃ»§ĞŞ¸ÄSCREEN µÄ±êÖ¾*/
+	/*CNcomment:è®¾ç½®ç”¨æˆ·ä¿®æ”¹SCREEN çš„æ ‡å¿—*/
 	HI_S32 (*HIFB_DRV_SetScreenFlag)(HIFB_LAYER_ID_E enLayerId, HI_BOOL bFlag);
 	/*Get flag of screensize modified by usr*/
-	/*CNcomment:»ñÈ¡ÓÃ»§ĞŞ¸ÄSCREEN µÄ±êÖ¾*/
+	/*CNcomment:è·å–ç”¨æˆ·ä¿®æ”¹SCREEN çš„æ ‡å¿—*/
 	HI_S32 (*HIFB_DRV_GetScreenFlag)(HIFB_LAYER_ID_E enLayerId);
 
 	/*set flag of screensize modified by usr*/
-	/*CNcomment:ÉèÖÃÓÃ»§ĞŞ¸ÄSCREEN µÄ±êÖ¾*/
+	/*CNcomment:è®¾ç½®ç”¨æˆ·ä¿®æ”¹SCREEN çš„æ ‡å¿—*/
 	HI_S32 (*HIFB_DRV_SetInitScreenFlag)(HIFB_LAYER_ID_E enLayerId, HI_BOOL bFlag);
 	/*Get flag of screensize modified by usr*/
-	/*CNcomment:»ñÈ¡ÓÃ»§ĞŞ¸ÄSCREEN µÄ±êÖ¾*/
+	/*CNcomment:è·å–ç”¨æˆ·ä¿®æ”¹SCREEN çš„æ ‡å¿—*/
 	HI_S32 (*HIFB_DRV_GetInitScreenFlag)(HIFB_LAYER_ID_E enLayerId);
 	/*set gfx mask flag*/
-	/*CNcomment:ÉèÖÃÍ¼ĞÎÆÁ±Î±êÖ¾*/
+	/*CNcomment:è®¾ç½®å›¾å½¢å±è”½æ ‡å¿—*/
 	HI_S32 (*HIFB_DRV_SetLayerMaskFlag)(HIFB_LAYER_ID_E enLayerId, HI_BOOL bFlag);
 	/*Get gfx mask flag*/
-	/*CNcomment:»ñÈ¡Í¼ĞÎÆÁ±Î±êÖ¾*/
+	/*CNcomment:è·å–å›¾å½¢å±è”½æ ‡å¿—*/
 	HI_S32 (*HIFB_DRV_GetLayerMaskFlag)(HIFB_LAYER_ID_E enLayerId);
 
 	HI_S32 (*HIFB_DRV_GetDispSize)(HIFB_LAYER_ID_E enLayerId, HIFB_RECT *pstOutputRect);

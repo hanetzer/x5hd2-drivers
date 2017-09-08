@@ -12,7 +12,7 @@
 #ifdef CFG_SCD_BUF
 #define SCD_MSG_BUFFER  CFG_SCD_BUF
 #else
-#define SCD_MSG_BUFFER  700*1024  // µÍÑÓ³ÙËùÐè²¿·Ö¿Õ¼äÔÚÕâÀïÒ»Æð·ÖÅä
+#define SCD_MSG_BUFFER  700*1024  // ä½Žå»¶è¿Ÿæ‰€éœ€éƒ¨åˆ†ç©ºé—´åœ¨è¿™é‡Œä¸€èµ·åˆ†é…
 #endif
 
 #ifndef SM_RUN_ON_SOFTSCD
@@ -44,9 +44,9 @@ typedef enum {
 
 typedef enum
 {
-    SCDDRV_SLEEP_STAGE_NONE = 0,      // Î´ÐÝÃß
-	SCDDRV_SLEEP_STAGE_PREPARE,       // ÊÕµ½ÐÝÃßÃüÁî£¬µ«»¹Î´Íê³ÉÐÝÃß
-	SCDDRV_SLEEP_STAGE_SLEEP          // ÒÑÐÝÃß
+    SCDDRV_SLEEP_STAGE_NONE = 0,      // æœªä¼‘çœ 
+	SCDDRV_SLEEP_STAGE_PREPARE,       // æ”¶åˆ°ä¼‘çœ å‘½ä»¤ï¼Œä½†è¿˜æœªå®Œæˆä¼‘çœ 
+	SCDDRV_SLEEP_STAGE_SLEEP          // å·²ä¼‘çœ 
 } SCDDRV_SLEEP_STAGE_E;
 
 /* control registers */
@@ -102,13 +102,13 @@ typedef enum
 /*######################################################
        macro & constants
  ######################################################*/
-// ÊµÀý×´Ì¬
+// å®žä¾‹çŠ¶æ€
 #define SM_INST_MODE_IDLE   0
 #define SM_INST_MODE_WORK   1
 #define SM_INST_MODE_WAIT   2
 
 
-// ¼«ÏÞ³£Êý
+// æžé™å¸¸æ•°
 #ifdef CFG_MAX_RAW_NUM
 #define MAX_STREAM_RAW_NUM  CFG_MAX_RAW_NUM
 #else
@@ -119,11 +119,11 @@ typedef enum
 #else
 #define MAX_STREAM_SEG_NUM  (1024 + 128)
 #endif
-#define MIN_STREAM_SEG_NUM      4//×îÐ¡Æô¶¯SCDµÄÏûÏ¢³ØµÄ¸öÊý
+#define MIN_STREAM_SEG_NUM      4//æœ€å°å¯åŠ¨SCDçš„æ¶ˆæ¯æ± çš„ä¸ªæ•°
 #define SM_MAX_SMID             MAX_CHAN_NUM
 #define SM_SCD_UP_INFO_NUM      2
 #ifdef SCD_MP4_SLICE_ENABLE
-#define MAX_SM_SCD_UP_INFO_NUM  3  //MPEG4ÉÏÐÐÏûÏ¢ÇøÊ¹ÓÃ3¸öword£¬ÆäËûÐ­ÒéÊ¹ÓÃ2¸öword£¬È¡×î´óµÄ
+#define MAX_SM_SCD_UP_INFO_NUM  3  //MPEG4ä¸Šè¡Œæ¶ˆæ¯åŒºä½¿ç”¨3ä¸ªwordï¼Œå…¶ä»–åè®®ä½¿ç”¨2ä¸ªwordï¼Œå–æœ€å¤§çš„
 #else
 #define MAX_SM_SCD_UP_INFO_NUM  SM_SCD_UP_INFO_NUM
 #endif
@@ -138,11 +138,11 @@ typedef enum
 #define CA_MN_SIZE           (64*4*1088)
 //end add
 
-#define SM_SEGWASTE_BUF_SIZE  64     //SegÊ£Óà¿Õ¼äÀË·ÑµÄ´óÐ¡
+#define SM_SEGWASTE_BUF_SIZE  64     //Segå‰©ä½™ç©ºé—´æµªè´¹çš„å¤§å°
 
-//#define MIN_BTM_SEG_LEN  (2*1024)  // ÒªÇóWORDÕûÊý±¶, ÓÃÀ´¿½±´¾íÈÆµÄ,ÏÖÔÚÓÃFPGA_SCD_SEG_BLANK_AHB_LEN
-#define MIN_TOP_SEG_LEN  (1*1024)    // ÒªÇóWORDÕûÊý±¶£¬¿ÉÄÜ½âÃ°µÄ
-#define SM_H263_THRESHOLD_NUM 12     //Á¬Ðø¶àÉÙ¸öH263Í·³öÏÖºó¾ÍËã³ÉH263Ä£Ê½
+//#define MIN_BTM_SEG_LEN  (2*1024)  // è¦æ±‚WORDæ•´æ•°å€, ç”¨æ¥æ‹·è´å·ç»•çš„,çŽ°åœ¨ç”¨FPGA_SCD_SEG_BLANK_AHB_LEN
+#define MIN_TOP_SEG_LEN  (1*1024)    // è¦æ±‚WORDæ•´æ•°å€ï¼Œå¯èƒ½è§£å†’çš„
+#define SM_H263_THRESHOLD_NUM 12     //è¿žç»­å¤šå°‘ä¸ªH263å¤´å‡ºçŽ°åŽå°±ç®—æˆH263æ¨¡å¼
 
 #define SM_RAW_DISCARD_SIZE    (1024*1024)
 
@@ -246,8 +246,8 @@ typedef struct
 {
     SINT8    ScdIntMask;
     SINT8    SliceCheckFlag;
-    SINT8    ScdStart;//ÊÇ·ñÆô¶¯Scd
-    SINT32   DownMsgPhyAddr;//¾ÍÊÇÏÂÐÐÏûÏ¢³ØµÄµØÖ·
+    SINT8    ScdStart;//æ˜¯å¦å¯åŠ¨Scd
+    SINT32   DownMsgPhyAddr;//å°±æ˜¯ä¸‹è¡Œæ¶ˆæ¯æ± çš„åœ°å€
     SINT32   *pDownMsgVirAddr;
     SINT32   UpMsgPhyAddr;
     SINT32   *pUpMsgVirAddr;
@@ -300,7 +300,7 @@ typedef struct
     SINT32  SrcEaten;
 }SM_STATEREG_S;
 
-/* MEPG4 ÌØÓÐµÄÓÐÐ§ÉÏÐÐÏûÏ¢ */
+/* MEPG4 ç‰¹æœ‰çš„æœ‰æ•ˆä¸Šè¡Œæ¶ˆæ¯ */
 typedef struct
 {
       USIGN  IsShStreamFlag:        1;
@@ -312,22 +312,22 @@ typedef struct
 } MP4_SCD_UPMSG;
 
 /********************************************************************************
-PhyAddr   ÂëÁ÷Æ¬µÄÎïÀíµØÖ·
-VirAddr   ÂëÁ÷Æ¬µÄÐéÄâµØÖ·
-LenInByte ÂëÁ÷Æ¬µÄ³¤¶È£¬ÒÔ×Ö½ÚÎªµ¥Î»
-StreamID  ÂëÁ÷Æ¬µÄID¡£Ã¿Æ¬Î»ÓÚ»º³åÇøµÄÂëÁ÷¶¼ÓÐÒ»¸öÎ¨Ò»µÄID¡£
-SegState  ÂëÁ÷Æ¬µÄ×´Ì¬
-        0£º  ¿ÕÏÐ£¬´ËÂëÁ÷Æ¬ÎÞÐ§
-        1£º  SCDÒÑ·Ö¸î£¬µ«Î´±»¶Á×ß
-        2£º  ÒÑ¶Á×ß£¬µ«Î´ÊÍ·Å
-        ÆäËü£ºreserved
-IsLastSeg ±êÊ¶ÕâÆ¬ÂëÁ÷ÊÇ·ñÊÇÒ»¸ö½âÂëµ¥ÔªµÄ×îºóÒ»Æ¬ÂëÁ÷
-        0£º    ±¾Æ¬ÂëÁ÷²»ÊÇ×îºóÒ»Æ¬
-        1£º    ±¾Æ¬ÂëÁ÷ÊÇ×îºóÒ»Æ¬
-        other£ºreserved
-        ×¢£ºÒ»¸ö½âÂëµ¥ÔªÊÇÖ¸Ð­Òé²ãÒ»´Î½âÎöµÄÆô¶¯µ¥Ôª£¬¶ÔÓÚH.264Ð­Òé¶øÑÔ£¬
-            ½âÂëµ¥ÔªÊÇNAL£»MPEGÏµÁÐÐ­ÒéµÄ½âÂëµ¥ÔªÔòÊÇpicture
-Pts         ÂëÁ÷µÄÊ±¼ä´Á
+PhyAddr   ç æµç‰‡çš„ç‰©ç†åœ°å€
+VirAddr   ç æµç‰‡çš„è™šæ‹Ÿåœ°å€
+LenInByte ç æµç‰‡çš„é•¿åº¦ï¼Œä»¥å­—èŠ‚ä¸ºå•ä½
+StreamID  ç æµç‰‡çš„IDã€‚æ¯ç‰‡ä½äºŽç¼“å†²åŒºçš„ç æµéƒ½æœ‰ä¸€ä¸ªå”¯ä¸€çš„IDã€‚
+SegState  ç æµç‰‡çš„çŠ¶æ€
+        0ï¼š  ç©ºé—²ï¼Œæ­¤ç æµç‰‡æ— æ•ˆ
+        1ï¼š  SCDå·²åˆ†å‰²ï¼Œä½†æœªè¢«è¯»èµ°
+        2ï¼š  å·²è¯»èµ°ï¼Œä½†æœªé‡Šæ”¾
+        å…¶å®ƒï¼šreserved
+IsLastSeg æ ‡è¯†è¿™ç‰‡ç æµæ˜¯å¦æ˜¯ä¸€ä¸ªè§£ç å•å…ƒçš„æœ€åŽä¸€ç‰‡ç æµ
+        0ï¼š    æœ¬ç‰‡ç æµä¸æ˜¯æœ€åŽä¸€ç‰‡
+        1ï¼š    æœ¬ç‰‡ç æµæ˜¯æœ€åŽä¸€ç‰‡
+        otherï¼šreserved
+        æ³¨ï¼šä¸€ä¸ªè§£ç å•å…ƒæ˜¯æŒ‡åè®®å±‚ä¸€æ¬¡è§£æžçš„å¯åŠ¨å•å…ƒï¼Œå¯¹äºŽH.264åè®®è€Œè¨€ï¼Œ
+            è§£ç å•å…ƒæ˜¯NALï¼›MPEGç³»åˆ—åè®®çš„è§£ç å•å…ƒåˆ™æ˜¯picture
+Pts         ç æµçš„æ—¶é—´æˆ³
 *********************************************************************************/
 typedef struct 
 {
@@ -347,21 +347,21 @@ typedef struct
   UINT32    DispFrameDistance;
   UINT32    DistanceBeforeFirstFrame;
   UINT32    GopNum;
-  /* MEPG4 ÌØÓÐµÄÓÐÐ§ÉÏÐÐÏûÏ¢ */
+  /* MEPG4 ç‰¹æœ‰çš„æœ‰æ•ˆä¸Šè¡Œæ¶ˆæ¯ */
   MP4_SCD_UPMSG stMp4UpMsg;
 }STREAM_SEG_S;
 
 
 /********************************************************************************
 
-RawPacket Ô­Ê¼ÂëÁ÷ÐÅÏ¢µÄ¼ÇÂ¼¿Õ¼ä£¬×î´ó¿É¼ÇÂ¼MAX_RAW_PACKET_NUM¸öÂëÁ÷°üµÄÐÅÏ¢¡£
-Head    µÚÒ»¸öÓÐÐ§¼ÇÂ¼µÄÎ»ÖÃ
-Tail    ×îºóÒ»¸öÓÐÐ§¼ÇÂ¼µÄÎ»ÖÃ
-SegBufPhyAddr ÂëÁ÷Æ¬¶Î»º³åÇøÎïÀíµØÖ·
-pSegBufVirAddr  ÂëÁ÷Æ¬¶Î»º³åÇøÐéÄâµØÖ·
-SegBufSize    ÂëÁ÷Æ¬¶Î»º³åÇø´óÐ¡£¬µ¥Î»£º×Ö½Ú
-SegBufReadAddr  ÂëÁ÷Æ¬¶Î»º³åÇøµÄ¶ÁµØÖ·
-SegBufWriteAddr ÂëÁ÷Æ¬¶Î»º³åÇøµÄÐ´µØÖ·
+RawPacket åŽŸå§‹ç æµä¿¡æ¯çš„è®°å½•ç©ºé—´ï¼Œæœ€å¤§å¯è®°å½•MAX_RAW_PACKET_NUMä¸ªç æµåŒ…çš„ä¿¡æ¯ã€‚
+Head    ç¬¬ä¸€ä¸ªæœ‰æ•ˆè®°å½•çš„ä½ç½®
+Tail    æœ€åŽä¸€ä¸ªæœ‰æ•ˆè®°å½•çš„ä½ç½®
+SegBufPhyAddr ç æµç‰‡æ®µç¼“å†²åŒºç‰©ç†åœ°å€
+pSegBufVirAddr  ç æµç‰‡æ®µç¼“å†²åŒºè™šæ‹Ÿåœ°å€
+SegBufSize    ç æµç‰‡æ®µç¼“å†²åŒºå¤§å°ï¼Œå•ä½ï¼šå­—èŠ‚
+SegBufReadAddr  ç æµç‰‡æ®µç¼“å†²åŒºçš„è¯»åœ°å€
+SegBufWriteAddr ç æµç‰‡æ®µç¼“å†²åŒºçš„å†™åœ°å€
 *********************************************************************************/
 typedef struct {
     UINT8         *pSegBufVirAddr;
@@ -375,27 +375,27 @@ typedef struct {
     SINT32        SegBufReadAddr;
     SINT32        SegBufWriteAddr;
 
-    SINT32        SegTotalSize;    /* SegTotalSize:  Insert¼Ó, Release¼õ */
-    SINT32        SegFreshSize;    /* SegFreshSize:  Insert¼Ó, Read¼õ */
+    SINT32        SegTotalSize;    /* SegTotalSize:  InsertåŠ , Releaseå‡ */
+    SINT32        SegFreshSize;    /* SegFreshSize:  InsertåŠ , Readå‡ */
     SINT32        SegFreshNum;    
 } SEG_ARRAY_S;
 
 
 /********************************************************************************
-Mode  Ö¸¶¨ÅäÖÃºóSMÊµÀýµÄ¹¤×÷Ä£Ê½¡£
-        0£º·Ç¹¤×÷Ä£Ê½
-        1£º¹¤×÷Ä£Ê½
-        Èç¹ûMode£½0±íÃ÷Íâ²¿Ä£¿éÏ£ÍûÕâ¸öSMÊµÀýÍ£Ö¹¹¤×÷£¬ÕâÖÖÇé¿öÏÂÖ»Ðè¹Ø±Õ´ËÊµÀý£¬ÆäËü³ÉÔ±µÄÈ¡Öµ±»ºöÂÔ¡£
-Priority    ÓÅÏÈ¼¶
-            ÓÅÏÈ¼¶Í¨³£ÊÇÒ»¸ö´óÓÚÁãµÄÕûÊý£¬ÊýÖµÔ½´óÓÅÏÈ¼¶Ô½¸ß¡£
-            0´ú±í"ÎÞÈ¨ÏÞ"£¬¼´ÎÞÓÅÏÈ¼¶£¬ÈÎºÎÊ±ºò¶¼²»»á±»µ÷¶È¡£
-VidStd  VID_STD_E ÊÓÆµÐ­ÒéÀàÐÍ¡£ÓÉÓÚÊÓÆµÐ­ÒéµÄ¶àÑùÐÔ£¬ÔÚÂëÁ÷ÇÐ·ÖºÍ¹ÜÀíÖÐ¿ÉÄÜ´æÔÚÓëÐ­ÒéÏà¹ØµÄ²Ù×÷£¬Õâ¸ö²ÎÊýÖ¸¶¨Ð­ÒéÀàÐÍ¡£
-DownMsgAddr ÏÂÐÐÏûÏ¢£¨ÂëÁ÷Á´£©µÄÎïÀíµØÖ·
-DownMsgSize ÏÂÐÐÏûÏ¢µÄ´óÐ¡£¨×Ö½ÚÊý£©
-UpMsgAddr   ÉÏÐÐÏûÏ¢£¨ÆðÊ¼ÂëµØÖ·¼¯£©µÄÎïÀíµØÖ·
-UpMsgSize   ÉÏÐÐÏûÏ¢µÄ´óÐ¡£¨×Ö½ÚÊý£©
-SegBufAddr  ÂëÁ÷»º³åÇøµÄÎïÀíµØÖ·¡£Õâ¸ö»º³åÇøÖÐ´æ·ÅµÄÊÇ±»SCD£¨»òÆäËüµÈÐ§Ä£¿é£©ÇÐ¸îºÃµÄÂëÁ÷¡£»º³åÇøµØÖ··ÖÎªÎïÀíµØÖ·ºÍÐéÄâµØÖ·£¬ÊÇÎªÁËÊÊÓ¦Ä³Ð©²Ù×÷ÏµÍ³£¨±ÈÈçLinux£©µÄÌØµã£¬ÔÚÆäËü²Ù×÷ÏµÍ³ÖÐ£¬ÐéÄâµØÖ·ºÍÎïÀíµØÖ·±»ÖÃ³ÉÍ¬Ò»¸öÖµ¼´¿É¡£
-SegBufSize  »º³åÇøµÄ´óÐ¡£¬ÒÔ×Ö½ÚÎªµ¥Î»¡£
+Mode  æŒ‡å®šé…ç½®åŽSMå®žä¾‹çš„å·¥ä½œæ¨¡å¼ã€‚
+        0ï¼šéžå·¥ä½œæ¨¡å¼
+        1ï¼šå·¥ä½œæ¨¡å¼
+        å¦‚æžœModeï¼0è¡¨æ˜Žå¤–éƒ¨æ¨¡å—å¸Œæœ›è¿™ä¸ªSMå®žä¾‹åœæ­¢å·¥ä½œï¼Œè¿™ç§æƒ…å†µä¸‹åªéœ€å…³é—­æ­¤å®žä¾‹ï¼Œå…¶å®ƒæˆå‘˜çš„å–å€¼è¢«å¿½ç•¥ã€‚
+Priority    ä¼˜å…ˆçº§
+            ä¼˜å…ˆçº§é€šå¸¸æ˜¯ä¸€ä¸ªå¤§äºŽé›¶çš„æ•´æ•°ï¼Œæ•°å€¼è¶Šå¤§ä¼˜å…ˆçº§è¶Šé«˜ã€‚
+            0ä»£è¡¨"æ— æƒé™"ï¼Œå³æ— ä¼˜å…ˆçº§ï¼Œä»»ä½•æ—¶å€™éƒ½ä¸ä¼šè¢«è°ƒåº¦ã€‚
+VidStd  VID_STD_E è§†é¢‘åè®®ç±»åž‹ã€‚ç”±äºŽè§†é¢‘åè®®çš„å¤šæ ·æ€§ï¼Œåœ¨ç æµåˆ‡åˆ†å’Œç®¡ç†ä¸­å¯èƒ½å­˜åœ¨ä¸Žåè®®ç›¸å…³çš„æ“ä½œï¼Œè¿™ä¸ªå‚æ•°æŒ‡å®šåè®®ç±»åž‹ã€‚
+DownMsgAddr ä¸‹è¡Œæ¶ˆæ¯ï¼ˆç æµé“¾ï¼‰çš„ç‰©ç†åœ°å€
+DownMsgSize ä¸‹è¡Œæ¶ˆæ¯çš„å¤§å°ï¼ˆå­—èŠ‚æ•°ï¼‰
+UpMsgAddr   ä¸Šè¡Œæ¶ˆæ¯ï¼ˆèµ·å§‹ç åœ°å€é›†ï¼‰çš„ç‰©ç†åœ°å€
+UpMsgSize   ä¸Šè¡Œæ¶ˆæ¯çš„å¤§å°ï¼ˆå­—èŠ‚æ•°ï¼‰
+SegBufAddr  ç æµç¼“å†²åŒºçš„ç‰©ç†åœ°å€ã€‚è¿™ä¸ªç¼“å†²åŒºä¸­å­˜æ”¾çš„æ˜¯è¢«SCDï¼ˆæˆ–å…¶å®ƒç­‰æ•ˆæ¨¡å—ï¼‰åˆ‡å‰²å¥½çš„ç æµã€‚ç¼“å†²åŒºåœ°å€åˆ†ä¸ºç‰©ç†åœ°å€å’Œè™šæ‹Ÿåœ°å€ï¼Œæ˜¯ä¸ºäº†é€‚åº”æŸäº›æ“ä½œç³»ç»Ÿï¼ˆæ¯”å¦‚Linuxï¼‰çš„ç‰¹ç‚¹ï¼Œåœ¨å…¶å®ƒæ“ä½œç³»ç»Ÿä¸­ï¼Œè™šæ‹Ÿåœ°å€å’Œç‰©ç†åœ°å€è¢«ç½®æˆåŒä¸€ä¸ªå€¼å³å¯ã€‚
+SegBufSize  ç¼“å†²åŒºçš„å¤§å°ï¼Œä»¥å­—èŠ‚ä¸ºå•ä½ã€‚
 *********************************************************************************/
 typedef struct 
 {
@@ -406,13 +406,13 @@ typedef struct
 
     SINT32        BufPhyAddr;
     SINT32        BufSize;
-    /*¼Ä´æÆ÷ÎïÀí»ùµØÖ·*/
+    /*å¯„å­˜å™¨ç‰©ç†åŸºåœ°å€*/
     SINT32        RegPhyBaseAddr;
-    STD_EXTENSION_U    StdExt;        /*À©Õ¹ÐÅÏ¢£¬VC1Ïà¹ØµÄÊÇÂëÁ÷ÊÇ·ñÎªAP ºÍ°æ±¾ÐÅÏ¢*/
-    UINT32        LastRawDisContinueCount; /* ÓÃÀ´ÅÐ¶ÏÊÇ·ñ·¢Éúraw°üDisContinueCount±ä»¯ £¬³õÊ¼»¯Îª-1 */
-    SINT32        DisContinueRawPacketFlag; /* 0: Î´·¢Éú£»1: ·¢Éú£»2: ·¢ÉúºóÖØÐÂ¿ªÊ¼£¬Ðè±»ÔÙ´Î»Øµ½0×´Ì¬ */
-    SINT32        ScdLowdlyEnable;          /* 0: µÍÑÓ³ÙÎ´Ê¹ÄÜ; 1: µÍÑÓ³ÙÊ¹ÄÜ */
-    STREAM_DATA_S DisContinueRawPacket; /* ¼ÇÂ¼·¢Éúraw°üdiscontinueÊ±µÄ×îÐÂÒ»°ü£¬ÓÃÒÔºóÐø´Ó´Ë°ü¿ªÊ¼½âÂë */
+    STD_EXTENSION_U    StdExt;        /*æ‰©å±•ä¿¡æ¯ï¼ŒVC1ç›¸å…³çš„æ˜¯ç æµæ˜¯å¦ä¸ºAP å’Œç‰ˆæœ¬ä¿¡æ¯*/
+    UINT32        LastRawDisContinueCount; /* ç”¨æ¥åˆ¤æ–­æ˜¯å¦å‘ç”ŸrawåŒ…DisContinueCountå˜åŒ– ï¼Œåˆå§‹åŒ–ä¸º-1 */
+    SINT32        DisContinueRawPacketFlag; /* 0: æœªå‘ç”Ÿï¼›1: å‘ç”Ÿï¼›2: å‘ç”ŸåŽé‡æ–°å¼€å§‹ï¼Œéœ€è¢«å†æ¬¡å›žåˆ°0çŠ¶æ€ */
+    SINT32        ScdLowdlyEnable;          /* 0: ä½Žå»¶è¿Ÿæœªä½¿èƒ½; 1: ä½Žå»¶è¿Ÿä½¿èƒ½ */
+    STREAM_DATA_S DisContinueRawPacket; /* è®°å½•å‘ç”ŸrawåŒ…discontinueæ—¶çš„æœ€æ–°ä¸€åŒ…ï¼Œç”¨ä»¥åŽç»­ä»Žæ­¤åŒ…å¼€å§‹è§£ç  */
 }SM_CFG_S;
 
 
@@ -454,20 +454,20 @@ typedef struct
 
 
 /********************************************************************************
- SMÊµÀýµÄÐÅÏ¢½á¹¹£¬ÓÃÓÚ¶ÔÍâ´«µÝÄÚ²¿ÐÅÏ¢£¬ÔÚGetInfo()½Ó¿ÚÖÐÊ¹ÓÃ
+ SMå®žä¾‹çš„ä¿¡æ¯ç»“æž„ï¼Œç”¨äºŽå¯¹å¤–ä¼ é€’å†…éƒ¨ä¿¡æ¯ï¼Œåœ¨GetInfo()æŽ¥å£ä¸­ä½¿ç”¨
 *********************************************************************************/
 typedef struct {
-    SINT8         InstMode;      /* 0: ·Ç¹¤×÷Ä£Ê½,  1: ¹¤×÷Ä£Ê½   */
-    SINT32        RawNum;        /* Ô­Ê¼ÂëÁ÷°üÊýÄ¿                */
-    SINT32        SegNum;        /* Ô­Ê¼ÂëÁ÷Êý¾Ý×ÜÁ¿              */
-    SINT32        TotalRawSize;  /* ÒÑÇÐ¸îµÄÂëÁ÷Æ¬¶ÎÊýÄ¿          */
-    SINT32        TotalSegSize;  /* ÒÑÇÐ¸îµÄÂëÁ÷Æ¬¶ÎÊý¾Ý×ÜÁ¿      */
+    SINT8         InstMode;      /* 0: éžå·¥ä½œæ¨¡å¼,  1: å·¥ä½œæ¨¡å¼   */
+    SINT32        RawNum;        /* åŽŸå§‹ç æµåŒ…æ•°ç›®                */
+    SINT32        SegNum;        /* åŽŸå§‹ç æµæ•°æ®æ€»é‡              */
+    SINT32        TotalRawSize;  /* å·²åˆ‡å‰²çš„ç æµç‰‡æ®µæ•°ç›®          */
+    SINT32        TotalSegSize;  /* å·²åˆ‡å‰²çš„ç æµç‰‡æ®µæ•°æ®æ€»é‡      */
 
-    SINT32        numReadSegFail;  /* Á¬Ðø¶Á²»µ½segµÄ¼ÆÊý */
+    SINT32        numReadSegFail;  /* è¿žç»­è¯»ä¸åˆ°segçš„è®¡æ•° */
 } SM_INST_INFO_S;
 
 /********************************************************************************
- Ã¿´ÎËÍÈëScdµÄRawÂëÁ÷µÄÊôÐÔ£¬ÐèÒªºóÃæSegStream´òPtsÊ¹ÓÃ
+ æ¯æ¬¡é€å…¥Scdçš„Rawç æµçš„å±žæ€§ï¼Œéœ€è¦åŽé¢SegStreamæ‰“Ptsä½¿ç”¨
 *********************************************************************************/
 typedef struct 
 {
@@ -476,7 +476,7 @@ typedef struct
     UINT32    CurrStartPhyAddr;
     UINT32    CurrEndPhyAddr;
     SINT32    Length;
-    SINT32    TotalLen;//´ÓµÚ0°üµ½µ±Ç°°üµÄÀÛ¼Æ³¤¶È
+    SINT32    TotalLen;//ä»Žç¬¬0åŒ…åˆ°å½“å‰åŒ…çš„ç´¯è®¡é•¿åº¦
     UINT64    Pts;    
 } SM_PUSHRAWPACKET_S;
 
@@ -484,7 +484,7 @@ typedef struct
 {
     SINT32             PushRawNum;
     SINT32             PushRawTotalLen;
-    SINT32             PushRawOver; // 0:³õÊ¼×´Ì¬£»1:ÕýÔÚÆô¶¯SCD´¦Àí£»2:Íê³ÉSCD´¦Àí£»3:±¾´ÎÆô¶¯ÓÉÓÚseekPTS±»ÖÃÎªÎÞÐ§
+    SINT32             PushRawOver; // 0:åˆå§‹çŠ¶æ€ï¼›1:æ­£åœ¨å¯åŠ¨SCDå¤„ç†ï¼›2:å®ŒæˆSCDå¤„ç†ï¼›3:æœ¬æ¬¡å¯åŠ¨ç”±äºŽseekPTSè¢«ç½®ä¸ºæ— æ•ˆ
 }SM_PUSHRAW_S;
 
 typedef enum
@@ -496,26 +496,26 @@ typedef enum
 
 typedef struct 
 {
-    UINT8    *pSegBufVirAddr;//Seg BufferµÄÐéÄâµØÖ·,È¡Êý¾ÝÊ±Ê¹ÓÃ
-    SINT32    *pScdUpMsg;      //±»¹ýÂËµÄÉÏÐÐÏûÏ¢µÄµØÖ·
+    UINT8    *pSegBufVirAddr;//Seg Bufferçš„è™šæ‹Ÿåœ°å€,å–æ•°æ®æ—¶ä½¿ç”¨
+    SINT32    *pScdUpMsg;      //è¢«è¿‡æ»¤çš„ä¸Šè¡Œæ¶ˆæ¯çš„åœ°å€
     SINT32    ProtocolType;
-    SINT32    ModeFlag;       //0:ÔÚ·ÇMpeg4Ä£Ê½; 1:ÉÏÒ»´Î²»ÊÇH263Ä£Ê½, 2:ÉÏÒ»´ÎÊÇH263Ä£Ê½
-    SINT32    LastH263Num;    //ÉÏÒ»´Î½âÂëÁ¬ÐøÎªH263Í·µÄÊýÁ¿
+    SINT32    ModeFlag;       //0:åœ¨éžMpeg4æ¨¡å¼; 1:ä¸Šä¸€æ¬¡ä¸æ˜¯H263æ¨¡å¼, 2:ä¸Šä¸€æ¬¡æ˜¯H263æ¨¡å¼
+    SINT32    LastH263Num;    //ä¸Šä¸€æ¬¡è§£ç è¿žç»­ä¸ºH263å¤´çš„æ•°é‡
     SINT32    SegBufPhyAddr;
     SINT32    SegBufSize;
     SINT32    SegBufRollAddr;
-    SINT32    SegNum;         //±»¹ýÂËµÄSegStream¹²ÓÐ¶àÉÙ°ü
+    SINT32    SegNum;         //è¢«è¿‡æ»¤çš„SegStreamå…±æœ‰å¤šå°‘åŒ…
 }SM_SEGSTREAMFILTER_S;
 
 typedef struct 
 {
     SINT8          SegFullFlag;
     SINT8          IsCounting;
-    SINT8          LastCfgAllRawFlag; // 1 : ¸ÃÊµÀýÉÏ´ÎÆô¶¯SCDÊ±¶ÔËùÓÐµÄRAWÂëÁ÷¶¼½øÐÐÁËÅäÖÃ´¦Àí£¬¸Ã±êÖ¾Î»ÔÚÃ¿´ÎSCDÆô¶¯Ê±½øÐÐÅÐ¶Ï¸³Öµ
-    SINT8          InsertNewSegFlag; // 1 : ¸ÃÊµÀýSCD´¦ÀíºóÓÐÐÂµÄSEGÂëÁ÷£¬¸Ã±êÖ¾Î»»áÔÚÃ¿´ÎSCDÖÐ¶ÏÖÐ½øÐÐ¸üÐÂ£¬SCDÆô¶¯ºóÇå0
-    SINT8          FillNewRawFlag; // 1 : ¸ÃÊµÀýÉÏ´ÎSCD´¦ÀíºóÓÖÓÐÐÂµÄRAWÂëÁ÷£¬¸Ã±êÖ¾Î»»áÔÚÃ¿´ÎSCDÆô¶¯ºóÇå0
+    SINT8          LastCfgAllRawFlag; // 1 : è¯¥å®žä¾‹ä¸Šæ¬¡å¯åŠ¨SCDæ—¶å¯¹æ‰€æœ‰çš„RAWç æµéƒ½è¿›è¡Œäº†é…ç½®å¤„ç†ï¼Œè¯¥æ ‡å¿—ä½åœ¨æ¯æ¬¡SCDå¯åŠ¨æ—¶è¿›è¡Œåˆ¤æ–­èµ‹å€¼
+    SINT8          InsertNewSegFlag; // 1 : è¯¥å®žä¾‹SCDå¤„ç†åŽæœ‰æ–°çš„SEGç æµï¼Œè¯¥æ ‡å¿—ä½ä¼šåœ¨æ¯æ¬¡SCDä¸­æ–­ä¸­è¿›è¡Œæ›´æ–°ï¼ŒSCDå¯åŠ¨åŽæ¸…0
+    SINT8          FillNewRawFlag; // 1 : è¯¥å®žä¾‹ä¸Šæ¬¡SCDå¤„ç†åŽåˆæœ‰æ–°çš„RAWç æµï¼Œè¯¥æ ‡å¿—ä½ä¼šåœ¨æ¯æ¬¡SCDå¯åŠ¨åŽæ¸…0
     SINT8          IsWaitSCD;
-    SM_SEGSTREAMFILTER_S SegFilter;//Ö»ÔÚMpeg4µÄÇé¿öÏÂÊ¹ÓÃ
+    SM_SEGSTREAMFILTER_S SegFilter;//åªåœ¨Mpeg4çš„æƒ…å†µä¸‹ä½¿ç”¨
     SM_CFG_S       Config;
     RAW_ARRAY_S    RawPacketArray;
     SEG_ARRAY_S    StreamSegArray;
@@ -523,21 +523,21 @@ typedef struct
     SM_BUFFERCFG_S BufAddrCfg;
     SINT32         InstID;
     SINT32         Mode;
-    SINT32         TransFormSeg[MAX_STREAM_SEG_NUM * MAX_SM_SCD_UP_INFO_NUM]; //±ä»»ºóµÄSegÆ¬¶Ï,Ö»ÔÚMpeg4µÄÇé¿öÏÂ¿ÉÄÜÓëÉÏÐÐÏûÏ¢²»Ò»Ñù,ÆäËüÐ­Òé¶¼ÊÇÒ»ÑùµÄ
-    UINT32         BlockTimeInMs;  // ±»×èÈûµÄÊ±¼ä£¬µ¥Î»ms
-    UINT32         LastBlockTime;  // ÉÏÒ»´Î±»×èÈûµÄÊ±¼ä(ÏµÍ³Ê±¼ä)£¬ÓÃÓÚºóÐøË¢ÐÂ×èÈûÊ±¼ä
-    UINT64         LastPts;//Èç¹û±¾´ÎµÄPtsÓëÉÏ´ÎÏàÍ¬Ôò´òÉÏ-1 
+    SINT32         TransFormSeg[MAX_STREAM_SEG_NUM * MAX_SM_SCD_UP_INFO_NUM]; //å˜æ¢åŽçš„Segç‰‡æ–­,åªåœ¨Mpeg4çš„æƒ…å†µä¸‹å¯èƒ½ä¸Žä¸Šè¡Œæ¶ˆæ¯ä¸ä¸€æ ·,å…¶å®ƒåè®®éƒ½æ˜¯ä¸€æ ·çš„
+    UINT32         BlockTimeInMs;  // è¢«é˜»å¡žçš„æ—¶é—´ï¼Œå•ä½ms
+    UINT32         LastBlockTime;  // ä¸Šä¸€æ¬¡è¢«é˜»å¡žçš„æ—¶é—´(ç³»ç»Ÿæ—¶é—´)ï¼Œç”¨äºŽåŽç»­åˆ·æ–°é˜»å¡žæ—¶é—´
+    UINT64         LastPts;//å¦‚æžœæœ¬æ¬¡çš„Ptsä¸Žä¸Šæ¬¡ç›¸åŒåˆ™æ‰“ä¸Š-1 
     SINT32         PrevCfgRawSize;
     SINT32         PrevCfgSegSize;
 
-	/* Í³¼ÆÂëÂÊ */
+	/* ç»Ÿè®¡ç çŽ‡ */
 	SINT32         TotalRawSize;
-	UINT32         LastStatTime; //ÓÃÓÚÍ³¼ÆÂëÂÊµÄÊ±¼ä
-	UINT32         BitRate;  // ÂëÂÊ, µ¥Î»Kbps
+	UINT32         LastStatTime; //ç”¨äºŽç»Ÿè®¡ç çŽ‡çš„æ—¶é—´
+	UINT32         BitRate;  // ç çŽ‡, å•ä½Kbps
 
-    /* ÆäËüÍ³¼ÆÐÅÏ¢ */
+    /* å…¶å®ƒç»Ÿè®¡ä¿¡æ¯ */
     SINT32         numReadSegFail;
-    SINT32         LastSCDStartTime; //ÉÏ´ÎÆô¶¯SCD´¦ÀíµÄÊ±¼ä£¬µ¥Î» ºÁÃë
+    SINT32         LastSCDStartTime; //ä¸Šæ¬¡å¯åŠ¨SCDå¤„ç†çš„æ—¶é—´ï¼Œå•ä½ æ¯«ç§’
 
     UINT32         UpMsgStepNum;
 } SM_INSTANCE_S;
@@ -556,7 +556,7 @@ typedef struct hiSCD_DRV_MEM_S
     SINT32        *pUpMsgMemVirAddr;
     SINT32         UpMsgMemSize;
 //add by l00225186 2013-04-15  3716cv200
-//sps pps ÐèÒªÓëÍ¨µÀÏà¹Ø
+//sps pps éœ€è¦ä¸Žé€šé“ç›¸å…³
 /*
 	SINT32         DspSpsMsgMemAddr;
 	SINT32         *pDspSpsMsgMemVirAddr;
@@ -583,7 +583,7 @@ typedef struct hiSCD_DRV_MEM_S
 } SCD_DRV_MEM_S;
 
 /* 
-    µÍÑÓ³ÙËùÐèÒªÎ¬»¤SPS,PPSÐÅÏ¢µÄDDT MEM ÃèÊö
+    ä½Žå»¶è¿Ÿæ‰€éœ€è¦ç»´æŠ¤SPS,PPSä¿¡æ¯çš„DDT MEM æè¿°
 */
 typedef struct 
 {
@@ -599,13 +599,13 @@ typedef struct
 }DSP_CTX_MEM_S;
 
 /********************************************************************************
-SmInstArray     SMÊµÀýÊý×é£¬¼ÇÂ¼ËùÓÐÊµÀýµÄÐÅÏ¢
-SmInstPriority  SM¸÷ÊµÀýµÄÓÅÏÈ¼¶
-          0´ú±í×î¸ßÓÅÏÈ¼¶£¬1´ÎÖ®£¬ÒÀ´ÎÀàÍÆ
-ThisInstID    µ±Ç°SCDÕýÔÚ´¦ÀíµÄÊµÀý±àºÅ
-ScdState    SCDµÄ¹¤×÷×´Ì¬£º
-          0£º¿ÕÏÐ£¨Î´Æô¶¯£©
-          1£ºÔËÐÐ£¨ÕýÔÚÔËÐÐÖÐ£©
+SmInstArray     SMå®žä¾‹æ•°ç»„ï¼Œè®°å½•æ‰€æœ‰å®žä¾‹çš„ä¿¡æ¯
+SmInstPriority  SMå„å®žä¾‹çš„ä¼˜å…ˆçº§
+          0ä»£è¡¨æœ€é«˜ä¼˜å…ˆçº§ï¼Œ1æ¬¡ä¹‹ï¼Œä¾æ¬¡ç±»æŽ¨
+ThisInstID    å½“å‰SCDæ­£åœ¨å¤„ç†çš„å®žä¾‹ç¼–å·
+ScdState    SCDçš„å·¥ä½œçŠ¶æ€ï¼š
+          0ï¼šç©ºé—²ï¼ˆæœªå¯åŠ¨ï¼‰
+          1ï¼šè¿è¡Œï¼ˆæ­£åœ¨è¿è¡Œä¸­ï¼‰
 *********************************************************************************/
 typedef struct {
     SCD_DRV_MEM_S       ScdDrvMem;
@@ -634,148 +634,148 @@ VOID SCDDRV_ExitSleep(VOID);
     part1.    raw stream management module
 ========================================================================*/
 /*********************************************************************************
-    º¯ÊýÔ­ÐÍ
+    å‡½æ•°åŽŸåž‹
       SINT32 ResetSCD(VOID)
-    ¹¦ÄÜÃèÊö
-      ¸´Î»SCDÓ²¼þ
-    ²ÎÊýËµÃ÷
-      ÎÞ
-    ·µ»ØÖµ
-      ÎÞ
-    Ëã·¨ÃèÊö
-      ÂÔ
+    åŠŸèƒ½æè¿°
+      å¤ä½SCDç¡¬ä»¶
+    å‚æ•°è¯´æ˜Ž
+      æ— 
+    è¿”å›žå€¼
+      æ— 
+    ç®—æ³•æè¿°
+      ç•¥
 *********************************************************************************/
 SINT32 ResetSCD(VOID);
 
 /************************************************************************
-  Ô­ÐÍ  VOID ResetRawStreamArray( RAW_ARRAY_S *pRawStreamArray )
-  ¹¦ÄÜ  ½«Ò»×éÔ­Ê¼ÂëÁ÷¼¯ºÏ¸´Î»£¬Çå³ýÆäÖÐËùÓÐ¼ÇÂ¼
-  ²ÎÊý  pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-  ·µ»ØÖµ  ÎÞ
+  åŽŸåž‹  VOID ResetRawStreamArray( RAW_ARRAY_S *pRawStreamArray )
+  åŠŸèƒ½  å°†ä¸€ç»„åŽŸå§‹ç æµé›†åˆå¤ä½ï¼Œæ¸…é™¤å…¶ä¸­æ‰€æœ‰è®°å½•
+  å‚æ•°  pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+  è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID ResetRawStreamArray( RAW_ARRAY_S *pRawStreamArray );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 InsertRawPacket( RAW_ARRAY_S *pRawStreamArray, RAW_PACKET_S *pRawPacket )
-  ¹¦ÄÜ  ½«Ò»¸öÔ­Ê¼ÂëÁ÷°ü²åÈëµ½Ö¸¶¨µÄÂëÁ÷¼¯ºÏ
-  ²ÎÊý  pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-        pRawPacket  Ö¸ÏòÔ­Ê¼ÂëÁ÷°ü
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 InsertRawPacket( RAW_ARRAY_S *pRawStreamArray, RAW_PACKET_S *pRawPacket )
+  åŠŸèƒ½  å°†ä¸€ä¸ªåŽŸå§‹ç æµåŒ…æ’å…¥åˆ°æŒ‡å®šçš„ç æµé›†åˆ
+  å‚æ•°  pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+        pRawPacket  æŒ‡å‘åŽŸå§‹ç æµåŒ…
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 InsertRawPacket( RAW_ARRAY_S *pRawStreamArray, STREAM_DATA_S *pRawPacket );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 GetRawIsFull(SINT32 SmID)
-  ¹¦ÄÜ  µÃµ½Raw BufferÄÜ·ñ²åÈëµÄ×´Ì¬
-  ²ÎÊý  SmID  ÂëÁ÷¹ÜÀíÄ£¿éµÄÊµÀýµÄ±êÊ¶
-  ·µ»ØÖµ  ¿ÉÒÔ²åÈëRaw Packet¾Í·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 GetRawIsFull(SINT32 SmID)
+  åŠŸèƒ½  å¾—åˆ°Raw Bufferèƒ½å¦æ’å…¥çš„çŠ¶æ€
+  å‚æ•°  SmID  ç æµç®¡ç†æ¨¡å—çš„å®žä¾‹çš„æ ‡è¯†
+  è¿”å›žå€¼  å¯ä»¥æ’å…¥Raw Packetå°±è¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 GetRawState(SINT32 SmID);
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 SetFirstOffset( RAW_ARRAY_S *pRawStreamArray, SINT32 Offset )
-  ¹¦ÄÜ  ÉèÖÃµÚÒ»¸öÂëÁ÷°üµÄÓÐÐ§×Ö½ÚÆ«ÒÆ
-  ²ÎÊý  pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-    Offset  µÚÒ»¸öÊý¾Ý°üµÄÓÐÐ§×Ö½ÚÆ«ÒÆÁ¿
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 SetFirstOffset( RAW_ARRAY_S *pRawStreamArray, SINT32 Offset )
+  åŠŸèƒ½  è®¾ç½®ç¬¬ä¸€ä¸ªç æµåŒ…çš„æœ‰æ•ˆå­—èŠ‚åç§»
+  å‚æ•°  pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+    Offset  ç¬¬ä¸€ä¸ªæ•°æ®åŒ…çš„æœ‰æ•ˆå­—èŠ‚åç§»é‡
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 SetFirstOffset( RAW_ARRAY_S *pRawStreamArray, SINT32 Offset );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 GetFirstOffset( RAW_ARRAY_S *pRawStreamArray, SINT32 *pOffset )
-  ¹¦ÄÜ  »ñÈ¡µÚÒ»¸öÂëÁ÷°üµÄÓÐÐ§×Ö½ÚÆ«ÒÆ
-  ²ÎÊý  pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-        pOffset µÚÒ»¸öÊý¾Ý°üµÄÓÐÐ§×Ö½ÚÆ«ÒÆÁ¿
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 GetFirstOffset( RAW_ARRAY_S *pRawStreamArray, SINT32 *pOffset )
+  åŠŸèƒ½  èŽ·å–ç¬¬ä¸€ä¸ªç æµåŒ…çš„æœ‰æ•ˆå­—èŠ‚åç§»
+  å‚æ•°  pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+        pOffset ç¬¬ä¸€ä¸ªæ•°æ®åŒ…çš„æœ‰æ•ˆå­—èŠ‚åç§»é‡
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 GetFirstOffset( RAW_ARRAY_S *pRawStreamArray, SINT32 *pOffset );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 ShowFirstRawPacket( RAW_ARRAY_S *pRawStreamArray, RAW_PACKET_S *pRawPacket )
-  ¹¦ÄÜ  ²é¿´Ö¸¶¨µÄÂëÁ÷¼¯ºÏÖÐµÄµÚÒ»¸öÂëÁ÷°üÐÅÏ¢¡£
-  ²ÎÊý  pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-        pRawPacket  Ö¸ÏòÔ­Ê¼ÂëÁ÷°üµÄ½á¹¹£¬ÓÃÓÚ½ÓÊÕÂëÁ÷°üÐÅÏ¢
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 ShowFirstRawPacket( RAW_ARRAY_S *pRawStreamArray, RAW_PACKET_S *pRawPacket )
+  åŠŸèƒ½  æŸ¥çœ‹æŒ‡å®šçš„ç æµé›†åˆä¸­çš„ç¬¬ä¸€ä¸ªç æµåŒ…ä¿¡æ¯ã€‚
+  å‚æ•°  pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+        pRawPacket  æŒ‡å‘åŽŸå§‹ç æµåŒ…çš„ç»“æž„ï¼Œç”¨äºŽæŽ¥æ”¶ç æµåŒ…ä¿¡æ¯
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 ShowFirstRawPacket( RAW_ARRAY_S *pRawStreamArray, STREAM_DATA_S *pRawPacket );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 ShowNextRawPacket( RAW_ARRAY_S *pRawStreamArray, RAW_PACKET_S *pRawPacket )
-  ¹¦ÄÜ  "Next"ÊÇÏà¶ÔÓÚÉÏÒ»´Îµ÷ÓÃShow¡­º¯Êý¶øÑÔµÄ¡£±¾º¯ÊýÓëShowFirstRawPacket()½áºÏ¿É²é¿´ËùÓÐÂëÁ÷°üµÄÐÅÏ¢¡£
-  ²ÎÊý  pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-        pRawPacket  Ö¸ÏòÔ­Ê¼ÂëÁ÷°üµÄ½á¹¹£¬ÓÃÓÚ½ÓÊÕÂëÁ÷°üÐÅÏ¢
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 ShowNextRawPacket( RAW_ARRAY_S *pRawStreamArray, RAW_PACKET_S *pRawPacket )
+  åŠŸèƒ½  "Next"æ˜¯ç›¸å¯¹äºŽä¸Šä¸€æ¬¡è°ƒç”¨Showâ€¦å‡½æ•°è€Œè¨€çš„ã€‚æœ¬å‡½æ•°ä¸ŽShowFirstRawPacket()ç»“åˆå¯æŸ¥çœ‹æ‰€æœ‰ç æµåŒ…çš„ä¿¡æ¯ã€‚
+  å‚æ•°  pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+        pRawPacket  æŒ‡å‘åŽŸå§‹ç æµåŒ…çš„ç»“æž„ï¼Œç”¨äºŽæŽ¥æ”¶ç æµåŒ…ä¿¡æ¯
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 ShowNextRawPacket( RAW_ARRAY_S *pRawStreamArray, STREAM_DATA_S *pRawPacket );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 DeleteRawPacket( RAW_ARRAY_S *pRawStreamArray, UINT32 DelNum )
-  ¹¦ÄÜ  ´ÓµÚÒ»ÂëÁ÷°ü¿ªÊ¼£¬Á¬ÐøÉ¾³ýDelNum¸öÂëÁ÷°ü¡£
-          ÓÉÓÚÓÐÂëÁ÷Æ¬¶Î»º³åÇøµÄ´æÔÚ£¬Ô­Ê¼ÂëÁ÷ÎÞÐèÂÒÐòÊÍ·Å£¬ËùÒÔÔ­Ê¼ÂëÁ÷
-      ¹ÜÀíÄ£¿é¿ÉÒÔÖ»Ö§³Ö°´²åÈëË³ÐòÊÍ·Å¡£ÂëÁ÷°ü´ÓÔ­Ê¼ÂëÁ÷¼¯ÖÐÉ¾³ýµÄÍ¬Ê±£¬
-      Ò²»áµ÷ÓÃMPPµÄ½Ó¿ÚÍ¨ÖªÍâ²¿×é½¨ÊÍ·Å¶ÔÓ¦µÄÂëÁ÷¿Õ¼ä¡£
-  ²ÎÊý  pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-        pRawPacket  Ö¸ÏòÔ­Ê¼ÂëÁ÷°üµÄ½á¹¹£¬ÓÃÓÚ½ÓÊÕÂëÁ÷°üÐÅÏ¢
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 DeleteRawPacket( RAW_ARRAY_S *pRawStreamArray, UINT32 DelNum )
+  åŠŸèƒ½  ä»Žç¬¬ä¸€ç æµåŒ…å¼€å§‹ï¼Œè¿žç»­åˆ é™¤DelNumä¸ªç æµåŒ…ã€‚
+          ç”±äºŽæœ‰ç æµç‰‡æ®µç¼“å†²åŒºçš„å­˜åœ¨ï¼ŒåŽŸå§‹ç æµæ— éœ€ä¹±åºé‡Šæ”¾ï¼Œæ‰€ä»¥åŽŸå§‹ç æµ
+      ç®¡ç†æ¨¡å—å¯ä»¥åªæ”¯æŒæŒ‰æ’å…¥é¡ºåºé‡Šæ”¾ã€‚ç æµåŒ…ä»ŽåŽŸå§‹ç æµé›†ä¸­åˆ é™¤çš„åŒæ—¶ï¼Œ
+      ä¹Ÿä¼šè°ƒç”¨MPPçš„æŽ¥å£é€šçŸ¥å¤–éƒ¨ç»„å»ºé‡Šæ”¾å¯¹åº”çš„ç æµç©ºé—´ã€‚
+  å‚æ•°  pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+        pRawPacket  æŒ‡å‘åŽŸå§‹ç æµåŒ…çš„ç»“æž„ï¼Œç”¨äºŽæŽ¥æ”¶ç æµåŒ…ä¿¡æ¯
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 DeleteRawPacket( RAW_ARRAY_S *pRawStreamArray, UINT32 DelNum );
 
 /************************************************************************
-Ô­ÐÍ    SINT32 DeleteRawPacketInBuffer(SINT32 SmID, SINT32 ResetFlag)
-¹¦ÄÜ    ´Óhistory¿ªÊ¼£¬Á¬ÐøÉ¾³ýµ½head
-²ÎÊý    pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+åŽŸåž‹    SINT32 DeleteRawPacketInBuffer(SINT32 SmID, SINT32 ResetFlag)
+åŠŸèƒ½    ä»Žhistoryå¼€å§‹ï¼Œè¿žç»­åˆ é™¤åˆ°head
+å‚æ•°    pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 DeleteRawPacketInBuffer(SINT32 SmID, SINT32 ResetFlag);
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 GetRawNumOffsert( RAW_ARRAY_S *pRawStreamArray, SINT32 Len, SINT32 *pNum, SINT32 *pOffset, UINT64 *pPts, UINT64 *pUsertag, UINT64 *pDisptime, UINT32 *pDispEnableFlag, UINT32 *pDispFrameDistance, UINT32 *pDistanceBeforeFirstFrame, UINT32 *pGopNum, UINT64 *pRawPts);
-  ¹¦ÄÜ  ´Ó³¤¶ÈLen¼ÆËã´ÓµÚÒ»ÂëÁ÷°ü¿ªÊ¼£¬¹²ÓÐÐèÒªÓÐ¶à¸öµÄÂëÁ÷°üµÄ´óÐ¡µÈÓÚLen£¬Èç¹ûÓÐ°ë°üÔò³¤¶ÈÓàÊýÎªOffset¡£ 
-  ²ÎÊý  pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-        Len             ³¤¶È
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 GetRawNumOffsert( RAW_ARRAY_S *pRawStreamArray, SINT32 Len, SINT32 *pNum, SINT32 *pOffset, UINT64 *pPts, UINT64 *pUsertag, UINT64 *pDisptime, UINT32 *pDispEnableFlag, UINT32 *pDispFrameDistance, UINT32 *pDistanceBeforeFirstFrame, UINT32 *pGopNum, UINT64 *pRawPts);
+  åŠŸèƒ½  ä»Žé•¿åº¦Lenè®¡ç®—ä»Žç¬¬ä¸€ç æµåŒ…å¼€å§‹ï¼Œå…±æœ‰éœ€è¦æœ‰å¤šä¸ªçš„ç æµåŒ…çš„å¤§å°ç­‰äºŽLenï¼Œå¦‚æžœæœ‰åŠåŒ…åˆ™é•¿åº¦ä½™æ•°ä¸ºOffsetã€‚ 
+  å‚æ•°  pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+        Len             é•¿åº¦
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 GetRawNumOffsert( RAW_ARRAY_S *pRawStreamArray, SINT32 Len, SINT32 *pNum, SINT32 *pOffset, UINT64 *pPts, UINT64 *pUsertag, UINT64 *pDisptime, UINT32 *pDispEnableFlag, UINT32 *pDispFrameDistance, UINT32 *pDistanceBeforeFirstFrame, UINT32 *pGopNum, UINT64 *pRawPts);
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 DeleteRawLen( RAW_ARRAY_S *pRawStreamArray, SINT32 DelLen )
-  ¹¦ÄÜ  ´ÓµÚÒ»ÂëÁ÷°ü¿ªÊ¼£¬Á¬ÐøÉ¾³ýDelLenµÄÂëÁ÷°üÈç¹ûÉ¾³ýµÄ³¤¶È²»¹»£¬ÔòÒªÖÃÆ«ÒÆ¡£          
-  ²ÎÊý  pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-        DelLen  ×Ü¹²ÐèÒªÉ¾³ýµÄ³¤¶È
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 DeleteRawLen( RAW_ARRAY_S *pRawStreamArray, SINT32 DelLen )
+  åŠŸèƒ½  ä»Žç¬¬ä¸€ç æµåŒ…å¼€å§‹ï¼Œè¿žç»­åˆ é™¤DelLençš„ç æµåŒ…å¦‚æžœåˆ é™¤çš„é•¿åº¦ä¸å¤Ÿï¼Œåˆ™è¦ç½®åç§»ã€‚          
+  å‚æ•°  pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+        DelLen  æ€»å…±éœ€è¦åˆ é™¤çš„é•¿åº¦
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 DeleteRawLen( RAW_ARRAY_S *pRawStreamArray, SINT32 DelLen );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 DeleteLastSendRaw( UINT32 SmID  )
-  ¹¦ÄÜ  É¾³ýSmIDËùÖ¸ÏòµÄÍ¨µÀ£¬ÉÏ´ÎËùËÍÈëSCDµÄÂëÁ÷
-  ²ÎÊý  SmIDÍ¨µÀºÅ
-  ·µ»ØÖµ  ÎÞ
+  åŽŸåž‹  SINT32 DeleteLastSendRaw( UINT32 SmID  )
+  åŠŸèƒ½  åˆ é™¤SmIDæ‰€æŒ‡å‘çš„é€šé“ï¼Œä¸Šæ¬¡æ‰€é€å…¥SCDçš„ç æµ
+  å‚æ•°  SmIDé€šé“å·
+  è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID DeleteLastSendRaw( UINT32 SmID );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 GetRawStreamSize( RAW_ARRAY_S *pRawStreamArray, SINT32 *pStreamSize)
-  ¹¦ÄÜ  ½«Ô­Ê¼ÂëÁ÷¼¯ºÏÖÐËùÓÐ°üµÄ³¤¶ÈÀÛ¼ÓÆðÀ´¼´ÎªÂëÁ÷×ÜÁ¿£¬Ä¿µÄÊÇ»ñµÃÄ¿Ç°µÄÂëÁ÷Õ¼ÓÃÇé¿ö¡£
-  ²ÎÊý  pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-  ·µ»ØÖµ  ³É¹¦·µ»ØÂëÁ÷³¤¶È£¬·ñÔò·µ»Ø´íÎóÂë£¨¸ºÕûÊý£©
+  åŽŸåž‹  SINT32 GetRawStreamSize( RAW_ARRAY_S *pRawStreamArray, SINT32 *pStreamSize)
+  åŠŸèƒ½  å°†åŽŸå§‹ç æµé›†åˆä¸­æ‰€æœ‰åŒ…çš„é•¿åº¦ç´¯åŠ èµ·æ¥å³ä¸ºç æµæ€»é‡ï¼Œç›®çš„æ˜¯èŽ·å¾—ç›®å‰çš„ç æµå ç”¨æƒ…å†µã€‚
+  å‚æ•°  pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žç æµé•¿åº¦ï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç ï¼ˆè´Ÿæ•´æ•°ï¼‰
 ************************************************************************/
 SINT32 GetRawStreamSize( RAW_ARRAY_S *pRawStreamArray, SINT32 *pStreamSize);
 
 /************************************************************************
-    Ô­ÐÍ  SINT32 GetRawStreamNum( RAW_ARRAY_S *pRawStreamArray, SINT32 *pStreamNum )
-    ¹¦ÄÜ  ½«Ô­Ê¼ÂëÁ÷¼¯ºÏÖÐÒÑ±»ÍÆËÍµ«ÉÐÎ´±»ÇÐ¸îµÄÂëÁ÷°üÊý£¬Ä¿µÄÊÇ»ñµÃÄ¿Ç°µÄÂëÁ÷Õ¼ÓÃÇé¿ö¡£
-    ²ÎÊý  pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-    ·µ»ØÖµ  ³É¹¦·µ»ØpStreamNumÂëÁ÷°üÊý£¬²¢·µ»ØFMW_OK,Ê§°ÜÔò·µ»Ø´íÎóÂë£¨¸ºÕûÊý£©
+    åŽŸåž‹  SINT32 GetRawStreamNum( RAW_ARRAY_S *pRawStreamArray, SINT32 *pStreamNum )
+    åŠŸèƒ½  å°†åŽŸå§‹ç æµé›†åˆä¸­å·²è¢«æŽ¨é€ä½†å°šæœªè¢«åˆ‡å‰²çš„ç æµåŒ…æ•°ï¼Œç›®çš„æ˜¯èŽ·å¾—ç›®å‰çš„ç æµå ç”¨æƒ…å†µã€‚
+    å‚æ•°  pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+    è¿”å›žå€¼  æˆåŠŸè¿”å›žpStreamNumç æµåŒ…æ•°ï¼Œå¹¶è¿”å›žFMW_OK,å¤±è´¥åˆ™è¿”å›žé”™è¯¯ç ï¼ˆè´Ÿæ•´æ•°ï¼‰
 ************************************************************************/
 SINT32 GetRawStreamNum( RAW_ARRAY_S *pRawStreamArray, SINT32 *pStreamNum );
 
 /************************************************************************
-Ô­ÐÍ    SINT32 GetRawStreamNumInBuffer( RAW_ARRAY_S *pRawStreamArray, SINT32 *pStreamNum )
-¹¦ÄÜ    ½«Ô­Ê¼ÂëÁ÷¼¯ºÏÖÐÒÑ±»ÍÆËÍµ«ÉÐÎ´±»ÇÐ¸îµÄÂëÁ÷°üÊýºÍÒÑÇÐ¸îµ«Î´±»´ÓbufferÖÐÊÍ·ÅµÄÂëÁ÷°üÊý£¬
-        Ä¿µÄÊÇ»ñµÃÄ¿Ç°µÄÂëÁ÷Õ¼ÓÃÇé¿ö¡£
-²ÎÊý    pRawStreamArray Ö¸ÏòÔ­Ê¼ÂëÁ÷¼¯ºÏ
-·µ»ØÖµ  ³É¹¦·µ»ØpStreamNumÂëÁ÷°üÊý£¬²¢·µ»ØFMW_OK,Ê§°ÜÔò·µ»Ø´íÎóÂë£¨¸ºÕûÊý£©
+åŽŸåž‹    SINT32 GetRawStreamNumInBuffer( RAW_ARRAY_S *pRawStreamArray, SINT32 *pStreamNum )
+åŠŸèƒ½    å°†åŽŸå§‹ç æµé›†åˆä¸­å·²è¢«æŽ¨é€ä½†å°šæœªè¢«åˆ‡å‰²çš„ç æµåŒ…æ•°å’Œå·²åˆ‡å‰²ä½†æœªè¢«ä»Žbufferä¸­é‡Šæ”¾çš„ç æµåŒ…æ•°ï¼Œ
+        ç›®çš„æ˜¯èŽ·å¾—ç›®å‰çš„ç æµå ç”¨æƒ…å†µã€‚
+å‚æ•°    pRawStreamArray æŒ‡å‘åŽŸå§‹ç æµé›†åˆ
+è¿”å›žå€¼  æˆåŠŸè¿”å›žpStreamNumç æµåŒ…æ•°ï¼Œå¹¶è¿”å›žFMW_OK,å¤±è´¥åˆ™è¿”å›žé”™è¯¯ç ï¼ˆè´Ÿæ•´æ•°ï¼‰
 ************************************************************************/
 SINT32 GetRawStreamNumInBuffer(RAW_ARRAY_S *pRawStreamArray, SINT32 *pStreamNum);
 
@@ -784,91 +784,91 @@ SINT32 GetRawStreamNumInBuffer(RAW_ARRAY_S *pRawStreamArray, SINT32 *pStreamNum)
 ========================================================================*/
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 ConfigStreamSegArray( SEG_ARRAY_S *pStreamSegArray, UINT32 BufPhyAddr, UINT8 *pBufVirAddr, UINT32 BufSize )
-  ¹¦ÄÜ  ÎªÂëÁ÷Æ¬¶Î¼¯ºÏÅäÖÃ±ØÒªµÄÐÅÏ¢£¬ÈçÂëÁ÷Æ¬¶Î»º³åÇøµÄÊ×µØÖ·¡¢³¤¶ÈµÈ¡£
-  ²ÎÊý  pStreamSegArray Ö¸ÏòÇÐ¸îÂëÁ÷Æ¬¶Î¼¯ºÏ
-        BufPhyAddr  ÂëÁ÷Æ¬¶Î»º³åÇøÎïÀíµØÖ·
-        BufSize ÂëÁ÷Æ¬¶Î»º³åÇø´óÐ¡£¬µ¥Î»£º×Ö½Ú
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 ConfigStreamSegArray( SEG_ARRAY_S *pStreamSegArray, UINT32 BufPhyAddr, UINT8 *pBufVirAddr, UINT32 BufSize )
+  åŠŸèƒ½  ä¸ºç æµç‰‡æ®µé›†åˆé…ç½®å¿…è¦çš„ä¿¡æ¯ï¼Œå¦‚ç æµç‰‡æ®µç¼“å†²åŒºçš„é¦–åœ°å€ã€é•¿åº¦ç­‰ã€‚
+  å‚æ•°  pStreamSegArray æŒ‡å‘åˆ‡å‰²ç æµç‰‡æ®µé›†åˆ
+        BufPhyAddr  ç æµç‰‡æ®µç¼“å†²åŒºç‰©ç†åœ°å€
+        BufSize ç æµç‰‡æ®µç¼“å†²åŒºå¤§å°ï¼Œå•ä½ï¼šå­—èŠ‚
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 ConfigStreamSegArray( SEG_ARRAY_S *pStreamSegArray, UINT32 BufPhyAddr, UINT8 *pBufVirAddr, UINT32 BufSize );
 
 /************************************************************************
-  Ô­ÐÍ  VOID ResetStreamSegArray( SEG_ARRAY_S *pStreamSegArray )
-  ¹¦ÄÜ  ½«Ò»×éÇÐ¸îÂëÁ÷Æ¬¶Î¼¯ºÏ¸´Î»£¬Çå³ýÆäÖÐËùÓÐ¼ÇÂ¼£¬ÊÍ·ÅÈ«²¿ÇÐ¸îÂëÁ÷»º³å¿Õ¼ä¡£
-  ²ÎÊý  pStreamSegArray Ö¸ÏòÇÐ¸îÂëÁ÷Æ¬¶Î¼¯ºÏ
-  ·µ»ØÖµ  ÎÞ
+  åŽŸåž‹  VOID ResetStreamSegArray( SEG_ARRAY_S *pStreamSegArray )
+  åŠŸèƒ½  å°†ä¸€ç»„åˆ‡å‰²ç æµç‰‡æ®µé›†åˆå¤ä½ï¼Œæ¸…é™¤å…¶ä¸­æ‰€æœ‰è®°å½•ï¼Œé‡Šæ”¾å…¨éƒ¨åˆ‡å‰²ç æµç¼“å†²ç©ºé—´ã€‚
+  å‚æ•°  pStreamSegArray æŒ‡å‘åˆ‡å‰²ç æµç‰‡æ®µé›†åˆ
+  è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID ResetStreamSegArray( SEG_ARRAY_S *pStreamSegArray );
 
 /************************************************************************
-  Ô­ÐÍ  VOID GetSegBuf( SEG_ARRAY_S *pStreamSegArray, UINT32 *pBufAddr, UINT32 *pBufLength )
-  ¹¦ÄÜ  »ñÈ¡ÂëÁ÷Æ¬¶Î»º³åÇøµÄµØÖ·ºÍ³¤¶È¡£
-          SCDÇÐ¸îÂëÁ÷Ê±ÐèÒªÅäÖÃ»º³åÇøµÄ¶¥µ×µØÖ·¡£
-  ²ÎÊý  pStreamSegArray Ö¸ÏòÇÐ¸îÂëÁ÷Æ¬¶Î¼¯ºÏ
-        pAddr ½ÓÊÕÂëÁ÷Æ¬¶Î»º³åÇøÊ×µØÖ·£¨ÎïÀíµØÖ·£©±äÁ¿µÄÖ¸Õë
-        pLength ½ÓÊÕÂëÁ÷Æ¬¶Î»º³åÇø³¤¶È±äÁ¿µÄÖ¸Õë
-  ·µ»ØÖµ  ÎÞ
+  åŽŸåž‹  VOID GetSegBuf( SEG_ARRAY_S *pStreamSegArray, UINT32 *pBufAddr, UINT32 *pBufLength )
+  åŠŸèƒ½  èŽ·å–ç æµç‰‡æ®µç¼“å†²åŒºçš„åœ°å€å’Œé•¿åº¦ã€‚
+          SCDåˆ‡å‰²ç æµæ—¶éœ€è¦é…ç½®ç¼“å†²åŒºçš„é¡¶åº•åœ°å€ã€‚
+  å‚æ•°  pStreamSegArray æŒ‡å‘åˆ‡å‰²ç æµç‰‡æ®µé›†åˆ
+        pAddr æŽ¥æ”¶ç æµç‰‡æ®µç¼“å†²åŒºé¦–åœ°å€ï¼ˆç‰©ç†åœ°å€ï¼‰å˜é‡çš„æŒ‡é’ˆ
+        pLength æŽ¥æ”¶ç æµç‰‡æ®µç¼“å†²åŒºé•¿åº¦å˜é‡çš„æŒ‡é’ˆ
+  è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID GetSegBuf( SEG_ARRAY_S *pStreamSegArray, UINT32 *pBufAddr, UINT32 *pBufLength );
 
 /************************************************************************
-  Ô­ÐÍ  VOID GetFreeSegBuf( SEG_ARRAY_S *pStreamSegArray, UINT32 *pAddr, UINT32 *pLength )
-  ¹¦ÄÜ  »ñÈ¡¿ÕÏÐµÄÂëÁ÷Æ¬¶Î»º³å¿Õ¼ä£¬ËùÓÐ½éÓÚÐ´µØÖ·ºÍ¶ÁµØÖ·Ö»¼ûµÄ¿Õ¼ä¶¼±»ÊÓÎª¿ÕÏÐ¿Õ¼ä¡£
-          ÓÉÓÚÂëÁ÷Æ¬¶Î»º³åÇøÊÇÒ»¸öÑ­»·buffer£¬ËùÒÔ¿ÕÏÐÇøÓò¿ÉÄÜ¾íÈÆ£¬´Ó¶øÊ¹µÃµØÖ·²»Á¬Ðø¡£
-      ÅÐ¶ÏµØÖ·ÊÇ·ñ¾íÈÆµÄÒÀ¾ÝÊÇpAddr+pLength>bufferµ×²¿¡£
-  ²ÎÊý  pStreamSegArray Ö¸ÏòÇÐ¸îÂëÁ÷Æ¬¶Î¼¯ºÏ
-        pAddr ½ÓÊÕ¿ÕÏÐ¿Õ¼äÊ×µØÖ·£¨ÎïÀíµØÖ·£©±äÁ¿µÄÖ¸Õë
-        pLength ½ÓÊÕ¿ÕÏÐ¿Õ¼ä³¤¶È±äÁ¿µÄÖ¸Õë
-  ·µ»ØÖµ  ÎÞ
+  åŽŸåž‹  VOID GetFreeSegBuf( SEG_ARRAY_S *pStreamSegArray, UINT32 *pAddr, UINT32 *pLength )
+  åŠŸèƒ½  èŽ·å–ç©ºé—²çš„ç æµç‰‡æ®µç¼“å†²ç©ºé—´ï¼Œæ‰€æœ‰ä»‹äºŽå†™åœ°å€å’Œè¯»åœ°å€åªè§çš„ç©ºé—´éƒ½è¢«è§†ä¸ºç©ºé—²ç©ºé—´ã€‚
+          ç”±äºŽç æµç‰‡æ®µç¼“å†²åŒºæ˜¯ä¸€ä¸ªå¾ªçŽ¯bufferï¼Œæ‰€ä»¥ç©ºé—²åŒºåŸŸå¯èƒ½å·ç»•ï¼Œä»Žè€Œä½¿å¾—åœ°å€ä¸è¿žç»­ã€‚
+      åˆ¤æ–­åœ°å€æ˜¯å¦å·ç»•çš„ä¾æ®æ˜¯pAddr+pLength>bufferåº•éƒ¨ã€‚
+  å‚æ•°  pStreamSegArray æŒ‡å‘åˆ‡å‰²ç æµç‰‡æ®µé›†åˆ
+        pAddr æŽ¥æ”¶ç©ºé—²ç©ºé—´é¦–åœ°å€ï¼ˆç‰©ç†åœ°å€ï¼‰å˜é‡çš„æŒ‡é’ˆ
+        pLength æŽ¥æ”¶ç©ºé—²ç©ºé—´é•¿åº¦å˜é‡çš„æŒ‡é’ˆ
+  è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID GetFreeSegBuf( SEG_ARRAY_S *pStreamSegArray, SINT32 *pAddr, SINT32 *pLength );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 InsertStreamSeg( SEG_ARRAY_S *pStreamSegArray, STREAM_SEG_S *pStreamSeg )
-  ¹¦ÄÜ  ÏòÌØ¶¨µÄÂëÁ÷Æ¬¶Î¼¯ÖÐ²åÈëÒ»¸öÂëÁ÷Æ¬¶Î¡£
-      ±¾º¯ÊýµÄÈÎÎñÓÐÁ½¸ö£¬µÚÒ»ÊÇ½«´ý²åÈëÂëÁ÷Æ¬¶ÎµÄÃèÊöÐÅÏ¢¼ÓÈëµ½¶ÓÁÐÖÐ£¬µÚ¶þÊÇ¸üÐÂÂëÁ÷Æ¬¶Î»º³åÇøµÄÐ´µØÖ·¡£
-  ²ÎÊý  pStreamSegArray Ö¸ÏòÇÐ¸îÂëÁ÷Æ¬¶Î¼¯ºÏ
-      pStreamSeg  ´ý²åÈëÂëÁ÷Æ¬¶ÎµÄÃèÊöÐÅÏ¢
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 InsertStreamSeg( SEG_ARRAY_S *pStreamSegArray, STREAM_SEG_S *pStreamSeg )
+  åŠŸèƒ½  å‘ç‰¹å®šçš„ç æµç‰‡æ®µé›†ä¸­æ’å…¥ä¸€ä¸ªç æµç‰‡æ®µã€‚
+      æœ¬å‡½æ•°çš„ä»»åŠ¡æœ‰ä¸¤ä¸ªï¼Œç¬¬ä¸€æ˜¯å°†å¾…æ’å…¥ç æµç‰‡æ®µçš„æè¿°ä¿¡æ¯åŠ å…¥åˆ°é˜Ÿåˆ—ä¸­ï¼Œç¬¬äºŒæ˜¯æ›´æ–°ç æµç‰‡æ®µç¼“å†²åŒºçš„å†™åœ°å€ã€‚
+  å‚æ•°  pStreamSegArray æŒ‡å‘åˆ‡å‰²ç æµç‰‡æ®µé›†åˆ
+      pStreamSeg  å¾…æ’å…¥ç æµç‰‡æ®µçš„æè¿°ä¿¡æ¯
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 InsertStreamSeg( SEG_ARRAY_S *pStreamSegArray, STREAM_SEG_S *pStreamSeg );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 GetStreamSeg( SEG_ARRAY_S *pStreamSegArray, STREAM_SEG_S *pStreamSeg )
-  ¹¦ÄÜ  ´ÓÌØ¶¨µÄÂëÁ÷Æ¬¶Î¼¯ÖÐÈ¡³öÒ»¸öÂëÁ÷Æ¬¶Î£º½«´¦ÓÚ¶ÓÁÐÍ·µÄÂëÁ÷Æ¬¶ÎÐÅÏ¢È¡³ö¡£
-  ²ÎÊý  pStreamSegArray Ö¸ÏòÁ÷Æ¬¶Î¼¯ºÏ
-        pStreamSeg  ´æ´¢ÂëÁ÷Æ¬¶ÎµÄÃèÊöÐÅÏ¢µÄ½á¹¹Ö¸Õë
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 GetStreamSeg( SEG_ARRAY_S *pStreamSegArray, STREAM_SEG_S *pStreamSeg )
+  åŠŸèƒ½  ä»Žç‰¹å®šçš„ç æµç‰‡æ®µé›†ä¸­å–å‡ºä¸€ä¸ªç æµç‰‡æ®µï¼šå°†å¤„äºŽé˜Ÿåˆ—å¤´çš„ç æµç‰‡æ®µä¿¡æ¯å–å‡ºã€‚
+  å‚æ•°  pStreamSegArray æŒ‡å‘æµç‰‡æ®µé›†åˆ
+        pStreamSeg  å­˜å‚¨ç æµç‰‡æ®µçš„æè¿°ä¿¡æ¯çš„ç»“æž„æŒ‡é’ˆ
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 GetStreamSeg( SEG_ARRAY_S *pStreamSegArray, STREAM_SEG_S *pStreamSeg );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 ReleaseStreamSeg( SEG_ ARRAY_S *pStreamSegArray, UINT32 StreamID)
-  ¹¦ÄÜ  ½«IDÎªStreamIDµÄÂëÁ÷Æ¬¶ÎÊÍ·Å£¬Èç¹ûÕâ¸öÂëÁ÷Æ¬¶ÎÊÇÀúÊ·ÉÏÒÑ¶ÁÈ¡µ«Î´ÊÍ·ÅµÄµÚÒ»¶ÎÂëÁ÷£¬ÔòÍ¬²½¸üÐÂÂëÁ÷Æ¬¶Î»º³åÇøµÄ¶ÁµØÖ·¡£
-  ²ÎÊý  pStreamSegArray Ö¸ÏòÁ÷Æ¬¶Î¼¯ºÏ
-      StreamID  ´ýÊÍ·ÅÂëÁ÷Æ¬¶ÎµÄID
-        Èç¹ûStreamIDÈ¡ÖµÔÚ0~ MAX_STREAM_SEG_NUM-1Ö®¼äÔò±íÊ¾ÒªÊÍ·ÅË÷ÒýºÅÎªStreamIDµÄÂëÁ÷Æ¬¶Î£»
-        Èç¹ûStreamID = 0xffffffff£¬Ôò±íÊ¾ÊÍ·ÅµÚÒ»¸öÂëÁ÷Æ¬¶Î¡£Õâ¸ö²ÎÊýµÄÊ¹ÓÃ³¡¾°ÊÇ£¬Èç¹ûÂëÁ÷
-      ½âÎöÄ£¿é³¤Ê±¼ä²»ÊÍ·ÅÂëÁ÷°ü£¬³öÓÚÈÝ´í¿¼ÂÇSMÄ£¿éÐèÒªÇ¿ÖÆÊÍ·ÅµÚÒ»°ü£¬ÒÔÌÚ³ö¿Õ¼äÀ´¼ÌÐøÇÐ¸îÂëÁ÷£¬
-      ±ÜÃâËÀËø¡£ÕâÖÖÇé¿öÏÂ£¬ÎÞÂÛµÚÒ»¸öÂëÁ÷Æ¬¶ÎÊÇ·ñ±»¶Á×ß£¬¶¼Ç¿ÖÆÊÍ·Å¡£
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 ReleaseStreamSeg( SEG_ ARRAY_S *pStreamSegArray, UINT32 StreamID)
+  åŠŸèƒ½  å°†IDä¸ºStreamIDçš„ç æµç‰‡æ®µé‡Šæ”¾ï¼Œå¦‚æžœè¿™ä¸ªç æµç‰‡æ®µæ˜¯åŽ†å²ä¸Šå·²è¯»å–ä½†æœªé‡Šæ”¾çš„ç¬¬ä¸€æ®µç æµï¼Œåˆ™åŒæ­¥æ›´æ–°ç æµç‰‡æ®µç¼“å†²åŒºçš„è¯»åœ°å€ã€‚
+  å‚æ•°  pStreamSegArray æŒ‡å‘æµç‰‡æ®µé›†åˆ
+      StreamID  å¾…é‡Šæ”¾ç æµç‰‡æ®µçš„ID
+        å¦‚æžœStreamIDå–å€¼åœ¨0~ MAX_STREAM_SEG_NUM-1ä¹‹é—´åˆ™è¡¨ç¤ºè¦é‡Šæ”¾ç´¢å¼•å·ä¸ºStreamIDçš„ç æµç‰‡æ®µï¼›
+        å¦‚æžœStreamID = 0xffffffffï¼Œåˆ™è¡¨ç¤ºé‡Šæ”¾ç¬¬ä¸€ä¸ªç æµç‰‡æ®µã€‚è¿™ä¸ªå‚æ•°çš„ä½¿ç”¨åœºæ™¯æ˜¯ï¼Œå¦‚æžœç æµ
+      è§£æžæ¨¡å—é•¿æ—¶é—´ä¸é‡Šæ”¾ç æµåŒ…ï¼Œå‡ºäºŽå®¹é”™è€ƒè™‘SMæ¨¡å—éœ€è¦å¼ºåˆ¶é‡Šæ”¾ç¬¬ä¸€åŒ…ï¼Œä»¥è…¾å‡ºç©ºé—´æ¥ç»§ç»­åˆ‡å‰²ç æµï¼Œ
+      é¿å…æ­»é”ã€‚è¿™ç§æƒ…å†µä¸‹ï¼Œæ— è®ºç¬¬ä¸€ä¸ªç æµç‰‡æ®µæ˜¯å¦è¢«è¯»èµ°ï¼Œéƒ½å¼ºåˆ¶é‡Šæ”¾ã€‚
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 ReleaseStreamSeg( SEG_ARRAY_S *pStreamSegArray, UINT32 StreamID );
 
 /************************************************************************
-    Ô­ÐÍ  SINT32 GetSegStreamSize( SEG_ARRAY_S *pSegStreamArray, SINT32 *pStreamSize)
-    ¹¦ÄÜ  ½«ÂëÁ÷Æ¬¶Ï¼¯ºÏÖÐËùÓÐ°üµÄ³¤¶ÈÀÛ¼ÓÆðÀ´¼´ÎªÂëÁ÷×ÜÁ¿£¬Ä¿µÄÊÇ»ñµÃÄ¿Ç°µÄÂëÁ÷Õ¼ÓÃÇé¿ö¡£
-    ²ÎÊý  pSegStreamArray Ö¸ÏòÂëÁ÷Æ¬¶Ï¼¯ºÏ
-    ·µ»ØÖµ  ³É¹¦·µ»ØÂëÁ÷³¤¶È£¬·ñÔò·µ»Ø´íÎóÂë£¨¸ºÕûÊý£©
+    åŽŸåž‹  SINT32 GetSegStreamSize( SEG_ARRAY_S *pSegStreamArray, SINT32 *pStreamSize)
+    åŠŸèƒ½  å°†ç æµç‰‡æ–­é›†åˆä¸­æ‰€æœ‰åŒ…çš„é•¿åº¦ç´¯åŠ èµ·æ¥å³ä¸ºç æµæ€»é‡ï¼Œç›®çš„æ˜¯èŽ·å¾—ç›®å‰çš„ç æµå ç”¨æƒ…å†µã€‚
+    å‚æ•°  pSegStreamArray æŒ‡å‘ç æµç‰‡æ–­é›†åˆ
+    è¿”å›žå€¼  æˆåŠŸè¿”å›žç æµé•¿åº¦ï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç ï¼ˆè´Ÿæ•´æ•°ï¼‰
 ************************************************************************/
 SINT32 GetSegStreamSize( SEG_ARRAY_S *pSegStreamArray, SINT32 *pStreamSize);
 
 /************************************************************************
-    Ô­ÐÍ  GetSegStreamNum(SEG_ARRAY_S *pSegStreamArray, SINT32 *pStreamNum);
-    ¹¦ÄÜ  ½«ÂëÁ÷Æ¬¶Ï¼¯ºÏÖÐÒÑ±»ÍÆËÍµ«ÉÐÎ´±»ÇÐ¸îµÄÂëÁ÷°üÊý£¬Ä¿µÄÊÇ»ñµÃÄ¿Ç°µÄÂëÁ÷Õ¼ÓÃÇé¿ö¡£
-    ²ÎÊý  pSegStreamArray Ö¸ÏòÂëÁ÷Æ¬¶Ï¼¯ºÏ
-    ·µ»ØÖµ  ³É¹¦·µ»ØÂëÁ÷°üÊý£¬·ñÔò·µ»Ø´íÎóÂë£¨¸ºÕûÊý£©
+    åŽŸåž‹  GetSegStreamNum(SEG_ARRAY_S *pSegStreamArray, SINT32 *pStreamNum);
+    åŠŸèƒ½  å°†ç æµç‰‡æ–­é›†åˆä¸­å·²è¢«æŽ¨é€ä½†å°šæœªè¢«åˆ‡å‰²çš„ç æµåŒ…æ•°ï¼Œç›®çš„æ˜¯èŽ·å¾—ç›®å‰çš„ç æµå ç”¨æƒ…å†µã€‚
+    å‚æ•°  pSegStreamArray æŒ‡å‘ç æµç‰‡æ–­é›†åˆ
+    è¿”å›žå€¼  æˆåŠŸè¿”å›žç æµåŒ…æ•°ï¼Œå¦åˆ™è¿”å›žé”™è¯¯ç ï¼ˆè´Ÿæ•´æ•°ï¼‰
 ************************************************************************/
 SINT32 GetSegStreamNum(SEG_ARRAY_S *pSegStreamArray, SINT32 *pStreamNum);
 
@@ -888,12 +888,12 @@ SINT32 SM_SetRawDiscontinueFlag(SINT32 InstID, SINT32 Flag);
 SINT32 SM_GetInstanceStreamEmptyFlag(SINT32 InstID);
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 SM_Reset ( SINT32 SmID )
-  ¹¦ÄÜ  ±¾º¯ÊýÓÃÒÔ¸´Î»Ò»¸öÂëÁ÷¹ÜÀíÄ£¿éµÄÊµÀý£¬ 
-      ±¾º¯ÊýÊ¹µÃIDºÅÎªSmIDµÄÂëÁ÷¹ÜÀíÄ£¿éÊµÀýµÄËùÓÐ×´Ì¬¶¼»Øµ½³õÊ¼Öµ¡£
-  ²ÎÊý  SmID  ±êÊ¶ÂëÁ÷¹ÜÀíÄ£¿éµÄÉÏÏÂÎÄÐÅÏ¢¡£ÔÚ¶àÂ·½âÂëÖÐ£¬Ã¿Ò»Â·½âÂëÆ÷¶¼ÓÐÒ»¸öÂëÁ÷¹ÜÀíÄ£¿éµÄ
-      ÊµÀý£¬SmIDÖ¸ÏòÄ³¸öÌØ¶¨µÄÊµÀý¡£
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»ØÌØ¶¨µÄ´íÎóÂë
+  åŽŸåž‹  SINT32 SM_Reset ( SINT32 SmID )
+  åŠŸèƒ½  æœ¬å‡½æ•°ç”¨ä»¥å¤ä½ä¸€ä¸ªç æµç®¡ç†æ¨¡å—çš„å®žä¾‹ï¼Œ 
+      æœ¬å‡½æ•°ä½¿å¾—IDå·ä¸ºSmIDçš„ç æµç®¡ç†æ¨¡å—å®žä¾‹çš„æ‰€æœ‰çŠ¶æ€éƒ½å›žåˆ°åˆå§‹å€¼ã€‚
+  å‚æ•°  SmID  æ ‡è¯†ç æµç®¡ç†æ¨¡å—çš„ä¸Šä¸‹æ–‡ä¿¡æ¯ã€‚åœ¨å¤šè·¯è§£ç ä¸­ï¼Œæ¯ä¸€è·¯è§£ç å™¨éƒ½æœ‰ä¸€ä¸ªç æµç®¡ç†æ¨¡å—çš„
+      å®žä¾‹ï¼ŒSmIDæŒ‡å‘æŸä¸ªç‰¹å®šçš„å®žä¾‹ã€‚
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žç‰¹å®šçš„é”™è¯¯ç 
 ************************************************************************/
 SINT32 SM_ClearInst (SINT32 SmID);
 SINT32 SM_Reset ( SINT32 SmID );
@@ -901,270 +901,270 @@ SINT32 SM_Start (SINT32 SmID);
 SINT32 SM_Stop (SINT32 SmID);
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 SM_Config ( SINT32 SmID, SM_CFG_S *pSmCfg )
-  ¹¦ÄÜ  ±¾º¯ÊýÓÃÒÔÅäÖÃÒ»¸öÂëÁ÷¹ÜÀíÄ£¿éµÄÊµÀý£¬ÔÚÕâ¸öÊµÀý¿ªÊ¼¹¤×÷Ö®Ç°£¬±ØÐëµ÷ÓÃ´Ëº¯Êý¸øËüÅäÖÃ±ØÒªµÄÐÅÏ¢¡£
-  ²ÎÊý  SmID  ±êÊ¶ÂëÁ÷¹ÜÀíÄ£¿éµÄÉÏÏÂÎÄÐÅÏ¢¡£ÔÚ¶àÂ·½âÂëÖÐ£¬Ã¿Ò»Â·½âÂëÆ÷¶¼ÓÐÒ»¸öÂëÁ÷¹ÜÀíÄ£¿éµÄÊµÀý£¬
-      SmIDÖ¸ÏòÄ³¸öÌØ¶¨µÄÊµÀý¡£
-      pSmCfg  SMÊµÀýµÄÅäÖÃÐÅÏ¢
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»ØÌØ¶¨µÄ´íÎóÂë
+  åŽŸåž‹  SINT32 SM_Config ( SINT32 SmID, SM_CFG_S *pSmCfg )
+  åŠŸèƒ½  æœ¬å‡½æ•°ç”¨ä»¥é…ç½®ä¸€ä¸ªç æµç®¡ç†æ¨¡å—çš„å®žä¾‹ï¼Œåœ¨è¿™ä¸ªå®žä¾‹å¼€å§‹å·¥ä½œä¹‹å‰ï¼Œå¿…é¡»è°ƒç”¨æ­¤å‡½æ•°ç»™å®ƒé…ç½®å¿…è¦çš„ä¿¡æ¯ã€‚
+  å‚æ•°  SmID  æ ‡è¯†ç æµç®¡ç†æ¨¡å—çš„ä¸Šä¸‹æ–‡ä¿¡æ¯ã€‚åœ¨å¤šè·¯è§£ç ä¸­ï¼Œæ¯ä¸€è·¯è§£ç å™¨éƒ½æœ‰ä¸€ä¸ªç æµç®¡ç†æ¨¡å—çš„å®žä¾‹ï¼Œ
+      SmIDæŒ‡å‘æŸä¸ªç‰¹å®šçš„å®žä¾‹ã€‚
+      pSmCfg  SMå®žä¾‹çš„é…ç½®ä¿¡æ¯
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žç‰¹å®šçš„é”™è¯¯ç 
 ************************************************************************/
 SINT32 SM_Config ( SINT32 SmID, SM_CFG_S *pSmCfg );
 
 /************************************************************************
-    Ô­ÐÍ    SINT32 SM_GetInfo( SINT32 SmID, SM_INST_INFO_S *pSmInstInfo )
-    ¹¦ÄÜ  ±¾º¯Êý²éÑ¯ÂëÁ÷¹ÜÀíÄ£¿éÖÐÔ­Ê¼ÂëÁ÷ÒÑÀÛ¼ÆÁË¶àÉÙ°ü£¬ÒÑÇÐ¸î´ý½âÂëµÄÂëÁ÷ÓÐ¶àÉÙ¶Î¡£ÔÚ¶àÂ·½âÂë»·¾³ÏÂ£¬ÉÏ²ãµ÷¶È³ÌÐò¿ÉÄÜÐèÒª¸ù¾ÝÃ¿Ò»Â·µÄÕâÐ©ÐÅÏ¢À´¾ö¶¨½«SCD·ÖÅä¸øÄÄÒ»Â·È¥ÇÐ¸îÂëÁ÷¡£
-    ²ÎÊý  SmID  ÂëÁ÷¹ÜÀíÄ£¿éµÄÊµÀýµÄ±êÊ¶
-            pSmInstInfo  ´æ·ÅÊµÀýÐÅÏ¢µÄ½á¹¹
-    ·µ»ØÖµ  FMW_ERR_PARAM or FMW_OK
+    åŽŸåž‹    SINT32 SM_GetInfo( SINT32 SmID, SM_INST_INFO_S *pSmInstInfo )
+    åŠŸèƒ½  æœ¬å‡½æ•°æŸ¥è¯¢ç æµç®¡ç†æ¨¡å—ä¸­åŽŸå§‹ç æµå·²ç´¯è®¡äº†å¤šå°‘åŒ…ï¼Œå·²åˆ‡å‰²å¾…è§£ç çš„ç æµæœ‰å¤šå°‘æ®µã€‚åœ¨å¤šè·¯è§£ç çŽ¯å¢ƒä¸‹ï¼Œä¸Šå±‚è°ƒåº¦ç¨‹åºå¯èƒ½éœ€è¦æ ¹æ®æ¯ä¸€è·¯çš„è¿™äº›ä¿¡æ¯æ¥å†³å®šå°†SCDåˆ†é…ç»™å“ªä¸€è·¯åŽ»åˆ‡å‰²ç æµã€‚
+    å‚æ•°  SmID  ç æµç®¡ç†æ¨¡å—çš„å®žä¾‹çš„æ ‡è¯†
+            pSmInstInfo  å­˜æ”¾å®žä¾‹ä¿¡æ¯çš„ç»“æž„
+    è¿”å›žå€¼  FMW_ERR_PARAM or FMW_OK
 ************************************************************************/
 SINT32 SM_GetInfo( SINT32 SmID, SM_INST_INFO_S *pSmInstInfo );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 SM_PushRaw(SINT32 SmID, RAW_PACKET_S *pRawPacket)
-  ¹¦ÄÜ  Íâ²¿³ÌÐòµ÷ÓÃ±¾º¯ÊýÏòÂëÁ÷¹ÜÀíÄ£¿éÍÆËÍÒ»¶ÎÂëÁ÷£¬ÍÆËÍ¹ý³ÌÖ»ÊÇ½«ÂëÁ÷µÄÏà¹ØÐÅÏ¢¼ÇÂ¼µ½SMÄ£¿éµÄÄÚ²¿½á¹¹ÖÐ£¬²¢²»Ò»¶¨Á¢¼´Ö´ÐÐÂëÁ÷µÄÇÐ·Ö¹¤×÷¡£
-  ²ÎÊý  SmID  ÂëÁ÷¹ÜÀíÄ£¿éµÄÊµÀýµÄ±êÊ¶
-    PhyAddr Ô­Ê¼ÂëÁ÷µÄÎïÀíµØÖ·
-    VirAddr Ô­Ê¼ÂëÁ÷µÄÐéÄâµØÖ·
-    Length  Ô­Ê¼ÂëÁ÷µÄ³¤¶È£¬ÒÔ×Ö½ÚÎªµ¥Î»
-    Pts Ô­Ê¼ÂëÁ÷µÄ½ÚÄ¿Ê±¼ä´Á(PTS)
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»ØÌØ¶¨µÄ´íÎóÂë
+  åŽŸåž‹  SINT32 SM_PushRaw(SINT32 SmID, RAW_PACKET_S *pRawPacket)
+  åŠŸèƒ½  å¤–éƒ¨ç¨‹åºè°ƒç”¨æœ¬å‡½æ•°å‘ç æµç®¡ç†æ¨¡å—æŽ¨é€ä¸€æ®µç æµï¼ŒæŽ¨é€è¿‡ç¨‹åªæ˜¯å°†ç æµçš„ç›¸å…³ä¿¡æ¯è®°å½•åˆ°SMæ¨¡å—çš„å†…éƒ¨ç»“æž„ä¸­ï¼Œå¹¶ä¸ä¸€å®šç«‹å³æ‰§è¡Œç æµçš„åˆ‡åˆ†å·¥ä½œã€‚
+  å‚æ•°  SmID  ç æµç®¡ç†æ¨¡å—çš„å®žä¾‹çš„æ ‡è¯†
+    PhyAddr åŽŸå§‹ç æµçš„ç‰©ç†åœ°å€
+    VirAddr åŽŸå§‹ç æµçš„è™šæ‹Ÿåœ°å€
+    Length  åŽŸå§‹ç æµçš„é•¿åº¦ï¼Œä»¥å­—èŠ‚ä¸ºå•ä½
+    Pts åŽŸå§‹ç æµçš„èŠ‚ç›®æ—¶é—´æˆ³(PTS)
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žç‰¹å®šçš„é”™è¯¯ç 
 ************************************************************************/
 SINT32 SM_PushRaw(SINT32 SmID, STREAM_DATA_S *pRawPacket);
 
 /************************************************************************
-Ô­ÐÍ  SINT32 SM_ReadStreamSeg(SINT32 SmID, STREAM_SEG_S *pStreamSeg )
-¹¦ÄÜ  ±¾º¯Êý´ÓÂëÁ÷¹ÜÀíÄ£¿é»ñÈ¡Ò»¶ÎÒÑ·Ö¸îÍê±ÏµÄÂëÁ÷
-²ÎÊý  SmID  ÂëÁ÷¹ÜÀíÄ£¿éµÄÊµÀýµÄ±êÊ¶
-      pStreamSeg  ½ÓÊÕÂëÁ÷¶ÎÐÅÏ¢µÄ½á¹¹Ö¸Õë
-·µ»ØÖµ  Èç¹û¶ÁÈ¡³É¹¦·µ»ØFMW_OK£¬·ñÔò·µ»ØÏàÓ¦µÄ´íÎóÂë
+åŽŸåž‹  SINT32 SM_ReadStreamSeg(SINT32 SmID, STREAM_SEG_S *pStreamSeg )
+åŠŸèƒ½  æœ¬å‡½æ•°ä»Žç æµç®¡ç†æ¨¡å—èŽ·å–ä¸€æ®µå·²åˆ†å‰²å®Œæ¯•çš„ç æµ
+å‚æ•°  SmID  ç æµç®¡ç†æ¨¡å—çš„å®žä¾‹çš„æ ‡è¯†
+      pStreamSeg  æŽ¥æ”¶ç æµæ®µä¿¡æ¯çš„ç»“æž„æŒ‡é’ˆ
+è¿”å›žå€¼  å¦‚æžœè¯»å–æˆåŠŸè¿”å›žFMW_OKï¼Œå¦åˆ™è¿”å›žç›¸åº”çš„é”™è¯¯ç 
 ************************************************************************/
 SINT32 SM_ReadStreamSeg(SINT32 SmID, STREAM_SEG_S *pStreamSeg);
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 SM_ReleaseStreamSeg( SINT32 SmID, SINT32 StreamID )
-  ¹¦ÄÜ  ±¾º¯Êý½«Ð­Òé²ãÒÑ¾­½âÂëÍê±ÏµÄÂëÁ÷Æ¬¹é»¹¸øÂëÁ÷¹ÜÀíÄ£¿é
-  ²ÎÊý  SmID  ÂëÁ÷¹ÜÀíÄ£¿éµÄÊµÀýµÄ±êÊ¶
-        StreamID  ÂëÁ÷Æ¬µÄID
-  ·µ»ØÖµ  ÎÞ
+  åŽŸåž‹  SINT32 SM_ReleaseStreamSeg( SINT32 SmID, SINT32 StreamID )
+  åŠŸèƒ½  æœ¬å‡½æ•°å°†åè®®å±‚å·²ç»è§£ç å®Œæ¯•çš„ç æµç‰‡å½’è¿˜ç»™ç æµç®¡ç†æ¨¡å—
+  å‚æ•°  SmID  ç æµç®¡ç†æ¨¡å—çš„å®žä¾‹çš„æ ‡è¯†
+        StreamID  ç æµç‰‡çš„ID
+  è¿”å›žå€¼  æ— 
 ************************************************************************/
 SINT32 SM_ReleaseStreamSeg( SINT32 SmID, SINT32 StreamID );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 CalcInstBlockTime( SINT32 SmID )
-  ¹¦ÄÜ  ¼ÆËãÖ¸¶¨ÊµÀý±»×èÈûµÄÊ±¼ä£¬½«ÉÏ´Î×èÈûÊ±¼äÓëµ±Ç°Ê±¼äÖ®²îÀÛ¼Óµ½
-          ×Ü×èÈûÊ±¼äÉÏÈ¥£¬²¢ÇÒ¸üÐÂ"ÉÏ´Î×èÈûÊ±¼ä"
-  ²ÎÊý  SmID  ÂëÁ÷¹ÜÀíÄ£¿éµÄÊµÀýµÄ±êÊ¶
-          FirstCalc  1: µÚÒ»´Î¼ÆËã£¬½ö¼ÇÂ¼"ÉÏ´Î×èÈûÊ±¼ä"
-                     0: ÀÛ¼Æ¼ÆËã£¬ÔÚÉÏÊö¹¤×÷Ö®Íâ»¹ÒªÀÛ¼Ó×èÈûÊ±¼ä
-  ·µ»ØÖµ  ÀÛ¼Æ×èÈûÊ±¼ä
+  åŽŸåž‹  SINT32 CalcInstBlockTime( SINT32 SmID )
+  åŠŸèƒ½  è®¡ç®—æŒ‡å®šå®žä¾‹è¢«é˜»å¡žçš„æ—¶é—´ï¼Œå°†ä¸Šæ¬¡é˜»å¡žæ—¶é—´ä¸Žå½“å‰æ—¶é—´ä¹‹å·®ç´¯åŠ åˆ°
+          æ€»é˜»å¡žæ—¶é—´ä¸ŠåŽ»ï¼Œå¹¶ä¸”æ›´æ–°"ä¸Šæ¬¡é˜»å¡žæ—¶é—´"
+  å‚æ•°  SmID  ç æµç®¡ç†æ¨¡å—çš„å®žä¾‹çš„æ ‡è¯†
+          FirstCalc  1: ç¬¬ä¸€æ¬¡è®¡ç®—ï¼Œä»…è®°å½•"ä¸Šæ¬¡é˜»å¡žæ—¶é—´"
+                     0: ç´¯è®¡è®¡ç®—ï¼Œåœ¨ä¸Šè¿°å·¥ä½œä¹‹å¤–è¿˜è¦ç´¯åŠ é˜»å¡žæ—¶é—´
+  è¿”å›žå€¼  ç´¯è®¡é˜»å¡žæ—¶é—´
 ************************************************************************/
 SINT32 CalcInstBlockTime( SINT32 SmID, SINT32 FirstCalc );
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 SetInstMode( SINT32 SmID, SINT32 Mode )
-  ¹¦ÄÜ  ¼ÆËãÖ¸¶¨ÊµÀý±»×èÈûµÄÊ±¼ä£¬½«ÉÏ´Î×èÈûÊ±¼äÓëµ±Ç°Ê±¼äÖ®²îÀÛ¼Óµ½
-          ×Ü×èÈûÊ±¼äÉÏÈ¥£¬²¢ÇÒ¸üÐÂ"ÉÏ´Î×èÈûÊ±¼ä"
-  ²ÎÊý  SmID  ÂëÁ÷¹ÜÀíÄ£¿éµÄÊµÀýµÄ±êÊ¶
-          Mode    SM_INST_MODE_WORK  ¹¤×÷Ä£Ê½
-                  SM_INST_MODE_WAIT  ×èÈûÄ£Ê½
-  ·µ»ØÖµ  ³É¹¦·µ»ØFMW_OK£¬ ·ñÔò·µ»Ø´íÎóÂë
+  åŽŸåž‹  SINT32 SetInstMode( SINT32 SmID, SINT32 Mode )
+  åŠŸèƒ½  è®¡ç®—æŒ‡å®šå®žä¾‹è¢«é˜»å¡žçš„æ—¶é—´ï¼Œå°†ä¸Šæ¬¡é˜»å¡žæ—¶é—´ä¸Žå½“å‰æ—¶é—´ä¹‹å·®ç´¯åŠ åˆ°
+          æ€»é˜»å¡žæ—¶é—´ä¸ŠåŽ»ï¼Œå¹¶ä¸”æ›´æ–°"ä¸Šæ¬¡é˜»å¡žæ—¶é—´"
+  å‚æ•°  SmID  ç æµç®¡ç†æ¨¡å—çš„å®žä¾‹çš„æ ‡è¯†
+          Mode    SM_INST_MODE_WORK  å·¥ä½œæ¨¡å¼
+                  SM_INST_MODE_WAIT  é˜»å¡žæ¨¡å¼
+  è¿”å›žå€¼  æˆåŠŸè¿”å›žFMW_OKï¼Œ å¦åˆ™è¿”å›žé”™è¯¯ç 
 ************************************************************************/
 SINT32 SetInstMode( SINT32 SmID, SINT32 Mode );
 
 
 /*========================================================================
-    part4.   SCD level ÂëÁ÷ÇÐ¸îºÍ¿ØÖÆ×ÓÄ£¿é 
+    part4.   SCD level ç æµåˆ‡å‰²å’ŒæŽ§åˆ¶å­æ¨¡å— 
 ========================================================================*/
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 CutStreamWithSCD(RAW_ARRAY_S *pRawStreamArray, SEG_ARRAY_S *pStreamSegArray, UINT32 StdType, SINT32 *pCutRawNum)
-    ¹¦ÄÜ  Çý¶¯SCDÇÐ¸îÂëÁ÷¡£
-            ±¾º¯Êý´ÓÔ­Ê¼ÂëÁ÷¼¯ÖÐÈ¡³öÈô¸É¸öÂëÁ÷°üÅäÖÃ¸øSCD£¬È»ºóÆô¶¯SCDÇÐ¸î¡£Ò»´ÎÇÐ¸îµÄÔ­Ê¼ÂëÁ÷°ü¸öÊýÈ¡¾öÓÚÁ½¸öÌõ¼þ£º
-            1.  ÂëÁ÷Æ¬¶Î»º³åÇøµÄ¿ÕÏÐ¿Õ¼ä
-            2.  Ô­Ê¼ÂëÁ÷µÄPTS·Ö²¼
-            Òà¼´£¬¿ÉÇÐ¸îµÄÂëÁ÷°ü×Ü³¤¶È²»µÃ´óÓÚÂëÁ÷Æ¬¶Î»º³åÇøµÄ¿ÕÏÐ¿Õ¼ä×ÜÁ¿£¬Ò»´ÎÇÐ¸îµÄÂëÁ÷°üPTS²»ÄÜ±ä»¯£¨¶ÔÓÚMPEGÏµÁÐ¿ÉÄÜÎÞÐëÊÜ´ËÏÞÖÆ£©¡£
-            ±¾º¯Êýµ÷ÓÃÔ­Ê¼ÂëÁ÷¹ÜÀí×ÓÄ£¿éµÄShowFirstRawPacket() / ShowNextRawPacket()º¯Êý×éÒÀ´ÎÉ¨ÃèÔ­Ê¼ÂëÁ÷£¬µÃµ½¿ÉÇÐ¸îµÄÂëÁ÷°üÊý¡£
-    ²ÎÊý  pRawStreamArray Ô­Ê¼ÂëÁ÷¼¯
-          pStreamSegArray ÇÐ¸îÂëÁ÷Æ¬¶Î¼¯
-          StdType ÂëÁ÷µÄÐ­ÒéÀàÐÍ¡£
-            SCDÍ¬²½Í·¼ì²âÒÀÀµÓÚÐ­ÒéÀàÐÍ¡£
-            pCutRawNum ¿ÉÇÐ¸îµÄÂëÁ÷°üÊýÄ¿£¨´óÓÚ0µÄÕûÊý£©
-    ·µ»ØÖµ  FMW_OK»ò´íÎóÂë
+  åŽŸåž‹  SINT32 CutStreamWithSCD(RAW_ARRAY_S *pRawStreamArray, SEG_ARRAY_S *pStreamSegArray, UINT32 StdType, SINT32 *pCutRawNum)
+    åŠŸèƒ½  é©±åŠ¨SCDåˆ‡å‰²ç æµã€‚
+            æœ¬å‡½æ•°ä»ŽåŽŸå§‹ç æµé›†ä¸­å–å‡ºè‹¥å¹²ä¸ªç æµåŒ…é…ç½®ç»™SCDï¼Œç„¶åŽå¯åŠ¨SCDåˆ‡å‰²ã€‚ä¸€æ¬¡åˆ‡å‰²çš„åŽŸå§‹ç æµåŒ…ä¸ªæ•°å–å†³äºŽä¸¤ä¸ªæ¡ä»¶ï¼š
+            1.  ç æµç‰‡æ®µç¼“å†²åŒºçš„ç©ºé—²ç©ºé—´
+            2.  åŽŸå§‹ç æµçš„PTSåˆ†å¸ƒ
+            äº¦å³ï¼Œå¯åˆ‡å‰²çš„ç æµåŒ…æ€»é•¿åº¦ä¸å¾—å¤§äºŽç æµç‰‡æ®µç¼“å†²åŒºçš„ç©ºé—²ç©ºé—´æ€»é‡ï¼Œä¸€æ¬¡åˆ‡å‰²çš„ç æµåŒ…PTSä¸èƒ½å˜åŒ–ï¼ˆå¯¹äºŽMPEGç³»åˆ—å¯èƒ½æ— é¡»å—æ­¤é™åˆ¶ï¼‰ã€‚
+            æœ¬å‡½æ•°è°ƒç”¨åŽŸå§‹ç æµç®¡ç†å­æ¨¡å—çš„ShowFirstRawPacket() / ShowNextRawPacket()å‡½æ•°ç»„ä¾æ¬¡æ‰«æåŽŸå§‹ç æµï¼Œå¾—åˆ°å¯åˆ‡å‰²çš„ç æµåŒ…æ•°ã€‚
+    å‚æ•°  pRawStreamArray åŽŸå§‹ç æµé›†
+          pStreamSegArray åˆ‡å‰²ç æµç‰‡æ®µé›†
+          StdType ç æµçš„åè®®ç±»åž‹ã€‚
+            SCDåŒæ­¥å¤´æ£€æµ‹ä¾èµ–äºŽåè®®ç±»åž‹ã€‚
+            pCutRawNum å¯åˆ‡å‰²çš„ç æµåŒ…æ•°ç›®ï¼ˆå¤§äºŽ0çš„æ•´æ•°ï¼‰
+    è¿”å›žå€¼  FMW_OKæˆ–é”™è¯¯ç 
 ************************************************************************/
 SINT32 CutStreamWithSCD(SM_INSTANCE_S *pScdInstance);
 
 /************************************************************************
-  Ô­ÐÍ  VOID ScdDriver(SM_CTRLREG_S *pSmCtrlReg, UINT32 *pRegUpAddress)
-    ¹¦ÄÜ  ÅäÖÃ¼Ä´æÆ÷º¯Êý
-    ²ÎÊý  
-    ·µ»ØÖµ  
+  åŽŸåž‹  VOID ScdDriver(SM_CTRLREG_S *pSmCtrlReg, UINT32 *pRegUpAddress)
+    åŠŸèƒ½  é…ç½®å¯„å­˜å™¨å‡½æ•°
+    å‚æ•°  
+    è¿”å›žå€¼  
 ************************************************************************/
 SINT32 ScdDriver(SM_CTRLREG_S *pSmCtrlReg, SM_PUSHRAW_S *pSmPushRaw, SINT32 SegStreamSize,RAW_ARRAY_S *pRawStreamArray,
             SINT32 *pDownMsgVirAddr, SINT32 DownMsgPhyAddr);
 
 /************************************************************************
-  Ô­ÐÍ  VOID WriteScdVtrlReg()
-    ¹¦ÄÜ  ÅäÖÃScd×´Ì¬¼Ä´æÆ÷º¯Êý
-    ²ÎÊý  
-    ·µ»ØÖµ
+  åŽŸåž‹  VOID WriteScdVtrlReg()
+    åŠŸèƒ½  é…ç½®ScdçŠ¶æ€å¯„å­˜å™¨å‡½æ•°
+    å‚æ•°  
+    è¿”å›žå€¼
 ************************************************************************/
 VOID WriteScdVtrlReg(SM_CTRLREG_S *pSmCtrlReg);
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 WriteScdMsg(SM_PUSHRAW_S *pSmPushRaw, SINT32 *pDownMsgVirAddr, SINT32 DownMsgPhyAddr)
-    ¹¦ÄÜ  ÅäÖÃScdÏÂÐÐÏûÏ¢³Ø
-    ²ÎÊý  
-    ·µ»ØÖµ
+  åŽŸåž‹  SINT32 WriteScdMsg(SM_PUSHRAW_S *pSmPushRaw, SINT32 *pDownMsgVirAddr, SINT32 DownMsgPhyAddr)
+    åŠŸèƒ½  é…ç½®Scdä¸‹è¡Œæ¶ˆæ¯æ± 
+    å‚æ•°  
+    è¿”å›žå€¼
 ************************************************************************/
 SINT32 WriteScdMsg(SM_PUSHRAW_S *pSmPushRaw, SINT32 SegStreamSize, RAW_ARRAY_S *pRawStreamArray,
            SINT32 *pDownMsgVirAddr, SINT32 DownMsgPhyAddr, SINT32 LowdlyFlag);
 
 /************************************************************************
-  Ô­ÐÍ  VOID ReadScdStateReg(SM_STATEREG_S *pSmStateReg)
-    ¹¦ÄÜ  ¶ÁÈ¡Scd×´Ì¬¼Ä´æÆ÷º¯Êý
-    ²ÎÊý  
-    ·µ»ØÖµ
+  åŽŸåž‹  VOID ReadScdStateReg(SM_STATEREG_S *pSmStateReg)
+    åŠŸèƒ½  è¯»å–ScdçŠ¶æ€å¯„å­˜å™¨å‡½æ•°
+    å‚æ•°  
+    è¿”å›žå€¼
 ************************************************************************/
 VOID ReadScdStateReg(SM_STATEREG_S *pSmStateReg);
 
 /************************************************************************
-  Ô­ÐÍ  SINT32 CheckScdStateReg(SM_STATEREG_S *pSmStateReg, SINT32 StdType)
-    ¹¦ÄÜ  ¼ì²éScd×´Ì¬¼Ä´æÆ÷º¯Êý
-    ²ÎÊý  
-    ·µ»ØÖµ
+  åŽŸåž‹  SINT32 CheckScdStateReg(SM_STATEREG_S *pSmStateReg, SINT32 StdType)
+    åŠŸèƒ½  æ£€æŸ¥ScdçŠ¶æ€å¯„å­˜å™¨å‡½æ•°
+    å‚æ•°  
+    è¿”å›žå€¼
 ************************************************************************/
 SINT32 CheckScdStateReg(SM_STATEREG_S *pSmStateReg, SINT32 StdType);
 
 /************************************************************************
-Ô­ÐÍ  SINT32 ScdReturnSegFilter(SM_SEGSTREAMFILTER_S *pSegStreamFilter, SINT32 *pTransFormSeg, SINT32 *pSegNum, UINT32 UpMsgStepNum)
-¹¦ÄÜ  
-²ÎÊý    pSegNum(ÊäÈë/Êä³ö)
-·µ»ØÖµ  FMW_OK»ò´íÎóÂë
+åŽŸåž‹  SINT32 ScdReturnSegFilter(SM_SEGSTREAMFILTER_S *pSegStreamFilter, SINT32 *pTransFormSeg, SINT32 *pSegNum, UINT32 UpMsgStepNum)
+åŠŸèƒ½  
+å‚æ•°    pSegNum(è¾“å…¥/è¾“å‡º)
+è¿”å›žå€¼  FMW_OKæˆ–é”™è¯¯ç 
 ************************************************************************/
 SINT32 ScdReturnSegFilter(SM_SEGSTREAMFILTER_S *pSegStreamFilter, SINT32 *pTransFormSeg, SINT32 *pExtraSrcBack, SINT32 *pSegNum, UINT32 UpMsgStepNum);
 
 /************************************************************************
-Ô­ÐÍ  SINT32 CheckSegValid(STREAM_SEG_S *pSegPacket, SINT32 SendSegTotalSize, SINT32 SegFreeBufLen)
-¹¦ÄÜ  
-        PreSegTotalSize:±¾°üÖ®Ç°ÏÈËÍÈëµÄ×Ü³¤¶È
-        SegFreeBufLen:Seg Stream BufferÖÐ»¹Ê£Óà¶àÉÙ³¤¶È
-·µ»ØÖµ  FMW_OK»ò´íÎóÂë
+åŽŸåž‹  SINT32 CheckSegValid(STREAM_SEG_S *pSegPacket, SINT32 SendSegTotalSize, SINT32 SegFreeBufLen)
+åŠŸèƒ½  
+        PreSegTotalSize:æœ¬åŒ…ä¹‹å‰å…ˆé€å…¥çš„æ€»é•¿åº¦
+        SegFreeBufLen:Seg Stream Bufferä¸­è¿˜å‰©ä½™å¤šå°‘é•¿åº¦
+è¿”å›žå€¼  FMW_OKæˆ–é”™è¯¯ç 
 
 ************************************************************************/
 SINT32 CheckSegValid(STREAM_SEG_S *pSegPacket, SINT32 SegFreeBufLen);
 
 /************************************************************************
-Ô­ÐÍ  SM_PUSHRAW_S *pPushRaw, SINT32 CurrSegTotalSize, SINT32 *pCurrRawId,UINT32 *pPts)
-¹¦ÄÜ  
-²ÎÊý    
-·µ»ØÖµ  Pts
+åŽŸåž‹  SM_PUSHRAW_S *pPushRaw, SINT32 CurrSegTotalSize, SINT32 *pCurrRawId,UINT32 *pPts)
+åŠŸèƒ½  
+å‚æ•°    
+è¿”å›žå€¼  Pts
 ************************************************************************/
 //VOID GetSegPts(SM_PUSHRAW_S *pPushRaw, SINT32 CurrSegTotalSize, SINT32 *pCurrRawId, SINT64 *pLastPts, SINT64 *pPts);
 //  VOID GetSegPts(RAW_ARRAY_S *pRawStreamArray, SINT32 Len, UINT64 *pLastPts, UINT64 *pPts, UINT64 *pUsertag, UINT64 *pDisptime);
   VOID GetSegPts(RAW_ARRAY_S *pRawStreamArray, SINT32 Len, UINT64 *pLastPts, STREAM_SEG_S* pSegPacket);
 
 /************************************************************************
-Ô­ÐÍ  SINT32 ProcessSCDReturn(RAW_ ARRAY_S *pRawStreamArray, SEG_ARRAY_S *pStreamSegArray, SINT32 *pCutRawNum)
-¹¦ÄÜ  ´¦ÀíSCDµÄ·µ»ØÐÅÏ¢¡£
-        ±¾º¯Êý´ÓSCDµÄ¼Ä´æÆ÷ºÍÉÏ¡¢ÏÂÐÐÏûÏ¢³ØÖÐ¶ÁÈ¡ÉÏÒ»´ÎµÄÂëÁ÷ÇÐ¸îÐÅÏ¢£¬Íê³ÉÏÂÁÐÁ½ÖÖ²Ù×÷£º
-        1.  ¸ù¾ÝÉÏÐÐÏûÏ¢½«¸÷Ö¡£¨»òNAL£©ÂëÁ÷°´STREAM_SEG_S¸ñÊ½×éÖ¯²¢ÇÒ²åÈëµ½ÂëÁ÷Æ¬¶Î¼¯pStreamSegArrayÖÐ¹ÜÀíÆðÀ´
-        2.  ·ÖÎö´Ë´ÎÇÐ¸îÏûºÄÁË¶àÉÙÔ­Ê¼ÂëÁ÷°ü£¬²¢½«ÕâÐ©ÂëÁ÷°üÊÍ·Å¡£
-        ²ÎÊý
-        pRawStreamArray Ô­Ê¼ÂëÁ÷¼¯
-        pStreamSegArray ÇÐ¸îÂëÁ÷Æ¬¶Î¼¯
-·µ»ØÖµ  FMW_OK»ò´íÎóÂë
+åŽŸåž‹  SINT32 ProcessSCDReturn(RAW_ ARRAY_S *pRawStreamArray, SEG_ARRAY_S *pStreamSegArray, SINT32 *pCutRawNum)
+åŠŸèƒ½  å¤„ç†SCDçš„è¿”å›žä¿¡æ¯ã€‚
+        æœ¬å‡½æ•°ä»ŽSCDçš„å¯„å­˜å™¨å’Œä¸Šã€ä¸‹è¡Œæ¶ˆæ¯æ± ä¸­è¯»å–ä¸Šä¸€æ¬¡çš„ç æµåˆ‡å‰²ä¿¡æ¯ï¼Œå®Œæˆä¸‹åˆ—ä¸¤ç§æ“ä½œï¼š
+        1.  æ ¹æ®ä¸Šè¡Œæ¶ˆæ¯å°†å„å¸§ï¼ˆæˆ–NALï¼‰ç æµæŒ‰STREAM_SEG_Sæ ¼å¼ç»„ç»‡å¹¶ä¸”æ’å…¥åˆ°ç æµç‰‡æ®µé›†pStreamSegArrayä¸­ç®¡ç†èµ·æ¥
+        2.  åˆ†æžæ­¤æ¬¡åˆ‡å‰²æ¶ˆè€—äº†å¤šå°‘åŽŸå§‹ç æµåŒ…ï¼Œå¹¶å°†è¿™äº›ç æµåŒ…é‡Šæ”¾ã€‚
+        å‚æ•°
+        pRawStreamArray åŽŸå§‹ç æµé›†
+        pStreamSegArray åˆ‡å‰²ç æµç‰‡æ®µé›†
+è¿”å›žå€¼  FMW_OKæˆ–é”™è¯¯ç 
 ************************************************************************/
 SINT32 ProcessScdReturn(SM_INSTANCE_S *pScdInstance);
 
 /************************************************************************
-  Ô­ÐÍ  VOID SM_SCDIntServeProc ( VOID )
-  ¹¦ÄÜ  ±¾º¯ÊýÎªSCDµÄÖÐ¶Ï·þÎñ³ÌÐò£¬ÏìÓ¦SCDµÄÖÐ¶ÏÐÅºÅ²¢´¦ÀíÆä·µ»ØµÄÐÅÏ¢¡£
-  ²ÎÊý  ÎÞ  
-  ·µ»ØÖµ  ÎÞ
+  åŽŸåž‹  VOID SM_SCDIntServeProc ( VOID )
+  åŠŸèƒ½  æœ¬å‡½æ•°ä¸ºSCDçš„ä¸­æ–­æœåŠ¡ç¨‹åºï¼Œå“åº”SCDçš„ä¸­æ–­ä¿¡å·å¹¶å¤„ç†å…¶è¿”å›žçš„ä¿¡æ¯ã€‚
+  å‚æ•°  æ—   
+  è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID SM_SCDIntServeProc ( VOID );
 
 /************************************************************************
-  Ô­ÐÍ  VOID SM_Wakeup ( VOID )
-  ¹¦ÄÜ  ±¾º¯ÊýÓÃÓÚ»½ÐÑSMÄ£¿é£¬±ÜÃâSMÍ£¹¤ºóÎÞ·¨»Ö¸´ÔËÐÐ¡£
-      Èç¹û²ÉÓÃÏß³Ì¼à¿ØSCD£¬Ôò½âÂëÏß³ÌÔÚÃ¿½âÍêÒ»Ö¡µ÷ÓÃ´Ëº¯Êý¡£
-      Èç¹û²ÉÓÃ¶¨Ê±ÖÐ¶Ï¼à¿ØSCD£¬ÔòÔÚ¶¨Ê±ÖÐ¶ÏÖÐµ÷ÓÃ´Ëº¯Êý¡£
-  ²ÎÊý  ÎÞ  
-  ·µ»ØÖµ  ÎÞ
+  åŽŸåž‹  VOID SM_Wakeup ( VOID )
+  åŠŸèƒ½  æœ¬å‡½æ•°ç”¨äºŽå”¤é†’SMæ¨¡å—ï¼Œé¿å…SMåœå·¥åŽæ— æ³•æ¢å¤è¿è¡Œã€‚
+      å¦‚æžœé‡‡ç”¨çº¿ç¨‹ç›‘æŽ§SCDï¼Œåˆ™è§£ç çº¿ç¨‹åœ¨æ¯è§£å®Œä¸€å¸§è°ƒç”¨æ­¤å‡½æ•°ã€‚
+      å¦‚æžœé‡‡ç”¨å®šæ—¶ä¸­æ–­ç›‘æŽ§SCDï¼Œåˆ™åœ¨å®šæ—¶ä¸­æ–­ä¸­è°ƒç”¨æ­¤å‡½æ•°ã€‚
+  å‚æ•°  æ—   
+  è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID SM_Wakeup ( VOID );
 
-/*  WIN32 ¡¢linuxÓÃ»§Ì¬¡¢VXWORKS»·¾³ÏÂ½øÐÐ²âÊÔÊ±£¬SCDµÄÇý¶¯Èë¿Ú  */
+/*  WIN32 ã€linuxç”¨æˆ·æ€ã€VXWORKSçŽ¯å¢ƒä¸‹è¿›è¡Œæµ‹è¯•æ—¶ï¼ŒSCDçš„é©±åŠ¨å…¥å£  */
 VOID  SM_SimpleEntry(VOID);
 
 /************************************************************************
-  Ô­ÐÍ  VOID SM_GetBasePhyVir(SINT32 SmID, SINT32 *pBasePhyAddr, UINT8 **pBaseVirAddr)
-  ¹¦ÄÜ  µÃÒÔ»ùÎïÀíµØÖ·Óë»ùÐéÄâµØÖ·
-  ²ÎÊý  ÎÞ  
-  ·µ»ØÖµ  Êä³öµÄÐéÄâµØÖ·
+  åŽŸåž‹  VOID SM_GetBasePhyVir(SINT32 SmID, SINT32 *pBasePhyAddr, UINT8 **pBaseVirAddr)
+  åŠŸèƒ½  å¾—ä»¥åŸºç‰©ç†åœ°å€ä¸ŽåŸºè™šæ‹Ÿåœ°å€
+  å‚æ•°  æ—   
+  è¿”å›žå€¼  è¾“å‡ºçš„è™šæ‹Ÿåœ°å€
 ************************************************************************/
 VOID SM_GetBasePhyVir(SINT32 SmID, SINT32 *pBasePhyAddr, UINT8 **pBaseVirAddr);
 
 /************************************************************************
-  Ô­ÐÍ  UINT8 *SM_PhyToVir(SINT32 BasePhyAddr, UINT8 *pBaseVirAddr, SINT32 PhyAddr)
-  ¹¦ÄÜ  ÎïÀíµØÖ·×ª³ÉÐéÄâµØÖ·
-  ²ÎÊý  ÎÞ  
-  ·µ»ØÖµ  Êä³öµÄÐéÄâµØÖ·
+  åŽŸåž‹  UINT8 *SM_PhyToVir(SINT32 BasePhyAddr, UINT8 *pBaseVirAddr, SINT32 PhyAddr)
+  åŠŸèƒ½  ç‰©ç†åœ°å€è½¬æˆè™šæ‹Ÿåœ°å€
+  å‚æ•°  æ—   
+  è¿”å›žå€¼  è¾“å‡ºçš„è™šæ‹Ÿåœ°å€
 ************************************************************************/
 UINT8 *SM_PhyToVir(SINT32 PhyAddr);
 
 /************************************************************************
-Ô­ÐÍ  UINT8 *SM_ScdPhyToVir(SINT32 BasePhyAddr, UINT8 *pBaseVirAddr, SINT32 PhyAddr)
-¹¦ÄÜ  ÎïÀíµØÖ·×ª³ÉÐéÄâµØÖ·
-²ÎÊý  ÎÞ  
-·µ»ØÖµ  Êä³öµÄÐéÄâµØÖ·
+åŽŸåž‹  UINT8 *SM_ScdPhyToVir(SINT32 BasePhyAddr, UINT8 *pBaseVirAddr, SINT32 PhyAddr)
+åŠŸèƒ½  ç‰©ç†åœ°å€è½¬æˆè™šæ‹Ÿåœ°å€
+å‚æ•°  æ—   
+è¿”å›žå€¼  è¾“å‡ºçš„è™šæ‹Ÿåœ°å€
 ************************************************************************/
 UINT8 *SM_ScdPhyToVir(SINT32 BasePhyAddr, UINT8 *pBaseVirAddr, SINT32 PhyAddr);
 
 /************************************************************************
-Ô­ÐÍ  VOID PrintScdRawState()
-¹¦ÄÜ  ´òÓ¡Raw¶ÓÁÐµÄÏêÏ¸Çé¿ö
-²ÎÊý  
-·µ»ØÖµ  ÎÞ
+åŽŸåž‹  VOID PrintScdRawState()
+åŠŸèƒ½  æ‰“å°Rawé˜Ÿåˆ—çš„è¯¦ç»†æƒ…å†µ
+å‚æ•°  
+è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID PrintScdRawState(SINT32 SmID, SINT32 PrintDetail);
 
 /************************************************************************
-Ô­ÐÍ  VOID PrintScdSegState()
-¹¦ÄÜ  ´òÓ¡Seg¶ÓÁÐµÄÏêÏ¸Çé¿ö
-²ÎÊý  
-·µ»ØÖµ  ÎÞ
+åŽŸåž‹  VOID PrintScdSegState()
+åŠŸèƒ½  æ‰“å°Segé˜Ÿåˆ—çš„è¯¦ç»†æƒ…å†µ
+å‚æ•°  
+è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID PrintScdSegState(SINT32 SmID, SINT32 PrintDetail);
 /************************************************************************
-Ô­ÐÍ  VOID PrintScdVtrlReg()
-¹¦ÄÜ  ´òÓ¡Scd¿ØÖÆ¼Ä´æÆ÷º¯Êý
-²ÎÊý  
-·µ»ØÖµ  ÎÞ
+åŽŸåž‹  VOID PrintScdVtrlReg()
+åŠŸèƒ½  æ‰“å°ScdæŽ§åˆ¶å¯„å­˜å™¨å‡½æ•°
+å‚æ•°  
+è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID PrintScdVtrlReg(VOID);
 
 /************************************************************************
-Ô­ÐÍ  VOID PrintScdVtrlReg()
-¹¦ÄÜ  ´òÓ¡ÏÂÐÐÏûÏ¢³Ø
-²ÎÊý  
-·µ»ØÖµ  ÎÞ
+åŽŸåž‹  VOID PrintScdVtrlReg()
+åŠŸèƒ½  æ‰“å°ä¸‹è¡Œæ¶ˆæ¯æ± 
+å‚æ•°  
+è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID PrintDownMsg(SINT32 DownMsgPhyAddr, SINT32 * pDownMsgVirAddr, SINT32 PushRawNum);
 
 /************************************************************************
-Ô­ÐÍ  VOID PrintScdStateReg()
-¹¦ÄÜ  ´òÓ¡Scd×´Ì¬¼Ä´æÆ÷º¯Êý
-²ÎÊý  
-·µ»ØÖµ  ÎÞ
+åŽŸåž‹  VOID PrintScdStateReg()
+åŠŸèƒ½  æ‰“å°ScdçŠ¶æ€å¯„å­˜å™¨å‡½æ•°
+å‚æ•°  
+è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID PrintScdStateReg(SM_STATEREG_S *pSmStateReg);
 
 /************************************************************************
-Ô­ÐÍ  VOID PrintScdInputRaw()
-¹¦ÄÜ  ´òÓ¡RawÂëÁ÷
-²ÎÊý  
-·µ»ØÖµ  ÎÞ
+åŽŸåž‹  VOID PrintScdInputRaw()
+åŠŸèƒ½  æ‰“å°Rawç æµ
+å‚æ•°  
+è¿”å›žå€¼  æ— 
 ************************************************************************/
 VOID PrintScdInputRawAfterStart(UINT8 *pDownMsgVirBaseAddr, SINT32 DownMsgPhyBaseAddr,
                                 UINT8 *pRawBufVirBaseAddr,  SINT32 RawBufPhyBaseAddr,

@@ -19,7 +19,7 @@
   2.Date        : 2009/12/17
     Author      : jianglei
     Modification: 	add control of output mode, output log to network through read from log buffer
-    				CNcomment:Ôö¼ÓÊä³ö·½Ê½¿ØÖÆ,Í¨¹ıÔö¼Ólog buffer,¿ÉÒÔÍ¨¹ı¶ÁÈ¡logÊä³öµ½ÍøÂç
+    				CNcomment:å¢åŠ è¾“å‡ºæ–¹å¼æ§åˆ¶,é€šè¿‡å¢åŠ log buffer,å¯ä»¥é€šè¿‡è¯»å–logè¾“å‡ºåˆ°ç½‘ç»œ
 
 ******************************************************************************/
 #include <linux/kernel.h>
@@ -44,7 +44,7 @@
 
 MMZ_BUFFER_S   g_LogConfigBuf;
 static HI_U32  g_LogModInit = 0;
-static LOG_CONFIG_INFO_S *g_pLogConfigInfo; /*kernel-state pointer of log control info*//*CNcomment:´òÓ¡¿ØÖÆĞÅÏ¢µÄÄÚºËÌ¬Ö¸Õë*/
+static LOG_CONFIG_INFO_S *g_pLogConfigInfo; /*kernel-state pointer of log control info*//*CNcomment:æ‰“å°æ§åˆ¶ä¿¡æ¯çš„å†…æ ¸æ€æŒ‡é’ˆ*/
 
 #if defined(LOG_NETWORK_SUPPORT) || defined(LOG_UDISK_SUPPORT)
 static LOG_BUFFER_INFO_S  g_MsgBufInfo;
@@ -220,7 +220,7 @@ HI_S32 HI_DRV_LOG_BufferWrite(HI_U8 *Buf,  HI_U32 MsgLen, HI_U32 UserOrKer)
     }
 
 	/*protect with semaphore while two module write at the same time*/
-    /*CNcomment:Á½¸öÄ£¿éÍ¬Ê±Ğ´Òª×öĞÅºÅÁ¿±£»¤*/
+    /*CNcomment:ä¸¤ä¸ªæ¨¡å—åŒæ—¶å†™è¦åšä¿¡å·é‡ä¿æŠ¤*/
     local_irq_save(flags);
 
     //down(&g_MsgBufInfo.semWrite);

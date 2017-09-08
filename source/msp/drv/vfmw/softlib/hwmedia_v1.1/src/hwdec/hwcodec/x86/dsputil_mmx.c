@@ -2130,7 +2130,7 @@ static void vector_fmul_add_add_3dnow(float *dst, const float *src0, const float
         );
     }
     else
-		/*ÆÁ±Î´Ë´úÂë ±àÒë²»Í¨¹ı x00141957 20101230*/
+		/*å±è”½æ­¤ä»£ç  ç¼–è¯‘ä¸é€šè¿‡ x00141957 20101230*/
        // ff_vector_fmul_add_add_c(dst, src0, src1, src2, src3, len, step);
     __asm__ volatile("femms");
 }
@@ -2188,7 +2188,7 @@ static void vector_fmul_add_add_sse(float *dst, const float *src0, const float *
         );
     }
     else
-		/*ÆÁ±Î´Ë´úÂë ±àÒë²»Í¨¹ı x00141957 20101230*/
+		/*å±è”½æ­¤ä»£ç  ç¼–è¯‘ä¸é€šè¿‡ x00141957 20101230*/
         //ff_vector_fmul_add_add_c(dst, src0, src1, src2, src3, len, step);
         ;
 }
@@ -2226,7 +2226,7 @@ static void vector_fmul_window_3dnow2(float *dst, const float *src0, const float
         );
     }else
 #endif
-	/*x00141957 2010 1230ÆÁ±Î´Ë´úÂë ±àÒë²»Í¨¹ı*/
+	/*x00141957 2010 1230å±è”½æ­¤ä»£ç  ç¼–è¯‘ä¸é€šè¿‡*/
 	// ff_vector_fmul_window_c(dst, src0, src1, win, add_bias, len);
 	;
 }
@@ -2264,7 +2264,7 @@ static void vector_fmul_window_sse(float *dst, const float *src0, const float *s
         );
     }else
 #endif
-		/*x00141957 20101230 ÆÁ±Î´Ë´úÂë ±àÒë²»Í¨¹ı*/
+		/*x00141957 20101230 å±è”½æ­¤ä»£ç  ç¼–è¯‘ä¸é€šè¿‡*/
 //        ff_vector_fmul_window_c(dst, src0, src1, win, add_bias, len);
 ;
 }
@@ -2632,7 +2632,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
                 c->idct_permutation_type= FF_LIBMPEG2_IDCT_PERM;
 #endif
             }
-/*vp6²»ÔÙ²ÉÓÃidct_putÒÔ¼°idct_add x00141957 2010 1130*/			
+/*vp6ä¸å†é‡‡ç”¨idct_putä»¥åŠidct_add x00141957 2010 1130*/			
 #if 0			
             else if((CONFIG_VP3_DECODER || CONFIG_VP5_DECODER || CONFIG_VP6_DECODER || CONFIG_THEORA_DECODER) && idct_algo==FF_IDCT_VP3)
             {
@@ -2831,7 +2831,7 @@ void dsputil_init_mmx(DSPContext* c, AVCodecContext *avctx)
             c->h264_h_loop_filter_chroma_intra= h264_h_loop_filter_chroma_intra_mmx2; 
             c->h264_loop_filter_strength= h264_loop_filter_strength_mmx2; 
 	    /* 2010/07/05 16:30:00 liuxw+00139685 */
-	    /* ĞÂÔöSSE4µÄÏÔÊ¾¼ÓÈ¨º¯Êı */
+	    /* æ–°å¢SSE4çš„æ˜¾ç¤ºåŠ æƒå‡½æ•° */
 #if 1	    
 	    if (mm_flags & FF_MM_SSE4)
 	    {

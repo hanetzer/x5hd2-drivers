@@ -1,6 +1,6 @@
 /**
  \file
- \brief Describes the header file of the decoder.CNcomment:DecoderÄ£¿éÍ·ÎÄ¼ş CNend
+ \brief Describes the header file of the decoder.CNcomment:Decoderæ¨¡å—å¤´æ–‡ä»¶ CNend
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version draft
@@ -23,133 +23,133 @@ extern "C" {
 /** \addtogroup      HIGO_DEC */
 /** @{ */  /** <!-- [HIGO_DEC] */
 
-/** Decoding type of the decoding instance*//** CNcomment: ½âÂëÊµÀıµÄ½âÂëÀàĞÍ */
+/** Decoding type of the decoding instance*//** CNcomment: è§£ç å®ä¾‹çš„è§£ç ç±»å‹ */
 typedef enum 
 {
-    HIGO_DEC_IMGTYPE_JPEG = HIGO_IMGTYPE_JPEG, /**<.jpeg picture*//**<CNcomment: JPEG¸ñÊ½Í¼Æ¬*/
-    HIGO_DEC_IMGTYPE_GIF  = HIGO_IMGTYPE_GIF,  /**<.gif picture*//**<CNcomment: GIF¸ñÊ½Í¼Æ¬*/
-    HIGO_DEC_IMGTYPE_BMP  = HIGO_IMGTYPE_BMP, /**<.bmp picture*//**<CNcomment: BMP¸ñÊ½Í¼Æ¬ */
-    HIGO_DEC_IMGTYPE_PNG  = HIGO_IMGTYPE_PNG,  /**<.png picture*//**<CNcomment: PNG¸ñÊ½Í¼Æ¬ */
-    HIGO_DEC_IMGTYPE_RLE  = HIGO_IMGTYPE_RLE,  /**<.rle picture*//**<CNcomment: RLE¸ñÊ½Í¼Æ¬ */
+    HIGO_DEC_IMGTYPE_JPEG = HIGO_IMGTYPE_JPEG, /**<.jpeg picture*//**<CNcomment: JPEGæ ¼å¼å›¾ç‰‡*/
+    HIGO_DEC_IMGTYPE_GIF  = HIGO_IMGTYPE_GIF,  /**<.gif picture*//**<CNcomment: GIFæ ¼å¼å›¾ç‰‡*/
+    HIGO_DEC_IMGTYPE_BMP  = HIGO_IMGTYPE_BMP, /**<.bmp picture*//**<CNcomment: BMPæ ¼å¼å›¾ç‰‡ */
+    HIGO_DEC_IMGTYPE_PNG  = HIGO_IMGTYPE_PNG,  /**<.png picture*//**<CNcomment: PNGæ ¼å¼å›¾ç‰‡ */
+    HIGO_DEC_IMGTYPE_RLE  = HIGO_IMGTYPE_RLE,  /**<.rle picture*//**<CNcomment: RLEæ ¼å¼å›¾ç‰‡ */
     HIGO_DEC_IMGTPYE_BUTT
 } HIGO_DEC_IMGTYPE_E;
 
-/**Stream source*//** CNcomment: ÂëÁ÷µÄÀ´Ô´ */
+/**Stream source*//** CNcomment: ç æµçš„æ¥æº */
 typedef enum 
 {
-    HIGO_DEC_SRCTYPE_FILE = 0, /**<Streams are derived from files.*//**<CNcomment: ÂëÁ÷À´Ô´ÓÚÎÄ¼ş*/
-    HIGO_DEC_SRCTYPE_MEM,      /**<Streams are derived from the memory.*//**<CNcomment: ÂëÁ÷À´Ô´ÓÚÄÚ´æ*/
-    HIGO_DEC_SRCTYPE_STREAM,   /**<Streams are derived from stream data.*/  /**<CNcomment: ÂëÁ÷À´Ô´ÓÚÁ÷Ê½Êı¾İ*/    
+    HIGO_DEC_SRCTYPE_FILE = 0, /**<Streams are derived from files.*//**<CNcomment: ç æµæ¥æºäºæ–‡ä»¶*/
+    HIGO_DEC_SRCTYPE_MEM,      /**<Streams are derived from the memory.*//**<CNcomment: ç æµæ¥æºäºå†…å­˜*/
+    HIGO_DEC_SRCTYPE_STREAM,   /**<Streams are derived from stream data.*/  /**<CNcomment: ç æµæ¥æºäºæµå¼æ•°æ®*/    
     HIGO_DEC_SRCTYPE_BUTT
 } HIGO_DEC_SRCTYPE_E;
 
 typedef enum 
 {
-    HIGO_DEC_POSITION_SET = 0,   /*Start position*//** CNcomment:ÆğÊ¼Î»ÖÃ*/
-    HIGO_DEC_POSITION_CUR,       /*From the current position*//** CNcomment:´Óµ±Ç°Î»ÖÃ*/
-    HIGO_DEC_POSITION_END,       /*From the end position*//** CNcomment:´Ó½áÊøÎ»ÖÃ*/
+    HIGO_DEC_POSITION_SET = 0,   /*Start position*//** CNcomment:èµ·å§‹ä½ç½®*/
+    HIGO_DEC_POSITION_CUR,       /*From the current position*//** CNcomment:ä»å½“å‰ä½ç½®*/
+    HIGO_DEC_POSITION_END,       /*From the end position*//** CNcomment:ä»ç»“æŸä½ç½®*/
     HIGO_DEC_POSITION_BUTT
 }HIGO_DEC_POSITION_E;
 
 typedef struct
 {
 	HIGO_MEMTYPE_E MemType;
-	HI_BOOL IsPubPalette;  /*Decoder uses common Palette or not*//** CNcomment:½âÂëÍ¼Æ¬ÊÇ·ñÊ¹ÓÃ¹«¹²µ÷É«°å,Ö»¶ÔÊä³ö¸ñÊ½ÓĞĞ§*/
+	HI_BOOL IsPubPalette;  /*Decoder uses common Palette or not*//** CNcomment:è§£ç å›¾ç‰‡æ˜¯å¦ä½¿ç”¨å…¬å…±è°ƒè‰²æ¿,åªå¯¹è¾“å‡ºæ ¼å¼æœ‰æ•ˆ*/
 }HIGO_DEC_SURINFO_S;
 
 
 typedef HI_S32 (*PTR_Dec_WriteStreamCB_FN)(HIGO_DEC_POSITION_E Position,  HI_S32 Offset);
 
 
-/**Detailed information about the stream source*//** CNcomment:ÂëÁ÷À´Ô´µÄÏêÏ¸ĞÅÏ¢*/
+/**Detailed information about the stream source*//** CNcomment:ç æµæ¥æºçš„è¯¦ç»†ä¿¡æ¯*/
 typedef union 
 {
-    /*The following information is required if the input source is the memory.*//** CNcomment:ÊäÈëÔ´ÎªÄÚ´æ¿éÊ±ĞèÒªµÄĞÅÏ¢*/
+    /*The following information is required if the input source is the memory.*//** CNcomment:è¾“å…¥æºä¸ºå†…å­˜å—æ—¶éœ€è¦çš„ä¿¡æ¯*/
     struct
     {
-        HI_CHAR* pAddr;      /**<Memory pointer address*//**<CNcomment: ÄÚ´æÖ¸ÕëµØÖ·*/
-        HI_U32 Length;       /**<Length*//**<CNcomment: ³¤¶È*/
+        HI_CHAR* pAddr;      /**<Memory pointer address*//**<CNcomment: å†…å­˜æŒ‡é’ˆåœ°å€*/
+        HI_U32 Length;       /**<Length*//**<CNcomment: é•¿åº¦*/
     } MemInfo;
 
-    /*Picture name*//** CNcomment:Í¼Æ¬ÎÄ¼şÃû*/
+    /*Picture name*//** CNcomment:å›¾ç‰‡æ–‡ä»¶å*/
     const HI_CHAR *pFileName;
     PTR_Dec_WriteStreamCB_FN pWriteCB;
 } HIGO_DEC_SRCINFO_U;
 
-/**Parameters for creating a decoding instance.*//** CNcomment: ´´½¨½âÂëÊµÀıĞèÒªµÄ²ÎÊı */
+/**Parameters for creating a decoding instance.*//** CNcomment: åˆ›å»ºè§£ç å®ä¾‹éœ€è¦çš„å‚æ•° */
 typedef struct 
 {
-    HIGO_DEC_SRCTYPE_E SrcType; /**<Type of the input stream.*//**<CNcomment: ÊäÈëÂëÁ÷µÄÀàĞÍ*/
-    HIGO_DEC_SRCINFO_U SrcInfo; /**<Information about the input source.*//**<CNcomment: ÊäÈëÔ´ÏêÏ¸ĞÅÏ¢*/
+    HIGO_DEC_SRCTYPE_E SrcType; /**<Type of the input stream.*//**<CNcomment: è¾“å…¥ç æµçš„ç±»å‹*/
+    HIGO_DEC_SRCINFO_U SrcInfo; /**<Information about the input source.*//**<CNcomment: è¾“å…¥æºè¯¦ç»†ä¿¡æ¯*/
 } HIGO_DEC_ATTR_S;
 
-/** Major information after decoding*//** CNcomment: ½âÂëºóÖ÷ĞÅÏ¢ */
+/** Major information after decoding*//** CNcomment: è§£ç åä¸»ä¿¡æ¯ */
 typedef struct 
 {
-    HI_U32             Count;           /**<Number of pictures*//**<CNcomment: Í¼Æ¬µÄ¸öÊı */
-    HIGO_DEC_IMGTYPE_E ImgType;         /**<Type of the input source.*//**<CNcomment: ÊäÈëÔ´ÀàĞÍ */
-    HI_U32             ScrWidth;        /**<Screen width. The screen refers to that of the picture. The value 0 indicates "invalid".*//**<CNcomment: ÆÁÄ»¿í¶È£¬´Ë´¦ÆÁÄ»±íÊ¾Í¼Æ¬ÎÄ¼şÆÁÄ»£¬0±íÊ¾ÎŞĞ§ */
-    HI_U32             ScrHeight;       /**<Screen height. The screen refers to that of the picture. The value 0 indicates "invalid".*//**<CNcomment: ÆÁÄ»¸ß¶È£¬´Ë´¦ÆÁÄ»±íÊ¾Í¼Æ¬ÎÄ¼şÆÁÄ»£¬0±íÊ¾ÎŞĞ§ */
-    HI_BOOL            IsHaveBGColor;   /**<Whether there is any background color.*//**<CNcomment: ÊÇ·ñÓĞ±³¾°É« */
-    HI_COLOR           BGColor;         /**<Background color*//**<CNcomment: ±³¾°ÑÕÉ« */
+    HI_U32             Count;           /**<Number of pictures*//**<CNcomment: å›¾ç‰‡çš„ä¸ªæ•° */
+    HIGO_DEC_IMGTYPE_E ImgType;         /**<Type of the input source.*//**<CNcomment: è¾“å…¥æºç±»å‹ */
+    HI_U32             ScrWidth;        /**<Screen width. The screen refers to that of the picture. The value 0 indicates "invalid".*//**<CNcomment: å±å¹•å®½åº¦ï¼Œæ­¤å¤„å±å¹•è¡¨ç¤ºå›¾ç‰‡æ–‡ä»¶å±å¹•ï¼Œ0è¡¨ç¤ºæ— æ•ˆ */
+    HI_U32             ScrHeight;       /**<Screen height. The screen refers to that of the picture. The value 0 indicates "invalid".*//**<CNcomment: å±å¹•é«˜åº¦ï¼Œæ­¤å¤„å±å¹•è¡¨ç¤ºå›¾ç‰‡æ–‡ä»¶å±å¹•ï¼Œ0è¡¨ç¤ºæ— æ•ˆ */
+    HI_BOOL            IsHaveBGColor;   /**<Whether there is any background color.*//**<CNcomment: æ˜¯å¦æœ‰èƒŒæ™¯è‰² */
+    HI_COLOR           BGColor;         /**<Background color*//**<CNcomment: èƒŒæ™¯é¢œè‰² */
 } HIGO_DEC_PRIMARYINFO_S;
 
-/** Index picture format*//** CNcomment: Ë÷ÒıÍ¼Æ¬¸ñÊ½ */
+/** Index picture format*//** CNcomment: ç´¢å¼•å›¾ç‰‡æ ¼å¼ */
 typedef struct 
 {
-    HI_U32    OffSetX;                /**<X offset value on the screen. The screen mentioned in this document refers to that of the picture.*//**<CNcomment: ÔÚÆÁÄ»ÉÏµÄXÆ«ÒÆÁ¿£¬´Ë´¦ÆÁÄ»±íÊ¾Í¼Æ¬ÎÄ¼şÆÁÄ»£¬ÏÂÍ¬ */
-    HI_U32    OffSetY;                /**<Y offset value on the screen.*//**<CNcomment: ÔÚÆÁÄ»ÉÏµÄYÆ«ÒÆÁ¿*/
-    HI_U32    Width;                  /**<Width of the original picture*//**<CNcomment: Ô­Ê¼Í¼Æ¬µÄ¿í¶È */
-    HI_U32    Height;                  /**<Height of the original picture*//**<CNcomment: Ô­Ê¼Í¼Æ¬µÄ¸ß¶È */
-    HI_U8     Alpha;                  /**<Information about channel alpha used for overlaying pictures. The alpha value ranges from 0 to 255.*//**<CNcomment: ÓÃÓÚÍ¼Æ¬½øĞĞµş¼ÓµÄÍ¨µÀalphaĞÅÏ¢£¬·¶Î§ÊÇ0-255 */
-    HI_BOOL   IsHaveKey;              /**<Key enable. HI_FALSE: disabled; HI_TRUE: enabled*//**<CNcomment: ÊÇ·ñÓĞKEY¡£ HI_FALSE: KEY²»Ê¹ÄÜ£»HI_TRUE: KEYÊ¹ÄÜ */
-    HI_COLOR  Key;                    /**<Information about colorkey used for overlaying pictures*//**<CNcomment: ÓÃÓÚÍ¼Æ¬½øĞĞµş¼ÓµÄcolorkeyĞÅÏ¢ */
-    HIGO_PF_E Format;                 /**<Pixel format of the picture source*//**<CNcomment: Í¼Æ¬Ô´ÏñËØ¸ñÊ½ */
-    HI_U32    DelayTime;              /**<Time interval between this picture and the previous one (10 ms). The value 0 indicates that the parameter is invalid.*//**<CNcomment: ÓëÉÏÒ»·ùÍ¼Æ¬µÄÊ±¼ä¼ä¸ô(10ms)£¬0±íÊ¾¸Ã²ÎÊıÎŞĞ§ */
-    HI_U32    DisposalMethod;         /**<Processing method of the current frame. This application programming interface (API) is valid for only GIF pictures. 0: customized processing method; 1: no processing method; 2: use the background color.*/    /**<CNcomment: µ±Ç°Ö¡´¦Àí·½·¨£¬´Ë½Ó¿ÚÖ»¶ÔGIFÓĞĞ§£¬0:ÓÃ»§¾ö¶¨´¦Àí·½Ê½£¬1:²»×ö´¦Àí£¬2:Ê¹ÓÃ±³¾°É«£¬*/    
+    HI_U32    OffSetX;                /**<X offset value on the screen. The screen mentioned in this document refers to that of the picture.*//**<CNcomment: åœ¨å±å¹•ä¸Šçš„Xåç§»é‡ï¼Œæ­¤å¤„å±å¹•è¡¨ç¤ºå›¾ç‰‡æ–‡ä»¶å±å¹•ï¼Œä¸‹åŒ */
+    HI_U32    OffSetY;                /**<Y offset value on the screen.*//**<CNcomment: åœ¨å±å¹•ä¸Šçš„Yåç§»é‡*/
+    HI_U32    Width;                  /**<Width of the original picture*//**<CNcomment: åŸå§‹å›¾ç‰‡çš„å®½åº¦ */
+    HI_U32    Height;                  /**<Height of the original picture*//**<CNcomment: åŸå§‹å›¾ç‰‡çš„é«˜åº¦ */
+    HI_U8     Alpha;                  /**<Information about channel alpha used for overlaying pictures. The alpha value ranges from 0 to 255.*//**<CNcomment: ç”¨äºå›¾ç‰‡è¿›è¡Œå åŠ çš„é€šé“alphaä¿¡æ¯ï¼ŒèŒƒå›´æ˜¯0-255 */
+    HI_BOOL   IsHaveKey;              /**<Key enable. HI_FALSE: disabled; HI_TRUE: enabled*//**<CNcomment: æ˜¯å¦æœ‰KEYã€‚ HI_FALSE: KEYä¸ä½¿èƒ½ï¼›HI_TRUE: KEYä½¿èƒ½ */
+    HI_COLOR  Key;                    /**<Information about colorkey used for overlaying pictures*//**<CNcomment: ç”¨äºå›¾ç‰‡è¿›è¡Œå åŠ çš„colorkeyä¿¡æ¯ */
+    HIGO_PF_E Format;                 /**<Pixel format of the picture source*//**<CNcomment: å›¾ç‰‡æºåƒç´ æ ¼å¼ */
+    HI_U32    DelayTime;              /**<Time interval between this picture and the previous one (10 ms). The value 0 indicates that the parameter is invalid.*//**<CNcomment: ä¸ä¸Šä¸€å¹…å›¾ç‰‡çš„æ—¶é—´é—´éš”(10ms)ï¼Œ0è¡¨ç¤ºè¯¥å‚æ•°æ— æ•ˆ */
+    HI_U32    DisposalMethod;         /**<Processing method of the current frame. This application programming interface (API) is valid for only GIF pictures. 0: customized processing method; 1: no processing method; 2: use the background color.*/    /**<CNcomment: å½“å‰å¸§å¤„ç†æ–¹æ³•ï¼Œæ­¤æ¥å£åªå¯¹GIFæœ‰æ•ˆï¼Œ0:ç”¨æˆ·å†³å®šå¤„ç†æ–¹å¼ï¼Œ1:ä¸åšå¤„ç†ï¼Œ2:ä½¿ç”¨èƒŒæ™¯è‰²ï¼Œ*/    
 } HIGO_DEC_IMGINFO_S;
 
-/* Picture attributes after decoding*//** CNcomment: ½âÂëºóÍ¼Æ¬ÊôĞÔ */
+/* Picture attributes after decoding*//** CNcomment: è§£ç åå›¾ç‰‡å±æ€§ */
 typedef struct 
 {
-    HI_U32    Width;                  /**<Expected width after decoding*//**<CNcomment: ÆÚÍû½âÂëºó¿í¶È */
-    HI_U32    Height;                 /**<Expected height after decoding*//**<CNcomment: ÆÚÍû½âÂëºó¸ß¶È*/
-    HIGO_PF_E Format;                 /**<Expected pixel format after decoding*//**<CNcomment: ÆÚÍû½âÂëºóÏñËØ¸ñÊ½*/
+    HI_U32    Width;                  /**<Expected width after decoding*//**<CNcomment: æœŸæœ›è§£ç åå®½åº¦ */
+    HI_U32    Height;                 /**<Expected height after decoding*//**<CNcomment: æœŸæœ›è§£ç åé«˜åº¦*/
+    HIGO_PF_E Format;                 /**<Expected pixel format after decoding*//**<CNcomment: æœŸæœ›è§£ç ååƒç´ æ ¼å¼*/
 } HIGO_DEC_IMGATTR_S;
 
-/** Extended data format type*//** CNcomment: À©Õ¹Êı¾İ¸ñÊ½ÀàĞÍ */
+/** Extended data format type*//** CNcomment: æ‰©å±•æ•°æ®æ ¼å¼ç±»å‹ */
 typedef enum 
 {
-    HIGO_DEC_EXTEND_EXIF = 0,          /**<Extended-data in EXIF format*//**<CNcomment: EXIF¸ñÊ½µÄÀ©Õ¹Êı¾İ */
+    HIGO_DEC_EXTEND_EXIF = 0,          /**<Extended-data in EXIF format*//**<CNcomment: EXIFæ ¼å¼çš„æ‰©å±•æ•°æ® */
     HIGO_DEC_EXTEND_EXIF_BUTT
 } HIGO_DEC_EXTENDTYPE_E;
 
-/** Basic picture information*//** CNcomment: Í¼Æ¬»ù±¾ĞÅÏ¢ */
+/** Basic picture information*//** CNcomment: å›¾ç‰‡åŸºæœ¬ä¿¡æ¯ */
 typedef struct 
 {
-    HI_U32    Width;                /**<Picture width*//**<CNcomment: Í¼Æ¬µÄ¿í¶È */
-    HI_U32    Height;               /**<Picture height*//**<CNcomment: Í¼Æ¬µÄ¸ß¶È */
-    HIGO_PF_E PixelFormat;          /**<Pixel format*//**<CNcomment: ÏñËØ¸ñÊ½ */
+    HI_U32    Width;                /**<Picture width*//**<CNcomment: å›¾ç‰‡çš„å®½åº¦ */
+    HI_U32    Height;               /**<Picture height*//**<CNcomment: å›¾ç‰‡çš„é«˜åº¦ */
+    HIGO_PF_E PixelFormat;          /**<Pixel format*//**<CNcomment: åƒç´ æ ¼å¼ */
     HI_U32    VirAddr[3];           /**<Virtual address. If the address is in RGB format, only the first VirAddr[0] is the start address,
                                                 and VirAddr[1] and VirAddr[2] are invalid. If the address is in YC format,
                                                 VirAddr[0] indicates the start address of the Y component, VirAddr[1] indicates the start address of the C component, 
                                                 and VirAddr[2] is invalid.*/
-                                                /**<CNcomment: ĞéÄâµØÖ·¡£Èç¹ûÊÇRGB¸ñÊ½£¬Ö»ÓĞµÚÒ»¸öVirAddr[0]ÎªÆğÊ¼µØÖ·£¬
-                                                VirAddr[1]ºÍVirAddr[2]ÎŞĞ§£»Èç¹ûÊÇYC¸ñÊ½£¬
-                                                VirAddr[0]±íÊ¾Y·ÖÁ¿ÆğÊ¼µØÖ·£¬VirAddr[1]±íÊ¾C·ÖÁ¿ÆğÊ¼µØÖ·£¬
-                                                VirAddr[2]ÎŞĞ§ */
-    HI_U32    PhyAddr[3];           /**<Physical address. The usage principles are the same as previous ones.*//**<CNcomment: ÎïÀíµØÖ·£¬Ê¹ÓÃÔ­ÔòÍ¬ÉÏ */
-    HI_U32    Pitch[3];             /**<Pitch. The usage principles are the same as previous ones.*//**<CNcomment: ĞĞ¼ä¾à£¬Ê¹ÓÃÔ­ÔòÍ¬ÉÏ */
-    HI_U32    Palate[256];         /**<Palette*//**<CNcomment: µ÷É«°å */
+                                                /**<CNcomment: è™šæ‹Ÿåœ°å€ã€‚å¦‚æœæ˜¯RGBæ ¼å¼ï¼Œåªæœ‰ç¬¬ä¸€ä¸ªVirAddr[0]ä¸ºèµ·å§‹åœ°å€ï¼Œ
+                                                VirAddr[1]å’ŒVirAddr[2]æ— æ•ˆï¼›å¦‚æœæ˜¯YCæ ¼å¼ï¼Œ
+                                                VirAddr[0]è¡¨ç¤ºYåˆ†é‡èµ·å§‹åœ°å€ï¼ŒVirAddr[1]è¡¨ç¤ºCåˆ†é‡èµ·å§‹åœ°å€ï¼Œ
+                                                VirAddr[2]æ— æ•ˆ */
+    HI_U32    PhyAddr[3];           /**<Physical address. The usage principles are the same as previous ones.*//**<CNcomment: ç‰©ç†åœ°å€ï¼Œä½¿ç”¨åŸåˆ™åŒä¸Š */
+    HI_U32    Pitch[3];             /**<Pitch. The usage principles are the same as previous ones.*//**<CNcomment: è¡Œé—´è·ï¼Œä½¿ç”¨åŸåˆ™åŒä¸Š */
+    HI_U32    Palate[256];         /**<Palette*//**<CNcomment: è°ƒè‰²æ¿ */
 } HIGO_DEC_IMGDATA_S;
 
-/** Information about input streams*//** CNcomment: ÊäÈëÁ÷ĞÅÏ¢*/
+/** Information about input streams*//** CNcomment: è¾“å…¥æµä¿¡æ¯*/
 typedef struct
 {
-    HI_VOID *pStreamAddr;    /**<Virtual start address of streams*//**<CNcomment: Á÷ĞéÄâÆğÊ¼µØÖ·*/
-    HI_U32   StreamLen;      /**<Stream length*//**<CNcomment: Á÷³¤¶È*/
-    HI_BOOL  EndFlag;        /**<Stream end flag*//**<CNcomment: ÂëÁ÷½áÊø±ê¼Ç*/
-    HI_U32   CopyLen;         /**<Actual length of the copied data*//**<CNcomment: Êµ¼Ê¿½±´µÄÊı¾İ³¤¶È*/
+    HI_VOID *pStreamAddr;    /**<Virtual start address of streams*//**<CNcomment: æµè™šæ‹Ÿèµ·å§‹åœ°å€*/
+    HI_U32   StreamLen;      /**<Stream length*//**<CNcomment: æµé•¿åº¦*/
+    HI_BOOL  EndFlag;        /**<Stream end flag*//**<CNcomment: ç æµç»“æŸæ ‡è®°*/
+    HI_U32   CopyLen;         /**<Actual length of the copied data*//**<CNcomment: å®é™…æ‹·è´çš„æ•°æ®é•¿åº¦*/
 }HIGO_DEC_WRITESTREAM_S;
 
 
@@ -162,10 +162,10 @@ typedef struct
 
 
  /**
-\brief Initializes the decoder.CNcomment: ½âÂëÆ÷³õÊ¼»¯ CNend
+\brief Initializes the decoder.CNcomment: è§£ç å™¨åˆå§‹åŒ– CNend
 \attention \n
-::HI_GO_Init already calls the interfaceCNcomment: ::HI_GO_InitÖĞÒÑ°üº¬¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
-\param  N/ACNcomment: ÎŞ CNend
+::HI_GO_Init already calls the interfaceCNcomment: ::HI_GO_Initä¸­å·²åŒ…å«å¯¹è¯¥æ¥å£çš„è°ƒç”¨ CNend
+\param  N/ACNcomment: æ—  CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HI_FAILURE
@@ -179,10 +179,10 @@ typedef struct
 HI_S32 HI_GO_InitDecoder(HI_VOID);
 
 /**
-\brief Deinitializes the decoder.CNcomment: ½âÂëÆ÷È¥³õÊ¼»¯ CNend
+\brief Deinitializes the decoder.CNcomment: è§£ç å™¨å»åˆå§‹åŒ– CNend
 \attention \n
-When ::HI_GO_Deinit is called, this API is also called.CNcomment: ::HI_GO_DeinitÖĞÒÑ°üº¬¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
-\param  N/A.CNcomment: ÎŞ CNend
+When ::HI_GO_Deinit is called, this API is also called.CNcomment: ::HI_GO_Deinitä¸­å·²åŒ…å«å¯¹è¯¥æ¥å£çš„è°ƒç”¨ CNend
+\param  N/A.CNcomment: æ—  CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_NOTINIT
@@ -195,19 +195,19 @@ When ::HI_GO_Deinit is called, this API is also called.CNcomment: ::HI_GO_Deinit
 HI_S32 HI_GO_DeinitDecoder(HI_VOID);
 
  /**
- \brief Creates a decoding handle.CNcomment: ´´½¨½âÂë¾ä±ú CNend
+ \brief Creates a decoding handle.CNcomment: åˆ›å»ºè§£ç å¥æŸ„ CNend
  \attention \n
  Currently, the formats of .bmp, .png, .jpeg, and .gif are supported. The picture input source can be the memory, files
 , and streams. The picture input source of streams is only applicable to the .jpeg format.
-CNcomment: Ä¿Ç°Ö§³ÖBMP¡¢PNG¡¢JPEGºÍGIF¸ñÊ½£¬Í¼Æ¬ÊäÈëÔ´Ö»¿ÉÒÔÎªÄÚ´æ¡¢ÎÄ¼şÒÔ¼°Á÷Ê½£¬Á÷Ê½Ä¿Ç°Ö»¶ÔJPEG¸ñÊ½ÓĞĞ§¡£CNend 
+CNcomment: ç›®å‰æ”¯æŒBMPã€PNGã€JPEGå’ŒGIFæ ¼å¼ï¼Œå›¾ç‰‡è¾“å…¥æºåªå¯ä»¥ä¸ºå†…å­˜ã€æ–‡ä»¶ä»¥åŠæµå¼ï¼Œæµå¼ç›®å‰åªå¯¹JPEGæ ¼å¼æœ‰æ•ˆã€‚CNend 
 
  \param[in] pSrcDesc Information about the input source. This parameter cannot be empty. 
                 The type of the input stream must match the information about the input source. For example, 
 corresponding file names must be entered for the file stream, and the memory address and memory size must be entered 
-for the memory stream.CNcomment: ÊäÈëÔ´ĞÅÏ¢£¬²»¿ÉÎª¿Õ\n
-                ÊäÈëÂëÁ÷µÄÀàĞÍÒªÓëÊäÈëÔ´ÏêÏ¸ĞÅÏ¢Ò»Ò»Æ¥Åä£¬ÈçFILEÂëÁ÷ÔòĞèÒªÊäÈëÏàÓ¦µÄÎÄ¼şÃû\n
-                ÈçMemoryÂëÁ÷ÔòĞèÒªÊäÈëmemoryµÄµØÖ·ÒÔ¼°³¤¶È CNend
- \param[out] pDecoder Pointer of the decoding instance handle. This parameter cannot be empty.CNcomment: ½âÂëÊµÀı¾ä±úÖ¸Õë£¬²»¿ÉÎª¿Õ CNend
+for the memory stream.CNcomment: è¾“å…¥æºä¿¡æ¯ï¼Œä¸å¯ä¸ºç©º\n
+                è¾“å…¥ç æµçš„ç±»å‹è¦ä¸è¾“å…¥æºè¯¦ç»†ä¿¡æ¯ä¸€ä¸€åŒ¹é…ï¼Œå¦‚FILEç æµåˆ™éœ€è¦è¾“å…¥ç›¸åº”çš„æ–‡ä»¶å\n
+                å¦‚Memoryç æµåˆ™éœ€è¦è¾“å…¥memoryçš„åœ°å€ä»¥åŠé•¿åº¦ CNend
+ \param[out] pDecoder Pointer of the decoding instance handle. This parameter cannot be empty.CNcomment: è§£ç å®ä¾‹å¥æŸ„æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
  
  \retval ::HI_SUCCESS
  \retval ::HIGO_ERR_NULLPTR
@@ -225,10 +225,10 @@ for the memory stream.CNcomment: ÊäÈëÔ´ĞÅÏ¢£¬²»¿ÉÎª¿Õ\n
 HI_S32 HI_GO_CreateDecoder(const HIGO_DEC_ATTR_S* pSrcDesc, HI_HANDLE* pDecoder);
 
  /** 
- \brief Destroys a decoding handle.CNcomment:Ïú»Ù½âÂë¾ä±ú CNend
+ \brief Destroys a decoding handle.CNcomment:é”€æ¯è§£ç å¥æŸ„ CNend
  \attention \n
- N/A.CNcomment:ÎŞ CNend
- \param[in] Decoder Handle of the decoding instance.CNcomment:½âÂëÊµÀı¾ä±ú CNend
+ N/A.CNcomment:æ—  CNend
+ \param[in] Decoder Handle of the decoding instance.CNcomment:è§£ç å®ä¾‹å¥æŸ„ CNend
  
  \retval ::HI_SUCCESS
  \retval ::HIGO_ERR_INVHANDLE
@@ -239,11 +239,11 @@ HI_S32 HI_GO_CreateDecoder(const HIGO_DEC_ATTR_S* pSrcDesc, HI_HANDLE* pDecoder)
 HI_S32 HI_GO_DestroyDecoder(HI_HANDLE Decoder);
 
 /**
- \brief Stream APICNcomment: Á÷Ê½ÂëÁ÷½Ó¿Ú CNend
+ \brief Stream APICNcomment: æµå¼ç æµæ¥å£ CNend
  \attention \n
- N/A.CNcomment:ÎŞ CNend
- \param[in] Decoder Handle of the decoding instance.CNcomment: ½âÂëÊµÀı¾ä±ú CNend
- \param[in] pStream Pointer to the stream information. This parameter cannot be empty.CNcomment: ÂëÁ÷ĞÅÏ¢Ö¸Õë £¬²»¿ÉÎª¿Õ CNend
+ N/A.CNcomment:æ—  CNend
+ \param[in] Decoder Handle of the decoding instance.CNcomment: è§£ç å®ä¾‹å¥æŸ„ CNend
+ \param[in] pStream Pointer to the stream information. This parameter cannot be empty.CNcomment: ç æµä¿¡æ¯æŒ‡é’ˆ ï¼Œä¸å¯ä¸ºç©º CNend
  
  \retval ::HI_SUCCESS
  \retval ::HI_FAILURE
@@ -257,10 +257,10 @@ HI_S32 HI_GO_DestroyDecoder(HI_HANDLE Decoder);
 HI_S32 HI_GO_DecWriteStream(HI_HANDLE Decoder, HIGO_DEC_WRITESTREAM_S *pStream);
 
 /** 
- \brief Resets the decoder when you need to terminate the decoding.CNcomment:¸´Î»½âÂëÆ÷£¬µ±ĞèÒªÖÕÖ¹½âÂëµÄÊ±ºò¾Í½øĞĞ½âÂëÆ÷¸´Î» CNend
+ \brief Resets the decoder when you need to terminate the decoding.CNcomment:å¤ä½è§£ç å™¨ï¼Œå½“éœ€è¦ç»ˆæ­¢è§£ç çš„æ—¶å€™å°±è¿›è¡Œè§£ç å™¨å¤ä½ CNend
  \attention \n
-  N/A.CNcomment:ÎŞ CNend
- \param[in] Decoder Handle of the decoding instance.CNcomment:½âÂëÊµÀı¾ä±ú CNend
+  N/A.CNcomment:æ—  CNend
+ \param[in] Decoder Handle of the decoding instance.CNcomment:è§£ç å®ä¾‹å¥æŸ„ CNend
  \retval ::HI_SUCCESS
  \retval ::HI_FAILURE
  \retval ::HIGO_ERR_INVHANDLE
@@ -272,11 +272,11 @@ HI_S32 HI_GO_DecWriteStream(HI_HANDLE Decoder, HIGO_DEC_WRITESTREAM_S *pStream);
 HI_S32 HI_GO_ResetDecoder(HI_HANDLE Decoder);
 
  /** 
- \brief Obtains the major information about pictures.CNcomment:»ñÈ¡Í¼Æ¬ÎÄ¼şµÄÖ÷ÒªĞÅÏ¢ CNend
+ \brief Obtains the major information about pictures.CNcomment:è·å–å›¾ç‰‡æ–‡ä»¶çš„ä¸»è¦ä¿¡æ¯ CNend
  \attention
- N/A.CNcomment:ÎŞ CNend
-\param[in] Decoder Handle of the decoding instance.CNcomment:½âÂëÊµÀı¾ä±ú CNend
-\param[out] pPrimaryInfo  Pointer to the major information about the decoded picture. This parameter cannot be empty.CNcomment:½âÂëÍ¼Æ¬Ö÷ĞÅÏ¢Ö¸Õë£¬²»¿ÉÎª¿Õ CNend
+ N/A.CNcomment:æ—  CNend
+\param[in] Decoder Handle of the decoding instance.CNcomment:è§£ç å®ä¾‹å¥æŸ„ CNend
+\param[out] pPrimaryInfo  Pointer to the major information about the decoded picture. This parameter cannot be empty.CNcomment:è§£ç å›¾ç‰‡ä¸»ä¿¡æ¯æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -290,18 +290,18 @@ HI_S32 HI_GO_ResetDecoder(HI_HANDLE Decoder);
 HI_S32 HI_GO_DecCommInfo(HI_HANDLE Decoder, HIGO_DEC_PRIMARYINFO_S *pPrimaryInfo);
 
 /**
- \brief Obtains the information about the specified picture. You can customize the picture format.CNcomment: »ñÈ¡Ö¸¶¨Í¼Æ¬µÄĞÅÏ¢£¬µ«Í¬Ê±ÓÃ»§¿ÉÒÔÉèÖÃÆÚÍûµÄÍ¼Ïó¸ñÊ½ CNend
+ \brief Obtains the information about the specified picture. You can customize the picture format.CNcomment: è·å–æŒ‡å®šå›¾ç‰‡çš„ä¿¡æ¯ï¼Œä½†åŒæ—¶ç”¨æˆ·å¯ä»¥è®¾ç½®æœŸæœ›çš„å›¾è±¡æ ¼å¼ CNend
  \attention \n
-  N/A.CNcomment: ÎŞ CNend
- \param[in] Decoder Handle of the decoding instance.CNcomment: ½âÂëÊµÀı¾ä±ú CNend
+  N/A.CNcomment: æ—  CNend
+ \param[in] Decoder Handle of the decoding instance.CNcomment: è§£ç å®ä¾‹å¥æŸ„ CNend
  \param[in] Index  
  Picture index number. For .jpeg pictures, the index number of the main picture is 0, and index 
 numbers of thumbnails start from 1.
                    The index numbers of GIF pictures start from 0 and increase by 1 according to the sequence of the 
 pictures stored in a file.
-CNcomment: Í¼Æ¬Ë÷ÒıºÅ¡£JPEG¸ñÊ½Í¼Æ¬£¬Ö÷Í¼µÄË÷ÒıºÅÊÇ0£¬ËõÂÔÍ¼Ë÷ÒıºÅÓÉ1¿ªÊ¼£»\n
-                   GIF¸ñÊ½Í¼Æ¬°´ÕÕÔÚÎÄ¼şÖĞµÄ´æ´¢Ë³Ğò£¬Ë÷ÒıºÅÓÉ0¿ªÊ¼µİ¼Ó CNend
- \param[out] pImgInfo Picture information. This parameter cannot be empty.CNcomment: Í¼Æ¬ĞÅÏ¢£¬²»¿ÉÎª¿Õ CNend
+CNcomment: å›¾ç‰‡ç´¢å¼•å·ã€‚JPEGæ ¼å¼å›¾ç‰‡ï¼Œä¸»å›¾çš„ç´¢å¼•å·æ˜¯0ï¼Œç¼©ç•¥å›¾ç´¢å¼•å·ç”±1å¼€å§‹ï¼›\n
+                   GIFæ ¼å¼å›¾ç‰‡æŒ‰ç…§åœ¨æ–‡ä»¶ä¸­çš„å­˜å‚¨é¡ºåºï¼Œç´¢å¼•å·ç”±0å¼€å§‹é€’åŠ  CNend
+ \param[out] pImgInfo Picture information. This parameter cannot be empty.CNcomment: å›¾ç‰‡ä¿¡æ¯ï¼Œä¸å¯ä¸ºç©º CNend
  
  \retval ::HI_SUCCESS
  \retval ::HIGO_ERR_NULLPTR
@@ -317,15 +317,15 @@ CNcomment: Í¼Æ¬Ë÷ÒıºÅ¡£JPEG¸ñÊ½Í¼Æ¬£¬Ö÷Í¼µÄË÷ÒıºÅÊÇ0£¬ËõÂÔÍ¼Ë÷ÒıºÅÓÉ1¿ªÊ¼£»\n
 HI_S32 HI_GO_DecImgInfo(HI_HANDLE Decoder, HI_U32 Index, HIGO_DEC_IMGINFO_S *pImgInfo);
 
  /** 
- \brief Obtains the data of a picture.CNcomment:»ñÈ¡µ¥¸öÍ¼Æ¬µÄÊı¾İ CNend
+ \brief Obtains the data of a picture.CNcomment:è·å–å•ä¸ªå›¾ç‰‡çš„æ•°æ® CNend
  \attention \n
- The format in the destination picture attributes does not support the macro block format.CNcomment:Ä¿±êÍ¼Æ¬ÊôĞÔÖĞµÄÍ¼Ïñ¸ñÊ½²»Ö§³Öºê¿é¸ñÊ½ CNend
+ The format in the destination picture attributes does not support the macro block format.CNcomment:ç›®æ ‡å›¾ç‰‡å±æ€§ä¸­çš„å›¾åƒæ ¼å¼ä¸æ”¯æŒå®å—æ ¼å¼ CNend
  
-\param[in] Decoder Handle of the decoding instance.CNcomment:½âÂëÊµÀı¾ä±ú CNend
-\param[in] Index Index number of a picture, starting from 0.CNcomment:Í¼Æ¬Ë÷ÒıºÅ£¬Ë÷ÒıºÅ´Ó0¿ªÊ¼ CNend
+\param[in] Decoder Handle of the decoding instance.CNcomment:è§£ç å®ä¾‹å¥æŸ„ CNend
+\param[in] Index Index number of a picture, starting from 0.CNcomment:å›¾ç‰‡ç´¢å¼•å·ï¼Œç´¢å¼•å·ä»0å¼€å§‹ CNend
 \param[in] pImgAttr Attribute of the destination picture. If the value is empty, it indicates that the original 
-picture attributes are retained.CNcomment:Ä¿±êÍ¼Æ¬ÊôĞÔ£¬Îª¿Õ±íÊ¾±£³ÖÔ­Í¼Æ¬ÊôĞÔ CNend
-\param[out] pSurface Handle of the surface where the decoded data is stored.CNcomment:½âÂëºóÊı¾İ´æ·ÅµÄsurfaceµÄ¾ä±ú CNend
+picture attributes are retained.CNcomment:ç›®æ ‡å›¾ç‰‡å±æ€§ï¼Œä¸ºç©ºè¡¨ç¤ºä¿æŒåŸå›¾ç‰‡å±æ€§ CNend
+\param[out] pSurface Handle of the surface where the decoded data is stored.CNcomment:è§£ç åæ•°æ®å­˜æ”¾çš„surfaceçš„å¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NULLPTR
@@ -343,15 +343,15 @@ picture attributes are retained.CNcomment:Ä¿±êÍ¼Æ¬ÊôĞÔ£¬Îª¿Õ±íÊ¾±£³ÖÔ­Í¼Æ¬ÊôĞÔ C
 HI_S32 HI_GO_DecImgData(HI_HANDLE Decoder, HI_U32 Index, const HIGO_DEC_IMGATTR_S *pImgAttr, HI_HANDLE *pSurface);
 
 /**
- \brief Obtains the extended data.CNcomment: »ñÈ¡À©Õ¹Êı¾İ CNend
+ \brief Obtains the extended data.CNcomment: è·å–æ‰©å±•æ•°æ® CNend
  \attention \n
- Hi3110E does not support the API.CNcomment: Hi3110E²»Ö§³Ö´Ëº¯Êı¡£ CNend
- \param[in] Decoder Handle of the decoding instance.CNcomment: ½âÂëÊµÀı¾ä±ú CNend
+ Hi3110E does not support the API.CNcomment: Hi3110Eä¸æ”¯æŒæ­¤å‡½æ•°ã€‚ CNend
+ \param[in] Decoder Handle of the decoding instance.CNcomment: è§£ç å®ä¾‹å¥æŸ„ CNend
  \param[in] DecExtendType 
  Type of the obtained extended data. Currently, only the EXIF information in .jpeg format is available.
- CNcomment: »ñÈ¡À©Õ¹Êı¾İµÄÀàĞÍ£¬Ä¿Ç°Ö÷ÒªÖ»ÓĞJPEGµÄEXIFĞÅÏ¢ CNend
- \param[out] ppData Pointer to the extended data pointer.CNcomment: Ö¸ÏòÀ©Õ¹Êı¾İÖ¸ÕëµÄÖ¸Õë CNend
- \param[out] pLength ppData Length.CNcomment: ppData³¤¶È CNend
+ CNcomment: è·å–æ‰©å±•æ•°æ®çš„ç±»å‹ï¼Œç›®å‰ä¸»è¦åªæœ‰JPEGçš„EXIFä¿¡æ¯ CNend
+ \param[out] ppData Pointer to the extended data pointer.CNcomment: æŒ‡å‘æ‰©å±•æ•°æ®æŒ‡é’ˆçš„æŒ‡é’ˆ CNend
+ \param[out] pLength ppData Length.CNcomment: ppDataé•¿åº¦ CNend
  \retval ::HI_SUCCESS
  \retval ::HIGO_ERR_NULLPTR
  \retval ::HIGO_ERR_INVHANDLE
@@ -363,13 +363,13 @@ HI_S32 HI_GO_DecImgData(HI_HANDLE Decoder, HI_U32 Index, const HIGO_DEC_IMGATTR_
 HI_S32 HI_GO_DecExtendData(HI_HANDLE Decoder, HIGO_DEC_EXTENDTYPE_E DecExtendType, HI_VOID **ppData, HI_U32 *pLength);
 
  /** 
- \brief Releases extended data.CNcomment:ÊÍ·ÅÀ©Õ¹Êı¾İ CNend
+ \brief Releases extended data.CNcomment:é‡Šæ”¾æ‰©å±•æ•°æ® CNend
  \attention \n
- Hi3110E does not support the API.CNcomment:Hi3110E²»Ö§³Ö´Ëº¯Êı¡£CNend
- \param[in] Decoder Decoder handle.CNcomment:Decoder¾ä±ú CNend
+ Hi3110E does not support the API.CNcomment:Hi3110Eä¸æ”¯æŒæ­¤å‡½æ•°ã€‚CNend
+ \param[in] Decoder Decoder handle.CNcomment:Decoderå¥æŸ„ CNend
  \param[in] DecExtendType Type of the obtained extended data. Currently, only the EXIF information in .jpeg format is 
-available.CNcomment:»ñÈ¡À©Õ¹Êı¾İµÄÀàĞÍ£¬Ä¿Ç°Ö÷ÒªÖ»ÓĞJPEGµÄEXIFĞÅÏ¢ CNend
- \param[in] pData Pointer to the extended data.CNcomment:Ö¸ÏòÀ©Õ¹Êı¾İÖ¸Õë CNend
+available.CNcomment:è·å–æ‰©å±•æ•°æ®çš„ç±»å‹ï¼Œç›®å‰ä¸»è¦åªæœ‰JPEGçš„EXIFä¿¡æ¯ CNend
+ \param[in] pData Pointer to the extended data.CNcomment:æŒ‡å‘æ‰©å±•æ•°æ®æŒ‡é’ˆ CNend
  \retval ::HI_SUCCESS
  \retval ::HIGO_ERR_NULLPTR
  \retval ::HIGO_ERR_UNSUPPORTED
@@ -380,14 +380,14 @@ available.CNcomment:»ñÈ¡À©Õ¹Êı¾İµÄÀàĞÍ£¬Ä¿Ç°Ö÷ÒªÖ»ÓĞJPEGµÄEXIFĞÅÏ¢ CNend
 HI_S32 HI_GO_ReleaseDecExtendData(HI_HANDLE Decoder, HIGO_DEC_EXTENDTYPE_E DecExtendType, HI_VOID *pData);
 
 /**
-\brief Decodes a picture to a specified surface.CNcomment:½«Í¼Ïñ½âÂëµ½Ö¸¶¨µÄsurface CNend
+\brief Decodes a picture to a specified surface.CNcomment:å°†å›¾åƒè§£ç åˆ°æŒ‡å®šçš„surface CNend
 \attention \n
 The decoded surface is scaled automatically based on the size of the target surface. In addition, the decoded surface 
 modifies the attributes of the target surface, such as colorkey, alpha value, and palette.
-CNcomment:½âÂëºóµÄSurface»á×Ô¶¯°´ÕÕÄ¿±êsurfaceµÄ´óĞ¡½øĞĞËõ·Å£¬²¢ÇÒ»á¸Ä±äÄ¿±êsurfaceµÄCOLORKEY¡¢ALPHAÒÔ¼°µ÷É«°åÊôĞÔ CNend
-\param[in] Decoder Handle of the decoding instance.CNcomment: ½âÂëÊµÀı¾ä±ú CNend
-\param[in] Index   Index number of a decoded picture.CNcomment:½âÂëÍ¼Æ¬Ë÷Òı CNend
-\param[out] Surface Decoded target surface.CNcomment:½âÂëµÄÄ¿±êsurface CNend
+CNcomment:è§£ç åçš„Surfaceä¼šè‡ªåŠ¨æŒ‰ç…§ç›®æ ‡surfaceçš„å¤§å°è¿›è¡Œç¼©æ”¾ï¼Œå¹¶ä¸”ä¼šæ”¹å˜ç›®æ ‡surfaceçš„COLORKEYã€ALPHAä»¥åŠè°ƒè‰²æ¿å±æ€§ CNend
+\param[in] Decoder Handle of the decoding instance.CNcomment: è§£ç å®ä¾‹å¥æŸ„ CNend
+\param[in] Index   Index number of a decoded picture.CNcomment:è§£ç å›¾ç‰‡ç´¢å¼• CNend
+\param[out] Surface Decoded target surface.CNcomment:è§£ç çš„ç›®æ ‡surface CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -400,20 +400,20 @@ CNcomment:½âÂëºóµÄSurface»á×Ô¶¯°´ÕÕÄ¿±êsurfaceµÄ´óĞ¡½øĞĞËõ·Å£¬²¢ÇÒ»á¸Ä±äÄ¿±êsurf
 \retval ::HIGO_ERR_UNSUPPORTED
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_DecImgToSurface(HI_HANDLE Decoder, HI_U32 Index, HI_HANDLE Surface);
 
 /**
-\brief Decodes a specified file, and generates a new surface.CNcomment:½âÂëÖ¸¶¨µÄÎÄ¼ş£¬²¢Éú³ÉÒ»¸öĞÂµÄsurface CNend
+\brief Decodes a specified file, and generates a new surface.CNcomment:è§£ç æŒ‡å®šçš„æ–‡ä»¶ï¼Œå¹¶ç”Ÿæˆä¸€ä¸ªæ–°çš„surface CNend
 \attention \n
     If there are multiple pictures in the file (such as .gif animation, .jpeg main picture, and .jpeg thumbnail),
     only the .jpeg main picture and the first picture of the .gif animation are decoded.
     In addition, the surface size is the same as the picture size.
-    CNcomment:Èç¹ûÎÄ¼şÖĞÓĞ¶àÕÅÍ¼Æ¬£¬±ÈÈç:gif¶¯»­£¬JPEG´øÖ÷Í¼ºÍËõÂÔÍ¼£¬
-    JPEGÖ»½âÖ÷Í¼£¬GIF½âÂë½âÂëµÚÒ»ÕÅÍ¼Æ¬surfaceµÄ´óĞ¡ÓëÍ¼Æ¬µÄ´óĞ¡Ò»ÖÂ CNend
-\param[in] pszFile Picture name. The picture can be in the format of .gif, .png, .jpg, or .bmp.CNcomment:Í¼Æ¬ÎÄ¼şÃû£¬¿ÉÒÔÊÇGIF, PNG, JPG, BMP CNend
-\param[out] pSurface, Surface for storing decoded pictures.CNcomment:±£´æ½âÂëºóÍ¼Ïñ CNend 
+    CNcomment:å¦‚æœæ–‡ä»¶ä¸­æœ‰å¤šå¼ å›¾ç‰‡ï¼Œæ¯”å¦‚:gifåŠ¨ç”»ï¼ŒJPEGå¸¦ä¸»å›¾å’Œç¼©ç•¥å›¾ï¼Œ
+    JPEGåªè§£ä¸»å›¾ï¼ŒGIFè§£ç è§£ç ç¬¬ä¸€å¼ å›¾ç‰‡surfaceçš„å¤§å°ä¸å›¾ç‰‡çš„å¤§å°ä¸€è‡´ CNend
+\param[in] pszFile Picture name. The picture can be in the format of .gif, .png, .jpg, or .bmp.CNcomment:å›¾ç‰‡æ–‡ä»¶åï¼Œå¯ä»¥æ˜¯GIF, PNG, JPG, BMP CNend
+\param[out] pSurface, Surface for storing decoded pictures.CNcomment:ä¿å­˜è§£ç åå›¾åƒ CNend 
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -429,22 +429,22 @@ HI_S32 HI_GO_DecImgToSurface(HI_HANDLE Decoder, HI_U32 Index, HI_HANDLE Surface)
 \retval ::HIGO_ERR_INVIMAGETYPE
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_DecodeFile(const HI_CHAR* pszFile, HI_HANDLE* pSurface);
 
 /**
-\brief Set the attribute of Decoder out Surface memrory.  CNcomment:ÉèÖÃ½âÂëÊä³öSurfaceµÄÄÚ´æÊôĞÔ CNend
+\brief Set the attribute of Decoder out Surface memrory.  CNcomment:è®¾ç½®è§£ç è¾“å‡ºSurfaceçš„å†…å­˜å±æ€§ CNend
 \attention \n
-N/A.CNcomment: ÎŞ CNend
-\param[in] Decoder handle. CNcomment:½âÂëÊµÀı¾ä±ú CNend
-\param[in] pSurfInfo.  CNcomment:SurfaceµÄÄÚ´æÊôĞÔ CNend
+N/A.CNcomment: æ—  CNend
+\param[in] Decoder handle. CNcomment:è§£ç å®ä¾‹å¥æŸ„ CNend
+\param[in] pSurfInfo.  CNcomment:Surfaceçš„å†…å­˜å±æ€§ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_SetDecSurfInfo(HI_HANDLE Decoder, HIGO_DEC_SURINFO_S  *pSurfInfo);
  

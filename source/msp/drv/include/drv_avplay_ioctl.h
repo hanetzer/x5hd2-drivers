@@ -51,14 +51,14 @@
 
 
 /* video buffer dither waterline */
-/* CNcomment: ÊÓÆµ»º³å¹ÜÀí¶¶¶¯Ë®ÏßµÄ°Ù·Ö±È£¬0-99 */
+/* CNcomment: è§†é¢‘ç¼“å†²ç®¡ç†æŠ–åŠ¨æ°´çº¿çš„ç™¾åˆ†æ¯”ï¼Œ0-99 */
 #define    AVPLAY_ES_VID_FULL_PERCENT    85
 #define    AVPLAY_ES_VID_HIGH_PERCENT    70 
 #define    AVPLAY_ES_VID_LOW_PERCENT     30 
 #define    AVPLAY_ES_VID_EMPTY_PERCENT   10
 
 /* audio buffer dither waterline */
-/* CNcomment: ÒôÆµ»º³å¹ÜÀí¶¶¶¯Ë®ÏßµÄ°Ù·Ö±È£¬0-99 */
+/* CNcomment: éŸ³é¢‘ç¼“å†²ç®¡ç†æŠ–åŠ¨æ°´çº¿çš„ç™¾åˆ†æ¯”ï¼Œ0-99 */
 #define    AVPLAY_ES_AUD_FULL_PERCENT    98
 #define    AVPLAY_ES_AUD_HIGH_PERCENT    85
 #define    AVPLAY_ES_AUD_LOW_PERCENT     5
@@ -191,11 +191,11 @@ typedef struct hiAVPLAY_S
 
     /*frc parameters*/
     HI_BOOL                         bFrcEnable;
-    AVPLAY_FRC_CFG_S                FrcParamCfg;        /* config frc param */ /*CNcomment: ÅäÖÃµÄfrc²ÎÊı */
-    AVPLAY_ALG_FRC_S                FrcCalAlg;          /* frc used rate info */ /*CNcomment: frcÕıÔÚÊ¹ÓÃµÄÖ¡ÂÊĞÅÏ¢ */
-    AVPLAY_FRC_CTRL_S               FrcCtrlInfo;        /* frc control */ /*CNcomment: frc¿ØÖÆĞÅÏ¢ */
-    HI_U32                          FrcNeedPlayCnt;     /* this frame need to play time*/ /*CNcomment:¸ÃÖ¡ĞèÒª²¥¼¸´Î */
-    HI_U32                          FrcCurPlayCnt;      /* this frame had played time*/   /*CNcomment:¸ÃÖ¡Êµ¼Ê²¥µ½µÚ¼¸´Î*/
+    AVPLAY_FRC_CFG_S                FrcParamCfg;        /* config frc param */ /*CNcomment: é…ç½®çš„frcå‚æ•° */
+    AVPLAY_ALG_FRC_S                FrcCalAlg;          /* frc used rate info */ /*CNcomment: frcæ­£åœ¨ä½¿ç”¨çš„å¸§ç‡ä¿¡æ¯ */
+    AVPLAY_FRC_CTRL_S               FrcCtrlInfo;        /* frc control */ /*CNcomment: frcæ§åˆ¶ä¿¡æ¯ */
+    HI_U32                          FrcNeedPlayCnt;     /* this frame need to play time*/ /*CNcomment:è¯¥å¸§éœ€è¦æ’­å‡ æ¬¡ */
+    HI_U32                          FrcCurPlayCnt;      /* this frame had played time*/   /*CNcomment:è¯¥å¸§å®é™…æ’­åˆ°ç¬¬å‡ æ¬¡*/
 
     /*flush stream control*/
     HI_BOOL                         bSetEosFlag;
@@ -297,7 +297,7 @@ typedef struct hiAVPLAY_INFO_S
 {
     AVPLAY_S   *pAvplay;         /* AVPLAY pointer in kernel model */
     HI_U32     AvplayPhyAddr;    /* AVPLAY physical address */ 
-    HI_U32     File;             /*avplay file handle*//* CNcomment: AVPLAYËùÔÚ½ø³Ì¾ä±ú */
+    HI_U32     File;             /*avplay file handle*//* CNcomment: AVPLAYæ‰€åœ¨è¿›ç¨‹å¥æŸ„ */
     HI_U32     AvplayUsrAddr;    /* AVPLAY address in user model */ 
 }AVPLAY_INFO_S;
 

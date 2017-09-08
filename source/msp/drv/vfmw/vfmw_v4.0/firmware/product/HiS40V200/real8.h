@@ -46,13 +46,13 @@
 #define REAL8_SLC_DN_MSG_SLOT_INDEX              3
 #define REAL8_SLC_DN_MSG_SLOT_FULL_THRESHOLD     (REAL8_MAX_SLOT_NUM-4)  // 60
 
-/*********************(64*4*X) Ã»²¿·Ö¿Õ¼ä¶¼Îª64wordÕûÊı±¶****/
+/*********************(64*4*X) æ²¡éƒ¨åˆ†ç©ºé—´éƒ½ä¸º64wordæ•´æ•°å€****/
 #define REAL8_ALIGN_LEN                          (64*4)
 #define REAL8_SED_TOP_ADDR_LEN                   (64*4*REAL8_VFMW_MAX_PIC_WIDTH)
 #define REAL8_PMV_TOP_ADDR_LEN                   (64*4*REAL8_VFMW_MAX_PIC_WIDTH)
 #define REAL8_RCN_TOP_ADDR_LEN                   (64*4*REAL8_VFMW_MAX_PIC_WIDTH)
 #define REAL8_DBLK_TOP_ADDR_LEN                  (64*4*REAL8_VFMW_MAX_PIC_WIDTH)
-#define REAL8_PMV_ONECOLMB_ADDR_LEN              (20*4)              //¼ÆËãµÃÖª£¬´óÖÂĞèÒª16words/mb£¬ÏÖÔÚ¶à·ÖÅäÒ»µã             
+#define REAL8_PMV_ONECOLMB_ADDR_LEN              (20*4)              //è®¡ç®—å¾—çŸ¥ï¼Œå¤§è‡´éœ€è¦16words/mbï¼Œç°åœ¨å¤šåˆ†é…ä¸€ç‚¹             
 #define REAL8_MSG_SLOT_BURST_LEN                 (64*4)              // 1 burst, 64 word    
 #define REAL8_UP_MSG_SLOT_LEN                    REAL8_MSG_SLOT_BURST_LEN
 #define REAL8_RP_MSG_SLOT_LEN                    REAL8_MSG_SLOT_BURST_LEN
@@ -205,7 +205,7 @@ typedef struct
     UINT8* BsVirAddr1;        //current bs virtual start addr
     SINT8  IsLastSeg;
     SINT8  IsLastSeg1;
-    UINT8  UsedDecMode;      //µ±Ç°ÕıÔÚÊ¹ÓÃµÄ½âÂëÄ£Ê½(IPB, IP, I)
+    UINT8  UsedDecMode;      //å½“å‰æ­£åœ¨ä½¿ç”¨çš„è§£ç æ¨¡å¼(IPB, IP, I)
     UINT8  HDRState;          //search pic or slc
     UINT8  Imgbuf_allocated;
     UINT8  LastDecPicCodingType;
@@ -213,7 +213,7 @@ typedef struct
     UINT8  RefNum;
     SINT8  YuvOutputOrder;
 
-    UINT8* vahb_vir_addr;         // VAHBÎïÀíµØÖ·£¬1024¶ÔÆë
+    UINT8* vahb_vir_addr;         // VAHBç‰©ç†åœ°å€ï¼Œ1024å¯¹é½
     UINT8* upmsg_vir_addr;
     UINT8* rpmsg_vir_addr;
     UINT8* picdnmsg_vir_addr;
@@ -226,7 +226,7 @@ typedef struct
     UINT8* image_vir_addr[REAL8_MAXIMUM_IMAGE_NUM];
 
 
-    RV8_VOBUFINF VOBufInf[MAX_QUEUE_IMAGE_NUM];        //VOÖ¡´æ¹ÜÀíĞÅÏ¢
+    RV8_VOBUFINF VOBufInf[MAX_QUEUE_IMAGE_NUM];        //VOå¸§å­˜ç®¡ç†ä¿¡æ¯
 
     RV8_PictureHeader PictureHeader;
     RV8_SliceHeader SliceHeader;
@@ -244,7 +244,7 @@ typedef struct
 
     SINT32 PacketTail;
     UINT32 NewSeqInited;
-    UINT32 StreamIntegrality;//ÂëÁ÷ÖĞ¸÷ÖÖÍ·µÄÍêÕûĞÔºÍÕıÈ·ĞÔĞÅÏ¢
+    UINT32 StreamIntegrality;//ç æµä¸­å„ç§å¤´çš„å®Œæ•´æ€§å’Œæ­£ç¡®æ€§ä¿¡æ¯
     UINT32 SeqCnt;
     UINT32 FrmCnt;
     UINT32 ErrorMbCnt;
@@ -257,7 +257,7 @@ typedef struct
     SINT32 Ratio1;
 
     /************** VAHB *************/
-    PHYADDR    vahb_phy_addr;         // VAHBÎïÀíµØÖ·£¬1024¶ÔÆë
+    PHYADDR    vahb_phy_addr;         // VAHBç‰©ç†åœ°å€ï¼Œ1024å¯¹é½
 
     //up msg slot
     PHYADDR    upmsg_phy_addr;
@@ -280,14 +280,14 @@ typedef struct
     //rcn_top_addr
     PHYADDR    rcn_top_phy_addr;
 
-    // PMV ColMB´æ´¢¿Õ¼ä
+    // PMV ColMBå­˜å‚¨ç©ºé—´
 //  PHYADDR    pmv_colmb_phy_addr;
 
     UINT32     rpr_stride;
     PHYADDR    rpr_phy_addr[2];  // 0 used for forward, 1 used for backward
 
-    // Í¼Ïñ´æ´¢¿Õ¼ä
-    SINT32     QueueImageNum;       // ×Ü¹²·ÖÅäµÄÍ¼Ïñ¸öÊı
+    // å›¾åƒå­˜å‚¨ç©ºé—´
+    SINT32     QueueImageNum;       // æ€»å…±åˆ†é…çš„å›¾åƒä¸ªæ•°
     UINT32     ddr_stride;
     PHYADDR    image_phy_addr[REAL8_MAXIMUM_IMAGE_NUM];
 

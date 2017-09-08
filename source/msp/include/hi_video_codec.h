@@ -33,38 +33,38 @@ extern "C"{
 
 /*Codec error defination */
 /**Operate fail due to insufficient resources(eg. no enough memory) */
-/**CNcomment: ×ÊÔ´²»×ã£¬(±à)½âÂëÊ§°Ü*/ 
+/**CNcomment: èµ„æºä¸è¶³ï¼Œ(ç¼–)è§£ç å¤±è´¥*/ 
 #define HI_ERR_CODEC_NOENOUGHRES    (HI_S32)(0x80510001)
 /**Parameter invalid */
-/**CNcomment: ²ÎÊıÎŞĞ§*/ 
+/**CNcomment: å‚æ•°æ— æ•ˆ*/ 
 #define HI_ERR_CODEC_INVALIDPARAM   (HI_S32)(0x80510002)
 /**The (en)decoding fails due to incorrect input(streams or frames) */
-/**CNcomment: ÊäÈëÊı¾İÓĞÎó£¬(±à)½âÂë½áÊø*/ 
+/**CNcomment: è¾“å…¥æ•°æ®æœ‰è¯¯ï¼Œ(ç¼–)è§£ç ç»“æŸ*/ 
 #define HI_ERR_CODEC_INPUTCORRUPT   (HI_S32)(0x80510003)
 /**The (en)decoding ends due to insufficient input data(streams or frames) */
-/**CNcomment: ÊäÈëÊı¾İ²»×ã£¬(±à)½âÂë½áÊø*/ 
+/**CNcomment: è¾“å…¥æ•°æ®ä¸è¶³ï¼Œ(ç¼–)è§£ç ç»“æŸ*/ 
 #define HI_ERR_CODEC_NOENOUGHDATA   (HI_S32)(0x80510004)
 /**The (en)decoding mode is not supported */
-/**CNcomment: ²»Ö§³ÖµÄ(±à)½âÂëÀàĞÍ*/ 
+/**CNcomment: ä¸æ”¯æŒçš„(ç¼–)è§£ç ç±»å‹*/ 
 #define HI_ERR_CODEC_INVALIDMODE    (HI_S32)(0x80510005)
 /**Operate fail */
-/**CNcomment: ²Ù×÷Ê§°Ü*/ 
+/**CNcomment: æ“ä½œå¤±è´¥*/ 
 #define HI_ERR_CODEC_OPERATEFAIL    (HI_S32)(0x80510006)
 /**Version unmatch*/
-/**CNcomment: °æ±¾²»Æ¥Åä*/ 
+/**CNcomment: ç‰ˆæœ¬ä¸åŒ¹é…*/ 
 #define HI_ERR_CODEC_VERSIONUNMATCH (HI_S32)(0x80510007)
 /**Unsupport operation */
-/**CNcomment: ²»Ö§³ÖµÄ²Ù×÷*/
+/**CNcomment: ä¸æ”¯æŒçš„æ“ä½œ*/
 #define HI_ERR_CODEC_UNSUPPORT      (HI_S32)(0x80510008)
 /**Decorder busy */
-/**CNcomment: ½âÂëÆ÷Ã¦*/ 
+/**CNcomment: è§£ç å™¨å¿™*/ 
 #define HI_ERR_CODEC_BUSY           (HI_S32)(0x80510009)
 /**Unknown error */
-/**CNcomment: Î´Öª´íÎó*/ 
+/**CNcomment: æœªçŸ¥é”™è¯¯*/ 
 #define HI_ERR_CODEC_UNKNOWN        (HI_S32)(0x80510010)
 
 /**Codec ID */
-/**CNcomment: Ğ­ÒéÀàĞÍ */
+/**CNcomment: åè®®ç±»å‹ */
 typedef enum hiCODEC_ID_E
 {
     HI_CODEC_ID_NONE = 0, 
@@ -243,149 +243,149 @@ typedef enum hiCODEC_ID_E
 }HI_CODEC_ID_E;
 
 /*BIT0 of HI_CODEC_SUPPORT_S.u32Type: Driven type */
-/**Need be driven by codec manager. Like FFMPEG. */ /**CNcomment:±à½âÂëÆ÷ĞèÒª¹ÜÀíÆ÷Çı¶¯ */
+/**Need be driven by codec manager. Like FFMPEG. */ /**CNcomment:ç¼–è§£ç å™¨éœ€è¦ç®¡ç†å™¨é©±åŠ¨ */
 #define HI_CODEC_CAP_DRIVENOUTSIDE      (0x00000000)
-/**Self-driven, only need call Start()/Stop(). Like VFMW. */ /**CNcomment:±à½âÂëÆ÷ÓĞ×ÔÇı¶¯ÄÜÁ¦ */
+/**Self-driven, only need call Start()/Stop(). Like VFMW. */ /**CNcomment:ç¼–è§£ç å™¨æœ‰è‡ªé©±åŠ¨èƒ½åŠ› */
 #define HI_CODEC_CAP_DRIVENSELF         (0x00000001)
 
 /*BIT1 of HI_CODEC_SUPPORT_S.u32Type: Output type */
-/**Codec outputs frame or stream to specified address directly.  */ /**CNcomment:±à½âÂëÆ÷Ö§³Ö½«Ö¡Êı¾İ»òÁ÷Êı¾İÊä³öµ½Ö¸¶¨µØÖ· */
+/**Codec outputs frame or stream to specified address directly.  */ /**CNcomment:ç¼–è§£ç å™¨æ”¯æŒå°†å¸§æ•°æ®æˆ–æµæ•°æ®è¾“å‡ºåˆ°æŒ‡å®šåœ°å€ */
 #define HI_CODEC_CAP_OUTPUT2SELFADDR    (0x00000000)
-/**Codec outputs frame or stream to the address self allocated . */ /**CNcomment:±à½âÂëÆ÷½«Ö¡Êı¾İ»òÁ÷Êı¾İÊä³öµ½×ÔÉíµØÖ·£¬ĞèÒªÍâ²¿¿½±´ */
+/**Codec outputs frame or stream to the address self allocated . */ /**CNcomment:ç¼–è§£ç å™¨å°†å¸§æ•°æ®æˆ–æµæ•°æ®è¾“å‡ºåˆ°è‡ªèº«åœ°å€ï¼Œéœ€è¦å¤–éƒ¨æ‹·è´ */
 #define HI_CODEC_CAP_OUTPUT2SPECADDR    (0x00000002)
 
 /**Defines codec type: encoder or decoder  */
-/**CNcomment:CodecÀàĞÍ:±àÂë»ò½âÂë*/ 
+/**CNcomment:Codecç±»å‹:ç¼–ç æˆ–è§£ç */ 
 typedef enum hiCODEC_TYPE_E
 {
-    HI_CODEC_TYPE_DEC = 0x01,       /**<decoder, value is b00000001*/ /**< CNcomment:½âÂëÆ÷ */
-    HI_CODEC_TYPE_ENC = 0x02,       /**<encoder, value is b00000010*/ /**< CNcomment:±àÂëÆ÷ */
+    HI_CODEC_TYPE_DEC = 0x01,       /**<decoder, value is b00000001*/ /**< CNcomment:è§£ç å™¨ */
+    HI_CODEC_TYPE_ENC = 0x02,       /**<encoder, value is b00000010*/ /**< CNcomment:ç¼–ç å™¨ */
     
     HI_CODEC_TYPE_BUTT
 }HI_CODEC_TYPE_E;
 
 /**Defines codec types and formats */
-/**CNcomment:CodecÀàĞÍÓëÖ§³ÖµÄĞ­Òé*/ 
+/**CNcomment:Codecç±»å‹ä¸æ”¯æŒçš„åè®®*/ 
 typedef struct hiCODEC_SUPPORT_S
 {
-    HI_U32          u32Type;            /**< Codec type, OR value of HI_CODEC_TYPE_E */ /**< CNcomment:CodecÀàĞÍ£¬HI_CODEC_TYPE_EµÄ»òÖµ */
-    HI_CODEC_ID_E   enID;               /**< Codec ID*/ /**< CNcomment:CodecÖ§³ÖµÄĞ­ÒéÀàĞÍ */
-    struct hiCODEC_SUPPORT_S* pstNext;  /**< Pointer to next node*/ /**< CNcomment:Ö¸ÏòÏÂÒ»¸öÄÜÁ¦½áµãµÄÖ¸Õë */
+    HI_U32          u32Type;            /**< Codec type, OR value of HI_CODEC_TYPE_E */ /**< CNcomment:Codecç±»å‹ï¼ŒHI_CODEC_TYPE_Eçš„æˆ–å€¼ */
+    HI_CODEC_ID_E   enID;               /**< Codec ID*/ /**< CNcomment:Codecæ”¯æŒçš„åè®®ç±»å‹ */
+    struct hiCODEC_SUPPORT_S* pstNext;  /**< Pointer to next node*/ /**< CNcomment:æŒ‡å‘ä¸‹ä¸€ä¸ªèƒ½åŠ›ç»“ç‚¹çš„æŒ‡é’ˆ */
 }HI_CODEC_SUPPORT_S;
 
 /**Defines codec capability */
-/**CNcomment:CodecÄÜÁ¦*/ 
+/**CNcomment:Codecèƒ½åŠ›*/ 
 typedef struct hiCODEC_CAP_S
 {
-    HI_U32              u32CapNumber;   /**< Codec capability index, OR value of several HI_CODEC_CAP_XXX */ /**< CNcomment:CodecÄÜÁ¦Ö¸Ê¾Öµ£¬HI_CODEC_CAP_XXXµÄ»òÖµ */
-    HI_CODEC_SUPPORT_S* pstSupport;     /**< Pointer to the support type and formats*/ /**< CNcomment:CodecÄÜÁ¦½á¹¹ÌåÖ¸Õë */
+    HI_U32              u32CapNumber;   /**< Codec capability index, OR value of several HI_CODEC_CAP_XXX */ /**< CNcomment:Codecèƒ½åŠ›æŒ‡ç¤ºå€¼ï¼ŒHI_CODEC_CAP_XXXçš„æˆ–å€¼ */
+    HI_CODEC_SUPPORT_S* pstSupport;     /**< Pointer to the support type and formats*/ /**< CNcomment:Codecèƒ½åŠ›ç»“æ„ä½“æŒ‡é’ˆ */
 }HI_CODEC_CAP_S;
 
 /**Defines the codec version*/
-/**CNcomment:°æ±¾¶¨Òå*/ 
+/**CNcomment:ç‰ˆæœ¬å®šä¹‰*/ 
 typedef union hiCODEC_VERSION_U
 {
     struct
     {
-        HI_U8 u8VersionMajor;           /**< Major version */ /**< CNcomment:Ö÷°æ±¾ºÅ */
-        HI_U8 u8VersionMinor;           /**< Minor version */ /**< CNcomment:´Î°æ±¾ºÅ */
-        HI_U8 u8Revision;               /**< Revision version */ /**< CNcomment:ĞŞ¶©°æ±¾ºÅ */
-        HI_U8 u8Step;                   /**< Step version */ /**< CNcomment:²½½ø°æ±¾ºÅ */
+        HI_U8 u8VersionMajor;           /**< Major version */ /**< CNcomment:ä¸»ç‰ˆæœ¬å· */
+        HI_U8 u8VersionMinor;           /**< Minor version */ /**< CNcomment:æ¬¡ç‰ˆæœ¬å· */
+        HI_U8 u8Revision;               /**< Revision version */ /**< CNcomment:ä¿®è®¢ç‰ˆæœ¬å· */
+        HI_U8 u8Step;                   /**< Step version */ /**< CNcomment:æ­¥è¿›ç‰ˆæœ¬å· */
     } stVersion;
     HI_U32 u32Version;
 } HI_CODEC_VERSION_U;
 
 /**Defines video decoder open parameter*/
-/**CNcomment:ÊÓÆµ½âÂëÆ÷´ò¿ª²ÎÊı*/ 
+/**CNcomment:è§†é¢‘è§£ç å™¨æ‰“å¼€å‚æ•°*/ 
 typedef struct hiCODEC_VDEC_OPENPARAM_S
 {
     HI_U32 u32Reserve;
-    HI_VOID* pPlatformPriv;         /**< Special parameter for platform hardware codec */ /**< CNcomment:Ó²½âÂëÆ÷Ë½ÓĞ²ÎÊı */
+    HI_VOID* pPlatformPriv;         /**< Special parameter for platform hardware codec */ /**< CNcomment:ç¡¬è§£ç å™¨ç§æœ‰å‚æ•° */
 }HI_CODEC_VDEC_OPENPARAM_S;
 
 /**Defines video encoder open parameter*/
-/**CNcomment:ÊÓÆµ±àÂëÆ÷´ò¿ª²ÎÊı*/ 
+/**CNcomment:è§†é¢‘ç¼–ç å™¨æ‰“å¼€å‚æ•°*/ 
 typedef struct hiCODEC_VENC_OPENPARAM_S
 {
     HI_U32 u32Reserve;
 }HI_CODEC_VENC_OPENPARAM_S;
 
 /**Defines the codec open parameters*/
-/**CNcomment:ÊµÀı´´½¨²ÎÊı*/
+/**CNcomment:å®ä¾‹åˆ›å»ºå‚æ•°*/
 typedef struct hiCODEC_OPENPARAM_S
 {
-    HI_CODEC_TYPE_E enType;       /** Encode or Decode */ /**< CNcomment:´´½¨±àÂëÆ÷»¹ÊÇ½âÂëÆ÷ */
-    HI_CODEC_ID_E enID;           /** Format */ /**< CNcomment:ĞèÒª±àÂë»ò½âÂëµÄĞ­ÒéÀàĞÍ */
+    HI_CODEC_TYPE_E enType;       /** Encode or Decode */ /**< CNcomment:åˆ›å»ºç¼–ç å™¨è¿˜æ˜¯è§£ç å™¨ */
+    HI_CODEC_ID_E enID;           /** Format */ /**< CNcomment:éœ€è¦ç¼–ç æˆ–è§£ç çš„åè®®ç±»å‹ */
     union {
-        HI_CODEC_VDEC_OPENPARAM_S stVdec; /** Open parameters of video decoder */ /**< CNcomment:ÊÓÆµ½âÂëÆ÷´´½¨²ÎÊı */
-        HI_CODEC_VENC_OPENPARAM_S stVenc; /** Open parameters of video encoder */ /**< CNcomment:ÊÓÆµ±àÂëÆ÷´´½¨²ÎÊı */
+        HI_CODEC_VDEC_OPENPARAM_S stVdec; /** Open parameters of video decoder */ /**< CNcomment:è§†é¢‘è§£ç å™¨åˆ›å»ºå‚æ•° */
+        HI_CODEC_VENC_OPENPARAM_S stVenc; /** Open parameters of video encoder */ /**< CNcomment:è§†é¢‘ç¼–ç å™¨åˆ›å»ºå‚æ•° */
     }unParam;
 } HI_CODEC_OPENPARAM_S;
 
 /**Defines the codec max priority */
-/**CNcomment:±à½âÂëÆ÷×î´óÓÅÏÈ¼¶¶¨Òå*/
+/**CNcomment:ç¼–è§£ç å™¨æœ€å¤§ä¼˜å…ˆçº§å®šä¹‰*/
 #define HI_CODEC_MAX_PRIORITY (16)
 
 /**Defines attribute of video decoder */
-/**CNcomment:ÊÓÆµ½âÂëÆ÷ÊµÀıÊôĞÔ*/
+/**CNcomment:è§†é¢‘è§£ç å™¨å®ä¾‹å±æ€§*/
 typedef struct hiCODEC_VDEC_ATTR_S
 {
-    HI_VOID*                pCodecContext;  /**< Codec context */ /**< CNcomment:±à½âÂëÆ÷ÉÏÏÂÎÄ£¬¿ÉÒÔ´«µİ½âÂëÆ÷ÌØ¶¨²ÎÊı */
-    HI_VOID*                pPlatformPriv;  /**< Only used by platform */ /**< CNcomment:Ó²½âÂëÆ÷Ë½ÓĞ²ÎÊı */
+    HI_VOID*                pCodecContext;  /**< Codec context */ /**< CNcomment:ç¼–è§£ç å™¨ä¸Šä¸‹æ–‡ï¼Œå¯ä»¥ä¼ é€’è§£ç å™¨ç‰¹å®šå‚æ•° */
+    HI_VOID*                pPlatformPriv;  /**< Only used by platform */ /**< CNcomment:ç¡¬è§£ç å™¨ç§æœ‰å‚æ•° */
 } HI_CODEC_VDEC_ATTR_S;
 
 /**Defines attribute of codec instance */
-/**CNcomment:ÊµÀıÊôĞÔ*/
+/**CNcomment:å®ä¾‹å±æ€§*/
 typedef struct hiCODEC_ATTR_S
 {
-    HI_CODEC_ID_E           enID;   /**< Codec ID*/ /**< CNcomment:±àÂë»ò½âÂëµÄĞ­ÒéÀàĞÍ*/
+    HI_CODEC_ID_E           enID;   /**< Codec ID*/ /**< CNcomment:ç¼–ç æˆ–è§£ç çš„åè®®ç±»å‹*/
     union {
-        HI_CODEC_VDEC_ATTR_S stVdec;/**< Instance attribute*/ /**< CNcomment:ÊÓÆµ½âÂëÆ÷ÊôĞÔ²ÎÊı*/
+        HI_CODEC_VDEC_ATTR_S stVdec;/**< Instance attribute*/ /**< CNcomment:è§†é¢‘è§£ç å™¨å±æ€§å‚æ•°*/
     } unAttr;
 } HI_CODEC_ATTR_S;
 
 /**Defines video sub standard */
-/**CNcomment: ÊÓÆµĞ­Òé·ÖÖ§±ê×¼ */
+/**CNcomment: è§†é¢‘åè®®åˆ†æ”¯æ ‡å‡† */
 typedef enum hiCODEC_VIDEO_SUB_STANDARD_E
 {
-    HI_CODEC_VIDEO_SUB_STANDARD_UNKNOWN,       /**<Unknown*/ /**<CNcomment: Î´ÖªĞ­Òé·ÖÖ§*/
-    HI_CODEC_VIDEO_SUB_STANDARD_MPEG2_MPEG1,   /**<The MPEG2 protocol family is compatible with MPEG1.*/ /**<CNcomment: MPEG2Ğ­Òé×å¿ÉÒÔ¼æÈİMPEG1 */
-    HI_CODEC_VIDEO_SUB_STANDARD_MPEG4_SHV,     /**<The MPEG4 protocol family is compatible with SHV.*/ /**<CNcomment: MPEG4Ğ­Òé×å¿ÉÒÔ¼æÈİSHV*/
-    HI_CODEC_VIDEO_SUB_STANDARD_MPEG4_XVID,    /**<The MPEG4 protocol family includes the sub protocol XVID.*/ /**<CNcomment: MPEG4Ğ­Òé°üº¬XVID·ÖÖ§*/
-    HI_CODEC_VIDEO_SUB_STANDARD_MPEG4_DIVX,    /**<The MPEG4 protocol family includes the sub protocol DIVX.*/ /**<CNcomment: MPEG4Ğ­Òé°üº¬DIVX·ÖÖ§*/
+    HI_CODEC_VIDEO_SUB_STANDARD_UNKNOWN,       /**<Unknown*/ /**<CNcomment: æœªçŸ¥åè®®åˆ†æ”¯*/
+    HI_CODEC_VIDEO_SUB_STANDARD_MPEG2_MPEG1,   /**<The MPEG2 protocol family is compatible with MPEG1.*/ /**<CNcomment: MPEG2åè®®æ—å¯ä»¥å…¼å®¹MPEG1 */
+    HI_CODEC_VIDEO_SUB_STANDARD_MPEG4_SHV,     /**<The MPEG4 protocol family is compatible with SHV.*/ /**<CNcomment: MPEG4åè®®æ—å¯ä»¥å…¼å®¹SHV*/
+    HI_CODEC_VIDEO_SUB_STANDARD_MPEG4_XVID,    /**<The MPEG4 protocol family includes the sub protocol XVID.*/ /**<CNcomment: MPEG4åè®®åŒ…å«XVIDåˆ†æ”¯*/
+    HI_CODEC_VIDEO_SUB_STANDARD_MPEG4_DIVX,    /**<The MPEG4 protocol family includes the sub protocol DIVX.*/ /**<CNcomment: MPEG4åè®®åŒ…å«DIVXåˆ†æ”¯*/
 
     HI_CODEC_VIDEO_SUB_STANDARD_BUTT
 }HI_CODEC_VIDEO_SUB_STANDARD_E;
 
 /**Defines the video norm*/
-/**CNcomment: ¶¨ÒåÊÓÆµÖÆÊ½Ã¶¾Ù*/
+/**CNcomment: å®šä¹‰è§†é¢‘åˆ¶å¼æšä¸¾*/
 typedef enum hiCODEC_ENC_FMT_E
 {
-    HI_CODEC_ENC_FMT_1080P_60 = 0,     /**<1080p 60 Hz*/ /**< CNcomment:1080p 60ºÕ×È*/
-    HI_CODEC_ENC_FMT_1080P_50,         /**<1080p 50 Hz*/ /**< CNcomment:1080p 50ºÕ×È*/
-    HI_CODEC_ENC_FMT_1080P_30,         /**<1080p 30 Hz*/ /**< CNcomment:1080p 30ºÕ×È*/
-    HI_CODEC_ENC_FMT_1080P_25,         /**<1080p 25 Hz*/ /**< CNcomment:1080p 25ºÕ×È*/
-    HI_CODEC_ENC_FMT_1080P_24,         /**<1080p 24 Hz*/ /**< CNcomment:1080p 24ºÕ×È*/
+    HI_CODEC_ENC_FMT_1080P_60 = 0,     /**<1080p 60 Hz*/ /**< CNcomment:1080p 60èµ«å…¹*/
+    HI_CODEC_ENC_FMT_1080P_50,         /**<1080p 50 Hz*/ /**< CNcomment:1080p 50èµ«å…¹*/
+    HI_CODEC_ENC_FMT_1080P_30,         /**<1080p 30 Hz*/ /**< CNcomment:1080p 30èµ«å…¹*/
+    HI_CODEC_ENC_FMT_1080P_25,         /**<1080p 25 Hz*/ /**< CNcomment:1080p 25èµ«å…¹*/
+    HI_CODEC_ENC_FMT_1080P_24,         /**<1080p 24 Hz*/ /**< CNcomment:1080p 24èµ«å…¹*/
 
-    HI_CODEC_ENC_FMT_1080i_60,         /**<1080i 60 Hz*/ /**< CNcomment:1080i 60ºÕ×È*/
-    HI_CODEC_ENC_FMT_1080i_50,         /**<1080i 50 Hz*/ /**< CNcomment:1080i 50ºÕ×È*/
+    HI_CODEC_ENC_FMT_1080i_60,         /**<1080i 60 Hz*/ /**< CNcomment:1080i 60èµ«å…¹*/
+    HI_CODEC_ENC_FMT_1080i_50,         /**<1080i 50 Hz*/ /**< CNcomment:1080i 50èµ«å…¹*/
 
-    HI_CODEC_ENC_FMT_720P_60,          /**<720p 60 Hz*/  /**< CNcomment:720p 60ºÕ×È*/
-    HI_CODEC_ENC_FMT_720P_50,          /**<720p 50 Hz */ /**< CNcomment:720p 50ºÕ×È*/
+    HI_CODEC_ENC_FMT_720P_60,          /**<720p 60 Hz*/  /**< CNcomment:720p 60èµ«å…¹*/
+    HI_CODEC_ENC_FMT_720P_50,          /**<720p 50 Hz */ /**< CNcomment:720p 50èµ«å…¹*/
 
-    HI_CODEC_ENC_FMT_576P_50,          /**<576p 50 Hz*/  /**< CNcomment:576p 50ºÕ×È*/
-    HI_CODEC_ENC_FMT_480P_60,          /**<480p 60 Hz*/  /**< CNcomment:480p 60ºÕ×È*/
+    HI_CODEC_ENC_FMT_576P_50,          /**<576p 50 Hz*/  /**< CNcomment:576p 50èµ«å…¹*/
+    HI_CODEC_ENC_FMT_480P_60,          /**<480p 60 Hz*/  /**< CNcomment:480p 60èµ«å…¹*/
 
-    HI_CODEC_ENC_FMT_PAL,              /**<B D G H I PAL */ /**< CNcomment:B D G H I PALÖÆÊ½*/
-    HI_CODEC_ENC_FMT_PAL_N,            /**<(N)PAL        */ /**< CNcomment:(N)PALÖÆÊ½*/
-    HI_CODEC_ENC_FMT_PAL_Nc,           /**<(Nc)PAL       */ /**< CNcomment:(Nc)PALÖÆÊ½*/
+    HI_CODEC_ENC_FMT_PAL,              /**<B D G H I PAL */ /**< CNcomment:B D G H I PALåˆ¶å¼*/
+    HI_CODEC_ENC_FMT_PAL_N,            /**<(N)PAL        */ /**< CNcomment:(N)PALåˆ¶å¼*/
+    HI_CODEC_ENC_FMT_PAL_Nc,           /**<(Nc)PAL       */ /**< CNcomment:(Nc)PALåˆ¶å¼*/
 
-    HI_CODEC_ENC_FMT_NTSC,             /**<(M)NTSC       */ /**< CNcomment:(M)NTSCÖÆÊ½*/
-    HI_CODEC_ENC_FMT_NTSC_J,           /**<NTSC-J        */ /**< CNcomment:NTSC-JÖÆÊ½*/
-    HI_CODEC_ENC_FMT_NTSC_PAL_M,       /**<(M)PAL        */ /**< CNcomment:(M)PALÖÆÊ½*/
+    HI_CODEC_ENC_FMT_NTSC,             /**<(M)NTSC       */ /**< CNcomment:(M)NTSCåˆ¶å¼*/
+    HI_CODEC_ENC_FMT_NTSC_J,           /**<NTSC-J        */ /**< CNcomment:NTSC-Jåˆ¶å¼*/
+    HI_CODEC_ENC_FMT_NTSC_PAL_M,       /**<(M)PAL        */ /**< CNcomment:(M)PALåˆ¶å¼*/
 
-    HI_CODEC_ENC_FMT_SECAM_SIN,        /**< SECAM_SIN*/ /**< CNcomment:SECAM_SINÖÆÊ½*/
-    HI_CODEC_ENC_FMT_SECAM_COS,        /**< SECAM_COS*/ /**< CNcomment:SECAM_COSÖÆÊ½*/
+    HI_CODEC_ENC_FMT_SECAM_SIN,        /**< SECAM_SIN*/ /**< CNcomment:SECAM_SINåˆ¶å¼*/
+    HI_CODEC_ENC_FMT_SECAM_COS,        /**< SECAM_COS*/ /**< CNcomment:SECAM_COSåˆ¶å¼*/
 
     HI_CODEC_ENC_FMT_1080P_24_FRAME_PACKING,
     HI_CODEC_ENC_FMT_720P_60_FRAME_PACKING,
@@ -413,335 +413,335 @@ typedef enum hiCODEC_ENC_FMT_E
 }HI_CODEC_ENC_FMT_E;
 
 /**Defines the video YUV format*/
-/**CNcomment: YUV¸ñÊ½Ã¶¾Ù*/
+/**CNcomment: YUVæ ¼å¼æšä¸¾*/
 typedef enum hiCODEC_COLOR_FORMAT_E
 {
-    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_400 = 0,   /**<The YUV spatial sampling format is SEMIPLANAR 4:0:0.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªSEMIPLANAR 4:0:0*/
-    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_411,       /**<The YUV spatial sampling format is SEMIPLANAR 4:1:1.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªSEMIPLANAR 4:1:1*/
-    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_420,       /**<The YUV spatial sampling format is SEMIPLANAR 4:2:0.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªSEMIPLANAR 4:2:0*/
-    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_422_1X2,   /**<The YUV spatial sampling format is SEMIPLANAR 4:2:2,two Y correspond to one U and V at vertical direction.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªSEMIPLANAR 4:2:2£¬´¹Ö±·½ÏòÁ½¸öÁÁ¶È²ÉÑùµã¹²ÓÃÒ»¶ÔÉ«¶È²ÉÑùµã*/
-    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_422_2X1,   /**<The YUV spatial sampling format is SEMIPLANAR 4:2:2,two Y correspond to one U and V at horizontal direction.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªSEMIPLANAR 4:2:2£¬Ë®Æ½·½ÏòÁ½¸öÁÁ¶È²ÉÑùµã¹²ÓÃÒ»¶ÔÉ«¶È²ÉÑùµã*/
-    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_444,       /**<The YUV spatial sampling format is SEMIPLANAR 4:4:4.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªSEMIPLANAR 4:4:4*/
+    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_400 = 0,   /**<The YUV spatial sampling format is SEMIPLANAR 4:0:0.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºSEMIPLANAR 4:0:0*/
+    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_411,       /**<The YUV spatial sampling format is SEMIPLANAR 4:1:1.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºSEMIPLANAR 4:1:1*/
+    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_420,       /**<The YUV spatial sampling format is SEMIPLANAR 4:2:0.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºSEMIPLANAR 4:2:0*/
+    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_422_1X2,   /**<The YUV spatial sampling format is SEMIPLANAR 4:2:2,two Y correspond to one U and V at vertical direction.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºSEMIPLANAR 4:2:2ï¼Œå‚ç›´æ–¹å‘ä¸¤ä¸ªäº®åº¦é‡‡æ ·ç‚¹å…±ç”¨ä¸€å¯¹è‰²åº¦é‡‡æ ·ç‚¹*/
+    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_422_2X1,   /**<The YUV spatial sampling format is SEMIPLANAR 4:2:2,two Y correspond to one U and V at horizontal direction.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºSEMIPLANAR 4:2:2ï¼Œæ°´å¹³æ–¹å‘ä¸¤ä¸ªäº®åº¦é‡‡æ ·ç‚¹å…±ç”¨ä¸€å¯¹è‰²åº¦é‡‡æ ·ç‚¹*/
+    HI_CODEC_COLOR_FORMAT_YUV_SEMIPLANAR_444,       /**<The YUV spatial sampling format is SEMIPLANAR 4:4:4.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºSEMIPLANAR 4:4:4*/
 
-    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_400 = 0x10,    /**<The YUV spatial sampling format is PLANAR 4:0:0.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªPLANAR 4:0:0*/   
-    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_411,           /**<The YUV spatial sampling format is PLANAR 4:1:1.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªPLANAR 4:1:1*/   
-    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_420,           /**<The YUV spatial sampling format is PLANAR 4:2:0.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªPLANAR 4:2:0*/   
-    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_422_1X2,       /**<The YUV spatial sampling format is PLANAR 4:2:2,two Y correspond to one U and V at vertical direction.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªPLANAR 4:2:2£¬´¹Ö±·½ÏòÁ½¸öÁÁ¶È²ÉÑùµã¹²ÓÃÒ»¶ÔÉ«¶È²ÉÑùµã*/
-    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_422_2X1,       /**<The YUV spatial sampling format is PLANAR 4:2:2,two Y correspond to one U and V at horizontal direction.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªPLANAR 4:2:2£¬Ë®Æ½·½ÏòÁ½¸öÁÁ¶È²ÉÑùµã¹²ÓÃÒ»¶ÔÉ«¶È²ÉÑùµã*/
-    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_444,           /**<The YUV spatial sampling format is PLANAR 4:4:4.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªPLANAR 4:4:4*/   
-    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_410,           /**<The YUV spatial sampling format is PLANAR 4:1:0.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½ÎªPLANAR 4:1:0*/   
+    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_400 = 0x10,    /**<The YUV spatial sampling format is PLANAR 4:0:0.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºPLANAR 4:0:0*/   
+    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_411,           /**<The YUV spatial sampling format is PLANAR 4:1:1.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºPLANAR 4:1:1*/   
+    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_420,           /**<The YUV spatial sampling format is PLANAR 4:2:0.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºPLANAR 4:2:0*/   
+    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_422_1X2,       /**<The YUV spatial sampling format is PLANAR 4:2:2,two Y correspond to one U and V at vertical direction.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºPLANAR 4:2:2ï¼Œå‚ç›´æ–¹å‘ä¸¤ä¸ªäº®åº¦é‡‡æ ·ç‚¹å…±ç”¨ä¸€å¯¹è‰²åº¦é‡‡æ ·ç‚¹*/
+    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_422_2X1,       /**<The YUV spatial sampling format is PLANAR 4:2:2,two Y correspond to one U and V at horizontal direction.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºPLANAR 4:2:2ï¼Œæ°´å¹³æ–¹å‘ä¸¤ä¸ªäº®åº¦é‡‡æ ·ç‚¹å…±ç”¨ä¸€å¯¹è‰²åº¦é‡‡æ ·ç‚¹*/
+    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_444,           /**<The YUV spatial sampling format is PLANAR 4:4:4.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºPLANAR 4:4:4*/   
+    HI_CODEC_COLOR_FORMAT_YUV_PLANAR_410,           /**<The YUV spatial sampling format is PLANAR 4:1:0.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºPLANAR 4:1:0*/   
     
-    HI_CODEC_COLOR_FORMAT_YUV_PACKAGE_UYVY422 = 0x20,   /**<The YUV spatial sampling format is package, and the pixel arrangement sequence in the memory is UYVY.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½Îªpackage,ÄÚ´æÅÅÁĞÎªUYVY*/
-    HI_CODEC_COLOR_FORMAT_YUV_PACKAGE_YUYV422,          /**<The YUV spatial sampling format is package, and the pixel arrangement sequence in the memory is YUYV.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½Îªpackage,ÄÚ´æÅÅÁĞÎªYUYV*/
-    HI_CODEC_COLOR_FORMAT_YUV_PACKAGE_YVYU422,          /**<The YUV spatial sampling format is package, and the pixel arrangement sequence in the memory is YVYU.*/ /**<CNcomment: YUV¿Õ¼ä²ÉÑù¸ñÊ½Îªpackage,ÄÚ´æÅÅÁĞÎªYVYU*/
+    HI_CODEC_COLOR_FORMAT_YUV_PACKAGE_UYVY422 = 0x20,   /**<The YUV spatial sampling format is package, and the pixel arrangement sequence in the memory is UYVY.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºpackage,å†…å­˜æ’åˆ—ä¸ºUYVY*/
+    HI_CODEC_COLOR_FORMAT_YUV_PACKAGE_YUYV422,          /**<The YUV spatial sampling format is package, and the pixel arrangement sequence in the memory is YUYV.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºpackage,å†…å­˜æ’åˆ—ä¸ºYUYV*/
+    HI_CODEC_COLOR_FORMAT_YUV_PACKAGE_YVYU422,          /**<The YUV spatial sampling format is package, and the pixel arrangement sequence in the memory is YVYU.*/ /**<CNcomment: YUVç©ºé—´é‡‡æ ·æ ¼å¼ä¸ºpackage,å†…å­˜æ’åˆ—ä¸ºYVYU*/
     HI_CODEC_COLOR_FORMAT_YUV_BUTT
 }HI_CODEC_COLOR_FORMAT_E;
 
 /**Defines the type of the video frame*/
-/**CNcomment: ¶¨ÒåÊÓÆµÖ¡µÄÀàĞÍÃ¶¾Ù*/
+/**CNcomment: å®šä¹‰è§†é¢‘å¸§çš„ç±»å‹æšä¸¾*/
 typedef enum hiCODEC_VIDEO_FRAME_TYPE_E
 {
-    HI_CODEC_VIDEO_FRAME_TYPE_UNKNOWN,   /**<Unknown*/ /**<CNcomment: Î´ÖªµÄÖ¡ÀàĞÍ*/
-    HI_CODEC_VIDEO_FRAME_TYPE_I,         /**<I frame*/ /**<CNcomment: IÖ¡*/
-    HI_CODEC_VIDEO_FRAME_TYPE_P,         /**<P frame*/ /**<CNcomment: PÖ¡*/
-    HI_CODEC_VIDEO_FRAME_TYPE_B,         /**<B frame*/ /**<CNcomment: BÖ¡*/
+    HI_CODEC_VIDEO_FRAME_TYPE_UNKNOWN,   /**<Unknown*/ /**<CNcomment: æœªçŸ¥çš„å¸§ç±»å‹*/
+    HI_CODEC_VIDEO_FRAME_TYPE_I,         /**<I frame*/ /**<CNcomment: Iå¸§*/
+    HI_CODEC_VIDEO_FRAME_TYPE_P,         /**<P frame*/ /**<CNcomment: På¸§*/
+    HI_CODEC_VIDEO_FRAME_TYPE_B,         /**<B frame*/ /**<CNcomment: Bå¸§*/
     HI_CODEC_VIDEO_FRAME_TYPE_BUTT
 }HI_CODEC_VIDEO_FRAME_TYPE_E;
 
 /**Defines the video frame/field mode*/
-/**CNcomment: ¶¨ÒåÊÓÆµÖ¡³¡Ä£Ê½Ã¶¾Ù*/
+/**CNcomment: å®šä¹‰è§†é¢‘å¸§åœºæ¨¡å¼æšä¸¾*/
 typedef enum hiCODEC_VIDEO_FIELD_MODE_E
 {
-    HI_CODEC_VIDEO_FIELD_ALL,        /**<Frame mode*/ /**<CNcomment: Ö¡Ä£Ê½*/
-    HI_CODEC_VIDEO_FIELD_TOP,        /**<Top field mode*/ /**<CNcomment: ¶¥³¡Ä£Ê½*/
-    HI_CODEC_VIDEO_FIELD_BOTTOM,     /**<Bottom field mode*/ /**<CNcomment: µ×³¡Ä£Ê½*/
+    HI_CODEC_VIDEO_FIELD_ALL,        /**<Frame mode*/ /**<CNcomment: å¸§æ¨¡å¼*/
+    HI_CODEC_VIDEO_FIELD_TOP,        /**<Top field mode*/ /**<CNcomment: é¡¶åœºæ¨¡å¼*/
+    HI_CODEC_VIDEO_FIELD_BOTTOM,     /**<Bottom field mode*/ /**<CNcomment: åº•åœºæ¨¡å¼*/
     HI_CODEC_VIDEO_FIELD_BUTT
 }HI_CODEC_VIDEO_FIELD_MODE_E;
 
 /**Defines 3D frame packing type*/
-/**CNcomment: 3DÖ¡´ò°ü·½Ê½ */
+/**CNcomment: 3Då¸§æ‰“åŒ…æ–¹å¼ */
 typedef enum hiCODEC_VIDEO_FRAME_PACKING_TYPE_E
 {
-    HI_CODEC_VIDEO_FRAME_PACKING_NONE,              /**< normal frame, not a 3D frame */ /**<CNcomment: ·Ç3DÖ¡*/
-    HI_CODEC_VIDEO_FRAME_PACKING_SIDE_BY_SIDE,      /**< side by side */ /**<CNcomment:×óÓÒÄ£Ê½3DÖ¡ */
-    HI_CODEC_VIDEO_FRAME_PACKING_TOP_AND_BOTTOM,    /**< top and bottom */ /**<CNcomment:ÉÏÏÂÄ£Ê½3DÖ¡ */
-    HI_CODEC_VIDEO_FRAME_PACKING_TIME_INTERLACED,   /**< time interlaced: one frame for left eye, the next frame for right eye */ /**<CNcomment:Ê±¼ä²îÄ£Ê½3DÖ¡ */
+    HI_CODEC_VIDEO_FRAME_PACKING_NONE,              /**< normal frame, not a 3D frame */ /**<CNcomment: é3Då¸§*/
+    HI_CODEC_VIDEO_FRAME_PACKING_SIDE_BY_SIDE,      /**< side by side */ /**<CNcomment:å·¦å³æ¨¡å¼3Då¸§ */
+    HI_CODEC_VIDEO_FRAME_PACKING_TOP_AND_BOTTOM,    /**< top and bottom */ /**<CNcomment:ä¸Šä¸‹æ¨¡å¼3Då¸§ */
+    HI_CODEC_VIDEO_FRAME_PACKING_TIME_INTERLACED,   /**< time interlaced: one frame for left eye, the next frame for right eye */ /**<CNcomment:æ—¶é—´å·®æ¨¡å¼3Då¸§ */
     HI_CODEC_VIDEO_FRAME_PACKING_BUTT             
 }HI_CODEC_VIDEO_FRAME_PACKING_TYPE_E;
 
 /**Defines address information*/
-/**CNcomment: µØÖ·ÃèÊö½á¹¹Ìå*/
+/**CNcomment: åœ°å€æè¿°ç»“æ„ä½“*/
 typedef struct hiCODEC_ADDRESS_S
 {
-    HI_U32  u32Phy;             /**<Physical address of (frame or stream) buffer */ /**<CNcomment: Ö¡»òÁ÷Êı¾İµÄÎïÀíµØÖ· */
-    HI_U32  u32Vir;             /**<Virtual address of (frame or stream) buffer */ /**<CNcomment: Ö¡»òÁ÷Êı¾İµÄĞéÄâµØÖ· */
-    HI_U32  u32Size;            /**<Size of (frame or stream) buffer*/ /**<CNcomment: Ö¡»òÁ÷Êı¾İµÄ´óĞ¡ */
+    HI_U32  u32Phy;             /**<Physical address of (frame or stream) buffer */ /**<CNcomment: å¸§æˆ–æµæ•°æ®çš„ç‰©ç†åœ°å€ */
+    HI_U32  u32Vir;             /**<Virtual address of (frame or stream) buffer */ /**<CNcomment: å¸§æˆ–æµæ•°æ®çš„è™šæ‹Ÿåœ°å€ */
+    HI_U32  u32Size;            /**<Size of (frame or stream) buffer*/ /**<CNcomment: å¸§æˆ–æµæ•°æ®çš„å¤§å° */
 }HI_CODEC_ADDRESS_S;
 
 /**Defines video stream info */
-/** CNcomment: ÊÓÆµÁ÷ĞÅÏ¢½á¹¹Ìå*/
+/** CNcomment: è§†é¢‘æµä¿¡æ¯ç»“æ„ä½“*/
 typedef struct hiCODEC_VIDEO_STREAMINFO_S
 {
-    HI_CODEC_ID_E                   enCodecID;      /**<Stream type*/ /**<CNcomment: ÂëÁ÷ÀàĞÍ */
-    HI_CODEC_VIDEO_SUB_STANDARD_E   enSubStandard;  /**<Sub stream protocol*/ /**<CNcomment: ÂëÁ÷µÄĞ­Òé·ÖÖ§ */
-    HI_U32                          u32SubVersion;  /**<Version of the sub stream protocol*/ /**<CNcomment: ÂëÁ÷×ÓĞ­Òé°æ±¾ºÅ */
-    HI_U32                          u32Profile;     /**<Stream profile*/ /**<CNcomment: ÂëÁ÷µÄprofile */
-    HI_U32                          u32Level;       /**<Stream level*/ /**<CNcomment: ÂëÁ÷µÄlevel */
-    HI_CODEC_ENC_FMT_E              enDisplayNorm;  /**<Display norm*/ /**<CNcomment: ÏÔÊ¾±ê×¼ */
-    HI_BOOL                         bProgressive;   /**<Sampling type (progressive or interlaced)*/ /**<CNcomment: ²ÉÑù·½Ê½(ÖğĞĞ/¸ôĞĞ) */
+    HI_CODEC_ID_E                   enCodecID;      /**<Stream type*/ /**<CNcomment: ç æµç±»å‹ */
+    HI_CODEC_VIDEO_SUB_STANDARD_E   enSubStandard;  /**<Sub stream protocol*/ /**<CNcomment: ç æµçš„åè®®åˆ†æ”¯ */
+    HI_U32                          u32SubVersion;  /**<Version of the sub stream protocol*/ /**<CNcomment: ç æµå­åè®®ç‰ˆæœ¬å· */
+    HI_U32                          u32Profile;     /**<Stream profile*/ /**<CNcomment: ç æµçš„profile */
+    HI_U32                          u32Level;       /**<Stream level*/ /**<CNcomment: ç æµçš„level */
+    HI_CODEC_ENC_FMT_E              enDisplayNorm;  /**<Display norm*/ /**<CNcomment: æ˜¾ç¤ºæ ‡å‡† */
+    HI_BOOL                         bProgressive;   /**<Sampling type (progressive or interlaced)*/ /**<CNcomment: é‡‡æ ·æ–¹å¼(é€è¡Œ/éš”è¡Œ) */
 
-    HI_U32                          u32AspectWidth; /**<Aspect width*/ /**<CNcomment: ×î¼ÑÏÔÊ¾·ùĞÍ±ÈÖ®¿í¶È±ÈÖµ*/
-    HI_U32                          u32AspectHeight;/**<Aspect height*/ /**<CNcomment: ×î¼ÑÏÔÊ¾·ùĞÍ±ÈÖ®¸ß¶È±ÈÖµ*/
+    HI_U32                          u32AspectWidth; /**<Aspect width*/ /**<CNcomment: æœ€ä½³æ˜¾ç¤ºå¹…å‹æ¯”ä¹‹å®½åº¦æ¯”å€¼*/
+    HI_U32                          u32AspectHeight;/**<Aspect height*/ /**<CNcomment: æœ€ä½³æ˜¾ç¤ºå¹…å‹æ¯”ä¹‹é«˜åº¦æ¯”å€¼*/
 
-    HI_U32 u32bps;            /**<Bit rate, in kbit/s*/ /**<CNcomment: ÂëÁ÷µÄÂëÂÊ, Kbps */
-    HI_U32 u32FrameRateInt;   /**<Integral part of the frame rate (in frame/s)*/ /**<CNcomment: ÂëÁ÷µÄÖ¡ÂÊµÄÕûÊı²¿·Ö, fps */
-    HI_U32 u32FrameRateDec;   /**<Fractional part (calculated to three decimal places) of the frame rate (in frame/s)*/ /**<CNcomment: ÂëÁ÷µÄÖ¡ÂÊµÄĞ¡Êı²¿·Ö£¨±£Áô3Î»£©, fps */
-    HI_U32 u32Width;          /**<Width of the decoded picture*/ /**<CNcomment: ½âÂëÍ¼Ïñ¿í */
-    HI_U32 u32Height;         /**<Height of the decoded picture*/ /**<CNcomment: ½âÂëÍ¼Ïñ¸ß */
-    HI_U32 u32DisplayWidth;   /**<Width of the displayed picture*/ /**<CNcomment: ÏÔÊ¾Í¼Ïñ¿í */
-    HI_U32 u32DisplayHeight;  /**<Height of the displayed picture*/ /**<CNcomment: ÏÔÊ¾Í¼Ïñ¸ß */
+    HI_U32 u32bps;            /**<Bit rate, in kbit/s*/ /**<CNcomment: ç æµçš„ç ç‡, Kbps */
+    HI_U32 u32FrameRateInt;   /**<Integral part of the frame rate (in frame/s)*/ /**<CNcomment: ç æµçš„å¸§ç‡çš„æ•´æ•°éƒ¨åˆ†, fps */
+    HI_U32 u32FrameRateDec;   /**<Fractional part (calculated to three decimal places) of the frame rate (in frame/s)*/ /**<CNcomment: ç æµçš„å¸§ç‡çš„å°æ•°éƒ¨åˆ†ï¼ˆä¿ç•™3ä½ï¼‰, fps */
+    HI_U32 u32Width;          /**<Width of the decoded picture*/ /**<CNcomment: è§£ç å›¾åƒå®½ */
+    HI_U32 u32Height;         /**<Height of the decoded picture*/ /**<CNcomment: è§£ç å›¾åƒé«˜ */
+    HI_U32 u32DisplayWidth;   /**<Width of the displayed picture*/ /**<CNcomment: æ˜¾ç¤ºå›¾åƒå®½ */
+    HI_U32 u32DisplayHeight;  /**<Height of the displayed picture*/ /**<CNcomment: æ˜¾ç¤ºå›¾åƒé«˜ */
     HI_U32 u32DisplayCenterX; /**<Horizontal coordinate of the center of the displayed picture (the upper left point of the source picture serves as the coordinate origin)*/
-                              /**<CNcomment: ÏÔÊ¾Í¼ÏñÖĞĞÄºá×ø±ê£¬ÒÔÔ­Ê¼Í¼ÏñµÄ×óÉÏ½ÇÎª×ø±êÔ­µã */
+                              /**<CNcomment: æ˜¾ç¤ºå›¾åƒä¸­å¿ƒæ¨ªåæ ‡ï¼Œä»¥åŸå§‹å›¾åƒçš„å·¦ä¸Šè§’ä¸ºåæ ‡åŸç‚¹ */
     HI_U32 u32DisplayCenterY; /**<Vertical coordinate of the center of the displayed picture (the upper left point of the source picture serves as the coordinate origin)*/
-                              /**<CNcomment: ÏÔÊ¾Í¼ÏñÖĞĞÄ×İ×ø±ê£¬ÒÔÔ­Ê¼Í¼ÏñµÄ×óÉÏ½ÇÎª×ø±êÔ­µã */
+                              /**<CNcomment: æ˜¾ç¤ºå›¾åƒä¸­å¿ƒçºµåæ ‡ï¼Œä»¥åŸå§‹å›¾åƒçš„å·¦ä¸Šè§’ä¸ºåæ ‡åŸç‚¹ */
 }HI_CODEC_VIDEO_STREAMINFO_S;
 
 /**Defines stream information */
-/**CNcomment: ÂëÁ÷ĞÅÏ¢½á¹¹Ìå*/
+/**CNcomment: ç æµä¿¡æ¯ç»“æ„ä½“*/
 typedef union hiCODEC_STREAMINFO_S
 {
-    HI_CODEC_VIDEO_STREAMINFO_S stVideo;    /**<video stream information*/ /**<CNcomment: ÊÓÆµÁ÷ĞÅÏ¢*/
+    HI_CODEC_VIDEO_STREAMINFO_S stVideo;    /**<video stream information*/ /**<CNcomment: è§†é¢‘æµä¿¡æ¯*/
 }HI_CODEC_STREAMINFO_S;
 
 /**Defines stream descriptor */
-/**CNcomment: ÂëÁ÷Êı¾İ½á¹¹Ìå*/
+/**CNcomment: ç æµæ•°æ®ç»“æ„ä½“*/
 typedef struct hiCODEC_STREAM_S
 {
-    HI_U8* pu8Addr;     /**<Stream buffer address*/ /**<CNcomment: Á÷Êı¾İµØÖ·*/
-    HI_U32 u32Size;     /**<Stream buffer size*/ /**<CNcomment: Á÷Êı¾İ´óĞ¡*/
-    HI_S64 s64PtsMs;    /**<PTS(ms)*/ /**<CNcomment: Á÷Êı¾İ¶ÔÓ¦PTS£¬ºÁÃëÎªµ¥Î»*/
+    HI_U8* pu8Addr;     /**<Stream buffer address*/ /**<CNcomment: æµæ•°æ®åœ°å€*/
+    HI_U32 u32Size;     /**<Stream buffer size*/ /**<CNcomment: æµæ•°æ®å¤§å°*/
+    HI_S64 s64PtsMs;    /**<PTS(ms)*/ /**<CNcomment: æµæ•°æ®å¯¹åº”PTSï¼Œæ¯«ç§’ä¸ºå•ä½*/
 }HI_CODEC_STREAM_S;
 
 /**Defines video codec comonds */
-/**CNcomment: ÊÓÆµ±à½âÂëÆ÷¿ØÖÆÃüÁî½á¹¹Ìå*/
+/**CNcomment: è§†é¢‘ç¼–è§£ç å™¨æ§åˆ¶å‘½ä»¤ç»“æ„ä½“*/
 typedef struct hiCODEC_VIDEO_CMD_S
 {
-    HI_U32      u32CmdID;   /**<Commond ID*/ /**<CNcomment: ÃüÁîID*/
-    HI_VOID     *pPara;     /**<Control parameter*/ /**<CNcomment: ÃüÁîĞ¯´ø²ÎÊı*/
+    HI_U32      u32CmdID;   /**<Commond ID*/ /**<CNcomment: å‘½ä»¤ID*/
+    HI_VOID     *pPara;     /**<Control parameter*/ /**<CNcomment: å‘½ä»¤æºå¸¦å‚æ•°*/
 }HI_CODEC_VIDEO_CMD_S;
 
 /**Defines video frame information*/
-/**CNcomment: ÊÓÆµÖ¡ĞÅÏ¢½á¹¹Ìå*/
+/**CNcomment: è§†é¢‘å¸§ä¿¡æ¯ç»“æ„ä½“*/
 typedef struct hiCODEC_VIDEO_FRAME_S
 {
-    HI_CODEC_COLOR_FORMAT_E             enColorFormat;        /**<Video format*/ /**<CNcomment: ÊÓÆµ¸ñÊ½*/
-    HI_CODEC_VIDEO_FRAME_TYPE_E         enFrameType;          /**<Frame type*/ /**<CNcomment: Ö¡ÀàĞÍ*/
-    HI_BOOL                             bProgressive;         /**<Sampling type*/ /**<CNcomment: ²ÉÑùÀàĞÍ*/
+    HI_CODEC_COLOR_FORMAT_E             enColorFormat;        /**<Video format*/ /**<CNcomment: è§†é¢‘æ ¼å¼*/
+    HI_CODEC_VIDEO_FRAME_TYPE_E         enFrameType;          /**<Frame type*/ /**<CNcomment: å¸§ç±»å‹*/
+    HI_BOOL                             bProgressive;         /**<Sampling type*/ /**<CNcomment: é‡‡æ ·ç±»å‹*/
     
-    HI_CODEC_VIDEO_FIELD_MODE_E         enFieldMode;          /**<Frame or field encoding mode*/ /**<CNcomment: Ö¡»ò³¡±àÂëÄ£Ê½*/
-    HI_BOOL                             bTopFieldFirst;       /**<Top field first flag*/ /**<CNcomment: ¶¥³¡ÓÅÏÈ±êÖ¾*/
+    HI_CODEC_VIDEO_FIELD_MODE_E         enFieldMode;          /**<Frame or field encoding mode*/ /**<CNcomment: å¸§æˆ–åœºç¼–ç æ¨¡å¼*/
+    HI_BOOL                             bTopFieldFirst;       /**<Top field first flag*/ /**<CNcomment: é¡¶åœºä¼˜å…ˆæ ‡å¿—*/
 
-    HI_CODEC_VIDEO_FRAME_PACKING_TYPE_E enFramePackingType;   /**<3D frame packing type*/ /**<CNcomment: 3DÖ¡´ò°ü·½Ê½*/
+    HI_CODEC_VIDEO_FRAME_PACKING_TYPE_E enFramePackingType;   /**<3D frame packing type*/ /**<CNcomment: 3Då¸§æ‰“åŒ…æ–¹å¼*/
     
-    HI_U32                              u32FrameRate;         /**<Frame rate*//**<CNcomment: Ö¡ÂÊ*/
+    HI_U32                              u32FrameRate;         /**<Frame rate*//**<CNcomment: å¸§ç‡*/
     
-    HI_U32                              u32Width;             /**<Width of the source picture*/ /**<CNcomment: Ô­Ê¼Í¼Ïñ¿í*/
-    HI_U32                              u32Height;            /**<Height of the source picture*/ /**<CNcomment: Ô­Ê¼Í¼Ïñ¸ß*/
-    HI_U32                              u32AspectWidth;       /**<Aspect width*/ /**<CNcomment: ×î¼ÑÏÔÊ¾¿í¶È*/
-    HI_U32                              u32AspectHeight;      /**<Aspect height*/ /**<CNcomment: ×î¼ÑÏÔÊ¾¸ß¶È*/
+    HI_U32                              u32Width;             /**<Width of the source picture*/ /**<CNcomment: åŸå§‹å›¾åƒå®½*/
+    HI_U32                              u32Height;            /**<Height of the source picture*/ /**<CNcomment: åŸå§‹å›¾åƒé«˜*/
+    HI_U32                              u32AspectWidth;       /**<Aspect width*/ /**<CNcomment: æœ€ä½³æ˜¾ç¤ºå®½åº¦*/
+    HI_U32                              u32AspectHeight;      /**<Aspect height*/ /**<CNcomment: æœ€ä½³æ˜¾ç¤ºé«˜åº¦*/
 
-    HI_U32                              u32YAddr;             /**<Address of the Y component in the current frame*/ /**<CNcomment: µ±Ç°Ö¡Y·ÖÁ¿Êı¾İµÄµØÖ·*/
-    HI_U32                              u32UAddr;             /**<Address of the U component in the current frame*/ /**<CNcomment: µ±Ç°Ö¡U·ÖÁ¿Êı¾İµÄµØÖ·*/
-    HI_U32                              u32VAddr;             /**<Address of the V component in the current frame*/ /**<CNcomment: µ±Ç°Ö¡V·ÖÁ¿Êı¾İµÄµØÖ·*/
-    HI_U32                              u32YStride;           /**<Stride of the Y component*/ /**<CNcomment: Y·ÖÁ¿Êı¾İµÄ¿ç·ù*/
-    HI_U32                              u32UStride;           /**<Stride of the U component*/ /**<CNcomment: C·ÖÁ¿Êı¾İµÄ¿ç·ù*/
-    HI_U32                              u32VStride;           /**<Stride of the V component*/ /**<CNcomment: C·ÖÁ¿Êı¾İµÄ¿ç·ù*/
+    HI_U32                              u32YAddr;             /**<Address of the Y component in the current frame*/ /**<CNcomment: å½“å‰å¸§Yåˆ†é‡æ•°æ®çš„åœ°å€*/
+    HI_U32                              u32UAddr;             /**<Address of the U component in the current frame*/ /**<CNcomment: å½“å‰å¸§Uåˆ†é‡æ•°æ®çš„åœ°å€*/
+    HI_U32                              u32VAddr;             /**<Address of the V component in the current frame*/ /**<CNcomment: å½“å‰å¸§Våˆ†é‡æ•°æ®çš„åœ°å€*/
+    HI_U32                              u32YStride;           /**<Stride of the Y component*/ /**<CNcomment: Yåˆ†é‡æ•°æ®çš„è·¨å¹…*/
+    HI_U32                              u32UStride;           /**<Stride of the U component*/ /**<CNcomment: Cåˆ†é‡æ•°æ®çš„è·¨å¹…*/
+    HI_U32                              u32VStride;           /**<Stride of the V component*/ /**<CNcomment: Cåˆ†é‡æ•°æ®çš„è·¨å¹…*/
 
-    HI_U8*                              pu8UserData;          /**<User data *//**<CNcomment: ÓÃ»§Êı¾İ*/
-    HI_U32                              u32UserDataSize;      /**<User data size *//**<CNcomment: ÓÃ»§Êı¾İ³¤¶È*/
+    HI_U8*                              pu8UserData;          /**<User data *//**<CNcomment: ç”¨æˆ·æ•°æ®*/
+    HI_U32                              u32UserDataSize;      /**<User data size *//**<CNcomment: ç”¨æˆ·æ•°æ®é•¿åº¦*/
 }HI_CODEC_VIDEO_FRAME_S;
 
 /**Defines frame descriptor */
-/**CNcomment: Ö¡ÃèÊö½á¹¹Ìå*/
+/**CNcomment: å¸§æè¿°ç»“æ„ä½“*/
 typedef struct hiCODEC_FRAME_S
 {
     HI_CODEC_ADDRESS_S          stOutputAddr;   /**< Always [in], only used by the codecs which support HI_CODEC_OUTPUT_TOSPECADDR, Only used by decoder  */
-                                                /**< CNcomment: Ö¡Êä³öµØÖ·£¬Ò»Ö±ÊÇÊäÈë²ÎÊı£¬½öÊÊÓÃÓÚÖ§³ÖHI_CODEC_OUTPUT_TOSPECADDRµÄ½âÂëÆ÷ */
+                                                /**< CNcomment: å¸§è¾“å‡ºåœ°å€ï¼Œä¸€ç›´æ˜¯è¾“å…¥å‚æ•°ï¼Œä»…é€‚ç”¨äºæ”¯æŒHI_CODEC_OUTPUT_TOSPECADDRçš„è§£ç å™¨ */
     HI_S64                      s64SrcPtsMs;    /**< Decoder [out], encoder [in], The source pts(ms) */
-                                                /**< CNcomment: Ö¡Ô´PTS£¬ºÁÃëÎªµ¥Î»£¬¶Ô½âÂëÆ÷À´ËµÊÇÊä³ö²ÎÊı£¬¶Ô±àÂëÆ÷À´ËµÊÇÊäÈë²ÎÊı*/
+                                                /**< CNcomment: å¸§æºPTSï¼Œæ¯«ç§’ä¸ºå•ä½ï¼Œå¯¹è§£ç å™¨æ¥è¯´æ˜¯è¾“å‡ºå‚æ•°ï¼Œå¯¹ç¼–ç å™¨æ¥è¯´æ˜¯è¾“å…¥å‚æ•°*/
     HI_S64                      s64PtsMs;       /**< Decoder [out], encoder [in], The pts(ms)*/
-                                                /**< CNcomment: Ö¡PTS£¬ºÁÃëÎªµ¥Î»£¬¶Ô½âÂëÆ÷À´ËµÊÇÊä³ö²ÎÊı£¬¶Ô±àÂëÆ÷À´ËµÊÇÊäÈë²ÎÊı*/
+                                                /**< CNcomment: å¸§PTSï¼Œæ¯«ç§’ä¸ºå•ä½ï¼Œå¯¹è§£ç å™¨æ¥è¯´æ˜¯è¾“å‡ºå‚æ•°ï¼Œå¯¹ç¼–ç å™¨æ¥è¯´æ˜¯è¾“å…¥å‚æ•°*/
     union{
         HI_CODEC_VIDEO_FRAME_S  stVideo;        /**< Decoder [out], encoder [in], The video frame information*/ 
-                                                /**< CNcomment: ÊÓÆµÖ¡ĞÅÏ¢£¬¶Ô½âÂëÆ÷À´ËµÊÇÊä³ö²ÎÊı£¬¶Ô±àÂëÆ÷À´ËµÊÇÊäÈë²ÎÊı*/
+                                                /**< CNcomment: è§†é¢‘å¸§ä¿¡æ¯ï¼Œå¯¹è§£ç å™¨æ¥è¯´æ˜¯è¾“å‡ºå‚æ•°ï¼Œå¯¹ç¼–ç å™¨æ¥è¯´æ˜¯è¾“å…¥å‚æ•°*/
     }unInfo;
 }HI_CODEC_FRAME_S;
 
 /**Defines codec*/
-/**CNcomment: CODEC½á¹¹Ìå¶¨Òå*/
+/**CNcomment: CODECç»“æ„ä½“å®šä¹‰*/
 typedef struct hiCODEC_S
 {
     /**<Description information about a codec */
-    /**<CNcomment: ±à½âÂëÆ÷ÃèÊöÃû×Ö */ 
+    /**<CNcomment: ç¼–è§£ç å™¨æè¿°åå­— */ 
     const HI_CHAR const* pszName;
 
     /**<Codec version */
-    /**<CNcomment: ±à½âÂëÆ÷°æ±¾ÃèÊö */ 
+    /**<CNcomment: ç¼–è§£ç å™¨ç‰ˆæœ¬æè¿° */ 
     const HI_CODEC_VERSION_U unVersion;
 
     /**<Detailed information about a codec */
-    /**<CNcomment: ±à½âÂëÆ÷ÏêÏ¸ÃèÊöĞÅÏ¢ */
+    /**<CNcomment: ç¼–è§£ç å™¨è¯¦ç»†æè¿°ä¿¡æ¯ */
     const HI_CHAR const* pszDescription;
     
     /**
-    \brief Get codec capability. CNcomment:»ñÈ¡±à½âÂëÆ÷ÄÜÁ¦ CNend
+    \brief Get codec capability. CNcomment:è·å–ç¼–è§£ç å™¨èƒ½åŠ› CNend
     \attention \n
     N/A
-    \param [out] pstCodecCap, Pointer of the codec capability. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸Ïò±à½âÂëÆ÷ÄÜÁ¦ CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [out] pstCodecCap, Pointer of the codec capability. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘ç¼–è§£ç å™¨èƒ½åŠ› CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */
     HI_S32 (*GetCap)(HI_CODEC_CAP_S *pstCodecCap);
   
     /**
-    \brief Create a codec instance. CNcomment:´´½¨±à½âÂëÆ÷ÊµÀı CNend
+    \brief Create a codec instance. CNcomment:åˆ›å»ºç¼–è§£ç å™¨å®ä¾‹ CNend
     \attention \n
     N/A
-    \param [in] pstParam, Pointer of the open params. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÊµÀı´ò¿ª²ÎÊı CNend
-    \param [out] phInst, Pointer to instance handle. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÊµÀı¾ä±ú CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [in] pstParam, Pointer of the open params. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘å®ä¾‹æ‰“å¼€å‚æ•° CNend
+    \param [out] phInst, Pointer to instance handle. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘å®ä¾‹å¥æŸ„ CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */
     HI_S32 (*Create)(HI_HANDLE* phInst, const HI_CODEC_OPENPARAM_S * pstParam);
 
     /**
-    \brief Destroy a codec instance. CNcomment:Ïú»Ù±à½âÂëÆ÷ÊµÀı CNend
+    \brief Destroy a codec instance. CNcomment:é”€æ¯ç¼–è§£ç å™¨å®ä¾‹ CNend
     \attention \n
     N/A
-    \param [in] hInst, Instance handle. CNcomment:ÊµÀı¾ä±ú CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [in] hInst, Instance handle. CNcomment:å®ä¾‹å¥æŸ„ CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */     
     HI_S32 (*Destroy)(HI_HANDLE hInst);
 
     /**
-    \brief Start a codec instance. CNcomment:Æô¶¯±à½âÂëÆ÷ÊµÀı CNend
+    \brief Start a codec instance. CNcomment:å¯åŠ¨ç¼–è§£ç å™¨å®ä¾‹ CNend
     \attention \n
     N/A
-    \param [in] hInst, Instance handle. CNcomment:ÊµÀı¾ä±ú CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [in] hInst, Instance handle. CNcomment:å®ä¾‹å¥æŸ„ CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */       
     HI_S32 (*Start)(HI_HANDLE hInst);
 
     /**
-    \brief Stop a codec instance. CNcomment:Í£Ö¹±à½âÂëÆ÷ÊµÀı CNend
+    \brief Stop a codec instance. CNcomment:åœæ­¢ç¼–è§£ç å™¨å®ä¾‹ CNend
     \attention \n
     N/A
-    \param [in] hInst, Instance handle. CNcomment:ÊµÀı¾ä±ú CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [in] hInst, Instance handle. CNcomment:å®ä¾‹å¥æŸ„ CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */       
     HI_S32 (*Stop)(HI_HANDLE hInst);
 
     /**
-    \brief Reset a codec instance. CNcomment:¸´Î»±à½âÂëÆ÷ÊµÀı CNend
+    \brief Reset a codec instance. CNcomment:å¤ä½ç¼–è§£ç å™¨å®ä¾‹ CNend
     \attention \n
     N/A
-    \param [in] hInst, Instance handle. CNcomment:ÊµÀı¾ä±ú CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [in] hInst, Instance handle. CNcomment:å®ä¾‹å¥æŸ„ CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */        
     HI_S32 (*Reset)(HI_HANDLE hInst);
 
     /**
-    \brief Set attribute to a codec instance. CNcomment:ÉèÖÃ±à½âÂëÆ÷ÊôĞÔ CNend
+    \brief Set attribute to a codec instance. CNcomment:è®¾ç½®ç¼–è§£ç å™¨å±æ€§ CNend
     \attention \n
     N/A
-    \param [in] hInst, Instance handle. CNcomment:ÊµÀı¾ä±ú CNend
-    \param [in] pstAttr, Pointer to the instance attribute. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÊµÀıÊôĞÔ CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [in] hInst, Instance handle. CNcomment:å®ä¾‹å¥æŸ„ CNend
+    \param [in] pstAttr, Pointer to the instance attribute. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘å®ä¾‹å±æ€§ CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */      
     HI_S32 (*SetAttr)(HI_HANDLE hInst, const HI_CODEC_ATTR_S * pstAttr);
 
     /**
-    \brief Get attribute to a codec instance. CNcomment:»ñÈ¡±à½âÂëÆ÷ÊôĞÔ CNend
+    \brief Get attribute to a codec instance. CNcomment:è·å–ç¼–è§£ç å™¨å±æ€§ CNend
     \attention \n
     N/A
-    \param [in] hInst, Instance handle. CNcomment:ÊµÀı¾ä±ú CNend
-    \param [out] pstAttr, Pointer to the instance attribute. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÊµÀıÊôĞÔ CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [in] hInst, Instance handle. CNcomment:å®ä¾‹å¥æŸ„ CNend
+    \param [out] pstAttr, Pointer to the instance attribute. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘å®ä¾‹å±æ€§ CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */        
     HI_S32 (*GetAttr)(HI_HANDLE hInst, HI_CODEC_ATTR_S * pstAttr);
 
     /**
-    \brief Decode a frame.. CNcomment:½âÂëÒ»Ö¡ CNend
+    \brief Decode a frame.. CNcomment:è§£ç ä¸€å¸§ CNend
     \attention \n
     N/A
-    \param [in] hInst, Instance handle. CNcomment:ÊµÀı¾ä±ú CNend
-    \param [in] pstIn, Pointer to stream data descriptor. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÂëÁ÷Êı¾İĞÅÏ¢½á¹¹Ìå CNend
-    \param [out] pstOut, Pointer to frame data descriptor. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÖ¡Êı¾İĞÅÏ¢½á¹¹Ìå CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [in] hInst, Instance handle. CNcomment:å®ä¾‹å¥æŸ„ CNend
+    \param [in] pstIn, Pointer to stream data descriptor. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘ç æµæ•°æ®ä¿¡æ¯ç»“æ„ä½“ CNend
+    \param [out] pstOut, Pointer to frame data descriptor. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘å¸§æ•°æ®ä¿¡æ¯ç»“æ„ä½“ CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */     
     HI_S32 (*DecodeFrame)(HI_HANDLE hInst, HI_CODEC_STREAM_S * pstIn, HI_CODEC_FRAME_S * pstOut);
 
     /**
-    \brief Encode a frame. CNcomment:±àÂëÒ»Ö¡ CNend
+    \brief Encode a frame. CNcomment:ç¼–ç ä¸€å¸§ CNend
     \attention \n
     N/A
-    \param [in] hInst, Instance handle. CNcomment:ÊµÀı¾ä±ú CNend
-    \param [in] pstIn, Pointer to stream data descriptor. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÂëÁ÷Êı¾İĞÅÏ¢½á¹¹Ìå CNend
-    \param [out] pstOut, Pointer to frame data descriptor. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÖ¡Êı¾İĞÅÏ¢½á¹¹Ìå CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [in] hInst, Instance handle. CNcomment:å®ä¾‹å¥æŸ„ CNend
+    \param [in] pstIn, Pointer to stream data descriptor. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘ç æµæ•°æ®ä¿¡æ¯ç»“æ„ä½“ CNend
+    \param [out] pstOut, Pointer to frame data descriptor. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘å¸§æ•°æ®ä¿¡æ¯ç»“æ„ä½“ CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */     
     HI_S32 (*EncodeFrame)(HI_HANDLE hInst, HI_CODEC_FRAME_S * pstIn, HI_CODEC_STREAM_S * pstOut);
 
     /**
-    \brief Get stream information. CNcomment:»ñÈ¡ÂëÁ÷ĞÅÏ¢ CNend
+    \brief Get stream information. CNcomment:è·å–ç æµä¿¡æ¯ CNend
     \attention \n
     N/A
-    \param [in] hInst, Instance handle. CNcomment:ÊµÀı¾ä±ú CNend
-    \param [out] pstAttr, Pointer to stream information. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÂëÁ÷ĞÅÏ¢½á¹¹Ìå CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [in] hInst, Instance handle. CNcomment:å®ä¾‹å¥æŸ„ CNend
+    \param [out] pstAttr, Pointer to stream information. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘ç æµä¿¡æ¯ç»“æ„ä½“ CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */     
     HI_S32 (*GetStreamInfo)(HI_HANDLE hInst, HI_CODEC_STREAMINFO_S * pstAttr);
 
     /**
-    \brief Other control, can be extended. CNcomment:ÆäËû¿ØÖÆÑ¡Ïî£¬¿ÉÀ©Õ¹ CNend
+    \brief Other control, can be extended. CNcomment:å…¶ä»–æ§åˆ¶é€‰é¡¹ï¼Œå¯æ‰©å±• CNend
     \attention \n
     N/A
-    \param [in] hInst, Instance handle. CNcomment:ÊµÀı¾ä±ú CNend
-    \param [out] u32CMD, The commond ID. CNcomment:ÃüÁîID CNend
-    \param [out] pParam, Pointer to control parameter. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸Ïò¿ØÖÆ²ÎÊı CNend
-    \retval ::HI_SUCCESS CNcomment:²Ù×÷³É¹¦ CNend
-    \retval ::HI_FAILURE CNcomment:²Ù×÷Ê§°Ü CNend
+    \param [in] hInst, Instance handle. CNcomment:å®ä¾‹å¥æŸ„ CNend
+    \param [out] u32CMD, The commond ID. CNcomment:å‘½ä»¤ID CNend
+    \param [out] pParam, Pointer to control parameter. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘æ§åˆ¶å‚æ•° CNend
+    \retval ::HI_SUCCESS CNcomment:æ“ä½œæˆåŠŸ CNend
+    \retval ::HI_FAILURE CNcomment:æ“ä½œå¤±è´¥ CNend
     \see \n
     N/A
     */     

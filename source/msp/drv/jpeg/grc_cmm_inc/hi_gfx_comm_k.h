@@ -7,7 +7,7 @@ File Name	    : hi_gfx_comm_k.h
 Version		    : version 1.0
 Author		    : 
 Created		    : 2013/05/28
-Description	    : Describes adp file. CNcomment:«˝∂ØøÁ∆ΩÃ®  ≈‰ CNend\n
+Description	    : Describes adp file. CNcomment:È©±Âä®Ë∑®Âπ≥Âè∞ÈÄÇÈÖç CNend\n
 Function List 	: 
 
 History       	:
@@ -23,10 +23,10 @@ Date				Author        		Modification
 /***************************** SDK Version Macro Definition *********************/
 
 /** \addtogroup 	GFX COMM */
-/** @{ */  /** <!-- °æGFX COMM°ø */
+/** @{ */  /** <!-- „ÄêGFX COMM„Äë */
 
 /** choice the sdk type */
-/** CNcomment:SDK∞Ê±æ CNend */
+/** CNcomment:SDKÁâàÊú¨ CNend */
 #define  CONFIG_GFX_STB_SDK
 
 
@@ -62,7 +62,7 @@ Date				Author        		Modification
 /***************************** Macro Definition ******************************/
 
 /** \addtogroup 	GFX COMM */
-/** @{ */  /** <!-- °æGFX COMM°ø */
+/** @{ */  /** <!-- „ÄêGFX COMM„Äë */
 
 /** this macro define at CFG_HI_KMOD_CFLAGS,so Makefile should include CFG_HI_KMOD_CFLAGS **/
 #ifdef HI_ADVCA_FUNCTION_RELEASE
@@ -72,34 +72,34 @@ Date				Author        		Modification
 
 #ifdef CONFIG_GFX_ADVCA_RELEASE
 /** char disable */
-/** CNcomment:char πƒ‹ CNend */
+/** CNcomment:char‰ΩøËÉΩ CNend */
 #define  CONFIG_GFX_COMM_STR_DISABLE
 /** PROC disable */
-/** CNcomment:proc πƒ‹ CNend */
+/** CNcomment:proc‰ΩøËÉΩ CNend */
 #define  CONFIG_GFX_COMM_PROC_DISABLE
 /** version info disable */
-/** CNcomment:∞Ê±æ–≈œ¢ πƒ‹ CNend */
+/** CNcomment:ÁâàÊú¨‰ø°ÊÅØ‰ΩøËÉΩ CNend */
 #define  CONFIG_GFX_COMM_VERSION_DISABLE
 #endif
 
 /** close the string function */
-/** CNcomment:πÿ±’◊÷∑˚¥Æπ¶ƒ‹,DEBUG±ÿ–Îπÿ±’ CNend */
+/** CNcomment:ÂÖ≥Èó≠Â≠óÁ¨¶‰∏≤ÂäüËÉΩ,DEBUGÂøÖÈ°ªÂÖ≥Èó≠ CNend */
 #ifdef   CONFIG_GFX_COMM_STR_DISABLE
 /** LOG disable */
-/** CNcomment:log πƒ‹ CNend */
+/** CNcomment:log‰ΩøËÉΩ CNend */
 #define  CONFIG_GFX_COMM_DEBUG_DISABLE
 #endif
 
 /** pm disable */
-/** CNcomment:pm πƒ‹ CNend */
+/** CNcomment:pm‰ΩøËÉΩ CNend */
 //#define  CONFIG_GFX_COMM_PM_DISABLE
 
 
 /** register mammap operate */
-/** CNcomment:ºƒ¥Ê∆˜”≥…‰≤Ÿ◊˜ CNend */
+/** CNcomment:ÂØÑÂ≠òÂô®Êò†Â∞ÑÊìç‰Ωú CNend */
 #define HI_GFX_REG_MAP(base, size)                    ioremap_nocache((base), (size))
 /** register unmap operate */
-/** CNcomment:ºƒ¥Ê∆˜ƒÊ”≥…‰≤Ÿ◊˜ CNend */
+/** CNcomment:ÂØÑÂ≠òÂô®ÈÄÜÊò†Â∞ÑÊìç‰Ωú CNend */
 #define HI_GFX_REG_UNMAP(base) 	                    iounmap((HI_VOID*)(base))
 
 #ifdef CONFIG_GFX_COMM_STR_DISABLE
@@ -112,7 +112,7 @@ Date				Author        		Modification
 
 
 /** the mutex init */
-/** CNcomment:–≈∫≈¡ø≥ı ºªØ CNend */
+/** CNcomment:‰ø°Âè∑ÈáèÂàùÂßãÂåñ CNend */
 #define HI_GFX_INIT_MUTEX(x)                           sema_init(x, 1)
 
 #if (LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 36))
@@ -124,10 +124,10 @@ Date				Author        		Modification
 
 #if defined(CONFIG_GFX_STB_SDK)
 	/** kmalloc mem */
-	/** CNcomment:ƒ⁄∫À∑÷≈‰ƒ⁄¥Ê CNend */
+	/** CNcomment:ÂÜÖÊ†∏ÂàÜÈÖçÂÜÖÂ≠ò CNend */
 	#define HI_GFX_KMALLOC(module_id, size, flags)      HI_KMALLOC(ConvertID(module_id), size, flags)
 	/** kfree mem */
-	/** CNcomment:ƒ⁄∫À Õ∑≈ƒ⁄¥Ê */
+	/** CNcomment:ÂÜÖÊ†∏ÈáäÊîæÂÜÖÂ≠ò */
 	#define HI_GFX_KFREE(module_id, addr)                HI_KFREE(ConvertID(module_id), addr)
 	#define HI_GFX_VMALLOC(module_id, size)              HI_VMALLOC(ConvertID(module_id), size)
 	#define HI_GFX_VFREE(module_id, addr)                HI_VFREE(ConvertID(module_id), addr)
@@ -194,7 +194,7 @@ Date				Author        		Modification
 
 #elif defined(CONFIG_GFX_BVT_SDK)
 	/** kmalloc mem */
-	/** CNcomment:ƒ⁄∫À∑÷≈‰ƒ⁄¥Ê CNend */
+	/** CNcomment:ÂÜÖÊ†∏ÂàÜÈÖçÂÜÖÂ≠ò CNend */
    	#define HI_GFX_KMALLOC(module_id, size, flags)       kmalloc(size, flags)
     #define HI_GFX_KFREE(module_id, addr)                 kfree(addr)
     #define HI_GFX_VMALLOC(module_id, size)               vmalloc(size)
@@ -202,7 +202,7 @@ Date				Author        		Modification
     #define MMB_ADDR_INVALID (~0)
 
 	/** kfree mem */
-	/** CNcomment:ƒ⁄∫À Õ∑≈ƒ⁄¥Ê CNend */
+	/** CNcomment:ÂÜÖÊ†∏ÈáäÊîæÂÜÖÂ≠ò CNend */
 	#define ConvertID(module_id) (module_id + HI_ID_TDE - HIGFX_TDE_ID)
 	
 	#ifdef CONFIG_GFX_COMM_DEBUG_DISABLE
@@ -246,11 +246,11 @@ Date				Author        		Modification
 /*************************** Enum Definition ****************************/
 
 /** \addtogroup 	 GFX COMM */
-/** @{ */  /** <!-- °æGFX COMM°ø */
+/** @{ */  /** <!-- „ÄêGFX COMM„Äë */
 
 
 /** enum of the chip type */
-/** CNcomment:–æ∆¨¿‡–Õ√∂æŸ CNend */
+/** CNcomment:ËäØÁâáÁ±ªÂûãÊûö‰∏æ CNend */
 typedef enum tagHIGFX_CHIP_TYPE_E
 {
     HIGFX_CHIP_TYPE_HI3716MV100 = 0,   /**< HI3716MV100 */
@@ -280,7 +280,7 @@ typedef enum tagHIGFX_CHIP_TYPE_E
 
 
 /** enum of the module ID */
-/** CNcomment:√ø∏ˆƒ£øÈµƒID∫≈ CNend */
+/** CNcomment:ÊØè‰∏™Ê®°ÂùóÁöÑIDÂè∑ CNend */
 typedef enum tagHIGFX_MODE_ID_E
 {
 
@@ -300,11 +300,11 @@ typedef enum tagHIGFX_MODE_ID_E
 
 
 /** \addtogroup 	 GFX COMM */
-/** @{ */  /** <!-- °æGFX COMM°ø */
+/** @{ */  /** <!-- „ÄêGFX COMM„Äë */
 
 
 /** Structure of proc item */
-/** CNcomment:procœ‡πÿ∫Ø ˝≤Ÿ◊˜ CNend */
+/** CNcomment:procÁõ∏ÂÖ≥ÂáΩÊï∞Êìç‰Ωú CNend */
 typedef struct struGFX_PROC_ITEM
 {
 	HI_S32 (*fnRead)(struct seq_file *, HI_VOID *);
@@ -323,16 +323,16 @@ extern unsigned long long sched_clock(void);
 /******************************* API declaration *****************************/
 
 /** \addtogroup 	 GFX COMM */
-/** @{ */  /** <!-- °æGFX COMM°ø */
+/** @{ */  /** <!-- „ÄêGFX COMM„Äë */
 
 
 /** 
-\brief show sdk version. CNcomment:œ‘ æƒ£øÈ∞Ê±æ∫≈ CNend\n
+\brief show sdk version. CNcomment:ÊòæÁ§∫Ê®°ÂùóÁâàÊú¨Âè∑ CNend\n
 \attention \n
 if you want to show module version when insmod ko,call this function.\n
-CNcomment:µ±“™œ‘ æƒ£øÈ∞Ê±æ∫≈µƒ ±∫Úµ˜”√∏√Ω”ø⁄ CNend\n
+CNcomment:ÂΩìË¶ÅÊòæÁ§∫Ê®°ÂùóÁâàÊú¨Âè∑ÁöÑÊó∂ÂÄôË∞ÉÁî®ËØ•Êé•Âè£ CNend\n
 
-\param[in]	ModID. CNcomment:ƒ£øÈID CNend
+\param[in]	ModID. CNcomment:Ê®°ÂùóID CNend
 
 \retval ::NA
 
@@ -358,10 +358,10 @@ static inline HI_VOID HI_GFX_ShowVersionK(HIGFX_MODE_ID_E ModID)
 }
 
 /** 
-\brief get time function. CNcomment:ªÒ»° ±º‰∫Ø ˝ CNend\n
+\brief get time function. CNcomment:Ëé∑ÂèñÊó∂Èó¥ÂáΩÊï∞ CNend\n
 \attention \n
 
-\param[in]	ModID. CNcomment:ƒ£øÈID CNend\n
+\param[in]	ModID. CNcomment:Ê®°ÂùóID CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -391,10 +391,10 @@ static inline HI_S32 HI_GFX_GetTimeStamp(HI_U32 *pu32TimeMs, HI_U32 *pu32TimeUs)
      
     
 /** 
-\brief free the mem that has alloced. CNcomment: Õ∑≈∑÷≈‰π˝µƒƒ⁄¥Ê CNend
+\brief free the mem that has alloced. CNcomment:ÈáäÊîæÂàÜÈÖçËøáÁöÑÂÜÖÂ≠ò CNend
 \attention \n
 
-\param[in]	u32Phyaddr. CNcomment:ŒÔ¿Ìµÿ÷∑ CNend\n
+\param[in]	u32Phyaddr. CNcomment:Áâ©ÁêÜÂú∞ÂùÄ CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -411,12 +411,12 @@ static inline HI_VOID HI_GFX_FreeMem(HI_U32 u32Phyaddr)
 
 
 /** 
-\brief alloc the mem that need. CNcomment:∑÷≈‰–Ë“™µƒƒ⁄¥Ê CNend\n
+\brief alloc the mem that need. CNcomment:ÂàÜÈÖçÈúÄË¶ÅÁöÑÂÜÖÂ≠ò CNend\n
 \attention \n
 
-\param[in]	pName.        CNcomment:ƒ£øÈ√˚   CNend\n
+\param[in]	pName.        CNcomment:Ê®°ÂùóÂêç   CNend\n
 \param[in]	pZoneName.
-\param[in]	u32LayerSize. CNcomment:ƒ⁄¥Ê¥Û–° CNend\n
+\param[in]	u32LayerSize. CNcomment:ÂÜÖÂ≠òÂ§ßÂ∞è CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -597,10 +597,10 @@ static inline HI_VOID HI_GFX_SYS_GetChipVersion(HIGFX_CHIP_TYPE_E *penChipType)
 
 
 /** 
-\brief free the mem that has alloced. CNcomment: Õ∑≈∑÷≈‰π˝µƒƒ⁄¥Ê CNend\n
+\brief free the mem that has alloced. CNcomment:ÈáäÊîæÂàÜÈÖçËøáÁöÑÂÜÖÂ≠ò CNend\n
 \attention \n
 
-\param[in]	u32Phyaddr. CNcomment:ŒÔ¿Ìµÿ÷∑ CNend\n
+\param[in]	u32Phyaddr. CNcomment:Áâ©ÁêÜÂú∞ÂùÄ CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -614,12 +614,12 @@ static HI_VOID HI_GFX_FreeMem(HI_U32 u32Phyaddr)
 }
 
 /** 
-\brief alloc the mem that need. CNcomment:∑÷≈‰–Ë“™µƒƒ⁄¥Ê CNend\n
+\brief alloc the mem that need. CNcomment:ÂàÜÈÖçÈúÄË¶ÅÁöÑÂÜÖÂ≠ò CNend\n
 \attention \n
 
-\param[in]	pName.        CNcomment:ƒ£øÈ√˚   CNend\n
+\param[in]	pName.        CNcomment:Ê®°ÂùóÂêç   CNend\n
 \param[in]	pZoneName.
-\param[in]	u32LayerSize. CNcomment:ƒ⁄¥Ê¥Û–° CNend\n
+\param[in]	u32LayerSize. CNcomment:ÂÜÖÂ≠òÂ§ßÂ∞è CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE

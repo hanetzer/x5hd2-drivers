@@ -78,12 +78,12 @@ typedef struct appArgs
 	int bNotCallProbeHeader;
 
 	int  threadNum;
-	// ÏÂÃæ²ÎÊýÓÃÓÚÏß³ÌÍ¬²½
+	// ä¸‹é¢å‚æ•°ç”¨äºŽçº¿ç¨‹åŒæ­¥
 	int iCurFileId;
 	int aiCurFileId[MAX_CODEC_NUM];
 	hw_mutex_t file_id_lock;
 
-	// ±£´æÏµÍ³ÐÅÏ¢Ö¸Õë
+	// ä¿å­˜ç³»ç»Ÿä¿¡æ¯æŒ‡é’ˆ
 	STRU_IMEDIA_SYSINFO *pstSysInfo;
 	int bPrintOverheadFlag;
 	int iDspMask;
@@ -743,11 +743,11 @@ static int DecodeOneFrame(IMEDIA_CODEC_CTX hDecHandle, STRU_IVIDDEC_STREAM *pstI
 				/* if reach the end of bitstream file, then not go out of the loop and keep on outputing the YUV stored in delay buffer */
 				if(1 != pstAppCnt->iFileEndFlag && stOutArgs.uiBytesConsumed)
 				{
-					break;   /* ÎÄ¼þÃ»ÓÐ½âÍê£¬µ«µ±Ç°ÊäÈëµÄbufÖÐ²»×ãÒÔÕÒ³öÍêÕûµÄÒ»Ö¡ */
+					break;   /* æ–‡ä»¶æ²¡æœ‰è§£å®Œï¼Œä½†å½“å‰è¾“å…¥çš„bufä¸­ä¸è¶³ä»¥æ‰¾å‡ºå®Œæ•´çš„ä¸€å¸§ */
 				}
 				else if(0 == stOutArgs.stFrame.uiNumBytes && stOutArgs.uiBytesConsumed)
 				{
-					continue;  /* ÎÄ¼þµÄ×îºóÒ»Ö¡£¬ÎÞ·¨Ê¶±ðµ½Ö¡½áÎ²£¨Í¨¹ý½«ÊäÈë×Ö½ÚÊýÉèÎª0£¬ÔÙµ÷ÓÃÒ»´Î£©*/
+					continue;  /* æ–‡ä»¶çš„æœ€åŽä¸€å¸§ï¼Œæ— æ³•è¯†åˆ«åˆ°å¸§ç»“å°¾ï¼ˆé€šè¿‡å°†è¾“å…¥å­—èŠ‚æ•°è®¾ä¸º0ï¼Œå†è°ƒç”¨ä¸€æ¬¡ï¼‰*/
 				}
 			}
 
@@ -764,7 +764,7 @@ static int DecodeOneFrame(IMEDIA_CODEC_CTX hDecHandle, STRU_IVIDDEC_STREAM *pstI
 				printf("Warning Codec Error Code: 0x%x\n",pstOutArgs->iErrorCode);
 			}
 
-			// µ±Ç°Ö¡ÐèÒªÖØÐÂ½âÂë£¬Ä¿Ç°µÄ´¦Àí·½·¨´æÔÚÎÊÌâ
+			// å½“å‰å¸§éœ€è¦é‡æ–°è§£ç ï¼Œç›®å‰çš„å¤„ç†æ–¹æ³•å­˜åœ¨é—®é¢˜
 			if(pstOutArgs->uiBytesConsumed == 0)
 			{
 				pstInArgs->pucBuf     -= stOutArgs.uiBytesConsumed;
@@ -993,7 +993,7 @@ static void DecThreadFxn(void *param)
 	thread_id = hw_get_current_thread_id();
 	printf("Thread %d start...\n", thread_id);
 
-	// È¡µ±Ç°´¦ÀíÎÄ¼þID
+	// å–å½“å‰å¤„ç†æ–‡ä»¶ID
 	hw_mutex_lock(&pstArgs->file_id_lock);
 	file_id = pstArgs->iCurFileId++;
 	hw_mutex_unlock(&pstArgs->file_id_lock);
@@ -1225,13 +1225,13 @@ static void DecThreadFxn(void *param)
 				astPicStore[(iInputNum++)%pstArgs->iBufNum] = stOutArgs.stPicture;
 				if(iInputNum >= pstArgs->iBufNum - 1)
 				{
-					// 2010/06/29 ½ö²âÐÔÄÜÊ±¿ÉÒÔ²»´æ´¢YUV
+					// 2010/06/29 ä»…æµ‹æ€§èƒ½æ—¶å¯ä»¥ä¸å­˜å‚¨YUV
 					if (NULL != fpOutFile)
 					{
 						PictureStore(fpOutFile, astPicStore[iOutputNum%pstArgs->iBufNum],format);
 					}
 
-					// ÊÍ·Åµ±Ç°YUV»º´æµÄÕ¼ÓÃ
+					// é‡Šæ”¾å½“å‰YUVç¼“å­˜çš„å ç”¨
 					IMedia_Viddec_Control(hDecHandle,IMEDIA_PICTURE_RELEASE,&(astPicStore[iOutputNum%pstArgs->iBufNum]),NULL);
 					iOutputNum++;
 				}
@@ -1265,7 +1265,7 @@ static void DecThreadFxn(void *param)
 			{
 				PictureStore(fpOutFile, astPicStore[iCount%pstArgs->iBufNum],0);
 			}
-			// ÊÍ·Åµ±Ç°YUV»º´æµÄÕ¼ÓÃ
+			// é‡Šæ”¾å½“å‰YUVç¼“å­˜çš„å ç”¨
 			IMedia_Viddec_Control(hDecHandle,IMEDIA_PICTURE_RELEASE,&(astPicStore[iCount%pstArgs->iBufNum]),NULL);
 		}
 
@@ -1315,7 +1315,7 @@ static void DecThreadFxn(void *param)
 		//	break;
 		//}
 
-		memset(&stInArgs,0,sizeof(stInArgs));  //Ã¿´Îresetºó£¬Çå¿ÕÊäÈë²ÎÊý
+		memset(&stInArgs,0,sizeof(stInArgs));  //æ¯æ¬¡resetåŽï¼Œæ¸…ç©ºè¾“å…¥å‚æ•°
 
 		stDecContent.fpInFile = fopen(pstArgs->pszInputFileName[file_id],"rb");
 		if(NULL == stDecContent.fpInFile)

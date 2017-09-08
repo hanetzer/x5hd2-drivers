@@ -70,13 +70,13 @@ static HI_U32   InBufThred            = 20;
 
 HI_U32          OmxTraceParam         = (1<<OMX_FATAL)+(1<<OMX_ERR);
 
-/*  ÄÚ²¿º¯Êı **********************************************************************/
+/*  å†…éƒ¨å‡½æ•° **********************************************************************/
 
 static HI_S32 check_chan_cfg(driver_cfg *pcfg);
 static inline HI_S32 channel_reset(struct chan_ctx_s *pchan);
 HI_S32 channel_handle_imgsize_changed(struct chan_ctx_s *pchan, HI_U32 new_width, HI_U32 new_height);
 
-/* ¹«ÓÃº¯Êı**********************************************************************/
+/* å…¬ç”¨å‡½æ•°**********************************************************************/
 
 HI_U32 OMX_GetTimeInMs(HI_VOID)
 {
@@ -371,7 +371,7 @@ static HI_S32 vpss_report_new_frame(struct chan_ctx_s *pchan, HI_DRV_VIDEO_FRAME
 
     OmxPrint(OMX_OUTBUF, "VPSS report frame: phy addr = 0x%08x, data_len: %d\n", phyaddr, user_buf.data_len);
 
-    /*Ê¹ÄÜÒ»´Î»ñÈ¡ÂëÁ÷¶¯×÷*/
+    /*ä½¿èƒ½ä¸€æ¬¡è·å–ç æµåŠ¨ä½œ*/
 	if (StreamCtrlEnable)
 	{
     	spin_lock_irqsave(&pchan->raw_lock, flags);
@@ -405,7 +405,7 @@ static HI_S32 vpss_get_frmbuffer(struct chan_ctx_s *pchan, HI_VOID *pstArgs)
         return -1;
     }
 
-    // ¼ì²âÊä³ö¿í¸ß±ä»¯£¬½øĞĞÉÏ±¨
+    // æ£€æµ‹è¾“å‡ºå®½é«˜å˜åŒ–ï¼Œè¿›è¡Œä¸ŠæŠ¥
     if (pVpssFrm->u32FrmW != pchan->out_width || pVpssFrm->u32FrmH != pchan->out_height)
     {
         OmxPrint(OMX_INFO, "Image size changed: %dx%d -> %dx%d\n", pchan->out_width, pchan->out_height, pVpssFrm->u32FrmW, pVpssFrm->u32FrmH);
@@ -535,7 +535,7 @@ static HI_S32 vpss_event_handler (HI_HANDLE ChanId, HI_DRV_VPSS_EVENT_E enEventI
     switch (enEventID)
     {
         case  VPSS_EVENT_BUFLIST_FULL:
-            //ÈçºÎ´¦Àí
+            //å¦‚ä½•å¤„ç†
             break;
 
         case  VPSS_EVENT_GET_FRMBUFFER:
@@ -1006,10 +1006,10 @@ static HI_S32 vpss_create_port (struct chan_ctx_s *pchan, HI_U32 color_format)
     }
 
     pchan->color_format = color_format;
-    stVpssPortCfg.s32OutputWidth = 0;    // ¿í¸ßÉèÎª0±íÊ¾¸ù¾İÊäÈë×ÔÊÊÓ¦ÅäÖÃ
+    stVpssPortCfg.s32OutputWidth = 0;    // å®½é«˜è®¾ä¸º0è¡¨ç¤ºæ ¹æ®è¾“å…¥è‡ªé€‚åº”é…ç½®
     stVpssPortCfg.s32OutputHeight = 0;
     stVpssPortCfg.u32MaxFrameRate = 30;
-    stVpssPortCfg.eFormat = HI_DRV_PIX_FMT_NV12;//color_format;     // ÔİÊ±ÏÈÕâÑù£¬ºóÃæÌí¼ÓRGB ¸ñÊ½
+    stVpssPortCfg.eFormat = HI_DRV_PIX_FMT_NV12;//color_format;     // æš‚æ—¶å…ˆè¿™æ ·ï¼Œåé¢æ·»åŠ RGB æ ¼å¼
     stVpssPortCfg.stBufListCfg.eBufType = HI_DRV_VPSS_BUF_USER_ALLOC_MANAGE;
 
     ret = (g_stOmxFunc.pVpssFunc->pfnVpssCreatePort)(pchan->hVpss, &stVpssPortCfg, &pchan->hPort);
@@ -1515,7 +1515,7 @@ static inline HI_S32 channel_release_with_vfmw(struct chan_ctx_s *pchan)
     if (ret < 0)
     {
        OmxPrint(OMX_FATAL, "%s destroy vfmw failed\n", __func__);
-       //return ret;  /* ²»ÍË³ö£¬Ç¿ÖÆÊÍ·Å×ÊÔ´ */
+       //return ret;  /* ä¸é€€å‡ºï¼Œå¼ºåˆ¶é‡Šæ”¾èµ„æº */
     }
 
     if (pchan->stSCDMMZBuf.u32Size != 0 && pchan->stSCDMMZBuf.u32StartPhyAddr != 0)
@@ -1578,7 +1578,7 @@ static HI_S32 channel_create_with_vfmw(struct chan_ctx_s *pchan, vdec_chan_cfg *
        ||((HI_CHIP_TYPE_HI3719M   == enChipType) && (HI_CHIP_VERSION_V100 == enChipVersion))
        ||((HI_CHIP_TYPE_HI3718M   == enChipType) && (HI_CHIP_VERSION_V100 == enChipVersion)) )
     {
-        pchan_cfg->s32VcmpEn = 0;   // DEBUG cv200Ñ¹ËõÍ¨Â·Î´Í¨£¬ÔİÊ±²»Ê¹ÄÜ
+        pchan_cfg->s32VcmpEn = 0;   // DEBUG cv200å‹ç¼©é€šè·¯æœªé€šï¼Œæš‚æ—¶ä¸ä½¿èƒ½
     }
 
     OmxPrint(OMX_TRACE, "%s() enter!\n", __func__);
@@ -1658,14 +1658,14 @@ static HI_S32 channel_create_with_vfmw(struct chan_ctx_s *pchan, vdec_chan_cfg *
             }
          }
 
-        /*pstChan->stSCDMMZBuf.u32SizeDµÄ´óĞ¡¾ÍÊÇ´Óvfmw»ñÈ¡µÄ´óĞ¡:pstChan->stMemSize.ScdDetailMem*/
+        /*pstChan->stSCDMMZBuf.u32SizeDçš„å¤§å°å°±æ˜¯ä»vfmwè·å–çš„å¤§å°:pstChan->stMemSize.ScdDetailMem*/
         stOption.MemDetail.ChanMemScd.Length  = pchan->stSCDMMZBuf.u32Size;
         stOption.MemDetail.ChanMemScd.PhyAddr = pchan->stSCDMMZBuf.u32StartPhyAddr;
         stOption.MemDetail.ChanMemScd.VirAddr = (HI_VOID*)pchan->stSCDMMZBuf.u32StartVirAddr;
     }
 
     /* Context memory allocated by VFMW */
-    /*Õâ²¿·ÖÓÉvfmw×Ô¼º½øĞĞ·ÖÅä£¬scdºÍvdhµÄÄÚ´æÓÉvdec½øĞĞ·ÖÅä*/
+    /*è¿™éƒ¨åˆ†ç”±vfmwè‡ªå·±è¿›è¡Œåˆ†é…ï¼Œscdå’Œvdhçš„å†…å­˜ç”±vdecè¿›è¡Œåˆ†é…*/
     stOption.MemDetail.ChanMemCtx.Length  = 0;
     stOption.MemDetail.ChanMemCtx.PhyAddr = 0;
     stOption.MemDetail.ChanMemCtx.VirAddr = HI_NULL;
@@ -2203,7 +2203,7 @@ int channel_write_proc(struct file *file, const char __user *buffer, unsigned lo
         return -1;
     }
 
-    // Èç¹ûÊÇÉèÖÃ´æyuvÑ¡Ïî£¬¿ÉÄÜ»¹¸ú×Å±£´æÂ·¾¶
+    // å¦‚æœæ˜¯è®¾ç½®å­˜yuvé€‰é¡¹ï¼Œå¯èƒ½è¿˜è·Ÿç€ä¿å­˜è·¯å¾„
     if (1 == dat1)
     {
         j = 0;
@@ -2424,7 +2424,7 @@ HI_S32 channel_write_proc(struct file *file, const char __user *buffer, size_t c
         return -1;
     }
 
-    // Èç¹ûÊÇÉèÖÃ´æyuvÑ¡Ïî£¬¿ÉÄÜ»¹¸ú×Å±£´æÂ·¾¶
+    // å¦‚æœæ˜¯è®¾ç½®å­˜yuvé€‰é¡¹ï¼Œå¯èƒ½è¿˜è·Ÿç€ä¿å­˜è·¯å¾„
     if (1 == dat1)
     {
         j = 0;
@@ -2793,7 +2793,7 @@ static HI_U32 channel_delete_addr_table(struct chan_ctx_s *pchan, struct vdec_us
 
 	if (i < (*num_of_buffers - 1))
        {
-              /* ¿½±´µ½ĞÂµØÖ· */
+              /* æ‹·è´åˆ°æ–°åœ°å€ */
               memcpy(pbuf, &buf_addr_table[*num_of_buffers - 1], sizeof(struct vdec_buf_s));
               pbuf->buf_id = i;
 
@@ -2805,13 +2805,13 @@ static HI_U32 channel_delete_addr_table(struct chan_ctx_s *pchan, struct vdec_us
                       if (buf_addr_table[*num_of_buffers - 1].user_vaddr == (p_qbuf->user_vaddr))
                       {
                           is_find = 1;
-                          /* É¾³ılist ÖĞÔ­½Úµã */
+                          /* åˆ é™¤list ä¸­åŸèŠ‚ç‚¹ */
                           list_del(&p_qbuf->list);
                           break;
                       }
                   }
 
-                  /* ²åÈë¸üĞÂºóµÄ½Úµã */
+                  /* æ’å…¥æ›´æ–°åçš„èŠ‚ç‚¹ */
                   if (is_find)
                   {
                       list_add_tail(&pbuf->list, p_queue);
@@ -3002,10 +3002,10 @@ static HI_S32 channel_flush_port(struct chan_ctx_s *pchan, enum vdec_port_dir di
 			msg_queue(pchan->msg_queue, VDEC_MSG_RESP_FLUSH_OUTPUT_DONE, VDEC_S_SUCCESS, NULL);
 		}
 
-        if (!pchan->recfg_flag)   // ·Ç±ä·Ö±æÂÊµ¼ÖÂµÄflush²Ù×÷£¬ĞèÒªÇåµô²ĞÁôÍ¼Ïñ(seek etc)
+        if (!pchan->recfg_flag)   // éå˜åˆ†è¾¨ç‡å¯¼è‡´çš„flushæ“ä½œï¼Œéœ€è¦æ¸…æ‰æ®‹ç•™å›¾åƒ(seek etc)
         {
             OmxPrint(OMX_INFO, "Call to clear remain pictures.\n");
-            channel_reset(pchan);  // Çå³ıµ±Ç°²ĞÁôÍ¼Ïñ
+            channel_reset(pchan);  // æ¸…é™¤å½“å‰æ®‹ç•™å›¾åƒ
         }
         else
         {
@@ -3016,7 +3016,7 @@ static HI_S32 channel_flush_port(struct chan_ctx_s *pchan, enum vdec_port_dir di
 	if (pchan->input_flush_pending)
     {
         OmxPrint(OMX_INBUF, "Call vfmw to release input buffers.\n");
-		channel_clear_stream(pchan);  // ÊÍ·Åraw buffers
+		channel_clear_stream(pchan);  // é‡Šæ”¾raw buffers
 	}
 
     OmxPrint(OMX_TRACE, "%s() exit normally !\n", __func__);
@@ -3364,7 +3364,7 @@ static HI_S32 channel_stop(struct chan_ctx_s *pchan)
 	pchan->state = CHAN_STATE_IDLE;
 	spin_unlock_irqrestore(&pchan->chan_lock, flags);
 
-    // Í£Ö¹¸´Î»µÄË³ĞòºÜÖØÒª!!!
+    // åœæ­¢å¤ä½çš„é¡ºåºå¾ˆé‡è¦!!!
 	if (channel_stop_with_vfmw(pchan))
     {
 		ret = -EFAULT;
@@ -3626,7 +3626,7 @@ HI_S32 channel_free_resource(struct chan_ctx_s *pchan)
 
 static HI_S32 check_chan_cfg(driver_cfg *pcfg)
 {
-    // ºóĞø´ıÌí¼Ó¾ßÌå¼ì²â
+    // åç»­å¾…æ·»åŠ å…·ä½“æ£€æµ‹
 	if (NULL == pcfg || pcfg->chan_cfg.s32ChanErrThr <= 0 || pcfg->chan_cfg.s32ChanErrThr > 100)
     {
         OmxPrint(OMX_FATAL, "%s() config invalid!\n", __func__);

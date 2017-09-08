@@ -85,7 +85,7 @@ HI_S32 HI_UNF_VENC_RequestIFrame(HI_HANDLE hVencChn)
 	return HI_MPI_VENC_RequestIFrame(hVencChn);
 }
 
-HI_S32 HI_UNF_VENC_QueueFrame(HI_HANDLE hVenc, HI_UNF_VIDEO_FRAME_INFO_S *pstFrameinfo)               //新功能，还未实现
+HI_S32 HI_UNF_VENC_QueueFrame(HI_HANDLE hVenc, HI_UNF_VIDEO_FRAME_INFO_S *pstFrameinfo)               //鏂板姛鑳斤紝杩樻湭瀹炵幇
 {
 	return HI_MPI_VENC_QueueFrame(hVenc, pstFrameinfo);
 }

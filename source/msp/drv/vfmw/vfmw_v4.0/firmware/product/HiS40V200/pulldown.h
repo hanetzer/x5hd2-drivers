@@ -2,14 +2,14 @@
 Copyright (C), 1988-2009, Huawei Tech. Co., Ltd.
 File name:      pulldown.h
 Author:   z00128410  Version:   1.0     Date: 2009-1-6
-Description:    ���ļ���Ҫ�����pulldown���ģ������Ҫ
-�õ��Ľṹ�����Ͷ��塢�궨�塢����ԭ�͵Ķ��塣
-pulldown���ģ��pulldown.cpp����Ҫ�������ļ���
-Others:         // �������ݵ�˵��
-Function List:  // ��Ҫ�����б���ÿ����¼Ӧ���������������ܼ�Ҫ˵��
+Description:    该文件主要完成了pulldown检测模块中需要
+用到的结构体类型定义、宏定义、函数原型的定义。
+pulldown检测模块pulldown.cpp中需要包含该文件。
+Others:         // 其它内容的说明
+Function List:  // 主要函数列表，每条记录应包括函数名及功能简要说明
 1. ....
-History:        // �޸���ʷ��¼�б���ÿ���޸ļ�¼Ӧ�����޸����ڡ��޸�
-// �߼��޸����ݼ���  
+History:        // 修改历史记录列表，每条修改记录应包括修改日期、修改
+// 者及修改内容简述  
 1. Date:
 Author:
 Modification:
@@ -28,7 +28,7 @@ Modification:
 exit(-__LINE__); } }
 
 
-//�������õĶ��׳�������ֵ�ṹ�壺 PULLDOWN_INPUT_CNT_S
+//检测计算用的顶底场计数器值结构体： PULLDOWN_INPUT_CNT_S
 typedef struct
 {
     int FC_T;  
@@ -43,7 +43,7 @@ typedef struct
     int mbNum;
 }PULLDOWN_INPUT_CNT_S;
 
-//3:2�������ˮ�߽ṹ�壺Pdown32Thd
+//3:2检测所需水线结构体：Pdown32Thd
 typedef struct
 {
     int FThresh;
@@ -51,7 +51,7 @@ typedef struct
     int TThresh;
 }Pdwn32Thd;
 
-//13:12�������ˮ�߽ṹ�壺Pdown1312Thd
+//13:12检测所需水线结构体：Pdown1312Thd
 typedef struct 
 {
 	int FThresh;
@@ -61,21 +61,21 @@ typedef struct
 }Pdwn1312Thd;
 
 
-//ö������Pattern����ʾ����Ϸ�ʽ
+//枚举类型Pattern：标示场组合方式
 typedef enum
 {Tc = 0, Bc, TcBc, TcBl, TcBn, BcTl, BcTn} 
 PATTERN_LIST;
 
-//��������ṹ��PULLDOWN_OUTPUT_PARAM_S
+//输出参数结构体PULLDOWN_OUTPUT_PARAM_S
 typedef struct
 {
-	int Fieldorder;      //��ʾ����
-    int CopyTime;        //��ʾ��ǰ���Ѿ����ֵĴ���   
-	PATTERN_LIST Pattern;//��ʾ��ǰ������һ����Ͽ������һ֡
+	int Fieldorder;      //标示场序
+    int CopyTime;        //标示当前场已经出现的次数   
+	PATTERN_LIST Pattern;//标示当前场与哪一场组合可以组成一帧
 }PULLDOWN_OUTPUT_PARAM_S;
 
 
-//���3:2�����м����ݱ�����CTXT32
+//存放3:2检测的中间数据变量：CTXT32
 typedef struct
 {
     int frame_cnt;
@@ -93,7 +93,7 @@ typedef struct
     int TM[5]; 
 }CTXT32;
 
-//���1312�����м����ݱ�����CTXT1312
+//存放1312检测的中间数据变量：CTXT1312
 typedef struct  
 {
 	int frame_cnt;
@@ -114,7 +114,7 @@ typedef struct
     int TM[25];
 }CTXT1312;
 
-//��ѯ���ݽṹ�壬��������
+//查询数据结构体，供调试用
 typedef struct 
 {
 	int FC_T;
@@ -139,12 +139,12 @@ typedef struct
 }PULLDOWN_PRIVATE_DATA_S;
 
 
-//��ʼ������
+//初始化函数
 void InitPulldown(int mbNum);
-//�����㺯��
+//检测计算函数
 void CalcPulldown(PULLDOWN_INPUT_CNT_S pdownInputCnt, PULLDOWN_OUTPUT_PARAM_S *ppdownOutputTop,
 				  PULLDOWN_OUTPUT_PARAM_S *ppdownOutputBtm);
-//��ѯ�м����ݺ�������ӡ��Ϣ
+//查询中间数据函数，打印信息
 void InspectPlldwnData(PULLDOWN_PRIVATE_DATA_S *pPrivateData);
 
 #endif

@@ -11,80 +11,80 @@ extern "C"{
 /** @{ */  /** <!-- [CIPHER] */
 
 /** min length of encrypt, unit: byte */
-/** CNcomment: ×îĞ¡¼Ó½âÃÜ³¤¶È£¬µ¥Î»byte */
+/** CNcomment: æœ€å°åŠ è§£å¯†é•¿åº¦ï¼Œå•ä½byte */
 #define HI_UNF_CIPHER_MIN_CRYPT_LEN      8
 
 /** max length of encrypt, unit: byte */
-/** CNcomment: ×î´ó¼Ó½âÃÜ³¤¶È£¬µ¥Î»byte */
+/** CNcomment: æœ€å¤§åŠ è§£å¯†é•¿åº¦ï¼Œå•ä½byte */
 #define HI_UNF_CIPHER_MAX_CRYPT_LEN      0xfffff
 
 /** Cipher work mode */
-/** CNcomment:CIPHER¹¤×÷Ä£Ê½ */
+/** CNcomment:CIPHERå·¥ä½œæ¨¡å¼ */
 typedef enum hiHI_UNF_CIPHER_WORK_MODE_E
 {
-    HI_UNF_CIPHER_WORK_MODE_ECB     = 0x0,   /**<Electronic codebook (ECB) mode*/    /**< CNcomment:ECBÄ£Ê½ */
-    HI_UNF_CIPHER_WORK_MODE_CBC     = 0x1,   /**<Cipher block chaining (CBC) mode*/  /**< CNcomment:CBCÄ£Ê½ */
-    HI_UNF_CIPHER_WORK_MODE_CFB     = 0x2,   /**<Cipher feedback (CFB) mode*/        /**< CNcomment:CFBÄ£Ê½ */
-    HI_UNF_CIPHER_WORK_MODE_OFB     = 0x3,   /**<Output feedback (OFB) mode*/        /**< CNcomment:OFBÄ£Ê½ */
-    HI_UNF_CIPHER_WORK_MODE_CTR     = 0x4,   /**<Counter (CTR) mode*/                /**< CNcomment:CTRÄ£Ê½ */
+    HI_UNF_CIPHER_WORK_MODE_ECB     = 0x0,   /**<Electronic codebook (ECB) mode*/    /**< CNcomment:ECBæ¨¡å¼ */
+    HI_UNF_CIPHER_WORK_MODE_CBC     = 0x1,   /**<Cipher block chaining (CBC) mode*/  /**< CNcomment:CBCæ¨¡å¼ */
+    HI_UNF_CIPHER_WORK_MODE_CFB     = 0x2,   /**<Cipher feedback (CFB) mode*/        /**< CNcomment:CFBæ¨¡å¼ */
+    HI_UNF_CIPHER_WORK_MODE_OFB     = 0x3,   /**<Output feedback (OFB) mode*/        /**< CNcomment:OFBæ¨¡å¼ */
+    HI_UNF_CIPHER_WORK_MODE_CTR     = 0x4,   /**<Counter (CTR) mode*/                /**< CNcomment:CTRæ¨¡å¼ */
     HI_UNF_CIPHER_WORK_MODE_BUTT    = 0x5
 }HI_UNF_CIPHER_WORK_MODE_E;
 
 /** Cipher algorithm */
-/** CNcomment:CIPHER¼ÓÃÜËã·¨ */
+/** CNcomment:CIPHERåŠ å¯†ç®—æ³• */
 typedef enum hiHI_UNF_CIPHER_ALG_E
 {
-    HI_UNF_CIPHER_ALG_DES           = 0x0,  /**< Data encryption standard (DES) algorithm */     /**< CNcomment: DESËã·¨ */
-    HI_UNF_CIPHER_ALG_3DES          = 0x1,  /**< 3DES algorithm */                               /**< CNcomment: 3DESËã·¨ */
-    HI_UNF_CIPHER_ALG_AES           = 0x2,  /**< Advanced encryption standard (AES) algorithm */ /**< CNcomment: AESËã·¨ */
+    HI_UNF_CIPHER_ALG_DES           = 0x0,  /**< Data encryption standard (DES) algorithm */     /**< CNcomment: DESç®—æ³• */
+    HI_UNF_CIPHER_ALG_3DES          = 0x1,  /**< 3DES algorithm */                               /**< CNcomment: 3DESç®—æ³• */
+    HI_UNF_CIPHER_ALG_AES           = 0x2,  /**< Advanced encryption standard (AES) algorithm */ /**< CNcomment: AESç®—æ³• */
     HI_UNF_CIPHER_ALG_BUTT          = 0x3   
 }HI_UNF_CIPHER_ALG_E;
 
 /** Key length */
-/** CNcomment: ÃÜÔ¿³¤¶È */
+/** CNcomment: å¯†é’¥é•¿åº¦ */
 typedef enum hiHI_UNF_CIPHER_KEY_LENGTH_E
 {
-    HI_UNF_CIPHER_KEY_AES_128BIT    = 0x0,  /**< 128-bit key for the AES algorithm */ /**< CNcomment:AESÔËËã·½Ê½ÏÂ²ÉÓÃ128bitÃÜÔ¿³¤¶È */
-    HI_UNF_CIPHER_KEY_AES_192BIT    = 0x1,  /**< 192-bit key for the AES algorithm */ /**< CNcomment:AESÔËËã·½Ê½ÏÂ²ÉÓÃ192bitÃÜÔ¿³¤¶È */
-    HI_UNF_CIPHER_KEY_AES_256BIT    = 0x2,  /**< 256-bit key for the AES algorithm */ /**< CNcomment:AESÔËËã·½Ê½ÏÂ²ÉÓÃ256bitÃÜÔ¿³¤¶È */
-    HI_UNF_CIPHER_KEY_DES_3KEY      = 0x2,  /**< Three keys for the DES algorithm */  /**< CNcomment:DESÔËËã·½Ê½ÏÂ²ÉÓÃ3¸ökey */
-    HI_UNF_CIPHER_KEY_DES_2KEY      = 0x3,  /**< Two keys for the DES algorithm */    /**< CNcomment: DESÔËËã·½Ê½ÏÂ²ÉÓÃ2¸ökey  */
+    HI_UNF_CIPHER_KEY_AES_128BIT    = 0x0,  /**< 128-bit key for the AES algorithm */ /**< CNcomment:AESè¿ç®—æ–¹å¼ä¸‹é‡‡ç”¨128bitå¯†é’¥é•¿åº¦ */
+    HI_UNF_CIPHER_KEY_AES_192BIT    = 0x1,  /**< 192-bit key for the AES algorithm */ /**< CNcomment:AESè¿ç®—æ–¹å¼ä¸‹é‡‡ç”¨192bitå¯†é’¥é•¿åº¦ */
+    HI_UNF_CIPHER_KEY_AES_256BIT    = 0x2,  /**< 256-bit key for the AES algorithm */ /**< CNcomment:AESè¿ç®—æ–¹å¼ä¸‹é‡‡ç”¨256bitå¯†é’¥é•¿åº¦ */
+    HI_UNF_CIPHER_KEY_DES_3KEY      = 0x2,  /**< Three keys for the DES algorithm */  /**< CNcomment:DESè¿ç®—æ–¹å¼ä¸‹é‡‡ç”¨3ä¸ªkey */
+    HI_UNF_CIPHER_KEY_DES_2KEY      = 0x3,  /**< Two keys for the DES algorithm */    /**< CNcomment: DESè¿ç®—æ–¹å¼ä¸‹é‡‡ç”¨2ä¸ªkey  */
 }HI_UNF_CIPHER_KEY_LENGTH_E;
 
 /** Cipher bit width */
-/** CNcomment: ¼ÓÃÜÎ»¿í */
+/** CNcomment: åŠ å¯†ä½å®½ */
 typedef enum hiHI_UNF_CIPHER_BIT_WIDTH_E
 {
-    HI_UNF_CIPHER_BIT_WIDTH_64BIT   = 0x0,  /**< 64-bit width */   /**< CNcomment:64bitÎ»¿í */
-    HI_UNF_CIPHER_BIT_WIDTH_8BIT    = 0x1,  /**< 8-bit width */    /**< CNcomment:8bitÎ»¿í */
-    HI_UNF_CIPHER_BIT_WIDTH_1BIT    = 0x2,  /**< 1-bit width */    /**< CNcomment:1bitÎ»¿í */
-    HI_UNF_CIPHER_BIT_WIDTH_128BIT  = 0x3,  /**< 128-bit width */  /**< CNcomment:128bitÎ»¿í */
+    HI_UNF_CIPHER_BIT_WIDTH_64BIT   = 0x0,  /**< 64-bit width */   /**< CNcomment:64bitä½å®½ */
+    HI_UNF_CIPHER_BIT_WIDTH_8BIT    = 0x1,  /**< 8-bit width */    /**< CNcomment:8bitä½å®½ */
+    HI_UNF_CIPHER_BIT_WIDTH_1BIT    = 0x2,  /**< 1-bit width */    /**< CNcomment:1bitä½å®½ */
+    HI_UNF_CIPHER_BIT_WIDTH_128BIT  = 0x3,  /**< 128-bit width */  /**< CNcomment:128bitä½å®½ */
 }HI_UNF_CIPHER_BIT_WIDTH_E;
 
 /** Cipher control parameters */
-/** CNcomment:¼ÓÃÜ¿ØÖÆ²ÎÊı±ä¸ü±êÖ¾ */
+/** CNcomment:åŠ å¯†æ§åˆ¶å‚æ•°å˜æ›´æ ‡å¿— */
 typedef struct hiUNF_CIPHER_CTRL_CHANGE_FLAG_S
 {
-    HI_U32   bit1IV:1;              /**< Initial Vector change or not */ /**< CNcomment:ÏòÁ¿±ä¸ü */
-    HI_U32   bitsResv:31;           /**< Reserved */ 					 /**< CNcomment:±£Áô */
+    HI_U32   bit1IV:1;              /**< Initial Vector change or not */ /**< CNcomment:å‘é‡å˜æ›´ */
+    HI_U32   bitsResv:31;           /**< Reserved */ 					 /**< CNcomment:ä¿ç•™ */
 }HI_UNF_CIPHER_CTRL_CHANGE_FLAG_S;
 
 /** Key ladder selecting parameters */
-/** CNcomment:Ê¹ÓÃÄÄ¸ökey ladder±êÖ¾ */
+/** CNcomment:ä½¿ç”¨å“ªä¸ªkey ladderæ ‡å¿— */
 typedef enum hiUNF_CIPHER_CA_TYPE_E
 {
-    HI_UNF_CIPHER_CA_TYPE_R2R   = 0x0,      /**< Using R2R key ladder */                                                 /**< CNcomment:Ê¹ÓÃR2R key ladder */
-    HI_UNF_CIPHER_CA_TYPE_SP,               /**< Using SP key ladder */                                                  /**< CNcomment:Ê¹ÓÃSP key ladder */
-    HI_UNF_CIPHER_CA_TYPE_CSA2,             /**< Using CSA2 key ladder */                                                /**< CNcomment:Ê¹ÓÃCSA2 key ladder */
-    HI_UNF_CIPHER_CA_TYPE_CSA3,             /**< Using CSA3 key ladder */                                                /**< CNcomment:Ê¹ÓÃCSA3 key ladder */
-    HI_UNF_CIPHER_CA_TYPE_MISC,             /**< Using MISC ladder */                                                    /**< CNcomment:Ê¹ÓÃSP key ladder */
-    HI_UNF_CIPHER_CA_TYPE_GDRM,             /**< Using GDRM ladder */                                                    /**< CNcomment:Ê¹ÓÃGDRM key ladder */
-    HI_UNF_CIPHER_CA_TYPE_BLPK,             /**< Using BLPK ladder */                                                    /**< CNcomment:Ê¹ÓÃBLPK key ladder */
-    HI_UNF_CIPHER_CA_TYPE_LPK,              /**< Using LPK ladder */                                                     /**< CNcomment:Ê¹ÓÃLPK key ladder */
+    HI_UNF_CIPHER_CA_TYPE_R2R   = 0x0,      /**< Using R2R key ladder */                                                 /**< CNcomment:ä½¿ç”¨R2R key ladder */
+    HI_UNF_CIPHER_CA_TYPE_SP,               /**< Using SP key ladder */                                                  /**< CNcomment:ä½¿ç”¨SP key ladder */
+    HI_UNF_CIPHER_CA_TYPE_CSA2,             /**< Using CSA2 key ladder */                                                /**< CNcomment:ä½¿ç”¨CSA2 key ladder */
+    HI_UNF_CIPHER_CA_TYPE_CSA3,             /**< Using CSA3 key ladder */                                                /**< CNcomment:ä½¿ç”¨CSA3 key ladder */
+    HI_UNF_CIPHER_CA_TYPE_MISC,             /**< Using MISC ladder */                                                    /**< CNcomment:ä½¿ç”¨SP key ladder */
+    HI_UNF_CIPHER_CA_TYPE_GDRM,             /**< Using GDRM ladder */                                                    /**< CNcomment:ä½¿ç”¨GDRM key ladder */
+    HI_UNF_CIPHER_CA_TYPE_BLPK,             /**< Using BLPK ladder */                                                    /**< CNcomment:ä½¿ç”¨BLPK key ladder */
+    HI_UNF_CIPHER_CA_TYPE_LPK,              /**< Using LPK ladder */                                                     /**< CNcomment:ä½¿ç”¨LPK key ladder */
 }HI_UNF_CIPHER_CA_TYPE_E;
 
 /** Encryption/Decryption type selecting */
-/** CNcomment:CIPHE¼Ó½âÃÜÀàĞÍÑ¡Ôñ */
+/** CNcomment:CIPHEåŠ è§£å¯†ç±»å‹é€‰æ‹© */
 typedef enum
 {
     HI_UNF_CIPHER_TYPE_NORMAL       = 0x0,
@@ -98,31 +98,31 @@ typedef struct
 }HI_UNF_CIPHER_ATTS_S;
 
 /** Structure of the cipher control information */
-/** CNcomment:¼ÓÃÜ¿ØÖÆĞÅÏ¢½á¹¹ */
+/** CNcomment:åŠ å¯†æ§åˆ¶ä¿¡æ¯ç»“æ„ */
 typedef struct hiHI_UNF_CIPHER_CTRL_S
 {
-    HI_U32 u32Key[8];                               /**< Key input */                                                                                                     /**< CNcomment:ÊäÈëÃÜÔ¿ */
-    HI_U32 u32IV[4];                                /**< Initialization vector (IV) */                                                                                    /**< CNcomment:³õÊ¼ÏòÁ¿ */
-    HI_BOOL bKeyByCA;                               /**< Encryption using advanced conditional access (CA) or decryption using keys */                                    /**< CNcomment:ÊÇ·ñÊ¹ÓÃ¸ß°²È«CA¼ÓÃÜ»ò½âÃÜKey */
-    HI_UNF_CIPHER_CA_TYPE_E enCaType;                   /**< Select keyladder type when using advanced CA */                                                  		          /**< CNcomment:Ê¹ÓÃ¸ß°²È«CAÊ±,Ñ¡ÔñºÎÖÖÀàĞÍµÄkeyladder */
-    HI_UNF_CIPHER_ALG_E enAlg;                      /**< Cipher algorithm */                                                                                              /**< CNcomment:¼ÓÃÜËã·¨ */
-    HI_UNF_CIPHER_BIT_WIDTH_E enBitWidth;           /**< Bit width for encryption or decryption */                                                                        /**< CNcomment:¼ÓÃÜ»ò½âÃÜµÄÎ»¿í */
-    HI_UNF_CIPHER_WORK_MODE_E enWorkMode;           /**< Operating mode */                                                                                                /**< CNcomment:¹¤×÷Ä£Ê½ */
-    HI_UNF_CIPHER_KEY_LENGTH_E enKeyLen;            /**< Key length */                                                                                                    /**< CNcomment:ÃÜÔ¿³¤¶È */
-    HI_UNF_CIPHER_CTRL_CHANGE_FLAG_S stChangeFlags; /**< control information exchange choices, we default all woulde be change except they have been in the choices */ 	  /**< CNcomment:¿ØÖÆĞÅÏ¢±ä¸üÑ¡Ïî£¬Ñ¡ÏîÖĞÃ»ÓĞ±êÊ¶µÄÏîÄ¬ÈÏÈ«²¿±ä¸ü */
+    HI_U32 u32Key[8];                               /**< Key input */                                                                                                     /**< CNcomment:è¾“å…¥å¯†é’¥ */
+    HI_U32 u32IV[4];                                /**< Initialization vector (IV) */                                                                                    /**< CNcomment:åˆå§‹å‘é‡ */
+    HI_BOOL bKeyByCA;                               /**< Encryption using advanced conditional access (CA) or decryption using keys */                                    /**< CNcomment:æ˜¯å¦ä½¿ç”¨é«˜å®‰å…¨CAåŠ å¯†æˆ–è§£å¯†Key */
+    HI_UNF_CIPHER_CA_TYPE_E enCaType;                   /**< Select keyladder type when using advanced CA */                                                  		          /**< CNcomment:ä½¿ç”¨é«˜å®‰å…¨CAæ—¶,é€‰æ‹©ä½•ç§ç±»å‹çš„keyladder */
+    HI_UNF_CIPHER_ALG_E enAlg;                      /**< Cipher algorithm */                                                                                              /**< CNcomment:åŠ å¯†ç®—æ³• */
+    HI_UNF_CIPHER_BIT_WIDTH_E enBitWidth;           /**< Bit width for encryption or decryption */                                                                        /**< CNcomment:åŠ å¯†æˆ–è§£å¯†çš„ä½å®½ */
+    HI_UNF_CIPHER_WORK_MODE_E enWorkMode;           /**< Operating mode */                                                                                                /**< CNcomment:å·¥ä½œæ¨¡å¼ */
+    HI_UNF_CIPHER_KEY_LENGTH_E enKeyLen;            /**< Key length */                                                                                                    /**< CNcomment:å¯†é’¥é•¿åº¦ */
+    HI_UNF_CIPHER_CTRL_CHANGE_FLAG_S stChangeFlags; /**< control information exchange choices, we default all woulde be change except they have been in the choices */ 	  /**< CNcomment:æ§åˆ¶ä¿¡æ¯å˜æ›´é€‰é¡¹ï¼Œé€‰é¡¹ä¸­æ²¡æœ‰æ ‡è¯†çš„é¡¹é»˜è®¤å…¨éƒ¨å˜æ›´ */
 } HI_UNF_CIPHER_CTRL_S;
 
 /** Cipher data */
-/** CNcomment:¼Ó½âÃÜÊı¾İ */
+/** CNcomment:åŠ è§£å¯†æ•°æ® */
 typedef struct hiHI_UNF_CIPHER_DATA_S
 {
-    HI_U32 u32SrcPhyAddr;     /**< phy address of the original data */   /**< CNcomment:Ô´Êı¾İÎïÀíµØÖ· */
-    HI_U32 u32DestPhyAddr;    /**< phy address of the purpose data */    /**< CNcomment:Ä¿µÄÊı¾İÎïÀíµØÖ· */
-    HI_U32 u32ByteLength;     /**< cigher data length*/                 /**< CNcomment:¼Ó½âÃÜÊı¾İ³¤¶È */
+    HI_U32 u32SrcPhyAddr;     /**< phy address of the original data */   /**< CNcomment:æºæ•°æ®ç‰©ç†åœ°å€ */
+    HI_U32 u32DestPhyAddr;    /**< phy address of the purpose data */    /**< CNcomment:ç›®çš„æ•°æ®ç‰©ç†åœ°å€ */
+    HI_U32 u32ByteLength;     /**< cigher data length*/                 /**< CNcomment:åŠ è§£å¯†æ•°æ®é•¿åº¦ */
 } HI_UNF_CIPHER_DATA_S;
 
 /** Hash algrithm type */
-/** CNcomment:¹şÏ£Ëã·¨ÀàĞÍ */
+/** CNcomment:å“ˆå¸Œç®—æ³•ç±»å‹ */
 typedef enum hiHI_UNF_CIPHER_HASH_TYPE_E
 {
     HI_UNF_CIPHER_HASH_TYPE_SHA1,
@@ -133,11 +133,11 @@ typedef enum hiHI_UNF_CIPHER_HASH_TYPE_E
 }HI_UNF_CIPHER_HASH_TYPE_E;
 
 /** Hash init struct input */
-/** CNcomment:¹şÏ£Ëã·¨³õÊ¼»¯ÊäÈë½á¹¹Ìå */
+/** CNcomment:å“ˆå¸Œç®—æ³•åˆå§‹åŒ–è¾“å…¥ç»“æ„ä½“ */
 typedef struct
 {
     HI_U32 u32TotalDataLen;
-    HI_U8  u8HMACKey[16];		/**< only used for HMAC-SHA1/HMAC-SHA2 algrithm */	/**< CNcomment:´Ë²ÎÊı½ö½öÓÃÓÚHMAC-SHA1/HMAC-SHA2Ëã·¨ */
+    HI_U8  u8HMACKey[16];		/**< only used for HMAC-SHA1/HMAC-SHA2 algrithm */	/**< CNcomment:æ­¤å‚æ•°ä»…ä»…ç”¨äºHMAC-SHA1/HMAC-SHA2ç®—æ³• */
     HI_UNF_CIPHER_HASH_TYPE_E eShaType;
 }HI_UNF_CIPHER_HASH_ATTS_S;
 
@@ -152,14 +152,14 @@ typedef struct
 /** @{ */  /** <!-- [CIPHER] */
 /* ---CIPHER---*/
 /** 
-\brief  Init the cipher device.  CNcomment:³õÊ¼»¯CIPHERÉè±¸¡£ CNend
+\brief  Init the cipher device.  CNcomment:åˆå§‹åŒ–CIPHERè®¾å¤‡ã€‚ CNend
 \attention \n
 This API is used to start the cipher device.
-CNcomment:µ÷ÓÃ´Ë½Ó¿Ú³õÊ¼»¯CIPHERÉè±¸¡£ CNend
-\param N/A                   													CNcomment:ÎŞ CNend
-\retval ::HI_SUCCESS  Call this API succussful. 								CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦ CNend
-\retval ::HI_FAILURE  Call this API fails.                                   	CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CIPHER_FAILED_INIT  The cipher device fails to be initialized. CNcomment:CIPHERÉè±¸³õÊ¼»¯Ê§°Ü CNend
+CNcomment:è°ƒç”¨æ­¤æ¥å£åˆå§‹åŒ–CIPHERè®¾å¤‡ã€‚ CNend
+\param N/A                   													CNcomment:æ—  CNend
+\retval ::HI_SUCCESS  Call this API succussful. 								CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸ CNend
+\retval ::HI_FAILURE  Call this API fails.                                   	CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CIPHER_FAILED_INIT  The cipher device fails to be initialized. CNcomment:CIPHERè®¾å¤‡åˆå§‹åŒ–å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -167,15 +167,15 @@ HI_S32 HI_UNF_CIPHER_Init(HI_VOID);
 
 /** 
 \brief  Deinit the cipher device.
-CNcomment:\brief  È¥³õÊ¼»¯CIPHERÉè±¸¡£ CNend
+CNcomment:\brief  å»åˆå§‹åŒ–CIPHERè®¾å¤‡ã€‚ CNend
 \attention \n
 This API is used to stop the cipher device. If this API is called repeatedly, HI_SUCCESS is returned, but only the first operation takes effect.
-CNcomment:µ÷ÓÃ´Ë½Ó¿Ú¹Ø±ÕCIPHERÉè±¸¡£ÖØ¸´¹Ø±Õ·µ»Ø³É¹¦£¬µÚÒ»´ÎÆğ×÷ÓÃ¡£ CNend
+CNcomment:è°ƒç”¨æ­¤æ¥å£å…³é—­CIPHERè®¾å¤‡ã€‚é‡å¤å…³é—­è¿”å›æˆåŠŸï¼Œç¬¬ä¸€æ¬¡èµ·ä½œç”¨ã€‚ CNend
 
-\param N/A                   													CNcomment:ÎŞ CNend
-\retval ::HI_SUCCESS  Call this API succussful. 						 		CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦ CNend
-\retval ::HI_FAILURE  Call this API fails.                            			CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized.  		CNcomment:CIPHERÉè±¸Î´³õÊ¼»¯ CNend
+\param N/A                   													CNcomment:æ—  CNend
+\retval ::HI_SUCCESS  Call this API succussful. 						 		CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸ CNend
+\retval ::HI_FAILURE  Call this API fails.                            			CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized.  		CNcomment:CIPHERè®¾å¤‡æœªåˆå§‹åŒ– CNend
 \see \n
 N/A
 */
@@ -183,30 +183,30 @@ HI_S32 HI_UNF_CIPHER_DeInit(HI_VOID);
 
 /** 
 \brief Obtain a cipher handle for encryption and decryption.
-CNcomment£º´´½¨Ò»Â·Cipher¾ä±ú¡£ CNend
+CNcommentï¼šåˆ›å»ºä¸€è·¯Cipherå¥æŸ„ã€‚ CNend
 
-\param[in] cipher attributes                                             		CNcomment:cipher ÊôĞÔ¡£ CNend
-\param[out] phCipher Cipher handle                                       		CNcomment:CIPHER¾ä±ú¡£ CNend
-\retval ::HI_SUCCESS Call this API succussful. 						 			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦ CNend
-\retval ::HI_FAILURE Call this API fails.										CNcomment: APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized.  		CNcomment:CIPHERÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CIPHER_INVALID_POINT  The pointer is null.              		CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
-\retval ::HI_ERR_CIPHER_FAILED_GETHANDLE  The cipher handle fails to be obtained, because there are no available cipher handles. CNcomment: »ñÈ¡CIPHER¾ä±úÊ§°Ü£¬Ã»ÓĞ¿ÕÏĞµÄCIPHER¾ä±ú CNend
+\param[in] cipher attributes                                             		CNcomment:cipher å±æ€§ã€‚ CNend
+\param[out] phCipher Cipher handle                                       		CNcomment:CIPHERå¥æŸ„ã€‚ CNend
+\retval ::HI_SUCCESS Call this API succussful. 						 			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸ CNend
+\retval ::HI_FAILURE Call this API fails.										CNcomment: APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized.  		CNcomment:CIPHERè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CIPHER_INVALID_POINT  The pointer is null.              		CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©º CNend
+\retval ::HI_ERR_CIPHER_FAILED_GETHANDLE  The cipher handle fails to be obtained, because there are no available cipher handles. CNcomment: è·å–CIPHERå¥æŸ„å¤±è´¥ï¼Œæ²¡æœ‰ç©ºé—²çš„CIPHERå¥æŸ„ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_CIPHER_CreateHandle(HI_HANDLE* phCipher, const HI_UNF_CIPHER_ATTS_S *pstCipherAttr);
 
 /** 
-\brief Destroy the existing cipher handle. CNcomment:Ïú»ÙÒÑ´æÔÚµÄCIPHER¾ä±ú¡£ CNend
+\brief Destroy the existing cipher handle. CNcomment:é”€æ¯å·²å­˜åœ¨çš„CIPHERå¥æŸ„ã€‚ CNend
 \attention \n
 This API is used to destroy existing cipher handles.
-CNcomment:µ÷ÓÃ´Ë½Ó¿ÚÏú»ÙÒÑ¾­´´½¨µÄCIPHER¾ä±ú¡£ CNend
+CNcomment:è°ƒç”¨æ­¤æ¥å£é”€æ¯å·²ç»åˆ›å»ºçš„CIPHERå¥æŸ„ã€‚ CNend
 
-\param[in] hCipher Cipher handle                 								CNcomment:CIPHER¾ä±ú¡£ CNend
-\retval ::HI_SUCCESS  Call this API succussful. 						 		CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦ CNend
-\retval ::HI_FAILURE  Call this API fails.    									CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized. 		CNcomment:CIPHERÉè±¸Î´³õÊ¼»¯ CNend
+\param[in] hCipher Cipher handle                 								CNcomment:CIPHERå¥æŸ„ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API succussful. 						 		CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸ CNend
+\retval ::HI_FAILURE  Call this API fails.    									CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized. 		CNcomment:CIPHERè®¾å¤‡æœªåˆå§‹åŒ– CNend
 \see \n
 N/A
 */
@@ -214,20 +214,20 @@ HI_S32 HI_UNF_CIPHER_DestroyHandle(HI_HANDLE hCipher);
 
 /** 
 \brief Configures the cipher control information.
-CNcomment:\brief ÅäÖÃCIPHER¿ØÖÆĞÅÏ¢¡£ CNend
+CNcomment:\brief é…ç½®CIPHERæ§åˆ¶ä¿¡æ¯ã€‚ CNend
 \attention \n
 Before encryption or decryption, you must call this API to configure the cipher control information.
 The first 64-bit data and the last 64-bit data should not be the same when using TDES algorithm.
-CNcomment:½øĞĞ¼ÓÃÜ½âÃÜÇ°±ØĞëÏÈÊ¹ÓÃ´Ë½Ó¿ÚÅäÖÃCIPHERµÄ¿ØÖÆĞÅÏ¢¡£Ê¹ÓÃTDESËã·¨Ê±£¬ÊäÈëÃÜÔ¿µÄÇ°ºó64 bitÊı¾İ²»ÄÜÏàÍ¬¡£ CNend
+CNcomment:è¿›è¡ŒåŠ å¯†è§£å¯†å‰å¿…é¡»å…ˆä½¿ç”¨æ­¤æ¥å£é…ç½®CIPHERçš„æ§åˆ¶ä¿¡æ¯ã€‚ä½¿ç”¨TDESç®—æ³•æ—¶ï¼Œè¾“å…¥å¯†é’¥çš„å‰å64 bitæ•°æ®ä¸èƒ½ç›¸åŒã€‚ CNend
 
-\param[in] hCipher Cipher handle.                                        		CNcomment:CIPHER¾ä±ú CNend
-\param[in] pstCtrl Cipher control information.                           		CNcomment:CIPHER¿ØÖÆĞÅÏ¢ CNend
-\retval ::HI_SUCCESS Call this API succussful. 						 			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦ CNend
-\retval ::HI_FAILURE Call this API fails.                           			CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized. 		CNcomment:CIPHERÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CIPHER_INVALID_POINT  The pointer is null.             		CNcomment:Ö¸Õë²ÎÊıÎª¿Õ CNend
-\retval ::HI_ERR_CIPHER_INVALID_PARA  The parameter is invalid.         		CNcomment:²ÎÊı´íÎó CNend
-\retval ::HI_ERR_CIPHER_INVALID_HANDLE  The handle is invalid.          		CNcomment:¾ä±ú·Ç·¨ CNend
+\param[in] hCipher Cipher handle.                                        		CNcomment:CIPHERå¥æŸ„ CNend
+\param[in] pstCtrl Cipher control information.                           		CNcomment:CIPHERæ§åˆ¶ä¿¡æ¯ CNend
+\retval ::HI_SUCCESS Call this API succussful. 						 			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸ CNend
+\retval ::HI_FAILURE Call this API fails.                           			CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized. 		CNcomment:CIPHERè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CIPHER_INVALID_POINT  The pointer is null.             		CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©º CNend
+\retval ::HI_ERR_CIPHER_INVALID_PARA  The parameter is invalid.         		CNcomment:å‚æ•°é”™è¯¯ CNend
+\retval ::HI_ERR_CIPHER_INVALID_HANDLE  The handle is invalid.          		CNcomment:å¥æŸ„éæ³• CNend
 \see \n
 N/A
 */
@@ -235,21 +235,21 @@ HI_S32 HI_UNF_CIPHER_ConfigHandle(HI_HANDLE hCipher, HI_UNF_CIPHER_CTRL_S* pstCt
 
 /** 
 \brief Performs encryption. 
-CNcomment:\brief ½øĞĞ¼ÓÃÜ¡£ CNend
+CNcomment:\brief è¿›è¡ŒåŠ å¯†ã€‚ CNend
 
 \attention \n
 This API is used to perform encryption by using the cipher module.
 The length of the encrypted data should be a multiple of 8 in TDES mode and 16 in AES mode. Besides, the length can not be bigger than 0xFFFFF.After this operation, the result will affect next operation.If you want to remove vector, you need to config IV(config pstCtrl->stChangeFlags.bit1IV with 1) by transfering HI_UNF_CIPHER_ConfigHandle.
-CNcomment:Ê¹ÓÃCIPHER½øĞĞ¼ÓÃÜ²Ù×÷¡£TDESÄ£Ê½ÏÂ¼ÓÃÜµÄÊı¾İ³¤¶ÈÓ¦µ±ÊÇ8µÄ±¶Êı£¬AESÏÂÓ¦µ±ÊÇ16µÄ±¶Êı¡£´ËÍâ£¬¼ÓÃÜÊı¾İ³¤¶È²»ÄÜ³¤ÓÚ0xFFFFF¡£±¾´Î²Ù×÷Íê³Éºó£¬´Ë´Î²Ù×÷µÄÏòÁ¿ÔËËã½á¹û»á×÷ÓÃÓÚÏÂÒ»´Î²Ù×÷£¬Èç¹ûÒªÇå³ıÏòÁ¿£¬ĞèÒªÔÚÏÂ´Î¼ÓÃÜ²Ù×÷Ö®Ç°µ÷ÓÃHI_UNF_CIPHER_ConfigHandleÖØĞÂÅäÖÃIV(ĞèÒªÉèÖÃpstCtrl->stChangeFlags.bit1IVÎª1)¡£ CNend
-\param[in] hCipher Cipher handle  												CNcomment:CIPHER¾ä±ú CNend
-\param[in] u32SrcPhyAddr Physical address of the source data            		CNcomment:Ô´Êı¾İÎïÀíµØÖ· CNend
-\param[in] u32DestPhyAddr Physical address of the target data           		CNcomment:Ä¿µÄÊı¾İÎïÀíµØÖ· CNend
-\param[in] u32ByteLength   Length of the encrypted data                 		CNcomment:¼ÓÃÜÊı¾İ³¤¶È CNend
-\retval ::HI_SUCCESS  Call this API succussful. 						 		CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦ CNend
-\retval ::HI_FAILURE  Call this API fails.                           			CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized. 		CNcomment:CIPHERÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CIPHER_INVALID_PARA  The parameter is invalid.         		CNcomment:²ÎÊı´íÎó CNend
-\retval ::HI_ERR_CIPHER_INVALID_HANDLE  The handle is invalid.          		CNcomment:¾ä±ú·Ç·¨ CNend
+CNcomment:ä½¿ç”¨CIPHERè¿›è¡ŒåŠ å¯†æ“ä½œã€‚TDESæ¨¡å¼ä¸‹åŠ å¯†çš„æ•°æ®é•¿åº¦åº”å½“æ˜¯8çš„å€æ•°ï¼ŒAESä¸‹åº”å½“æ˜¯16çš„å€æ•°ã€‚æ­¤å¤–ï¼ŒåŠ å¯†æ•°æ®é•¿åº¦ä¸èƒ½é•¿äº0xFFFFFã€‚æœ¬æ¬¡æ“ä½œå®Œæˆåï¼Œæ­¤æ¬¡æ“ä½œçš„å‘é‡è¿ç®—ç»“æœä¼šä½œç”¨äºä¸‹ä¸€æ¬¡æ“ä½œï¼Œå¦‚æœè¦æ¸…é™¤å‘é‡ï¼Œéœ€è¦åœ¨ä¸‹æ¬¡åŠ å¯†æ“ä½œä¹‹å‰è°ƒç”¨HI_UNF_CIPHER_ConfigHandleé‡æ–°é…ç½®IV(éœ€è¦è®¾ç½®pstCtrl->stChangeFlags.bit1IVä¸º1)ã€‚ CNend
+\param[in] hCipher Cipher handle  												CNcomment:CIPHERå¥æŸ„ CNend
+\param[in] u32SrcPhyAddr Physical address of the source data            		CNcomment:æºæ•°æ®ç‰©ç†åœ°å€ CNend
+\param[in] u32DestPhyAddr Physical address of the target data           		CNcomment:ç›®çš„æ•°æ®ç‰©ç†åœ°å€ CNend
+\param[in] u32ByteLength   Length of the encrypted data                 		CNcomment:åŠ å¯†æ•°æ®é•¿åº¦ CNend
+\retval ::HI_SUCCESS  Call this API succussful. 						 		CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸ CNend
+\retval ::HI_FAILURE  Call this API fails.                           			CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized. 		CNcomment:CIPHERè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CIPHER_INVALID_PARA  The parameter is invalid.         		CNcomment:å‚æ•°é”™è¯¯ CNend
+\retval ::HI_ERR_CIPHER_INVALID_HANDLE  The handle is invalid.          		CNcomment:å¥æŸ„éæ³• CNend
 \see \n
 N/A
 */
@@ -257,21 +257,21 @@ HI_S32 HI_UNF_CIPHER_Encrypt(HI_HANDLE hCipher, HI_U32 u32SrcPhyAddr, HI_U32 u32
 
 /** 
 \brief Performs decryption.
-CNcomment:\brief ½øĞĞ½âÃÜ CNend
+CNcomment:\brief è¿›è¡Œè§£å¯† CNend
 
 \attention \n
 This API is used to perform decryption by using the cipher module.
 The length of the decrypted data should be a multiple of 8 in TDES mode and 16 in AES mode. Besides, the length can not be bigger than 0xFFFFF.After this operation, the result will affect next operation.If you want to remove vector, you need to config IV(config pstCtrl->stChangeFlags.bit1IV with 1) by transfering HI_UNF_CIPHER_ConfigHandle.
-CNcomment:Ê¹ÓÃCIPHER½øĞĞ½âÃÜ²Ù×÷¡£TDESÄ£Ê½ÏÂ½âÃÜµÄÊı¾İ³¤¶ÈÓ¦µ±ÊÇ8µÄ±¶Êı£¬AESÏÂÓ¦µ±ÊÇ16µÄ±¶Êı¡£´ËÍâ£¬½âÃÜÊı¾İ³¤¶È²»ÄÜ³¤ÓÚ0xFFFFF¡£±¾´Î²Ù×÷Íê³Éºó£¬´Ë´Î²Ù×÷µÄÏòÁ¿ÔËËã½á¹û»á×÷ÓÃÓÚÏÂÒ»´Î²Ù×÷£¬Èç¹ûÒªÇå³ıÏòÁ¿£¬ĞèÒªÔÚÏÂ´Î½âÃÜ²Ù×÷Ö®Ç°µ÷ÓÃHI_UNF_CIPHER_ConfigHandleÖØĞÂÅäÖÃIV(ĞèÒªÉèÖÃpstCtrl->stChangeFlags.bit1IVÎª1)¡£ CNend
-\param[in] hCipher Cipher handle.                                        		CNcomment:CIPHER¾ä±ú CNend
-\param[in] u32SrcPhyAddr Physical address of the source data.            		CNcomment:Ô´Êı¾İÎïÀíµØÖ· CNend
-\param[in] u32DestPhyAddr Physical address of the target data.           		CNcomment:Ä¿µÄÊı¾İÎïÀíµØÖ· CNend
-\param[in] u32ByteLength Length of the decrypted data                   		CNcomment:½âÃÜÊı¾İ³¤¶È CNend
-\retval ::HI_SUCCESS Call this API succussful. 						 			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦ CNend
-\retval ::HI_FAILURE Call this API fails.                           			CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized. 		CNcomment:CIPHERÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CIPHER_INVALID_PARA  The parameter is invalid.         		CNcomment:²ÎÊı´íÎó CNend
-\retval ::HI_ERR_CIPHER_INVALID_HANDLE  The handle is invalid.          		CNcomment:¾ä±ú·Ç·¨ CNend
+CNcomment:ä½¿ç”¨CIPHERè¿›è¡Œè§£å¯†æ“ä½œã€‚TDESæ¨¡å¼ä¸‹è§£å¯†çš„æ•°æ®é•¿åº¦åº”å½“æ˜¯8çš„å€æ•°ï¼ŒAESä¸‹åº”å½“æ˜¯16çš„å€æ•°ã€‚æ­¤å¤–ï¼Œè§£å¯†æ•°æ®é•¿åº¦ä¸èƒ½é•¿äº0xFFFFFã€‚æœ¬æ¬¡æ“ä½œå®Œæˆåï¼Œæ­¤æ¬¡æ“ä½œçš„å‘é‡è¿ç®—ç»“æœä¼šä½œç”¨äºä¸‹ä¸€æ¬¡æ“ä½œï¼Œå¦‚æœè¦æ¸…é™¤å‘é‡ï¼Œéœ€è¦åœ¨ä¸‹æ¬¡è§£å¯†æ“ä½œä¹‹å‰è°ƒç”¨HI_UNF_CIPHER_ConfigHandleé‡æ–°é…ç½®IV(éœ€è¦è®¾ç½®pstCtrl->stChangeFlags.bit1IVä¸º1)ã€‚ CNend
+\param[in] hCipher Cipher handle.                                        		CNcomment:CIPHERå¥æŸ„ CNend
+\param[in] u32SrcPhyAddr Physical address of the source data.            		CNcomment:æºæ•°æ®ç‰©ç†åœ°å€ CNend
+\param[in] u32DestPhyAddr Physical address of the target data.           		CNcomment:ç›®çš„æ•°æ®ç‰©ç†åœ°å€ CNend
+\param[in] u32ByteLength Length of the decrypted data                   		CNcomment:è§£å¯†æ•°æ®é•¿åº¦ CNend
+\retval ::HI_SUCCESS Call this API succussful. 						 			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸ CNend
+\retval ::HI_FAILURE Call this API fails.                           			CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CIPHER_NOT_INIT  The cipher device is not initialized. 		CNcomment:CIPHERè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CIPHER_INVALID_PARA  The parameter is invalid.         		CNcomment:å‚æ•°é”™è¯¯ CNend
+\retval ::HI_ERR_CIPHER_INVALID_HANDLE  The handle is invalid.          		CNcomment:å¥æŸ„éæ³• CNend
 \see \n
 N/A
 */
@@ -279,19 +279,19 @@ HI_S32 HI_UNF_CIPHER_Decrypt(HI_HANDLE hCipher, HI_U32 u32SrcPhyAddr, HI_U32 u32
     
 /** 
 \brief Encrypt multiple packaged data.
-CNcomment:\brief ½øĞĞ¶à¸ö°üÊı¾İµÄ¼ÓÃÜ¡£ CNend
+CNcomment:\brief è¿›è¡Œå¤šä¸ªåŒ…æ•°æ®çš„åŠ å¯†ã€‚ CNend
 \attention \n
 You can not encrypt more than 128 data package one time. When HI_ERR_CIPHER_BUSY return, the data package you send will not be deal, the custmer should decrease the number of data package or run cipher again.Note:When encrypting more than one packaged data, every one package will be calculated using initial vector configured by HI_UNF_CIPHER_ConfigHandle.Previous result will not affect the later result.
-CNcomment:Ã¿´Î¼ÓÃÜµÄÊı¾İ°ü¸öÊı×î¶à²»ÄÜ³¬¹ı128¸ö¡£·µ»ØHI_ERR_CIPHER_BUSYµÄÊ±ºò£¬ËÍÈëÊı¾İ°üÒ»¸öÒ²²»»á±»´¦Àí£¬ÓÃ»§ĞèÒª¼õÉÙËÍÈëµÄÊı¾İ°üµÄÊıÁ¿»òÕßÔÙ´Î³¢ÊÔ¼ÓÃÜ¡£×¢Òâ: ¶ÔÓÚ¶à¸ö°üµÄ²Ù×÷£¬Ã¿¸ö°ü¶¼Ê¹ÓÃHI_UNF_CIPHER_ConfigHandleÅäÖÃµÄÏòÁ¿½øĞĞÔËËã£¬Ç°Ò»¸ö°üµÄÏòÁ¿ÔËËã½á¹û²»»á×÷ÓÃÓÚÏÂÒ»¸ö°üµÄÔËËã£¬Ã¿¸ö°ü¶¼ÊÇ¶ÀÁ¢ÔËËãµÄ¡£Ç°Ò»´Îº¯Êıµ÷ÓÃµÄ½á¹ûÒ²²»»áÓ°ÏìºóÒ»´Îº¯Êıµ÷ÓÃµÄÔËËã½á¹û¡£ CNend
-\param[in] hCipher cipher handle                                                                  CNcomment:CIPHER¾ä±ú¡£ CNend
-\param[in] pstDataPkg data package ready for cipher                                               CNcomment:´ı¼ÓÃÜµÄÊı¾İ°ü¡£ CNend
-\param[in] u32DataPkgNum  number of package ready for cipher                                      CNcomment:´ı¼ÓÃÜµÄÊı¾İ°ü¸öÊı¡£ CNend
-\retval ::HI_SUCCESS  Call this API succussful. 						 						  CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦ CNend
-\retval ::HI_FAILURE  Call this API fails.                                                     	  CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CIPHER_NOT_INIT  cipher device have not been initialized                         CNcomment:CIPHERÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CIPHER_INVALID_PARA  parameter error                                             CNcomment:²ÎÊı´íÎó CNend
-\retval ::HI_ERR_CIPHER_INVALID_HANDLE  handle invalid                                            CNcomment:¾ä±ú·Ç·¨ CNend
-\retval ::HI_ERR_CIPHER_BUSY  hardware is busy, it can not deal with all data package once time   CNcomment:Ó²¼şÕıÃ¦£¬ÎŞ·¨Ò»´ÎĞÔ´¦ÀíÈ«²¿µÄÊı¾İ°ü CNend
+CNcomment:æ¯æ¬¡åŠ å¯†çš„æ•°æ®åŒ…ä¸ªæ•°æœ€å¤šä¸èƒ½è¶…è¿‡128ä¸ªã€‚è¿”å›HI_ERR_CIPHER_BUSYçš„æ—¶å€™ï¼Œé€å…¥æ•°æ®åŒ…ä¸€ä¸ªä¹Ÿä¸ä¼šè¢«å¤„ç†ï¼Œç”¨æˆ·éœ€è¦å‡å°‘é€å…¥çš„æ•°æ®åŒ…çš„æ•°é‡æˆ–è€…å†æ¬¡å°è¯•åŠ å¯†ã€‚æ³¨æ„: å¯¹äºå¤šä¸ªåŒ…çš„æ“ä½œï¼Œæ¯ä¸ªåŒ…éƒ½ä½¿ç”¨HI_UNF_CIPHER_ConfigHandleé…ç½®çš„å‘é‡è¿›è¡Œè¿ç®—ï¼Œå‰ä¸€ä¸ªåŒ…çš„å‘é‡è¿ç®—ç»“æœä¸ä¼šä½œç”¨äºä¸‹ä¸€ä¸ªåŒ…çš„è¿ç®—ï¼Œæ¯ä¸ªåŒ…éƒ½æ˜¯ç‹¬ç«‹è¿ç®—çš„ã€‚å‰ä¸€æ¬¡å‡½æ•°è°ƒç”¨çš„ç»“æœä¹Ÿä¸ä¼šå½±å“åä¸€æ¬¡å‡½æ•°è°ƒç”¨çš„è¿ç®—ç»“æœã€‚ CNend
+\param[in] hCipher cipher handle                                                                  CNcomment:CIPHERå¥æŸ„ã€‚ CNend
+\param[in] pstDataPkg data package ready for cipher                                               CNcomment:å¾…åŠ å¯†çš„æ•°æ®åŒ…ã€‚ CNend
+\param[in] u32DataPkgNum  number of package ready for cipher                                      CNcomment:å¾…åŠ å¯†çš„æ•°æ®åŒ…ä¸ªæ•°ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API succussful. 						 						  CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸ CNend
+\retval ::HI_FAILURE  Call this API fails.                                                     	  CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CIPHER_NOT_INIT  cipher device have not been initialized                         CNcomment:CIPHERè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CIPHER_INVALID_PARA  parameter error                                             CNcomment:å‚æ•°é”™è¯¯ CNend
+\retval ::HI_ERR_CIPHER_INVALID_HANDLE  handle invalid                                            CNcomment:å¥æŸ„éæ³• CNend
+\retval ::HI_ERR_CIPHER_BUSY  hardware is busy, it can not deal with all data package once time   CNcomment:ç¡¬ä»¶æ­£å¿™ï¼Œæ— æ³•ä¸€æ¬¡æ€§å¤„ç†å…¨éƒ¨çš„æ•°æ®åŒ… CNend
 \see \n
 N/A
 */
@@ -300,19 +300,19 @@ HI_S32 HI_UNF_CIPHER_EncryptMulti(HI_HANDLE hCipher, HI_UNF_CIPHER_DATA_S *pstDa
 
 /** 
 \brief Decrypt multiple packaged data.
-CNcomment:\brief ½øĞĞ¶à¸ö°üÊı¾İµÄ½âÃÜ¡£ CNend
+CNcomment:\brief è¿›è¡Œå¤šä¸ªåŒ…æ•°æ®çš„è§£å¯†ã€‚ CNend
 \attention \n
 You can not decrypt more than 128 data package one time.When HI_ERR_CIPHER_BUSY return, the data package you send will not be deal, the custmer should decrease the number of data package or run cipher again.Note:When decrypting more than one packaged data, every one package will be calculated using initial vector configured by HI_UNF_CIPHER_ConfigHandle.Previous result will not affect the later result. 
-CNcomment:Ã¿´Î½âÃÜµÄÊı¾İ°ü¸öÊı×î¶à²»ÄÜ³¬¹ı128¸ö¡£·µ»ØHI_ERR_CIPHER_BUSYµÄÊ±ºò£¬ËÍÈëÊı¾İ°üÒ»¸öÒ²²»»á±»´¦Àí£¬ÓÃ»§ĞèÒª¼õÉÙËÍÈëµÄÊı¾İ°üµÄÊıÁ¿»òÕßÔÙ´Î³¢ÊÔ½âÃÜ¡£×¢Òâ: ¶ÔÓÚ¶à¸ö°üµÄ²Ù×÷£¬Ã¿¸ö°ü¶¼Ê¹ÓÃHI_UNF_CIPHER_ConfigHandleÅäÖÃµÄÏòÁ¿½øĞĞÔËËã£¬Ç°Ò»¸ö°üµÄÏòÁ¿ÔËËã½á¹û²»»á×÷ÓÃÓÚÏÂÒ»¸ö°üµÄÔËËã£¬Ã¿¸ö°ü¶¼ÊÇ¶ÀÁ¢ÔËËãµÄ£¬Ç°Ò»´Îº¯Êıµ÷ÓÃµÄ½á¹ûÒ²²»»áÓ°ÏìºóÒ»´Îº¯Êıµ÷ÓÃµÄÔËËã½á¹û¡£ CNend
-\param[in] hCipher cipher handle                                                                 CNcomment:CIPHER¾ä±ú¡£ CNend
-\param[in] pstDataPkg data package ready for cipher                                              CNcomment:´ı½âÃÜµÄÊı¾İ°ü¡£ CNend
-\param[in] u32DataPkgNum  number of package ready for cipher                                     CNcomment:´ı½âÃÜµÄÊı¾İ°ü¸öÊı¡£ CNend
-\retval ::HI_SUCCESS  Call this API succussful. 						 						 CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦ CNend
-\retval ::HI_FAILURE  Call this API fails.                                                    	 CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CIPHER_NOT_INIT  cipher device have not been initialized                        CNcomment:CIPHERÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CIPHER_INVALID_PARA  parameter error                                            CNcomment:²ÎÊı´íÎó CNend
-\retval ::HI_ERR_CIPHER_INVALID_HANDLE  handle invalid                                           CNcomment:¾ä±ú·Ç·¨ CNend
-\retval ::HI_ERR_CIPHER_BUSY  hardware is busy, it can not deal with all data package once time  CNcomment:Ó²¼şÕıÃ¦£¬ÎŞ·¨Ò»´ÎĞÔ´¦ÀíÈ«²¿µÄÊı¾İ°ü CNend
+CNcomment:æ¯æ¬¡è§£å¯†çš„æ•°æ®åŒ…ä¸ªæ•°æœ€å¤šä¸èƒ½è¶…è¿‡128ä¸ªã€‚è¿”å›HI_ERR_CIPHER_BUSYçš„æ—¶å€™ï¼Œé€å…¥æ•°æ®åŒ…ä¸€ä¸ªä¹Ÿä¸ä¼šè¢«å¤„ç†ï¼Œç”¨æˆ·éœ€è¦å‡å°‘é€å…¥çš„æ•°æ®åŒ…çš„æ•°é‡æˆ–è€…å†æ¬¡å°è¯•è§£å¯†ã€‚æ³¨æ„: å¯¹äºå¤šä¸ªåŒ…çš„æ“ä½œï¼Œæ¯ä¸ªåŒ…éƒ½ä½¿ç”¨HI_UNF_CIPHER_ConfigHandleé…ç½®çš„å‘é‡è¿›è¡Œè¿ç®—ï¼Œå‰ä¸€ä¸ªåŒ…çš„å‘é‡è¿ç®—ç»“æœä¸ä¼šä½œç”¨äºä¸‹ä¸€ä¸ªåŒ…çš„è¿ç®—ï¼Œæ¯ä¸ªåŒ…éƒ½æ˜¯ç‹¬ç«‹è¿ç®—çš„ï¼Œå‰ä¸€æ¬¡å‡½æ•°è°ƒç”¨çš„ç»“æœä¹Ÿä¸ä¼šå½±å“åä¸€æ¬¡å‡½æ•°è°ƒç”¨çš„è¿ç®—ç»“æœã€‚ CNend
+\param[in] hCipher cipher handle                                                                 CNcomment:CIPHERå¥æŸ„ã€‚ CNend
+\param[in] pstDataPkg data package ready for cipher                                              CNcomment:å¾…è§£å¯†çš„æ•°æ®åŒ…ã€‚ CNend
+\param[in] u32DataPkgNum  number of package ready for cipher                                     CNcomment:å¾…è§£å¯†çš„æ•°æ®åŒ…ä¸ªæ•°ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API succussful. 						 						 CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸ CNend
+\retval ::HI_FAILURE  Call this API fails.                                                    	 CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CIPHER_NOT_INIT  cipher device have not been initialized                        CNcomment:CIPHERè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CIPHER_INVALID_PARA  parameter error                                            CNcomment:å‚æ•°é”™è¯¯ CNend
+\retval ::HI_ERR_CIPHER_INVALID_HANDLE  handle invalid                                           CNcomment:å¥æŸ„éæ³• CNend
+\retval ::HI_ERR_CIPHER_BUSY  hardware is busy, it can not deal with all data package once time  CNcomment:ç¡¬ä»¶æ­£å¿™ï¼Œæ— æ³•ä¸€æ¬¡æ€§å¤„ç†å…¨éƒ¨çš„æ•°æ®åŒ… CNend
 \see \n
 N/A
 */
@@ -320,15 +320,15 @@ HI_S32 HI_UNF_CIPHER_DecryptMulti(HI_HANDLE hCipher, HI_UNF_CIPHER_DATA_S *pstDa
 
 /** 
 \brief Get the random number.
-CNcomment:\brief »ñÈ¡Ëæ»úÊı¡£ CNend
+CNcomment:\brief è·å–éšæœºæ•°ã€‚ CNend
 
 \attention \n
 This API is used to obtain the random number from the hardware.
-CNcomment:µ÷ÓÃ´Ë½Ó¿ÚÓÃÓÚ»ñÈ¡Ëæ»úÊı¡£ CNend
+CNcomment:è°ƒç”¨æ­¤æ¥å£ç”¨äºè·å–éšæœºæ•°ã€‚ CNend
 
-\param[out] pu32RandomNumber Point to the random number.                       					CNcomment:Ëæ»úÊıÊıÖµ¡£ CNend
-\retval ::HI_SUCCESS  Call this API succussful. 						 						CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails.                        								CNcomment: APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[out] pu32RandomNumber Point to the random number.                       					CNcomment:éšæœºæ•°æ•°å€¼ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API succussful. 						 						CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails.                        								CNcomment: APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 
 \see \n
 N/A
@@ -337,18 +337,18 @@ HI_S32 HI_UNF_CIPHER_GetRandomNumber(HI_U32 *pu32RandomNumber);
 
 /** 
 \brief Get the AES CBC-MAC value.
-CNcomment:\brief »ñÈ¡Êı¾İµÄAES CBC-MACÖµ¡£ CNend
+CNcomment:\brief è·å–æ•°æ®çš„AES CBC-MACå€¼ã€‚ CNend
 
 \attention \n
 This API is used to obtain the AES CBC-MAC value.
-CNcomment:µ÷ÓÃ´Ë½Ó¿ÚÓÃÓÚ»ñÈ¡AES CBC-MACÖµ¡£ CNend
-\param[in] hCipherHandle:  The cipher handle.                        							CNcomment:Cipher¾ä±ú¡£ CNend
-\param[in] pInputData: input data.                           									CNcomment:ÊäÈëÊı¾İ¡£ CNend
-\param[in] u32InputDataLen: input data length,the length should be multiple of 16 bytes if it is not the last block. CNcomment:ÊäÈëÊı¾İµÄ³¤¶È£¬Èç¹û²»ÊÇ×îºóÒ»¸öblock£¬Ôò±ØĞëÎª16¸öbyteµÄ±¶Êı¡£ CNend
-\param[in] bIsLastBlock: Whether this block is last block or not.								CNcomment:ÊÇ·ñ×îºóÒ»¸öblock¡£ CNend
-\param[out] pOutputMAC: output CBC-MAC value.                      								CNcomment:Êä³öµÄCBC-MAC¡£   CNend
-\retval ::HI_SUCCESS  Call this API succussful. 						 						CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails.                     									CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+CNcomment:è°ƒç”¨æ­¤æ¥å£ç”¨äºè·å–AES CBC-MACå€¼ã€‚ CNend
+\param[in] hCipherHandle:  The cipher handle.                        							CNcomment:Cipherå¥æŸ„ã€‚ CNend
+\param[in] pInputData: input data.                           									CNcomment:è¾“å…¥æ•°æ®ã€‚ CNend
+\param[in] u32InputDataLen: input data length,the length should be multiple of 16 bytes if it is not the last block. CNcomment:è¾“å…¥æ•°æ®çš„é•¿åº¦ï¼Œå¦‚æœä¸æ˜¯æœ€åä¸€ä¸ªblockï¼Œåˆ™å¿…é¡»ä¸º16ä¸ªbyteçš„å€æ•°ã€‚ CNend
+\param[in] bIsLastBlock: Whether this block is last block or not.								CNcomment:æ˜¯å¦æœ€åä¸€ä¸ªblockã€‚ CNend
+\param[out] pOutputMAC: output CBC-MAC value.                      								CNcomment:è¾“å‡ºçš„CBC-MACã€‚   CNend
+\retval ::HI_SUCCESS  Call this API succussful. 						 						CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails.                     									CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 
 \see \n
 N/A
@@ -358,15 +358,15 @@ HI_S32 HI_UNF_CIPHER_CalcMAC(HI_HANDLE hCipherHandle, HI_U8 *pInputData, HI_U32 
 
 /** 
 \brief Init the hash module, if other program is using the hash module, the API will return failure.
-CNcomment:\brief ³õÊ¼»¯HASHÄ£¿é£¬Èç¹ûÓĞÆäËû³ÌĞòÕıÔÚÊ¹ÓÃHASHÄ£¿é£¬·µ»ØÊ§°Ü×´Ì¬¡£ CNend
+CNcomment:\brief åˆå§‹åŒ–HASHæ¨¡å—ï¼Œå¦‚æœæœ‰å…¶ä»–ç¨‹åºæ­£åœ¨ä½¿ç”¨HASHæ¨¡å—ï¼Œè¿”å›å¤±è´¥çŠ¶æ€ã€‚ CNend
 
 \attention \n
 N/A
 
-\param[in] pstHashAttr: The hash calculating structure input.                                      CNcomment:ÓÃÓÚ¼ÆËãhashµÄ½á¹¹Ìå²ÎÊı CNend
-\param[out] pHashHandle: The output hash handle.               									CNcomment:Êä³öµÄhash¾ä±ú CNend
-\retval ::HI_SUCCESS  Call this API succussful. 						 						CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails.                       								CNcomment: APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
+\param[in] pstHashAttr: The hash calculating structure input.                                      CNcomment:ç”¨äºè®¡ç®—hashçš„ç»“æ„ä½“å‚æ•° CNend
+\param[out] pHashHandle: The output hash handle.               									CNcomment:è¾“å‡ºçš„hashå¥æŸ„ CNend
+\retval ::HI_SUCCESS  Call this API succussful. 						 						CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails.                       								CNcomment: APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -375,16 +375,16 @@ HI_S32 HI_UNF_CIPHER_HashInit(HI_UNF_CIPHER_HASH_ATTS_S *pstHashAttr, HI_HANDLE 
 
 /** 
 \brief Calculate the hash, if the size of the data to be calculated is very big and the DDR ram is not enough, this API can calculate the data one block by one block. Attention: The input block length must be 64bytes alingned except for the last block.
-CNcomment:\brief ¼ÆËãhashÖµ£¬Èç¹ûĞèÒª¼ÆËãµÄÊı¾İÁ¿±È½Ï´ó£¬¸Ã½Ó¿Ú¿ÉÒÔÊµÏÖÒ»¸öblockÒ»¸öblockµÄ¼ÆËã£¬±ÜÃâÊı¾İÁ¿±È½Ï´óµÄÇé¿öÏÂ£¬ÄÚ´æ²»×ãµÄÎÊÌâ¡£ ÌØ±ğ×¢Òâ£¬³ıÁË×îºóÒ»¸öblock£¬Ç°ÃæµÄÃ¿Ò»ÂÖÊäÈëµÄ³¤¶È¶¼±ØĞëÊÇ64×Ö½Ú¶ÔÆë¡£CNend
+CNcomment:\brief è®¡ç®—hashå€¼ï¼Œå¦‚æœéœ€è¦è®¡ç®—çš„æ•°æ®é‡æ¯”è¾ƒå¤§ï¼Œè¯¥æ¥å£å¯ä»¥å®ç°ä¸€ä¸ªblockä¸€ä¸ªblockçš„è®¡ç®—ï¼Œé¿å…æ•°æ®é‡æ¯”è¾ƒå¤§çš„æƒ…å†µä¸‹ï¼Œå†…å­˜ä¸è¶³çš„é—®é¢˜ã€‚ ç‰¹åˆ«æ³¨æ„ï¼Œé™¤äº†æœ€åä¸€ä¸ªblockï¼Œå‰é¢çš„æ¯ä¸€è½®è¾“å…¥çš„é•¿åº¦éƒ½å¿…é¡»æ˜¯64å­—èŠ‚å¯¹é½ã€‚CNend
 
 \attention \n
 N/A
 
-\param[in] hHashHandl:  Hash handle.                                  		CNcomment:Hash¾ä±ú¡£ CNend
-\param[in] pu8InputData:  The input data buffer.                  			CNcomment:ÊäÈëÊı¾İ»º³å CNend
-\param[in] u32InputDataLen:  The input data length, attention: the block length input must be 64bytes aligned except the last block!			CNcomment:ÊäÈëÊı¾İµÄ³¤¶È¡£ÖØÒª£º ÊäÈëÊı¾İ¿éµÄ³¤¶È±ØĞëÊÇ64×Ö½Ú¶ÔÆë£¬×îºóÒ»¸öblockÎŞ´ËÏŞÖÆ¡£ CNend
-\retval ::HI_SUCCESS  Call this API succussful. 						 	CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails.                       		    CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[in] hHashHandl:  Hash handle.                                  		CNcomment:Hashå¥æŸ„ã€‚ CNend
+\param[in] pu8InputData:  The input data buffer.                  			CNcomment:è¾“å…¥æ•°æ®ç¼“å†² CNend
+\param[in] u32InputDataLen:  The input data length, attention: the block length input must be 64bytes aligned except the last block!			CNcomment:è¾“å…¥æ•°æ®çš„é•¿åº¦ã€‚é‡è¦ï¼š è¾“å…¥æ•°æ®å—çš„é•¿åº¦å¿…é¡»æ˜¯64å­—èŠ‚å¯¹é½ï¼Œæœ€åä¸€ä¸ªblockæ— æ­¤é™åˆ¶ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API succussful. 						 	CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails.                       		    CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 
 \see \n
 N/A
@@ -395,16 +395,16 @@ HI_S32 HI_UNF_CIPHER_HashUpdate(HI_HANDLE hHashHandle, HI_U8 *pu8InputData, HI_U
 
 /** 
 \brief Get the final hash value, after calculate all of the data, call this API to get the final hash value and close the handle.If there is some reason need to interupt the calculation, this API should also be call to close the handle.
-CNcomment:»ñÈ¡hashÖµ£¬ÔÚ¼ÆËãÍêËùÓĞµÄÊı¾İºó£¬µ÷ÓÃÕâ¸ö½Ó¿Ú»ñÈ¡×îÖÕµÄhashÖµ£¬¸Ã½Ó¿ÚÍ¬Ê±»á¹Ø±Õhash¾ä±ú¡£Èç¹ûÔÚ¼ÆËã¹ı³ÌÖĞ£¬ĞèÒªÖĞ¶Ï¼ÆËã£¬Ò²±ØĞëµ÷ÓÃ¸Ã½Ó¿Ú¹Ø±Õhash¾ä±ú¡£ CNend
+CNcomment:è·å–hashå€¼ï¼Œåœ¨è®¡ç®—å®Œæ‰€æœ‰çš„æ•°æ®åï¼Œè°ƒç”¨è¿™ä¸ªæ¥å£è·å–æœ€ç»ˆçš„hashå€¼ï¼Œè¯¥æ¥å£åŒæ—¶ä¼šå…³é—­hashå¥æŸ„ã€‚å¦‚æœåœ¨è®¡ç®—è¿‡ç¨‹ä¸­ï¼Œéœ€è¦ä¸­æ–­è®¡ç®—ï¼Œä¹Ÿå¿…é¡»è°ƒç”¨è¯¥æ¥å£å…³é—­hashå¥æŸ„ã€‚ CNend
 
 \attention \n
 N/A
 
-\param[in] hHashHandle:  Hash handle.                                  		CNcomment:Hash¾ä±ú¡£ CNend
-\param[out] pu8OutputHash:  The final output hash value.                   	CNcomment:Êä³öµÄhashÖµ¡£ CNend
+\param[in] hHashHandle:  Hash handle.                                  		CNcomment:Hashå¥æŸ„ã€‚ CNend
+\param[out] pu8OutputHash:  The final output hash value.                   	CNcomment:è¾“å‡ºçš„hashå€¼ã€‚ CNend
 
-\retval ::HI_SUCCESS  Call this API succussful. 						 	CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails.                       		CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\retval ::HI_SUCCESS  Call this API succussful. 						 	CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails.                       		CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 
 \see \n
 N/A

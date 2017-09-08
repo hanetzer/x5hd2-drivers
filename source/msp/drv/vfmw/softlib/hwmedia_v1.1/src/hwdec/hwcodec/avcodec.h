@@ -58,12 +58,12 @@
 #define AV_TIME_BASE            1000000
 #define AV_TIME_BASE_Q          (AVRational){1, AV_TIME_BASE}
 
-/*guoshan+00101841 20100612 Ôö¼Óºê£¬ÔÚ½âÂë´íÎóÊ±·µ»ØÉÏ²ã¼ÌĞøµ÷ÓÃÏÂÒ»Ö¡*/
+/*guoshan+00101841 20100612 å¢åŠ å®ï¼Œåœ¨è§£ç é”™è¯¯æ—¶è¿”å›ä¸Šå±‚ç»§ç»­è°ƒç”¨ä¸‹ä¸€å¸§*/
 /*#define GOTO_NEXT_FRAME 0xFFFF*/
-#define AVCODEC_RET_DECODE_FAILURE -3 /*µ±Ç°Ö¡½âÂëÊ§°Ü*/
-#define AVCODEC_RET_DECODE_BLOCK -2  /*ÄÚ²¿buffer²»¹»ÓÃ£¬µÈ´ıÉÏ²ãÊÍ·Å£¬ÉÏ²ãÊÍ·ÅÍê³ÉºóÖØ¸´½âÂëµ±Ç°Ö¡*/
-#define AVCODEC_RET_DECODE_ABORT -1  /*ÑÏÖØ´íÎó£¬°üÀ¨ÄÚ´æ·ÖÅäÊ§°Ü£¬ÎŞ·¨¼ÌĞøµÈ*/
-#define AVCODEC_RET_DECODE_LAST_FRAME 0 /*×îºóÒ»Ö¡Êä³ö*/
+#define AVCODEC_RET_DECODE_FAILURE -3 /*å½“å‰å¸§è§£ç å¤±è´¥*/
+#define AVCODEC_RET_DECODE_BLOCK -2  /*å†…éƒ¨bufferä¸å¤Ÿç”¨ï¼Œç­‰å¾…ä¸Šå±‚é‡Šæ”¾ï¼Œä¸Šå±‚é‡Šæ”¾å®Œæˆåé‡å¤è§£ç å½“å‰å¸§*/
+#define AVCODEC_RET_DECODE_ABORT -1  /*ä¸¥é‡é”™è¯¯ï¼ŒåŒ…æ‹¬å†…å­˜åˆ†é…å¤±è´¥ï¼Œæ— æ³•ç»§ç»­ç­‰*/
+#define AVCODEC_RET_DECODE_LAST_FRAME 0 /*æœ€åä¸€å¸§è¾“å‡º*/
 #define INTERNAL_BUFFER_SIZE 32
 #define INTERNAL_BUFFER_MIN_SIZE 3
 /**
@@ -834,14 +834,14 @@ typedef struct AVPanScan{
 	/** store error code for every frame */\
 	int iErrorCode;\
 	/* 2010/08/26 10:00:00 liuxw+00139685 */ \
-	/* Ôö¼ÓÒ»¸öÊı¾İ³ÉÔ±ÓÃÓÚvc1µÄrangedfrm¹¦ÄÜ */ \
+	/* å¢åŠ ä¸€ä¸ªæ•°æ®æˆå‘˜ç”¨äºvc1çš„rangedfrmåŠŸèƒ½ */ \
 	/* 0->no range scale; 1-> range scale */ \
 	int rangedfrm;                            \
 	/* 0-> no need; 1->scale up; 2-> scale down */ \
 	int recovery;                             \
-	/* ±íÊ¾µ±Ç°bufÊÇ·ñ¿ÉÒÔÊ¹ÓÃ0->¿ÉÒÔÊ¹ÓÃ 1->²»¿ÉÒÔÊ¹ÓÃ */ \
+	/* è¡¨ç¤ºå½“å‰bufæ˜¯å¦å¯ä»¥ä½¿ç”¨0->å¯ä»¥ä½¿ç”¨ 1->ä¸å¯ä»¥ä½¿ç”¨ */ \
 	int isbusy;                                \
-	/* µ±Ç°Ö¡µÄpts£¬ÓÉÉÏ²ã´«ÏÂÀ´ */ \
+	/* å½“å‰å¸§çš„ptsï¼Œç”±ä¸Šå±‚ä¼ ä¸‹æ¥ */ \
 	int iPts;                                \
 
 
@@ -1493,7 +1493,7 @@ typedef struct AVCodecContext {
 #define FF_MM_FORCE    0x80000000 /* Force usage of selected flags (OR) */
 	/* lower 16 bits - CPU features */
 	/* 2010/03/24 11:30:00 liuxw+00139685 */
-	/* Ôö¼Ósse4ºÍsse42µÄºê£¬¸Ä±äÁË´ó²¿·ÖºêµÄ¶¨Òå */
+	/* å¢åŠ sse4å’Œsse42çš„å®ï¼Œæ”¹å˜äº†å¤§éƒ¨åˆ†å®çš„å®šä¹‰ */
 #define FF_MM_MMX      0x0008 ///< standard MMX
 #define FF_MM_3DNOW    0x0001 ///< AMD 3DNOW
 #define FF_MM_MMXEXT   0x0010 ///< SSE integer functions or AMD MMX ext
@@ -2388,49 +2388,49 @@ typedef struct AVCodecContext {
 
 	/* new add by lxw */
 
-	/* ½âÂëÍ¼ÏñµÄÊµ¼Ê¿í¶ÈºÍ¸ß¶È */
+	/* è§£ç å›¾åƒçš„å®é™…å®½åº¦å’Œé«˜åº¦ */
 	unsigned short usActualWidth;
 	unsigned short usActualHeight;
 
 	/* add by lxw for control */
     /* for control: get params */
-    unsigned short usSourceWidth;        /**< ÊÓÆµ»­Ãæ¿í¶È£¬È¡Öµ·¶Î§[32-1920] */
-    unsigned short usSourceHeight;       /**< ÊÓÆµ»­Ãæ¸ß¶È£¬È¡Öµ·¶Î§[16-1088] */
-    unsigned int   uiRefFrame;     /**< ²Î¿¼Ö¡¸öÊı£¬È¡Öµ·¶Î§[1-16] */
-	unsigned int   uiBufNum;       /**< ·ÖÅäyuvµÄ¸öÊı */
+    unsigned short usSourceWidth;        /**< è§†é¢‘ç”»é¢å®½åº¦ï¼Œå–å€¼èŒƒå›´[32-1920] */
+    unsigned short usSourceHeight;       /**< è§†é¢‘ç”»é¢é«˜åº¦ï¼Œå–å€¼èŒƒå›´[16-1088] */
+    unsigned int   uiRefFrame;     /**< å‚è€ƒå¸§ä¸ªæ•°ï¼Œå–å€¼èŒƒå›´[1-16] */
+	unsigned int   uiBufNum;       /**< åˆ†é…yuvçš„ä¸ªæ•° */
     unsigned int   uiProfileIdc;   /**< profile idc */
     unsigned int   uiLevelIdc;     /**< level idc */
-    int   eColorSpaceType;   /**< ÂëÁ÷Í¼ÏñµÄ¸ñÊ½ (YUV420, YUV422, etc) */
-    char  bForceOutYUV420; /**< ½âÂëÆ÷Ö»Êä³öYUV420¸ñÊ½ */
-    char  bDeblockFilter;  /**< ºó´¦ÀíDeblockÂË²¨¿ªÆô±ê¼Ç£¬H264ÎŞĞè´Ë¹¦ÄÜ£¬Ô¤ÁôÓÃ£¬Ò»ÆÚ¿ÉÒÔ²»ÊµÏÖ */
-//  int   iDebugLevel;     /**< ÈÕÖ¾Êä³öµ÷ÊÔ¼¶±ğIMEDIA_DEBUG_LEVEL */
-    int   eFrameSkipMode; /**< ÌøÖ¡Ä£Ê½£¬±£Áô×Ö¶Î */
+    int   eColorSpaceType;   /**< ç æµå›¾åƒçš„æ ¼å¼ (YUV420, YUV422, etc) */
+    char  bForceOutYUV420; /**< è§£ç å™¨åªè¾“å‡ºYUV420æ ¼å¼ */
+    char  bDeblockFilter;  /**< åå¤„ç†Deblockæ»¤æ³¢å¼€å¯æ ‡è®°ï¼ŒH264æ— éœ€æ­¤åŠŸèƒ½ï¼Œé¢„ç•™ç”¨ï¼Œä¸€æœŸå¯ä»¥ä¸å®ç° */
+//  int   iDebugLevel;     /**< æ—¥å¿—è¾“å‡ºè°ƒè¯•çº§åˆ«IMEDIA_DEBUG_LEVEL */
+    int   eFrameSkipMode; /**< è·³å¸§æ¨¡å¼ï¼Œä¿ç•™å­—æ®µ */
 	/* add by lxw for control */
 
 	/* lxw add for control get decoder status */
-//	unsigned int eCodecStatus;		/**< Ëã·¨×´Ì¬ */
-    int			 iErrorCode; 		/**< ´íÎóÂë */
-	int			 iTotalError;       /**< ´íÎó×ÜÊı */
-    unsigned int uiDecIFrames;      /**< ÒÑ½âÂëµÄIÖ¡ÊıÁ¿ */
-    unsigned int uiDecPFrames;      /**< ÒÑ½âÂëµÄPÖ¡ÊıÁ¿ */
-    unsigned int uiDecBFrames;      /**< ÒÑ½âÂëµÄbÖ¡ÊıÁ¿ */
-    unsigned int uiDisplayedFrames; /**< ÒÑÏÔÊ¾Ö¡µÄÊıÁ¿ */
-    unsigned int uiInUsedBufNum;    /**< ÒÑÊ¹ÓÃµÄYUV BUFÊıÁ¿ */
-    unsigned int uiFreeBufNum;      /**< ¿ÕÏĞµÄYUV BUFÊıÁ¿ */
+//	unsigned int eCodecStatus;		/**< ç®—æ³•çŠ¶æ€ */
+    int			 iErrorCode; 		/**< é”™è¯¯ç  */
+	int			 iTotalError;       /**< é”™è¯¯æ€»æ•° */
+    unsigned int uiDecIFrames;      /**< å·²è§£ç çš„Iå¸§æ•°é‡ */
+    unsigned int uiDecPFrames;      /**< å·²è§£ç çš„På¸§æ•°é‡ */
+    unsigned int uiDecBFrames;      /**< å·²è§£ç çš„bå¸§æ•°é‡ */
+    unsigned int uiDisplayedFrames; /**< å·²æ˜¾ç¤ºå¸§çš„æ•°é‡ */
+    unsigned int uiInUsedBufNum;    /**< å·²ä½¿ç”¨çš„YUV BUFæ•°é‡ */
+    unsigned int uiFreeBufNum;      /**< ç©ºé—²çš„YUV BUFæ•°é‡ */
 	/* end lxw add for control get decoder status */
 
 	/* lxw add for control get stream info */
 	int			   eCodecType;
-//	unsigned int   uiFrameRate;       /**< µ±Ç°ÂëÁ÷µÄÖ¡ÂÊ x 1000 */
-//	unsigned int   uiBitRate;         /**< µ±ÏñÇ°ÂëÁ÷µÄ±ÈÌØÂÊ£¬µ¥Î»byte/s */
-	int            eContentType;      /**< Í¼µÄÀàĞÍ (IVIDEO_PROGRESSIVE or IVIDEO_INTERLACED) */
-	int			   eColorFormatType;  /**< ÂëÁ÷Í¼ÏñµÄ¸ñÊ½ (YUV420, YUV422, etc) */
-	int			   iActualProfile;    /**< µ±Ç°ÂëÁ÷µÄprofile */
-	int			   iActualLevel;	  /**< µ±Ç°ÂëÁ÷µÄlevel */
-	int			   iActualRefNum;     /**< µ±Ç°ÂëÁ÷µÄ²Î¿¼Ö¡¸öÊı */
-//	unsigned int uiVbvBufSize;        /**< VBV»º´æ´óĞ¡£¬µ¥Î»ms */
-	int			   iChromaFormat;     /**< Í¨µÀÊµ¼ÊµÄÉ«¶È¿Õ¼ä */
-	int			   iSourceChromaFormat; /**< Í¨µÀ´´½¨Ê±ÉèÖÃµÄÉ«¶È¿Õ¼ä */
+//	unsigned int   uiFrameRate;       /**< å½“å‰ç æµçš„å¸§ç‡ x 1000 */
+//	unsigned int   uiBitRate;         /**< å½“åƒå‰ç æµçš„æ¯”ç‰¹ç‡ï¼Œå•ä½byte/s */
+	int            eContentType;      /**< å›¾çš„ç±»å‹ (IVIDEO_PROGRESSIVE or IVIDEO_INTERLACED) */
+	int			   eColorFormatType;  /**< ç æµå›¾åƒçš„æ ¼å¼ (YUV420, YUV422, etc) */
+	int			   iActualProfile;    /**< å½“å‰ç æµçš„profile */
+	int			   iActualLevel;	  /**< å½“å‰ç æµçš„level */
+	int			   iActualRefNum;     /**< å½“å‰ç æµçš„å‚è€ƒå¸§ä¸ªæ•° */
+//	unsigned int uiVbvBufSize;        /**< VBVç¼“å­˜å¤§å°ï¼Œå•ä½ms */
+	int			   iChromaFormat;     /**< é€šé“å®é™…çš„è‰²åº¦ç©ºé—´ */
+	int			   iSourceChromaFormat; /**< é€šé“åˆ›å»ºæ—¶è®¾ç½®çš„è‰²åº¦ç©ºé—´ */
     /* end lxw add for control get stream info */
 
 	/**< store the bitstream header */
@@ -2440,30 +2440,30 @@ typedef struct AVCodecContext {
 	/* end new add by lxw */
 
 	/* 2010/04/09 08:30:00 liuxw+00139685 */
-	/* Ôö¼Ó³ÉÔ±ÓÃÓÚÍ³¼Æ¶ªµôµÄÖ¡Êı */ 
-	unsigned int uiDiscardFrames; /**< ÒÑ¶ªµôÖ¡µÄÊıÁ¿ */
-	unsigned int uiFldCnt;        /**< µ±Ç°³¡µÄ¸öÊı */
+	/* å¢åŠ æˆå‘˜ç”¨äºç»Ÿè®¡ä¸¢æ‰çš„å¸§æ•° */ 
+	unsigned int uiDiscardFrames; /**< å·²ä¸¢æ‰å¸§çš„æ•°é‡ */
+	unsigned int uiFldCnt;        /**< å½“å‰åœºçš„ä¸ªæ•° */
 
 	/* 2010/06/05 10:30:00 liuxw+00139685 */
-	/* Ôö¼ÓÒ»¸ö³ÉÔ±£¬ÓÃÓÚ±íÊ¾µ±Ç°ÄÚ´æ·ÖÅäÊÇ·ñÊ§°Ü */
+	/* å¢åŠ ä¸€ä¸ªæˆå‘˜ï¼Œç”¨äºè¡¨ç¤ºå½“å‰å†…å­˜åˆ†é…æ˜¯å¦å¤±è´¥ */
 	int iMallocFailed;
 
 	/* 2010/09/14 11:30:00 liuxw+00139685 */
-	/* Ôö¼ÓÒ»¸ö³ÉÔ±£¬ÓÃÓÚ´æ´¢µ±Ç°Ö¡µÄpts */
+	/* å¢åŠ ä¸€ä¸ªæˆå‘˜ï¼Œç”¨äºå­˜å‚¨å½“å‰å¸§çš„pts */
 	int iPts;
 
 	/* 2010/09/26 15:00:00 liuxw+00139685 */
-	/* ´æ´¢·ÖÅä¸øµ±Ç°codecµÄËùĞè¿Õ¼äµÄÆğÊ¼µØÖ·ºÍ³¤¶È£¬ÒÔ¼°ÄÚ²¿Ê¹ÓÃ·ÖÅäÊ±µÄÆ«ÒÆ */
+	/* å­˜å‚¨åˆ†é…ç»™å½“å‰codecçš„æ‰€éœ€ç©ºé—´çš„èµ·å§‹åœ°å€å’Œé•¿åº¦ï¼Œä»¥åŠå†…éƒ¨ä½¿ç”¨åˆ†é…æ—¶çš„åç§» */
 	uint8_t  *pucBase;
 	int      iBufLength;
 	uint32_t uiCurPos;
 
     /*20101011 guoshan+00101841*/
-	/*Ôö¼Óh263_loop_filterÊ±¼äÍ³¼Æ*/
+	/*å¢åŠ h263_loop_filteræ—¶é—´ç»Ÿè®¡*/
 	UINT64 loop_filter_time;
 
 	/*20101026 guoshan+00101841*/
-	/*Ôö¼ÓarmÓÅ»¯¿ª¹Ø*/
+	/*å¢åŠ armä¼˜åŒ–å¼€å…³*/
 	unsigned arm_disable_flag;
 
 
@@ -2804,7 +2804,7 @@ void avcodec_get_chroma_sub_sample(int pix_fmt, int *h_shift, int *v_shift);
 const char *avcodec_get_pix_fmt_name(int pix_fmt);
 void avcodec_set_dimensions(AVCodecContext *s, int width, int height);
 /*guoshan + 00101841 20100416*/
-/*ĞÂÔöº¯Êı¶¨Òå£¬ÉèÖÃchroma_format*/
+/*æ–°å¢å‡½æ•°å®šä¹‰ï¼Œè®¾ç½®chroma_format*/
 void avcodec_set_chroma_format(AVCodecContext *s, int chroma_format);
 
 enum PixelFormat avcodec_get_pix_fmt(const char* name);
@@ -2980,7 +2980,7 @@ void avcodec_get_context_defaults2(AVCodecContext *s, enum CodecType);
 AVCodecContext *avcodec_alloc_context(void);
 
 /* 2010/3/24 9:38:00 songxiaogang+00133955 */
-/* ½«avctxµÄÊÍ·Å·ÅÔÚÄÚ²¿´¦Àí */
+/* å°†avctxçš„é‡Šæ”¾æ”¾åœ¨å†…éƒ¨å¤„ç† */
 void avcodec_free_context(AVCodecContext *avctx);
 
 /** THIS FUNCTION IS NOT YET PART OF THE PUBLIC API!
@@ -3054,7 +3054,7 @@ int avcodec_default_execute(AVCodecContext *c, int (*func)(AVCodecContext *c2, v
  */
 int avcodec_open(AVCodecContext *avctx, AVCodec *codec);
 
-/* ĞÂÔöº¯Êı£º¸´Î»½âÂëÍ¨µÀ±äÁ¿ */
+/* æ–°å¢å‡½æ•°ï¼šå¤ä½è§£ç é€šé“å˜é‡ */
 int avcodec_reset(AVCodecContext *avctx);
 
 /**
@@ -3482,7 +3482,7 @@ int av_parse_video_frame_rate(AVRational *frame_rate, const char *str);
 void av_register_hwaccel(AVHWAccel *hwaccel);
 
 /* 2010/03/24 11:30:00 liuxw+00139685 */
-/* Ôö¼Óff_find_hwaccelº¯ÊıµÄÉùÃ÷ */
+/* å¢åŠ ff_find_hwaccelå‡½æ•°çš„å£°æ˜ */
 AVHWAccel *ff_find_hwaccel(enum CodecID codec_id, enum PixelFormat pix_fmt);
 /**
  * If hwaccel is NULL, returns the first registered hardware accelerator,

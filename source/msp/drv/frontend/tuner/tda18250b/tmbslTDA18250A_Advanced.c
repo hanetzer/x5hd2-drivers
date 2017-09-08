@@ -177,13 +177,13 @@ tmbslTDA18250A_SetGpio(
         switch (bNumber)
         {
             case 1:
-                /* Set GPIO n°1 */
+                /* Set GPIO n1 */
                 err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_Gpio_ctrl_byte__GPIO1, (bActive==True)?1:0, Bus_RW);
                 tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
                 break;
 
             case 2:
-                /* Set GPIO n°2 */
+                /* Set GPIO n2 */
                 err = iTDA18250A_Write(pObj, &gTDA18250A_Reg_Gpio_ctrl_byte__GPIO2, (bActive==True)?1:0, Bus_RW);
                 tmASSERTExT(err, TM_OK, (DEBUGLVL_ERROR, "iTDA18250A_Write(0x%08X) failed.", pObj->tUnitW));
                 break;

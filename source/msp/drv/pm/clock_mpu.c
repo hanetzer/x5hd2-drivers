@@ -351,14 +351,14 @@ static int mpu_clk_set_sel(unsigned long sel)
  *profile2	750MHz	1.15V	APLL 750MHz
  *profile3	600MHz	1.1V		BPLL 1.2GHz DIV2
  *profile4	400MHz	1.05V	400MHz
- *000£ºAPLLÊä³ö£»
- *001£ºreserved£»
- *010£ºDPLLÊä³ö£»
- *011£ºWPLLÊä³ö£»
- *100£º24M£»
- *101£º1200M£»
- *110£º400M£»
- *111£º200M
+ *000ï¼šAPLLè¾“å‡ºï¼›
+ *001ï¼šreservedï¼›
+ *010ï¼šDPLLè¾“å‡ºï¼›
+ *011ï¼šWPLLè¾“å‡ºï¼›
+ *100ï¼š24Mï¼›
+ *101ï¼š1200Mï¼›
+ *110ï¼š400Mï¼›
+ *111ï¼š200M
  */
 static int mpu_clk_set_rate(struct clk *clk, unsigned rate)
 {

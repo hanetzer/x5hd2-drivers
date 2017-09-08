@@ -1,24 +1,24 @@
 /*******************************************************************************
 Copyright (C), 2009-2012, Huawei Tech. Co., Ltd.
 File name: imedia_util.h
-Author & ID: ËÎÐ¡¸Õ+00133955
+Author & ID: å®‹å°åˆš+00133955
 Version: 1.00
 Date:  2009-12-18
-Description: ±¾ÎÄ¼þ°üÀ¨ÁËÖÐ¼ä´¦ÀíÄ£¿éµÄ½Ó¿Úº¯Êý¼°Ïà¹Ø½á¹¹¶¨Òå
+Description: æœ¬æ–‡ä»¶åŒ…æ‹¬äº†ä¸­é—´å¤„ç†æ¨¡å—çš„æŽ¥å£å‡½æ•°åŠç›¸å…³ç»“æž„å®šä¹‰
 Function List:
 1. 
 History:
 * Revision 1.00  2009/12/18 10:00:00  songxg+00133955
-* ³õÊ¼°æ±¾±àÂëÍê³É
+* åˆå§‹ç‰ˆæœ¬ç¼–ç å®Œæˆ
 *
 * Revision 1.01  2010/01/21 14:15:00  songxg+00133955
-* ¸ù¾ÝÆÀÉóÒâ¼ûÐÞ¶¨´úÂë¹æ·¶¡¢½Ó¿ÚÐÞ¸ÄµÈ
+* æ ¹æ®è¯„å®¡æ„è§ä¿®å®šä»£ç è§„èŒƒã€æŽ¥å£ä¿®æ”¹ç­‰
 *
 * Revision 1.02  2010/03/23 14:15:00  songxg+00133955
-* Ôö¼ÓÄÚ´æ¶ÔÆë·ÖÅäºÍ¶ÔÆëÊÍ·ÅµÈº¯Êý
+* å¢žåŠ å†…å­˜å¯¹é½åˆ†é…å’Œå¯¹é½é‡Šæ”¾ç­‰å‡½æ•°
 *
 * Revision 1.03  2010/04/29 18:25:00  songxg+00101841
-* ÐÞ¸Ä»ã±àÓÅ»¯´«Èë½Ó¿Ú£¬²¢½«CPUÖ¸ÁîÏà¹ØÐÅÏ¢´Óimedia_common.hÒÆµ½±¾ÎÄ¼þÖÐ¶¨Òå
+* ä¿®æ”¹æ±‡ç¼–ä¼˜åŒ–ä¼ å…¥æŽ¥å£ï¼Œå¹¶å°†CPUæŒ‡ä»¤ç›¸å…³ä¿¡æ¯ä»Žimedia_common.hç§»åˆ°æœ¬æ–‡ä»¶ä¸­å®šä¹‰
 *
 *******************************************************************************/
 #ifndef __IMEDIA_UTIL_H__
@@ -35,7 +35,7 @@ extern "C" {
 
 #pragma pack(push, 1)
 
-/**< ·À´íÂë£¬ÓÃÓÚ·À·¶Íâ²¿Ä£¿é´«µÝ¾ä±ú³ö´í */
+/**< é˜²é”™ç ï¼Œç”¨äºŽé˜²èŒƒå¤–éƒ¨æ¨¡å—ä¼ é€’å¥æŸ„å‡ºé”™ */
 #define CRC_MASK 0x55AA55AA
 
 #define IMEDIA_FOURCC(a, b, c, d) (((UINT32)a) | ( ((UINT32)b) << 8 ) | ( ((UINT32)c) << 16 ) | ( ((UINT32)d) << 24 ))
@@ -76,43 +76,43 @@ extern "C" {
 
 typedef struct STRU_IMEDIA_CPU_CAPS
 {
-    UINT32 uiCpuFlag;               /**< CPUÄÜÁ¦MASK±ê¼Ç£¬ÈçÊÇ·ñÖ§³ÖMMX¡¢SSEµÈ£¬µ±ÇÒ½öµ±CPUÄÜÁ¦Ò²Ö§³Ö¸Ã¹¦ÄÜÊ±²ÅÓÐÐ§£¬¿ÉÍ¨¹ýIMedia_GetCpuCaps»ñÈ¡ */
+    UINT32 uiCpuFlag;               /**< CPUèƒ½åŠ›MASKæ ‡è®°ï¼Œå¦‚æ˜¯å¦æ”¯æŒMMXã€SSEç­‰ï¼Œå½“ä¸”ä»…å½“CPUèƒ½åŠ›ä¹Ÿæ”¯æŒè¯¥åŠŸèƒ½æ—¶æ‰æœ‰æ•ˆï¼Œå¯é€šè¿‡IMedia_GetCpuCapsèŽ·å– */
 } STRU_IMEDIA_CPU_CAPS;
 
 typedef struct STRU_IMEDIA_GLOBAL_INFO
 {
-    BOOL  bIsExternalSet;           /**< ÐÅÏ¢ÊÇ·ñÎªÍâ²¿ÉèÖÃµÄ */
-    BOOL  bMallocFxnUsed;           /**< Malloc»Øµ÷º¯ÊýÊÇ·ñ±»Ê¹ÓÃ¹ý */
-    STRU_IMEDIA_SYSINFO stSysInfo;  /**< ÏµÍ³ÐÅÏ¢½á¹¹ */
+    BOOL  bIsExternalSet;           /**< ä¿¡æ¯æ˜¯å¦ä¸ºå¤–éƒ¨è®¾ç½®çš„ */
+    BOOL  bMallocFxnUsed;           /**< Mallocå›žè°ƒå‡½æ•°æ˜¯å¦è¢«ä½¿ç”¨è¿‡ */
+    STRU_IMEDIA_SYSINFO stSysInfo;  /**< ç³»ç»Ÿä¿¡æ¯ç»“æž„ */
 } STRU_IMEDIA_GLOBAL_INFO;
 
 extern STRU_IMEDIA_GLOBAL_INFO g_stGlobalInfo;
 
 #if (!defined(ARCH_X86) || !ARCH_X86)
 /****************************************************************************************
-* º¯ÊýËµÃ÷£º»ñÈ¡CPUÐÅÏ¢º¯Êý¡£
-* ÊäÈë²ÎÊý£º
-*     caps       CPUÖ§³ÖÖ¸ÁîÐÅÏ¢
-* Êä³ö²ÎÊý£º
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+* å‡½æ•°è¯´æ˜Žï¼šèŽ·å–CPUä¿¡æ¯å‡½æ•°ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+*     caps       CPUæ”¯æŒæŒ‡ä»¤ä¿¡æ¯
+* è¾“å‡ºå‚æ•°ï¼š
+* è¿” å›ž å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›žå€¼å®šä¹‰ã€‚
 *****************************************************************************************/
 EXPORT_API INT32 IMedia_GetCpuCaps(STRU_IMEDIA_CPU_CAPS *pstCaps);
 #endif
 
 /*========================================================================================
-* º¯ÊýËµÃ÷£ºÉèÖÃÏµÍ³ÐÅÏ¢£¬Ö»ÄÜÔÚÄÚ´æ·ÖÅäº¯ÊýÉÐÎ´µ÷ÓÃÇ°ÉèÖÃÓÐÐ§
-* ÊäÈë²ÎÊý£º
-*     pstSysInfo ÏµÍ³ÐÅÏ¢
-* Êä³ö²ÎÊý£º
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+* å‡½æ•°è¯´æ˜Žï¼šè®¾ç½®ç³»ç»Ÿä¿¡æ¯ï¼Œåªèƒ½åœ¨å†…å­˜åˆ†é…å‡½æ•°å°šæœªè°ƒç”¨å‰è®¾ç½®æœ‰æ•ˆ
+* è¾“å…¥å‚æ•°ï¼š
+*     pstSysInfo ç³»ç»Ÿä¿¡æ¯
+* è¾“å‡ºå‚æ•°ï¼š
+* è¿” å›ž å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›žå€¼å®šä¹‰ã€‚
 =========================================================================================*/
 EXPORT_API INT32 IMedia_SetSysInfo(struct STRU_IMEDIA_SYSINFO* pstSysInfo);
 
 /*****************************************************************************************
-* º¯ÊýËµÃ÷£ºÊ±¼ä»ñÈ¡º¯Êý¡£
-* ÊäÈë²ÎÊý£º
-* Êä³ö²ÎÊý£º
-* ·µ »Ø Öµ£º·µ»ØÏàÓ¦µÄÊ±¼ä¡£
+* å‡½æ•°è¯´æ˜Žï¼šæ—¶é—´èŽ·å–å‡½æ•°ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+* è¾“å‡ºå‚æ•°ï¼š
+* è¿” å›ž å€¼ï¼šè¿”å›žç›¸åº”çš„æ—¶é—´ã€‚
 *****************************************************************************************/
 #ifndef __KERNEL__
 EXPORT_API const char*  IMedia_OS_TimeString();
@@ -123,21 +123,21 @@ EXPORT_API UINT32 IMedia_OS_Milliseconds32();
 EXPORT_API UINT32 IMedia_ValueOffset32(UINT32 begin, UINT32 end);
 
 /*****************************************************************************************
-* º¯ÊýËµÃ÷£ºÏß³ÌÐÝÏ¢º¯Êý¡£
-* ÊäÈë²ÎÊý£º
-*     ms    ÐÝÏ¢Ê±¼ä
-* Êä³ö²ÎÊý£º
-* ·µ »Ø Öµ£ºÎÞ¡£
+* å‡½æ•°è¯´æ˜Žï¼šçº¿ç¨‹ä¼‘æ¯å‡½æ•°ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+*     ms    ä¼‘æ¯æ—¶é—´
+* è¾“å‡ºå‚æ•°ï¼š
+* è¿” å›ž å€¼ï¼šæ— ã€‚
 *****************************************************************************************/
 EXPORT_API void   IMedia_Sleep(UINT32 ms);
 
 /*****************************************************************************************
-* º¯ÊýËµÃ÷£ºÈÕÖ¾ÐÅÏ¢Êä³öº¯Êý¡£
-* ÊäÈë²ÎÊý£º
+* å‡½æ•°è¯´æ˜Žï¼šæ—¥å¿—ä¿¡æ¯è¾“å‡ºå‡½æ•°ã€‚
+* è¾“å…¥å‚æ•°ï¼š
 *     p
-*      level       CPUÖ§³ÖÖ¸ÁîÐÅÏ¢
-* Êä³ö²ÎÊý£º
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+*      level       CPUæ”¯æŒæŒ‡ä»¤ä¿¡æ¯
+* è¾“å‡ºå‚æ•°ï¼š
+* è¿” å›ž å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›žå€¼å®šä¹‰ã€‚
 *****************************************************************************************/
 #if defined(__GNUC__)
 EXPORT_API void IMedia_msg_format(const char *file, int line, const char *funcname, int level, const char *format, ...);
@@ -148,27 +148,27 @@ EXPORT_API void IMedia_msg_format(int level, const char *format, ...);
 #endif
 
 /*****************************************************************************************
-* º¯ÊýËµÃ÷£ºÄÚ´æ·ÖÅäº¯Êý¡£
-* ÊäÈë²ÎÊý£º
-*     size  ËùÐèÄÚ´æ³¤¶È
-* Êä³ö²ÎÊý£º
-* ·µ »Ø Öµ£ºÊµ¼ÊÄÚ´æ¿Õ¼äµØÖ·£¬»òÊ§°Ü-NULL¡£
+* å‡½æ•°è¯´æ˜Žï¼šå†…å­˜åˆ†é…å‡½æ•°ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+*     size  æ‰€éœ€å†…å­˜é•¿åº¦
+* è¾“å‡ºå‚æ•°ï¼š
+* è¿” å›ž å€¼ï¼šå®žé™…å†…å­˜ç©ºé—´åœ°å€ï¼Œæˆ–å¤±è´¥-NULLã€‚
 *****************************************************************************************/
 EXPORT_API void* IMedia_Malloc(unsigned int size);
 EXPORT_API void* IMedia_AlignMalloc(unsigned int size);
 
 /*****************************************************************************************
-* º¯ÊýËµÃ÷£ºÄÚ´æÊÍ·Åº¯Êý¡£
-* ÊäÈë²ÎÊý£º
-*     ptr   ÄÚ´æµØÖ·
-* Êä³ö²ÎÊý£º
-* ·µ »Ø Öµ£ºÎÞ¡£
+* å‡½æ•°è¯´æ˜Žï¼šå†…å­˜é‡Šæ”¾å‡½æ•°ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+*     ptr   å†…å­˜åœ°å€
+* è¾“å‡ºå‚æ•°ï¼š
+* è¿” å›ž å€¼ï¼šæ— ã€‚
 *****************************************************************************************/
 EXPORT_API void  IMedia_Free(void *ptr);
 EXPORT_API void  IMedia_AlignFree(void *ptr);
 
 /*****************************************************************************************
-* INIÅäÖÃÎÄ¼þ¶ÁÐ´º¯Êý
+* INIé…ç½®æ–‡ä»¶è¯»å†™å‡½æ•°
 *****************************************************************************************/
 typedef void* IMEDIA_INI_FILE;
 
@@ -183,11 +183,11 @@ EXPORT_API char*  IMedia_Ini_GetString(IMEDIA_INI_FILE ini, const char* key);
 EXPORT_API const char* IMedia_Ini_GetValue(IMEDIA_INI_FILE ini, const char* key);
 
 /*****************************************************************************************
-* º¯ÊýËµÃ÷£º´íÎó×Ö·û´®»ñÈ¡º¯Êý¡£
-* ÊäÈë²ÎÊý£º
-*     iErrorCode   Ä£¿éÄÚ²¿´íÎóÂë
-* Êä³ö²ÎÊý£º
-* ·µ »Ø Öµ£º·µ»ØÏàÓ¦µÄ×Ö·û´®¡£
+* å‡½æ•°è¯´æ˜Žï¼šé”™è¯¯å­—ç¬¦ä¸²èŽ·å–å‡½æ•°ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+*     iErrorCode   æ¨¡å—å†…éƒ¨é”™è¯¯ç 
+* è¾“å‡ºå‚æ•°ï¼š
+* è¿” å›ž å€¼ï¼šè¿”å›žç›¸åº”çš„å­—ç¬¦ä¸²ã€‚
 *****************************************************************************************/
 EXPORT_API INT32 IMedia_GetErrorString(INT32 iErrorCode, char* pszRet, INT32 iLen);
 

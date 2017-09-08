@@ -4,11 +4,11 @@
 * 
 * $Id: imedia_viddec.c,v 1.138 2010/01/12 09:39:22 songxiaogang Exp $     
 *
-* Description£º  
+* Descriptionï¼š  
 *
-* Reference Doc£º  
+* Reference Docï¼š  
 * 
-* Modification£º//¼ûÎÄ¼şÎ²
+* Modificationï¼š//è§æ–‡ä»¶å°¾
 * 
 *************************************************************************/
 #include <stdarg.h>
@@ -50,7 +50,7 @@ typedef enum ENUM_IVIDENC_ENCODE_TYPE
     ENCODE_TRICK_MODE,
 } ENUM_IVIDENC_ENCODE_TYPE;
 
-// Õı³£±àÂëÆ÷ÉÏÏÂÎÄ
+// æ­£å¸¸ç¼–ç å™¨ä¸Šä¸‹æ–‡
 typedef struct STRU_H264_CTX
 {
     int handle;
@@ -62,37 +62,37 @@ typedef struct STRU_H264_CTX
     funHW264E_GetSpsPps    pfnGetSpsPps;
 } STRU_H264_CTX;
 
-// ±àÂëÍ¨µÀÉÏÏÂÎÄ£¬ÓëÍâ²¿½Ó¿Ú
+// ç¼–ç é€šé“ä¸Šä¸‹æ–‡ï¼Œä¸å¤–éƒ¨æ¥å£
 typedef struct STRU_VIDEO_ENCODE_CTX
 {
-    INT32 iCrcMask;                     // ·À´íÂë
-    ENUM_IVIDEO_CODEC_STATUS eStatus;   // ×´Ì¬
-    ENUM_IVIDENC_ENCODE_TYPE eType;     // µ±Ç°±àÂëÀàĞÍ
-    void   *pstEncoder;                 // H264±àÂëÆ÷¾ä±ú
-    STRU_H264_CTX stModule;             // ±àÂëÆ÷¶¯Ì¬¿âÄ£¿é
-    UINT32 uiFrameMaxSize;              // Ö¡µÄ×î´ó³ß´ç
-    UINT8  *pFrameStreamBuf;            // ´æ´¢ÁÙÊ±Êı¾İµÄÖ¡»º´æ
-    STRU_IVIDENC_PARAMS   stParams;     // ´æ´¢ÅäÖÃ¾²Ì¬²ÎÊı
-    STRU_IVIDENC_DYNAMIC_PARAMS stDynParams;     // ´æ´¢ÅäÖÃ¶¯Ì¬²ÎÊı
-    STRU_IVIDENC_QUALITY_PARAMS stQualityParams; // ´æ´¢ÖÊÁ¿¿ØÖÆ²ÎÊı
+    INT32 iCrcMask;                     // é˜²é”™ç 
+    ENUM_IVIDEO_CODEC_STATUS eStatus;   // çŠ¶æ€
+    ENUM_IVIDENC_ENCODE_TYPE eType;     // å½“å‰ç¼–ç ç±»å‹
+    void   *pstEncoder;                 // H264ç¼–ç å™¨å¥æŸ„
+    STRU_H264_CTX stModule;             // ç¼–ç å™¨åŠ¨æ€åº“æ¨¡å—
+    UINT32 uiFrameMaxSize;              // å¸§çš„æœ€å¤§å°ºå¯¸
+    UINT8  *pFrameStreamBuf;            // å­˜å‚¨ä¸´æ—¶æ•°æ®çš„å¸§ç¼“å­˜
+    STRU_IVIDENC_PARAMS   stParams;     // å­˜å‚¨é…ç½®é™æ€å‚æ•°
+    STRU_IVIDENC_DYNAMIC_PARAMS stDynParams;     // å­˜å‚¨é…ç½®åŠ¨æ€å‚æ•°
+    STRU_IVIDENC_QUALITY_PARAMS stQualityParams; // å­˜å‚¨è´¨é‡æ§åˆ¶å‚æ•°
 
-    UINT32  uiFrameDropBase;        // ¶ªÖ¡»ù×¼£¬×î´ó¿ÉÎª60 x 32
-    UINT8   *pucFrameDropMask;      // ¶ªÖ¡ÑÚÂë±í
+    UINT32  uiFrameDropBase;        // ä¸¢å¸§åŸºå‡†ï¼Œæœ€å¤§å¯ä¸º60 x 32
+    UINT8   *pucFrameDropMask;      // ä¸¢å¸§æ©ç è¡¨
 
-    // ÓÃÓÚ×´Ì¬¸üĞÂ
-    UINT32  uiTotalInputFrames;     // ÊäÈë×ÜÖ¡Êı
-    UINT32  uiTotalOutputFrames;    // Êä³ö×ÜÖ¡Êı
-    UINT32  uiTotalDropFrames;      // ×Ü¹²¶ªÆúµÄÖ¡Êı
-    UINT32  uiTotalErrors;          // ×Ü¹²·¢Éú´íÎóÊı
-    UINT64  uiTotalPSNR_Y;          // ×ÜµÄPSNR_Y
-    UINT32  uiPSNRFrames;           // ¼ÆËãPSNR_YµÄ×ÜÖ¡Êı
-    FLOAT32 fCurFramePSNR_Y;        // µ±Ç°Ö¡µÄPSNR_Y
-    BOOL    bEncodeLastFrameFlag;   // ÊÇ·ñÒÑ±àÂë×îºóÒ»Ö¡£¬ÓÉÓÚÄÚ²¿±àÂë²»Ö§³Ö±àÍê×îºóÒ»Ö¡ºóÔÙÊäÈëĞÂYUVµÄ¹¦ÄÜ£¬½Ó¿Ú²ãĞèÆÁ±Î
+    // ç”¨äºçŠ¶æ€æ›´æ–°
+    UINT32  uiTotalInputFrames;     // è¾“å…¥æ€»å¸§æ•°
+    UINT32  uiTotalOutputFrames;    // è¾“å‡ºæ€»å¸§æ•°
+    UINT32  uiTotalDropFrames;      // æ€»å…±ä¸¢å¼ƒçš„å¸§æ•°
+    UINT32  uiTotalErrors;          // æ€»å…±å‘ç”Ÿé”™è¯¯æ•°
+    UINT64  uiTotalPSNR_Y;          // æ€»çš„PSNR_Y
+    UINT32  uiPSNRFrames;           // è®¡ç®—PSNR_Yçš„æ€»å¸§æ•°
+    FLOAT32 fCurFramePSNR_Y;        // å½“å‰å¸§çš„PSNR_Y
+    BOOL    bEncodeLastFrameFlag;   // æ˜¯å¦å·²ç¼–ç æœ€åä¸€å¸§ï¼Œç”±äºå†…éƒ¨ç¼–ç ä¸æ”¯æŒç¼–å®Œæœ€åä¸€å¸§åå†è¾“å…¥æ–°YUVçš„åŠŸèƒ½ï¼Œæ¥å£å±‚éœ€å±è”½
 
-    // ÓÃÓÚĞÔÄÜÍ³¼Æ×Ö¶Î
-    UINT64  ullTotalSpendTime;      // ×Ü¹²´¦ÀíÊ±¼ä
-    UINT64  ullPrevSpendTime;       // ÉÏÒ»´ÎÍ³¼Æ×Ü¹²ÓÃµÄÊ±¼ä
-    UINT32  uiPrevOutputFrames;     // Êä³ö×ÜÖ¡Êı
+    // ç”¨äºæ€§èƒ½ç»Ÿè®¡å­—æ®µ
+    UINT64  ullTotalSpendTime;      // æ€»å…±å¤„ç†æ—¶é—´
+    UINT64  ullPrevSpendTime;       // ä¸Šä¸€æ¬¡ç»Ÿè®¡æ€»å…±ç”¨çš„æ—¶é—´
+    UINT32  uiPrevOutputFrames;     // è¾“å‡ºæ€»å¸§æ•°
 } STRU_VIDEO_ENCODE_CTX;
 
 static void HW264E_FreeLibrary(STRU_H264_CTX *pModule)
@@ -157,8 +157,8 @@ static INT32 HW264E_LoadLibrary(STRU_H264_CTX *pModule, BOOL bTrickMode)
     return IMEDIA_RET_SUCCESS;
 }
 
-// »ñÈ¡²ÉÑùÖ¡¼ä¸ô
-// ¼ÆËã¹«Ê½ (ref_frames / ref_framerate) = scale * (dst_frames / dst_framerate)
+// è·å–é‡‡æ ·å¸§é—´éš”
+// è®¡ç®—å…¬å¼ (ref_frames / ref_framerate) = scale * (dst_frames / dst_framerate)
 static void CalcTrickmodeCaptureInterval(int scale, int ref_framerate, int dst_framerate, int *ref_frames,int *dst_frames)
 {
     int i, j;
@@ -175,7 +175,7 @@ static void CalcTrickmodeCaptureInterval(int scale, int ref_framerate, int dst_f
     }
 }
 
-// ¶ªÖ¡¼ÆËã¹«Ê½
+// ä¸¢å¸§è®¡ç®—å…¬å¼
 // ifr - input frames 5
 // ofr - output frames 3
 static int CalcFrameSkipPattern(int ifr, int ofr, unsigned char pSkipPattern[], unsigned char defaultValue, unsigned char maskValue)
@@ -273,7 +273,7 @@ static double psnr( INT64 iSsd, INT64 iSize )
     return (double)(-10.0 * log( f_mse ) / log( 10.0 ));
 }
 
-// ¼ÆËãPSNR
+// è®¡ç®—PSNR
 static void CalculatePSNR(const IHW264E_YUV *pstOrig, const IHW264E_YUV *pstRecon,
                            INT32 iWidth, INT32 iHeight, INT32 iOrigStride, INT32 iReconStride, UINT32 uChannelID)                       
 
@@ -350,7 +350,7 @@ static void CalculatePSNR(const IHW264E_YUV *pstOrig, const IHW264E_YUV *pstReco
 #define CHECK_VALUE_MAX(v, max_v, ret) {if ((v) > (max_v)) { return ret; }}
 #define CHECK_VALUE_RANGE(v, min_v, max_v, ret) {if ((v) < (min_v) || (v) > (max_v)) { return ret; }}
 
-// ¸Ãº¯ÊıºóĞø»¹ĞèÒªµ÷Õû
+// è¯¥å‡½æ•°åç»­è¿˜éœ€è¦è°ƒæ•´
 static INT32 H264_CheckMaxParams(STRU_IVIDENC_PARAMS *pstParams)
 {
     /*lint -e685*/
@@ -394,10 +394,10 @@ static const char* GetFrameTypeString(INT32 iType)
     return "UNKNOWN";
 }
 
-// »ñÈ¡Ëã·¨Í¨µÀµÄ¾²Ì¬²ÎÊı
+// è·å–ç®—æ³•é€šé“çš„é™æ€å‚æ•°
 static INT32 GetStaticParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_PARAMS* params)
 {
-    // ¼ì²éÏà¹Ø²ÎÊı
+    // æ£€æŸ¥ç›¸å…³å‚æ•°
     if (NULL == params)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "input params NULL\n");
@@ -423,10 +423,10 @@ static INT32 GetStaticParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_PARA
     return IMEDIA_RET_SUCCESS;
 }
 
-// »ñÈ¡Ëã·¨Í¨µÀµÄ¶¯Ì¬²ÎÊı
+// è·å–ç®—æ³•é€šé“çš„åŠ¨æ€å‚æ•°
 static INT32 GetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYNAMIC_PARAMS* params)
 {
-    // ¼ì²éÏà¹Ø²ÎÊı
+    // æ£€æŸ¥ç›¸å…³å‚æ•°
     if (NULL == params)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "input params NULL\n");
@@ -458,14 +458,14 @@ static INT32 GetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
     return IMEDIA_RET_SUCCESS;
 }
 
-// »ñÈ¡ĞòÁĞÍ·Í¼ÏñÍ·NALUÂëÁ÷
+// è·å–åºåˆ—å¤´å›¾åƒå¤´NALUç æµ
 static INT32 GetSpsPps(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_H264_FRAME_STREAM* params)
 {
     INT32 i = 0;
     INT32 iRet = IMEDIA_RET_SUCCESS;
     IHW264E_STREAM stStream = { 0 };
 
-    // ¼ì²éÏà¹Ø²ÎÊı
+    // æ£€æŸ¥ç›¸å…³å‚æ•°
     if (NULL == params)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "input params NULL\n");
@@ -526,10 +526,10 @@ static INT32 GetSpsPps(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_H264_FRAME_STREAM*
     return iRet;
 }
 
-/*// »ñÈ¡Ëã·¨Í¨µÀµÄÖÊÁ¿¿ØÖÆ²ÎÊı
+/*// è·å–ç®—æ³•é€šé“çš„è´¨é‡æ§åˆ¶å‚æ•°
 static INT32 GetQualityParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_QUALITY_PARAMS* pstParams)
 {
-    // ¼ì²éÏà¹Ø²ÎÊı
+    // æ£€æŸ¥ç›¸å…³å‚æ•°
     if (NULL == pstParams)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "input params NULL\n");
@@ -548,19 +548,19 @@ static INT32 GetQualityParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_QUA
         return IMEDIA_RET_OBJ_BAD_MASK;
     }
 
-    // µ±Ç°Ëã·¨Í¨µÀµÄÖÊÁ¿¿ØÖÆ²ÎÊı
+    // å½“å‰ç®—æ³•é€šé“çš„è´¨é‡æ§åˆ¶å‚æ•°
     memcpy(pstParams, &pstEncCtx->stQualityParams, sizeof(STRU_IVIDENC_QUALITY_PARAMS));
 
     return IMEDIA_RET_SUCCESS;
 }*/
 
-// ´ÓÅäÖÃÎÄ¼şµÄÄÚ´æÓ³ÏñÖĞ»ñÈ¡ÖÊÁ¿¿ØÖÆ²ÎÊı
+// ä»é…ç½®æ–‡ä»¶çš„å†…å­˜æ˜ åƒä¸­è·å–è´¨é‡æ§åˆ¶å‚æ•°
 static INT32 GetQualityParamsFromMemory(STRU_IVIDENC_QUALITY_PARAMS *pstParams, char *text)
 {
     INT32 iRet = IMEDIA_RET_SUCCESS;
     IMEDIA_INI_FILE pstIniHandle = NULL;
 
-    // ¼ì²é²ÎÊı
+    // æ£€æŸ¥å‚æ•°
     if (NULL == pstParams)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "input params NULL\n");
@@ -579,7 +579,7 @@ static INT32 GetQualityParamsFromMemory(STRU_IVIDENC_QUALITY_PARAMS *pstParams, 
         return IMEDIA_RET_PARAM_NULL;
     }
 
-    // ·ÖÎöÎÄ¼şºÍÄÚÈİ
+    // åˆ†ææ–‡ä»¶å’Œå†…å®¹
     iRet = IMedia_Ini_OpenFromMemory(text, &pstIniHandle);
     if (IMEDIA_RET_SUCCESS != iRet)
     {
@@ -587,7 +587,7 @@ static INT32 GetQualityParamsFromMemory(STRU_IVIDENC_QUALITY_PARAMS *pstParams, 
         return iRet;
     }
 
-    // Öğ¸ö²ÎÊı¶ÁÈ¡
+    // é€ä¸ªå‚æ•°è¯»å–
     pstParams->eLevel = (ENUM_IVIDEO_CODEC_LEVEL)IMedia_Ini_GetInteger(pstIniHandle, "LevelIDC", 31);
     pstParams->ePicCodingType = (ENUM_IVIDENC_PICTURE_CODING_TYPE)IMedia_Ini_GetInteger(pstIniHandle, "InterlaceType", PIC_CODING_FRAME);
     pstParams->iMultiPass = IMedia_Ini_GetInteger(pstIniHandle, "MultiPass", 2);
@@ -595,13 +595,13 @@ static INT32 GetQualityParamsFromMemory(STRU_IVIDENC_QUALITY_PARAMS *pstParams, 
     pstParams->bCabacFlag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "SymbolMode", 0);
     pstParams->bDCT8x8Flag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "Transform8x8", 0);
 
-    /**< Âë¿ØÏà¹Ø²ÎÊı */
+    /**< ç æ§ç›¸å…³å‚æ•° */
     pstParams->uiVbvBufDelay = (UINT32)IMedia_Ini_GetInteger(pstIniHandle, "VbvBufDelay", 1000);
     pstParams->bSkipFrameFlag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "SkipEnable", 0);
     pstParams->iChromaQPOffset = IMedia_Ini_GetInteger(pstIniHandle, "ChromaQPOffset", 0);
     pstParams->iSecondChromaQPOffset = IMedia_Ini_GetInteger(pstIniHandle, "SecondChrQPOffset", 0);
 
-    /**< ËÑË÷Ëã·¨Ïà¹Ø²ÎÊı */
+    /**< æœç´¢ç®—æ³•ç›¸å…³å‚æ•° */
     pstParams->eMEMethod = (ENUM_IVIDENC_ME_METHOD)IMedia_Ini_GetInteger(pstIniHandle, "MotionEstimationType", ME_HEX);
     pstParams->iSubMELevel = IMedia_Ini_GetInteger(pstIniHandle, "SubMELevel", 5);
     pstParams->iMERange = IMedia_Ini_GetInteger(pstIniHandle, "MERange", 32);
@@ -611,10 +611,10 @@ static INT32 GetQualityParamsFromMemory(STRU_IVIDENC_QUALITY_PARAMS *pstParams, 
     pstParams->bBiMEFlag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "BiME", 0);
     pstParams->bFastPSkipFlag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "FastSkip", 1);
 
-    /**< Ç°´¦ÀíËã·¨Ïà¹Ø²ÎÊı */
+    /**< å‰å¤„ç†ç®—æ³•ç›¸å…³å‚æ•° */
     pstParams->eScenecutType = (ENUM_IVIDENC_SCENECUT_METHOD)IMedia_Ini_GetInteger(pstIniHandle, "ScenecutType", SCENECUT_NONE);
 
-    /**< BÖ¡Ïà¹Ø²ÎÊı */
+    /**< Bå¸§ç›¸å…³å‚æ•° */
     pstParams->eBFrameRefType = (ENUM_IVIDENC_BREF_METHOD)IMedia_Ini_GetInteger(pstIniHandle, "BHiercodingType", BREF_NONE);
     pstParams->eBFrameDirectMode = (ENUM_IVIDENC_DIRECT_MODE)IMedia_Ini_GetInteger(pstIniHandle, "DirectModeType", DIRECT_SPATIAL);
     pstParams->iBFrameNum = IMedia_Ini_GetInteger(pstIniHandle, "BPictureNumber", 0);
@@ -622,17 +622,17 @@ static INT32 GetQualityParamsFromMemory(STRU_IVIDENC_QUALITY_PARAMS *pstParams, 
     pstParams->bBFrameAdaptFlag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "BPictureAdapt", 1);
     pstParams->bBFrameRDOFlag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "BPictureRDO", 0);
 
-    /**< ºê¿éÄ£Ê½Ïà¹Ø²ÎÊı */
+    /**< å®å—æ¨¡å¼ç›¸å…³å‚æ•° */
     pstParams->bI4x4Flag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "I4x4", 1);
     pstParams->bI8x8Flag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "I8x8", 0);
     pstParams->bPSub16x16Flag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "PSub16x16", 1);
     pstParams->bPSub8x8Flag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "PSub8x8", 1);
     pstParams->bBSub16x16Flag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "BSub16x16", 1);
 
-    /**< ¼ÓÈ¨Ô¤²âÏà¹Ø²ÎÊı */
+    /**< åŠ æƒé¢„æµ‹ç›¸å…³å‚æ•° */
     pstParams->bWPFlag = (BOOL)IMedia_Ini_GetInteger(pstIniHandle, "WeightedPrediction", 0);
 
-    /**< »·Â·ÂË²¨Ïà¹Ø²ÎÊı */
+    /**< ç¯è·¯æ»¤æ³¢ç›¸å…³å‚æ•° */
     pstParams->eLfDisableIdc = (ENUM_IVIDENC_FILTER_TYPE)IMedia_Ini_GetInteger(pstIniHandle, "LFDisableIdc", FILTER_FILTER);
     pstParams->iLFAlphaOffset = IMedia_Ini_GetInteger(pstIniHandle, "LFAlpha", 0);
     pstParams->iLFBetaOffset = IMedia_Ini_GetInteger(pstIniHandle, "LFBeta", 0);
@@ -642,20 +642,20 @@ static INT32 GetQualityParamsFromMemory(STRU_IVIDENC_QUALITY_PARAMS *pstParams, 
     pstParams->eSliceMode = (ENUM_IVIDENC_SLICE_MODE)IMedia_Ini_GetInteger(pstIniHandle, "SliceMode", SLICE_MODE_ONLY_ONE);
     pstParams->iSliceParam = IMedia_Ini_GetInteger(pstIniHandle, "SliceArgument", 1024);
 
-    // ÊÍ·ÅÏà¹Ø×ÊÔ´
+    // é‡Šæ”¾ç›¸å…³èµ„æº
     IMedia_Ini_Close(pstIniHandle);
     pstIniHandle = NULL;
 
     return IMEDIA_RET_SUCCESS;
 }
 
-// »ñÈ¡Ëã·¨Í¨µÀµÄ×´Ì¬
+// è·å–ç®—æ³•é€šé“çš„çŠ¶æ€
 static INT32 GetStatus(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_STATUS* pstStatus)
 {
     INT32 iRet = 0;
     IHW264E_STATUS_ENC stStatus;
 
-    // ¼ì²éÏà¹Ø²ÎÊı
+    // æ£€æŸ¥ç›¸å…³å‚æ•°
     if (NULL == pstStatus)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "input params NULL\n");
@@ -704,13 +704,13 @@ static INT32 GetStatus(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_STATUS* ps
     return IMEDIA_RET_SUCCESS;
 }
 
-// »ñÈ¡Ëã·¨Í¨µÀµÄÁ÷ĞÅÏ¢
+// è·å–ç®—æ³•é€šé“çš„æµä¿¡æ¯
 static INT32 GetStreamInfo(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDEO_STREAM_INFO* pstStreamInfo)
 {
     INT32 iRet = 0;
     IHW264E_STATUS_PARAM stStreamInfo;
 
-    // ¼ì²éÏà¹Ø²ÎÊı
+    // æ£€æŸ¥ç›¸å…³å‚æ•°
     if (NULL == pstStreamInfo)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "input params NULL\n");
@@ -780,7 +780,7 @@ static void ResetContextStatus(STRU_VIDEO_ENCODE_CTX* pstEncCtx)
     pstEncCtx->bEncodeLastFrameFlag = FALSE;
 }
 
-// ÉèÖÃËã·¨Í¨µÀµÄ¶¯Ì¬²ÎÊı
+// è®¾ç½®ç®—æ³•é€šé“çš„åŠ¨æ€å‚æ•°
 static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYNAMIC_PARAMS* params)
 {
     INT32  iRet = IMEDIA_RET_SUCCESS;
@@ -791,7 +791,7 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
     INT32  iInFrameRate = DEFAULT_FRAME_RATE;
     INT32  iOutFrameRate = DEFAULT_FRAME_RATE;
 
-    // ¼ì²éÏà¹Ø²ÎÊı
+    // æ£€æŸ¥ç›¸å…³å‚æ•°
     if (NULL == params)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "input params NULL\n");
@@ -822,7 +822,7 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
         return IMEDIA_RET_OBJ_NOT_INIT;
     }
 
-    // ¼ì²â²ÎÊıÊÇ·ñºÏ·¨
+    // æ£€æµ‹å‚æ•°æ˜¯å¦åˆæ³•
     iRet = H264_CheckDynParams(&pstEncCtx->stParams, params);
     if (IMEDIA_RET_SUCCESS != iRet)
     {
@@ -830,11 +830,11 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
         return iRet;
     }
 
-    // ¸´ÖÆÏà¹Ø²ÎÊı
+    // å¤åˆ¶ç›¸å…³å‚æ•°
     memcpy(&pstEncCtx->stDynParams, params, sizeof(STRU_IVIDENC_DYNAMIC_PARAMS));
     pstEncCtx->stDynParams.pszQualityCfgBuf = NULL;
 
-    // ÉèÖÃ»ù±¾¶¯Ì¬²ÎÊı
+    // è®¾ç½®åŸºæœ¬åŠ¨æ€å‚æ•°
     stDynBaseParams.iImgWidth       = (INT32)pstEncCtx->stDynParams.usWidth;
     stDynBaseParams.iImgHeight      = (INT32)pstEncCtx->stDynParams.usHeight;
     stDynBaseParams.iKeyInterval    = /*(ENCODE_TRICK_MODE == pstEncCtx->eType) ? 1 :*/ (INT32)pstEncCtx->stDynParams.uiKeyframeInterval;
@@ -847,7 +847,7 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
     stDynBaseParams.iSarWidth       = (INT32)pstEncCtx->stDynParams.stAspectRatio.usSarWidth;
     stDynBaseParams.iSarHeight      = (INT32)pstEncCtx->stDynParams.stAspectRatio.usSarHeight;
 
-    // ·ÖÎöÖÊÁ¿²ÎÊı
+    // åˆ†æè´¨é‡å‚æ•°
     if (QUALITY_LEVEL_CUSTOM == pstEncCtx->stParams.eQualityLevel)
     {
         if (NULL == params->pszQualityCfgBuf)
@@ -863,7 +863,7 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
             return iRet;
         }
 
-        // ĞŞÕı²»·ûºÏ¿ì½ø±àÂëÒªÇóµÄ²¿·Ö×Ô¶¨Òå²ÎÊı£¬È±Ê¡²ÎÊı¼¯ĞèÒªÔÚ±àÂëÆ÷ÄÚ²¿ÉèÖÃ
+        // ä¿®æ­£ä¸ç¬¦åˆå¿«è¿›ç¼–ç è¦æ±‚çš„éƒ¨åˆ†è‡ªå®šä¹‰å‚æ•°ï¼Œç¼ºçœå‚æ•°é›†éœ€è¦åœ¨ç¼–ç å™¨å†…éƒ¨è®¾ç½®
         if (ENCODE_TRICK_MODE == pstEncCtx->eType)
         {
             pstEncCtx->stQualityParams.iBFrameNum = 0;
@@ -874,7 +874,7 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
             pstEncCtx->stQualityParams.eBFrameRefType = BREF_NONE;
             pstEncCtx->stQualityParams.eSliceMode = SLICE_MODE_ONLY_ONE;
             
-            // ÔÚ³¡ĞòÁĞµÄÇé¿öÏÂÖ»Ö§³Ö³¡±àÂë
+            // åœ¨åœºåºåˆ—çš„æƒ…å†µä¸‹åªæ”¯æŒåœºç¼–ç 
             if (IVIDEO_INTERLACED == pstEncCtx->stParams.eContentType && pstEncCtx->stParams.eProfile > IVIDEO_PROFILE_H264_BASELINE)
             {
                 pstEncCtx->stQualityParams.ePicCodingType = PIC_CODING_FIELD;
@@ -885,7 +885,7 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
             }
         }
 
-        // ÉèÖÃ×Ô¶¨Òå¶¯Ì¬²ÎÊı
+        // è®¾ç½®è‡ªå®šä¹‰åŠ¨æ€å‚æ•°
         stDynCustomParams.iMultiPass    = pstEncCtx->stQualityParams.iMultiPass;
         stDynCustomParams.eInterlace    = (HW264E_INTERLACE)pstEncCtx->stQualityParams.ePicCodingType;
         stDynCustomParams.eLevel        = (HW264E_LEVEL)pstEncCtx->stQualityParams.eLevel;
@@ -925,7 +925,7 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
         memset(&stDynCustomParams, 0, sizeof(IHW264E_DYN_PARAM_CUSTOM));
     }
 
-    // ĞŞÕı¶¯Ì¬²ÎÊı
+    // ä¿®æ­£åŠ¨æ€å‚æ•°
     if (ENCODE_TRICK_MODE == pstEncCtx->eType) /* && IVIDEO_INTERLACED == pstEncCtx->stParams.eContentType && !pstEncCtx->stDynParams.bSkipFrameFlag */
     {
         if (pstEncCtx->stDynParams.bSkipFrameFlag)
@@ -942,7 +942,7 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
         }
     }
 
-    // ÉèÖÃ¶¯Ì¬²ÎÊı
+    // è®¾ç½®åŠ¨æ€å‚æ•°
     iRet = pstEncCtx->stModule.pfnControl(pstEncCtx->pstEncoder, &stDynBaseParams, &stDynCustomParams);
     if (HW264E_S_OK != iRet)
     {
@@ -952,9 +952,9 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
 
     pstEncCtx->eStatus = IVIDEO_CODEC_RUNNING;
 
-    // Éú³É¶ªÖ¡ÑÚÂë±í£¨ÊÇ·ñÒª¿¼ÂÇ¼ÓskipÖ¡±ê¼Ç£©
-    // ÓÉÓÚÒ»ÆÚ²»¿¼ÂÇNTSC <-> PAL×ª»»£¬¿ÉÒÔÏÈ°´ÕûÊı´¦Àí£¬¿ì½ø±àÂëÊ±Ö¡ÂÊµÄÒªÇóÃ»ÄÇÃ´ÑÏ¸ñ
-    // 29.97fpsÊ±´æÔÚÎÊÌâ
+    // ç”Ÿæˆä¸¢å¸§æ©ç è¡¨ï¼ˆæ˜¯å¦è¦è€ƒè™‘åŠ skipå¸§æ ‡è®°ï¼‰
+    // ç”±äºä¸€æœŸä¸è€ƒè™‘NTSC <-> PALè½¬æ¢ï¼Œå¯ä»¥å…ˆæŒ‰æ•´æ•°å¤„ç†ï¼Œå¿«è¿›ç¼–ç æ—¶å¸§ç‡çš„è¦æ±‚æ²¡é‚£ä¹ˆä¸¥æ ¼
+    // 29.97fpsæ—¶å­˜åœ¨é—®é¢˜
     iInFrameRate  = (INT32)((pstEncCtx->stDynParams.uiInputRefFrameRate + 500) / 1000);
     iOutFrameRate = (INT32)((pstEncCtx->stDynParams.uiFrameRate + 500) / 1000);
     CalcTrickmodeCaptureInterval((ENCODE_TRICK_MODE == pstEncCtx->eType && pstEncCtx->stDynParams.bSkipFrameFlag) ? 
@@ -964,7 +964,7 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
         pTempBuf = IMedia_Malloc(iInFrameRate*sizeof(UINT8));
         if (pTempBuf)
         {
-            // ÏÈÊÍ·ÅÔ­ÏÈµÄÄÚ´æ
+            // å…ˆé‡Šæ”¾åŸå…ˆçš„å†…å­˜
             if (pstEncCtx->pucFrameDropMask)
             {
                 IMedia_Free(pstEncCtx->pucFrameDropMask);
@@ -988,24 +988,24 @@ static INT32 SetDynamicParams(STRU_VIDEO_ENCODE_CTX* pstEncCtx, STRU_IVIDENC_DYN
     }
     else
     {
-        // ÊäÈëÖ¡ÂÊ±ÈÊä³öÖ¡ÂÊµÍµÄÇé¿öÏÂÔİ²»¿¼ÂÇ²åÈëÖ¡£¨Ò»ÆÚÎŞNTSC <-> PAL×ª»»£©
+        // è¾“å…¥å¸§ç‡æ¯”è¾“å‡ºå¸§ç‡ä½çš„æƒ…å†µä¸‹æš‚ä¸è€ƒè™‘æ’å…¥å¸§ï¼ˆä¸€æœŸæ— NTSC <-> PALè½¬æ¢ï¼‰
         pstEncCtx->uiFrameDropBase = iInFrameRate;
         memset(pstEncCtx->pucFrameDropMask, FRAME_MASK_ENCODE, pstEncCtx->uiFrameDropBase);
     }
 
-    // µ±Ç°ÂëÂÊÅäÖÃÌõ¼şÏÂÖ¡µÄ¿ÉÄÜ×î´ó³ß´ç
+    // å½“å‰ç ç‡é…ç½®æ¡ä»¶ä¸‹å¸§çš„å¯èƒ½æœ€å¤§å°ºå¯¸
     //uiFrameMaxSize = stDynBaseParams.iBitRate * 125; // kbps -> bytes
-    //uiFrameMaxSize = IVIDEO_YUV_SIZE(pstEncCtx->stDynParams.usWidth, pstEncCtx->stDynParams.usHeight) << 1; // 2Ö¡YUV´óĞ¡£¬CModelÈ±Ê¡Öµ
-    uiFrameMaxSize = IVIDEO_YUV_SIZE(pstEncCtx->stParams.usMaxWidth, pstEncCtx->stParams.usMaxHeight) << 1;   // 2Ö¡YUV´óĞ¡£¬ÓÃ×î´ó¿í¸ßÖµ¿É±ÜÃâ±àÂë¿í¸ß±ä»¯Ê±Ôì³ÉÄÚ´æ¿Õ¼äµÄÖØĞÂ·ÖÅä
-    uiFrameMaxSize = IMEDIA_MAX(uiFrameMaxSize, 131072); // ×îÉÙ128KB
-    uiFrameMaxSize = IMEDIA_MIN(uiFrameMaxSize, (MAX_BITRATE_KBPS * 125)); // È¡2Ö¡YUV¼°×î´óÂëÂÊ¿Õ¼äµÄ×îĞ¡Öµ
+    //uiFrameMaxSize = IVIDEO_YUV_SIZE(pstEncCtx->stDynParams.usWidth, pstEncCtx->stDynParams.usHeight) << 1; // 2å¸§YUVå¤§å°ï¼ŒCModelç¼ºçœå€¼
+    uiFrameMaxSize = IVIDEO_YUV_SIZE(pstEncCtx->stParams.usMaxWidth, pstEncCtx->stParams.usMaxHeight) << 1;   // 2å¸§YUVå¤§å°ï¼Œç”¨æœ€å¤§å®½é«˜å€¼å¯é¿å…ç¼–ç å®½é«˜å˜åŒ–æ—¶é€ æˆå†…å­˜ç©ºé—´çš„é‡æ–°åˆ†é…
+    uiFrameMaxSize = IMEDIA_MAX(uiFrameMaxSize, 131072); // æœ€å°‘128KB
+    uiFrameMaxSize = IMEDIA_MIN(uiFrameMaxSize, (MAX_BITRATE_KBPS * 125)); // å–2å¸§YUVåŠæœ€å¤§ç ç‡ç©ºé—´çš„æœ€å°å€¼
     if (pstEncCtx->uiFrameMaxSize < uiFrameMaxSize)
     {
-        // ´´½¨ÁÙÊ±Ö¡ÂëÁ÷»º´æ
+        // åˆ›å»ºä¸´æ—¶å¸§ç æµç¼“å­˜
         pTempBuf = IMedia_Malloc(uiFrameMaxSize*sizeof(UINT8));
         if (pTempBuf)
         {
-            // ÏÈÊÍ·ÅÔ­ÏÈµÄÄÚ´æ
+            // å…ˆé‡Šæ”¾åŸå…ˆçš„å†…å­˜
             if (pstEncCtx->pFrameStreamBuf)
             {
                 IMedia_Free(pstEncCtx->pFrameStreamBuf);
@@ -1045,14 +1045,14 @@ static void HW264E_msg_callback(const char *pszFileName, UINT32 uLine, const cha
 
 
 /*****************************************************************************************
-* º¯ÊıËµÃ÷£º´´½¨Ëã·¨Í¨µÀ¡£
-* ÊäÈë²ÎÊı£º
-*        eCodecType    Ëã·¨ÀàĞÍ
-*        params        ±àÂëÆ÷µÄÒ»Ğ©»ù±¾ĞÅÏ¢µÄ½á¹¹ÌåÖ¸Õë£¬°üÀ¨Í¼ÏñµÄ¿í¸ß¡¢±ÈÌØÂÊµÈĞÅÏ¢
-*        pfnReconFrame µ±Ç°Í¨µÀÖØ½¨Ö¡YUVÊä³ö»Øµ÷º¯Êı
-* Êä³ö²ÎÊı£º
-*        pctx       Ëã·¨Í¨µÀ¾ä±ú
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+* å‡½æ•°è¯´æ˜ï¼šåˆ›å»ºç®—æ³•é€šé“ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+*        eCodecType    ç®—æ³•ç±»å‹
+*        params        ç¼–ç å™¨çš„ä¸€äº›åŸºæœ¬ä¿¡æ¯çš„ç»“æ„ä½“æŒ‡é’ˆï¼ŒåŒ…æ‹¬å›¾åƒçš„å®½é«˜ã€æ¯”ç‰¹ç‡ç­‰ä¿¡æ¯
+*        pfnReconFrame å½“å‰é€šé“é‡å»ºå¸§YUVè¾“å‡ºå›è°ƒå‡½æ•°
+* è¾“å‡ºå‚æ•°ï¼š
+*        pctx       ç®—æ³•é€šé“å¥æŸ„
+* è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 *****************************************************************************************/
 EXPORT_API INT32 IMedia_Videnc_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IVIDENC_PARAMS *pstParams, IMEDIA_CODEC_CTX* pctx, funReconFrame *pfnCallBackRecFrame)
 {
@@ -1061,14 +1061,14 @@ EXPORT_API INT32 IMedia_Videnc_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
     IHW264E_STATIC_PARAM_BASE   stStaticBaseParams;
     IHW264E_STATIC_PARAM_CUSTOM stStaticCustomParams;
 
-    // 1. ¼ì²âÊäÈëÊä³ö²ÎÊıÊÇ·ñºÏ·¨
+    // 1. æ£€æµ‹è¾“å…¥è¾“å‡ºå‚æ•°æ˜¯å¦åˆæ³•
     if (NULL == pstParams)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "input params NULL\n");
         return IMEDIA_RET_PARAM_NULL; 
     }
 
-    // Ä¿Ç°Ö»Ö§³ÖH264
+    // ç›®å‰åªæ”¯æŒH264
     if (IVIDEO_CODEC_H264 != eCodecType)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "input eCodecType <%d> wrong\n",eCodecType);
@@ -1083,7 +1083,7 @@ EXPORT_API INT32 IMedia_Videnc_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
 
     *pctx = NULL;
 
-    // ¼ì²â²ÎÊıÊÇ·ñºÏ·¨
+    // æ£€æµ‹å‚æ•°æ˜¯å¦åˆæ³•
     iRet = H264_CheckMaxParams(pstParams);
     if (IMEDIA_RET_SUCCESS != iRet)
     {
@@ -1093,8 +1093,8 @@ EXPORT_API INT32 IMedia_Videnc_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
 
     g_stGlobalInfo.bMallocFxnUsed = TRUE;
 
-    // 2. ¿ªÊ¼Í¨µÀ´´½¨
-    // ·ÖÅä±àÂëÍ¨µÀ
+    // 2. å¼€å§‹é€šé“åˆ›å»º
+    // åˆ†é…ç¼–ç é€šé“
     pstEncCtx = IMedia_Malloc(sizeof(STRU_VIDEO_ENCODE_CTX));
     if(NULL == pstEncCtx)
     {
@@ -1104,7 +1104,7 @@ EXPORT_API INT32 IMedia_Videnc_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
 
     IMEDIA_LOG(IMEDIA_INFO, "malloc enc_ctx = %p succeed\n", pstEncCtx);
 
-    // ³õÊ¼»¯²¿·Ö²ÎÊı
+    // åˆå§‹åŒ–éƒ¨åˆ†å‚æ•°
     memset(pstEncCtx, 0, sizeof(STRU_VIDEO_ENCODE_CTX));
     memcpy(&pstEncCtx->stParams, pstParams, sizeof(STRU_IVIDENC_PARAMS));
     pstEncCtx->iCrcMask = CRC_MASK;
@@ -1115,8 +1115,8 @@ EXPORT_API INT32 IMedia_Videnc_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
     }
     pstEncCtx->eType = (pstEncCtx->stParams.uiEncScale > 1) ? ENCODE_TRICK_MODE : ENCODE_NORMAL;
 
-    // 3. ´´½¨H264±àÂëÆ÷
-    // ÉèÖÃ»ù±¾¾²Ì¬²ÎÊı
+    // 3. åˆ›å»ºH264ç¼–ç å™¨
+    // è®¾ç½®åŸºæœ¬é™æ€å‚æ•°
     stStaticBaseParams.iMaxWidth        = pstParams->usMaxWidth;
     stStaticBaseParams.iMaxHeight       = pstParams->usMaxHeight;
     stStaticBaseParams.iMaxKeyInterval  = pstParams->uiMaxKeyframeInterval;
@@ -1130,12 +1130,12 @@ EXPORT_API INT32 IMedia_Videnc_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
     stStaticBaseParams.ReconFunc        = (HW264E_RECON_FXN)pfnCallBackRecFrame;
     stStaticBaseParams.CalcQualityFunc  = (pstParams->iFlags & IMEDIA_FLAG_CALC_PSNR) ? CalculatePSNR : NULL;
     
-    // ÉèÖÃ×Ô¶¨Òå¾²Ì¬²ÎÊı
+    // è®¾ç½®è‡ªå®šä¹‰é™æ€å‚æ•°
     stStaticCustomParams.iMaxRefNum     = pstParams->uiMaxRefFrameNum;
     stStaticCustomParams.iMaxBNum       = pstParams->uiMaxBFrameNum;
     stStaticCustomParams.iMaxMultiPass  = pstParams->uiMaxMultipass;
 
-    // ³õÊ¼»¯È±Ê¡¶¯Ì¬²ÎÊı
+    // åˆå§‹åŒ–ç¼ºçœåŠ¨æ€å‚æ•°
     pstEncCtx->stDynParams.usWidth              = stStaticBaseParams.iMaxWidth;
     pstEncCtx->stDynParams.usHeight             = stStaticBaseParams.iMaxHeight;
     pstEncCtx->stDynParams.uiInputRefFrameRate  = 25000;
@@ -1150,7 +1150,7 @@ EXPORT_API INT32 IMedia_Videnc_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
     pstEncCtx->stDynParams.stAspectRatio.usSarHeight = 1;
     pstEncCtx->stDynParams.pszQualityCfgBuf     = NULL;
 
-    // ³õÊ¼»¯È±Ê¡ÖÊÁ¿²ÎÊı
+    // åˆå§‹åŒ–ç¼ºçœè´¨é‡å‚æ•°
     pstEncCtx->stQualityParams.uiVbvBufDelay = 1000;
     pstEncCtx->stQualityParams.bSkipFrameFlag = 0;
     pstEncCtx->stQualityParams.eSliceMode = SLICE_MODE_ONLY_ONE;
@@ -1167,7 +1167,7 @@ EXPORT_API INT32 IMedia_Videnc_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
 
     if (ENCODE_TRICK_MODE == pstEncCtx->eType)
     {
-        // H264¿ì½ø±àÂëÆ÷, µ÷Õû²¿·Ö²ÎÊı
+        // H264å¿«è¿›ç¼–ç å™¨, è°ƒæ•´éƒ¨åˆ†å‚æ•°
         //stStaticCustomParams.iMaxRefNum = 1;
         stStaticCustomParams.iMaxBNum = 0;
         //stStaticCustomParams.iMaxMultiPass = 1;
@@ -1188,7 +1188,7 @@ EXPORT_API INT32 IMedia_Videnc_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
     pstEncCtx->eStatus = IVIDEO_CODEC_READY;
     *pctx = pstEncCtx;
 
-    // ÔÚ´Ë´¦ÉèÖÃÈ±Ê¡¶¯Ì¬²ÎÊıµÄÔ­ÒòÊÇ¿É½ÚÊ¡µ÷ÓÃcontrol(IMEDIA_SET_DYN_PARAMS)½Ó¿Ú
+    // åœ¨æ­¤å¤„è®¾ç½®ç¼ºçœåŠ¨æ€å‚æ•°çš„åŸå› æ˜¯å¯èŠ‚çœè°ƒç”¨control(IMEDIA_SET_DYN_PARAMS)æ¥å£
     //iRet = SetDynamicParams(pstEncCtx, &pstEncCtx->stDynParams);
     //if (IMEDIA_RET_SUCCESS != iRet)
     //{
@@ -1214,23 +1214,23 @@ CREATE_FAILED:
 }
 
 /*****************************************************************************************
-* º¯ÊıËµÃ÷£ºÍ¨µÀ¿ØÖÆº¯Êı¡£
-* ÊäÈë²ÎÊı£º
-*        ctx     Ëã·¨Í¨µÀ¾ä±ú
-*        cmd:    ¿ØÖÆ²ÎÊıµÄÃüÁîÂë
-*           IMEDIA_GET_VERSION     »ñÈ¡°æ±¾ĞÅÏ¢                  wparam(STRU_IMEDIA_VERSION*)           lparam(NULL)
-*           IMEDIA_GET_STATUS      »ñÈ¡Ëã·¨Í¨µÀ×´Ì¬ĞÅÏ¢          wparam(STRU_IVIDENC_STATUS*)           lparam(NULL)
-*           IMEDIA_GET_STREAM_INFO »ñÈ¡Ëã·¨Í¨µÀµ±Ç°ÂëÁ÷ĞÅÏ¢      wparam(STRU_IVIDEO_STREAM_INFO*)       lparam(NULL)
-*           IMEDIA_GET_PARAMS      »ñÈ¡Ëã·¨Í¨µÀµÄ²ÎÊıĞÅÏ¢        wparam(STRU_IVIDENC_PARAMS*)           lparam(NULL)
-*           IMEDIA_GET_DYN_PARAMS  »ñÈ¡Ëã·¨Í¨µÀµÄ¶¯Ì¬²ÎÊı        wparam(STRU_IVIDENC_DYNAMIC_PARAMS*)   lparam(NULL)
-*           IMEDIA_GET_SPS_PPS     »ñÈ¡ĞòÁĞÍ·Í¼ÏñÍ·NALUÂëÁ÷      wparam(STRU_H264_FRAME_STREAM*)        lparam(NULL)
-*           IMEDIA_SET_DYN_PARAMS  ÉèÖÃËã·¨Í¨µÀµÄ¶¯Ì¬²ÎÊı        wparam(STRU_IVIDENC_DYNAMIC_PARAMS*)   lparam(NULL)
-*        wparam    Ã¿ÖÖÃüÁî¶ÔÓ¦¸÷×ÔÀàĞÍ£¬¿É×÷ÎªÊäÈë»òÊä³ö
-*        lparam    Ã¿ÖÖÃüÁî¶ÔÓ¦¸÷×ÔÀàĞÍ£¬¿É×÷ÎªÊäÈë»òÊä³ö
-* Êä³ö²ÎÊı£º
-*        wparam    Ã¿ÖÖÃüÁî¶ÔÓ¦¸÷×ÔÀàĞÍ£¬¿É×÷ÎªÊäÈë»òÊä³ö
-*        lparam    Ã¿ÖÖÃüÁî¶ÔÓ¦¸÷×ÔÀàĞÍ£¬¿É×÷ÎªÊäÈë»òÊä³ö
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+* å‡½æ•°è¯´æ˜ï¼šé€šé“æ§åˆ¶å‡½æ•°ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+*        ctx     ç®—æ³•é€šé“å¥æŸ„
+*        cmd:    æ§åˆ¶å‚æ•°çš„å‘½ä»¤ç 
+*           IMEDIA_GET_VERSION     è·å–ç‰ˆæœ¬ä¿¡æ¯                  wparam(STRU_IMEDIA_VERSION*)           lparam(NULL)
+*           IMEDIA_GET_STATUS      è·å–ç®—æ³•é€šé“çŠ¶æ€ä¿¡æ¯          wparam(STRU_IVIDENC_STATUS*)           lparam(NULL)
+*           IMEDIA_GET_STREAM_INFO è·å–ç®—æ³•é€šé“å½“å‰ç æµä¿¡æ¯      wparam(STRU_IVIDEO_STREAM_INFO*)       lparam(NULL)
+*           IMEDIA_GET_PARAMS      è·å–ç®—æ³•é€šé“çš„å‚æ•°ä¿¡æ¯        wparam(STRU_IVIDENC_PARAMS*)           lparam(NULL)
+*           IMEDIA_GET_DYN_PARAMS  è·å–ç®—æ³•é€šé“çš„åŠ¨æ€å‚æ•°        wparam(STRU_IVIDENC_DYNAMIC_PARAMS*)   lparam(NULL)
+*           IMEDIA_GET_SPS_PPS     è·å–åºåˆ—å¤´å›¾åƒå¤´NALUç æµ      wparam(STRU_H264_FRAME_STREAM*)        lparam(NULL)
+*           IMEDIA_SET_DYN_PARAMS  è®¾ç½®ç®—æ³•é€šé“çš„åŠ¨æ€å‚æ•°        wparam(STRU_IVIDENC_DYNAMIC_PARAMS*)   lparam(NULL)
+*        wparam    æ¯ç§å‘½ä»¤å¯¹åº”å„è‡ªç±»å‹ï¼Œå¯ä½œä¸ºè¾“å…¥æˆ–è¾“å‡º
+*        lparam    æ¯ç§å‘½ä»¤å¯¹åº”å„è‡ªç±»å‹ï¼Œå¯ä½œä¸ºè¾“å…¥æˆ–è¾“å‡º
+* è¾“å‡ºå‚æ•°ï¼š
+*        wparam    æ¯ç§å‘½ä»¤å¯¹åº”å„è‡ªç±»å‹ï¼Œå¯ä½œä¸ºè¾“å…¥æˆ–è¾“å‡º
+*        lparam    æ¯ç§å‘½ä»¤å¯¹åº”å„è‡ªç±»å‹ï¼Œå¯ä½œä¸ºè¾“å…¥æˆ–è¾“å‡º
+* è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 *****************************************************************************************/
 EXPORT_API INT32 IMedia_Videnc_Control(IMEDIA_CODEC_CTX ctx, ENUM_IMEDIA_CMD cmd, void *wparam, void *lparam)
 {
@@ -1295,14 +1295,14 @@ EXPORT_API INT32 IMedia_Videnc_Control(IMEDIA_CODEC_CTX ctx, ENUM_IMEDIA_CMD cmd
 }
 
 /*****************************************************************************************
-* º¯ÊıËµÃ÷£ºËã·¨Í¨µÀ´¦Àíº¯Êı£¬Ã¿´Îµ÷ÓÃ½öÊä³öÒ»Ö¡£¬Í¨¹ıÊä³ö²ÎÊıENUM_BITSTREAM_STATUS»ñÈ¡ÊÇ·ñÎª×îºóÒ»Ö¡µÄÂëÁ÷¡£
-*           ÔÚ´ËÖ®Ç°Ğèµ÷ÓÃIMedia_Videnc_Control(...,cmd=IMEDIA_SET_DYN_PARAMS,...)½Ó¿Ú
-* ÊäÈë²ÎÊı£º
-*        ctx        Ëã·¨Í¨µÀ¾ä±ú
-*        pstInArgs  ÊäÈë²ÎÊıĞÅÏ¢£¨ÊäÈëYUVµÈĞÅÏ¢£©
-* Êä³ö²ÎÊı£º
-*        pstOutArgs Êä³ö²ÎÊıĞÅÏ¢£¨Êä³öÂëÁ÷µØÖ·ÓÉËã·¨Ä£¿éÄÚ²¿·ÖÅäºÃºóÊä³ö£¬Ó¦ÓÃ²ã²»ÄÜÊÍ·Å¿Õ¼ä£©
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+* å‡½æ•°è¯´æ˜ï¼šç®—æ³•é€šé“å¤„ç†å‡½æ•°ï¼Œæ¯æ¬¡è°ƒç”¨ä»…è¾“å‡ºä¸€å¸§ï¼Œé€šè¿‡è¾“å‡ºå‚æ•°ENUM_BITSTREAM_STATUSè·å–æ˜¯å¦ä¸ºæœ€åä¸€å¸§çš„ç æµã€‚
+*           åœ¨æ­¤ä¹‹å‰éœ€è°ƒç”¨IMedia_Videnc_Control(...,cmd=IMEDIA_SET_DYN_PARAMS,...)æ¥å£
+* è¾“å…¥å‚æ•°ï¼š
+*        ctx        ç®—æ³•é€šé“å¥æŸ„
+*        pstInArgs  è¾“å…¥å‚æ•°ä¿¡æ¯ï¼ˆè¾“å…¥YUVç­‰ä¿¡æ¯ï¼‰
+* è¾“å‡ºå‚æ•°ï¼š
+*        pstOutArgs è¾“å‡ºå‚æ•°ä¿¡æ¯ï¼ˆè¾“å‡ºç æµåœ°å€ç”±ç®—æ³•æ¨¡å—å†…éƒ¨åˆ†é…å¥½åè¾“å‡ºï¼Œåº”ç”¨å±‚ä¸èƒ½é‡Šæ”¾ç©ºé—´ï¼‰
+* è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 *****************************************************************************************/
 EXPORT_API INT32 IMedia_Videnc_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDENC_IN_ARGS *pstInArgs, STRU_IVIDENC_OUT_ARGS *pstOutArgs)
 {
@@ -1316,7 +1316,7 @@ EXPORT_API INT32 IMedia_Videnc_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDENC_IN_ARG
     HW264E_RETURN  eRet = HW264E_S_OK;
     UINT64         ullCurrentSysTime = 0;
 
-    // ¼ì²éÏà¹Ø²ÎÊı
+    // æ£€æŸ¥ç›¸å…³å‚æ•°
     if (NULL == pstEncCtx)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "pstEncCtx NULL\n");
@@ -1341,7 +1341,7 @@ EXPORT_API INT32 IMedia_Videnc_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDENC_IN_ARG
         return IMEDIA_RET_OBJ_NOT_INIT;
     }
 
-    // ±£Ö¤ÊäÈë/Êä³ö²ÎÊı½á¹¹Ìå·Ç¿Õ
+    // ä¿è¯è¾“å…¥/è¾“å‡ºå‚æ•°ç»“æ„ä½“éç©º
     if(NULL == pstInArgs)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "enc_ctx[%p] inArgs NULL\n", pstEncCtx);
@@ -1358,11 +1358,11 @@ EXPORT_API INT32 IMedia_Videnc_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDENC_IN_ARG
     pstOutArgs->eBitstreamStatus = BITSTREAM_UNKNOWN;
     pstOutArgs->stFrame.eFrameType = IVIDEO_FRAME_UNKNOWN;
 
-    // ÔÚÊäÈëÍ¼Ïñ·Ç¿ÕÊ±Ö¸¶¨ÊäÈëYUV
+    // åœ¨è¾“å…¥å›¾åƒéç©ºæ—¶æŒ‡å®šè¾“å…¥YUV
     if (NULL != pstInArgs->pstSource && NULL != pstInArgs->pstSource->apucBuf)
     {
         /* 2010/6/23 songxg+s00133955 [AZ1D02176] */
-        // µ±±àÂë½áÊøºó£¬ÎªÁË±ÜÃâÂß¼­ÎÊÌâ£¬²»Ö§³Ö¼ÌĞø±àÂëĞÂYUVÖ¡£¬Ô­ÒòÊÇÊä³öÂëÁ÷¿ÉÄÜ»á»¨ÆÁ
+        // å½“ç¼–ç ç»“æŸåï¼Œä¸ºäº†é¿å…é€»è¾‘é—®é¢˜ï¼Œä¸æ”¯æŒç»§ç»­ç¼–ç æ–°YUVå¸§ï¼ŒåŸå› æ˜¯è¾“å‡ºç æµå¯èƒ½ä¼šèŠ±å±
         if (pstEncCtx->bEncodeLastFrameFlag)
         {
             /*if (ENCODE_TRICK_MODE != pstEncCtx->eType) */
@@ -1381,22 +1381,22 @@ EXPORT_API INT32 IMedia_Videnc_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDENC_IN_ARG
     }
     else if (!pstInArgs->bLastFrameFlag && !pstEncCtx->bEncodeLastFrameFlag)
     {
-        // ÉĞÎ´µ½×îºó±àÂëµÄ»°£¬²»ÔÊĞí³öÏÖÊäÈëYUVÎªNULL
+        // å°šæœªåˆ°æœ€åç¼–ç çš„è¯ï¼Œä¸å…è®¸å‡ºç°è¾“å…¥YUVä¸ºNULL
         IMEDIA_LOG(IMEDIA_ERROR, "enc_ctx[%p] source NULL before last frame\n", pstEncCtx);
         return IMEDIA_RET_PARAM_IN_VALUE_NULL; 
     }
 
-    // ÅĞ¶ÏÊÇ·ñ½øÈëÁË×îºóÒ»Ö¡±àÂë
+    // åˆ¤æ–­æ˜¯å¦è¿›å…¥äº†æœ€åä¸€å¸§ç¼–ç 
     if (pstInArgs->bLastFrameFlag && !pstEncCtx->bEncodeLastFrameFlag)
     {
         IMEDIA_LOG(IMEDIA_INFO, "enc_ctx[%p] enter last frame encode\n", pstEncCtx);
         pstEncCtx->bEncodeLastFrameFlag = TRUE;
     }
 
-    // ¸ù¾İÔ´²Î¿¼Ö¡ÂÊºÍÄ¿±ê²Î¿¼Ö¡ÂÊÅĞ¶ÏÊÇ·ñ½øĞĞ±àÂë
+    // æ ¹æ®æºå‚è€ƒå¸§ç‡å’Œç›®æ ‡å‚è€ƒå¸§ç‡åˆ¤æ–­æ˜¯å¦è¿›è¡Œç¼–ç 
     if (pstYUV)
     {
-        // ±£Ö¤ÊäÈëÍ¼ÏñY,U,VÆ½Ãæ·Ç¿Õ
+        // ä¿è¯è¾“å…¥å›¾åƒY,U,Vå¹³é¢éç©º
         if (NULL == pstYUV->pucY || NULL == pstYUV->pucU || NULL == pstYUV->pucV)
         { 
             IMEDIA_LOG(IMEDIA_ERROR, "enc_ctx[%p] source Y || U || V buffer NULL\n", pstEncCtx);
@@ -1424,14 +1424,14 @@ EXPORT_API INT32 IMedia_Videnc_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDENC_IN_ARG
             return IMEDIA_RET_PARAM_IN_VALUE_INVALID; 
         }
 
-        // Ä¿Ç°Ö»Ö§³ÖYUV420£¬ÔİÎŞÉ«¶È¿Õ¼äÑ¡Ïî£¬¹Ê½«Æä×¢ÊÍ
+        // ç›®å‰åªæ”¯æŒYUV420ï¼Œæš‚æ— è‰²åº¦ç©ºé—´é€‰é¡¹ï¼Œæ•…å°†å…¶æ³¨é‡Š
         /*if (IVIDEO_CSP_YUV420 != pstInArgs->pstSource->eColorSpaceType)
         {
             IMEDIA_LOG(IMEDIA_ERROR, "enc_ctx[%p] eContentType(%d) != IVIDEO_CSP_YUV420 \n", pstEncCtx, pstInArgs->pstSource->eContentType);
             return IMEDIA_RET_PARAM_IN_VALUE_INVALID; 
         }*/
 
-        // ¼ì²éÊÇ·ñ¿ÉÒÔ¶ªÖ¡
+        // æ£€æŸ¥æ˜¯å¦å¯ä»¥ä¸¢å¸§
         if (0 != pstEncCtx->uiFrameDropBase && pstEncCtx->pucFrameDropMask)
         {
             if (ENCODE_TRICK_MODE == pstEncCtx->eType && pstEncCtx->stDynParams.bSkipFrameFlag)
@@ -1466,7 +1466,7 @@ EXPORT_API INT32 IMedia_Videnc_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDENC_IN_ARG
         ullCurrentSysTime = IMedia_OS_Milliseconds();
     }
 
-    // µ÷ÓÃÊµ¼Ê±àÂëº¯Êı
+    // è°ƒç”¨å®é™…ç¼–ç å‡½æ•°
     stStream.pucStream = pstEncCtx->pFrameStreamBuf;
     stStream.iBufLen = pstEncCtx->uiFrameMaxSize;
     if (ENCODE_TRICK_MODE == pstEncCtx->eType)
@@ -1479,7 +1479,7 @@ EXPORT_API INT32 IMedia_Videnc_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDENC_IN_ARG
         eRet = pstEncCtx->stModule.pfnEncode(pstEncCtx->pstEncoder, pstYUV, &stStream, (pstInArgs->bForceKeyframeFlag) ? HW264E_FRAME_IDR : HW264E_FRAME_OTHER, iStride);
     }
 
-    // ¼ÆËãĞÔÄÜ
+    // è®¡ç®—æ€§èƒ½
     if (pstEncCtx->stParams.iFlags & IMEDIA_FLAG_CALC_FPS)
     {
         UINT32 uiSpendMS = 0;
@@ -1497,19 +1497,19 @@ EXPORT_API INT32 IMedia_Videnc_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDENC_IN_ARG
         }
     }
 
-    // ÉèÖÃÊä³öĞÅÏ¢
+    // è®¾ç½®è¾“å‡ºä¿¡æ¯
     pstOutArgs->iErrorCode = 0;
     //pstEncCtx->uiTotalErrors;
     //pstStatus->fAvgPSNR;
 
     switch (eRet)
     {
-    case HW264E_S_END_OF_SOURCE: // ÊÇ·ñÓĞÂëÁ÷Êä³ö
+    case HW264E_S_END_OF_SOURCE: // æ˜¯å¦æœ‰ç æµè¾“å‡º
         {
             pstOutArgs->eBitstreamStatus = BITSTREAM_SEGMENT_END;
             
             /* 2010/07/07 14:25:00 songxg+00133955 [AZ1D02183] */
-            /* µ±±àÂë½áÊøºóĞè½«±àÂëÍ¨µÀ¸ÄÎª½áÊø×´Ì¬£¬±ÜÃâºóĞøÔÙµ÷ÓÃ±àÂë½Ó¿Ú */
+            /* å½“ç¼–ç ç»“æŸåéœ€å°†ç¼–ç é€šé“æ”¹ä¸ºç»“æŸçŠ¶æ€ï¼Œé¿å…åç»­å†è°ƒç”¨ç¼–ç æ¥å£ */
             pstEncCtx->eStatus = IVIDEO_CODEC_STOPPED;
         }
         break;
@@ -1539,7 +1539,7 @@ EXPORT_API INT32 IMedia_Videnc_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDENC_IN_ARG
                 pstOutArgs->stFrame.stNalu[i].ePriority = (ENUM_H264_NALU_PRIORITY)stStream.stNAL[i].eNaluPriority;
             }
 
-            // ×´Ì¬¸üĞÂ
+            // çŠ¶æ€æ›´æ–°
             eRet = pstEncCtx->stModule.pfnGetEncStatus(pstEncCtx->pstEncoder, &stFrameInfo, HW264E_GET_STATUS_DEBUG);
             if (HW264E_S_OK == eRet)
             {
@@ -1581,19 +1581,19 @@ EXPORT_API INT32 IMedia_Videnc_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDENC_IN_ARG
 }
 
 /*****************************************************************************************
-* º¯ÊıËµÃ÷£ºÉ¾³ıËã·¨Í¨µÀ¡£
-* ÊäÈë²ÎÊı£º
-*        ctx    Ëã·¨Í¨µÀ¾ä±ú
-* Êä³ö²ÎÊı£º
-*        ÎŞ
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+* å‡½æ•°è¯´æ˜ï¼šåˆ é™¤ç®—æ³•é€šé“ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+*        ctx    ç®—æ³•é€šé“å¥æŸ„
+* è¾“å‡ºå‚æ•°ï¼š
+*        æ— 
+* è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 *****************************************************************************************/
 EXPORT_API INT32 IMedia_Videnc_Delete(IMEDIA_CODEC_CTX ctx)
 {
     INT32 iRet = IMEDIA_RET_SUCCESS;
     STRU_VIDEO_ENCODE_CTX *pstEncCtx = (STRU_VIDEO_ENCODE_CTX*)ctx;
 
-    // ¼ì²éÏà¹Ø²ÎÊı
+    // æ£€æŸ¥ç›¸å…³å‚æ•°
     if (NULL == pstEncCtx)
     {
         IMEDIA_LOG(IMEDIA_ERROR, "pstEncCtx NULL\n");
@@ -1606,7 +1606,7 @@ EXPORT_API INT32 IMedia_Videnc_Delete(IMEDIA_CODEC_CTX ctx)
         return IMEDIA_RET_OBJ_BAD_MASK;
     }
 
-    // ÊÍ·ÅÁÙÊ±Ö¡ÂëÁ÷»º´æ
+    // é‡Šæ”¾ä¸´æ—¶å¸§ç æµç¼“å­˜
     if (pstEncCtx->pFrameStreamBuf)
     {
         IMEDIA_LOG(IMEDIA_INFO, "enc_ctx[%p] free pFrameStreamBuf(%p)\n", pstEncCtx, pstEncCtx->pFrameStreamBuf);
@@ -1615,7 +1615,7 @@ EXPORT_API INT32 IMedia_Videnc_Delete(IMEDIA_CODEC_CTX ctx)
         pstEncCtx->uiFrameMaxSize = 0;
     }
 
-    // ÊÍ·ÅÁÙÊ±ÑÚÂë»º´æ
+    // é‡Šæ”¾ä¸´æ—¶æ©ç ç¼“å­˜
     if (pstEncCtx->pucFrameDropMask)
     {
         IMEDIA_LOG(IMEDIA_INFO, "enc_ctx[%p] free pucFrameDropMask(%p)\n", pstEncCtx, pstEncCtx->pucFrameDropMask);
@@ -1624,7 +1624,7 @@ EXPORT_API INT32 IMedia_Videnc_Delete(IMEDIA_CODEC_CTX ctx)
         pstEncCtx->uiFrameDropBase = 0;
     }
 
-    // ÊÍ·Å±àÂëÆ÷ÄÚ²¿Í¨µÀ
+    // é‡Šæ”¾ç¼–ç å™¨å†…éƒ¨é€šé“
     if (pstEncCtx->pstEncoder)
     {
         IMEDIA_LOG(IMEDIA_INFO, "enc_ctx[%p] free sub_ctx[%p]\n", pstEncCtx, pstEncCtx->pstEncoder);
@@ -1633,7 +1633,7 @@ EXPORT_API INT32 IMedia_Videnc_Delete(IMEDIA_CODEC_CTX ctx)
         HW264E_FreeLibrary(&pstEncCtx->stModule);
     }
 
-    // ÊÍ·ÅÕû¸ö±àÂëÍ¨µÀ
+    // é‡Šæ”¾æ•´ä¸ªç¼–ç é€šé“
     IMEDIA_LOG(IMEDIA_INFO, "enc_ctx[%p] free %d\n", pstEncCtx, iRet);
     pstEncCtx->iCrcMask = 0;
     pstEncCtx->eStatus = IVIDEO_CODEC_INVALID;

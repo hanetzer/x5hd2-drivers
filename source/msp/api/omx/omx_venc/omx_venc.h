@@ -21,7 +21,7 @@ This module contains the class definition for openMAX decoder component.
 
 //specific-version NO.1.1
 #define KHRONOS_1_1                                  //??
-#define OMX_SPEC_VERSION			0x00000101       //°æ±¾ºÅºê¶¨Òå
+#define OMX_SPEC_VERSION			0x00000101       //æ±¾Åºê¶¨??
 
 #define MAX_PORT_NUM				2
 
@@ -32,7 +32,7 @@ This module contains the class definition for openMAX decoder component.
 
 #define DEFAULT_FPS				    30
 #define DEFAULT_BITRATE             (2*1024*1024)
-#define DEFAULT_ALIGN_SIZE			4096                      //?? ´«ËµÖĞµÄ4K±ß½ç±ß½ç?
+#define DEFAULT_ALIGN_SIZE			4096                      //?? ??Ëµ?Ğµ?4K?ß½??ß½??
 
 #define DEF_MAX_IN_BUF_CNT			6
 #define DEF_MIN_IN_BUF_CNT			6
@@ -40,10 +40,10 @@ This module contains the class definition for openMAX decoder component.
 #define DEF_MAX_OUT_BUF_CNT			4
 #define DEF_MIN_OUT_BUF_CNT			1
 
-#define OMX_VENC_COMP_NAME			"OMX.hisi.video.encoder"            //ÔÚComponent_initÖĞÓÃµ½
+#define OMX_VENC_COMP_NAME			"OMX.hisi.video.encoder"            //??Component_init???Ãµ?
 
 
-#define OMX_COMPONENTROLES_H264		"video_encoder.avc"                //ÓÃÓÚ¸øpcomp_priv->m_role¸³Öµ        
+#define OMX_COMPONENTROLES_H264		"video_encoder.avc"                //???Ú¸?pcomp_priv->m_role??Öµ        
 
 #define OMX_COMPONENTROLES_H263		"video_encoder.h263"
 #define OMX_COMPONENTROLES_MPEG2	"video_encoder.mpeg2"
@@ -54,14 +54,14 @@ This module contains the class definition for openMAX decoder component.
 //#define ESHUTDOWN					108
 //#define ERESTARTSYS					512
 
-/*ÉèÖÃÊäÈë²ÎÊıÖĞµÄ °æ±¾ºÅºÍ½á¹¹´óĞ¡*/
+/*?????????????Ğµ? ?æ±¾?ÅºÍ½á¹¹??Ğ¡*/
 #define CONFIG_VERSION_SIZE(pParam,Type)  do{\
 	pParam->nVersion.nVersion = OMX_SPEC_VERSION;\
 	pParam->nSize             = sizeof(Type);\
     }while(0)
 
 
-#define COUNTOF(x) (sizeof(x)/sizeof(x[0]))                  //Ëã³öÊı×éÖĞº¬ÓĞµÄÔªËØ¸öÊı
+#define COUNTOF(x) (sizeof(x)/sizeof(x[0]))                  //?????????Ğº??Ğµ?Ôª?Ø¸???
 
 #define MAX(a, b) ((a) > (b) ? (a) : (b))
 
@@ -73,8 +73,8 @@ This module contains the class definition for openMAX decoder component.
 
 // state transactions pending bits
 #if 0
-enum {                                   /*ÔÚcomponentË½ÓĞ½á¹¹ÖĞ£¬×÷Îª¸÷ÖÖ´¦ÀíµÄ±êÖ¾£¬´¦ÀíÍê¸ÃÊÂ¼şºó£¬°Ñ¸ÃbitÎ»ÖÃ»Ø0*/
-	OMX_STATE_IDLE_PENDING				= 0x1,               //idle(¿ÕÏĞ)µÈ´ı±êÖ¾,¸Ã±êÖ¾Îª1Ê±£¬ÔÚÏàÓ¦ÊÂ¼ş´¦Àíº¯ÊıÖĞ´¦Àí¸ÃµÈ´ıµÄ²Ù×÷£¬´¦ÀíÍêºó°Ñ¸ÃÎ» ÖÃ»Ø0         
+enum {                                   /*??componentË½?Ğ½á¹¹?Ğ£???Îª???Ö´????Ä±?Ö¾???????????Â¼??ó£¬°Ñ¸?bitÎ»?Ã»?0*/
+	OMX_STATE_IDLE_PENDING				= 0x1,               //idle(????)?È´???Ö¾,?Ã±?Ö¾Îª1Ê±??????Ó¦?Â¼????íº¯???Ğ´????ÃµÈ´??Ä²??÷£¬´????????Ñ¸?Î» ?Ã»?0         
 	OMX_STATE_LOADING_PENDING			= 0x2,
 	OMX_STATE_INPUT_ENABLE_PENDING		= 0x3,
 	OMX_STATE_OUTPUT_ENABLE_PENDING		= 0x4,
@@ -88,7 +88,7 @@ enum {                                   /*ÔÚcomponentË½ÓĞ½á¹¹ÖĞ£¬×÷Îª¸÷ÖÖ´¦ÀíµÄ
 #endif
 
 // Deferred callback identifiers
-/*enum {                                                        //ÓÃÓÚ±íÊ¾¸÷¸ö CMD ÀàĞÍ,ÒÔ±ãÔÚ²åÈë¶ÓÁĞµÄÊ±ºòÅĞ¶ÏÒª°ÑÏûÏ¢µÄ´¦ÀíÊÇÒª²åÈëÄÄ¸ö¶ÓÁĞ
+/*enum {                                                        //???Ú±?Ê¾???? CMD ????,?Ô±??Ú²??????Ğµ?Ê±???Ğ¶?Òª????Ï¢?Ä´?????Òª?????Ä¸?????
 	OMX_GENERATE_COMMAND_DONE			= 0x1,                               
 	OMX_GENERATE_FTB					= 0x2,
 	OMX_GENERATE_ETB					= 0x3,
@@ -113,12 +113,12 @@ enum {
 	OUTPUT_PORT_INDEX	= 1
 };
 
-struct port_property {                                         //×÷Îª¶Ë¿ÚË½ÓĞ½á¹¹µÄ³ÉÔ±±äÁ¿Ö®Ò»,ÃèÊöÁË¶Ë¿ÚÌØĞÔ
-	OMX_U32 port_dir;                                     //¶Ë¿ÚµÄ·½Ïò:in /out
-	OMX_U32 min_count;                                    //¶ÔÓ¦ÓÚ±ê×¼OMX_PARAM_PORTDEFINITIONTYPEÀàĞÍ¶¨ÒåÖĞµÄnBufferCountMin±äÁ¿£¬±êÊ¶The minimum number of buffers this port requires
-	OMX_U32 max_count;                                    //¶ÔÓ¦ÓÚ±ê×¼OMX_PARAM_PORTDEFINITIONTYPEÀàĞÍ¶¨ÒåÖĞµÄnBufferCountActual±äÁ¿£¬±êÊ¶The actual number of buffers allocated on this port
-	OMX_U32 buffer_size;                                  //¶ÔÓ¦ÓÚ±ê×¼OMX_PARAM_PORTDEFINITIONTYPEÀàĞÍ¶¨ÒåÖĞµÄnBufferSize£¬±êÊ¶Size, in bytes, for buffers to be used for this channel
-	OMX_U32 alignment;                                    //ÓÃÓÚÉêÇëÄÚ´æÖ®ÀàµÄ¶¯×÷!!4K¶ÔÆë
+struct port_property {                                         //??Îª?Ë¿?Ë½?Ğ½á¹¹?Ä³?Ô±??Á¿Ö®Ò»,?????Ë¶Ë¿?????
+	OMX_U32 port_dir;                                     //?Ë¿ÚµÄ·???:in /out
+	OMX_U32 min_count;                                    //??Ó¦?Ú±?×¼OMX_PARAM_PORTDEFINITIONTYPE???Í¶????Ğµ?nBufferCountMin??Á¿????Ê¶The minimum number of buffers this port requires
+	OMX_U32 max_count;                                    //??Ó¦?Ú±?×¼OMX_PARAM_PORTDEFINITIONTYPE???Í¶????Ğµ?nBufferCountActual??Á¿????Ê¶The actual number of buffers allocated on this port
+	OMX_U32 buffer_size;                                  //??Ó¦?Ú±?×¼OMX_PARAM_PORTDEFINITIONTYPE???Í¶????Ğµ?nBufferSize????Ê¶Size, in bytes, for buffers to be used for this channel
+	OMX_U32 alignment;                                    //?????????Ú´?Ö®???Ä¶???!!4K????
 };
 
 /*struct omx_hisi_extern_index
@@ -127,21 +127,21 @@ struct port_property {                                         //×÷Îª¶Ë¿ÚË½ÓĞ½á¹
 	OMX_HISI_EXTERN_INDEXTYPE index_type;
 };*/
 
-struct codec_info {                                            //±àÂëÆ÷Ğ­ÒéÀàĞÍ½á¹¹Ìå,¾ßÌå°üº¬:
-    const OMX_STRING role_name;                                     //±àÂëÀàĞÍÃû³Æ(ucharĞÍÊı×é)
-    OMX_VIDEO_CODINGTYPE compress_fmt;                         //OMX±ê×¼Í·ÎÄ¼şomx_video.hÖĞ¶¨ÒåµÄÊÓÆµĞ­ÒéÃ¶¾ÙÀàĞÍ,×îÖÕ¸³Öµ¸øOMX_COMPONENT_PRIVATEÀàĞÍµÄm_dec_fmt£¬OMX_VIDEO_PARAM_PORTFORMATTYPE»òOMX_VIDEO_PORTDEFINITIONTYPEÀàĞÍÖĞµÄeCompressionFormat
-	//enum venc_codec_type codec_type;                           //OMX±ê×¼Í·ÎÄ¼şomx_video.hÖĞ¶¨ÒåµÄÊÓÆµĞ­ÒéÃ¶¾ÙÀàĞÍ,×îÖÕ¸³Öµ¸øOMX_COMPONENT_PRIVATEÀàĞÍµÄdrv_ctx.venc_chan_attr[VENC_MAX_CHN].chan_cfg.protocol,¾ßÌå¶¨ÒåÔÚhisi_venc.h£¬Ó¦ÓëÔ­À´hi_unf_common.hÖĞ¶¨ÒåÒ»ÖÂ                                    
+struct codec_info {                                            //??????Ğ­?????Í½á¹¹??,????????:
+    const OMX_STRING role_name;                                     //????????????(uchar??????)
+    OMX_VIDEO_CODINGTYPE compress_fmt;                         //OMX??×¼Í·?Ä¼?omx_video.h?Ğ¶???????ÆµĞ­??Ã¶??????,???Õ¸?Öµ??OMX_COMPONENT_PRIVATE???Íµ?m_dec_fmt??OMX_VIDEO_PARAM_PORTFORMATTYPE??OMX_VIDEO_PORTDEFINITIONTYPE?????Ğµ?eCompressionFormat
+	//enum venc_codec_type codec_type;                           //OMX??×¼Í·?Ä¼?omx_video.h?Ğ¶???????ÆµĞ­??Ã¶??????,???Õ¸?Öµ??OMX_COMPONENT_PRIVATE???Íµ?drv_ctx.venc_chan_attr[VENC_MAX_CHN].chan_cfg.protocol,???å¶¨????hisi_venc.h??Ó¦??Ô­À´hi_unf_common.h?Ğ¶???Ò»??                                    
     HI_UNF_VCODEC_TYPE_E codec_type;
 };
 
-struct codec_profile_level                                   //±àÂë²»ĞèÒª¿ ÔİÊ±±£Áô
+struct codec_profile_level                                   //???ë²»??Òª? ??Ê±????
 {
 	OMX_S32 profile;
 	OMX_S32 level;
 };/**/
 
 
-struct frame_info {                                          //ÒÑ°üº¬ÔÚ±àÂëÍ¨µÀÊôĞÔÖĞ
+struct frame_info {                                          //?Ñ°????Ú±???Í¨????????
 	OMX_U32 frame_width;
 	OMX_U32 frame_height;
 	OMX_U32 stride;
@@ -153,89 +153,89 @@ struct frame_info {                                          //ÒÑ°üº¬ÔÚ±àÂëÍ¨µÀÊ
 };/**/
 
 // port private for omx
-typedef struct OMX_PORT_PRIVATE {                               //¶Ë¿ÚµÄË½ÓĞ½á¹¹Ìå£¬×÷Îª×é¼şµÄË½ÓĞ½á¹¹ÌåµÄ³ÉÔ±Ö®Ò»£¬ÔÚOMX_COMPONENT_PRIVATEÀàĞÍÖĞ£¬¶ÔÓ¦ÊäÈë/Êä³ö¶Ë¿Ú¸÷ÓĞÒ»Ì×
-	OMX_BUFFERHEADERTYPE **m_omx_bufhead;                       //¶ÔÓ¦OMX±ê×¼¶¨Òå£¬ÓÃÓÚ´æ·Å¸Ã¶Ë¿ÚÒª´¦ÀíµÄbuffer
-	//struct port_property port_pro;                              //¶Ë¿ÚÌØĞÔ½á¹¹Ìå£¬ÆäÖĞ°üº¬µÄÄÚÈİ¶àÔÚ±ê×¼µÄ¶Ë¿ÚÀàĞÍOMX_PARAM_PORTDEFINITIONTYPEÖĞ¶ÔÓ¦
+typedef struct OMX_PORT_PRIVATE {                               //?Ë¿Úµ?Ë½?Ğ½á¹¹?å£¬??Îª??????Ë½?Ğ½á¹¹???Ä³?Ô±Ö®Ò»????OMX_COMPONENT_PRIVATE?????Ğ£???Ó¦????/?????Ë¿Ú¸???Ò»??
+	OMX_BUFFERHEADERTYPE **m_omx_bufhead;                       //??Ó¦OMX??×¼???å£¬???Ú´??Å¸Ã¶Ë¿?Òª??????buffer
+	//struct port_property port_pro;                              //?Ë¿????Ô½á¹¹?å£¬???Ğ°????????İ¶??Ú±?×¼?Ä¶Ë¿?????OMX_PARAM_PORTDEFINITIONTYPE?Ğ¶?Ó¦
 
     OMX_PARAM_PORTDEFINITIONTYPE port_def;
-	//OMX_U32	m_port_index;                                       //¶Ë¿ÚIDË÷ÒıºÅ   ÔÚOMX_PARAM_PORTDEFINITIONTYPEÄÇÀïÓĞ¶¨Òå£»
+	//OMX_U32	m_port_index;                                       //?Ë¿?ID??????   ??OMX_PARAM_PORTDEFINITIONTYPE?????Ğ¶??å£»
 
-    OMX_U32 m_buf_cnt;                                          //Ïàµ±ÓÚ±êÊ¶¶Ë¿ÚµÚi¸öbufferÓĞÎŞÊı¾İµÄflag£¬m_buf_cntµÄÃ¿Ò»Î»Îª1£¬Ôò¸ÃÎ»¶ÔÓ¦µÄĞòºÅµÄbufferÓĞÊı¾İ£¬¿ÉÓÃÓÚÅĞ¶Ïport buffer µÄ¿ÕÂú£¬ÕÒ¿ÉĞ´ÈëµÄ¿ÕÏĞbufferµÈ²Ù×÷                                 
+    OMX_U32 m_buf_cnt;                                          //?àµ±?Ú±?Ê¶?Ë¿Úµ?i??buffer???????İµ?flag??m_buf_cnt??Ã¿Ò»Î»Îª1??????Î»??Ó¦?????Åµ?buffer?????İ£????????Ğ¶?port buffer ?Ä¿??????Ò¿?Ğ´???Ä¿???buffer?È²???                                 
 
-	OMX_U32 m_usage_bitmap;                                     //ÓëÉÏÊöm_buf_cnt£¬ÓÃ·¨ÏàËÆ£¬Ö»ÊÇËüÓÃÓÚ mark buffer to be allocated(±êÊ¶×Ô¼ºÉêÇëµ½µÄbuffer£¬·½±ãÒÔºó×öfree²Ù×÷)
-	OMX_U32	m_buf_pend_cnt;                                     //¼ÇÂ¼´ıÓÃ»§´¦ÀíµÄbufferÊıÄ¿(Êµ¼ÊÉÏ×é¼şÄÚ²¿ÒÑ¾­´¦ÀíÍê³É£¬Ö»ÊÇµÈ´ı¸æÖªÓÃ»§)~~Èç:fill_this_buffer_porxyÊ±++,ÔÚfill_this_buffer_doneÊ±--.
+	OMX_U32 m_usage_bitmap;                                     //??????m_buf_cnt???Ã·????Æ£?Ö»???????? mark buffer to be allocated(??Ê¶?Ô¼????ëµ½??buffer???????Ôº???free????)
+	OMX_U32	m_buf_pend_cnt;                                     //??Â¼???Ã»???????buffer??Ä¿(Êµ?????????Ú²??Ñ¾????????É£?Ö»?ÇµÈ´???Öª?Ã»?)~~??:fill_this_buffer_porxyÊ±++,??fill_this_buffer_doneÊ±--.
 
-	//OMX_U32	m_port_enabled;                                     //¶Ë¿ÚÊ¹ÄÜ±êÖ¾Î»£¬Ò²¶ÔÓ¦ÓÚ¶Ë¿Ú±ê×¼¶¨ÒåOMX_PARAM_PORTDEFINITIONTYPEÖĞµÄbEnabledÎ» 
-	//OMX_U32	m_port_populated;                                   //¶Ë¿Ú³äÂú(?)±êÖ¾Î»£¬Ò²¶ÔÓ¦ÓÚ¶Ë¿Ú±ê×¼¶¨ÒåOMX_PARAM_PORTDEFINITIONTYPEÖĞµÄbPopulatedÎ»£¬¾ßÌåÃèÊö¼ûbPopulatedµÄ×¢ÊÍ¡¾±íÊ¾¶Ë¿ÚËùÉêÇëµÄbufferÊıÄ¿ÒÑ¾­´ïµ½×î´ó¡¿
+	//OMX_U32	m_port_enabled;                                     //?Ë¿?Ê¹?Ü±?Ö¾Î»??Ò²??Ó¦?Ú¶Ë¿Ú±?×¼????OMX_PARAM_PORTDEFINITIONTYPE?Ğµ?bEnabledÎ» 
+	//OMX_U32	m_port_populated;                                   //?Ë¿Ú³???(?)??Ö¾Î»??Ò²??Ó¦?Ú¶Ë¿Ú±?×¼????OMX_PARAM_PORTDEFINITIONTYPE?Ğµ?bPopulatedÎ»????????????bPopulated??×¢?Í¡???Ê¾?Ë¿?????????buffer??Ä¿?Ñ¾??ïµ½??????
 
-	OMX_BOOL m_port_reconfig;                                   //¶Ë¿ÚÖØĞÂÅäÖÃ±êÖ¾Î»£¬Ä¬ÈÏÎªfalse£¬µ±´¦ÀíOMX_GENERATE_IMAGE_SIZE_CHANGEÃüÁîÊÂ¼şÊ±£¬°Ñ¸Ã±êÊ¶ÖÃ1£¬´ËÊ±²»ÄÜ½øĞĞfill/empty_this_bufferµÈ²Ù×÷£¬µÈµ½½Óµ½COMMON_DONE¼°OMX_CommandPortEnableµÄÊÂ¼ş´¦ÀíÊ±²Å»á°ÑËüÖÃ»Ø0
-	OMX_BOOL m_port_flushing;                                   //¶Ë¿ÚbufferË¢ĞÂ±êÖ¾Î»£¬Ä¬ÈÏÎªfalse£¬µ±ÊÕµ½OMX_CommandFlushÃüÁîÊ±µ÷ÓÃhandle_command_flushº¯Êı´¦Àí£¬°Ñ¸Ã±êÊ¶ÖÃ1£¬´ËÊ±²»ÄÜ½øĞĞfill/empty_this_bufferµÈ²Ù×÷£¬µÈµ½½Óµ½OMX_GENERATE_FLUSH_INPUT_DONEµÄÊÂ¼ş´¦ÀíÊ±²Å»á°ÑËüÖÃ»Ø0
+	OMX_BOOL m_port_reconfig;                                   //?Ë¿????????Ã±?Ö¾Î»??Ä¬??Îªfalse????????OMX_GENERATE_IMAGE_SIZE_CHANGE?????Â¼?Ê±???Ñ¸Ã±?Ê¶??1????Ê±???Ü½???fill/empty_this_buffer?È²??÷£¬µÈµ??Óµ?COMMON_DONE??OMX_CommandPortEnable???Â¼?????Ê±?Å»??????Ã»?0
+	OMX_BOOL m_port_flushing;                                   //?Ë¿?bufferË¢?Â±?Ö¾Î»??Ä¬??Îªfalse?????Õµ?OMX_CommandFlush????Ê±????handle_command_flush???????í£¬?Ñ¸Ã±?Ê¶??1????Ê±???Ü½???fill/empty_this_buffer?È²??÷£¬µÈµ??Óµ?OMX_GENERATE_FLUSH_INPUT_DONE???Â¼?????Ê±?Å»??????Ã»?0
 
 
-    //struct frame_info pic_info;               //ÔÚvenc_driver_contextÊı¾İÀàĞÍÖĞÓĞ¶¨Òå±àÂë¿í¶È¸ß¶ÈĞÅÏ¢£¬¿É·ñ¸´ÓÃ?   (Ä¿Ç°Ïàµ±ÓÚÊäÈëµÄÖ¡ĞÅÏ¢)
+    //struct frame_info pic_info;               //??venc_driver_context???????????Ğ¶??????????È¸ß¶???Ï¢???É·??????   (Ä¿Ç°?àµ±????????Ö¡??Ï¢)
 
-    venc_user_buf **m_venc_bufhead;                 //??ÓÃÓÚ¶Ô±ê×¼m_omx_bufheadµÄ²¹³äbuffer??
+    venc_user_buf **m_venc_bufhead;                 //?????Ú¶Ô±?×¼m_omx_bufhead?Ä²???buffer??
     
 } OMX_PORT_PRIVATE;
 
-//component private for omx                                     //×é¼şµÄË½ÓĞ½á¹¹Ìå£¬Êµ¼ÊÓ¦ÓÃ¾ø´ó²¿·Ö¶¼ÊÇÕâ¸ö½á¹¹Ìå£¬ÆäÖĞ°üº¬±ê×¼¶¨ÒåÖĞµÄOMX_COMPONENTTYPEÀàĞÍÊı¾İÖ¸Õë
+//component private for omx                                     //??????Ë½?Ğ½á¹¹?å£¬Êµ??Ó¦?Ã¾??ó²¿·Ö¶????????á¹¹?å£¬???Ğ°?????×¼?????Ğµ?OMX_COMPONENTTYPE????????Ö¸??
 typedef struct OMX_COMPONENT_PRIVATE {
-	pthread_mutex_t m_lock;                                     //»¥³âÁ¿£¬ÔÚ¶Ô¹²Ïí×ÊÔ´µÄ¶ÁĞ´²Ù×÷Ê±£¬Ò»¶¨ÒªÓÃ»¥³âÁ¿¼ÓÒÔ±£»¤£¬ÕâÀïµÄ¹²Ïí×ÊÔ´Ö÷ÒªÊÇ:Èı¸ö¶ÓÁĞ£¬¹ÜµÀ¶ÁĞ´¶Ë
-	OMX_COMPONENTTYPE *m_pcomp;                                 //×é¼ş½á¹¹Ìå
-	OMX_STATETYPE m_state;                                      //×é¼ş×´Ì¬
-	OMX_U32 m_flags;                                            //Ã¿Ò»Î»¶ÔÓ¦ÁËflags_bit_positionsÖĞ¶¨ÒåµÄÊÂ¼ş
+	pthread_mutex_t m_lock;                                     //????Á¿???Ú¶Ô¹?????Ô´?Ä¶?Ğ´????Ê±??Ò»??Òª?Ã»???Á¿???Ô±??????????Ä¹?????Ô´??Òª??:???????Ğ£??ÜµÀ¶?Ğ´??
+	OMX_COMPONENTTYPE *m_pcomp;                                 //?????á¹¹??
+	OMX_STATETYPE m_state;                                      //????×´Ì¬
+	OMX_U32 m_flags;                                            //Ã¿Ò»Î»??Ó¦??flags_bit_positions?Ğ¶??????Â¼?
 
-	OMX_VIDEO_CODINGTYPE m_encoder_fmt;                         //Óëcodec_info¶ÔÓ¦
-	OMX_S8 m_role[OMX_MAX_STRINGNAME_SIZE];                     //±àÂëÀàĞÍÃû×Ö±êÊ¶
-    OMX_S8 m_comp_name[OMX_MAX_STRINGNAME_SIZE];                //±àÂëÆ÷Ãû×ÖÖ¸Õë
-	OMX_PTR m_app_data;                                         //ÓÉÍâ²¿Ó¦ÓÃ³ÌĞòAPP´«½øÀ´µÄÒ»¸ö²ÎÊı£¬ÓÃÓÚ¸øAPPÇø·Ö²»Í¬µÄcomponent£¬ÔÚÓ¦ÓÃ³ÌĞòµ÷ÓÃOMX_GetHandleÊ±Óë»Øµ÷º¯Êı½á¹¹ÌåÖ¸ÕëÒ»Æğ´«Èë
-	OMX_CALLBACKTYPE m_cb;                                      //ÓÉÍâ²¿Ó¦ÓÃ³ÌĞòAPP´«½øÀ´»Øµ÷º¯ÊıÖ¸Õë£¬ÔÚÓ¦ÓÃ³ÌĞòµ÷ÓÃOMX_GetHandleÊ±ÓëÉÏÊöm_app_data»Øµ÷º¯Êı½á¹¹ÌåÖ¸ÕëÒ»Æğ´«Èë
+	OMX_VIDEO_CODINGTYPE m_encoder_fmt;                         //??codec_info??Ó¦
+	OMX_S8 m_role[OMX_MAX_STRINGNAME_SIZE];                     //???????????Ö±?Ê¶
+    OMX_S8 m_comp_name[OMX_MAX_STRINGNAME_SIZE];                //??????????Ö¸??
+	OMX_PTR m_app_data;                                         //???â²¿Ó¦?Ã³???APP????À´??Ò»???????????Ú¸?APP???Ö²?Í¬??component????Ó¦?Ã³???????OMX_GetHandleÊ±???Øµ??????á¹¹??Ö¸??Ò»??????
+	OMX_CALLBACKTYPE m_cb;                                      //???â²¿Ó¦?Ã³???APP????À´?Øµ?????Ö¸?ë£¬??Ó¦?Ã³???????OMX_GetHandleÊ±??????m_app_data?Øµ??????á¹¹??Ö¸??Ò»??????
 
-	OMX_TICKS m_pre_timestamp;                                  //pts Ê±¼ä´Á
+	OMX_TICKS m_pre_timestamp;                                  //pts Ê±????
 
-	OMX_PORT_PRIVATE m_port[MAX_PORT_NUM];                      //portµÄË½ÓĞ½á¹¹                    
-	OMX_BOOL m_use_native_buf;                                  //ÓÃ×ÔÉíbuffer±êÊ¶£¬ÔÚget/set_parameterµÄ OMX_GoogleIndexGetAndroidNativeBufferUsage = OMX_IndexVendorStartUnused + 3 ÅĞ¶Ï·ÖÖ§ÖĞÓ¦ÓÃ
+	OMX_PORT_PRIVATE m_port[MAX_PORT_NUM];                      //port??Ë½?Ğ½á¹¹                    
+	OMX_BOOL m_use_native_buf;                                  //??????buffer??Ê¶????get/set_parameter?? OMX_GoogleIndexGetAndroidNativeBufferUsage = OMX_IndexVendorStartUnused + 3 ?Ğ¶Ï·?Ö§??Ó¦??
 
-	pthread_t msg_thread_id;                                    //ÏûÏ¢Ïß³Ì     ->write
-	pthread_t event_thread_id;                                  //ÊÂ¼ş´¦ÀíÏß³Ì ->read
+	pthread_t msg_thread_id;                                    //??Ï¢?ß³?     ->write
+	pthread_t event_thread_id;                                  //?Â¼??????ß³? ->read
 
-	volatile OMX_BOOL event_thread_exit;                                 //ÊÂ¼ş´¦ÀíÏß³ÌÍË³ö±êÖ¾
-	volatile OMX_BOOL msg_thread_exit;                                   ////ÏûÏ¢Ïß³ÌÍË³ö±êÖ¾
+	volatile OMX_BOOL event_thread_exit;                                 //?Â¼??????ß³??Ë³???Ö¾
+	volatile OMX_BOOL msg_thread_exit;                                   ////??Ï¢?ß³??Ë³???Ö¾
 
     
-	venc_drv_context drv_ctx;         //×÷ÎªComponentµÄË½ÓĞ½á¹¹£¬¶¨ÓÚÔÚomx_venc_drv.hÖĞ°üº¬±àÂëÆ÷Éè±¸ÎÄ¼ş±êÊ¶·ûºÅ¡¢±àÂëÆ÷Í¨µÀÊôĞÔ
+	venc_drv_context drv_ctx;         //??ÎªComponent??Ë½?Ğ½á¹¹????????omx_venc_drv.h?Ğ°??????????è±¸?Ä¼???Ê¶???Å¡???????Í¨??????
 	OMX_S32 m_pipe_in;                              //read this pipe
 	OMX_S32 m_pipe_out;                             //write this pipe
 
-	sem_t m_async_sem;                          //Òì²½ĞÅºÅÁ¿ £¬ÓÃÓÚ¶ÁÈ¡Í¨µÀÊ±¼ÓĞÅºÅÁ¿±£»¤
-	sem_t m_cmd_lock;                           //ÃüÁîĞÅºÅÁ¿ (Ïàµ±ÓÚËø) ??
+	sem_t m_async_sem;                          //?ì²½?Åº?Á¿ ?????Ú¶?È¡Í¨??Ê±???Åº?Á¿????
+	sem_t m_cmd_lock;                           //?????Åº?Á¿ (?àµ±????) ??
 
-	omx_event_queue m_ftb_q;                    //Êä³öÊı¾İ¶ÓÁĞ           /*×¢Òâ:Ã¿´ÎĞ´Íê¶ÓÁĞÖ®ºó¶Ô¶¼»á¶Ô¹ÜµÀ½øĞĞÏàÓ¦µÄĞ´£¬ÔÚÊÂ¼ş´¦ÀíÏß³ÌÖĞ¶Ô¹ÜµÀ½øĞĞ¶Á²Ù×÷£¬¶Á³öÏûÏ¢´¦ÀíÍêºó±ã³ö¶ªÁĞ*/
-	omx_event_queue m_cmd_q;                    //ÃüÁî¶ÓÁĞ
-	omx_event_queue m_etb_q;                    //ÊäÈëÔ´¶ÓÁĞ       
+	omx_event_queue m_ftb_q;                    //???????İ¶???           /*×¢??:Ã¿??Ğ´??????Ö®???Ô¶????Ô¹ÜµÀ½?????Ó¦??Ğ´?????Â¼??????ß³??Ğ¶Ô¹ÜµÀ½??Ğ¶Á²??÷£¬¶Á³???Ï¢????????????????*/
+	omx_event_queue m_cmd_q;                    //????????
+	omx_event_queue m_etb_q;                    //????Ô´????       
 
-	//allocator_handle_t allocator_handle;        //·ÖÅäÄÚ´æ£¬ÓÃµ½IOHÉè±¸Ê±£¬ÓÃÓÚ¼ÇÂ¼ION¾ä±ú~ 
+	//allocator_handle_t allocator_handle;        //?????Ú´æ£¬?Ãµ?IOH?è±¸Ê±?????Ú¼?Â¼ION????~ 
 }OMX_COMPONENT_PRIVATE;
 
 /*==========================================================================*/
 // bit operation functions
-static inline void bit_set(OMX_U32 *addr, OMX_U32 nr)                          // ¶ÔÊı¾İµÄÄ³Ò»Î»ÉèÖÃÎª 1 (¸Ãº¯Êı¶Ô64Î»Í¬ÑùÓĞĞ§)
+static inline void bit_set(OMX_U32 *addr, OMX_U32 nr)                          // ?????İµ?Ä³Ò»Î»????Îª 1 (?Ãº?????64Î»Í¬????Ğ§)
 {
 	addr[nr / BITS_PER_LONG] |= (1 << (nr % BITS_PER_LONG));
 }
 
-static inline void bit_clear(OMX_U32 *addr, OMX_U32 nr)                         // ¶ÔÊı¾İµÄÄ³Ò»Î»ÉèÖÃÎªÇå0 (¸Ãº¯Êı¶Ô64Î»Í¬ÑùÓĞĞ§)
+static inline void bit_clear(OMX_U32 *addr, OMX_U32 nr)                         // ?????İµ?Ä³Ò»Î»????Îª??0 (?Ãº?????64Î»Í¬????Ğ§)
 {
 	addr[nr / BITS_PER_LONG] &= ~((OMX_U32)(1 << (nr % BITS_PER_LONG)));
 }
 
-static inline OMX_S32 bit_present(const OMX_U32 *addr, OMX_U32 nr)         // ÅĞ¶ÏÊı¾İÄ³Ò»Î»ÊÇ·ñÎª 1;Èç¹ûÎª1,Ôò·µ»Ø1£¬·ñÔò·µ»Ø0 (¸Ãº¯Êı¶Ô64Î»Í¬ÑùÓĞĞ§)
+static inline OMX_S32 bit_present(const OMX_U32 *addr, OMX_U32 nr)         // ?Ğ¶?????Ä³Ò»Î»?Ç·?Îª 1;????Îª1,?ò·µ»?1?????ò·µ»?0 (?Ãº?????64Î»Í¬????Ğ§)
 {
 	return ((1 << (nr % BITS_PER_LONG)) &
 		(((OMX_U32 *)addr)[nr / BITS_PER_LONG])) != 0;
 }
 
-static inline OMX_S32 bit_absent(const OMX_U32 *addr, OMX_U32 nr)          // ÅĞ¶ÏÊı¾İÄ³Ò»Î»ÊÇ·ñÎª 0£»Èç¹ûÎª0,Ôò·µ»Ø1£¬·ñÔò·µ»Ø0
+static inline OMX_S32 bit_absent(const OMX_U32 *addr, OMX_U32 nr)          // ?Ğ¶?????Ä³Ò»Î»?Ç·?Îª 0??????Îª0,?ò·µ»?1?????ò·µ»?0
 {
 	return !bit_present(addr, nr);
 }

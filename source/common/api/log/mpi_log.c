@@ -46,7 +46,7 @@
 
 static HI_U32 g_LogModInit = 0;
 static HI_S32 g_s32DbgDevFd = -1;
-static LOG_CONFIG_INFO_S *g_pLogConfigInfo;  /*the pointer of print control info*//*CNcomment:´òÓ¡¿ØÖÆĞÅÏ¢µÄÓÃ»§Ì¬Ö¸Õë*/
+static LOG_CONFIG_INFO_S *g_pLogConfigInfo;  /*the pointer of print control info*//*CNcomment:æ‰“å°æ§åˆ¶ä¿¡æ¯çš„ç”¨æˆ·æ€æŒ‡é’ˆ*/
 //static HI_U32 g_u32LogInfoPhyAddr = 0;
 
 char *DebugLevelName[HI_LOG_LEVEL_BUTT+1] = {

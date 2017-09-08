@@ -17,7 +17,7 @@
 /** 
  * \file
  * \brief Describes the information about the audio/video player (AVPLAY) module.
-          CNcomment:Ìá¹©AVPLAYµÄÏà¹ØĞÅÏ¢ CNend
+          CNcomment:æä¾›AVPLAYçš„ç›¸å…³ä¿¡æ¯ CNend
  */
 #ifndef __HI_UNF_AVPLAY_H__
 #define __HI_UNF_AVPLAY_H__
@@ -36,288 +36,288 @@ extern "C" {
 /** @{ */  /** <!-- [AVPLAY] */
 
 /**Highest priority of the video decoder*/
-/**CNcomment:ÊÓÆµ½âÂëÆ÷µÄ×î´óÓÅÏÈ¼¶ */
+/**CNcomment:è§†é¢‘è§£ç å™¨çš„æœ€å¤§ä¼˜å…ˆçº§ */
 #define HI_UNF_VCODEC_MAX_PRIORITY  16
 
 
 /**Defines the buffer ID required in an AVPLAY.*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷ÖĞĞèÒªµÄBufferIDÃ¶¾ÙÀàĞÍ */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨ä¸­éœ€è¦çš„BufferIDæšä¸¾ç±»å‹ */
 typedef enum hiUNF_AVPLAY_BUFID_E
 {
-    HI_UNF_AVPLAY_BUF_ID_ES_VID  = 0,    /**<ID of the buffer for storing the video elementary streams (ESs) played by an AVPLAY*//**<CNcomment: AV²¥·ÅÆ÷ESÊÓÆµBuffer ID. */
-    HI_UNF_AVPLAY_BUF_ID_ES_AUD  = 1,    /**<ID of the buffer for storing the audio ESs played by an AVPLAY*//**<CNcommentAV²¥·ÅÆ÷ESÒôÆµBuffer ID.*/
+    HI_UNF_AVPLAY_BUF_ID_ES_VID  = 0,    /**<ID of the buffer for storing the video elementary streams (ESs) played by an AVPLAY*//**<CNcomment: AVæ’­æ”¾å™¨ESè§†é¢‘Buffer ID. */
+    HI_UNF_AVPLAY_BUF_ID_ES_AUD  = 1,    /**<ID of the buffer for storing the audio ESs played by an AVPLAY*//**<CNcommentAVæ’­æ”¾å™¨ESéŸ³é¢‘Buffer ID.*/
     HI_UNF_AVPLAY_BUF_ID_BUTT
 } HI_UNF_AVPLAY_BUFID_E;
 
 /**Defines the type of a media channel.*/
-/**CNcomment:¶¨ÒåÃ½ÌåÍ¨µÀÀàĞÍ. */
+/**CNcomment:å®šä¹‰åª’ä½“é€šé“ç±»å‹. */
 typedef enum hiUNF_AVPLAY_MEDIA_CHAN
 {
-    HI_UNF_AVPLAY_MEDIA_CHAN_AUD  = 0x01,  /**<Audio channel*//**<CNcomment: ÒôÆµÍ¨µÀ */
-    HI_UNF_AVPLAY_MEDIA_CHAN_VID  = 0x02,  /**<Video channel*//**<CNcomment: ÊÓÆµÍ¨µÀ */
+    HI_UNF_AVPLAY_MEDIA_CHAN_AUD  = 0x01,  /**<Audio channel*//**<CNcomment: éŸ³é¢‘é€šé“ */
+    HI_UNF_AVPLAY_MEDIA_CHAN_VID  = 0x02,  /**<Video channel*//**<CNcomment: è§†é¢‘é€šé“ */
 
     HI_UNF_AVPLAY_MEDIA_CHAN_BUTT = 0x8
 } HI_UNF_AVPLAY_MEDIA_CHAN_E;
 
 /**Defines the type of an input stream interface.*/
-/**CNcomment:¶¨ÒåÊı¾İÊäÈëÁ÷½Ó¿ÚÀàĞÍ */
+/**CNcomment:å®šä¹‰æ•°æ®è¾“å…¥æµæ¥å£ç±»å‹ */
 typedef enum hiUNF_AVPLAY_STREAM_TYPE_E
 {
-    HI_UNF_AVPLAY_STREAM_TYPE_TS = 0,   /**<Transport stream (TS)*//**<CNcomment:TSÂëÁ÷ */
-    HI_UNF_AVPLAY_STREAM_TYPE_ES,       /**<ES stream*//**<CNcomment:ESÂëÁ÷ */
+    HI_UNF_AVPLAY_STREAM_TYPE_TS = 0,   /**<Transport stream (TS)*//**<CNcomment:TSç æµ */
+    HI_UNF_AVPLAY_STREAM_TYPE_ES,       /**<ES stream*//**<CNcomment:ESç æµ */
 
     HI_UNF_AVPLAY_STREAM_TYPE_BUTT
 } HI_UNF_AVPLAY_STREAM_TYPE_E;
 
 /**Defines the stream attributes.*/
-/**CNcomment:¶¨ÒåÂëÁ÷ÊôĞÔµÄ½á¹¹Ìå */
+/**CNcomment:å®šä¹‰ç æµå±æ€§çš„ç»“æ„ä½“ */
 typedef struct hiUNF_AVPLAY_STREAM_ATTR_S
 {
-    HI_UNF_AVPLAY_STREAM_TYPE_E enStreamType;   /**<Stream type*//**<CNcomment:ÂëÁ÷ÀàĞÍ */
+    HI_UNF_AVPLAY_STREAM_TYPE_E enStreamType;   /**<Stream type*//**<CNcomment:ç æµç±»å‹ */
 
-    HI_U32                      u32VidBufSize;  /**<Video buffer size*//**<CNcomment: ÊÓÆµ»º³å´óĞ¡ */
-    HI_U32                      u32AudBufSize;  /**<Audio buffer size*//**<CNcomment: ÒôÆµ»º³å´óĞ¡ */
+    HI_U32                      u32VidBufSize;  /**<Video buffer size*//**<CNcomment: è§†é¢‘ç¼“å†²å¤§å° */
+    HI_U32                      u32AudBufSize;  /**<Audio buffer size*//**<CNcomment: éŸ³é¢‘ç¼“å†²å¤§å° */
 
 } HI_UNF_AVPLAY_STREAM_ATTR_S;
 
 /**Supported synchronization control mode*/
-/**CNcomment:Ö§³ÖµÄÍ¬²½¿ØÖÆÄ£Ê½ */
+/**CNcomment:æ”¯æŒçš„åŒæ­¥æ§åˆ¶æ¨¡å¼ */
 typedef enum hiUNF_SYNC_REF_E
 {
-    HI_UNF_SYNC_REF_NONE = 0, /**<Free playing without synchronization*//**<CNcomment: ×ÔÓÉ²¥·Å */
-    HI_UNF_SYNC_REF_AUDIO,    /**<Audio-based synchronization*//**<CNcomment: ÒÔÒôÆµÎª×¼ */
-    HI_UNF_SYNC_REF_VIDEO,    /**<Video-based synchronization*//**<CNcomment: ÒÔÊÓÆµÎª×¼ */
-    HI_UNF_SYNC_REF_PCR,      /**<Program clock reference (PCR)-based synchronization*//**<CNcomment: ÒÔPCR£¨Program Clock Reference£©Îª×¼ */
-    HI_UNF_SYNC_REF_SCR,      /**<Program clock reference (SCR)-based synchronization*//**<CNcomment: ÒÔSCR(System Clock Reference) Îª×¼ */
+    HI_UNF_SYNC_REF_NONE = 0, /**<Free playing without synchronization*//**<CNcomment: è‡ªç”±æ’­æ”¾ */
+    HI_UNF_SYNC_REF_AUDIO,    /**<Audio-based synchronization*//**<CNcomment: ä»¥éŸ³é¢‘ä¸ºå‡† */
+    HI_UNF_SYNC_REF_VIDEO,    /**<Video-based synchronization*//**<CNcomment: ä»¥è§†é¢‘ä¸ºå‡† */
+    HI_UNF_SYNC_REF_PCR,      /**<Program clock reference (PCR)-based synchronization*//**<CNcomment: ä»¥PCRï¼ˆProgram Clock Referenceï¼‰ä¸ºå‡† */
+    HI_UNF_SYNC_REF_SCR,      /**<Program clock reference (SCR)-based synchronization*//**<CNcomment: ä»¥SCR(System Clock Reference) ä¸ºå‡† */
 
     HI_UNF_AVPLAY_SYNC_REF_BUTT
 } HI_UNF_SYNC_REF_E;
 
 /**Defines the status of a buffer.*/
-/**CNcomment:¶¨ÒåÊ¹ÓÃµÄ»º³åÇø×´Ì¬Ã¶¾ÙÀàĞÍ */
+/**CNcomment:å®šä¹‰ä½¿ç”¨çš„ç¼“å†²åŒºçŠ¶æ€æšä¸¾ç±»å‹ */
 typedef enum hiUNF_AVPLAY_BUF_STATE_E
 {
-    HI_UNF_AVPLAY_BUF_STATE_EMPTY = 0,   /**<The buffer is idle.*//**<CNcomment: »º³åÇø¿ÕÏĞ */
-    HI_UNF_AVPLAY_BUF_STATE_LOW,         /**<The buffer usage is too low.*//**<CNcomment: »º³åÇøÕ¼ÓÃÂÊ¹ıµÍ */
-    HI_UNF_AVPLAY_BUF_STATE_NORMAL,      /**<The buffer works normally.*//**<CNcomment: »º³åÇøÊ¹ÓÃÕı³£ */
-    HI_UNF_AVPLAY_BUF_STATE_HIGH,        /**<The buffer usage is too high.*//**<CNcomment: »º³åÇøÕ¼ÓÃÂÊ¹ı¸ß */
-    HI_UNF_AVPLAY_BUF_STATE_FULL,        /**<The buffer is full.*//**<CNcomment: »º³åÇøÒÑÂú */
+    HI_UNF_AVPLAY_BUF_STATE_EMPTY = 0,   /**<The buffer is idle.*//**<CNcomment: ç¼“å†²åŒºç©ºé—² */
+    HI_UNF_AVPLAY_BUF_STATE_LOW,         /**<The buffer usage is too low.*//**<CNcomment: ç¼“å†²åŒºå ç”¨ç‡è¿‡ä½ */
+    HI_UNF_AVPLAY_BUF_STATE_NORMAL,      /**<The buffer works normally.*//**<CNcomment: ç¼“å†²åŒºä½¿ç”¨æ­£å¸¸ */
+    HI_UNF_AVPLAY_BUF_STATE_HIGH,        /**<The buffer usage is too high.*//**<CNcomment: ç¼“å†²åŒºå ç”¨ç‡è¿‡é«˜ */
+    HI_UNF_AVPLAY_BUF_STATE_FULL,        /**<The buffer is full.*//**<CNcomment: ç¼“å†²åŒºå·²æ»¡ */
 
     HI_UNF_AVPLAY_BUF_STATE_BUTT
 }HI_UNF_AVPLAY_BUF_STATE_E;
 
 /**Defines the type of pts channel.*/
-/** CNcomment:¶¨ÒåPTSÍ¨µÀÀàĞÍ */
+/** CNcomment:å®šä¹‰PTSé€šé“ç±»å‹ */
 typedef enum hiUNF_SYNC_PTS_CHAN_E
 {
-    HI_UNF_SYNC_PTS_CHAN_VID,   /**<Video pts channel.*//**<CNcomment:ÊÓÆµPTSÍ¨µÀ */
-    HI_UNF_SYNC_PTS_CHAN_AUD,   /**<Audio pts channel.*//**<CNcomment:ÒôÆµPTSÍ¨µÀ */
-    HI_UNF_SYNC_PTS_CHAN_PCR,   /**<Pcr channel.*//**<CNcomment:PCRÍ¨µÀ */
+    HI_UNF_SYNC_PTS_CHAN_VID,   /**<Video pts channel.*//**<CNcomment:è§†é¢‘PTSé€šé“ */
+    HI_UNF_SYNC_PTS_CHAN_AUD,   /**<Audio pts channel.*//**<CNcomment:éŸ³é¢‘PTSé€šé“ */
+    HI_UNF_SYNC_PTS_CHAN_PCR,   /**<Pcr channel.*//**<CNcomment:PCRé€šé“ */
     
     HI_UNF_SYNC_PTS_CHAN_BUTT
 }HI_UNF_SYNC_PTS_CHAN_E;
 
 /**Defines the parameters of pts jump.*/
-/** CNcomment:¶¨ÒåPTSÌø±ä²ÎÊıµÄ½á¹¹Ìå */
+/** CNcomment:å®šä¹‰PTSè·³å˜å‚æ•°çš„ç»“æ„ä½“ */
 typedef struct hiUNF_SYNC_PTSJUMP_PARAM_S
 {
-    HI_UNF_SYNC_PTS_CHAN_E  enPtsChan;  /**<Pts channel.*//**<CNcomment:PTSÍ¨µÀ */
-    HI_BOOL                 bLoopback;  /**<Loopback or not.*//**<CNcomment:ÊÇ·ñ»·»Ø */
-    HI_U32                  u32FirstPts;/**<The first pts.*//**<CNcomment:µÚÒ»¸öPTS */
-    HI_U32                  u32FirstValidPts;/**<The first valid pts.*//**<CNcomment:µÚÒ»¸öÓĞĞ§PTS */
-    HI_U32                  u32CurSrcPts;   /**<The current src pts.*//**<CNcomment:µ±Ç°Ô­Ê¼PTS */
-    HI_U32                  u32CurPts;      /**<The current pts.*//**<CNcomment:µ±Ç°PTS */
-    HI_U32                  u32LastSrcPts;  /**<The last src pts.*//**<CNcomment:ÉÏÒ»¸öÔ­Ê¼PTS */
-    HI_U32                  u32LastPts;     /**<The last pts.*//**<CNcomment:ÉÏÒ»¸öPTS */
+    HI_UNF_SYNC_PTS_CHAN_E  enPtsChan;  /**<Pts channel.*//**<CNcomment:PTSé€šé“ */
+    HI_BOOL                 bLoopback;  /**<Loopback or not.*//**<CNcomment:æ˜¯å¦ç¯å› */
+    HI_U32                  u32FirstPts;/**<The first pts.*//**<CNcomment:ç¬¬ä¸€ä¸ªPTS */
+    HI_U32                  u32FirstValidPts;/**<The first valid pts.*//**<CNcomment:ç¬¬ä¸€ä¸ªæœ‰æ•ˆPTS */
+    HI_U32                  u32CurSrcPts;   /**<The current src pts.*//**<CNcomment:å½“å‰åŸå§‹PTS */
+    HI_U32                  u32CurPts;      /**<The current pts.*//**<CNcomment:å½“å‰PTS */
+    HI_U32                  u32LastSrcPts;  /**<The last src pts.*//**<CNcomment:ä¸Šä¸€ä¸ªåŸå§‹PTS */
+    HI_U32                  u32LastPts;     /**<The last pts.*//**<CNcomment:ä¸Šä¸€ä¸ªPTS */
 }HI_UNF_SYNC_PTSJUMP_PARAM_S;
 
 /**Defines the parameters of synchronization status change*/
-/** CNcomment:¶¨ÒåÍ¬²½×´Ì¬±ä¸ü²ÎÊıµÄ½á¹¹Ìå */
+/** CNcomment:å®šä¹‰åŒæ­¥çŠ¶æ€å˜æ›´å‚æ•°çš„ç»“æ„ä½“ */
 typedef struct hiUNF_SYNC_STAT_PARAM_S
 {
-     HI_S32          s32VidAudDiff;     /**<The diffrence between video and audio frames*//**<CNcomment: ÒôÊÓÆµ²îÖµ */
-     HI_S32          s32VidPcrDiff;     /**<The diffrence between video frame and pcr*//**<CNcomment: ÊÓÆµPCR²îÖµ */
-     HI_S32          s32AudPcrDiff;     /**<The diffrence between audio frame and pcr*//**<CNcomment: ÒôÆµPCR²îÖµ */
-     HI_U32          u32VidLocalTime;   /**<Local video synchronization reference time*//**<CNcomment: ÊÓÆµ±¾µØÊ±¼ä */
-     HI_U32          u32AudLocalTime;   /**<Local audio synchronization reference time*//**<CNcomment: ÒôÆµ±¾µØÊ±¼ä */
-     HI_U32          u32PcrLocalTime;   /**<Local pcr synchronization reference time*//**<CNcomment: PCR±¾µØÊ±¼ä */
+     HI_S32          s32VidAudDiff;     /**<The diffrence between video and audio frames*//**<CNcomment: éŸ³è§†é¢‘å·®å€¼ */
+     HI_S32          s32VidPcrDiff;     /**<The diffrence between video frame and pcr*//**<CNcomment: è§†é¢‘PCRå·®å€¼ */
+     HI_S32          s32AudPcrDiff;     /**<The diffrence between audio frame and pcr*//**<CNcomment: éŸ³é¢‘PCRå·®å€¼ */
+     HI_U32          u32VidLocalTime;   /**<Local video synchronization reference time*//**<CNcomment: è§†é¢‘æœ¬åœ°æ—¶é—´ */
+     HI_U32          u32AudLocalTime;   /**<Local audio synchronization reference time*//**<CNcomment: éŸ³é¢‘æœ¬åœ°æ—¶é—´ */
+     HI_U32          u32PcrLocalTime;   /**<Local pcr synchronization reference time*//**<CNcomment: PCRæœ¬åœ°æ—¶é—´ */
 }HI_UNF_SYNC_STAT_PARAM_S;
 
 /*Type of the event callback function*/
-/**CNcomment: ÊÂ¼ş»Øµ÷º¯ÊıÀàĞÍ */
+/**CNcomment: äº‹ä»¶å›è°ƒå‡½æ•°ç±»å‹ */
 typedef enum hiUNF_AVPLAY_EVENT_E
 {
-    HI_UNF_AVPLAY_EVENT_EOS,                   /**<The end of stream (EOS) operation is performed, NULL*//**<CNcomment: EOSÖ´ĞĞ½áÊø, NULL.*/
-    HI_UNF_AVPLAY_EVENT_STOP,                  /**<The stop operation is performed, NULL*//**<CNcomment: STOPÖ´ĞĞ½áÊø, NULL.*/
-    HI_UNF_AVPLAY_EVENT_RNG_BUF_STATE,         /**<Status change of the media buffer queue, HI_UNF_AVPLAY_BUF_STATE_E*//**<CNcomment: Ã½Ìå»º´æ¶ÓÁĞ×´Ì¬±ä»¯, HI_UNF_AVPLAY_BUF_STATE_E.*/
-    HI_UNF_AVPLAY_EVENT_NORM_SWITCH,           /**<Standard switch, HI_UNF_NORMCHANGE_PARAM_S*//**<CNcomment: ÖÆÊ½ÇĞ»», HI_UNF_NORMCHANGE_PARAM_S .*/
-    HI_UNF_AVPLAY_EVENT_FRAMEPACKING_CHANGE,   /**<*3D Frame packing change,HI_UNF_VIDEO_FRAME_PACKING_TYPE_E*//**<CNcomment: 3DÖ¡ÀàĞÍ±ä»¯, HI_UNF_VIDEO_FRAME_PACKING_TYPE_E .*/
-    HI_UNF_AVPLAY_EVENT_NEW_VID_FRAME,         /**<New video frame, HI_UNF_VO_FRAMEINFO_S*//**<CNcomment: ĞÂÊÓÆµÖ¡, HI_UNF_VO_FRAMEINFO_S .*/
-    HI_UNF_AVPLAY_EVENT_NEW_AUD_FRAME,         /**<New audio frame, HI_UNF_AO_FRAMEINFO_S*//**<CNcomment: ĞÂÒôÆµÖ¡, HI_UNF_AO_FRAMEINFO_S .*/
-    HI_UNF_AVPLAY_EVENT_NEW_USER_DATA,         /**<New video user data, HI_UNF_VIDEO_USERDATA_S*//**<CNcomment: ĞÂÊÓÆµÓÃ»§Êı¾İ, HI_UNF_VIDEO_USERDATA_S .*/
-    HI_UNF_AVPLAY_EVENT_GET_AUD_ES,            /**<New audio ES data, HI_UNF_ES_BUF_S*//**<CNcomment: ĞÂÒôÆµESÊı¾İ, HI_UNF_ES_BUF_S .*/
-    HI_UNF_AVPLAY_EVENT_IFRAME_ERR,            /**<I frame decode error*//**<CNcomment: ½âÂëIÖ¡´íÎó .*/
-    HI_UNF_AVPLAY_EVENT_SYNC_PTS_JUMP,         /**<Pts Jump, HI_UNF_SYNC_PTSJUMP_PARAM_S * *//**<CNcomment: PTSÌø±ä, HI_UNF_SYNC_PTSJUMP_PARAM_S * .*/
-    HI_UNF_AVPLAY_EVENT_SYNC_STAT_CHANGE,      /**<Synchronization status change, HI_UNF_SYNC_STAT_PARAM_S * *//**<CNcomment: Í¬²½×´Ì¬±ä¸ü, HI_UNF_SYNC_STAT_PARAM_S * .*/
-    HI_UNF_AVPLAY_EVENT_VID_BUF_STATE,         /**<Status change of the media buffer queue, HI_UNF_AVPLAY_EVENT_VID_BUF_STATE*//**<CNcomment: ÊÓÆµ»º´æ¶ÓÁĞ×´Ì¬±ä»¯, HI_UNF_AVPLAY_EVENT_VID_BUF_STATE */
-    HI_UNF_AVPLAY_EVENT_AUD_BUF_STATE,         /**<Status change of the media buffer queue, HI_UNF_AVPLAY_EVENT_AUD_BUF_STATE*//**<CNcomment: ÒôÆµ»º´æ¶ÓÁĞ×´Ì¬±ä»¯, HI_UNF_AVPLAY_EVENT_AUD_BUF_STATE */
-    HI_UNF_AVPLAY_EVENT_VID_UNSUPPORT,         /**<The video stream is unsupport*//**<CNcomment: ÊÓÆµÂëÁ÷²»Ö§³Ö*/
+    HI_UNF_AVPLAY_EVENT_EOS,                   /**<The end of stream (EOS) operation is performed, NULL*//**<CNcomment: EOSæ‰§è¡Œç»“æŸ, NULL.*/
+    HI_UNF_AVPLAY_EVENT_STOP,                  /**<The stop operation is performed, NULL*//**<CNcomment: STOPæ‰§è¡Œç»“æŸ, NULL.*/
+    HI_UNF_AVPLAY_EVENT_RNG_BUF_STATE,         /**<Status change of the media buffer queue, HI_UNF_AVPLAY_BUF_STATE_E*//**<CNcomment: åª’ä½“ç¼“å­˜é˜Ÿåˆ—çŠ¶æ€å˜åŒ–, HI_UNF_AVPLAY_BUF_STATE_E.*/
+    HI_UNF_AVPLAY_EVENT_NORM_SWITCH,           /**<Standard switch, HI_UNF_NORMCHANGE_PARAM_S*//**<CNcomment: åˆ¶å¼åˆ‡æ¢, HI_UNF_NORMCHANGE_PARAM_S .*/
+    HI_UNF_AVPLAY_EVENT_FRAMEPACKING_CHANGE,   /**<*3D Frame packing change,HI_UNF_VIDEO_FRAME_PACKING_TYPE_E*//**<CNcomment: 3Då¸§ç±»å‹å˜åŒ–, HI_UNF_VIDEO_FRAME_PACKING_TYPE_E .*/
+    HI_UNF_AVPLAY_EVENT_NEW_VID_FRAME,         /**<New video frame, HI_UNF_VO_FRAMEINFO_S*//**<CNcomment: æ–°è§†é¢‘å¸§, HI_UNF_VO_FRAMEINFO_S .*/
+    HI_UNF_AVPLAY_EVENT_NEW_AUD_FRAME,         /**<New audio frame, HI_UNF_AO_FRAMEINFO_S*//**<CNcomment: æ–°éŸ³é¢‘å¸§, HI_UNF_AO_FRAMEINFO_S .*/
+    HI_UNF_AVPLAY_EVENT_NEW_USER_DATA,         /**<New video user data, HI_UNF_VIDEO_USERDATA_S*//**<CNcomment: æ–°è§†é¢‘ç”¨æˆ·æ•°æ®, HI_UNF_VIDEO_USERDATA_S .*/
+    HI_UNF_AVPLAY_EVENT_GET_AUD_ES,            /**<New audio ES data, HI_UNF_ES_BUF_S*//**<CNcomment: æ–°éŸ³é¢‘ESæ•°æ®, HI_UNF_ES_BUF_S .*/
+    HI_UNF_AVPLAY_EVENT_IFRAME_ERR,            /**<I frame decode error*//**<CNcomment: è§£ç Iå¸§é”™è¯¯ .*/
+    HI_UNF_AVPLAY_EVENT_SYNC_PTS_JUMP,         /**<Pts Jump, HI_UNF_SYNC_PTSJUMP_PARAM_S * *//**<CNcomment: PTSè·³å˜, HI_UNF_SYNC_PTSJUMP_PARAM_S * .*/
+    HI_UNF_AVPLAY_EVENT_SYNC_STAT_CHANGE,      /**<Synchronization status change, HI_UNF_SYNC_STAT_PARAM_S * *//**<CNcomment: åŒæ­¥çŠ¶æ€å˜æ›´, HI_UNF_SYNC_STAT_PARAM_S * .*/
+    HI_UNF_AVPLAY_EVENT_VID_BUF_STATE,         /**<Status change of the media buffer queue, HI_UNF_AVPLAY_EVENT_VID_BUF_STATE*//**<CNcomment: è§†é¢‘ç¼“å­˜é˜Ÿåˆ—çŠ¶æ€å˜åŒ–, HI_UNF_AVPLAY_EVENT_VID_BUF_STATE */
+    HI_UNF_AVPLAY_EVENT_AUD_BUF_STATE,         /**<Status change of the media buffer queue, HI_UNF_AVPLAY_EVENT_AUD_BUF_STATE*//**<CNcomment: éŸ³é¢‘ç¼“å­˜é˜Ÿåˆ—çŠ¶æ€å˜åŒ–, HI_UNF_AVPLAY_EVENT_AUD_BUF_STATE */
+    HI_UNF_AVPLAY_EVENT_VID_UNSUPPORT,         /**<The video stream is unsupport*//**<CNcomment: è§†é¢‘ç æµä¸æ”¯æŒ*/
 
     HI_UNF_AVPLAY_EVENT_BUTT
 } HI_UNF_AVPLAY_EVENT_E;
 
 /**Mode of processing the buffer overflow*/
-/**CNcomment: »º³åÒç³ö´¦ÀíÀàĞÍ  */
+/**CNcomment: ç¼“å†²æº¢å‡ºå¤„ç†ç±»å‹  */
 typedef enum hiUNF_AVPLAY_OVERFLOW_E
 {
-    HI_UNF_AVPLAY_OVERFLOW_RESET,              /**<Reset during overflow*//**<CNcomment: Òç³öÊ±½øĞĞ¸´Î»  */
-    HI_UNF_AVPLAY_OVERFLOW_DISCARD,            /**<Discard during overflow*//**<CNcomment: Òç³öÊ±½øĞĞ¶ªÆú  */
+    HI_UNF_AVPLAY_OVERFLOW_RESET,              /**<Reset during overflow*//**<CNcomment: æº¢å‡ºæ—¶è¿›è¡Œå¤ä½  */
+    HI_UNF_AVPLAY_OVERFLOW_DISCARD,            /**<Discard during overflow*//**<CNcomment: æº¢å‡ºæ—¶è¿›è¡Œä¸¢å¼ƒ  */
     HI_UNF_AVPLAY_OVERFLOW_BUTT
 } HI_UNF_AVPLAY_OVERFLOW_E;
 
 /**Defines the type of the event callback function.*/
-/**CNcomment: ¶¨ÒåÊÂ¼ş»Øµ÷º¯ÊıÃ¶¾ÙÀàĞÍ */
+/**CNcomment: å®šä¹‰äº‹ä»¶å›è°ƒå‡½æ•°æšä¸¾ç±»å‹ */
 typedef HI_S32 (*HI_UNF_AVPLAY_EVENT_CB_FN)(HI_HANDLE hAvplay, HI_UNF_AVPLAY_EVENT_E enEvent, HI_U32 u32Para);
 
 /**Defines the attribute ID of an AVPLAY.*/
-/**CNcomment: ¶¨ÒåAV²¥·ÅÆ÷ÊôĞÔIDÃ¶¾ÙÀàĞÍ */
+/**CNcomment: å®šä¹‰AVæ’­æ”¾å™¨å±æ€§IDæšä¸¾ç±»å‹ */
 typedef enum hiUNF_AVPLAY_ATTR_ID_E
 {
-    HI_UNF_AVPLAY_ATTR_ID_STREAM_MODE = 0,  /**<Playing mode, HI_UNF_AVPLAY_ATTR_S*//**<CNcomment: ²¥·ÅÄ£Ê½ , HI_UNF_AVPLAY_ATTR_S .*/
+    HI_UNF_AVPLAY_ATTR_ID_STREAM_MODE = 0,  /**<Playing mode, HI_UNF_AVPLAY_ATTR_S*//**<CNcomment: æ’­æ”¾æ¨¡å¼ , HI_UNF_AVPLAY_ATTR_S .*/
 
-    HI_UNF_AVPLAY_ATTR_ID_ADEC,             /**<Audio attribute, HI_UNF_ACODEC_ATTR_S*//**<CNcomment: ÒôÆµÊôĞÔ , HI_UNF_ACODEC_ATTR_S .*/
-    HI_UNF_AVPLAY_ATTR_ID_VDEC,             /**<Video attribute, HI_UNF_VCODEC_ATTR_S*//**<CNcomment: ÊÓÆµÊôĞÔ , HI_UNF_VCODEC_ATTR_S  .*/
+    HI_UNF_AVPLAY_ATTR_ID_ADEC,             /**<Audio attribute, HI_UNF_ACODEC_ATTR_S*//**<CNcomment: éŸ³é¢‘å±æ€§ , HI_UNF_ACODEC_ATTR_S .*/
+    HI_UNF_AVPLAY_ATTR_ID_VDEC,             /**<Video attribute, HI_UNF_VCODEC_ATTR_S*//**<CNcomment: è§†é¢‘å±æ€§ , HI_UNF_VCODEC_ATTR_S  .*/
 
-    HI_UNF_AVPLAY_ATTR_ID_AUD_PID,          /**<Audio packet identifier (PID), HI_U32*//**<CNcomment: ÒôÆµPID , HI_U32 .*/
-    HI_UNF_AVPLAY_ATTR_ID_VID_PID,          /**<Video PID , HI_U32*//**<CNcomment: ÊÓÆµPID , HI_U32 .*/
+    HI_UNF_AVPLAY_ATTR_ID_AUD_PID,          /**<Audio packet identifier (PID), HI_U32*//**<CNcomment: éŸ³é¢‘PID , HI_U32 .*/
+    HI_UNF_AVPLAY_ATTR_ID_VID_PID,          /**<Video PID , HI_U32*//**<CNcomment: è§†é¢‘PID , HI_U32 .*/
     HI_UNF_AVPLAY_ATTR_ID_PCR_PID,          /**<PCR PID, HI_U32*//**<CNcomment: PCR PID , HI_U32 .*/
 
-    HI_UNF_AVPLAY_ATTR_ID_SYNC,             /**<Synchronization attribute, HI_UNF_SYNC_ATTR_S*//**<CNcomment: Í¬²½ÊôĞÔ , HI_UNF_SYNC_ATTR_S .*/
-    HI_UNF_AVPLAY_ATTR_ID_AFD,              /**<Whether to enable the active format descriptor (AFD), HI_BOOL* *//**<CNcomment: AFD ÊÇ·ñ¿ªÆô£¬ HI_BOOL * .*/
-    HI_UNF_AVPLAY_ATTR_ID_OVERFLOW,         /**<Overflow processing type, HI_UNF_AVPLAY_OVERFLOW_E* *//**<CNcomment: Òç³ö´¦ÀíÀàĞÍ , HI_UNF_AVPLAY_OVERFLOW_E * .*/
+    HI_UNF_AVPLAY_ATTR_ID_SYNC,             /**<Synchronization attribute, HI_UNF_SYNC_ATTR_S*//**<CNcomment: åŒæ­¥å±æ€§ , HI_UNF_SYNC_ATTR_S .*/
+    HI_UNF_AVPLAY_ATTR_ID_AFD,              /**<Whether to enable the active format descriptor (AFD), HI_BOOL* *//**<CNcomment: AFD æ˜¯å¦å¼€å¯ï¼Œ HI_BOOL * .*/
+    HI_UNF_AVPLAY_ATTR_ID_OVERFLOW,         /**<Overflow processing type, HI_UNF_AVPLAY_OVERFLOW_E* *//**<CNcomment: æº¢å‡ºå¤„ç†ç±»å‹ , HI_UNF_AVPLAY_OVERFLOW_E * .*/
 
-    HI_UNF_AVPLAY_ATTR_ID_MULTIAUD,          /**<Multiple audio attribute,  HI_UNF_AVPLAY_MULTIAUD_ATTR_S **//**<CNcomment: ¶àÒô¹ìÊôĞÔ, HI_UNF_AVPLAY_MULTIAUD_ATTR_S * .*/
-    HI_UNF_AVPLAY_ATTR_ID_FRMRATE_PARAM,     /**<Frame Rate Parameter, HI_UNF_AVPLAY_FRMRATE_PARAM_S * *//**<CNcomment:Ö¡ÂÊ²ÎÊı,HI_UNF_AVPLAY_FRMRATE_PARAM_S * .*/
-    HI_UNF_AVPLAY_ATTR_ID_FRMPACK_TYPE,      /**<3D Frame Packing Type, HI_UNF_VIDEO_FRAME_PACKING_TYPE_E * *//**<CNcomment:3DÖ¡µÄ´ò°üÀàĞÍ,HI_UNF_VIDEO_FRAME_PACKING_TYPE_E * .*/
-     HI_UNF_AVPLAY_ATTR_ID_LOW_DELAY,        /**<Low Delay Attr, HI_UNF_AVPLAY_LOW_DELAY_ATTR_S * *//**<CNcomment: µÍÑÓÊ±ÊôĞÔ , HI_UNF_AVPLAY_LOW_DELAY_ATTR_S * .*/
+    HI_UNF_AVPLAY_ATTR_ID_MULTIAUD,          /**<Multiple audio attribute,  HI_UNF_AVPLAY_MULTIAUD_ATTR_S **//**<CNcomment: å¤šéŸ³è½¨å±æ€§, HI_UNF_AVPLAY_MULTIAUD_ATTR_S * .*/
+    HI_UNF_AVPLAY_ATTR_ID_FRMRATE_PARAM,     /**<Frame Rate Parameter, HI_UNF_AVPLAY_FRMRATE_PARAM_S * *//**<CNcomment:å¸§ç‡å‚æ•°,HI_UNF_AVPLAY_FRMRATE_PARAM_S * .*/
+    HI_UNF_AVPLAY_ATTR_ID_FRMPACK_TYPE,      /**<3D Frame Packing Type, HI_UNF_VIDEO_FRAME_PACKING_TYPE_E * *//**<CNcomment:3Då¸§çš„æ‰“åŒ…ç±»å‹,HI_UNF_VIDEO_FRAME_PACKING_TYPE_E * .*/
+     HI_UNF_AVPLAY_ATTR_ID_LOW_DELAY,        /**<Low Delay Attr, HI_UNF_AVPLAY_LOW_DELAY_ATTR_S * *//**<CNcomment: ä½å»¶æ—¶å±æ€§ , HI_UNF_AVPLAY_LOW_DELAY_ATTR_S * .*/
     HI_UNF_AVPLAY_ATTR_ID_BUTT
 } HI_UNF_AVPLAY_ATTR_ID_E;
 
 /**Defines the attribute of low delay.*/
-/**CNcomment: ¶¨ÒåµÍÑÓÊ±ÊôĞÔ½á¹¹Ìå*/
+/**CNcomment: å®šä¹‰ä½å»¶æ—¶å±æ€§ç»“æ„ä½“*/
 typedef struct hiUNF_AVPLAY_LOW_DELAY_ATTR_S
 {
-    HI_BOOL               bEnable;  /**<Is low delay enable or not*//**<CNcomment: µÍÑÓÊ±ÊÇ·ñÊ¹ÄÜ*/
+    HI_BOOL               bEnable;  /**<Is low delay enable or not*//**<CNcomment: ä½å»¶æ—¶æ˜¯å¦ä½¿èƒ½*/
 }HI_UNF_AVPLAY_LOW_DELAY_ATTR_S;
 
 /**Defines the audio/video synchronization .*/
-/**CNcomment: ¶¨ÒåÒôÊÓÆµÍ¬²½µ÷ÕûÇø¼ä */
+/**CNcomment: å®šä¹‰éŸ³è§†é¢‘åŒæ­¥è°ƒæ•´åŒºé—´ */
 typedef struct hiUNF_SYNC_REGION_S
 {
-    HI_S32                s32VidPlusTime;        /**<Plus time range during video synchronization*//**<CNcomment: ÊÓÆµÍ¬²½³¬Ç°µÄÊ±¼ä·¶Î§ */
-    HI_S32                s32VidNegativeTime;    /**<Negative time range during video synchronization*//**<CNcomment: ÊÓÆµÍ¬²½ÂäºóµÄÊ±¼ä·¶Î§ */
-    HI_BOOL               bSmoothPlay;           /**<Slow playing enable*//**<CNcomment: Âı·ÅÊ¹ÄÜ */
+    HI_S32                s32VidPlusTime;        /**<Plus time range during video synchronization*//**<CNcomment: è§†é¢‘åŒæ­¥è¶…å‰çš„æ—¶é—´èŒƒå›´ */
+    HI_S32                s32VidNegativeTime;    /**<Negative time range during video synchronization*//**<CNcomment: è§†é¢‘åŒæ­¥è½åçš„æ—¶é—´èŒƒå›´ */
+    HI_BOOL               bSmoothPlay;           /**<Slow playing enable*//**<CNcomment: æ…¢æ”¾ä½¿èƒ½ */
 } HI_UNF_SYNC_REGION_S;
 
 /**Defines the audio/video synchronization attributes.*/
-/**CNcomment: ¶¨ÒåÒôÊÓÆµÍ¬²½ÊôĞÔ */
+/**CNcomment: å®šä¹‰éŸ³è§†é¢‘åŒæ­¥å±æ€§ */
 typedef struct hiUNF_SYNC_ATTR_S
 {
-    HI_UNF_SYNC_REF_E     enSyncRef;             /**<Audio-based synchronization, PCR-based synchronization, and free playing without synchronization*//**<CNcomment: ÒôÆµÎª×¼£¬PCRÎª×¼£¬×ÔÓÉ²¥·ÅµÈ */
-    HI_UNF_SYNC_REGION_S  stSyncStartRegion;     /**<Synchronization start region*//**<CNcomment: Í¬²½Æğµ÷Çø¼ä */
-    HI_UNF_SYNC_REGION_S  stSyncNovelRegion;     /**<Synchronization exception region*//**<CNcomment: Í¬²½Òì³£Çø¼ä */
-    HI_S32                s32VidPtsAdjust;       /**<Video presentation time stamp (PTS) adjustment*//**<CNcomment: ÊÓÆµPTSµ÷Õû */
-    HI_S32                s32AudPtsAdjust;       /**<Audio PTS adjustment*//**<CNcomment: ÒôÆµPTSµ÷Õû */
+    HI_UNF_SYNC_REF_E     enSyncRef;             /**<Audio-based synchronization, PCR-based synchronization, and free playing without synchronization*//**<CNcomment: éŸ³é¢‘ä¸ºå‡†ï¼ŒPCRä¸ºå‡†ï¼Œè‡ªç”±æ’­æ”¾ç­‰ */
+    HI_UNF_SYNC_REGION_S  stSyncStartRegion;     /**<Synchronization start region*//**<CNcomment: åŒæ­¥èµ·è°ƒåŒºé—´ */
+    HI_UNF_SYNC_REGION_S  stSyncNovelRegion;     /**<Synchronization exception region*//**<CNcomment: åŒæ­¥å¼‚å¸¸åŒºé—´ */
+    HI_S32                s32VidPtsAdjust;       /**<Video presentation time stamp (PTS) adjustment*//**<CNcomment: è§†é¢‘PTSè°ƒæ•´ */
+    HI_S32                s32AudPtsAdjust;       /**<Audio PTS adjustment*//**<CNcomment: éŸ³é¢‘PTSè°ƒæ•´ */
 
-    HI_U32                u32PreSyncTimeoutMs;   /**<Pre-synchronization timeout, in ms*//**<CNcomment: Ô¤Í¬²½µÄ³¬Ê±Ê±¼ä£¬µ¥Î»ÎªºÁÃë */
-    HI_BOOL               bQuickOutput;          /**<Fast output enable*//**<CNcomment: ¿ìËÙÊä³öÊ¹ÄÜ */
+    HI_U32                u32PreSyncTimeoutMs;   /**<Pre-synchronization timeout, in ms*//**<CNcomment: é¢„åŒæ­¥çš„è¶…æ—¶æ—¶é—´ï¼Œå•ä½ä¸ºæ¯«ç§’ */
+    HI_BOOL               bQuickOutput;          /**<Fast output enable*//**<CNcomment: å¿«é€Ÿè¾“å‡ºä½¿èƒ½ */
 } HI_UNF_SYNC_ATTR_S;
 
 /**Defines the playing attributes of an AVPLAY.*/
-/**CNcomment: ¶¨ÒåAV²¥·ÅÊôĞÔ */
+/**CNcomment: å®šä¹‰AVæ’­æ”¾å±æ€§ */
 typedef struct hiUNF_AVPLAY_ATTR_S
 {
-    HI_U32                       u32DemuxId;   /**<ID of the DEMUX used by an AVPLAY*//**<CNcomment: AVPLAYËùÊ¹ÓÃµÄDEMUX ID ½öµ±ÂëÁ÷ÀàĞÍÎªTSÊ±ÓĞĞ§ */
-    HI_UNF_AVPLAY_STREAM_ATTR_S  stStreamAttr; /**<Stream attributes*//**<CNcomment: ÂëÁ÷ÊôĞÔ */
+    HI_U32                       u32DemuxId;   /**<ID of the DEMUX used by an AVPLAY*//**<CNcomment: AVPLAYæ‰€ä½¿ç”¨çš„DEMUX ID ä»…å½“ç æµç±»å‹ä¸ºTSæ—¶æœ‰æ•ˆ */
+    HI_UNF_AVPLAY_STREAM_ATTR_S  stStreamAttr; /**<Stream attributes*//**<CNcomment: ç æµå±æ€§ */
 } HI_UNF_AVPLAY_ATTR_S;
 
 /**Defines the synchronization status when an AVPLAY is running.*/
-/**CNcomment: ¶¨Òå²¥·ÅÆ÷ÔËĞĞ×´Ì¬ĞÅÏ¢ÖĞÍ¬²½×´Ì¬ĞÅÏ¢ÀàĞÍ */
+/**CNcomment: å®šä¹‰æ’­æ”¾å™¨è¿è¡ŒçŠ¶æ€ä¿¡æ¯ä¸­åŒæ­¥çŠ¶æ€ä¿¡æ¯ç±»å‹ */
 typedef struct hiUNF_SYNC_STATUS_S
 {
-    HI_U32 u32FirstAudPts;    /**<PTS of the first audio frame*//**<CNcomment: µÚÒ»¸öÒôÆµÖ¡ PTS .*/
-    HI_U32 u32FirstVidPts;    /**<PTS of the first video frame*//**<CNcomment: µÚÒ»¸öÊÓÆµÖ¡ PTS .*/
-    HI_U32 u32LastAudPts;     /**<PTS of the last audio frame*//**<CNcomment: ×î½ü²¥·ÅµÄÒ»¸öÒôÆµÖ¡ PTS .*/
-    HI_U32 u32LastVidPts;     /**<PTS of the last video frame*//**<CNcomment: ×î½ü²¥·ÅµÄÒ»¸öÊÓÆµÖ¡ PTS .*/
-    HI_S32 s32DiffAvPlayTime; /**<Playing time difference between audio and video frames*//**<CNcomment: ÒôÊÓÆµ ²¥·ÅÊ±²î .*/
-    HI_U32 u32PlayTime;       /**<Playing time*//**<CNcomment: µ±Ç°ÒÑ²¥·ÅÊ±¼ä .*/
-    HI_U32 u32LocalTime;      /**<Local synchronization reference time*//**<CNcomment: ±¾µØÍ¬²½²Î¿¼Ê±¼ä .*/
+    HI_U32 u32FirstAudPts;    /**<PTS of the first audio frame*//**<CNcomment: ç¬¬ä¸€ä¸ªéŸ³é¢‘å¸§ PTS .*/
+    HI_U32 u32FirstVidPts;    /**<PTS of the first video frame*//**<CNcomment: ç¬¬ä¸€ä¸ªè§†é¢‘å¸§ PTS .*/
+    HI_U32 u32LastAudPts;     /**<PTS of the last audio frame*//**<CNcomment: æœ€è¿‘æ’­æ”¾çš„ä¸€ä¸ªéŸ³é¢‘å¸§ PTS .*/
+    HI_U32 u32LastVidPts;     /**<PTS of the last video frame*//**<CNcomment: æœ€è¿‘æ’­æ”¾çš„ä¸€ä¸ªè§†é¢‘å¸§ PTS .*/
+    HI_S32 s32DiffAvPlayTime; /**<Playing time difference between audio and video frames*//**<CNcomment: éŸ³è§†é¢‘ æ’­æ”¾æ—¶å·® .*/
+    HI_U32 u32PlayTime;       /**<Playing time*//**<CNcomment: å½“å‰å·²æ’­æ”¾æ—¶é—´ .*/
+    HI_U32 u32LocalTime;      /**<Local synchronization reference time*//**<CNcomment: æœ¬åœ°åŒæ­¥å‚è€ƒæ—¶é—´ .*/
 } HI_UNF_SYNC_STATUS_S;
 
 /**Defines the status of a media buffer.*/
-/**CNcomment:¶¨ÒåÃ½Ìå»º³åÇøµÄ×´Ì¬ĞÅÏ¢ */
+/**CNcomment:å®šä¹‰åª’ä½“ç¼“å†²åŒºçš„çŠ¶æ€ä¿¡æ¯ */
 typedef struct hiUNF_AVPLAY_BUF_STATUS_S
 {
-    HI_U32 u32BufId;         /**<Media buffer ID*//**<CNcomment: Ã½Ìå»º³å ±êÊ¶ */
-    HI_U32 u32BufSize;       /**<Media buffer size*//**<CNcomment: Ã½Ìå»º³å´óĞ¡ */
-    HI_U32 u32BufRptr;       /*Read pointer of the media buffer. This pointer is valid when TSs are being played.*//**<CNcomment: Ã½Ìå»º³å¶ÁÖ¸Õë,Ts²¥·ÅÊ±ÓĞĞ§ */
-    HI_U32 u32BufWptr;       /*Write pointer of the media buffer. This pointer is valid when TSs are being played.*//**<CNcomment: Ã½Ìå»º³åĞ´Ö¸Õë,Ts²¥·ÅÊ±ÓĞĞ§ */
-    HI_U32 u32UsedSize;      /**<Used size of the media buffer*//**<CNcomment: Ã½Ìå»º³åÒÑÊ¹ÓÃ´óĞ¡ */
-    HI_U32 u32FrameBufTime;  /**<Frame buffer time*//**<CNcomment: Ö¡»º³åÊ±¼ä */
-    HI_U32 u32FrameBufNum;   /**<The number of frames in frame buffer*//**<CNcomment: Ö¡»º³åÊıÄ¿ ½öVIDEOÓĞĞ§ */
-    HI_BOOL bEndOfStream;    /**<Flag to indicate end of stream*//**<CNcomment: »º³åÖĞÂëÁ÷½âÂëÍê±Ï±êÊ¶ ½öVIDEOÓĞĞ§ */
+    HI_U32 u32BufId;         /**<Media buffer ID*//**<CNcomment: åª’ä½“ç¼“å†² æ ‡è¯† */
+    HI_U32 u32BufSize;       /**<Media buffer size*//**<CNcomment: åª’ä½“ç¼“å†²å¤§å° */
+    HI_U32 u32BufRptr;       /*Read pointer of the media buffer. This pointer is valid when TSs are being played.*//**<CNcomment: åª’ä½“ç¼“å†²è¯»æŒ‡é’ˆ,Tsæ’­æ”¾æ—¶æœ‰æ•ˆ */
+    HI_U32 u32BufWptr;       /*Write pointer of the media buffer. This pointer is valid when TSs are being played.*//**<CNcomment: åª’ä½“ç¼“å†²å†™æŒ‡é’ˆ,Tsæ’­æ”¾æ—¶æœ‰æ•ˆ */
+    HI_U32 u32UsedSize;      /**<Used size of the media buffer*//**<CNcomment: åª’ä½“ç¼“å†²å·²ä½¿ç”¨å¤§å° */
+    HI_U32 u32FrameBufTime;  /**<Frame buffer time*//**<CNcomment: å¸§ç¼“å†²æ—¶é—´ */
+    HI_U32 u32FrameBufNum;   /**<The number of frames in frame buffer*//**<CNcomment: å¸§ç¼“å†²æ•°ç›® ä»…VIDEOæœ‰æ•ˆ */
+    HI_BOOL bEndOfStream;    /**<Flag to indicate end of stream*//**<CNcomment: ç¼“å†²ä¸­ç æµè§£ç å®Œæ¯•æ ‡è¯† ä»…VIDEOæœ‰æ•ˆ */
 } HI_UNF_AVPLAY_BUF_STATUS_S;
 
 /**Defines the playing status of an AVPLAY.*/
-/**CNcomment:¶¨ÒåAVµÄ²¥·Å×´Ì¬ */
+/**CNcomment:å®šä¹‰AVçš„æ’­æ”¾çŠ¶æ€ */
 typedef enum hiUNF_AVPLAY_STATUS_E
 {
-    HI_UNF_AVPLAY_STATUS_STOP = 0, /**<Stop*//**<CNcomment: Í£Ö¹ */
-    HI_UNF_AVPLAY_STATUS_PLAY,     /**<Play*//**<CNcomment: ²¥·Å */
-    HI_UNF_AVPLAY_STATUS_TPLAY,    /**<Trick play, such as fast forward and rewind*//**<CNcomment: TPlay, ¿ì½ø¿ìÍË */
-    HI_UNF_AVPLAY_STATUS_PAUSE,    /**<Pause*//**<CNcomment: ÔİÍ£ */
-    HI_UNF_AVPLAY_STATUS_EOS,      /**<EOS*//**<CNcomment: ÂëÁ÷²¥·Å½áÊø */
-    HI_UNF_AVPLAY_STATUS_SEEK ,    /**<Seek play*//**<CNcomment: ¶¨Î»²¥·Å */
+    HI_UNF_AVPLAY_STATUS_STOP = 0, /**<Stop*//**<CNcomment: åœæ­¢ */
+    HI_UNF_AVPLAY_STATUS_PLAY,     /**<Play*//**<CNcomment: æ’­æ”¾ */
+    HI_UNF_AVPLAY_STATUS_TPLAY,    /**<Trick play, such as fast forward and rewind*//**<CNcomment: TPlay, å¿«è¿›å¿«é€€ */
+    HI_UNF_AVPLAY_STATUS_PAUSE,    /**<Pause*//**<CNcomment: æš‚åœ */
+    HI_UNF_AVPLAY_STATUS_EOS,      /**<EOS*//**<CNcomment: ç æµæ’­æ”¾ç»“æŸ */
+    HI_UNF_AVPLAY_STATUS_SEEK ,    /**<Seek play*//**<CNcomment: å®šä½æ’­æ”¾ */
 
     HI_UNF_AVPLAY_STATUS_BUTT
 }HI_UNF_AVPLAY_STATUS_E;
 
 /**Defines the output value after the playing status of an AVPLAY is queried.*/
-/**CNcomment:¶¨ÒåAV²¥·Å×´Ì¬²éÑ¯Êä³öÖµÀàĞÍ */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾çŠ¶æ€æŸ¥è¯¢è¾“å‡ºå€¼ç±»å‹ */
 typedef struct hiUNF_AVPLAY_STATUS_INFO_S
 {
-    HI_UNF_SYNC_STATUS_S       stSyncStatus;      /**<Synchronization status*//**<CNcomment: Í¬²½×´Ì¬ */
-    HI_UNF_AVPLAY_STATUS_E     enRunStatus;       /**<Running status*//**< CNcomment:ÔËĞĞ×´Ì¬ */
-    HI_U32                     u32VidFrameCount;  /**<Count of played video frames*//**<CNcomment: ÊÓÆµÒÑ²¥·ÅÖ¡Êı */
-    HI_U32                     u32AuddFrameCount; /**<Count of played audio frames*//**<CNcomment: ÒôÆµÒÑ²¥·ÅÖ¡Êı */
-    HI_UNF_AVPLAY_BUF_STATUS_S stBufStatus[HI_UNF_AVPLAY_BUF_ID_BUTT]; /**<Status of the media buffer*//**<CNcomment:Ã½Ìå»º³å×´Ì¬ */
-    HI_U32                     u32VidErrorFrameCount; /**<Number of error frames during video decoding*/ /**<CNcomment: ÊÓÆµ½âÂë´íÎóÖ¡Êı */    
+    HI_UNF_SYNC_STATUS_S       stSyncStatus;      /**<Synchronization status*//**<CNcomment: åŒæ­¥çŠ¶æ€ */
+    HI_UNF_AVPLAY_STATUS_E     enRunStatus;       /**<Running status*//**< CNcomment:è¿è¡ŒçŠ¶æ€ */
+    HI_U32                     u32VidFrameCount;  /**<Count of played video frames*//**<CNcomment: è§†é¢‘å·²æ’­æ”¾å¸§æ•° */
+    HI_U32                     u32AuddFrameCount; /**<Count of played audio frames*//**<CNcomment: éŸ³é¢‘å·²æ’­æ”¾å¸§æ•° */
+    HI_UNF_AVPLAY_BUF_STATUS_S stBufStatus[HI_UNF_AVPLAY_BUF_ID_BUTT]; /**<Status of the media buffer*//**<CNcomment:åª’ä½“ç¼“å†²çŠ¶æ€ */
+    HI_U32                     u32VidErrorFrameCount; /**<Number of error frames during video decoding*/ /**<CNcomment: è§†é¢‘è§£ç é”™è¯¯å¸§æ•° */    
 } HI_UNF_AVPLAY_STATUS_INFO_S;
 
 /**Defines the information about the playing program streams to be queried.*/
-/**CNcomment: ¶¨Òå²¥·Å½ÚÄ¿Á÷²éÑ¯ĞÅÏ¢ÀàĞÍ */
+/**CNcomment: å®šä¹‰æ’­æ”¾èŠ‚ç›®æµæŸ¥è¯¢ä¿¡æ¯ç±»å‹ */
 typedef struct hiUNF_AVPLAY_STREAM_INFO_S
 {
-    HI_UNF_VCODEC_STREAMINFO_S stVidStreamInfo; /**<Video stream information*//**<CNcomment:ÊÓÆµÁ÷ĞÅÏ¢ */
-    HI_UNF_ACODEC_STREAMINFO_S stAudStreamInfo; /**<Audio stream information*//**<CNcomment:ÒôÆµÁ÷ĞÅÏ¢ */
+    HI_UNF_VCODEC_STREAMINFO_S stVidStreamInfo; /**<Video stream information*//**<CNcomment:è§†é¢‘æµä¿¡æ¯ */
+    HI_UNF_ACODEC_STREAMINFO_S stAudStreamInfo; /**<Audio stream information*//**<CNcomment:éŸ³é¢‘æµä¿¡æ¯ */
 } HI_UNF_AVPLAY_STREAM_INFO_S;
 
-/**Defines the information about an I frame.*//**CNcomment:¶¨ÒåIÖ¡Êı¾İĞÅÏ¢ÀàĞÍ */
+/**Defines the information about an I frame.*//**CNcomment:å®šä¹‰Iå¸§æ•°æ®ä¿¡æ¯ç±»å‹ */
 typedef struct hiUNF_AVPLAY_I_FRAME_S
 {
-    HI_U8                *pu8Addr;    /**<User-state virtual address of a frame*//**<CNcomment:Ö¡Êı¾İÓÃ»§Ì¬ĞéÄâµØÖ· */
-    HI_U32               u32BufSize; /**<Frame size, in byte*//**<CNcomment:Ö¡Êı¾İ´óĞ¡£¬µ¥Î»×Ö½Ú */
-    HI_UNF_VCODEC_TYPE_E enType;     /*Protocol type of a data segment*//**<CNcomment:¸ÃÆ¬Êı¾İµÄĞ­ÒéÀàĞÍ */
+    HI_U8                *pu8Addr;    /**<User-state virtual address of a frame*//**<CNcomment:å¸§æ•°æ®ç”¨æˆ·æ€è™šæ‹Ÿåœ°å€ */
+    HI_U32               u32BufSize; /**<Frame size, in byte*//**<CNcomment:å¸§æ•°æ®å¤§å°ï¼Œå•ä½å­—èŠ‚ */
+    HI_UNF_VCODEC_TYPE_E enType;     /*Protocol type of a data segment*//**<CNcomment:è¯¥ç‰‡æ•°æ®çš„åè®®ç±»å‹ */
 } HI_UNF_AVPLAY_I_FRAME_S;
 
 /**Defines the decoder type. The occupied memory varies according to decoders.*/
-/**CNcomment:¶¨Òå½âÂëÆ÷ÀàĞÍ ²»Í¬ÀàĞÍµÄ½âÂëÆ÷Õ¼ÓÃÄÚ´æ²»Í¬ */
+/**CNcomment:å®šä¹‰è§£ç å™¨ç±»å‹ ä¸åŒç±»å‹çš„è§£ç å™¨å ç”¨å†…å­˜ä¸åŒ */
 typedef enum hiHI_UNF_VCODEC_DEC_TYPE_E
 {
-    HI_UNF_VCODEC_DEC_TYPE_NORMAL,            /**<Normal type.*//**<CNcomment:ÆÕÍ¨ÀàĞÍ */
+    HI_UNF_VCODEC_DEC_TYPE_NORMAL,            /**<Normal type.*//**<CNcomment:æ™®é€šç±»å‹ */
 
     /**<I frame decoding type. If an AVPLAY is used to decode I frames only (HI_UNF_AVPLAY_DecodeIFrame), you can select this type to reduce the memory usage.*/
-    /**<CNcomment:IÖ¡½âÂëÀàĞÍ Èç¹ûavplay½öÓÃÓÚIÖ¡½âÂë(HI_UNF_AVPLAY_DecodeIFrame) ÉèÖÃÎª´ËÀàĞÍ¿ÉÒÔ½ÚÊ¡ÄÚ´æ */    
+    /**<CNcomment:Iå¸§è§£ç ç±»å‹ å¦‚æœavplayä»…ç”¨äºIå¸§è§£ç (HI_UNF_AVPLAY_DecodeIFrame) è®¾ç½®ä¸ºæ­¤ç±»å‹å¯ä»¥èŠ‚çœå†…å­˜ */    
     HI_UNF_VCODEC_DEC_TYPE_ISINGLE,  
     
     HI_UNF_VCODEC_DEC_TYPE_BUTT                
@@ -325,197 +325,197 @@ typedef enum hiHI_UNF_VCODEC_DEC_TYPE_E
 
 /**Defines the level of the protocol supported by the decoder. This value affects the number of frame buffers allocated by the normal decoder. 
 The greater the value, the more the required frame buffers.*/
-/**CNcomment:¶¨Òå½âÂëÆ÷Ö§³ÖµÄĞ­Òé¼¶±ğ Ó°ÏìNORMALÀàĞÍ½âÂëÆ÷·ÖÅäµÄÖ¡´æ¸öÊı ÖµÔ½´óĞèÒªµÄÖ¡´æÊıÄ¿Ô½¶à */
+/**CNcomment:å®šä¹‰è§£ç å™¨æ”¯æŒçš„åè®®çº§åˆ« å½±å“NORMALç±»å‹è§£ç å™¨åˆ†é…çš„å¸§å­˜ä¸ªæ•° å€¼è¶Šå¤§éœ€è¦çš„å¸§å­˜æ•°ç›®è¶Šå¤š */
 typedef enum hiHI_UNF_VCODEC_PRTCL_LEVEL_E
 {
-    HI_UNF_VCODEC_PRTCL_LEVEL_MPEG = 0,     /**<Protocols excluding the H.264 protocol*//**<CNcomment:³ıh264ÍâµÄÆäËûĞ­Òé */
-    HI_UNF_VCODEC_PRTCL_LEVEL_H264 = 1,  /**<H.264 protocol and other protocols*//**<CNcomment:h264Ğ­Òé */    
+    HI_UNF_VCODEC_PRTCL_LEVEL_MPEG = 0,     /**<Protocols excluding the H.264 protocol*//**<CNcomment:é™¤h264å¤–çš„å…¶ä»–åè®® */
+    HI_UNF_VCODEC_PRTCL_LEVEL_H264 = 1,  /**<H.264 protocol and other protocols*//**<CNcomment:h264åè®® */    
     HI_UNF_VCODEC_PRTCL_LEVEL_MVC,
     HI_UNF_VCODEC_PRTCL_LEVEL_BUTT
 }HI_UNF_VCODEC_PRTCL_LEVEL_E;
 
 /**Defines the attributes when an AVPLAY enables the video decoder. The settings affect the memory occupied by the video decoder and decoding performance.*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷´ò¿ªÊÓÆµ½âÂëÆ÷Ê±ÊôĞÔÉèÖÃ½á¹¹Ìå Ó°ÏìÊÓÆµ½âÂëÆ÷Õ¼ÓÃÄÚ´æ´óĞ¡¼°½âÂëÄÜÁ¦ */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨æ‰“å¼€è§†é¢‘è§£ç å™¨æ—¶å±æ€§è®¾ç½®ç»“æ„ä½“ å½±å“è§†é¢‘è§£ç å™¨å ç”¨å†…å­˜å¤§å°åŠè§£ç èƒ½åŠ› */
 typedef struct hiHI_UNF_AVPLAY_OPEN_OPT_S
 {
-    HI_UNF_VCODEC_DEC_TYPE_E    enDecType;       /**<Decoder type.*//**<CNcomment:½âÂëÆ÷ÀàĞÍ*/
-    HI_UNF_VCODEC_CAP_LEVEL_E   enCapLevel;      /**<Maximum resolution supported by the decoder. This value affects the size of each frame buffer.*//**<CNcomment:½âÂëÆ÷Ö§³ÖµÄ×î´ó·Ö±æÂÊ Ó°ÏìÃ¿¸öÖ¡´æµÄ´óĞ¡ */
-    HI_UNF_VCODEC_PRTCL_LEVEL_E enProtocolLevel; /**<Supported protocol level. This value affects the number of frame buffers.*//**<CNcomment:Ö§³ÖµÄĞ­Òé¼¶±ğ Ó°ÏìÖ¡´æÊıÄ¿ */
+    HI_UNF_VCODEC_DEC_TYPE_E    enDecType;       /**<Decoder type.*//**<CNcomment:è§£ç å™¨ç±»å‹*/
+    HI_UNF_VCODEC_CAP_LEVEL_E   enCapLevel;      /**<Maximum resolution supported by the decoder. This value affects the size of each frame buffer.*//**<CNcomment:è§£ç å™¨æ”¯æŒçš„æœ€å¤§åˆ†è¾¨ç‡ å½±å“æ¯ä¸ªå¸§å­˜çš„å¤§å° */
+    HI_UNF_VCODEC_PRTCL_LEVEL_E enProtocolLevel; /**<Supported protocol level. This value affects the number of frame buffers.*//**<CNcomment:æ”¯æŒçš„åè®®çº§åˆ« å½±å“å¸§å­˜æ•°ç›® */
 }HI_UNF_AVPLAY_OPEN_OPT_S;
 
 /**Defines the video display mode after an AVPLAY is stopped.*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷Í£Ö¹Ê±ÊÓÆµÏÔÊ¾Ä£Ê½ */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨åœæ­¢æ—¶è§†é¢‘æ˜¾ç¤ºæ¨¡å¼ */
 typedef enum hiUNF_AVPLAY_STOP_MODE_E
 {
-    HI_UNF_AVPLAY_STOP_MODE_STILL = 0,  /**<The last frame is still after an AVPLAY is stopped.*//**<CNcomment:stopºó±£Áô×îºóÒ»Ö¡ */
-    HI_UNF_AVPLAY_STOP_MODE_BLACK = 1,  /**<The blank screen is displayed after an AVPLAY is stopped.*//**<CNcomment:stopºóºÚÆÁ */
+    HI_UNF_AVPLAY_STOP_MODE_STILL = 0,  /**<The last frame is still after an AVPLAY is stopped.*//**<CNcomment:stopåä¿ç•™æœ€åä¸€å¸§ */
+    HI_UNF_AVPLAY_STOP_MODE_BLACK = 1,  /**<The blank screen is displayed after an AVPLAY is stopped.*//**<CNcomment:stopåé»‘å± */
     HI_UNF_AVPLAY_STOP_MODE_BUTT
 } HI_UNF_AVPLAY_STOP_MODE_E;
 
 /**Defines the attributes when an AVPLAY is started.*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷Æô¶¯Ê±ÊôĞÔÉèÖÃ½á¹¹Ìå */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨å¯åŠ¨æ—¶å±æ€§è®¾ç½®ç»“æ„ä½“ */
 typedef struct hiAVPLAY_START_OPT_S
 {
     HI_U32       u32Reserved;
 } HI_UNF_AVPLAY_START_OPT_S;
 
 /**Defines the attributes when an AVPLAY is stopped.*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷Í£Ö¹Ê±ÊôĞÔÉèÖÃ½á¹¹Ìå */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨åœæ­¢æ—¶å±æ€§è®¾ç½®ç»“æ„ä½“ */
 typedef struct hiAVPLAY_STOP_OPT_S
 {
     /*
          s32Timeout: end of stream timeout
-         s32Timeout = 0   Wait until streams are played in non-block mode, that is, the interface is returned immediately. CNcomment:·Ç×èÈûµÈ´ıÂëÁ÷²¥·Å½áÊø£¬Á¢¼´·µ»Ø CNend
-         s32Timeout > 0   Block timeout, in ms, CNcomment:×èÈû³¬Ê±Ê±¼ä£¬µ¥Î»ÎªºÁÃë CNend
-         s32Timeout = -1  Infinite wait,CNcomment:ÎŞÏŞµÈ´ı CNend
+         s32Timeout = 0   Wait until streams are played in non-block mode, that is, the interface is returned immediately. CNcomment:éé˜»å¡ç­‰å¾…ç æµæ’­æ”¾ç»“æŸï¼Œç«‹å³è¿”å› CNend
+         s32Timeout > 0   Block timeout, in ms, CNcomment:é˜»å¡è¶…æ—¶æ—¶é—´ï¼Œå•ä½ä¸ºæ¯«ç§’ CNend
+         s32Timeout = -1  Infinite wait,CNcomment:æ— é™ç­‰å¾… CNend
      */
-    HI_U32                    u32TimeoutMs;    /**<Timeout*//**<CNcomment:³¬Ê±Öµ */
-    HI_UNF_AVPLAY_STOP_MODE_E enMode;          /**<Video display mode*//**<CNcomment:ÊÓÆµÏÔÊ¾Ä£Ê½ */
+    HI_U32                    u32TimeoutMs;    /**<Timeout*//**<CNcomment:è¶…æ—¶å€¼ */
+    HI_UNF_AVPLAY_STOP_MODE_E enMode;          /**<Video display mode*//**<CNcomment:è§†é¢‘æ˜¾ç¤ºæ¨¡å¼ */
 } HI_UNF_AVPLAY_STOP_OPT_S;
 
 /*Defines the attributes when an AVPLAY is paused.*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷ÔİÍ£Ê±ÊôĞÔÉèÖÃ½á¹¹Ìå */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨æš‚åœæ—¶å±æ€§è®¾ç½®ç»“æ„ä½“ */
 typedef struct hiAVPLAY_PAUSE_OPT_S
 {
     HI_U32       u32Reserved;
 } HI_UNF_AVPLAY_PAUSE_OPT_S;
 
 /**Defines the direction of tplay*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷TPLAYµÄ·½Ïò */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨TPLAYçš„æ–¹å‘ */
 typedef enum hiUNF_AVPLAY_TPLAY_DIRECT_E
 {
-    HI_UNF_AVPLAY_TPLAY_DIRECT_FORWARD,     /**<Tplay forward*//**<CNcomment: ÏòÇ°TPLAY. */
-    HI_UNF_AVPLAY_TPLAY_DIRECT_BACKWARD,    /**<Tplay backward*//**<CNcomment: ÏòºóTPLAY. */
+    HI_UNF_AVPLAY_TPLAY_DIRECT_FORWARD,     /**<Tplay forward*//**<CNcomment: å‘å‰TPLAY. */
+    HI_UNF_AVPLAY_TPLAY_DIRECT_BACKWARD,    /**<Tplay backward*//**<CNcomment: å‘åTPLAY. */
     HI_UNF_AVPLAY_TPLAY_DIRECT_BUTT    
     
 } HI_UNF_AVPLAY_TPLAY_DIRECT_E;
 
 /**Defines the attributes when the playing mode of an AVPLAY is tplay.*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷TPALYÊ±ÊôĞÔÉèÖÃ½á¹¹Ìå */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨TPALYæ—¶å±æ€§è®¾ç½®ç»“æ„ä½“ */
 typedef struct hiAVPLAY_TPLAY_OPT_S
 {
-    HI_UNF_AVPLAY_TPLAY_DIRECT_E    enTplayDirect;      /**<Tplay direction*//**<CNcomment: TPLAY·½Ïò */
-    HI_U32                          u32SpeedInteger;    /**<Integral part of tplay speed*//**<CNcomment: TPLAY±¶ÊıµÄÕûÊı²¿·Ö */
-    HI_U32                          u32SpeedDecimal;    /**<Fractional part (calculated to three decimal places) of tplay speed*//**<CNcomment: TPLAY±¶ÊıµÄĞ¡Êı²¿·Ö£¬±£Áô3Î»Ğ¡Êı */
+    HI_UNF_AVPLAY_TPLAY_DIRECT_E    enTplayDirect;      /**<Tplay direction*//**<CNcomment: TPLAYæ–¹å‘ */
+    HI_U32                          u32SpeedInteger;    /**<Integral part of tplay speed*//**<CNcomment: TPLAYå€æ•°çš„æ•´æ•°éƒ¨åˆ† */
+    HI_U32                          u32SpeedDecimal;    /**<Fractional part (calculated to three decimal places) of tplay speed*//**<CNcomment: TPLAYå€æ•°çš„å°æ•°éƒ¨åˆ†ï¼Œä¿ç•™3ä½å°æ•° */
 } HI_UNF_AVPLAY_TPLAY_OPT_S;
 
 /**Defines the attributes when an AVPLAY is resumed.*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷»Ö¸´Ê±ÊôĞÔÉèÖÃ½á¹¹Ìå */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨æ¢å¤æ—¶å±æ€§è®¾ç½®ç»“æ„ä½“ */
 typedef struct hiAVPLAY_RESUME_OPT_S
 {
     HI_U32       u32Reserved;
 } HI_UNF_AVPLAY_RESUME_OPT_S;
 
 /**Defines the attributes when an AVPLAY is reset.*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷¸´Î»Ê±ÊôĞÔÉèÖÃ½á¹¹Ìå */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨å¤ä½æ—¶å±æ€§è®¾ç½®ç»“æ„ä½“ */
 typedef struct hiAVPLAY_RESET_OPT_S
 {
     HI_U32       u32Reserved;
 } HI_UNF_AVPLAY_RESET_OPT_S;
 
 /**Defines the attributes when an AVPLAY is step.*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷²½½øÊ±ÊôĞÔÉèÖÃ½á¹¹Ìå */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨æ­¥è¿›æ—¶å±æ€§è®¾ç½®ç»“æ„ä½“ */
 typedef struct hiUNF_AVPLAY_STEP_OPT_S
 {
     HI_U32       u32Reserved;
 }HI_UNF_AVPLAY_STEP_OPT_S;
 
 /**Defines the attributes when an AVPLAY is in Flushing Stream Status.*/
-/**CNcomment:¶¨ÒåAV²¥·ÅÆ÷Flush StreamÊ±ÊôĞÔÉèÖÃ½á¹¹Ìå */
+/**CNcomment:å®šä¹‰AVæ’­æ”¾å™¨Flush Streamæ—¶å±æ€§è®¾ç½®ç»“æ„ä½“ */
 typedef struct hiUNF_AVPLAY_FLUSH_STREAM_OPT_S
 {
     HI_U32          u32Reserved;
 }HI_UNF_AVPLAY_FLUSH_STREAM_OPT_S;
 
 /**Defines the attributes of multiple audio.*/
-/**CNcomment:¶¨Òå¶àÒô¹ìÊôĞÔ½á¹¹Ìå */
+/**CNcomment:å®šä¹‰å¤šéŸ³è½¨å±æ€§ç»“æ„ä½“ */
 typedef struct hiUNF_AVPLAY_MULTIAUD_ATTR_S
 {
-    HI_U32                  u32PidNum;      /**<the number of Audio PID *//**< CNcomment:ÒôÆµPID¸öÊı */
-    HI_U32                  *pu32AudPid;    /**<Pointer to the array of audio PID*//**< CNcomment:Ö¸ÏòPIDÊı×éµÄÖ¸Õë */
-    HI_UNF_ACODEC_ATTR_S    *pstAcodecAttr; /**<Pointer to the array of audio attribute*//**< CNcomment:Ö¸ÏòÒôÆµÊôĞÔÊı×éµÄÖ¸Õë */
+    HI_U32                  u32PidNum;      /**<the number of Audio PID *//**< CNcomment:éŸ³é¢‘PIDä¸ªæ•° */
+    HI_U32                  *pu32AudPid;    /**<Pointer to the array of audio PID*//**< CNcomment:æŒ‡å‘PIDæ•°ç»„çš„æŒ‡é’ˆ */
+    HI_UNF_ACODEC_ATTR_S    *pstAcodecAttr; /**<Pointer to the array of audio attribute*//**< CNcomment:æŒ‡å‘éŸ³é¢‘å±æ€§æ•°ç»„çš„æŒ‡é’ˆ */
 }HI_UNF_AVPLAY_MULTIAUD_ATTR_S;
 
 /**Defines the source of frame rate.*/
-/**CNcomment: ¶¨ÒåÖ¡ÂÊÀ´Ô´ÀàĞÍµÄÃ¶¾Ù */
+/**CNcomment: å®šä¹‰å¸§ç‡æ¥æºç±»å‹çš„æšä¸¾ */
 typedef enum hiUNF_AVPLAY_FRMRATE_TYPE_E
 {
-    HI_UNF_AVPLAY_FRMRATE_TYPE_PTS,         /**<Use the frame rate calculates from PTS*//**<CNcomment: ²ÉÓÃPTS¼ÆËãÖ¡ÂÊ */
-    HI_UNF_AVPLAY_FRMRATE_TYPE_STREAM,      /**<Use the frame rate comes from stream*//**<CNcomment: ²ÉÓÃÂëÁ÷ĞÅÏ¢ÖĞµÄÖ¡ÂÊ */
-    HI_UNF_AVPLAY_FRMRATE_TYPE_USER,        /**<Use the frame rate set by user*//**<CNcomment: ²ÉÓÃÓÃ»§ÉèÖÃµÄÖ¡ÂÊ */
-    HI_UNF_AVPLAY_FRMRATE_TYPE_USER_PTS,    /**<Use the frame rate set by user until the 2nd I frame comes, then use the frame rate calculates from PTS*//**<CNcomment: µÚ¶ş¸öIÖ¡À´Ö®Ç°²ÉÓÃÓÃ»§ÉèÖÃµÄÖ¡ÂÊ£¬Ö®ºó¸ù¾İPTS¼ÆËãÖ¡ÂÊ */
+    HI_UNF_AVPLAY_FRMRATE_TYPE_PTS,         /**<Use the frame rate calculates from PTS*//**<CNcomment: é‡‡ç”¨PTSè®¡ç®—å¸§ç‡ */
+    HI_UNF_AVPLAY_FRMRATE_TYPE_STREAM,      /**<Use the frame rate comes from stream*//**<CNcomment: é‡‡ç”¨ç æµä¿¡æ¯ä¸­çš„å¸§ç‡ */
+    HI_UNF_AVPLAY_FRMRATE_TYPE_USER,        /**<Use the frame rate set by user*//**<CNcomment: é‡‡ç”¨ç”¨æˆ·è®¾ç½®çš„å¸§ç‡ */
+    HI_UNF_AVPLAY_FRMRATE_TYPE_USER_PTS,    /**<Use the frame rate set by user until the 2nd I frame comes, then use the frame rate calculates from PTS*//**<CNcomment: ç¬¬äºŒä¸ªIå¸§æ¥ä¹‹å‰é‡‡ç”¨ç”¨æˆ·è®¾ç½®çš„å¸§ç‡ï¼Œä¹‹åæ ¹æ®PTSè®¡ç®—å¸§ç‡ */
     HI_UNF_AVPLAY_FRMRATE_TYPE_BUTT
 }HI_UNF_AVPLAY_FRMRATE_TYPE_E;
 
 /**Defines the parameter of frame rate.*/
-/**CNcomment: ¶¨ÒåÖ¡ÂÊÊôĞÔ²ÎÊıµÄ½á¹¹Ìå */
+/**CNcomment: å®šä¹‰å¸§ç‡å±æ€§å‚æ•°çš„ç»“æ„ä½“ */
 typedef struct hiUNF_AVPLAY_FRMRATE_PARAM_S
 {
-    HI_UNF_AVPLAY_FRMRATE_TYPE_E    enFrmRateType;  /**<The source of frame rate*//**<CNcomment: Ö¡ÂÊÀ´Ô´ÀàĞÍ */
-    HI_UNF_VCODEC_FRMRATE_S         stSetFrmRate;   /**<Setting frame rate*//**<CNcomment: ÉèÖÃµÄÖ¡ÂÊ */
+    HI_UNF_AVPLAY_FRMRATE_TYPE_E    enFrmRateType;  /**<The source of frame rate*//**<CNcomment: å¸§ç‡æ¥æºç±»å‹ */
+    HI_UNF_VCODEC_FRMRATE_S         stSetFrmRate;   /**<Setting frame rate*//**<CNcomment: è®¾ç½®çš„å¸§ç‡ */
 }HI_UNF_AVPLAY_FRMRATE_PARAM_S;
 
 /**Defines commond to get vdec information, the parameter is HI_UNF_AVPLAY_VDEC_INFO_S.*/
-/**CNcomment: »ñÈ¡½âÂëÆ÷ĞÅÏ¢ÃüÁî£¬²ÎÊı¶ÔÓ¦ÀàĞÍÎªHI_UNF_AVPLAY_VDEC_INFO_S */
+/**CNcomment: è·å–è§£ç å™¨ä¿¡æ¯å‘½ä»¤ï¼Œå‚æ•°å¯¹åº”ç±»å‹ä¸ºHI_UNF_AVPLAY_VDEC_INFO_S */
 #define HI_UNF_AVPLAY_GET_VDEC_INFO_CMD         0x20
 /**Defines commond to set TPLAY parameter, the parameter is HI_UNF_AVPLAY_TPLAY_OPT_S.*/
-/**CNcomment: ÉèÖÃTPLAY²ÎÊıÃüÁî£¬²ÎÊı¶ÔÓ¦ÀàĞÍÎªHI_UNF_AVPLAY_TPLAY_OPT_S*/
+/**CNcomment: è®¾ç½®TPLAYå‚æ•°å‘½ä»¤ï¼Œå‚æ•°å¯¹åº”ç±»å‹ä¸ºHI_UNF_AVPLAY_TPLAY_OPT_S*/
 #define HI_UNF_AVPLAY_SET_TPLAY_PARA_CMD        0x21
 /**Defines commond to set special control information of stream, the parameter is HI_UNF_AVPLAY_CONTROL_INFO_S*/
-/**CNcomment: ÓÃÀ´ÉèÖÃÒ»Ğ©ÂëÁ÷µÄÌØÊâ¿ØÖÆĞÅÏ¢£¬²ÎÊı¶ÔÓ¦ÀàĞÍÎªHI_UNF_AVPLAY_CONTROL_INFO_S*/
+/**CNcomment: ç”¨æ¥è®¾ç½®ä¸€äº›ç æµçš„ç‰¹æ®Šæ§åˆ¶ä¿¡æ¯ï¼Œå‚æ•°å¯¹åº”ç±»å‹ä¸ºHI_UNF_AVPLAY_CONTROL_INFO_S*/
 #define HI_UNF_AVPLAY_SET_CTRL_INFO_CMD         0x22
 
 /**Defines commond to set video sample type, HI_BOOL *, HI_TRUE: Progressive, HI_FALSE: Interlance */
-/**CNcomment: ÉèÖÃÊÓÆµÖğĞĞĞÅÏ¢, HI_TRUE: ÖğĞĞ, HI_FALSE: ¸ôĞĞ*/
+/**CNcomment: è®¾ç½®è§†é¢‘é€è¡Œä¿¡æ¯, HI_TRUE: é€è¡Œ, HI_FALSE: éš”è¡Œ*/
 #define HI_UNF_AVPLAY_SET_PROGRESSIVE_CMD       0x23
 
 /**Defines the type of AVPLAY invoke.*/
-/**CNcomment: ¶¨ÒåAVPLAY Invokeµ÷ÓÃÀàĞÍµÄÃ¶¾Ù */
+/**CNcomment: å®šä¹‰AVPLAY Invokeè°ƒç”¨ç±»å‹çš„æšä¸¾ */
 typedef enum hiUNF_AVPLAY_INVOKE_E
 {
-    HI_UNF_AVPLAY_INVOKE_ACODEC  = 0,   /**<Invoke commond to control audio codec*//**<CNcomment: ¿ØÖÆÒôÆµ½âÂëÆ÷µÄInvokeµ÷ÓÃ */
-    HI_UNF_AVPLAY_INVOKE_VCODEC,        /**<Invoke commond to control video codec, HI_CODEC_VIDEO_CMD_S*//**<CNcomment: ¿ØÖÆÊÓÆµ½âÂëÆ÷µÄInvokeµ÷ÓÃ */
-    HI_UNF_AVPLAY_INVOKE_GET_PRIV_PLAYINFO, /**<Invoke commond to get private play infomation,the parameter is HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S*//**<CNcomment: »ñÈ¡Ë½ÓĞ²¥·ÅĞÅÏ¢µÄInvokeµ÷ÓÃ£¬ ²ÎÊıÎªHI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S * */
+    HI_UNF_AVPLAY_INVOKE_ACODEC  = 0,   /**<Invoke commond to control audio codec*//**<CNcomment: æ§åˆ¶éŸ³é¢‘è§£ç å™¨çš„Invokeè°ƒç”¨ */
+    HI_UNF_AVPLAY_INVOKE_VCODEC,        /**<Invoke commond to control video codec, HI_CODEC_VIDEO_CMD_S*//**<CNcomment: æ§åˆ¶è§†é¢‘è§£ç å™¨çš„Invokeè°ƒç”¨ */
+    HI_UNF_AVPLAY_INVOKE_GET_PRIV_PLAYINFO, /**<Invoke commond to get private play infomation,the parameter is HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S*//**<CNcomment: è·å–ç§æœ‰æ’­æ”¾ä¿¡æ¯çš„Invokeè°ƒç”¨ï¼Œ å‚æ•°ä¸ºHI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S * */
     HI_UNF_AVPLAY_INVOKE_SET_DISP_OPTIMIZE_FLAG, /**Defines commond to set Display Optimize Flag, The Parameter is HI_U32, 1: Enable, 0: Disable */
     HI_UNF_AVPLAY_INVOKE_BUTT
 } HI_UNF_AVPLAY_INVOKE_E; 
 
 /**Defines the decoding information of video codec.*/
-/**CNcomment: ¶¨ÒåVDEC½âÂëĞÅÏ¢µÄ½á¹¹Ìå */
+/**CNcomment: å®šä¹‰VDECè§£ç ä¿¡æ¯çš„ç»“æ„ä½“ */
 typedef struct hiUNF_AVPLAY_VDEC_INFO_S
 {
-    HI_U32                  u32DispFrmBufNum;   /**<the number of display frame*//**<CNcomment: ÏÔÊ¾Ö¡´æ¸öÊı */
-    HI_U32                  u32FieldFlag;       /**<The encoding mode of image, 0 frame mode, 1 filed mode*//**<CNcomment: Í¼Ïñ±àÂë·½Ê½, 0 Ö¡Ä£Ê½£¬1 ³¡Ä£Ê½ */
-    HI_UNF_VCODEC_FRMRATE_S stDecFrmRate;      /**<decoding frame rate*//**<CNcomment: ½âÂëÖ¡ÂÊ */
-    HI_U32                  u32UndecFrmNum;     /**<the number of undecoded frame*//**<CNcomment: Î´½âÂëÖ¡¸öÊı */
+    HI_U32                  u32DispFrmBufNum;   /**<the number of display frame*//**<CNcomment: æ˜¾ç¤ºå¸§å­˜ä¸ªæ•° */
+    HI_U32                  u32FieldFlag;       /**<The encoding mode of image, 0 frame mode, 1 filed mode*//**<CNcomment: å›¾åƒç¼–ç æ–¹å¼, 0 å¸§æ¨¡å¼ï¼Œ1 åœºæ¨¡å¼ */
+    HI_UNF_VCODEC_FRMRATE_S stDecFrmRate;      /**<decoding frame rate*//**<CNcomment: è§£ç å¸§ç‡ */
+    HI_U32                  u32UndecFrmNum;     /**<the number of undecoded frame*//**<CNcomment: æœªè§£ç å¸§ä¸ªæ•° */
 }HI_UNF_AVPLAY_VDEC_INFO_S;
 
 /**Defines the private status information.*/
-/**CNcomment: ¶¨ÒåAVPLAYË½ÓĞ×´Ì¬ĞÅÏ¢ */
+/**CNcomment: å®šä¹‰AVPLAYç§æœ‰çŠ¶æ€ä¿¡æ¯ */
 typedef struct hiUNF_AVPLAY_PRIVATE_STATUS_INFO_S
 {
-    HI_U32 u32LastPts;   /**<PTS of the last audio or video frame*/ /**<CNcomment: ×î½ü²¥·ÅµÄÒ»¸öÒôÆµÖ¡ PTS»òÊÓÆµPTS*/ 
-    HI_U32 u32LastPlayTime; /**< PlayTime of the last audio or video frame */ /**<CNcomment: ×î½ü²¥·ÅµÄÒ»¸öÒôÆµÖ¡ PlayTime»òÊÓPlayTime  */	
-    HI_U32 u32DispOptimizeFlag; /**<Display Optimize Flag,1: Enable, 0: Disable*//**<CNcomment: ÏÔÊ¾ÓÅ»¯±êÖ¾*/
+    HI_U32 u32LastPts;   /**<PTS of the last audio or video frame*/ /**<CNcomment: æœ€è¿‘æ’­æ”¾çš„ä¸€ä¸ªéŸ³é¢‘å¸§ PTSæˆ–è§†é¢‘PTS*/ 
+    HI_U32 u32LastPlayTime; /**< PlayTime of the last audio or video frame */ /**<CNcomment: æœ€è¿‘æ’­æ”¾çš„ä¸€ä¸ªéŸ³é¢‘å¸§ PlayTimeæˆ–è§†PlayTime  */	
+    HI_U32 u32DispOptimizeFlag; /**<Display Optimize Flag,1: Enable, 0: Disable*//**<CNcomment: æ˜¾ç¤ºä¼˜åŒ–æ ‡å¿—*/
 } HI_UNF_AVPLAY_PRIVATE_STATUS_INFO_S;
 
 /**Defines the special control information of stream.*/
-/**CNcomment: ¶¨ÒåÌØÊâ¿ØÖÆĞÅÏ¢ */
+/**CNcomment: å®šä¹‰ç‰¹æ®Šæ§åˆ¶ä¿¡æ¯ */
 typedef struct hiUNF_AVPLAY_CONTROL_INFO_S
 {
-    HI_U32 u32IDRFlag;               /**<IDR frame Flag, 1 means IDR(instantaneous decoding refresh) frame.*/ /**<CNcomment: ÊÇ·ñÊÇIDR(´ËÖ¡Ç°ºóÎŞ²Î¿¼¹ØÏµ)Ö¡£¬1±íÊ¾ÊÇ*/ 
-    HI_U32 u32BFrmRefFlag;           /**<Whether B frame is refer frame, 1 means B frame is refer frame.*/ /**<CNcomment: BÖ¡ÊÇ·ñÊÇ²Î¿¼Ö¡£¬1±íÊ¾ÊÇ*/ 
-    HI_U32 u32ContinuousFlag;        /**<Whether send frame is continusous. 1 means continusous*/ /**<CNcomment: Ö¡ÊÇ·ñÁ¬Ğø£¬1±íÊ¾Á¬Ğø*/ 
-    HI_U32 u32BackwardOptimizeFlag;  /**<The Backward Optimize Flag*//**<CNcomment: ¿ìÍËÓÅ»¯Ê¹ÄÜ±êÖ¾.*/
-    HI_U32 u32DispOptimizeFlag;      /**<Display Optimize Flag,1: Enable, 0: Disable*//**<CNcomment: ÏÔÊ¾ÓÅ»¯±êÖ¾*/
+    HI_U32 u32IDRFlag;               /**<IDR frame Flag, 1 means IDR(instantaneous decoding refresh) frame.*/ /**<CNcomment: æ˜¯å¦æ˜¯IDR(æ­¤å¸§å‰åæ— å‚è€ƒå…³ç³»)å¸§ï¼Œ1è¡¨ç¤ºæ˜¯*/ 
+    HI_U32 u32BFrmRefFlag;           /**<Whether B frame is refer frame, 1 means B frame is refer frame.*/ /**<CNcomment: Bå¸§æ˜¯å¦æ˜¯å‚è€ƒå¸§ï¼Œ1è¡¨ç¤ºæ˜¯*/ 
+    HI_U32 u32ContinuousFlag;        /**<Whether send frame is continusous. 1 means continusous*/ /**<CNcomment: å¸§æ˜¯å¦è¿ç»­ï¼Œ1è¡¨ç¤ºè¿ç»­*/ 
+    HI_U32 u32BackwardOptimizeFlag;  /**<The Backward Optimize Flag*//**<CNcomment: å¿«é€€ä¼˜åŒ–ä½¿èƒ½æ ‡å¿—.*/
+    HI_U32 u32DispOptimizeFlag;      /**<Display Optimize Flag,1: Enable, 0: Disable*//**<CNcomment: æ˜¾ç¤ºä¼˜åŒ–æ ‡å¿—*/
 }HI_UNF_AVPLAY_CONTROL_INFO_S;
 
 /**Defines the parameter when the stream is send by HI_UNF_AVPLAY_PutBufEx.*/
-/**CNcomment: ¶¨Òå°´PutBufExÄ£Ê½ËÍÂëÁ÷µÄ²ÎÊı½á¹¹Ìå */
+/**CNcomment: å®šä¹‰æŒ‰PutBufExæ¨¡å¼é€ç æµçš„å‚æ•°ç»“æ„ä½“ */
 typedef struct hiUNF_AVPLAY_PUTBUFEX_OPT_S
 {
-    HI_BOOL bEndOfFrm;      /**<whether this package of stream is the end of one frame*//**<CNcomment: ¸Ã°üÂëÁ÷ÊÇ·ñÎªÒ»Ö¡µÄ×îºóÒ»°ü */
-    HI_BOOL bContinue;      /**<whether this package of stream is contnued with the last package*//**<CNcomment: ¸Ã°üÂëÁ÷ÊÇ·ñÓëÖ®Ç°Á¬Ğø */
+    HI_BOOL bEndOfFrm;      /**<whether this package of stream is the end of one frame*//**<CNcomment: è¯¥åŒ…ç æµæ˜¯å¦ä¸ºä¸€å¸§çš„æœ€åä¸€åŒ… */
+    HI_BOOL bContinue;      /**<whether this package of stream is contnued with the last package*//**<CNcomment: è¯¥åŒ…ç æµæ˜¯å¦ä¸ä¹‹å‰è¿ç»­ */
 }HI_UNF_AVPLAY_PUTBUFEX_OPT_S;
 
 
@@ -526,70 +526,70 @@ typedef struct hiUNF_AVPLAY_PUTBUFEX_OPT_S
 /** @{ */  /** <!-- [AVPLAY] */
 
 /**
-\brief Initializes the AVPLAY module.CNcomment:³õÊ¼»¯AVPLAYÄ£¿é CNend
+\brief Initializes the AVPLAY module.CNcomment:åˆå§‹åŒ–AVPLAYæ¨¡å— CNend
 \attention \n
 Before calling ::HI_UNF_AVPLAY_Create to create an AVPLAY, you must call this application programming interface (API).
-CNcomment ÔÚµ÷ÓÃAVPLAYÄ£¿éÆäËû½Ó¿ÚÇ°£¬ÒªÇóÊ×ÏÈµ÷ÓÃ±¾½Ó¿Ú CNend
+CNcomment åœ¨è°ƒç”¨AVPLAYæ¨¡å—å…¶ä»–æ¥å£å‰ï¼Œè¦æ±‚é¦–å…ˆè°ƒç”¨æœ¬æ¥å£ CNend
 \param  N/A
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NOT_EXIST There is no AVPLAY. CNcomment:AVPLAYÉè±¸²»´æÔÚ CNend
-\retval ::HI_ERR_AVPLAY_NOT_DEV_FILE  The file is not an AVPLAY file. CNcomment:AVPLAY·ÇÉè±¸ CNend
-\retval ::HI_ERR_AVPLAY_DEV_OPEN_ERR  An AVPLAY fails to be started. CNcomment:AVPLAY´ò¿ªÊ§°Ü CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NOT_EXIST There is no AVPLAY. CNcomment:AVPLAYè®¾å¤‡ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_AVPLAY_NOT_DEV_FILE  The file is not an AVPLAY file. CNcomment:AVPLAYéè®¾å¤‡ CNend
+\retval ::HI_ERR_AVPLAY_DEV_OPEN_ERR  An AVPLAY fails to be started. CNcomment:AVPLAYæ‰“å¼€å¤±è´¥ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_Init(HI_VOID);
 
 /**
-\brief Deinitializes the AVPLAY module. CNcomment:È¥³õÊ¼»¯AVPLAYÄ£¿é CNend
+\brief Deinitializes the AVPLAY module. CNcomment:å»åˆå§‹åŒ–AVPLAYæ¨¡å— CNend
 \attention \n
 Please call this API function, before call anyother API of AVPLAY module. 
-CNcomment: ÔÚµ÷ÓÃ::HI_UNF_AVPLAY_Destroy½Ó¿ÚÏú»ÙËùÓĞµÄ²¥·ÅÆ÷ºó£¬µ÷ÓÃ±¾½Ó¿Ú CNend
+CNcomment: åœ¨è°ƒç”¨::HI_UNF_AVPLAY_Destroyæ¥å£é”€æ¯æ‰€æœ‰çš„æ’­æ”¾å™¨åï¼Œè°ƒç”¨æœ¬æ¥å£ CNend
 \param N/A
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT  The operation is invalid.  CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_DEV_CLOSE_ERR  An AVPLAY fails to be stopped. CNcomment:AVPLAY¹Ø±ÕÊ§°Ü CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT  The operation is invalid.  CNcomment:æ“ä½œéæ³• CNend
+\retval ::HI_ERR_AVPLAY_DEV_CLOSE_ERR  An AVPLAY fails to be stopped. CNcomment:AVPLAYå…³é—­å¤±è´¥ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_DeInit(HI_VOID);
 
 /**
-\brief Obtains the default configuration of an AVPLAY. CNcomment:»ñÈ¡È±Ê¡µÄAV²¥·ÅÅäÖÃ CNend
+\brief Obtains the default configuration of an AVPLAY. CNcomment:è·å–ç¼ºçœçš„AVæ’­æ”¾é…ç½® CNend
 \attention \n
 When calling this API to set the enCfg parameter, you must enter correct mode of the player to be created.\n
 It is recommended that you call this API to obtain the default AVPLAY attributes before creating an AVPLAY. This avoids creation failures due to incomplete or incorrect parameters.
-CNcomment:µ÷ÓÃ±¾½Ó¿ÚÊäÈëenCfg²ÎÊıÊ±£¬ÇëÕıÈ·ÊäÈëÏëÒª´´½¨²¥·ÅÆ÷Ä£Ê½\n 
-´´½¨AV²¥·ÅÆ÷Ç°½¨Òéµ÷ÓÃ±¾½Ó¿Ú£¬»ñÈ¡µ½AV²¥·ÅÆ÷Ä¬ÈÏÊôĞÔ£¬±ÜÃâ´´½¨AV²¥·ÅÆ÷Ê±ÓÉÓÚ²ÎÊı²»È«»ò²ÎÊı´íÎóµ¼ÖÂ²¥·ÅÆ÷´´½¨²»³É¹¦ÏÖÏó CNend
-\param[out] pstAvAttr  Pointer to AVPLAY attributes. For details, see the description of ::HI_UNF_AVPLAY_ATTR_S. CNcomment: Ö¸ÕëÀàĞÍ£¬AV²¥·ÅÊôĞÔ£¬Çë²Î¼û::HI_UNF_AVPLAY_ATTR_S. CNend
-\param[in] enCfg       AVPLAY type. For details, see the description of ::HI_UNF_AVPLAY_STREAM_TYPE_E. CNcomment: AV²¥·ÅµÄÀàĞÍ£¬Çë²Î¼û::HI_UNF_AVPLAY_STREAM_TYPE_E. CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+CNcomment:è°ƒç”¨æœ¬æ¥å£è¾“å…¥enCfgå‚æ•°æ—¶ï¼Œè¯·æ­£ç¡®è¾“å…¥æƒ³è¦åˆ›å»ºæ’­æ”¾å™¨æ¨¡å¼\n 
+åˆ›å»ºAVæ’­æ”¾å™¨å‰å»ºè®®è°ƒç”¨æœ¬æ¥å£ï¼Œè·å–åˆ°AVæ’­æ”¾å™¨é»˜è®¤å±æ€§ï¼Œé¿å…åˆ›å»ºAVæ’­æ”¾å™¨æ—¶ç”±äºå‚æ•°ä¸å…¨æˆ–å‚æ•°é”™è¯¯å¯¼è‡´æ’­æ”¾å™¨åˆ›å»ºä¸æˆåŠŸç°è±¡ CNend
+\param[out] pstAvAttr  Pointer to AVPLAY attributes. For details, see the description of ::HI_UNF_AVPLAY_ATTR_S. CNcomment: æŒ‡é’ˆç±»å‹ï¼ŒAVæ’­æ”¾å±æ€§ï¼Œè¯·å‚è§::HI_UNF_AVPLAY_ATTR_S. CNend
+\param[in] enCfg       AVPLAY type. For details, see the description of ::HI_UNF_AVPLAY_STREAM_TYPE_E. CNcomment: AVæ’­æ”¾çš„ç±»å‹ï¼Œè¯·å‚è§::HI_UNF_AVPLAY_STREAM_TYPE_E. CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_GetDefaultConfig(HI_UNF_AVPLAY_ATTR_S *pstAvAttr, HI_UNF_AVPLAY_STREAM_TYPE_E enCfg);
 
 /**
-\brief Registers a dynamic audio decoding library. CNcomment:×¢²áÒôÆµ¶¯Ì¬½âÂë¿â CNend
+\brief Registers a dynamic audio decoding library. CNcomment:æ³¨å†ŒéŸ³é¢‘åŠ¨æ€è§£ç åº“ CNend
 \attention \n
-\param[in] pFileName Name of the file in the audio decoding library CNcomment:ÒôÆµ½âÂë¿âÎÄ¼şÃû CNend
-\retval ::HI_SUCCESS  Success CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE Failure CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR  The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+\param[in] pFileName Name of the file in the audio decoding library CNcomment:éŸ³é¢‘è§£ç åº“æ–‡ä»¶å CNend
+\retval ::HI_SUCCESS  Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE Failure CNcomment:å¤±è´¥ CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR  The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_RegisterAcodecLib(const HI_CHAR *pFileName);
 
 /**
-\brief Registers a dynamic video decoding library. CNcomment:×¢²áÊÓÆµ¶¯Ì¬½âÂë¿â CNend
+\brief Registers a dynamic video decoding library. CNcomment:æ³¨å†Œè§†é¢‘åŠ¨æ€è§£ç åº“ CNend
 \attention \n
-\param[in] pFileName Name of the file in the video decoding library CNcomment:ÊÓÆµ½âÂë¿âÎÄ¼şÃû CNend
-\retval ::HI_SUCCESS  Success CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE Failure CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR  The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+\param[in] pFileName Name of the file in the video decoding library CNcomment:è§†é¢‘è§£ç åº“æ–‡ä»¶å CNend
+\retval ::HI_SUCCESS  Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE Failure CNcomment:å¤±è´¥ CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR  The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
 \see \n
 N/A
 */
@@ -597,13 +597,13 @@ HI_S32 HI_UNF_AVPLAY_RegisterVcodecLib(const HI_CHAR *pFileName);
 
 /**
 \brief Searches for registered dynamic audio decoding libraries based on the audio format. 
-CNcomment:¸ù¾İÒôÆµ¸ñÊ½, ²éÕÒ×¢²áÒôÆµ¶¯Ì¬½âÂë¿â CNend
+CNcomment:æ ¹æ®éŸ³é¢‘æ ¼å¼, æŸ¥æ‰¾æ³¨å†ŒéŸ³é¢‘åŠ¨æ€è§£ç åº“ CNend
 \attention \n
-\param[in] enFormat Audio format CNcomment:ÒôÆµ¸ñÊ½ CNend
+\param[in] enFormat Audio format CNcomment:éŸ³é¢‘æ ¼å¼ CNend
 \param[out] penDstCodecID If an audio decoding library is found, its codec ID is returned. 
-CNcomment:³É¹¦Ôò·µ»ØÒôÆµ½âÂë¿âCodecID CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE Failure CNcomment:Ê§°Ü CNend
+CNcomment:æˆåŠŸåˆ™è¿”å›éŸ³é¢‘è§£ç åº“CodecID CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE Failure CNcomment:å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -612,108 +612,108 @@ HI_S32 HI_UNF_AVPLAY_FoundSupportDeoder(const HA_FORMAT_E enFormat,HI_U32 * penD
 
 /**
 \brief Sets private commands for a dynamic audio decoding library. These commands are used to call ha_codec. 
-CNcomment:ÉèÖÃË½ÓĞÃüÁî¸øÒôÆµ¶¯Ì¬½âÂë¿â, µ÷ÓÃha_codec ·½·¨  CNend
+CNcomment:è®¾ç½®ç§æœ‰å‘½ä»¤ç»™éŸ³é¢‘åŠ¨æ€è§£ç åº“, è°ƒç”¨ha_codec æ–¹æ³•  CNend
 HI_HA_ERRORTYPE_E (*DecSetConfig)(HI_VOID * hDecoder, HI_VOID * pstConfigStructure);
 \attention \n
-\param[in] enDstCodecID  The audio Codec ID  CNcomment:ÒôÆµ½âÂë¿âID CNend
-\param[in] pPara  Attribute structure CNcomment:ÊôĞÔ½á¹¹ CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE Failure CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR  The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+\param[in] enDstCodecID  The audio Codec ID  CNcomment:éŸ³é¢‘è§£ç åº“ID CNend
+\param[in] pPara  Attribute structure CNcomment:å±æ€§ç»“æ„ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE Failure CNcomment:å¤±è´¥ CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR  The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_ConfigAcodec(const HI_U32 enDstCodecID, HI_VOID *pPara);
 
 /**
-\brief Creates an AVPLAY. CNcomment:´´½¨AV²¥·ÅÆ÷ CNend
+\brief Creates an AVPLAY. CNcomment:åˆ›å»ºAVæ’­æ”¾å™¨ CNend
 \attention \n
 Note the following point when setting the input parameter pstAttr: The stream source can be HI_UNF_AVPLAY_STREAM_TYPE_ES (ESs input from the memory) or HI_UNF_AVPLAY_STREAM_TYPE_TS (ESs input from the memory and TSs input from the Tuner).
-CNcomment:ÊäÈëÊôĞÔ²ÎÊıpstAttrÖĞÓĞ¼¸µãĞèÒª×¢Òâ£ºÂëÁ÷Ô´Ö§³ÖHI_UNF_AVPLAY_STREAM_TYPE_ES£¨ÄÚ´æÊäÈëESÁ÷£©¡¢HI_UNF_AVPLAY_STREAM_TYPE_TS£¨ÄÚ´æÊäÈëTSÁ÷»òTUNERÊäÈëTS Á÷£©CNend
-\param[in]  pstAvAttr   Pointer to AVPLAY attributes. For details, see the description of ::HI_UNF_AVPLAY_ATTR_S. CNcomment:Ö¸ÕëÀàĞÍ£¬AV²¥·ÅÊôĞÔ£¬Çë²Î¼û::HI_UNF_AVPLAY_ATTR_S. CNend
-\param[out] phAvplay    Pointer to the handle of a created AVPLAY.CNcomment:Ö¸ÕëÀàĞÍ£¬´´½¨µÄAV²¥·Å¾ä±ú CNend
-\retval ::HI_SUCCESS  Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_CREATE_ERR       The AVPLAY fails to be created. CNcomment:AVPLAY´´½¨Ê§°Ü CNend
+CNcomment:è¾“å…¥å±æ€§å‚æ•°pstAtträ¸­æœ‰å‡ ç‚¹éœ€è¦æ³¨æ„ï¼šç æµæºæ”¯æŒHI_UNF_AVPLAY_STREAM_TYPE_ESï¼ˆå†…å­˜è¾“å…¥ESæµï¼‰ã€HI_UNF_AVPLAY_STREAM_TYPE_TSï¼ˆå†…å­˜è¾“å…¥TSæµæˆ–TUNERè¾“å…¥TS æµï¼‰CNend
+\param[in]  pstAvAttr   Pointer to AVPLAY attributes. For details, see the description of ::HI_UNF_AVPLAY_ATTR_S. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒAVæ’­æ”¾å±æ€§ï¼Œè¯·å‚è§::HI_UNF_AVPLAY_ATTR_S. CNend
+\param[out] phAvplay    Pointer to the handle of a created AVPLAY.CNcomment:æŒ‡é’ˆç±»å‹ï¼Œåˆ›å»ºçš„AVæ’­æ”¾å¥æŸ„ CNend
+\retval ::HI_SUCCESS  Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_CREATE_ERR       The AVPLAY fails to be created. CNcomment:AVPLAYåˆ›å»ºå¤±è´¥ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_Create(const HI_UNF_AVPLAY_ATTR_S *pstAvAttr, HI_HANDLE *phAvplay);
 
 /**
-\brief Destroys an AVPLAY. CNcomment:Ïú»ÙAV²¥·ÅÆ÷ CNend
+\brief Destroys an AVPLAY. CNcomment:é”€æ¯AVæ’­æ”¾å™¨ CNend
 \attention \n
 N/A
-\param[in] hAvplay  AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay  AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_Destroy(HI_HANDLE hAvplay);
 
 /**
-\brief Sets the attributes of an AVPLAY. CNcomment:ÉèÖÃAV²¥·ÅÊôĞÔ CNend
+\brief Sets the attributes of an AVPLAY. CNcomment:è®¾ç½®AVæ’­æ”¾å±æ€§ CNend
 \attention \n
 You can set the audio/video PID, audio/video decoding type, and synchronization mode by calling this API.\n
 Different attribute IDs correspond to different data types. For details, see the Note part of HI_UNF_AVPLAY_ATTR_ID_E. The attribute types of the pPara and enAttrID parameters must be the same.\n
 Before setting HI_UNF_AVPLAY_ATTR_ID_ADEC (audio decoding attribute) and HI_UNF_AVPLAY_ATTR_ID_VDEC (video decoding attribute),\n
 you must disable the audio channel or video channel. The new attributes take effect when you enable the audio channel or video channel again.
-CNcomment:µ÷ÓÃ±¾½Ó¿Ú¿ÉÊµÏÖÉèÖÃÒôÊÓÆµPID¡¢ÉèÖÃÒôÊÓÆµ½âÂëÀàĞÍ¡¢ÉèÖÃÍ¬²½·½Ê½µÈ¹¦ÄÜ\n
-²»Í¬µÄÊôĞÔID¶ÔÓ¦µÄ½á¹¹ÌåÇë²Î¼û½á¹¹ÌåHI_UNF_AVPLAY_ATTR_ID_EµÄ[×¢Òâ], pPara²ÎÊıÒªÓëenAttrID¶ÔÓ¦µÄÊôĞÔ½á¹¹ÌåÀàĞÍ±£³ÖÒ»ÖÂ\n
-µ±ĞèÒªÉèÖÃHI_UNF_AVPLAY_ATTR_ID_ADEC(ÒôÆµ½âÂëÊôĞÔ),HI_UNF_AVPLAY_ATTR_ID_VDEC(ÊÓÆµ½âÂëÊôĞÔ)Ê±\n
-ĞèÒªÏÈ¹Ø±ÕÒôÆµ»òÊÓÆµÍ¨µÀ£¬ÔÙÉèÖÃĞÂÊôĞÔ£¬È»ºóÔÙÖØĞÂ´ò¿ªÒôÆµ»òÊÓÆµÍ¨µÀĞÂÊôĞÔ²Å¿ÉÒÔÉúĞ§¡£ CNend
-\param[in] hAvplay         AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enAttrID        Attribute ID CNcomment:ÊôĞÔID CNend
-\param[in] pPara  Data type corresponding to an attribute ID CNcomment:ÊôĞÔID¶ÔÓ¦½á¹¹ CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:è°ƒç”¨æœ¬æ¥å£å¯å®ç°è®¾ç½®éŸ³è§†é¢‘PIDã€è®¾ç½®éŸ³è§†é¢‘è§£ç ç±»å‹ã€è®¾ç½®åŒæ­¥æ–¹å¼ç­‰åŠŸèƒ½\n
+ä¸åŒçš„å±æ€§IDå¯¹åº”çš„ç»“æ„ä½“è¯·å‚è§ç»“æ„ä½“HI_UNF_AVPLAY_ATTR_ID_Eçš„[æ³¨æ„], pParaå‚æ•°è¦ä¸enAttrIDå¯¹åº”çš„å±æ€§ç»“æ„ä½“ç±»å‹ä¿æŒä¸€è‡´\n
+å½“éœ€è¦è®¾ç½®HI_UNF_AVPLAY_ATTR_ID_ADEC(éŸ³é¢‘è§£ç å±æ€§),HI_UNF_AVPLAY_ATTR_ID_VDEC(è§†é¢‘è§£ç å±æ€§)æ—¶\n
+éœ€è¦å…ˆå…³é—­éŸ³é¢‘æˆ–è§†é¢‘é€šé“ï¼Œå†è®¾ç½®æ–°å±æ€§ï¼Œç„¶åå†é‡æ–°æ‰“å¼€éŸ³é¢‘æˆ–è§†é¢‘é€šé“æ–°å±æ€§æ‰å¯ä»¥ç”Ÿæ•ˆã€‚ CNend
+\param[in] hAvplay         AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enAttrID        Attribute ID CNcomment:å±æ€§ID CNend
+\param[in] pPara  Data type corresponding to an attribute ID CNcomment:å±æ€§IDå¯¹åº”ç»“æ„ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_SetAttr(HI_HANDLE hAvplay, HI_UNF_AVPLAY_ATTR_ID_E enAttrID, HI_VOID *pPara);
 
 /**
-\brief Obtains the attributes of an AVPLAY. CNcomment:»ñÈ¡AV²¥·ÅÊôĞÔ CNend
+\brief Obtains the attributes of an AVPLAY. CNcomment:è·å–AVæ’­æ”¾å±æ€§ CNend
 \attention \n
 N/A
-\param[in] hAvplay          AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enAttrID         Attribute ID CNcomment:ÊôĞÔID CNend
-\param[in] pPara   Data type corresponding to an attribute ID, CNcomment:ÊôĞÔID¶ÔÓ¦½á¹¹ CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay          AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enAttrID         Attribute ID CNcomment:å±æ€§ID CNend
+\param[in] pPara   Data type corresponding to an attribute ID, CNcomment:å±æ€§IDå¯¹åº”ç»“æ„ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_GetAttr(HI_HANDLE hAvplay, HI_UNF_AVPLAY_ATTR_ID_E enAttrID, HI_VOID *pPara);
 
 /**
-\brief Decodes I frames. CNcomment:½âÂëIÖ¡ÂëÁ÷ CNend
+\brief Decodes I frames. CNcomment:è§£ç Iå¸§ç æµ CNend
 \attention \n
 If pstCapPicture is null, the decoded I frames are displayed in the window,and do not need release memory; \n
 if pstCapPicture is not null, the information about I frames is reported, and need invoke ::HI_UNF_AVPLAY_ReleaseIFrame to release memory.
 You must stop the video decoder before calling this API. If I frames are being processed, do not enable the video decoder.
-CNcomment:µ±pstCapPictureÎª¿ÕÖ¸ÕëÊ±£¬½âÍêµÄIÖ¡½«ÔÚwindowÉÏÏÔÊ¾£¬²»ĞèÊÍ·ÅÄÚ´æ£¬Èç¹û·Ç¿Õ£¬Ôò²»»áÏÔÊ¾¶øÊÇ½«IÖ¡ĞÅÏ¢ÉÏ±¨,Í¬Ê±IÖ¡´¦ÀíÍê±Ïºó£¬ĞèÒªµ÷ÓÃHI_UNF_AVPLAY_ReleaseIFrameÀ´ÊÍ·ÅIÖ¡
-µ÷ÓÃ¸Ã½Ó¿ÚÇ°£¬ĞèÍ£Ö¹ÊÓÆµ½âÂëÆ÷£»IÖ¡´¦ÀíÃ»ÓĞÍê³ÉÊ±£¬Ò²²»ÄÜÆô¶¯ÊÓÆµ½âÂëÆ÷ CNend
-\param[in] hAvplay         AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] pstFrame        Pointer to frame attributes CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¡Êı¾İÊôĞÔ CNend
-\param[in] pstCapPicture   Pointer to the frame information CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¡ĞÅÏ¢ CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:å½“pstCapPictureä¸ºç©ºæŒ‡é’ˆæ—¶ï¼Œè§£å®Œçš„Iå¸§å°†åœ¨windowä¸Šæ˜¾ç¤ºï¼Œä¸éœ€é‡Šæ”¾å†…å­˜ï¼Œå¦‚æœéç©ºï¼Œåˆ™ä¸ä¼šæ˜¾ç¤ºè€Œæ˜¯å°†Iå¸§ä¿¡æ¯ä¸ŠæŠ¥,åŒæ—¶Iå¸§å¤„ç†å®Œæ¯•åï¼Œéœ€è¦è°ƒç”¨HI_UNF_AVPLAY_ReleaseIFrameæ¥é‡Šæ”¾Iå¸§
+è°ƒç”¨è¯¥æ¥å£å‰ï¼Œéœ€åœæ­¢è§†é¢‘è§£ç å™¨ï¼›Iå¸§å¤„ç†æ²¡æœ‰å®Œæˆæ—¶ï¼Œä¹Ÿä¸èƒ½å¯åŠ¨è§†é¢‘è§£ç å™¨ CNend
+\param[in] hAvplay         AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] pstFrame        Pointer to frame attributes CNcomment:æŒ‡é’ˆç±»å‹ï¼Œå¸§æ•°æ®å±æ€§ CNend
+\param[in] pstCapPicture   Pointer to the frame information CNcomment:æŒ‡é’ˆç±»å‹ï¼Œå¸§ä¿¡æ¯ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
@@ -721,17 +721,17 @@ HI_S32 HI_UNF_AVPLAY_DecodeIFrame(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_I_FRAME
 
 
 /**
-\brief Release memory of I frame. CNcomment:ÊÍ·ÅIÖ¡Ö¡´æ CNend
+\brief Release memory of I frame. CNcomment:é‡Šæ”¾Iå¸§å¸§å­˜ CNend
 \attention \n
 If you call HI_UNF_AVPLAY_DecodeIFrame with non-null pstCapPicture, you need call this API to release the memory.
-CNcomment:Èç¹ûµ÷ÓÃHI_UNF_AVPLAY_DecodeIFrameÊ±pstCapPicture²»Îª¿Õ£¬ĞèÒªµ÷ÓÃ´Ë½Ó¿ÚÀ´ÊÍ·ÅÄÚ´æ CNend
-\param[in] hAvplay         AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] pstCapPicture   Pointer to the frame information CNcomment:Ö¸ÕëÀàĞÍ£¬ÊÍ·ÅµÄÖ¡ĞÅÏ¢ CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:å¦‚æœè°ƒç”¨HI_UNF_AVPLAY_DecodeIFrameæ—¶pstCapPictureä¸ä¸ºç©ºï¼Œéœ€è¦è°ƒç”¨æ­¤æ¥å£æ¥é‡Šæ”¾å†…å­˜ CNend
+\param[in] hAvplay         AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] pstCapPicture   Pointer to the frame information CNcomment:æŒ‡é’ˆç±»å‹ï¼Œé‡Šæ”¾çš„å¸§ä¿¡æ¯ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
@@ -739,36 +739,36 @@ HI_S32 HI_UNF_AVPLAY_ReleaseIFrame(HI_HANDLE hAvplay, HI_UNF_VIDEO_FRAME_INFO_S 
 
 
 /**
-\brief Sets the mode of a video decoder. CNcomment:ÉèÖÃÊÓÆµ½âÂëÆ÷µÄÄ£Ê½ CNend
+\brief Sets the mode of a video decoder. CNcomment:è®¾ç½®è§†é¢‘è§£ç å™¨çš„æ¨¡å¼ CNend
 \attention \n
 This API is used in trick play mode. Before switching the mode to the trick play mode, you must enable a decoder to decode only I frames by calling this API.\n
 Before switching the mode to the normal mode, you also need to set the mode of a decoder to normal by calling this API.
-CNcomment:±¾½Ó¿ÚÖ÷ÒªÓ¦ÓÃÔÚ¿ì½ø²¥·ÅµÄ³¡¾°£¬µ±ÇĞ»»µ½¿ì½ø²¥·ÅÇ°£¬¿ÉÒÔÏÈµ÷ÓÃ±¾½Ó¿Ú½«½âÂëÆ÷ÉèÖÃÎªÖ»½âIÖ¡£¬\n
-µ±ÇĞ»»»ØÕı³£²¥·ÅÇ°£¬ÏÈµ÷ÓÃ±¾½Ó¿Ú½«½âÂëÆ÷ÉèÖÃÎªNORMAL¡£ CNend
-\param[in] hAvplay            AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enDecodeMode       Decoding mode CNcomment:½âÂëÄ£Ê½ CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:æœ¬æ¥å£ä¸»è¦åº”ç”¨åœ¨å¿«è¿›æ’­æ”¾çš„åœºæ™¯ï¼Œå½“åˆ‡æ¢åˆ°å¿«è¿›æ’­æ”¾å‰ï¼Œå¯ä»¥å…ˆè°ƒç”¨æœ¬æ¥å£å°†è§£ç å™¨è®¾ç½®ä¸ºåªè§£Iå¸§ï¼Œ\n
+å½“åˆ‡æ¢å›æ­£å¸¸æ’­æ”¾å‰ï¼Œå…ˆè°ƒç”¨æœ¬æ¥å£å°†è§£ç å™¨è®¾ç½®ä¸ºNORMALã€‚ CNend
+\param[in] hAvplay            AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enDecodeMode       Decoding mode CNcomment:è§£ç æ¨¡å¼ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_SetDecodeMode(HI_HANDLE hAvplay, HI_UNF_VCODEC_MODE_E enDecodeMode);
 
 /**
-\brief Registers an event. CNcomment:×¢²áÊÂ¼ş CNend
+\brief Registers an event. CNcomment:æ³¨å†Œäº‹ä»¶ CNend
 \attention \n
 N/A
-\param[in] hAvplay     AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enEvent     Event type enumeration CNcomment:Ã¶¾ÙÀàĞÍ£¬±íÊ¾ÊÂ¼şÀàĞÍ CNend
-\param[in] pfnEventCB  Pointer to the callback function corresponding to the registered event. CNcomment:»Øµ÷º¯ÊıÖ¸Õë£¬Ö¸ÏòÓë×¢²áÊÂ¼ş¶ÔÓ¦µÄ»Øµ÷º¯Êı CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT     The AVPLAY is not initialized.  CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay     AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enEvent     Event type enumeration CNcomment:æšä¸¾ç±»å‹ï¼Œè¡¨ç¤ºäº‹ä»¶ç±»å‹ CNend
+\param[in] pfnEventCB  Pointer to the callback function corresponding to the registered event. CNcomment:å›è°ƒå‡½æ•°æŒ‡é’ˆï¼ŒæŒ‡å‘ä¸æ³¨å†Œäº‹ä»¶å¯¹åº”çš„å›è°ƒå‡½æ•° CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT     The AVPLAY is not initialized.  CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
@@ -778,81 +778,81 @@ HI_S32 HI_UNF_AVPLAY_RegisterEvent(HI_HANDLE      hAvplay,
 
 
 /**
-\brief Deregisters an event. CNcomment:È¡Ïû×¢²áÊÂ¼ş CNend
+\brief Deregisters an event. CNcomment:å–æ¶ˆæ³¨å†Œäº‹ä»¶ CNend
 \attention \n
 N/A
-\param[in] hAvplay   AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enEvent   Event type enumeration CNcomment:Ã¶¾ÙÀàĞÍ£¬±íÊ¾ÊÂ¼şÀàĞÍ CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay   AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enEvent   Event type enumeration CNcomment:æšä¸¾ç±»å‹ï¼Œè¡¨ç¤ºäº‹ä»¶ç±»å‹ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_UnRegisterEvent(HI_HANDLE hAvplay, HI_UNF_AVPLAY_EVENT_E enEvent);
 
 /**
-\brief Enables an AVPLAY channel. CNcomment:´ò¿ªAV²¥·ÅÆ÷Í¨µÀ CNend
+\brief Enables an AVPLAY channel. CNcomment:æ‰“å¼€AVæ’­æ”¾å™¨é€šé“ CNend
 \attention \n
 You can enable an audio channel and a video channel for each AVPLAY. If you only need to play videos or audios, you can enable the corresponding channel to save resources.
-CNcomment:Ã¿¸öAV²¥·ÅÆ÷½öÖ§³Ö´ò¿ªÒôÊÓÆµÍ¨µÀ¸÷1¸ö¡£Èç¹ûÖ»²¥·ÅÒôÆµ»òÊÓÆµ£¬Ö»ĞèÒª´ò¿ªÏàÓ¦Í¨µÀ£¬ÒÔ½ÚÊ¡×ÊÔ´¡£ CNend
-\param[in] hAvplay  AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enChn    Separate audio channel or video channel. For details, see the description of ::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNcomment:µ¥¶ÀµÄÒôÊÓÆµÍ¨µÀ£¬Çë²Î¼û::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNend
-\param[in] pPara    Pointer type. For details, see the description of ::HI_UNF_AVPLAY_OPEN_OPT_S. CNcomment:Ö¸ÕëÀàĞÍ£¬Çë²Î¼û::HI_UNF_AVPLAY_OPEN_OPT_S. CNend
+CNcomment:æ¯ä¸ªAVæ’­æ”¾å™¨ä»…æ”¯æŒæ‰“å¼€éŸ³è§†é¢‘é€šé“å„1ä¸ªã€‚å¦‚æœåªæ’­æ”¾éŸ³é¢‘æˆ–è§†é¢‘ï¼Œåªéœ€è¦æ‰“å¼€ç›¸åº”é€šé“ï¼Œä»¥èŠ‚çœèµ„æºã€‚ CNend
+\param[in] hAvplay  AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enChn    Separate audio channel or video channel. For details, see the description of ::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNcomment:å•ç‹¬çš„éŸ³è§†é¢‘é€šé“ï¼Œè¯·å‚è§::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNend
+\param[in] pPara    Pointer type. For details, see the description of ::HI_UNF_AVPLAY_OPEN_OPT_S. CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¯·å‚è§::HI_UNF_AVPLAY_OPEN_OPT_S. CNend
     If enChn is set to HI_UNF_AVPLAY_MEDIA_CHAN_VID, this API is used to specify the maximum decoding performance of the video decoder.
     If enChn is set to NULL, the maximum performance H264+HI_UNF_VCODEC_CAP_LEVEL_FULLHD is used by default.
     The higher the configured decoding performance, the larger the required MMZ. It is recommended that you configure the performance as required.
-    CNcomment:enChnÎªHI_UNF_AVPLAY_MEDIA_CHAN_VIDÊ±ÓÃÀ´Ö¸¶¨ÊÓÆµ½âÂëÆ÷µÄ×î´ó½âÂëÄÜÁ¦¡£
-    Èç¹ûÉèÎªNULL£¬½«Ä¬ÈÏÎª×î´óÄÜÁ¦: H264+HI_UNF_VCODEC_CAP_LEVEL_FULLHD¡£
-    ÅäÖÃÖ§³ÖµÄÄÜÁ¦Ô½´ó£¬ĞèÒªµÄMMZÎïÀíÄÚ´æÒ²¾ÍÔ½´ó£¬½¨Òé°´ĞèÅäÖÃ¼´¿É¡£ CNend
-\retval ::HI_SUCCESS Success             CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+    CNcomment:enChnä¸ºHI_UNF_AVPLAY_MEDIA_CHAN_VIDæ—¶ç”¨æ¥æŒ‡å®šè§†é¢‘è§£ç å™¨çš„æœ€å¤§è§£ç èƒ½åŠ›ã€‚
+    å¦‚æœè®¾ä¸ºNULLï¼Œå°†é»˜è®¤ä¸ºæœ€å¤§èƒ½åŠ›: H264+HI_UNF_VCODEC_CAP_LEVEL_FULLHDã€‚
+    é…ç½®æ”¯æŒçš„èƒ½åŠ›è¶Šå¤§ï¼Œéœ€è¦çš„MMZç‰©ç†å†…å­˜ä¹Ÿå°±è¶Šå¤§ï¼Œå»ºè®®æŒ‰éœ€é…ç½®å³å¯ã€‚ CNend
+\retval ::HI_SUCCESS Success             CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_ChnOpen(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, const HI_VOID *pPara);
 
 /**
-\brief Disables an AVPLAY channel. CNcomment:¹Ø±ÕAV²¥·ÅÆ÷Í¨µÀ CNend
+\brief Disables an AVPLAY channel. CNcomment:å…³é—­AVæ’­æ”¾å™¨é€šé“ CNend
 \attention \n
 N/A
-\param[in] hAvplay   AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enChn     Separate audio channel or video channel. For details, see the description of ::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNcomment:µ¥¶ÀµÄÒôÊÓÆµÍ¨µÀ£¬Çë²Î¼û::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay   AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enChn     Separate audio channel or video channel. For details, see the description of ::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNcomment:å•ç‹¬çš„éŸ³è§†é¢‘é€šé“ï¼Œè¯·å‚è§::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_ChnClose(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn);
 
 /**
-\brief Starts an AVPLAY. The AVPLAY is in play mode. CNcomment:Æô¶¯²¥·ÅÆ÷£¬½øÈëPLAY×´Ì¬ CNend
+\brief Starts an AVPLAY. The AVPLAY is in play mode. CNcomment:å¯åŠ¨æ’­æ”¾å™¨ï¼Œè¿›å…¥PLAYçŠ¶æ€ CNend
 \attention \n
 After enabling channels and setting their attributes, you can call this API to start an AVPLAY to enable it to work in play mode. The audios and videos can be played separately or simultaneously.
-CNcomment:µ±Íê³ÉÍ¨µÀ´ò¿ªºÍÊôĞÔÉèÖÃºó£¬µ÷ÓÃ±¾½Ó¿ÚÆô¶¯²¥·Å£¬½øÈëPLAY×´Ì¬¡£Ö§³Ö·Ö±ğºÍÍ¬Ê±Æô¶¯ÒôÊÓÆµ²¥·Å¡£ CNend
-\param[in] hAvplay         AVPLAY handle  CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enChn           Separate audio channel or video channel. For details, see the description of ::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNcomment:µ¥¶ÀµÄÒôÊÓÆµÍ¨µÀ£¬Çë²Î¼û::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNend
-\param[in] pstStartOpt     Pointer used for expansion. You can set it to NULL. CNcomment:Ö¸ÕëÀàĞÍ£¬´ıÀ©Õ¹Ê¹ÓÃ£¬ÉèÎªNULL¼´¿É. CNend
-\retval ::HI_SUCCESS  Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:å½“å®Œæˆé€šé“æ‰“å¼€å’Œå±æ€§è®¾ç½®åï¼Œè°ƒç”¨æœ¬æ¥å£å¯åŠ¨æ’­æ”¾ï¼Œè¿›å…¥PLAYçŠ¶æ€ã€‚æ”¯æŒåˆ†åˆ«å’ŒåŒæ—¶å¯åŠ¨éŸ³è§†é¢‘æ’­æ”¾ã€‚ CNend
+\param[in] hAvplay         AVPLAY handle  CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enChn           Separate audio channel or video channel. For details, see the description of ::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNcomment:å•ç‹¬çš„éŸ³è§†é¢‘é€šé“ï¼Œè¯·å‚è§::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNend
+\param[in] pstStartOpt     Pointer used for expansion. You can set it to NULL. CNcomment:æŒ‡é’ˆç±»å‹ï¼Œå¾…æ‰©å±•ä½¿ç”¨ï¼Œè®¾ä¸ºNULLå³å¯. CNend
+\retval ::HI_SUCCESS  Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_Start(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, const HI_UNF_AVPLAY_START_OPT_S *pstStartOpt);
 
 /**
-\brief Stops an AVPLAY. Then the AVPLAY is in stop mode. CNcomment:Í£Ö¹AV²¥·Å£¬½øÈëSTOP×´Ì¬ CNend
+\brief Stops an AVPLAY. Then the AVPLAY is in stop mode. CNcomment:åœæ­¢AVæ’­æ”¾ï¼Œè¿›å…¥STOPçŠ¶æ€ CNend
 \attention \n
 If you call this API, all selected channels stop playing. The playing audios and videos can be stopped separately or simultaneously.\n
 The parameter pstStopOpt->enMode takes effect only when a video channel is selected.\n
@@ -862,113 +862,113 @@ When pstStopOpt->u32TimeoutMs is 0, the AVPLAY stops and this API is returned.\n
 When pstStopOpt->u32TimeoutMs is greater than 0, this API is blocked until the data in the buffer is used up.\n
 When pstStopOpt->u32TimeoutMs is greater than -1, this API is blocked until the data in the buffer is used up.\n
 To stop the audio or video separately when both the audio and video are enabled, you must set pstStopOpt->u32TimeoutMs to 0.
-CNcomment:µ÷ÓÃ±¾½Ó¿Ú½«Í£Ö¹ËùÑ¡Í¨µÀµÄ²¥·Å£¬Ö§³Ö·Ö±ğºÍÍ¬Ê±Í£Ö¹ÒôÊÓÆµ²¥·Å¡£\n
-µ±ËùÑ¡Í¨µÀÖĞ°üº¬ÊÓÆµÍ¨µÀÊ±£¬²ÎÊıpstStopOpt->enMode²ÅÓĞÒâÒå¡£\n
-µ±pstStopOpt->enModeÎª¿Õ»òÕßÎªHI_UNF_AVPLAY_STOP_MODE_STILLÊ±£¬±£Áô×îºóÒ»Ö¡ÊÓÆµÍ¼Ïñ¡£\n
-µ±pstStopOpt->enModeÎªHI_UNF_AVPLAY_STOP_MODE_BLACKÊ±£¬Çå³ıÊÓÆµ×îºóÒ»Ö¡£¬ÊÓÆµÊä³öÎªºÚÆÁ¡£\n
-µ±pstStopOpt->u32TimeoutMsÎª0Ê±½«Àë¿ªÍ£Ö¹²¥·Å²¢·µ»Ø¡£\n
-µ±pstStopOpt->u32TimeoutMs>0Ê±½«×èÈûÏàÓ¦Ê±¼ä£¬Ö±µ½»º³åÖĞµÄÊı¾İ²¥Íê¡£\n
-µ±pstStopOpt->u32TimeoutMs=-1Ê±½«Ò»Ö±×èÈûµ½»º³åÖĞµÄÊı¾İ²¥Íê¡£\n
-µ±ÒôÊÓÆµ¶¼´¦ÓÚ¿ªÆô×´Ì¬Ê±,Òªµ¥¶ÀÍ£Ö¹ÒôÆµºÍÊÓÆµ£¬±ØĞëÉèÖÃpstStopOpt->u32TimeoutMsÎª0. CNend
-\param[in] hAvplay  AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enChn    Separate audio channel or video channel. For details, see the description of ::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNcomment:µ¥¶ÀµÄÒôÊÓÆµÍ¨µÀ£¬Çë²Î¼û::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNend
-\param[in] pstStopOpt   Pointer to the clear screen mode. For details, see the description of ::HI_UNF_AVPLAY_STOP_OPT_S. CNcomment:Ö¸ÕëÀàĞÍ£¬ÇåÆÁÄ£Ê½£¬Çë²Î¼û::HI_UNF_AVPLAY_STOP_OPT_S. CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:è°ƒç”¨æœ¬æ¥å£å°†åœæ­¢æ‰€é€‰é€šé“çš„æ’­æ”¾ï¼Œæ”¯æŒåˆ†åˆ«å’ŒåŒæ—¶åœæ­¢éŸ³è§†é¢‘æ’­æ”¾ã€‚\n
+å½“æ‰€é€‰é€šé“ä¸­åŒ…å«è§†é¢‘é€šé“æ—¶ï¼Œå‚æ•°pstStopOpt->enModeæ‰æœ‰æ„ä¹‰ã€‚\n
+å½“pstStopOpt->enModeä¸ºç©ºæˆ–è€…ä¸ºHI_UNF_AVPLAY_STOP_MODE_STILLæ—¶ï¼Œä¿ç•™æœ€åä¸€å¸§è§†é¢‘å›¾åƒã€‚\n
+å½“pstStopOpt->enModeä¸ºHI_UNF_AVPLAY_STOP_MODE_BLACKæ—¶ï¼Œæ¸…é™¤è§†é¢‘æœ€åä¸€å¸§ï¼Œè§†é¢‘è¾“å‡ºä¸ºé»‘å±ã€‚\n
+å½“pstStopOpt->u32TimeoutMsä¸º0æ—¶å°†ç¦»å¼€åœæ­¢æ’­æ”¾å¹¶è¿”å›ã€‚\n
+å½“pstStopOpt->u32TimeoutMs>0æ—¶å°†é˜»å¡ç›¸åº”æ—¶é—´ï¼Œç›´åˆ°ç¼“å†²ä¸­çš„æ•°æ®æ’­å®Œã€‚\n
+å½“pstStopOpt->u32TimeoutMs=-1æ—¶å°†ä¸€ç›´é˜»å¡åˆ°ç¼“å†²ä¸­çš„æ•°æ®æ’­å®Œã€‚\n
+å½“éŸ³è§†é¢‘éƒ½å¤„äºå¼€å¯çŠ¶æ€æ—¶,è¦å•ç‹¬åœæ­¢éŸ³é¢‘å’Œè§†é¢‘ï¼Œå¿…é¡»è®¾ç½®pstStopOpt->u32TimeoutMsä¸º0. CNend
+\param[in] hAvplay  AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enChn    Separate audio channel or video channel. For details, see the description of ::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNcomment:å•ç‹¬çš„éŸ³è§†é¢‘é€šé“ï¼Œè¯·å‚è§::HI_UNF_AVPLAY_MEDIA_CHAN_E. CNend
+\param[in] pstStopOpt   Pointer to the clear screen mode. For details, see the description of ::HI_UNF_AVPLAY_STOP_OPT_S. CNcomment:æŒ‡é’ˆç±»å‹ï¼Œæ¸…å±æ¨¡å¼ï¼Œè¯·å‚è§::HI_UNF_AVPLAY_STOP_OPT_S. CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_Stop(HI_HANDLE hAvplay, HI_UNF_AVPLAY_MEDIA_CHAN_E enChn, const HI_UNF_AVPLAY_STOP_OPT_S *pstStopOpt);
 
 /**
-\brief Pauses an AVPLAY. Then the AVPLAY is in pause mode. CNcomment:ÔİÍ£AV²¥·Å£¬½øÈëPAUSE×´Ì¬ CNend
+\brief Pauses an AVPLAY. Then the AVPLAY is in pause mode. CNcomment:æš‚åœAVæ’­æ”¾ï¼Œè¿›å…¥PAUSEçŠ¶æ€ CNend
 \attention \n
 N/A
-\param[in] hAvplay  AVPLAY handle CNcomment: AV²¥·Å¾ä±ú CNend
-\param[in] pstPauseOpt  Pointer used for expansion. You can set it to NULL. CNcomment:Ö¸ÕëÀàĞÍ£¬´ıÀ©Õ¹Ê¹ÓÃ£¬ÉèÎªÎªNULL¼´¿É CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay  AVPLAY handle CNcomment: AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] pstPauseOpt  Pointer used for expansion. You can set it to NULL. CNcomment:æŒ‡é’ˆç±»å‹ï¼Œå¾…æ‰©å±•ä½¿ç”¨ï¼Œè®¾ä¸ºä¸ºNULLå³å¯ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_Pause(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_PAUSE_OPT_S *pstPauseOpt);
 
 /**
-\brief Plays videos or audios in trick play mode. Then the AVPLAY is in TPLAY mode. CNcomment:±¶ËÙ²¥·Å£¬½øÈëTPLAY×´Ì¬ CNend
+\brief Plays videos or audios in trick play mode. Then the AVPLAY is in TPLAY mode. CNcomment:å€é€Ÿæ’­æ”¾ï¼Œè¿›å…¥TPLAYçŠ¶æ€ CNend
 \attention \n
 pstTplayOpt->u32SpeedInteger is the integer part of speed, the range is 0-64. 
 pstTplayOpt->u32SpeedDecimal is the decimal part of speed, the range is 0-999. 
-CNcomment: pstTplayOpt->u32SpeedIntegerÎªËÙ¶ÈµÄÕûÊı²¿·Ö£¬È¡Öµ·¶Î§Îª0-64. CNend
-CNcomment: pstTplayOpt->u32SpeedDecimalÎªËÙ¶ÈµÄĞ¡Êı²¿·Ö£¬±£Áô3Î»Ğ¡Êı£¬È¡Öµ·¶Î§Îª0-999. CNend
-\param[in] hAvplay  AVPLAY handle CNcomment: AV²¥·Å¾ä±ú CNend
-\param[in] pstTplayOpt   The pointer of Tplay parameter,For details, see the description of ::HI_UNF_AVPLAY_TPLAY_OPT_S . CNcomment:Ö¸ÕëÀàĞÍ£¬TPLAY²ÎÊıÖ¸Õë,Çë²Î¼ûHI_UNF_AVPLAY_TPLAY_OPT_S½á¹¹Ìå¶¨Òå CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment: pstTplayOpt->u32SpeedIntegerä¸ºé€Ÿåº¦çš„æ•´æ•°éƒ¨åˆ†ï¼Œå–å€¼èŒƒå›´ä¸º0-64. CNend
+CNcomment: pstTplayOpt->u32SpeedDecimalä¸ºé€Ÿåº¦çš„å°æ•°éƒ¨åˆ†ï¼Œä¿ç•™3ä½å°æ•°ï¼Œå–å€¼èŒƒå›´ä¸º0-999. CNend
+\param[in] hAvplay  AVPLAY handle CNcomment: AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] pstTplayOpt   The pointer of Tplay parameter,For details, see the description of ::HI_UNF_AVPLAY_TPLAY_OPT_S . CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒTPLAYå‚æ•°æŒ‡é’ˆ,è¯·å‚è§HI_UNF_AVPLAY_TPLAY_OPT_Sç»“æ„ä½“å®šä¹‰ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_Tplay(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_TPLAY_OPT_S *pstTplayOpt);
 
 /**
-\brief Resumes an AVPLAY. Then the AVPLAY is in play mode. CNcomment:»Ö¸´AV²¥·Å£¬½øÈëPLAY×´Ì¬ CNend
+\brief Resumes an AVPLAY. Then the AVPLAY is in play mode. CNcomment:æ¢å¤AVæ’­æ”¾ï¼Œè¿›å…¥PLAYçŠ¶æ€ CNend
 \attention \n
 By calling this API, you can resume an AVPLAY from the trick play mode or pause mode rather than the stop mode.
-CNcomment:±¾½Ó¿ÚÓÃÀ´½«±¶ËÙ»òÔİÍ£×´Ì¬»Ö¸´Îª²¥·Å×´Ì¬£¬µ«ÎŞ·¨½«Í£Ö¹×´Ì¬»Ö¸´Îª²¥·Å×´Ì¬¡£ CNend
-\param[in] hAvplay  AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] pstResumeOpt  Pointer used for expansion. You can set it to NULL. CNcomment:Ö¸ÕëÀàĞÍ£¬´ıÀ©Õ¹Ê¹ÓÃ£¬ÔİÖÃÎª¿Õ¼´¿É CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:æœ¬æ¥å£ç”¨æ¥å°†å€é€Ÿæˆ–æš‚åœçŠ¶æ€æ¢å¤ä¸ºæ’­æ”¾çŠ¶æ€ï¼Œä½†æ— æ³•å°†åœæ­¢çŠ¶æ€æ¢å¤ä¸ºæ’­æ”¾çŠ¶æ€ã€‚ CNend
+\param[in] hAvplay  AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] pstResumeOpt  Pointer used for expansion. You can set it to NULL. CNcomment:æŒ‡é’ˆç±»å‹ï¼Œå¾…æ‰©å±•ä½¿ç”¨ï¼Œæš‚ç½®ä¸ºç©ºå³å¯ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_Resume(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_RESUME_OPT_S *pstResumeOpt);
 
 /**
-\brief Resets an AVPLAY. In this case, the play mode is not changed. CNcomment:¸´Î»AV²¥·Å£¬²»¸Ä±ä×´Ì¬ CNend
+\brief Resets an AVPLAY. In this case, the play mode is not changed. CNcomment:å¤ä½AVæ’­æ”¾ï¼Œä¸æ”¹å˜çŠ¶æ€ CNend
 \attention \n
 N/A
-\param[in] hAvplay  AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] pstResetOpt   Pointer used for expansion. You can set it to NULL. CNcomment:Ö¸ÕëÀàĞÍ£¬´ıÀ©Õ¹Ê¹ÓÃ£¬ÉèÎªÎªNULL¼´¿É CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay  AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] pstResetOpt   Pointer used for expansion. You can set it to NULL. CNcomment:æŒ‡é’ˆç±»å‹ï¼Œå¾…æ‰©å±•ä½¿ç”¨ï¼Œè®¾ä¸ºä¸ºNULLå³å¯ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_Reset(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_RESET_OPT_S *pstResetOpt);
 
 /**
-\brief Step play. CNcomment:²½½ø²¥·Å CNend
+\brief Step play. CNcomment:æ­¥è¿›æ’­æ”¾ CNend
 \attention \n
 N/A
-\param[in] hAvplay  AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] pstStepOpt   Pointer used for expansion. You can set it to NULL. CNcomment:Ö¸ÕëÀàĞÍ£¬´ıÀ©Õ¹Ê¹ÓÃ£¬ÉèÎªÎªNULL¼´¿É CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay  AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] pstStepOpt   Pointer used for expansion. You can set it to NULL. CNcomment:æŒ‡é’ˆç±»å‹ï¼Œå¾…æ‰©å±•ä½¿ç”¨ï¼Œè®¾ä¸ºä¸ºNULLå³å¯ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_Step(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_STEP_OPT_S *pstStepOpt);
 
 /**
-\brief Applies for a buffer for storing the streams played by an AVPLAY. CNcomment:ÉêÇëAV²¥·ÅµÄÂëÁ÷»º³å CNend
+\brief Applies for a buffer for storing the streams played by an AVPLAY. CNcomment:ç”³è¯·AVæ’­æ”¾çš„ç æµç¼“å†² CNend
 \attention \n
 This API is used only when you want to play the ESs obtained from Internet or local ESs.\n
 The pstData parameter is used to return the start address and size of the buffer applied for.\n
@@ -976,22 +976,22 @@ If u32TimeOutMs is set to 0, it indicates that the waiting time is 0; if u32Time
 If no buffer can be applied for during the block period, an error code indicating full buffer is returned.\n
 If u32TimeOutMs is set to 0, and no buffer can be applied for, it indicates that the audio and video buffers are full. In this case, you need to call the usleep(N*1000) function to release the CPU.
 Therefore, other threads can be scheduled.
-CNcomment:µ±²¥·ÅÍøÂç»ò±¾µØESÁ÷Ê±²ÅĞèÒªÊ¹ÓÃ±¾½Ó¿Ú¡£\n
-²ÎÊıpstDataÓÃÀ´·µ»Ø³É¹¦ÉêÇëµ½µÄBufferµÄÊ×µØÖ·ÒÔ¼°´óĞ¡¡£\n
-u32TimeOutMsÉèÖÃÎª0±íÊ¾²»µÈ´ı£¬ÉèÖÃÎª0xffffffff±íÊ¾Ò»Ö±µÈ´ı£¬ÉèÖÃÎªÆäËûÖµ±íÊ¾µÈ´ıu32TimeOutMsºÁÃë¡£\n
-Èô³¬¹ı×èÈûÊ±¼ä£¬»¹ÎŞ·¨ÉêÇëµ½Buffer£¬Ôò·µ»ØbufferÂú´íÎóÂë\n
-u32TimeOutMsÅäÖÃÎª0Ê±£¬Èç¹ûÉêÇë²»µ½Buffer£¬ËµÃ÷´ËÊ±ÒôÊÓÆµµÄBufferÒÑÂú£¬ĞèÒªÍ¨¹ıusleep(N*1000)ÊÍ·Åcpu
-ÒÔÊ¹ÆäËüÏß³ÌÄÜ¹»µÃµ½µ÷¶È¡£ CNend
-\param[in] hAvplay  AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enBufId     Buffer queue ID CNcomment:»º³å¶ÓÁĞID CNend
-\param[in] u32ReqLen   Size of the buffer applied for CNcomment:ÉêÇë»º´æµÄ´óĞ¡ CNend
-\param[out] pstData    Pointer to the returned buffer CNcomment:·µ»Ø»º´æÖ¸Õë CNend
-\param[in] u32TimeOutMs      Wait timeout, in ms CNcomment:µÈ´ı³¬Ê±Ê±¼ä£¬µ¥Î»ms. CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:å½“æ’­æ”¾ç½‘ç»œæˆ–æœ¬åœ°ESæµæ—¶æ‰éœ€è¦ä½¿ç”¨æœ¬æ¥å£ã€‚\n
+å‚æ•°pstDataç”¨æ¥è¿”å›æˆåŠŸç”³è¯·åˆ°çš„Bufferçš„é¦–åœ°å€ä»¥åŠå¤§å°ã€‚\n
+u32TimeOutMsè®¾ç½®ä¸º0è¡¨ç¤ºä¸ç­‰å¾…ï¼Œè®¾ç½®ä¸º0xffffffffè¡¨ç¤ºä¸€ç›´ç­‰å¾…ï¼Œè®¾ç½®ä¸ºå…¶ä»–å€¼è¡¨ç¤ºç­‰å¾…u32TimeOutMsæ¯«ç§’ã€‚\n
+è‹¥è¶…è¿‡é˜»å¡æ—¶é—´ï¼Œè¿˜æ— æ³•ç”³è¯·åˆ°Bufferï¼Œåˆ™è¿”å›bufferæ»¡é”™è¯¯ç \n
+u32TimeOutMsé…ç½®ä¸º0æ—¶ï¼Œå¦‚æœç”³è¯·ä¸åˆ°Bufferï¼Œè¯´æ˜æ­¤æ—¶éŸ³è§†é¢‘çš„Bufferå·²æ»¡ï¼Œéœ€è¦é€šè¿‡usleep(N*1000)é‡Šæ”¾cpu
+ä»¥ä½¿å…¶å®ƒçº¿ç¨‹èƒ½å¤Ÿå¾—åˆ°è°ƒåº¦ã€‚ CNend
+\param[in] hAvplay  AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enBufId     Buffer queue ID CNcomment:ç¼“å†²é˜Ÿåˆ—ID CNend
+\param[in] u32ReqLen   Size of the buffer applied for CNcomment:ç”³è¯·ç¼“å­˜çš„å¤§å° CNend
+\param[out] pstData    Pointer to the returned buffer CNcomment:è¿”å›ç¼“å­˜æŒ‡é’ˆ CNend
+\param[in] u32TimeOutMs      Wait timeout, in ms CNcomment:ç­‰å¾…è¶…æ—¶æ—¶é—´ï¼Œå•ä½ms. CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_GetBuf(HI_HANDLE  hAvplay,
@@ -1001,21 +1001,21 @@ HI_S32 HI_UNF_AVPLAY_GetBuf(HI_HANDLE  hAvplay,
                             HI_U32                u32TimeOutMs);
 
 /**
-\brief Updates the write pointer after data is successfully copied. CNcomment:¿½±´Êı¾İ³É¹¦ºó£¬¸üĞÂĞ´Ö¸Õë CNend
+\brief Updates the write pointer after data is successfully copied. CNcomment:æ‹·è´æ•°æ®æˆåŠŸåï¼Œæ›´æ–°å†™æŒ‡é’ˆ CNend
 \attention \n
 After transmitting streams to the buffer applied for, you can call this API to update the write pointer of the audio and video buffers.\n
 If the transmitted streams do not contain PTS, u32ptsMs must be set to -1.
-CNcomment:ÔÚÏòÉêÇëµ½µÄ»º³åÇøÄÚËÍÂëÁ÷Íê±Ïºó£¬µ÷ÓÃ±¾½Ó¿Ú¸üĞÂÒôÊÓÆµ»º³åÇøµÄĞ´Ö¸Õë¡£\n
-Èç¹û±¾´ÎËÍÈëµÄÂëÁ÷Ã»ÓĞ¶ÔÓ¦µÄPTS£¬u32ptsMs±ØĞëÎª-1¡£ CNend
-\param[in] hAvplay  AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enBufId     Buffer queue ID CNcomment:»º³å¶ÓÁĞID. CNend
-\param[in] u32ValidDataLen     Number of bytes that are written to the buffer CNcomment:Êµ¼ÊĞ´Èë»º³åÇøµÄ×Ö½ÚÊı CNend
-\param[in] u32PtsMs            PTS, in ms  CNcomment:Ê±¼ä´Á,ÒÔºÁÃëÎªµ¥Î» CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:åœ¨å‘ç”³è¯·åˆ°çš„ç¼“å†²åŒºå†…é€ç æµå®Œæ¯•åï¼Œè°ƒç”¨æœ¬æ¥å£æ›´æ–°éŸ³è§†é¢‘ç¼“å†²åŒºçš„å†™æŒ‡é’ˆã€‚\n
+å¦‚æœæœ¬æ¬¡é€å…¥çš„ç æµæ²¡æœ‰å¯¹åº”çš„PTSï¼Œu32ptsMså¿…é¡»ä¸º-1ã€‚ CNend
+\param[in] hAvplay  AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enBufId     Buffer queue ID CNcomment:ç¼“å†²é˜Ÿåˆ—ID. CNend
+\param[in] u32ValidDataLen     Number of bytes that are written to the buffer CNcomment:å®é™…å†™å…¥ç¼“å†²åŒºçš„å­—èŠ‚æ•° CNend
+\param[in] u32PtsMs            PTS, in ms  CNcomment:æ—¶é—´æˆ³,ä»¥æ¯«ç§’ä¸ºå•ä½ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
@@ -1024,22 +1024,22 @@ HI_S32 HI_UNF_AVPLAY_PutBuf(HI_HANDLE hAvplay, HI_UNF_AVPLAY_BUFID_E enBufId,
 
 
 /**
-\brief Updates the write pointer after data is successfully copied. CNcomment:¿½±´Êı¾İ³É¹¦ºó£¬¸üĞÂĞ´Ö¸Õë CNend
+\brief Updates the write pointer after data is successfully copied. CNcomment:æ‹·è´æ•°æ®æˆåŠŸåï¼Œæ›´æ–°å†™æŒ‡é’ˆ CNend
 \attention \n
 After transmitting streams to the buffer applied for, you can call this API to update the write pointer of the audio and video buffers.\n
 If the transmitted streams do not contain PTS, u32ptsMs must be set to -1.
-CNcomment:ÔÚÏòÉêÇëµ½µÄ»º³åÇøÄÚËÍÂëÁ÷Íê±Ïºó£¬µ÷ÓÃ±¾½Ó¿Ú¸üĞÂÒôÊÓÆµ»º³åÇøµÄĞ´Ö¸Õë, ±¾½Ó¿Ú¿ÉÓÉÓÚÒ»Ö¡ÂëÁ÷·Ö¶à°üËÍÈë¡£\n
-Èç¹û±¾´ÎËÍÈëµÄÂëÁ÷Ã»ÓĞ¶ÔÓ¦µÄPTS£¬u32ptsMs±ØĞëÎª-1¡£ CNend
-\param[in] hAvplay  AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] enBufId     Buffer queue ID CNcomment:»º³å¶ÓÁĞID CNend
-\param[in] u32ValidDataLen     Number of bytes that are written to the buffer CNcomment:Êµ¼ÊĞ´Èë»º³åÇøµÄ×Ö½ÚÊı CNend
-\param[in] u32PtsMs            PTS, in ms  CNcomment:Ê±¼ä´Á,ÒÔºÁÃëÎªµ¥Î» CNend
-\param[in] pPutOpt   the extern parameter of PutBufEx, see the description of ::HI_UNF_AVPLAY_PUTBUFEX_OPT_S.CNcomment:PutBufExµÄ¶îÍâ²ÎÊı£¬Çë²Î¼û::HI_UNF_AVPLAY_PUTBUFEX_OPT_S. CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:åœ¨å‘ç”³è¯·åˆ°çš„ç¼“å†²åŒºå†…é€ç æµå®Œæ¯•åï¼Œè°ƒç”¨æœ¬æ¥å£æ›´æ–°éŸ³è§†é¢‘ç¼“å†²åŒºçš„å†™æŒ‡é’ˆ, æœ¬æ¥å£å¯ç”±äºä¸€å¸§ç æµåˆ†å¤šåŒ…é€å…¥ã€‚\n
+å¦‚æœæœ¬æ¬¡é€å…¥çš„ç æµæ²¡æœ‰å¯¹åº”çš„PTSï¼Œu32ptsMså¿…é¡»ä¸º-1ã€‚ CNend
+\param[in] hAvplay  AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enBufId     Buffer queue ID CNcomment:ç¼“å†²é˜Ÿåˆ—ID CNend
+\param[in] u32ValidDataLen     Number of bytes that are written to the buffer CNcomment:å®é™…å†™å…¥ç¼“å†²åŒºçš„å­—èŠ‚æ•° CNend
+\param[in] u32PtsMs            PTS, in ms  CNcomment:æ—¶é—´æˆ³,ä»¥æ¯«ç§’ä¸ºå•ä½ CNend
+\param[in] pPutOpt   the extern parameter of PutBufEx, see the description of ::HI_UNF_AVPLAY_PUTBUFEX_OPT_S.CNcomment:PutBufExçš„é¢å¤–å‚æ•°ï¼Œè¯·å‚è§::HI_UNF_AVPLAY_PUTBUFEX_OPT_S. CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT      The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
@@ -1047,32 +1047,32 @@ HI_S32 HI_UNF_AVPLAY_PutBufEx(HI_HANDLE hAvplay, HI_UNF_AVPLAY_BUFID_E enBufId,
                                        HI_U32 u32ValidDataLen, HI_U32 u32Pts, HI_UNF_AVPLAY_PUTBUFEX_OPT_S *pPutOpt);
 
 /**
-\brief Obtains the handle of the DMX audio channel used by an AVPLAY in TS mode. CNcomment:TSÄ£Ê½Ê±»ñÈ¡AV²¥·ÅÆ÷Ê¹ÓÃµÄDMXÒôÆµÍ¨µÀµÄHandle CNend
+\brief Obtains the handle of the DMX audio channel used by an AVPLAY in TS mode. CNcomment:TSæ¨¡å¼æ—¶è·å–AVæ’­æ”¾å™¨ä½¿ç”¨çš„DMXéŸ³é¢‘é€šé“çš„Handle CNend
 \attention \n
 N/A
-\param[in] hAvplay  AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] phDmxAudChn    Pointer to the handle of a DMX audio channel CNcomment:DMXÒôÆµÍ¨µÀHandleÖ¸Õë CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay  AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] phDmxAudChn    Pointer to the handle of a DMX audio channel CNcomment:DMXéŸ³é¢‘é€šé“HandleæŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_GetDmxAudChnHandle(HI_HANDLE hAvplay, HI_HANDLE *phDmxAudChn);
 
 /**
-\brief Obtains the handle of the DMX video channel used by an AVPLAY in TS mode. CNcomment:TSÄ£Ê½Ê±»ñÈ¡AV²¥·ÅÆ÷Ê¹ÓÃµÄDMXÊÓÆµÍ¨µÀµÄHandle. CNend
+\brief Obtains the handle of the DMX video channel used by an AVPLAY in TS mode. CNcomment:TSæ¨¡å¼æ—¶è·å–AVæ’­æ”¾å™¨ä½¿ç”¨çš„DMXè§†é¢‘é€šé“çš„Handle. CNend
 \attention \n
 N/A
-\param[in] hAvplay  AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] phDmxVidChn    Pointer to the handle of a DMX video channel CNcomment:DMXÊÓÆµÍ¨µÀHandleÖ¸Õë CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay  AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] phDmxVidChn    Pointer to the handle of a DMX video channel CNcomment:DMXè§†é¢‘é€šé“HandleæŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
@@ -1080,16 +1080,16 @@ HI_S32 HI_UNF_AVPLAY_GetDmxVidChnHandle(HI_HANDLE hAvplay, HI_HANDLE *phDmxVidCh
 
 
 /**
-\brief Obtains the status information about an AVPLAY. CNcomment:»ñÈ¡AV²¥·Å×´Ì¬ĞÅÏ¢ CNend
+\brief Obtains the status information about an AVPLAY. CNcomment:è·å–AVæ’­æ”¾çŠ¶æ€ä¿¡æ¯ CNend
 \attention \n
 N/A
-\param[in] hAvplay  AVPLAY handle  CNcomment:AV²¥·Å¾ä±ú CNend
-\param[out] pstStatusInfo  Pointer to the status of an AVPLAY. For details, see the description of HI_UNF_AVPLAY_STATUS_INFO_S. CNcomment:Ö¸ÕëÀàĞÍ£¬AV²¥·Å×´Ì¬ĞÅÏ¢£¬Çë²Î¼ûHI_UNF_AVPLAY_STATUS_INFO_S. CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay  AVPLAY handle  CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[out] pstStatusInfo  Pointer to the status of an AVPLAY. For details, see the description of HI_UNF_AVPLAY_STATUS_INFO_S. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒAVæ’­æ”¾çŠ¶æ€ä¿¡æ¯ï¼Œè¯·å‚è§HI_UNF_AVPLAY_STATUS_INFO_S. CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
@@ -1098,16 +1098,16 @@ HI_S32 HI_UNF_AVPLAY_GetStatusInfo(HI_HANDLE          hAvplay,
 
 
 /**
-\brief Obtains the information about audio and video streams. CNcomment:»ñÈ¡ÒôÊÓÆµÂëÁ÷ĞÅÏ¢ CNend
+\brief Obtains the information about audio and video streams. CNcomment:è·å–éŸ³è§†é¢‘ç æµä¿¡æ¯ CNend
 \attention \n
 N/A
-\param[in] hAvplay  AVPLAY handle  CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] pstStreamInfo     Pointer to the information about audio and video streams. For details, see the description of HI_UNF_AVPLAY_STREAM_INFO_S. CNcomment:Ö¸ÕëÀàĞÍ£¬ÒôÊÓÆµÂëÁ÷ĞÅÏ¢£¬Çë²Î¼ûHI_UNF_AVPLAY_STREAM_INFO_S CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay  AVPLAY handle  CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] pstStreamInfo     Pointer to the information about audio and video streams. For details, see the description of HI_UNF_AVPLAY_STREAM_INFO_S. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒéŸ³è§†é¢‘ç æµä¿¡æ¯ï¼Œè¯·å‚è§HI_UNF_AVPLAY_STREAM_INFO_S CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
@@ -1115,115 +1115,115 @@ HI_S32 HI_UNF_AVPLAY_GetStreamInfo(HI_HANDLE          hAvplay,
                                    HI_UNF_AVPLAY_STREAM_INFO_S *pstStreamInfo);
 
 /**
-\brief Obtains the information audio spectrums. CNcomment:»ñÈ¡ÒôÆµÄÜÁ¿ĞÅÏ¢ CNend
+\brief Obtains the information audio spectrums. CNcomment:è·å–éŸ³é¢‘èƒ½é‡ä¿¡æ¯ CNend
 \attention \n
 N/A
-\param[in] hAvplay  AVPLAY handle  CNcomment:AV²¥·Å¾ä±ú CNend
-\param[in] pSpectrum      Pointer to the array of audio spectrums. CNcomment:Ö¸ÕëÀàĞÍ£¬ÒôÆµÄÜÁ¿ĞÅÏ¢Êı×éÖ¸Õë CNend
-\param[in] u32BandNum     Length of an audio spectrum array CNcomment:ÒôÆµÄÜÁ¿ĞÅÏ¢Êı×é³¤¶È CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+\param[in] hAvplay  AVPLAY handle  CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] pSpectrum      Pointer to the array of audio spectrums. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒéŸ³é¢‘èƒ½é‡ä¿¡æ¯æ•°ç»„æŒ‡é’ˆ CNend
+\param[in] u32BandNum     Length of an audio spectrum array CNcomment:éŸ³é¢‘èƒ½é‡ä¿¡æ¯æ•°ç»„é•¿åº¦ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT    The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_GetAudioSpectrum(HI_HANDLE hAvplay, HI_U16 *pSpectrum, HI_U32 u32BandNum);
 
 /**
-\brief Queries whether the AVPLAY buffer is empty. CNcomment:²éÑ¯AVPLAY bufferÊÇ·ñÒÑ¾­Îª¿Õ CNend
+\brief Queries whether the AVPLAY buffer is empty. CNcomment:æŸ¥è¯¢AVPLAY bufferæ˜¯å¦å·²ç»ä¸ºç©º CNend
 \attention \n
 N/A
-\param[in] hAvplay        AVPLAY handle CNcomment:AV²¥·Å¾ä±ú CNend
-\param[out] pbIsEmpty      Pointer type. This pointer indicates whether the AVPLAY buffer is empty (the playing ends). CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸Ê¾bufferÊÇ·ñÒÑ¾­Îª¿Õ(²¥·ÅÍê³É) CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\param[in] hAvplay        AVPLAY handle CNcomment:AVæ’­æ”¾å¥æŸ„ CNend
+\param[out] pbIsEmpty      Pointer type. This pointer indicates whether the AVPLAY buffer is empty (the playing ends). CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡ç¤ºbufferæ˜¯å¦å·²ç»ä¸ºç©º(æ’­æ”¾å®Œæˆ) CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_IsBuffEmpty(HI_HANDLE hAvplay, HI_BOOL * pbIsEmpty);
 
 /**
-\brief Switch the demux audio channel CNcomment:ÇĞ»»ÒôÆµDEMUX¾ä±ú CNend
+\brief Switch the demux audio channel CNcomment:åˆ‡æ¢éŸ³é¢‘DEMUXå¥æŸ„ CNend
 \attention \n
 N/A
-\param[in] hAvplay       AVPLAY handle CNcomment: AV²¥·Å¾ä±ú CNend
-\param[in] hNewDmxAud     New demux audio handle CNcomment:ĞÂDMX¾ä±ú CNend
-\param[out] phOldDmxAud     Old  demux audio handle CNcomment:¾ÉDMX¾ä±úÖ¸Õë CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\param[in] hAvplay       AVPLAY handle CNcomment: AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] hNewDmxAud     New demux audio handle CNcomment:æ–°DMXå¥æŸ„ CNend
+\param[out] phOldDmxAud     Old  demux audio handle CNcomment:æ—§DMXå¥æŸ„æŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_SwitchDmxAudChn(HI_HANDLE hAvplay, HI_HANDLE hNewDmxAud, HI_HANDLE *phOldDmxAud);
 
 /**
-\brief Notify an AVPLAY the stream is end CNcomment:Í¨ÖªAVPLAYÂëÁ÷ÒÑ¾­ËÍÍê CNend
+\brief Notify an AVPLAY the stream is end CNcomment:é€šçŸ¥AVPLAYç æµå·²ç»é€å®Œ CNend
 \attention \n
 Call this interface to notice AVPLAY when the last package of stream has been sent,  
 then check whether the last frame has been output by eos event or by invoking ::HI_UNF_AVPLAY_IsBuffEmpty,
 this interface is only apply to ES mode.
-CNcomment: µ±ÓÃ»§ËÍÍê×îºóÒ»°üÂëÁ÷Ê±£¬µ÷ÓÃ¸Ã½Ó¿ÚÍ¨ÖªAVPLAY£¬Ö®ºó¿ÉÒÔÍ¨¹ı¼ì²âEOSÊÂ¼ş»òÕßµ÷ÓÃ::HI_UNF_AVPLAY_IsBuffEmptyÅĞ¶Ï×îºóÒ»Ö¡ÊÇ·ñÊä³ö
-Ä¿Ç°¸Ã½Ó¿Ú½öÊÊÓÃÓÚESÄ£Ê½ CNend
-\param[in] hAvplay       AVPLAY handle CNcomment: AV²¥·Å¾ä±ú CNend
-\param[in] pstFlushOpt   Pointer used for expansion. You can set it to NULL.CNcomment:Ö¸ÕëÀàĞÍ£¬´ıÀ©Õ¹Ê¹ÓÃ£¬ÉèÎªÎªNULL¼´¿É CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+CNcomment: å½“ç”¨æˆ·é€å®Œæœ€åä¸€åŒ…ç æµæ—¶ï¼Œè°ƒç”¨è¯¥æ¥å£é€šçŸ¥AVPLAYï¼Œä¹‹åå¯ä»¥é€šè¿‡æ£€æµ‹EOSäº‹ä»¶æˆ–è€…è°ƒç”¨::HI_UNF_AVPLAY_IsBuffEmptyåˆ¤æ–­æœ€åä¸€å¸§æ˜¯å¦è¾“å‡º
+ç›®å‰è¯¥æ¥å£ä»…é€‚ç”¨äºESæ¨¡å¼ CNend
+\param[in] hAvplay       AVPLAY handle CNcomment: AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] pstFlushOpt   Pointer used for expansion. You can set it to NULL.CNcomment:æŒ‡é’ˆç±»å‹ï¼Œå¾…æ‰©å±•ä½¿ç”¨ï¼Œè®¾ä¸ºä¸ºNULLå³å¯ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_FlushStream(HI_HANDLE hAvplay, HI_UNF_AVPLAY_FLUSH_STREAM_OPT_S *pstFlushOpt);
 
 /**
-\brief AVPLAY private command invoking. CNcomment: AVPLAYË½ÓĞÃüÁîµ÷ÓÃ CNend
+\brief AVPLAY private command invoking. CNcomment: AVPLAYç§æœ‰å‘½ä»¤è°ƒç”¨ CNend
 \attention \n
-\param[in] hAvplay       AVPLAY handle CNcomment: AV²¥·Å¾ä±ú CNend
-\param[in] enInvokeType  Type of private command invoking.CNcomment:Ë½ÓĞÃüÁîµ÷ÓÃÀàĞÍ CNend
-\param[in] pPara         Pointer to the parameter of invoking. CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòInvokeµ÷ÓÃµÄ²ÎÊı CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\param[in] hAvplay       AVPLAY handle CNcomment: AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] enInvokeType  Type of private command invoking.CNcomment:ç§æœ‰å‘½ä»¤è°ƒç”¨ç±»å‹ CNend
+\param[in] pPara         Pointer to the parameter of invoking. CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘Invokeè°ƒç”¨çš„å‚æ•° CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_Invoke(HI_HANDLE hAvplay, HI_UNF_AVPLAY_INVOKE_E enInvokeType, HI_VOID *pPara);
 
 /**
-\brief Accquire user dada. CNcomment: »ñÈ¡ÓÃ»§Êı¾İ CNend
+\brief Accquire user dada. CNcomment: è·å–ç”¨æˆ·æ•°æ® CNend
 \attention \n
 Only support Closed Caption Data.
-CNcomment: ½öÖ§³ÖCCÊı¾İ CNend
-\param[in] hAvplay       AVPLAY handle CNcomment: AV²¥·Å¾ä±ú CNend
-\param[out] pstUserData  user data.CNcomment:ÓÃ»§Êı¾İ CNend
-\param[out] penType      user data type. CNcomment:ÓÃ»§Êı¾İÀàĞÍ CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+CNcomment: ä»…æ”¯æŒCCæ•°æ® CNend
+\param[in] hAvplay       AVPLAY handle CNcomment: AVæ’­æ”¾å¥æŸ„ CNend
+\param[out] pstUserData  user data.CNcomment:ç”¨æˆ·æ•°æ® CNend
+\param[out] penType      user data type. CNcomment:ç”¨æˆ·æ•°æ®ç±»å‹ CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AVPLAY_AcqUserData(HI_HANDLE hAvplay, HI_UNF_VIDEO_USERDATA_S *pstUserData, HI_UNF_VIDEO_USERDATA_TYPE_E *penType);
 
 /**
-\brief Accquire user dada. CNcomment: ÊÍ·ÅÓÃ»§Êı¾İ CNend
+\brief Accquire user dada. CNcomment: é‡Šæ”¾ç”¨æˆ·æ•°æ® CNend
 \attention \n
 Only support Closed Caption Data.
-CNcomment: ½öÖ§³ÖCCÊı¾İ CNend
-\param[in] hAvplay       AVPLAY handle CNcomment: AV²¥·Å¾ä±ú CNend
-\param[in] pstUserData  user data.CNcomment:ÓÃ»§Êı¾İ CNend
-\retval ::HI_SUCCESS Success  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+CNcomment: ä»…æ”¯æŒCCæ•°æ® CNend
+\param[in] hAvplay       AVPLAY handle CNcomment: AVæ’­æ”¾å¥æŸ„ CNend
+\param[in] pstUserData  user data.CNcomment:ç”¨æˆ·æ•°æ® CNend
+\retval ::HI_SUCCESS Success  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AVPLAY_DEV_NO_INIT      The AVPLAY is not initialized. CNcomment:AVPLAYæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_AVPLAY_NULL_PTR         The input pointer is null. CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_PARA     The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
 \see \n
 N/A
 */

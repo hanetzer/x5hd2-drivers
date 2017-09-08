@@ -16,7 +16,7 @@
 
 /** 
  * \file
- * \brief describle the information about AENC. CNcomment:Ìá¹©AENCµÄÏà¹ØĞÅÏ¢ CNend
+ * \brief describle the information about AENC. CNcomment:æä¾›AENCçš„ç›¸å…³ä¿¡æ¯ CNend
  */
  
 #ifndef  __HI_UNF_AENC_H__
@@ -35,97 +35,97 @@ extern "C" {
 /** @{ */  /** <!-- [AENC] */
 
 /**
-\brief Initializes audio encoder. CNcomment:³õÊ¼»¯ÒôÆµ±àÂëÆ÷ CNend
+\brief Initializes audio encoder. CNcomment:åˆå§‹åŒ–éŸ³é¢‘ç¼–ç å™¨ CNend
 \attention \n
-Call the interface before calling HI_UNF_AENC_Open. CNcomment:HI_UNF_AENC_Open½Ó¿ÚÇ°µ÷ÓÃ CNend
+Call the interface before calling HI_UNF_AENC_Open. CNcomment:HI_UNF_AENC_Openæ¥å£å‰è°ƒç”¨ CNend
 \param N/A
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE Failure CNcomment:Ê§°Ü CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE Failure CNcomment:å¤±è´¥ CNend
 \see \n
 N/A
 */
 HI_S32   HI_UNF_AENC_Init(HI_VOID);
 
 /**
-\brief Deinitializes audio encoder. CNcomment:È¥³õÊ¼»¯ÒôÆµ±àÂëÆ÷ CNend
+\brief Deinitializes audio encoder. CNcomment:å»åˆå§‹åŒ–éŸ³é¢‘ç¼–ç å™¨ CNend
 \attention \n
 N/A
 \param N/A
-\retval ::HI_ERR_AENC_CH_NOT_SUPPORT  Invalid operation CNcomment:HI_ERR_AENC_CH_NOT_SUPPORT ÎŞĞ§µÄ²Ù×÷ CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
+\retval ::HI_ERR_AENC_CH_NOT_SUPPORT  Invalid operation CNcomment:HI_ERR_AENC_CH_NOT_SUPPORT æ— æ•ˆçš„æ“ä½œ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
 \see \n
 N/A
 */
 HI_S32   HI_UNF_AENC_DeInit(HI_VOID);
 
 /**
-\brief Create audio encoder. CNcomment:´´½¨ÒôÆµ±àÂëÆ÷ CNend
+\brief Create audio encoder. CNcomment:åˆ›å»ºéŸ³é¢‘ç¼–ç å™¨ CNend
 \attention \n
 Before calling the interface, you must configure the encoder. Now AENC only supports 16-bit and 2 channels, and support 16K, 22K, 24K, 32K, 44K, or 48Ksample rate.   
-CNcomment:µ÷ÓÃ¸Ã½Ó¿ÚÇ°£¬±ØĞëÅäÖÃ±àÂëÆ÷£¬Ä¿Ç°AENCÖ»Ö§³Ö16Î»2ÉùµÀ£¬ÇÒ²ÉÑùÂÊÎª£º16K 22K 24K 32K 44KºÍ48K CNend
-\param[in] phAenc                    Obtain the handle of the audio encoder. CNcomment:µÃµ½ÒôÆµ±àÂëÆ÷¾ä±ú CNend
-\param[in] pstAencAttr               Attribute structure of the audio encoder. CNcomment:ÒôÆµ±àÂëÆ÷ÊôĞÔ½á¹¹ CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE Failure CNcomment:Ê§°Ü CNend
-\retval ::HI_ERR_AENC_NULL_PTR        The pointer is null. CNcomment:Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AENC_CREATECH_FAIL   The encoder fails to be created. CNcomment:´´½¨±àÂëÆ÷Ê§°Ü CNend
+CNcomment:è°ƒç”¨è¯¥æ¥å£å‰ï¼Œå¿…é¡»é…ç½®ç¼–ç å™¨ï¼Œç›®å‰AENCåªæ”¯æŒ16ä½2å£°é“ï¼Œä¸”é‡‡æ ·ç‡ä¸ºï¼š16K 22K 24K 32K 44Kå’Œ48K CNend
+\param[in] phAenc                    Obtain the handle of the audio encoder. CNcomment:å¾—åˆ°éŸ³é¢‘ç¼–ç å™¨å¥æŸ„ CNend
+\param[in] pstAencAttr               Attribute structure of the audio encoder. CNcomment:éŸ³é¢‘ç¼–ç å™¨å±æ€§ç»“æ„ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE Failure CNcomment:å¤±è´¥ CNend
+\retval ::HI_ERR_AENC_NULL_PTR        The pointer is null. CNcomment:æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AENC_CREATECH_FAIL   The encoder fails to be created. CNcomment:åˆ›å»ºç¼–ç å™¨å¤±è´¥ CNend
 \see \n
 N/A
 */
 HI_S32   HI_UNF_AENC_Create(const HI_UNF_AENC_ATTR_S *pstAencAttr, HI_HANDLE *phAenc);
 
 /**
-\brief Destroy the audio encoder. CNcomment:Ïú»ÙÒôÆµ±àÂëÆ÷ CNend
+\brief Destroy the audio encoder. CNcomment:é”€æ¯éŸ³é¢‘ç¼–ç å™¨ CNend
 \attention \n
-\param[in] phAenc the handle of the audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AENC_CH_NOT_SUPPORT  The operation is invalid. CNcomment:ÎŞĞ§µÄ²Ù×÷ CNend
-\retval ::HI_ERR_AENC_INVALID_PARA    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_AENC_CH_NOT_OPEN     The audio encoder is not opened. CNcomment:ÒôÆµ±àÂëÆ÷Ã»ÓĞ´ò¿ª CNend
+\param[in] phAenc the handle of the audio encoder CNcomment:éŸ³é¢‘ç¼–ç å™¨å¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AENC_CH_NOT_SUPPORT  The operation is invalid. CNcomment:æ— æ•ˆçš„æ“ä½œ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA    The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•° CNend
+\retval ::HI_ERR_AENC_CH_NOT_OPEN     The audio encoder is not opened. CNcomment:éŸ³é¢‘ç¼–ç å™¨æ²¡æœ‰æ‰“å¼€ CNend
 \see \n
 N/A
 */
 HI_S32   HI_UNF_AENC_Destroy(HI_HANDLE hAenc);
 
 /** 
-\brief Copy data to the encoder for encoding. CNcomment:Ïò±àÂëÆ÷¿½±´Êı¾İÒÔ¹©±àÂë CNend
+\brief Copy data to the encoder for encoding. CNcomment:å‘ç¼–ç å™¨æ‹·è´æ•°æ®ä»¥ä¾›ç¼–ç  CNend
 \attention \n
-\param[in] phAenc     The audio encoder handle CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
-\param[in] pstAOFrame Send a frame of data to the encoder. CNcomment:ÏòÒôÆµ±àÂëÆ÷ËÍÒ»Ö¡Êı¾İ CNend
-\retval ::HI_SUCCESS  Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AENC_IN_BUF_FULL      The input buffer of the encoder is full. CNcomment:±àÂëÆ÷ÊäÈë»º³åÂú CNend
-\retval ::HI_ERR_AENC_INVALID_PARA     The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_AENC_CH_NOT_SUPPORT   The operation is invalid. CNcomment:ÎŞĞ§µÄ²Ù×÷ CNend
+\param[in] phAenc     The audio encoder handle CNcomment:éŸ³é¢‘ç¼–ç å™¨å¥æŸ„ CNend
+\param[in] pstAOFrame Send a frame of data to the encoder. CNcomment:å‘éŸ³é¢‘ç¼–ç å™¨é€ä¸€å¸§æ•°æ® CNend
+\retval ::HI_SUCCESS  Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AENC_IN_BUF_FULL      The input buffer of the encoder is full. CNcomment:ç¼–ç å™¨è¾“å…¥ç¼“å†²æ»¡ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA     The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•° CNend
+\retval ::HI_ERR_AENC_CH_NOT_SUPPORT   The operation is invalid. CNcomment:æ— æ•ˆçš„æ“ä½œ CNend
 \see \n
 N/A
 */
 HI_S32   HI_UNF_AENC_SendFrame(HI_HANDLE hAenc, const HI_UNF_AO_FRAMEINFO_S *pstAOFrame);
 
 /**
-\brief Obtain data from a output buffer of the encoder and write the data into the file. CNcomment:´Ó±àÂëÆ÷µÄÒ»¸öÊä³ö»º³åÖĞÈ¡³öÊı¾İÒÔ¹©Ğ´ÈëÎÄ¼ş CNend
+\brief Obtain data from a output buffer of the encoder and write the data into the file. CNcomment:ä»ç¼–ç å™¨çš„ä¸€ä¸ªè¾“å‡ºç¼“å†²ä¸­å–å‡ºæ•°æ®ä»¥ä¾›å†™å…¥æ–‡ä»¶ CNend
 \attention \n
-\param[in] phAenc     The audio encoder handle CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
-\param[in] pstStream  The data in a output buffer of the audio encoder CNcomment:ÒôÆµ±àÂëÆ÷Ò»¸öÊä³ö»º³åÖĞµÄÊı¾İ CNend
-\retval ::HI_SUCCESS  Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AENC_INVALID_PARA    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_AENC_OUT_BUF_EMPTY   The output buffer of the encoder is empty. CNcomment:±àÂëÆ÷Êä³ö»º³åÎª¿Õ CNend
-\retval ::HI_ERR_AENC_CH_NOT_SUPPORT  The operation is invalid. CNcomment:ÎŞĞ§µÄ²Ù×÷ CNend
+\param[in] phAenc     The audio encoder handle CNcomment:éŸ³é¢‘ç¼–ç å™¨å¥æŸ„ CNend
+\param[in] pstStream  The data in a output buffer of the audio encoder CNcomment:éŸ³é¢‘ç¼–ç å™¨ä¸€ä¸ªè¾“å‡ºç¼“å†²ä¸­çš„æ•°æ® CNend
+\retval ::HI_SUCCESS  Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA    The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•° CNend
+\retval ::HI_ERR_AENC_OUT_BUF_EMPTY   The output buffer of the encoder is empty. CNcomment:ç¼–ç å™¨è¾“å‡ºç¼“å†²ä¸ºç©º CNend
+\retval ::HI_ERR_AENC_CH_NOT_SUPPORT  The operation is invalid. CNcomment:æ— æ•ˆçš„æ“ä½œ CNend
 \see \n
 N/A
 */
 HI_S32   HI_UNF_AENC_AcquireStream(HI_HANDLE hAenc, HI_UNF_ES_BUF_S *pstStream, HI_U32 u32TimeoutMs);
 
 /**
-\brief Destroy the data in a output buffer of the encoder. CNcomment:Ïú»Ù±àÂëÆ÷Ò»¸öÊä³ö»º³åÖĞµÄÊı¾İ CNend
+\brief Destroy the data in a output buffer of the encoder. CNcomment:é”€æ¯ç¼–ç å™¨ä¸€ä¸ªè¾“å‡ºç¼“å†²ä¸­çš„æ•°æ® CNend
 \attention \n
-Call the interface after calling HI_UNF_AENC_ReceiveStream. CNcomment:ÔÚHI_UNF_AENC_ReceiveStreamÖ®ºóµ÷ÓÃ CNend
-\param[in] phAenc     The handle of audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
-\param[in] pstStream  The data in a output buffer of the audio encoder CNcomment:ÒôÆµ±àÂëÆ÷Ò»¸öÊä³ö»º³åÖĞµÄÊı¾İ CNend
-\retval ::HI_SUCCESS  Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AENC_INVALID_PARA   The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_AENC_OUT_BUF_BAD    The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_AENC_IN_BUF_UNEMPTY The input buffer is empty. CNcomment:ÊäÈë»º³å·Ç¿Õ CNend
-\retval ::HI_ERR_AENC_CH_NOT_SUPPORT The operation is invalid. CNcomment:ÎŞĞ§µÄ²Ù×÷ CNend
+Call the interface after calling HI_UNF_AENC_ReceiveStream. CNcomment:åœ¨HI_UNF_AENC_ReceiveStreamä¹‹åè°ƒç”¨ CNend
+\param[in] phAenc     The handle of audio encoder CNcomment:éŸ³é¢‘ç¼–ç å™¨å¥æŸ„ CNend
+\param[in] pstStream  The data in a output buffer of the audio encoder CNcomment:éŸ³é¢‘ç¼–ç å™¨ä¸€ä¸ªè¾“å‡ºç¼“å†²ä¸­çš„æ•°æ® CNend
+\retval ::HI_SUCCESS  Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA   The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•° CNend
+\retval ::HI_ERR_AENC_OUT_BUF_BAD    The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•° CNend
+\retval ::HI_ERR_AENC_IN_BUF_UNEMPTY The input buffer is empty. CNcomment:è¾“å…¥ç¼“å†²éç©º CNend
+\retval ::HI_ERR_AENC_CH_NOT_SUPPORT The operation is invalid. CNcomment:æ— æ•ˆçš„æ“ä½œ CNend
 \see \n
 N/A
 */
@@ -133,57 +133,57 @@ HI_S32   HI_UNF_AENC_ReleaseStream(HI_HANDLE hAenc, const HI_UNF_ES_BUF_S *pstSt
 
 
 /**
-\brief Register dynamic audio encoding libraries. CNcomment:×¢²áÒôÆµ¶¯Ì¬±àÂë¿â CNend
+\brief Register dynamic audio encoding libraries. CNcomment:æ³¨å†ŒéŸ³é¢‘åŠ¨æ€ç¼–ç åº“ CNend
 \attention \n
-\param[in] pEncoderDllName The file name of audio encoding  libraries CNcomment:pEncoderDllName ÒôÆµ±àÂë¿âÎÄ¼şÃû CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE Failure CNcomment:Ê§°Ü CNend
+\param[in] pEncoderDllName The file name of audio encoding  libraries CNcomment:pEncoderDllName éŸ³é¢‘ç¼–ç åº“æ–‡ä»¶å CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE Failure CNcomment:å¤±è´¥ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AENC_RegisterEncoder(const HI_CHAR *pEncoderDllName);
 
 /**
-\brief Attach audio encoder with audio track,reserved. CNcomment:°ó¶¨ÒôÆµ±àÂëÆ÷ºÍÒôÆµTrack Í¨Â·, Ô¤Áô CNend
+\brief Attach audio encoder with audio track,reserved. CNcomment:ç»‘å®šéŸ³é¢‘ç¼–ç å™¨å’ŒéŸ³é¢‘Track é€šè·¯, é¢„ç•™ CNend
 \attention \n
-Before obtaining the streams and encoding, you must call the interface. CNcomment:¿ªÊ¼±àÂëºÍ»ñÈ¡ÂëÁ÷Ö®Ç°ĞèÒªÊ×ÏÈµ÷ÓÃ¸Ã½Ó¿Ú CNend
-\param[in] hSrc   The handle of audio track CNcomment:×ÊÔ´¾ä±ú CNend
-\param[in] hAenc     The handle of audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AENC_INVALID_PARA	        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_AENC_CH_NOT_SUPPORT        The operation is invalid. CNcomment:ÎŞĞ§µÄ²Ù×÷ CNend
-\retval ::HI_ERR_AENC_NULL_PTR	            The pointer is null. CNcomment:Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT	        The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+Before obtaining the streams and encoding, you must call the interface. CNcomment:å¼€å§‹ç¼–ç å’Œè·å–ç æµä¹‹å‰éœ€è¦é¦–å…ˆè°ƒç”¨è¯¥æ¥å£ CNend
+\param[in] hSrc   The handle of audio track CNcomment:èµ„æºå¥æŸ„ CNend
+\param[in] hAenc     The handle of audio encoder CNcomment:éŸ³é¢‘ç¼–ç å™¨å¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA	        The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•° CNend
+\retval ::HI_ERR_AENC_CH_NOT_SUPPORT        The operation is invalid. CNcomment:æ— æ•ˆçš„æ“ä½œ CNend
+\retval ::HI_ERR_AENC_NULL_PTR	            The pointer is null. CNcomment:æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT	        The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AENC_AttachInput(HI_HANDLE hAenc, HI_HANDLE hSrc);
 
 /**
-\brief Detach audio encoder with audio track, reserved. CNcomment:½â³ıÒôÆµ±àÂëÆ÷ºÍÒôÆµTrack Í¨Â·µÄ°ó¶¨, Ô¤Áô CNend
+\brief Detach audio encoder with audio track, reserved. CNcomment:è§£é™¤éŸ³é¢‘ç¼–ç å™¨å’ŒéŸ³é¢‘Track é€šè·¯çš„ç»‘å®š, é¢„ç•™ CNend
 \attention \n
-Before calling the interface, stop the encoding. CNcomment:µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈÍ£Ö¹±àÂë CNend
-\param[in] hAenc     The handle of audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AENC_INVALID_PARA	        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_AENC_CH_NOT_SUPPORT        The operation is invalid. CNcomment:ÎŞĞ§µÄ²Ù×÷ CNend
-\retval ::HI_ERR_AENC_NULL_PTR	            The pointer is null. CNcomment:Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT	        The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+Before calling the interface, stop the encoding. CNcomment:è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆåœæ­¢ç¼–ç  CNend
+\param[in] hAenc     The handle of audio encoder CNcomment:éŸ³é¢‘ç¼–ç å™¨å¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA	        The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•° CNend
+\retval ::HI_ERR_AENC_CH_NOT_SUPPORT        The operation is invalid. CNcomment:æ— æ•ˆçš„æ“ä½œ CNend
+\retval ::HI_ERR_AENC_NULL_PTR	            The pointer is null. CNcomment:æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT	        The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AENC_DetachInput(HI_HANDLE hAenc);
 
 /**
-\brief Start to encode. CNcomment:¿ªÊ¼±àÂë CNend
+\brief Start to encode. CNcomment:å¼€å§‹ç¼–ç  CNend
 \attention \n
 Before calling the interface, you need to initialize the encoder, create an encoding channel and attach the player.
-CNcomment:µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈ³õÊ¼»¯±àÂëÆ÷£¬´´½¨±àÂëÍ¨µÀ£¬°ó¶¨²¥·ÅÆ÷ CNend
-\param[in] hAenc The handle of audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AENC_INVALID_PARA	        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_AENC_NULL_PTR	            The pointer is null. CNcomment:Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT	        The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆåˆå§‹åŒ–ç¼–ç å™¨ï¼Œåˆ›å»ºç¼–ç é€šé“ï¼Œç»‘å®šæ’­æ”¾å™¨ CNend
+\param[in] hAenc The handle of audio encoder CNcomment:éŸ³é¢‘ç¼–ç å™¨å¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA	        The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•° CNend
+\retval ::HI_ERR_AENC_NULL_PTR	            The pointer is null. CNcomment:æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT	        The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
@@ -191,43 +191,43 @@ HI_S32 HI_UNF_AENC_Start(HI_HANDLE hAenc);
 
 
 /**
-\brief Stop to encode. CNcomment:Í£Ö¹±àÂë CNend
+\brief Stop to encode. CNcomment:åœæ­¢ç¼–ç  CNend
 \attention \n
 Before calling the interface, you need to initialize the encoder, create an encoding channel, attach the player, and start the encoding.
-CNcomment:µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈ³õÊ¼»¯±àÂëÆ÷£¬´´½¨±àÂëÍ¨µÀ£¬°ó¶¨²¥·ÅÆ÷£¬ÒÑ¾­¿ªÊ¼±àÂë CNend
-\param[in] hAenc   The handle of audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AENC_INVALID_PARA	        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_AENC_NULL_PTR	            The pointer is null. CNcomment:Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AVPLAY_INVALID_OPT	        The operation is invalid. CNcomment:²Ù×÷·Ç·¨ CNend
+CNcomment:è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆåˆå§‹åŒ–ç¼–ç å™¨ï¼Œåˆ›å»ºç¼–ç é€šé“ï¼Œç»‘å®šæ’­æ”¾å™¨ï¼Œå·²ç»å¼€å§‹ç¼–ç  CNend
+\param[in] hAenc   The handle of audio encoder CNcomment:éŸ³é¢‘ç¼–ç å™¨å¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA	        The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•° CNend
+\retval ::HI_ERR_AENC_NULL_PTR	            The pointer is null. CNcomment:æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AVPLAY_INVALID_OPT	        The operation is invalid. CNcomment:æ“ä½œéæ³• CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AENC_Stop(HI_HANDLE hAenc);
 
 /**
-\brief Set the attribution of encode. CNcomment:ÉèÖÃ±àÂëÊôĞÔ CNend
+\brief Set the attribution of encode. CNcomment:è®¾ç½®ç¼–ç å±æ€§ CNend
 \attention \n
 Before calling the interface, you need to stop the encoder.
-CNcomment:µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈÍ£Ö¹±àÂëCNend
-\param[in] hAenc   The handle of audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
-\param[in] pstAencAttr   The attribution of audio encoder CNcomment:ÒôÆµ±àÂëÊôĞÔ CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AENC_INVALID_PARA        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_AENC_NULL_PTR            The pointer is null. CNcomment:Ö¸ÕëÎª¿Õ CNend
+CNcomment:è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆåœæ­¢ç¼–ç CNend
+\param[in] hAenc   The handle of audio encoder CNcomment:éŸ³é¢‘ç¼–ç å™¨å¥æŸ„ CNend
+\param[in] pstAencAttr   The attribution of audio encoder CNcomment:éŸ³é¢‘ç¼–ç å±æ€§ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA        The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•° CNend
+\retval ::HI_ERR_AENC_NULL_PTR            The pointer is null. CNcomment:æŒ‡é’ˆä¸ºç©º CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AENC_SetAttr(HI_HANDLE hAenc, const HI_UNF_AENC_ATTR_S *pstAencAttr);
 
 /**
-\brief Set the attribution of encode. CNcomment:»ñÈ¡±àÂëÊôĞÔ CNend
+\brief Set the attribution of encode. CNcomment:è·å–ç¼–ç å±æ€§ CNend
 \attention \n
-\param[in] hAenc   The handle of audio encoder CNcomment:ÒôÆµ±àÂëÆ÷¾ä±ú CNend
-\param[out] pstAencAttr   The attribution of audio encoder CNcomment:ÒôÆµ±àÂëÊôĞÔ CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_AENC_INVALID_PARA        The parameter is invalid. CNcomment:ÎŞĞ§µÄ²ÎÊı CNend
-\retval ::HI_ERR_AENC_NULL_PTR            The pointer is null. CNcomment:Ö¸ÕëÎª¿Õ CNend
+\param[in] hAenc   The handle of audio encoder CNcomment:éŸ³é¢‘ç¼–ç å™¨å¥æŸ„ CNend
+\param[out] pstAencAttr   The attribution of audio encoder CNcomment:éŸ³é¢‘ç¼–ç å±æ€§ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_AENC_INVALID_PARA        The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•° CNend
+\retval ::HI_ERR_AENC_NULL_PTR            The pointer is null. CNcomment:æŒ‡é’ˆä¸ºç©º CNend
 \see \n
 N/A
 */

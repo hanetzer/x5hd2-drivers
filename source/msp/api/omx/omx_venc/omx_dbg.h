@@ -12,7 +12,7 @@
 #define LOG_TAG				"HIOMX_COMP"
 
 
-#ifndef ANDROID                      // 为了使linux下pc-linc不报警，所以打开，Android环境下默认不打开
+#ifndef ANDROID                      // 涓轰簡浣縧inux涓媝c-linc涓嶆姤璀︼紝鎵�浠ユ墦寮�锛孉ndroid鐜涓嬮粯璁や笉鎵撳紑
 #define DEBUG                 1
 #define DEBUG_WARN            1
 #define DEBUG_STREAM          1

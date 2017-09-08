@@ -1379,14 +1379,14 @@ Dword Standard_getSignalQualityIndication (
 
     if ((locked==0) || (bit_err_3 > 2))
         SQ1 = 0;
-    else if (bit_err_3 > 0)    // SQ ¡× 42¡ã8
+    else if (bit_err_3 > 0)    // SQ âˆ½ 42Â°8
         SQ1 = 55 - (bit_err_3<<4) - (bit_err_2>>4);
-    else if (bit_err_2 > 12)  // SQ ¡× 70¡ã42 
+    else if (bit_err_2 > 12)  // SQ âˆ½ 70Â°42 
         SQ1 = 71 - (bit_err_2>>3);
-    else if (bit_err_2 > 2)   // SQ ¡× 89¡ã70
+    else if (bit_err_2 > 2)   // SQ âˆ½ 89Â°70
         SQ1 = 95 - (bit_err_2<<1) - (bit_err_1>>7);  
     else 
-        SQ1 = 100 - (bit_err_2<<2) - (bit_err_1>>6); //----- 100 ¡ã 89 
+        SQ1 = 100 - (bit_err_2<<2) - (bit_err_1>>6); //----- 100 Â° 89 
                                            
                                    
 exit:

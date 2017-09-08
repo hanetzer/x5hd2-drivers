@@ -67,7 +67,7 @@ HI_S32 SI_TX_PHY_HighBandwidth(HI_BOOL bTermEn)
         HI_INFO_HDMI("low Bandwith 0x10171804:0x%x\n", u32phyreg);             
     }
 #else  
-    //–¬phy
+    //Êñ∞phy
     if(HI_TRUE == bTermEn)
     {
         HI_INFO_HDMI("From Jing:TMDS_CTL2[4]:term_en must be set to 1 for HDMI Eye-Diagram test\n");
@@ -104,7 +104,7 @@ HI_S32 SI_TX_PHY_GetOutPutEnable(void)
     }
     return HI_TRUE;
 #else  
-    //–¬phy
+    //Êñ∞phy
     SI_TX_PHY_ReadRegister(0x05,&u32Value);
     if ((u32Value & 0x20) != 0x20)
     {
@@ -130,7 +130,7 @@ HI_S32 SI_TX_PHY_DisableHdmiOutput(void)
     HI_INFO_HDMI("writing phy 0x%x DisableHdmiOutput\n",u32Reg);
     SI_TX_PHY_WriteRegister(0x1, u32Reg);
 #else  
-    //–¬phy
+    //Êñ∞phy
     /* disable HDMI PHY Output:TMDS CNTL2 Register:oe */
     SI_TX_PHY_ReadRegister(0x05,&u32Reg);
     u32Reg &= ~0x20;
@@ -158,7 +158,7 @@ HI_S32 SI_TX_PHY_EnableHdmiOutput(void)
     HI_INFO_HDMI("writing phy 0x%x EnableHdmiOutput\n",u32Reg);
     SI_TX_PHY_WriteRegister(0x1, u32Reg);
 #else  
-    //–¬phy
+    //Êñ∞phy
     SI_TX_PHY_ReadRegister(0x05,&u32Reg);
     HI_INFO_HDMI("writing phy 0x%x EnableHdmiOutput\n",u32Reg);
     u32Reg |= 0x20;
@@ -184,7 +184,7 @@ void SI_TX_PHY_INIT(void)
     SI_TX_PHY_ReadRegister(0x1,&u32Value);
     HI_INFO_HDMI("TMDS_CTL2 set to:0x%x\n", u32Value);
     SI_TX_PHY_DisableHdmiOutput();
-    //SI_TX_PHY_EnableHdmiOutput();//temp µ»out putÕ®¡À‘ŸπÿµÙ
+    //SI_TX_PHY_EnableHdmiOutput();//temp Á≠âout putÈÄö‰∫ÜÂÜçÂÖ≥Êéâ
     SI_TX_PHY_WriteRegister(0x8, (HI_U32)0x00000060);
     SI_TX_PHY_WriteRegister(0x2, (HI_U32)0x000000a9);
     SI_TX_PHY_WriteRegister(0x3, (HI_U32)0x00000040);
@@ -192,7 +192,7 @@ void SI_TX_PHY_INIT(void)
 #else      
     // unknown DM_TX_CTRL2
     SI_TX_PHY_WriteRegister(0x06,0x89);
-    // term_en && cap_ctl  // term_en œ»πÿµÙ
+    // term_en && cap_ctl  // term_en ÂÖàÂÖ≥Êéâ
     SI_TX_PHY_WriteRegister(0x0e,0x00);
     // unknown DM_TX_CTRL3
     SI_TX_PHY_WriteRegister(0x07,0x81);
@@ -205,7 +205,7 @@ void SI_TX_PHY_INIT(void)
     // pll ctrl -deep color
     SI_TX_PHY_WriteRegister(0x02,0x24);
     // oe && pwr_down 
-    // ≥ı ºªØ ±≤ª¥Úø™oe
+    // ÂàùÂßãÂåñÊó∂‰∏çÊâìÂºÄoe
     SI_TX_PHY_WriteRegister(0x05,0x12);
     //unknown DM_TX_CTRL4 
     SI_TX_PHY_WriteRegister(0x08,0x40);
@@ -231,7 +231,7 @@ HI_S32 SI_TX_PHY_PowerDown(HI_BOOL bPwdown)
     HI_INFO_HDMI("writing phy 0x%x PowerDown\n",u32Value);
     SI_TX_PHY_WriteRegister(0x2,u32Value);
 #else  
-    //–¬phy
+    //Êñ∞phy
     /* hdmi PHY */
     SI_TX_PHY_ReadRegister(0x05,&u32Value);
     if(bPwdown)
@@ -286,7 +286,7 @@ HI_S32 SI_TX_PHY_SetDeepColor(HI_U8 bDeepColor)
     SI_TX_PHY_ReadRegister(0x02,&u32Value);
     HI_INFO_HDMI("TMDS_CTL3 new walue:0x%x\n", u32Value);
 #else  
-    //–¬phy
+    //Êñ∞phy
     /* Config kudu IP for DeepColor*/
     SI_TX_PHY_ReadRegister(0x02,&u32Value);
 

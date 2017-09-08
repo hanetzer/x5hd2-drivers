@@ -14,9 +14,9 @@
 #define KEYBUF_LEN (8)
 
 /* state of the key */
-#define KEY_PRESS (0x0)           /* key pressed */     /*CNcomment: °´¼ü°´ÏÂ×´Ì¬ */
-#define KEY_HOLD (0x01)           /* key holden */        /* CNcomment:°´¼ü³¤°´×´Ì¬ */
-#define KEY_RELEASE (0x02)        /* key release */     /*CNcomment: °´¼üÊÍ·Å×´Ì¬ */
+#define KEY_PRESS (0x0)           /* key pressed */     /*CNcomment: æŒ‰é”®æŒ‰ä¸‹çŠ¶æ€ */
+#define KEY_HOLD (0x01)           /* key holden */        /* CNcomment:æŒ‰é”®é•¿æŒ‰çŠ¶æ€ */
+#define KEY_RELEASE (0x02)        /* key release */     /*CNcomment: æŒ‰é”®é‡Šæ”¾çŠ¶æ€ */
 
 #define DEFAULT_BLOCKTIME 500   /*500ms*/
 
@@ -30,20 +30,20 @@ typedef enum enum_KeyLed_Status
 
 typedef struct hiKEYLED_PROC_INFO_S
 {
-    HI_U32 KeyBufSize;	       /*  size of  keybuf  */                                   /*CNcomment: keybuf´óĞ¡*/
-    HI_U32 KeyBufHead;	       /*  head of keybuf  */                                    /*CNcomment: keybufÍ·*/
-    HI_U32 KeyBufTail;	       /*  tail of keybuf  */                                    /*CNcomment: keybuf½áÎ²*/
-	HI_U32 KeyComeNum;	         /*  the top num of keybuf  */                             /*CNcomment: keybufµ½´ï¸öÊı*/
-    HI_U32 KeyReadNum;	       /*  number that the keybuf can read  */                   /*CNcomment: keybuf¶ÁÈ¡¸öÊı*/
-    HI_U32 u32RepKeyTimeMs;    /*whether it is the time we think it is repeat key*/      /*CNcomment: °´¼üÖØ¸´ÅĞ¶ÏÊ±¼ä*/
-    HI_U32 u32IsRepKeyEnable;  /*whether the  function of repeat key  is enable*/        /*CNcomment: ÊÇ·ñÊ¹ÄÜÖØ¸´°´¼ü*/
-    HI_U32 u32IsUpKeyEnable;   /*whether the function of key up is enable*/              /*CNcomment: ÊÇ·ñÊ¹ÄÜ°´¼üµ¯Æğ*/
+    HI_U32 KeyBufSize;	       /*  size of  keybuf  */                                   /*CNcomment: keybufå¤§å°*/
+    HI_U32 KeyBufHead;	       /*  head of keybuf  */                                    /*CNcomment: keybufå¤´*/
+    HI_U32 KeyBufTail;	       /*  tail of keybuf  */                                    /*CNcomment: keybufç»“å°¾*/
+	HI_U32 KeyComeNum;	         /*  the top num of keybuf  */                             /*CNcomment: keybufåˆ°è¾¾ä¸ªæ•°*/
+    HI_U32 KeyReadNum;	       /*  number that the keybuf can read  */                   /*CNcomment: keybufè¯»å–ä¸ªæ•°*/
+    HI_U32 u32RepKeyTimeMs;    /*whether it is the time we think it is repeat key*/      /*CNcomment: æŒ‰é”®é‡å¤åˆ¤æ–­æ—¶é—´*/
+    HI_U32 u32IsRepKeyEnable;  /*whether the  function of repeat key  is enable*/        /*CNcomment: æ˜¯å¦ä½¿èƒ½é‡å¤æŒ‰é”®*/
+    HI_U32 u32IsUpKeyEnable;   /*whether the function of key up is enable*/              /*CNcomment: æ˜¯å¦ä½¿èƒ½æŒ‰é”®å¼¹èµ·*/
     HI_U32 u32BlockTime;
     HI_UNF_KEYLED_LIGHT_E enFlashPin;
-    HI_UNF_KEYLED_LEVEL_E enFlashLevel;  /*level of the LED twinkle*/                              /*CNcomment: ÊıÂë¹ÜÉÁË¸¼¶±ğ*/
+    HI_UNF_KEYLED_LEVEL_E enFlashLevel;  /*level of the LED twinkle*/                              /*CNcomment: æ•°ç ç®¡é—ªçƒçº§åˆ«*/
     HI_UNF_KEYLED_TYPE_E enKeyLedType;
     HI_UNF_KEYLED_TIME_S stLedTime;
-    HI_U32 u32DispCode;        /*the number that the LED is displaying */                /*CNcomment: µ±Ç°ÊıÂë¹ÜÏÔÊ¾µÄÂëĞÍÖµ*/
+    HI_U32 u32DispCode;        /*the number that the LED is displaying */                /*CNcomment: å½“å‰æ•°ç ç®¡æ˜¾ç¤ºçš„ç å‹å€¼*/
 
 }KEYLED_PROC_INFO_S;
 
@@ -112,7 +112,7 @@ typedef struct tagKEYLED_OPT_S
 
 	HI_S32 (*KEYLED_LED_SetLockIndicator)(HI_BOOL bLock);
     
-    /*get the proc information of  the module */ /*CNcomment:»ñÈ¡Ä£¿éµÄPROCĞÅÏ¢*/
+    /*get the proc information of  the module */ /*CNcomment:è·å–æ¨¡å—çš„PROCä¿¡æ¯*/
     HI_S32 (*KEYLED_GetProcInfo)(KEYLED_PROC_INFO_S *stInfo);
 
     HI_S32 (*KEYLED_Suspend)(HI_VOID);

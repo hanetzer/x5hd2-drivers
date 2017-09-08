@@ -1,6 +1,6 @@
 /**
  \file
- \brief Describes the header file of the graphic device (Gdev) module. CNcomment:GdevÄ£¿éÍ·ÎÄ¼ş CNend
+ \brief Describes the header file of the graphic device (Gdev) module. CNcomment:Gdevæ¨¡å—å¤´æ–‡ä»¶ CNend
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version 1.0
@@ -24,7 +24,7 @@ extern "C" {
 /** @{ */  /** <!-- [HIGO_GDEV] */
 
 /** Definition of the graphics layer ID*/
-/** CNcomment:Í¼²ãID¶¨Òå*/
+/** CNcomment:å›¾å±‚IDå®šä¹‰*/
 typedef enum
 {
     HIGO_LAYER_SD_0 = 0,
@@ -39,24 +39,24 @@ typedef enum
 }HIGO_LAYER_E;
 
 /**Standard-definition (SD) graphics layer 0*/
-/** CNcomment:±êÇåÍ¼ĞÎµş¼Ó²ã0 */
+/** CNcomment:æ ‡æ¸…å›¾å½¢å åŠ å±‚0 */
 #define HIGO_LAYER_RGB0 HIGO_LAYER_SD_0
 
 /**SD graphics layer 1*/
-/** CNcomment:±êÇåÍ¼ĞÎµş¼Ó²ã1 */
+/** CNcomment:æ ‡æ¸…å›¾å½¢å åŠ å±‚1 */
 #define HIGO_LAYER_RGB1 HIGO_LAYER_SD_1
 
 #define GRAPHICS_LAYER_MAX_NUM 4
 /** The following macro defines the buffer mode of each graphics layer of the HiGo. The canvas buffer is used for drawing,
 and the display buffer is used for display output.*/
-/** CNcomment:ÏÂÃæºê¶¨ÒåÁËhigoµÄÃ¿¸öÍ¼²ãµÄbufferÄ£Ê½£¬ÆäÖĞcanvas bufferÊÇ¹©ÓÃ»§»æÖÆµÄbuffer, display bufferÊÇÓÃÓÚÏÔÊ¾Êä³öµÄbuffer.*/
-#define HIGO_LAYER_BUFFER_SINGLE      0x02 /**<One canvas buffer, and no display buffer*//**<CNcomment:1¿écanvas buffer, ÎŞdisplay buffer */    
-#define HIGO_LAYER_BUFFER_DOUBLE      0x04 /**<One canvas buffer, and one display buffer. Dual buffers are supported.*//**<CNcomment:1¿écanvas buffer, 1¿édisplay buffer Ö§³ÖË«»º³å */ 
-#define HIGO_LAYER_BUFFER_TRIPLE      0x08 /**<One canvas buffer, and two display buffers. The flip function is supported.*//**<CNcomment:1¿écanvas buffer, 2¿édisplay buffer Ö§³Öflip,Ë¢ĞÂµÄÊ±ºòµÈ´ıÈÎÎñÍê³É */
-#define HIGO_LAYER_BUFFER_OVER        0x10 /**<One canvas buffer, and two display buffers. The flip function is supported. If tasks are being performed during refresh, the current frame is discarded.*//**<CNcomment:1¿écanvas buffer, 2¿édisplay buffer Ö§³Öflip,Èç¹ûË¢ĞÂµÄÊ±ºò´øÓĞÈÎÎñÃ¦£¬Ôò¶ªÆúµ±Ç°Ö¡ */
+/** CNcomment:ä¸‹é¢å®å®šä¹‰äº†higoçš„æ¯ä¸ªå›¾å±‚çš„bufferæ¨¡å¼ï¼Œå…¶ä¸­canvas bufferæ˜¯ä¾›ç”¨æˆ·ç»˜åˆ¶çš„buffer, display bufferæ˜¯ç”¨äºæ˜¾ç¤ºè¾“å‡ºçš„buffer.*/
+#define HIGO_LAYER_BUFFER_SINGLE      0x02 /**<One canvas buffer, and no display buffer*//**<CNcomment:1å—canvas buffer, æ— display buffer */    
+#define HIGO_LAYER_BUFFER_DOUBLE      0x04 /**<One canvas buffer, and one display buffer. Dual buffers are supported.*//**<CNcomment:1å—canvas buffer, 1å—display buffer æ”¯æŒåŒç¼“å†² */ 
+#define HIGO_LAYER_BUFFER_TRIPLE      0x08 /**<One canvas buffer, and two display buffers. The flip function is supported.*//**<CNcomment:1å—canvas buffer, 2å—display buffer æ”¯æŒflip,åˆ·æ–°çš„æ—¶å€™ç­‰å¾…ä»»åŠ¡å®Œæˆ */
+#define HIGO_LAYER_BUFFER_OVER        0x10 /**<One canvas buffer, and two display buffers. The flip function is supported. If tasks are being performed during refresh, the current frame is discarded.*//**<CNcomment:1å—canvas buffer, 2å—display buffer æ”¯æŒflip,å¦‚æœåˆ·æ–°çš„æ—¶å€™å¸¦æœ‰ä»»åŠ¡å¿™ï¼Œåˆ™ä¸¢å¼ƒå½“å‰å¸§ */
 
 /**Refresh mode of graphics layers for complying with old definitions. The mode is not recommended.*/
-/** CNcomment:Îª¼æÈİÀÏ¶¨Òå£¬Í¼²ãµÄË¢ĞÂ·½Ê½£¬²»½¨ÒéÊ¹ÓÃ*/
+/** CNcomment:ä¸ºå…¼å®¹è€å®šä¹‰ï¼Œå›¾å±‚çš„åˆ·æ–°æ–¹å¼ï¼Œä¸å»ºè®®ä½¿ç”¨*/
 typedef enum 
 {
     HIGO_LAYER_FLUSH_FLIP        = HIGO_LAYER_BUFFER_TRIPLE, 
@@ -67,7 +67,7 @@ typedef enum
 } HIGO_LAYER_FLUSHTYPE_E;
 
 /**Anti-flicker level, ranging from low to high. The higher the level, the better the anti-flicker effect, but the more blurred the picture.*/
-/** CNcomment:¿¹ÉÁË¸¼¶±ğ£¬ÖµÎªLOW~HIGH,ÖµÔ½´ó¿¹ÉÁË¸Ğ§¹ûÔ½ºÃ£¬µ«Ô½Ä£ºı*/
+/** CNcomment:æŠ—é—ªçƒçº§åˆ«ï¼Œå€¼ä¸ºLOW~HIGH,å€¼è¶Šå¤§æŠ—é—ªçƒæ•ˆæœè¶Šå¥½ï¼Œä½†è¶Šæ¨¡ç³Š*/
 typedef enum
 {
     HIGO_LAYER_DEFLICKER_NONE = 0, 
@@ -81,7 +81,7 @@ typedef enum
 
 
 /**3D STEREO mode*/
-/** CNcomment:3D STEREOÄ£Ê½*/
+/** CNcomment:3D STEREOæ¨¡å¼*/
 typedef enum
 {
     HIGO_STEREO_MODE_HW_FULL = 0x0,  /**< 3d stereo function use hardware and transfer full frame to vo, note: hardware doesn't support the mode if encoder picture delivery method is top and bottom */    
@@ -91,50 +91,50 @@ typedef enum
 }HIGO_STEREO_MODE_E;
 
 /**Layer attribute parameters*/
-/** CNcomment:Í¼²ãÊôĞÔ²ÎÊı*/
+/** CNcomment:å›¾å±‚å±æ€§å‚æ•°*/
 typedef struct 
 {
-    HI_S32                 ScreenWidth;    /**<Height of a graphics layer on the screen. The value must be greater than 0.*//**<CNcomment:Í¼²ãÔÚÆÁÄ»ÉÏÏÔÊ¾¿í¶È£¬±ØĞë´óÓÚ0 */
-    HI_S32                 ScreenHeight;   /**<Width of a graphics layer on the screen. The value must be greater than 0.*//**<CNcomment:Í¼²ãÔÚÆÁÄ»ÉÏÏÔÊ¾¸ß¶È£¬±ØĞë´óÓÚ0 */
-    HI_S32                 CanvasWidth;    /**<Width of the canvas buffer of a graphics layer. If the value is 0, no canvas buffer is created.*//**<CNcomment:Í¼²ãµÄ»æÖÆbuffer¿í¶È£¬Îª0Ê±£¬²»´´½¨»æÖÆbuffer */
-    HI_S32                 CanvasHeight;   /**<Height of the canvas buffer of a graphics layer. If the value is 0, no canvas buffer is created.*//**<CNcomment:Í¼²ãµÄ»æÖÆbuffer¸ß¶È£¬Îª0Ê±£¬²»´´½¨»æÖÆbuffer */
-    HI_S32                 DisplayWidth;   /**<Width of the display buffer of a graphics layer. If the value is 0, the value of ScreenWidth is used.*//**<CNcomment:Í¼²ãµÄÏÔÊ¾buffer¿í¶È£¬Îª0Ê±£¬ºÍScreenWidthÏàÍ¬*/
-    HI_S32                 DisplayHeight;  /**<Height of the display buffer of a graphics layer. If the value is 0, the value of ScreenHeight is used.*//**<CNcomment:Í¼²ãµÄÏÔÊ¾buffer¸ß¶È£¬Îª0Ê±£¬ºÍScreenHeightÏàÍ¬*/
-    HIGO_LAYER_FLUSHTYPE_E LayerFlushType; /**< Refresh mode of the layer. You can choose the refresh mode based on the actual scenario to improve the refresh efficiency. If the value is 0, the dual-buffer+flip refresh mode is used by default. *//**<CNcomment:Í¼²ãµÄË¢ĞÂ·½Ê½£¬ÓÃ»§¿É¸ù¾İÊ¹ÓÃ³¡¾°Ñ¡Ôñ²»Í¬µÄË¢ĞÂÄ£Ê½À´Ìá¸ßË¢ĞÂĞ§ÂÊ,µÈÓÚ0Ê±Ä¬ÈÏÊ¹ÓÃË«»º³å+FlipË¢ĞÂÄ£Ê½ */
-    HIGO_LAYER_DEFLICKER_E AntiLevel;      /**<Anti-flicker level of a graphics layer*//**<CNcomment:Í¼²ã¿¹ÉÁË¸¼¶±ğ */
-    HIGO_PF_E              PixelFormat;    /**<Pixel format of a graphics layer. The format must be supported by the hardware layer. You need to choose the pixel format parameters of the layer based on hardware devices.*//**<CNcomment:Í¼²ãµÄÏñËØ¸ñÊ½£¬´Ë¸ñÊ½±ØĞëÎªÓ²¼şÍ¼²ãËùÖ§³ÖµÄ¸ñÊ½£¬Çë¸ù¾İ²»Í¬Ó²¼şÉè±¸À´Ñ¡ÔñÍ¼²ãµÄÏñËØ¸ñÊ½²ÎÊı */
-    HIGO_LAYER_E           LayerID;        /**<Hardware ID of a graphics layer. The supported graphics layer depends on the chip platform. For example, the Hi3720 supports an HD graphics layer and an SD graphics layer.*//**<CNcomment:Í¼²ãÓ²¼şID£¬ÄÜÖ§³ÖÍ¼²ãÈ¡¾öÓÚĞ¾Æ¬Æ½Ì¨£¬hi3720¸ßÇåÖ§³ÖÒ»¸ö¸ßÇåºÍÒ»¸ö±êÇå */
+    HI_S32                 ScreenWidth;    /**<Height of a graphics layer on the screen. The value must be greater than 0.*//**<CNcomment:å›¾å±‚åœ¨å±å¹•ä¸Šæ˜¾ç¤ºå®½åº¦ï¼Œå¿…é¡»å¤§äº0 */
+    HI_S32                 ScreenHeight;   /**<Width of a graphics layer on the screen. The value must be greater than 0.*//**<CNcomment:å›¾å±‚åœ¨å±å¹•ä¸Šæ˜¾ç¤ºé«˜åº¦ï¼Œå¿…é¡»å¤§äº0 */
+    HI_S32                 CanvasWidth;    /**<Width of the canvas buffer of a graphics layer. If the value is 0, no canvas buffer is created.*//**<CNcomment:å›¾å±‚çš„ç»˜åˆ¶bufferå®½åº¦ï¼Œä¸º0æ—¶ï¼Œä¸åˆ›å»ºç»˜åˆ¶buffer */
+    HI_S32                 CanvasHeight;   /**<Height of the canvas buffer of a graphics layer. If the value is 0, no canvas buffer is created.*//**<CNcomment:å›¾å±‚çš„ç»˜åˆ¶bufferé«˜åº¦ï¼Œä¸º0æ—¶ï¼Œä¸åˆ›å»ºç»˜åˆ¶buffer */
+    HI_S32                 DisplayWidth;   /**<Width of the display buffer of a graphics layer. If the value is 0, the value of ScreenWidth is used.*//**<CNcomment:å›¾å±‚çš„æ˜¾ç¤ºbufferå®½åº¦ï¼Œä¸º0æ—¶ï¼Œå’ŒScreenWidthç›¸åŒ*/
+    HI_S32                 DisplayHeight;  /**<Height of the display buffer of a graphics layer. If the value is 0, the value of ScreenHeight is used.*//**<CNcomment:å›¾å±‚çš„æ˜¾ç¤ºbufferé«˜åº¦ï¼Œä¸º0æ—¶ï¼Œå’ŒScreenHeightç›¸åŒ*/
+    HIGO_LAYER_FLUSHTYPE_E LayerFlushType; /**< Refresh mode of the layer. You can choose the refresh mode based on the actual scenario to improve the refresh efficiency. If the value is 0, the dual-buffer+flip refresh mode is used by default. *//**<CNcomment:å›¾å±‚çš„åˆ·æ–°æ–¹å¼ï¼Œç”¨æˆ·å¯æ ¹æ®ä½¿ç”¨åœºæ™¯é€‰æ‹©ä¸åŒçš„åˆ·æ–°æ¨¡å¼æ¥æé«˜åˆ·æ–°æ•ˆç‡,ç­‰äº0æ—¶é»˜è®¤ä½¿ç”¨åŒç¼“å†²+Flipåˆ·æ–°æ¨¡å¼ */
+    HIGO_LAYER_DEFLICKER_E AntiLevel;      /**<Anti-flicker level of a graphics layer*//**<CNcomment:å›¾å±‚æŠ—é—ªçƒçº§åˆ« */
+    HIGO_PF_E              PixelFormat;    /**<Pixel format of a graphics layer. The format must be supported by the hardware layer. You need to choose the pixel format parameters of the layer based on hardware devices.*//**<CNcomment:å›¾å±‚çš„åƒç´ æ ¼å¼ï¼Œæ­¤æ ¼å¼å¿…é¡»ä¸ºç¡¬ä»¶å›¾å±‚æ‰€æ”¯æŒçš„æ ¼å¼ï¼Œè¯·æ ¹æ®ä¸åŒç¡¬ä»¶è®¾å¤‡æ¥é€‰æ‹©å›¾å±‚çš„åƒç´ æ ¼å¼å‚æ•° */
+    HIGO_LAYER_E           LayerID;        /**<Hardware ID of a graphics layer. The supported graphics layer depends on the chip platform. For example, the Hi3720 supports an HD graphics layer and an SD graphics layer.*//**<CNcomment:å›¾å±‚ç¡¬ä»¶IDï¼Œèƒ½æ”¯æŒå›¾å±‚å–å†³äºèŠ¯ç‰‡å¹³å°ï¼Œhi3720é«˜æ¸…æ”¯æŒä¸€ä¸ªé«˜æ¸…å’Œä¸€ä¸ªæ ‡æ¸… */
 } HIGO_LAYER_INFO_S;
 
 /**Status of a graphics layer*/
-/** CNcomment:Í¼²ã×´Ì¬½á¹¹ */
+/** CNcomment:å›¾å±‚çŠ¶æ€ç»“æ„ */
 typedef struct 
 {
-    HI_BOOL bShow;             /**<Whether to display a graphics layer.*//**<CNcomment:Í¼²ãÊÇ·ñÏÔÊ¾ */
+    HI_BOOL bShow;             /**<Whether to display a graphics layer.*//**<CNcomment:å›¾å±‚æ˜¯å¦æ˜¾ç¤º */
 } HIGO_LAYER_STATUS_S;
 
 typedef struct
 {
-    HI_COLOR ColorKey;         /**<Transparency of a graphics layer*//**<CNcomment:Í¼²ãµÄÍ¸Ã÷É«*/
-    HI_BOOL bEnableCK;         /**<Whether the colorkey of a graphics layer is enabled.*//**<CNcomment:Í¼²ãÊÇ·ñÊ¹ÄÜcolorkey */
+    HI_COLOR ColorKey;         /**<Transparency of a graphics layer*//**<CNcomment:å›¾å±‚çš„é€æ˜è‰²*/
+    HI_BOOL bEnableCK;         /**<Whether the colorkey of a graphics layer is enabled.*//**<CNcomment:å›¾å±‚æ˜¯å¦ä½¿èƒ½colorkey */
 }HIGO_LAYER_KEY_S;
 
 typedef struct
 {
-    HI_BOOL bAlphaEnable;   /**<Alpha pixel enable flag*//**<CNcomment:alphaÏñËØÊ¹ÄÜ±êÖ¾ */
-    HI_BOOL bAlphaChannel;  /**<Alpha channel enable flag*//**<CNcomment:alphaÍ¨µÀÊ¹ÄÜ±êÖ¾  */
-    HI_U8   Alpha0;         /**<Alpha0 value. It is valid in ARGB1555 format.*//**<CNcomment:alpha0Öµ,ÔÚARGB1555¸ñÊ½ÏÂÉúĞ§ */
-    HI_U8   Alpha1;         /**<Alpha1 value. It is valid in ARGB1555 format.*//**<CNcomment:alpha1Öµ,ÔÚARGB1555¸ñÊ½ÏÂÉúĞ§ */
-    HI_U8   GlobalAlpha;    /**<Global alpha. This value is valid only when the alpha channel is valid.*//**<CNcomment:È«¾Öalpha£¬¸ÃÖµÖ»ÓĞÔÚalphaÍ¨µÀÓĞĞ§µÄÊ±ºò²ÅÓĞÒâÒå */
+    HI_BOOL bAlphaEnable;   /**<Alpha pixel enable flag*//**<CNcomment:alphaåƒç´ ä½¿èƒ½æ ‡å¿— */
+    HI_BOOL bAlphaChannel;  /**<Alpha channel enable flag*//**<CNcomment:alphaé€šé“ä½¿èƒ½æ ‡å¿—  */
+    HI_U8   Alpha0;         /**<Alpha0 value. It is valid in ARGB1555 format.*//**<CNcomment:alpha0å€¼,åœ¨ARGB1555æ ¼å¼ä¸‹ç”Ÿæ•ˆ */
+    HI_U8   Alpha1;         /**<Alpha1 value. It is valid in ARGB1555 format.*//**<CNcomment:alpha1å€¼,åœ¨ARGB1555æ ¼å¼ä¸‹ç”Ÿæ•ˆ */
+    HI_U8   GlobalAlpha;    /**<Global alpha. This value is valid only when the alpha channel is valid.*//**<CNcomment:å…¨å±€alphaï¼Œè¯¥å€¼åªæœ‰åœ¨alphaé€šé“æœ‰æ•ˆçš„æ—¶å€™æ‰æœ‰æ„ä¹‰ */
 }HIGO_LAYER_ALPHA_S;
 #if 0
 /**Frame encode format*/
-/**CNcomment:Ö¡±àÂë´«Êä¸ñÊ½*/
+/**CNcomment:å¸§ç¼–ç ä¼ è¾“æ ¼å¼*/
 typedef enum
 {
-    HIGO_STEREO_MONO   = 0x0,             /**< Normal display, no 3D TV*//**<CNcomment:Õı³£Êä³ö£¬·Ç3D µçÊÓ*/
-    HIGO_STEREO_SIDEBYSIDE_HALF,          /**< L/R frames are downscaled horizontally by 2 andpacked side-by-side into a single frame, left on lefthalf of frame*//**<CNcomment:½«L/RÖ¡Ë®Æ½Ëõ·Åµ½µ¥Ö¡ÖĞ*/
-    HIGO_STEREO_TOPANDBOTTOM,             /**< L/R frames are downscaled vertically by 2 andpacked into a single frame, left on top*//**<CNcomment:½«L/RÖ¡´¹Ö±Ëõ·Åµ½µ¥Ö¡ÖĞ*/
+    HIGO_STEREO_MONO   = 0x0,             /**< Normal display, no 3D TV*//**<CNcomment:æ­£å¸¸è¾“å‡ºï¼Œé3D ç”µè§†*/
+    HIGO_STEREO_SIDEBYSIDE_HALF,          /**< L/R frames are downscaled horizontally by 2 andpacked side-by-side into a single frame, left on lefthalf of frame*//**<CNcomment:å°†L/Rå¸§æ°´å¹³ç¼©æ”¾åˆ°å•å¸§ä¸­*/
+    HIGO_STEREO_TOPANDBOTTOM,             /**< L/R frames are downscaled vertically by 2 andpacked into a single frame, left on top*//**<CNcomment:å°†L/Rå¸§å‚ç›´ç¼©æ”¾åˆ°å•å¸§ä¸­*/
     HIGO_STEREO_BUTT
 }HIGO_STEREO_MODE_E;
 #endif
@@ -167,11 +167,11 @@ typedef struct
 /** @{ */  /** <!--[HIGO_GDEV] */
 
 /** 
-\brief Initializes a display device. CNcomment:³õÊ¼»¯ÏÔÊ¾Éè±¸ CNend
+\brief Initializes a display device. CNcomment:åˆå§‹åŒ–æ˜¾ç¤ºè®¾å¤‡ CNend
 \attention \n
 When ::HI_GO_Init is called, this API is also called.
-CNcomment: ::HI_GO_InitÒÑ°üº¬ÁË¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
-\param N/A. CNcomment:ÎŞ CNend
+CNcomment: ::HI_GO_Initå·²åŒ…å«äº†å¯¹è¯¥æ¥å£çš„è°ƒç”¨ CNend
+\param N/A. CNcomment:æ—  CNend
 
 \retval ::HI_FAILURE
 \retval ::HI_SUCCESS
@@ -184,11 +184,11 @@ CNcomment: ::HI_GO_InitÒÑ°üº¬ÁË¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
 HI_S32 HI_GO_InitDisplay(HI_VOID);
 
 /** 
-\brief Deinitializes a display device. CNcomment:È¥³õÊ¼»¯ÏÔÊ¾Éè±¸ CNend
+\brief Deinitializes a display device. CNcomment:å»åˆå§‹åŒ–æ˜¾ç¤ºè®¾å¤‡ CNend
 \attention \n
 When ::HI_GO_Deinit is called, this API is also called.
-CNcomment: ::HI_GO_DeinitÒÑ°üº¬ÁË¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
-\param N/A. CNcomment:ÎŞ CNend
+CNcomment: ::HI_GO_Deinitå·²åŒ…å«äº†å¯¹è¯¥æ¥å£çš„è°ƒç”¨ CNend
+\param N/A. CNcomment:æ—  CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -203,12 +203,12 @@ HI_S32 HI_GO_DeinitDisplay(HI_VOID);
 /**
 \brief Obtains the default parameters of an SD or HD graphics layer based on its ID.
 If you do not want to use default values, you can set the members of pLayerInfo.
-CNcomment:¸ù¾İÍ¼²ãID»ñÈ¡ÏàÓ¦Í¼²ã(SD,HD)´´½¨Ê±µÄÄ¬ÈÏ²ÎÊı£¬
-Èç¹ûĞèÒªÊ¹ÓÃ·ÇÄ¬ÈÏÖµ£¬¿ÉÒÔÖ±½ÓÉèÖÃpLayerInfo¸÷¸ö³ÉÔ± CNend
+CNcomment:æ ¹æ®å›¾å±‚IDè·å–ç›¸åº”å›¾å±‚(SD,HD)åˆ›å»ºæ—¶çš„é»˜è®¤å‚æ•°ï¼Œ
+å¦‚æœéœ€è¦ä½¿ç”¨éé»˜è®¤å€¼ï¼Œå¯ä»¥ç›´æ¥è®¾ç½®pLayerInfoå„ä¸ªæˆå‘˜ CNend
 \attention \n
 
-\param[in] LayerID Layer ID. CNcomment:Í¼²ãID CNend
-\param[in]  pLayerInfo Obtained parameters of a graphics layer when it is created. CNcomment:»ñÈ¡µ½µÄ´´½¨²ÎÊı CNend
+\param[in] LayerID Layer ID. CNcomment:å›¾å±‚ID CNend
+\param[in]  pLayerInfo Obtained parameters of a graphics layer when it is created. CNcomment:è·å–åˆ°çš„åˆ›å»ºå‚æ•° CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -217,23 +217,23 @@ CNcomment:¸ù¾İÍ¼²ãID»ñÈ¡ÏàÓ¦Í¼²ã(SD,HD)´´½¨Ê±µÄÄ¬ÈÏ²ÎÊı£¬
 \retval ::HIGO_ERR_NOTINIT
 \retval ::HIGO_ERR_INVPARAM
 \see \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_GetLayerDefaultParam (HIGO_LAYER_E LayerID, HIGO_LAYER_INFO_S *pLayerInfo);
 
 
 /** 
-\brief Creates a graphics layer. CNcomment:´´½¨Í¼²ã CNend
+\brief Creates a graphics layer. CNcomment:åˆ›å»ºå›¾å±‚ CNend
 \attention \n
 The platform determines whether VO hardware scaling is supported.
 If VO hardware scaling is supported, the display size is scaled to fit the screen when the display size is inconsistent with the screen size.
 If VO hardware scaling is not supported, the display size and screen size must be the same.
-CNcomment:ÊÇ·ñÖ§³ÖVOÓ²¼şËõ·ÅÈ¡¾öÓÚÆ½Ì¨¡£
-Èç¹ûÆ½Ì¨Ö§³ÖVO Ó²¼şËõ·Å£¬¼´ÔÚÉèÖÃdisplaysizeÓëscreensize²»Ò»ÖÂµÄÇé¿öÏÂ£¬×îÖÕ»áËõ·Åµ½screensizeµÄ´óĞ¡¡£
-Èç¹ûÆ½Ì¨²»Ö§³ÖVO Ó²¼şËõ·Å£¬¼´Ê¹displaysizeÓëscreensize²»Ò»ÖÂ£¬Ò²»áÇ¿ÖÆÒªÇódisplaysizeÓëscreensizeÒ»ÖÂ CNend
+CNcomment:æ˜¯å¦æ”¯æŒVOç¡¬ä»¶ç¼©æ”¾å–å†³äºå¹³å°ã€‚
+å¦‚æœå¹³å°æ”¯æŒVO ç¡¬ä»¶ç¼©æ”¾ï¼Œå³åœ¨è®¾ç½®displaysizeä¸screensizeä¸ä¸€è‡´çš„æƒ…å†µä¸‹ï¼Œæœ€ç»ˆä¼šç¼©æ”¾åˆ°screensizeçš„å¤§å°ã€‚
+å¦‚æœå¹³å°ä¸æ”¯æŒVO ç¡¬ä»¶ç¼©æ”¾ï¼Œå³ä½¿displaysizeä¸screensizeä¸ä¸€è‡´ï¼Œä¹Ÿä¼šå¼ºåˆ¶è¦æ±‚displaysizeä¸screensizeä¸€è‡´ CNend
 
-\param[in]  pLayerInfo Basic attributes of a graphics layer. The value cannot be empty. CNcomment:Í¼²ã»ù±¾ÊôĞÔ£¬²»¿ÉÎª¿Õ CNend
-\param[out] pLayer Pointer to the handle of a graphics layer. The value cannot be empty. CNcomment:Í¼²ãµÄ¾ä±úÖ¸Õë£¬²»¿ÉÎª¿Õ CNend
+\param[in]  pLayerInfo Basic attributes of a graphics layer. The value cannot be empty. CNcomment:å›¾å±‚åŸºæœ¬å±æ€§ï¼Œä¸å¯ä¸ºç©º CNend
+\param[out] pLayer Pointer to the handle of a graphics layer. The value cannot be empty. CNcomment:å›¾å±‚çš„å¥æŸ„æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -258,11 +258,11 @@ CNcomment:ÊÇ·ñÖ§³ÖVOÓ²¼şËõ·ÅÈ¡¾öÓÚÆ½Ì¨¡£
 HI_S32 HI_GO_CreateLayer (const HIGO_LAYER_INFO_S *pLayerInfo, HI_HANDLE* pLayer);
 
 /** 
-\brief Destroys a graphics layer. CNcomment:Ïú»ÙÍ¼²ã CNend
+\brief Destroys a graphics layer. CNcomment:é”€æ¯å›¾å±‚ CNend
 \attention \n
 If a graphics layer is in use (for example, the desktop based on the layer is not destroyed), the layer cannot be destroyed.
-CNcomment:µ±Í¼²ãÕıÔÚ±»Ê¹ÓÃÊ±£¨ÀıÈç»ùÓÚ´ËÍ¼²ãµÄ×ÀÃæÎ´Ïú»Ù£©£¬ÔòÍ¼²ãÎŞ·¨±»Ïú»Ù CNend
-\param[in] Layer Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
+CNcomment:å½“å›¾å±‚æ­£åœ¨è¢«ä½¿ç”¨æ—¶ï¼ˆä¾‹å¦‚åŸºäºæ­¤å›¾å±‚çš„æ¡Œé¢æœªé”€æ¯ï¼‰ï¼Œåˆ™å›¾å±‚æ— æ³•è¢«é”€æ¯ CNend
+\param[in] Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -277,13 +277,13 @@ HI_S32 HI_GO_DestroyLayer(HI_HANDLE Layer);
 
 
 /** 
-\brief Sets the position of a graphics layer on the screen. CNcomment:ÉèÖÃÍ¼²ãÔÚÆÁÄ»ÖĞµÄÎ»ÖÃ CNend
+\brief Sets the position of a graphics layer on the screen. CNcomment:è®¾ç½®å›¾å±‚åœ¨å±å¹•ä¸­çš„ä½ç½® CNend
 \attention \n
 The value takes effect at once and you do not need to refresh it. If the start position of a layer exceeds the screen, it is automatically adjusted to the boundary of the screen.
-CNcomment:Á¢¼´ÉúĞ§£¬ÎŞĞèË¢ĞÂ¡£µ±ÉèÖÃµÄÍ¼²ãµÄÆğÊ¼Î»ÖÃ³¬³öÆÁÄ»·¶Î§Ê±»á×Ô¶¯µ÷ÕûÖÁÆÁÄ»µÄ±ß½çÖµ CNend
-\param[in] Layer  Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[in] u32StartX Horizontal coordinate of the position where a layer appears on the screen. CNcomment:Í¼²ãÔÚÆÁÄ»ÉÏµÄÏÔÊ¾Î»ÖÃX×ø±ê CNend
-\param[in] u32StartY Vertical coordinate of the position where a layer appears on the screen. CNcomment:Í¼²ãÔÚÆÁÄ»ÉÏµÄÏÔÊ¾Î»ÖÃY×ø±ê CNend
+CNcomment:ç«‹å³ç”Ÿæ•ˆï¼Œæ— éœ€åˆ·æ–°ã€‚å½“è®¾ç½®çš„å›¾å±‚çš„èµ·å§‹ä½ç½®è¶…å‡ºå±å¹•èŒƒå›´æ—¶ä¼šè‡ªåŠ¨è°ƒæ•´è‡³å±å¹•çš„è¾¹ç•Œå€¼ CNend
+\param[in] Layer  Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[in] u32StartX Horizontal coordinate of the position where a layer appears on the screen. CNcomment:å›¾å±‚åœ¨å±å¹•ä¸Šçš„æ˜¾ç¤ºä½ç½®Xåæ ‡ CNend
+\param[in] u32StartY Vertical coordinate of the position where a layer appears on the screen. CNcomment:å›¾å±‚åœ¨å±å¹•ä¸Šçš„æ˜¾ç¤ºä½ç½®Yåæ ‡ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -297,12 +297,12 @@ CNcomment:Á¢¼´ÉúĞ§£¬ÎŞĞèË¢ĞÂ¡£µ±ÉèÖÃµÄÍ¼²ãµÄÆğÊ¼Î»ÖÃ³¬³öÆÁÄ»·¶Î§Ê±»á×Ô¶¯µ÷ÕûÖÁÆÁ
 HI_S32 HI_GO_SetLayerPos(HI_HANDLE Layer, HI_U32 u32StartX, HI_U32 u32StartY);
 
 /** 
-\brief Obtains the position where a layer appears on the screen. CNcomment:»ñÈ¡Í¼²ãÔÚÆÁÄ»ÉÏµÄÎ»ÖÃ CNend
+\brief Obtains the position where a layer appears on the screen. CNcomment:è·å–å›¾å±‚åœ¨å±å¹•ä¸Šçš„ä½ç½® CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
-\param[in] Layer Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[out] pStartX Pointer of the horizontal coordinate of the position where a layer appears on the screen. The value cannot be empty. CNcomment:Í¼²ãÔÚÆÁÄ»ÉÏµÄÏÔÊ¾Î»ÖÃX×ø±êÖ¸Õë£¬²»¿ÉÎª¿Õ CNend
-\param[out] pStartY Pointer of the vertical coordinate of the position where a layer appears on the screen. The value cannot be empty. CNcomment:Í¼²ãÔÚÆÁÄ»ÉÏµÄÏÔÊ¾Î»ÖÃY×ø±êÖ¸Õë£¬²»¿ÉÎª¿Õ CNend
+N/A. CNcomment:æ—  CNend
+\param[in] Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[out] pStartX Pointer of the horizontal coordinate of the position where a layer appears on the screen. The value cannot be empty. CNcomment:å›¾å±‚åœ¨å±å¹•ä¸Šçš„æ˜¾ç¤ºä½ç½®Xåæ ‡æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
+\param[out] pStartY Pointer of the vertical coordinate of the position where a layer appears on the screen. The value cannot be empty. CNcomment:å›¾å±‚åœ¨å±å¹•ä¸Šçš„æ˜¾ç¤ºä½ç½®Yåæ ‡æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -317,14 +317,14 @@ HI_S32 HI_GO_GetLayerPos(HI_HANDLE Layer, HI_U32 *pStartX, HI_U32 *pStartY);
 
 
 /** 
-\brief Sets the output height and width of a graphics layer on the display device. CNcomment:ÉèÖÃÔÚÊä³öÏÔÊ¾Éè±¸ÉÏµÄÊä³öµÄ¸ß¶ÈºÍ¿í¶È CNend
+\brief Sets the output height and width of a graphics layer on the display device. CNcomment:è®¾ç½®åœ¨è¾“å‡ºæ˜¾ç¤ºè®¾å¤‡ä¸Šçš„è¾“å‡ºçš„é«˜åº¦å’Œå®½åº¦ CNend
 \attention \n
 This API supports zoom in operations. The maximum range is specified when a graphics layer is created.\n
-CNcomment:ÔÚÄÚ´æÖ§³ÖµÄÇ°ÌáÏÂ£¬¸Ã½Ó¿Ú¿ÉÒÔÖ§³ÖËõ·Å CNend
+CNcomment:åœ¨å†…å­˜æ”¯æŒçš„å‰æä¸‹ï¼Œè¯¥æ¥å£å¯ä»¥æ”¯æŒç¼©æ”¾ CNend
 
-\param[in]  Layer Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[in] u32SWidth  Actual output width. CNcomment:Êµ¼ÊÊä³ö¿í¶È CNend
-\param[in] u32SHeight Actual output height. CNcomment:Êµ¼ÊÊä³ö¸ß¶È CNend
+\param[in]  Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[in] u32SWidth  Actual output width. CNcomment:å®é™…è¾“å‡ºå®½åº¦ CNend
+\param[in] u32SHeight Actual output height. CNcomment:å®é™…è¾“å‡ºé«˜åº¦ CNend
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
 \retval ::HIGO_ERR_INVSIZE
@@ -338,12 +338,12 @@ HI_S32 HI_GO_SetScreenSize(HI_HANDLE Layer, HI_U32 u32SWidth, HI_U32 u32SHeight)
 
 
 /** 
-\brief Obtains the output height and width of a graphics layer on the display device. CNcomment:»ñÈ¡ÔÚÊä³öÏÔÊ¾Éè±¸ÉÏµÄÊä³öµÄ¸ß¶ÈºÍ¿í¶È¡£CNend 
+\brief Obtains the output height and width of a graphics layer on the display device. CNcomment:è·å–åœ¨è¾“å‡ºæ˜¾ç¤ºè®¾å¤‡ä¸Šçš„è¾“å‡ºçš„é«˜åº¦å’Œå®½åº¦ã€‚CNend 
 \attention \n
-N/A. CNcomment:ÎŞ CNend
-\param[in]  Layer Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[out] pSWidth  Pointer to the actual output width. CNcomment:Êµ¼ÊÊä³ö¿í¶ÈÖ¸Õë CNend
-\param[out] pSHeight Pointer to the actual output height. CNcomment:Êµ¼ÊÊä³ö¸ß¶ÈÖ¸Õë CNend
+N/A. CNcomment:æ—  CNend
+\param[in]  Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[out] pSWidth  Pointer to the actual output width. CNcomment:å®é™…è¾“å‡ºå®½åº¦æŒ‡é’ˆ CNend
+\param[out] pSHeight Pointer to the actual output height. CNcomment:å®é™…è¾“å‡ºé«˜åº¦æŒ‡é’ˆ CNend
 \retval none
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -357,12 +357,12 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetScreenSize(HI_HANDLE Layer, HI_U32 *pSWidth, HI_U32 *pSHeight);
 
 /** 
-\brief Sets the global alpha value of a layer surface. CNcomment:ÉèÖÃÍ¼²ãsurfaceµÄÈ«¾ÖalphaÖµ CNend
+\brief Sets the global alpha value of a layer surface. CNcomment:è®¾ç½®å›¾å±‚surfaceçš„å…¨å±€alphaå€¼ CNend
 \attention \n
 The value takes effect at once, and you do not need to refresh it.
-CNcomment:Á¢¼´ÉúĞ§£¬ÎŞĞèË¢ĞÂ CNend
-\param[in] Layer Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[in] Alpha Global alpha value. The value cannot be empty and ranges from 0 to 255. CNcomment:Alpha È«¾ÖalphaÖµ£¬²»¿ÉÎª¿Õ£¬·¶Î§0-255 CNend
+CNcomment:ç«‹å³ç”Ÿæ•ˆï¼Œæ— éœ€åˆ·æ–° CNend
+\param[in] Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[in] Alpha Global alpha value. The value cannot be empty and ranges from 0 to 255. CNcomment:Alpha å…¨å±€alphaå€¼ï¼Œä¸å¯ä¸ºç©ºï¼ŒèŒƒå›´0-255 CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -377,11 +377,11 @@ CNcomment:Á¢¼´ÉúĞ§£¬ÎŞĞèË¢ĞÂ CNend
 HI_S32 HI_GO_SetLayerAlpha(HI_HANDLE Layer, HI_U8 Alpha);
 
 /** 
-\brief Obtains the global alpha value of a layer surface. CNcomment:»ñÈ¡Í¼²ãsurfaceµÄÈ«¾ÖalphaÖµ CNend
+\brief Obtains the global alpha value of a layer surface. CNcomment:è·å–å›¾å±‚surfaceçš„å…¨å±€alphaå€¼ CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
-\param[in] Layer Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[out] pAlpha Pointer to the global alpha value. CNcomment:È«¾ÖalphaÖ¸Õë CNend
+N/A. CNcomment:æ—  CNend
+\param[in] Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[out] pAlpha Pointer to the global alpha value. CNcomment:å…¨å±€alphaæŒ‡é’ˆ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -396,14 +396,14 @@ HI_S32 HI_GO_GetLayerAlpha(HI_HANDLE Layer, HI_U8* pAlpha);
 
 
 /** 
-\brief Obtains the surface of a graphics layer. CNcomment:»ñÈ¡Í¼²ãµÄsurface CNend
+\brief Obtains the surface of a graphics layer. CNcomment:è·å–å›¾å±‚çš„surface CNend
 \attention \n
 Surface of a graphics layer. It cannot be released by calling HI_GO_FreeSurface. The surface can be released only when the corresponding layer is destroyed.
 After a process is switched, you must obtain the layer surface again by calling HI_S32 HI_GO_GetLayerSurface.
-CNcomment:Í¼²ãsurface£¬²»ÄÜÊ¹ÓÃHI_GO_FreeSurfaceÀ´ÊÍ·Å¡£Ö»ÓĞÔÚÏú»ÙÍ¼²ãµÄÊ±ºò²Å»á±»ÊÍ·Å
-½ø³ÌÇĞ»»Ö®ºó±ØĞëµ÷ÓÃ¸Ã½Ó¿ÚÀ´ÖØĞÂ»ñÈ¡Í¼²ãsurface; CNend
-\param[in] Layer handle. CNcomment:Layer Í¼²ã¾ä±ú CNend
-\param[out] pSurface Pointer to the surface handle. The value cannot be empty. CNcomment:surface¾ä±úÖ¸Õë£¬²»¿ÉÎª¿Õ CNend
+CNcomment:å›¾å±‚surfaceï¼Œä¸èƒ½ä½¿ç”¨HI_GO_FreeSurfaceæ¥é‡Šæ”¾ã€‚åªæœ‰åœ¨é”€æ¯å›¾å±‚çš„æ—¶å€™æ‰ä¼šè¢«é‡Šæ”¾
+è¿›ç¨‹åˆ‡æ¢ä¹‹åå¿…é¡»è°ƒç”¨è¯¥æ¥å£æ¥é‡æ–°è·å–å›¾å±‚surface; CNend
+\param[in] Layer handle. CNcomment:Layer å›¾å±‚å¥æŸ„ CNend
+\param[out] pSurface Pointer to the surface handle. The value cannot be empty. CNcomment:surfaceå¥æŸ„æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -415,17 +415,17 @@ CNcomment:Í¼²ãsurface£¬²»ÄÜÊ¹ÓÃHI_GO_FreeSurfaceÀ´ÊÍ·Å¡£Ö»ÓĞÔÚÏú»ÙÍ¼²ãµÄÊ±ºò²Å»á
 \retval ::HIGO_ERR_DEPEND_FB
 
 \see \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_GetLayerSurface(HI_HANDLE Layer, HI_HANDLE *pSurface);
 
 /**
-\brief Shows or hides a graphics layer. CNcomment:ÏÔÊ¾»òÒş²ØÍ¼²ã CNend
+\brief Shows or hides a graphics layer. CNcomment:æ˜¾ç¤ºæˆ–éšè—å›¾å±‚ CNend
 \attention \n
 The value takes effect at once, and you do not need to refresh it.
-CNcomment:Á¢¼´ÉúĞ§£¬ÎŞĞèË¢ĞÂ CNend
-\param[in] Layer Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[in] bVisbile Show/hide flag. HI_TRUE: show; HI_FALSE: hide. CNcomment:ÏÔÊ¾Òş²Ø±êÖ¾¡£HI_TRUE£ºÏÔÊ¾£»HI_FALSE£ºÒş²Ø CNend
+CNcomment:ç«‹å³ç”Ÿæ•ˆï¼Œæ— éœ€åˆ·æ–° CNend
+\param[in] Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[in] bVisbile Show/hide flag. HI_TRUE: show; HI_FALSE: hide. CNcomment:æ˜¾ç¤ºéšè—æ ‡å¿—ã€‚HI_TRUEï¼šæ˜¾ç¤ºï¼›HI_FALSEï¼šéšè— CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -438,11 +438,11 @@ CNcomment:Á¢¼´ÉúĞ§£¬ÎŞĞèË¢ĞÂ CNend
 HI_S32 HI_GO_ShowLayer(HI_HANDLE Layer, HI_BOOL bVisbile);
 
 /** 
-\brief Obtains the current status of a graphics layer. CNcomment:»ñÈ¡Í¼²ãµ±Ç°×´Ì¬ CNend
+\brief Obtains the current status of a graphics layer. CNcomment:è·å–å›¾å±‚å½“å‰çŠ¶æ€ CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
-\param[in] Layer Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[out] pLayerStatus Pointer to the current status of a graphics layer. The value cannot be empty. CNcomment:Í¼²ãµ±Ç°×´Ì¬½á¹¹Ö¸Õë£¬²»¿ÉÎª¿Õ CNend
+N/A. CNcomment:æ—  CNend
+\param[in] Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[out] pLayerStatus Pointer to the current status of a graphics layer. The value cannot be empty. CNcomment:å›¾å±‚å½“å‰çŠ¶æ€ç»“æ„æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -456,14 +456,14 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetLayerStatus(HI_HANDLE Layer, HIGO_LAYER_STATUS_S* pLayerStatus);
 
 /** 
-\brief Refreshes a graphics layer. CNcomment:Ë¢ĞÂÍ¼²ã CNend
+\brief Refreshes a graphics layer. CNcomment:åˆ·æ–°å›¾å±‚ CNend
 \attention \n
 1. After drawing, you need to refresh the layer to display the drawing result.
 2. There are two display modes after a graphics layer is refreshed. If there is no window, the contents of the layer surface are displayed; if there is a window, its contents are displayed.
-CNcomment:1.»æÖÆÍê³Éºó£¬ĞèË¢ĞÂÍ¼²ã²ÅÄÜÏÔÊ¾»æÖÆºó½á¹û 
-2.Ë¢ĞÂÓĞÁ½ÖÖÄ£Ê½£¬Ò»ÖÖÊÇÃ»ÓĞÈÎºÎ´°¿ÚµÄÊ±ºò¾ÍÏÔÊ¾layersurfaceµÄÄÚÈİ£¬·ñÔòÏÔÊ¾´°¿ÚÖĞµÄÄÚÈİ¡£CNend
-\param[in] Layer Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[in]  pRect Rectangle to be refreshed. If the value is NULL, the entire screen is refreshed. CNcomment:Ë¢ĞÂµÄ¾ØĞÎÇøÓò£¬Èç¹ûÊÇNULL, ÔòË¢ĞÂÕû¸öÈ«ÆÁ CNend
+CNcomment:1.ç»˜åˆ¶å®Œæˆåï¼Œéœ€åˆ·æ–°å›¾å±‚æ‰èƒ½æ˜¾ç¤ºç»˜åˆ¶åç»“æœ 
+2.åˆ·æ–°æœ‰ä¸¤ç§æ¨¡å¼ï¼Œä¸€ç§æ˜¯æ²¡æœ‰ä»»ä½•çª—å£çš„æ—¶å€™å°±æ˜¾ç¤ºlayersurfaceçš„å†…å®¹ï¼Œå¦åˆ™æ˜¾ç¤ºçª—å£ä¸­çš„å†…å®¹ã€‚CNend
+\param[in] Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[in]  pRect Rectangle to be refreshed. If the value is NULL, the entire screen is refreshed. CNcomment:åˆ·æ–°çš„çŸ©å½¢åŒºåŸŸï¼Œå¦‚æœæ˜¯NULL, åˆ™åˆ·æ–°æ•´ä¸ªå…¨å± CNend
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
 \retval ::HIGO_ERR_NULLPTR
@@ -474,19 +474,19 @@ CNcomment:1.»æÖÆÍê³Éºó£¬ĞèË¢ĞÂÍ¼²ã²ÅÄÜÏÔÊ¾»æÖÆºó½á¹û
 \retval ::HIGO_ERR_EMPTYRECT
 
 \see \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_RefreshLayer(HI_HANDLE Layer, const HI_RECT* pRect);
 
 
 /**
-\brief Sets the canvas buffer of a graphics layer. CNcomment:ÉèÖÃ²ãµÄcanvas surface. CNend
+\brief Sets the canvas buffer of a graphics layer. CNcomment:è®¾ç½®å±‚çš„canvas surface. CNend
 \attention \n
 If the stream sources of the HD and SD graphics layer are the same, the canvas buffer of the SD graphics layer can be shared with the HD graphics layer.
-CNcomment:¸ßÇåºÍ±êÇåÍ¬Ô´Ê±£¬ÎÒÃÇ¿ÉÒÔÈÃ±êÇåµÄcanvas bufferÓë¸ßÇåµÄ¹²ÏíÍ¬Ò»¸ö 
-     SurrfaceµÄÄÚ´æÀàĞÍ±ØĞëÊÇMMZÀàĞÍµÄ. CNend
-\param[in] Layer     Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[in] hSurface  Surface of a graphics layer. If the value is INVALID_HANDLE, there is no user handle. CNcomment:Í¼²ãµÄsurface£¬Èç¹û¸Ã²ÎÊıÎªINVALID_HANDLE±íÊ¾Ã»ÓĞÓÃ»§¾ä±ú CNend
+CNcomment:é«˜æ¸…å’Œæ ‡æ¸…åŒæºæ—¶ï¼Œæˆ‘ä»¬å¯ä»¥è®©æ ‡æ¸…çš„canvas bufferä¸é«˜æ¸…çš„å…±äº«åŒä¸€ä¸ª 
+     Surrfaceçš„å†…å­˜ç±»å‹å¿…é¡»æ˜¯MMZç±»å‹çš„. CNend
+\param[in] Layer     Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[in] hSurface  Surface of a graphics layer. If the value is INVALID_HANDLE, there is no user handle. CNcomment:å›¾å±‚çš„surfaceï¼Œå¦‚æœè¯¥å‚æ•°ä¸ºINVALID_HANDLEè¡¨ç¤ºæ²¡æœ‰ç”¨æˆ·å¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -496,36 +496,36 @@ CNcomment:¸ßÇåºÍ±êÇåÍ¬Ô´Ê±£¬ÎÒÃÇ¿ÉÒÔÈÃ±êÇåµÄcanvas bufferÓë¸ßÇåµÄ¹²ÏíÍ¬Ò»¸ö
 \retval ::HIGO_ERR_INVPARAM
 
 \see \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_SetLayerSurface(HI_HANDLE Layer, HI_HANDLE hSurface);
 
 
 
 /**
-\brief Sets the background color of a graphics layer. CNcomment:ÉèÖÃÍ¼²ãµÄ±³¾°ÑÕÉ« CNend
+\brief Sets the background color of a graphics layer. CNcomment:è®¾ç½®å›¾å±‚çš„èƒŒæ™¯é¢œè‰² CNend
 \attention \n
 The background color of a graphics layer takes effect only when widows are overlaid with each other.
-CNcomment:Í¼²ã±³¾°É«£¬Ö»ÓĞÔÚµş¼Ó´°¿Ú²ÅÓĞĞ§ CNend
-\param[in] Layer Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[in] Color Background color of a graphics layer. CNcomment:Í¼²ã±³¾°ÑÕÉ« CNend
+CNcomment:å›¾å±‚èƒŒæ™¯è‰²ï¼Œåªæœ‰åœ¨å åŠ çª—å£æ‰æœ‰æ•ˆ CNend
+\param[in] Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[in] Color Background color of a graphics layer. CNcomment:å›¾å±‚èƒŒæ™¯é¢œè‰² CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_SetLayerBGColor(HI_HANDLE Layer, HI_COLOR Color);
 
 /**
-\brief Obtains the background color of a graphics layer. CNcomment:»ñÈ¡Í¼²ãµÄ±³¾°ÑÕÉ« CNend
+\brief Obtains the background color of a graphics layer. CNcomment:è·å–å›¾å±‚çš„èƒŒæ™¯é¢œè‰² CNend
 \attention \n
 This API is available only when there are windows on graphics layers. Otherwise, the configured background color does not take effect.
-CNcomment:´Ë½Ó¿ÚÖ»ÓĞÔÚÍ¼²ãÉÏÓĞ´°¿ÚµÄÊ±ºò²Å»áÓĞĞ§¡£·ñÔò¸ÃÑÕÉ«ÉèÖÃÎŞĞ§¡£CNend
-\param[in] Layer Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[in] pColor Used for storing the background color of a graphics layer. CNcomment:´æ´¢Í¼²ã±³¾°ÑÕÉ« CNend
+CNcomment:æ­¤æ¥å£åªæœ‰åœ¨å›¾å±‚ä¸Šæœ‰çª—å£çš„æ—¶å€™æ‰ä¼šæœ‰æ•ˆã€‚å¦åˆ™è¯¥é¢œè‰²è®¾ç½®æ— æ•ˆã€‚CNend
+\param[in] Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[in] pColor Used for storing the background color of a graphics layer. CNcomment:å­˜å‚¨å›¾å±‚èƒŒæ™¯é¢œè‰² CNend
  
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -533,19 +533,19 @@ CNcomment:´Ë½Ó¿ÚÖ»ÓĞÔÚÍ¼²ãÉÏÓĞ´°¿ÚµÄÊ±ºò²Å»áÓĞĞ§¡£·ñÔò¸ÃÑÕÉ«ÉèÖÃÎŞĞ§¡£CNend
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_GetLayerBGColor(HI_HANDLE Layer, HI_COLOR* pColor);
 
 /**
-\brief Sets the size of a display buffer. CNcomment:ÉèÖÃÏÔÊ¾buffer size CNend
+\brief Sets the size of a display buffer. CNcomment:è®¾ç½®æ˜¾ç¤ºbuffer size CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] Layer      Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[in] u32DWidth     Pointer to the width. CNcomment:¿í¶ÈÖ¸Õë CNend
-\param[in] u32DHeight    Pointer to the height. CNcomment:¸ß¶ÈÖ¸Õë CNend
-\param[out] N/A . CNcomment:ÎŞ  CNend
+\param[in] Layer      Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[in] u32DWidth     Pointer to the width. CNcomment:å®½åº¦æŒ‡é’ˆ CNend
+\param[in] u32DHeight    Pointer to the height. CNcomment:é«˜åº¦æŒ‡é’ˆ CNend
+\param[out] N/A . CNcomment:æ—   CNend
 
 \retval ::HIGO_ERR_NOTINIT
 \retval ::HIGO_ERR_INVSIZE 
@@ -558,14 +558,14 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_SetDisplaySize(HI_HANDLE Layer, HI_U32 u32DWidth, HI_U32 u32DHeight);
 
 /**
-\brief Obtains the size of a display buffer. CNcomment:»ñÈ¡ÏÔÊ¾bufferµÄsize CNend
+\brief Obtains the size of a display buffer. CNcomment:è·å–æ˜¾ç¤ºbufferçš„size CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] Layer      Layer handle. CNcomment:Í¼²ã¾ä±ú CNend
-\param[in] pDWidth    Pointer to the width. The value cannot be empty. CNcomment:¿í¶ÈÖ¸Õë£¬²»¿ÉÎª¿Õ  CNend
-\param[in] pDHeight   Pointer to the height. The value cannot be empty. CNcomment:¸ß¶ÈÖ¸Õë£¬²»¿ÉÎª¿Õ CNend
-\param[out] N/A. CNcomment:ÎŞ CNend
+\param[in] Layer      Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[in] pDWidth    Pointer to the width. The value cannot be empty. CNcomment:å®½åº¦æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º  CNend
+\param[in] pDHeight   Pointer to the height. The value cannot be empty. CNcomment:é«˜åº¦æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
+\param[out] N/A. CNcomment:æ—  CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -578,13 +578,13 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetDisplaySize(HI_HANDLE Layer, HI_U32 *pDWidth, HI_U32 *pDHeight);
 
 /**
-\brief Sets the refresh mode. CNcomment:ÉèÖÃË¢ĞÂÀàĞÍ CNend
+\brief Sets the refresh mode. CNcomment:è®¾ç½®åˆ·æ–°ç±»å‹ CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] Layer         Layer handle. CNcomment:Í¼²ã¾ä±ú CNend           
-\param[in] FlushType     Refresh mode of a graphics layer. CNcomment:Í¼²ãË¢ĞÂÀàĞÍ CNend
-\param[out] N/A. CNcomment:ÎŞ CNend
+\param[in] Layer         Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend           
+\param[in] FlushType     Refresh mode of a graphics layer. CNcomment:å›¾å±‚åˆ·æ–°ç±»å‹ CNend
+\param[out] N/A. CNcomment:æ—  CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -598,13 +598,13 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_SetFlushType(HI_HANDLE Layer, HIGO_LAYER_FLUSHTYPE_E FlushType);
 
 /**
-\brief Obtains the refresh mode. CNcomment:»ñÈ¡Ë¢ĞÂÀàĞÍ CNend
+\brief Obtains the refresh mode. CNcomment:è·å–åˆ·æ–°ç±»å‹ CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú  CNend             
-\param[in] *pFlushType Refresh mode of a graphics layer. The value cannot be empty. CNcomment:Í¼²ãË¢ĞÂÀàĞÍ£¬²»¿ÉÎª¿Õ  CNend
-\param[out] N/A. CNcomment:ÎŞ  CNend
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„  CNend             
+\param[in] *pFlushType Refresh mode of a graphics layer. The value cannot be empty. CNcomment:å›¾å±‚åˆ·æ–°ç±»å‹ï¼Œä¸å¯ä¸ºç©º  CNend
+\param[out] N/A. CNcomment:æ—   CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -618,13 +618,13 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetFlushType(HI_HANDLE Layer, HIGO_LAYER_FLUSHTYPE_E *pFlushType);
 
 /**
-\brief Sets the transparency of a graphics layer. CNcomment:ÉèÖÃÍ¼²ãµÄÍ¸Ã÷É« CNend
+\brief Sets the transparency of a graphics layer. CNcomment:è®¾ç½®å›¾å±‚çš„é€æ˜è‰² CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú  CNend             
-\param[in] pKey        Pointer to the transparency information. The value cannot be empty. CNcomment:Í¸Ã÷É«ĞÅÏ¢Ö¸Õë£¬²»¿ÉÎª¿Õ CNend
-\param[out] N/A. CNcomment:ÎŞ  CNend
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„  CNend             
+\param[in] pKey        Pointer to the transparency information. The value cannot be empty. CNcomment:é€æ˜è‰²ä¿¡æ¯æŒ‡é’ˆï¼Œä¸å¯ä¸ºç©º CNend
+\param[out] N/A. CNcomment:æ—   CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -638,13 +638,13 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_SetLayerColorkey(HI_HANDLE Layer, const HIGO_LAYER_KEY_S *pKey);
 
 /**
-\brief Obtains the transparency information about a graphics layer. CNcomment:»ñÈ¡Í¸Ã÷É«ĞÅÏ¢ CNend
+\brief Obtains the transparency information about a graphics layer. CNcomment:è·å–é€æ˜è‰²ä¿¡æ¯ CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú CNend              
-\param[in] pKey        Pointer to the transparency information. CNcomment:Í¸Ã÷É«ĞÅÏ¢Ö¸Õë CNend
-\param[out] N/A. CNcomment:ÎŞ  CNend
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend              
+\param[in] pKey        Pointer to the transparency information. CNcomment:é€æ˜è‰²ä¿¡æ¯æŒ‡é’ˆ CNend
+\param[out] N/A. CNcomment:æ—   CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -658,13 +658,13 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetLayerColorkey(HI_HANDLE Layer, HIGO_LAYER_KEY_S *pKey);
 
 /**
-\brief Sets the palette of a graphics layer. CNcomment:ÉèÖÃÍ¼²ãµÄµ÷É«°å CNend
+\brief Sets the palette of a graphics layer. CNcomment:è®¾ç½®å›¾å±‚çš„è°ƒè‰²æ¿ CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú CNend              
-\param[in] Palette     Palette of a graphics layer. CNcomment:Í¼²ãµ÷É«°å CNend
-\param[out] N/A. CNcomment:ÎŞ  CNend
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend              
+\param[in] Palette     Palette of a graphics layer. CNcomment:å›¾å±‚è°ƒè‰²æ¿ CNend
+\param[out] N/A. CNcomment:æ—   CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -679,13 +679,13 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_SetLayerPalette(HI_HANDLE Layer, const HI_PALETTE Palette);
 
 /**
-\brief Obtains the palette of a graphics layer. CNcomment:»ñÈ¡Í¼²ãµ÷É«°å CNend
+\brief Obtains the palette of a graphics layer. CNcomment:è·å–å›¾å±‚è°ƒè‰²æ¿ CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú CNend               
-\param[in] Palette     Palette of a graphics layer. CNcomment:Í¼²ãµ÷É«°å CNend
-\param[out] N/A. CNcomment:ÎŞ  CNend 
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend               
+\param[in] Palette     Palette of a graphics layer. CNcomment:å›¾å±‚è°ƒè‰²æ¿ CNend
+\param[out] N/A. CNcomment:æ—   CNend 
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -699,12 +699,12 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetLayerPalette(HI_HANDLE Layer, HI_PALETTE Palette);
 
 /**
-\brief Waits for the blanking area. CNcomment:µÈ´ıÏûÒşÇø CNend
+\brief Waits for the blanking area. CNcomment:ç­‰å¾…æ¶ˆéšåŒº CNend
 \attention \n
 N/A
-CNcomment:ÎŞ  CNend
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú  CNend            
-\param[out] N/A. CNcomment:ÎŞ  CNend
+CNcomment:æ—   CNend
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„  CNend            
+\param[out] N/A. CNcomment:æ—   CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -718,15 +718,15 @@ HI_S32 HI_GO_WaitForBlank(HI_HANDLE Layer);
 
 
 /**
-\brief Configures the alpha information about a graphics layer. This API is an extended API. CNcomment:ÉèÖÃÍ¼²ãalphaĞÅÏ¢£¬À©Õ¹½Ó¿Ú CNend
+\brief Configures the alpha information about a graphics layer. This API is an extended API. CNcomment:è®¾ç½®å›¾å±‚alphaä¿¡æ¯ï¼Œæ‰©å±•æ¥å£ CNend
 \attention \n
 The alpha0 and alpha1 of the data structure HIGO_LAYER_ALPHA_S are valid only in ARGB1555 format.
 This API is used to implement the translucent effect in ARGB1555 format.
-CNcomment:¸Ã½Ó¿ÚHIGO_LAYER_ALPHA_S½á¹¹ÌåµÄalpha0,alpha1Ö»ÔÚARGB1555¸ñÊ½ÏÂ²ÅÓĞĞ§£¬
-ÓÃÓÚÔÚARGB1555¸ñÊ½ÏÂÊµÏÖ°ëÍ¸Ã÷Ğ§¹û CNend
+CNcomment:è¯¥æ¥å£HIGO_LAYER_ALPHA_Sç»“æ„ä½“çš„alpha0,alpha1åªåœ¨ARGB1555æ ¼å¼ä¸‹æ‰æœ‰æ•ˆï¼Œ
+ç”¨äºåœ¨ARGB1555æ ¼å¼ä¸‹å®ç°åŠé€æ˜æ•ˆæœ CNend
 
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú CNend              
-\param[in] pAlphaInfo   Alpha information about a graphics layer. The value cannot be empty. CNcomment:Í¼²ãalphaĞÅÏ¢£¬²»¿ÉÎª¿Õ CNend  
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend              
+\param[in] pAlphaInfo   Alpha information about a graphics layer. The value cannot be empty. CNcomment:å›¾å±‚alphaä¿¡æ¯ï¼Œä¸å¯ä¸ºç©º CNend  
 \param[out] N/A. 
 
 \retval ::HI_SUCCESS
@@ -742,12 +742,12 @@ HI_S32 HI_GO_SetLayerAlphaEx(HI_HANDLE Layer,  HIGO_LAYER_ALPHA_S *pAlphaInfo);
 
 
 /**
-\brief Obtains the alpha information about a graphics layer. This API is an extended API. CNcomment:»ñÈ¡Í¼²ãalphaĞÅÏ¢£¬À©Õ¹½Ó¿Ú CNend
+\brief Obtains the alpha information about a graphics layer. This API is an extended API. CNcomment:è·å–å›¾å±‚alphaä¿¡æ¯ï¼Œæ‰©å±•æ¥å£ CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú CNend             
-\param[out] pAlphaInfo  Alpha information about a graphics layer. The value cannot be empty. CNcomment:Í¼²ãalphaĞÅÏ¢£¬²»¿ÉÎª¿Õ CNend    
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend             
+\param[out] pAlphaInfo  Alpha information about a graphics layer. The value cannot be empty. CNcomment:å›¾å±‚alphaä¿¡æ¯ï¼Œä¸å¯ä¸ºç©º CNend    
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -760,11 +760,11 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetLayerAlphaEx(HI_HANDLE Layer,  HIGO_LAYER_ALPHA_S *pAlphaInfo);
 
 /** 
-\brief set the Z order of graphics layer in the sample display. CNcomment:¸Ä±äÍ¬Ò»ÏÔÊ¾Éè±¸ÉÏÍ¼ĞÎ²ãµÄZĞò¡£CNend
+\brief set the Z order of graphics layer in the sample display. CNcomment:æ”¹å˜åŒä¸€æ˜¾ç¤ºè®¾å¤‡ä¸Šå›¾å½¢å±‚çš„Zåºã€‚CNend
 \attention \n
-this function make effect imediately. CNcomment:¸Ã¹¦ÄÜĞèÒªÓ²¼şÖ§³ÖZĞòµÄĞŞ¸Ä£¬Á¢¼´ÉúĞ§£¬ÎŞĞèË¢ĞÂ CNend
-\param[in] Layer Layer handle. CNcomment:Í¼²ã¾ä±ú  CNend     
-\param[in] ZFlag zorder flag. CNcomment:ĞŞ¸ÄZĞò±êÖ¾ CNend
+this function make effect imediately. CNcomment:è¯¥åŠŸèƒ½éœ€è¦ç¡¬ä»¶æ”¯æŒZåºçš„ä¿®æ”¹ï¼Œç«‹å³ç”Ÿæ•ˆï¼Œæ— éœ€åˆ·æ–° CNend
+\param[in] Layer Layer handle. CNcomment:å›¾å±‚å¥æŸ„  CNend     
+\param[in] ZFlag zorder flag. CNcomment:ä¿®æ”¹Zåºæ ‡å¿— CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -778,11 +778,11 @@ this function make effect imediately. CNcomment:¸Ã¹¦ÄÜĞèÒªÓ²¼şÖ§³ÖZĞòµÄĞŞ¸Ä£¬Á¢¼
 HI_S32 HI_GO_SetLayerZorder(HI_HANDLE Layer, HIGO_ZORDER_E enZOrder);
 
 /** 
-\brief get the Z order of graphics layer in the sample display. CNcomment:»ñÈ¡Í¬Ò»ÏÔÊ¾Éè±¸ÉÏÍ¼ĞÎ²ãµÄZĞò¡£CNend
+\brief get the Z order of graphics layer in the sample display. CNcomment:è·å–åŒä¸€æ˜¾ç¤ºè®¾å¤‡ä¸Šå›¾å½¢å±‚çš„Zåºã€‚CNend
 \attention \n
-ZĞòÔ½Ğ¡µÄÍ¼²ãÔ½¿¿ÏÂ CNend
-\param[in] Layer    Layer handle. CNcomment:Í¼²ã¾ä±ú  CNend
-\param[out] pZOrder Z Order Information. CNcomment:Í¼²ãZĞòĞÅÏ¢¡£CNend
+Zåºè¶Šå°çš„å›¾å±‚è¶Šé ä¸‹ CNend
+\param[in] Layer    Layer handle. CNcomment:å›¾å±‚å¥æŸ„  CNend
+\param[out] pZOrder Z Order Information. CNcomment:å›¾å±‚Zåºä¿¡æ¯ã€‚CNend
 
 
 \retval ::HI_SUCCESS
@@ -796,13 +796,13 @@ ZĞòÔ½Ğ¡µÄÍ¼²ãÔ½¿¿ÏÂ CNend
 HI_S32 HI_GO_GetLayerZorder(HI_HANDLE Layer, HI_U32* pu32ZOrder);
 
 /**
-\brief Sets frame input encode mode of a graphic layer. CNcomment:ÉèÖÃÍ¼ĞÎ²ãÊäÈë3D¸ñÊ½£¬Êä³ö¸ñÊ½×Ô¶¯¸úËæVO½øĞĞÉèÖÃ¡£CNend
+\brief Sets frame input encode mode of a graphic layer. CNcomment:è®¾ç½®å›¾å½¢å±‚è¾“å…¥3Dæ ¼å¼ï¼Œè¾“å‡ºæ ¼å¼è‡ªåŠ¨è·ŸéšVOè¿›è¡Œè®¾ç½®ã€‚CNend
 \attention \n
 MONO is the default mode.
-CNcomment:Ä¬ÈÏÎªMONO¸ñÊ½£¬¼´ÆÕÍ¨·Ç3D Stereo¸ñÊ½. CNend
+CNcomment:é»˜è®¤ä¸ºMONOæ ¼å¼ï¼Œå³æ™®é€šé3D Stereoæ ¼å¼. CNend
 
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú CNend             
-\param[in] EncPicFrm  Frame encode mode.The value cannot be empty. CNcomment:Í¼²ãÖ¡´«Êä±àÂë¸ñÊ½£¬²»¿ÉÎª¿Õ CNend  
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend             
+\param[in] EncPicFrm  Frame encode mode.The value cannot be empty. CNcomment:å›¾å±‚å¸§ä¼ è¾“ç¼–ç æ ¼å¼ï¼Œä¸å¯ä¸ºç©º CNend  
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -817,12 +817,12 @@ HI_S32 HI_GO_SetStereoMode(HI_HANDLE Layer,  HIGO_STEREO_MODE_E InputEnc);
 
 
 /**
-\brief Obtains frame encode mode of a graphic layer. CNcomment:»ñÈ¡Í¼ĞÎ²ã3D¸ñÊ½¡£CNend
+\brief Obtains frame encode mode of a graphic layer. CNcomment:è·å–å›¾å½¢å±‚3Dæ ¼å¼ã€‚CNend
 \attention \n
-ÎŞ CNend
+æ—  CNend
 
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú CNend             
-\param[out] pInputEnc  Frame encode mode.The value cannot be empty. CNcomment:Í¼²ãÖ¡´«Êä±àÂë¸ñÊ½£¬²»¿ÉÎª¿Õ CNend  
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend             
+\param[out] pInputEnc  Frame encode mode.The value cannot be empty. CNcomment:å›¾å±‚å¸§ä¼ è¾“ç¼–ç æ ¼å¼ï¼Œä¸å¯ä¸ºç©º CNend  
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -836,12 +836,12 @@ HI_S32 HI_GO_GetStereoMode(HI_HANDLE Layer,  HIGO_STEREO_MODE_E *pInputEnc);
 
 
 /**
-\brief set the 3d depth, only support depth in Horizontal . CNcomment:ÉèÖÃ¾°Éî,Ö»Ö§³ÖË®Æ½·½Ïò¾°Éî CNend
+\brief set the 3d depth, only support depth in Horizontal . CNcomment:è®¾ç½®æ™¯æ·±,åªæ”¯æŒæ°´å¹³æ–¹å‘æ™¯æ·± CNend
 \attention \n
-ÎŞ CNend
+æ—  CNend
 
-\param[in]  Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú CNend             
-\param[out] StereoDepth  3D depth. CNcomment:¾°Éî CNend
+\param[in]  Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend             
+\param[out] StereoDepth  3D depth. CNcomment:æ™¯æ·± CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -855,12 +855,12 @@ HI_S32 HI_GO_SetStereoDepth(HI_HANDLE Layer,  HI_S32  s32StereoDepth);
 
 
 /**
-\brief get the 3d depth, only support depth in Horizontal . CNcomment:»ñÈ¡¾°Éî,Ö»Ö§³ÖË®Æ½·½Ïò¾°Éî CNend
+\brief get the 3d depth, only support depth in Horizontal . CNcomment:è·å–æ™¯æ·±,åªæ”¯æŒæ°´å¹³æ–¹å‘æ™¯æ·± CNend
 \attention \n
-ÎŞ CNend
+æ—  CNend
 
-\param[in]  Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú CNend              
-\param[out] pStereoDepth  3D depth. CNcomment:¾°Éî CNend
+\param[in]  Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend              
+\param[out] pStereoDepth  3D depth. CNcomment:æ™¯æ·± CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -873,14 +873,14 @@ HI_S32 HI_GO_SetStereoDepth(HI_HANDLE Layer,  HI_S32  s32StereoDepth);
 HI_S32 HI_GO_GetStereoDepth(HI_HANDLE Layer,  HI_S32  *ps32StereoDepth);
 
 /**
-\brief Sets compress mode of a graphic layer. CNcomment:ÉèÖÃÊ¹ÄÜÑ¹ËõÄ£Ê½ CNend
+\brief Sets compress mode of a graphic layer. CNcomment:è®¾ç½®ä½¿èƒ½å‹ç¼©æ¨¡å¼ CNend
 \attention \n
 When compress is enable, only HIGO_PF_8888 is supported;SD layer and  STEREO TOPANDBOTTOM
 are also not supported.
-CNcomment:Ö»Ö§³ÖÏñËØ¸ñÊ½ÎªHIGO_PF_8888£¬²»Ö§³Ö±êÇåºÍ3D STEREO TOPANDBOTTOMÄ£Ê½ CNend
+CNcomment:åªæ”¯æŒåƒç´ æ ¼å¼ä¸ºHIGO_PF_8888ï¼Œä¸æ”¯æŒæ ‡æ¸…å’Œ3D STEREO TOPANDBOTTOMæ¨¡å¼ CNend
 
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú CNend              
-\param[in] StereoMode  Stereo mode, the value cannot be empty. CNcomment:Ñ¹ËõÊ¹ÄÜ£¬²»¿ÉÎª¿Õ CNend
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend              
+\param[in] StereoMode  Stereo mode, the value cannot be empty. CNcomment:å‹ç¼©ä½¿èƒ½ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -894,11 +894,11 @@ HI_S32 HI_GO_SetCompression(HI_HANDLE Layer,  HI_BOOL bEnable);
 
 
 /**
-\brief Sets compress mode of a graphic layer. CNcomment:»ñÈ¡Ñ¹ËõÄ£Ê½ÊÇ·ñÊ¹ÄÜ CNend
+\brief Sets compress mode of a graphic layer. CNcomment:è·å–å‹ç¼©æ¨¡å¼æ˜¯å¦ä½¿èƒ½ CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
-\param[in] Layer       Layer handle. CNcomment:Í¼²ã¾ä±ú CNend             
-\param[out] pbEnable  Stereo mode, the value cannot be empty. CNcomment:Ñ¹ËõÊ¹ÄÜ£¬²»¿ÉÎª¿Õ CNend  
+N/A. CNcomment:æ—  CNend
+\param[in] Layer       Layer handle. CNcomment:å›¾å±‚å¥æŸ„ CNend             
+\param[out] pbEnable  Stereo mode, the value cannot be empty. CNcomment:å‹ç¼©ä½¿èƒ½ï¼Œä¸å¯ä¸ºç©º CNend  
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -911,12 +911,12 @@ N/A. CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetCompression(HI_HANDLE Layer,  HI_BOOL* pbEnable);
 
 /**
-\brief Create ScrollText. CNcomment:´´½¨¹ö¶¯×ÖÄ» CNend
+\brief Create ScrollText. CNcomment:åˆ›å»ºæ»šåŠ¨å­—å¹• CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] pstScrollAttr  ScrollText attribute,the value cannot be empty. CNcomment:¹ö¶¯×ÖÄ»ÊôĞÔ CNend
-\param[out] phScrollText  ScrollText handle. CNcomment:¹ö¶¯×ÖÄ»µÄÊä³ö¾ä±ú CNend
+\param[in] pstScrollAttr  ScrollText attribute,the value cannot be empty. CNcomment:æ»šåŠ¨å­—å¹•å±æ€§ CNend
+\param[out] phScrollText  ScrollText handle. CNcomment:æ»šåŠ¨å­—å¹•çš„è¾“å‡ºå¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -932,12 +932,12 @@ HI_S32 HI_GO_CreateScrollText(HIGO_SCROLLTEXT_ATTR_S * pstScrollAttr, HI_HANDLE 
 
 
 /**
-\brief Fill data to ScrollText cache buffer. CNcomment:Ïò¹ö¶¯×ÖÄ»ËÍÈëÊı¾İ CNend
+\brief Fill data to ScrollText cache buffer. CNcomment:å‘æ»šåŠ¨å­—å¹•é€å…¥æ•°æ® CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] hScrollText  ScrollText handle.     CNcomment:¹ö¶¯×ÖÄ»µÄ¾ä±ú CNend
-\param[out] pstScrollData ScrollText data information. CNcomment:¹ö¶¯×ÖÄ»µÄÊı¾İĞÅÏ¢ CNend
+\param[in] hScrollText  ScrollText handle.     CNcomment:æ»šåŠ¨å­—å¹•çš„å¥æŸ„ CNend
+\param[out] pstScrollData ScrollText data information. CNcomment:æ»šåŠ¨å­—å¹•çš„æ•°æ®ä¿¡æ¯ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -952,11 +952,11 @@ HI_S32 HI_GO_FillScrollText(HI_HANDLE hScrollText, HIGO_SCROLLTEXT_DATA_S * pstS
 
 
 /**
-\brief Pause the ScrollText. CNcomment:ÔİÍ£¹ö¶¯×ÖÄ» CNend
+\brief Pause the ScrollText. CNcomment:æš‚åœæ»šåŠ¨å­—å¹• CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] hScrollText  ScrollText handle.   CNcomment:¹ö¶¯×ÖÄ»µÄ¾ä±ú CNend
+\param[in] hScrollText  ScrollText handle.   CNcomment:æ»šåŠ¨å­—å¹•çš„å¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -970,11 +970,11 @@ HI_S32  HI_GO_PauseScrollText(HI_HANDLE hScrollText);
 
 
 /**
-\brief Resume the ScrollText,the ScrollText has Paused. CNcomment:»Ö¸´ÒÑÔİÍ£µÄ¹ö¶¯×ÖÄ» CNend
+\brief Resume the ScrollText,the ScrollText has Paused. CNcomment:æ¢å¤å·²æš‚åœçš„æ»šåŠ¨å­—å¹• CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] hScrollText  ScrollText handle.  CNcomment:¹ö¶¯×ÖÄ»µÄ¾ä±ú CNend
+\param[in] hScrollText  ScrollText handle.  CNcomment:æ»šåŠ¨å­—å¹•çš„å¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -988,11 +988,11 @@ HI_S32  HI_GO_ResumeScrollText(HI_HANDLE hScrollText);
 
 
 /**
-\brief Destroy ScrollText. CNcomment:Ïú»Ù¹ö¶¯×ÖÄ» CNend
+\brief Destroy ScrollText. CNcomment:é”€æ¯æ»šåŠ¨å­—å¹• CNend
 \attention \n
-N/A. CNcomment:ÎŞ CNend
+N/A. CNcomment:æ—  CNend
 
-\param[in] hScrollText ScrollText handle.  CNcomment:¹ö¶¯×ÖÄ»µÄ¾ä±ú CNend
+\param[in] hScrollText ScrollText handle.  CNcomment:æ»šåŠ¨å­—å¹•çš„å¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT

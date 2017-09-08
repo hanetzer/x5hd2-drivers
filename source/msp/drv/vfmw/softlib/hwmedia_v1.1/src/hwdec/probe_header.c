@@ -22,7 +22,7 @@
 #include "bitstream.h"
 #include "golomb.h"
 
-/*ÓÃÀ´mpeg2½âÎöÍ·²¿ĞÅÏ¢ xiongfei20100302Ìí¼Ó*/
+/*ç”¨æ¥mpeg2è§£æå¤´éƒ¨ä¿¡æ¯ xiongfei20100302æ·»åŠ */
 #include "avcodec.h"
 #include "mpeg12.h"
 #include "h264.h"
@@ -93,7 +93,7 @@ INT32 H264_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
     INT32 iSpsFlag = NOT_FOUND;
     INT32 iPpsFlag = NOT_FOUND;
 
-    // ±£Ö¤ÖÁÉÙÊ£Óà3¸ö×Ö½Ú
+    // ä¿è¯è‡³å°‘å‰©ä½™3ä¸ªå­—èŠ‚
     if(HEADER_PREFIX < uiNumBytes)
     {
         uiNumBytes -= HEADER_PREFIX;
@@ -179,7 +179,7 @@ INT32 H264_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
             }
 
             /* 2010/06/17 16:30:00 liuxw+00139685 */
-            /* Èç¹ûÊÇÁ½¸öÁ¬ĞøµÄsps»òÁ¬ĞøµÄpps£¬¶øÇÒÊÇµÚ¶ş¸öµÄÊ±ºò£¬¾ÍÏÈ²»Ìø¹ıÆğÊ¼Âë */
+            /* å¦‚æœæ˜¯ä¸¤ä¸ªè¿ç»­çš„spsæˆ–è¿ç»­çš„ppsï¼Œè€Œä¸”æ˜¯ç¬¬äºŒä¸ªçš„æ—¶å€™ï¼Œå°±å…ˆä¸è·³è¿‡èµ·å§‹ç  */
             /* skip the start code */
             if(!((FOUND_HEADER == iSpsFlag && H264_NAL_SPS == iNaluType) || (FOUND_HEADER == iPpsFlag &&  H264_NAL_PPS == iNaluType)))
             {
@@ -486,7 +486,7 @@ static INT32 H264_DECODE_PPS(GetBitContext *pstBitContext, STRU_IVIDEO_STREAM_IN
 			uint8_t scaling_matrix4[6][16];
 			uint8_t scaling_matrix8[2][64];
 
-			// sizeof(H264Context) = 286KB£¬ÎªÁË½ÚÊ¡Õ»¿Õ¼ä¸ÄÎªÔÚ¶ÑÖĞ·ÖÅä
+			// sizeof(H264Context) = 286KBï¼Œä¸ºäº†èŠ‚çœæ ˆç©ºé—´æ”¹ä¸ºåœ¨å †ä¸­åˆ†é…
 			h = IMedia_Malloc(sizeof(H264Context));
 			if(NULL == h)
 			{
@@ -710,7 +710,7 @@ static INT32 H264_DECODE_SPS(GetBitContext *pstBitContext, STRU_IVIDEO_STREAM_IN
 		return RETURN_ERR;
 	}
 
-	// sizeof(H264Context) = 286KB£¬ÎªÁË½ÚÊ¡Õ»¿Õ¼ä¸ÄÎªÔÚ¶ÑÖĞ·ÖÅä
+	// sizeof(H264Context) = 286KBï¼Œä¸ºäº†èŠ‚çœæ ˆç©ºé—´æ”¹ä¸ºåœ¨å †ä¸­åˆ†é…
 	h = IMedia_Malloc(sizeof(H264Context));
 	if(NULL == h)
 	{
@@ -866,8 +866,8 @@ static INT32 H264_DECODE_SPS(GetBitContext *pstBitContext, STRU_IVIDEO_STREAM_IN
 				IMEDIA_LOG(IMEDIA_WARNING,"poc_cycle_length[%d] exceed MAX_POC_CYCLE[%d]!\n",uiPocCycleLength,MAX_POC_CYCLE);
 				//              return RETURN_ERR;
 				/* 2010/06/17 8:30:00 liuxw+00139685 */
-				/* Èôpoc cycle length²»ºÏ·¨£¬Ôò½øĞĞĞŞÕı */
-				uiPocCycleLength = MAX_POC_CYCLE - 1;     //TIĞŞÕıÎªÆä×ÔÉíµÄÖµ(Ïàµ±ÓÚÃ»ÓĞĞŞÕı),¸ù¾İffmpegµÄ·½Ê½½øĞĞĞŞÕı
+				/* è‹¥poc cycle lengthä¸åˆæ³•ï¼Œåˆ™è¿›è¡Œä¿®æ­£ */
+				uiPocCycleLength = MAX_POC_CYCLE - 1;     //TIä¿®æ­£ä¸ºå…¶è‡ªèº«çš„å€¼(ç›¸å½“äºæ²¡æœ‰ä¿®æ­£),æ ¹æ®ffmpegçš„æ–¹å¼è¿›è¡Œä¿®æ­£
 			}
 
 			for(i = 0; i < uiPocCycleLength; i++)
@@ -1035,21 +1035,21 @@ static INT32 MPEG4_CHECK_PROFILE(STRU_IVIDEO_STREAM_INFO *pstStream)
 }
 
 /*
-´Ëº¯ÊıÓÃÀ´Ñ°ÕÒmpeg2ÂëÁ÷ÖĞµÄseq header£¬Èç¹ûÓĞÀ©Õ¹Í·Ò²Ò»²¢Ñ°ÕÒ
-ÈôÕÒµ½Ôò·µ»ØheaderµÄµØÖ·ºÍ³¤¶È
-ÈôÎ´ÕÒµ½ÔòÔÚpiStatusÖĞ·µ»Ø´íÎó£¬²¢¸æËßÉÏ²ã
+æ­¤å‡½æ•°ç”¨æ¥å¯»æ‰¾mpeg2ç æµä¸­çš„seq headerï¼Œå¦‚æœæœ‰æ‰©å±•å¤´ä¹Ÿä¸€å¹¶å¯»æ‰¾
+è‹¥æ‰¾åˆ°åˆ™è¿”å›headerçš„åœ°å€å’Œé•¿åº¦
+è‹¥æœªæ‰¾åˆ°åˆ™åœ¨piStatusä¸­è¿”å›é”™è¯¯ï¼Œå¹¶å‘Šè¯‰ä¸Šå±‚
 xiongfei 20100302
 */
 INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,INT32 *piStatus,STRU_IVIDDEC_META_DATA *pstMetaData,STRU_IVIDEO_STREAM_INFO *pstParams)
 {
 //  INT32 iRet = RETURN_OK;
 
-    /*ÔÚËù¶ÁÈëµÄ×Ö½ÚÊıÖĞÑ°ÕÒĞòÁĞÍ· ,¿ÉÄÜÃ»ÓĞgopÍ·xiongfei20100210*/
+    /*åœ¨æ‰€è¯»å…¥çš„å­—èŠ‚æ•°ä¸­å¯»æ‰¾åºåˆ—å¤´ ,å¯èƒ½æ²¡æœ‰gopå¤´xiongfei20100210*/
     {
 #define FIND_MPEG2_VOS 1
 #define FIND_MPEG2_VOP 1
 #define MPEG2_MAX_HEADER_LENGTH 800
-        /*¶¨ÒåÒ»Ğ©ÁÙÊ±½á¹¹ÌåÓÃÒÔ½âÎöÍ·²¿ĞÅÏ¢ xiongfei20100302*/
+        /*å®šä¹‰ä¸€äº›ä¸´æ—¶ç»“æ„ä½“ç”¨ä»¥è§£æå¤´éƒ¨ä¿¡æ¯ xiongfei20100302*/
         Mpeg1Context s1 ;
 
         AVCodecContext   *avctx = NULL;
@@ -1061,7 +1061,7 @@ INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
         INT32 iFindVopFlag = 0;
         UINT32 uiStartCode = (UINT32)-1;
 
-        /*¸ù¾İc68632¼ìÊÓÒâ¼û½øĞĞĞŞ¸Ä,µ±uiNumBytes<3Ê±*puiBytesConsumed»á·´×ª x00141957 20100418*/
+        /*æ ¹æ®c68632æ£€è§†æ„è§è¿›è¡Œä¿®æ”¹,å½“uiNumBytes<3æ—¶*puiBytesConsumedä¼šåè½¬ x00141957 20100418*/
         if(uiNumBytes<=PSC_LENGTH_IN_BYTES)
         {
             *puiBytesConsumed = uiNumBytes;
@@ -1071,12 +1071,12 @@ INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
         avctx = avcodec_alloc_context();
         if(NULL == avctx)
         {
-            // Èç¹ûÔÚµ±Ç°»º³åÇøÄÚÎŞ·¨ÕÒµ½ÆğÊ¼Âë ±¬warning xiongfei20100302
+            // å¦‚æœåœ¨å½“å‰ç¼“å†²åŒºå†…æ— æ³•æ‰¾åˆ°èµ·å§‹ç  çˆ†warning xiongfei20100302
             IMEDIA_LOG(IMEDIA_ERROR,"avctx alloc failed!\n");
             return IMEDIA_RET_SUCCESS;//?
         }
 
-        /*³õÊ¼»¯½âÎöÍ·²¿ËùÓÃÁÙÊ±½á¹¹Ìå xiongfei20100302*/
+        /*åˆå§‹åŒ–è§£æå¤´éƒ¨æ‰€ç”¨ä¸´æ—¶ç»“æ„ä½“ xiongfei20100302*/
         avctx->priv_data = &s1;
         s1.mpeg_enc_ctx.avctx = avctx;
 
@@ -1093,7 +1093,7 @@ INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
 
             pucBufPos = ff_find_start_code(pucBufPos,pucBufEnd, &uiStartCode);
 
-            /*Èç¹ûÕÒ²»µ½Í·,Ôò·µ»Øµ±Ç°ËùÕÒµ½Í·µÄÆğÊ¼µØÖ·£¬ÈôÃ»ÓĞÔò·µ»Ø0*/
+            /*å¦‚æœæ‰¾ä¸åˆ°å¤´,åˆ™è¿”å›å½“å‰æ‰€æ‰¾åˆ°å¤´çš„èµ·å§‹åœ°å€ï¼Œè‹¥æ²¡æœ‰åˆ™è¿”å›0*/
             if (uiStartCode > 0x1ff)
             {
                 if(FIND_MPEG2_VOS == iFindVosFlag)
@@ -1107,7 +1107,7 @@ INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
                 *piStatus = META_DATA_NOT_FOUND;
                 pstMetaData->iNumMetaData = 0;
                 
-                // Èç¹ûÔÚµ±Ç°»º³åÇøÄÚÎŞ·¨ÕÒµ½ÆğÊ¼Âë ±¬warning xiongfei20100302
+                // å¦‚æœåœ¨å½“å‰ç¼“å†²åŒºå†…æ— æ³•æ‰¾åˆ°èµ·å§‹ç  çˆ†warning xiongfei20100302
                 IMEDIA_LOG(IMEDIA_WARNING,"BITSTREAM BUFFER is FINISHED!\n");
                 avcodec_free_context(avctx);
                 avctx = NULL;
@@ -1117,19 +1117,19 @@ INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
             {
                 iInputSize = pucBufEnd - pucBufPos;
 
-                /*ÈôÕÒµ½ÆğÊ¼ÂëÔò¸ù¾İ¸÷ÆğÊ¼ÂëÀàĞÍ½âÂëheaderĞÅÏ¢ xiongfei20100210 */
+                /*è‹¥æ‰¾åˆ°èµ·å§‹ç åˆ™æ ¹æ®å„èµ·å§‹ç ç±»å‹è§£ç headerä¿¡æ¯ xiongfei20100210 */
                 switch(uiStartCode) 
                 {
                 case SEQ_START_CODE:
                     {
-                        /*Îª·ÀÖ¹µ±Ç°±ÈÌØÊı²»¹»³¤¶øµ¼ÖÂ½âÂëÍ·²¿³ö´í£¬×öÒÔÏÂ´¦Àí£ºµ±µ±Ç°ËùÊ£ÏÂ±ÈÌØÊıĞ¡ÓÚ1kÊ±£¬·ÅÆú½âÂëÍ·²¿£¬Ìø³öÈ¥´ÓÍâ²¿ÔÙ¶ÁÊı¾İ½øÀ´xionigfei20100312    */
+                        /*ä¸ºé˜²æ­¢å½“å‰æ¯”ç‰¹æ•°ä¸å¤Ÿé•¿è€Œå¯¼è‡´è§£ç å¤´éƒ¨å‡ºé”™ï¼Œåšä»¥ä¸‹å¤„ç†ï¼šå½“å½“å‰æ‰€å‰©ä¸‹æ¯”ç‰¹æ•°å°äº1kæ—¶ï¼Œæ”¾å¼ƒè§£ç å¤´éƒ¨ï¼Œè·³å‡ºå»ä»å¤–éƒ¨å†è¯»æ•°æ®è¿›æ¥xionigfei20100312    */
                         if( MPEG2_MAX_HEADER_LENGTH > (uiNumBytes - (UINT32)((UINT32)pucBufPos - 4 - (UINT32)pucBuf)))
                         {
                             *puiBytesConsumed = (UINT32)((UINT32)pucBufPos - 4 - (UINT32)pucBuf);
                             *piStatus = META_DATA_NOT_FOUND;
                             pstMetaData->iNumMetaData = 0;
 
-                            // Èç¹ûÔÚµ±Ç°»º³åÇøÄÚÎŞ·¨ÕÒµ½ÆğÊ¼Âë ±¬warning xiongfei20100302
+                            // å¦‚æœåœ¨å½“å‰ç¼“å†²åŒºå†…æ— æ³•æ‰¾åˆ°èµ·å§‹ç  çˆ†warning xiongfei20100302
                             IMEDIA_LOG(IMEDIA_WARNING,"BITSTREAM BUFFER is NOT ENOUGH!\n");
                             avcodec_free_context(avctx);
                             avctx = NULL;
@@ -1138,7 +1138,7 @@ INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
                         
                         iDecodeHeaderFlag = mpeg1_decode_sequence(avctx,pucBufPos,iInputSize);
 
-                        /*ÒÑ¾­ÕÒµ½vosÍ·  xiongfei20100210*/
+                        /*å·²ç»æ‰¾åˆ°voså¤´  xiongfei20100210*/
                         if(iDecodeHeaderFlag == 0)
                         {
                             iFindVosFlag = FIND_MPEG2_VOS;
@@ -1152,10 +1152,10 @@ INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
                         {
                             *puiBytesConsumed = uiNumBytes - ((INT32)pucBufEnd - (INT32)pucBufPos + 4);
                             iFindVopFlag = FIND_MPEG2_VOP;
-                            /*ÖÃÎ»×´Ì¬ ±íÊ¾ÒÑ¾­»ñµÃËùĞèÊı¾İ xiongfei20100212*/
+                            /*ç½®ä½çŠ¶æ€ è¡¨ç¤ºå·²ç»è·å¾—æ‰€éœ€æ•°æ® xiongfei20100212*/
                             *piStatus = META_DATA_FOUND;
                             pstMetaData->iNumMetaData = 1;
-                            /* ÍË³ö xiongfei20100302*/
+                            /* é€€å‡º xiongfei20100302*/
                         }
                     }
                     break;
@@ -1163,7 +1163,7 @@ INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
                     {
                         if(FIND_MPEG2_VOS == iFindVosFlag)
                         {
-                            //guoshan+00101841 20100623 pc-lint warning: Warning 578 Declaration of symbol 's1' hides symbol 's1' (line 262),¸Äs1Îªs2
+                            //guoshan+00101841 20100623 pc-lint warning: Warning 578 Declaration of symbol 's1' hides symbol 's1' (line 262),æ”¹s1ä¸ºs2
 //                             Mpeg1Context *s1 = avctx->priv_data;
 //                             MpegEncContext *s = &s1->mpeg_enc_ctx;
                             Mpeg1Context *s2 = avctx->priv_data;
@@ -1172,20 +1172,20 @@ INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
                             int ext_type;
                             const UINT8  *pBuffer = pucBufPos;
 
-                            /*Îª·ÀÖ¹µ±Ç°±ÈÌØÊı²»¹»³¤¶øµ¼ÖÂ½âÂëÍ·²¿³ö´í£¬×öÒÔÏÂ´¦Àí£ºµ±µ±Ç°ËùÊ£ÏÂ±ÈÌØÊıĞ¡ÓÚ1kÊ±£¬·ÅÆú½âÂëÍ·²¿£¬Ìø³öÈ¥´ÓÍâ²¿ÔÙ¶ÁÊı¾İ½øÀ´xionigfei20100312    */
+                            /*ä¸ºé˜²æ­¢å½“å‰æ¯”ç‰¹æ•°ä¸å¤Ÿé•¿è€Œå¯¼è‡´è§£ç å¤´éƒ¨å‡ºé”™ï¼Œåšä»¥ä¸‹å¤„ç†ï¼šå½“å½“å‰æ‰€å‰©ä¸‹æ¯”ç‰¹æ•°å°äº1kæ—¶ï¼Œæ”¾å¼ƒè§£ç å¤´éƒ¨ï¼Œè·³å‡ºå»ä»å¤–éƒ¨å†è¯»æ•°æ®è¿›æ¥xionigfei20100312    */
                             if( MPEG2_MAX_HEADER_LENGTH > (uiNumBytes - (UINT32)((UINT32)pucBufPos - 4 - (UINT32)pucBuf)))
                             {
                                 *puiBytesConsumed = (UINT32)((UINT32)pucBufPos - 4 - (UINT32)pucBuf);
                                 *piStatus = META_DATA_NOT_FOUND;
                                 pstMetaData->iNumMetaData = 0;
 
-                                // Èç¹ûÔÚµ±Ç°»º³åÇøÄÚÎŞ·¨ÕÒµ½ÆğÊ¼Âë ±¬warning xiongfei20100302
+                                // å¦‚æœåœ¨å½“å‰ç¼“å†²åŒºå†…æ— æ³•æ‰¾åˆ°èµ·å§‹ç  çˆ†warning xiongfei20100302
                                 IMEDIA_LOG(IMEDIA_WARNING,"BITSTREAM BUFFER is NOT ENOUGH!\n");
                                 avcodec_free_context(avctx);
                                 avctx = NULL;
                                 return IMEDIA_RET_SUCCESS;//? 
                             }                                
-                            /*x00141957 20100607 liuxiaowei²âÊÔÎóÂë*/
+                            /*x00141957 20100607 liuxiaoweiæµ‹è¯•è¯¯ç */
                             init_get_bits(&s->gb, pBuffer, iInputSize*8);
                             ext_type = get_bits(&s->gb, 4);    
                             
@@ -1196,11 +1196,11 @@ INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
                                                     mpeg_decode_extension(avctx,pucBufPos,iInputSize);
                                                     {
 
-                                                        /*¸ù¾İk68699´úÂë¼ìÊÓÒâ¼û½øĞĞĞŞ¸Ä£¬½âÂëÀ©Õ¹¿ÉÄÜ»áÊ§°Üµ¼ÖÂÎŞ·¨»ñµÃÉ«É¢Ä£Ê½ x00141957 20100518*/
+                                                        /*æ ¹æ®k68699ä»£ç æ£€è§†æ„è§è¿›è¡Œä¿®æ”¹ï¼Œè§£ç æ‰©å±•å¯èƒ½ä¼šå¤±è´¥å¯¼è‡´æ— æ³•è·å¾—è‰²æ•£æ¨¡å¼ x00141957 20100518*/
                                                         if(s->chroma_format != 1 && s->chroma_format != 2)
                                                         {
                                                             iFindVosFlag = 0;
-                                                            /*x00141957 20100607 Èç¹ûchroma´íÎó Ôò½«Ö¸ÕëÖÃ¿Õ*/
+                                                            /*x00141957 20100607 å¦‚æœchromaé”™è¯¯ åˆ™å°†æŒ‡é’ˆç½®ç©º*/
                                                             pstMetaData->apucMetaData[0] = NULL;
                                                         }
                                                     }
@@ -1222,17 +1222,17 @@ INT32 MPEG2_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
             }            
         }
         
-        /*¼ÇÂ¼²¢¼ÆËãsar x00141957 20100726*/
+        /*è®°å½•å¹¶è®¡ç®—sar x00141957 20100726*/
         mpeg12_get_sar(&s1.mpeg_enc_ctx,&pstParams->stAspectRatio.usSarHeight,&pstParams->stAspectRatio.usSarWidth);
 
-        /*´Ó´Ëº¯ÊıÍË³öÓĞÁ½ÖÖÇé¿ö £¬Ò»ÖÖÊÇÂëÁ÷ÖĞÃ»ÓĞÕÒµ½Ö¡Í·£¬¶øÊı¾İÓÃ¾¡£¬Ò»ÖÖÊÇÕÒµ½ xiongfei20100211*/
+        /*ä»æ­¤å‡½æ•°é€€å‡ºæœ‰ä¸¤ç§æƒ…å†µ ï¼Œä¸€ç§æ˜¯ç æµä¸­æ²¡æœ‰æ‰¾åˆ°å¸§å¤´ï¼Œè€Œæ•°æ®ç”¨å°½ï¼Œä¸€ç§æ˜¯æ‰¾åˆ° xiongfei20100211*/
         pstMetaData->ausMetaDataLen[0] = (UINT16)(pucBufPos - pstMetaData->apucMetaData[0] - 4);
         pstParams->usWidth = s1.mpeg_enc_ctx.width;
         pstParams->usHeight = s1.mpeg_enc_ctx.height;
         pstParams->eProfile = (ENUM_IVIDEO_CODEC_PROFILE)avctx->profile;
         pstParams->eLevel = (ENUM_IVIDEO_CODEC_LEVEL)avctx->level;
         pstParams->uiRefFrameNum = 2;
-        /*½«yuvÄ£Ê½¸¶¸øpstParamsÈÃÍâÃæ¿´¼û xiongfei201000303*/
+        /*å°†yuvæ¨¡å¼ä»˜ç»™pstParamsè®©å¤–é¢çœ‹è§ xiongfei201000303*/
         if( 1 == s1.mpeg_enc_ctx.chroma_format)
         {
             pstParams->eColorSpaceType = (ENUM_IVIDEO_COLOR_SPACE_TYPE)(s1.mpeg_enc_ctx.chroma_format - 1);
@@ -1265,7 +1265,7 @@ INT32 WMV3_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
 	AVCodecContext *pstAvctx = NULL;
 
 	/* 2010/07/14 14:30:00 liuxw+00139685 [AZ1D02219] */
-	/* ½«ÅĞ¶ÏÌõ¼şĞŞ¸ÄÎª´óÓÚµÈÓÚ */
+	/* å°†åˆ¤æ–­æ¡ä»¶ä¿®æ”¹ä¸ºå¤§äºç­‰äº */
 	//if(HEADER_PREFIX > uiNumBytes)
 	if(HEADER_PREFIX >= uiNumBytes)
 	{
@@ -1396,7 +1396,7 @@ INT32 WMV3_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
 				pstParams->usHeight = pstAvctx->coded_height;
 				pstParams->eContentType = IVIDEO_PROGRESSIVE;
 				/* 2010/07/26 14:30:00 liuxw+00139685 */
-				/* wmv3Ã»ÓĞ´ËÀàÓï·¨ÔªËØÔòÉèÎªÄ¬ÈÏÖµ */
+				/* wmv3æ²¡æœ‰æ­¤ç±»è¯­æ³•å…ƒç´ åˆ™è®¾ä¸ºé»˜è®¤å€¼ */
 				pstParams->stAspectRatio.usSarWidth  = 1;
 				pstParams->stAspectRatio.usSarHeight = 1;
 			}
@@ -1446,11 +1446,11 @@ INT32 MPEG4_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
 
     UINT32 uiStartCode = 0xff;
     UINT32 uiTmp  = 0;
-    UINT32 uiVOSOffset = 0; //guoshan +00101841 20100414±£´æÆğÊ¼ÂëµÄÆ«ÒÆ
-    UINT32 uiVOLOffset = 0; //guoshan +00101841 20100414±£´æÆğÊ¼ÂëµÄÆ«ÒÆ
+    UINT32 uiVOSOffset = 0; //guoshan +00101841 20100414ä¿å­˜èµ·å§‹ç çš„åç§»
+    UINT32 uiVOLOffset = 0; //guoshan +00101841 20100414ä¿å­˜èµ·å§‹ç çš„åç§»
     INT32 i = 0;
     INT32 iStatus = *piStatus;
-    INT32 iFoundFlag = 0;  //guoshan + 00101841 20100601 iFoundFlag =1±íÊ¾½âÎöµ½VOSÆğÊ¼Âë;iFoundFlag =2±íÊ¾½âÎöµ½VOLÆğÊ¼Âë;
+    INT32 iFoundFlag = 0;  //guoshan + 00101841 20100601 iFoundFlag =1è¡¨ç¤ºè§£æåˆ°VOSèµ·å§‹ç ;iFoundFlag =2è¡¨ç¤ºè§£æåˆ°VOLèµ·å§‹ç ;
 
     INT32 iProfile =0;
 
@@ -1466,13 +1466,13 @@ INT32 MPEG4_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
     stMpegCxt.avctx = pstAvctx;
     pstAvctx->priv_data = &stMpegCxt;
 
-    *puiBytesConsumed = 0; //³õÊ¼»¯
+    *puiBytesConsumed = 0; //åˆå§‹åŒ–
     pstMetaData->iNumMetaData = 0;
 
-    /* ±£Ö¤ÖÁÉÙ>5¸ö×Ö½Ú */
+    /* ä¿è¯è‡³å°‘>5ä¸ªå­—èŠ‚ */
     if(uiNumBytes <= MPEG4_HEADER_PREFIX_LEN)
     {
-        *puiBytesConsumed = uiNumBytes;  //guoshan+0010841 Ã»ÓĞ¸ü¶àµÄÂëÁ÷,¾Í±íÊ¾Êı¾İ¶ÁÍêÁË
+        *puiBytesConsumed = uiNumBytes;  //guoshan+0010841 æ²¡æœ‰æ›´å¤šçš„ç æµ,å°±è¡¨ç¤ºæ•°æ®è¯»å®Œäº†
         IMEDIA_LOG(IMEDIA_WARNING, "Not enough uiNumBytes[%d] for VOS/VOL start code!\n", uiNumBytes);
         goto MPEG4_CLEAN;
     }
@@ -1482,12 +1482,12 @@ INT32 MPEG4_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
 	init_get_bits(&stMpegCxt.gb, pucBuf, uiNumBytes*8);
 	stMpegCxt.bitstream_buffer_size=0;
 
-	/*ÂëÁ÷¶ÔÆëºó¿ªÊ¼ÕÒ32bitsµÄvisual_oject_sequence_start_codeÂë*/
+	/*ç æµå¯¹é½åå¼€å§‹æ‰¾32bitsçš„visual_oject_sequence_start_codeç */
 	align_get_bits(&stMpegCxt.gb);
 
 	for(i = stMpegCxt.gb.size_in_bits - get_bits_count(&stMpegCxt.gb); i > 32; i -= 8) 
 	{
-		if(META_DATA_FOUND == iStatus)  //guoshan +00101841 20100525 Í·ÒÑ½âÎö³É¹¦£¬ÍË³ö
+		if(META_DATA_FOUND == iStatus)  //guoshan +00101841 20100525 å¤´å·²è§£ææˆåŠŸï¼Œé€€å‡º
 		{
 			break; 
 		}
@@ -1499,11 +1499,11 @@ INT32 MPEG4_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
 		if(VISOBJSEQ_START_CODE == uiStartCode && (iStatus != META_DATA_FOUND_ONLY_SPS))
 		{
 			uiVOSOffset = stMpegCxt.gb.index - 32;
-			uiVOSOffset = uiVOSOffset >> 3;  //guoshan +00101841 20100415 ×ª»»³É×Ö½ÚÊı
+			uiVOSOffset = uiVOSOffset >> 3;  //guoshan +00101841 20100415 è½¬æ¢æˆå­—èŠ‚æ•°
 			*puiBytesConsumed = uiVOLOffset;
 			iFoundFlag = 1;
 
-			if(uiNumBytes < uiVOSOffset + MPEG4_VOS_LEN)  ////guoshan +00101841 20100415 ±£Ö¤VOSÍ·ºóÖÁÉÙÓĞ5¸ö×Ö½Ú
+			if(uiNumBytes < uiVOSOffset + MPEG4_VOS_LEN)  ////guoshan +00101841 20100415 ä¿è¯VOSå¤´åè‡³å°‘æœ‰5ä¸ªå­—èŠ‚
 			{
 				IMEDIA_LOG(IMEDIA_WARNING,"NOT ENOUGH Bytes for VOS parsing!\n");
 				goto MPEG4_CLEAN;        
@@ -1515,26 +1515,26 @@ INT32 MPEG4_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
 			iProfile = get_bits(&stMpegCxt.gb, 8);
 			pstParams->eProfile = (ENUM_IVIDEO_CODEC_PROFILE)((iProfile & 0xF0) >> 4);
 			pstParams->eLevel = (ENUM_IVIDEO_CODEC_LEVEL)(iProfile & 0x0F);
-			//guoshan + 00101841 20100415 ´«µİÏà¹Ø²ÎÊı¸øpstParams
+			//guoshan + 00101841 20100415 ä¼ é€’ç›¸å…³å‚æ•°ç»™pstParams
 
-			iRet = MPEG4_CHECK_PROFILE(pstParams); //guoshan + 00101841 20100525 ¸Ãº¯Êıºã·µ»ØOK£¬²»ÓÃÔÙ¶ÔÆä·µ»ØÖµ½øĞĞÅĞ¶Ï
+			iRet = MPEG4_CHECK_PROFILE(pstParams); //guoshan + 00101841 20100525 è¯¥å‡½æ•°æ’è¿”å›OKï¼Œä¸ç”¨å†å¯¹å…¶è¿”å›å€¼è¿›è¡Œåˆ¤æ–­
 
 			iStatus = (META_DATA_FOUND_ONLY_PPS == iStatus) ? META_DATA_FOUND : META_DATA_FOUND_ONLY_SPS;
 			IMEDIA_LOG(IMEDIA_INFO,"Found VOS header!\n");
 
 			align_get_bits(&stMpegCxt.gb);
-			uiStartCode = 0xff;  //ÖØĞÂÖÃÎ»ºóÔÙÕÒVOL header
+			uiStartCode = 0xff;  //é‡æ–°ç½®ä½åå†æ‰¾VOL header
 		}
 		else if((VIDOBJLAY_START_CODE_MASK == (uiStartCode & 0xFFFFFFF0)) && (iStatus != META_DATA_FOUND_ONLY_PPS))
 		{
 			UINT32 uiVolEnd = 0;
 
 			uiVOLOffset = stMpegCxt.gb.index >> 3;
-			uiVOLOffset -= MPEG4_HEADER_PREFIX_LEN; //guoshan+00101841 20100525 »ØÍËµ½VOLÍ·µÄÊ×µØÖ·
+			uiVOLOffset -= MPEG4_HEADER_PREFIX_LEN; //guoshan+00101841 20100525 å›é€€åˆ°VOLå¤´çš„é¦–åœ°å€
 			*puiBytesConsumed = uiVOLOffset;
 			iFoundFlag = 2;
 
-			if(uiNumBytes < uiVOLOffset + NEED_LENGTH)  //guoshan+00101841 20100415 ±£Ö¤VOLÍ·ºóÖÁÉÙÓĞNEED_LENGTH¸ö×Ö½Ú
+			if(uiNumBytes < uiVOLOffset + NEED_LENGTH)  //guoshan+00101841 20100415 ä¿è¯VOLå¤´åè‡³å°‘æœ‰NEED_LENGTHä¸ªå­—èŠ‚
 			{
 				IMEDIA_LOG(IMEDIA_WARNING,"NOT ENOUGH Bytes for VOL parsing!\n");
 				goto MPEG4_CLEAN;        
@@ -1548,12 +1548,12 @@ INT32 MPEG4_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
 				align_get_bits(&stMpegCxt.gb);
 				i = stMpegCxt.gb.size_in_bits - get_bits_count(&stMpegCxt.gb);
 				uiVOLOffset = 0; 
-				iFoundFlag = 0;  //guoshan+00101841 20100601 ½âÎöÊ§°Ü£¬±êÖ¾Î»¸´Î»£¬ÖØĞÂ¿ªÊ¼
+				iFoundFlag = 0;  //guoshan+00101841 20100601 è§£æå¤±è´¥ï¼Œæ ‡å¿—ä½å¤ä½ï¼Œé‡æ–°å¼€å§‹
 			}
 			else
 			{
 				pstMetaData->apucMetaData[1] = pucBuf + uiVOLOffset;
-				pstMetaData->ausMetaDataLen[1] = uiVolEnd - uiVOLOffset;  //guoshan+00101841 20100413 32bitsÕ¼ÓÃ4¸öbytes, ÊÇ8×Ö½Ú¶ÔÆëµÄ
+				pstMetaData->ausMetaDataLen[1] = uiVolEnd - uiVOLOffset;  //guoshan+00101841 20100413 32bitså ç”¨4ä¸ªbytes, æ˜¯8å­—èŠ‚å¯¹é½çš„
 				pstMetaData->iNumMetaData++;
 				pstAvctx->iChromaFormat = stMpegCxt.chroma_format;
 				iStatus = (META_DATA_FOUND_ONLY_SPS == iStatus) ? META_DATA_FOUND : META_DATA_FOUND_ONLY_PPS;
@@ -1563,16 +1563,16 @@ INT32 MPEG4_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed
 				pstParams->usWidth = stMpegCxt.width;
 				pstParams->usHeight = stMpegCxt.height;
 				pstParams->uiRefFrameNum = 1;
-				//guoshan+00101841 20100723 Ôö¼ÓparĞÅÏ¢Êä³ö
+				//guoshan+00101841 20100723 å¢åŠ parä¿¡æ¯è¾“å‡º
 				pstParams->stAspectRatio.usSarWidth = stMpegCxt.avctx->sample_aspect_ratio.num;
 				pstParams->stAspectRatio.usSarHeight = stMpegCxt.avctx->sample_aspect_ratio.den;
 
-				//guoshan+00101841 20100803 Ôö¼ÓframeÀàĞÍĞÅÏ¢Êä³ö
+				//guoshan+00101841 20100803 å¢åŠ frameç±»å‹ä¿¡æ¯è¾“å‡º
 				pstParams->eContentType = stMpegCxt.progressive_frame ? IVIDEO_PROGRESSIVE : IVIDEO_INTERLACED;
 
 				align_get_bits(&stMpegCxt.gb);
 			}
-			uiStartCode = 0xff;  //ÖØĞÂÖÃÎ»ºóÔÙÕÒVOL header
+			uiStartCode = 0xff;  //é‡æ–°ç½®ä½åå†æ‰¾VOL header
 		}    
 	}
     
@@ -1600,13 +1600,13 @@ INT32 H263_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
     INT32 iRet = RETURN_OK;
 
     MpegEncContext stH263Cxt;
-    Picture stPic;  //guoshan +00101841 20100413Õâ¸ö½á¹¹ÌåµÄÉùÃ÷Ö»ÊÇÎªÁË·ÀÖ¹ĞŞ¸Äh263_decode_picture_header(),Ôì³ÉÊµ¼Ê½âÂëÖĞµÄÎÊÌâ£¬ÆäÖµÔÚprobeHeaderÖĞÎŞÓÃ
+    Picture stPic;  //guoshan +00101841 20100413è¿™ä¸ªç»“æ„ä½“çš„å£°æ˜åªæ˜¯ä¸ºäº†é˜²æ­¢ä¿®æ”¹h263_decode_picture_header(),é€ æˆå®é™…è§£ç ä¸­çš„é—®é¢˜ï¼Œå…¶å€¼åœ¨probeHeaderä¸­æ— ç”¨
     AVCodecContext *pstAvctx = NULL;
 
     UINT32 uiStartCode = 0;
     INT32 i = 0;
-    INT32 iIndex = 0; //guoshan +00101841 20100414±£´æÆğÊ¼ÂëµÄÊ×µØÖ·
-    INT32 iIndex_IN_BYTES = 0; //guoshan +00101841 20100414±£´æÆğÊ¼ÂëµÄÊ×µØÖ·
+    INT32 iIndex = 0; //guoshan +00101841 20100414ä¿å­˜èµ·å§‹ç çš„é¦–åœ°å€
+    INT32 iIndex_IN_BYTES = 0; //guoshan +00101841 20100414ä¿å­˜èµ·å§‹ç çš„é¦–åœ°å€
 
 
     INT32 iStatus = *piStatus;
@@ -1625,12 +1625,12 @@ INT32 H263_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
     stH263Cxt.current_picture_ptr = &stPic;
     pstAvctx->priv_data = &stH263Cxt;
 
-    *puiBytesConsumed = 0; //³õÊ¼»¯
+    *puiBytesConsumed = 0; //åˆå§‹åŒ–
 
     pstParams->eColorSpaceType = IVIDEO_CSP_IYUV;
     memset(pstMetaData, 0, sizeof(STRU_IVIDDEC_META_DATA));
 
-    /* ±£Ö¤ÖÁÉÙ>3¸ö×Ö½Ú */
+    /* ä¿è¯è‡³å°‘>3ä¸ªå­—èŠ‚ */
     if(uiNumBytes <= PSC_LENGTH_IN_BYTES)
     {
         *puiBytesConsumed = uiNumBytes;  //guoshan +00101841 20100529
@@ -1641,10 +1641,10 @@ INT32 H263_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
     init_get_bits(&stH263Cxt.gb, pucBuf, uiNumBytes*8);
     stH263Cxt.bitstream_buffer_size=0;
 
-    /*ÂëÁ÷¶ÔÆëºó¿ªÊ¼ÕÒ22bitsµÄPSCÂë*/
+    /*ç æµå¯¹é½åå¼€å§‹æ‰¾22bitsçš„PSCç */
     align_get_bits(&stH263Cxt.gb);
 
-    uiStartCode= get_bits(&stH263Cxt.gb, PSC_LENGTH_IN_BITS-8);   //guoshan+00101841 20100531 ÕâÀïbitÆ«ÒÆÁË14Î»
+    uiStartCode= get_bits(&stH263Cxt.gb, PSC_LENGTH_IN_BITS-8);   //guoshan+00101841 20100531 è¿™é‡Œbitåç§»äº†14ä½
 
     for(i = stH263Cxt.gb.size_in_bits - get_bits_count(&stH263Cxt.gb); i > 24; i -= 8) 
     {
@@ -1653,13 +1653,13 @@ INT32 H263_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
             break;
         }
 
-        uiStartCode = ((uiStartCode << 8) | get_bits(&stH263Cxt.gb, 8)) & 0x003FFFFF;   //guoshan +00101841 20100412 È¡22bits
+        uiStartCode = ((uiStartCode << 8) | get_bits(&stH263Cxt.gb, 8)) & 0x003FFFFF;   //guoshan +00101841 20100412 å–22bits
 
         if(uiStartCode == 0x20) //guoshan +00101841 20100412: found start code
         {
             iIndex = stH263Cxt.gb.index - PSC_LENGTH_IN_BITS;
             iIndex_IN_BYTES = iIndex >> 3;
-            *puiBytesConsumed = iIndex_IN_BYTES;  //guoshan+00101841 20100526:ÕâÖÖÇé¿öÏÂ,*puiBytesConsumed»ØÍËµ½ÆğÊ¼ÂëµÄÊ×µØÖ·, 22bitsÕ¼3¸öbytes
+            *puiBytesConsumed = iIndex_IN_BYTES;  //guoshan+00101841 20100526:è¿™ç§æƒ…å†µä¸‹,*puiBytesConsumedå›é€€åˆ°èµ·å§‹ç çš„é¦–åœ°å€, 22bitså 3ä¸ªbytes
            
             //guoshan + 00101841: found PSC, but left buffer is not enough to parse
             if( (uiNumBytes - iIndex_IN_BYTES) < NEED_LENGTH) 
@@ -1668,21 +1668,21 @@ INT32 H263_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
                 goto H263_CLEAN;
             }
 
-            /*Õâ¸öµØ·½ÂëÁ÷ÆğÊ¼µØÖ·ÒÑ¾­Æ«µ½PSCµÄÎ²²¿ÁË, indexÇå0, ÀûÓÃÔ­ÓĞº¯ÊıÖØĞÂ¿ªÊ¼½âÎö*/
-            /*guoshan+00101841 20100531´Ë´¦²»Ó¦Çå0£¬Ó¦¸Ã°ÑstH263Cxt.gb.index»ØÎ»µ½PSCÊ×µØÖ·¼´¿É*/
+            /*è¿™ä¸ªåœ°æ–¹ç æµèµ·å§‹åœ°å€å·²ç»ååˆ°PSCçš„å°¾éƒ¨äº†, indexæ¸…0, åˆ©ç”¨åŸæœ‰å‡½æ•°é‡æ–°å¼€å§‹è§£æ*/
+            /*guoshan+00101841 20100531æ­¤å¤„ä¸åº”æ¸…0ï¼Œåº”è¯¥æŠŠstH263Cxt.gb.indexå›ä½åˆ°PSCé¦–åœ°å€å³å¯*/
             //stH263Cxt.gb.index = 0;
             stH263Cxt.gb.index = iIndex;
             iRet = h263_decode_picture_header(&stH263Cxt);
             if(RETURN_OK == iRet)
             {
                 /*guoshan + 00101841 20100413 17:30:00*/
-                /*ÔÚ½âÎö³É¹¦µÄÇé¿öÏÂ£¬PSC´ÓÂëÁ÷Ê×µØÖ·¿ªÊ¼Ê±£¬*puiBytesConsumed = pstMetaData->ausMetaDataLen£¬ÆäÓàÇé¿öÔò²»È»£¬ÌØ±ğ×¢Òâ*/
+                /*åœ¨è§£ææˆåŠŸçš„æƒ…å†µä¸‹ï¼ŒPSCä»ç æµé¦–åœ°å€å¼€å§‹æ—¶ï¼Œ*puiBytesConsumed = pstMetaData->ausMetaDataLenï¼Œå…¶ä½™æƒ…å†µåˆ™ä¸ç„¶ï¼Œç‰¹åˆ«æ³¨æ„*/
                 iStatus = META_DATA_FOUND;
                 /*guoshan + 00101841 20100529 14:00:00*/
-                /*probeheader½âÎöºóµÄ±£´æÆäĞòÁĞÊı¾İ£¬H.263Ö»ÓĞÖ¡Í·ĞÅÏ¢£¬²»ÓÃ±£´æ³öÀ´ÁË*/
+                /*probeheaderè§£æåçš„ä¿å­˜å…¶åºåˆ—æ•°æ®ï¼ŒH.263åªæœ‰å¸§å¤´ä¿¡æ¯ï¼Œä¸ç”¨ä¿å­˜å‡ºæ¥äº†*/
 //                 pstMetaData->iNumMetaData = 1;
-//                 pstMetaData->apucMetaData[0] = pucBuf + ((iIndex + 7) >> 3);  //guoshan +00101841 20100413 22bitsÕ¼ÓÃ3¸öbytes
-//                 pstMetaData->ausMetaDataLen[0] = (stH263Cxt.gb.index - iIndex + 7) >> 3;  //guoshan + 00101841 20100413 09:20:00´ÓÆğÊ¼ÂëµÄÊµ¼ÊÆğÊ¼Î»ÖÃ¿ªÊ¼Í³¼Æ
+//                 pstMetaData->apucMetaData[0] = pucBuf + ((iIndex + 7) >> 3);  //guoshan +00101841 20100413 22bitså ç”¨3ä¸ªbytes
+//                 pstMetaData->ausMetaDataLen[0] = (stH263Cxt.gb.index - iIndex + 7) >> 3;  //guoshan + 00101841 20100413 09:20:00ä»èµ·å§‹ç çš„å®é™…èµ·å§‹ä½ç½®å¼€å§‹ç»Ÿè®¡
 
                 /*guoshan+00101841 20100413 15:15:00*/
                 /*H263 level info cannot be concluded in the header*/
@@ -1690,7 +1690,7 @@ INT32 H263_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
                 pstParams->usHeight = stH263Cxt.height;
                 pstParams->eProfile = (stH263Cxt.h263_plus == 0) ? IVIDEO_PROFILE_H263 : IVIDEO_PROFILE_H263_PLUS;
                 pstParams->uiRefFrameNum = 1;
-                //guoshan+00101841 20100723 Ôö¼ÓparĞÅÏ¢Êä³ö
+                //guoshan+00101841 20100723 å¢åŠ parä¿¡æ¯è¾“å‡º
                 pstParams->stAspectRatio.usSarWidth = stH263Cxt.avctx->sample_aspect_ratio.num;
                 pstParams->stAspectRatio.usSarHeight = stH263Cxt.avctx->sample_aspect_ratio.den;
 
@@ -1700,9 +1700,9 @@ INT32 H263_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
             else
             {
                 IMEDIA_LOG(IMEDIA_WARNING,"H263 Header probe failed!\n");
-                //guoshan + 00101841 20100526 Ñ­»·¼ÌĞøÕÒÍ·
+                //guoshan + 00101841 20100526 å¾ªç¯ç»§ç»­æ‰¾å¤´
                  align_get_bits(&stH263Cxt.gb);
-                 uiStartCode= get_bits(&stH263Cxt.gb, PSC_LENGTH_IN_BITS-8);   //guoshan+00101841 20100531 ÕâÀïbitÔÙ´ÎÆ«ÒÆÁË14Î»
+                 uiStartCode= get_bits(&stH263Cxt.gb, PSC_LENGTH_IN_BITS-8);   //guoshan+00101841 20100531 è¿™é‡Œbitå†æ¬¡åç§»äº†14ä½
                 i = stH263Cxt.gb.size_in_bits - get_bits_count(&stH263Cxt.gb);
             }
         }
@@ -1753,7 +1753,7 @@ static INT32 GetBitstream(const UINT8 *pucSrc, UINT8 *pucDst, INT32 *piDstLength
 
     di = iLength;
 
-    /*x00141957 20100630Ìí¼Ó ½«·À´íÂëÈ¥µô*/
+    /*x00141957 20100630æ·»åŠ  å°†é˜²é”™ç å»æ‰*/
     {
         int i,j;
         for(i = 0; i < iLength -4; i++)
@@ -1785,22 +1785,22 @@ INT32 VP6_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,I
 	INT32 iDstLength;
 	INT32 iSrcLength;
 
-	/*ÕÒµ½Ö¡Í·ÒÔ¼°³É¹¦½âÂë±êÖ¾Î» x00141957 20100714*/
+	/*æ‰¾åˆ°å¸§å¤´ä»¥åŠæˆåŠŸè§£ç æ ‡å¿—ä½ x00141957 20100714*/
 	INT32 DecodeSuccess;
 	INT32 FindHeader;
 	INT32 NumBytes = (INT32)uiNumBytes;
-	*puiBytesConsumed = 0; //³õÊ¼»¯
+	*puiBytesConsumed = 0; //åˆå§‹åŒ–
 
-	/*³õÊ¼»¯¸÷±êÖ¾Î» x00141957 20100714*/
+	/*åˆå§‹åŒ–å„æ ‡å¿—ä½ x00141957 20100714*/
 	DecodeSuccess = 0;
 	FindHeader = 0;    
 #define FIND_HEADER 1
 #define DECODE_SUCCESS 1
 
-	/*x00141957 20100714 ÈôÕÒ²»µ½ÕıÈ·frame header£¬ÔòÒ»Ö±ÕÒÏÂÈ¥£¬Ö±µ½ÂëÁ÷½áÊø*/
+	/*x00141957 20100714 è‹¥æ‰¾ä¸åˆ°æ­£ç¡®frame headerï¼Œåˆ™ä¸€ç›´æ‰¾ä¸‹å»ï¼Œç›´åˆ°ç æµç»“æŸ*/
 	while(DECODE_SUCCESS != DecodeSuccess)
 	{
-		/* ±£Ö¤ÖÁÉÙ>3¸ö×Ö½Ú */
+		/* ä¿è¯è‡³å°‘>3ä¸ªå­—èŠ‚ */
 		if(PSC_LENGTH_IN_BYTES >= NumBytes)
 		{
 			*piStatus = META_DATA_NOT_FOUND;
@@ -1809,24 +1809,24 @@ INT32 VP6_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,I
 			return IMEDIA_RET_SUCCESS;
 		}
 
-		/*¿ªÊ¼Ñ°ÕÒÆğÊ¼Âë x00141957 20100706*/
+		/*å¼€å§‹å¯»æ‰¾èµ·å§‹ç  x00141957 20100706*/
 		for(pos = 0; pos < NumBytes - 2; pos++)
 		{
 			if((pucBuffer[pos] == 0)&&(pucBuffer[pos+1] == 0)&&(pucBuffer[pos+2] == 1))
 			{
-				/*ÕÒµ½ÆğÊ¼Âë x00141957 20100626*/
+				/*æ‰¾åˆ°èµ·å§‹ç  x00141957 20100626*/
 				FindHeader = FIND_HEADER;
 				break;
 			}
-			/*ÎÊÌâµ¥ºÅ£ºAZ1D02228
-			ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-			Ê±¼ä£º2010/7/21
-			ÎÊÌâÃèÊö£º µ±µÚÒ»´ÎÊäÈëÖĞÃ»ÓĞÖ¡Í·Ê±µ¼ÖÂºóÃæÒ»Ö±ÕÒ²»µ½Ö¡Í·
-			ÎÊÌâĞŞ¸Ä£º Öğ×Ö½ÚÑ°ÕÒÖ¡Í·*/
+			/*é—®é¢˜å•å·ï¼šAZ1D02228
+			ä¿®æ”¹äººï¼šç†Šé£ +00141957
+			æ—¶é—´ï¼š2010/7/21
+			é—®é¢˜æè¿°ï¼š å½“ç¬¬ä¸€æ¬¡è¾“å…¥ä¸­æ²¡æœ‰å¸§å¤´æ—¶å¯¼è‡´åé¢ä¸€ç›´æ‰¾ä¸åˆ°å¸§å¤´
+			é—®é¢˜ä¿®æ”¹ï¼š é€å­—èŠ‚å¯»æ‰¾å¸§å¤´*/
 			//pucBuffer += 3;
 		}
 
-		/*Èç¹ûÂëÁ÷ºÄ¾¡È´»¹Ã»ÓĞÕÒµ½Í· x00141957 20100716*/
+		/*å¦‚æœç æµè€—å°½å´è¿˜æ²¡æœ‰æ‰¾åˆ°å¤´ x00141957 20100716*/
 		if(FIND_HEADER != FindHeader)
 		{
 			*piStatus = META_DATA_NOT_FOUND;
@@ -1836,18 +1836,18 @@ INT32 VP6_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,I
 
 		pucBuffer += pos;
 
-		/*ÎÊÌâµ¥ºÅ£ºAZ1D02284
-		ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-		Ê±¼ä£º2010/08/31
-		ÎÊÌâÃèÊö£º VP6½âÂëÆ÷½âÂë1080P·Ö±æÂÊµÄflvÂëÁ÷ÎÄ¼şÊ±£¬³ÌĞò·¢ÉúÒì³£ÍË³ö
-		ÎÊÌâĞŞ¸Ä£º Ëæ×ÅbufferµÄÍÆ½ø£¬Êµ¼ÊÓĞÓÃ×Ö½ÚÊıµİ¼õ*/
+		/*é—®é¢˜å•å·ï¼šAZ1D02284
+		ä¿®æ”¹äººï¼šç†Šé£ +00141957
+		æ—¶é—´ï¼š2010/08/31
+		é—®é¢˜æè¿°ï¼š VP6è§£ç å™¨è§£ç 1080Påˆ†è¾¨ç‡çš„flvç æµæ–‡ä»¶æ—¶ï¼Œç¨‹åºå‘ç”Ÿå¼‚å¸¸é€€å‡º
+		é—®é¢˜ä¿®æ”¹ï¼š éšç€bufferçš„æ¨è¿›ï¼Œå®é™…æœ‰ç”¨å­—èŠ‚æ•°é€’å‡*/
 		NumBytes -= pos;
 
 		uiLength = NumBytes - (pos + 3);
 
 
-		/*µ÷ÓÃº¯Êı ½âÎöÂëÁ÷Í· x00141957 20100626*/
-		/*vp6 Ö¡Í·IÖ¡×î´óÎª81¸ö±ÈÌØ£¬PÖ¡×î´óÎª43¸ö±ÈÌØ£¬ËùÒÔ×îĞ¡ÒªÇóÎª11¸ö×Ö½Ú ÕâÀïÉèÎª20 x00141957 20100706*/
+		/*è°ƒç”¨å‡½æ•° è§£æç æµå¤´ x00141957 20100626*/
+		/*vp6 å¸§å¤´Iå¸§æœ€å¤§ä¸º81ä¸ªæ¯”ç‰¹ï¼ŒPå¸§æœ€å¤§ä¸º43ä¸ªæ¯”ç‰¹ï¼Œæ‰€ä»¥æœ€å°è¦æ±‚ä¸º11ä¸ªå­—èŠ‚ è¿™é‡Œè®¾ä¸º20 x00141957 20100706*/
 #define MIN_VP6_HEADER 20
 		if(MIN_VP6_HEADER > uiLength)
 		{
@@ -1857,7 +1857,7 @@ INT32 VP6_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,I
 			return IMEDIA_RET_SUCCESS;
 		}
 
-		/*×îÉÙ¶Á900×Ö½Ú½øÈ¥ È¥µô0x03 x00141957 20100707*/
+		/*æœ€å°‘è¯»900å­—èŠ‚è¿›å» å»æ‰0x03 x00141957 20100707*/
 #define VP6_MAX_HEADER_LENGTH 900
 		if(VP6_MAX_HEADER_LENGTH <= NumBytes)
 		{
@@ -1880,14 +1880,14 @@ INT32 VP6_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,I
 			}
 			else
 			{
-				/*Èç¹û½âÂëÍ·²¿Ê§°Ü£¬Ôò½«bufferÖĞµÄÆğÊ¼ÂëÈ¥µô£¬ÖØĞÂ¿ªÊ¼Ñ°ÕÒÆğÊ¼Âë x00141957 20100716*/
+				/*å¦‚æœè§£ç å¤´éƒ¨å¤±è´¥ï¼Œåˆ™å°†bufferä¸­çš„èµ·å§‹ç å»æ‰ï¼Œé‡æ–°å¼€å§‹å¯»æ‰¾èµ·å§‹ç  x00141957 20100716*/
 				FindHeader = 0;
 				pucBuffer += 3;
-				/*ÎÊÌâµ¥ºÅ£ºAZ1D02284
-				ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-				Ê±¼ä£º2010/08/31
-				ÎÊÌâÃèÊö£º VP6½âÂëÆ÷½âÂë1080P·Ö±æÂÊµÄflvÂëÁ÷ÎÄ¼şÊ±£¬³ÌĞò·¢ÉúÒì³£ÍË³ö
-				ÎÊÌâĞŞ¸Ä£º Ëæ×ÅbufferµÄÍÆ½ø£¬Êµ¼ÊÓĞÓÃ×Ö½ÚÊıµİ¼õ*/
+				/*é—®é¢˜å•å·ï¼šAZ1D02284
+				ä¿®æ”¹äººï¼šç†Šé£ +00141957
+				æ—¶é—´ï¼š2010/08/31
+				é—®é¢˜æè¿°ï¼š VP6è§£ç å™¨è§£ç 1080Påˆ†è¾¨ç‡çš„flvç æµæ–‡ä»¶æ—¶ï¼Œç¨‹åºå‘ç”Ÿå¼‚å¸¸é€€å‡º
+				é—®é¢˜ä¿®æ”¹ï¼š éšç€bufferçš„æ¨è¿›ï¼Œå®é™…æœ‰ç”¨å­—èŠ‚æ•°é€’å‡*/
 				NumBytes -= 3;
 			}
 		}
@@ -1912,22 +1912,22 @@ INT32 VP6A_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
 	INT32 iDstLength;
 	INT32 iSrcLength;
 
-	/*ÕÒµ½Ö¡Í·ÒÔ¼°³É¹¦½âÂë±êÖ¾Î» x00141957 20100714*/
+	/*æ‰¾åˆ°å¸§å¤´ä»¥åŠæˆåŠŸè§£ç æ ‡å¿—ä½ x00141957 20100714*/
 	INT32 DecodeSuccess;
 	INT32 FindHeader;
 	INT32 NumBytes = (INT32)uiNumBytes;
-	*puiBytesConsumed = 0; //³õÊ¼»¯
+	*puiBytesConsumed = 0; //åˆå§‹åŒ–
 
-	/*³õÊ¼»¯¸÷±êÖ¾Î» x00141957 20100714*/
+	/*åˆå§‹åŒ–å„æ ‡å¿—ä½ x00141957 20100714*/
 	DecodeSuccess = 0;
 	FindHeader = 0;    
 #define FIND_HEADER 1
 #define DECODE_SUCCESS 1
 
-	/*x00141957 20100714 ÈôÕÒ²»µ½ÕıÈ·frame header£¬ÔòÒ»Ö±ÕÒÏÂÈ¥£¬Ö±µ½ÂëÁ÷½áÊø*/
+	/*x00141957 20100714 è‹¥æ‰¾ä¸åˆ°æ­£ç¡®frame headerï¼Œåˆ™ä¸€ç›´æ‰¾ä¸‹å»ï¼Œç›´åˆ°ç æµç»“æŸ*/
 	while(DECODE_SUCCESS != DecodeSuccess)
 	{
-		/* ±£Ö¤ÖÁÉÙ>3¸ö×Ö½Ú */
+		/* ä¿è¯è‡³å°‘>3ä¸ªå­—èŠ‚ */
 		if(PSC_LENGTH_IN_BYTES >= NumBytes)
 		{
 			*piStatus = META_DATA_NOT_FOUND;
@@ -1936,24 +1936,24 @@ INT32 VP6A_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
 			return IMEDIA_RET_SUCCESS;
 		}
 
-		/*¿ªÊ¼Ñ°ÕÒÆğÊ¼Âë x00141957 20100706*/
+		/*å¼€å§‹å¯»æ‰¾èµ·å§‹ç  x00141957 20100706*/
 		for(pos = 0; pos < NumBytes - 2; pos++)
 		{
 			if((pucBuffer[pos] == 0)&&(pucBuffer[pos+1] == 0)&&(pucBuffer[pos+2] == 1))
 			{
-				/*ÕÒµ½ÆğÊ¼Âë x00141957 20100626*/
+				/*æ‰¾åˆ°èµ·å§‹ç  x00141957 20100626*/
 				FindHeader = FIND_HEADER;
 				break;
 			}
-			/*ÎÊÌâµ¥ºÅ£ºAZ1D02228
-			ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-			Ê±¼ä£º2010/7/21
-			ÎÊÌâÃèÊö£º µ±µÚÒ»´ÎÊäÈëÖĞÃ»ÓĞÖ¡Í·Ê±µ¼ÖÂºóÃæÒ»Ö±ÕÒ²»µ½Ö¡Í·
-			ÎÊÌâĞŞ¸Ä£º Öğ×Ö½ÚÑ°ÕÒÖ¡Í·*/
+			/*é—®é¢˜å•å·ï¼šAZ1D02228
+			ä¿®æ”¹äººï¼šç†Šé£ +00141957
+			æ—¶é—´ï¼š2010/7/21
+			é—®é¢˜æè¿°ï¼š å½“ç¬¬ä¸€æ¬¡è¾“å…¥ä¸­æ²¡æœ‰å¸§å¤´æ—¶å¯¼è‡´åé¢ä¸€ç›´æ‰¾ä¸åˆ°å¸§å¤´
+			é—®é¢˜ä¿®æ”¹ï¼š é€å­—èŠ‚å¯»æ‰¾å¸§å¤´*/
 			//pucBuffer += 3;
 		}
 
-		/*Èç¹ûÂëÁ÷ºÄ¾¡È´»¹Ã»ÓĞÕÒµ½Í· x00141957 20100716*/
+		/*å¦‚æœç æµè€—å°½å´è¿˜æ²¡æœ‰æ‰¾åˆ°å¤´ x00141957 20100716*/
 		if(FIND_HEADER != FindHeader)
 		{
 			*piStatus = META_DATA_NOT_FOUND;
@@ -1963,18 +1963,18 @@ INT32 VP6A_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
 
 		pucBuffer += pos;
 
-		/*ÎÊÌâµ¥ºÅ£ºAZ1D02284
-		ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-		Ê±¼ä£º2010/08/31
-		ÎÊÌâÃèÊö£º VP6½âÂëÆ÷½âÂë1080P·Ö±æÂÊµÄflvÂëÁ÷ÎÄ¼şÊ±£¬³ÌĞò·¢ÉúÒì³£ÍË³ö
-		ÎÊÌâĞŞ¸Ä£º Ëæ×ÅbufferµÄÍÆ½ø£¬Êµ¼ÊÓĞÓÃ×Ö½ÚÊıµİ¼õ*/
+		/*é—®é¢˜å•å·ï¼šAZ1D02284
+		ä¿®æ”¹äººï¼šç†Šé£ +00141957
+		æ—¶é—´ï¼š2010/08/31
+		é—®é¢˜æè¿°ï¼š VP6è§£ç å™¨è§£ç 1080Påˆ†è¾¨ç‡çš„flvç æµæ–‡ä»¶æ—¶ï¼Œç¨‹åºå‘ç”Ÿå¼‚å¸¸é€€å‡º
+		é—®é¢˜ä¿®æ”¹ï¼š éšç€bufferçš„æ¨è¿›ï¼Œå®é™…æœ‰ç”¨å­—èŠ‚æ•°é€’å‡*/
 		NumBytes -= pos;
 
 		uiLength = NumBytes - (pos + 3);
 
 
-		/*µ÷ÓÃº¯Êı ½âÎöÂëÁ÷Í· x00141957 20100626*/
-		/*vp6 Ö¡Í·IÖ¡×î´óÎª81¸ö±ÈÌØ£¬PÖ¡×î´óÎª43¸ö±ÈÌØ£¬ËùÒÔ×îĞ¡ÒªÇóÎª11¸ö×Ö½Ú ÕâÀïÉèÎª20 x00141957 20100706*/
+		/*è°ƒç”¨å‡½æ•° è§£æç æµå¤´ x00141957 20100626*/
+		/*vp6 å¸§å¤´Iå¸§æœ€å¤§ä¸º81ä¸ªæ¯”ç‰¹ï¼ŒPå¸§æœ€å¤§ä¸º43ä¸ªæ¯”ç‰¹ï¼Œæ‰€ä»¥æœ€å°è¦æ±‚ä¸º11ä¸ªå­—èŠ‚ è¿™é‡Œè®¾ä¸º20 x00141957 20100706*/
 #define MIN_VP6_HEADER 20
 		if(MIN_VP6_HEADER > uiLength)
 		{
@@ -1984,7 +1984,7 @@ INT32 VP6A_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
 			return IMEDIA_RET_SUCCESS;
 		}
 
-		/*×îÉÙ¶Á900×Ö½Ú½øÈ¥ È¥µô0x03 x00141957 20100707*/
+		/*æœ€å°‘è¯»900å­—èŠ‚è¿›å» å»æ‰0x03 x00141957 20100707*/
 #define VP6_MAX_HEADER_LENGTH 900
 		if(VP6_MAX_HEADER_LENGTH <= NumBytes)
 		{
@@ -2008,14 +2008,14 @@ INT32 VP6A_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
 			}
 			else
 			{
-				/*Èç¹û½âÂëÍ·²¿Ê§°Ü£¬Ôò½«bufferÖĞµÄÆğÊ¼ÂëÈ¥µô£¬ÖØĞÂ¿ªÊ¼Ñ°ÕÒÆğÊ¼Âë x00141957 20100716*/
+				/*å¦‚æœè§£ç å¤´éƒ¨å¤±è´¥ï¼Œåˆ™å°†bufferä¸­çš„èµ·å§‹ç å»æ‰ï¼Œé‡æ–°å¼€å§‹å¯»æ‰¾èµ·å§‹ç  x00141957 20100716*/
 				FindHeader = 0;
 				pucBuffer += 3;
-				/*ÎÊÌâµ¥ºÅ£ºAZ1D02284
-				ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-				Ê±¼ä£º2010/08/31
-				ÎÊÌâÃèÊö£º VP6½âÂëÆ÷½âÂë1080P·Ö±æÂÊµÄflvÂëÁ÷ÎÄ¼şÊ±£¬³ÌĞò·¢ÉúÒì³£ÍË³ö
-				ÎÊÌâĞŞ¸Ä£º Ëæ×ÅbufferµÄÍÆ½ø£¬Êµ¼ÊÓĞÓÃ×Ö½ÚÊıµİ¼õ*/
+				/*é—®é¢˜å•å·ï¼šAZ1D02284
+				ä¿®æ”¹äººï¼šç†Šé£ +00141957
+				æ—¶é—´ï¼š2010/08/31
+				é—®é¢˜æè¿°ï¼š VP6è§£ç å™¨è§£ç 1080Påˆ†è¾¨ç‡çš„flvç æµæ–‡ä»¶æ—¶ï¼Œç¨‹åºå‘ç”Ÿå¼‚å¸¸é€€å‡º
+				é—®é¢˜ä¿®æ”¹ï¼š éšç€bufferçš„æ¨è¿›ï¼Œå®é™…æœ‰ç”¨å­—èŠ‚æ•°é€’å‡*/
 				NumBytes -= 3;
 			}
 		}
@@ -2028,7 +2028,7 @@ INT32 VP6A_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiBytesConsumed,
 	return IMEDIA_RET_SUCCESS;
 }
 
-/*ÕâÀïĞèÒª¿¼ÂÇµ½Èç¹ûÊÇp frame£¬ÔòÃ»ÓĞ¿í¸ßĞÅÏ¢£¬ĞèÒªÍË³öÖØĞÂÑ°ÕÒ x00141957 20100714*/
+/*è¿™é‡Œéœ€è¦è€ƒè™‘åˆ°å¦‚æœæ˜¯p frameï¼Œåˆ™æ²¡æœ‰å®½é«˜ä¿¡æ¯ï¼Œéœ€è¦é€€å‡ºé‡æ–°å¯»æ‰¾ x00141957 20100714*/
 static INT32 VP6_Decodeheader(UINT8 *pucSrcBuf, INT32 iLength, STRU_IVIDEO_STREAM_INFO *pstParams)
 {
 	INT32 key_frame = 0;
@@ -2050,11 +2050,11 @@ static INT32 VP6_Decodeheader(UINT8 *pucSrcBuf, INT32 iLength, STRU_IVIDEO_STREA
 	INT32 res = RETURN_OK;
 	VP56RangeCoder vp56RC;
 	VP56RangeCoder *c = &vp56RC;
-	/*ÎÊÌâµ¥ºÅ£ºAZ1D02316
-	ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-	Ê±¼ä£º2010/09/09
-	ÎÊÌâÃèÊö£º ½âÂë1080pÍ¼ÏñÓëffmpeg²»Ò»ÖÂ
-	ÎÊÌâĞŞ¸Ä£º ½«flvÖĞ¶îÍâĞÅÏ¢´øÈëÂëÁ÷ÖĞ*/
+	/*é—®é¢˜å•å·ï¼šAZ1D02316
+	ä¿®æ”¹äººï¼šç†Šé£ +00141957
+	æ—¶é—´ï¼š2010/09/09
+	é—®é¢˜æè¿°ï¼š è§£ç 1080på›¾åƒä¸ffmpegä¸ä¸€è‡´
+	é—®é¢˜ä¿®æ”¹ï¼š å°†flvä¸­é¢å¤–ä¿¡æ¯å¸¦å…¥ç æµä¸­*/
 	UINT8 cropsize = buf[0];
 
 	INT32 separated_coeff;
@@ -2122,28 +2122,28 @@ static INT32 VP6_Decodeheader(UINT8 *pucSrcBuf, INT32 iLength, STRU_IVIDEO_STREA
 
 	av_log(NULL, AV_LOG_DEBUG, "vp6 info: sample_variance_threshold = %d, max_vector_length =%d ,use_huffman = %d , coeff_offset = %d, dequant =%d, filter_mode =%d, filter_selection = %d\n",sample_variance_threshold ,max_vector_length, use_huffman, coeff_offset, dequant, filter_mode, filter_selection);
 
-    /*Ìí¼Ó£ºÈç¹û½âÎö³É¹¦ Ôò½«ĞÅÏ¢Ğ´ÈëpstParams x00141957 20100629*/
+    /*æ·»åŠ ï¼šå¦‚æœè§£ææˆåŠŸ åˆ™å°†ä¿¡æ¯å†™å…¥pstParams x00141957 20100629*/
     pstParams->stAspectRatio.usSarHeight = 1;
     pstParams->stAspectRatio.usSarWidth = 1;
-	/*ÎÊÌâµ¥ºÅ£ºAZ1D02316
-	ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-	Ê±¼ä£º2010/09/09
-	ÎÊÌâÃèÊö£º ½âÂë1080pÍ¼ÏñÓëffmpeg²»Ò»ÖÂ
-	ÎÊÌâĞŞ¸Ä£º ½«flvÖĞ¶îÍâĞÅÏ¢´øÈëÂëÁ÷ÖĞ*/
+	/*é—®é¢˜å•å·ï¼šAZ1D02316
+	ä¿®æ”¹äººï¼šç†Šé£ +00141957
+	æ—¶é—´ï¼š2010/09/09
+	é—®é¢˜æè¿°ï¼š è§£ç 1080på›¾åƒä¸ffmpegä¸ä¸€è‡´
+	é—®é¢˜ä¿®æ”¹ï¼š å°†flvä¸­é¢å¤–ä¿¡æ¯å¸¦å…¥ç æµä¸­*/
     pstParams->usWidth = (cols<<4) - (((unsigned int)cropsize) >> 4);
     pstParams->usHeight = (rows <<4) - (((unsigned int)cropsize) & 0x0F);
 	/*lint -e64*/
     pstParams->eProfile = sub_version;
 	/*lint +e64*/
     pstParams->uiRefFrameNum = 2;
-    /*x00141957 20100803Ìí¼Ó*/ 
+    /*x00141957 20100803æ·»åŠ */ 
     pstParams->eColorSpaceType = IVIDEO_CSP_YUV420;
     pstParams->eContentType = IVIDEO_PROGRESSIVE;
     return res;        
 }
 
 
-/*ÕâÀïĞèÒª¿¼ÂÇµ½Èç¹ûÊÇp frame£¬ÔòÃ»ÓĞ¿í¸ßĞÅÏ¢£¬ĞèÒªÍË³öÖØĞÂÑ°ÕÒ x00141957 20100714*/
+/*è¿™é‡Œéœ€è¦è€ƒè™‘åˆ°å¦‚æœæ˜¯p frameï¼Œåˆ™æ²¡æœ‰å®½é«˜ä¿¡æ¯ï¼Œéœ€è¦é€€å‡ºé‡æ–°å¯»æ‰¾ x00141957 20100714*/
 static INT32 VP6A_Decodeheader(UINT8 *pucSrcBuf, INT32 iLength, STRU_IVIDEO_STREAM_INFO *pstParams)
 {
 	INT32 key_frame = 0;
@@ -2165,11 +2165,11 @@ static INT32 VP6A_Decodeheader(UINT8 *pucSrcBuf, INT32 iLength, STRU_IVIDEO_STRE
 	INT32 res = RETURN_OK;
 	VP56RangeCoder vp56RC;
 	VP56RangeCoder *c = &vp56RC;
-	/*ÎÊÌâµ¥ºÅ£ºAZ1D02316
-	ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-	Ê±¼ä£º2010/09/09
-	ÎÊÌâÃèÊö£º ½âÂë1080pÍ¼ÏñÓëffmpeg²»Ò»ÖÂ
-	ÎÊÌâĞŞ¸Ä£º ½«flvÖĞ¶îÍâĞÅÏ¢´øÈëÂëÁ÷ÖĞ*/
+	/*é—®é¢˜å•å·ï¼šAZ1D02316
+	ä¿®æ”¹äººï¼šç†Šé£ +00141957
+	æ—¶é—´ï¼š2010/09/09
+	é—®é¢˜æè¿°ï¼š è§£ç 1080på›¾åƒä¸ffmpegä¸ä¸€è‡´
+	é—®é¢˜ä¿®æ”¹ï¼š å°†flvä¸­é¢å¤–ä¿¡æ¯å¸¦å…¥ç æµä¸­*/
 	UINT8 cropsize = buf[0];
 
 	INT32 separated_coeff;
@@ -2177,7 +2177,7 @@ static INT32 VP6A_Decodeheader(UINT8 *pucSrcBuf, INT32 iLength, STRU_IVIDEO_STRE
 	buf++;
 	iLength --;
 
-	/*È¥µôalpha offset³¤¶È x00141957 20110402*/
+	/*å»æ‰alpha offseté•¿åº¦ x00141957 20110402*/
 	buf += 3;
 	iLength -= 3;
 
@@ -2242,21 +2242,21 @@ static INT32 VP6A_Decodeheader(UINT8 *pucSrcBuf, INT32 iLength, STRU_IVIDEO_STRE
 
 	av_log(NULL, AV_LOG_DEBUG, "vp6 info: sample_variance_threshold = %d, max_vector_length =%d ,use_huffman = %d , coeff_offset = %d, dequant =%d, filter_mode =%d, filter_selection = %d\n",sample_variance_threshold ,max_vector_length, use_huffman, coeff_offset, dequant, filter_mode, filter_selection);
 
-	/*Ìí¼Ó£ºÈç¹û½âÎö³É¹¦ Ôò½«ĞÅÏ¢Ğ´ÈëpstParams x00141957 20100629*/
+	/*æ·»åŠ ï¼šå¦‚æœè§£ææˆåŠŸ åˆ™å°†ä¿¡æ¯å†™å…¥pstParams x00141957 20100629*/
 	pstParams->stAspectRatio.usSarHeight = 1;
 	pstParams->stAspectRatio.usSarWidth = 1;
-	/*ÎÊÌâµ¥ºÅ£ºAZ1D02316
-	ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-	Ê±¼ä£º2010/09/09
-	ÎÊÌâÃèÊö£º ½âÂë1080pÍ¼ÏñÓëffmpeg²»Ò»ÖÂ
-	ÎÊÌâĞŞ¸Ä£º ½«flvÖĞ¶îÍâĞÅÏ¢´øÈëÂëÁ÷ÖĞ*/
+	/*é—®é¢˜å•å·ï¼šAZ1D02316
+	ä¿®æ”¹äººï¼šç†Šé£ +00141957
+	æ—¶é—´ï¼š2010/09/09
+	é—®é¢˜æè¿°ï¼š è§£ç 1080på›¾åƒä¸ffmpegä¸ä¸€è‡´
+	é—®é¢˜ä¿®æ”¹ï¼š å°†flvä¸­é¢å¤–ä¿¡æ¯å¸¦å…¥ç æµä¸­*/
 	pstParams->usWidth = (cols<<4) - (((unsigned int)cropsize) >> 4);
 	pstParams->usHeight = (rows <<4) - (((unsigned int)cropsize) & 0x0F);
 	/*lint -e64*/
 	pstParams->eProfile = sub_version;
 	/*lint +e64*/
 	pstParams->uiRefFrameNum = 2;
-	/*x00141957 20100803Ìí¼Ó*/ 
+	/*x00141957 20100803æ·»åŠ */ 
 	pstParams->eColorSpaceType = IVIDEO_CSP_YUV420;
 	pstParams->eContentType = IVIDEO_PROGRESSIVE;
 	return res;        
@@ -2275,8 +2275,8 @@ INT32 Sorenson_Spark_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiByte
 
 	UINT32 uiStartCode = 0;
 	INT32 i = 0;
-	INT32 iIndex = 0; //guoshan +00101841 20100414±£´æÆğÊ¼ÂëµÄÊ×µØÖ·
-	INT32 iIndex_IN_BYTES = 0; //guoshan +00101841 20100414±£´æÆğÊ¼ÂëµÄÊ×µØÖ·
+	INT32 iIndex = 0; //guoshan +00101841 20100414ä¿å­˜èµ·å§‹ç çš„é¦–åœ°å€
+	INT32 iIndex_IN_BYTES = 0; //guoshan +00101841 20100414ä¿å­˜èµ·å§‹ç çš„é¦–åœ°å€
 
 
 	INT32 iStatus = *piStatus;
@@ -2293,12 +2293,12 @@ INT32 Sorenson_Spark_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiByte
 	stSorensonCxt.avctx = pstAvctx;
 	pstAvctx->priv_data = &stSorensonCxt;
 
-	*puiBytesConsumed = 0; //³õÊ¼»¯
+	*puiBytesConsumed = 0; //åˆå§‹åŒ–
 
 	pstParams->eColorSpaceType = IVIDEO_CSP_IYUV;
 	memset(pstMetaData, 0, sizeof(STRU_IVIDDEC_META_DATA));
 
-	/* ±£Ö¤ÖÁÉÙ>3¸ö×Ö½Ú */
+	/* ä¿è¯è‡³å°‘>3ä¸ªå­—èŠ‚ */
 	if(uiNumBytes <= PSC_LENGTH_IN_BYTES)
 	{
 		*puiBytesConsumed = uiNumBytes;  //guoshan +00101841 20100529
@@ -2309,7 +2309,7 @@ INT32 Sorenson_Spark_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiByte
 	init_get_bits(&stSorensonCxt.gb, pucBuf, uiNumBytes*8);
 	stSorensonCxt.bitstream_buffer_size=0;
 
-	/*ÂëÁ÷¶ÔÆëºó¿ªÊ¼ÕÒ17bitsµÄstartcode*/
+	/*ç æµå¯¹é½åå¼€å§‹æ‰¾17bitsçš„startcode*/
 	align_get_bits(&stSorensonCxt.gb);
 
 	uiStartCode= get_bits(&stSorensonCxt.gb, SORENSON_START_CODE_LEN-8);  
@@ -2351,9 +2351,9 @@ INT32 Sorenson_Spark_ProbeHeader(UINT8 *pucBuf,UINT32 uiNumBytes,UINT32 *puiByte
 			else
 			{
 				IMEDIA_LOG(IMEDIA_WARNING,"Sorenson Spark Header probe failed!\n");
-				//guoshan + 00101841 20100526 Ñ­»·¼ÌĞøÕÒÍ·
+				//guoshan + 00101841 20100526 å¾ªç¯ç»§ç»­æ‰¾å¤´
 				align_get_bits(&stSorensonCxt.gb);
-				uiStartCode= get_bits(&stSorensonCxt.gb, SORENSON_START_CODE_LEN-8);   //guoshan+00101841 20100531 ÕâÀïbitÔÙ´ÎÆ«ÒÆÁË14Î»
+				uiStartCode= get_bits(&stSorensonCxt.gb, SORENSON_START_CODE_LEN-8);   //guoshan+00101841 20100531 è¿™é‡Œbitå†æ¬¡åç§»äº†14ä½
 				i = stSorensonCxt.gb.size_in_bits - get_bits_count(&stSorensonCxt.gb);
 			}
 		}

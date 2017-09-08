@@ -893,7 +893,7 @@ static OMX_ERRORTYPE update_picture_info(
     pcomp_priv->pic_info.stride             = align_width;
     pcomp_priv->pic_info.scan_lines         = align_height;
 
-    port_priv->port_pro.buffer_size         = FRAME_SIZE(align_width, height);   // ÒòÎª1088ºÍ1080µÄ¹ØÏµ£¬ËùÒÔÕâÀï²»ÓÃalign_height
+    port_priv->port_pro.buffer_size         = FRAME_SIZE(align_width, height);   // å› ä¸º1088å’Œ1080çš„å…³ç³»ï¼Œæ‰€ä»¥è¿™é‡Œä¸ç”¨align_height
 
     return OMX_ErrorNone;
 }
@@ -1324,7 +1324,7 @@ static OMX_S8 save_this_frame(OMX_COMPONENT_PRIVATE *pcom_priv, struct vdec_user
         }
         *pChromlSize = pstFrame->width*pstFrame->height;
     }
-    else  // ·ÀÖ¹±ä·Ö±æÂÊÄÚ´æÔ½½ç// MARK
+    else  // é˜²æ­¢å˜åˆ†è¾¨çŽ‡å†…å­˜è¶Šç•Œ// MARK
     {
         if (pstFrame->width*pstFrame->height > *pChromlSize)
         {
@@ -3113,7 +3113,7 @@ static OMX_ERRORTYPE  set_parameter(
             else if (OUTPUT_PORT_INDEX == portFmt->nPortIndex)
             {
                 /* now we only support yuv420SemiPlanar */
-                           //  ½«À´Ìí¼Ó ÐÂÔöÖ§³Ö¸ñÊ½
+                           //  å°†æ¥æ·»åŠ  æ–°å¢žæ”¯æŒæ ¼å¼
                            switch (portFmt->eColorFormat)
                            {
                                case OMX_COLOR_FormatYUV420SemiPlanar:

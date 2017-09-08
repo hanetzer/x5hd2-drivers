@@ -142,7 +142,7 @@ static irqreturn_t HDMI_Isr(HI_S32 irq, HI_VOID *dev_id)
     DEBUG_PRINTK("Interrupt Control Register: 0x%x\n", IntReg[0]);
     
     //WriteByteHDMITXP0( 0x79, 0x00);
-    //s40 hdmi tx���ж�Ϊ����Ч
+    //s40 hdmi tx的中断为低有效
     WriteByteHDMITXP0( INT_CNTRL_ADDR, 0x02);
     
     return 0;
@@ -464,7 +464,7 @@ static HI_S32 hdmi_ProcessCmd(unsigned int cmd, HI_VOID *arg, HI_BOOL bUser)
                 //HI_ERR_HDMI("\n ---hdmi read event over--- \n");
                 u32Ret = (pPollEvent->Event != 0)?HI_SUCCESS:HI_ERR_HDMI_FAILURE;
 
-                //����������
+                //先屏蔽试试
 				//pPollEvent->u32CallbackAddr = g_u32CallbackAddr;
                 break;
             }
@@ -703,7 +703,7 @@ HI_S32 hdmi_Ioctl(struct inode *inode, struct file *file,
 
 
 
-//�޸���������
+//修改命名规则
 //HI_S32  HDMI_ModeInit_0(HI_VOID)
 HI_S32 HDMI_DRV_Init(HI_VOID)
 {
@@ -712,7 +712,7 @@ HI_S32 HDMI_DRV_Init(HI_VOID)
     return DRV_HDMI_Register();
 }
 
-//�޸���������
+//修改命名规则
 //HI_VOID  HDMI_ModeExit_0(HI_VOID)
 HI_VOID  HDMI_DRV_EXIT(HI_VOID)
 {
@@ -811,7 +811,7 @@ void hdmi_MCE_ProcHotPlug(HI_HANDLE hHdmi)
         else
         {
             pstAppAttr->enVidOutMode = HI_UNF_HDMI_VIDEO_MODE_RGB444;
-            //��ȡ����edid�����Ҳ�֧��hdmi�����dviģʽ
+            //读取到了edid，并且不支持hdmi则进入dvi模式
             //read real edid ok && sink not support hdmi,then we run in dvi mode
             pstAppAttr->bEnableHdmi = HI_FALSE;
         }
@@ -1067,7 +1067,7 @@ void hdmi_MCE_ProcHotPlug(HI_HANDLE hHdmi)
 		    enAspectRate  = HI_UNF_HDMI_ASPECT_RATIO_4TO3;
 		    if (pstAVIInfoframe->enAspectRatio == HI_UNF_HDMI_ASPECT_RATIO_16TO9)
 		    {
-			    /*the ratio mustn't force to change when setting 576p_50 16:9 before hotplug *//*CNcomment:�Ȳ����ǰ���õ���576p_50 16:9��ģʽ������Ҫǿ�Ƹı� */
+			    /*the ratio mustn't force to change when setting 576p_50 16:9 before hotplug *//*CNcomment:热插拔以前采用的是576p_50 16:9的模式，不需要强制改变 */
 			    enAspectRate = HI_UNF_HDMI_ASPECT_RATIO_16TO9;
 		    }
 		    pstAVIInfoframe->u32PixelRepetition      = HI_TRUE;
@@ -1460,7 +1460,7 @@ HI_S32 HI_DRV_HDMI_SetAttr(HI_UNF_HDMI_ID_E enHdmi, HDMI_APP_ATTR_S *pstAttr)
 }
 
 #if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
-//������Ҫ��ģ��һ��ע��
+//后续需要和模块一起注册
 EXPORT_SYMBOL(HI_DRV_HDMI_Init);
 EXPORT_SYMBOL(HI_DRV_HDMI_Deinit);
 EXPORT_SYMBOL(HI_DRV_HDMI_Open);

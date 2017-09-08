@@ -46,7 +46,7 @@
 #define AC_VLC_BITS 9
 
 /* 2010/06/18 19:00:00 liuxw+00139685 */
-/* ĞÂÔö¼ÓµÄºê */
+/* æ–°å¢åŠ çš„å® */
 #define MAX_PIC_HEIGHT 1088
 #define MIN_PIC_HEIGHT 16
 #define MAX_PIC_WIDTH  1920
@@ -65,7 +65,7 @@ static int output_num = 0;
 static const uint16_t table_mb_intra[64][2];
 
 /* 2010/05/31 17:00:00 liuxw+00139685 */
-/* ½«vc1_parser.cÖĞĞÂÔöµÄº¯ÊıµÄÉùÃ÷¼Óµ½ÕâÀï£¬Ô­Òò£ºÃ»ÓĞvc1_parser.hÍ·ÎÄ¼ş */
+/* å°†vc1_parser.cä¸­æ–°å¢çš„å‡½æ•°çš„å£°æ˜åŠ åˆ°è¿™é‡Œï¼ŒåŸå› ï¼šæ²¡æœ‰vc1_parser.hå¤´æ–‡ä»¶ */
 int VC1_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf, unsigned int *puiOutBufSize,const uint8_t *pucInBuf, unsigned int uiInBufSize, int *piLength);
 //int msmpeg4_vlc_table_free();
 /**
@@ -74,23 +74,23 @@ int VC1_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf,
  * @return Status
  */
 /* 2010/08/31 11:30:00 liuxw+00139685 [AZ1D02297] */
-/* ½«¶¯Ì¬·ÖÅäµÄ¿Õ¼äÈ«²¿×ª»»Îª±íÌ¬×é */
+/* å°†åŠ¨æ€åˆ†é…çš„ç©ºé—´å…¨éƒ¨è½¬æ¢ä¸ºè¡¨æ€ç»„ */
 #if 0
 static int vc1_init_common(VC1Context *v)
 {
 	/* 2010/08/13 11:30:00 liuxw+00139685 [AZ1D02265] */
-	/* ÓÉÓÚÔÚ¸´Î»µÄÊ±ºòÓĞĞ©³õÊ¼»¯µÄº¯ÊıµÄ¾Ö²¿±äÁ¿ÎŞ·¨¸´Î»£¬ËùÒÔĞŞ¸ÄÎªÍ¨µÀ±äÁ¿ÖĞµÄ³ÉÔ± */
+	/* ç”±äºåœ¨å¤ä½çš„æ—¶å€™æœ‰äº›åˆå§‹åŒ–çš„å‡½æ•°çš„å±€éƒ¨å˜é‡æ— æ³•å¤ä½ï¼Œæ‰€ä»¥ä¿®æ”¹ä¸ºé€šé“å˜é‡ä¸­çš„æˆå‘˜ */
  // static int done = 0;
     int i = 0;
 	/* 2010/06/18 17:30:00 liuxw+00139685 */
-	/* Ôö¼Ó·µ»ØÂë */
+	/* å¢åŠ è¿”å›ç  */
 	int iRet = 0;
 
     v->hrd_rate = v->hrd_buffer = NULL;
 
     /* VLC tables */
 	/* 2010/08/13 11:30:00 liuxw+00139685 [AZ1D02265] */
-	/* ÓÉÓÚÔÚ¸´Î»µÄÊ±ºòÓĞĞ©³õÊ¼»¯µÄº¯ÊıµÄ¾Ö²¿±äÁ¿ÎŞ·¨¸´Î»£¬ËùÒÔĞŞ¸ÄÎªÍ¨µÀ±äÁ¿ÖĞµÄ³ÉÔ± */
+	/* ç”±äºåœ¨å¤ä½çš„æ—¶å€™æœ‰äº›åˆå§‹åŒ–çš„å‡½æ•°çš„å±€éƒ¨å˜é‡æ— æ³•å¤ä½ï¼Œæ‰€ä»¥ä¿®æ”¹ä¸ºé€šé“å˜é‡ä¸­çš„æˆå‘˜ */
   /*  if(!done)
     {
         done = 1; */
@@ -299,12 +299,12 @@ static int vc1_init_common(VC1Context *v)
 #endif
 
 /* 2010/08/31 11:30:00 liuxw+00139685 [AZ1D02297] */
-/* ÓÉÓÚÉÏÃæ½«¶¯Ì¬·ÖÅäµÄVLC¿Õ¼äÈ«²¿×ª»»Îª¾²Ì¬Êı×é£¬ËùÒÔÎŞĞèÄÚ´æÊÍ·Å */
+/* ç”±äºä¸Šé¢å°†åŠ¨æ€åˆ†é…çš„VLCç©ºé—´å…¨éƒ¨è½¬æ¢ä¸ºé™æ€æ•°ç»„ï¼Œæ‰€ä»¥æ— éœ€å†…å­˜é‡Šæ”¾ */
 #if 0
 /* 2010/06/18 15:30:00 liuxw+00139685 */
-/* ĞÂÔöº¯Êı£ºÊÍ·ÅVC1ËùÓÃµ½µÄVLC±íËùÕ¼ÓÃµÄÄÚ´æ */
+/* æ–°å¢å‡½æ•°ï¼šé‡Šæ”¾VC1æ‰€ç”¨åˆ°çš„VLCè¡¨æ‰€å ç”¨çš„å†…å­˜ */
 /* 2010/08/18 15:30:00 liuxw+00139685 [AZ1D02265] */
-/* ¶ÔÓÚÃ¿Ò»¸öÊÍ·ÅºóµÄvlc_table£¬¶Ô¹ÜÀíÆätableµÄÈ«¾Ö±äÁ¿½øĞĞÇå0´¦Àí */
+/* å¯¹äºæ¯ä¸€ä¸ªé‡Šæ”¾åçš„vlc_tableï¼Œå¯¹ç®¡ç†å…¶tableçš„å…¨å±€å˜é‡è¿›è¡Œæ¸…0å¤„ç† */
 static int vc1_vlc_talbe_free()
 {
 	int i;
@@ -481,7 +481,7 @@ static int bitplane_decoding(uint8_t* data, int *raw_flag, VC1Context *v)
                     if(code < 0)
 					{
 						/* 2010/06/23 10:30:00 liuxw+00139685 */
-						/* ĞŞ¸Ä´íÎó¼¶±ğ */
+						/* ä¿®æ”¹é”™è¯¯çº§åˆ« */
 //						av_log(v->s.avctx, AV_LOG_DEBUG, "invalid NORM-6 VLC\n");
 						av_log(v->s.avctx, AV_LOG_WARNING, "invalid NORM-6 VLC\n");
                         return -1;
@@ -509,7 +509,7 @@ static int bitplane_decoding(uint8_t* data, int *raw_flag, VC1Context *v)
                     if(code < 0)
 					{
 						/* 2010/06/23 10:30:00 liuxw+00139685 */
-						/* ĞŞ¸Ä´íÎó¼¶±ğ */
+						/* ä¿®æ”¹é”™è¯¯çº§åˆ« */
 //						av_log(v->s.avctx, AV_LOG_DEBUG, "invalid NORM-6 VLC\n");
 						av_log(v->s.avctx, AV_LOG_WARNING, "invalid NORM-6 VLC\n");
                         return -1;
@@ -538,7 +538,7 @@ static int bitplane_decoding(uint8_t* data, int *raw_flag, VC1Context *v)
         break;
     default: 
 		/* 2010/06/23 10:30:00 liuxw+00139685 */
-		/* Ôö¼ÓÈÕÖ¾´òÓ¡£¬²¢·µ»Ø */
+		/* å¢åŠ æ—¥å¿—æ‰“å°ï¼Œå¹¶è¿”å› */
 		av_log(v->s.avctx,AV_LOG_WARNING,"Bitplane mode[%d] is invalid!\n",imode);
 		return -1;
 //		break;
@@ -655,7 +655,7 @@ static void vc1_loop_filter(uint8_t* src, int step, int stride, int len, int pq)
 static void vc1_loop_filter_iblk(MpegEncContext *s, int pq)
 {
 	/* 2010/06/28 16:30:00 liuxw+00139685 */
-	/* ÓÉÓÚ´úÂëĞŞ¸Ä£¬ËùÒÔ±äÁ¿iÃ»ÓĞÊ¹ÓÃ£¬ÎªÏû³ı±àÒëwarning£¬×¢ÊÍµô±äÁ¿iµÄÉùÃ÷  */
+	/* ç”±äºä»£ç ä¿®æ”¹ï¼Œæ‰€ä»¥å˜é‡iæ²¡æœ‰ä½¿ç”¨ï¼Œä¸ºæ¶ˆé™¤ç¼–è¯‘warningï¼Œæ³¨é‡Šæ‰å˜é‡içš„å£°æ˜  */
 //  int i, j;
 	int j;
     if(!s->first_slice_line)
@@ -663,7 +663,7 @@ static void vc1_loop_filter_iblk(MpegEncContext *s, int pq)
     vc1_loop_filter(s->dest[0] + 8*s->linesize, 1, s->linesize, 16, pq);
 
 	/* 2010/06/28 16:30:00 liuxw+00139685 */
-	/* È¥µôforµÄÃèÊö·½Ê½£¬½«Æä¸ÄÎªifµÄ·½Ê½  */
+	/* å»æ‰forçš„æè¿°æ–¹å¼ï¼Œå°†å…¶æ”¹ä¸ºifçš„æ–¹å¼  */
 //  for(i = !s->mb_x*8; i < 16; i += 8)
 //		vc1_loop_filter(s->dest[0] + i, s->linesize, 1, 16, pq);
 	if(s->mb_x)
@@ -713,7 +713,7 @@ static int vop_dquant_decoding(VC1Context *v)
                 break;
             case DQPROFILE_ALL_MBS:
                 v->dqbilevel = get_bits1(gb);
-                if(!v->dqbilevel)      /* 2010/06/23 10:30:00 liuxw+00139685 ËùÓĞµÄºê¿é¶¼²»»áÓÃPQUANT,ËùÒÔhalfqpÒ²²»»áÊ¹ÓÃ */
+                if(!v->dqbilevel)      /* 2010/06/23 10:30:00 liuxw+00139685 æ‰€æœ‰çš„å®å—éƒ½ä¸ä¼šç”¨PQUANT,æ‰€ä»¥halfqpä¹Ÿä¸ä¼šä½¿ç”¨ */
                     v->halfpq = 0;
 				break;
             default: 
@@ -740,7 +740,7 @@ static void vc1_put_block(VC1Context *v, DCTELEM block[6][64])
     int ys, us, vs;
     DSPContext *dsp = &v->s.dsp;
 	/* 2010/08/26 10:00:00 liuxw+00139685 */
-	/* rangeredfrm¹¦ÄÜÊ¹ÓÃ´íÎó */
+	/* rangeredfrmåŠŸèƒ½ä½¿ç”¨é”™è¯¯ */
 /*
     if(v->rangeredfrm) 
 	{
@@ -843,7 +843,7 @@ static void vc1_mc_1mv(VC1Context *v, int dir)
     }
 
 	/* 2010/05/27 10:00:00 liuxw+00139685 */
-	/* Ïû³ı±àÒëwarning(ÔÚ>µÄÓÒ±ßÇ¿ÖÆ×ª»¯Îªunsigned) */
+	/* æ¶ˆé™¤ç¼–è¯‘warning(åœ¨>çš„å³è¾¹å¼ºåˆ¶è½¬åŒ–ä¸ºunsigned) */
     if(v->rangeredfrm || (v->mv_mode == MV_PMODE_INTENSITY_COMP)
        || (unsigned)(src_x - s->mspel) > (unsigned)(s->h_edge_pos - (mx&3) - 16 - s->mspel*3)
        || (unsigned)(src_y - s->mspel) > (unsigned)(s->v_edge_pos - (my&3) - 16 - s->mspel*3))
@@ -862,7 +862,7 @@ static void vc1_mc_1mv(VC1Context *v, int dir)
         srcV = uvbuf + 16;
         /* if we deal with range reduction we need to scale source blocks */
 	/* 2010/08/26 10:00:00 liuxw+00139685 */
-	/* rangeredfrm¹¦ÄÜÊ¹ÓÃ´íÎó */
+	/* rangeredfrmåŠŸèƒ½ä½¿ç”¨é”™è¯¯ */
    /*     if(v->rangeredfrm) 
 		{
             int i, j;
@@ -1019,7 +1019,7 @@ static void vc1_mc_4mv_luma(VC1Context *v, int n)
 
     srcY += src_y * s->linesize + src_x;
 	/* 2010/05/27 10:00:00 liuxw+00139685 */
-	/* Ïû³ı±àÒëwarning(ÔÚ>µÄÓÒ±ßÇ¿ÖÆ×ª»¯Îªunsigned) */
+	/* æ¶ˆé™¤ç¼–è¯‘warning(åœ¨>çš„å³è¾¹å¼ºåˆ¶è½¬åŒ–ä¸ºunsigned) */
     if(v->rangeredfrm || (v->mv_mode == MV_PMODE_INTENSITY_COMP)
        || (unsigned)(src_x - s->mspel) > (unsigned)(s->h_edge_pos - (mx&3) - 8 - s->mspel*2)
        || (unsigned)(src_y - s->mspel) > (unsigned)(s->v_edge_pos - (my&3) - 8 - s->mspel*2))
@@ -1030,7 +1030,7 @@ static void vc1_mc_4mv_luma(VC1Context *v, int n)
         srcY = s->edge_emu_buffer;
         /* if we deal with range reduction we need to scale source blocks */
 		/* 2010/08/26 10:00:00 liuxw+00139685 */
-		/* rangeredfrm¹¦ÄÜÊ¹ÓÃ´íÎó */
+		/* rangeredfrmåŠŸèƒ½ä½¿ç”¨é”™è¯¯ */
 /*        if(v->rangeredfrm) 
 		{
             int i, j;
@@ -1174,7 +1174,7 @@ static void vc1_mc_4mv_chroma(VC1Context *v)
     srcU = s->last_picture.data[1] + uvsrc_y * s->uvlinesize + uvsrc_x;
     srcV = s->last_picture.data[2] + uvsrc_y * s->uvlinesize + uvsrc_x;
 	/* 2010/05/27 10:00:00 liuxw+00139685 */
-	/* Ïû³ı±àÒëwarning(ÔÚ>µÄÓÒ±ßÇ¿ÖÆ×ª»¯Îªunsigned) */
+	/* æ¶ˆé™¤ç¼–è¯‘warning(åœ¨>çš„å³è¾¹å¼ºåˆ¶è½¬åŒ–ä¸ºunsigned) */
     if(v->rangeredfrm || (v->mv_mode == MV_PMODE_INTENSITY_COMP)
        || (unsigned)uvsrc_x > (unsigned)((s->h_edge_pos >> 1) - 9)
        || (unsigned)uvsrc_y > (unsigned)((s->v_edge_pos >> 1) - 9))
@@ -1188,7 +1188,7 @@ static void vc1_mc_4mv_chroma(VC1Context *v)
 
         /* if we deal with range reduction we need to scale source blocks */
 		/* 2010/08/26 10:00:00 liuxw+00139685 */
-		/* rangeredfrm¹¦ÄÜÊ¹ÓÃ´íÎó */
+		/* rangeredfrmåŠŸèƒ½ä½¿ç”¨é”™è¯¯ */
 /*        if(v->rangeredfrm) 
 		{
             int i, j;
@@ -1247,18 +1247,18 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
  * @return Status
  */
 /* 2010/06/17 17:00:00 liuxw+00139685 */
-/* ½«¾²Ì¬µÄÊôĞÔÈ¥µô£ºÔÚprobeheaderÖĞ»áµ÷ÓÃ´Ëº¯Êı */
+/* å°†é™æ€çš„å±æ€§å»æ‰ï¼šåœ¨probeheaderä¸­ä¼šè°ƒç”¨æ­¤å‡½æ•° */
 /*static*/ int decode_sequence_header(AVCodecContext *avctx, GetBitContext *gb)
 {
     VC1Context *v = avctx->priv_data;
 	int width,height;
 
 	/* 2010/06/13 16:30:00 liuxw+00139685 */
-	/* Ôö¼Ó½âÎö¿íºÍ¸ßµÄÓï·¨ÔªËØ(Ë½×Ô¶¨ÒåµÄ) */ 
+	/* å¢åŠ è§£æå®½å’Œé«˜çš„è¯­æ³•å…ƒç´ (ç§è‡ªå®šä¹‰çš„) */ 
 	width = get_bits(gb, 32)*2;
 	height = get_bits(gb, 32)*2;
 	/* 2010/06/18 19:00:00 liuxw+00139685 */
-	/* Ìí¼Ó³¤ºÍ¿íµÄºÏ·¨ĞÔ¼ì²é¼°·µ»Ø */
+	/* æ·»åŠ é•¿å’Œå®½çš„åˆæ³•æ€§æ£€æŸ¥åŠè¿”å› */
 	if(avctx->usSourceWidth && avctx->usSourceHeight < height)
 	{
 		if(MIN_PIC_WIDTH > width || avctx->usSourceWidth < width || MIN_PIC_HEIGHT > height || avctx->usSourceHeight < height)
@@ -1289,12 +1289,12 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
 
 	av_log(avctx, AV_LOG_DEBUG, "Header: %0X\n", show_bits(gb, 32));
 	/* 2010/06/13 16:30:00 liuxw+00139685 */
-	/* ÓÉĞ­Òé¸½Â¼J¿ÉÖª£¬profileÓï·¨ÔªËØÕ¼4bit */ 
+	/* ç”±åè®®é™„å½•Jå¯çŸ¥ï¼Œprofileè¯­æ³•å…ƒç´ å 4bit */ 
 //	v->profile = get_bits(gb, 2);
 	v->profile = get_bits(gb, 4);
 
 	/* 2010/06/13 16:30:00 liuxw+00139685 */
-	/* ĞŞ¸Äprofile²»ÕıÈ·µÄ´¦Àí·½Ê½:±¨¾¯¸æ£¬È»ºó¼ÌĞøÏòºó½â */ 
+	/* ä¿®æ”¹profileä¸æ­£ç¡®çš„å¤„ç†æ–¹å¼:æŠ¥è­¦å‘Šï¼Œç„¶åç»§ç»­å‘åè§£ */ 
     //if (v->profile == PROFILE_COMPLEX)
     //{
     //    av_log(avctx, AV_LOG_ERROR, "WMV3 Complex Profile is not fully supported\n");
@@ -1311,7 +1311,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
 	{
 		av_log(avctx,AV_LOG_WARNING,"Profile[%d] is invalid or not support!\n",v->profile);
 		/* 2010/06/18 19:00:00 liuxw+00139685 */
-		/* Ìí¼Ó´íÎóÂë£¬²¢¶Ôprofile½øĞĞĞŞÕı */
+		/* æ·»åŠ é”™è¯¯ç ï¼Œå¹¶å¯¹profileè¿›è¡Œä¿®æ­£ */
 		avctx->iTotalError++;
 		IMEDIA_SET_ERR_SEQ(avctx->iErrorCode,IMEDIA_ERR_SEQ_PROFILE_LEVEL);
 		v->profile = PROFILE_MAIN;
@@ -1337,7 +1337,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
     if(v->s.loop_filter == 1 && v->profile == PROFILE_SIMPLE)
     {
 		/* 2010/06/18 19:00:00 liuxw+00139685 */
-		/* Ìí¼Ó´íÎóÂë£¬²¢¶Ôloop_filter½øĞĞĞŞÕı */
+		/* æ·»åŠ é”™è¯¯ç ï¼Œå¹¶å¯¹loop_filterè¿›è¡Œä¿®æ­£ */
 //      av_log(avctx, AV_LOG_WARNING,"LOOPFILTER shell not be enabled in simple profile\n");
 		av_log(avctx, AV_LOG_WARNING,"LOOPFILTER shell not be enabled in simple profile\n");
 		avctx->iTotalError++;
@@ -1349,7 +1349,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
 
     v->res_x8 = get_bits1(gb); //reserved
 	/* 2010/06/19 16:30:00 liuxw+00139685 */
-	/* Ôö¼Ó¶Ô±£ÁôÎ»µÄºÏ·¨ĞÔÅĞ¶Ï,²¢½øĞĞĞŞÕı */
+	/* å¢åŠ å¯¹ä¿ç•™ä½çš„åˆæ³•æ€§åˆ¤æ–­,å¹¶è¿›è¡Œä¿®æ­£ */
 	if(1 == v->res_x8)
 	{
 		av_log(avctx, AV_LOG_WARNING,"Reserved bit must be zero!\n");
@@ -1360,7 +1360,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
 
     v->multires = get_bits1(gb);
 	/* 2010/06/19 16:30:00 liuxw+00139685 */
-	/* ÔÚsimple profielÏÂ²»Ö§³Ö¶¯Ì¬µ÷Õû·Ö±æÂÊ */
+	/* åœ¨simple profielä¸‹ä¸æ”¯æŒåŠ¨æ€è°ƒæ•´åˆ†è¾¨ç‡ */
 	if(PROFILE_SIMPLE == v->profile && v->multires)
 	{
 		av_log(avctx, AV_LOG_WARNING,"Simple Profile not support resolution change!\n");
@@ -1377,7 +1377,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
         v->s.dsp.vc1_inv_trans_4x8 = ff_simple_idct48_add;
         v->s.dsp.vc1_inv_trans_4x4 = ff_simple_idct44_add;
 		/* 2010/06/19 16:30:00 liuxw+00139685 */
-		/* ±£ÁôÎ»±ØĞèÎª1 */
+		/* ä¿ç•™ä½å¿…éœ€ä¸º1 */
 		av_log(avctx, AV_LOG_WARNING,"Simple Profile not support resolution change!\n");
 		avctx->iTotalError++;
 		IMEDIA_SET_ERR_SEQ(avctx->iErrorCode,IMEDIA_ERR_SEQ_MARKER);
@@ -1388,7 +1388,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
     if (!v->profile && !v->fastuvmc)
     {
 		/* 2010/06/18 19:00:00 liuxw+00139685 */
-		/* Ìí¼Ó´íÎóÂë£¬²¢¶Ôfastuvmc½øĞĞĞŞÕı */
+		/* æ·»åŠ é”™è¯¯ç ï¼Œå¹¶å¯¹fastuvmcè¿›è¡Œä¿®æ­£ */
 //      av_log(avctx, AV_LOG_ERROR,"FASTUVMC unavailable in Simple Profile\n");
 		av_log(avctx, AV_LOG_ERROR,"FASTUVMC unavailable in Simple Profile\n");
 		avctx->iTotalError++;
@@ -1400,7 +1400,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
     if (!v->profile && v->extended_mv)
     {
 		/* 2010/06/18 19:00:00 liuxw+00139685 */
-		/* Ìí¼Ó´íÎóÂë£¬²¢¶Ôextended_mv½øĞĞĞŞÕı */
+		/* æ·»åŠ é”™è¯¯ç ï¼Œå¹¶å¯¹extended_mvè¿›è¡Œä¿®æ­£ */
 //      av_log(avctx, AV_LOG_ERROR,"Extended MVs unavailable in Simple Profile\n");
 		av_log(avctx, AV_LOG_WARNING,"Extended MVs unavailable in Simple Profile\n");
 		avctx->iTotalError++;
@@ -1411,7 +1411,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
 
     v->dquant =  get_bits(gb, 2); //common
 	/* 2010/06/19 17:00:00 liuxw+00139685 */
-	/* Ôö¼Ó¶ÔdquantµÄºÏ·¨ĞÔ¼ì²â */
+	/* å¢åŠ å¯¹dquantçš„åˆæ³•æ€§æ£€æµ‹ */
 	if(v->dquant && PROFILE_SIMPLE == v->profile ||  (PROFILE_MAIN == v->profile && v->multires))
 	{
 		av_log(avctx, AV_LOG_WARNING,"Simple Profile not support dquant[%d] or Main Profile not support dquant[%d] and resolution change simultaneity!\n");
@@ -1426,7 +1426,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
     if (v->res_transtab)
     {
 		/* 2010/06/18 19:00:00 liuxw+00139685 */
-		/* Ìí¼Ó´íÎóÂë£¬²¢¶Ôextended_mv½øĞĞĞŞÕı */
+		/* æ·»åŠ é”™è¯¯ç ï¼Œå¹¶å¯¹extended_mvè¿›è¡Œä¿®æ­£ */
 //		av_log(avctx, AV_LOG_ERROR,"1 for reserved RES_TRANSTAB is forbidden\n");
 		av_log(avctx, AV_LOG_WARNING,"1 for reserved RES_TRANSTAB is forbidden!\n");
 		avctx->iTotalError++;
@@ -1439,7 +1439,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
 
     v->s.resync_marker = get_bits1(gb);
 	/* 2010/06/18 19:00:00 liuxw+00139685 */
-	/* Ìí¼Ó¶Ôresync_markerµÄ¼ì²â */
+	/* æ·»åŠ å¯¹resync_markerçš„æ£€æµ‹ */
 	if(PROFILE_SIMPLE == v->profile && v->s.resync_marker)
 	{
 		av_log(avctx, AV_LOG_WARNING,"resync_marker should be set to 0 in simple profile\n");
@@ -1452,7 +1452,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
     if (v->rangered && PROFILE_SIMPLE == v->profile)
     {
 		/* 2010/06/18 19:00:00 liuxw+00139685 */
-		/* Ìí¼Ó´íÎóÂë£¬²¢¶Ôrangered½øĞĞĞŞÕı */
+		/* æ·»åŠ é”™è¯¯ç ï¼Œå¹¶å¯¹rangeredè¿›è¡Œä¿®æ­£ */
 //		av_log(avctx, AV_LOG_INFO,"RANGERED should be set to 0 in simple profile\n");
 		av_log(avctx, AV_LOG_WARNING,"RANGERED should be set to 0 in simple profile\n");
 		avctx->iTotalError++;
@@ -1462,7 +1462,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
 
     v->s.max_b_frames = avctx->max_b_frames = get_bits(gb, 3); //common
 	/* 2010/06/19 10:30:00 liuxw+00139685 */
-	/* Ôö¼Ó¶ÔsimpleÏÂ²»Ö§³ÖBÖ¡µÄ¼ì²â */
+	/* å¢åŠ å¯¹simpleä¸‹ä¸æ”¯æŒBå¸§çš„æ£€æµ‹ */
 	if(PROFILE_SIMPLE == v->profile && v->s.max_b_frames)
 	{
 		av_log(avctx, AV_LOG_WARNING,"Simple profile not support B frames!\n");
@@ -1478,7 +1478,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb);
     if (!v->res_rtm_flag)
     {
 		/* 2010/06/18 19:00:00 liuxw+00139685 */
-		/* Ìí¼Ó´íÎóÂë£¬²¢¶Ôres_rtm_flag½øĞĞĞŞÕı */
+		/* æ·»åŠ é”™è¯¯ç ï¼Œå¹¶å¯¹res_rtm_flagè¿›è¡Œä¿®æ­£ */
 //      av_log(avctx, AV_LOG_ERROR, "0 for reserved RES_RTM_FLAG is forbidden\n");
 //      av_log(avctx, AV_LOG_ERROR,"Old WMV3 version detected, only I-frames will be decoded\n");
 		av_log(avctx, AV_LOG_WARNING,"Old WMV3 version detected, only I-frames will be decoded\n");
@@ -1516,12 +1516,12 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb)
     v->res_rtm_flag = 1;
 
 	/* 2010/06/13 16:30:00 liuxw+00139685 */
-	/* ³õÊ¼»¯º¯ÊıÖ¸Õë */
+	/* åˆå§‹åŒ–å‡½æ•°æŒ‡é’ˆ */
 	v->zz_8x4 = ff_vc1_adv_progressive_8x4_zz;
 	v->zz_4x8 = ff_vc1_adv_progressive_4x8_zz;
 
 	/* 2010/06/13 16:30:00 liuxw+00139685 */
-	/* Ôö¼Ó½âÎöprofileÓï·¨ÔªËØ */
+	/* å¢åŠ è§£æprofileè¯­æ³•å…ƒç´  */
 	v->profile = get_bits(gb, 2);
 	if(v->profile != 3)
 	{
@@ -1538,7 +1538,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb)
     {
         av_log(v->s.avctx, AV_LOG_WARNING,"Chroma format[%d] is not supported(Only support 4:2:0)\n",v->chromaformat);
 		/* 2010/06/13 16:30:00 liuxw+00139685 */
-		/* Èôchromaformat²»ÕıÈ·£¬Ôò±¨¾¯¸æ£¬²¢¶ÔÆä½øĞĞĞŞÕı */
+		/* è‹¥chromaformatä¸æ­£ç¡®ï¼Œåˆ™æŠ¥è­¦å‘Šï¼Œå¹¶å¯¹å…¶è¿›è¡Œä¿®æ­£ */
 		v->chromaformat = 1;
 //        return -1;
     }
@@ -1596,7 +1596,7 @@ static int decode_sequence_header_adv(VC1Context *v, GetBitContext *gb)
             w = get_bits(gb, 8);
             h = get_bits(gb, 8);
 			/* 2010/05/27 10:00:00 liuxw+00139685 */
-			/* Ïû³ı±àÒëerror£¨vcÏÂ£© */
+			/* æ¶ˆé™¤ç¼–è¯‘errorï¼ˆvcä¸‹ï¼‰ */
 //          v->s.avctx->sample_aspect_ratio = (AVRational){w, h};
 			v->s.avctx->sample_aspect_ratio.num = w;
 			v->s.avctx->sample_aspect_ratio.den = h;
@@ -1725,7 +1725,7 @@ static int vc1_parse_frame_header(VC1Context *v, GetBitContext* gb)
 	else v->s.pict_type = v->s.pict_type ? FF_P_TYPE : FF_I_TYPE;
 
 	/* 2010/06/19 10:30:00 liuxw+00139685 */
-	/* ¸üĞÂ½âÂë×´Ì¬ĞÅÏ¢ */
+	/* æ›´æ–°è§£ç çŠ¶æ€ä¿¡æ¯ */
 	switch(v->s.pict_type)
 	{
 		case FF_I_TYPE:
@@ -1755,7 +1755,7 @@ static int vc1_parse_frame_header(VC1Context *v, GetBitContext* gb)
     if(v->s.pict_type == FF_I_TYPE || v->s.pict_type == FF_BI_TYPE)
 	{
 		/* 2010/06/19 9:30:00 liuxw+00139685 */
-		/* buffer fullnessÔÚ½âÂë¹ı³ÌÖĞËäÈ»²»Ê¹ÓÃ£¬µ«ÒÀÈ»Òª¶ÔÆäºÏ·¨ĞÔ½øĞĞÅĞ¶Ï */    
+		/* buffer fullnessåœ¨è§£ç è¿‡ç¨‹ä¸­è™½ç„¶ä¸ä½¿ç”¨ï¼Œä½†ä¾ç„¶è¦å¯¹å…¶åˆæ³•æ€§è¿›è¡Œåˆ¤æ–­ */    
 //		skip_bits(gb, 7); // skip buffer fullness
 		int tmp;
 		tmp = get_bits(gb,7);
@@ -1778,7 +1778,7 @@ static int vc1_parse_frame_header(VC1Context *v, GetBitContext* gb)
     if(!pqindex) 
 	{
 		/* 2010/06/19 9:30:00 liuxw+00139685 */
-		/* ¶ÔqpindexµÄºÏ·¨ĞÔ½øĞĞÅĞ¶Ï£¬²¢½øĞĞĞŞÕı */  
+		/* å¯¹qpindexçš„åˆæ³•æ€§è¿›è¡Œåˆ¤æ–­ï¼Œå¹¶è¿›è¡Œä¿®æ­£ */  
 		av_log(v->s.avctx,AV_LOG_WARNING,"pqindex[0] is out of range[1-31]!\n",pqindex);
 		v->s.avctx->iTotalError++;
 		IMEDIA_SET_ERR_SLICE(v->s.avctx->iErrorCode,IMEDIA_ERR_SLICE_QP);
@@ -1813,13 +1813,13 @@ static int vc1_parse_frame_header(VC1Context *v, GetBitContext* gb)
     v->range_x = 1 << (v->k_x - 1);
     v->range_y = 1 << (v->k_y - 1);
 	/* 2010/06/23 9:30:00 liuxw+00139685 */
-	/* ³ıÁËBÖ¡Ö®ÍâBIÖ¡Ò²ÊÇ²»Ö§³ÖmultiresµÄ */
+	/* é™¤äº†Bå¸§ä¹‹å¤–BIå¸§ä¹Ÿæ˜¯ä¸æ”¯æŒmultiresçš„ */
 //  if (v->multires && v->s.pict_type != FF_B_TYPE) 
 	if (v->multires && (v->s.pict_type == FF_I_TYPE || v->s.pict_type == FF_P_TYPE)) 
 	{
 		v->respic = get_bits(gb, 2);
 		/* 2010/06/23 18:30:00 liuxw+00139685 */
-		/* Ä¿Ç°²»Ö§³Ö¶¯Ì¬µ÷Õû·Ö±æÂÊµÄ¹¦ÄÜ */
+		/* ç›®å‰ä¸æ”¯æŒåŠ¨æ€è°ƒæ•´åˆ†è¾¨ç‡çš„åŠŸèƒ½ */
 		if(v->respic != 0)
 		{
 			av_log(v->s.avctx,AV_LOG_WARNING,"Not support multi-resolution!\n");
@@ -1990,7 +1990,7 @@ static int vc1_parse_frame_header(VC1Context *v, GetBitContext* gb)
 			}
 			break;
 			/* 2010/06/23 10:30:00 liuxw+00139685 */
-			/* Ìí¼Ódefault */
+			/* æ·»åŠ default */
 		default:
 			break;
 		}
@@ -2299,7 +2299,7 @@ static int vc1_parse_frame_header_adv(VC1Context *v, GetBitContext* gb)
  * @brief Get macroblock-level quantizer scale
  */
 /* 2010/08/31 19:00:00 liuxw+00139685 [AZ1D02293] */
-/* ÓÉÓÚµ±pic_qpºÍaltpqÏàµÈÊ±£¬v->pq²»ÖªµÀÊÇÓÉË­µÃµ½£¬ºóÃæÔÚ¼ÆËãqscaleÊ±ÊÇ¸ù¾İv->pqÊÇ·ñµÈÓÚmqpÀ´ÅĞ¶ÏÊÇ·ñÊ¹ÓÃhalfqp */
+/* ç”±äºå½“pic_qpå’Œaltpqç›¸ç­‰æ—¶ï¼Œv->pqä¸çŸ¥é“æ˜¯ç”±è°å¾—åˆ°ï¼Œåé¢åœ¨è®¡ç®—qscaleæ—¶æ˜¯æ ¹æ®v->pqæ˜¯å¦ç­‰äºmqpæ¥åˆ¤æ–­æ˜¯å¦ä½¿ç”¨halfqp */
 #if 0
 #define GET_MQUANT()                                           \
   if (v->dquantfrm)                                            \
@@ -2649,7 +2649,7 @@ static void vc1_interp_mc(VC1Context *v)
         srcV = s->edge_emu_buffer + 18 * s->linesize;
     }
 	/* 2010/05/27 10:00:00 liuxw+00139685 */
-	/* Ïû³ı±àÒëwarning(ÔÚ>µÄÓÒ±ßÇ¿ÖÆ×ª»¯Îªunsigned) */
+	/* æ¶ˆé™¤ç¼–è¯‘warning(åœ¨>çš„å³è¾¹å¼ºåˆ¶è½¬åŒ–ä¸ºunsigned) */
     if(v->rangeredfrm
        || (unsigned)src_x > (unsigned)(s->h_edge_pos - (mx&3) - 16)
        || (unsigned)src_y > (unsigned)(s->v_edge_pos - (my&3) - 16))
@@ -2667,7 +2667,7 @@ static void vc1_interp_mc(VC1Context *v)
         srcU = uvbuf;
         srcV = uvbuf + 16;
 		/* 2010/08/26 10:00:00 liuxw+00139685 */
-		/* rangeredfrm¹¦ÄÜÊ¹ÓÃ´íÎó */
+		/* rangeredfrmåŠŸèƒ½ä½¿ç”¨é”™è¯¯ */
         /* if we deal with range reduction we need to scale source blocks */
 /*        if(v->rangeredfrm) 
 		{
@@ -2793,7 +2793,7 @@ static inline void vc1_pred_b_mv(VC1Context *v, int dmv_x[2], int dmv_y[2], int 
     }
 
 	/* 2010/08/31 19:00:00 liuxw+00139685 [AZ1D02293] */
-	/* µ±¼ÆËãBºê¿éµÄdirectµÄÊ±ºò»áÓÃµ½ºóÇ°²Î¿¼Ö¡ÏàÍ¬Î»ÖÃºê¿éµÄmv£¬µ«ÔÚÊ¹ÓÃÖ®Ç°ÒªÏÈ¾­¹ıÒ»¸öpull backµÄ²Ù×÷ Ğ­Òé8.4.5.4 */	
+	/* å½“è®¡ç®—Bå®å—çš„directçš„æ—¶å€™ä¼šç”¨åˆ°åå‰å‚è€ƒå¸§ç›¸åŒä½ç½®å®å—çš„mvï¼Œä½†åœ¨ä½¿ç”¨ä¹‹å‰è¦å…ˆç»è¿‡ä¸€ä¸ªpull backçš„æ“ä½œ åè®®8.4.5.4 */	
 //   s->mv[0][0][0] = scale_mv(s->next_picture.motion_val[1][xy][0], v->bfraction, 0, s->quarter_sample);
 //   s->mv[0][0][1] = scale_mv(s->next_picture.motion_val[1][xy][1], v->bfraction, 0, s->quarter_sample);
 //   s->mv[1][0][0] = scale_mv(s->next_picture.motion_val[1][xy][0], v->bfraction, 1, s->quarter_sample);
@@ -2879,7 +2879,7 @@ static inline void vc1_pred_b_mv(VC1Context *v, int dmv_x[2], int dmv_y[2], int 
         {
             int qx, qy, X, Y;
 			/* 2010/07/15 16:30:00 liuxw+00139685 [AZ1D02221] */
-			/* ÓÉÓÚprofileµÄºê¶¨Òå½øĞĞ¹ıĞŞ¸Ä£¬µ¼ÖÂmain profile±Èadvanced profile´ó£¬ËùÒÔ°ÑÌõ¼ş·´×ª¹ıÀ´ */
+			/* ç”±äºprofileçš„å®å®šä¹‰è¿›è¡Œè¿‡ä¿®æ”¹ï¼Œå¯¼è‡´main profileæ¯”advanced profileå¤§ï¼Œæ‰€ä»¥æŠŠæ¡ä»¶åè½¬è¿‡æ¥ */
 			//if(v->profile < PROFILE_ADVANCED)
 			if(v->profile > PROFILE_ADVANCED) 
 			{
@@ -2983,7 +2983,7 @@ static inline void vc1_pred_b_mv(VC1Context *v, int dmv_x[2], int dmv_y[2], int 
         {
             int qx, qy, X, Y;
 			/* 2010/07/15 16:30:00 liuxw+00139685 [AZ1D02221] */
-			/* ÓÉÓÚprofileµÄºê¶¨Òå½øĞĞ¹ıĞŞ¸Ä£¬µ¼ÖÂmain profile±Èadvanced profile´ó£¬ËùÒÔ°ÑÌõ¼ş·´×ª¹ıÀ´ */
+			/* ç”±äºprofileçš„å®å®šä¹‰è¿›è¡Œè¿‡ä¿®æ”¹ï¼Œå¯¼è‡´main profileæ¯”advanced profileå¤§ï¼Œæ‰€ä»¥æŠŠæ¡ä»¶åè½¬è¿‡æ¥ */
 			//if(v->profile < PROFILE_ADVANCED)
             if(v->profile > PROFILE_ADVANCED) 
 			{
@@ -3100,17 +3100,17 @@ static inline int vc1_i_pred_dc(MpegEncContext *s, int overlap, int pq, int n,
     if (pq < 9 || !overlap)
     {
         /* Set outer values */
-        if (s->first_slice_line && (n!=2 && n!=3)) //Ö¡µÄµÚÒ»ĞĞ¶øÇÒ²»ÊÇºê¿éµÄµÚ2¡¢3¸ö¿é liuxw+00139685
+        if (s->first_slice_line && (n!=2 && n!=3)) //å¸§çš„ç¬¬ä¸€è¡Œè€Œä¸”ä¸æ˜¯å®å—çš„ç¬¬2ã€3ä¸ªå— liuxw+00139685
 			b=a=dcpred[scale];
-        if (s->mb_x == 0 && (n!=1 && n!=3))       //Ö¡µÄµÚÒ»ÁĞ¶øÇÒ²»ÊÇºê¿éµÄµÚ1¡¢3¸ö¿é liuxw+00139685
+        if (s->mb_x == 0 && (n!=1 && n!=3))       //å¸§çš„ç¬¬ä¸€åˆ—è€Œä¸”ä¸æ˜¯å®å—çš„ç¬¬1ã€3ä¸ªå— liuxw+00139685
 			b=c=dcpred[scale];
     }
     else
     { //if(pq >= 9 && overlap ) liuxw+00139685
         /* Set outer values */
-        if (s->first_slice_line && (n!=2 && n!=3)) //Ö¡µÄµÚÒ»ĞĞ¶øÇÒ²»ÊÇºê¿éµÄµÚ2¡¢3¸ö¿é liuxw+00139685
+        if (s->first_slice_line && (n!=2 && n!=3)) //å¸§çš„ç¬¬ä¸€è¡Œè€Œä¸”ä¸æ˜¯å®å—çš„ç¬¬2ã€3ä¸ªå— liuxw+00139685
 			b=a=0;
-        if (s->mb_x == 0 && (n!=1 && n!=3))        //Ö¡µÄµÚÒ»ÁĞ¶øÇÒ²»ÊÇºê¿éµÄµÚ1¡¢3¸ö¿é liuxw+00139685
+        if (s->mb_x == 0 && (n!=1 && n!=3))        //å¸§çš„ç¬¬ä¸€åˆ—è€Œä¸”ä¸æ˜¯å®å—çš„ç¬¬1ã€3ä¸ªå— liuxw+00139685
 			b=c=0;
     }
 
@@ -3355,7 +3355,7 @@ static int vc1_decode_i_block(VC1Context *v, DCTELEM block[64], int n, int coded
     if (dcdiff < 0)
 	{
 		/* 2010/06/23 16:30:00 liuxw+00139685 */
-		/* ĞŞ¸ÄÈÕÖ¾ĞÅÏ¢ºÍ¼¶±ğ */
+		/* ä¿®æ”¹æ—¥å¿—ä¿¡æ¯å’Œçº§åˆ« */
 //		av_log(s->avctx, AV_LOG_ERROR, "Illegal DC VLC\n");
 		av_log(s->avctx, AV_LOG_WARNING, "Illegal DC VLC[%d]\n",dcdiff);
 		s->avctx->iTotalError++;
@@ -3999,7 +3999,7 @@ static int vc1_decode_p_block(VC1Context *v, DCTELEM block[64], int n, int mquan
     }
 
 /* 2010/08/31 19:00:00 liuxw+00139685 [AZ1D02293] */
-/* Ê×ÏÈÊÇ¸ù¾İv->pq == mquantÀ´ÅĞ¶ÏÊÇ·ñÊ¹ÓÃhalqp£¬ÈôÆä³ÉÁ¢£¬ÔòÔÙ¿´useAltQP±êÖ¾¿´ÊÇ·ñÈ·ÊµÊÇÓÃpic_qp */
+/* é¦–å…ˆæ˜¯æ ¹æ®v->pq == mquantæ¥åˆ¤æ–­æ˜¯å¦ä½¿ç”¨halqpï¼Œè‹¥å…¶æˆç«‹ï¼Œåˆ™å†çœ‹useAltQPæ ‡å¿—çœ‹æ˜¯å¦ç¡®å®æ˜¯ç”¨pic_qp */
 //  scale = 2 * mquant + ((v->pq == mquant) ? v->halfpq : 0);
     scale = 2 * mquant + ((v->pq == mquant && !v->useAltQP) ? v->halfpq : 0);
 
@@ -4253,7 +4253,7 @@ static int vc1_decode_p_mb(VC1Context *v)
 						continue;
                     s->dsp.vc1_inv_trans_8x8(s->block[i]);
 					/* 2010/08/26 10:00:00 liuxw+00139685 */
-					/* rangeredfrm¹¦ÄÜÊµÏÖ²»¶Ô */
+					/* rangeredfrmåŠŸèƒ½å®ç°ä¸å¯¹ */
  /*                   if(v->rangeredfrm) 
 						for(j = 0; j < 64; j++) 
 							s->block[i][j] <<= 1;*/
@@ -4266,7 +4266,7 @@ static int vc1_decode_p_mb(VC1Context *v)
                             s->dsp.vc1_v_overlap(s->dest[dst_idx] + off, s->linesize >> ((i & 4) >> 2));
                     }
             /* 2010/07/14 16:30:00 liuxw+00139685 [AZ1D2220] */
-		    /* ĞŞ¸ÄÅĞ¶ÏÌõ¼ş */
+		    /* ä¿®æ”¹åˆ¤æ–­æ¡ä»¶ */
 //          if(apply_loop_filter && s->mb_x && s->mb_x != (s->mb_width - 1) && s->mb_y && s->mb_y != (s->mb_height - 1))
 		    if(apply_loop_filter && !((s->mb_y==0&&(i==0||i==1||i==4||i==5))|| (s->mb_x==0&&(i==0||i==2||i==4||i==5)) || (s->mb_y==(s->mb_height-1)&&(i==2||i==3||i==4||i==5))||(s->mb_x==(s->mb_width - 1)&&(i==1||i==3||i==4||i==5))))
 		    {
@@ -4292,7 +4292,7 @@ static int vc1_decode_p_mb(VC1Context *v)
 				{
                     int left_cbp = 0, top_cbp = 0, filter = 0;
 					/* 2010/07/21 15:30:00 liuxw+00139685 [AZ1D2220] */
-					/* ĞŞ¸ÄÅĞ¶ÏÌõ¼ş */
+					/* ä¿®æ”¹åˆ¤æ–­æ¡ä»¶ */
 //                   if(apply_loop_filter && s->mb_x && s->mb_x != (s->mb_width - 1) && s->mb_y && s->mb_y != (s->mb_height - 1))
 					if(apply_loop_filter && !((s->mb_y==0&&(i==0||i==1||i==4||i==5))|| (s->mb_x==0&&(i==0||i==2||i==4||i==5)) || (s->mb_y==(s->mb_height-1)&&(i==2||i==3||i==4||i==5))||(s->mb_x==(s->mb_width - 1)&&(i==1||i==3||i==4||i==5))))
 					{
@@ -4308,7 +4308,7 @@ static int vc1_decode_p_mb(VC1Context *v)
                             top_cbp  = (i & 2) ? (cbp >> ((i-2)*4)) : (v->cbp[s->mb_x - s->mb_stride] >> ((i+2)*4));
                         }
                         /* 2010/07/14 16:30:00 liuxw+00139685 [AZ1D2220] */
-			            /* ×¢ÊÍµô²»±ØÒªµÄloop filter */
+			            /* æ³¨é‡Šæ‰ä¸å¿…è¦çš„loop filter */
                         //if(left_cbp & 0xC)
                         //    vc1_loop_filter(s->dest[dst_idx] + off, 1, i & 4 ? s->uvlinesize : s->linesize, 8, mquant);
                         //if(top_cbp  & 0xA)
@@ -4441,7 +4441,7 @@ static int vc1_decode_p_mb(VC1Context *v)
 						continue;
                     s->dsp.vc1_inv_trans_8x8(s->block[i]);
 					/* 2010/08/26 10:00:00 liuxw+00139685 */
-					/* rangeredfrm¹¦ÄÜÊ¹ÓÃ´íÎó */
+					/* rangeredfrmåŠŸèƒ½ä½¿ç”¨é”™è¯¯ */
                     //if(v->rangeredfrm) 
 					//	for(j = 0; j < 64; j++) 
 					//		s->block[i][j] <<= 1; 
@@ -4454,7 +4454,7 @@ static int vc1_decode_p_mb(VC1Context *v)
                             s->dsp.vc1_v_overlap(s->dest[dst_idx] + off, s->linesize >> ((i & 4) >> 2));
                     }
 					/* 2010/07/21 15:30:00 liuxw+00139685 [AZ1D2220] */
-					/* ĞŞ¸ÄÅĞ¶ÏÌõ¼ş */
+					/* ä¿®æ”¹åˆ¤æ–­æ¡ä»¶ */
 //                  if(v->s.loop_filter && s->mb_x && s->mb_x != (s->mb_width - 1) && s->mb_y && s->mb_y != (s->mb_height - 1))
 					if(apply_loop_filter && !((s->mb_y==0&&(i==0||i==1||i==4||i==5))|| (s->mb_x==0&&(i==0||i==2||i==4||i==5)) || (s->mb_y==(s->mb_height-1)&&(i==2||i==3||i==4||i==5))||(s->mb_x==(s->mb_width - 1)&&(i==1||i==3||i==4||i==5))))
 					{
@@ -4480,7 +4480,7 @@ static int vc1_decode_p_mb(VC1Context *v)
 				{
                     int left_cbp = 0, top_cbp = 0, filter = 0;
                     /* 2010/07/21 15:30:00 liuxw+00139685 [AZ1D2220] */
-					/* ĞŞ¸ÄÅĞ¶ÏÌõ¼ş */
+					/* ä¿®æ”¹åˆ¤æ–­æ¡ä»¶ */
 //                  if(apply_loop_filter && s->mb_x && s->mb_x != (s->mb_width - 1) && s->mb_y && s->mb_y != (s->mb_height - 1))
 					if(apply_loop_filter && !((s->mb_y==0&&(i==0||i==1||i==4||i==5))|| (s->mb_x==0&&(i==0||i==2||i==4||i==5)) || (s->mb_y==(s->mb_height-1)&&(i==2||i==3||i==4||i==5))||(s->mb_x==(s->mb_width - 1)&&(i==1||i==3||i==4||i==5))))
 					{
@@ -4496,7 +4496,7 @@ static int vc1_decode_p_mb(VC1Context *v)
                             top_cbp  = (i & 2) ? (cbp >> ((i-2)*4)) : (v->cbp[s->mb_x - s->mb_stride] >> ((i+2)*4));
                         }
 						/* 2010/07/21 15:30:00 liuxw+00139685 [AZ1D2220] */
-						/* È¥µô²»±ØÒªµÄ´úÂë */
+						/* å»æ‰ä¸å¿…è¦çš„ä»£ç  */
                         //if(left_cbp & 0xC)
                         //    vc1_loop_filter(s->dest[dst_idx] + off, 1, i & 4 ? s->uvlinesize : s->linesize, 8, mquant);
                         //if(top_cbp  & 0xA)
@@ -4725,7 +4725,7 @@ static void vc1_decode_b_mb(VC1Context *v)
 				continue;
             s->dsp.vc1_inv_trans_8x8(s->block[i]);
 			/* 2010/08/26 10:00:00 liuxw+00139685 */
-			/* rangeredfrm¹¦ÄÜÊ¹ÓÃ´íÎó */
+			/* rangeredfrmåŠŸèƒ½ä½¿ç”¨é”™è¯¯ */
 /*            if(v->rangeredfrm) 
 				for(j = 0; j < 64; j++) 
 				s->block[i][j] <<= 1; */
@@ -4764,7 +4764,7 @@ static void vc1_decode_i_blocks(VC1Context *v)
     uint8_t *coded_val;
     int mb_pos;
 	/* 2010/06/23 16:30:00 liuxw+00139685 */
-	/* ¶¨ÒåÒ»¸ö·µ»ØÂë */
+	/* å®šä¹‰ä¸€ä¸ªè¿”å›ç  */
 	int iRet = 0;
 
     /* select codingmode used for VLC tables selection */
@@ -4817,7 +4817,7 @@ static void vc1_decode_i_blocks(VC1Context *v)
 
             // do actual MB decoding and displaying
             cbp = get_vlc2(&v->s.gb, ff_msmp4_mb_i_vlc.table, MB_INTRA_VLC_BITS, 2);
-            v->s.ac_pred = get_bits1(&v->s.gb);  //ÓÃÓÚ±íÊ¾ÊÇ·ñÊ¹ÓÃÁËacÔ¤²â + l00139685
+            v->s.ac_pred = get_bits1(&v->s.gb);  //ç”¨äºè¡¨ç¤ºæ˜¯å¦ä½¿ç”¨äº†acé¢„æµ‹ + l00139685
 
             for(k = 0; k < 6; k++) 
 			{
@@ -4832,7 +4832,7 @@ static void vc1_decode_i_blocks(VC1Context *v)
                 cbp |= val << (5 - k);
 
 				/* 2010/06/23 16:30:00 liuxw+00139685 */
-				/* Ôö¼Ó·µ»ØÂë¼ì²â */
+				/* å¢åŠ è¿”å›ç æ£€æµ‹ */
 //              vc1_decode_i_block(v, s->block[k], k, val, (k<4)? v->codingset : v->codingset2);
 				iRet = vc1_decode_i_block(v, s->block[k], k, val, (k<4)? v->codingset : v->codingset2);
 				if(iRet < 0)
@@ -4924,7 +4924,7 @@ static void vc1_decode_i_blocks(VC1Context *v)
 			{
                 ff_er_add_slice(s, 0, 0, s->mb_x, s->mb_y, (AC_END|DC_END|MV_END));
 				/* 2010/06/23 11:30:00 liuxw+00139685 */
-				/* ĞŞ¸ÄÈÕÖ¾¼¶±ğ */
+				/* ä¿®æ”¹æ—¥å¿—çº§åˆ« */
 //              av_log(s->avctx, AV_LOG_ERROR, "Bits overconsumption: %i > %i\n", get_bits_count(&s->gb), v->bits);
 				av_log(s->avctx, AV_LOG_WARNING, "Bits overconsumption: %i > %i\n", get_bits_count(&s->gb), v->bits);
                 return;
@@ -5136,7 +5136,7 @@ static void vc1_decode_p_blocks(VC1Context *v)
 			{
                 ff_er_add_slice(s, 0, 0, s->mb_x, s->mb_y, (AC_END|DC_END|MV_END));
 				/* 2010/06/23 17:30:00 liuxw+00139685 */
-				/* ĞŞ¸ÄÈÕÖ¾¼¶±ğ */
+				/* ä¿®æ”¹æ—¥å¿—çº§åˆ« */
 //              av_log(s->avctx, AV_LOG_ERROR, "Bits overconsumption: %i > %i at %ix%i\n", get_bits_count(&s->gb), v->bits,s->mb_x,s->mb_y);
 				av_log(s->avctx, AV_LOG_WARNING, "Bits overconsumption: %i > %i at %ix%i\n", get_bits_count(&s->gb), v->bits,s->mb_x,s->mb_y);
                 return;
@@ -5289,7 +5289,7 @@ static av_always_inline const uint8_t* find_next_marker(const uint8_t *src, cons
 }
 
 /* 2010/06/17 17:30:00 liuxw+00139685 */
-/* ½«vc1_unescape_bufferº¯ÊıµÄ¾²Ì¬ÊôĞÔÈ¥µô£ºÔÚprobe headerÖĞ»áµ÷ÓÃ´Ëº¯Êı */
+/* å°†vc1_unescape_bufferå‡½æ•°çš„é™æ€å±æ€§å»æ‰ï¼šåœ¨probe headerä¸­ä¼šè°ƒç”¨æ­¤å‡½æ•° */
 /*static av_always_inline*/ int vc1_unescape_buffer(const uint8_t *src, int size, uint8_t *dst)
 {
     int dsize = 0, i;
@@ -5314,7 +5314,7 @@ static av_always_inline const uint8_t* find_next_marker(const uint8_t *src, cons
 }
 
 /* 2010/06/12 14:30:00 liuxw+00139685 */
-/* ĞÂÔö¼ÓÒ»¸öº¯Êı£¬Ö÷ÒªÍê³ÉÔÚ½âÍêĞòÁĞÍ·Ö®ºóµÄÒ»Ğ©³õÊ¼»¯²Ù×÷ */
+/* æ–°å¢åŠ ä¸€ä¸ªå‡½æ•°ï¼Œä¸»è¦å®Œæˆåœ¨è§£å®Œåºåˆ—å¤´ä¹‹åçš„ä¸€äº›åˆå§‹åŒ–æ“ä½œ */
 static int alloc_table(AVCodecContext *avctx)
 {
 	VC1Context *v = avctx->priv_data;
@@ -5394,7 +5394,7 @@ static av_cold int vc1_decode_init(AVCodecContext *avctx)
     MpegEncContext *s = &v->s;
 
 	/* 2010/06/12 14:30:00 liuxw+00139685 */
-	/* ÓÉÓÚµ÷ÓÃÁ÷³ÌµÄµ÷Õû£¬ÕâĞ©Óï¾äÔÚĞÂµÄÁ÷³ÌÖĞÔÚ´Ëº¯ÊıÀïÊÇ²»ĞèÒªµÄ */
+	/* ç”±äºè°ƒç”¨æµç¨‹çš„è°ƒæ•´ï¼Œè¿™äº›è¯­å¥åœ¨æ–°çš„æµç¨‹ä¸­åœ¨æ­¤å‡½æ•°é‡Œæ˜¯ä¸éœ€è¦çš„ */
 //  GetBitContext gb;
 //  if (!avctx->extradata_size || !avctx->extradata) return -1;
 
@@ -5415,7 +5415,7 @@ static av_cold int vc1_decode_init(AVCodecContext *avctx)
     if (vc1_init_common(v) < 0) return -1;
 
 	/* 2010/06/12 14:30:00 liuxw+00139685 */
-	/* ½«ÒÔÏÂº¯ÊıÈ«²¿×¢ÊÍ£¬²¿·Ö´úÂë¸Ä·Åµ½ĞÂÔö¼ÓµÄº¯Êıalloc_tableÖĞÈ¥ */
+	/* å°†ä»¥ä¸‹å‡½æ•°å…¨éƒ¨æ³¨é‡Šï¼Œéƒ¨åˆ†ä»£ç æ”¹æ”¾åˆ°æ–°å¢åŠ çš„å‡½æ•°alloc_tableä¸­å» */
 #if 0
     avctx->coded_width = avctx->width;
     avctx->coded_height = avctx->height;
@@ -5428,7 +5428,7 @@ static av_cold int vc1_decode_init(AVCodecContext *avctx)
         // the last byte of the extradata is a version number, 1 for the
         // samples we can decode
 		/* 2010/05/27 10:00:00 liuxw+00139685 */
-		/* ÒÔÇ°extradata,ÏÖÔÚ±»ĞŞ¸ÄÎªÊı×é */
+		/* ä»¥å‰extradata,ç°åœ¨è¢«ä¿®æ”¹ä¸ºæ•°ç»„ */
 //      init_get_bits(&gb, avctx->extradata, avctx->extradata_size*8);
 		for(i=0;i < avctx->extradata_num; i++)
 		{
@@ -5450,7 +5450,7 @@ static av_cold int vc1_decode_init(AVCodecContext *avctx)
 		}
     } else { // VC1/WVC1
 		/* 2010/05/27 10:00:00 liuxw+00139685 */
-		/* ÒÔÇ°extradata,ÏÖÔÚ±»ĞŞ¸ÄÎªÊı×é */
+		/* ä»¥å‰extradata,ç°åœ¨è¢«ä¿®æ”¹ä¸ºæ•°ç»„ */
 		int i;
 		int seq_initialized = 0, ep_initialized = 0;
 		for(i=0;i < avctx->extradata_num; i++)
@@ -5540,7 +5540,7 @@ static av_cold int vc1_decode_init(AVCodecContext *avctx)
 	}
 
 	/* 2010/06/17 15:30:00 liuxw+00139685 */
-	/* ÔÚ³õÊ¼»¯º¯ÊıÖĞÔö¼Óparse_context×´Ì¬³õÊ¼»¯(Ô­À´ÊÇÔÚmpv_common_initÖĞÊµÏÖµÄ) */
+	/* åœ¨åˆå§‹åŒ–å‡½æ•°ä¸­å¢åŠ parse_contextçŠ¶æ€åˆå§‹åŒ–(åŸæ¥æ˜¯åœ¨mpv_common_initä¸­å®ç°çš„) */
 	s->parse_context.state= -1;
 
     return 0;
@@ -5561,7 +5561,7 @@ int ff_vc1_decode_rbdu_trailing(VC1Context *v, const uint8_t *src)
 }
 
 /* 2010/06/12 15:30:00 liuxw+00139685 */
-/* ĞÂÔöº¯Êı£ºÊµÏÖ½âÂëBDU(bitstream data unit) */
+/* æ–°å¢å‡½æ•°ï¼šå®ç°è§£ç BDU(bitstream data unit) */
 static int vc1_decode_bdu(VC1Context *v, const uint8_t *buf, int buf_size)
 {
 	MpegEncContext *s = &v->s;
@@ -5577,7 +5577,7 @@ static int vc1_decode_bdu(VC1Context *v, const uint8_t *buf, int buf_size)
 	s->current_picture_ptr = NULL;  /* l00139685+20100617 init every frame */
 
 	/* 2010/06/13 15:30:00 liuxw+00139685 */
-    /* Ê×ÏÈµÃµ½µÚÒ»¸öÆğÊ¼ */
+    /* é¦–å…ˆå¾—åˆ°ç¬¬ä¸€ä¸ªèµ·å§‹ */
 	next = find_next_marker(start, end);
 	if(next == end)
 	{
@@ -5600,7 +5600,7 @@ static int vc1_decode_bdu(VC1Context *v, const uint8_t *buf, int buf_size)
 		buf2_size = vc1_unescape_buffer(start + 4, size, v->rbdu_buf);
 
 		/* 2010/06/13 11:30:00 liuxw+00139685 */
-		/* Ôö¼ÓÈ¥trainling bit ºÍsufix leading zero bytes(Ö»ÓĞvc1²Å»áÔËĞĞÏÂÁĞ´úÂë) */
+		/* å¢åŠ å»trainling bit å’Œsufix leading zero bytes(åªæœ‰vc1æ‰ä¼šè¿è¡Œä¸‹åˆ—ä»£ç ) */
 		while(avctx->codec_id == CODEC_ID_VC1 && v->rbdu_buf[buf2_size - 1] == 0 && buf2_size > 0)
 			buf2_size--;
 
@@ -5631,10 +5631,10 @@ static int vc1_decode_bdu(VC1Context *v, const uint8_t *buf, int buf_size)
 						continue;
 					}
 
-					avctx->iChromaFormat = 1;  //sp/mp Ã»ÓĞÓï·¨ÔªËØÀ´±íÊ¾chroma format£¬ËùÒÔÖÃÎª1(420)¼´¿É
+					avctx->iChromaFormat = 1;  //sp/mp æ²¡æœ‰è¯­æ³•å…ƒç´ æ¥è¡¨ç¤ºchroma formatï¼Œæ‰€ä»¥ç½®ä¸º1(420)å³å¯
 					v->seq_initialized = v->ep_initialized = 1;
 				}
-				/* ¼ì²âÍ¼Ïñ¿í¸ßµÄºÏ·¨ĞÔ */
+				/* æ£€æµ‹å›¾åƒå®½é«˜çš„åˆæ³•æ€§ */
 				if(avctx->usActualWidth && avctx->usActualHeight)
 				{
 					if(avctx->usActualWidth != avctx->coded_width || avctx->usActualHeight != avctx->coded_height)
@@ -5650,7 +5650,7 @@ static int vc1_decode_bdu(VC1Context *v, const uint8_t *buf, int buf_size)
 					avctx->usActualHeight = avctx->coded_height;
 				}
 
-				/* ¸üĞÂÂëÁ÷ĞÅÏ¢ºÍ½âÂëÆ÷×´Ì¬ĞÅÏ¢ */
+				/* æ›´æ–°ç æµä¿¡æ¯å’Œè§£ç å™¨çŠ¶æ€ä¿¡æ¯ */
 				s->avctx->iActualProfile = v->profile;
 				s->avctx->iActualLevel   = (v->profile==PROFILE_ADVANCED) ? v->level : (-1);
 				s->avctx->iActualRefNum  = 1;
@@ -5757,7 +5757,7 @@ static int vc1_decode_bdu(VC1Context *v, const uint8_t *buf, int buf_size)
 		if(1 == context_count)
 		{
 			/* 2010/06/19 10:30:00 liuxw+00139685 */
-			/* res_rtm_flagÔÚ½âÎöÊ±¾ÍÒÑ¾­±£Ö¤²»»áµÈÓÚ0 */
+			/* res_rtm_flagåœ¨è§£ææ—¶å°±å·²ç»ä¿è¯ä¸ä¼šç­‰äº0 */
 //			if(s->pict_type != FF_I_TYPE && !v->res_rtm_flag)
 //			{
 //				return -1;
@@ -5770,7 +5770,7 @@ static int vc1_decode_bdu(VC1Context *v, const uint8_t *buf, int buf_size)
 			if(NULL == s->last_picture_ptr && (FF_B_TYPE == s->pict_type || s->dropable))
 			{
 				/* 2010/06/19 11:00:00 liuxw+00139685 */
-				/* Ôö¼ÓÈÕÖ¾´òÓ¡ */
+				/* å¢åŠ æ—¥å¿—æ‰“å° */
 				av_log(avctx,AV_LOG_WARNING,"Lost foreward reference picture for B picture!\n");
 				avctx->uiDiscardFrames++;
 				return -1;//buf_size;
@@ -5781,7 +5781,7 @@ static int vc1_decode_bdu(VC1Context *v, const uint8_t *buf, int buf_size)
 				if(FF_B_TYPE == s->pict_type)
 				{
 					/* 2010/06/19 11:00:00 liuxw+00139685 */
-					/* Ôö¼ÓÈÕÖ¾´òÓ¡ */
+					/* å¢åŠ æ—¥å¿—æ‰“å° */
 					av_log(avctx,AV_LOG_WARNING,"Backward reference picture for B picture is dmamged!\n");
 					avctx->uiDiscardFrames++;
 //					return buf_size;
@@ -5797,7 +5797,7 @@ static int vc1_decode_bdu(VC1Context *v, const uint8_t *buf, int buf_size)
 			}
 
 			/* 2010/08/26 14:00:00 liuxw+00139685 */
-			/* Ôö¼Órangedfrm¹¦ÄÜ */
+			/* å¢åŠ rangedfrmåŠŸèƒ½ */
 			s->current_picture_ptr->pict_type = v->s.pict_type;
 			s->current_picture_ptr->rangedfrm = v->rangeredfrm;
 			if(v->rangered && (FF_P_TYPE == v->s.pict_type || (FF_B_TYPE == v->s.pict_type && !v->bi_type)) && (v->rangeredfrm ^ s->last_picture_ptr->rangedfrm))
@@ -5931,7 +5931,7 @@ static int vc1_decode_frame(AVCodecContext *avctx,
             *data_size = sizeof(AVFrame);
 
 			/* 2010/06/12 14:30:00 liuxw+00139685 */
-			/* ÖÃÎ»×îºóÒ»Ö¡±êÖ¾ */
+			/* ç½®ä½æœ€åä¸€å¸§æ ‡å¿— */
 			pict->ucLastFrame = 1;
         }
 
@@ -5948,7 +5948,7 @@ static int vc1_decode_frame(AVCodecContext *avctx,
     if (s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
 	{
 		/* 2010/07/15 16:30:00 liuxw+00139685 [AZ1D02221] */
-		/* ÓÉÓÚprofileµÄºê¶¨Òå½øĞĞ¹ıĞŞ¸Ä£¬µ¼ÖÂmain profile±Èadvanced profile´ó£¬ËùÒÔ°ÑÌõ¼ş·´×ª¹ıÀ´ */
+		/* ç”±äºprofileçš„å®å®šä¹‰è¿›è¡Œè¿‡ä¿®æ”¹ï¼Œå¯¼è‡´main profileæ¯”advanced profileå¤§ï¼Œæ‰€ä»¥æŠŠæ¡ä»¶åè½¬è¿‡æ¥ */
 		//if(v->profile < PROFILE_ADVANCED)
 		if(v->profile > PROFILE_ADVANCED) 
             avctx->pix_fmt = PIX_FMT_VDPAU_WMV3;
@@ -5957,7 +5957,7 @@ static int vc1_decode_frame(AVCodecContext *avctx,
     }
 
 	/* 2010/06/13 16:30:00 liuxw+00139685 */
-	/* ½«ÏÂÃæµÄ¾ßÌå½âÂë¹ı³Ì·â×°µ½Ò»¸öĞÂº¯ÊıÖĞÈ¥ */
+	/* å°†ä¸‹é¢çš„å…·ä½“è§£ç è¿‡ç¨‹å°è£…åˆ°ä¸€ä¸ªæ–°å‡½æ•°ä¸­å» */
 #if 0
     //for advanced profile we may need to parse and unescape data
     if (avctx->codec_id == CODEC_ID_VC1) {
@@ -6069,7 +6069,7 @@ static int vc1_decode_frame(AVCodecContext *avctx,
         &&s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
 	{
 		/* 2010/05/31 17:00:00 liuxw+00139685 */
-		/* ×¢ÊÍµô´Ëº¯Êı£º²»Ö§³ÖÓ²¼ş¼ÓËÙ¹¦ÄÜ */
+		/* æ³¨é‡Šæ‰æ­¤å‡½æ•°ï¼šä¸æ”¯æŒç¡¬ä»¶åŠ é€ŸåŠŸèƒ½ */
 //      ff_vdpau_vc1_decode_picture(s, buf_start, (buf + buf_size) - buf_start);
 		;
 	}
@@ -6111,7 +6111,7 @@ static int vc1_decode_frame(AVCodecContext *avctx,
     MPV_frame_end(s);
 
 	/* 2010/06/19 11:30:00 liuxw+00139685 */
-	/* ¸üĞÂÂëÁ÷ĞÅÏ¢ºÍ½âÂëÆ÷×´Ì¬ĞÅÏ¢ */
+	/* æ›´æ–°ç æµä¿¡æ¯å’Œè§£ç å™¨çŠ¶æ€ä¿¡æ¯ */
 	s->current_picture_ptr->pict_type = s->pict_type;
 	s->current_picture_ptr->interlaced_frame = (v->fcm==3);
 	s->current_picture_ptr->iErrorCode |= avctx->iErrorCode;
@@ -6134,7 +6134,7 @@ assert(s->current_picture.pict_type == s->pict_type);
     }
 
 	/* 2010/08/30 10:00:00 liuxw+00139685 */
-	/* Èôµ±Ç°ÓĞÑÓ³Ù£¬¶øÇÒ±»ÑÓ³ÙµÄÖ¡ÓÖ×öÁËrangedfrm£¬ËùÒÔÔÚÊä³öµÄÊ±ºòÒª½øĞĞ»Ö¸´ */
+	/* è‹¥å½“å‰æœ‰å»¶è¿Ÿï¼Œè€Œä¸”è¢«å»¶è¿Ÿçš„å¸§åˆåšäº†rangedfrmï¼Œæ‰€ä»¥åœ¨è¾“å‡ºçš„æ—¶å€™è¦è¿›è¡Œæ¢å¤ */
 	if((*data_size) && pict->recovery == 1)
 	{
 		unsigned char *p = NULL;
@@ -6250,14 +6250,14 @@ static av_cold int vc1_decode_end(AVCodecContext *avctx)
     ff_intrax8_common_end(&v->x8);
 
 	/* 2010/06/18 16:30:00 liuxw+00139685 */
-	/* ÊÍ·Å·ÖÅäµÄvlc tableËùÕ¼µÄ¿Õ¼ä */
+	/* é‡Šæ”¾åˆ†é…çš„vlc tableæ‰€å çš„ç©ºé—´ */
 	/* 2010/08/31 11:30:00 liuxw+00139685 [AZ1D02297] */
-   /* ½«¶¯Ì¬·ÖÅäµÄVLC¿Õ¼äÈ«²¿×ª»»Îª¾²Ì¬Êı×é£¬ËùÒÔÎŞĞèÄÚ´æÊÍ·Å */
+   /* å°†åŠ¨æ€åˆ†é…çš„VLCç©ºé—´å…¨éƒ¨è½¬æ¢ä¸ºé™æ€æ•°ç»„ï¼Œæ‰€ä»¥æ— éœ€å†…å­˜é‡Šæ”¾ */
 //	msmpeg4_vlc_table_free();
 //	vc1_vlc_talbe_free();
 
 	/* 2010/06/13 14:30:00 liuxw+00139685 */
-	/* ÊÍ·ÅĞÂÔöµÄ¿Õ¼ä */
+	/* é‡Šæ”¾æ–°å¢çš„ç©ºé—´ */
 	av_freep(&v->rbdu_buf);
 
     return 0;
@@ -6265,7 +6265,7 @@ static av_cold int vc1_decode_end(AVCodecContext *avctx)
 
 #if 0
 /* 2010/06/18 16:30:00 liuxw+00139685 */
-/* ĞÂÔöº¯Êı£ºÔÚ¸´Î»Ê±µ÷ÓÃ(²»Ê¹ÓÃvc1_decode_end,Í¬ÒòÎªËü»áÊÍ·ÅËùÓĞµÄvlc±í) */
+/* æ–°å¢å‡½æ•°ï¼šåœ¨å¤ä½æ—¶è°ƒç”¨(ä¸ä½¿ç”¨vc1_decode_end,åŒå› ä¸ºå®ƒä¼šé‡Šæ”¾æ‰€æœ‰çš„vlcè¡¨) */
 static av_cold int vc1_decode_end_hw(AVCodecContext *avctx)
 {
 	VC1Context *v = avctx->priv_data;
@@ -6282,14 +6282,14 @@ static av_cold int vc1_decode_end_hw(AVCodecContext *avctx)
 	ff_intrax8_common_end(&v->x8);
 
 	/* 2010/06/13 14:30:00 liuxw+00139685 */
-	/* ÊÍ·ÅĞÂÔöµÄ¿Õ¼ä */
+	/* é‡Šæ”¾æ–°å¢çš„ç©ºé—´ */
 	av_freep(&v->rbdu_buf);
 
 	return 0;
 }
 #endif
 
-/* ĞÂÔöº¯Êı£º¸´Î»WMV3/VC1½âÂëÆ÷ */
+/* æ–°å¢å‡½æ•°ï¼šå¤ä½WMV3/VC1è§£ç å™¨ */
 static av_cold int vc1_reset(VC1Context *v)
 {
 	int iRet = 0;
@@ -6298,19 +6298,19 @@ static av_cold int vc1_reset(VC1Context *v)
 	AVCodecContext *		avctx	= s->avctx;
 
 	/* 2010/08/18 15:30:00 liuxw+00139685 [AZ1D02265] */
-	/* ¸´Î»Ê±²¢²»ÊÍ·Å¶¯Ì¬·ÖÅäµÄtable£¬ËùÒÔ±ØĞë±£Áôµ±Ç°tableÊÇ·ñÒÑ·ÖÅäµÄ±êÖ¾ */
+	/* å¤ä½æ—¶å¹¶ä¸é‡Šæ”¾åŠ¨æ€åˆ†é…çš„tableï¼Œæ‰€ä»¥å¿…é¡»ä¿ç•™å½“å‰tableæ˜¯å¦å·²åˆ†é…çš„æ ‡å¿— */
 	//int s_done = s->done;
 	//int v_done = v->done;
 
-	/* Çå¿ÕVC1Context½á¹¹Ìå±äÁ¿ */
+	/* æ¸…ç©ºVC1Contextç»“æ„ä½“å˜é‡ */
 	memset(v, 0, sizeof(VC1Context));
 
 	/* 2010/08/18 15:30:00 liuxw+00139685 [AZ1D02265] */
-	/* »Ö¸´Æä±£ÁôµÄ±êÖ¾ */
+	/* æ¢å¤å…¶ä¿ç•™çš„æ ‡å¿— */
 	//v->done = v_done;
 	//s->done = s_done;
 
-	/* ³õÊ¼»¯VC1Context½á¹¹Ìå±äÁ¿ */
+	/* åˆå§‹åŒ–VC1Contextç»“æ„ä½“å˜é‡ */
 	iRet = vc1_decode_init(avctx);
 	if(0 != iRet)
 	{
@@ -6320,7 +6320,7 @@ static av_cold int vc1_reset(VC1Context *v)
 	return iRet;
 }
 /* 2010/06/13 17:30:00 liuxw+00139685 */
-/* ĞÂÔöº¯Êı:WMV3/VC1 ½âÂëÆ÷¸´Î»º¯Êı */
+/* æ–°å¢å‡½æ•°:WMV3/VC1 è§£ç å™¨å¤ä½å‡½æ•° */
 static av_cold int decode_reset(AVCodecContext *avctx)
 {
 
@@ -6329,11 +6329,11 @@ static av_cold int decode_reset(AVCodecContext *avctx)
 	VC1Context *v = avctx->priv_data;
 	MpegEncContext *s = &v->s;
 
-	/*  ³ıÁË²»ÊÍ·ÅÔÚinitÊ±·ÖÅäµÄvlc±íÖ®Íâ£¬ÆäËüµÄÄÚ´æÈ«²¿ÊÍ·Å */
+	/*  é™¤äº†ä¸é‡Šæ”¾åœ¨initæ—¶åˆ†é…çš„vlcè¡¨ä¹‹å¤–ï¼Œå…¶å®ƒçš„å†…å­˜å…¨éƒ¨é‡Šæ”¾ */
 //	iRet = vc1_decode_end_hw(avctx);
 	iRet = vc1_decode_end(avctx);
 
-	/* ¸´Î»¼°³õÊ¼»¯AVCodecContext½á¹¹Ìå±äÁ¿ */
+	/* å¤ä½åŠåˆå§‹åŒ–AVCodecContextç»“æ„ä½“å˜é‡ */
 	iRet = avcodec_reset(avctx);
 	if(0 != iRet)
 	{
@@ -6341,7 +6341,7 @@ static av_cold int decode_reset(AVCodecContext *avctx)
 		return iRet;
 	}
 
-	/* ¸´Î»¼°³õÊ¼»¯H264Context½á¹¹Ìå±äÁ¿ */
+	/* å¤ä½åŠåˆå§‹åŒ–H264Contextç»“æ„ä½“å˜é‡ */
 	iRet = vc1_reset(v);
 	if(0 != iRet)
 	{

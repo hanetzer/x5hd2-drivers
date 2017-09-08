@@ -68,7 +68,7 @@ Date				Author        		Modification
 
 
 /** module register name */
-/** CNcomment:ÏòSDK×¢²áÄ£¿éÃû */
+/** CNcomment:å‘SDKæ³¨å†Œæ¨¡å—å */
 #define JPEGNAME                  "hi_jpeg_irq"
 #define JPEGDEVNAME               "jpeg"
 
@@ -77,14 +77,14 @@ Date				Author        		Modification
 
 
 /** jpeg device imformation */
-/** CNcomment:jpegÉè±¸ĞÅÏ¢ */
+/** CNcomment:jpegè®¾å¤‡ä¿¡æ¯ */
 typedef struct hiJPG_OSRDEV_S
 {
 
-	HI_BOOL bSuspendSignal;      /**< whether get suspend signal  *//**<CNcomment:»ñÈ¡´ı»úĞÅºÅ       */
-	HI_BOOL bResumeSignal;	       /**< whether get resume signal   *//**<CNcomment:»ñÈ¡´ı»ú»½ĞÑĞÅºÅ  */
+	HI_BOOL bSuspendSignal;      /**< whether get suspend signal  *//**<CNcomment:è·å–å¾…æœºä¿¡å·       */
+	HI_BOOL bResumeSignal;	       /**< whether get resume signal   *//**<CNcomment:è·å–å¾…æœºå”¤é†’ä¿¡å·  */
 	HI_BOOL bEngageFlag;          /**< whether be occupied, HI_TRUE if be occupied */
-	HI_BOOL bDecTask;             /**< whether have jpeg dec task   *//**<CNcomment:ÊÇ·ñÓĞjpeg½âÂëÈÎÎñ  */
+	HI_BOOL bDecTask;             /**< whether have jpeg dec task   *//**<CNcomment:æ˜¯å¦æœ‰jpegè§£ç ä»»åŠ¡  */
     struct semaphore   SemGetDev; /**< protect the device to occupy the operation singnal */
     struct file        *pFile;
     JPG_INTTYPE_E      IntType;    /**< lately happened halt type  */
@@ -95,7 +95,7 @@ typedef struct hiJPG_OSRDEV_S
 
 
 /** dispose close device */
-/** CNcomment:¹ØÉè±¸´¦Àí */
+/** CNcomment:å…³è®¾å¤‡å¤„ç† */
 typedef struct hiJPG_DISPOSE_CLOSE_S
 {
 
@@ -113,7 +113,7 @@ typedef struct hiJPG_DISPOSE_CLOSE_S
 extern HI_JPEG_PROC_INFO_S s_stJpeg6bProcInfo;
 
 /** read or write register value */
-/** CNcomment: ¶Á»òĞ´¼Ä´æÆ÷µÄÖµ */
+/** CNcomment: è¯»æˆ–å†™å¯„å­˜å™¨çš„å€¼ */
 static volatile HI_U64  sg_u64RegValue     = 0;
 #ifndef CONFIG_JPEG_USE_SDK_CRG_ENABLE
 static volatile HI_U32  *s_pJpegCRG     = HI_NULL;
@@ -121,8 +121,8 @@ static volatile HI_U32  *s_pJpegCRG     = HI_NULL;
 static volatile HI_U32  *s_pJpegRegBase = HI_NULL;
 static JPG_OSRDEV_S *s_pstruJpgOsrDev   = HI_NULL;
 
-HI_GFX_DECLARE_MUTEX(s_JpegMutex);      /**< dec muxtex     *//**<CNcomment:½âÂë¶àÏß³Ì±£»¤ */
-HI_GFX_DECLARE_MUTEX(s_SuspendMutex);   /**< suspend muxtex *//**<CNcomment:´ı»ú¶àÏß³Ì±£»¤ */
+HI_GFX_DECLARE_MUTEX(s_JpegMutex);      /**< dec muxtex     *//**<CNcomment:è§£ç å¤šçº¿ç¨‹ä¿æŠ¤ */
+HI_GFX_DECLARE_MUTEX(s_SuspendMutex);   /**< suspend muxtex *//**<CNcomment:å¾…æœºå¤šçº¿ç¨‹ä¿æŠ¤ */
 
 /******************************* API forward declarations *******************/
 static HI_S32 jpg_osr_open(struct inode *inode, struct file *file);
@@ -141,7 +141,7 @@ DECLARE_GFX_NODE(JPEGDEVNAME,jpg_osr_open, jpg_osr_close,jpg_osr_mmap,jpg_osr_io
 /***************************************************************************************
 * func			: jpg_do_cancel_reset
 * description	: cancel reset jpeg register
-				  CNcomment: ²âÏû¸´Î» CNend\n
+				  CNcomment: æµ‹æ¶ˆå¤ä½ CNend\n
 * param[in] 	: HI_VOID
 * retval		: NA
 * others:		: NA
@@ -153,7 +153,7 @@ static HI_VOID jpg_do_cancel_reset(HI_VOID)
 
 		unTempValue.u32 = g_pstRegCrg->PERI_CRG31.u32;
 		/** no reset, */
-		/** CNcomment:²»¸´Î»,ÒªÊÇÒ»Ö±´¦ÓÚ¸´Î»×´Ì¬,jpegÊÇÎŞ·¨¹¤×÷µÄ£¬µÚËÄbitĞ´0 */
+		/** CNcomment:ä¸å¤ä½,è¦æ˜¯ä¸€ç›´å¤„äºå¤ä½çŠ¶æ€,jpegæ˜¯æ— æ³•å·¥ä½œçš„ï¼Œç¬¬å››bitå†™0 */
 		#if defined(CONFIG_CHIP_3716CV200_VERSION) || defined(CONFIG_CHIP_3719CV100_VERSION) || defined(CONFIG_CHIP_3718CV100_VERSION) || defined(CONFIG_CHIP_3719MV100_A_VERSION)
 		unTempValue.bits.jpgd_srst_req  = 0x0;
 		#elif defined(CONFIG_CHIP_S40V200_VERSION)
@@ -167,7 +167,7 @@ static HI_VOID jpg_do_cancel_reset(HI_VOID)
 		pResetAddr   = s_pJpegCRG;
 
 		/** no reset */
-		/** CNcomment:²»¸´Î»,ÒªÊÇÒ»Ö±´¦ÓÚ¸´Î»×´Ì¬,jpegÊÇÎŞ·¨¹¤×÷µÄ */
+		/** CNcomment:ä¸å¤ä½,è¦æ˜¯ä¸€ç›´å¤„äºå¤ä½çŠ¶æ€,jpegæ˜¯æ— æ³•å·¥ä½œçš„ */
 		*pResetAddr &= JPGD_UNRESET_REG_VALUE;
 #endif
 }
@@ -175,7 +175,7 @@ static HI_VOID jpg_do_cancel_reset(HI_VOID)
 /***************************************************************************************
 * func			: jpg_do_reset
 * description	: reset jpeg register
-				  CNcomment: ¸´Î» CNend\n
+				  CNcomment: å¤ä½ CNend\n
 * param[in] 	: HI_VOID
 * retval		: NA
 * others:		: NA
@@ -190,7 +190,7 @@ static HI_VOID jpg_do_reset(HI_VOID)
 
 		unTempValue.u32 = g_pstRegCrg->PERI_CRG31.u32;
 		/** when dec finish, should reset to dec next jpeg steam */
-		/** CNcomment:µ±½âÂëÍê³ÉÖ®ºóÒª½øĞĞ¸´Î»,½øĞĞÏÂÒ»Ö¡½âÂë,µÚËÄbitĞ´1 */
+		/** CNcomment:å½“è§£ç å®Œæˆä¹‹åè¦è¿›è¡Œå¤ä½,è¿›è¡Œä¸‹ä¸€å¸§è§£ç ,ç¬¬å››bitå†™1 */
 		#if defined(CONFIG_CHIP_3716CV200_VERSION) || defined(CONFIG_CHIP_3719CV100_VERSION) || defined(CONFIG_CHIP_3718CV100_VERSION) || defined(CONFIG_CHIP_3719MV100_A_VERSION)
 		unTempValue.bits.jpgd_srst_req  = 0x1;
 		#elif defined(CONFIG_CHIP_S40V200_VERSION)
@@ -199,22 +199,22 @@ static HI_VOID jpg_do_reset(HI_VOID)
 		g_pstRegCrg->PERI_CRG31.u32 = unTempValue.u32;
 
 		/*++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-		[31:2]	reserve 	   : ±£Áô
-		[1]		whether reset  : ÊÇ·ñ¸´Î»±êÖ¾
-		0: has reset   : ÒÑ¾­¸´Î»
-		1: no reset    : Ã»ÓĞ¸´Î»
-		[0]		start decode   : JPEG½âÂëÆô¶¯¼Ä´æÆ÷
-		1: startup dec : Æô¶¯JPEG½øĞĞ½âÂë£¬½âÂëÆô¶¯ºó£¬´Ë¼Ä´æÆ÷»á×Ô¶¯Çå0¡£
+		[31:2]	reserve 	   : ä¿ç•™
+		[1]		whether reset  : æ˜¯å¦å¤ä½æ ‡å¿—
+		0: has reset   : å·²ç»å¤ä½
+		1: no reset    : æ²¡æœ‰å¤ä½
+		[0]		start decode   : JPEGè§£ç å¯åŠ¨å¯„å­˜å™¨
+		1: startup dec : å¯åŠ¨JPEGè¿›è¡Œè§£ç ï¼Œè§£ç å¯åŠ¨åï¼Œæ­¤å¯„å­˜å™¨ä¼šè‡ªåŠ¨æ¸…0ã€‚
 		++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
 
 		/** when reset,should cancle reset */
-		/** CNcomment:Èç¹ûÒÑ¾­¸´Î»ÁËÔò³·Ïû¸´Î»,ÕâÑù¾ÍÄÜ½øĞĞÏÂÒ»Ö¡½âÂëÁË */
+		/** CNcomment:å¦‚æœå·²ç»å¤ä½äº†åˆ™æ’¤æ¶ˆå¤ä½,è¿™æ ·å°±èƒ½è¿›è¡Œä¸‹ä¸€å¸§è§£ç äº† */
 		while (*pBusyAddr & 0x2)
 		{	
 		/*nothing to do!*/
 		}
 		/** the 4 bit write 0 */
-		/** CNcomment:µÚ4bitĞ´0²»¸´Î»,0x10ÊÇµÚ4bit£¬ÄÄ¸öbit¾ÍÊÇÔÚÄÇ¸öµØ·½Îª1 */
+		/** CNcomment:ç¬¬4bitå†™0ä¸å¤ä½,0x10æ˜¯ç¬¬4bitï¼Œå“ªä¸ªbitå°±æ˜¯åœ¨é‚£ä¸ªåœ°æ–¹ä¸º1 */
 		unTempValue.u32 = g_pstRegCrg->PERI_CRG31.u32;
 		#if defined(CONFIG_CHIP_3716CV200_VERSION) || defined(CONFIG_CHIP_3719CV100_VERSION) || defined(CONFIG_CHIP_3718CV100_VERSION) || defined(CONFIG_CHIP_3719MV100_A_VERSION)
 		unTempValue.bits.jpgd_srst_req  = 0x0;
@@ -243,7 +243,7 @@ static HI_VOID jpg_do_reset(HI_VOID)
 /***************************************************************************************
 * func			: jpg_do_clock_off
 * description	: close the jpeg clock
-				  CNcomment: ¹Ø±ÕjpegÊ±ÖÓ CNend\n
+				  CNcomment: å…³é—­jpegæ—¶é’Ÿ CNend\n
 * param[in] 	: HI_VOID
 * retval		: NA
 * others:		: NA
@@ -255,7 +255,7 @@ static HI_VOID jpg_do_clock_off(HI_VOID)
 
 		unTempValue.u32 = g_pstRegCrg->PERI_CRG31.u32;
 		/** the 0 bit write 0 */
-		/** CNcomment:µÚ0bitĞ´0 £¬0x0 & 0x1 = 0 */
+		/** CNcomment:ç¬¬0bitå†™0 ï¼Œ0x0 & 0x1 = 0 */
 		#if defined(CONFIG_CHIP_3716CV200_VERSION) || defined(CONFIG_CHIP_3719CV100_VERSION) || defined(CONFIG_CHIP_3718CV100_VERSION) || defined(CONFIG_CHIP_3719MV100_A_VERSION)
 		unTempValue.bits.jpgd_cken = 0x0;
 		#elif defined(CONFIG_CHIP_S40V200_VERSION)
@@ -275,7 +275,7 @@ static HI_VOID jpg_do_clock_off(HI_VOID)
 /***************************************************************************************
 * func			: jpg_do_clock_on
 * description	: open the jpeg clock
-				  CNcomment: ´ò¿ªjpegÊ±ÖÓ CNend\n
+				  CNcomment: æ‰“å¼€jpegæ—¶é’Ÿ CNend\n
 * param[in] 	: HI_VOID
 * retval		: NA
 * others:		: NA
@@ -287,7 +287,7 @@ static HI_VOID jpg_do_clock_on(HI_VOID)
 
 		unTempValue.u32 = g_pstRegCrg->PERI_CRG31.u32;
 		/** the 0 bit write 1 */
-		/** CNcomment:µÚ0bitĞ´1£¬0x1 & 0x1 = 1 */
+		/** CNcomment:ç¬¬0bitå†™1ï¼Œ0x1 & 0x1 = 1 */
 		#if defined(CONFIG_CHIP_3716CV200_VERSION) || defined(CONFIG_CHIP_3719CV100_VERSION) || defined(CONFIG_CHIP_3718CV100_VERSION) || defined(CONFIG_CHIP_3719MV100_A_VERSION)
 		unTempValue.bits.jpgd_cken  = 0x1;
 		#elif defined(CONFIG_CHIP_S40V200_VERSION)
@@ -306,7 +306,7 @@ static HI_VOID jpg_do_clock_on(HI_VOID)
  /***************************************************************************************
  * func 		 : jpg_select_clock_frep
  * description	 : select the clock frequence
-				   CNcomment: jpegÊ±ÖÓÆµÂÊÑ¡Ôñ CNend\n
+				   CNcomment: jpegæ—¶é’Ÿé¢‘ç‡é€‰æ‹© CNend\n
  * param[in]	 : HI_VOID
  * retval		 : NA
  * others:		 : NA
@@ -318,11 +318,11 @@ static HI_VOID jpg_do_clock_on(HI_VOID)
 
 		unTempValue.u32 = g_pstRegCrg->PERI_CRG31.u32;
 		/** the 8 bit write 0(200M) or 1(150M) **/
-		/** CNcomment:µÚ8bitĞ´0£¬»ò 1,ÕâÀï¼Ä´æÆ÷¿ÉÒÔÍ¨¹ıhimd.l JPGD_CRG_REG_PHYADDRÀ´²é¿´ **/
+		/** CNcomment:ç¬¬8bitå†™0ï¼Œæˆ– 1,è¿™é‡Œå¯„å­˜å™¨å¯ä»¥é€šè¿‡himd.l JPGD_CRG_REG_PHYADDRæ¥æŸ¥çœ‹ **/
 		#if defined(CONFIG_CHIP_3716CV200_VERSION) || defined(CONFIG_CHIP_3719CV100_VERSION) || defined(CONFIG_CHIP_3718CV100_VERSION) || defined(CONFIG_CHIP_3719MV100_A_VERSION)
 		unTempValue.bits.jpgd_clk_sel  = 0x0;
 		#elif defined(CONFIG_CHIP_S40V200_VERSION)
-		/** 00£º250MHz    01£º300MHz   10£º200MHz  11£ºreserved **/
+		/** 00ï¼š250MHz    01ï¼š300MHz   10ï¼š200MHz  11ï¼šreserved **/
 		//unTempValue.bits.jpgd0_clk_sel = 0x0; /** 250MHz **/
 		unTempValue.bits.jpgd0_clk_sel = 0x1; /** 300MHz **/
 		//unTempValue.bits.jpgd0_clk_sel = 0x2; /** 200MHz **/
@@ -342,11 +342,11 @@ static HI_VOID jpg_do_clock_on(HI_VOID)
 /***************************************************************************************
 * func 		 : jpg_osr_suspend
 * description: get the suspend signale.
-			   CNcomment: ÊÕµ½´ı»úĞÅºÅ CNend\n
+			   CNcomment: æ”¶åˆ°å¾…æœºä¿¡å· CNend\n
 * param[in]	 : *pdev
 * param[in]	 : state
-* retval	 : HI_SUCCESS ³É¹¦
-* retval	 : HI_FAILURE Ê§°Ü
+* retval	 : HI_SUCCESS æˆåŠŸ
+* retval	 : HI_FAILURE å¤±è´¥
 * others:	 : NA
 ***************************************************************************************/
 static HI_S32 jpg_osr_suspend(PM_BASEDEV_S *pdev, pm_message_t state)
@@ -357,13 +357,13 @@ static HI_S32 jpg_osr_suspend(PM_BASEDEV_S *pdev, pm_message_t state)
 	 HI_S32 Ret  = 0;
  
 	 /** if you continue suspend and resume,this can be protected */
-	 /** CNcomment:Èç¹û²»Í£µÄ´ı»ú»½ĞÑ£¬ÕâÀï»áÆğ±£»¤×÷ÓÃ£¬Ê¼ÖÕÊ¹´ı»úÓë»½ĞÑÅä¶Ô²Ù×÷ */
+	 /** CNcomment:å¦‚æœä¸åœçš„å¾…æœºå”¤é†’ï¼Œè¿™é‡Œä¼šèµ·ä¿æŠ¤ä½œç”¨ï¼Œå§‹ç»ˆä½¿å¾…æœºä¸å”¤é†’é…å¯¹æ“ä½œ */
 	 Ret  = down_interruptible(&s_SuspendMutex);
 	 if(HI_TRUE == s_pstruJpgOsrDev->bDecTask)
 	 {
 		 JPG_WaitDecTaskDone();
 		 /** tell the api received suspend signal */
-		 /** CNcomment:Í¨ÖªÓ¦ÓÃ²ãÓĞ´ı»úĞÅºÅÁË */
+		 /** CNcomment:é€šçŸ¥åº”ç”¨å±‚æœ‰å¾…æœºä¿¡å·äº† */
 		 s_pstruJpgOsrDev->bSuspendSignal = HI_TRUE;
 	 }
 #endif
@@ -376,10 +376,10 @@ static HI_S32 jpg_osr_suspend(PM_BASEDEV_S *pdev, pm_message_t state)
 /***************************************************************************************
 * func 		 : jpg_osr_resume
 * description: get the resume signale.
-			   CNcomment: ÊÕµ½´ı»ú»½ĞÑĞÅºÅ CNend\n
+			   CNcomment: æ”¶åˆ°å¾…æœºå”¤é†’ä¿¡å· CNend\n
 * param[in]	 : *pdev
-* retval	 : HI_SUCCESS ³É¹¦
-* retval	 : HI_FAILURE Ê§°Ü
+* retval	 : HI_SUCCESS æˆåŠŸ
+* retval	 : HI_FAILURE å¤±è´¥
 * others:	 : NA
 ***************************************************************************************/
 static HI_S32 jpg_osr_resume(PM_BASEDEV_S *pdev)
@@ -388,7 +388,7 @@ static HI_S32 jpg_osr_resume(PM_BASEDEV_S *pdev)
 #ifdef CONFIG_JPEG_SUSPEND
  
 	 /** tell the api received resume signal */
-	 /** CNcomment:Í¨ÖªÓ¦ÓÃ²ãÓĞ´ı»ú»½ĞÑĞÅºÅÁË */
+	 /** CNcomment:é€šçŸ¥åº”ç”¨å±‚æœ‰å¾…æœºå”¤é†’ä¿¡å·äº† */
 	 if(HI_TRUE == s_pstruJpgOsrDev->bDecTask)
 	 {
 		 s_pstruJpgOsrDev->bResumeSignal  = HI_TRUE;
@@ -398,8 +398,8 @@ static HI_S32 jpg_osr_resume(PM_BASEDEV_S *pdev)
 
 	 /** if suspend resume,the clock should open,if not open **/
 	 /** when you read and write register,the system will no work**/
-	 /** CNcomment:ÓÉÓÚ´ı»úÒÑ¾­°ÑÊ±ÖÓ¹Ø±ÕÁË£¬ÒªÊÇ»½ĞÑµÄÊ±ºòÃ»ÓĞ´ò¿ª£¬Ôò
-      **           ÏµÍ³»á¹ÒËÀ¶øÎŞ·¨Õı³£¹¤×÷ **/
+	 /** CNcomment:ç”±äºå¾…æœºå·²ç»æŠŠæ—¶é’Ÿå…³é—­äº†ï¼Œè¦æ˜¯å”¤é†’çš„æ—¶å€™æ²¡æœ‰æ‰“å¼€ï¼Œåˆ™
+      **           ç³»ç»Ÿä¼šæŒ‚æ­»è€Œæ— æ³•æ­£å¸¸å·¥ä½œ **/
 	 jpg_do_clock_on();
 
 	 return HI_SUCCESS;
@@ -411,12 +411,12 @@ static HI_S32 jpg_osr_resume(PM_BASEDEV_S *pdev)
  /***************************************************************************************
  * func 		 : JpgOsrISR
  * description	 : the halt function
-				   CNcomment: ÖĞ¶ÏÏìÓ¦º¯Êı CNend\n
+				   CNcomment: ä¸­æ–­å“åº”å‡½æ•° CNend\n
  * param[in]	 : irq
  * param[in]	 : * devId
  * param[in]	 : * ptrReg
- * retval		 : HI_SUCCESS ³É¹¦
- * retval		 : HI_FAILURE Ê§°Ü
+ * retval		 : HI_SUCCESS æˆåŠŸ
+ * retval		 : HI_FAILURE å¤±è´¥
  * others:		 : NA
  ***************************************************************************************/
 static HI_S32 JpgOsrISR(HI_S32 irq, HI_VOID * devId, struct pt_regs * ptrReg)
@@ -425,10 +425,10 @@ static HI_S32 JpgOsrISR(HI_S32 irq, HI_VOID * devId, struct pt_regs * ptrReg)
         HI_U32 IntType = 0;
         
         /** get and set the halt status */
-		/** CNcomment:»ñÈ¡µ±Ç°µÄÖĞ¶Ï×´Ì¬ */
+		/** CNcomment:è·å–å½“å‰çš„ä¸­æ–­çŠ¶æ€ */
         JpgHalGetIntStatus(&IntType);
 		/** get and set the halt status */
-		/** CNcomment:ÖØĞÂÉèÖÃÖĞ¶Ï×´Ì¬ */
+		/** CNcomment:é‡æ–°è®¾ç½®ä¸­æ–­çŠ¶æ€ */
         JpgHalSetIntStatus(IntType);
 
         if (IntType & 0x1)
@@ -446,7 +446,7 @@ static HI_S32 JpgOsrISR(HI_S32 irq, HI_VOID * devId, struct pt_regs * ptrReg)
         }
 
 		/** AI7D02761 wake up the waiting halt */
-		/** CNcomment:µÈ´ıÖĞ¶Ï»½ĞÑ */
+		/** CNcomment:ç­‰å¾…ä¸­æ–­å”¤é†’ */
         wake_up_interruptible(&s_pstruJpgOsrDev->QWaitInt);
         
         return IRQ_HANDLED;
@@ -457,7 +457,7 @@ static HI_S32 JpgOsrISR(HI_S32 irq, HI_VOID * devId, struct pt_regs * ptrReg)
 /***************************************************************************************
 * func			: Jpg_Request_irq
 * description	: register the halt function
-				  CNcomment: ¸ù¾İÖĞ¶ÏºÅ×¢²áÖĞ¶ÏÏìÓ¦º¯Êı CNend\n
+				  CNcomment: æ ¹æ®ä¸­æ–­å·æ³¨å†Œä¸­æ–­å“åº”å‡½æ•° CNend\n
 * param[in] 	: HI_VOID
 * retval		: NA
 * others:		: NA
@@ -478,7 +478,7 @@ static HI_VOID Jpg_Request_irq(HI_VOID)
 /***************************************************************************************
 * func			: Jpg_Free_irq
 * description	: free the halt
-				  CNcomment: Ïú»ÙÖĞ¶ÏÏìÓ¦ CNend\n
+				  CNcomment: é”€æ¯ä¸­æ–­å“åº” CNend\n
 * param[in] 	: HI_VOID
 * retval		: NA
 * others:		: NA
@@ -492,7 +492,7 @@ static HI_VOID Jpg_Free_irq(HI_VOID)
 /***************************************************************************************
 * func			: JpgOsrDeinit
 * description	: when remout driver,call this deinit function
-				  CNcomment: Ğ¶ÔØÉè±¸µÄÊ±ºòÈ¥³õÊ¼»¯ CNend\n
+				  CNcomment: å¸è½½è®¾å¤‡çš„æ—¶å€™å»åˆå§‹åŒ– CNend\n
 * param[in] 	: *pOsrDev
 * retval		: NA
 * others:		: NA
@@ -502,7 +502,7 @@ static HI_VOID JpgOsrDeinit(JPG_OSRDEV_S *pOsrDev)
 
 
 	    /** use to initial waitqueue head and mutex */
-		/** CNcomment:³õÊ¼²ÎÊı */
+		/** CNcomment:åˆå§‹å‚æ•° */
 	    pOsrDev->bEngageFlag = HI_FALSE;
 	    pOsrDev->pFile       = HI_NULL;
 	    pOsrDev->IntType     = JPG_INTTYPE_NONE;
@@ -534,7 +534,7 @@ static HI_VOID JpgOsrDeinit(JPG_OSRDEV_S *pOsrDev)
  /***************************************************************************************
  * func 		 : JPEG_DRV_ModExit
  * description	 : remount the jpeg driver
-				   CNcomment: Ğ¶ÔØÉè±¸ CNend\n
+				   CNcomment: å¸è½½è®¾å¤‡ CNend\n
  * param[in]	 : *pOsrDev
  * retval		 : NA
  * others:		 : NA
@@ -546,15 +546,15 @@ HI_VOID JPEG_DRV_ModExit(HI_VOID)
 	    JPG_OSRDEV_S *pDev = s_pstruJpgOsrDev;
 
 	    /** unregister the jpeg from sdk */
-		/** CNcomment: ½«jpegÄ£¿é´ÓSDKÈ¥³ı */
+		/** CNcomment: å°†jpegæ¨¡å—ä»SDKå»é™¤ */
 		HI_GFX_MODULE_UnRegister(HIGFX_JPGDEC_ID);
 
 	    /** uninstall the device  */
-		/** CNcomment: Ğ¶ÔØÉè±¸   */
+		/** CNcomment: å¸è½½è®¾å¤‡   */
 	    HI_GFX_PM_UnRegister();
 		
 	    /** free the halt  */
-		/** CNcomment: ÊÍ·ÅÖĞ¶Ï  */
+		/** CNcomment: é‡Šæ”¾ä¸­æ–­  */
         Jpg_Free_irq();
 
 		jpg_do_clock_off();
@@ -582,7 +582,7 @@ HI_VOID JPEG_DRV_ModExit(HI_VOID)
 /***************************************************************************************
 * func			: JpgOsrInit
 * description	: when insmod the driver call this function
-				  CNcomment: ¼ÓÔØÉè±¸³õÊ¼»¯ CNend\n
+				  CNcomment: åŠ è½½è®¾å¤‡åˆå§‹åŒ– CNend\n
 * param[in] 	: *pOsrDev
 * retval		: HI_SUCCESS
 * retval		: HI_FAILURE
@@ -593,7 +593,7 @@ static HI_S32 JpgOsrInit(JPG_OSRDEV_S *pOsrDev)
 
 
 	    /** display the version message  */
-		/** CNcomment: ÏÔÊ¾°æ±¾ºÅ  */
+		/** CNcomment: æ˜¾ç¤ºç‰ˆæœ¬å·  */
         HI_GFX_ShowVersionK(HIGFX_JPGDEC_ID);
 
         #ifdef CONFIG_JPEG_PROC_ENABLE
@@ -633,7 +633,7 @@ static HI_S32 JpgOsrInit(JPG_OSRDEV_S *pOsrDev)
 /***************************************************************************************
 * func			: JPEG_DRV_ModInit
 * description	: when insmod the driver call this function
-				  CNcomment: ¼ÓÔØÉè±¸³õÊ¼»¯ CNend\n
+				  CNcomment: åŠ è½½è®¾å¤‡åˆå§‹åŒ– CNend\n
 * param[in] 	: NA
 * retval		: HI_SUCCESS
 * retval		: HI_FAILURE
@@ -664,13 +664,13 @@ HI_S32 JPEG_DRV_ModInit(HI_VOID)
 		s_pJpegCRG     = (volatile HI_U32*)HI_GFX_REG_MAP(u64CRGAddr, JPGD_CRG_REG_LENGTH);
         #endif
 		/** select clock frequence  */
-		/** CNcomment: Ñ¡ÔñÊ±ÖÓÆµÂÊ */
+		/** CNcomment: é€‰æ‹©æ—¶é’Ÿé¢‘ç‡ */
 		jpg_select_clock_frep();
 		/** open the clock  */
-		/** CNcomment: ´ò¿ª¹¤×÷Ê±ÖÓ */
+		/** CNcomment: æ‰“å¼€å·¥ä½œæ—¶é’Ÿ */
         jpg_do_clock_on();
 		/** cancle the reset,now can work  */
-		/** CNcomment: ³·Ïû¸´Î»Ê¹Ö®ÄÜ¹»¹¤×÷ */
+		/** CNcomment: æ’¤æ¶ˆå¤ä½ä½¿ä¹‹èƒ½å¤Ÿå·¥ä½œ */
 		jpg_do_cancel_reset();
 		
         /** malloc and initial the struct that drive needed to s_pstruJpgOsrDev,if malloc failure, return -NOMEM  */
@@ -723,7 +723,7 @@ HI_S32 JPEG_DRV_ModInit(HI_VOID)
 /***************************************************************************************
 * func			: jpg_osr_open
 * description	: open jpeg device
-				  CNcomment: ´ò¿ªjpegÉè±¸ CNend\n
+				  CNcomment: æ‰“å¼€jpegè®¾å¤‡ CNend\n
 * param[in] 	: *inode
 * param[in] 	: *file
 * retval		: HI_SUCCESS
@@ -762,7 +762,7 @@ static HI_S32 jpg_osr_open(struct inode *inode, struct file *file)
  /***************************************************************************************
  * func 		 : jpg_osr_close
  * description	 : close jpeg device
-				   CNcomment: ¹Ø±ÕjpegÉè±¸ CNend\n
+				   CNcomment: å…³é—­jpegè®¾å¤‡ CNend\n
  * param[in]	 : *inode
  * param[in]	 : *file
  * retval		 : HI_SUCCESS
@@ -793,14 +793,14 @@ static HI_S32 jpg_osr_close( struct inode *inode, struct file *file)
 		}
 
         /**
-	     **½âÂëÈÎÎñÍê³É
+	     **è§£ç ä»»åŠ¡å®Œæˆ
 	     **/
 		 s_pstruJpgOsrDev->bDecTask = HI_FALSE;
 		 s_pstruJpgOsrDev->bSuspendSignal = HI_FALSE;
 		 s_pstruJpgOsrDev->bResumeSignal  = HI_FALSE;
 		
         /** if suspend dispose */
-		/** CNcomment: Èç¹ûÊÇ´ı»úÔò½«´ı»úĞèÒªµÄÉè±¸¹Ø»Øµô¼´¿É */
+		/** CNcomment: å¦‚æœæ˜¯å¾…æœºåˆ™å°†å¾…æœºéœ€è¦çš„è®¾å¤‡å…³å›æ‰å³å¯ */
         if(HI_SUCCESS==sDisposeClose->s32SuspendClose)
 		{
              if(HI_TRUE == sDisposeClose->bSuspendUp)
@@ -891,7 +891,7 @@ static HI_S32 jpg_osr_close( struct inode *inode, struct file *file)
  /***************************************************************************************
  * func 		 : jpg_osr_mmap
  * description	 : mmap jpeg device
-				   CNcomment: Ó³ÉäjpegÉè±¸ CNend\n
+				   CNcomment: æ˜ å°„jpegè®¾å¤‡ CNend\n
  * param[in]	 : *filp
  * param[in]	 : *vma
  * retval		 : HI_SUCCESS
@@ -902,7 +902,7 @@ static HI_S32 jpg_osr_mmap(struct file * filp, struct vm_area_struct *vma)
 {
       
 		/** if api call mmap,will call this function */
-		/** CNcomment: ÉÏ²ãmap jpegÉè±¸µÄÊ±ºòµ÷ÓÃ */
+		/** CNcomment: ä¸Šå±‚map jpegè®¾å¤‡çš„æ—¶å€™è°ƒç”¨ */
         HI_U32 Phys;
         HI_U64 u64BaseAddr = JPGD_REG_BASEADDR;
         /**
@@ -1002,7 +1002,7 @@ static long jpg_osr_ioctl(struct file *file, HI_U32 Cmd, unsigned long Arg)
 	             up(&s_pstruJpgOsrDev->SemGetDev);
 
                  /**
-                  **¿ªÊ¼½âÂëÈÎÎñ
+                  **å¼€å§‹è§£ç ä»»åŠ¡
                   **/
 				 s_pstruJpgOsrDev->bDecTask = HI_TRUE;
 				 
@@ -1061,7 +1061,7 @@ static long jpg_osr_ioctl(struct file *file, HI_U32 Cmd, unsigned long Arg)
 	            sDisposeClose->bRealse = HI_TRUE;
 
 			   /**
-				**½âÂëÈÎÎñ½áÊø
+				**è§£ç ä»»åŠ¡ç»“æŸ
 				**/
 				s_pstruJpgOsrDev->bDecTask = HI_FALSE;
 
@@ -1214,7 +1214,7 @@ static long jpg_osr_ioctl(struct file *file, HI_U32 Cmd, unsigned long Arg)
 				
 	        }   	
 	        case CMD_JPG_GETRESUMEVALUE:
-	        {/** »ñÈ¡´ı»ú»½ĞÑĞÅÏ¢ **/
+	        {/** è·å–å¾…æœºå”¤é†’ä¿¡æ¯ **/
 				#ifdef CONFIG_JPEG_SUSPEND				
 	            if (0 == Arg)
 	            {
@@ -1232,7 +1232,7 @@ static long jpg_osr_ioctl(struct file *file, HI_U32 Cmd, unsigned long Arg)
 				
 	        }
 	        case CMD_JPG_GETSUSPEND:
-	        { /** »ñÈ¡´ı»úĞÅÏ¢ **/
+	        { /** è·å–å¾…æœºä¿¡æ¯ **/
 				
                 #ifdef CONFIG_JPEG_SUSPEND
 	            if (0 == Arg)
@@ -1248,7 +1248,7 @@ static long jpg_osr_ioctl(struct file *file, HI_U32 Cmd, unsigned long Arg)
 				
 	        }
 	        case CMD_JPG_GETRESUME:
-	        {/** »ñÈ¡´ı»ú»½ĞÑĞÅÏ¢ **/  
+	        {/** è·å–å¾…æœºå”¤é†’ä¿¡æ¯ **/  
 				#ifdef CONFIG_JPEG_SUSPEND
 	            if (0 == Arg)
 	            {
@@ -1305,7 +1305,7 @@ static long jpg_osr_ioctl(struct file *file, HI_U32 Cmd, unsigned long Arg)
 
 
 
-/** ÕâÁ½¸öº¯ÊıÒª°´´ËÃüÃû **/
+/** è¿™ä¸¤ä¸ªå‡½æ•°è¦æŒ‰æ­¤å‘½å **/
 #ifdef MODULE
 /** 
  ** this two function is defined at msp/drv/include/drv_jpeg_ext.h

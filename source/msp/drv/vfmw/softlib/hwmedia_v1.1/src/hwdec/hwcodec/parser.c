@@ -260,7 +260,7 @@ int ff_combine_frame(ParseContext *pc, int next, const uint8_t **buf, int *buf_s
 
     /* copy into buffer end return */
     if(next == END_NOT_FOUND){
-		/* ÐÞ¸Ä´úÂë£¨l00139685£©*/
+		/* ä¿®æ”¹ä»£ç ï¼ˆl00139685ï¼‰*/
         /* void* new_buffer = av_fast_realloc(pc->buffer, &pc->buffer_size, (*buf_size) + pc->index + FF_INPUT_BUFFER_PADDING_SIZE);
 
         if(!new_buffer)
@@ -269,7 +269,7 @@ int ff_combine_frame(ParseContext *pc, int next, const uint8_t **buf, int *buf_s
 		if((*buf_size) + pc->index + FF_INPUT_BUFFER_PADDING_SIZE > (int)pc->buffer_size)
 		{
 			/* 2010/04/24 9:00:00 liuxw+00139685 [AZ1D02011]*/
-			/* ¸´Î»½âÎö½á¹¹Ìå±äÁ¿ */
+			/* å¤ä½è§£æžç»“æž„ä½“å˜é‡ */
 			pc->index = 0;
 			pc->frame_start_found = 0;
 			av_log(NULL,AV_LOG_WARNING,"pc->buffer_size[%d] is less than the size[%d] of current bitstream!\n",pc->buffer_size,(*buf_size) + pc->index + FF_INPUT_BUFFER_PADDING_SIZE);
@@ -285,7 +285,7 @@ int ff_combine_frame(ParseContext *pc, int next, const uint8_t **buf, int *buf_s
 
     /* append to buffer */
     if(pc->index){
-		/* ÐÞ¸Ä´úÂë(l00139685) */
+		/* ä¿®æ”¹ä»£ç (l00139685) */
  /*       void* new_buffer = av_fast_realloc(pc->buffer, &pc->buffer_size, next + pc->index + FF_INPUT_BUFFER_PADDING_SIZE);
 
         if(!new_buffer)
@@ -294,7 +294,7 @@ int ff_combine_frame(ParseContext *pc, int next, const uint8_t **buf, int *buf_s
 		if(next + pc->index + FF_INPUT_BUFFER_PADDING_SIZE > (int)pc->buffer_size)
 		{
 			/* 2010/04/24 9:00:00 liuxw+00139685 [AZ1D02011]*/
-			/* ¸´Î»½âÎö½á¹¹Ìå±äÁ¿ */
+			/* å¤ä½è§£æžç»“æž„ä½“å˜é‡ */
 			if(0 >= next)
 			{
 				*buf_size = 0;

@@ -1067,7 +1067,7 @@ HI_S32 TdeOsiListWaitForDone(TDE_HANDLE s32Handle, HI_U32 u32TimeOut)
 
 /*****************************************************************************
  Prototype    : TdeOsiListSqUpdateProc
- Description  : sq can update interrupt service     CNcomment:Í¬²½Á´±í¿É¸üĞÂÖĞ¶Ï·şÎñ³ÌĞò
+ Description  : sq can update interrupt service     CNcomment:åŒæ­¥é“¾è¡¨å¯æ›´æ–°ä¸­æ–­æœåŠ¡ç¨‹åº
  Input        : HI_VOID
  Output       : None
  Return Value :

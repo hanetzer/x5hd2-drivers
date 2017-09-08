@@ -134,11 +134,11 @@
                        /*  0x40000000L  unused */
 
 #ifdef HIPNG_ACCELERATE
-#define HIPNG_ARGB1555 0x4000000L   /*Output format is ARGB1555*//*CNcomment:目标输出ARGB1555格式*/
-#define HIPNG_ARGB4444 0x10000000L	/*Output format is ARGB4444*//*CNcomment:目标输出ARGB4444格式*/
-#define HIPNG_RGB565 0x20000000L	/*Output format is RGB565*//*CNcomment:目标输出RGB565格式*/
-#define HIPNG_RGB555 0x40000000L	/*Output format is RGB555*//*CNcomment:目标输出RGB555格式*/
-#define HIPNG_RGB444 0x80000000L	/*Output format is RGB444*//*CNcomment:目标输出RGB444格式*/
+#define HIPNG_ARGB1555 0x4000000L   /*Output format is ARGB1555*//*CNcomment:鐩爣杈撳嚭ARGB1555鏍煎紡*/
+#define HIPNG_ARGB4444 0x10000000L	/*Output format is ARGB4444*//*CNcomment:鐩爣杈撳嚭ARGB4444鏍煎紡*/
+#define HIPNG_RGB565 0x20000000L	/*Output format is RGB565*//*CNcomment:鐩爣杈撳嚭RGB565鏍煎紡*/
+#define HIPNG_RGB555 0x40000000L	/*Output format is RGB555*//*CNcomment:鐩爣杈撳嚭RGB555鏍煎紡*/
+#define HIPNG_RGB444 0x80000000L	/*Output format is RGB444*//*CNcomment:鐩爣杈撳嚭RGB444鏍煎紡*/
 #endif
 
 /* Flags for png_create_struct */

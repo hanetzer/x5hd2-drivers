@@ -38,56 +38,56 @@ Date				Author        		Modification
     /***************************** Macro Definition ******************************/
     #if defined(CONFIG_CHIP_S40V200_VERSION)
 	
-		#define JPGD_IRQ_NUM				      (97 + 32)             /** ÖÐ¶ÏºÅ **/
-		#define JPGD_REG_BASEADDR			      (0xf8c40000)         /** ¼Ä´æÆ÷»ùµØÖ· **/
-		#define JPGD_CLOCK_SELECT			      0x100 				/** Ê±ÖÓÆµÂÊÑ¡Ôñ,Õâ¸öÊÇ200MHz **/
-		#define JPGD_CLOCK_ON				      0x1					/** ´ò¿ªÊ±ÖÓ£¬ÕâÀï»ò²Ù×÷	  **/
-		#define JPGD_CLOCK_OFF				      0xFFFFFFFE		   /** ¹Ø±ÕÊ±ÖÓ£¬ÕâÀïÓë²Ù×÷ 	 **/
-		#define JPGD_RESET_REG_VALUE 		      0x10					/** ¸´Î»£¬ÕâÀï»ò²Ù×÷		  **/
-		#define JPGD_UNRESET_REG_VALUE		  0xFFFFFFEF		   /** ²»¸´Î»£¬ÕâÀïÓë²Ù×÷		 **/
+		#define JPGD_IRQ_NUM				      (97 + 32)             /** ä¸­æ–­å· **/
+		#define JPGD_REG_BASEADDR			      (0xf8c40000)         /** å¯„å­˜å™¨åŸºåœ°å€ **/
+		#define JPGD_CLOCK_SELECT			      0x100 				/** æ—¶é’Ÿé¢‘çŽ‡é€‰æ‹©,è¿™ä¸ªæ˜¯200MHz **/
+		#define JPGD_CLOCK_ON				      0x1					/** æ‰“å¼€æ—¶é’Ÿï¼Œè¿™é‡Œæˆ–æ“ä½œ	  **/
+		#define JPGD_CLOCK_OFF				      0xFFFFFFFE		   /** å…³é—­æ—¶é’Ÿï¼Œè¿™é‡Œä¸Žæ“ä½œ 	 **/
+		#define JPGD_RESET_REG_VALUE 		      0x10					/** å¤ä½ï¼Œè¿™é‡Œæˆ–æ“ä½œ		  **/
+		#define JPGD_UNRESET_REG_VALUE		  0xFFFFFFEF		   /** ä¸å¤ä½ï¼Œè¿™é‡Œä¸Žæ“ä½œ		 **/
 
 	#elif defined(CONFIG_CHIP_3716CV200_VERSION) || defined(CONFIG_CHIP_3719CV100_VERSION) || defined(CONFIG_CHIP_3718CV100_VERSION) || defined(CONFIG_CHIP_3719MV100_A_VERSION)
 	
 		#define JPGD_IRQ_NUM				      (97 + 32)
 		#define JPGD_REG_BASEADDR			      (0xf8c40000)
-		#define JPGD_CLOCK_SELECT			      0x000 				/** Ê±ÖÓÆµÂÊÑ¡Ôñ,Õâ¸öÊÇ200MHz **/
-		#define JPGD_CLOCK_ON				      0x1					/** ´ò¿ªÊ±ÖÓ£¬ÕâÀï»ò²Ù×÷	  **/
-		#define JPGD_CLOCK_OFF				      0xFFFFFFFE		   /** ¹Ø±ÕÊ±ÖÓ£¬ÕâÀïÓë²Ù×÷ 	 **/
-		#define JPGD_RESET_REG_VALUE 		      0x10					/** ¸´Î»£¬ÕâÀï»ò²Ù×÷		  **/
-		#define JPGD_UNRESET_REG_VALUE		  0xFFFFFFEF		   /** ²»¸´Î»£¬ÕâÀïÓë²Ù×÷		 **/
+		#define JPGD_CLOCK_SELECT			      0x000 				/** æ—¶é’Ÿé¢‘çŽ‡é€‰æ‹©,è¿™ä¸ªæ˜¯200MHz **/
+		#define JPGD_CLOCK_ON				      0x1					/** æ‰“å¼€æ—¶é’Ÿï¼Œè¿™é‡Œæˆ–æ“ä½œ	  **/
+		#define JPGD_CLOCK_OFF				      0xFFFFFFFE		   /** å…³é—­æ—¶é’Ÿï¼Œè¿™é‡Œä¸Žæ“ä½œ 	 **/
+		#define JPGD_RESET_REG_VALUE 		      0x10					/** å¤ä½ï¼Œè¿™é‡Œæˆ–æ“ä½œ		  **/
+		#define JPGD_UNRESET_REG_VALUE		  0xFFFFFFEF		   /** ä¸å¤ä½ï¼Œè¿™é‡Œä¸Žæ“ä½œ		 **/
 
 	#elif defined(CONFIG_CHIP_3712_VERSION)
 		
 		#define JPGD_IRQ_NUM				      (42 + 32)
 		#define JPGD_REG_BASEADDR			      (0x101a0000)
 		#define JPGD_CRG_REG_PHYADDR		      (0x101f5068)
-		#define JPGD_CLOCK_SELECT			      0x3 				    /** Ê±ÖÓÆµÂÊÑ¡Ôñ,Õâ¸öÊÇ200MHz **/
-		#define JPGD_CLOCK_ON				      0x100					/** ´ò¿ªÊ±ÖÓ£¬ÕâÀï»ò²Ù×÷	  **/
-		#define JPGD_CLOCK_OFF				      0xFFFFFFFD		    /** ¹Ø±ÕÊ±ÖÓ£¬ÕâÀïÓë²Ù×÷ 	 **/
-		#define JPGD_RESET_REG_VALUE 		      0x1					/** ¸´Î»£¬ÕâÀï»ò²Ù×÷		  **/
-		#define JPGD_UNRESET_REG_VALUE		  0xFFFFFFFE		    /** ²»¸´Î»£¬ÕâÀïÓë²Ù×÷		 **/
+		#define JPGD_CLOCK_SELECT			      0x3 				    /** æ—¶é’Ÿé¢‘çŽ‡é€‰æ‹©,è¿™ä¸ªæ˜¯200MHz **/
+		#define JPGD_CLOCK_ON				      0x100					/** æ‰“å¼€æ—¶é’Ÿï¼Œè¿™é‡Œæˆ–æ“ä½œ	  **/
+		#define JPGD_CLOCK_OFF				      0xFFFFFFFD		    /** å…³é—­æ—¶é’Ÿï¼Œè¿™é‡Œä¸Žæ“ä½œ 	 **/
+		#define JPGD_RESET_REG_VALUE 		      0x1					/** å¤ä½ï¼Œè¿™é‡Œæˆ–æ“ä½œ		  **/
+		#define JPGD_UNRESET_REG_VALUE		  0xFFFFFFFE		    /** ä¸å¤ä½ï¼Œè¿™é‡Œä¸Žæ“ä½œ		 **/
 
 	#elif defined(CONFIG_CHIP_3535_VERSION)
 	
 		#define JPGD_IRQ_NUM				      (70)
 		#define JPGD_REG_BASEADDR			      (0x20670000)
 		#define JPGD_CRG_REG_PHYADDR		      (0x20030064)
-		#define JPGD_CLOCK_SELECT			      0x000 			  /** Ê±ÖÓÆµÂÊÑ¡Ôñ,Õâ¸öÊÇ200MHz **/
-		#define JPGD_CLOCK_ON				      0x2				  /** ´ò¿ªÊ±ÖÓ£¬ÕâÀï»ò²Ù×÷		**/
-		#define JPGD_CLOCK_OFF				      0xFFFFFFFD		 /** ¹Ø±ÕÊ±ÖÓ£¬ÕâÀïÓë²Ù×÷	   **/
-		#define JPGD_RESET_REG_VALUE 		      0x1				  /** ¸´Î»£¬ÕâÀï»ò²Ù×÷			**/
-		#define JPGD_UNRESET_REG_VALUE		  0xFFFFFFFE		 /** ²»¸´Î»£¬ÕâÀïÓë²Ù×÷ 	   **/
+		#define JPGD_CLOCK_SELECT			      0x000 			  /** æ—¶é’Ÿé¢‘çŽ‡é€‰æ‹©,è¿™ä¸ªæ˜¯200MHz **/
+		#define JPGD_CLOCK_ON				      0x2				  /** æ‰“å¼€æ—¶é’Ÿï¼Œè¿™é‡Œæˆ–æ“ä½œ		**/
+		#define JPGD_CLOCK_OFF				      0xFFFFFFFD		 /** å…³é—­æ—¶é’Ÿï¼Œè¿™é‡Œä¸Žæ“ä½œ	   **/
+		#define JPGD_RESET_REG_VALUE 		      0x1				  /** å¤ä½ï¼Œè¿™é‡Œæˆ–æ“ä½œ			**/
+		#define JPGD_UNRESET_REG_VALUE		  0xFFFFFFFE		 /** ä¸å¤ä½ï¼Œè¿™é‡Œä¸Žæ“ä½œ 	   **/
 
 	#elif defined(CONFIG_CHIP_3716MV300_VERSION)
 			
 	#define JPGD_IRQ_NUM					  (42 + 32)
 	#define JPGD_REG_BASEADDR				  (0x60100000)
 	#define JPGD_CRG_REG_PHYADDR			  (0x101f5068)
-	#define JPGD_CLOCK_SELECT				  0x3					/** Ê±ÖÓÆµÂÊÑ¡Ôñ,Õâ¸öÊÇ200MHz **/
-	#define JPGD_CLOCK_ON					  0x100 				/** ´ò¿ªÊ±ÖÓ£¬ÕâÀï»ò²Ù×÷	  **/
-	#define JPGD_CLOCK_OFF					  0xFFFFFFFD			/** ¹Ø±ÕÊ±ÖÓ£¬ÕâÀïÓë²Ù×÷	 **/
-	#define JPGD_RESET_REG_VALUE			  0x3					/** ¸´Î»£¬ÕâÀï»ò²Ù×÷		  **/
-	#define JPGD_UNRESET_REG_VALUE		  0xFFFFFFFE			/** ²»¸´Î»£¬ÕâÀïÓë²Ù×÷		 **/
+	#define JPGD_CLOCK_SELECT				  0x3					/** æ—¶é’Ÿé¢‘çŽ‡é€‰æ‹©,è¿™ä¸ªæ˜¯200MHz **/
+	#define JPGD_CLOCK_ON					  0x100 				/** æ‰“å¼€æ—¶é’Ÿï¼Œè¿™é‡Œæˆ–æ“ä½œ	  **/
+	#define JPGD_CLOCK_OFF					  0xFFFFFFFD			/** å…³é—­æ—¶é’Ÿï¼Œè¿™é‡Œä¸Žæ“ä½œ	 **/
+	#define JPGD_RESET_REG_VALUE			  0x3					/** å¤ä½ï¼Œè¿™é‡Œæˆ–æ“ä½œ		  **/
+	#define JPGD_UNRESET_REG_VALUE		  0xFFFFFFFE			/** ä¸å¤ä½ï¼Œè¿™é‡Œä¸Žæ“ä½œ		 **/
 
 	#else
 	
@@ -103,80 +103,80 @@ Date				Author        		Modification
 	#endif
 
 
-    /** ¼Ä´æÆ÷³¤¶È£¬µ±Âß¼­¹¦ÄÜÔö¼ÓµÄÊ±ºò£¬È·ÈÏ¸Ã³¤¶ÈÊÇ·ñ¿ÉÒÔ **/
+    /** å¯„å­˜å™¨é•¿åº¦ï¼Œå½“é€»è¾‘åŠŸèƒ½å¢žåŠ çš„æ—¶å€™ï¼Œç¡®è®¤è¯¥é•¿åº¦æ˜¯å¦å¯ä»¥ **/
 	//#ifdef CONFIG_JPEG_TEST_CHIP_PRESS
 	//#define JPGD_REG_LENGTH                      0xFF30
 	//#else
 	/** the length of register */
-	/** CNcomment:jpeg¼Ä´æÆ÷³¤¶È£¬×¢ÒâÒª¸²¸ÇËùÓÐ¼Ä´æÆ÷ */
+	/** CNcomment:jpegå¯„å­˜å™¨é•¿åº¦ï¼Œæ³¨æ„è¦è¦†ç›–æ‰€æœ‰å¯„å­˜å™¨ */
 	#define JPGD_REG_LENGTH					   0x64F			 /** <64K  **/
 	//#endif
 	#define JPGD_CRG_REG_LENGTH				   0x4
 
 	/** JPEG register that decoding start */
-	/** CNcomment:jpeg ¿ªÊ¼½âÂë¼Ä´æÆ÷ */
+	/** CNcomment:jpeg å¼€å§‹è§£ç å¯„å­˜å™¨ */
 	#define JPGD_REG_START						 	 0x0
 	/** JPEG continue stream register */
-	/** CNcomment:jpeg ÐøÂëÁ÷½âÂë¼Ä´æÆ÷ */
+	/** CNcomment:jpeg ç»­ç æµè§£ç å¯„å­˜å™¨ */
 	#define JPGD_REG_RESUME 						 0x4
 	/** the pic_vld_num register */
-	/** CNcomment:jpeg Ã¿Ö¡µÄ²Ð²î¼Ä´æÆ÷ */
+	/** CNcomment:jpeg æ¯å¸§çš„æ®‹å·®å¯„å­˜å™¨ */
 	#define JPGD_REG_PICVLDNUM					 	 0x8
 	/** VHB stride register */
-	/** CNcomment:jpeg ÐÐ¼ä¾à¼Ä´æÆ÷ */
+	/** CNcomment:jpeg è¡Œé—´è·å¯„å­˜å™¨ */
 	#define JPGD_REG_STRIDE 						 0xC
 	/** picture width register */
-	/** CNcomment:jpeg ¿í¶ÈºÍ¸ß¶È¼Ä´æÆ÷ */
+	/** CNcomment:jpeg å®½åº¦å’Œé«˜åº¦å¯„å­˜å™¨ */
 	#define JPGD_REG_PICSIZE						 0x10
 	/** picture type register */
-	/** CNcomment:jpeg Í¼Æ¬ÀàÐÍ¼Ä´æÆ÷ */
+	/** CNcomment:jpeg å›¾ç‰‡ç±»åž‹å¯„å­˜å™¨ */
 	#define JPGD_REG_PICTYPE						 0x14
 	/** picture decode time cost */
-	/** CNcomment:jpeg ½âÂëÊ±¼ä¼Ä´æÆ÷ */
+	/** CNcomment:jpeg è§£ç æ—¶é—´å¯„å­˜å™¨ */
 	#define JPGD_REG_TIME                           0x18
 	/** stream buffer start register */
-	/** CNcomment:jpeg Ó²¼þbufferÆðÊ¼µØÖ·¼Ä´æÆ÷ */
+	/** CNcomment:jpeg ç¡¬ä»¶bufferèµ·å§‹åœ°å€å¯„å­˜å™¨ */
 	#define JPGD_REG_STADDR 						 0x20
 	/** stream buffer end register */
-	/** CNcomment:jpeg Ó²¼þbuffer½áÊøµØÖ·¼Ä´æÆ÷ */
+	/** CNcomment:jpeg ç¡¬ä»¶bufferç»“æŸåœ°å€å¯„å­˜å™¨ */
 	#define JPGD_REG_ENDADDR						 0x24
 	/** stream start address and end address must in hard start and end address */
-	/** CNcomment:ÂëÁ÷bufferµÄÆðÊ¼µØÖ·ºÍ½áÊøµØÖ·±ØÐëÔÚÓ²¼þbufferÆðÊ¼ºÍ½áÊøµÄÇø¼äÄÚ */
+	/** CNcomment:ç æµbufferçš„èµ·å§‹åœ°å€å’Œç»“æŸåœ°å€å¿…é¡»åœ¨ç¡¬ä»¶bufferèµ·å§‹å’Œç»“æŸçš„åŒºé—´å†… */
 	/** stream saved start register */
-	/** CNcomment:jpeg ÂëÁ÷bufferÆðÊ¼µØÖ·¼Ä´æÆ÷ */
+	/** CNcomment:jpeg ç æµbufferèµ·å§‹åœ°å€å¯„å­˜å™¨ */
 	#define JPGD_REG_STADD						 	 0x28
 	/** stream save end register */
-	/** CNcomment:jpeg ÂëÁ÷buffer½áÊøµØÖ·¼Ä´æÆ÷ */
+	/** CNcomment:jpeg ç æµbufferç»“æŸåœ°å€å¯„å­˜å™¨ */
 	#define JPGD_REG_ENDADD 						 0x2C
 	/** luminance address register */
-	/** CNcomment:ÁÁ¶ÈÊä³öµØÖ·¼Ä´æÆ÷ */
+	/** CNcomment:äº®åº¦è¾“å‡ºåœ°å€å¯„å­˜å™¨ */
 	#define JPGD_REG_YSTADDR						 0x30
 	/** chrominance address register */
-	/** CNcomment:É«¶ÈÊä³öµØÖ·¼Ä´æÆ÷ */
+	/** CNcomment:è‰²åº¦è¾“å‡ºåœ°å€å¯„å­˜å™¨ */
 	#define JPGD_REG_UVSTADDR						 0x34
 	/** scale register */
-	/** CNcomment:Ëõ·Å±ÈÀý¼Ä´æÆ÷ */
+	/** CNcomment:ç¼©æ”¾æ¯”ä¾‹å¯„å­˜å™¨ */
 	#define JPGD_REG_SCALE						 	 0x40
 	
 	
 #ifdef CONFIG_JPEG_HARDDEC2ARGB
 	/** the dither register, used when output argb1555 */
-	/** CNcomment:dither(argb1555²ÅÓÃµ½)£¬ÂË²¨£¬Êä³öÍ¼ÏñÀàÐÍ */
+	/** CNcomment:dither(argb1555æ‰ç”¨åˆ°)ï¼Œæ»¤æ³¢ï¼Œè¾“å‡ºå›¾åƒç±»åž‹ */
 	#define JPGD_REG_OUTTYPE						 0x44
 	/** the alpha register */
-	/** CNcomment:alphaÖµ¼Ä´æÆ÷ */
+	/** CNcomment:alphaå€¼å¯„å­˜å™¨ */
 	#define JPGD_REG_ALPHA						     0x48
 	/** the crop start pos */
-	/** CNcomment:²Ã¼ôÆðÊ¼×ø±ê */
+	/** CNcomment:è£å‰ªèµ·å§‹åæ ‡ */
 	#define JPGD_REG_OUTSTARTPOS					 0xd8
 	/** the crop end pos */
-	/** CNcomment:²Ã¼ô½áÊø×ø±ê */
+	/** CNcomment:è£å‰ªç»“æŸåæ ‡ */
 	#define JPGD_REG_OUTENDPOS					     0xdc
 	/** the hard need ddr buffer */
-	/** CNcomment:rgbÊä³ö£¬Âß¼­ÐèÒªDDR¿Õ¼ä£¬ÐÐbuffer */
+	/** CNcomment:rgbè¾“å‡ºï¼Œé€»è¾‘éœ€è¦DDRç©ºé—´ï¼Œè¡Œbuffer */
 	#define JPGD_REG_MINADDR						 0xc8
 	/** the hard need ddr buffer */
-	/** CNcomment:rgbÊä³ö£¬Âß¼­ÐèÒªDDR¿Õ¼ä£¬ÐÐbuffer */
+	/** CNcomment:rgbè¾“å‡ºï¼Œé€»è¾‘éœ€è¦DDRç©ºé—´ï¼Œè¡Œbuffer */
 	#define JPGD_REG_MINADDR1						 0xcc
 	
 	#define JPGD_REG_HORCOEF00_01				     0x4C
@@ -206,38 +206,38 @@ Date				Author        		Modification
 	
 		
 	/** halt status register */
-	/** CNcomment:jpeg ÖÐ¶Ï×´Ì¬¼Ä´æÆ÷ */
+	/** CNcomment:jpeg ä¸­æ–­çŠ¶æ€å¯„å­˜å™¨ */
 	#define JPGD_REG_INT							 0x100
 	/** halt shield register */
-	/** CNcomment:jpeg ÖÐ¶ÏÑÚÂë¼Ä´æÆ÷ */
+	/** CNcomment:jpeg ä¸­æ–­æŽ©ç å¯„å­˜å™¨ */
 	#define JPGD_REG_INTMASK						 0x104
 	/** debug register */
-	/** CNcomment:jpeg µ÷ÊÔ¼Ä´æÆ÷ */
+	/** CNcomment:jpeg è°ƒè¯•å¯„å­˜å™¨ */
 	#define JPGD_REG_DEBUG						     0x108
 	
 #ifdef CONFIG_JPEG_OUTPUT_LUPIXSUM
 	/** save lu pixle data register */
-	/** CNcomment:Í³¼ÆÁÁ¶ÈÐÅÏ¢,32Î»È«ÊÇ */
+	/** CNcomment:ç»Ÿè®¡äº®åº¦ä¿¡æ¯,32ä½å…¨æ˜¯ */
 	#define JPGD_REG_LPIXSUM0						 0x114
 	/** save lu pixle data register */
-	/** CNcomment:Í³¼ÆÁÁ¶ÈÐÅÏ¢£¬µÍ4Î» */
+	/** CNcomment:ç»Ÿè®¡äº®åº¦ä¿¡æ¯ï¼Œä½Ž4ä½ */
 	#define JPGD_REG_LPIXSUM1						 0x118
 #endif
 	
 	/** dqt set register */
-	/** CNcomment:Á¿»¯±í¼Ä´æÆ÷ */
+	/** CNcomment:é‡åŒ–è¡¨å¯„å­˜å™¨ */
 	#define JPGD_REG_QUANT						     0x200
 	/** Huffman  set register */
-	/** CNcomment:huffman±í¼Ä´æÆ÷ */
+	/** CNcomment:huffmanè¡¨å¯„å­˜å™¨ */
 	#define JPGD_REG_HDCTABLE						 0x300
 	/** Huffman AC mincode memory register */
-	/** CNcomment:huffman±íac¼Ä´æÆ÷ */
+	/** CNcomment:huffmanè¡¨acå¯„å­˜å™¨ */
 	#define JPGD_REG_HACMINTABLE					 0x340
 	/** Huffman AC base memory register */
-	/** CNcomment:huffman±íac¼Ä´æÆ÷ */
+	/** CNcomment:huffmanè¡¨acå¯„å­˜å™¨ */
 	#define JPGD_REG_HACBASETABLE				     0x360
 	/** Huffman AC symbol memory register */
-	/** CNcomment:huffman±íac¼Ä´æÆ÷ */
+	/** CNcomment:huffmanè¡¨acå¯„å­˜å™¨ */
 	#define JPGD_REG_HACSYMTABLE					 0x400
 	
 	

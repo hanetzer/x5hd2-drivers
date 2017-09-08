@@ -35,16 +35,16 @@ HI_VOID VENC_HAL_ReadReg( HI_U32 EncHandle )
     /* read IntStat & RC reg */
     pEncPara->VencEndOfPic = pAllReg->VEDU_INTSTAT.bits.VencEndOfPic;
     pEncPara->VencBufFull = pAllReg->VEDU_INTSTAT.bits.VencBufFull;
-    pEncPara->VencPbitOverflow = pAllReg->VEDU_INTSTAT.bits.VencPbitOverflow;                          //ÐÂÔö  liminqi
+    pEncPara->VencPbitOverflow = pAllReg->VEDU_INTSTAT.bits.VencPbitOverflow;                          //æ–°å¢ž  liminqi
     
     if (!pEncPara->VencBufFull || !pEncPara->VencPbitOverflow)
     {
         pEncPara->MeanQP        = pAllReg->VEDU_MEANQP.bits.meanQp;
-        pEncPara->PicBits       = pAllReg->VEDU_PICBITS;                   //µ±Ç°Í¼ÏñÕûÖ¡Êµ¼Ê±àÂëbitÊý
-        pEncPara->TotalMbhBits  = pAllReg->VEDU_TOTALMBHBITS;              //ÂëÂÊ¿ØÖÆÐèÒªµÄÕûÖ¡Í¼ÏñµÄmbheaderµÄbitÊý
-        pEncPara->TotalTxtBits  = pAllReg->VEDU_TOTALTXTBITS;              //ÂëÂÊ¿ØÖÆÐèÒªµÄÕûÖ¡Í¼ÏñµÄÎÆÀíbitÊý
-        pEncPara->TotalTxtCost0 = pAllReg->VEDU_TOTALCOST0;                //ÂëÂÊ¿ØÖÆÐèÒªµÄÕûÖ¡Í¼ÏñµÄÎÆÀícostµÍ32bits
-        pEncPara->TotalTxtCost1 = pAllReg->VEDU_TOTALCOST1;                //ÂëÂÊ¿ØÖÆÐèÒªµÄÕûÖ¡Í¼ÏñµÄÎÆÀícost¸ß32bits
+        pEncPara->PicBits       = pAllReg->VEDU_PICBITS;                   //å½“å‰å›¾åƒæ•´å¸§å®žé™…ç¼–ç bitæ•°
+        pEncPara->TotalMbhBits  = pAllReg->VEDU_TOTALMBHBITS;              //ç çŽ‡æŽ§åˆ¶éœ€è¦çš„æ•´å¸§å›¾åƒçš„mbheaderçš„bitæ•°
+        pEncPara->TotalTxtBits  = pAllReg->VEDU_TOTALTXTBITS;              //ç çŽ‡æŽ§åˆ¶éœ€è¦çš„æ•´å¸§å›¾åƒçš„çº¹ç†bitæ•°
+        pEncPara->TotalTxtCost0 = pAllReg->VEDU_TOTALCOST0;                //ç çŽ‡æŽ§åˆ¶éœ€è¦çš„æ•´å¸§å›¾åƒçš„çº¹ç†costä½Ž32bits
+        pEncPara->TotalTxtCost1 = pAllReg->VEDU_TOTALCOST1;                //ç çŽ‡æŽ§åˆ¶éœ€è¦çš„æ•´å¸§å›¾åƒçš„çº¹ç†costé«˜32bits
 ///////////add by ckf77439
 
         pEncPara->stRc.NumIMBCurFrm =  pAllReg->VEDU_PICINFO1.u32
@@ -123,7 +123,7 @@ HI_VOID VENC_HAL_CfgReg( HI_U32 EncHandle )
 #endif
         D32.bits.clkGateEn    = pEncPara->ClkGateEn;
         D32.bits.memClkGateEn = pEncPara->MemClkGateEn;                           //
-        D32.bits.strFmt       = pEncPara->StoreFmt;                               //ÁÁÉ«¶È·ÖÁ¿µÄ´æ´¢¸ñÊ½ :0(semiplaner)
+        D32.bits.strFmt       = pEncPara->StoreFmt;                               //äº®è‰²åº¦åˆ†é‡çš„å­˜å‚¨æ ¼å¼ :0(semiplaner)
         D32.bits.packageSel   = pEncPara->PackageSel;
         D32.bits.osdEn        = pEncPara->OsdCfg.osd_en[0] | pEncPara->OsdCfg.osd_en[1] | pEncPara->OsdCfg.osd_en[2] | pEncPara->OsdCfg.osd_en[3] | 
                                 pEncPara->OsdCfg.osd_en[4] | pEncPara->OsdCfg.osd_en[5] | pEncPara->OsdCfg.osd_en[6] | pEncPara->OsdCfg.osd_en[7] ;  
@@ -646,7 +646,7 @@ HI_VOID VENC_HAL_CfgReg( HI_U32 EncHandle )
         pAllReg->VEDU_RC1.u32 = D32.u32;
     }
 #if 0  //old version	
-    if (pEncPara->IntraPic)                                         /*  µ÷½ÚÍ¼ÏñÖÊÁ¿ */
+    if (pEncPara->IntraPic)                                         /*  è°ƒèŠ‚å›¾åƒè´¨é‡ */
     {
         pAllReg->VEDU_QPDELTATHR0.u32 = 0x110f0e0c;   
         pAllReg->VEDU_QPDELTATHR1.u32 = 0x1b181613;

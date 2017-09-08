@@ -7,8 +7,8 @@ File Name	    : hi_gfx_test_comm.h
 Version		    : version 1.0
 Author		    : 
 Created		    : 2013/07/04
-Description	    : CNcomment:API¿çÆ½Ì¨ÊÊÅä,ÓÃÀ´×öFPGAÑéÖ¤ºÍEDAÑéÖ¤µÄº¯Êı·â×°
-                            º¯ÊıÃûÒ»Ñù£¬ÊµÏÖ²»Ò»Ñù CNend\n
+Description	    : CNcomment:APIè·¨å¹³å°é€‚é…,ç”¨æ¥åšFPGAéªŒè¯å’ŒEDAéªŒè¯çš„å‡½æ•°å°è£…
+                            å‡½æ•°åä¸€æ ·ï¼Œå®ç°ä¸ä¸€æ · CNend\n
 Function List 	: 
 
 History       	:
@@ -24,7 +24,7 @@ Date				Author        		Modification
 /***************************** SDK Version Macro Definition *********************/
 
 /** \addtogroup 	GFX COMM */
-/** @{ */  /** <!-- ¡¾GFX COMM¡¿ */
+/** @{ */  /** <!-- ã€GFX COMMã€‘ */
 
 
 /** @} */	/*! <!-- Macro Definition end */
@@ -49,7 +49,7 @@ Date				Author        		Modification
 /***************************** Macro Definition ******************************/
 
 /** \addtogroup 	GFX COMM */
-/** @{ */  /** <!-- ¡¾GFX COMM¡¿ */
+/** @{ */  /** <!-- ã€GFX COMMã€‘ */
 
 #define GFX_Printf( fmt, args... )\
 do { \
@@ -107,10 +107,10 @@ extern HI_S32 sg_s32MMZDev;
 /*************************** Enum Definition ****************************/
 
 /** \addtogroup 	 GFX COMM */
-/** @{ */  /** <!-- ¡¾GFX COMM¡¿ */
+/** @{ */  /** <!-- ã€GFX COMMã€‘ */
 
 /** enum of the module ID */
-/** CNcomment:Ã¿¸öÄ£¿éµÄIDºÅ */
+/** CNcomment:æ¯ä¸ªæ¨¡å—çš„IDå· */
 typedef enum tagHIGFX_MODE_ID_E
 {
 
@@ -130,7 +130,7 @@ typedef enum tagHIGFX_MODE_ID_E
 
 
 /** \addtogroup 	 GFX COMM */
-/** @{ */  /** <!-- ¡¾GFX COMM¡¿ */
+/** @{ */  /** <!-- ã€GFX COMMã€‘ */
 
 typedef struct
 {
@@ -169,15 +169,15 @@ typedef struct
 /******************************* API declaration *****************************/
 
 /** \addtogroup 	 GFX COMM */
-/** @{ */  /** <!-- ¡¾GFX COMM¡¿ */
+/** @{ */  /** <!-- ã€GFX COMMã€‘ */
 
 
 /** 
-\brief get the system time,not use gettimeofday to get time. CNcomment:»ñÈ¡ÏµÍ³Ê±¼ä£¬²»Ê¹ÓÃgettimeofdayµÄÔ­ÒòÔÚÓÚÕâ¸öº¯Êı»ñÈ¡µÄÊ±¼äÓĞ¿ÉÄÜ±»¿Í»§µÄºóÌ¨³ÌĞòĞŞ¸Ä CNend
+\brief get the system time,not use gettimeofday to get time. CNcomment:è·å–ç³»ç»Ÿæ—¶é—´ï¼Œä¸ä½¿ç”¨gettimeofdayçš„åŸå› åœ¨äºè¿™ä¸ªå‡½æ•°è·å–çš„æ—¶é—´æœ‰å¯èƒ½è¢«å®¢æˆ·çš„åå°ç¨‹åºä¿®æ”¹ CNend
 \attention \n
 
-\param[out] *pu32TimeMs  CNcomment:»ñÈ¡µ½µÄÊ±¼äms CNend\n
-\param[out] *pu32TimeUs  CNcomment:»ñÈ¡µ½µÄÊ±¼äus CNend\n
+\param[out] *pu32TimeMs  CNcomment:è·å–åˆ°çš„æ—¶é—´ms CNend\n
+\param[out] *pu32TimeUs  CNcomment:è·å–åˆ°çš„æ—¶é—´us CNend\n
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
 
@@ -185,7 +185,7 @@ typedef struct
 ::HI_GFX_GetTimeStamp
 */
 static inline HI_S32 HI_GFX_GetTimeStamp(HI_U32 *pu32TimeMs, HI_U32 *pu32TimeUs)
-{/**Ê¹ÓÃgettimeÀ´ÊµÏÖ **/
+{/**ä½¿ç”¨gettimeæ¥å®ç° **/
 
 		struct timeval tv_cur;
 
@@ -216,11 +216,11 @@ static inline HI_VOID* GFX_MMZ_New(HI_S32 mmz,HI_U32 size,HI_U32 align,HI_CHAR *
 	      if (mmz_name != NULL)
 	      {   
 	          /**
-	           ** sizeof °üº¬ÁË×Ö·û´®µÄ'\0'µÄ³¤¶È
-	           ** strlen µÚÒ»¸ö '\0' Ö®Ç°ËùÓĞ×Ö·ûµÄÊıÁ¿,²»°üÀ¨'\0'
+	           ** sizeof åŒ…å«äº†å­—ç¬¦ä¸²çš„'\0'çš„é•¿åº¦
+	           ** strlen ç¬¬ä¸€ä¸ª '\0' ä¹‹å‰æ‰€æœ‰å­—ç¬¦çš„æ•°é‡,ä¸åŒ…æ‹¬'\0'
 	           ** sizeof("d\0sign")  = 7
 	           ** strlen("d\0sign")  = 1
-	           ** ²Î¿¼ĞŞ¸Ä½¨Òé
+	           ** å‚è€ƒä¿®æ”¹å»ºè®®
 	           **/
 	          strncpy(mmi.mmz_name, mmz_name, strlen(mmi.mmz_name));
 			  mmi.mmz_name[strlen(mmz_name)]='\0';
@@ -306,10 +306,10 @@ static inline HI_S32 GFX_MMZ_Flush(HI_S32 mmz)
 
 
 /** 
-\brief free the mem that has alloced. CNcomment:ÊÍ·Å·ÖÅä¹ıµÄÄÚ´æ CNend
+\brief free the mem that has alloced. CNcomment:é‡Šæ”¾åˆ†é…è¿‡çš„å†…å­˜ CNend
 \attention \n
 
-\param[in]	u32Phyaddr. CNcomment:ÎïÀíµØÖ· CNend\n
+\param[in]	u32Phyaddr. CNcomment:ç‰©ç†åœ°å€ CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -325,12 +325,12 @@ static inline HI_S32 HI_GFX_FreeMem(HI_U32 u32Phyaddr)
 
 
 /** 
-\brief alloc the mem that need. CNcomment:·ÖÅäĞèÒªµÄÄÚ´æ CNend\n
+\brief alloc the mem that need. CNcomment:åˆ†é…éœ€è¦çš„å†…å­˜ CNend\n
 \attention \n
 
-\param[in]	pName.        CNcomment:Ä£¿éÃû   CNend\n
+\param[in]	pName.        CNcomment:æ¨¡å—å   CNend\n
 \param[in]	pZoneName.
-\param[in]	u32LayerSize. CNcomment:ÄÚ´æ´óĞ¡ CNend\n
+\param[in]	u32LayerSize. CNcomment:å†…å­˜å¤§å° CNend\n
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE

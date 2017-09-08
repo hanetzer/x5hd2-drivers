@@ -349,7 +349,7 @@ typedef struct
     UINT32 HOldScaled;       
     UINT32 VOldScaled;       
     
-    UINT32 UsedDecMode;      //µ±Ç°ÕıÔÚÊ¹ÓÃµÄ½âÂëÄ£Ê½(IPB, IP, I) 	
+    UINT32 UsedDecMode;      //å½“å‰æ­£åœ¨ä½¿ç”¨çš„è§£ç æ¨¡å¼(IPB, IP, I) 	
     UINT32 RefNum;
     UINT32 Imgbuf_allocated;
 

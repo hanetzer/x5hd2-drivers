@@ -17,7 +17,7 @@
 
 /**
  ** this file is added
- ** CNcomment: Õâ¸öÍ·ÎÄ¼þÊÇÐÂÔöµÄ CNend\n
+ ** CNcomment: è¿™ä¸ªå¤´æ–‡ä»¶æ˜¯æ–°å¢žçš„ CNend\n
  **/
  #include "jpeg_hdec_api.h"
  #include "hi_jpeg_config.h"
@@ -52,7 +52,7 @@ use_merged_upsample (j_decompress_ptr cinfo)
 {
 /**
 ** use which upsample
-** CNcomment: Ê¹ÓÃÄÄÖÖ²ÉÑù·½Ê½  CNend\n
+** CNcomment: ä½¿ç”¨å“ªç§é‡‡æ ·æ–¹å¼  CNend\n
 **/
 #ifdef UPSAMPLE_MERGING_SUPPORTED
   /* Merging is the equivalent of plain box-filter upsampling */
@@ -162,7 +162,7 @@ jpeg_calc_output_dimensions (j_decompress_ptr cinfo)
 
 /**
  ** calc the output width and height and scale that as same with the hard size
- ** CNcomment: ÖØÐÂ¼ÆËãËõ·Å±ÈÀý£¬Ê¹µÃ¸úÓ²¼þ±£³ÖÒ»ÖÂ£¬·ñÔò»áµ¼ÖÂ½âÂë´íÎó  CNend\n
+ ** CNcomment: é‡æ–°è®¡ç®—ç¼©æ”¾æ¯”ä¾‹ï¼Œä½¿å¾—è·Ÿç¡¬ä»¶ä¿æŒä¸€è‡´ï¼Œå¦åˆ™ä¼šå¯¼è‡´è§£ç é”™è¯¯  CNend\n
  **/
 #ifdef CONFIG_JPEG_HARDDEC2ARGB
 if((1 == cinfo->scale_denom) && (JCS_ARGB_8888 == cinfo->out_color_space || JCS_ABGR_8888 == cinfo->out_color_space))
@@ -209,7 +209,7 @@ while( ((cinfo->output_width > 4095) || ( cinfo->output_height > 4095 )) && (HI_
        ci++, compptr++) {
     int ssize = cinfo->min_DCT_scaled_size;
 	#ifndef CONFIG_JPEG_USEHWIDCT
-	/** Ê¹ÓÃÐ¾Æ¬µÄËõ·ÅËã·¨ **/
+	/** ä½¿ç”¨èŠ¯ç‰‡çš„ç¼©æ”¾ç®—æ³• **/
     while (ssize < DCTSIZE &&
 	   (compptr->h_samp_factor * ssize * 2 <=
 	    cinfo->max_h_samp_factor * cinfo->min_DCT_scaled_size) &&

@@ -38,36 +38,36 @@
 #define FD650_SDA_D_IN       s_pGpioFunc->pfnGpioDirSetBit(FD650_SDA, FD50_INPUT)
 
 /** System parameter command  */
-/**CNcomment:ÉèÖÃÏµÍ³²ÎÊıÃüÁî */
-#define FD650_BIT_ENABLE     0x01   /**<Open/close bit           */     /**<CNcomment: ¿ªÆô/¹Ø±ÕÎ» */
-#define FD650_BIT_SLEEP      0x04   /**<Sleep control bit        */     /**<CNcomment: Ë¯Ãß¿ØÖÆÎ»  */
-#define FD650_BIT_7SEG       0x08   /**<Seven segment control bit*/     /**<CNcomment: 7¶Î¿ØÖÆÎ»   */
-#define FD650_BIT_INTENS1    0x10   /**<Level 1 light            */     /**<CNcomment: 1¼¶ÁÁ¶È     */
-#define FD650_BIT_INTENS2    0x20   /**<Level 2 light            */     /**<CNcomment: 2¼¶ÁÁ¶È     */
-#define FD650_BIT_INTENS3    0x30   /**<Level 3 light            */     /**<CNcomment: 3¼¶ÁÁ¶È     */
-#define FD650_BIT_INTENS4    0x40   /**<Level 4 light            */     /**<CNcomment: 4¼¶ÁÁ¶È     */
-#define FD650_BIT_INTENS5    0x50   /**<Level 5 light            */     /**<CNcomment: 5¼¶ÁÁ¶È     */
-#define FD650_BIT_INTENS6    0x60   /**<Level 6 light            */     /**<CNcomment: 6¼¶ÁÁ¶È     */
-#define FD650_BIT_INTENS7    0x70   /**<Level 7 light            */     /**<CNcomment: 7¼¶ÁÁ¶È     */
-#define FD650_BIT_INTENS8    0x00   /**<Level 8 light            */     /**<CNcomment: 8¼¶ÁÁ¶È     */
+/**CNcomment:è®¾ç½®ç³»ç»Ÿå‚æ•°å‘½ä»¤ */
+#define FD650_BIT_ENABLE     0x01   /**<Open/close bit           */     /**<CNcomment: å¼€å¯/å…³é—­ä½ */
+#define FD650_BIT_SLEEP      0x04   /**<Sleep control bit        */     /**<CNcomment: ç¡çœ æ§åˆ¶ä½  */
+#define FD650_BIT_7SEG       0x08   /**<Seven segment control bit*/     /**<CNcomment: 7æ®µæ§åˆ¶ä½   */
+#define FD650_BIT_INTENS1    0x10   /**<Level 1 light            */     /**<CNcomment: 1çº§äº®åº¦     */
+#define FD650_BIT_INTENS2    0x20   /**<Level 2 light            */     /**<CNcomment: 2çº§äº®åº¦     */
+#define FD650_BIT_INTENS3    0x30   /**<Level 3 light            */     /**<CNcomment: 3çº§äº®åº¦     */
+#define FD650_BIT_INTENS4    0x40   /**<Level 4 light            */     /**<CNcomment: 4çº§äº®åº¦     */
+#define FD650_BIT_INTENS5    0x50   /**<Level 5 light            */     /**<CNcomment: 5çº§äº®åº¦     */
+#define FD650_BIT_INTENS6    0x60   /**<Level 6 light            */     /**<CNcomment: 6çº§äº®åº¦     */
+#define FD650_BIT_INTENS7    0x70   /**<Level 7 light            */     /**<CNcomment: 7çº§äº®åº¦     */
+#define FD650_BIT_INTENS8    0x00   /**<Level 8 light            */     /**<CNcomment: 8çº§äº®åº¦     */
 
-#define FD650_SYSOFF     0x0400                              /**<Close led and key  */              /**<CNcomment:¹Ø±ÕÏÔÊ¾¡¢¹Ø±Õ¼üÅÌ      */
-#define FD650_SYSON      ( FD650_SYSOFF | FD650_BIT_ENABLE ) /**<Open led and key  */               /**<CNcomment:¿ªÆôÏÔÊ¾¡¢¼üÅÌ          */
-#define FD650_SLEEPOFF    FD650_SYSOFF                       /**<Close sleep  */                    /**<CNcomment:¹Ø±ÕË¯Ãß                */
-#define FD650_SLEEPON    ( FD650_SYSOFF | FD650_BIT_SLEEP )  /**<Open sleep  */                     /**<CNcomment:¿ªÆôË¯Ãß                */
-#define FD650_7SEG_ON    ( FD650_SYSON | FD650_BIT_7SEG )    /**<Open seven segment mode  */        /**<CNcomment:¿ªÆôÆß¶ÎÄ£Ê½            */
-#define FD650_8SEG_ON    ( FD650_SYSON | 0x00 )              /**<Open eight segment mode  */        /**<CNcomment:¿ªÆô°Ë¶ÎÄ£Ê½            */
-#define FD650_SYSON_1    ( FD650_SYSON | FD650_BIT_INTENS1 ) /**<Open led, key, level 1 light  */   /**<CNcomment:¿ªÆôÏÔÊ¾¡¢¼üÅÌ¡¢1¼¶ÁÁ¶È */
-#define FD650_SYSON_2    ( FD650_SYSON | FD650_BIT_INTENS2 ) /**<Open led, key, level 2 light  */   /**<CNcomment:¿ªÆôÏÔÊ¾¡¢¼üÅÌ¡¢2¼¶ÁÁ¶È */
-#define FD650_SYSON_3    ( FD650_SYSON | FD650_BIT_INTENS3 ) /**<Open led, key, level 3 light  */   /**<CNcomment:¿ªÆôÏÔÊ¾¡¢¼üÅÌ¡¢3¼¶ÁÁ¶È */
-#define FD650_SYSON_4    ( FD650_SYSON | FD650_BIT_INTENS4 ) /**<Open led, key, level 4 light  */   /**<CNcomment:¿ªÆôÏÔÊ¾¡¢¼üÅÌ¡¢4¼¶ÁÁ¶È */
-#define FD650_SYSON_5    ( FD650_SYSON | FD650_BIT_INTENS5 ) /**<Open led, key, level 5 light  */   /**<CNcomment:¿ªÆôÏÔÊ¾¡¢¼üÅÌ¡¢5¼¶ÁÁ¶È */
-#define FD650_SYSON_6    ( FD650_SYSON | FD650_BIT_INTENS6 ) /**<Open led, key, level 6 light  */   /**<CNcomment:¿ªÆôÏÔÊ¾¡¢¼üÅÌ¡¢6¼¶ÁÁ¶È */
-#define FD650_SYSON_7    ( FD650_SYSON | FD650_BIT_INTENS7 ) /**<Open led, key, level 7 light  */   /**<CNcomment:¿ªÆôÏÔÊ¾¡¢¼üÅÌ¡¢7¼¶ÁÁ¶È */
-#define FD650_SYSON_8    ( FD650_SYSON | FD650_BIT_INTENS8 ) /**<Open led, key, level 8 light  */   /**<CNcomment:¿ªÆôÏÔÊ¾¡¢¼üÅÌ¡¢8¼¶ÁÁ¶È */
+#define FD650_SYSOFF     0x0400                              /**<Close led and key  */              /**<CNcomment:å…³é—­æ˜¾ç¤ºã€å…³é—­é”®ç›˜      */
+#define FD650_SYSON      ( FD650_SYSOFF | FD650_BIT_ENABLE ) /**<Open led and key  */               /**<CNcomment:å¼€å¯æ˜¾ç¤ºã€é”®ç›˜          */
+#define FD650_SLEEPOFF    FD650_SYSOFF                       /**<Close sleep  */                    /**<CNcomment:å…³é—­ç¡çœ                 */
+#define FD650_SLEEPON    ( FD650_SYSOFF | FD650_BIT_SLEEP )  /**<Open sleep  */                     /**<CNcomment:å¼€å¯ç¡çœ                 */
+#define FD650_7SEG_ON    ( FD650_SYSON | FD650_BIT_7SEG )    /**<Open seven segment mode  */        /**<CNcomment:å¼€å¯ä¸ƒæ®µæ¨¡å¼            */
+#define FD650_8SEG_ON    ( FD650_SYSON | 0x00 )              /**<Open eight segment mode  */        /**<CNcomment:å¼€å¯å…«æ®µæ¨¡å¼            */
+#define FD650_SYSON_1    ( FD650_SYSON | FD650_BIT_INTENS1 ) /**<Open led, key, level 1 light  */   /**<CNcomment:å¼€å¯æ˜¾ç¤ºã€é”®ç›˜ã€1çº§äº®åº¦ */
+#define FD650_SYSON_2    ( FD650_SYSON | FD650_BIT_INTENS2 ) /**<Open led, key, level 2 light  */   /**<CNcomment:å¼€å¯æ˜¾ç¤ºã€é”®ç›˜ã€2çº§äº®åº¦ */
+#define FD650_SYSON_3    ( FD650_SYSON | FD650_BIT_INTENS3 ) /**<Open led, key, level 3 light  */   /**<CNcomment:å¼€å¯æ˜¾ç¤ºã€é”®ç›˜ã€3çº§äº®åº¦ */
+#define FD650_SYSON_4    ( FD650_SYSON | FD650_BIT_INTENS4 ) /**<Open led, key, level 4 light  */   /**<CNcomment:å¼€å¯æ˜¾ç¤ºã€é”®ç›˜ã€4çº§äº®åº¦ */
+#define FD650_SYSON_5    ( FD650_SYSON | FD650_BIT_INTENS5 ) /**<Open led, key, level 5 light  */   /**<CNcomment:å¼€å¯æ˜¾ç¤ºã€é”®ç›˜ã€5çº§äº®åº¦ */
+#define FD650_SYSON_6    ( FD650_SYSON | FD650_BIT_INTENS6 ) /**<Open led, key, level 6 light  */   /**<CNcomment:å¼€å¯æ˜¾ç¤ºã€é”®ç›˜ã€6çº§äº®åº¦ */
+#define FD650_SYSON_7    ( FD650_SYSON | FD650_BIT_INTENS7 ) /**<Open led, key, level 7 light  */   /**<CNcomment:å¼€å¯æ˜¾ç¤ºã€é”®ç›˜ã€7çº§äº®åº¦ */
+#define FD650_SYSON_8    ( FD650_SYSON | FD650_BIT_INTENS8 ) /**<Open led, key, level 8 light  */   /**<CNcomment:å¼€å¯æ˜¾ç¤ºã€é”®ç›˜ã€8çº§äº®åº¦ */
 
 /** Data command */
-/**<CNcomment:¼ÓÔØ×ÖÊı¾İÃüÁî */
+/**<CNcomment:åŠ è½½å­—æ•°æ®å‘½ä»¤ */
 #define FD650_DIG0        0x1400            
 #define FD650_DIG1        0x1500            
 #define FD650_DIG2        0x1600            
@@ -75,7 +75,7 @@
 #define FD650_DOT         0x0080
 
 /** Reading key command */
-/**<CNcomment:¶ÁÈ¡°´¼ü´úÂëÃüÁî */
+/**<CNcomment:è¯»å–æŒ‰é”®ä»£ç å‘½ä»¤ */
 #define FD650_GET_KEY     0x0700
 
 #define SCAN_INTV   (30)    //ms

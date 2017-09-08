@@ -26,7 +26,7 @@
 #include    <stdio.h>
 #include    <time.h>
 #ifndef ENV_VXWORKS   
-#include    <sys/timeb.h>  /* VXWORKSÏµÍ³ÏÂ²»ÄÜ°üº¬Õâ¸öÍ·ÎÄ¼ş */
+#include    <sys/timeb.h>  /* VXWORKSç³»ç»Ÿä¸‹ä¸èƒ½åŒ…å«è¿™ä¸ªå¤´æ–‡ä»¶ */
 #endif //ENV_VXWORKS
 #else
 #endif
@@ -41,12 +41,12 @@
 #ifdef MPEG2_ENABLE
 
 
-//Ğ­ÒéÍ·
+//åè®®å¤´
 #define PICTURE_START_CODE                         0x100
 #define SLICE_START_CODE_MIN                       0x101
 #define SLICE_START_CODE_MAX                       0x1AF
 #define USER_DATA_START_CODE                       0x1B2
-#define YXSB_WATERMARK_CODE                        0x1B1  /* ÓÀĞÂÊÀ²©Êı×ÖË®Ó¡µÄË½ÓĞÊı¾İ£¬´¦Àí·½Ê½µÈÍ¬ÓÚuser data */
+#define YXSB_WATERMARK_CODE                        0x1B1  /* æ°¸æ–°ä¸–åšæ•°å­—æ°´å°çš„ç§æœ‰æ•°æ®ï¼Œå¤„ç†æ–¹å¼ç­‰åŒäºuser data */
 #define SEQUENCE_HEADER_CODE                       0x1B3
 #define SEQUENCE_ERROR_CODE                        0x1B4
 #define EXTENSION_START_CODE                       0x1B5
@@ -89,7 +89,7 @@
 #define PICTURE_SPATIAL_SCALABLE_EXTENSION_ID      9
 #define PICTURE_TEMPORAL_SCALABLE_EXTENSION_ID     10
     
-//VFMWĞÅÏ¢
+//VFMWä¿¡æ¯
 #define NOTENOUGH_STREAM                          -1
 #define PARSE_OVER                                 0
 #define FOUND_SLCHDR                               1
@@ -154,8 +154,8 @@ typedef struct
     UINT8  ref_flag;
     IMAGE  imginf;
     UINT32 err_level;
-    SINT32 vo_fs_id_plus1; /* Èç¹ûÏÔÊ¾Í¼ÁíÍâÊä³ö(±ÈÈç×öºó´¦Àí)£¬ÔòĞèÒª¶îÍâÖ¸¶¨Êä³öÍ¼ */
-    SINT32 tf_fs_id_plus1; /* Èç¹ûTFÊ¹ÄÜ£¬ÔòĞèÒª±£´æÂË²¨ºóµÄÍ¼ÏóÎªºóĞøTFÌá¹©²Î¿¼ */
+    SINT32 vo_fs_id_plus1; /* å¦‚æœæ˜¾ç¤ºå›¾å¦å¤–è¾“å‡º(æ¯”å¦‚åšåå¤„ç†)ï¼Œåˆ™éœ€è¦é¢å¤–æŒ‡å®šè¾“å‡ºå›¾ */
+    SINT32 tf_fs_id_plus1; /* å¦‚æœTFä½¿èƒ½ï¼Œåˆ™éœ€è¦ä¿å­˜æ»¤æ³¢åçš„å›¾è±¡ä¸ºåç»­TFæä¾›å‚è€ƒ */
 } MP2VOBUFINF;
 
 /* BEGIN: Added by y62639, 2010/8/19 */
@@ -271,10 +271,10 @@ typedef struct
 
     /*slice header*/
 
-    UINT32  FirstMbInSliceFlag; //ÓÃÓÚÊÇ·ñÎªskip ºê¿éµÄÅĞ¶Ï£¬
-    UINT32  slice_vertical_position;    //slice start code ºóÃæµÄ8bit, 01~AF
-    UINT32  slice_vertical_position_extension; //À©Õ¹
-    UINT32  previous_macroblock_address;   //¼ÇÂ¼ÉÏÒ»¸öºê¿é¾ø¶ÔµØÖ·,¶ÔÓÚsliceµÄµÚÒ»¸öºê¿éÀ´Ëµ£¬±íÊ¾ÉÏÒ»¸ösliceËùÔÚĞĞµÄ×îºóÒ»¸öºê¿éµØÖ·
+    UINT32  FirstMbInSliceFlag; //ç”¨äºæ˜¯å¦ä¸ºskip å®å—çš„åˆ¤æ–­ï¼Œ
+    UINT32  slice_vertical_position;    //slice start code åé¢çš„8bit, 01~AF
+    UINT32  slice_vertical_position_extension; //æ‰©å±•
+    UINT32  previous_macroblock_address;   //è®°å½•ä¸Šä¸€ä¸ªå®å—ç»å¯¹åœ°å€,å¯¹äºsliceçš„ç¬¬ä¸€ä¸ªå®å—æ¥è¯´ï¼Œè¡¨ç¤ºä¸Šä¸€ä¸ªsliceæ‰€åœ¨è¡Œçš„æœ€åä¸€ä¸ªå®å—åœ°å€
     UINT32  intra_slice;
 
     /*bitstream*/
@@ -305,9 +305,9 @@ typedef struct
     UINT8  LastDecPicCodingType;
     UINT8  Last_FieldStruct;
 
-    MP2VOBUFINF   VOBufInf[MAX_QUEUE_IMAGE_NUM];       //VOÖ¡´æ¹ÜÀíĞÅÏ¢
+    MP2VOBUFINF   VOBufInf[MAX_QUEUE_IMAGE_NUM];       //VOå¸§å­˜ç®¡ç†ä¿¡æ¯
 
-    //MPEG2½âÂëÆ÷È«¾Ö±äÁ¿
+    //MPEG2è§£ç å™¨å…¨å±€å˜é‡
     SINT32 BsOffset;         //byte offset from packet stream pointer
 //    UINT32 BsPhyAddr;        //current bs physical start addr
 //    UINT8 *BsVirAddr;        //current bs virtual start addr
@@ -320,10 +320,10 @@ typedef struct
 //  SINT32 IsLastSeg1;
     MP2_STREAM_PACKET stMp2Packet;
 
-    UINT32 UsedDecMode;      //µ±Ç°ÕıÔÚÊ¹ÓÃµÄ½âÂëÄ£Ê½(IPB, IP, I)
+    UINT32 UsedDecMode;      //å½“å‰æ­£åœ¨ä½¿ç”¨çš„è§£ç æ¨¡å¼(IPB, IP, I)
     SINT32 PacketTail;
     UINT32 NewSeqInited;
-    UINT32 StreamIntegrality;//ÂëÁ÷ÖĞ¸÷ÖÖÍ·µÄÍêÕûĞÔºÍÕıÈ·ĞÔĞÅÏ¢
+    UINT32 StreamIntegrality;//ç æµä¸­å„ç§å¤´çš„å®Œæ•´æ€§å’Œæ­£ç¡®æ€§ä¿¡æ¯
     UINT32 SeqCnt;
     SINT32 Frame_Cnt;
     UINT32 Second_Field;
@@ -366,10 +366,10 @@ typedef struct
 
 typedef struct
 {
-    UINT8*    VirAddr;    // ÂëÁ÷µÄĞéÄâµØÖ·
-    UINT32    PhyAddr;    // ÂëÁ÷µÄÎïÀíµØÖ·
-    SINT32    Length1;    // µÚÒ»²¿·ÖÂëÁ÷³¤¶È£¨×Ö½ÚÊı£©
-    SINT32    Length2;    // µÚ¶ş²¿·ÖÂëÁ÷³¤¶È£¨×Ö½ÚÊı£©
+    UINT8*    VirAddr;    // ç æµçš„è™šæ‹Ÿåœ°å€
+    UINT32    PhyAddr;    // ç æµçš„ç‰©ç†åœ°å€
+    SINT32    Length1;    // ç¬¬ä¸€éƒ¨åˆ†ç æµé•¿åº¦ï¼ˆå­—èŠ‚æ•°ï¼‰
+    SINT32    Length2;    // ç¬¬äºŒéƒ¨åˆ†ç æµé•¿åº¦ï¼ˆå­—èŠ‚æ•°ï¼‰
 } MP2STREAM_PARAM;
 
 
@@ -382,7 +382,7 @@ typedef struct
     MP2_SLCINFO_S SliceInfo;
     BS            Bs;
 
-    /* intra_quantizer_matrix, non_intra_quantizer_matrixÒÔÇ°ÊÇÈ«¾Ö±äÁ¿£¬¶àÍ¨µÀ´æÔÚ»¥Ïà¸ÉÈÅ£¬ËùÒÔ·ÅÔÚÍ¨µÀÉÏÏÂÎÄÀï: */
+    /* intra_quantizer_matrix, non_intra_quantizer_matrixä»¥å‰æ˜¯å…¨å±€å˜é‡ï¼Œå¤šé€šé“å­˜åœ¨äº’ç›¸å¹²æ‰°ï¼Œæ‰€ä»¥æ”¾åœ¨é€šé“ä¸Šä¸‹æ–‡é‡Œ: */
     UINT32 intra_quantizer_matrix[MPEG2_BLOCK_SIZE];
     UINT32 non_intra_quantizer_matrix[MPEG2_BLOCK_SIZE];
     DEC_STREAM_PACKET_S stCurPacket;

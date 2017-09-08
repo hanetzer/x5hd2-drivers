@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/07/01
 Description	    : the proc information define in this file
-                  CNcomment: proc Ïà¹ØµÄĞÅÏ¢¶¼ÔÚÕâÀï CNend\n
+                  CNcomment: proc ç›¸å…³çš„ä¿¡æ¯éƒ½åœ¨è¿™é‡Œ CNend\n
 Function List 	: 
 
 			  		  

@@ -46,12 +46,12 @@ static VDP_DISP_SYNCINFO_S s_stSyncTiming[] =
 /* Synm,Iop, Itf, Vact,Vbb,Vfb,  Hact, Hbb,Hfb,Hmid,  Bvact,Bvbb,Bvfb, Hpw,Vpw, Idv,Ihs,Ivs */
   //0 HI_UNF_ENC_FMT_PAL
   {0,   0,   0,   288,  22,  2,  720, 132, 12,     288,  23,  2,    126, 3, 0, 0,  0,  0},/* 576I(PAL) */
-  //576I: HDMIÊä³öÒªÇóhmid=300, ¶øYPbPrÒªÇóhmid=0, 
-  //¿¼ÂÇÒ»°ãÓÃ»§²»»áÊ¹ÓÃHDMIÊä³ö576I£¬ËùÒÔ²»Ö§³ÖHDMI_567IÊä³ö£¬Ñ¡Ôñhmid=0
+  //576I: HDMIè¾“å‡ºè¦æ±‚hmid=300, è€ŒYPbPrè¦æ±‚hmid=0, 
+  //è€ƒè™‘ä¸€èˆ¬ç”¨æˆ·ä¸ä¼šä½¿ç”¨HDMIè¾“å‡º576Iï¼Œæ‰€ä»¥ä¸æ”¯æŒHDMI_567Iè¾“å‡ºï¼Œé€‰æ‹©hmid=0
   //1 HI_UNF_ENC_FMT_NTSC
   {0,   0,   0,   240,  18,  4,   720, 119, 19,     240,  19,  4,    124, 3,  0, 0, 0,  0},/* 480I(NTSC) */
-  //480I: HDMIÊä³öÒªÇóhmid=310, ¶øYPbPrÒªÇóhmid=0, 
-  //¿¼ÂÇÒ»°ãÓÃ»§²»»áÊ¹ÓÃHDMIÊä³ö480I£¬ËùÒÔ²»Ö§³ÖHDMI_480IÊä³ö£¬Ñ¡Ôñhmid=0
+  //480I: HDMIè¾“å‡ºè¦æ±‚hmid=310, è€ŒYPbPrè¦æ±‚hmid=0, 
+  //è€ƒè™‘ä¸€èˆ¬ç”¨æˆ·ä¸ä¼šä½¿ç”¨HDMIè¾“å‡º480Iï¼Œæ‰€ä»¥ä¸æ”¯æŒHDMI_480Iè¾“å‡ºï¼Œé€‰æ‹©hmid=0
   //2 HI_UNF_ENC_FMT_720P_60
   {1,   1,   2,   720,  25,  5,  1280, 260,110,      1,   1,  1,    40,  5,  1, 0,  0,  0}, /* 720P@60Hz */
   //3 HI_UNF_ENC_FMT_1080i_60
@@ -10676,7 +10676,7 @@ static HI_U32 u32aDATESrc13Coef[][18]=
 
 
 /*
-Çë×éÖ¯»Ø¹éÑéÖ¤ÏÂ£¬Ð»Ð»¡£
+è¯·ç»„ç»‡å›žå½’éªŒè¯ä¸‹ï¼Œè°¢è°¢ã€‚
 himm 0xf8ccf2c8 0x1f07e8
 himm 0xf8ccf2cc 0x1f01f2
 himm 0xf8ccf2d0 0x7e8
@@ -10956,7 +10956,7 @@ HI_VOID VDP_DATE_SetSignal(HI_DRV_DISP_INTF_ID_E enIntfId,DISP_VENC_E eDate, HI_
             /**/
             HDATE_VIDEO_FORMAT.u32 = VDP_RegRead((HI_U32)&(pVdpReg->HDATE_VIDEO_FORMAT.u32));
 
-            HDATE_VIDEO_FORMAT.bits.csc_ctrl = 0;/*YCbCr£­>YPbPr*/
+            HDATE_VIDEO_FORMAT.bits.csc_ctrl = 0;/*YCbCrï¼>YPbPr*/
             HDATE_VIDEO_FORMAT.bits.video_out_ctrl = 1;/*YPbPr insight sync*/
             HDATE_VIDEO_FORMAT.bits.sync_add_ctrl = 2; /*default : sync on G/Y */
             VDP_RegWrite((HI_U32)(&(pVdpReg->HDATE_VIDEO_FORMAT.u32)), HDATE_VIDEO_FORMAT.u32);
@@ -10989,7 +10989,7 @@ HI_VOID VDP_DATE_SetSignal(HI_DRV_DISP_INTF_ID_E enIntfId,DISP_VENC_E eDate, HI_
             U_HDATE_VIDEO_FORMAT HDATE_VIDEO_FORMAT;
             /**/
             HDATE_VIDEO_FORMAT.u32 = VDP_RegRead((HI_U32)&(pVdpReg->HDATE_VIDEO_FORMAT.u32));
-            HDATE_VIDEO_FORMAT.bits.csc_ctrl = 1;/*YCbCr¡ª>RGB ITU-R BT709*/
+            HDATE_VIDEO_FORMAT.bits.csc_ctrl = 1;/*YCbCrâ€”>RGB ITU-R BT709*/
             HDATE_VIDEO_FORMAT.bits.video_out_ctrl = 0;/*RGB sync in*/
             
             if (!bRGBSync)
@@ -11407,7 +11407,7 @@ HI_VOID VDP_VDAC_Reset(HI_VOID)
     VDP_VDAC_ResetCRG();
 
     /*    
-    0xF8CC0120  0x00004000 //common block(29\14) iso¿ØÖÆ¼Ä´æÆ÷Ä¬ÈÏÎª0£»
+    0xF8CC0120  0x00004000 //common block(29\14) isoæŽ§åˆ¶å¯„å­˜å™¨é»˜è®¤ä¸º0ï¼›
     //0xF8CC0130  0x10000000 //c channel (28)
     //0xF8CC0134  0x10000000 //r channel (28)
     //0xF8CC0138  0x10000000 //g channel (28)
@@ -11705,18 +11705,18 @@ HI_BOOL  SDATE_SetOutAgcAmp(HI_U32 u32Data)
 
 /*zkun_confirm:*/
 /*
-    DAC £¨ 0x0£©¡£
+    DAC ï¼ˆ 0x0ï¼‰ã€‚
 
-    0x0£º £¨SDATE£©£»
-    0x1£º Y/R £¨SDATE£©£»
-    0x2£º Cb/G £¨SDATE£©£»
-    0x3£º Cr/B £¨SDATE£©£»
-    0x4£º Y/R £¨HDATE£©£»
-    0x5£º Cb/G £¨HDATE£©£»
-    0x6£º Cr/B £¨HDATE£©£»
-    0x7£ºVGA   R£»
-    0x8£ºVGA   G£»
-    0x9£ºVGA   B¡£
+    0x0ï¼š ï¼ˆSDATEï¼‰ï¼›
+    0x1ï¼š Y/R ï¼ˆSDATEï¼‰ï¼›
+    0x2ï¼š Cb/G ï¼ˆSDATEï¼‰ï¼›
+    0x3ï¼š Cr/B ï¼ˆSDATEï¼‰ï¼›
+    0x4ï¼š Y/R ï¼ˆHDATEï¼‰ï¼›
+    0x5ï¼š Cb/G ï¼ˆHDATEï¼‰ï¼›
+    0x6ï¼š Cr/B ï¼ˆHDATEï¼‰ï¼›
+    0x7ï¼šVGA   Rï¼›
+    0x8ï¼šVGA   Gï¼›
+    0x9ï¼šVGA   Bã€‚
 */
 static HI_U32 s_VDACLink[3][HI_DRV_DISP_VDAC_SIGNAL_BUTT] = 
 {/*0  1  2  3  4     5  6  7  8  9    10*/
@@ -13877,9 +13877,9 @@ BIT[   22] = vdac_ch2_clk_sel  <= 0, sd; 1, hd
 BIT[   21] = vdac_ch1_clk_sel  <= 0, sd; 1, hd
 BIT[   20] = vdac_ch0_clk_sel  <= 0, sd; 1, hd
 BIT[19-18] = vo_hd_clk_div     <= 00, 1/2; 01, 1/4; 1X, 1
-BIT[17-16] = vo_hd_clk_sel     <= 00£ºsd_ini£»01£ºhd0_ini£»10£ºhd1_ini£»11£ºreserved
+BIT[17-16] = vo_hd_clk_sel     <= 00ï¼šsd_iniï¼›01ï¼šhd0_iniï¼›10ï¼šhd1_iniï¼›11ï¼šreserved
 BIT[15-14] = vo_sd_clk_div     <= 00, 1/2; 01, 1/4; 1X, 1
-BIT[13-12] = vo_sd_clk_sel     <= 00£ºsd_ini£»01£ºhd0_ini£»10£ºhd1_ini£»11£ºreserved
+BIT[13-12] = vo_sd_clk_sel     <= 00ï¼šsd_iniï¼›01ï¼šhd0_iniï¼›10ï¼šhd1_iniï¼›11ï¼šreserved
 BIT[   11] = reserved          <=
 BIT[   10] = vo_clkout_cken    <= 0,dis; 1, en;
 BIT[    9] = vdac_ch3_cken     <= 0,dis; 1, en;

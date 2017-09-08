@@ -18,7 +18,7 @@
  */
 
 /**
- ** ¸ÃÎÄ¼ş¶ÀÁ¢ÓÚjpeglib¿â£¬¿ÉÒÔ±àÒë½øÈ¥£¬Ò²¿ÉÒÔ²»±àÒë½øÈ¥
+ ** è¯¥æ–‡ä»¶ç‹¬ç«‹äºjpeglibåº“ï¼Œå¯ä»¥ç¼–è¯‘è¿›å»ï¼Œä¹Ÿå¯ä»¥ä¸ç¼–è¯‘è¿›å»
  **/
 /* If you happen not to want the image transform support, disable it here */
 #ifndef TRANSFORMS_SUPPORTED

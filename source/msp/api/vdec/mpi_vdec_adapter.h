@@ -93,7 +93,7 @@ typedef enum
     VFMW_CMD_SETTPLAYOPT = 0x21,/* Set T play, the param is HI_UNF_AVPLAY_TPLAY_OPT_S* */
     VFMW_CMD_SETCTRLINFO = 0x22,/* Set control info, the param is HI_UNF_AVPLAY_CONTROL_INFO_S* */
     /**Defines commond to set video sample type, HI_BOOL *, HI_TRUE: Progressive, HI_FALSE: Interlance */
-    /**CNcomment: 设置视频逐行信息, HI_TRUE: 逐行, HI_FALSE: 隔行*/
+    /**CNcomment: 璁剧疆瑙嗛閫愯淇℃伅, HI_TRUE: 閫愯, HI_FALSE: 闅旇*/
     VFMW_CMD_SET_PROGRESSIVE = 0x23,
     
     VFMW_CMD_BUTT

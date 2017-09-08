@@ -30,96 +30,96 @@ extern "C"{
 
 /*************************** Structure Definition ****************************/
 /** \addtogroup      H_2_2_1 */
-/** @{ */  /** <!-- ¡¾Common for the media domain CNcomment: ÒôÆµÍ¨ÓÃ¡¿ */
+/** @{ */  /** <!-- ã€Common for the media domain CNcomment: éŸ³é¢‘é€šç”¨ã€‘ */
 
 
-/**CNcomment: ¶¨ÒåÒôÆµ²ÉÑùÂÊÃ¶¾Ù*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘é‡‡æ ·çŽ‡æžšä¸¾*/
 typedef enum hiUNF_SAMPLE_RATE_E
 {
-    HI_UNF_SAMPLE_RATE_UNKNOWN=0,       /**<Unknown*/ /**<CNcomment: Î´Öª²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_8K    = 8000,    /**<8 kHz sampling rate*/ /**<CNcomment: 8K²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_11K   = 11025,   /**<11.025 kHz sampling rate*/ /**<CNcomment: 11.025K²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_12K   = 12000,   /**<12 kHz sampling rate*/ /**<CNcomment: 12K²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_16K   = 16000,   /**<16 kHz sampling rate*/ /**<CNcomment: 16K²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_22K   = 22050,   /**<22.050 kHz sampling rate*/ /**<CNcomment: 22.050K²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_24K   = 24000,   /**<24 kHz sampling rate*/ /**<CNcomment: 24K²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_32K   = 32000,   /**<32 kHz sampling rate*/ /**<CNcomment: 32K²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_44K   = 44100,   /**<44.1 kHz sampling rate*/ /**<CNcomment: 44.1K²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_48K   = 48000,   /**<48 kHz sampling rate*/ /**<CNcomment: 48K²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_88K   = 88200,   /**<88.2 kHz sampling rate*/ /**<CNcomment: 88.2K²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_96K   = 96000,   /**<96 kHz sampling rate*/ /**<CNcomment: 96K²ÉÑùÆµÂÊ */
-	HI_UNF_SAMPLE_RATE_176K	 = 176400,	/**<176 kHz sampling rate*/ /**<CNcomment: 176K²ÉÑùÆµÂÊ */
-    HI_UNF_SAMPLE_RATE_192K  = 192000,  /**<192 kHz sampling rate*/ /**<CNcomment: 192K²ÉÑùÆµÂÊ */
+    HI_UNF_SAMPLE_RATE_UNKNOWN=0,       /**<Unknown*/ /**<CNcomment: æœªçŸ¥é‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_8K    = 8000,    /**<8 kHz sampling rate*/ /**<CNcomment: 8Ké‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_11K   = 11025,   /**<11.025 kHz sampling rate*/ /**<CNcomment: 11.025Ké‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_12K   = 12000,   /**<12 kHz sampling rate*/ /**<CNcomment: 12Ké‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_16K   = 16000,   /**<16 kHz sampling rate*/ /**<CNcomment: 16Ké‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_22K   = 22050,   /**<22.050 kHz sampling rate*/ /**<CNcomment: 22.050Ké‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_24K   = 24000,   /**<24 kHz sampling rate*/ /**<CNcomment: 24Ké‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_32K   = 32000,   /**<32 kHz sampling rate*/ /**<CNcomment: 32Ké‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_44K   = 44100,   /**<44.1 kHz sampling rate*/ /**<CNcomment: 44.1Ké‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_48K   = 48000,   /**<48 kHz sampling rate*/ /**<CNcomment: 48Ké‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_88K   = 88200,   /**<88.2 kHz sampling rate*/ /**<CNcomment: 88.2Ké‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_96K   = 96000,   /**<96 kHz sampling rate*/ /**<CNcomment: 96Ké‡‡æ ·é¢‘çŽ‡ */
+	HI_UNF_SAMPLE_RATE_176K	 = 176400,	/**<176 kHz sampling rate*/ /**<CNcomment: 176Ké‡‡æ ·é¢‘çŽ‡ */
+    HI_UNF_SAMPLE_RATE_192K  = 192000,  /**<192 kHz sampling rate*/ /**<CNcomment: 192Ké‡‡æ ·é¢‘çŽ‡ */
 
     HI_UNF_SAMPLE_RATE_BUTT
 }HI_UNF_SAMPLE_RATE_E;
 
 /**Defines the bit depth during audio sampling.*/
-/**CNcomment: ¶¨ÒåÒôÆµ²ÉÑùÎ»¿íÃ¶¾Ù*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘é‡‡æ ·ä½å®½æžšä¸¾*/
 typedef enum hiUNF_BIT_DEPTH_E
 {
-    HI_UNF_BIT_DEPTH_UNKNOWN =0,/**<Unknown*/ /**<CNcomment: Î´Öª²ÉÑùÎ»¿í  */
-    HI_UNF_BIT_DEPTH_8  = 8,    /**< 8-bit depth*/ /**<CNcomment: 8Î»²ÉÑùÎ»¿í  */
-    HI_UNF_BIT_DEPTH_16 = 16,   /**<16-bit depth*/ /**<CNcomment: 16Î»²ÉÑùÎ»¿í */
-    HI_UNF_BIT_DEPTH_18 = 18,   /**<18-bit depth*/ /**<CNcomment: 18Î»²ÉÑùÎ»¿í */
-    HI_UNF_BIT_DEPTH_20 = 20,   /**<20-bit depth*/ /**<CNcomment: 20Î»²ÉÑùÎ»¿í */
-    HI_UNF_BIT_DEPTH_24 = 24,   /**<24-bit depth*/ /**<CNcomment: 24Î»²ÉÑùÎ»¿í */
-    HI_UNF_BIT_DEPTH_32 = 32,   /**<32-bit depth*/ /**<CNcomment: 32Î»²ÉÑùÎ»¿í */
+    HI_UNF_BIT_DEPTH_UNKNOWN =0,/**<Unknown*/ /**<CNcomment: æœªçŸ¥é‡‡æ ·ä½å®½  */
+    HI_UNF_BIT_DEPTH_8  = 8,    /**< 8-bit depth*/ /**<CNcomment: 8ä½é‡‡æ ·ä½å®½  */
+    HI_UNF_BIT_DEPTH_16 = 16,   /**<16-bit depth*/ /**<CNcomment: 16ä½é‡‡æ ·ä½å®½ */
+    HI_UNF_BIT_DEPTH_18 = 18,   /**<18-bit depth*/ /**<CNcomment: 18ä½é‡‡æ ·ä½å®½ */
+    HI_UNF_BIT_DEPTH_20 = 20,   /**<20-bit depth*/ /**<CNcomment: 20ä½é‡‡æ ·ä½å®½ */
+    HI_UNF_BIT_DEPTH_24 = 24,   /**<24-bit depth*/ /**<CNcomment: 24ä½é‡‡æ ·ä½å®½ */
+    HI_UNF_BIT_DEPTH_32 = 32,   /**<32-bit depth*/ /**<CNcomment: 32ä½é‡‡æ ·ä½å®½ */
 
     HI_UNF_BIT_DEPTH_BUTT
 }HI_UNF_BIT_DEPTH_E;
 
 /**Defines the mode of audio channels.*/
-/**CNcomment: ¶¨ÒåÒôÆµÉùµÀÄ£Ê½Ã¶¾Ù*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘å£°é“æ¨¡å¼æžšä¸¾*/
 typedef enum hiUNF_TRACK_MODE_E
 {
-    HI_UNF_TRACK_MODE_STEREO = 0,          /**<Stereo*/ /**<CNcomment: Á¢ÌåÉù*/
-    HI_UNF_TRACK_MODE_DOUBLE_MONO,         /**<Data is output after being mixed in the audio-left channel and audio-right channel.*/ /**<CNcomment: ×óÓÒÉùµÀ»ìºÏºóÊä³ö*/
-    HI_UNF_TRACK_MODE_DOUBLE_LEFT,         /**<The audio-left channel and audio-right channel output the data of the audio-left channel.*/ /**<CNcomment: ×óÓÒÉùµÀÊä³ö×óÉùµÀÊý¾Ý*/
-    HI_UNF_TRACK_MODE_DOUBLE_RIGHT,        /**<The audio-left channel and audio-right channel output the data of the audio-right channel.*/ /**<CNcomment: ×óÓÒÉùµÀÊä³öÓÒÉùµÀÊý¾Ý*/
-    HI_UNF_TRACK_MODE_EXCHANGE,            /**<Data is output after being exchanged in the audio-left channel and audio-right channel.*/ /**<CNcomment: ×óÓÒÉùµÀÊý¾Ý½»»»Êä³ö */
-    HI_UNF_TRACK_MODE_ONLY_RIGHT,          /**<Only the data in the audio-right channel is output.*/ /**<CNcomment: Ö»Êä³öÓÒÉùµÀÊý¾Ý*/
-    HI_UNF_TRACK_MODE_ONLY_LEFT,           /**<Only the data in the audio-left channel is output.*/ /**<CNcomment: Ö»Êä³ö×óÉùµÀÊý¾Ý*/
-    HI_UNF_TRACK_MODE_MUTED,               /**<Mute*/ /**<CNcomment: ¾²Òô*/
+    HI_UNF_TRACK_MODE_STEREO = 0,          /**<Stereo*/ /**<CNcomment: ç«‹ä½“å£°*/
+    HI_UNF_TRACK_MODE_DOUBLE_MONO,         /**<Data is output after being mixed in the audio-left channel and audio-right channel.*/ /**<CNcomment: å·¦å³å£°é“æ··åˆåŽè¾“å‡º*/
+    HI_UNF_TRACK_MODE_DOUBLE_LEFT,         /**<The audio-left channel and audio-right channel output the data of the audio-left channel.*/ /**<CNcomment: å·¦å³å£°é“è¾“å‡ºå·¦å£°é“æ•°æ®*/
+    HI_UNF_TRACK_MODE_DOUBLE_RIGHT,        /**<The audio-left channel and audio-right channel output the data of the audio-right channel.*/ /**<CNcomment: å·¦å³å£°é“è¾“å‡ºå³å£°é“æ•°æ®*/
+    HI_UNF_TRACK_MODE_EXCHANGE,            /**<Data is output after being exchanged in the audio-left channel and audio-right channel.*/ /**<CNcomment: å·¦å³å£°é“æ•°æ®äº¤æ¢è¾“å‡º */
+    HI_UNF_TRACK_MODE_ONLY_RIGHT,          /**<Only the data in the audio-right channel is output.*/ /**<CNcomment: åªè¾“å‡ºå³å£°é“æ•°æ®*/
+    HI_UNF_TRACK_MODE_ONLY_LEFT,           /**<Only the data in the audio-left channel is output.*/ /**<CNcomment: åªè¾“å‡ºå·¦å£°é“æ•°æ®*/
+    HI_UNF_TRACK_MODE_MUTED,               /**<Mute*/ /**<CNcomment: é™éŸ³*/
 
     HI_UNF_TRACK_MODE_BUTT
 } HI_UNF_TRACK_MODE_E;
 
 /**Defines the attributes of the audio decoder.*/
-/**CNcomment: ¶¨ÒåÒôÆµ½âÂëÆ÷ÊôÐÔ½á¹¹*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘è§£ç å™¨å±žæ€§ç»“æž„*/
 typedef struct hiUNF_ACODEC_ATTR_S{
-    HA_CODEC_ID_E        enType;                    /**<Audio decoder type*/ /**<CNcomment: ÒôÆµ½âÂëÀàÐÍ*/
-    HI_HADECODE_OPENPARAM_S stDecodeParam;   /**<Audio decoder parameter*/ /**<CNcomment: ÒôÆµ½âÂë²ÎÊý*/
+    HA_CODEC_ID_E        enType;                    /**<Audio decoder type*/ /**<CNcomment: éŸ³é¢‘è§£ç ç±»åž‹*/
+    HI_HADECODE_OPENPARAM_S stDecodeParam;   /**<Audio decoder parameter*/ /**<CNcomment: éŸ³é¢‘è§£ç å‚æ•°*/
 }HI_UNF_ACODEC_ATTR_S;
 
 /**Defines the attributes of audio encoder.*/
-/**CNcomment: ¶¨ÒåÒôÆµ±àÂëÆ÷ÊôÐÔ½á¹¹*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘ç¼–ç å™¨å±žæ€§ç»“æž„*/
 typedef struct hiUNF_AENC_ATTR_S
 {
-    HI_U32         enAencType;              /**<Audio encoder type*/ /**<CNcomment: ÒôÆµ±àÂëÀàÐÍ*/
-    HI_HAENCODE_OPENPARAM_S   sOpenParam;   /**<Audio encoder parameter*/ /**<CNcomment: ÒôÆµ±àÂë²ÎÊý*/
+    HI_U32         enAencType;              /**<Audio encoder type*/ /**<CNcomment: éŸ³é¢‘ç¼–ç ç±»åž‹*/
+    HI_HAENCODE_OPENPARAM_S   sOpenParam;   /**<Audio encoder parameter*/ /**<CNcomment: éŸ³é¢‘ç¼–ç å‚æ•°*/
 }HI_UNF_AENC_ATTR_S;
 
 /**Defines the information about audio streams.*/
-/**CNcomment: ¶¨ÒåÒôÆµÂëÁ÷ÐÅÏ¢½á¹¹*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘ç æµä¿¡æ¯ç»“æž„*/
 typedef struct hiUNF_ACODEC_STREAMINFO_S
 {
-    HI_U32   enACodecType;                 /**<Audio encoding type*/ /**<CNcomment: ÒôÆµ±àÂëÀàÐÍ*/
-    HI_U32               enSampleRate;     /**<Audio sampling rate*/ /**<CNcomment: ÒôÆµ²ÉÑùÂÊ*/
-    HI_UNF_BIT_DEPTH_E   enBitDepth;       /**<Bit depth during audio sampling*/ /**<CNcomment: ÒôÆµ²ÉÑùÎ»¿í*/
+    HI_U32   enACodecType;                 /**<Audio encoding type*/ /**<CNcomment: éŸ³é¢‘ç¼–ç ç±»åž‹*/
+    HI_U32               enSampleRate;     /**<Audio sampling rate*/ /**<CNcomment: éŸ³é¢‘é‡‡æ ·çŽ‡*/
+    HI_UNF_BIT_DEPTH_E   enBitDepth;       /**<Bit depth during audio sampling*/ /**<CNcomment: éŸ³é¢‘é‡‡æ ·ä½å®½*/
 }HI_UNF_ACODEC_STREAMINFO_S;
 
 /**Defines the I2S(Inter-IC Sound) mode.*/
-/**CNcomment: ¶¨ÒåÒôÆµI2S½Ó¿ÚÄ£Ê½Ã¶¾Ù*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘I2SæŽ¥å£æ¨¡å¼æžšä¸¾*/
 typedef enum hiHI_UNF_I2S_MODE_E
 {
-    HI_UNF_I2S_STD_MODE = 0,     /**<I2S standard mode*/ /**<CNcomment: I2S±ê×¼Ä£Ê½*/
-    HI_UNF_I2S_PCM_MODE,         /**<pcm mode*/ /**<CNcomment: PCMÄ£Ê½*/
+    HI_UNF_I2S_STD_MODE = 0,     /**<I2S standard mode*/ /**<CNcomment: I2Sæ ‡å‡†æ¨¡å¼*/
+    HI_UNF_I2S_PCM_MODE,         /**<pcm mode*/ /**<CNcomment: PCMæ¨¡å¼*/
     HI_UNF_I2S_MODE_BUTT
 } HI_UNF_I2S_MODE_E;
 
 /**Defines the I2S(Inter-IC Sound) master clock.*/
-/**CNcomment: ¶¨ÒåÒôÆµI2S½Ó¿Ú¹¤×÷Ê±ÖÓÃ¶¾Ù*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘I2SæŽ¥å£å·¥ä½œæ—¶é’Ÿæžšä¸¾*/
 typedef enum hiHI_UNF_I2S_MCLK_SEL_E
 {
     HI_UNF_I2S_MCLK_128_FS = 0,      /* mclk 128*fs  */
@@ -149,7 +149,7 @@ typedef enum hiHI_UNF_I2S_BCLK_SEL_E
 } HI_UNF_I2S_BCLK_SEL_E;
 
 /**Defines the I2S(Inter-IC Sound) channels.*/
-/**CNcomment: ¶¨ÒåÒôÆµI2S½Ó¿ÚÒôÆµÍ¨µÀÃ¶¾Ù*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘I2SæŽ¥å£éŸ³é¢‘é€šé“æžšä¸¾*/
 typedef enum hiHI_UNF_I2S_CHNUM_E
 {
     HI_UNF_I2S_CHNUM_1  = 1,
@@ -166,7 +166,7 @@ typedef enum hiHI_UNF_I2S_BITDEPTH_E
 } HI_UNF_I2S_BITDEPTH_E;
 
 /**Defines the I2S(Inter-IC Sound) data valid after frame sync clock at PCM mode .*/
-/**CNcomment: ¶¨ÒåÒôÆµI2S½Ó¿Ú£¬Êý¾ÝÓÐÐ§ÑÓ³ÙÖÜÆÚ£¬½öPCMÄ£Ê½ÓÐÐ§*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘I2SæŽ¥å£ï¼Œæ•°æ®æœ‰æ•ˆå»¶è¿Ÿå‘¨æœŸï¼Œä»…PCMæ¨¡å¼æœ‰æ•ˆ*/
 typedef enum hiHI_UNF_I2S_PCMDELAY_E
 {
     HI_UNF_I2S_PCM_0_DELAY = 0,           /* 0  bclk cycles delay*/ 
@@ -179,7 +179,7 @@ typedef enum hiHI_UNF_I2S_PCMDELAY_E
 
 
 /**Defines the I2S(Inter-IC Sound) attribute .*/
-/**CNcomment: ¶¨ÒåÒôÆµI2S½Ó¿ÚÅäÖÃÊôÐÔ*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘I2SæŽ¥å£é…ç½®å±žæ€§*/
 typedef struct hiHI_UNF_I2S_ATTR_S
 {
     HI_BOOL               bMaster;           /* HI_TRUE:master, HI_FALSE: slave */
@@ -193,28 +193,28 @@ typedef struct hiHI_UNF_I2S_ATTR_S
 } HI_UNF_I2S_ATTR_S;
 
 /**Defines the information about audio frames.*/
-/**CNcomment: ¶¨ÒåÒôÆµÖ¡ÐÅÏ¢½á¹¹*/
+/**CNcomment: å®šä¹‰éŸ³é¢‘å¸§ä¿¡æ¯ç»“æž„*/
 typedef struct hiUNF_AO_FRAMEINFO_S
 {
     /** s32BitPerSample: (PCM) Data depth, and format of storing the output data
           If the data depth is 16 bits, 16-bit word memory is used.
           If the data depth is greater than 16 bits, 32-bit word memory is used, and data is stored as left-aligned data. That is, the valid data is at upper bits.
      */
-    /**CNcomment: s32BitPerSample: (PCM) Êý¾ÝÎ»¿íÉèÖÃ. Êä³ö´æ·Å¸ñÊ½
-          µÈÓÚ16bit:   Õ¼ÓÃ16bit wordÄÚ´æ
-          ´óÓÚ16bit:   Õ¼ÓÃ32bit wordÄÚ´æ, Êý¾Ý×ó¶ÔÆë·½Ê½´æ·Å(ÓÐÐ§Êý¾ÝÔÚ¸ßÎ»)
+    /**CNcomment: s32BitPerSample: (PCM) æ•°æ®ä½å®½è®¾ç½®. è¾“å‡ºå­˜æ”¾æ ¼å¼
+          ç­‰äºŽ16bit:   å ç”¨16bit wordå†…å­˜
+          å¤§äºŽ16bit:   å ç”¨32bit wordå†…å­˜, æ•°æ®å·¦å¯¹é½æ–¹å¼å­˜æ”¾(æœ‰æ•ˆæ•°æ®åœ¨é«˜ä½)
      */
-    HI_S32  s32BitPerSample;       /**<Data depth*/ /**<CNcomment: Êý¾ÝÎ»¿í*/
-    HI_BOOL bInterleaved;          /**<Whether the data is interleaved*/ /**<CNcomment: Êý¾ÝÊÇ·ñ½»Ö¯*/
-    HI_U32  u32SampleRate;         /**<Sampling rate*/ /**<CNcomment: ²ÉÑùÂÊ*/
-    HI_U32  u32Channels;           /**<Number of channels*/ /**<CNcomment: Í¨µÀÊýÁ¿*/
-    HI_U32  u32PtsMs;              /**<Presentation time stamp (PTS)*/ /**<CNcomment: Ê±¼ä´Á*/
-    HI_S32 *ps32PcmBuffer;         /**<Pointer to the buffer for storing the pulse code modulation (PCM) data*/ /**<CNcomment: PCMÊý¾Ý»º³åÖ¸Õë*/
-    HI_S32 *ps32BitsBuffer;        /**<Pointer to the buffer for storing the stream data*/ /**<CNcomment: ÂëÁ÷Êý¾Ý»º³åÖ¸Õë*/
-    HI_U32  u32PcmSamplesPerFrame; /**<Number of sampling points of the PCM data*/ /**<CNcomment: PCMÊý¾Ý²ÉÑùµãÊýÁ¿*/
-    HI_U32  u32BitsBytesPerFrame;  /**<IEC61937 data size*/ /**<CNcomment: IEC61937Êý¾Ý³¤¶È*/
-    HI_U32  u32FrameIndex;         /**<Frame ID*/ /**<CNcomment: Ö¡ÐòºÅ */
-	HI_U32  u32IEC61937DataType;      /**<IEC61937 Data Type*/ /**<CNcomment: IEC61937Êý¾ÝÀàÐÍ±êÊ¶£¬µÍ8bitÎªIECÊý¾ÝÀàÐÍ */
+    HI_S32  s32BitPerSample;       /**<Data depth*/ /**<CNcomment: æ•°æ®ä½å®½*/
+    HI_BOOL bInterleaved;          /**<Whether the data is interleaved*/ /**<CNcomment: æ•°æ®æ˜¯å¦äº¤ç»‡*/
+    HI_U32  u32SampleRate;         /**<Sampling rate*/ /**<CNcomment: é‡‡æ ·çŽ‡*/
+    HI_U32  u32Channels;           /**<Number of channels*/ /**<CNcomment: é€šé“æ•°é‡*/
+    HI_U32  u32PtsMs;              /**<Presentation time stamp (PTS)*/ /**<CNcomment: æ—¶é—´æˆ³*/
+    HI_S32 *ps32PcmBuffer;         /**<Pointer to the buffer for storing the pulse code modulation (PCM) data*/ /**<CNcomment: PCMæ•°æ®ç¼“å†²æŒ‡é’ˆ*/
+    HI_S32 *ps32BitsBuffer;        /**<Pointer to the buffer for storing the stream data*/ /**<CNcomment: ç æµæ•°æ®ç¼“å†²æŒ‡é’ˆ*/
+    HI_U32  u32PcmSamplesPerFrame; /**<Number of sampling points of the PCM data*/ /**<CNcomment: PCMæ•°æ®é‡‡æ ·ç‚¹æ•°é‡*/
+    HI_U32  u32BitsBytesPerFrame;  /**<IEC61937 data size*/ /**<CNcomment: IEC61937æ•°æ®é•¿åº¦*/
+    HI_U32  u32FrameIndex;         /**<Frame ID*/ /**<CNcomment: å¸§åºå· */
+	HI_U32  u32IEC61937DataType;      /**<IEC61937 Data Type*/ /**<CNcomment: IEC61937æ•°æ®ç±»åž‹æ ‡è¯†ï¼Œä½Ž8bitä¸ºIECæ•°æ®ç±»åž‹ */
 } HI_UNF_AO_FRAMEINFO_S;
 
 /** @} */  /** <!-- ==== Structure Definition End ==== */

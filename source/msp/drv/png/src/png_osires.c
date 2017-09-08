@@ -7,7 +7,7 @@ File Name	: png_hal.h
 Version		: Initial Draft
 Author		: z00141204
 Created		: 2010/10/11
-Description	: PNG osires layer code     CNcomment:PNG osiresÊµÏÖ
+Description	: PNG osires layer code     CNcomment:PNG osireså®ç°
 Function List 	: 
 	  		  		  
 History       	:
@@ -68,7 +68,7 @@ HI_VOID PngOsiResDeinitHandle(HI_VOID)
 * ret:	1--32	decoder handle
 * ret:	HI_ERR_PNG_NOHANDLE	no handle resource
 * others: Max handle count is 32
-             CNcomment:×î¶àÖ§³Ö´´½¨32¸öhandle
+             CNcomment:æœ€å¤šæ”¯æŒåˆ›å»º32ä¸ªhandle
 *********************************************************************************************/
 HI_S32 PngOsiResAllocHandle(HI_PNG_HANDLE *ps32Handle)
 {

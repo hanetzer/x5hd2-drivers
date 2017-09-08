@@ -80,7 +80,7 @@ typedef enum hiPNG_124TO8_MODE_E
 typedef enum hiPNG_16TO8_MODE_E
 {
     HI_PNG_16TO8_BRIEF = 0x0,		/* throw away the lower 8 bits */
-    HI_PNG_16TO8_ACCURATE,			/* by formula:H8 + ((L8 - H8 > 128)? 1 : 0)   H8 is higher 8 bit£¬L8 is lower 8 bit */
+    HI_PNG_16TO8_ACCURATE,			/* by formula:H8 + ((L8 - H8 > 128)? 1 : 0)   H8 is higher 8 bitï¼ŒL8 is lower 8 bit */
     HI_PNG_16TO8_BUTT
 }HI_PNG_16TO8_MODE_E;
 

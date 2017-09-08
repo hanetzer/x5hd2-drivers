@@ -1,6 +1,6 @@
 /**
  \file
- \brief Describes the header file of the HiGo.CNcomment:HiGo图形库头文件 CNend
+ \brief Describes the header file of the HiGo.CNcomment:HiGo鍥惧舰搴撳ご鏂囦欢 CNend
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version 1.0

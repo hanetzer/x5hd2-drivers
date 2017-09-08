@@ -118,8 +118,8 @@ static DISP_FMT_CFG_S s_stDispFormatParam[] =
    {HI_DRV_DISP_FMT_PAL,     DISP_STEREO_NONE, HI_TRUE,  {0,0,720,576} ,  {0,0,720,576} , {4,3},  5000, HI_DRV_CS_BT601_YUV_LIMITED}
  },
 #if 1
-  //576I: HDMIÊä³öÒªÇóhmid=300, ¶øYPbPrÒªÇóhmid=0, 
-  //¿¼ÂÇÒ»°ãÓÃ»§²»»áÊ¹ÓÃHDMIÊä³ö576I£¬ËùÒÔ²»Ö§³ÖHDMI_567IÊä³ö£¬Ñ¡Ôñhmid=0
+  //576I: HDMIè¾“å‡ºè¦æ±‚hmid=300, è€ŒYPbPrè¦æ±‚hmid=0, 
+  //è€ƒè™‘ä¸€èˆ¬ç”¨æˆ·ä¸ä¼šä½¿ç”¨HDMIè¾“å‡º576Iï¼Œæ‰€ä»¥ä¸æ”¯æŒHDMI_567Iè¾“å‡ºï¼Œé€‰æ‹©hmid=0
   // 13 HI_UNF_ENC_FMT_NTSC
  { {0,   0,   0,   240,  18,  4,   720, 119, 19,     240,  19,  4,    124, 3,  0, 0, 0,  0},/* 480I(NTSC) */
    DISP_CLOCK_SOURCE_SD0, 
@@ -133,8 +133,8 @@ static DISP_FMT_CFG_S s_stDispFormatParam[] =
    {HI_DRV_DISP_FMT_NTSC,    DISP_STEREO_NONE, HI_TRUE,  {0,0,720-16,480} , {0,0,720-16,480} ,{4,3},  6000, HI_DRV_CS_BT601_YUV_LIMITED},
  },
 #endif
-  //480I: HDMIÊä³öÒªÇóhmid=310, ¶øYPbPrÒªÇóhmid=0, 
-  //¿¼ÂÇÒ»°ãÓÃ»§²»»áÊ¹ÓÃHDMIÊä³ö480I£¬ËùÒÔ²»Ö§³ÖHDMI_480IÊä³ö£¬Ñ¡Ôñhmid=0
+  //480I: HDMIè¾“å‡ºè¦æ±‚hmid=310, è€ŒYPbPrè¦æ±‚hmid=0, 
+  //è€ƒè™‘ä¸€èˆ¬ç”¨æˆ·ä¸ä¼šä½¿ç”¨HDMIè¾“å‡º480Iï¼Œæ‰€ä»¥ä¸æ”¯æŒHDMI_480Iè¾“å‡ºï¼Œé€‰æ‹©hmid=0
 
     /* ============================================= */
     // TODO:
@@ -310,8 +310,8 @@ static DISP_FMT_CFG_S s_stDispFormatParam[] =
    {0x14000000, 0x02002063}, // 1080i50
    {HI_DRV_DISP_FMT_PAL,     DISP_STEREO_NONE, HI_TRUE,  {0,0,1440,576} , {0,0,720,576} ,{4,3},  5000, HI_DRV_CS_BT601_YUV_LIMITED}
  },
-  //576I: HDMIÊä³öÒªÇóhmid=300, ¶øYPbPrÒªÇóhmid=0, 
-  //¿¼ÂÇÒ»°ãÓÃ»§²»»áÊ¹ÓÃHDMIÊä³ö576I£¬ËùÒÔ²»Ö§³ÖHDMI_567IÊä³ö£¬Ñ¡Ôñhmid=0
+  //576I: HDMIè¾“å‡ºè¦æ±‚hmid=300, è€ŒYPbPrè¦æ±‚hmid=0, 
+  //è€ƒè™‘ä¸€èˆ¬ç”¨æˆ·ä¸ä¼šä½¿ç”¨HDMIè¾“å‡º576Iï¼Œæ‰€ä»¥ä¸æ”¯æŒHDMI_567Iè¾“å‡ºï¼Œé€‰æ‹©hmid=0
   // 27 HI_UNF_ENC_FMT_NTSC for HDMI
  { {0,   0,   0,   240,  18,  4,   720*2, 119*2, 19*2,  240,  19,  4,    124, 3,  310, 0, 0,  0},/* 480I(NTSC) */
    DISP_CLOCK_SOURCE_SD0, 

@@ -167,7 +167,7 @@ DMD_ERROR_t DMD_device_init( DMD_PARAMETER_t* param )
         return DMD_E_ERROR;
     }
 #if 0    
-    /*设置TS的输出模式，串行还是并行*/
+    /*璁剧疆TS鐨勮緭鍑烘ā寮忥紝涓茶杩樻槸骞惰*/
     if(DMD_TS_PARALLEL == param->tstype)
     {
         if (DMD_E_ERROR == DMD_I2C_Write(i2cnum, DMD_BANK_1st + i2caddr, DMD_TSSET1, 0))

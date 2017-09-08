@@ -22,25 +22,25 @@ extern "C" {
 #endif /* __cplusplus */
 
 //Playback
-//ÔİÍ£Ö¸¶¨AE DMA  Í¨µÀ ´«Êä
+//æš‚åœæŒ‡å®šAE DMA  é€šé“ ä¼ è¾“
 int aoe_dma_stop(int dma_Index, void * p);
-//Ê¹ÄÜÖ¸¶¨AE DMA  Í¨µÀ ´«Êä
+//ä½¿èƒ½æŒ‡å®šAE DMA  é€šé“ ä¼ è¾“
 int aoe_dma_start(int dma_Index, void * p);
-// prepare Ã¿´Î¶ÁĞ´Ç°/ XRUN »Ö¸´  ¶¼»á±»µ÷ÓÃ±£Áô¸Ã½Ó¿Ú
+// prepare æ¯æ¬¡è¯»å†™å‰/ XRUN æ¢å¤  éƒ½ä¼šè¢«è°ƒç”¨ä¿ç•™è¯¥æ¥å£
 int aoe_dma_prepare(int dma_Index, void * p);
-//»ñÈ¡Ö¸¶¨AE DMA  Í¨µÀ¶Á/Ğ´ Ïà¶ÔµØÖ·(½¨Òéperiod_size¶ÔÆë)
+//è·å–æŒ‡å®šAE DMA  é€šé“è¯»/å†™ ç›¸å¯¹åœ°å€(å»ºè®®period_sizeå¯¹é½)
 //int aoe_dma_offsetpos(int dma_Index, int *offset);
-//ÎªÖ¸¶¨AE DMA  Í¨µÀÉèÖÃdma ÖĞ¶Ï»Øµ÷º¯Êı
-//Dma_Index Ö¸¶¨AE DMA  Í¨µÀ
+//ä¸ºæŒ‡å®šAE DMA  é€šé“è®¾ç½®dma ä¸­æ–­å›è°ƒå‡½æ•°
+//Dma_Index æŒ‡å®šAE DMA  é€šé“
 //stream : captrue / palyback
-//func: ÖĞ¶Ï»Øµ÷º¯Êı
-//data: »Øµ÷º¯Êı´øÈëµÄÊı¾İ
+//func: ä¸­æ–­å›è°ƒå‡½æ•°
+//data: å›è°ƒå‡½æ•°å¸¦å…¥çš„æ•°æ®
 //int aoe_dma_setbufperiodsize(int dma_Index, int stream, int buffer_size, int period_size);
 
 int aoe_dma_sethwparam(int dma_Index, void *hw_param);
-//ÉêÇë/ÊÍ·ÅÒ»Â·AE DMA ×ÊÔ´
-//Stream: DMA ´«Êä·½Ïò
-//Dma_Index: ·µ»ØÍ¨µÀÊı
+//ç”³è¯·/é‡Šæ”¾ä¸€è·¯AE DMA èµ„æº
+//Stream: DMA ä¼ è¾“æ–¹å‘
+//Dma_Index: è¿”å›é€šé“æ•°
 int aoe_dma_requestchan(int *dma_index, struct file *file, void *arg);
 int aoe_dma_releasechan(int dma_index);
 //Playback

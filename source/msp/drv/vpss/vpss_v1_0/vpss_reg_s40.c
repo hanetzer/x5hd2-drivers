@@ -228,7 +228,7 @@ HI_S32 VPSS_REG_EnPort(HI_U32 u32AppAddr,VPSS_REG_PORT_E ePort,HI_BOOL bEnable)
     return HI_SUCCESS;
 }
 
-/*输入Image相关操作*/
+/*杈撳叆Image鐩稿叧鎿嶄綔*/
 /*************************************************************************************************/
 HI_S32 VPSS_REG_SetImgSize(HI_U32 u32AppAddr,HI_U32 u32Height,HI_U32 u32Width,HI_BOOL bProgressive)
 {

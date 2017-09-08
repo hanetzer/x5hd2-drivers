@@ -53,12 +53,12 @@ typedef enum hiLOG_OUTPUT_POS_E
 #endif
 
 /*structure of mode log level */
-/*CNcomment: Ä£¿é´òÓ¡¼¶±ğ¿ØÖÆĞÅÏ¢½á¹¹ */
+/*CNcomment: æ¨¡å—æ‰“å°çº§åˆ«æ§åˆ¶ä¿¡æ¯ç»“æ„ */
 typedef struct hiLOG_CONFIG_INFO_S
 {
     HI_U8 ModName[16+12];     /*mode name 16 + '_' 1 + pid 10 */
-    HI_U8 u8LogLevel;         /*log level*//*CNcomment:  Ä£¿é´òÓ¡¼¶±ğ¿ØÖÆ */
-    HI_U8 u8LogPrintPos;      /*log output location, 0:serial port; 1:network;2:u-disk*//*CNcomment:  Ä£¿é´òÓ¡Î»ÖÃ¿ØÖÆ 0:´®¿Ú 1:ÍøÂç 2:UÅÌ */
+    HI_U8 u8LogLevel;         /*log level*//*CNcomment:  æ¨¡å—æ‰“å°çº§åˆ«æ§åˆ¶ */
+    HI_U8 u8LogPrintPos;      /*log output location, 0:serial port; 1:network;2:u-disk*//*CNcomment:  æ¨¡å—æ‰“å°ä½ç½®æ§åˆ¶ 0:ä¸²å£ 1:ç½‘ç»œ 2:Uç›˜ */
     HI_U8 u8UdiskFlag;        /* u-disk log flag */
 }LOG_CONFIG_INFO_S;
 

@@ -73,7 +73,7 @@ static int av_set_number2(void *obj, const char *name, double num, int den, int6
     case FF_OPT_TYPE_RATIONAL:
         if((int)num == num) 
 			/* 2010/03/13 18:33:00 liuxw+00139685 */
-			/* ½«c99ÌØĞÔµÄ¸³ÖµÈ¥µô */
+			/* å°†c99ç‰¹æ€§çš„èµ‹å€¼å»æ‰ */
 	//		*(AVRational*)dst= (AVRational){num*intnum, den};
 		{
 			((AVRational*)dst)->num = (int)(num*intnum);
@@ -318,13 +318,13 @@ AVRational av_get_q(void *obj, const char *name, const AVOption **o_out){
     double num=1;
     int den=1;
 	/* 2010/03/13 18:33:00 liuxw+00139685 */
-	/* ¶¨ÒåÒ»¸ö±äÁ¿ */
+	/* å®šä¹‰ä¸€ä¸ªå˜é‡ */
 	AVRational dst;
 
     av_get_number(obj, name, o_out, &num, &den, &intnum);
     if(num == 1.0 && (int)intnum == intnum)
 		/* 2010/03/13 18:33:00 liuxw+00139685 */
-		/* ½«c99ÌØĞÔµÄ¸³ÖµÈ¥µô */
+		/* å°†c99ç‰¹æ€§çš„èµ‹å€¼å»æ‰ */
  //       return (AVRational){intnum, den};
 	{
 		dst.num = (int)intnum;

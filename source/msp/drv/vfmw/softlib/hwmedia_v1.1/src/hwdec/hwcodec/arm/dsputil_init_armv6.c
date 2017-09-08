@@ -24,7 +24,7 @@
 #include "dsputil.h"
 #include "dsputil_arm.h"
 
-//guoshan+00101841 20100820 Ôö¼Óh263ÂË²¨Æ÷µÄarm´úÂëÓÅ»¯
+//guoshan+00101841 20100820 å¢åŠ h263æ»¤æ³¢å™¨çš„armä»£ç ä¼˜åŒ–
 extern const uint8_t ff_h263_loop_filter_strength[32];
 extern void h263_v_lf_arm(uint8_t *src, int stride, int strength);
 extern void h263_h_lf_arm(uint8_t *src, int stride, int strength);
@@ -77,7 +77,7 @@ int ff_sse16_armv6(void *s, uint8_t *blk1, uint8_t *blk2,
 int ff_pix_norm1_armv6(uint8_t *pix, int line_size);
 int ff_pix_sum_armv6(uint8_t *pix, int line_size);
 
-/*x00141957 2010 1127 vp64³éÍ·²åÖµÂË²¨ armv6´úÂë*/
+/*x00141957 2010 1127 vp64æŠ½å¤´æ’å€¼æ»¤æ³¢ armv6ä»£ç */
 extern void vp6_filter_hv4asm_armv6(uint8_t *dst, uint8_t *src, int stride,
                            const int16_t *h_weights, const int16_t *v_weights);
 
@@ -99,7 +99,7 @@ void av_cold ff_dsputil_init_armv6(DSPContext* c, AVCodecContext *avctx)
         c->idct_permutation_type = FF_LIBMPEG2_IDCT_PERM;
     }
 
-    /*¹ùæ©ËùÓÅ»¯h263 loop filter´úÂë  x00141957 2010 1127*/	
+    /*éƒ­å§—æ‰€ä¼˜åŒ–h263 loop filterä»£ç   x00141957 2010 1127*/	
     c->h263_v_loop_filter= h263_v_loop_filter_arm;
     c->h263_h_loop_filter= h263_h_loop_filter_arm;
 		   
@@ -142,7 +142,7 @@ void av_cold ff_dsputil_init_armv6(DSPContext* c, AVCodecContext *avctx)
     c->pix_norm1 = ff_pix_norm1_armv6;
     c->pix_sum   = ff_pix_sum_armv6;
 
-   /*x00141957 Îªvp6½âÂëËùĞ´armv6»ã±à 2010 1128*/	
+   /*x00141957 ä¸ºvp6è§£ç æ‰€å†™armv6æ±‡ç¼– 2010 1128*/	
     if (CONFIG_VP6_DECODER)
      {
                 c->vp6_filter_diag4 = vp6_filter_hv4asm_armv6;
@@ -157,7 +157,7 @@ void av_cold ff_dsputil_init_armv6(DSPContext* c, AVCodecContext *avctx)
 }
 
 
-//guoshan+00101841 20100820 Ôö¼Óh263ÂË²¨Æ÷µÄarm´úÂëÓÅ»¯
+//guoshan+00101841 20100820 å¢åŠ h263æ»¤æ³¢å™¨çš„armä»£ç ä¼˜åŒ–
 static void h263_v_loop_filter_arm(uint8_t *src, int stride, int qscale)
 {
 		const int strength= ff_h263_loop_filter_strength[qscale];

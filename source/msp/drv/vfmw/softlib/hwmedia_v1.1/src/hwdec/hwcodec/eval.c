@@ -64,7 +64,7 @@ typedef struct Parser{
 } Parser;
 
 /* 2010/03/13 18:48:00 liuxw+00139685 */
-/* ½«c99ÌØĞÔµÄÊı×é¸³Öµ½øĞĞĞŞ¸Ä */
+/* å°†c99ç‰¹æ€§çš„æ•°ç»„èµ‹å€¼è¿›è¡Œä¿®æ”¹ */
 #if __STDC_VERSION__ >= 199901L
 static const int8_t si_prefixes['z' - 'E' + 1]={
     ['y'-'E']= -24,
@@ -123,7 +123,7 @@ static double av_strtod(const char *name, char **tail) {
     char *next;
     d = strtod(name, &next);
 	/* 2010/03/13 18:48:00 liuxw+00139685 */
-	/* ½«c99ÌØĞÔµÄÊı×é¸³ÖµĞŞ¸ÄÎªº¯ÊıµÄ³õÊ¼»¯ */
+	/* å°†c99ç‰¹æ€§çš„æ•°ç»„èµ‹å€¼ä¿®æ”¹ä¸ºå‡½æ•°çš„åˆå§‹åŒ– */
 #if __STDC_VERSION__ < 199901L
 	Init_si_prefixes();
 #endif
@@ -194,7 +194,7 @@ static double eval_expr(Parser * p, AVEvalExpr * e) {
         case e_ld:     return e->value * p->var[av_clip((int)eval_expr(p, e->param[0]), 0, VARS-1)];
         case e_while: {
 			/* 2010/03/13 19:14:00 liuxw+00139685 */
-			/* ½«dµÄ³õÊ¼ÖµÉèÎª0.0 */
+			/* å°†dçš„åˆå§‹å€¼è®¾ä¸º0.0 */
 //          double d = NAN;
 			double d = 0.0;
             while(eval_expr(p, e->param[0]))
@@ -221,7 +221,7 @@ static double eval_expr(Parser * p, AVEvalExpr * e) {
         }
     }
 	/* 2010/03/13 19:14:00 liuxw+00139685 */
-	/* ½«·µ»ØÖµÉèÎª0.0 */
+	/* å°†è¿”å›å€¼è®¾ä¸º0.0 */
 //  return NAN;
 	return 0.0;
 }
@@ -428,7 +428,7 @@ AVEvalExpr * ff_parse(const char *s, const char * const *const_name,
     Parser p;
     AVEvalExpr * e;
 	/* 2010/03/13 18:48:00 liuxw+00139685 */
-	/* ½«c99ÌØĞÔµÄ·ÖÅä¶¯Ì¬Êı×é£¬¸ÄÎªÔÚÕ»ÖĞ½øĞĞ·ÖÅä */
+	/* å°†c99ç‰¹æ€§çš„åˆ†é…åŠ¨æ€æ•°ç»„ï¼Œæ”¹ä¸ºåœ¨æ ˆä¸­è¿›è¡Œåˆ†é… */
 #if __STDC_VERSION__ >= 199901L
 	char w[strlen(s) + 1], * wp = w;
 #else
@@ -481,7 +481,7 @@ double ff_eval2(const char *s, const double *const_value, const char * const *co
     double d;
     if (!e) 
 	/* 2010/03/13 19:14:00 liuxw+00139685 */
-	/* ½«·µ»ØÖµÉèÎª0.0 */
+	/* å°†è¿”å›å€¼è®¾ä¸º0.0 */
 //	return NAN;
 	return 0.0;
     d = ff_parse_eval(e, const_value, opaque);

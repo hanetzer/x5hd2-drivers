@@ -60,7 +60,7 @@ extern "C"
             HI_TRACE(HI_LOG_LEVEL_INFO, HI_DEBUG_ID_TUNER, fmt)
 
 /* print test case name, adds to the start of each test case function*/
-/*CNcomment:´òÓ¡²âÊÔÓÃÀıÃû³Æ£¬ ¼ÓÔÚÃ¿¸öÓÃÀıº¯Êı¿ªÊ¼´¦ */
+/*CNcomment:æ‰“å°æµ‹è¯•ç”¨ä¾‹åç§°ï¼Œ åŠ åœ¨æ¯ä¸ªç”¨ä¾‹å‡½æ•°å¼€å§‹å¤„ */
 #define D_SVPrintTc()  HI_INFO_QTC(" FUNC = %s\n", __FUNCTION__) 
 
 
@@ -70,31 +70,31 @@ extern "C"
 typedef enum hiSV_TC_STATUS_E
 {
     /* state of the test case 0-Stop 1-Running*/
-    /*CNcomment:ÓÃÀı×´Ì¬ 0-Stop 1-Running*/
+    /*CNcomment:ç”¨ä¾‹çŠ¶æ€ 0-Stop 1-Running*/
     HI_SV_TC_STATUS_STOP = 0,
     HI_SV_TC_STATUS_RUNNING,
 
     /* execute test cases by sequence automatically*/
-    /*CNcomment:×Ô¶¯°´Ë³ĞòÖ´ĞĞÓÃÀı */
+    /*CNcomment:è‡ªåŠ¨æŒ‰é¡ºåºæ‰§è¡Œç”¨ä¾‹ */
     HI_SV_TC_STATUS_AUTORUN, 
 
     HI_SV_TC_STATUS_BUTT
 }HI_SV_TC_STATUS_E;
 
-/*the length of test case description*//*CNcomment:ÓÃÀıÃèÊö³¤¶È */
+/*the length of test case description*//*CNcomment:ç”¨ä¾‹æè¿°é•¿åº¦ */
 #define SV_TC_MAX_DESC_LEN 100 
 
 typedef HI_VOID (* SV_TC_FUNC)(HI_VOID);
 
 typedef struct hiSV_TC_S
 {
-    /*description of the test case*//*CNcomment: ÓÃÀıÃèÊö*/
+    /*description of the test case*//*CNcomment: ç”¨ä¾‹æè¿°*/
     HI_CHAR     tcDesc[SV_TC_MAX_DESC_LEN];
 
-    /*the function pointer that executes test case*//*CNcomment: ÓÃÀıÖ´ĞĞº¯ÊıÖ¸Õë */
+    /*the function pointer that executes test case*//*CNcomment: ç”¨ä¾‹æ‰§è¡Œå‡½æ•°æŒ‡é’ˆ */
     SV_TC_FUNC pEnterFunc; 
 
-    /*the function pointer that exits test case*//*CNcomment:ÓÃÀıÍË³öº¯ÊıÖ¸Õë */
+    /*the function pointer that exits test case*//*CNcomment:ç”¨ä¾‹é€€å‡ºå‡½æ•°æŒ‡é’ˆ */
     SV_TC_FUNC pExitFunc; 
 
     HI_SV_TC_STATUS_E enTCStatus;

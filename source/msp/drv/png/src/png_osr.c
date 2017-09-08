@@ -116,7 +116,7 @@ int PNG_DRV_ModInit(void)
     PNG_ProcInit();
     #endif
     /*Version info*/
-    /*CNcomment:版本信息*/
+    /*CNcomment:鐗堟湰淇℃伅*/
     #ifndef CONFIG_PNG_VERSION_DISABLE
     HI_GFX_ShowVersionK(HIGFX_PNG_ID);
     #endif
@@ -387,7 +387,7 @@ static int png_pm_resume(PM_BASEDEV_S *pdev)
     return pngOsiResume();
 }
 
-/** 这两个函数要按此命名 **/
+/** 杩欎袱涓嚱鏁拌鎸夋鍛藉悕 **/
 #ifdef MODULE
 module_init(PNG_DRV_ModInit);
 module_exit(PNG_DRV_ModExit);

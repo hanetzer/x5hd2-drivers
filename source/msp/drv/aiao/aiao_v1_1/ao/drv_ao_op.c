@@ -448,7 +448,7 @@ static HI_VOID SndOpGetSubFormatAttr(SND_OP_STATE_S *state, SND_OP_ATTR_S *pstSn
 //zgjiere, unf proc ÖĞ¶Ï£¬×Ô¶¯×¢²á AIAO_IsrFunc      *pIsrFunc;
 //zgjiere, alsa ÖĞ¶ÏÈçºÎ×¢²á£¬alsaÖĞ¶ÏÔÚtrackÈ·¶¨£¬aiaoÖĞ¶ÏÔÚport´ò¿ªÈ·¶¨?
 1) alsaÄÜ·ñ²ÉÓÃDSP2ARMÖĞ¶Ï?
-2) ÔËĞĞ¹ı³Ì£¬ĞŞ¸ÄÖĞ¶Ï·şÎñ³ÌĞòÏ
+2) ÔËĞĞ¹ı³Ì£¬ĞŞ¸ÄÖĞ¶Ï·şÎñ³ÌĞò
  */
 
 HI_S32 SndOpStart(HI_HANDLE hSndOp, HI_VOID *pstParams)

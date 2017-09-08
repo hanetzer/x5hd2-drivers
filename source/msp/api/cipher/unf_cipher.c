@@ -300,7 +300,7 @@ HI_S32 HI_UNF_CIPHER_Init(HI_VOID)
     HI_CIPHER_LOCK();
 
     /*Check whether the cipher has been opened.*/
-    /*CNcomment: ÔÚ¸Ã½ø³ÌÖÐÒÑ¾­´ò¿ª¹ý */
+    /*CNcomment: åœ¨è¯¥è¿›ç¨‹ä¸­å·²ç»æ‰“å¼€è¿‡ */
     if (g_CipherDevFd > 0)
     {
         HI_CIPHER_UNLOCK();

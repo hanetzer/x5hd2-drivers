@@ -69,7 +69,7 @@ HI_S32 VPSS_REG_ResetAppReg(HI_U32 u32AppAddr)
 
 HI_S32 VPSS_REG_SetIntMask(HI_U32 u32AppAddr,HI_U32 u32Mask)
 {
-     // TODO:新增解压错误、TUNNEL中断
+     // TODO:鏂板瑙ｅ帇閿欒銆乀UNNEL涓柇
     U_VPSS_INTMASK VPSS_INTMASK;
     
     VPSS_REG_S *pstReg;

@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : the suspend dispose
-                  CNcomment: ´ı»ú´¦Àí CNend\n
+                  CNcomment: å¾…æœºå¤„ç† CNend\n
 Function List 	: 
 
 			  		  
@@ -52,7 +52,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPG_WaitDecTaskDone
 	* description	: waite the jpeg decode task done
-					  CNcomment: µÈ´ı½âÂëÈÎÎñÍê³É  CNend\n
+					  CNcomment: ç­‰å¾…è§£ç ä»»åŠ¡å®Œæˆ  CNend\n
 	* param[in] 	: NULL
 	* retval		: NA
 	* others:		: NA
@@ -63,7 +63,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPG_GetResumeValue
 	* description	: get the value that resume need
-					  CNcomment: »ñÈ¡´ı»ú»½ĞÑĞèÒªµÄÖµ  CNend\n
+					  CNcomment: è·å–å¾…æœºå”¤é†’éœ€è¦çš„å€¼  CNend\n
 	* param[in] 	: *pSaveInfo
 	* retval		: NA
 	* others:		: NA
@@ -73,7 +73,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPG_SuspendInit
 	* description	: suspend initial
-					  CNcomment: ´ı»ú³õÊ¼»¯  CNend\n
+					  CNcomment: å¾…æœºåˆå§‹åŒ–  CNend\n
 	* param[in] 	: u32JpegRegBase
 	* retval		: NA
 	* others:		: NA
@@ -84,7 +84,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPG_SuspendExit
 	* description	: suspend exit
-					  CNcomment: ´ı»úÈ¥³õÊ¼»¯  CNend\n
+					  CNcomment: å¾…æœºå»åˆå§‹åŒ–  CNend\n
 	* param[in] 	: u32JpegRegBase
 	* retval		: NA
 	* others:		: NA

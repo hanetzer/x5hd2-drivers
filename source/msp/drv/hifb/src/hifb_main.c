@@ -571,7 +571,7 @@ static HIFB_ARGB_BITINFO_S s_stArgbBitField[] =
 
 /******************************* API declaration *****************************/
 /** \addtogroup      HIFB_MAIN */
-/** @{ */  /** <!-- ¡¾HIFB_MAIN ¡¿ */
+/** @{ */  /** <!-- ã€HIFB_MAIN ã€‘ */
 
 static HI_S32 hifb_vo_callback(HI_VOID *pParaml, HI_VOID *pParamr);
 static HI_S32 hifb_refresh(HI_U32 u32LayerId, HIFB_BUFFER_S *pstCanvasBuf, HIFB_LAYER_BUF_E enBufMode);

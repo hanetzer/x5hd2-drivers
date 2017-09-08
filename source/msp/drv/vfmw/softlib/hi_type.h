@@ -3,7 +3,7 @@
 *                           ALL RIGHTS RESERVED
 ******************************************************************************
 * FileName: hi_type.h
-* Description: STB Step-2 模块公共定义
+* Description: STB Step-2 妯″潡鍏叡瀹氫箟
 *
 * History:
 * Version  Date        Author                               DefectNum  Description
@@ -21,7 +21,7 @@ extern "C"{
 #endif /* __cplusplus */
 
 /*----------------------------------------------*
- * 操作系统定义，默认是Linux
+ * 鎿嶄綔绯荤粺瀹氫箟锛岄粯璁ゆ槸Linux
  *----------------------------------------------*/
 
 #if !defined(HI_OS_LINUX)
@@ -38,7 +38,7 @@ extern "C"{
 #endif
 
 /*----------------------------------------------*
- * 数据类型定义，应用层和内核代码均使用         *
+ * 鏁版嵁绫诲瀷瀹氫箟锛屽簲鐢ㄥ眰鍜屽唴鏍镐唬鐮佸潎浣跨敤         *
  *----------------------------------------------*/
 
 typedef unsigned char       HI_U8;

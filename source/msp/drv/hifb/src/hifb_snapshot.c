@@ -30,29 +30,29 @@ extern HIFB_DRV_TDEOPS_S s_stDrvTdeOps;
 extern HI_U32 hifb_getbppbyfmt(HIFB_COLOR_FMT_E enColorFmt);
 static HIFB_COLOR_FMT_E gSnapshot_ColorFmt = HIFB_FMT_RGB888;
 
-//λͼͷ�ļ��ṹ��ע���ֽڶ������
+//位图头文件结构，注意字节对齐情况
 
 typedef struct  tagBITMAPFILEHEADER{
-	HI_U16 u16Type;			/*�ļ����ͣ���Ϊ0x4D42*/
-	HI_U32 u32Size;			/*�ļ���С���������ݼ���ͷ�ļ���Сsizeof*/
-	HI_U16 u16Reserved1;		/*����λ*/
-    HI_U16 u16Reserved2;		/*����λ*/
-    HI_U32 u32OffBits;			/*�ļ�ͷ��ʵ��λͼ���ݵ�ƫ����*/
+	HI_U16 u16Type;			/*文件类型，设为0x4D42*/
+	HI_U32 u32Size;			/*文件大小，像素数据加上头文件大小sizeof*/
+	HI_U16 u16Reserved1;		/*保留位*/
+    HI_U16 u16Reserved2;		/*保留位*/
+    HI_U32 u32OffBits;			/*文件头到实际位图数据的偏移量*/
 }__attribute__((packed)) BMP_BMFHEADER_S;
 
-//λͼ��Ϣͷ�ṹ
+//位图信息头结构
 typedef  struct tagBITMAPINFOHEADER{
-	HI_U32 u32Size;			/*λͼ��Ϣͷ�Ĵ�С,sizeof(BMP_BMIHEADER_S)*/
-	HI_U32 u32Width;			/*ͼ�����*/
-	HI_U32 u32Height;			/*ͼ��߶�*/		
-	HI_U16 u32Planes;			/*λͼλ��������Ϊ1*/
-	HI_U16 u32PixbitCount;			/*ÿ�����ص�λ������RGB8888����32*/
-	HI_U32 u32Compression;	/*λͼ����ѹ�����ͣ���Ϊ0����ʾ����ѹ��*/
-	HI_U32 u32SizeImage;		/*λͼ���ݴ�С����Ϊ0 */
-	HI_U32 u32XPelsPerMeter;	/*λͼˮƽ�ֱ��ʣ���ͼ�������ͬ*/
-	HI_U32 u32YPelsPerMeter;	/*λͼ��ֱ�ֱ��ʣ���ͼ��߶���ͬ*/
-	HI_U32 u32ClrUsed;		/*˵��λͼʵ��ʹ�õĲ�ɫ���е���ɫ����������Ϊ0*/
-	HI_U32 u32ClrImportant;	/*��ͼ����ʾ����Ҫ����ɫ����������Ϊ0*/
+	HI_U32 u32Size;			/*位图信息头的大小,sizeof(BMP_BMIHEADER_S)*/
+	HI_U32 u32Width;			/*图像宽度*/
+	HI_U32 u32Height;			/*图像高度*/		
+	HI_U16 u32Planes;			/*位图位面数，设为1*/
+	HI_U16 u32PixbitCount;			/*每个像素的位数，如RGB8888就是32*/
+	HI_U32 u32Compression;	/*位图数据压缩类型，设为0，表示不会压缩*/
+	HI_U32 u32SizeImage;		/*位图数据大小，设为0 */
+	HI_U32 u32XPelsPerMeter;	/*位图水平分辨率，与图像宽度相同*/
+	HI_U32 u32YPelsPerMeter;	/*位图垂直分辨率，与图像高度相同*/
+	HI_U32 u32ClrUsed;		/*说明位图实际使用的彩色表中的颜色索引数，设为0*/
+	HI_U32 u32ClrImportant;	/*对图像显示很重要的颜色索引数，设为0*/
 } BMP_BMIHEADER_S;
 
 
@@ -139,7 +139,7 @@ HI_VOID hifb_captureimage_fromdevice(HI_U32 u32LayerID)
 	    return;
 	}
 
-	/*��ÿһ�������ֵ*/
+	/*给每一个数据项赋值*/
     sBmpHeader.u16Type = 0x4D42;
     sBmpHeader.u32Size = u32BufSize + sizeof(BMP_BMFHEADER_S) + sizeof(BMP_BMIHEADER_S);
     sBmpHeader.u16Reserved1 = 0;

@@ -70,7 +70,7 @@ HI_S32 DISP_UA_Init(HI_DRV_DISP_VERSION_S *pstVersion)
         && (pstVersion->u32VersionPartL == DISP_CV200_ES_VERSION_L)
         )
     {
-        // ×¼±¸¹¤×÷£¬°üÀ¨×ÊÔ´ÉêÇë
+        // å‡†å¤‡å·¥ä½œï¼ŒåŒ…æ‹¬èµ„æºç”³è¯·
         nRet = ALG_VZmeVdpComnInit(&g_stVZMEInstance);
         if (nRet)
         {
@@ -78,7 +78,7 @@ HI_S32 DISP_UA_Init(HI_DRV_DISP_VERSION_S *pstVersion)
             return HI_FAILURE;
         }
 
-        // º¯ÊıÖ¸Õë¸³Öµ
+        // å‡½æ•°æŒ‡é’ˆèµ‹å€¼
         g_stUAFuntion.pfCalcCscCoef  = DISP_ALG_CscCoefSet;
 
         g_stUAFuntion.pfVZmeVdpHQSet = UA_VZmeVdpHQSet;
@@ -102,7 +102,7 @@ HI_S32 DISP_UA_DeInit(HI_VOID)
 {
     if (g_bUAInitFlag)
     {
-        // ÊÍ·Å×ÊÔ´
+        // é‡Šæ”¾èµ„æº
         ALG_VZmeVdpComnDeInit(&g_stVZMEInstance);
 
         DISP_MEMSET(&g_stUAFuntion, 0, sizeof(g_stUAFuntion));

@@ -20,7 +20,7 @@
  */
 
 /**
-xiongfeif Ìí¼Ó´ËÎÄ¼þ
+xiongfeif æ·»åŠ æ­¤æ–‡ä»¶
 20100212
  */
 
@@ -36,7 +36,7 @@ xiongfeif Ìí¼Ó´ËÎÄ¼þ
  */
 
 
-/*xiongfeiÔö¼Ó 20100220*/							  
+/*xiongfeiå¢žåŠ  20100220*/							  
 int MPEG2_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf, unsigned int *puiOutBufSize,const uint8_t *pucInBuf, unsigned int uiInBufSize, int *piLength);
 
 #endif /* AVCODEC_H264_PARSER_H */

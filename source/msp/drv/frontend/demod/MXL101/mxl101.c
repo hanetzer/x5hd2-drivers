@@ -68,7 +68,7 @@ HI_S32 mxl101_connect(HI_U32 u32TunerPort, TUNER_ACC_QAM_PARAMS_S *pstChannel)
     // Configure XTAL Bias value if needed
 
     // Xtal Capacitance value must be configured in accordance
-    // with XTAL datasheet’s requirement.
+    // with XTAL datasheet requirement.
     mxlXtalCfg.XtalFreq = XTAL_24MHz;
     mxlXtalCfg.LoopThruEnable = MXL_DISABLE;
     mxlXtalCfg.XtalBiasCurrent = XTAL_BIAS_NA;

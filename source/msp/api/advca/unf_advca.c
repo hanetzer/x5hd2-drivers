@@ -486,7 +486,7 @@ HI_S32 HI_UNF_ADVCA_SetVersionId(HI_U8 u8VersionId[4])
 
 
 /** 
-\brief  ÉèÖÃ¹Ì¶¨Ê¹ÓÃÓ²¼şCW×Ö Ä¬ÈÏ¸ù¾İDemuxµÄÅäÖÃÑ¡ÔñÊ¹ÓÃÓ²¼şCW×Ö»¹ÊÇÈí¼şCW×Ö
+\brief  è®¾ç½®å›ºå®šä½¿ç”¨ç¡¬ä»¶CWå­— é»˜è®¤æ ¹æ®Demuxçš„é…ç½®é€‰æ‹©ä½¿ç”¨ç¡¬ä»¶CWå­—è¿˜æ˜¯è½¯ä»¶CWå­—
 */
 HI_S32 HI_UNF_ADVCA_LockHardCwSel(HI_VOID)
 {
@@ -509,7 +509,7 @@ HI_S32 HI_UNF_ADVCA_LockHardCwSel(HI_VOID)
 }
 
 /** 
-\brief ÉèÖÃ±ØĞë¶ÔBootLoader½øĞĞ½âÃÜ
+\brief è®¾ç½®å¿…é¡»å¯¹BootLoaderè¿›è¡Œè§£å¯†
 */
 HI_S32 HI_UNF_ADVCA_LockBootDecEn(HI_VOID)
 {
@@ -532,7 +532,7 @@ HI_S32 HI_UNF_ADVCA_LockBootDecEn(HI_VOID)
 }
 
 /** 
-\brief »ñÈ¡BootLoader½âÃÜ±êÖ¾Î»
+\brief è·å–BootLoaderè§£å¯†æ ‡å¿—ä½
 */
 HI_S32 HI_UNF_ADVCA_GetBootDecEnStat(HI_U32 *pu32Stat)
 {
@@ -561,7 +561,7 @@ HI_S32 HI_UNF_ADVCA_GetBootDecEnStat(HI_U32 *pu32Stat)
 }
 
 /** 
-\brief ÉèÖÃ¹Ì¶¨ÓÃÓ²¼şÃÜÔ¿×÷ÎªR2RµÄÃÜÔ¿
+\brief è®¾ç½®å›ºå®šç”¨ç¡¬ä»¶å¯†é’¥ä½œä¸ºR2Rçš„å¯†é’¥
 */
 HI_S32 HI_UNF_ADVCA_LockR2RHardKey(HI_VOID)
 {
@@ -584,7 +584,7 @@ HI_S32 HI_UNF_ADVCA_LockR2RHardKey(HI_VOID)
 }
 
 /** 
-\brief  ÅĞ¶ÏÊÇ·ñ¹Ì¶¨Ê¹ÓÃÓ²¼şCW×Ö
+\brief  åˆ¤æ–­æ˜¯å¦å›ºå®šä½¿ç”¨ç¡¬ä»¶CWå­—
 */
 HI_S32 HI_UNF_ADVCA_GetHardCwSelStat(HI_BOOL *pbLock)
 {
@@ -613,7 +613,7 @@ HI_S32 HI_UNF_ADVCA_GetHardCwSelStat(HI_BOOL *pbLock)
 }
 
 /** 
-\brief ÅĞ¶ÏÊÇ·ñ¹Ì¶¨ÓÃÓ²¼şÃÜÔ¿×÷ÎªR2RµÄÃÜÔ¿
+\brief åˆ¤æ–­æ˜¯å¦å›ºå®šç”¨ç¡¬ä»¶å¯†é’¥ä½œä¸ºR2Rçš„å¯†é’¥
 */
 HI_S32 HI_UNF_ADVCA_GetR2RHardKeyStat(HI_BOOL *pbLock)
 {
@@ -643,7 +643,7 @@ HI_S32 HI_UNF_ADVCA_GetR2RHardKeyStat(HI_BOOL *pbLock)
 }
 
 /** 
-\brief ÅĞ¶ÏÊÇ·ñËø¶¨CIPHERÖ»ÄÜÊ¹ÓÃTDES
+\brief åˆ¤æ–­æ˜¯å¦é”å®šCIPHERåªèƒ½ä½¿ç”¨TDES
 */
 HI_S32 HI_UNF_ADVCA_GetTdesLockStat(HI_BOOL *pbLock)
 {
@@ -672,7 +672,7 @@ HI_S32 HI_UNF_ADVCA_GetTdesLockStat(HI_BOOL *pbLock)
 }
 
 /** 
-\brief ¹Ø±ÕLink Protection¹¦ÄÜ
+\brief å…³é—­Link ProtectionåŠŸèƒ½
 */
 HI_S32 HI_UNF_ADVCA_DisableLinkProtection(HI_VOID)
 {
@@ -696,7 +696,7 @@ HI_S32 HI_UNF_ADVCA_DisableLinkProtection(HI_VOID)
 
 
 /** 
-\brief ¹Ø±ÕSelfBoot¹¦ÄÜ
+\brief å…³é—­SelfBootåŠŸèƒ½
 */
 HI_S32 HI_UNF_ADVCA_DisableSelfBoot(HI_VOID)
 {
@@ -719,7 +719,7 @@ HI_S32 HI_UNF_ADVCA_DisableSelfBoot(HI_VOID)
 }
 
 /** 
-\brief »ñÈ¡SelfBoot×´Ì¬
+\brief è·å–SelfBootçŠ¶æ€
 */
 HI_S32 HI_UNF_ADVCA_GetSelfBootStat(HI_BOOL *pbDisable)
 {
@@ -749,7 +749,7 @@ HI_S32 HI_UNF_ADVCA_GetSelfBootStat(HI_BOOL *pbDisable)
 
 
 /**
-\brief »ñÈ¡°²È«Æô¶¯Ê¹ÄÜ×´Ì¬
+\brief è·å–å®‰å…¨å¯åŠ¨ä½¿èƒ½çŠ¶æ€
 */
 HI_S32 HI_UNF_ADVCA_GetSecBootStat(HI_BOOL *pbEnable,HI_UNF_ADVCA_FLASH_TYPE_E *penFlashType)
 {
@@ -773,7 +773,7 @@ HI_S32 HI_UNF_ADVCA_GetSecBootStat(HI_BOOL *pbEnable,HI_UNF_ADVCA_FLASH_TYPE_E *
         return HI_ERR_CA_INVALID_PARA;
     }
 
-    /* »ñÈ¡°²È«Æô¶¯Ê¹ÄÜ×´Ì¬ */
+    /* è·å–å®‰å…¨å¯åŠ¨ä½¿èƒ½çŠ¶æ€ */
     ret = ioctl(g_s32CaFd, CMD_CA_GET_SCSACTIVE, &val);
     if (HI_SUCCESS != ret)
     {
@@ -784,7 +784,7 @@ HI_S32 HI_UNF_ADVCA_GetSecBootStat(HI_BOOL *pbEnable,HI_UNF_ADVCA_FLASH_TYPE_E *
     if (val)
     {
         *pbEnable = HI_TRUE;
-        /* »ñÈ¡°²È«Æô¶¯µÄFlashÀàĞÍ */
+        /* è·å–å®‰å…¨å¯åŠ¨çš„Flashç±»å‹ */
         ret = ioctl(g_s32CaFd, CMD_CA_GET_BOOTMODE, penFlashType);
         if (HI_SUCCESS != ret)
         {
@@ -803,7 +803,7 @@ HI_S32 HI_UNF_ADVCA_GetSecBootStat(HI_BOOL *pbEnable,HI_UNF_ADVCA_FLASH_TYPE_E *
 
 
 /**
-\brief ÉèÖÃ°²È«Æô¶¯Ê¹ÄÜ,Í¬Ê±Ö¸¶¨°²È«Æô¶¯µÄFlashÀàĞÍ
+\brief è®¾ç½®å®‰å…¨å¯åŠ¨ä½¿èƒ½,åŒæ—¶æŒ‡å®šå®‰å…¨å¯åŠ¨çš„Flashç±»å‹
 */
 HI_S32 HI_UNF_ADVCA_EnableSecBoot(HI_UNF_ADVCA_FLASH_TYPE_E enFlashType)
 {
@@ -821,7 +821,7 @@ HI_S32 HI_UNF_ADVCA_EnableSecBoot(HI_UNF_ADVCA_FLASH_TYPE_E enFlashType)
         return HI_ERR_CA_INVALID_PARA;
     }
 
-    /* Ê¹ÄÜ°²È«Æô¶¯ */
+    /* ä½¿èƒ½å®‰å…¨å¯åŠ¨ */
     ret = ioctl(g_s32CaFd, CMD_CA_SET_SCSACTIVE,0);
     if (HI_SUCCESS != ret)
     {
@@ -829,7 +829,7 @@ HI_S32 HI_UNF_ADVCA_EnableSecBoot(HI_UNF_ADVCA_FLASH_TYPE_E enFlashType)
         return ret;
     }
 
-    /* ÉèÖÃ°²È«Æô¶¯µÄFlashÀàĞÍ */
+    /* è®¾ç½®å®‰å…¨å¯åŠ¨çš„Flashç±»å‹ */
     ret = ioctl(g_s32CaFd, CMD_CA_SET_BOOTMODE, &enFlashType);
     if (HI_SUCCESS != ret)
     {
@@ -850,7 +850,7 @@ HI_S32 HI_UNF_ADVCA_EnableSecBootEx(HI_VOID)
         return HI_ERR_CA_NOT_INIT;
     }
 
-     /* Ê¹ÄÜ°²È«Æô¶¯ */
+     /* ä½¿èƒ½å®‰å…¨å¯åŠ¨ */
     ret = ioctl(g_s32CaFd, CMD_CA_SET_SCSACTIVE, 0);
     if (HI_SUCCESS != ret)
     {
@@ -878,7 +878,7 @@ HI_S32 HI_UNF_ADVCA_SetFlashTypeEx(HI_UNF_ADVCA_FLASH_TYPE_E enFlashType)
         return HI_ERR_CA_INVALID_PARA;
     }
 
-     /* ÉèÖÃ°²È«Æô¶¯µÄFlashÀàĞÍ */
+     /* è®¾ç½®å®‰å…¨å¯åŠ¨çš„Flashç±»å‹ */
     ret = ioctl(g_s32CaFd, CMD_CA_SET_BOOTMODE, &enFlashType);
     if (HI_SUCCESS != ret)
     {
@@ -972,7 +972,7 @@ HI_S32 HI_UNF_ADVCA_SetJtagMode(HI_UNF_ADVCA_JTAG_MODE_E enJtagMode)
 }
 
 /**
-\brief »ñÈ¡OTPĞ´±£»¤ÊÇ·ñÊ¹ÄÜ
+\brief è·å–OTPå†™ä¿æŠ¤æ˜¯å¦ä½¿èƒ½
 */
 HI_S32 HI_UNF_ADVCA_GetOtpWrProtect(HI_BOOL *pbEnable)
 {
@@ -1011,7 +1011,7 @@ HI_S32 HI_UNF_ADVCA_GetOtpWrProtect(HI_BOOL *pbEnable)
 }
 
 /**
-\brief ÉèÖÃOTPĞ´±£»¤Ê¹ÄÜ  
+\brief è®¾ç½®OTPå†™ä¿æŠ¤ä½¿èƒ½  
 */
 HI_S32 HI_UNF_ADVCA_SetOtpWrProtect(HI_VOID)
 {
@@ -1480,7 +1480,7 @@ HI_S32 HI_UNF_ADVCA_SetGDRMSessionKey(HI_UNF_ADVCA_KEYLADDER_LEV_E enStage, HI_U
 }
 
 /** 
-\brief ¼ÓÔØLPK
+\brief åŠ è½½LPK
 */
 HI_S32 HI_UNF_ADVCA_LoadLpk(HI_U8 *pEncryptedLpk)
 {
@@ -1518,7 +1518,7 @@ HI_S32 HI_UNF_ADVCA_LoadLpk(HI_U8 *pEncryptedLpk)
 
 
 /** 
-\brief ½âÃÜÖÇÄÜ¿¨´«ËÍ¸øCPUµÄ¾­¹ıÁ´Â·±£»¤µÄ·Ö×éÊı¾İ (Link Protection)
+\brief è§£å¯†æ™ºèƒ½å¡ä¼ é€ç»™CPUçš„ç»è¿‡é“¾è·¯ä¿æŠ¤çš„åˆ†ç»„æ•°æ® (Link Protection)
 */
 HI_S32 HI_UNF_ADVCA_DecryptLptBlock(HI_U8 *pEncryptedBlock,HI_U8 *pPlainBlock)
 {
@@ -1562,7 +1562,7 @@ HI_S32 HI_UNF_ADVCA_DecryptLptBlock(HI_U8 *pEncryptedBlock,HI_U8 *pPlainBlock)
 }
 
 /** 
-\brief ½âÃÜÖÇÄÜ¿¨´«ËÍ¸øCPUµÄ¾­¹ıÁ´Â·±£»¤µÄÊı¾İ (Link Protection)
+\brief è§£å¯†æ™ºèƒ½å¡ä¼ é€ç»™CPUçš„ç»è¿‡é“¾è·¯ä¿æŠ¤çš„æ•°æ® (Link Protection)
 */
 HI_S32 HI_UNF_ADVCA_DecryptLptParam(HI_U8 *pCipherText,HI_S32 s32TextLen,HI_U8 *pPlainText)
 {
@@ -1704,7 +1704,7 @@ HI_S32 HI_UNF_ADVCA_DecryptLptParam(HI_U8 *pCipherText,HI_S32 s32TextLen,HI_U8 *
 }
 
 /** 
-\brief ¼ÓÃÜÈí¼ş±£»¤ÃÜÔ¿
+\brief åŠ å¯†è½¯ä»¶ä¿æŠ¤å¯†é’¥
 */
 HI_S32 HI_UNF_ADVCA_EncryptSWPK(HI_U8 *pPlainSwpk,HI_U8 *pEncryptedSwpk)
 {

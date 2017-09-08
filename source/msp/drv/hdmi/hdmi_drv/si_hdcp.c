@@ -387,7 +387,7 @@ HI_U8 SI_ReadKSVList_Timeout(void)
      || ((5 == (TimeSKVList.tv_sec - TimeR0.tv_sec)) && (TimeSKVList.tv_usec > TimeR0.tv_usec) && (TimeSKVList.tv_usec >= TimeR0.tv_usec))
       )
     {
-        /*>=5, we will think timeout is occur!!*/ /*CNcomment:>= 5, we will think timeout is occur!!¡¡*/
+        /*>=5, we will think timeout is occur!!*/ /*CNcomment:>= 5, we will think timeout is occur!!ã€€*/
         HI_ERR_HDMI("\n****Timeout(%d, %d, diff:%d s.%d us) in get KSVlist, ReAuthentication***\n", (HI_U32)TimeSKVList.tv_sec, (HI_U32)TimeR0.tv_sec,
                 (HI_U32)(TimeSKVList.tv_sec - TimeR0.tv_sec), (HI_U32)(TimeSKVList.tv_usec - TimeR0.tv_usec));
         return HI_TRUE;
@@ -409,7 +409,7 @@ HI_U8 SI_ReadKSVList_Timeout(void)
     {
         if (tick_to_jiffies < (jiffies_now - jiffies_org))
         {
-            /*>=5 , we will think timeout is occur!!*//* CNcomment:>= 5, we will think timeout is occur!!¡¡*/
+            /*>=5 , we will think timeout is occur!!*//* CNcomment:>= 5, we will think timeout is occur!!ã€€*/
             HI_ERR_HDMI("\n****Timeout(%d, %d, diff:0x%x ms) in get KSVlist, ReAuthentication***\n", (HI_U32)jiffies_now,
                     (HI_U32)jiffies_org, (HI_U32)(jiffies_now - jiffies_org));
             return HI_TRUE;
@@ -419,7 +419,7 @@ HI_U8 SI_ReadKSVList_Timeout(void)
     {
         if (tick_to_jiffies < jiffies_now)
         {
-            /*>5, we will think timeout is occur!!*//*CNcomment:>= 5, we will think timeout is occur!!¡¡*/
+            /*>5, we will think timeout is occur!!*//*CNcomment:>= 5, we will think timeout is occur!!ã€€*/
             HI_ERR_HDMI("\n****Timeout(%d, %d, diff:0x%x ms) in get KSVlist, ReAuthentication***\n", (HI_U32)jiffies_now,
                     (HI_U32)jiffies_org, (HI_U32)(jiffies_now - jiffies_org));
             return HI_TRUE;

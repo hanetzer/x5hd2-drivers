@@ -16,7 +16,7 @@ History       :
 ******************************************************************************/
 /**
  * \file
- * \brief Describes the information about the DEMUX module.CNcomment:Ìá¹©DEMUXµÄÏà¹ØĞÅÏ¢ CNend
+ * \brief Describes the information about the DEMUX module.CNcomment:æä¾›DEMUXçš„ç›¸å…³ä¿¡æ¯ CNend
  */
 
 #ifndef __HI_UNF_DEMUX_H__
@@ -36,25 +36,25 @@ extern "C" {
 /** @{ */  /** <!-- [DEMUX] */
 
 /**Maximum depth of a filter. */
-/**CNcomment:filter×î´óÉî¶È*/
+/**CNcomment:filteræœ€å¤§æ·±åº¦*/
 #define DMX_FILTER_MAX_DEPTH            16
 
 /**Defines the capability of the DEMUX module*/
-/**CNcomment:¶¨ÒåDEMUXÄ£¿éÒµÎñ¹¦ÄÜ½á¹¹Ìå*/
+/**CNcomment:å®šä¹‰DEMUXæ¨¡å—ä¸šåŠ¡åŠŸèƒ½ç»“æ„ä½“*/
 typedef struct hiUNF_DMX_CAPABILITY_S
 {
-    HI_U32 u32TunerPortNum;     /**<Number of Tuner ports. */ /**< CNcomment: Tuner¶Ë¿ÚÊıÁ¿     */
-    HI_U32 u32RamPortNum;       /**<Number of Ram ports. */ /**< CNcomment: Ram¶Ë¿ÚÊıÁ¿     */
-    HI_U32 u32DmxNum;           /**<Number of DEMUX devices*/ /**< CNcomment:Éè±¸ÊıÁ¿     */
-    HI_U32 u32ChannelNum;       /**<Number of channels, containing the audio and video channels */ /**< CNcomment:Í¨µÀÊıÁ¿£¬º¬ÒôÊÓÆµÍ¨µÀµÄÊıÁ¿ */
-    HI_U32 u32AVChannelNum;     /**<Number of av channels*/ /**< CNcomment:ÒôÊÓÆµÍ¨µÀÊıÁ¿ */
-    HI_U32 u32FilterNum;        /**<Number of filters*/ /**< CNcomment:¹ıÂËÆ÷ÊıÁ¿   */
-    HI_U32 u32KeyNum;           /**<Number of keys*/ /**< CNcomment:ÃÜÔ¿ÇøÊıÁ¿   */
-    HI_U32 u32RecChnNum;        /**<Number of record channels */ /**< CNcomment:Â¼ÖÆÍ¨µÀµÄÊıÁ¿ */
+    HI_U32 u32TunerPortNum;     /**<Number of Tuner ports. */ /**< CNcomment: Tunerç«¯å£æ•°é‡     */
+    HI_U32 u32RamPortNum;       /**<Number of Ram ports. */ /**< CNcomment: Ramç«¯å£æ•°é‡     */
+    HI_U32 u32DmxNum;           /**<Number of DEMUX devices*/ /**< CNcomment:è®¾å¤‡æ•°é‡     */
+    HI_U32 u32ChannelNum;       /**<Number of channels, containing the audio and video channels */ /**< CNcomment:é€šé“æ•°é‡ï¼Œå«éŸ³è§†é¢‘é€šé“çš„æ•°é‡ */
+    HI_U32 u32AVChannelNum;     /**<Number of av channels*/ /**< CNcomment:éŸ³è§†é¢‘é€šé“æ•°é‡ */
+    HI_U32 u32FilterNum;        /**<Number of filters*/ /**< CNcomment:è¿‡æ»¤å™¨æ•°é‡   */
+    HI_U32 u32KeyNum;           /**<Number of keys*/ /**< CNcomment:å¯†é’¥åŒºæ•°é‡   */
+    HI_U32 u32RecChnNum;        /**<Number of record channels */ /**< CNcomment:å½•åˆ¶é€šé“çš„æ•°é‡ */
 } HI_UNF_DMX_CAPABILITY_S;
 
 /**TS port ID*/
-/**CNcomment:TS¶Ë¿ÚID */
+/**CNcomment:TSç«¯å£ID */
 typedef enum hiUNF_DMX_PORT_E
 {
     HI_UNF_DMX_PORT_TUNER_0,
@@ -79,184 +79,184 @@ typedef enum hiUNF_DMX_PORT_E
 } HI_UNF_DMX_PORT_E;
 
 /**TS port mode*/
-/**CNcomment:TS¶Ë¿ÚÄ£Ê½ */
+/**CNcomment:TSç«¯å£æ¨¡å¼ */
 typedef enum hiUNF_DMX_PORT_MODE_E
 {
-    HI_UNF_DMX_PORT_MODE_EXTERNAL,   /**<External TS input mode*/ /**< CNcomment:Íâ²¿TSÊäÈë*/
-    HI_UNF_DMX_PORT_MODE_INTERNAL,   /**<Internal TS input mode*/ /**< CNcomment:ÄÚ²¿TSÊäÈë*/
-    HI_UNF_DMX_PORT_MODE_RAM,        /**<Memory input mode*/ /**< CNcomment:´ÓÄÚ´æÊäÈë*/
+    HI_UNF_DMX_PORT_MODE_EXTERNAL,   /**<External TS input mode*/ /**< CNcomment:å¤–éƒ¨TSè¾“å…¥*/
+    HI_UNF_DMX_PORT_MODE_INTERNAL,   /**<Internal TS input mode*/ /**< CNcomment:å†…éƒ¨TSè¾“å…¥*/
+    HI_UNF_DMX_PORT_MODE_RAM,        /**<Memory input mode*/ /**< CNcomment:ä»å†…å­˜è¾“å…¥*/
 
     HI_UNF_DMX_PORT_MODE_BUTT
 } HI_UNF_DMX_PORT_MODE_E;
 
 /**TS port type*/
-/**CNcomment:TS¶Ë¿ÚÀàĞÍ */
+/**CNcomment:TSç«¯å£ç±»å‹ */
 typedef enum hiUNF_DMX_PORT_TYPE_E
 {
-    HI_UNF_DMX_PORT_TYPE_PARALLEL_BURST,          /**<Parallel burst mode*/ /**< CNcomment:²¢ĞĞBURSTÄ£Ê½             */
-    HI_UNF_DMX_PORT_TYPE_PARALLEL_VALID,          /**<Parallel valid mode*/ /**< CNcomment:²¢ĞĞVALIDÄ£Ê½             */
-    HI_UNF_DMX_PORT_TYPE_PARALLEL_NOSYNC_188,     /**<Self-sync 188 mode*/ /**< CNcomment:×ÔÍ¬²½188Ä£Ê½             */
-    HI_UNF_DMX_PORT_TYPE_PARALLEL_NOSYNC_204,     /**<Self-sync 204 mode*/ /**< CNcomment:×ÔÍ¬²½204Ä£Ê½             */
-    HI_UNF_DMX_PORT_TYPE_PARALLEL_NOSYNC_188_204, /**<self-sync 188/204 auto-identification mode */ /**< CNcomment:×ÔÍ¬²½188/204×Ô¶¯Ê¶±ğÄ£Ê½ */
-    HI_UNF_DMX_PORT_TYPE_SERIAL,                  /**<Serial sync mode, 1bit*/ /**< CNcomment:´®ĞĞsyncÄ£Ê½, 1bit´®ĞĞ */
-    HI_UNF_DMX_PORT_TYPE_USER_DEFINED,            /**<User defined mode*//**< CNcomment:ÓÃ»§×Ô¶¨ÒåÄ£Ê½ */
-    HI_UNF_DMX_PORT_TYPE_SERIAL2BIT,              /**<Serial sync mode, 2bit*/ /**< CNcomment:´®ĞĞsyncÄ£Ê½, 2bit´®ĞĞ */
-    HI_UNF_DMX_PORT_TYPE_SERIAL_NOSYNC,           /**<Serial nosync mode, 1bit */ /**< CNcomment:´®ĞĞnosyncÄ£Ê½, 1bit´®ĞĞ */
-    HI_UNF_DMX_PORT_TYPE_SERIAL2BIT_NOSYNC,       /**<Serial nosync mode, 2bit */ /**< CNcomment:´®ĞĞnosyncÄ£Ê½, 2bit´®ĞĞ */
-    HI_UNF_DMX_PORT_TYPE_AUTO,                    /**<Auto mode*/ /**< CNcomment: ×Ô¶¯Ä£Ê½ */
+    HI_UNF_DMX_PORT_TYPE_PARALLEL_BURST,          /**<Parallel burst mode*/ /**< CNcomment:å¹¶è¡ŒBURSTæ¨¡å¼             */
+    HI_UNF_DMX_PORT_TYPE_PARALLEL_VALID,          /**<Parallel valid mode*/ /**< CNcomment:å¹¶è¡ŒVALIDæ¨¡å¼             */
+    HI_UNF_DMX_PORT_TYPE_PARALLEL_NOSYNC_188,     /**<Self-sync 188 mode*/ /**< CNcomment:è‡ªåŒæ­¥188æ¨¡å¼             */
+    HI_UNF_DMX_PORT_TYPE_PARALLEL_NOSYNC_204,     /**<Self-sync 204 mode*/ /**< CNcomment:è‡ªåŒæ­¥204æ¨¡å¼             */
+    HI_UNF_DMX_PORT_TYPE_PARALLEL_NOSYNC_188_204, /**<self-sync 188/204 auto-identification mode */ /**< CNcomment:è‡ªåŒæ­¥188/204è‡ªåŠ¨è¯†åˆ«æ¨¡å¼ */
+    HI_UNF_DMX_PORT_TYPE_SERIAL,                  /**<Serial sync mode, 1bit*/ /**< CNcomment:ä¸²è¡Œsyncæ¨¡å¼, 1bitä¸²è¡Œ */
+    HI_UNF_DMX_PORT_TYPE_USER_DEFINED,            /**<User defined mode*//**< CNcomment:ç”¨æˆ·è‡ªå®šä¹‰æ¨¡å¼ */
+    HI_UNF_DMX_PORT_TYPE_SERIAL2BIT,              /**<Serial sync mode, 2bit*/ /**< CNcomment:ä¸²è¡Œsyncæ¨¡å¼, 2bitä¸²è¡Œ */
+    HI_UNF_DMX_PORT_TYPE_SERIAL_NOSYNC,           /**<Serial nosync mode, 1bit */ /**< CNcomment:ä¸²è¡Œnosyncæ¨¡å¼, 1bitä¸²è¡Œ */
+    HI_UNF_DMX_PORT_TYPE_SERIAL2BIT_NOSYNC,       /**<Serial nosync mode, 2bit */ /**< CNcomment:ä¸²è¡Œnosyncæ¨¡å¼, 2bitä¸²è¡Œ */
+    HI_UNF_DMX_PORT_TYPE_AUTO,                    /**<Auto mode*/ /**< CNcomment: è‡ªåŠ¨æ¨¡å¼ */
 
     HI_UNF_DMX_PORT_TYPE_BUTT
 } HI_UNF_DMX_PORT_TYPE_E;
 
 /**TS port attributes*/
-/**CNcomment:TS¶Ë¿ÚÊôĞÔ*/
+/**CNcomment:TSç«¯å£å±æ€§*/
 typedef struct hiUNF_DMX_PORT_ATTR_S
 {
-    HI_UNF_DMX_PORT_MODE_E enPortMod;  /**<Port mode.Readonly*/ /**< CNcomment:¶Ë¿ÚÄ£Ê½ Ö»¶Á*/
-    HI_UNF_DMX_PORT_TYPE_E enPortType; /**<Port type*/ /**< CNcomment:¶Ë¿ÚÀàĞÍ */
-    HI_U32 u32SyncLostTh;              /**<Sync loss threshold.The default value is recommended.*/ /**< CNcomment:Í¬²½¶ªÊ§ÃÅÏŞ£¬ÍÆ¼öÊ¹ÓÃÄ¬ÈÏÖµ */
-    HI_U32 u32SyncLockTh;              /**<Sync lock threshold.The default value is recommended.*/ /**< CNcomment:Í¬²½Ëø¶¨ÃÅÏŞ£¬ÍÆ¼öÊ¹ÓÃÄ¬ÈÏÖµ */
-    HI_U32 u32TunerInClk;              /**<Whether to reverse the phase of the clock input from the tuner*/ /**< CNcomment:TunerÊäÈëÊ±ÖÓÊÇ·ñ·´Ïà.0: Í¬Ïà(Ä¬ÈÏ); 1: ·´Ïà*/
+    HI_UNF_DMX_PORT_MODE_E enPortMod;  /**<Port mode.Readonly*/ /**< CNcomment:ç«¯å£æ¨¡å¼ åªè¯»*/
+    HI_UNF_DMX_PORT_TYPE_E enPortType; /**<Port type*/ /**< CNcomment:ç«¯å£ç±»å‹ */
+    HI_U32 u32SyncLostTh;              /**<Sync loss threshold.The default value is recommended.*/ /**< CNcomment:åŒæ­¥ä¸¢å¤±é—¨é™ï¼Œæ¨èä½¿ç”¨é»˜è®¤å€¼ */
+    HI_U32 u32SyncLockTh;              /**<Sync lock threshold.The default value is recommended.*/ /**< CNcomment:åŒæ­¥é”å®šé—¨é™ï¼Œæ¨èä½¿ç”¨é»˜è®¤å€¼ */
+    HI_U32 u32TunerInClk;              /**<Whether to reverse the phase of the clock input from the tuner*/ /**< CNcomment:Tunerè¾“å…¥æ—¶é’Ÿæ˜¯å¦åç›¸.0: åŒç›¸(é»˜è®¤); 1: åç›¸*/
     HI_U32 u32SerialBitSelector;       /**<Port line sequence select In parallel mode: 0: cdata[7] is the most significant bit (MSB) (default). 1: cdata[0] is the MSB.
                                            In serial mode: 1: cdata[0] is the data line (default). 0: cdata[7] is the data line.*/
-                                        /**< CNcomment:¶Ë¿ÚÏßĞòÑ¡Ôñ¡£²¢ĞĞÊ±:0: ±íÊ¾cdata[7]×î¸ßÎ»(Ä¬ÈÏ);1: ±íÊ¾cdata[0]×î¸ßÎ»¡£
-                                           ´®ĞĞÊ±:1: ±íÊ¾cdata[0]ÎªÊı¾İÏß(Ä¬ÈÏ); 0: ±íÊ¾cdata[7]ÎªÊı¾İÏß*/
+                                        /**< CNcomment:ç«¯å£çº¿åºé€‰æ‹©ã€‚å¹¶è¡Œæ—¶:0: è¡¨ç¤ºcdata[7]æœ€é«˜ä½(é»˜è®¤);1: è¡¨ç¤ºcdata[0]æœ€é«˜ä½ã€‚
+                                           ä¸²è¡Œæ—¶:1: è¡¨ç¤ºcdata[0]ä¸ºæ•°æ®çº¿(é»˜è®¤); 0: è¡¨ç¤ºcdata[7]ä¸ºæ•°æ®çº¿*/
 
     HI_U32 u32TunerErrMod;             /**<Level mode of the cerr_n line from the tuner to a DEMUX.
                                            0: A data error occurs when the cerr_n line is high.
                                            1: A data error occurs when the cerr_n line is low (default).*/
-                                            /**< CNcomment:tunerµ½DEMUXµÄcerr_nÏßµçÆ½Ä£Ê½:
-                                           0: ±íÊ¾cerr_nÏßÎª¸ßÊ±±íÊ¾Êı¾İ´íÎó;
-                                           1: ±íÊ¾cerr_nÏßÎªµÍÊ±±íÊ¾Êı¾İ´íÎó (Ä¬ÈÏ) */
-    HI_U32 u32UserDefLen1;            /**<User defined length1,valid when enPortType is HI_UNF_DMX_PORT_TYPE_USER_DEFINED,188~255 *//**< CNcomment:ÓÃ»§×Ô¶¨Òå³¤¶È¼ì²â°ü³¤1£¬Ö»ÓĞ¶Ë¿ÚÀàĞÍÎªÓÃ»§×Ô¶¨ÒåÊ±ÓĞĞ§£¬ÓĞĞ§·¶Î§188~255 */
-    HI_U32 u32UserDefLen2;            /**<User defined length2,valid when enPortType is HI_UNF_DMX_PORT_TYPE_USER_DEFINED,188~255 *//**< CNcomment:ÓÃ»§×Ô¶¨Òå³¤¶È¼ì²â°ü³¤2£¬Ö»ÓĞ¶Ë¿ÚÀàĞÍÎªÓÃ»§×Ô¶¨ÒåÊ±ÓĞĞ§£¬ÓĞĞ§·¶Î§188~255*/
+                                            /**< CNcomment:tuneråˆ°DEMUXçš„cerr_nçº¿ç”µå¹³æ¨¡å¼:
+                                           0: è¡¨ç¤ºcerr_nçº¿ä¸ºé«˜æ—¶è¡¨ç¤ºæ•°æ®é”™è¯¯;
+                                           1: è¡¨ç¤ºcerr_nçº¿ä¸ºä½æ—¶è¡¨ç¤ºæ•°æ®é”™è¯¯ (é»˜è®¤) */
+    HI_U32 u32UserDefLen1;            /**<User defined length1,valid when enPortType is HI_UNF_DMX_PORT_TYPE_USER_DEFINED,188~255 *//**< CNcomment:ç”¨æˆ·è‡ªå®šä¹‰é•¿åº¦æ£€æµ‹åŒ…é•¿1ï¼Œåªæœ‰ç«¯å£ç±»å‹ä¸ºç”¨æˆ·è‡ªå®šä¹‰æ—¶æœ‰æ•ˆï¼Œæœ‰æ•ˆèŒƒå›´188~255 */
+    HI_U32 u32UserDefLen2;            /**<User defined length2,valid when enPortType is HI_UNF_DMX_PORT_TYPE_USER_DEFINED,188~255 *//**< CNcomment:ç”¨æˆ·è‡ªå®šä¹‰é•¿åº¦æ£€æµ‹åŒ…é•¿2ï¼Œåªæœ‰ç«¯å£ç±»å‹ä¸ºç”¨æˆ·è‡ªå®šä¹‰æ—¶æœ‰æ•ˆï¼Œæœ‰æ•ˆèŒƒå›´188~255*/
 
 } HI_UNF_DMX_PORT_ATTR_S;
 
 /**Status of the TS port*/
-/**CNcomment:TS¶Ë¿ÚµÄ×´Ì¬*/
+/**CNcomment:TSç«¯å£çš„çŠ¶æ€*/
 typedef struct hiUNF_DMX_PORT_PACKETNUM_S
 {
-    HI_U32  u32TsPackCnt;    /**<Number of TS packets received from the TS port*/ /**< CNcomment:¶Ë¿ÚÊÕµ½µÄTS°ü¼ÆÊı*/
-    HI_U32  u32ErrTsPackCnt; /**<Number of error TS packets received from the TS port*/ /**< CNcomment:¶Ë¿ÚÉÏ´íÎóTS°üµÄ¼ÆÊı*/
+    HI_U32  u32TsPackCnt;    /**<Number of TS packets received from the TS port*/ /**< CNcomment:ç«¯å£æ”¶åˆ°çš„TSåŒ…è®¡æ•°*/
+    HI_U32  u32ErrTsPackCnt; /**<Number of error TS packets received from the TS port*/ /**< CNcomment:ç«¯å£ä¸Šé”™è¯¯TSåŒ…çš„è®¡æ•°*/
 } HI_UNF_DMX_PORT_PACKETNUM_S;
 
 /**Status of a TS buffer of a DEMUX*/
-/**CNcomment:DEMUXµÄTS Buffer×´Ì¬ */
+/**CNcomment:DEMUXçš„TS BufferçŠ¶æ€ */
 typedef struct hiUNF_DMX_TSBUF_STATUS_S
 {
-    HI_U32 u32BufSize;    /**<Buffer size*/ /**< CNcomment:»º³åÇø´óĞ¡       */
-    HI_U32 u32UsedSize;   /**<Used buffer size*/ /**< CNcomment:»º³åÇøÒÑÊ¹ÓÃ´óĞ¡,¸ÃÖµ±ÈÊµ¼ÊÊ¹ÓÃÖµ´ó0x100×Ö½Ú */
+    HI_U32 u32BufSize;    /**<Buffer size*/ /**< CNcomment:ç¼“å†²åŒºå¤§å°       */
+    HI_U32 u32UsedSize;   /**<Used buffer size*/ /**< CNcomment:ç¼“å†²åŒºå·²ä½¿ç”¨å¤§å°,è¯¥å€¼æ¯”å®é™…ä½¿ç”¨å€¼å¤§0x100å­—èŠ‚ */
 } HI_UNF_DMX_TSBUF_STATUS_S;
 
 /**Channel type*/
-/**CNcomment:Í¨µÀÀàĞÍ */
+/**CNcomment:é€šé“ç±»å‹ */
 typedef enum hiUNF_DMX_CHAN_TYPE_E
 {
-    HI_UNF_DMX_CHAN_TYPE_SEC = 0, /**<Channel that receives sections data such as program specific information (PSI) or service information (SI) data*/ /**< CNcomment:ÓÃÓÚ½ÓÊÕ PSI/SIµÈsecitonsÊı¾İµÄÍ¨µÀ*/
-    HI_UNF_DMX_CHAN_TYPE_PES,     /**<Channel that receives packetized elementary stream (PES) data*/ /**< CNcomment:ÓÃÓÚ½ÓÊÕPES°üÊı¾İµÄÍ¨µÀ*/
-    HI_UNF_DMX_CHAN_TYPE_AUD,     /**<Channel that receives audio data*/ /**< CNcomment:ÓÃÓÚ½ÓÊÕÒôÆµÊı¾İµÄÍ¨µÀ*/
-    HI_UNF_DMX_CHAN_TYPE_VID,     /**<Channel that receives video data*/ /**< CNcomment:ÓÃÓÚ½ÓÊÕÊÓÆµÊı¾İµÄÍ¨µÀ*/
-    HI_UNF_DMX_CHAN_TYPE_POST,      /**<Entire-packet posting channel that receives an entire TS packet with a specific packet identifier (PID). */ /**< CNcomment:Õû°üÉÏËÍÍ¨µÀ£¬ÓÃÓÚ½ÓÊÕÄ³PIDµÄÍêÕûTS°ü*/
-    HI_UNF_DMX_CHAN_TYPE_ECM_EMM,   /**<Channel that receives entitlement control message (ECM) or entitlement management message (EMM) data*/ /**< CNcomment:ÓÃÓÚ½ÓÊÕECM»òEMMÊı¾İµÄÍ¨µÀ*/
+    HI_UNF_DMX_CHAN_TYPE_SEC = 0, /**<Channel that receives sections data such as program specific information (PSI) or service information (SI) data*/ /**< CNcomment:ç”¨äºæ¥æ”¶ PSI/SIç­‰secitonsæ•°æ®çš„é€šé“*/
+    HI_UNF_DMX_CHAN_TYPE_PES,     /**<Channel that receives packetized elementary stream (PES) data*/ /**< CNcomment:ç”¨äºæ¥æ”¶PESåŒ…æ•°æ®çš„é€šé“*/
+    HI_UNF_DMX_CHAN_TYPE_AUD,     /**<Channel that receives audio data*/ /**< CNcomment:ç”¨äºæ¥æ”¶éŸ³é¢‘æ•°æ®çš„é€šé“*/
+    HI_UNF_DMX_CHAN_TYPE_VID,     /**<Channel that receives video data*/ /**< CNcomment:ç”¨äºæ¥æ”¶è§†é¢‘æ•°æ®çš„é€šé“*/
+    HI_UNF_DMX_CHAN_TYPE_POST,      /**<Entire-packet posting channel that receives an entire TS packet with a specific packet identifier (PID). */ /**< CNcomment:æ•´åŒ…ä¸Šé€é€šé“ï¼Œç”¨äºæ¥æ”¶æŸPIDçš„å®Œæ•´TSåŒ…*/
+    HI_UNF_DMX_CHAN_TYPE_ECM_EMM,   /**<Channel that receives entitlement control message (ECM) or entitlement management message (EMM) data*/ /**< CNcomment:ç”¨äºæ¥æ”¶ECMæˆ–EMMæ•°æ®çš„é€šé“*/
 
     HI_UNF_DMX_CHAN_TYPE_BUTT
 } HI_UNF_DMX_CHAN_TYPE_E;
 
 /**Cyclic redundancy check (CRC) mode of a channel*/
-/**CNcomment:Í¨µÀµÄCRCÄ£Ê½ */
+/**CNcomment:é€šé“çš„CRCæ¨¡å¼ */
 typedef enum hiUNF_DMX_CHAN_CRC_MODE_E
 {
-    HI_UNF_DMX_CHAN_CRC_MODE_FORBID = 0,                /**<The CRC check is disabled*/ /**< CNcomment:CRCĞ£Ñé½ûÖ¹ */
-    HI_UNF_DMX_CHAN_CRC_MODE_FORCE_AND_DISCARD = 1,     /**<The CRC check is enabled, and the error Section data is discarded*/ /**< CNcomment:CRCĞ£ÑéÊ¹ÄÜ£¬²¢¶ªÆú´íÎóSection */
-    HI_UNF_DMX_CHAN_CRC_MODE_FORCE_AND_SEND = 2,        /**<The CRC check is enabled, and the error Section data is received*/ /**< CNcomment:CRCĞ£ÑéÊ¹ÄÜ£¬²¢ÉÏËÍ´íÎóSection */
-    HI_UNF_DMX_CHAN_CRC_MODE_BY_SYNTAX_AND_DISCARD = 3, /**<Whether the CRC check is performed depends on the syntax, and the error Section data is discarded*/ /**< CNcomment:¸ù¾İÓï·¨ÅĞ¶ÏÊÇ·ñ½øĞĞCRCĞ£Ñé£¬²¢¶ªÆú´íÎóSection */
-    HI_UNF_DMX_CHAN_CRC_MODE_BY_SYNTAX_AND_SEND = 4,    /**<Whether the CRC check is performed depends on the syntax, and the error Section data is received*/ /**< CNcomment:¸ù¾İÓï·¨ÅĞ¶ÏÊÇ·ñ½øĞĞCRCĞ£Ñé£¬²¢ÉÏËÍ´íÎóSection */
+    HI_UNF_DMX_CHAN_CRC_MODE_FORBID = 0,                /**<The CRC check is disabled*/ /**< CNcomment:CRCæ ¡éªŒç¦æ­¢ */
+    HI_UNF_DMX_CHAN_CRC_MODE_FORCE_AND_DISCARD = 1,     /**<The CRC check is enabled, and the error Section data is discarded*/ /**< CNcomment:CRCæ ¡éªŒä½¿èƒ½ï¼Œå¹¶ä¸¢å¼ƒé”™è¯¯Section */
+    HI_UNF_DMX_CHAN_CRC_MODE_FORCE_AND_SEND = 2,        /**<The CRC check is enabled, and the error Section data is received*/ /**< CNcomment:CRCæ ¡éªŒä½¿èƒ½ï¼Œå¹¶ä¸Šé€é”™è¯¯Section */
+    HI_UNF_DMX_CHAN_CRC_MODE_BY_SYNTAX_AND_DISCARD = 3, /**<Whether the CRC check is performed depends on the syntax, and the error Section data is discarded*/ /**< CNcomment:æ ¹æ®è¯­æ³•åˆ¤æ–­æ˜¯å¦è¿›è¡ŒCRCæ ¡éªŒï¼Œå¹¶ä¸¢å¼ƒé”™è¯¯Section */
+    HI_UNF_DMX_CHAN_CRC_MODE_BY_SYNTAX_AND_SEND = 4,    /**<Whether the CRC check is performed depends on the syntax, and the error Section data is received*/ /**< CNcomment:æ ¹æ®è¯­æ³•åˆ¤æ–­æ˜¯å¦è¿›è¡ŒCRCæ ¡éªŒï¼Œå¹¶ä¸Šé€é”™è¯¯Section */
 
     HI_UNF_DMX_CHAN_CRC_MODE_BUTT
 } HI_UNF_DMX_CHAN_CRC_MODE_E;
 
 /**Output mode of a channel*/
-/**CNcomment:Í¨µÀµÄÊä³öÄ£Ê½ */
+/**CNcomment:é€šé“çš„è¾“å‡ºæ¨¡å¼ */
 typedef enum hiUNF_DMX_CHAN_OUTPUT_MODE_E
 {
-    HI_UNF_DMX_CHAN_OUTPUT_MODE_PLAY = 0x1,     /**<Mode of playing audios/videos or receiving data*/ /**< CNcomment:ÒôÊÓÆµ²¥·Å»òÊı¾İ½ÓÊÕ */
-    HI_UNF_DMX_CHAN_OUTPUT_MODE_REC  = 0x2,     /**<Recording mode*/ /**< CNcomment:Â¼ÖÆ */
-    HI_UNF_DMX_CHAN_OUTPUT_MODE_PLAY_REC = 0x3, /**<Mode of recording and playing data or receiving data*/ /**< CNcomment:Í¬Ê±Â¼ÖÆºÍ²¥·Å»òÊı¾İ½ÓÊÕ */
+    HI_UNF_DMX_CHAN_OUTPUT_MODE_PLAY = 0x1,     /**<Mode of playing audios/videos or receiving data*/ /**< CNcomment:éŸ³è§†é¢‘æ’­æ”¾æˆ–æ•°æ®æ¥æ”¶ */
+    HI_UNF_DMX_CHAN_OUTPUT_MODE_REC  = 0x2,     /**<Recording mode*/ /**< CNcomment:å½•åˆ¶ */
+    HI_UNF_DMX_CHAN_OUTPUT_MODE_PLAY_REC = 0x3, /**<Mode of recording and playing data or receiving data*/ /**< CNcomment:åŒæ—¶å½•åˆ¶å’Œæ’­æ”¾æˆ–æ•°æ®æ¥æ”¶ */
     HI_UNF_DMX_CHAN_OUTPUT_MODE_BUTT = -1
 } HI_UNF_DMX_CHAN_OUTPUT_MODE_E;
 
 /**Channel attribute*/
-/**CNcomment:Í¨µÀÊôĞÔ*/
+/**CNcomment:é€šé“å±æ€§*/
 typedef struct hiUNF_DMX_CHAN_ATTR_S
 {
-    HI_U32 u32BufSize;                            /**<Buffer size used by channels*/ /**< CNcomment:Í¨µÀÓ²¼şÊ¹ÓÃbuffer´óĞ¡*/
-    HI_UNF_DMX_CHAN_TYPE_E enChannelType;         /**<Channel type*/ /**< CNcomment:Í¨µÀÀàĞÍ */
-    HI_UNF_DMX_CHAN_CRC_MODE_E enCRCMode;         /**<CRC mode.It is valid for the DEMUX_CHAN_SEC channel.*/ /**< CNcomment:CRCÄ£Ê½£¬Í¨µÀÀàĞÍÎªDMX_CHAN_SEC Ê±ÓĞĞ§ */
-    HI_UNF_DMX_CHAN_OUTPUT_MODE_E enOutputMode;   /**<Output mode of the channel data*/ /**< CNcomment:Í¨µÀÊı¾İÊä³öÄ£Ê½ */
+    HI_U32 u32BufSize;                            /**<Buffer size used by channels*/ /**< CNcomment:é€šé“ç¡¬ä»¶ä½¿ç”¨bufferå¤§å°*/
+    HI_UNF_DMX_CHAN_TYPE_E enChannelType;         /**<Channel type*/ /**< CNcomment:é€šé“ç±»å‹ */
+    HI_UNF_DMX_CHAN_CRC_MODE_E enCRCMode;         /**<CRC mode.It is valid for the DEMUX_CHAN_SEC channel.*/ /**< CNcomment:CRCæ¨¡å¼ï¼Œé€šé“ç±»å‹ä¸ºDMX_CHAN_SEC æ—¶æœ‰æ•ˆ */
+    HI_UNF_DMX_CHAN_OUTPUT_MODE_E enOutputMode;   /**<Output mode of the channel data*/ /**< CNcomment:é€šé“æ•°æ®è¾“å‡ºæ¨¡å¼ */
 } HI_UNF_DMX_CHAN_ATTR_S;
 
 /**Scrambled flag of the channel data*/
-/**CNcomment:Í¨µÀÊı¾İµÄ¼ÓÈÅ±êÖ¾ */
+/**CNcomment:é€šé“æ•°æ®çš„åŠ æ‰°æ ‡å¿— */
 typedef enum hiUNF_DMX_SCRAMBLED_FLAG_E
 {
-    HI_UNF_DMX_SCRAMBLED_FLAG_TS,  /**<TS data is scrambled*/ /**< CNcomment:Êı¾İ±»TS¼¶¼ÓÈÅ*/
-    HI_UNF_DMX_SCRAMBLED_FLAG_PES, /**<PES data is scrambled*/ /**< CNcomment:Êı¾İ±»PES¼¶¼ÓÈÅ*/
-    HI_UNF_DMX_SCRAMBLED_FLAG_NO,  /**<Data is not scrambled*/ /**< CNcomment:Êı¾İÎ´±»¼ÓÈÅ*/
+    HI_UNF_DMX_SCRAMBLED_FLAG_TS,  /**<TS data is scrambled*/ /**< CNcomment:æ•°æ®è¢«TSçº§åŠ æ‰°*/
+    HI_UNF_DMX_SCRAMBLED_FLAG_PES, /**<PES data is scrambled*/ /**< CNcomment:æ•°æ®è¢«PESçº§åŠ æ‰°*/
+    HI_UNF_DMX_SCRAMBLED_FLAG_NO,  /**<Data is not scrambled*/ /**< CNcomment:æ•°æ®æœªè¢«åŠ æ‰°*/
 
     HI_UNF_DMX_SCRAMBLED_FLAG_BUTT
 } HI_UNF_DMX_SCRAMBLED_FLAG_E;
 
 /**Channel status*/
-/**CNcomment:Í¨µÀ×´Ì¬ */
+/**CNcomment:é€šé“çŠ¶æ€ */
 typedef enum hiUNF_DMX_CHAN_STATUS_E
 {
-    HI_UNF_DMX_CHAN_CLOSE = 0x0,        /**<The channel is stopped.*/ /**< CNcomment:Í¨µÀ´¦ÓÚ¹Ø±Õ×´Ì¬*/
-    HI_UNF_DMX_CHAN_PLAY_EN = 0x1,      /**<The channel is playing audios/videos or receiving data.*/ /**< CNcomment:Í¨µÀ´¦ÓÚÒôÊÓÆµ²¥·Å»òÊı¾İ½ÓÊÕ×´Ì¬*/
-    HI_UNF_DMX_CHAN_REC_EN = 0X2,       /**<The channel is recording data.*/ /**< CNcomment:Í¨µÀ´¦ÓÚÊı¾İÂ¼ÖÆ×´Ì¬*/
-    HI_UNF_DMX_CHAN_PLAY_REC_EN = 0X3,  /**<The channel is recording and receiving data.*/ /**< CNcomment:Í¨µÀ´¦ÓÚÍ¬Ê±Â¼ÖÆºÍÊı¾İ½ÓÊÕ×´Ì¬*/
+    HI_UNF_DMX_CHAN_CLOSE = 0x0,        /**<The channel is stopped.*/ /**< CNcomment:é€šé“å¤„äºå…³é—­çŠ¶æ€*/
+    HI_UNF_DMX_CHAN_PLAY_EN = 0x1,      /**<The channel is playing audios/videos or receiving data.*/ /**< CNcomment:é€šé“å¤„äºéŸ³è§†é¢‘æ’­æ”¾æˆ–æ•°æ®æ¥æ”¶çŠ¶æ€*/
+    HI_UNF_DMX_CHAN_REC_EN = 0X2,       /**<The channel is recording data.*/ /**< CNcomment:é€šé“å¤„äºæ•°æ®å½•åˆ¶çŠ¶æ€*/
+    HI_UNF_DMX_CHAN_PLAY_REC_EN = 0X3,  /**<The channel is recording and receiving data.*/ /**< CNcomment:é€šé“å¤„äºåŒæ—¶å½•åˆ¶å’Œæ•°æ®æ¥æ”¶çŠ¶æ€*/
 } HI_UNF_DMX_CHAN_STATUS_E;
 
 /**Defines the channel status*/
-/** CNcomment:¶¨ÒåÍ¨µÀ×´Ì¬½á¹¹Ìå*/
+/** CNcomment:å®šä¹‰é€šé“çŠ¶æ€ç»“æ„ä½“*/
 typedef struct hiUNF_DMX_CHAN_STATUS_S
 {
-    HI_UNF_DMX_CHAN_STATUS_E enChanStatus;   /**<Channel status*/ /**< CNcomment:Í¨µÀ×´Ì¬*/
+    HI_UNF_DMX_CHAN_STATUS_E enChanStatus;   /**<Channel status*/ /**< CNcomment:é€šé“çŠ¶æ€*/
 } HI_UNF_DMX_CHAN_STATUS_S;
 
 /**Filter attribute*/
-/**CNcomment:¹ıÂËÆ÷ÊôĞÔ*/
+/**CNcomment:è¿‡æ»¤å™¨å±æ€§*/
 typedef struct hiUNF_DMX_FILTER_ATTR_S
 {
-    HI_U32  u32FilterDepth;                     /**<Depth of a filter.*/ /**< CNcomment:¹ıÂËÆ÷Éî¶È*/
-    HI_U8   au8Match[DMX_FILTER_MAX_DEPTH];     /**<Matched bytes of a filter.The data is compared by bit.*/ /**< CNcomment:¹ıÂËÆ÷Æ¥Åä×Ö½Ú,°´bit±È½Ï*/
-    HI_U8   au8Mask[DMX_FILTER_MAX_DEPTH];      /**<Masked bytes of a filter. The conditions are set by bit. 0: no mask. Comparison is required. 1: mask. Comparison is not required.*/ /**< CNcomment:¹ıÂËÆ÷ÆÁ±Î×Ö½Ú,°´bitÉèÖÃ, 0:Ã»ÓĞmask£¬Òª½øĞĞ±È½Ï, 1:maskÆğ×÷ÓÃ£¬²»½øĞĞ±È½Ï*/
-    HI_U8   au8Negate[DMX_FILTER_MAX_DEPTH];    /**<Negated bytes of a filter. 0: not negated; 1: negated*/ /**< CNcomment:¹ıÂËÆ÷È¡·´×Ö½Ú,°´byteÉèÖÃ, 0:²»È¡·´,1:È¡·´*/
+    HI_U32  u32FilterDepth;                     /**<Depth of a filter.*/ /**< CNcomment:è¿‡æ»¤å™¨æ·±åº¦*/
+    HI_U8   au8Match[DMX_FILTER_MAX_DEPTH];     /**<Matched bytes of a filter.The data is compared by bit.*/ /**< CNcomment:è¿‡æ»¤å™¨åŒ¹é…å­—èŠ‚,æŒ‰bitæ¯”è¾ƒ*/
+    HI_U8   au8Mask[DMX_FILTER_MAX_DEPTH];      /**<Masked bytes of a filter. The conditions are set by bit. 0: no mask. Comparison is required. 1: mask. Comparison is not required.*/ /**< CNcomment:è¿‡æ»¤å™¨å±è”½å­—èŠ‚,æŒ‰bitè®¾ç½®, 0:æ²¡æœ‰maskï¼Œè¦è¿›è¡Œæ¯”è¾ƒ, 1:maskèµ·ä½œç”¨ï¼Œä¸è¿›è¡Œæ¯”è¾ƒ*/
+    HI_U8   au8Negate[DMX_FILTER_MAX_DEPTH];    /**<Negated bytes of a filter. 0: not negated; 1: negated*/ /**< CNcomment:è¿‡æ»¤å™¨å–åå­—èŠ‚,æŒ‰byteè®¾ç½®, 0:ä¸å–å,1:å–å*/
 } HI_UNF_DMX_FILTER_ATTR_S;
 
 /**Type of the DEMUX data packet.*/
-/**CNcomment:DEMUXÊı¾İ°üµÄÀàĞÍ*/
+/**CNcomment:DEMUXæ•°æ®åŒ…çš„ç±»å‹*/
 typedef enum hiUNF_DMX_DATA_TYPE_E
 {
-    HI_UNF_DMX_DATA_TYPE_WHOLE = 0,  /**<The data segment contains a complete data packet*/ /**< CNcomment:´Ë¶ÎÊı¾İ°üº¬ÍêÕûµÄÊı¾İ°ü, ¶ÔÓÚSECTIONÃ¿¸ö°ü¶¼ÊÇÍêÕûµÄ*/
-    HI_UNF_DMX_DATA_TYPE_HEAD,       /**<The data segment contains the head of a data packet, but the data packet may not be complete*/ /**< CNcomment:´Ë¶ÎÊı¾İ°üº¬Êı¾İ°üµÄÆğÊ¼£¬µ«ÊÇ²»Ò»¶¨ÊÇÍêÕûµÄ°ü, Ö»ÓÃÓÚPESÊı¾İ*/
-    HI_UNF_DMX_DATA_TYPE_BODY,       /**<This type is valid only for the PES data.The data segment contains the body of a data packet. */ /**< CNcomment:´Ë¶ÎÊı¾İ°üº¬Êı¾İ°üµÄÄÚÈİ£¬²»°üº¬ÆğÊ¼£¬¿ÉÄÜÓĞ½áÎ², Ö»ÓÃÓÚPESÊı¾İ*/
-    HI_UNF_DMX_DATA_TYPE_TAIL,       /**<This type is valid only for the PES data.The data segment contains the tail of a data packet, and is used to identify the end of a data packet.*/ /**< CNcomment:´Ë¶ÎÊı¾İ°üº¬Êı¾İ°üµÄ½áÎ²£¬ÓÃÓÚÖ¸Ê¾¿ÉÊ¶±ğµÄ°ü½áÊø, Ö»ÓÃÓÚPESÊı¾İ*/
+    HI_UNF_DMX_DATA_TYPE_WHOLE = 0,  /**<The data segment contains a complete data packet*/ /**< CNcomment:æ­¤æ®µæ•°æ®åŒ…å«å®Œæ•´çš„æ•°æ®åŒ…, å¯¹äºSECTIONæ¯ä¸ªåŒ…éƒ½æ˜¯å®Œæ•´çš„*/
+    HI_UNF_DMX_DATA_TYPE_HEAD,       /**<The data segment contains the head of a data packet, but the data packet may not be complete*/ /**< CNcomment:æ­¤æ®µæ•°æ®åŒ…å«æ•°æ®åŒ…çš„èµ·å§‹ï¼Œä½†æ˜¯ä¸ä¸€å®šæ˜¯å®Œæ•´çš„åŒ…, åªç”¨äºPESæ•°æ®*/
+    HI_UNF_DMX_DATA_TYPE_BODY,       /**<This type is valid only for the PES data.The data segment contains the body of a data packet. */ /**< CNcomment:æ­¤æ®µæ•°æ®åŒ…å«æ•°æ®åŒ…çš„å†…å®¹ï¼Œä¸åŒ…å«èµ·å§‹ï¼Œå¯èƒ½æœ‰ç»“å°¾, åªç”¨äºPESæ•°æ®*/
+    HI_UNF_DMX_DATA_TYPE_TAIL,       /**<This type is valid only for the PES data.The data segment contains the tail of a data packet, and is used to identify the end of a data packet.*/ /**< CNcomment:æ­¤æ®µæ•°æ®åŒ…å«æ•°æ®åŒ…çš„ç»“å°¾ï¼Œç”¨äºæŒ‡ç¤ºå¯è¯†åˆ«çš„åŒ…ç»“æŸ, åªç”¨äºPESæ•°æ®*/
 
     HI_UNF_DMX_DATA_TYPE_BUTT
 } HI_UNF_DMX_DATA_TYPE_E;
 
 /**DEMUX data packet*/
-/**CNcomment:DEMUXÊı¾İ°ü½á¹¹*/
+/**CNcomment:DEMUXæ•°æ®åŒ…ç»“æ„*/
 typedef struct hiUNF_DMX_DATA_S
 {
-    HI_U8   *pu8Data;                   /**<Data pointer*/ /**< CNcomment:Êı¾İÖ¸Õë */
-    HI_U32  u32Size;                    /**<Data length*/ /**< CNcomment:Êı¾İ³¤¶È */
-    HI_UNF_DMX_DATA_TYPE_E enDataType;  /**<Data packet type*/ /**< CNcomment:Êı¾İ°üµÄÀàĞÍ */
+    HI_U8   *pu8Data;                   /**<Data pointer*/ /**< CNcomment:æ•°æ®æŒ‡é’ˆ */
+    HI_U32  u32Size;                    /**<Data length*/ /**< CNcomment:æ•°æ®é•¿åº¦ */
+    HI_UNF_DMX_DATA_TYPE_E enDataType;  /**<Data packet type*/ /**< CNcomment:æ•°æ®åŒ…çš„ç±»å‹ */
 } HI_UNF_DMX_DATA_S;
 
 /**type of record*/
-/**CNcomment: Â¼ÖÆÀàĞÍ*/
+/**CNcomment: å½•åˆ¶ç±»å‹*/
 typedef enum hiUNF_DMX_REC_TYPE_E
 {
     HI_UNF_DMX_REC_TYPE_SELECT_PID,
@@ -265,90 +265,90 @@ typedef enum hiUNF_DMX_REC_TYPE_E
 } HI_UNF_DMX_REC_TYPE_E;
 
 /**type of index*/
-/**CNcomment: Ë÷ÒıÀàĞÍ */
+/**CNcomment: ç´¢å¼•ç±»å‹ */
 typedef enum hiUNF_DMX_REC_INDEX_TYPE_E
 {
-    HI_UNF_DMX_REC_INDEX_TYPE_NONE,     /**<No index is created */  /**<CNcomment: ²»½¨Ë÷Òı */
-    HI_UNF_DMX_REC_INDEX_TYPE_VIDEO,    /**<Video index */          /**<CNcomment: ÊÓÆµË÷Òı */
-    HI_UNF_DMX_REC_INDEX_TYPE_AUDIO,    /**<Audio index */          /**<CNcomment: ÒôÆµË÷Òı */
+    HI_UNF_DMX_REC_INDEX_TYPE_NONE,     /**<No index is created */  /**<CNcomment: ä¸å»ºç´¢å¼• */
+    HI_UNF_DMX_REC_INDEX_TYPE_VIDEO,    /**<Video index */          /**<CNcomment: è§†é¢‘ç´¢å¼• */
+    HI_UNF_DMX_REC_INDEX_TYPE_AUDIO,    /**<Audio index */          /**<CNcomment: éŸ³é¢‘ç´¢å¼• */
     HI_UNF_DMX_REC_INDEX_TYPE_BUTT
 } HI_UNF_DMX_REC_INDEX_TYPE_E;
 
 /**record attribute*/
-/**CNcomment: Â¼ÖÆÊôĞÔ*/
+/**CNcomment: å½•åˆ¶å±æ€§*/
 typedef struct hiUNF_DMX_REC_ATTR_S
 {
     HI_U32                      u32DmxId;
-    HI_U32                      u32RecBufSize;  /**<Buffer size used by record */ /**< CNcomment: Â¼ÖÆ»º´æ´óĞ¡ */
-    HI_UNF_DMX_REC_TYPE_E       enRecType;      /**<Record type */ /**< CNcomment: Â¼ÖÆÀàĞÍ */
-    HI_BOOL                     bDescramed;     /**<HI_TRUE is the descrambled TS. HI_FALSE is the original TS. */ /**<CNcomment: HI_TRUE±íÊ¾Â¼ÖÆ½âÈÅºóµÄTSÁ÷£¬HI_FALSE±íÊ¾Â¼ÖÆÔ­Ê¼Á÷ */
-    HI_UNF_DMX_REC_INDEX_TYPE_E enIndexType;    /**<Index type */ /**< CNcomment: Ë÷ÒıÀàĞÍ */
-    HI_U32                      u32IndexSrcPid; /**<The index information is formed according to the PID. when indexing video, it has to be set to the video of PID. when indexing audio, it has to be set to the audio of PID. */ /**< CNcomment: ¸ù¾İ´ËPIDÉú³ÉË÷ÒıÊı¾İ£¬ÊÓÆµË÷ÒıÊ±ÉèÖÃÎªÊÓÆµµÄPID£¬ÒôÆµË÷ÒıÊ±ÉèÖÃÎªÒôÆµµÄPID */
-    HI_UNF_VCODEC_TYPE_E        enVCodecType;   /**<Video encoding protocol. The protocol needs to be set only when the index type is HI_UNF_DMX_REC_INDEX_TYPE_VIDEO.*/ /**< CNcomment: ÊÓÆµË÷ÒıÊ±ÉèÖÃÊÓÆµµÄ±àÂëÀàĞÍ */
+    HI_U32                      u32RecBufSize;  /**<Buffer size used by record */ /**< CNcomment: å½•åˆ¶ç¼“å­˜å¤§å° */
+    HI_UNF_DMX_REC_TYPE_E       enRecType;      /**<Record type */ /**< CNcomment: å½•åˆ¶ç±»å‹ */
+    HI_BOOL                     bDescramed;     /**<HI_TRUE is the descrambled TS. HI_FALSE is the original TS. */ /**<CNcomment: HI_TRUEè¡¨ç¤ºå½•åˆ¶è§£æ‰°åçš„TSæµï¼ŒHI_FALSEè¡¨ç¤ºå½•åˆ¶åŸå§‹æµ */
+    HI_UNF_DMX_REC_INDEX_TYPE_E enIndexType;    /**<Index type */ /**< CNcomment: ç´¢å¼•ç±»å‹ */
+    HI_U32                      u32IndexSrcPid; /**<The index information is formed according to the PID. when indexing video, it has to be set to the video of PID. when indexing audio, it has to be set to the audio of PID. */ /**< CNcomment: æ ¹æ®æ­¤PIDç”Ÿæˆç´¢å¼•æ•°æ®ï¼Œè§†é¢‘ç´¢å¼•æ—¶è®¾ç½®ä¸ºè§†é¢‘çš„PIDï¼ŒéŸ³é¢‘ç´¢å¼•æ—¶è®¾ç½®ä¸ºéŸ³é¢‘çš„PID */
+    HI_UNF_VCODEC_TYPE_E        enVCodecType;   /**<Video encoding protocol. The protocol needs to be set only when the index type is HI_UNF_DMX_REC_INDEX_TYPE_VIDEO.*/ /**< CNcomment: è§†é¢‘ç´¢å¼•æ—¶è®¾ç½®è§†é¢‘çš„ç¼–ç ç±»å‹ */
 } HI_UNF_DMX_REC_ATTR_S;
 
 /**record data*/
-/**CNcomment: Â¼ÖÆÊı¾İ*/
+/**CNcomment: å½•åˆ¶æ•°æ®*/
 typedef struct hiUNF_DMX_REC_DATA_S
 {
-    HI_U8  *pDataAddr;      /**<Data address*/          /**<CNcomment: Êı¾İµØÖ· */
-    HI_U32  u32DataPhyAddr; /**<Data physical address*/ /**<CNcomment: Êı¾İµÄÎïÀíµØÖ· */
-    HI_U32  u32Len;         /**<Data length*/           /**<CNcomment: Êı¾İ³¤¶È */
+    HI_U8  *pDataAddr;      /**<Data address*/          /**<CNcomment: æ•°æ®åœ°å€ */
+    HI_U32  u32DataPhyAddr; /**<Data physical address*/ /**<CNcomment: æ•°æ®çš„ç‰©ç†åœ°å€ */
+    HI_U32  u32Len;         /**<Data length*/           /**<CNcomment: æ•°æ®é•¿åº¦ */
 } HI_UNF_DMX_REC_DATA_S;
 
 /**index data*/
-/**CNcomment: Ë÷ÒıÊı¾İ*/
+/**CNcomment: ç´¢å¼•æ•°æ®*/
 typedef struct hiUNF_DMX_REC_INDEX_S
 {
-    HI_UNF_VIDEO_FRAME_TYPE_E   enFrameType;        /**< it is meaningless when indexing audio. */ /**<CNcomment: ÒôÆµË÷ÒıÊ±ÎŞÒâÒå */
+    HI_UNF_VIDEO_FRAME_TYPE_E   enFrameType;        /**< it is meaningless when indexing audio. */ /**<CNcomment: éŸ³é¢‘ç´¢å¼•æ—¶æ— æ„ä¹‰ */
     HI_U32                      u32PtsMs;
     HI_U64                      u64GlobalOffset;
-    HI_U32                      u32FrameSize;       /**< it is meaningless when indexing audio. */ /**<CNcomment: ÒôÆµË÷ÒıÊ±ÎŞÒâÒå */
+    HI_U32                      u32FrameSize;       /**< it is meaningless when indexing audio. */ /**<CNcomment: éŸ³é¢‘ç´¢å¼•æ—¶æ— æ„ä¹‰ */
     HI_U32                      u32DataTimeMs;
 } HI_UNF_DMX_REC_INDEX_S;
 
 /**record buffer status*/
-/**CNcomment: Â¼ÖÆ»º³åÇø×´Ì¬½á¹¹*/
+/**CNcomment: å½•åˆ¶ç¼“å†²åŒºçŠ¶æ€ç»“æ„*/
 typedef struct hiUNF_DMX_RECBUF_STATUS_S
 {
-    HI_U32  u32BufSize;     /**<Buffer size*/ /**< CNcomment:»º³åÇø´óĞ¡ */
-    HI_U32  u32UsedSize;    /**<Used buffer*/ /**< CNcomment:»º³åÇøÒÑÊ¹ÓÃ´óĞ¡ */
+    HI_U32  u32BufSize;     /**<Buffer size*/ /**< CNcomment:ç¼“å†²åŒºå¤§å° */
+    HI_U32  u32UsedSize;    /**<Used buffer*/ /**< CNcomment:ç¼“å†²åŒºå·²ä½¿ç”¨å¤§å° */
 } HI_UNF_DMX_RECBUF_STATUS_S;
 
-/**Repeat CC mode of channel*//**CNcomment:Í¨µÀµÄCCÖØ¸´Ä£Ê½ */
+/**Repeat CC mode of channel*//**CNcomment:é€šé“çš„CCé‡å¤æ¨¡å¼ */
 typedef enum hiUNF_DMX_CHAN_CC_REPEAT_MODE
 {
-    HI_UNF_DMX_CHAN_CC_REPEAT_MODE_RSV   = 0x0,     /**<Receive CC repeat ts packet*/ /**< CNcomment:½ÓÊÕccÖØ¸´µÄts°ü*/
-    HI_UNF_DMX_CHAN_CC_REPEAT_MODE_DROP  = 0x1,     /**<Drop CC repeat ts packet*/ /**< CNcomment:¶ªÆúccÖØ¸´µÄts°ü */
+    HI_UNF_DMX_CHAN_CC_REPEAT_MODE_RSV   = 0x0,     /**<Receive CC repeat ts packet*/ /**< CNcomment:æ¥æ”¶ccé‡å¤çš„tsåŒ…*/
+    HI_UNF_DMX_CHAN_CC_REPEAT_MODE_DROP  = 0x1,     /**<Drop CC repeat ts packet*/ /**< CNcomment:ä¸¢å¼ƒccé‡å¤çš„tsåŒ… */
     HI_UNF_DMX_CHAN_CC_REPEAT_MODE_BUTT = -1
 }HI_UNF_DMX_CHAN_CC_REPEAT_MODE_E;
 
 typedef struct hiUNF_DMX_CHAN_CC_REPEAT_SET_S
 {
-    HI_HANDLE hChannel;                               /**<The channel handle*/ /**< CNcomment:Í¨µÀ¾ä±ú*/ 
-    HI_UNF_DMX_CHAN_CC_REPEAT_MODE_E enCCRepeatMode;   /**<Repeat CC mode of channel*/ /**< CNcomment:Í¨µÀµÄCCÄ£Ê½*/  
+    HI_HANDLE hChannel;                               /**<The channel handle*/ /**< CNcomment:é€šé“å¥æŸ„*/ 
+    HI_UNF_DMX_CHAN_CC_REPEAT_MODE_E enCCRepeatMode;   /**<Repeat CC mode of channel*/ /**< CNcomment:é€šé“çš„CCæ¨¡å¼*/  
 }HI_UNF_DMX_CHAN_CC_REPEAT_SET_S;
 
 /** PUSI (Payload Unit Start Index) config structure*/
-/**CNcomment: PUSI ÅäÖÃ½á¹¹Ìå */
+/**CNcomment: PUSI é…ç½®ç»“æ„ä½“ */
 typedef struct hiUNF_DMX_PUSI_SET_S
 {
-    HI_BOOL bPusi;                               /**< Value of Pusi , Default is HI_FALSE means receive ts packet without checking PUSI*/ /**< CNcomment:NoPusiEn µÄÖµ£¬Ä¬ÈÏÎª HI_FALSE ±íÊ¾½ÓÊÕTS°üµÄÊ±ºò²»¼ì²âPUSI±êÖ¾*/ 
+    HI_BOOL bPusi;                               /**< Value of Pusi , Default is HI_FALSE means receive ts packet without checking PUSI*/ /**< CNcomment:NoPusiEn çš„å€¼ï¼Œé»˜è®¤ä¸º HI_FALSE è¡¨ç¤ºæ¥æ”¶TSåŒ…çš„æ—¶å€™ä¸æ£€æµ‹PUSIæ ‡å¿—*/ 
 }HI_UNF_DMX_PUSI_SET_S;
 
 /** TEI (Transport Error Index) config structure*/
-/**CNcomment: TEI ÅäÖÃ½á¹¹Ìå */
+/**CNcomment: TEI é…ç½®ç»“æ„ä½“ */
 typedef struct hiUNF_DMX_TEI_SET_S
 {
-    HI_U32   u32DemuxID;					/**<The Subdiviece ID*/ /**< CNcomment:Demux ×ÓÉè±¸ID*/ 
-    HI_BOOL bTei;                                   /**< Value of bTei , Default is HI_FALSE means receive ts packet even TEI equal 1*/ /**< CNcomment:TEICfg µÄÖµ£¬Ä¬ÈÏÎª HI_FALSE ±íÊ¾½ÓÊÕTEIÎª1 µÄ TS°üÈÔÈ»½ÓÊÕ*/     
+    HI_U32   u32DemuxID;					/**<The Subdiviece ID*/ /**< CNcomment:Demux å­è®¾å¤‡ID*/ 
+    HI_BOOL bTei;                                   /**< Value of bTei , Default is HI_FALSE means receive ts packet even TEI equal 1*/ /**< CNcomment:TEICfg çš„å€¼ï¼Œé»˜è®¤ä¸º HI_FALSE è¡¨ç¤ºæ¥æ”¶TEIä¸º1 çš„ TSåŒ…ä»ç„¶æ¥æ”¶*/     
 }HI_UNF_DMX_TEI_SET_S;
 
 typedef enum hiUNF_DMX_INVOKE_TYPE
 {
-    HI_UNF_DMX_INVOKE_TYPE_CHAN_CC_REPEAT_SET  = 0,  /**<dmx set channel extra attr,param:HI_UNF_DMX_CHAN_CC_REPEAT_SET_S*//**<CNcomment: ÉèÖÃÍ¨µÀ¸½¼ÓÊôĞÔ£¬Ê¹ÓÃ²ÎÊıHI_UNF_DMX_CHAN_CC_REPEAT_SET_S */
-    HI_UNF_DMX_INVOKE_TYPE_PUSI_SET,                    /**<dmx set PUSI flag,param:HI_UNF_DMX_PUSI_SET_S*//**<CNcomment: ÉèÖÃ NoPusiEn ±êÖ¾£¬Ê¹ÓÃ²ÎÊıHI_UNF_DMX_PUSI_SET_S */
-    HI_UNF_DMX_INVOKE_TYPE_TEI_SET,				/**<dmx set TEI flag,param:HI_UNF_DMX_TEI_SET_S*//**<CNcomment: ÉèÖÃDemux ×ÓÉè±¸TEICfg ±êÖ¾£¬Ê¹ÓÃ²ÎÊıHI_UNF_DMX_TEI_SET_S */
+    HI_UNF_DMX_INVOKE_TYPE_CHAN_CC_REPEAT_SET  = 0,  /**<dmx set channel extra attr,param:HI_UNF_DMX_CHAN_CC_REPEAT_SET_S*//**<CNcomment: è®¾ç½®é€šé“é™„åŠ å±æ€§ï¼Œä½¿ç”¨å‚æ•°HI_UNF_DMX_CHAN_CC_REPEAT_SET_S */
+    HI_UNF_DMX_INVOKE_TYPE_PUSI_SET,                    /**<dmx set PUSI flag,param:HI_UNF_DMX_PUSI_SET_S*//**<CNcomment: è®¾ç½® NoPusiEn æ ‡å¿—ï¼Œä½¿ç”¨å‚æ•°HI_UNF_DMX_PUSI_SET_S */
+    HI_UNF_DMX_INVOKE_TYPE_TEI_SET,				/**<dmx set TEI flag,param:HI_UNF_DMX_TEI_SET_S*//**<CNcomment: è®¾ç½®Demux å­è®¾å¤‡TEICfg æ ‡å¿—ï¼Œä½¿ç”¨å‚æ•°HI_UNF_DMX_TEI_SET_S */
     HI_UNF_DMX_INVOKE_TYPE_BUTT
 } HI_UNF_DMX_INVOKE_TYPE_E; 
 
@@ -360,48 +360,48 @@ typedef enum hiUNF_DMX_INVOKE_TYPE
 /** @{ */  /** <!-- [DEMUX] */
 
 /**
-\brief Initializes the DEMUX module.CNcomment:³õÊ¼»¯DEMUXÄ£¿é¡£CNend
+\brief Initializes the DEMUX module.CNcomment:åˆå§‹åŒ–DEMUXæ¨¡å—ã€‚CNend
 \attention \n
 Before using DEMUXs, you must call this application programming interface (API).\n
 Before using the personal video recorder (PVR) or audio/video player (AVPLAY), you need to initialize the DEMUX module.\n
 The error code HI_SUCCESS is returned if this API is called repeatedly.
-CNcomment:ÔÚ½øĞĞDEMUXÏà¹Ø²Ù×÷Ç°Ó¦¸ÃÊ×ÏÈµ÷ÓÃ±¾½Ó¿Ú\n
-ÔÚÊ¹ÓÃPVRºÍAVPLAYÇ°ÇëÌáÇ°½øĞĞDEMUXÄ£¿éµÄ³õÊ¼»¯\n
-ÖØ¸´µ÷ÓÃ±¾½Ó¿Ú·µ»Ø³É¹¦¡£CNend
-\param  N/A.CNcomment:ÎŞ¡£CNend
-\retval ::HI_SUCCESS Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
+CNcomment:åœ¨è¿›è¡ŒDEMUXç›¸å…³æ“ä½œå‰åº”è¯¥é¦–å…ˆè°ƒç”¨æœ¬æ¥å£\n
+åœ¨ä½¿ç”¨PVRå’ŒAVPLAYå‰è¯·æå‰è¿›è¡ŒDEMUXæ¨¡å—çš„åˆå§‹åŒ–\n
+é‡å¤è°ƒç”¨æœ¬æ¥å£è¿”å›æˆåŠŸã€‚CNend
+\param  N/A.CNcomment:æ— ã€‚CNend
+\retval ::HI_SUCCESS Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
 \see \n
-N/A.CNcomment:ÎŞ¡£CNend
+N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_Init(HI_VOID);
 
 
 /**
-\brief Deinitializes the DEMUX module. CNcomment:È¥³õÊ¼»¯DEMUXÄ£¿é¡£CNend
+\brief Deinitializes the DEMUX module. CNcomment:å»åˆå§‹åŒ–DEMUXæ¨¡å—ã€‚CNend
 \attention \n
 After this API is called, the DEMUX module is stopped, and the DEMUX resources used by the process are released.\n
 This API is valid when it is called for the first time. If this API is called repeatedly, the error code HI_SUCCESS is returned.
-CNcomment:µ÷ÓÃ±¾½Ó¿ÚÍ£Ö¹Ê¹ÓÃDEMUXÄ£¿é£¬²¢ÊÍ·Å±¾½ø³ÌËùÕ¼ÓÃµÄDEMUX×ÊÔ´\n
-±¾½Ó¿ÚµÚÒ»´Îµ÷ÓÃÆğ×÷ÓÃ£¬ÖØ¸´µ÷ÓÃ·µ»Ø³É¹¦¡£CNend
-\param  N/A.CNcomment:ÎŞ¡£CNend
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
+CNcomment:è°ƒç”¨æœ¬æ¥å£åœæ­¢ä½¿ç”¨DEMUXæ¨¡å—ï¼Œå¹¶é‡Šæ”¾æœ¬è¿›ç¨‹æ‰€å ç”¨çš„DEMUXèµ„æº\n
+æœ¬æ¥å£ç¬¬ä¸€æ¬¡è°ƒç”¨èµ·ä½œç”¨ï¼Œé‡å¤è°ƒç”¨è¿”å›æˆåŠŸã€‚CNend
+\param  N/A.CNcomment:æ— ã€‚CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_DeInit(HI_VOID);
 
 
 /**
 \brief Obtains the information about the service capabilities of the DEMUX module.The information includes the numbers of channels, filters, keys, ports, DEMUXs, and audio/video channels.
-CNcomment:²éÑ¯DEMUXÄ£¿éÒµÎñÄÜÁ¦¡£ÒµÎñ¹¦ÄÜ°üÀ¨Í¨ÓÃÍ¨µÀÊıÄ¿¡¢¹ıÂËÆ÷ÊıÄ¿¡¢ÃÜÔ¿ÊıÄ¿¡¢¶Ë¿ÚÊıÄ¿¡¢DEMUXÉè±¸ÊıÄ¿ºÍÒôÊÓÆµÍ¨µÀÊıÄ¿µÈ¡£CNend
+CNcomment:æŸ¥è¯¢DEMUXæ¨¡å—ä¸šåŠ¡èƒ½åŠ›ã€‚ä¸šåŠ¡åŠŸèƒ½åŒ…æ‹¬é€šç”¨é€šé“æ•°ç›®ã€è¿‡æ»¤å™¨æ•°ç›®ã€å¯†é’¥æ•°ç›®ã€ç«¯å£æ•°ç›®ã€DEMUXè®¾å¤‡æ•°ç›®å’ŒéŸ³è§†é¢‘é€šé“æ•°ç›®ç­‰ã€‚CNend
 \attention \n
-N/A.CNcomment:ÎŞ¡£CNend
-\param[out] pstCap   Pointer to the capability of the DEMUX module (output).CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³öDEMUXÄ£¿éÄÜÁ¦¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null.CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+N/A.CNcomment:æ— ã€‚CNend
+\param[out] pstCap   Pointer to the capability of the DEMUX module (output).CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºDEMUXæ¨¡å—èƒ½åŠ›ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null.CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
 ::HI_UNF_DMX_CAPABILITY_S
 */
@@ -409,67 +409,67 @@ HI_S32 HI_UNF_DMX_GetCapability(HI_UNF_DMX_CAPABILITY_S *pstCap);
 
 
 /**
-\brief Obtains the attributes of a DEMUX port.CNcomment:»ñÈ¡DEMUX¶Ë¿ÚÊôĞÔ¡£CNend
+\brief Obtains the attributes of a DEMUX port.CNcomment:è·å–DEMUXç«¯å£å±æ€§ã€‚CNend
 \attention \n
- N/A.CNcomment:ÎŞ¡£CNend
-\param[in] enPortId Port ID.CNcomment:¶Ë¿ÚºÅ¡£CNend
-\param[out] pstAttr Pointer to the port attributes (output).CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³ö¶Ë¿ÚÊôĞÔ¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid.CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null.CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
+\param[in] enPortId Port ID.CNcomment:ç«¯å£å·ã€‚CNend
+\param[out] pstAttr Pointer to the port attributes (output).CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºç«¯å£å±æ€§ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid.CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null.CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetTSPortAttr(HI_UNF_DMX_PORT_E enPortId, HI_UNF_DMX_PORT_ATTR_S *pstAttr);
 
 
 /**
-\brief Sets the attributes of a DEMUX port.CNcomment:ÉèÖÃDEMUX¶Ë¿ÚÊôĞÔ¡£CNend
+\brief Sets the attributes of a DEMUX port.CNcomment:è®¾ç½®DEMUXç«¯å£å±æ€§ã€‚CNend
 \attention \n
 It is recommended to query the default attributes of a DEMUX port by calling HI_UNF_DMX_GetTSPortAttr before modifying the attributes of the port.\n
 The port mode can be queried only, but other attributes can be modified dynamically.\n
 If the sync loss threshold and sync lock threshold are used, their default values are recommended.\n
 For details on how to set the input clock of the tuner, select the line sequence of the port, and set the level of the tuner error line, contact hardware engineers of HiSilicon\n
 and refer to tuner user manuals.
-CNcomment:½¨ÒéÏÈÍ¨¹ıHI_UNF_DMX_GetTSPortAttr»ñÈ¡Ä¬ÈÏÊôĞÔ£¬È»ºó¶ÔÒª¸Ä±äµÄÊôĞÔ½øĞĞÉèÖÃ\n
-¶Ë¿ÚÄ£Ê½Ö»Ö§³Ö²éÑ¯£¬²»Ö§³ÖĞŞ¸Ä£¬ÆäËûÊôĞÔ¾ùÖ§³ÖËæÊ±¶¯Ì¬ĞŞ¸Ä\n
-Í¬²½¶ªÊ§ºÍÍ¬²½Ëø¶¨ÃÅÏŞ£¬ÍÆ¼öÊ¹ÓÃÄ¬ÈÏÖµ\n
-tunerÊäÈëÊ±ÖÓ·´Ïò¡¢¶Ë¿ÚÏßĞòÑ¡ÔñºÍtuner errorÏßµçÆ½Ä£Ê½µÄÉèÖÃÇë×ÉÑ¯Ó²¼ş¹¤³ÌÊ¦\n
-²¢²Î¿¼tunerµÄÓÃ»§ÊÖ²á£¬È»ºóÉèÖÃÎªºÏÊÊµÄÖµ¡£CNend
-\param[in] enPortId Port ID.CNcomment:¶Ë¿ÚºÅ¡£CNend
-\param[in] pstAttr  Pointer to port attributes.CNcomment:Ö¸ÕëÀàĞÍ£¬¶Ë¿ÚÊôĞÔ¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment:å»ºè®®å…ˆé€šè¿‡HI_UNF_DMX_GetTSPortAttrè·å–é»˜è®¤å±æ€§ï¼Œç„¶åå¯¹è¦æ”¹å˜çš„å±æ€§è¿›è¡Œè®¾ç½®\n
+ç«¯å£æ¨¡å¼åªæ”¯æŒæŸ¥è¯¢ï¼Œä¸æ”¯æŒä¿®æ”¹ï¼Œå…¶ä»–å±æ€§å‡æ”¯æŒéšæ—¶åŠ¨æ€ä¿®æ”¹\n
+åŒæ­¥ä¸¢å¤±å’ŒåŒæ­¥é”å®šé—¨é™ï¼Œæ¨èä½¿ç”¨é»˜è®¤å€¼\n
+tunerè¾“å…¥æ—¶é’Ÿåå‘ã€ç«¯å£çº¿åºé€‰æ‹©å’Œtuner errorçº¿ç”µå¹³æ¨¡å¼çš„è®¾ç½®è¯·å’¨è¯¢ç¡¬ä»¶å·¥ç¨‹å¸ˆ\n
+å¹¶å‚è€ƒtunerçš„ç”¨æˆ·æ‰‹å†Œï¼Œç„¶åè®¾ç½®ä¸ºåˆé€‚çš„å€¼ã€‚CNend
+\param[in] enPortId Port ID.CNcomment:ç«¯å£å·ã€‚CNend
+\param[in] pstAttr  Pointer to port attributes.CNcomment:æŒ‡é’ˆç±»å‹ï¼Œç«¯å£å±æ€§ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_SetTSPortAttr(HI_UNF_DMX_PORT_E enPortId, const HI_UNF_DMX_PORT_ATTR_S *pstAttr);
 
 
 /**
-\brief Attaches a DEMUX to a port.CNcomment:°ó¶¨DEMUXµ½¶Ë¿ÚÉÏ¡£CNend
+\brief Attaches a DEMUX to a port.CNcomment:ç»‘å®šDEMUXåˆ°ç«¯å£ä¸Šã€‚CNend
 \attention \n
 Each DEMUX can be attached to only one port, but the data from a port can be delivered to multiple DEMUXs.\n
 After a DEMUX is attached to a port, the DEMUX starts to receive the data input from this port.\n
 If the DEMUX is not used, you can detach it by calling HI_UNF_DMX_DetachTSPort.\n
 The DEMUXs can be attached to different ports dynamically. That is, you can attach the DEMUXs without detaching them.\n
 If you call this API to attach a DEMUX to the same channel, the error code HI_SUCCESS is returned.
-CNcomment:Ã¿Â·DEMUXÖ»ÄÜ°ó¶¨µ½Ò»¸öPORT£¬µ«ÊÇÒ»¸öPORTµÄÊı¾İ¿ÉÒÔ·Ö·¢µ½¶à¸öDEMUX\n
-DEMUX°ó¶¨µ½¶Ë¿ÚÉÏÖ®ºó¾Í¿ªÊ¼½ÓÊÕÕâ¸ö¶Ë¿ÚÉÏÊäÈëµÄÊı¾İ\n
-²»ÔÙÊ¹ÓÃÕâÂ·DEMUX½ÓÊÕÊı¾İºó£¬Ê¹ÓÃHI_UNF_DMX_DetachTSPort½Ó¿Ú½â°ó¶¨DEMUX\n
-¿ÉÒÔ¶¯Ì¬µÄ°ó¶¨µ½²»Í¬µÄ¶Ë¿ÚÉÏ£¬²»ÓÃÏÈ½â°ó¶¨\n
-ÖØ¸´µ÷ÓÃ´Ë½Ó¿Ú°ó¶¨µ½ÏàÍ¬Í¨µÀÉÏ·µ»Ø³É¹¦¡£CNend
-\param[in] u32DmxId  DEMUX ID.CNcomment:DEMUXºÅ¡£CNend
-\param[in] enPortId  Port ID.CNcomment:¶Ë¿ÚºÅ¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
+CNcomment:æ¯è·¯DEMUXåªèƒ½ç»‘å®šåˆ°ä¸€ä¸ªPORTï¼Œä½†æ˜¯ä¸€ä¸ªPORTçš„æ•°æ®å¯ä»¥åˆ†å‘åˆ°å¤šä¸ªDEMUX\n
+DEMUXç»‘å®šåˆ°ç«¯å£ä¸Šä¹‹åå°±å¼€å§‹æ¥æ”¶è¿™ä¸ªç«¯å£ä¸Šè¾“å…¥çš„æ•°æ®\n
+ä¸å†ä½¿ç”¨è¿™è·¯DEMUXæ¥æ”¶æ•°æ®åï¼Œä½¿ç”¨HI_UNF_DMX_DetachTSPortæ¥å£è§£ç»‘å®šDEMUX\n
+å¯ä»¥åŠ¨æ€çš„ç»‘å®šåˆ°ä¸åŒçš„ç«¯å£ä¸Šï¼Œä¸ç”¨å…ˆè§£ç»‘å®š\n
+é‡å¤è°ƒç”¨æ­¤æ¥å£ç»‘å®šåˆ°ç›¸åŒé€šé“ä¸Šè¿”å›æˆåŠŸã€‚CNend
+\param[in] u32DmxId  DEMUX ID.CNcomment:DEMUXå·ã€‚CNend
+\param[in] enPortId  Port ID.CNcomment:ç«¯å£å·ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
 \see \n
 ::HI_UNF_DMX_DetachTSPort
 */
@@ -477,19 +477,19 @@ HI_S32 HI_UNF_DMX_AttachTSPort(HI_U32 u32DmxId, HI_UNF_DMX_PORT_E enPortId);
 
 
 /**
-\brief Detaches a DEMUX from a port.CNcomment:´Ó¶Ë¿ÚÉÏ½â°ó¶¨DEMUX¡£CNend
+\brief Detaches a DEMUX from a port.CNcomment:ä»ç«¯å£ä¸Šè§£ç»‘å®šDEMUXã€‚CNend
 \attention \n
 If a DEMUX is not used, you can detach it from the corresponding port by calling this API.\n
 This API can be called dynamically, and can be used to disable the input sources of a DEMUX.\n
 If this API is called repeatedly, the error code HI_SUCCESS is returned.
-CNcomment:²»ÔÙÊ¹ÓÃDEMUX½ÓÊÕÈÎºÎÊı¾İÊ±Ê¹ÓÃ´Ë½Ó¿Ú½«DEMUX´Ó¶Ë¿ÚÉÏ½â°ó¶¨\n
-¿ÉÒÔ¶¯Ì¬Ê¹ÓÃ½â°ó¶¨½Ó¿Ú£¬¿ÉÒÔÍ¨¹ı½â°ó¶¨½Ó¿ÚÇĞ¶ÏDEMUXµÄÊäÈëÔ´\n
-ÖØ¸´½â°ó¶¨·µ»Ø³É¹¦¡£CNend
-\param[in] u32DmxId  DEMUX ID. CNcomment: DEMUXºÅ¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
+CNcomment:ä¸å†ä½¿ç”¨DEMUXæ¥æ”¶ä»»ä½•æ•°æ®æ—¶ä½¿ç”¨æ­¤æ¥å£å°†DEMUXä»ç«¯å£ä¸Šè§£ç»‘å®š\n
+å¯ä»¥åŠ¨æ€ä½¿ç”¨è§£ç»‘å®šæ¥å£ï¼Œå¯ä»¥é€šè¿‡è§£ç»‘å®šæ¥å£åˆ‡æ–­DEMUXçš„è¾“å…¥æº\n
+é‡å¤è§£ç»‘å®šè¿”å›æˆåŠŸã€‚CNend
+\param[in] u32DmxId  DEMUX ID. CNcomment: DEMUXå·ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
 \see \n
 ::HI_UNF_DMX_AttachTSPort
 */
@@ -497,71 +497,71 @@ HI_S32 HI_UNF_DMX_DetachTSPort(HI_U32 u32DmxId);
 
 
 /**
-\brief Obtains the ID of the port that is attached to a DEMUX. CNcomment:»ñÈ¡DEMUXËù°ó¶¨µÄ¶Ë¿ÚµÄ¶Ë¿ÚºÅ¡£CNend
+\brief Obtains the ID of the port that is attached to a DEMUX. CNcomment:è·å–DEMUXæ‰€ç»‘å®šçš„ç«¯å£çš„ç«¯å£å·ã€‚CNend
 \attention \n
-If a DEMUX is not attached to any port, an error code is returned.CNcomment:Èç¹ûDEMUXÃ»ÓĞ°ó¶¨µ½ÈÎºÎ¶Ë¿ÚÉÏ»á·µ»Ø´íÎóÂë¡£CNend
-\param[in] u32DmxId  DEMUX ID. CNcomment: DEMUXºÅ¡£CNend
-\param[out] penPortId  Pointer to the ID of the port that is attached to a DEMUX(output).CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³öDEMUX°ó¶¨µÄ¶Ë¿ÚºÅ¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOATTACH_PORT  The DEMUX is not attached to any port.CNcomment:´ËÂ·DEMUXÃ»ÓĞ°ó¶¨µ½ÈÎºÎ¶Ë¿ÚÉÏ¡£CNend
+If a DEMUX is not attached to any port, an error code is returned.CNcomment:å¦‚æœDEMUXæ²¡æœ‰ç»‘å®šåˆ°ä»»ä½•ç«¯å£ä¸Šä¼šè¿”å›é”™è¯¯ç ã€‚CNend
+\param[in] u32DmxId  DEMUX ID. CNcomment: DEMUXå·ã€‚CNend
+\param[out] penPortId  Pointer to the ID of the port that is attached to a DEMUX(output).CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºDEMUXç»‘å®šçš„ç«¯å£å·ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOATTACH_PORT  The DEMUX is not attached to any port.CNcomment:æ­¤è·¯DEMUXæ²¡æœ‰ç»‘å®šåˆ°ä»»ä½•ç«¯å£ä¸Šã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetTSPortId(HI_U32 u32DmxId, HI_UNF_DMX_PORT_E *penPortId);
 
 
 /**
-\brief Creates a TS buffer for the RAM port to receive the TS data from Internet or local memory. CNcomment:ÎªRAM¶Ë¿Ú´´½¨TS BufferÓÃÓÚ½ÓÊÕ´ÓÍøÂç»ò±¾µØ´æ´¢ÖĞÊäÈëµÄTSÊı¾İ¡£CNend
+\brief Creates a TS buffer for the RAM port to receive the TS data from Internet or local memory. CNcomment:ä¸ºRAMç«¯å£åˆ›å»ºTS Bufferç”¨äºæ¥æ”¶ä»ç½‘ç»œæˆ–æœ¬åœ°å­˜å‚¨ä¸­è¾“å…¥çš„TSæ•°æ®ã€‚CNend
 \attention \n
 A TS buffer can be created for the RAM port only.\n
 The buffer size must range from 4 KB to 16 MB.\n
 It is recommended to set the buffer size to an integral multiple of 4 KB. Otherwise, bottom alignment is performed inside.\n
 The TS buffer cannot be created for the same port for multiple times; otherwise, an error code is returned.
-CNcomment:Ö»ÓĞRAM¶Ë¿Ú¿ÉÒÔ´´½¨TS Buffer\n
-buffer´óĞ¡±ØĞëÔÚ4KºÍ16MÖ®¼ä£¬µ¥Î»Îª×Ö½Ú\n
-buffer´óĞ¡×îºÃÎª4KµÄÕûÊı±¶£¬Èç¹û²»ÊÇÕûÊı±¶£¬ÄÚ²¿»á½øĞĞÏòÏÂ¶ÔÆë²Ù×÷\n
-Í¬Ò»¸ö¶Ë¿Ú²»ÄÜÖØ¸´´´½¨TS Buffer,·ñÔò·µ»Ø´íÎóÂë¡£CNend
-\param[in] enPortId  [in]  Port ID.CNcomment:¶Ë¿ÚºÅ¡£CNend
-\param[in] u32TsBufSize Size of a TS buffer.CNcomment:TS Buffer´óĞ¡¡£CNend
-\param[out] phTsBuffer  Pointer to the handle of a created TS buffer (output).CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³ö´´½¨µÄTS Buffer ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_RECREAT_TSBUFFER  The TS buffer corresponding to the port is created.CNcomment:ÖØ¸´´´½¨TS Buffer¡£CNend
+CNcomment:åªæœ‰RAMç«¯å£å¯ä»¥åˆ›å»ºTS Buffer\n
+bufferå¤§å°å¿…é¡»åœ¨4Kå’Œ16Mä¹‹é—´ï¼Œå•ä½ä¸ºå­—èŠ‚\n
+bufferå¤§å°æœ€å¥½ä¸º4Kçš„æ•´æ•°å€ï¼Œå¦‚æœä¸æ˜¯æ•´æ•°å€ï¼Œå†…éƒ¨ä¼šè¿›è¡Œå‘ä¸‹å¯¹é½æ“ä½œ\n
+åŒä¸€ä¸ªç«¯å£ä¸èƒ½é‡å¤åˆ›å»ºTS Buffer,å¦åˆ™è¿”å›é”™è¯¯ç ã€‚CNend
+\param[in] enPortId  [in]  Port ID.CNcomment:ç«¯å£å·ã€‚CNend
+\param[in] u32TsBufSize Size of a TS buffer.CNcomment:TS Bufferå¤§å°ã€‚CNend
+\param[out] phTsBuffer  Pointer to the handle of a created TS buffer (output).CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºåˆ›å»ºçš„TS Buffer å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_RECREAT_TSBUFFER  The TS buffer corresponding to the port is created.CNcomment:é‡å¤åˆ›å»ºTS Bufferã€‚CNend
 \see \n
-N/A.CNcomment:ÎŞ¡£CNend
+N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_CreateTSBuffer(HI_UNF_DMX_PORT_E enPortId, HI_U32 u32TsBufSize, HI_HANDLE *phTsBuffer);
 
 
 /**
-\brief Destroys an existing TS buffer. CNcomment:Ïú»Ù´´½¨µÄTS Buffer¡£CNend
+\brief Destroys an existing TS buffer. CNcomment:é”€æ¯åˆ›å»ºçš„TS Bufferã€‚CNend
 \attention \n
 A TS buffer cannot be destroyed repeatedly. If a TS buffer is destroyed, its handle is also destroyed.\n
 In addition, if a buffer is destroyed, its data is cleared. In this case, the get and put operations are not available.\n
 However, the data in channels is retained when a TS buffer is destroyed. To switch streams, you need disable the channel, and then enable the channel again.
-CNcomment:²»ÄÜÖØ¸´Ïú»ÙÒ»¸öTS Buffer,Ïú»ÙÖ®ºóhandle¾Í²»´æÔÚÁË\n
-Ïú»ÙÖ®ºóbufferÖĞµÄÊı¾İ¾Í»á±»Çå¿Õ£¬²»ÄÜÔÙ½øĞĞGetºÍPut²Ù×÷\n
-Ïú»ÙTS buffer²¢²»ÄÜÇå¿ÕÍ¨µÀÖĞÊı¾İ£¬ÒªÇĞ»»ÂëÁ÷£¬Òª×¢Òâ¹Ø±ÕÍ¨µÀ£¬ÖØĞÂ´ò¿ª¡£CNend
-\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Buffer¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
+CNcomment:ä¸èƒ½é‡å¤é”€æ¯ä¸€ä¸ªTS Buffer,é”€æ¯ä¹‹åhandleå°±ä¸å­˜åœ¨äº†\n
+é”€æ¯ä¹‹åbufferä¸­çš„æ•°æ®å°±ä¼šè¢«æ¸…ç©ºï¼Œä¸èƒ½å†è¿›è¡ŒGetå’ŒPutæ“ä½œ\n
+é”€æ¯TS bufferå¹¶ä¸èƒ½æ¸…ç©ºé€šé“ä¸­æ•°æ®ï¼Œè¦åˆ‡æ¢ç æµï¼Œè¦æ³¨æ„å…³é—­é€šé“ï¼Œé‡æ–°æ‰“å¼€ã€‚CNend
+\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Bufferå¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_DestroyTSBuffer(HI_HANDLE hTsBuffer);
 
 
 /**
-\brief Obtains a TS buffer to input data.CNcomment:»ñÈ¡TS Buffer¿Õ¼ä£¬ÓÃÓÚÊı¾İÊäÈë¡£CNend
+\brief Obtains a TS buffer to input data.CNcomment:è·å–TS Bufferç©ºé—´ï¼Œç”¨äºæ•°æ®è¾“å…¥ã€‚CNend
 \attention \n
 If you call this API repeatedly, the address of the same buffer is returned.\n
 The input data length must be appropriate. If the data length is too large, data cannot be input in time.\n
@@ -572,35 +572,35 @@ In addition, the requested data length cannot be 0; otherwise, the error code HI
 If u32TimeOutMs is set to 0, it indicates that the waiting time is 0; if u32TimeOutMs is set to 0XFFFFFFFF, it indicates infinite wait; if u32TimeOutMs is set to other values, it indicates that the waiting time is u32TimeOutMs ms.\n
 If no buffer can be applied for during the block period, the error code HI_ERR_DMX_TIMEOUT is returned.\n
 If u32TimeOutMs is set to 0, and no buffer can be applied for, it indicates that the internal TS buffer is full. In this case, you need to call the usleep(10000) function to release the CPU. Therefore, other threads can be scheduled.
-CNcomment:ÖØ¸´get·µ»ØÍ¬Ò»¸öbufferµØÖ·\n
-ÊäÈëÊı¾İÊ±×¢ÒâÃ¿´ÎÊäÈëµÄÊı¾İ³¤¶È£¬Ì«³¤¿ÉÄÜ»áµ¼ÖÂÊäÈëÊı¾İ²»¼°Ê±\n
-Ì«¶Ì¿ÉÄÜ»áµ¼ÖÂµ÷¶ÈÌ«Æµ·±£¬ĞÔÄÜÏÂ½µ\n
-µ±Ê£Óà¿Õ¼äĞ¡ÓÚµÈÓÚÇëÇóµÄ³¤¶ÈÊ±£¬·µ»Ø´íÎóÂë\n
-Ã¿´ÎÉêÇëµÄ³¤¶ÈÒªĞ¡ÓÚÊ£ÓàÊ£Óà³¤¶È£¬¼´buffer²»¿ÉÄÜ±»ÌîÂú\n
-ÇëÇó³¤¶È²»ÔÊĞíÎª0£¬·ñÔò·µ»Ø²ÎÊı·Ç·¨´íÎóÂë\n
-u32TimeOutMsÉèÖÃÎª0±íÊ¾²»µÈ´ı£¬ÉèÖÃÎª0xffffffff±íÊ¾Ò»Ö±µÈ´ı£¬ÉèÖÃÎªÆäËûÖµ±íÊ¾µÈ´ıu32TimeOutMsºÁÃë¡£\n
-Èô³¬¹ı×èÈûÊ±¼ä£¬»¹ÎŞ·¨ÉêÇëµ½Buffer£¬Ôò·µ»ØHI_ERR_DMX_TIMEOUT´íÎóÂë\n
-u32TimeOutMsÅäÖÃÎª0Ê±£¬Èç¹ûÉêÇë²»µ½Buffer£¬ËµÃ÷´ËÊ±ÄÚ²¿TS Buffer¿Õ¼äÒÑÂú£¬ĞèÒªÍ¨¹ıusleep(10000)ÊÍ·Åcpu
-ÒÔÊ¹ÆäËüÏß³ÌÄÜ¹»µÃµ½µ÷¶È¡£CNend
-\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Buffer¾ä±ú¡£CNend
-\param[in] u32ReqLen Requested data length.CNcomment:ÇëÇóÊı¾İµÄ³¤¶È¡£CNend
-\param[out] pstData  Data buffer.CNcomment:Êı¾İbuffer½á¹¹¡£CNend
-\param[in] u32TimeOutMs      Wait timeout, in ms.CNcomment:µÈ´ı³¬Ê±Ê±¼ä£¬µ¥Î»ms¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_TIMEOUT  The wait times out. CNcomment:µÈ´ı³¬Ê±¡£CNend
-\retval ::HI_ERR_DMX_NOAVAILABLE_BUF  The size of the available buffer is smaller than the requested data length.CNcomment:Ê£Óàbuffer¿Õ¼äĞ¡ÓÚÇëÇó³¤¶È¡£CNend
+CNcomment:é‡å¤getè¿”å›åŒä¸€ä¸ªbufferåœ°å€\n
+è¾“å…¥æ•°æ®æ—¶æ³¨æ„æ¯æ¬¡è¾“å…¥çš„æ•°æ®é•¿åº¦ï¼Œå¤ªé•¿å¯èƒ½ä¼šå¯¼è‡´è¾“å…¥æ•°æ®ä¸åŠæ—¶\n
+å¤ªçŸ­å¯èƒ½ä¼šå¯¼è‡´è°ƒåº¦å¤ªé¢‘ç¹ï¼Œæ€§èƒ½ä¸‹é™\n
+å½“å‰©ä½™ç©ºé—´å°äºç­‰äºè¯·æ±‚çš„é•¿åº¦æ—¶ï¼Œè¿”å›é”™è¯¯ç \n
+æ¯æ¬¡ç”³è¯·çš„é•¿åº¦è¦å°äºå‰©ä½™å‰©ä½™é•¿åº¦ï¼Œå³bufferä¸å¯èƒ½è¢«å¡«æ»¡\n
+è¯·æ±‚é•¿åº¦ä¸å…è®¸ä¸º0ï¼Œå¦åˆ™è¿”å›å‚æ•°éæ³•é”™è¯¯ç \n
+u32TimeOutMsè®¾ç½®ä¸º0è¡¨ç¤ºä¸ç­‰å¾…ï¼Œè®¾ç½®ä¸º0xffffffffè¡¨ç¤ºä¸€ç›´ç­‰å¾…ï¼Œè®¾ç½®ä¸ºå…¶ä»–å€¼è¡¨ç¤ºç­‰å¾…u32TimeOutMsæ¯«ç§’ã€‚\n
+è‹¥è¶…è¿‡é˜»å¡æ—¶é—´ï¼Œè¿˜æ— æ³•ç”³è¯·åˆ°Bufferï¼Œåˆ™è¿”å›HI_ERR_DMX_TIMEOUTé”™è¯¯ç \n
+u32TimeOutMsé…ç½®ä¸º0æ—¶ï¼Œå¦‚æœç”³è¯·ä¸åˆ°Bufferï¼Œè¯´æ˜æ­¤æ—¶å†…éƒ¨TS Bufferç©ºé—´å·²æ»¡ï¼Œéœ€è¦é€šè¿‡usleep(10000)é‡Šæ”¾cpu
+ä»¥ä½¿å…¶å®ƒçº¿ç¨‹èƒ½å¤Ÿå¾—åˆ°è°ƒåº¦ã€‚CNend
+\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Bufferå¥æŸ„ã€‚CNend
+\param[in] u32ReqLen Requested data length.CNcomment:è¯·æ±‚æ•°æ®çš„é•¿åº¦ã€‚CNend
+\param[out] pstData  Data buffer.CNcomment:æ•°æ®bufferç»“æ„ã€‚CNend
+\param[in] u32TimeOutMs      Wait timeout, in ms.CNcomment:ç­‰å¾…è¶…æ—¶æ—¶é—´ï¼Œå•ä½msã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_TIMEOUT  The wait times out. CNcomment:ç­‰å¾…è¶…æ—¶ã€‚CNend
+\retval ::HI_ERR_DMX_NOAVAILABLE_BUF  The size of the available buffer is smaller than the requested data length.CNcomment:å‰©ä½™bufferç©ºé—´å°äºè¯·æ±‚é•¿åº¦ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetTSBuffer(HI_HANDLE hTsBuffer, HI_U32 u32ReqLen,
             HI_UNF_STREAM_BUF_S *pstData, HI_U32 u32TimeOutMs);
 
 /**
-\brief Obtains a TS buffer to input data.CNcomment:»ñÈ¡TS Buffer¿Õ¼ä£¬ÓÃÓÚÊı¾İÊäÈë¡£CNend
+\brief Obtains a TS buffer to input data.CNcomment:è·å–TS Bufferç©ºé—´ï¼Œç”¨äºæ•°æ®è¾“å…¥ã€‚CNend
 \attention \n
 If you call this API repeatedly, the address of the same buffer is returned.\n
 The input data length must be appropriate. If the data length is too large, data cannot be input in time.\n
@@ -611,182 +611,182 @@ In addition, the requested data length cannot be 0; otherwise, the error code HI
 If u32TimeOutMs is set to 0, it indicates that the waiting time is 0; if u32TimeOutMs is set to 0XFFFFFFFF, it indicates infinite wait; if u32TimeOutMs is set to other values, it indicates that the waiting time is u32TimeOutMs ms.\n
 If no buffer can be applied for during the block period, the error code HI_ERR_DMX_TIMEOUT is returned.\n
 If u32TimeOutMs is set to 0, and no buffer can be applied for, it indicates that the internal TS buffer is full. In this case, you need to call the usleep(10000) function to release the CPU. Therefore, other threads can be scheduled.
-CNcomment:ÖØ¸´get·µ»ØÍ¬Ò»¸öbufferµØÖ·\n
-ÊäÈëÊı¾İÊ±×¢ÒâÃ¿´ÎÊäÈëµÄÊı¾İ³¤¶È£¬Ì«³¤¿ÉÄÜ»áµ¼ÖÂÊäÈëÊı¾İ²»¼°Ê±\n
-Ì«¶Ì¿ÉÄÜ»áµ¼ÖÂµ÷¶ÈÌ«Æµ·±£¬ĞÔÄÜÏÂ½µ\n
-µ±Ê£Óà¿Õ¼äĞ¡ÓÚµÈÓÚÇëÇóµÄ³¤¶ÈÊ±£¬·µ»Ø´íÎóÂë\n
-Ã¿´ÎÉêÇëµÄ³¤¶ÈÒªĞ¡ÓÚÊ£ÓàÊ£Óà³¤¶È£¬¼´buffer²»¿ÉÄÜ±»ÌîÂú\n
-ÇëÇó³¤¶È²»ÔÊĞíÎª0£¬·ñÔò·µ»Ø²ÎÊı·Ç·¨´íÎóÂë\n
-u32TimeOutMsÉèÖÃÎª0±íÊ¾²»µÈ´ı£¬ÉèÖÃÎª0xffffffff±íÊ¾Ò»Ö±µÈ´ı£¬ÉèÖÃÎªÆäËûÖµ±íÊ¾µÈ´ıu32TimeOutMsºÁÃë¡£\n
-Èô³¬¹ı×èÈûÊ±¼ä£¬»¹ÎŞ·¨ÉêÇëµ½Buffer£¬Ôò·µ»ØHI_ERR_DMX_TIMEOUT´íÎóÂë\n
-u32TimeOutMsÅäÖÃÎª0Ê±£¬Èç¹ûÉêÇë²»µ½Buffer£¬ËµÃ÷´ËÊ±ÄÚ²¿TS Buffer¿Õ¼äÒÑÂú£¬ĞèÒªÍ¨¹ıusleep(10000)ÊÍ·Åcpu
-ÒÔÊ¹ÆäËüÏß³ÌÄÜ¹»µÃµ½µ÷¶È¡£CNend
-\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Buffer¾ä±ú¡£CNend
-\param[in] u32ReqLen Requested data length.CNcomment:ÇëÇóÊı¾İµÄ³¤¶È¡£CNend
-\param[out] pstData  Data buffer.CNcomment:Êı¾İbuffer½á¹¹¡£CNend
-\param[out] pu32PhyAddr buffer physical address.CNcomment:bufferµÄÎïÀíµØÖ·¡£CNend
-\param[in] u32TimeOutMs      Wait timeout, in ms.CNcomment:µÈ´ı³¬Ê±Ê±¼ä£¬µ¥Î»ms¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_TIMEOUT  The wait times out. CNcomment:µÈ´ı³¬Ê±¡£CNend
-\retval ::HI_ERR_DMX_NOAVAILABLE_BUF  The size of the available buffer is smaller than the requested data length.CNcomment:Ê£Óàbuffer¿Õ¼äĞ¡ÓÚÇëÇó³¤¶È¡£CNend
+CNcomment:é‡å¤getè¿”å›åŒä¸€ä¸ªbufferåœ°å€\n
+è¾“å…¥æ•°æ®æ—¶æ³¨æ„æ¯æ¬¡è¾“å…¥çš„æ•°æ®é•¿åº¦ï¼Œå¤ªé•¿å¯èƒ½ä¼šå¯¼è‡´è¾“å…¥æ•°æ®ä¸åŠæ—¶\n
+å¤ªçŸ­å¯èƒ½ä¼šå¯¼è‡´è°ƒåº¦å¤ªé¢‘ç¹ï¼Œæ€§èƒ½ä¸‹é™\n
+å½“å‰©ä½™ç©ºé—´å°äºç­‰äºè¯·æ±‚çš„é•¿åº¦æ—¶ï¼Œè¿”å›é”™è¯¯ç \n
+æ¯æ¬¡ç”³è¯·çš„é•¿åº¦è¦å°äºå‰©ä½™å‰©ä½™é•¿åº¦ï¼Œå³bufferä¸å¯èƒ½è¢«å¡«æ»¡\n
+è¯·æ±‚é•¿åº¦ä¸å…è®¸ä¸º0ï¼Œå¦åˆ™è¿”å›å‚æ•°éæ³•é”™è¯¯ç \n
+u32TimeOutMsè®¾ç½®ä¸º0è¡¨ç¤ºä¸ç­‰å¾…ï¼Œè®¾ç½®ä¸º0xffffffffè¡¨ç¤ºä¸€ç›´ç­‰å¾…ï¼Œè®¾ç½®ä¸ºå…¶ä»–å€¼è¡¨ç¤ºç­‰å¾…u32TimeOutMsæ¯«ç§’ã€‚\n
+è‹¥è¶…è¿‡é˜»å¡æ—¶é—´ï¼Œè¿˜æ— æ³•ç”³è¯·åˆ°Bufferï¼Œåˆ™è¿”å›HI_ERR_DMX_TIMEOUTé”™è¯¯ç \n
+u32TimeOutMsé…ç½®ä¸º0æ—¶ï¼Œå¦‚æœç”³è¯·ä¸åˆ°Bufferï¼Œè¯´æ˜æ­¤æ—¶å†…éƒ¨TS Bufferç©ºé—´å·²æ»¡ï¼Œéœ€è¦é€šè¿‡usleep(10000)é‡Šæ”¾cpu
+ä»¥ä½¿å…¶å®ƒçº¿ç¨‹èƒ½å¤Ÿå¾—åˆ°è°ƒåº¦ã€‚CNend
+\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Bufferå¥æŸ„ã€‚CNend
+\param[in] u32ReqLen Requested data length.CNcomment:è¯·æ±‚æ•°æ®çš„é•¿åº¦ã€‚CNend
+\param[out] pstData  Data buffer.CNcomment:æ•°æ®bufferç»“æ„ã€‚CNend
+\param[out] pu32PhyAddr buffer physical address.CNcomment:bufferçš„ç‰©ç†åœ°å€ã€‚CNend
+\param[in] u32TimeOutMs      Wait timeout, in ms.CNcomment:ç­‰å¾…è¶…æ—¶æ—¶é—´ï¼Œå•ä½msã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_TIMEOUT  The wait times out. CNcomment:ç­‰å¾…è¶…æ—¶ã€‚CNend
+\retval ::HI_ERR_DMX_NOAVAILABLE_BUF  The size of the available buffer is smaller than the requested data length.CNcomment:å‰©ä½™bufferç©ºé—´å°äºè¯·æ±‚é•¿åº¦ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetTSBufferEx(HI_HANDLE hTsBuffer, HI_U32 u32ReqLen,
             HI_UNF_STREAM_BUF_S *pstData, HI_U32 *pu32PhyAddr, HI_U32 u32TimeOutMs);
 
 /**
-\brief Updates the write pointer of a TS buffer after the TS data is input.CNcomment:TSÊı¾İÊäÈëÍê±Ï£¬ÓÃÓÚ¸üĞÂTS BufferĞ´Ö¸Õë¡£CNend
+\brief Updates the write pointer of a TS buffer after the TS data is input.CNcomment:TSæ•°æ®è¾“å…¥å®Œæ¯•ï¼Œç”¨äºæ›´æ–°TS Bufferå†™æŒ‡é’ˆã€‚CNend
 \attention \n
 This API must work with HI_UNF_DMX_GetTSBuffer. That is, if you call HI_UNF_DMX_PutTSBuffer without calling HI_UNF_DMX_GetTSBuffer, no operation takes effect, but the error code HI_SUCCESS is returned.\n
 If the valid data length is 0, no operation takes effect, and the error code HI_SUCCESS.\n
 The valid data length cannot be greater than data length queried by calling HI_UNF_DMX_GetTSBuffer. Otherwise, the error code HI_ERR_DMX_INVALID_PARA is returned.\n
 If the valid data length is smaller than the data length queried by calling HI_UNF_DMX_GetTSBuffer, it indicates that a part of data is stored.
-CNcomment:´Ë½Ó¿Ú±ØĞëºÍGet½Ó¿ÚÅä¶ÔÊ¹ÓÃ£¬Èç¹ûÃ»ÓĞGetÔò½øĞĞPut²Ù×÷£¬Ôò²»»á½øĞĞÈÎºÎ²Ù×÷£¬µ«·µ»Ø³É¹¦\n
-PutµÄ³¤¶ÈÈç¹ûÎª0£¬Ò²²»»á½øĞĞÈÎºÎ²Ù×÷Ö±½Ó·µ»Ø³É¹¦\n
-²»ÔÊĞíPut³¤¶È´óÓÚÊµ¼ÊGetµ½µÄ³¤¶È£¬·ñÔò·µ»Ø²ÎÊı·Ç·¨´íÎóÂë\n
-ÔÊĞíPut³¤¶ÈĞ¡ÓÚGet³¤¶È£¬±íÃ÷Ö»ÊäÈëÁËÒ»²¿·ÖÊı¾İ\n
-ÎªÌá¸ßĞ§ÂÊ£¬PutµÄ³¤¶È¾¡Á¿²»ÒªÌ«¶Ì£¬¾¡Á¿±£³ÖÔÚ10¸öts°üÒÔÉÏPutÒ»´Î£¬Êı¾İÌ«¶Ì»áµ¼ÖÂĞÔÄÜÏÂ½µ\n¡£CNend
-\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Buffer¾ä±ú¡£CNend
-\param[in] u32ValidDataLen Valid data length.CNcomment:ÓĞĞ§Êı¾İµÄ³¤¶È¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
+CNcomment:æ­¤æ¥å£å¿…é¡»å’ŒGetæ¥å£é…å¯¹ä½¿ç”¨ï¼Œå¦‚æœæ²¡æœ‰Getåˆ™è¿›è¡ŒPutæ“ä½œï¼Œåˆ™ä¸ä¼šè¿›è¡Œä»»ä½•æ“ä½œï¼Œä½†è¿”å›æˆåŠŸ\n
+Putçš„é•¿åº¦å¦‚æœä¸º0ï¼Œä¹Ÿä¸ä¼šè¿›è¡Œä»»ä½•æ“ä½œç›´æ¥è¿”å›æˆåŠŸ\n
+ä¸å…è®¸Puté•¿åº¦å¤§äºå®é™…Getåˆ°çš„é•¿åº¦ï¼Œå¦åˆ™è¿”å›å‚æ•°éæ³•é”™è¯¯ç \n
+å…è®¸Puté•¿åº¦å°äºGeté•¿åº¦ï¼Œè¡¨æ˜åªè¾“å…¥äº†ä¸€éƒ¨åˆ†æ•°æ®\n
+ä¸ºæé«˜æ•ˆç‡ï¼ŒPutçš„é•¿åº¦å°½é‡ä¸è¦å¤ªçŸ­ï¼Œå°½é‡ä¿æŒåœ¨10ä¸ªtsåŒ…ä»¥ä¸ŠPutä¸€æ¬¡ï¼Œæ•°æ®å¤ªçŸ­ä¼šå¯¼è‡´æ€§èƒ½ä¸‹é™\nã€‚CNend
+\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Bufferå¥æŸ„ã€‚CNend
+\param[in] u32ValidDataLen Valid data length.CNcomment:æœ‰æ•ˆæ•°æ®çš„é•¿åº¦ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_PutTSBuffer(HI_HANDLE hTsBuffer, HI_U32 u32ValidDataLen);
 
 /**
-\brief Updates the write pointer of a TS buffer after the TS data is input.CNcomment:TSÊı¾İÊäÈëÍê±Ï£¬ÓÃÓÚ¸üĞÂTS BufferĞ´Ö¸Õë¡£CNend
+\brief Updates the write pointer of a TS buffer after the TS data is input.CNcomment:TSæ•°æ®è¾“å…¥å®Œæ¯•ï¼Œç”¨äºæ›´æ–°TS Bufferå†™æŒ‡é’ˆã€‚CNend
 \attention \n
 This API must work with HI_UNF_DMX_GetTSBuffer. That is, if you call HI_UNF_DMX_PutTSBuffer without calling HI_UNF_DMX_GetTSBuffer, no operation takes effect, but the error code HI_SUCCESS is returned.\n
 If the valid data length is 0, no operation takes effect, and the error code HI_SUCCESS.\n
 The valid data length cannot be greater than data length queried by calling HI_UNF_DMX_GetTSBuffer. Otherwise, the error code HI_ERR_DMX_INVALID_PARA is returned.\n
 If the valid data length is smaller than the data length queried by calling HI_UNF_DMX_GetTSBuffer, it indicates that a part of data is stored.
-CNcomment:´Ë½Ó¿Ú±ØĞëºÍGet½Ó¿ÚÅä¶ÔÊ¹ÓÃ£¬Èç¹ûÃ»ÓĞGetÔò½øĞĞPut²Ù×÷£¬Ôò²»»á½øĞĞÈÎºÎ²Ù×÷£¬µ«·µ»Ø³É¹¦\n
-PutµÄ³¤¶ÈÈç¹ûÎª0£¬Ò²²»»á½øĞĞÈÎºÎ²Ù×÷Ö±½Ó·µ»Ø³É¹¦\n
-²»ÔÊĞíPut³¤¶È´óÓÚÊµ¼ÊGetµ½µÄ³¤¶È£¬·ñÔò·µ»Ø²ÎÊı·Ç·¨´íÎóÂë\n
-ÔÊĞíPut³¤¶ÈĞ¡ÓÚGet³¤¶È£¬±íÃ÷Ö»ÊäÈëÁËÒ»²¿·ÖÊı¾İ\n
-ÎªÌá¸ßĞ§ÂÊ£¬PutµÄ³¤¶È¾¡Á¿²»ÒªÌ«¶Ì£¬¾¡Á¿±£³ÖÔÚ10¸öts°üÒÔÉÏPutÒ»´Î£¬Êı¾İÌ«¶Ì»áµ¼ÖÂĞÔÄÜÏÂ½µ\n¡£CNend
-\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Buffer¾ä±ú¡£CNend
-\param[in] u32ValidDataLen Valid data length.CNcomment:ÓĞĞ§Êı¾İµÄ³¤¶È¡£CNend
-\param[in] u32StartPos start position of the valid data. CNcomment:ÓĞĞ§Êı¾İµÄÆğÊ¼Î»ÖÃ¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
+CNcomment:æ­¤æ¥å£å¿…é¡»å’ŒGetæ¥å£é…å¯¹ä½¿ç”¨ï¼Œå¦‚æœæ²¡æœ‰Getåˆ™è¿›è¡ŒPutæ“ä½œï¼Œåˆ™ä¸ä¼šè¿›è¡Œä»»ä½•æ“ä½œï¼Œä½†è¿”å›æˆåŠŸ\n
+Putçš„é•¿åº¦å¦‚æœä¸º0ï¼Œä¹Ÿä¸ä¼šè¿›è¡Œä»»ä½•æ“ä½œç›´æ¥è¿”å›æˆåŠŸ\n
+ä¸å…è®¸Puté•¿åº¦å¤§äºå®é™…Getåˆ°çš„é•¿åº¦ï¼Œå¦åˆ™è¿”å›å‚æ•°éæ³•é”™è¯¯ç \n
+å…è®¸Puté•¿åº¦å°äºGeté•¿åº¦ï¼Œè¡¨æ˜åªè¾“å…¥äº†ä¸€éƒ¨åˆ†æ•°æ®\n
+ä¸ºæé«˜æ•ˆç‡ï¼ŒPutçš„é•¿åº¦å°½é‡ä¸è¦å¤ªçŸ­ï¼Œå°½é‡ä¿æŒåœ¨10ä¸ªtsåŒ…ä»¥ä¸ŠPutä¸€æ¬¡ï¼Œæ•°æ®å¤ªçŸ­ä¼šå¯¼è‡´æ€§èƒ½ä¸‹é™\nã€‚CNend
+\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Bufferå¥æŸ„ã€‚CNend
+\param[in] u32ValidDataLen Valid data length.CNcomment:æœ‰æ•ˆæ•°æ®çš„é•¿åº¦ã€‚CNend
+\param[in] u32StartPos start position of the valid data. CNcomment:æœ‰æ•ˆæ•°æ®çš„èµ·å§‹ä½ç½®ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_PutTSBufferEx(HI_HANDLE hTsBuffer, HI_U32 u32ValidDataLen, HI_U32 u32StartPos);
 
 /**
-\brief Resets a TS buffer to clear its data.CNcomment:¸´Î»TS Buffer£¬Çå¿ÕTS BufferÖĞµÄÊı¾İ¡£CNend
+\brief Resets a TS buffer to clear its data.CNcomment:å¤ä½TS Bufferï¼Œæ¸…ç©ºTS Bufferä¸­çš„æ•°æ®ã€‚CNend
 \attention \n
-If a TS buffer is reset, you can call HI_UNF_DMX_PutTSBuffer only after calling HI_UNF_DMX_GetTSBuffer.CNcomment:TS Buffer¸´Î»ºóĞèÒªÖØĞÂget²ÅÄÜÖ´ĞĞput²Ù×÷¡£CNend
-\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Buffer¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
+If a TS buffer is reset, you can call HI_UNF_DMX_PutTSBuffer only after calling HI_UNF_DMX_GetTSBuffer.CNcomment:TS Bufferå¤ä½åéœ€è¦é‡æ–°getæ‰èƒ½æ‰§è¡Œputæ“ä½œã€‚CNend
+\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Bufferå¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_ResetTSBuffer(HI_HANDLE hTsBuffer);
 
 
 /**
-\brief Obtains the status of a TS buffer. CNcomment:»ñÈ¡TS Buffer×´Ì¬¡£CNend
+\brief Obtains the status of a TS buffer. CNcomment:è·å–TS BufferçŠ¶æ€ã€‚CNend
 \attention \n
-You can query the size of a TS buffer and the used buffer size by calling this API. CNcomment:¿ÉÒÔ²éÑ¯TS Buffer´óĞ¡ºÍÒÑÓÃµÄ¿Õ¼ä´óĞ¡¡£CNend
-\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Buffer¾ä±ú¡£CNend
-\param[out] pStatus  TS buffer status.CNcomment:TS Buffer×´Ì¬½á¹¹¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+You can query the size of a TS buffer and the used buffer size by calling this API. CNcomment:å¯ä»¥æŸ¥è¯¢TS Bufferå¤§å°å’Œå·²ç”¨çš„ç©ºé—´å¤§å°ã€‚CNend
+\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Bufferå¥æŸ„ã€‚CNend
+\param[out] pStatus  TS buffer status.CNcomment:TS BufferçŠ¶æ€ç»“æ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetTSBufferStatus(HI_HANDLE hTsBuffer, HI_UNF_DMX_TSBUF_STATUS_S *pStatus);
 
 /**
-\brief Obtains the ID of the port corresponding to a TS buffer.CNcomment:»ñÈ¡TS Buffer¶ÔÓ¦µÄPort ID¡£CNend
+\brief Obtains the ID of the port corresponding to a TS buffer.CNcomment:è·å–TS Bufferå¯¹åº”çš„Port IDã€‚CNend
 \attention \n
 If you query the ID of the port corresponding to a TS buffer that is not applied for successfully, an error code is returned.
-CNcomment:¶ÔÓÚÃ»ÓĞÉêÇëµÄTS buffer,²éÑ¯»á·µ»Ø´íÎó¡£CNend
-\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Buffer¾ä±ú¡£CNend
-\param[out] penPortId  ID of the port.corresponding to a TS buffer  CNcomment:TS Buffer¶ÔÓ¦µÄPort ID¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment:å¯¹äºæ²¡æœ‰ç”³è¯·çš„TS buffer,æŸ¥è¯¢ä¼šè¿”å›é”™è¯¯ã€‚CNend
+\param[in] hTsBuffer Handle of a TS buffer.CNcomment:TS Bufferå¥æŸ„ã€‚CNend
+\param[out] penPortId  ID of the port.corresponding to a TS buffer  CNcomment:TS Bufferå¯¹åº”çš„Port IDã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetTSBufferPortId(HI_HANDLE hTsBuffer, HI_UNF_DMX_PORT_E *penPortId);
 
 /**
-\brief Obtains the handle of the TS buffer corresponding to a port ID.CNcomment:»ñÈ¡Port ID¶ÔÓ¦µÄTS Buffer handle¡£CNend
+\brief Obtains the handle of the TS buffer corresponding to a port ID.CNcomment:è·å–Port IDå¯¹åº”çš„TS Buffer handleã€‚CNend
 \attention \n
-If you obtain the handle of a TS buffer that is not created, an error code is returned.CNcomment:¶ÔÓÚÃ»ÓĞÉêÇëµÄTS buffer,²éÑ¯»á·µ»Ø´íÎó¡£CNend
-\param[in] enPortId   Port ID. CNcomment:¶Ë¿ÚºÅ¡£CNend
-\param[out] phTsBuffer Handle of a TS buffer.CNcomment:TS Buffer¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+If you obtain the handle of a TS buffer that is not created, an error code is returned.CNcomment:å¯¹äºæ²¡æœ‰ç”³è¯·çš„TS buffer,æŸ¥è¯¢ä¼šè¿”å›é”™è¯¯ã€‚CNend
+\param[in] enPortId   Port ID. CNcomment:ç«¯å£å·ã€‚CNend
+\param[out] phTsBuffer Handle of a TS buffer.CNcomment:TS Bufferå¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetTSBufferHandle(HI_UNF_DMX_PORT_E enPortId, HI_HANDLE *phTsBuffer);
 
 /**
-\brief Obtains the information about TS packets of a port.CNcomment:»ñÈ¡¶Ë¿ÚµÄTS°üĞÅÏ¢¡£CNend
+\brief Obtains the information about TS packets of a port.CNcomment:è·å–ç«¯å£çš„TSåŒ…ä¿¡æ¯ã€‚CNend
 \attention \n
 If you query the information about an unattached port, an error code is returned.
-CNcomment:¶ÔÓÚÃ»ÓĞ°ó¶¨µÄ¶Ë¿Ú,²éÑ¯»á·µ»Ø´íÎó¡£CNend
-\param[in] enPortId    Port ID. CNcomment:¶Ë¿ÚºÅ¡£CNend
-\param[out] sPortStat   Number of TS packets .CNcomment:TS°ü¼ÆÊıĞÅÏ¢¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment:å¯¹äºæ²¡æœ‰ç»‘å®šçš„ç«¯å£,æŸ¥è¯¢ä¼šè¿”å›é”™è¯¯ã€‚CNend
+\param[in] enPortId    Port ID. CNcomment:ç«¯å£å·ã€‚CNend
+\param[out] sPortStat   Number of TS packets .CNcomment:TSåŒ…è®¡æ•°ä¿¡æ¯ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetTSPortPacketNum(HI_UNF_DMX_PORT_E enPortId, HI_UNF_DMX_PORT_PACKETNUM_S *sPortStat);
 
 /**
-\brief Obtains the default attributes of a channel.CNcomment:»ñÈ¡Í¨µÀÄ¬ÈÏÊôĞÔ¡£CNend
+\brief Obtains the default attributes of a channel.CNcomment:è·å–é€šé“é»˜è®¤å±æ€§ã€‚CNend
 \attention \n
 It is recommended to query the default channel attributes before creating a channel, and then modify the attributes.\n
 By default, the attributes of the Section channel are returned. If other channels are used, you need to modify the attributes.
-CNcomment:×îºÃÔÚÉêÇëÍ¨µÀÖ®Ç°Ê¹ÓÃ´Ë½Ó¿Ú»ñÈ¡Ä¬ÈÏÊôĞÔ£¬È»ºó¸Ä±äĞèÒªĞŞ¸ÄµÄÊôĞÔ¼´¿É\n
-Ä¬ÈÏÊôĞÔ°´Ò»°ãµÄsectionÍ¨µÀ·µ»ØµÄ£¬Èç¹ûÒªÊ¹ÓÃÆäËûÀàĞÍµÄÍ¨µÀ×¢ÒâĞŞ¸ÄÊôĞÔÖµ¡£CNend
-\param[out] pstChAttr Pointer to the structure of the channel attributes.CNcomment:Í¨µÀÊôĞÔ½á¹¹ÌåÖ¸Õë¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment:æœ€å¥½åœ¨ç”³è¯·é€šé“ä¹‹å‰ä½¿ç”¨æ­¤æ¥å£è·å–é»˜è®¤å±æ€§ï¼Œç„¶åæ”¹å˜éœ€è¦ä¿®æ”¹çš„å±æ€§å³å¯\n
+é»˜è®¤å±æ€§æŒ‰ä¸€èˆ¬çš„sectioné€šé“è¿”å›çš„ï¼Œå¦‚æœè¦ä½¿ç”¨å…¶ä»–ç±»å‹çš„é€šé“æ³¨æ„ä¿®æ”¹å±æ€§å€¼ã€‚CNend
+\param[out] pstChAttr Pointer to the structure of the channel attributes.CNcomment:é€šé“å±æ€§ç»“æ„ä½“æŒ‡é’ˆã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetChannelDefaultAttr(HI_UNF_DMX_CHAN_ATTR_S *pstChAttr);
 
 
 /**
-\brief Creates a PID channel based on channel attributes.CNcomment:¸ù¾İÍ¨µÀÊôĞÔ´´½¨Ò»¸öPIDÍ¨µÀ¡£CNend
+\brief Creates a PID channel based on channel attributes.CNcomment:æ ¹æ®é€šé“å±æ€§åˆ›å»ºä¸€ä¸ªPIDé€šé“ã€‚CNend
 \attention \n
 It is recommended to call HI_UNF_DMX_GetChannelDefaultAttr to query default channel attributes before calling HI_UNF_DMX_CreateChannel.
 For the Section channel and ECM/EMM channel, you can set the CRC mode, and dynamically change the CRC mode by calling HI_UNF_DMX_SetChannelAttr.\n
@@ -796,265 +796,265 @@ It is recommended to set the buffer size to a value greater than 4 KB for the Se
 It is recommended to set the buffer size to a value greater than 64 KB for the PES channel. If the buffer size is smaller than 64 KB, the size of 64 KB is used by default.\n
 The playing channel and playing/recording channel cannot be created at the same time./n
 The audio/video playing channels are allocated and managed by the player.
-CNcomment:½¨Òéµ÷ÓÃ´Ë½Ó¿ÚÖ®Ç°£¬½¨ÒéÏÈµ÷ÓÃHI_UNF_DMX_GetChannelDefaultAttr»ñÈ¡Í¨µÀÄ¬ÈÏÊôĞÔ\n
-Ö»ÓĞsectionÀàĞÍµÄÍ¨µÀºÍecm emmÀàĞÍµÄÍ¨µÀÖ§³ÖÉèÖÃCRCÄ£Ê½£¬²¢ÇÒ¿ÉÒÔÍ¨¹ıÊôĞÔÉèÖÃ½Ó¿Ú¶¯Ì¬ĞŞ¸ÄCRCÄ£Ê½\n
-ÆäËûÀàĞÍÍ¨µÀÖ»Ö§³ÖÉèÖÃÎªCRC½ûÖ¹£¬Èç¹ûÑ¡ÔñÁËÆäËûÀàĞÍµÄCRC»á±»Ä¬ÈÏĞŞ¸ÄÎªCRC½ûÖ¹\n
-ÔÚÉêÇëÍ¨µÀÊ±×¢ÒâBuffer´óĞ¡µÄÅäÖÃ£¬Ä¬ÈÏ´óĞ¡Îª16K£¬buffer´óĞ¡µÄµ¥Î»Îª×Ö½Ú\n
-Section¡¢ecm emmºÍPOSTÍ¨µÀµÄbuffer´óĞ¡ÖÁÉÙÎª4K£¬Èç¹ûĞ¡ÓÚ4K»á±»Ä¬ÈÏĞŞ¸ÄÎª4K\n
-PESÍ¨µÀ½¨ÒéÊ¹ÓÃ64KÒÔÉÏµÄbuffer´óĞ¡£¬Èç¹ûĞ¡ÓÚ64K»á±»Ä¬ÈÏĞŞ¸ÄÎª64K\n
-²¥·ÅÀàĞÍºÍÍ¬Ê±²¥·ÅÓëÂ¼ÖÆÀàĞÍµÄÒôÊÓÆµÍ¨µÀÊÇ²»ÄÜÉêÇëµÄ\n
-ÒôÊÓÆµµÄ²¥·ÅÍ¨µÀÓÉPlayerÍ³Ò»·ÖÅäºÍ¹ÜÀí¡£CNend
-\param[in] u32DmxId  DEMUX ID. CNcomment: DEMUXºÅ¡£CNend
-\param[in] pstChAttr  Pointer to the attributes of an input channel. For details, see the description of HI_UNF_DMX_CHAN_ATTR_S.CNcomment:Ö¸ÕëÀàĞÍ£¬ÊäÈëÍ¨µÀÊôĞÔ¡£Çë²Î¼û::HI_UNF_DMX_CHAN_ATTR_S¡£CNend
-\param[out] phChannel  Pointer to the handle of an allocated channel.CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³ö·ÖÅäµÄÍ¨µÀHandle¡£¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOFREE_CHAN  There is no available channel.CNcomment:Ã»ÓĞ¿ÕÏĞÍ¨µÀ¡£CNend
+CNcomment:å»ºè®®è°ƒç”¨æ­¤æ¥å£ä¹‹å‰ï¼Œå»ºè®®å…ˆè°ƒç”¨HI_UNF_DMX_GetChannelDefaultAttrè·å–é€šé“é»˜è®¤å±æ€§\n
+åªæœ‰sectionç±»å‹çš„é€šé“å’Œecm emmç±»å‹çš„é€šé“æ”¯æŒè®¾ç½®CRCæ¨¡å¼ï¼Œå¹¶ä¸”å¯ä»¥é€šè¿‡å±æ€§è®¾ç½®æ¥å£åŠ¨æ€ä¿®æ”¹CRCæ¨¡å¼\n
+å…¶ä»–ç±»å‹é€šé“åªæ”¯æŒè®¾ç½®ä¸ºCRCç¦æ­¢ï¼Œå¦‚æœé€‰æ‹©äº†å…¶ä»–ç±»å‹çš„CRCä¼šè¢«é»˜è®¤ä¿®æ”¹ä¸ºCRCç¦æ­¢\n
+åœ¨ç”³è¯·é€šé“æ—¶æ³¨æ„Bufferå¤§å°çš„é…ç½®ï¼Œé»˜è®¤å¤§å°ä¸º16Kï¼Œbufferå¤§å°çš„å•ä½ä¸ºå­—èŠ‚\n
+Sectionã€ecm emmå’ŒPOSTé€šé“çš„bufferå¤§å°è‡³å°‘ä¸º4Kï¼Œå¦‚æœå°äº4Kä¼šè¢«é»˜è®¤ä¿®æ”¹ä¸º4K\n
+PESé€šé“å»ºè®®ä½¿ç”¨64Kä»¥ä¸Šçš„bufferå¤§å°ï¼Œå¦‚æœå°äº64Kä¼šè¢«é»˜è®¤ä¿®æ”¹ä¸º64K\n
+æ’­æ”¾ç±»å‹å’ŒåŒæ—¶æ’­æ”¾ä¸å½•åˆ¶ç±»å‹çš„éŸ³è§†é¢‘é€šé“æ˜¯ä¸èƒ½ç”³è¯·çš„\n
+éŸ³è§†é¢‘çš„æ’­æ”¾é€šé“ç”±Playerç»Ÿä¸€åˆ†é…å’Œç®¡ç†ã€‚CNend
+\param[in] u32DmxId  DEMUX ID. CNcomment: DEMUXå·ã€‚CNend
+\param[in] pstChAttr  Pointer to the attributes of an input channel. For details, see the description of HI_UNF_DMX_CHAN_ATTR_S.CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å…¥é€šé“å±æ€§ã€‚è¯·å‚è§::HI_UNF_DMX_CHAN_ATTR_Sã€‚CNend
+\param[out] phChannel  Pointer to the handle of an allocated channel.CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºåˆ†é…çš„é€šé“Handleã€‚ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOFREE_CHAN  There is no available channel.CNcomment:æ²¡æœ‰ç©ºé—²é€šé“ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_CreateChannel(HI_U32 u32DmxId, const HI_UNF_DMX_CHAN_ATTR_S *pstChAttr,
             HI_HANDLE *phChannel);
 
 
 /**
-\brief Destroys an existing PID channel.CNcomment:Ïú»Ù´´½¨µÄPIDÍ¨µÀ¡£CNend
+\brief Destroys an existing PID channel.CNcomment:é”€æ¯åˆ›å»ºçš„PIDé€šé“ã€‚CNend
 \attention \n
 If you release an enabled channel, the channel is disabled automatically. If you release a channel that is attached to a filter or key area, the channel is detached from the filter or key area automatically.\n
 However, the filter or key area is not released.\n
 It is recommended to explicitly detach channels by calling corresponding detach APIs. In this way, resources are managed in a unified manner.
-CNcomment:ÊÍ·ÅÍ¨µÀÊ±Èç¹ûÍ¨µÀ´¦ÓÚ´ò¿ª×´Ì¬»á×Ô¶¯¹Ø±ÕÍ¨µÀ£¬Èç¹ûÍ¨µÀÉÏ°ó¶¨ÁË¹ıÂËÆ÷»òÃÜÔ¿Çø£¬»á×Ô¶¯½â°ó¶¨\n
-µ«ÊÇ²¢²»»áÊÍ·Å¹ıÂËÆ÷ºÍÃÜÔ¿Çø
-½¨ÒéÊ¹ÓÃ½â°ó¶¨½Ó¿Ú½øĞĞÏÔÊ½µÄ½â°ó¶¨²Ù×÷£¬¶Ô×ÊÔ´µÄÊ¹ÓÃ½øĞĞÇåÎúµÄ¹ÜÀí¡£CNend
-\param[in] hChannel  Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
+CNcomment:é‡Šæ”¾é€šé“æ—¶å¦‚æœé€šé“å¤„äºæ‰“å¼€çŠ¶æ€ä¼šè‡ªåŠ¨å…³é—­é€šé“ï¼Œå¦‚æœé€šé“ä¸Šç»‘å®šäº†è¿‡æ»¤å™¨æˆ–å¯†é’¥åŒºï¼Œä¼šè‡ªåŠ¨è§£ç»‘å®š\n
+ä½†æ˜¯å¹¶ä¸ä¼šé‡Šæ”¾è¿‡æ»¤å™¨å’Œå¯†é’¥åŒº
+å»ºè®®ä½¿ç”¨è§£ç»‘å®šæ¥å£è¿›è¡Œæ˜¾å¼çš„è§£ç»‘å®šæ“ä½œï¼Œå¯¹èµ„æºçš„ä½¿ç”¨è¿›è¡Œæ¸…æ™°çš„ç®¡ç†ã€‚CNend
+\param[in] hChannel  Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_DestroyChannel(HI_HANDLE hChannel);
 
 
 /**
-\brief Obtains the attributes of a channel.CNcomment:»ñÈ¡Í¨µÀÊôĞÔ¡£CNend
+\brief Obtains the attributes of a channel.CNcomment:è·å–é€šé“å±æ€§ã€‚CNend
 \attention \n
-The API can be called only after a channel is allocated.CNcomment:±¾½Ó¿Ú±ØĞëÔÚÍ¨µÀ·ÖÅäÒÔºó²Å¿ÉÒÔµ÷ÓÃ¡£CNend
-\param[in] hChannel   Channel handle.CNcomment:Í¨µÀHandle¡£CNend
-\param[out] pstChAttr  Pointer to the attributes of a specified channel. For details, see the description of HI_UNF_DMX_CHAN_ATTR_S.CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³öÖ¸¶¨Í¨µÀÊôĞÔ¡£Çë²Î¼û::HI_UNF_DMX_CHAN_ATTR_S¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid.CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+The API can be called only after a channel is allocated.CNcomment:æœ¬æ¥å£å¿…é¡»åœ¨é€šé“åˆ†é…ä»¥åæ‰å¯ä»¥è°ƒç”¨ã€‚CNend
+\param[in] hChannel   Channel handle.CNcomment:é€šé“Handleã€‚CNend
+\param[out] pstChAttr  Pointer to the attributes of a specified channel. For details, see the description of HI_UNF_DMX_CHAN_ATTR_S.CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºæŒ‡å®šé€šé“å±æ€§ã€‚è¯·å‚è§::HI_UNF_DMX_CHAN_ATTR_Sã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid.CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetChannelAttr(HI_HANDLE hChannel, HI_UNF_DMX_CHAN_ATTR_S *pstChAttr);
 
 
 /**
-\brief Sets the attributes of a channel.CNcomment:ÉèÖÃÍ¨µÀÊôĞÔ¡£CNend
+\brief Sets the attributes of a channel.CNcomment:è®¾ç½®é€šé“å±æ€§ã€‚CNend
 \attention \n
 The API can be called only after a channel is allocated.\n
 You cannot dynamically modify all attributes except the CRC mode by calling HI_UNF_DMX_SetChannelAttr.\n
 To be specific, the CRC mode can be changed dynamically after a channel is created.\n
 If you modify other attributes, the error code HI_ERR_DMX_INVALID_PARA is returned.
-CNcomment:±¾½Ó¿Ú±ØĞëÔÚÍ¨µÀ·ÖÅäÒÔºó²Å¿ÉÒÔµ÷ÓÃ\n
-³ıÁËCRCÄ£Ê½ÆäËûÊôĞÔ¶¼²»ÔÊĞíÊ¹ÓÃHI_UNF_DMX_SetChannelAttr½Ó¿Ú½øĞĞ¶¯Ì¬ĞŞ¸Ä\n
-CRCÄ£Ê½¿ÉÒÔÔÚÍ¨µÀÉêÇëºóµÄÈÎÒâÊ±¿ÌĞŞ¸Ä£¬¶¯Ì¬ÉúĞ§\n
-ÒªĞŞ¸ÄÆäËûÊôĞÔ»á·µ»Ø²ÎÊı·Ç·¨´íÎóÂë¡£CNend
-\param[in] hChannel   Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\param[in] pstChAttr    Pointer to the attributes of an input channel. For details, see the description of HI_UNF_DMX_CHAN_ATTR_S.  CNcomment:Ö¸ÕëÀàĞÍ£¬ÊäÈëÍ¨µÀÊôĞÔ¡£Çë²Î¼û ::HI_UNF_DMX_CHAN_ATTR_S¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment:æœ¬æ¥å£å¿…é¡»åœ¨é€šé“åˆ†é…ä»¥åæ‰å¯ä»¥è°ƒç”¨\n
+é™¤äº†CRCæ¨¡å¼å…¶ä»–å±æ€§éƒ½ä¸å…è®¸ä½¿ç”¨HI_UNF_DMX_SetChannelAttræ¥å£è¿›è¡ŒåŠ¨æ€ä¿®æ”¹\n
+CRCæ¨¡å¼å¯ä»¥åœ¨é€šé“ç”³è¯·åçš„ä»»æ„æ—¶åˆ»ä¿®æ”¹ï¼ŒåŠ¨æ€ç”Ÿæ•ˆ\n
+è¦ä¿®æ”¹å…¶ä»–å±æ€§ä¼šè¿”å›å‚æ•°éæ³•é”™è¯¯ç ã€‚CNend
+\param[in] hChannel   Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\param[in] pstChAttr    Pointer to the attributes of an input channel. For details, see the description of HI_UNF_DMX_CHAN_ATTR_S.  CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å…¥é€šé“å±æ€§ã€‚è¯·å‚è§ ::HI_UNF_DMX_CHAN_ATTR_Sã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_SetChannelAttr(HI_HANDLE hChannel, const HI_UNF_DMX_CHAN_ATTR_S *pstChAttr);
 
 
 /**
-\brief Sets the PID of a channel.CNcomment:ÉèÖÃÍ¨µÀPID¡£CNend
+\brief Sets the PID of a channel.CNcomment:è®¾ç½®é€šé“PIDã€‚CNend
 \attention \n
 If you set the same PID for two channels of a DEMUX, the PID of the second channel is valid, and the PID of the first channel is changed to 0x1FFF.\n
 You must set the PID of a channel after the channel is disabled.\n
 If you set the PID of a channel to 0x1FFF, the channel cannot receive data. That is, the channel is disabled. 
-CNcomment:Í¬Ò»Â·DEMUXµÄÁ½¸öÍ¨µÀÉèÖÃÏàÍ¬µÄPID¡£ºóÉèÖÃµÄÍ¨µÀÓĞĞ§£¬ÏÈÉèÖÃµÄÍ¨µÀµÄPID±»ĞŞ¸ÄÎª0x1fff\n
-±ØĞëÔÚÍ¨µÀ¹Ø±ÕµÄ×´Ì¬ÏÂÅäÖÃÍ¨µÀµÄPID\n
-ÔÊĞí½«Í¨µÀµÄPIDÅäÖÃÎª0x1fff,ÅäÖÃÎª0x1fffºó²»½ÓÊÕÈÎºÎÊı¾İ£¬Ïàµ±ÓÚ¹Ø±ÕÍ¨µÀ¡£CNend
-\param[in] hChannel   Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\param[in] u32Pid     Channel PID.CNcomment:Í¨µÀPID¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_OPENING_CHAN  The channel is enabled.CNcomment:Í¨µÀ´¦ÓÚ´ò¿ª×´Ì¬¡£CNend
+CNcomment:åŒä¸€è·¯DEMUXçš„ä¸¤ä¸ªé€šé“è®¾ç½®ç›¸åŒçš„PIDã€‚åè®¾ç½®çš„é€šé“æœ‰æ•ˆï¼Œå…ˆè®¾ç½®çš„é€šé“çš„PIDè¢«ä¿®æ”¹ä¸º0x1fff\n
+å¿…é¡»åœ¨é€šé“å…³é—­çš„çŠ¶æ€ä¸‹é…ç½®é€šé“çš„PID\n
+å…è®¸å°†é€šé“çš„PIDé…ç½®ä¸º0x1fff,é…ç½®ä¸º0x1fffåä¸æ¥æ”¶ä»»ä½•æ•°æ®ï¼Œç›¸å½“äºå…³é—­é€šé“ã€‚CNend
+\param[in] hChannel   Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\param[in] u32Pid     Channel PID.CNcomment:é€šé“PIDã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_OPENING_CHAN  The channel is enabled.CNcomment:é€šé“å¤„äºæ‰“å¼€çŠ¶æ€ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_SetChannelPID(HI_HANDLE hChannel, HI_U32 u32Pid);
 
 
 /**
-\brief Obtains the PID of a channel.CNcomment:»ñÈ¡Í¨µÀÅäÖÃµÄPID¡£CNend
+\brief Obtains the PID of a channel.CNcomment:è·å–é€šé“é…ç½®çš„PIDã€‚CNend
 \attention \n
 If no PID is set for a channel, the obtained value is 0x1FFF.\n
 You can obtain the channel PID after a channel is created.
-CNcomment:Ã»ÓĞÅäÖÃPIDÇ°£¬»ñÈ¡µ½µÄPIDÎª0x1fff\n
-¿ÉÒÔÔÚÍ¨µÀÉêÇëºóµÄÈÎÒâÊ±¿Ì»ñÈ¡Í¨µÀPID¡£CNend
-\param[in] hChannel  Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\param[out] pu32Pid   Pointer to the PID of a channel (output).CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³öÍ¨µÀµÄPID¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment:æ²¡æœ‰é…ç½®PIDå‰ï¼Œè·å–åˆ°çš„PIDä¸º0x1fff\n
+å¯ä»¥åœ¨é€šé“ç”³è¯·åçš„ä»»æ„æ—¶åˆ»è·å–é€šé“PIDã€‚CNend
+\param[in] hChannel  Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\param[out] pu32Pid   Pointer to the PID of a channel (output).CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºé€šé“çš„PIDã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetChannelPID(HI_HANDLE hChannel, HI_U32 *pu32Pid);
 
 
 /**
-\brief Enables a channel.CNcomment:´ò¿ªÍ¨µÀ¡£CNend
+\brief Enables a channel.CNcomment:æ‰“å¼€é€šé“ã€‚CNend
 \attention \n
 If you call this API to enable a PID channel that has been enabled, no error occurs.\n
 If you call this API to enable a Section channel that is not attached to a filter, the channel cannot receive data.\n
 If you want to receive data without filter, you can create a filter and then set its filter depth to 0.
-CNcomment:ÔÚPIDÍ¨µÀ´ò¿ª×´Ì¬ÏÂ£¬µ÷ÓÃ±¾½Ó¿Ú´ò¿ªÍ¨µÀ²»»á·¢Éú´íÎó\n
-¶ÔÓÚsectionÍ¨µÀ£¬ÔÚÍ¨µÀÃ»ÓĞ°ó¶¨¹ıÂËÆ÷Ê±µ÷ÓÃ±¾½Ó¿Ú£¬Í¨µÀ²»ÄÜ½ÓÊÕÊı¾İ\n
-Èç¹û²»ÏëÊ¹ÓÃfilter½ÓÊÕÊı¾İ£¬¿ÉÒÔÉêÇëÒ»¸öfilter½«¹ıÂËÉî¶ÈÅäÖÃÎª0£¬½øĞĞÊı¾İ½ÓÊÕ¡£CNend
-\param[in] hChannel  Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
+CNcomment:åœ¨PIDé€šé“æ‰“å¼€çŠ¶æ€ä¸‹ï¼Œè°ƒç”¨æœ¬æ¥å£æ‰“å¼€é€šé“ä¸ä¼šå‘ç”Ÿé”™è¯¯\n
+å¯¹äºsectioné€šé“ï¼Œåœ¨é€šé“æ²¡æœ‰ç»‘å®šè¿‡æ»¤å™¨æ—¶è°ƒç”¨æœ¬æ¥å£ï¼Œé€šé“ä¸èƒ½æ¥æ”¶æ•°æ®\n
+å¦‚æœä¸æƒ³ä½¿ç”¨filteræ¥æ”¶æ•°æ®ï¼Œå¯ä»¥ç”³è¯·ä¸€ä¸ªfilterå°†è¿‡æ»¤æ·±åº¦é…ç½®ä¸º0ï¼Œè¿›è¡Œæ•°æ®æ¥æ”¶ã€‚CNend
+\param[in] hChannel  Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_OpenChannel(HI_HANDLE hChannel);
 
 
 /**
-\brief Disables a channel.CNcomment:¹Ø±ÕÍ¨µÀ¡£CNend
+\brief Disables a channel.CNcomment:å…³é—­é€šé“ã€‚CNend
 \attention \n
-If you this API to disable a PID channel that has been disabled, no error occurs.CNcomment:ÔÚPIDÍ¨µÀ¹Ø±Õ×´Ì¬ÏÂ£¬µ÷ÓÃ±¾½Ó¿Ú¹Ø±ÕÍ¨µÀ²»»á·¢Éú´íÎó¡£CNend
-\param[in] hChannel   Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
+If you this API to disable a PID channel that has been disabled, no error occurs.CNcomment:åœ¨PIDé€šé“å…³é—­çŠ¶æ€ä¸‹ï¼Œè°ƒç”¨æœ¬æ¥å£å…³é—­é€šé“ä¸ä¼šå‘ç”Ÿé”™è¯¯ã€‚CNend
+\param[in] hChannel   Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_CloseChannel(HI_HANDLE hChannel);
 
 
 /**
-\brief Obtains the status of a channel.CNcomment:»ñÈ¡Í¨µÀ×´Ì¬¡£CNend
+\brief Obtains the status of a channel.CNcomment:è·å–é€šé“çŠ¶æ€ã€‚CNend
 \attention \n
-You can call this API after a channel is created.CNcomment:¿ÉÒÔÔÚÍ¨µÀÉêÇëºóµÄÈÎÒâÊ±¿Ìµ÷ÓÃ¡£CNend
-\param[in] hChannel   Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\param[out] pstStatus  Pointer to the status of a channel (output). For details, see the description of ::HI_UNF_DMX_CHAN_STATUS_S.CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³öÍ¨µÀ×´Ì¬¡£Çë²Î¼û::HI_UNF_DMX_CHAN_STATUS_S¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+You can call this API after a channel is created.CNcomment:å¯ä»¥åœ¨é€šé“ç”³è¯·åçš„ä»»æ„æ—¶åˆ»è°ƒç”¨ã€‚CNend
+\param[in] hChannel   Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\param[out] pstStatus  Pointer to the status of a channel (output). For details, see the description of ::HI_UNF_DMX_CHAN_STATUS_S.CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºé€šé“çŠ¶æ€ã€‚è¯·å‚è§::HI_UNF_DMX_CHAN_STATUS_Sã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetChannelStatus(HI_HANDLE hChannel, HI_UNF_DMX_CHAN_STATUS_S *pstStatus);
 
 /**
-\brief Obtains the ts count of a channel.CNcomment:»ñÈ¡Í¨µÀts°ü¼ÆÊı¡£CNend
+\brief Obtains the ts count of a channel.CNcomment:è·å–é€šé“tsåŒ…è®¡æ•°ã€‚CNend
 \attention \n
-You can call this API after a channel is created.CNcomment:¿ÉÒÔÔÚÍ¨µÀÉêÇëºóµÄÈÎÒâÊ±¿Ìµ÷ÓÃ¡£CNend
-\param[in] hChannel   Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\param[out] pu32TsCount  Pointer to the count of a channel (output).CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³öÍ¨µÀts°ü¼ÆÊı¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+You can call this API after a channel is created.CNcomment:å¯ä»¥åœ¨é€šé“ç”³è¯·åçš„ä»»æ„æ—¶åˆ»è°ƒç”¨ã€‚CNend
+\param[in] hChannel   Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\param[out] pu32TsCount  Pointer to the count of a channel (output).CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºé€šé“tsåŒ…è®¡æ•°ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
  */
 HI_S32 HI_UNF_DMX_GetChannelTsCount(HI_HANDLE hChannel, HI_U32 *pu32TsCount);
 
 
 
 /**
-\brief Obtains the handle of the channel with a specific PID.CNcomment:»ñÈ¡ÅäÖÃÄ³PIDµÄÍ¨µÀ¾ä±ú¡£CNend
+\brief Obtains the handle of the channel with a specific PID.CNcomment:è·å–é…ç½®æŸPIDçš„é€šé“å¥æŸ„ã€‚CNend
 \attention \n
 You must specify the DEMUX ID when calling this API, because the channel PIDs of different DEMUXs can be the same.\n
 You cannot query the PID that is equal to or greater than 0x1FFF; otherwise, the error code HI_ERR_DMX_INVALID_PARA is returned.\n
 If no channel with a specific PID is found, an error code is returned.
-CNcomment:Òò²»Í¬DEMUXÉè±¸µÄÍ¨µÀÔÊĞíÉèÖÃÏàÍ¬µÄPID£¬µ÷ÓÃ±¾½Ó¿ÚĞèÒªÖ¸¶¨DEMUX ID\n
-²»ÔÊĞí²éÑ¯0x1fff¼°ÒÔÉÏµÄ·Ç·¨PIDÖµ£¬·ñÔò·µ»Ø²ÎÊı·Ç·¨´íÎóÂë\n
-Èç¹ûÃ»ÓĞ²éÑ¯µ½ÈÎºÎÍ¨µÀÉèÖÃÁËÒª²éÑ¯µÄPID£¬½«·µ»Ø´íÎóÂë¡£CNend
-\param[in] u32DmxId    DEMUX ID. CNcomment: DEMUXºÅ¡£CNend
-\param[in] u32Pid      Channel PID.CNcomment:Í¨µÀPID¡£CNend
-\param[out] phChannel Pointer to channel handle.CNcomment: Ö¸ÕëÀàĞÍ£¬Êä³öÍ¨µÀHandle¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_UNMATCH_CHAN  No matched channel is found.CNcomment:Ã»ÓĞ²éÑ¯µ½Æ¥ÅäÍ¨µÀ¡£CNend
+CNcomment:å› ä¸åŒDEMUXè®¾å¤‡çš„é€šé“å…è®¸è®¾ç½®ç›¸åŒçš„PIDï¼Œè°ƒç”¨æœ¬æ¥å£éœ€è¦æŒ‡å®šDEMUX ID\n
+ä¸å…è®¸æŸ¥è¯¢0x1fffåŠä»¥ä¸Šçš„éæ³•PIDå€¼ï¼Œå¦åˆ™è¿”å›å‚æ•°éæ³•é”™è¯¯ç \n
+å¦‚æœæ²¡æœ‰æŸ¥è¯¢åˆ°ä»»ä½•é€šé“è®¾ç½®äº†è¦æŸ¥è¯¢çš„PIDï¼Œå°†è¿”å›é”™è¯¯ç ã€‚CNend
+\param[in] u32DmxId    DEMUX ID. CNcomment: DEMUXå·ã€‚CNend
+\param[in] u32Pid      Channel PID.CNcomment:é€šé“PIDã€‚CNend
+\param[out] phChannel Pointer to channel handle.CNcomment: æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºé€šé“Handleã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_UNMATCH_CHAN  No matched channel is found.CNcomment:æ²¡æœ‰æŸ¥è¯¢åˆ°åŒ¹é…é€šé“ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetChannelHandle(HI_U32 u32DmxId , HI_U32 u32Pid, HI_HANDLE *phChannel);
 
 
 /**
-\brief Obtains the number of available channels of a DEMUX.CNcomment:»ñÈ¡DEMUXÉè±¸¿ÉÓÃµÄ¿ÕÏĞÍ¨µÀµÄÊıÁ¿¡£CNend
+\brief Obtains the number of available channels of a DEMUX.CNcomment:è·å–DEMUXè®¾å¤‡å¯ç”¨çš„ç©ºé—²é€šé“çš„æ•°é‡ã€‚CNend
 \attention \n
 The returned number is the number of all remaining channels including the used audio/video channels.\n
 Because channels are allocated in a unified manner, the parameter u32DmxId is invalid.
-CNcomment:·µ»ØµÄÊıÁ¿ÎªËùÓĞÍ¨µÀÊ£ÓàµÄÊıÁ¿£¬°üÀ¨ÒÑ±»Ê¹ÓÃµÄÒôÊÓÆµÍ¨µÀ\n
-ÓÉÓÚÍ¨µÀ×ÊÔ´Í³Ò»·ÖÅäËùÒÔ²ÎÊıu32DmxIdÒÑ¾­Ã»ÓĞÒâÒå¡£CNend
-\param[in] u32DmxId         DEMUX ID. CNcomment: DEMUXºÅ¡£CNend
-\param[out] pu32FreeCount   Pointer to the number of available channels of a DEMUX.CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³öDEMUX¿ÕÏĞÍ¨µÀÊıÄ¿¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment:è¿”å›çš„æ•°é‡ä¸ºæ‰€æœ‰é€šé“å‰©ä½™çš„æ•°é‡ï¼ŒåŒ…æ‹¬å·²è¢«ä½¿ç”¨çš„éŸ³è§†é¢‘é€šé“\n
+ç”±äºé€šé“èµ„æºç»Ÿä¸€åˆ†é…æ‰€ä»¥å‚æ•°u32DmxIdå·²ç»æ²¡æœ‰æ„ä¹‰ã€‚CNend
+\param[in] u32DmxId         DEMUX ID. CNcomment: DEMUXå·ã€‚CNend
+\param[out] pu32FreeCount   Pointer to the number of available channels of a DEMUX.CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºDEMUXç©ºé—²é€šé“æ•°ç›®ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetFreeChannelCount (HI_U32 u32DmxId, HI_U32 *pu32FreeCount);
 
 
 /**
-\brief Obtains the scrambled flag of the channel data.CNcomment:»ñÈ¡Í¨µÀÊı¾İ¼ÓÈÅ±êÖ¾¡£CNend
+\brief Obtains the scrambled flag of the channel data.CNcomment:è·å–é€šé“æ•°æ®åŠ æ‰°æ ‡å¿—ã€‚CNend
 \attention \n
-You can query the scrambled PES data and ES data.CNcomment:Ö§³ÖPES¼¶¼ÓÈÅºÍTS¼¶¼ÓÈÅµÄ²éÑ¯¡£CNend
-\param[in] hChannel   Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\param[out] penScrambleFlag   Pointer to the scrambled flag of the channel data (output). For details, see the description of ::HI_UNF_DMX_SCRAMBLED_FLAG_E.CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³öÍ¨µÀÊı¾İ¼ÓÈÅ±êÖ¾¡£Çë²Î¼û::HI_UNF_DMX_SCRAMBLED_FLAG_E¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+You can query the scrambled PES data and ES data.CNcomment:æ”¯æŒPESçº§åŠ æ‰°å’ŒTSçº§åŠ æ‰°çš„æŸ¥è¯¢ã€‚CNend
+\param[in] hChannel   Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\param[out] penScrambleFlag   Pointer to the scrambled flag of the channel data (output). For details, see the description of ::HI_UNF_DMX_SCRAMBLED_FLAG_E.CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºé€šé“æ•°æ®åŠ æ‰°æ ‡å¿—ã€‚è¯·å‚è§::HI_UNF_DMX_SCRAMBLED_FLAG_Eã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetScrambledFlag(HI_HANDLE hChannel, HI_UNF_DMX_SCRAMBLED_FLAG_E *penScrambleFlag);
 
 
 /**
-\brief Creates a data filter.CNcomment:´´½¨Ò»¸öÊı¾İ¹ıÂËÆ÷¡£CNend
+\brief Creates a data filter.CNcomment:åˆ›å»ºä¸€ä¸ªæ•°æ®è¿‡æ»¤å™¨ã€‚CNend
 \attention \n
 The maximum depth of a filter is 16 bytes.\n
 For details on how to set the attributes of a filter, see the description of ::HI_UNF_DMX_FILTER_ATTR_S.\n
@@ -1065,111 +1065,111 @@ If a filter is used to filter the Section data, the valid byte is byte 1 and byt
 If a filter is used to filter the PES data, the valid byte is byte 4 and byte 7 to byte 21.\n
 The filter can be used to filter the data of general-purpose channels only, including the Section channel, ECM/EMM channel, and PES channel.\n
 If a filter is allocated successfully, phFilter returns the handle of the created filter.
-CNcomment:¹ıÂËÆ÷Éî¶È×î´óÎª16\n
-¹ıÂËÆ÷ÊôĞÔÅäÖÃÇë²Î¿¼::HI_UNF_DMX_FILTER_ATTR_S\n
-´´½¨¹ıÂËÆ÷Ê±£¬Í¬Ê±ÊµÏÖ¶Ô¹ıÂËÆ÷µÄÉèÖÃ£»Èô²»ĞèÒªÊı¾İ¹ıÂË£¬ÉèÖÃ¹ıÂËÆ÷Éî¶ÈÎª0¼´¿É\n
-ÈôĞèÒªĞŞ¸Ä¹ıÂËÆ÷ÊôĞÔ£¬¿Éµ÷ÓÃHI_UNF_DMX_SetFilterAttr½øĞĞÊôĞÔĞŞ¸Ä\n
-Ö§³ÖÊôĞÔµÄ¶¯Ì¬ĞŞ¸Ä\n
-¹ıÂËÆ÷ÓÃÓÚ¹ıÂËSectionÊı¾İÊ±£¬ÓĞĞ§¹ıÂË×Ö½ÚÎªµÚ1×Ö½Ú¼°µÚ4×Ö½Ú¡«µÚ18×Ö½Ú\n
-¹ıÂËÆ÷ÓÃÓÚ¹ıÂËPESÊı¾İÊ±£¬ÓĞĞ§¹ıÂË×Ö½ÚÎªµÚ4×Ö½Ú¼°µÚ7×Ö½Ú¡«µÚ21×Ö½Ú\n
-¹ıÂËÆ÷Ö»ÊÊÓÃÓÚÍ¨ÓÃÍ¨µÀµÄÊı¾İ¹ıÂË£¬°üÀ¨sectionÍ¨µÀ¡¢ECM/EMMÍ¨µÀºÍPESÍ¨µÀ\n
-Èô·ÖÅä³É¹¦£¬phFilter·µ»Ø»ñÈ¡µÄ¹ıÂËÆ÷Handle¡£CNend
-\param[in] u32DmxId    DEMUX ID. CNcomment: DEMUXºÅ¡£CNend
-\param[in] pstFilterAttr   Pointer to the attributes of a filter (input).CNcomment:Ö¸ÕëÀàĞÍ£¬ÊäÈë¹ıÂËÆ÷ÊôĞÔ¡£CNend
-\param[out] phFilter   Pointer to the handle of the created filter (output).CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³öÉêÇëµÄ¹ıÂËÆ÷Handle¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOFREE_FILTER There is no available filter.CNcomment:Ã»ÓĞ¿ÕÏĞfilter¡£CNend
+CNcomment:è¿‡æ»¤å™¨æ·±åº¦æœ€å¤§ä¸º16\n
+è¿‡æ»¤å™¨å±æ€§é…ç½®è¯·å‚è€ƒ::HI_UNF_DMX_FILTER_ATTR_S\n
+åˆ›å»ºè¿‡æ»¤å™¨æ—¶ï¼ŒåŒæ—¶å®ç°å¯¹è¿‡æ»¤å™¨çš„è®¾ç½®ï¼›è‹¥ä¸éœ€è¦æ•°æ®è¿‡æ»¤ï¼Œè®¾ç½®è¿‡æ»¤å™¨æ·±åº¦ä¸º0å³å¯\n
+è‹¥éœ€è¦ä¿®æ”¹è¿‡æ»¤å™¨å±æ€§ï¼Œå¯è°ƒç”¨HI_UNF_DMX_SetFilterAttrè¿›è¡Œå±æ€§ä¿®æ”¹\n
+æ”¯æŒå±æ€§çš„åŠ¨æ€ä¿®æ”¹\n
+è¿‡æ»¤å™¨ç”¨äºè¿‡æ»¤Sectionæ•°æ®æ—¶ï¼Œæœ‰æ•ˆè¿‡æ»¤å­—èŠ‚ä¸ºç¬¬1å­—èŠ‚åŠç¬¬4å­—èŠ‚ï½ç¬¬18å­—èŠ‚\n
+è¿‡æ»¤å™¨ç”¨äºè¿‡æ»¤PESæ•°æ®æ—¶ï¼Œæœ‰æ•ˆè¿‡æ»¤å­—èŠ‚ä¸ºç¬¬4å­—èŠ‚åŠç¬¬7å­—èŠ‚ï½ç¬¬21å­—èŠ‚\n
+è¿‡æ»¤å™¨åªé€‚ç”¨äºé€šç”¨é€šé“çš„æ•°æ®è¿‡æ»¤ï¼ŒåŒ…æ‹¬sectioné€šé“ã€ECM/EMMé€šé“å’ŒPESé€šé“\n
+è‹¥åˆ†é…æˆåŠŸï¼ŒphFilterè¿”å›è·å–çš„è¿‡æ»¤å™¨Handleã€‚CNend
+\param[in] u32DmxId    DEMUX ID. CNcomment: DEMUXå·ã€‚CNend
+\param[in] pstFilterAttr   Pointer to the attributes of a filter (input).CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å…¥è¿‡æ»¤å™¨å±æ€§ã€‚CNend
+\param[out] phFilter   Pointer to the handle of the created filter (output).CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºç”³è¯·çš„è¿‡æ»¤å™¨Handleã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOFREE_FILTER There is no available filter.CNcomment:æ²¡æœ‰ç©ºé—²filterã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_CreateFilter(HI_U32 u32DmxId, const HI_UNF_DMX_FILTER_ATTR_S  *pstFilterAttr,
             HI_HANDLE *phFilter);
 
 
 /**
-\brief Destroys an existing data filter.CNcomment:Ïú»Ù´´½¨µÄÊı¾İ¹ıÂËÆ÷¡£CNend
+\brief Destroys an existing data filter.CNcomment:é”€æ¯åˆ›å»ºçš„æ•°æ®è¿‡æ»¤å™¨ã€‚CNend
 \attention \n
 If a filter is attached to a general-purpose channel, you can call this API to release the filter when the channel is enabled or disabled.\n
 If no filter is attached to a Section channel, the channel cannot receive data. This restriction is not applicable to other channels.
-CNcomment:Èô¹ıÂËÆ÷ºÍÍ¨ÓÃÍ¨µÀ°ó¶¨£¬ÔÊĞíÔÚÍ¨µÀ´ò¿ª»òÕß¹Ø±Õ×´Ì¬ÏÂ£¬µ÷ÓÃ±¾½Ó¿ÚÊÍ·Å¹ıÂËÆ÷\n
-¶ÔÓÚsectionÍ¨µÀµ±Í¨µÀÉÏÃ»ÓĞÈÎºÎ¹ıÂËÆ÷°ó¶¨Ê±£¬Ôò²»ÔÙ½ÓÊÕÊı¾İ£¬ÆäËûÍ¨µÀÃ»ÓĞ´ËÏŞÖÆ¡£CNend
-\param[in] hFilter  Filter handle.CNcomment:¹ıÂËÆ÷¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
+CNcomment:è‹¥è¿‡æ»¤å™¨å’Œé€šç”¨é€šé“ç»‘å®šï¼Œå…è®¸åœ¨é€šé“æ‰“å¼€æˆ–è€…å…³é—­çŠ¶æ€ä¸‹ï¼Œè°ƒç”¨æœ¬æ¥å£é‡Šæ”¾è¿‡æ»¤å™¨\n
+å¯¹äºsectioné€šé“å½“é€šé“ä¸Šæ²¡æœ‰ä»»ä½•è¿‡æ»¤å™¨ç»‘å®šæ—¶ï¼Œåˆ™ä¸å†æ¥æ”¶æ•°æ®ï¼Œå…¶ä»–é€šé“æ²¡æœ‰æ­¤é™åˆ¶ã€‚CNend
+\param[in] hFilter  Filter handle.CNcomment:è¿‡æ»¤å™¨å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_DestroyFilter(HI_HANDLE hFilter);
 
 
 /**
-\brief Releases all the filters attached to a channel.CNcomment:ÊÍ·Å°ó¶¨ÔÚÄ³¸öÍ¨µÀÉÏµÄËùÓĞ¹ıÂËÆ÷¡£CNend
+\brief Releases all the filters attached to a channel.CNcomment:é‡Šæ”¾ç»‘å®šåœ¨æŸä¸ªé€šé“ä¸Šçš„æ‰€æœ‰è¿‡æ»¤å™¨ã€‚CNend
 \attention \n
-You can call this API to release all filters attached to a channel when the channel is enabled or disabled.CNcomment:ÔÊĞíÔÚÍ¨µÀ´ò¿ª»òÕß¹Ø±Õ×´Ì¬ÏÂ£¬µ÷ÓÃ±¾½Ó¿ÚÊÍ·ÅÍ¨µÀÉÏ°ó¶¨µÄËùÓĞ¹ıÂËÆ÷¡£CNend
-\param[in] hChannel  Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is valid.CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
+You can call this API to release all filters attached to a channel when the channel is enabled or disabled.CNcomment:å…è®¸åœ¨é€šé“æ‰“å¼€æˆ–è€…å…³é—­çŠ¶æ€ä¸‹ï¼Œè°ƒç”¨æœ¬æ¥å£é‡Šæ”¾é€šé“ä¸Šç»‘å®šçš„æ‰€æœ‰è¿‡æ»¤å™¨ã€‚CNend
+\param[in] hChannel  Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is valid.CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
 \see \n
-N/A.CNcomment:ÎŞ¡£CNend
+N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_DeleteAllFilter(HI_HANDLE hChannel);
 
 
 /**
-\brief Sets the filter criteria of a filter.CNcomment:ÉèÖÃ¹ıÂËÆ÷µÄ¹ıÂËÌõ¼ş¡£CNend
+\brief Sets the filter criteria of a filter.CNcomment:è®¾ç½®è¿‡æ»¤å™¨çš„è¿‡æ»¤æ¡ä»¶ã€‚CNend
 \attention \n
 The maximum filter depth u32FilterDepth is 16.\n
 For details on how to set the attributes of a filter, see the description of ::HI_UNF_DMX_FILTER_ATTR_S.\n
 If a filter is used to filter the Section data, the valid byte is byte 1 and byte 4 to byte 18.\n
 If a filter is used to filter the PES data, the valid byte is byte 4 and byte 7 to byte 21.\n
 The attributes can be modified dynamically.
-CNcomment:¹ıÂËÆ÷µÄÉî¶ÈÊôĞÔu32FilterDepth×î´óÎª16\n
-¹ıÂËÆ÷ÊôĞÔÅäÖÃÇë²Î¿¼::HI_UNF_DMX_FILTER_ATTR_S\n
-¹ıÂËÆ÷ÓÃÓÚ¹ıÂËSectionÊı¾İÊ±£¬ÓĞĞ§¹ıÂË×Ö½ÚÎªµÚ1×Ö½Ú¼°µÚ4×Ö½Ú¡«µÚ18×Ö½Ú\n
-¹ıÂËÆ÷ÓÃÓÚ¹ıÂËPESÊı¾İÊ±£¬ÓĞĞ§¹ıÂË×Ö½ÚÎªµÚ4×Ö½Ú¼°µÚ7×Ö½Ú¡«µÚ21×Ö½Ú\n
-Ö§³ÖÊôĞÔµÄ¶¯Ì¬ĞŞ¸Ä¡£CNend
-\param[in] hFilter   Filter handle.CNcomment:¹ıÂËÆ÷¾ä±ú¡£CNend
-\param[in] pstFilterAttr   Pointer to the attributes of a filter (input).CNcomment:Ö¸ÕëÀàĞÍ£¬ÊäÈë¹ıÂËÆ÷ÊôĞÔ¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_ATTACHED_FILTER  The attributes cannot be set dynamically, because the filter is attached to a channel.CNcomment:¹ıÂËÆ÷°ó¶¨ÔÚÍ¨µÀÉÏ£¬²»ÄÜ¶¯Ì¬ÉèÖÃ¡£CNend
+CNcomment:è¿‡æ»¤å™¨çš„æ·±åº¦å±æ€§u32FilterDepthæœ€å¤§ä¸º16\n
+è¿‡æ»¤å™¨å±æ€§é…ç½®è¯·å‚è€ƒ::HI_UNF_DMX_FILTER_ATTR_S\n
+è¿‡æ»¤å™¨ç”¨äºè¿‡æ»¤Sectionæ•°æ®æ—¶ï¼Œæœ‰æ•ˆè¿‡æ»¤å­—èŠ‚ä¸ºç¬¬1å­—èŠ‚åŠç¬¬4å­—èŠ‚ï½ç¬¬18å­—èŠ‚\n
+è¿‡æ»¤å™¨ç”¨äºè¿‡æ»¤PESæ•°æ®æ—¶ï¼Œæœ‰æ•ˆè¿‡æ»¤å­—èŠ‚ä¸ºç¬¬4å­—èŠ‚åŠç¬¬7å­—èŠ‚ï½ç¬¬21å­—èŠ‚\n
+æ”¯æŒå±æ€§çš„åŠ¨æ€ä¿®æ”¹ã€‚CNend
+\param[in] hFilter   Filter handle.CNcomment:è¿‡æ»¤å™¨å¥æŸ„ã€‚CNend
+\param[in] pstFilterAttr   Pointer to the attributes of a filter (input).CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å…¥è¿‡æ»¤å™¨å±æ€§ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_ATTACHED_FILTER  The attributes cannot be set dynamically, because the filter is attached to a channel.CNcomment:è¿‡æ»¤å™¨ç»‘å®šåœ¨é€šé“ä¸Šï¼Œä¸èƒ½åŠ¨æ€è®¾ç½®ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_SetFilterAttr(HI_HANDLE hFilter, const HI_UNF_DMX_FILTER_ATTR_S *pstFilterAttr);
 
 
 /**
-\brief Obtains the filter criteria of a filter.CNcomment:»ñÈ¡¹ıÂËÆ÷µÄ¹ıÂËÌõ¼ş¡£CNend
+\brief Obtains the filter criteria of a filter.CNcomment:è·å–è¿‡æ»¤å™¨çš„è¿‡æ»¤æ¡ä»¶ã€‚CNend
 \attention \n
 If you call the API before a filter is allocated, an error code is returned.
-CNcomment:ÔÚ¹ıÂËÆ÷Î´·ÖÅäÊ±µ÷ÓÃ¸Ã½Ó¿Ú£¬·µ»Ø´íÎó¡£CNend
-\param[in] hFilter   Filter handle.CNcomment:¹ıÂËÆ÷¾ä±ú¡£CNend
-\param[out] pstFilterAttr   Pointer to the attributes of a filter (output). For details, see the description of ::HI_UNF_DMX_FILTER_ATTR_S.CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³ö¹ıÂËÆ÷ÊôĞÔ¡£Çë²Î¼û::HI_UNF_DMX_FILTER_ATTR_S¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment:åœ¨è¿‡æ»¤å™¨æœªåˆ†é…æ—¶è°ƒç”¨è¯¥æ¥å£ï¼Œè¿”å›é”™è¯¯ã€‚CNend
+\param[in] hFilter   Filter handle.CNcomment:è¿‡æ»¤å™¨å¥æŸ„ã€‚CNend
+\param[out] pstFilterAttr   Pointer to the attributes of a filter (output). For details, see the description of ::HI_UNF_DMX_FILTER_ATTR_S.CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºè¿‡æ»¤å™¨å±æ€§ã€‚è¯·å‚è§::HI_UNF_DMX_FILTER_ATTR_Sã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetFilterAttr(HI_HANDLE hFilter, HI_UNF_DMX_FILTER_ATTR_S *pstFilterAttr);
 
 
 /**
-\brief  Attaches filters to a specific channel.CNcomment:°ó¶¨¹ıÂËÆ÷µ½Ö¸¶¨µÄÍ¨µÀ¡£CNend
+\brief  Attaches filters to a specific channel.CNcomment:ç»‘å®šè¿‡æ»¤å™¨åˆ°æŒ‡å®šçš„é€šé“ã€‚CNend
 \attention \n
 One or more filters can be attached to a general-purpose channel. All filters are ORed.\n
 That is, if the data meets the filter criteria of a filter, the data is transmitted to the DMA buffer.\n
@@ -1177,88 +1177,88 @@ Filters cannot be attached to the audio/video channel and post channel.\n
 If a filter is used, it cannot be attached to one or more channels repeatedly.\n
 If a filter and a channel do not belong to the same DEMUX, the filter cannot be detached from the channel.\n
 A filter can be attached to a general-purpose channel when the channel is enabled or disabled.
-CNcomment:Ò»¸öÍ¨ÓÃÍ¨µÀ¿ÉÒÔ°ó¶¨Ò»¸ö»òÕß¶à¸öÊı¾İ¹ıÂËÆ÷£¬ËùÓĞ¹ıÂËÆ÷Ö®¼äµÄ¹ıÂË¹ØÏµÊÇ»ò¡£\n
-¼´Ö»ÒªÂú×ãÆäÖĞÈÎºÎÒ»¸ö¹ıÂËÆ÷µÄ¹ıÂËÌõ¼ş£¬µ±Ç°¹ıÂËµÄÊı¾İ¶¼½«Í¨¹ı¹ıÂË¶ø±»ËÍÈëDMA»º³åÇø\n
-²»Ö§³ÖÒôÊÓÆµÍ¨µÀºÍPOSTÍ¨µÀµÄ¹ıÂËÆ÷°ó¶¨\n
-²»ÄÜ½«Ò»¸ö¹ıÂËÆ÷ÖØ¸´°ó¶¨µ½Ò»¸ö»ò¶à¸öÍ¨µÀÉÏ\n
-¹ıÂËÆ÷ÓëÍ¨µÀ²»ÊôÓÚÍ¬Ò»Â·DEMUXÊ±£¬²»ÄÜ½øĞĞ°ó¶¨²Ù×÷\n
-Ö§³ÖÍ¨ÓÃÍ¨µÀ´ò¿ª»òÕß¹Ø±Õ×´Ì¬ÏÂµÄ¹ıÂËÆ÷°ó¶¨¡£CNend
-\param[in] hFilter  Filter handle.CNcomment:¹ıÂËÆ÷¾ä±ú¡£CNend
-\param[in] hChannel   Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_ATTACHED_FILTER  The filter is attached.CNcomment:¹ıÂËÆ÷ÒÑ¾­´¦ÓÚ°ó¶¨×´Ì¬¡£CNend
-\retval ::HI_ERR_DMX_NOT_SUPPORT   No filter can be attached to the channel.CNcomment:´ËÀàĞÍÍ¨µÀ²»Ö§³Ö°ó¶¨¹ıÂËÆ÷¡£CNend
+CNcomment:ä¸€ä¸ªé€šç”¨é€šé“å¯ä»¥ç»‘å®šä¸€ä¸ªæˆ–è€…å¤šä¸ªæ•°æ®è¿‡æ»¤å™¨ï¼Œæ‰€æœ‰è¿‡æ»¤å™¨ä¹‹é—´çš„è¿‡æ»¤å…³ç³»æ˜¯æˆ–ã€‚\n
+å³åªè¦æ»¡è¶³å…¶ä¸­ä»»ä½•ä¸€ä¸ªè¿‡æ»¤å™¨çš„è¿‡æ»¤æ¡ä»¶ï¼Œå½“å‰è¿‡æ»¤çš„æ•°æ®éƒ½å°†é€šè¿‡è¿‡æ»¤è€Œè¢«é€å…¥DMAç¼“å†²åŒº\n
+ä¸æ”¯æŒéŸ³è§†é¢‘é€šé“å’ŒPOSTé€šé“çš„è¿‡æ»¤å™¨ç»‘å®š\n
+ä¸èƒ½å°†ä¸€ä¸ªè¿‡æ»¤å™¨é‡å¤ç»‘å®šåˆ°ä¸€ä¸ªæˆ–å¤šä¸ªé€šé“ä¸Š\n
+è¿‡æ»¤å™¨ä¸é€šé“ä¸å±äºåŒä¸€è·¯DEMUXæ—¶ï¼Œä¸èƒ½è¿›è¡Œç»‘å®šæ“ä½œ\n
+æ”¯æŒé€šç”¨é€šé“æ‰“å¼€æˆ–è€…å…³é—­çŠ¶æ€ä¸‹çš„è¿‡æ»¤å™¨ç»‘å®šã€‚CNend
+\param[in] hFilter  Filter handle.CNcomment:è¿‡æ»¤å™¨å¥æŸ„ã€‚CNend
+\param[in] hChannel   Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_ATTACHED_FILTER  The filter is attached.CNcomment:è¿‡æ»¤å™¨å·²ç»å¤„äºç»‘å®šçŠ¶æ€ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_SUPPORT   No filter can be attached to the channel.CNcomment:æ­¤ç±»å‹é€šé“ä¸æ”¯æŒç»‘å®šè¿‡æ»¤å™¨ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_AttachFilter(HI_HANDLE hFilter, HI_HANDLE hChannel);
 
 
 
 /**
-\brief Detaches a filter from a specific channel.CNcomment:½«¹ıÂËÆ÷´ÓÖ¸¶¨Í¨µÀÉÏ½â°ó¶¨¡£CNend
+\brief Detaches a filter from a specific channel.CNcomment:å°†è¿‡æ»¤å™¨ä»æŒ‡å®šé€šé“ä¸Šè§£ç»‘å®šã€‚CNend
 \attention \n
 If no filter is attached to a channel, the error code HI_FAILURE is returned when you call this API.\n
 If a filter and a channel do not belong to the same DEMUX, an error code is returned.\n
 A filter can be detached from a general-purpose channel when the channel is enabled or disabled.
-CNcomment:Í¨µÀÉÏÃ»ÓĞ°ó¶¨¹ıÂËÆ÷½øĞĞ½â°ó¶¨·µ»ØÊ§°Ü\n
-¹ıÂËÆ÷ÓëÍ¨µÀ²»ÊôÓÚÍ¬Ò»Â·DEMUXÎ¬»¤Ê±£¬·µ»Ø´íÎó\n
-Ö§³ÖÍ¨ÓÃÍ¨µÀ´ò¿ª»òÕß¹Ø±Õ×´Ì¬ÏÂµÄ¹ıÂËÆ÷½â°ó¶¨¡£CNend
-\param[in] hFilter   Filter handle.CNcomment:¹ıÂËÆ÷¾ä±ú¡£CNend
-\param[in] hChannel  Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NOATTACH_FILTER  No filter is attached to any channel.CNcomment:filterÃ»ÓĞ°ó¶¨ÔÚÈÎºÎÍ¨µÀÉÏ¡£CNend
-\retval ::HI_ERR_DMX_UNMATCH_FILTER  No filter is attached to the channel.CNcomment:filterÃ»ÓĞ°ó¶¨ÔÚ´ËÍ¨µÀÉÏ¡£CNend
+CNcomment:é€šé“ä¸Šæ²¡æœ‰ç»‘å®šè¿‡æ»¤å™¨è¿›è¡Œè§£ç»‘å®šè¿”å›å¤±è´¥\n
+è¿‡æ»¤å™¨ä¸é€šé“ä¸å±äºåŒä¸€è·¯DEMUXç»´æŠ¤æ—¶ï¼Œè¿”å›é”™è¯¯\n
+æ”¯æŒé€šç”¨é€šé“æ‰“å¼€æˆ–è€…å…³é—­çŠ¶æ€ä¸‹çš„è¿‡æ»¤å™¨è§£ç»‘å®šã€‚CNend
+\param[in] hFilter   Filter handle.CNcomment:è¿‡æ»¤å™¨å¥æŸ„ã€‚CNend
+\param[in] hChannel  Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NOATTACH_FILTER  No filter is attached to any channel.CNcomment:filteræ²¡æœ‰ç»‘å®šåœ¨ä»»ä½•é€šé“ä¸Šã€‚CNend
+\retval ::HI_ERR_DMX_UNMATCH_FILTER  No filter is attached to the channel.CNcomment:filteræ²¡æœ‰ç»‘å®šåœ¨æ­¤é€šé“ä¸Šã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_DetachFilter(HI_HANDLE hFilter, HI_HANDLE hChannel);
 
 
 /**
-\brief Obtains the handle of the channel to which a filter is attached.CNcomment:»ñÈ¡¹ıÂËÆ÷Ëù°ó¶¨µÄÍ¨µÀ¾ä±ú¡£CNend
+\brief Obtains the handle of the channel to which a filter is attached.CNcomment:è·å–è¿‡æ»¤å™¨æ‰€ç»‘å®šçš„é€šé“å¥æŸ„ã€‚CNend
 \attention \n
-Each filter corresponds to a channel. If a filter is not attached to a channel, the error code HI_ERR_DMX_NOATTACH_FILTER is returned.CNcomment:Ã¿¸ö¹ıÂËÆ÷Î¨Ò»¶ÔÓ¦Ò»¸öÍ¨µÀ¡£Èô¹ıÂËÆ÷Ã»ÓĞ°ó¶¨ÈÎºÎµ½Í¨µÀÉÏ£¬Ôò·µ»ØHI_ERR_DMX_NOATTACH_FILTER´íÎóÂë¡£CNend
-\param[in] hFilter    Filter handle.CNcomment:¹ıÂËÆ÷¾ä±ú¡£CNend
-\param[out] phChannel   Pointer to the handle of the channel to which a filter is attached (output).CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³ö¹ıÂËÆ÷°ó¶¨µÄÍ¨µÀ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOATTACH_FILTER  No filter is attached to any channel.CNcomment:filterÃ»ÓĞ°ó¶¨ÔÚÈÎºÎÍ¨µÀÉÏ¡£CNend
+Each filter corresponds to a channel. If a filter is not attached to a channel, the error code HI_ERR_DMX_NOATTACH_FILTER is returned.CNcomment:æ¯ä¸ªè¿‡æ»¤å™¨å”¯ä¸€å¯¹åº”ä¸€ä¸ªé€šé“ã€‚è‹¥è¿‡æ»¤å™¨æ²¡æœ‰ç»‘å®šä»»ä½•åˆ°é€šé“ä¸Šï¼Œåˆ™è¿”å›HI_ERR_DMX_NOATTACH_FILTERé”™è¯¯ç ã€‚CNend
+\param[in] hFilter    Filter handle.CNcomment:è¿‡æ»¤å™¨å¥æŸ„ã€‚CNend
+\param[out] phChannel   Pointer to the handle of the channel to which a filter is attached (output).CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºè¿‡æ»¤å™¨ç»‘å®šçš„é€šé“å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOATTACH_FILTER  No filter is attached to any channel.CNcomment:filteræ²¡æœ‰ç»‘å®šåœ¨ä»»ä½•é€šé“ä¸Šã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetFilterChannelHandle(HI_HANDLE hFilter, HI_HANDLE *phChannel);
 
 
 /**
-\brief Obtains the number of available filters of a DEMUX.CNcomment:»ñÈ¡DEMUXÉè±¸¿ÉÓÃµÄ¿ÕÏĞ¹ıÂËÆ÷ÊıÁ¿¡£CNend
+\brief Obtains the number of available filters of a DEMUX.CNcomment:è·å–DEMUXè®¾å¤‡å¯ç”¨çš„ç©ºé—²è¿‡æ»¤å™¨æ•°é‡ã€‚CNend
 \attention \n
 The number of unallocated filters is returned. The filters that are allocated but not attached to channels are excluded.
-CNcomment:·µ»Øµ±Ç°Î´·ÖÅäµÄ¹ıÂËÆ÷ÊıÄ¿£¬ÒÑ·ÖÅäµ«Î´°ó¶¨µ½Í¨µÀÉÏµÄ¹ıÂËÆ÷²»Í³¼Æ¡£CNend
-\param[in] u32DmxId   DEMUX ID. CNcomment: DEMUXºÅ¡£CNend
-\param[out]  pu32FreeCount  Pointer to the number of allocated filters (output).CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³öµ±Ç°Î´·ÖÅäµÄ¹ıÂËÆ÷ÊıÄ¿¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment:è¿”å›å½“å‰æœªåˆ†é…çš„è¿‡æ»¤å™¨æ•°ç›®ï¼Œå·²åˆ†é…ä½†æœªç»‘å®šåˆ°é€šé“ä¸Šçš„è¿‡æ»¤å™¨ä¸ç»Ÿè®¡ã€‚CNend
+\param[in] u32DmxId   DEMUX ID. CNcomment: DEMUXå·ã€‚CNend
+\param[out]  pu32FreeCount  Pointer to the number of allocated filters (output).CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºå½“å‰æœªåˆ†é…çš„è¿‡æ»¤å™¨æ•°ç›®ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetFreeFilterCount(HI_U32 u32DmxId ,  HI_U32 * pu32FreeCount);
 
 
 /**
-\brief Obtains the handles of all channels that receive new data.CNcomment:»ñÈ¡ÓĞĞÂÊı¾İµ½´ïµÄËùÓĞÍ¨µÀµÄ¾ä±ú¡£CNend
+\brief Obtains the handles of all channels that receive new data.CNcomment:è·å–æœ‰æ–°æ•°æ®åˆ°è¾¾çš„æ‰€æœ‰é€šé“çš„å¥æŸ„ã€‚CNend
 \attention \n
 When you call this API, the parameter pu32ChNum serves as the input parameter and is used to specify the data length pointed by phChannel. pu32ChNum indicates the number of channels to be queried.\n
 The number of channels must be initialized, and the initial value cannot be 0.\n
@@ -1267,36 +1267,36 @@ After you call this API successfully, the parameter pu32ChNum serves as the outp
 The block time is configurable (in ms). If u32TimeOutMs is set to 0, it indicates that the block time is 0; if u32TimeOutMs is set to 0xFFFFFFFF, it indicates infinite wait.\n
 If no data is received when the block time is exceeded, the error code HI_ERR_DMX_TIMEOUT is returned.\n
 If the wait time is 0, and no data is received in any channel, ::HI_ERR_DMX_NOAVAILABLE_DATA is returned.
-CNcomment:µ÷ÓÃ¸Ã½Ó¿ÚÊ±£¬pu32ChNum×÷ÎªÊäÈë²ÎÊı£¬ÓÃÓÚÖ¸¶¨phChannelÖ¸ÏòÊı×éµÄ³¤¶È£¬±íÊ¾Òª²éÑ¯µÄÍ¨µÀ¸öÊı£»\n
-Í¨µÀ¸öÊı±ØĞë³õÊ¼»¯£¬ÇÒ³õÊ¼Öµ±ØĞëÎª·Ç0Öµ\n
-½¨Òé½«Í¨µÀ¸öÊıÉèÖÃÎªÍ¨µÀµÄ×Ü¸öÊı\n
-µ±¸Ã½Ó¿Úµ÷ÓÃ³É¹¦Ê±£¬pu32ChNum×÷ÎªÊä³ö²ÎÊı£¬Ö¸¶¨phChannelÖ¸ÏòÊı×éµÄÓĞĞ§³¤¶È\n
-×èÈûÊ±¼ä¿ÉÒÔÉèÖÃ£¬Ê±¼äµ¥Î»ÎªºÁÃë£¬ÉèÖÃÎª0²»µÈ´ı£¬ÉèÖÃÎª0xffffffffÒ»Ö±µÈ´ı¡£\n
-Èô³¬¹ı×èÈûÊ±¼ä£¬ËùÓĞÍ¨µÀ¶¼Ã»ÓĞÊı¾İµ½´ï£¬Ôò·µ»ØµÈ´ı³¬Ê±´íÎó\n
-Èç¹ûµÈ´ıÊ±¼äÎª0£¬¶øÇÒÃ»ÓĞÈÎºÎÍ¨µÀÓĞÊı¾İÔò·µ»Ø::HI_ERR_DMX_NOAVAILABLE_DATA¡£CNend
-\param[out] phChannel      Pointer to the number of channels. The number of channels depends on the value of pu32ChNum.CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÍ¨µÀ¾ä±úÊı×é¡£Êı×é³¤¶ÈÓĞpu32ChNum¾ö¶¨¡£CNend
+CNcomment:è°ƒç”¨è¯¥æ¥å£æ—¶ï¼Œpu32ChNumä½œä¸ºè¾“å…¥å‚æ•°ï¼Œç”¨äºæŒ‡å®šphChannelæŒ‡å‘æ•°ç»„çš„é•¿åº¦ï¼Œè¡¨ç¤ºè¦æŸ¥è¯¢çš„é€šé“ä¸ªæ•°ï¼›\n
+é€šé“ä¸ªæ•°å¿…é¡»åˆå§‹åŒ–ï¼Œä¸”åˆå§‹å€¼å¿…é¡»ä¸ºé0å€¼\n
+å»ºè®®å°†é€šé“ä¸ªæ•°è®¾ç½®ä¸ºé€šé“çš„æ€»ä¸ªæ•°\n
+å½“è¯¥æ¥å£è°ƒç”¨æˆåŠŸæ—¶ï¼Œpu32ChNumä½œä¸ºè¾“å‡ºå‚æ•°ï¼ŒæŒ‡å®šphChannelæŒ‡å‘æ•°ç»„çš„æœ‰æ•ˆé•¿åº¦\n
+é˜»å¡æ—¶é—´å¯ä»¥è®¾ç½®ï¼Œæ—¶é—´å•ä½ä¸ºæ¯«ç§’ï¼Œè®¾ç½®ä¸º0ä¸ç­‰å¾…ï¼Œè®¾ç½®ä¸º0xffffffffä¸€ç›´ç­‰å¾…ã€‚\n
+è‹¥è¶…è¿‡é˜»å¡æ—¶é—´ï¼Œæ‰€æœ‰é€šé“éƒ½æ²¡æœ‰æ•°æ®åˆ°è¾¾ï¼Œåˆ™è¿”å›ç­‰å¾…è¶…æ—¶é”™è¯¯\n
+å¦‚æœç­‰å¾…æ—¶é—´ä¸º0ï¼Œè€Œä¸”æ²¡æœ‰ä»»ä½•é€šé“æœ‰æ•°æ®åˆ™è¿”å›::HI_ERR_DMX_NOAVAILABLE_DATAã€‚CNend
+\param[out] phChannel      Pointer to the number of channels. The number of channels depends on the value of pu32ChNum.CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘é€šé“å¥æŸ„æ•°ç»„ã€‚æ•°ç»„é•¿åº¦æœ‰pu32ChNumå†³å®šã€‚CNend
 \param[in] pu32ChNum    Pointer type
                            Input: indicates the number of channel handles to which pChannelHandle points.
                            Output: indicates the number of lower-layer channels that receive new data. The maximum value cannot be greater than the input value.
-                           CNcomment: Ö¸ÕëÀàĞÍ¡£×¢Òâ:¸Ã²ÎÊıÍ¬Ê±×÷ÎªÊäÈëºÍÊä³ö¡£CNend
-                           CNcomment: ÊäÈë£ºpChannelHandleÖ¸ÏòÊı×éµÄ³¤¶È¡£CNend
-                           CNcomment: Êä³ö£ºµ×²ãÓĞĞÂÊı¾İÍ¨µÀµÄÊıÄ¿£»×î¶à²»³¬¹ıÊäÈëµÄÊıÖµ¡£CNend
-\param[in] u32TimeOutMs      Wait timeout, in ms.CNcomment:µÈ´ı³¬Ê±Ê±¼ä£¬µ¥Î»ms¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOAVAILABLE_DATA  No data is received in any channel.CNcomment:Ã»ÓĞÈÎºÎÍ¨µÀÓĞÊı¾İµ½´ï¡£CNend
-\retval ::HI_ERR_DMX_TIMEOUT  The wait times out.CNcomment:µÈ´ı³¬Ê±¡£CNend
+                           CNcomment: æŒ‡é’ˆç±»å‹ã€‚æ³¨æ„:è¯¥å‚æ•°åŒæ—¶ä½œä¸ºè¾“å…¥å’Œè¾“å‡ºã€‚CNend
+                           CNcomment: è¾“å…¥ï¼špChannelHandleæŒ‡å‘æ•°ç»„çš„é•¿åº¦ã€‚CNend
+                           CNcomment: è¾“å‡ºï¼šåº•å±‚æœ‰æ–°æ•°æ®é€šé“çš„æ•°ç›®ï¼›æœ€å¤šä¸è¶…è¿‡è¾“å…¥çš„æ•°å€¼ã€‚CNend
+\param[in] u32TimeOutMs      Wait timeout, in ms.CNcomment:ç­‰å¾…è¶…æ—¶æ—¶é—´ï¼Œå•ä½msã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOAVAILABLE_DATA  No data is received in any channel.CNcomment:æ²¡æœ‰ä»»ä½•é€šé“æœ‰æ•°æ®åˆ°è¾¾ã€‚CNend
+\retval ::HI_ERR_DMX_TIMEOUT  The wait times out.CNcomment:ç­‰å¾…è¶…æ—¶ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_GetDataHandle(HI_HANDLE *phChannel, HI_U32 *pu32ChNum,
             HI_U32 u32TimeOutMs);
 
 /**
-\brief Obtains whether data is received in some channels.CNcomment:²éÑ¯²¿·ÖÍ¨µÀÊÇ·ñÓĞÊı¾İµ½´ï¡£CNend
+\brief Obtains whether data is received in some channels.CNcomment:æŸ¥è¯¢éƒ¨åˆ†é€šé“æ˜¯å¦æœ‰æ•°æ®åˆ°è¾¾ã€‚CNend
 \attention \n
 This API is a supplementary interface of ::HI_UNF_DMX_GetDataHandle. You can call this API when you only want to check whether data is received in some channels.
 The handles of the channels to be queried are specified by phWatchChannel, and the number of channels to be queried is specified by u32WatchNum.\n
@@ -1304,33 +1304,33 @@ If phWatchChannel is NULL, all channels are queried. The value of u32WatchNum ca
 The block time is configurable (in ms). If u32TimeOutMs is set to 0, it indicates that the block time is 0; if u32TimeOutMs is set to 0xFFFFFFFF, it indicates infinite wait.\n
 If no data is received when the block time is exceeded, the error code HI_ERR_DMX_TIMEOUT is returned.\n
 If the wait time is 0, and no data is received in any channel, ::HI_ERR_DMX_NOAVAILABLE_DATA is returned.
-CNcomment:ÓÃÀ´×÷Îª::HI_UNF_DMX_GetDataHandleµÄ²¹³ä£¬µ±Ó¦ÓÃÖĞÖ»¹Ø×¢²¿·ÖÍ¨µÀµÄÊı¾İµ½´ïÇé¿öÊ±Ê¹ÓÃ´Ë½Ó¿Ú\n
-±»¼àÊÓÍ¨µÀµÄ¾ä±úÓÉphWatchChannelÖ¸¶¨£¬¸öÊıÓÉu32WatchNumÖ¸¶¨\n
-phWatchChannelÎªNULL,²éÑ¯ËùÓĞÍ¨µÀµÄÊı¾İµ½´ïÇé¿ö£¬u32WatchNum±ØĞëÎª·Ç0Öµ\n
-×èÈûÊ±¼ä¿ÉÒÔÉèÖÃ£¬Ê±¼äµ¥Î»ÎªºÁÃë£¬ÉèÖÃÎª0²»µÈ´ı£¬ÉèÖÃÎª0xffffffffÒ»Ö±µÈ´ı¡£\n
-Èô³¬¹ı×èÈûÊ±¼ä£¬ËùÓĞÍ¨µÀ¶¼Ã»ÓĞÊı¾İµ½´ï£¬Ôò·µ»ØµÈ´ı³¬Ê±´íÎó\n
-Èç¹ûµÈ´ıÊ±¼äÎª0£¬¶øÇÒÃ»ÓĞÈÎºÎÍ¨µÀÓĞÊı¾İÔò·µ»Ø::HI_ERR_DMX_NOAVAILABLE_DATA¡£CNend
-\param[in] phWatchChannel   Pointer to the number of handles of the channels to be queried. The number depends on the value of u32WatchNum.CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸Ïò±»¼àÊÓÍ¨µÀµÄ¾ä±úÊı×é¡£Êı×é³¤¶ÈÓĞu32WatchNum¾ö¶¨¡£CNend
-\param[in] u32WatchNum      Number of channels to be queried.CNcomment:¼àÊÓÍ¨µÀµÄ¸öÊı¡£CNend
-\param[in] phDataChannel    Pointer to the number of handles of the channels that contain data The number depends on the value of pu32ChNum.CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸Ïò´æÔÚÊı¾İµÄÍ¨µÀµÄ¾ä±úÊı×é¡£Êı×é³¤¶ÈÓĞpu32ChNum¾ö¶¨¡£CNend
-\param[out] pu32ChNum       Pointer to the number of lower-layer channels that receive new data. The maximum value cannot be greater than the input value.CNcomment:Ö¸ÕëÀàĞÍ¡£µ×²ãÓĞĞÂÊı¾İÍ¨µÀµÄÊıÄ¿£»×î¶à²»³¬¹ı±»¼àÊÓµÄÍ¨µÀµÄÊıÖµ¡£CNend
-\param[in] u32TimeOutMs     Wait timeout, in ms.CNcomment:µÈ´ı³¬Ê±Ê±¼ä£¬µ¥Î»ms¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR   The pointer is null.CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOAVAILABLE_DATA   No data is received in any channel.CNcomment:Ã»ÓĞÈÎºÎÍ¨µÀÓĞÊı¾İµ½´ï¡£CNend
-\retval ::HI_ERR_DMX_TIMEOUT   The wait times out.CNcomment:µÈ´ı³¬Ê±¡£CNend
+CNcomment:ç”¨æ¥ä½œä¸º::HI_UNF_DMX_GetDataHandleçš„è¡¥å……ï¼Œå½“åº”ç”¨ä¸­åªå…³æ³¨éƒ¨åˆ†é€šé“çš„æ•°æ®åˆ°è¾¾æƒ…å†µæ—¶ä½¿ç”¨æ­¤æ¥å£\n
+è¢«ç›‘è§†é€šé“çš„å¥æŸ„ç”±phWatchChannelæŒ‡å®šï¼Œä¸ªæ•°ç”±u32WatchNumæŒ‡å®š\n
+phWatchChannelä¸ºNULL,æŸ¥è¯¢æ‰€æœ‰é€šé“çš„æ•°æ®åˆ°è¾¾æƒ…å†µï¼Œu32WatchNumå¿…é¡»ä¸ºé0å€¼\n
+é˜»å¡æ—¶é—´å¯ä»¥è®¾ç½®ï¼Œæ—¶é—´å•ä½ä¸ºæ¯«ç§’ï¼Œè®¾ç½®ä¸º0ä¸ç­‰å¾…ï¼Œè®¾ç½®ä¸º0xffffffffä¸€ç›´ç­‰å¾…ã€‚\n
+è‹¥è¶…è¿‡é˜»å¡æ—¶é—´ï¼Œæ‰€æœ‰é€šé“éƒ½æ²¡æœ‰æ•°æ®åˆ°è¾¾ï¼Œåˆ™è¿”å›ç­‰å¾…è¶…æ—¶é”™è¯¯\n
+å¦‚æœç­‰å¾…æ—¶é—´ä¸º0ï¼Œè€Œä¸”æ²¡æœ‰ä»»ä½•é€šé“æœ‰æ•°æ®åˆ™è¿”å›::HI_ERR_DMX_NOAVAILABLE_DATAã€‚CNend
+\param[in] phWatchChannel   Pointer to the number of handles of the channels to be queried. The number depends on the value of u32WatchNum.CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘è¢«ç›‘è§†é€šé“çš„å¥æŸ„æ•°ç»„ã€‚æ•°ç»„é•¿åº¦æœ‰u32WatchNumå†³å®šã€‚CNend
+\param[in] u32WatchNum      Number of channels to be queried.CNcomment:ç›‘è§†é€šé“çš„ä¸ªæ•°ã€‚CNend
+\param[in] phDataChannel    Pointer to the number of handles of the channels that contain data The number depends on the value of pu32ChNum.CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘å­˜åœ¨æ•°æ®çš„é€šé“çš„å¥æŸ„æ•°ç»„ã€‚æ•°ç»„é•¿åº¦æœ‰pu32ChNumå†³å®šã€‚CNend
+\param[out] pu32ChNum       Pointer to the number of lower-layer channels that receive new data. The maximum value cannot be greater than the input value.CNcomment:æŒ‡é’ˆç±»å‹ã€‚åº•å±‚æœ‰æ–°æ•°æ®é€šé“çš„æ•°ç›®ï¼›æœ€å¤šä¸è¶…è¿‡è¢«ç›‘è§†çš„é€šé“çš„æ•°å€¼ã€‚CNend
+\param[in] u32TimeOutMs     Wait timeout, in ms.CNcomment:ç­‰å¾…è¶…æ—¶æ—¶é—´ï¼Œå•ä½msã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR   The pointer is null.CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOAVAILABLE_DATA   No data is received in any channel.CNcomment:æ²¡æœ‰ä»»ä½•é€šé“æœ‰æ•°æ®åˆ°è¾¾ã€‚CNend
+\retval ::HI_ERR_DMX_TIMEOUT   The wait times out.CNcomment:ç­‰å¾…è¶…æ—¶ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_SelectDataHandle(HI_HANDLE *phWatchChannel, HI_U32 u32WatchNum,
             HI_HANDLE *phDataChannel, HI_U32 *pu32ChNum, HI_U32 u32TimeOutMs);
 
 
 /**
-\brief Obtains the received data packets from a specific channel.CNcomment:´ÓÖ¸¶¨Í¨µÀÖĞ»ñÈ¡Êä³öµÄÊı¾İ°ü¡£CNend
+\brief Obtains the received data packets from a specific channel.CNcomment:ä»æŒ‡å®šé€šé“ä¸­è·å–è¾“å‡ºçš„æ•°æ®åŒ…ã€‚CNend
 \attention \n
 Before calling this API, you need to set the value of u32AcquireNum to specify the maximum number of buffers that can be queried. The number of buffers depends on the value of u32AcquireNum.\n
 The value of pu32AcquiredNum is not greater than that of u32AcquireNum.\n
@@ -1341,30 +1341,30 @@ For the post channel, each data packet may contain one or more complete TS packe
 For the audio/video channel, data cannot be obtained by calling this API. The audio data and video data are transferred to the decoder through internal interfaces.
 You cannot call this API repeatedly, but you can call this API once and release buffers for several times. Note that you must release buffers in sequence, and the address and size of the buffer to be released must be consistent with those obtained by calling HI_UNF_DMX_AcquireBuf.
 In addition, you can call HI_UNF_DMX_AcquireBuf again only after all data packets are released. Otherwise, the error code HI_ERR_DMX_REACQUIRE_BUF is returned.
-CNcomment:ÔÚµ÷ÓÃ±¾½Ó¿ÚÖ®Ç°£¬¸øu32AcquireNum¸³Öµ£¬Ö¸¶¨ÔÊĞí²éÑ¯µÄ»º³åÇøĞÅÏ¢×î´óÊıÄ¿¡£ÏûÏ¢»º³åÇøÊı×éµÄ³¤¶ÈÓÉu32AcquireNum¾ö¶¨\n
-Êµ¼Ê»ñÈ¡µÄ»º³åÇøĞÅÏ¢ÊıÄ¿pu32AcquiredNumÊıÖµ²»»á³¬¹ıu32AcquireNum\n
-¶ÔÓÚsectionÍ¨µÀºÍECM/EMMÍ¨µÀ£¬Ã¿¸öÊı¾İ°ü°üº¬Ò»¸öÍêÕûµÄsection\n
-¶ÔÓÚPESÍ¨µÀ£¬Ã¿¸öÊı¾İ°ü¾¡Á¿°üº¬ÍêÕûµÄpes£¬µ«ÊÇÈç¹ûpesÌ«´ó£¬¿ÉÄÜÒª·Ö¶à¸öpes°üÊä³ö£¬\n
-Êä³öµÄÊı¾İÊÇ·ñÍêÕûÍ¨¹ıÊı¾İ°ü½á¹¹µÄenDataType×Ö¶ÎÖ¸¶¨\n
-¶ÔÓÚPOSTÀàĞÍµÄÍ¨µÀ£¬Ã¿¸öÊı¾İ°ü°üº¬Ò»¸ö»ò¶à¸öÍêÕûµÄTS°ü£¬TS°ü³¤188×Ö½Ú\n
-¶ÔÓÚÒôÊÓÆµÍ¨µÀÊÇ²»ÄÜÍ¨¹ı´Ë½Ó¿Ú»ñÈ¡Êı¾İµÄ£¬ÒôÊÓÆµÊı¾İ»áÍ¨¹ıÄÚ²¿½Ó¿ÚÖ±½ÓËÍ¸ø½âÂëÆ÷½øĞĞ½âÂë\n
-²»ÔÊĞíÖØ¸´µ÷ÓÃ´Ë½Ó¿Ú£¬¿ÉÒÔÒ»´ÎÇëÇó¶à´ÎÊÍ·Å£¬µ«ÊÇÊÍ·Å±ØĞë°´Ë³Ğò£¬¶øÇÒÊÍ·ÅµÄµØÖ·ºÍ³¤¶È±ØĞëºÍÇëÇóµÄÒ»ÖÂ\n
-²¢ÇÒÖ»ÓĞÊÍ·ÅÍêËùÓĞµÄÊı¾İ°ü²ÅÄÜÔÙ´ÎÇëÇó£¬·ñÔò·µ»ØÖØ¸´ÇëÇó´íÎóÂë¡£CNend
-\param[in] hChannel            Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\param[in] u32AcquireNum       Maximum number of obtained data packets.CNcomment:ÇëÇóµÄÊı¾İ°üµÄ×î´ó¸öÊı¡£CNend
-\param[out] pu32AcquiredNum    Pointer to the actual number of obtained data packets.CNcomment:Ö¸ÕëÀàĞÍ£¬Êä³öÊµ¼ÊÇëÇóµ½µÄÊı¾İ°ü¸öÊı¡£CNend
-\param[out] pstBuf             Pointer to the number of data packets. The number depends on the value of pu32AcquiredNum.CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÊı¾İ°üĞÅÏ¢Êı×é£¬Êı×é¸öÊıÓÉpu32AcquiredNum¾ö¶¨¡£CNend
-\param[in] u32TimeOutMs        Wait timeout, in ms.CNcomment:µÈ´ı³¬Ê±Ê±¼ä£¬µ¥Î»Îªms¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOAVAILABLE_DATA  There is no valid data in the channel.CNcomment:Í¨µÀÖĞÃ»ÓĞÓĞĞ§Êı¾İ¡£CNend
-\retval ::HI_ERR_DMX_TIMEOUT  The wait times out.CNcomment:µÈ´ı³¬Ê±¡£CNend
-\retval ::HI_ERR_DMX_REACQUIRE_BUF  The data packet has been obtained.CNcomment:ÖØ¸´ÇëÇóÊı¾İ°ü¡£CNend
+CNcomment:åœ¨è°ƒç”¨æœ¬æ¥å£ä¹‹å‰ï¼Œç»™u32AcquireNumèµ‹å€¼ï¼ŒæŒ‡å®šå…è®¸æŸ¥è¯¢çš„ç¼“å†²åŒºä¿¡æ¯æœ€å¤§æ•°ç›®ã€‚æ¶ˆæ¯ç¼“å†²åŒºæ•°ç»„çš„é•¿åº¦ç”±u32AcquireNumå†³å®š\n
+å®é™…è·å–çš„ç¼“å†²åŒºä¿¡æ¯æ•°ç›®pu32AcquiredNumæ•°å€¼ä¸ä¼šè¶…è¿‡u32AcquireNum\n
+å¯¹äºsectioné€šé“å’ŒECM/EMMé€šé“ï¼Œæ¯ä¸ªæ•°æ®åŒ…åŒ…å«ä¸€ä¸ªå®Œæ•´çš„section\n
+å¯¹äºPESé€šé“ï¼Œæ¯ä¸ªæ•°æ®åŒ…å°½é‡åŒ…å«å®Œæ•´çš„pesï¼Œä½†æ˜¯å¦‚æœpeså¤ªå¤§ï¼Œå¯èƒ½è¦åˆ†å¤šä¸ªpesåŒ…è¾“å‡ºï¼Œ\n
+è¾“å‡ºçš„æ•°æ®æ˜¯å¦å®Œæ•´é€šè¿‡æ•°æ®åŒ…ç»“æ„çš„enDataTypeå­—æ®µæŒ‡å®š\n
+å¯¹äºPOSTç±»å‹çš„é€šé“ï¼Œæ¯ä¸ªæ•°æ®åŒ…åŒ…å«ä¸€ä¸ªæˆ–å¤šä¸ªå®Œæ•´çš„TSåŒ…ï¼ŒTSåŒ…é•¿188å­—èŠ‚\n
+å¯¹äºéŸ³è§†é¢‘é€šé“æ˜¯ä¸èƒ½é€šè¿‡æ­¤æ¥å£è·å–æ•°æ®çš„ï¼ŒéŸ³è§†é¢‘æ•°æ®ä¼šé€šè¿‡å†…éƒ¨æ¥å£ç›´æ¥é€ç»™è§£ç å™¨è¿›è¡Œè§£ç \n
+ä¸å…è®¸é‡å¤è°ƒç”¨æ­¤æ¥å£ï¼Œå¯ä»¥ä¸€æ¬¡è¯·æ±‚å¤šæ¬¡é‡Šæ”¾ï¼Œä½†æ˜¯é‡Šæ”¾å¿…é¡»æŒ‰é¡ºåºï¼Œè€Œä¸”é‡Šæ”¾çš„åœ°å€å’Œé•¿åº¦å¿…é¡»å’Œè¯·æ±‚çš„ä¸€è‡´\n
+å¹¶ä¸”åªæœ‰é‡Šæ”¾å®Œæ‰€æœ‰çš„æ•°æ®åŒ…æ‰èƒ½å†æ¬¡è¯·æ±‚ï¼Œå¦åˆ™è¿”å›é‡å¤è¯·æ±‚é”™è¯¯ç ã€‚CNend
+\param[in] hChannel            Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\param[in] u32AcquireNum       Maximum number of obtained data packets.CNcomment:è¯·æ±‚çš„æ•°æ®åŒ…çš„æœ€å¤§ä¸ªæ•°ã€‚CNend
+\param[out] pu32AcquiredNum    Pointer to the actual number of obtained data packets.CNcomment:æŒ‡é’ˆç±»å‹ï¼Œè¾“å‡ºå®é™…è¯·æ±‚åˆ°çš„æ•°æ®åŒ…ä¸ªæ•°ã€‚CNend
+\param[out] pstBuf             Pointer to the number of data packets. The number depends on the value of pu32AcquiredNum.CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘æ•°æ®åŒ…ä¿¡æ¯æ•°ç»„ï¼Œæ•°ç»„ä¸ªæ•°ç”±pu32AcquiredNumå†³å®šã€‚CNend
+\param[in] u32TimeOutMs        Wait timeout, in ms.CNcomment:ç­‰å¾…è¶…æ—¶æ—¶é—´ï¼Œå•ä½ä¸ºmsã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOAVAILABLE_DATA  There is no valid data in the channel.CNcomment:é€šé“ä¸­æ²¡æœ‰æœ‰æ•ˆæ•°æ®ã€‚CNend
+\retval ::HI_ERR_DMX_TIMEOUT  The wait times out.CNcomment:ç­‰å¾…è¶…æ—¶ã€‚CNend
+\retval ::HI_ERR_DMX_REACQUIRE_BUF  The data packet has been obtained.CNcomment:é‡å¤è¯·æ±‚æ•°æ®åŒ…ã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_AcquireBuf(HI_HANDLE hChannel, HI_U32 u32AcquireNum,
             HI_U32 * pu32AcquiredNum, HI_UNF_DMX_DATA_S *pstBuf,
@@ -1372,281 +1372,281 @@ HI_S32  HI_UNF_DMX_AcquireBuf(HI_HANDLE hChannel, HI_U32 u32AcquireNum,
 
 
 /**
-\brief Releases the buffers for storing data packets after data packets are processed.CNcomment:´¦ÀíÍêÊı¾İ°üµÄÊı¾İºó£¬ÊÍ·ÅÊı¾İ°üÕ¼ÓÃµÄ»º³å¿Õ¼ä¡£CNend
+\brief Releases the buffers for storing data packets after data packets are processed.CNcomment:å¤„ç†å®Œæ•°æ®åŒ…çš„æ•°æ®åï¼Œé‡Šæ”¾æ•°æ®åŒ…å ç”¨çš„ç¼“å†²ç©ºé—´ã€‚CNend
 \attention \n
 If you release buffers by calling this API, the buffers must be those obtained by calling ::HI_UNF_DMX_AcquireBuf, and the addresses and sizes of these buffers cannot be changed.\n
 The number of released buffers can be less than the number of obtained buffers.
-CNcomment:±¾½Ó¿ÚÊÍ·ÅµÄ»º³åÇøÒ»¶¨ÊÇÍ¨¹ı::HI_UNF_DMX_AcquireBuf»ñÈ¡µÄ»º³åÇø£¬»º³åÇøµÄµØÖ·ºÍ³¤¶È²»ÄÜ¸ü¸Ä\n
-ÊÍ·ÅµÄ»º³åÇø¸öÊı¿ÉÒÔĞ¡ÓÚ»ñÈ¡µÄ»º³åÇø¸öÊı¡£CNend
-\param[in] hChannel        Channel handl.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\param[in] u32ReleaseNum   Number of released buffers.CNcomment:ÊÍ·ÅÊı¾İ°ü¸öÊı¡£CNend
-\param[in] pstBuf          Pointer to the number of released buffers. The number depends on the value of u32ReleaseNum.CNcomment:Ö¸ÕëÀàĞÍ£¬Ö¸ÏòÊÍ·Å»º³åÇøĞÅÏ¢Êı×é£¬³¤¶ÈÓÉu32ReleaseNum¾ö¶¨¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment:æœ¬æ¥å£é‡Šæ”¾çš„ç¼“å†²åŒºä¸€å®šæ˜¯é€šè¿‡::HI_UNF_DMX_AcquireBufè·å–çš„ç¼“å†²åŒºï¼Œç¼“å†²åŒºçš„åœ°å€å’Œé•¿åº¦ä¸èƒ½æ›´æ”¹\n
+é‡Šæ”¾çš„ç¼“å†²åŒºä¸ªæ•°å¯ä»¥å°äºè·å–çš„ç¼“å†²åŒºä¸ªæ•°ã€‚CNend
+\param[in] hChannel        Channel handl.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\param[in] u32ReleaseNum   Number of released buffers.CNcomment:é‡Šæ”¾æ•°æ®åŒ…ä¸ªæ•°ã€‚CNend
+\param[in] pstBuf          Pointer to the number of released buffers. The number depends on the value of u32ReleaseNum.CNcomment:æŒ‡é’ˆç±»å‹ï¼ŒæŒ‡å‘é‡Šæ”¾ç¼“å†²åŒºä¿¡æ¯æ•°ç»„ï¼Œé•¿åº¦ç”±u32ReleaseNumå†³å®šã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎŞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_ReleaseBuf(HI_HANDLE hChannel, HI_U32 u32ReleaseNum,
             HI_UNF_DMX_DATA_S *pstBuf);
 
 /**
-\brief Creates a record channel. CNcomment: ´´½¨Ò»¸öÂ¼ÖÆÍ¨µÀ¡£CNend
+\brief Creates a record channel. CNcomment: åˆ›å»ºä¸€ä¸ªå½•åˆ¶é€šé“ã€‚CNend
 \attention \n
 A demux can be set only one recording channe. 
-CNcomment: Ò»¸öDEMUXÉÏÖ»ÄÜ´´½¨Ò»¸öÂ¼ÖÆÍ¨µÀ¡£CNend
-\param[in]  pstRecAttr  record attribute.   CNcomment: Â¼ÖÆÊôĞÔ¡£CNend
-\param[out] phRecChn    record handle.      CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment: ³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment: APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment: Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment: ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment: Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOFREE_CHAN  There is no available channel. CNcomment: Ã»ÓĞ¿ÕÏĞµÄÍ¨µÀ¡£CNend
-\retval ::HI_ERR_DMX_ALLOC_MEM_FAILED  memory allocate failure. CNcomment: ÄÚ´æ·ÖÅäÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_MMAP_FAILED  memory map failed. CNcomment: ÄÚ´æÓ³ÉäÊ§°Ü¡£CNend
+CNcomment: ä¸€ä¸ªDEMUXä¸Šåªèƒ½åˆ›å»ºä¸€ä¸ªå½•åˆ¶é€šé“ã€‚CNend
+\param[in]  pstRecAttr  record attribute.   CNcomment: å½•åˆ¶å±æ€§ã€‚CNend
+\param[out] phRecChn    record handle.      CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment: æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment: APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment: æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment: è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment: æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOFREE_CHAN  There is no available channel. CNcomment: æ²¡æœ‰ç©ºé—²çš„é€šé“ã€‚CNend
+\retval ::HI_ERR_DMX_ALLOC_MEM_FAILED  memory allocate failure. CNcomment: å†…å­˜åˆ†é…å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_MMAP_FAILED  memory map failed. CNcomment: å†…å­˜æ˜ å°„å¤±è´¥ã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_CreateRecChn(HI_UNF_DMX_REC_ATTR_S *pstRecAttr, HI_HANDLE *phRecChn);
 
 /**
-\brief Destroys an existing record channel. CNcomment: Ïú»Ù´´½¨µÄÂ¼ÖÆÍ¨µÀ¡£CNend
+\brief Destroys an existing record channel. CNcomment: é”€æ¯åˆ›å»ºçš„å½•åˆ¶é€šé“ã€‚CNend
 \attention \n
- N/A. CNcomment: ÎŞ¡£CNend
-\param[in] hRecChn  record handle. CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment: ³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment: APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment: Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment: ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment: Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+ N/A. CNcomment: æ— ã€‚CNend
+\param[in] hRecChn  record handle. CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment: æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment: APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment: æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment: è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment: æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_DestroyRecChn(HI_HANDLE hRecChn);
 
 /**
-\brief if the type of record were the HI_UNF_DMX_REC_TYPE_SELECT_PID, it would increase the recorded PID that we need. CNcomment: Â¼ÖÆÀàĞÍÎªHI_UNF_DMX_REC_TYPE_SELECT_PIDÊ±Ôö¼ÓĞèÒªÂ¼ÖÆµÄPID¡£CNend
+\brief if the type of record were the HI_UNF_DMX_REC_TYPE_SELECT_PID, it would increase the recorded PID that we need. CNcomment: å½•åˆ¶ç±»å‹ä¸ºHI_UNF_DMX_REC_TYPE_SELECT_PIDæ—¶å¢åŠ éœ€è¦å½•åˆ¶çš„PIDã€‚CNend
 \attention \n
- N/A. CNcomment: ÎŞ¡£CNend
-\param[in]  hRecChn     record handle.  CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\param[in]  u32Pid      pid value.      CNcomment: PIDÖµ¡£CNend
-\param[out] phChannel   channel handle. CNcomment: Í¨µÀ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment: ³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment: APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment: Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment: ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment: Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOT_SUPPORT  This function is not supported. CNcomment: ²»Ö§³Ö´Ë¹¦ÄÜ¡£CNend
+ N/A. CNcomment: æ— ã€‚CNend
+\param[in]  hRecChn     record handle.  CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\param[in]  u32Pid      pid value.      CNcomment: PIDå€¼ã€‚CNend
+\param[out] phChannel   channel handle. CNcomment: é€šé“å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment: æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment: APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment: æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment: è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment: æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOT_SUPPORT  This function is not supported. CNcomment: ä¸æ”¯æŒæ­¤åŠŸèƒ½ã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_AddRecPid(HI_HANDLE hRecChn, HI_U32 u32Pid, HI_HANDLE *phChannel);
 
 /**
-\brief if the type of record were the HI_UNF_DMX_REC_TYPE_SELECT_PID, it would delete increase PID. CNcomment: Â¼ÖÆÀàĞÍÎªHI_UNF_DMX_REC_TYPE_SELECT_PIDÊ±É¾³ıÒÑÔö¼ÓµÄPID¡£CNend
+\brief if the type of record were the HI_UNF_DMX_REC_TYPE_SELECT_PID, it would delete increase PID. CNcomment: å½•åˆ¶ç±»å‹ä¸ºHI_UNF_DMX_REC_TYPE_SELECT_PIDæ—¶åˆ é™¤å·²å¢åŠ çš„PIDã€‚CNend
 \attention \n
- N/A. CNcomment: ÎŞ¡£CNend
-\param[in]  hRecChn     record handle.  CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\param[in]  hChannel    channel handle. CNcomment: Í¨µÀ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+ N/A. CNcomment: æ— ã€‚CNend
+\param[in]  hRecChn     record handle.  CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\param[in]  hChannel    channel handle. CNcomment: é€šé“å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_DelRecPid(HI_HANDLE hRecChn, HI_HANDLE hChannel);
 
 /**
-\brief if the type of record were the HI_UNF_DMX_REC_TYPE_SELECT_PID, it would delete all increase PID. CNcomment: Â¼ÖÆÀàĞÍÎªHI_UNF_DMX_REC_TYPE_SELECT_PIDÊ±É¾³ıËùÓĞÒÑÔö¼ÓµÄPID¡£CNend
+\brief if the type of record were the HI_UNF_DMX_REC_TYPE_SELECT_PID, it would delete all increase PID. CNcomment: å½•åˆ¶ç±»å‹ä¸ºHI_UNF_DMX_REC_TYPE_SELECT_PIDæ—¶åˆ é™¤æ‰€æœ‰å·²å¢åŠ çš„PIDã€‚CNend
 \attention \n
- N/A. CNcomment: ÎŞ¡£CNend
-\param[in] hRecChn  record handle. CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+ N/A. CNcomment: æ— ã€‚CNend
+\param[in] hRecChn  record handle. CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_DelAllRecPid(HI_HANDLE hRecChn);
 
 /**
-\brief if the type of record were the HI_UNF_DMX_REC_TYPE_ALL_PID, it would remove the specified PID. CNcomment: Â¼ÖÆÀàĞÍÎªHI_UNF_DMX_REC_TYPE_ALL_PIDÊ±ÅÅ³ıÖ¸¶¨µÄPID¡£CNend
+\brief if the type of record were the HI_UNF_DMX_REC_TYPE_ALL_PID, it would remove the specified PID. CNcomment: å½•åˆ¶ç±»å‹ä¸ºHI_UNF_DMX_REC_TYPE_ALL_PIDæ—¶æ’é™¤æŒ‡å®šçš„PIDã€‚CNend
 \attention \n
 chips do not support the function.
-CNcomment: Ğ¾Æ¬²»Ö§³Ö´Ë¹¦ÄÜÊ±·µ»Ø²»Ö§³Ö¡£CNend
-\param[in]  hRecChn record handle.  CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\param[in]  u32Pid  pid value.      CNcomment: PIDÖµ¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOT_SUPPORT  This function is not supported. CNcomment: ²»Ö§³Ö´Ë¹¦ÄÜ¡£CNend
+CNcomment: èŠ¯ç‰‡ä¸æ”¯æŒæ­¤åŠŸèƒ½æ—¶è¿”å›ä¸æ”¯æŒã€‚CNend
+\param[in]  hRecChn record handle.  CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\param[in]  u32Pid  pid value.      CNcomment: PIDå€¼ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOT_SUPPORT  This function is not supported. CNcomment: ä¸æ”¯æŒæ­¤åŠŸèƒ½ã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_AddExcludeRecPid(HI_HANDLE hRecChn, HI_U32 u32Pid);
 
 /**
-\brief if the type of record were the HI_UNF_DMX_REC_TYPE_ALL_PID, it would cancel the PID that have been removed. CNcomment: Â¼ÖÆÀàĞÍÎªHI_UNF_DMX_REC_TYPE_ALL_PIDÊ±È¡ÏûÒÑÅÅ³ıµÄPID¡£CNend
+\brief if the type of record were the HI_UNF_DMX_REC_TYPE_ALL_PID, it would cancel the PID that have been removed. CNcomment: å½•åˆ¶ç±»å‹ä¸ºHI_UNF_DMX_REC_TYPE_ALL_PIDæ—¶å–æ¶ˆå·²æ’é™¤çš„PIDã€‚CNend
 \attention \n
 chips do not support the function.
-CNcomment: Ğ¾Æ¬²»Ö§³Ö´Ë¹¦ÄÜÊ±·µ»Ø²»Ö§³Ö¡£CNend
-\param[in]  hRecChn record handle.  CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\param[in]  u32Pid  pid value.      CNcomment: PIDÖµ¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOT_SUPPORT  This function is not supported. CNcomment: ²»Ö§³Ö´Ë¹¦ÄÜ¡£CNend
+CNcomment: èŠ¯ç‰‡ä¸æ”¯æŒæ­¤åŠŸèƒ½æ—¶è¿”å›ä¸æ”¯æŒã€‚CNend
+\param[in]  hRecChn record handle.  CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\param[in]  u32Pid  pid value.      CNcomment: PIDå€¼ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOT_SUPPORT  This function is not supported. CNcomment: ä¸æ”¯æŒæ­¤åŠŸèƒ½ã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_DelExcludeRecPid(HI_HANDLE hRecChn, HI_U32 u32Pid);
 
 /**
-\brief if the type of record were the HI_UNF_DMX_REC_TYPE_ALL_PID, it would cancel all the PID that have been removed. CNcomment: Â¼ÖÆÀàĞÍÎªHI_UNF_DMX_REC_TYPE_ALL_PIDÊ±È¡ÏûËùÓĞÒÑÅÅ³ıµÄPID¡£CNend
+\brief if the type of record were the HI_UNF_DMX_REC_TYPE_ALL_PID, it would cancel all the PID that have been removed. CNcomment: å½•åˆ¶ç±»å‹ä¸ºHI_UNF_DMX_REC_TYPE_ALL_PIDæ—¶å–æ¶ˆæ‰€æœ‰å·²æ’é™¤çš„PIDã€‚CNend
 \attention \n
 chips do not support the function.
-CNcomment: Ğ¾Æ¬²»Ö§³Ö´Ë¹¦ÄÜÊ±·µ»Ø²»Ö§³Ö¡£CNend
-\param[in] hRecChn  record handle. CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOT_SUPPORT  This function is not supported. CNcomment: ²»Ö§³Ö´Ë¹¦ÄÜ¡£CNend
+CNcomment: èŠ¯ç‰‡ä¸æ”¯æŒæ­¤åŠŸèƒ½æ—¶è¿”å›ä¸æ”¯æŒã€‚CNend
+\param[in] hRecChn  record handle. CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOT_SUPPORT  This function is not supported. CNcomment: ä¸æ”¯æŒæ­¤åŠŸèƒ½ã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_DelAllExcludeRecPid(HI_HANDLE hRecChn);
 
 /**
-\brief Starts a recording channel. CNcomment: Æô¶¯Â¼ÖÆÍ¨µÀ¡£CNend
+\brief Starts a recording channel. CNcomment: å¯åŠ¨å½•åˆ¶é€šé“ã€‚CNend
 \attention \n
 when the recording channel has been activated, it should use the interface to come back success.
-CNcomment: ÔÚÂ¼ÖÆÍ¨µÀÒÑÆô¶¯µÄ×´Ì¬ÏÂµ÷ÓÃ±¾½Ó¿Ú·µ»Ø³É¹¦¡£CNend
-\param[in] hRecChn  record handle. CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment: åœ¨å½•åˆ¶é€šé“å·²å¯åŠ¨çš„çŠ¶æ€ä¸‹è°ƒç”¨æœ¬æ¥å£è¿”å›æˆåŠŸã€‚CNend
+\param[in] hRecChn  record handle. CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_StartRecChn(HI_HANDLE hRecChn);
 
 /**
-\brief Stops a recording channel. CNcomment: Í£Ö¹Â¼ÖÆÍ¨µÀ¡£CNend
+\brief Stops a recording channel. CNcomment: åœæ­¢å½•åˆ¶é€šé“ã€‚CNend
 \attention \n
 when the recording channel has been stopped, it should use the interface to come back success.
-CNcomment: ÔÚÂ¼ÖÆÍ¨µÀÒÑÍ£Ö¹µÄ×´Ì¬ÏÂµ÷ÓÃ±¾½Ó¿Ú·µ»Ø³É¹¦¡£CNend
-\param[in] hRecChn  record handle. CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment: åœ¨å½•åˆ¶é€šé“å·²åœæ­¢çš„çŠ¶æ€ä¸‹è°ƒç”¨æœ¬æ¥å£è¿”å›æˆåŠŸã€‚CNend
+\param[in] hRecChn  record handle. CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_StopRecChn(HI_HANDLE hRecChn);
 
 /**
-\brief Obtains record data. CNcomment: »ñÈ¡Â¼ÖÆÊı¾İ¡£CNend
+\brief Obtains record data. CNcomment: è·å–å½•åˆ¶æ•°æ®ã€‚CNend
 \attention \n
 The obtained data must use the ::HI_UNF_DMX_ReleaseRecData function to release.
-CNcomment: µ÷ÓÃ±¾½Ó¿Ú»ñÈ¡µ½µÄÊı¾İ±ØĞëÊ¹ÓÃ::HI_UNF_DMX_ReleaseRecData½Ó¿Ú½øĞĞÊÍ·Å¡£CNend
-\param[in]  hRecChn         record handle.          CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\param[out] pstRecData      record data.            CNcomment: Â¼ÖÆÊı¾İ¡£CNend
-\param[in]  u32TimeOutMs    Wait timeout, in ms.    CNcomment: µÈ´ı³¬Ê±Ê±¼ä£¬µ¥Î»ÎªºÁÃë¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+CNcomment: è°ƒç”¨æœ¬æ¥å£è·å–åˆ°çš„æ•°æ®å¿…é¡»ä½¿ç”¨::HI_UNF_DMX_ReleaseRecDataæ¥å£è¿›è¡Œé‡Šæ”¾ã€‚CNend
+\param[in]  hRecChn         record handle.          CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\param[out] pstRecData      record data.            CNcomment: å½•åˆ¶æ•°æ®ã€‚CNend
+\param[in]  u32TimeOutMs    Wait timeout, in ms.    CNcomment: ç­‰å¾…è¶…æ—¶æ—¶é—´ï¼Œå•ä½ä¸ºæ¯«ç§’ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_AcquireRecData(HI_HANDLE hRecChn, HI_UNF_DMX_REC_DATA_S *pstRecData, HI_U32 u32TimeoutMs);
 
 /**
-\brief Releases record data. CNcomment: ÊÍ·Å»ñÈ¡µ½µÄÂ¼ÖÆÊı¾İ¡£CNend
+\brief Releases record data. CNcomment: é‡Šæ”¾è·å–åˆ°çš„å½•åˆ¶æ•°æ®ã€‚CNend
 \attention \n
- N/A. CNcomment:ÎŞ¡£CNend
-\param[in] hRecChn      record handle.  CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\param[in] pstRecData   record data.    CNcomment: Â¼ÖÆÊı¾İ¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
+\param[in] hRecChn      record handle.  CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\param[in] pstRecData   record data.    CNcomment: å½•åˆ¶æ•°æ®ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_ReleaseRecData(HI_HANDLE hRecChn, const HI_UNF_DMX_REC_DATA_S *pstRecData);
 
 /**
-\brief Obtains index data. CNcomment: »ñÈ¡Ë÷ÒıÊı¾İ¡£CNend
+\brief Obtains index data. CNcomment: è·å–ç´¢å¼•æ•°æ®ã€‚CNend
 \attention \n
 when indexing video or audio, it would use the interface to gain indexing data, or it will not support if you return.
-CNcomment: ÒôÆµ»òÊÓÆµË÷ÒıÊ±²ÅÄÜ»ñÈ¡Ë÷ÒıÊı¾İ£¬·ñÔò·µ»Ø²»Ö§³Ö¡£CNend
-\param[in]  hRecChn         record handle.          CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\param[out] pstRecIndex     index data.             CNcomment: Ë÷ÒıÊı¾İ¡£CNend
-\param[in]  u32TimeOutMs    Wait timeout, in ms.    CNcomment: µÈ´ı³¬Ê±Ê±¼ä£¬µ¥Î»ÎªºÁÃë¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOT_START_REC_CHAN  CNcomment: Â¼ÖÆÍ¨µÀÎ´Æô¶¯¡£CNend
-\retval ::HI_ERR_DMX_NOT_SUPPORT  This function is not supported. CNcomment: ²»Ö§³Ö´Ë¹¦ÄÜ¡£CNend
-\retval ::HI_ERR_DMX_NOAVAILABLE_DATA  no data. CNcomment: ÎŞÊı¾İ¡£CNend
-\retval ::HI_ERR_DMX_TIMEOUT  The wait times out. CNcomment:µÈ´ı³¬Ê±¡£CNend
+CNcomment: éŸ³é¢‘æˆ–è§†é¢‘ç´¢å¼•æ—¶æ‰èƒ½è·å–ç´¢å¼•æ•°æ®ï¼Œå¦åˆ™è¿”å›ä¸æ”¯æŒã€‚CNend
+\param[in]  hRecChn         record handle.          CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\param[out] pstRecIndex     index data.             CNcomment: ç´¢å¼•æ•°æ®ã€‚CNend
+\param[in]  u32TimeOutMs    Wait timeout, in ms.    CNcomment: ç­‰å¾…è¶…æ—¶æ—¶é—´ï¼Œå•ä½ä¸ºæ¯«ç§’ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOT_START_REC_CHAN  CNcomment: å½•åˆ¶é€šé“æœªå¯åŠ¨ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_SUPPORT  This function is not supported. CNcomment: ä¸æ”¯æŒæ­¤åŠŸèƒ½ã€‚CNend
+\retval ::HI_ERR_DMX_NOAVAILABLE_DATA  no data. CNcomment: æ— æ•°æ®ã€‚CNend
+\retval ::HI_ERR_DMX_TIMEOUT  The wait times out. CNcomment:ç­‰å¾…è¶…æ—¶ã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_AcquireRecIndex(HI_HANDLE hRecChn, HI_UNF_DMX_REC_INDEX_S *pstRecIndex, HI_U32 u32TimeoutMs);
 
 /**
-\brief Obtains the status of a record buffer. CNcomment: »ñÈ¡Â¼ÖÆ»º´æµÄ×´Ì¬¡£CNend
+\brief Obtains the status of a record buffer. CNcomment: è·å–å½•åˆ¶ç¼“å­˜çš„çŠ¶æ€ã€‚CNend
 \attention \n
- N/A. CNcomment:ÎŞ¡£CNend
-\param[in]  hRecChn         record handle.          CNcomment: Â¼ÖÆ¾ä±ú¡£CNend
-\param[out] pstBufStatus    record buffer status.   CNcomment: Â¼ÖÆ»º´æµÄ×´Ì¬¡£CNend
-\retval ::HI_SUCCESS  Success. CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿Õ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
+\param[in]  hRecChn         record handle.          CNcomment: å½•åˆ¶å¥æŸ„ã€‚CNend
+\param[out] pstBufStatus    record buffer status.   CNcomment: å½•åˆ¶ç¼“å­˜çš„çŠ¶æ€ã€‚CNend
+\retval ::HI_SUCCESS  Success. CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails. CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
 */
 HI_S32  HI_UNF_DMX_GetRecBufferStatus(HI_HANDLE hRecChn, HI_UNF_DMX_RECBUF_STATUS_S *pstBufStatus);
 
 /**
-\brief Set or get the extra attributes of a demux through the commands.CNcomment:Í¨¹ıÃüÁîÉèÖÃ»ò»ñÈ¡DMX¸½¼ÓÊôĞÔCNend
+\brief Set or get the extra attributes of a demux through the commands.CNcomment:é€šè¿‡å‘½ä»¤è®¾ç½®æˆ–è·å–DMXé™„åŠ å±æ€§CNend
 \attention \n
 Diffrent CMD use diffrent param, for details see the description of HI_UNF_DMX_INVOKE_TYPE_E.\n
-CNcomment:²»Í¬µÄÃüÁîÊ¹ÓÃµÄ²ÎÊı²»Í¬£¬¾ßÌåĞÅÏ¢Çë²Î¿¼ÃüÁîÃ¶¾ÙµÄ¶¨ÒåHI_UNF_DMX_INVOKE_TYPE_E\n CNend
-\param[in] enCmd   Command type.CNcomment:ÃüÁîÀàĞÍ¡£CNend
-\param[in] pCmdPara    Pointer to command param.  CNcomment:ÃüÁî²ÎÊıCNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓĞ³õÊ¼»¯CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊı·Ç·¨CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊıÎª¿ÕCNend
+CNcomment:ä¸åŒçš„å‘½ä»¤ä½¿ç”¨çš„å‚æ•°ä¸åŒï¼Œå…·ä½“ä¿¡æ¯è¯·å‚è€ƒå‘½ä»¤æšä¸¾çš„å®šä¹‰HI_UNF_DMX_INVOKE_TYPE_E\n CNend
+\param[in] enCmd   Command type.CNcomment:å‘½ä»¤ç±»å‹ã€‚CNend
+\param[in] pCmdPara    Pointer to command param.  CNcomment:å‘½ä»¤å‚æ•°CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸCNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éæ³•CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºCNend
 \see \n
- N/A. CNcomment:ÎŞ¡£CNend
+ N/A. CNcomment:æ— ã€‚CNend
  */
 HI_S32 HI_UNF_DMX_Invoke(HI_UNF_DMX_INVOKE_TYPE_E enCmd, const HI_VOID *pCmdPara);
 

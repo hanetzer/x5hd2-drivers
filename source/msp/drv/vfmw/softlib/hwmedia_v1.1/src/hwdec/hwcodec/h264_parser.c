@@ -334,7 +334,7 @@ static void h264_close(AVCodecParserContext *s)
     av_free_hw(pc->buffer);
 }
 
-/* ÐÂÔöº¯Êý(l00139685)£º½âÎöÒ»ÍêÕûÍ¼Ïñ£¨Ö¡»ò³¡£©µÄ264ÂëÁ÷ */
+/* æ–°å¢žå‡½æ•°(l00139685)ï¼šè§£æžä¸€å®Œæ•´å›¾åƒï¼ˆå¸§æˆ–åœºï¼‰çš„264ç æµ */
 int H264_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf, unsigned int *puiOutBufSize,const uint8_t *pucInBuf, unsigned int uiInBufSize, int *piLength)
 {
     int iRet = IMEDIA_RET_SUCCESS;
@@ -371,7 +371,7 @@ int H264_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf
 	pstParseContext = &pstH264Context->s.parse_context;
 
 	/* 2010/06/29 19:30:00 liuxw+00139685 */
-	/* Èç¹ûdisplay_picÖÐÓÐÍ¼ÏñÊä³ö£¬Ôò²»½øÐÐÖ¡½âÎö£¬Ö±½ÓÍË³ö */
+	/* å¦‚æžœdisplay_picä¸­æœ‰å›¾åƒè¾“å‡ºï¼Œåˆ™ä¸è¿›è¡Œå¸§è§£æžï¼Œç›´æŽ¥é€€å‡º */
 	if(pstH264Context->display_pic_num)
 	{
 		*pucOutBuf = NULL;
@@ -394,18 +394,18 @@ int H264_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf
 			*piLength = uiInBufSize;
 			return iRet;
 //		}
-		/* ÐÂÔö´úÂë(l00139685) error: the buffer size is not enough */
+		/* æ–°å¢žä»£ç (l00139685) error: the buffer size is not enough */
 //		pstAVCodecContext->iErrorCode = IMEDIA_CODEC_ERR__BUF_SIZE_NOT_ENOUGH;	
 //		return IMEDIA_RET_DECODE_INTERRUPT;
     }
 
-	/* Èç¹ûµ±Ç°½âÎöÖ¡ÔÚÇ°Ò»¸öbufferµÄ±ß½ç£¨buffer×îºó¼¸¸ö×Ö½ÚÎª0x00 0x00 0x01)µÈ£¬ÔòÓ¦±£´æÆäµ±Ç°×´Ì¬ */
+	/* å¦‚æžœå½“å‰è§£æžå¸§åœ¨å‰ä¸€ä¸ªbufferçš„è¾¹ç•Œï¼ˆbufferæœ€åŽå‡ ä¸ªå­—èŠ‚ä¸º0x00 0x00 0x01)ç­‰ï¼Œåˆ™åº”ä¿å­˜å…¶å½“å‰çŠ¶æ€ */
     if(0 > iBytesConsumed && END_NOT_FOUND != iBytesConsumed)
 	{
         assert(pstParseContext->last_index + iBytesConsumed >= 0 );
         ff_h264_find_frame_end(pstH264Context, &pstParseContext->buffer[pstParseContext->last_index + iBytesConsumed], -iBytesConsumed); //update state
     }
-	/* Èç¹ûµ±Ç°½âÎöÖ¡ÔÚÇ°Ò»¸öbufferµÄ±ß½ç£¬Ôòµ±Ç°bufferµÄ½âÎöÓÃµôµÄ×Ö½ÚÊýÎª0 */
+	/* å¦‚æžœå½“å‰è§£æžå¸§åœ¨å‰ä¸€ä¸ªbufferçš„è¾¹ç•Œï¼Œåˆ™å½“å‰bufferçš„è§£æžç”¨æŽ‰çš„å­—èŠ‚æ•°ä¸º0 */
 	if(0 > iBytesConsumed)
 	{
 		iBytesConsumed = 0;

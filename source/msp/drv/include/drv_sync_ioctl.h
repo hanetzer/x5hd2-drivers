@@ -95,11 +95,11 @@ typedef struct hiSYNC_PCR_INFO_S
 
 typedef enum hiSYNC_BUF_STATE_E
 {
-    SYNC_BUF_STATE_EMPTY = 0,   /**<The buffer is idle.*//**<CNcomment: »º³åÇø¿ÕÏÐ*/
-    SYNC_BUF_STATE_LOW,         /**<The buffer usage is too low.*//**<CNcomment: »º³åÇøÕ¼ÓÃÂÊ¹ýµÍ*/
-    SYNC_BUF_STATE_NORMAL,      /**<The buffer works normally.*//**<CNcomment: »º³åÇøÊ¹ÓÃÕý³£*/
-    SYNC_BUF_STATE_HIGH,        /**<The buffer usage is too high.*//**<CNcomment: »º³åÇøÕ¼ÓÃÂÊ¹ý¸ß*/
-    SYNC_BUF_STATE_FULL,        /**<The buffer is full.*//**<CNcomment: »º³åÇøÒÑÂú*/
+    SYNC_BUF_STATE_EMPTY = 0,   /**<The buffer is idle.*//**<CNcomment: ç¼“å†²åŒºç©ºé—²*/
+    SYNC_BUF_STATE_LOW,         /**<The buffer usage is too low.*//**<CNcomment: ç¼“å†²åŒºå ç”¨çŽ‡è¿‡ä½Ž*/
+    SYNC_BUF_STATE_NORMAL,      /**<The buffer works normally.*//**<CNcomment: ç¼“å†²åŒºä½¿ç”¨æ­£å¸¸*/
+    SYNC_BUF_STATE_HIGH,        /**<The buffer usage is too high.*//**<CNcomment: ç¼“å†²åŒºå ç”¨çŽ‡è¿‡é«˜*/
+    SYNC_BUF_STATE_FULL,        /**<The buffer is full.*//**<CNcomment: ç¼“å†²åŒºå·²æ»¡*/
 
     SYNC_BUF_STATE_BUTT
 }SYNC_BUF_STATE_E;

@@ -2488,7 +2488,7 @@ HI_S32 HI_DRV_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         return HI_ERR_AVPLAY_INVALID_OPT;    
     }
 
-    /* homologous window*/ /* Í¬Ô´´°¿Ú */
+    /* homologous window*/ /* åŒæºçª—å£ */
     if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinInfo.eType)
     {
         if (pAvplay->MasterFrmChn.hWindow != WinInfo.hPrim)
@@ -2527,7 +2527,7 @@ HI_S32 HI_DRV_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
 		pAvplay->SlaveFrmChn.hWindow = HI_INVALID_HANDLE;
         pAvplay->SlaveFrmChn.hPort = HI_INVALID_HANDLE;
     }
-    /*  analogous master window*/ /* ·ÇÍ¬Ô´ Ö÷´°¿Ú¼°´Ó´°¿Ú */
+    /*  analogous master window*/ /* éžåŒæº ä¸»çª—å£åŠä»Žçª—å£ */
     else if (HI_DRV_WIN_ACTIVE_SINGLE == WinInfo.eType)
     {
         if (pAvplay->MasterFrmChn.hWindow == hWindow)

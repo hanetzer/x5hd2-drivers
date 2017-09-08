@@ -428,7 +428,7 @@ STATIC INLINE HI_U32 PVRIndexCycAdjReadFrame(const PVR_INDEX_HANDLE handle, HI_U
 }
 
 /* move over or move back s32Offset frames.If beyond scope, the pointor will be directed to beginning or end*/
-/*CNcomment:ÏòÇ°ÒÆ»òÏòºóÒÆs32OffsetÖ¡£¬ÒÆ¶¯ºó³¬³ö¿ªÊ¼ºÍ½áÊø£¬Ôò½«¶ÁÖ¸Õë·Åµ½¿ªÊ¼»ò½áÊø */
+/*CNcomment:å‘å‰ç§»æˆ–å‘åŽç§»s32Offsetå¸§ï¼Œç§»åŠ¨åŽè¶…å‡ºå¼€å§‹å’Œç»“æŸï¼Œåˆ™å°†è¯»æŒ‡é’ˆæ”¾åˆ°å¼€å§‹æˆ–ç»“æŸ */
 STATIC INLINE HI_VOID PVRIndexCycMoveReadFrame(PVR_INDEX_HANDLE handle, HI_S32 s32Offset)
 {
     HI_U32 u32ReadFrame = 0;
@@ -441,7 +441,7 @@ STATIC INLINE HI_VOID PVRIndexCycMoveReadFrame(PVR_INDEX_HANDLE handle, HI_S32 s
         handle->stCycMgr.u32LastFrame, handle->u32ReadFrame, s32Offset);
 
     */
-    /*if did not rewind, move it directly*//*CNcomment: Ã»ÓÐ»·ÈÆÖ±½ÓÒÆ¶¯¾ÍºÃÁË*/
+    /*if did not rewind, move it directly*//*CNcomment: æ²¡æœ‰çŽ¯ç»•ç›´æŽ¥ç§»åŠ¨å°±å¥½äº†*/
     if (!PVR_IDX_IS_REWIND(handle))
     {
         handle->u32ReadFrame += s32Offset;
@@ -455,7 +455,7 @@ STATIC INLINE HI_VOID PVRIndexCycMoveReadFrame(PVR_INDEX_HANDLE handle, HI_S32 s
             handle->u32ReadFrame = handle->stCycMgr.u32EndFrame;
         }
     }
-    else /* call moving function when rewind*//*CNcomment:»·ÈÆµÄÇé¿ö£¬Ê¹ÓÃ»·ÈÆÒÆ¶¯º¯Êý */
+    else /* call moving function when rewind*//*CNcomment:çŽ¯ç»•çš„æƒ…å†µï¼Œä½¿ç”¨çŽ¯ç»•ç§»åŠ¨å‡½æ•° */
     {
         u32ReadFrame = handle->u32ReadFrame + s32Offset;
         handle->u32ReadFrame = PVRIndexCycAdjReadFrame(handle, u32ReadFrame);

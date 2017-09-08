@@ -45,12 +45,12 @@
 #define DIVX3_SLC_DN_MSG_SLOT_INDEX                   3
 #define DIVX3_SLC_DN_MSG_SLOT_FULL_THRESHOLD          (DIVX3_MAX_SLOT_NUM-4)
 
-/*********************(64*4*X) Ã»²¿·Ö¿Õ¼ä¶¼Îª64wordÕûÊı±¶****/
+/*********************(64*4*X) æ²¡éƒ¨åˆ†ç©ºé—´éƒ½ä¸º64wordæ•´æ•°å€****/
 #define DIVX3_ALIGN_LEN                               (64*4)
 #define DIVX3_SED_TOP_ADDR_LEN                        (64*4*DIVX3_VFMW_MAX_PIC_WIDTH)
 #define DIVX3_PMV_TOP_ADDR_LEN                        (64*4*DIVX3_VFMW_MAX_PIC_WIDTH)
 #define DIVX3_IT_TOP_ADDR_LEN                         (64*4*DIVX3_VFMW_MAX_PIC_WIDTH)
-#define DIVX3_PMV_ONECOLMB_ADDR_LEN                   (20*4)              //¼ÆËãµÃÖª£¬´óÖÂĞèÒª16words/mb£¬ÏÖÔÚ¶à·ÖÅäÒ»µã             
+#define DIVX3_PMV_ONECOLMB_ADDR_LEN                   (20*4)              //è®¡ç®—å¾—çŸ¥ï¼Œå¤§è‡´éœ€è¦16words/mbï¼Œç°åœ¨å¤šåˆ†é…ä¸€ç‚¹             
 #define DIVX3_MSG_SLOT_BURST_LEN                      (64*4)              // 1 burst, 64 word    
 #define DIVX3_UP_MSG_SLOT_LEN                         DIVX3_MSG_SLOT_BURST_LEN
 #define DIVX3_RP_MSG_SLOT_LEN                         DIVX3_MSG_SLOT_BURST_LEN
@@ -124,10 +124,10 @@ typedef struct
     UINT8  IsStreamEndFlag;
     UINT8  Last_FieldStruct;
     UINT8  Imgbuf_allocated;
-    UINT8  UsedDecMode;       //µ±Ç°ÕıÔÚÊ¹ÓÃµÄ½âÂëÄ£Ê½(IPB, IP, I)
+    UINT8  UsedDecMode;       //å½“å‰æ­£åœ¨ä½¿ç”¨çš„è§£ç æ¨¡å¼(IPB, IP, I)
     UINT8* image_vir_addr[DIVX3_MAXIMUM_IMAGE_NUM];
 
-    UINT8* vahb_vir_addr;         // VAHBÎïÀíµØÖ·£¬1024¶ÔÆë
+    UINT8* vahb_vir_addr;         // VAHBç‰©ç†åœ°å€ï¼Œ1024å¯¹é½
     UINT8* upmsg_vir_addr;
     UINT8* rpmsg_vir_addr;
     UINT8* picdnmsg_vir_addr;
@@ -146,7 +146,7 @@ typedef struct
     SINT32 BsLength1;
     SINT32 IsLastSeg1;
 
-    DIVX3_VOBUFINF VOBufInf[MAX_QUEUE_IMAGE_NUM];        //VOÖ¡´æ¹ÜÀíĞÅÏ¢
+    DIVX3_VOBUFINF VOBufInf[MAX_QUEUE_IMAGE_NUM];        //VOå¸§å­˜ç®¡ç†ä¿¡æ¯
     DIVX3_PictureHeader_S PictureHeader;
     UINT32 PrevSwitchRounding;
 
@@ -154,7 +154,7 @@ typedef struct
 
     SINT32 PacketTail;
     UINT32 NewSeqInited;
-    UINT32 StreamIntegrality; //ÂëÁ÷ÖĞ¸÷ÖÖÍ·µÄÍêÕûĞÔºÍÕıÈ·ĞÔĞÅÏ¢
+    UINT32 StreamIntegrality; //ç æµä¸­å„ç§å¤´çš„å®Œæ•´æ€§å’Œæ­£ç¡®æ€§ä¿¡æ¯
     UINT32 SeqCnt;
     UINT32 FrmCnt;
     UINT32 RefNum;
@@ -168,7 +168,7 @@ typedef struct
 
 
     /************** VAHB *************/
-    PHYADDR    vahb_phy_addr;         // VAHBÎïÀíµØÖ·£¬1024¶ÔÆë
+    PHYADDR    vahb_phy_addr;         // VAHBç‰©ç†åœ°å€ï¼Œ1024å¯¹é½
     //up msg slot
     PHYADDR    upmsg_phy_addr;
     //repair msg slot
@@ -185,11 +185,11 @@ typedef struct
     PHYADDR    rcn_top_phy_addr;
     //it_top_addr
     PHYADDR    it_top_phy_addr;
-    // PMV ColMB´æ´¢¿Õ¼ä
+    // PMV ColMBå­˜å‚¨ç©ºé—´
 //  PHYADDR    pmv_colmb_phy_addr;
 
-    // Í¼Ïñ´æ´¢¿Õ¼ä
-    SINT32     QueueImageNum;       // ×Ü¹²·ÖÅäµÄÍ¼Ïñ¸öÊı
+    // å›¾åƒå­˜å‚¨ç©ºé—´
+    SINT32     QueueImageNum;       // æ€»å…±åˆ†é…çš„å›¾åƒä¸ªæ•°
     UINT32     ddr_stride;
     PHYADDR    image_phy_addr[DIVX3_MAXIMUM_IMAGE_NUM];
 

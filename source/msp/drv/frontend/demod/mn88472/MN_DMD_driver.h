@@ -117,7 +117,7 @@ typedef struct {
 	DMD_u32_t				ddradr;					//!<DDR memory address
 	DMD_u32_t	info[DMD_INFORMATION_MAX];			//!<Demodulator Information
 	DMD_u32_t mn_tunerid;
-       DMD_Handle_t userdata;//用于挂载上层传递下来的全局变是
+       DMD_Handle_t userdata;//鐢ㄤ簬鎸傝浇涓婂眰浼犻�掍笅鏉ョ殑鍏ㄥ眬鍙樻槸
 } DMD_PARAMETER_t;
 
 /* **************************************************** */

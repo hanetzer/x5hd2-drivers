@@ -601,7 +601,7 @@ decompress_data (j_decompress_ptr cinfo, JSAMPIMAGE output_buf)
       return JPEG_SUSPENDED;
    /**
     ** revise the bug
-    ** CNcomment: ÐÞ¸Ä6B°æ±¾µÄbug CNend\n
+    ** CNcomment: ä¿®æ”¹6Bç‰ˆæœ¬çš„bug CNend\n
     **/
 	else if((*cinfo->inputctl->consume_input)(cinfo) == JPEG_REACHED_EOI)
 	  return JPEG_REACHED_EOI;

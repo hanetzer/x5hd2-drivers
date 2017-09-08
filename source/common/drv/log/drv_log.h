@@ -37,15 +37,15 @@ extern "C"
 
 typedef struct hiLOG_BUFFER_INFO_S
 {
-    HI_U32 u32StartAddrPhy; /*start physic address*/	/*CNcomment:»º³åÇøÆğÊ¼ÎïÀíµØÖ·*/
-    HI_U8 *pu8StartAddrVir; /*start virtual address*/	/*CNcomment:»º³åÇøÆğÊ¼ĞéÄâµØÖ·*/
-    HI_U32 u32BufSize;      /*buffer size*/				/*CNcomment:»º³åÇø´óĞ¡*/
-    HI_U32 u32WriteAddr;    /*write offset*/			/*CNcomment:Ğ´µØÖ·Æ«ÒÆ*/
-    HI_U32 u32ReadAddr;     /*read offset*/				/*CNcomment:¶ÁµØÖ·Æ«ÒÆ*/
-    HI_U32 u32ResetFlag;    /*reset count*/				/*CNcomment:¸´Î»´ÎÊı*/
-    HI_U32 u32WriteCount;   /*write count*/				/*CNcomment:Ğ´Èë´ÎÊı*/
-    wait_queue_head_t wqNoData;    /*no wait queque*/	/*CNcomment:Ã»ÓĞÊı¾İµÈ´ı¶ÓÁĞ*/
-	struct semaphore semWrite;     /*write semaphore*/	/*CNcomment:Ğ´bufferĞÅºÅÁ¿*/
+    HI_U32 u32StartAddrPhy; /*start physic address*/	/*CNcomment:ç¼“å†²åŒºèµ·å§‹ç‰©ç†åœ°å€*/
+    HI_U8 *pu8StartAddrVir; /*start virtual address*/	/*CNcomment:ç¼“å†²åŒºèµ·å§‹è™šæ‹Ÿåœ°å€*/
+    HI_U32 u32BufSize;      /*buffer size*/				/*CNcomment:ç¼“å†²åŒºå¤§å°*/
+    HI_U32 u32WriteAddr;    /*write offset*/			/*CNcomment:å†™åœ°å€åç§»*/
+    HI_U32 u32ReadAddr;     /*read offset*/				/*CNcomment:è¯»åœ°å€åç§»*/
+    HI_U32 u32ResetFlag;    /*reset count*/				/*CNcomment:å¤ä½æ¬¡æ•°*/
+    HI_U32 u32WriteCount;   /*write count*/				/*CNcomment:å†™å…¥æ¬¡æ•°*/
+    wait_queue_head_t wqNoData;    /*no wait queque*/	/*CNcomment:æ²¡æœ‰æ•°æ®ç­‰å¾…é˜Ÿåˆ—*/
+	struct semaphore semWrite;     /*write semaphore*/	/*CNcomment:å†™bufferä¿¡å·é‡*/
 }LOG_BUFFER_INFO_S;
 
 #ifdef __cplusplus

@@ -1,6 +1,6 @@
 /**
  \file
- \brief Describes the header file of the bit block transfer (Bliter) module.CNcomment:bliterÍ·ÎÄ¼þ CNend
+ \brief Describes the header file of the bit block transfer (Bliter) module.CNcomment:bliterå¤´æ–‡ä»¶ CNend
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version 1.0
@@ -27,40 +27,40 @@ extern "C" {
 /** @{ */  /** <!-- [HIGO_BLIT] */
 
 /** Pixel-level alpha blending operation*/
-/** CNcomment: ÏñËØ¼¶alpha»ìºÏ²Ù×÷ÔËËã */
+/** CNcomment: åƒç´ çº§alphaæ··åˆæ“ä½œè¿ç®— */
 typedef enum
 {
-    HIGO_COMPOPT_NONE = 0, /**<Porter/Duff None-blending operation*//**<CNcomment:Porter/Duff None»ìºÏ²Ù×÷ */
-    HIGO_COMPOPT_CLEAR,    /**<Porter/Duff clear blending operation*//**<CNcomment:Porter/Duff clear»ìºÏ²Ù×÷ */
-    HIGO_COMPOPT_SRC     , /**<Porter/Duff SRC blending operation*//**<CNcomment:Porter/Duff Src»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_SRCOVER , /**<Porter/Duff Srcover blending operation*//**<CNcomment:Porter/Duff Srcover»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_DSTOVER , /**<Porter/Duff DstOver blending operation*/ /**<CNcomment:Porter/Duff DstOver»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_SRCIN   , /**<Porter/Duff SrcIn blending operation*//**<CNcomment:Porter/Duff SrcIn»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_DSTIN   , /**<Porter/Duff DstIn blending operation*/ /**<CNcomment:Porter/Duff DstIn»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_SRCOUT  , /**<Porter/Duff SrcOut blending operation*//**<CNcomment:Porter/Duff SrcOut»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_DSTOUT  , /**<Porter/Duff DstOut blending operation*/ /** CNcomment:Porter/Duff DstOut»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_SRCATOP , /**<Porter/Duff SrcAtop blending operation*/ /**<CNcomment:Porter/Duff SrcAtop»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_DSTATOP , /**<Porter/Duff DstAtop blending operation*//**<CNcomment: Porter/Duff DstAtop»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_ADD     ,  /**<Porter/Duff DstAtop blending operation*/ /**<CNcomment: Porter/Duff DstAtop»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_XOR     , /**<Porter/Duff Xor blending operation*/ /**<CNcomment: Porter/Duff Xor»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_DST     , /**<Porter/Duff DstAtop blending operation*/ /**<CNcomment: Porter/Duff DstAtop»ìºÏ²Ù×÷ */ 
-    HIGO_COMPOPT_AKS,      /**<Assume that the destination surface is not transparent. After the alpha blending is performed, the source alpha is retained.*//**<CNcomment: ¼ÙÉèÄ¿±êsurfaceÎª²»Í¸Ã÷£¬¼òµ¥alpha»ìºÏ£¬½á¹û±£ÁôÔ´alpha */
-    HIGO_COMPOPT_AKD,      /**<Assume that the destination surface is not transparent. After the alpha blending is performed, the destination alpha is retained.*//**<CNcomment: ¼ÙÉèÄ¿±êsurfaceÎª²»Í¸Ã÷£¬¼òµ¥alpha»ìºÏ£¬½á¹û±£ÁôÄ¿±êalpha */
+    HIGO_COMPOPT_NONE = 0, /**<Porter/Duff None-blending operation*//**<CNcomment:Porter/Duff Noneæ··åˆæ“ä½œ */
+    HIGO_COMPOPT_CLEAR,    /**<Porter/Duff clear blending operation*//**<CNcomment:Porter/Duff clearæ··åˆæ“ä½œ */
+    HIGO_COMPOPT_SRC     , /**<Porter/Duff SRC blending operation*//**<CNcomment:Porter/Duff Srcæ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_SRCOVER , /**<Porter/Duff Srcover blending operation*//**<CNcomment:Porter/Duff Srcoveræ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_DSTOVER , /**<Porter/Duff DstOver blending operation*/ /**<CNcomment:Porter/Duff DstOveræ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_SRCIN   , /**<Porter/Duff SrcIn blending operation*//**<CNcomment:Porter/Duff SrcInæ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_DSTIN   , /**<Porter/Duff DstIn blending operation*/ /**<CNcomment:Porter/Duff DstInæ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_SRCOUT  , /**<Porter/Duff SrcOut blending operation*//**<CNcomment:Porter/Duff SrcOutæ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_DSTOUT  , /**<Porter/Duff DstOut blending operation*/ /** CNcomment:Porter/Duff DstOutæ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_SRCATOP , /**<Porter/Duff SrcAtop blending operation*/ /**<CNcomment:Porter/Duff SrcAtopæ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_DSTATOP , /**<Porter/Duff DstAtop blending operation*//**<CNcomment: Porter/Duff DstAtopæ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_ADD     ,  /**<Porter/Duff DstAtop blending operation*/ /**<CNcomment: Porter/Duff DstAtopæ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_XOR     , /**<Porter/Duff Xor blending operation*/ /**<CNcomment: Porter/Duff Xoræ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_DST     , /**<Porter/Duff DstAtop blending operation*/ /**<CNcomment: Porter/Duff DstAtopæ··åˆæ“ä½œ */ 
+    HIGO_COMPOPT_AKS,      /**<Assume that the destination surface is not transparent. After the alpha blending is performed, the source alpha is retained.*//**<CNcomment: å‡è®¾ç›®æ ‡surfaceä¸ºä¸é€æ˜Žï¼Œç®€å•alphaæ··åˆï¼Œç»“æžœä¿ç•™æºalpha */
+    HIGO_COMPOPT_AKD,      /**<Assume that the destination surface is not transparent. After the alpha blending is performed, the destination alpha is retained.*//**<CNcomment: å‡è®¾ç›®æ ‡surfaceä¸ºä¸é€æ˜Žï¼Œç®€å•alphaæ··åˆï¼Œç»“æžœä¿ç•™ç›®æ ‡alpha */
 
     HIGO_COMPOPT_BUTT
 } HIGO_COMPOPT_E;
 
-/** Operation mode corresponding to colorkey*//** CNcomment: Colorkey¶ÔÓ¦µÄ²Ù×÷·½Ê½ */
+/** Operation mode corresponding to colorkey*//** CNcomment: Colorkeyå¯¹åº”çš„æ“ä½œæ–¹å¼ */
 typedef enum
 {
-    HIGO_CKEY_NONE = 0, /**<Do not use the colorkey.*//**<CNcomment: ²»Ê¹ÓÃcolorkey */
-    HIGO_CKEY_SRC,      /**<Use the source colorkey.*//**<CNcomment: Ê¹ÓÃÔ´colorkey */
-    HIGO_CKEY_DST,     /**<Use the destination colorkey.*//**<CNcomment: Ê¹ÓÃÄ¿±êcolorkey */
+    HIGO_CKEY_NONE = 0, /**<Do not use the colorkey.*//**<CNcomment: ä¸ä½¿ç”¨colorkey */
+    HIGO_CKEY_SRC,      /**<Use the source colorkey.*//**<CNcomment: ä½¿ç”¨æºcolorkey */
+    HIGO_CKEY_DST,     /**<Use the destination colorkey.*//**<CNcomment: ä½¿ç”¨ç›®æ ‡colorkey */
 
     HIGO_CKEY_BUTT
 } HIGO_CKEY_E;
 
-/** Two raster of operations (ROPs)*//** CNcomment: 2ÔªROP²Ù×÷ */
+/** Two raster of operations (ROPs)*//** CNcomment: 2å…ƒROPæ“ä½œ */
 typedef enum
 {
     HIGO_ROP_BLACK = 0, /**< Blackness */
@@ -86,9 +86,9 @@ typedef enum
 typedef enum
 {
     HIGO_ROTATE_NONE = 0,
-    HIGO_ROTATE_90,     /**<Rotate 90 degrees clockwise*//**<CNcomment: Ë³Ê±ÕëÐý×ª90¶È */
-    HIGO_ROTATE_180,    /**<Rotate 180 degrees clockwise*//**<CNcomment: Ë³Ê±ÕëÐý×ª180¶È */
-    HIGO_ROTATE_270,    /**<Rotate 270 degrees clockwise*//**<CNcomment: Ë³Ê±ÕëÐý×ª270¶È */
+    HIGO_ROTATE_90,     /**<Rotate 90 degrees clockwise*//**<CNcomment: é¡ºæ—¶é’ˆæ—‹è½¬90åº¦ */
+    HIGO_ROTATE_180,    /**<Rotate 180 degrees clockwise*//**<CNcomment: é¡ºæ—¶é’ˆæ—‹è½¬180åº¦ */
+    HIGO_ROTATE_270,    /**<Rotate 270 degrees clockwise*//**<CNcomment: é¡ºæ—¶é’ˆæ—‹è½¬270åº¦ */
 
     HIGO_ROTATE_BUTT
 } HIGO_ROTATE_E;
@@ -97,60 +97,60 @@ typedef enum
 {
     HIGO_MIRROR_NONE = 0,
 
-    HIGO_MIRROR_LR,     /**<Mirror the left and the right*//**<CNcomment: ×óÓÒ¾µÏñ */
-    HIGO_MIRROR_TB,     /**<Mirror the top and the bottom*//**<CNcomment: ÉÏÏÂ¾µÏñ */
+    HIGO_MIRROR_LR,     /**<Mirror the left and the right*//**<CNcomment: å·¦å³é•œåƒ */
+    HIGO_MIRROR_TB,     /**<Mirror the top and the bottom*//**<CNcomment: ä¸Šä¸‹é•œåƒ */
 
     HIGO_MIRROR_BUTT
 } HIGO_MIRROR_E;
 
 typedef struct 
 {
-    HI_BOOL EnableGlobalAlpha;      /**<Global alpha enable flag*//**<CNcomment: È«¾ÖalphaÊ¹ÄÜ±êÖ¾ */
-    HI_BOOL EnablePixelAlpha;       /**<Pixel alpha enable flag*//**<CNcomment: ÏñËØalphaÊ¹ÄÜ±êÖ¾ */
-    HIGO_COMPOPT_E PixelAlphaComp;  /**<Pixel alpha operation*//**<CNcomment: ÏñËØalpha²Ù×÷ */
-    HIGO_CKEY_E    ColorKeyFrom;    /**<Colorkey operation*//**<CNcomment:ColorKey²Ù×÷ */
-    HI_BOOL        EnableRop;       /**<Enable the ROP2 operation*//**<CNcomment: ÆôÓÃROP2²Ù×÷ */
-    HIGO_ROP_E     Rop;              /**<ROP2 operation type*//**<CNcomment: ROP2²Ù×÷ÀàÐÍ */
-    HIGO_ROP_E     RopAlpha;         /**<Type of the ROP alpha operation*//**<CNcomment: ROP alpha²Ù×÷ÀàÐÍ*/
+    HI_BOOL EnableGlobalAlpha;      /**<Global alpha enable flag*//**<CNcomment: å…¨å±€alphaä½¿èƒ½æ ‡å¿— */
+    HI_BOOL EnablePixelAlpha;       /**<Pixel alpha enable flag*//**<CNcomment: åƒç´ alphaä½¿èƒ½æ ‡å¿— */
+    HIGO_COMPOPT_E PixelAlphaComp;  /**<Pixel alpha operation*//**<CNcomment: åƒç´ alphaæ“ä½œ */
+    HIGO_CKEY_E    ColorKeyFrom;    /**<Colorkey operation*//**<CNcomment:ColorKeyæ“ä½œ */
+    HI_BOOL        EnableRop;       /**<Enable the ROP2 operation*//**<CNcomment: å¯ç”¨ROP2æ“ä½œ */
+    HIGO_ROP_E     Rop;              /**<ROP2 operation type*//**<CNcomment: ROP2æ“ä½œç±»åž‹ */
+    HIGO_ROP_E     RopAlpha;         /**<Type of the ROP alpha operation*//**<CNcomment: ROP alphaæ“ä½œç±»åž‹*/
  }HIGO_BLTOPT2_S;
 
-/** CNcomment: blit²Ù×÷ÊôÐÔ */
+/** CNcomment: blitæ“ä½œå±žæ€§ */
 typedef struct
 {
-    HI_BOOL EnableGlobalAlpha;      /**<Global alpha enable flag. If this flag is enabled, the PixelAlphaComp blending mode must be specified.*//**<CNcomment: È«¾ÖalphaÊ¹ÄÜ±êÖ¾,´ò¿ª´Ë¿ª¹ØÖ®Íâ»¹±ØÐëÖ¸¶¨PixelAlphaCompµÄ»ìºÏ·½Ê½*/
-    HI_BOOL EnablePixelAlpha;       /**<Pixel alpha enable flag*//**<CNcomment: ÏñËØalphaÊ¹ÄÜ±êÖ¾ */
-    HIGO_COMPOPT_E PixelAlphaComp;  /**<Pixel alpha operation*//**<CNcomment: ÏñËØalpha²Ù×÷ */
-    HIGO_CKEY_E    ColorKeyFrom;    /**<colorkey operation*//**<CNcomment: ColorKey²Ù×÷ */
-    HI_BOOL        EnableRop;       /**<Enable the ROP2 operation*//**<CNcomment: ÆôÓÃROP2²Ù×÷ */
-    HIGO_ROP_E     Rop;             /**<ROP2 operation type*//**<CNcomment: ROP2²Ù×÷ÀàÐÍ */
-    HIGO_ROP_E     RopAlpha;        /**<Type of the ROP alpha operation*/    /**<CNcomment: ROP alpha²Ù×÷ÀàÐÍ*/    
-    HI_BOOL        EnableScale;      /**<Enable the scaling function*//**<CNcomment: ÆôÓÃËõ·Å */
-    HIGO_ROTATE_E  RotateType;      /**<Rotation type*//**<CNcomment: Ðý×ª·½Ê½ */
-    HIGO_MIRROR_E  MirrorType;      /**<Mirror type*//**<CNcomment: ¾µÏñ·½Ê½ */
+    HI_BOOL EnableGlobalAlpha;      /**<Global alpha enable flag. If this flag is enabled, the PixelAlphaComp blending mode must be specified.*//**<CNcomment: å…¨å±€alphaä½¿èƒ½æ ‡å¿—,æ‰“å¼€æ­¤å¼€å…³ä¹‹å¤–è¿˜å¿…é¡»æŒ‡å®šPixelAlphaCompçš„æ··åˆæ–¹å¼*/
+    HI_BOOL EnablePixelAlpha;       /**<Pixel alpha enable flag*//**<CNcomment: åƒç´ alphaä½¿èƒ½æ ‡å¿— */
+    HIGO_COMPOPT_E PixelAlphaComp;  /**<Pixel alpha operation*//**<CNcomment: åƒç´ alphaæ“ä½œ */
+    HIGO_CKEY_E    ColorKeyFrom;    /**<colorkey operation*//**<CNcomment: ColorKeyæ“ä½œ */
+    HI_BOOL        EnableRop;       /**<Enable the ROP2 operation*//**<CNcomment: å¯ç”¨ROP2æ“ä½œ */
+    HIGO_ROP_E     Rop;             /**<ROP2 operation type*//**<CNcomment: ROP2æ“ä½œç±»åž‹ */
+    HIGO_ROP_E     RopAlpha;        /**<Type of the ROP alpha operation*/    /**<CNcomment: ROP alphaæ“ä½œç±»åž‹*/    
+    HI_BOOL        EnableScale;      /**<Enable the scaling function*//**<CNcomment: å¯ç”¨ç¼©æ”¾ */
+    HIGO_ROTATE_E  RotateType;      /**<Rotation type*//**<CNcomment: æ—‹è½¬æ–¹å¼ */
+    HIGO_MIRROR_E  MirrorType;      /**<Mirror type*//**<CNcomment: é•œåƒæ–¹å¼ */
 } HIGO_BLTOPT_S;
 
 typedef struct
 {
-    HI_BOOL EnableGlobalAlpha;      /**<Global alpha enable flag*//**<CNcomment: È«¾ÖalphaÊ¹ÄÜ±êÖ¾ */
+    HI_BOOL EnableGlobalAlpha;      /**<Global alpha enable flag*//**<CNcomment: å…¨å±€alphaä½¿èƒ½æ ‡å¿— */
 
-    HIGO_COMPOPT_E PixelAlphaComp;  /**<Pixel alpha operation*//**<CNcomment: ÏñËØalpha²Ù×÷ */
-    HI_BOOL        EnableRop;       /**<Enable the ROP2 operation*//**<CNcomment: ÆôÓÃROP2²Ù×÷ */
-    HIGO_ROP_E     RopColor;        /**<ROP2 operation type*//**<CNcomment: ROP2²Ù×÷ÀàÐÍ */
+    HIGO_COMPOPT_E PixelAlphaComp;  /**<Pixel alpha operation*//**<CNcomment: åƒç´ alphaæ“ä½œ */
+    HI_BOOL        EnableRop;       /**<Enable the ROP2 operation*//**<CNcomment: å¯ç”¨ROP2æ“ä½œ */
+    HIGO_ROP_E     RopColor;        /**<ROP2 operation type*//**<CNcomment: ROP2æ“ä½œç±»åž‹ */
 	HIGO_ROP_E     RopAlpha;
 		
 } HIGO_MASKOPT_S;
 
-/**Anti-flicker level*//** CNcomment: ¿¹ÉÁË¸¼¶±ð */
+/**Anti-flicker level*//** CNcomment: æŠ—é—ªçƒçº§åˆ« */
 typedef enum
 {
-    HIGO_DEFLICKER_AUTO = 0, /*Anti-flicker level, ranging from low to high. The higher the level, the better the anti-flicker effect, but the more blurred the picture.*//** CNcomment:¿¹ÉÁË¸¼¶±ð£¬ÖµÎªLOW~HIGH,ÖµÔ½´ó¿¹ÉÁË¸Ð§¹ûÔ½ºÃ£¬µ«Ô½Ä£ºý*/
+    HIGO_DEFLICKER_AUTO = 0, /*Anti-flicker level, ranging from low to high. The higher the level, the better the anti-flicker effect, but the more blurred the picture.*//** CNcomment:æŠ—é—ªçƒçº§åˆ«ï¼Œå€¼ä¸ºLOW~HIGH,å€¼è¶Šå¤§æŠ—é—ªçƒæ•ˆæžœè¶Šå¥½ï¼Œä½†è¶Šæ¨¡ç³Š*/
     HIGO_DEFLICKER_LOW,
     HIGO_DEFLICKER_MIDDLE,
     HIGO_DEFLICKER_HIGH,
     HIGO_DEFLICKER_BUTT
 }HIGO_DEFLICKEROPT_E;
 
-/**Anti-flicker level*//** CNcomment: ¿¹ÉÁË¸¼¶±ð */
+/**Anti-flicker level*//** CNcomment: æŠ—é—ªçƒçº§åˆ« */
 typedef struct
 {
     HIGO_DEFLICKEROPT_E DefLevel;
@@ -161,13 +161,13 @@ typedef struct
 
 /******************************* API declaration *****************************/
 /** \addtogroup      HIGO_BLIT */
-/** @{ */  /** <!-- ¡¾HIGO_BLIT¡¿ */
+/** @{ */  /** <!-- ã€HIGO_BLITã€‘ */
 
 /** 
-\brief Initializes the Bliter module.CNcomment: ³õÊ¼»¯BliterÄ£¿é CNend
+\brief Initializes the Bliter module.CNcomment: åˆå§‹åŒ–Bliteræ¨¡å— CNend
 \attention \n
-When ::HI_GO_Init is called, this application programming interface (API) is also called.CNcomment: ::HI_GO_InitÖÐÒÑ°üº¬ÁË¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
-\param  N/A.CNcomment: ÎÞ CNend
+When ::HI_GO_Init is called, this application programming interface (API) is also called.CNcomment: ::HI_GO_Initä¸­å·²åŒ…å«äº†å¯¹è¯¥æŽ¥å£çš„è°ƒç”¨ CNend
+\param  N/A.CNcomment: æ—  CNend
 
 \retval ::HI_SUCCESS  
 \retval ::HI_FAILURE
@@ -180,10 +180,10 @@ When ::HI_GO_Init is called, this application programming interface (API) is als
 HI_S32 HI_GO_InitBliter(HI_VOID);
 
 /** 
-\brief Deinitializes the Bliter module.CNcomment:È¥³õÊ¼»¯BliterÄ£¿é CNend
+\brief Deinitializes the Bliter module.CNcomment:åŽ»åˆå§‹åŒ–Bliteræ¨¡å— CNend
 \attention \n
-When ::HI_GO_Deinit is called, this API is also called.CNcomment:::HI_GO_DeinitÖÐÒÑ°üº¬ÁË¶Ô¸Ã½Ó¿ÚµÄµ÷ÓÃ CNend
-\param N/A. CNcomment:ÎÞ CNend
+When ::HI_GO_Deinit is called, this API is also called.CNcomment:::HI_GO_Deinitä¸­å·²åŒ…å«äº†å¯¹è¯¥æŽ¥å£çš„è°ƒç”¨ CNend
+\param N/A. CNcomment:æ—  CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -196,15 +196,15 @@ When ::HI_GO_Deinit is called, this API is also called.CNcomment:::HI_GO_DeinitÖ
 HI_S32 HI_GO_DeinitBliter(HI_VOID);
 
 /**  
-\brief Fills in a rectangle.CNcomment:¾ØÐÎÌî³ä CNend
+\brief Fills in a rectangle.CNcomment:çŸ©å½¢å¡«å…… CNend
 \attention \n
-N/A.CNcomment:ÎÞ CNend
-\param[in] Surface Surface handle.CNcomment:Surface¾ä±ú CNend
+N/A.CNcomment:æ—  CNend
+\param[in] Surface Surface handle.CNcomment:Surfaceå¥æŸ„ CNend
 \param[in] pRect Size of the rectangle to be filled in. If the parameter is not set, it indicates that the entire 
-surface is filled in.CNcomment: Ìî³ä¾ØÐÎ´óÐ¡£¬Îª¿Õ±íÊ¾Ìî³äÕû¸ösurface CNend
+surface is filled in.CNcomment: å¡«å……çŸ©å½¢å¤§å°ï¼Œä¸ºç©ºè¡¨ç¤ºå¡«å……æ•´ä¸ªsurface CNend
 \param[in] Color Color Fill color. For the RGB format, 32-bit color is filled in; for the palette, the color index (0-255) 
-is filled in.CNcomment:Ìî³äÑÕÉ«,×¢ÒâÈç¹ûÊÇRGB¸ñÊ½£¬Í³Ò»Ìî³ä32Î»É«£¬Èç¹ûµ÷É«°å£¬¾ÍÖ±½ÓÌî³äÑÕÉ«Ë÷Òý(0 ~ 255)¡£CNend 
-\param[in] CompositeOpt Blending mode.CNcomment:»ìºÏ·½Ê½ CNend
+is filled in.CNcomment:å¡«å……é¢œè‰²,æ³¨æ„å¦‚æžœæ˜¯RGBæ ¼å¼ï¼Œç»Ÿä¸€å¡«å……32ä½è‰²ï¼Œå¦‚æžœè°ƒè‰²æ¿ï¼Œå°±ç›´æŽ¥å¡«å……é¢œè‰²ç´¢å¼•(0 ~ 255)ã€‚CNend 
+\param[in] CompositeOpt Blending mode.CNcomment:æ··åˆæ–¹å¼ CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HI_FAILURE
@@ -220,29 +220,29 @@ is filled in.CNcomment:Ìî³äÑÕÉ«,×¢ÒâÈç¹ûÊÇRGB¸ñÊ½£¬Í³Ò»Ìî³ä32Î»É«£¬Èç¹ûµ÷É«°å£¬¾
 \retval ::HIGO_ERR_EMPTYRECT
 \retval ::HIGO_ERR_OUTOFBOUNDS
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_FillRect(HI_HANDLE Surface, const HI_RECT* pRect, HI_COLOR Color, HIGO_COMPOPT_E CompositeOpt);
 
 /**  
-\brief Transfers bit blocks. During the transfer, color space conversion (CSC), scaling, and rotation are supported.CNcomment:Î»¿é°áÒÆ£¬ÔÚ°áÒÆ¹ý³ÌÖÐ£¬¿ÉÒÔÊµÏÖÉ«²Ê¿Õ¼ä×ª»»¡¢Ëõ·Å¡¢Ðý×ª¹¦ÄÜ CNend
+\brief Transfers bit blocks. During the transfer, color space conversion (CSC), scaling, and rotation are supported.CNcomment:ä½å—æ¬ç§»ï¼Œåœ¨æ¬ç§»è¿‡ç¨‹ä¸­ï¼Œå¯ä»¥å®žçŽ°è‰²å½©ç©ºé—´è½¬æ¢ã€ç¼©æ”¾ã€æ—‹è½¬åŠŸèƒ½ CNend
 \attention \n
 Only the YUV-to-RGB CSC is supported. \n
 The operations of colorkey, alpha, ROP, and colorkey+ROP are supported.\
 Scaling, rotation, and mirror cannot be combined. \n
 For scaling, rotation, and mirror, the source and destination pixel formats must be the same, but the format cannot 
 be YUV or CLUT.\n
-CNcomment:É«²Ê¿Õ¼ä×ª»»½öÖ§³ÖYUVµ½RGB×ª»» \n
-¿ÉÒÔÖ§³Ö²Ù×÷ÈçÏÂcolorkey¡¢alpha¡¢ROP¡¢colorkey+ROP\
-Ëõ·Å¡¢Ðý×ª»ò¾µÏñ²»¿É×éºÏÊ¹ÓÃ \n
-Ëõ·Å¡¢Ðý×ª»ò¾µÏñÒªÇóÔ´ÓëÄ¿±êÏñËØ¸ñÊ½ÍêÈ«ÏàÍ¬£¬µ«²»ÄÜÊÇYUV¸ñÊ½ºÍCLUT¸ñÊ½ \n CNend
+CNcomment:è‰²å½©ç©ºé—´è½¬æ¢ä»…æ”¯æŒYUVåˆ°RGBè½¬æ¢ \n
+å¯ä»¥æ”¯æŒæ“ä½œå¦‚ä¸‹colorkeyã€alphaã€ROPã€colorkey+ROP\
+ç¼©æ”¾ã€æ—‹è½¬æˆ–é•œåƒä¸å¯ç»„åˆä½¿ç”¨ \n
+ç¼©æ”¾ã€æ—‹è½¬æˆ–é•œåƒè¦æ±‚æºä¸Žç›®æ ‡åƒç´ æ ¼å¼å®Œå…¨ç›¸åŒï¼Œä½†ä¸èƒ½æ˜¯YUVæ ¼å¼å’ŒCLUTæ ¼å¼ \n CNend
 
-\param[in] SrcSurface Source surface handle.CNcomment:Ô´surface¾ä±ú CNend
-\param[in] pSrcRect Source region for transfer. If the parameter is not set, it indicates the entire source surface.CNcomment:°áÒÆµÄÔ´ÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÔ´surfaceÇøÓò CNend
-\param[in] DstSurface Destination surface handle.CNcomment:Ä¿µÄsurface¾ä±ú CNend
+\param[in] SrcSurface Source surface handle.CNcomment:æºsurfaceå¥æŸ„ CNend
+\param[in] pSrcRect Source region for transfer. If the parameter is not set, it indicates the entire source surface.CNcomment:æ¬ç§»çš„æºåŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªæºsurfaceåŒºåŸŸ CNend
+\param[in] DstSurface Destination surface handle.CNcomment:ç›®çš„surfaceå¥æŸ„ CNend
 \param[in] pDstRect Destination region for transfer. If the parameter is not set, it indicates the entire destination 
-surface.CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
-\param[in] pBlitOpt Blending mode.CNcomment:»ìºÏ·½Ê½ CNend
+surface.CNcomment:æ¬ç§»çš„ç›®çš„åŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªç›®æ ‡surfaceåŒºåŸŸ CNend
+\param[in] pBlitOpt Blending mode.CNcomment:æ··åˆæ–¹å¼ CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_NOTINIT
@@ -264,24 +264,24 @@ surface.CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
 \retval ::HIGO_ERR_INTERNAL
 
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_Blit (HI_HANDLE SrcSurface, const HI_RECT* pSrcRect,
                    HI_HANDLE DstSurface, const HI_RECT* pDstRect,
                    const HIGO_BLTOPT_S* pBlitOpt);
 
 /**  
-\brief Draws a line segment. Cropping is not supported.CNcomment:»æÖÆÏß¶Î£¬²»Ö§³Ö²Ã¼õ CNend
+\brief Draws a line segment. Cropping is not supported.CNcomment:ç»˜åˆ¶çº¿æ®µï¼Œä¸æ”¯æŒè£å‡ CNend
 \attention \n
 Cropping is not supported. Users must keep the entire line within the surface region.
-CNcomment:²»Ö§³Ö²Ã¼õ£¬Ê¹ÓÃÕß±ØÐë±£Ö¤ÕûÌõÖ±ÏßÔÚsurfaceÇøÓòÄÚ CNend 
+CNcomment:ä¸æ”¯æŒè£å‡ï¼Œä½¿ç”¨è€…å¿…é¡»ä¿è¯æ•´æ¡ç›´çº¿åœ¨surfaceåŒºåŸŸå†… CNend 
 
-\param[in] Surface Destination surface handle.CNcomment:Ä¿µÄsurface¾ä±ú CNend
-\param[in] x0 Horizontal coordinate of the start point.CNcomment:Æðµãx×ø±ê CNend
-\param[in] y0 Vertical coordinate of the start point.CNcomment:Æðµãy×ø±ê CNend
-\param[in] x1 Horizontal coordinate of the end point.CNcomment:ÖÕµãx×ø±ê CNend
-\param[in] y1 Vertical coordinate of the end point .CNcomment:ÖÕµãy×ø±ê CNend 
-\param[in] color Line segment color.CNcomment:Ïß¶ÎÑÕÉ« CNend
+\param[in] Surface Destination surface handle.CNcomment:ç›®çš„surfaceå¥æŸ„ CNend
+\param[in] x0 Horizontal coordinate of the start point.CNcomment:èµ·ç‚¹xåæ ‡ CNend
+\param[in] y0 Vertical coordinate of the start point.CNcomment:èµ·ç‚¹yåæ ‡ CNend
+\param[in] x1 Horizontal coordinate of the end point.CNcomment:ç»ˆç‚¹xåæ ‡ CNend
+\param[in] y1 Vertical coordinate of the end point .CNcomment:ç»ˆç‚¹yåæ ‡ CNend 
+\param[in] color Line segment color.CNcomment:çº¿æ®µé¢œè‰² CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HI_FAILURE
@@ -292,22 +292,22 @@ CNcomment:²»Ö§³Ö²Ã¼õ£¬Ê¹ÓÃÕß±ØÐë±£Ö¤ÕûÌõÖ±ÏßÔÚsurfaceÇøÓòÄÚ CNend
 \retval ::HIGO_ERR_DEPEND_TDE
 
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_DrawLine(HI_HANDLE Surface, HI_S32 x0, HI_S32 y0, HI_S32 x1, HI_S32 y1, HI_COLOR color);
 
 /**  
-\brief Draws an ellipse.CNcomment:»æÖÆÍÖÔ² CNend
+\brief Draws an ellipse.CNcomment:ç»˜åˆ¶æ¤­åœ† CNend
 \attention \n
 Cropping is not supported. Users must keep the entire ellipse within the surface region.
-CNcomment:²»Ö§³Ö²Ã¼õ£¬Ê¹ÓÃÕß±ØÐë±£Ö¤Õû¸öÍÖÔ²ÔÚsurfaceÇøÓòÄÚ CNend
+CNcomment:ä¸æ”¯æŒè£å‡ï¼Œä½¿ç”¨è€…å¿…é¡»ä¿è¯æ•´ä¸ªæ¤­åœ†åœ¨surfaceåŒºåŸŸå†… CNend
 
-\param[in] Surface Destination surface handle.CNcomment:Ä¿µÄsurface¾ä±ú CNend
-\param[in] sx Horizontal coordinate of the ellipse center.CNcomment:Ô²ÐÄx×ø±ê CNend
-\param[in] sy Vertical coordinate of the ellipse center.CNcomment:Ô²ÐÄy×ø±ê CNend
-\param[in] rx X axis radius .CNcomment:xÖá°ë¾¶ CNend 
-\param[in] ry Y axis radius.CNcomment:yÖá°ë¾¶ CNend
-\param[in] color Ellipse color.CNcomment:ÍÖÔ²ÑÕÉ« CNend
+\param[in] Surface Destination surface handle.CNcomment:ç›®çš„surfaceå¥æŸ„ CNend
+\param[in] sx Horizontal coordinate of the ellipse center.CNcomment:åœ†å¿ƒxåæ ‡ CNend
+\param[in] sy Vertical coordinate of the ellipse center.CNcomment:åœ†å¿ƒyåæ ‡ CNend
+\param[in] rx X axis radius .CNcomment:xè½´åŠå¾„ CNend 
+\param[in] ry Y axis radius.CNcomment:yè½´åŠå¾„ CNend
+\param[in] color Ellipse color.CNcomment:æ¤­åœ†é¢œè‰² CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_NOTINIT
@@ -315,21 +315,21 @@ CNcomment:²»Ö§³Ö²Ã¼õ£¬Ê¹ÓÃÕß±ØÐë±£Ö¤Õû¸öÍÖÔ²ÔÚsurfaceÇøÓòÄÚ CNend
 \retval ::HIGO_ERR_UNSUPPORTED
 
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_DrawEllipse(HI_HANDLE Surface, HI_S32 sx, HI_S32 sy, HI_S32 rx, HI_S32 ry, HI_COLOR color);
 
 /**  
-\brief Draws a circle. Cropping is not supported.CNcomment:»æÖÆÔ²£¬²»Ö§³Ö²Ã¼õ CNend
+\brief Draws a circle. Cropping is not supported.CNcomment:ç»˜åˆ¶åœ†ï¼Œä¸æ”¯æŒè£å‡ CNend
 \attention \n
 Cropping is not supported. Users must keep the entire circle within the surface region.
-CNcomment:²»Ö§³Ö²Ã¼õ£¬Ê¹ÓÃÕß±ØÐë±£Ö¤Õû¸öÔ²ÔÚsurfaceÇøÓòÄÚ CNend
+CNcomment:ä¸æ”¯æŒè£å‡ï¼Œä½¿ç”¨è€…å¿…é¡»ä¿è¯æ•´ä¸ªåœ†åœ¨surfaceåŒºåŸŸå†… CNend
 
-\param[in] Surface Destination surface handle.CNcomment:Ä¿µÄsurface¾ä±ú CNend
-\param[in] x Horizontal coordinate of the circle center.CNcomment:Ô²ÐÄx×ø±ê CNend
-\param[in] y Vertical coordinate of the circle center.CNcomment:Ô²ÐÄy×ø±ê CNend
-\param[in] r Radius.CNcomment:°ë¾¶ CNend
-\param[in] color Circle color. The circle is filled in with 32-bit colors.CNcomment:Ô²ÑÕÉ«, ÑÕÉ«°´ÕÕ32Î»É«½øÐÐÌî³ä CNend
+\param[in] Surface Destination surface handle.CNcomment:ç›®çš„surfaceå¥æŸ„ CNend
+\param[in] x Horizontal coordinate of the circle center.CNcomment:åœ†å¿ƒxåæ ‡ CNend
+\param[in] y Vertical coordinate of the circle center.CNcomment:åœ†å¿ƒyåæ ‡ CNend
+\param[in] r Radius.CNcomment:åŠå¾„ CNend
+\param[in] color Circle color. The circle is filled in with 32-bit colors.CNcomment:åœ†é¢œè‰², é¢œè‰²æŒ‰ç…§32ä½è‰²è¿›è¡Œå¡«å…… CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_NOTINIT
@@ -337,21 +337,21 @@ CNcomment:²»Ö§³Ö²Ã¼õ£¬Ê¹ÓÃÕß±ØÐë±£Ö¤Õû¸öÔ²ÔÚsurfaceÇøÓòÄÚ CNend
 \retval ::HIGO_ERR_UNSUPPORTED
 
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_DrawCircle(HI_HANDLE Surface, HI_S32 x, HI_S32 y, HI_S32 r, HI_COLOR color);
 
 /**  
-\brief Draws a rectangle.CNcomment:»æÖÆ¾ØÐÎ CNend
+\brief Draws a rectangle.CNcomment:ç»˜åˆ¶çŸ©å½¢ CNend
 \attention \n
 If the rectangle is empty, it indicates that the rectangle size is the same as surface.
 Cropping is not supported; therefore, you must ensure that the entire rectangle is within the surface.
-CNcomment:¾ØÐÎÎª¿Õ±íÊ¾Êä³ö¾ØÐÎ´óÐ¡ÓësurfaceÏàÍ¬
-²»Ö§³Ö²Ã¼õ£¬Ê¹ÓÃÕß±ØÐë±£Ö¤Õû¸ö¾ØÐÎÔÚsurfaceÇøÓòÄÚ CNend
+CNcomment:çŸ©å½¢ä¸ºç©ºè¡¨ç¤ºè¾“å‡ºçŸ©å½¢å¤§å°ä¸Žsurfaceç›¸åŒ
+ä¸æ”¯æŒè£å‡ï¼Œä½¿ç”¨è€…å¿…é¡»ä¿è¯æ•´ä¸ªçŸ©å½¢åœ¨surfaceåŒºåŸŸå†… CNend
 
-\param[in] Surface Destination surface handle.CNcomment:Ä¿µÄsurface¾ä±ú CNend
-\param[in] pRect Rectangle region.CNcomment:¾ØÐÎÇøÓò CNend
-\param[in] color Rectangle color.CNcomment:¾ØÐÎÑÕÉ« CNend
+\param[in] Surface Destination surface handle.CNcomment:ç›®çš„surfaceå¥æŸ„ CNend
+\param[in] pRect Rectangle region.CNcomment:çŸ©å½¢åŒºåŸŸ CNend
+\param[in] color Rectangle color.CNcomment:çŸ©å½¢é¢œè‰² CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_NOTINIT
@@ -359,28 +359,28 @@ CNcomment:¾ØÐÎÎª¿Õ±íÊ¾Êä³ö¾ØÐÎ´óÐ¡ÓësurfaceÏàÍ¬
 \retval ::HIGO_ERR_UNSUPPORTED
 
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_DrawRect(HI_HANDLE Surface, const HI_RECT* pRect, HI_COLOR color);
 
 /**  
-\brief Performs the mask ROP or mask blend transfer on the raster bitmap.CNcomment:¶Ô¹âÕ¤Î»Í¼½øÐÐMask Rop»òÕßMask Blend°áÒÆ²Ù×÷ CNend
+\brief Performs the mask ROP or mask blend transfer on the raster bitmap.CNcomment:å¯¹å…‰æ …ä½å›¾è¿›è¡ŒMask Ropæˆ–è€…Mask Blendæ¬ç§»æ“ä½œ CNend
 \attention \n
 The mask bitmap is in A1 or A8 format.
 You need to overlay the mask bitmap with the source bitmap, overlay the result with the destination bitmap, and then 
 output the final result to the destination bitmap.
 If the ROP and blending operation are perform at the same time, only the ROP takes effect.
-CNcomment:MaskÊÇA1»òA8µÄÎ»Í¼Surface¡£ 
-Ê×ÏÈ½«MaskÎ»Í¼ÓëÔ´Î»Í¼×öÒ»´Îµþ¼Ó£¬È»ºóÓÃµþ¼ÓµÄ½á¹ûºÍÄ¿±ê×öµþ¼ÓÊä³öµ½Ä¿±êÎ»Í¼ 
-RopºÍBlend»ìºÏÍ¬Ê±Ö»ÄÜÓÐÒ»¸öÊÇÓÐÐ§µÄ£¬Á½Õß¶¼Ñ¡Ö»ÓÐRopÉúÐ§ CNend
+CNcomment:Maskæ˜¯A1æˆ–A8çš„ä½å›¾Surfaceã€‚ 
+é¦–å…ˆå°†Maskä½å›¾ä¸Žæºä½å›¾åšä¸€æ¬¡å åŠ ï¼Œç„¶åŽç”¨å åŠ çš„ç»“æžœå’Œç›®æ ‡åšå åŠ è¾“å‡ºåˆ°ç›®æ ‡ä½å›¾ 
+Ropå’ŒBlendæ··åˆåŒæ—¶åªèƒ½æœ‰ä¸€ä¸ªæ˜¯æœ‰æ•ˆçš„ï¼Œä¸¤è€…éƒ½é€‰åªæœ‰Ropç”Ÿæ•ˆ CNend
 
-\param[in] SrcSurface Source surface handle.CNcomment:Ô´surface¾ä±ú CNend
-\param[in] pSrcRect Source rectangle.CNcomment:Ô´¾ØÐÎ CNend
-\param[in] DstSurface Destination surface handle.CNcomment:Ä¿±êsurface¾ä±ú CNend
-\param[in] pDstRect Destination rectangle.CNcomment:Ä¿±ê¾ØÐÎ CNend
-\param[in] MaskSurface Mask surface handle.CNcomment:MASK surface¾ä±ú CNend
-\param[in] pMaskRect Mask rectangle.CNcomment:MASK¾ØÐÎ CNend
-\param[in] pOpt Operation option.CNcomment:²Ù×÷Ñ¡Ïî CNend
+\param[in] SrcSurface Source surface handle.CNcomment:æºsurfaceå¥æŸ„ CNend
+\param[in] pSrcRect Source rectangle.CNcomment:æºçŸ©å½¢ CNend
+\param[in] DstSurface Destination surface handle.CNcomment:ç›®æ ‡surfaceå¥æŸ„ CNend
+\param[in] pDstRect Destination rectangle.CNcomment:ç›®æ ‡çŸ©å½¢ CNend
+\param[in] MaskSurface Mask surface handle.CNcomment:MASK surfaceå¥æŸ„ CNend
+\param[in] pMaskRect Mask rectangle.CNcomment:MASKçŸ©å½¢ CNend
+\param[in] pOpt Operation option.CNcomment:æ“ä½œé€‰é¡¹ CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_NOTINIT
@@ -395,7 +395,7 @@ RopºÍBlend»ìºÏÍ¬Ê±Ö»ÄÜÓÐÒ»¸öÊÇÓÐÐ§µÄ£¬Á½Õß¶¼Ñ¡Ö»ÓÐRopÉúÐ§ CNend
 \retval ::HIGO_ERR_INTERNAL
 
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 
 HI_S32 HI_GO_MaskBlit(HI_HANDLE SrcSurface, const HI_RECT* pSrcRect,
@@ -404,19 +404,19 @@ HI_S32 HI_GO_MaskBlit(HI_HANDLE SrcSurface, const HI_RECT* pSrcRect,
                       const HIGO_MASKOPT_S* pOpt);
 
 /**  
-\brief Transfers bit blocks. During the transfer, CSC is supported.CNcomment:Î»¿é°áÒÆ£¬ÔÚ°áÒÆ¹ý³ÌÖÐ£¬¿ÉÒÔÊµÏÖÉ«²Ê¿Õ¼ä×ª»» CNend
+\brief Transfers bit blocks. During the transfer, CSC is supported.CNcomment:ä½å—æ¬ç§»ï¼Œåœ¨æ¬ç§»è¿‡ç¨‹ä¸­ï¼Œå¯ä»¥å®žçŽ°è‰²å½©ç©ºé—´è½¬æ¢ CNend
 \attention \n
 Only the YUV-to-RGB CSC is supported. \n
 The operations of colorkey, alpha, ROP, and colorkey+ROP are supported.\
-CNcomment: É«²Ê¿Õ¼ä×ª»»½öÖ§³ÖYUVµ½RGB×ª»» \n
-¿ÉÒÔÖ§³Ö²Ù×÷ÈçÏÂcolorkey¡¢alpha¡¢ROP¡¢colorkey+ROP\ CNend
+CNcomment: è‰²å½©ç©ºé—´è½¬æ¢ä»…æ”¯æŒYUVåˆ°RGBè½¬æ¢ \n
+å¯ä»¥æ”¯æŒæ“ä½œå¦‚ä¸‹colorkeyã€alphaã€ROPã€colorkey+ROP\ CNend
 
-\param[in] SrcSurface Source surface handle.CNcomment:Ô´surface¾ä±ú CNend
-\param[in] pSrcRect Source region for transfer. If the parameter is not set, it indicates the entire source surface.CNcomment:°áÒÆµÄÔ´ÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÔ´surfaceÇøÓò CNend
-\param[in] DstSurface Destination surface handle.CNcomment:Ä¿µÄsurface¾ä±ú CNend
+\param[in] SrcSurface Source surface handle.CNcomment:æºsurfaceå¥æŸ„ CNend
+\param[in] pSrcRect Source region for transfer. If the parameter is not set, it indicates the entire source surface.CNcomment:æ¬ç§»çš„æºåŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªæºsurfaceåŒºåŸŸ CNend
+\param[in] DstSurface Destination surface handle.CNcomment:ç›®çš„surfaceå¥æŸ„ CNend
 \param[in] pDstRect Destination region for transfer. If the parameter is not set, it indicates the entire destination 
-surface.CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
-\param[in] pBlitOpt Blending mode. If the parameter is not set, default settings are used. CNcomment:»ìºÏ·½Ê½£¬²ÎÊýÎª¿ÕÊ¹ÓÃÄ¬ÈÏ²ÎÊý²Ù×÷ CNend
+surface.CNcomment:æ¬ç§»çš„ç›®çš„åŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªç›®æ ‡surfaceåŒºåŸŸ CNend
+\param[in] pBlitOpt Blending mode. If the parameter is not set, default settings are used. CNcomment:æ··åˆæ–¹å¼ï¼Œå‚æ•°ä¸ºç©ºä½¿ç”¨é»˜è®¤å‚æ•°æ“ä½œ CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_NOTINIT
@@ -435,26 +435,26 @@ surface.CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
 \retval ::HIGO_ERR_OUTOFBOUNDS
 
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_BitBlit (HI_HANDLE SrcSurface, const HI_RECT* pSrcRect,
                        HI_HANDLE DstSurface, const HI_RECT* pDstRect,
                        const HIGO_BLTOPT2_S* pBlitOpt);
 
 /**  
-\brief Transfers bit blocks. During the transfer, CSC and scaling are supported. CNcomment:Î»¿é°áÒÆ£¬ÔÚ°áÒÆ¹ý³ÌÖÐ£¬¿ÉÒÔÊµÏÖÉ«²Ê¿Õ¼ä×ª»», Ëõ·Å CNend
+\brief Transfers bit blocks. During the transfer, CSC and scaling are supported. CNcomment:ä½å—æ¬ç§»ï¼Œåœ¨æ¬ç§»è¿‡ç¨‹ä¸­ï¼Œå¯ä»¥å®žçŽ°è‰²å½©ç©ºé—´è½¬æ¢, ç¼©æ”¾ CNend
 \attention \n
 Only the YUV-to-RGB CSC is supported. \n
 The operations of colorkey, alpha, ROP, and colorkey+ROP are supported.\
-CNcomment:É«²Ê¿Õ¼ä×ª»»½öÖ§³ÖYUVµ½RGB×ª»» \n
-¿ÉÒÔÖ§³Ö²Ù×÷ÈçÏÂcolorkey¡¢alpha¡¢ROP¡¢colorkey+ROP\ CNend
+CNcomment:è‰²å½©ç©ºé—´è½¬æ¢ä»…æ”¯æŒYUVåˆ°RGBè½¬æ¢ \n
+å¯ä»¥æ”¯æŒæ“ä½œå¦‚ä¸‹colorkeyã€alphaã€ROPã€colorkey+ROP\ CNend
 
-\param[in] SrcSurface  Source surface handle. CNcomment:Ô´surface¾ä±ú CNend
-\param[in] pSrcRect Source region for transfer. If the parameter is not set, it indicates the entire source surface.CNcomment:°áÒÆµÄÔ´ÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÔ´surfaceÇøÓò CNend
-\param[in] DstSurface Destination surface handle. CNcomment:Ä¿µÄsurface¾ä±ú CNend
+\param[in] SrcSurface  Source surface handle. CNcomment:æºsurfaceå¥æŸ„ CNend
+\param[in] pSrcRect Source region for transfer. If the parameter is not set, it indicates the entire source surface.CNcomment:æ¬ç§»çš„æºåŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªæºsurfaceåŒºåŸŸ CNend
+\param[in] DstSurface Destination surface handle. CNcomment:ç›®çš„surfaceå¥æŸ„ CNend
 \param[in] pDstRect pDstRect Destination region for transfer. If the parameter is not set, it indicates the entire destination 
-surface. CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
-\param[in] pBlitOpt Blending mode. If the parameter is not set, default settings are used. CNcomment:»ìºÏ·½Ê½,²ÎÊýÎª¿ÕÊ¹ÓÃÄ¬ÈÏ²ÎÊý²Ù×÷ CNend
+surface. CNcomment:æ¬ç§»çš„ç›®çš„åŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªç›®æ ‡surfaceåŒºåŸŸ CNend
+\param[in] pBlitOpt Blending mode. If the parameter is not set, default settings are used. CNcomment:æ··åˆæ–¹å¼,å‚æ•°ä¸ºç©ºä½¿ç”¨é»˜è®¤å‚æ•°æ“ä½œ CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_NOTINIT
@@ -473,21 +473,21 @@ surface. CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
 \retval ::HIGO_ERR_OUTOFBOUNDS
 
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_StretchBlit (HI_HANDLE SrcSurface, const HI_RECT* pSrcRect,
                        HI_HANDLE DstSurface, const HI_RECT* pDstRect,
                        const HIGO_BLTOPT2_S* pBlitOpt);
 
 /** 
-\brief  Fills in the pattern.CNcomment:½øÐÐÄ£Ê½Ìî³ä CNend
+\brief  Fills in the pattern.CNcomment:è¿›è¡Œæ¨¡å¼å¡«å…… CNend
 \attention \n
-\param[in] SrcSurface  Source surface handle. CNcomment:Ô´surface¾ä±ú CNend
-\param[in] pSrcRect  Source region for transfer. If the parameter is not set, it indicates the entire source surface.CNcomment:°áÒÆµÄÔ´ÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÔ´surfaceÇøÓò CNend
-\param[in] DstSurface  Destination surface handle. CNcomment:Ä¿µÄsurface¾ä±ú CNend
+\param[in] SrcSurface  Source surface handle. CNcomment:æºsurfaceå¥æŸ„ CNend
+\param[in] pSrcRect  Source region for transfer. If the parameter is not set, it indicates the entire source surface.CNcomment:æ¬ç§»çš„æºåŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªæºsurfaceåŒºåŸŸ CNend
+\param[in] DstSurface  Destination surface handle. CNcomment:ç›®çš„surfaceå¥æŸ„ CNend
 \param[in] pDstRect  Destination region for transfer. If the parameter is not set, it indicates the entire destination 
-surface.CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
-\param[in] pParOpt  Blending mode. If the parameter is not set, default settings are used. CNcomment:»ìºÏ·½Ê½,²ÎÊýÎª¿ÕÊ¹ÓÃÄ¬ÈÏ²ÎÊý²Ù×÷ CNend
+surface.CNcomment:æ¬ç§»çš„ç›®çš„åŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªç›®æ ‡surfaceåŒºåŸŸ CNend
+\param[in] pParOpt  Blending mode. If the parameter is not set, default settings are used. CNcomment:æ··åˆæ–¹å¼,å‚æ•°ä¸ºç©ºä½¿ç”¨é»˜è®¤å‚æ•°æ“ä½œ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -504,31 +504,31 @@ surface.CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
 \retval ::HIGO_ERR_OUTOFBOUNDS
 
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_PatternBlit(HI_HANDLE SrcSurface, const HI_RECT* pSrcRect, 
                               HI_HANDLE DstSurface, const HI_RECT * pDstRect, 
                               const HIGO_BLTOPT2_S* pParOpt);
 
 /** 
-\brief Performs anti-flicker and transfer. This API is used for the second anti-flicker.CNcomment:¿¹ÉÁË¸°áÒÆ£¬Õâ¸ö½Ó¿ÚÓÃÓÚµÚ¶þ´Î¿¹ÉÁË¸£¬CNend
+\brief Performs anti-flicker and transfer. This API is used for the second anti-flicker.CNcomment:æŠ—é—ªçƒæ¬ç§»ï¼Œè¿™ä¸ªæŽ¥å£ç”¨äºŽç¬¬äºŒæ¬¡æŠ—é—ªçƒï¼ŒCNend
 \attention \n
 This API is used in the following two application scenarios:
 1. The automatic anti-flicker effect of a graphics layer is poor.
 2. The buffer mode of a graphics layer is single-buffer mode (HIGO_LAYER_BUFFER_SINGLE). In this case, users need to 
 perform anti-flicker by themselves.
 When the sizes of the source bitmap and destination bitmap are different, scaling is performed automatically.
-CNcomment:Á½ÖÖÇé¿öÓÃµ½¸Ã½Ó¿Ú 
-1 µ±Í¼²ãµÄ×Ô¶¯¿¹ÉÁË¸Ð§¹û²»ÊÇºÜºÃÊ±£¬¿ÉÒÔÊ¹ÓÃÕâ¸ö½Ó¿ÚÔÙ×öÒ»´Î¡£
-2 µ±Í¼²ãµÄbufferÄ£Ê½ÊÇµ¥bufferÄ£Ê½(HIGO_LAYER_BUFFER_SINGLE)Ê±£¬ÓÃ»§ÐèÒª×Ô¼º×ö¿¹ÉÁË¸£¬
-µ±Ô´ºÍÄ¿±ê´óÐ¡²»Í¬µÄÊ±ºò×Ô¶¯½øÐÐËõ·Å¡£CNend
+CNcomment:ä¸¤ç§æƒ…å†µç”¨åˆ°è¯¥æŽ¥å£ 
+1 å½“å›¾å±‚çš„è‡ªåŠ¨æŠ—é—ªçƒæ•ˆæžœä¸æ˜¯å¾ˆå¥½æ—¶ï¼Œå¯ä»¥ä½¿ç”¨è¿™ä¸ªæŽ¥å£å†åšä¸€æ¬¡ã€‚
+2 å½“å›¾å±‚çš„bufferæ¨¡å¼æ˜¯å•bufferæ¨¡å¼(HIGO_LAYER_BUFFER_SINGLE)æ—¶ï¼Œç”¨æˆ·éœ€è¦è‡ªå·±åšæŠ—é—ªçƒï¼Œ
+å½“æºå’Œç›®æ ‡å¤§å°ä¸åŒçš„æ—¶å€™è‡ªåŠ¨è¿›è¡Œç¼©æ”¾ã€‚CNend
 
-\param[in] SrcSurface  SrcSurface Source surface handle.CNcomment: Ô´surface¾ä±ú CNend
-\param[in] pSrcRect  pSrcRect Source region for transfer. If the parameter is not set, it indicates the entire source surface.CNcomment:°áÒÆµÄÔ´ÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÔ´surfaceÇøÓò CNend
-\param[in] DstSurface  DstSurface Destination surface handle. CNcomment:Ä¿µÄsurface¾ä±ú CNend
+\param[in] SrcSurface  SrcSurface Source surface handle.CNcomment: æºsurfaceå¥æŸ„ CNend
+\param[in] pSrcRect  pSrcRect Source region for transfer. If the parameter is not set, it indicates the entire source surface.CNcomment:æ¬ç§»çš„æºåŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªæºsurfaceåŒºåŸŸ CNend
+\param[in] DstSurface  DstSurface Destination surface handle. CNcomment:ç›®çš„surfaceå¥æŸ„ CNend
 \param[in] pDstRect  pDstRect Destination region for transfer. If the parameter is not set, it indicates the entire destination 
-surface. CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
-\param[in] pDefOpt  pDefOpt Anti-flicker level. If this parameter is not set, it indicates the automatic level. CNcomment:¿¹ÉÁË¸¼¶±ðÑ¡Ïî£¬Îª¿Õ±íÊ¾AUTO ¼¶±ð CNend
+surface. CNcomment:æ¬ç§»çš„ç›®çš„åŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªç›®æ ‡surfaceåŒºåŸŸ CNend
+\param[in] pDefOpt  pDefOpt Anti-flicker level. If this parameter is not set, it indicates the automatic level. CNcomment:æŠ—é—ªçƒçº§åˆ«é€‰é¡¹ï¼Œä¸ºç©ºè¡¨ç¤ºAUTO çº§åˆ« CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -546,7 +546,7 @@ surface. CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
 \retval ::HIGO_ERR_OUTOFBOUNDS
 
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_DeflickerBlit(HI_HANDLE SrcSurface, const HI_RECT* pSrcRect, 
                                  HI_HANDLE DstSurface, const HI_RECT * pDstRect, 
@@ -554,27 +554,27 @@ HI_S32 HI_GO_DeflickerBlit(HI_HANDLE SrcSurface, const HI_RECT* pSrcRect,
 
 /**  
 \brief Do the alpha blending between the forground surface and the backgroud surface, transfers the result to the destination surface. The background surface and the destination surface must be in the RGB color space. 
-You can performs color space coversion, scale, or mirror, colorkey with alpha blending.CNcomment:¸Ãº¯ÊýÊµÏÖÇ°¾°ºÍ±³¾°µþ¼ÓÊä³öµ½Ä¿±ê¹¦ÄÜ£¬±³¾°ºÍÄ¿±êsurface±ØÐëÎ»ÓÚRGB¿Õ¼ä£¬ÔÚµþ¼Ó¹ý³ÌÖÐ¿ÉÒÔ¸½¼ÓÑÕÉ«¿Õ¼ä×ª»»¡¢Ëõ·Å¡¢¾µÏñµÈ²Ù×÷£¬²»Ö§³ÖÐý×ª¡£CNend
+You can performs color space coversion, scale, or mirror, colorkey with alpha blending.CNcomment:è¯¥å‡½æ•°å®žçŽ°å‰æ™¯å’ŒèƒŒæ™¯å åŠ è¾“å‡ºåˆ°ç›®æ ‡åŠŸèƒ½ï¼ŒèƒŒæ™¯å’Œç›®æ ‡surfaceå¿…é¡»ä½äºŽRGBç©ºé—´ï¼Œåœ¨å åŠ è¿‡ç¨‹ä¸­å¯ä»¥é™„åŠ é¢œè‰²ç©ºé—´è½¬æ¢ã€ç¼©æ”¾ã€é•œåƒç­‰æ“ä½œï¼Œä¸æ”¯æŒæ—‹è½¬ã€‚CNend
 \attention \n
 Only the YUV-to-RGB CSC is supported. \n
 The operations of colorkey, alpha, ROP, and colorkey+ROP are supported, rotation is not supported.\
 Scaling, and mirror cannot be combined. \n
 For scaling, and mirror, the source and destination pixel formats must be the same, but the format cannot 
 be YUV or CLUT.\n
-CNcomment:É«²Ê¿Õ¼ä×ª»»½öÖ§³ÖYUVµ½RGB×ª»» \n
-¿ÉÒÔÖ§³Ö²Ù×÷ÈçÏÂcolorkey¡¢alpha¡¢ROP¡¢colorkey+ROP£¬²»Ö§³ÖËõ·Å\
-Ëõ·Å¡¢¾µÏñ²»¿É×éºÏÊ¹ÓÃ \n
-Ëõ·Å»ò¾µÏñÒªÇóÔ´ÓëÄ¿±êÏñËØ¸ñÊ½ÍêÈ«ÏàÍ¬£¬µ«²»ÄÜÊÇYUV¸ñÊ½ºÍCLUT¸ñÊ½ \n CNend
+CNcomment:è‰²å½©ç©ºé—´è½¬æ¢ä»…æ”¯æŒYUVåˆ°RGBè½¬æ¢ \n
+å¯ä»¥æ”¯æŒæ“ä½œå¦‚ä¸‹colorkeyã€alphaã€ROPã€colorkey+ROPï¼Œä¸æ”¯æŒç¼©æ”¾\
+ç¼©æ”¾ã€é•œåƒä¸å¯ç»„åˆä½¿ç”¨ \n
+ç¼©æ”¾æˆ–é•œåƒè¦æ±‚æºä¸Žç›®æ ‡åƒç´ æ ¼å¼å®Œå…¨ç›¸åŒï¼Œä½†ä¸èƒ½æ˜¯YUVæ ¼å¼å’ŒCLUTæ ¼å¼ \n CNend
 
-\param[in] BckSurface background surface handle.CNcomment:±³¾°surface¾ä±ú CNend
-\param[in] pBckRect backgound region for transfer. If the parameter is not set, it indicates the entire background surface.CNcomment:±³¾°surface²Ù×÷ÇøÓò£¬Îª¿Õ±íÊ¾Õû¸ö±³¾°surfaceÇøÓò CNend
-\param[in] ForSurface forground surface handle.CNcomment:Ç°¾°surface¾ä±ú CNend
+\param[in] BckSurface background surface handle.CNcomment:èƒŒæ™¯surfaceå¥æŸ„ CNend
+\param[in] pBckRect backgound region for transfer. If the parameter is not set, it indicates the entire background surface.CNcomment:èƒŒæ™¯surfaceæ“ä½œåŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªèƒŒæ™¯surfaceåŒºåŸŸ CNend
+\param[in] ForSurface forground surface handle.CNcomment:å‰æ™¯surfaceå¥æŸ„ CNend
 \param[in] pForRect forground region for transfer. If the parameter is not set, it indicates the entire forground surface. 
-surface.CNcomment:Ç°¾°surface²Ù×÷ÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÇ°¾°surfaceÇøÓò CNend
-\param[in] DstSurface destination surface handle.CNcomment:Ä¿±êsurface¾ä±ú CNend
+surface.CNcomment:å‰æ™¯surfaceæ“ä½œåŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªå‰æ™¯surfaceåŒºåŸŸ CNend
+\param[in] DstSurface destination surface handle.CNcomment:ç›®æ ‡surfaceå¥æŸ„ CNend
 \param[in] pDstRect destination region for transfer. If the parameter is not set, it indicates the entire destination surface. 
-surface.CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
-\param[in] pBlitOpt Blending mode.CNcomment:»ìºÏ·½Ê½ CNend
+surface.CNcomment:æ¬ç§»çš„ç›®çš„åŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªç›®æ ‡surfaceåŒºåŸŸ CNend
+\param[in] pBlitOpt Blending mode.CNcomment:æ··åˆæ–¹å¼ CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_NOTINIT
@@ -596,7 +596,7 @@ surface.CNcomment:°áÒÆµÄÄ¿µÄÇøÓò£¬Îª¿Õ±íÊ¾Õû¸öÄ¿±êsurfaceÇøÓò CNend
 \retval ::HIGO_ERR_INTERNAL
 
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_Blit3Source(HI_HANDLE BckSurface, const HI_RECT* pBckRect,
                    HI_HANDLE ForSurface, const HI_RECT* pForRect,

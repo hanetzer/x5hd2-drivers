@@ -30,7 +30,7 @@
 #endif
 
 #if defined(ENV_ARMLINUX) || defined( ENV_ARMLINUX_KERNEL )
-#include "stdarg.h" // linuxÏÂ¶¨Òåva_listµÄÍ·º¯Êı
+#include "stdarg.h" // linuxä¸‹å®šä¹‰va_listçš„å¤´å‡½æ•°
 #endif
 
 #if defined( ENV_WIN32 )
@@ -48,14 +48,14 @@
       constants 
  ***********************************************************************/
 
-#define  VFMW_VERSION_NUM       2013062501   // VFMWµÄ°æ±¾ºÅ
+#define  VFMW_VERSION_NUM       2013062501   // VFMWçš„ç‰ˆæœ¬å·
 
 
 // limit data  
-#define  MAX_QUEUE_IMAGE_NUM    64  /* ´ËÊıÖµ²»¿ÉÒÔËæÒâĞŞ¸Ä£¬Èç¹ûÉèÎª·Ç2ÕûÊı´ÎÃİ£¬»òÕßĞ¡ÓÚ64£¬¶¼¿ÉÄÜ³öÎÊÌâ */
+#define  MAX_QUEUE_IMAGE_NUM    64  /* æ­¤æ•°å€¼ä¸å¯ä»¥éšæ„ä¿®æ”¹ï¼Œå¦‚æœè®¾ä¸ºé2æ•´æ•°æ¬¡å¹‚ï¼Œæˆ–è€…å°äº64ï¼Œéƒ½å¯èƒ½å‡ºé—®é¢˜ */
 
 #define  SCD_SEG_BLANK_LEN  (128*1024)
-#define  MIN_BOTTOM_SEG_LEN          (1*1024) ////SCD_SEG_BLANK_LEN  //128KÌ«´óÁË°É£¬ÕâÃ´¶àÂëÁ÷¿½±´Ò»µ©·¢Éú»áºÄÊ±ºÜ³¤£¬¸ø»¥³âÊµÏÖ´øÀ´Âé·³
+#define  MIN_BOTTOM_SEG_LEN          (1*1024) ////SCD_SEG_BLANK_LEN  //128Kå¤ªå¤§äº†å§ï¼Œè¿™ä¹ˆå¤šç æµæ‹·è´ä¸€æ—¦å‘ç”Ÿä¼šè€—æ—¶å¾ˆé•¿ï¼Œç»™äº’æ–¥å®ç°å¸¦æ¥éº»çƒ¦
 
 #define  VFMW_TRUE    0
 #define  VFMW_FALSE   1
@@ -64,8 +64,8 @@
 #define  DBG_ERR     -1
 
 // debug message print control
-#define  DEFAULT_PRINT_ENABLE   0x0//0x18 //(1<< PRN_DNR)//(1<<PRN_VDMREG)|(1<<PRN_DNMSG) //0x60 //0x0  //0x3B // Ä¬ÈÏ 'PRN_CTRL' & 'PRN_FATAL' ´ò¿ª£¬ÆäÓà¹Ø±Õ
-#define  DEFAULT_PRINT_DEVICE   DEV_SCREEN   // Ä¬ÈÏ 'DEV_SCREEN'£¬¼´´òÓ¡µ½ÆÁÄ»
+#define  DEFAULT_PRINT_ENABLE   0x0//0x18 //(1<< PRN_DNR)//(1<<PRN_VDMREG)|(1<<PRN_DNMSG) //0x60 //0x0  //0x3B // é»˜è®¤ 'PRN_CTRL' & 'PRN_FATAL' æ‰“å¼€ï¼Œå…¶ä½™å…³é—­
+#define  DEFAULT_PRINT_DEVICE   DEV_SCREEN   // é»˜è®¤ 'DEV_SCREEN'ï¼Œå³æ‰“å°åˆ°å±å¹•
 
 /***********************************************************************
       enum  
@@ -80,69 +80,69 @@ typedef enum
 
 typedef enum
 {
-    PRN_FATAL = 0,       // 0.  ÖÂÃüÒì³££¨fatal error£©£¬±ÈÈçÎ´ÖªÒì³££¬VDM¹ÒËÀµÈĞÅÏ¢
-    PRN_ERROR,           // 1.  Ò»°ãÒì³££¨error£©£¬±ÈÈçÓï·¨´íÎó
-    PRN_CTRL,            // 2.  ¿ØÖÆĞÅÏ¢, ±ÈÈç×´Ì¬µÆ£¬ÄÚ²¿×´Ì¬»úÌø×ªĞÅÏ¢µÈ
-    PRN_VDMREG,          // 3.  VDM¼Ä´æÆ÷£¬°üÀ¨¿ØÖÆ¼Ä´æÆ÷¡¢×´Ì¬¼Ä´æÆ÷
+    PRN_FATAL = 0,       // 0.  è‡´å‘½å¼‚å¸¸ï¼ˆfatal errorï¼‰ï¼Œæ¯”å¦‚æœªçŸ¥å¼‚å¸¸ï¼ŒVDMæŒ‚æ­»ç­‰ä¿¡æ¯
+    PRN_ERROR,           // 1.  ä¸€èˆ¬å¼‚å¸¸ï¼ˆerrorï¼‰ï¼Œæ¯”å¦‚è¯­æ³•é”™è¯¯
+    PRN_CTRL,            // 2.  æ§åˆ¶ä¿¡æ¯, æ¯”å¦‚çŠ¶æ€ç¯ï¼Œå†…éƒ¨çŠ¶æ€æœºè·³è½¬ä¿¡æ¯ç­‰
+    PRN_VDMREG,          // 3.  VDMå¯„å­˜å™¨ï¼ŒåŒ…æ‹¬æ§åˆ¶å¯„å­˜å™¨ã€çŠ¶æ€å¯„å­˜å™¨
 
-    PRN_DNMSG,           // 4.  ½âÂëÏÂĞĞÏûÏ¢£¬¸÷ÏûÏ¢×ÖµÄÖµ´òÓ¡
-    PRN_RPMSG,           // 5.  ĞŞ²¹ÏûÏ¢£¬ĞŞ²¹ÏûÏ¢¸÷¸öÏûÏ¢×Ö
-    PRN_UPMSG,           // 6.  ÉÏĞĞÏûÏ¢£¬ÉÏĞĞÏûÏ¢¸÷¸öÏûÏ¢×Ö
-    PRN_STREAM,          // 7.  ÂëÁ÷ĞÅÏ¢£¬ÈçÃ¿¸öÂëÁ÷°üµÄĞÅÏ¢£¨µØÖ·£¬³¤¶ÈµÈ£©
+    PRN_DNMSG,           // 4.  è§£ç ä¸‹è¡Œæ¶ˆæ¯ï¼Œå„æ¶ˆæ¯å­—çš„å€¼æ‰“å°
+    PRN_RPMSG,           // 5.  ä¿®è¡¥æ¶ˆæ¯ï¼Œä¿®è¡¥æ¶ˆæ¯å„ä¸ªæ¶ˆæ¯å­—
+    PRN_UPMSG,           // 6.  ä¸Šè¡Œæ¶ˆæ¯ï¼Œä¸Šè¡Œæ¶ˆæ¯å„ä¸ªæ¶ˆæ¯å­—
+    PRN_STREAM,          // 7.  ç æµä¿¡æ¯ï¼Œå¦‚æ¯ä¸ªç æµåŒ…çš„ä¿¡æ¯ï¼ˆåœ°å€ï¼Œé•¿åº¦ç­‰ï¼‰
 
-    PRN_STR_HEAD,        // 8.  ÂëÁ÷Í·×Ö½Ú£¬£¨Ç°8×Ö½Ú£¬ÓÃÓÚ²éÕÒ±È¶Ô£©
-    PRN_STR_TAIL,        // 9.  ÂëÁ÷Î²×Ö½Ú£¬£¨ºó8×Ö½Ú£¬ÓÃÓÚ²éÕÒ±È¶Ô£©
-    PRN_STR_BODY,        // 10. ÂëÁ÷ÖĞ²¿×Ö½Ú£¬£¨Ç°ºó8×Ö½ÚÖ®ÍâµÄÂëÁ÷£©
-    PRN_IMAGE,           // 11. ½âÂëÍ¼ÏñĞÅÏ¢£¨Í¼ÏñµÄid£¬µØÖ·£¬ÊôĞÔµÈ£©
+    PRN_STR_HEAD,        // 8.  ç æµå¤´å­—èŠ‚ï¼Œï¼ˆå‰8å­—èŠ‚ï¼Œç”¨äºæŸ¥æ‰¾æ¯”å¯¹ï¼‰
+    PRN_STR_TAIL,        // 9.  ç æµå°¾å­—èŠ‚ï¼Œï¼ˆå8å­—èŠ‚ï¼Œç”¨äºæŸ¥æ‰¾æ¯”å¯¹ï¼‰
+    PRN_STR_BODY,        // 10. ç æµä¸­éƒ¨å­—èŠ‚ï¼Œï¼ˆå‰å8å­—èŠ‚ä¹‹å¤–çš„ç æµï¼‰
+    PRN_IMAGE,           // 11. è§£ç å›¾åƒä¿¡æ¯ï¼ˆå›¾åƒçš„idï¼Œåœ°å€ï¼Œå±æ€§ç­‰ï¼‰
 
-    PRN_QUEUE,           // 12. ½âÂëÍ¼¶ÓÁĞĞÅÏ¢£¨¶ÓÁĞµÄÍ¼Ïñ¸öÊı£¬Î»ÖÃµÈ£©
-    PRN_REF,             // 13. ²Î¿¼Í¼ĞÅÏ¢£¨H264´òÓ¡LISTÏà¹ØĞÅÏ¢£¬MPEG´òÓ¡²Î¿¼Í¼¼°ÆäÎ¬»¤µÄĞÅÏ¢£©
-    PRN_DPB,             // 14. DPBÀàĞÅÏ¢£¨ÓëdpbÏà¹ØµÄ¸÷ÖÖĞÅÏ¢£©
-    PRN_POC,             // 15. POCÀàĞÅÏ¢£¨POCµÄ½âÂëºÍ¼ÆËã£©
+    PRN_QUEUE,           // 12. è§£ç å›¾é˜Ÿåˆ—ä¿¡æ¯ï¼ˆé˜Ÿåˆ—çš„å›¾åƒä¸ªæ•°ï¼Œä½ç½®ç­‰ï¼‰
+    PRN_REF,             // 13. å‚è€ƒå›¾ä¿¡æ¯ï¼ˆH264æ‰“å°LISTç›¸å…³ä¿¡æ¯ï¼ŒMPEGæ‰“å°å‚è€ƒå›¾åŠå…¶ç»´æŠ¤çš„ä¿¡æ¯ï¼‰
+    PRN_DPB,             // 14. DPBç±»ä¿¡æ¯ï¼ˆä¸dpbç›¸å…³çš„å„ç§ä¿¡æ¯ï¼‰
+    PRN_POC,             // 15. POCç±»ä¿¡æ¯ï¼ˆPOCçš„è§£ç å’Œè®¡ç®—ï¼‰
 
-    PRN_MARK_MMCO,       // 16. MARK & MMCO²Ù×÷ĞÅÏ¢£¨MARKºÍMMCO²Ù×÷µÄĞÅÏ¢£¬¿É±íÏÖÖ´ĞĞµÄ¹ı³Ì£©
-    PRN_SEQ,             // 17. ĞòÁĞ¼¶ÖØÒªÓï·¨ĞÅÏ¢£¬H264´òÓ¡SPS£¬MPEG2´òÓ¡sequenceĞÅÏ¢£¬MPEG4´òÓ¡VOL¼°ÒÔÉÏ²ãĞÅÏ¢
-    PRN_PIC,             // 18. Í¼Ïñ¼¶ÖØÒªÓï·¨ĞÅÏ¢£¬H264´òÓ¡PPS£¬MPEG2´òÓ¡picture£¬MPEG4´òÓ¡VOP/SHVOPÍ·
-    PRN_SLICE,           // 19. slice¼¶ÖØÒªÓï·¨ĞÅÏ¢£º½öH264ÓĞÒâÒå
+    PRN_MARK_MMCO,       // 16. MARK & MMCOæ“ä½œä¿¡æ¯ï¼ˆMARKå’ŒMMCOæ“ä½œçš„ä¿¡æ¯ï¼Œå¯è¡¨ç°æ‰§è¡Œçš„è¿‡ç¨‹ï¼‰
+    PRN_SEQ,             // 17. åºåˆ—çº§é‡è¦è¯­æ³•ä¿¡æ¯ï¼ŒH264æ‰“å°SPSï¼ŒMPEG2æ‰“å°sequenceä¿¡æ¯ï¼ŒMPEG4æ‰“å°VOLåŠä»¥ä¸Šå±‚ä¿¡æ¯
+    PRN_PIC,             // 18. å›¾åƒçº§é‡è¦è¯­æ³•ä¿¡æ¯ï¼ŒH264æ‰“å°PPSï¼ŒMPEG2æ‰“å°pictureï¼ŒMPEG4æ‰“å°VOP/SHVOPå¤´
+    PRN_SLICE,           // 19. sliceçº§é‡è¦è¯­æ³•ä¿¡æ¯ï¼šä»…H264æœ‰æ„ä¹‰
 
-    PRN_SEI,             // 20. SEIĞÅÏ¢£¬½öH264ÓĞÒâÒå
-    PRN_SE,              // 21. H264Óï·¨ĞÅÏ¢,½öH264ÓĞÒâÒå 
-    PRN_DBG,             // 22. µ÷ÊÔĞÅÏ¢
-    PRN_BLOCK,           // 23. ½âÂëÏß³Ì×èÈûĞÅÏ¢
+    PRN_SEI,             // 20. SEIä¿¡æ¯ï¼Œä»…H264æœ‰æ„ä¹‰
+    PRN_SE,              // 21. H264è¯­æ³•ä¿¡æ¯,ä»…H264æœ‰æ„ä¹‰ 
+    PRN_DBG,             // 22. è°ƒè¯•ä¿¡æ¯
+    PRN_BLOCK,           // 23. è§£ç çº¿ç¨‹é˜»å¡ä¿¡æ¯
 
     PRN_SCD_REGMSG,      // 24.
     PRN_SCD_STREAM,      // 25.
-    PRN_SCD_INFO,        // 26. ´òÓ¡SCDÒ»Ğ©ÔËĞĞ×´Ì¬µÄĞÅÏ¢
-    PRN_FOD,             // 27. ´òÓ¡FOD¼°ÆäÇı¶¯³ÌĞòÏà¹ØĞÅÏ¢
+    PRN_SCD_INFO,        // 26. æ‰“å°SCDä¸€äº›è¿è¡ŒçŠ¶æ€çš„ä¿¡æ¯
+    PRN_FOD,             // 27. æ‰“å°FODåŠå…¶é©±åŠ¨ç¨‹åºç›¸å…³ä¿¡æ¯
     
-	PRN_DNR,             // 28. ´òÓ¡DNR¼°ÆäÇı¶¯³ÌĞòÏà¹ØĞÅÏ¢
-	PRN_PTS,             // 29. ´òÓ¡ÓëPTS´¦ÀíÏà¹ØµÄĞÅÏ¢
-    PRN_DEC_MODE,        // 30. ½âÂëÄ£Ê½ÇĞ»»ĞÅÏ¢
+	PRN_DNR,             // 28. æ‰“å°DNRåŠå…¶é©±åŠ¨ç¨‹åºç›¸å…³ä¿¡æ¯
+	PRN_PTS,             // 29. æ‰“å°ä¸PTSå¤„ç†ç›¸å…³çš„ä¿¡æ¯
+    PRN_DEC_MODE,        // 30. è§£ç æ¨¡å¼åˆ‡æ¢ä¿¡æ¯
 
-    PRN_ALWS=32          // 32. ²»ÊÜ¿Ø´òÓ¡
+    PRN_ALWS=32          // 32. ä¸å—æ§æ‰“å°
 } PRINT_MSG_TYPE;
 
 /* state type */
 typedef enum
 {
-    STATE_RCV_RAW = 0,           //0. ½ÓÊÕRAWÂëÁ÷
-    STATE_SCD_START,             //1. Æô¶¯SCD
-    STATE_SCD_INTERRUPT,        //2. SCDÖĞ¶Ï
+    STATE_RCV_RAW = 0,           //0. æ¥æ”¶RAWç æµ
+    STATE_SCD_START,             //1. å¯åŠ¨SCD
+    STATE_SCD_INTERRUPT,        //2. SCDä¸­æ–­
 
-    STATE_DECSYNTAX_SEG,        //3. Óï·¨½âÎöSEGÂëÁ÷
-    STATE_GENERATE_DECPARAM,    //4. Éú³É½âÂë²ÎÊı
+    STATE_DECSYNTAX_SEG,        //3. è¯­æ³•è§£æSEGç æµ
+    STATE_GENERATE_DECPARAM,    //4. ç”Ÿæˆè§£ç å‚æ•°
 
-    STATE_VDH_START,             //5. Æô¶¯VDH
-    STATE_VDH_INTERRUPT,         //6. VDHÖĞ¶Ï
-    STATE_VDH_REPAIR,            //7. VDHĞŞ²¹
-    STATE_1D_TO_QUEUE,           //8. 1DÍ¼ÏñÊä³öµ½¶ÓÁĞ
+    STATE_VDH_START,             //5. å¯åŠ¨VDH
+    STATE_VDH_INTERRUPT,         //6. VDHä¸­æ–­
+    STATE_VDH_REPAIR,            //7. VDHä¿®è¡¥
+    STATE_1D_TO_QUEUE,           //8. 1Då›¾åƒè¾“å‡ºåˆ°é˜Ÿåˆ—
 
-    STATE_DNR_START,             //9. Æô¶¯DNR
-    STATE_DNR_INTERRUPT,         //10. DNRÖĞ¶Ï
-    STATE_2D_TO_QUEUE,           //11. 2DÍ¼ÏñÊä³öµ½¶ÓÁĞ
+    STATE_DNR_START,             //9. å¯åŠ¨DNR
+    STATE_DNR_INTERRUPT,         //10. DNRä¸­æ–­
+    STATE_2D_TO_QUEUE,           //11. 2Då›¾åƒè¾“å‡ºåˆ°é˜Ÿåˆ—
 
-    STATE_VO_RCV_IMG,            //12. VO¶ÁÈ¡Í¼Ïñ
-    STATE_VO_REL_IMG             //13. VOÊÍ·ÅÍ¼Ïñ
+    STATE_VO_RCV_IMG,            //12. VOè¯»å–å›¾åƒ
+    STATE_VO_REL_IMG             //13. VOé‡Šæ”¾å›¾åƒ
 } VFMW_STATE_TYPE_E;
 
 //#define    SAVE_PIC_YUV       0x1
@@ -154,13 +154,13 @@ typedef enum
    Struct 'STREAM_PARAM' defines the stream info format. */
 typedef struct
 {
-    UINT8*    VirAddr;    // ÂëÁ÷µÄĞéÄâµØÖ·
-    UINT32    PhyAddr;    // ÂëÁ÷µÄÎïÀíµØÖ·
-    SINT32    Length;     // ÂëÁ÷³¤¶È£¨×Ö½ÚÊı£©
+    UINT8*    VirAddr;    // ç æµçš„è™šæ‹Ÿåœ°å€
+    UINT32    PhyAddr;    // ç æµçš„ç‰©ç†åœ°å€
+    SINT32    Length;     // ç æµé•¿åº¦ï¼ˆå­—èŠ‚æ•°ï¼‰
 } STREAM_PARAM;
 
 
-/* ÄÚ´æ´òÓ¡Êı¾İ½á¹¹  */
+/* å†…å­˜æ‰“å°æ•°æ®ç»“æ„  */
 typedef struct 
 {      
     SINT8*    buf_addr;
@@ -170,7 +170,7 @@ typedef struct
 } MEMPRINT;
 
 
-/* MPEG2/4µÄÂëÁ÷Ôİ´æ»º³å */
+/* MPEG2/4çš„ç æµæš‚å­˜ç¼“å†² */
 typedef struct
 {
 	UINT8*    buf_vir_addr;
@@ -180,29 +180,29 @@ typedef struct
 	SINT32    length;
 } STRM_LOCAL_BUF;
 
-/* VDM Çı¶¯µÄĞÅÏ¢»ã×Ü */
+/* VDM é©±åŠ¨çš„ä¿¡æ¯æ±‡æ€» */
 typedef struct
 {
 	SINT32    DecTaskState;
 } VDMCMN_DECTASK_INFO_S;
 
 
-/* µÍÑÓ³Ù¸÷Ä£¿éÊ±¼äÍ³¼ÆĞÅÏ¢ */
+/* ä½å»¶è¿Ÿå„æ¨¡å—æ—¶é—´ç»Ÿè®¡ä¿¡æ¯ */
 typedef struct
 {
-    SINT32    lowdly_enable;             /* µÍÑÓ³ÙÊ¹ÄÜ±êÖ¾ */
-    SINT32    chan_id;                   /* Í¨µÀ ID */
-	SINT32    receive_raw;               /* ¼ÇÂ¼ÊÕµ½ RAW °üÊ±¼ä */
-	SINT32    scd_start;                 /* SCD Æô¶¯Ê±¼ä */
-	SINT32    scd_return;                /* SCD ÖĞ¶Ï·µ»Ø */
-	SINT32    scd_count;                 /* SCD ¹¤×÷Ò»´ÎËùÏûºÄµÄÊ±¼ä */
-	SINT32    vdh_start;                 /* VDH Æô¶¯Ê±¼ä */
-	SINT32    vdh_return;                /* VDH ÖĞ¶Ï·µ»Ø */
-	SINT32    vdh_count;                 /* VDH ¹¤×÷Ò»´ÎËùÏûºÄµÄÊ±¼ä */
-	SINT32    vo_read_img;               /* VO ³É¹¦¶Á×ßÍ¼ÏñµÄÊ±¼ä */
-	SINT32    raw_to_scd_return;         /* ´ÓVFMWÊÕµ½ÂëÁ÷µ½½â³öÒ»Ö¡Í¼ÏñµÄÊ±¼ä, Ö»ÓĞ°´Ö¡ËÍÂëÁ÷Ê±²Å½ÏÎª×¼È· */
-	SINT32    raw_to_img;                /* ´ÓVFMWÊÕµ½ÂëÁ÷µ½½â³öÒ»Ö¡Í¼ÏñµÄÊ±¼ä, Ö»ÓĞ°´Ö¡ËÍÂëÁ÷Ê±²Å½ÏÎª×¼È· */
-	SINT32    raw_to_vo;                 /* ´ÓVFMWÊÕµ½ÂëÁ÷µ½½â³öÒ»Ö¡Í¼ÏñµÄÊ±¼ä£¬Ö»ÓĞ°´Ö¡ËÍÂëÁ÷Ê±²Å½ÏÎª×¼È· */
+    SINT32    lowdly_enable;             /* ä½å»¶è¿Ÿä½¿èƒ½æ ‡å¿— */
+    SINT32    chan_id;                   /* é€šé“ ID */
+	SINT32    receive_raw;               /* è®°å½•æ”¶åˆ° RAW åŒ…æ—¶é—´ */
+	SINT32    scd_start;                 /* SCD å¯åŠ¨æ—¶é—´ */
+	SINT32    scd_return;                /* SCD ä¸­æ–­è¿”å› */
+	SINT32    scd_count;                 /* SCD å·¥ä½œä¸€æ¬¡æ‰€æ¶ˆè€—çš„æ—¶é—´ */
+	SINT32    vdh_start;                 /* VDH å¯åŠ¨æ—¶é—´ */
+	SINT32    vdh_return;                /* VDH ä¸­æ–­è¿”å› */
+	SINT32    vdh_count;                 /* VDH å·¥ä½œä¸€æ¬¡æ‰€æ¶ˆè€—çš„æ—¶é—´ */
+	SINT32    vo_read_img;               /* VO æˆåŠŸè¯»èµ°å›¾åƒçš„æ—¶é—´ */
+	SINT32    raw_to_scd_return;         /* ä»VFMWæ”¶åˆ°ç æµåˆ°è§£å‡ºä¸€å¸§å›¾åƒçš„æ—¶é—´, åªæœ‰æŒ‰å¸§é€ç æµæ—¶æ‰è¾ƒä¸ºå‡†ç¡® */
+	SINT32    raw_to_img;                /* ä»VFMWæ”¶åˆ°ç æµåˆ°è§£å‡ºä¸€å¸§å›¾åƒçš„æ—¶é—´, åªæœ‰æŒ‰å¸§é€ç æµæ—¶æ‰è¾ƒä¸ºå‡†ç¡® */
+	SINT32    raw_to_vo;                 /* ä»VFMWæ”¶åˆ°ç æµåˆ°è§£å‡ºä¸€å¸§å›¾åƒçš„æ—¶é—´ï¼Œåªæœ‰æŒ‰å¸§é€ç æµæ—¶æ‰è¾ƒä¸ºå‡†ç¡® */
 	SINT32    OneTimeFlag;
 }LOWDLY_INFO_S;
 
@@ -217,11 +217,11 @@ extern  UINT32            g_StateBkup_008;   // VDM_STATE
 extern  FILE              *g_fpLog;
 extern  SINT32            g_LogEnable;
 
-extern  SEM               g_SEM_VdmMutex;    // VDMÔÚÊÓÆµ½âÂëºÍJPEG½âÂëÖ®¼äµÄ»¥³â
-extern  SEM               g_SEM_VdmFinish;   // ·ÇH.264Ğ­ÒéVDM½âÂëÍê³ÉĞÅºÅÁ¿
+extern  SEM               g_SEM_VdmMutex;    // VDMåœ¨è§†é¢‘è§£ç å’ŒJPEGè§£ç ä¹‹é—´çš„äº’æ–¥
+extern  SEM               g_SEM_VdmFinish;   // éH.264åè®®VDMè§£ç å®Œæˆä¿¡å·é‡
 
-extern  SEM               g_SEM_StateMutex;  // "×´Ì¬Ë¢ĞÂ"ºÍ"×´Ì¬»ñÈ¡"Ö®¼äµÄ»¥³â
-extern  SEM               g_SEM_CfgMutex;    // "ÅäÖÃĞÅÏ¢²éÔÄ"ºÍ"ÅäÖÃĞÅÏ¢¸üĞÂ"Ö®¼äµÄ»¥³â
+extern  SEM               g_SEM_StateMutex;  // "çŠ¶æ€åˆ·æ–°"å’Œ"çŠ¶æ€è·å–"ä¹‹é—´çš„äº’æ–¥
+extern  SEM               g_SEM_CfgMutex;    // "é…ç½®ä¿¡æ¯æŸ¥é˜…"å’Œ"é…ç½®ä¿¡æ¯æ›´æ–°"ä¹‹é—´çš„äº’æ–¥
 
 extern  UINT32            g_ScreenPrint;
 extern  UINT32            g_WriteLog;
@@ -260,7 +260,7 @@ extern  LOWDLY_INFO_S     g_stLowdlyInfo[MAX_CHAN_NUM];
 /***********************************************************************
       macro 
  ***********************************************************************/
-//×¢Òâ:ÓĞºÜ¶àº¯ÊıÇ°Ãæ¶Ô¿ÕÖ¸ÕëµÄÅĞ¶Ï¾Í¿ÉÒÔÈ¥µôÁË
+//æ³¨æ„:æœ‰å¾ˆå¤šå‡½æ•°å‰é¢å¯¹ç©ºæŒ‡é’ˆçš„åˆ¤æ–­å°±å¯ä»¥å»æ‰äº†
 //add for check null point parament
 #define CHECK_NULL_PTR_ReturnValue(parPoint,ReturnValue)                        \
     do                                                  \
@@ -286,8 +286,8 @@ extern  LOWDLY_INFO_S     g_stLowdlyInfo[MAX_CHAN_NUM];
 #if 0
 #define DefaultMarkValue -1
 //add for check array beyond the mark
-//Èç¹û²»ĞèÒªDeflautMark½«ÆäÉèÎª-1
-//Èç¹ûÊı×é¶¨ÒåÎªint array[65] ÄÇÃ´FirstMark = 0; LastMark = 64
+//å¦‚æœä¸éœ€è¦DeflautMarkå°†å…¶è®¾ä¸º-1
+//å¦‚æœæ•°ç»„å®šä¹‰ä¸ºint array[65] é‚£ä¹ˆFirstMark = 0; LastMark = 64
 #define CHECK_ARRAY_BEYOND_ReturnValue( FirstMark, LastMark, InputMark, DefaultMark, ReturnValue)       \
  do                                                 \
     {                                                   \
@@ -315,56 +315,56 @@ extern  LOWDLY_INFO_S     g_stLowdlyInfo[MAX_CHAN_NUM];
 //end
  
 
-/*********************** µ÷ÓÃÍâ¹Òº¯Êı¶Ôµ÷ÊÔ×´Ì¬½øĞĞ´¦ÀíµÄºê·â×° *************************/
-/* state=1	VFMW¿ªÊ¼µÈ´ıÂëÁ÷(¶ÁÂëÁ÷Ê§°Ü)	ÎŞ²ÎÊı   */
+/*********************** è°ƒç”¨å¤–æŒ‚å‡½æ•°å¯¹è°ƒè¯•çŠ¶æ€è¿›è¡Œå¤„ç†çš„å®å°è£… *************************/
+/* state=1	VFMWå¼€å§‹ç­‰å¾…ç æµ(è¯»ç æµå¤±è´¥)	æ— å‚æ•°   */
 #define HANDLE_WAIT_STREAM()                                              \
 do{                                                                       \
 }while(0)
 
-/* state=2	VFMW½áÊøµÈ´ıÂëÁ÷(µÃµ½ÂëÁ÷)	ÎŞ²ÎÊı */
+/* state=2	VFMWç»“æŸç­‰å¾…ç æµ(å¾—åˆ°ç æµ)	æ— å‚æ•° */
 #define HANDLE_GET_STREAM()                                               \
 do{                                                                       \
 }while(0)
 
-/* state=3	VFMW¿ªÊ¼µÈ´ıVDMµÄ²Ù×÷È¨	ÎŞ²ÎÊı */
+/* state=3	VFMWå¼€å§‹ç­‰å¾…VDMçš„æ“ä½œæƒ	æ— å‚æ•° */
 #define HANDLE_WAIT_VDMPROPERTY()                                         \
 do{                                                                       \
 }while(0)
 
-/* state=4	VFMW½áÊøµÈ´ıVDM²Ù×÷È¨£¨ÒÑ»ñµÃ£©	ÎŞ²ÎÊı */
+/* state=4	VFMWç»“æŸç­‰å¾…VDMæ“ä½œæƒï¼ˆå·²è·å¾—ï¼‰	æ— å‚æ•° */
 #define HANDLE_GET_VDMPROPERTY()                                          \
 do{                                                                       \
 }while(0)
 
-/* state=5	VFMW¿ªÊ¼µÈ´ıVDM½âÂëÍê³É	ÎŞ²ÎÊı */
+/* state=5	VFMWå¼€å§‹ç­‰å¾…VDMè§£ç å®Œæˆ	æ— å‚æ•° */
 #define HANDLE_WAIT_VDMFINISH()                                           \
 do{                                                                       \
 }while(0)
 
-/* state=6	VFMW½áÊøµÈ´ıVDM½âÂëÍê³É£¨VDMÒÑÍê³É£© ÎŞ²ÎÊı */
+/* state=6	VFMWç»“æŸç­‰å¾…VDMè§£ç å®Œæˆï¼ˆVDMå·²å®Œæˆï¼‰ æ— å‚æ•° */
 #define HANDLE_GET_VDMFINISH()                                            \
 do{                                                                       \
 }while(0)
 
-/* state=7	VFMW¿ªÊ¼µÈ´ı¿ÕÏĞÖ¡´æ  ÎŞ²ÎÊı */
+/* state=7	VFMWå¼€å§‹ç­‰å¾…ç©ºé—²å¸§å­˜  æ— å‚æ•° */
 #define HANDLE_WAIT_FRAMESTORE()                                          \
 do{                                                                       \
 }while(0)
 
-/* state=8	VFMW½áÊøµÈ´ı¿ÕÏĞÖ¡´æ£¨ÒÑ»ñµÃÖ¡´æ£©	ÎŞ²ÎÊı */
+/* state=8	VFMWç»“æŸç­‰å¾…ç©ºé—²å¸§å­˜ï¼ˆå·²è·å¾—å¸§å­˜ï¼‰	æ— å‚æ•° */
 #define HANDLE_GET_FRAMESTORE()                                           \
 do{                                                                       \
 }while(0)
 
-/* state=100	Êä³öµ÷ÊÔĞÅÏ¢	p_args: µ÷ÊÔ×Ö·û´®£¬arg_len: ×Ö·û´®³¤¶È */
+/* state=100	è¾“å‡ºè°ƒè¯•ä¿¡æ¯	p_args: è°ƒè¯•å­—ç¬¦ä¸²ï¼Œarg_len: å­—ç¬¦ä¸²é•¿åº¦ */
 #define HANDLE_OUT_STRING( str, len )                                     \
 do{                                                                       \
 }while(0)
 
 
-/*********************** ·¢ËÍÏûÏ¢µÄºê·â×° *************************/
+/*********************** å‘é€æ¶ˆæ¯çš„å®å°è£… *************************/
 
-/* type=1	Í¼ÏñµÄÏÔÊ¾ÇøÓò·¢ÉúÁË±ä»¯ */
+/* type=1	å›¾åƒçš„æ˜¾ç¤ºåŒºåŸŸå‘ç”Ÿäº†å˜åŒ– */
 #define REPORT_DISP_AREA_CHANGE(chan_id,w,h,center_x,center_y)  \
 do{                                                         \
     if( NULL != g_event_report )                         \
@@ -378,7 +378,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=2, Í¼Ïñ¿í¸ß·¢ÉúÁË±ä»¯ */
+/* type=2, å›¾åƒå®½é«˜å‘ç”Ÿäº†å˜åŒ– */
 #define REPORT_IMGSIZE_CHANGE( chan_id, oldw, oldh, neww, newh )	\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -392,7 +392,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=3, Ö¡ÂÊ·¢ÉúÁË±ä»¯ */
+/* type=3, å¸§ç‡å‘ç”Ÿäº†å˜åŒ– */
 #define REPORT_FRMRATE_CHANGE( chan_id, newfr )    		\
 do{                                                      	\
     if( NULL != g_event_report )                 		\
@@ -403,7 +403,7 @@ do{                                                      	\
     }                                                       \
 }while(0)
 
-/* type=4, Í¼ÏñµÄÖğĞĞ/¸ôĞĞĞÅÏ¢±ä»¯£¬ÎŞ²ÎÊı */
+/* type=4, å›¾åƒçš„é€è¡Œ/éš”è¡Œä¿¡æ¯å˜åŒ–ï¼Œæ— å‚æ•° */
 #define REPORT_SCAN_CHANGE( chan_id, newscan ) 			\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -414,7 +414,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=5, ÓĞÒ»Ö¡Í¼Ïñ½øÈë¶ÓÁĞ */
+/* type=5, æœ‰ä¸€å¸§å›¾åƒè¿›å…¥é˜Ÿåˆ— */
 #define REPORT_IMGRDY( chan_id, pImage )            		\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -425,7 +425,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=6, ·¢ÏÖÁËuser data */
+/* type=6, å‘ç°äº†user data */
 #define REPORT_USRDAT( chan_id, p_usrdat )              	\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -436,7 +436,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=7  ·¢ÏÖ¿í¸ß±È·¢Éú±ä»¯ */
+/* type=7  å‘ç°å®½é«˜æ¯”å‘ç”Ÿå˜åŒ– */
 #define REPORT_ASPR_CHANGE( chan_id, oldasp, newasp )  	    \
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -448,7 +448,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=8  ¼´½«Êä³öÒ»¸ö³ß´çÓëÖ®Ç°²»Í¬µÄÖ¡ */
+/* type=8  å³å°†è¾“å‡ºä¸€ä¸ªå°ºå¯¸ä¸ä¹‹å‰ä¸åŒçš„å¸§ */
 #define REPORT_OUTPUT_IMG_SIZE_CHANGE( chan_id, oldw, oldh, neww, newh )	\
     do{                                                         \
         if( NULL != g_event_report )                            \
@@ -463,7 +463,7 @@ do{                                                         \
     }while(0)
 
 
-/* type=20  ·¢ÏÖÒ»¸öIÖ¡£¬×¼±¸½âÂë´ËIÖ¡ */
+/* type=20  å‘ç°ä¸€ä¸ªIå¸§ï¼Œå‡†å¤‡è§£ç æ­¤Iå¸§ */
 #define REPORT_FIND_IFRAME( chan_id, stream_size )          \
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -473,7 +473,7 @@ do{                                                         \
         g_event_report( chan_id, EVNT_FIND_IFRAME, (UINT8*)para );  \
     }                                                       \
 }while(0)
-/* type=21  capture×¥Í¼Íê³É */
+/* type=21  captureæŠ“å›¾å®Œæˆ */
 #define REPORT_CAPTURE_BTL_OVER( chan_id, pImage )          \
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -485,7 +485,7 @@ do{                                                         \
 }while(0)
  
 /*--------------------------------------------------------------*/
-/* type=100 ·¢ÏÖÂëÁ÷´íÎó p_args[3..0]£º´íÎó±àºÅ*/
+/* type=100 å‘ç°ç æµé”™è¯¯ p_args[3..0]ï¼šé”™è¯¯ç¼–å·*/
 #define REPORT_STRMERR(chan_id, err_code )          		\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -496,7 +496,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=101 VDM²»ÏìÓ¦ */
+/* type=101 VDMä¸å“åº” */
 #define REPORT_VDMERR(chan_id)                           	\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -505,7 +505,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=102 ·¢ÏÖ²»Ö§³ÖµÄ¹æ¸ñ ÎŞ */
+/* type=102 å‘ç°ä¸æ”¯æŒçš„è§„æ ¼ æ—  */
 #define REPORT_UNSUPPORT(chan_id)                       	\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -514,7 +514,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=103	ÂëÁ÷µÄÓï·¨´íÎó	ÎŞ */
+/* type=103	ç æµçš„è¯­æ³•é”™è¯¯	æ—  */
 #define REPORT_SE_ERR(chan_id)                           	\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -523,7 +523,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=104  Í¼Ïñ´íÎóÂÊ³¬¹ıref_error_thr	ÎŞ */
+/* type=104  å›¾åƒé”™è¯¯ç‡è¶…è¿‡ref_error_thr	æ—  */
 #define REPORT_OVER_REFTHR(chan_id)                    		\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -532,7 +532,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=105  Í¼Ïñ´íÎóÂÊ³¬¹ıout_error_thr	ÎŞ */
+/* type=105  å›¾åƒé”™è¯¯ç‡è¶…è¿‡out_error_thr	æ—  */
 #define REPORT_OVER_OUTTHR(chan_id)                     	\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -541,7 +541,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=106  ²Î¿¼Ö¡¸öÊı³¬¹ıÁËÉè¶¨Öµ p_args[3..0]£º²Î¿¼Ö¡¸öÊı£¬ p_args[7..4]£ºÉè¶¨Öµ */
+/* type=106  å‚è€ƒå¸§ä¸ªæ•°è¶…è¿‡äº†è®¾å®šå€¼ p_args[3..0]ï¼šå‚è€ƒå¸§ä¸ªæ•°ï¼Œ p_args[7..4]ï¼šè®¾å®šå€¼ */
 #define REPORT_REF_NUM_OVER(chan_id, RefNum, MaxRefNum)    	\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -553,7 +553,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=107, Í¼Ïñ¿í¸ß³¬¹ıãĞÖµ */
+/* type=107, å›¾åƒå®½é«˜è¶…è¿‡é˜ˆå€¼ */
 #define REPORT_IMGSIZE_OVER( chan_id, w, h, maxw, maxh )	\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -567,7 +567,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=108, slice¸öÊı³¬¹ıãĞÖµ */
+/* type=108, sliceä¸ªæ•°è¶…è¿‡é˜ˆå€¼ */
 #define REPORT_SLICE_NUM_OVER( chan_id, SliceNum, MaxSliceNum )	\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -579,7 +579,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=109, sps¸öÊı³¬¹ıãĞÖµ */
+/* type=109, spsä¸ªæ•°è¶…è¿‡é˜ˆå€¼ */
 #define REPORT_SPS_NUM_OVER( chan_id, SpsNum, MaxSpsNum )	\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -591,7 +591,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=110, pps¸öÊı³¬¹ıãĞÖµ */
+/* type=110, ppsä¸ªæ•°è¶…è¿‡é˜ˆå€¼ */
 #define REPORT_PPS_NUM_OVER( chan_id, PpsNum, MaxPpsNum )	\
 do{                                                         \
     if( NULL != g_event_report )                    		\
@@ -603,7 +603,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=111  ·¢ÏÖIÖ¡½âÂë´íÎó    ÎŞ */
+/* type=111  å‘ç°Iå¸§è§£ç é”™è¯¯    æ—  */
 #define REPORT_IFRAME_ERR(chan_id)                     	\
 do{                                                         \
     if( NULL != g_event_report )                            \
@@ -612,7 +612,7 @@ do{                                                         \
     }                                                       \
 }while(0)
 
-/* type=112  ·¢ÏÖĞÂµÄÖ¡½áÊø·û    ÎŞ */
+/* type=112  å‘ç°æ–°çš„å¸§ç»“æŸç¬¦    æ—  */
 #define REPORT_MEET_NEWFRM(chan_id)                     	\
 do{                                                         \
     if( NULL != g_event_report )                            \
@@ -622,7 +622,7 @@ do{                                                         \
 }while(0)
 
 // y00226912
-/* type=113  ÂëÁ÷½âÎö´íÎó*/
+/* type=113  ç æµè§£æé”™è¯¯*/
 #define REPORT_DECSYNTAX_ERR(chan_id)                     	\
 do{ 														\
     if( NULL != g_event_report )							\
@@ -632,7 +632,7 @@ do{ 														\
 }while(0)
 
 // y00226912
-/* type=114  ´íÎóÂÊ·ÇÁãÉÏ±¨ */
+/* type=114  é”™è¯¯ç‡éé›¶ä¸ŠæŠ¥ */
 #define REPORT_RATIO_NOTZERO(chan_id, ErrRatio)                           \
 do{ 														\
     if( NULL != g_event_report )							\
@@ -643,7 +643,7 @@ do{ 														\
     }														\
 }while(0)
 
-/* type=115  ×îºóÒ»Ö¡Êä³ö½á¹ûÉÏ±¨ */
+/* type=115  æœ€åä¸€å¸§è¾“å‡ºç»“æœä¸ŠæŠ¥ */
 #define REPORT_LAST_FRAME(chan_id, flag)                     	\
 do{ 														\
     if( NULL != g_event_report )							\
@@ -654,7 +654,7 @@ do{ 														\
     }														\
 }while(0)
 
-/* type=116  ±ä·Ö±æÂÊÖØĞÂ·Ö¸îÖ¡´æÉÏ±¨ */
+/* type=116  å˜åˆ†è¾¨ç‡é‡æ–°åˆ†å‰²å¸§å­˜ä¸ŠæŠ¥ */
 #define REPORT_RESOLUTION_CHANGE(chan_id)                     	\
 do{ 														\
     if( NULL != g_event_report )							\

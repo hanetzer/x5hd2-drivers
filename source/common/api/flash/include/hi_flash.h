@@ -16,12 +16,12 @@
 
 /**
  * \file
- * \brief describle the information about hiflash component. CNcomment:Ìá¹©hiflash×é¼şÏà¹Ø½Ó¿Ú¡¢Êı¾İ½á¹¹ĞÅÏ¢¡£
+ * \brief describle the information about hiflash component. CNcomment:æä¾›hiflashç»„ä»¶ç›¸å…³æ¥å£ã€æ•°æ®ç»“æ„ä¿¡æ¯ã€‚
  * \attention \n
  * DO NOT write/erase flash too heavily using this hiflash interface because hiflash do not support "load balancing", use filesystems or implement "load balancing" instead if you have to. read is limitless.\n
  *       for example: if max write/erase times of MLC Nand chip is 3000, write/erase any fixed area must not exceed 3000 times, or read data may be wrong. \n\n
- * CNcomment:²»ÒªÊ¹ÓÃhiflash½Ó¿ÚÆµ·±write/erase flash£¬hiflash²»Ö§³Ö¶ÁĞ´¾ùºâ£¬Èç¹û±ØĞëÒªÆµ·±write/erase²Ù×÷£¬ÇëÊ¹ÓÃÎÄ¼şÏµÍ³£¬»òÕß¸ù¾İÊµ¼ÊÓ¦ÓÃ³¡¾°Éè¼Æ¶ÁĞ´¾ùºâËã·¨¡£read²Ù×÷ÎŞ´ËÏŞÖÆ¡£ \n
- *       ±ÈÈç: Èç¹ûMLC NandµÄÊ¹ÓÃÊÙÃüÎª3000´Î£¬ÔÚ²úÆ·Õû¸öÉúÃüÖÜÆÚÖĞ£¬¶ÔÄ³¸ö¹Ì¶¨ÇøÓòµÄwrite/erase²Ù×÷²»Ó¦¸Ã³¬¹ı3000´Î£¬·ñÔòÓÉÓÚNandÊ§Ğ§¶Á³öÊı¾İ¿ÉÄÜ´íÎó¡£
+ * CNcomment:ä¸è¦ä½¿ç”¨hiflashæ¥å£é¢‘ç¹write/erase flashï¼Œhiflashä¸æ”¯æŒè¯»å†™å‡è¡¡ï¼Œå¦‚æœå¿…é¡»è¦é¢‘ç¹write/eraseæ“ä½œï¼Œè¯·ä½¿ç”¨æ–‡ä»¶ç³»ç»Ÿï¼Œæˆ–è€…æ ¹æ®å®é™…åº”ç”¨åœºæ™¯è®¾è®¡è¯»å†™å‡è¡¡ç®—æ³•ã€‚readæ“ä½œæ— æ­¤é™åˆ¶ã€‚ \n
+ *       æ¯”å¦‚: å¦‚æœMLC Nandçš„ä½¿ç”¨å¯¿å‘½ä¸º3000æ¬¡ï¼Œåœ¨äº§å“æ•´ä¸ªç”Ÿå‘½å‘¨æœŸä¸­ï¼Œå¯¹æŸä¸ªå›ºå®šåŒºåŸŸçš„write/eraseæ“ä½œä¸åº”è¯¥è¶…è¿‡3000æ¬¡ï¼Œå¦åˆ™ç”±äºNandå¤±æ•ˆè¯»å‡ºæ•°æ®å¯èƒ½é”™è¯¯ã€‚
  */
 
 #ifndef __HI_FLASH__H__
@@ -50,7 +50,7 @@ typedef enum hiHI_FLASH_TYPE_E
 #define  HI_FLASH_RW_FLAG_ERASE_FIRST   0x2   /** erase before write */
 
 /** this macro for return value when nand flash have bad block or valid length less partition length */
-/** CNcomment:µ±nandÓĞ»µ¿éÊ±,¶Á/Ğ´/²Á³ıÊ±,ÓĞĞ§³¤¶È¿ÉÄÜĞ¡ÓÚ·ÖÇø´óĞ¡/´ò¿ª³¤¶È,´ËÊ±ÎªÁË²»Ô½½ç,¶Á/Ğ´/²Á³ıÍêÓĞĞ§³¤¶Èºó,·µ»Ø¸ÃÖµ */
+/** CNcomment:å½“nandæœ‰åå—æ—¶,è¯»/å†™/æ“¦é™¤æ—¶,æœ‰æ•ˆé•¿åº¦å¯èƒ½å°äºåˆ†åŒºå¤§å°/æ‰“å¼€é•¿åº¦,æ­¤æ—¶ä¸ºäº†ä¸è¶Šç•Œ,è¯»/å†™/æ“¦é™¤å®Œæœ‰æ•ˆé•¿åº¦å,è¿”å›è¯¥å€¼ */
 #define  HI_FLASH_END_DUETO_BADBLOCK    -10
 
 /** Flash partition access permission type */
@@ -94,7 +94,7 @@ typedef struct hiFlash_InterInfo_S
     HI_U32  BlockSize;                  /**< flash block size */
     HI_U32  PageSize;                   /**< flash page size */
     HI_U32  OobSize;                    /**< flash OOB size */
-    HI_S32  fd;                         /**< file handle */ /**<CNcomment:ÎÄ¼ş¾ä±ú(°´µØÖ·´ò¿ª²»ÄÜµÃµ½ÕæÊµ¾ä±ú)*/
+    HI_S32  fd;                         /**< file handle */ /**<CNcomment:æ–‡ä»¶å¥æŸ„(æŒ‰åœ°å€æ‰“å¼€ä¸èƒ½å¾—åˆ°çœŸå®å¥æŸ„)*/
     HI_U64  OpenAddr;                   /**< flash open address */
     HI_U64  OpenLeng;                   /**< flash open length */
     HI_FLASH_TYPE_E FlashType;          /**< flash type */
@@ -113,9 +113,9 @@ typedef struct hiFlash_InterInfo_S
 \brief: open flash partiton
 \attention \n
 \param[in] enFlashType      Flash type
-\param[in] pPartitionName   CNcomment: ·ÇEMMCÆ÷¼ş(ÈçSPI/NAND),Ö»ÄÜÓÃ/dev/mtdx×÷Îª·ÖÇøÃû¡£EMMCÆ÷¼şÖ»ÄÜÓÃ/dev/mmcblk0px×÷Îª·ÖÇøÃû¡£
-\param[in] u64Address       open address CNcomment:´ò¿ªµØÖ·(µ±·ÖÇøÃûÎŞĞ§¼´pPartitionNameÎª¿ÕÊ±Ê¹ÓÃ)
-\param[in] u64Len           open length CNcomment:´ò¿ª³¤¶È(µ±·ÖÇøÃûÎŞĞ§¼´pPartitionNameÎª¿ÕÊ±Ê¹ÓÃ)
+\param[in] pPartitionName   CNcomment: éEMMCå™¨ä»¶(å¦‚SPI/NAND),åªèƒ½ç”¨/dev/mtdxä½œä¸ºåˆ†åŒºåã€‚EMMCå™¨ä»¶åªèƒ½ç”¨/dev/mmcblk0pxä½œä¸ºåˆ†åŒºåã€‚
+\param[in] u64Address       open address CNcomment:æ‰“å¼€åœ°å€(å½“åˆ†åŒºåæ— æ•ˆå³pPartitionNameä¸ºç©ºæ—¶ä½¿ç”¨)
+\param[in] u64Len           open length CNcomment:æ‰“å¼€é•¿åº¦(å½“åˆ†åŒºåæ— æ•ˆå³pPartitionNameä¸ºç©ºæ—¶ä½¿ç”¨)
 \retval    fd               Flash handle
 \retval    INVALID_FD       invaild fd
 \see \n
@@ -125,7 +125,7 @@ HI_HANDLE HI_Flash_Open(HI_FLASH_TYPE_E enFlashType, HI_CHAR *pPartitionName, HI
 /**
 \brief:  open flash patition by name
 \attention \n
-\param[in] pPartitionName   patition name CNcomment:·ÇEMMCÆ÷¼ş(ÈçSPI/NAND),Ö»ÄÜÓÃ/dev/mtdx×÷Îª·ÖÇøÃû¡£EMMCÆ÷¼şÖ»ÄÜÓÃbootargsÀïblkdevparts=mmcblk0:ÖĞÉè¶¨µÄ·ÖÇøÃû×Ö£¬²»ÄÜÓÃ/dev/mmcblk0px×÷Îª·ÖÇøÃû
+\param[in] pPartitionName   patition name CNcomment:éEMMCå™¨ä»¶(å¦‚SPI/NAND),åªèƒ½ç”¨/dev/mtdxä½œä¸ºåˆ†åŒºåã€‚EMMCå™¨ä»¶åªèƒ½ç”¨bootargsé‡Œblkdevparts=mmcblk0:ä¸­è®¾å®šçš„åˆ†åŒºåå­—ï¼Œä¸èƒ½ç”¨/dev/mmcblk0pxä½œä¸ºåˆ†åŒºå
 \retval    fd               Flash hande
 \retval    INVALID_FD       invaild fd
 \see \n
@@ -136,7 +136,7 @@ HI_HANDLE HI_Flash_OpenByName(HI_CHAR *pPartitionName);
 \brief: open flash patition by  type and name
 \attention \n
 \param[in] enFlashType      flash type
-\param[in] pPartitionName   patition name CNcomment: ·ÇEMMCÆ÷¼ş(ÈçSPI/NAND),Ö»ÄÜÓÃ/dev/mtdx×÷Îª·ÖÇøÃû¡£EMMCÆ÷¼şÖ»ÄÜÓÃ/dev/mmcblk0px×÷Îª·ÖÇøÃû¡£
+\param[in] pPartitionName   patition name CNcomment: éEMMCå™¨ä»¶(å¦‚SPI/NAND),åªèƒ½ç”¨/dev/mtdxä½œä¸ºåˆ†åŒºåã€‚EMMCå™¨ä»¶åªèƒ½ç”¨/dev/mmcblk0pxä½œä¸ºåˆ†åŒºåã€‚
 \retval    fd               Flash hande
 \retval    INVALID_FD       invaild fd
 \see \n
@@ -170,10 +170,10 @@ HI_S32 HI_Flash_Close(HI_HANDLE hFlash);
 \brief: erase Flash partiton
 \attention \n
 \param[in] hFlash      flash handle
-\param[in] u64Address  erase start address, must align with blocksize  CNcomment:²ÁĞ´µØÖ·£¬×Ö½ÚÎªµ¥Î»£¬¿é¶ÔÆë
-\param[in] u32Len      data length, must align with blocksize CNcomment:Êı¾İ³¤¶È£¬×Ö½ÚÎªµ¥Î»£¬¿é¶ÔÆë
+\param[in] u64Address  erase start address, must align with blocksize  CNcomment:æ“¦å†™åœ°å€ï¼Œå­—èŠ‚ä¸ºå•ä½ï¼Œå—å¯¹é½
+\param[in] u32Len      data length, must align with blocksize CNcomment:æ•°æ®é•¿åº¦ï¼Œå­—èŠ‚ä¸ºå•ä½ï¼Œå—å¯¹é½
 \retval ::TotalErase   erase total length
-\retval ::HI_FLASH_END_DUETO_BADBLOCK     return value when nand flash have bad block or valid length less partition length CNcomment:²Á³ıFlashÓöµ½»µ¿é½áÊø(²Á³ıÍêÓĞĞ§³¤¶ÈÊı¾İºó,·µ»Ø¸ÃÖµ,Ò»°ã²»ÈÏÎª¸Ã²Ù×÷Ê§°Ü)
+\retval ::HI_FLASH_END_DUETO_BADBLOCK     return value when nand flash have bad block or valid length less partition length CNcomment:æ“¦é™¤Flashé‡åˆ°åå—ç»“æŸ(æ“¦é™¤å®Œæœ‰æ•ˆé•¿åº¦æ•°æ®å,è¿”å›è¯¥å€¼,ä¸€èˆ¬ä¸è®¤ä¸ºè¯¥æ“ä½œå¤±è´¥)
 \retval ::HI_FAILURE   failure
 \see \n
 */
@@ -186,9 +186,9 @@ HI_S32 HI_Flash_Erase(HI_HANDLE hFlash, HI_U64 u64Address, HI_U64 u64Len);
 \param[in] u64Address   read start address, for nand, must align with pagesize.
 \param[in] pBuf         destination buffer pointer
 \param[in] u32Len       destination data length
-\param[in] u32Flags     OOB flag  CNcomment:¿ÉÈ¡Öµ HI_FLASH_RW_FLAG_WITH_OOB£¬±íÊ¾Êı¾İÄÚÈİÊÇ·ñ´ø OOB Çø
+\param[in] u32Flags     OOB flag  CNcomment:å¯å–å€¼ HI_FLASH_RW_FLAG_WITH_OOBï¼Œè¡¨ç¤ºæ•°æ®å†…å®¹æ˜¯å¦å¸¦ OOB åŒº
 \retval ::TotalRead     read flash vaild length
-\retval ::HI_FLASH_END_DUETO_BADBLOCK    CNcomment:¶ÁFlashÓöµ½»µ¿é½áÊø(¶ÁÍêÓĞĞ§³¤¶ÈÊı¾İºó,·µ»Ø¸ÃÖµ,ÓÉÓÃ»§ÅĞ¶Ï´ËÖÖÇé¿ö³É¹¦Óë·ñ)
+\retval ::HI_FLASH_END_DUETO_BADBLOCK    CNcomment:è¯»Flashé‡åˆ°åå—ç»“æŸ(è¯»å®Œæœ‰æ•ˆé•¿åº¦æ•°æ®å,è¿”å›è¯¥å€¼,ç”±ç”¨æˆ·åˆ¤æ–­æ­¤ç§æƒ…å†µæˆåŠŸä¸å¦)
 \retval ::HI_FAILURE    failure
 \see \n
 */
@@ -200,16 +200,16 @@ HI_S32 HI_Flash_Read(HI_HANDLE hFlash, HI_U64 u64Address, HI_U8 *pBuf,
 \attention \n
 1) forbidden used the function when yaffs filesystem is using
 2) can use HI_FLASH_RW_FLAG_ERASE_FIRST manner write flah , can write over all partition one time or write with block
-CNcomment:1) ²»ÄÜµ÷ÓÃ¸Ã½Ó¿Ú¸üĞÂµ±Ç°ÕıÊ¹ÓÃµÄyaffsÎÄ¼şÏµÍ³
-CNcomment:2) µ÷ÓÃ¸Ã½Ó¿ÚĞ´FlashÊ±£¬¿ÉÒÔÊ¹ÓÃHI_FLASH_RW_FLAG_ERASE_FIRST£¬¿ÉÒÔÒ»´ÎĞ´ÍêÒ²¿ÉÒÔÒ»¿éÒ»¿éµÄĞ´£¬µ«ÊÇµ±Ğ´yaffs2Ê±£¬
-    ±ØĞëÏÈµ÷ÓÃHI_Flash_Erase°ÑÒªĞ´µÄ·ÖÇøÍêÈ«²Á³ı
+CNcomment:1) ä¸èƒ½è°ƒç”¨è¯¥æ¥å£æ›´æ–°å½“å‰æ­£ä½¿ç”¨çš„yaffsæ–‡ä»¶ç³»ç»Ÿ
+CNcomment:2) è°ƒç”¨è¯¥æ¥å£å†™Flashæ—¶ï¼Œå¯ä»¥ä½¿ç”¨HI_FLASH_RW_FLAG_ERASE_FIRSTï¼Œå¯ä»¥ä¸€æ¬¡å†™å®Œä¹Ÿå¯ä»¥ä¸€å—ä¸€å—çš„å†™ï¼Œä½†æ˜¯å½“å†™yaffs2æ—¶ï¼Œ
+    å¿…é¡»å…ˆè°ƒç”¨HI_Flash_EraseæŠŠè¦å†™çš„åˆ†åŒºå®Œå…¨æ“¦é™¤
 \param[in] hFlash       flash handle
 \param[in] u64Address   data start address, for nand, must align with pagesize
 \param[in] pBuf         destination buffer pointer
 \param[in] u32Len       destination data length, for nand, if write with oob, must align with (pagesize + oobsize)
-\param[in] u32Flags     OOB flag CNcomment:¿ÉÈ¡Öµ HI_FLASH_RW_FLAG_WITH_OOB£¬±íÊ¾Êı¾İÄÚÈİÊÇ·ñ´ø OOB Çø
+\param[in] u32Flags     OOB flag CNcomment:å¯å–å€¼ HI_FLASH_RW_FLAG_WITH_OOBï¼Œè¡¨ç¤ºæ•°æ®å†…å®¹æ˜¯å¦å¸¦ OOB åŒº
 \retval ::TotalWrite    write flash vaild length
-\retval ::HI_FLASH_END_DUETO_BADBLOCK   have bad block CNcomment:Ğ´FlashÓöµ½»µ¿é½áÊø(Ğ´ÍêÓĞĞ§³¤¶ÈÊı¾İºó,·µ»Ø¸ÃÖµ,ÓÉÓÃ»§ÅĞ¶Ï´ËÖÖÇé¿ö³É¹¦Óë·ñ)
+\retval ::HI_FLASH_END_DUETO_BADBLOCK   have bad block CNcomment:å†™Flashé‡åˆ°åå—ç»“æŸ(å†™å®Œæœ‰æ•ˆé•¿åº¦æ•°æ®å,è¿”å›è¯¥å€¼,ç”±ç”¨æˆ·åˆ¤æ–­æ­¤ç§æƒ…å†µæˆåŠŸä¸å¦)
 \retval ::HI_FAILURE
 \see \n
 */

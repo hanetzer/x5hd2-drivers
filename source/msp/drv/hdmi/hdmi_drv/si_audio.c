@@ -74,8 +74,8 @@ void SI_SetAudioPath ( HI_U8 * abAudioPath )
     // abAudioPath[1] = Sampling Freq Fs:  0 - 44KHz;   2 - 48KHz ...
     // abAudioPath[2] = Sample length : 2, 4, 8, 0xA, 0xC +1 for Max 24. Even values are Max 20. Odd: Max 24.
     // abAudioPath[3] = I2S control bits (for 0x7A:0x1D)
-    // 验证时使用过，正式版本暂时不确定是否需要mclk abAudioPath[4] = 0b000 = MCLK is 128*Fs 0b001 = MCLK is 256*Fs0  b010 = MCLK is 384*Fs  ...
-    // abAudioPath[5] = 0x01 内部mclk 0x00 外部mclk
+    // 楠岃瘉鏃朵娇鐢ㄨ繃锛屾寮忕増鏈殏鏃朵笉纭畾鏄惁闇�瑕乵clk abAudioPath[4] = 0b000 = MCLK is 128*Fs 0b001 = MCLK is 256*Fs0  b010 = MCLK is 384*Fs  ...
+    // abAudioPath[5] = 0x01 鍐呴儴mclk 0x00 澶栭儴mclk
     //
     /////////////////////////////////////////////////////////////////////////////////////////////////////
     HI_U8 bRegVal1, bRegVal2, bRegVal3;

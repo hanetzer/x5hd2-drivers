@@ -11,7 +11,7 @@
 /*****************************************************************************/
 /**
  \file
- \brief Describes the header file of the 2D effect library. CNcomment:2DÌØÐÔ¿âÍ·ÎÄ¼þ
+ \brief Describes the header file of the 2D effect library. CNcomment:2Dç‰¹æ€§åº“å¤´æ–‡ä»¶
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version 1.0
@@ -38,11 +38,11 @@ extern "C" {
 /** @{ */  /** <!-- [Effect module] */
 
 /**Definition of the HiEffect error ID*/
-/** CNcomment:HiEffect ÏîÄ¿´íÎóID */
+/** CNcomment:HiEffect é¡¹ç›®é”™è¯¯ID */
 #define HIEFFECT_ERR_APPID (0x80000000L + 0x40000000L)
 
 /**Definition of the HiEffect module ID*/
-/** CNcomment:HiEffect Ä£¿éID */
+/** CNcomment:HiEffect æ¨¡å—ID */
 #define HIEFFECT_ERR_MODUID 0x00000000
 
 /** @} */  /*! <!-- Macro Definition end */
@@ -66,7 +66,7 @@ typedef enum hiEFFECTLOG_ERRLEVEL_E
 } HIEFFECT_LOG_ERRLEVEL_E;
 
 /**Definition of the HiEffect error code*/
-/** CNcomment:HiEffect ´íÎóÂë¶¨Òåºê */
+/** CNcomment:HiEffect é”™è¯¯ç å®šä¹‰å® */
 #define HIEFFECT_DEF_ERR(module, errid) \
     ((HI_S32)((HIEFFECT_ERR_APPID) | ((module) << 16) | ((HIEFFECT_LOG_LEVEL_ERROR) << 13) | (errid)))
 
@@ -123,21 +123,21 @@ enum HIEFFECT_ErrorCode_E
     HIEFFECT_DEF_ERR(HIEFFECT_ERR_MODUID, ERR_HIEFFECT_NO_MEM)
 
 /**Screen refresh callback*/
-/** CNcomment:ÆÁÄ»Ë¢ÐÂ»Øµ÷º¯Êý*/
+/** CNcomment:å±å¹•åˆ·æ–°å›žè°ƒå‡½æ•°*/
 typedef HI_S32 (*pRefresh_Callback)(HI_VOID);
 typedef enum hiEFFECT_MODE_E
 {
-    HI_EFFECT_NONE = 0, 			/**<Copy *//**<CNcomment:¿½±´ÏÔÊ¾*/
-    HI_EFFECT_TURNPAGE, 			/**<Turnpage *//**<CNcomment:·­Ò³*/
-    HI_EFFECT_ROLLPAGE, 			/**<Rollpage *//**<CNcomment:¾íÖá*/
-    HI_EFFECT_VERTICALSHUTTER,		/**<Vertical shutter *//**<CNcomment:´¹Ö±°ÙÒ¶´°*/
-    HI_EFFECT_HORIZONTALSHUTTER,    /**<Horizontal shutter *//**<CNcomment:Ë®Æ½°ÙÒ¶´°*/
-    HI_EFFECT_LEFTIN,				/**<Leftin*//**<CNcomment:´Ó×ó³é³ö*/
-    HI_EFFECT_TOPIN, 				/**<Topin*//**<CNcomment:´ÓÉÏ³é³ö*/
-    HI_EFFECT_TRANSIN, 				/**<Transin*//**<CNcomment:½¥½ø½¥³ö*/
-    HI_EFFECT_ROTATE,  				/**<Rotate*//**<CNcomment:ÂÝÐý*/
-    HI_EFFECT_CENTEROUT,  			/**<Centerout*//**<CNcomment:ÖÐÑë½¥³ö*/
-    HI_EFFECT_CENTERIN, 			/**<Centerin*//**<CNcomment:ÖÐÑë½¥Èë*/
+    HI_EFFECT_NONE = 0, 			/**<Copy *//**<CNcomment:æ‹·è´æ˜¾ç¤º*/
+    HI_EFFECT_TURNPAGE, 			/**<Turnpage *//**<CNcomment:ç¿»é¡µ*/
+    HI_EFFECT_ROLLPAGE, 			/**<Rollpage *//**<CNcomment:å·è½´*/
+    HI_EFFECT_VERTICALSHUTTER,		/**<Vertical shutter *//**<CNcomment:åž‚ç›´ç™¾å¶çª—*/
+    HI_EFFECT_HORIZONTALSHUTTER,    /**<Horizontal shutter *//**<CNcomment:æ°´å¹³ç™¾å¶çª—*/
+    HI_EFFECT_LEFTIN,				/**<Leftin*//**<CNcomment:ä»Žå·¦æŠ½å‡º*/
+    HI_EFFECT_TOPIN, 				/**<Topin*//**<CNcomment:ä»Žä¸ŠæŠ½å‡º*/
+    HI_EFFECT_TRANSIN, 				/**<Transin*//**<CNcomment:æ¸è¿›æ¸å‡º*/
+    HI_EFFECT_ROTATE,  				/**<Rotate*//**<CNcomment:èžºæ—‹*/
+    HI_EFFECT_CENTEROUT,  			/**<Centerout*//**<CNcomment:ä¸­å¤®æ¸å‡º*/
+    HI_EFFECT_CENTERIN, 			/**<Centerin*//**<CNcomment:ä¸­å¤®æ¸å…¥*/
 } EFFECT_MODE_E;
 
 typedef enum hiEFFECT_SPEED
@@ -155,15 +155,15 @@ typedef enum hiEFFECT_SPEED
 /** @{ */  /** <!-- [Effect module] */
 
 /** 
-\brief Effect init function. CNcomment:ÌØÐ§³õÊ¼»¯º¯Êý CNend
+\brief Effect init function. CNcomment:ç‰¹æ•ˆåˆå§‹åŒ–å‡½æ•° CNend
 
 \attention \n
-CNcomment: ×¢²áÆÁÄ»Ë¢ÐÂ»Øµ÷º¯Êý²¢ÉèÖÃÏÔÊ¾Ä£Ê½ 
-bLetfbox ÎªHI_TRUE, ±íÊ¾Í¼Ïñ±ÈÀýÓëÆÁÄ»±ÈÀý²»Ò»ÖÂÊ±Ìí¼ÓºÚ±ß 
-bLetfbox ÎªHI_FALSE, ±íÊ¾Í¼ÏñËõ·Å³ÉÈ«ÆÁ,Èç¹ûÍ¼ÐÎ±ÈÀýÓëÆÁÄ»±ÈÀý²»Ò»ÖÂ»áµ¼ÖÂ±äÐÎ. 
-ÎÞÂÛÄÇÖÖ·½Ê½,Í¼Ïñ¶¼È«ÆÁÏÔÊ¾ CNend
-\param[in] pfCallBack Screen refresh callback function.CNcomment:ÆÁÄ»Ë¢ÐÂ»Øµ÷º¯Êý CNend
-\param[in] bLetfbox Picture dispaly mode.CNcomment:Í¼ÐÎÏÔÊ¾·½Ê½ CNend
+CNcomment: æ³¨å†Œå±å¹•åˆ·æ–°å›žè°ƒå‡½æ•°å¹¶è®¾ç½®æ˜¾ç¤ºæ¨¡å¼ 
+bLetfbox ä¸ºHI_TRUE, è¡¨ç¤ºå›¾åƒæ¯”ä¾‹ä¸Žå±å¹•æ¯”ä¾‹ä¸ä¸€è‡´æ—¶æ·»åŠ é»‘è¾¹ 
+bLetfbox ä¸ºHI_FALSE, è¡¨ç¤ºå›¾åƒç¼©æ”¾æˆå…¨å±,å¦‚æžœå›¾å½¢æ¯”ä¾‹ä¸Žå±å¹•æ¯”ä¾‹ä¸ä¸€è‡´ä¼šå¯¼è‡´å˜å½¢. 
+æ— è®ºé‚£ç§æ–¹å¼,å›¾åƒéƒ½å…¨å±æ˜¾ç¤º CNend
+\param[in] pfCallBack Screen refresh callback function.CNcomment:å±å¹•åˆ·æ–°å›žè°ƒå‡½æ•° CNend
+\param[in] bLetfbox Picture dispaly mode.CNcomment:å›¾å½¢æ˜¾ç¤ºæ–¹å¼ CNend
 \retval ::HI_ERR_HIEFFECT_OPENED
 \retval ::HI_ERR_HIEFFECT_PTR_NULL
 \retval ::HI_SUCCESS
@@ -175,10 +175,10 @@ bLetfbox ÎªHI_FALSE, ±íÊ¾Í¼ÏñËõ·Å³ÉÈ«ÆÁ,Èç¹ûÍ¼ÐÎ±ÈÀýÓëÆÁÄ»±ÈÀý²»Ò»ÖÂ»áµ¼ÖÂ±äÐÎ.
 extern HI_S32  HI_Effect_Init(pRefresh_Callback pfCallBack, HI_BOOL bLetfbox);
 
 /** 
-\brief Effect deinit function. CNcomment:ÌØÐ§È¥³õÊ¼»¯º¯Êý CNend
+\brief Effect deinit function. CNcomment:ç‰¹æ•ˆåŽ»åˆå§‹åŒ–å‡½æ•° CNend
 \attention \n
 N/A
-\param N/A. CNcomment:ÎÞ CNend
+\param N/A. CNcomment:æ—  CNend
 \retval ::HI_ERR_HIEFFECT_NO_OPEN
 \retval ::HI_SUCCESS
 \see \n
@@ -188,12 +188,12 @@ N/A
 extern HI_S32  HI_Effect_Deinit(HI_VOID);
 
 /** 
-\brief Effect play function. CNcomment:ÌØÐ§²¥·Åº¯Êý CNend
+\brief Effect play function. CNcomment:ç‰¹æ•ˆæ’­æ”¾å‡½æ•° CNend
 
 \attention \n
-CNcomment: ÌØÐ§²¥·Åº¯Êý, ¸Ãº¯ÊýÎª×èÈûº¯Êý,ÌØÐ§Íê³É²ÅÍË³ö
-ËùÓÐsurfaceµÄÏñËØ¸ñÊ½±ØÐë±£³ÖÒ»ÖÂ
-Ä¿Ç°Ö§³ÖµÄ¸ñÊ½:
+CNcomment: ç‰¹æ•ˆæ’­æ”¾å‡½æ•°, è¯¥å‡½æ•°ä¸ºé˜»å¡žå‡½æ•°,ç‰¹æ•ˆå®Œæˆæ‰é€€å‡º
+æ‰€æœ‰surfaceçš„åƒç´ æ ¼å¼å¿…é¡»ä¿æŒä¸€è‡´
+ç›®å‰æ”¯æŒçš„æ ¼å¼:
     HIGO_PF_4444,
     HIGO_PF_0444,
     HIGO_PF_1555,
@@ -208,36 +208,36 @@ CNcomment: ÌØÐ§²¥·Åº¯Êý, ¸Ãº¯ÊýÎª×èÈûº¯Êý,ÌØÐ§Íê³É²ÅÍË³ö
 \retval ::HI_ERR_HIEFFECT_NO_MEM
 \retval ::HI_SUCCESS
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 extern HI_S32  HI_Effect_Play(HI_HANDLE hNewSurface, HI_HANDLE hScreenSurface, EFFECT_MODE_E mode);
 
 
 /** 
-\brief Effect Set Layer handle function. CNcomment:ÉèÖÃÌØÐ§¾ä±ú CNend
+\brief Effect Set Layer handle function. CNcomment:è®¾ç½®ç‰¹æ•ˆå¥æŸ„ CNend
 \attention \n
 N/A
 \param[in] Layer Layer handle
 \retval ::HI_SUCCESS
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 extern HI_S32 HI_Effect_SetLayer(HI_HANDLE Layer);
 
 /** 
-\brief Effect Stop function. CNcomment:ÌØÐ§²¥·ÅÖÐÖ¹,¿ÉÒÔÌá¸ß°´¼üÏìÓ¦ËÙ¶È CNend
+\brief Effect Stop function. CNcomment:ç‰¹æ•ˆæ’­æ”¾ä¸­æ­¢,å¯ä»¥æé«˜æŒ‰é”®å“åº”é€Ÿåº¦ CNend
 \attention \n
 N/A
-\param N/A. CNcomment:ÎÞ CNend
+\param N/A. CNcomment:æ—  CNend
 \retval ::HI_ERR_HIEFFECT_NO_OPEN
 \retval ::HI_SUCCESS
 \see \n
-N/A. CNcomment:ÎÞ
+N/A. CNcomment:æ— 
 */
 extern HI_S32  HI_Effect_Stop(HI_VOID);
 
 /** 
-\brief Set Effect Speed function. CNcomment:ÉèÖÃÌØÐ§²¥·ÅËÙ¶È CNend
+\brief Set Effect Speed function. CNcomment:è®¾ç½®ç‰¹æ•ˆæ’­æ”¾é€Ÿåº¦ CNend
 \attention \n
 N/A
 \param[in] eSpeed Effect Speed   
@@ -245,7 +245,7 @@ N/A
 \retval ::HI_ERR_HIEFFECT_INVALID_PARAMETER
 \retval ::HI_SUCCESS
 \see \n
-N/A. CNcomment:ÎÞ CNend
+N/A. CNcomment:æ—  CNend
 */
 extern HI_S32  HI_Effect_SetSpeed(EFFECT_SPEED eSpeed);
 

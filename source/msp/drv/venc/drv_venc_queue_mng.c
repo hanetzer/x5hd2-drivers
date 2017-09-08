@@ -78,7 +78,7 @@ static void VENC_DRV_MngQueueStop(queue_info_s *queue)
     return;
 }
 
-queue_info_s* VENC_DRV_MngQueueInit( HI_U32 depth,HI_BOOL bOMX)     //ÉêÇëÄÚ´æ£¬²¢³õÊ¼»¯
+queue_info_s* VENC_DRV_MngQueueInit( HI_U32 depth,HI_BOOL bOMX)     //ç”³è¯·å†…å­˜ï¼Œå¹¶åˆå§‹åŒ–
 {
     queue_info_s  *queue;
 	queue_data_s  *data;
@@ -183,7 +183,7 @@ HI_S32 VENC_DRV_MngDequeue(queue_info_s *queue, queue_data_s *pQueue_data)
 
     if (queue->bToOMX)
     {
-		ret = wait_event_interruptible_timeout(queue->wait, VENC_DRV_MngQueuePending(queue),msecs_to_jiffies(50));   // msg_pending(queue)ÎªÕæÔòÍË³ö×èÈûµÄµÈ´ý!
+		ret = wait_event_interruptible_timeout(queue->wait, VENC_DRV_MngQueuePending(queue),msecs_to_jiffies(50));   // msg_pending(queue)ä¸ºçœŸåˆ™é€€å‡ºé˜»å¡žçš„ç­‰å¾…!
 		if (ret <= 0)   /*ret >0 is success*/
 	    {
 			//HI_ERR_VENC("dequeue timeout, failed, ret = %d\n", ret);

@@ -1,19 +1,19 @@
 /******************************************************************************
 
-                  °æÈ¨ËùÓÐ (C), 2001-2011, »ªÎª¼¼ÊõÓÐÏÞ¹«Ë¾
+                  ç‰ˆæƒæ‰€æœ‰ (C), 2001-2011, åŽä¸ºæŠ€æœ¯æœ‰é™å…¬å¸
 
 ******************************************************************************
-  ÎÄ ¼þ Ãû   : vc1_vfmw.h
-  °æ ±¾ ºÅ   : ³õ¸å
-  ×÷    Õß   : y62639
-  Éú³ÉÈÕÆÚ   : 2009Äê9ÔÂ21ÈÕ
-  ×î½üÐÞ¸Ä   :
-  ¹¦ÄÜÃèÊö   : vc1 firmware Í·ÎÄ¼þ
-  º¯ÊýÁÐ±í   :
-  ÐÞ¸ÄÀúÊ·   :
-  1.ÈÕ    ÆÚ   : 2009Äê9ÔÂ21ÈÕ
-    ×÷    Õß   : y62639
-    ÐÞ¸ÄÄÚÈÝ   : ´´½¨ÎÄ¼þ
+  æ–‡ ä»¶ å   : vc1_vfmw.h
+  ç‰ˆ æœ¬ å·   : åˆç¨¿
+  ä½œ    è€…   : y62639
+  ç”Ÿæˆæ—¥æœŸ   : 2009å¹´9æœˆ21æ—¥
+  æœ€è¿‘ä¿®æ”¹   :
+  åŠŸèƒ½æè¿°   : vc1 firmware å¤´æ–‡ä»¶
+  å‡½æ•°åˆ—è¡¨   :
+  ä¿®æ”¹åŽ†å²   :
+  1.æ—¥    æœŸ   : 2009å¹´9æœˆ21æ—¥
+    ä½œ    è€…   : y62639
+    ä¿®æ”¹å†…å®¹   : åˆ›å»ºæ–‡ä»¶
 
 ******************************************************************************/
 
@@ -30,7 +30,7 @@ extern "C" {
 #endif
 
 /*----------------------------------------------*
-* ºê¶¨Òå                                       *
+* å®å®šä¹‰                                       *
 *----------------------------------------------*/
 #define VC1_VFMW_FALSE 0
 #define VC1_VFMW_TRUE 1
@@ -39,9 +39,9 @@ extern "C" {
 #define VC1_OUTPUT_IN_DEC 1
 #define VC1_OUTPUT_IN_DSP 0
 
-#define VC1_REG_SIZE        128  //¼Ä´æÆ÷ÐÅÏ¢³¤¶È£¬µ¥Î»WORDs
-#define VC1_PICDNMSG_SIZE   96   //PicÏÂÐÐÏûÏ¢³¤¶È£¬µ¥Î»WORD
-#define VC1_SLCDNMSG_SIZE   64   //SlcÏÂÐÐÏûÏ¢³¤¶È£¬µ¥Î»WORD
+#define VC1_REG_SIZE        128  //å¯„å­˜å™¨ä¿¡æ¯é•¿åº¦ï¼Œå•ä½WORDs
+#define VC1_PICDNMSG_SIZE   96   //Picä¸‹è¡Œæ¶ˆæ¯é•¿åº¦ï¼Œå•ä½WORD
+#define VC1_SLCDNMSG_SIZE   64   //Slcä¸‹è¡Œæ¶ˆæ¯é•¿åº¦ï¼Œå•ä½WORD
 
 
 
@@ -65,8 +65,8 @@ extern "C" {
 #define VC1_MAX_PIC_HEIGHT 128 // unit: MB
 #define VC1_MAX_PIC_MB (VC1_MAX_PIC_WIDTH * VC1_MAX_PIC_HEIGHT) // 16129, unit: MB
 
-#define VC1_MB_PITCH 16   /* ÁÁ¶È¿éµÄ±ß³¤ */
-#define VC1_SUBMB_PITCH 8    /* É«¶È¿éµÄ±ß³¤ */
+#define VC1_MB_PITCH 16   /* äº®åº¦å—çš„è¾¹é•¿ */
+#define VC1_SUBMB_PITCH 8    /* è‰²åº¦å—çš„è¾¹é•¿ */
 
 #define VC1_ALL_BLK_4x4 15
 
@@ -77,11 +77,11 @@ extern "C" {
 #define VC1VFMW_DNMSG_NUM 2
 #define VC1VFMW_UPMSG_NUM 1
 #define VC1VFMW_RPMSG_NUM 1
-#define VC1VFMW_MSG_BUF_SIZE (((((VC1VFMW_DNMSG_NUM + VC1VFMW_UPMSG_NUM + VC1VFMW_RPMSG_NUM) * 4) + 1023) >> 10) << 10)        /* 32 ÐÐÉî¶È:32*1024  */
+#define VC1VFMW_MSG_BUF_SIZE (((((VC1VFMW_DNMSG_NUM + VC1VFMW_UPMSG_NUM + VC1VFMW_RPMSG_NUM) * 4) + 1023) >> 10) << 10)        /* 32 è¡Œæ·±åº¦:32*1024  */
 
-#define VC1VFMW_NEIGHBOR_BUF_SIZE       ((((VC1VFMW_MAX_PIC_WIDTH * 4) + 1023) >> 10) << 10)  /* 32 ÐÐÉî¶È:32*1024  */
+#define VC1VFMW_NEIGHBOR_BUF_SIZE       ((((VC1VFMW_MAX_PIC_WIDTH * 4) + 1023) >> 10) << 10)  /* 32 è¡Œæ·±åº¦:32*1024  */
 
-//#define VC1VDH_REG_PHY_ADDR 0x10100000       // VDH ¼Ä´æÆ÷Ó³Éäµ½ARM¿Õ¼äµÄµØÖ·
+//#define VC1VDH_REG_PHY_ADDR 0x10100000       // VDH å¯„å­˜å™¨æ˜ å°„åˆ°ARMç©ºé—´çš„åœ°å€
 
 //#ifndef SMP
 //#define FPGA_RAW_BUF_LEN  (2*1024*1024)  //(6*1024*1024) SMP
@@ -382,7 +382,7 @@ typedef struct
 
     //derived
     UINT8  ALTPQUANT;
-    VC1_QUANTMODE QuantMode; // ÄÄÌõ±ßÓÃALTPQUANT, fk ms
+    VC1_QUANTMODE QuantMode; // å“ªæ¡è¾¹ç”¨ALTPQUANT, fk ms
 } VC1_VOPDQUANT_S;
 
 typedef struct
@@ -580,12 +580,12 @@ typedef struct
 } VC1_VFMWSYNTAX_S;
 #if 0
 typedef struct {
-    UINT32    PhyAddr;    // ÂëÁ÷µÄÎïÀíµØÖ·
-    UINT8*    VirAddr;    // ÂëÁ÷µÄÐéÄâµØÖ·
-    SINT32    Length;     // ÂëÁ÷³¤¶È£¨×Ö½ÚÊý£©
-    UINT32    PhyAddr2;    // ÂëÁ÷µÄÎïÀíµØÖ·
-    UINT8*    VirAddr2;    // ÂëÁ÷µÄÐéÄâµØÖ·
-    SINT32    Length2;     // ÂëÁ÷³¤¶È£¨×Ö½ÚÊý£©
+    UINT32    PhyAddr;    // ç æµçš„ç‰©ç†åœ°å€
+    UINT8*    VirAddr;    // ç æµçš„è™šæ‹Ÿåœ°å€
+    SINT32    Length;     // ç æµé•¿åº¦ï¼ˆå­—èŠ‚æ•°ï¼‰
+    UINT32    PhyAddr2;    // ç æµçš„ç‰©ç†åœ°å€
+    UINT8*    VirAddr2;    // ç æµçš„è™šæ‹Ÿåœ°å€
+    SINT32    Length2;     // ç æµé•¿åº¦ï¼ˆå­—èŠ‚æ•°ï¼‰
 } SLICE_STREAM_PARAM;
 #endif
 typedef struct
@@ -659,7 +659,7 @@ typedef struct
     VC1_VFMWFRAMEOBJ_S  FrameObj[VC1VFMW_MAX_FRAME_BUF_NUM];
     VC1_VFMWFRAMEOBJ_S  ZeroFrm;
     VC1_VFMWFRAMEOBJ_S* pCurFrm;
-    VC1_VFMWFRAMEOBJ_S* pRef[3];    /*ÆäÖÐ0Îª×î½ü½â³öµÄ²Î¿¼Í¼£¬1Îª½ÏÔç½â³öµÄ²Î¿¼Í¼*/
+    VC1_VFMWFRAMEOBJ_S* pRef[3];    /*å…¶ä¸­0ä¸ºæœ€è¿‘è§£å‡ºçš„å‚è€ƒå›¾ï¼Œ1ä¸ºè¾ƒæ—©è§£å‡ºçš„å‚è€ƒå›¾*/
     SINT32              MbWidth;
     SINT32              MbHeight;
     SINT32              MbWidthLast;
@@ -717,7 +717,7 @@ typedef struct
     UINT32              FIELDTX_ADDR;
     UINT32              FORWARDMB_ADDR;
 
-    UINT32              UsedDecMode;      //µ±Ç°ÕýÔÚÊ¹ÓÃµÄ½âÂëÄ£Ê½(IPB, IP, I)
+    UINT32              UsedDecMode;      //å½“å‰æ­£åœ¨ä½¿ç”¨çš„è§£ç æ¨¡å¼(IPB, IP, I)
 } VC1_VFMWCODECINF_S;
 
 typedef struct
@@ -853,19 +853,19 @@ typedef struct
 } VC1_VCTRLINFO_S;
 typedef struct
 {
-    SINT8   XInt;       // ÕûÏñËØµã
+    SINT8   XInt;       // æ•´åƒç´ ç‚¹
     SINT8   YInt;
-    SINT8   XFrac;      // 0: ÕûÏñËØµã,  1: °ëÏñËØµã
+    SINT8   XFrac;      // 0: æ•´åƒç´ ç‚¹,  1: åŠåƒç´ ç‚¹
     SINT8   YFrac;
     UINT8   PicStruct;
-    /* ÏÂÁÐ±äÁ¿ÎªÔ¤È¡²ÎÊý */
+    /* ä¸‹åˆ—å˜é‡ä¸ºé¢„å–å‚æ•° */
     SINT32  SubWidth;
     SINT32  SubHeight;
 
-    SINT32  XPixWidth;  // ²Î¿¼Í¼Ïñ¿í¸ß (É«¶ÈÁÁ¶ÈÒª·Ö±ð¼ÆËã)
+    SINT32  XPixWidth;  // å‚è€ƒå›¾åƒå®½é«˜ (è‰²åº¦äº®åº¦è¦åˆ†åˆ«è®¡ç®—)
     SINT32  YPixHeight;
     SINT32  PixScale;
-    UINT32  StartAddr;  // ²Î¿¼Í¼Ïñ(Ö¡»ò³¡)×óÉÏ½ÇÏñËØÎ»ÖÃ
+    UINT32  StartAddr;  // å‚è€ƒå›¾åƒ(å¸§æˆ–åœº)å·¦ä¸Šè§’åƒç´ ä½ç½®
 } VC1_PRCBLOCKINFO_S;
 
 
@@ -885,7 +885,7 @@ typedef struct
     UINT8   PrcBuf[15*15];
     UINT8   Prc2PrfBuf[8*26];
 
-    /* ´ÓpmvÄ£¿é´«ÏÂÀ´µÄÊý¾Ý */
+    /* ä»Žpmvæ¨¡å—ä¼ ä¸‹æ¥çš„æ•°æ® */
     SINT32  LumaMvSub[4][2][2];      // [BlockIdx][Foreward/Backward][x/y]
     SINT32  ChromaMvSub[4][2][2];
     //SINT32  Prd[4][2];
@@ -897,12 +897,12 @@ typedef struct
     SINT32 Profile;
 	UINT8  CurParity;
 
-    /* ´ÓsedÄ£¿é´«ÏÂÀ´µÄÊý¾Ý */
+    /* ä»Žsedæ¨¡å—ä¼ ä¸‹æ¥çš„æ•°æ® */
     SINT32  Mbx;
     SINT32  Mby;
     SINT32  Mbn;
 
-    /* ´Óvctrl¹ã²¥ÏÂÀ´µÄÊý¾Ý */
+    /* ä»Žvctrlå¹¿æ’­ä¸‹æ¥çš„æ•°æ® */
     UINT32  DDRStride; 
     UINT32  DDRHeight;
     UINT32  PicWidth;         //Frame width in pix
@@ -910,14 +910,14 @@ typedef struct
     UINT32  DispPicWidth;         //Frame width in pix
     UINT32  DispPicHeight;        //Frame height in in pix
 
-    UINT32  pic_addressx[3];  // pic_addressx[0]: Ç°Ïò²Î¿¼Ö¡µØÖ·;   pic_addressx[1]: ºóÏò²Î¿¼Ö¡µØÖ·
-	                          // pic_addressx[3]: µ±Ç°²Î¿¼Ö¡µØÖ·
+    UINT32  pic_addressx[3];  // pic_addressx[0]: å‰å‘å‚è€ƒå¸§åœ°å€;   pic_addressx[1]: åŽå‘å‚è€ƒå¸§åœ°å€
+	                          // pic_addressx[3]: å½“å‰å‚è€ƒå¸§åœ°å€
     SINT32  RefPicStruct[2];
 	UINT8   PicStruct;
 	SINT32  OppRefChroma[2];
 	SINT32  IsSecondFld;
 
-    /* Êä³ö */
+    /* è¾“å‡º */
     SINT32  BlockPartIdx;
 } VC1_PRCINFO_S;
 typedef enum
@@ -1169,7 +1169,7 @@ typedef struct
     UINT32 PicWidthInMb;
     UINT32 PicHeightInMb;
 
-    /* ´ÓsedÄ£¿éÊäÈë */
+    /* ä»Žsedæ¨¡å—è¾“å…¥ */
     SINT32 Mbx;
     SINT32 Mby;
     SINT32 Mbn;
@@ -1179,7 +1179,7 @@ typedef struct
     SINT32 FieldFrameTransform;
 
     SINT32 iDCStepSizeY;   // 
-    SINT32 iDCStepSizeC;   // ÓëiDCStepSizeY ÍêÈ«ÏàÍ¬
+    SINT32 iDCStepSizeC;   // ä¸ŽiDCStepSizeY å®Œå…¨ç›¸åŒ
     SINT32 iDoubleStepSize;
     SINT32 iStepMinusStepIsEven;
     SINT32 bRotatedIdct;    //Rotate Flag
@@ -1193,8 +1193,8 @@ typedef struct
 		
     VC1_BLKTYPE_E BlkType[6];
 
-    SINT32 DefaultPredY;  //Ô¤²âÈ±Ê¡Öµ
-    SINT32 DefaultPredC;  //Ô¤²âÈ±Ê¡Öµ, ÓëDefaultPredY ÍêÈ«ÏàÍ¬
+    SINT32 DefaultPredY;  //é¢„æµ‹ç¼ºçœå€¼
+    SINT32 DefaultPredC;  //é¢„æµ‹ç¼ºçœå€¼, ä¸ŽDefaultPredY å®Œå…¨ç›¸åŒ
 
     SINT32 bIntra[6];         //
     //SINT32 dct_type;         // 0: frame  1: field;
@@ -1205,7 +1205,7 @@ typedef struct
     SINT32 quant;
     SINT32 quant_type;
 
-    /* ItransÐèÒªÎ¬»¤µÄÊý¾Ý */
+    /* Itranséœ€è¦ç»´æŠ¤çš„æ•°æ® */
 
     //VC1_BLOCK CurrInfoLeft;
     //VC1_BLOCK CurrInfoUp;
@@ -1214,9 +1214,9 @@ typedef struct
     SINT32  ScaledDCPred;
 
     //SINT32      dc_step[6];
-    SINT32 DefaulPredVal;  // È±Ê¡µÄÔ¤²âÖµ
+    SINT32 DefaulPredVal;  // ç¼ºçœçš„é¢„æµ‹å€¼
 
-    /* outputµ½rcnÄ£¿é */
+    /* outputåˆ°rcnæ¨¡å— */
     SINT32 Residual[6][64];
 } VC1_ITRANSINFO_S;
 #endif
@@ -1231,32 +1231,32 @@ typedef struct
 
     /***** input from pmv  *****/
     UINT32 Mbn;
-    UINT32 Mbx;    /* ÒÔºê¿éÎªµ¥Î» */
-    UINT32 Mby;    /* ÒÔºê¿éÎªµ¥Î» */
+    UINT32 Mbx;    /* ä»¥å®å—ä¸ºå•ä½ */
+    UINT32 Mby;    /* ä»¥å®å—ä¸ºå•ä½ */
     SINT32 FldPrd;
     SINT32 FieldFrameTransform;
     SINT32 Ratio0;
     SINT32 Ratio1;
 
     /* output to dblk */
-    SINT32 Recon[6][64];      /* ºê¿éµÄÖØ¹¹ÏñËØ */
+    SINT32 Recon[6][64];      /* å®å—çš„é‡æž„åƒç´  */
 
     UINT32 IsSkipMb;
     SINT32 IsIntraL[4];
     SINT32 IsIntraC;
-    SINT32 field_prediction;          // Ô¤²â·½Ê½
+    SINT32 field_prediction;          // é¢„æµ‹æ–¹å¼
     SINT32 Prd[4][2];          // [blockidx][foreward/backward]
     SINT32 ChrPrd[4][2];          // [blockidx][foreward/backward]
 
-    /* ÎªrcnÓ²¼þÓÅ»¯Ô¤Áô, pvÖÐ²»Ê¹ÓÃ */
-    SINT32 dct_type;           // dct±ä»»·½Ê½ 0: frame/1: field;
+    /* ä¸ºrcnç¡¬ä»¶ä¼˜åŒ–é¢„ç•™, pvä¸­ä¸ä½¿ç”¨ */
+    SINT32 dct_type;           // dctå˜æ¢æ–¹å¼ 0: frame/1: field;
 
     /***** input from itrans  *****/
     SINT32 Residual[6][64];
 
     /***** input from prf *****/
-    UINT32 PredY[4][2][64];      // [blockidx][0: Ç°ÏòÔ¤²â/1: ºóÏòÔ¤²â]
-    UINT32 PredC[4][2][32];      // UV ¼ä²å´æ·Å
+    UINT32 PredY[4][2][64];      // [blockidx][0: å‰å‘é¢„æµ‹/1: åŽå‘é¢„æµ‹]
+    UINT32 PredC[4][2][32];      // UV é—´æ’å­˜æ”¾
 
 } VC1_RCNINFO_S;
 
@@ -1283,7 +1283,7 @@ typedef struct
     SINT32 CONDOVER;
     SINT32 OVERFLAGMB;
 
-    // µ±Ç°ºê¿éÏà¹ØÐÅÏ¢
+    // å½“å‰å®å—ç›¸å…³ä¿¡æ¯
     UINT32 Mbx;
     UINT32 Mby;
     UINT32 Mbn;
@@ -1294,7 +1294,7 @@ typedef struct
     UINT32 IsIntraChromaBlk;
     UINT32 SliceNum;
 
-    SINT32 ReconPixel[384];               // Rcn´«À´µÄMBÏñËØ£¬×¼±¸½øÐÐOverlap
+    SINT32 ReconPixel[384];               // Rcnä¼ æ¥çš„MBåƒç´ ï¼Œå‡†å¤‡è¿›è¡ŒOverlap
     SINT32 Combined4Mb[256*4 + 64*4 + 64*4];
     SINT32 ForDblkCombined4Mb[256*4 + 64*4 + 64*4];
 } VC1_OVERLAPINFO_S;
@@ -1311,7 +1311,7 @@ typedef struct
     SINT32 Mvx[24][2];    //[blk4x4][Fwd/Bwd]
     SINT32 Mvy[24][2];    //[blk4x4][Fwd/Bwd]
 
-    SINT32 Bs[48];  //ÏÈË®Æ½£¬ºó´¹Ö±£»ÏÈÁÁ¶ÈºóÉ«¶È£»´ÓÉÏµ½ÏÂ£¬´Ó×óµ½ÓÒ
+    SINT32 Bs[48];  //å…ˆæ°´å¹³ï¼ŒåŽåž‚ç›´ï¼›å…ˆäº®åº¦åŽè‰²åº¦ï¼›ä»Žä¸Šåˆ°ä¸‹ï¼Œä»Žå·¦åˆ°å³
 
     SINT32 MbPixel[384];  // 16x16 + 8x8 + 8x8
 } VC1_DBLKMBINFO_S;
@@ -1332,7 +1332,7 @@ typedef struct
     SINT32 SaveStride;
     UINT8  PicStruct;
 
-    // µ±Ç°ºê¿éÏà¹ØÐÅÏ¢
+    // å½“å‰å®å—ç›¸å…³ä¿¡æ¯
     UINT32 Mbx;
     UINT32 Mby;
     UINT32 Mbn;
@@ -1422,12 +1422,12 @@ typedef struct
 {
     FILE   *fp_VDHLog;
 	FILE   *fp_Golden;
-    SINT32  PrintModule;          // Ä¬ÈÏ´òÓ¡BASICÐÅÏ¢
-    SINT32  PicStart;             // Ä¬ÈÏ´ÓµÚ0¸öÍ¼Ïñ¿ªÊ¼´òÓ¡
-    SINT32  PicEnd;               // Ä¬ÈÏ´òÓ¡µ½×îºóÒ»¸öÍ¼Ïñ
-    SINT32  MbStart;              // Ä¬ÈÏ´ÓµÚ0¸öºê¿é¿ªÊ¼´òÓ¡
-    SINT32  MbEnd;                // Ä¬ÈÏ´òÓ¡µ½×îºóÒ»¸öºê¿é
-    SINT32  PrintDev;             // ´òÓ¡Éè±¸, 0,ÆÁÄ»,1 ÎÄ¼þ
+    SINT32  PrintModule;          // é»˜è®¤æ‰“å°BASICä¿¡æ¯
+    SINT32  PicStart;             // é»˜è®¤ä»Žç¬¬0ä¸ªå›¾åƒå¼€å§‹æ‰“å°
+    SINT32  PicEnd;               // é»˜è®¤æ‰“å°åˆ°æœ€åŽä¸€ä¸ªå›¾åƒ
+    SINT32  MbStart;              // é»˜è®¤ä»Žç¬¬0ä¸ªå®å—å¼€å§‹æ‰“å°
+    SINT32  MbEnd;                // é»˜è®¤æ‰“å°åˆ°æœ€åŽä¸€ä¸ªå®å—
+    SINT32  PrintDev;             // æ‰“å°è®¾å¤‡, 0,å±å¹•,1 æ–‡ä»¶
     SINT32  (*Fun_VDH_Print)(SINT32 module, const SINT8 *format, ...);
 	VOID    (*Fun_VDH_Flush)(VOID);
 } VDH_PRINT_CTRL;

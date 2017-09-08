@@ -100,7 +100,7 @@ HI_S32 mxl603_set_tuner_dvb_c(HI_U32 u32TunerPort, HI_U8 i2c_channel, HI_U32 puR
         xtalCfg.clkOutEnable = MXL_DISABLE;//MXL_ENABLE;
         xtalCfg.clkOutDiv = MXL_DISABLE;
         xtalCfg.clkOutExt = MXL_DISABLE;
-        xtalCfg.singleSupply_3_3V = MXL_ENABLE;//MXL_DISABLE;¦Ì£¤¦Ì??¡ä?¡ê¨º?
+        xtalCfg.singleSupply_3_3V = MXL_ENABLE;//MXL_DISABLE;Î¼ï¿¥Î¼??â€²?ï¿¡Ãª?
         xtalCfg.XtalSharingMode = MXL_DISABLE;
         status = MxLWare603_API_CfgDevXtal(s_u8devId_dvb_c, xtalCfg);
         if (status != MXL_SUCCESS)
@@ -256,7 +256,7 @@ HI_S32 mxl603_set_tuner (HI_U32 u32TunerPort, HI_U8 enI2cChannel, HI_U32 u32PuRF
 
         status = MxLWare603_API_CfgDrvInit(devId, (void *) &device_context[devId]);
 
-        // if you don¡¯t want to pass any oem data, just use NULL as a parameter:
+        // if you donâ€™t want to pass any oem data, just use NULL as a parameter:
         // status = MxLWare603_API_CfgDrvInit(devId, NULL);
         }
 

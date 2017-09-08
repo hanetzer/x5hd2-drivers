@@ -1348,7 +1348,7 @@ HI_S32 VENC_DRV_QueueFrame(HI_HANDLE hVencChn, HI_UNF_VIDEO_FRAME_INFO_S *pstFra
    pstEncChnPara = (VeduEfl_EncPara_S *)hVencChn;
    if (HI_TRUE == pstEncChnPara->bNeverEnc)
    {
-       if (HI_ID_BUTT == g_stVencChn[u32VeChn].enSrcModId)   //Èç¹ûÎ´°ó¶¨ÔòÉèÖÃ
+       if (HI_ID_BUTT == g_stVencChn[u32VeChn].enSrcModId)   //å¦‚æžœæœªç»‘å®šåˆ™è®¾ç½®
        {
            pstEncChnPara->stSrcInfo.pfGetImage = VENC_DRV_EflGetImage;
            pstEncChnPara->stSrcInfo.pfPutImage = VENC_DRV_EflPutImage;

@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : the mem mangage
-                  CNcomment: ÄÚ´æ¹ÜÀí CNend\n
+                  CNcomment: å†…å­˜ç®¡ç† CNend\n
 Function List 	: 
 
 			  		  
@@ -42,21 +42,21 @@ Date				Author        		Modification
 
     /***************************** Macro Definition ******************************/
     /** \addtogroup 	 JPEG MEM MACRO */
-    /** @{ */  /** <!-- ¡¾JPEG MEM MACRO¡¿ */
+    /** @{ */  /** <!-- ã€JPEG MEM MACROã€‘ */
 
 	 /** this macro is from the make menuconfig */
-	 /** CNcomment:µ×ÏÂÕâĞ©ºê±äÁ¿¿ÉÒÔÀ´Ö®make menuconfig
-				   ×¢ÒâÓ²¼şbufµØÖ·´óĞ¡Òª64×Ö½Ú¶ÔÆë£¬´æ´¢ÂëÁ÷bufferÃ»ÓĞ
-				   ×ö´ËÒªÇó£¬µ«ÒªÔÚÓ²¼şbuf·¶Î§Ö®ÄÚhimd.l 0x60100000  0x20
-				   Æ«ÒÆµØÖ·À´È·¶¨£¬Ç°Á½¸öÊÇbufµØÖ·£¬ºóÁ½¸öÊÇÂëÁ÷bufµØ
-				   Ö·£¬Õâ¿éÁÙÊ±bufferÒªÓÀÔ¶´æÔÚ¹©Ó²¼şÊ¹ÓÃ */
+	 /** CNcomment:åº•ä¸‹è¿™äº›å®å˜é‡å¯ä»¥æ¥ä¹‹make menuconfig
+				   æ³¨æ„ç¡¬ä»¶bufåœ°å€å¤§å°è¦64å­—èŠ‚å¯¹é½ï¼Œå­˜å‚¨ç æµbufferæ²¡æœ‰
+				   åšæ­¤è¦æ±‚ï¼Œä½†è¦åœ¨ç¡¬ä»¶bufèŒƒå›´ä¹‹å†…himd.l 0x60100000  0x20
+				   åç§»åœ°å€æ¥ç¡®å®šï¼Œå‰ä¸¤ä¸ªæ˜¯bufåœ°å€ï¼Œåä¸¤ä¸ªæ˜¯ç æµbufåœ°
+				   å€ï¼Œè¿™å—ä¸´æ—¶bufferè¦æ°¸è¿œå­˜åœ¨ä¾›ç¡¬ä»¶ä½¿ç”¨ */
 	 #ifndef  CFG_HI_JPEG6B_STREAMBUFFER_SIZE
 	 /** the hard buffer size */
-	 /** CNcomment:Ó²¼şbuffer´óĞ¡,Òª64×Ö½Ú¶ÔÆë */
+	 /** CNcomment:ç¡¬ä»¶bufferå¤§å°,è¦64å­—èŠ‚å¯¹é½ */
 	 #define JPGD_HARD_BUFFER				      (1024 * 1024)
 	 /** the save stream size,1M is the best,the buffer size should >= INPUT_BUF_SIZE */
-	 /** CNcomment:´æ´¢ÂëÁ÷µÄbuffer´óĞ¡£¬¾­¹ı²âÊÔ1MÊÇ×îºÃµÄ,-64ÊÇÎªÁË±£Ö¤ÔÚÓ²¼şbuf·¶Î§Ö®ÄÚ,
-	               ÂëÁ÷buffer´óĞ¡±ØĞë´óÓÚ INPUT_BUF_SIZE = 4096 */
+	 /** CNcomment:å­˜å‚¨ç æµçš„bufferå¤§å°ï¼Œç»è¿‡æµ‹è¯•1Mæ˜¯æœ€å¥½çš„,-64æ˜¯ä¸ºäº†ä¿è¯åœ¨ç¡¬ä»¶bufèŒƒå›´ä¹‹å†…,
+	               ç æµbufferå¤§å°å¿…é¡»å¤§äº INPUT_BUF_SIZE = 4096 */
 	 #define JPGD_STREAM_BUFFER				  (JPGD_HARD_BUFFER - 64)
 	 #else
 	 #define JPGD_HARD_BUFFER					  (CFG_HI_JPEG6B_STREAMBUFFER_SIZE) > (4096 + 64) ? (CFG_HI_JPEG6B_STREAMBUFFER_SIZE) : (4096 + 64)
@@ -65,33 +65,33 @@ Date				Author        		Modification
 
 
 	 /** 2bytes align */
-	 /** CNcomment:2×Ö½Ú¶ÔÆë */
+	 /** CNcomment:2å­—èŠ‚å¯¹é½ */
 	#define JPGD_HDEC_MMZ_ALIGN_2BYTES 	  2
 	 
 	 /** 3bytes align */
-	 /** CNcomment:3×Ö½Ú¶ÔÆë */
+	 /** CNcomment:3å­—èŠ‚å¯¹é½ */
 	#define JPGD_HDEC_MMZ_ALIGN_3BYTES 	  3
 
 	
 	 /** 4bytes align */
-	 /** CNcomment:4×Ö½Ú¶ÔÆë */
+	 /** CNcomment:4å­—èŠ‚å¯¹é½ */
 	#define JPGD_HDEC_MMZ_ALIGN_4BYTES 	  4
 
 	 /** 4bytes align */
-	 /** CNcomment:16×Ö½Ú¶ÔÆë */
+	 /** CNcomment:16å­—èŠ‚å¯¹é½ */
 	 #define JPGD_HDEC_MMZ_ALIGN_16BYTES 	  16
 
 	 /** 24bytes align */
-	 /** CNcomment:24×Ö½Ú¶ÔÆë */
+	 /** CNcomment:24å­—èŠ‚å¯¹é½ */
 	 #define JPGD_HDEC_MMZ_ALIGN_24BYTES   24
 	 
 	 /** 64bytes align */
-	 /** CNcomment:64×Ö½Ú¶ÔÆë */
+	 /** CNcomment:64å­—èŠ‚å¯¹é½ */
 	#define JPGD_HDEC_MMZ_ALIGN_64BYTES 	  64
 	 
 	 
 	 /** 128bytes align */
-	 /** CNcomment:128×Ö½Ú¶ÔÆë */
+	 /** CNcomment:128å­—èŠ‚å¯¹é½ */
 	#define JPGD_HDEC_MMZ_ALIGN_128BYTES 	  128
 
 	 /** @} */	/*! <!-- Macro Definition end */
@@ -100,7 +100,7 @@ Date				Author        		Modification
 	 /*************************** Enum Definition ****************************/
 
 	/** \addtogroup      JPEG MEM ENUM */
-    /** @{ */  /** <!-- ¡¾JPEG MEM ENUM¡¿ */
+    /** @{ */  /** <!-- ã€JPEG MEM ENUMã€‘ */
 
 
 	
@@ -109,7 +109,7 @@ Date				Author        		Modification
 	/*************************** Structure Definition ****************************/
 
 	/** \addtogroup      JPEG MEM STRUCTURE */
-    /** @{ */  /** <!-- ¡¾JPEG MEM STRUCTURE¡¿ */
+    /** @{ */  /** <!-- ã€JPEG MEM STRUCTUREã€‘ */
 
 	/** @} */  /*! <!-- Structure Definition end */
 
@@ -119,18 +119,18 @@ Date				Author        		Modification
     /******************************* API declaration *****************************/
 
 	/** \addtogroup      JPEG MEM API */
-    /** @{ */  /** <!-- ¡¾JPEG MEM API¡¿ */
+    /** @{ */  /** <!-- ã€JPEG MEM APIã€‘ */
 	
 
 	/*****************************************************************************
 	* func			: JPEG_HDEC_GetStreamMem
 	* description	: alloc the stream buffer mem
-					  CNcomment: ·ÖÅäÂëÁ÷bufferÄÚ´æ CNend\n
-	* param[in] 	: u32MemSize   CNcomment: Òª·ÖÅäµÄÄÚ´æ´óĞ¡	  CNend\n
-	* param[out]	: pOutPhyAddr  CNcomment: ·ÖÅäµÃµ½µÄÎïÀíµØÖ·  CNend\n
-	* param[out]	: pOutVirAddr  CNcomment: ·ÖÅäµÃµ½µÄĞéÄâµØÖ·  CNend\n
-	* retval		: HI_SUCCESS   CNcomment: ³É¹¦	CNend\n
-	* retval		: HI_FAILURE   CNcomment: Ê§°Ü	 CNend\n
+					  CNcomment: åˆ†é…ç æµbufferå†…å­˜ CNend\n
+	* param[in] 	: u32MemSize   CNcomment: è¦åˆ†é…çš„å†…å­˜å¤§å°	  CNend\n
+	* param[out]	: pOutPhyAddr  CNcomment: åˆ†é…å¾—åˆ°çš„ç‰©ç†åœ°å€  CNend\n
+	* param[out]	: pOutVirAddr  CNcomment: åˆ†é…å¾—åˆ°çš„è™šæ‹Ÿåœ°å€  CNend\n
+	* retval		: HI_SUCCESS   CNcomment: æˆåŠŸ	CNend\n
+	* retval		: HI_FAILURE   CNcomment: å¤±è´¥	 CNend\n
 	* others:		: NA
 	*****************************************************************************/
     #ifdef CONFIG_JPEG_REALIZEFUNC_BEFORMAINFUNC
@@ -143,8 +143,8 @@ Date				Author        		Modification
 	 /*****************************************************************************
 	 * func 		 : JPEG_HDEC_FreeStreamMem
 	 * description	 : free the stream buffer mem
-					   CNcomment: ÊÍ·ÅÂëÁ÷bufferÄÚ´æ CNend\n
-	 * param[in]	 : pInPhyAddr	 CNcomment: ÒªÊÍ·ÅµÄÂëÁ÷bufferÎïÀíµØÖ· CNend\n
+					   CNcomment: é‡Šæ”¾ç æµbufferå†…å­˜ CNend\n
+	 * param[in]	 : pInPhyAddr	 CNcomment: è¦é‡Šæ”¾çš„ç æµbufferç‰©ç†åœ°å€ CNend\n
 	 * retval		 : NA
 	 * others:		 : NA
 	 *****************************************************************************/
@@ -158,10 +158,10 @@ Date				Author        		Modification
 	 /*****************************************************************************
 	 * func 		 : JPEG_HDEC_GetYUVMem
 	 * description	 : get the hard decode output mem
-					   CNcomment: »ñÈ¡Ó²¼ş½âÂëÊä³öµÄÄÚ´æ CNend\n
-	 * param[in]	 : pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú CNend\n
-	 * retval		 : HI_SUCCESS	 CNcomment: ³É¹¦       CNend\n
-	 * retval		 : HI_FAILURE	 CNcomment: Ê§°Ü       CNend\n
+					   CNcomment: è·å–ç¡¬ä»¶è§£ç è¾“å‡ºçš„å†…å­˜ CNend\n
+	 * param[in]	 : pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„ CNend\n
+	 * retval		 : HI_SUCCESS	 CNcomment: æˆåŠŸ       CNend\n
+	 * retval		 : HI_FAILURE	 CNcomment: å¤±è´¥       CNend\n
 	 * others:		 : NA
 	 *****************************************************************************/
 	 HI_S32 JPEG_HDEC_GetYUVMem(JPEG_HDEC_HANDLE_S_PTR	 pJpegHandle);
@@ -170,8 +170,8 @@ Date				Author        		Modification
 	 /*****************************************************************************
 	 * func 		 : JPEG_HDEC_FreeYUVMem
 	 * description	 : free the hard decode output mem
-					   CNcomment: ÊÍ·ÅÓ²¼ş½âÂëÊä³öµÄµØÖ·  CNend\n
-	 * param[in]	 : pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú  CNend\n
+					   CNcomment: é‡Šæ”¾ç¡¬ä»¶è§£ç è¾“å‡ºçš„åœ°å€  CNend\n
+	 * param[in]	 : pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„  CNend\n
 	 * retval		 : NA
 	 * others:		 : NA
 	 *****************************************************************************/
@@ -181,10 +181,10 @@ Date				Author        		Modification
 	 /*****************************************************************************
 	 * func 		 : JPEG_HDEC_GetMinMem
 	 * description	 : get dec output argb min memory
-					   CNcomment: »ñÈ¡Ó²¼ş½âÂëÊä³öÎªARGBµÄĞĞbuffer CNend\n
-	 * param[in]	 : pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú CNend\n
-	 * retval		 : HI_SUCCESS	 CNcomment: ³É¹¦       CNend\n
-	 * retval		 : HI_FAILURE	 CNcomment: Ê§°Ü       CNend\n
+					   CNcomment: è·å–ç¡¬ä»¶è§£ç è¾“å‡ºä¸ºARGBçš„è¡Œbuffer CNend\n
+	 * param[in]	 : pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„ CNend\n
+	 * retval		 : HI_SUCCESS	 CNcomment: æˆåŠŸ       CNend\n
+	 * retval		 : HI_FAILURE	 CNcomment: å¤±è´¥       CNend\n
 	 * others:		 : NA
 	 *****************************************************************************/
 	 HI_S32 JPEG_HDEC_GetMinMem(JPEG_HDEC_HANDLE_S_PTR pJpegHandle);
@@ -193,8 +193,8 @@ Date				Author        		Modification
 	 /*****************************************************************************
 	 * func 		 : JPEG_HDEC_FreeMinMem
 	 * description	 : free dec output argb min memory
-					   CNcomment: ÊÍ·ÅÓ²¼ş½âÂëÊä³öÎªARGBµÄĞĞbuffer  CNend\n
-	 * param[in]	 : pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú  CNend\n
+					   CNcomment: é‡Šæ”¾ç¡¬ä»¶è§£ç è¾“å‡ºä¸ºARGBçš„è¡Œbuffer  CNend\n
+	 * param[in]	 : pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„  CNend\n
 	 * retval		 : NA
 	 * others:		 : NA
 	 *****************************************************************************/
@@ -205,10 +205,10 @@ Date				Author        		Modification
 	 /*****************************************************************************
 	 * func 		 : JPEG_HDEC_GetOutMem
 	 * description	 : get the output buffer
-	                   CNcomment: ·ÖÅä×îÖÕÊä³öµÄÄÚ´æ      CNend\n
-	 * param[in]	 : pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú CNend\n
-	 * retval		 : HI_SUCCESS    CNcomment: ³É¹¦       CNend\n
-	 * retval		 : HI_FAILURE    CNcomment: Ê§°Ü       CNend\n
+	                   CNcomment: åˆ†é…æœ€ç»ˆè¾“å‡ºçš„å†…å­˜      CNend\n
+	 * param[in]	 : pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„ CNend\n
+	 * retval		 : HI_SUCCESS    CNcomment: æˆåŠŸ       CNend\n
+	 * retval		 : HI_FAILURE    CNcomment: å¤±è´¥       CNend\n
 	 * others:		 : NA
 	 *****************************************************************************/
 	 HI_S32 JPEG_HDEC_GetOutMem(const struct jpeg_decompress_struct *cinfo);
@@ -217,8 +217,8 @@ Date				Author        		Modification
 	 /*****************************************************************************
 	 * func 		 : JPEG_HDEC_FreeOutMem
 	 * description	 : free the output buf
-	                   CNcomment: ÊÍ·Å×îÖÕÊä³öµÄÄÚ´æ        CNend\n
-	 * param[in]	 : pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú  CNend\n
+	                   CNcomment: é‡Šæ”¾æœ€ç»ˆè¾“å‡ºçš„å†…å­˜        CNend\n
+	 * param[in]	 : pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„  CNend\n
 	 * retval		 : NA
 	 * others:		 : NA
 	 *****************************************************************************/

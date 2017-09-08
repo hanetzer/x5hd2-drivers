@@ -251,7 +251,7 @@
 #define SAMPLE_RATE_CONVERSION				(0x23)
 #define HBR_SPR_MASK						(0x00)
 #define I2S_IN_LEN							(0x24)							
-#define AUDP_TXCTRL_ADDR					(0x2F) /*control register, Audio packet header layout & HDMI mode*//*CNcomment:¿ØÖÆ¼Ä´æÆ÷£¬Audio packet header layout & HDMI mode */
+#define AUDP_TXCTRL_ADDR					(0x2F) /*control register, Audio packet header layout & HDMI mode*//*CNcomment:æŽ§åˆ¶å¯„å­˜å™¨ï¼ŒAudio packet header layout & HDMI mode */
 #define		BIT_DEEPCOLOR_EN				(0x40)
 #define		BIT_TXHDMI_MODE					(0x01)
 #define		BIT_EN_AUDIO					(0x01)

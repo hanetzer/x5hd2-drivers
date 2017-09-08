@@ -8,8 +8,8 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : use the sdk alloc mem add structure file
-                  CNcomment: Ê¹ÓÃSDK·ÖÅäÄÚ´æÔö¼ÓµÃ½á¹¹ÌåÍ·ÎÄ¼ş,½«jmemmgr.cÖĞµÃ½á¹¹Ìå
-                             Å²¶¯Õâ¸öÍ·ÎÄ¼şÀ´ CNend\n
+                  CNcomment: ä½¿ç”¨SDKåˆ†é…å†…å­˜å¢åŠ å¾—ç»“æ„ä½“å¤´æ–‡ä»¶,å°†jmemmgr.cä¸­å¾—ç»“æ„ä½“
+                             æŒªåŠ¨è¿™ä¸ªå¤´æ–‡ä»¶æ¥ CNend\n
 Function List 	: 
 
 			  		  

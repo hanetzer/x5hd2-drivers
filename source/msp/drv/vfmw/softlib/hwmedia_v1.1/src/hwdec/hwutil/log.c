@@ -76,7 +76,7 @@ void av_log_default_callback(void* ptr, int level, const char* fmt, va_list vl)
 }
 
 /* 2010/03/30 15:00:00 songxg+00133955 */
-/* ĞŞ¸Äav_logº¯Êı£¬ÔÚlinuxÆ½Ì¨ÏÂÔö¼ÓÎÄ¼şÃû¡¢ĞĞºÅÏÔÊ¾ */
+/* ä¿®æ”¹av_logå‡½æ•°ï¼Œåœ¨linuxå¹³å°ä¸‹å¢åŠ æ–‡ä»¶åã€è¡Œå·æ˜¾ç¤º */
 #ifdef __GNUC__
 static void (*av_log_callback)(const char *, int, const char *, void*, int, const char*, va_list) = av_log_default_callback;
 

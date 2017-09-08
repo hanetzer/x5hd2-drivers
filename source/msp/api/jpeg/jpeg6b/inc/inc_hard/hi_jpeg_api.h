@@ -41,25 +41,25 @@ Date				Author        		Modification
 	 /** @{ */	/** <!--[JPEG]*/
 
 	 /** Maximum number of data components */
-	 /** CNcomment:×î´óÊý¾Ý·ÖÁ¿Êý CNend */
+	 /** CNcomment:æœ€å¤§æ•°æ®åˆ†é‡æ•° CNend */
      #define MAX_PIXEL_COMPONENT_NUM            3
 	 /** Maximum column number of hor coef */
-	 /** CNcomment:×î´óË®Æ½ÁÐÏµÊý CNend */
+	 /** CNcomment:æœ€å¤§æ°´å¹³åˆ—ç³»æ•° CNend */
      #define MAX_HORCOEF_COL                     8
 	 /** Maximum row number of hor coef */
-	 /** CNcomment:×î´óË®Æ½ÐÐÏµÊý CNend */
+	 /** CNcomment:æœ€å¤§æ°´å¹³è¡Œç³»æ•° CNend */
      #define MAX_HORCOEF_ROW                     4
 	 /** Maximum column number of ver coef */
-	 /** CNcomment:×î´ó´¹Ö±ÁÐÏµÊý CNend */
+	 /** CNcomment:æœ€å¤§åž‚ç›´åˆ—ç³»æ•° CNend */
 	 #define MAX_VERCOEF_COL                     4
 	 /** Maximum row number of ver coef */
-	 /** CNcomment:×î´ó´¹Ö±ÐÐÏµÊý CNend */
+	 /** CNcomment:æœ€å¤§åž‚ç›´è¡Œç³»æ•° CNend */
      #define MAX_VERCOEF_ROW                     4
 	 /** Maximum column number of csc coef */
-	 /** CNcomment:×î´ócscÁÐÏµÊý CNend */
+	 /** CNcomment:æœ€å¤§cscåˆ—ç³»æ•° CNend */
 	 #define MAX_CSCCOEF_COL                     3
 	 /** Maximum row number of csc coef */
-	 /** CNcomment:×î´ócscÐÐÏµÊý CNend */
+	 /** CNcomment:æœ€å¤§cscè¡Œç³»æ•° CNend */
      #define MAX_CSCCOEF_ROW                     3
 
      /** @} */  /** <!-- ==== Macro Definition end ==== */
@@ -73,7 +73,7 @@ Date				Author        		Modification
 	/** @{ */	/** <!--[JPEG]*/
 
 	/** enum of the input jpeg color space */
-    /** CNcomment:ÊäÈëµÄjpegÍ¼Æ¬¸ñÊ½ CNend */
+    /** CNcomment:è¾“å…¥çš„jpegå›¾ç‰‡æ ¼å¼ CNend */
 	typedef enum hiHI_JPEG_FMT_E
 	{
 		JPEG_FMT_YUV400	    = 0,   /**< yuv400     */
@@ -97,7 +97,7 @@ Date				Author        		Modification
 	/** @{ */	/** <!--[JPEG]*/
 
 	/** Structure of Rectangle */
-    /** CNcomment:¾ØÐÎ CNend */
+    /** CNcomment:çŸ©å½¢ CNend */
 	typedef struct hiJPEG_RECT_S
 	{
 		HI_S32 x, y;
@@ -105,51 +105,51 @@ Date				Author        		Modification
 	}HI_JPEG_RECT_S;
 
 	/** Structure of the output yuvsp/rgb/yuv package message, only support 1/2/4/8/ scale */
-	/** CNcomment:ÉèÖÃÊä³öyuvsp/rgb/yuv pacekage µÄÏà¹ØÐÅÏ¢£¬Ö»Ö§³Ö1/2/4/8Ëõ·Å CNend */
+	/** CNcomment:è®¾ç½®è¾“å‡ºyuvsp/rgb/yuv pacekage çš„ç›¸å…³ä¿¡æ¯ï¼Œåªæ”¯æŒ1/2/4/8ç¼©æ”¾ CNend */
 	typedef struct hiJPEG_SURFACE_S
 	{
-		 HI_CHAR* pOutPhy[MAX_PIXEL_COMPONENT_NUM];        /**< output physic address,0 is luminance or rgb buf, 1 is chroma buf    *//**<CNcomment:Êä³öÎïÀíµØÖ·£¬0·ÖÁ¿Êä³öy»òÕßrgbµØÖ·£¬1·ÖÁ¿ÎªÉ«¶ÈµØÖ· CNend     */
-		 HI_CHAR* pOutVir[MAX_PIXEL_COMPONENT_NUM];        /**< output virtual address,0 is luminance or rgb buf, 1 is chroma buf   *//**<CNcomment:Êä³öÐéÄâµØÖ·£¬0·ÖÁ¿Êä³öy»òÕßrgbµØÖ·£¬1·ÖÁ¿ÎªÉ«¶ÈµØÖ· CNend     */
-		 HI_U32   u32OutStride[MAX_PIXEL_COMPONENT_NUM];   /**< output stride                     *//**<CNcomment:Êä³öÐÐ¼ä¾à CNend      */
-         HI_BOOL  bUserPhyMem;                             /**< if use user physic memeory         *//**<CNcomment:ÊÇ·ñÊ¹ÓÃÓÃ»§µÄÎïÀíÄÚ´æ CNend  */
+		 HI_CHAR* pOutPhy[MAX_PIXEL_COMPONENT_NUM];        /**< output physic address,0 is luminance or rgb buf, 1 is chroma buf    *//**<CNcomment:è¾“å‡ºç‰©ç†åœ°å€ï¼Œ0åˆ†é‡è¾“å‡ºyæˆ–è€…rgbåœ°å€ï¼Œ1åˆ†é‡ä¸ºè‰²åº¦åœ°å€ CNend     */
+		 HI_CHAR* pOutVir[MAX_PIXEL_COMPONENT_NUM];        /**< output virtual address,0 is luminance or rgb buf, 1 is chroma buf   *//**<CNcomment:è¾“å‡ºè™šæ‹Ÿåœ°å€ï¼Œ0åˆ†é‡è¾“å‡ºyæˆ–è€…rgbåœ°å€ï¼Œ1åˆ†é‡ä¸ºè‰²åº¦åœ°å€ CNend     */
+		 HI_U32   u32OutStride[MAX_PIXEL_COMPONENT_NUM];   /**< output stride                     *//**<CNcomment:è¾“å‡ºè¡Œé—´è· CNend      */
+         HI_BOOL  bUserPhyMem;                             /**< if use user physic memeory         *//**<CNcomment:æ˜¯å¦ä½¿ç”¨ç”¨æˆ·çš„ç‰©ç†å†…å­˜ CNend  */
 	
 	}HI_JPEG_SURFACE_S;
 	
 	/** Structure of the output message */
-	/** CNcomment:ÉèÖÃÊä³öÏà¹ØÐÅÏ¢ CNend */
+	/** CNcomment:è®¾ç½®è¾“å‡ºç›¸å…³ä¿¡æ¯ CNend */
 	typedef struct hiJPEG_SURFACE_DESCRIPTION_S
 	{
-		 HI_JPEG_SURFACE_S	 stOutSurface; /**< output  surface   *//**<CNcomment:Êä³öÐÅÏ¢ CNend       */
-		 HI_JPEG_RECT_S      stCropRect;   /**< output crop size  *//**<CNcomment:Êä³ö²Ã¼ôÇøÓò CNend   */
-		 HI_BOOL bCrop;                    /**<  if crop           *//**<CNcomment:ÊÇ·ñ²Ã¼ô CNend      */
+		 HI_JPEG_SURFACE_S	 stOutSurface; /**< output  surface   *//**<CNcomment:è¾“å‡ºä¿¡æ¯ CNend       */
+		 HI_JPEG_RECT_S      stCropRect;   /**< output crop size  *//**<CNcomment:è¾“å‡ºè£å‰ªåŒºåŸŸ CNend   */
+		 HI_BOOL bCrop;                    /**<  if crop           *//**<CNcomment:æ˜¯å¦è£å‰ª CNend      */
 	}HI_JPEG_SURFACE_DESCRIPTION_S;
 
 
 	/** Structure of output argb sampler and filte message */
-	/** CNcomment:ÉèÖÃÊä³öargb²ÉÑùºÍÂË²¨Ïà¹ØÐÅÏ¢ CNend */
+	/** CNcomment:è®¾ç½®è¾“å‡ºargbé‡‡æ ·å’Œæ»¤æ³¢ç›¸å…³ä¿¡æ¯ CNend */
     typedef struct hiJPEG_DEC_COEF_S
     {
-        HI_BOOL bEnHorMedian;                                  /**< if set hor median filter           *//**<CNcomment:ÊÇ·ñË®Æ½ÖÐÖµÂË²¨ CNend        */
-		HI_BOOL bEnVerMedian;                                  /**< if set ver median filter           *//**<CNcomment:ÊÇ·ñ´¹Ö±ÖÐÖµÂË²¨ CNend        */
-        HI_BOOL bSetHorSampleCoef;                             /**< if set hor sample coef            *//**<CNcomment:ÊÇ·ñÉèÖÃË®Æ½²ÉÑù²ÎÊý CNend    */
-		HI_BOOL bSetVerSampleCoef;                             /**< if set ver sample coef            *//**<CNcomment:ÊÇ·ñÉèÖÃ´¹Ö±²ÉÑù²ÎÊý CNend    */
-		HI_BOOL bSetCSCCoef;                                   /**< if set csc coef                    *//**<CNcomment:ÊÇ·ñÉèÖÃCSC²ÎÊý CNend         */
-		HI_S16  s16HorCoef[MAX_HORCOEF_ROW][MAX_HORCOEF_COL];  /**< set chrome hor sampler coefficient  *//**<CNcomment:É«¶ÈÉÏ²ÉÑùË®Æ½ÂË²¨ÏµÊý CNend */
-		HI_S16  s16VerCoef[MAX_VERCOEF_ROW][MAX_VERCOEF_COL];  /**< set chrome ver sampler coefficient  *//**<CNcomment:É«¶ÈÉÏ²ÉÑù´¹Ö±ÂË²¨ÏµÊý CNend */
-		HI_S16  s16CSCCoef[MAX_CSCCOEF_ROW][MAX_CSCCOEF_COL];  /**< set csc coefficient                 *//**<CNcomment:ÑÕÉ«¿Õ¼ä×ª»»ÏµÊý CNend       */
+        HI_BOOL bEnHorMedian;                                  /**< if set hor median filter           *//**<CNcomment:æ˜¯å¦æ°´å¹³ä¸­å€¼æ»¤æ³¢ CNend        */
+		HI_BOOL bEnVerMedian;                                  /**< if set ver median filter           *//**<CNcomment:æ˜¯å¦åž‚ç›´ä¸­å€¼æ»¤æ³¢ CNend        */
+        HI_BOOL bSetHorSampleCoef;                             /**< if set hor sample coef            *//**<CNcomment:æ˜¯å¦è®¾ç½®æ°´å¹³é‡‡æ ·å‚æ•° CNend    */
+		HI_BOOL bSetVerSampleCoef;                             /**< if set ver sample coef            *//**<CNcomment:æ˜¯å¦è®¾ç½®åž‚ç›´é‡‡æ ·å‚æ•° CNend    */
+		HI_BOOL bSetCSCCoef;                                   /**< if set csc coef                    *//**<CNcomment:æ˜¯å¦è®¾ç½®CSCå‚æ•° CNend         */
+		HI_S16  s16HorCoef[MAX_HORCOEF_ROW][MAX_HORCOEF_COL];  /**< set chrome hor sampler coefficient  *//**<CNcomment:è‰²åº¦ä¸Šé‡‡æ ·æ°´å¹³æ»¤æ³¢ç³»æ•° CNend */
+		HI_S16  s16VerCoef[MAX_VERCOEF_ROW][MAX_VERCOEF_COL];  /**< set chrome ver sampler coefficient  *//**<CNcomment:è‰²åº¦ä¸Šé‡‡æ ·åž‚ç›´æ»¤æ³¢ç³»æ•° CNend */
+		HI_S16  s16CSCCoef[MAX_CSCCOEF_ROW][MAX_CSCCOEF_COL];  /**< set csc coefficient                 *//**<CNcomment:é¢œè‰²ç©ºé—´è½¬æ¢ç³»æ•° CNend       */
     }HI_JPEG_DEC_COEF_S;
 
 
 	/** Structure of the input and output jpeg width and height,input jpeg format */
-	/** CNcomment:jpegÎÄ¼þµÄÔ­Ê¼´óÐ¡ÒÔ¼°½âÂëÊä³ö´óÐ¡£¬Ô­Ê¼Í¼Æ¬¸ñÊ½ CNend */
+	/** CNcomment:jpegæ–‡ä»¶çš„åŽŸå§‹å¤§å°ä»¥åŠè§£ç è¾“å‡ºå¤§å°ï¼ŒåŽŸå§‹å›¾ç‰‡æ ¼å¼ CNend */
 	typedef struct hiJPEG_INFO_S
 	{
-	     HI_U32  u32Width[MAX_PIXEL_COMPONENT_NUM];     /**< 0 input and output rgb width and lu width,1 is ch width    *//**<CNcomment:0ÊäÈëºÍ½âÂëÊä³örgbÍ¼Æ¬¿í¶È»òÕß½âÂëyuvspÁÁ¶È¿í¶È£¬1ÎªÉ«¶È¿í¶È CNend */
-		 HI_U32  u32Height[MAX_PIXEL_COMPONENT_NUM];    /**< 0 input and output rgb height and lu width,1 is ch height  *//**<CNcomment:0ÊäÈëºÍ½âÂëÊä³örgbÍ¼Æ¬¸ß¶È»òÕß½âÂëyuvspÁÁ¶È¸ß¶È£¬1ÎªÉ«¶È¸ß¶È CNend */
-		 HI_U32  u32OutStride[MAX_PIXEL_COMPONENT_NUM]; /**< 0 output rgb stride and lu stride,1 is ch stride           *//**<CNcomment:0½âÂëÊä³örgb»òyubspµÄÁÁ¶ÈÐÐ¼ä¾à£¬1ÎªÉ«¶ÈÐÐ¼ä¾àÀë CNend             */
-		 HI_U32  u32OutSize[MAX_PIXEL_COMPONENT_NUM];   /**< 0 output rgb size and lu size,1 is ch size		         *//**<CNcomment:0½âÂëÊä³örgb»òyubspµÄ´óÐ¡£¬1ÎªÉ«¶È´óÐ¡ CNend            			  */
-		 HI_JPEG_FMT_E enFmt;  /**< the input format  *//**<CNcomment:ÊäÈëµÄÍ¼Æ¬¸ñÊ½ CNend      */
-		 HI_BOOL bOutInfo;     /**< false is get input information and the other get output information   *//**<CNcomment:FALSE»ñÈ¡ÊäÈëÐÅÏ¢£¬TRUE»ñÈ¡Êä³öÐÅÏ¢ CNend */
+	     HI_U32  u32Width[MAX_PIXEL_COMPONENT_NUM];     /**< 0 input and output rgb width and lu width,1 is ch width    *//**<CNcomment:0è¾“å…¥å’Œè§£ç è¾“å‡ºrgbå›¾ç‰‡å®½åº¦æˆ–è€…è§£ç yuvspäº®åº¦å®½åº¦ï¼Œ1ä¸ºè‰²åº¦å®½åº¦ CNend */
+		 HI_U32  u32Height[MAX_PIXEL_COMPONENT_NUM];    /**< 0 input and output rgb height and lu width,1 is ch height  *//**<CNcomment:0è¾“å…¥å’Œè§£ç è¾“å‡ºrgbå›¾ç‰‡é«˜åº¦æˆ–è€…è§£ç yuvspäº®åº¦é«˜åº¦ï¼Œ1ä¸ºè‰²åº¦é«˜åº¦ CNend */
+		 HI_U32  u32OutStride[MAX_PIXEL_COMPONENT_NUM]; /**< 0 output rgb stride and lu stride,1 is ch stride           *//**<CNcomment:0è§£ç è¾“å‡ºrgbæˆ–yubspçš„äº®åº¦è¡Œé—´è·ï¼Œ1ä¸ºè‰²åº¦è¡Œé—´è·ç¦» CNend             */
+		 HI_U32  u32OutSize[MAX_PIXEL_COMPONENT_NUM];   /**< 0 output rgb size and lu size,1 is ch size		         *//**<CNcomment:0è§£ç è¾“å‡ºrgbæˆ–yubspçš„å¤§å°ï¼Œ1ä¸ºè‰²åº¦å¤§å° CNend            			  */
+		 HI_JPEG_FMT_E enFmt;  /**< the input format  *//**<CNcomment:è¾“å…¥çš„å›¾ç‰‡æ ¼å¼ CNend      */
+		 HI_BOOL bOutInfo;     /**< false is get input information and the other get output information   *//**<CNcomment:FALSEèŽ·å–è¾“å…¥ä¿¡æ¯ï¼ŒTRUEèŽ·å–è¾“å‡ºä¿¡æ¯ CNend */
 	}HI_JPEG_INFO_S;
 
 	
@@ -165,15 +165,15 @@ Date				Author        		Modification
 	
 
 	/** 
-	\brief Sets dec output message. CNcomment:ÉèÖÃ½âÂëÊä³öµÄÐÅÏ¢ÉÏÏÂÎÄ CNend
+	\brief Sets dec output message. CNcomment:è®¾ç½®è§£ç è¾“å‡ºçš„ä¿¡æ¯ä¸Šä¸‹æ–‡ CNend
 	\attention \n
 	HI_JPEG_SetOutDesc should have called create jpeg decoder.set the output address \n
 	and output stride,set whether crop, set crop rect \n
-	CNcomment:±ØÐëÔÚ´´½¨½âÂëÆ÷Ö®ºó£¬Æô¶¯½âÂëÖ®Ç°µ÷ÓÃ¸Ã½Ó¿Ú£¬Ö÷ÒªÉèÖÃ½âÂëÊä³öµØÖ·ºÍÊä³ö \n
-	          ÐÐ¼ä¾à£¬ÉèÖÃÊÇ·ñ²Ã¼ôÒÔ¼°¶ÔÓ¦µÄ²Ã¼ôÇøÓò CNend\n
+	CNcomment:å¿…é¡»åœ¨åˆ›å»ºè§£ç å™¨ä¹‹åŽï¼Œå¯åŠ¨è§£ç ä¹‹å‰è°ƒç”¨è¯¥æŽ¥å£ï¼Œä¸»è¦è®¾ç½®è§£ç è¾“å‡ºåœ°å€å’Œè¾“å‡º \n
+	          è¡Œé—´è·ï¼Œè®¾ç½®æ˜¯å¦è£å‰ªä»¥åŠå¯¹åº”çš„è£å‰ªåŒºåŸŸ CNend\n
 
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[in]	*pstSurfaceDesc. CNcomment:½âÂëÊä³öÃèÊöÐÅÏ¢ CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[in]	*pstSurfaceDesc. CNcomment:è§£ç è¾“å‡ºæè¿°ä¿¡æ¯ CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE
@@ -184,18 +184,18 @@ Date				Author        		Modification
 	HI_S32	HI_JPEG_SetOutDesc(const struct jpeg_decompress_struct *cinfo, const HI_JPEG_SURFACE_DESCRIPTION_S *pstSurfaceDesc);
 
 	/** 
-	\brief Get Jpeg information. CNcomment:»ñÈ¡jpegÍ¼Æ¬ÐÅÏ¢ CNend
+	\brief Get Jpeg information. CNcomment:èŽ·å–jpegå›¾ç‰‡ä¿¡æ¯ CNend
 	\attention \n
 	if you want to get input format and input width and input height,you should set bOutInfo false.\n
     others you can get the information as follows: output rgb widht/height/stride/size or output \n
     yuvsp lu width/height/stride/size and ch width/height/stride/size.\n
 	you call this function should after read header and set the ouput parameter.\n
-	CNcomment:µ±bOutInfoÉèÖÃ³ÉFALSEµÄÊ±ºò£¬¿ÉÒÔ»ñÈ¡µ½Í¼Æ¬ÊäÈëµÄ¿í¶ÈºÍ¸ß¶ÈÒÔ¼°ÏñËØ¸ñÊ½£¬µ±ÉèÖÃ³ÉTRUEµÄ \n
-	          Ê±ºòÔò¿ÉÒÔ»ñÈ¡µ½ÈçÏÂÐÅÏ¢£¬ÒªÊÇ½âÂëRGBÔò»ñÈ¡µ½¿í¶È/¸ß¶È/ÐÐ¼ä¾à/´óÐ¡,ÒªÊÇ½âÂëÊä³öyuvsp£¬\n
-	          Ôò¿ÉÒÔ»ñÈ¡µÄÁÁ¶ÈºÍÉ«¶ÈµÄ¿í¶È/¸ß¶È/ÐÐ¼ä¾à/´óÐ¡µÄÐÅÏ¢¡£ CNend\n
+	CNcomment:å½“bOutInfoè®¾ç½®æˆFALSEçš„æ—¶å€™ï¼Œå¯ä»¥èŽ·å–åˆ°å›¾ç‰‡è¾“å…¥çš„å®½åº¦å’Œé«˜åº¦ä»¥åŠåƒç´ æ ¼å¼ï¼Œå½“è®¾ç½®æˆTRUEçš„ \n
+	          æ—¶å€™åˆ™å¯ä»¥èŽ·å–åˆ°å¦‚ä¸‹ä¿¡æ¯ï¼Œè¦æ˜¯è§£ç RGBåˆ™èŽ·å–åˆ°å®½åº¦/é«˜åº¦/è¡Œé—´è·/å¤§å°,è¦æ˜¯è§£ç è¾“å‡ºyuvspï¼Œ\n
+	          åˆ™å¯ä»¥èŽ·å–çš„äº®åº¦å’Œè‰²åº¦çš„å®½åº¦/é«˜åº¦/è¡Œé—´è·/å¤§å°çš„ä¿¡æ¯ã€‚ CNend\n
 
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[out]	pJpegInfo.  CNcomment:½âÂëjpegµÄÏà¹ØÐÅÏ¢  CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[out]	pJpegInfo.  CNcomment:è§£ç jpegçš„ç›¸å…³ä¿¡æ¯  CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE
@@ -207,14 +207,14 @@ Date				Author        		Modification
 
 
 	/** 
-	\brief set jpeg dec inflexion. CNcomment:ÔÚÓ²¼þ½âÂëÖ§³ÖµÄÇé¿öÏÂ£¬ÉèÖÃÈí½âºÍÓ²½âµÄ¹Õµã CNend
+	\brief set jpeg dec inflexion. CNcomment:åœ¨ç¡¬ä»¶è§£ç æ”¯æŒçš„æƒ…å†µä¸‹ï¼Œè®¾ç½®è½¯è§£å’Œç¡¬è§£çš„æ‹ç‚¹ CNend
 	\attention \n
 	HI_JPEG_SetInflexion should have called jpeg_create_decompress.if no call this \n
 	function,use the default flexion \n
-	CNcomment:±ØÐëÔÚ´´½¨Íê½âÂëÆ÷Ö®ºóµ÷ÓÃ¸Ãº¯Êý£¬ÒªÊÇÃ»ÓÐÉèÖÃ¹Õµã£¬Ê¹ÓÃÄ¬ÈÏµÄ¹Õµã´óÐ¡ CNend\n
+	CNcomment:å¿…é¡»åœ¨åˆ›å»ºå®Œè§£ç å™¨ä¹‹åŽè°ƒç”¨è¯¥å‡½æ•°ï¼Œè¦æ˜¯æ²¡æœ‰è®¾ç½®æ‹ç‚¹ï¼Œä½¿ç”¨é»˜è®¤çš„æ‹ç‚¹å¤§å° CNend\n
 
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[in]	u32flexionSize. CNcomment:ÒªÉèÖÃµÄ½âÂë¹Õµã´óÐ¡ CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[in]	u32flexionSize. CNcomment:è¦è®¾ç½®çš„è§£ç æ‹ç‚¹å¤§å° CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE
@@ -226,13 +226,13 @@ Date				Author        		Modification
 	
 
 	/** 
-	\brief get jpeg dec inflexion. CNcomment:»ñÈ¡Èí¼þºÍÓ²¼þ½âÂëµÄ¹Õµã CNend
+	\brief get jpeg dec inflexion. CNcomment:èŽ·å–è½¯ä»¶å’Œç¡¬ä»¶è§£ç çš„æ‹ç‚¹ CNend
 	\attention \n
 	HI_JPEG_GetInflexion should have called jpeg_create_decompress.\n
-	CNcomment:ÔÚµ÷ÓÃHI_JPEG_GetInflexionÖ®Ç°±ØÐëÒÑ¾­´´½¨ºÃÁË½âÂëÆ÷ CNend\n
+	CNcomment:åœ¨è°ƒç”¨HI_JPEG_GetInflexionä¹‹å‰å¿…é¡»å·²ç»åˆ›å»ºå¥½äº†è§£ç å™¨ CNend\n
 
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[out]	pu32flexionSize. CNcomment:½âÂë¹Õµã´óÐ¡ CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[out]	pu32flexionSize. CNcomment:è§£ç æ‹ç‚¹å¤§å° CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE
@@ -244,16 +244,16 @@ Date				Author        		Modification
 	
 
 	/** 
-	\brief set jpeg dec coef when output argb. CNcomment:ÔÚ½âÂëÊä³öARGBµÄÇé¿öÏÂÉèÖÃÏà¹ØÏµÊý CNend
+	\brief set jpeg dec coef when output argb. CNcomment:åœ¨è§£ç è¾“å‡ºARGBçš„æƒ…å†µä¸‹è®¾ç½®ç›¸å…³ç³»æ•° CNend
 	\attention \n
 	HI_JPEG_SetDecCoef should have called jpeg_create_decompress.set whether horizontal \n
 	and vertical fliter,whether set horizontal and ver sample, whether set csc coefficient, \n
 	and set there coefficient.if no call this function, use the default parameter. \n
-	CNcomment:±ØÐëÔÚ´´½¨Íê½âÂëÆ÷Ö®ºóµ÷ÓÃ¸Ãº¯Êý£¬Ö÷ÒªÉèÖÃÊÇ·ñ´¹Ö±ºÍË®Æ½ÂË²¨£¬ÊÇ·ñÉèÖÃ´¹Ö±ºÍË®Æ½ \n
-	          ²ÉÑùÏµÊý£¬ÊÇ·ñÉèÖÃCSSÏµÊý£¬²¢ÉèÖÃÏà¶ÔÓ¦µÄÏµÊý£¬ÒªÊÇÃ»ÓÐµ÷ÓÃ¸Ãº¯Êý£¬Ê¹ÓÃÄ¬ÈÏÖµ CNend\n
+	CNcomment:å¿…é¡»åœ¨åˆ›å»ºå®Œè§£ç å™¨ä¹‹åŽè°ƒç”¨è¯¥å‡½æ•°ï¼Œä¸»è¦è®¾ç½®æ˜¯å¦åž‚ç›´å’Œæ°´å¹³æ»¤æ³¢ï¼Œæ˜¯å¦è®¾ç½®åž‚ç›´å’Œæ°´å¹³ \n
+	          é‡‡æ ·ç³»æ•°ï¼Œæ˜¯å¦è®¾ç½®CSSç³»æ•°ï¼Œå¹¶è®¾ç½®ç›¸å¯¹åº”çš„ç³»æ•°ï¼Œè¦æ˜¯æ²¡æœ‰è°ƒç”¨è¯¥å‡½æ•°ï¼Œä½¿ç”¨é»˜è®¤å€¼ CNend\n
 	
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[in]	*pstDecCoef. CNcomment:½âÂëÏµÊý CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[in]	*pstDecCoef. CNcomment:è§£ç ç³»æ•° CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE
@@ -265,13 +265,13 @@ Date				Author        		Modification
 
 
 	/** 
-	\brief get jpeg dec coef when output argb. CNcomment:ÔÚ½âÂëÊä³öARGBµÄÇé¿öÏÂ»ñÈ¡ÉèÖÃµÄÏà¹ØÏµÊý CNend
+	\brief get jpeg dec coef when output argb. CNcomment:åœ¨è§£ç è¾“å‡ºARGBçš„æƒ…å†µä¸‹èŽ·å–è®¾ç½®çš„ç›¸å…³ç³»æ•° CNend
 	\attention \n
 	HI_JPEG_GetDecCoef should have called HI_JPEG_SetDecCoef.\n
-	CNcomment:ÔÚµ÷ÓÃHI_JPEG_GetDecCoefÖ®Ç°±ØÐëÒÑ¾­HI_JPEG_SetDecCoef CNend\n
+	CNcomment:åœ¨è°ƒç”¨HI_JPEG_GetDecCoefä¹‹å‰å¿…é¡»å·²ç»HI_JPEG_SetDecCoef CNend\n
 	
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[out]	pstOutDecCoef. CNcomment:Êä³ö½âÂëÏµÊý CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[out]	pstOutDecCoef. CNcomment:è¾“å‡ºè§£ç ç³»æ•° CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE
@@ -283,15 +283,15 @@ Date				Author        		Modification
 
 
 	/** 
-	\brief set alpha value. CNcomment:ÉèÖÃalphaµÄÖµ CNend
+	\brief set alpha value. CNcomment:è®¾ç½®alphaçš„å€¼ CNend
 	\attention \n
 	HI_JPEG_SetAlpha should have called jpeg_create_decompress.when decode output \n
 	argb8888 and argb8888,we can call this function,if no call it,use the default value. \n
-	CNcomment:±ØÐëÔÚ´´½¨Íê½âÂëÆ÷Ö®ºóµ÷ÓÃ¸Ãº¯Êý£¬µ±½âÂëÊä³öÎªARGB8888ºÍABGR8888µÄÊ±ºò¿ÉÒÔ \n
-	µ÷ÓÃ¸Ãº¯Êý£¬ÒªÊÇÃ»ÓÐµ÷ÓÃ¸Ãº¯Êý£¬¾ÍÊ¹ÓÃÄ¬ÈÏµÄÖµ CNend\n
+	CNcomment:å¿…é¡»åœ¨åˆ›å»ºå®Œè§£ç å™¨ä¹‹åŽè°ƒç”¨è¯¥å‡½æ•°ï¼Œå½“è§£ç è¾“å‡ºä¸ºARGB8888å’ŒABGR8888çš„æ—¶å€™å¯ä»¥ \n
+	è°ƒç”¨è¯¥å‡½æ•°ï¼Œè¦æ˜¯æ²¡æœ‰è°ƒç”¨è¯¥å‡½æ•°ï¼Œå°±ä½¿ç”¨é»˜è®¤çš„å€¼ CNend\n
 	
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[in]	s32Alpha. CNcomment:ÉèÖÃalphaÖµ CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[in]	s32Alpha. CNcomment:è®¾ç½®alphaå€¼ CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE
@@ -303,14 +303,14 @@ Date				Author        		Modification
 
 
 	/** 
-	\brief set stream from flag of use phy mem  or virtual mem. CNcomment:ÉèÖÃÂëÁ÷Á¬Ðø»¹ÊÇÐéÄâÄÚ´æÐÅÏ¢ CNend
+	\brief set stream from flag of use phy mem  or virtual mem. CNcomment:è®¾ç½®ç æµè¿žç»­è¿˜æ˜¯è™šæ‹Ÿå†…å­˜ä¿¡æ¯ CNend
 	\attention \n
 	if want to use this function,should call between create decompress and 
 	jpeg_stdio_src or jpeg_mem_src.if not call this we should check\n
-	CNcomment:Èç¹ûÒªµ÷ÓÃ£¬±ØÐëÔÚ´´½¨Íê½âÂëÆ÷¹ØÁªÂëÁ÷Ö®Ç°µ÷ÓÃ£¬Èç¹ûÃ»ÓÐµ÷ÓÃ¸Ã½Ó¿ÚÒ²ÓÐ¿ÉÄÜÊÇÁ¬ÐøµÄÄÚ´æ CNend\n
+	CNcomment:å¦‚æžœè¦è°ƒç”¨ï¼Œå¿…é¡»åœ¨åˆ›å»ºå®Œè§£ç å™¨å…³è”ç æµä¹‹å‰è°ƒç”¨ï¼Œå¦‚æžœæ²¡æœ‰è°ƒç”¨è¯¥æŽ¥å£ä¹Ÿæœ‰å¯èƒ½æ˜¯è¿žç»­çš„å†…å­˜ CNend\n
 	
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[in]	pStreamPhyAddr. CNcomment:ÂëÁ÷ÎïÀíµØÖ· CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[in]	pStreamPhyAddr. CNcomment:ç æµç‰©ç†åœ°å€ CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE
@@ -322,13 +322,13 @@ Date				Author        		Modification
 
 
 	/** 
-	\brief set if dec output yuv420sp. CNcomment:ÉèÖÃÊÇ·ñÍ³Ò»Êä³öyuv420sp±êÊ¶ CNend
+	\brief set if dec output yuv420sp. CNcomment:è®¾ç½®æ˜¯å¦ç»Ÿä¸€è¾“å‡ºyuv420spæ ‡è¯† CNend
 	\attention \n
 	HI_JPEG_SetYCbCr420spFlag should have called jpeg_create_decompress.\n
-	CNcomment:ÔÚµ÷ÓÃHI_JPEG_SetYCbCr420spFlagÖ®Ç°±ØÐëÒÑ¾­´´½¨ºÃÁË½âÂëÆ÷ CNend\n
+	CNcomment:åœ¨è°ƒç”¨HI_JPEG_SetYCbCr420spFlagä¹‹å‰å¿…é¡»å·²ç»åˆ›å»ºå¥½äº†è§£ç å™¨ CNend\n
 	
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[in]	bOutYCbCr420sp. CNcomment:ÊÇ·ñÍ³Ò»½âÂëÊä³öyuv420sp¸ñÊ½ CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[in]	bOutYCbCr420sp. CNcomment:æ˜¯å¦ç»Ÿä¸€è§£ç è¾“å‡ºyuv420spæ ¼å¼ CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE
@@ -340,13 +340,13 @@ Date				Author        		Modification
 
 
 	/** 
-	\brief set if output lu pixle sum value. CNcomment:ÉèÖÃÊÇ·ñÍ³¼ÆÁÁ¶ÈÖµ±êÊ¶ CNend
+	\brief set if output lu pixle sum value. CNcomment:è®¾ç½®æ˜¯å¦ç»Ÿè®¡äº®åº¦å€¼æ ‡è¯† CNend
 	\attention \n
 	HI_JPEG_SetLuPixSumFlag should have called jpeg_create_decompress.\n
-	CNcomment:ÔÚµ÷ÓÃHI_JPEG_SetLuPixSumFlagÖ®Ç°±ØÐëÒÑ¾­´´½¨ºÃÁË½âÂëÆ÷ CNend\n
+	CNcomment:åœ¨è°ƒç”¨HI_JPEG_SetLuPixSumFlagä¹‹å‰å¿…é¡»å·²ç»åˆ›å»ºå¥½äº†è§£ç å™¨ CNend\n
 	
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[in]	bLuPixSum. CNcomment:ÉèÖÃÊÇ·ñÍ³¼ÆÁÁ¶ÈÖµ±êÊ¶ CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[in]	bLuPixSum. CNcomment:è®¾ç½®æ˜¯å¦ç»Ÿè®¡äº®åº¦å€¼æ ‡è¯† CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE
@@ -357,15 +357,15 @@ Date				Author        		Modification
 	HI_S32 HI_JPEG_SetLuPixSumFlag(const struct jpeg_decompress_struct *cinfo,const HI_BOOL bLuPixSum);
 
 	/** 
-	\brief get lu pixle sum value. CNcomment:»ñÈ¡ÁÁ¶ÈÖµ CNend
+	\brief get lu pixle sum value. CNcomment:èŽ·å–äº®åº¦å€¼ CNend
 	\attention \n
 	If you want to get the luminance value, you can call this function, \n
 	but you should call it after jpeg_start_decompress and have call HI_JPEG_SetLuPixSumFlag.\n
-	CNcomment:ÒªÊÇÏëµÃµ½ÁÁ¶ÈÖµ£¬¿ÉÒÔµ÷ÓÃ¸Ãº¯Êý£¬µ«±ØÐëÔÚjpeg_start_decompressÖ®ºóµ÷ÓÃ¶øÇÒ½âÂë \n
-	          Ö®Ç°Òªµ÷ÓÃHI_JPEG_SetLuPixSumFlag CNend\n
+	CNcomment:è¦æ˜¯æƒ³å¾—åˆ°äº®åº¦å€¼ï¼Œå¯ä»¥è°ƒç”¨è¯¥å‡½æ•°ï¼Œä½†å¿…é¡»åœ¨jpeg_start_decompressä¹‹åŽè°ƒç”¨è€Œä¸”è§£ç  \n
+	          ä¹‹å‰è¦è°ƒç”¨HI_JPEG_SetLuPixSumFlag CNend\n
 	
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[out]	u64LuPixSum. CNcomment:Êä³öÁÁ¶ÈÖµ CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[out]	u64LuPixSum. CNcomment:è¾“å‡ºäº®åº¦å€¼ CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE
@@ -377,14 +377,14 @@ Date				Author        		Modification
 
 
 	/** 
-	\brief get jpeg dec time. CNcomment:»ñÈ¡jpeg½âÂëÊ±¼ä CNend
+	\brief get jpeg dec time. CNcomment:èŽ·å–jpegè§£ç æ—¶é—´ CNend
 	\attention \n
 	If you want to know how much the decode cost time ,you can call HI_JPEG_GetDecTime, \n
 	but should have called it after jpeg_finish_decompress.\n
-	CNcomment:ÒªÊÇÏë¿´½âÂë»¨·ÑÁË¶àÉÙÊ±¼ä¿ÉÒÔµ÷ÓÃ¸Ãº¯Êý£¬µ«±ØÐëÔÚ½âÂëÍê³ÉÖ®ºóµ÷ÓÃ CNend\n
+	CNcomment:è¦æ˜¯æƒ³çœ‹è§£ç èŠ±è´¹äº†å¤šå°‘æ—¶é—´å¯ä»¥è°ƒç”¨è¯¥å‡½æ•°ï¼Œä½†å¿…é¡»åœ¨è§£ç å®Œæˆä¹‹åŽè°ƒç”¨ CNend\n
 	
-	\param[in]	cinfo. CNcomment:½âÂë¶ÔÏó CNend
-	\param[out]	pu32DecTime. CNcomment:Êä³öÕû¸ö½âÂëÊ±¼ä CNend
+	\param[in]	cinfo. CNcomment:è§£ç å¯¹è±¡ CNend
+	\param[out]	pu32DecTime. CNcomment:è¾“å‡ºæ•´ä¸ªè§£ç æ—¶é—´ CNend
 	
 	\retval ::HI_SUCCESS 
 	\retval ::HI_FAILURE

@@ -512,7 +512,7 @@ extern HI_BOOL get_current_rgb_mode(HI_UNF_HDMI_ID_E enHdmi);
 //-------------------------------------------------------------------------------
 void SI_SendCP_Packet(HI_U8 bMuteAv)
 {
-	//5´ÎÑ­»·CP Packet ERR²úÉúÔ­Òò»¹Î´¶¨Î»³öÀ´£¬ºóĞøĞèÒª¼ÌĞø¸úÖÕ
+	//5æ¬¡å¾ªç¯CP Packet ERRäº§ç”ŸåŸå› è¿˜æœªå®šä½å‡ºæ¥ï¼Œåç»­éœ€è¦ç»§ç»­è·Ÿç»ˆ
     //HI_U8 RegVal, TimeOutCount = 5;
     HI_U8 RegVal, TimeOutCount = 5;
     HI_U8 BlankValue[3];

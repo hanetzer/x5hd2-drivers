@@ -282,7 +282,7 @@ static PM_BASEOPS_S g_PdmDrvOps = {
 };
 
 /*******************************************
-tag format is version=1.0.0.0  fb=0x85000000,0x10000  baseparam=0x86000000,0x2000 ¡­¡­
+tag format is version=1.0.0.0  fb=0x85000000,0x10000  baseparam=0x86000000,0x2000 â€¦â€¦
 *******************************************/
 HI_S32 PDM_GetTagBuf(HI_VOID)
 {

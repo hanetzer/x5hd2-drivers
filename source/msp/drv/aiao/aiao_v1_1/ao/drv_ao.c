@@ -506,7 +506,7 @@ static HI_S32 AO_SND_GetVolume(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enO
     return SND_GetOpVolume(pCard, enOutPort, pstGain);
 }
 
-//zgjiere; HAL_AIAO_P_SetSampleRate ²»ÄÜ¶¯Ì¬ĞŞ¸Ä£¬½¨ÒéHI_UNF_SND_ATTR_SÈ·¶¨
+//zgjiere; HAL_AIAO_P_SetSampleRate ä¸èƒ½åŠ¨æ€ä¿®æ”¹ï¼Œå»ºè®®HI_UNF_SND_ATTR_Sç¡®å®š
 static HI_S32 AO_SND_SetSampleRate(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort,
                                    HI_UNF_SAMPLE_RATE_E enSampleRate)
 {
@@ -1016,10 +1016,10 @@ static HI_S32 AO_Track_GetStatus(HI_U32 u32TrackID, HI_VOID *pstParam)
 
 #endif
 
-//zgjiere; alsaÍ³³ï¿¼ÂÇ
+//zgjiere; alsaç»Ÿç­¹è€ƒè™‘
 
 /*
-//zgjiere, ½Ó¿ÚÊÇ·ñÂú×ã±ê×¼alsa, ÖĞ¶Ï·şÎñ³ÌĞò
+//zgjiere, æ¥å£æ˜¯å¦æ»¡è¶³æ ‡å‡†alsa, ä¸­æ–­æœåŠ¡ç¨‹åº
  */
 
 /*
@@ -1027,7 +1027,7 @@ static HI_S32 AO_Track_GetStatus(HI_U32 u32TrackID, HI_VOID *pstParam)
  */
 
 /*
-//zgjiere, alsa Êı¾İÈçºÎĞ´Èë? Ä¿Ç°AIPÈÔÈ»¸ù¾İAIP¶ÁĞ´Ö¸Õë½øĞĞÊı¾İ´¦Àí? ALSA±ê×¼Çı¶¯ĞĞÎª¶¨Ê±¶Á£¬ºöÂÔĞ´Ö¸Õë
+//zgjiere, alsa æ•°æ®å¦‚ä½•å†™å…¥? ç›®å‰AIPä»ç„¶æ ¹æ®AIPè¯»å†™æŒ‡é’ˆè¿›è¡Œæ•°æ®å¤„ç†? ALSAæ ‡å‡†é©±åŠ¨è¡Œä¸ºå®šæ—¶è¯»ï¼Œå¿½ç•¥å†™æŒ‡é’ˆ
  */
 
 HI_S32 AO_Track_UpdateBufWptr(HI_U32 u32TrackID, HI_U32 *pu32WritePos)
@@ -1401,7 +1401,7 @@ static HI_S32 AO_Cast_ReleseData(HI_HANDLE hCast, AO_Cast_Data_Param_S *pstCastD
 /********************************Driver inteface FUNC****************************************/
 
 /*********************************** Code ************************************/
-//zgjiere; proc¼æÈİĞèÇóÊÇ·ñÂú×ã? ÆğÂë·ç¸ñÀàËÆÓÚV1R1
+//zgjiere; procå…¼å®¹éœ€æ±‚æ˜¯å¦æ»¡è¶³? èµ·ç é£æ ¼ç±»ä¼¼äºV1R1
 static HI_S32 AOReadSndProc( struct seq_file* p, HI_UNF_SND_E enSnd )
 {
     HI_U32 i;

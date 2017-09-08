@@ -34,7 +34,7 @@ idct_add_armv6:
 	BLT	oc_idct8x8_10
 oc_idct8x8_slow:
 	STMFD	r13!,{r4-r11,r14}
-	/*´æ´¢dstºÍstride*/
+	/*å­˜å‚¨dstå’Œstride*/
 	push    {r0}
 	push    {r1}
 	SUB	r13,r13,#64*2
@@ -81,7 +81,7 @@ oc_idct8x8_slow:
 oc_idct8x8_10:
 	STMFD	r13!,{r4-r11,r14}
 	
-	/*dst ºÍ  stride Ê×ÏÈÈëÕ» x00141957*/
+	/*dst å’Œ  stride é¦–å…ˆå…¥æ ˆ x00141957*/
 	push    {r0}
 	push    {r1}
 	SUB	r13,r13,#64*2
@@ -285,14 +285,14 @@ idct2core_down:
 	MOV	r11,r11,ASR #4
 	
 			
-	/*»ñµÃdstºÍstride*/
+	/*è·å¾—dstå’Œstride*/
 	ldr     r9, [r13, #128]
 	ldr     r2, [r13, #132]
 	add     r8, r2, #1
 	
 	ldrb    r0, [r2]
 	add     r4, r4, r0
-	/*½«¸÷¸öÖµ½µÖÁ8bit*/
+	/*å°†å„ä¸ªå€¼é™è‡³8bit*/
 	usat    r4, #8, r4
 	STRB	r4, [r2], r9
 	
@@ -431,7 +431,7 @@ idct3core_down:
 	MOV	r3, r3, ASR #4
 
 		
-	/*»ñµÃdstºÍstride*/
+	/*è·å¾—dstå’Œstride*/
 	ldr     r9, [r13, #128]
 	ldr     r8, [r13, #132]
 	add     r7, r8, #1
@@ -454,7 +454,7 @@ idct3core_down:
 	
 	ldrb    r0, [r8]
 	add     r4, r4, r0
-	/*½«¸÷¸öÖµ½µÖÁ8bit*/
+	/*å°†å„ä¸ªå€¼é™è‡³8bit*/
 	usat    r4, #8, r4
 	STRB	r4, [r8], r9
 	
@@ -607,7 +607,7 @@ idct4core_down:
 	MOV	r4, r4, ASR #4
 	MOV	r5, r5, ASR #4
 
-	/*»ñµÃdstºÍstride*/
+	/*è·å¾—dstå’Œstride*/
 	ldr     r9, [r13, #128]
 	ldr     r8, [r13, #132]
 	add     r12, r8, #1	
@@ -620,7 +620,7 @@ idct4core_down:
 	
 	ldrb    r0, [r8]
 	add     r4, r4, r0
-	/*½«¸÷¸öÖµ½µÖÁ8bit*/
+	/*å°†å„ä¸ªå€¼é™è‡³8bit*/
 	usat    r4, #8, r4
 	STRB	r4, [r8], r9
 
@@ -934,14 +934,14 @@ idct8core_down:
 	MOV	r14,r14,ASR #4
 	MOV	r9, r9, ASR #4
 		
-	/*»ñµÃdstºÍstride*/
+	/*è·å¾—dstå’Œstride*/
 	ldr     r7, [r13, #136]
 	ldr     r5, [r13, #140]
 	add     r11, r5, #1
 	
 	ldrb    r0, [r5]
 	add     r2, r2, r0
-	/*½«¸÷¸öÖµ½µÖÁ8bit*/
+	/*å°†å„ä¸ªå€¼é™è‡³8bit*/
 	usat    r2, #8, r2
 	STRB	r2, [r5], r7
 	

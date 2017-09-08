@@ -344,7 +344,7 @@ static PM_BASEOPS_S ca_drvops =
 
 /*****************************************************************************
  Prototype    :
- Description  : CA模块 proc 函数
+ Description  : CA妯″潡 proc 鍑芥暟
  Input        : None
  Output       : None
  Return Value : None
@@ -802,7 +802,7 @@ HI_S32 DRV_ADVCA_ProcWrite(struct file * file, const char __user * buf, size_t c
 
 /*****************************************************************************
  Prototype    :
- Description  : CA模块 注册函数
+ Description  : CA妯″潡 娉ㄥ唽鍑芥暟
  Input        : None
  Output       : None
  Return Value : None

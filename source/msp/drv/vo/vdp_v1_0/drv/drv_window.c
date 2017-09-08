@@ -2107,7 +2107,7 @@ HI_S32 WIN_SetZorder(HI_HANDLE hWin, HI_DRV_DISP_ZORDER_E enZFlag)
     bVirtual = WinCheckVirtual(hWin);
     if (!bVirtual)
     {
-        // s1 ¼ì²é¾ä±úºÏ·¨ĞÔ
+        // s1 æ£€æŸ¥å¥æŸ„åˆæ³•æ€§
         WinCheckWindow(hWin, pstWin);
 
         switch(enZFlag)
@@ -2156,7 +2156,7 @@ HI_S32 WIN_GetZorder(HI_HANDLE hWin, HI_U32 *pu32Zorder)
     bVirtual = WinCheckVirtual(hWin);
     if (!bVirtual)
     {
-        // s1 ¼ì²é¾ä±úºÏ·¨ĞÔ
+        // s1 æ£€æŸ¥å¥æŸ„åˆæ³•æ€§
         WinCheckWindow(hWin, pstWin);
 
         nRet = pstWin->stVLayerFunc.PF_GetZorder(pstWin->u32VideoLayer, pu32Zorder);
@@ -2181,7 +2181,7 @@ HI_S32 WIN_Freeze(HI_HANDLE hWin, HI_BOOL bEnable, HI_DRV_WIN_SWITCH_E enFrz)
     bVirtual = WinCheckVirtual(hWin);
     if (!bVirtual)
     {
-        // s1 ¼ì²é¾ä±úºÏ·¨ĞÔ
+        // s1 æ£€æŸ¥å¥æŸ„åˆæ³•æ€§
         WinCheckWindow(hWin, pstWin);
         //WinCheckSlaveWindow(pstWin);
 
@@ -2253,7 +2253,7 @@ HI_S32 WIN_Reset(HI_HANDLE hWin, HI_DRV_WIN_SWITCH_E enRst)
     bVirtual = WinCheckVirtual(hWin);
     if (!bVirtual)
     {
-        // s1 ¼ì²é¾ä±úºÏ·¨ĞÔ
+        // s1 æ£€æŸ¥å¥æŸ„åˆæ³•æ€§
         WinCheckWindow(hWin, pstWin);
         //WinCheckSlaveWindow(pstWin);
 
@@ -2324,7 +2324,7 @@ HI_S32 WIN_Pause(HI_HANDLE hWin, HI_BOOL bEnable)
     
     if (!bVirtual)
     {
-        // s1 ¼ì²é¾ä±úºÏ·¨ĞÔ
+        // s1 æ£€æŸ¥å¥æŸ„åˆæ³•æ€§
         WinCheckWindow(hWin, pstWin);
         //WinCheckSlaveWindow(pstWin);
 
@@ -2371,7 +2371,7 @@ HI_S32 WIN_SetStepMode(HI_HANDLE hWin, HI_BOOL bStepMode)
     
     if (!bVirtual)
     {
-        // s1 ¼ì²é¾ä±úºÏ·¨ĞÔ
+        // s1 æ£€æŸ¥å¥æŸ„åˆæ³•æ€§
         WinCheckWindow(hWin, pstWin);
 
         // s2 set enable
@@ -2412,7 +2412,7 @@ HI_S32 WIN_SetQuick(HI_HANDLE hWin, HI_BOOL bEnable)
 
     WinCheckDeviceOpen();
 
-    // s1 ¼ì²é¾ä±úºÏ·¨ĞÔ
+    // s1 æ£€æŸ¥å¥æŸ„åˆæ³•æ€§
     WinCheckWindow(hWin, pstWin);
     //WinCheckSlaveWindow(pstWin);
 
@@ -2632,7 +2632,7 @@ HI_S32 Win_DebugGetHandle(HI_DRV_DISPLAY_E enDisp, WIN_HANDLE_ARRAY_S *pstWin)
 
     WinCheckDeviceOpen();
 
-    // s1 ¼ì²é¾ä±úºÏ·¨ĞÔ
+    // s1 æ£€æŸ¥å¥æŸ„åˆæ³•æ€§
     WinCheckNullPointer(pstWin);
 
     DISP_MEMSET(pstWin, 0, sizeof(WIN_HANDLE_ARRAY_S));

@@ -7,7 +7,7 @@ Author        : Hisilicon multimedia software group
 Created       : 2005/4/23
 Last Modified :
 Description   : Common data types of the system.
-                CNcomment: ÏµÍ³¹²ÓÃµÄÊı¾İÀàĞÍ¶¨Òå CNend
+                CNcomment: ç³»ç»Ÿå…±ç”¨çš„æ•°æ®ç±»å‹å®šä¹‰ CNend
 Function List :
 History       :
 ******************************************************************************/
@@ -23,7 +23,7 @@ extern "C"{
 
 /*--------------------------------------------------------------------------------------------------------------*
  * Defintion of basic data types. The data types are applicable to both the application layer and kernel codes. *
- * CNcomment: »ù±¾Êı¾İÀàĞÍ¶¨Òå£¬Ó¦ÓÃ²ãºÍÄÚºË´úÂë¾ùÊ¹ÓÃ  CNend                                                   *
+ * CNcomment: åŸºæœ¬æ•°æ®ç±»å‹å®šä¹‰ï¼Œåº”ç”¨å±‚å’Œå†…æ ¸ä»£ç å‡ä½¿ç”¨  CNend                                                   *
  *--------------------------------------------------------------------------------------------------------------*/
 /*************************** Structure Definition ****************************/
 /** \addtogroup      Common_TYPE */
@@ -62,7 +62,7 @@ typedef HI_U32                  HI_HANDLE;
 
 /*----------------------------------------------*
  * Constant Definition                          *
- * CNcomment: ³£Á¿¶¨Òå  CNend                   *
+ * CNcomment: å¸¸é‡å®šä¹‰  CNend                   *
  *----------------------------------------------*/
 typedef enum {
     HI_FALSE    = 0,

@@ -38,9 +38,9 @@
 #include "vdpau_internal.h"
 #include "xvmc_internal.h"
 
-/*xiongfei Ìí¼Ó´ËÍ·ÎÄ¼ş xiongfei20100212*/
+/*xiongfei æ·»åŠ æ­¤å¤´æ–‡ä»¶ xiongfei20100212*/
 #include "mpegvideo_parser.h"
-/*´íÎóÂëÍ·ÎÄ¼ş xiongfei20100303*/
+/*é”™è¯¯ç å¤´æ–‡ä»¶ xiongfei20100303*/
 #include "imedia_error.h"
 
 #define MV_VLC_BITS 9
@@ -320,7 +320,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
 {
     int i, j, k, cbp, val, mb_type, motion_type;
 
-	/*s->chroma_formatÖ¸Ê¾ÊÇ·ñ420 422 444 xiongfei20100222*/
+	/*s->chroma_formatæŒ‡ç¤ºæ˜¯å¦420 422 444 xiongfei20100222*/
     const int mb_block_count = 4 + (1<< s->chroma_format);
 
     dprintf(s->avctx, "decode_mb: x=%d y=%d\n", s->mb_x, s->mb_y);
@@ -352,13 +352,13 @@ static int mpeg_decode_mb(MpegEncContext *s,
         return 0;
     }
 
-	/*ÒÔÏÂ½âÂëºê¿éÀàĞÍ xiongfei20100222*/
+	/*ä»¥ä¸‹è§£ç å®å—ç±»å‹ xiongfei20100222*/
     switch(s->pict_type) {
     default:
     case FF_I_TYPE:
-		/*IÖ¡ºê¿éÄ£Ê½½âÂë²Î¿¼B-2 xiongfei20100222*/
+		/*Iå¸§å®å—æ¨¡å¼è§£ç å‚è€ƒB-2 xiongfei20100222*/
         if (get_bits1(&s->gb) == 0) {
-			/*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+			/*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
             if (get_bits1(&s->gb) == 0){
                 av_log(s->avctx, AV_LOG_WARNING, "invalid mb type in I Frame at %d %d\n", s->mb_x, s->mb_y);
 				IMEDIA_SET_ERR_MB(s->avctx->iErrorCode, IMEDIA_ERR_MB_TYPE);
@@ -371,9 +371,9 @@ static int mpeg_decode_mb(MpegEncContext *s,
         }
         break;
     case FF_P_TYPE:
-		/*PÖ¡ºê¿éÄ£Ê½½âÂë²Î¿¼B-3 xiongfei20100222*/
+		/*På¸§å®å—æ¨¡å¼è§£ç å‚è€ƒB-3 xiongfei20100222*/
         mb_type = get_vlc2(&s->gb, mb_ptype_vlc.table, MB_PTYPE_VLC_BITS, 1);
-		/*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+		/*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
         if (mb_type < 0){
             av_log(s->avctx, AV_LOG_WARNING, "invalid mb type in P Frame at %d %d\n", s->mb_x, s->mb_y);
 			IMEDIA_SET_ERR_MB(s->avctx->iErrorCode, IMEDIA_ERR_MB_TYPE);
@@ -383,9 +383,9 @@ static int mpeg_decode_mb(MpegEncContext *s,
         mb_type = ptype2mb_type[ mb_type ];
         break;
     case FF_B_TYPE:
-		/*BÖ¡ºê¿éÄ£Ê½½âÂë²Î¿¼B-4 xiongfei20100222*/
+		/*Bå¸§å®å—æ¨¡å¼è§£ç å‚è€ƒB-4 xiongfei20100222*/
         mb_type = get_vlc2(&s->gb, mb_btype_vlc.table, MB_BTYPE_VLC_BITS, 1);
-		/*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+		/*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
         if (mb_type < 0){
             av_log(s->avctx, AV_LOG_WARNING, "invalid mb type in B Frame at %d %d\n", s->mb_x, s->mb_y);
 			IMEDIA_SET_ERR_MB(s->avctx->iErrorCode, IMEDIA_ERR_MB_TYPE);
@@ -400,8 +400,8 @@ static int mpeg_decode_mb(MpegEncContext *s,
 //    motion_type = 0; /* avoid warning */
 
     if (IS_INTRA(mb_type)) {
-		/*intra¿é½âÂëÁ÷³Ì xiongfei20100222*/
-		/*½«²ÎÊıµØÖ·¿ªÊ¼6¸öblock´óĞ¡¿Õ¼ä½øĞĞÇåÁã xiongfei20100224*/
+		/*intraå—è§£ç æµç¨‹ xiongfei20100222*/
+		/*å°†å‚æ•°åœ°å€å¼€å§‹6ä¸ªblockå¤§å°ç©ºé—´è¿›è¡Œæ¸…é›¶ xiongfei20100224*/
 		s->dsp.clear_blocks(s->block[0]);
 
         if(!s->chroma_y_shift){
@@ -414,7 +414,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
             s->interlaced_dct = get_bits1(&s->gb);
         }
 		
-		/*»ñµÃqp xiongfei20100222*/
+		/*è·å¾—qp xiongfei20100222*/
         if (IS_QUANT(mb_type))
             s->qscale = get_qscale(s);
 
@@ -442,7 +442,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
             }
         }
 */
-		/*intra¿évld £¬Ã¿´ÎÒ»¸öblock£¬½âÂë³öÀ´Êı¾İ´æ·ÅÔÚs->pblocks[i]ÖĞxiongfei20100222*/
+		/*intraå—vld ï¼Œæ¯æ¬¡ä¸€ä¸ªblockï¼Œè§£ç å‡ºæ¥æ•°æ®å­˜æ”¾åœ¨s->pblocks[i]ä¸­xiongfei20100222*/
         if (s->codec_id == CODEC_ID_MPEG2VIDEO) {
             if(s->flags2 & CODEC_FLAG2_FAST){
                 for(i=0;i<6;i++) {
@@ -461,9 +461,9 @@ static int mpeg_decode_mb(MpegEncContext *s,
             }
         }
     } else {
-		/*interÒÔ¼°B½âÂëÁ÷³Ì xiongfei20100222*/
+		/*interä»¥åŠBè§£ç æµç¨‹ xiongfei20100222*/
         if (mb_type & MB_TYPE_ZERO_MV){
-			/*0mvµÄÇé¿ö xiongfei20100222*/
+			/*0mvçš„æƒ…å†µ xiongfei20100222*/
             assert(mb_type & MB_TYPE_CBP);
 
             s->mv_dir = MV_DIR_FORWARD;
@@ -480,7 +480,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
             if (IS_QUANT(mb_type))
                 s->qscale = get_qscale(s);
 
-			/*omvµÄÇé¿öÏÂ£¬ÖØÖÃmvÔ¤²âÖµ xiongfei20100222*/
+			/*omvçš„æƒ…å†µä¸‹ï¼Œé‡ç½®mvé¢„æµ‹å€¼ xiongfei20100222*/
             s->last_mv[0][0][0] = 0;
             s->last_mv[0][0][1] = 0;
             s->last_mv[0][1][0] = 0;
@@ -488,7 +488,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
             s->mv[0][0][0] = 0;
             s->mv[0][0][1] = 0;
         }else{
-			/*ÓĞmvµÄÇé¿ö xiongfei20100222*/
+			/*æœ‰mvçš„æƒ…å†µ xiongfei20100222*/
             assert(mb_type & MB_TYPE_L0L1);
 //FIXME decide if MBs in field pictures are MB_TYPE_INTERLACED
             /* get additional motion vector type */
@@ -506,8 +506,8 @@ static int mpeg_decode_mb(MpegEncContext *s,
             /* motion vectors */
             s->mv_dir= (mb_type>>13)&3;
             dprintf(s->avctx, "motion_type=%d\n", motion_type);
-			/*¸ù¾İÔË¶¯Ê¸Á¿ÀàĞÍ½øĞĞ½âÎömv xiongfei20100222*/
-			/*´ËÊ±Ëù½âÎö³ömv½ö½öÊÇ¸ù¾İÂëÁ÷½âÎö³öÀ´Êı¾İ£¬Ã»ÓĞ½øĞĞÈÎºÎ±ä»» xiongfei20100224*/
+			/*æ ¹æ®è¿åŠ¨çŸ¢é‡ç±»å‹è¿›è¡Œè§£æmv xiongfei20100222*/
+			/*æ­¤æ—¶æ‰€è§£æå‡ºmvä»…ä»…æ˜¯æ ¹æ®ç æµè§£æå‡ºæ¥æ•°æ®ï¼Œæ²¡æœ‰è¿›è¡Œä»»ä½•å˜æ¢ xiongfei20100224*/
             switch(motion_type) {
             case MT_FRAME: /* or MT_16X8 */
                 if (s->picture_structure == PICT_FRAME) {
@@ -515,7 +515,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
                     s->mv_type = MV_TYPE_16X16;
                     for(i=0;i<2;i++) {
                         if (USES_LIST(mb_type, i)) {
-							/*xiongfei20100401 modified ¼ì²éfcode*/
+							/*xiongfei20100401 modified æ£€æŸ¥fcode*/
 							{
 								if((s->mpeg_f_code[i][0]<1)||(s->mpeg_f_code[i][1]>9)||(s->mpeg_f_code[i][0]>9)||(s->mpeg_f_code[i][1]<1))
 								{
@@ -546,10 +546,10 @@ static int mpeg_decode_mb(MpegEncContext *s,
                         if (USES_LIST(mb_type, i)) {
                             /* MT_16X8 */
                             for(j=0;j<2;j++) {
-								/*»ñµÃ²Î¿¼³¡ xiongfei20100222*/
+								/*è·å¾—å‚è€ƒåœº xiongfei20100222*/
                                 s->field_select[i][j] = get_bits1(&s->gb);
                                 for(k=0;k<2;k++) {
-									/*xiongfei20100401 modified ¼ì²éfcode*/
+									/*xiongfei20100401 modified æ£€æŸ¥fcode*/
 									{
 										if((s->mpeg_f_code[i][k]<1)||(s->mpeg_f_code[i][k]>9))
 										{
@@ -579,7 +579,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
                         if (USES_LIST(mb_type, i)) {
                             for(j=0;j<2;j++) {
                                 s->field_select[i][j] = get_bits1(&s->gb);
-								/*xiongfei20100401 modified ¼ì²éfcode*/
+								/*xiongfei20100401 modified æ£€æŸ¥fcode*/
 								{
 									if((s->mpeg_f_code[i][0]<1)||(s->mpeg_f_code[i][1]>9)||(s->mpeg_f_code[i][0]>9)||(s->mpeg_f_code[i][1]<1))
 									{
@@ -610,7 +610,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
                         if (USES_LIST(mb_type, i)) {
                             s->field_select[i][0] = get_bits1(&s->gb);
                             for(k=0;k<2;k++) {
-								/*xiongfei20100401 modified ¼ì²éfcode*/
+								/*xiongfei20100401 modified æ£€æŸ¥fcode*/
 								{
 									if((s->mpeg_f_code[i][k]<1)||(s->mpeg_f_code[i][k]>9))
 									{
@@ -637,7 +637,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
                 for(i=0;i<2;i++) {
                     if (USES_LIST(mb_type, i)) {
                         int dmx, dmy, mx, my, m;
-						/*xiongfei20100401 modified ¼ì²éfcode*/
+						/*xiongfei20100401 modified æ£€æŸ¥fcode*/
 						{
 							if((s->mpeg_f_code[i][0]<1)||(s->mpeg_f_code[i][1]>9)||(s->mpeg_f_code[i][0]>9)||(s->mpeg_f_code[i][1]<1))
 							{
@@ -693,7 +693,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
                 }
                 break;
             default:
-				/*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+				/*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
                 av_log(s->avctx, AV_LOG_WARNING, "00 motion_type at %d %d\n", s->mb_x, s->mb_y);
 				IMEDIA_SET_ERR_MB(s->avctx->iErrorCode, IMEDIA_ERR_MB_MV);
 				s->avctx->iTotalError ++;
@@ -701,7 +701,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
             }
         }
 		
-		/*½âÂëinter»òÕßB¿é²Ğ²î²¿·Ö xiongfei20100222*/
+		/*è§£ç interæˆ–è€…Bå—æ®‹å·®éƒ¨åˆ† xiongfei20100222*/
         s->mb_intra = 0;
         if (HAS_CBP(mb_type)) {
             s->dsp.clear_blocks(s->block[0]);
@@ -712,7 +712,7 @@ static int mpeg_decode_mb(MpegEncContext *s,
                  cbp |= get_bits(&s->gb, mb_block_count-6);
                  s->dsp.clear_blocks(s->block[6]);
             }
-			/*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+			/*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
             if (cbp <= 0){
                 av_log(s->avctx, AV_LOG_WARNING, "invalid cbp at %d %d\n", s->mb_x, s->mb_y);
 				IMEDIA_SET_ERR_MB(s->avctx->iErrorCode, IMEDIA_ERR_MB_CBP);
@@ -791,7 +791,7 @@ static int mpeg_decode_motion(MpegEncContext *s, int fcode, int pred)
 {
     int code, sign, val, l, shift;
 
-	/*xiongfei20100401ĞŞ¸Ä´Ëº¯Êı  Ôö¼Ó¶Ôlow highµÄÅĞ¶Ï */
+	/*xiongfei20100401ä¿®æ”¹æ­¤å‡½æ•°  å¢åŠ å¯¹low highçš„åˆ¤æ–­ */
 //	int low,high,range;
 
     code = get_vlc2(&s->gb, mv_vlc.table, MV_VLC_BITS, 2);
@@ -799,7 +799,7 @@ static int mpeg_decode_motion(MpegEncContext *s, int fcode, int pred)
         return pred;
     }
 
-	/*²»´òËãÔÚ´ËÔö¼Ó´íÎóÂë µ«ÊÇÔö¼Ó´òÓ¡ĞÅÏ¢ ÌáÊ¾´Ë´¦±ÈÌØ´íÎó xiongfei20100317*/
+	/*ä¸æ‰“ç®—åœ¨æ­¤å¢åŠ é”™è¯¯ç  ä½†æ˜¯å¢åŠ æ‰“å°ä¿¡æ¯ æç¤ºæ­¤å¤„æ¯”ç‰¹é”™è¯¯ xiongfei20100317*/
     if (code < 0) {
 		av_log(s->avctx, AV_LOG_WARNING, "ac-tex damaged at %d %d\n", s->mb_x, s->mb_y);
 		IMEDIA_SET_ERR_MB(s->avctx->iErrorCode, IMEDIA_ERR_MB_MV);
@@ -810,7 +810,7 @@ static int mpeg_decode_motion(MpegEncContext *s, int fcode, int pred)
     sign = get_bits1(&s->gb);
     shift = fcode - 1;
 	
-	/*xiongfei20100401ĞŞ¸Ä´Ëº¯Êı  Ôö¼Ó¶Ôlow highµÄÅĞ¶Ï */
+	/*xiongfei20100401ä¿®æ”¹æ­¤å‡½æ•°  å¢åŠ å¯¹low highçš„åˆ¤æ–­ */
 // 	low = (-16)*shift;
 // 	high = 16*shift - 1;
 // 	range = 32 * shift;
@@ -827,7 +827,7 @@ static int mpeg_decode_motion(MpegEncContext *s, int fcode, int pred)
         val = -val;
     val += pred;
 
-	/*xiongfei20100401ĞŞ¸Ä´Ëº¯Êı  Ôö¼Ó¶Ôlow highµÄÅĞ¶Ï */
+	/*xiongfei20100401ä¿®æ”¹æ­¤å‡½æ•°  å¢åŠ å¯¹low highçš„åˆ¤æ–­ */
 // 	{
 // 		if(val < low)
 // 		{
@@ -1105,7 +1105,7 @@ static inline int mpeg2_decode_block_non_intra(MpegEncContext *s,
             quant_matrix = s->chroma_inter_matrix;
 
         // special case for first coefficient, no need to add second VLC table
-		/*·Çintra¿éµÄµÚÒ»¸ödctÏµÊı·Ö¿ª½âÂë£¬Çë²ÎÕÕĞ­Òé xiongfei20100224 */
+		/*éintraå—çš„ç¬¬ä¸€ä¸ªdctç³»æ•°åˆ†å¼€è§£ç ï¼Œè¯·å‚ç…§åè®® xiongfei20100224 */
         UPDATE_CACHE(re, &s->gb);
         if (((int32_t)GET_CACHE(re, &s->gb)) < 0) {
             level= (3*qscale*quant_matrix[0])>>5;
@@ -1148,7 +1148,7 @@ static inline int mpeg2_decode_block_non_intra(MpegEncContext *s,
                 }
             }
 
-			/*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+			/*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
             if (i > 63){
                 av_log(s->avctx, AV_LOG_WARNING, "ac-tex damaged at %d %d\n", s->mb_x, s->mb_y);
 				IMEDIA_SET_ERR_RESIDUAL(s->avctx->iErrorCode, IMEDIA_ERR_RESIDUAL_AC);	
@@ -1271,7 +1271,7 @@ static inline int mpeg2_decode_block_intra(MpegEncContext *s,
 
     diff = decode_dc(&s->gb, component);
 
-	/*Ôö¼ÓÈÕÖ¾´òÓ¡ÒÔ¼°´íÎóÂë xongfei20100317*/
+	/*å¢åŠ æ—¥å¿—æ‰“å°ä»¥åŠé”™è¯¯ç  xongfei20100317*/
     if (diff >= 0xffff)
 	{
 		av_log(s->avctx, AV_LOG_WARNING, "dc[%d] damaged \n", diff);
@@ -1280,13 +1280,13 @@ static inline int mpeg2_decode_block_intra(MpegEncContext *s,
 		return -1;
 	}
 
-	/*´Ë´¦»ñµÃ±¾block DCÖµ ²»ĞèÒª·´Á¿»¯ xiongfei20100223*/
+	/*æ­¤å¤„è·å¾—æœ¬block DCå€¼ ä¸éœ€è¦åé‡åŒ– xiongfei20100223*/
     dc = s->last_dc[component];
     dc += diff;
 
     s->last_dc[component] = dc;
 
-	/*´Ë´¦Çó³öµ±Ç°intra¿éµÄDCÏµÊıÖµ xiongfei20100223*/
+	/*æ­¤å¤„æ±‚å‡ºå½“å‰intraå—çš„DCç³»æ•°å€¼ xiongfei20100223*/
     block[0] = dc << (3 - s->intra_dc_precision);
     dprintf(s->avctx, "dc=%d\n", block[0]);
     mismatch = block[0] ^ 1;
@@ -1296,7 +1296,7 @@ static inline int mpeg2_decode_block_intra(MpegEncContext *s,
     else
         rl = &ff_rl_mpeg1;
 
-	/*¿ªÊ¼intra¿éµÄvlc½âÂë xiongfei20100224*/
+	/*å¼€å§‹intraå—çš„vlcè§£ç  xiongfei20100224*/
     {
         OPEN_READER(re, &s->gb);
         /* now quantify & encode AC coefficients */
@@ -1326,7 +1326,7 @@ static inline int mpeg2_decode_block_intra(MpegEncContext *s,
                     level= (level*qscale*quant_matrix[j])>>4;
                 }
             }
-			/*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+			/*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
             if (i > 63){
                 av_log(s->avctx, AV_LOG_WARNING, "ac-tex damaged at %d %d\n", s->mb_x, s->mb_y);
 				IMEDIA_SET_ERR_RESIDUAL(s->avctx->iErrorCode, IMEDIA_ERR_RESIDUAL_AC);
@@ -1414,7 +1414,7 @@ static inline int mpeg2_fast_decode_block_intra(MpegEncContext *s,
     s->block_last_index[n] = scantable - s->intra_scantable.permutated;
     return 0;
 }
-/*½« Mpeg1ContextµÄ¶¨ÒåÒÆµ½mpeg12.hÍ·ÎÄ¼şÖĞ xiongfei20100221*/
+/*å°† Mpeg1Contextçš„å®šä¹‰ç§»åˆ°mpeg12.hå¤´æ–‡ä»¶ä¸­ xiongfei20100221*/
 static av_cold int mpeg_decode_init(AVCodecContext *avctx)
 {
     Mpeg1Context *s = avctx->priv_data;
@@ -1440,8 +1440,8 @@ static av_cold int mpeg_decode_init(AVCodecContext *avctx)
     s->mpeg_enc_ctx.codec_id= avctx->codec->id;
 
 	/* xiongfei20100302*/
-	/*parse_context.buffeÖĞµÄ»º³å¿Õ¼äÔÚ´Ë³õÊ¼»¯£¬±ÜÃâÁËÔÚff_combine_frameº¯ÊıÖĞÖØĞÂ·ÖÅäÄÚ´æ xiongfei20100302*/
-	/* ĞÂÔö´úÂë£¨l00139685): ¸ørbsp_bufferºÍparse.buffer·ÖÅäÄÚ´æ */
+	/*parse_context.buffeä¸­çš„ç¼“å†²ç©ºé—´åœ¨æ­¤åˆå§‹åŒ–ï¼Œé¿å…äº†åœ¨ff_combine_frameå‡½æ•°ä¸­é‡æ–°åˆ†é…å†…å­˜ xiongfei20100302*/
+	/* æ–°å¢ä»£ç ï¼ˆl00139685): ç»™rbsp_bufferå’Œparse.bufferåˆ†é…å†…å­˜ */
 #define MAX_FRAME_SIZE MPEG2_MAX_WIDTH*MPEG2_MAX_HEIGHT*2
 	s2->parse_context.buffer = av_malloc_hw(avctx,MAX_FRAME_SIZE);
 	if(NULL == s2->parse_context.buffer)
@@ -1452,7 +1452,7 @@ static av_cold int mpeg_decode_init(AVCodecContext *avctx)
 	s2->parse_context.buffer_size = MAX_FRAME_SIZE;
 
 	/* 2010/06/17 15:30:00 liuxw+00139685 */
-	/* ÔÚ³õÊ¼»¯º¯ÊıÖĞÔö¼Óparse_context×´Ì¬³õÊ¼»¯(Ô­À´ÊÇÔÚmpv_common_initÖĞÊµÏÖµÄ) */
+	/* åœ¨åˆå§‹åŒ–å‡½æ•°ä¸­å¢åŠ parse_contextçŠ¶æ€åˆå§‹åŒ–(åŸæ¥æ˜¯åœ¨mpv_common_initä¸­å®ç°çš„) */
 	s2->parse_context.state= -1;
 
 	return 0;
@@ -1498,12 +1498,12 @@ static int mpeg_decode_postinit(AVCodecContext *avctx){
     MpegEncContext *s = &s1->mpeg_enc_ctx;
     uint8_t old_permutation[64];
 
-	/*x00141957 20100519 ĞŞ¸Ä ÆÁ±Î¶Ôaspect_ratio_infoµÄÅĞ¶Ï£¬ÒòÎª²»Ó°Ïì½âÂë*/
-	/*ÎÊÌâµ¥ºÅ£ºAZ1D02088
-	ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-	Ê±¼ä£º2010/5/19
-	ÎÊÌâÃèÊö£º ¶Ôaspect_ratio_infoµÄÅĞ¶ÏÒıÆğÄÚÍâ²»Ò»ÖÂ£¬´Ó¶øµ¼ÖÂ½âÂë¶Î´íÎó
-	ÎÊÌâĞŞ¸Ä£º ²»¶Ôaspect_ratio_infoµÄ´íÎó×öÑÏ¸ñ¼ì²é*/
+	/*x00141957 20100519 ä¿®æ”¹ å±è”½å¯¹aspect_ratio_infoçš„åˆ¤æ–­ï¼Œå› ä¸ºä¸å½±å“è§£ç */
+	/*é—®é¢˜å•å·ï¼šAZ1D02088
+	ä¿®æ”¹äººï¼šç†Šé£ +00141957
+	æ—¶é—´ï¼š2010/5/19
+	é—®é¢˜æè¿°ï¼š å¯¹aspect_ratio_infoçš„åˆ¤æ–­å¼•èµ·å†…å¤–ä¸ä¸€è‡´ï¼Œä»è€Œå¯¼è‡´è§£ç æ®µé”™è¯¯
+	é—®é¢˜ä¿®æ”¹ï¼š ä¸å¯¹aspect_ratio_infoçš„é”™è¯¯åšä¸¥æ ¼æ£€æŸ¥*/
     if (
 //         (s1->mpeg_enc_ctx_allocated == 0)||
 //         avctx->coded_width  != s->width ||
@@ -1584,7 +1584,7 @@ static int mpeg_decode_postinit(AVCodecContext *avctx){
         }//MPEG-2
 
 		/* 2010/05/08 10:05:00 songxiaogang+00133955 */
-		/* ½«mpeg2 idctµÄËã·¨¸Ä³ÉÓëlibmpeg2¿âÒ»ÖÂ£¬ÌáÉıÖÊÁ¿ÇÒ±ãÓÚ×ö±ÈÌØÒ»ÖÂĞÔ²âÊÔ */
+		/* å°†mpeg2 idctçš„ç®—æ³•æ”¹æˆä¸libmpeg2åº“ä¸€è‡´ï¼Œæå‡è´¨é‡ä¸”ä¾¿äºåšæ¯”ç‰¹ä¸€è‡´æ€§æµ‹è¯• */
 /*
 #if defined(__GNUC__)
 #if HAVE_MMX && CONFIG_GPL
@@ -1609,7 +1609,7 @@ static int mpeg_decode_postinit(AVCodecContext *avctx){
         if (MPV_common_init(s) < 0)
             return -2;
 		
-		/*³õÊ¼»¯Á¿»¯¾ØÕó xiongfei20100224*/
+		/*åˆå§‹åŒ–é‡åŒ–çŸ©é˜µ xiongfei20100224*/
         quant_matrix_rebuild(s->intra_matrix,       old_permutation,s->dsp.idct_permutation);
         quant_matrix_rebuild(s->inter_matrix,       old_permutation,s->dsp.idct_permutation);
         quant_matrix_rebuild(s->chroma_intra_matrix,old_permutation,s->dsp.idct_permutation);
@@ -1627,8 +1627,8 @@ static int mpeg1_decode_picture(AVCodecContext *avctx,
     MpegEncContext *s = &s1->mpeg_enc_ctx;
     int ref, f_code, vbv_delay;
     
-	/*MpegEncContext½á¹¹ÌåÖĞÒ»Ğ©ÄÚ´æ³õÊ¼»¯ÔÚ´Ë xiongfei20100222*/
-	/*Ôö¼Ó´òÓ¡´íÎóÈÕÖ¾²¢Ìí¼Ó´íÎóÂë xiongfei20100317*/
+	/*MpegEncContextç»“æ„ä½“ä¸­ä¸€äº›å†…å­˜åˆå§‹åŒ–åœ¨æ­¤ xiongfei20100222*/
+	/*å¢åŠ æ‰“å°é”™è¯¯æ—¥å¿—å¹¶æ·»åŠ é”™è¯¯ç  xiongfei20100317*/
     if(mpeg_decode_postinit(s->avctx) < 0)
 	{
 		av_log(avctx, AV_LOG_ERROR, "memmory initial failed !\n");
@@ -1644,7 +1644,7 @@ static int mpeg1_decode_picture(AVCodecContext *avctx,
     ref = get_bits(&s->gb, 10); /* temporal ref */
     s->pict_type = get_bits(&s->gb, 3);
 
-	/*Ôö¼Ó´òÓ¡´íÎóÈÕÖ¾²¢Ìí¼Ó´íÎóÂë xiongfei20100317*/
+	/*å¢åŠ æ‰“å°é”™è¯¯æ—¥å¿—å¹¶æ·»åŠ é”™è¯¯ç  xiongfei20100317*/
     if(s->pict_type <= 0 || s->pict_type > 3)
 	{
 		av_log(avctx, AV_LOG_WARNING, "pict_type[%d] error !\n" , s->pict_type);
@@ -1657,7 +1657,7 @@ static int mpeg1_decode_picture(AVCodecContext *avctx,
     vbv_delay= get_bits(&s->gb, 16);
     if (s->pict_type == FF_P_TYPE || s->pict_type == FF_B_TYPE) {
         s->full_pel[0] = get_bits1(&s->gb);
-		/*¶Ôfull_pel_forward_vectorºÍforward_f_code¸ù¾İĞ­Òé×ö¼ì²â x00141957 20100505*/
+		/*å¯¹full_pel_forward_vectorå’Œforward_f_codeæ ¹æ®åè®®åšæ£€æµ‹ x00141957 20100505*/
         f_code = get_bits(&s->gb, 3);
 		if(s->full_pel[0] != 0 || f_code != 7)
 		{
@@ -1677,7 +1677,7 @@ static int mpeg1_decode_picture(AVCodecContext *avctx,
     if (s->pict_type == FF_B_TYPE) {
         s->full_pel[1] = get_bits1(&s->gb);
         f_code = get_bits(&s->gb, 3);
-		/*¶Ôfull_pel_backward_vectorºÍbackward_f_code¸ù¾İĞ­Òé×ö¼ì²â x00141957 20100505*/
+		/*å¯¹full_pel_backward_vectorå’Œbackward_f_codeæ ¹æ®åè®®åšæ£€æµ‹ x00141957 20100505*/
 		if(s->full_pel[1] != 0 || f_code != 7)
 		{
 			av_log(avctx, AV_LOG_WARNING, "full_pel_backward_vector[%d] or f_code[%d] error !\n" , s->full_pel[1] ,f_code);
@@ -1711,16 +1711,16 @@ static void mpeg_decode_sequence_extension(Mpeg1Context *s1)
     int horiz_size_ext, vert_size_ext;
     int bit_rate_ext;
 
-	/*xiongfeiÔö¼Ó 20100401*/
+	/*xiongfeiå¢åŠ  20100401*/
 	int width,height;
 
     skip_bits(&s->gb, 1); /* profile and level esc*/
     s->avctx->profile= get_bits(&s->gb, 3);
     s->avctx->level= get_bits(&s->gb, 4);
-	/*ĞèÒª¶ÔÒÔÏÂÁ½Õß½øĞĞ¼ì²é x00141957 20100506*/
+	/*éœ€è¦å¯¹ä»¥ä¸‹ä¸¤è€…è¿›è¡Œæ£€æŸ¥ x00141957 20100506*/
     s->progressive_sequence = get_bits1(&s->gb); /* progressive_sequence */
     s->chroma_format = get_bits(&s->gb, 2); /* chroma_format 1=420, 2=422, 3=444 */
-	/*¶Ôs->chroma_format½øĞĞ¼ì²é x00141957 20100507*/
+	/*å¯¹s->chroma_formatè¿›è¡Œæ£€æŸ¥ x00141957 20100507*/
 	if(s->chroma_format != 1 && s->chroma_format != 2)
 	{
 		av_log(s->avctx, AV_LOG_WARNING, "s->chroma_format[%d] error !\n" , s->chroma_format);
@@ -1760,11 +1760,11 @@ static void mpeg_decode_sequence_extension(Mpeg1Context *s1)
                s->avctx->profile, s->avctx->level, s->avctx->rc_buffer_size, s->bit_rate);
 	}
 
-	/*ÒÔÏÂÎåĞĞ´úÂëÎªĞÂÔö £¬ÒòÎªmpeg2¿í¸ßµÈĞÅÏ¢¶¼Ö»ÔÚĞòÁĞÍ·ÖĞ¸ø³ö£¬ËùÒÔÊµ¼Ê¿í¸ßÖµÖ»ÄÜÔÚÕâÀïµÃµ½ »ñµÃÍ¨µÀÊµ¼Ê½âÂë²ÎÊıxiongfei20100303*/
-	/*ÒÔÏÂÁ½ĞĞ´úÂëÎªĞÂÔö £¬ÒòÎªmpeg2¿í¸ßµÈĞÅÏ¢¶¼Ö»ÔÚĞòÁĞÍ·ÖĞ¸ø³ö£¬ËùÒÔÊµ¼Ê¿í¸ßÖµÖ»ÄÜÔÚÕâÀïµÃµ½ xiongfei20100303*/
-	/*¿¼ÂÇµ½ÎÒÃÇµÄ½âÂëÆ÷²»Ö§³ÖÖĞ¼ä±ä»»·Ö±æÂÊ£¬ËùÒÔÒÔµÚÒ»´ÎËù¶Áµ½µÄÍ¼Ïñ¿í¸ßÎªÖ÷ xiongfei20100401*/
+	/*ä»¥ä¸‹äº”è¡Œä»£ç ä¸ºæ–°å¢ ï¼Œå› ä¸ºmpeg2å®½é«˜ç­‰ä¿¡æ¯éƒ½åªåœ¨åºåˆ—å¤´ä¸­ç»™å‡ºï¼Œæ‰€ä»¥å®é™…å®½é«˜å€¼åªèƒ½åœ¨è¿™é‡Œå¾—åˆ° è·å¾—é€šé“å®é™…è§£ç å‚æ•°xiongfei20100303*/
+	/*ä»¥ä¸‹ä¸¤è¡Œä»£ç ä¸ºæ–°å¢ ï¼Œå› ä¸ºmpeg2å®½é«˜ç­‰ä¿¡æ¯éƒ½åªåœ¨åºåˆ—å¤´ä¸­ç»™å‡ºï¼Œæ‰€ä»¥å®é™…å®½é«˜å€¼åªèƒ½åœ¨è¿™é‡Œå¾—åˆ° xiongfei20100303*/
+	/*è€ƒè™‘åˆ°æˆ‘ä»¬çš„è§£ç å™¨ä¸æ”¯æŒä¸­é—´å˜æ¢åˆ†è¾¨ç‡ï¼Œæ‰€ä»¥ä»¥ç¬¬ä¸€æ¬¡æ‰€è¯»åˆ°çš„å›¾åƒå®½é«˜ä¸ºä¸» xiongfei20100401*/
 
-	/*²»Ö§³Ö´óÓÚ 1 << 12µÄÍ¼Ïñ xioingfei20100401*/
+	/*ä¸æ”¯æŒå¤§äº 1 << 12çš„å›¾åƒ xioingfei20100401*/
 	if((width != s->avctx->usActualWidth) || (height != s->avctx->usActualHeight))
 	{
 		av_log(s->avctx, AV_LOG_WARNING, "width[%d] != %d or height[%d] != %d\n", width, s->avctx->usActualWidth, height, s->avctx->usActualHeight);
@@ -1774,7 +1774,7 @@ static void mpeg_decode_sequence_extension(Mpeg1Context *s1)
 	}
 
 	/* 2010/04/23 10:07:00 songxg+00133955 */
-	/* Ôö¼Ó¶Ôprofile, levelµÄºÏ·¨ĞÔÅĞ¶Ï */
+	/* å¢åŠ å¯¹profile, levelçš„åˆæ³•æ€§åˆ¤æ–­ */
 	/* profile SIMPLE=5 MAIN=4 HIGH=1 */
 	if(!(5 == s->avctx->profile || 4 == s->avctx->profile || 1 == s->avctx->profile))
 	{
@@ -1806,7 +1806,7 @@ static void mpeg_decode_sequence_extension(Mpeg1Context *s1)
 // 	s->avctx->usActualHeight = s->height;
 	s->avctx->iActualRefNum  = 2;
 
-	/*ÖÃÎ»À©Õ¹±êÖ¾ x00141957 20100511*/
+	/*ç½®ä½æ‰©å±•æ ‡å¿— x00141957 20100511*/
 	s->iExtFlag = 1;
 }
 
@@ -1834,7 +1834,7 @@ static void mpeg_decode_sequence_display_extension(Mpeg1Context *s1)
         av_log(s->avctx, AV_LOG_DEBUG, "sde w:%d, h:%d\n", w, h);
 }
 
-/*²»×÷ÈÎºÎ¼ì²é x00141957 20100506 ¸úTI±£³ÖÒ»ÖÂ*/
+/*ä¸ä½œä»»ä½•æ£€æŸ¥ x00141957 20100506 è·ŸTIä¿æŒä¸€è‡´*/
 static void mpeg_decode_picture_display_extension(Mpeg1Context *s1)
 {
     MpegEncContext *s= &s1->mpeg_enc_ctx;
@@ -1869,7 +1869,7 @@ static void mpeg_decode_picture_display_extension(Mpeg1Context *s1)
         );
 }
 
-/*²»×÷ÈÎºÎ¼ì²é x00141957 20100506 ¸úTI±£³ÖÒ»ÖÂ*/
+/*ä¸ä½œä»»ä½•æ£€æŸ¥ x00141957 20100506 è·ŸTIä¿æŒä¸€è‡´*/
 static void mpeg_decode_quant_matrix_extension(MpegEncContext *s)
 {
     int i, v, j;
@@ -1935,7 +1935,7 @@ static void mpeg_decode_picture_coding_extension(Mpeg1Context *s1)
 	/*xiongfei modified 20100331*/
 
 	s->picture_structure = get_bits(&s->gb, 2);
-	/*¸ú¾İĞ­ÒéÔö¼Ó¶Ôpicture_structureµÄ¼ì²â x00141957 20100506*/
+	/*è·Ÿæ®åè®®å¢åŠ å¯¹picture_structureçš„æ£€æµ‹ x00141957 20100506*/
 	if(s->picture_structure==0)
 	{
 		av_log(s->avctx, AV_LOG_WARNING, "picture_structure[%d] error !\n" , s->picture_structure);
@@ -2029,11 +2029,11 @@ static int mpeg_field_start(MpegEncContext *s, const uint8_t *buf, int buf_size)
         if(MPV_frame_start(s, avctx) < 0)
             return -1;
 		
-		/*Ò»Ö¡´íÎóÒş²Ø³õÊ¼»¯ xiongfei20100222*/
+		/*ä¸€å¸§é”™è¯¯éšè—åˆå§‹åŒ– xiongfei20100222*/
         ff_er_frame_start(s);
 
         /* first check if we must repeat the frame */
-		/*repeat_pict Ê²Ã´ÒâË¼£¿ xiongfei20100222*/
+		/*repeat_pict ä»€ä¹ˆæ„æ€ï¼Ÿ xiongfei20100222*/
         s->current_picture_ptr->repeat_pict = 0;
         if (s->repeat_first_field) {
             if (s->progressive_sequence) {
@@ -2097,8 +2097,8 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
     s->resync_mb_x=
     s->resync_mb_y= -1;
 
-	/*²é¿´ÊÇ·ñ³¬¹ıÒ»Ö¡ xiongfei20100222*/
-	/*Ìí¼Ó´íÎóÂë xiongfei20100317*/
+	/*æŸ¥çœ‹æ˜¯å¦è¶…è¿‡ä¸€å¸§ xiongfei20100222*/
+	/*æ·»åŠ é”™è¯¯ç  xiongfei20100317*/
     if (mb_y<<field_pic >= s->mb_height){
         av_log(s->avctx, AV_LOG_WARNING, "slice below image (%d >= %d)\n", mb_y, s->mb_height);
 		IMEDIA_SET_ERR_SLICE(avctx->iErrorCode, IMEDIA_ERR_SLICE_ADDR);
@@ -2108,15 +2108,15 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
 
     init_get_bits(&s->gb, *buf, buf_size*8);
 
-	/*³õÊ¼»¯dcÔ¤²âÖµ ²¢ÇÒpmvÖµÄÚ´æÇåÁã xiongfei20100222*/
+	/*åˆå§‹åŒ–dcé¢„æµ‹å€¼ å¹¶ä¸”pmvå€¼å†…å­˜æ¸…é›¶ xiongfei20100222*/
     ff_mpeg1_clean_buffers(s);
 
     s->interlaced_dct = 0;
 
-	/*»ñµÃµ±Ç°slice qscale xiongfei20100222*/
+	/*è·å¾—å½“å‰slice qscale xiongfei20100222*/
     s->qscale = get_qscale(s);
 
-    /*Ìí¼Ó´íÎóÂë xiongfei20100317*/
+    /*æ·»åŠ é”™è¯¯ç  xiongfei20100317*/
 	if(s->qscale == 0){
         av_log(s->avctx, AV_LOG_WARNING, "qscale == 0\n");
 		IMEDIA_SET_ERR_SLICE(avctx->iErrorCode, IMEDIA_ERR_SLICE_QP);
@@ -2132,7 +2132,7 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
 
     s->mb_x=0;
 
-	/*Ó²¼ş¼ÓËÙ²¿·Ö xiongfei20100222*/
+	/*ç¡¬ä»¶åŠ é€Ÿéƒ¨åˆ† xiongfei20100222*/
     if (avctx->hwaccel) {
         const uint8_t *buf_end, *buf_start = *buf - 4; /* include start_code */
         int start_code = -1;
@@ -2147,9 +2147,9 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
     }
 
     for(;;) {
-		/*Î´¿´¶®´Ë´¦ºÎÒâ xiongfei20100222*/
+		/*æœªçœ‹æ‡‚æ­¤å¤„ä½•æ„ xiongfei20100222*/
         int code = get_vlc2(&s->gb, mbincr_vlc.table, MBINCR_VLC_BITS, 2);
-		/*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+		/*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
         if (code < 0)
 		/*xiongfei20100331modified*/
 		/*if(code <= 0)*/{
@@ -2173,7 +2173,7 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
         }
     }
 
-	/*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+	/*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
     if(s->mb_x >= s->mb_width){
         av_log(s->avctx, AV_LOG_WARNING, "initial skip overflow\n");
 		IMEDIA_SET_ERR_SLICE(avctx->iErrorCode, IMEDIA_ERR_SLICE_NUM);
@@ -2185,7 +2185,7 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
     s->resync_mb_y= s->mb_y= mb_y;
     s->mb_skip_run= 0;
 	
-	/*³õÊ¼»¯Ò»Ğ©blockĞÅÏ¢ÒÔ¼°yuvÖØ½¨Ö¡´æ·ÅµØÖ· xiongfei20100222*/
+	/*åˆå§‹åŒ–ä¸€äº›blockä¿¡æ¯ä»¥åŠyuvé‡å»ºå¸§å­˜æ”¾åœ°å€ xiongfei20100222*/
     ff_init_block_index(s);
 
     if (s->mb_y==0 && s->mb_x==0 && (s->first_field || s->picture_structure==PICT_FRAME)) {
@@ -2199,15 +2199,15 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
         }
     }
 
-	/*½øÈë½âÂëÑ­»·£¬½âÂësliceÖĞÃ¿Ò»¸öºê¿é xiongfei20100222*/
+	/*è¿›å…¥è§£ç å¾ªç¯ï¼Œè§£ç sliceä¸­æ¯ä¸€ä¸ªå®å— xiongfei20100222*/
     for(;;) {
         //If 1, we memcpy blocks in xvmcvideo.
 		/*xiongfei20100210*/  
 		if(CONFIG_MPEG_XVMC_DECODER && s->avctx->xvmc_acceleration > 1)
             /*ff_xvmc_init_block(s)*/;//set s->block 
 
-        /*½øÈë½âÂëÃ¿Ò»¸öºê¿é ,´ËÁ÷³ÌÖĞÖ»ÓĞÂëÁ÷½âÎö²¿·Ö xiongfei20100222*/
-		/*Ôö¼Ó´òÓ¡´íÎóÈÕÖ¾ xiongfei20100317*/
+        /*è¿›å…¥è§£ç æ¯ä¸€ä¸ªå®å— ,æ­¤æµç¨‹ä¸­åªæœ‰ç æµè§£æéƒ¨åˆ† xiongfei20100222*/
+		/*å¢åŠ æ‰“å°é”™è¯¯æ—¥å¿— xiongfei20100317*/
 		if(mpeg_decode_mb(s, s->block) < 0)
 		{
 			av_log(avctx, AV_LOG_WARNING, "mpeg_decode_mb failed !\n" );
@@ -2215,7 +2215,7 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
 		}
 
 		/*xiongfei modified 20100402*/
-		/*²»ĞèÒª½øÈëÕâÒ»²½ µ±ÓĞ´íÎóÒş²Ø£¬»áÒıÆğÄÚ´æĞ´²Ù×÷Ô½½ç xiongfei20100403*/
+		/*ä¸éœ€è¦è¿›å…¥è¿™ä¸€æ­¥ å½“æœ‰é”™è¯¯éšè—ï¼Œä¼šå¼•èµ·å†…å­˜å†™æ“ä½œè¶Šç•Œ xiongfei20100403*/
 		if(0)
         /*if(s->current_picture.motion_val[0] && !s->encoding)*/{ //note motion_val is normally NULL unless we want to extract the MVs
             const int wrap = field_pic ? 2*s->b8_stride : s->b8_stride;
@@ -2248,18 +2248,18 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
             }
         }
 
-		/*Ö¸ÕëÍùºóÒÆ y:16 uv:8 xiongfei20100222*/
+		/*æŒ‡é’ˆå¾€åç§» y:16 uv:8 xiongfei20100222*/
         s->dest[0] += 16 >> lowres;
         s->dest[1] +=(16 >> lowres) >> s->chroma_x_shift;
         s->dest[2] +=(16 >> lowres) >> s->chroma_x_shift;
 
-		/*´Ë´¦½øĞĞÊı¾İÖØ½¨£¬ÆäÖĞ°üÀ¨mc,idct xiongfei20100222*/
+		/*æ­¤å¤„è¿›è¡Œæ•°æ®é‡å»ºï¼Œå…¶ä¸­åŒ…æ‹¬mc,idct xiongfei20100222*/
         MPV_decode_mb(s, s->block);
 
         if (++s->mb_x >= s->mb_width) {
             const int mb_size= 16>>s->avctx->lowres;
 			
-			/*½øÈëÏÂÒ»¸öºê¿éĞĞ xiongfei20100222*/
+			/*è¿›å…¥ä¸‹ä¸€ä¸ªå®å—è¡Œ xiongfei20100222*/
             ff_draw_horiz_band(s, mb_size*s->mb_y, mb_size);
 
             s->mb_x = 0;
@@ -2271,7 +2271,7 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
                             && s->intra_dc_precision == 2 && s->q_scale_type == 1 && s->alternate_scan == 0
                             && s->progressive_frame == 0 /* vbv_delay == 0xBBB || 0xE10*/;
 
-                /*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+                /*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
 				if(left < 0 || (left && show_bits(&s->gb, FFMIN(left, 23)) && !is_d10)
                    || (avctx->error_recognition >= FF_ER_AGGRESSIVE && left>8)){
                     av_log(avctx, AV_LOG_WARNING, "end mismatch left=%d %0X\n", left, show_bits(&s->gb, FFMIN(left, 23)));
@@ -2292,7 +2292,7 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
             for(;;) {
                 int code = get_vlc2(&s->gb, mbincr_vlc.table, MBINCR_VLC_BITS, 2);
 
-				/*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+				/*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
                 if (code < 0)
 				/*xiongfei20100331modified*/
 				/*if(code <= 0)*/
@@ -2306,7 +2306,7 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
                     if (code == 33) {
                         s->mb_skip_run += 33;
                     }else if(code == 35){
-                        /*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+                        /*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
 						if(s->mb_skip_run != 0 || show_bits(&s->gb, 15) != 0){
                             av_log(s->avctx, AV_LOG_WARNING, "slice mismatch\n");
 							IMEDIA_SET_ERR_SLICE(avctx->iErrorCode, IMEDIA_ERR_SLICE_TYPE);	
@@ -2332,7 +2332,7 @@ static int mpeg_decode_slice(Mpeg1Context *s1, int mb_y,
             }
             if(s->mb_skip_run){
                 int i;
-				/*Ôö¼Ó´íÎóÂë xiongfei20100317*/
+				/*å¢åŠ é”™è¯¯ç  xiongfei20100317*/
                 if(s->pict_type == FF_I_TYPE){
                     av_log(s->avctx, AV_LOG_WARNING, "skipped MB in I frame at %d %d\n", s->mb_x, s->mb_y);
 					IMEDIA_SET_ERR_SLICE(avctx->iErrorCode, IMEDIA_ERR_SLICE_OTHER);	
@@ -2466,7 +2466,7 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
     width = get_bits(&s->gb, 12);
     height = get_bits(&s->gb, 12);
 
-    /*´òÓ¡´íÎóÈÕÖ¾²¢Ìí¼Ó´íÎóÂë xiongfei20100317*/
+    /*æ‰“å°é”™è¯¯æ—¥å¿—å¹¶æ·»åŠ é”™è¯¯ç  xiongfei20100317*/
 	if (width < MPEG2_MIN_WIDTH || width > MPEG2_MAX_WIDTH || height < MPEG2_MIN_HEIGHT || height > MPEG2_MAX_HEIGHT)
 	{
 		av_log(avctx, AV_LOG_WARNING, "size is wrong width[%d] height[%d ]\n" , width, height);
@@ -2477,10 +2477,10 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
     
 	s->aspect_ratio_info= get_bits(&s->gb, 4);
 
-	/*xiongfei 20100505ĞŞ¸Ä Ôö¼ÓÑÏ¸ñ²âÊÔ*/
+	/*xiongfei 20100505ä¿®æ”¹ å¢åŠ ä¸¥æ ¼æµ‹è¯•*/
     if ((s->aspect_ratio_info <= 0)||(s->aspect_ratio_info >= 5)) {
         av_log(avctx, AV_LOG_WARNING, "aspect ratio has forbidden value\n");
-        /*Ìí¼Ó´íÎóÂë xiongfei20100317*/
+        /*æ·»åŠ é”™è¯¯ç  xiongfei20100317*/
 		//if (avctx->error_recognition >= FF_ER_COMPLIANT)
 		{
 			IMEDIA_SET_ERR_SEQ(avctx->iErrorCode, IMEDIA_ERR_SEQ_SIZE);
@@ -2490,7 +2490,7 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
     }
     s->frame_rate_index = get_bits(&s->gb, 4);
     
-	/*Ôö¼Ó´òÓ¡´íÎóÈÕÖ¾²¢Ìí¼Ó´íÎóÂë xiongfei20100317*/
+	/*å¢åŠ æ‰“å°é”™è¯¯æ—¥å¿—å¹¶æ·»åŠ é”™è¯¯ç  xiongfei20100317*/
 	if (s->frame_rate_index <= 0 || s->frame_rate_index > 8)
 	{
 		av_log(avctx, AV_LOG_WARNING, "frame_rate_index[%d] is wrong !\n" ,s->frame_rate_index);
@@ -2501,7 +2501,7 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
 
     s->bit_rate = get_bits(&s->gb, 18) * 400;
     
-	/*Ôö¼Ó´òÓ¡´íÎóÈÕÖ¾²¢Ìí¼Ó´íÎóÂë ²¢Ôö¼Ó·µ»Ø xioingfei20100317*/
+	/*å¢åŠ æ‰“å°é”™è¯¯æ—¥å¿—å¹¶æ·»åŠ é”™è¯¯ç  å¹¶å¢åŠ è¿”å› xioingfei20100317*/
 	if (get_bits1(&s->gb) == 0) /* marker */
 	{
 		av_log(avctx, AV_LOG_WARNING, "marker bit [%d] is wrong !\n");
@@ -2512,7 +2512,7 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
 
     s->avctx->rc_buffer_size= get_bits(&s->gb, 10) * 1024*16;
 
-    /*x00141957 20100505 ¸ù¾İĞ­ÒéĞŞ¸Ä×öÑÏ¸ñ¼ì²é*/
+    /*x00141957 20100505 æ ¹æ®åè®®ä¿®æ”¹åšä¸¥æ ¼æ£€æŸ¥*/
 	//skip_bits(&s->gb, 1);
 	if (get_bits1(&s->gb) == 1) /* constrained_parameters_flag */
 	{
@@ -2526,7 +2526,7 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
     if (get_bits1(&s->gb)) {
         for(i=0;i<64;i++) {
             v = get_bits(&s->gb, 8);
-			/*Ìí¼Ó´íÎóÂë xioingfei20100317*/
+			/*æ·»åŠ é”™è¯¯ç  xioingfei20100317*/
             if(v==0){
                 av_log(s->avctx, AV_LOG_WARNING, "intra matrix damaged\n");
 				IMEDIA_SET_ERR_SEQ(avctx->iErrorCode, IMEDIA_ERR_SEQ_QUANT);
@@ -2554,7 +2554,7 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
     if (get_bits1(&s->gb)) {
         for(i=0;i<64;i++) {
             v = get_bits(&s->gb, 8);
-			/*Ìí¼Ó´íÎóÂë xioingfei20100317*/
+			/*æ·»åŠ é”™è¯¯ç  xioingfei20100317*/
 			if(v==0){
 				av_log(s->avctx, AV_LOG_WARNING, "intra matrix damaged\n");
 				IMEDIA_SET_ERR_SEQ(avctx->iErrorCode, IMEDIA_ERR_SEQ_QUANT);
@@ -2580,7 +2580,7 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
         }
     }
 
-	/*Ìí¼Ó´íÎóÂë xioingfei20100317*/
+	/*æ·»åŠ é”™è¯¯ç  xioingfei20100317*/
     if(show_bits(&s->gb, 23) != 0){
         av_log(s->avctx, AV_LOG_WARNING, "sequence header damaged\n");
 		IMEDIA_SET_ERR_SEQ(avctx->iErrorCode, IMEDIA_ERR_SEQ_OTHER);
@@ -2605,8 +2605,8 @@ static int slice_end(AVCodecContext *avctx, AVFrame *pict)
                s->avctx->rc_buffer_size, s->bit_rate);
 	}
 
-	/*ÒÔÏÂÁ½ĞĞ´úÂëÎªĞÂÔö £¬ÒòÎªmpeg2¿í¸ßµÈĞÅÏ¢¶¼Ö»ÔÚĞòÁĞÍ·ÖĞ¸ø³ö£¬ËùÒÔÊµ¼Ê¿í¸ßÖµÖ»ÄÜÔÚÕâÀïµÃµ½ xiongfei20100303*/
-	/*¿¼ÂÇµ½ÎÒÃÇµÄ½âÂëÆ÷²»Ö§³ÖÖĞ¼ä±ä»»·Ö±æÂÊ£¬ËùÒÔÒÔµÚÒ»´ÎËù¶Áµ½µÄÍ¼Ïñ¿í¸ßÎªÖ÷ xiongfei20100401*/
+	/*ä»¥ä¸‹ä¸¤è¡Œä»£ç ä¸ºæ–°å¢ ï¼Œå› ä¸ºmpeg2å®½é«˜ç­‰ä¿¡æ¯éƒ½åªåœ¨åºåˆ—å¤´ä¸­ç»™å‡ºï¼Œæ‰€ä»¥å®é™…å®½é«˜å€¼åªèƒ½åœ¨è¿™é‡Œå¾—åˆ° xiongfei20100303*/
+	/*è€ƒè™‘åˆ°æˆ‘ä»¬çš„è§£ç å™¨ä¸æ”¯æŒä¸­é—´å˜æ¢åˆ†è¾¨ç‡ï¼Œæ‰€ä»¥ä»¥ç¬¬ä¸€æ¬¡æ‰€è¯»åˆ°çš„å›¾åƒå®½é«˜ä¸ºä¸» xiongfei20100401*/
 	if((0 == avctx->usActualWidth)||(0 == avctx->usActualHeight))
 	{
 		avctx->usActualWidth = width;
@@ -2805,7 +2805,7 @@ static int mpeg_decode_frame(AVCodecContext *avctx,
 	int ret = 0;
     dprintf(avctx, "fill_buffer\n");
 
-	/*´ËÊ±ÒÑ¾­ºÄ¾¡±ÈÌØÊı,buf_size±íÊ¾»º³åÖĞ±ÈÌØÊıÄ¿ xiongfei20100221*/
+	/*æ­¤æ—¶å·²ç»è€—å°½æ¯”ç‰¹æ•°,buf_sizeè¡¨ç¤ºç¼“å†²ä¸­æ¯”ç‰¹æ•°ç›® xiongfei20100221*/
     if (buf_size == 0 || (buf_size == 4 && AV_RB32(buf) == SEQ_END_CODE)) {
         /* special case for last picture */
         if (s2->low_delay==0 && s2->next_picture_ptr) {
@@ -2814,7 +2814,7 @@ static int mpeg_decode_frame(AVCodecContext *avctx,
 
             *data_size = sizeof(AVFrame);
 			/* 2010/06/11 10:30:00 liuxw+00139685 */
-			/* ÖÃÎ»×îºóÒ»Ö¡µÄ±êÖ¾ */
+			/* ç½®ä½æœ€åä¸€å¸§çš„æ ‡å¿— */
 			picture->ucLastFrame = 1;
         }
 
@@ -2845,7 +2845,7 @@ static int mpeg_decode_frame(AVCodecContext *avctx,
 
     s->slice_count= 0;
 
-/* ²»Ã÷°×extradata xiongfei20100220*/
+/* ä¸æ˜ç™½extradata xiongfei20100220*/
 
 //     if(avctx->extradata && !avctx->frame_number)
 //         decode_chunks(avctx, picture, data_size, avctx->extradata, avctx->extradata_size);
@@ -2857,11 +2857,11 @@ static int mpeg_decode_frame(AVCodecContext *avctx,
  			decode_chunks(avctx, picture, data_size, avctx->extradata[i], avctx->extradata_size[i]);
  		}
  	}
-		/*x00141957 20100511 ·µ»ØÖµĞŞ¸ÄÒÔ±£Ö¤ÄÜÍêÈ«½âÍêÂëÁ÷*/
+		/*x00141957 20100511 è¿”å›å€¼ä¿®æ”¹ä»¥ä¿è¯èƒ½å®Œå…¨è§£å®Œç æµ*/
 	ret = decode_chunks(avctx, picture, data_size, buf, buf_size);
 
-	/*x00141957 20100726»ñµÃµ±Ç°ÂëÁ÷µÄaspect ratio info*/
-	/*¼ÇÂ¼²¢¼ÆËãsar x00141957 20100726*/
+	/*x00141957 20100726è·å¾—å½“å‰ç æµçš„aspect ratio info*/
+	/*è®°å½•å¹¶è®¡ç®—sar x00141957 20100726*/
 	//mpeg12_get_sar(s2,avctx->sample_aspect_ratio.den,avctx->sample_aspect_ratio.num);
 	
 	if (-1 >= ret)
@@ -2869,7 +2869,7 @@ static int mpeg_decode_frame(AVCodecContext *avctx,
 		ret = 1;
 	}
 	
-	/*x00141957 20100513Ìí¼Ó */
+	/*x00141957 20100513æ·»åŠ  */
 	avctx->frame_number++;
 
 	return ret;
@@ -2892,7 +2892,7 @@ static int decode_chunks(AVCodecContext *avctx,
         /* find next start code */
         uint32_t start_code = -1;
         buf_ptr = ff_find_start_code(buf_ptr,buf_end, &start_code);
-		/*Èç¹ûÃ»ÄÜÕÒµ½ÆğÊ¼Âë£¬Ôò±íÃ÷´ËÖ¡Êı¾İ½áÊø xiongfei20100221*/
+		/*å¦‚æœæ²¡èƒ½æ‰¾åˆ°èµ·å§‹ç ï¼Œåˆ™è¡¨æ˜æ­¤å¸§æ•°æ®ç»“æŸ xiongfei20100221*/
         if (start_code > 0x1ff){
             if(s2->pict_type != FF_B_TYPE || avctx->skip_frame <= AVDISCARD_DEFAULT){
                 if(avctx->thread_count > 1){
@@ -2912,13 +2912,13 @@ static int decode_chunks(AVCodecContext *avctx,
                     if(s2->last_picture_ptr || s2->low_delay) //FIXME merge with the stuff in mpeg_decode_slice
 					{
 						*data_size = sizeof(AVPicture);
-						/*ĞÂÔö´úÂë ÏÔÊ¾Ö¡¼Ó1 xiongfei20100304*/
+						/*æ–°å¢ä»£ç  æ˜¾ç¤ºå¸§åŠ 1 xiongfei20100304*/
 						s2->input_picture_number ++;
 						/* 2010/05/8 15:00:00 liuxw+00139685 */
-						/* uiDisplayedFramesºÍuiDisFramesIDµÄ´¦ÀíÈ«²¿Ìáµ½½Ó¿Ú²ã */
+						/* uiDisplayedFrameså’ŒuiDisFramesIDçš„å¤„ç†å…¨éƒ¨æåˆ°æ¥å£å±‚ */
 //						avctx->uiDisplayedFrames = s2->input_picture_number + 1;
 //						avctx->uiDisFramesID = s2->input_picture_number + 1;
-						/*½áÊøĞÂÔö xiongfei20100304*/
+						/*ç»“æŸæ–°å¢ xiongfei20100304*/
 					}				
                 }
             }
@@ -2955,18 +2955,18 @@ static int decode_chunks(AVCodecContext *avctx,
 					s2->avctx->uiDiscardFrames ++;
 				return -1;
 			}
-			/*ÒÔÏÂÎªĞÂÔö´úÂë,½«µ±Ç°Ö¡Êµ¼Ê±àÂëÀàĞÍ¸øavctx£¬ÈÃÍâÃæ¿´¼û xiongfei20100304*/
+			/*ä»¥ä¸‹ä¸ºæ–°å¢ä»£ç ,å°†å½“å‰å¸§å®é™…ç¼–ç ç±»å‹ç»™avctxï¼Œè®©å¤–é¢çœ‹è§ xiongfei20100304*/
 			{
 				switch(s2->pict_type)
 				{
 				case FF_I_TYPE:
-					avctx->uiDecIFrames++;  /* Ôö¼ÓÒÑ½âÂëIÖ¡ÊıÁ¿ */
+					avctx->uiDecIFrames++;  /* å¢åŠ å·²è§£ç Iå¸§æ•°é‡ */
 					break;
 				case FF_P_TYPE:
-					avctx->uiDecPFrames++;	 /* Ôö¼ÓÒÑ½âÂëPÖ¡ÊıÁ¿ */
+					avctx->uiDecPFrames++;	 /* å¢åŠ å·²è§£ç På¸§æ•°é‡ */
 					break;
 				case FF_B_TYPE:
-					avctx->uiDecBFrames++;  /* Ôö¼ÓÒÑ½âÂëBÖ¡ÊıÁ¿ */
+					avctx->uiDecBFrames++;  /* å¢åŠ å·²è§£ç Bå¸§æ•°é‡ */
 					break;
 				default:	break;
 				}
@@ -3009,7 +3009,7 @@ static int decode_chunks(AVCodecContext *avctx,
 					return -1;
 				}
 
-				/*ÒÔÏÂÎª ĞÂÔö´úÂë ½«yuvÄ£Ê½¸¶¸øavctxÈÃÍâÃæ¿´¼û xiongfei201000303*/
+				/*ä»¥ä¸‹ä¸º æ–°å¢ä»£ç  å°†yuvæ¨¡å¼ä»˜ç»™avctxè®©å¤–é¢çœ‹è§ xiongfei201000303*/
 				/*	if( 1 == s->chroma_format)
 				{
 				avctx->eColorFormatType = s->chroma_format - 1;
@@ -3031,12 +3031,12 @@ static int decode_chunks(AVCodecContext *avctx,
                                     buf_ptr, input_size);
             break;
         default:
-			/*Èç¹ûÕÒµ½sliceÍ· ,Ôò½øÈëslice½âÂëÁ÷³Ì xiongfei20100221*/
+			/*å¦‚æœæ‰¾åˆ°sliceå¤´ ,åˆ™è¿›å…¥sliceè§£ç æµç¨‹ xiongfei20100221*/
             if (start_code >= SLICE_MIN_START_CODE &&
                 start_code <= SLICE_MAX_START_CODE) {
                 int mb_y= start_code - SLICE_MIN_START_CODE;
 
-				/*¶Ô¸÷¹Ø¼üÊı¾İ½øĞĞ¼ì²é x00141957 20100511*/
+				/*å¯¹å„å…³é”®æ•°æ®è¿›è¡Œæ£€æŸ¥ x00141957 20100511*/
 				if((s2->picture_structure == 0)&&(s2->iExtFlag))
 				{
 					av_log(s2->avctx, AV_LOG_WARNING, "picture_structure ==  0\n");
@@ -3068,7 +3068,7 @@ static int decode_chunks(AVCodecContext *avctx,
 				{
 					break;
 				}
-				/*¼ì²é½áÊø x00141957 20100511*/
+				/*æ£€æŸ¥ç»“æŸ x00141957 20100511*/
 
                 if(s2->last_picture_ptr==NULL){
                 /* Skip B-frames if we do not have reference frames. */
@@ -3099,14 +3099,14 @@ static int decode_chunks(AVCodecContext *avctx,
                     break;
                 }
 				
-				/*Èç¹ûÊÇµÚÒ»¸öslice£¬ËµÃ÷¸Õ¿ªÊ¼±àÂëÒ»Ö¡£¬³õÊ¼»¯ÄÚ´æÊı¾İ £¬µ«ÊÇÒ²¿¼ÂÇµ½ÁËµ×³¡µÚÒ»¸öslice±àÂëµÄÇé¿ö xiongfei20100222*/
+				/*å¦‚æœæ˜¯ç¬¬ä¸€ä¸ªsliceï¼Œè¯´æ˜åˆšå¼€å§‹ç¼–ç ä¸€å¸§ï¼Œåˆå§‹åŒ–å†…å­˜æ•°æ® ï¼Œä½†æ˜¯ä¹Ÿè€ƒè™‘åˆ°äº†åº•åœºç¬¬ä¸€ä¸ªsliceç¼–ç çš„æƒ…å†µ xiongfei20100222*/
                 if(s2->first_slice)
 				{
-                    /*Å²µ½ºóÃæ x00141957 20100511*/
+                    /*æŒªåˆ°åé¢ x00141957 20100511*/
 					/*s2->first_slice=0;*/
-					/*ÒÔÏÂÎªĞÂÔö´úÂë£¬ÅĞ¶ÏÍ¨µÀ×ÊÔ´ÊÇ·ñÂú×ãÂëÁ÷ £¬Ö÷ÒªÅĞ¶Ï¿í¸ßÒÔ¼°chromaformat xiongfei20100303*/
+					/*ä»¥ä¸‹ä¸ºæ–°å¢ä»£ç ï¼Œåˆ¤æ–­é€šé“èµ„æºæ˜¯å¦æ»¡è¶³ç æµ ï¼Œä¸»è¦åˆ¤æ–­å®½é«˜ä»¥åŠchromaformat xiongfei20100303*/
 					{
-						/* ¼ì²âµ±Ç°ÂëÁ÷µÄ¿í¶ÈºÍ³¤¶ÈÊÇ·ñ³¬¹ı¾²Ì¬²ÎÊıÖĞµÄ×î´ó¿í¶ÈºÍ¸ß¶È */
+						/* æ£€æµ‹å½“å‰ç æµçš„å®½åº¦å’Œé•¿åº¦æ˜¯å¦è¶…è¿‡é™æ€å‚æ•°ä¸­çš„æœ€å¤§å®½åº¦å’Œé«˜åº¦ */
 						if(avctx->usActualWidth > avctx->usSourceWidth || avctx->usActualHeight > avctx->usSourceHeight)
 						{
 							av_log(avctx, AV_LOG_WARNING, "dec_ctx[%p] mpeg2_dec[%p] decode_chunks() the ActualWidth[%d] of the bitstream is more than MaxWidth[%d] or  \
@@ -3160,11 +3160,11 @@ static int decode_chunks(AVCodecContext *avctx,
                     }
                     buf_ptr += 2; //FIXME add minimum number of bytes per slice
                 }else{
-					/*´Ë´¦ÕıÊ½½øÈë½âÂëslice xiongfei20100222*/
+					/*æ­¤å¤„æ­£å¼è¿›å…¥è§£ç slice xiongfei20100222*/
                     ret = mpeg_decode_slice(s, mb_y, &buf_ptr, input_size);
                     emms_c();
 
-					/*Èç¹û½âÂë·µ»ØÊ§°Ü£¬ÔòÎªÒÔºóµÄ´íÎóÒş²Ø xiongfei20100222*/
+					/*å¦‚æœè§£ç è¿”å›å¤±è´¥ï¼Œåˆ™ä¸ºä»¥åçš„é”™è¯¯éšè— xiongfei20100222*/
                     if(ret < 0){
                         if(s2->resync_mb_x>=0 && s2->resync_mb_y>=0)
                             ff_er_add_slice(s2, s2->resync_mb_x, s2->resync_mb_y, s2->mb_x, s2->mb_y, AC_ERROR|DC_ERROR|MV_ERROR);
@@ -3187,7 +3187,7 @@ static int mpeg_decode_end(AVCodecContext *avctx)
  	else
  	{
  		MpegEncContext *s2 = &s->mpeg_enc_ctx;
- 		/*x00141957 20100507 Ôö¼Ó¶Ôparse_context.bufferÄÚ´æµÄÊÍ·Å*/
+ 		/*x00141957 20100507 å¢åŠ å¯¹parse_context.bufferå†…å­˜çš„é‡Šæ”¾*/
  		if(s2->parse_context.buffer)
  		{
  			av_freep(&s2->parse_context.buffer);
@@ -3196,7 +3196,7 @@ static int mpeg_decode_end(AVCodecContext *avctx)
     return 0;
 }
 
-/* ĞÂÔöº¯Êı£º¸´Î»mpeg2½âÂëÆ÷ xiongfei20100302*/
+/* æ–°å¢å‡½æ•°ï¼šå¤ä½mpeg2è§£ç å™¨ xiongfei20100302*/
 static av_cold int mpeg12_reset(Mpeg1Context *h)
 {
 	int iRet = 0;
@@ -3204,10 +3204,10 @@ static av_cold int mpeg12_reset(Mpeg1Context *h)
 	MpegEncContext * const	s		= &h->mpeg_enc_ctx;
 	AVCodecContext *		avctx	= s->avctx;
 
-	/* Çå¿ÕMpeg1Context½á¹¹Ìå±äÁ¿ xionigfei20100302*/
+	/* æ¸…ç©ºMpeg1Contextç»“æ„ä½“å˜é‡ xionigfei20100302*/
 	memset(h, 0, sizeof(Mpeg1Context));
 
-	/* ³õÊ¼»¯Mpeg1Context½á¹¹Ìå±äÁ¿ xiongfei20100302*/
+	/* åˆå§‹åŒ–Mpeg1Contextç»“æ„ä½“å˜é‡ xiongfei20100302*/
 	iRet = mpeg_decode_init(avctx);
 	if(0 != iRet)
 	{
@@ -3216,7 +3216,7 @@ static av_cold int mpeg12_reset(Mpeg1Context *h)
 	return iRet;
 }
 
-/*Ôö¼Ódecode_resetº¯Êı£¬ÓÃÓÚcontrolÖĞµÄreset xiongfei20100302*/
+/*å¢åŠ decode_resetå‡½æ•°ï¼Œç”¨äºcontrolä¸­çš„reset xiongfei20100302*/
 static av_cold int decode_reset(AVCodecContext *avctx)
 {
 	int iRet = 0;
@@ -3225,18 +3225,18 @@ static av_cold int decode_reset(AVCodecContext *avctx)
 	MpegEncContext *s = &h->mpeg_enc_ctx;
 //	int i;
 
-	/* Çå¿Õbuffer */
+	/* æ¸…ç©ºbuffer */
 	ff_mpeg_flush(avctx);
 
-	/*x00141957 20100606 ²âÊÔ*/
-	/*ÎÊÌâµ¥ºÅ£ºAZ1D02136
-	ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-	Ê±¼ä£º2010/6/7
-	ÎÊÌâÃèÊö£º ¶ª°üÎóÂëÑ­»·½âÂëµÄÇé¿öÏÂ£¬ÂëÁ÷ÅÜËÀ
-	ÎÊÌâĞŞ¸Ä£º resetÊ±ÓĞÄÚ´æĞ¹Â¶´æÔÚ*/
+	/*x00141957 20100606 æµ‹è¯•*/
+	/*é—®é¢˜å•å·ï¼šAZ1D02136
+	ä¿®æ”¹äººï¼šç†Šé£ +00141957
+	æ—¶é—´ï¼š2010/6/7
+	é—®é¢˜æè¿°ï¼š ä¸¢åŒ…è¯¯ç å¾ªç¯è§£ç çš„æƒ…å†µä¸‹ï¼Œç æµè·‘æ­»
+	é—®é¢˜ä¿®æ”¹ï¼š resetæ—¶æœ‰å†…å­˜æ³„éœ²å­˜åœ¨*/
 	MPV_common_end(s);
 
-	/* ¸´Î»¼°³õÊ¼»¯AVCodecContext½á¹¹Ìå±äÁ¿ xiongfei20100302*/
+	/* å¤ä½åŠåˆå§‹åŒ–AVCodecContextç»“æ„ä½“å˜é‡ xiongfei20100302*/
 	iRet = avcodec_reset(avctx);
 	if(0 != iRet)
 	{
@@ -3244,7 +3244,7 @@ static av_cold int decode_reset(AVCodecContext *avctx)
 		return iRet;
 	}
 
-	/* ¸´Î»¼°³õÊ¼»¯Mpeg1Context½á¹¹Ìå±äÁ¿ xiongfei20100302*/
+	/* å¤ä½åŠåˆå§‹åŒ–Mpeg1Contextç»“æ„ä½“å˜é‡ xiongfei20100302*/
 	iRet = mpeg12_reset(h);
 	if(0 != iRet)
 	{
@@ -3271,7 +3271,7 @@ AVCodec mpeg1video_decoder = {
 };
 */
 
-/*¸ù¾İÁõĞ¡Î°¸ÄĞ´½á¹¹Ìå ¸ÄĞ´ÕâÀï xiongfei20100212*/
+/*æ ¹æ®åˆ˜å°ä¼Ÿæ”¹å†™ç»“æ„ä½“ æ”¹å†™è¿™é‡Œ xiongfei20100212*/
 AVCodec mpeg2video_decoder = {
     "mpeg2video",
     CODEC_TYPE_VIDEO,

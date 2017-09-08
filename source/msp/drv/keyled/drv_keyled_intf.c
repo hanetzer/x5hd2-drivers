@@ -569,7 +569,7 @@ static HI_S32 KEYLEDIoctl(struct inode *inode, struct file * file, HI_U32 cmd, H
 
 #if 0
 /*entrance of function controled by the proc file system*/
-/*CNcomment:Í¨¹ıprocÎÄ¼şÏµÍ³½øĞĞ¿ØÖÆµÄº¯ÊıÈë¿Ú*/
+/*CNcomment:é€šè¿‡procæ–‡ä»¶ç³»ç»Ÿè¿›è¡Œæ§åˆ¶çš„å‡½æ•°å…¥å£*/
 
 HI_S32 KEYLEDDebugCtrl(HI_U32 u32Para1, HI_U32 u32Para2)
 {

@@ -36,7 +36,7 @@ HI_U8 SI_MDDCInitReadBlockFromFIFO(HI_U8 Addr, HI_U16 NBytes)
     TmpD.MDDC.NBytesMSB = (HI_U8) (NBytes >> 8);
     TmpD.MDDC.Dummy = 0;
     TmpD.MDDC.Cmd = MASTER_CMD_SEQ_RD;
-    /*In order to change the adress of DDC written and read ,only seven bytes are transmited,the data is transmited by MDDC FIFO*//*CNcomment:仅传输前7个字节的数据,目的是为了改变DDC的读写地址，数据通过后续的函数从 MDDC FIFO 传输 */
+    /*In order to change the adress of DDC written and read ,only seven bytes are transmited,the data is transmited by MDDC FIFO*//*CNcomment:浠呬紶杈撳墠7涓瓧鑺傜殑鏁版嵁,鐩殑鏄负浜嗘敼鍙楧DC鐨勮鍐欏湴鍧�锛屾暟鎹�氳繃鍚庣画鐨勫嚱鏁颁粠 MDDC FIFO 浼犺緭 */
     return SI_BlockWriteHDMITXP0(MASTER_BASE + 1, 7, (HI_U8 *)&TmpD.MDDC);
 }
 

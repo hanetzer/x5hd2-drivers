@@ -153,8 +153,8 @@ struct chan_ctx_s {
 	struct vdec_entry *vdec;
 	
 	struct vdec_buf_s last_frame;
-       HI_U32 last_frame_flag[2];     /* 0 (0/1): vfmw ÊÇ·ñÉÏ±¨; 
-                                                           1 (0/1/2): vfmw ÉÏ±¨µÄÀàĞÍ 0 success, 1 fail,  2+ report last frame image id
+       HI_U32 last_frame_flag[2];     /* 0 (0/1): vfmw æ˜¯å¦ä¸ŠæŠ¥; 
+                                                           1 (0/1/2): vfmw ä¸ŠæŠ¥çš„ç±»å‹ 0 success, 1 fail,  2+ report last frame image id
                                                        */
     
        MMZ_BUFFER_S           LAST_FRAME_Buf;

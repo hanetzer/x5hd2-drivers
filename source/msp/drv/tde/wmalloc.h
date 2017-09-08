@@ -3,7 +3,7 @@
 /*                           ALL RIGHTS RESERVED                             */
 /*                                                                           */
 /* FileName: wmalloc.h                                                       */
-/* Version: 01a head file of mamage memery. CNcomment:ÄÚ´æ¹ÜÀíÍ·ÎÄ¼ş*/
+/* Version: 01a head file of mamage memery. CNcomment:å†…å­˜ç®¡ç†å¤´æ–‡ä»¶*/
 /*                                                                           */
 /* History:                                                                  */
 /* 1. 01a,2009-2-25, w54130 Create this file.                                 */
@@ -14,19 +14,19 @@
 
 /*CNcomment:*****************************************************************************
 *Function: wmeminit
-*Description: init memery pool. CNcomment:TDEÄÚ´æ³Ø³õÊ¼»¯
+*Description: init memery pool. CNcomment:TDEå†…å­˜æ± åˆå§‹åŒ–
 *Input: none
 *Output: none
-*Return: success/error code. CNcomment:³É¹¦/´íÎóÂë
+*Return: success/error code. CNcomment:æˆåŠŸ/é”™è¯¯ç 
 others: none
 *******************************************************************************/
 HI_S32 wmeminit(void);
 
 /******************************************************************************
 *Function: wmalloc
-*Description: request memery from memery pool. CNcomment:´ÓÄÚ´æ³ØÖĞÉêÇëÄÚ´æ
-*Input: size request size. CNcomment:ÉêÇëµÄÄÚ´æ´óĞ¡
-*Output: the pointer of memery that request memery. CNcomment:Ö¸ÏòÄÚ´æ¿éµÄÖ¸Õë
+*Description: request memery from memery pool. CNcomment:ä»å†…å­˜æ± ä¸­ç”³è¯·å†…å­˜
+*Input: size request size. CNcomment:ç”³è¯·çš„å†…å­˜å¤§å°
+*Output: the pointer of memery that request memery. CNcomment:æŒ‡å‘å†…å­˜å—çš„æŒ‡é’ˆ
 *Return: none
 others: none
 *******************************************************************************/
@@ -34,17 +34,17 @@ HI_VOID *wmalloc(size_t size);
 
 /******************************************************************************
 *Function: wfree
-*Description: free memery.CNcomment: ÊÍ·ÅÄÚ´æ
-*Input: ptr  the pointer of memery that need free. CNcomment:Ö¸ÏòÄÚ´æ¿éµÄÖ¸Õë
+*Description: free memery.CNcomment: é‡Šæ”¾å†…å­˜
+*Input: ptr  the pointer of memery that need free. CNcomment:æŒ‡å‘å†…å­˜å—çš„æŒ‡é’ˆ
 *Output: none
-*Return: success/error code. CNcomment:³É¹¦/´íÎóÂë
+*Return: success/error code. CNcomment:æˆåŠŸ/é”™è¯¯ç 
 others: none
 *******************************************************************************/
 HI_S32 wfree(HI_VOID *ptr);
 
 /******************************************************************************
 *Function: wmemterm
-*Description: Deinit memery pool. CNcomment:TDEÄÚ´æ³ØÈ¥³õÊ¼»¯
+*Description: Deinit memery pool. CNcomment:TDEå†…å­˜æ± å»åˆå§‹åŒ–
 *Input: none
 *Output: none
 *Return: none
@@ -54,9 +54,9 @@ HI_VOID wmemterm(void);
 
 /******************************************************************************
 *Function: wgetphy
-*Description: get the physics address of memery. CNcomment:»ñÈ¡ÄÚ´æµÄÎïÀíµØÖ·
-*Input: ptr  the pointer of memery. CNcomment:Ö¸ÏòÄÚ´æµÄÖ¸Õë
-*Output:  physics address. CNcomment:ÎïÀíµØÖ·
+*Description: get the physics address of memery. CNcomment:è·å–å†…å­˜çš„ç‰©ç†åœ°å€
+*Input: ptr  the pointer of memery. CNcomment:æŒ‡å‘å†…å­˜çš„æŒ‡é’ˆ
+*Output:  physics address. CNcomment:ç‰©ç†åœ°å€
 *Return: none
 others: none
 *******************************************************************************/
@@ -64,9 +64,9 @@ HI_U32 wgetphy(HI_VOID *ptr);
 
 /******************************************************************************
 *Function: wgetphy
-*Description: get the virtual address of memery. CNcomment:»ñÈ¡ÄÚ´æµÄĞéÄâµØÖ·
-*Input: phyaddr  physics address. CNcomment:ÎïÀíµØÖ·
-*Output: virtual address. CNcomment:ĞéÄâµØÖ·
+*Description: get the virtual address of memery. CNcomment:è·å–å†…å­˜çš„è™šæ‹Ÿåœ°å€
+*Input: phyaddr  physics address. CNcomment:ç‰©ç†åœ°å€
+*Output: virtual address. CNcomment:è™šæ‹Ÿåœ°å€
 *Return: none
 others: none
 *******************************************************************************/
@@ -74,10 +74,10 @@ HI_VOID * wgetvrt(HI_U32 phyaddr);
 
 /******************************************************************************
 *Function: wgetfreenum
-*Description:get the number of the free unit. CNcomment:»ñÈ¡ÄÚ´æµÄÊ£ÓàµÄUnitµ¥ÔªÊı
+*Description:get the number of the free unit. CNcomment:è·å–å†…å­˜çš„å‰©ä½™çš„Unitå•å…ƒæ•°
 *Input: none
 *Output: none
-*Return: the number of the free unit. CNcomment:Ê£ÓàµÄµ¥ÔªÊı
+*Return: the number of the free unit. CNcomment:å‰©ä½™çš„å•å…ƒæ•°
 others: none
 *******************************************************************************/
 HI_U32 wgetfreenum(HI_VOID);

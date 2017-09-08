@@ -35,8 +35,8 @@
         }                                                                               \
     } while (0)
 #endif
-/*demux ÖÐ¶ÔÓÚ¼Ä´æÆ÷²Ù×÷´æÔÚ¾ºÕù£¬¿ÉÄÜ»áÒýÆðÄªÃûÆæÃîµÄ´íÎó£¬ÐèÒªÈ«¾Öreview ËùÓÐ¼Ä´æÆ÷£¬Í³Ò»ÐÞ¸Ä
-ÒýÈëÒÔÏÂÁ½¸öËø£¬ÊÇÁÙÊ±·½°¸£¬ÔÝÊ±ÏÈ´¦Àíµ÷×îÈÝÒ×ÒýÆðÎÊÌâµÄÁ½¸ö¼Ä´æÆ÷£¬ÎÊÌâµ¥ºÅ: DTS2013082001104 */
+/*demux ä¸­å¯¹äºŽå¯„å­˜å™¨æ“ä½œå­˜åœ¨ç«žäº‰ï¼Œå¯èƒ½ä¼šå¼•èµ·èŽ«åå¥‡å¦™çš„é”™è¯¯ï¼Œéœ€è¦å…¨å±€review æ‰€æœ‰å¯„å­˜å™¨ï¼Œç»Ÿä¸€ä¿®æ”¹
+å¼•å…¥ä»¥ä¸‹ä¸¤ä¸ªé”ï¼Œæ˜¯ä¸´æ—¶æ–¹æ¡ˆï¼Œæš‚æ—¶å…ˆå¤„ç†è°ƒæœ€å®¹æ˜“å¼•èµ·é—®é¢˜çš„ä¸¤ä¸ªå¯„å­˜å™¨ï¼Œé—®é¢˜å•å·: DTS2013082001104 */
 struct semaphore      HALLockOQ;
 struct semaphore      HALLockFQ;
 HI_BOOL bSemphoreInit = HI_FALSE;

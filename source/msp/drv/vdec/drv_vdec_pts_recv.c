@@ -240,7 +240,7 @@ HI_S32 PTSREC_SetFrmRate(HI_HANDLE hHandle, HI_UNF_AVPLAY_FRMRATE_PARAM_S *pstFr
         }
 
         /*correct to us*/
-        /*CNcomment: ±£ÁôÐ¡ÊýµãºóÈýÎ» */
+        /*CNcomment: ä¿ç•™å°æ•°ç‚¹åŽä¸‰ä½ */
         s_stPtsRecChan[hHandle].u32SetFrameTime = 1000000000 / u32DivNum;
         HI_INFO_PTSREC("set chan(%d) frm diff(%d)\n", hHandle,  s_stPtsRecChan[hHandle].u32SetFrameTime);
     }
@@ -331,7 +331,7 @@ HI_U32 PTSREC_CalcStamp(HI_HANDLE hHandle, HI_UNF_VCODEC_TYPE_E enVdecType, IMAG
 
 
     /*calculate how many frames between two frames with valid src pts, ingore the loopback situation*/
-    /*CNcomment: ¼ÆËãÁ½¸öÓÐÐ§PTSÖ¡Ö®¼äµÄÖ¡Êý ÎÞ·ûºÅ¼õ·¨²»¿¼ÂÇ»·»ØµÄÇé¿ö 0 - 255 = 1*/
+    /*CNcomment: è®¡ç®—ä¸¤ä¸ªæœ‰æ•ˆPTSå¸§ä¹‹é—´çš„å¸§æ•° æ— ç¬¦å·å‡æ³•ä¸è€ƒè™‘çŽ¯å›žçš„æƒ…å†µ 0 - 255 = 1*/
     if (HI_INVALID_PTS != pstPtsInfo->u32LastSrcPts)
     {
         u32NumPass = pstImage->frame_num - pstPtsInfo->u32LastSrcFrmIdx;
@@ -344,7 +344,7 @@ HI_U32 PTSREC_CalcStamp(HI_HANDLE hHandle, HI_UNF_VCODEC_TYPE_E enVdecType, IMAG
     if (HI_INVALID_PTS != u32SrcPts)
     {
         /* calculate StatPtsDelta based on pts delta and frame numbers between two valid src pts */
-        /* CNcomment: ¸ù¾ÝÁ½¸öÓÐÐ§PTS¼äµÄPTS²îÖµºÍÖ¡Êý¼ÆËãStatPtsDelta */
+        /* CNcomment: æ ¹æ®ä¸¤ä¸ªæœ‰æ•ˆPTSé—´çš„PTSå·®å€¼å’Œå¸§æ•°è®¡ç®—StatPtsDelta */
         if (HI_INVALID_PTS != pstPtsInfo->u32LastSrcPts)
         {
             if (u32SrcPts >= pstPtsInfo->u32LastSrcPts)
@@ -365,7 +365,7 @@ HI_U32 PTSREC_CalcStamp(HI_HANDLE hHandle, HI_UNF_VCODEC_TYPE_E enVdecType, IMAG
                 if (u32PtsPass <= PTS_MAX_PASSTIME)
                 {
                     /*only successive twice u32FrameTime is the same, then update u32CalcFrameTime*/
-                    /**CNcomment: Ö»ÓÐÁ¬Ðø2´ÎµÄFrameTime¼ÆËãÏàÍ¬²Å»á¸üÐÂCalcFrameTime*/
+                    /**CNcomment: åªæœ‰è¿žç»­2æ¬¡çš„FrameTimeè®¡ç®—ç›¸åŒæ‰ä¼šæ›´æ–°CalcFrameTime*/
                     if (HI_INVALID_TIME != pstPtsInfo->u32CalcFrameTime)
                     {
                         if (abs(u32PtsPass * 1000 / u32NumPass - pstPtsInfo->u32LastCalcFrmTime) > FRMTIME_MAX_JUMP)

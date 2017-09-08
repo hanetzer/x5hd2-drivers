@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : The user will use this api to realize some function
-                  Õâ¸öÊÇ×¨ÃÅÓÃÀ´²âÊÔÊ¹ÓÃµÄ
+                  è¿™ä¸ªæ˜¯ä¸“é—¨ç”¨æ¥æµ‹è¯•ä½¿ç”¨çš„
 Function List 	: 
 
 			  		  
@@ -41,14 +41,14 @@ Date				Author        		Modification
 
      /***************************** Macro Definition ******************************/
      /** \addtogroup 	 JPEG */
-     /** @{ */  /** <!-- ¡¾JPEG¡¿ */
+     /** @{ */  /** <!-- ã€JPEGã€‘ */
 
 #ifdef CONFIG_JPEG_FPGA_TEST_SAVE_SCEN_ENABLE
 	 #define  CV200_JPEG_BASE    0xf8c40000
 	 #define  PRN_SCENE(pFile,addr,data)  fprintf(pFile, "W 0x%08x 0x%08x word single\n",addr,data)
 	/**
-	 **android¿ÉÒÔ·ÅÖÃµÄÂ·¾¶Îª cd /data/ mkdir register_scen
-	 **Ôò /data/register_scen/.scen
+	 **androidå¯ä»¥æ”¾ç½®çš„è·¯å¾„ä¸º cd /data/ mkdir register_scen
+	 **åˆ™ /data/register_scen/.scen
 	 **/
 	 #define  SCEN_FILE_NAME                "./../res/test_data_dec_log_file/scen_file/output_file.scen"
      #define  SCEN_PRINT                     fprintf
@@ -77,7 +77,7 @@ Date				Author        		Modification
 	/****************************************************************************/
 	
 	/** \addtogroup      JPEG */
-    /** @{ */  /** <!-- ¡¾JPEG¡¿ */
+    /** @{ */  /** <!-- ã€JPEGã€‘ */
 
     /** @} */  /*! <!-- enum Definition end */
 
@@ -87,7 +87,7 @@ Date				Author        		Modification
 	/****************************************************************************/
 	
 	/** \addtogroup      JPEG */
-    /** @{ */  /** <!-- ¡¾JPEG¡¿ */
+    /** @{ */  /** <!-- ã€JPEGã€‘ */
 
 	/** @} */  /*! <!-- Structure Definition end */
 
@@ -98,13 +98,13 @@ Date				Author        		Modification
 
 
 	/** \addtogroup      JPEG */
-    /** @{ */  /** <!-- ¡¾JPEG¡¿ */
+    /** @{ */  /** <!-- ã€JPEGã€‘ */
 
 	 /*****************************************************************************
 	 * func 		 : HI_JPEG_OpenScenFile
 	 * description	 : open the scen file
-					   CNcomment: ´ò¿ªµ¼ÏÖ³¡µÄÎÄ¼ş CNend\n
-	 * param[in]	 : cinfo.		CNcomment:½âÂë¶ÔÏó	   CNend\n
+					   CNcomment: æ‰“å¼€å¯¼ç°åœºçš„æ–‡ä»¶ CNend\n
+	 * param[in]	 : cinfo.		CNcomment:è§£ç å¯¹è±¡	   CNend\n
 	 * retval		 : NA
 	 * others:		 : NA
 	 *****************************************************************************/
@@ -114,8 +114,8 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_CloseScenFile
 	* description	: close the scen file
-					  CNcomment: ¹Ø±Õµ¼ÏÖ³¡µÄÎÄ¼ş CNend\n
-	* param[in] 	: cinfo.	   CNcomment:½âÂë¶ÔÏó	  CNend\n
+					  CNcomment: å…³é—­å¯¼ç°åœºçš„æ–‡ä»¶ CNend\n
+	* param[in] 	: cinfo.	   CNcomment:è§£ç å¯¹è±¡	  CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -124,13 +124,13 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_OutScenData
 	* description	: get the scen data
-					  CNcomment: »ñÈ¡ÏÖ³¡Êı¾İ CNend\n
-	* param[in] 	: cinfo.				 CNcomment:½âÂë¶ÔÏó 		CNend\n
-	* param[in] 	: pStreamStartBuf.		 CNcomment:ÂëÁ÷ÆğÊ¼µØÖ· 	CNend\n
-	* param[in] 	: pStreamEndBuf.		 CNcomment:ÂëÁ÷½áÊøµØÖ· 	CNend\n
-	* param[in] 	: pData.				 CNcomment:Êı¾İµØÖ· 		CNend\n
-	* param[in] 	: u64DataSize.			 CNcomment:Êı¾İ´óĞ¡ 		CNend\n
-	* param[in] 	: bStartFirst			 CNcomment:µÚÒ»´ÎÆô¶¯½âÂë	CNend\n
+					  CNcomment: è·å–ç°åœºæ•°æ® CNend\n
+	* param[in] 	: cinfo.				 CNcomment:è§£ç å¯¹è±¡ 		CNend\n
+	* param[in] 	: pStreamStartBuf.		 CNcomment:ç æµèµ·å§‹åœ°å€ 	CNend\n
+	* param[in] 	: pStreamEndBuf.		 CNcomment:ç æµç»“æŸåœ°å€ 	CNend\n
+	* param[in] 	: pData.				 CNcomment:æ•°æ®åœ°å€ 		CNend\n
+	* param[in] 	: u64DataSize.			 CNcomment:æ•°æ®å¤§å° 		CNend\n
+	* param[in] 	: bStartFirst			 CNcomment:ç¬¬ä¸€æ¬¡å¯åŠ¨è§£ç 	CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -146,13 +146,13 @@ Date				Author        		Modification
 	* func			: HI_JPEG_SetSaveScen
 	* description	: if the decode failure, we want to debug should need the decode\n
 					  scen,and use eda simulation.
-					  CNcomment: Èç¹û½âÂëÊ§°ÜÎÒÃÇÏ£ÍûÓÃEDA·ÂÕæ½øĞĞ¶¨Î»£¬ĞèÒª±£´æ½âÂëÏÖ\n
-								 ³¡ÓÃÀ´µ÷ÊÔÊ¹ÓÃ CNend\n
-	* param[in] 	:cinfo. 	  CNcomment:½âÂë¶ÔÏó	 CNend\n
-	* param[in] 	:bSaveScen.   CNcomment:ÊÇ·ñ±£´æÏÖ³¡ CNend\n
-	* param[in]     :pFileName    CNcomment:½âÂëÎÄ¼ş     CNend\n
-	* retval		: HI_SUCCESS  CNcomment: ³É¹¦		 CNend\n
-	* retval		: HI_FAILURE  CNcomment: Ê§°Ü		 CNend\n
+					  CNcomment: å¦‚æœè§£ç å¤±è´¥æˆ‘ä»¬å¸Œæœ›ç”¨EDAä»¿çœŸè¿›è¡Œå®šä½ï¼Œéœ€è¦ä¿å­˜è§£ç ç°\n
+								 åœºç”¨æ¥è°ƒè¯•ä½¿ç”¨ CNend\n
+	* param[in] 	:cinfo. 	  CNcomment:è§£ç å¯¹è±¡	 CNend\n
+	* param[in] 	:bSaveScen.   CNcomment:æ˜¯å¦ä¿å­˜ç°åœº CNend\n
+	* param[in]     :pFileName    CNcomment:è§£ç æ–‡ä»¶     CNend\n
+	* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ		 CNend\n
+	* retval		: HI_FAILURE  CNcomment: å¤±è´¥		 CNend\n
 	* others:		: NA
 	*****************************************************************************/
 	HI_S32 HI_JPEG_SetSaveScen(const struct jpeg_decompress_struct *cinfo,HI_BOOL bSaveScen,HI_CHAR* pFileName);
@@ -160,7 +160,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_OpenDev
 	* description	: open the jpeg device.
-					  CNcomment: ´ò¿ªjpegÉè±¸£¬´ı»úÊ¹ÓÃµÄ CNend\n
+					  CNcomment: æ‰“å¼€jpegè®¾å¤‡ï¼Œå¾…æœºä½¿ç”¨çš„ CNend\n
 	* param[in]	    : NA
 	* retval		: NA
 	* others:		: NA
@@ -169,7 +169,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_CloseDev
 	* description	: close the jpeg device.
-					  CNcomment: ¹Ø±ÕjpegÉè±¸ CNend\n
+					  CNcomment: å…³é—­jpegè®¾å¤‡ CNend\n
 	* param[in] 	: NA
 	* retval		: NA
 	* others:		: NA
@@ -179,8 +179,8 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_GetDev
 	* description	: get the jpeg device.
-					  CNcomment: »ñÈ¡jpegÉè±¸ CNend\n
-	* param[in] 	: s32JpegDev CNcomment: ´ò¿ªµÄjpeg½Úµã CNend\n
+					  CNcomment: è·å–jpegè®¾å¤‡ CNend\n
+	* param[in] 	: s32JpegDev CNcomment: æ‰“å¼€çš„jpegèŠ‚ç‚¹ CNend\n
 	* retval		: HI_SUCCESS
 	* retval		: HI_FAILURE
 	* others:		: NA
@@ -190,7 +190,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_Suspend
 	* description	: test suspend.
-					  CNcomment: ´ı»ú´¦Àí CNend\n
+					  CNcomment: å¾…æœºå¤„ç† CNend\n
 	* param[in]	    : NA
 	* retval		: HI_SUCCESS
 	* retval		: HI_FAILURE
@@ -201,7 +201,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_Resume
 	* description	: test resume.
-					  CNcomment: ´ı»ú»½ĞÑ´¦Àí CNend\n
+					  CNcomment: å¾…æœºå”¤é†’å¤„ç† CNend\n
 	* param[in] 	: NA
 	* retval		: HI_SUCCESS
 	* retval		: HI_FAILURE
@@ -213,7 +213,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_SaveBmp
 	* description	: save the phy data to bmp picture.
-					  CNcomment: ±£´æ½âÂëºóµÄÊı¾İµ½bmpÍ¼Æ¬ CNend\n
+					  CNcomment: ä¿å­˜è§£ç åçš„æ•°æ®åˆ°bmpå›¾ç‰‡ CNend\n
 	* param[in]	    : pDataPhy
 	* param[in]	    : u32Width
 	* param[in]	    : u32Height
@@ -228,7 +228,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_SaveYUVSP
 	* description	: save the yuv semi-planer data
-			  		  CNcomment: ±£´æ½âÂëºóµÄyuvspÊı¾İ CNend\n
+			  		  CNcomment: ä¿å­˜è§£ç åçš„yuvspæ•°æ® CNend\n
 	* param[in] 	: cinfo
 	* retval		: NA
 	* others:		: NA
@@ -239,11 +239,11 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_GetIfHardDec2ARGB8888
 	* description	: get if use jpeg hard decode to ARGB888,is not tde csc to ARGB8888
-					  CNcomment: »ñÈ¡ÊÇ·ñÊ¹ÓÃJPEGÓ²¼ş½âÂë½â³ÉARGB8888£¬Õâ¸öÊ±ºòÊÇÓÃ½âÂë·Ö±æÂÊµÄ
-					             ÕæÕıµÄÊı¾İÊÇÏÔÊ¾·Ö±æÂÊ£¬ËùÒÔJPEG½âÂëÒª²Ã¼ô³ÉÏÔÊ¾·Ö±æÂÊ´óĞ¡µÄ£¬
-					             ÕâÑùÊä³öÊı¾İ¾ÍÕıÈ·ÁË¡£·ñÔò²»ÉèÖÃ²Ã¼ô»áÓĞ¶àÓàÊı¾İµÄ CNend\n
-	* param[in]	    : cinfo                    ½âÂë¶ÔÏó
-	* param[in]	    : pbJpegHardDecARGB8888    ÊÇ·ñÎªJPEGÓ²¼ş½âÂëÊä³öARGB8888
+					  CNcomment: è·å–æ˜¯å¦ä½¿ç”¨JPEGç¡¬ä»¶è§£ç è§£æˆARGB8888ï¼Œè¿™ä¸ªæ—¶å€™æ˜¯ç”¨è§£ç åˆ†è¾¨ç‡çš„
+					             çœŸæ­£çš„æ•°æ®æ˜¯æ˜¾ç¤ºåˆ†è¾¨ç‡ï¼Œæ‰€ä»¥JPEGè§£ç è¦è£å‰ªæˆæ˜¾ç¤ºåˆ†è¾¨ç‡å¤§å°çš„ï¼Œ
+					             è¿™æ ·è¾“å‡ºæ•°æ®å°±æ­£ç¡®äº†ã€‚å¦åˆ™ä¸è®¾ç½®è£å‰ªä¼šæœ‰å¤šä½™æ•°æ®çš„ CNend\n
+	* param[in]	    : cinfo                    è§£ç å¯¹è±¡
+	* param[in]	    : pbJpegHardDecARGB8888    æ˜¯å¦ä¸ºJPEGç¡¬ä»¶è§£ç è¾“å‡ºARGB8888
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -254,9 +254,9 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_IfHardDec
 	* description	: whether is hard decode or soft decode
-					  CNcomment: ÊÇÓ²¼ş½âÂë»¹ÊÇÈí¼ş½âÂë CNend\n
-	* param[in]	    : cinfo       ½âÂë¶ÔÏó
-	* param[in]	    : pHardDec    ÊÇ·ñÎªÓ²¼ş½âÂë
+					  CNcomment: æ˜¯ç¡¬ä»¶è§£ç è¿˜æ˜¯è½¯ä»¶è§£ç  CNend\n
+	* param[in]	    : cinfo       è§£ç å¯¹è±¡
+	* param[in]	    : pHardDec    æ˜¯å¦ä¸ºç¡¬ä»¶è§£ç 
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -268,7 +268,7 @@ Date				Author        		Modification
    /*****************************************************************************
 	* func			: HI_JPEG_HardDecNow
 	* description	: whether has hard decode now
-					  CNcomment: ´Ë¿ÌÊÇ·ñÆô¶¯ÁËÓ²¼ş½âÂë CNend\n
+					  CNcomment: æ­¤åˆ»æ˜¯å¦å¯åŠ¨äº†ç¡¬ä»¶è§£ç  CNend\n
 	* retval		: HI_SUCCESS;
 	* retval		: HI_FAILURE;
 	* others:		: NA
@@ -278,7 +278,7 @@ Date				Author        		Modification
    /*****************************************************************************
 	* func			: HI_JPEG_RandomReset
 	* description	: reset the hard decode register
-					  CNcomment: ¸´Î»Ó²¼ş½âÂë¼Ä´æÆ÷ CNend\n
+					  CNcomment: å¤ä½ç¡¬ä»¶è§£ç å¯„å­˜å™¨ CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -287,7 +287,7 @@ Date				Author        		Modification
    /*****************************************************************************
 	* func			: HI_JPEG_SetDecState
 	* description	: set hard decode state
-					  CNcomment: ÉèÖÃ½âÂë×´Ì¬ CNend\n
+					  CNcomment: è®¾ç½®è§£ç çŠ¶æ€ CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -296,7 +296,7 @@ Date				Author        		Modification
     /*****************************************************************************
 	* func			: HI_JPEG_SetJpegDev
 	* description	: set Jpeg Dev
-					  CNcomment: ÉèÖÃ½âÂëÉè±¸Öµ CNend\n
+					  CNcomment: è®¾ç½®è§£ç è®¾å¤‡å€¼ CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -305,7 +305,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_SetJpegVir
 	* description	: set Jpeg map virtual value
-					  CNcomment: ÉèÖÃÓ³ÉäĞéÄâµØÖ· CNend\n
+					  CNcomment: è®¾ç½®æ˜ å°„è™šæ‹Ÿåœ°å€ CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -314,7 +314,7 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: HI_JPEG_RandomResetInit
 	* description	: init the random reset valure
-					  CNcomment: ³õÊ¼»¯Ëæ»úÈí¸´Î»²âÊÔµÄÏà¹Ø²ÎÊıÖµ CNend\n
+					  CNcomment: åˆå§‹åŒ–éšæœºè½¯å¤ä½æµ‹è¯•çš„ç›¸å…³å‚æ•°å€¼ CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/

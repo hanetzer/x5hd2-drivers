@@ -281,7 +281,7 @@ HI_S32 SYNC_CheckNum(HI_U32 *pSyncNum, struct file *file)
     for (i=0; i<SYNC_MAX_NUM; i++)
     {
         /*multi-thread process in MCE mode*/
-        /*CNcomment:´ËÊ±mce·½Ê½Àà¶àÏß³Ì´¦Àí¼´¿É */
+        /*CNcomment:æ­¤æ—¶mceæ–¹å¼ç±»å¤šçº¿ç¨‹å¤„ç†å³å¯ */
         if (g_SyncGlobalState.SyncInfo[i].File == ((HI_U32)file))
         {
             (*pSyncNum)++;
@@ -722,7 +722,7 @@ HI_S32 SYNC_MOD_Ioctl(unsigned int cmd, HI_VOID *arg)
 
 #ifdef HI_MCE_SUPPORT
 /*the following interface is only for mce now*/
-/*CNCommont: ÏÂÊö½Ó¿Ú¾ùÎªSYNCÄ£¿éÇý¶¯ÏÂ¶ÔÍâ½Ó¿Ú£¬Ä¿Ç°½öÌá¹©¸øMCEÄ£¿éÊ¹ÓÃ*/
+/*CNCommont: ä¸‹è¿°æŽ¥å£å‡ä¸ºSYNCæ¨¡å—é©±åŠ¨ä¸‹å¯¹å¤–æŽ¥å£ï¼Œç›®å‰ä»…æä¾›ç»™MCEæ¨¡å—ä½¿ç”¨*/
 static HI_S32 DRV_SYNC_CheckHandle(HI_HANDLE hSync, SYNC_S **ppSync, HI_U32 *pSyncID)
 {
     *pSyncID = hSync & 0xff;
@@ -873,10 +873,10 @@ HI_S32 HI_DRV_SYNC_Init()
 {
     HI_S32          Ret;
 
-    /*KO¼ÓÔØÇ°°ë²¿*/
+    /*KOåŠ è½½å‰åŠéƒ¨*/
     Ret = SYNC_DRV_Init();
 
-    /*±¾Ä£¿é»ù±¾³õÊ¼»¯*/
+    /*æœ¬æ¨¡å—åŸºæœ¬åˆå§‹åŒ–*/
     Ret |= SYNC_MOD_Init();
     
     return Ret;

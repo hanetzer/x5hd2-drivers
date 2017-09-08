@@ -10,14 +10,14 @@
 /* 2005-06-12:												*/
 /*Create manage link for the memory mapped successful to 
 	avoid remap												*/
-/*CNcomment:¶ÔÓ³Éä³É¹¦¿Õ¼ä½¨Á¢¹ÜÀíÁ´±í£¬¿ÉÒÔ·ÀÖ¹¶ÔÖØµş¿Õ¼äµÄ
-  CNcomment:ÖØ¸´Ó³Éä 										*/
+/*CNcomment:å¯¹æ˜ å°„æˆåŠŸç©ºé—´å»ºç«‹ç®¡ç†é“¾è¡¨ï¼Œå¯ä»¥é˜²æ­¢å¯¹é‡å ç©ºé—´çš„
+  CNcomment:é‡å¤æ˜ å°„ 										*/
 /* 2005-12-21: 					                            */
 /*Add memunmap function										*/
-/*CNcomment:Ôö¼Ómemunmapº¯Êı								*/
+/*CNcomment:å¢åŠ memunmapå‡½æ•°								*/
 /* 2010-02-05: 												*/
 /*fix bug:slop over when memunmap  search for address 		*/
-/*CNcomment:jianglei(40671)ĞŞ¸Ämemunmap²éÕÒµØÖ·Ô½½çÎÊÌâ		*/
+/*CNcomment:jianglei(40671)ä¿®æ”¹memunmapæŸ¥æ‰¾åœ°å€è¶Šç•Œé—®é¢˜		*/
 /************************************************************/
 
 #include <stdio.h>
@@ -45,7 +45,7 @@ typedef struct tag_MMAP_Node
     unsigned int Start_P;
     unsigned int Start_V;
     unsigned int length;
-    unsigned int refcount;  /*the count of the memory after mapped*//*CNcomment: mapºóµÄ¿Õ¼ä¶ÎµÄÒıÓÃ¼ÆÊı */
+    unsigned int refcount;  /*the count of the memory after mapped*//*CNcomment: mapåçš„ç©ºé—´æ®µçš„å¼•ç”¨è®¡æ•° */
     struct tag_MMAP_Node * next;
 }MMAP_Node_t;
 
@@ -218,7 +218,7 @@ HI_S32 HI_MUNMAP(HI_VOID * addr_mapped)
             if(0 == pTmp->refcount)
             {
             	/*when the count is 0 the mapped memory is not in use, use memunmap to reclaim*/
-                /*CNcomment:ÒıÓÃ¼ÆÊı±äÎª0, ±»mapµÄÄÚ´æ¿Õ¼ä²»ÔÙÊ¹ÓÃ,´ËÊ±ĞèÒª½øĞĞmunmap»ØÊÕ */
+                /*CNcomment:å¼•ç”¨è®¡æ•°å˜ä¸º0, è¢«mapçš„å†…å­˜ç©ºé—´ä¸å†ä½¿ç”¨,æ­¤æ—¶éœ€è¦è¿›è¡Œmunmapå›æ”¶ */
 
                 //WRITE_LOG_INFO("memunmap(): map node will be remove:0x%x!\n", pTmp);
 

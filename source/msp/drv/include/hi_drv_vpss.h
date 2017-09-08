@@ -6,11 +6,11 @@
 #include "drv_pq_ext.h"
 
 /** Handle Definition.*/
-/**<CNcomment: ¾ä±ú¶¨Òå \n
-      ¾ä±úÊµ¼ÊÉÏÊÇÒ»¸öÕûÊý£¬ÓÃÓÚ±êÊ¶chanºÍportÊ±ÊýÖµµÄ¶¨ÒåÓÐËù²»Í¬£¬µ«¶¼ÒÔ-1×÷ÎªÎÞÐ§¾ä±ú¡£\n
-      1. VPSSÊµÀý¾ä±ú£¬ÆäÖµÎªÊµÀýµÄË÷ÒýºÅ(ID) \n
-      2. ¶Ë¿Ú¾ä±ú£¬ÆäÖµÒª±íÊ¾Á½¸öÄÚÈÝ: ËùÊôÍ¨µÀË÷Òý£¬ÒÔ¼°¶Ë¿Ú±¾ÉíµÄË÷Òý¡£\n
-              = ÊµÀýË÷Òý*256 + ¶Ë¿ÚË÷Òý */
+/**<CNcomment: å¥æŸ„å®šä¹‰ \n
+      å¥æŸ„å®žé™…ä¸Šæ˜¯ä¸€ä¸ªæ•´æ•°ï¼Œç”¨äºŽæ ‡è¯†chanå’Œportæ—¶æ•°å€¼çš„å®šä¹‰æœ‰æ‰€ä¸åŒï¼Œä½†éƒ½ä»¥-1ä½œä¸ºæ— æ•ˆå¥æŸ„ã€‚\n
+      1. VPSSå®žä¾‹å¥æŸ„ï¼Œå…¶å€¼ä¸ºå®žä¾‹çš„ç´¢å¼•å·(ID) \n
+      2. ç«¯å£å¥æŸ„ï¼Œå…¶å€¼è¦è¡¨ç¤ºä¸¤ä¸ªå†…å®¹: æ‰€å±žé€šé“ç´¢å¼•ï¼Œä»¥åŠç«¯å£æœ¬èº«çš„ç´¢å¼•ã€‚\n
+              = å®žä¾‹ç´¢å¼•*256 + ç«¯å£ç´¢å¼• */
       
 typedef HI_S32 VPSS_HANDLE;
 #define VPSS_INVALID_HANDLE (-1)
@@ -24,17 +24,17 @@ typedef HI_S32 VPSS_HANDLE;
 #define DEF_HI_DRV_VPSS_PORT_MAX_NUMBER 3
 
 /** Last Frame Flag,indicate it is a valid frame.*/
-/**<CNcomment: Ç°¼¶´«ÈëµÄ×îºóÒ»Ö¡±ê¼Ç£¬¸ÃÖ¡ÓÐÐ§*/
+/**<CNcomment: å‰çº§ä¼ å…¥çš„æœ€åŽä¸€å¸§æ ‡è®°ï¼Œè¯¥å¸§æœ‰æ•ˆ*/
 #define DEF_HI_DRV_VPSS_LAST_FRAME_FLAG 0xffee
 
 /** Last Frame Flag,indicate it is an invalid frame.*/
-/**<CNcomment: Ç°¼¶´«ÈëµÄ×îºóÒ»Ö¡±ê¼Ç£¬¸ÃÖ¡ÎÞÐ§*/
+/**<CNcomment: å‰çº§ä¼ å…¥çš„æœ€åŽä¸€å¸§æ ‡è®°ï¼Œè¯¥å¸§æ— æ•ˆ*/
 #define DEF_HI_DRV_VPSS_LAST_ERROR_FLAG 0xff00
 
 /*************************** Structure Definition ****************************/
 
 /**defines the vertical flip type.*/
-/**CNcomment:¶¨ÒåÊÇ·ñ´ò¿ª´¹Ö±·­×ª¹¦ÄÜ*/
+/**CNcomment:å®šä¹‰æ˜¯å¦æ‰“å¼€åž‚ç›´ç¿»è½¬åŠŸèƒ½*/
 typedef enum
 {
     HI_DRV_VPSS_HFLIP_DISABLE = 0,
@@ -43,7 +43,7 @@ typedef enum
 }HI_DRV_VPSS_HFLIP_E;
 
 /**defines the horizon flip type.*/
-/**CNcomment:¶¨ÒåÊÇ·ñ´ò¿ªË®Æ½·­×ª¹¦ÄÜ*/
+/**CNcomment:å®šä¹‰æ˜¯å¦æ‰“å¼€æ°´å¹³ç¿»è½¬åŠŸèƒ½*/
 typedef enum
 {
     HI_DRV_VPSS_VFLIP_DISABLE = 0,
@@ -53,7 +53,7 @@ typedef enum
 
 
 /**defines the ROTATION type.*/
-/**CNcomment:¶¨ÒåÊÓÆµÐý×ª½Ç¶È*/
+/**CNcomment:å®šä¹‰è§†é¢‘æ—‹è½¬è§’åº¦*/
 typedef enum
 {
     HI_DRV_VPSS_ROTATION_DISABLE = 0,
@@ -75,11 +75,11 @@ typedef enum
 
 
 /**defines the Deinterlace mode.
-    3FIELD£¬4FIELD£¬5FIELD is supported¡£
+    3FIELDï¼Œ4FIELDï¼Œ5FIELD is supportedã€‚
     Default is HI_DRV_VPSS_DIE_5FIELD*/
-/**CNcomment:¶¨ÒåÈ¥¸ôÐÐËã·¨Ä£Ê½
-    ½öÖ§³ÖÈý¡¢ËÄ¡¢Îå³¡Ä£Ê½
-    Ä¬ÈÏÅäÖÃÎªÎå³¡Ä£Ê½*/
+/**CNcomment:å®šä¹‰åŽ»éš”è¡Œç®—æ³•æ¨¡å¼
+    ä»…æ”¯æŒä¸‰ã€å››ã€äº”åœºæ¨¡å¼
+    é»˜è®¤é…ç½®ä¸ºäº”åœºæ¨¡å¼*/
 typedef enum
 {
     HI_DRV_VPSS_DIE_DISABLE = 0,
@@ -124,8 +124,8 @@ typedef enum
 }HI_DRV_VPSS_CC_E;
 
 /**defines the Sharpen type.*/
-/**CNcomment:¶¨ÒåÈñ»¯Ä£Ê½*/
-/*ÐèÒªÈ·ÈÏ*/
+/**CNcomment:å®šä¹‰é”åŒ–æ¨¡å¼*/
+/*éœ€è¦ç¡®è®¤*/
 typedef enum
 {
     HI_DRV_VPSS_SHARPNESS_DISABLE = 0,
@@ -135,7 +135,7 @@ typedef enum
 }HI_DRV_VPSS_SHARPNESS_E;
 
 /**defines the Dnr type.*/
-/**CNcomment:¶¨ÒåÈ¥¿éÈ¥ÕñÁåËã·¨Ä£Ê½*/
+/**CNcomment:å®šä¹‰åŽ»å—åŽ»æŒ¯é“ƒç®—æ³•æ¨¡å¼*/
 typedef enum
 {
     HI_DRV_VPSS_DNR_DISABLE = 0,
@@ -162,7 +162,7 @@ typedef enum
 }HI_DRV_VPSS_DR_E;
 /*delete*/
 /**defines the color space convert type.*/
-/**CNcomment:¶¨ÒåÉ«²Ê¿Õ¼ä×ª»»Ä£Ê½*/
+/**CNcomment:å®šä¹‰è‰²å½©ç©ºé—´è½¬æ¢æ¨¡å¼*/
 typedef enum
 {
     HI_DRV_VPSS_CSC_DISABLE = 0,
@@ -172,7 +172,7 @@ typedef enum
 }HI_DRV_VPSS_CSC_E;
 
 /**defines the fidelity type.*/
-/**CNcomment:¶¨Òå±£Õæ´¦ÀíÄ£Ê½*/
+/**CNcomment:å®šä¹‰ä¿çœŸå¤„ç†æ¨¡å¼*/
 typedef enum
 {
     HI_DRV_VPSS_FIDELITY_DISABLE = 0,
@@ -208,7 +208,7 @@ typedef struct
 
 
 /**defines the vpss instance attr.*/
-/**CNcomment:¶¨ÒåÖð¸ôÐÐ¼ì²âÅäÖÃ*/
+/**CNcomment:å®šä¹‰é€éš”è¡Œæ£€æµ‹é…ç½®*/
 typedef enum
 {   
     HI_DRV_VPSS_PRODETECT_PROGRESSIVE = 0,
@@ -219,19 +219,19 @@ typedef enum
 
 
 /**defines the vpss instance attr.*/
-/**CNcomment:¶¨ÒåÊµÀýÅäÖÃ*/
+/**CNcomment:å®šä¹‰å®žä¾‹é…ç½®*/
 typedef struct 
 {
     HI_S32  s32Priority;  /**defines the instance priority.
                                 default 16
                                 0 is valid ,1 ~ 31 is more and more prior 
                                 */
-                          /**CNcomment:0ÎÞÐ§£¬1 ~ 31ÎªÕý³£ÓÅÏÈ¼¶£¬ÊýÖµÔ½´óÓÅÏÈ¼¶Ô½¸ß*/
+                          /**CNcomment:0æ— æ•ˆï¼Œ1 ~ 31ä¸ºæ­£å¸¸ä¼˜å…ˆçº§ï¼Œæ•°å€¼è¶Šå¤§ä¼˜å…ˆçº§è¶Šé«˜*/
     
     HI_BOOL bAlwaysFlushSrc;    /**whether process the newest frame.
                                         */
-                                /**CNcomment:ÊÇ·ñÖ»´¦Àí×îÐÂÒ»Ö¡£¬ÔÚµÍÑÓ³ÙÄ£Ê½ÏÂÖÃÎªTRUE
-                                            ÕâÑùÃ¿´Î¶¼»á¶Á¿ÕSrc buf£¬Ö»Áô×îÐÂÒ»Ö¡´¦Àí */
+                                /**CNcomment:æ˜¯å¦åªå¤„ç†æœ€æ–°ä¸€å¸§ï¼Œåœ¨ä½Žå»¶è¿Ÿæ¨¡å¼ä¸‹ç½®ä¸ºTRUE
+                                            è¿™æ ·æ¯æ¬¡éƒ½ä¼šè¯»ç©ºSrc bufï¼Œåªç•™æœ€æ–°ä¸€å¸§å¤„ç† */
     
     HI_DRV_VPSS_PRODETECT_E enProgInfo;
     
@@ -241,7 +241,7 @@ typedef struct
 
 
 /**defines the out buffer mode.*/
-/**CNcomment:¶¨ÒåÊä³öÖ¡´æ¹ÜÀíÄ£Ê½*/
+/**CNcomment:å®šä¹‰è¾“å‡ºå¸§å­˜ç®¡ç†æ¨¡å¼*/
 typedef enum hiDRV_VPSS_BUFFER_TYPE_E{
     HI_DRV_VPSS_BUF_VPSS_ALLOC_MANAGE = 0,
     HI_DRV_VPSS_BUF_USER_ALLOC_MANAGE,
@@ -261,7 +261,7 @@ typedef struct hiDRV_VPSS_BUFFER_CFG_S
 }HI_DRV_VPSS_BUFLIST_CFG_S;
 
 /**defines the Port attr.*/
-/**CNcomment:¶¨ÒåÊä³ö¶Ë¿ÚÅäÖÃ*/
+/**CNcomment:å®šä¹‰è¾“å‡ºç«¯å£é…ç½®*/
 typedef struct
 {
     HI_DRV_COLOR_SPACE_E eDstCS;        /**Output color space*/
@@ -284,8 +284,8 @@ typedef struct
     
     HI_BOOL  bTunnelEnable;             
     HI_S32  s32SafeThr;                 /**if Tunnel is  enabled, it is used to keep logic W/R order*/
-                                        /**CNcomment:°²È«Ë®Ïß£¬0~100£¬ÎªÊä³öÖ¡ÒÑÍê³ÉµÄ°Ù·Ö±È. 
-                                                    0±íÊ¾ËæÊ±¿É¸øºó¼¶£¬100±íÊ¾ÍêÈ«Íê³É²ÅÄÜ¸øºó¼¶ */
+                                        /**CNcomment:å®‰å…¨æ°´çº¿ï¼Œ0~100ï¼Œä¸ºè¾“å‡ºå¸§å·²å®Œæˆçš„ç™¾åˆ†æ¯”. 
+                                                    0è¡¨ç¤ºéšæ—¶å¯ç»™åŽçº§ï¼Œ100è¡¨ç¤ºå®Œå…¨å®Œæˆæ‰èƒ½ç»™åŽçº§ */
     HI_BOOL   b3Dsupport;
     
 }HI_DRV_VPSS_PORT_CFG_S;
@@ -298,7 +298,7 @@ typedef struct
 }HI_DRV_VPSS_PORT_AVAILABLE_S;
 
 /**defines the user control command.*/
-/**CNcomment:¶¨ÒåÓÃ»§¿ØÖÆÃüÁî*/
+/**CNcomment:å®šä¹‰ç”¨æˆ·æŽ§åˆ¶å‘½ä»¤*/
 typedef enum
 {
     HI_DRV_VPSS_USER_COMMAND_IMAGEREADY = 0,
@@ -309,7 +309,7 @@ typedef enum
 }HI_DRV_VPSS_USER_COMMAND_E;
 
 /**defines the out buffer state structure.*/
-/**CNcomment:¶¨ÒåÊä³öÖ¡´æ¶ÓÁÐ×´Ì¬*/
+/**CNcomment:å®šä¹‰è¾“å‡ºå¸§å­˜é˜Ÿåˆ—çŠ¶æ€*/
 typedef struct
 {   
     HI_U32 u32TotalBufNumber;
@@ -326,7 +326,7 @@ typedef enum
 
 
 /**defines the Pre-Module Mutual Mode.*/
-/**CNcomment:¶¨ÒåÓëÇ°¼¶Ä£¿é½»»¥Ä£Ê½*/
+/**CNcomment:å®šä¹‰ä¸Žå‰çº§æ¨¡å—äº¤äº’æ¨¡å¼*/
 typedef enum
 {
     VPSS_SOURCE_MODE_USERACTIVE = 0,
@@ -343,7 +343,7 @@ typedef struct
 }HI_DRV_VPSS_SOURCE_FUNC_S;
 
 /**defines the user buffer structure.*/
-/**CNcomment:¶¨ÒåVPSSÏòÍâ²¿ÉêÇëµÄBUFER½á¹¹*/
+/**CNcomment:å®šä¹‰VPSSå‘å¤–éƒ¨ç”³è¯·çš„BUFERç»“æž„*/
 typedef struct
 {
     VPSS_HANDLE hPort; 
@@ -362,7 +362,7 @@ typedef struct
 }HI_DRV_VPSS_FRMINFO_S;
 
 /**defines the vpss process event.*/
-/**CNcomment:¶¨ÒåVPSS´¦ÀíÊÂ¼þ*/
+/**CNcomment:å®šä¹‰VPSSå¤„ç†äº‹ä»¶*/
 typedef enum
 {   
     VPSS_EVENT_BUFLIST_FULL,
@@ -373,11 +373,11 @@ typedef enum
 }HI_DRV_VPSS_EVENT_E;
 
 /**defines the vpss process event callback.*/
-/**CNcomment:¶¨ÒåVPSS´¦ÀíÊÂ¼þ»Øµ÷
-    VPSS_EVENT_BUFLIST_FULL:Êä³öÖ¡´æÂú£¬ÉÏ±¨HI_DRV_VPSS_BUFFUL_STRATAGY_E½á¹¹Ìå£¬ÓÃ»§·µ»Ø´¦Àí²ßÂÔ
-    VPSS_EVENT_GET_FRMBUFFER:»ñÈ¡Êä³öÖ¡´æ£¬ÉÏ±¨HI_DRV_VPSS_FRMBUF_S½á¹¹Ìå£¬ÓÃ»§¸³Öµ
-    VPSS_EVENT_REL_FRMBUFFER:ÊÍ·ÅÓÃ»§Ö¡´æ£¬ÉÏ±¨HI_DRV_VPSS_FRMBUF_S½á¹¹Ìå£¬ÓÃ»§´¦Àí
-    VPSS_EVENT_NEW_FRAME:ÐÂÖ¡´¦ÀíÍê³É£¬ÉÏ±¨HI_NULL£¬ÓÃ»§´¦Àí*/
+/**CNcomment:å®šä¹‰VPSSå¤„ç†äº‹ä»¶å›žè°ƒ
+    VPSS_EVENT_BUFLIST_FULL:è¾“å‡ºå¸§å­˜æ»¡ï¼Œä¸ŠæŠ¥HI_DRV_VPSS_BUFFUL_STRATAGY_Eç»“æž„ä½“ï¼Œç”¨æˆ·è¿”å›žå¤„ç†ç­–ç•¥
+    VPSS_EVENT_GET_FRMBUFFER:èŽ·å–è¾“å‡ºå¸§å­˜ï¼Œä¸ŠæŠ¥HI_DRV_VPSS_FRMBUF_Sç»“æž„ä½“ï¼Œç”¨æˆ·èµ‹å€¼
+    VPSS_EVENT_REL_FRMBUFFER:é‡Šæ”¾ç”¨æˆ·å¸§å­˜ï¼Œä¸ŠæŠ¥HI_DRV_VPSS_FRMBUF_Sç»“æž„ä½“ï¼Œç”¨æˆ·å¤„ç†
+    VPSS_EVENT_NEW_FRAME:æ–°å¸§å¤„ç†å®Œæˆï¼Œä¸ŠæŠ¥HI_NULLï¼Œç”¨æˆ·å¤„ç†*/
 typedef HI_S32 (*PFN_VPSS_CALLBACK)(HI_HANDLE hDst, HI_DRV_VPSS_EVENT_E enEventID, HI_VOID *pstArgs);
 
 

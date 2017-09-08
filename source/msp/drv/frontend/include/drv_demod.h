@@ -64,12 +64,12 @@ HI_VOID hi3136_config_i2c_out(HI_U32 u32TunerPort, HI_BOOL bTuner);
 #define          POLAR_SWITCH					0     /*0 level for 18V,1 level for 13V*/
 /*Diseqc Command word*/
 /*-----------------------------------
-帧头+地址+命令+数据
+甯уご+鍦板潃+鍛戒护+鏁版嵁
 -----------------------------------*/
-#define		HI3136_DISEQC_CMD1 	              0xE0  //桢头
-#define		HI3136_DISEQC_CMD2 	              0x10  //地址
-#define		HI3136_DISEQC_CMD3 	              0x38 //命令committed
-#define		HI3136_DISEQC_CMD3_1 	              0x39 //命令 uncommitted
+#define		HI3136_DISEQC_CMD1 	              0xE0  //妗㈠ご
+#define		HI3136_DISEQC_CMD2 	              0x10  //鍦板潃
+#define		HI3136_DISEQC_CMD3 	              0x38 //鍛戒护committed
+#define		HI3136_DISEQC_CMD3_1 	              0x39 //鍛戒护 uncommitted
 
 #define		HI3136_DISEQC_CMD4_LNB1         0xF0
 #define		HI3136_DISEQC_CMD4_SW01        0xF0

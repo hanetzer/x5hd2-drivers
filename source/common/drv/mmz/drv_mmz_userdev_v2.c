@@ -1061,7 +1061,7 @@ static struct mmb_info* get_mmbinfo_byusraddr(unsigned long addr, struct mmz_use
     return p;
 }
 
-// Ó¦µ±ÓĞ get/putÁ½¸ö½Ó¿Ú£¬±£Ö¤refµÄ»ñÈ¡ÊÍ·Å£¬²»¹ıÓÃ»§¶Ô¸Ã½Ó¿ÚÔİÊ±×Ô¼ºÈ·ÈÏ£¬Ê¹ÓÃÖĞ²»½øĞĞÊÍ·Å
+// åº”å½“æœ‰ get/putä¸¤ä¸ªæ¥å£ï¼Œä¿è¯refçš„è·å–é‡Šæ”¾ï¼Œä¸è¿‡ç”¨æˆ·å¯¹è¯¥æ¥å£æš‚æ—¶è‡ªå·±ç¡®è®¤ï¼Œä½¿ç”¨ä¸­ä¸è¿›è¡Œé‡Šæ”¾
 static int ioctl_mmb_user_getphyaddr(struct file *file, unsigned int iocmd, struct mmb_info *pmi)
 {
     struct mmb_info *p;

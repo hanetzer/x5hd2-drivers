@@ -1,6 +1,6 @@
 /**
  \file
- \brief Describes the header file that contains the common contents of the HiGo.CNcomment:HiGo¹«¹²ÄÚÈÝÍ·ÎÄ¼þ CNend
+ \brief Describes the header file that contains the common contents of the HiGo.CNcomment:HiGoå…¬å…±å†…å®¹å¤´æ–‡ä»¶ CNend
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version 1.0
@@ -22,29 +22,29 @@ extern "C" {
 /***************************** Macro Definition ******************************/
 /*************************** Structure Definition ****************************/
 /** \addtogroup      HIGO_COMMON */
-/** @{ */  /**<!¡ª[HIGO_COMMON] */
+/** @{ */  /**<!â€”[HIGO_COMMON] */
 
-/**Maximum number of colors in the palette*//** CNcomment: µ÷É«°å×î´óÑÕÉ«Êý */
+/**Maximum number of colors in the palette*//** CNcomment: è°ƒè‰²æ¿æœ€å¤§é¢œè‰²æ•° */
 #define MAX_PALETTE_COLOR_SIZE 256
 
-/**Color value*//** CNcomment: ÑÕÉ«Öµ */
+/**Color value*//** CNcomment: é¢œè‰²å€¼ */
 typedef HI_U32 HI_COLOR;
 
-/**Palette*//** CNcomment: µ÷É«°å */
+/**Palette*//** CNcomment: è°ƒè‰²æ¿ */
 typedef HI_COLOR HI_PALETTE[MAX_PALETTE_COLOR_SIZE];
 
 typedef enum 
 {
-    HIGO_IMGTYPE_JPEG = 0, /**<.jpeg picture*//**<CNcomment: JPEG¸ñÊ½Í¼Æ¬*/
-    HIGO_IMGTYPE_GIF,      /**<.gif picture*//**<CNcomment: GIF¸ñÊ½Í¼Æ¬*/
-    HIGO_IMGTYPE_BMP,       /**<.bmp picture*//**<CNcomment: BMP¸ñÊ½Í¼Æ¬ */
-    HIGO_IMGTYPE_PNG,      /**<.png picture*//**<CNcomment: PNG¸ñÊ½Í¼Æ¬ */
-    HIGO_IMGTYPE_RLE,      /**<.rle picture*//**<CNcomment: RLE¸ñÊ½Í¼Æ¬ */
+    HIGO_IMGTYPE_JPEG = 0, /**<.jpeg picture*//**<CNcomment: JPEGæ ¼å¼å›¾ç‰‡*/
+    HIGO_IMGTYPE_GIF,      /**<.gif picture*//**<CNcomment: GIFæ ¼å¼å›¾ç‰‡*/
+    HIGO_IMGTYPE_BMP,       /**<.bmp picture*//**<CNcomment: BMPæ ¼å¼å›¾ç‰‡ */
+    HIGO_IMGTYPE_PNG,      /**<.png picture*//**<CNcomment: PNGæ ¼å¼å›¾ç‰‡ */
+    HIGO_IMGTYPE_RLE,      /**<.rle picture*//**<CNcomment: RLEæ ¼å¼å›¾ç‰‡ */
     HIGO_IMGTPYE_BUTT
 } HIGO_IMGTYPE_E;
 
 
-/**Rectangle*//** CNcomment: ¾ØÐÎ */
+/**Rectangle*//** CNcomment: çŸ©å½¢ */
 typedef struct
 {
     HI_S32 x, y;
@@ -52,7 +52,7 @@ typedef struct
     HI_S32 w, h;
 } HI_RECT;
 
-/**Region*//** CNcomment: ÇøÓò */
+/**Region*//** CNcomment: åŒºåŸŸ */
 typedef struct
 {
     HI_S32 l;
@@ -61,19 +61,19 @@ typedef struct
     HI_S32 b;
 } HI_REGION;
 
-/**Mode of adjusting the window z-order*//**CNcomment:ZÐòµ÷Õû·½Ê½*/
+/**Mode of adjusting the window z-order*//**CNcomment:Zåºè°ƒæ•´æ–¹å¼*/
 typedef enum
 {
-    HIGO_ZORDER_MOVETOP = 0,  /**<Move to the top*//**<CNcomment:ÒÆµ½×î¶¥²¿*/
-    HIGO_ZORDER_MOVEUP,       /**<Move upwards*//**<CNcomment:ÏòÉÏÒÆ*/
-    HIGO_ZORDER_MOVEBOTTOM,   /**<Move to the bottom*//**<CNcomment:ÒÆµ½×îµ×²¿*/
-    HIGO_ZORDER_MOVEDOWN,     /**<Move downwards*//**<CNcomment:ÏòÏÂÒÆ*/
+    HIGO_ZORDER_MOVETOP = 0,  /**<Move to the top*//**<CNcomment:ç§»åˆ°æœ€é¡¶éƒ¨*/
+    HIGO_ZORDER_MOVEUP,       /**<Move upwards*//**<CNcomment:å‘ä¸Šç§»*/
+    HIGO_ZORDER_MOVEBOTTOM,   /**<Move to the bottom*//**<CNcomment:ç§»åˆ°æœ€åº•éƒ¨*/
+    HIGO_ZORDER_MOVEDOWN,     /**<Move downwards*//**<CNcomment:å‘ä¸‹ç§»*/
     HIGO_ZORDER_BUTT
 } HIGO_ZORDER_E;
 
 #define HIGO_INVALID_HANDLE 0x0
 
-/**Stream position*//** CNcomment: Á÷Ê½Î»ÖÃ*/
+/**Stream position*//** CNcomment: æµå¼ä½ç½®*/
 
 
 /** @} */  /*! <!-- Structure Definition end */
@@ -82,17 +82,17 @@ typedef enum
 
 /******************************* API declaration *****************************/
 /** \addtogroup      HIGO_COMMON */
-/** @{ */  /** <!¡ª[HIGO_COMMON] */
+/** @{ */  /** <!â€”[HIGO_COMMON] */
 
 
 /** 
-\brief Initializes the HiGo.CNcomment:HiGo³õÊ¼»¯ CNend
+\brief Initializes the HiGo.CNcomment:HiGoåˆå§‹åŒ– CNend
 \attention \n
 Before using the HiGo, you must call this application programming interface (API) to initialize the HiGo. The HiGo 
 includes the graphic device (Gdev) module, decoder, Winc module, bit block transfer (Bliter) module, and surface 
 module.
-CNcomment:Ê¹ÓÃHiGo¹¦ÄÜ±ØÐëÏÈµ÷ÓÃ¸Ã½Ó¿Ú£¬Íê³ÉHiGoµÄ³õÊ¼»¯£¬Ö÷Òª°üÀ¨gdev, decoder, winc, blit, surfaceÄ£¿é CNend
-\param N/A.CNcomment:ÎÞ CNend
+CNcomment:ä½¿ç”¨HiGoåŠŸèƒ½å¿…é¡»å…ˆè°ƒç”¨è¯¥æŽ¥å£ï¼Œå®ŒæˆHiGoçš„åˆå§‹åŒ–ï¼Œä¸»è¦åŒ…æ‹¬gdev, decoder, winc, blit, surfaceæ¨¡å— CNend
+\param N/A.CNcomment:æ—  CNend
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -105,10 +105,10 @@ CNcomment:Ê¹ÓÃHiGo¹¦ÄÜ±ØÐëÏÈµ÷ÓÃ¸Ã½Ó¿Ú£¬Íê³ÉHiGoµÄ³õÊ¼»¯£¬Ö÷Òª°üÀ¨gdev, decoder,
 HI_S32	HI_GO_Init(HI_VOID);
 
 /**
-\brief Deinitializes the HiGo.CNcomment: HiGoÈ¥³õÊ¼»¯ CNend
+\brief Deinitializes the HiGo.CNcomment: HiGoåŽ»åˆå§‹åŒ– CNend
 \attention \n
-If the HiGo is not used, you need to call this API to release resources.CNcomment: ²»ÔÙÊ¹ÓÃHiGo¹¦ÄÜÊ±ÐèÒªµ÷ÓÃ¸Ã½Ó¿Ú£¬ÊÍ·Å×ÊÔ´ CNend
-\param N/A.CNcomment: ÎÞ CNend
+If the HiGo is not used, you need to call this API to release resources.CNcomment: ä¸å†ä½¿ç”¨HiGoåŠŸèƒ½æ—¶éœ€è¦è°ƒç”¨è¯¥æŽ¥å£ï¼Œé‡Šæ”¾èµ„æº CNend
+\param N/A.CNcomment: æ—  CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -120,12 +120,12 @@ If the HiGo is not used, you need to call this API to release resources.CNcommen
 HI_S32	HI_GO_Deinit(HI_VOID);
 
 /** 
-\brief Initializes the extended library of the HiGo.CNcomment:HiGo À©Õ¹¿â³õÊ¼»¯ CNend
+\brief Initializes the extended library of the HiGo.CNcomment:HiGo æ‰©å±•åº“åˆå§‹åŒ– CNend
 \attention \n
 If the extended library of the HiGo is not used, you need to call this API to release resources, especially the 
 resources of the cursor and text modules.
-CNcomment:Ö÷ÒªÊÇCURSORºÍTEXTÄ£¿é¡£CNend
-\param N/A.CNcomment:ÎÞ CNend
+CNcomment:ä¸»è¦æ˜¯CURSORå’ŒTEXTæ¨¡å—ã€‚CNend
+\param N/A.CNcomment:æ—  CNend
 
 \retval ::HI_SUCCESS
 \retval ::HI_FAILURE
@@ -139,10 +139,10 @@ CNcomment:Ö÷ÒªÊÇCURSORºÍTEXTÄ£¿é¡£CNend
 HI_S32 HI_GO_InitExt(HI_VOID);
 
 /**
-\brief Deinitializes the extended library of the HiGo.CNcomment: HiGoÀ©Õ¹¿âÈ¥³õÊ¼»¯ CNend
+\brief Deinitializes the extended library of the HiGo.CNcomment: HiGoæ‰©å±•åº“åŽ»åˆå§‹åŒ– CNend
 \attention \n
-If the HiGo is not used, you need to call this API to release resources.CNcomment: ²»ÔÙÊ¹ÓÃHiGoÀ©Õ¹¿â¹¦ÄÜÊ±ÐèÒªµ÷ÓÃ¸Ã½Ó¿Ú£¬ÊÍ·Å×ÊÔ´£¬Ö÷ÒªÊÇCURSORºÍTEXTÄ£¿é¡£CNend
-\param N/A.CNcomment: ÎÞ CNend
+If the HiGo is not used, you need to call this API to release resources.CNcomment: ä¸å†ä½¿ç”¨HiGoæ‰©å±•åº“åŠŸèƒ½æ—¶éœ€è¦è°ƒç”¨è¯¥æŽ¥å£ï¼Œé‡Šæ”¾èµ„æºï¼Œä¸»è¦æ˜¯CURSORå’ŒTEXTæ¨¡å—ã€‚CNend
+\param N/A.CNcomment: æ—  CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NOTINIT
@@ -154,29 +154,29 @@ If the HiGo is not used, you need to call this API to release resources.CNcommen
 HI_S32 HI_GO_DeInitExt(HI_VOID);
 
 /** 
-\brief Obtains the version information.CNcomment:»ñÈ¡°æ±¾ÐÅÏ¢ CNend
+\brief Obtains the version information.CNcomment:èŽ·å–ç‰ˆæœ¬ä¿¡æ¯ CNend
 \attention \n
-N/A.CNcomment:ÎÞ CNend
-\param[out] ppVersion Output address of the version information string. The value cannot be empty.CNcomment: °æ±¾ÐÅÏ¢×Ö·û´®Êä³öµØÖ·£¬²»¿ÉÎª¿Õ CNend
-\param[out] ppBuildTime Build Output address of the time string. The value cannot be empty.CNcomment:BuildÊ±¼ä×Ö·û´®Êä³öµØÖ·£¬²»¿ÉÎª¿Õ CNend
+N/A.CNcomment:æ—  CNend
+\param[out] ppVersion Output address of the version information string. The value cannot be empty.CNcomment: ç‰ˆæœ¬ä¿¡æ¯å­—ç¬¦ä¸²è¾“å‡ºåœ°å€ï¼Œä¸å¯ä¸ºç©º CNend
+\param[out] ppBuildTime Build Output address of the time string. The value cannot be empty.CNcomment:Buildæ—¶é—´å­—ç¬¦ä¸²è¾“å‡ºåœ°å€ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NULLPTR
 
 \see \n
-N/A.CNcomment:ÎÞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_GetVersion(HI_CHAR ** ppVersion, HI_CHAR **ppBuildTime);
 
 /**
-\brief Converts the data on a surface into a .bmp picture for output.CNcomment: ½«SurfaceÖÐµÄÊý¾Ý×ª»»³ÉBMP¸ñÊ½Í¼ÏóÊä³ö¡£CNend
+\brief Converts the data on a surface into a .bmp picture for output.CNcomment: å°†Surfaceä¸­çš„æ•°æ®è½¬æ¢æˆBMPæ ¼å¼å›¾è±¡è¾“å‡ºã€‚CNend
 \attention \n
-The output file is [year]-[date]-[hour]-[min]-[second]-[ms].bmp.CNcomment: Êä³öÎÄ¼þÃûÎª[year]-[date]-[hour]-[min]-[second]-[ms].bmp CNend
-The output picture must be a 16-bit bitmap.CNcomment: Êä³öÍ¼Æ¬¹Ì¶¨Îª16Î»Í¼¡£CNend
-It is recommended that you call HI_GO_EncodeToFile rather than HI_GO_Surface2Bmp.CNcomment: ½¨ÒéÊ¹ÓÃHI_GO_EncodeToFile½Ó¿ÚÀ´´úÌæ´Ë½Ó¿Ú CNend
+The output file is [year]-[date]-[hour]-[min]-[second]-[ms].bmp.CNcomment: è¾“å‡ºæ–‡ä»¶åä¸º[year]-[date]-[hour]-[min]-[second]-[ms].bmp CNend
+The output picture must be a 16-bit bitmap.CNcomment: è¾“å‡ºå›¾ç‰‡å›ºå®šä¸º16ä½å›¾ã€‚CNend
+It is recommended that you call HI_GO_EncodeToFile rather than HI_GO_Surface2Bmp.CNcomment: å»ºè®®ä½¿ç”¨HI_GO_EncodeToFileæŽ¥å£æ¥ä»£æ›¿æ­¤æŽ¥å£ CNend
 
-\param[in] Surface Data to be captured.CNcomment: ÐèÒª½øÐÐ½ØÆÁµÄÊý¾Ý¡£CNend
-\param[in] pRect Pointer to a rectangle. If this parameter is not set, it indicates the entire surface.CNcomment: ÇøÓòÖ¸Õë,Îª¿Õ±íÊ¾Õû¸ösurface¡£CNend
+\param[in] Surface Data to be captured.CNcomment: éœ€è¦è¿›è¡Œæˆªå±çš„æ•°æ®ã€‚CNend
+\param[in] pRect Pointer to a rectangle. If this parameter is not set, it indicates the entire surface.CNcomment: åŒºåŸŸæŒ‡é’ˆ,ä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªsurfaceã€‚CNend
 
 
 \retval ::HI_SUCCESS
@@ -192,13 +192,13 @@ It is recommended that you call HI_GO_EncodeToFile rather than HI_GO_Surface2Bmp
 HI_S32	HI_GO_Surface2Bmp(HI_HANDLE Surface, const HI_RECT *pRect);
 
 /** 
-\brief Enables the memory management module.CNcomment:Ê¹ÄÜÄÚ´æ¹ÜÀíÄ£¿é CNend
+\brief Enables the memory management module.CNcomment:ä½¿èƒ½å†…å­˜ç®¡ç†æ¨¡å— CNend
 \attention \n
 The memory management module is disabled by default. Before using the memory statistics function, you must call this 
 API to enable the memory management module.
-CNcomment:Ä¬ÈÏÇé¿ö´¦ÓÚ·ÇÊ¹ÄÜ×´Ì¬£¬Ö»ÓÐ¸Ã½Ó¿Ú´ò¿ªºó²ÅÄÜÊ¹ÓÃÄÚ´æÍ³¼Æ¹¦ÄÜ CNend
+CNcomment:é»˜è®¤æƒ…å†µå¤„äºŽéžä½¿èƒ½çŠ¶æ€ï¼Œåªæœ‰è¯¥æŽ¥å£æ‰“å¼€åŽæ‰èƒ½ä½¿ç”¨å†…å­˜ç»Ÿè®¡åŠŸèƒ½ CNend
 
-\param[in] bEnable Whether to enable the memory statistics function.CNcomment:ÊÇ·ñ¿ªÆôÄÚ´æÍ³¼Æ¹¦ÄÜ CNend
+\param[in] bEnable Whether to enable the memory statistics function.CNcomment:æ˜¯å¦å¼€å¯å†…å­˜ç»Ÿè®¡åŠŸèƒ½ CNend
 
 \retval ::HI_SUCCESS
 
@@ -208,9 +208,9 @@ HI_S32 HI_GO_EnableMemMng(HI_BOOL bEnable);
 
 
 /** 
-\brief Obtains the enable status of the memory management module.CNcomment:»ñÈ¡ÄÚ´æ¹ÜÀíÄ£¿éÊ¹ÄÜ×´Ì¬ CNend
+\brief Obtains the enable status of the memory management module.CNcomment:èŽ·å–å†…å­˜ç®¡ç†æ¨¡å—ä½¿èƒ½çŠ¶æ€ CNend
 \attention \n
-\param[out] pbEnable Whether to obtain the enable status of the memory statistics function.CNcomment:»ñÈ¡ÄÚ´æÍ³¼Æ¹¦ÄÜÊÇ·ñ¿ªÆô CNend
+\param[out] pbEnable Whether to obtain the enable status of the memory statistics function.CNcomment:èŽ·å–å†…å­˜ç»Ÿè®¡åŠŸèƒ½æ˜¯å¦å¼€å¯ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NULLPTR
@@ -219,18 +219,18 @@ HI_S32 HI_GO_EnableMemMng(HI_BOOL bEnable);
 HI_S32 HI_GO_GetMemMngStatus(HI_BOOL *pbEnable);
 
 /** 
-\brief Outputs the general information about the system memory.CNcomment:Êä³öÏµÍ³ÄÚ´æµÄ×ÜÌåÐÅÏ¢ CNend
+\brief Outputs the general information about the system memory.CNcomment:è¾“å‡ºç³»ç»Ÿå†…å­˜çš„æ€»ä½“ä¿¡æ¯ CNend
 \attention \n
-\param N/A.CNcomment:ÎÞ CNend
+\param N/A.CNcomment:æ—  CNend
 
 \retval ::HI_SUCCESS
 */
 HI_S32 HI_GO_SysMemQuene(HI_VOID);
 
 /** 
-\brief Outputs the general information about the media memory zone (MMZ).CNcomment: Êä³öMMZÄÚ´æµÄ×ÜÌåÐÅÏ¢¡£CNend
+\brief Outputs the general information about the media memory zone (MMZ).CNcomment: è¾“å‡ºMMZå†…å­˜çš„æ€»ä½“ä¿¡æ¯ã€‚CNend
 \attention \n
-\param N/A.CNcomment:ÎÞ CNend
+\param N/A.CNcomment:æ—  CNend
 
 \retval ::HI_SUCCESS
 

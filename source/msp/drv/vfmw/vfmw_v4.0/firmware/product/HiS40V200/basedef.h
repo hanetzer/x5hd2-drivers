@@ -52,14 +52,14 @@ extern "C" {
  *************************************************************************/
 #if 0
 #ifndef BYPASS_FOD
-#define BYPASS_FOD               //FOD¿ª¹Ø
+#define BYPASS_FOD               //FODå¼€å…³
 #endif
 #endif
 
 #if defined(ENV_WIN32)
 
 #elif defined(ENV_ARMLINUX_KERNEL)
-#define USE_DECODE_THREAD       /* ARMLINUXÄÚºËÌ¬Ò»¶¨Òª¿ªÆô½âÂëÏß³Ì */
+#define USE_DECODE_THREAD       /* ARMLINUXå†…æ ¸æ€ä¸€å®šè¦å¼€å¯è§£ç çº¿ç¨‹ */
 #endif
 
 #define H264_ENABLE
@@ -90,7 +90,7 @@ extern SINT32  *g_pDbgMemVir;
 #define REC_POS(Data)
 #endif
 
-/* MAX()/MIN(): ×î´ó×îĞ¡ */
+/* MAX()/MIN(): æœ€å¤§æœ€å° */
 #define MAX(a, b)         (( (a) < (b) ) ?  (b) : (a))
 #define MIN(a, b)         (( (a) > (b) ) ?  (b) : (a))
 #define ABS(x)            (( (x) <  0  ) ? -(x) : (x))
@@ -113,13 +113,13 @@ extern SINT32  *g_pDbgMemVir;
 #define pos()  printf("%s: L%d\n", __FUNCTION__, __LINE__ )
 #endif
 
-/* =============== ÓÃÓÚÆ½Ì¨³éÏóµÄºê¶¨Òå ================ */
+/* =============== ç”¨äºå¹³å°æŠ½è±¡çš„å®å®šä¹‰ ================ */
 #if !defined(ENV_WIN32) && !defined(ENV_ARMLINUX) && !defined(ENV_ARMLINUX_KERNEL) && !defined(ENV_VXWORKS) && !defined(ENV_ADS)
-    #define ENV_ADS	//ÒòÎªADSµÄDEGUGÄ£Ê½²»Ö§³ÖÔ¤¶¨Òå£¬ËùÒÔÕâÀïĞèÒª¼ÓÉÏÕâÒ»¶Î´úÂë
+    #define ENV_ADS	//å› ä¸ºADSçš„DEGUGæ¨¡å¼ä¸æ”¯æŒé¢„å®šä¹‰ï¼Œæ‰€ä»¥è¿™é‡Œéœ€è¦åŠ ä¸Šè¿™ä¸€æ®µä»£ç 
 #endif
 
 
-#if defined( ENV_WIN32 )   /* WIN32ÏÂµ÷ÊÔ»·¾³ */
+#if defined( ENV_WIN32 )   /* WIN32ä¸‹è°ƒè¯•ç¯å¢ƒ */
     #define MALLOC( len, align )			malloc( (len) )
     #define FREE( p )						free((p))
 	#define RET_MEM_ERR						NULL
@@ -136,7 +136,7 @@ extern SINT32  *g_pDbgMemVir;
     //typedef  HANDLE                         TASK_HANDLE;
     #define  TASK_HANDLE                    HANDLE
 
-#elif defined( ENV_ARMLINUX )   /* FGPAÉÏµÄLINUX²âÊÔ»·¾³ */
+#elif defined( ENV_ARMLINUX )   /* FGPAä¸Šçš„LINUXæµ‹è¯•ç¯å¢ƒ */
     #define MALLOC( len, align )			malloc( (len) )
     #define FREE( p )						free( (p) )
 	#define RET_MEM_ERR						NULL
@@ -152,7 +152,7 @@ extern SINT32  *g_pDbgMemVir;
     #define  ASSERT(arg)                        ;
     #define  TASK_HANDLE                      pthread_t
 
-#elif defined( ENV_ARMLINUX_KERNEL ) /* ÄÚºËÌ¬°æ±¾£¬×îÖÕ½»¸¶¸ø·½°¸ */
+#elif defined( ENV_ARMLINUX_KERNEL ) /* å†…æ ¸æ€ç‰ˆæœ¬ï¼Œæœ€ç»ˆäº¤ä»˜ç»™æ–¹æ¡ˆ */
     #define SLEEP( ms )                      \
     do{                                      \
         msleep(ms);                          \
@@ -161,7 +161,7 @@ extern SINT32  *g_pDbgMemVir;
     #define MALLOC( len, align )			klib_malloc( len )
     #define FREE( p )				        kfree( p )
 	#define RET_MEM_ERR						NULL
-	// LINUXµÄsemaphoreÃ»ÓĞ³¬Ê±·µ»Ø»úÖÆ£¬ÕâÀïÖ»ÊÇ½èÓÃsemaphoreµÄÃû×Ö£¬Êµ¼ÊÉÏÓÃµÄÊÇÏûÏ¢¶ÓÁĞ
+	// LINUXçš„semaphoreæ²¡æœ‰è¶…æ—¶è¿”å›æœºåˆ¶ï¼Œè¿™é‡Œåªæ˜¯å€Ÿç”¨semaphoreçš„åå­—ï¼Œå®é™…ä¸Šç”¨çš„æ˜¯æ¶ˆæ¯é˜Ÿåˆ—
 	#define  SEM						    KLIB_SEM
 	#if 0
 	extern SINT32 SEM_INIT(SEM *pSem, SINT32 val);
@@ -173,7 +173,7 @@ extern SINT32  *g_pDbgMemVir;
 	#define  ASSERT(arg)
     #define TASK_HANDLE                      struct task_struct;
 
-#elif defined( ENV_VXWORKS )   /* ¹©VXWORKS²âÊÔ */
+#elif defined( ENV_VXWORKS )   /* ä¾›VXWORKSæµ‹è¯• */
     #define SLEEP( ms )                      \
     do{                                      \
         taskDelay(ms);                       \
@@ -199,7 +199,7 @@ extern SINT32  *g_pDbgMemVir;
     #define  ASSERT(arg)                    assert(arg)
     #define TASK_HANDLE                     UINT32;
 
-#elif defined( ENV_ADS )   /* ¹©ADS²âÊÔ */
+#elif defined( ENV_ADS )   /* ä¾›ADSæµ‹è¯• */
 	#define MALLOC( len, align )			malloc( (len) )
     #define FREE( p )						free((p))
 	#define RET_MEM_ERR						NULL
@@ -218,7 +218,7 @@ extern SINT32  *g_pDbgMemVir;
 #endif
 
 #if 0
-/* DPRINT(): ÆÁÄ»´òÓ¡ */
+/* DPRINT(): å±å¹•æ‰“å° */
 #ifdef SCREEN_PRINT_ON
     #if defined(ENV_ARMLINUX_KERNEL)
         #define DPRINT printk
@@ -246,7 +246,7 @@ extern SINT32  *g_pDbgMemVir;
 #endif
 
 
-/* MARKER(): ¼ì²éÂëÁ÷ÖĞµÄmarker_bit */
+/* MARKER(): æ£€æŸ¥ç æµä¸­çš„marker_bit */
 #define MARKER( pBs )										    \
 	if( !BsGet( pBs, 1 ) ){										\
 	    DPRINT( "fatal stream error --- marker_bit=0\n" );		\
@@ -254,9 +254,9 @@ extern SINT32  *g_pDbgMemVir;
     }
 #endif
 
-/* _LOG(): ÍùLOGÎÄ¼şÖĞ´òÓ¡ĞÅÏ¢ */
+/* _LOG(): å¾€LOGæ–‡ä»¶ä¸­æ‰“å°ä¿¡æ¯ */
 #ifdef  LOG_PRINT_ON
-    #if defined( ENV_ARMLINUX_KERNEL )  /* ARMLINUX ÄÚºËÌ¬°æ±¾ */
+    #if defined( ENV_ARMLINUX_KERNEL )  /* ARMLINUX å†…æ ¸æ€ç‰ˆæœ¬ */
         #define _LOG(...)                                       \
         if( 0 != g_LogEnable )                                  \
         {                                                       \
@@ -264,20 +264,20 @@ extern SINT32  *g_pDbgMemVir;
             sprintf(logchar, __VA_ARGS__ );                     \
             klib_fwrite(logchar, strlen(logchar)+1, g_fpLog);   \
         }
-	    //ÄÚºËÌ¬ÏÂÔİÊ±²»Ö§³Ö´æÂëÁ÷µÄ¹¦ÄÜ£¬ÒòÎª»¹²»»á´æ¶ş½øÖÆÎÄ¼ş µÄ·½·¨
+	    //å†…æ ¸æ€ä¸‹æš‚æ—¶ä¸æ”¯æŒå­˜ç æµçš„åŠŸèƒ½ï¼Œå› ä¸ºè¿˜ä¸ä¼šå­˜äºŒè¿›åˆ¶æ–‡ä»¶ çš„æ–¹æ³•
         #define _FWRITE
 
-    #elif defined( ENV_ARMLINUX )       /* ARMLINUX ÓÃ»§Ì¬°æ±¾ */
+    #elif defined( ENV_ARMLINUX )       /* ARMLINUX ç”¨æˆ·æ€ç‰ˆæœ¬ */
         #define _LOG(...)                                       \
 	    if( 0 != g_LogEnable )                                  \
 	    {                                                       \
 		    fprintf( g_fpLog, __VA_ARGS__ );                    \
 		    fflush( g_fpLog );	                                \
         }
-	    //ÓÃ»§Ì¬ÏÂÔİÊ±²»Ö§³Ö´æÂëÁ÷µÄ¹¦ÄÜ£¬ÒòÎª»¹²»»á´æ¶ş½øÖÆÎÄ¼ş µÄ·½·¨
+	    //ç”¨æˆ·æ€ä¸‹æš‚æ—¶ä¸æ”¯æŒå­˜ç æµçš„åŠŸèƒ½ï¼Œå› ä¸ºè¿˜ä¸ä¼šå­˜äºŒè¿›åˆ¶æ–‡ä»¶ çš„æ–¹æ³•
         #define _FWRITE(SrcBuffer,WriteSize)
 
-    #elif defined( ENV_WIN32 )   /* WIN32°æ±¾ÏÂ²»ÓÃºê£¬ÓÃº¯ÊıÊµÏÖ¿É±ä²ÎÊı¡££¨VXWORKSºóĞøÔÙ¶¨£© */
+    #elif defined( ENV_WIN32 )   /* WIN32ç‰ˆæœ¬ä¸‹ä¸ç”¨å®ï¼Œç”¨å‡½æ•°å®ç°å¯å˜å‚æ•°ã€‚ï¼ˆVXWORKSåç»­å†å®šï¼‰ */
         SINT32 _LOG( const char *format, ...  );
         #define _FWRITE(SrcBuffer,WriteSize)                    \
         if( 0 != g_StreamEnable )                               \
@@ -321,7 +321,7 @@ extern SINT32  *g_pDbgMemVir;
 #endif
 
 #if 0
-/* DTRACE: ´òÓ¡¸ú×ÙĞÅÏ¢ */
+/* DTRACE: æ‰“å°è·Ÿè¸ªä¿¡æ¯ */
 #ifdef ENV_ARMLINUX_KERNEL
     #define DTRACE HI_TRACE_VDEC
 

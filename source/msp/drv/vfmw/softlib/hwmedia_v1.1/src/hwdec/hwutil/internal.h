@@ -41,7 +41,7 @@
 #include <stdint.h>
 #include <assert.h>
 
-/*xiongfei modified linux下编译不通过，改回ffmpeg原来形式 xiongfei20100312*/
+/*xiongfei modified linux涓嬬紪璇戜笉閫氳繃锛屾敼鍥瀎fmpeg鍘熸潵褰㈠紡 xiongfei20100312*/
 #ifdef WIN32 
 #include <windows.h>
 #include "sys/timer.h"

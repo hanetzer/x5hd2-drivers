@@ -5,58 +5,58 @@
 
 #include "hi_drv_ndpt.h"
 
-/*create link according to net parameter, used to receive and send RTP/RTCP data. CNcomment:¸ù¾İÍøÂç²ÎÊı´´½¨Á´½Ó£¬ÓÃÓÚ·¢ËÍºÍ½ÓÊÕRTP/RTCPÊı¾İ¡£
+/*create link according to net parameter, used to receive and send RTP/RTCP data. CNcomment:æ ¹æ®ç½‘ç»œå‚æ•°åˆ›å»ºé“¾æ¥ï¼Œç”¨äºå‘é€å’Œæ¥æ”¶RTP/RTCPæ•°æ®ã€‚
 input parameter:
-     pNetPara:struct pointer of net communication protocol parameter,NDPT_NET_CONFIG_PARA_S CNcomment:RTPÁ÷ÍøÂçÍ¨ĞÅĞ­Òé²ÎÊı½á¹¹ÌåÖ¸Õë£¬NDPT_NET_CONFIG_PARA_S
+     pNetPara:struct pointer of net communication protocol parameter,NDPT_NET_CONFIG_PARA_S CNcomment:RTPæµç½‘ç»œé€šä¿¡åè®®å‚æ•°ç»“æ„ä½“æŒ‡é’ˆï¼ŒNDPT_NET_CONFIG_PARA_S
 return:
-     0:failure CNcomment:Ê§°Ü
-     other:handle of net adapter layer channel CNcomment:ÆäËû ÍøÂçÊÊÅä²ãÍ¨µÀ¾ä±ú
+     0:failure CNcomment:å¤±è´¥
+     other:handle of net adapter layer channel CNcomment:å…¶ä»– ç½‘ç»œé€‚é…å±‚é€šé“å¥æŸ„
 */
 extern HI_U32 HI_DRV_NDPT_CreateLink(HI_VOID *pNetCfgPara);
 
 /*
-modify parameter of net adapter layer channel CNcomment:ĞŞ¸ÄÍøÂçÊÊÅäÍ¨µÀ²ÎÊı¡£
+modify parameter of net adapter layer channel CNcomment:ä¿®æ”¹ç½‘ç»œé€‚é…é€šé“å‚æ•°ã€‚
 input parameter:
-      handle:handle of net adapter layer channel CNcomment:ÍøÂçÊÊÅä²ãÍ¨µÀ¾ä±ú¡£
-      pstNetPara:struct pointer of net parameter config, NDPT_NET_CONFIG_PARA_S CNcomment:ÍøÂç²ÎÊıÅäÖÃ½á¹¹ÌåÖ¸Õë£¬NDPT_NET_CONFIG_PARA_S £»
+      handle:handle of net adapter layer channel CNcomment:ç½‘ç»œé€‚é…å±‚é€šé“å¥æŸ„ã€‚
+      pstNetPara:struct pointer of net parameter config, NDPT_NET_CONFIG_PARA_S CNcomment:ç½‘ç»œå‚æ•°é…ç½®ç»“æ„ä½“æŒ‡é’ˆï¼ŒNDPT_NET_CONFIG_PARA_S ï¼›
 return:
-      0:success CNcomment:³É¹¦
-      other:failure CNcomment:ÆäËû Ê§°Ü
+      0:success CNcomment:æˆåŠŸ
+      other:failure CNcomment:å…¶ä»– å¤±è´¥
 */
 extern HI_S32 HI_DRV_NDPT_ModifyNetPara(HI_U32 handle,HI_VOID * pNetCfgPara);
 
 /*
-cancellation link interface CNcomment:×¢ÏúÁ´Â·½Ó¿Ú£º
+cancellation link interface CNcomment:æ³¨é”€é“¾è·¯æ¥å£ï¼š
 input parameter:
-      handle:handle of net adapter layer channel CNcomment:ÍøÂçÊÊÅä²ãÍ¨µÀ¾ä±ú¡£
+      handle:handle of net adapter layer channel CNcomment:ç½‘ç»œé€‚é…å±‚é€šé“å¥æŸ„ã€‚
 return:
-      0:success CNcomment:³É¹¦
-      other:failure CNcomment:ÆäËû Ê§°Ü
+      0:success CNcomment:æˆåŠŸ
+      other:failure CNcomment:å…¶ä»– å¤±è´¥
 */
 extern HI_S32 HI_DRV_NDPT_DestroyLink(HI_U32 handle);
 
 
 /*
-sent-received callbacks function of register data from RTP to net adapter CNcomment:RTPÏòÍøÂçÊÊÅä×¢²áÊı¾İ½ÓÊÕ»Øµ÷º¯Êı
+sent-received callbacks function of register data from RTP to net adapter CNcomment:RTPå‘ç½‘ç»œé€‚é…æ³¨å†Œæ•°æ®æ¥æ”¶å›è°ƒå‡½æ•°
 input parameter:
-      handle:handle of net adapter layer channel CNcomment:ÍøÂçÊÊÅä²ãÍ¨µÀ¾ä±ú¡£
-      TransId:RTP layer channel ID,return when net adapter call RTP layer's sent-received callbacks CNcomment:RTP²ãÍ¨µÀID£¬ÍøÂçÊÊÅäµ÷ÓÃRTP²ã½ÓÊÕ»Øµ÷º¯ÊıÊ±»Ø´«¡£
-      funptr:receive callbacks function pointer CNcomment: CNcomment:½ÓÊÕ»Øµ÷º¯ÊıÖ¸Õë£»
+      handle:handle of net adapter layer channel CNcomment:ç½‘ç»œé€‚é…å±‚é€šé“å¥æŸ„ã€‚
+      TransId:RTP layer channel ID,return when net adapter call RTP layer's sent-received callbacks CNcomment:RTPå±‚é€šé“IDï¼Œç½‘ç»œé€‚é…è°ƒç”¨RTPå±‚æ¥æ”¶å›è°ƒå‡½æ•°æ—¶å›ä¼ ã€‚
+      funptr:receive callbacks function pointer CNcomment: CNcomment:æ¥æ”¶å›è°ƒå‡½æ•°æŒ‡é’ˆï¼›
 return:
-      0:success CNcomment:³É¹¦£»
-      other:failure CNcomment:ÆäËû Ê§°Ü£»
+      0:success CNcomment:æˆåŠŸï¼›
+      other:failure CNcomment:å…¶ä»– å¤±è´¥ï¼›
 */
 extern HI_S32 HI_DRV_NDPT_RevFun(HI_U32 handle, HI_U32 TransId, ndpt_rtp_revfrom funptr);
 
 /*
-send RTP/RTCP data CNcomment:·¢ËÍRTP/RTCPÊı¾İ¡£
+send RTP/RTCP data CNcomment:å‘é€RTP/RTCPæ•°æ®ã€‚
 input parameter:
-      handle:handle of net adapter layer channel CNcomment:ÍøÂçÊÊÅä²ãÍ¨µÀ¾ä±ú¡£
-      even_odd:port mode CNcomment:¶Ë¿ÚÄ£Ê½¡£
-      data_buffer:data struct pointer CNcomment:Êı¾İ½á¹¹ÌåÖ¸Õë¡£
+      handle:handle of net adapter layer channel CNcomment:ç½‘ç»œé€‚é…å±‚é€šé“å¥æŸ„ã€‚
+      even_odd:port mode CNcomment:ç«¯å£æ¨¡å¼ã€‚
+      data_buffer:data struct pointer CNcomment:æ•°æ®ç»“æ„ä½“æŒ‡é’ˆã€‚
 return:
-      0:success CNcomment:³É¹¦£»
-      other:failure CNcomment:ÆäËû Ê§°Ü£»
+      0:success CNcomment:æˆåŠŸï¼›
+      other:failure CNcomment:å…¶ä»– å¤±è´¥ï¼›
 */
 extern HI_S32 HI_DRV_NDPT_SendRtp(HI_U32 handle, HI_U32 even_odd, RTP_NET_BUFFER_STRU *data_buffer);
 

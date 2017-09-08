@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : the suspend dispose
-                  CNcomment: ´ı»ú´¦Àí CNend\n
+                  CNcomment: å¾…æœºå¤„ç† CNend\n
 Function List 	: 
 
 			  		  
@@ -49,7 +49,7 @@ Date				Author        		Modification
 
     /***************************** Macro Definition ******************************/
     /** \addtogroup 	 JPEG SUSPEND MACRO */
-    /** @{ */  /** <!-- ¡¾JPEG SUSPEND MACRO¡¿ */
+    /** @{ */  /** <!-- ã€JPEG SUSPEND MACROã€‘ */
 
 	 /** @} */	/*! <!-- Macro Definition end */
 
@@ -57,14 +57,14 @@ Date				Author        		Modification
 	 /*************************** Enum Definition ****************************/
 	
 	/** \addtogroup      JPEG SUSPEND ENUM */
-    /** @{ */  /** <!-- ¡¾JPEG SUSPEND ENUM¡¿ */
+    /** @{ */  /** <!-- ã€JPEG SUSPEND ENUMã€‘ */
 
 
     /** @} */  /*! <!-- enum Definition end */
 
 	/*************************** Structure Definition ****************************/
 	/** \addtogroup      JPEG SUSPEND STRUCTURE */
-    /** @{ */  /** <!-- ¡¾JPEG SUSPEND STRUCTURE¡¿ */
+    /** @{ */  /** <!-- ã€JPEG SUSPEND STRUCTUREã€‘ */
 
 
 	/** @} */  /*! <!-- Structure Definition end */
@@ -75,14 +75,14 @@ Date				Author        		Modification
     /******************************* API declaration *****************************/
 
 	/** \addtogroup      JPEG SUSPEND API */
-    /** @{ */  /** <!-- ¡¾JPEG SUSPEND API¡¿ */
+    /** @{ */  /** <!-- ã€JPEG SUSPEND APIã€‘ */
 	
 	/*****************************************************************************
 	* func			: JPEG_HDEC_GetSuspendSignal
 	* description	: get the suspend signal
-					  CNcomment:  »ñÈ¡´ı»úĞÅºÅ			      CNend\n
-	* param[in] 	:  *pJpegHandle   CNcomment:  ½âÂëÆ÷¾ä±ú  CNend\n
-	* param[out] 	: bSuspendSignal  CNcomment:  ´ı»úĞÅºÅ    CNend\n
+					  CNcomment:  è·å–å¾…æœºä¿¡å·			      CNend\n
+	* param[in] 	:  *pJpegHandle   CNcomment:  è§£ç å™¨å¥æŸ„  CNend\n
+	* param[out] 	: bSuspendSignal  CNcomment:  å¾…æœºä¿¡å·    CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -92,9 +92,9 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_GetResumeSignal
 	* description	: get the resume signal
-					  CNcomment:  »ñÈ¡´ı»ú»½ĞÑĞÅºÅ			   CNend\n
-	* param[in] 	:  *pJpegHandle   CNcomment:   ½âÂëÆ÷¾ä±ú  CNend\n
-	* param[out] 	: bResumeSignal   CNcomment:   ´ı»ú»½ĞÑĞÅºÅ CNend\n
+					  CNcomment:  è·å–å¾…æœºå”¤é†’ä¿¡å·			   CNend\n
+	* param[in] 	:  *pJpegHandle   CNcomment:   è§£ç å™¨å¥æŸ„  CNend\n
+	* param[out] 	: bResumeSignal   CNcomment:   å¾…æœºå”¤é†’ä¿¡å· CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -104,8 +104,8 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_Resume
 	* description	: suspend resume
-					  CNcomment: ´ı»ú»½ĞÑ CNend\n
-	* param[in] 	: cinfo       CNcomment:  ½âÂë¶ÔÏó         CNend\n
+					  CNcomment: å¾…æœºå”¤é†’ CNend\n
+	* param[in] 	: cinfo       CNcomment:  è§£ç å¯¹è±¡         CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/

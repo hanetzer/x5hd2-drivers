@@ -98,7 +98,7 @@ static HI_VOID   HAL_AIAO_BoardI2SReset(HI_VOID)
     pstI2SBorad->enRxCrgSource = AIAO_TX_CRG0;
     pstI2SBorad->enRxCrgMode = AIAO_CRG_MODE_DUPLICATE;
 
-    // todo, π‹Ω≈∏¥”√≈‰÷√
+    // todo, ÁÆ°ËÑöÂ§çÁî®ÈÖçÁΩÆ
 #if defined (HI_UNF_I2S0_MCLK_SUPPORT)
         g_pstRegIO->ioshare_reg11.u32 = 0x1;
 #endif
@@ -165,7 +165,7 @@ static HI_VOID   HAL_AIAO_BoardI2SReset(HI_VOID)
     pstI2SBorad->enRxCrgSource = AIAO_TX_CRG1;
     pstI2SBorad->enRxCrgMode = AIAO_CRG_MODE_DUPLICATE;
 
-// todo, π‹Ω≈∏¥”√≈‰÷√
+// todo, ÁÆ°ËÑöÂ§çÁî®ÈÖçÁΩÆ
 #if defined (CHIP_TYPE_hi3716cv200) \
         || defined (CHIP_TYPE_hi3719cv100) || defined (CHIP_TYPE_hi3718cv100)  \
         || defined (CHIP_TYPE_hi3719mv100) || defined (CHIP_TYPE_hi3719mv100_a)\

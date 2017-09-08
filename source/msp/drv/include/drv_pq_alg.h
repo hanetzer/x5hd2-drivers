@@ -281,7 +281,7 @@ typedef struct hi_PQ_DEI_HIST_MOTION
 typedef struct hi_PQ_DEI_MOR_FLT
 {
     HI_U32 u32Mor_flt_en;                                          //the enable of morphological filter
-    HI_U32 u32Mor_flt_size;                            //the window size of morphological filter£º0-1x9£»1-1x7£»2-1x5
+    HI_U32 u32Mor_flt_size;                            //the window size of morphological filterï¼š0-1x9ï¼›1-1x7ï¼›2-1x5
     HI_U32 u32Mor_flt_thd;                           //the threshold of morphological filter
 
 } PQ_DEI_MOR_FLT;
@@ -349,7 +349,7 @@ typedef struct hi_PQ_FMD_CTRL_S
     HI_U32 u32Pd22_mode;                       //pulldown 2:2 detection mode:
     HI_U32 u32Edge_smooth_en;                       //edgesmooth enable
     HI_U32 u32Edge_smooth_ratio;                       //edgesmooth ratio
-    HI_U32 u32Bitsmov2r;                       //iCHD calculation para-right shift bits: 0£ºright shift 6bit;
+    HI_U32 u32Bitsmov2r;                       //iCHD calculation para-right shift bits: 0ï¼šright shift 6bit;
 
 } PQ_FMD_CTRL_S;
 
@@ -484,7 +484,7 @@ typedef struct hi_PQ_SHARP_LUMA_S
 {
     HI_U32 u32Lti_en;                                 //luma sharpen enable
     HI_U32 u32Lgain_ratio;                                 //gain ratio for luma
-    HI_U32 u32Lmixing_ratio;                                 //mixing weight for luma (u,1,7£©
+    HI_U32 u32Lmixing_ratio;                                 //mixing weight for luma (u,1,7ï¼‰
     HI_S32 s32Lhpass_coef0;                                 //HPL coefficient 0 for luma
     HI_S32 s32Lhpass_coef1;                                 //HPL coefficient 1 for luma
     HI_S32 s32Lhpass_coef2;                                 //HPL coefficient 2 for luma
@@ -505,7 +505,7 @@ typedef struct hi_PQ_SHARP_CHROMA_S
 {
     HI_U32 u32Cti_en;                                 //chroma sharpen enable
     HI_U32 u32Cgain_ratio;                                 //gain ratio for chroma
-    HI_U32 u32Cmixing_ratio;                                 //mixing weight for chroma (u,1,7£©
+    HI_U32 u32Cmixing_ratio;                                 //mixing weight for chroma (u,1,7ï¼‰
     HI_S32 s32Chpass_coef0;                                 //HPL coefficient 0 for chroma
     HI_S32 s32Chpass_coef1;                                 //HPL coefficient 1 for chroma
     HI_S32 s32Chpass_coef2;                                 //HPL coefficient 2 for chroma

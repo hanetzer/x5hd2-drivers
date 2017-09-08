@@ -7,7 +7,7 @@ File Name	: hipng_accelerate.h
 Version		: Initial Draft
 Author		: z00141204
 Created		: 2010/10/18
-Description	: libpngÊÊÅä²ã
+Description	: libpngé€‚é…å±‚
 Function List 	: 
 			  		  
 History       	:
@@ -35,26 +35,26 @@ extern "C"{
 #define HIPNG_HWDEC_MASK 0x2
 #define HIPNG_DEC_COPY 0x4
 
-/* Ó²¼ş½âÂë¿ØÖÆ½á¹¹Ìå */
+/* ç¡¬ä»¶è§£ç æ§åˆ¶ç»“æ„ä½“ */
 typedef struct tag_hipng_struct_hwctl_s
 {
-    HI_U8 u8DecMode;         /*Decode mode*//*CNcomment:½âÂëÄ£Ê½*/
+    HI_U8 u8DecMode;         /*Decode mode*//*CNcomment:è§£ç æ¨¡å¼*/
 
     /*Decode mode specified by user*/
-    /*CNcomment:ÓÃ»§Ö¸¶¨µÄ½âÂëÄ£Ê½*/
-    HI_U8 u8UserDecMode; /* ÓÃ»§Ö¸¶¨µÄ½âÂëÄ£Ê½ */
-    HI_BOOL bSyncDec;       /*Sync decode flag*//*CNcomment:ÊÇ·ñÍ¬²½½âÂë*/
-    HI_PNG_HANDLE s32Handle; /*Decoder handle*//*CNcomment:Ó²¼ş½âÂëÆ÷¾ä±ú*/
-    HI_PNG_STATE_E eState;  /*Decoder state*//*CNcomment:½âÂëÆ÷×´Ì¬ */
+    /*CNcomment:ç”¨æˆ·æŒ‡å®šçš„è§£ç æ¨¡å¼*/
+    HI_U8 u8UserDecMode; /* ç”¨æˆ·æŒ‡å®šçš„è§£ç æ¨¡å¼ */
+    HI_BOOL bSyncDec;       /*Sync decode flag*//*CNcomment:æ˜¯å¦åŒæ­¥è§£ç */
+    HI_PNG_HANDLE s32Handle; /*Decoder handle*//*CNcomment:ç¡¬ä»¶è§£ç å™¨å¥æŸ„*/
+    HI_PNG_STATE_E eState;  /*Decoder state*//*CNcomment:è§£ç å™¨çŠ¶æ€ */
 
     /*IO function of software decode*/
-    /*CNcomment:libpngÔ­À´µÄIOº¯ÊıÖ¸Õë*/
-    png_rw_ptr read_data_fn;    /* libpngÔ­À´µÄIOº¯ÊıÖ¸Õë */
+    /*CNcomment:libpngåŸæ¥çš„IOå‡½æ•°æŒ‡é’ˆ*/
+    png_rw_ptr read_data_fn;    /* libpngåŸæ¥çš„IOå‡½æ•°æŒ‡é’ˆ */
 
     /*IO function of hardware decode*/
-    /*CNcomment:Ó²¼şµÄIOº¯ÊıÖ¸Õë*/
-    HI_PNG_READ_FN read_data_fn_hw; /* Ó²¼şµÄIOº¯ÊıÖ¸Õë */
-    png_bytepp image;       /*Output buf*//*CNcomment:Ä¿±ê½âÂëÄÚ´æ */
+    /*CNcomment:ç¡¬ä»¶çš„IOå‡½æ•°æŒ‡é’ˆ*/
+    HI_PNG_READ_FN read_data_fn_hw; /* ç¡¬ä»¶çš„IOå‡½æ•°æŒ‡é’ˆ */
+    png_bytepp image;       /*Output buf*//*CNcomment:ç›®æ ‡è§£ç å†…å­˜ */
     png_uint_32 idat_size;     /* current IDAT size for read */
     png_uint_32 crc;           /* current chunk CRC value */
     png_byte chunk_name[5];
@@ -67,13 +67,13 @@ typedef struct tag_hipng_struct_hwctl_s
 
 
 /*****************************************************************
-* func:	´´½¨Ó²¼ş½âÂëĞÅÏ¢½á¹¹Ìå
+* func:	åˆ›å»ºç¡¬ä»¶è§£ç ä¿¡æ¯ç»“æ„ä½“
 * in:	      user_png_ver,error_ptr,png_error_ptr and warn_fn are useless, only for keep
             the same style with hipng_create_read_struct
-            CNcomment:user_png_ver,error_ptr,png_error_ptr,warn_fn ÎŞÓÃ,
-            Ö»ÊÇÎªÁËºÍlibpngµÄĞÎÊ½±£³ÖÒ»ÖÂ
+            CNcomment:user_png_ver,error_ptr,png_error_ptr,warn_fn æ— ç”¨,
+            åªæ˜¯ä¸ºäº†å’Œlibpngçš„å½¢å¼ä¿æŒä¸€è‡´
 * out:	A pointer to struct hipng_struct_hwctl_s
-            CNcomment:½á¹¹ÌåÖ¸Õë
+            CNcomment:ç»“æ„ä½“æŒ‡é’ˆ
 * ret:   none
 * others:	
 *****************************************************************/
@@ -82,8 +82,8 @@ hipng_struct_hwctl_s *hipng_create_read_struct_hw(png_const_charp user_png_ver, 
 
 /*****************************************************************
 * func:	Destroy hardware decoder
-            CNcomment:Ïú»ÙÓ²¼ş½âÂëĞÅÏ¢½á¹¹Ìå
-* in:	pstHwctlStruct A pointer to decoder struct  CNcomment:½âÂëĞÅÏ¢½á¹¹Ìå
+            CNcomment:é”€æ¯ç¡¬ä»¶è§£ç ä¿¡æ¯ç»“æ„ä½“
+* in:	pstHwctlStruct A pointer to decoder struct  CNcomment:è§£ç ä¿¡æ¯ç»“æ„ä½“
 * out:	none
 * ret:   none
 * others:	
@@ -91,11 +91,11 @@ hipng_struct_hwctl_s *hipng_create_read_struct_hw(png_const_charp user_png_ver, 
 HI_VOID hipng_destroy_read_struct_hw(hipng_struct_hwctl_s *pstHwctlStruct);
 
 /*****************************************************************
-* func:	Start hardware decode       CNcomment:pngÓ²¼ş½âÂë
-* in:	png_ptr png   decoder ptr     CNcomment:½âÂë½á¹¹Ìå
+* func:	Start hardware decode       CNcomment:pngç¡¬ä»¶è§£ç 
+* in:	png_ptr png   decoder ptr     CNcomment:è§£ç ç»“æ„ä½“
 * out:	none
-* ret:	HI_SUCCESS	Success     CNcomment:½âÂë³É¹¦
-*		HI_FAILURE	Failure     CNcomment:½âÂëÊ§°Ü
+* ret:	HI_SUCCESS	Success     CNcomment:è§£ç æˆåŠŸ
+*		HI_FAILURE	Failure     CNcomment:è§£ç å¤±è´¥
 * others:	
 *****************************************************************/
 HI_S32 hipng_read_image_hw(png_structp png_ptr);

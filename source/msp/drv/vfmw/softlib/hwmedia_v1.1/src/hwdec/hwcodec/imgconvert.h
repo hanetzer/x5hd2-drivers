@@ -38,11 +38,11 @@ int ff_set_systematic_pal(uint32_t pal[256], enum PixelFormat pix_fmt);
 int img_convert(AVPicture *dst, int dst_pix_fmt, const AVPicture *src,
                 int src_pix_fmt, int src_width, int src_height);
 /* 2010/03/24 14:30:00 liuxw+00139685 */
-/* Ôö¼ÓÒ»¸öº¯Êý */
+/* å¢žåŠ ä¸€ä¸ªå‡½æ•° */
 #if __STDC_VERSION__ < 199901L
 void avpicture_init_pixfmtinfo(void); 
 #endif
 /* 2010/03/24 14:30:00 liuxw+00139685 */
-/* Ôö¼ÓÒ»¸öº¯ÊýÉùÃ÷ */
+/* å¢žåŠ ä¸€ä¸ªå‡½æ•°å£°æ˜Ž */
 int ff_is_hwaccel_pix_fmt(enum PixelFormat pix_fmt);
 #endif /* AVCODEC_IMGCONVERT_H */

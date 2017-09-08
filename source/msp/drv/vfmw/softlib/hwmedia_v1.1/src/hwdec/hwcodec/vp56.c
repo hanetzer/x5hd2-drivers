@@ -190,7 +190,7 @@ static void vp56_decode_4mv(VP56Context *s, int row, int col)
         switch (type[b]) {
             case VP56_MB_INTER_NOVEC_PF:
                 /*s->mv[b] = (VP56mv) {0,0};*/
-                /*x00141957 20100608 ĞŞ¸Äc99Óï·¨*/
+                /*x00141957 20100608 ä¿®æ”¹c99è¯­æ³•*/
 				s->mv[b].x = 0;
 				s->mv[b].y = 0;
 				break;
@@ -208,7 +208,7 @@ static void vp56_decode_4mv(VP56Context *s, int row, int col)
         mv.y += s->mv[b].y;
     }
 
-	/*x00141957 2010 1120ĞŞ¸Ä*/
+	/*x00141957 2010 1120ä¿®æ”¹*/
 	mv.x = (mv.x+1+(mv.x>=0));
 	mv.y = (mv.y+1+(mv.y>=0));
 
@@ -221,7 +221,7 @@ static void vp56_decode_4mv(VP56Context *s, int row, int col)
         s->mv[4].y = s->mv[5].y = RSHIFT(mv.y,2);
     } else {
         /*s->mv[4] = s->mv[5] = (VP56mv) {mv.x/4, mv.y/4};*/
-		/*x00141957 20100608 ĞŞ¸Äc99Óï·¨*/	
+		/*x00141957 20100608 ä¿®æ”¹c99è¯­æ³•*/	
 		s->mv[4].x = s->mv[5].x = mv.x >> 2;
 		s->mv[4].y = s->mv[5].y = mv.y >> 2;
 	}
@@ -233,7 +233,7 @@ static VP56mb vp56_decode_mv(VP56Context *s, int row, int col)
     int ctx, b;
 
     ctx = vp56_get_vectors_predictors(s, row, col, VP56_FRAME_PREVIOUS);
-    //½âÎöºê¿éÀàĞÍXiongFei20091207
+    //è§£æå®å—ç±»å‹XiongFei20091207
     s->mb_type = vp56_parse_mb_type(s, s->mb_type, ctx);
     s->macroblocks[row * s->mb_width + col].type = s->mb_type;
 
@@ -381,7 +381,7 @@ static void vp56_mc(VP56Context *s, int b, int plane, uint8_t *src,
 	 {
 		copy_flag = 1;
 	 }
-	/*´Ë´¦¶ÔmvËùÖ¸Ïò²Î¿¼Çø·¶Î§×÷ÁËÏŞÖÆ,ÏŞ»ØÓĞĞ§ÇøÓòx00141957 20100903*/
+	/*æ­¤å¤„å¯¹mvæ‰€æŒ‡å‘å‚è€ƒåŒºèŒƒå›´ä½œäº†é™åˆ¶,é™å›æœ‰æ•ˆåŒºåŸŸx00141957 20100903*/
     if (x<0 || x+12>=s->plane_width[plane] ||
         y<0 || y+12>=s->plane_height[plane]) {
         ff_emulated_edge_mc(s->edge_emu_buffer,
@@ -485,7 +485,7 @@ static void vp56_mc(VP56Context *s, int b, int plane, uint8_t *src,
 			
 			}
 		}
-		/*×öidct x00141957 20101120*/
+		/*åšidct x00141957 20101120*/
 		if ( s->eob_pos[b] <= 1 )
 		{
 			s->dsp.idct_slow1_add(dst,
@@ -658,7 +658,7 @@ static int vp56_size_changed(AVCodecContext *avctx)
         return -1;
     }
 
-	/*x00141957 20100701 ²ÉÓÃav_malloc_hw·ÖÅäÄÚ´æ ²¢ÇÒ²»Ö§³Ösize±ä»¯*/
+	/*x00141957 20100701 é‡‡ç”¨av_malloc_hwåˆ†é…å†…å­˜ å¹¶ä¸”ä¸æ”¯æŒsizeå˜åŒ–*/
    /* s->above_blocks = av_realloc(s->above_blocks,
                                   (4*s->mb_width+6) * sizeof(*s->above_blocks));    
 	s->macroblocks = av_realloc(s->macroblocks,
@@ -676,7 +676,7 @@ static int vp56_size_changed(AVCodecContext *avctx)
 //	av_free(s->edge_emu_buffer_alloc);
 	av_free_hw(s->edge_emu_buffer_alloc);
 
-	/*½«av_malloc¸ÄÎªav_malloc_hw x00141957 20100701*/
+	/*å°†av_mallocæ”¹ä¸ºav_malloc_hw x00141957 20100701*/
     s->edge_emu_buffer_alloc = av_malloc_hw(avctx,16*stride);
     
 	s->edge_emu_buffer = s->edge_emu_buffer_alloc;
@@ -686,13 +686,13 @@ static int vp56_size_changed(AVCodecContext *avctx)
     return 0;
 }
 
-/*x00141957 20100902ĞŞ¸Ä Ôö¼Óº¯ÊıÓÃÒÔ¼ÆËãºÄ·Ñ×Ö½ÚÊı*/
+/*x00141957 20100902ä¿®æ”¹ å¢åŠ å‡½æ•°ç”¨ä»¥è®¡ç®—è€—è´¹å­—èŠ‚æ•°*/
 static int inline vp56_count_bytes(const uint8_t *uiEndbuf, const uint8_t *uiStartbuf)
 {
 	return((int )uiEndbuf - (int )uiStartbuf);
 }
 
-/*x00141957 20100914 ĞÂÔöº¯Êı ÓÃÀ´»ñµÃÒ»Ö¡Ö¸Õë*/
+/*x00141957 20100914 æ–°å¢å‡½æ•° ç”¨æ¥è·å¾—ä¸€å¸§æŒ‡é’ˆ*/
 static int vp6_get_frame(VP56Context *s,AVFrame **p)
 {
 	unsigned int i;
@@ -715,7 +715,7 @@ static int vp6_get_frame(VP56Context *s,AVFrame **p)
 	{
 		*p = &s->frames[i];
 	}
-	/*¸ù¾İÊµ¼Ê½âÂë¿í¸ß¼ÆËãlinesize*/
+	/*æ ¹æ®å®é™…è§£ç å®½é«˜è®¡ç®—linesize*/
 	{
 		int w,h;
 		int h_chroma_shift, v_chroma_shift;
@@ -754,7 +754,7 @@ static int vp6_get_frame(VP56Context *s,AVFrame **p)
 		{
 			(*p)->linesize[i] = picture.linesize[i];
 		}
-		/*x00141957 201007914 ¸ÄĞ´*/
+		/*x00141957 201007914 æ”¹å†™*/
 		{
 			int i;
 			int stride = picture.linesize[0];
@@ -768,7 +768,7 @@ static int vp6_get_frame(VP56Context *s,AVFrame **p)
 
 			s->mb_width  = (s->avctx->coded_width +15) / 16;
 			s->mb_height = (s->avctx->coded_height+15) / 16;
-			/*x00141957 2010 1020ĞŞ¸Ä*/
+			/*x00141957 2010 1020ä¿®æ”¹*/
 			/*if (s->flip < 0)
 				s->edge_emu_buffer += 15 * stride;*/
 		}
@@ -776,7 +776,7 @@ static int vp6_get_frame(VP56Context *s,AVFrame **p)
 	return 0;
 }
 
-//VP5,6½âÂëÖ¡µÄÖ÷º¯Êı XiongFei20091209
+//VP5,6è§£ç å¸§çš„ä¸»å‡½æ•° XiongFei20091209
 int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
                       const uint8_t *buf, int buf_size)
 {
@@ -785,13 +785,13 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 
     int is_alpha, av_uninit(alpha_offset);
 
-	/*x00141957 20100901 ´Ë´¦Ôö¼ÓÖ¸Õë¼ÇÂ¼ÂëÁ÷ÆğÊ¼µØÖ·*/
+	/*x00141957 20100901 æ­¤å¤„å¢åŠ æŒ‡é’ˆè®°å½•ç æµèµ·å§‹åœ°å€*/
 	const uint8_t *uiStartBuf;
 	int key_frame;
 	
 	avctx->iChromaFormat = 1;
 	
-	/*x00141957 2011 0331 bufµÄÊ×µØÖ·ÊÇcropsize*/
+	/*x00141957 2011 0331 bufçš„é¦–åœ°å€æ˜¯cropsize*/
 	avctx->extradata[0] = buf;
 	buf ++;
 	buf_size --;
@@ -800,7 +800,7 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 	avctx->sample_aspect_ratio.den = 1;
 	avctx->sample_aspect_ratio.num = 1;
 
-	/* x00141957 20100630 Ìí¼Ó×îºóÒ»Ö¡±êÖ¾Î» */
+	/* x00141957 20100630 æ·»åŠ æœ€åä¸€å¸§æ ‡å¿—ä½ */
 	if (buf_size == 0) 
 	{
 		AVFrame *pict = data;
@@ -819,15 +819,15 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 		/*x00141957 20100628*/
         alpha_offset = bytestream_get_be24(&buf);
 		buf_size -= 3;
-		/*Ä¿Ç°²»Ö§³ÖalphaÍ¨µÀ x00141957 20100902*/
+		/*ç›®å‰ä¸æ”¯æŒalphaé€šé“ x00141957 20100902*/
 		//av_log(avctx, AV_LOG_ERROR, "don't support alpha channel!\n");
 		//IMEDIA_SET_ERR_SLICE(avctx->iErrorCode, IMEDIA_ERR_PIC_OTHER);
     }
 	
-	/*¼ÇÂ¼´ËÖ¡Êı¾İÆğÊ¼µØÖ· x00141957 20100901*/
+	/*è®°å½•æ­¤å¸§æ•°æ®èµ·å§‹åœ°å€ x00141957 20100901*/
 	uiStartBuf = buf;
 
-	/*²»½âÂëalphaÍ¨µÀ x00141957 20110331*/
+	/*ä¸è§£ç alphaé€šé“ x00141957 20110331*/
 	is_alpha=0;
  //   for (is_alpha=0; is_alpha < 1+s->has_alpha; is_alpha++) 
 	{
@@ -838,25 +838,25 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 
         s->modelp = &s->models[is_alpha];
 
-	    //½âÎöÂëÁ÷Í· XiongFei20091208
+	    //è§£æç æµå¤´ XiongFei20091208
         /*res = s->parse_header(s, buf, remaining_buf_size, &golden_frame);*/
-		/*Èç¹ûÍ¼Ïñ¿í¸ß±äÁË£¬ÔòĞŞÕıÎªÒÔÇ°µÄ¿í¸ß x00141957 20100903*/
+		/*å¦‚æœå›¾åƒå®½é«˜å˜äº†ï¼Œåˆ™ä¿®æ­£ä¸ºä»¥å‰çš„å®½é«˜ x00141957 20100903*/
 		res = s->parse_header(s, buf, buf_size, &golden_frame, &key_frame);
         
-		/*Èç¹ûÍ¼Ïñ¿í¸ß·Ç·¨£¬Ôò·µ»Ø£¬ÖØĞÂÑ°ÕÒÍ· x00141957 20100913*/
+		/*å¦‚æœå›¾åƒå®½é«˜éæ³•ï¼Œåˆ™è¿”å›ï¼Œé‡æ–°å¯»æ‰¾å¤´ x00141957 20100913*/
 		if (-1 == res)
 		{
 			return AVCODEC_RET_DECODE_FAILURE;
 		}
 		
-		/*Èç¹ûÍ¼Ïñ¿í¸ß´óÓÚÍ¨µÀ¹æ¸ñ£¬ÔòÎŞ·¨¼ÌĞø½âÂë x00141957 20110328*/
+		/*å¦‚æœå›¾åƒå®½é«˜å¤§äºé€šé“è§„æ ¼ï¼Œåˆ™æ— æ³•ç»§ç»­è§£ç  x00141957 20110328*/
 		if (-2 == res)
 		{
 			return AVCODEC_RET_DECODE_ABORT;
 		}
 		
 		
-		/*x00141957 20100906ĞŞ¸Ä ÎóÂë²âÊÔ£¬µ±Ç°Ò»¹Ø¼üÖ¡Ö¡Í·ÓĞ´íÎóµ¼ÖÂÎ´·ÖÅäÊı¾İÊ±£¬ÈçÏÂĞŞ¸Ä£º²»¹ÜÊÇ·ñÓĞ´íÎó¶¼·ÖÅäÄÚ´æ*/
+		/*x00141957 20100906ä¿®æ”¹ è¯¯ç æµ‹è¯•ï¼Œå½“å‰ä¸€å…³é”®å¸§å¸§å¤´æœ‰é”™è¯¯å¯¼è‡´æœªåˆ†é…æ•°æ®æ—¶ï¼Œå¦‚ä¸‹ä¿®æ”¹ï¼šä¸ç®¡æ˜¯å¦æœ‰é”™è¯¯éƒ½åˆ†é…å†…å­˜*/
         if (!is_alpha) 
 		{
 			if (vp6_get_frame(s, &p) < 0 )
@@ -881,7 +881,7 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 			goto DECODE_END;
 		}    
 
-		/*x00141957 20100901 ´Ë´¦Ôö¼Ó´úÂë£¬¼ì²éÂëÁ÷½âÎöÊÇ·ñÔ½½ç*/
+		/*x00141957 20100901 æ­¤å¤„å¢åŠ ä»£ç ï¼Œæ£€æŸ¥ç æµè§£ææ˜¯å¦è¶Šç•Œ*/
 		if (vp56_count_bytes(s->c.buffer,uiStartBuf) > buf_size)
 		{
 			av_log(avctx, AV_LOG_ERROR, "vp56 parse_header  Crossing the border!\n");
@@ -890,7 +890,7 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 			goto DECODE_END;
 		}
 
-	    //µ±Ç°Ö¡Îª¹Ø¼üÖ¡£¬Ò²¾ÍÊÇIÖ¡ XiongFei20091209
+	    //å½“å‰å¸§ä¸ºå…³é”®å¸§ï¼Œä¹Ÿå°±æ˜¯Iå¸§ XiongFei20091209
         if (p->key_frame) {
             p->pict_type = FF_I_TYPE;
             s->default_models_init(s);
@@ -903,7 +903,7 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
             s->mb_type = VP56_MB_INTER_NOVEC_PF;
         }
 
-		/*x00141957 20100901 ´Ë´¦Ôö¼Ó´úÂë£¬¼ì²éÂëÁ÷½âÎöÊÇ·ñÔ½½ç*/
+		/*x00141957 20100901 æ­¤å¤„å¢åŠ ä»£ç ï¼Œæ£€æŸ¥ç æµè§£ææ˜¯å¦è¶Šç•Œ*/
 		if (vp56_count_bytes(s->c.buffer,uiStartBuf) > buf_size)
 		{
 			av_log(avctx, AV_LOG_ERROR, "vp56 decode MB  Crossing the border!\n");
@@ -918,7 +918,7 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 			IMEDIA_SET_ERR_SLICE(avctx->iErrorCode, IMEDIA_ERR_SLICE_OTHER);
 			goto DECODE_END;
 		}
-		/*x00141957 20100901 ´Ë´¦Ôö¼Ó´úÂë£¬¼ì²éÂëÁ÷½âÎöÊÇ·ñÔ½½ç*/
+		/*x00141957 20100901 æ­¤å¤„å¢åŠ ä»£ç ï¼Œæ£€æŸ¥ç æµè§£ææ˜¯å¦è¶Šç•Œ*/
 		if (vp56_count_bytes(s->c.buffer,uiStartBuf) > buf_size)
 		{
 			av_log(avctx, AV_LOG_ERROR, "vp56 parse_coeff_models  Crossing the border!\n");
@@ -927,7 +927,7 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
 			goto DECODE_END;
 		
 		}
-	//¸üĞÂdcÔ¤²âÏà¹ØĞÅÏ¢ XiongFei20091208
+	//æ›´æ–°dcé¢„æµ‹ç›¸å…³ä¿¡æ¯ XiongFei20091208
         memset(s->prev_dc, 0, sizeof(s->prev_dc));
         s->prev_dc[1][VP56_FRAME_CURRENT] = 128;
         s->prev_dc[2][VP56_FRAME_CURRENT] = 128;
@@ -947,7 +947,7 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
             mb_offset = 7;
 
         /* main macroblocks loop */
-        //´ÓÒÔÏÂ¿ªÊ¼½âÂëÃ¿Ò»¸öºê¿é XiongFei20091208
+        //ä»ä»¥ä¸‹å¼€å§‹è§£ç æ¯ä¸€ä¸ªå®å— XiongFei20091208
         for (mb_row=0; mb_row<s->mb_height; mb_row++) {
             if (s->flip < 0)
                 mb_row_flip = s->mb_height - mb_row - 1;
@@ -979,7 +979,7 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
             for (mb_col=0; mb_col<s->mb_width; mb_col++) {
                 
 				vp56_decode_mb(s, mb_row, mb_col, is_alpha);
-				/*x00141957 20100901 ´Ë´¦Ôö¼Ó´úÂë£¬¼ì²éÂëÁ÷½âÎöÊÇ·ñÔ½½ç*/
+				/*x00141957 20100901 æ­¤å¤„å¢åŠ ä»£ç ï¼Œæ£€æŸ¥ç æµè§£ææ˜¯å¦è¶Šç•Œ*/
 				if (vp56_count_bytes(s->c.buffer,uiStartBuf) > buf_size)
 				{
 					av_log(avctx, AV_LOG_ERROR, "vp56 decode MB  Crossing the border!\n");
@@ -1006,12 +1006,12 @@ DECODE_END:
                 s->framep[VP56_FRAME_GOLDEN] != s->framep[VP56_FRAME_GOLDEN2])
 			{
 				//avctx->release_buffer(avctx, s->framep[VP56_FRAME_GOLDEN]);
-				/*x00141957 20100914 ½«Ç°Ò»Ö¡µÄ²Î¿¼±êÖ¾Î»ÖÃ0*/
+				/*x00141957 20100914 å°†å‰ä¸€å¸§çš„å‚è€ƒæ ‡å¿—ä½ç½®0*/
 				s->framep[VP56_FRAME_GOLDEN]->reference = 0;
 			}
             s->framep[VP56_FRAME_GOLDEN] = p;
         }
-		/*²»½âÂëalphaÍ¨µÀ x00141957 20110331*/
+		/*ä¸è§£ç alphaé€šé“ x00141957 20110331*/
 /*
         if (s->has_alpha) {
             FFSWAP(AVFrame *, s->framep[VP56_FRAME_GOLDEN],
@@ -1035,7 +1035,7 @@ DECODE_END:
 	else if (s->framep[VP56_FRAME_PREVIOUS]->data[0])
 	{
 		//avctx->release_buffer(avctx, s->framep[VP56_FRAME_PREVIOUS]);
-		/*x00141957 20100914 ½«Ç°Ò»Ö¡µÄ²Î¿¼±êÖ¾Î»ÖÃ0*/
+		/*x00141957 20100914 å°†å‰ä¸€å¸§çš„å‚è€ƒæ ‡å¿—ä½ç½®0*/
 		s->framep[VP56_FRAME_PREVIOUS]->reference = 0;
 	}
     FFSWAP(AVFrame *, s->framep[VP56_FRAME_CURRENT],s->framep[VP56_FRAME_PREVIOUS]);
@@ -1065,7 +1065,7 @@ av_cold int vp56_init(AVCodecContext *avctx, int flip, int has_alpha)
 		 if (avctx->get_buffer(avctx, p) < 0) {
 			 av_log(avctx, AV_LOG_ERROR, "get_buffer() failed\n");
 			 IMEDIA_SET_ERR_SLICE(avctx->iErrorCode, IMEDIA_ERR_SLICE_OTHER);
-			 /*ÊÍ·ÅËùÓĞÒÑ·ÖÅäbuff£¬²¢·µ»Ø x00141957 20100914*/
+			 /*é‡Šæ”¾æ‰€æœ‰å·²åˆ†é…buffï¼Œå¹¶è¿”å› x00141957 20100914*/
 			vp56_free(avctx);
 			 return AVCODEC_RET_DECODE_ABORT;
 		 }
@@ -1111,17 +1111,17 @@ av_cold int vp56_free(AVCodecContext *avctx)
     int pt,ct,cg;
 	VP56Context *s = avctx->priv_data;
 
-	/*x00141957 20100630Ìí¼Ó*/
+	/*x00141957 20100630æ·»åŠ */
 	av_freep(&s->parse_context.buffer);
 	s->parse_context.buffer_size=0;
-	/*½áÊøĞÂÔö x00141957 20100630*/
+	/*ç»“æŸæ–°å¢ x00141957 20100630*/
 
-	/*x00141957 20100701ĞŞ¸Ä ½«av_free ¸ÄÎªav_freep*/
+	/*x00141957 20100701ä¿®æ”¹ å°†av_free æ”¹ä¸ºav_freep*/
     av_freep(&s->above_blocks);
     av_freep(&s->macroblocks);
     av_freep(&s->edge_emu_buffer_alloc);
 	
-	/*ÊÍ·Åvlc±íÄÚ´æ x00141957 20100928*/
+	/*é‡Šæ”¾vlcè¡¨å†…å­˜ x00141957 20100928*/
 	for (pt=0; pt<2; pt++) {
 		free_vlc(&s->dccv_vlc[pt]);
 		free_vlc(&s->runv_vlc[pt]);
@@ -1137,11 +1137,11 @@ av_cold int vp56_free(AVCodecContext *avctx)
     if (s->framep[VP56_FRAME_PREVIOUS]->data[0])
         avctx->release_buffer(avctx, s->framep[VP56_FRAME_PREVIOUS]);
 
-	/*ÎÊÌâµ¥ºÅ£ºAZ1D02229
-	ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-	Ê±¼ä£º2010/7/21
-	ÎÊÌâÃèÊö£º ¶à´Îcreat process deleteµ¼ÖÂËÀ»ú
-	ÎÊÌâĞŞ¸Ä£º Ôö¼ÓyuvbufferµÄÊÍ·Å*/
+	/*é—®é¢˜å•å·ï¼šAZ1D02229
+	ä¿®æ”¹äººï¼šç†Šé£ +00141957
+	æ—¶é—´ï¼š2010/7/21
+	é—®é¢˜æè¿°ï¼š å¤šæ¬¡creat process deleteå¯¼è‡´æ­»æœº
+	é—®é¢˜ä¿®æ”¹ï¼š å¢åŠ yuvbufferçš„é‡Šæ”¾*/
 	avcodec_default_free_buffers(avctx);
     return 0;
 }

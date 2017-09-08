@@ -34,7 +34,7 @@
 #include <linux/vmalloc.h>
 #include <linux/slab.h>
 
-//#include "common_dev.h" Í·ÎÄ¼ş¸ÄÃû
+//#include "common_dev.h" å¤´æ–‡ä»¶æ”¹å
 #include "hi_drv_dev.h"
 //#include "common_proc.h"
 #include "hi_drv_proc.h"
@@ -898,7 +898,7 @@ HI_S32 hdmi_GetProcArg(HI_CHAR*  chCmd,HI_CHAR*  chArg,HI_U32 u32ArgIdx)
     HI_CHAR chArg2[DEF_FILE_NAMELENGTH] = {0};
     u32CmdCount = 0;
 
-    /*Çå³ıÇ°ÃæµÄ¿Õ¸ñ*/
+    /*æ¸…é™¤å‰é¢çš„ç©ºæ ¼*/
     u32Count = 0;
     u32CmdCount = 0;
     u32LogCount = 1;
@@ -2291,7 +2291,7 @@ HI_S32 hdmi_ProcWrite(struct file * file,
             }
 
                      
-            // term_en && cap_ctl  // term_en ÏÈ¹Øµô
+            // term_en && cap_ctl  // term_en å…ˆå…³æ‰
             SI_TX_PHY_ReadRegister(0x0e,&u32Reg);
             if(u32Reg & 0x01)
             {
@@ -2505,7 +2505,7 @@ int HDMI_DRV_ModInit(void)
     //ret = DRV_HDMI_Register();
     
 #ifdef ANDROID_SUPPORT
-    //android ÌØÓĞ
+    //android ç‰¹æœ‰
 	if (switch_dev_register(&hdmi_tx_sdev))
     {
 		HI_WARN_HDMI("\n Warning:! registering HDMI switch device Failed \n");		
@@ -2544,7 +2544,7 @@ void HDMI_DRV_ModExit(void)
         //HI_DRV_HDMI_Close(HI_UNF_HDMI_ID_0);
     //}
 #ifdef ANDROID_SUPPORT
-    //android ÌØÓĞ
+    //android ç‰¹æœ‰
     if(g_switchOk == HI_TRUE)
     {
     	switch_dev_unregister(&hdmi_tx_sdev);

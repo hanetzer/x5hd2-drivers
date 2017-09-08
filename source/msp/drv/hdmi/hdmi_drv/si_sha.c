@@ -280,7 +280,7 @@ static HI_U8 GetKSVList(SHA_CTX IRAM * Sha, HI_U16 i)
 #ifdef __HISI_ENVIRONMENT__ /* lc added for HDCP Repeater */
     {
         HI_U8 index_byte, index, tmp, *Data, NBytes;
-        /*big-endian and little-endian Byte sequence translation*//*CNcomment:´óĞ¡×Ö½ÚĞòÕûÌå×ª»» */
+        /*big-endian and little-endian Byte sequence translation*//*CNcomment:å¤§å°å­—èŠ‚åºæ•´ä½“è½¬æ¢ */
         for(index_byte = 0; index_byte < 16; index_byte ++)
         {
 

@@ -1254,7 +1254,7 @@ HI_VOID SndProcSpidfRoute(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrack, TR
     return;
 }
 
-//zgjiere; u32BufLevelMsÐèÒªÏ¸ÐÄ¼ì²éÒì³£Çé¿ö£¬±ÜÃâ¶ÂÈû£¬u32BufLevelMsÒì³£Ê±£¬ÈÏÎªÎÞÁ÷¿Ø
+//zgjiere; u32BufLevelMséœ€è¦ç»†å¿ƒæ£€æŸ¥å¼‚å¸¸æƒ…å†µï¼Œé¿å…å µå¡žï¼Œu32BufLevelMså¼‚å¸¸æ—¶ï¼Œè®¤ä¸ºæ— æµæŽ§
 HI_BOOL TrackisBufFree(SND_CARD_STATE_S *pCard, SND_TRACK_STATE_S *pTrack, SND_TRACK_STREAM_ATTR_S * pstStreamAttr)
 {
     HI_U32 Free = 0;
@@ -2505,7 +2505,7 @@ HI_S32 TRACK_GetStatus(SND_CARD_STATE_S *pCard, HI_U32 u32TrackID, HI_VOID *pstP
 
 HI_S32 TRACK_GetDefAttr(HI_UNF_AUDIOTRACK_ATTR_S * pstDefAttr)
 {
-    //zgjiere;u32OutputBufSize Ä¿Ç°±»ºöÂÔ£¬AIP°´ÕÕ×î´óÄÜÁ¦´´½¨£¬±ÜÃâÆµ·±ÄÚ´æ²Ù×÷
+    //zgjiere;u32OutputBufSize ç›®å‰è¢«å¿½ç•¥ï¼ŒAIPæŒ‰ç…§æœ€å¤§èƒ½åŠ›åˆ›å»ºï¼Œé¿å…é¢‘ç¹å†…å­˜æ“ä½œ
     switch (pstDefAttr->enTrackType)
     {
     case HI_UNF_SND_TRACK_TYPE_MASTER:

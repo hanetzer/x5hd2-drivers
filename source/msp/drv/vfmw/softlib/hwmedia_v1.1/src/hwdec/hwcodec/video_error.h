@@ -1,15 +1,15 @@
 /*******************************************************************************
 Copyright (C), 2009-2012, Huawei Tech. Co., Ltd.
 File name: VIDEO_error.h
-Author & ID: ËÎĞ¡¸Õ+00133955
+Author & ID: å®‹å°åˆš+00133955
 Version: 1.00
 Date:  2010-01-18
-Description: ±¾ÎÄ¼ş°üÀ¨ÁË·µ»ØÖµ¼°´íÎóÂë¶¨Òå
+Description: æœ¬æ–‡ä»¶åŒ…æ‹¬äº†è¿”å›å€¼åŠé”™è¯¯ç å®šä¹‰
 Function List:
 History:
-1¡¢20100118 ±àÂëÍê³É ËÎĞ¡¸Õ+00133955
-2¡¢**
-3¡¢¡Á¡Á
+1ã€20100118 ç¼–ç å®Œæˆ å®‹å°åˆš+00133955
+2ã€**
+3ã€Ã—Ã—
 *******************************************************************************/
 #ifndef __VIDEO_ERROR_H__
 #define __VIDEO_ERROR_H__
@@ -21,59 +21,59 @@ extern "C" {
 #endif    /* __cpluscplus*/
 #endif    /* __cpluscplus*/
 
-/** Ä£¿é·µ»ØÖµÃ¶¾ÙÀàĞÍ¶¨Òå */
+/** æ¨¡å—è¿”å›å€¼æšä¸¾ç±»å‹å®šä¹‰ */
 typedef enum ENUM_VIDEO_RETURN
 {
-    VIDEO_RET_SUCCESS = 0,             /**< Õı³£·µ»Ø */
+    VIDEO_RET_SUCCESS = 0,             /**< æ­£å¸¸è¿”å› */
     
-    /** ²ÎÊıÀàÎÊÌâ·µ»Ø */
-    VIDEO_RET_PARAM_NULL = 0x0100,     /**< ²ÎÊıÖ¸ÕëÎª¿Õ */
-    VIDEO_RET_PARAM_INVALID,           /**< ²ÎÊıÎŞĞ§ */
-    VIDEO_RET_PARAM_IN_VALUE_NULL,     /**< ÊäÈë²ÎÊıÖµÖ¸ÕëÎª¿Õ */
-    VIDEO_RET_PARAM_IN_VALUE_INVALID,  /**< ÊäÈë²ÎÊıÖµÎŞĞ§ */
-    VIDEO_RET_PARAM_OUT_VALUE_NULL,    /**< Êä³ö²ÎÊıÖµÖ¸ÕëÎª¿Õ */
-    VIDEO_RET_PARAM_OUT_VALUE_INVALID, /**< Êä³ö²ÎÊıÖµÎŞĞ§ */
-    VIDEO_RET_PARAM_NOT_ENOUGH,        /**< ²ÎÊı²»×ã */
+    /** å‚æ•°ç±»é—®é¢˜è¿”å› */
+    VIDEO_RET_PARAM_NULL = 0x0100,     /**< å‚æ•°æŒ‡é’ˆä¸ºç©º */
+    VIDEO_RET_PARAM_INVALID,           /**< å‚æ•°æ— æ•ˆ */
+    VIDEO_RET_PARAM_IN_VALUE_NULL,     /**< è¾“å…¥å‚æ•°å€¼æŒ‡é’ˆä¸ºç©º */
+    VIDEO_RET_PARAM_IN_VALUE_INVALID,  /**< è¾“å…¥å‚æ•°å€¼æ— æ•ˆ */
+    VIDEO_RET_PARAM_OUT_VALUE_NULL,    /**< è¾“å‡ºå‚æ•°å€¼æŒ‡é’ˆä¸ºç©º */
+    VIDEO_RET_PARAM_OUT_VALUE_INVALID, /**< è¾“å‡ºå‚æ•°å€¼æ— æ•ˆ */
+    VIDEO_RET_PARAM_NOT_ENOUGH,        /**< å‚æ•°ä¸è¶³ */
 
-    VIDEO_RET_PARAM_OTHER = 0x01FF,    /**< ²ÎÊıÀàÆäËûÎÊÌâ */
+    VIDEO_RET_PARAM_OTHER = 0x01FF,    /**< å‚æ•°ç±»å…¶ä»–é—®é¢˜ */
     
-    /** ¶ÔÏóÀàÎÊÌâ·µ»Ø */
-    VIDEO_RET_OBJ_NULL = 0x0200,       /**< ¶ÔÏóÖ¸ÕëÎª¿Õ */
-    VIDEO_RET_OBJ_BAD_MASK,            /**< ¶ÔÏó·À´íÂë»Ù»µ */
-    VIDEO_RET_OBJ_INVALID,             /**< ÎŞĞ§¶ÔÏó */
-    VIDEO_RET_OBJ_NOT_FOUND,           /**< ¶ÔÏóÃ»ÕÒµ½ */
-    VIDEO_RET_OBJ_CREATE_FAIL,         /**< ¶ÔÏó´´½¨Ê§°Ü */
-    VIDEO_RET_OBJ_NOT_INIT,            /**< ¶ÔÏóÎ´³õÊ¼»¯ */
-    VIDEO_RET_OBJ_DELETE_FAIL,         /**< ¶ÔÏóÉ¾³ıÊ§°Ü */
+    /** å¯¹è±¡ç±»é—®é¢˜è¿”å› */
+    VIDEO_RET_OBJ_NULL = 0x0200,       /**< å¯¹è±¡æŒ‡é’ˆä¸ºç©º */
+    VIDEO_RET_OBJ_BAD_MASK,            /**< å¯¹è±¡é˜²é”™ç æ¯å */
+    VIDEO_RET_OBJ_INVALID,             /**< æ— æ•ˆå¯¹è±¡ */
+    VIDEO_RET_OBJ_NOT_FOUND,           /**< å¯¹è±¡æ²¡æ‰¾åˆ° */
+    VIDEO_RET_OBJ_CREATE_FAIL,         /**< å¯¹è±¡åˆ›å»ºå¤±è´¥ */
+    VIDEO_RET_OBJ_NOT_INIT,            /**< å¯¹è±¡æœªåˆå§‹åŒ– */
+    VIDEO_RET_OBJ_DELETE_FAIL,         /**< å¯¹è±¡åˆ é™¤å¤±è´¥ */
     
-    VIDEO_RET_OBJ_OTHER = 0x02FF,      /**< ¶ÔÏóÀàÆäËûÎÊÌâ */
+    VIDEO_RET_OBJ_OTHER = 0x02FF,      /**< å¯¹è±¡ç±»å…¶ä»–é—®é¢˜ */
     
-    /** »º´æ£¨ÂëÁ÷£©ÀàÎÊÌâ·µ»Ø */
-    VIDEO_RET_MEM_MALLOC_FAIL = 0x0400,/**< ÄÚ´æ·ÖÅäÊ§°Ü */
-    VIDEO_RET_MEM_FREE_FAIL,           /**< ÄÚ´æÊÍ·ÅÊ§°Ü */
-    VIDEO_RET_BUF_NULL,                /**< »º´æÖ¸ÕëÎª¿Õ */
-    VIDEO_RET_BUF_BAD_MASK,            /**< »º´æ·À´íÂë»Ù»µ */
-    VIDEO_RET_BUF_INVALID,             /**< ÂëÁ÷ÎŞĞ§£¬ÎŞ·¨Ê¶±ğ¸ñÊ½ */
-    VIDEO_RET_BUF_OVER_FLOW,           /**< »º´æÒç³ö */
-    VIDEO_RET_BUF_ADDR_NOT_ALIGN,      /**< »º´æµØÖ·Î´¶ÔÆë */
-    VIDEO_RET_BUF_SIZE_NOT_ALIGN,      /**< »º´æ´óĞ¡Î´¶ÔÆë */
-	VIDEO_RET_STREAM_ERROR,			/**< ÂëÁ÷½âÎö´íÎó */
+    /** ç¼“å­˜ï¼ˆç æµï¼‰ç±»é—®é¢˜è¿”å› */
+    VIDEO_RET_MEM_MALLOC_FAIL = 0x0400,/**< å†…å­˜åˆ†é…å¤±è´¥ */
+    VIDEO_RET_MEM_FREE_FAIL,           /**< å†…å­˜é‡Šæ”¾å¤±è´¥ */
+    VIDEO_RET_BUF_NULL,                /**< ç¼“å­˜æŒ‡é’ˆä¸ºç©º */
+    VIDEO_RET_BUF_BAD_MASK,            /**< ç¼“å­˜é˜²é”™ç æ¯å */
+    VIDEO_RET_BUF_INVALID,             /**< ç æµæ— æ•ˆï¼Œæ— æ³•è¯†åˆ«æ ¼å¼ */
+    VIDEO_RET_BUF_OVER_FLOW,           /**< ç¼“å­˜æº¢å‡º */
+    VIDEO_RET_BUF_ADDR_NOT_ALIGN,      /**< ç¼“å­˜åœ°å€æœªå¯¹é½ */
+    VIDEO_RET_BUF_SIZE_NOT_ALIGN,      /**< ç¼“å­˜å¤§å°æœªå¯¹é½ */
+	VIDEO_RET_STREAM_ERROR,			/**< ç æµè§£æé”™è¯¯ */
     
-    VIDEO_RET_BUF_OTHER = 0x04FF,      /**< ²ÎÊıÀàÆäËûÎÊÌâ */
+    VIDEO_RET_BUF_OTHER = 0x04FF,      /**< å‚æ•°ç±»å…¶ä»–é—®é¢˜ */
     
-    /** ¿ØÖÆÃüÁîÀàÎÊÌâ·µ»Ø */
+    /** æ§åˆ¶å‘½ä»¤ç±»é—®é¢˜è¿”å› */
     VIDEO_RET_CMD_INVALID = 0x1000,
     
-    /** ÆäËûÎÊÌâ·µ»Ø */
+    /** å…¶ä»–é—®é¢˜è¿”å› */
     VIDEO_RET_OTHER = 0x8000,
 } ENUM_VIDEO_RETURN;
 
-/** Ëã·¨´íÎóºÅÃ¶¾ÙÀàĞÍ¶¨Òå */
+/** ç®—æ³•é”™è¯¯å·æšä¸¾ç±»å‹å®šä¹‰ */
 typedef enum ENUM_VIDEO_CODEC_ERROR_CODE
 {
-    VIDEO_CODEC_ERR_NOTHING = 0,    	/**< Õı³£·µ»Ø */
+    VIDEO_CODEC_ERR_NOTHING = 0,    	/**< æ­£å¸¸è¿”å› */
     
-    /** Í¨ÓÃ´íÎóÀàĞÍ */
+    /** é€šç”¨é”™è¯¯ç±»å‹ */
     VIDEO_CODEC_ERR_UNSUPPORTED_PROFILE,
     VIDEO_CODEC_ERR_UNSUPPORTED_LEVEL,
     VIDEO_CODEC_ERR_UNSUPPORT_COLOR_SPACE,
@@ -84,20 +84,20 @@ typedef enum ENUM_VIDEO_CODEC_ERROR_CODE
     VIDEO_CODEC_ERR_INVALID_FRAMERATE,
     VIDEO_CODEC_ERR_INVALID_BITRATE,
     
-    /** H264´íÎóÀàĞÍ */
+    /** H264é”™è¯¯ç±»å‹ */
     VIDEO_CODEC_ERR_INVALID_SPS = 0x0100,
     VIDEO_CODEC_ERR_INVALID_PPS,
     //...
     
-    /** MPEG2´íÎóÀàĞÍ */
+    /** MPEG2é”™è¯¯ç±»å‹ */
     
-    /** H263´íÎóÀàĞÍ */
+    /** H263é”™è¯¯ç±»å‹ */
     
-    /** MPEG4´íÎóÀàĞÍ */
+    /** MPEG4é”™è¯¯ç±»å‹ */
     
-    /** WMV/VC1´íÎóÀàĞÍ */
+    /** WMV/VC1é”™è¯¯ç±»å‹ */
     
-    /** VP6´íÎóÀàĞÍ */
+    /** VP6é”™è¯¯ç±»å‹ */
     
 } ENUM_VIDEO_CODEC_ERROR_CODE;
 

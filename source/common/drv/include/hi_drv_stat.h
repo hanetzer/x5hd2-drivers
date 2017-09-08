@@ -81,7 +81,7 @@ HI_S32  HI_DRV_STAT_Init(HI_VOID);
 HI_VOID HI_DRV_STAT_Exit(HI_VOID);
 
 /*interrupt cost time in kernel-state*/
-/*CNcomment:内核态中断耗时统计*/
+/*CNcomment:鍐呮牳鎬佷腑鏂�楁椂缁熻*/
 #if defined(HI_STAT_ISR_SUPPORTED)
 HI_VOID HI_DRV_STAT_IsrReset(HI_VOID);
 HI_VOID HI_DRV_STAT_IsrEnable(HI_VOID);

@@ -4571,7 +4571,7 @@ tmddTDA18250SetFreqCut
 /*                                                                            */
 /* RETURN:      TM_OK if no error                                             */
 /*                                                                            */
-/* NOTES:       FreCut_sel=1 => FreqCut[6:0]=FreCut_rÈel - 128                */
+/* NOTES:       FreCut_sel=1 => FreqCut[6:0]=FreCut_rÈñël - 128                */
 /*              FreCut_sel=0 => FreqCut[6:0]=FreCut_cal/2                     */
 /*              (Default value in mode manuel: 182MHz)                        */
 /*============================================================================*/
@@ -6291,8 +6291,8 @@ tmddTDA18250SetLF_freq
 /*                                                                            */
 /* RETURN:      TM_OK if no error                                             */
 /*                                                                            */
-/* NOTES:       0 : LF_freq[3:0] from I≤C is not shifted by RC cal results    */
-/*              1 : LF_freq[3:0] from I≤C is shifted by RC cal results        */
+/* NOTES:       0 : LF_freq[3:0] from IÁù† is not shifted by RC cal results    */
+/*              1 : LF_freq[3:0] from IÁù† is shifted by RC cal results        */
 /*============================================================================*/
 tmErrorCode_t
 tmddTDA18250SetShift_LF_rccal

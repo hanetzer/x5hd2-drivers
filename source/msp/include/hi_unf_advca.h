@@ -30,15 +30,15 @@ extern "C"{
 #define MAX_FP_ID_LENGTH    (0x100)
 
 /** Key ladder selecting parameters */
-/** CNcomment:Ê¹ÓÃÄÄ¸ökey ladder±êÖ¾ */
+/** CNcomment:ä½¿ç”¨å“ªä¸ªkey ladderæ ‡å¿— */
 typedef enum hiUNF_ADVCA_CA_TYPE_E
 {
-    HI_UNF_ADVCA_CA_TYPE_R2R       = 0x0,    /**< Using R2R key ladder */                                                 /**< CNcomment:Ê¹ÓÃR2R key ladder */
-    HI_UNF_ADVCA_CA_TYPE_SP        = 0x1,    /**< Using SP key ladder */                                                  /**< CNcomment:Ê¹ÓÃSP key ladder */
-    HI_UNF_ADVCA_CA_TYPE_CSA2      = 0x1,    /**< Using CSA2 key ladder */                                                /**< CNcomment:Ê¹ÓÃCSA2 key ladder */
-    HI_UNF_ADVCA_CA_TYPE_CSA3      = 0x1,    /**< Using CSA3 key ladder */                                                /**< CNcomment:Ê¹ÓÃCSA3 key ladder */
-    HI_UNF_ADVCA_CA_TYPE_MISC      = 0x2,    /**< Using MISC ladder */                                                    /**< CNcomment:Ê¹ÓÃSP key ladder */
-    HI_UNF_ADVCA_CA_TYPE_GDRM      = 0x3,    /**< Using GDRM ladder */                                                    /**< CNcomment:Ê¹ÓÃGDRM key ladder */
+    HI_UNF_ADVCA_CA_TYPE_R2R       = 0x0,    /**< Using R2R key ladder */                                                 /**< CNcomment:ä½¿ç”¨R2R key ladder */
+    HI_UNF_ADVCA_CA_TYPE_SP        = 0x1,    /**< Using SP key ladder */                                                  /**< CNcomment:ä½¿ç”¨SP key ladder */
+    HI_UNF_ADVCA_CA_TYPE_CSA2      = 0x1,    /**< Using CSA2 key ladder */                                                /**< CNcomment:ä½¿ç”¨CSA2 key ladder */
+    HI_UNF_ADVCA_CA_TYPE_CSA3      = 0x1,    /**< Using CSA3 key ladder */                                                /**< CNcomment:ä½¿ç”¨CSA3 key ladder */
+    HI_UNF_ADVCA_CA_TYPE_MISC      = 0x2,    /**< Using MISC ladder */                                                    /**< CNcomment:ä½¿ç”¨SP key ladder */
+    HI_UNF_ADVCA_CA_TYPE_GDRM      = 0x3,    /**< Using GDRM ladder */                                                    /**< CNcomment:ä½¿ç”¨GDRM key ladder */
 }HI_UNF_ADVCA_CA_TYPE_E;
 
 /** advanced CA session serect key class*/
@@ -214,223 +214,223 @@ typedef enum hiUNF_ADVCA_VENDORID_E
 /** @{ */  /** <!-- [ADVCA] */
 
 /**
-\brief Initializes the advanced CA module CNcomment:³õÊ¼»¯advance CAÄ£¿é CNend
+\brief Initializes the advanced CA module CNcomment:åˆå§‹åŒ–advance CAæ¨¡å— CNend
 \attention \n
 Call this application programming interface (API) before using the advanced CA module.
 The code HI_SUCCESS is returned if this API is called repeatedly.
-CNcomment:ÔÚ½øÐÐadvance CAÏà¹Ø²Ù×÷Ç°Ó¦¸ÃÊ×ÏÈµ÷ÓÃ±¾½Ó¿Ú\n
-ÖØ¸´µ÷ÓÃ±¾½Ó¿Ú£¬»á·µ»Ø³É¹¦ CNend
-\param N/A CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_OPEN_ERR The CA device fails to start CNcomment:HI_ERR_CA_OPEN_ERR ´ò¿ªCAÉè±¸Ê§°Ü CNend
+CNcomment:åœ¨è¿›è¡Œadvance CAç›¸å…³æ“ä½œå‰åº”è¯¥é¦–å…ˆè°ƒç”¨æœ¬æŽ¥å£\n
+é‡å¤è°ƒç”¨æœ¬æŽ¥å£ï¼Œä¼šè¿”å›žæˆåŠŸ CNend
+\param N/A CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_OPEN_ERR The CA device fails to start CNcomment:HI_ERR_CA_OPEN_ERR æ‰“å¼€CAè®¾å¤‡å¤±è´¥ CNend
 \see \n
 ::HI_UNF_ADVCA_DeInit
 */
 HI_S32 HI_UNF_ADVCA_Init(HI_VOID);
 
 /**
-\brief Deinitializes the advanced CA module CNcomment:È¥³õÊ¼»¯advance CAÄ£¿é CNend
+\brief Deinitializes the advanced CA module CNcomment:åŽ»åˆå§‹åŒ–advance CAæ¨¡å— CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param N/A CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
+None CNcomment:æ—  CNend
+\param N/A CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_DeInit(HI_VOID);
 
 /**
-\brief Set the ChipId CNcomment:ÉèÖÃChipId  CNend
+\brief Set the ChipId CNcomment:è®¾ç½®ChipId  CNend
 \attention \n
 This application programming interface (API) is allowed to invoked only once. 
 It's not allowed to call this API repeatedly.
 CHIP_ID should have been setting before chipset is delivered to STB Manufacture.
 Please contact Hisilicon before Customer try to use this interface.
 CNcomment:\n  CNend
-CNcomment:¸Ã½Ó¿ÚÖ»ÔÊÐíµ÷ÓÃÒ»´Î£¬²»ÄÜÖØ¸´µ÷ÓÃ£¬Çë½÷É÷Ê¹ÓÃ\n
-CHIP_ID¿ÉÄÜÒÑ°´ÕÕCA¹«Ë¾ÒªÇóÉèÖÃ£¬¸Ã½Ó¿ÚÈç¹û¿Í»§ÐèÒªÊ¹ÓÃ¸Ã½Ó¿ÚÐèÒªÏÈÍ¨Öªº£Ë¼\n  CNend
+CNcomment:è¯¥æŽ¥å£åªå…è®¸è°ƒç”¨ä¸€æ¬¡ï¼Œä¸èƒ½é‡å¤è°ƒç”¨ï¼Œè¯·è°¨æ…Žä½¿ç”¨\n
+CHIP_IDå¯èƒ½å·²æŒ‰ç…§CAå…¬å¸è¦æ±‚è®¾ç½®ï¼Œè¯¥æŽ¥å£å¦‚æžœå®¢æˆ·éœ€è¦ä½¿ç”¨è¯¥æŽ¥å£éœ€è¦å…ˆé€šçŸ¥æµ·æ€\n  CNend
 \param[in] Id chip id CNcomment:Id chip id\n  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
 \see \n
 ::HI_UNF_ADVCA_SetChipId
 */
 HI_S32 HI_UNF_ADVCA_SetChipId(HI_U32 Id);
 
 /**
-\brief Obtains the chip ID CNcomment:»ñÈ¡Ð¾Æ¬ID  CNend
+\brief Obtains the chip ID CNcomment:èŽ·å–èŠ¯ç‰‡ID  CNend
 \attention \n
 The chip ID is read-only.
-CNcomment:Ð¾Æ¬IDÖ»ÄÜ¶Á²»ÄÜÐ´ CNend
-\param[out] pu32ChipId Chip ID CNcomment:pu32ChipId   Ð¾Æ¬ID  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:èŠ¯ç‰‡IDåªèƒ½è¯»ä¸èƒ½å†™ CNend
+\param[out] pu32ChipId Chip ID CNcomment:pu32ChipId   èŠ¯ç‰‡ID  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_GetChipId(HI_U32 *pu32ChipId);
 
 
 /**
-\brief Obtains the market ID CNcomment:»ñÈ¡Market ID  CNend
+\brief Obtains the market ID CNcomment:èŽ·å–Market ID  CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] u8MarketId market ID CNcomment:u8MarketId   Õë¶ÔÊÐ³¡µÄ±êÊ¶ÐòºÅ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] u8MarketId market ID CNcomment:u8MarketId   é’ˆå¯¹å¸‚åœºçš„æ ‡è¯†åºå· CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_SetMarketId
 */
 HI_S32 HI_UNF_ADVCA_GetMarketId(HI_U8 u8MarketId[4]);
 
 /**
-\brief Sets the Market ID CNcomment:ÉèÖÃMarket ID  CNend
+\brief Sets the Market ID CNcomment:è®¾ç½®Market ID  CNend
 \attention \n
 The market ID of the set-top box (STB) is set before delivery. The market ID can be set once only and takes effects after the STB restarts.
-CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±ÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î ÉèÖÃºóÖØÆôÉúÐ§ CNend
-\param[in] u8MarketId market ID CNcomment:u8MarketId   Õë¶ÔÊÐ³¡µÄ±êÊ¶ÐòºÅ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT  CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  ÖØ¸´ÉèÖÃ CNend
+CNcomment:åœ¨æœºé¡¶ç›’å‡ºåŽ‚æ—¶è®¾ç½®ï¼Œä»…æ”¯æŒè®¾ç½®ä¸€æ¬¡ è®¾ç½®åŽé‡å¯ç”Ÿæ•ˆ CNend
+\param[in] u8MarketId market ID CNcomment:u8MarketId   é’ˆå¯¹å¸‚åœºçš„æ ‡è¯†åºå· CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT  CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  é‡å¤è®¾ç½® CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_SetMarketId(HI_U8 u8MarketId[4]);
 
 
 /**
-\brief Obtains the serial number of the STB CNcomment:»ñÈ¡»ú¶¥ºÐÐòÁÐºÅ CNend
+\brief Obtains the serial number of the STB CNcomment:èŽ·å–æœºé¡¶ç›’åºåˆ—å· CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] u8StbSn serial number of the STB CNcomment:u8StbSn   »ú¶¥ºÐÐòÁÐºÅ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] u8StbSn serial number of the STB CNcomment:u8StbSn   æœºé¡¶ç›’åºåˆ—å· CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_SetStbSn
 */
 HI_S32 HI_UNF_ADVCA_GetStbSn(HI_U8 u8StbSn[4]);
 
 /**
-\brief Sets the serial number of the STB CNcomment:ÉèÖÃ»ú¶¥ºÐÐòÁÐºÅ CNend
+\brief Sets the serial number of the STB CNcomment:è®¾ç½®æœºé¡¶ç›’åºåˆ—å· CNend
 \attention \n
 The serial number of the STB is set before delivery. The market ID can be set once only and takes effects after the STB restarts.
-CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±ÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î ÉèÖÃºóÖØÆôÉúÐ§ CNend
-\param[in] u8StbSn serial number of the STB CNcomment:u8StbSn   »ú¶¥ºÐÐòÁÐºÅ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT  CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  ÖØ¸´ÉèÖÃ CNend
+CNcomment:åœ¨æœºé¡¶ç›’å‡ºåŽ‚æ—¶è®¾ç½®ï¼Œä»…æ”¯æŒè®¾ç½®ä¸€æ¬¡ è®¾ç½®åŽé‡å¯ç”Ÿæ•ˆ CNend
+\param[in] u8StbSn serial number of the STB CNcomment:u8StbSn   æœºé¡¶ç›’åºåˆ—å· CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT  CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  é‡å¤è®¾ç½® CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_SetStbSn(HI_U8 u8StbSn[4]);
 
 /**
-\brief Set the R2R RootKey CNcomment:ÉèÖÃR2R RootKey  CNend
+\brief Set the R2R RootKey CNcomment:è®¾ç½®R2R RootKey  CNend
 \attention \n
 This application programming interface (API) is allowed to invoked only once. 
 It's not allowed to call this API repeatedly.
 R2R RootKey should have been setting before chipset is delivered to STB Manufacture.
 Please contact Hisilicon before Customer try to use this interface.
-CNcomment:¸Ã½Ó¿ÚÖ»ÔÊÐíµ÷ÓÃÒ»´Î£¬²»ÄÜÖØ¸´µ÷ÓÃ,Çë½÷É÷Ê¹ÓÃ¸Ã½Ó¿Ú\n
-R2RRootKey¿ÉÄÜÒÑ°´ÕÕCA¹«Ë¾ÒªÇóÉèÖÃ£¬¸Ã½Ó¿ÚÈç¹û¿Í»§ÐèÒªÊ¹ÓÃ¸Ã½Ó¿ÚÐèÒªÏÈÍ¨Öªº£Ë¼\n  CNend
-\param[in] pkey R2R Root Key CNcomment:pkey  R2R¸ùÃÜÔ¿\n  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:è¯¥æŽ¥å£åªå…è®¸è°ƒç”¨ä¸€æ¬¡ï¼Œä¸èƒ½é‡å¤è°ƒç”¨,è¯·è°¨æ…Žä½¿ç”¨è¯¥æŽ¥å£\n
+R2RRootKeyå¯èƒ½å·²æŒ‰ç…§CAå…¬å¸è¦æ±‚è®¾ç½®ï¼Œè¯¥æŽ¥å£å¦‚æžœå®¢æˆ·éœ€è¦ä½¿ç”¨è¯¥æŽ¥å£éœ€è¦å…ˆé€šçŸ¥æµ·æ€\n  CNend
+\param[in] pkey R2R Root Key CNcomment:pkey  R2Ræ ¹å¯†é’¥\n  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_GetR2RRootKey
 */
 HI_S32 HI_UNF_ADVCA_SetR2RRootKey(HI_U8 *pkey);
 
 /**
-\brief Get the R2R RootKey CNcomment:»ñÈ¡R2R RootKey  CNend
+\brief Get the R2R RootKey CNcomment:èŽ·å–R2R RootKey  CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] pkey R2R Root Key CNcomment:pkey  R2R¸ùÃÜÔ¿\n  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] pkey R2R Root Key CNcomment:pkey  R2Ræ ¹å¯†é’¥\n  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_SetR2RRootKey
 */
 HI_S32 HI_UNF_ADVCA_GetR2RRootKey(HI_U8 *pkey);
 
 /**
-\brief Lock the burned keys CNcomment:Ëø¶¨ÉÕÐ´µÄkey  CNend
+\brief Lock the burned keys CNcomment:é”å®šçƒ§å†™çš„key  CNend
 \attention \n
 This application programming interface (API) is used to lock the root keys after burning the root keys
-CNcomment:¸Ã½Ó¿Ú¹©ÉÕÐ´ÍêRoot keyÖ®ºóµ÷ÓÃÓÃÀ´Ëø¶¨root key\n  CNend
-\param N/A CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
+CNcomment:è¯¥æŽ¥å£ä¾›çƒ§å†™å®ŒRoot keyä¹‹åŽè°ƒç”¨ç”¨æ¥é”å®šroot key\n  CNend
+\param N/A CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
 \see \n
 ::HI_UNF_ADVCA_HideLockKeys
 */
 HI_S32 HI_UNF_ADVCA_HideLockKeys(HI_VOID);
 
 /**
-\brief Obtains the security startup enable status CNcomment:»ñÈ¡°²È«Æô¶¯Ê¹ÄÜ×´Ì¬ CNend
+\brief Obtains the security startup enable status CNcomment:èŽ·å–å®‰å…¨å¯åŠ¨ä½¿èƒ½çŠ¶æ€ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] pbEnable: Security startup enable. CNcomment:pbEnable   °²È«Æô¶¯ÊÇ·ñÊ¹ÄÜ£¬ CNend
-HI_TRUE enabled CNcomment:HI_TRUE Ê¹ÄÜ£¬  CNend
-HI_FALSE disabled CNcomment:HI_FALSE ²»Ê¹ÄÜ CNend
+None CNcomment:æ—  CNend
+\param[out] pbEnable: Security startup enable. CNcomment:pbEnable   å®‰å…¨å¯åŠ¨æ˜¯å¦ä½¿èƒ½ï¼Œ CNend
+HI_TRUE enabled CNcomment:HI_TRUE ä½¿èƒ½ï¼Œ  CNend
+HI_FALSE disabled CNcomment:HI_FALSE ä¸ä½¿èƒ½ CNend
 \param[out] penFlashType the startup flash type, only valid when SCS is enable
-CNcomment:penFlashType ½öÔÚ°²È«Æô¶¯Ê¹ÄÜÊ±ÓÐÐ§£¬±íÊ¾°²È«Æô¶¯µÄFlashÀàÐÍ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:penFlashType ä»…åœ¨å®‰å…¨å¯åŠ¨ä½¿èƒ½æ—¶æœ‰æ•ˆï¼Œè¡¨ç¤ºå®‰å…¨å¯åŠ¨çš„Flashç±»åž‹ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_GetSecBootStat(HI_BOOL *pbEnable,HI_UNF_ADVCA_FLASH_TYPE_E *penFlashType);
 
 /**
-\brief Obtains the mode of the JTAG interface CNcomment:»ñÈ¡JTAGµ÷ÊÔ¿ÚÄ£Ê½ CNend
+\brief Obtains the mode of the JTAG interface CNcomment:èŽ·å–JTAGè°ƒè¯•å£æ¨¡å¼ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] penJtagMode Mode of the JTAG interface CNcomment:penJtagMode   JTAGµ÷ÊÔ¿ÚÄ£Ê½ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] penJtagMode Mode of the JTAG interface CNcomment:penJtagMode   JTAGè°ƒè¯•å£æ¨¡å¼ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_JTAG_MODE_E
 */
 HI_S32 HI_UNF_ADVCA_GetJtagMode(HI_UNF_ADVCA_JTAG_MODE_E *penJtagMode);
 
 /**
-\brief Sets the mode of the JTAG interface CNcomment:ÉèÖÃJTAGµ÷ÊÔ¿ÚÄ£Ê½   CNend
+\brief Sets the mode of the JTAG interface CNcomment:è®¾ç½®JTAGè°ƒè¯•å£æ¨¡å¼   CNend
 \attention \n
 If the mode of the JTAG interface is set to closed or password-protected, it cannot be opened.
 If the JTAG interface is open, it can be closed or password-protected.
 If the JATG interface is password-protected, it can be closed.
 After being closed, the JATG interface cannot be set to open or password-protected mode.
-CNcomment:²»Ö§³ÖÉèÖÃÎª´ò¿ª×´Ì¬¡£\n
-´ò¿ªµÄÊ±ºò¿ÉÒÔ¹Ø±Õ»òÉèÖÃÎªÃÜÔ¿±£»¤×´Ì¬¡£\n
-´¦ÓÚÃÜÔ¿±£»¤×´Ì¬Ê±¿ÉÒÔ¹Ø±Õ¡£\n
-¹Ø±ÕÖ®ºó²»ÄÜ´ò¿ªºÍÉèÖÃÎªÃÜÔ¿±£»¤×´Ì¬ CNend
-\param[in] enJtagMode Mode of the JTAG interface CNcomment:enJtagMode   JTAGµ÷ÊÔ¿ÚÄ£Ê½ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN ÖØ¸´ÉèÖÃ CNend
+CNcomment:ä¸æ”¯æŒè®¾ç½®ä¸ºæ‰“å¼€çŠ¶æ€ã€‚\n
+æ‰“å¼€çš„æ—¶å€™å¯ä»¥å…³é—­æˆ–è®¾ç½®ä¸ºå¯†é’¥ä¿æŠ¤çŠ¶æ€ã€‚\n
+å¤„äºŽå¯†é’¥ä¿æŠ¤çŠ¶æ€æ—¶å¯ä»¥å…³é—­ã€‚\n
+å…³é—­ä¹‹åŽä¸èƒ½æ‰“å¼€å’Œè®¾ç½®ä¸ºå¯†é’¥ä¿æŠ¤çŠ¶æ€ CNend
+\param[in] enJtagMode Mode of the JTAG interface CNcomment:enJtagMode   JTAGè°ƒè¯•å£æ¨¡å¼ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN é‡å¤è®¾ç½® CNend
 \see \n
 ::HI_UNF_ADVCA_JTAG_MODE_E
 */
@@ -438,67 +438,67 @@ HI_S32 HI_UNF_ADVCA_SetJtagMode(HI_UNF_ADVCA_JTAG_MODE_E enJtagMode);
 
 
 /**
-\brief Obtains the R2R key ladder stage CNcomment:»ñÈ¡R2R key ladder¼¶Êý CNend
+\brief Obtains the R2R key ladder stage CNcomment:èŽ·å–R2R key ladderçº§æ•° CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] penStage Key ladder stage CNcomment:penStage   key ladder¼¶Êý CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] penStage Key ladder stage CNcomment:penStage   key ladderçº§æ•° CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_KEYLADDER_LEV_E
 */
 HI_S32 HI_UNF_ADVCA_GetR2RKeyLadderStage(HI_UNF_ADVCA_KEYLADDER_LEV_E *penStage);
 
 /**
-\brief Sets the R2R key ladder stage CNcomment:ÉèÖÃR2R key ladderµÄ¼¶Êý    CNend
+\brief Sets the R2R key ladder stage CNcomment:è®¾ç½®R2R key ladderçš„çº§æ•°    CNend
 \attention \n
 The key ladder stage can be set only once before delivery and cannot be changed. Please use default value.
-CNcomment:»ú¶¥ºÐ³ö³§Ê±ÉèÖÃ ½öÄÜÉèÖÃÒ»´Î ²»¿É¸ü¸Ä,²»½¨ÒéÊ¹ÓÃ¸Ã½Ó¿Ú¸Ä±ästage  CNend
+CNcomment:æœºé¡¶ç›’å‡ºåŽ‚æ—¶è®¾ç½® ä»…èƒ½è®¾ç½®ä¸€æ¬¡ ä¸å¯æ›´æ”¹,ä¸å»ºè®®ä½¿ç”¨è¯¥æŽ¥å£æ”¹å˜stage  CNend
 \param[in] enStage Key ladder stage Its value is HI_UNF_ADVCA_KEYLADDER_LEV2 or HI_UNF_ADVCA_KEYLADDER_LEV3
-CNcomment:enStage   key ladder¼¶Êý\n È¡ÖµÖ»ÄÜÎªHI_UNF_ADVCA_KEYLADDER_LEV2 »òÕß HI_UNF_ADVCA_KEYLADDER_LEV3  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:enStage   key ladderçº§æ•°\n å–å€¼åªèƒ½ä¸ºHI_UNF_ADVCA_KEYLADDER_LEV2 æˆ–è€… HI_UNF_ADVCA_KEYLADDER_LEV3  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_KEYLADDER_LEV_E
 */
 HI_S32 HI_UNF_ADVCA_SetR2RKeyLadderStage(HI_UNF_ADVCA_KEYLADDER_LEV_E enStage);
 
 /**
-\brief Obtains the digital video broadcasting (DVB) key ladder stage CNcomment:»ñÈ¡DVB key ladderµÄ¼¶Êý CNend
+\brief Obtains the digital video broadcasting (DVB) key ladder stage CNcomment:èŽ·å–DVB key ladderçš„çº§æ•° CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] penStage Key ladder stage CNcomment:penStage   key ladder¼¶Êý CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] penStage Key ladder stage CNcomment:penStage   key ladderçº§æ•° CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_KEYLADDER_LEV_E
 */
 HI_S32 HI_UNF_ADVCA_GetDVBKeyLadderStage(HI_UNF_ADVCA_KEYLADDER_LEV_E *penStage);
 
 /**
-\brief Sets the DVB key ladder stage CNcomment:ÉèÖÃDVB key ladderµÄ¼¶Êý    CNend
+\brief Sets the DVB key ladder stage CNcomment:è®¾ç½®DVB key ladderçš„çº§æ•°    CNend
 \attention \n
 The key ladder stage can be set only once before delivery and cannot be changed. Please use default value.
-CNcomment:»ú¶¥ºÐ³ö³§Ê±ÉèÖÃ ½öÄÜÉèÖÃÒ»´Î ²»¿É¸ü¸Ä,²»½¨ÒéÊ¹ÓÃ¸Ã½Ó¿Ú¸Ä±ästage  CNend
+CNcomment:æœºé¡¶ç›’å‡ºåŽ‚æ—¶è®¾ç½® ä»…èƒ½è®¾ç½®ä¸€æ¬¡ ä¸å¯æ›´æ”¹,ä¸å»ºè®®ä½¿ç”¨è¯¥æŽ¥å£æ”¹å˜stage  CNend
 \param[in] enStage Key ladder stage Its value is HI_UNF_ADVCA_KEYLADDER_LEV2 or HI_UNF_ADVCA_KEYLADDER_LEV3.
-CNcomment:enStage  key ladder¼¶Êý\n È¡ÖµÖ»ÄÜÎªHI_UNF_ADVCA_KEYLADDER_lev2 »òÕß HI_UNF_ADVCA_KEYLADDER_lev3  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:enStage  key ladderçº§æ•°\n å–å€¼åªèƒ½ä¸ºHI_UNF_ADVCA_KEYLADDER_lev2 æˆ–è€… HI_UNF_ADVCA_KEYLADDER_lev3  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_KEYLADDER_LEV_E
 */
 HI_S32 HI_UNF_ADVCA_SetDVBKeyLadderStage(HI_UNF_ADVCA_KEYLADDER_LEV_E enStage);
 
 /**
-\brief Sets session keys for an R2R key ladder CNcomment:ÎªR2R key ladderÅäÖÃ»á»°ÃÜÔ¿    CNend
+\brief Sets session keys for an R2R key ladder CNcomment:ä¸ºR2R key ladderé…ç½®ä¼šè¯å¯†é’¥    CNend
 \attention \n
 
 The stage of the session key cannot be greater than the configured stage of the key ladder. The last stage of the session key is configured by calling the API of the CIPHER module rather than this API.
@@ -506,52 +506,52 @@ That is, only session key 1 and session key 2 need to be configured for a 3-stag
 Only session key 1 needs to be configured for a 2-stage key ladder.
 You need to set the key ladder stage by calling HI_UNF_ADVCA_SetR2RKeyLadderStage first.
 Session keys can be set during initialization or changed at any time.
-CNcomment:×¢ÒâÅäÖÃµÄ¼¶Êý²»ÄÜ³¬¹ýÉèÖÃµÄ¼¶ÊýÖµ£¬×îºóÒ»¼¶ÓÉCIPHERÄ£¿éÄÚ²¿ÅäÖÃ£¬²»ÓÃÍ¨¹ý´Ë½Ó¿ÚÅäÖÃ¡£\n
-Ò²¾ÍÊÇËµ£¬¶ÔÓÚ3¼¶key ladder£¬Ö»ÓÃÅäÖÃ»á»°ÃÜÔ¿1ºÍ»á»°ÃÜÔ¿2¡£\n
-¶ÔÓÚ2¼¶µÄkey ladder£¬Ö»ÓÃÅäÖÃ»á»°ÃÜÔ¿1¡£\n
-ÇëÏÈµ÷ÓÃHI_UNF_ADVCA_SetR2RKeyLadderStageÉèÖÃkey ladder¼¶Êý¡£\n
-»á»°ÃÜÔ¿¿ÉÒÔ³õÊ¼Ê±ÉèÖÃÒ»´Î£¬Ò²¿ÉÒÔËæÊ±ÐÞ¸Ä¡£ CNend
+CNcomment:æ³¨æ„é…ç½®çš„çº§æ•°ä¸èƒ½è¶…è¿‡è®¾ç½®çš„çº§æ•°å€¼ï¼Œæœ€åŽä¸€çº§ç”±CIPHERæ¨¡å—å†…éƒ¨é…ç½®ï¼Œä¸ç”¨é€šè¿‡æ­¤æŽ¥å£é…ç½®ã€‚\n
+ä¹Ÿå°±æ˜¯è¯´ï¼Œå¯¹äºŽ3çº§key ladderï¼Œåªç”¨é…ç½®ä¼šè¯å¯†é’¥1å’Œä¼šè¯å¯†é’¥2ã€‚\n
+å¯¹äºŽ2çº§çš„key ladderï¼Œåªç”¨é…ç½®ä¼šè¯å¯†é’¥1ã€‚\n
+è¯·å…ˆè°ƒç”¨HI_UNF_ADVCA_SetR2RKeyLadderStageè®¾ç½®key ladderçº§æ•°ã€‚\n
+ä¼šè¯å¯†é’¥å¯ä»¥åˆå§‹æ—¶è®¾ç½®ä¸€æ¬¡ï¼Œä¹Ÿå¯ä»¥éšæ—¶ä¿®æ”¹ã€‚ CNend
 \param[in] enStage Key ladder stage Its value is HI_UNF_ADVCA_KEYLADDER_LEV2 or HI_UNF_ADVCA_KEYLADDER_LEV3.
-CNcomment:enStage    ÃÜÔ¿¼¶Êý£¬[HI_UNF_ADVCA_KEYLADDER_LEV1 ~ HI_UNF_ADVCA_KEYLADDER_LEV2]  CNend
-\param[in] pu8Key Protection key pointer, 128 bits (16 bytes) in total CNcomment:pu8Key     ±£»¤ÃÜÔ¿Ö¸Õë£¬¹²128bit(16byte)  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS  ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:enStage    å¯†é’¥çº§æ•°ï¼Œ[HI_UNF_ADVCA_KEYLADDER_LEV1 ~ HI_UNF_ADVCA_KEYLADDER_LEV2]  CNend
+\param[in] pu8Key Protection key pointer, 128 bits (16 bytes) in total CNcomment:pu8Key     ä¿æŠ¤å¯†é’¥æŒ‡é’ˆï¼Œå…±128bit(16byte)  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS  æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \retval ::HI_ERR_CA_WAIT_TIMEOUT Timeout occurs when the CA module waits for encryption or decryption
-CNcomment:HI_ERR_CA_WAIT_TIMEOUT CAµÈ´ý¼Ó½âÃÜ³¬Ê± CNend
-\retval ::HI_ERR_CA_R2R_DECRYPT The R2R decryption fails CNcomment:HI_ERR_CA_R2R_DECRYPT  R2R½âÃÜÊ§°Ü CNend
+CNcomment:HI_ERR_CA_WAIT_TIMEOUT CAç­‰å¾…åŠ è§£å¯†è¶…æ—¶ CNend
+\retval ::HI_ERR_CA_R2R_DECRYPT The R2R decryption fails CNcomment:HI_ERR_CA_R2R_DECRYPT  R2Rè§£å¯†å¤±è´¥ CNend
 \see \n
 ::HI_UNF_ADVCA_KEYLADDER_LEV_E
 */
 HI_S32 HI_UNF_ADVCA_SetR2RSessionKey(HI_UNF_ADVCA_KEYLADDER_LEV_E enStage, HI_U8 *pu8Key);
 
 /**
-\brief Sets session keys for a DVB key ladder CNcomment:ÎªDVB key ladderÅäÖÃ»á»°ÃÜÔ¿    CNend
+\brief Sets session keys for a DVB key ladder CNcomment:ä¸ºDVB key ladderé…ç½®ä¼šè¯å¯†é’¥    CNend
 \attention \n
 The stage of the session key cannot be greater than the configured stage of the key ladder. The last stage of the session key is configured by calling the API of the CIPHER module rather than this API.
 That is, only session key 1 and session key 2 need to be configured for a 3-stage key ladder.
 Only session key 1 needs to be configured for a 2-stage key ladder.
 You need to set the key ladder stage by calling HI_UNF_ADVCA_SetDVBKeyLadderStage first.
  Session keys can be set during initialization or changed at any time.
-CNcomment:×¢ÒâÅäÖÃµÄ¼¶Êý²»ÄÜ³¬¹ýÉèÖÃµÄ¼¶ÊýÖµ£¬×îºóÒ»¼¶ÓÉDescramblerÄ£¿éÄÚ²¿ÅäÖÃ£¬²»ÓÃÍ¨¹ý´Ë½Ó¿ÚÅäÖÃ¡£\n
-Ò²¾ÍÊÇËµ£¬¶ÔÓÚ3¼¶key ladder£¬Ö»ÓÃÅäÖÃ»á»°ÃÜÔ¿1ºÍ»á»°ÃÜÔ¿2¡£\n
-¶ÔÓÚ2¼¶µÄkey ladder£¬Ö»ÓÃÅäÖÃ»á»°ÃÜÔ¿1¡£\n
-ÇëÏÈµ÷ÓÃHI_UNF_ADVCA_SetDVBKeyLadderStageÉèÖÃkey ladder¼¶Êý¡£\n
-»á»°ÃÜÔ¿¿ÉÒÔ³õÊ¼Ê±ÉèÖÃÒ»´Î£¬Ò²¿ÉÒÔËæÊ±ÐÞ¸Ä¡£ CNend
+CNcomment:æ³¨æ„é…ç½®çš„çº§æ•°ä¸èƒ½è¶…è¿‡è®¾ç½®çš„çº§æ•°å€¼ï¼Œæœ€åŽä¸€çº§ç”±Descrambleræ¨¡å—å†…éƒ¨é…ç½®ï¼Œä¸ç”¨é€šè¿‡æ­¤æŽ¥å£é…ç½®ã€‚\n
+ä¹Ÿå°±æ˜¯è¯´ï¼Œå¯¹äºŽ3çº§key ladderï¼Œåªç”¨é…ç½®ä¼šè¯å¯†é’¥1å’Œä¼šè¯å¯†é’¥2ã€‚\n
+å¯¹äºŽ2çº§çš„key ladderï¼Œåªç”¨é…ç½®ä¼šè¯å¯†é’¥1ã€‚\n
+è¯·å…ˆè°ƒç”¨HI_UNF_ADVCA_SetDVBKeyLadderStageè®¾ç½®key ladderçº§æ•°ã€‚\n
+ä¼šè¯å¯†é’¥å¯ä»¥åˆå§‹æ—¶è®¾ç½®ä¸€æ¬¡ï¼Œä¹Ÿå¯ä»¥éšæ—¶ä¿®æ”¹ã€‚ CNend
 \param[in] enStage Key ladder stage Its value is HI_UNF_ADVCA_KEYLADDER_LEV2 or HI_UNF_ADVCA_KEYLADDER_LEV3.
-CNcomment:enStage    ÃÜÔ¿¼¶Êý£¬[HI_UNF_ADVCA_KEYLADDER_LEV1 ~ HI_UNF_ADVCA_KEYLADDER_LEV2]  CNend
-\param[in] pu8Key Protection key pointer, 128 bits (16 bytes) in total CNcomment:pu8Key     ±£»¤ÃÜÔ¿Ö¸Õë£¬¹²128bit(16byte)  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS  ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:enStage    å¯†é’¥çº§æ•°ï¼Œ[HI_UNF_ADVCA_KEYLADDER_LEV1 ~ HI_UNF_ADVCA_KEYLADDER_LEV2]  CNend
+\param[in] pu8Key Protection key pointer, 128 bits (16 bytes) in total CNcomment:pu8Key     ä¿æŠ¤å¯†é’¥æŒ‡é’ˆï¼Œå…±128bit(16byte)  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS  æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \retval ::HI_ERR_CA_WAIT_TIMEOUT Timeout occurs when the CA module waits for encryption or decryption
-CNcomment:HI_ERR_CA_WAIT_TIMEOUT CAµÈ´ý¼Ó½âÃÜ³¬Ê± CNend
-\retval ::HI_ERR_CA_R2R_DECRYPT The CW decryption fails CNcomment:HI_ERR_CA_CW_DECRYPT   CW½âÃÜÊ§°Ü CNend
+CNcomment:HI_ERR_CA_WAIT_TIMEOUT CAç­‰å¾…åŠ è§£å¯†è¶…æ—¶ CNend
+\retval ::HI_ERR_CA_R2R_DECRYPT The CW decryption fails CNcomment:HI_ERR_CA_CW_DECRYPT   CWè§£å¯†å¤±è´¥ CNend
 
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_SetDVBSessionKey(HI_UNF_ADVCA_KEYLADDER_LEV_E enStage, HI_U8 *pu8Key);
 
@@ -560,24 +560,24 @@ HI_S32 HI_UNF_ADVCA_SetDVBSessionKey(HI_UNF_ADVCA_KEYLADDER_LEV_E enStage, HI_U8
 HI_S32 HI_UNF_ADVCA_SetGDRMSessionKey(HI_UNF_ADVCA_KEYLADDER_LEV_E enStage, HI_U8 *pu8Key, HI_UNF_ADVCA_CA_TARGET_E enKlTarget);
 
 /** 
-\brief Encrypts software protect keys (SWPKs) CNcomment:¼ÓÃÜÈí¼þ±£»¤ÃÜÔ¿ CNend
+\brief Encrypts software protect keys (SWPKs) CNcomment:åŠ å¯†è½¯ä»¶ä¿æŠ¤å¯†é’¥ CNend
 \attention
 Before the delivery of the STB, you need to read the SWPKs in plain text format from the flash memory, encrypt SWPKs by calling this API, and store the encrypted SWPKs in the flash memory for security startup.
-CNcomment:»ú¶¥ºÐ³ö³§Ê± ´ÓFlashÉÏ¶ÁÈ¡Ã÷ÎÄµÄSWPK(Software Protect Key),µ÷ÓÃ¸Ã½Ó¿Ú¼ÓÃÜ,½«¼ÓÃÜµÄSWPK´æ´¢ÔÚFlashÖÐ£¬ÓÃÓÚ°²È«Æô¶¯ CNend
+CNcomment:æœºé¡¶ç›’å‡ºåŽ‚æ—¶ ä»ŽFlashä¸Šè¯»å–æ˜Žæ–‡çš„SWPK(Software Protect Key),è°ƒç”¨è¯¥æŽ¥å£åŠ å¯†,å°†åŠ å¯†çš„SWPKå­˜å‚¨åœ¨Flashä¸­ï¼Œç”¨äºŽå®‰å…¨å¯åŠ¨ CNend
 The fist 8 bytes of the SWPK can't be equal to the last 8 bytes.
-CNcomment:SWPKµÄÇ°8¸ö×Ö½ÚÓëºó8¸ö×Ö½Ú²»ÄÜÏàµÈ CNend
+CNcomment:SWPKçš„å‰8ä¸ªå­—èŠ‚ä¸ŽåŽ8ä¸ªå­—èŠ‚ä¸èƒ½ç›¸ç­‰ CNend
 This API is only for special CA, please contact Hislicon before usage.
-CNcomment:×¢Òâ:´Ë½Ó¿ÚÎªÌØ¶¨CA×¨ÓÃ£¬ÈçÐèÊ¹ÓÃ£¬ÇëÁªÏµº£Ë¼ CNend
-\param[in]  pPlainSwpk SWPKs in plain text format CNcomment:pPlainSwpk    Ã÷ÎÄSWPK  CNend
-\param[out] pEncryptedSwpk Encrypted SWPKs CNcomment:pEncryptedSwpk  ¼ÓÃÜºóµÄSWPK  CNend
+CNcomment:æ³¨æ„:æ­¤æŽ¥å£ä¸ºç‰¹å®šCAä¸“ç”¨ï¼Œå¦‚éœ€ä½¿ç”¨ï¼Œè¯·è”ç³»æµ·æ€ CNend
+\param[in]  pPlainSwpk SWPKs in plain text format CNcomment:pPlainSwpk    æ˜Žæ–‡SWPK  CNend
+\param[out] pEncryptedSwpk Encrypted SWPKs CNcomment:pEncryptedSwpk  åŠ å¯†åŽçš„SWPK  CNend
 
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS               ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT       CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA   ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_CA_NOT_SUPPORT The function is not supported CNcomment:HI_ERR_CA_NOT_SUPPORT    ¹¦ÄÜ²»Ö§³Ö CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS               æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT       CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA   è¾“å…¥å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_CA_NOT_SUPPORT The function is not supported CNcomment:HI_ERR_CA_NOT_SUPPORT    åŠŸèƒ½ä¸æ”¯æŒ CNend
 \retval ::HI_ERR_CA_WAIT_TIMEOUT Timeout occurs when the CA module waits for encryption or decryption
-CNcomment:HI_ERR_CA_WAIT_TIMEOUT   CAµÈ´ý¼Ó½âÃÜ³¬Ê± CNend
-\return ::HI_ERR_CA_SWPK_ENCRYPT SWPK encryption fails CNcomment:HI_ERR_CA_SWPK_ENCRYPT   SWPK¼ÓÃÜÊ§°Ü CNend
+CNcomment:HI_ERR_CA_WAIT_TIMEOUT   CAç­‰å¾…åŠ è§£å¯†è¶…æ—¶ CNend
+\return ::HI_ERR_CA_SWPK_ENCRYPT SWPK encryption fails CNcomment:HI_ERR_CA_SWPK_ENCRYPT   SWPKåŠ å¯†å¤±è´¥ CNend
 
 \see
 \li ::
@@ -585,99 +585,99 @@ CNcomment:HI_ERR_CA_WAIT_TIMEOUT   CAµÈ´ý¼Ó½âÃÜ³¬Ê± CNend
 HI_S32 HI_UNF_ADVCA_EncryptSWPK(HI_U8 *pPlainSwpk,HI_U8 *pEncryptedSwpk);
 
 /**
-\brief Sets the algorithm of the DVB key ladder CNcomment:ÉèÖÃDVB key ladderµÄËã·¨    CNend
+\brief Sets the algorithm of the DVB key ladder CNcomment:è®¾ç½®DVB key ladderçš„ç®—æ³•    CNend
 \attention \n
 You must set an algorithm before using a key ladder in a session. The default algorithm is TDES.
 It is recommended that you retain the algorithm in a session.
-CNcomment:Ã¿´Î»á»°¹ý³ÌÖÐÊ¹ÓÃkey ladderÖ®Ç°£¬ÐëÉèÖÃ¾ßÌåËã·¨, ÏµÍ³³õÊ¼Ä¬ÈÏÖµ HI_UNF_ADVCA_ALG_TYPE_TDES£»\n
-±¾´Î»á»°¹ý³ÌÖÐ£¬½¨Òé±£³ÖËã·¨µÄÎÈ¶¨²»±ä¡£ CNend
-\param[in] enType Key ladder algorithm CNcomment:enType  key ladderËã·¨\n  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:æ¯æ¬¡ä¼šè¯è¿‡ç¨‹ä¸­ä½¿ç”¨key ladderä¹‹å‰ï¼Œé¡»è®¾ç½®å…·ä½“ç®—æ³•, ç³»ç»Ÿåˆå§‹é»˜è®¤å€¼ HI_UNF_ADVCA_ALG_TYPE_TDESï¼›\n
+æœ¬æ¬¡ä¼šè¯è¿‡ç¨‹ä¸­ï¼Œå»ºè®®ä¿æŒç®—æ³•çš„ç¨³å®šä¸å˜ã€‚ CNend
+\param[in] enType Key ladder algorithm CNcomment:enType  key ladderç®—æ³•\n  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_ALG_TYPE_E
 */
 HI_S32 HI_UNF_ADVCA_SetDVBAlg(HI_UNF_ADVCA_ALG_TYPE_E enType);
 
 /**
-\brief Sets the algorithm of the R2R key ladder CNcomment:ÉèÖÃR2R key ladderµÄËã·¨    CNend
+\brief Sets the algorithm of the R2R key ladder CNcomment:è®¾ç½®R2R key ladderçš„ç®—æ³•    CNend
 \attention \n
 You must set an algorithm before using a key ladder in a session. The default algorithm is TDES.
 It is recommended that you retain the algorithm in a session.
-CNcomment:Ã¿´Î»á»°¹ý³ÌÖÐÊ¹ÓÃkey ladderÖ®Ç°£¬ÐëÉèÖÃ¾ßÌåËã·¨, ÏµÍ³³õÊ¼Ä¬ÈÏÖµ HI_UNF_ADVCA_ALG_TYPE_TDES£»\n
-±¾´Î»á»°¹ý³ÌÖÐ£¬½¨Òé±£³ÖËã·¨µÄÎÈ¶¨²»±ä¡£ CNend
-\param[in] enType Key ladder algorithm CNcomment:enType  key ladderËã·¨\n  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:æ¯æ¬¡ä¼šè¯è¿‡ç¨‹ä¸­ä½¿ç”¨key ladderä¹‹å‰ï¼Œé¡»è®¾ç½®å…·ä½“ç®—æ³•, ç³»ç»Ÿåˆå§‹é»˜è®¤å€¼ HI_UNF_ADVCA_ALG_TYPE_TDESï¼›\n
+æœ¬æ¬¡ä¼šè¯è¿‡ç¨‹ä¸­ï¼Œå»ºè®®ä¿æŒç®—æ³•çš„ç¨³å®šä¸å˜ã€‚ CNend
+\param[in] enType Key ladder algorithm CNcomment:enType  key ladderç®—æ³•\n  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_ALG_TYPE_E
 */
 HI_S32 HI_UNF_ADVCA_SetR2RAlg(HI_UNF_ADVCA_ALG_TYPE_E enType);
 
 /**
-\brief Obtains the algorithm of the DVB key ladder CNcomment: »ñÈ¡ DVB key ladderµÄËã·¨    CNend
+\brief Obtains the algorithm of the DVB key ladder CNcomment: èŽ·å– DVB key ladderçš„ç®—æ³•    CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[in] pEnType Key ladder algorithm CNcomment:pEnType  key ladderËã·¨\n  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[in] pEnType Key ladder algorithm CNcomment:pEnType  key ladderç®—æ³•\n  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_ALG_TYPE_E
 */
 HI_S32 HI_UNF_ADVCA_GetDVBAlg(HI_UNF_ADVCA_ALG_TYPE_E *pEnType);
 
 /**
-\brief Obtains the algorithm of the R2R key ladder CNcomment:»ñÈ¡ R2R key ladderµÄËã·¨    CNend
+\brief Obtains the algorithm of the R2R key ladder CNcomment:èŽ·å– R2R key ladderçš„ç®—æ³•    CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[in] enType Key ladder algorithm CNcomment:enType  key ladderËã·¨\n  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[in] enType Key ladder algorithm CNcomment:enType  key ladderç®—æ³•\n  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_ALG_TYPE_E
 */
 HI_S32 HI_UNF_ADVCA_GetR2RAlg(HI_UNF_ADVCA_ALG_TYPE_E *pEnType);
 
 /**
-  \brief set RSA key CNcomment:ÉèÖÃÇ©ÃûÐ£ÑéµÄRSAÃÜÂë CNend
+  \brief set RSA key CNcomment:è®¾ç½®ç­¾åæ ¡éªŒçš„RSAå¯†ç  CNend
   \attention \n
   RSA key should have been setting before chipset is delivered to STB Manufacture.
   The length of RSA key must be 512 Bytes.
      Please contact Hisilicon before Customer try to use this interface.
-  CNcomment:¸Ã½Ó¿Ú½öÓÃÓÚ²âÊÔÐ¾Æ¬£¬ÕýÊ½Ð¾Æ¬²»ÄÜÉèÖÃRSAKey\n
-     ¸Ã½Ó¿ÚÖ»ÔÊÐíµ÷ÓÃÒ»´Î£¬²»ÄÜÖØ¸´µ÷ÓÃ,Çë½÷É÷Ê¹ÓÃ¸Ã½Ó¿Ú, RSA keyµÄ³¤¶È±ØÐëÎª512 Bytes\n
-     RSA key¿ÉÄÜÒÑ°´ÕÕCA¹«Ë¾ÒªÇóÉèÖÃ£¬¸Ã½Ó¿ÚÈç¹û¿Í»§ÐèÒªÊ¹ÓÃ¸Ã½Ó¿ÚÐèÒªÏÈÍ¨Öªº£Ë¼\n  CNend
-  \param[in] pkey RSA key CNcomment:pkey  RSAÃÜÂë\n  CNend
-  \retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-  \retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-  \retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-  \retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+  CNcomment:è¯¥æŽ¥å£ä»…ç”¨äºŽæµ‹è¯•èŠ¯ç‰‡ï¼Œæ­£å¼èŠ¯ç‰‡ä¸èƒ½è®¾ç½®RSAKey\n
+     è¯¥æŽ¥å£åªå…è®¸è°ƒç”¨ä¸€æ¬¡ï¼Œä¸èƒ½é‡å¤è°ƒç”¨,è¯·è°¨æ…Žä½¿ç”¨è¯¥æŽ¥å£, RSA keyçš„é•¿åº¦å¿…é¡»ä¸º512 Bytes\n
+     RSA keyå¯èƒ½å·²æŒ‰ç…§CAå…¬å¸è¦æ±‚è®¾ç½®ï¼Œè¯¥æŽ¥å£å¦‚æžœå®¢æˆ·éœ€è¦ä½¿ç”¨è¯¥æŽ¥å£éœ€è¦å…ˆé€šçŸ¥æµ·æ€\n  CNend
+  \param[in] pkey RSA key CNcomment:pkey  RSAå¯†ç \n  CNend
+  \retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+  \retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+  \retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+  \retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
   \see \n
 */
 HI_S32 HI_UNF_ADVCA_SetRSAKey(HI_U8 *pkey);
 
 /**
-  \brief set RSA key CNcomment:»ñÈ¡Ç©ÃûÐ£ÑéµÄRSAÃÜÂë CNend
+  \brief set RSA key CNcomment:èŽ·å–ç­¾åæ ¡éªŒçš„RSAå¯†ç  CNend
   \attention \n
      RSA key can only be read out, only RSAKey is not locked.
      RSA key should have been setting and lock before chipset is delivered to STB Manufacture.
      The length of RSA key must be 512 Bytes.
      Please contact Hisilicon before Customer try to use this interface.
-  CNcomment:¸Ã½Ó¿Ú½öÔÚRSAkeyÃ»ÓÐ±»Ëø¶¨µÄÇé¿öÏÂ£¬¶ÁÈ¡³öÀ´, RSA keyµÄ³¤¶È±ØÐëÎª512 Bytes\n
-     RSA key¿ÉÄÜÒÑ°´ÕÕCA¹«Ë¾ÒªÇóÉèÖÃ²¢Ëø¶¨£¬¸Ã½Ó¿ÚÈç¹û¿Í»§ÐèÒªÊ¹ÓÃ¸Ã½Ó¿ÚÐèÒªÏÈÍ¨Öªº£Ë¼\n  CNend
-  \param[in] pkey RSA key CNcomment:pkey  RSAÃÜÂë\n  CNend
-  \retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-  \retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-  \retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-  \retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+  CNcomment:è¯¥æŽ¥å£ä»…åœ¨RSAkeyæ²¡æœ‰è¢«é”å®šçš„æƒ…å†µä¸‹ï¼Œè¯»å–å‡ºæ¥, RSA keyçš„é•¿åº¦å¿…é¡»ä¸º512 Bytes\n
+     RSA keyå¯èƒ½å·²æŒ‰ç…§CAå…¬å¸è¦æ±‚è®¾ç½®å¹¶é”å®šï¼Œè¯¥æŽ¥å£å¦‚æžœå®¢æˆ·éœ€è¦ä½¿ç”¨è¯¥æŽ¥å£éœ€è¦å…ˆé€šçŸ¥æµ·æ€\n  CNend
+  \param[in] pkey RSA key CNcomment:pkey  RSAå¯†ç \n  CNend
+  \retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+  \retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+  \retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+  \retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
   \see \n
 */
 HI_S32 HI_UNF_ADVCA_GetRSAKey(HI_U8 *pkey);
@@ -708,62 +708,62 @@ HI_S32 HI_UNF_ADVCA_GetVendorID(HI_U32 *pu32VendorID);
 
 /**
 \brief Enables the security startup function and sets the type of flash memory for security startup
-CNcomment:ÉèÖÃ°²È«Æô¶¯Ê¹ÄÜ,Í¬Ê±Ö¸¶¨°²È«Æô¶¯µÄFlashÀàÐÍ CNend
+CNcomment:è®¾ç½®å®‰å…¨å¯åŠ¨ä½¿èƒ½,åŒæ—¶æŒ‡å®šå®‰å…¨å¯åŠ¨çš„Flashç±»åž‹ CNend
 \attention \n
 This function can be enabled only and cannot be disabled after being enabled.
-CNcomment:Ö»ÄÜÊ¹ÄÜ£¬Ê¹ÄÜÖ®ºó²»¿ÉÐÞ¸Ä¡£ CNend
-\param[in]  enFlashType Type of the flash memory for security startup CNcomment:enFlashType  Æô¶¯µÄFlashÀàÐÍ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  ÖØ¸´ÉèÖÃ CNend
+CNcomment:åªèƒ½ä½¿èƒ½ï¼Œä½¿èƒ½ä¹‹åŽä¸å¯ä¿®æ”¹ã€‚ CNend
+\param[in]  enFlashType Type of the flash memory for security startup CNcomment:enFlashType  å¯åŠ¨çš„Flashç±»åž‹ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  é‡å¤è®¾ç½® CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_EnableSecBoot(HI_UNF_ADVCA_FLASH_TYPE_E enFlashType);
 
 /**
 \brief Enables the security startup function. This API should be used with the API HI_UNF_ADVCA_SetFlashTypeEx.
-CNcomment:ÉèÖÃ°²È«Æô¶¯Ê¹ÄÜ£¬¸Ã½Ó¿Ú±ØÐëºÍHI_UNF_ADVCA_SetFlashTypeExÅäÌ×Ê¹ÓÃ¡£ CNend
+CNcomment:è®¾ç½®å®‰å…¨å¯åŠ¨ä½¿èƒ½ï¼Œè¯¥æŽ¥å£å¿…é¡»å’ŒHI_UNF_ADVCA_SetFlashTypeExé…å¥—ä½¿ç”¨ã€‚ CNend
 \attention \n
 \param[in]  None
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  ÖØ¸´ÉèÖÃ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  é‡å¤è®¾ç½® CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_EnableSecBootEx(HI_VOID);
 
 /**
 \brief Sets the type of flash memory for security startup and disable the self boot, which mean that you cannot use the serial port to update the boot. This API should be used with the API HI_UNF_ADVCA_EnableSecBootEx
-CNcomment:Ö¸¶¨°²È«Æô¶¯µÄFlashÀàÐÍ£¬Í¬Ê±¹Ø±Õ×Ô¾Ù¹¦ÄÜ£¬¼´²»ÄÜÍ¨¹ý´®¿ÚÉý¼¶fastboot¡£¸Ã½Ó¿Ú¸úHI_UNF_ADVCA_EnableSecBootExÅäÌ×Ê¹ÓÃ CNend
+CNcomment:æŒ‡å®šå®‰å…¨å¯åŠ¨çš„Flashç±»åž‹ï¼ŒåŒæ—¶å…³é—­è‡ªä¸¾åŠŸèƒ½ï¼Œå³ä¸èƒ½é€šè¿‡ä¸²å£å‡çº§fastbootã€‚è¯¥æŽ¥å£è·ŸHI_UNF_ADVCA_EnableSecBootExé…å¥—ä½¿ç”¨ CNend
 \attention \n
 The setting is performed before delivery and can be performed once only.
-CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±Ñ¡ÔñÊÇ·ñÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î CNend
-\param[in]  enFlashType Type of the flash memory for security startup CNcomment:enFlashType  Æô¶¯µÄFlashÀàÐÍ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  ÖØ¸´ÉèÖÃ CNend
+CNcomment:åœ¨æœºé¡¶ç›’å‡ºåŽ‚æ—¶é€‰æ‹©æ˜¯å¦è®¾ç½®ï¼Œä»…æ”¯æŒè®¾ç½®ä¸€æ¬¡ CNend
+\param[in]  enFlashType Type of the flash memory for security startup CNcomment:enFlashType  å¯åŠ¨çš„Flashç±»åž‹ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  é‡å¤è®¾ç½® CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_SetFlashTypeEx(HI_UNF_ADVCA_FLASH_TYPE_E enFlashType);
 
 /** 
-\brief  Sets whether to use hardware CWs only CNcomment:ÉèÖÃ¹Ì¶¨Ê¹ÓÃÓ²¼þCW×Ö CNend
+\brief  Sets whether to use hardware CWs only CNcomment:è®¾ç½®å›ºå®šä½¿ç”¨ç¡¬ä»¶CWå­— CNend
 \attention
 The setting is performed before delivery and can be performed once only.
 By default, the CW type (hardware CWs or software CWs) depends on the configuration of the DEMUX.
-CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±Ñ¡ÔñÊÇ·ñÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î
-Ä¬ÈÏ¸ù¾ÝDemuxµÄÅäÖÃÑ¡ÔñÊ¹ÓÃÓ²¼þCW×Ö»¹ÊÇÈí¼þCW×Ö CNend
+CNcomment:åœ¨æœºé¡¶ç›’å‡ºåŽ‚æ—¶é€‰æ‹©æ˜¯å¦è®¾ç½®ï¼Œä»…æ”¯æŒè®¾ç½®ä¸€æ¬¡
+é»˜è®¤æ ¹æ®Demuxçš„é…ç½®é€‰æ‹©ä½¿ç”¨ç¡¬ä»¶CWå­—è¿˜æ˜¯è½¯ä»¶CWå­— CNend
 \param[in] 
 
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAÎ´³õÊ¼»¯ CNend
-\return ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN    ÖØ¸´ÉèÖÃ²ÎÊý CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAæœªåˆå§‹åŒ– CNend
+\return ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN    é‡å¤è®¾ç½®å‚æ•° CNend
 
 \see
 \li :: 
@@ -771,16 +771,16 @@ CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±Ñ¡ÔñÊÇ·ñÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î
 HI_S32 HI_UNF_ADVCA_LockHardCwSel(HI_VOID);
 
 /** 
-\brief Disables the self-boot function CNcomment:¹Ø±ÕSelfBoot¹¦ÄÜ,Ò²¾ÍÊÇbootÏÂ²»ÄÜÊ¹ÓÃ´®¿Ú/Íø¿ÚÉý¼¶ CNend
+\brief Disables the self-boot function CNcomment:å…³é—­SelfBootåŠŸèƒ½,ä¹Ÿå°±æ˜¯bootä¸‹ä¸èƒ½ä½¿ç”¨ä¸²å£/ç½‘å£å‡çº§ CNend
 \attention
 The setting is performed before delivery and can be performed once only.
 The self-boot function is enabled by default.
-CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±Ñ¡ÔñÊÇ·ñÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î
-Ä¬ÈÏÊ¹ÄÜSelfBoot¹¦ÄÜ CNend
+CNcomment:åœ¨æœºé¡¶ç›’å‡ºåŽ‚æ—¶é€‰æ‹©æ˜¯å¦è®¾ç½®ï¼Œä»…æ”¯æŒè®¾ç½®ä¸€æ¬¡
+é»˜è®¤ä½¿èƒ½SelfBootåŠŸèƒ½ CNend
 
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized.  CNcomment:HI_ERR_CA_NOT_INIT          CAÎ´³õÊ¼»¯ CNend
-\return ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN    ÖØ¸´ÉèÖÃ²ÎÊý CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized.  CNcomment:HI_ERR_CA_NOT_INIT          CAæœªåˆå§‹åŒ– CNend
+\return ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN    é‡å¤è®¾ç½®å‚æ•° CNend
 
 \see
 \li ::
@@ -788,31 +788,31 @@ CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±Ñ¡ÔñÊÇ·ñÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î
 HI_S32 HI_UNF_ADVCA_DisableSelfBoot(HI_VOID);
 
 /**
-\brief Obtains the self-boot status CNcomment:»ñÈ¡SelfBoot×´Ì¬ CNend
+\brief Obtains the self-boot status CNcomment:èŽ·å–SelfBootçŠ¶æ€ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] pbDisable: self-boot status. CNcomment:pbEnable   SelfBootÊÇ·ñ½ûÓÃ CNend
-HI_TRUE enabled CNcomment:HI_TRUE ½ûÓÃ£¬  CNend
-HI_FALSE disabled CNcomment:HI_FALSE Î´½ûÓÃ CNend
+None CNcomment:æ—  CNend
+\param[out] pbDisable: self-boot status. CNcomment:pbEnable   SelfBootæ˜¯å¦ç¦ç”¨ CNend
+HI_TRUE enabled CNcomment:HI_TRUE ç¦ç”¨ï¼Œ  CNend
+HI_FALSE disabled CNcomment:HI_FALSE æœªç¦ç”¨ CNend
 
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_GetSelfBootStat(HI_BOOL *pbDisable);
 
 /** 
-\brief  Get whether to use hardware CWs only CNcomment:»ñÈ¡¹Ì¶¨Ê¹ÓÃÓ²¼þCW×Ö±êÖ¾ CNend
+\brief  Get whether to use hardware CWs only CNcomment:èŽ·å–å›ºå®šä½¿ç”¨ç¡¬ä»¶CWå­—æ ‡å¿— CNend
 \attention
-None CNcomment:ÎÞ CNend
-\param[out] pbLock indicates the state of hardware CWs  CNcomment:pbLock Ó²¼þCW×ÖµÄ±êÖ¾Î» CNend
+None CNcomment:æ—  CNend
+\param[out] pbLock indicates the state of hardware CWs  CNcomment:pbLock ç¡¬ä»¶CWå­—çš„æ ‡å¿—ä½ CNend
 
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  ÊäÈë²ÎÊý·Ç·¨ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  è¾“å…¥å‚æ•°éžæ³• CNend
 
 \see
 \li :: 
@@ -820,12 +820,12 @@ None CNcomment:ÎÞ CNend
 HI_S32 HI_UNF_ADVCA_GetHardCwSelStat(HI_BOOL *pbLock);
 
 /** 
-\brief  Open the SWPK key ladder CNcomment:´ò¿ªboot key ladder  CNend
+\brief  Open the SWPK key ladder CNcomment:æ‰“å¼€boot key ladder  CNend
 \attention
 \param[in] 
 
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAÎ´³õÊ¼»¯ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAæœªåˆå§‹åŒ– CNend
 
 \see
 \li :: 
@@ -833,12 +833,12 @@ HI_S32 HI_UNF_ADVCA_GetHardCwSelStat(HI_BOOL *pbLock);
 HI_S32 HI_UNF_ADVCA_SWPKKeyLadderOpen(HI_VOID);
 
 /** 
-\brief  Close the SWPK key ladder CNcomment:¹Ø±Õboot key ladder  CNend
+\brief  Close the SWPK key ladder CNcomment:å…³é—­boot key ladder  CNend
 \attention
 \param[in] 
 
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAÎ´³õÊ¼»¯ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAæœªåˆå§‹åŒ– CNend
 
 \see
 \li :: 
@@ -846,147 +846,147 @@ HI_S32 HI_UNF_ADVCA_SWPKKeyLadderOpen(HI_VOID);
 HI_S32 HI_UNF_ADVCA_SWPKKeyLadderClose(HI_VOID);
 
 /**
-\brief Obtains the Version ID CNcomment:»ñÈ¡Version ID  CNend
+\brief Obtains the Version ID CNcomment:èŽ·å–Version ID  CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] u8VersionId version ID CNcomment:u8VersionId   °æ±¾ºÅ±êÖ¾ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] u8VersionId version ID CNcomment:u8VersionId   ç‰ˆæœ¬å·æ ‡å¿— CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_SetVersionId
 */
 HI_S32 HI_UNF_ADVCA_GetVersionId(HI_U8 u8VersionId[4]);
 
 /**
-\brief Sets the Version ID CNcomment:ÉèÖÃVersion ID  CNend
+\brief Sets the Version ID CNcomment:è®¾ç½®Version ID  CNend
 \attention \n
 The version ID of the set-top box (STB) is set before delivery. The version ID can be set once only and takes effects after the STB restarts.
-CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±ÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î ÉèÖÃºóÖØÆôÉúÐ§ CNend
-\param[in] u8VersionId version ID CNcomment:u8VersionId   °æ±¾ºÅ±êÖ¾ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT  CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  ÖØ¸´ÉèÖÃ CNend
+CNcomment:åœ¨æœºé¡¶ç›’å‡ºåŽ‚æ—¶è®¾ç½®ï¼Œä»…æ”¯æŒè®¾ç½®ä¸€æ¬¡ è®¾ç½®åŽé‡å¯ç”Ÿæ•ˆ CNend
+\param[in] u8VersionId version ID CNcomment:u8VersionId   ç‰ˆæœ¬å·æ ‡å¿— CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT  CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN  é‡å¤è®¾ç½® CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_SetVersionId(HI_U8 u8VersionId[4]);
 
 /** 
-\brief  Sets whether to check the boot version CNcomment:ÉèÖÃÊÇ·ñ¼ì²éVersion  CNend
+\brief  Sets whether to check the boot version CNcomment:è®¾ç½®æ˜¯å¦æ£€æŸ¥Version  CNend
 \attention
 The setting is performed before delivery and can be performed once only.
 By default, the version check function is disabled
-CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±Ñ¡ÔñÊÇ·ñÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î
-Ä¬ÈÏ²»Ê¹ÄÜversion check  CNend
+CNcomment:åœ¨æœºé¡¶ç›’å‡ºåŽ‚æ—¶é€‰æ‹©æ˜¯å¦è®¾ç½®ï¼Œä»…æ”¯æŒè®¾ç½®ä¸€æ¬¡
+é»˜è®¤ä¸ä½¿èƒ½version check  CNend
 \param[in] 
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAÎ´³õÊ¼»¯ CNend
-\return ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN    ÖØ¸´ÉèÖÃ²ÎÊý CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAæœªåˆå§‹åŒ– CNend
+\return ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN    é‡å¤è®¾ç½®å‚æ•° CNend
 \see
 \li :: 
 */
 HI_S32 HI_UNF_ADVCA_EnableVersionCheck(HI_VOID);
 
 /** 
-\brief  Get the boot version check flag CNcomment:»ñÈ¡ÊÇ·ñ¼ì²éversionµÄ±êÖ¾Î» CNend
+\brief  Get the boot version check flag CNcomment:èŽ·å–æ˜¯å¦æ£€æŸ¥versionçš„æ ‡å¿—ä½ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] pu32Stat boot version check flag CNcomment:pu32Stat    version¼ì²éµÄ±êÖ¾Î» CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] pu32Stat boot version check flag CNcomment:pu32Stat    versionæ£€æŸ¥çš„æ ‡å¿—ä½ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_GetVersionCheckStat(HI_U32 *pu32Stat);
 
 /** 
-\brief  Sets whether to check the MSID in boot area CNcomment:ÉèÖÃÊÇ·ñ¼ì²éboot areaµÄMSID  CNend
+\brief  Sets whether to check the MSID in boot area CNcomment:è®¾ç½®æ˜¯å¦æ£€æŸ¥boot areaçš„MSID  CNend
 \attention
 The setting is performed before delivery and can be performed once only.
 By default, the boot MSID check function is disabled
-CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±Ñ¡ÔñÊÇ·ñÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î
-Ä¬ÈÏ²»Ê¹ÄÜboot MSID check  CNend
+CNcomment:åœ¨æœºé¡¶ç›’å‡ºåŽ‚æ—¶é€‰æ‹©æ˜¯å¦è®¾ç½®ï¼Œä»…æ”¯æŒè®¾ç½®ä¸€æ¬¡
+é»˜è®¤ä¸ä½¿èƒ½boot MSID check  CNend
 \param[in] 
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAÎ´³õÊ¼»¯ CNend
-\return ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN    ÖØ¸´ÉèÖÃ²ÎÊý CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAæœªåˆå§‹åŒ– CNend
+\return ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN    é‡å¤è®¾ç½®å‚æ•° CNend
 \see
 \li :: 
 */
 HI_S32 HI_UNF_ADVCA_EnableBootMSIDCheck(HI_VOID);
 
 /** 
-\brief  Get the boot MSID check flag CNcomment:»ñÈ¡ÊÇ·ñ¼ì²éMSIDµÄ±êÖ¾Î» CNend
+\brief  Get the boot MSID check flag CNcomment:èŽ·å–æ˜¯å¦æ£€æŸ¥MSIDçš„æ ‡å¿—ä½ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] pu32Stat boot MSID check flag CNcomment:pu32Stat    MSID¼ì²éµÄ±êÖ¾Î» CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] pu32Stat boot MSID check flag CNcomment:pu32Stat    MSIDæ£€æŸ¥çš„æ ‡å¿—ä½ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_GetBootMSIDCheckStat(HI_U32 *pu32Stat);
 
 /** 
 \brief  Get the software revision
-CNcomment:»ñÈ¡Èí¼þµÄrevision°æ±¾ºÅ CNend
+CNcomment:èŽ·å–è½¯ä»¶çš„revisionç‰ˆæœ¬å· CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] revision string of Revision CNcomment:revision    Revision°æ±¾ºÅ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] revision string of Revision CNcomment:revision    Revisionç‰ˆæœ¬å· CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_GetRevision(HI_U8 revision[25]);
 
 /** 
 \brief  Set the DDR Scramble flag. Normally, this flag has been set as required by CA vendor
-CNcomment:ÉèÖÃDDR¼ÓÈÅ±êÖ¾Î»£¬Ò»°ã¸ß°²Ð¾Æ¬³ö³§Ê±ÒÑ°´ÕÕCA¹«Ë¾ÒªÇóÉèÖÃ CNend
+CNcomment:è®¾ç½®DDRåŠ æ‰°æ ‡å¿—ä½ï¼Œä¸€èˆ¬é«˜å®‰èŠ¯ç‰‡å‡ºåŽ‚æ—¶å·²æŒ‰ç…§CAå…¬å¸è¦æ±‚è®¾ç½® CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAÎ´³õÊ¼»¯ CNend
+None CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAæœªåˆå§‹åŒ– CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_SetDDRScramble(HI_VOID);
 
 /** 
 \brief  Get the DDR Scramble flag
-CNcomment:»ñÈ¡DDR¼ÓÈÅ±êÖ¾Î» CNend
+CNcomment:èŽ·å–DDRåŠ æ‰°æ ‡å¿—ä½ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] pu32Stat DDR Scramble flag CNcomment:pu32Stat    DDR¼ÓÈÅ±êÖ¾ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] pu32Stat DDR Scramble flag CNcomment:pu32Stat    DDRåŠ æ‰°æ ‡å¿— CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_GetDDRScrambleStat(HI_U32 *pu32Stat);
 
 /** 
-\brief Sets whether to decrypt the BootLoader CNcomment:ÉèÖÃ±ØÐë¶ÔBootLoader½øÐÐ½âÃÜ CNend
+\brief Sets whether to decrypt the BootLoader CNcomment:è®¾ç½®å¿…é¡»å¯¹BootLoaderè¿›è¡Œè§£å¯† CNend
 \attention
 The setting is performed before delivery and can be performed once only.
-CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±Ñ¡ÔñÊÇ·ñÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î
-Ä¬ÈÏ¸ù¾ÝFlashÖÐµÄÊý¾Ý±êÊ¶£¬¾ö¶¨BootLoaderÊÇ·ñÐèÒª½âÃÜ CNend
+CNcomment:åœ¨æœºé¡¶ç›’å‡ºåŽ‚æ—¶é€‰æ‹©æ˜¯å¦è®¾ç½®ï¼Œä»…æ”¯æŒè®¾ç½®ä¸€æ¬¡
+é»˜è®¤æ ¹æ®Flashä¸­çš„æ•°æ®æ ‡è¯†ï¼Œå†³å®šBootLoaderæ˜¯å¦éœ€è¦è§£å¯† CNend
 
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAÎ´³õÊ¼»¯ CNend
-\return ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN    ÖØ¸´ÉèÖÃ²ÎÊý CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT          CAæœªåˆå§‹åŒ– CNend
+\return ::HI_ERR_CA_SETPARAM_AGAIN The parameter has been set CNcomment:HI_ERR_CA_SETPARAM_AGAIN    é‡å¤è®¾ç½®å‚æ•° CNend
 
 \see
 \li ::
@@ -994,16 +994,16 @@ CNcomment:ÔÚ»ú¶¥ºÐ³ö³§Ê±Ñ¡ÔñÊÇ·ñÉèÖÃ£¬½öÖ§³ÖÉèÖÃÒ»´Î
 HI_S32 HI_UNF_ADVCA_LockBootDecEn(HI_VOID);
 
 /** 
-\brief Get the BootLoader Decryption flag CNcomment:»ñÈ¡BootLoader½âÃÜµÄ±êÖ¾Î» CNend
+\brief Get the BootLoader Decryption flag CNcomment:èŽ·å–BootLoaderè§£å¯†çš„æ ‡å¿—ä½ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] pu32Stat BootLoader Decryption flag CNcomment:pu32Stat    Bootloader½âÃÜ±êÖ¾Î» CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] pu32Stat BootLoader Decryption flag CNcomment:pu32Stat    Bootloaderè§£å¯†æ ‡å¿—ä½ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized CNcomment:HI_ERR_CA_NOT_INIT  CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA  è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_GetBootDecEnStat(HI_U32 *pu32Stat);
 
@@ -1015,11 +1015,11 @@ HI_S32 HI_UNF_ADVCA_GetBootDecEnStat(HI_U32 *pu32Stat);
 
 
 /** 
-\brief  Open ADVCA PVR Record CNcomment:´ò¿ªADVCA PVR Â¼ÖÆ CNend
+\brief  Open ADVCA PVR Record CNcomment:æ‰“å¼€ADVCA PVR å½•åˆ¶ CNend
 \attention
-\param[in] u32RecChnID Channel ID of record CNcomment:u32RecChnID   Â¼ÖÆÍ¨µÀºÅ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  Ê§°Ü CNend
+\param[in] u32RecChnID Channel ID of record CNcomment:u32RecChnID   å½•åˆ¶é€šé“å· CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  å¤±è´¥ CNend
 
 \see
 \li :: 
@@ -1027,11 +1027,11 @@ HI_S32 HI_UNF_ADVCA_GetBootDecEnStat(HI_U32 *pu32Stat);
 HI_S32 HI_UNF_ADVCA_PVR_RecOpen(HI_U32 u32RecChnID);
 
 /** 
-\brief  Close ADVCA PVR Record CNcomment:¹Ø±ÕADVCA PVR Â¼ÖÆ CNend
+\brief  Close ADVCA PVR Record CNcomment:å…³é—­ADVCA PVR å½•åˆ¶ CNend
 \attention
-\param[in] u32RecChnID Channel ID of record CNcomment:u32RecChnID   Â¼ÖÆÍ¨µÀºÅ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  Ê§°Ü CNend
+\param[in] u32RecChnID Channel ID of record CNcomment:u32RecChnID   å½•åˆ¶é€šé“å· CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  å¤±è´¥ CNend
 
 \see
 \li :: 
@@ -1039,11 +1039,11 @@ HI_S32 HI_UNF_ADVCA_PVR_RecOpen(HI_U32 u32RecChnID);
 HI_S32 HI_UNF_ADVCA_PVR_RecClose(HI_U32 u32RecChnID);
 
 /** 
-\brief  Open ADVCA PVR Play CNcomment:´ò¿ªADVCA PVR ²¥·Å CNend
+\brief  Open ADVCA PVR Play CNcomment:æ‰“å¼€ADVCA PVR æ’­æ”¾ CNend
 \attention
-\param[in] u32PlayChnID Channel ID of record CNcomment:u32PlayChnID   ²¥·ÅÍ¨µÀºÅ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  Ê§°Ü CNend
+\param[in] u32PlayChnID Channel ID of record CNcomment:u32PlayChnID   æ’­æ”¾é€šé“å· CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  å¤±è´¥ CNend
 
 \see
 \li :: 
@@ -1051,11 +1051,11 @@ HI_S32 HI_UNF_ADVCA_PVR_RecClose(HI_U32 u32RecChnID);
 HI_S32 HI_UNF_ADVCA_PVR_PlayOpen(HI_U32 u32PlayChnID);
 
 /** 
-\brief  Open ADVCA PVR Play CNcomment:¹Ø±ÕADVCA PVR ²¥·Å CNend
+\brief  Open ADVCA PVR Play CNcomment:å…³é—­ADVCA PVR æ’­æ”¾ CNend
 \attention
-\param[in] u32PlayChnID Channel ID of record CNcomment:u32PlayChnID   ²¥·ÅÍ¨µÀºÅ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  Ê§°Ü CNend
+\param[in] u32PlayChnID Channel ID of record CNcomment:u32PlayChnID   æ’­æ”¾é€šé“å· CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  å¤±è´¥ CNend
 
 \see
 \li :: 
@@ -1065,43 +1065,43 @@ HI_S32 HI_UNF_ADVCA_PVR_PlayClose(HI_U32 u32PlayChnID);
 
 
 /** 
-\brief  Register functions of operating CA data CNcomment:×¢²á²Ù×÷CAË½ÓÐÊý¾ÝµÄº¯Êý CNend
+\brief  Register functions of operating CA data CNcomment:æ³¨å†Œæ“ä½œCAç§æœ‰æ•°æ®çš„å‡½æ•° CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[in] funcGetData Function of getting CA private data when running PVR CNcomment:funcGetData   µ±½øÐÐPVRÊ±£¬»ñÈ¡CAË½ÓÐÊý¾ÝµÄº¯Êý CNend
-\param[in] funcSetData Function of setting CA private data when running PVR CNcomment:funcSetData   µ±½øÐÐPVRÊ±£¬ÉèÖÃCAË½ÓÐÊý¾ÝµÄº¯Êý CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  Ê§°Ü CNend
+None CNcomment:æ—  CNend
+\param[in] funcGetData Function of getting CA private data when running PVR CNcomment:funcGetData   å½“è¿›è¡ŒPVRæ—¶ï¼ŒèŽ·å–CAç§æœ‰æ•°æ®çš„å‡½æ•° CNend
+\param[in] funcSetData Function of setting CA private data when running PVR CNcomment:funcSetData   å½“è¿›è¡ŒPVRæ—¶ï¼Œè®¾ç½®CAç§æœ‰æ•°æ®çš„å‡½æ•° CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_RegisterCADataOps(fpGetCAData funcGetData,fpSetCAData funcSetData);
 
 /** 
 \brief  Write callback function which should be registered by PVR,it achieve operating keyladder and M2M encryption 
-CNcomment:Ó¦¸Ã±»PVR×¢²áµÄÂ¼ÖÆ»Øµ÷º¯Êý£¬ËüÖ÷ÒªÍê³ÉÊ¹ÓÃkeyladderºÍmulticipher¶ÔÂ¼ÖÆÊý¾Ý½øÐÐ¼ÓÃÜ CNend
+CNcomment:åº”è¯¥è¢«PVRæ³¨å†Œçš„å½•åˆ¶å›žè°ƒå‡½æ•°ï¼Œå®ƒä¸»è¦å®Œæˆä½¿ç”¨keyladderå’Œmulticipherå¯¹å½•åˆ¶æ•°æ®è¿›è¡ŒåŠ å¯† CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[in] pstCAPVRArgs Structure of parameters used by this function CNcomment:pstCAPVRArgs    ±¾º¯ÊýÊ¹ÓÃµÄ²ÎÊý½á¹¹Ìå£¬
-ÏêÏ¸¶¨Òå¼ûHI_UNF_PVR_CA_CALLBACK_ARGS_S½á¹¹ÌåµÄ¶¨Òå CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  Ê§°Ü CNend
+None CNcomment:æ—  CNend
+\param[in] pstCAPVRArgs Structure of parameters used by this function CNcomment:pstCAPVRArgs    æœ¬å‡½æ•°ä½¿ç”¨çš„å‚æ•°ç»“æž„ä½“ï¼Œ
+è¯¦ç»†å®šä¹‰è§HI_UNF_PVR_CA_CALLBACK_ARGS_Sç»“æž„ä½“çš„å®šä¹‰ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_WriteCallBack(HI_UNF_PVR_CA_CALLBACK_ARGS_S* pstCAPVRArgs);
 
 /** 
 \brief  Read callback function which should be registered by PVR,it achieve operating keyladder and M2M decryption 
-CNcomment:Ó¦¸Ã±»PVR×¢²áµÄ²¥·Å»Øµ÷º¯Êý£¬ËüÖ÷ÒªÍê³ÉÊ¹ÓÃkeyladderºÍmulticipher¶ÔÂ¼ÖÆÊý¾Ý½øÐÐ½âÃÜ CNend
+CNcomment:åº”è¯¥è¢«PVRæ³¨å†Œçš„æ’­æ”¾å›žè°ƒå‡½æ•°ï¼Œå®ƒä¸»è¦å®Œæˆä½¿ç”¨keyladderå’Œmulticipherå¯¹å½•åˆ¶æ•°æ®è¿›è¡Œè§£å¯† CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[in] pstCAPVRArgs Structure of parameters used by this function CNcomment:pstCAPVRArgs    ±¾º¯ÊýÊ¹ÓÃµÄ²ÎÊý½á¹¹Ìå£¬
-ÏêÏ¸¶¨Òå¼ûHI_UNF_PVR_CA_CALLBACK_ARGS_S½á¹¹ÌåµÄ¶¨Òå CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  ³É¹¦ CNend
-\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  Ê§°Ü CNend
+None CNcomment:æ—  CNend
+\param[in] pstCAPVRArgs Structure of parameters used by this function CNcomment:pstCAPVRArgs    æœ¬å‡½æ•°ä½¿ç”¨çš„å‚æ•°ç»“æž„ä½“ï¼Œ
+è¯¦ç»†å®šä¹‰è§HI_UNF_PVR_CA_CALLBACK_ARGS_Sç»“æž„ä½“çš„å®šä¹‰ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS                  æˆåŠŸ CNend
+\retval ::HI_FAILURE Faliure CNcomment:HI_FAILURE                  å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_ReadCallBack(HI_UNF_PVR_CA_CALLBACK_ARGS_S* pstCAPVRArgs);
 
@@ -1109,234 +1109,234 @@ HI_S32 HI_UNF_ADVCA_PVR_ReadCallBack(HI_UNF_PVR_CA_CALLBACK_ARGS_S* pstCAPVRArgs
 
 /**
 \brief  Get the name of CA private data file by index file name
-CNcomment:Í¨¹ýË÷ÒýÎÄ¼þÃû×Ö»ñÈ¡CAË½ÓÐÊý¾ÝÎÄ¼þ CNend
+CNcomment:é€šè¿‡ç´¢å¼•æ–‡ä»¶åå­—èŽ·å–CAç§æœ‰æ•°æ®æ–‡ä»¶ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 
-\param[in] pIndexFileName  The name of index file        CNcomment:Ë÷ÒýÎÄ¼þÃû×Ö CNend
-\param[out] CAPrivateFileName  The name  CA private data file  CNcomment:Ë½ÓÐÊý¾ÝÎÄ¼þÃû×Ö CNend
+\param[in] pIndexFileName  The name of index file        CNcomment:ç´¢å¼•æ–‡ä»¶åå­— CNend
+\param[out] CAPrivateFileName  The name  CA private data file  CNcomment:ç§æœ‰æ•°æ®æ–‡ä»¶åå­— CNend
 
 
-\retval ::HI_SUCCESS Success     CNcomment: ³É¹¦ CNend
-\retval ::HI_FAILURE Faliure       CNcomment:  Ê§°Ü CNend
+\retval ::HI_SUCCESS Success     CNcomment: æˆåŠŸ CNend
+\retval ::HI_FAILURE Faliure       CNcomment:  å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_GetCAPrivateFileName(HI_CHAR * pIndexFileName,HI_CHAR CAPrivateFileName[128]);
 
 /**
 \brief  Create CA private data file
-CNcomment: ´´½¨CAË½ÓÐÊý¾ÝÎÄ¼þ CNend
+CNcomment: åˆ›å»ºCAç§æœ‰æ•°æ®æ–‡ä»¶ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 
-\param[in] u32RecChnID  Record channel ID        CNcomment:Â¼ÖÆÍ¨µÀID  CNend
-\param[in] pCAPrivateFileName  The name  CA private data file  CNcomment:Ë½ÓÐÊý¾ÝÎÄ¼þÃû×Ö CNend
+\param[in] u32RecChnID  Record channel ID        CNcomment:å½•åˆ¶é€šé“ID  CNend
+\param[in] pCAPrivateFileName  The name  CA private data file  CNcomment:ç§æœ‰æ•°æ®æ–‡ä»¶åå­— CNend
 
-\retval ::HI_SUCCESS Success       CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE Faliure          CNcomment: Ê§°Ü CNend
+\retval ::HI_SUCCESS Success       CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE Faliure          CNcomment: å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_CreateCAPrivateFile( HI_U32 u32RecChnID,HI_CHAR * pCAPrivateFileName);
 
 /**
 \brief  Check  if the file of CA private data is correct
-CNcomment: ºË¶ÔCA Ë½ÓÐÊý¾ÝÎÄ¼þÊÇ·ñÕýÈ· CNend
+CNcomment: æ ¸å¯¹CA ç§æœ‰æ•°æ®æ–‡ä»¶æ˜¯å¦æ­£ç¡® CNend
 \attention \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 
-\param[in]  pCAPrivateFileName  The name of CA private data file .     CNcomment:CA Ë½ÓÐÊý¾ÝÎÄ¼þÃû×Ö CNend
+\param[in]  pCAPrivateFileName  The name of CA private data file .     CNcomment:CA ç§æœ‰æ•°æ®æ–‡ä»¶åå­— CNend
 
-\retval ::HI_SUCCESS Check successfully                   CNcomment:ºË¶Ô³É¹¦ CNend
-\retval ::HI_FAILURE  Fail to check.                          CNcomment:ºË¶ÔÊ§°Ü CNend
+\retval ::HI_SUCCESS Check successfully                   CNcomment:æ ¸å¯¹æˆåŠŸ CNend
+\retval ::HI_FAILURE  Fail to check.                          CNcomment:æ ¸å¯¹å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_CheckCAPrivateFileMAC( HI_CHAR * pCAPrivateFileName);
 
 /**
 \brief  Save the information of maturity rate into the file of CA private data
-CNcomment: ½«³ÉÈË¼¶ÐÅÏ¢±£´æµ½CA Ë½ÓÐÊý¾ÝÎÄ¼þÖÐ CNend
+CNcomment: å°†æˆäººçº§ä¿¡æ¯ä¿å­˜åˆ°CA ç§æœ‰æ•°æ®æ–‡ä»¶ä¸­ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 
-\param[in]  u32RecChnID  The record channel ID .                             CNcomment:Â¼ÖÆÍ¨µÀID  CNend
-\param[in]  pCAPrivateFileName  The name of CA private data file .     CNcomment:CA Ë½ÓÐÊý¾ÝÎÄ¼þÃû×Ö CNend
-\param[in]  pstPVRURI  The information of maturity rate                   CNcomment:³ÉÈË¼¶ÐÅÏ¢ CNend
+\param[in]  u32RecChnID  The record channel ID .                             CNcomment:å½•åˆ¶é€šé“ID  CNend
+\param[in]  pCAPrivateFileName  The name of CA private data file .     CNcomment:CA ç§æœ‰æ•°æ®æ–‡ä»¶åå­— CNend
+\param[in]  pstPVRURI  The information of maturity rate                   CNcomment:æˆäººçº§ä¿¡æ¯ CNend
 
 
-\retval ::HI_SUCCESS Check successfully                   CNcomment:±£´æ³É¹¦ CNend
-\retval ::HI_FAILURE  Fail to check.                          CNcomment:±£´æÊ§°Ü CNend
+\retval ::HI_SUCCESS Check successfully                   CNcomment:ä¿å­˜æˆåŠŸ CNend
+\retval ::HI_FAILURE  Fail to check.                          CNcomment:ä¿å­˜å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_SaveURI( HI_U32 u32RecChnID,HI_CHAR * pCAPrivateFileName ,HI_UNF_PVR_URI_S* pstPVRURI);
 
 /**
 \brief  Save the information of fingerprint into the file of CA private data
-CNcomment: ½«Ö¸ÎÆÐÅÏ¢±£´æµ½CA Ë½ÓÐÊý¾ÝÎÄ¼þÖÐ CNend
+CNcomment: å°†æŒ‡çº¹ä¿¡æ¯ä¿å­˜åˆ°CA ç§æœ‰æ•°æ®æ–‡ä»¶ä¸­ CNend
 
 \attention \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 
-\param[in]  u32RecChnID  The record channel ID .                             CNcomment:Â¼ÖÆÍ¨µÀID  CNend
-\param[in]  pCAPrivateFileName  The name of CA private data file .     CNcomment:CA Ë½ÓÐÊý¾ÝÎÄ¼þÃû×Ö CNend
-\param[in]  pstFPInfo  The information of fingerprint                   CNcomment:Ö¸ÎÆÐÅÏ¢ CNend
+\param[in]  u32RecChnID  The record channel ID .                             CNcomment:å½•åˆ¶é€šé“ID  CNend
+\param[in]  pCAPrivateFileName  The name of CA private data file .     CNcomment:CA ç§æœ‰æ•°æ®æ–‡ä»¶åå­— CNend
+\param[in]  pstFPInfo  The information of fingerprint                   CNcomment:æŒ‡çº¹ä¿¡æ¯ CNend
 
 
-\retval ::HI_SUCCESS Check successfully                   CNcomment:±£´æ³É¹¦ CNend
-\retval ::HI_FAILURE  Fail to check.                          CNcomment:±£´æÊ§°Ü CNend
+\retval ::HI_SUCCESS Check successfully                   CNcomment:ä¿å­˜æˆåŠŸ CNend
+\retval ::HI_FAILURE  Fail to check.                          CNcomment:ä¿å­˜å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_SaveFP( HI_U32 u32RecChnID,HI_CHAR * pCAPrivateFileName,HI_UNF_PVR_FP_INFO_S* pstFPInfo);
 
 /**
 \brief  Get the corresponding information of maturity rate based on the number from the file of CA private data
-CNcomment: ¸ù¾Ýnumber ´ÓCA Ë½ÓÐÊý¾ÝÎÄ¼þÖÐ»ñÈ¡ÏàÓ¦µÄ³ÉÈË¼¶ÐÅÏ¢ CNend
+CNcomment: æ ¹æ®number ä»ŽCA ç§æœ‰æ•°æ®æ–‡ä»¶ä¸­èŽ·å–ç›¸åº”çš„æˆäººçº§ä¿¡æ¯ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 
-\param[in]  pCAPrivateFileName  The name of CA private data file .      CNcomment:CA Ë½ÓÐÊý¾ÝÎÄ¼þÃû×Ö CNend
-\param[in]  u32URINum  The number of information of maturity level .  CNcomment:³ÉÈË¼¶ÐÅÏ¢number  CNend
-\param[in]  pstPVRURI   The information of maturity rate                   CNcomment:³ÉÈË¼¶ÐÅÏ¢ CNend
+\param[in]  pCAPrivateFileName  The name of CA private data file .      CNcomment:CA ç§æœ‰æ•°æ®æ–‡ä»¶åå­— CNend
+\param[in]  u32URINum  The number of information of maturity level .  CNcomment:æˆäººçº§ä¿¡æ¯number  CNend
+\param[in]  pstPVRURI   The information of maturity rate                   CNcomment:æˆäººçº§ä¿¡æ¯ CNend
 
-\retval ::HI_SUCCESS  Get successfully                  CNcomment:»ñÈ¡³É¹¦ CNend
-\retval ::HI_FAILURE  Fail to get.                          CNcomment:»ñÈ¡Ê§°Ü CNend
+\retval ::HI_SUCCESS  Get successfully                  CNcomment:èŽ·å–æˆåŠŸ CNend
+\retval ::HI_FAILURE  Fail to get.                          CNcomment:èŽ·å–å¤±è´¥ CNend
 
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_GetURI( HI_CHAR * pCAPrivateFileName ,HI_U32 u32URINum, HI_UNF_PVR_URI_S* pstURI);
 
 /**
 \brief  Get the corresponding information of fingerprint based on the number from the file of CA private data
-CNcomment: ¸ù¾Ýnumber ´ÓCA Ë½ÓÐÊý¾ÝÎÄ¼þÖÐ»ñÈ¡ÏàÓ¦µÄÖ¸ÎÆÐÅÏ¢ CNend
+CNcomment: æ ¹æ®number ä»ŽCA ç§æœ‰æ•°æ®æ–‡ä»¶ä¸­èŽ·å–ç›¸åº”çš„æŒ‡çº¹ä¿¡æ¯ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 
-\param[in]  pCAPrivateFileName  The name of CA private data file .      CNcomment:CA Ë½ÓÐÊý¾ÝÎÄ¼þÃû×Ö CNend
-\param[in]  u32FPNum  The number of information of fingerprint .  CNcomment:Ö¸ÎÆÐÅÏ¢number  CNend
-\param[in]  pstPVRURI   The information of fingerprint                   CNcomment:Ö¸ÎÆÐÅÏ¢ CNend
+\param[in]  pCAPrivateFileName  The name of CA private data file .      CNcomment:CA ç§æœ‰æ•°æ®æ–‡ä»¶åå­— CNend
+\param[in]  u32FPNum  The number of information of fingerprint .  CNcomment:æŒ‡çº¹ä¿¡æ¯number  CNend
+\param[in]  pstPVRURI   The information of fingerprint                   CNcomment:æŒ‡çº¹ä¿¡æ¯ CNend
 
-\retval ::HI_SUCCESS  Get successfully                  CNcomment:»ñÈ¡³É¹¦ CNend
-\retval ::HI_FAILURE  Fail to get.                          CNcomment:»ñÈ¡Ê§°Ü CNend
+\retval ::HI_SUCCESS  Get successfully                  CNcomment:èŽ·å–æˆåŠŸ CNend
+\retval ::HI_FAILURE  Fail to get.                          CNcomment:èŽ·å–å¤±è´¥ CNend
 
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_GetFP( HI_CHAR * pCAPrivateFileName,HI_U32 u32FPNum,HI_UNF_PVR_FP_INFO_S* pstFPInfo);
 
 /**
 \brief  Get the numbers of maturity rate and fingerprint from the file of CA private data
-CNcomment: ´ÓCA Ë½ÓÐÊý¾ÝÎÄ¼þÖÐ»ñÈ¡³ÉÈË¼¶ºÍÖ¸ÎÆÐÅÏ¢µÄÊýÁ¿ CNend
+CNcomment: ä»ŽCA ç§æœ‰æ•°æ®æ–‡ä»¶ä¸­èŽ·å–æˆäººçº§å’ŒæŒ‡çº¹ä¿¡æ¯çš„æ•°é‡ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 
-\param[in]  pCAPrivateFileName  The name of CA private data file .        CNcomment:CA Ë½ÓÐÊý¾ÝÎÄ¼þÃû×Ö CNend
-\param[in]  u32URINum  The numbers of information of maturity rate .   CNcomment:³ÉÈË¼¶ÐÅÏ¢µÄÊýÁ¿ CNend
-\param[in]  u32FPNum   The numbers of information of fingerprint           CNcomment:Ö¸ÎÆÐÅÏ¢µÄÊýÁ¿ CNend
+\param[in]  pCAPrivateFileName  The name of CA private data file .        CNcomment:CA ç§æœ‰æ•°æ®æ–‡ä»¶åå­— CNend
+\param[in]  u32URINum  The numbers of information of maturity rate .   CNcomment:æˆäººçº§ä¿¡æ¯çš„æ•°é‡ CNend
+\param[in]  u32FPNum   The numbers of information of fingerprint           CNcomment:æŒ‡çº¹ä¿¡æ¯çš„æ•°é‡ CNend
 
-\retval ::HI_SUCCESS  Get successfully                  CNcomment:»ñÈ¡³É¹¦ CNend
-\retval ::HI_FAILURE  Fail to get.                          CNcomment:»ñÈ¡Ê§°Ü CNend
+\retval ::HI_SUCCESS  Get successfully                  CNcomment:èŽ·å–æˆåŠŸ CNend
+\retval ::HI_FAILURE  Fail to get.                          CNcomment:èŽ·å–å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_GetURIAndFPNum( HI_CHAR * pCAPrivateFileName,HI_U32* u32URINum,HI_U32* u32FPNum);
 
 /**
 \brief  Calculte the AES_CMAC value of data  
-CNcomment: ¼ÆËãÊý¾ÝµÄAES_CMAC Öµ CNend
+CNcomment: è®¡ç®—æ•°æ®çš„AES_CMAC å€¼ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 
-\param[in]  buffer  pointer of data buffer .        CNcomment:Êý¾Ýbuffer Ö¸Õë CNend
-\param[in]  Length  The length  of data .   CNcomment:Êý¾Ý³¤¶È CNend
-\param[in]  Key   The key used in Calculte the AES_CMAC of data           CNcomment: AES_CMAC ¼ÆËãÖÐÊ¹ÓÃµÄkey  CNend
-\param[out]  MAC   The AES_CMAC value          CNcomment:AES_CMAC Öµ CNend
+\param[in]  buffer  pointer of data buffer .        CNcomment:æ•°æ®buffer æŒ‡é’ˆ CNend
+\param[in]  Length  The length  of data .   CNcomment:æ•°æ®é•¿åº¦ CNend
+\param[in]  Key   The key used in Calculte the AES_CMAC of data           CNcomment: AES_CMAC è®¡ç®—ä¸­ä½¿ç”¨çš„key  CNend
+\param[out]  MAC   The AES_CMAC value          CNcomment:AES_CMAC å€¼ CNend
 
-\retval ::HI_SUCCESS  Success                 CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE    Failure                     CNcomment:Ê§°Ü CNend
+\retval ::HI_SUCCESS  Success                 CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE    Failure                     CNcomment:å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_CalculteAES_CMAC(HI_U8 *buffer, HI_U32 Length, HI_U8 Key[16], HI_U8 MAC[16]);
 
 /**
 \brief  Get the status of PVR recording  
-CNcomment: »ñÈ¡ PVR Â¼ÖÆÐÅÏ¢ CNend
+CNcomment: èŽ·å– PVR å½•åˆ¶ä¿¡æ¯ CNend
 \attention \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 
-\param[in]  u32RecChnID  The channel ID of record.        CNcomment:Â¼ÖÆÍ¨µÀID  CNend
-\param[out]  SessionKey1  The Session key1 of  PVR recording .   CNcomment:   PVR Â¼ÖÆ¼ÓÃÜsession key 1.  CNend
-\param[out]  CurrentSessionKey2  The Session key2 of  PVR recording .   CNcomment:  µ±Ç° ÕýÔÚ Ê¹ÓÃµÄ PVR Â¼ÖÆ session key 2.  CNend
+\param[in]  u32RecChnID  The channel ID of record.        CNcomment:å½•åˆ¶é€šé“ID  CNend
+\param[out]  SessionKey1  The Session key1 of  PVR recording .   CNcomment:   PVR å½•åˆ¶åŠ å¯†session key 1.  CNend
+\param[out]  CurrentSessionKey2  The Session key2 of  PVR recording .   CNcomment:  å½“å‰ æ­£åœ¨ ä½¿ç”¨çš„ PVR å½•åˆ¶ session key 2.  CNend
 
 
-\retval ::HI_SUCCESS  Success                 CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE    Failure                     CNcomment:Ê§°Ü CNend
+\retval ::HI_SUCCESS  Success                 CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE    Failure                     CNcomment:å¤±è´¥ CNend
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_PVR_GetRecStatus(HI_U32 u32RecChnID, HI_U8 SessionKey1[16], HI_U8 CurrentSessionKey2[16]);
 
 /**
-\brief Sets the algorithm of the SP key ladder CNcomment:ÉèÖÃSP key ladderµÄËã·¨    CNend
+\brief Sets the algorithm of the SP key ladder CNcomment:è®¾ç½®SP key ladderçš„ç®—æ³•    CNend
 \attention \n
 You must set an algorithm before using a key ladder in a session. The default algorithm is TDES.
 It is recommended that you retain the algorithm in a session.
-CNcomment:Ã¿´Î»á»°¹ý³ÌÖÐÊ¹ÓÃkey ladderÖ®Ç°£¬ÐëÉèÖÃ¾ßÌåËã·¨, ÏµÍ³³õÊ¼Ä¬ÈÏÖµ HI_UNF_ADVCA_ALG_TYPE_TDES£»\n
-±¾´Î»á»°¹ý³ÌÖÐ£¬½¨Òé±£³ÖËã·¨µÄÎÈ¶¨²»±ä¡£ CNend
-\param[in] enType Key ladder algorithm CNcomment:enType  key ladderËã·¨\n  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:æ¯æ¬¡ä¼šè¯è¿‡ç¨‹ä¸­ä½¿ç”¨key ladderä¹‹å‰ï¼Œé¡»è®¾ç½®å…·ä½“ç®—æ³•, ç³»ç»Ÿåˆå§‹é»˜è®¤å€¼ HI_UNF_ADVCA_ALG_TYPE_TDESï¼›\n
+æœ¬æ¬¡ä¼šè¯è¿‡ç¨‹ä¸­ï¼Œå»ºè®®ä¿æŒç®—æ³•çš„ç¨³å®šä¸å˜ã€‚ CNend
+\param[in] enType Key ladder algorithm CNcomment:enType  key ladderç®—æ³•\n  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_ALG_TYPE_E
 */
 HI_S32 HI_UNF_ADVCA_SetSPAlg(HI_UNF_ADVCA_ALG_TYPE_E enType);
 
 /**
-\brief Obtains the algorithm of the SP key ladder CNcomment: »ñÈ¡ SP key ladderµÄËã·¨    CNend
+\brief Obtains the algorithm of the SP key ladder CNcomment: èŽ·å– SP key ladderçš„ç®—æ³•    CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[in] pEnType Key ladder algorithm CNcomment:pEnType  key ladderËã·¨\n  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[in] pEnType Key ladder algorithm CNcomment:pEnType  key ladderç®—æ³•\n  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_ALG_TYPE_E
 */
 HI_S32 HI_UNF_ADVCA_GetSPAlg(HI_UNF_ADVCA_ALG_TYPE_E *pEnType);
 
 /**
-\brief Sets the SP key ladder stage CNcomment:ÉèÖÃSP key ladderµÄ¼¶Êý    CNend
+\brief Sets the SP key ladder stage CNcomment:è®¾ç½®SP key ladderçš„çº§æ•°    CNend
 \attention \n
 The key ladder stage can be set only once before delivery and cannot be changed. Please use default value.
-CNcomment:»ú¶¥ºÐ³ö³§Ê±ÉèÖÃ ½öÄÜÉèÖÃÒ»´Î ²»¿É¸ü¸Ä,²»½¨ÒéÊ¹ÓÃ¸Ã½Ó¿Ú¸Ä±ästage  CNend
+CNcomment:æœºé¡¶ç›’å‡ºåŽ‚æ—¶è®¾ç½® ä»…èƒ½è®¾ç½®ä¸€æ¬¡ ä¸å¯æ›´æ”¹,ä¸å»ºè®®ä½¿ç”¨è¯¥æŽ¥å£æ”¹å˜stage  CNend
 \param[in] enStage Key ladder stage Its value is HI_UNF_ADVCA_KEYLADDER_LEV2 or HI_UNF_ADVCA_KEYLADDER_LEV3.
-CNcomment:enStage  key ladder¼¶Êý\n È¡ÖµÖ»ÄÜÎªHI_UNF_ADVCA_KEYLADDER_lev2 »òÕß HI_UNF_ADVCA_KEYLADDER_lev3  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:enStage  key ladderçº§æ•°\n å–å€¼åªèƒ½ä¸ºHI_UNF_ADVCA_KEYLADDER_lev2 æˆ–è€… HI_UNF_ADVCA_KEYLADDER_lev3  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_KEYLADDER_LEV_E
 */
 HI_S32 HI_UNF_ADVCA_SetSPKeyLadderStage(HI_UNF_ADVCA_KEYLADDER_LEV_E enStage);
 
 /**
-\brief Obtains the SP key ladder stage CNcomment:»ñÈ¡SP key ladderµÄ¼¶Êý CNend
+\brief Obtains the SP key ladder stage CNcomment:èŽ·å–SP key ladderçš„çº§æ•° CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[out] penStage Key ladder stage CNcomment:penStage   key ladder¼¶Êý CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[out] penStage Key ladder stage CNcomment:penStage   key ladderçº§æ•° CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_KEYLADDER_LEV_E
 */
@@ -1344,60 +1344,60 @@ HI_S32 HI_UNF_ADVCA_GetSPKeyLadderStage(HI_UNF_ADVCA_KEYLADDER_LEV_E *penStage);
 
 
 /**
-\brief Sets session keys for a SP key ladder CNcomment:ÎªSP key ladderÅäÖÃ»á»°ÃÜÔ¿    CNend
+\brief Sets session keys for a SP key ladder CNcomment:ä¸ºSP key ladderé…ç½®ä¼šè¯å¯†é’¥    CNend
 \attention \n
 The stage of the session key cannot be greater than the configured stage of the key ladder. The last stage of the session key is configured by calling the API of the CIPHER module rather than this API.
 That is, only session key 1 and session key 2 need to be configured for a 3-stage key ladder.
 Only session key 1 needs to be configured for a 2-stage key ladder.
 You need to set the key ladder stage by calling HI_UNF_ADVCA_SetSPKeyLadderStage first.
  Session keys can be set during initialization or changed at any time.
-CNcomment:×¢ÒâÅäÖÃµÄ¼¶Êý²»ÄÜ³¬¹ýÉèÖÃµÄ¼¶ÊýÖµ£¬×îºóÒ»¼¶ÓÉDescramblerÄ£¿éÄÚ²¿ÅäÖÃ£¬²»ÓÃÍ¨¹ý´Ë½Ó¿ÚÅäÖÃ¡£\n
-Ò²¾ÍÊÇËµ£¬¶ÔÓÚ3¼¶key ladder£¬Ö»ÓÃÅäÖÃ»á»°ÃÜÔ¿1ºÍ»á»°ÃÜÔ¿2¡£\n
-¶ÔÓÚ2¼¶µÄkey ladder£¬Ö»ÓÃÅäÖÃ»á»°ÃÜÔ¿1¡£\n
-ÇëÏÈµ÷ÓÃHI_UNF_ADVCA_SetSPKeyLadderStageÉèÖÃkey ladder¼¶Êý¡£\n
-»á»°ÃÜÔ¿¿ÉÒÔ³õÊ¼Ê±ÉèÖÃÒ»´Î£¬Ò²¿ÉÒÔËæÊ±ÐÞ¸Ä¡£ CNend
+CNcomment:æ³¨æ„é…ç½®çš„çº§æ•°ä¸èƒ½è¶…è¿‡è®¾ç½®çš„çº§æ•°å€¼ï¼Œæœ€åŽä¸€çº§ç”±Descrambleræ¨¡å—å†…éƒ¨é…ç½®ï¼Œä¸ç”¨é€šè¿‡æ­¤æŽ¥å£é…ç½®ã€‚\n
+ä¹Ÿå°±æ˜¯è¯´ï¼Œå¯¹äºŽ3çº§key ladderï¼Œåªç”¨é…ç½®ä¼šè¯å¯†é’¥1å’Œä¼šè¯å¯†é’¥2ã€‚\n
+å¯¹äºŽ2çº§çš„key ladderï¼Œåªç”¨é…ç½®ä¼šè¯å¯†é’¥1ã€‚\n
+è¯·å…ˆè°ƒç”¨HI_UNF_ADVCA_SetSPKeyLadderStageè®¾ç½®key ladderçº§æ•°ã€‚\n
+ä¼šè¯å¯†é’¥å¯ä»¥åˆå§‹æ—¶è®¾ç½®ä¸€æ¬¡ï¼Œä¹Ÿå¯ä»¥éšæ—¶ä¿®æ”¹ã€‚ CNend
 \param[in] enStage Key ladder stage Its value is HI_UNF_ADVCA_KEYLADDER_LEV2 or HI_UNF_ADVCA_KEYLADDER_LEV3.
-CNcomment:enStage    ÃÜÔ¿¼¶Êý£¬[HI_UNF_ADVCA_KEYLADDER_LEV1 ~ HI_UNF_ADVCA_KEYLADDER_LEV2]  CNend
-\param[in] pu8Key Protection key pointer, 128 bits (16 bytes) in total CNcomment:pu8Key     ±£»¤ÃÜÔ¿Ö¸Õë£¬¹²128bit(16byte)  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS  ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:enStage    å¯†é’¥çº§æ•°ï¼Œ[HI_UNF_ADVCA_KEYLADDER_LEV1 ~ HI_UNF_ADVCA_KEYLADDER_LEV2]  CNend
+\param[in] pu8Key Protection key pointer, 128 bits (16 bytes) in total CNcomment:pu8Key     ä¿æŠ¤å¯†é’¥æŒ‡é’ˆï¼Œå…±128bit(16byte)  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS  æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \retval ::HI_ERR_CA_WAIT_TIMEOUT Timeout occurs when the CA module waits for encryption or decryption
-CNcomment:HI_ERR_CA_WAIT_TIMEOUT CAµÈ´ý¼Ó½âÃÜ³¬Ê± CNend
-\retval ::HI_ERR_CA_R2R_DECRYPT The CW decryption fails CNcomment:HI_ERR_CA_CW_DECRYPT   CW½âÃÜÊ§°Ü CNend
+CNcomment:HI_ERR_CA_WAIT_TIMEOUT CAç­‰å¾…åŠ è§£å¯†è¶…æ—¶ CNend
+\retval ::HI_ERR_CA_R2R_DECRYPT The CW decryption fails CNcomment:HI_ERR_CA_CW_DECRYPT   CWè§£å¯†å¤±è´¥ CNend
 
 \see \n
-None CNcomment:ÎÞ CNend
+None CNcomment:æ—  CNend
 */
 HI_S32 HI_UNF_ADVCA_SetSPSessionKey(HI_UNF_ADVCA_KEYLADDER_LEV_E enStage, HI_U8 *pu8Key);
 
 /**
-\brief Sets the descramble mode of the SP key ladder CNcomment:ÉèÖÃSP key ladderµÄ½âÈÅËã·¨    CNend
+\brief Sets the descramble mode of the SP key ladder CNcomment:è®¾ç½®SP key ladderçš„è§£æ‰°ç®—æ³•    CNend
 \attention \n
 You must set a descramble mode before using a key ladder in a session. The default algorithm is HI_UNF_ADVCA_SP_DSC_MODE_PAYLOAD_AES_CBC_CI.
 It is recommended that you retain the descramble mode in a session.
-CNcomment:Ã¿´Î»á»°¹ý³ÌÖÐÊ¹ÓÃkey ladderÖ®Ç°£¬ÐëÉèÖÃ¾ßÌåËã·¨, ÏµÍ³³õÊ¼Ä¬ÈÏÖµ HI_UNF_ADVCA_SP_DSC_MODE_PAYLOAD_AES_CBC_CI£»\n
-±¾´Î»á»°¹ý³ÌÖÐ£¬½¨Òé±£³ÖËã·¨µÄÎÈ¶¨²»±ä¡£ CNend
-\param[in] enType Key ladder algorithm CNcomment:enType  key ladderËã·¨\n  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:æ¯æ¬¡ä¼šè¯è¿‡ç¨‹ä¸­ä½¿ç”¨key ladderä¹‹å‰ï¼Œé¡»è®¾ç½®å…·ä½“ç®—æ³•, ç³»ç»Ÿåˆå§‹é»˜è®¤å€¼ HI_UNF_ADVCA_SP_DSC_MODE_PAYLOAD_AES_CBC_CIï¼›\n
+æœ¬æ¬¡ä¼šè¯è¿‡ç¨‹ä¸­ï¼Œå»ºè®®ä¿æŒç®—æ³•çš„ç¨³å®šä¸å˜ã€‚ CNend
+\param[in] enType Key ladder algorithm CNcomment:enType  key ladderç®—æ³•\n  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_ALG_TYPE_E
 */
 HI_S32 HI_UNF_ADVCA_SetSPDscMode(HI_UNF_ADVCA_SP_DSC_MODE_E enType);
 
 /**
-\brief Obtains the descramble mode of the SP key ladder CNcomment: »ñÈ¡ SP key ladderµÄËã·¨    CNend
+\brief Obtains the descramble mode of the SP key ladder CNcomment: èŽ·å– SP key ladderçš„ç®—æ³•    CNend
 \attention \n
-None CNcomment:ÎÞ CNend
-\param[in] pEnType Key ladder algorithm CNcomment:pEnType  key ladderËã·¨\n  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS ³É¹¦ CNend
-\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIÏµÍ³µ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA ÊäÈë²ÎÊý·Ç·¨ CNend
+None CNcomment:æ—  CNend
+\param[in] pEnType Key ladder algorithm CNcomment:pEnType  key ladderç®—æ³•\n  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS æˆåŠŸ CNend
+\retval ::HI_FAILURE This API fails to be called CNcomment:HI_FAILURE  APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 ::HI_UNF_ADVCA_ALG_TYPE_E
 */
@@ -1405,33 +1405,33 @@ HI_S32 HI_UNF_ADVCA_GetSPDscMode(HI_UNF_ADVCA_SP_DSC_MODE_E *pEnType);
 
 /** 
 \brief Decrypts a block of LPK-encrypted data
-CNcomment:½âÃÜÖÇÄÜ¿¨´«ËÍ¸øCPUµÄ¾­¹ýÁ´Â·±£»¤µÄ·Ö×éÊý¾Ý (Link Protection)  CNend
+CNcomment:è§£å¯†æ™ºèƒ½å¡ä¼ é€ç»™CPUçš„ç»è¿‡é“¾è·¯ä¿æŠ¤çš„åˆ†ç»„æ•°æ® (Link Protection)  CNend
 \attention
-\param[in] pEncryptedBlock Block data encrypted by the LPK CNcomment:pEncryptedBlock   ¾­LPK¼ÓÃÜµÄ·Ö×éÊý¾Ý CNend
-\param[out] pPlainBlock Plain block data. The data memory is allocated by the caller CNcomment:pPlainBlock      Ã÷ÎÄ·Ö×éÊý¾Ý ¿Õ¼äÓÉµ÷ÓÃÕß·ÖÅä  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS               ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT       CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA   ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_CA_NOT_SUPPORT The function is not supported CNcomment:HI_ERR_CA_NOT_SUPPORT    ¹¦ÄÜ²»Ö§³Ö CNend
+\param[in] pEncryptedBlock Block data encrypted by the LPK CNcomment:pEncryptedBlock   ç»LPKåŠ å¯†çš„åˆ†ç»„æ•°æ® CNend
+\param[out] pPlainBlock Plain block data. The data memory is allocated by the caller CNcomment:pPlainBlock      æ˜Žæ–‡åˆ†ç»„æ•°æ® ç©ºé—´ç”±è°ƒç”¨è€…åˆ†é…  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS               æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT       CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA   è¾“å…¥å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_CA_NOT_SUPPORT The function is not supported CNcomment:HI_ERR_CA_NOT_SUPPORT    åŠŸèƒ½ä¸æ”¯æŒ CNend
 \retval ::HI_ERR_CA_WAIT_TIMEOUT Timeout occurs when the CA module waits for encryption or decryption
-CNcomment:HI_ERR_CA_WAIT_TIMEOUT   CAµÈ´ý¼Ó½âÃÜ³¬Ê± CNend
-\retval ::HI_ERR_CA_LPK_DECRYPT The API fails to decrypt the LPK block CNcomment:HI_ERR_CA_LPK_DECRYPT    LPK½âÃÜÊ§°Ü CNend
+CNcomment:HI_ERR_CA_WAIT_TIMEOUT   CAç­‰å¾…åŠ è§£å¯†è¶…æ—¶ CNend
+\retval ::HI_ERR_CA_LPK_DECRYPT The API fails to decrypt the LPK block CNcomment:HI_ERR_CA_LPK_DECRYPT    LPKè§£å¯†å¤±è´¥ CNend
 \see
 \li ::
 */
 HI_S32 HI_UNF_ADVCA_DecryptLptBlock(HI_U8 *pEncryptedBlock,HI_U8 *pPlainBlock);
 
 /** 
-\brief  Loads link protection keys (LPKs) CNcomment: ¼ÓÔØLPK  CNend
+\brief  Loads link protection keys (LPKs) CNcomment: åŠ è½½LPK  CNend
 \attention
-\param[in] pEbcryptedLpk LPK encrypted by R2RROOTKEY CNcomment:pEncryptedLpk  ÓÃR2RROOTKEY¼ÓÃÜµÄLPK  CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS               ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT       CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA   ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_CA_NOT_SUPPORT The function is not supported CNcomment:HI_ERR_CA_NOT_SUPPORT    ¹¦ÄÜ²»Ö§³Ö CNend
+\param[in] pEbcryptedLpk LPK encrypted by R2RROOTKEY CNcomment:pEncryptedLpk  ç”¨R2RROOTKEYåŠ å¯†çš„LPK  CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS               æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT       CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA   è¾“å…¥å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_CA_NOT_SUPPORT The function is not supported CNcomment:HI_ERR_CA_NOT_SUPPORT    åŠŸèƒ½ä¸æ”¯æŒ CNend
 \retval ::HI_ERR_CA_WAIT_TIMEOUT Timeout occurs when the CA module waits for encryption or decryption
-CNcomment:HI_ERR_CA_WAIT_TIMEOUT   CAµÈ´ý¼Ó½âÃÜ³¬Ê± CNend
-\retval ::HI_ERR_CA_LPK_DECRYPT The API fails to load the LPK CNcomment:HI_ERR_CA_LPK_DECRYPT    LPK½âÃÜÊ§°Ü CNend
+CNcomment:HI_ERR_CA_WAIT_TIMEOUT   CAç­‰å¾…åŠ è§£å¯†è¶…æ—¶ CNend
+\retval ::HI_ERR_CA_LPK_DECRYPT The API fails to load the LPK CNcomment:HI_ERR_CA_LPK_DECRYPT    LPKè§£å¯†å¤±è´¥ CNend
 \see
 \li ::
 */
@@ -1440,18 +1440,18 @@ HI_S32 HI_UNF_ADVCA_LoadLpk(HI_U8 *pEncryptedLpk);
 
 /** 
 \brief Decrypts a block of link protection key (LPK)-encrypted data
-CNcomment:½âÃÜÖÇÄÜ¿¨´«ËÍ¸øCPUµÄ¾­¹ýÁ´Â·±£»¤µÄÊý¾Ý (Link Protection)  CNend
+CNcomment:è§£å¯†æ™ºèƒ½å¡ä¼ é€ç»™CPUçš„ç»è¿‡é“¾è·¯ä¿æŠ¤çš„æ•°æ® (Link Protection)  CNend
 \attention
-\param[in] pCipherText buffer of the cipher text to be decrypted  CNcomment:pCipherText   ÃÜÎÄ CNend
-\param[in] s32TextLen the length of the cipher text should be larger than 8 byte CNcomment:s32TextLen    ÃÜÎÄ³¤¶È ÒªÇó´óÓÚÒ»¸öBlock³¤¶È 8byte  CNend
-\param[out] pPlainText the buffer to store the clear text CNcomment:pPlainText   Ã÷ÎÄ CNend
-\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS               ³É¹¦ CNend
-\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT       CAÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA   ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_CA_NOT_SUPPORT The function is not supported CNcomment:HI_ERR_CA_NOT_SUPPORT    ¹¦ÄÜ²»Ö§³Ö CNend
+\param[in] pCipherText buffer of the cipher text to be decrypted  CNcomment:pCipherText   å¯†æ–‡ CNend
+\param[in] s32TextLen the length of the cipher text should be larger than 8 byte CNcomment:s32TextLen    å¯†æ–‡é•¿åº¦ è¦æ±‚å¤§äºŽä¸€ä¸ªBlocké•¿åº¦ 8byte  CNend
+\param[out] pPlainText the buffer to store the clear text CNcomment:pPlainText   æ˜Žæ–‡ CNend
+\retval ::HI_SUCCESS Success CNcomment:HI_SUCCESS               æˆåŠŸ CNend
+\retval ::HI_ERR_CA_NOT_INIT The advanced CA module is not initialized. CNcomment:HI_ERR_CA_NOT_INIT       CAæœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_CA_INVALID_PARA The input parameter value is invalid CNcomment:HI_ERR_CA_INVALID_PARA   è¾“å…¥å‚æ•°éžæ³• CNend
+\retval ::HI_ERR_CA_NOT_SUPPORT The function is not supported CNcomment:HI_ERR_CA_NOT_SUPPORT    åŠŸèƒ½ä¸æ”¯æŒ CNend
 \retval ::HI_ERR_CA_WAIT_TIMEOUT Timeout occurs when the CA module waits for encryption or decryption
-CNcomment:HI_ERR_CA_WAIT_TIMEOUT   CAµÈ´ý¼Ó½âÃÜ³¬Ê± CNend
-\retval ::HI_ERR_CA_LPK_DECRYPT The API fails to decrypt the LPK Param CNcomment:HI_ERR_CA_LPK_DECRYPT    LPK½âÃÜÊ§°Ü CNend
+CNcomment:HI_ERR_CA_WAIT_TIMEOUT   CAç­‰å¾…åŠ è§£å¯†è¶…æ—¶ CNend
+\retval ::HI_ERR_CA_LPK_DECRYPT The API fails to decrypt the LPK Param CNcomment:HI_ERR_CA_LPK_DECRYPT    LPKè§£å¯†å¤±è´¥ CNend
 \see
 \li ::
 */

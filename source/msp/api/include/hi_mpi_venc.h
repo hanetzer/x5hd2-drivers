@@ -31,70 +31,70 @@ extern "C" {
 
 /********************************Macro Definition********************************/
 /** \addtogroup      H_2_2_11 */
-/** @{ */  /** <!-- ¡¾VENC¡¿ */
+/** @{ */  /** <!-- ã€VENCã€‘ */
 
 /**<Maximum encoding width*/
-/**<CNcomment: ×î´ó±àÂë¿í¶È*/
+/**<CNcomment: æœ€å¤§ç¼–ç å®½åº¦*/
 #define HI_VENC_MAX_WIDTH       (1920)	
 /**<Minimum encoding width*/	
-/**<CNcomment: ×îÐ¡±àÂë¿í¶È*/	
+/**<CNcomment: æœ€å°ç¼–ç å®½åº¦*/	
 #define HI_VENC_MIN_WIDTH       (176)
 /**<Maximum encoding height*/			  
-/**<CNcomment: ×î´ó±àÂë¸ß¶È*/
+/**<CNcomment: æœ€å¤§ç¼–ç é«˜åº¦*/
 #define HI_VENC_MAX_HEIGTH      (1088)		
 /**<Minimum encoding height*/
-/**<CNcomment: ×îÐ¡±àÂë¸ß¶È*/	
+/**<CNcomment: æœ€å°ç¼–ç é«˜åº¦*/	
 #define HI_VENC_MIN_HEIGTH      (144)	
 /**<Picture size alignment (in bytes)*/		  
-/**<CNcomment: Í¼Ïñ´óÐ¡¶ÔÆë×Ö½Ú*/
+/**<CNcomment: å›¾åƒå¤§å°å¯¹é½å­—èŠ‚*/
 #define HI_VENC_PIC_SZIE_ALIGN  (4)	
 /**<Maximum buffer (in bytes)*/		  
-/**<CNcomment: ×î´ó»º´æ×Ö½Ú*/
+/**<CNcomment: æœ€å¤§ç¼“å­˜å­—èŠ‚*/
 #define HI_VENC_MAX_BUF_SIZE    (20*1024*1024)	
 /**<Minimum buffer (in bytes)*/
-/**<CNcomment: ×îÐ¡»º´æ×Ö½Ú*/ 
+/**<CNcomment: æœ€å°ç¼“å­˜å­—èŠ‚*/ 
 #define HI_VENC_MIN_BUF_SIZE    (256*1024)	
 /**<Minimum group of picture (GOP)*/
-/**<CNcomment: ×îÐ¡GOP*/
+/**<CNcomment: æœ€å°GOP*/
 #define HI_VENC_MIN_GOP         (1)		
 /**<Maximum output bit rate*/		  
-/**<CNcomment: ×î´óÊä³öÂëÂÊ*/
+/**<CNcomment: æœ€å¤§è¾“å‡ºç çŽ‡*/
 #define HI_VENC_MAX_bps         (42*1024*1024)
 /**<Minimum output bit rate*/	
-/**<CNcomment: ×îÐ¡Êä³öÂëÂÊ*/
+/**<CNcomment: æœ€å°è¾“å‡ºç çŽ‡*/
 #define HI_VENC_MIN_bps         (32*1024)	
 #if 0
 /**<Maximum split size (in bytes)*/	
-/**<CNcomment: ×î´óSplit×Ö½Ú*/
+/**<CNcomment: æœ€å¤§Splitå­—èŠ‚*/
 #define HI_VENC_MAX_SPLIT_BYTE_SIZE  (0xFFFF)	
 /**<Minimum split size (in bytes)*/	
-/**<CNcomment: ×îÐ¡Split×Ö½Ú*/
+/**<CNcomment: æœ€å°Splitå­—èŠ‚*/
 #define HI_VENC_MIN_SPLIT_BYTE_SIZE  (512)	
 
 /**<Maximum split size (in bytes)*/	
-/**<CNcomment: ×î´óSplit×Ö½Ú*/
+/**<CNcomment: æœ€å¤§Splitå­—èŠ‚*/
 #define HI_VENC_MAX_SPLIT_MB_LINE  (511)	
 #endif
 /**Maximum frame rate*/			  
-/**<CNcomment: ×î´óÖ¡ÂÊ*/
+/**<CNcomment: æœ€å¤§å¸§çŽ‡*/
 #define HI_VENC_MAX_fps         (60)
 /**Minimum frame rate*/		
-/**<CNcomment: ×îÐ¡Ö¡ÂÊ*/	  
+/**<CNcomment: æœ€å°å¸§çŽ‡*/	  
 #define HI_VENC_MIN_fps         (1)		
 /**Maximum channel priority*/		
-/**<CNcomment: ×î´óÍ¨µÀÓÅÏÈ¼¶*/	  
+/**<CNcomment: æœ€å¤§é€šé“ä¼˜å…ˆçº§*/	  
 #define HI_VENC_MAX_PRIORITY    (8)					  
 /**<Maximum Quantization Parameter*/		 
-/**<CNcomment: ×î´óÁ¿»¯²ÎÊýÖµ*/
+/**<CNcomment: æœ€å¤§é‡åŒ–å‚æ•°å€¼*/
 #define HI_VENC_MAX_QP          (51)
 /**<Size of reserved bytes for the bit rate*/		 
-/**<CNcomment: ÂëÂÊ±£Áô×Ö½Ú´óÐ¡*/
+/**<CNcomment: ç çŽ‡ä¿ç•™å­—èŠ‚å¤§å°*/
 #define HI_VENC_STREAM_RESERV_SIZE  (48)
 /**<Maximum quantization level*/		  
-/**<CNcomment: ×î´óÁ¿»¯¼¶±ð*/
+/**<CNcomment: æœ€å¤§é‡åŒ–çº§åˆ«*/
 #define HI_VENC_MAX_Q_VALUE     (99)	
 /**<Minimum quantization level*/ 	 
-/**<CNcomment: ×îÐ¡Á¿»¯¼¶±ð*/ 
+/**<CNcomment: æœ€å°é‡åŒ–çº§åˆ«*/ 
 #define HI_VENC_MIN_Q_VALUE     (1)	
 
 

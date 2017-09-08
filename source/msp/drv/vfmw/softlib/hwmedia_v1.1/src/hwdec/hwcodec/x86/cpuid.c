@@ -93,7 +93,7 @@ int mm_support(void)
         if (ecx & 0x00000200 )
             rval |= FF_MM_SSSE3;
 	/* 2010/08/06 14:30:00 liuxw+00139685 */            
-	/* Ôö¼ÓSSE4ºÍSSE42µÄ¹¦ÄÜ±êÖ¾ */            
+	/* å¢žåŠ SSE4å’ŒSSE42çš„åŠŸèƒ½æ ‡å¿— */            
         if (ecx & 0x00080000 )
             rval |= FF_MM_SSE4;
         if (ecx & 0x00100000 )

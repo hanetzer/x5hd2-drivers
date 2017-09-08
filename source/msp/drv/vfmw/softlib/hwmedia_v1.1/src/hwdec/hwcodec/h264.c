@@ -66,7 +66,7 @@ int output_num = 0;
 #define DELAYED_PIC_REF 4
 
 /* 2010/05/4 19:00:00 liuxw+00139685 */
-/* ĞÂÔö¼ÓµÄºê */
+/* æ–°å¢åŠ çš„å® */
 #define MAX_PIC_HEIGHT 1088
 #define MIN_PIC_HEIGHT 16
 #define MAX_PIC_WIDTH  1920
@@ -145,7 +145,7 @@ static void fill_caches(H264Context *h, int mb_type, int for_deblock){
     if(for_deblock && (h->slice_num == 1 || h->slice_table[mb_xy] == h->slice_table[top_xy]) && !FRAME_MBAFF)
 	{
         /* 2010/08/07 19:30:00 liuxw+00139685 */
-		/* Èç¹ûÓÉ´ËÍË³öµÄ»°£¬ÄÇÃ´»¹±ØĞë¸üĞÂtop_mb_xy */
+		/* å¦‚æœç”±æ­¤é€€å‡ºçš„è¯ï¼Œé‚£ä¹ˆè¿˜å¿…é¡»æ›´æ–°top_mb_xy */
 		h->top_mb_xy = top_xy;
 		return;
 	}
@@ -444,7 +444,7 @@ static void fill_caches(H264Context *h, int mb_type, int for_deblock){
 	{
         int list;
 		/* 2010/08/23 11:30:00 liuxw+00139685 */
-		/* ½«h->list_countÖ±½ÓÌæ»»Îª2,µ±Ä³¸öºê¿éµÄ0/1²»´æÔÚÊ±£¬½«ºê¿éµÄmvÇå0£¬refÖÃ-1 */
+		/* å°†h->list_countç›´æ¥æ›¿æ¢ä¸º2,å½“æŸä¸ªå®å—çš„0/1ä¸å­˜åœ¨æ—¶ï¼Œå°†å®å—çš„mvæ¸…0ï¼Œrefç½®-1 */
 //      for(list=0; list<(int)h->list_count; list++)
 		for(list=0; list<2; list++)
 		{
@@ -460,7 +460,7 @@ static void fill_caches(H264Context *h, int mb_type, int for_deblock){
             h->mv_cache_clean[list]= 0;
 
 			/* 2010/08/23 11:30:00 liuxw+00139685 */
-			/* ĞÂÔö´úÂë£ºµ±µ±Ç°ºê¿éµÄlist0/1²»´æÔÚÊ±£¬½«ºê¿éµÄmvÇå0£¬refÖÃ-1 */
+			/* æ–°å¢ä»£ç ï¼šå½“å½“å‰å®å—çš„list0/1ä¸å­˜åœ¨æ—¶ï¼Œå°†å®å—çš„mvæ¸…0ï¼Œrefç½®-1 */
 			if(!USES_LIST(mb_type, list))
 			{
 				memset(h->mv_cache [list],  0, 8*5*2*sizeof(int16_t));
@@ -713,7 +713,7 @@ static inline int check_intra_pred_mode(H264Context *h, int mode){
     static const int8_t left[7]= { TOP_DC_PRED8x8,-1, 2,-1,DC_128_PRED8x8};
 
 	/* 2010/08/16 14:00:00 liuxw+00139685 */
-	/* Ôö¼ÓÁÙÊ±±äÁ¿±£´æintra chromaÔ¤²âÄ£Ê½ */
+	/* å¢åŠ ä¸´æ—¶å˜é‡ä¿å­˜intra chromaé¢„æµ‹æ¨¡å¼ */
 	int tmp_mode = mode;
 
     if(mode > 6U) {
@@ -734,7 +734,7 @@ static inline int check_intra_pred_mode(H264Context *h, int mode){
     if((h->left_samples_available&0x8080) != 0x8080){
         mode= left[ mode ];
 		/* 2010/08/16 14:00:00 liuxw+00139685 */
-		/* µ±intra chromaÔ¤²âÄ£Ê½µÈÓÚDCÔ¤²âÊ±£¬²Å»á×ßÏÂÃæÒ»²½ */
+		/* å½“intra chromaé¢„æµ‹æ¨¡å¼ç­‰äºDCé¢„æµ‹æ—¶ï¼Œæ‰ä¼šèµ°ä¸‹é¢ä¸€æ­¥ */
 //		if(h->left_samples_available&0x8080){ //mad cow disease mode, aka MBAFF + constrained_intra_pred
         if(h->left_samples_available&0x8080 && !tmp_mode){ //mad cow disease mode, aka MBAFF + constrained_intra_pred
             mode= ALZHEIMER_DC_L0T_PRED8x8 + (!(h->left_samples_available&0x8000)) + 2*(mode == DC_128_PRED8x8);
@@ -751,7 +751,7 @@ static inline int check_intra_pred_mode(H264Context *h, int mode){
 
 
 /* 2010/08/13 11:30:00 liuxw+00139685 */
-/* ĞÂÔö¼ÓµÄº¯Êı£ºÓÃÓÚ¼ì²âluma intraºê¿éÔ¤²âÄ£Ê½µÄºÏ·¨ĞÔ */
+/* æ–°å¢åŠ çš„å‡½æ•°ï¼šç”¨äºæ£€æµ‹luma intraå®å—é¢„æµ‹æ¨¡å¼çš„åˆæ³•æ€§ */
 static inline int check_intra_pred_mode_luma(H264Context *h, int mode){
     MpegEncContext * const s = &h->s;
     static const int8_t top [7]= {LEFT_DC_PRED8x8, 1,-1,-1};
@@ -1077,14 +1077,14 @@ static int get_scale_factor(H264Context * const h, int poc, int poc1, int i){
 static inline void direct_dist_scale_factor(H264Context * const h){
     MpegEncContext * const s = &h->s;
 	/* 2010/08/11 14:30:00 liuxw+00139685 */
-	/* µ±µ±Ç°Í¼ÏñÎªÖ¡£¬¶øÇÒ¶¥³¡µÄPOC±Èµ×³¡µÄPOCÒª´óµÄÇé¿öÏÂ£¬µ±Ç°POCÊÇµÈÓÚµ×³¡µÄPOC(µÈÓÚĞ¡µÄ) */
+	/* å½“å½“å‰å›¾åƒä¸ºå¸§ï¼Œè€Œä¸”é¡¶åœºçš„POCæ¯”åº•åœºçš„POCè¦å¤§çš„æƒ…å†µä¸‹ï¼Œå½“å‰POCæ˜¯ç­‰äºåº•åœºçš„POC(ç­‰äºå°çš„) */
 	//const int poc = FIELD_PICTURE ? h->s.current_picture_ptr->field_poc[ s->picture_structure == PICT_BOTTOM_FIELD ]
 	const int poc = FIELD_PICTURE ? h->s.current_picture_ptr->field_poc[ s->picture_structure == PICT_BOTTOM_FIELD ]:h->s.current_picture_ptr->poc;
     const int poc1 = h->ref_list[1][0].poc;
     int i, field;
 	/* 2010/03/16 19:29:00 liuxw+00139685 */
-	/* Ôö¼ÓÁËmbaffµÄÅĞ¶Ï£ºÈôÃ»ÓĞ£¬Ôò²»¹Ümbaff¹¦ÄÜÊ¹ÄÜ£¬¶¼»á½øĞĞÈçÏÂ²Ù×÷£¬
-	   ÕâÑù×Ó»áµ¼ÖÂdist_scale_factor_fieldÊı×éÒç³ö£¬¸²¸Ç½á¹¹ÌåÖĞÆäËüµÄÊı¾İ */
+	/* å¢åŠ äº†mbaffçš„åˆ¤æ–­ï¼šè‹¥æ²¡æœ‰ï¼Œåˆ™ä¸ç®¡mbaffåŠŸèƒ½ä½¿èƒ½ï¼Œéƒ½ä¼šè¿›è¡Œå¦‚ä¸‹æ“ä½œï¼Œ
+	   è¿™æ ·å­ä¼šå¯¼è‡´dist_scale_factor_fieldæ•°ç»„æº¢å‡ºï¼Œè¦†ç›–ç»“æ„ä½“ä¸­å…¶å®ƒçš„æ•°æ® */
 	if(FRAME_MBAFF)
 	{
 		for(field=0; field<2; field++){
@@ -1101,22 +1101,22 @@ static inline void direct_dist_scale_factor(H264Context * const h){
 }
 
 /* 2010/08/24 15:00:00 liuxw+00139685 */
-/* ¸øº¯ÊıÔö¼ÓÒ»¸ö²ÎÊı£¬´«µİµ±Ç°µÄslice num */
+/* ç»™å‡½æ•°å¢åŠ ä¸€ä¸ªå‚æ•°ï¼Œä¼ é€’å½“å‰çš„slice num */
 //static void fill_colmap(H264Context *h, int map[2][16+32], int list, int field, int colfield, int mbafi)
 static void fill_colmap(H264Context *h, int map[2][16+32], int list, int field, int colfield, int mbafi,int slice_num)
 {
     MpegEncContext * const s = &h->s;
     Picture * const ref1 = &h->ref_list[1][0];
     int j, old_ref, rfield;
-	/* Èômbaff=0£¬start=0£»Èômbaff=1£¬start=16 liuxw+00139685 */
+	/* è‹¥mbaff=0ï¼Œstart=0ï¼›è‹¥mbaff=1ï¼Œstart=16 liuxw+00139685 */
     int start= mbafi ? 16 : 0;
-	/* Èômbaff=0£¬end=h->ref_count[list]£»Èômbaff=1£¬end £½ 16+2*h->ref_count[list] liuxw+00139685 */
+	/* è‹¥mbaff=0ï¼Œend=h->ref_count[list]ï¼›è‹¥mbaff=1ï¼Œend ï¼ 16+2*h->ref_count[list] liuxw+00139685 */
 	/* 2010/08/24 15:00:00 liuxw+00139685 */
-	/* endÖ»ÊÇ±íÊ¾list0µÄ½áÊø£¬ºÍlistÎŞ¹Ø */
+	/* endåªæ˜¯è¡¨ç¤ºlist0çš„ç»“æŸï¼Œå’Œlistæ— å…³ */
 //  int end  = mbafi ? 16+2*h->ref_count[list] : h->ref_count[list];
 	int end  = mbafi ? 16+2*h->ref_count[0] : h->ref_count[0];
 
-	/* Èôµ±Ç°ÎªÖ¡¶øÇÒmbaff=0Ê±£¬interl=0£»Èôµ±Ç°Îª³¡»òÕßmbaff=1Ê±£¬interl=1 liuxw+00139685 */
+	/* è‹¥å½“å‰ä¸ºå¸§è€Œä¸”mbaff=0æ—¶ï¼Œinterl=0ï¼›è‹¥å½“å‰ä¸ºåœºæˆ–è€…mbaff=1æ—¶ï¼Œinterl=1 liuxw+00139685 */
     int interl= mbafi || s->picture_structure != PICT_FRAME;
 
     /* bogus; fills in for missing frames */
@@ -1125,55 +1125,55 @@ static void fill_colmap(H264Context *h, int map[2][16+32], int list, int field, 
     for(rfield=0; rfield<2; rfield++)
 	{
 		/* 2010/08/24 15:00:00 liuxw+00139685 */
-		/* ĞŞ¸ÄÎªµ±Ç°Òª´¦ÀíµÄsliceËù¶ÔÓ¦µÄ²Î¿¼¶ÓÁĞ */
+		/* ä¿®æ”¹ä¸ºå½“å‰è¦å¤„ç†çš„sliceæ‰€å¯¹åº”çš„å‚è€ƒé˜Ÿåˆ— */
 //      for(old_ref=0; old_ref<ref1->ref_count[colfield][list]; old_ref++)
 		for(old_ref=0; old_ref<ref1->ref_count[colfield][slice_num][list]; old_ref++)
 		{
 			/* 2010/08/24 15:00:00 liuxw+00139685 */
-			/* ĞŞ¸ÄÎªµ±Ç°Òª´¦ÀíµÄsliceËù¶ÔÓ¦µÄ²Î¿¼¶ÓÁĞ */
+			/* ä¿®æ”¹ä¸ºå½“å‰è¦å¤„ç†çš„sliceæ‰€å¯¹åº”çš„å‚è€ƒé˜Ÿåˆ— */
 //          int poc = ref1->ref_poc[colfield][list][old_ref];
 			int poc = ref1->ref_poc[colfield][slice_num][list][old_ref];
-			/* µ±Ç°ÎªÖ¡¶øÇÒmbaff=0Ê±,ÖÃÎ»ref1(×÷Îªµ±Ç°Í¼Ïñ)µÄ²Î¿¼¶ÓÁĞÖĞµ±Ç°²Î¿¼Í¼ÏñµÄPOCµÄµÍ¶şÎ»(½«Æä²Î¿¼ÊôĞÔ¸ÄÎªÖ¡²Î¿¼) liuxw+00139685 */
+			/* å½“å‰ä¸ºå¸§è€Œä¸”mbaff=0æ—¶,ç½®ä½ref1(ä½œä¸ºå½“å‰å›¾åƒ)çš„å‚è€ƒé˜Ÿåˆ—ä¸­å½“å‰å‚è€ƒå›¾åƒçš„POCçš„ä½äºŒä½(å°†å…¶å‚è€ƒå±æ€§æ”¹ä¸ºå¸§å‚è€ƒ) liuxw+00139685 */
             if(!interl)
                 poc |= 3;
-			/* 1¡¢µ±Ç°ÊÇÖ¡¡¢mbaff=1¶øÇÒref1µÄ²Î¿¼¶ÓÁĞÖĞµ±Ç°²Î¿¼Í¼ÏñÎªÖ¡
-			   2¡¢µ±Ç°ÊÇ³¡¶øÇÒref1µÄ²Î¿¼¶ÓÁĞÖĞµ±Ç°²Î¿¼Í¼ÏñÎªÖ¡ 
-			   Âú×ãÒÔÉÏÌõ¼şÖ®Ò»£¬ÔòpocµÄµÍÁ½Î»(²Î¿¼ÊôĞÔ)ÖØÖÃ(¶¥»òµ×µÄÊôĞÔ) liuxw+00139685 */
+			/* 1ã€å½“å‰æ˜¯å¸§ã€mbaff=1è€Œä¸”ref1çš„å‚è€ƒé˜Ÿåˆ—ä¸­å½“å‰å‚è€ƒå›¾åƒä¸ºå¸§
+			   2ã€å½“å‰æ˜¯åœºè€Œä¸”ref1çš„å‚è€ƒé˜Ÿåˆ—ä¸­å½“å‰å‚è€ƒå›¾åƒä¸ºå¸§ 
+			   æ»¡è¶³ä»¥ä¸Šæ¡ä»¶ä¹‹ä¸€ï¼Œåˆ™pocçš„ä½ä¸¤ä½(å‚è€ƒå±æ€§)é‡ç½®(é¡¶æˆ–åº•çš„å±æ€§) liuxw+00139685 */
             else if( interl && (poc&3) == 3) //FIXME store all MBAFF references so this isnt needed
                 poc= (poc&~3) + rfield + 1;
 
             for(j=start; j<end; j++)
 			{
-				/* ´Óµ±Ç°Í¼ÏñµÄ²Î¿¼¶ÓÁĞÖĞÑ¡ÔñÓëref1ÖĞpocÏàµÈµÄ²Î¿¼Í¼Ïñ£¬²¢¼ÇÏÂÆäÔÚµ±Ç°Í¼Ïñ²Î¿¼¶ÓÁĞÖĞµÄË÷ÒıºÅ liuxw+00139685 */
+				/* ä»å½“å‰å›¾åƒçš„å‚è€ƒé˜Ÿåˆ—ä¸­é€‰æ‹©ä¸ref1ä¸­pocç›¸ç­‰çš„å‚è€ƒå›¾åƒï¼Œå¹¶è®°ä¸‹å…¶åœ¨å½“å‰å›¾åƒå‚è€ƒé˜Ÿåˆ—ä¸­çš„ç´¢å¼•å· liuxw+00139685 */
 				/* 2010/04/010 14:30:00 liuxw+00139685 */
-				/* µ±Ç°Ö»»áÊ¹ÓÃ²Î¿¼ÁĞ±í0£¬Ïà¶Ô¶ÔÓÚref1Ê±µÄ²Î¿¼ÁĞ±í0ºÍ²Î¿¼ÁĞ±í1 */
+				/* å½“å‰åªä¼šä½¿ç”¨å‚è€ƒåˆ—è¡¨0ï¼Œç›¸å¯¹å¯¹äºref1æ—¶çš„å‚è€ƒåˆ—è¡¨0å’Œå‚è€ƒåˆ—è¡¨1 */
  //              if(4*h->ref_list[list][j].frame_num + (h->ref_list[list][j].reference&3) == poc){
 				 if(4*h->ref_list[0][j].frame_num + (h->ref_list[0][j].reference&3) == poc)
 				 {
-                    /* ÔÚmbaff=1Ê±£¬µ×³¡µÄÓ³Éä¹ØÏµÒª½øĞĞÒ»¸ö±ä»»£¨¶¥³¡Óëµ×³¡»¥»»£©[Ô­Òò£ºÒòÎª´æ´¢Ë³ĞòºÍ¶¥³¡Ò»Ñù£¬ÎªÁËÊ¹¶ÁÈ¡Ë³ĞòÒ»ÖÂ] liuxw+00139685 */
+                    /* åœ¨mbaff=1æ—¶ï¼Œåº•åœºçš„æ˜ å°„å…³ç³»è¦è¿›è¡Œä¸€ä¸ªå˜æ¢ï¼ˆé¡¶åœºä¸åº•åœºäº’æ¢ï¼‰[åŸå› ï¼šå› ä¸ºå­˜å‚¨é¡ºåºå’Œé¡¶åœºä¸€æ ·ï¼Œä¸ºäº†ä½¿è¯»å–é¡ºåºä¸€è‡´] liuxw+00139685 */
 					int cur_ref= mbafi ? (j-16)^field : j;
-					/* mbaff=1´æ³¡µÄÓ³Éä¹ØÏµ liuxw+00139685 */
-					/* ???µ±Ç°mbaff=0,µ±Ç°Í¼ÏñºÍref1¶¼ÊÇ³¡µÄÇé¿öÏÂ£¬
-					¡¡1¡¢mapÕâ¸öÊı×éºÜÈİÒ×³¬³ö½çÏŞ[ref_count>16]£»
-					  2¡¢ map[list][old_ref]µÄÖµÈİÒ×±»¸²¸Ç[ref_count>16] liuxw+00139685 */
+					/* mbaff=1å­˜åœºçš„æ˜ å°„å…³ç³» liuxw+00139685 */
+					/* ???å½“å‰mbaff=0,å½“å‰å›¾åƒå’Œref1éƒ½æ˜¯åœºçš„æƒ…å†µä¸‹ï¼Œ
+					ã€€1ã€mapè¿™ä¸ªæ•°ç»„å¾ˆå®¹æ˜“è¶…å‡ºç•Œé™[ref_count>16]ï¼›
+					  2ã€ map[list][old_ref]çš„å€¼å®¹æ˜“è¢«è¦†ç›–[ref_count>16] liuxw+00139685 */
 					/* 2010/03/16 15:32:00 liuxw+00139685 */
-					/* Ôö¼ÓmbafiµÄÅĞ¶Ï£ºÖ»ÓĞµ±mbaff=1Ê±£¬²Å»á¶Ômap[list][]½øĞĞ¸³Öµ£¬
-					   ·ñÔòµ±³¡½âÂëÊ±£¬ref_count > 16Ê±£¬map[list][]»áÒç³ö£¬»á¸²¸Ç½á¹¹ÌåÏÂÃæµÄÓï·¨ÔªËØ 
+					/* å¢åŠ mbafiçš„åˆ¤æ–­ï¼šåªæœ‰å½“mbaff=1æ—¶ï¼Œæ‰ä¼šå¯¹map[list][]è¿›è¡Œèµ‹å€¼ï¼Œ
+					   å¦åˆ™å½“åœºè§£ç æ—¶ï¼Œref_count > 16æ—¶ï¼Œmap[list][]ä¼šæº¢å‡ºï¼Œä¼šè¦†ç›–ç»“æ„ä½“ä¸‹é¢çš„è¯­æ³•å…ƒç´  
 					   2010/04/08 15:32 hanqr+00115692
-					   Ôö¼ÓÅĞ¶ÏÌõ¼ş£ºÒòÎªµ±µ±Ç°ºê¿é¶ÔÊÇÖ¡ºê¿é¶Ô£¬µ«ref1¶ÔÓ¦µÄµØ·½ÊÇ³¡ºê¿é¶ÔÊ±£¬Ôò»áÊ¹ÓÃmap_col_to_list0£»
-					   µ±µ±Ç°ºê¿é¶ÔÊÇ³¡ºê¿é¶ÔÊ±£¬Ôò»áÊ¹ÓÃmap_col_to_list0_field */
+					   å¢åŠ åˆ¤æ–­æ¡ä»¶ï¼šå› ä¸ºå½“å½“å‰å®å—å¯¹æ˜¯å¸§å®å—å¯¹ï¼Œä½†ref1å¯¹åº”çš„åœ°æ–¹æ˜¯åœºå®å—å¯¹æ—¶ï¼Œåˆ™ä¼šä½¿ç”¨map_col_to_list0ï¼›
+					   å½“å½“å‰å®å—å¯¹æ˜¯åœºå®å—å¯¹æ—¶ï¼Œåˆ™ä¼šä½¿ç”¨map_col_to_list0_field */
 					/* 2010/04/20 14:30:00 liuxw+00139685 [AZ1D01992] */
-					/* µ±ref1ÓÃÁËmbaffµÄ¹¦ÄÜÊ±£¬Ò²Òª¶Ô³¡(´Ó16¿ªÊ¼)½øĞĞ´æ´¢,ÒòÎªÔÚºóÃæÊ¹ÓÃcol_mal_to_list0Ê±£¬»áÒòÎªref1.mbaff=1,¶ø¶ÔË÷Òı½øĞĞ16µÄÆ«ÒÆ */
+					/* å½“ref1ç”¨äº†mbaffçš„åŠŸèƒ½æ—¶ï¼Œä¹Ÿè¦å¯¹åœº(ä»16å¼€å§‹)è¿›è¡Œå­˜å‚¨,å› ä¸ºåœ¨åé¢ä½¿ç”¨col_mal_to_list0æ—¶ï¼Œä¼šå› ä¸ºref1.mbaff=1,è€Œå¯¹ç´¢å¼•è¿›è¡Œ16çš„åç§» */
 //					if((FRAME_MBAFF)||(1 == mbafi))
 					/* 2010/08/17 17:00:00 liuxw+00139685 */
-					/* ½«FRAME_MBAFFµÄÌõ¼şÈ¥µô */
+					/* å°†FRAME_MBAFFçš„æ¡ä»¶å»æ‰ */
 					//if((FRAME_MBAFF)||(1 == mbafi) || ref1->mbaff)
 					/* 2010/08/26 10:00:00 liuxw+00139685 */
-					/* Ôö¼ÓÒ»¸öÅĞ¶ÏÌõ¼ş£ºÖ»ÓĞµ±mbafiÎª1(µ±Ç°Ö¡ÎªMBAFF)¶øÇÒref1ÎªÖ¡µÄÇé¿ö²Å»á½øÈë´Ë·ÖÖ§£¬·ñÔòÈç¹ûmbafi==1,¶øÇÒref1Îª³¡£¬ÄÇÃ´ÈçÏÂµÄ¼ÆËã½á¹û»á¸²¸Çmap[list][old_ref]ÄÚÈİ */
+					/* å¢åŠ ä¸€ä¸ªåˆ¤æ–­æ¡ä»¶ï¼šåªæœ‰å½“mbafiä¸º1(å½“å‰å¸§ä¸ºMBAFF)è€Œä¸”ref1ä¸ºå¸§çš„æƒ…å†µæ‰ä¼šè¿›å…¥æ­¤åˆ†æ”¯ï¼Œå¦åˆ™å¦‚æœmbafi==1,è€Œä¸”ref1ä¸ºåœºï¼Œé‚£ä¹ˆå¦‚ä¸‹çš„è®¡ç®—ç»“æœä¼šè¦†ç›–map[list][old_ref]å†…å®¹ */
 					if((1 == mbafi && ref1->interlaced_frame==0) || ref1->mbaff)
 					{
 						/* 2010/06/02 17:00:00 liuxw+00139685 */
-						/* ½«old_ref½øĞĞ16µÄÈ¡Ä££¬ÎªÁË·ÀÖ¹ÎóÂëËÀ»ú£ºµ±ref1->ref_count[colfield][list]´óÓÚ16¶øÇÒÓÖ½øÈëÁË´Ë·ÖÖ§£¬ÔòºÜ¿ÉÄÜ»á¸²¸Ç»ºh½á¹¹ÌåÏÂÃæµÄ³ÉÔ± */
+						/* å°†old_refè¿›è¡Œ16çš„å–æ¨¡ï¼Œä¸ºäº†é˜²æ­¢è¯¯ç æ­»æœºï¼šå½“ref1->ref_count[colfield][list]å¤§äº16è€Œä¸”åˆè¿›å…¥äº†æ­¤åˆ†æ”¯ï¼Œåˆ™å¾ˆå¯èƒ½ä¼šè¦†ç›–ç¼“hç»“æ„ä½“ä¸‹é¢çš„æˆå‘˜ */
 						map[list][2*(old_ref%16) + (rfield^field) + 16] = cur_ref;
 						if(old_ref >= 16)
 						{
@@ -1182,7 +1182,7 @@ static void fill_colmap(H264Context *h, int map[2][16+32], int list, int field, 
 							IMEDIA_SET_ERR_SLICE(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_REF);
 						}
 	  				}
-					/* mbaff=0Ê±´æÖ¡»ò³¡µÄÓ³Éä¹ØÏµ£»mbaff=1Ê±´æÖ¡µÄÓ³Éä¹ØÏµ liuxw+00139685 */
+					/* mbaff=0æ—¶å­˜å¸§æˆ–åœºçš„æ˜ å°„å…³ç³»ï¼›mbaff=1æ—¶å­˜å¸§çš„æ˜ å°„å…³ç³» liuxw+00139685 */
 					if(rfield == field)
 							map[list][old_ref] = cur_ref;
                     break;
@@ -1192,41 +1192,41 @@ static void fill_colmap(H264Context *h, int map[2][16+32], int list, int field, 
     }
 }
 
-/* BÖ¡Ö±½ÓÔ¤²â£¨Ê±¼ä¡¢¿Õ¼ä£©ËùĞèÒªÓÃµ½µÄÊı¾İµÄ³õÊ¼»¯ liuxw+00139685 */
+/* Bå¸§ç›´æ¥é¢„æµ‹ï¼ˆæ—¶é—´ã€ç©ºé—´ï¼‰æ‰€éœ€è¦ç”¨åˆ°çš„æ•°æ®çš„åˆå§‹åŒ– liuxw+00139685 */
 static inline void direct_ref_list_init(H264Context * const h)
 {
     MpegEncContext * const s = &h->s;
     Picture * const ref1 = &h->ref_list[1][0];
     Picture * const cur = s->current_picture_ptr;
     int list, j, field;
-	/* µ±Ç°Í¼ÏñÊÇÖ¡»òÊÇ¶¥³¡Ê±£¬sidx=0£»µ±Ç°Í¼ÏñÊÇµ×³¡Ê±£¬sidx=1 liuxw+00139685 */
+	/* å½“å‰å›¾åƒæ˜¯å¸§æˆ–æ˜¯é¡¶åœºæ—¶ï¼Œsidx=0ï¼›å½“å‰å›¾åƒæ˜¯åº•åœºæ—¶ï¼Œsidx=1 liuxw+00139685 */
     int sidx= (s->picture_structure&1)^1;
-	/* ref1(Ç°Ïò²Î¿¼¶ÓÁĞÖĞµÄµÚÒ»¸ö²Î¿¼Í¼Ïñ)£ºref1ÈôÊÇÖ¡»òÊÇ¶¥³¡£¬ref1sidx=0£»µ±Ç°Í¼ÏñÊÇµ×³¡Ê±£¬ref1sidx=1 liuxw+00139685 */
+	/* ref1(å‰å‘å‚è€ƒé˜Ÿåˆ—ä¸­çš„ç¬¬ä¸€ä¸ªå‚è€ƒå›¾åƒ)ï¼šref1è‹¥æ˜¯å¸§æˆ–æ˜¯é¡¶åœºï¼Œref1sidx=0ï¼›å½“å‰å›¾åƒæ˜¯åº•åœºæ—¶ï¼Œref1sidx=1 liuxw+00139685 */
     int ref1sidx= (ref1->reference&1)^1;
 	int ref1sidx2 = ref1sidx;
 	int flag = 0;
 
-	/* ±£´æµ±Ç°Í¼ÏñµÄÇ°ºóÏò²Î¿¼¶ÓÁĞ¼°ÆäPOCµ½µ±Ç°Í¼ÏñµÄ½á¹¹Ìåµ±ÖĞ liuxw+00139685 */
+	/* ä¿å­˜å½“å‰å›¾åƒçš„å‰åå‘å‚è€ƒé˜Ÿåˆ—åŠå…¶POCåˆ°å½“å‰å›¾åƒçš„ç»“æ„ä½“å½“ä¸­ liuxw+00139685 */
     for(list=0; list<2; list++)
 	{
 		/* 2010/08/24 14:00:00 liuxw+00139685 */
-		/* ±£´æÃ¿¸ösliceµÄref poc */
+		/* ä¿å­˜æ¯ä¸ªsliceçš„ref poc */
 //      cur->ref_count[sidx][list] = h->ref_count[list];
 		cur->ref_count[sidx][h->current_slice][list] = h->ref_count[list];
         for(j=0; j<(int)h->ref_count[list]; j++)
-			/* µ±Ç°±£´æµÄPOCµÄ¼ÆËã·½Ê½£º(frame_num<<2 | reference&3) 
-			   µ±Ç°²Î¿¼Í¼ÏñÊÇÖ¡£º(frame_num<<2) + 3 
-			   µ±Ç°²Î¿¼Í¼ÏñÊÇ¶¥³¡£º(frame_num<<2) + 1 
-			   µ±Ç°²Î¿¼Í¼ÏñÊÇµ×³¡£º(frame_num<<2) + 2 liuxw+00139685 */
+			/* å½“å‰ä¿å­˜çš„POCçš„è®¡ç®—æ–¹å¼ï¼š(frame_num<<2 | reference&3) 
+			   å½“å‰å‚è€ƒå›¾åƒæ˜¯å¸§ï¼š(frame_num<<2) + 3 
+			   å½“å‰å‚è€ƒå›¾åƒæ˜¯é¡¶åœºï¼š(frame_num<<2) + 1 
+			   å½“å‰å‚è€ƒå›¾åƒæ˜¯åº•åœºï¼š(frame_num<<2) + 2 liuxw+00139685 */
 //          cur->ref_poc[sidx][list][j] = 4*h->ref_list[list][j].frame_num + (h->ref_list[list][j].reference&3);
 			cur->ref_poc[sidx][h->current_slice][list][j] = 4*h->ref_list[list][j].frame_num + (h->ref_list[list][j].reference&3);
     }
 
-    /* µ±Ç°Í¼ÏñÊÇÖ¡£¬Ôòcur->ref_count[0]Óëcur->ref_count[1]ÏàÍ¬£¬¼ûsidx liuxw+00139685 */
+    /* å½“å‰å›¾åƒæ˜¯å¸§ï¼Œåˆ™cur->ref_count[0]ä¸cur->ref_count[1]ç›¸åŒï¼Œè§sidx liuxw+00139685 */
 	if(s->picture_structure == PICT_FRAME)
 	{
 		/* 2010/08/24 14:00:00 liuxw+00139685 */
-		/* ±£´æÃ¿¸ösliceµÄref poc */
+		/* ä¿å­˜æ¯ä¸ªsliceçš„ref poc */
 //      memcpy(cur->ref_count[1], cur->ref_count[0], sizeof(cur->ref_count[0]));
 //      memcpy(cur->ref_poc  [1], cur->ref_poc  [0], sizeof(cur->ref_poc  [0]));
 		memcpy(cur->ref_count[1][h->current_slice], cur->ref_count[0][h->current_slice], sizeof(cur->ref_count[0][h->current_slice]));
@@ -1235,15 +1235,15 @@ static inline void direct_ref_list_init(H264Context * const h)
 
     cur->mbaff= FRAME_MBAFF;
 
-	/* Èç¹ûÊÇ¿Õ¼äÖ±½ÓÔ¤²â£¬ÔòÖ±½Ó·µ»Ø liuxw+00139685 */
+	/* å¦‚æœæ˜¯ç©ºé—´ç›´æ¥é¢„æµ‹ï¼Œåˆ™ç›´æ¥è¿”å› liuxw+00139685 */
 	/* 2010/08/26 10:00:00 liuxw+00139685 */
-	/* ÓÉÓÚcur->pict_typeÖ»ÊÇ±íÊ¾µ±Ç°Ö¡µÚÒ»¸ösliceµÄÀàĞÍ£¬µ±Ò»¸öÖ¡ÖĞµÚÒ»¸ösliceÎªPµÚ¶ş¸öÎªB sliceÊ±£¬ÄÇÃ´¾Í²»»áÖ±µ½ÏÂÃæÈ¥(¼ÆËãBºê¿éÊ±¼äÖ±½ÓÔ¤²â) */
+	/* ç”±äºcur->pict_typeåªæ˜¯è¡¨ç¤ºå½“å‰å¸§ç¬¬ä¸€ä¸ªsliceçš„ç±»å‹ï¼Œå½“ä¸€ä¸ªå¸§ä¸­ç¬¬ä¸€ä¸ªsliceä¸ºPç¬¬äºŒä¸ªä¸ºB sliceæ—¶ï¼Œé‚£ä¹ˆå°±ä¸ä¼šç›´åˆ°ä¸‹é¢å»(è®¡ç®—Bå®å—æ—¶é—´ç›´æ¥é¢„æµ‹) */
 //	if(cur->pict_type != FF_B_TYPE || h->direct_spatial_mv_pred)
     if(s->pict_type != FF_B_TYPE || h->direct_spatial_mv_pred)
         return;
 
 	/* 2010/08/26 10:00:00 liuxw+00139685 */
-	/* Èç¹ûµ±Ç°ÊÇÖ¡£¬ref1ÊÇÒ»²Î¿¼³¡¶Ô£¬ÄÇÃ´¼ÆËãref1->slice_numÑ¡ÔñÄÄÒ»¸ö³¡µÄslicesliceÊıÄ¿ºÍcol_picÊÇÄÄÒ»¸ö³¡ */
+	/* å¦‚æœå½“å‰æ˜¯å¸§ï¼Œref1æ˜¯ä¸€å‚è€ƒåœºå¯¹ï¼Œé‚£ä¹ˆè®¡ç®—ref1->slice_numé€‰æ‹©å“ªä¸€ä¸ªåœºçš„slicesliceæ•°ç›®å’Œcol_picæ˜¯å“ªä¸€ä¸ªåœº */
 	if(PICT_FRAME == s->picture_structure && ref1->interlaced_frame)
 	{
 		ref1sidx2 = FFABS(ref1->field_poc[0] - cur->poc) >= FFABS(ref1->field_poc[1] - cur->poc);
@@ -1251,31 +1251,31 @@ static inline void direct_ref_list_init(H264Context * const h)
 	}
 
 	/* 2010/08/26 10:00:00 liuxw+00139685 */
-	/* Èç¹ûµ±Ç°ÊÇ³¡£¬ref1ÊÇÖ¡£¬ÄÇÃ´½«Ö»È¡indexÎª0µÄref1->slice_numÊıÄ¿ */
+	/* å¦‚æœå½“å‰æ˜¯åœºï¼Œref1æ˜¯å¸§ï¼Œé‚£ä¹ˆå°†åªå–indexä¸º0çš„ref1->slice_numæ•°ç›® */
 	if(PICT_FRAME != s->picture_structure && !ref1->interlaced_frame)
 	{
 		ref1sidx2 = 0;
 	}
 
 	/* 2010/08/26 10:00:00 liuxw+00139685 */
-	/* Èç¹ûµ±Ç°Ö¡ÊÇmbaff¶øÇÒref1Ò²ÊÇmbaff£¬ÄÇÃ´ÔÚ¼ÆËãfield_mapµÄÊ±ºò£¬½«Ö»È¡indexÎª0µÄref1->slice_numÊıÄ¿ */
+	/* å¦‚æœå½“å‰å¸§æ˜¯mbaffè€Œä¸”ref1ä¹Ÿæ˜¯mbaffï¼Œé‚£ä¹ˆåœ¨è®¡ç®—field_mapçš„æ—¶å€™ï¼Œå°†åªå–indexä¸º0çš„ref1->slice_numæ•°ç›® */
 	if(cur->mbaff && ref1->mbaff)
 	{
 		flag = 1;
 	}
 	
-	/* Ê±¼äÖ±½ÓÔ¤²â: ref1ºóÏòºÍÇ°ÏòÔ¤²â¶ÓÁĞÓëcur²Î¿¼¶ÓÁĞµÄÓ³Éä¹ØÏµ liuxw+00139685 */
+	/* æ—¶é—´ç›´æ¥é¢„æµ‹: ref1åå‘å’Œå‰å‘é¢„æµ‹é˜Ÿåˆ—ä¸curå‚è€ƒé˜Ÿåˆ—çš„æ˜ å°„å…³ç³» liuxw+00139685 */
     for(list=0; list<2; list++)
 	{
-		/* mbaff=0Ê±£¬ref1µÄ²Î¿¼¶ÓÁĞºÍcur²Î¿¼¶ÓÁĞµÄÓ³Éä¹ØÏµ(Ö¡¡¢¶¥³¡¡¢µ×³¡£ºÒ»´ÎÖ»»áÓÃÆäÖĞµÄÒ»ÖÖ) liuxw+00139685 */
+		/* mbaff=0æ—¶ï¼Œref1çš„å‚è€ƒé˜Ÿåˆ—å’Œcurå‚è€ƒé˜Ÿåˆ—çš„æ˜ å°„å…³ç³»(å¸§ã€é¡¶åœºã€åº•åœºï¼šä¸€æ¬¡åªä¼šç”¨å…¶ä¸­çš„ä¸€ç§) liuxw+00139685 */
 		/* 2010/04/20 9:30:00 liuxw+00139685 [AZ1D01992] */
-		/* Ôö¼ÓÒ»¸öÑ­»·£¬µ±µ±Ç°Í¼ÏñÊÇÖ¡£¬ref1ÊÇ³¡µÄÇéĞÎ£¬¿ÉÄÜ»áÓÃµ½map_col_to_list0[1] */
+		/* å¢åŠ ä¸€ä¸ªå¾ªç¯ï¼Œå½“å½“å‰å›¾åƒæ˜¯å¸§ï¼Œref1æ˜¯åœºçš„æƒ…å½¢ï¼Œå¯èƒ½ä¼šç”¨åˆ°map_col_to_list0[1] */
 //      fill_colmap(h, h->map_col_to_list0, list, sidx, ref1sidx, 0);
 		int j;
 //		for(i=0;i<2;i++)
 //		{
 			/* 2010/08/24 14:00:00 liuxw+00139685 */
-			/* ¶ÔÓÚref1µÄÃ¿Ò»¸ösliceµÄ²Î¿¼¶ÓÁĞ¶¼Òª½øĞĞmap */
+			/* å¯¹äºref1çš„æ¯ä¸€ä¸ªsliceçš„å‚è€ƒé˜Ÿåˆ—éƒ½è¦è¿›è¡Œmap */
 /*			fill_colmap(h, h->map_col_to_list0[i], list, sidx, ref1sidx, 0);
 			ref1sidx = !ref1sidx; */
 			for(j=0;j<ref1->slice_num[ref1sidx2];j++)
@@ -1284,20 +1284,20 @@ static inline void direct_ref_list_init(H264Context * const h)
 			}
 //			ref1sidx = !ref1sidx;
 //		}
-		/* mbaff=1Ê±£¬ref1µÄ²Î¿¼¶ÓÁĞºÍcur²Î¿¼¶ÓÁĞµÄÓ³Éä¹ØÏµ£¨Ö¡¡¢¶¥³¡¡¢µ×³¡£ºÒ»´ÎÊ¹ÓÃÈıÖÖ£© liuxw+00139685 */
+		/* mbaff=1æ—¶ï¼Œref1çš„å‚è€ƒé˜Ÿåˆ—å’Œcurå‚è€ƒé˜Ÿåˆ—çš„æ˜ å°„å…³ç³»ï¼ˆå¸§ã€é¡¶åœºã€åº•åœºï¼šä¸€æ¬¡ä½¿ç”¨ä¸‰ç§ï¼‰ liuxw+00139685 */
 		/* 2010/03/16 19:30:00 liuxw+00139685 */
-		/* Ôö¼Ó¶ÔmbaffµÄÅĞ¶Ï£ºÈôµ±Ç°mbaffÃ»ÓĞÊ¹ÄÜ£¬½øÈë´Ë²Ù×÷ºó£¬
-		   Èôµ±Ç°Îª³¡±àÂë¶øÇÒref_count´óÓÚ16Ê±£¬¾Í»á¸²¸Ç½á¹¹ÌåºóÃæµÄÄÚÈİ */
+		/* å¢åŠ å¯¹mbaffçš„åˆ¤æ–­ï¼šè‹¥å½“å‰mbaffæ²¡æœ‰ä½¿èƒ½ï¼Œè¿›å…¥æ­¤æ“ä½œåï¼Œ
+		   è‹¥å½“å‰ä¸ºåœºç¼–ç è€Œä¸”ref_countå¤§äº16æ—¶ï¼Œå°±ä¼šè¦†ç›–ç»“æ„ä½“åé¢çš„å†…å®¹ */
 		if(FRAME_MBAFF)
 		{
 			/* 2010/08/24 14:00:00 liuxw+00139685 */
-			/* ¶ÔÓÚref1µÄÃ¿Ò»¸ösliceµÄ²Î¿¼¶ÓÁĞ¶¼Òª½øĞĞmap */
+			/* å¯¹äºref1çš„æ¯ä¸€ä¸ªsliceçš„å‚è€ƒé˜Ÿåˆ—éƒ½è¦è¿›è¡Œmap */
 /*			for(field=0; field<2; field++)
 				fill_colmap(h, h->map_col_to_list0_field[field], list, field, field, 1); */
 			for(field=0; field<2; field++)
 			{
 				/* 2010/08/26 10:00:00 liuxw+00139685 */
-				/* Èç¹ûµ±Ç°Ö¡ÊÇmbaff¶øÇÒref1Ò²ÊÇmbaff£¬ÄÇÃ´ÔÚ¼ÆËãfield_mapµÄÊ±ºò£¬½«Ö»È¡indexÎª0µÄref1->slice_numÊıÄ¿ */
+				/* å¦‚æœå½“å‰å¸§æ˜¯mbaffè€Œä¸”ref1ä¹Ÿæ˜¯mbaffï¼Œé‚£ä¹ˆåœ¨è®¡ç®—field_mapçš„æ—¶å€™ï¼Œå°†åªå–indexä¸º0çš„ref1->slice_numæ•°ç›® */
 				//for(j=0;j<ref1->slice_num[field];j++)
 				for(j=0;j<ref1->slice_num[flag?0:field];j++)
 				{
@@ -1319,13 +1319,13 @@ static inline void pred_direct_motion(H264Context * const h, int *mb_type){
     const int is_b8x8 = IS_8X8(*mb_type);
     unsigned int sub_mb_type;
     int i8, i4;
-	/* 2010/04/20 14:00:00 liuxw+00139685¡¡[AZ1D01992] */
-	/* Ôö¼ÓÒ»¸ö±äÁ¿£¬µ±µ±Ç°Í¼ÏñÎªÖ¡£¬ref1Îª³¡µÄÇé¿öÊ¹ÓÃ */
+	/* 2010/04/20 14:00:00 liuxw+00139685ã€€[AZ1D01992] */
+	/* å¢åŠ ä¸€ä¸ªå˜é‡ï¼Œå½“å½“å‰å›¾åƒä¸ºå¸§ï¼Œref1ä¸ºåœºçš„æƒ…å†µä½¿ç”¨ */
 	/* 2010/08/26 10:00:00 liuxw+00139685 */
-	/* µ±µ±Ç°Í¼ÏñÎªÖ¡£¬ref1Îª³¡Ê±£¬ÎŞĞèflagÀ´Ö¸¶¨£¬ÓÉÓÚÍ¬Ò»Ê±¼äÖ»»á´æÔÚÒ»ÖÖÇé¿ö£¬ËùÒÔÈ«ÓÃindex=0¼´¿É */
+	/* å½“å½“å‰å›¾åƒä¸ºå¸§ï¼Œref1ä¸ºåœºæ—¶ï¼Œæ— éœ€flagæ¥æŒ‡å®šï¼Œç”±äºåŒä¸€æ—¶é—´åªä¼šå­˜åœ¨ä¸€ç§æƒ…å†µï¼Œæ‰€ä»¥å…¨ç”¨index=0å³å¯ */
 //	int flag = 0;
 	/* 2010/06/10 14:30:00 liuxw+00139685 */
-	/* Ôö¼ÓÒ»¸ö±äÁ¿£¬·ÀÖ¹ÎóÂëÊ±³öÏÖËÀ»úµÄÇé¿ö */
+	/* å¢åŠ ä¸€ä¸ªå˜é‡ï¼Œé˜²æ­¢è¯¯ç æ—¶å‡ºç°æ­»æœºçš„æƒ…å†µ */
 	int pre_flag = 0;
 
 #ifdef LXW_DEBUG
@@ -1340,7 +1340,7 @@ static inline void pred_direct_motion(H264Context * const h, int *mb_type){
 
 
 	/* 2010/04/15 18:30:00 liuxw+00139685 [AZ1D01992] */
-	/* Ôö¼ÓÁËÒ»¸öÅĞ¶ÏÌõ¼ş£ºÈôµ±Ç°Í¼ÏñºÍ²Î¿¼Í¼ÏñÈ«ÊÇ³¡£¨ÊôĞÔÏà·´£©£¬Ôò½øÈëÒÔÏÂifÓï¾ä */
+	/* å¢åŠ äº†ä¸€ä¸ªåˆ¤æ–­æ¡ä»¶ï¼šè‹¥å½“å‰å›¾åƒå’Œå‚è€ƒå›¾åƒå…¨æ˜¯åœºï¼ˆå±æ€§ç›¸åï¼‰ï¼Œåˆ™è¿›å…¥ä»¥ä¸‹ifè¯­å¥ */
 //     if(IS_INTERLACED(h->ref_list[1][0].mb_type[mb_xy])){ // AFL/AFR/FR/FL -> AFL/FL
      if(IS_INTERLACED( h->ref_list[1][0].mb_type[mb_xy]) || (h->ref_list[1][0].mbaff != 1 && h->ref_list[1][0].interlaced_frame)){
         if(!IS_INTERLACED(*mb_type)){                    //     AFR/FR    -> AFL/FL
@@ -1349,8 +1349,8 @@ static inline void pred_direct_motion(H264Context * const h, int *mb_type){
             int col_parity = FFABS(col_poc[0] - cur_poc) >= FFABS(col_poc[1] - cur_poc);
             mb_xy= s->mb_x + ((s->mb_y&~1) + col_parity)*s->mb_stride;
             b8_stride = 0;
-			/* 2010/04/20 14:00:00 liuxw+00139685¡¡[AZ1D01992] */
-			/* ±£´æµ±Ç°ºê¿é¶ÔÓ¦µÄref1µÄ³¡(¶¥³¡»òµ×³¡) */
+			/* 2010/04/20 14:00:00 liuxw+00139685ã€€[AZ1D01992] */
+			/* ä¿å­˜å½“å‰å®å—å¯¹åº”çš„ref1çš„åœº(é¡¶åœºæˆ–åº•åœº) */
 			//flag = col_parity;
         }else if(!(s->picture_structure & h->ref_list[1][0].reference) && !h->ref_list[1][0].mbaff){// FL -> FL & differ parity
             int fieldoff= 2*(h->ref_list[1][0].reference)-3;
@@ -1365,7 +1365,7 @@ static inline void pred_direct_motion(H264Context * const h, int *mb_type){
             b8_stride *= 3;
             b4_stride *= 6;
 			/* 2010/06/10 14:30:00 liuxw+00139685 */
-			/* ÖÃÎ»ĞÂÔö¼ÓµÄ±äÁ¿£¬·ÀÖ¹ÎóÂëÊ±³öÏÖËÀ»úµÄÇé¿ö */
+			/* ç½®ä½æ–°å¢åŠ çš„å˜é‡ï¼Œé˜²æ­¢è¯¯ç æ—¶å‡ºç°æ­»æœºçš„æƒ…å†µ */
 			pre_flag = 1;
             //FIXME IS_8X8(mb_type_col[0]) && !h->sps.direct_8x8_inference_flag
             if(    (mb_type_col[0] & MB_TYPE_16x16_OR_INTRA)
@@ -1397,7 +1397,7 @@ single_col:
     }
 
 	 /* 2010/06/01 9:00:00 liuxw+00139685 */
-	 /* ¶ÔBÖ¡Ö±½ÓÔ¤²âÊ±£¬Çóref1µÄcolocatedºê¿éµÄË÷ÒıÊ±£¬½øĞĞºÏ·¨ĞÔÅĞ¶Ï£»Èô·Ç·¨(³¬³öÍ¼Ïñ·¶Î§)£¬ÔòĞŞÕıÆäµÈÓÚh->mb_xy */
+	 /* å¯¹Bå¸§ç›´æ¥é¢„æµ‹æ—¶ï¼Œæ±‚ref1çš„colocatedå®å—çš„ç´¢å¼•æ—¶ï¼Œè¿›è¡Œåˆæ³•æ€§åˆ¤æ–­ï¼›è‹¥éæ³•(è¶…å‡ºå›¾åƒèŒƒå›´)ï¼Œåˆ™ä¿®æ­£å…¶ç­‰äºh->mb_xy */
 	 if(0 > mb_xy || s->mb_stride * s->mb_height < mb_xy)
 	 {
 		 av_log(s->avctx,AV_LOG_WARNING,"Colocated MB is out of ref pic when process Direct MB!\n");
@@ -1406,7 +1406,7 @@ single_col:
 		 mb_xy = h->mb_xy;
 	 }
 
-	/* (µÃµ½mvx(0\1)ºÍrefx(0\1)) */
+	/* (å¾—åˆ°mvx(0\1)å’Œrefx(0\1)) */
     l1mv0  = &h->ref_list[1][0].motion_val[0][h->mb2b_xy [mb_xy]];
     l1mv1  = &h->ref_list[1][0].motion_val[1][h->mb2b_xy [mb_xy]];
     l1ref0 = &h->ref_list[1][0].ref_index [0][h->mb2b8_xy[mb_xy]];
@@ -1422,7 +1422,7 @@ single_col:
         }
     }
 
-	/* ¿Õ¼äÖ±½ÓÔ¤²â liuxw+00139685 */
+	/* ç©ºé—´ç›´æ¥é¢„æµ‹ liuxw+00139685 */
     if(h->direct_spatial_mv_pred)
 	{
         int ref[2];
@@ -1500,7 +1500,7 @@ single_col:
             fill_rectangle(&h->ref_cache[0][scan8[0]], 4, 4, 8, (uint8_t)ref[0], 1);
             fill_rectangle(&h->ref_cache[1][scan8[0]], 4, 4, 8, (uint8_t)ref[1], 1);
 			/* 2010/08/29 15:00:00 liuxw+00139685 */
-			/* colZeroFlagµÈÓÚ1µÄÌõ¼ş×Ü¹²ÓĞÈı¸ö£¬ÒÔÏÂÖ»ÓĞÁ½¸ö£º²îµÄÒ»¸öÊÇh->ref_list[1][0]ÊÇ¶ÌÆÚ²Î¿¼ */
+			/* colZeroFlagç­‰äº1çš„æ¡ä»¶æ€»å…±æœ‰ä¸‰ä¸ªï¼Œä»¥ä¸‹åªæœ‰ä¸¤ä¸ªï¼šå·®çš„ä¸€ä¸ªæ˜¯h->ref_list[1][0]æ˜¯çŸ­æœŸå‚è€ƒ */
 		/*	if(!IS_INTRA(mb_type_col[0])
                && (   (l1ref0[0] == 0 && FFABS(l1mv0[0][0]) <= 1 && FFABS(l1mv0[0][1]) <= 1)
                    || (l1ref0[0]  < 0 && l1ref1[0] == 0 && FFABS(l1mv1[0][0]) <= 1 && FFABS(l1mv1[0][1]) <= 1
@@ -1520,7 +1520,7 @@ single_col:
             fill_rectangle(&h->mv_cache[1][scan8[0]], 4, 4, 8, b, 4);
         }else{
 			/* 2010/06/12 10:30:00 liuxw+00139685 */
-			/* Èô´Ë±êÖ¾±»ÖÃÎ»¶øÇÒÓÖ½øÈë´Ë·ÖÖ§£¬ÔòËµÃ÷²úÉúÁËÎóÂë£¬½«b8_strideºÍb4_strideĞŞÕı»ØÀ´ */
+			/* è‹¥æ­¤æ ‡å¿—è¢«ç½®ä½è€Œä¸”åˆè¿›å…¥æ­¤åˆ†æ”¯ï¼Œåˆ™è¯´æ˜äº§ç”Ÿäº†è¯¯ç ï¼Œå°†b8_strideå’Œb4_strideä¿®æ­£å›æ¥ */
 			if(pre_flag)
 			{
 				b8_stride = s->b8_stride;
@@ -1542,7 +1542,7 @@ single_col:
 
                 /* col_zero_flag */
 				/* 2010/08/29 15:00:00 liuxw+00139685 */
-			    /* colZeroFlagµÈÓÚ1µÄÌõ¼ş×Ü¹²ÓĞÈı¸ö£¬ÒÔÏÂÖ»ÓĞÁ½¸ö£º²îµÄÒ»¸öÊÇh->ref_list[1][0]ÊÇ¶ÌÆÚ²Î¿¼ */
+			    /* colZeroFlagç­‰äº1çš„æ¡ä»¶æ€»å…±æœ‰ä¸‰ä¸ªï¼Œä»¥ä¸‹åªæœ‰ä¸¤ä¸ªï¼šå·®çš„ä¸€ä¸ªæ˜¯h->ref_list[1][0]æ˜¯çŸ­æœŸå‚è€ƒ */
                /* if(!IS_INTRA(mb_type_col[0]) && (   l1ref0[x8 + y8*b8_stride] == 0
                                               || (l1ref0[x8 + y8*b8_stride] < 0 && l1ref1[x8 + y8*b8_stride] == 0
                                                   && (h->x264_build>33 || !h->x264_build)))) */
@@ -1579,11 +1579,11 @@ single_col:
     }
     else
     { /* direct temporal mv pred */
-		/* 2010/04/20 14:00:00 liuxw+00139685¡¡[AZ1D01992] */
-		/* µ±µ±Ç°Í¼ÏñÎªÖ¡£¬ref1Îª³¡µÄÇé¿öÏÂ£¬¸ù¾İref1ÊÇ¶¥³¡»¹ÊÇµ×³¡À´Ñ¡Ôñmap_col_to_list0 */
+		/* 2010/04/20 14:00:00 liuxw+00139685ã€€[AZ1D01992] */
+		/* å½“å½“å‰å›¾åƒä¸ºå¸§ï¼Œref1ä¸ºåœºçš„æƒ…å†µä¸‹ï¼Œæ ¹æ®ref1æ˜¯é¡¶åœºè¿˜æ˜¯åº•åœºæ¥é€‰æ‹©map_col_to_list0 */
 //		const int *map_col_to_list0[2] = {h->map_col_to_list0[0], h->map_col_to_list0[1]};
 		/* 2010/08/24 15:00:00 liuxw+00139685 */
-		/* Ñ¡È¡col_MBËùÔÚµÄsliceµÄ²Î¿¼¶ÓÁĞmap */
+		/* é€‰å–col_MBæ‰€åœ¨çš„sliceçš„å‚è€ƒé˜Ÿåˆ—map */
 //		const int *map_col_to_list0[2] = {h->map_col_to_list0[flag][0], h->map_col_to_list0[flag][1]};
 		const int *map_col_to_list0[2] = {h->map_col_to_list0[(h->ref_list[1][0].slice_table[mb_xy]&(MAX_SLICES-1))-1][0], h->map_col_to_list0[(h->ref_list[1][0].slice_table[mb_xy]&(MAX_SLICES-1))-1][1]};
         const int *dist_scale_factor = h->dist_scale_factor;
@@ -1592,7 +1592,7 @@ single_col:
         if(FRAME_MBAFF && IS_INTERLACED(*mb_type))
 		{
 			/* 2010/08/24 15:00:00 liuxw+00139685 */
-			/* Ñ¡È¡col_MBËùÔÚµÄsliceµÄ²Î¿¼¶ÓÁĞmap */
+			/* é€‰å–col_MBæ‰€åœ¨çš„sliceçš„å‚è€ƒé˜Ÿåˆ—map */
 //			map_col_to_list0[0] = h->map_col_to_list0_field[s->mb_y&1][0];
 //			map_col_to_list0[1] = h->map_col_to_list0_field[s->mb_y&1][1];
             map_col_to_list0[0] = h->map_col_to_list0_field[s->mb_y&1][(h->ref_list[1][0].slice_table[mb_xy]&(MAX_SLICES-1))-1][0];
@@ -1607,7 +1607,7 @@ single_col:
 
         if(IS_INTERLACED(*mb_type) != IS_INTERLACED(mb_type_col[0]))
 		{
-            /* FIXME assumes direct_8x8_inference == 1 £¨maybe have problems??? liuxw+00139685£©*/
+            /* FIXME assumes direct_8x8_inference == 1 ï¼ˆmaybe have problems??? liuxw+00139685ï¼‰*/
             int y_shift  = 2*!IS_INTERLACED(*mb_type);
 
             for(i8=0; i8<4; i8++){
@@ -1630,18 +1630,18 @@ single_col:
                 }
 				
 				/* 2010/08/25 10:00:00 liuxw+00139685 */
-				/* Èôµ±Ç°ÊÇ³¡£¬ref1ÊÇÖ¡£¬ÄÇÃ´col_mb»áÊÇÁ½¸ö(0/1,2/3) */
+				/* è‹¥å½“å‰æ˜¯åœºï¼Œref1æ˜¯å¸§ï¼Œé‚£ä¹ˆcol_mbä¼šæ˜¯ä¸¤ä¸ª(0/1,2/3) */
 				if(pre_flag && i8 > 1)
 				{
 					/* 2010/08/26 10:00:00 liuxw+00139685 */
-					/* Èôµ±Ç°ÊÇMBAFFÖĞµÄ³¡ºê¿é£¬ref1ÊÇÖ¡(MBAFF)£¬ÄÇÃ´col_mb»áÊÇÁ½¸ö(0/1,2/3) */
+					/* è‹¥å½“å‰æ˜¯MBAFFä¸­çš„åœºå®å—ï¼Œref1æ˜¯å¸§(MBAFF)ï¼Œé‚£ä¹ˆcol_mbä¼šæ˜¯ä¸¤ä¸ª(0/1,2/3) */
 					if(FRAME_MBAFF && IS_INTERLACED(*mb_type))
 					{
 						map_col_to_list0[0] = h->map_col_to_list0_field[s->mb_y&1][(h->ref_list[1][0].slice_table[mb_xy+s->mb_stride]&(MAX_SLICES-1))-1][0];
 						map_col_to_list0[1] = h->map_col_to_list0_field[s->mb_y&1][(h->ref_list[1][0].slice_table[mb_xy+s->mb_stride]&(MAX_SLICES-1))-1][1];
 					}
 					/* 2010/08/25 10:00:00 liuxw+00139685 */
-					/* Èôµ±Ç°ÊÇ³¡£¬ref1ÊÇÖ¡£¬ÄÇÃ´col_mb»áÊÇÁ½¸ö(0/1,2/3) */
+					/* è‹¥å½“å‰æ˜¯åœºï¼Œref1æ˜¯å¸§ï¼Œé‚£ä¹ˆcol_mbä¼šæ˜¯ä¸¤ä¸ª(0/1,2/3) */
 					else
 					{
 						map_col_to_list0[0] = h->map_col_to_list0[(h->ref_list[1][0].slice_table[mb_xy+s->mb_stride]&(MAX_SLICES-1))-1][0];
@@ -1653,7 +1653,7 @@ single_col:
                 if(ref0 >= 0)
 					ref0 = map_col_to_list0[0][ref0 + ref_offset];
 				/* 2010/04/15 18:30:00 liuxw+00139685 */
-				/* Ôö¼ÓÁË¶Ôref1Ç°Ïò²Î¿¼ÊÇ·ñ´æÔÚµÄÅĞ¶ÏºÍ¶Ôref1Ç°ºóÏò¶¼²»´æÔÚÊ±¶ÔrefºÍmvµÄ´¦Àí */
+				/* å¢åŠ äº†å¯¹ref1å‰å‘å‚è€ƒæ˜¯å¦å­˜åœ¨çš„åˆ¤æ–­å’Œå¯¹ref1å‰åå‘éƒ½ä¸å­˜åœ¨æ—¶å¯¹refå’Œmvçš„å¤„ç† */
 	/*			else
 				ref0 = map_col_to_list0[1][l1ref1[x8 + y8*b8_stride] + ref_offset]; */
 				else if(l1ref1[x8 + y8*b8_stride] >= 0)  
@@ -1700,7 +1700,7 @@ single_col:
 			else
 			{
 				/* 2010/04/15 18:30:00 liuxw+00139685 */
-				/* Ôö¼ÓÁË¶ÔcolrefºÍcolmvµÄÑ¡Ôñ[¾ßÌå¿É²Î¼ûĞ­Òé] */
+				/* å¢åŠ äº†å¯¹colrefå’Œcolmvçš„é€‰æ‹©[å…·ä½“å¯å‚è§åè®®] */
 				//const int ref0 = l1ref0[0] >= 0 ? map_col_to_list0[0][l1ref0[0] + ref_offset]
 				//: map_col_to_list0[1][l1ref1[0] + ref_offset];
 				const int ref0 = l1ref0[0] >= 0 ? map_col_to_list0[0][l1ref0[0] + ref_offset]
@@ -1723,7 +1723,7 @@ single_col:
 		else
 		{
 			/* 2010/06/10 14:30:00 liuxw+00139685 */
-			/* Èô´Ë±êÖ¾±»ÖÃÎ»¶øÇÒÓÖ½øÈë´Ë·ÖÖ§£¬ÔòËµÃ÷²úÉúÁËÎóÂë£¬½«b8_strideºÍb4_strideĞŞÕı»ØÀ´ */
+			/* è‹¥æ­¤æ ‡å¿—è¢«ç½®ä½è€Œä¸”åˆè¿›å…¥æ­¤åˆ†æ”¯ï¼Œåˆ™è¯´æ˜äº§ç”Ÿäº†è¯¯ç ï¼Œå°†b8_strideå’Œb4_strideä¿®æ­£å›æ¥ */
             if(pre_flag)
 			{
 				b8_stride = s->b8_stride;
@@ -1736,7 +1736,7 @@ single_col:
                 int ref0, scale;
                 const int16_t (*l1mv)[2]= l1mv0;
 				/* 2010/04/15 18:30:00 liuxw+00139685 */
-				/* Ôö¼ÓÁË¶Ôref1ºóÏò»òÇ°ÏòµÄÑ¡Ôñ±êÖ¾[¾ßÌå¿É²Î¼ûĞ­Òé] */
+				/* å¢åŠ äº†å¯¹ref1åå‘æˆ–å‰å‘çš„é€‰æ‹©æ ‡å¿—[å…·ä½“å¯å‚è§åè®®] */
 				int flag = 1;	
 
                 if(is_b8x8 && !IS_DIRECT(h->sub_mb_type[i8]))
@@ -1753,12 +1753,12 @@ single_col:
 
                 ref0 = l1ref0[x8 + y8*b8_stride] + ref_offset;
 				/* 2010/04/15 18:30:00 hanqr+00115692 [AZ1D01992] */
-				/* ĞŞ¸ÄÁË¶Ôref1ºóÏò²Î¿¼µÄÅĞ¶ÏÌõ¼ş */
+				/* ä¿®æ”¹äº†å¯¹ref1åå‘å‚è€ƒçš„åˆ¤æ–­æ¡ä»¶ */
 //               if(ref0 >= 0)
 				if(ref0 >= ref_offset)
                     ref0 = map_col_to_list0[0][ref0];
 				/* 2010/04/15 18:30:00 liuxw+00139685 */
-				/* Ôö¼ÓÁË¶Ôref1Ç°Ïò²Î¿¼ÊÇ·ñ´æÔÚµÄÅĞ¶ÏºÍ¶Ôref1Ç°ºóÏò¶¼²»´æÔÚÊ±¶ÔrefºÍmvµÄ´¦Àí */
+				/* å¢åŠ äº†å¯¹ref1å‰å‘å‚è€ƒæ˜¯å¦å­˜åœ¨çš„åˆ¤æ–­å’Œå¯¹ref1å‰åå‘éƒ½ä¸å­˜åœ¨æ—¶å¯¹refå’Œmvçš„å¤„ç† */
 //               else{
 				else if(l1ref1[x8 + y8*b8_stride] >= 0) 
 				{
@@ -1776,7 +1776,7 @@ single_col:
                 if(IS_SUB_8X8(sub_mb_type))
 				{
 					/* 2010/04/15 18:30:00 liuxw+00139685 */
-					/* Ôö¼ÓÁËref1Ç°ÏòºÍºóÏò²Î¿¼¶¼²»´æÔÚÊ±mv_colµÄ´¦Àí */
+					/* å¢åŠ äº†ref1å‰å‘å’Œåå‘å‚è€ƒéƒ½ä¸å­˜åœ¨æ—¶mv_colçš„å¤„ç† */
 //					const int16_t *mv_col = l1mv[x8*3 + y8*3*b4_stride];
 					int16_t tmp_mv_col[2] = {0,0};
 					const int16_t *mv_col = flag ? l1mv[x8*3 + y8*3*b4_stride] : tmp_mv_col;
@@ -1791,7 +1791,7 @@ single_col:
                 for(i4=0; i4<4; i4++)
 				{
 					/* 2010/04/15 18:30:00 liuxw+00139685 */
-					/* Ôö¼ÓÁËref1Ç°ÏòºÍºóÏò²Î¿¼¶¼²»´æÔÚÊ±mv_colµÄ´¦Àí */
+					/* å¢åŠ äº†ref1å‰å‘å’Œåå‘å‚è€ƒéƒ½ä¸å­˜åœ¨æ—¶mv_colçš„å¤„ç† */
 //					const int16_t *mv_col = l1mv[x8*2 + (i4&1) + (y8*2 + (i4>>1))*b4_stride];
 					int16_t tmp_mv_col[2] = {0,0};
 					const int16_t *mv_col = flag ? l1mv[x8*2 + (i4&1) + (y8*2 + (i4>>1))*b4_stride] : tmp_mv_col;
@@ -1799,7 +1799,7 @@ single_col:
                     mv_l0[0] = (scale * mv_col[0] + 128) >> 8;
                     mv_l0[1] = (scale * mv_col[1] + 128) >> 8;
 					/* 2010/04/15 18:30:00 liuxw+00139685 */
-					/* Ôö¼ÓÁË¶Ôµ±Ç°ºê¿é²¿·ÖºóÏò²Î¿¼mvµÄ´æ´¢ */
+					/* å¢åŠ äº†å¯¹å½“å‰å®å—éƒ¨åˆ†åå‘å‚è€ƒmvçš„å­˜å‚¨ */
 					*(uint32_t*)h->mv_cache[0][scan8[i8*4+i4]] = pack16to32(mv_l0[0],mv_l0[1]);
                     *(uint32_t*)h->mv_cache[1][scan8[i8*4+i4]] = pack16to32(mv_l0[0]-mv_col[0],mv_l0[1]-mv_col[1]);
 					/* add by lxw for test */
@@ -1908,7 +1908,7 @@ const uint8_t *ff_h264_decode_nal(H264Context *h, const uint8_t *src, int *dst_l
     }
 
     bufidx = h->nal_unit_type == NAL_DPC ? 1 : 0; // use second escape buffer for inter data
-	/* ĞŞ¸Ä´úÂë£¨l00139685) */
+	/* ä¿®æ”¹ä»£ç ï¼ˆl00139685) */
    // h->rbsp_buffer[bufidx]= av_fast_realloc(h->rbsp_buffer[bufidx], &h->rbsp_buffer_size[bufidx], length+FF_INPUT_BUFFER_PADDING_SIZE);
 	if(length+FF_INPUT_BUFFER_PADDING_SIZE > (int)h->rbsp_buffer_size[bufidx])
 	{
@@ -2102,35 +2102,35 @@ static inline int get_chroma_qp(H264Context *h, int t, int qscale){
     return h->pps.chroma_qp_table[t][qscale];
 }
 
-/* src_x_offset: µÈÓÚµ±Ç°×Óºê¿éÔÚ²Î¿¼Í¼ÏñÖĞµÄx·½ÏòµÄÈ«¾ÖµØÖ·[Ïà¶ÔÓÚchroma¶øÑÔ0~pic_width/2-1]
-   src_y_offset: µÈÓÚµ±Ç°×Óºê¿éÔÚ²Î¿¼Í¼ÏñÖĞµÄy·½ÏòµÄÈ«¾ÖµØÖ·[Ïà¶ÔÓÚchroma¶øÑÔ0~pic_height/2-1] liuxw+00139685 */
+/* src_x_offset: ç­‰äºå½“å‰å­å®å—åœ¨å‚è€ƒå›¾åƒä¸­çš„xæ–¹å‘çš„å…¨å±€åœ°å€[ç›¸å¯¹äºchromaè€Œè¨€0~pic_width/2-1]
+   src_y_offset: ç­‰äºå½“å‰å­å®å—åœ¨å‚è€ƒå›¾åƒä¸­çš„yæ–¹å‘çš„å…¨å±€åœ°å€[ç›¸å¯¹äºchromaè€Œè¨€0~pic_height/2-1] liuxw+00139685 */
 
 static inline int mc_dir_part(H264Context *h, Picture *pic, int n, int square, int chroma_height, int delta, int list,
                            uint8_t *dest_y, uint8_t *dest_cb, uint8_t *dest_cr,
                            int src_x_offset, int src_y_offset,
                            qpel_mc_func *qpix_op, h264_chroma_mc_func chroma_op){
     MpegEncContext * const s = &h->s;
-    const int mx= h->mv_cache[list][ scan8[n] ][0] + src_x_offset*8;  /* µÃµ½Ô¤²â¿éY·ÖÁ¿x·½ÏòÉÏÔÚ²Î¿¼Í¼ÏñÖĞµÄÈ«¾ÖµØÖ·£¨1/4ÏñËØµ¥Î»£©£¬src_x_offset*2*4£º
-																	     *2±íÊ¾½«chromaµÄÆ«ÒÆ×ª»»ÎªYµÄÆ«ÒÆ£¬*4±íÊ¾½øÈëµ½1/4ÏñËØµ¥Î» liuxw+00139685 */
-	int my=       h->mv_cache[list][ scan8[n] ][1] + src_y_offset*8;  /* µÃµ½Ô¤²â¿éY·ÖÁ¿y·½ÏòÉÏÔÚ²Î¿¼Í¼ÏñÖĞµÄÈ«¾ÖµØÖ·£¬src_y_offset*2*4£º
-																	  *2±íÊ¾½«chromaµÄÆ«ÒÆ×ª»»ÎªYµÄÆ«ÒÆ£¬*4±íÊ¾½øÈëµ½1/4ÏñËØµ¥Î» liuxw+00139685 */
-    const int luma_xy= (mx&3) + ((my&3)<<2);	/* ²åÖµº¯ÊıÖ¸ÕëÊı×éµÄË÷Òı liuxw+00139685 */
-    uint8_t * src_y = pic->data[0] + (mx>>2) + (my>>2)*h->mb_linesize;  /* µ±Ç°¿éµÄy·ÖÁ¿µÄÔ´µØÖ· liuxw+00139685 */
+    const int mx= h->mv_cache[list][ scan8[n] ][0] + src_x_offset*8;  /* å¾—åˆ°é¢„æµ‹å—Yåˆ†é‡xæ–¹å‘ä¸Šåœ¨å‚è€ƒå›¾åƒä¸­çš„å…¨å±€åœ°å€ï¼ˆ1/4åƒç´ å•ä½ï¼‰ï¼Œsrc_x_offset*2*4ï¼š
+																	     *2è¡¨ç¤ºå°†chromaçš„åç§»è½¬æ¢ä¸ºYçš„åç§»ï¼Œ*4è¡¨ç¤ºè¿›å…¥åˆ°1/4åƒç´ å•ä½ liuxw+00139685 */
+	int my=       h->mv_cache[list][ scan8[n] ][1] + src_y_offset*8;  /* å¾—åˆ°é¢„æµ‹å—Yåˆ†é‡yæ–¹å‘ä¸Šåœ¨å‚è€ƒå›¾åƒä¸­çš„å…¨å±€åœ°å€ï¼Œsrc_y_offset*2*4ï¼š
+																	  *2è¡¨ç¤ºå°†chromaçš„åç§»è½¬æ¢ä¸ºYçš„åç§»ï¼Œ*4è¡¨ç¤ºè¿›å…¥åˆ°1/4åƒç´ å•ä½ liuxw+00139685 */
+    const int luma_xy= (mx&3) + ((my&3)<<2);	/* æ’å€¼å‡½æ•°æŒ‡é’ˆæ•°ç»„çš„ç´¢å¼• liuxw+00139685 */
+    uint8_t * src_y = pic->data[0] + (mx>>2) + (my>>2)*h->mb_linesize;  /* å½“å‰å—çš„yåˆ†é‡çš„æºåœ°å€ liuxw+00139685 */
     uint8_t * src_cb, * src_cr;
-    int extra_width= h->emu_edge_width;    /* padding¿í¶È(16) liuxw+00139685 */
-    int extra_height= h->emu_edge_height;  /* padding¸ß¶È(16) liuxw+00139685 */
+    int extra_width= h->emu_edge_width;    /* paddingå®½åº¦(16) liuxw+00139685 */
+    int extra_height= h->emu_edge_height;  /* paddingé«˜åº¦(16) liuxw+00139685 */
     int emu=0;
-    const int full_mx= mx>>2;  /* µ±Ç°¿éY·ÖÁ¿x·½ÏòÔÚ²Î¿¼Í¼ÏñÖĞµÄÈ«¾ÖµØÖ·(ÕûÏñËØµ¥Î») liuxw+00139685 */
-    const int full_my= my>>2;  /* µ±Ç°¿éY·ÖÁ¿y·½ÏòÔÚ²Î¿¼Í¼ÏñÖĞµÄÈ«¾ÖµØÖ·(ÕûÏñËØµ¥Î») liuxw+00139685 */
+    const int full_mx= mx>>2;  /* å½“å‰å—Yåˆ†é‡xæ–¹å‘åœ¨å‚è€ƒå›¾åƒä¸­çš„å…¨å±€åœ°å€(æ•´åƒç´ å•ä½) liuxw+00139685 */
+    const int full_my= my>>2;  /* å½“å‰å—Yåˆ†é‡yæ–¹å‘åœ¨å‚è€ƒå›¾åƒä¸­çš„å…¨å±€åœ°å€(æ•´åƒç´ å•ä½) liuxw+00139685 */
     const int pic_width  = 16*s->mb_width;
-    const int pic_height = (16*s->mb_height) >> MB_FIELD;  /* ÈôÊÇµ±Ç°ºê¿éÊÇ³¡ºê¿é£¬ÔòÍ¼Ïñ¸ß¶È×ª»¯Îª³¡Í¼ÏñµÄ¸ß¶È£¨¼´³ıÒÔ2£© liuxw+00139685 */
+    const int pic_height = (16*s->mb_height) >> MB_FIELD;  /* è‹¥æ˜¯å½“å‰å®å—æ˜¯åœºå®å—ï¼Œåˆ™å›¾åƒé«˜åº¦è½¬åŒ–ä¸ºåœºå›¾åƒçš„é«˜åº¦ï¼ˆå³é™¤ä»¥2ï¼‰ liuxw+00139685 */
 	int iRet = 0;
 
     if(mx&7) extra_width -= 3;
     if(my&7) extra_height -= 3;
 
 	/* 2010/04/06 14:30:00 liuxw+00139685 */
-	/* Ôö¼Ó¶ÔmvºÏ·¨ĞÔµÄ¼ì²é(avoid segment) */
+	/* å¢åŠ å¯¹mvåˆæ³•æ€§çš„æ£€æŸ¥(avoid segment) */
 	if(NULL == pic->data[0] ||  NULL == pic->data[1] || NULL == pic->data[2])
 	{
 		av_log(s->avctx,AV_LOG_WARNING,"source data is NULL!\n");
@@ -2165,9 +2165,9 @@ static inline int mc_dir_part(H264Context *h, Picture *pic, int n, int square, i
 	}
 
 #endif
-	/* ¸ù¾İluma_xyµ÷ÓÃ¶ÔÓ¦µÄ²åÖµº¯Êı¶Ôµ±Ç°¿é½øĞĞÏàÓ¦µÄ²åÖµ liuxw+00139685 */
+	/* æ ¹æ®luma_xyè°ƒç”¨å¯¹åº”çš„æ’å€¼å‡½æ•°å¯¹å½“å‰å—è¿›è¡Œç›¸åº”çš„æ’å€¼ liuxw+00139685 */
     qpix_op[luma_xy](dest_y, src_y, h->mb_linesize); //FIXME try variable height perhaps?
-	/* Èç¹ûµ±Ç°×Ó¿é²»ÊÇÒ»¸öÕı·½ĞÎ(16x16¡¢8x8¡¢4x4),Ôò»á½«³¤·½ĞÎ·Ö½â³ÉÁ½¸öÕı·½ĞÎ(16x8·Ö½â³ÉÁ½¸ö8x8£©£¬·Ö±ğ¶ÔÕâÁ½¸öÕı·½ĞÎ½øĞĞ²åÖµ liuxw+00139685 */
+	/* å¦‚æœå½“å‰å­å—ä¸æ˜¯ä¸€ä¸ªæ­£æ–¹å½¢(16x16ã€8x8ã€4x4),åˆ™ä¼šå°†é•¿æ–¹å½¢åˆ†è§£æˆä¸¤ä¸ªæ­£æ–¹å½¢(16x8åˆ†è§£æˆä¸¤ä¸ª8x8ï¼‰ï¼Œåˆ†åˆ«å¯¹è¿™ä¸¤ä¸ªæ­£æ–¹å½¢è¿›è¡Œæ’å€¼ liuxw+00139685 */
     if(!square){
         qpix_op[luma_xy](dest_y + delta, src_y + delta, h->mb_linesize);
     }
@@ -2185,15 +2185,15 @@ static inline int mc_dir_part(H264Context *h, Picture *pic, int n, int square, i
 
     if(MB_FIELD){
         // chroma offset when predicting from a field of opposite parity
-		/* Èç¹û¶¥³¡²Î¿¼µ×³¡£¬Ôòmy + =-2;Èç¹ûÊÇµ×³¡²Î¿¼¶¥³¡,Ôòmy += 2(Ô­ÒòÔİ²»Çå³ş£©liuxw+00139685 */
+		/* å¦‚æœé¡¶åœºå‚è€ƒåº•åœºï¼Œåˆ™my + =-2;å¦‚æœæ˜¯åº•åœºå‚è€ƒé¡¶åœº,åˆ™my += 2(åŸå› æš‚ä¸æ¸…æ¥šï¼‰liuxw+00139685 */
         my += 2 * ((s->mb_y & 1) - (pic->reference - 1));
 		/* ???
 		liuxw+00139685 */
         emu |= (my>>3) < 0 || (my>>3) + 8 >= (pic_height>>1);
     }
-	/* chromaÊÇ1/8ÏñËØ¾«¶È liuxw+00139685 */
-    src_cb= pic->data[1] + (mx>>3) + (my>>3)*h->mb_uvlinesize;	/* µ±Ç°¿éµÄu·ÖÁ¿µÄÔ´µØÖ· liuxw+00139685 */
-    src_cr= pic->data[2] + (mx>>3) + (my>>3)*h->mb_uvlinesize;	/* µ±Ç°¿éµÄv·ÖÁ¿µÄÔ´µØÖ· liuxw+00139685 */
+	/* chromaæ˜¯1/8åƒç´ ç²¾åº¦ liuxw+00139685 */
+    src_cb= pic->data[1] + (mx>>3) + (my>>3)*h->mb_uvlinesize;	/* å½“å‰å—çš„uåˆ†é‡çš„æºåœ°å€ liuxw+00139685 */
+    src_cr= pic->data[2] + (mx>>3) + (my>>3)*h->mb_uvlinesize;	/* å½“å‰å—çš„våˆ†é‡çš„æºåœ°å€ liuxw+00139685 */
 
     if(emu){
         ff_emulated_edge_mc(s->edge_emu_buffer, src_cb, h->mb_uvlinesize, 9, 9/*FIXME*/, (mx>>3), (my>>3), pic_width>>1, pic_height>>1);
@@ -2229,11 +2229,11 @@ static inline int mc_dir_part(H264Context *h, Picture *pic, int n, int square, i
 	return iRet;
 }
 
-/* n: ÓÃÀ´µÃµ½µ±Ç°×Óºê¿éµÄ²Î¿¼Ë÷Òı£»		square: 16x16 8x8 4x4 -> 1 others -> 0 
-   chroma_heigth: µ±Ç°×Óºê¿éµÄÉ«¶ÈµÄ¸ß¶È£»   delta: µ±square=1Ê±£¬delta=0;square=0Ê±,deltaµÈÓÚµ±Ç°×Óºê¿éÄÚµÚ¶ş¸öÕı·½ĞÎ¿éÓëµÚÒ»¸öÕı·½ĞÎ¿éµÄÆ«ÒÆ
-   £¨16x8,ÉÏÃæµÄ16x8¿ÉÒÔ·Ö³ÉÁ½¸ö8x8µÄÕı·½ĞÎ£¬µÚ¶ş¸ö¶ÔÓÚµÚÒ»¸öµÄÆ«ÒÆ£½8£©£»
-	x_offset£ºµ±Ç°ºê¿éÄÚ²¿×Óºê¿éµÄx·½ÏòµÄÆ«ÒÆ£¨¶ÔÓÚchroma¶øÑÔµÄÆ«ÒÆ£©(16x8,ÉÏÃæµÄ16x8¶ÔÓÚchroma¶øÑÔ¶ÔÓÚµ±Ç°ºê¿éµÄÆ«ÒÆx_offset=0,y_offset=0)
-	y_offset£ºµ±Ç°ºê¿éÄÚ²¿×Óºê¿éµÄy·½ÏòµÄÆ«ÒÆ£¨¶ÔÓÚchroma¶øÑÔµÄÆ«ÒÆ£©(16x8,ÏÂÃæµÄ16x8¶ÔÓÚchroma¶øÑÔ¶ÔÓÚµ±Ç°ºê¿éµÄÆ«ÒÆx_offset=0,y_offset=4)	
+/* n: ç”¨æ¥å¾—åˆ°å½“å‰å­å®å—çš„å‚è€ƒç´¢å¼•ï¼›		square: 16x16 8x8 4x4 -> 1 others -> 0 
+   chroma_heigth: å½“å‰å­å®å—çš„è‰²åº¦çš„é«˜åº¦ï¼›   delta: å½“square=1æ—¶ï¼Œdelta=0;square=0æ—¶,deltaç­‰äºå½“å‰å­å®å—å†…ç¬¬äºŒä¸ªæ­£æ–¹å½¢å—ä¸ç¬¬ä¸€ä¸ªæ­£æ–¹å½¢å—çš„åç§»
+   ï¼ˆ16x8,ä¸Šé¢çš„16x8å¯ä»¥åˆ†æˆä¸¤ä¸ª8x8çš„æ­£æ–¹å½¢ï¼Œç¬¬äºŒä¸ªå¯¹äºç¬¬ä¸€ä¸ªçš„åç§»ï¼8ï¼‰ï¼›
+	x_offsetï¼šå½“å‰å®å—å†…éƒ¨å­å®å—çš„xæ–¹å‘çš„åç§»ï¼ˆå¯¹äºchromaè€Œè¨€çš„åç§»ï¼‰(16x8,ä¸Šé¢çš„16x8å¯¹äºchromaè€Œè¨€å¯¹äºå½“å‰å®å—çš„åç§»x_offset=0,y_offset=0)
+	y_offsetï¼šå½“å‰å®å—å†…éƒ¨å­å®å—çš„yæ–¹å‘çš„åç§»ï¼ˆå¯¹äºchromaè€Œè¨€çš„åç§»ï¼‰(16x8,ä¸‹é¢çš„16x8å¯¹äºchromaè€Œè¨€å¯¹äºå½“å‰å®å—çš„åç§»x_offset=0,y_offset=4)	
 	liuxw+00139685 */
 static inline int mc_part_std(H264Context *h, int n, int square, int chroma_height, int delta,
                            uint8_t *dest_y, uint8_t *dest_cb, uint8_t *dest_cr,
@@ -2246,16 +2246,16 @@ static inline int mc_part_std(H264Context *h, int n, int square, int chroma_heig
     h264_chroma_mc_func chroma_op= chroma_put;
 	int iRet = 0;
 
-    dest_y  += 2*x_offset + 2*y_offset*h->mb_linesize;   /* µÃµ½µ±Ç°×Óºê¿éYµÄµØÖ· liuxw+00139685 */
-    dest_cb +=   x_offset +   y_offset*h->mb_uvlinesize; /* µÃµ½µ±Ç°×Óºê¿éUµÄµØÖ· liuxw+00139685 */
-    dest_cr +=   x_offset +   y_offset*h->mb_uvlinesize; /* µÃµ½µ±Ç°×Óºê¿éVµÄµØÖ· liuxw+00139685 */
-    x_offset += 8*s->mb_x;								 /* x_offsetµÈÓÚµ±Ç°×Óºê¿éÔÚ²Î¿¼Í¼ÏñÖĞµÄx·½ÏòµÄÈ«¾ÖµØÖ·[Ïà¶ÔÓÚchroma¶øÑÔ0~pic_width/2-1] liuxw+00139685 */
-    /* Èç¹ûµ±Ç°ºê¿éÊÇÔÚMBAFF¿ªÆôºóµÄ³¡ºê¿é£¬Ôò½«Êµ¼ÊÍ¼ÏñÖĞµÄmb_y³ıÒÔ2£¬×ª»»µ½³¡¶ÔÓ¦µÄmb_y liuxw+00139685 */
-	y_offset += 8*(s->mb_y >> MB_FIELD);				 /* y_offsetµÈÓÚµ±Ç°×Óºê¿éÔÚ²Î¿¼Í¼ÏñÖĞµÄy·½ÏòµÄÈ«¾ÖµØÖ·[Ïà¶ÔÓÚchroma¶øÑÔ0~pic_height/2-1] liuxw+00139685 */
+    dest_y  += 2*x_offset + 2*y_offset*h->mb_linesize;   /* å¾—åˆ°å½“å‰å­å®å—Yçš„åœ°å€ liuxw+00139685 */
+    dest_cb +=   x_offset +   y_offset*h->mb_uvlinesize; /* å¾—åˆ°å½“å‰å­å®å—Uçš„åœ°å€ liuxw+00139685 */
+    dest_cr +=   x_offset +   y_offset*h->mb_uvlinesize; /* å¾—åˆ°å½“å‰å­å®å—Vçš„åœ°å€ liuxw+00139685 */
+    x_offset += 8*s->mb_x;								 /* x_offsetç­‰äºå½“å‰å­å®å—åœ¨å‚è€ƒå›¾åƒä¸­çš„xæ–¹å‘çš„å…¨å±€åœ°å€[ç›¸å¯¹äºchromaè€Œè¨€0~pic_width/2-1] liuxw+00139685 */
+    /* å¦‚æœå½“å‰å®å—æ˜¯åœ¨MBAFFå¼€å¯åçš„åœºå®å—ï¼Œåˆ™å°†å®é™…å›¾åƒä¸­çš„mb_yé™¤ä»¥2ï¼Œè½¬æ¢åˆ°åœºå¯¹åº”çš„mb_y liuxw+00139685 */
+	y_offset += 8*(s->mb_y >> MB_FIELD);				 /* y_offsetç­‰äºå½“å‰å­å®å—åœ¨å‚è€ƒå›¾åƒä¸­çš„yæ–¹å‘çš„å…¨å±€åœ°å€[ç›¸å¯¹äºchromaè€Œè¨€0~pic_height/2-1] liuxw+00139685 */
 
     if(list0){
 		/* 2010/06/02 19:00:00 liuxw+00139685 */
-		/* Ôö¼Ó¶Ôh->ref_cache[0][ scan8[n] ]ºÏ·¨ÖµµÄÅĞ¶Ï */
+		/* å¢åŠ å¯¹h->ref_cache[0][ scan8[n] ]åˆæ³•å€¼çš„åˆ¤æ–­ */
 //      Picture *ref = &h->ref_list[0][ h->ref_cache[0][ scan8[n] ] ];
 		Picture *ref = NULL;
 		if(h->ref_cache[0][ scan8[n] ] < 0 || ((MB_MBAFF&&MB_FIELD)?(h->ref_cache[0][ scan8[n] ] >= (int)(16+h->ref_count[0]*2)):(h->ref_cache[0][ scan8[n] ] >= (int)h->ref_count[0])))
@@ -2280,7 +2280,7 @@ static inline int mc_part_std(H264Context *h, int n, int square, int chroma_heig
 
     if(list1){
 		/* 2010/06/02 19:00:00 liuxw+00139685 */
-		/* Ôö¼Ó¶Ôh->ref_cache[0][ scan8[n] ]ºÏ·¨ÖµµÄÅĞ¶Ï */
+		/* å¢åŠ å¯¹h->ref_cache[0][ scan8[n] ]åˆæ³•å€¼çš„åˆ¤æ–­ */
 //      Picture *ref= &h->ref_list[1][ h->ref_cache[1][ scan8[n] ] ];
 		Picture *ref = NULL;
 		if(h->ref_cache[1][ scan8[n] ] < 0 || ((MB_MBAFF&&MB_FIELD)?(h->ref_cache[1][ scan8[n] ] >= (int)(16+h->ref_count[1]*2)):(h->ref_cache[1][ scan8[n] ] >= (int)h->ref_count[1])))
@@ -2318,7 +2318,7 @@ static inline int mc_part_weighted(H264Context *h, int n, int square, int chroma
     dest_cr +=   x_offset +   y_offset*h->mb_uvlinesize;
     x_offset += 8*s->mb_x;
     y_offset += 8*(s->mb_y >> MB_FIELD);
-	/* ÈôÊÇË«ÏòÔ¤²â£¨BÏÔÊ¾¼ÓÈ¨»òÒşÊ½¼ÓÈ¨£©liuxw+00139685 */
+	/* è‹¥æ˜¯åŒå‘é¢„æµ‹ï¼ˆBæ˜¾ç¤ºåŠ æƒæˆ–éšå¼åŠ æƒï¼‰liuxw+00139685 */
     if(list0 && list1){
         /* don't optimize for luma-only case, since B-frames usually
          * use implicit weights => chroma too. */
@@ -2329,7 +2329,7 @@ static inline int mc_part_weighted(H264Context *h, int n, int square, int chroma
         int refn1 = h->ref_cache[1][ scan8[n] ];
 
 		/* 2010/06/03 14:30:00 liuxw+00139685 */
-		/* ¶Ôrefn0/refn1½øĞĞºÏ·¨ĞÔÅĞ¶Ï */
+		/* å¯¹refn0/refn1è¿›è¡Œåˆæ³•æ€§åˆ¤æ–­ */
 		if(refn0 < 0 || ((MB_MBAFF&&MB_FIELD)?(refn0 >= (int)(16+h->ref_count[0]*2)):(refn0 >= (int)h->ref_count[0])))
 		{
 			av_log(NULL,AV_LOG_WARNING,"list0 ref index[%d] of MB[mb_x:%d mb_y:%d] is exceed range!\n",refn0,h->s.mb_x,h->s.mb_y);
@@ -2346,17 +2346,17 @@ static inline int mc_part_weighted(H264Context *h, int n, int square, int chroma
 			return -1;
 		}
 
-		/* ºóÏò(list0)Ô¤²â£ºµÃµ½Î´¼ÓÈ¨Ç°µÄÔ¤²âÖµ£¨1/4ÏñËØ£©liuxw+00139685 */
+		/* åå‘(list0)é¢„æµ‹ï¼šå¾—åˆ°æœªåŠ æƒå‰çš„é¢„æµ‹å€¼ï¼ˆ1/4åƒç´ ï¼‰liuxw+00139685 */
         iRet = mc_dir_part(h, &h->ref_list[0][refn0], n, square, chroma_height, delta, 0,
                     dest_y, dest_cb, dest_cr, x_offset, y_offset, qpix_put, chroma_put);
 		if(iRet < 0)
 			return -1;
-		/* Ç°Ïò(list1)Ô¤²â£ºµÃµ½Î´¼ÓÈ¨Ç°µÄÔ¤²âÖµ£¨1/4ÏñËØ£©liuxw+00139685 */ 
+		/* å‰å‘(list1)é¢„æµ‹ï¼šå¾—åˆ°æœªåŠ æƒå‰çš„é¢„æµ‹å€¼ï¼ˆ1/4åƒç´ ï¼‰liuxw+00139685 */ 
         iRet = mc_dir_part(h, &h->ref_list[1][refn1], n, square, chroma_height, delta, 1,
                     tmp_y, tmp_cb, tmp_cr, x_offset, y_offset, qpix_put, chroma_put);
 		if(iRet < 0)
 			return -1;
-		/* ÒşÊ½Ô¤²â liuxw+00139685 */
+		/* éšå¼é¢„æµ‹ liuxw+00139685 */
         if(h->use_weight == 2)
 		{
             int weight0 = h->implicit_weight[TOP_OR_BOT_FLD_MB][refn0][refn1];
@@ -2367,7 +2367,7 @@ static inline int mc_part_weighted(H264Context *h, int n, int square, int chroma
 			av_log(h->s.avctx,AV_LOG_WARNING,"implicit weight: ref0:%d ref1:%d weight0:%d weight1:%d\n",refn0,refn1,weight0,weight1);
 #endif
 
-			/* µÃµ½¼ÓÈ¨ºóµÄÔ¤²âÖµ liuxw+00139685 */
+			/* å¾—åˆ°åŠ æƒåçš„é¢„æµ‹å€¼ liuxw+00139685 */
             luma_weight_avg(  dest_y,  tmp_y,  h->  mb_linesize, 5, weight0, weight1, 0);
 			if(CHROMA)
 			{
@@ -2375,7 +2375,7 @@ static inline int mc_part_weighted(H264Context *h, int n, int square, int chroma
 				chroma_weight_avg(dest_cr, tmp_cr, h->mb_uvlinesize, 5, weight0, weight1, 0);
 			}
         }
-		/* ÏÔÊ¾Ô¤²â liuxw+00139685 */
+		/* æ˜¾ç¤ºé¢„æµ‹ liuxw+00139685 */
 		else{
 
 #ifdef LXW_DEBUG
@@ -2384,16 +2384,16 @@ static inline int mc_part_weighted(H264Context *h, int n, int square, int chroma
 				h->luma_log2_weight_denom,refn0,h->luma_weight[0][refn0],h->luma_offset[0][refn0],refn1,h->luma_weight[1][refn1],h->luma_offset[1][refn1]);
 #endif
 
-			/* µÃµ½¼ÓÈ¨ºóµÄÔ¤²âÖµ liuxw+00139685 */
+			/* å¾—åˆ°åŠ æƒåçš„é¢„æµ‹å€¼ liuxw+00139685 */
             luma_weight_avg(dest_y, tmp_y, h->mb_linesize, h->luma_log2_weight_denom,
                             h->luma_weight[0][refn0], h->luma_weight[1][refn1],
                             h->luma_offset[0][refn0] + h->luma_offset[1][refn1]);
 			/* 2010/03/08 19:32:00 liuxw+00139685 */
-			/* Ôö¼Ó¶ÔÉ«¶È¼ÓÈ¨µÄÌõ¼ş */
+			/* å¢åŠ å¯¹è‰²åº¦åŠ æƒçš„æ¡ä»¶ */
 			if(CHROMA)
 			{
 				/* 2010/07/05 16:30:00 liuxw+00139685 */
-				/* Ôö¼Ó¶ÔÏÔÊ¾¼ÓÈ¨(w0+w1)ºÏ·¨ĞÔµÄÅĞ¶Ï */
+				/* å¢åŠ å¯¹æ˜¾ç¤ºåŠ æƒ(w0+w1)åˆæ³•æ€§çš„åˆ¤æ–­ */
 				if((h->chroma_weight[0][refn0][0] + h->chroma_weight[1][refn1][0]) > ((h->chroma_log2_weight_denom==7)?128:129) || (h->chroma_weight[0][refn0][0] + h->chroma_weight[1][refn1][0]) < -128)
 				{
 					av_log(h->s.avctx,AV_LOG_WARNING,"B explicit weight Cb component: Toatl[%d] of w0[%d]+w1[%d] is exceed valid range[%d-%d]\n",
@@ -2419,13 +2419,13 @@ static inline int mc_part_weighted(H264Context *h, int n, int square, int chroma
 			}
         }
     }
-	/* µ¥ÏòÔ¤²â£¨PÏÔÊ¾¼ÓÈ¨¡¢BÏÔÊ¾ºóÏò(list0)¼ÓÈ¨¡¢BÏÔÊ¾Ç°Ïò(list1)¼ÓÈ¨ liuxw+00139685 */
+	/* å•å‘é¢„æµ‹ï¼ˆPæ˜¾ç¤ºåŠ æƒã€Bæ˜¾ç¤ºåå‘(list0)åŠ æƒã€Bæ˜¾ç¤ºå‰å‘(list1)åŠ æƒ liuxw+00139685 */
 	else
 	{
-        int list = list1 ? 1 : 0;	/* µÃµ½Ô¤²â·½Ïò liuxw+00139685 */
+        int list = list1 ? 1 : 0;	/* å¾—åˆ°é¢„æµ‹æ–¹å‘ liuxw+00139685 */
         int refn = h->ref_cache[list][ scan8[n] ];
 		/* 2010/06/03 14:30:00 liuxw+00139685 */
-		/* ¶Ôrefn½øĞĞºÏ·¨ĞÔÅĞ¶Ï */
+		/* å¯¹refnè¿›è¡Œåˆæ³•æ€§åˆ¤æ–­ */
 //      Picture *ref= &h->ref_list[list][refn];
 		Picture *ref = NULL;
 		if(refn < 0 || ((MB_MBAFF&&MB_FIELD)?(refn >= (int)(16+h->ref_count[list]*2)):(refn >= (int)h->ref_count[list])))
@@ -2436,21 +2436,21 @@ static inline int mc_part_weighted(H264Context *h, int n, int square, int chroma
 		}
 		
 		ref = &h->ref_list[list][refn];
-		/* µÃµ½Î´¼ÓÈ¨Ç°µÄÔ¤²âÖµ£¨1/4ÏñËØ£©liuxw+00139685 */
+		/* å¾—åˆ°æœªåŠ æƒå‰çš„é¢„æµ‹å€¼ï¼ˆ1/4åƒç´ ï¼‰liuxw+00139685 */
         iRet = mc_dir_part(h, ref, n, square, chroma_height, delta, list,
                     dest_y, dest_cb, dest_cr, x_offset, y_offset, qpix_put, chroma_put);
 		if(iRet < 0)
 			return -1;
-		/* lumaÔ¤²âÏñËØÖµ¼ÓÈ¨ liuxw+00139685 */
+		/* lumaé¢„æµ‹åƒç´ å€¼åŠ æƒ liuxw+00139685 */
         luma_weight_op(dest_y, h->mb_linesize, h->luma_log2_weight_denom,
                        h->luma_weight[list][refn], h->luma_offset[list][refn]);
-		/* É«¶ÈÒ²½øĞĞÁË¼ÓÈ¨ liuxw+00139685 */
+		/* è‰²åº¦ä¹Ÿè¿›è¡Œäº†åŠ æƒ liuxw+00139685 */
         if(CHROMA)
 		{
-			/* cb Ô¤²âÏñËØÖµ¼ÓÈ¨ liuxw+00139685 */
+			/* cb é¢„æµ‹åƒç´ å€¼åŠ æƒ liuxw+00139685 */
             chroma_weight_op(dest_cb, h->mb_uvlinesize, h->chroma_log2_weight_denom,
                              h->chroma_weight[list][refn][0], h->chroma_offset[list][refn][0]);
-			/* cb Ô¤²âÏñËØÖµ¼ÓÈ¨ liuxw+00139685 */
+			/* cb é¢„æµ‹åƒç´ å€¼åŠ æƒ liuxw+00139685 */
             chroma_weight_op(dest_cr, h->mb_uvlinesize, h->chroma_log2_weight_denom,
                              h->chroma_weight[list][refn][1], h->chroma_offset[list][refn][1]);
         }
@@ -2496,7 +2496,7 @@ static inline void prefetch_motion(H264Context *h, int list){
     }
 }
 
-/* mc: µÃµ½Ö¡¼äÔ¤²âÖµ liuxw+00139685 */ 
+/* mc: å¾—åˆ°å¸§é—´é¢„æµ‹å€¼ liuxw+00139685 */ 
 static int hl_motion(H264Context *h, uint8_t *dest_y, uint8_t *dest_cb, uint8_t *dest_cr,
                       qpel_mc_func (*qpix_put)[16], h264_chroma_mc_func (*chroma_put),
                       qpel_mc_func (*qpix_avg)[16], h264_chroma_mc_func (*chroma_avg),
@@ -2623,12 +2623,12 @@ static av_cold void init_cavlc_level_tab(void){
 }
 
 /* 2010/30/04 10:32:00 liuxw+00139685 */
-/* ¸ødecode_init_vlc£¨£©Ôö¼Ó·µ»ØÂë */
+/* ç»™decode_init_vlcï¼ˆï¼‰å¢åŠ è¿”å›ç  */
 //static av_cold void decode_init_vlc(void){
 static av_cold int decode_init_vlc(void){
     static int done = 0;
 	/* 2010/30/04 10:36:00 liuxw+00139685 */
-	/* Ôö¼Ó·µ»ØÂë */
+	/* å¢åŠ è¿”å›ç  */
 	int iRet = 0;
 
     if (!done) {
@@ -2639,7 +2639,7 @@ static av_cold int decode_init_vlc(void){
         chroma_dc_coeff_token_vlc.table = chroma_dc_coeff_token_vlc_table;
         chroma_dc_coeff_token_vlc.table_allocated = chroma_dc_coeff_token_vlc_table_size;
 		/* 2010/30/04 10:39:00 liuxw+00139685 */
-		/* Ôö¼Ó·µ»ØÂëºÍ·µ»ØÂëµÄÅĞ¶Ï */
+		/* å¢åŠ è¿”å›ç å’Œè¿”å›ç çš„åˆ¤æ–­ */
         iRet = init_vlc(&chroma_dc_coeff_token_vlc, CHROMA_DC_COEFF_TOKEN_VLC_BITS, 4*5,
                  &chroma_dc_coeff_token_len [0], 1, 1,
                  &chroma_dc_coeff_token_bits[0], 1, 1,
@@ -2654,7 +2654,7 @@ static av_cold int decode_init_vlc(void){
             coeff_token_vlc[i].table = coeff_token_vlc_tables+offset;
             coeff_token_vlc[i].table_allocated = coeff_token_vlc_tables_size[i];
 			/* 2010/30/04 10:39:00 liuxw+00139685 */
-			/* Ôö¼Ó·µ»ØÂëºÍ·µ»ØÂëµÄÅĞ¶Ï */
+			/* å¢åŠ è¿”å›ç å’Œè¿”å›ç çš„åˆ¤æ–­ */
             iRet = init_vlc(&coeff_token_vlc[i], COEFF_TOKEN_VLC_BITS, 4*17,
                      &coeff_token_len [i][0], 1, 1,
                      &coeff_token_bits[i][0], 1, 1,
@@ -2676,7 +2676,7 @@ static av_cold int decode_init_vlc(void){
             chroma_dc_total_zeros_vlc[i].table = chroma_dc_total_zeros_vlc_tables[i];
             chroma_dc_total_zeros_vlc[i].table_allocated = chroma_dc_total_zeros_vlc_tables_size;
 			/* 2010/30/04 10:39:00 liuxw+00139685 */
-			/* Ôö¼Ó·µ»ØÂëºÍ·µ»ØÂëµÄÅĞ¶Ï */
+			/* å¢åŠ è¿”å›ç å’Œè¿”å›ç çš„åˆ¤æ–­ */
             iRet = init_vlc(&chroma_dc_total_zeros_vlc[i],
                      CHROMA_DC_TOTAL_ZEROS_VLC_BITS, 4,
                      &chroma_dc_total_zeros_len [i][0], 1, 1,
@@ -2691,7 +2691,7 @@ static av_cold int decode_init_vlc(void){
             total_zeros_vlc[i].table = total_zeros_vlc_tables[i];
             total_zeros_vlc[i].table_allocated = total_zeros_vlc_tables_size;
 			/* 2010/30/04 10:39:00 liuxw+00139685 */
-			/* Ôö¼Ó·µ»ØÂëºÍ·µ»ØÂëµÄÅĞ¶Ï */
+			/* å¢åŠ è¿”å›ç å’Œè¿”å›ç çš„åˆ¤æ–­ */
             iRet = init_vlc(&total_zeros_vlc[i],
                      TOTAL_ZEROS_VLC_BITS, 16,
                      &total_zeros_len [i][0], 1, 1,
@@ -2707,7 +2707,7 @@ static av_cold int decode_init_vlc(void){
             run_vlc[i].table = run_vlc_tables[i];
             run_vlc[i].table_allocated = run_vlc_tables_size;
 			/* 2010/30/04 10:39:00 liuxw+00139685 */
-			/* Ôö¼Ó·µ»ØÂëºÍ·µ»ØÂëµÄÅĞ¶Ï */
+			/* å¢åŠ è¿”å›ç å’Œè¿”å›ç çš„åˆ¤æ–­ */
             iRet = init_vlc(&run_vlc[i],
                      RUN_VLC_BITS, 7,
                      &run_len [i][0], 1, 1,
@@ -2721,7 +2721,7 @@ static av_cold int decode_init_vlc(void){
         run7_vlc.table = run7_vlc_table,
         run7_vlc.table_allocated = run7_vlc_table_size;
 		/* 2010/30/04 10:39:00 liuxw+00139685 */
-		/* Ôö¼Ó·µ»ØÂëºÍ·µ»ØÂëµÄÅĞ¶Ï */
+		/* å¢åŠ è¿”å›ç å’Œè¿”å›ç çš„åˆ¤æ–­ */
         iRet = init_vlc(&run7_vlc, RUN7_VLC_BITS, 16,
                  &run_len [6][0], 1, 1,
                  &run_bits[6][0], 1, 1,
@@ -2734,7 +2734,7 @@ static av_cold int decode_init_vlc(void){
         init_cavlc_level_tab();
     }
 	/* 2010/30/04 10:37:00 liuxw+00139685 */
-	/* Ôö¼Ó·µ»ØÂë */
+	/* å¢åŠ è¿”å›ç  */
 	return iRet;
 }
 
@@ -2960,7 +2960,7 @@ static av_cold int decode_init(AVCodecContext *avctx){
     MpegEncContext * const s = &h->s;
 
 	/* 2010/30/04 10:41:00 liuxw+00139685 */
-	/* Ôö¼Ó·µ»ØÂë */
+	/* å¢åŠ è¿”å›ç  */
 	int iRet = 0;
 
 	/* init MpegEncContext with default value */
@@ -2986,7 +2986,7 @@ static av_cold int decode_init(AVCodecContext *avctx){
     avctx->hwaccel = ff_find_hwaccel(avctx->codec->id, avctx->pix_fmt);
 
 	/* 2010/30/04 10:39:00 liuxw+00139685 */
-	/* Ôö¼Ó·µ»ØÂëºÍ·µ»ØÂëµÄÅĞ¶Ï */
+	/* å¢åŠ è¿”å›ç å’Œè¿”å›ç çš„åˆ¤æ–­ */
     iRet = decode_init_vlc();
 	if(0 > iRet)
 	{
@@ -3013,7 +3013,7 @@ static av_cold int decode_init(AVCodecContext *avctx){
     }
 
 	/* 2010/30/04 10:41:00 liuxw+00139685 */
-	/* ¸ørbsp_bufferºÍparse.buffer·ÖÅäÒ»¹Ì¶¨´óĞ¡ÄÚ´æ */
+	/* ç»™rbsp_bufferå’Œparse.bufferåˆ†é…ä¸€å›ºå®šå¤§å°å†…å­˜ */
 	#define MAX_FRAME_SIZE 1920*1088*2
 
 	s->parse_context.buffer = av_malloc_hw(avctx,MAX_FRAME_SIZE);
@@ -3034,13 +3034,13 @@ static av_cold int decode_init(AVCodecContext *avctx){
 	h->rbsp_buffer_size[0] = h->rbsp_buffer_size[1] = MAX_FRAME_SIZE;
 
 	/* 2010/06/17 15:30:00 liuxw+00139685 */
-	/* ÔÚ³õÊ¼»¯º¯ÊıÖĞÔö¼Óparse_context×´Ì¬³õÊ¼»¯(Ô­À´ÊÇÔÚmpv_common_initÖĞÊµÏÖµÄ) */
+	/* åœ¨åˆå§‹åŒ–å‡½æ•°ä¸­å¢åŠ parse_contextçŠ¶æ€åˆå§‹åŒ–(åŸæ¥æ˜¯åœ¨mpv_common_initä¸­å®ç°çš„) */
 	s->parse_context.state= -1;
 
     return 0;
 
 	/* 2010/30/04 10:43:00 liuxw+00139685 */
-	/* Èô¸ørbsp_bufferºÍparse.buffer·ÖÅäÒ»¹Ì¶¨´óĞ¡ÄÚ´æÊ§°Ü£¬ÔòÊÍ·ÅÒÑ¾­·ÖÅä³É¹¦µÄÄÚ´æ */
+	/* è‹¥ç»™rbsp_bufferå’Œparse.bufferåˆ†é…ä¸€å›ºå®šå¤§å°å†…å­˜å¤±è´¥ï¼Œåˆ™é‡Šæ”¾å·²ç»åˆ†é…æˆåŠŸçš„å†…å­˜ */
 END:
 	if(s->parse_context.buffer)
 	{
@@ -3118,7 +3118,7 @@ static int frame_start(H264Context *h){
     s->current_picture_ptr->field_poc[0]=
     s->current_picture_ptr->field_poc[1]= INT_MAX;
 	/* 2010/08/29 16:00:00 liuxw+00139685 */
-	/* ¸´Î»iErrorCode */
+	/* å¤ä½iErrorCode */
 	s->current_picture_ptr->iErrorCode = 0;
     assert(s->current_picture_ptr->long_ref==0);
 
@@ -3261,7 +3261,7 @@ b= t;
         }
     }
 }
-/* IDCT , Ö¡ÄÚÔ¤²â¡¢Ö¡¼äÔ¤²â¡¢»·Â·ÂË²¨¡¢ºê¿éÖØ½¨ */
+/* IDCT , å¸§å†…é¢„æµ‹ã€å¸§é—´é¢„æµ‹ã€ç¯è·¯æ»¤æ³¢ã€å®å—é‡å»º */
 static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
     MpegEncContext * const s = &h->s;
     const int mb_x= s->mb_x;
@@ -3333,14 +3333,14 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
             memcpy(dest_cb+ i*uvlinesize, h->mb + 128 + i*4,  8);
             memcpy(dest_cr+ i*uvlinesize, h->mb + 160 + i*4,  8);
         }
-    } else {	/* IDCT¡¢Ö¡ÄÚÔ¤²â¡¢Ö¡¼äÔ¤²â¡¢ºê¿éÖØ½¨*/
-        if(IS_INTRA(mb_type)){	/* Ö¡ÄÚÔ¤²â¡¢IDCT */
-            if(h->deblocking_filter)	/* ¸üĞÂµ±Ç°ºê¿éµÄ±ßÔµĞÅÏ¢ */
+    } else {	/* IDCTã€å¸§å†…é¢„æµ‹ã€å¸§é—´é¢„æµ‹ã€å®å—é‡å»º*/
+        if(IS_INTRA(mb_type)){	/* å¸§å†…é¢„æµ‹ã€IDCT */
+            if(h->deblocking_filter)	/* æ›´æ–°å½“å‰å®å—çš„è¾¹ç¼˜ä¿¡æ¯ */
                 xchg_mb_border(h, dest_y, dest_cb, dest_cr, linesize, uvlinesize, 1, simple);
-			/* Ö¡ÄÚchromaÔ¤²â */
+			/* å¸§å†…chromaé¢„æµ‹ */
             if(simple || !CONFIG_GRAY || !(s->flags&CODEC_FLAG_GRAY)){
 				/* 2010/06/04 14:30:00 liuxw+00139685 */
-				/* ·ÀÖ¹ËÀ»ú£¬Ôö¼Ó¶Ôh->chroma_pred_modeºÏ·¨ĞÔµÄ¼ì²â */
+				/* é˜²æ­¢æ­»æœºï¼Œå¢åŠ å¯¹h->chroma_pred_modeåˆæ³•æ€§çš„æ£€æµ‹ */
 				if(h->chroma_pred_mode >= 11)
 				{
 					av_log(h->s.avctx,AV_LOG_WARNING,"chroma intra8x8_pred_mod[%d] is invalid!\n",h->chroma_pred_mode);
@@ -3354,21 +3354,21 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
             }
 			/* mb_type = intra4x4 or intra8x8 */
             if(IS_INTRA4x4(mb_type)){
-                if(simple || !s->encoding){	/* ¼òµ¥ÀàĞÍ½âÂë */
-                    if(IS_8x8DCT(mb_type)){	/* DCTÄ£Ê½Îª8x8dctµÄÂëÁ÷µÄ½âÂë */
-                        if(transform_bypass){	/* transform_bypassÄ£Ê½£¨²»½øĞĞ8x8DCT) */
+                if(simple || !s->encoding){	/* ç®€å•ç±»å‹è§£ç  */
+                    if(IS_8x8DCT(mb_type)){	/* DCTæ¨¡å¼ä¸º8x8dctçš„ç æµçš„è§£ç  */
+                        if(transform_bypass){	/* transform_bypassæ¨¡å¼ï¼ˆä¸è¿›è¡Œ8x8DCT) */
                             idct_dc_add =
                             idct_add    = s->dsp.add_pixels8;
-                        }else{	/* Õı³£Ä£Ê½(½øĞĞ8x8DCT */
+                        }else{	/* æ­£å¸¸æ¨¡å¼(è¿›è¡Œ8x8DCT */
                             idct_dc_add = s->dsp.h264_idct8_dc_add;
                             idct_add    = s->dsp.h264_idct8_add;
-                        }		/* intra8x8 Ô¤²â¡¢IDCT¡¢ºê¿éÖØ½¨ */
+                        }		/* intra8x8 é¢„æµ‹ã€IDCTã€å®å—é‡å»º */
                         for(i=0; i<16; i+=4){
                             uint8_t * const ptr= dest_y + block_offset[i];
                             const int dir= h->intra4x4_pred_mode_cache[ scan8[i] ];
                             if(transform_bypass && h->sps.profile_idc==244 && dir<=1){
 								/* 2010/06/04 14:30:00 liuxw+00139685 */
-								/* ·ÀÖ¹ËÀ»ú£¬Ôö¼Ó¶ÔdirºÏ·¨ĞÔµÄ¼ì²â */
+								/* é˜²æ­¢æ­»æœºï¼Œå¢åŠ å¯¹diråˆæ³•æ€§çš„æ£€æµ‹ */
 								if(dir >= 2)
 								{
 									av_log(h->s.avctx,AV_LOG_WARNING,"pred8x8l_add[%d] is invalid!\n",dir);
@@ -3377,10 +3377,10 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
 									return -1;
 								}
                                 h->hpc.pred8x8l_add[dir](ptr, h->mb + i*16, linesize);
-                            }else{	/* intra8x8 Ô¤²â */
+                            }else{	/* intra8x8 é¢„æµ‹ */
                                 const int nnz = h->non_zero_count_cache[ scan8[i] ];
 								/* 2010/06/04 14:30:00 liuxw+00139685 */
-								/* ·ÀÖ¹ËÀ»ú£¬Ôö¼Ó¶ÔdirºÏ·¨ĞÔµÄ¼ì²â */
+								/* é˜²æ­¢æ­»æœºï¼Œå¢åŠ å¯¹diråˆæ³•æ€§çš„æ£€æµ‹ */
 								if(dir >= 12)
 								{
 									av_log(h->s.avctx,AV_LOG_WARNING,"intra8x8l_pred_mod[%d] is invalid!\n",dir);
@@ -3391,29 +3391,29 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
 
                                 h->hpc.pred8x8l[ dir ](ptr, (h->topleft_samples_available<<i)&0x8000,
                                                            (h->topright_samples_available<<i)&0x4000, linesize);
-                                if(nnz){/* intra8x8 IDCTºÍºê¿éÖØ½¨ */
-                                    if(nnz == 1 && h->mb[i*16])		/* Ö»´æÔÚDCµÄIDCTºÍºê¿éÖØ½¨ */
+                                if(nnz){/* intra8x8 IDCTå’Œå®å—é‡å»º */
+                                    if(nnz == 1 && h->mb[i*16])		/* åªå­˜åœ¨DCçš„IDCTå’Œå®å—é‡å»º */
                                         idct_dc_add(ptr, h->mb + i*16, linesize);
-                                    else	/* °üÀ¨DCºÍACµÄIDCTºÍºê¿éÖØ½¨ */
+                                    else	/* åŒ…æ‹¬DCå’ŒACçš„IDCTå’Œå®å—é‡å»º */
                                         idct_add   (ptr, h->mb + i*16, linesize);
                                 }
                             }
                         }
-                    }else{	/* DCTÄ£Ê½Îª8x8dctµÄÂëÁ÷µÄ½âÂë */
-                        if(transform_bypass){	/* transform_bypassÄ£Ê½£¨²»½øĞĞ4x4DCT) */
+                    }else{	/* DCTæ¨¡å¼ä¸º8x8dctçš„ç æµçš„è§£ç  */
+                        if(transform_bypass){	/* transform_bypassæ¨¡å¼ï¼ˆä¸è¿›è¡Œ4x4DCT) */
                             idct_dc_add =
                             idct_add    = s->dsp.add_pixels4;
-                        }else{	/* Õı³£Ä£Ê½(½øĞĞ4x4DCT */
+                        }else{	/* æ­£å¸¸æ¨¡å¼(è¿›è¡Œ4x4DCT */
                             idct_dc_add = s->dsp.h264_idct_dc_add;
                             idct_add    = s->dsp.h264_idct_add;
-                        }	/* intra4x4 Ô¤²â¡¢IDCT¡¢ºê¿éÖØ½¨ */
+                        }	/* intra4x4 é¢„æµ‹ã€IDCTã€å®å—é‡å»º */
                         for(i=0; i<16; i++){
                             uint8_t * const ptr= dest_y + block_offset[i];
                             const int dir= h->intra4x4_pred_mode_cache[ scan8[i] ];
 
                             if(transform_bypass && h->sps.profile_idc==244 && dir<=1){
 								/* 2010/06/04 14:30:00 liuxw+00139685 */
-								/* ·ÀÖ¹ËÀ»ú£¬Ôö¼Ó¶ÔdirºÏ·¨ĞÔµÄ¼ì²â */
+								/* é˜²æ­¢æ­»æœºï¼Œå¢åŠ å¯¹diråˆæ³•æ€§çš„æ£€æµ‹ */
 								if(dir >= 2)
 								{
 									av_log(h->s.avctx,AV_LOG_WARNING,"pred4x4_add[%d] is invalid!\n",dir);
@@ -3435,9 +3435,9 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
                                         topright= ptr + 4 - linesize;
                                 }else
                                     topright= NULL;
-								/* intra4x4 Ô¤²â */
+								/* intra4x4 é¢„æµ‹ */
 								/* 2010/06/04 14:30:00 liuxw+00139685 */
-								/* Ôö¼Ó¶ÔdirµÄºÏ·¨ĞÔ½øĞĞ¼ì²â */
+								/* å¢åŠ å¯¹dirçš„åˆæ³•æ€§è¿›è¡Œæ£€æµ‹ */
 								if(dir >= 15)
 								{
 									av_log(h->s.avctx,AV_LOG_WARNING,"intra4x4_pred_mod[%d] is invalid!\n",dir);
@@ -3450,9 +3450,9 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
                                 nnz = h->non_zero_count_cache[ scan8[i] ];
                                 if(nnz){
                                     if(is_h264){
-                                        if(nnz == 1 && h->mb[i*16])	/* Ö»´æÔÚDCµÄIDCT ºÍºê¿éÖØ½¨ */
+                                        if(nnz == 1 && h->mb[i*16])	/* åªå­˜åœ¨DCçš„IDCT å’Œå®å—é‡å»º */
                                             idct_dc_add(ptr, h->mb + i*16, linesize);
-                                        else	/* °üÀ¨DCºÍACµÄIDCTºÍºê¿éÖØ½¨ */
+                                        else	/* åŒ…æ‹¬DCå’ŒACçš„IDCTå’Œå®å—é‡å»º */
                                             idct_add   (ptr, h->mb + i*16, linesize);
                                     }else /* codec_id  = svq3 */
                                         svq3_add_idct_c(ptr, h->mb + i*16, linesize, s->qscale, 0);
@@ -3461,9 +3461,9 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
                         }
                     }
                 }
-            }else{	/* intra16x16Ô¤²â¡¢DC·´Á¿»¯¡¢IDCT */
+            }else{	/* intra16x16é¢„æµ‹ã€DCåé‡åŒ–ã€IDCT */
 				/* 2010/06/04 14:30:00 liuxw+00139685 */
-				/* ·ÀÖ¹ËÀ»ú£¬Ôö¼Ó¶Ôh->intra16x16_pred_modeµÄºÏ·¨ĞÔ¼ì²â */
+				/* é˜²æ­¢æ­»æœºï¼Œå¢åŠ å¯¹h->intra16x16_pred_modeçš„åˆæ³•æ€§æ£€æµ‹ */
 				if(h->intra16x16_pred_mode >= 7)
 				{
 					av_log(h->s.avctx,AV_LOG_WARNING,"intra16x16_pred_mod[%d] is invalid!\n",h->intra16x16_pred_mode);
@@ -3472,16 +3472,16 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
 					return -1;
 				}
 
-                h->hpc.pred16x16[ h->intra16x16_pred_mode ](dest_y , linesize);	/* intra16x16Ô¤²â */
+                h->hpc.pred16x16[ h->intra16x16_pred_mode ](dest_y , linesize);	/* intra16x16é¢„æµ‹ */
                 if(is_h264){
-                    if(!transform_bypass)	/* intra16x16 DC·´Á¿»¯¡¢IDCT */
+                    if(!transform_bypass)	/* intra16x16 DCåé‡åŒ–ã€IDCT */
                         h264_luma_dc_dequant_idct_c(h->mb, s->qscale, h->dequant4_coeff[0][s->qscale][0]);
                 }else	/* codec_id  = svq3 */
                     svq3_luma_dc_dequant_idct_c(h->mb, s->qscale);
             }
-            if(h->deblocking_filter)	/* ¸üĞÂµ±Ç°ºê¿éµÄ±ßÔµĞÅÏ¢ */
+            if(h->deblocking_filter)	/* æ›´æ–°å½“å‰å®å—çš„è¾¹ç¼˜ä¿¡æ¯ */
                 xchg_mb_border(h, dest_y, dest_cb, dest_cr, linesize, uvlinesize, 0, simple);
-        }else if(is_h264){	/* Ö¡¼äÔ¤²â */
+        }else if(is_h264){	/* å¸§é—´é¢„æµ‹ */
             iRet = hl_motion(h, dest_y, dest_cb, dest_cr,
                       s->me.qpel_put, s->dsp.put_h264_chroma_pixels_tab,
                       s->me.qpel_avg, s->dsp.avg_h264_chroma_pixels_tab,
@@ -3506,19 +3506,19 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
 #endif
         }
 
-		/* ³ıÁËintra4x4ºÍintra8x8ÍâµÄIDCTºÍºê¿éÖØ½¨(intra4x4ºÍintra8x8ÒÑ¾­IDCTºÍºê¿éÖØ½¨£© */
+		/* é™¤äº†intra4x4å’Œintra8x8å¤–çš„IDCTå’Œå®å—é‡å»º(intra4x4å’Œintra8x8å·²ç»IDCTå’Œå®å—é‡å»ºï¼‰ */
         if(!IS_INTRA4x4(mb_type))
 		{
             if(is_h264)
 			{
                 if(IS_INTRA16x16(mb_type))
-				{	/* intra16x16 IDCTºÍºê¿éÖØ½¨ */
+				{	/* intra16x16 IDCTå’Œå®å—é‡å»º */
                     if(transform_bypass)
-					{	/* transform_bypassÄ£Ê½µÄÂëÁ÷ */
+					{	/* transform_bypassæ¨¡å¼çš„ç æµ */
                         if(h->sps.profile_idc==244 && (h->intra16x16_pred_mode==VERT_PRED8x8 || h->intra16x16_pred_mode==HOR_PRED8x8))
 						{
 							/* 2010/06/04 14:30:00 liuxw+00139685 */
-							/* ·ÀÖ¹ËÀ»ú£¬Ôö¼Ó¶Ôh->intra16x16_pred_modeºÏ·¨ĞÔµÄ¼ì²â */
+							/* é˜²æ­¢æ­»æœºï¼Œå¢åŠ å¯¹h->intra16x16_pred_modeåˆæ³•æ€§çš„æ£€æµ‹ */
 							if(h->intra16x16_pred_mode >= 3)
 							{
 								av_log(h->s.avctx,AV_LOG_WARNING,"intra16x16_pred_mode[%d] is invalid!\n",h->intra16x16_pred_mode);
@@ -3538,14 +3538,14 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
                         }
                     }
 					else
-					{	/* Õı³£DCTºóµÄÂëÁ÷ */
-                         s->dsp.h264_idct_add16intra(dest_y, block_offset, h->mb, linesize, h->non_zero_count_cache);	/* intra16x16 IDCTºÍºê¿éÖØ½¨ */
+					{	/* æ­£å¸¸DCTåçš„ç æµ */
+                         s->dsp.h264_idct_add16intra(dest_y, block_offset, h->mb, linesize, h->non_zero_count_cache);	/* intra16x16 IDCTå’Œå®å—é‡å»º */
                     }
                 }
 				else if(h->cbp&15)
-				{	/* Ö¡¼äIDCTºÍºê¿éÖØ½¨ */
+				{	/* å¸§é—´IDCTå’Œå®å—é‡å»º */
                     if(transform_bypass)
-					{	/* transform_bypassÄ£Ê½µÄÂëÁ÷ */
+					{	/* transform_bypassæ¨¡å¼çš„ç æµ */
                         const int di = IS_8x8DCT(mb_type) ? 4 : 1;
                         idct_add= IS_8x8DCT(mb_type) ? s->dsp.add_pixels8 : s->dsp.add_pixels4;
                         for(i=0; i<16; i+=di)
@@ -3557,13 +3557,13 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
                         }
                     }
 					else
-					{	/* Õı³£DCTºóµÄÂëÁ÷ */
+					{	/* æ­£å¸¸DCTåçš„ç æµ */
                         if(IS_8x8DCT(mb_type))
-						{	/* DCTÄ£Ê½Îª8x8dctµÄÂëÁ÷µÄ½âÂë */
+						{	/* DCTæ¨¡å¼ä¸º8x8dctçš„ç æµçš„è§£ç  */
                             s->dsp.h264_idct8_add4(dest_y, block_offset, h->mb, linesize, h->non_zero_count_cache);
                         }
 						else
-						{	/* DCTÄ£Ê½Îª4x4dctµÄÂëÁ÷µÄ½âÂë */
+						{	/* DCTæ¨¡å¼ä¸º4x4dctçš„ç æµçš„è§£ç  */
                             s->dsp.h264_idct_add16(dest_y, block_offset, h->mb, linesize, h->non_zero_count_cache);
                         }
                     }
@@ -3581,7 +3581,7 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
                 }
             }
         }
-		/* É«¶È¿éµÄIDCTºÍÖØ½¨ */
+		/* è‰²åº¦å—çš„IDCTå’Œé‡å»º */
         if((simple || !CONFIG_GRAY || !(s->flags&CODEC_FLAG_GRAY)) && (h->cbp&0x30))
 		{
             uint8_t *dest[2] = {dest_cb, dest_cr};
@@ -3590,7 +3590,7 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
                 if(IS_INTRA(mb_type) && h->sps.profile_idc==244 && (h->chroma_pred_mode==VERT_PRED8x8 || h->chroma_pred_mode==HOR_PRED8x8))
 				{
 					/* 2010/06/04 14:30:00 liuxw+00139685 */
-					/* ·ÀÖ¹ËÀ»ú£¬Ôö¼Ó¶Ôh->chroma_pred_modeºÏ·¨ĞÔµÄ¼ì²â */
+					/* é˜²æ­¢æ­»æœºï¼Œå¢åŠ å¯¹h->chroma_pred_modeåˆæ³•æ€§çš„æ£€æµ‹ */
 					if(h->chroma_pred_mode >= 3)
 					{
 						av_log(h->s.avctx,AV_LOG_WARNING,"chroma_pred_mode[%d] is invalid!\n",h->chroma_pred_mode);
@@ -3612,7 +3612,7 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
                 }
             }
 			else
-			{	/* chroma dc·´Á¿»¯ºÍIDCT */
+			{	/* chroma dcåé‡åŒ–å’ŒIDCT */
                 chroma_dc_dequant_idct_c(h->mb + 16*16, h->chroma_qp[0], h->dequant4_coeff[IS_INTRA(mb_type) ? 1:4][h->chroma_qp[0]][0]);
                 chroma_dc_dequant_idct_c(h->mb + 16*16+4*16, h->chroma_qp[1], h->dequant4_coeff[IS_INTRA(mb_type) ? 2:5][h->chroma_qp[1]][0]);
                 if(is_h264)
@@ -3621,9 +3621,9 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
                     idct_dc_add = s->dsp.h264_idct_dc_add;
                     for(i=16; i<16+8; i++)
 					{
-                        if(h->non_zero_count_cache[ scan8[i] ])	/* chroma DC/AC IDCT ºÍÖØ½¨ */
+                        if(h->non_zero_count_cache[ scan8[i] ])	/* chroma DC/AC IDCT å’Œé‡å»º */
                             idct_add   (dest[(i&4)>>2] + block_offset[i], h->mb + i*16, uvlinesize);
-                        else if(h->mb[i*16])	/* chroma DC IDCTºÍÖØ½¨ */
+                        else if(h->mb[i*16])	/* chroma DC IDCTå’Œé‡å»º */
                             idct_dc_add(dest[(i&4)>>2] + block_offset[i], h->mb + i*16, uvlinesize);
                     }
                 }
@@ -3642,7 +3642,7 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
         }
     }
     if(h->cbp || IS_INTRA(mb_type))
-        s->dsp.clear_blocks(h->mb);	/* Çå¿ÕblockÖĞÄÚÈİ */
+        s->dsp.clear_blocks(h->mb);	/* æ¸…ç©ºblockä¸­å†…å®¹ */
 
 #ifdef LXW_DEBUG
 	if(h->deblocking_filter == 0)
@@ -3669,7 +3669,7 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
 	}
 #endif
 
-	/* »·Â·ÂË²¨ */
+	/* ç¯è·¯æ»¤æ³¢ */
     if(h->deblocking_filter) 
 	{
         backup_mb_border(h, dest_y, dest_cb, dest_cr, linesize, uvlinesize, simple);
@@ -3699,11 +3699,11 @@ static av_always_inline int hl_decode_mb_internal(H264Context *h, int simple){
 		} 
 #endif		
         if (!simple && FRAME_MBAFF) 
-		{	/* ¸´ÔÓµÄ»·Â·ÂË²¨ */
+		{	/* å¤æ‚çš„ç¯è·¯æ»¤æ³¢ */
             filter_mb(h, mb_x, mb_y, dest_y, dest_cb, dest_cr, linesize, uvlinesize);
         } 
 		else 
-		{	/* ¼òµ¥µÄ»·Â·ÂË²¨ */
+		{	/* ç®€å•çš„ç¯è·¯æ»¤æ³¢ */
             filter_mb_fast(h, mb_x, mb_y, dest_y, dest_cb, dest_cr, linesize, uvlinesize);
         }
 #ifdef LXW_DEBUG
@@ -3741,7 +3741,7 @@ static int hl_decode_mb_simple(H264Context *h){
 static int av_noinline hl_decode_mb_complex(H264Context *h){
    return hl_decode_mb_internal(h, 0);
 }
-/* IDCT , Ö¡ÄÚÔ¤²â¡¢Ö¡¼äÔ¤²â¡¢»·Â·ÂË²¨¡¢ºê¿éÖØ½¨ */  
+/* IDCT , å¸§å†…é¢„æµ‹ã€å¸§é—´é¢„æµ‹ã€ç¯è·¯æ»¤æ³¢ã€å®å—é‡å»º */  
 static int hl_decode_mb(H264Context *h){
     MpegEncContext * const s = &h->s;
     const int mb_xy= h->mb_xy;
@@ -3844,23 +3844,23 @@ static int add_sorted(Picture **sorted, Picture **src, int len, int limit, int d
 /**
  * fills the default_ref_list.
  */
-/* ²Î¿¼Í¼Ïñ¶ÓÁĞµÄ³õÊ¼»¯£º¶ÌÆÚ²Î¿¼Ö¡µÄÅÅĞò¡¢Ä¬ÈÏ²Î¿¼Í¼ÏñÁĞ±íµÄÅÅĞò liuxw+00139685 */
+/* å‚è€ƒå›¾åƒé˜Ÿåˆ—çš„åˆå§‹åŒ–ï¼šçŸ­æœŸå‚è€ƒå¸§çš„æ’åºã€é»˜è®¤å‚è€ƒå›¾åƒåˆ—è¡¨çš„æ’åº liuxw+00139685 */
 static int fill_default_ref_list(H264Context *h){
     MpegEncContext * const s = &h->s;
     int i, len;
 
     if(h->slice_type_nos==FF_B_TYPE){
-        Picture *sorted[32];  /* ×î´ó32¸ö²Î¿¼Í¼Ïñ liuxw+00139685 */
+        Picture *sorted[32];  /* æœ€å¤§32ä¸ªå‚è€ƒå›¾åƒ liuxw+00139685 */
         int cur_poc, list;
         int lens[2];
 		int tmp_poc,index = -1;
 		
 		/* 2010/08/18 13:30:00 liuxw+00139685 */
-		/* Èç¹ûÊÇ³¡µÄÇé¿öÏÂ£¬¶øÇÒµ±Ç°³¡µÄÁíÒ»³¡ÒÑ¾­½âÂëÇÒ×÷Îª¶ÌÆÚ²Î¿¼´æÔÚÓÚ¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞ£¬¶øÇÒµ±Ç°³¡µÄPOCĞ¡ÓÚÒÑ½âÂë³¡µÄPOC
-		   ,´ËÊ±½«´ËÖ¡ËùÔÚµÄ¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞµÄPOC½øĞĞĞŞ¸Ä£¬ĞŞ¸ÄÎªµ±Ç°³¡µÄÁíÒ»³¡µÄPOC£¬²¢ÇÒ±£´æ¶ÌÆÚ²Î¿¼Ë÷ÒıºÅºÍĞŞ¸ÄÇ°µÄPOCµÄÖµ*/
-//		 if(FIELD_PICTURE)  /* Èôµ±Ç°ÊÇ³¡£¬ÔòÈ¡µ±Ç°³¡µÄPOC liuxw+00139685 */
+		/* å¦‚æœæ˜¯åœºçš„æƒ…å†µä¸‹ï¼Œè€Œä¸”å½“å‰åœºçš„å¦ä¸€åœºå·²ç»è§£ç ä¸”ä½œä¸ºçŸ­æœŸå‚è€ƒå­˜åœ¨äºçŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­ï¼Œè€Œä¸”å½“å‰åœºçš„POCå°äºå·²è§£ç åœºçš„POC
+		   ,æ­¤æ—¶å°†æ­¤å¸§æ‰€åœ¨çš„çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­çš„POCè¿›è¡Œä¿®æ”¹ï¼Œä¿®æ”¹ä¸ºå½“å‰åœºçš„å¦ä¸€åœºçš„POCï¼Œå¹¶ä¸”ä¿å­˜çŸ­æœŸå‚è€ƒç´¢å¼•å·å’Œä¿®æ”¹å‰çš„POCçš„å€¼*/
+//		 if(FIELD_PICTURE)  /* è‹¥å½“å‰æ˜¯åœºï¼Œåˆ™å–å½“å‰åœºçš„POC liuxw+00139685 */
 //			cur_poc= s->current_picture_ptr->field_poc[ s->picture_structure == PICT_BOTTOM_FIELD ];
-        if(FIELD_PICTURE)  /* Èôµ±Ç°ÊÇ³¡£¬ÔòÈ¡µ±Ç°³¡µÄPOC liuxw+00139685 */
+        if(FIELD_PICTURE)  /* è‹¥å½“å‰æ˜¯åœºï¼Œåˆ™å–å½“å‰åœºçš„POC liuxw+00139685 */
 		{
 			int i;
 			cur_poc= s->current_picture_ptr->field_poc[ s->picture_structure == PICT_BOTTOM_FIELD ];
@@ -3874,59 +3874,59 @@ static int fill_default_ref_list(H264Context *h){
 				}
 			}
 		}
-        else	/* Èôµ±Ç°ÊÇÖ¡£¬ÔòÈ¡µ±Ç°Ö¡µÄPOC liuxw+00139685 */
+        else	/* è‹¥å½“å‰æ˜¯å¸§ï¼Œåˆ™å–å½“å‰å¸§çš„POC liuxw+00139685 */
             cur_poc= s->current_picture_ptr->poc;
 
         for(list= 0; list<2; list++){
-			/* ÓÉ¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞ£¬¸ù¾İDIR£¬¾ö¶¨µ±Ç°pictureÈçºÎ½øĞĞ²Î¿¼Ö¡¶ÓÁĞÅÅĞò£º
-			   dir=1: ½«poc±Ècur_pocĞ¡µÄ½øĞĞ½µĞòÅÅĞò£»dir=0: ½«poc±Ècru_poc´óµÄ½øĞĞÉıĞòÅÅĞò¡£
-			   list0: Ê×ÏÈÊÇdir=1£¬È»ºóÊÇdir=0£»list1: Ê×ÏÈÊÇdir=0£¬È»ºóÊÇdir=1. list0liuxw+00139685 */
+			/* ç”±çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ï¼Œæ ¹æ®DIRï¼Œå†³å®šå½“å‰pictureå¦‚ä½•è¿›è¡Œå‚è€ƒå¸§é˜Ÿåˆ—æ’åºï¼š
+			   dir=1: å°†pocæ¯”cur_pocå°çš„è¿›è¡Œé™åºæ’åºï¼›dir=0: å°†pocæ¯”cru_pocå¤§çš„è¿›è¡Œå‡åºæ’åºã€‚
+			   list0: é¦–å…ˆæ˜¯dir=1ï¼Œç„¶åæ˜¯dir=0ï¼›list1: é¦–å…ˆæ˜¯dir=0ï¼Œç„¶åæ˜¯dir=1. list0liuxw+00139685 */
             len= add_sorted(sorted    , h->short_ref, h->short_ref_count, cur_poc, 1^list);
             len+=add_sorted(sorted+len, h->short_ref, h->short_ref_count, cur_poc, 0^list);
             assert(len<=32);
-			/* ¸ù¾İµ±Ç°picµÄÊôĞÔºÍÉÏÊö²Î¿¼Ö¡¶ÓÁĞµÄÅÅĞòÁĞ£¬¾ö¶¨ÈçºÎÀ´ÅÅĞòÁĞÄ¬ÈÏ²Î¿¼Í¼Ïñ¶ÓÁĞ	
-			    Èç¹ûµ±Ç°picÊÇÖ¡£¬ÔòÄ¬ÈÏ²Î¿¼Í¼Ïñ¶ÓÁĞµÈÓÚÉÏÊö²Î¿¼Ö¡¶ÓÁĞ£»Èç¹ûµ±Ç°picÊÇ¶¥³¡£¬Ôò¸ù¾İÉÏÊö²Î¿¼
-				Ö¡¶ÓÁĞµÄË³Ğò£¬ÏÈÅÅ¶¥³¡£¬ÔÙ½»ÌæÅÅµ×³¡µÄË³Ğò½øĞĞÅÅÁĞ£»Èç¹ûµ±Ç°picÊÇµ×³¡£¬Ôò¸ù¾İÉÏÊö²Î¿¼Ö¡¶ÓÁĞµÄ
-				Ë³Ğò£¬ÏÈÅÅµ×³¡£¬ÔÙ½»ÌæÅÅ¶¥³¡µÄË³Ğò½øĞĞÅÅÁĞ¡£							list0liuxw+00139685 */
+			/* æ ¹æ®å½“å‰picçš„å±æ€§å’Œä¸Šè¿°å‚è€ƒå¸§é˜Ÿåˆ—çš„æ’åºåˆ—ï¼Œå†³å®šå¦‚ä½•æ¥æ’åºåˆ—é»˜è®¤å‚è€ƒå›¾åƒé˜Ÿåˆ—	
+			    å¦‚æœå½“å‰picæ˜¯å¸§ï¼Œåˆ™é»˜è®¤å‚è€ƒå›¾åƒé˜Ÿåˆ—ç­‰äºä¸Šè¿°å‚è€ƒå¸§é˜Ÿåˆ—ï¼›å¦‚æœå½“å‰picæ˜¯é¡¶åœºï¼Œåˆ™æ ¹æ®ä¸Šè¿°å‚è€ƒ
+				å¸§é˜Ÿåˆ—çš„é¡ºåºï¼Œå…ˆæ’é¡¶åœºï¼Œå†äº¤æ›¿æ’åº•åœºçš„é¡ºåºè¿›è¡Œæ’åˆ—ï¼›å¦‚æœå½“å‰picæ˜¯åº•åœºï¼Œåˆ™æ ¹æ®ä¸Šè¿°å‚è€ƒå¸§é˜Ÿåˆ—çš„
+				é¡ºåºï¼Œå…ˆæ’åº•åœºï¼Œå†äº¤æ›¿æ’é¡¶åœºçš„é¡ºåºè¿›è¡Œæ’åˆ—ã€‚							list0liuxw+00139685 */
             len= build_def_list(h->default_ref_list[list]    , sorted     , len, 0, s->picture_structure);
-			/* ×îºóÔÙ½«³¤ÆÚ²Î¿¼Ö¡¶ÓÁĞ°´ÕÕLongTermIdxÉıĞòºÍµ±Ç°picµÄÊôĞÔ£¬¾ö¶¨ÈçºÎ½«³¤ÆÚ²Î¿¼Í¼Ïñ¼ÓÈëÄ¬ÈÏ²Î¿¼Í¼Ïñ¶ÓÁĞÖĞ
-			  £¨¼ÓÔÚ¶ÌÆÚ²Î¿¼¶ÓÁĞµÄºóÃæ£©Èç¹ûµ±Ç°picÊÇÖ¡£¬ÔòÖ±½Ó½«³¤ÆÚ²Î¿¼¶ÓÁĞ¼ÓÈëµ½Ä¬ÈÏ²Î¿¼Í¼Ïñ¶ÓÁĞÖĞ£»Èç¹ûÊÇ¶¥³¡£¬
-			   Ôò¸ù¾İ³¤ÆÚ²Î¿¼Ö¡¶ÓÁĞµÄË³Ğò£¬ÏÈÅÅ¶¥³¡£¬ÔÙÅÅµ×³¡£¬½»ÌæÅÅÁĞ£»Èç¹ûµ±Ç°³¡ÊÇµ×³¡£¬Ôò¸ù¾İ³¤ÆÚ²Î¿¼Ö¡¶ÓÁĞµÄË³Ğò£¬
-			   ÏÈÅÅµ×³¡£¬ÔÙÅÅ¶¥³¡£¬½»ÌæÅÅÁĞ.													    liuxw+00139685 */
+			/* æœ€åå†å°†é•¿æœŸå‚è€ƒå¸§é˜Ÿåˆ—æŒ‰ç…§LongTermIdxå‡åºå’Œå½“å‰picçš„å±æ€§ï¼Œå†³å®šå¦‚ä½•å°†é•¿æœŸå‚è€ƒå›¾åƒåŠ å…¥é»˜è®¤å‚è€ƒå›¾åƒé˜Ÿåˆ—ä¸­
+			  ï¼ˆåŠ åœ¨çŸ­æœŸå‚è€ƒé˜Ÿåˆ—çš„åé¢ï¼‰å¦‚æœå½“å‰picæ˜¯å¸§ï¼Œåˆ™ç›´æ¥å°†é•¿æœŸå‚è€ƒé˜Ÿåˆ—åŠ å…¥åˆ°é»˜è®¤å‚è€ƒå›¾åƒé˜Ÿåˆ—ä¸­ï¼›å¦‚æœæ˜¯é¡¶åœºï¼Œ
+			   åˆ™æ ¹æ®é•¿æœŸå‚è€ƒå¸§é˜Ÿåˆ—çš„é¡ºåºï¼Œå…ˆæ’é¡¶åœºï¼Œå†æ’åº•åœºï¼Œäº¤æ›¿æ’åˆ—ï¼›å¦‚æœå½“å‰åœºæ˜¯åº•åœºï¼Œåˆ™æ ¹æ®é•¿æœŸå‚è€ƒå¸§é˜Ÿåˆ—çš„é¡ºåºï¼Œ
+			   å…ˆæ’åº•åœºï¼Œå†æ’é¡¶åœºï¼Œäº¤æ›¿æ’åˆ—.													    liuxw+00139685 */
             len+=build_def_list(h->default_ref_list[list]+len, h->long_ref, 16 , 1, s->picture_structure);
             assert(len<=32);
-			/* Èç¹ûµ±Ç°²Î¿¼Í¼Ïñ¶ÓÁĞÖĞ×î´ó²Î¿¼Í¼ÏñµÄ¸öÊı´óÓÚÄ¬ÈÏ²Î¿¼Í¼ÏñÁĞ±íÖĞµÄ¸öÊı£¬Ôò½«Î´ÌîÂúµÄ²Î¿¼Í¼ÏñÇå¿Õ liuxw+00139685 */
+			/* å¦‚æœå½“å‰å‚è€ƒå›¾åƒé˜Ÿåˆ—ä¸­æœ€å¤§å‚è€ƒå›¾åƒçš„ä¸ªæ•°å¤§äºé»˜è®¤å‚è€ƒå›¾åƒåˆ—è¡¨ä¸­çš„ä¸ªæ•°ï¼Œåˆ™å°†æœªå¡«æ»¡çš„å‚è€ƒå›¾åƒæ¸…ç©º liuxw+00139685 */
             if(len < (int)h->ref_count[list])
                 memset(&h->default_ref_list[list][len], 0, sizeof(Picture)*(h->ref_count[list] - len));
             lens[list]= len;
         }
-		/* Èç¹ûlist0ºÍlist1Á½¸ö²Î¿¼¶ÓÁĞÍêÈ«ÏàÍ¬£¬¶øÇÒ²Î¿¼Í¼Ïñ¸öÊı´óÓÚ1£¬ÔòĞèÒª½«list1[0]ºÍlist1[1]Á½¸öÎ»ÖÃ½øĞĞ½»»»
-		   ºÃ´¦£ºÈç¹ûÁ½¸ö²Î¿¼Í¼ÏñÏàÍ¬£¬Ôò±ØÈ»Ö»»áÈ¡ÆäÖĞµÄÒ»¸ö²Î¿¼Í¼ÏñÁĞ±í£»½«list1[0]ºÍlist1[1]Î»ÖÃ»¥»»ºó£¬µ±µ±Ç°Í¼Ïñ
-		   ²Î¿¼list0[0]ºÍlist1[0](ÒÔÇ°ÊÇlist1[1])£¬Ôò½«»áÊ¡µôlist1µÄrefidxËùÕ¼µÄ±ÈÌØÊı£¨Ö»ÊÇ¾Ù¸öÀı×Ó£©liuxw+00139685 */
+		/* å¦‚æœlist0å’Œlist1ä¸¤ä¸ªå‚è€ƒé˜Ÿåˆ—å®Œå…¨ç›¸åŒï¼Œè€Œä¸”å‚è€ƒå›¾åƒä¸ªæ•°å¤§äº1ï¼Œåˆ™éœ€è¦å°†list1[0]å’Œlist1[1]ä¸¤ä¸ªä½ç½®è¿›è¡Œäº¤æ¢
+		   å¥½å¤„ï¼šå¦‚æœä¸¤ä¸ªå‚è€ƒå›¾åƒç›¸åŒï¼Œåˆ™å¿…ç„¶åªä¼šå–å…¶ä¸­çš„ä¸€ä¸ªå‚è€ƒå›¾åƒåˆ—è¡¨ï¼›å°†list1[0]å’Œlist1[1]ä½ç½®äº’æ¢åï¼Œå½“å½“å‰å›¾åƒ
+		   å‚è€ƒlist0[0]å’Œlist1[0](ä»¥å‰æ˜¯list1[1])ï¼Œåˆ™å°†ä¼šçœæ‰list1çš„refidxæ‰€å çš„æ¯”ç‰¹æ•°ï¼ˆåªæ˜¯ä¸¾ä¸ªä¾‹å­ï¼‰liuxw+00139685 */
         if(lens[0] == lens[1] && lens[1] > 1){
             for(i=0; h->default_ref_list[0][i].data[0] == h->default_ref_list[1][i].data[0] && i<lens[0]; i++);
             if(i == lens[0])
                 FFSWAP(Picture, h->default_ref_list[1][0], h->default_ref_list[1][1]);
         }
 		/* 2010/08/18 13:30:00 liuxw+00139685 */
-		/* Èô½«¶ÌÆÚ²Î¿¼¶ÓÁĞ½øĞĞ¹ıĞŞ¸Ä£¬ÔòÔÚÅÅÍêĞòºó½«ÆäĞŞ¸Ä»ØÀ´ */
+		/* è‹¥å°†çŸ­æœŸå‚è€ƒé˜Ÿåˆ—è¿›è¡Œè¿‡ä¿®æ”¹ï¼Œåˆ™åœ¨æ’å®Œåºåå°†å…¶ä¿®æ”¹å›æ¥ */
 		if(-1 != index)
 		{
 			h->short_ref[index]->poc = tmp_poc;
 		}
     }else{
-		/* P sliceµÄÄ¬ÈÏ²Î¿¼Í¼Ïñ¶ÓÁĞµÄÅÅĞò£¨¶ÌÆÚ£©£º¸ù¾İµ±Ç°Í¼ÏñµÄÊôĞÔºÍ¶ÌÆÚ²ÎÖ¡¶ÓÁĞµÄÅÅĞò£¬¾ö¶¨Ä¬ÈÏ²Î¿¼Í¼Ïñ¶ÓÁĞÖĞ¶ÌÆÚ²Î¿¼Í¼ÏñµÄÅÅĞò¡£
-		   ÅÅÁĞË³ĞòÍ¬B sliceµÄlist0µÄ¶ÌÆÚ²Î¿¼Í¼ÏñÅÅĞò¡£																	liuxw+00139685 */
+		/* P sliceçš„é»˜è®¤å‚è€ƒå›¾åƒé˜Ÿåˆ—çš„æ’åºï¼ˆçŸ­æœŸï¼‰ï¼šæ ¹æ®å½“å‰å›¾åƒçš„å±æ€§å’ŒçŸ­æœŸå‚å¸§é˜Ÿåˆ—çš„æ’åºï¼Œå†³å®šé»˜è®¤å‚è€ƒå›¾åƒé˜Ÿåˆ—ä¸­çŸ­æœŸå‚è€ƒå›¾åƒçš„æ’åºã€‚
+		   æ’åˆ—é¡ºåºåŒB sliceçš„list0çš„çŸ­æœŸå‚è€ƒå›¾åƒæ’åºã€‚																	liuxw+00139685 */
         len = build_def_list(h->default_ref_list[0]    , h->short_ref, h->short_ref_count, 0, s->picture_structure);
-		/* P sliceµÄÄ¬ÈÏ²Î¿¼Í¼Ïñ¶ÓÁĞµÄÅÅĞò£¨³¤ÆÚ£©£º¸ù¾İµ±Ç°Í¼ÏñµÄÊôĞÔºÍ³¤ÆÚ²ÎÖ¡¶ÓÁĞµÄÅÅĞò£¬¾ö¶¨Ä¬ÈÏ²Î¿¼Í¼Ïñ¶ÓÁĞÖĞ³¤ÆÚ²Î¿¼Í¼ÏñµÄÅÅĞò¡£
-		ÅÅÁĞË³ĞòÍ¬B sliceµÄlist0µÄ³¤ÆÚ²Î¿¼ÅÅĞò¡£																	liuxw+00139685 */
+		/* P sliceçš„é»˜è®¤å‚è€ƒå›¾åƒé˜Ÿåˆ—çš„æ’åºï¼ˆé•¿æœŸï¼‰ï¼šæ ¹æ®å½“å‰å›¾åƒçš„å±æ€§å’Œé•¿æœŸå‚å¸§é˜Ÿåˆ—çš„æ’åºï¼Œå†³å®šé»˜è®¤å‚è€ƒå›¾åƒé˜Ÿåˆ—ä¸­é•¿æœŸå‚è€ƒå›¾åƒçš„æ’åºã€‚
+		æ’åˆ—é¡ºåºåŒB sliceçš„list0çš„é•¿æœŸå‚è€ƒæ’åºã€‚																	liuxw+00139685 */
         len+= build_def_list(h->default_ref_list[0]+len, h-> long_ref, 16                , 1, s->picture_structure);
         assert(len <= 32);
-		/* Èç¹ûµ±Ç°²Î¿¼Í¼Ïñ¶ÓÁĞÖĞ×î´ó²Î¿¼Í¼ÏñµÄ¸öÊı´óÓÚÄ¬ÈÏ²Î¿¼Í¼ÏñÁĞ±íÖĞµÄ¸öÊı£¬Ôò½«Î´ÌîÂúµÄ²Î¿¼Í¼ÏñÇå¿Õ liuxw+00139685 */
+		/* å¦‚æœå½“å‰å‚è€ƒå›¾åƒé˜Ÿåˆ—ä¸­æœ€å¤§å‚è€ƒå›¾åƒçš„ä¸ªæ•°å¤§äºé»˜è®¤å‚è€ƒå›¾åƒåˆ—è¡¨ä¸­çš„ä¸ªæ•°ï¼Œåˆ™å°†æœªå¡«æ»¡çš„å‚è€ƒå›¾åƒæ¸…ç©º liuxw+00139685 */
         if(len < (int)h->ref_count[0])
             memset(&h->default_ref_list[0][len], 0, sizeof(Picture)*(h->ref_count[0] - len));
     }
-#ifdef TRACE    /* ºóÆÚÎÒÃÇĞèÒª½«traceĞÅÏ¢´òÓ¡µÄ¸ü¼ÓÏêÏ¸ºÍÒâË¼Ã÷È· liuxw+00139685 */
+#ifdef TRACE    /* åæœŸæˆ‘ä»¬éœ€è¦å°†traceä¿¡æ¯æ‰“å°çš„æ›´åŠ è¯¦ç»†å’Œæ„æ€æ˜ç¡® liuxw+00139685 */
     for (i=0; i<h->ref_count[0]; i++) {
         tprintf(h->s.avctx, "List0: %s fn:%d 0x%p\n", (h->default_ref_list[0][i].long_ref ? "LT" : "ST"), h->default_ref_list[0][i].pic_id, h->default_ref_list[0][i].data[0]);
     }
@@ -3973,23 +3973,23 @@ static int decode_ref_pic_list_reordering(H264Context *h){
     print_short_term(h);
     print_long_term(h);
 	
-	/* ½«ÅÅºÃĞòµÄÄ¬ÈÏ²Î¿¼Í¼Ïñ¶ÓÁĞ¿½±´µ½ºóÃæÊµ¼ÊÓÃµ½µÄ²Î¿¼Í¼Ïñ¶ÓÁĞ Ö»»á¿½±´Ö¸¶¨µÄ²Î¿¼Í¼ÏñµÄ¸öÊı¡£
-	   Èç¹ûÄ¬ÈÏ²Î¿¼Í¼Ïñ¶ÓÁĞµÄ¸öÊı²»×ã£¬Ôò»á²»×ãµÄ²Î¿¼Í¼ÏñÈ«²¿Çå0£» Èç¹ûÄ¬ÈÏ²Î¿¼Í¼Ïñ¶ÓÁĞµÄ¸öÊı¶àÁË
-	   £¬ÔòÖ»»á¿½±´Ç°ÃæÖ¸¶¨µÄ¸öÊı¡£												liuxw+00139685 */
+	/* å°†æ’å¥½åºçš„é»˜è®¤å‚è€ƒå›¾åƒé˜Ÿåˆ—æ‹·è´åˆ°åé¢å®é™…ç”¨åˆ°çš„å‚è€ƒå›¾åƒé˜Ÿåˆ— åªä¼šæ‹·è´æŒ‡å®šçš„å‚è€ƒå›¾åƒçš„ä¸ªæ•°ã€‚
+	   å¦‚æœé»˜è®¤å‚è€ƒå›¾åƒé˜Ÿåˆ—çš„ä¸ªæ•°ä¸è¶³ï¼Œåˆ™ä¼šä¸è¶³çš„å‚è€ƒå›¾åƒå…¨éƒ¨æ¸…0ï¼› å¦‚æœé»˜è®¤å‚è€ƒå›¾åƒé˜Ÿåˆ—çš„ä¸ªæ•°å¤šäº†
+	   ï¼Œåˆ™åªä¼šæ‹·è´å‰é¢æŒ‡å®šçš„ä¸ªæ•°ã€‚												liuxw+00139685 */
     for(list=0; list<(int)h->list_count; list++){
         memcpy(h->ref_list[list], h->default_ref_list[list], sizeof(Picture)*h->ref_count[list]);
 
-		/* ref_pic_list_reordering_flag_l0£½0£¬Ôò²»×öÖØÅÅĞò()£¬Ö±½ÓÊ¹ÓÃÉÏÊö¿½±´µÄlist0£»Èç¹ûµÈÓÚ1£¬ÔòĞè
-		   Òª½øĞĞÖØÅÅĞò£¬¼ÌĞø¶ÁÈ¡ºóÃæµÄÓï·¨ÔªËØ										liuxw+00139685 */
+		/* ref_pic_list_reordering_flag_l0ï¼0ï¼Œåˆ™ä¸åšé‡æ’åº()ï¼Œç›´æ¥ä½¿ç”¨ä¸Šè¿°æ‹·è´çš„list0ï¼›å¦‚æœç­‰äº1ï¼Œåˆ™éœ€
+		   è¦è¿›è¡Œé‡æ’åºï¼Œç»§ç»­è¯»å–åé¢çš„è¯­æ³•å…ƒç´ 										liuxw+00139685 */
         if(get_bits1(&s->gb)){
-            int pred= h->curr_pic_num;       /* µÃµ½µ±Ç°Í¼ÏñµÄpic_num£¬ÓÃÓÚºóÃæ¼ÆËã¶ÌÆÚ²Î¿¼Í¼ÏñµÄpic_num liuxw+00139685 */
+            int pred= h->curr_pic_num;       /* å¾—åˆ°å½“å‰å›¾åƒçš„pic_numï¼Œç”¨äºåé¢è®¡ç®—çŸ­æœŸå‚è€ƒå›¾åƒçš„pic_num liuxw+00139685 */
 
             for(index=0; ; index++){
                 unsigned int reordering_of_pic_nums_idc= get_ue_golomb_31(&s->gb);
                 unsigned int pic_id;
                 int i;
                 Picture *ref = NULL;
-				/* ÖØÅÅĞò½áÊø±êÖ¾ liuxw+00139685 */
+				/* é‡æ’åºç»“æŸæ ‡å¿— liuxw+00139685 */
                 if(reordering_of_pic_nums_idc==3)
                     break;
 
@@ -4000,7 +4000,7 @@ static int decode_ref_pic_list_reordering(H264Context *h){
                 }
 
                 if(reordering_of_pic_nums_idc<3){
-					/* ¶ÌÆÚ²Î¿¼Í¼ÏñÖØÅÅĞò liuxw+00139685 */
+					/* çŸ­æœŸå‚è€ƒå›¾åƒé‡æ’åº liuxw+00139685 */
                     if(reordering_of_pic_nums_idc<2){
                         const unsigned int abs_diff_pic_num= get_ue_golomb(&s->gb) + 1;
                         int frame_num;
@@ -4010,15 +4010,15 @@ static int decode_ref_pic_list_reordering(H264Context *h){
 							av_log(h->s.avctx, AV_LOG_WARNING, "abs_diff_pic_num overflow\n");
                             return -1;
                         }
-						/* µÃµ½µ±Ç°Òª½øĞĞÖØÅÅĞòµÄ ¶ÌÆÚ²Î¿¼Í¼ÏñµÄpic_num liuxw+00139685 */
+						/* å¾—åˆ°å½“å‰è¦è¿›è¡Œé‡æ’åºçš„ çŸ­æœŸå‚è€ƒå›¾åƒçš„pic_num liuxw+00139685 */
                         if(reordering_of_pic_nums_idc == 0) pred-= abs_diff_pic_num;
                         else                                pred+= abs_diff_pic_num;
                         pred &= h->max_pic_num - 1;
 
-						/* Ñ°ÕÒµ±Ç°ÒªÖØÅÅĞòÁĞÍ¼ÏñµÄframe_num liuxw+00139685 */
+						/* å¯»æ‰¾å½“å‰è¦é‡æ’åºåˆ—å›¾åƒçš„frame_num liuxw+00139685 */
                         frame_num = pic_num_extract(h, pred, &pic_structure);
 						
-						/* ÔÚ¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞÑ°ÕÒframe_numµÈÓÚµ±Ç°¶ÌÆÚ²Î¿¼Í¼ÏñµÄframe_numµÄË÷Òı liuxw+00139685 */
+						/* åœ¨çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­å¯»æ‰¾frame_numç­‰äºå½“å‰çŸ­æœŸå‚è€ƒå›¾åƒçš„frame_numçš„ç´¢å¼• liuxw+00139685 */
                         for(i= h->short_ref_count-1; i>=0; i--){
                             ref = h->short_ref[i];
                             assert(ref->reference);
@@ -4029,25 +4029,25 @@ static int decode_ref_pic_list_reordering(H264Context *h){
                               )
                                 break;
                         }
-						/* ÈôÕÒµ½ÁË£¬Ôò½«ĞÂµÄ£¨Ô¤²â¼ÆËã£©pic_num¸³¸øËü liuxw+00139685 */
+						/* è‹¥æ‰¾åˆ°äº†ï¼Œåˆ™å°†æ–°çš„ï¼ˆé¢„æµ‹è®¡ç®—ï¼‰pic_numèµ‹ç»™å®ƒ liuxw+00139685 */
                         if(i>=0)
                             ref->pic_id= pred;
                     }else{
                         int long_idx;
-						/* µÃµ½½«ÒªÖØÅÅĞòµÄ³¤ÆÚ²Î¿¼Í¼ÏñµÄpic_idx liuxw+00139685 */
+						/* å¾—åˆ°å°†è¦é‡æ’åºçš„é•¿æœŸå‚è€ƒå›¾åƒçš„pic_idx liuxw+00139685 */
                         pic_id= get_ue_golomb(&s->gb); //long_term_pic_idx
 
-						/* µÃµ½³¤ÆÚ²Î¿¼Ö¡¶ÓÁĞµÄË÷Òı liuxw+00139685 */
+						/* å¾—åˆ°é•¿æœŸå‚è€ƒå¸§é˜Ÿåˆ—çš„ç´¢å¼• liuxw+00139685 */
                         long_idx= pic_num_extract(h, pic_id, &pic_structure);
                         if(long_idx>31){
 //                          av_log(h->s.avctx, AV_LOG_ERROR, "long_term_pic_idx[%d] overflow\n",long_idx);
 							av_log(h->s.avctx, AV_LOG_WARNING, "long_term_pic_idx[%d] overflow\n",long_idx);
                             return -1;
                         }
-						/* µÃµ½µ±Ç°Òª½øĞĞÖØÅÅĞòµÄ³¤ÆÚ²Î¿¼Í¼ÏñËùÔÚµÄÖ¡ liuxw+00139685 */
+						/* å¾—åˆ°å½“å‰è¦è¿›è¡Œé‡æ’åºçš„é•¿æœŸå‚è€ƒå›¾åƒæ‰€åœ¨çš„å¸§ liuxw+00139685 */
                         ref = h->long_ref[long_idx];
                         assert(!(ref && !ref->reference));
-						/* Èô´æÔÚ£¬ÔòĞŞ¸Äµ±Ç°³¤ÆÚ²Î¿¼Í¼ÏñµÄpic_id liuxw+00139685 */
+						/* è‹¥å­˜åœ¨ï¼Œåˆ™ä¿®æ”¹å½“å‰é•¿æœŸå‚è€ƒå›¾åƒçš„pic_id liuxw+00139685 */
                         if(ref && (ref->reference & pic_structure)){
                             ref->pic_id= pic_id;
                             assert(ref->long_ref);
@@ -4057,35 +4057,35 @@ static int decode_ref_pic_list_reordering(H264Context *h){
                         }
                     }
 					
-					/* ÈôÒª½øĞĞÖØÅÅĞòµÄ¶ÌÆÚ»ò³¤ÆÚ²Î¿¼Ö¡Î´ÔÚ¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞ»ò³¤ÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞÕÒµ½£¬Ôò±¨´í liuxw+00139685 */
+					/* è‹¥è¦è¿›è¡Œé‡æ’åºçš„çŸ­æœŸæˆ–é•¿æœŸå‚è€ƒå¸§æœªåœ¨çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—æˆ–é•¿æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­æ‰¾åˆ°ï¼Œåˆ™æŠ¥é”™ liuxw+00139685 */
                     if (i < 0) {
 //                      av_log(h->s.avctx, AV_LOG_ERROR, "reference picture missing during reorder\n");
 						/* 2010/03/22 17:00:00 liuxw+00139685 */
-						/* Ôö¼Ó´íÎóÂë */
+						/* å¢åŠ é”™è¯¯ç  */
 						av_log(h->s.avctx, AV_LOG_WARNING, "reference picture missing during reorder\n");
 						IMEDIA_SET_ERR_SLICE(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_MARKER);
 						s->avctx->iTotalError++;
                         memset(&h->ref_list[list][index], 0, sizeof(Picture)); //FIXME
                     } else {
-						/* Ñ°ÕÒ¶ÌÆÚ»ò³¤ÆÚ²Î¿¼Í¼ÏñÔÚ²Î¿¼Í¼Ïñ¶ÓÁĞÖĞµÄÎ»ÖÃ liuxw+00139685 */
+						/* å¯»æ‰¾çŸ­æœŸæˆ–é•¿æœŸå‚è€ƒå›¾åƒåœ¨å‚è€ƒå›¾åƒé˜Ÿåˆ—ä¸­çš„ä½ç½® liuxw+00139685 */
                         for(i=index; i+1<(int)h->ref_count[list]; i++){
                             if(ref->long_ref == h->ref_list[list][i].long_ref && ref->pic_id == h->ref_list[list][i].pic_id)
                                 break;
                         }
-						/* ½«ÔÚµ±Ç°²Î¿¼Í¼ÏñÇ°ÃæµÄ¶ÌÆÚ»ò³¤ÆÚ²Î¿¼Í¼ÏñÒÀ´ÎÏòºó°áÒÆÒ»¸öÎ»ÖÃ liuxw+00139685 */
+						/* å°†åœ¨å½“å‰å‚è€ƒå›¾åƒå‰é¢çš„çŸ­æœŸæˆ–é•¿æœŸå‚è€ƒå›¾åƒä¾æ¬¡å‘åæ¬ç§»ä¸€ä¸ªä½ç½® liuxw+00139685 */
                         for(; i > index; i--){
                             h->ref_list[list][i]= h->ref_list[list][i-1];
                         }
-						/* ½«µ±Ç°²Î¿¼Í¼Ïñ²åÈëÖØÅÅĞòºóµÄÎ»ÖÃ£¨ÊÇ½á¹¹Ìå¸³Öµ£¬²»ÊÇÖ¸Õë¸³Öµ£©liuxw+00139685 */
+						/* å°†å½“å‰å‚è€ƒå›¾åƒæ’å…¥é‡æ’åºåçš„ä½ç½®ï¼ˆæ˜¯ç»“æ„ä½“èµ‹å€¼ï¼Œä¸æ˜¯æŒ‡é’ˆèµ‹å€¼ï¼‰liuxw+00139685 */
                         h->ref_list[list][index]= *ref;
-						/* ÒòÎªrefÊÇ´Ó¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞÕÒµ½µÄ£¬ËùÒÔÊÇÖ¡²Î¿¼µÄĞÎÊ½£»Èôµ±Ç°ÊÇ³¡£¬ÔòĞèÒª½«Æä£¨ÒÑ´æ·ÅÔÚ²Î¿¼Í¼Ïñ¶ÓÁĞÖĞ£©
-						   ²Î¿¼µÄÊôĞÔ(top or bottom)£¬poc£¬linesize£¬dataÆğÊ¼µØÖ·½øĞĞÏàÓ¦µÄĞŞ¸Ä  liuxw+00139685 */
+						/* å› ä¸ºrefæ˜¯ä»çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­æ‰¾åˆ°çš„ï¼Œæ‰€ä»¥æ˜¯å¸§å‚è€ƒçš„å½¢å¼ï¼›è‹¥å½“å‰æ˜¯åœºï¼Œåˆ™éœ€è¦å°†å…¶ï¼ˆå·²å­˜æ”¾åœ¨å‚è€ƒå›¾åƒé˜Ÿåˆ—ä¸­ï¼‰
+						   å‚è€ƒçš„å±æ€§(top or bottom)ï¼Œpocï¼Œlinesizeï¼Œdataèµ·å§‹åœ°å€è¿›è¡Œç›¸åº”çš„ä¿®æ”¹  liuxw+00139685 */
                         if (FIELD_PICTURE){
                             pic_as_field(&h->ref_list[list][index], pic_structure);
                         }
                     }
                 }else{
-					/* ÖØÅÅĞòcommand index´íÎó liuxw+00139685 */
+					/* é‡æ’åºcommand indexé”™è¯¯ liuxw+00139685 */
 //                  av_log(h->s.avctx, AV_LOG_ERROR, "illegal reordering_of_pic_nums_idc\n");
 					av_log(h->s.avctx, AV_LOG_WARNING, "illegal reordering_of_pic_nums_idc\n");
                     return -1;
@@ -4093,12 +4093,12 @@ static int decode_ref_pic_list_reordering(H264Context *h){
             }
         }
     }
-	/* ¶Ô²Î¿¼Í¼Ïñ¶ÓÁĞ½øĞĞÑéÖ¤ liuxw+00139685 */
+	/* å¯¹å‚è€ƒå›¾åƒé˜Ÿåˆ—è¿›è¡ŒéªŒè¯ liuxw+00139685 */
     for(list=0; list<(int)h->list_count; list++){
         for(index= 0; index < (int)h->ref_count[list]; index++){
 			/* 2010/03/13 10:40:00 liuxw+00139685 */
-			/* ÕâÀïÃ»ÓĞ±ØÒªÕâÑù×Ó×ö£¬ÒòÎªµ±Ä¬ÈÏ(³õÊ¼)²Î¿¼¶ÓÁĞÖĞµÄ¸öÊıĞ¡ÓÚref_countÊ±£¬ºóÃæµÄ»á±»ÖÃ¿Õ£»¼ûĞ­Òé8.2.4.1 
-			   ??? µ±ÒÔÉÏÇé¿ö³öÏÖºó£¬²»ÖªµÀÔÚºóÃæºê¿éÑ¡Ôñ²Î¿¼Í¼ÏñË÷ÒıÊ±ÓĞÃ»ÓĞ¼ì²é */
+			/* è¿™é‡Œæ²¡æœ‰å¿…è¦è¿™æ ·å­åšï¼Œå› ä¸ºå½“é»˜è®¤(åˆå§‹)å‚è€ƒé˜Ÿåˆ—ä¸­çš„ä¸ªæ•°å°äºref_countæ—¶ï¼Œåé¢çš„ä¼šè¢«ç½®ç©ºï¼›è§åè®®8.2.4.1 
+			   ??? å½“ä»¥ä¸Šæƒ…å†µå‡ºç°åï¼Œä¸çŸ¥é“åœ¨åé¢å®å—é€‰æ‹©å‚è€ƒå›¾åƒç´¢å¼•æ—¶æœ‰æ²¡æœ‰æ£€æŸ¥ */
             if(!h->ref_list[list][index].data[0]){
 //              av_log(h->s.avctx, AV_LOG_ERROR, "Missing reference picture\n");
 				av_log(h->s.avctx, AV_LOG_WARNING, "Missing reference picture\n");
@@ -4116,33 +4116,33 @@ static void fill_mbaff_ref_list(H264Context *h){
     int list, i, j;
 	int field;
 	/* 2010/03/13 17:35:00 liuxw+00139685 */
-	/* ½«Ñ­»·´ÎÊıĞŞ¸ÄÎªh->list_countĞ§ÂÊ»á¸ü¸ß */
+	/* å°†å¾ªç¯æ¬¡æ•°ä¿®æ”¹ä¸ºh->list_countæ•ˆç‡ä¼šæ›´é«˜ */
 //  for(list=0; list<2; list++){ //FIXME try list_count
 	for(list=0; list<(int)h->list_count; list++)
 	{
         for(i=0; i<(int)h->ref_count[list]; i++)
 		{
-			/* ref_list[0£­15]×öÖ¡²Î¿¼¶ÓÁĞ£¬ref_list[16£­47]×ö³¡²Î¿¼¶ÓÁĞ(¶¥³¡ÔÚÇ°£© liuxw+00139685 */
-			/* ???Èôµ±Ç°³¡ÊÇ¶¥³¡£¬Ôòref_list[16£­47]¿ÉÒÔÖ±½ÓÊ¹ÓÃ£»ÈôÊÇµ×³¡£¬Ôò²»ÖªºóÃæÊÇÈçºÎÊ¹ÓÃ(µ×³¡Ê±²Î¿¼¶ÓÁĞµÄµ×³¡ÔÚÇ°) */
+			/* ref_list[0ï¼15]åšå¸§å‚è€ƒé˜Ÿåˆ—ï¼Œref_list[16ï¼47]åšåœºå‚è€ƒé˜Ÿåˆ—(é¡¶åœºåœ¨å‰ï¼‰ liuxw+00139685 */
+			/* ???è‹¥å½“å‰åœºæ˜¯é¡¶åœºï¼Œåˆ™ref_list[16ï¼47]å¯ä»¥ç›´æ¥ä½¿ç”¨ï¼›è‹¥æ˜¯åº•åœºï¼Œåˆ™ä¸çŸ¥åé¢æ˜¯å¦‚ä½•ä½¿ç”¨(åº•åœºæ—¶å‚è€ƒé˜Ÿåˆ—çš„åº•åœºåœ¨å‰) */
             Picture *frame = &h->ref_list[list][i];
             Picture *field = &h->ref_list[list][16+2*i];
             field[0] = *frame;
-			/* ³¡²Î¿¼¶ÓÁĞÖĞµÄlinesizeÒªÀ©´óÁ½±¶£¨¸ôÖ¡ĞĞÈ¡³¡ĞĞ£©liuxw+00139685 */
+			/* åœºå‚è€ƒé˜Ÿåˆ—ä¸­çš„linesizeè¦æ‰©å¤§ä¸¤å€ï¼ˆéš”å¸§è¡Œå–åœºè¡Œï¼‰liuxw+00139685 */
             for(j=0; j<3; j++)
                 field[0].linesize[j] <<= 1;
             field[0].reference = PICT_TOP_FIELD;
             field[0].poc= field[0].field_poc[0];
             field[1] = field[0];
-			/* µ×³¡YUVÊı¾İÓë¶¥³¡YUVÊı¾İÆğÊ¼µØÖ·µÄÆ«ÒÆ liuxw+00139685 */
+			/* åº•åœºYUVæ•°æ®ä¸é¡¶åœºYUVæ•°æ®èµ·å§‹åœ°å€çš„åç§» liuxw+00139685 */
             for(j=0; j<3; j++)
                 field[1].data[j] += frame->linesize[j];
             field[1].reference = PICT_BOTTOM_FIELD;
             field[1].poc= field[1].field_poc[1];
 
-			/* ÏÔÊ¾¼ÓÈ¨£º¶¥³¡Óëµ×³¡¶¼ºÍÖ¡µÄ¼ÓÈ¨ÏàÍ¬ 
-			   0-15´æ·ÅÖ¡µÄ¼ÓÈ¨£»16£­47 ´æ·Å³¡µÄ¼ÓÈ¨ liuxw+00139685 */ 
+			/* æ˜¾ç¤ºåŠ æƒï¼šé¡¶åœºä¸åº•åœºéƒ½å’Œå¸§çš„åŠ æƒç›¸åŒ 
+			   0-15å­˜æ”¾å¸§çš„åŠ æƒï¼›16ï¼47 å­˜æ”¾åœºçš„åŠ æƒ liuxw+00139685 */ 
 			/* 2010/08/11 19:30:00 liuxw+00139685 */
-			/* ÔÚPÖ¡ÏÔÊ¾¼ÓÈ¨µÄÊ±ºò£¬MBAFFÇÒµ±Ç°ºê¿éÊÇ³¡ºê¿éÊ±£¬ÓÉÓÚ´óÓÚ16µÄÈ¨ÖµÃ»ÓĞ½øĞĞ¸³Öµ£ÛÄ¬ÈÏÎª0£İ£¬ËùÒÔ¼ÓÈ¨ºóÈ«Îª0 */
+			/* åœ¨På¸§æ˜¾ç¤ºåŠ æƒçš„æ—¶å€™ï¼ŒMBAFFä¸”å½“å‰å®å—æ˜¯åœºå®å—æ—¶ï¼Œç”±äºå¤§äº16çš„æƒå€¼æ²¡æœ‰è¿›è¡Œèµ‹å€¼ï¼»é»˜è®¤ä¸º0ï¼½ï¼Œæ‰€ä»¥åŠ æƒåå…¨ä¸º0 */
 //			if(1 == h->pps.weighted_bipred_idc)
 			if(1 == h->pps.weighted_pred || 1 == h->pps.weighted_bipred_idc)
 			{
@@ -4156,13 +4156,13 @@ static void fill_mbaff_ref_list(H264Context *h){
 			}
         }
     }
-	/* ÒşÊ½¼ÓÈ¨implicit_weight[48][48]£º¶¥³¡Óëµ×³¡¶¼ºÍÖ¡µÄ¼ÓÈ¨ÏàÍ¬
-	   implicit_weight[0-15][0-15]: Ö¡µÄÒşÊ½¼ÓÈ¨
-	   implicit_weight[16-47][16-47]£º³¡µÄÒşÊ½¼ÓÈ¨ liuxw+00139685 */
-	/* ??? Ö®Ç°´æµÄÊ±ºòÊÇ´æµÄimplicit_weight[ref0][ref1]£¬µ«ÏÖÔÚÈ·ÊÇimplicit_weight[ref1][ref0] */
+	/* éšå¼åŠ æƒimplicit_weight[48][48]ï¼šé¡¶åœºä¸åº•åœºéƒ½å’Œå¸§çš„åŠ æƒç›¸åŒ
+	   implicit_weight[0-15][0-15]: å¸§çš„éšå¼åŠ æƒ
+	   implicit_weight[16-47][16-47]ï¼šåœºçš„éšå¼åŠ æƒ liuxw+00139685 */
+	/* ??? ä¹‹å‰å­˜çš„æ—¶å€™æ˜¯å­˜çš„implicit_weight[ref0][ref1]ï¼Œä½†ç°åœ¨ç¡®æ˜¯implicit_weight[ref1][ref0] */
 
 	/* 2010/05/4 10:00:00 liuxw+00139685 [AZ1D02057] */
-	/* ĞŞ¸ÄBÖ¡ÒşÊ½¼ÓÈ¨µÄÎÊÌâ */
+	/* ä¿®æ”¹Bå¸§éšå¼åŠ æƒçš„é—®é¢˜ */
 /*  for(j=0; j<(int)h->ref_count[1]; j++){
         for(i=0; i<(int)h->ref_count[0]; i++)
 			h->implicit_weight[j][16+2*i] = h->implicit_weight[j][16+2*i+1] = h->implicit_weight[j][i];
@@ -4171,7 +4171,7 @@ static void fill_mbaff_ref_list(H264Context *h){
 	}
 */
 	/* 2010/08/23 14:00:00 liuxw+00139685 */
-	/* Èç¹ûµ±Ç°Îªp slice£¬ÄÇÃ´Ã»ÓĞ±ØÒªÔÙ½øĞĞ¼ÆËã */
+	/* å¦‚æœå½“å‰ä¸ºp sliceï¼Œé‚£ä¹ˆæ²¡æœ‰å¿…è¦å†è¿›è¡Œè®¡ç®— */
 	if(FF_B_TYPE == h->slice_type_nos && 2 == h->pps.weighted_bipred_idc)
 	{
 		for(j=0; j<(int)h->ref_count[0]; j++)
@@ -4226,8 +4226,8 @@ static void fill_mbaff_ref_list(H264Context *h){
 }
 	
 
-/* ÏÔÊ¾¼ÓÈ¨£¨PÖ¡ÏÔÊ¾¼ÓÈ¨¡¢BÖ¡ÏÔÊ¾¼ÓÈ¨£©: µÃµ½luma_weight_flag¡¢luma_log2_weight_denom¡¢luma_weight¡¢luma_offset
-chroma_weight_flag¡¢chroma_log2_weight_denom¡¢chroma_weight¡¢chroma_offset  liuxw+00139685 */
+/* æ˜¾ç¤ºåŠ æƒï¼ˆPå¸§æ˜¾ç¤ºåŠ æƒã€Bå¸§æ˜¾ç¤ºåŠ æƒï¼‰: å¾—åˆ°luma_weight_flagã€luma_log2_weight_denomã€luma_weightã€luma_offset
+chroma_weight_flagã€chroma_log2_weight_denomã€chroma_weightã€chroma_offset  liuxw+00139685 */
 static int pred_weight_table(H264Context *h){
     MpegEncContext * const s = &h->s;
     int list, i;
@@ -4237,7 +4237,7 @@ static int pred_weight_table(H264Context *h){
     h->use_weight_chroma= 0;
     h->luma_log2_weight_denom= get_ue_golomb(&s->gb);
 	/* 2010/04/06 15:20:00 liuxw+00139685 */
-	/* Ôö¼Ó¶Ôluma_log2_weight_denomºÏ·¨ĞÔµÄ¼ì²é */
+	/* å¢åŠ å¯¹luma_log2_weight_denomåˆæ³•æ€§çš„æ£€æŸ¥ */
 	if(h->luma_log2_weight_denom > 7)
 	{
 		av_log(s->avctx,AV_LOG_WARNING,"luma_log2_weight_denom[%d] is invalid!\n",h->luma_log2_weight_denom);
@@ -4247,13 +4247,13 @@ static int pred_weight_table(H264Context *h){
 //		return -1;
 	}
 	/* 2010/03/08 9:20:00 liuxw+00139685 */
-	/* Ôö¼Ó¶ÔchromaÊÇ·ñ´æÔÚµÄÅĞ¶Ï */
+	/* å¢åŠ å¯¹chromaæ˜¯å¦å­˜åœ¨çš„åˆ¤æ–­ */
 //	 h->chroma_log2_weight_denom= get_ue_golomb(&s->gb);
 	if(CHROMA)
 	{
 		h->chroma_log2_weight_denom= get_ue_golomb(&s->gb);
 		/* 2010/04/06 15:20:00 liuxw+00139685 */
-		/* Ôö¼Ó¶Ôchroma_log2_weight_denomºÏ·¨ĞÔµÄ¼ì²é */
+		/* å¢åŠ å¯¹chroma_log2_weight_denomåˆæ³•æ€§çš„æ£€æŸ¥ */
 		if(h->chroma_log2_weight_denom > 7)
 		{
 			av_log(s->avctx,AV_LOG_WARNING,"chroma_log2_weight_denom[%d] is invalid!\n",h->chroma_log2_weight_denom);
@@ -4273,12 +4273,12 @@ static int pred_weight_table(H264Context *h){
             int luma_weight_flag, chroma_weight_flag;
 
             luma_weight_flag= get_bits1(&s->gb);
-			/* Èç¹û¼ÓÈ¨ÏµÊı´æÔÚ£¬Ôò¼ÌĞø´ÓÂëÁ÷ÖĞ¶Á¼ÓÈ¨ÏµÊıºÍÆ«²î liuxw+00139685 */
+			/* å¦‚æœåŠ æƒç³»æ•°å­˜åœ¨ï¼Œåˆ™ç»§ç»­ä»ç æµä¸­è¯»åŠ æƒç³»æ•°å’Œåå·® liuxw+00139685 */
             if(luma_weight_flag){
                 h->luma_weight[list][i]= get_se_golomb(&s->gb);
                 h->luma_offset[list][i]= get_se_golomb(&s->gb);
 				/* 2010/04/06 15:20:00 liuxw+00139685 */
-				/* Ôö¼Ó¶Ôluma_weight/luma_offsetºÏ·¨ĞÔµÄ¼ì²é */
+				/* å¢åŠ å¯¹luma_weight/luma_offsetåˆæ³•æ€§çš„æ£€æŸ¥ */
 				if(h->luma_weight[list][i] > 127 || h->luma_weight[list][i] < -128 || h->luma_offset[list][i] > 127 || h->luma_offset[list][i] < -128)
 				{
 					av_log(s->avctx,AV_LOG_WARNING,"luma_weight[%d]/luma_offset[%d] is invalid!\n",h->luma_weight[list][i],h->luma_offset[list][i]);
@@ -4287,30 +4287,30 @@ static int pred_weight_table(H264Context *h){
 					h->luma_weight[list][i] = h->luma_offset[list][i] = 0;
 //					return -1;
 				}
-				/* Èç¹ûµÚi¸ö²Î¿¼Ö¡µÄ¼ÓÈ¨ÏµÊı²»µÈÓÚÄ¬ÈÏÖµ»òÊÇÆ«²î²»µÈÓÚ0£¬ÄÇÃ´µ±Ç°²Î¿¼Ö¡Ê¹ÓÃÁË¼ÓÈ¨£»
-				   ·ñÔòµ±Ç°²Î¿¼Ö¡Ê¹ÓÃÄ¬ÈÏ¼ÓÈ¨£©liuxw+00139685 */
+				/* å¦‚æœç¬¬iä¸ªå‚è€ƒå¸§çš„åŠ æƒç³»æ•°ä¸ç­‰äºé»˜è®¤å€¼æˆ–æ˜¯åå·®ä¸ç­‰äº0ï¼Œé‚£ä¹ˆå½“å‰å‚è€ƒå¸§ä½¿ç”¨äº†åŠ æƒï¼›
+				   å¦åˆ™å½“å‰å‚è€ƒå¸§ä½¿ç”¨é»˜è®¤åŠ æƒï¼‰liuxw+00139685 */
                 if(   h->luma_weight[list][i] != luma_def
                    || h->luma_offset[list][i] != 0) {
                     h->use_weight= 1;
                     h->luma_weight_flag[list]= 1;
                 }
             }
-			/* Èç¹û¼ÓÈ¨ÏµÊı²»´æÔÚ£¬Ôò½«¼ÓÈ¨ÏµÊıºÍÆ«²îÖ±½Ó¸³Öµ liuxw+00139685 */
+			/* å¦‚æœåŠ æƒç³»æ•°ä¸å­˜åœ¨ï¼Œåˆ™å°†åŠ æƒç³»æ•°å’Œåå·®ç›´æ¥èµ‹å€¼ liuxw+00139685 */
 			else{
                 h->luma_weight[list][i]= luma_def;
                 h->luma_offset[list][i]= 0;
             }
-			/* Èç¹ûÉ«²î(UV)´æÔÚ£¬ÔòÅĞ¶ÏchromaÊÇ·ñ¼ÓÈ¨ */
+			/* å¦‚æœè‰²å·®(UV)å­˜åœ¨ï¼Œåˆ™åˆ¤æ–­chromaæ˜¯å¦åŠ æƒ */
             if(CHROMA){
                 chroma_weight_flag= get_bits1(&s->gb);
-				/* Èç¹û¼ÓÈ¨ÏµÊı´æÔÚ£¬Ôò¼ÌĞø´ÓÂëÁ÷ÖĞ¶Á¼ÓÈ¨ÏµÊıºÍÆ«²î liuxw+00139685 */
+				/* å¦‚æœåŠ æƒç³»æ•°å­˜åœ¨ï¼Œåˆ™ç»§ç»­ä»ç æµä¸­è¯»åŠ æƒç³»æ•°å’Œåå·® liuxw+00139685 */
                 if(chroma_weight_flag){
                     int j;
                     for(j=0; j<2; j++){
                         h->chroma_weight[list][i][j]= get_se_golomb(&s->gb);
                         h->chroma_offset[list][i][j]= get_se_golomb(&s->gb);
 						/* 2010/04/06 15:20:00 liuxw+00139685 */
-						/* Ôö¼Ó¶Ôchroma_weight/chroma_offsetºÏ·¨ĞÔµÄ¼ì²é */
+						/* å¢åŠ å¯¹chroma_weight/chroma_offsetåˆæ³•æ€§çš„æ£€æŸ¥ */
 						if(h->chroma_weight[list][i][j] > 127 || h->chroma_weight[list][i][j] < -128 || h->chroma_offset[list][i][j] > 127 || h->chroma_offset[list][i][j] < -128)
 						{
 							av_log(s->avctx,AV_LOG_WARNING,"chroma_weight[%d]/chroma_offset[%d] is invalid!\n",h->chroma_weight[list][i][j],h->chroma_offset[list][i][j]);
@@ -4319,8 +4319,8 @@ static int pred_weight_table(H264Context *h){
 							h->chroma_weight[list][i][j] = h->chroma_offset[list][i][j] = 0;
 //							return -1;
 						}
-						/* Èç¹ûµÚi¸ö²Î¿¼Ö¡µÄ¼ÓÈ¨ÏµÊı²»µÈÓÚÄ¬ÈÏÖµ»òÊÇÆ«²î²»µÈÓÚ0£¬ÄÇÃ´µ±Ç°²Î¿¼Ö¡Ê¹ÓÃÁË¼ÓÈ¨£»
-						·ñÔòµ±Ç°²Î¿¼Ö¡Ê¹ÓÃÄ¬ÈÏ¼ÓÈ¨£©liuxw+00139685 */
+						/* å¦‚æœç¬¬iä¸ªå‚è€ƒå¸§çš„åŠ æƒç³»æ•°ä¸ç­‰äºé»˜è®¤å€¼æˆ–æ˜¯åå·®ä¸ç­‰äº0ï¼Œé‚£ä¹ˆå½“å‰å‚è€ƒå¸§ä½¿ç”¨äº†åŠ æƒï¼›
+						å¦åˆ™å½“å‰å‚è€ƒå¸§ä½¿ç”¨é»˜è®¤åŠ æƒï¼‰liuxw+00139685 */
                         if(   h->chroma_weight[list][i][j] != chroma_def
                            || h->chroma_offset[list][i][j] != 0) {
                             h->use_weight_chroma= 1;
@@ -4328,7 +4328,7 @@ static int pred_weight_table(H264Context *h){
                         }
                     }
                 }
-				/* Èç¹û¼ÓÈ¨ÏµÊı²»´æÔÚ£¬Ôò½«¼ÓÈ¨ÏµÊıºÍÆ«²îÖ±½Ó¸³Öµ liuxw+00139685 */
+				/* å¦‚æœåŠ æƒç³»æ•°ä¸å­˜åœ¨ï¼Œåˆ™å°†åŠ æƒç³»æ•°å’Œåå·®ç›´æ¥èµ‹å€¼ liuxw+00139685 */
 				else{
                     int j;
                     for(j=0; j<2; j++){
@@ -4338,41 +4338,41 @@ static int pred_weight_table(H264Context *h){
                 }
             }
         }
-		/* Èç¹ûÊÇPÖ¡ÏÔÊ¾¼ÓÈ¨£¬ÔòÖ±½ÓÍË³ö£»ÈôÊÇBÖ¡ÏÔÊ¾¼ÓÈ¨£¬Ôò¼ÌĞø½âÎölist1µÄ¼ÓÈ¨ÏµÊı liuxw+00139685 */
+		/* å¦‚æœæ˜¯På¸§æ˜¾ç¤ºåŠ æƒï¼Œåˆ™ç›´æ¥é€€å‡ºï¼›è‹¥æ˜¯Bå¸§æ˜¾ç¤ºåŠ æƒï¼Œåˆ™ç»§ç»­è§£ælist1çš„åŠ æƒç³»æ•° liuxw+00139685 */
         if(h->slice_type_nos != FF_B_TYPE) break;
     }
-	/* ÉèÖÃ¼ÓÈ¨±êÖ¾£¨0£ºÄ¬ÈÏ¼ÓÈ¨ 1£ºÏÔÊ¾¼ÓÈ¨ 2£ºÒşÊ½¼ÓÈ¨ liuxw+00139685 */
+	/* è®¾ç½®åŠ æƒæ ‡å¿—ï¼ˆ0ï¼šé»˜è®¤åŠ æƒ 1ï¼šæ˜¾ç¤ºåŠ æƒ 2ï¼šéšå¼åŠ æƒ liuxw+00139685 */
     h->use_weight= h->use_weight || h->use_weight_chroma;
     return 0;
 }
 
-/* BÖ¡ÒşÊ½¼ÓÈ¨£ºluma_weight¡¢chroma_weight liuxw+00139685 */
+/* Bå¸§éšå¼åŠ æƒï¼šluma_weightã€chroma_weight liuxw+00139685 */
 static void implicit_weight_table(H264Context *h){
     MpegEncContext * const s = &h->s;
     int ref0, ref1, i;
 	/* 2010/30/10 14:48:00 liuxw+00139685 */
-	/* ĞŞ¸Äµ±Ç°pictureµÄpoc£ºĞŞ¸ÄÇ°£¬µ±µ±Ç°pictureÊÇµ×³¡Ê±£¬Æäpoc²»µÈÓÚµ±Ç°frameµÄpoc£¬¹Êµ¼ÖÂºóÃæ¼ÆËãÒşÊ½È¨ÖµµÄ´íÎó */
+	/* ä¿®æ”¹å½“å‰pictureçš„pocï¼šä¿®æ”¹å‰ï¼Œå½“å½“å‰pictureæ˜¯åº•åœºæ—¶ï¼Œå…¶pocä¸ç­‰äºå½“å‰frameçš„pocï¼Œæ•…å¯¼è‡´åé¢è®¡ç®—éšå¼æƒå€¼çš„é”™è¯¯ */
 	//int cur_poc = s->picture_structure ==s->current_picture_ptr->poc;
 	int cur_poc = s->picture_structure == PICT_FRAME ? s->current_picture_ptr->poc : s->current_picture_ptr->field_poc[s->picture_structure - 1];
 
-	/* Çå¿Õ¼ÓÈ¨µÄ±êÖ¾ liuxw+00139685 */
+	/* æ¸…ç©ºåŠ æƒçš„æ ‡å¿— liuxw+00139685 */
     for (i = 0; i < 2; i++) {
         h->luma_weight_flag[i]   = 0;
         h->chroma_weight_flag[i] = 0;
     }
 
-	/* Ç°ÏòÓëºóÏò²Î¿¼Ö¡¶ÓÁĞ¶¼Ö»ÓĞÒ»¸ö²Î¿¼Ö¡¶øÇÒÕâÁ½¸ö²Î¿¼Ö¡ÔÚÊ±¼äÉÏÒÔÊÇµ±Ç°Ö¡ÎªÖĞĞÄ¶Ô³ÆµÄ£¬Ôò²»Ğè¼ÓÈ¨£¨Ä¬ÈÏ¼ÓÈ¨¡¢Æ½¾ù£© liuxw+00139685 */
+	/* å‰å‘ä¸åå‘å‚è€ƒå¸§é˜Ÿåˆ—éƒ½åªæœ‰ä¸€ä¸ªå‚è€ƒå¸§è€Œä¸”è¿™ä¸¤ä¸ªå‚è€ƒå¸§åœ¨æ—¶é—´ä¸Šä»¥æ˜¯å½“å‰å¸§ä¸ºä¸­å¿ƒå¯¹ç§°çš„ï¼Œåˆ™ä¸éœ€åŠ æƒï¼ˆé»˜è®¤åŠ æƒã€å¹³å‡ï¼‰ liuxw+00139685 */
     if(   h->ref_count[0] == 1 && h->ref_count[1] == 1
        && h->ref_list[0][0].poc + h->ref_list[1][0].poc == 2*cur_poc){
         h->use_weight= 0;
         h->use_weight_chroma= 0;
 		/* 2010/05/4 10:00:00 liuxw+00139685 [AZ1D02057] */
-		/* ĞŞ¸ÄBÖ¡ÒşÊ½¼ÓÈ¨µÄÎÊÌâ */
+		/* ä¿®æ”¹Bå¸§éšå¼åŠ æƒçš„é—®é¢˜ */
 		h->implicit_weight[0][0][0] = 32;
         return;
     }
 
-	/* ÖÃÎ»ÒşÊ½¼ÓÈ¨±êÖ¾ liuxw+00139685 */
+	/* ç½®ä½éšå¼åŠ æƒæ ‡å¿— liuxw+00139685 */
     h->use_weight= 2;
     h->use_weight_chroma= 2;
     h->luma_log2_weight_denom= 5;
@@ -4381,7 +4381,7 @@ static void implicit_weight_table(H264Context *h){
     for(ref0=0; ref0 < (int)h->ref_count[0]; ref0++){
         int poc0 = h->ref_list[0][ref0].poc;
 		/* 2010/30/08 9:20:00 liuxw+00139685 */
-		/* ĞÂÔö´úÂë£ºÈç¹ûµ±Ç°²Î¿¼Ö¡(list0)Îª³¤ÆÚ²Î¿¼Ö¡£¬Ôò´ËÖ¡Ëù¶ÔÓ¦list1ÖĞËùÓĞµÄ²Î¿¼Ö¡¾ù²ÉÓÃÄ¬ÈÏ¼ÓÈ¨ */
+		/* æ–°å¢ä»£ç ï¼šå¦‚æœå½“å‰å‚è€ƒå¸§(list0)ä¸ºé•¿æœŸå‚è€ƒå¸§ï¼Œåˆ™æ­¤å¸§æ‰€å¯¹åº”list1ä¸­æ‰€æœ‰çš„å‚è€ƒå¸§å‡é‡‡ç”¨é»˜è®¤åŠ æƒ */
 		if(1 == h->ref_list[0][ref0].long_ref)
 		{
 			for(ref1=0; ref1 < (int)h->ref_count[1]; ref1++)
@@ -4393,7 +4393,7 @@ static void implicit_weight_table(H264Context *h){
         for(ref1=0; ref1 < (int)h->ref_count[1]; ref1++){
             int poc1 = h->ref_list[1][ref1].poc;
             int td = av_clip(poc1 - poc0, -128, 127);
-			/* ĞÂÔö´úÂë£ºÈç¹ûµ±Ç°²Î¿¼Ö¡(list0)Îª³¤ÆÚ²Î¿¼Ö¡£¬Ôò²ÉÓÃÄ¬ÈÏ¼ÓÈ¨ */
+			/* æ–°å¢ä»£ç ï¼šå¦‚æœå½“å‰å‚è€ƒå¸§(list0)ä¸ºé•¿æœŸå‚è€ƒå¸§ï¼Œåˆ™é‡‡ç”¨é»˜è®¤åŠ æƒ */
 			if(1 == h->ref_list[1][ref1].long_ref)
 			{
 				h->implicit_weight[0][ref0][ref1] = 32;
@@ -4411,7 +4411,7 @@ static void implicit_weight_table(H264Context *h){
                 else
                     h->implicit_weight[0][ref0][ref1] = 64 - dist_scale_factor;
             }
-			/* Èç¹ûÇ°ÏòºÍºóÏò²Î¿¼¶¼ÊÇÊ¹ÓÃÒ»Ö¡£¬Ôò²ÉÓÃÄ¬ÈÏ¼ÓÈ¨(Æ½¾ù) liuxw+00139685 */
+			/* å¦‚æœå‰å‘å’Œåå‘å‚è€ƒéƒ½æ˜¯ä½¿ç”¨ä¸€å¸§ï¼Œåˆ™é‡‡ç”¨é»˜è®¤åŠ æƒ(å¹³å‡) liuxw+00139685 */
 			else
                 h->implicit_weight[0][ref0][ref1] = 32;
         }
@@ -4474,22 +4474,22 @@ static void idr(H264Context *h){
 static void flush_dpb(AVCodecContext *avctx){
     H264Context *h= avctx->priv_data;
     int i;
-	/* Çå¿Õdelay buffer */
+	/* æ¸…ç©ºdelay buffer */
     for(i=0; i<MAX_DELAYED_PIC_COUNT; i++) {
         if(h->delayed_pic[i])
             h->delayed_pic[i]->reference= 0;
         h->delayed_pic[i]= NULL;
     }
     h->outputed_poc= INT_MIN;
-	/* Çå¿Õ¶ÌÆÚ²Î¿¼¶ÓÁĞºÍ³¤ÆÚ²Î¿¼¶ÓÁĞ */
+	/* æ¸…ç©ºçŸ­æœŸå‚è€ƒé˜Ÿåˆ—å’Œé•¿æœŸå‚è€ƒé˜Ÿåˆ— */
     idr(h);
-	/* Çå¿Õµ±Ç°Í¼Ïñ */
+	/* æ¸…ç©ºå½“å‰å›¾åƒ */
     if(h->s.current_picture_ptr)
         h->s.current_picture_ptr->reference= 0;
     h->s.first_field= 0;
-	/* ¸´Î»SEI */
+	/* å¤ä½SEI */
     reset_sei(h);
-	/* Çå¿ÕYUV buffer¶ÓÁĞºÍ×´Ì¬ĞÅÏ¢ */
+	/* æ¸…ç©ºYUV bufferé˜Ÿåˆ—å’ŒçŠ¶æ€ä¿¡æ¯ */
     ff_mpeg_flush(avctx);
 
 }
@@ -4626,19 +4626,19 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
         if(s->avctx->debug&FF_DEBUG_MMCO)
             av_log(h->s.avctx, AV_LOG_DEBUG, "mmco:%d %d %d\n", h->mmco[i].opcode, h->mmco[i].short_pic_num, h->mmco[i].long_arg);
 
-		/* Èç¹û²Ù×÷Óë¶ÌÆÚÏà¹Ø£¬ÔòÏÈµÃµ½¶ÌÆÚ²Î¿¼Í¼Ïñ liuxw+00139685 */
+		/* å¦‚æœæ“ä½œä¸çŸ­æœŸç›¸å…³ï¼Œåˆ™å…ˆå¾—åˆ°çŸ­æœŸå‚è€ƒå›¾åƒ liuxw+00139685 */
         if(   mmco[i].opcode == MMCO_SHORT2UNUSED
            || mmco[i].opcode == MMCO_SHORT2LONG){
-		   /* ÔÚ¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞÕÒµ½pic_numµÈÓÚshort_pic_numµÄÄÇÒ»Í¼ÏñµÄframe_num liuxw+00139685 */
+		   /* åœ¨çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­æ‰¾åˆ°pic_numç­‰äºshort_pic_numçš„é‚£ä¸€å›¾åƒçš„frame_num liuxw+00139685 */
             frame_num = pic_num_extract(h, mmco[i].short_pic_num, &structure);
-			/* ÔÚ¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞÕÒµ½frame_numµÄÄÇÒ»Ö¡ liuxw+00139685 */
+			/* åœ¨çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­æ‰¾åˆ°frame_numçš„é‚£ä¸€å¸§ liuxw+00139685 */
             pic = find_short(h, frame_num, &j);
             if(!pic){
-				/* Èç¹ûµ±Ç°Ö¸¶¨µÄ¶ÌÆÚ²Î¿¼Í¼Ïñ²»ÔÚ¶ÌÆÚ²Î¿¼¶ÓÁĞÖĞ£¬¶øÇÒÂú×ãÒÔÏÂÌõ¼şÖ®Ò»£º
-				   1¡¢µ±Ç°²Ù×÷ÊÇMMCO_SHORT2UNUSED£»2¡¢µ±Ç°²Ù×÷ÊÇMMCO_SHORT2LONG£¬µ«Ö¸¶¨µÄ³¤ÆÚ²Î¿¼Ö¡
-				   ²»´æÔÚ£»3¡¢Ç°²Ù×÷ÊÇMMCO_SHORT2LONG£¬µ«Ö¸¶¨µÄ³¤ÆÚ²Î¿¼Ö¡´æÔÚµ«Æäframe_num²»µÈÓÚ½«Òª±»
-				   ÉèÎª³¤ÆÚ²Î¿¼Ö¡µÄframe_num£»¾Í»á±¨´í¡£Èôµ±Ç°²Ù×÷ÊÇMMCO_SHORT2LONG£¬¶øÇÒÖ¸¶¨µÄ³¤ÆÚ
-				   ²Î¿¼Ö¡´æÔÚ£¨ÄÚ´æ£©¶øÇÒ¾ÍÊÇ½«Òª±»ÉèÎª³¤ÆÚ²Î¿¼µÄÄÇÒ»Ö¡£¬Ôò²»»á±¨´í liuxw+00139685 */
+				/* å¦‚æœå½“å‰æŒ‡å®šçš„çŸ­æœŸå‚è€ƒå›¾åƒä¸åœ¨çŸ­æœŸå‚è€ƒé˜Ÿåˆ—ä¸­ï¼Œè€Œä¸”æ»¡è¶³ä»¥ä¸‹æ¡ä»¶ä¹‹ä¸€ï¼š
+				   1ã€å½“å‰æ“ä½œæ˜¯MMCO_SHORT2UNUSEDï¼›2ã€å½“å‰æ“ä½œæ˜¯MMCO_SHORT2LONGï¼Œä½†æŒ‡å®šçš„é•¿æœŸå‚è€ƒå¸§
+				   ä¸å­˜åœ¨ï¼›3ã€å‰æ“ä½œæ˜¯MMCO_SHORT2LONGï¼Œä½†æŒ‡å®šçš„é•¿æœŸå‚è€ƒå¸§å­˜åœ¨ä½†å…¶frame_numä¸ç­‰äºå°†è¦è¢«
+				   è®¾ä¸ºé•¿æœŸå‚è€ƒå¸§çš„frame_numï¼›å°±ä¼šæŠ¥é”™ã€‚è‹¥å½“å‰æ“ä½œæ˜¯MMCO_SHORT2LONGï¼Œè€Œä¸”æŒ‡å®šçš„é•¿æœŸ
+				   å‚è€ƒå¸§å­˜åœ¨ï¼ˆå†…å­˜ï¼‰è€Œä¸”å°±æ˜¯å°†è¦è¢«è®¾ä¸ºé•¿æœŸå‚è€ƒçš„é‚£ä¸€å¸§ï¼Œåˆ™ä¸ä¼šæŠ¥é”™ liuxw+00139685 */
                 if(mmco[i].opcode != MMCO_SHORT2LONG || !h->long_ref[mmco[i].long_arg]
                    || h->long_ref[mmco[i].long_arg]->frame_num != frame_num)
 //              av_log(h->s.avctx, AV_LOG_ERROR, "mmco: unref short failure\n");
@@ -4650,23 +4650,23 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
         }
 
         switch(mmco[i].opcode){
-		/* Èç¹ûµ±Ç°ÊÇÖ¡£¬Ôò½«¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞpic_num×îĞ¡µÄÄÇÒ»Ö¡È¥µô£»Èç¹ûµ±Ç°ÊÇ³¡£¬Ôò½«shor_pic_numµÄÄÇÒ»³¡
-		   ÉèÎª²»×÷²Î¿¼£¬Èç¹ûÄÇÒ»³¡ÊÇÒ»¸ö²Î¿¼Ö¡ÖĞµÄÒ»³¡»òÊÇ»¥²¹²Î¿¼³¡ÖĞµÄÒ»³¡£¬ÄÇÃ´½«²Î¿¼Ö¡»ò»¥²¹²Î¿¼³¡Ò²ÉèÎª
-		   ²»×÷²Î¿¼£¬µ«ÁíÍâÒ»³¡µÄ²Î¿¼ÊôĞÔ²»±ä¡£liuxw+00139685 */
+		/* å¦‚æœå½“å‰æ˜¯å¸§ï¼Œåˆ™å°†çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­pic_numæœ€å°çš„é‚£ä¸€å¸§å»æ‰ï¼›å¦‚æœå½“å‰æ˜¯åœºï¼Œåˆ™å°†shor_pic_numçš„é‚£ä¸€åœº
+		   è®¾ä¸ºä¸ä½œå‚è€ƒï¼Œå¦‚æœé‚£ä¸€åœºæ˜¯ä¸€ä¸ªå‚è€ƒå¸§ä¸­çš„ä¸€åœºæˆ–æ˜¯äº’è¡¥å‚è€ƒåœºä¸­çš„ä¸€åœºï¼Œé‚£ä¹ˆå°†å‚è€ƒå¸§æˆ–äº’è¡¥å‚è€ƒåœºä¹Ÿè®¾ä¸º
+		   ä¸ä½œå‚è€ƒï¼Œä½†å¦å¤–ä¸€åœºçš„å‚è€ƒå±æ€§ä¸å˜ã€‚liuxw+00139685 */
         case MMCO_SHORT2UNUSED:
             if(s->avctx->debug&FF_DEBUG_MMCO)
                 av_log(h->s.avctx, AV_LOG_DEBUG, "mmco: unref short %d count %d\n", h->mmco[i].short_pic_num, h->short_ref_count); 
-		    /* °Ñframe_numÖĞ¶ÔÓ¦µÄ²Î¿¼ÊôĞÔ(Ö¡£¬¶¥³¡£¬µ×³¡)¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞÈ¥µô liuxw+00139685 */
+		    /* æŠŠframe_numä¸­å¯¹åº”çš„å‚è€ƒå±æ€§(å¸§ï¼Œé¡¶åœºï¼Œåº•åœº)çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­å»æ‰ liuxw+00139685 */
 			remove_short(h, frame_num, structure ^ PICT_FRAME);
             break;
         case MMCO_SHORT2LONG:
-				/* Èç¹ûÒª±»Ö¸¶¨Îª³¤ÆÚ²Î¿¼Í¼ÏñµÄ¶ÌÆÚ²Î¿¼Í¼Ïñ²»´æÔÚÓÚ³¤ÆÚ²Î¿¼Í¼Ïñ¶ÓÁĞÖĞ
-				   £¬ÄÇÃ´¾Í½«µ±Ç°µÄ³¤ÆÚ²Î¿¼Í¼Ïñ´Ó³¤ÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞÈ¥µô liuxw+00139685 */
+				/* å¦‚æœè¦è¢«æŒ‡å®šä¸ºé•¿æœŸå‚è€ƒå›¾åƒçš„çŸ­æœŸå‚è€ƒå›¾åƒä¸å­˜åœ¨äºé•¿æœŸå‚è€ƒå›¾åƒé˜Ÿåˆ—ä¸­
+				   ï¼Œé‚£ä¹ˆå°±å°†å½“å‰çš„é•¿æœŸå‚è€ƒå›¾åƒä»é•¿æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­å»æ‰ liuxw+00139685 */
                 if (h->long_ref[mmco[i].long_arg] != pic)
                     remove_long(h, mmco[i].long_arg, 0);
-				/* ½«Òª±»Ö¸¶¨Îª³¤ÆÚ²Î¿¼Í¼ÏñµÄ¶ÌÆÚ²Î¿¼Í¼Ïñ´Ó¶ÌÆÚ²Î¿¼Ö¡ÖĞÈ¥µô liuxw+00139685 */
+				/* å°†è¦è¢«æŒ‡å®šä¸ºé•¿æœŸå‚è€ƒå›¾åƒçš„çŸ­æœŸå‚è€ƒå›¾åƒä»çŸ­æœŸå‚è€ƒå¸§ä¸­å»æ‰ liuxw+00139685 */
                 remove_short_at_index(h, j);
-				/* ½«µ±Ç°²Î¿¼Í¼Ïñ´æÈë³¤ÆÚ²Î¿¼Í¼¶ÓÁĞÖĞ£¬²¢¸üĞÂ³¤ÆÚ²Î¿¼¶ÓÁĞµÄĞÅÏ¢ liuxw+00139685 */
+				/* å°†å½“å‰å‚è€ƒå›¾åƒå­˜å…¥é•¿æœŸå‚è€ƒå›¾é˜Ÿåˆ—ä¸­ï¼Œå¹¶æ›´æ–°é•¿æœŸå‚è€ƒé˜Ÿåˆ—çš„ä¿¡æ¯ liuxw+00139685 */
                 h->long_ref[ mmco[i].long_arg ]= pic;
                 if (h->long_ref[ mmco[i].long_arg ]){
                     h->long_ref[ mmco[i].long_arg ]->long_ref=1;
@@ -4674,11 +4674,11 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
                 }
             break;
         case MMCO_LONG2UNUSED:
-			/*  ¸ù¾İlong_pic_numºÍ²Î¿¼ÊôĞÔµÃµ½long_frame_index,´Ó¶øµÃµ½ref_pic liuxw+00139685 */
+			/*  æ ¹æ®long_pic_numå’Œå‚è€ƒå±æ€§å¾—åˆ°long_frame_index,ä»è€Œå¾—åˆ°ref_pic liuxw+00139685 */
             j = pic_num_extract(h, mmco[i].long_arg, &structure);
             pic = h->long_ref[j];
             if (pic) {
-			/* ¸ù¾İlong_frame_indexºÍ²Î¿¼ÊôĞÔ£¨Ö¡¡¢¶¥³¡¡¢µ×³¡£©½«¶ÔÓ¦µÄÖ¡»ò³¡£¨¶¥»òµ×£©ÉèÎª²»×÷²Î¿¼ liuxw+00139685 */
+			/* æ ¹æ®long_frame_indexå’Œå‚è€ƒå±æ€§ï¼ˆå¸§ã€é¡¶åœºã€åº•åœºï¼‰å°†å¯¹åº”çš„å¸§æˆ–åœºï¼ˆé¡¶æˆ–åº•ï¼‰è®¾ä¸ºä¸ä½œå‚è€ƒ liuxw+00139685 */
                 remove_long(h, j, structure ^ PICT_FRAME);
             } else if(s->avctx->debug&FF_DEBUG_MMCO)
                 av_log(h->s.avctx, AV_LOG_DEBUG, "mmco: unref long failure\n");
@@ -4691,38 +4691,38 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
                      * Report the problem and keep the pair where it is,
                      * and mark this field valid.
                      */
-			/* Èç¹ûµ±Ç°Í¼Ïñ²»µÈÓÚÖ¸¶¨³¤ÆÚ²Î¿¼Í¼ÏñÖĞlong_term_pic_numµÄÍ¼Ïñ£¬ÔòÏÈ½«
-			   long_term_pic_numµÄÍ¼Ïñ´Ó³¤ÆÚ²Î¿¼Í¼ÏñÖĞÈ¥³ı liuxw+00139685 */
+			/* å¦‚æœå½“å‰å›¾åƒä¸ç­‰äºæŒ‡å®šé•¿æœŸå‚è€ƒå›¾åƒä¸­long_term_pic_numçš„å›¾åƒï¼Œåˆ™å…ˆå°†
+			   long_term_pic_numçš„å›¾åƒä»é•¿æœŸå‚è€ƒå›¾åƒä¸­å»é™¤ liuxw+00139685 */
             if (h->long_ref[mmco[i].long_arg] != s->current_picture_ptr) {
                 remove_long(h, mmco[i].long_arg, 0);
-				/* ½«µ±Ç°Í¼Ïñ¼ÓÈëµ½³¤ÆÚ²Î¿¼¶ÓÁĞÖĞ£¬²¢¸üĞÂ³¤ÆÚ²Î¿¼¶ÓÁĞµÄĞÅÏ¢ liuxw+00139685 */
+				/* å°†å½“å‰å›¾åƒåŠ å…¥åˆ°é•¿æœŸå‚è€ƒé˜Ÿåˆ—ä¸­ï¼Œå¹¶æ›´æ–°é•¿æœŸå‚è€ƒé˜Ÿåˆ—çš„ä¿¡æ¯ liuxw+00139685 */
                 h->long_ref[ mmco[i].long_arg ]= s->current_picture_ptr;
                 h->long_ref[ mmco[i].long_arg ]->long_ref=1;
                 h->long_ref_count++;
             }
 
             s->current_picture_ptr->reference |= s->picture_structure;
-			/* ÖÃÎ»µ±Ç°Í¼ÏñÒÑ¾­½øĞĞ¹ımarking´¦Àí liuxw+00139685 */
+			/* ç½®ä½å½“å‰å›¾åƒå·²ç»è¿›è¡Œè¿‡markingå¤„ç† liuxw+00139685 */
             current_ref_assigned=1;
             break;
         case MMCO_SET_MAX_LONG:
             assert(mmco[i].long_arg <= 16);
             // just remove the long term which index is greater than new max
-			/* ½«´óÓÚĞÂµÄmax_long_term_frame_idxµÄ³¤ÆÚ²Î¿¼¶ÓÁĞÖĞÈ¥³ı liuxw+00139685 */
+			/* å°†å¤§äºæ–°çš„max_long_term_frame_idxçš„é•¿æœŸå‚è€ƒé˜Ÿåˆ—ä¸­å»é™¤ liuxw+00139685 */
             for(j = mmco[i].long_arg; j<16; j++){
                 remove_long(h, j, 0);
             }
             break;
         case MMCO_RESET:
-			/* ÒÆÈ¥ËùÓĞµÄ¶ÌÆÚ²Î¿¼Ö¡ liuxw+00139685 */
+			/* ç§»å»æ‰€æœ‰çš„çŸ­æœŸå‚è€ƒå¸§ liuxw+00139685 */
             while(h->short_ref_count){
                 remove_short(h, h->short_ref[0]->frame_num, 0);
             }
-			/* ÒÆÈ¥ËùÓĞµÄ³¤ÆÚ²Î¿¼Ö¡ liuxw+00139685 */
+			/* ç§»å»æ‰€æœ‰çš„é•¿æœŸå‚è€ƒå¸§ liuxw+00139685 */
             for(j = 0; j < 16; j++) {
                 remove_long(h, j, 0);
             }
-			/* Çå×´Ì¬ĞÅÏ¢(²Ù×÷Í¬IDRÖ¡Ê±Ò»ÑùµÄ) liuxw+00139685 */
+			/* æ¸…çŠ¶æ€ä¿¡æ¯(æ“ä½œåŒIDRå¸§æ—¶ä¸€æ ·çš„) liuxw+00139685 */
             s->current_picture_ptr->poc=
             s->current_picture_ptr->field_poc[0]=
             s->current_picture_ptr->field_poc[1]=
@@ -4734,7 +4734,7 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
         default: assert(0);
         }
     }
-	/* Èç¹ûµ±Ç°Í¼Ïñ»¹Ã»ÓĞ½øĞĞ·ÖÅä£¨ÊÇ³¤ÆÚ¡¢¶ÌÆÚ»¹ÊÇ²»×÷²Î¿¼£©liuxw+00139685 */
+	/* å¦‚æœå½“å‰å›¾åƒè¿˜æ²¡æœ‰è¿›è¡Œåˆ†é…ï¼ˆæ˜¯é•¿æœŸã€çŸ­æœŸè¿˜æ˜¯ä¸ä½œå‚è€ƒï¼‰liuxw+00139685 */
     if (!current_ref_assigned) {
         /* Second field of complementary field pair; the first field of
          * which is already referenced. If short referenced, it
@@ -4742,8 +4742,8 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
          * in long_ref; trying to put it on the short list here is an
          * error in the encoded bit stream (ref: 7.4.3.3, NOTE 2 and 3).
          */
-		/*  Èç¹û¶ÌÆÚ²Î¿¼Ö¡µÄ¸öÊı´óÓÚ0¶øÇÒµ±Ç°Í¼ÏñÎªµÚ¶ş³¡£¨µÚÒ»³¡×÷Îª²Î¿¼£©£¬
-		    Ôò²»Ğè¸üĞÂ¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞ(ÒÑ¾­´æÔÚÁË)£¬½«µ±Ç°»¥²¹²Î¿¼³¡¶ÔÉèÎªÖ¡²Î¿¼ liuxw+00139685 */
+		/*  å¦‚æœçŸ­æœŸå‚è€ƒå¸§çš„ä¸ªæ•°å¤§äº0è€Œä¸”å½“å‰å›¾åƒä¸ºç¬¬äºŒåœºï¼ˆç¬¬ä¸€åœºä½œä¸ºå‚è€ƒï¼‰ï¼Œ
+		    åˆ™ä¸éœ€æ›´æ–°çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—(å·²ç»å­˜åœ¨äº†)ï¼Œå°†å½“å‰äº’è¡¥å‚è€ƒåœºå¯¹è®¾ä¸ºå¸§å‚è€ƒ liuxw+00139685 */
         if (h->short_ref_count && h->short_ref[0] == s->current_picture_ptr) 
 		{
             /* Just mark the second field valid */
@@ -4751,9 +4751,9 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
         }
 		else if (s->current_picture_ptr->long_ref) 
 		{
-			/* ½øÈëif (!current_ref_assigned)Õâ¸ö·ÖÖ§ºó²»ÄÜ¶Ô³¤ÆÚ²Î¿¼Í¼Ïñ×÷ÈÎºÎ¸Ä±ä
-			   £¬Ö»ÓĞÔÚfor(i=0; i<mmco_count; i++)µÄÑ­»·ÖĞ¶Ô³¤ÆÚ²Î¿¼½øĞĞ¸Ä±ä£»
-			   ³öÏÖÇé¿ö£ºµÚÒ»³¡×÷³¤ÆÚ²Î¿¼£¬µÚ¶ş³¡×÷¶ÌÆÚ²Î¿¼ liuxw+00139685 */
+			/* è¿›å…¥if (!current_ref_assigned)è¿™ä¸ªåˆ†æ”¯åä¸èƒ½å¯¹é•¿æœŸå‚è€ƒå›¾åƒä½œä»»ä½•æ”¹å˜
+			   ï¼Œåªæœ‰åœ¨for(i=0; i<mmco_count; i++)çš„å¾ªç¯ä¸­å¯¹é•¿æœŸå‚è€ƒè¿›è¡Œæ”¹å˜ï¼›
+			   å‡ºç°æƒ…å†µï¼šç¬¬ä¸€åœºä½œé•¿æœŸå‚è€ƒï¼Œç¬¬äºŒåœºä½œçŸ­æœŸå‚è€ƒ liuxw+00139685 */
 //          av_log(h->s.avctx, AV_LOG_ERROR, "illegal short term reference "
 			av_log(h->s.avctx, AV_LOG_WARNING, "illegal short term reference "
                                              "assignment for second field "
@@ -4764,7 +4764,7 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
         } 
 		else 
 		{
-			/* ´Ó¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞÕÒµ±Ç°Í¼ÏñµÄframe_num£¬ÈôÕÒµ½ÁË£¬Ôò±¨´í£¨ÒòÎª»¹Î´·Å½øÈ¥£©liuxw+00139685 */
+			/* ä»çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­æ‰¾å½“å‰å›¾åƒçš„frame_numï¼Œè‹¥æ‰¾åˆ°äº†ï¼Œåˆ™æŠ¥é”™ï¼ˆå› ä¸ºè¿˜æœªæ”¾è¿›å»ï¼‰liuxw+00139685 */
             pic= remove_short(h, s->current_picture_ptr->frame_num, 0);
             if(pic)
 			{
@@ -4773,18 +4773,18 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
 				IMEDIA_SET_ERR_SLICE(h->s.avctx->iErrorCode,IMEDIA_ERR_SLICE_MARKER);
 				h->s.avctx->iTotalError++;
             }
-			/* Èô¶ÌÆÚ²Î¿¼Í¼Ïñ¸öÊı´óÓÚ1£¬Ôò½«ËùÓĞµÄ²Î¿¼Ö¡ÍùºóÒÆÒ»Ö¡ liuxw+00139685 */
+			/* è‹¥çŸ­æœŸå‚è€ƒå›¾åƒä¸ªæ•°å¤§äº1ï¼Œåˆ™å°†æ‰€æœ‰çš„å‚è€ƒå¸§å¾€åç§»ä¸€å¸§ liuxw+00139685 */
             if(h->short_ref_count)
                 memmove(&h->short_ref[1], &h->short_ref[0], h->short_ref_count*sizeof(Picture*));
-			/* °Ñµ±Ç°Í¼Ïñ²åÈëµ½¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞµÄshort_ref[0] ²¢¸üĞÂ¶ÌÆÚ²Î¿¼¶ÓÁĞµÄĞÅÏ¢ liuxw+00139685 */
+			/* æŠŠå½“å‰å›¾åƒæ’å…¥åˆ°çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—çš„short_ref[0] å¹¶æ›´æ–°çŸ­æœŸå‚è€ƒé˜Ÿåˆ—çš„ä¿¡æ¯ liuxw+00139685 */
             h->short_ref[0]= s->current_picture_ptr;
             h->short_ref_count++;
             s->current_picture_ptr->reference |= s->picture_structure;
         }
     }
 
-	/* Èç¹ûÖ´ĞĞmarkingºó¶ÌÆÚ²Î¿¼Ö¡ºÍ³¤ÆÚ²Î¿¼Ö¡µÄ¸öÊı´óÓÚspsÖĞµÄframe_num(max_ref_frame_num)£¬
-	   ÔòËµÃ÷³öÁËÎÊÌâ£¨ÒòÎªÔÚmarkingµÄÊ±ºòÒÑ¾­½øĞĞ¹ı¼ì²é) liuxw+00139685 */
+	/* å¦‚æœæ‰§è¡ŒmarkingåçŸ­æœŸå‚è€ƒå¸§å’Œé•¿æœŸå‚è€ƒå¸§çš„ä¸ªæ•°å¤§äºspsä¸­çš„frame_num(max_ref_frame_num)ï¼Œ
+	   åˆ™è¯´æ˜å‡ºäº†é—®é¢˜ï¼ˆå› ä¸ºåœ¨markingçš„æ—¶å€™å·²ç»è¿›è¡Œè¿‡æ£€æŸ¥) liuxw+00139685 */
     if (h->long_ref_count + h->short_ref_count > h->sps.ref_frame_count)
 	{
         /* We have too many reference frames, probably due to corrupted
@@ -4797,8 +4797,8 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
                "corrupt input), discarding one\n");
 		IMEDIA_SET_ERR_SLICE(h->s.avctx->iErrorCode,IMEDIA_ERR_SLICE_MARKER);
 		h->s.avctx->iTotalError++;
-		/* ³öÎÊÌâºóµÄ×ö·¨£ºµ±È«ÊÇ³¤ÆÚ²Î¿¼Ö¡Ê±£¬Ôò¶ªÆú³¤ÆÚ²Î¿¼Ë÷Òı×îĞ¡µÄÄÇÒ»¸ö
-		   (???Ó¦¸Ã¶ªÆúË÷Òı×î´óµÄÄÇÒ»¸ö²Å±È½ÏºÃ) liuxw+00139685 */
+		/* å‡ºé—®é¢˜åçš„åšæ³•ï¼šå½“å…¨æ˜¯é•¿æœŸå‚è€ƒå¸§æ—¶ï¼Œåˆ™ä¸¢å¼ƒé•¿æœŸå‚è€ƒç´¢å¼•æœ€å°çš„é‚£ä¸€ä¸ª
+		   (???åº”è¯¥ä¸¢å¼ƒç´¢å¼•æœ€å¤§çš„é‚£ä¸€ä¸ªæ‰æ¯”è¾ƒå¥½) liuxw+00139685 */
         if (h->long_ref_count && !h->short_ref_count) 
 		{
             for (i = 0; i < 16; ++i)
@@ -4810,7 +4810,7 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
         } 
 		else 
 		{
-			/* ³öÎÊÌâºóµÄ×ö·¨£ºÈç¹û´æÔÚ¶ÌÆÚ²Î¿¼Ö¡£¬Ôò¶ªÆú¶ÌÆÚ²Î¿¼Ë÷Òı×î´óµÄÄÇÒ»¸ö liuxw+00139685 */
+			/* å‡ºé—®é¢˜åçš„åšæ³•ï¼šå¦‚æœå­˜åœ¨çŸ­æœŸå‚è€ƒå¸§ï¼Œåˆ™ä¸¢å¼ƒçŸ­æœŸå‚è€ƒç´¢å¼•æœ€å¤§çš„é‚£ä¸€ä¸ª liuxw+00139685 */
             pic = h->short_ref[h->short_ref_count - 1];
             remove_short(h, pic->frame_num, 0);
         }
@@ -4821,7 +4821,7 @@ static int execute_ref_pic_marking(H264Context *h, MMCO *mmco, int mmco_count){
     return 0;
 }
 
-/* ²Î¿¼Í¼Ïñ¶ÓÁĞµÄ±ê¼Ç lixxw+00139685 */
+/* å‚è€ƒå›¾åƒé˜Ÿåˆ—çš„æ ‡è®° lixxw+00139685 */
 static int decode_ref_pic_marking(H264Context *h, GetBitContext *gb){
     MpegEncContext * const s = &h->s;
     int i;
@@ -4829,9 +4829,9 @@ static int decode_ref_pic_marking(H264Context *h, GetBitContext *gb){
     h->mmco_index= 0;
     if(h->nal_unit_type == NAL_IDR_SLICE)
 	{ //FIXME fields
-		/* ??? ´ËÓï·¨ÔªËØ²¢Î´Ê¹ÓÃ£¬²»ÖªµÀ»á²»»áÓĞÎÊÌâ liuxw+00139685 */
+		/* ??? æ­¤è¯­æ³•å…ƒç´ å¹¶æœªä½¿ç”¨ï¼Œä¸çŸ¥é“ä¼šä¸ä¼šæœ‰é—®é¢˜ liuxw+00139685 */
         s->broken_link= get_bits1(gb) -1;
-		/* ½«µ±Ç°IDRÍ¼Ïñ×÷Îª³¤ÆÚ²Î¿¼Í¼Ïñ */
+		/* å°†å½“å‰IDRå›¾åƒä½œä¸ºé•¿æœŸå‚è€ƒå›¾åƒ */
         if(get_bits1(gb))
 		{
             h->mmco[0].opcode= MMCO_LONG;
@@ -4841,18 +4841,18 @@ static int decode_ref_pic_marking(H264Context *h, GetBitContext *gb){
     }
 	else
 	{
-		/* ²ÉÓÃ×ÔÊÊÓ¦µÄ²Î¿¼Í¼Ïñ±ê¼Ç·½Ê½ lixxw+00139685 */
+		/* é‡‡ç”¨è‡ªé€‚åº”çš„å‚è€ƒå›¾åƒæ ‡è®°æ–¹å¼ lixxw+00139685 */
         if(get_bits1(gb)){ // adaptive_ref_pic_marking_mode_flag
             for(i= 0; i<MAX_MMCO_COUNT; i++) 
 			{
-				/* µÃµ½²Î¿¼Í¼Ïñ±ê¼ÇµÄ²Ù×÷Âë lixxw+00139685 */
+				/* å¾—åˆ°å‚è€ƒå›¾åƒæ ‡è®°çš„æ“ä½œç  lixxw+00139685 */
                 MMCOOpcode opcode= get_ue_golomb_31(gb);
-				/* ¼ÇÂ¼²Î¿¼Í¼Ïñ±ê¼ÇµÄ²Ù×÷Âë lixxw+00139685 */
+				/* è®°å½•å‚è€ƒå›¾åƒæ ‡è®°çš„æ“ä½œç  lixxw+00139685 */
                 h->mmco[i].opcode= opcode;
 
-				/* ´ÓÂëÁ÷ÖĞ½âÎö¶ÔÓ¦²Ù×÷ÂëµÄÓï·¨ÔªËØ£¬²¢½øĞĞ±£´æ lixxw+00139685 */
+				/* ä»ç æµä¸­è§£æå¯¹åº”æ“ä½œç çš„è¯­æ³•å…ƒç´ ï¼Œå¹¶è¿›è¡Œä¿å­˜ lixxw+00139685 */
 
-				/* µÃµ½¶ÌÆÚ²Î¿¼Í¼ÏñµÄpic_num£¬²¢½øĞĞ±£´æ lixxw+00139685 */
+				/* å¾—åˆ°çŸ­æœŸå‚è€ƒå›¾åƒçš„pic_numï¼Œå¹¶è¿›è¡Œä¿å­˜ lixxw+00139685 */
                 if(opcode==MMCO_SHORT2UNUSED || opcode==MMCO_SHORT2LONG)
 				{
                     h->mmco[i].short_pic_num= (h->curr_pic_num - get_ue_golomb(gb) - 1) & (h->max_pic_num - 1);
@@ -4861,21 +4861,21 @@ static int decode_ref_pic_marking(H264Context *h, GetBitContext *gb){
                         return -1;
                     }*/
                 }
-				/* µÃµ½³¤ÆÚ²Î¿¼Í¼ÏñµÄpic_num»ò³¤ÆÚ²Î¿¼Í¼ÏñµÄ×î´óÖµ£¬²¢½øĞĞ±£´æ lixxw+00139685 */
+				/* å¾—åˆ°é•¿æœŸå‚è€ƒå›¾åƒçš„pic_numæˆ–é•¿æœŸå‚è€ƒå›¾åƒçš„æœ€å¤§å€¼ï¼Œå¹¶è¿›è¡Œä¿å­˜ lixxw+00139685 */
                 if(opcode==MMCO_SHORT2LONG || opcode==MMCO_LONG2UNUSED || opcode==MMCO_LONG || opcode==MMCO_SET_MAX_LONG)
 				{
                     unsigned int long_arg= get_ue_golomb_31(gb);
 					/* 2010/08/11 10:00:00 liuxw+00139685 */
-					/* Èç¹û²Ù×÷ÂëÊÇ4£¬Ò²¾ÍÊÇÉèÖÃ×î´ó³¤ÆÚ²Î¿¼Ö¡µÄË÷ÒıÊ±£¬ÆäÖµÒª¼õ1 */
+					/* å¦‚æœæ“ä½œç æ˜¯4ï¼Œä¹Ÿå°±æ˜¯è®¾ç½®æœ€å¤§é•¿æœŸå‚è€ƒå¸§çš„ç´¢å¼•æ—¶ï¼Œå…¶å€¼è¦å‡1 */
 					if(opcode==MMCO_SET_MAX_LONG)
 					{
 						long_arg--;
 					}
-					/* 1¡¢long_pic_num´óÓÚ32£¨fieldÊ±£©£»2¡¢ÊÇlong_pic_num´óÓÚ16(frame)£»3¡¢max_long_frame_index´óÓÚ16£»
-					   4¡¢long_pic_num´óÓÚ16¶øÇÒopcode==MMCO_SHORT2LONG(Èô²Î¿¼ÊÇ³¡£¬Ôò½«°üº¬µ±Ç°³¡µÄ²Î¿¼Ö¡»ò»¥²¹²Î¿¼³¡ÉèÎª³¤ÆÚ²Î¿¼£»³¤ÆÚ²Î¿¼Í¼ÏñÊÇ°´Ö¡½øĞĞ´æ·ÅµÄ)£»
-					   5¡¢long_pic_num´óÓÚ16¶øÇÒopcode==MMCO_LONG(Èôµ±Ç°ÊÇ³¡£¬Ôò½«°üº¬µ±Ç°³¡µÄ²Î¿¼Ö¡»ò»¥²¹²Î¿¼³¡ÉèÎª³¤ÆÚ²Î¿¼Ö¡£»³¤ÆÚ²Î¿¼Í¼ÏñÊÇ°´Ö¡½øĞĞ´æ·ÅµÄ);
-					   Âú×ãÒÔÉÏÌõ¼şÖ®Ò»¼´»á±¨¸æ´íÎó£»Ö»ÓĞÔÚopcode == MMCO_LONG2UNUSED¶øÇÒµ±Ç°ÊÇ³¡µÄÇé¿öÏÂ£¬0<long_pic_num<32
-					   £¨ºóÃæ»á¸ù¾İlong_pic_numºÍ²Î¿¼ÊôĞÔµÃµ½long_frame_index£¬´Ó¶ø¸ù¾İlong_frame_indexºÍ²Î¿¼ÊôĞÔ½øĞĞunused²Ù×÷£© liuxw+00139685 */
+					/* 1ã€long_pic_numå¤§äº32ï¼ˆfieldæ—¶ï¼‰ï¼›2ã€æ˜¯long_pic_numå¤§äº16(frame)ï¼›3ã€max_long_frame_indexå¤§äº16ï¼›
+					   4ã€long_pic_numå¤§äº16è€Œä¸”opcode==MMCO_SHORT2LONG(è‹¥å‚è€ƒæ˜¯åœºï¼Œåˆ™å°†åŒ…å«å½“å‰åœºçš„å‚è€ƒå¸§æˆ–äº’è¡¥å‚è€ƒåœºè®¾ä¸ºé•¿æœŸå‚è€ƒï¼›é•¿æœŸå‚è€ƒå›¾åƒæ˜¯æŒ‰å¸§è¿›è¡Œå­˜æ”¾çš„)ï¼›
+					   5ã€long_pic_numå¤§äº16è€Œä¸”opcode==MMCO_LONG(è‹¥å½“å‰æ˜¯åœºï¼Œåˆ™å°†åŒ…å«å½“å‰åœºçš„å‚è€ƒå¸§æˆ–äº’è¡¥å‚è€ƒåœºè®¾ä¸ºé•¿æœŸå‚è€ƒå¸§ï¼›é•¿æœŸå‚è€ƒå›¾åƒæ˜¯æŒ‰å¸§è¿›è¡Œå­˜æ”¾çš„);
+					   æ»¡è¶³ä»¥ä¸Šæ¡ä»¶ä¹‹ä¸€å³ä¼šæŠ¥å‘Šé”™è¯¯ï¼›åªæœ‰åœ¨opcode == MMCO_LONG2UNUSEDè€Œä¸”å½“å‰æ˜¯åœºçš„æƒ…å†µä¸‹ï¼Œ0<long_pic_num<32
+					   ï¼ˆåé¢ä¼šæ ¹æ®long_pic_numå’Œå‚è€ƒå±æ€§å¾—åˆ°long_frame_indexï¼Œä»è€Œæ ¹æ®long_frame_indexå’Œå‚è€ƒå±æ€§è¿›è¡Œunusedæ“ä½œï¼‰ liuxw+00139685 */
                     if(long_arg >= 32 || (long_arg >= 16 && !(opcode == MMCO_LONG2UNUSED && FIELD_PICTURE)))
 					{
 //                      av_log(h->s.avctx, AV_LOG_ERROR, "illegal long ref in memory management control operation %d\n", opcode);
@@ -4884,34 +4884,34 @@ static int decode_ref_pic_marking(H264Context *h, GetBitContext *gb){
                     }
                     h->mmco[i].long_arg= long_arg;
                 }
-				/* ¼ì²é²Ù×÷ÂëµÄºÏ·¨ĞÔ lixxw+00139685 */
+				/* æ£€æŸ¥æ“ä½œç çš„åˆæ³•æ€§ lixxw+00139685 */
                 if(opcode > (unsigned)MMCO_LONG)
 				{
 //                  av_log(h->s.avctx, AV_LOG_ERROR, "illegal memory management control operation %d\n", opcode);
 					av_log(h->s.avctx, AV_LOG_WARNING, "illegal memory management control operation %d\n", opcode);
                     return -1;
                 }
-				/* Èç¹û²Ù×÷ÂëµÈÓÚ0£¬ÔòÍË³ö²Î¿¼Í¼ÏñµÄ±ê¼Ç£¬²»¼ÌĞøÍùºó¶ÁÈ¡²Ù×÷ÂëÓï·¨ÔªËØ lixxw+00139685 */
+				/* å¦‚æœæ“ä½œç ç­‰äº0ï¼Œåˆ™é€€å‡ºå‚è€ƒå›¾åƒçš„æ ‡è®°ï¼Œä¸ç»§ç»­å¾€åè¯»å–æ“ä½œç è¯­æ³•å…ƒç´  lixxw+00139685 */
                 if(opcode == MMCO_END)
                     break;
             }
-			/* ¼ÇÂ¼Ö´ĞĞ²Î¿¼Í¼Ïñ±ê¼ÇµÄ´ÎÊı lixxw+00139685 */
+			/* è®°å½•æ‰§è¡Œå‚è€ƒå›¾åƒæ ‡è®°çš„æ¬¡æ•° lixxw+00139685 */
             h->mmco_index= i;
         }
 		else
 		{
-			/* ²ÉÓÃ»¬¶¯´°µÄ²Î¿¼Í¼Ïñ±ê¼Ç·½Ê½ liuxw+00139685 */
+			/* é‡‡ç”¨æ»‘åŠ¨çª—çš„å‚è€ƒå›¾åƒæ ‡è®°æ–¹å¼ liuxw+00139685 */
             assert(h->long_ref_count + h->short_ref_count <= h->sps.ref_frame_count);
-			/* µ±¶ÌÆÚ²Î¿¼Ö¡´æ¶øÇÒ³¤ÆÚ²Î¿¼Ö¡ºÍ¶ÌÆÚ²Î¿¼Ö¡µÄ×ÜÊıµÈÓÚref_frame_numÊ±£¬¶øÇÒÂú×ãÒÔÏÂÌõ¼şÖ®Ò»£º
-			   1¡¢µ±Ç°Í¼ÏñÊÇÖ¡ 2¡¢µ±Ç°Í¼ÏñÊÇ¶¥³¡ 
-			   ÄÇÃ´½«¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞµÄpic_num×îĞ¡µÄÄÇÒ»Ö¡´Ó¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞ±ê¼ÇÎªunused liuxw+00139685 */
+			/* å½“çŸ­æœŸå‚è€ƒå¸§å­˜è€Œä¸”é•¿æœŸå‚è€ƒå¸§å’ŒçŸ­æœŸå‚è€ƒå¸§çš„æ€»æ•°ç­‰äºref_frame_numæ—¶ï¼Œè€Œä¸”æ»¡è¶³ä»¥ä¸‹æ¡ä»¶ä¹‹ä¸€ï¼š
+			   1ã€å½“å‰å›¾åƒæ˜¯å¸§ 2ã€å½“å‰å›¾åƒæ˜¯é¡¶åœº 
+			   é‚£ä¹ˆå°†çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­çš„pic_numæœ€å°çš„é‚£ä¸€å¸§ä»çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­æ ‡è®°ä¸ºunused liuxw+00139685 */
             if(h->short_ref_count && h->long_ref_count + h->short_ref_count == h->sps.ref_frame_count &&
                     !(FIELD_PICTURE && !s->first_field && s->current_picture_ptr->reference)) 
 			{
                 h->mmco[0].opcode= MMCO_SHORT2UNUSED;
                 h->mmco[0].short_pic_num= h->short_ref[ h->short_ref_count - 1 ]->frame_num;
                 h->mmco_index= 1;
-				/* Èç¹ûÊÇ³¡£¬Ôò½«¶ÌÆÚ²Î¿¼Ö¡¶ÓÁĞÖĞpic_num×îĞ¡µÄÄÇÒ»Ö¡µÄÁ½³¡(²»¹ÜÊÇ·ñ¶¼×ö²Î¿¼)¶¼±ê¼ÇÎªunused liuxw+00139685 */
+				/* å¦‚æœæ˜¯åœºï¼Œåˆ™å°†çŸ­æœŸå‚è€ƒå¸§é˜Ÿåˆ—ä¸­pic_numæœ€å°çš„é‚£ä¸€å¸§çš„ä¸¤åœº(ä¸ç®¡æ˜¯å¦éƒ½åšå‚è€ƒ)éƒ½æ ‡è®°ä¸ºunused liuxw+00139685 */
                 if (FIELD_PICTURE) 
 				{
                     h->mmco[0].short_pic_num *= 2;
@@ -4956,7 +4956,7 @@ static int init_poc(H264Context *h)
         int i;
 
 		/* 2010/04/30 17:00:00 liuxw+00139685 [az1d02058] */
-		/* Ôö¼ÓÒ»¸öÅĞ¶Ï£ºµ±µ±Ç°pictureÎªIDRÊ±£¬Ôò½«delta_poc³õÊ¼»¯Îª0 */
+		/* å¢åŠ ä¸€ä¸ªåˆ¤æ–­ï¼šå½“å½“å‰pictureä¸ºIDRæ—¶ï¼Œåˆ™å°†delta_pocåˆå§‹åŒ–ä¸º0 */
 		if(NAL_IDR_SLICE == h->nal_unit_type)
 		{
 			h->delta_poc[0] = 0;
@@ -5008,7 +5008,7 @@ static int init_poc(H264Context *h)
         s->current_picture_ptr->field_poc[1]= field_poc[1];
     cur->poc= FFMIN(cur->field_poc[0], cur->field_poc[1]);
 	/* 2010/05/7 9:00:00 liuxw+00139685 */
-	/* Èôµ±Ç°Á½³¡ÖĞÓĞÒ»³¡ÊÇIDR£¬Ôò½«cur->pocÖÃÎª0 */
+	/* è‹¥å½“å‰ä¸¤åœºä¸­æœ‰ä¸€åœºæ˜¯IDRï¼Œåˆ™å°†cur->pocç½®ä¸º0 */
 	if(cur->field_poc[0] == 0 || cur->field_poc[1] == 0)
 	{
 		cur->poc = 0;
@@ -5114,17 +5114,17 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     int last_pic_structure;
 
     s->dropable= h->nal_ref_idc == 0;
-	/* Èç¹ûµ±Ç°Ö¡Îª·Ç²Î¿¼Ö¡¶øÇÒ´ò¿ªCODEC_FLAG2_FAST¹¦ÄÜ£¬Ôò¿ÉÒÔµ÷ÓÃ¼òµ¥µÄ1/4ÏñËØ²åÖµ */
+	/* å¦‚æœå½“å‰å¸§ä¸ºéå‚è€ƒå¸§è€Œä¸”æ‰“å¼€CODEC_FLAG2_FASTåŠŸèƒ½ï¼Œåˆ™å¯ä»¥è°ƒç”¨ç®€å•çš„1/4åƒç´ æ’å€¼ */
     if((s->avctx->flags2 & CODEC_FLAG2_FAST) && !h->nal_ref_idc){
         s->me.qpel_put= s->dsp.put_2tap_qpel_pixels_tab;
         s->me.qpel_avg= s->dsp.avg_2tap_qpel_pixels_tab;
-    }else{	/* ·ûºÏĞ­ÒéµÄ²åÖµ */
+    }else{	/* ç¬¦åˆåè®®çš„æ’å€¼ */
         s->me.qpel_put= s->dsp.put_h264_qpel_pixels_tab;
         s->me.qpel_avg= s->dsp.avg_h264_qpel_pixels_tab;
     }
 
     first_mb_in_slice= get_ue_golomb(&s->gb);
-	/* Èç¹ûCODEC_FLAG2_CHUNKS¹¦ÄÜ´ò¿ª£¬Ôò×öÒ»Ğ©slice¼¶µÄ³õÊ¼»¯(Èô¹¦ÄÜÃ»ÓĞ´ò¿ª£¬Ôòslice¼¶³õÊ¼»¯ÔÚdecode_nal_unit()ÖĞÒÑ¾­×öÁË) */
+	/* å¦‚æœCODEC_FLAG2_CHUNKSåŠŸèƒ½æ‰“å¼€ï¼Œåˆ™åšä¸€äº›sliceçº§çš„åˆå§‹åŒ–(è‹¥åŠŸèƒ½æ²¡æœ‰æ‰“å¼€ï¼Œåˆ™sliceçº§åˆå§‹åŒ–åœ¨decode_nal_unit()ä¸­å·²ç»åšäº†) */
     if((s->flags2 & CODEC_FLAG2_CHUNKS) && first_mb_in_slice == 0){
         h0->current_slice = 0;
         if (!s0->first_field)
@@ -5136,7 +5136,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 //      av_log(h->s.avctx, AV_LOG_ERROR, "slice type too large (%d) at %d %d\n", h->slice_type, s->mb_x, s->mb_y);
 		av_log(h->s.avctx, AV_LOG_WARNING, "slice type too large (%d) at %d %d\n", h->slice_type, s->mb_x, s->mb_y);
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó·µ»ØÂë */
+		/* å¢åŠ è¿”å›ç  */
 		IMEDIA_SET_ERR_SLICE(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_TYPE);
 		s->avctx->iTotalError++;
         return -1;
@@ -5149,8 +5149,8 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 
     slice_type= golomb_to_pict_type[ slice_type ];
 
-	/* 1¡¢Èç¹ûÊÇIDRÖ¡£¬Ôò½«²Î¿¼¶ÓÁĞ³õÊ¼»¯±êÖ¾ÖÃÎª1£¨²»×ö³õÊ¼»¯£ºIDRÊ±²Î¿¼¶ÓÁĞÒÑ±»Çå¿Õ£©
-	   2¡¢Èç¹û²»ÊÇpictureµÄµÚÒ»¸öslice¶øÇÒµ±Ç°slice_tyepµÈÓÚÉÏÒ»¸ösliceµÄslice_typeÊ±£¬Ò²²»Ğè³õÊ¼»¯²Î¿¼¶ÓÁĞ */
+	/* 1ã€å¦‚æœæ˜¯IDRå¸§ï¼Œåˆ™å°†å‚è€ƒé˜Ÿåˆ—åˆå§‹åŒ–æ ‡å¿—ç½®ä¸º1ï¼ˆä¸åšåˆå§‹åŒ–ï¼šIDRæ—¶å‚è€ƒé˜Ÿåˆ—å·²è¢«æ¸…ç©ºï¼‰
+	   2ã€å¦‚æœä¸æ˜¯pictureçš„ç¬¬ä¸€ä¸ªsliceè€Œä¸”å½“å‰slice_tyepç­‰äºä¸Šä¸€ä¸ªsliceçš„slice_typeæ—¶ï¼Œä¹Ÿä¸éœ€åˆå§‹åŒ–å‚è€ƒé˜Ÿåˆ— */
 	if(slice_type == FF_I_TYPE || (h0->current_slice != 0 && slice_type == h0->last_slice_type) ) 
 	{
         default_ref_list_done = 1;
@@ -5159,7 +5159,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     h->slice_type_nos= slice_type & 3;
 
     s->pict_type= h->slice_type; // to make a few old functions happy, it's wrong though
-	/* Èôµ±Ç°Ö¡ÎªBÖ¡£¬¶øÇÒÆäÇ°Ã»ÓĞ²Î¿¼Ö¡Ê±;È¥µôÔ­Òò£º½â¾öBÖ¡×÷µÚÒ»²ã²Î¿¼µÄÎÊÌâ */
+	/* è‹¥å½“å‰å¸§ä¸ºBå¸§ï¼Œè€Œä¸”å…¶å‰æ²¡æœ‰å‚è€ƒå¸§æ—¶;å»æ‰åŸå› ï¼šè§£å†³Bå¸§ä½œç¬¬ä¸€å±‚å‚è€ƒçš„é—®é¢˜ */
 /*    if (s->pict_type == FF_B_TYPE && s0->last_picture_ptr == NULL) {
         av_log(h->s.avctx, AV_LOG_ERROR,
                "B picture before any references, skipping\n");
@@ -5171,7 +5171,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 //      av_log(h->s.avctx, AV_LOG_ERROR, "pps_id out of range\n");
 		av_log(h->s.avctx, AV_LOG_WARNING, "pps_id out of range\n");
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂë */
+		/* å¢åŠ é”™è¯¯ç  */
 		IMEDIA_SET_ERR_SLICE(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_ID);
 		s->avctx->iTotalError++;
 		pps_id = 0;
@@ -5195,7 +5195,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     }
     h->sps = *h0->sps_buffers[h->pps.sps_id];
 
-	/* Èç¹ûpps¸Ä±äºó£¬ÔòÖØĞÂ³õÊ¼»¯·´Á¿»¯±í liuxw+00139685 */
+	/* å¦‚æœppsæ”¹å˜åï¼Œåˆ™é‡æ–°åˆå§‹åŒ–åé‡åŒ–è¡¨ liuxw+00139685 */
     if(h == h0 && h->dequant_coeff_pps != pps_id){
         h->dequant_coeff_pps = pps_id;
         init_dequant_tables(h);
@@ -5208,9 +5208,9 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 	s->height= 16*s->mb_height;
 
 	/* 2010/05/26 10:33:00 liuxw+00139685 */
-	/* È·±£ĞòÁĞµÄ³¤¶È²»»á¸Ä±ä£¬·ÀÖ¹ËÀ»ú */
+	/* ç¡®ä¿åºåˆ—çš„é•¿åº¦ä¸ä¼šæ”¹å˜ï¼Œé˜²æ­¢æ­»æœº */
 	/* 2010/06/03 10:00:00 liuxw+00139685 */
-	/* ½«Ìõ¼şs->context_initializedÈ¥µô£¬ÒòÎªÔÚspsÖĞÒÑ¾­¶ÔÆä½øĞĞ¸³Öµ */
+	/* å°†æ¡ä»¶s->context_initializedå»æ‰ï¼Œå› ä¸ºåœ¨spsä¸­å·²ç»å¯¹å…¶è¿›è¡Œèµ‹å€¼ */
 //	if(s->context_initialized)
 //	{
 		if(s->width != s->avctx->width || s->height != s->avctx->height)
@@ -5229,7 +5229,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     h->b_stride=  s->mb_width*4;
     h->b8_stride= s->mb_width*2;
 
-/* ÒÔÏÂ¼ÆËãÍ¼ÏñÔ­Ê¼´óĞ¡µÄ·½·¨²»¶Ô */
+/* ä»¥ä¸‹è®¡ç®—å›¾åƒåŸå§‹å¤§å°çš„æ–¹æ³•ä¸å¯¹ */
 	/*
     s->width = 16*s->mb_width - 2*FFMIN(h->sps.crop_right, 7);
     if(h->sps.frame_mbs_only_flag)
@@ -5238,15 +5238,15 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
         s->height= 16*s->mb_height - 4*FFMIN(h->sps.crop_bottom, 3);   */
 
 	/* 2010/30/06 14:33:00 liuxw+00139685 */
-	/* ¸üĞÂÂëÁ÷ĞÅÏ¢ */
+	/* æ›´æ–°ç æµä¿¡æ¯ */
 	s->avctx->iChromaFormat = h->sps.chroma_format_idc;
-	/* ¸üĞÂÂëÁ÷×´Ì¬ĞÅÏ¢ */
+	/* æ›´æ–°ç æµçŠ¶æ€ä¿¡æ¯ */
 	s->avctx->iActualProfile = h->sps.profile_idc;
 	s->avctx->iActualLevel   = h->sps.level_idc;
 	s->avctx->iActualRefNum  = h->sps.ref_frame_count;
-/* ½áÊø£¨ĞÂÔö´úÂë£©*/
+/* ç»“æŸï¼ˆæ–°å¢ä»£ç ï¼‰*/
 
-	/* ÔÚ¹«¹²½á¹¹ÌåÒÑ¾­³õÊ¼»¯µÄÇé¿öÏÂ£ºÈç¹ûµ±Ç°Ïß³ÌËù´¦ÀíµÄsliceÓëÏÈÇ°´¦ÀíµÄsliceµÄ¿í¶È»ò¸ß¶È²»Ò»ÖÂµÄÇé¿öÏÂ£¬ÊÍ·Åµ±Ç°Ïß³ÌËùÕ¼µÄ×ÊÔ´ */
+	/* åœ¨å…¬å…±ç»“æ„ä½“å·²ç»åˆå§‹åŒ–çš„æƒ…å†µä¸‹ï¼šå¦‚æœå½“å‰çº¿ç¨‹æ‰€å¤„ç†çš„sliceä¸å…ˆå‰å¤„ç†çš„sliceçš„å®½åº¦æˆ–é«˜åº¦ä¸ä¸€è‡´çš„æƒ…å†µä¸‹ï¼Œé‡Šæ”¾å½“å‰çº¿ç¨‹æ‰€å çš„èµ„æº */
     if (s->context_initialized
         && (   s->width != s->avctx->width || s->height != s->avctx->height)) {
         if(h != h0)
@@ -5255,15 +5255,15 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
         flush_dpb(s->avctx);
         MPV_common_end(s);
     }
-	/* Èç¹û¹«¹²½á¹¹Ìå±äÁ¿Ã»ÓĞ³õÊ¼»¯£¬Ôò½øĞĞ³õÊ¼»¯ */
+	/* å¦‚æœå…¬å…±ç»“æ„ä½“å˜é‡æ²¡æœ‰åˆå§‹åŒ–ï¼Œåˆ™è¿›è¡Œåˆå§‹åŒ– */
     if (!s->context_initialized) {
 		/* 2010/06/10 18:30:00 liuxw+00139685 */
-		/* Ôö¼Ó·µ»ØÂë(ÔÚÄÚ´æ·ÖÅäÊ§°ÜµÄÇé¿öÏÂ·µ»Ø) */
+		/* å¢åŠ è¿”å›ç (åœ¨å†…å­˜åˆ†é…å¤±è´¥çš„æƒ…å†µä¸‹è¿”å›) */
 		int iRet = 0;
-        /* ¹«¹²½á¹¹Ìå±äÁ¿Ã»ÓĞ³õÊ¼»¯Ê±£¬hÓ¦¸ÃµÈÓÚh0 */
+        /* å…¬å…±ç»“æ„ä½“å˜é‡æ²¡æœ‰åˆå§‹åŒ–æ—¶ï¼Œhåº”è¯¥ç­‰äºh0 */
 		if(h != h0)
             return -1;  // we cant (re-)initialize context during parallel decoding
-		/* ³õÊ¼»¯¹«¹²½á¹¹Ìå±äÁ¿£º */
+		/* åˆå§‹åŒ–å…¬å…±ç»“æ„ä½“å˜é‡ï¼š */
         if (MPV_common_init(s) < 0)
             return -1;
 
@@ -5271,14 +5271,14 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 
         init_scan_tables(h);
 		/* 2010/06/10 18:30:00 liuxw+00139685 */
-		/* Ôö¼Ó·µ»ØÂë(ÔÚÄÚ´æ·ÖÅäÊ§°ÜµÄÇé¿öÏÂ·µ»Ø) */
+		/* å¢åŠ è¿”å›ç (åœ¨å†…å­˜åˆ†é…å¤±è´¥çš„æƒ…å†µä¸‹è¿”å›) */
 //	   alloc_tables(h);
        iRet = alloc_tables(h);
 	   if(iRet < 0)
 	   {
 			return -1;
 	   }
-		/* ÎªÃ¿Ò»¸öÏß³Ì·ÖÅäÒ»¸öh264½âÂëÍ¨µÀ±äÁ¿,²¢½øĞĞ³õÊ¼»¯(¿½±´µÚÒ»¸öÄÚÈİ) */
+		/* ä¸ºæ¯ä¸€ä¸ªçº¿ç¨‹åˆ†é…ä¸€ä¸ªh264è§£ç é€šé“å˜é‡,å¹¶è¿›è¡Œåˆå§‹åŒ–(æ‹·è´ç¬¬ä¸€ä¸ªå†…å®¹) */
         for(i = 1; i < (unsigned int)s->avctx->thread_count; i++) 
 		{
             H264Context *c;
@@ -5290,7 +5290,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             init_scan_tables(c);
             clone_tables(c, h);
         }
-		/* ³õÊ¼»¯Ã¿¸öÏß³ÌµÄ½âÂëÍ¨µÀ±äÁ¿µÄ²¿·Ö³ÉÔ±·ÖÅä¿Õ¼ä£¨²»¹²Ïí£©*/
+		/* åˆå§‹åŒ–æ¯ä¸ªçº¿ç¨‹çš„è§£ç é€šé“å˜é‡çš„éƒ¨åˆ†æˆå‘˜åˆ†é…ç©ºé—´ï¼ˆä¸å…±äº«ï¼‰*/
         for(i = 0; i < (unsigned int)s->avctx->thread_count; i++)
             if(context_init(h->thread_context[i]) < 0)
                 return -1;
@@ -5298,7 +5298,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
         s->avctx->width = s->width;
         s->avctx->height = s->height;
 		/* 2010/08/28 14:30:00 liuxw+00139685 */
-	    /* Èôsps.sarÎª(0,0),ÔòÎŞĞè¸³Öµ */
+	    /* è‹¥sps.sarä¸º(0,0),åˆ™æ— éœ€èµ‹å€¼ */
 		if(h->sps.sar.den != 0 && h->sps.sar.num != 0)
 			s->avctx->sample_aspect_ratio= h->sps.sar;
         //if(!s->avctx->sample_aspect_ratio.den)
@@ -5338,9 +5338,9 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     }
     h->mb_field_decoding_flag= s->picture_structure != PICT_FRAME;
 
-	/*Èç¹ûÊÇÒ»Ö¡µÄµÚÒ»¸öslice£¬ÔòÒªÈ¥¼ì²éframe_numÊÇ·ñÁ¬Ğø */
+	/*å¦‚æœæ˜¯ä¸€å¸§çš„ç¬¬ä¸€ä¸ªsliceï¼Œåˆ™è¦å»æ£€æŸ¥frame_numæ˜¯å¦è¿ç»­ */
     if(h0->current_slice == 0){
-		/* Èôframe_num²»Á¬Ğø£º???[ºó¼Ì¸ú×Ù] */
+		/* è‹¥frame_numä¸è¿ç»­ï¼š???[åç»§è·Ÿè¸ª] */
         while(h->frame_num !=  h->prev_frame_num &&
               h->frame_num != (h->prev_frame_num+1)%(1<<h->sps.log2_max_frame_num)){
             av_log(NULL, AV_LOG_DEBUG, "Frame num gap %d %d\n", h->frame_num, h->prev_frame_num);
@@ -5364,7 +5364,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
                  * Previous field is unmatched. Don't display it, but let it
                  * remain for reference if marked as such.
                  */
-				/* Èç¹ûµ±Ç°³¡ºÍÇ°Ò»³¡²»ÊÇ»¥²¹³¡¶Ô£¬ÄÇÃ´²»ÏÔÊ¾Ç°Ò»³¡£»Èç¹ûÇ°Ò»³¡ÊÇ²Î¿¼³¡£¬ÔòÒÀÈ»±£ÁôÆä²Î¿¼ÊôĞÔ */
+				/* å¦‚æœå½“å‰åœºå’Œå‰ä¸€åœºä¸æ˜¯äº’è¡¥åœºå¯¹ï¼Œé‚£ä¹ˆä¸æ˜¾ç¤ºå‰ä¸€åœºï¼›å¦‚æœå‰ä¸€åœºæ˜¯å‚è€ƒåœºï¼Œåˆ™ä¾ç„¶ä¿ç•™å…¶å‚è€ƒå±æ€§ */
                 s0->current_picture_ptr = NULL;
                 s0->first_field = FIELD_PICTURE;
 				if(s0->first_field)
@@ -5372,7 +5372,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 					s->avctx->uiFldCnt++;
 				}
 
-            } else { /* µ±Ç°³¡ºÍÇ°Ò»³¡ÊÇ»¥²¹³¡¶Ô */
+            } else { /* å½“å‰åœºå’Œå‰ä¸€åœºæ˜¯äº’è¡¥åœºå¯¹ */
                 if (h->nal_ref_idc &&
                         s0->current_picture_ptr->reference &&
                         s0->current_picture_ptr->frame_num != h->frame_num) {
@@ -5382,7 +5382,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
                      * pair. Throw away previous field except for reference
                      * purposes.
                      */
-					/* Èç¹ûµ±Ç°³¡ºÍÇ°Ò»³¡ÊÇÒ»¶Ô»¥²¹²Î¿¼³¡¶Ô£¬µ«²»ÊôÓÚÍ¬Ò»Ö¡£¬Ôò²»Êä³öÇ°Ò»³¡£¬ÈÏÎªÆäÎªÒ»Ö¡µÄµÚÒ»³¡£¨¶¥³¡£©£¬µ«±£ÁôÆä²Î¿¼ÊôĞÔ£»*/
+					/* å¦‚æœå½“å‰åœºå’Œå‰ä¸€åœºæ˜¯ä¸€å¯¹äº’è¡¥å‚è€ƒåœºå¯¹ï¼Œä½†ä¸å±äºåŒä¸€å¸§ï¼Œåˆ™ä¸è¾“å‡ºå‰ä¸€åœºï¼Œè®¤ä¸ºå…¶ä¸ºä¸€å¸§çš„ç¬¬ä¸€åœºï¼ˆé¡¶åœºï¼‰ï¼Œä½†ä¿ç•™å…¶å‚è€ƒå±æ€§ï¼›*/
                     s0->first_field = 1;
                     s0->current_picture_ptr = NULL;
 					s->avctx->uiFldCnt++;
@@ -5395,57 +5395,57 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 					s->avctx->uiFldCnt++;
 				}
 				else 
-				{ /* ÊÇÒ»Ö¡ÖĞµÄµÚ¶ş³¡£¨µ×³¡)£¬Çå0µÚÒ»³¡±êÖ¾Î»£¨¶¥³¡±êÖ¾Î»£©*/
+				{ /* æ˜¯ä¸€å¸§ä¸­çš„ç¬¬äºŒåœºï¼ˆåº•åœº)ï¼Œæ¸…0ç¬¬ä¸€åœºæ ‡å¿—ä½ï¼ˆé¡¶åœºæ ‡å¿—ä½ï¼‰*/
                     /* Second field in complementary pair */
                     s0->first_field = 0;
                 }
             }
 
-        } else { /* Èç¹ûµ±Ç°ÊÇ¶¥³¡£¬Ôòfirst_field£½1£»Èç¹ûµ±Ç°ÊÇÖ¡£¬Ôòfirst_field£½0 */
+        } else { /* å¦‚æœå½“å‰æ˜¯é¡¶åœºï¼Œåˆ™first_fieldï¼1ï¼›å¦‚æœå½“å‰æ˜¯å¸§ï¼Œåˆ™first_fieldï¼0 */
             /* Frame or first field in a potentially complementary pair */
             assert(!s0->current_picture_ptr);
             s0->first_field = FIELD_PICTURE;
         }
-		/* Èç¹ûµ±Ç°ÊÇÖ¡»òÊÇ¶¥³¡£¬Ôò»á×öframe_start();ÈôÊÇµ×³¡£¬Ôò²»ĞèÒªÔÙµ÷ÓÃ */
+		/* å¦‚æœå½“å‰æ˜¯å¸§æˆ–æ˜¯é¡¶åœºï¼Œåˆ™ä¼šåšframe_start();è‹¥æ˜¯åº•åœºï¼Œåˆ™ä¸éœ€è¦å†è°ƒç”¨ */
 		/* frame_start():  */
         if((!FIELD_PICTURE || s0->first_field) && frame_start(h) < 0) {
             s0->first_field = 0;
             return -1;
         }
 
-		/* ĞÂÔö´úÂë */
-		if(!FIELD_PICTURE || s0->first_field) /* ÈôÊÇÖ¡»òÊÇ¶¥³¡Ê±£¬¸üĞÂÒÑ½âÂëI P BÖ¡µÄÊıÁ¿ */
+		/* æ–°å¢ä»£ç  */
+		if(!FIELD_PICTURE || s0->first_field) /* è‹¥æ˜¯å¸§æˆ–æ˜¯é¡¶åœºæ—¶ï¼Œæ›´æ–°å·²è§£ç I P Bå¸§çš„æ•°é‡ */
 		{
 			switch(slice_type)
 			{
 				case FF_I_TYPE:
-					s->avctx->uiDecIFrames++;  /* Ôö¼ÓÒÑ½âÂëIÖ¡ÊıÁ¿ */
+					s->avctx->uiDecIFrames++;  /* å¢åŠ å·²è§£ç Iå¸§æ•°é‡ */
 					break;
 				case FF_P_TYPE:
-					s->avctx->uiDecPFrames++;	 /* Ôö¼ÓÒÑ½âÂëPÖ¡ÊıÁ¿ */
+					s->avctx->uiDecPFrames++;	 /* å¢åŠ å·²è§£ç På¸§æ•°é‡ */
 					break;
 				case FF_B_TYPE:
-					s->avctx->uiDecBFrames++;  /* Ôö¼ÓÒÑ½âÂëBÖ¡ÊıÁ¿ */
+					s->avctx->uiDecBFrames++;  /* å¢åŠ å·²è§£ç Bå¸§æ•°é‡ */
 					break;
 				default:	break;
 			}
 		}
-		/* ½áÊø£¨ĞÂÔö´úÂë) */
+		/* ç»“æŸï¼ˆæ–°å¢ä»£ç ) */
     }
-	/* Èô¶àslice²¢ĞĞ½âÂëµÄ»°£¬Ôò³ıÁËµÚÒ»¸öÏß³ÌÒÔÍâ¶¼ĞèÒª¿½±´µÚÒ»¸öÏß³ÌµÄÒªÓÃµ½µÄ±í */
+	/* è‹¥å¤šsliceå¹¶è¡Œè§£ç çš„è¯ï¼Œåˆ™é™¤äº†ç¬¬ä¸€ä¸ªçº¿ç¨‹ä»¥å¤–éƒ½éœ€è¦æ‹·è´ç¬¬ä¸€ä¸ªçº¿ç¨‹çš„è¦ç”¨åˆ°çš„è¡¨ */
     if(h != h0)
         clone_slice(h, h0);
 
     s->current_picture_ptr->frame_num= h->frame_num; //FIXME frame_num cleanup
 
     assert(s->mb_num == s->mb_width * s->mb_height);
-	/* ¼ì²éfirst_mb_in_sliceµÄºÏ·¨ĞÔ liuxw+00139685 */
+	/* æ£€æŸ¥first_mb_in_sliceçš„åˆæ³•æ€§ liuxw+00139685 */
     if((int)(first_mb_in_slice << FIELD_OR_MBAFF_PICTURE) >= s->mb_num ||
        (int)first_mb_in_slice >= s->mb_num){
 //      av_log(h->s.avctx, AV_LOG_ERROR, "first_mb_in_slice overflow\n");
 		av_log(h->s.avctx, AV_LOG_WARNING, "first_mb_in_slice overflow\n");
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂë */
+		/* å¢åŠ é”™è¯¯ç  */
 		IMEDIA_SET_ERR_SLICE(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_ADDR);
 		s->avctx->iTotalError++;
 		first_mb_in_slice = 0;
@@ -5460,7 +5460,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     if(s->picture_structure==PICT_FRAME){
         h->curr_pic_num=   h->frame_num;
         h->max_pic_num= 1<< h->sps.log2_max_frame_num;
-    }else{ /* CurrPicNum¼ÆËã¼ûĞ­Òé7.4.3 liuxw+00139685 */
+    }else{ /* CurrPicNumè®¡ç®—è§åè®®7.4.3 liuxw+00139685 */
         h->curr_pic_num= 2*h->frame_num + 1;
         h->max_pic_num= 1<<(h->sps.log2_max_frame_num + 1);
     }
@@ -5472,7 +5472,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
     if(h->sps.poc_type==0){
         h->poc_lsb= get_bits(&s->gb, h->sps.log2_max_poc_lsb);
 		/* 2010/05/5 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂë */
+		/* å¢åŠ é”™è¯¯ç  */
 		if((int)h->poc_lsb >= (1<<h->sps.log2_max_poc_lsb))
 		{
 			av_log(h->s.avctx, AV_LOG_WARNING, "poc_lsb[%d] out of range[0,%d]\n",h->poc_lsb,h->sps.log2_max_poc_lsb);
@@ -5494,7 +5494,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             h->delta_poc[1]= get_se_golomb(&s->gb);
     }
 
-	/* ½âÎöpicture order count */
+	/* è§£æpicture order count */
     init_poc(h);
 
 #ifdef LXW_DEBUG
@@ -5524,19 +5524,19 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             if(h->slice_type_nos==FF_B_TYPE)
                 h->ref_count[1]= get_ue_golomb(&s->gb) + 1;
 			/* 2010/03/11 10:40:00 liuxw+00139685 */
-			/* Ôö¼Óelse·ÖÖ§Óï¾ä£ºµ±Îªp sliceÊ±£¬Ö»ÓĞÒ»¸ölist0²Î¿¼ÁĞ±í */
+			/* å¢åŠ elseåˆ†æ”¯è¯­å¥ï¼šå½“ä¸ºp sliceæ—¶ï¼Œåªæœ‰ä¸€ä¸ªlist0å‚è€ƒåˆ—è¡¨ */
 			else                    
 			{
 				h->ref_count[1] = 0;
 			}
 			/* 2010/03/11 10:40:00 liuxw+00139685 */
-			/* ÔÚinterÔ¤²âÊ±£¬²Î¿¼Í¼Ïñ¶ÓÁĞlist0µÄ¸öÊıÒ»¶¨Òª´óÓÚ0Ğ¡ÓÚ32£»list1Ö»ÒªĞ¡ÓÚ32¼´¿É */
+			/* åœ¨interé¢„æµ‹æ—¶ï¼Œå‚è€ƒå›¾åƒé˜Ÿåˆ—list0çš„ä¸ªæ•°ä¸€å®šè¦å¤§äº0å°äº32ï¼›list1åªè¦å°äº32å³å¯ */
 //          if(h->ref_count[0]-1 > 32-1 || h->ref_count[1]-1 > 32-1){
 			if(h->ref_count[0] -1 > 32 - 1 || h->ref_count[1] > 32){           
 //              av_log(h->s.avctx, AV_LOG_ERROR, "reference overflow\n");
 				av_log(h->s.avctx, AV_LOG_WARNING, "reference overflow\n");
 				/* 2010/03/22 17:00:00 liuxw+00139685 */
-				/* Ôö¼Ó´íÎóÂë */
+				/* å¢åŠ é”™è¯¯ç  */
 				IMEDIA_SET_ERR_SLICE(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_REF);
                 h->ref_count[0]= h->ref_count[1]= 1;
 				s->avctx->iTotalError++;
@@ -5549,7 +5549,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 		{
 			h->list_count= 1;
 			/* 2010/08/23 14:00:00 liuxw+00139685 */
-			/* Èç¹ûµ±Ç°Îªp slice£¬ÄÇÃ´list1µÄÊıÄ¿ÔòÎª0 */
+			/* å¦‚æœå½“å‰ä¸ºp sliceï¼Œé‚£ä¹ˆlist1çš„æ•°ç›®åˆ™ä¸º0 */
 			h->ref_count[1] = 0;
 		}
     }
@@ -5557,13 +5557,13 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 	{
 		h->list_count= 0;
 		/* 2010/04/08 21:30:00 liuxw+00139685 */
-		/* ½â¾öµ±µ±Ç°Ö¡ÎªIÖ¡Ê±£¬ref_countÃ»ÓĞ±»Çå0£¬µ¼ÖÂºóÃæËÀ»ú */
+		/* è§£å†³å½“å½“å‰å¸§ä¸ºIå¸§æ—¶ï¼Œref_countæ²¡æœ‰è¢«æ¸…0ï¼Œå¯¼è‡´åé¢æ­»æœº */
 		h->ref_count[0] = 0;
 		h->ref_count[1] = 0;
 	}
 
 	/* 2010/05/5 15:00:00 liuxw+00139685 */
-	/* Ôö¼Ó¶Ô²Î¿¼Ö¡ÊıµÄÅĞ¶Ï */
+	/* å¢åŠ å¯¹å‚è€ƒå¸§æ•°çš„åˆ¤æ–­ */
 	//if((int)h->ref_count[0] > (h->sps.ref_frame_count<<FIELD_PICTURE))
 	//{
 	//	av_log(s->avctx,AV_LOG_WARNING,"Ref count  is wrong!\n");
@@ -5584,7 +5584,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 	}
 
 	/* 2010/06/03 19:30:00 liuxw+00139685 */
-	/* ÈôÊÇmbaff»òÊÇÖ¡±àÂë£¬ÄÇÃ´list0/1ÖĞ²Î¿¼Í¼ÏñµÄ¸öÊı±ØĞèĞ¡ÓÚ16 */
+	/* è‹¥æ˜¯mbaffæˆ–æ˜¯å¸§ç¼–ç ï¼Œé‚£ä¹ˆlist0/1ä¸­å‚è€ƒå›¾åƒçš„ä¸ªæ•°å¿…éœ€å°äº16 */
 	if(!FIELD_PICTURE)
 	{
 		h->ref_count[0] = FFMIN(h->ref_count[0],16);
@@ -5598,41 +5598,41 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 
 	}
 
-	/* Èç¹ûÊÇP»òBÖ¡£¬Ôò½øĞĞ²Î¿¼¶ÓÁĞµÄ³õÊ¼»¯£¨ÅÅĞò£©(IDR»ò·ÇpictureµÄµÚÒ»¸ösliceÔò²»½øĞĞ²Î¿¼¶ÓÁĞµÄ³õÊ¼»¯ liuxw+00139685 */
+	/* å¦‚æœæ˜¯Pæˆ–Bå¸§ï¼Œåˆ™è¿›è¡Œå‚è€ƒé˜Ÿåˆ—çš„åˆå§‹åŒ–ï¼ˆæ’åºï¼‰(IDRæˆ–épictureçš„ç¬¬ä¸€ä¸ªsliceåˆ™ä¸è¿›è¡Œå‚è€ƒé˜Ÿåˆ—çš„åˆå§‹åŒ– liuxw+00139685 */
     if(!default_ref_list_done)
 	{
         fill_default_ref_list(h);
     }
-	/* ²Î¿¼¶ÓÁĞµÄÖØÅÅĞò£¬IÖ¡²»×öÖØÅÅĞò liuxw+00139685 */
+	/* å‚è€ƒé˜Ÿåˆ—çš„é‡æ’åºï¼ŒIå¸§ä¸åšé‡æ’åº liuxw+00139685 */
     if(h->slice_type_nos!=FF_I_TYPE && decode_ref_pic_list_reordering(h) < 0)
 	{
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂë */
+		/* å¢åŠ é”™è¯¯ç  */
     	IMEDIA_SET_ERR_SLICE(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_REF);
 		s->avctx->iTotalError++;
 		return -1;
 	}
-	/* ¿½±´µ±Ç°pictureµÄÉÏÒ»Ö¡»ò³¡ liuxw+00139685 */
+	/* æ‹·è´å½“å‰pictureçš„ä¸Šä¸€å¸§æˆ–åœº liuxw+00139685 */
     if(h->slice_type_nos!=FF_I_TYPE)
 	{
         s->last_picture_ptr= &h->ref_list[0][0];
         ff_copy_picture(&s->last_picture, s->last_picture_ptr);
     }
-	/* ¿½±´µ±Ç°pictureµÄÏÂÒ»Ö¡»ò³¡ liuxw+00139685 */
+	/* æ‹·è´å½“å‰pictureçš„ä¸‹ä¸€å¸§æˆ–åœº liuxw+00139685 */
     if(h->slice_type_nos==FF_B_TYPE)
 	{
         s->next_picture_ptr= &h->ref_list[1][0];
         ff_copy_picture(&s->next_picture, s->next_picture_ptr);
     }
-	/* ¼ÓÈ¨Ô¤²â(BÖ¡ÏÔÊ¾¼ÓÈ¨¡¢PÖ¡ÏÔÊ¾¼ÓÈ¨ liuxw+00139685 */
+	/* åŠ æƒé¢„æµ‹(Bå¸§æ˜¾ç¤ºåŠ æƒã€På¸§æ˜¾ç¤ºåŠ æƒ liuxw+00139685 */
     if(   (h->pps.weighted_pred          && h->slice_type_nos == FF_P_TYPE )
        ||  (h->pps.weighted_bipred_idc==1 && h->slice_type_nos== FF_B_TYPE ) )
         pred_weight_table(h);
-	/* BÖ¡ÒşÊ½¼ÓÈ¨ liuxw+00139685 */
+	/* Bå¸§éšå¼åŠ æƒ liuxw+00139685 */
     else if(h->pps.weighted_bipred_idc==2 && h->slice_type_nos== FF_B_TYPE)
         implicit_weight_table(h);
     else 
-	{  /* Çå¼ÓÈ¨±êÖ¾ liuxw+00139685 */
+	{  /* æ¸…åŠ æƒæ ‡å¿— liuxw+00139685 */
         h->use_weight = 0;
         for (i = 0; i < 2; i++) 
 		{
@@ -5640,7 +5640,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             h->chroma_weight_flag[i] = 0;
         }
     }
-	/* ²ÎÊı¶ÓÁĞµÄ±ê¼Ç£¬·Ç²Î¿¼Í¼Ïñ²»×ö liuxw+00139685 */
+	/* å‚æ•°é˜Ÿåˆ—çš„æ ‡è®°ï¼Œéå‚è€ƒå›¾åƒä¸åš liuxw+00139685 */
     if(h->nal_ref_idc)
 	{
 		if(decode_ref_pic_marking(h0, &s->gb) < 0)
@@ -5650,13 +5650,13 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 			return -1;
 		}
 	}
-	/* Èç¹û´ò¿ªmbaff¹¦ÄÜ£¬Ôò³õÊ¼»¯mbaffµÄ²Î¿¼Ö¡¶ÓÁĞ liuxw+00139685 */
+	/* å¦‚æœæ‰“å¼€mbaffåŠŸèƒ½ï¼Œåˆ™åˆå§‹åŒ–mbaffçš„å‚è€ƒå¸§é˜Ÿåˆ— liuxw+00139685 */
     if(FRAME_MBAFF)
         fill_mbaff_ref_list(h);
-	/* BÖ¡Ê±¼äÖ±½ÓÔ¤²âÄ£Ê½Ê±£¬¼ÆËãËùÓĞµÄDistScaleFactor liuxw+00139685 */
+	/* Bå¸§æ—¶é—´ç›´æ¥é¢„æµ‹æ¨¡å¼æ—¶ï¼Œè®¡ç®—æ‰€æœ‰çš„DistScaleFactor liuxw+00139685 */
     if(h->slice_type_nos==FF_B_TYPE && !h->direct_spatial_mv_pred)
         direct_dist_scale_factor(h);
-	/* BÖ¡Ö±½ÓÔ¤²â²Î¿¼¶ÓÁĞ³õÊ¼»¯ liuxw+00139685 */
+	/* Bå¸§ç›´æ¥é¢„æµ‹å‚è€ƒé˜Ÿåˆ—åˆå§‹åŒ– liuxw+00139685 */
     direct_ref_list_init(h);
 
     if( h->slice_type_nos != FF_I_TYPE && h->pps.cabac ){
@@ -5665,7 +5665,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 //          av_log(s->avctx, AV_LOG_ERROR, "cabac_init_idc[%d] overflow!\n",tmp);
 			av_log(s->avctx, AV_LOG_WARNING, "cabac_init_idc[%d] overflow!\n",tmp);
 			/* 2010/03/22 17:00:00 liuxw+00139685 */
-			/* Ôö¼Ó´íÎóÂë */
+			/* å¢åŠ é”™è¯¯ç  */
 			IMEDIA_SET_ERR_SLICE(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_VLC);
 			s->avctx->iTotalError++;
 			tmp = 0;
@@ -5680,7 +5680,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 //      av_log(s->avctx, AV_LOG_ERROR, "QP %u out of range\n", tmp);
 		av_log(s->avctx, AV_LOG_WARNING, "QP %u out of range\n", tmp);
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂë */
+		/* å¢åŠ é”™è¯¯ç  */
 		IMEDIA_SET_ERR_SLICE(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_QP);
 		s->avctx->iTotalError++;
 		tmp = 26;
@@ -5707,7 +5707,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 //          av_log(s->avctx, AV_LOG_ERROR, "deblocking_filter_idc[%d] out of range!\n", tmp);
 			av_log(s->avctx, AV_LOG_WARNING, "deblocking_filter_idc[%d] out of range!\n", tmp);
 			/* 2010/03/22 17:00:00 liuxw+00139685 */
-			/* Ôö¼Ó´íÎóÂë */
+			/* å¢åŠ é”™è¯¯ç  */
 			IMEDIA_SET_ERR_SLICE(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_DEBLOCKING);
 			s->avctx->iTotalError++;
 			tmp = 1;
@@ -5721,7 +5721,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
             h->slice_alpha_c0_offset = get_se_golomb(&s->gb) << 1;
             h->slice_beta_offset = get_se_golomb(&s->gb) << 1;
 			/* 2010/03/22 17:00:00 liuxw+00139685 */
-			/* Ôö¼Ó¶Ôslice_alpha_c0_offsetºÍslice_beta_offsetµÄºÏ·¨ĞÔ¼ì²é */
+			/* å¢åŠ å¯¹slice_alpha_c0_offsetå’Œslice_beta_offsetçš„åˆæ³•æ€§æ£€æŸ¥ */
 			if(h->slice_alpha_c0_offset > 12 || h->slice_alpha_c0_offset < -12 || h->slice_beta_offset > 12 || h->slice_beta_offset < -12)
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "slice_alpha_c0_offset[%d]/slice_beta_offset[%d] out of range!\n", h->slice_alpha_c0_offset,h->slice_beta_offset);
@@ -5766,7 +5766,7 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
 //      av_log(s->avctx, AV_LOG_ERROR, "Too many slices, increase MAX_SLICES and recompile\n");
 		av_log(s->avctx, AV_LOG_WARNING, "Too many slices, increase MAX_SLICES and recompile\n");
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂë */
+		/* å¢åŠ é”™è¯¯ç  */
 		IMEDIA_SET_ERR_SLICE(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_NUM);
 		s->avctx->iTotalError++;
     }
@@ -5778,11 +5778,11 @@ static int decode_slice_header(H264Context *h, H264Context *h0){
         ref2frm[1]= -1;
         for(i=0; i<16; i++)
 			/* 2010/08/10 19:00:00 liuxw+00139685 */
-			/* ÓÉÓÚÊ¹ÓÃframe_num¿ÉÄÜµ¼ÖÂÎÊÌâ£¬ËùÒÔ½«ÆäÌæ»»Îªcoded_picture_number */
+			/* ç”±äºä½¿ç”¨frame_numå¯èƒ½å¯¼è‡´é—®é¢˜ï¼Œæ‰€ä»¥å°†å…¶æ›¿æ¢ä¸ºcoded_picture_number */
 //          ref2frm[i+2]= 4*h->ref_list[j][i].frame_num +(h->ref_list[j][i].reference&3); 
 			ref2frm[i+2]= 4*h->ref_list[j][i].coded_picture_number + (h->ref_list[j][i].reference&3);
 		/* 2010/04/09 08:30:00 hanqr+00115692 */
-		/* Ôö¼Ó¶Ôframe_mbaffµÄÅĞ¶Ï£¬Èô·ÇmbaffÔòÖ»»á¶Ô16~31½øĞĞ¸³Öµ */
+		/* å¢åŠ å¯¹frame_mbaffçš„åˆ¤æ–­ï¼Œè‹¥émbaffåˆ™åªä¼šå¯¹16~31è¿›è¡Œèµ‹å€¼ */
 		if(!FRAME_MBAFF)
 		{
 			for(i=16; i<32; i++)
@@ -5894,7 +5894,7 @@ static int decode_residual(H264Context *h, GetBitContext *gb, DCTELEM *block, in
 //      av_log(h->s.avctx, AV_LOG_ERROR, "corrupted macroblock %d %d (total_coeff=%d)\n", s->mb_x, s->mb_y, total_coeff);
 		av_log(h->s.avctx, AV_LOG_WARNING, "corrupted macroblock %d %d (total_coeff=%d)\n", s->mb_x, s->mb_y, total_coeff);
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂëºÍÀÛ¼Æ´íÎó×ÜÊı */
+		/* å¢åŠ é”™è¯¯ç å’Œç´¯è®¡é”™è¯¯æ€»æ•° */
 		IMEDIA_SET_ERR_RESIDUAL(s->avctx->iErrorCode,IMEDIA_ERR_RESIDUAL_TOTAL_COEFF);
 		s->avctx->iTotalError++;
         return -1;
@@ -5989,7 +5989,7 @@ static int decode_residual(H264Context *h, GetBitContext *gb, DCTELEM *block, in
         if(n == CHROMA_DC_BLOCK_INDEX)
 		{
 			/* 2010/04/14 11:30:00 liuxw+00139685 [AZ1D01990] */
-			/* ÎªÁË·ÀÖ¹ËÀ»ú£¬Ôö¼Ó¶Ô±íË÷ÒıµÄ¼ì²â */
+			/* ä¸ºäº†é˜²æ­¢æ­»æœºï¼Œå¢åŠ å¯¹è¡¨ç´¢å¼•çš„æ£€æµ‹ */
 			if(0 > total_coeff-1 || 3 < total_coeff-1)
 			{
 				av_log(h->s.avctx,AV_LOG_WARNING,"index[%d] of chroma_dc_total_zeros_vlc is out of range!\n",total_coeff-1);
@@ -6002,7 +6002,7 @@ static int decode_residual(H264Context *h, GetBitContext *gb, DCTELEM *block, in
         else
 		{
 			/* 2010/04/14 11:30:00 liuxw+00139685 [AZ1D01990] */
-			/* ÎªÁË·ÀÖ¹ËÀ»ú£¬Ôö¼Ó¶Ô±íË÷ÒıµÄ¼ì²â */
+			/* ä¸ºäº†é˜²æ­¢æ­»æœºï¼Œå¢åŠ å¯¹è¡¨ç´¢å¼•çš„æ£€æµ‹ */
 			if(0 > total_coeff-1 || 15 < total_coeff-1)
 			{
 				av_log(h->s.avctx,AV_LOG_WARNING,"index[%d] of total_zeros_vlc is out of range!\n",total_coeff-1);
@@ -6054,7 +6054,7 @@ static int decode_residual(H264Context *h, GetBitContext *gb, DCTELEM *block, in
 //      av_log(h->s.avctx, AV_LOG_ERROR, "negative number of zero coeffs at %d %d\n", s->mb_x, s->mb_y);
 		av_log(h->s.avctx, AV_LOG_WARNING, "negative number of zero coeffs at %d %d\n", s->mb_x, s->mb_y);
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂëºÍÀÛ¼Æ´íÎó×ÜÊı */
+		/* å¢åŠ é”™è¯¯ç å’Œç´¯è®¡é”™è¯¯æ€»æ•° */
 		IMEDIA_SET_ERR_RESIDUAL(s->avctx->iErrorCode,IMEDIA_ERR_RESIDUAL_ZERO_LEFT);
 		s->avctx->iTotalError++;
         return -1;
@@ -6124,7 +6124,7 @@ static void decode_mb_skip(H264Context *h){
  * decodes a macroblock
  * @returns 0 if OK, AC_ERROR / DC_ERROR / MV_ERROR if an error is noticed
  */
-/* CAVLC: Ä£Ê½Ô¤²â¡¢½âÂë²Ğ²î¡¢·´Á¿»¯ */
+/* CAVLC: æ¨¡å¼é¢„æµ‹ã€è§£ç æ®‹å·®ã€åé‡åŒ– */
 static int decode_mb_cavlc(H264Context *h){
     MpegEncContext * const s = &h->s;
     int mb_xy;
@@ -6143,7 +6143,7 @@ static int decode_mb_cavlc(H264Context *h){
             int left_mb;
 			s->mb_skip_run= get_ue_golomb(&s->gb);
 			/* 2010/04/06 14:30:00 liuxw+00139685 */
-			/* Ôö¼Ó¶Ômb_skip_runµÄÅĞ¶Ï */
+			/* å¢åŠ å¯¹mb_skip_runçš„åˆ¤æ–­ */
 			left_mb =  FRAME_MBAFF ? ((s->mb_y&1) ? (2*s->mb_x+(s->mb_y-1)*s->mb_width+1) : (2*s->mb_x+s->mb_y*s->mb_width)) : (s->mb_x+s->mb_y/(1+FIELD_PICTURE)*s->mb_width);
 			left_mb = (s->mb_num >> FIELD_PICTURE) - left_mb;
 			if(s->mb_skip_run > left_mb)
@@ -6154,7 +6154,7 @@ static int decode_mb_cavlc(H264Context *h){
 				return -1;
 			}
 		}
-		/* Èôµ±Ç°ºê¿éÊÇskipºê¿é(p_skip»òb_skip£©£¬Ôò½øĞĞºê¿é½âÂë£¨µÃµ½MV)£¬·µ»Ø(ÎŞ²Ğ²î£© */
+		/* è‹¥å½“å‰å®å—æ˜¯skipå®å—(p_skipæˆ–b_skipï¼‰ï¼Œåˆ™è¿›è¡Œå®å—è§£ç ï¼ˆå¾—åˆ°MV)ï¼Œè¿”å›(æ— æ®‹å·®ï¼‰ */
         if (s->mb_skip_run--) {
             if(FRAME_MBAFF && (s->mb_y&1) == 0){
                 if(s->mb_skip_run==0)
@@ -6164,14 +6164,14 @@ static int decode_mb_cavlc(H264Context *h){
             }
             decode_mb_skip(h);
 			/* 2010/04/13 08:30:00 liuxw+00139685 */
-			/* ½«µ±Ç°ºê¿éµÄcbpÖÃÎª0 */
+			/* å°†å½“å‰å®å—çš„cbpç½®ä¸º0 */
 			h->cbp_table[mb_xy] = 0;
 			h->cbp = 0;
             return 0;
         }
     }
     if(FRAME_MBAFF){
-		/* ÕâÀïÈ±ÉÙÒ»¸öÅĞ¶ÏÌõ¼ş??? liuxw+00139685 */
+		/* è¿™é‡Œç¼ºå°‘ä¸€ä¸ªåˆ¤æ–­æ¡ä»¶??? liuxw+00139685 */
         if( (s->mb_y&1) == 0 )
             h->mb_mbaff = h->mb_field_decoding_flag = get_bits1(&s->gb);
 #ifdef LXW_DEBUG
@@ -6207,7 +6207,7 @@ decode_intra_mb:
         if(mb_type > 25){
             av_log(h->s.avctx, AV_LOG_WARNING, "mb_type %d in %c slice too large at %d %d\n", mb_type, av_get_pict_type_char(h->slice_type), s->mb_x, s->mb_y);
 			/* 2010/03/22 17:00:00 liuxw+00139685 */
-			/* Ôö¼Ó´íÎóÂë */
+			/* å¢åŠ é”™è¯¯ç  */
 			IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_TYPE);
 			s->avctx->iTotalError++;
             return -1;
@@ -6254,11 +6254,11 @@ decode_intra_mb:
 
     fill_caches(h, mb_type, 0);
 
-    /* Ö¡ÄÚÔ¤²â */
+    /* å¸§å†…é¢„æµ‹ */
     if(IS_INTRA(mb_type)){
         int pred_mode;
 //            init_top_left_availability(h);
-		/* LUMA: intra4x4Ô¤²âÄ£Ê½»òintra8x8Ô¤²âÄ£Ê½ */
+		/* LUMA: intra4x4é¢„æµ‹æ¨¡å¼æˆ–intra8x8é¢„æµ‹æ¨¡å¼ */
         if(IS_INTRA4x4(mb_type)){
             int i;
             int di = 1;
@@ -6270,9 +6270,9 @@ decode_intra_mb:
 //                fill_intra4x4_pred_table(h);
 			/* intra4x4: di = 1; intra8x8: di = 4 */
             for(i=0; i<16; i+=di){
-                int mode= pred_intra_mode(h, i);  /* ½âÎöintra4x4»òintra8x8µÄÔ¤²âÄ£Ê½ */
+                int mode= pred_intra_mode(h, i);  /* è§£æintra4x4æˆ–intra8x8çš„é¢„æµ‹æ¨¡å¼ */
 
-                if(!get_bits1(&s->gb)){ /* Ô¤²âµÄ²»×¼£¬Ôò´ÓÂëÁ÷ÖĞ¶ÁÈ¡Ô¤²âÄ£Ê½ */
+                if(!get_bits1(&s->gb)){ /* é¢„æµ‹çš„ä¸å‡†ï¼Œåˆ™ä»ç æµä¸­è¯»å–é¢„æµ‹æ¨¡å¼ */
                     const int rem_mode= get_bits(&s->gb, 3);
                     mode = rem_mode + (rem_mode >= mode);
                 }
@@ -6282,43 +6282,43 @@ decode_intra_mb:
                 else
                     h->intra4x4_pred_mode_cache[ scan8[i] ] = mode;
             }
-            write_back_intra_pred_mode(h);			/* ±£´æintra4x4»òintra8x8µÄÔ¤²âÄ£Ê½ */
-			/* ¼ì²âintra4x4»òintra8x8µÄÔ¤²âÄ£Ê½µÄºÏ·¨ĞÔ */
+            write_back_intra_pred_mode(h);			/* ä¿å­˜intra4x4æˆ–intra8x8çš„é¢„æµ‹æ¨¡å¼ */
+			/* æ£€æµ‹intra4x4æˆ–intra8x8çš„é¢„æµ‹æ¨¡å¼çš„åˆæ³•æ€§ */
             if( check_intra4x4_pred_mode(h) < 0)
 			{
 				/* 2010/03/22 17:00:00 liuxw+00139685 */
-				/* Ôö¼Ó´íÎóÂë */
+				/* å¢åŠ é”™è¯¯ç  */
 				IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_MODE); 
 				s->avctx->iTotalError++;
 				return -1;
 			}
-        }else{	/* LUMA: intra16x16 Ô¤²âÄ£Ê½ */
+        }else{	/* LUMA: intra16x16 é¢„æµ‹æ¨¡å¼ */
 			/* 2010/08/13 11:30:00 liuxw+00139685 */
-			/* Ìæ»»ÒÑ¾­ÓĞµÄº¯Êıº¯Êı£ºÓÃÓÚ¼ì²âluma intraºê¿éÔ¤²âÄ£Ê½µÄºÏ·¨ĞÔ */
-//			h->intra16x16_pred_mode= check_intra_pred_mode(h, h->intra16x16_pred_mode);/* ½âÎöintra16x16Ô¤²âÄ£Ê½²¢¼ì²âÄ£Ê½µÄºÏ·¨ĞÔ */
-            h->intra16x16_pred_mode= check_intra_pred_mode_luma(h, h->intra16x16_pred_mode);/* ½âÎöintra16x16Ô¤²âÄ£Ê½²¢¼ì²âÄ£Ê½µÄºÏ·¨ĞÔ */
+			/* æ›¿æ¢å·²ç»æœ‰çš„å‡½æ•°å‡½æ•°ï¼šç”¨äºæ£€æµ‹luma intraå®å—é¢„æµ‹æ¨¡å¼çš„åˆæ³•æ€§ */
+//			h->intra16x16_pred_mode= check_intra_pred_mode(h, h->intra16x16_pred_mode);/* è§£æintra16x16é¢„æµ‹æ¨¡å¼å¹¶æ£€æµ‹æ¨¡å¼çš„åˆæ³•æ€§ */
+            h->intra16x16_pred_mode= check_intra_pred_mode_luma(h, h->intra16x16_pred_mode);/* è§£æintra16x16é¢„æµ‹æ¨¡å¼å¹¶æ£€æµ‹æ¨¡å¼çš„åˆæ³•æ€§ */
             if(h->intra16x16_pred_mode < 0)
 			{
 				/* 2010/03/22 17:00:00 liuxw+00139685 */
-				/* Ôö¼Ó´íÎóÂë */
+				/* å¢åŠ é”™è¯¯ç  */
 				IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_MODE); 
 				s->avctx->iTotalError++;
                 return -1;
 			}
         }
-        if(CHROMA){	/* chroma´æÔÚ(¼È²»ÊÇµ¥É«Y) */
-            pred_mode= check_intra_pred_mode(h, get_ue_golomb_31(&s->gb));  /* ½âÎöchroma intra8x8Ô¤²âÄ£Ê½²¢¼ì²âÄ£Ê½µÄºÏ·¨ĞÔ */
+        if(CHROMA){	/* chromaå­˜åœ¨(æ—¢ä¸æ˜¯å•è‰²Y) */
+            pred_mode= check_intra_pred_mode(h, get_ue_golomb_31(&s->gb));  /* è§£æchroma intra8x8é¢„æµ‹æ¨¡å¼å¹¶æ£€æµ‹æ¨¡å¼çš„åˆæ³•æ€§ */
             if(pred_mode < 0)
 			{
 				/* 2010/03/22 17:00:00 liuxw+00139685 */
-				/* Ôö¼Ó´íÎóÂë */
+				/* å¢åŠ é”™è¯¯ç  */
 				IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_MODE); 
 				s->avctx->iTotalError++;
 				return -1;
 			}
             h->chroma_pred_mode= pred_mode;
         }
-    }else if(partition_count==4){	/* Ö¡¼äÔ¤²â£ºP8x8»òB8x8 */
+    }else if(partition_count==4){	/* å¸§é—´é¢„æµ‹ï¼šP8x8æˆ–B8x8 */
         int i, j, sub_partition_count[4], list, ref[2][4];
 
         if(h->slice_type_nos == FF_B_TYPE){	/* B8x8 */
@@ -6328,7 +6328,7 @@ decode_intra_mb:
 //                  av_log(h->s.avctx, AV_LOG_ERROR, "B sub_mb_type %u out of range at %d %d\n", h->sub_mb_type[i], s->mb_x, s->mb_y);
 					av_log(h->s.avctx, AV_LOG_WARNING, "B sub_mb_type %u out of range at %d %d\n", h->sub_mb_type[i], s->mb_x, s->mb_y);
 					/* 2010/03/22 17:00:00 liuxw+00139685 */
-					/* Ôö¼Ó´íÎóÂë */
+					/* å¢åŠ é”™è¯¯ç  */
 					IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_TYPE);
 					s->avctx->iTotalError++;
                     return -1;
@@ -6339,7 +6339,7 @@ decode_intra_mb:
 					av_log(h->s.avctx,AV_LOG_WARNING,"Partion%d sub_partition_count[%d] sub_mb_type{%d] \n",i,sub_partition_count[i],h->sub_mb_type[i]);
 #endif
                 h->sub_mb_type[i]=      b_sub_mb_type_info[ h->sub_mb_type[i] ].type;
-            }/* Èô4¸ö×Óºê¿é8x8ÖĞ´æÔÚdirect8x8Ô¤²âÄ£Ê½£¬Ôò½øĞĞÖ±½ÓÔ¤²âÄ£Ê½ */
+            }/* è‹¥4ä¸ªå­å®å—8x8ä¸­å­˜åœ¨direct8x8é¢„æµ‹æ¨¡å¼ï¼Œåˆ™è¿›è¡Œç›´æ¥é¢„æµ‹æ¨¡å¼ */
             if(   IS_DIRECT(h->sub_mb_type[0]) || IS_DIRECT(h->sub_mb_type[1])
                || IS_DIRECT(h->sub_mb_type[2]) || IS_DIRECT(h->sub_mb_type[3])) {
                 pred_direct_motion(h, &mb_type);
@@ -6356,7 +6356,7 @@ decode_intra_mb:
 //                  av_log(h->s.avctx, AV_LOG_ERROR, "P sub_mb_type %u out of range at %d %d\n", h->sub_mb_type[i], s->mb_x, s->mb_y);
 					av_log(h->s.avctx, AV_LOG_WARNING, "P sub_mb_type %u out of range at %d %d\n", h->sub_mb_type[i], s->mb_x, s->mb_y);
 					/* 2010/03/22 17:00:00 liuxw+00139685 */
-					/* Ôö¼Ó´íÎóÂë */
+					/* å¢åŠ é”™è¯¯ç  */
 					IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_TYPE);
 					s->avctx->iTotalError++;
                     return -1;
@@ -6386,7 +6386,7 @@ decode_intra_mb:
 //                          av_log(h->s.avctx, AV_LOG_ERROR, "ref[%u] overflow\n", tmp);
 							av_log(h->s.avctx, AV_LOG_WARNING, "ref[%u] overflow\n", tmp);
 							/* 2010/03/22 17:00:00 liuxw+00139685 */
-							/* Ôö¼Ó´íÎóÂë */
+							/* å¢åŠ é”™è¯¯ç  */
 							IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_REF);
 							s->avctx->iTotalError++;
                             return -1;
@@ -6406,7 +6406,7 @@ decode_intra_mb:
 
         if(dct8x8_allowed)
             dct8x8_allowed = get_dct8x8_allowed(h);
-		/* ºê¿é16x16µÄ4¸ö×Óºê¿é8x8µÄÄ£Ê½Ô¤²â */
+		/* å®å—16x16çš„4ä¸ªå­å®å—8x8çš„æ¨¡å¼é¢„æµ‹ */
         for(list=0; list<(int)h->list_count; list++){
             for(i=0; i<4; i++){
                 if(IS_DIRECT(h->sub_mb_type[i])) {
@@ -6415,7 +6415,7 @@ decode_intra_mb:
                 }
                 h->ref_cache[list][ scan8[4*i]   ]=h->ref_cache[list][ scan8[4*i]+1 ]=
                 h->ref_cache[list][ scan8[4*i]+8 ]=h->ref_cache[list][ scan8[4*i]+9 ]= ref[list][i];
-				/* ×Óºê¿éµÄsub_partition£¨8x8 8x4 4x8 4x4Ö¡¼äÄ£Ê½Ô¤²â) ²»°üÀ¨direct8x8 */
+				/* å­å®å—çš„sub_partitionï¼ˆ8x8 8x4 4x8 4x4å¸§é—´æ¨¡å¼é¢„æµ‹) ä¸åŒ…æ‹¬direct8x8 */
                 if(IS_DIR(h->sub_mb_type[i], 0, list)){
                     const int sub_mb_type= h->sub_mb_type[i];
                     const int block_width= (sub_mb_type & (MB_TYPE_16x16|MB_TYPE_16x8)) ? 2 : 1;
@@ -6454,10 +6454,10 @@ decode_intra_mb:
                 }
             }
         }
-    }else if(IS_DIRECT(mb_type)){	/* direct16x16Ö¡¼äÔ¤²âÄ£Ê½ */
+    }else if(IS_DIRECT(mb_type)){	/* direct16x16å¸§é—´é¢„æµ‹æ¨¡å¼ */
         pred_direct_motion(h, &mb_type);
         dct8x8_allowed &= h->sps.direct_8x8_inference_flag;
-    }else{	/* Ö¡¼äÆäËüÔ¤²âÄ£Ê½£ºp16x16 p8x16 p16x8 b16x16 b8x16 b16x8 */
+    }else{	/* å¸§é—´å…¶å®ƒé¢„æµ‹æ¨¡å¼ï¼šp16x16 p8x16 p16x8 b16x16 b8x16 b16x8 */
         int list, mx, my, i;
          //FIXME we should set ref_idx_l? to 0 if we use that later ...
         if(IS_16X16(mb_type)){	/* p16x16 or b16x16 */
@@ -6474,7 +6474,7 @@ decode_intra_mb:
  //                             av_log(h->s.avctx, AV_LOG_ERROR, "ref %u overflow\n", val);
 								av_log(h->s.avctx, AV_LOG_WARNING, "ref %u overflow\n", val);
 								/* 2010/03/22 17:00:00 liuxw+00139685 */
-								/* Ôö¼Ó´íÎóÂë */
+								/* å¢åŠ é”™è¯¯ç  */
 								IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_REF);
 								s->avctx->iTotalError++;
                                 return -1;
@@ -6486,7 +6486,7 @@ decode_intra_mb:
             }
             for(list=0; list<(int)h->list_count; list++){
                 unsigned int val;
-                if(IS_DIR(mb_type, 0, list)){/* ½âÎöÖ¡¼äp16x16»òb16x16µÄÔ¤²âÄ£Ê½ */
+                if(IS_DIR(mb_type, 0, list)){/* è§£æå¸§é—´p16x16æˆ–b16x16çš„é¢„æµ‹æ¨¡å¼ */
                     pred_motion(h, 0, 4, list, h->ref_cache[list][ scan8[0] ], &mx, &my);
                     mx += get_se_golomb(&s->gb);
                     my += get_se_golomb(&s->gb);
@@ -6500,7 +6500,7 @@ decode_intra_mb:
         }
         else if(IS_16X8(mb_type)){	/* p16x8 or b16x8 */
             for(list=0; list<(int)h->list_count; list++){
-                    for(i=0; i<2; i++){	/* 2¸ö16x8µÄ×Óºê¿é */
+                    for(i=0; i<2; i++){	/* 2ä¸ª16x8çš„å­å®å— */
                         unsigned int val;
                         if(IS_DIR(mb_type, i, list)){
                             if(h->ref_count[list] == 1){
@@ -6511,7 +6511,7 @@ decode_intra_mb:
                                 val= get_ue_golomb_31(&s->gb);
                                 if(val >= h->ref_count[list]){
 									/* 2010/03/22 17:00:00 liuxw+00139685 */
-									/* Ôö¼Ó´íÎóÂë */
+									/* å¢åŠ é”™è¯¯ç  */
 									IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_REF);
 									s->avctx->iTotalError++;
 //                                  av_log(h->s.avctx, AV_LOG_ERROR, "ref %u overflow\n", val);
@@ -6523,9 +6523,9 @@ decode_intra_mb:
                             val= LIST_NOT_USED&0xFF;
                         fill_rectangle(&h->ref_cache[list][ scan8[0] + 16*i ], 4, 2, 8, val, 1);
                     }
-            }/* ½âÎöÖ¡¼äp16x8»òb16x8µÄÔ¤²âÄ£Ê½ */
+            }/* è§£æå¸§é—´p16x8æˆ–b16x8çš„é¢„æµ‹æ¨¡å¼ */
             for(list=0; list<(int)h->list_count; list++){
-                for(i=0; i<2; i++){/* 2¸ö16x8µÄ×Óºê¿é */
+                for(i=0; i<2; i++){/* 2ä¸ª16x8çš„å­å®å— */
                     unsigned int val;
                     if(IS_DIR(mb_type, i, list)){
                         pred_16x8_motion(h, 8*i, list, h->ref_cache[list][scan8[0] + 16*i], &mx, &my);
@@ -6555,7 +6555,7 @@ decode_intra_mb:
 //                                  av_log(h->s.avctx, AV_LOG_ERROR, "ref %u overflow\n", val);
 									av_log(h->s.avctx, AV_LOG_WARNING, "ref %u overflow\n", val);
 									/* 2010/03/22 17:00:00 liuxw+00139685 */
-									/* Ôö¼Ó´íÎóÂë */
+									/* å¢åŠ é”™è¯¯ç  */
 									IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_REF);
 									s->avctx->iTotalError++;
                                     return -1;
@@ -6565,9 +6565,9 @@ decode_intra_mb:
                             val= LIST_NOT_USED&0xFF;
                         fill_rectangle(&h->ref_cache[list][ scan8[0] + 2*i ], 2, 4, 8, val, 1);
                     }
-            }/* ½âÎöÖ¡¼äp8x16»òb8x16µÄÔ¤²âÄ£Ê½ */
+            }/* è§£æå¸§é—´p8x16æˆ–b8x16çš„é¢„æµ‹æ¨¡å¼ */
             for(list=0; list<(int)h->list_count; list++){
-                for(i=0; i<2; i++){	/* 2¸ö8x16µÄ×Óºê¿é */
+                for(i=0; i<2; i++){	/* 2ä¸ª8x16çš„å­å®å— */
                     unsigned int val;
                     if(IS_DIR(mb_type, i, list)){
                         pred_8x16_motion(h, i*4, list, h->ref_cache[list][ scan8[0] + 2*i ], &mx, &my);
@@ -6582,31 +6582,31 @@ decode_intra_mb:
             }
         }
     }
-	/* ±£´æµ±Ç°ºê¿éµÄÖ¡¼äÔ¤²âÄ£Ê½ */
+	/* ä¿å­˜å½“å‰å®å—çš„å¸§é—´é¢„æµ‹æ¨¡å¼ */
     if(IS_INTER(mb_type))
         write_back_motion(h, mb_type);
-	/* Èô²»ÊÇintra16x16£¬Ôò½âÎöCBP(ÒòÎªintra16x16µÄCBP±£´æÔÚmb_typeÖĞ) */
+	/* è‹¥ä¸æ˜¯intra16x16ï¼Œåˆ™è§£æCBP(å› ä¸ºintra16x16çš„CBPä¿å­˜åœ¨mb_typeä¸­) */
     if(!IS_INTRA16x16(mb_type)){
         cbp= get_ue_golomb(&s->gb);
         if(cbp > 47){
 //          av_log(h->s.avctx, AV_LOG_ERROR, "cbp too large (%u) at %d %d\n", cbp, s->mb_x, s->mb_y);
 			av_log(h->s.avctx, AV_LOG_WARNING, "cbp too large (%u) at %d %d\n", cbp, s->mb_x, s->mb_y);
 			/* 2010/03/22 17:00:00 liuxw+00139685 */
-			/* Ôö¼Ó´íÎóÂë */
+			/* å¢åŠ é”™è¯¯ç  */
 			IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_CBP);
 			s->avctx->iTotalError++;
             return -1;
         }
-		/* chroma´æÔÚ(¼È²»ÊÇµ¥É«Y) */
+		/* chromaå­˜åœ¨(æ—¢ä¸æ˜¯å•è‰²Y) */
         if(CHROMA){
-            if(IS_INTRA4x4(mb_type)) cbp= golomb_to_intra4x4_cbp[cbp]; /* Ö¡ÄÚcbp×ª»»£¨ÄÚ²¿ÊµÏÖÓÅ»¯£© */
-            else                     cbp= golomb_to_inter_cbp   [cbp]; /* Ö¡ÄÚcbp×ª»»£¨ÄÚ²¿ÊµÏÖÓÅ»¯£© */
-        }else{ /* chroma²»´æÔÚ(¼ÈÊÇµ¥É«Y) */
+            if(IS_INTRA4x4(mb_type)) cbp= golomb_to_intra4x4_cbp[cbp]; /* å¸§å†…cbpè½¬æ¢ï¼ˆå†…éƒ¨å®ç°ä¼˜åŒ–ï¼‰ */
+            else                     cbp= golomb_to_inter_cbp   [cbp]; /* å¸§å†…cbpè½¬æ¢ï¼ˆå†…éƒ¨å®ç°ä¼˜åŒ–ï¼‰ */
+        }else{ /* chromaä¸å­˜åœ¨(æ—¢æ˜¯å•è‰²Y) */
         /* 2010/05/18 19:00:00 liuxw+00139685 */
-        /* ÈôcbpµÄÖµ´óÓÚ16£¬Ôò»áÔì³ÉËÀ»ú */
+        /* è‹¥cbpçš„å€¼å¤§äº16ï¼Œåˆ™ä¼šé€ æˆæ­»æœº */
         	cbp %= 16;
-            if(IS_INTRA4x4(mb_type)) cbp= golomb_to_intra4x4_cbp_gray[cbp]; /* Ö¡ÄÚcbp×ª»»£¨ÄÚ²¿ÊµÏÖÓÅ»¯£© */
-            else                     cbp= golomb_to_inter_cbp_gray[cbp];	/* Ö¡ÄÚcbp×ª»»£¨ÄÚ²¿ÊµÏÖÓÅ»¯£© */
+            if(IS_INTRA4x4(mb_type)) cbp= golomb_to_intra4x4_cbp_gray[cbp]; /* å¸§å†…cbpè½¬æ¢ï¼ˆå†…éƒ¨å®ç°ä¼˜åŒ–ï¼‰ */
+            else                     cbp= golomb_to_inter_cbp_gray[cbp];	/* å¸§å†…cbpè½¬æ¢ï¼ˆå†…éƒ¨å®ç°ä¼˜åŒ–ï¼‰ */
         }
     }
     h->cbp = cbp;
@@ -6618,7 +6618,7 @@ decode_intra_mb:
         }
     }
     s->current_picture.mb_type[mb_xy]= mb_type;
-	/* ÈôCBP²»Îª0£¨¼´´æÔÚ²Ğ²î)»òintra16x16 */
+	/* è‹¥CBPä¸ä¸º0ï¼ˆå³å­˜åœ¨æ®‹å·®)æˆ–intra16x16 */
     if(cbp || IS_INTRA16x16(mb_type)){
         int i8x8, i4x4, chroma_idx;
         int dquant;
@@ -6626,7 +6626,7 @@ decode_intra_mb:
         const uint8_t *scan, *scan8x8, *dc_scan;
 
 //        fill_non_zero_count_cache(h);
-		/* ÖØÅÅĞò(inverse scan)(¸³ÖØÅÅĞò±í) */
+		/* é‡æ’åº(inverse scan)(èµ‹é‡æ’åºè¡¨) */
         if(IS_INTERLACED(mb_type)){
             scan8x8= s->qscale ? h->field_scan8x8_cavlc : h->field_scan8x8_cavlc_q0;
             scan= s->qscale ? h->field_scan : h->field_scan_q0;
@@ -6642,7 +6642,7 @@ decode_intra_mb:
 //          av_log(h->s.avctx, AV_LOG_ERROR, "dquant out of range (%d) at %d %d\n", dquant, s->mb_x, s->mb_y);
 			av_log(h->s.avctx, AV_LOG_WARNING, "dquant out of range (%d) at %d %d\n", dquant, s->mb_x, s->mb_y);
 			/* 2010/03/22 17:00:00 liuxw+00139685 */
-			/* Ôö¼Ó´íÎóÂë */
+			/* å¢åŠ é”™è¯¯ç  */
 			IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_QP);
 			s->avctx->iTotalError++;
             return -1;
@@ -6656,18 +6656,18 @@ decode_intra_mb:
 
         h->chroma_qp[0]= get_chroma_qp(h, 0, s->qscale);	/* CB QP */
         h->chroma_qp[1]= get_chroma_qp(h, 1, s->qscale);	/* CR QP */
-        /* ½âÎöintra16x16µÄ²Ğ²î */
+        /* è§£æintra16x16çš„æ®‹å·® */
 		if(IS_INTRA16x16(mb_type)){
-			/* ½âÎö intra16x16 DC µÄ²Ğ²î */
+			/* è§£æ intra16x16 DC çš„æ®‹å·® */
             if( decode_residual(h, h->intra_gb_ptr, h->mb, LUMA_DC_BLOCK_INDEX, dc_scan, h->dequant4_coeff[0][s->qscale], 16) < 0){
                 return -1; //FIXME continue if partitioned and other return -1 too
             }
 
             assert((cbp&15) == 0 || (cbp&15) == 15);
-			/* ½âÎö²Ğ²î²»Îª0µÄ8x8×Óºê¿é */
+			/* è§£ææ®‹å·®ä¸ä¸º0çš„8x8å­å®å— */
             if(cbp&15){
                 for(i8x8=0; i8x8<4; i8x8++){
-					/* ½âÎöÃ¿¸ö4x4µÄ¿éµÄ²Ğ²î²¢½øĞĞ·´Á¿»¯ */
+					/* è§£ææ¯ä¸ª4x4çš„å—çš„æ®‹å·®å¹¶è¿›è¡Œåé‡åŒ– */
                     for(i4x4=0; i4x4<4; i4x4++){
                         const int index= i4x4 + 4*i8x8;
                         if( decode_residual(h, h->intra_gb_ptr, h->mb + 16*index, index, scan + 1, h->dequant4_coeff[0][s->qscale], 15) < 0 ){
@@ -6678,14 +6678,14 @@ decode_intra_mb:
             }else{
                 fill_rectangle(&h->non_zero_count_cache[scan8[0]], 4, 4, 8, 0, 1);
             }
-        }else{	/* ½âÎömb_type != intra16x16 && cbp²»Îª0µÄºê¿éµÄ²Ğ²î */
-            for(i8x8=0; i8x8<4; i8x8++){	/* ½âÎö²Ğ²î²»Îª0µÄ8x8µÄ¿é */
+        }else{	/* è§£æmb_type != intra16x16 && cbpä¸ä¸º0çš„å®å—çš„æ®‹å·® */
+            for(i8x8=0; i8x8<4; i8x8++){	/* è§£ææ®‹å·®ä¸ä¸º0çš„8x8çš„å— */
                 if(cbp & (1<<i8x8)){ 
-					/* DCTÄ£Ê½Îª8x8DCTµÄÂëÁ÷µÄ½âÂë */
+					/* DCTæ¨¡å¼ä¸º8x8DCTçš„ç æµçš„è§£ç  */
                     if(IS_8x8DCT(mb_type)){
                         DCTELEM *buf = &h->mb[64*i8x8];
                         uint8_t *nnz;
-						/* ½âÎö8x8¿éµÄ²Ğ²î²¢½øĞĞ·´Á¿»¯ */
+						/* è§£æ8x8å—çš„æ®‹å·®å¹¶è¿›è¡Œåé‡åŒ– */
                         for(i4x4=0; i4x4<4; i4x4++){
                             if( decode_residual(h, gb, buf, i4x4+4*i8x8, scan8x8+16*i4x4,
                                                 h->dequant8_coeff[IS_INTRA( mb_type ) ? 0:1][s->qscale], 16) <0 )
@@ -6693,53 +6693,53 @@ decode_intra_mb:
                         }
                         nnz= &h->non_zero_count_cache[ scan8[4*i8x8] ];
                         nnz[0] += nnz[1] + nnz[8] + nnz[9];
-                    }else{ /* DCTÄ£Ê½Îª4x4DCTµÄÂëÁ÷µÄ½âÂë */
+                    }else{ /* DCTæ¨¡å¼ä¸º4x4DCTçš„ç æµçš„è§£ç  */
                         for(i4x4=0; i4x4<4; i4x4++){
                             const int index= i4x4 + 4*i8x8;
-							/* ½âÎö4x4¿éµÄ²Ğ²î²¢½øĞĞ·´Á¿»¯ */
+							/* è§£æ4x4å—çš„æ®‹å·®å¹¶è¿›è¡Œåé‡åŒ– */
                             if( decode_residual(h, gb, h->mb + 16*index, index, scan, h->dequant4_coeff[IS_INTRA( mb_type ) ? 0:3][s->qscale], 16) <0 ){
                                 return -1;
                             }
                         }
                     }
-                }else{	/* ²Ğ²îÎª0µÄ8x8¿é */
+                }else{	/* æ®‹å·®ä¸º0çš„8x8å— */
                     uint8_t * const nnz= &h->non_zero_count_cache[ scan8[4*i8x8] ];
                     nnz[0] = nnz[1] = nnz[8] = nnz[9] = 0;
                 }
             }
         }
-		/* ½âÎöchroma DC²Ğ²î */
-        if(cbp&0x30){	/* ½âÎöcb cr DC²Ğ²î */
+		/* è§£æchroma DCæ®‹å·® */
+        if(cbp&0x30){	/* è§£æcb cr DCæ®‹å·® */
             for(chroma_idx=0; chroma_idx<2; chroma_idx++)
-				/* ½âÎöcb/cr 2x2¿éµÄDC²Ğ²î */
+				/* è§£æcb/cr 2x2å—çš„DCæ®‹å·® */
                 if( decode_residual(h, gb, h->mb + 256 + 16*4*chroma_idx, CHROMA_DC_BLOCK_INDEX, chroma_dc_scan, NULL, 4) < 0){
                     return -1;
                 }
         }
-		/* ½âÎöchroma AC²Ğ²î¡¢·´Á¿»¯ */
-        if(cbp&0x20){	/* ½âÎöcb cr AC 8x8¿éµÄ²Ğ²î */
+		/* è§£æchroma ACæ®‹å·®ã€åé‡åŒ– */
+        if(cbp&0x20){	/* è§£æcb cr AC 8x8å—çš„æ®‹å·® */
             for(chroma_idx=0; chroma_idx<2; chroma_idx++){
                 const uint32_t *qmul = h->dequant4_coeff[chroma_idx+1+(IS_INTRA( mb_type ) ? 0:3)][h->chroma_qp[chroma_idx]];
-                for(i4x4=0; i4x4<4; i4x4++){	/* ½âÎöcb/crÃ¿¸ö4x4¿éµÄAC²Ğ²î */
+                for(i4x4=0; i4x4<4; i4x4++){	/* è§£æcb/cræ¯ä¸ª4x4å—çš„ACæ®‹å·® */
                     const int index= 16 + 4*chroma_idx + i4x4;
                     if( decode_residual(h, gb, h->mb + 16*index, index, scan + 1, qmul, 15) < 0){
                         return -1;
                     }
                 }
             }
-        }else{	/* chroma  AC²Ğ²îÎª0 */
+        }else{	/* chroma  ACæ®‹å·®ä¸º0 */
             uint8_t * const nnz= &h->non_zero_count_cache[0];
             nnz[ scan8[16]+0 ] = nnz[ scan8[16]+1 ] =nnz[ scan8[16]+8 ] =nnz[ scan8[16]+9 ] =
             nnz[ scan8[20]+0 ] = nnz[ scan8[20]+1 ] =nnz[ scan8[20]+8 ] =nnz[ scan8[20]+9 ] = 0;
         }
-    }else{	/* CPBÎª0 && mb_type != intra16x16 */
+    }else{	/* CPBä¸º0 && mb_type != intra16x16 */
         uint8_t * const nnz= &h->non_zero_count_cache[0];
         fill_rectangle(&nnz[scan8[0]], 4, 4, 8, 0, 1);
         nnz[ scan8[16]+0 ] = nnz[ scan8[16]+1 ] =nnz[ scan8[16]+8 ] =nnz[ scan8[16]+9 ] =
         nnz[ scan8[20]+0 ] = nnz[ scan8[20]+1 ] =nnz[ scan8[20]+8 ] =nnz[ scan8[20]+9 ] = 0;
     }
     s->current_picture.qscale_table[mb_xy]= s->qscale;
-    write_back_non_zero_count(h);	/* ±£´æµ±Ç°ºê¿é·ÇÁãÏµÊı */
+    write_back_non_zero_count(h);	/* ä¿å­˜å½“å‰å®å—éé›¶ç³»æ•° */
 
     if(MB_MBAFF){
         h->ref_count[0] >>= 1;
@@ -7332,7 +7332,7 @@ static inline void compute_mb_neighbors(H264Context *h)
  * decodes a macroblock
  * @returns 0 if OK, AC_ERROR / DC_ERROR / MV_ERROR if an error is noticed
  */
-/* CABAC: Ä£Ê½Ô¤²â¡¢½âÂë²Ğ²î¡¢·´Á¿»¯ */  
+/* CABAC: æ¨¡å¼é¢„æµ‹ã€è§£ç æ®‹å·®ã€åé‡åŒ– */  
 static int decode_mb_cabac(H264Context *h) {
     MpegEncContext * const s = &h->s;
     int mb_xy;
@@ -7352,7 +7352,7 @@ static int decode_mb_cabac(H264Context *h) {
         else
             skip = decode_cabac_mb_skip( h, s->mb_x, s->mb_y );
         /* read skip flags */
-        if( skip ) {	/* Èôµ±Ç°ºê¿éÊÇskipºê¿é(p_skip»òb_skip£©£¬Ôò½øĞĞºê¿é½âÂë£¨µÃµ½MV)£¬·µ»Ø(ÎŞ²Ğ²î£© */
+        if( skip ) {	/* è‹¥å½“å‰å®å—æ˜¯skipå®å—(p_skipæˆ–b_skipï¼‰ï¼Œåˆ™è¿›è¡Œå®å—è§£ç ï¼ˆå¾—åˆ°MV)ï¼Œè¿”å›(æ— æ®‹å·®ï¼‰ */
             if( FRAME_MBAFF && (s->mb_y&1)==0 ){
                 s->current_picture.mb_type[mb_xy] = MB_TYPE_SKIP;
                 h->next_mb_skipped = decode_cabac_mb_skip( h, s->mb_x, s->mb_y+1 );
@@ -7364,7 +7364,7 @@ static int decode_mb_cabac(H264Context *h) {
 
             h->cbp_table[mb_xy] = 0;
 			/* 2010/04/09 08:30:00 hanqr+00115692 */
-			/* ½«µ±Ç°ºê¿éµÄcbpÖÃÎª0 */
+			/* å°†å½“å‰å®å—çš„cbpç½®ä¸º0 */
 			h->cbp = 0;
             h->chroma_pred_mode_table[mb_xy] = 0;
             h->last_qscale_diff = 0;
@@ -7380,7 +7380,7 @@ static int decode_mb_cabac(H264Context *h) {
     }
 
     h->prev_mb_skipped = 0;
-	/* µÃµ½ÏàÁÚºê¿éµÄĞÅÏ¢ */
+	/* å¾—åˆ°ç›¸é‚»å®å—çš„ä¿¡æ¯ */
     compute_mb_neighbors(h);
 
     if( h->slice_type_nos == FF_B_TYPE ) {
@@ -7415,7 +7415,7 @@ static int decode_mb_cabac(H264Context *h) {
         assert(h->slice_type_nos == FF_I_TYPE);
 decode_intra_mb:
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼ÓºÏ·¨ĞÔÅĞ¶Ï */
+		/* å¢åŠ åˆæ³•æ€§åˆ¤æ–­ */
 		if(mb_type > 25){
 			av_log(h->s.avctx, AV_LOG_WARNING, "mb_type %d in %c slice too large at %d %d\n", mb_type, av_get_pict_type_char(h->slice_type), s->mb_x, s->mb_y);
 			IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_TYPE);
@@ -7475,12 +7475,12 @@ decode_intra_mb:
     }
 
     fill_caches(h, mb_type, 0);
-	/* Ö¡ÄÚÔ¤²â */
+	/* å¸§å†…é¢„æµ‹ */
     if( IS_INTRA( mb_type ) ) {
         int i, pred_mode;
-		/* LUMA: intra4x4Ô¤²âÄ£Ê½»òintra8x8Ô¤²âÄ£Ê½ */
+		/* LUMA: intra4x4é¢„æµ‹æ¨¡å¼æˆ–intra8x8é¢„æµ‹æ¨¡å¼ */
         if( IS_INTRA4x4( mb_type ) ) {
-			/* intra8x8Ô¤²âÄ£Ê½ */
+			/* intra8x8é¢„æµ‹æ¨¡å¼ */
             if( dct8x8_allowed && decode_cabac_mb_transform_size( h ) ) {
                 mb_type |= MB_TYPE_8x8DCT;
                 for( i = 0; i < 16; i+=4 ) {
@@ -7488,7 +7488,7 @@ decode_intra_mb:
                     int mode = decode_cabac_mb_intra4x4_pred_mode( h, pred );
                     fill_rectangle( &h->intra4x4_pred_mode_cache[ scan8[i] ], 2, 2, 8, mode, 1 );
                 }
-            } else {	/* intra4x4Ô¤²âÄ£Ê½ */
+            } else {	/* intra4x4é¢„æµ‹æ¨¡å¼ */
                 for( i = 0; i < 16; i++ ) {
                     int pred = pred_intra_mode( h, i );
                     h->intra4x4_pred_mode_cache[ scan8[i] ] = decode_cabac_mb_intra4x4_pred_mode( h, pred );
@@ -7496,8 +7496,8 @@ decode_intra_mb:
                 //av_log( s->avctx, AV_LOG_ERROR, "i4x4 pred=%d mode=%d\n", pred, h->intra4x4_pred_mode_cache[ scan8[i] ] );
                 }
             }
-            write_back_intra_pred_mode(h);	/* ±£´æintra4x4»òintra8x8µÄÔ¤²âÄ£Ê½ */
-			/* ¼ì²âintra4x4»òintra8x8µÄÔ¤²âÄ£Ê½µÄºÏ·¨ĞÔ */
+            write_back_intra_pred_mode(h);	/* ä¿å­˜intra4x4æˆ–intra8x8çš„é¢„æµ‹æ¨¡å¼ */
+			/* æ£€æµ‹intra4x4æˆ–intra8x8çš„é¢„æµ‹æ¨¡å¼çš„åˆæ³•æ€§ */
             if( check_intra4x4_pred_mode(h) < 0 ) 
 			{
 				/* 2010/03/22 17:00:00 liuxw+00139685 */
@@ -7506,11 +7506,11 @@ decode_intra_mb:
 				s->avctx->iTotalError++;
 				return -1;	
 			}
-        } else {	/* LUMA: intra16x16 Ô¤²âÄ£Ê½ */
+        } else {	/* LUMA: intra16x16 é¢„æµ‹æ¨¡å¼ */
 			/* 2010/08/13 11:30:00 liuxw+00139685 */
-			/* Ìæ»»ÒÑ¾­ÓĞµÄº¯Êıº¯Êı£ºÓÃÓÚ¼ì²âluma intraºê¿éÔ¤²âÄ£Ê½µÄºÏ·¨ĞÔ */
-//			h->intra16x16_pred_mode= check_intra_pred_mode( h, h->intra16x16_pred_mode );  /* ½âÎöintra16x16Ô¤²âÄ£Ê½²¢¼ì²âÄ£Ê½µÄºÏ·¨ĞÔ */
-            h->intra16x16_pred_mode= check_intra_pred_mode_luma( h, h->intra16x16_pred_mode );  /* ½âÎöintra16x16Ô¤²âÄ£Ê½²¢¼ì²âÄ£Ê½µÄºÏ·¨ĞÔ */
+			/* æ›¿æ¢å·²ç»æœ‰çš„å‡½æ•°å‡½æ•°ï¼šç”¨äºæ£€æµ‹luma intraå®å—é¢„æµ‹æ¨¡å¼çš„åˆæ³•æ€§ */
+//			h->intra16x16_pred_mode= check_intra_pred_mode( h, h->intra16x16_pred_mode );  /* è§£æintra16x16é¢„æµ‹æ¨¡å¼å¹¶æ£€æµ‹æ¨¡å¼çš„åˆæ³•æ€§ */
+            h->intra16x16_pred_mode= check_intra_pred_mode_luma( h, h->intra16x16_pred_mode );  /* è§£æintra16x16é¢„æµ‹æ¨¡å¼å¹¶æ£€æµ‹æ¨¡å¼çš„åˆæ³•æ€§ */
             if( h->intra16x16_pred_mode < 0 ) 
 			{
 				/* 2010/03/22 17:00:00 liuxw+00139685 */
@@ -7520,29 +7520,29 @@ decode_intra_mb:
 				return -1;
 			}
         }
-        if(CHROMA){	/* chroma´æÔÚ(¼È²»ÊÇµ¥É«Y) */
+        if(CHROMA){	/* chromaå­˜åœ¨(æ—¢ä¸æ˜¯å•è‰²Y) */
             h->chroma_pred_mode_table[mb_xy] =
-            pred_mode                        = decode_cabac_mb_chroma_pre_mode( h );	/* ½âÎöchroma intra8x8Ô¤²âÄ£Ê½ */
-			/* ¼ì²âchroma intra8x8Ô¤²âÄ£Ê½µÄºÏ·¨ĞÔ */
+            pred_mode                        = decode_cabac_mb_chroma_pre_mode( h );	/* è§£æchroma intra8x8é¢„æµ‹æ¨¡å¼ */
+			/* æ£€æµ‹chroma intra8x8é¢„æµ‹æ¨¡å¼çš„åˆæ³•æ€§ */
             pred_mode= check_intra_pred_mode( h, pred_mode );	
             if( pred_mode < 0 ) 
 			{
 				/* 2010/03/22 17:00:00 liuxw+00139685 */
-				/* Ôö¼Ó´íÎóÂëºÍÀÛ»ı×ÜµÄ´íÎóÊı */
+				/* å¢åŠ é”™è¯¯ç å’Œç´¯ç§¯æ€»çš„é”™è¯¯æ•° */
 				IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_MODE);
 				s->avctx->iTotalError++;
 				return -1;
 			}
             h->chroma_pred_mode= pred_mode;
         }
-    } else if( partition_count == 4 ) {	/* Ö¡¼äÔ¤²â£ºP8x8»òB8x8 */
+    } else if( partition_count == 4 ) {	/* å¸§é—´é¢„æµ‹ï¼šP8x8æˆ–B8x8 */
         int i, j, sub_partition_count[4], list, ref[2][4];
 
         if( h->slice_type_nos == FF_B_TYPE ) {	/* B8x8 */
             for( i = 0; i < 4; i++ ) {
                 h->sub_mb_type[i] = decode_cabac_b_mb_sub_type( h );
 				/* 2010/03/22 17:00:00 liuxw+00139685 */
-				/* Ôö¼Ó´íÎóÂëºÍÀÛ»ı×ÜµÄ´íÎóÊı */
+				/* å¢åŠ é”™è¯¯ç å’Œç´¯ç§¯æ€»çš„é”™è¯¯æ•° */
 				if(h->sub_mb_type[i] >=13){
 					av_log(h->s.avctx, AV_LOG_WARNING, "B sub_mb_type %u out of range at %d %d\n", h->sub_mb_type[i], s->mb_x, s->mb_y);
 					IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_TYPE);
@@ -7551,7 +7551,7 @@ decode_intra_mb:
 				}
                 sub_partition_count[i]= b_sub_mb_type_info[ h->sub_mb_type[i] ].partition_count;
                 h->sub_mb_type[i]=      b_sub_mb_type_info[ h->sub_mb_type[i] ].type;
-            }	/* Èô4¸ö×Óºê¿é8x8ÖĞ´æÔÚdirect8x8Ô¤²âÄ£Ê½£¬Ôò½øĞĞÖ±½ÓÔ¤²âÄ£Ê½ */
+            }	/* è‹¥4ä¸ªå­å®å—8x8ä¸­å­˜åœ¨direct8x8é¢„æµ‹æ¨¡å¼ï¼Œåˆ™è¿›è¡Œç›´æ¥é¢„æµ‹æ¨¡å¼ */
             if( IS_DIRECT(h->sub_mb_type[0] | h->sub_mb_type[1] |
                           h->sub_mb_type[2] | h->sub_mb_type[3]) ) {
                 pred_direct_motion(h, &mb_type);
@@ -7569,7 +7569,7 @@ decode_intra_mb:
             for( i = 0; i < 4; i++ ) {
                 h->sub_mb_type[i] = decode_cabac_p_mb_sub_type( h );
 				/* 2010/03/22 17:00:00 liuxw+00139685 */
-				/* Ôö¼Ósub_mb_typeµÄºÏ·¨ĞÔÅĞ¶Ï */
+				/* å¢åŠ sub_mb_typeçš„åˆæ³•æ€§åˆ¤æ–­ */
 				if(h->sub_mb_type[i] >=4){
 					av_log(h->s.avctx, AV_LOG_WARNING, "P sub_mb_type %u out of range at %d %d\n", h->sub_mb_type[i], s->mb_x, s->mb_y);
 					IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_TYPE);
@@ -7589,7 +7589,7 @@ decode_intra_mb:
                             ref[list][i] = decode_cabac_mb_ref( h, list, 4*i );
                             if(ref[list][i] >= (int)h->ref_count[list]){
 								/* 2010/03/22 17:00:00 liuxw+00139685 */
-								/* Ôö¼Ó´íÎóÂë */
+								/* å¢åŠ é”™è¯¯ç  */
 //                              av_log(s->avctx, AV_LOG_ERROR, "Reference %d >= %d\n", ref[list][i], h->ref_count[list]);
 								av_log(s->avctx, AV_LOG_WARNING, "Reference %d >= %d\n", ref[list][i], h->ref_count[list]);
 								IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_REF);
@@ -7608,16 +7608,16 @@ decode_intra_mb:
 
         if(dct8x8_allowed)
             dct8x8_allowed = get_dct8x8_allowed(h);
-		/* ×Óºê¿é8x8µÄÄ£Ê½Ô¤²â */
+		/* å­å®å—8x8çš„æ¨¡å¼é¢„æµ‹ */
         for(list=0; list<(int)h->list_count; list++){
-			/* 4¸ö8x8µÄ×Óºê¿é */
+			/* 4ä¸ª8x8çš„å­å®å— */
             for(i=0; i<4; i++){
                 h->ref_cache[list][ scan8[4*i]   ]=h->ref_cache[list][ scan8[4*i]+1 ];
                 if(IS_DIRECT(h->sub_mb_type[i])){
                     fill_rectangle(h->mvd_cache[list][scan8[4*i]], 2, 2, 8, 0, 4);
                     continue;
                 }
-				/* ×Óºê¿éµÄsub_partition£¨8x8 8x4 4x8 4x4Ö¡¼äÄ£Ê½Ô¤²â) ²»°üÀ¨direct8x8 */
+				/* å­å®å—çš„sub_partitionï¼ˆ8x8 8x4 4x8 4x4å¸§é—´æ¨¡å¼é¢„æµ‹) ä¸åŒ…æ‹¬direct8x8 */
                 if(IS_DIR(h->sub_mb_type[i], 0, list) && !IS_DIRECT(h->sub_mb_type[i])){
                     const int sub_mb_type= h->sub_mb_type[i];
                     const int block_width= (sub_mb_type & (MB_TYPE_16x16|MB_TYPE_16x8)) ? 2 : 1;
@@ -7662,7 +7662,7 @@ decode_intra_mb:
                         mvd_cache[ 0 ][0]= mx - mpx;
                         mvd_cache[ 0 ][1]= my - mpy;
                     }
-                }else{	/* ²Ğ²îÎª0µÄ×Óºê¿é8x8 */
+                }else{	/* æ®‹å·®ä¸º0çš„å­å®å—8x8 */
                     uint32_t *p= (uint32_t *)&h->mv_cache[list][ scan8[4*i] ][0];
                     uint32_t *pd= (uint32_t *)&h->mvd_cache[list][ scan8[4*i] ][0];
                     p[0] = p[1] = p[8] = p[9] = 0;
@@ -7670,12 +7670,12 @@ decode_intra_mb:
                 }
             }
         }
-    } else if( IS_DIRECT(mb_type) ) {	/* direct16x16Ö¡¼äÔ¤²âÄ£Ê½ */
+    } else if( IS_DIRECT(mb_type) ) {	/* direct16x16å¸§é—´é¢„æµ‹æ¨¡å¼ */
         pred_direct_motion(h, &mb_type);
         fill_rectangle(h->mvd_cache[0][scan8[0]], 4, 4, 8, 0, 4);
         fill_rectangle(h->mvd_cache[1][scan8[0]], 4, 4, 8, 0, 4);
         dct8x8_allowed &= h->sps.direct_8x8_inference_flag;
-    } else {	/* Ö¡¼äÆäËüÔ¤²âÄ£Ê½£ºp16x16 p8x16 p16x8 b16x16 b8x16 b16x8 */
+    } else {	/* å¸§é—´å…¶å®ƒé¢„æµ‹æ¨¡å¼ï¼šp16x16 p8x16 p16x8 b16x16 b8x16 b16x8 */
         int list, mx, my, i, mpx, mpy;
         if(IS_16X16(mb_type)){	/* p16x16 or b16x16 */
             for(list=0; list<(int)h->list_count; list++){
@@ -7687,7 +7687,7 @@ decode_intra_mb:
 //                          av_log(s->avctx, AV_LOG_ERROR, "Reference %d >= %d\n", ref, h->ref_count[list]);
 							av_log(s->avctx, AV_LOG_WARNING, "Reference %d >= %d\n", ref, h->ref_count[list]);
 							/* 2010/03/22 17:00:00 liuxw+00139685 */
-							/* Ôö¼Ó´íÎóÂë */
+							/* å¢åŠ é”™è¯¯ç  */
 							IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_REF);
 							s->avctx->iTotalError++;
                             return -1;
@@ -7698,7 +7698,7 @@ decode_intra_mb:
                 }else
                     fill_rectangle(&h->ref_cache[list][ scan8[0] ], 4, 4, 8, (uint8_t)LIST_NOT_USED, 1); //FIXME factorize and the other fill_rect below too
             }
-			/* ½âÎöÖ¡¼äp16x16»òb16x16µÄÔ¤²âÄ£Ê½ */
+			/* è§£æå¸§é—´p16x16æˆ–b16x16çš„é¢„æµ‹æ¨¡å¼ */
             for(list=0; list<(int)h->list_count; list++){
                 if(IS_DIR(mb_type, 0, list)){
                     pred_motion(h, 0, 4, list, h->ref_cache[list][ scan8[0] ], &mpx, &mpy);
@@ -7715,7 +7715,7 @@ decode_intra_mb:
         }	/* p16x8 or b16x8 */
         else if(IS_16X8(mb_type)){
             for(list=0; list<(int)h->list_count; list++){
-                    for(i=0; i<2; i++){	/* 2¸ö16x8µÄ×Óºê¿é */
+                    for(i=0; i<2; i++){	/* 2ä¸ª16x8çš„å­å®å— */
                         if(IS_DIR(mb_type, i, list)){
                             int ref;
                             if(h->ref_count[list] > 1){
@@ -7724,7 +7724,7 @@ decode_intra_mb:
 //                                  av_log(s->avctx, AV_LOG_ERROR, "Reference %d >= %d\n", ref, h->ref_count[list]);
 									av_log(s->avctx, AV_LOG_WARNING, "Reference %d >= %d\n", ref, h->ref_count[list]);
 									/* 2010/03/22 17:00:00 liuxw+00139685 */
-									/* Ôö¼Ó´íÎóÂë */
+									/* å¢åŠ é”™è¯¯ç  */
 									IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_REF);
 									s->avctx->iTotalError++;
                                     return -1;
@@ -7735,7 +7735,7 @@ decode_intra_mb:
                         }else
                             fill_rectangle(&h->ref_cache[list][ scan8[0] + 16*i ], 4, 2, 8, (LIST_NOT_USED&0xFF), 1);
                     }
-            }	/* ½âÎöÖ¡¼äp16x8»òb16x8µÄÔ¤²âÄ£Ê½ */
+            }	/* è§£æå¸§é—´p16x8æˆ–b16x8çš„é¢„æµ‹æ¨¡å¼ */
             for(list=0; list<(int)h->list_count; list++){
                 for(i=0; i<2; i++){
                     if(IS_DIR(mb_type, i, list)){
@@ -7764,7 +7764,7 @@ decode_intra_mb:
 //                                  av_log(s->avctx, AV_LOG_ERROR, "Reference %d >= %d\n", ref, h->ref_count[list]);
 									av_log(s->avctx, AV_LOG_WARNING, "Reference %d >= %d\n", ref, h->ref_count[list]);
 									/* 2010/03/22 17:00:00 liuxw+00139685 */
-									/* Ôö¼Ó´íÎóÂë */
+									/* å¢åŠ é”™è¯¯ç  */
 									IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_REF);
 									s->avctx->iTotalError++;
                                     return -1;
@@ -7775,9 +7775,9 @@ decode_intra_mb:
                         }else
                             fill_rectangle(&h->ref_cache[list][ scan8[0] + 2*i ], 2, 4, 8, (LIST_NOT_USED&0xFF), 1);
                     }
-            }	/* ½âÎöÖ¡¼äp8x16»òb8x16µÄÔ¤²âÄ£Ê½ */
+            }	/* è§£æå¸§é—´p8x16æˆ–b8x16çš„é¢„æµ‹æ¨¡å¼ */
             for(list=0; list<(int)h->list_count; list++){
-                for(i=0; i<2; i++){	/* 2¸ö8x16µÄ×Óºê¿é */
+                for(i=0; i<2; i++){	/* 2ä¸ª8x16çš„å­å®å— */
                     if(IS_DIR(mb_type, i, list)){
                         pred_8x16_motion(h, i*4, list, h->ref_cache[list][ scan8[0] + 2*i ], &mpx, &mpy);
                         mx = mpx + decode_cabac_mb_mvd( h, list, 4*i, 0 );
@@ -7794,23 +7794,23 @@ decode_intra_mb:
             }
         }
     }
-	/* ±£´æµ±Ç°ºê¿éµÄÖ¡¼äÔ¤²âÄ£Ê½ */
+	/* ä¿å­˜å½“å‰å®å—çš„å¸§é—´é¢„æµ‹æ¨¡å¼ */
    if( IS_INTER( mb_type ) ) {
         h->chroma_pred_mode_table[mb_xy] = 0;
         write_back_motion( h, mb_type );
    }
-	/* Èô²»ÊÇintra16x16£¬Ôò½âÎöCBP(ÒòÎªintra16x16µÄCBP±£´æÔÚmb_typeÖĞ) */
+	/* è‹¥ä¸æ˜¯intra16x16ï¼Œåˆ™è§£æCBP(å› ä¸ºintra16x16çš„CBPä¿å­˜åœ¨mb_typeä¸­) */
     if( !IS_INTRA16x16( mb_type ) ) {
         cbp  = decode_cabac_mb_cbp_luma( h );
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó¶ÔcbpµÄÅĞ¶Ï */
+		/* å¢åŠ å¯¹cbpçš„åˆ¤æ–­ */
 		if(cbp > 47){
 			av_log(h->s.avctx, AV_LOG_WARNING, "cbp too large (%u) at %d %d\n", cbp, s->mb_x, s->mb_y);
 			IMEDIA_SET_ERR_MB(s->avctx->iErrorCode,IMEDIA_ERR_MB_CBP);
 			s->avctx->iTotalError++;
 			return -1;
 		}
-        if(CHROMA)	/* chroma´æÔÚ(¼È²»ÊÇµ¥É«Y) */
+        if(CHROMA)	/* chromaå­˜åœ¨(æ—¢ä¸æ˜¯å•è‰²Y) */
             cbp |= decode_cabac_mb_cbp_chroma( h ) << 4;
     }
 
@@ -7821,12 +7821,12 @@ decode_intra_mb:
             mb_type |= MB_TYPE_8x8DCT;
     }
     s->current_picture.mb_type[mb_xy]= mb_type;
-	/* ÈôCBP²»Îª0£¨¼´´æÔÚ²Ğ²î)»òintra16x16 */
+	/* è‹¥CBPä¸ä¸º0ï¼ˆå³å­˜åœ¨æ®‹å·®)æˆ–intra16x16 */
     if( cbp || IS_INTRA16x16( mb_type ) ) {
         const uint8_t *scan, *scan8x8, *dc_scan;
         const uint32_t *qmul;
         int dqp;
-		/* ¸³ÖØÅÅĞò±í(inverse scan) */
+		/* èµ‹é‡æ’åºè¡¨(inverse scan) */
         if(IS_INTERLACED(mb_type)){
             scan8x8= s->qscale ? h->field_scan8x8 : h->field_scan8x8_q0;
             scan= s->qscale ? h->field_scan : h->field_scan_q0;
@@ -7839,7 +7839,7 @@ decode_intra_mb:
 
         h->last_qscale_diff = dqp = decode_cabac_mb_dqp( h );	/* delta QP */
 		 /* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* ĞŞ¸ÄdqpµÄ¼ì²âÌõ¼ş */
+		/* ä¿®æ”¹dqpçš„æ£€æµ‹æ¡ä»¶ */
 		 if(dqp > 25 || dqp < -26){
  //      if( dqp == INT_MIN ){
  //         av_log(h->s.avctx, AV_LOG_ERROR, "cabac decode of qscale diff failed at %d %d\n", s->mb_x, s->mb_y);
@@ -7855,74 +7855,74 @@ decode_intra_mb:
         }
         h->chroma_qp[0] = get_chroma_qp(h, 0, s->qscale);	/* CB QP */
         h->chroma_qp[1] = get_chroma_qp(h, 1, s->qscale);	/* CR QP */
-		/* ½âÎöintra16x16µÄ²Ğ²î */
+		/* è§£æintra16x16çš„æ®‹å·® */
         if( IS_INTRA16x16( mb_type ) ) {
             int i;
             //av_log( s->avctx, AV_LOG_ERROR, "INTRA16x16 DC\n" );
-            decode_cabac_residual( h, h->mb, 0, 0, dc_scan, NULL, 16);	/* ½âÎö intra16x16 DC µÄ²Ğ²î */
+            decode_cabac_residual( h, h->mb, 0, 0, dc_scan, NULL, 16);	/* è§£æ intra16x16 DC çš„æ®‹å·® */
 
             if( cbp&15 ) {
-				/* ½âÎö²Ğ²î²»Îª0µÄ8x8×Óºê¿é */
+				/* è§£ææ®‹å·®ä¸ä¸º0çš„8x8å­å®å— */
                 qmul = h->dequant4_coeff[0][s->qscale];
                 for( i = 0; i < 16; i++ ) {
                     //av_log( s->avctx, AV_LOG_ERROR, "INTRA16x16 AC:%d\n", i );
-                    decode_cabac_residual(h, h->mb + 16*i, 1, i, scan + 1, qmul, 15);	/* ½âÎöÃ¿¸ö4x4µÄ¿éµÄ²Ğ²î²¢½øĞĞ·´Á¿»¯ */
+                    decode_cabac_residual(h, h->mb + 16*i, 1, i, scan + 1, qmul, 15);	/* è§£ææ¯ä¸ª4x4çš„å—çš„æ®‹å·®å¹¶è¿›è¡Œåé‡åŒ– */
                 }
             } else {
                 fill_rectangle(&h->non_zero_count_cache[scan8[0]], 4, 4, 8, 0, 1);
             }
-        } else {	/* ½âÎömb_type != intra16x16 && cbp²»Îª0µÄºê¿éµÄ²Ğ²î */
+        } else {	/* è§£æmb_type != intra16x16 && cbpä¸ä¸º0çš„å®å—çš„æ®‹å·® */
             int i8x8, i4x4;
-            for( i8x8 = 0; i8x8 < 4; i8x8++ ) {	/* ½âÎö²Ğ²î²»Îª0µÄ8x8µÄ¿é */
+            for( i8x8 = 0; i8x8 < 4; i8x8++ ) {	/* è§£ææ®‹å·®ä¸ä¸º0çš„8x8çš„å— */
                 if( cbp & (1<<i8x8) ) {
-					/* DCTÄ£Ê½Îª8x8dctÂëÁ÷µÄ½âÂë */
+					/* DCTæ¨¡å¼ä¸º8x8dctç æµçš„è§£ç  */
                     if( IS_8x8DCT(mb_type) ) {
-						/* ½âÎö8x8¿éµÄ²Ğ²î²¢½øĞĞ·´Á¿»¯ */
+						/* è§£æ8x8å—çš„æ®‹å·®å¹¶è¿›è¡Œåé‡åŒ– */
                         decode_cabac_residual(h, h->mb + 64*i8x8, 5, 4*i8x8,
                             scan8x8, h->dequant8_coeff[IS_INTRA( mb_type ) ? 0:1][s->qscale], 64);
-                    } else {	/* DCTÄ£Ê½Îª4x4dctÂëÁ÷µÄ½âÂë */
+                    } else {	/* DCTæ¨¡å¼ä¸º4x4dctç æµçš„è§£ç  */
                         qmul = h->dequant4_coeff[IS_INTRA( mb_type ) ? 0:3][s->qscale];
                         for( i4x4 = 0; i4x4 < 4; i4x4++ ) {
                             const int index = 4*i8x8 + i4x4;
                             //av_log( s->avctx, AV_LOG_ERROR, "Luma4x4: %d\n", index );
-//START_TIMER				/* ½âÎö4x4¿éµÄ²Ğ²î²¢½øĞĞ·´Á¿»¯ */
+//START_TIMER				/* è§£æ4x4å—çš„æ®‹å·®å¹¶è¿›è¡Œåé‡åŒ– */
                             decode_cabac_residual(h, h->mb + 16*index, 2, index, scan, qmul, 16);
 //STOP_TIMER("decode_residual")
                         }
                     }
-                } else {	/* ²Ğ²îÎª0µÄ8x8¿é */
+                } else {	/* æ®‹å·®ä¸º0çš„8x8å— */
                     uint8_t * const nnz= &h->non_zero_count_cache[ scan8[4*i8x8] ];
                     nnz[0] = nnz[1] = nnz[8] = nnz[9] = 0;
                 }
             }
         }
-		/* ½âÎöchroma DC²Ğ²î */
+		/* è§£æchroma DCæ®‹å·® */
         if( cbp&0x30 ){
             int c;
-            for( c = 0; c < 2; c++ ) {	/* ½âÎöcb cr DC²Ğ²î */
+            for( c = 0; c < 2; c++ ) {	/* è§£æcb cr DCæ®‹å·® */
                 //av_log( s->avctx, AV_LOG_ERROR, "INTRA C%d-DC\n",c );
-                decode_cabac_residual(h, h->mb + 256 + 16*4*c, 3, c, chroma_dc_scan, NULL, 4);	/* ½âÎöcb/cr 2x2¿éµÄDC²Ğ²î */
+                decode_cabac_residual(h, h->mb + 256 + 16*4*c, 3, c, chroma_dc_scan, NULL, 4);	/* è§£æcb/cr 2x2å—çš„DCæ®‹å·® */
             }
         }
-		/* ½âÎöchroma AC²Ğ²î¡¢·´Á¿»¯ */
+		/* è§£æchroma ACæ®‹å·®ã€åé‡åŒ– */
         if( cbp&0x20 ) {
             int c, i;
-            for( c = 0; c < 2; c++ ) {	/* ½âÎöcb cr AC 8x8¿éµÄ²Ğ²î */
+            for( c = 0; c < 2; c++ ) {	/* è§£æcb cr AC 8x8å—çš„æ®‹å·® */
                 qmul = h->dequant4_coeff[c+1+(IS_INTRA( mb_type ) ? 0:3)][h->chroma_qp[c]];
                 for( i = 0; i < 4; i++ ) {
                     const int index = 16 + 4 * c + i;
                     //av_log( s->avctx, AV_LOG_ERROR, "INTRA C%d-AC %d\n",c, index - 16 );
-                    decode_cabac_residual(h, h->mb + 16*index, 4, index, scan + 1, qmul, 15); /* ½âÎöÃ¿¸ö4x4¿éµÄ²Ğ²î²¢½øĞĞ·´Á¿»¯ */
+                    decode_cabac_residual(h, h->mb + 16*index, 4, index, scan + 1, qmul, 15); /* è§£ææ¯ä¸ª4x4å—çš„æ®‹å·®å¹¶è¿›è¡Œåé‡åŒ– */
                 }
             }
-        } else {	/* chroma  AC²Ğ²îÎª0 */
+        } else {	/* chroma  ACæ®‹å·®ä¸º0 */
             uint8_t * const nnz= &h->non_zero_count_cache[0];
             nnz[ scan8[16]+0 ] = nnz[ scan8[16]+1 ] =nnz[ scan8[16]+8 ] =nnz[ scan8[16]+9 ] =
             nnz[ scan8[20]+0 ] = nnz[ scan8[20]+1 ] =nnz[ scan8[20]+8 ] =nnz[ scan8[20]+9 ] = 0;
         }
     }
 	else 
-	{	/* CPBÎª0 && mb_type != intra16x16 */
+	{	/* CPBä¸º0 && mb_type != intra16x16 */
         uint8_t * const nnz= &h->non_zero_count_cache[0];
         fill_rectangle(&nnz[scan8[0]], 4, 4, 8, 0, 1);
         nnz[ scan8[16]+0 ] = nnz[ scan8[16]+1 ] =nnz[ scan8[16]+8 ] =nnz[ scan8[16]+9 ] =
@@ -7931,7 +7931,7 @@ decode_intra_mb:
     }
 
     s->current_picture.qscale_table[mb_xy]= s->qscale;
-    write_back_non_zero_count(h);	/* ±£´æµ±Ç°ºê¿é·ÇÁãÏµÊı */
+    write_back_non_zero_count(h);	/* ä¿å­˜å½“å‰å®å—éé›¶ç³»æ•° */
 
     if(MB_MBAFF)
 	{
@@ -7949,7 +7949,7 @@ static void filter_mb_edgev( H264Context *h, uint8_t *pix, int stride, int16_t b
     const int alpha = (alpha_table+52)[index_a];
     const int beta  = (beta_table+52)[qp + h->slice_beta_offset];
 	/* 2010/07/08 9:30:00 liuxw+00139685 [AZ1D02186] */
-	/* Ôö¼Ó¶ÔalphaºÍbetaµÄÅĞ¶Ï£ºÈç¹ûalpha»òÕßbetaĞ¡ÓÚµÈÓÚÁãµÄÇé¿öÏÂ£¬Ôò²»ÓÃ½øĞĞÂË²¨ */
+	/* å¢åŠ å¯¹alphaå’Œbetaçš„åˆ¤æ–­ï¼šå¦‚æœalphaæˆ–è€…betaå°äºç­‰äºé›¶çš„æƒ…å†µä¸‹ï¼Œåˆ™ä¸ç”¨è¿›è¡Œæ»¤æ³¢ */
 	if(alpha > 0 && beta > 0)
 	{
 		if( bS[0] < 4 ) 
@@ -7986,7 +7986,7 @@ static void filter_mb_edgecv( H264Context *h, uint8_t *pix, int stride, int16_t 
     const int beta  = (beta_table+52)[qp + h->slice_beta_offset];
 	
 	/* 2010/07/08 9:30:00 liuxw+00139685 [AZ1D02186] */
-	/* Ôö¼Ó¶ÔalphaºÍbetaµÄÅĞ¶Ï£ºÈç¹ûalpha»òÕßbetaĞ¡ÓÚµÈÓÚÁãµÄÇé¿öÏÂ£¬Ôò²»ÓÃ½øĞĞÂË²¨ */
+	/* å¢åŠ å¯¹alphaå’Œbetaçš„åˆ¤æ–­ï¼šå¦‚æœalphaæˆ–è€…betaå°äºç­‰äºé›¶çš„æƒ…å†µä¸‹ï¼Œåˆ™ä¸ç”¨è¿›è¡Œæ»¤æ³¢ */
 	if(alpha > 0 && beta > 0)
 	{
 		if( bS[0] < 4 ) 
@@ -8179,7 +8179,7 @@ static void filter_mb_edgeh( H264Context *h, uint8_t *pix, int stride, int16_t b
     const int beta  = (beta_table+52)[qp + h->slice_beta_offset];
 
 	/* 2010/07/08 9:30:00 liuxw+00139685 [AZ1D02186] */
-	/* Ôö¼Ó¶ÔalphaºÍbetaµÄÅĞ¶Ï£ºÈç¹ûalpha»òÕßbetaĞ¡ÓÚµÈÓÚÁãµÄÇé¿öÏÂ£¬Ôò²»ÓÃ½øĞĞÂË²¨ */
+	/* å¢åŠ å¯¹alphaå’Œbetaçš„åˆ¤æ–­ï¼šå¦‚æœalphaæˆ–è€…betaå°äºç­‰äºé›¶çš„æƒ…å†µä¸‹ï¼Œåˆ™ä¸ç”¨è¿›è¡Œæ»¤æ³¢ */
 	if(alpha > 0 && beta > 0)
 	{
 		if( bS[0] < 4 ) 
@@ -8215,7 +8215,7 @@ static void filter_mb_edgech( H264Context *h, uint8_t *pix, int stride, int16_t 
     const int beta  = (beta_table+52)[qp + h->slice_beta_offset];
 	
 	/* 2010/07/08 9:30:00 liuxw+00139685 [AZ1D02186] */
-	/* Ôö¼Ó¶ÔalphaºÍbetaµÄÅĞ¶Ï£ºÈç¹ûalpha»òÕßbetaĞ¡ÓÚµÈÓÚÁãµÄÇé¿öÏÂ£¬Ôò²»ÓÃ½øĞĞÂË²¨ */
+	/* å¢åŠ å¯¹alphaå’Œbetaçš„åˆ¤æ–­ï¼šå¦‚æœalphaæˆ–è€…betaå°äºç­‰äºé›¶çš„æƒ…å†µä¸‹ï¼Œåˆ™ä¸ç”¨è¿›è¡Œæ»¤æ³¢ */
 	if(alpha > 0 && beta > 0)
 	{
 		if( bS[0] < 4 ) 
@@ -8369,7 +8369,7 @@ static av_always_inline void filter_mb_dir(H264Context *h, int mb_x, int mb_y, u
     const int mbm_xy = dir == 0 ? mb_xy -1 : h->top_mb_xy;
     const int mbm_type = s->current_picture.mb_type[mbm_xy];
 	/* 2010/04/23 14:30:00 liuxw+00139685 */
-	/* Ïû³ı±àÒëwarning  */
+	/* æ¶ˆé™¤ç¼–è¯‘warning  */
 //  int (*ref2frm) [64] = h->ref2frm[ h->slice_num & (MAX_SLICES-1) ][0] + (MB_MBAFF ? 20 : 2);
 //  int (*ref2frmm)[64] = h->ref2frm[ h->slice_table[mbm_xy] & (MAX_SLICES-1) ][0] + (MB_MBAFF ? 20 : 2);
 	int (*ref2frm) [64] = (int(*)[64])(h->ref2frm[h->slice_num&(MAX_SLICES-1)][0] + (MB_MBAFF ? 20 : 2));
@@ -8509,7 +8509,7 @@ static av_always_inline void filter_mb_dir(H264Context *h, int mb_x, int mb_y, u
                 int bn_idx= b_idx - (dir ? 8:1);
                 int v = 0;
 				/* 2010/08/22 16:30:00 liuxw+00139685 */
-				/* ÓÉÓÚÔ­ÏÈµÄ´úÂëÃ»ÓĞÍêÈ«°´ÕÕĞ­ÒéÀ´ÊµÏÖ£¬ËùÒÔĞŞ¸ÄÎªÍêÈ«°´ÕÕĞ­ÒéÀ´ÊµÏÖ */
+				/* ç”±äºåŸå…ˆçš„ä»£ç æ²¡æœ‰å®Œå…¨æŒ‰ç…§åè®®æ¥å®ç°ï¼Œæ‰€ä»¥ä¿®æ”¹ä¸ºå®Œå…¨æŒ‰ç…§åè®®æ¥å®ç° */
 #if 0
                 for( l = 0; !v && l < 1 + (h->slice_type_nos == FF_B_TYPE); l++ ) 
 				{
@@ -8599,7 +8599,7 @@ static av_always_inline void filter_mb_dir(H264Context *h, int mb_x, int mb_y, u
                 else if(!mv_done)
                 {
 					/* 2010/08/22 16:30:00 liuxw+00139685 */
-					/* ÓÉÓÚÔ­ÏÈµÄ´úÂëÃ»ÓĞÍêÈ«°´ÕÕĞ­ÒéÀ´ÊµÏÖ£¬ËùÒÔĞŞ¸ÄÎªÍêÈ«°´ÕÕĞ­ÒéÀ´ÊµÏÖ */
+					/* ç”±äºåŸå…ˆçš„ä»£ç æ²¡æœ‰å®Œå…¨æŒ‰ç…§åè®®æ¥å®ç°ï¼Œæ‰€ä»¥ä¿®æ”¹ä¸ºå®Œå…¨æŒ‰ç…§åè®®æ¥å®ç° */
 #if 0
                     bS[i] = 0;
                     for( l = 0; l < 1 + (h->slice_type_nos == FF_B_TYPE); l++ ) 
@@ -8863,14 +8863,14 @@ static int decode_slice(struct AVCodecContext *avctx, void *arg){
 
     h->is_complex = FRAME_MBAFF || s->picture_structure != PICT_FRAME || s->codec_id != CODEC_ID_H264 ||
                     (CONFIG_GRAY && (s->flags&CODEC_FLAG_GRAY));
-	/* CABAC²Ğ²î½âÂë */
+	/* CABACæ®‹å·®è§£ç  */
     if( h->pps.cabac ) {
         int i;
 
         /* realign */
         align_get_bits( &s->gb );
 
-        /* ³õÊ¼»¯cabacµÄ×´Ì¬ºÍ½âÂë²ÎÊı */
+        /* åˆå§‹åŒ–cabacçš„çŠ¶æ€å’Œè§£ç å‚æ•° */
         ff_init_cabac_states( &h->cabac);
         ff_init_cabac_decoder( &h->cabac,
                                s->gb.buffer + get_bits_count(&s->gb)/8,
@@ -8903,7 +8903,7 @@ static int decode_slice(struct AVCodecContext *avctx, void *arg){
 			} 
 #endif
 			/* 2010/04/08 14:30:00 liuxw+00139685 */
-			/* Ôö¼Ó¶Ôºê¿éÎ»ÖÃºÏ·¨ĞÔµÄ·¶Î§£¬±ÜÃâÔÚÎóÂë»ò¶ª°üµÄÇé¿öÏÂËÀ»ú(avoid segment) */
+			/* å¢åŠ å¯¹å®å—ä½ç½®åˆæ³•æ€§çš„èŒƒå›´ï¼Œé¿å…åœ¨è¯¯ç æˆ–ä¸¢åŒ…çš„æƒ…å†µä¸‹æ­»æœº(avoid segment) */
 			if(h->s.mb_x < 0 ||h->s.mb_x >= s->mb_stride || h->s.mb_y < 0 || h->s.mb_y >= s->mb_height)
 			{
 				av_log(h->s.avctx,AV_LOG_WARNING,"mb_x or mb_y is invalid!\n");
@@ -8911,7 +8911,7 @@ static int decode_slice(struct AVCodecContext *avctx, void *arg){
 				h->s.avctx->iTotalError++;
 				return -1;
 			}
-			ret = decode_mb_cabac(h); /* Ä£Ê½Ô¤²â¡¢½âÂë²Ğ²î¡¢·´Á¿»¯ */
+			ret = decode_mb_cabac(h); /* æ¨¡å¼é¢„æµ‹ã€è§£ç æ®‹å·®ã€åé‡åŒ– */
 
 			/* add by lxw for test */
 #ifdef LXW_DEBUG
@@ -8922,14 +8922,14 @@ static int decode_slice(struct AVCodecContext *avctx, void *arg){
 			}
 #endif
 
-            if(ret>=0) iRet = hl_decode_mb(h);  /* IDCT , Ö¡ÄÚÔ¤²â¡¢Ö¡¼äÔ¤²â¡¢ÖØ½¨¡¢»·Â·ÂË²¨ */
+            if(ret>=0) iRet = hl_decode_mb(h);  /* IDCT , å¸§å†…é¢„æµ‹ã€å¸§é—´é¢„æµ‹ã€é‡å»ºã€ç¯è·¯æ»¤æ³¢ */
 			if(iRet < 0)return -1;
-			/* ÈôMBAFF¹¦ÄÜ´ò¿ª£¬ÔòÒ»´ÎÒª½âÒ»¸öºê¿é¶Ô */
+			/* è‹¥MBAFFåŠŸèƒ½æ‰“å¼€ï¼Œåˆ™ä¸€æ¬¡è¦è§£ä¸€ä¸ªå®å—å¯¹ */
             if( ret >= 0 && FRAME_MBAFF ) { //FIXME optimal? or let mb_decode decode 16x32 ?
                 s->mb_y++;
 
 				/* 2010/06/01 18:30:00 liuxw+00139685 */
-				/* Ôö¼Ó¶Ôºê¿éÎ»ÖÃºÏ·¨ĞÔµÄ·¶Î§£¬±ÜÃâÔÚÎóÂë»ò¶ª°üµÄÇé¿öÏÂËÀ»ú(avoid segment) */
+				/* å¢åŠ å¯¹å®å—ä½ç½®åˆæ³•æ€§çš„èŒƒå›´ï¼Œé¿å…åœ¨è¯¯ç æˆ–ä¸¢åŒ…çš„æƒ…å†µä¸‹æ­»æœº(avoid segment) */
 				if(h->s.mb_x < 0 ||h->s.mb_x >= s->mb_stride || h->s.mb_y < 0 || h->s.mb_y >= s->mb_height)
 				{
 					av_log(h->s.avctx,AV_LOG_WARNING,"mb_x[%d] or mb_y[%d] is invalid!\n",h->s.mb_x,h->s.mb_y);
@@ -8944,7 +8944,7 @@ static int decode_slice(struct AVCodecContext *avctx, void *arg){
 				if(iRet < 0)return -1;
                 s->mb_y--;
             }
-            eos = get_cabac_terminate( &h->cabac );	/* ½âÎöslice end ±êÖ¾ */
+            eos = get_cabac_terminate( &h->cabac );	/* è§£æslice end æ ‡å¿— */
 
             if( ret < 0 || h->cabac.bytestream > h->cabac.bytestream_end + 2) {
 //              av_log(h->s.avctx, AV_LOG_ERROR, "error while decoding MB %d %d, bytestream (%td)\n", s->mb_x, s->mb_y, h->cabac.bytestream_end - h->cabac.bytestream);
@@ -8971,7 +8971,7 @@ static int decode_slice(struct AVCodecContext *avctx, void *arg){
             }
         }
 
-    } else { /* CAVLC²Ğ²î½âÂë */
+    } else { /* CAVLCæ®‹å·®è§£ç  */
         for(;;){
 			int ret = 0;
 			int iRet = 0;
@@ -8984,7 +8984,7 @@ static int decode_slice(struct AVCodecContext *avctx, void *arg){
 			}   
 #endif
 			/* 2010/04/08 14:30:00 liuxw+00139685 */
-			/* Ôö¼Ó¶Ôºê¿éÎ»ÖÃºÏ·¨ĞÔµÄ·¶Î§£¬±ÜÃâÔÚÎóÂë»ò¶ª°üµÄÇé¿öÏÂËÀ»ú(avoid segment) */
+			/* å¢åŠ å¯¹å®å—ä½ç½®åˆæ³•æ€§çš„èŒƒå›´ï¼Œé¿å…åœ¨è¯¯ç æˆ–ä¸¢åŒ…çš„æƒ…å†µä¸‹æ­»æœº(avoid segment) */
 			if(h->s.mb_x < 0 ||h->s.mb_x >= s->mb_stride || h->s.mb_y < 0 || h->s.mb_y >= s->mb_height)
 			{
 				av_log(h->s.avctx,AV_LOG_WARNING,"mb_x or mb_y is invalid!\n");
@@ -8993,7 +8993,7 @@ static int decode_slice(struct AVCodecContext *avctx, void *arg){
 				return -1;
 			}
 
-			ret = decode_mb_cavlc(h);	/* Ä£Ê½Ô¤²â¡¢½âÂë²Ğ²î¡¢·´Á¿»¯ */
+			ret = decode_mb_cavlc(h);	/* æ¨¡å¼é¢„æµ‹ã€è§£ç æ®‹å·®ã€åé‡åŒ– */
 
 #ifdef LXW_DEBUG
 			if(frame_num == TARGET_FRAME && h->s.mb_x == MB_X && h->s.mb_y == MB_Y)
@@ -9003,14 +9003,14 @@ static int decode_slice(struct AVCodecContext *avctx, void *arg){
 			}
 #endif
 
-            if(ret>=0) iRet = hl_decode_mb(h);		/* IDCT , Ö¡ÄÚÔ¤²â¡¢Ö¡¼äÔ¤²â¡¢ÖØ½¨¡¢»·Â·ÂË²¨ */
+            if(ret>=0) iRet = hl_decode_mb(h);		/* IDCT , å¸§å†…é¢„æµ‹ã€å¸§é—´é¢„æµ‹ã€é‡å»ºã€ç¯è·¯æ»¤æ³¢ */
 			if(iRet < 0) return -1;
-			/* ÈôMBAFF¹¦ÄÜ´ò¿ª£¬ÔòÒ»´ÎÒª½âÒ»¸öºê¿é¶Ô */
+			/* è‹¥MBAFFåŠŸèƒ½æ‰“å¼€ï¼Œåˆ™ä¸€æ¬¡è¦è§£ä¸€ä¸ªå®å—å¯¹ */
             if(ret>=0 && FRAME_MBAFF){ //FIXME optimal? or let mb_decode decode 16x32 ?
                 s->mb_y++;
 
 				/* 2010/06/01 18:30:00 liuxw+00139685 */
-				/* Ôö¼Ó¶Ôºê¿éÎ»ÖÃºÏ·¨ĞÔµÄ·¶Î§£¬±ÜÃâÔÚÎóÂë»ò¶ª°üµÄÇé¿öÏÂËÀ»ú(avoid segment) */
+				/* å¢åŠ å¯¹å®å—ä½ç½®åˆæ³•æ€§çš„èŒƒå›´ï¼Œé¿å…åœ¨è¯¯ç æˆ–ä¸¢åŒ…çš„æƒ…å†µä¸‹æ­»æœº(avoid segment) */
 				if(h->s.mb_x < 0 ||h->s.mb_x >= s->mb_stride || h->s.mb_y < 0 || h->s.mb_y >= s->mb_height)
 				{
 					av_log(h->s.avctx,AV_LOG_WARNING,"mb_x[%d] or mb_y[%d] is invalid!\n",h->s.mb_x,h->s.mb_y);
@@ -9359,7 +9359,7 @@ static inline int decode_hrd_parameters(H264Context *h, SPS *sps){
     }
 //  s->avctx->aspect_ratio= sar_width*s->width / (float)(s->height*sar_height);
 	/* 2010/07/23 15:30:00 liuxw+00139685 */
-	/* ¸øavctxµÄsample_aspect_ratio½øĞĞ¸³Öµ */
+	/* ç»™avctxçš„sample_aspect_ratioè¿›è¡Œèµ‹å€¼ */
 	if( NULL != s->avctx)
 	{
 		s->avctx->sample_aspect_ratio.num = sps->sar.num;
@@ -9430,7 +9430,7 @@ static inline int decode_hrd_parameters(H264Context *h, SPS *sps){
 				h->s.avctx->iTotalError++;
 			}
 			/* 2010/05/31 10:00:00 liuxw+00139685 */
-			/* Èônum_reorder_frames³¬¹ıÁË16£¬Ôò±¨´í£¬²¢ĞŞÕıbitstream_restriction_flagºÍnum_reorder_framesÆäÎª0  */
+			/* è‹¥num_reorder_framesè¶…è¿‡äº†16ï¼Œåˆ™æŠ¥é”™ï¼Œå¹¶ä¿®æ­£bitstream_restriction_flagå’Œnum_reorder_frameså…¶ä¸º0  */
 			sps->num_reorder_frames = 0;
 			sps->bitstream_restriction_flag = 0;
             return -1;
@@ -9485,7 +9485,7 @@ static void decode_scaling_list(H264Context *h, uint8_t *factors, int size,
 }
 
 /* 2010/05/5 15:00:00 liuxw+00139685 */
-/* ĞÂÔöº¯Êı£º¼ì²éµ±Ç°½âÎöµÄSPSÓëÏÈÇ°sps_idÏàÍ¬µÄSPSµÄÇø±ğ£¬Èô¹Ø¼üÓï·¨ÔªËØ²»Í¬£¬Ôò·µ»Ø-1£¬·ñÔò·µ»Ø0 */
+/* æ–°å¢å‡½æ•°ï¼šæ£€æŸ¥å½“å‰è§£æçš„SPSä¸å…ˆå‰sps_idç›¸åŒçš„SPSçš„åŒºåˆ«ï¼Œè‹¥å…³é”®è¯­æ³•å…ƒç´ ä¸åŒï¼Œåˆ™è¿”å›-1ï¼Œå¦åˆ™è¿”å›0 */
 int sps_check(SPS *cur_sps, SPS * old_sps)
 {
 	
@@ -9508,7 +9508,7 @@ int sps_check(SPS *cur_sps, SPS * old_sps)
 }
 
 /* 2010/05/5 15:00:00 liuxw+00139685 */
-/* ĞÂÔöº¯Êı£ºÑ°ÕÒÒ»¸öÒÑ¾­½âÎöµÄSPS£¬²¢·µ»ØÆäË÷Òı */
+/* æ–°å¢å‡½æ•°ï¼šå¯»æ‰¾ä¸€ä¸ªå·²ç»è§£æçš„SPSï¼Œå¹¶è¿”å›å…¶ç´¢å¼• */
 int find_sps(H264Context *h, int *index)
 {
 	int i = 0;
@@ -9535,7 +9535,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 	int width,height;
 
 	/* 2010/30/04 9:07:00 liuxw+00139685 */
-	/* Ôö¼ÓÒ»¸öÖ¸ÕëÊı×é£¬±ã ÓÚ´òÓ¡Í¼ÏñĞÅÏ¢ */
+	/* å¢åŠ ä¸€ä¸ªæŒ‡é’ˆæ•°ç»„ï¼Œä¾¿ äºæ‰“å°å›¾åƒä¿¡æ¯ */
 	const char *apszColorFmt[4] = {"Gray","420","422","444"};
 
     profile_idc= get_bits(&s->gb, 8);
@@ -9546,7 +9546,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
     get_bits(&s->gb, 4); // reserved
 
 	/* 2010/04/06 10:07:00 liuxw+00139685 */
-	/* Ôö¼Ó¶Ôprofile_idcµÄºÏ·¨ĞÔÅĞ¶Ï */
+	/* å¢åŠ å¯¹profile_idcçš„åˆæ³•æ€§åˆ¤æ–­ */
 	if(!(66 == profile_idc || 77 == profile_idc || 100 == profile_idc))
 	{
 		av_log(h->s.avctx, AV_LOG_WARNING, "Profile[%d] not supported currently\n", profile_idc);
@@ -9587,7 +9587,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 //      av_log(h->s.avctx, AV_LOG_ERROR, "sps_id (%d) out of range\n", sps_id);
 		av_log(h->s.avctx, AV_LOG_WARNING, "sps_id (%d) out of range\n", sps_id);
 		/* 2010/03/22 17:07:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂë */
+		/* å¢åŠ é”™è¯¯ç  */
 		IMEDIA_SET_ERR_SEQ(s->avctx->iErrorCode,IMEDIA_ERR_SEQ_ID);
 		s->avctx->iTotalError++;
 		sps_id = 0;
@@ -9600,7 +9600,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
     if(sps == NULL)
 	{
 		/* 2010/03/22 17:07:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÈÕÖ¾ĞÅÏ¢´òÓ¡ */
+		/* å¢åŠ é”™è¯¯æ—¥å¿—ä¿¡æ¯æ‰“å° */
 		av_log(h->s.avctx, AV_LOG_ERROR, "Malloc memory for sps is failed!\n");
 		h->s.avctx->iMallocFailed = 1;
 		return -1;
@@ -9617,7 +9617,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
     if(sps->profile_idc >= 100){ //high profile
         sps->chroma_format_idc= get_ue_golomb_31(&s->gb);
 		/* 2010/03/22 17:07:00 liuxw+00139685 */
-		/* Ôö¼Óchroma_format_idcºÏ·¨ĞÔÅĞ¶Ï */
+		/* å¢åŠ chroma_format_idcåˆæ³•æ€§åˆ¤æ–­ */
 		if(sps->chroma_format_idc != 1)
 		{
 			av_log(h->s.avctx, AV_LOG_WARNING, "chroma_format_idc[%d] is out of range or not supported currently!\n", sps->chroma_format_idc);
@@ -9630,7 +9630,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
         sps->bit_depth_luma   = get_ue_golomb(&s->gb) + 8;
         sps->bit_depth_chroma = get_ue_golomb(&s->gb) + 8;
 		/* 2010/03/22 17:07:00 liuxw+00139685 */
-		/* Ôö¼Óbit_depth_luma/bit_depth_chromaºÏ·¨ĞÔÅĞ¶Ï */
+		/* å¢åŠ bit_depth_luma/bit_depth_chromaåˆæ³•æ€§åˆ¤æ–­ */
 		if(sps->bit_depth_luma != 8 || sps->bit_depth_chroma != 8)
 		{
 			av_log(h->s.avctx, AV_LOG_WARNING, "bit_depth_luma[%d]/bit_depth_chroma[%d] is out of range or not supported currently!\n", sps->bit_depth_luma,sps->bit_depth_chroma);
@@ -9648,7 +9648,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 
     sps->log2_max_frame_num= get_ue_golomb(&s->gb) + 4;
 	/* 2010/03/22 17:07:00 liuxw+00139685 */
-	/* Ôö¼Ólog2_max_frame_numºÏ·¨ĞÔÅĞ¶Ï */
+	/* å¢åŠ log2_max_frame_numåˆæ³•æ€§åˆ¤æ–­ */
 	if(sps->log2_max_frame_num > 16)
 	{
 		av_log(h->s.avctx, AV_LOG_WARNING, "log2_max_frame_num[%d] is out of range!!\n", sps->log2_max_frame_num);
@@ -9664,7 +9664,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 	{ //FIXME #define
         sps->log2_max_poc_lsb= get_ue_golomb(&s->gb) + 4;
 		/* 2010/03/22 17:07:00 liuxw+00139685 */
-		/* Ôö¼Ólog2_max_poc_lsbºÏ·¨ĞÔÅĞ¶Ï */
+		/* å¢åŠ log2_max_poc_lsbåˆæ³•æ€§åˆ¤æ–­ */
 		if(sps->log2_max_poc_lsb > 16)
 		{
 			av_log(h->s.avctx, AV_LOG_WARNING, "log2_max_poc_lsb[%d] is out of range!!\n", sps->log2_max_poc_lsb);
@@ -9686,7 +9686,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 //          av_log(h->s.avctx, AV_LOG_ERROR, "poc_cycle_length[%d] overflow[%d]\n", sps->poc_cycle_length,FF_ARRAY_ELEMS(sps->offset_for_ref_frame));
 			av_log(h->s.avctx, AV_LOG_WARNING, "poc_cycle_length[%d] overflow[%d]\n", sps->poc_cycle_length,FF_ARRAY_ELEMS(sps->offset_for_ref_frame));
 			/* 2010/03/22 17:07:00 liuxw+00139685 */
-			/* Ôö¼Ó´íÎóÂë */
+			/* å¢åŠ é”™è¯¯ç  */
 			IMEDIA_SET_ERR_SEQ(s->avctx->iErrorCode,IMEDIA_ERR_SEQ_ID);
 			s->avctx->iTotalError++;
 			sps->poc_cycle_length = FF_ARRAY_ELEMS(sps->offset_for_ref_frame) - 1;
@@ -9702,7 +9702,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 //      av_log(h->s.avctx, AV_LOG_ERROR, "Poc type[%d] is invalid!\n", sps->poc_type);
 		av_log(h->s.avctx, AV_LOG_WARNING, "Poc type[%d] is invalid!\n", sps->poc_type);
 		/* 2010/03/22 17:07:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎó·µ»ØÂë */
+		/* å¢åŠ é”™è¯¯è¿”å›ç  */
 		IMEDIA_SET_ERR_SEQ(s->avctx->iErrorCode,IMEDIA_ERR_SEQ_ID);
 		s->avctx->iTotalError++;
 		sps->poc_type = 0;
@@ -9713,14 +9713,14 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 
     sps->ref_frame_count= get_ue_golomb_31(&s->gb);
 	/* 2010/04/06 10:46:00 liuxw+00139685 */
-	/* ĞŞ¸ÄÅĞ¶ÏÌõ¼ş */
+	/* ä¿®æ”¹åˆ¤æ–­æ¡ä»¶ */
 //  if(sps->ref_frame_count > MAX_PICTURE_COUNT-2 || sps->ref_frame_count >= 32U){
 	if(sps->ref_frame_count > 16)
 	{
 //      av_log(h->s.avctx, AV_LOG_ERROR, "too many reference frames\n");
 		av_log(h->s.avctx, AV_LOG_WARNING, "too many reference frames\n");
 		/* 2010/03/22 17:07:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂë */
+		/* å¢åŠ é”™è¯¯ç  */
 		IMEDIA_SET_ERR_SEQ(s->avctx->iErrorCode,IMEDIA_ERR_SEQ_FRAME_NUM);
 		s->avctx->iTotalError++;
 		sps->ref_frame_count = 1;
@@ -9738,9 +9738,9 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
         sps->mb_aff= 0;
 
 	/* 2010/03/22 17:07:00 liuxw+00139685 */
-	/* Ôö¼Ó¶Ômb_widthºÍmb_heightºÏ·¨ĞÔÅĞ¶Ï */
+	/* å¢åŠ å¯¹mb_widthå’Œmb_heightåˆæ³•æ€§åˆ¤æ–­ */
 	/* 2010/06/03 10:00:00 liuxw+00139685 */
-	/* °Ñframe_mb_only_flagÒ²¿¼ÂÇµ½mb_heightÖĞÈ¥ */
+	/* æŠŠframe_mb_only_flagä¹Ÿè€ƒè™‘åˆ°mb_heightä¸­å» */
 	if(sps->mb_width > MAX_PIC_WIDTH/MB_WIDTH || (sps->mb_height<<(1-sps->frame_mbs_only_flag)) > MAX_PIC_HEIGHT/MB_HEIGHT || (sps->mb_height<<(1-sps->frame_mbs_only_flag)) < MIN_PIC_HEIGHT/MB_HEIGHT 
 		|| sps->mb_width < MIN_PIC_WIDTH/MB_WIDTH || (unsigned)sps->mb_width >= INT_MAX/MB_WIDTH || (unsigned)sps->mb_height >= INT_MAX/MB_HEIGHT || avcodec_check_dimensions(NULL, 16*sps->mb_width, 16*sps->mb_height))
 	{
@@ -9748,7 +9748,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 			//     av_log(h->s.avctx, AV_LOG_ERROR, "mb_width[%d]/mb_height[%d] overflow!\n",sps->mb_width,sps->mb_height);
 			av_log(h->s.avctx, AV_LOG_WARNING, "mb_width[%d]/mb_height[%d] overflow[%d,%d]!\n",sps->mb_width,sps->mb_height,MAX_PIC_WIDTH/MB_WIDTH,MAX_PIC_HEIGHT/MB_HEIGHT);
 			/* 2010/03/22 17:07:00 liuxw+00139685 */
-			/* Ôö¼Ó´íÎóÂë */
+			/* å¢åŠ é”™è¯¯ç  */
 			IMEDIA_SET_ERR_SEQ(s->avctx->iErrorCode,IMEDIA_ERR_SEQ_SIZE);
 			s->avctx->iTotalError++;
 			warn_cnt++;
@@ -9764,7 +9764,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 
     sps->direct_8x8_inference_flag= get_bits1(&s->gb);
 	/* 2010/04/06 11:07:00 liuxw+00139685 */
-	/* Ôö¼Ó´íÎóÂë */
+	/* å¢åŠ é”™è¯¯ç  */
 	if(!sps->frame_mbs_only_flag && !sps->direct_8x8_inference_flag)
 	{
 		av_log(h->s.avctx, AV_LOG_WARNING, "direct_8x8_inference_flag must be 1 when frame_mbs_only_flag equal to 0!\n");
@@ -9786,7 +9786,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
         sps->crop_top   = get_ue_golomb(&s->gb);
         sps->crop_bottom= get_ue_golomb(&s->gb);
 		/* 2010/04/06 11:07:00 liuxw+00139685 */
-		/* Ôö¼Ó¶ÔcropµÄÅĞ¶Ï */
+		/* å¢åŠ å¯¹cropçš„åˆ¤æ–­ */
 		if((int)(sps->crop_left+sps->crop_right) >= sps->mb_width*MB_WIDTH || (int)(sps->crop_top+sps->crop_bottom) >= sps->mb_height*MB_HEIGHT*(2-sps->frame_mbs_only_flag))
 		{
 			av_log(h->s.avctx, AV_LOG_WARNING, "crop_left[%d]/crop_right[%d]/crop_top[%d]/crop_bottom[%d] is invalid!\n",sps->crop_left,sps->crop_right,sps->crop_top,sps->crop_bottom);
@@ -9797,7 +9797,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 //			goto fail;
 		}
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* È¥µôÁË´òÓ¡²»Ö§³Öcrop¹¦ÄÜµÄÓï¾ä */
+		/* å»æ‰äº†æ‰“å°ä¸æ”¯æŒcropåŠŸèƒ½çš„è¯­å¥ */
  /*        if(sps->crop_left || sps->crop_top){
             av_log(h->s.avctx, AV_LOG_ERROR, "insane cropping not completely supported, this could look slightly wrong ...\n");
         }
@@ -9851,7 +9851,7 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 			sps->mb_width  = h->sps_buffers[index]->mb_width;
 			sps->mb_height = h->sps_buffers[index]->mb_height;
 			/* 2010/06/03 9:00:00 liuxw+00139685 */
-			/* ÈôÓĞÎÊÌâ£¬Ò²±ØĞè¶Ôcrop½øĞĞĞŞÕı */
+			/* è‹¥æœ‰é—®é¢˜ï¼Œä¹Ÿå¿…éœ€å¯¹cropè¿›è¡Œä¿®æ­£ */
 			sps->crop        = h->sps_buffers[index]->crop;
 			sps->crop_top    = h->sps_buffers[index]->crop_top;
 			sps->crop_bottom = h->sps_buffers[index]->crop_bottom;
@@ -9864,12 +9864,12 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
 		s->avctx->usActualWidth  = width;
 		s->avctx->usActualHeight = height;
 		/* 2010/06/03 9:30:00 liuxw+00139685 */
-		/* ½«ºÏ·¨µÄwidthºÍheight[Î´cropµÄ]¸³¸øavctx->widhtºÍavctx->height */
+		/* å°†åˆæ³•çš„widthå’Œheight[æœªcropçš„]èµ‹ç»™avctx->widhtå’Œavctx->height */
 		s->avctx->width  = sps->mb_width*MB_WIDTH;
 		s->avctx->height = (sps->mb_height * (2 - sps->frame_mbs_only_flag))*MB_HEIGHT;
 	}
 
-	/* ¼ì²âµ±Ç°ÂëÁ÷µÄ¿í¶ÈºÍ³¤¶ÈÊÇ·ñ³¬¹ı¾²Ì¬²ÎÊıÖĞµÄ×î´ó¿í¶ÈºÍ¸ß¶È */
+	/* æ£€æµ‹å½“å‰ç æµçš„å®½åº¦å’Œé•¿åº¦æ˜¯å¦è¶…è¿‡é™æ€å‚æ•°ä¸­çš„æœ€å¤§å®½åº¦å’Œé«˜åº¦ */
 	if(s->avctx->usActualWidth > s->avctx->usSourceWidth || s->avctx->usActualHeight > s->avctx->usSourceHeight)
 	{
 //		av_log(s->avctx, AV_LOG_ERROR, "codec_ctx[%p] h264_dec[%p] decode_slice_header() the ActualWidth[%u] of the bitstream is more than MaxWidth[%u] or the ActualHeight[%u] of the bitstream is more than MaxHeight[%u]!\n",
@@ -9898,14 +9898,14 @@ int ff_h264_decode_seq_parameter_set(H264Context *h){
                sps->crop_top, sps->crop_bottom,
                sps->vui_parameters_present_flag ? "VUI" : ""
 			   /* 2010/30/04 9:10:00 liuxw+00139685 */
-			   /* ½«c99Ğ´·¨¸ÄÎªc89µÄĞ´·¨£¬MS2008²»Ö§³Öc99 */
+			   /* å°†c99å†™æ³•æ”¹ä¸ºc89çš„å†™æ³•ï¼ŒMS2008ä¸æ”¯æŒc99 */
 	           /* ,((const char*[]){"Gray","420","422","444"})[sps->chroma_format_idc] */
 				,apszColorFmt[sps->chroma_format_idc]
                );
     }
 
 	/* 2010/04/06 10:07:00 liuxw+00139685 */
-	/* Ôö¼Ó¶ÔÏûºÄ±ÈÌØÊıµÄºÏ·¨ĞÔÅĞ¶Ï */
+	/* å¢åŠ å¯¹æ¶ˆè€—æ¯”ç‰¹æ•°çš„åˆæ³•æ€§åˆ¤æ–­ */
 	if(h->s.gb.index > h->s.gb.size_in_bits)
 	{	
 		av_log(s->avctx, AV_LOG_WARNING, "Bit conmused[%d] by SPS is over its size[%d]!\n",h->s.gb.index,h->s.gb.size_in_bits);
@@ -9945,7 +9945,7 @@ build_qp_table(PPS *pps, int t, int index)
 }
 
 /* 2010/05/5 15:00:00 liuxw+00139685 */
-/* ĞÂÔöº¯Êı£º¼ì²âµ±Ç°½âÎöµÄPPSÓëÒÑ¾­½âÎöµÄpps_idÏàÍ¬µÄPPS½øĞĞ¹Ø¼üÓï·¨ÔªËØµÄ±È½Ï */
+/* æ–°å¢å‡½æ•°ï¼šæ£€æµ‹å½“å‰è§£æçš„PPSä¸å·²ç»è§£æçš„pps_idç›¸åŒçš„PPSè¿›è¡Œå…³é”®è¯­æ³•å…ƒç´ çš„æ¯”è¾ƒ */
 int pps_check(PPS *cur_pps, PPS *old_pps)
 {
 	if(cur_pps->cabac != old_pps->cabac)
@@ -9966,7 +9966,7 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
 //      av_log(h->s.avctx, AV_LOG_ERROR, "pps_id (%d) out of range\n", pps_id);
 		av_log(h->s.avctx, AV_LOG_WARNING, "pps_id (%d) out of range\n", pps_id);
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂë */
+		/* å¢åŠ é”™è¯¯ç  */
 		IMEDIA_SET_ERR_PIC(s->avctx->iErrorCode,IMEDIA_ERR_PIC_ID);
 		s->avctx->iTotalError++;
 		pps_id = 0;
@@ -9979,7 +9979,7 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
     if(pps == NULL)
 	{
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼ÓÄÚ´æ·ÖÅäÊ§°ÜµÄÈÕÖ¾ĞÅÏ¢*/
+		/* å¢åŠ å†…å­˜åˆ†é…å¤±è´¥çš„æ—¥å¿—ä¿¡æ¯*/
 		av_log(h->s.avctx, AV_LOG_ERROR, "Malloc memory for pps is failed!\n");
 		h->s.avctx->iMallocFailed = 1;
 		return -1;
@@ -9992,7 +9992,7 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
 //      av_log(h->s.avctx, AV_LOG_ERROR, "sps_id out of range\n");
 		av_log(h->s.avctx, AV_LOG_WARNING, "sps_id out of range\n");
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂë */
+		/* å¢åŠ é”™è¯¯ç  */
 		IMEDIA_SET_ERR_PIC(s->avctx->iErrorCode,IMEDIA_ERR_PIC_ID);
 		s->avctx->iTotalError++;
 		if(find_sps(h,&index)<0)
@@ -10008,7 +10008,7 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
     pps->pic_order_present= get_bits1(&s->gb);
     pps->slice_group_count= get_ue_golomb(&s->gb) + 1;
 	/* 2010/03/22 17:00:00 liuxw+00139685 */
-	/* Ôö¼Ó¶Ôslice_group_countºÏ·¨ĞÔµÄ¼ì²é */
+	/* å¢åŠ å¯¹slice_group_countåˆæ³•æ€§çš„æ£€æŸ¥ */
 	if(1 != pps->slice_group_count)
 	{
 		av_log(h->s.avctx, AV_LOG_WARNING, "slice_group_count[%d] is invalid or not supported currently!\n",pps->slice_group_count);
@@ -10062,7 +10062,7 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
 //      av_log(h->s.avctx, AV_LOG_ERROR, "reference list0 count[%d] or reference list1 count[%d] overflow!\n",pps->ref_count[0],pps->ref_count[1]);
 		av_log(h->s.avctx, AV_LOG_WARNING, "reference list0 count[%d] or reference list1 count[%d] overflow!\n",pps->ref_count[0],pps->ref_count[1]);
 		/* 2010/03/22 17:00:00 liuxw+00139685 */
-		/* Ôö¼Ó´íÎóÂë */
+		/* å¢åŠ é”™è¯¯ç  */
 		IMEDIA_SET_ERR_PIC(s->avctx->iErrorCode,IMEDIA_ERR_SLICE_REF);
 		s->avctx->iTotalError++;
 		pps->ref_count[0] = pps->ref_count[1] = 1;
@@ -10073,7 +10073,7 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
     pps->weighted_pred= get_bits1(&s->gb);
     pps->weighted_bipred_idc= get_bits(&s->gb, 2);
 	/* 2010/04/06 14:00:00 liuxw+00139685 */
-	/* Ôö¼Ó¶Ôweighted_bipred_idcºÏ·¨ĞÔµÄ¼ì²âÊÔ */
+	/* å¢åŠ å¯¹weighted_bipred_idcåˆæ³•æ€§çš„æ£€æµ‹è¯• */
 	if((h->sps_buffers[pps->sps_id]->profile_idc == 66 && (pps->weighted_pred != 0 || pps->weighted_bipred_idc !=0)) || pps->weighted_bipred_idc == 3)
 	{
 		av_log(h->s.avctx, AV_LOG_WARNING, "weighted_pred[%d] or weighted_bipred_idc[%d] in pps is invalid!\n",pps->weighted_pred,pps->weighted_bipred_idc);
@@ -10087,7 +10087,7 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
     pps->init_qp= get_se_golomb(&s->gb) + 26;
     pps->init_qs= get_se_golomb(&s->gb) + 26;
 	/* 2010/04/06 14:00:00 liuxw+00139685 */
-	/* Ôö¼Ó¶Ôinit_qp/init_qsºÏ·¨ĞÔµÄ¼ì²âÊÔ */
+	/* å¢åŠ å¯¹init_qp/init_qsåˆæ³•æ€§çš„æ£€æµ‹è¯• */
 	if(pps->init_qp >= 52 || pps->init_qp < 0 || pps->init_qs >= 52 || pps->init_qs < 0)
 	{
 		av_log(h->s.avctx, AV_LOG_WARNING, "init_qp[%d]/init_qs[%d] in pps is invalid!\n",pps->init_qp,pps->init_qs);
@@ -10100,7 +10100,7 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
 
     pps->chroma_qp_index_offset[0]= get_se_golomb(&s->gb);
 	/* 2010/04/06 14:00:00 liuxw+00139685 */
-	/* Ôö¼Ó¶Ôchroma_qp_index_offsetºÏ·¨ĞÔµÄ¼ì²âÊÔ */
+	/* å¢åŠ å¯¹chroma_qp_index_offsetåˆæ³•æ€§çš„æ£€æµ‹è¯• */
 	if(pps->chroma_qp_index_offset[0] > 12 || pps->chroma_qp_index_offset[0] < -12)
 	{
 		av_log(h->s.avctx, AV_LOG_WARNING, "chroma_qp_index_offset[%d] in pps is invalid!\n",pps->chroma_qp_index_offset[0]);
@@ -10124,7 +10124,7 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
         decode_scaling_matrices(h, h->sps_buffers[pps->sps_id], pps, 0, pps->scaling_matrix4, pps->scaling_matrix8);
         pps->chroma_qp_index_offset[1]= get_se_golomb(&s->gb); //second_chroma_qp_index_offset
 		/* 2010/04/06 14:00:00 liuxw+00139685 */
-		/* Ôö¼Ó¶Ôchroma_qp_index_offsetºÏ·¨ĞÔµÄ¼ì²âÊÔ */
+		/* å¢åŠ å¯¹chroma_qp_index_offsetåˆæ³•æ€§çš„æ£€æµ‹è¯• */
 		if(pps->chroma_qp_index_offset[1] > 12 || pps->chroma_qp_index_offset[1] < -12)
 		{
 			av_log(h->s.avctx, AV_LOG_WARNING, "chroma_qp_index_offset[%d] in pps is invalid!\n",pps->chroma_qp_index_offset[1]);
@@ -10159,7 +10159,7 @@ int ff_h264_decode_picture_parameter_set(H264Context *h, int bit_length){
     }
 
 	/* 2010/04/06 10:07:00 liuxw+00139685 */
-	/* Ôö¼Ó¶ÔÏûºÄ±ÈÌØÊıµÄºÏ·¨ĞÔÅĞ¶Ï */
+	/* å¢åŠ å¯¹æ¶ˆè€—æ¯”ç‰¹æ•°çš„åˆæ³•æ€§åˆ¤æ–­ */
 	if(h->s.gb.index > h->s.gb.size_in_bits)
 	{	
 		av_log(s->avctx, AV_LOG_WARNING, "Bit conmused[%d] by PPS is over its size[%d]!\n",h->s.gb.index,h->s.gb.size_in_bits);
@@ -10242,14 +10242,14 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
         av_log(NULL, AV_LOG_ERROR,"%02X ", buf[i]);
     }
 #endif
-	/* Ã¿µ÷ÓÃÒ»´Îdecode_nal_units£¨£©º¯Êı£¬Ôò»áÉèÖÃÒ»´Î³õÊ¼Öµ */
+	/* æ¯è°ƒç”¨ä¸€æ¬¡decode_nal_unitsï¼ˆï¼‰å‡½æ•°ï¼Œåˆ™ä¼šè®¾ç½®ä¸€æ¬¡åˆå§‹å€¼ */
     if(!(s->flags2 & CODEC_FLAG2_CHUNKS))
 	{
         h->current_slice = 0;
-		/* Èç¹ûµ±Ç°ÊÇÒ»Ö¡»ò¶¥³¡£¬Ôò½«s->current_picture_ptrÖÃ¿Õ liuxw+00139685 */
+		/* å¦‚æœå½“å‰æ˜¯ä¸€å¸§æˆ–é¡¶åœºï¼Œåˆ™å°†s->current_picture_ptrç½®ç©º liuxw+00139685 */
         if (!s->first_field)
             s->current_picture_ptr= NULL;
-        reset_sei(h);  /* ¸´Î»SEIÖĞµÄ±êÖ¾Î» */
+        reset_sei(h);  /* å¤ä½SEIä¸­çš„æ ‡å¿—ä½ */
     }
 
     for(;;)
@@ -10260,7 +10260,7 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
         const uint8_t *ptr;
         int i, nalsize = 0;
         int err;
-		/* AVC1£ºiso base media¸ñÊ½ÎÄ¼şÖĞµÄÒ»ÖÖboxµÄÃû³Æ */
+		/* AVC1ï¼šiso base mediaæ ¼å¼æ–‡ä»¶ä¸­çš„ä¸€ç§boxçš„åç§° */
         if(h->is_avc) 
 		{
             if(buf_index >= buf_size) 
@@ -10285,31 +10285,31 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
         } 
 		else 
 		{	/* h264 elementary stream */
-            /* Ñ°ÕÒÆğÊ¼Âë0x000001 */
+            /* å¯»æ‰¾èµ·å§‹ç 0x000001 */
             for(; buf_index + 3 < buf_size; buf_index++)
 			{
                 // This should always succeed in the first iteration.
                 if(buf[buf_index] == 0 && buf[buf_index+1] == 0 && buf[buf_index+2] == 1)
-                    break; /* ÕÒµ½ÆğÊ¼Âëºó£¬ÔòÍË³ö */
+                    break; /* æ‰¾åˆ°èµ·å§‹ç åï¼Œåˆ™é€€å‡º */
             }
-			/* Ò»Ö±ÕÒµ½stream bufferµÄµ¹ÊıµÚÈı¸ö×Ö½Ú£¬ÈôÃ»ÓĞÕÒµ½ÆğÊ¼Âë£¬ÔòÍË³ö(ÕâÒ²ÊÇforµÄÕı³£³ö¿Ú) */
+			/* ä¸€ç›´æ‰¾åˆ°stream bufferçš„å€’æ•°ç¬¬ä¸‰ä¸ªå­—èŠ‚ï¼Œè‹¥æ²¡æœ‰æ‰¾åˆ°èµ·å§‹ç ï¼Œåˆ™é€€å‡º(è¿™ä¹Ÿæ˜¯forçš„æ­£å¸¸å‡ºå£) */
             if(buf_index+3 >= buf_size) 
 				break;
-			/* ÈôÕÒµ½ÁË£¬ÔòÌø¹ıÆğÊ¼Âë */
+			/* è‹¥æ‰¾åˆ°äº†ï¼Œåˆ™è·³è¿‡èµ·å§‹ç  */
             buf_index+=3;
         }
 
         hx = h->thread_context[context_count];
-		/* ½«EBSP×ª»¯ÎªRBSP£¨È¥µôÂëÁ÷ÖĞµÄ·À´íÂë0x03£©*/ 
+		/* å°†EBSPè½¬åŒ–ä¸ºRBSPï¼ˆå»æ‰ç æµä¸­çš„é˜²é”™ç 0x03ï¼‰*/ 
         ptr= ff_h264_decode_nal(hx, buf + buf_index, &dst_length, &consumed, h->is_avc ? nalsize : buf_size - buf_index);
         if (ptr==NULL || dst_length < 0)
 		{
             return -1;
         }
-		/* È¥µôÂëÁ÷×îºóÎª0µÄ×Ö½Ú */
+		/* å»æ‰ç æµæœ€åä¸º0çš„å­—èŠ‚ */
         while(ptr[dst_length - 1] == 0 && dst_length > 0)
             dst_length--;
-		/* È¥µôbitÊıÖĞ×îºó¼¸Î»trainling±ÈÌØ£¬µÃµ½µ±Ç°nalÕæÕıµÄbitµÄÊıÄ¿ liuxw+00139685 */
+		/* å»æ‰bitæ•°ä¸­æœ€åå‡ ä½trainlingæ¯”ç‰¹ï¼Œå¾—åˆ°å½“å‰nalçœŸæ­£çš„bitçš„æ•°ç›® liuxw+00139685 */
         bit_length= !dst_length ? 0 : (8*dst_length - ff_h264_decode_rbsp_trailing(h, ptr + dst_length - 1));
 
         if(s->avctx->debug&FF_DEBUG_STARTCODE)
@@ -10327,9 +10327,9 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
             av_log(h->s.avctx, debug_level, "AVC: Consumed only %d bytes instead of %d\n", consumed, nalsize);
             consumed= nalsize;
         }
-		/* µ±Ç°ÏûºÄµÄ×Ö½ÚÊı */
+		/* å½“å‰æ¶ˆè€—çš„å­—èŠ‚æ•° */
         buf_index += consumed;
-		/* Èç¹û´ò¿ªskipÄ£¿éÇÒµ±Ç°Ö¡²»×÷²Î¿¼£¬Ôò¿É¶ªÆúµ±Ç°Ö¡ */
+		/* å¦‚æœæ‰“å¼€skipæ¨¡å—ä¸”å½“å‰å¸§ä¸ä½œå‚è€ƒï¼Œåˆ™å¯ä¸¢å¼ƒå½“å‰å¸§ */
         if(  (s->hurry_up == 1 && h->nal_ref_idc  == 0) //FIXME do not discard SEI id
            ||(avctx->skip_frame >= AVDISCARD_NONREF && h->nal_ref_idc  == 0))
             continue;
@@ -10338,7 +10338,7 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
         err = 0;
         switch(hx->nal_unit_type)
 		{
-        /* IDR slice½âÂë */
+        /* IDR sliceè§£ç  */
 	    case NAL_IDR_SLICE:
             if (h->nal_unit_type != NAL_IDR_SLICE) 
 			{
@@ -10348,7 +10348,7 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
 				h->nal_unit_type = NAL_IDR_SLICE;
             }
 			/* 2010/04/06 14:30:00 liuxw+00139685 */
-			/* Ôö¼Ó¶Ôhx->nal_ref_idcµÄ¼ì²â */ 
+			/* å¢åŠ å¯¹hx->nal_ref_idcçš„æ£€æµ‹ */ 
 			if(hx->nal_ref_idc == 0)
 			{
 				av_log(h->s.avctx, AV_LOG_WARNING, "nal_ref_idc[%d] is invalid when nal_unit_type equal to NAL_IDR_SLICE!\n",hx->nal_ref_idc);
@@ -10358,30 +10358,30 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
 				hx->nal_ref_idc = 2;
 			}
 
-			/* Çå¿Õ¶ÌÆÚ²Î¿¼ºÍ³¤ÆÚ²Î¿¼¶ÓÁĞÒÔ¼°Çå0£ºframe_num,poc */
+			/* æ¸…ç©ºçŸ­æœŸå‚è€ƒå’Œé•¿æœŸå‚è€ƒé˜Ÿåˆ—ä»¥åŠæ¸…0ï¼šframe_num,poc */
             idr(h); //FIXME ensure we don't loose some frames if there is reordering
-		/* ·ÇIDR slice½âÂë */
+		/* éIDR sliceè§£ç  */
         case NAL_SLICE:
-			/* ³õÊ¼»¯µ±Ç°bit streamµÄĞÅÏ¢£º³¤¶È£¬ÆğÊ¼µØÖ·µÈ */
+			/* åˆå§‹åŒ–å½“å‰bit streamçš„ä¿¡æ¯ï¼šé•¿åº¦ï¼Œèµ·å§‹åœ°å€ç­‰ */
             init_get_bits(&hx->s.gb, ptr, bit_length);
             hx->intra_gb_ptr=
             hx->inter_gb_ptr= &hx->s.gb;
             hx->s.data_partitioning = 0;
-			/* ½âÂësliceÍ·ĞÅÏ¢¡¢²Î¿¼¶ÓÁĞ¹ÜÀí£¨init,reordering,marking) */
+			/* è§£ç sliceå¤´ä¿¡æ¯ã€å‚è€ƒé˜Ÿåˆ—ç®¡ç†ï¼ˆinit,reordering,marking) */
             if((err = decode_slice_header(hx, h)))
                break;
-			/* Ó²¼ş¼ÓËÙ¹¦ÄÜ£¬Ôİ²»Ö§³Ö */
+			/* ç¡¬ä»¶åŠ é€ŸåŠŸèƒ½ï¼Œæš‚ä¸æ”¯æŒ */
             if (s->avctx->hwaccel && h->current_slice == 1) 
 			{
                 if (s->avctx->hwaccel->start_frame(s->avctx, NULL, 0) < 0)
                     return -1;
             }
-			/* ¹Ø¼üÖ¡(IDR)±êÖ¾ÉèÖÃ */
+			/* å…³é”®å¸§(IDR)æ ‡å¿—è®¾ç½® */
 			/* 2010/08/9 19:00:00 liuxw+00139685 */
-			/* Ö»ÔÚIDRµÄÊ±ºò²ÅÉèÖÃÎª¹Ø¼üÖ¡ */
+			/* åªåœ¨IDRçš„æ—¶å€™æ‰è®¾ç½®ä¸ºå…³é”®å¸§ */
 //          s->current_picture_ptr->key_frame |= (hx->nal_unit_type == NAL_IDR_SLICE) || (h->sei_recovery_frame_cnt >= 0);
 			s->current_picture_ptr->key_frame |= (hx->nal_unit_type == NAL_IDR_SLICE);
-			/* Ó²¼ş¼ÓËÙ, Ôİ²»Ö§³Ö */ 
+			/* ç¡¬ä»¶åŠ é€Ÿ, æš‚ä¸æ”¯æŒ */ 
             if(hx->redundant_pic_count==0 && hx->s.hurry_up < 5
                && (avctx->skip_frame < AVDISCARD_NONREF || hx->nal_ref_idc)
                && (avctx->skip_frame < AVDISCARD_BIDIR  || hx->slice_type_nos!=FF_B_TYPE)
@@ -10401,7 +10401,7 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
                     //ff_vdpau_add_data_chunk(s, &buf[buf_index - consumed], consumed );
                 }
 				else
-                    context_count++;  /* ÖÃ½â²Ğ²î±êÖ¾ */
+                    context_count++;  /* ç½®è§£æ®‹å·®æ ‡å¿— */
             }
             break;
         case NAL_DPA:
@@ -10429,15 +10429,15 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
                && avctx->skip_frame < AVDISCARD_ALL)
                 context_count++;
             break;
-		/* SEI ½âÂë */
+		/* SEI è§£ç  */
         case NAL_SEI:
             init_get_bits(&s->gb, ptr, bit_length);
             ff_h264_decode_sei(h);
             break;
-		/* sps ½âÂë */
+		/* sps è§£ç  */
         case NAL_SPS:
 			/* 2010/04/06 14:30:00 liuxw+00139685 */
-			/* Ôö¼Ó¶Ôhx->nal_ref_idcµÄ¼ì²â */ 
+			/* å¢åŠ å¯¹hx->nal_ref_idcçš„æ£€æµ‹ */ 
 			if(hx->nal_ref_idc == 0)
 			{
 				av_log(h->s.avctx, AV_LOG_WARNING, "nal_ref_idc[%d] is invalid when nal_unit_type equal to NAL_SPS!\n",hx->nal_ref_idc);
@@ -10454,10 +10454,10 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
             if(avctx->has_b_frames < 2)
                 avctx->has_b_frames= !s->low_delay;
             break;
-		/* pps½âÂë */
+		/* ppsè§£ç  */
         case NAL_PPS:
 			/* 2010/04/06 14:30:00 liuxw+00139685 */
-			/* Ôö¼Ó¶Ôhx->nal_ref_idcµÄ¼ì²â */ 
+			/* å¢åŠ å¯¹hx->nal_ref_idcçš„æ£€æµ‹ */ 
 			if(hx->nal_ref_idc == 0)
 			{
 				av_log(h->s.avctx, AV_LOG_WARNING, "nal_ref_idc[%d] is invalid when nal_unit_type equal to NAL_PPS!\n",hx->nal_ref_idc);
@@ -10479,7 +10479,7 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
         default:
             av_log(avctx, AV_LOG_DEBUG, "Unknown NAL code: %d (%d bits)\n", h->nal_unit_type, bit_length);
         }
-		/* ²Ğ²î½âÂë¡¢·´Á¿»¯¡¢IDCT¡¢ÖØ½¨¡¢»·Â·ÂË²¨ */
+		/* æ®‹å·®è§£ç ã€åé‡åŒ–ã€IDCTã€é‡å»ºã€ç¯è·¯æ»¤æ³¢ */
         if(context_count == h->max_contexts) 
 		{
             execute_decode_slices(h, context_count);
@@ -10507,10 +10507,10 @@ static int decode_nal_units(H264Context *h, const uint8_t *buf, int buf_size)
             goto again;
         }
     }
-	/* Ò»°ã²»½øÈë´Ë·ÖÖ§ */
+	/* ä¸€èˆ¬ä¸è¿›å…¥æ­¤åˆ†æ”¯ */
     if(context_count)
         execute_decode_slices(h, context_count);
-	/* ·µ»Ø½âÂëµ±Ç°Ö¡ÏûºÄµÄ×Ö½ÚÊı */
+	/* è¿”å›è§£ç å½“å‰å¸§æ¶ˆè€—çš„å­—èŠ‚æ•° */
     return buf_index;
 }
 
@@ -10524,7 +10524,7 @@ static int get_consumed_bytes(MpegEncContext *s, int pos, int buf_size){
         return pos;
 }
 
-/* h264 decode: Ò»´ÎÖ»½âÒ»Ö¡µÄÊı¾İ(¿É°üÀ¨ÆäËünal_typeµÄÂëÁ÷) */
+/* h264 decode: ä¸€æ¬¡åªè§£ä¸€å¸§çš„æ•°æ®(å¯åŒ…æ‹¬å…¶å®ƒnal_typeçš„ç æµ) */
 static int decode_frame(AVCodecContext *avctx,
                              void *data, int *data_size,
                              const uint8_t *buf, int buf_size)
@@ -10538,7 +10538,7 @@ static int decode_frame(AVCodecContext *avctx,
     s->flags2= avctx->flags2;
 
 	/* 2010/06/29 19:30:00 liuxw+00139685 */
-	/* Èôdisplay_picÖĞÓĞÈÔÎ´Êä³öµÄpic£¬ÔòÏÈÊä³ödisplay_picÖĞµÄÍ¼Ïñ */
+	/* è‹¥display_picä¸­æœ‰ä»æœªè¾“å‡ºçš„picï¼Œåˆ™å…ˆè¾“å‡ºdisplay_picä¸­çš„å›¾åƒ */
 	if(h->display_pic_num)
 	{
 		Picture *out;
@@ -10570,7 +10570,7 @@ static int decode_frame(AVCodecContext *avctx,
 
 		*data_size = sizeof(AVFrame);
 		*pict= *(AVFrame*)out;
-		/* Êä³öÈ¥µôcropºóµÄYUVÊı¾İ */
+		/* è¾“å‡ºå»æ‰cropåçš„YUVæ•°æ® */
 		{
 			int SubHeightC[] ={1,2,1,1};
 			int SubWidthC[]  ={1,2,2,1};
@@ -10596,18 +10596,18 @@ static int decode_frame(AVCodecContext *avctx,
 
 //FIXME factorize this with the output code below
         out = h->delayed_pic[0];
-		if(out  == NULL) /* Èç¹ûdelay bufferÖĞÃ»ÓĞ»º´æµÄYUV£¬ÔòÖÃ½áÊø±êÖ¾²¢·µ»Ø */
+		if(out  == NULL) /* å¦‚æœdelay bufferä¸­æ²¡æœ‰ç¼“å­˜çš„YUVï¼Œåˆ™ç½®ç»“æŸæ ‡å¿—å¹¶è¿”å› */
 		{
 			pict->ucLastFrame = 1;   
 			return 0;
 		}
 
         out_idx = 0;
-		/* ´Ódelay bufferÖĞÑ¡È¡POC×îĞ¡µÄÒ»Ö¡YUV×÷Îªµ±Ç°Êä³öÖ¡ */
+		/* ä»delay bufferä¸­é€‰å–POCæœ€å°çš„ä¸€å¸§YUVä½œä¸ºå½“å‰è¾“å‡ºå¸§ */
 		/* 2010/05/31 10:00:00 liuxw+00139685 */
-		/* Ôö¼Ó¶ÔiµÄ·¶Î§µÄÏŞÖÆ£¬·ÀÖ¹ËÀ»ú */
+		/* å¢åŠ å¯¹içš„èŒƒå›´çš„é™åˆ¶ï¼Œé˜²æ­¢æ­»æœº */
 		/* 2010/06/29 19:30:00 liuxw+00139685 */
-		/* ĞŞ¸ÄÅĞ¶ÏÌõ¼ş */
+		/* ä¿®æ”¹åˆ¤æ–­æ¡ä»¶ */
 //      for(i=1; i<s->avctx->has_b_frames && h->delayed_pic[i] && (h->delayed_pic[i]->poc && !h->delayed_pic[i]->key_frame); i++)
 		for(i = 1; i < h->delay_pic_num && (h->delayed_pic[i]->poc && !h->delayed_pic[i]->key_frame); i++)
 		{
@@ -10621,7 +10621,7 @@ static int decode_frame(AVCodecContext *avctx,
 		out->reference = 0;
 
 		/* 2010/06/29 19:30:00 liuxw+00139685 */
-		/* delay_picµÄÊıÄ¿¼õÉÙ */
+		/* delay_picçš„æ•°ç›®å‡å°‘ */
 		h->delay_pic_num--;
 
 #ifdef LXW_DEBUG
@@ -10632,15 +10632,15 @@ static int decode_frame(AVCodecContext *avctx,
 		}
 #endif
 
-		/* Êä³ö×îĞ¡POCÖ¡Ö®ºó£¬½«×îĞ¡POCÖ¡ºóÃæµÄÖ¡ÏòÇ°ÒÆ¶¯ */
+		/* è¾“å‡ºæœ€å°POCå¸§ä¹‹åï¼Œå°†æœ€å°POCå¸§åé¢çš„å¸§å‘å‰ç§»åŠ¨ */
         for(i=out_idx; h->delayed_pic[i]; i++)
             h->delayed_pic[i] = h->delayed_pic[i+1];
-		/* Èôµ±Ç°Êä³öÖ¡´æÔÚ£¬Ôò¸øÊä³öÖ¸ÕëºÍ´óĞ¡¸³Öµ */
+		/* è‹¥å½“å‰è¾“å‡ºå¸§å­˜åœ¨ï¼Œåˆ™ç»™è¾“å‡ºæŒ‡é’ˆå’Œå¤§å°èµ‹å€¼ */
 		//h->outputed_poc = out->poc;
 		*data_size = sizeof(AVFrame);
 		*pict= *(AVFrame*)out;
 		//s->avctx->has_b_frames--;
-		/* È¥µôÍ¼Ïñcrop²¿·Ö */
+		/* å»æ‰å›¾åƒcropéƒ¨åˆ† */
 		{
 			int SubHeightC[] = {1,2,1,1};
 			int SubWidthC[] = {1,2,2,1};
@@ -10650,24 +10650,24 @@ static int decode_frame(AVCodecContext *avctx,
 			pict->data[2] = pict->data[2] + pict->linesize[2] * h->sps.crop_top * (2 - h->sps.frame_mbs_only_flag) + h->sps.crop_left;
 	   } 
 
-		/* Èôdelay bufferÖĞ»¹´æÔÚYUV£¬ÔòÖÃ½áÊø±êÖ¾Îª0,²¢·µ»ØAVFrame½á¹¹ÌåµÄ´óĞ¡ */
+		/* è‹¥delay bufferä¸­è¿˜å­˜åœ¨YUVï¼Œåˆ™ç½®ç»“æŸæ ‡å¿—ä¸º0,å¹¶è¿”å›AVFrameç»“æ„ä½“çš„å¤§å° */
 		/* 2010/05/31 10:00:00 liuxw+00139685 */
-		/* Ôö¼Ó·µ»ØÌõ¼ş£ºµ±delayÖ¡µÄ¸öÊıĞ¡ÓÚµÈÓÚ0Ê±£¬ÍË³ö */
+		/* å¢åŠ è¿”å›æ¡ä»¶ï¼šå½“delayå¸§çš„ä¸ªæ•°å°äºç­‰äº0æ—¶ï¼Œé€€å‡º */
 		/* 2010/06/29 19:30:00 liuxw+00139685 */
-		/* ĞŞ¸ÄÅĞ¶ÏÌõ¼ş */
+		/* ä¿®æ”¹åˆ¤æ–­æ¡ä»¶ */
 		//if(h->delayed_pic[0] || 0 < s->avctx->has_b_frames)
 		if(h->delay_pic_num )
 		{
 			pict->ucLastFrame = 0;   //add by lxw
 			return sizeof(AVFrame);
 		}
-		else	/* Èôdelay_bufferÖĞÃ»ÓĞYUV£¬ÔòÖÃ½áÊø±êÖ¾Îª1£¬²¢·µ»Ø0 */
+		else	/* è‹¥delay_bufferä¸­æ²¡æœ‰YUVï¼Œåˆ™ç½®ç»“æŸæ ‡å¿—ä¸º1ï¼Œå¹¶è¿”å›0 */
 		{
 			pict->ucLastFrame = 1;   //add by lxw
 			return 0;
 		}
     }
-	/* AVC1£ºiso base media¸ñÊ½ÎÄ¼şÖĞµÄÒ»ÖÖboxµÄÃû³Æ */
+	/* AVC1ï¼šiso base mediaæ ¼å¼æ–‡ä»¶ä¸­çš„ä¸€ç§boxçš„åç§° */
     if(h->is_avc && !h->got_avcC) {
         int i, cnt, nalsize;
         unsigned char *p = avctx->extradata[0];
@@ -10712,23 +10712,23 @@ static int decode_frame(AVCodecContext *avctx,
         // Do not reparse avcC
         h->got_avcC = 1;
     }
-	/* avc: µÚÒ»´Îµ÷ÓÃÊ±£¬»á¶Ôs->avctx->extradataÖĞµÄspsºÍpps½øĞĞ½âÂë */
+	/* avc: ç¬¬ä¸€æ¬¡è°ƒç”¨æ—¶ï¼Œä¼šå¯¹s->avctx->extradataä¸­çš„spså’Œppsè¿›è¡Œè§£ç  */
 	if(!h->got_avcC && !h->is_avc && s->avctx->extradata_num){
 		int i;
 		for(i=0;i<s->avctx->extradata_num;i++)
-		{	/* ½âÎöspsºÍpps */
+		{	/* è§£æspså’Œpps */
 			if(decode_nal_units(h, s->avctx->extradata[i], s->avctx->extradata_size[i]) < 0)
 				return -1;
 		}
-        h->got_avcC = 1; /* µ÷ÓÃºó£¬ÔòÖÃÎ»±êÖ¾Î» */
+        h->got_avcC = 1; /* è°ƒç”¨åï¼Œåˆ™ç½®ä½æ ‡å¿—ä½ */
     }
-	/* ½âÎönal, ·µ»ØËùÓÃµôµÄ×Ö½ÚÊı */
+	/* è§£ænal, è¿”å›æ‰€ç”¨æ‰çš„å­—èŠ‚æ•° */
     buf_index=decode_nal_units(h, buf, buf_size);
     if(buf_index <= 0)
         return -1;
-	/* Èç¹û²»Ö§³ÖCODEC_FLAG2_CHUNKS¹¦ÄÜ¶øÇÒµ±Ç°Í¼ÏñÖ¸ÕëÎª¿Õ£¬Ôò·µ»Ø */
+	/* å¦‚æœä¸æ”¯æŒCODEC_FLAG2_CHUNKSåŠŸèƒ½è€Œä¸”å½“å‰å›¾åƒæŒ‡é’ˆä¸ºç©ºï¼Œåˆ™è¿”å› */
     if(!(s->flags2 & CODEC_FLAG2_CHUNKS) && !s->current_picture_ptr){
-        if (avctx->skip_frame >= AVDISCARD_NONREF || s->hurry_up) return 0; /* Èç¹û¿ªÆôÌøÖ¡¹¦ÄÜ£¬ÔòÕı³£·µ»Ø£»·ñÔò±¨´í£¬²¢Òì³£·µ»Ø */
+        if (avctx->skip_frame >= AVDISCARD_NONREF || s->hurry_up) return 0; /* å¦‚æœå¼€å¯è·³å¸§åŠŸèƒ½ï¼Œåˆ™æ­£å¸¸è¿”å›ï¼›å¦åˆ™æŠ¥é”™ï¼Œå¹¶å¼‚å¸¸è¿”å› */
 //      av_log(avctx, AV_LOG_ERROR, "no frame!\n");
 		av_log(avctx, AV_LOG_WARNING, "No frame output currently!\n");
 //      return -1;
@@ -10743,13 +10743,13 @@ static int decode_frame(AVCodecContext *avctx,
 
 		return 1;
     }
-	/* Èç¹û²»Ö§³ÖCODEC_FLAG2_CHUNKS¹¦ÄÜ»òµ±Ç°½âÂëµÄ¸ß¶È´óÓÚµÈÓÚÊä³öÍ¼Ïñ¸ß¶ÈÊ±£¬Êä³öÍ¼Ïñ */
+	/* å¦‚æœä¸æ”¯æŒCODEC_FLAG2_CHUNKSåŠŸèƒ½æˆ–å½“å‰è§£ç çš„é«˜åº¦å¤§äºç­‰äºè¾“å‡ºå›¾åƒé«˜åº¦æ—¶ï¼Œè¾“å‡ºå›¾åƒ */
     if(!(s->flags2 & CODEC_FLAG2_CHUNKS) || (s->mb_y >= s->mb_height && s->mb_height))
 	{
         Picture *out = s->current_picture_ptr;
         Picture *cur = s->current_picture_ptr;
 		/* 2010/06/29 19:30:00 liuxw+00139685 */
-		/* ×¢ÊÍµôÓÉÓÚ´úÂëĞŞ¸Äµ¼ÖÂÒ»Ğ©²»ÓÃµÄÁÙÊ±±äÁ¿£¬Ôö¼ÓÁÙÊ±±äÁ¿tmp_count */
+		/* æ³¨é‡Šæ‰ç”±äºä»£ç ä¿®æ”¹å¯¼è‡´ä¸€äº›ä¸ç”¨çš„ä¸´æ—¶å˜é‡ï¼Œå¢åŠ ä¸´æ—¶å˜é‡tmp_count */
 //      int i, pics, cross_idr, out_of_order, out_idx;
 		 int i, out_idx;
 		int tmp_count = 0;
@@ -10759,19 +10759,19 @@ static int decode_frame(AVCodecContext *avctx,
         s->current_picture_ptr->qscale_type= FF_QSCALE_TYPE_H264;
         s->current_picture_ptr->pict_type= s->pict_type;
 		/* 2010/05/8 18:00:00 liuxw+00139685 */
-		/* Èç¹ûµ±Ç°ÊÇ³¡±àÂë£¬¶¥³¡ÎªIDR£¬µ×³¡ÎªP,ÔòÕûÖ¡ÀàĞÍÎªIDR */
+		/* å¦‚æœå½“å‰æ˜¯åœºç¼–ç ï¼Œé¡¶åœºä¸ºIDRï¼Œåº•åœºä¸ºP,åˆ™æ•´å¸§ç±»å‹ä¸ºIDR */
 		if (s->current_picture_ptr->key_frame)
 		{
 			s->current_picture_ptr->pict_type = FF_I_TYPE;
 		}
-		/* Ó²¼ş½âÂë¹¦ÄÜ£¬Ôİ²»Ö§³Ö */
+		/* ç¡¬ä»¶è§£ç åŠŸèƒ½ï¼Œæš‚ä¸æ”¯æŒ */
         if (CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
             ;//ff_vdpau_h264_set_reference_frames(s);
-		/* µ±Ç°Í¼ÏñÎª²Î¿¼Í¼Ïñ£¬ÔòÖ´ĞĞmarkingºóµÄ²Î¿¼¶ÓÁĞ */
+		/* å½“å‰å›¾åƒä¸ºå‚è€ƒå›¾åƒï¼Œåˆ™æ‰§è¡Œmarkingåçš„å‚è€ƒé˜Ÿåˆ— */
         if(!s->dropable) 
 		{
 			/* 2010/06/29 20:30:00 liuxw+00139685 */
-			/* ±£´æ×Ü²Î¿¼Ö¡µÄ¸öÊı */
+			/* ä¿å­˜æ€»å‚è€ƒå¸§çš„ä¸ªæ•° */
 			if(FIELD_PICTURE && s->first_field || !FIELD_PICTURE)
 			{
 				h->total_ref_count = h->short_ref_count + h->long_ref_count;
@@ -10781,20 +10781,20 @@ static int decode_frame(AVCodecContext *avctx,
             h->prev_poc_lsb= h->poc_lsb;
 
 			/* 2010/08/24 14:00:00 liuxw+00139685 */
-			/* ¶Ôslice_tableºÍslice_num¸³Öµ */
+			/* å¯¹slice_tableå’Œslice_numèµ‹å€¼ */
 			cur->slice_num[s->picture_structure == PICT_BOTTOM_FIELD] = h->slice_num;
 			memcpy(cur->slice_table,h->slice_table,cur->slice_table_size);
         }
         h->prev_frame_num_offset= h->frame_num_offset;
         h->prev_frame_num= h->frame_num;
-		/* Ó²¼ş½âÂë¹¦ÄÜ£¬Ôİ²»Ö§³Ö */
+		/* ç¡¬ä»¶è§£ç åŠŸèƒ½ï¼Œæš‚ä¸æ”¯æŒ */
         if (avctx->hwaccel) 
 		{
             if (avctx->hwaccel->end_frame(avctx) < 0)
 //              av_log(avctx, AV_LOG_ERROR, "hardware accelerator failed to decode picture\n");
 				av_log(avctx, AV_LOG_WARNING, "hardware accelerator failed to decode picture\n");
         }
-		/* Ó²¼ş½âÂë¹¦ÄÜ£¬Ôİ²»Ö§³Ö */
+		/* ç¡¬ä»¶è§£ç åŠŸèƒ½ï¼Œæš‚ä¸æ”¯æŒ */
         if (CONFIG_H264_VDPAU_DECODER && s->avctx->codec->capabilities&CODEC_CAP_HWACCEL_VDPAU)
            ; //ff_vdpau_h264_picture_complete(s);
 
@@ -10829,26 +10829,26 @@ static int decode_frame(AVCodecContext *avctx,
 			}
 #endif
         if (!FIELD_PICTURE)
-            ff_er_frame_end(s);  /* ´íÎóÒş²Ø */
-		/* ¶ÔÍ¼Ïñ¿í¶È½øĞĞpadding£»±£´æÒ»Ğ©±äÁ¿µÄÖµ */
+            ff_er_frame_end(s);  /* é”™è¯¯éšè— */
+		/* å¯¹å›¾åƒå®½åº¦è¿›è¡Œpaddingï¼›ä¿å­˜ä¸€äº›å˜é‡çš„å€¼ */
         MPV_frame_end(s);
 
 		/* 2010/04/15 18:30:00 liuxw+00139685 [AZ1D01992] */
-		/* Ã¿½âÍêÒ»¸öpicture[frame/field],¸üĞÂÓï·¨ÔªËØinterlaced_frame */
+		/* æ¯è§£å®Œä¸€ä¸ªpicture[frame/field],æ›´æ–°è¯­æ³•å…ƒç´ interlaced_frame */
 		cur->interlaced_frame = FIELD_PICTURE;
 
 		/* 2010/05/10 15:00:00 liuxw+00139685 */
 		/* store error code for every frame */
 		cur->iErrorCode	|= s->avctx->iErrorCode;
 
-		/* Ò»Ö¡ÖĞÊÇ·ñÁ½³¡¶¼½âÂëÍê±Ï£¨ÒòÎªÒ»´Î»áÊä³öÒ»Ö¡£© */
+		/* ä¸€å¸§ä¸­æ˜¯å¦ä¸¤åœºéƒ½è§£ç å®Œæ¯•ï¼ˆå› ä¸ºä¸€æ¬¡ä¼šè¾“å‡ºä¸€å¸§ï¼‰ */
 		/* 2010/08/09 17:30:00 liuxw+00139685 */
-		/* Ôö¼ÓÒ»¸öÅĞ¶ÏÌõ¼ş£ºÈç¹ûµ±Ç°ÎªFRAME£¬ÄÇÃ´Ö±½ÓÍùÏÂ×ß */
+		/* å¢åŠ ä¸€ä¸ªåˆ¤æ–­æ¡ä»¶ï¼šå¦‚æœå½“å‰ä¸ºFRAMEï¼Œé‚£ä¹ˆç›´æ¥å¾€ä¸‹èµ° */
 //		if (cur->field_poc[0]==INT_MAX || cur->field_poc[1]==INT_MAX)
         if (FIELD_PICTURE && (cur->field_poc[0]==INT_MAX || cur->field_poc[1]==INT_MAX)) 
 		{
             /* Wait for second field. */
-            *data_size = 0; /* ÈôÊÇÒ»³¡£¬Ôò²»Êä³ö */
+            *data_size = 0; /* è‹¥æ˜¯ä¸€åœºï¼Œåˆ™ä¸è¾“å‡º */
         } 
 		else 
 		{
@@ -10885,7 +10885,7 @@ static int decode_frame(AVCodecContext *avctx,
 			cur->repeat_pict = 0;
 
 			/* 2010/06/07 11:30:00 liuxw+00139685 */
-			/* ·ÀÖ¹ËÀ»ú£ºÈôµ±Ç°Ö¡(»¥²¹³¡¶Ô)ÒÑ¾­½âÂëÍê±Ï£¬ÔòÂíÉÏÇå0 first_field£¬ÒÔÃâÔÚºóĞøÖ¡½âÂëÊ±£¬ÓÉÓÚfirst_field=1¶øµ¼ÖÂÃ»ÓĞ½«s->current_picturc_ptr=NULL */
+			/* é˜²æ­¢æ­»æœºï¼šè‹¥å½“å‰å¸§(äº’è¡¥åœºå¯¹)å·²ç»è§£ç å®Œæ¯•ï¼Œåˆ™é©¬ä¸Šæ¸…0 first_fieldï¼Œä»¥å…åœ¨åç»­å¸§è§£ç æ—¶ï¼Œç”±äºfirst_field=1è€Œå¯¼è‡´æ²¡æœ‰å°†s->current_picturc_ptr=NULL */
 			s->first_field = 0;
 
             /* Signal interlacing information externally. */
@@ -10909,7 +10909,7 @@ static int decode_frame(AVCodecContext *avctx,
                     // From these hints, let the applications decide if they apply deinterlacing.
                     cur->repeat_pict = 1;
 					/* 2010/04/46 13:30:00 liuxw+00139685 [AZ1D01991] */
-					/* Èôµ±Ç°ÎªÖ¡»òMBAFFÊ±£¬ÔòÎªprogressive;ÈôÎª³¡£¬ÔòÎªinterlace */
+					/* è‹¥å½“å‰ä¸ºå¸§æˆ–MBAFFæ—¶ï¼Œåˆ™ä¸ºprogressive;è‹¥ä¸ºåœºï¼Œåˆ™ä¸ºinterlace */
 //                  cur->interlaced_frame = FIELD_OR_MBAFF_PICTURE;
 					cur->interlaced_frame = FIELD_PICTURE;
                     break;
@@ -10928,13 +10928,13 @@ static int decode_frame(AVCodecContext *avctx,
 			{
                 /* Derive interlacing flag from used decoding process. */
 				/* 2010/04/46 13:30:00 liuxw+00139685 [AZ1D01991] */
-				/* Èôµ±Ç°ÎªÖ¡»òMBAFFÊ±£¬ÔòÎªprogressive;ÈôÎª³¡£¬ÔòÎªinterlace */
+				/* è‹¥å½“å‰ä¸ºå¸§æˆ–MBAFFæ—¶ï¼Œåˆ™ä¸ºprogressive;è‹¥ä¸ºåœºï¼Œåˆ™ä¸ºinterlace */
 //                cur->interlaced_frame = FIELD_OR_MBAFF_PICTURE;
 				  cur->interlaced_frame = FIELD_PICTURE;
             }
 
 			/* 2010/08/11 15:30:00 liuxw+00139685 */
-			/* ÓÉÓÚspsÖĞVUIĞÅÏ¢¿ÉÄÜ»á¶Ôinterlaced½øĞĞ¸Ä±ä£¬µ«Æä£ÛVUI£İ¶Ô½âÂëÃ»ÓĞÈÎºÎ°ïÖú£¬ËùÒÔÇ¿ÖÆ°Ñinterlaced¸Ä»ØÀ´ */
+			/* ç”±äºspsä¸­VUIä¿¡æ¯å¯èƒ½ä¼šå¯¹interlacedè¿›è¡Œæ”¹å˜ï¼Œä½†å…¶ï¼»VUIï¼½å¯¹è§£ç æ²¡æœ‰ä»»ä½•å¸®åŠ©ï¼Œæ‰€ä»¥å¼ºåˆ¶æŠŠinterlacedæ”¹å›æ¥ */
 			cur->interlaced_frame = FIELD_PICTURE;
 
             if (cur->field_poc[0] != cur->field_poc[1])
@@ -10960,107 +10960,107 @@ static int decode_frame(AVCodecContext *avctx,
             }
 
 			/* 2010/06/29 18:30:00 liuxw+00139685 */
-			/* ×¢ÊÍµôÒÔÇ°µÄÊä³öµÄµ÷¶È */
+			/* æ³¨é‡Šæ‰ä»¥å‰çš„è¾“å‡ºçš„è°ƒåº¦ */
 #if 0 
 			//FIXME do something with unavailable reference frames
             /* Sort B-frames into display order */
-			/* VUIÖĞÓï·¨ÔªËØ£ºbitstream_restriction_flag->ÂëÁ÷ÌØĞÔÏŞÖÆ£»num_reorder_frames->Í¼ÏñÊä³öÇ°Ğè´æ´¢Í¼ÏñµÄ×î´óÊıÄ¿ */
+			/* VUIä¸­è¯­æ³•å…ƒç´ ï¼šbitstream_restriction_flag->ç æµç‰¹æ€§é™åˆ¶ï¼›num_reorder_frames->å›¾åƒè¾“å‡ºå‰éœ€å­˜å‚¨å›¾åƒçš„æœ€å¤§æ•°ç›® */
             if(h->sps.bitstream_restriction_flag && s->avctx->has_b_frames < h->sps.num_reorder_frames)
 			{
                 s->avctx->has_b_frames = h->sps.num_reorder_frames;
                 s->low_delay = 0;
             }
-			/* strict_std_compliance ×ñÊØĞ­ÒéµÄÑÏ¸ñ³Ì¶È */
+			/* strict_std_compliance éµå®ˆåè®®çš„ä¸¥æ ¼ç¨‹åº¦ */
             if(   s->avctx->strict_std_compliance >= FF_COMPLIANCE_STRICT && !h->sps.bitstream_restriction_flag)
 			{
-                s->avctx->has_b_frames= MAX_DELAYED_PIC_COUNT; /* »º´æMAX_DELAYED_PIC_COUNTºó²Å¿ªÊ¼Êä³ö */
+                s->avctx->has_b_frames= MAX_DELAYED_PIC_COUNT; /* ç¼“å­˜MAX_DELAYED_PIC_COUNTåæ‰å¼€å§‹è¾“å‡º */
                 s->low_delay= 0;
             }
 
             pics = 0;
-			/* delay bufferÖĞ»º´æYUVµÄÊıÄ¿ */
+			/* delay bufferä¸­ç¼“å­˜YUVçš„æ•°ç›® */
             while(h->delayed_pic[pics]) pics++;
 
             assert(pics <= MAX_DELAYED_PIC_COUNT);
-			/* ½«µ±Ç°Ö¡·Åµ½delay bufferÖĞµÚÒ»¸öÎª¿ÕµÄÎ»ÖÃÈ¥ */
+			/* å°†å½“å‰å¸§æ”¾åˆ°delay bufferä¸­ç¬¬ä¸€ä¸ªä¸ºç©ºçš„ä½ç½®å» */
             h->delayed_pic[pics++] = cur;
-            if(cur->reference == 0)	/* Èôµ±Ç°Ö¡²»×÷²Î¿¼£¬Ôò½«referenceÊôĞÔĞŞ¸ÄÎªDELAYED_PIC_REF */
+            if(cur->reference == 0)	/* è‹¥å½“å‰å¸§ä¸ä½œå‚è€ƒï¼Œåˆ™å°†referenceå±æ€§ä¿®æ”¹ä¸ºDELAYED_PIC_REF */
                 cur->reference = DELAYED_PIC_REF;
 
             out = h->delayed_pic[0];
             out_idx = 0;
-			/* ´Ódelay bufferÖĞÑ°ÕÒPOC×îĞ¡µÄÒ»Ö¡×÷Îªµ±Ç°Êä³ö */
-			/* ÍË³öÌõ¼ş£º1¡¢µ±µÚi¸ödelay bufferÎª¿Õ 2¡¢µÚi¸ödelay bufferÖĞpoc£½0£¨¼Èpoc´ïµ½×î´ó»òÊÇIDRÖ¡£© 
-			   3¡¢µÚi¸ödelay bufferÎªIDRÖ¡£¨µÚ¶şµã¶¼ÒÑ¾­°üº¬ÁËµÚÈıµã£©4¡¢POC´ïµ½×î´óÖµºóÖØĞÂ¿ªÊ¼¼ÆÊıÇÒ²»Îª0£¨ĞÂÔö£©*/
+			/* ä»delay bufferä¸­å¯»æ‰¾POCæœ€å°çš„ä¸€å¸§ä½œä¸ºå½“å‰è¾“å‡º */
+			/* é€€å‡ºæ¡ä»¶ï¼š1ã€å½“ç¬¬iä¸ªdelay bufferä¸ºç©º 2ã€ç¬¬iä¸ªdelay bufferä¸­pocï¼0ï¼ˆæ—¢pocè¾¾åˆ°æœ€å¤§æˆ–æ˜¯IDRå¸§ï¼‰ 
+			   3ã€ç¬¬iä¸ªdelay bufferä¸ºIDRå¸§ï¼ˆç¬¬äºŒç‚¹éƒ½å·²ç»åŒ…å«äº†ç¬¬ä¸‰ç‚¹ï¼‰4ã€POCè¾¾åˆ°æœ€å¤§å€¼åé‡æ–°å¼€å§‹è®¡æ•°ä¸”ä¸ä¸º0ï¼ˆæ–°å¢ï¼‰*/
 			/* 2010/05/31 10:00:00 liuxw+00139685 */
-			/* Ôö¼Ó¶ÔiµÄ·¶Î§µÄÏŞÖÆ£¬·ÀÖ¹ËÀ»ú */
+			/* å¢åŠ å¯¹içš„èŒƒå›´çš„é™åˆ¶ï¼Œé˜²æ­¢æ­»æœº */
 			for(i=1; i<(s->avctx->has_b_frames+1) && h->delayed_pic[i] && (h->delayed_pic[i]->poc && !h->delayed_pic[i]->key_frame) && ((out->poc - h->delayed_pic[i]->poc) < INT32_MAX); i++)
                 if(h->delayed_pic[i]->poc < out->poc)
 				{
                     out = h->delayed_pic[i];
                     out_idx = i;
                 }
-			/* cross_idrÒâÒå£º±íÃ÷µ±Ç°delay bufferÖĞÊÇ·ñ´æÔÚIDRÖ¡»òÊÇpoc´ïµ½×î´óºó±äÎª0µÄÖ¡¡££Û1£º±íÃ÷´æÔÚ 0£º±íÃ÷²»´æÔÚ£İ
-			   cross_idrÎªÕæµÄÌõ¼ş£º1¡¢delay bufferÖĞµÚÒ»Ö¡µÄPOC=0£¨¼Èpoc´ïµ½×î´ó»òÊÇIDRÖ¡£©£»2¡¢ÉÏÃæforÍË³öÌõ¼şÎªµÚ¶şµã»òµÚÈıµã 
-			   3¡¢delay bufferÖĞµÚÒ»Ö¡ÎªIDRÖ¡(µÚÒ»µãÓ¦¸ÃÒÑ¾­°üº¬µÚÈıµã£© */
+			/* cross_idræ„ä¹‰ï¼šè¡¨æ˜å½“å‰delay bufferä¸­æ˜¯å¦å­˜åœ¨IDRå¸§æˆ–æ˜¯pocè¾¾åˆ°æœ€å¤§åå˜ä¸º0çš„å¸§ã€‚ï¼»1ï¼šè¡¨æ˜å­˜åœ¨ 0ï¼šè¡¨æ˜ä¸å­˜åœ¨ï¼½
+			   cross_idrä¸ºçœŸçš„æ¡ä»¶ï¼š1ã€delay bufferä¸­ç¬¬ä¸€å¸§çš„POC=0ï¼ˆæ—¢pocè¾¾åˆ°æœ€å¤§æˆ–æ˜¯IDRå¸§ï¼‰ï¼›2ã€ä¸Šé¢foré€€å‡ºæ¡ä»¶ä¸ºç¬¬äºŒç‚¹æˆ–ç¬¬ä¸‰ç‚¹ 
+			   3ã€delay bufferä¸­ç¬¬ä¸€å¸§ä¸ºIDRå¸§(ç¬¬ä¸€ç‚¹åº”è¯¥å·²ç»åŒ…å«ç¬¬ä¸‰ç‚¹ï¼‰ */
             cross_idr = !h->delayed_pic[0]->poc || !!h->delayed_pic[i] || h->delayed_pic[0]->key_frame;
-			/* out_of_orderÒâÒå£º³ıÈ¥Ìõ¼ş1ºó£¬ÊÇ·ñ´æÔÚdelay bufferÖĞPOC×îĞ¡µÄÖ¡µÄPOC±ÈÉÏ´ÎÊä³öÖ¡µÄPOCÒªĞ¡£Û1£º´æÔÚ£¨³öÏÖµÄ¸ÅÂÊ½ÏĞ¡£©0£º²»´æÔÚ£İ
-			   out_of_orderÎªÕæµÄÌõ¼ş(ĞŞ¸ÄºóÒ»Ö±Îª¼Ù)[1ºÍ2Í¬Ê±³ÉÁ¢£İ£º1¡¢µ±Ç°delay bufferÖĞ²»´æIDRÖ¡»òÊÇPOC´ïµ½×î´óºó±äÎª0µÄÖ¡ 
-			   2¡¢delay bufferÖĞPOC×îĞ¡µÄÖ¡µÄPOC±ÈÉÏ´ÎÊä³öÖ¡µÄPOCÒªĞ¡ */
+			/* out_of_orderæ„ä¹‰ï¼šé™¤å»æ¡ä»¶1åï¼Œæ˜¯å¦å­˜åœ¨delay bufferä¸­POCæœ€å°çš„å¸§çš„POCæ¯”ä¸Šæ¬¡è¾“å‡ºå¸§çš„POCè¦å°ï¼»1ï¼šå­˜åœ¨ï¼ˆå‡ºç°çš„æ¦‚ç‡è¾ƒå°ï¼‰0ï¼šä¸å­˜åœ¨ï¼½
+			   out_of_orderä¸ºçœŸçš„æ¡ä»¶(ä¿®æ”¹åä¸€ç›´ä¸ºå‡)[1å’Œ2åŒæ—¶æˆç«‹ï¼½ï¼š1ã€å½“å‰delay bufferä¸­ä¸å­˜IDRå¸§æˆ–æ˜¯POCè¾¾åˆ°æœ€å¤§åå˜ä¸º0çš„å¸§ 
+			   2ã€delay bufferä¸­POCæœ€å°çš„å¸§çš„POCæ¯”ä¸Šæ¬¡è¾“å‡ºå¸§çš„POCè¦å° */
             out_of_order = !cross_idr && out->poc < h->outputed_poc;
-			/* Èç¹ûÂëÁ÷ÖĞÒÑ¾­Ìá¹©ÁË×î´ódelayÖ¡ÊıMAX_DELAY£¬ÔòÏÈ»º´æMAX_DELAY,µ½µÚMAX_DELAY£«1Ö¡Ê±²ÅÊä³öµÚ1Ö¡ */
+			/* å¦‚æœç æµä¸­å·²ç»æä¾›äº†æœ€å¤§delayå¸§æ•°MAX_DELAYï¼Œåˆ™å…ˆç¼“å­˜MAX_DELAY,åˆ°ç¬¬MAX_DELAYï¼‹1å¸§æ—¶æ‰è¾“å‡ºç¬¬1å¸§ */
             if(h->sps.bitstream_restriction_flag && s->avctx->has_b_frames >= h->sps.num_reorder_frames)
                 { }
-			/* ÈôÂëÁ÷ÖĞÃ»ÓĞÌá¹©×î´ódelayÖ¡Êı£¬ÔòÂú×ãÒÔÏÂÌõ¼şÊ±£¬delayÖ¡ÊıÔö¼Ó1£¬µ±Ç°Ö¡²»»áÊä³öYUV£»Èô²»Âú×ã£¬ÔòÊä³ödelay bufferÖĞpoc×îĞ¡µÄÄÇÒ»Ö¡¡£
-			   Ö´ĞĞÌõ¼ş£º1¡¢delay bufferÖĞPOC×îĞ¡µÄÖ¡µÄPOC±ÈÉÏ´ÎÊä³öÖ¡µÄPOCÒªĞ¡ 2¡¢[a &&((b&&c)||d)£¨´ËÌõ¼şÖ»»á½øÈëÒ»´Î] a.µÍÑÓÊ±±êÖ¾Îª1;
-			   b.µ±Ç°delay bufferÖĞÊÇ²»´æÔÚIDRÖ¡»òÊÇpoc´ïµ½×î´óºó±äÎª0µÄÖ¡;c.µ±Ç°delay bufferÖĞPOC×îĞ¡µÄÖ¡ÓëÉÏ´ÎÊä³öÖ¡¼ä¸ô´óÓÚÒ»Ö¡;d.µ±Ç°Ö¡ÎªBÖ¡ 
-			   3¡¢[a&&b&&c] a.µ±Ç°Ö¡ÎªBÖ¡ÇÒ¿ÉÒÔ×ö²Î¿¼£»b.µ±Ç°delay bufferÖĞÊÇ²»´æÔÚIDRÖ¡»òÊÇpoc´ïµ½×î´óºó±äÎª0µÄÖ¡;c.µ±Ç°delay bufferÖĞPOC×îĞ¡µÄÖ¡ÓëÉÏ´ÎÊä³öÖ¡¼ä¸ô´óÓÚÒ»Ö¡ */
+			/* è‹¥ç æµä¸­æ²¡æœ‰æä¾›æœ€å¤§delayå¸§æ•°ï¼Œåˆ™æ»¡è¶³ä»¥ä¸‹æ¡ä»¶æ—¶ï¼Œdelayå¸§æ•°å¢åŠ 1ï¼Œå½“å‰å¸§ä¸ä¼šè¾“å‡ºYUVï¼›è‹¥ä¸æ»¡è¶³ï¼Œåˆ™è¾“å‡ºdelay bufferä¸­pocæœ€å°çš„é‚£ä¸€å¸§ã€‚
+			   æ‰§è¡Œæ¡ä»¶ï¼š1ã€delay bufferä¸­POCæœ€å°çš„å¸§çš„POCæ¯”ä¸Šæ¬¡è¾“å‡ºå¸§çš„POCè¦å° 2ã€[a &&((b&&c)||d)ï¼ˆæ­¤æ¡ä»¶åªä¼šè¿›å…¥ä¸€æ¬¡] a.ä½å»¶æ—¶æ ‡å¿—ä¸º1;
+			   b.å½“å‰delay bufferä¸­æ˜¯ä¸å­˜åœ¨IDRå¸§æˆ–æ˜¯pocè¾¾åˆ°æœ€å¤§åå˜ä¸º0çš„å¸§;c.å½“å‰delay bufferä¸­POCæœ€å°çš„å¸§ä¸ä¸Šæ¬¡è¾“å‡ºå¸§é—´éš”å¤§äºä¸€å¸§;d.å½“å‰å¸§ä¸ºBå¸§ 
+			   3ã€[a&&b&&c] a.å½“å‰å¸§ä¸ºBå¸§ä¸”å¯ä»¥åšå‚è€ƒï¼›b.å½“å‰delay bufferä¸­æ˜¯ä¸å­˜åœ¨IDRå¸§æˆ–æ˜¯pocè¾¾åˆ°æœ€å¤§åå˜ä¸º0çš„å¸§;c.å½“å‰delay bufferä¸­POCæœ€å°çš„å¸§ä¸ä¸Šæ¬¡è¾“å‡ºå¸§é—´éš”å¤§äºä¸€å¸§ */
 			/* 2010/04/23 16:00:00 liuxw+00139685 */
-			/* Ôö¼ÓÒ»¸ö½øÈëµÄÌõ¼ş£ºµ±Ç°Ö¡ÊÇBÖ¡ÓÃ×÷²Î¿¼£¬¶øÇÒµ±Ç°Ö¡µÄPOCĞ¡ÓÚ0£¬½«ÒªÊä³öµÄPOCĞ¡ÓÚ0 */
+			/* å¢åŠ ä¸€ä¸ªè¿›å…¥çš„æ¡ä»¶ï¼šå½“å‰å¸§æ˜¯Bå¸§ç”¨ä½œå‚è€ƒï¼Œè€Œä¸”å½“å‰å¸§çš„POCå°äº0ï¼Œå°†è¦è¾“å‡ºçš„POCå°äº0 */
             else if((out_of_order && pics-1 == s->avctx->has_b_frames && s->avctx->has_b_frames < MAX_DELAYED_PIC_COUNT)
 					|| (s->low_delay && ((!cross_idr && out->poc > h->outputed_poc + 2)
 					|| cur->pict_type == FF_B_TYPE))  || (cur->pict_type == FF_B_TYPE && h->nal_ref_idc && 
 					((!cross_idr && out->poc > h->outputed_poc + 2) || (out->poc < 0 && h->outputed_poc < 0 && out->poc > h->outputed_poc + 2) || 
 					(out->poc < 0 && h->outputed_poc > 0 && s->current_picture_ptr->poc < 0 ))))
             {
-                /* ÏµÍ³´æÔÚÑÓÊ±£¬ÇåÁãÏµÍ³ÑÓÊ±±êÖ¾ */
+                /* ç³»ç»Ÿå­˜åœ¨å»¶æ—¶ï¼Œæ¸…é›¶ç³»ç»Ÿå»¶æ—¶æ ‡å¿— */
 				s->low_delay = 0;
-				/* ÑÓÊ±Êä³öÖ¡µÄÊıÄ¿¼Ó1 */
+				/* å»¶æ—¶è¾“å‡ºå¸§çš„æ•°ç›®åŠ 1 */
                 s->avctx->has_b_frames++;
             }
 
 			/* 2010/05/6 15:00:00 liuxw+00139685 */
-			/* Èôµ±Ç°delay bufferÂúÁË£¬ÔòÇ¿ÖÆÊä³öbufferÖĞPOC×îĞ¡µÄÒ»Ö¡ */
+			/* è‹¥å½“å‰delay bufferæ»¡äº†ï¼Œåˆ™å¼ºåˆ¶è¾“å‡ºbufferä¸­POCæœ€å°çš„ä¸€å¸§ */
 			if(s->avctx->has_b_frames > MAX_DELAYED_PIC_COUNT)
 			{
 				out_of_order = 0;
 				out->reference = 0;
 				s->avctx->has_b_frames--;
 			}
-			/* out_of_orderÒ»Ö±Îª¼Ù£»ÈôÓĞÖ¡Êä³ö£¬Ôò½«µ±Ç°Êä³öÖ¡ºóÃæµÄÖ¡ÍùÇ°ÒÆ */
+			/* out_of_orderä¸€ç›´ä¸ºå‡ï¼›è‹¥æœ‰å¸§è¾“å‡ºï¼Œåˆ™å°†å½“å‰è¾“å‡ºå¸§åé¢çš„å¸§å¾€å‰ç§» */
             if(out_of_order || pics > s->avctx->has_b_frames){
-                /* Èôµ±Ç°Êä³öÍ¼Ïñ×÷²Î¿¼£¬ÔòÒÀÈ»×÷²Î¿¼£»ÈôÊôĞÔÎªDELAYED_PIC_REF£¬ÔòÖÃÎª0£¨ÉÔºó»á´ÓbufferÖĞÈ¥µô£ÛÒÑ¾­Êä³öÇÒ²»×÷²Î¿¼£İ*/
+                /* è‹¥å½“å‰è¾“å‡ºå›¾åƒä½œå‚è€ƒï¼Œåˆ™ä¾ç„¶ä½œå‚è€ƒï¼›è‹¥å±æ€§ä¸ºDELAYED_PIC_REFï¼Œåˆ™ç½®ä¸º0ï¼ˆç¨åä¼šä»bufferä¸­å»æ‰ï¼»å·²ç»è¾“å‡ºä¸”ä¸ä½œå‚è€ƒï¼½*/
 				out->reference &= ~DELAYED_PIC_REF; 
                 for(i=out_idx; h->delayed_pic[i]; i++)
                     h->delayed_pic[i] = h->delayed_pic[i+1];
 				/* 2010/06/11 10:30:00 liuxw+00139685 */
-				/* Èç¹ûÒòÎªÂÒĞò£¬½«¶ªµôÂÒĞòµÄÄÇÒ»Ö¡£¬ÕâÊ±Ó¦¸Ã½«delayµÄÖ¡ÊıÒ²ÏàÓ¦µÄ¼õÉÙ */
+				/* å¦‚æœå› ä¸ºä¹±åºï¼Œå°†ä¸¢æ‰ä¹±åºçš„é‚£ä¸€å¸§ï¼Œè¿™æ—¶åº”è¯¥å°†delayçš„å¸§æ•°ä¹Ÿç›¸åº”çš„å‡å°‘ */
 				if(out_of_order)
 				{
 					s->avctx->has_b_frames--;
 				}
             }
-			/* Êä³öÒ»Ö¡YUV */
+			/* è¾“å‡ºä¸€å¸§YUV */
             if(!out_of_order && pics > s->avctx->has_b_frames){
                 *data_size = sizeof(AVFrame);
 
 				/* 2010/04/46 13:30:00 liuxw+00139685 [AZ1D01991] */
-				/* ½«ÏÈÇ°µÄ´¦Àí¸øÈ¥µô£¬ÔÚÇ°Ãæ»á¶ÔÃ¿Ò»Ö¡µÄinterlaced_frame½øĞĞ¸³Öµ */
-//				out->interlaced_frame = s->picture_structure; /* Êä³öÖ¡ÄÚÈİ liuxw+00139685 */				
+				/* å°†å…ˆå‰çš„å¤„ç†ç»™å»æ‰ï¼Œåœ¨å‰é¢ä¼šå¯¹æ¯ä¸€å¸§çš„interlaced_frameè¿›è¡Œèµ‹å€¼ */
+//				out->interlaced_frame = s->picture_structure; /* è¾“å‡ºå¸§å†…å®¹ liuxw+00139685 */				
 				
                 h->outputed_poc = out->poc;
                 *pict= *(AVFrame*)out;
-				/* Êä³öÈ¥µôcropºóµÄYUVÊı¾İ */
+				/* è¾“å‡ºå»æ‰cropåçš„YUVæ•°æ® */
                 {
                 	int SubHeightC[] ={1,2,1,1};
 					int SubWidthC[]  ={1,2,2,1};
@@ -11070,7 +11070,7 @@ static int decode_frame(AVCodecContext *avctx,
                 	pict->data[2] = pict->data[2] + pict->linesize[2] * h->sps.crop_top * (2 - h->sps.frame_mbs_only_flag) + h->sps.crop_left;
                 }
 				/* 2010/05/26 15:00:00 liuxw+00139685 [AZ1D02104] */
-				/* ½«´òÓ¡debugĞÅÏ¢µÄº¯ÊıÌáÇ°£¬ÒÔÃâ³öÏÖËÀ»úµÄÇé¿ö */
+				/* å°†æ‰“å°debugä¿¡æ¯çš„å‡½æ•°æå‰ï¼Œä»¥å…å‡ºç°æ­»æœºçš„æƒ…å†µ */
             assert(pict->data[0] || !*data_size);
     		ff_print_debug_info(s, pict);
 				
@@ -11078,7 +11078,7 @@ static int decode_frame(AVCodecContext *avctx,
 			else
 			{
 				/* 2010/30/06 11:10:00 liuxw+00139685 */
-				/* ½«´òÓ¡µÄÈÕÖ¾ĞÅÏ¢ÄÚÈİĞŞ¸ÄÁË */
+				/* å°†æ‰“å°çš„æ—¥å¿—ä¿¡æ¯å†…å®¹ä¿®æ”¹äº† */
 				//av_log(avctx, AV_LOG_DEBUG, "no picture\n");
 				av_log(avctx, AV_LOG_DEBUG, "Current picture[POC:%d] delayed!\n",cur->poc);
             }
@@ -11131,7 +11131,7 @@ static int decode_frame(AVCodecContext *avctx,
 				out = h->delayed_pic[0];
 				out_idx = 0;
 				/* 2010/08/09 19:30:00 liuxw+00139685 */
-				/* ĞŞ¸ÄÅĞ¶ÏÌõ¼ş£ºÖ»ÓĞPOC!=0£¬²ÅÍË³ö */
+				/* ä¿®æ”¹åˆ¤æ–­æ¡ä»¶ï¼šåªæœ‰POC!=0ï¼Œæ‰é€€å‡º */
 				for(i = 1; i < h->delay_pic_num && /*!(!*/h->delayed_pic[i]->poc /*&& h->delayed_pic[i]->key_frame)*/ && !h->delayed_pic[i]->is_output; i++)
 				{
 					if(h->delayed_pic[i]->poc < out->poc)
@@ -11229,7 +11229,7 @@ static int decode_frame(AVCodecContext *avctx,
 
 				*data_size = sizeof(AVFrame);
 				*pict= *(AVFrame*)out;
-				/* Êä³öÈ¥µôcropºóµÄYUVÊı¾İ */
+				/* è¾“å‡ºå»æ‰cropåçš„YUVæ•°æ® */
 				{
 					int SubHeightC[] ={1,2,1,1};
 					int SubWidthC[]  ={1,2,2,1};
@@ -11239,7 +11239,7 @@ static int decode_frame(AVCodecContext *avctx,
 					pict->data[2] = pict->data[2] + pict->linesize[2] * h->sps.crop_top * (2 - h->sps.frame_mbs_only_flag) + h->sps.crop_left;
 				}
 				/* 2010/05/26 15:00:00 liuxw+00139685 [AZ1D02104] */
-				/* ½«´òÓ¡debugĞÅÏ¢µÄº¯ÊıÌáÇ°£¬ÒÔÃâ³öÏÖËÀ»úµÄÇé¿ö */
+				/* å°†æ‰“å°debugä¿¡æ¯çš„å‡½æ•°æå‰ï¼Œä»¥å…å‡ºç°æ­»æœºçš„æƒ…å†µ */
 				assert(pict->data[0] || !*data_size);
 				ff_print_debug_info(s, pict);
 			}
@@ -11250,7 +11250,7 @@ static int decode_frame(AVCodecContext *avctx,
 #endif
 
 //  assert(pict->data[0] || !*data_size);
-	/* ´òÓ¡µ±Ç°½âÖ¡µÄÏà¹ØĞÅÏ¢(Ä¬ÈÏÊÇ¹Ø±Õ£© */
+	/* æ‰“å°å½“å‰è§£å¸§çš„ç›¸å…³ä¿¡æ¯(é»˜è®¤æ˜¯å…³é—­ï¼‰ */
 //    ff_print_debug_info(s, pict);
 //printf("out %d\n", (int)pict->data[0]);
 #if 0 //?
@@ -11260,7 +11260,7 @@ static int decode_frame(AVCodecContext *avctx,
     avctx->frame_number = s->picture_number - 1;
 #endif
 
-	/* ·µ»Ø½âÂëµ±Ç°Ö¡Ëù»¨·ÑµÄ×Ö½ÚÊı */
+	/* è¿”å›è§£ç å½“å‰å¸§æ‰€èŠ±è´¹çš„å­—èŠ‚æ•° */
     return get_consumed_bytes(s, buf_index, buf_size);
 }
 #if 0
@@ -11483,7 +11483,7 @@ static av_cold int decode_end(AVCodecContext *avctx)
 }
 
 
-/* ĞÂÔöº¯Êı£º¸´Î»h264½âÂëÆ÷ */
+/* æ–°å¢å‡½æ•°ï¼šå¤ä½h264è§£ç å™¨ */
 static av_cold int h264_reset(H264Context *h)
 {
 	int iRet = 0;
@@ -11492,10 +11492,10 @@ static av_cold int h264_reset(H264Context *h)
 	AVCodecContext *		avctx	= s->avctx;
 //	int i;
 
-	/* Çå¿ÕH264Context½á¹¹Ìå±äÁ¿ */
+	/* æ¸…ç©ºH264Contextç»“æ„ä½“å˜é‡ */
 	memset(h, 0, sizeof(H264Context));
 
-	/* ³õÊ¼ĞİH264Context½á¹¹Ìå±äÁ¿ */
+	/* åˆå§‹ä¼‘H264Contextç»“æ„ä½“å˜é‡ */
 	iRet = decode_init(avctx);
 	if(0 != iRet)
 	{
@@ -11503,7 +11503,7 @@ static av_cold int h264_reset(H264Context *h)
 	}
 
 #if 0
-	/* ¶¨Òå±äÁ¿£¬±£´æh264contextÖĞÒÑ·ÖÅäµÄÄÚ´æÖ¸Õë */
+	/* å®šä¹‰å˜é‡ï¼Œä¿å­˜h264contextä¸­å·²åˆ†é…çš„å†…å­˜æŒ‡é’ˆ */
 	uint8_t *rbsp_buffer[2]				= {h->rbsp_buffer[0],h->rbsp_buffer[1]} ;
 	unsigned int rbsp_buffer_size[2]    = { h->rbsp_buffer_size[0], h->rbsp_buffer_size[1]};
 	int8_t (*intra4x4_pred_mode)[8]		= h->intra4x4_pred_mode;
@@ -11544,17 +11544,17 @@ static av_cold int h264_reset(H264Context *h)
 		thread_context[i] = h->thread_context[i];
 	}
 
-	/* Çå¿ÕH264Context */
+	/* æ¸…ç©ºH264Context */
 	memset(&(h->nal_ref_idc), 0, sizeof(H264Context) - sizeof(MpegEncContext));
 
-	/* h264½âÂëÆ÷³õÊ¼»¯ */
+	/* h264è§£ç å™¨åˆå§‹åŒ– */
 	iRet = decode_init(s->avctx);
 	if(0 != iRet)
 	{
 		av_log(s->avctx, AV_LOG_ERROR, "ctx_dec[%p] h264_ctx[%p] decode_init() failed! return code: %d !\n",avctx, h, iRet); 
 	}
 
-	/* »Ö¸´Ö®Ç°±£´æµÄÖ¸Õë */
+	/* æ¢å¤ä¹‹å‰ä¿å­˜çš„æŒ‡é’ˆ */
 	h->rbsp_buffer[0]			= rbsp_buffer[0];
 	h->rbsp_buffer[1]			= rbsp_buffer[1];
 	h->rbsp_buffer_size[0]		= rbsp_buffer_size[0];
@@ -11604,7 +11604,7 @@ static av_cold int h264_reset(H264Context *h)
 	return iRet;
 }
 
-/* ĞÂÔöº¯Êı(l00139685)£º¸´Î»½âÂëÆ÷ */
+/* æ–°å¢å‡½æ•°(l00139685)ï¼šå¤ä½è§£ç å™¨ */
 static av_cold int decode_reset(AVCodecContext *avctx)
 {
 	int iRet = 0;
@@ -11613,10 +11613,10 @@ static av_cold int decode_reset(AVCodecContext *avctx)
 	MpegEncContext *s = &h->s;
 	int i;
 
-	/* Çå¿Õbuffer */
+	/* æ¸…ç©ºbuffer */
 	flush_dpb(avctx);
 
-	/* ÊÍ·ÅÄÚ´æ(YUV buffer³ıÍâ) */
+	/* é‡Šæ”¾å†…å­˜(YUV bufferé™¤å¤–) */
 	av_freep(&h->rbsp_buffer[0]);
 	av_freep(&h->rbsp_buffer[1]);
 	free_tables(h); //FIXME cleanup init stuff perhaps
@@ -11630,7 +11630,7 @@ static av_cold int decode_reset(AVCodecContext *avctx)
 //	MPV_common_end_hw(s);
 	MPV_common_end(s);
 
-	/* ¸´Î»¼°³õÊ¼»¯AVCodecContext½á¹¹Ìå±äÁ¿ */
+	/* å¤ä½åŠåˆå§‹åŒ–AVCodecContextç»“æ„ä½“å˜é‡ */
 	iRet = avcodec_reset(avctx);
 	if(0 != iRet)
 	{
@@ -11638,7 +11638,7 @@ static av_cold int decode_reset(AVCodecContext *avctx)
 		return iRet;
 	}
 
-	/* ¸´Î»¼°³õÊ¼»¯H264Context½á¹¹Ìå±äÁ¿ */
+	/* å¤ä½åŠåˆå§‹åŒ–H264Contextç»“æ„ä½“å˜é‡ */
 	iRet = h264_reset(h);
 	if(0 != iRet)
 	{
@@ -11646,7 +11646,7 @@ static av_cold int decode_reset(AVCodecContext *avctx)
 		return iRet;
 	}
 
-	/* ¸´Î»¼°³õÊ¼»¯MpegEncContext½á¹¹Ìå±äÁ¿ */
+	/* å¤ä½åŠåˆå§‹åŒ–MpegEncContextç»“æ„ä½“å˜é‡ */
 /*	iRet = MPV_common_reset(s);
 	if(0 != iRet)
 	{

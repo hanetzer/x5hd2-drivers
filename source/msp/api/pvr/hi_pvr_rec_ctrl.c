@@ -1723,7 +1723,7 @@ HI_S32 HI_PVR_RecStopChn(HI_U32 u32ChnID)
 
     while ((pRecChn->u64CurFileSize < indexedSize)
            && (waitTimes < 30)
-           && pRecChn->bSavingData)    /*If returned already by error,go ahead*/ /*CNcomment:如果已经出错退出，可以不用继续等待 */
+           && pRecChn->bSavingData)    /*If returned already by error,go ahead*/ /*CNcomment:濡傛灉宸茬粡鍑洪敊閫�鍑猴紝鍙互涓嶇敤缁х画绛夊緟 */
     {
         usleep(1000 * 40);
         waitTimes++;

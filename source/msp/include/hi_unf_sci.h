@@ -28,73 +28,73 @@ extern "C" {
 /** @{*/  /** <!-- [SCI] */
 
 /**Output configuration of the smart card interface clock (SCICLK) pin*/
-/** CNcomment:SCICLKÒý½ÅÊä³öÅäÖÃ*/
+/** CNcomment:SCICLKå¼•è„šè¾“å‡ºé…ç½®*/
 typedef enum  hiUNF_SCI_MODE_E
 {
-    HI_UNF_SCI_MODE_CMOS = 0, /**<Complementary metal-oxide semiconductor (CMOS) output*/   /**<CNcomment:CMOSÊä³ö*/
-    HI_UNF_SCI_MODE_OD, /**<Open drain (OD) output*/                                  /**<CNcomment:ODÊä³ö*/
+    HI_UNF_SCI_MODE_CMOS = 0, /**<Complementary metal-oxide semiconductor (CMOS) output*/   /**<CNcomment:CMOSè¾“å‡º*/
+    HI_UNF_SCI_MODE_OD, /**<Open drain (OD) output*/                                  /**<CNcomment:ODè¾“å‡º*/
     HI_UNF_SCI_MODE_BUTT
 } HI_UNF_SCI_MODE_E;
 
 /**SCI port*/
-/** CNcomment:SCI ¶Ë¿Ú */
+/** CNcomment:SCI ç«¯å£ */
 typedef enum hiUNF_SCI_PORT_E
 {
-    HI_UNF_SCI_PORT0, /**< SCI port 0*/  /**<CNcomment:SCI¶Ë¿Ú0*/
-    HI_UNF_SCI_PORT1, /**< SCI port 1*/  /**<CNcomment:SCI¶Ë¿Ú1*/
+    HI_UNF_SCI_PORT0, /**< SCI port 0*/  /**<CNcomment:SCIç«¯å£0*/
+    HI_UNF_SCI_PORT1, /**< SCI port 1*/  /**<CNcomment:SCIç«¯å£1*/
     HI_UNF_SCI_PORT_BUTT
 } HI_UNF_SCI_PORT_E;
 
 /**Status of the SCI card*/
-/** CNcomment:ÖÇÄÜ¿¨×´Ì¬ */
+/** CNcomment:æ™ºèƒ½å¡çŠ¶æ€ */
 typedef enum hiUNF_SCI_STATUS_E
 {
-    HI_UNF_SCI_STATUS_UNINIT = 0, /**<The SCI card is not initialized.(Reserved status) */               /**<CNcomment: SCIÎ´³õÊ¼»¯¡£(Ô¤Áô×´Ì¬) */
-    HI_UNF_SCI_STATUS_FIRSTINIT, /**<The SCI card is being initialized.(Reserved status)*/             /**<CNcomment:SCI³õÊ¼»¯¹ý³ÌÖÐ¡£(Ô¤Áô×´Ì¬)*/
-    HI_UNF_SCI_STATUS_NOCARD, /**<There is no SCI card.*/                          /**<CNcomment:ÎÞ¿¨ */
-    HI_UNF_SCI_STATUS_INACTIVECARD, /**<The SCI card is not activated (unavailable).*/   /**<CNcomment:¿¨Î´Íê³É¼¤»î£¨¿¨ÎÞÐ§£© */
+    HI_UNF_SCI_STATUS_UNINIT = 0, /**<The SCI card is not initialized.(Reserved status) */               /**<CNcomment: SCIæœªåˆå§‹åŒ–ã€‚(é¢„ç•™çŠ¶æ€) */
+    HI_UNF_SCI_STATUS_FIRSTINIT, /**<The SCI card is being initialized.(Reserved status)*/             /**<CNcomment:SCIåˆå§‹åŒ–è¿‡ç¨‹ä¸­ã€‚(é¢„ç•™çŠ¶æ€)*/
+    HI_UNF_SCI_STATUS_NOCARD, /**<There is no SCI card.*/                          /**<CNcomment:æ— å¡ */
+    HI_UNF_SCI_STATUS_INACTIVECARD, /**<The SCI card is not activated (unavailable).*/   /**<CNcomment:å¡æœªå®Œæˆæ¿€æ´»ï¼ˆå¡æ— æ•ˆï¼‰ */
 
-    //   HI_UNF_SCI_STATUS_CARDFAULT,		  /**<The SCI card is faulty.*/                        /**<CNcomment:¿¨¹ÊÕÏ*/
-    HI_UNF_SCI_STATUS_WAITATR, /**<The SCI card is waiting for the ATR data.*/      /**<CNcomment:µÈ´ýATR*/
-    HI_UNF_SCI_STATUS_READATR, /**<The SCI card is receiving the ATR data.*/        /**<CNcomment:ÕýÔÚ½ÓÊÕATR*/
-    HI_UNF_SCI_STATUS_READY, /**<The SCI card is available (activated).*/         /**<CNcomment:¿¨¿ÉÒÔÊ¹ÓÃ£¨¿¨¼¤»î£© */
-    HI_UNF_SCI_STATUS_RX, /**<The SCI card is busy receiving data.*/           /**<CNcomment:¿¨Ã¦£¨½ÓÊÕÊý¾ÝÖÐ£© */
-    HI_UNF_SCI_STATUS_TX /**<The SCI card is busy transmitting data.*/        /**<CNcomment:¿¨Ã¦£¨·¢ËÍÊý¾ÝÖÐ£© */
+    //   HI_UNF_SCI_STATUS_CARDFAULT,		  /**<The SCI card is faulty.*/                        /**<CNcomment:å¡æ•…éšœ*/
+    HI_UNF_SCI_STATUS_WAITATR, /**<The SCI card is waiting for the ATR data.*/      /**<CNcomment:ç­‰å¾…ATR*/
+    HI_UNF_SCI_STATUS_READATR, /**<The SCI card is receiving the ATR data.*/        /**<CNcomment:æ­£åœ¨æŽ¥æ”¶ATR*/
+    HI_UNF_SCI_STATUS_READY, /**<The SCI card is available (activated).*/         /**<CNcomment:å¡å¯ä»¥ä½¿ç”¨ï¼ˆå¡æ¿€æ´»ï¼‰ */
+    HI_UNF_SCI_STATUS_RX, /**<The SCI card is busy receiving data.*/           /**<CNcomment:å¡å¿™ï¼ˆæŽ¥æ”¶æ•°æ®ä¸­ï¼‰ */
+    HI_UNF_SCI_STATUS_TX /**<The SCI card is busy transmitting data.*/        /**<CNcomment:å¡å¿™ï¼ˆå‘é€æ•°æ®ä¸­ï¼‰ */
 } HI_UNF_SCI_STATUS_E;
 
 /**SCI protocol*/
-/** CNcomment:SCI Ð­Òé */
+/** CNcomment:SCI åè®® */
 typedef enum hiUNF_SCI_PROTOCOL_E
 {
-    HI_UNF_SCI_PROTOCOL_T0, /**<7816 T0 protocol*/   /**<CNcomment:7816 T0 Ð­Òé */
-    HI_UNF_SCI_PROTOCOL_T1, /**<7816 T1 protocol*/   /**<CNcomment:7816 T1 Ð­Òé */
-    HI_UNF_SCI_PROTOCOL_T14, /**<7816 T14 protocol*/  /**<CNcomment:7816 T14 Ð­Òé */
+    HI_UNF_SCI_PROTOCOL_T0, /**<7816 T0 protocol*/   /**<CNcomment:7816 T0 åè®® */
+    HI_UNF_SCI_PROTOCOL_T1, /**<7816 T1 protocol*/   /**<CNcomment:7816 T1 åè®® */
+    HI_UNF_SCI_PROTOCOL_T14, /**<7816 T14 protocol*/  /**<CNcomment:7816 T14 åè®® */
     HI_UNF_SCI_PROTOCOL_BUTT
 } HI_UNF_SCI_PROTOCOL_E;
 
 /**SCI active level*/
-/** CNcomment:SCIÓÐÐ§µçÆ½*/
+/** CNcomment:SCIæœ‰æ•ˆç”µå¹³*/
 typedef enum hiUNF_SCI_LEVEL_E
 {
-    HI_UNF_SCI_LEVEL_LOW, /**<Active low*/   /**<CNcomment:µÍµçÆ½ÓÐÐ§ */
-    HI_UNF_SCI_LEVEL_HIGH, /**<Active high*/  /**<CNcomment:¸ßµçÆ½ÓÐÐ§ */
+    HI_UNF_SCI_LEVEL_LOW, /**<Active low*/   /**<CNcomment:ä½Žç”µå¹³æœ‰æ•ˆ */
+    HI_UNF_SCI_LEVEL_HIGH, /**<Active high*/  /**<CNcomment:é«˜ç”µå¹³æœ‰æ•ˆ */
     HI_UNF_SCI_LEVEL_BUTT
 } HI_UNF_SCI_LEVEL_E;
 
 /**SCI system parameters*/
-/**CNcomment:SCI ÏµÍ³²ÎÊý */
+/**CNcomment:SCI ç³»ç»Ÿå‚æ•° */
 typedef struct hiUNF_SCI_PARAMS_S
 {
-    HI_UNF_SCI_PORT_E     enSciPort; /**<SCI port ID*/                                                      /**<CNcomment:SCI ¶Ë¿ÚºÅ */
-    HI_UNF_SCI_PROTOCOL_E enProtocolType; /**<Used protocol type*/                                    /**<CNcomment:Ê¹ÓÃµÄÐ­ÒéÀàÐÍ */
-    HI_U32                ActalClkRate; /**<Actual clock rate conversion factor F*/                     /**<CNcomment:Êµ¼ÊµÄF ÖµÊ±ÖÓ×ª»»Òò×Ó */
-    HI_U32                ActalBitRate; /**<Actual bit rate conversion factor D*/                         /**<CNcomment:Êµ¼ÊµÄD Öµ±ÈÌØÂÊ×ª»»Òò×Ó */
-    HI_U32                Fi; /**<Clock factor returned by the answer to reset (ATR)*/                      /**<CNcomment:ATR ·µ»ØµÄÊ±ÖÓÒò×Ó */
-    HI_U32                Di; /**<Bit rate factor returned by the ATR*/                                     /**<CNcomment:ATR ·µ»ØµÄ±ÈÌØÂÊÒò×Ó */
-    HI_U32                GuardDelay; /**<Extra guard time N*/                                        /**<CNcomment:N Öµ¶îÍâÔö¼ÓµÄ±£»¤Ê±¼ä*/
-    HI_U32                CharTimeouts; /**<Character timeout of T0 or T1*/                             /**<CNcomment:T0 »òT1µÄ×Ö·û³¬Ê±Ê±¼ä*/
-    HI_U32                BlockTimeouts; /**<Block timeout of T1 */                                     /**<CNcomment:T1µÄ¿é³¬Ê±Ê±¼ä*/
-    HI_U32                TxRetries; /**<Number of transmission retries*/                                   /**<CNcomment:·¢ËÍÖØÊÔ´ÎÊý*/
+    HI_UNF_SCI_PORT_E     enSciPort; /**<SCI port ID*/                                                      /**<CNcomment:SCI ç«¯å£å· */
+    HI_UNF_SCI_PROTOCOL_E enProtocolType; /**<Used protocol type*/                                    /**<CNcomment:ä½¿ç”¨çš„åè®®ç±»åž‹ */
+    HI_U32                ActalClkRate; /**<Actual clock rate conversion factor F*/                     /**<CNcomment:å®žé™…çš„F å€¼æ—¶é’Ÿè½¬æ¢å› å­ */
+    HI_U32                ActalBitRate; /**<Actual bit rate conversion factor D*/                         /**<CNcomment:å®žé™…çš„D å€¼æ¯”ç‰¹çŽ‡è½¬æ¢å› å­ */
+    HI_U32                Fi; /**<Clock factor returned by the answer to reset (ATR)*/                      /**<CNcomment:ATR è¿”å›žçš„æ—¶é’Ÿå› å­ */
+    HI_U32                Di; /**<Bit rate factor returned by the ATR*/                                     /**<CNcomment:ATR è¿”å›žçš„æ¯”ç‰¹çŽ‡å› å­ */
+    HI_U32                GuardDelay; /**<Extra guard time N*/                                        /**<CNcomment:N å€¼é¢å¤–å¢žåŠ çš„ä¿æŠ¤æ—¶é—´*/
+    HI_U32                CharTimeouts; /**<Character timeout of T0 or T1*/                             /**<CNcomment:T0 æˆ–T1çš„å­—ç¬¦è¶…æ—¶æ—¶é—´*/
+    HI_U32                BlockTimeouts; /**<Block timeout of T1 */                                     /**<CNcomment:T1çš„å—è¶…æ—¶æ—¶é—´*/
+    HI_U32                TxRetries; /**<Number of transmission retries*/                                   /**<CNcomment:å‘é€é‡è¯•æ¬¡æ•°*/
 } HI_UNF_SCI_PARAMS_S, *HI_UNF_SCI_PARAMS_S_PTR;
 
 /** @}*/  /** <!-- ==== Structure Definition End ====*/
@@ -107,10 +107,10 @@ typedef struct hiUNF_SCI_PARAMS_S
 /** @{*/  /** <!-- [SCI] */
 
 /**
- \brief Initializes the SCI.   CNcomment:SCI³õÊ¼»¯¡£CNend
+ \brief Initializes the SCI.   CNcomment:SCIåˆå§‹åŒ–ã€‚CNend
  \attention \n
- \param  N/A                   CNcomment:ÎÞ¡£CNend
- \retval 0 Success             CNcomment:³É¹¦¡£CNend
+ \param  N/A                   CNcomment:æ— ã€‚CNend
+ \retval 0 Success             CNcomment:æˆåŠŸã€‚CNend
 
  \see \n
 N/A
@@ -118,10 +118,10 @@ N/A
 HI_S32 HI_UNF_SCI_Init(HI_VOID);
 
 /**
- \brief Deinitializes the SCI. CNcomment:SCIÈ¥³õÊ¼»¯¡£CNend
+ \brief Deinitializes the SCI. CNcomment:SCIåŽ»åˆå§‹åŒ–ã€‚CNend
  \attention \n
- \param  N/A                   CNcomment:ÎÞ¡£CNend
- \retval 0 Success             CNcomment:0 ³É¹¦¡£CNend
+ \param  N/A                   CNcomment:æ— ã€‚CNend
+ \retval 0 Success             CNcomment:0 æˆåŠŸã€‚CNend
 
  \see \n
 N/A
@@ -130,7 +130,7 @@ HI_S32 HI_UNF_SCI_DeInit(HI_VOID);
 
 /**
  \brief Starts an SCI device to initialize it based on the input port and protocol. If there is an SCI card, the card is also initialized.\n
-CNcomment:´ò¿ªSCI£¨Smart Card Interface£©Éè±¸£¬Õë¶ÔÊäÈëµÄ¶Ë¿ÚºÍÐ­Òé£¬½øÐÐSCI½Ó¿ÚÉè±¸µÄ³õÊ¼»¯£»Èç¹û¿¨´æÔÚ£¬ÔòÍ¬Ê±¶Ô¿¨½øÐÐ³õÊ¼»¯¡£CNend
+CNcomment:æ‰“å¼€SCIï¼ˆSmart Card Interfaceï¼‰è®¾å¤‡ï¼Œé’ˆå¯¹è¾“å…¥çš„ç«¯å£å’Œåè®®ï¼Œè¿›è¡ŒSCIæŽ¥å£è®¾å¤‡çš„åˆå§‹åŒ–ï¼›å¦‚æžœå¡å­˜åœ¨ï¼Œåˆ™åŒæ—¶å¯¹å¡è¿›è¡Œåˆå§‹åŒ–ã€‚CNend
 \attention \n
 After an SCI device is started, it is initialized based on the default configuration.\n
 If you modify the configuration, you need to call HI_UNF_SCI_ResetCard for the modifications to take effect.\n
@@ -142,22 +142,22 @@ the SCI card based on the close output frequency. The SCI clock is calculated as
 Fsci_clk is the SCI clock required by peripherals, and clkicc is the required clock divider of registers. clkicc is calculated as follows: Clkicc = Frefclk/(2 x Fsci_clk) - 1. \n
 The clkicc may be a floating point value, but only the integral part is used. Therefore, the configured frequency is different from the actual frequency.\n
 
-CNcomment: ´ò¿ªºóSCIÉè±¸²ÉÓÃÄ¬ÈÏÅäÖÃ¶ÔÉè±¸½øÐÐ³õÊ¼»¯¡£\n 
-Ö®ºóÈç¹û¸ü¸ÄÁËÅäÖÃ£¬ÐèÒªµ÷ÓÃHI_UNF_SCI_ResetCardÀ´Ê¹ÅäÖÃÉúÐ§¡£\n 
-Ö®ºóÈç¹û¶Ô¿¨½øÐÐ°Î²å£¬ÐèÒªµ÷ÓÃHI_UNF_SCI_ResetCardÀ´½øÐÐ¸´Î»¡£\n 
-´ò¿ªÉè±¸µÄÊ±ºòÐèÒªÉèÖÃÆµÂÊ²ÎÊý£¬¶øÐ¾Æ¬Êµ¼Ê¸øSCI µÄÊ±ÖÓÊÇÓÉÍâ²¿´«ÈëµÄ \n
-Ê±ÖÓÆµÂÊ²ÎÊý¼ÆËãµÄ·ÖÆµÒò×Ó·ÖÆµµÃÀ´£¬ÒòÎª¼ÆËã¹«Ê½»áÉáÆú¼ÆËãµÄ·ÖÆµÒò×ÓµÄÐ¡Êý²¿·Ö£¬\n
-ËùÒÔÍ¨¹ýÏµÍ³Ê±ÖÓ·ÖÆµÖ®ºó¸ø¿¨µÄÊ±ÖÓ»á´æÔÚÔöÁ¿Îó²î£¬Êµ¼ÊÅäÖÃ¿¼ÂÇÓëÐèÇó×î½Ó½üµÄÖµÀ´ \n
-ÉèÖÃºÍÈ¨ºâ£¬¾ßÌåËã·¨ Fsci_clk = Frefclk/[(Clkicc + 1) x 2];ÆäÖÐFrefclkÊÇÏµÍ³96MÊ±ÖÓ£¬Fsci_clkÊÇÍâ²¿ÐèÒªÉèÖÃµÄ \n
-sciÊ±ÖÓ,Êµ¼ÊÒªÅäÈë¼Ä´æÆ÷·ÖÆµÒò×ÓClkicc = Frefclk/(2 x Fsci_clk) - 1;clkicc ÓÐÊ±ºò¼ÆËã³öÀ´ÊÇ¸¡µãÊý£¬µ«Ö»È¡Õû£¬\n
-ËùÒÔÉèÖÃµÄÆµÂÊÓëÊµ¼ÊÆµÂÊÓÐÆ«²î¡£CNend
+CNcomment: æ‰“å¼€åŽSCIè®¾å¤‡é‡‡ç”¨é»˜è®¤é…ç½®å¯¹è®¾å¤‡è¿›è¡Œåˆå§‹åŒ–ã€‚\n 
+ä¹‹åŽå¦‚æžœæ›´æ”¹äº†é…ç½®ï¼Œéœ€è¦è°ƒç”¨HI_UNF_SCI_ResetCardæ¥ä½¿é…ç½®ç”Ÿæ•ˆã€‚\n 
+ä¹‹åŽå¦‚æžœå¯¹å¡è¿›è¡Œæ‹”æ’ï¼Œéœ€è¦è°ƒç”¨HI_UNF_SCI_ResetCardæ¥è¿›è¡Œå¤ä½ã€‚\n 
+æ‰“å¼€è®¾å¤‡çš„æ—¶å€™éœ€è¦è®¾ç½®é¢‘çŽ‡å‚æ•°ï¼Œè€ŒèŠ¯ç‰‡å®žé™…ç»™SCI çš„æ—¶é’Ÿæ˜¯ç”±å¤–éƒ¨ä¼ å…¥çš„ \n
+æ—¶é’Ÿé¢‘çŽ‡å‚æ•°è®¡ç®—çš„åˆ†é¢‘å› å­åˆ†é¢‘å¾—æ¥ï¼Œå› ä¸ºè®¡ç®—å…¬å¼ä¼šèˆå¼ƒè®¡ç®—çš„åˆ†é¢‘å› å­çš„å°æ•°éƒ¨åˆ†ï¼Œ\n
+æ‰€ä»¥é€šè¿‡ç³»ç»Ÿæ—¶é’Ÿåˆ†é¢‘ä¹‹åŽç»™å¡çš„æ—¶é’Ÿä¼šå­˜åœ¨å¢žé‡è¯¯å·®ï¼Œå®žé™…é…ç½®è€ƒè™‘ä¸Žéœ€æ±‚æœ€æŽ¥è¿‘çš„å€¼æ¥ \n
+è®¾ç½®å’Œæƒè¡¡ï¼Œå…·ä½“ç®—æ³• Fsci_clk = Frefclk/[(Clkicc + 1) x 2];å…¶ä¸­Frefclkæ˜¯ç³»ç»Ÿ96Mæ—¶é’Ÿï¼ŒFsci_clkæ˜¯å¤–éƒ¨éœ€è¦è®¾ç½®çš„ \n
+sciæ—¶é’Ÿ,å®žé™…è¦é…å…¥å¯„å­˜å™¨åˆ†é¢‘å› å­Clkicc = Frefclk/(2 x Fsci_clk) - 1;clkicc æœ‰æ—¶å€™è®¡ç®—å‡ºæ¥æ˜¯æµ®ç‚¹æ•°ï¼Œä½†åªå–æ•´ï¼Œ\n
+æ‰€ä»¥è®¾ç½®çš„é¢‘çŽ‡ä¸Žå®žé™…é¢‘çŽ‡æœ‰åå·®ã€‚CNend
 
- \param[in] enSciPort     ID of an SCI port. The port ID can be 0 or 1.  CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[in] enSciProtocol Protocol type.                                  CNcomment:Ð­ÒéÀàÐÍ¡£CNend
- \param[in] u32Frequency    Frequency of the SCI card to be set, in kHz. For the T0 and T1 cards, the frequency ranges from 1 MHz to 5 MHz; for the T14 card, the frequency must be set to 6 MHz.  CNcomment:ÒªÉèÖÃµÄSCI¿¨ÆµÂÊ¡£¶ÔÓÚT0£¬T1¿¨£¬Ö§³ÖÆµÂÊ1MHz¡«5MHz£»¶ÔÓÚT14¿¨£¬Ö»Ö§³Ö6MHz¡£µ¥Î»Îªkhz¡£CNend
- \retval 0 Success.                                                       CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT  SCI  No SCI device is started.           CNcomment:Éè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.            CNcomment:²ÎÊý·Ç·¨¡£CNend
+ \param[in] enSciPort     ID of an SCI port. The port ID can be 0 or 1.  CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[in] enSciProtocol Protocol type.                                  CNcomment:åè®®ç±»åž‹ã€‚CNend
+ \param[in] u32Frequency    Frequency of the SCI card to be set, in kHz. For the T0 and T1 cards, the frequency ranges from 1 MHz to 5 MHz; for the T14 card, the frequency must be set to 6 MHz.  CNcomment:è¦è®¾ç½®çš„SCIå¡é¢‘çŽ‡ã€‚å¯¹äºŽT0ï¼ŒT1å¡ï¼Œæ”¯æŒé¢‘çŽ‡1MHzï½ž5MHzï¼›å¯¹äºŽT14å¡ï¼Œåªæ”¯æŒ6MHzã€‚å•ä½ä¸ºkhzã€‚CNend
+ \retval 0 Success.                                                       CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  SCI  No SCI device is started.           CNcomment:è®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.            CNcomment:å‚æ•°éžæ³•ã€‚CNend
  \see \n
 N/A
  */
@@ -165,16 +165,16 @@ HI_S32 HI_UNF_SCI_Open(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_PROTOCOL_E enSciP
 
 /**
  \brief Stops an SCI device.
-CNcomment:¹Ø±ÕSCIÉè±¸¡£CNend
+CNcomment:å…³é—­SCIè®¾å¤‡ã€‚CNend
 
  \attention \n
 This API cannot be called repeatedly.
-CNcomment:ÖØ¸´¹Ø±Õ»áÊ§°Ü¡£CNend
+CNcomment:é‡å¤å…³é—­ä¼šå¤±è´¥ã€‚CNend
 
- \param[in] enSciPort     ID of an SCI port. The port ID can be 0 or 1.  CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \retval 0 Success.                                                       CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.               CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.            CNcomment:²ÎÊý·Ç·¨¡£CNend
+ \param[in] enSciPort     ID of an SCI port. The port ID can be 0 or 1.  CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \retval 0 Success.                                                       CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.               CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.            CNcomment:å‚æ•°éžæ³•ã€‚CNend
  \see \n
 N/A
  */
@@ -182,22 +182,22 @@ HI_S32 HI_UNF_SCI_Close(HI_UNF_SCI_PORT_E enSciPort);
 
 /**
  \brief Performs a warm reset on an SCI card.
-CNcomment:¸´Î»SCI¿¨¡£CNend
+CNcomment:å¤ä½SCIå¡ã€‚CNend
 
  \attention \n
 If no SCI card is inserted, the reset fails.\n
 If you modify the configuration of an SCI device, you need to call HI_S32 HI_UNF_SCI_ResetCard for the modifications to take effect.\n
 In addition, if you remove and insert an SCI card after calling HI_UNF_SCI_Open, you also need to call HI_S32 HI_UNF_SCI_ResetCard to reset the card.
-CNcomment:Ã»ÓÐ²åÈë¿¨£¬¸´Î»»áÊ§°Ü¡£\n
-µ±¸ü¸ÄÁËSCIÉè±¸µÄÅäÖÃºó£¬ÐèÒªµ÷ÓÃ¸Ã½Ó¿ÚÊ¹ÅäÖÃÉúÐ§¡£\n
-ÔÚµ÷ÓÃ´ò¿ªSCIÉè±¸½Ó¿Úºó£¬¶Ô¿¨½øÐÐ°Î²å£¬Ò²ÐèÒªµ÷ÓÃ¸Ã½Ó¿Ú½øÐÐ¸´Î»¡£CNend
+CNcomment:æ²¡æœ‰æ’å…¥å¡ï¼Œå¤ä½ä¼šå¤±è´¥ã€‚\n
+å½“æ›´æ”¹äº†SCIè®¾å¤‡çš„é…ç½®åŽï¼Œéœ€è¦è°ƒç”¨è¯¥æŽ¥å£ä½¿é…ç½®ç”Ÿæ•ˆã€‚\n
+åœ¨è°ƒç”¨æ‰“å¼€SCIè®¾å¤‡æŽ¥å£åŽï¼Œå¯¹å¡è¿›è¡Œæ‹”æ’ï¼Œä¹Ÿéœ€è¦è°ƒç”¨è¯¥æŽ¥å£è¿›è¡Œå¤ä½ã€‚CNend
 
- \param[in] enSciPort   ID of an SCI port. The port ID can be 0 or 1                                             CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[in] bWarmResetValid   Reset mode.  HI_TRUE: warm reset; HI_FALSE: cold reset (recommended)    			 CNcomment:¸´Î»·½Ê½¡£HI_TRUE: ÈÈ¸´Î»; HI_FALSE: Àä¸´Î»£¨ÍÆ¼öÓÃÕâÖÖ·½Ê½£©¡£CNend
- \retval 0 Success.                                                                                              CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
+ \param[in] enSciPort   ID of an SCI port. The port ID can be 0 or 1                                             CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[in] bWarmResetValid   Reset mode.  HI_TRUE: warm reset; HI_FALSE: cold reset (recommended)    			 CNcomment:å¤ä½æ–¹å¼ã€‚HI_TRUE: çƒ­å¤ä½; HI_FALSE: å†·å¤ä½ï¼ˆæŽ¨èç”¨è¿™ç§æ–¹å¼ï¼‰ã€‚CNend
+ \retval 0 Success.                                                                                              CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
  \see \n
 N/A
  */
@@ -205,17 +205,17 @@ HI_S32 HI_UNF_SCI_ResetCard(HI_UNF_SCI_PORT_E enSciPort, HI_BOOL bWarmResetValid
 
 /**
  \brief Deactivates an SCI card.
-CNcomment:È¥¼¤»îSCI¿¨¡£CNend
+CNcomment:åŽ»æ¿€æ´»SCIå¡ã€‚CNend
 
  \attention \n
 After an SCI card is deactivated, the card cannot be read or written until it is reset.
-CNcomment:È¥¼¤»î¿¨ºó£¬ÎÞ·¨¶ÁÐ´Êý¾Ý¡£Ö»ÓÐÖØÐÂ¸´Î»¿¨ºó£¬²ÅÄÜ¼ÌÐø¶ÁÐ´¡£CNend
+CNcomment:åŽ»æ¿€æ´»å¡åŽï¼Œæ— æ³•è¯»å†™æ•°æ®ã€‚åªæœ‰é‡æ–°å¤ä½å¡åŽï¼Œæ‰èƒ½ç»§ç»­è¯»å†™ã€‚CNend
 
- \param[in] enSciPort ID of an SCI port. The port ID can be 0 or 1.         CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \retval 0   Success.                                                        CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT No SCI device is started.                    CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.               CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                 CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
+ \param[in] enSciPort ID of an SCI port. The port ID can be 0 or 1.         CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \retval 0   Success.                                                        CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT No SCI device is started.                    CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.               CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                 CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
  \see \n
 N/A
  */
@@ -223,20 +223,20 @@ HI_S32 HI_UNF_SCI_DeactiveCard(HI_UNF_SCI_PORT_E enSciPort);
 
 /**
  \brief Obtains the ATR data of an SCI card.
-CNcomment:»ñÈ¡SCI¿¨ATRÊý¾Ý¡£CNend
+CNcomment:èŽ·å–SCIå¡ATRæ•°æ®ã€‚CNend
 
  \attention \n
 N/A
- \param[in]  enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[out]  pu8AtrBuf   Address for storing the obtained ATR data.                                               CNcomment:»ñÈ¡µÄATRÊý¾ÝµÄ´æ´¢µØÖ·¡£CNend
- \param[in]  u32AtrBufSize  Length of the ATR data read from the buffer.                                          CNcomment:ATR Êý¾Ý¶ÁÈ¡ buffer ³¤¶È¡£CNend
- \param[out]  pu8AtrRcvCount Actual number of ATR data segments.                                                   CNcomment:Êµ¼Ê»ñÈ¡µÄATRÊý¾Ý¸öÊý¡£CNend
- \retval 0   Success.                                                                                             CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                                                        CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_NULL_PTR The pointer is invalid.                                                      	  CNcomment: ·Ç·¨Ö¸Õë¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                     CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_NO_ATR  There is no ATR data.                                                               CNcomment:ÎÞATRÊý¾Ý¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			  				  CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
+ \param[in]  enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[out]  pu8AtrBuf   Address for storing the obtained ATR data.                                               CNcomment:èŽ·å–çš„ATRæ•°æ®çš„å­˜å‚¨åœ°å€ã€‚CNend
+ \param[in]  u32AtrBufSize  Length of the ATR data read from the buffer.                                          CNcomment:ATR æ•°æ®è¯»å– buffer é•¿åº¦ã€‚CNend
+ \param[out]  pu8AtrRcvCount Actual number of ATR data segments.                                                   CNcomment:å®žé™…èŽ·å–çš„ATRæ•°æ®ä¸ªæ•°ã€‚CNend
+ \retval 0   Success.                                                                                             CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                                                        CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_NULL_PTR The pointer is invalid.                                                      	  CNcomment: éžæ³•æŒ‡é’ˆã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                     CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_NO_ATR  There is no ATR data.                                                               CNcomment:æ— ATRæ•°æ®ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			  				  CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
  \see \n
 N/A
  */
@@ -244,19 +244,19 @@ HI_S32 HI_UNF_SCI_GetATR(HI_UNF_SCI_PORT_E enSciPort, HI_U8 *pu8AtrBuf, HI_U32 u
 
 /**
  \brief Obtains the status of an SCI card.
-CNcomment:»ñÈ¡SCI¿¨×´Ì¬¡£CNend
+CNcomment:èŽ·å–SCIå¡çŠ¶æ€ã€‚CNend
 
  \attention \n
 This API is a non-block API. You can transfer data to an SCI card by calling HI_UNF_SCI_Send or HI_UNF_SCI_Receive only when the card status is HI_UNF_SCI_STATUS_READY.\n
-CNcomment:´Ë½Ó¿ÚÊÇÎÞ×èÈûº¯Êý£¬ÔÚ¿¨µÄ×´Ì¬ÎªHI_UNF_SCI_STATUS_READYÊ±£¬²Å¿Éµ÷ÓÃHI_UNF_SCI_Send»òHI_UNF_SCI_Receive½Ó¿ÚÓë¿¨½øÐÐÊý¾Ý½»»¥¡£CNend
+CNcomment:æ­¤æŽ¥å£æ˜¯æ— é˜»å¡žå‡½æ•°ï¼Œåœ¨å¡çš„çŠ¶æ€ä¸ºHI_UNF_SCI_STATUS_READYæ—¶ï¼Œæ‰å¯è°ƒç”¨HI_UNF_SCI_Sendæˆ–HI_UNF_SCI_ReceiveæŽ¥å£ä¸Žå¡è¿›è¡Œæ•°æ®äº¤äº’ã€‚CNend
 
- \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[out] penSCIStatus  Status of an SCI card.                                                                CNcomment: SCI¿¨×´Ì¬¡£CNend
- \retval 0 Success.                                                                                              CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_NULL_PTR The pointer is invalid.                                                      	 CNcomment:·Ç·¨Ö¸Õë¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
+ \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[out] penSCIStatus  Status of an SCI card.                                                                CNcomment: SCIå¡çŠ¶æ€ã€‚CNend
+ \retval 0 Success.                                                                                              CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_NULL_PTR The pointer is invalid.                                                      	 CNcomment:éžæ³•æŒ‡é’ˆã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
  \see \n
 N/A
  */
@@ -264,27 +264,27 @@ HI_S32 HI_UNF_SCI_GetCardStatus(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_STATUS_E
 
 /**
  \brief Transmits data to an SCI card.
-CNcomment:ÏòSCI¿¨·¢ËÍÊý¾Ý¡£CNend
+CNcomment:å‘SCIå¡å‘é€æ•°æ®ã€‚CNend
 
  \attention \n
 Data must be transmitted based on application protocols.\n
 Data cannot be transmitted consecutively.\n
 In addition, data is transmitted and received in block mode. Therefore, when a large number of data is being transmitted, the transmission may fail if the timeout is too small.\n
-CNcomment:·¢ËÍÊý¾ÝÐèÒª°´ÕÕÓ¦ÓÃÐ­ÒéÀ´·¢ËÍ \n
-²»ÄÜÁ¬ÐøÁ½´Î·¢ËÍ¶øÖÐ¼ä²»½ÓÊÕÊý¾Ý \n
-·¢ËÍ¶ÁÈ¡¶¼ÊÇ×èÈûµÄ£¬Òò´Ë·¢ËÍ´óÁ¿µÄÊý¾ÝÊ±£¬ÊÜµ½³¬Ê±Ê±¼äµÄÏÞÖÆ£¬Èç¹û³¬Ê±Öµ±È½Ï¶Ì£¬ÓÐ¿ÉÄÜ·¢ËÍÊ§°Ü¡£CNend
+CNcomment:å‘é€æ•°æ®éœ€è¦æŒ‰ç…§åº”ç”¨åè®®æ¥å‘é€ \n
+ä¸èƒ½è¿žç»­ä¸¤æ¬¡å‘é€è€Œä¸­é—´ä¸æŽ¥æ”¶æ•°æ® \n
+å‘é€è¯»å–éƒ½æ˜¯é˜»å¡žçš„ï¼Œå› æ­¤å‘é€å¤§é‡çš„æ•°æ®æ—¶ï¼Œå—åˆ°è¶…æ—¶æ—¶é—´çš„é™åˆ¶ï¼Œå¦‚æžœè¶…æ—¶å€¼æ¯”è¾ƒçŸ­ï¼Œæœ‰å¯èƒ½å‘é€å¤±è´¥ã€‚CNend
 
- \param[in] enSciPort   ID of an SCI port. The port ID can be 0 or 1.                                            CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[in]  pSciSendBuf Address for storing the data to be transmitted.                                          CNcomment:·¢ËÍÊý¾ÝµÄ´æ´¢µØÖ·¡£CNend
- \param[in] u32SendLen  Number of data segments (in byte) to be transmitted.                                      CNcomment:·¢ËÍÊý¾ÝµÄ¸öÊý,µ¥Î»Îª BYTE¡£CNend
- \param[in]  pu32ActLen Number of transmitted data segments (in byte).                                            CNcomment:Êµ¼Ê·¢ËÍÊý¾Ý¸öÊý,µ¥Î»Îª BYTE¡£CNend
- \param[in] u32TimeoutMs Wait timeout (in ms). 0: not blocked; 0xFFFFFFFF: infinite block.                        CNcomment:µÈ´ý³¬Ê±Öµ, µ¥Î»ÊÇºÁÃë, 0 - ²»×èÈû, 0xFFFFFFFF-ÓÀ¾Ã×èÈû¡£CNend
- \retval 0 Success.                                                                                               CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT  SCI  No SCI device is started.                                                   CNcomment:Éè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_NULL_PTR  The pointer is invalid.                                                     	 CNcomment:·Ç·¨Ö¸Õë¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA The parameter is invalid.                                                     CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
- \retval ::HI_ERR_SCI_SEND_ERR  The transmission operation fails.                                             	CNcomment: ·¢ËÍ²Ù×÷Ê§°Ü¡£CNend
+ \param[in] enSciPort   ID of an SCI port. The port ID can be 0 or 1.                                            CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[in]  pSciSendBuf Address for storing the data to be transmitted.                                          CNcomment:å‘é€æ•°æ®çš„å­˜å‚¨åœ°å€ã€‚CNend
+ \param[in] u32SendLen  Number of data segments (in byte) to be transmitted.                                      CNcomment:å‘é€æ•°æ®çš„ä¸ªæ•°,å•ä½ä¸º BYTEã€‚CNend
+ \param[in]  pu32ActLen Number of transmitted data segments (in byte).                                            CNcomment:å®žé™…å‘é€æ•°æ®ä¸ªæ•°,å•ä½ä¸º BYTEã€‚CNend
+ \param[in] u32TimeoutMs Wait timeout (in ms). 0: not blocked; 0xFFFFFFFF: infinite block.                        CNcomment:ç­‰å¾…è¶…æ—¶å€¼, å•ä½æ˜¯æ¯«ç§’, 0 - ä¸é˜»å¡ž, 0xFFFFFFFF-æ°¸ä¹…é˜»å¡žã€‚CNend
+ \retval 0 Success.                                                                                               CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  SCI  No SCI device is started.                                                   CNcomment:è®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_NULL_PTR  The pointer is invalid.                                                     	 CNcomment:éžæ³•æŒ‡é’ˆã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA The parameter is invalid.                                                     CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
+ \retval ::HI_ERR_SCI_SEND_ERR  The transmission operation fails.                                             	CNcomment: å‘é€æ“ä½œå¤±è´¥ã€‚CNend
  \see \n
 N/A
  */
@@ -293,23 +293,23 @@ HI_S32 HI_UNF_SCI_Send(HI_UNF_SCI_PORT_E enSciPort, HI_U8 *pSciSendBuf, HI_U32 u
 
 /**
  \brief Receives data from an SCI card.
-CNcomment:´ÓSCI¿¨½ÓÊÕÊý¾Ý¡£CNend
+CNcomment:ä»ŽSCIå¡æŽ¥æ”¶æ•°æ®ã€‚CNend
 
  \attention \n
 You must set the data length obtained by each upper-layer application based on the protocol. If the length of the obtained data is greater than that of the returned data, this API is returned after timeout occurs.\n
-CNcomment:ÉÏ²ãÓ¦ÓÃ³ÌÐò±ØÐë¸ù¾ÝÐ­ÒéÀ´ÅäÖÃËù»ñÈ¡µÄ³¤¶È£¬Èç¹ûÏ£Íû»ñÈ¡µÄ³¤¶È³¬³öÊµ¼ÊÄÜ¹»·µ»ØµÄ³¤¶È£¬ÔòÖ»ÄÜµÈµ½³¬Ê±µ½ÆÚ²ÅÄÜ·µ»Ø¡£CNend
+CNcomment:ä¸Šå±‚åº”ç”¨ç¨‹åºå¿…é¡»æ ¹æ®åè®®æ¥é…ç½®æ‰€èŽ·å–çš„é•¿åº¦ï¼Œå¦‚æžœå¸Œæœ›èŽ·å–çš„é•¿åº¦è¶…å‡ºå®žé™…èƒ½å¤Ÿè¿”å›žçš„é•¿åº¦ï¼Œåˆ™åªèƒ½ç­‰åˆ°è¶…æ—¶åˆ°æœŸæ‰èƒ½è¿”å›žã€‚CNend
 
- \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[out]  pSciReceiveBuf   Address for storing the received data.                                              CNcomment:½ÓÊÕÊý¾ÝµÄ´æ´¢µØÖ·¡£CNend
- \param[in] u32ReceiveLen  Number of data segments (in byte) to be received.                                      CNcomment:ÆÚÍû½ÓÊÕÊý¾ÝµÄ¸öÊý,µ¥Î»Îª BYTE¡£CNend
- \param[out]  pu32ActLen   Number of received data segments (in byte).                                             CNcomment:Êµ¼Ê½ÓÊÕÊý¾Ý¸öÊý,µ¥Î»Îª BYTE¡£CNend
- \param[in] u32TimeOutMs  Wait timeout (in ms). 0: not blocked; 0xFFFFFFFF: infinite block.                       CNcomment:µÈ´ý³¬Ê±Öµ, µ¥Î»ÊÇºÁÃë, 0 - ²»×èÈû, 0xFFFFFFFF-ÓÀ¾Ã×èÈû¡£CNend
- \retval 0 Success.                                                                                               CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                                                       CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_NULL_PTR  The pointer is invalid.                                                     	 CNcomment: ·Ç·¨Ö¸Õë¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
- \retval ::HI_ERR_SCI_RECEIVE_ERR  The reception operation fails.                                             	CNcomment:½ÓÊÕ²Ù×÷Ê§°Ü¡£CNend
+ \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[out]  pSciReceiveBuf   Address for storing the received data.                                              CNcomment:æŽ¥æ”¶æ•°æ®çš„å­˜å‚¨åœ°å€ã€‚CNend
+ \param[in] u32ReceiveLen  Number of data segments (in byte) to be received.                                      CNcomment:æœŸæœ›æŽ¥æ”¶æ•°æ®çš„ä¸ªæ•°,å•ä½ä¸º BYTEã€‚CNend
+ \param[out]  pu32ActLen   Number of received data segments (in byte).                                             CNcomment:å®žé™…æŽ¥æ”¶æ•°æ®ä¸ªæ•°,å•ä½ä¸º BYTEã€‚CNend
+ \param[in] u32TimeOutMs  Wait timeout (in ms). 0: not blocked; 0xFFFFFFFF: infinite block.                       CNcomment:ç­‰å¾…è¶…æ—¶å€¼, å•ä½æ˜¯æ¯«ç§’, 0 - ä¸é˜»å¡ž, 0xFFFFFFFF-æ°¸ä¹…é˜»å¡žã€‚CNend
+ \retval 0 Success.                                                                                               CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                                                       CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_NULL_PTR  The pointer is invalid.                                                     	 CNcomment: éžæ³•æŒ‡é’ˆã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
+ \retval ::HI_ERR_SCI_RECEIVE_ERR  The reception operation fails.                                             	CNcomment:æŽ¥æ”¶æ“ä½œå¤±è´¥ã€‚CNend
  \see \n
 N/A
  */
@@ -318,18 +318,18 @@ HI_S32 HI_UNF_SCI_Receive(HI_UNF_SCI_PORT_E enSciPort, HI_U8 *pSciReceiveBuf, HI
 
 /**
  \brief Sets the active level of the VCCEN signal.
-CNcomment:ÅäÖÃVCCENÐÅºÅÏßµÄÓÐÐ§µçÆ½¡£CNend
+CNcomment:é…ç½®VCCENä¿¡å·çº¿çš„æœ‰æ•ˆç”µå¹³ã€‚CNend
  \attention \n
 The active level needs to be set based on the circuits of hardware, and the low level is active by default.\n
 After changing the active level, you need to call HI_UNF_SCI_ResetCard for the modification take effect.\n
-CNcomment:ÐèÒª¸ù¾ÝÓ²¼þµçÂ·½øÐÐÅäÖÃ£¬Ä¬ÈÏÎªµÍµçÆ½ÓÐÐ§£¬¸ü¸Ä´ËÏîÅäÖÃºóÐèÒªµ÷ÓÃHI_UNF_SCI_ResetCard²ÅÄÜÊ¹ÐÂµÄÅäÖÃÓÐÐ§¡£CNend
+CNcomment:éœ€è¦æ ¹æ®ç¡¬ä»¶ç”µè·¯è¿›è¡Œé…ç½®ï¼Œé»˜è®¤ä¸ºä½Žç”µå¹³æœ‰æ•ˆï¼Œæ›´æ”¹æ­¤é¡¹é…ç½®åŽéœ€è¦è°ƒç”¨HI_UNF_SCI_ResetCardæ‰èƒ½ä½¿æ–°çš„é…ç½®æœ‰æ•ˆã€‚CNend
 
- \param[in] enSciPort ID of an SCI port. The port ID can be 0 or 1.                                              CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[in] enSciVcc  Active level of a signal. HI_FALSE: active low; HI_TRUE: active high  Active level of a signal. HI_FALSE: active low; HI_TRUE: active high.  CNcomment:ÐÅºÅÏßµÄÓÐÐ§µçÆ½¡£HI_FALSE£ºµÍµçÆ½ÓÐÐ§£¬HI_TRUE£º¸ßµçÆ½ÓÐÐ§¡£CNend
- \retval 0   Success.                                                                                             CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                                                       CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
+ \param[in] enSciPort ID of an SCI port. The port ID can be 0 or 1.                                              CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[in] enSciVcc  Active level of a signal. HI_FALSE: active low; HI_TRUE: active high  Active level of a signal. HI_FALSE: active low; HI_TRUE: active high.  CNcomment:ä¿¡å·çº¿çš„æœ‰æ•ˆç”µå¹³ã€‚HI_FALSEï¼šä½Žç”µå¹³æœ‰æ•ˆï¼ŒHI_TRUEï¼šé«˜ç”µå¹³æœ‰æ•ˆã€‚CNend
+ \retval 0   Success.                                                                                             CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                                                       CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
  \see \n
 N/A
  */
@@ -337,19 +337,19 @@ HI_S32 HI_UNF_SCI_ConfigVccEn(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_LEVEL_E en
 
 /**
  \brief Sets the active level of the DETECT signal.
-CNcomment:ÅäÖÃDETECTÐÅºÅÏßµÄÓÐÐ§µçÆ½¡£CNend
+CNcomment:é…ç½®DETECTä¿¡å·çº¿çš„æœ‰æ•ˆç”µå¹³ã€‚CNend
 
  \attention \n
 The active level needs to be set based on the circuits of hardware, and the high level is active by default.\n
 After changing the active level, you need to call HI_UNF_SCI_ResetCard for the modification take effect.\n
-CNcomment:ÐèÒª¸ù¾ÝÓ²¼þµçÂ·½øÐÐÉèÖÃ£¬Ä¬ÈÏÎª¸ßµçÆ½ÓÐÐ§£¬¸ü¸Ä´ËÏîÅäÖÃºóÐèÒªµ÷ÓÃHI_UNF_SCI_ResetCard²ÅÄÜÊ¹ÐÂµÄÅäÖÃÓÐÐ§¡£CNend
+CNcomment:éœ€è¦æ ¹æ®ç¡¬ä»¶ç”µè·¯è¿›è¡Œè®¾ç½®ï¼Œé»˜è®¤ä¸ºé«˜ç”µå¹³æœ‰æ•ˆï¼Œæ›´æ”¹æ­¤é¡¹é…ç½®åŽéœ€è¦è°ƒç”¨HI_UNF_SCI_ResetCardæ‰èƒ½ä½¿æ–°çš„é…ç½®æœ‰æ•ˆã€‚CNend
 
- \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[in] enSciDetect Active level of a signal. HI_FALSE: active low; HI_TRUE: active high.                     CNcomment:ÐÅºÅÏßµÄÓÐÐ§µçÆ½¡£HI_FALSE£ºµÍµçÆ½ÓÐÐ§£¬HI_TRUE£º¸ßµçÆ½ÓÐÐ§¡£CNend
- \retval 0  Success.                                                                                              CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
+ \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[in] enSciDetect Active level of a signal. HI_FALSE: active low; HI_TRUE: active high.                     CNcomment:ä¿¡å·çº¿çš„æœ‰æ•ˆç”µå¹³ã€‚HI_FALSEï¼šä½Žç”µå¹³æœ‰æ•ˆï¼ŒHI_TRUEï¼šé«˜ç”µå¹³æœ‰æ•ˆã€‚CNend
+ \retval 0  Success.                                                                                              CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
  \see \n
 N/A
  */
@@ -357,18 +357,18 @@ HI_S32 HI_UNF_SCI_ConfigDetect(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_LEVEL_E e
 
 /**
  \brief Sets the mode of a clock signal.
-CNcomment:ÉèÖÃÊ±ÖÓÏßµÄÄ£Ê½¡£CNend
+CNcomment:è®¾ç½®æ—¶é’Ÿçº¿çš„æ¨¡å¼ã€‚CNend
  \attention \n
 The mode needs to be set based on the circuits of hardware, and the OD mode is selected by default.\n
 After changing the mode, you need to call HI_UNF_SCI_ResetCard for the modification take effect.\n
-CNcomment:ÐèÒª¸ù¾ÝÓ²¼þµçÂ·½øÐÐÉèÖÃ£¬Ä¬ÈÏÎªODÄ£Ê½£¬¸ü¸Ä´ËÏîÅäÖÃºóÐèÒªµ÷ÓÃHI_UNF_SCI_ResetCard²ÅÄÜÊ¹ÐÂµÄÅäÖÃÓÐÐ§¡£CNend
+CNcomment:éœ€è¦æ ¹æ®ç¡¬ä»¶ç”µè·¯è¿›è¡Œè®¾ç½®ï¼Œé»˜è®¤ä¸ºODæ¨¡å¼ï¼Œæ›´æ”¹æ­¤é¡¹é…ç½®åŽéœ€è¦è°ƒç”¨HI_UNF_SCI_ResetCardæ‰èƒ½ä½¿æ–°çš„é…ç½®æœ‰æ•ˆã€‚CNend
 
- \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[in] enClkMode  Mode of a clock signal.                                                                    CNcomment:Ê±ÖÓÏßµÄÄ£Ê½¡£CNend
- \retval 0 Success.                                                                                               CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                            			 CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
+ \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[in] enClkMode  Mode of a clock signal.                                                                    CNcomment:æ—¶é’Ÿçº¿çš„æ¨¡å¼ã€‚CNend
+ \retval 0 Success.                                                                                               CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                            			 CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
  \see \n
 N/A
  */
@@ -376,19 +376,19 @@ HI_S32 HI_UNF_SCI_ConfigClkMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E e
 
 /**
  \brief Sets the mode of a clock signal.
-CNcomment:ÉèÖÃRESETÏßµÄÄ£Ê½¡£CNend
+CNcomment:è®¾ç½®RESETçº¿çš„æ¨¡å¼ã€‚CNend
  \attention \n
 The mode needs to be set based on the circuits of hardware, and the OD mode is selected by default.\n
 After changing the mode, you need to call HI_UNF_SCI_ResetCard for the modification take effect.\n
-CNcomment:ÐèÒª¸ù¾ÝÓ²¼þµçÂ·½øÐÐÉèÖÃ£¬Ä¬ÈÏÎªODÄ£Ê½£¬¸ü¸Ä´ËÏîÅäÖÃºóÐèÒªµ÷ÓÃHI_UNF_SCI_ResetCard²ÅÄÜÊ¹ÐÂµÄÅäÖÃÓÐÐ§¡£CNend
+CNcomment:éœ€è¦æ ¹æ®ç¡¬ä»¶ç”µè·¯è¿›è¡Œè®¾ç½®ï¼Œé»˜è®¤ä¸ºODæ¨¡å¼ï¼Œæ›´æ”¹æ­¤é¡¹é…ç½®åŽéœ€è¦è°ƒç”¨HI_UNF_SCI_ResetCardæ‰èƒ½ä½¿æ–°çš„é…ç½®æœ‰æ•ˆã€‚CNend
 
- \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[in] enClkMode  Mode of a reset signal.                                                                    CNcomment:Ê±ÖÓÏßµÄÄ£Ê½¡£CNend
- \retval 0 Success.                                                                                               CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                            			                 CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
- \retval ::HI_ERR_SCI_NOTSUPPORT	Current chipset not support config RESET output type.                        CNcomment:µ±Ç°Ð¾Æ¬²»Ö§³ÖÅäÖÃRESETÊä³öÀàÐÍ¡£CNend
+ \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[in] enClkMode  Mode of a reset signal.                                                                    CNcomment:æ—¶é’Ÿçº¿çš„æ¨¡å¼ã€‚CNend
+ \retval 0 Success.                                                                                               CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                            			                 CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
+ \retval ::HI_ERR_SCI_NOTSUPPORT	Current chipset not support config RESET output type.                        CNcomment:å½“å‰èŠ¯ç‰‡ä¸æ”¯æŒé…ç½®RESETè¾“å‡ºç±»åž‹ã€‚CNend
  \see \n
 N/A
  */
@@ -396,19 +396,19 @@ HI_S32 HI_UNF_SCI_ConfigResetMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E
 
 /**
  \brief Sets the mode of a clock signal.
-CNcomment:ÉèÖÃPOWERENÏßµÄÄ£Ê½¡£CNend
+CNcomment:è®¾ç½®POWERENçº¿çš„æ¨¡å¼ã€‚CNend
  \attention \n
 The mode needs to be set based on the circuits of hardware, and the OD mode is selected by default.\n
 After changing the mode, you need to call HI_UNF_SCI_ResetCard for the modification take effect.\n
-CNcomment:ÐèÒª¸ù¾ÝÓ²¼þµçÂ·½øÐÐÉèÖÃ£¬Ä¬ÈÏÎªODÄ£Ê½£¬¸ü¸Ä´ËÏîÅäÖÃºóÐèÒªµ÷ÓÃHI_UNF_SCI_ResetCard²ÅÄÜÊ¹ÐÂµÄÅäÖÃÓÐÐ§¡£CNend
+CNcomment:éœ€è¦æ ¹æ®ç¡¬ä»¶ç”µè·¯è¿›è¡Œè®¾ç½®ï¼Œé»˜è®¤ä¸ºODæ¨¡å¼ï¼Œæ›´æ”¹æ­¤é¡¹é…ç½®åŽéœ€è¦è°ƒç”¨HI_UNF_SCI_ResetCardæ‰èƒ½ä½¿æ–°çš„é…ç½®æœ‰æ•ˆã€‚CNend
 
- \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[in] enClkMode  Mode of a poweren signal.                                                                    CNcomment:Ê±ÖÓÏßµÄÄ£Ê½¡£CNend
- \retval 0 Success.                                                                                               CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                            			                 CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
- \retval ::HI_ERR_SCI_NOTSUPPORT	Current chipset not support config POWEREN output type.                      CNcomment:µ±Ç°Ð¾Æ¬²»Ö§³ÖÅäÖÃPOWERENÊä³öÀàÐÍ¡£CNend
+ \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[in] enClkMode  Mode of a poweren signal.                                                                    CNcomment:æ—¶é’Ÿçº¿çš„æ¨¡å¼ã€‚CNend
+ \retval 0 Success.                                                                                               CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                            			                 CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
+ \retval ::HI_ERR_SCI_NOTSUPPORT	Current chipset not support config POWEREN output type.                      CNcomment:å½“å‰èŠ¯ç‰‡ä¸æ”¯æŒé…ç½®POWERENè¾“å‡ºç±»åž‹ã€‚CNend
 
  \see \n
 N/A
@@ -418,7 +418,7 @@ HI_S32 HI_UNF_SCI_ConfigVccEnMode(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_MODE_E
 
 /**
  \brief Changes the card slot.
-CNcomment:ÇÐ»»¿¨²Û¡£CNend
+CNcomment:åˆ‡æ¢å¡æ§½ã€‚CNend
 
  \attention \n
 When you call HI_UNF_SCI_Open, the primary card is used by default, that is, port 0 is used.\n
@@ -426,20 +426,20 @@ After you switch to a new SCI device, all the preceding SCI APIs are called to o
 In addition, after a new SCI device is switched, the device is initialized based on the default configuration.\n
 If any modifications are made, you need to call HI_UNF_SCI_ResetCard for the modifications to take effect.\n
 If the SCI port to be switched to is the same as the current active port, an error code is returned.\n
-CNcomment:µ÷ÓÃHI_UNF_SCI_OpenÊ±£¬Ä¬ÈÏ´ò¿ªµÄÎªÖ÷¿¨£¬¼´¶Ë¿Ú0¡£\n
-ÇÐ»»µ½ÐÂµÄSCIÉè±¸ºó£¬ÉÏÊöËùÓÐSCI½Ó¿Ú¼´¶ÔÐÂµÄSCIÉè±¸½øÐÐ²Ù×÷¡£\n
-ÇÐ»»µ½ÐÂµÄSCIÉè±¸²ÉÓÃÄ¬ÈÏÅäÖÃ¶ÔÉè±¸½øÐÐ³õÊ¼»¯¡£\n
-Ö®ºóÈç¹û¸ü¸ÄÁËÅäÖÃ£¬ÐèÒªµ÷ÓÃHI_UNF_SCI_ResetCardÀ´Ê¹ÅäÖÃÉúÐ§¡£\n
-Ï£ÍûÇÐ»»µ½µÄSCI¶Ë¿ÚÓëµ±Ç°ÓÐÐ§¶Ë¿ÚÏàÍ¬Ê±£¬»á·µ»ØÊ§°Ü¡£CNend
+CNcomment:è°ƒç”¨HI_UNF_SCI_Openæ—¶ï¼Œé»˜è®¤æ‰“å¼€çš„ä¸ºä¸»å¡ï¼Œå³ç«¯å£0ã€‚\n
+åˆ‡æ¢åˆ°æ–°çš„SCIè®¾å¤‡åŽï¼Œä¸Šè¿°æ‰€æœ‰SCIæŽ¥å£å³å¯¹æ–°çš„SCIè®¾å¤‡è¿›è¡Œæ“ä½œã€‚\n
+åˆ‡æ¢åˆ°æ–°çš„SCIè®¾å¤‡é‡‡ç”¨é»˜è®¤é…ç½®å¯¹è®¾å¤‡è¿›è¡Œåˆå§‹åŒ–ã€‚\n
+ä¹‹åŽå¦‚æžœæ›´æ”¹äº†é…ç½®ï¼Œéœ€è¦è°ƒç”¨HI_UNF_SCI_ResetCardæ¥ä½¿é…ç½®ç”Ÿæ•ˆã€‚\n
+å¸Œæœ›åˆ‡æ¢åˆ°çš„SCIç«¯å£ä¸Žå½“å‰æœ‰æ•ˆç«¯å£ç›¸åŒæ—¶ï¼Œä¼šè¿”å›žå¤±è´¥ã€‚CNend
 
- \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param[in] enSciProtocol  Protocol type.                                                                         CNcomment:Ð­ÒéÀàÐÍ¡£CNend
- \param[in] u32Frequency Frequency of the SCI card to be set, in kHz. For the T0 and T1 cards, the frequency ranges from 1 MHz to 5 MHz; for the T14 card, the frequency must be set to 6 MHz. CNcomment:ÒªÉèÖÃµÄSCI¿¨ÆµÂÊ¡£¶ÔÓÚT0£¬T1¿¨£¬Ö§³ÖÆµÂÊ1MHz~5MHz£»¶ÔÓÚT14¿¨£¬Ö»Ö§³Ö6MHz¡£µ¥Î»ÎªkHz¡£CNend
- \retval 0  Success.                                                                                              CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_NULL_PTR The pointer is invalid.                                                      	 CNcomment:·Ç·¨Ö¸Õë¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
+ \param[in] enSciPort  ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param[in] enSciProtocol  Protocol type.                                                                         CNcomment:åè®®ç±»åž‹ã€‚CNend
+ \param[in] u32Frequency Frequency of the SCI card to be set, in kHz. For the T0 and T1 cards, the frequency ranges from 1 MHz to 5 MHz; for the T14 card, the frequency must be set to 6 MHz. CNcomment:è¦è®¾ç½®çš„SCIå¡é¢‘çŽ‡ã€‚å¯¹äºŽT0ï¼ŒT1å¡ï¼Œæ”¯æŒé¢‘çŽ‡1MHz~5MHzï¼›å¯¹äºŽT14å¡ï¼Œåªæ”¯æŒ6MHzã€‚å•ä½ä¸ºkHzã€‚CNend
+ \retval 0  Success.                                                                                              CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                        CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_NULL_PTR The pointer is invalid.                                                      	 CNcomment:éžæ³•æŒ‡é’ˆã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                                    CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			 CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
  \see \n
 N/A
  */
@@ -447,23 +447,23 @@ HI_S32 HI_UNF_SCI_SwitchCard(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_PROTOCOL_E 
 
 /**
  \brief Sets the clock rate factor (in ETU) and baud rate regulator factor for special cards.
-CNcomment:¶ÔÌØÊâ¿¨ÐèÒªÉèÖÃÖ¸¶¨etu Ê±ÖÓÂÊÒò×Ó£¬²¨ÌØÂÊµ÷½ÚÒò×Ó¡£CNend
+CNcomment:å¯¹ç‰¹æ®Šå¡éœ€è¦è®¾ç½®æŒ‡å®šetu æ—¶é’ŸçŽ‡å› å­ï¼Œæ³¢ç‰¹çŽ‡è°ƒèŠ‚å› å­ã€‚CNend
 
  \attention \n
 This API needs to be called only for special cards.
 The configured values must match the clock rate conversion factor F and bit rate regulator factor D defined in the protocol.
 You can also set the factors to the values defined in the card specifications. Note that the values must be set correctly.
-CNcomment:Ö»ÓÐÌØÐèÒªÇóµÄ¿¨ÐèÒªÉèÖÃ£¬ÆÕÍ¨¿¨²»ÐèÒªµ÷ÓÃ´Ë½Ó¿ÚÉèÖÃ£¬
-ÉèÖÃµÄÖµÒªÓëÐ­ÒéÖÐ¹æ¶¨µÄFÊ±ÖÓ×ªÂÊ×ª»»Òò×Ó¡¢D±ÈÌØÂÊµ÷½ÚÒò×Ó¼æÈÝ£¬
-»òÕßÉèÖÃÎª¿¨¹æ·¶ÖÐ¹æ¶¨µÄÖµ£¬²»¿ÉËæÒâÉèÖÃ¡£CNend
+CNcomment:åªæœ‰ç‰¹éœ€è¦æ±‚çš„å¡éœ€è¦è®¾ç½®ï¼Œæ™®é€šå¡ä¸éœ€è¦è°ƒç”¨æ­¤æŽ¥å£è®¾ç½®ï¼Œ
+è®¾ç½®çš„å€¼è¦ä¸Žåè®®ä¸­è§„å®šçš„Fæ—¶é’Ÿè½¬çŽ‡è½¬æ¢å› å­ã€Dæ¯”ç‰¹çŽ‡è°ƒèŠ‚å› å­å…¼å®¹ï¼Œ
+æˆ–è€…è®¾ç½®ä¸ºå¡è§„èŒƒä¸­è§„å®šçš„å€¼ï¼Œä¸å¯éšæ„è®¾ç½®ã€‚CNend
 
- \param [in] 	enSciPort	ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param [in] 	u32ClkFactor  Clock rate conversion factor, ranging from 372 to 2048. For details, see the factor F and card features in the protocol.	CNcomment:Ê±ÖÓ×ªÂÊÒò×Ó372¡«2048 £¬¾ßÌåÉèÖÃ²Î¿¼Ð­ÒéµÄFÒò×ÓºÍ¿¨ÌØÐÔ¡£CNend
- \param [in] 	u32BaudFactor	Baud rate regulator factor 1, 2 x n (n = 1-16). For details, see the factor D and card features in the protocol. CNcomment:²¨ÌØÂÊÐ£ÕýÒò×Ó1¡¢2*n (n=1¡«16) £¬¾ßÌåÉèÖÃ²Î¿¼Ð­ÒéDÒò×ÓºÍ¿¨ÌØÐÔ¡£CNend
- \retval  0 	Success.                                                                                               CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                          CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA The parameter is invalid.                                                       CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			   CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
+ \param [in] 	enSciPort	ID of an SCI port. The port ID can be 0 or 1.                                             CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param [in] 	u32ClkFactor  Clock rate conversion factor, ranging from 372 to 2048. For details, see the factor F and card features in the protocol.	CNcomment:æ—¶é’Ÿè½¬çŽ‡å› å­372ï½ž2048 ï¼Œå…·ä½“è®¾ç½®å‚è€ƒåè®®çš„Få› å­å’Œå¡ç‰¹æ€§ã€‚CNend
+ \param [in] 	u32BaudFactor	Baud rate regulator factor 1, 2 x n (n = 1-16). For details, see the factor D and card features in the protocol. CNcomment:æ³¢ç‰¹çŽ‡æ ¡æ­£å› å­1ã€2*n (n=1ï½ž16) ï¼Œå…·ä½“è®¾ç½®å‚è€ƒåè®®Då› å­å’Œå¡ç‰¹æ€§ã€‚CNend
+ \retval  0 	Success.                                                                                               CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  No SCI device is started.                                                          CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA The parameter is invalid.                                                       CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             			   CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
  \see \n
 N/A
  */
@@ -471,19 +471,19 @@ HI_S32 HI_UNF_SCI_SetEtuFactor(HI_UNF_SCI_PORT_E enSciPort, HI_U32 u32ClkFactor,
 
 /**
  \brief \brief Sets the extra guard time for transmitting two consecutive bytes from the terminal to an IC card. The guard time is the interval between the start edges of two consecutive bytes.
-CNcomment:ÉèÖÃÖÕ¶ËÏòIC¿¨·¢ËÍÁ¬ÐøµÄÁ½¸ö×Ö½ÚÆðÊ¼ÑØ¶îÍâÔö¼ÓµÄ¼ä¸ôÊ±¼ä¡£CNend
+CNcomment:è®¾ç½®ç»ˆç«¯å‘ICå¡å‘é€è¿žç»­çš„ä¸¤ä¸ªå­—èŠ‚èµ·å§‹æ²¿é¢å¤–å¢žåŠ çš„é—´éš”æ—¶é—´ã€‚CNend
 
  \attention \n
 This setting is performed based on related features only for the cards that require extra character guard time.
 In general, the default value is used or the interval guard time is automatically set based on the ART analysis result.
-CNcomment:Ö»ÓÐÌØÐèÒªÇóµÄ¿¨£¬ÐèÒª¶îÍâÉèÖÃ×Ö·û±£»¤Ê±¼äµÄ²ÅÄÜ¸ù¾Ý¿¨µÄÏà¹ØÌØÐÔÉèÖÃ£¬
-²»¿ÉËæÒâÉèÖÃ¡£Ò»°ãÊ¹ÓÃÏµÍ³Ä¬ÈÏÖµ£¬»òÕßÏµÍ³¸ù¾ÝATR½âÎö×Ô¶¯ÉèÖÃ¡£CNend
- \param [in] 	enSciPort	ID of an SCI port. The port ID can be 0 or 1.      	CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param [in] 	u32GuardTime  Extra guard time, ranging from 0 to 254 ETU.	   	CNcomment:¶îÍâ¼ä¸ô±£»¤µÄ·¶Î§0¡«254  etu¡£CNend
- \retval 0  Success.	                                                       		CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                  		CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.               		CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                          CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
+CNcomment:åªæœ‰ç‰¹éœ€è¦æ±‚çš„å¡ï¼Œéœ€è¦é¢å¤–è®¾ç½®å­—ç¬¦ä¿æŠ¤æ—¶é—´çš„æ‰èƒ½æ ¹æ®å¡çš„ç›¸å…³ç‰¹æ€§è®¾ç½®ï¼Œ
+ä¸å¯éšæ„è®¾ç½®ã€‚ä¸€èˆ¬ä½¿ç”¨ç³»ç»Ÿé»˜è®¤å€¼ï¼Œæˆ–è€…ç³»ç»Ÿæ ¹æ®ATRè§£æžè‡ªåŠ¨è®¾ç½®ã€‚CNend
+ \param [in] 	enSciPort	ID of an SCI port. The port ID can be 0 or 1.      	CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param [in] 	u32GuardTime  Extra guard time, ranging from 0 to 254 ETU.	   	CNcomment:é¢å¤–é—´éš”ä¿æŠ¤çš„èŒƒå›´0ï½ž254  etuã€‚CNend
+ \retval 0  Success.	                                                       		CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                  		CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.               		CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                          CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
  \see \n
 N/A
  */
@@ -491,28 +491,28 @@ HI_S32 HI_UNF_SCI_SetGuardTime(HI_UNF_SCI_PORT_E enSciPort, HI_U32 u32GuardTime)
 
 /**
  \brief Sets the baud rate supported by the SCI card through protocol and parameters selection (PPS) negotiation or performs negotiation by using the F and D factors returned by the ATR to switch the protocol of a card.
-CNcomment:Í¨¹ýPPS Ð­ÉÌ¿ÉÒÔÉèÖÃ¿¨ËùÖ§³ÖµÄ²¨ÌØÂÊ»òÕßÓÃATR ´«»ØµÄF¡¢DÒò×Ó½øÐÐÐ­ÉÌ£¬Ö§³Ö¶àÐ­Òé¿¨µÄÐ­ÒéÇÐ»»¡£CNend
+CNcomment:é€šè¿‡PPS åå•†å¯ä»¥è®¾ç½®å¡æ‰€æ”¯æŒçš„æ³¢ç‰¹çŽ‡æˆ–è€…ç”¨ATR ä¼ å›žçš„Fã€Då› å­è¿›è¡Œåå•†ï¼Œæ”¯æŒå¤šåè®®å¡çš„åè®®åˆ‡æ¢ã€‚CNend
 \attention \n
 PPS negotiation is available only when the SCI card supports this function.
 The negotiated baud rate must be supported by the SCI card.
 The command words for negotiation must comply with the specifications defined in section 9.2 "PPS request and response" in the 7816-3 protocol.
-CNcomment:Òª½øÐÐPPS Ð­ÉÌÊ×ÏÈ¿¨±ØÐëÖ§³Ö¸Ã¹¦ÄÜ£¬
-ÒªÐ­ÉÌµÄ²¨ÌØÂÊÄÚÈÝ±ØÐëÊÇ¿¨Ëù¹æ¶¨µÄÖ§³ÖµÄ²¨ÌØÂÊ·¶Î§£¬
-ÇëÇóÐ­ÉÌµÄÃüÁî×ÖÐè·ûºÏ7816-3 ÖÐ9.2 PPS request and response¡£CNend
+CNcomment:è¦è¿›è¡ŒPPS åå•†é¦–å…ˆå¡å¿…é¡»æ”¯æŒè¯¥åŠŸèƒ½ï¼Œ
+è¦åå•†çš„æ³¢ç‰¹çŽ‡å†…å®¹å¿…é¡»æ˜¯å¡æ‰€è§„å®šçš„æ”¯æŒçš„æ³¢ç‰¹çŽ‡èŒƒå›´ï¼Œ
+è¯·æ±‚åå•†çš„å‘½ä»¤å­—éœ€ç¬¦åˆ7816-3 ä¸­9.2 PPS request and responseã€‚CNend
 
- \param [in] 	enSciPort	ID of an SCI port. The port ID is 0 or 1.                                 CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param [in] 	pSciSendBuf  PPS negotiation command combined based on card specifications. If the default negotiation mode is used, the command word can be left empty.   CNcomment:¸ù¾Ý¿¨¹æ·¶×éºÏµÄPPSÐ­ÉÌÃüÁî£¬ÈôÊ¹ÓÃÏµÍ³Ä¬ÈÏµÄÐ­ÉÌ·½Ê½£¬ÃüÁî×ÖµÄÄÚÈÝ¿ÉÎª¿Õ¡£CNend
- \param [in]	Sendlen	   Length of the command word to be transmitted, ranging from 0 bytes to 5 bytes. The value 0 indicates that the default negotiation mode is used.   CNcomment: ·¢ËÍÃüÁî×ÖµÄ³¤¶È(0¡«5),ÉèÖÃÎª0±íÊ¾Ê¹ÓÃÏµÍ³Ä¬ÈÏµÄÐ­ÉÌÃüÁî·½Ê½¡£CNend
- \param [in]	RecTimeouts  PPS response timeout after commands are transmitted. The value ranges from 1 ms to 10000 ms.  CNcomment: ·¢ËÍÍêÃüÁîÖ®ºó£¬½ÓÊÕPPS ÏìÓ¦µÄ³¬Ê±Ê±¼ä(1-10000),µ¥Î»ÊÇºÁÃë¡£CNend
- \retval 0 	Success.                                                                               		CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                                         		CNcomment:SCIÉè±¸Î´´ò¿ª¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                      		CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_NULL_PTR		The pointer is null.                                          		CNcomment:¿ÕÖ¸Õë¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                                          	CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
- \retval ::HI_ERR_SCI_RECEIVE_ERR  A reception error occurs.                                       		CNcomment:½ÓÊÕ´íÎó¡£CNend
- \retval ::HI_ERR_SCI_PPS_PTYPE_ERR 	The protocol type for PPS negotiation is incorrect.           		CNcomment:PPSÐ­ÉÌµÄÐ­ÒéÀàÐÍ´íÎó¡£CNend
- \retval ::HI_ERR_SCI_PPS_FACTOR_ERR 	The F factor and D factor for PPS negotiation are incorrect. 	        CNcomment:PPSÐ­ÉÌµÄF¡¢DÒò×Ó´íÎó¡£CNend
- \retval ::HI_ERR_SCI_PPS_NOTSUPPORT_ERR  The PPS negotiation type is not supported.               		CNcomment:²»Ö§³ÖµÄPPSÐ­ÉÌÀàÐÍ¡£CNend
+ \param [in] 	enSciPort	ID of an SCI port. The port ID is 0 or 1.                                 CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param [in] 	pSciSendBuf  PPS negotiation command combined based on card specifications. If the default negotiation mode is used, the command word can be left empty.   CNcomment:æ ¹æ®å¡è§„èŒƒç»„åˆçš„PPSåå•†å‘½ä»¤ï¼Œè‹¥ä½¿ç”¨ç³»ç»Ÿé»˜è®¤çš„åå•†æ–¹å¼ï¼Œå‘½ä»¤å­—çš„å†…å®¹å¯ä¸ºç©ºã€‚CNend
+ \param [in]	Sendlen	   Length of the command word to be transmitted, ranging from 0 bytes to 5 bytes. The value 0 indicates that the default negotiation mode is used.   CNcomment: å‘é€å‘½ä»¤å­—çš„é•¿åº¦(0ï½ž5),è®¾ç½®ä¸º0è¡¨ç¤ºä½¿ç”¨ç³»ç»Ÿé»˜è®¤çš„åå•†å‘½ä»¤æ–¹å¼ã€‚CNend
+ \param [in]	RecTimeouts  PPS response timeout after commands are transmitted. The value ranges from 1 ms to 10000 ms.  CNcomment: å‘é€å®Œå‘½ä»¤ä¹‹åŽï¼ŒæŽ¥æ”¶PPS å“åº”çš„è¶…æ—¶æ—¶é—´(1-10000),å•ä½æ˜¯æ¯«ç§’ã€‚CNend
+ \retval 0 	Success.                                                                               		CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT   No SCI device is started.                                         		CNcomment:SCIè®¾å¤‡æœªæ‰“å¼€ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                                      		CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_NULL_PTR		The pointer is null.                                          		CNcomment:ç©ºæŒ‡é’ˆã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                                          	CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
+ \retval ::HI_ERR_SCI_RECEIVE_ERR  A reception error occurs.                                       		CNcomment:æŽ¥æ”¶é”™è¯¯ã€‚CNend
+ \retval ::HI_ERR_SCI_PPS_PTYPE_ERR 	The protocol type for PPS negotiation is incorrect.           		CNcomment:PPSåå•†çš„åè®®ç±»åž‹é”™è¯¯ã€‚CNend
+ \retval ::HI_ERR_SCI_PPS_FACTOR_ERR 	The F factor and D factor for PPS negotiation are incorrect. 	        CNcomment:PPSåå•†çš„Fã€Då› å­é”™è¯¯ã€‚CNend
+ \retval ::HI_ERR_SCI_PPS_NOTSUPPORT_ERR  The PPS negotiation type is not supported.               		CNcomment:ä¸æ”¯æŒçš„PPSåå•†ç±»åž‹ã€‚CNend
 
  \see \n
 N/A
@@ -521,18 +521,18 @@ HI_S32 HI_UNF_SCI_NegotiatePPS(HI_UNF_SCI_PORT_E enSciPort, HI_U8 *pSciSendBuf, 
 
 /**
  \brief  Obtains the PPS data for the card response after PPS negotiation is successful.
-CNcomment:PPS Ð­ÉÌ³É¹¦Ö®ºó,Í¨¹ý¸Ã½Ó¿Ú¿É»ñµÃ¿¨ÏìÓ¦µÄPPS Êý¾Ý¡£CNend
+CNcomment:PPS åå•†æˆåŠŸä¹‹åŽ,é€šè¿‡è¯¥æŽ¥å£å¯èŽ·å¾—å¡å“åº”çš„PPS æ•°æ®ã€‚CNend
  \attention \n
 This API takes effect only after PPS negotiation is successful.
-CNcomment:ÒªµÈPPS Ð­ÉÌ³É¹¦Ö®ºó,Ê¹ÓÃ¸Ã½Ó¿Ú²ÅÓÐÊµ¼ÊÒâÒå¡£CNend
+CNcomment:è¦ç­‰PPS åå•†æˆåŠŸä¹‹åŽ,ä½¿ç”¨è¯¥æŽ¥å£æ‰æœ‰å®žé™…æ„ä¹‰ã€‚CNend
 
- \param [in] 	enSciPort	ID of an SCI port. The port ID is 0 or 1.                   CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param [out] 	pRecBuf   Address of the buffer for storing the data to be received.   	CNcomment:´ý½ÓÊÕµÄÊý¾Ýbuffer µØÖ·¡£CNend
- \param [out]	pDataLen	  Required length of the received data.                      CNcomment:ÆÚÍû½ÓÊÕÊý¾ÝµÄ³¤¶È¡£CNend
- \retval 0  Success.	                                                                	CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                        	CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_NULL_PTR	The pointer is null.                                	CNcomment:¿ÕÖ¸Õë¡£CNend
- \retval ::HI_ERR_SCI_PPS_NOTSUPPORT_ERR  The PPS negotiation type is not supported. 	CNcomment:²»Ö§³ÖµÄPPSÐ­ÉÌÀàÐÍ¡£CNend
+ \param [in] 	enSciPort	ID of an SCI port. The port ID is 0 or 1.                   CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param [out] 	pRecBuf   Address of the buffer for storing the data to be received.   	CNcomment:å¾…æŽ¥æ”¶çš„æ•°æ®buffer åœ°å€ã€‚CNend
+ \param [out]	pDataLen	  Required length of the received data.                      CNcomment:æœŸæœ›æŽ¥æ”¶æ•°æ®çš„é•¿åº¦ã€‚CNend
+ \retval 0  Success.	                                                                	CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                        	CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_NULL_PTR	The pointer is null.                                	CNcomment:ç©ºæŒ‡é’ˆã€‚CNend
+ \retval ::HI_ERR_SCI_PPS_NOTSUPPORT_ERR  The PPS negotiation type is not supported. 	CNcomment:ä¸æ”¯æŒçš„PPSåå•†ç±»åž‹ã€‚CNend
 
  \see \n
 N/A
@@ -541,19 +541,19 @@ HI_S32 HI_UNF_SCI_GetPPSResponData(HI_UNF_SCI_PORT_E enSciPort, HI_U8* pRecBuf, 
 
 /**
 brief  Obtains the SCI parameter values including the protocol, ATR clock factor, ATR bit rate factor, actual clock factor, actual bit rate factor, number of retries, guard delay, character wait timeout, and block wait timeout.
-CNcomment:»ñÈ¡sci ²ÎÊý°üÀ¨Ð­Òé¡¢ATR Ê±ÖÓºÍ±ÈÌØÂÊÒò×Ó¡¢Êµ¼ÊÉèÖÃµÄÊ±ÖÓÒò×ÓºÍ±ÈÌØÂÊÒò×Ó£¬
-·¢ËÍÖØÊÔ´ÎÊý¡¢GuardDelay ¡¢×Ö·ûµÈ´ý³¬Ê±¡¢¿éµÈ´ý³¬Ê±¡£CNend
+CNcomment:èŽ·å–sci å‚æ•°åŒ…æ‹¬åè®®ã€ATR æ—¶é’Ÿå’Œæ¯”ç‰¹çŽ‡å› å­ã€å®žé™…è®¾ç½®çš„æ—¶é’Ÿå› å­å’Œæ¯”ç‰¹çŽ‡å› å­ï¼Œ
+å‘é€é‡è¯•æ¬¡æ•°ã€GuardDelay ã€å­—ç¬¦ç­‰å¾…è¶…æ—¶ã€å—ç­‰å¾…è¶…æ—¶ã€‚CNend
  \attention \n
 This API is available only after HI_UNF_SCI_Init and HI_UNF_SCI_ResetCard are called.
-CNcomment:ÒªµÈ µ½³õÊ¼»¯¸´Î»Ö®ºó,²ÅÄÜÊ¹ÓÃ¸Ã½Ó¿Ú¡£CNend
+CNcomment:è¦ç­‰ åˆ°åˆå§‹åŒ–å¤ä½ä¹‹åŽ,æ‰èƒ½ä½¿ç”¨è¯¥æŽ¥å£ã€‚CNend
 
- \param [in] 	enSciPort	 ID of an SCI port. The port ID is 0 or 1.                      CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param [out] 	pParams   Pointer to the data type of the data structure to be received.   	CNcomment:´ý½ÓÊÕµÄ½á¹¹ÌåÊý¾ÝÀàÐÍÖ¸Õë¡£CNend
- \retval 0 	Success.                                                                     	CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA The parameter is invalid.                             	CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_NULL_PTR		The pointer is null.                                    CNcomment:¿ÕÖ¸Õë¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                                	CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
- \retval ::HI_ERR_SCI_NOT_INIT  	The SCI device is not initialized.                      CNcomment:Ã»Íê³É³õÊ¼»¯¡£CNend
+ \param [in] 	enSciPort	 ID of an SCI port. The port ID is 0 or 1.                      CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param [out] 	pParams   Pointer to the data type of the data structure to be received.   	CNcomment:å¾…æŽ¥æ”¶çš„ç»“æž„ä½“æ•°æ®ç±»åž‹æŒ‡é’ˆã€‚CNend
+ \retval 0 	Success.                                                                     	CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA The parameter is invalid.                             	CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_NULL_PTR		The pointer is null.                                    CNcomment:ç©ºæŒ‡é’ˆã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                                	CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
+ \retval ::HI_ERR_SCI_NOT_INIT  	The SCI device is not initialized.                      CNcomment:æ²¡å®Œæˆåˆå§‹åŒ–ã€‚CNend
 
  \see \n
 N/A
@@ -562,19 +562,19 @@ HI_S32 HI_UNF_SCI_GetParams(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_PARAMS_S_PTR
 
 /**
  \brief  Sets the character timeout of T0 and T1 separately based on the current protocol type.
-CNcomment:¸ù¾Ýµ±Ç°Ð­ÒéÀàÐÍ·Ö±ð¿ÉÉèÖÃT0¡¢T1µÄ×Ö·û³¬Ê±Ê±¼ä¡£CNend
+CNcomment:æ ¹æ®å½“å‰åè®®ç±»åž‹åˆ†åˆ«å¯è®¾ç½®T0ã€T1çš„å­—ç¬¦è¶…æ—¶æ—¶é—´ã€‚CNend
 
  \attention \n
 The timeout can be set only after the SCI card is reset successfully. The protocol type must be consistent with the current card type. In general, the timeout is obtained by parsing the ATR. That is, the timeout needs to be set only when card communication fails.
-CNcomment:ÒªµÈ¿¨¸´Î»³É¹¦Ö®ºó,²ÅÄÜ½øÐÐÉèÖÃ£¬Ð­ÒéÀàÐÍ²ÎÊý±ØÐëÓëµ±Ç°¿¨ÀàÐÍÒ»ÖÂ£¬Ò»°ãÇé¿ö¶¼ÊÇ¸ù¾ÝATR½âÎö£¬Ö»ÓÐÌØÊâ¿¨Çé¿ö²ÅÐèÒªÉèÖÃ¡£CNend
+CNcomment:è¦ç­‰å¡å¤ä½æˆåŠŸä¹‹åŽ,æ‰èƒ½è¿›è¡Œè®¾ç½®ï¼Œåè®®ç±»åž‹å‚æ•°å¿…é¡»ä¸Žå½“å‰å¡ç±»åž‹ä¸€è‡´ï¼Œä¸€èˆ¬æƒ…å†µéƒ½æ˜¯æ ¹æ®ATRè§£æžï¼Œåªæœ‰ç‰¹æ®Šå¡æƒ…å†µæ‰éœ€è¦è®¾ç½®ã€‚CNend
 
- \param [in] 	enSciPort	ID of an SCI port. The port ID is 0 or 1.   CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param [in] 	enSciProtocol  Protocol type.                           	CNcomment:Ð­ÒéÀàÐÍ¡£CNend
- \param [in]	MaxCharTime  Maximum character timeout. The value of MaxCharTime for T0 ranges from 960 to 244800, and the value of MaxCharTime for T1 ranges from 12 to 32779.	  CNcomment:ÉèÖÃ×î´óµÄ×Ö·û³¬Ê±Ê±¼ä£¬ÉèÖÃ·¶Î§T0(960¡«244800),T1(12¡«32779)¡£CNend
- \retval 0 	Success.                                                  	CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.         	CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.             	CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
- \retval ::HI_ERR_SCI_NO_ATR  	The SCI card fails to be reset.        	CNcomment:Ã»¸´Î»³É¹¦¡£CNend
+ \param [in] 	enSciPort	ID of an SCI port. The port ID is 0 or 1.   CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param [in] 	enSciProtocol  Protocol type.                           	CNcomment:åè®®ç±»åž‹ã€‚CNend
+ \param [in]	MaxCharTime  Maximum character timeout. The value of MaxCharTime for T0 ranges from 960 to 244800, and the value of MaxCharTime for T1 ranges from 12 to 32779.	  CNcomment:è®¾ç½®æœ€å¤§çš„å­—ç¬¦è¶…æ—¶æ—¶é—´ï¼Œè®¾ç½®èŒƒå›´T0(960ï½ž244800),T1(12ï½ž32779)ã€‚CNend
+ \retval 0 	Success.                                                  	CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.         	CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.             	CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
+ \retval ::HI_ERR_SCI_NO_ATR  	The SCI card fails to be reset.        	CNcomment:æ²¡å¤ä½æˆåŠŸã€‚CNend
 
  \see \n
 N/A
@@ -583,17 +583,17 @@ HI_S32 HI_UNF_SCI_SetCharTimeout(HI_UNF_SCI_PORT_E enSciPort, HI_UNF_SCI_PROTOCO
 
 /**
  \brief  Sets the block timeout of T1.
-CNcomment:ÉèÖÃT1µÄ¿é³¬Ê±Ê±¼ä¡£CNend
+CNcomment:è®¾ç½®T1çš„å—è¶…æ—¶æ—¶é—´ã€‚CNend
 \attention \n
 The timeout can be set only after the SCI card is reset successfully. In general, the timeout is obtained by parsing the ATR. That is, the timeout needs to be set only in special cases
-CNcomment:ÒªµÈ¿¨¸´Î»³É¹¦Ö®ºó,²ÅÄÜ½øÐÐÉèÖÃ£¬Ò»°ãÇé¿ö¶¼ÊÇ¸ù¾ÝATR½âÎö£¬Ö»ÓÐÌØÊâ¿¨Çé¿ö²ÅÐèÒªÉèÖÃ¡£CNend
+CNcomment:è¦ç­‰å¡å¤ä½æˆåŠŸä¹‹åŽ,æ‰èƒ½è¿›è¡Œè®¾ç½®ï¼Œä¸€èˆ¬æƒ…å†µéƒ½æ˜¯æ ¹æ®ATRè§£æžï¼Œåªæœ‰ç‰¹æ®Šå¡æƒ…å†µæ‰éœ€è¦è®¾ç½®ã€‚CNend
 
- \param [in] 	enSciPort	 ID of an SCI port. The port ID is 0 or 1.                         	CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param [in] 	MaxBlockTime   Maximum block timeout. The value ranges from 971 to 491531.   	CNcomment:ÉèÖÃ¿é³¬Ê±µÄ×î´óÖµ£¬·¶Î§(971¡«491531)¡£CNend
- \retval 0 	Success.                                                                        		CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA The parameter is invalid.                                		CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                                   	CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
- \retval ::HI_ERR_SCI_NO_ATR  		The SCI card fails to be reset.                            	CNcomment:Ã»¸´Î»³É¹¦¡£CNend
+ \param [in] 	enSciPort	 ID of an SCI port. The port ID is 0 or 1.                         	CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param [in] 	MaxBlockTime   Maximum block timeout. The value ranges from 971 to 491531.   	CNcomment:è®¾ç½®å—è¶…æ—¶çš„æœ€å¤§å€¼ï¼ŒèŒƒå›´(971ï½ž491531)ã€‚CNend
+ \retval 0 	Success.                                                                        		CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA The parameter is invalid.                                		CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                                   	CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
+ \retval ::HI_ERR_SCI_NO_ATR  		The SCI card fails to be reset.                            	CNcomment:æ²¡å¤ä½æˆåŠŸã€‚CNend
 
  \see \n
 N/A
@@ -602,17 +602,17 @@ HI_S32 HI_UNF_SCI_SetBlockTimeout(HI_UNF_SCI_PORT_E enSciPort, HI_U32 MaxBlockTi
 
 /**
  \brief  Sets the maximum number of transmission retries after a check error occurs.
-CNcomment:ÉèÖÃÐ£Ñé´íÎóºóÖØ·¢ËÍ×î´ó´ÎÊý¡£CNend
+CNcomment:è®¾ç½®æ ¡éªŒé”™è¯¯åŽé‡å‘é€æœ€å¤§æ¬¡æ•°ã€‚CNend
 \attention \n
 The number can be set only after the SCI card is reset successfully.
-CNcomment:ÒªµÈ¿¨¸´Î»³É¹¦Ö®ºó,²ÅÄÜ½øÐÐÉèÖÃ¡£CNend
+CNcomment:è¦ç­‰å¡å¤ä½æˆåŠŸä¹‹åŽ,æ‰èƒ½è¿›è¡Œè®¾ç½®ã€‚CNend
 
- \param [in] 	enSciPort	ID of an SCI port. The port ID is 0 or 1.                   CNcomment:SCI¶Ë¿ÚºÅ£¬È¡Öµ·¶Î§Îª0ºÍ1¡£CNend
- \param [in] 	TxRetryTimes   Number of transmission retries, ranging from 0 to 7.    	CNcomment:´ÎÊý·¶Î§(0¡«7)¡£CNend
- \retval 0 	Success.                                                                  	CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                         	CNcomment:²ÎÊý·Ç·¨¡£CNend
- \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             	CNcomment:²»¿ÉÓÃµÄÑ¡Ïî¡£CNend
- \retval ::HI_ERR_SCI_NO_ATR  	The SCI card fails to be reset.	                       	CNcomment:Ã»¸´Î»³É¹¦¡£CNend
+ \param [in] 	enSciPort	ID of an SCI port. The port ID is 0 or 1.                   CNcomment:SCIç«¯å£å·ï¼Œå–å€¼èŒƒå›´ä¸º0å’Œ1ã€‚CNend
+ \param [in] 	TxRetryTimes   Number of transmission retries, ranging from 0 to 7.    	CNcomment:æ¬¡æ•°èŒƒå›´(0ï½ž7)ã€‚CNend
+ \retval 0 	Success.                                                                  	CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_PARA  The parameter is invalid.                         	CNcomment:å‚æ•°éžæ³•ã€‚CNend
+ \retval ::HI_ERR_SCI_INVALID_OPT	The option is invalid.                             	CNcomment:ä¸å¯ç”¨çš„é€‰é¡¹ã€‚CNend
+ \retval ::HI_ERR_SCI_NO_ATR  	The SCI card fails to be reset.	                       	CNcomment:æ²¡å¤ä½æˆåŠŸã€‚CNend
 
  \see \n
 N/A

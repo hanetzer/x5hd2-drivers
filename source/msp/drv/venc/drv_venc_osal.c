@@ -111,7 +111,7 @@ HI_S32 VENC_DRV_OsalDeleteTask(HI_VOID *hTask)
 
 #if 1
 /************************************************************************/
-/* ³õÊ¼»¯ÊÂ¼ş                                                           */
+/* åˆå§‹åŒ–äº‹ä»¶                                                           */
 /************************************************************************/
 HI_S32 VENC_DRV_OsalInitEvent( VEDU_OSAL_EVENT *pEvent, HI_S32 InitVal )
 {
@@ -121,7 +121,7 @@ HI_S32 VENC_DRV_OsalInitEvent( VEDU_OSAL_EVENT *pEvent, HI_S32 InitVal )
 }
 
 /************************************************************************/
-/* ·¢³öÊÂ¼ş»½ĞÑ                                                             */
+/* å‘å‡ºäº‹ä»¶å”¤é†’                                                             */
 /************************************************************************/
 HI_S32 VENC_DRV_OsalGiveEvent( VEDU_OSAL_EVENT *pEvent )
 {
@@ -132,9 +132,9 @@ HI_S32 VENC_DRV_OsalGiveEvent( VEDU_OSAL_EVENT *pEvent )
 }
 
 /************************************************************************/
-/* µÈ´ıÊÂ¼ş                                                             */
-/* ÊÂ¼ş·¢Éú·µ»ØOSAL_OK£¬³¬Ê±·µ»ØOSAL_ERR Èôcondition²»Âú×ã¾Í×èÈûµÈ´ı    */
-/* ±»»½ĞÑ·µ»Ø 0 £¬³¬Ê±·µ»Ø·Ç-1                                          */
+/* ç­‰å¾…äº‹ä»¶                                                             */
+/* äº‹ä»¶å‘ç”Ÿè¿”å›OSAL_OKï¼Œè¶…æ—¶è¿”å›OSAL_ERR è‹¥conditionä¸æ»¡è¶³å°±é˜»å¡ç­‰å¾…    */
+/* è¢«å”¤é†’è¿”å› 0 ï¼Œè¶…æ—¶è¿”å›é-1                                          */
 /************************************************************************/
 HI_S32 VENC_DRV_OsalWaitEvent( VEDU_OSAL_EVENT *pEvent, HI_U32 msWaitTime )
 {
@@ -159,7 +159,7 @@ HI_S32 VENC_DRV_OsalWaitEvent( VEDU_OSAL_EVENT *pEvent, HI_U32 msWaitTime )
 }
 #endif
 /************************************************************************/
-/* ÎÄ¼ştell position                                                    */
+/* æ–‡ä»¶tell position                                                    */
 /************************************************************************/
 
 struct file *VENC_DRV_OsalFopen(const char *filename, int flags, int mode)

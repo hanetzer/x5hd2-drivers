@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : y00181162
 Created		    : 2013/06/20
 Description	    : set parameter that hard decode need
-                  CNcomment: ÅäÖÃÓ²¼ş½âÂëĞèÒªµÄ²ÎÊıĞÅÏ¢ CNend\n
+                  CNcomment: é…ç½®ç¡¬ä»¶è§£ç éœ€è¦çš„å‚æ•°ä¿¡æ¯ CNend\n
 Function List 	:
 
 			  		  
@@ -43,8 +43,8 @@ Date				Author        		Modification
 /*****************************************************************************
  * func 		 : JPEG_HDEC_ImagFmt2HardFmt
  * description	 : convert the input jpeg format to hard register need format
-				   CNcomment:  ½«ÊäÈëÍ¼Æ¬µÄÏñËØ¸ñÊ½×ª»»³ÉÓ²¼şĞèÒªµÄÏñËØ¸ñÊ½ CNend\n
- * param[in]	 : cinfo	   CNcomment: ½âÂë¶ÔÏó	 CNend\n
+				   CNcomment:  å°†è¾“å…¥å›¾ç‰‡çš„åƒç´ æ ¼å¼è½¬æ¢æˆç¡¬ä»¶éœ€è¦çš„åƒç´ æ ¼å¼ CNend\n
+ * param[in]	 : cinfo	   CNcomment: è§£ç å¯¹è±¡	 CNend\n
  * retval		 : NA
  * others:		 : NA
  *****************************************************************************/
@@ -79,10 +79,10 @@ static HI_VOID JPEG_HDEC_ImagFmt2HardFmt(const HI_JPEG_FMT_E enJpegFmt,HI_U32 *p
 /*****************************************************************************
 * func			: JPEG_HDEC_SetSof
 * description	: set the sof message
-				  CNcomment: ÉèÖÃsof»ù±¾ĞÅÏ¢    	   CNend\n
-* param[in] 	: cinfo 		CNcomment: ½âÂë¶ÔÏó    CNend\n
-* retval		: HI_SUCCESS	CNcomment: ³É¹¦ 	   CNend\n
-* retval		: HI_FAILURE	CNcomment: Ê§°Ü 	   CNend\n
+				  CNcomment: è®¾ç½®sofåŸºæœ¬ä¿¡æ¯    	   CNend\n
+* param[in] 	: cinfo 		CNcomment: è§£ç å¯¹è±¡    CNend\n
+* retval		: HI_SUCCESS	CNcomment: æˆåŠŸ 	   CNend\n
+* retval		: HI_FAILURE	CNcomment: å¤±è´¥ 	   CNend\n
 * others:		: NA
 *****************************************************************************/
 static HI_S32 JPEG_HDEC_SetSof(const struct jpeg_decompress_struct *cinfo)
@@ -98,7 +98,7 @@ static HI_S32 JPEG_HDEC_SetSof(const struct jpeg_decompress_struct *cinfo)
 
         /**
 		 ** set the picture type
-		 ** CNcomment: ÉèÖÃÍ¼Æ¬ÀàĞÍ CNend\n
+		 ** CNcomment: è®¾ç½®å›¾ç‰‡ç±»å‹ CNend\n
 		 **/
 		JPEG_HDEC_ImagFmt2HardFmt(pJpegHandle->enImageFmt,&u32HardFmt);
 		if(u32HardFmt >= 7)
@@ -109,13 +109,13 @@ static HI_S32 JPEG_HDEC_SetSof(const struct jpeg_decompress_struct *cinfo)
 
         /**
 		 ** set the dec scale
-		 ** CNcomment: ÉèÖÃ½âÂëËõ·Å±ÈÀı CNend\n
+		 ** CNcomment: è®¾ç½®è§£ç ç¼©æ”¾æ¯”ä¾‹ CNend\n
 		 **/
 		#ifdef CONFIG_JPEG_HARDDEC2ARGB
 		if(HI_TRUE == pJpegHandle->bDecARGB)
 		{   /**
 			 ** do not write data to ddr and no scale
-			 ** CNcomment: ²»ÍùDDRĞ´YUVÊı¾İ²¢ÇÒ²»Ëõ·Å CNend\n
+			 ** CNcomment: ä¸å¾€DDRå†™YUVæ•°æ®å¹¶ä¸”ä¸ç¼©æ”¾ CNend\n
 			 **/
 		   JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_SCALE, 0x30);
 		}
@@ -124,8 +124,8 @@ static HI_S32 JPEG_HDEC_SetSof(const struct jpeg_decompress_struct *cinfo)
 		{
 		    /**
 			 ** set the scale register
-			 ** CNcomment: ÉèÖÃÒª½âÂëµÄËõ·Å±ÈÀı£¬¿´¸Ã¼Ä´æÆ÷µÄ½á¹¹À´ÅäÖÃ
-			 **            ÏÈ»ñÈ¡Ó²¼şÄ¬ÈÏµÄËõ·Å±ÈÀı Scale.struBits.Outstanding = 7 CNend\n
+			 ** CNcomment: è®¾ç½®è¦è§£ç çš„ç¼©æ”¾æ¯”ä¾‹ï¼Œçœ‹è¯¥å¯„å­˜å™¨çš„ç»“æ„æ¥é…ç½®
+			 **            å…ˆè·å–ç¡¬ä»¶é»˜è®¤çš„ç¼©æ”¾æ¯”ä¾‹ Scale.struBits.Outstanding = 7 CNend\n
 			 **/
 		    s32DefaultScale = JPEG_HDEC_ReadReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_SCALE);
 			#ifdef CONFIG_JPEG_TEST_CHIP_OPEN_CK
@@ -133,7 +133,7 @@ static HI_S32 JPEG_HDEC_SetSof(const struct jpeg_decompress_struct *cinfo)
 				                  JPGD_REG_SCALE,              \
 							      (HI_S32)(((HI_U32)s32DefaultScale & 0xfffffffc) | pJpegHandle->u32ScalRation | 0x8));
 
-			/** himd.l 0xf8c40000 ¿´ÊÇ·ñÒÑ¾­Ğ´Èë **/
+			/** himd.l 0xf8c40000 çœ‹æ˜¯å¦å·²ç»å†™å…¥ **/
 			//getchar();
 			#else
 			JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,\
@@ -143,10 +143,10 @@ static HI_S32 JPEG_HDEC_SetSof(const struct jpeg_decompress_struct *cinfo)
 		}
 		
 		/**  set the picture size
-	     **  CNcomment: ÉèÖÃÍ¼Æ¬Ô­Ê¼´óĞ¡£¬¿í¸ß
-		 **  Õâ¸öÖµÊÇ½âÂë·Ö±æÂÊpstMessagePrivate->stImagMsg.u32PicSizeºÍÍ¼Æ¬±¾ÉíµÄ
-		 **  µÄÏÔÊ¾·Ö±æÂÊ²»Ò»¶¨ÏàµÈ£¬ÒòÎª×öÁË¶ÔÆë²Ù×÷£¬¿ÉÄÜ»á´óÓÚjpeg±¾ÉíÍ¼Æ¬´óĞ¡
-		 **  µ«Ó²¼şµÄÏŞÖÆÊÇ¸ù¾İ½âÂë·Ö±æÂÊÀ´×Å
+	     **  CNcomment: è®¾ç½®å›¾ç‰‡åŸå§‹å¤§å°ï¼Œå®½é«˜
+		 **  è¿™ä¸ªå€¼æ˜¯è§£ç åˆ†è¾¨ç‡pstMessagePrivate->stImagMsg.u32PicSizeå’Œå›¾ç‰‡æœ¬èº«çš„
+		 **  çš„æ˜¾ç¤ºåˆ†è¾¨ç‡ä¸ä¸€å®šç›¸ç­‰ï¼Œå› ä¸ºåšäº†å¯¹é½æ“ä½œï¼Œå¯èƒ½ä¼šå¤§äºjpegæœ¬èº«å›¾ç‰‡å¤§å°
+		 **  ä½†ç¡¬ä»¶çš„é™åˆ¶æ˜¯æ ¹æ®è§£ç åˆ†è¾¨ç‡æ¥ç€
 		 **  ~0x3ff03ff = 0x111111 0000000000(w)	111111 0000000000(h) = 8192 * 8192 CNend\n
 		 **/
 		if ( 0 != ((pJpegHandle->stJpegSofInfo.u32InWandH & (~0x3ff03ff))) ) 
@@ -158,7 +158,7 @@ static HI_S32 JPEG_HDEC_SetSof(const struct jpeg_decompress_struct *cinfo)
 
 		/**
 		 ** set lu and ch stride
-		 ** CNcomment: ÅäÖÃÁÁ¶ÈºÍÉ«¶ÈµÄĞĞ¼ä¾àÖµ CNend\n
+		 ** CNcomment: é…ç½®äº®åº¦å’Œè‰²åº¦çš„è¡Œé—´è·å€¼ CNend\n
 		 **/
 		u32Stride = (pJpegHandle->stJpegSofInfo.u32CbCrStride << 16 ) | pJpegHandle->stJpegSofInfo.u32YStride;
 		
@@ -173,16 +173,16 @@ static HI_S32 JPEG_HDEC_SetSof(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_SetStreamBuf
 * description	: set stream buffer message
-				  CNcomment: ÉèÖÃÂëÁ÷buffer¼Ä´æÆ÷ 	   CNend\n
-* param[in] 	: cinfo 		CNcomment: ½âÂë¶ÔÏó    CNend\n
+				  CNcomment: è®¾ç½®ç æµbufferå¯„å­˜å™¨ 	   CNend\n
+* param[in] 	: cinfo 		CNcomment: è§£ç å¯¹è±¡    CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
 static HI_VOID JPEG_HDEC_SetStreamBuf(const struct jpeg_decompress_struct *cinfo)
 {
 
-		HI_U32 u32Align       = 64;  /**< the stream buffer should 64 bytes align *//**<CNcomment:ÂëÁ÷bufferĞèÒª64×Ö½Ú¶ÔÆë */
-		HI_U32 u32Offset      = 100; /**< you can set >=0,insure include the save stream buffer *//**<CNcomment:´óÓÚµÈÓÚ0µÄÖµ£¬±£Ö¤ÄÜ¹»°üº¬´æ´¢ÂëÁ÷bufferµÄÇøÓò */
+		HI_U32 u32Align       = 64;  /**< the stream buffer should 64 bytes align *//**<CNcomment:ç æµbufferéœ€è¦64å­—èŠ‚å¯¹é½ */
+		HI_U32 u32Offset      = 100; /**< you can set >=0,insure include the save stream buffer *//**<CNcomment:å¤§äºç­‰äº0çš„å€¼ï¼Œä¿è¯èƒ½å¤ŸåŒ…å«å­˜å‚¨ç æµbufferçš„åŒºåŸŸ */
 		HI_U64 u64StreamSize  = 0;
 		HI_CHAR *pStartStreamPhy  = NULL;
 		HI_CHAR *pEndStreamPhy    = NULL;
@@ -190,9 +190,9 @@ static HI_VOID JPEG_HDEC_SetStreamBuf(const struct jpeg_decompress_struct *cinfo
 
 		/**
 		** if use user buffer, this buffer can not sure is 64 bytes align
-		** CNcomment: Èç¹ûÊÇÊ¹ÓÃÓÃ»§µÄÁ¬ĞøÂëÁ÷buffer£¬²¢²»Ò»¶¨ÊÇ64×Ö½Ú¶ÔÆë
-		**            Ó²¼şbufferÖ»ÓĞÓĞÁ½¸öÖµ¼´¿É£¬ÕæÕıÊ¹ÓÃµÄ´æ´¢ÂëÁ÷µÄbuffer£¬
-		**            ±ØĞëÔÚÕâÁ½¸öÖµÖ®¼ä CNend\n
+		** CNcomment: å¦‚æœæ˜¯ä½¿ç”¨ç”¨æˆ·çš„è¿ç»­ç æµbufferï¼Œå¹¶ä¸ä¸€å®šæ˜¯64å­—èŠ‚å¯¹é½
+		**            ç¡¬ä»¶bufferåªæœ‰æœ‰ä¸¤ä¸ªå€¼å³å¯ï¼ŒçœŸæ­£ä½¿ç”¨çš„å­˜å‚¨ç æµçš„bufferï¼Œ
+		**            å¿…é¡»åœ¨è¿™ä¸¤ä¸ªå€¼ä¹‹é—´ CNend\n
 		**/
 		if(HI_TRUE == pJpegHandle->stHDecDataBuf.bUserPhyMem)
 		{
@@ -200,7 +200,7 @@ static HI_VOID JPEG_HDEC_SetStreamBuf(const struct jpeg_decompress_struct *cinfo
 			/**
 			** this can insure the start buffer is before the stream address
 			** after align.
-			** CNcomment: Õâ¸öÄÜÈ·±£¶ÔÆëÖ®ºóÔÚÂëÁ÷µØÖ·Ö®Ç° CNend\n
+			** CNcomment: è¿™ä¸ªèƒ½ç¡®ä¿å¯¹é½ä¹‹ååœ¨ç æµåœ°å€ä¹‹å‰ CNend\n
 			**/
 			pStartStreamPhy = pJpegHandle->stHDecDataBuf.pDataPhyBuf - u32Align;
 			pStartStreamPhy = (HI_CHAR*)(((HI_U32)pStartStreamPhy + u32Align - 1) & (~(u32Align - 1)));
@@ -217,7 +217,7 @@ static HI_VOID JPEG_HDEC_SetStreamBuf(const struct jpeg_decompress_struct *cinfo
 
 		/**
 		 ** the end address [0:d] invalid. just ok
-		 ** CNcomment: ½áÊøµØÖ·»Ø¶ÁµÄÊ±ºò[0:5]ÎŞĞ§£¬ÎªÁã£¬ËùÒÔ»á¿´µ½ºÍÊµ¼Ê²»Ò»ÖÂ£¬Õı³£µÄ CNend\n
+		 ** CNcomment: ç»“æŸåœ°å€å›è¯»çš„æ—¶å€™[0:5]æ— æ•ˆï¼Œä¸ºé›¶ï¼Œæ‰€ä»¥ä¼šçœ‹åˆ°å’Œå®é™…ä¸ä¸€è‡´ï¼Œæ­£å¸¸çš„ CNend\n
 		 **/		
 		JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,    \
 						    JPGD_REG_STADDR, 				  \
@@ -232,8 +232,8 @@ static HI_VOID JPEG_HDEC_SetStreamBuf(const struct jpeg_decompress_struct *cinfo
 /*****************************************************************************
 * func			: JPEG_HDEC_SetMidderBuf
 * description	: set middle buffer register
-				  CNcomment: ÉèÖÃJPEGÓ²¼ş½âÂëÊä³ö¼Ä´æÆ÷   CNend\n
-* param[in] 	: cinfo 		CNcomment: ½âÂë¶ÔÏó       CNend\n
+				  CNcomment: è®¾ç½®JPEGç¡¬ä»¶è§£ç è¾“å‡ºå¯„å­˜å™¨   CNend\n
+* param[in] 	: cinfo 		CNcomment: è§£ç å¯¹è±¡       CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -246,7 +246,7 @@ static HI_VOID JPEG_HDEC_SetMidderBuf(const struct jpeg_decompress_struct * cinf
 
 		/**
 		 ** set y address,if jpeg hard decode out to argb,is also argb address
-		 ** CNcomment: ÉèÖÃÁÁ¶ÈÊä³öµØÖ·£¬ÒªÊÇ½âÂëÊä³öARGB£¬ÔòÒ²ÊÇARGBÊä³öµØÖ· CNend\n
+		 ** CNcomment: è®¾ç½®äº®åº¦è¾“å‡ºåœ°å€ï¼Œè¦æ˜¯è§£ç è¾“å‡ºARGBï¼Œåˆ™ä¹Ÿæ˜¯ARGBè¾“å‡ºåœ°å€ CNend\n
 		 **/
 		    JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,   \
 				             JPGD_REG_YSTADDR, 				 \
@@ -271,8 +271,8 @@ static HI_VOID JPEG_HDEC_SetMidderBuf(const struct jpeg_decompress_struct * cinf
 /*****************************************************************************
 * func		   : JPEG_HDEC_SetDecARGBPara
 * description  : set the argb parameter when jpeg hard decode output argb
-				 CNcomment: µ±½âÂëÊä³öARGBÊ±ºòĞèÒªÉèÖÃµÄÒ»Ğ©²ÎÊı	 CNend\n
-* param[in]	   : cinfo		   CNcomment: ½âÂë¶ÔÏó		             CNend\n
+				 CNcomment: å½“è§£ç è¾“å‡ºARGBæ—¶å€™éœ€è¦è®¾ç½®çš„ä¸€äº›å‚æ•°	 CNend\n
+* param[in]	   : cinfo		   CNcomment: è§£ç å¯¹è±¡		             CNend\n
 * retval 	   : NA
 * others:	   : NA
 *****************************************************************************/
@@ -296,7 +296,7 @@ static HI_VOID JPEG_HDEC_SetDecARGBPara(const struct jpeg_decompress_struct *cin
 
 		/**
 		** calc crop or no crop position and size
-		** CNcomment: ¼ÆËã²Ã¼ô»ò·Ç²Ã¼ôµÄÎ»ÖÃºÍ´óĞ¡,Ô­Í¼²Ã¼ôºÍÕæ²Ã¼ô CNend\n
+		** CNcomment: è®¡ç®—è£å‰ªæˆ–éè£å‰ªçš„ä½ç½®å’Œå¤§å°,åŸå›¾è£å‰ªå’ŒçœŸè£å‰ª CNend\n
 		**/
 		s32CropX    = pJpegHandle->stOutDesc.stCropRect.x;
 		s32CropY    = pJpegHandle->stOutDesc.stCropRect.y;
@@ -316,13 +316,13 @@ static HI_VOID JPEG_HDEC_SetDecARGBPara(const struct jpeg_decompress_struct *cin
 
 		/**
 		** set alpha value,default is zero
-		** CNcomment: ÉèÖÃalphaÖµ£¬¼Ä´æÆ÷Ä¬ÈÏÖµÎª0 CNend\n
+		** CNcomment: è®¾ç½®alphaå€¼ï¼Œå¯„å­˜å™¨é»˜è®¤å€¼ä¸º0 CNend\n
 		**/
 		JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_ALPHA,(HI_S32)pJpegHandle->u32Alpha);
 
 		/**
 		** set the min buffer
-		** CNcomment: ÉèÖÃARGBµÄĞĞbufferµØÖ· CNend\n
+		** CNcomment: è®¾ç½®ARGBçš„è¡Œbufferåœ°å€ CNend\n
 		**/
 		JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_MINADDR,(int)(pJpegHandle->pMinPhyBuf));
 		JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_MINADDR1,(int)(pJpegHandle->pMinPhyBuf  + pJpegHandle->stJpegSofInfo.u32MINSize));  
@@ -330,7 +330,7 @@ static HI_VOID JPEG_HDEC_SetDecARGBPara(const struct jpeg_decompress_struct *cin
 
 		/**
 		** set output type register
-		** CNcomment: ÉèÖÃÊä³öÀàĞÍÒÔ¼°ÊÇ·ñÂË²¨¼Ä´æÆ÷ CNend\n
+		** CNcomment: è®¾ç½®è¾“å‡ºç±»å‹ä»¥åŠæ˜¯å¦æ»¤æ³¢å¯„å­˜å™¨ CNend\n
 		**/
 		if(HI_TRUE == pJpegHandle->stDecCoef.bEnHorMedian)
 		{
@@ -357,8 +357,8 @@ static HI_VOID JPEG_HDEC_SetDecARGBPara(const struct jpeg_decompress_struct *cin
 		/**
 		** if output argb, the JPGD_REG_SCALE jidct_emar_en register value should set zero
 		** default is one dec yuv
-		** CNcomment: ÉèÖÃÊä³öÀàĞÍÒÔ¼°ÊÇ·ñÂË²¨¼Ä´æÆ÷£¬»¹ÓÉËõ·Å±ÈÀı¼Ä´æÆ÷µÄjidct_emar_en
-		**            Î»ÓĞ¹Ø£¬Õâ¸öÅäÖÃÎª0²ÅÊÇARGBÊä³ö£¬Ä¬ÈÏÊÇ1ÎªYUVÊä³ö CNend\n
+		** CNcomment: è®¾ç½®è¾“å‡ºç±»å‹ä»¥åŠæ˜¯å¦æ»¤æ³¢å¯„å­˜å™¨ï¼Œè¿˜ç”±ç¼©æ”¾æ¯”ä¾‹å¯„å­˜å™¨çš„jidct_emar_en
+		**            ä½æœ‰å…³ï¼Œè¿™ä¸ªé…ç½®ä¸º0æ‰æ˜¯ARGBè¾“å‡ºï¼Œé»˜è®¤æ˜¯1ä¸ºYUVè¾“å‡º CNend\n
 		**/
 		JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_OUTTYPE,s32OutPut);
 
@@ -368,8 +368,8 @@ static HI_VOID JPEG_HDEC_SetDecARGBPara(const struct jpeg_decompress_struct *cin
 /*****************************************************************************
 * func		   : JPEG_HDEC_SetHorSampleCoef
 * description  : set the hor sample coef
-				 CNcomment:  ÉèÖÃË®Æ½²ÉÑùÂË²¨ÏµÊı    CNend\n
-* param[in]	    : *pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú CNend\n
+				 CNcomment:  è®¾ç½®æ°´å¹³é‡‡æ ·æ»¤æ³¢ç³»æ•°    CNend\n
+* param[in]	    : *pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„ CNend\n
 * retval	   : NA
 * others:	   : NA
 *****************************************************************************/
@@ -430,8 +430,8 @@ static HI_VOID  JPEG_HDEC_SetHorSampleCoef(const JPEG_HDEC_HANDLE_S *pJpegHandle
 /*****************************************************************************
 * func		   : JPEG_HDEC_SetVerSampleCoef
 * description  : set the ver sample coef
-				 CNcomment:  ÉèÖÃ´¹Ö±²ÉÑùÂË²¨ÏµÊı    CNend\n
-* param[in]	    : *pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú CNend\n
+				 CNcomment:  è®¾ç½®å‚ç›´é‡‡æ ·æ»¤æ³¢ç³»æ•°    CNend\n
+* param[in]	    : *pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„ CNend\n
 * retval	   : NA
 * others:	   : NA
 *****************************************************************************/
@@ -472,8 +472,8 @@ static HI_VOID  JPEG_HDEC_SetVerSampleCoef(const JPEG_HDEC_HANDLE_S *pJpegHandle
 /*****************************************************************************
 * func		   : JPEG_HDEC_SetCSCCoef
 * description  : set the CSC coef
-				 CNcomment:  ÉèÖÃCSC×ª»»ÏµÊı    	 CNend\n
-* param[in]	    : *pJpegHandle   CNcomment: ½âÂëÆ÷¾ä±ú CNend\n
+				 CNcomment:  è®¾ç½®CSCè½¬æ¢ç³»æ•°    	 CNend\n
+* param[in]	    : *pJpegHandle   CNcomment: è§£ç å™¨å¥æŸ„ CNend\n
 * retval	   : NA
 * others:	   : NA
 *****************************************************************************/
@@ -483,7 +483,7 @@ static HI_VOID  JPEG_HDEC_SetCSCCoef(const JPEG_HDEC_HANDLE_S *pJpegHandle)
 
 		/**
 		 ** the dc coef is changeless, and the ac coef is change
-		 ** CNcomment: Ö±Á÷ÏµÊıDC±£³Ö¹Ì¶¨²»±ä£¬½»Á÷ÏµÊıAC±£¿É±ä CNend\n
+		 ** CNcomment: ç›´æµç³»æ•°DCä¿æŒå›ºå®šä¸å˜ï¼Œäº¤æµç³»æ•°ACä¿å¯å˜ CNend\n
 		 **/
 		 
 		HI_S32 s32B4 = 0;
@@ -510,8 +510,8 @@ static HI_VOID  JPEG_HDEC_SetCSCCoef(const JPEG_HDEC_HANDLE_S *pJpegHandle)
 /*****************************************************************************
 * func		   : JPEG_HDEC_SetCropAndARGBInfo
 * description  : set about dec out argb register
-				 CNcomment: ÉèÖÃ½âÂëÊä³öÎªARGBÏà¹ØĞÅÏ¢	 CNend\n
-* param[in]	   : cinfo		   CNcomment: ½âÂë¶ÔÏó		 CNend\n
+				 CNcomment: è®¾ç½®è§£ç è¾“å‡ºä¸ºARGBç›¸å…³ä¿¡æ¯	 CNend\n
+* param[in]	   : cinfo		   CNcomment: è§£ç å¯¹è±¡		 CNend\n
 * retval 	   : NA
 * others:	   : NA
 *****************************************************************************/
@@ -541,8 +541,8 @@ static HI_VOID JPEG_HDEC_SetCropAndARGBInfo(const struct jpeg_decompress_struct 
 /*****************************************************************************
 * func		   : JPEG_HDEC_SetCropAndARGBInfo
 * description  : set all decode output yuv420sp information
-				 CNcomment: ÉèÖÃ½âÂëÍ³Ò»Êä³öyuvsp420sp¼Ä´æÆ÷	 CNend\n
-* param[in]	   : cinfo		   CNcomment: ½âÂë¶ÔÏó		         CNend\n
+				 CNcomment: è®¾ç½®è§£ç ç»Ÿä¸€è¾“å‡ºyuvsp420spå¯„å­˜å™¨	 CNend\n
+* param[in]	   : cinfo		   CNcomment: è§£ç å¯¹è±¡		         CNend\n
 * retval 	   : NA
 * others:	   : NA
 *****************************************************************************/
@@ -561,8 +561,8 @@ static HI_VOID JPEG_HDEC_SetYUV420SPInfo(const struct jpeg_decompress_struct *ci
 /*****************************************************************************
 * func		   : JPEG_HDEC_SetCropAndARGBInfo
 * description  : set count lu pixle sum value
-				 CNcomment: ÉèÖÃÍ³¼ÆÁÁ¶ÈÖµ¼Ä´æÆ÷ 	 CNend\n
-* param[in]	   : cinfo		   CNcomment: ½âÂë¶ÔÏó	 CNend\n
+				 CNcomment: è®¾ç½®ç»Ÿè®¡äº®åº¦å€¼å¯„å­˜å™¨ 	 CNend\n
+* param[in]	   : cinfo		   CNcomment: è§£ç å¯¹è±¡	 CNend\n
 * retval 	   : NA
 * others:	   : NA
 *****************************************************************************/
@@ -584,9 +584,9 @@ static HI_VOID JPEG_HDEC_SetLuPixSumInfo(const struct jpeg_decompress_struct *ci
 /*****************************************************************************
 * func		   : JPEG_HDEC_SetPress
 * description  : set press register
-				 CNcomment: Õı³£Ê¹ÓÃµÄ²»ÅäÖÃ·´Ñ¹£¬²âÊÔÊ¹ÓÃ
-				 			FPGAÑéÖ¤µÄÊ±ºòÊ¹ÓÃ CNend\n
-* param[in]    : cinfo		   CNcomment: ½âÂë¶ÔÏó	 CNend\n
+				 CNcomment: æ­£å¸¸ä½¿ç”¨çš„ä¸é…ç½®åå‹ï¼Œæµ‹è¯•ä½¿ç”¨
+				 			FPGAéªŒè¯çš„æ—¶å€™ä½¿ç”¨ CNend\n
+* param[in]    : cinfo		   CNcomment: è§£ç å¯¹è±¡	 CNend\n
 * retval	   : NA
 * others:	   : NA
 *****************************************************************************/
@@ -600,10 +600,10 @@ static HI_VOID JPEG_HDEC_SetPress(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_SetPara
 * description	: set the parameter that hard decode need
-				  CNcomment: ÅäÖÃÓ²¼ş½âÂëĞèÒªµÄ²ÎÊıĞÅÏ¢ 	   CNend\n
-* param[in] 	: cinfo 		CNcomment: ½âÂë¶ÔÏó    CNend\n
-* retval		: HI_SUCCESS	CNcomment: ³É¹¦ 	   CNend\n
-* retval		: HI_FAILURE	CNcomment: Ê§°Ü 	   CNend\n
+				  CNcomment: é…ç½®ç¡¬ä»¶è§£ç éœ€è¦çš„å‚æ•°ä¿¡æ¯ 	   CNend\n
+* param[in] 	: cinfo 		CNcomment: è§£ç å¯¹è±¡    CNend\n
+* retval		: HI_SUCCESS	CNcomment: æˆåŠŸ 	   CNend\n
+* retval		: HI_FAILURE	CNcomment: å¤±è´¥ 	   CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_SetPara(const struct jpeg_decompress_struct *cinfo)
@@ -616,25 +616,25 @@ HI_S32 JPEG_HDEC_SetPara(const struct jpeg_decompress_struct *cinfo)
 
 		/**
 		 ** turn on interrupt
-		 ** CNcomment: ´ò¿ªÖĞ¶Ï CNend\n
+		 ** CNcomment: æ‰“å¼€ä¸­æ–­ CNend\n
 		 **/
 		JPEG_HDEC_WriteReg(pJpegHandle->pJpegRegVirAddr,JPGD_REG_INTMASK,0x0);
 				  
 		/**
 		 ** set dqt table register
-		 ** CNcomment: ÅäÖÃÁ¿»¯±í£¬21us CNend\n
+		 ** CNcomment: é…ç½®é‡åŒ–è¡¨ï¼Œ21us CNend\n
 		 **/
 		JPEG_HDEC_SetDqt(cinfo);
 		
 		/**
 		 ** set dht table register
-		 ** CNcomment: ÅäÖÃ¹ş·òÂü±í£¬100us ~ 120us CNend\n
+		 ** CNcomment: é…ç½®å“ˆå¤«æ›¼è¡¨ï¼Œ100us ~ 120us CNend\n
 		 **/
 		JPEG_HDEC_SetDht(cinfo);
 
 		/**
 		 ** set sof message
-		 ** CNcomment: ÉèÖÃSOFĞÅÏ¢ CNend\n
+		 ** CNcomment: è®¾ç½®SOFä¿¡æ¯ CNend\n
 		 **/
 		s32RetVal = JPEG_HDEC_SetSof(cinfo);
 		if(HI_SUCCESS != s32RetVal)
@@ -643,13 +643,13 @@ HI_S32 JPEG_HDEC_SetPara(const struct jpeg_decompress_struct *cinfo)
 		}
 		/**
 		 ** set stream buffer message
-		 ** CNcomment: ÉèÖÃÂëÁ÷buffer¼Ä´æÆ÷ CNend\n
+		 ** CNcomment: è®¾ç½®ç æµbufferå¯„å­˜å™¨ CNend\n
 		 **/
 		JPEG_HDEC_SetStreamBuf(cinfo);
 
 		/**
 		 ** set middle buffer register
-		 ** CNcomment: ÉèÖÃJPEGÓ²¼ş½âÂëÊä³ö¼Ä´æÆ÷ CNend\n
+		 ** CNcomment: è®¾ç½®JPEGç¡¬ä»¶è§£ç è¾“å‡ºå¯„å­˜å™¨ CNend\n
 		 **/
 		JPEG_HDEC_SetMidderBuf(cinfo);
 				
@@ -657,7 +657,7 @@ HI_S32 JPEG_HDEC_SetPara(const struct jpeg_decompress_struct *cinfo)
 #ifdef CONFIG_JPEG_HARDDEC2ARGB
 		/**
 		 ** set about dec out argb register
-		 ** CNcomment: ÉèÖÃ½âÂëÊä³öÎªARGBÏà¹ØĞÅÏ¢ CNend\n
+		 ** CNcomment: è®¾ç½®è§£ç è¾“å‡ºä¸ºARGBç›¸å…³ä¿¡æ¯ CNend\n
 		 **/
 		if(HI_TRUE == pJpegHandle->bDecARGB)
 		{
@@ -668,7 +668,7 @@ HI_S32 JPEG_HDEC_SetPara(const struct jpeg_decompress_struct *cinfo)
 #ifdef CONFIG_JPEG_OUTPUT_YUV420SP
 		/**
 		 ** set all decode output yuv420sp information
-		 ** CNcomment: ÉèÖÃ½âÂëÍ³Ò»Êä³öyuvsp420sp¼Ä´æÆ÷ CNend\n
+		 ** CNcomment: è®¾ç½®è§£ç ç»Ÿä¸€è¾“å‡ºyuvsp420spå¯„å­˜å™¨ CNend\n
 		 **/
 		if(HI_TRUE == pJpegHandle->bOutYUV420SP)
 		{
@@ -679,7 +679,7 @@ HI_S32 JPEG_HDEC_SetPara(const struct jpeg_decompress_struct *cinfo)
 #ifdef CONFIG_JPEG_OUTPUT_LUPIXSUM
 		/**
 		 ** set count lu pixle sum value
-		 ** CNcomment: ÉèÖÃÍ³¼ÆÁÁ¶ÈÖµ¼Ä´æÆ÷ CNend\n
+		 ** CNcomment: è®¾ç½®ç»Ÿè®¡äº®åº¦å€¼å¯„å­˜å™¨ CNend\n
 		 **/
 		if(HI_TRUE == pJpegHandle->bLuPixSum)
 		{

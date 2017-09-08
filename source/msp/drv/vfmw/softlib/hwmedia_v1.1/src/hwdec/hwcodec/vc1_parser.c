@@ -95,7 +95,7 @@ static int vc1_parse(AVCodecParserContext *s,
 }
 
 /* 2010/05/31 10:00:00 liuxw+00139685 */
-/* ÐÂÔöº¯Êý£ºÑ°ÕÒÍêÕûµÄÒ»·ùÍ¼Ïñ(Ò»³¡»òÊÇÒ»Ö¡) */
+/* æ–°å¢žå‡½æ•°ï¼šå¯»æ‰¾å®Œæ•´çš„ä¸€å¹…å›¾åƒ(ä¸€åœºæˆ–æ˜¯ä¸€å¸§) */
 int VC1_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf, unsigned int *puiOutBufSize,const uint8_t *pucInBuf, unsigned int uiInBufSize, int *piLength)
 {
 	int iRet = IMEDIA_RET_SUCCESS;
@@ -144,7 +144,7 @@ int VC1_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf,
 		return iRet;
 	}
 
-	/* Èç¹ûµ±Ç°½âÎöÖ¡ÔÚÇ°Ò»¸öbufferµÄ±ß½ç£¬Ôòµ±Ç°bufferµÄ½âÎöÓÃµôµÄ×Ö½ÚÊýÎª0 */
+	/* å¦‚æžœå½“å‰è§£æžå¸§åœ¨å‰ä¸€ä¸ªbufferçš„è¾¹ç•Œï¼Œåˆ™å½“å‰bufferçš„è§£æžç”¨æŽ‰çš„å­—èŠ‚æ•°ä¸º0 */
 	if(0 > iBytesConsumed)
 	{
 		iBytesConsumed = 0;

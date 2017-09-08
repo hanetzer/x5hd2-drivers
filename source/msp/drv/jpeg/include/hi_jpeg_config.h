@@ -50,18 +50,18 @@ extern "C"
     /***************************** Macro Definition ******************************/
 
 	/** \addtogroup 	 JPEG CFG */
-    /** @{ */  /** <!-- ¡¾JPEG CFG¡¿ */
+    /** @{ */  /** <!-- ã€JPEG CFGã€‘ */
 
 
     /****************************************************************************
-     **µ×ÏÂÕâÈýÖÖºê¿ª¹Ø¶¼ÊÇÔÚMakefileÖÐ¶¨Òå
+     **åº•ä¸‹è¿™ä¸‰ç§å®å¼€å…³éƒ½æ˜¯åœ¨Makefileä¸­å®šä¹‰
      ****************************************************************************/
 	/** Definition of the chip version */
-	/** CNcomment:Ð¾Æ¬ÀàÐÍºê¶¨Òå,½«ºê¿ª¹Ø·Åµ½MakefileÖÐÈ¥ CNend */
+	/** CNcomment:èŠ¯ç‰‡ç±»åž‹å®å®šä¹‰,å°†å®å¼€å…³æ”¾åˆ°Makefileä¸­åŽ» CNend */
     #if 0
        #define CONFIG_CHIP_S40V200_VERSION
 	   /** the chip version is 3716CV200 */
-	   /** CNcomment:3716CV200Ð¾Æ¬ */
+	   /** CNcomment:3716CV200èŠ¯ç‰‡ */
        #define CONFIG_CHIP_3716CV200_VERSION
 	   #define CONFIG_CHIP_3719CV100_VERSION
 	   #define CONFIG_CHIP_3718CV100_VERSION
@@ -73,130 +73,130 @@ extern "C"
 	   #define CONFIG_CHIP_OTHERS_VERSION
     #endif
 	/** this macro is add google function and use in android version,define in Makefile */
-	/** CNcomment:½«androidµÄgoogle°æ±¾ºËÈëjpeg-6bÖÐ£¬ÔÚMakefileÖÐ¿ØÖÆ¸Ãºê¿ª¹Ø CNend */
+	/** CNcomment:å°†androidçš„googleç‰ˆæœ¬æ ¸å…¥jpeg-6bä¸­ï¼Œåœ¨Makefileä¸­æŽ§åˆ¶è¯¥å®å¼€å…³ CNend */
 	#if 0
 	#define CONFIG_JPEG_ADD_GOOGLEFUNCTION
 	#endif
 
      /****************************************************************************
       ** function marco definition no depend chip platform
-	  ** CNcomment:ºÍÐ¾Æ¬Æ½Ì¨ÎÞ¹ØµÄºê¶¨Òå
+	  ** CNcomment:å’ŒèŠ¯ç‰‡å¹³å°æ— å…³çš„å®å®šä¹‰
      ****************************************************************************/
      #ifndef CONFIG_GFX_ANDROID_SDK
 		/** the some function realize before the main function */
-		/** CNcomment:ÓÐÐ©¹¦ÄÜÔÚmainº¯ÊýÖ®Ç°ÊµÏÖ£¬Ò²¾ÍÊÇ³ÌÐòÔËÐÐÖ®ºóµ÷ÓÃÒ»´Î */
+		/** CNcomment:æœ‰äº›åŠŸèƒ½åœ¨mainå‡½æ•°ä¹‹å‰å®žçŽ°ï¼Œä¹Ÿå°±æ˜¯ç¨‹åºè¿è¡Œä¹‹åŽè°ƒç”¨ä¸€æ¬¡ */
 		#define CONFIG_JPEG_REALIZEFUNC_BEFORMAINFUNC
 	 #else
 	 	/** use outsize deal with stream */
-		/** CNcomment:Ê¹ÓÃÍâ²¿´¦ÀíÂëÁ÷»úÖÆ£¬Í¨¹ý»Øµ÷º¯Êý */
+		/** CNcomment:ä½¿ç”¨å¤–éƒ¨å¤„ç†ç æµæœºåˆ¶ï¼Œé€šè¿‡å›žè°ƒå‡½æ•° */
 	 	#define CONFIG_JPEG_USE_CALLBACK_STREAM
 		/** use gfx mmz to alloc mem */
-		/** CNcomment:Ê¹ÓÃ×Ô¼º·â×°µÄMMZ·ÖÅäÄÚ´æ */
+		/** CNcomment:ä½¿ç”¨è‡ªå·±å°è£…çš„MMZåˆ†é…å†…å­˜ */
 		#define CONFIG_JPEG_USE_PRIVATE_MMZ
 		/** use android debug message */
-		/** CNcomment:Android°æ±¾µÄµ÷ÊÔÐÅÏ¢ */
+		/** CNcomment:Androidç‰ˆæœ¬çš„è°ƒè¯•ä¿¡æ¯ */
 		#define CONFIG_JPEG_ANDROID_DEBUG_ENABLE
      #endif
 
 	 #ifndef CONFIG_GFX_ADVCA_RELEASE
 	 /** if need proc message */
-	 /** CNcomment:ÊÇ·ñÐèÒªprocÐÅÏ¢ */
+	 /** CNcomment:æ˜¯å¦éœ€è¦procä¿¡æ¯ */
      #define CONFIG_JPEG_PROC_ENABLE
 	 #endif
 
 	/** if need use soft csc to debug whether the hard csc has problem */
-	/** CNcomment:Ê¹ÓÃÈí¼þ×ª»»À´¶¨Î»Ó²¼þ×ª»»ÊÇ·ñÓÐÎÊÌâ */
+	/** CNcomment:ä½¿ç”¨è½¯ä»¶è½¬æ¢æ¥å®šä½ç¡¬ä»¶è½¬æ¢æ˜¯å¦æœ‰é—®é¢˜ */
     #define CONFIG_JPEG_SOFTCSC_ENABLE
 
 	/** use hard idct method */
-	/** CNcomment:Ê¹ÓÃÓ²¼þµÃIDCTËã·¨ */
+	/** CNcomment:ä½¿ç”¨ç¡¬ä»¶å¾—IDCTç®—æ³• */
     #define CONFIG_JPEG_USEHWIDCT
 	
 /****************************************************************************
  ** function marco definition depend chip platform
- ** CNcomment:ºÍÐ¾Æ¬Æ½Ì¨Ïà¹ØµÄºê¶¨Òå
+ ** CNcomment:å’ŒèŠ¯ç‰‡å¹³å°ç›¸å…³çš„å®å®šä¹‰
  ****************************************************************************/
 #ifdef CONFIG_CHIP_3716MV300_VERSION
 	/** if support crop */
-    /** CNcomment:ÊÇ·ñÖ§³Ö²Ã¼ô¹¦ÄÜ */
+    /** CNcomment:æ˜¯å¦æ”¯æŒè£å‰ªåŠŸèƒ½ */
     #define CONFIG_JPEG_OUTPUT_CROP
 	/** use mmz to alloc memory */
-	/** CNcomment:Ê¹ÓÃmmz·ÖÅäµÄÄÚ´æ */
+	/** CNcomment:ä½¿ç”¨mmzåˆ†é…çš„å†…å­˜ */
 	#define CONFIG_JPEG_USEMMZMEM
 	/** get jpeg dec time */
-	/** CNcomment:»ñÈ¡jpeg½âÂëµÄÊ±¼ä */
+	/** CNcomment:èŽ·å–jpegè§£ç çš„æ—¶é—´ */
 	#define CONFIG_JPEG_GETDECTIME
 	/** support motion jpeg decode */
-	/** CNcomment:Ö§³Ömotion jpeg ½âÂë */
+	/** CNcomment:æ”¯æŒmotion jpeg è§£ç  */
 	//#define CONFIG_JPEG_MPG_DEC_ENABLE
 #endif
 
 
 #ifdef CONFIG_CHIP_S40V200_VERSION
 	/** if support crop */
-	/** CNcomment:ÊÇ·ñÖ§³Ö²Ã¼ô¹¦ÄÜ */
+	/** CNcomment:æ˜¯å¦æ”¯æŒè£å‰ªåŠŸèƒ½ */
     #define CONFIG_JPEG_OUTPUT_CROP
 	/** use mmz to alloc memory */
-	/** CNcomment:Ê¹ÓÃmmz·ÖÅäµÄÄÚ´æ */
+	/** CNcomment:ä½¿ç”¨mmzåˆ†é…çš„å†…å­˜ */
 	#define CONFIG_JPEG_USEMMZMEM
 	/** get jpeg dec time */
-	/** CNcomment:»ñÈ¡jpeg½âÂëµÄÊ±¼ä */
+	/** CNcomment:èŽ·å–jpegè§£ç çš„æ—¶é—´ */
 	#define CONFIG_JPEG_GETDECTIME
 	/** use sdk CRG write */
-	/** CNcomment:Ê¹ÓÃSDKµÄCRG²Ù×÷ */
+	/** CNcomment:ä½¿ç”¨SDKçš„CRGæ“ä½œ */
 	#define CONFIG_JPEG_USE_SDK_CRG_ENABLE
 #endif
 
 	
 #if defined(CONFIG_CHIP_3716CV200_VERSION) || defined(CONFIG_CHIP_3719CV100_VERSION) || defined(CONFIG_CHIP_3718CV100_VERSION) || defined(CONFIG_CHIP_3719MV100_A_VERSION)
 	/** if support crop */
-	/** CNcomment:ÊÇ·ñÖ§³Ö²Ã¼ô¹¦ÄÜ */
+	/** CNcomment:æ˜¯å¦æ”¯æŒè£å‰ªåŠŸèƒ½ */
     #define CONFIG_JPEG_OUTPUT_CROP
 	/** if support suspend */
-	/** CNcomment:ÊÇ·ñÖ§³Ö´ý»ú¹¦ÄÜ */
+	/** CNcomment:æ˜¯å¦æ”¯æŒå¾…æœºåŠŸèƒ½ */
 	#define CONFIG_JPEG_SUSPEND
 	/** if support jpeg hard dec to argb8888 */
-	/** CNcomment:ÊÇ·ñÖ§³ÖjpegÓ²¼þ½âÂëÊä³öargb8888 */
-	//#define CONFIG_JPEG_HARDDEC2ARGB /** Õâ¸ö°æ±¾²»Ö§³Ö£¬ÓÉÓÚÉæ¼°µ½strideÎÊÌâ£¬Ö±½ÓÓÃTDE×ª¹æ±ÜÁË **/
+	/** CNcomment:æ˜¯å¦æ”¯æŒjpegç¡¬ä»¶è§£ç è¾“å‡ºargb8888 */
+	//#define CONFIG_JPEG_HARDDEC2ARGB /** è¿™ä¸ªç‰ˆæœ¬ä¸æ”¯æŒï¼Œç”±äºŽæ¶‰åŠåˆ°strideé—®é¢˜ï¼Œç›´æŽ¥ç”¨TDEè½¬è§„é¿äº† **/
 	/** use mmz to alloc memory */
-	/** CNcomment:Ê¹ÓÃmmz·ÖÅäµÄÄÚ´æ */
+	/** CNcomment:ä½¿ç”¨mmzåˆ†é…çš„å†…å­˜ */
 	#define CONFIG_JPEG_USEMMZMEM
 	/** get jpeg dec time */
-	/** CNcomment:»ñÈ¡jpeg½âÂëµÄÊ±¼ä */
+	/** CNcomment:èŽ·å–jpegè§£ç çš„æ—¶é—´ */
 	#define CONFIG_JPEG_GETDECTIME
 	/** the save stream buffer should 4bytes align about 3716CV200 */
-	/** CNcomment:3716CV200Ð¾Æ¬´æ´¢ÂëÁ÷bufferÆðÊ¼µØÖ·ÐèÒª4×Ö½Ú¶ÔÆë£¬Ö®ºóµÄÐ¾Æ¬½â¾öÁËÕâ¸öbug */
+	/** CNcomment:3716CV200èŠ¯ç‰‡å­˜å‚¨ç æµbufferèµ·å§‹åœ°å€éœ€è¦4å­—èŠ‚å¯¹é½ï¼Œä¹‹åŽçš„èŠ¯ç‰‡è§£å†³äº†è¿™ä¸ªbug */
 	#define CONFIG_JPEG_STREAMBUF_4ALIGN
 	/** support motion jpeg decode */
-	/** CNcomment:Ö§³Ömotion jpeg ½âÂë */
+	/** CNcomment:æ”¯æŒmotion jpeg è§£ç  */
 	//#define CONFIG_JPEG_MPG_DEC_ENABLE
 	/** use sdk CRG write */
-	/** CNcomment:Ê¹ÓÃSDKµÄCRG²Ù×÷ */
+	/** CNcomment:ä½¿ç”¨SDKçš„CRGæ“ä½œ */
 	#define CONFIG_JPEG_USE_SDK_CRG_ENABLE
 #endif
 
 
 #ifdef CONFIG_CHIP_3719MV300_VERSION
 		/** if support crop */
-		/** CNcomment:ÊÇ·ñÖ§³Ö²Ã¼ô¹¦ÄÜ */
+		/** CNcomment:æ˜¯å¦æ”¯æŒè£å‰ªåŠŸèƒ½ */
     	#define CONFIG_JPEG_OUTPUT_CROP
 	    /** all jpeg dec output yuv420sp */
-	    /** CNcomment:Í³Ò»½âÂëÊä³öyuv420sp */
+	    /** CNcomment:ç»Ÿä¸€è§£ç è¾“å‡ºyuv420sp */
         #define CONFIG_JPEG_OUTPUT_YUV420SP
 	    /** dec jpeg file output lu pixel value sum */
-	    /** CNcomment:Í³¼ÆÁÁ¶ÈÖµ */
+	    /** CNcomment:ç»Ÿè®¡äº®åº¦å€¼ */
         #define CONFIG_JPEG_OUTPUT_LUPIXSUM
 		/** get jpeg dec time */
-	    /** CNcomment:»ñÈ¡jpeg½âÂëµÄÊ±¼ä */
+	    /** CNcomment:èŽ·å–jpegè§£ç çš„æ—¶é—´ */
 	    #define CONFIG_JPEG_GETDECTIME
 		/** use mmz to alloc memory */
-		/** CNcomment:Ê¹ÓÃmmz·ÖÅäµÄÄÚ´æ */
+		/** CNcomment:ä½¿ç”¨mmzåˆ†é…çš„å†…å­˜ */
 		#define CONFIG_JPEG_USEMMZMEM
 		/** if support suspend */
-		/** CNcomment:ÊÇ·ñÖ§³Ö´ý»ú¹¦ÄÜ */
+		/** CNcomment:æ˜¯å¦æ”¯æŒå¾…æœºåŠŸèƒ½ */
 		#define CONFIG_JPEG_SUSPEND
 		/** support motion jpeg decode */
-		/** CNcomment:Ö§³Ömotion jpeg ½âÂë */
+		/** CNcomment:æ”¯æŒmotion jpeg è§£ç  */
 		//#define CONFIG_JPEG_MPG_DEC_ENABLE
 #endif
 
@@ -204,62 +204,62 @@ extern "C"
 
 #ifdef CONFIG_CHIP_3535_VERSION
 		/** if support crop */
-		/** CNcomment:ÊÇ·ñÖ§³Ö²Ã¼ô¹¦ÄÜ */
+		/** CNcomment:æ˜¯å¦æ”¯æŒè£å‰ªåŠŸèƒ½ */
     	#define CONFIG_JPEG_OUTPUT_CROP
 	    /** not output warning info */
-	    /** CNcomment:²»Êä³ö¸æ¾¯ÐÅÏ¢ */
+	    /** CNcomment:ä¸è¾“å‡ºå‘Šè­¦ä¿¡æ¯ */
 		#define CONFIG_JPEG_UNPRINT_WARNING
 	    /** all jpeg dec output yuv420sp */
-	    /** CNcomment:Í³Ò»½âÂëÊä³öyuv420sp */
+	    /** CNcomment:ç»Ÿä¸€è§£ç è¾“å‡ºyuv420sp */
 		#define CONFIG_JPEG_OUTPUT_YUV420SP
 	    /** dec jpeg file output lu pixel value sum */
-	    /** CNcomment:Í³¼ÆÁÁ¶ÈÖµ */
+	    /** CNcomment:ç»Ÿè®¡äº®åº¦å€¼ */
 		#define CONFIG_JPEG_OUTPUT_LUPIXSUM
 	    /** set mem */
-	    /** CNcomment:Í¨¹ýÉèÖÃÄÚ´æ½Ó¿ÚÀ´»ñÈ¡ÐèÒªµÄÄÚ´æ */
+	    /** CNcomment:é€šè¿‡è®¾ç½®å†…å­˜æŽ¥å£æ¥èŽ·å–éœ€è¦çš„å†…å­˜ */
 		#define CONFIG_JPEG_SETMEM
 	    /** use no mmz cach */
-	    /** CNcomment:Ê¹ÓÃ²»´øcachµÄmmzÄÚ´æ */
+	    /** CNcomment:ä½¿ç”¨ä¸å¸¦cachçš„mmzå†…å­˜ */
 		#define CONFIG_JPEG_NOCACHE
 	    /** soft decode to calc the lu pixle sum value */
-	    /** CNcomment:ÊÇ·ñÐèÒªÈí¼þÍ³¼ÆÁÁ¶ÈÖµ¹¦ÄÜ */
+	    /** CNcomment:æ˜¯å¦éœ€è¦è½¯ä»¶ç»Ÿè®¡äº®åº¦å€¼åŠŸèƒ½ */
 		#define CONFIG_JPEG_SFCALCLUPIXSUM
 #endif
 
 	/** use the calc default value dqt and dht value */
-	/** CNcomment:Ê¹ÓÃ¼ÆËãºÃµÄÁ¿»¯±íºÍ¹þ·òÂü±íµÄÖµ£¬Ö±½ÓÅäÖÃ¼Ä´æÆ÷ */
+	/** CNcomment:ä½¿ç”¨è®¡ç®—å¥½çš„é‡åŒ–è¡¨å’Œå“ˆå¤«æ›¼è¡¨çš„å€¼ï¼Œç›´æŽ¥é…ç½®å¯„å­˜å™¨ */
 #ifdef CONFIG_JPEG_MPG_DEC_ENABLE
 		#define CONFIG_JPEG_USE_CALC_DEFAULT_VALUE
 #endif
 
     /****************************************************************************
      ** function marco definition use to fpga test and deal with bug by eda
-	 ** CNcomment:ÓÃÀ´Ó²¼þÂß¼­²âÊÔ¼°¶¨Î»bugÊ¹ÓÃµÄºê¿ª¹Ø
+	 ** CNcomment:ç”¨æ¥ç¡¬ä»¶é€»è¾‘æµ‹è¯•åŠå®šä½bugä½¿ç”¨çš„å®å¼€å…³
      ****************************************************************************/
 	/** save the scen information,use it to eda simulation */
-	/** CNcomment:µ¼ÏÖ³¡Ê¹ÄÜ£¬ÓÃÀ´µ÷ÊÔÓÃµÄ£¬ÏÖ³¡¸øÂß¼­×öEDA·ÂÕæ */
+	/** CNcomment:å¯¼çŽ°åœºä½¿èƒ½ï¼Œç”¨æ¥è°ƒè¯•ç”¨çš„ï¼ŒçŽ°åœºç»™é€»è¾‘åšEDAä»¿çœŸ */
 	//#define CONFIG_JPEG_FPGA_TEST_SAVE_SCEN_ENABLE
 	/** save the data to bmp picture */
-	/** CNcomment:±£´æbmpÍ¼Æ¬ */
+	/** CNcomment:ä¿å­˜bmpå›¾ç‰‡ */
     //#define CONFIG_JPEG_TEST_SAVE_BMP_PIC
     /** save yuv semi-planer data */
-	/** CNcomment:±£´æyuv semi-planerÊý¾Ý */
+	/** CNcomment:ä¿å­˜yuv semi-planeræ•°æ® */
     //#define CONFIG_JPEG_TEST_SAVE_YUVSP_DATA
 
 	/** the chip hard decode random reset test */
-	/** CNcomment:Ëæ»úÈí¸´Î»ÑùÆ¬²âÊÔ */
+	/** CNcomment:éšæœºè½¯å¤ä½æ ·ç‰‡æµ‹è¯• */
 	//#define CONFIG_JPEG_TEST_CHIP_RANDOM_RESET
 	/** test press */
-	/** CNcomment:²âÊÔ·´Ñ¹ */
+	/** CNcomment:æµ‹è¯•ååŽ‹ */
 	//#define CONFIG_JPEG_TEST_CHIP_PRESS
 	/** the ck_gt_en is open */
-	/** CNcomment:Ê±ÖÓÃÅ¿Ø´ò¿ª */
+	/** CNcomment:æ—¶é’Ÿé—¨æŽ§æ‰“å¼€ */
 	//#define CONFIG_JPEG_TEST_CHIP_OPEN_CK
 	/** test hard decode capa */
-	/** CNcomment:²âÊÔÓ²¼þ½âÂëÐÔÄÜ */
+	/** CNcomment:æµ‹è¯•ç¡¬ä»¶è§£ç æ€§èƒ½ */
 	//#define CONFIG_JPEG_TEST_HARD_DEC_CAPA
 	/** save the scen information,use it to eda simulation */
-	/** CNcomment:²âÊÔ´ý»úÔö¼ÓµÄ¼¸¸ö½Ó¿Ú */
+	/** CNcomment:æµ‹è¯•å¾…æœºå¢žåŠ çš„å‡ ä¸ªæŽ¥å£ */
 	//#define CONFIG_JPEG_FPGA_TEST_SUSPEND_ENABLE
 
 	#ifdef CONFIG_GFX_FPGA_SDK
@@ -268,7 +268,7 @@ extern "C"
 	
     #ifdef CONFIG_GFX_ADVCA_RELEASE
 	    /** this is not has warning message */
-	    /** CNcomment:Ö»ÓÐ´øÉÏ²ÎÊý²Å²»»áÓÐ¸æ¾¯ÐÅÏ¢ */
+	    /** CNcomment:åªæœ‰å¸¦ä¸Šå‚æ•°æ‰ä¸ä¼šæœ‰å‘Šè­¦ä¿¡æ¯ */
         #define JPEG_TRACE( fmt,args...)
 	#else
 	    #ifdef __KERNEL__

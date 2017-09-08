@@ -16,7 +16,7 @@
 *******************************************************************************/
 /** 
  * \file
- * \brief Describes the information about video encoding (VENC). CNcomment: Ìá¹©VENCµÄÏà¹ØĞÅÏ¢ CNend
+ * \brief Describes the information about video encoding (VENC). CNcomment: æä¾›VENCçš„ç›¸å…³ä¿¡æ¯ CNend
  */
 
 #ifndef  __HI_UNF_VENC_H__
@@ -32,10 +32,10 @@ extern "C" {
 
 /********************************Struct Definition********************************/
 /** \addtogroup      VENC */
-/** @{ */  /** <!-- ¡¾VENC¡¿ */
+/** @{ */  /** <!-- ã€VENCã€‘ */
 
 /**H.264 NALU type*/
-/**CNcomment: H.264NALUÀàĞÍ */
+/**CNcomment: H.264NALUç±»å‹ */
 typedef enum hiUNF_H264E_NALU_TYPE_E
 {
     HI_UNF_H264E_NALU_PSLICE = 1,       /**<P slice NALU*/ 
@@ -47,7 +47,7 @@ typedef enum hiUNF_H264E_NALU_TYPE_E
 } HI_UNF_H264E_NALU_TYPE_E;
 
 /**H.263 NALU type*/
-/**CNcomment: H.263NALUÀàĞÍ */
+/**CNcomment: H.263NALUç±»å‹ */
 typedef enum hiUNF_H263E_PACK_TYPE_E
 {
     HI_UNF_H263E_NALU_PSLICE = 1,       /**<P slice NALU*/
@@ -59,64 +59,64 @@ typedef enum hiUNF_H263E_PACK_TYPE_E
 } HI_UNF_H263E_PACK_TYPE_E;
 
 /**MPEG4 package type*/
-/**CNcomment: MPEG4´ò°üÀàĞÍ */
+/**CNcomment: MPEG4æ‰“åŒ…ç±»å‹ */
 typedef enum hiUNF_MPEG4E_PACK_TYPE_E
 {
-    HI_UNF_MPEG4E_PACK_VO    = 1,          /**<VO package*/ /**<CNcomment: VO °ü*/
-    HI_UNF_MPEG4E_PACK_VOS   = 2,         /**<VOS package*/ /**<CNcomment: VOS °ü*/
-    HI_UNF_MPEG4E_PACK_VOL   = 3,         /**<VOL package*/ /**<CNcomment: VOL °ü*/
-    HI_UNF_MPEG4E_PACK_VOP   = 4,         /**<VOP package*/ /**<CNcomment: VOP °ü*/
-    HI_UNF_MPEG4E_PACK_SLICE = 5        /**<Slice package*/ /**<CNcomment: SLICE °ü*/	
+    HI_UNF_MPEG4E_PACK_VO    = 1,          /**<VO package*/ /**<CNcomment: VO åŒ…*/
+    HI_UNF_MPEG4E_PACK_VOS   = 2,         /**<VOS package*/ /**<CNcomment: VOS åŒ…*/
+    HI_UNF_MPEG4E_PACK_VOL   = 3,         /**<VOL package*/ /**<CNcomment: VOL åŒ…*/
+    HI_UNF_MPEG4E_PACK_VOP   = 4,         /**<VOP package*/ /**<CNcomment: VOP åŒ…*/
+    HI_UNF_MPEG4E_PACK_SLICE = 5        /**<Slice package*/ /**<CNcomment: SLICE åŒ…*/	
 } HI_UNF_MPEG4E_PACK_TYPE_E;
 
 /**Data type of the Encoder*/
-/**CNcomment: ±àÂëÆ÷Êı¾İÀàĞÍ */
+/**CNcomment: ç¼–ç å™¨æ•°æ®ç±»å‹ */
 typedef union hiUNF_VENC_DATA_TYPE_U
 {
-    HI_UNF_H264E_NALU_TYPE_E   enH264EType;	/**<H.264 encoding data*/ /**<CNcomment: h264±àÂëÊı¾İ*/	
-    HI_UNF_H263E_PACK_TYPE_E   enH263EType;	/**<H.263 encoding data*/ /**<CNcomment: h263±àÂëÊı¾İ*/	
-    HI_UNF_MPEG4E_PACK_TYPE_E  enMPEG4EType;    /**<MPEG4 encoding data*/ /**<CNcomment: MPEG4±àÂëÊı¾İ*/		
+    HI_UNF_H264E_NALU_TYPE_E   enH264EType;	/**<H.264 encoding data*/ /**<CNcomment: h264ç¼–ç æ•°æ®*/	
+    HI_UNF_H263E_PACK_TYPE_E   enH263EType;	/**<H.263 encoding data*/ /**<CNcomment: h263ç¼–ç æ•°æ®*/	
+    HI_UNF_MPEG4E_PACK_TYPE_E  enMPEG4EType;    /**<MPEG4 encoding data*/ /**<CNcomment: MPEG4ç¼–ç æ•°æ®*/		
 }HI_UNF_VENC_DATA_TYPE_U;
 
 /*Output stream attributes structure*/
-/**CNcomment: Êä³öÂëÁ÷ÊôĞÔ½á¹¹Ìå */
+/**CNcomment: è¾“å‡ºç æµå±æ€§ç»“æ„ä½“ */
 typedef struct hiVENC_STREAM_S
 {
-    HI_U8                   *pu8Addr ;       /**<Stream virtual address*/ /**<CNcomment: ÂëÁ÷ĞéÄâµØÖ·*/	
-    HI_U32                  u32SlcLen;      /**<Stream length*/ /**<CNcomment: ÂëÁ÷³¤¶È*/		
-    HI_U32                  u32PtsMs;        /**<Presentation time stamp (PTS), in ms*/ /**<CNcomment: Ê±¼ä´Á£¬µ¥Î»ÊÇºÁÃë*/
-    HI_BOOL                 bFrameEnd;       /**<Frame end or not*/ /**<CNcomment: ±êÊ¶ÊÇ·ñÎªÖ¡½áÊø*/
-    HI_UNF_VENC_DATA_TYPE_U enDataType;      /**Encoding data type*/ /**<CNcomment: ±àÂëÊı¾İÀàĞÍ*/
+    HI_U8                   *pu8Addr ;       /**<Stream virtual address*/ /**<CNcomment: ç æµè™šæ‹Ÿåœ°å€*/	
+    HI_U32                  u32SlcLen;      /**<Stream length*/ /**<CNcomment: ç æµé•¿åº¦*/		
+    HI_U32                  u32PtsMs;        /**<Presentation time stamp (PTS), in ms*/ /**<CNcomment: æ—¶é—´æˆ³ï¼Œå•ä½æ˜¯æ¯«ç§’*/
+    HI_BOOL                 bFrameEnd;       /**<Frame end or not*/ /**<CNcomment: æ ‡è¯†æ˜¯å¦ä¸ºå¸§ç»“æŸ*/
+    HI_UNF_VENC_DATA_TYPE_U enDataType;      /**Encoding data type*/ /**<CNcomment: ç¼–ç æ•°æ®ç±»å‹*/
 }HI_UNF_VENC_STREAM_S;
 
 /*Coding channal attributes structure*/
-/**CNcomment: ±àÂëÍ¨µÀÊôĞÔ½á¹¹Ìå */
+/**CNcomment: ç¼–ç é€šé“å±æ€§ç»“æ„ä½“ */
 typedef struct hiUNF_VENC_CHN_ATTR_S
 {
-    HI_UNF_VCODEC_TYPE_E        enVencType;	      /**<Encoder type*/ /**<CNcomment: ±àÂëÆ÷ÀàĞÍ */
-    HI_UNF_VCODEC_CAP_LEVEL_E   enCapLevel;       /**<Encoder level*/ /**<CNcomment: ±àÂëÆ÷±àÂëÄÜÁ¦ */
-	HI_UNF_H264_PROFILE_E       enVencProfile;    /**<H264 Profile of Encoder,it is just valid for H264 Encoder*/ /**<CNcomment: ±àÂëH264µÄµµ´Î£¬Ö»ÔÚ¶¨ÒåÁËH264Ğ­Òé±àÂëÆ÷Çé¿öÏÂ²ÅÓĞĞ§*/
+    HI_UNF_VCODEC_TYPE_E        enVencType;	      /**<Encoder type*/ /**<CNcomment: ç¼–ç å™¨ç±»å‹ */
+    HI_UNF_VCODEC_CAP_LEVEL_E   enCapLevel;       /**<Encoder level*/ /**<CNcomment: ç¼–ç å™¨ç¼–ç èƒ½åŠ› */
+	HI_UNF_H264_PROFILE_E       enVencProfile;    /**<H264 Profile of Encoder,it is just valid for H264 Encoder*/ /**<CNcomment: ç¼–ç H264çš„æ¡£æ¬¡ï¼Œåªåœ¨å®šä¹‰äº†H264åè®®ç¼–ç å™¨æƒ…å†µä¸‹æ‰æœ‰æ•ˆ*/
     HI_U32                      u32Width;         /**<Width, 4-byte aligned. The width can be configured dynamically in the limit of encoder level.*/ 
-                                                  /**<CNcomment: ¿í¶È,4¶ÔÆë,±àÂëÄÜÁ¦¼¶·¶Î§ÄÚ¿ÉÖ§³Ö¶¯Ì¬ÉèÖÃ */
+                                                  /**<CNcomment: å®½åº¦,4å¯¹é½,ç¼–ç èƒ½åŠ›çº§èŒƒå›´å†…å¯æ”¯æŒåŠ¨æ€è®¾ç½® */
     HI_U32                      u32Height;        /**<Height, 4-byte aligned.The height can be configured dynamically in the limit of encoder level.*/ 
-                                                  /**<CNcomment: ¸ß¶È,4¶ÔÆë,±àÂëÄÜÁ¦¼¶·¶Î§ÄÚ¿ÉÖ§³Ö¶¯Ì¬ÉèÖÃ */
+                                                  /**<CNcomment: é«˜åº¦,4å¯¹é½,ç¼–ç èƒ½åŠ›çº§èŒƒå›´å†…å¯æ”¯æŒåŠ¨æ€è®¾ç½® */
     HI_U32                      u32StrmBufSize;	  /**<Stream buffer size, should be larger than width*height*2 of the encoder level's resolving power*/ 
-                                                  /**<CNcomment: ÂëÁ÷buffer´óĞ¡,ÅäÖÃµÄÂëÁ÷buffer´óĞ¡Òª>=±àÂëÄÜÁ¦¼¶·Ö±æÂÊµÄ¿í*¸ß*2 */
-    HI_U32                      u32RotationAngle; /**<Rotation angle. This parameter cannot be set.*/ /**<CNcomment: Ğı×ª½Ç¶È,ÎŞĞ§ÉèÖÃ  */
-    HI_BOOL                     bSlcSplitEn;      /**<Slice split enable*/ /**<CNcomment: ÊÇ·ñÊ¹ÄÜ·Ö¸îslice */ 	
+                                                  /**<CNcomment: ç æµbufferå¤§å°,é…ç½®çš„ç æµbufferå¤§å°è¦>=ç¼–ç èƒ½åŠ›çº§åˆ†è¾¨ç‡çš„å®½*é«˜*2 */
+    HI_U32                      u32RotationAngle; /**<Rotation angle. This parameter cannot be set.*/ /**<CNcomment: æ—‹è½¬è§’åº¦,æ— æ•ˆè®¾ç½®  */
+    HI_BOOL                     bSlcSplitEn;      /**<Slice split enable*/ /**<CNcomment: æ˜¯å¦ä½¿èƒ½åˆ†å‰²slice */ 	
     HI_U32                      u32TargetBitRate; /**<RC parameter for the VENC. It can be set dynamically.Some reference values as follows:above 5M for 1080P,above 3M for 720P, about 2M for D1*/ 
-                                                   /**<CNcomment: VencÏÂÊÇRC²ÎÊı,¿É¶¯Ì¬ÉèÖÃ.²¿·Ö²Î¿¼ÖµÈçÏÂ:1080PÏÂ5MÒÔÉÏ£¬720PÏÂ3MÒÔÉÏ£¬D1ÏÂ2M×óÓÒ*/
-    HI_U32                      u32TargetFrmRate; /**<Target frame rate. It can be set dynamically.*/         /**<CNcomment: Ä¿±êÖ¡ÂÊ,¿É¶¯Ì¬ÉèÖÃ */ 
+                                                   /**<CNcomment: Vencä¸‹æ˜¯RCå‚æ•°,å¯åŠ¨æ€è®¾ç½®.éƒ¨åˆ†å‚è€ƒå€¼å¦‚ä¸‹:1080Pä¸‹5Mä»¥ä¸Šï¼Œ720Pä¸‹3Mä»¥ä¸Šï¼ŒD1ä¸‹2Må·¦å³*/
+    HI_U32                      u32TargetFrmRate; /**<Target frame rate. It can be set dynamically.*/         /**<CNcomment: ç›®æ ‡å¸§ç‡,å¯åŠ¨æ€è®¾ç½® */ 
     HI_U32                      u32InputFrmRate;  /**<Input frame rate. It can be set dynamically. The value of u32TargetFrmRate is less than or equal to the value of u32InputFrmRate.
 	                                               ** Attention the if in the mode of attach source to encode the InputFrmRate which set by user is in vain.*/ 
-                                                  /**<CNcomment: ÊäÈëÖ¡ÂÊ,¿É¶¯Ì¬ÉèÖÃ,u32TargetFrmRate <= u32InputFrmRate ,×¢ÒâÔÚ°ó¶¨Ä£Ê½±àÂëÇé¿öÏÂÓÃ»§ÅäÖÃµÄÊäÈëÖ¡ÂÊ½«Ê§Ğ§*/ 
-    HI_U32                      u32Gop;			  /**<GOP size. It can be set dynamically.*/ /**<CNcomment: GOP´óĞ¡,¿É¶¯Ì¬ÉèÖÃ */ 	
-    HI_U32                      u32MaxQp;         /**<The maximum quantization parameter. It can be set dynamically.*/    /**<CNcomment: ×î´óÁ¿»¯²ÎÊı,¿É¶¯Ì¬ÉèÖÃ*/	
-    HI_U32                      u32MinQp;         /**<The minimum quantization parameter. It can be set dynamically.*/    /**<CNcomment: ×îĞ¡Á¿»¯²ÎÊı,¿É¶¯Ì¬ÉèÖÃ*/	
-    HI_BOOL			            bQuickEncode;     /**<Quick Encode Mode enable*/ /**<CNcomment:ÊÇ·ñÊ¹ÄÜ¿ìËÙ±àÂëÄ£Ê½*/
+                                                  /**<CNcomment: è¾“å…¥å¸§ç‡,å¯åŠ¨æ€è®¾ç½®,u32TargetFrmRate <= u32InputFrmRate ,æ³¨æ„åœ¨ç»‘å®šæ¨¡å¼ç¼–ç æƒ…å†µä¸‹ç”¨æˆ·é…ç½®çš„è¾“å…¥å¸§ç‡å°†å¤±æ•ˆ*/ 
+    HI_U32                      u32Gop;			  /**<GOP size. It can be set dynamically.*/ /**<CNcomment: GOPå¤§å°,å¯åŠ¨æ€è®¾ç½® */ 	
+    HI_U32                      u32MaxQp;         /**<The maximum quantization parameter. It can be set dynamically.*/    /**<CNcomment: æœ€å¤§é‡åŒ–å‚æ•°,å¯åŠ¨æ€è®¾ç½®*/	
+    HI_U32                      u32MinQp;         /**<The minimum quantization parameter. It can be set dynamically.*/    /**<CNcomment: æœ€å°é‡åŒ–å‚æ•°,å¯åŠ¨æ€è®¾ç½®*/	
+    HI_BOOL			            bQuickEncode;     /**<Quick Encode Mode enable*/ /**<CNcomment:æ˜¯å¦ä½¿èƒ½å¿«é€Ÿç¼–ç æ¨¡å¼*/
     HI_U8                       u8Priority;       /**<the Priority Level of the channal,should between 0 to the max num of channel minus 1.It can be set dynamically.*/     
-                                                  /**<CNcomment: ±àÂëÍ¨µÀµÄÓÅÏÈ¼¶ÊôĞÔ£¬È¡Öµ·¶Î§Îª0~×î´óÍ¨µÀÊı-1,¿É¶¯Ì¬ÉèÖÃ*/
-    HI_U32                      u32Qlevel;        /**<The value ranges from 1 to 99 for the JPGE, and is set to 0 for other formats.*/ /**<CNcomment: JPGEÈ¡Öµ·¶Î§1-99£¬ÆäËûÉèÖÃÎª0 */
+                                                  /**<CNcomment: ç¼–ç é€šé“çš„ä¼˜å…ˆçº§å±æ€§ï¼Œå–å€¼èŒƒå›´ä¸º0~æœ€å¤§é€šé“æ•°-1,å¯åŠ¨æ€è®¾ç½®*/
+    HI_U32                      u32Qlevel;        /**<The value ranges from 1 to 99 for the JPGE, and is set to 0 for other formats.*/ /**<CNcomment: JPGEå–å€¼èŒƒå›´1-99ï¼Œå…¶ä»–è®¾ç½®ä¸º0 */
     
 }HI_UNF_VENC_CHN_ATTR_S;
 
@@ -125,192 +125,192 @@ typedef struct hiUNF_VENC_CHN_ATTR_S
 
 /********************************API declaration********************************/
 /** \addtogroup      VENC */
-/** @{ */  /** <!-- ¡¾VENC¡¿ */
+/** @{ */  /** <!-- ã€VENCã€‘ */
 
 /** 
-\brief Initializes the video encoder. CNcomment: ³õÊ¼»¯ÊÓÆµ±àÂëÆ÷ CNend
+\brief Initializes the video encoder. CNcomment: åˆå§‹åŒ–è§†é¢‘ç¼–ç å™¨ CNend
 \attention \n
-Before using the VENC, you must call this API. CNcomment: µ÷ÓÃVENCÄ£¿éÒªÇóÊ×ÏÈµ÷ÓÃ¸Ã½Ó¿Ú CNend
-\param[in] N/A CNcomment: ÎŞ CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_DEV_NOT_EXIST No VENC device exists. CNcomment: Éè±¸²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_NOT_DEV_FILE The file is not a VENC file. CNcomment: ÎÄ¼ş·ÇÉè±¸ CNend
-\retval ::HI_ERR_VENC_DEV_OPEN_ERR The VENC device fails to start. CNcomment: ´ò¿ªÉè±¸Ê§°Ü CNend
+Before using the VENC, you must call this API. CNcomment: è°ƒç”¨VENCæ¨¡å—è¦æ±‚é¦–å…ˆè°ƒç”¨è¯¥æ¥å£ CNend
+\param[in] N/A CNcomment: æ—  CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_DEV_NOT_EXIST No VENC device exists. CNcomment: è®¾å¤‡ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_NOT_DEV_FILE The file is not a VENC file. CNcomment: æ–‡ä»¶éè®¾å¤‡ CNend
+\retval ::HI_ERR_VENC_DEV_OPEN_ERR The VENC device fails to start. CNcomment: æ‰“å¼€è®¾å¤‡å¤±è´¥ CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_Init(HI_VOID);
 
 
 /** 
-\brief Deinitializes the video encoder. CNcomment: È¥³õÊ¼»¯ÊÓÆµ±àÂëÆ÷ CNend
+\brief Deinitializes the video encoder. CNcomment: å»åˆå§‹åŒ–è§†é¢‘ç¼–ç å™¨ CNend
 \attention \n
-N/A CNcomment: ÎŞ CNend
-\param[in] N/A CNcomment: ÎŞ CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_DEV_CLOSE_ERR The video encoder fails to stop. CNcomment: ¹Ø±Õ±àÂëÆ÷Ê§°Ü CNend
+N/A CNcomment: æ—  CNend
+\param[in] N/A CNcomment: æ—  CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_DEV_CLOSE_ERR The video encoder fails to stop. CNcomment: å…³é—­ç¼–ç å™¨å¤±è´¥ CNend
 \see \n
-N/A CNcomment: ÎŞ  CNend
+N/A CNcomment: æ—   CNend
 */
 HI_S32 HI_UNF_VENC_DeInit(HI_VOID);
 
 
 /** 
-\brief Obtains the default attributes of a VENC channel. CNcomment: »ñÈ¡±àÂëÍ¨µÀÄ¬ÈÏÊôĞÔ CNend
+\brief Obtains the default attributes of a VENC channel. CNcomment: è·å–ç¼–ç é€šé“é»˜è®¤å±æ€§ CNend
 \attention \n
 By default, the encoding size is D1, encoding format is H.264, and a frame is a slice.
-CNcomment: Ä¬ÈÏD1±àÂë£¬H.264¸ñÊ½£¬Ò»Ö¡ÎªÒ»¸öSlice CNend
-\param[out] pstAttr Pointer to the attributes of a VENC channel. CNcomment: pstAttr Ö¸Ïò±àÂëÍ¨µÀÊôĞÔµÄÖ¸Õë CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_NULL_PTR The input pointer parameter is null. CNcomment: ÊäÈëÖ¸Õë²ÎÊıÎª¿ÕÖ¸Õë CNend
+CNcomment: é»˜è®¤D1ç¼–ç ï¼ŒH.264æ ¼å¼ï¼Œä¸€å¸§ä¸ºä¸€ä¸ªSlice CNend
+\param[out] pstAttr Pointer to the attributes of a VENC channel. CNcomment: pstAttr æŒ‡å‘ç¼–ç é€šé“å±æ€§çš„æŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_NULL_PTR The input pointer parameter is null. CNcomment: è¾“å…¥æŒ‡é’ˆå‚æ•°ä¸ºç©ºæŒ‡é’ˆ CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_GetDefaultAttr(HI_UNF_VENC_CHN_ATTR_S *pstAttr);
 
 
 /** 
-\brief Creates a VENC channel. CNcomment: ´´½¨ÊÓÆµ±àÂëÍ¨µÀ CNend
+\brief Creates a VENC channel. CNcomment: åˆ›å»ºè§†é¢‘ç¼–ç é€šé“ CNend
 \attention \n
 You must create a VENC channel before video encoding. 
-CNcomment: ½øĞĞÊÓÆµ±àÂëÒªÇóÊ×ÏÈ´´½¨±àÂëÍ¨µÀ CNend
-\param[in] pstAttr Pointer to the attributes of a VENC channel. CNcomment: pstAttr Ö¸Ïò±àÂëÍ¨µÀÊôĞÔµÄÖ¸Õë CNend
-\param[out] phVenc Pointer to the handle of a VENC channel. CNcomment: phVenc Ö¸Ïò±àÂëÍ¨µÀ¾ä±úµÄÖ¸Õë CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦  CNend
-\retval ::HI_ERR_VENC_NULL_PTR The input pointer parameter is null. CNcomment: ÊäÈëÖ¸Õë²ÎÊıÓĞ¿ÕÖ¸Õë CNend
-\retval ::HI_ERR_VENC_CREATE_ERR The number of VENC channels exceeds the limit. CNcomment: ±àÂëÍ¨µÀÊıÒÑÂú CNend
-\retval ::HI_ERR_VENC_INVALID_PARA The channel attributes are incorrect. CNcomment: Í¨µÀÊôĞÔÉèÖÃ´íÎó CNend
-\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
+CNcomment: è¿›è¡Œè§†é¢‘ç¼–ç è¦æ±‚é¦–å…ˆåˆ›å»ºç¼–ç é€šé“ CNend
+\param[in] pstAttr Pointer to the attributes of a VENC channel. CNcomment: pstAttr æŒ‡å‘ç¼–ç é€šé“å±æ€§çš„æŒ‡é’ˆ CNend
+\param[out] phVenc Pointer to the handle of a VENC channel. CNcomment: phVenc æŒ‡å‘ç¼–ç é€šé“å¥æŸ„çš„æŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ  CNend
+\retval ::HI_ERR_VENC_NULL_PTR The input pointer parameter is null. CNcomment: è¾“å…¥æŒ‡é’ˆå‚æ•°æœ‰ç©ºæŒ‡é’ˆ CNend
+\retval ::HI_ERR_VENC_CREATE_ERR The number of VENC channels exceeds the limit. CNcomment: ç¼–ç é€šé“æ•°å·²æ»¡ CNend
+\retval ::HI_ERR_VENC_INVALID_PARA The channel attributes are incorrect. CNcomment: é€šé“å±æ€§è®¾ç½®é”™è¯¯ CNend
+\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
 \see \n
 N/A
-CNcomment: ÎŞ  CNend
+CNcomment: æ—   CNend
 */
 HI_S32 HI_UNF_VENC_Create(HI_HANDLE *phVenc,const HI_UNF_VENC_CHN_ATTR_S *pstAttr);
 
 
 /** 
-\brief Destroys a VENC channel. CNcomment: Ïú»ÙÊÓÆµ±àÂëÍ¨µÀ CNend
+\brief Destroys a VENC channel. CNcomment: é”€æ¯è§†é¢‘ç¼–ç é€šé“ CNend
 \attention \n
-\param[in] hVenc Handle of a VENC channel. CNcomment: CNcomment: hVenc ±àÂëÍ¨µÀ¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST No handle exists. CNcomment: ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
+\param[in] hVenc Handle of a VENC channel. CNcomment: CNcomment: hVenc ç¼–ç é€šé“å¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST No handle exists. CNcomment: å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
 \see \n
-N/A CNcomment: ÎŞ  CNend
+N/A CNcomment: æ—   CNend
 */
 HI_S32 HI_UNF_VENC_Destroy(HI_HANDLE hVenc);
 
 
 /** 
-\brief Attaches a VENC channel to the video source. CNcomment: °ó¶¨±àÂëÍ¨µÀµ½ÊÓÆµÔ´ CNend
+\brief Attaches a VENC channel to the video source. CNcomment: ç»‘å®šç¼–ç é€šé“åˆ°è§†é¢‘æº CNend
 \attention \n
-You must call this API before performing encoding and obtaining streams. CNcomment: ¿ªÊ¼±àÂëºÍ»ñÈ¡ÂëÁ÷Ö®Ç°ĞèÒªÊ×ÏÈµ÷ÓÃ¸Ã½Ó¿Ú CNend
-\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ±àÂëÍ¨µÀ¾ä±ú CNend
-\param[in] hSrc Data source handle CNcomment: hSrc ÊÓÆµÔ´¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ±àÂëÍ¨µÀ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_INVALID_PARA The video source is invalid. CNcomment: ÊÓÆµÔ´´íÎó  CNend
-\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
+You must call this API before performing encoding and obtaining streams. CNcomment: å¼€å§‹ç¼–ç å’Œè·å–ç æµä¹‹å‰éœ€è¦é¦–å…ˆè°ƒç”¨è¯¥æ¥å£ CNend
+\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ç¼–ç é€šé“å¥æŸ„ CNend
+\param[in] hSrc Data source handle CNcomment: hSrc è§†é¢‘æºå¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ç¼–ç é€šé“å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_INVALID_PARA The video source is invalid. CNcomment: è§†é¢‘æºé”™è¯¯  CNend
+\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_AttachInput(HI_HANDLE hVenc,HI_HANDLE hSrc);
 
 
 /** 
-\brief Detaches a VENC channel from the video source. CNcomment: ½â°ó¶¨ÊÓÆµÔ´ CNend
+\brief Detaches a VENC channel from the video source. CNcomment: è§£ç»‘å®šè§†é¢‘æº CNend
 \attention \n
 You must stop encoding before calling this API.
-CNcomment: µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈÍ£Ö¹±àÂë CNend
-\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ±àÂëÍ¨µÀ¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦  CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ±àÂëÍ¨µÀ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_INVALID_PARA The video source is invalid. CNcomment: ÊÓÆµÔ´´íÎó CNend
-\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VENC_CHN_INVALID_STAT Invalid state which the video encoder does not stop encoding. CNcomment: Òì³£×´Ì¬,±àÂëÆ÷Î´Í£Ö¹±àÂë CNend
-\retval ::HI_ERR_VENC_CHN_NO_ATTACH The VENC channel doesn't attach any source. CNcomment: ±àÂëÍ¨µÀÃ»ÓĞ°ó¶¨ÈÎºÎÔ´ CNend
+CNcomment: è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆåœæ­¢ç¼–ç  CNend
+\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ç¼–ç é€šé“å¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ  CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ç¼–ç é€šé“å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_INVALID_PARA The video source is invalid. CNcomment: è§†é¢‘æºé”™è¯¯ CNend
+\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_VENC_CHN_INVALID_STAT Invalid state which the video encoder does not stop encoding. CNcomment: å¼‚å¸¸çŠ¶æ€,ç¼–ç å™¨æœªåœæ­¢ç¼–ç  CNend
+\retval ::HI_ERR_VENC_CHN_NO_ATTACH The VENC channel doesn't attach any source. CNcomment: ç¼–ç é€šé“æ²¡æœ‰ç»‘å®šä»»ä½•æº CNend
 \see \n
-N/A CNcomment: ÎŞ  CNend
+N/A CNcomment: æ—   CNend
 */
 HI_S32 HI_UNF_VENC_DetachInput(HI_HANDLE hVencChn);
 
 
 /** 
-\brief Starts to perform encoding. CNcomment: ¿ªÊ¼±àÂë CNend
+\brief Starts to perform encoding. CNcomment: å¼€å§‹ç¼–ç  CNend
 \attention \n
 You must initialize the video encoder, create a VENC channel, and attach the channel to the video source before calling this API.
-CNcomment: µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈ³õÊ¼»¯±àÂëÆ÷£¬´´½¨±àÂëÍ¨µÀ£¬°ó¶¨ÊÓÆµÔ´ CNend
-\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ±àÂëÍ¨µÀ¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ±àÂëÍ¨µÀ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
+CNcomment: è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆåˆå§‹åŒ–ç¼–ç å™¨ï¼Œåˆ›å»ºç¼–ç é€šé“ï¼Œç»‘å®šè§†é¢‘æº CNend
+\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ç¼–ç é€šé“å¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ç¼–ç é€šé“å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_Start(HI_HANDLE hVenc);
 
 
 /** 
-\brief Stops encoding. CNcomment: Í£Ö¹±àÂë CNend
+\brief Stops encoding. CNcomment: åœæ­¢ç¼–ç  CNend
 \attention \n
 You must initialize the video encoder, create a VENC channel, attach the channel to the video source, and start to perform encoding before calling this API.
-CNcomment: µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈ³õÊ¼»¯±àÂëÆ÷£¬´´½¨±àÂëÍ¨µÀ£¬°ó¶¨ÊÓÆµÔ´£¬ÒÑ¾­¿ªÊ¼±àÂë CNend
-\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ±àÂëÍ¨µÀ¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ±àÂëÍ¨µÀ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
+CNcomment: è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆåˆå§‹åŒ–ç¼–ç å™¨ï¼Œåˆ›å»ºç¼–ç é€šé“ï¼Œç»‘å®šè§†é¢‘æºï¼Œå·²ç»å¼€å§‹ç¼–ç  CNend
+\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ç¼–ç é€šé“å¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ç¼–ç é€šé“å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_Stop(HI_HANDLE hVenc);
 
 /** 
-\brief Obtains VENC streams. CNcomment: »ñÈ¡ÊÓÆµ±àÂëÂëÁ÷ CNend
+\brief Obtains VENC streams. CNcomment: è·å–è§†é¢‘ç¼–ç ç æµ CNend
 \attention \n
 You must attach a VENC channel to the video source and start to perform encoding before calling this API.
 The block time (in ms) is configurable. If u32TimeOutMs is set to 0, the block time is 0; if u32TimeOutMs is set to 0xFFFFFFFF, it indicates infinite wait. \n
 If the block time is reached but no data is received, ::HI_ERR_VENC_BUF_EMPTY is returned.\n
 If the wait time is 0 and there is no data, ::HI_ERR_VENC_BUF_EMPTY is returned.
-CNcomment: µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈ°ó¶¨ÊÓÆµÔ´£¬¿ªÊ¼±àÂë
-×èÈûÊ±¼ä¿ÉÒÔÉèÖÃ£¬Ê±¼äµ¥Î»ÎªºÁÃë£¬ÉèÖÃÎª0²»µÈ´ı£¬ÉèÖÃÎª0xffffffffÒ»Ö±µÈ´ı¡£\n
-Èô³¬¹ı×èÈûÊ±¼ä£¬»¹Ã»ÓĞÊı¾İµ½´ï£¬Ôò·µ»Ø::HI_ERR_VENC_BUF_EMPTY\n
-Èç¹ûµÈ´ıÊ±¼äÎª0£¬ÇÒÃ»ÓĞÂëÁ÷Êı¾İ£¬Ôò·µ»Ø::HI_ERR_VENC_BUF_EMPTY\n CNend
-\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ±àÂëÍ¨µÀ¾ä±ú CNend
-\param[out] pstStream Pointer to the structure for storing streams CNcomment: pstStream ´æ·ÅÂëÁ÷½á¹¹µÄÖ¸Õë CNend
-\param[in] u32TimeoutMs: Wait timeout, count in ms CNcomment: u32TimeoutMs£ºµÈ´ı³¬Ê±Ê±¼ä£¬µ¥Î»ms CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ±àÂëÍ¨µÀ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VENC_NULL_PTR The stream pointer is null. CNcomment: ÂëÁ÷Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VENC_BUF_EMPTY Streams fail to be obtained. CNcomment: »ñÈ¡ÂëÁ÷Ê§°Ü CNend
+CNcomment: è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆç»‘å®šè§†é¢‘æºï¼Œå¼€å§‹ç¼–ç 
+é˜»å¡æ—¶é—´å¯ä»¥è®¾ç½®ï¼Œæ—¶é—´å•ä½ä¸ºæ¯«ç§’ï¼Œè®¾ç½®ä¸º0ä¸ç­‰å¾…ï¼Œè®¾ç½®ä¸º0xffffffffä¸€ç›´ç­‰å¾…ã€‚\n
+è‹¥è¶…è¿‡é˜»å¡æ—¶é—´ï¼Œè¿˜æ²¡æœ‰æ•°æ®åˆ°è¾¾ï¼Œåˆ™è¿”å›::HI_ERR_VENC_BUF_EMPTY\n
+å¦‚æœç­‰å¾…æ—¶é—´ä¸º0ï¼Œä¸”æ²¡æœ‰ç æµæ•°æ®ï¼Œåˆ™è¿”å›::HI_ERR_VENC_BUF_EMPTY\n CNend
+\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ç¼–ç é€šé“å¥æŸ„ CNend
+\param[out] pstStream Pointer to the structure for storing streams CNcomment: pstStream å­˜æ”¾ç æµç»“æ„çš„æŒ‡é’ˆ CNend
+\param[in] u32TimeoutMs: Wait timeout, count in ms CNcomment: u32TimeoutMsï¼šç­‰å¾…è¶…æ—¶æ—¶é—´ï¼Œå•ä½ms CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ç¼–ç é€šé“å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_VENC_NULL_PTR The stream pointer is null. CNcomment: ç æµæŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_VENC_BUF_EMPTY Streams fail to be obtained. CNcomment: è·å–ç æµå¤±è´¥ CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_AcquireStream(HI_HANDLE hVenc,HI_UNF_VENC_STREAM_S *pstStream, HI_U32 u32TimeoutMs);
 
 
 /** 
-\brief Releases VENC streams. CNcomment: ÊÍ·ÅÊÓÆµ±àÂëÂëÁ÷ CNend
+\brief Releases VENC streams. CNcomment: é‡Šæ”¾è§†é¢‘ç¼–ç ç æµ CNend
 \attention \n
 You must obtain streams and keep the streams unchanged before calling this API.
 The stream which you get first should be release first.
-CNcomment: µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈ»ñÈ¡ÂëÁ÷£¬ÇÒ²»ÄÜ¸Ä±äÂëÁ÷ÄÚÈİ¡£
-ÏÈ»ñÈ¡µÄÂëÁ÷ĞèÒªÏÈÊÍ·Å¡£ CNend
-\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ±àÂëÍ¨µÀ¾ä±ú CNend
-\param[in] pstStream Pointer to the structure for storing streams CNcomment: pstStream ´æ·ÅÂëÁ÷½á¹¹µÄÖ¸Õë CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ±àÂëÍ¨µÀ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VENC_NULL_PTR The stream pointer is null. CNcomment: ÂëÁ÷Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VENC_CHN_RELEASE_ERR Streams fail to be released. CNcomment: ÊÍ·ÅÂëÁ÷Ê§°Ü CNend
+CNcomment: è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆè·å–ç æµï¼Œä¸”ä¸èƒ½æ”¹å˜ç æµå†…å®¹ã€‚
+å…ˆè·å–çš„ç æµéœ€è¦å…ˆé‡Šæ”¾ã€‚ CNend
+\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ç¼–ç é€šé“å¥æŸ„ CNend
+\param[in] pstStream Pointer to the structure for storing streams CNcomment: pstStream å­˜æ”¾ç æµç»“æ„çš„æŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ç¼–ç é€šé“å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_VENC_NULL_PTR The stream pointer is null. CNcomment: ç æµæŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_VENC_CHN_RELEASE_ERR Streams fail to be released. CNcomment: é‡Šæ”¾ç æµå¤±è´¥ CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_ReleaseStream(HI_HANDLE hVenc, const HI_UNF_VENC_STREAM_S *pstStream);
 
 
 /** 
-\brief Sets the encoding channel attributes dynamically. CNcomment: ¶¯Ì¬ÉèÖÃ±àÂëÍ¨µÀÊôĞÔ CNend
+\brief Sets the encoding channel attributes dynamically. CNcomment: åŠ¨æ€è®¾ç½®ç¼–ç é€šé“å±æ€§ CNend
 \attention \n
 You must create a VENC channel before calling this API.
 This API just can change these attributes as follows:input framerate,target output framerate,target output bitrate,gop,
@@ -318,103 +318,103 @@ max/min QP,channel priority, whether use QuickEncode mode and even the encode wi
 Moreover,even though you can't change the attributes of encoder level,encoder type,Stream buffer size,Rotation angle,Slice split enable and so on,
 you should still assign the real value to them at that time.
 It's better that you should call HI_UNF_VENC_GetAttr() to obtain the attributes of a VENC channel before calling this API.
-CNcomment: µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈ´´½¨±àÂëÍ¨µÀ .¸Ã½Ó½Ó¿ÚÖ»ÄÜ¶¯Ì¬µÄÉèÖÃÒÔÏÂÍ¨µÀÊôĞÔ:ÊäÈëÖ¡ÂÊ£¬Ä¿±êÊä³öÖ¡ÂÊ£¬Ä¿±êÊä³öÂëÂÊ£¬GOPÖµ£¬×î´ó/×îĞ¡Á¿»¯²ÎÊı£¬
-Í¨µÀÓÅÏÈ¼¶£¬ ¿ìËÙ±àÂëÊ¹ÄÜ£¬ÉõÖÁÔÚ±àÂëÄÜÁ¦¼¶·¶Î§ÏÂ¶¯Ì¬¸Ä±ä±àÂë¿í¸ß¡£´ËÍâ£¬¼´Ê¹¸Ã½Ó¿Ú²»ÄÜ¶¯Ì¬¸Ä±ä±àÂëÄÜÁ¦¼¶£¬±àÂëĞ­Òé£¬ÂëÁ÷buffer´óĞ¡£¬
-Ğı×ª½Ç¶È£¬·Ö¸î±àÂëÊ¹ÄÜµÈÊôĞÔ£¬ÔÚµ÷ÓÃ¸Ã½Ó¿ÚÊ±Äã»¹ÊÇÒª¸øÕâĞ©Í¨µÀÊôĞÔ¸³ÉÏµ±Ê±µÄÊµ¼ÊÖµ¡£×îºÃÔÚµ÷ÓÃ¸Ã½Ó¿ÚÖ®Ç°µ÷ÓÃHI_UNF_VENC_GetAttr()½Ó¿Ú»ñÈ¡µ½µ±Ê±µÄÍ¨µÀÊôĞÔ CNend
-\param[in] Venc Handle of a VENC channel CNcomment: hVenc ±àÂëÍ¨µÀ¾ä±ú CNend
-\param[in] pstAttr Pointer to the attributes of a VENC channel CNcomment: pstAttr ´æ·Å±àÂëÍ¨µÀÊôĞÔµÄÖ¸Õë CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ±àÂëÍ¨µÀ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_INVALID_PARA The channel attributes are incorrect. CNcomment: Í¨µÀÊôĞÔÉèÖÃ´íÎó CNend
-\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VENC_NULL_PTR The pointer is null. CNcomment: Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VENC_NOT_SUPPORT This change of attributes dosen't be supported. CNcomment: ²»Ö§³Ö¸ÃÊôĞÔ¶¯Ì¬ÅäÖÃ CNend
+CNcomment: è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆåˆ›å»ºç¼–ç é€šé“ .è¯¥æ¥æ¥å£åªèƒ½åŠ¨æ€çš„è®¾ç½®ä»¥ä¸‹é€šé“å±æ€§:è¾“å…¥å¸§ç‡ï¼Œç›®æ ‡è¾“å‡ºå¸§ç‡ï¼Œç›®æ ‡è¾“å‡ºç ç‡ï¼ŒGOPå€¼ï¼Œæœ€å¤§/æœ€å°é‡åŒ–å‚æ•°ï¼Œ
+é€šé“ä¼˜å…ˆçº§ï¼Œ å¿«é€Ÿç¼–ç ä½¿èƒ½ï¼Œç”šè‡³åœ¨ç¼–ç èƒ½åŠ›çº§èŒƒå›´ä¸‹åŠ¨æ€æ”¹å˜ç¼–ç å®½é«˜ã€‚æ­¤å¤–ï¼Œå³ä½¿è¯¥æ¥å£ä¸èƒ½åŠ¨æ€æ”¹å˜ç¼–ç èƒ½åŠ›çº§ï¼Œç¼–ç åè®®ï¼Œç æµbufferå¤§å°ï¼Œ
+æ—‹è½¬è§’åº¦ï¼Œåˆ†å‰²ç¼–ç ä½¿èƒ½ç­‰å±æ€§ï¼Œåœ¨è°ƒç”¨è¯¥æ¥å£æ—¶ä½ è¿˜æ˜¯è¦ç»™è¿™äº›é€šé“å±æ€§èµ‹ä¸Šå½“æ—¶çš„å®é™…å€¼ã€‚æœ€å¥½åœ¨è°ƒç”¨è¯¥æ¥å£ä¹‹å‰è°ƒç”¨HI_UNF_VENC_GetAttr()æ¥å£è·å–åˆ°å½“æ—¶çš„é€šé“å±æ€§ CNend
+\param[in] Venc Handle of a VENC channel CNcomment: hVenc ç¼–ç é€šé“å¥æŸ„ CNend
+\param[in] pstAttr Pointer to the attributes of a VENC channel CNcomment: pstAttr å­˜æ”¾ç¼–ç é€šé“å±æ€§çš„æŒ‡é’ˆ CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ç¼–ç é€šé“å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_INVALID_PARA The channel attributes are incorrect. CNcomment: é€šé“å±æ€§è®¾ç½®é”™è¯¯ CNend
+\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_VENC_NULL_PTR The pointer is null. CNcomment: æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_VENC_NOT_SUPPORT This change of attributes dosen't be supported. CNcomment: ä¸æ”¯æŒè¯¥å±æ€§åŠ¨æ€é…ç½® CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_SetAttr(HI_HANDLE hVenc,const HI_UNF_VENC_CHN_ATTR_S *pstAttr);
 
 
 /** 
-\brief Obtains the attributes of a VENC channel. CNcomment: »ñÈ¡±àÂëÍ¨µÀÊôĞÔ CNend
+\brief Obtains the attributes of a VENC channel. CNcomment: è·å–ç¼–ç é€šé“å±æ€§ CNend
 \attention \n
 You must create a VENC channel before calling this API.
-CNcomment: µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈ´´½¨±àÂëÍ¨µÀ CNend
-\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ±àÂëÍ¨µÀ¾ä±ú CNend
-\param[out] pstAttr Encoding channel attribute CNcomment: pstAttr ±àÂëÍ¨µÀÊôĞÔ CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ±àÂëÍ¨µÀ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VENC_NULL_PTR The pointer is null. CNcomment: Ö¸ÕëÎª¿Õ CNend
+CNcomment: è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆåˆ›å»ºç¼–ç é€šé“ CNend
+\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ç¼–ç é€šé“å¥æŸ„ CNend
+\param[out] pstAttr Encoding channel attribute CNcomment: pstAttr ç¼–ç é€šé“å±æ€§ CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ç¼–ç é€šé“å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_VENC_NULL_PTR The pointer is null. CNcomment: æŒ‡é’ˆä¸ºç©º CNend
 \see \n 
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_GetAttr(HI_HANDLE hVenc, HI_UNF_VENC_CHN_ATTR_S *pstAttr);
 
 
 /** 
-\brief Applies for I frames. CNcomment: ÇëÇóIÖ¡ CNend
+\brief Applies for I frames. CNcomment: è¯·æ±‚Iå¸§ CNend
 \attention \n
 The video encoder encodes an I frame as soon as possible after you call this API.\n
 You can call this API when you set up a video call or fix errors.\n
 If you call this API repeatedly in a short period, I frames may be not generated each time.\n
-CNcomment: µ÷ÓÃ¸Ã½Ó¿Úºó£¬±àÂëÆ÷»á¾¡¿ì±àÂë³öÒ»¸öIÖ¡À´.\n
-´Ë½Ó¿ÚÒ»°ãÓÃÓÚ¿ÉÊÓµç»°³¡¾°µÄÍ¨»°½¨Á¢ºÍ´íÎó»Ö¸´.\n
-´Ë½Ó¿ÚÖ»ÊÇ"¾¡×î´óÄÜÁ¦"¾¡¿ì±àÂë³öÒ»¸öIÖ¡À´£¬Èç¹ûÔÚ¶ÌÊ±¼äÄÚ¶à´Îµ÷ÓÃ´Ë½Ó¿Ú£¬ÄÇÃ´²»ÄÜ±£Ö¤Ã¿´Îµ÷ÓÃ¶¼ÄÜ¶ÔÓ¦±àÂë³öÒ»¸öIÖ¡À´.\n CNend
-\param[in] hVencChn Handle of a VENC channel CNcomment: hVencChn ±àÂëÍ¨µÀ¾ä±ú CNend
-\retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ±àÂëÍ¨µÀ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
+CNcomment: è°ƒç”¨è¯¥æ¥å£åï¼Œç¼–ç å™¨ä¼šå°½å¿«ç¼–ç å‡ºä¸€ä¸ªIå¸§æ¥.\n
+æ­¤æ¥å£ä¸€èˆ¬ç”¨äºå¯è§†ç”µè¯åœºæ™¯çš„é€šè¯å»ºç«‹å’Œé”™è¯¯æ¢å¤.\n
+æ­¤æ¥å£åªæ˜¯"å°½æœ€å¤§èƒ½åŠ›"å°½å¿«ç¼–ç å‡ºä¸€ä¸ªIå¸§æ¥ï¼Œå¦‚æœåœ¨çŸ­æ—¶é—´å†…å¤šæ¬¡è°ƒç”¨æ­¤æ¥å£ï¼Œé‚£ä¹ˆä¸èƒ½ä¿è¯æ¯æ¬¡è°ƒç”¨éƒ½èƒ½å¯¹åº”ç¼–ç å‡ºä¸€ä¸ªIå¸§æ¥.\n CNend
+\param[in] hVencChn Handle of a VENC channel CNcomment: hVencChn ç¼–ç é€šé“å¥æŸ„ CNend
+\retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST No VENC channel handle exists. CNcomment: ç¼–ç é€šé“å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_NO_INIT The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_RequestIFrame(HI_HANDLE hVencChn);
 
 
 /** 
-\brief Input frame to VENC. CNcomment: Ïò±àÂëÆ÷ËÍÖ¡ CNend
+\brief Input frame to VENC. CNcomment: å‘ç¼–ç å™¨é€å¸§ CNend
 \attention \n
 You must create a VENC channel before calling this API.
 If the venc channel has already attach the source,::HI_ERR_VENC_CHN_INVALID_STAT is returned.
 This API should be matched with the API: HI_UNF_VENC_DequeueFrame.
 HI_UNF_VENC_QueueFrame is used to send frame data to Encoder for user and HI_UNF_VENC_DequeueFrame is used to call the Encoder 
 to receive the frame data which has already be processed.
-CNcomment: µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈ´´½¨±àÂëÍ¨µÀ.
-Èç¹û±àÂëÍ¨µÀÒÑ¾­°ó¶¨Ô´£¬»á·µ»ØHI_ERR_VENC_CHN_INVALID_STAT ÎŞĞ§²Ù×÷ 
-¸Ã½Ó¿ÚĞèÒªÓë HI_UNF_VENC_DequeueFrame ½Ó¿ÚÅä¶ÔÊ¹ÓÃ¡£
-HI_UNF_VENC_QueueFrame½Ó¿ÚÓÃÓÚÎªÓÃ»§Ìá¹©Ò»¸ö½Ó¿ÚÏò±àÂëÆ÷ËÍÖ¡¹©±àÂë£¬HI_UNF_VENC_DequeueFrame½Ó¿ÚÊÇ±àÂëÆ÷¹é»¹ÒÑ¾­´¦ÀíµÄÖ¡ CNend
-\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ±àÂëÍ¨µÀ¾ä±ú CNend
-\param[in] pstFrameinfo Frame information struct CNcomment: Ö¡ĞÅÏ¢ÊôĞÔ CNend
-\retval ::HI_SUCCESS                      Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST       No VENC channel handle exists. CNcomment: ±àÂëÍ¨µÀ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_NULL_PTR            The pointer is null. CNcomment: Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VENC_NO_INIT             The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VENC_CHN_INVALID_STAT    Invalid state which the VENC channel has already attach source. CNcomment: Òì³£×´Ì¬£¬±àÂëÆ÷Í¨µÀÒÑ¾­°ó¶¨Ô´ CNend
+CNcomment: è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆåˆ›å»ºç¼–ç é€šé“.
+å¦‚æœç¼–ç é€šé“å·²ç»ç»‘å®šæºï¼Œä¼šè¿”å›HI_ERR_VENC_CHN_INVALID_STAT æ— æ•ˆæ“ä½œ 
+è¯¥æ¥å£éœ€è¦ä¸ HI_UNF_VENC_DequeueFrame æ¥å£é…å¯¹ä½¿ç”¨ã€‚
+HI_UNF_VENC_QueueFrameæ¥å£ç”¨äºä¸ºç”¨æˆ·æä¾›ä¸€ä¸ªæ¥å£å‘ç¼–ç å™¨é€å¸§ä¾›ç¼–ç ï¼ŒHI_UNF_VENC_DequeueFrameæ¥å£æ˜¯ç¼–ç å™¨å½’è¿˜å·²ç»å¤„ç†çš„å¸§ CNend
+\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ç¼–ç é€šé“å¥æŸ„ CNend
+\param[in] pstFrameinfo Frame information struct CNcomment: å¸§ä¿¡æ¯å±æ€§ CNend
+\retval ::HI_SUCCESS                      Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST       No VENC channel handle exists. CNcomment: ç¼–ç é€šé“å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_NULL_PTR            The pointer is null. CNcomment: æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_VENC_NO_INIT             The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_VENC_CHN_INVALID_STAT    Invalid state which the VENC channel has already attach source. CNcomment: å¼‚å¸¸çŠ¶æ€ï¼Œç¼–ç å™¨é€šé“å·²ç»ç»‘å®šæº CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_QueueFrame(HI_HANDLE hVenc, HI_UNF_VIDEO_FRAME_INFO_S *pstFrameinfo);
 
 
 /** 
-\brief release frame from VENC. CNcomment: Ïò±àÂëÆ÷»¹Ö¡ CNend
+\brief release frame from VENC. CNcomment: å‘ç¼–ç å™¨è¿˜å¸§ CNend
 \attention \n
 You must create a VENC channel before calling this API.
 If the venc channel has already attach the source,::HI_ERR_VENC_CHN_INVALID_STAT is returned.
 Refer to the attention of the API: HI_UNF_VENC_QueueFrame.
 If HI_UNF_VENC_DequeueFrame return HI_SUCCESS, it means the corresponding frame buffer could be set free by user. 
-CNcomment: µ÷ÓÃ¸Ã½Ó¿ÚĞèÒªÊ×ÏÈ´´½¨±àÂëÍ¨µÀ.
-Èç¹û±àÂëÍ¨µÀÒÑ¾­°ó¶¨Ô´£¬»á·µ»ØHI_ERR_VENC_CHN_INVALID_STAT ÎŞĞ§²Ù×÷ 
-×¢ÒâÊÂÏî²ÎÕÕ HI_UNF_VENC_QueueFrame½Ó¿Ú¡£Èç¹ûHI_UNF_VENC_DequeueFrame½Ó¿Ú·µ»Ø³É¹¦£¬ÒâÎ¶×Å¶ÔÓ¦µÄÖ¡´æÓÃ»§¿ÉÒÔÊÍ·Å CNend
-\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ±àÂëÍ¨µÀ¾ä±ú CNend
-\param[out] pstFrameinfo Frame information struct CNcomment: Ö¡ĞÅÏ¢ÊôĞÔ CNend
-\retval ::HI_SUCCESS                       Success CNcomment: ³É¹¦ CNend
-\retval ::HI_ERR_VENC_CHN_NOT_EXIST        No VENC channel handle exists. CNcomment: ±àÂëÍ¨µÀ¾ä±ú²»´æÔÚ CNend
-\retval ::HI_ERR_VENC_NULL_PTR             The pointer is null. CNcomment: Ö¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VENC_NO_INIT              The video encoder is not initialized. CNcomment: ±àÂëÆ÷Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VENC_CHN_INVALID_STAT     Invalid state which the VENC channel has already attach source. CNcomment: Òì³£×´Ì¬£¬±àÂëÆ÷Í¨µÀÒÑ¾­°ó¶¨Ô´ CNend
+CNcomment: è°ƒç”¨è¯¥æ¥å£éœ€è¦é¦–å…ˆåˆ›å»ºç¼–ç é€šé“.
+å¦‚æœç¼–ç é€šé“å·²ç»ç»‘å®šæºï¼Œä¼šè¿”å›HI_ERR_VENC_CHN_INVALID_STAT æ— æ•ˆæ“ä½œ 
+æ³¨æ„äº‹é¡¹å‚ç…§ HI_UNF_VENC_QueueFrameæ¥å£ã€‚å¦‚æœHI_UNF_VENC_DequeueFrameæ¥å£è¿”å›æˆåŠŸï¼Œæ„å‘³ç€å¯¹åº”çš„å¸§å­˜ç”¨æˆ·å¯ä»¥é‡Šæ”¾ CNend
+\param[in] hVenc Handle of a VENC channel CNcomment: hVenc ç¼–ç é€šé“å¥æŸ„ CNend
+\param[out] pstFrameinfo Frame information struct CNcomment: å¸§ä¿¡æ¯å±æ€§ CNend
+\retval ::HI_SUCCESS                       Success CNcomment: æˆåŠŸ CNend
+\retval ::HI_ERR_VENC_CHN_NOT_EXIST        No VENC channel handle exists. CNcomment: ç¼–ç é€šé“å¥æŸ„ä¸å­˜åœ¨ CNend
+\retval ::HI_ERR_VENC_NULL_PTR             The pointer is null. CNcomment: æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_VENC_NO_INIT              The video encoder is not initialized. CNcomment: ç¼–ç å™¨æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_VENC_CHN_INVALID_STAT     Invalid state which the VENC channel has already attach source. CNcomment: å¼‚å¸¸çŠ¶æ€ï¼Œç¼–ç å™¨é€šé“å·²ç»ç»‘å®šæº CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_VENC_DequeueFrame(HI_HANDLE hVenc, HI_UNF_VIDEO_FRAME_INFO_S *pstFrameinfo);
 

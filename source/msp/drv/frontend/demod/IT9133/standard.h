@@ -329,7 +329,7 @@ Dword Standard_getSignalQualityIndication (
  * Get siganl strength Indication.
  *
  * @param demodulator the handle of demodulator.
- * @param strength The value of signal strength that calculations of ¡§score mapping¡¨ from the signal strength (dBm) to the ¡§0-100¡¨ scoring.
+ * @param strength The value of signal strength that calculations of Â¨score mappingã€ƒ from the signal strength (dBm) to the Â¨0-100ã€ƒ scoring.
  * @return Error_NO_ERROR: successful, non-zero error code otherwise.
  */
 Dword Standard_getSignalStrengthIndication (

@@ -571,7 +571,7 @@ HI_VOID sort_tp_and_deredun(HI_S32 *psts32TPNum, HI_UNF_TUNER_SAT_TPINFO_S *pstT
         {
             for(j = i + 1; j < *psts32TPNum; j++)
             {
-                if(pstTPInfo[i].cbs_reliablity < pstTPInfo[j].cbs_reliablity)	//根据CBS可靠度进行排序，由大至小
+                if(pstTPInfo[i].cbs_reliablity < pstTPInfo[j].cbs_reliablity)	//鏍规嵁CBS鍙潬搴﹁繘琛屾帓搴忥紝鐢卞ぇ鑷冲皬
                 {
                     temp_tp = pstTPInfo[i];
                     pstTPInfo[i] = pstTPInfo[j];
@@ -2824,7 +2824,7 @@ HI_S32 HI_UNF_TUNER_GetBER(HI_U32	u32tunerId , HI_U32 *pu32BER)
     }
     
     /*pu32BER points to the first address of three unsigned numbers which have BER*/
-    /*CNcomment:pu32BER 指向存放误码率的三个无符数的首地址*/
+    /*CNcomment:pu32BER 鎸囧悜瀛樻斁璇爜鐜囩殑涓変釜鏃犵鏁扮殑棣栧湴鍧�*/
     s32Result= ioctl(s_s32TunerFd, TUNER_GET_STATUS_CMD, (unsigned long)&stTunerData);
 
     if (HI_SUCCESS != s32Result)
@@ -2866,7 +2866,7 @@ HI_S32 HI_UNF_TUNER_GetBER(HI_U32	u32tunerId , HI_U32 *pu32BER)
         }
         
         /*get the integer and exponent part by Scientific notation, keep three effective digits*/
-        /*CNcomment:科学计数法得到整数位和指数，保留三位有效数字*/
+        /*CNcomment:绉戝璁℃暟娉曞緱鍒版暣鏁颁綅鍜屾寚鏁帮紝淇濈暀涓変綅鏈夋晥鏁板瓧*/
         pu32BER[0] = (HI_U32)dBer;
         pu32BER[1] = ((HI_U32)(dBer * 1000)) % 1000;
         pu32BER[2] = (HI_U32)i;

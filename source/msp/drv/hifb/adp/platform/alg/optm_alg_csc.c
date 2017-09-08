@@ -209,7 +209,7 @@ HI_VOID OPTM_CalcCscCoef_RGBtoYCbCr(OPTM_ALG_CSC_DRV_PARA_S *pstCscDrvPara, cons
     return;
 }
 
-//¼ÆËãÉ«²Ê¿Õ¼ä×ª»»ÏµÊý
+//è®¡ç®—è‰²å½©ç©ºé—´è½¬æ¢ç³»æ•°
 //for YCbCr->RGB  
 HI_VOID OPTM_CalcCscCoef_YCbCrtoRGB(OPTM_ALG_CSC_DRV_PARA_S *pstCscDrvPara, const OPTM_CSC_TABLE_S *pMatrixOri, OPTM_CSC_TABLE_S *pMatrixDst)
 {
@@ -265,8 +265,8 @@ HI_VOID OPTM_CalcCscCoef_YCbCrtoRGB(OPTM_ALG_CSC_DRV_PARA_S *pstCscDrvPara, cons
     return;
 }
 
-//¼ÆËãÉ«²Ê¿Õ¼ä×ª»»ÏµÊý
-//¼ÆËãÉ«ÎÂ±ä»»¾ØÕó(for YCbCr->YCbCr µ÷½ÚÉ«ÎÂ)
+//è®¡ç®—è‰²å½©ç©ºé—´è½¬æ¢ç³»æ•°
+//è®¡ç®—è‰²æ¸©å˜æ¢çŸ©é˜µ(for YCbCr->YCbCr è°ƒèŠ‚è‰²æ¸©)
 static HI_VOID OPTM_CalcCscTmprtMat(OPTM_ALG_CSC_DRV_PARA_S *pstCscDrvPara, OPTM_CSC_TABLE_S *pMatrixOri, OPTM_CSC_TABLE_S *pMatrixDst)
 {
 	HI_S32 s32Rgain;
@@ -282,7 +282,7 @@ static HI_VOID OPTM_CalcCscTmprtMat(OPTM_ALG_CSC_DRV_PARA_S *pstCscDrvPara, OPTM
 	s32Bgain = (HI_S32)(pstCscDrvPara->u32Kb) - 50;
 	s32Bgain = 2 * s32Bgain + 100;
 
-	//KrÏµÁÐ¾«¶È100, É«ÎÂ¾ØÕóÏµÊý¾«¶È1000
+	//Krç³»åˆ—ç²¾åº¦100, è‰²æ¸©çŸ©é˜µç³»æ•°ç²¾åº¦1000
 	stYCbCrColrTemp.s32C00 =  (114 * s32Bgain + 587 * s32Ggain + 299 * s32Rgain) / 100;
 	stYCbCrColrTemp.s32C01 =  (232 * s32Bgain - 232 * s32Ggain) / 100;
 	stYCbCrColrTemp.s32C02 = -(341 * s32Ggain - 341 * s32Rgain) / 100;
@@ -336,7 +336,7 @@ static HI_VOID OPTM_CalcCscTmprtMat(OPTM_ALG_CSC_DRV_PARA_S *pstCscDrvPara, OPTM
 }
 
 
-//¼ÆËãÉ«²Ê¿Õ¼ä×ª»»ÏµÊý
+//è®¡ç®—è‰²å½©ç©ºé—´è½¬æ¢ç³»æ•°
 //for YCbCr->YCbCr 
 HI_VOID OPTM_CalcCscCoef_YCbCrtoYCbCr(OPTM_ALG_CSC_DRV_PARA_S *pstCscDrvPara, const OPTM_CSC_TABLE_S *pMatrixOri, OPTM_CSC_TABLE_S *pMatrixDst)
 {
@@ -400,7 +400,7 @@ HI_VOID OPTM_CalcCscCoef_YCbCrtoYCbCr(OPTM_ALG_CSC_DRV_PARA_S *pstCscDrvPara, co
 }
 
 
-//¼ÆËãÉ«²Ê¿Õ¼ä×ª»»ÏµÊý
+//è®¡ç®—è‰²å½©ç©ºé—´è½¬æ¢ç³»æ•°
 
 
 //for RGB->RGB  

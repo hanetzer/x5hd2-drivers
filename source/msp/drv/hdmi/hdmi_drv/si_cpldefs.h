@@ -16,7 +16,7 @@
 
     ///    #define _9032_SHA_                  // If defined, use the HW SHA calculator
 
-#if 0 /*-- s40v200 无向下兼容需求，去掉了一些版本兼容性宏 --*/
+#if 0 /*-- s40v200 鏃犲悜涓嬪吋瀹归渶姹傦紝鍘绘帀浜嗕竴浜涚増鏈吋瀹规�у畯 --*/
     #define _9032_AN_STOP_FIX_     //over     // If defined, no need to toggle Repeat bit to write AN_STOP to 0
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,7 +40,7 @@
 
 ///    #define _9132_DIAG_PD_DEFAULT_      // Default for this register is different from other TX's - #define for Fred and for Fred/Dino FPGAs. Undefine for Dino 
 
-#if 0 /*-- s40v200 无向下兼容需求，去掉了一些版本兼容性宏 --*/
+#if 0 /*-- s40v200 鏃犲悜涓嬪吋瀹归渶姹傦紝鍘绘帀浜嗕竴浜涚増鏈吋瀹规�у畯 --*/
     #define _9132_SPDIF_DECODER_  //over      // SPDIF decoder is on this board
     #define _9132_SACD_  //over               // Support for SACD
     #define _9132_USE_SOURCE_TERMINATION_  //over  // source termination enabled

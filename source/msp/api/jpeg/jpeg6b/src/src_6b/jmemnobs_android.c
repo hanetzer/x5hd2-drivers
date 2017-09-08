@@ -105,7 +105,7 @@ jpeg_mem_available (j_common_ptr cinfo, long min_bytes_needed,
 		return max_bytes_needed;
 #else
 		/**
-         ** Õâ¸öµØ·½ÊÇ»ØĞ´µÄ£¬ĞÔÄÜ»á±ä²î
+         ** è¿™ä¸ªåœ°æ–¹æ˜¯å›å†™çš„ï¼Œæ€§èƒ½ä¼šå˜å·®
          **/
 		return cinfo->mem->max_memory_to_use - already_allocated;
 #endif
@@ -212,10 +212,10 @@ jpeg_mem_init (j_common_ptr cinfo)
 	** insufficiency, the speed will down
 	**/
 #if 1
-	/** ÓĞ¶àÉÙ·Ö¶àÉÙµÄ **/
+	/** æœ‰å¤šå°‘åˆ†å¤šå°‘çš„ **/
 	return 0;	
 #else
-	/** ¿ÉÒÔ·ÖÅäµÄ×î´óÄÚ´æ£¬µ±ÄÚ´æ²»×ãµÄÊ±ºòÕâ¸öµØ·½¾Í»á·¢ÉúÒì³£ **/
+	/** å¯ä»¥åˆ†é…çš„æœ€å¤§å†…å­˜ï¼Œå½“å†…å­˜ä¸è¶³çš„æ—¶å€™è¿™ä¸ªåœ°æ–¹å°±ä¼šå‘ç”Ÿå¼‚å¸¸ **/
 	return DEFAULT_MAX_MEM;	/* default for max_memory_to_use */
 #endif
 		

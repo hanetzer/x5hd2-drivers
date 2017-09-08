@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : y00181162
 Created		    : 2013/06/20
 Description	    : the suspend dispose
-                  CNcomment: ´ı»ú´¦Àí CNend\n
+                  CNcomment: å¾…æœºå¤„ç† CNend\n
 Function List 	:
 
 			  		  
@@ -51,9 +51,9 @@ Date				Author        		Modification
 /*****************************************************************************
 * func			: JPEG_HDEC_GetSuspendSignal
 * description	: get the suspend signal
-				  CNcomment:  »ñÈ¡´ı»úĞÅºÅ             CNend\n
-* param[in] 	: *pJpegHandle    CNcomment:  ½âÂëÆ÷¾ä±ú   CNend\n
-* param[in] 	: bSuspendSignal  CNcomment:  ´ı»úĞÅºÅ CNend\n
+				  CNcomment:  è·å–å¾…æœºä¿¡å·             CNend\n
+* param[in] 	: *pJpegHandle    CNcomment:  è§£ç å™¨å¥æŸ„   CNend\n
+* param[in] 	: bSuspendSignal  CNcomment:  å¾…æœºä¿¡å· CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -76,9 +76,9 @@ HI_VOID JPEG_HDEC_GetSuspendSignal(const JPEG_HDEC_HANDLE_S  *pJpegHandle,HI_BOO
 /*****************************************************************************
 * func			: JPEG_HDEC_GetResumeSignal
 * description	: get the resume signal
-				  CNcomment:  »ñÈ¡´ı»ú»½ĞÑĞÅºÅ             CNend\n
-* param[in] 	: *pJpegHandle    CNcomment:  ½âÂëÆ÷¾ä±ú   CNend\n
-* param[in] 	: bResumeSignal  CNcomment:   ´ı»ú»½ĞÑĞÅºÅ CNend\n
+				  CNcomment:  è·å–å¾…æœºå”¤é†’ä¿¡å·             CNend\n
+* param[in] 	: *pJpegHandle    CNcomment:  è§£ç å™¨å¥æŸ„   CNend\n
+* param[in] 	: bResumeSignal  CNcomment:   å¾…æœºå”¤é†’ä¿¡å· CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -101,8 +101,8 @@ HI_VOID JPEG_HDEC_GetResumeSignal(const JPEG_HDEC_HANDLE_S  *pJpegHandle,HI_BOOL
 /*****************************************************************************
 * func			: JPEG_HDEC_Resume
 * description	: suspend resume
-				  CNcomment: ´ı»ú»½ĞÑ CNend\n
-* param[in] 	: cinfo       CNcomment:  ½âÂë¶ÔÏó         CNend\n
+				  CNcomment: å¾…æœºå”¤é†’ CNend\n
+* param[in] 	: cinfo       CNcomment:  è§£ç å¯¹è±¡         CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -118,7 +118,7 @@ HI_VOID JPEG_HDEC_Resume(const struct jpeg_decompress_struct *cinfo)
 		memset(&stResumeValue,0,sizeof(HI_JPG_SAVEINFO_S));
 		/**
 		** cancel reset
-		** CNcomment:³·Ïû¸´Î» CNend\n
+		** CNcomment:æ’¤æ¶ˆå¤ä½ CNend\n
 		**/
 		s32RetVal = ioctl(pJpegHandle->s32JpegDev, CMD_JPG_CANCEL_RESET);
 		if(HI_SUCCESS != s32RetVal)
@@ -127,7 +127,7 @@ HI_VOID JPEG_HDEC_Resume(const struct jpeg_decompress_struct *cinfo)
 		}
 		/**
 		** waite cancel reset success
-		** CNcomment:µÈ´ı³·Ïû¸´Î»³É¹¦ CNend\n
+		** CNcomment:ç­‰å¾…æ’¤æ¶ˆå¤ä½æˆåŠŸ CNend\n
 		**/   
 		usleep(1); /** 1ms at least **/
 

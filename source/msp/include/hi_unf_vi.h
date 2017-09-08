@@ -17,7 +17,7 @@
 
 /**
  * \file
- * \brief Describes the information about video input (VI). CNcomment: Ìá¹©VIµÄÏà¹ØĞÅÏ¢ CNend
+ * \brief Describes the information about video input (VI). CNcomment: æä¾›VIçš„ç›¸å…³ä¿¡æ¯ CNend
  */
 
 #ifndef  __HI_UNF_VI_H__
@@ -34,279 +34,279 @@ extern "C" {
 
 /********************************Macro Definition********************************/
 /** \addtogroup      VI */
-/** @{ */  /** <!-- ¡¾VI¡¿ */
+/** @{ */  /** <!-- ã€VIã€‘ */
 /**Maximum external buffer number*/
-/**CNcomment: VI¹ÜÀíÍâ²¿»º³åÇø×î´ó¸öÊı*/
+/**CNcomment: VIç®¡ç†å¤–éƒ¨ç¼“å†²åŒºæœ€å¤§ä¸ªæ•°*/
 #define MAX_VI_EXT_BUF_NUM (16)
 
 /** @} */  /** <!-- ==== Macro Definition end ==== */
 
 /********************************Struct Definition********************************/
 /** \addtogroup      VI */
-/** @{ */  /** <!-- ¡¾VI¡¿ */
+/** @{ */  /** <!-- ã€VIã€‘ */
 
 /**Input port */
-/**CNcomment: ÊäÈë¶Ë¿Ú */
+/**CNcomment: è¾“å…¥ç«¯å£ */
 typedef enum hiUNF_VI_E
 {
-    HI_UNF_VI_PORT0 = 0,      /**<Port 0 *//**<CNcomment: ¶Ë¿Ú0*/
-    HI_UNF_VI_PORT1,          /**<Port 1 *//**<CNcomment: ¶Ë¿Ú1*/
+    HI_UNF_VI_PORT0 = 0,      /**<Port 0 *//**<CNcomment: ç«¯å£0*/
+    HI_UNF_VI_PORT1,          /**<Port 1 *//**<CNcomment: ç«¯å£1*/
     HI_UNF_VI_BUTT
 } HI_UNF_VI_E;
 
 /**Input interface mode */
-/**CNcomment: ÊäÈë½Ó¿ÚÄ£Ê½ */
+/**CNcomment: è¾“å…¥æ¥å£æ¨¡å¼ */
 typedef enum hiUNF_VI_INPUT_MODE_E
 {
-    HI_UNF_VI_MODE_BT656_576I = 0,  /**<ITU-R BT.656 YUV4:2:2 standard, 576I *//**<CNcomment: ITU-R BT.656 YUV4:2:2 ±ê×¼£¬576I */
-    HI_UNF_VI_MODE_BT656_480I,      /**<ITU-R BT.656 YUV4:2:2 standard, 480I *//**<CNcomment: ITU-R BT.656 YUV4:2:2 ±ê×¼£¬480I */
-    HI_UNF_VI_MODE_BT601_576I,      /**<ITU-R BT.601 YUV4:2:2 standard, 576I *//**<CNcomment: ITU-R BT.601 YUV4:2:2 ±ê×¼ */
-    HI_UNF_VI_MODE_BT601_480I,      /**<ITU-R BT.601 YUV4:2:2 standard, 480I *//**<CNcomment: ITU-R BT.601 YUV4:2:2 ±ê×¼ */
-    HI_UNF_VI_MODE_BT1120_480P,     /**<ITU-R BT.1120 YUV4:2:2 standard, 480P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 ±ê×¼£¬480P */
-    HI_UNF_VI_MODE_BT1120_576P,     /**<ITU-R BT.1120 YUV4:2:2 standard, 576P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 ±ê×¼£¬576P */
-    HI_UNF_VI_MODE_BT1120_720P_50,  /**<ITU-R BT.1120 YUV4:2:2 standard, 720P_50 *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 ±ê×¼£¬720P_50 */
-    HI_UNF_VI_MODE_BT1120_720P_60,  /**<ITU-R BT.1120 YUV4:2:2 standard, 720P_60 *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 ±ê×¼£¬720P_60 */
-    HI_UNF_VI_MODE_BT1120_1080I_50, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080I_50 *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 ±ê×¼£¬1080I_50 */
-    HI_UNF_VI_MODE_BT1120_1080I_60, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080I_60 *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 ±ê×¼£¬1080I_60 */
-    HI_UNF_VI_MODE_BT1120_1080P_25, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 ±ê×¼£¬1080P_25 */
-    HI_UNF_VI_MODE_BT1120_1080P_30, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 ±ê×¼£¬1080P_30 */
-    HI_UNF_VI_MODE_BT1120_1080P_50, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 ±ê×¼£¬1080P_50 */
-    HI_UNF_VI_MODE_BT1120_1080P_60, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 ±ê×¼£¬1080P_60 */
+    HI_UNF_VI_MODE_BT656_576I = 0,  /**<ITU-R BT.656 YUV4:2:2 standard, 576I *//**<CNcomment: ITU-R BT.656 YUV4:2:2 æ ‡å‡†ï¼Œ576I */
+    HI_UNF_VI_MODE_BT656_480I,      /**<ITU-R BT.656 YUV4:2:2 standard, 480I *//**<CNcomment: ITU-R BT.656 YUV4:2:2 æ ‡å‡†ï¼Œ480I */
+    HI_UNF_VI_MODE_BT601_576I,      /**<ITU-R BT.601 YUV4:2:2 standard, 576I *//**<CNcomment: ITU-R BT.601 YUV4:2:2 æ ‡å‡† */
+    HI_UNF_VI_MODE_BT601_480I,      /**<ITU-R BT.601 YUV4:2:2 standard, 480I *//**<CNcomment: ITU-R BT.601 YUV4:2:2 æ ‡å‡† */
+    HI_UNF_VI_MODE_BT1120_480P,     /**<ITU-R BT.1120 YUV4:2:2 standard, 480P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 æ ‡å‡†ï¼Œ480P */
+    HI_UNF_VI_MODE_BT1120_576P,     /**<ITU-R BT.1120 YUV4:2:2 standard, 576P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 æ ‡å‡†ï¼Œ576P */
+    HI_UNF_VI_MODE_BT1120_720P_50,  /**<ITU-R BT.1120 YUV4:2:2 standard, 720P_50 *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 æ ‡å‡†ï¼Œ720P_50 */
+    HI_UNF_VI_MODE_BT1120_720P_60,  /**<ITU-R BT.1120 YUV4:2:2 standard, 720P_60 *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 æ ‡å‡†ï¼Œ720P_60 */
+    HI_UNF_VI_MODE_BT1120_1080I_50, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080I_50 *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 æ ‡å‡†ï¼Œ1080I_50 */
+    HI_UNF_VI_MODE_BT1120_1080I_60, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080I_60 *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 æ ‡å‡†ï¼Œ1080I_60 */
+    HI_UNF_VI_MODE_BT1120_1080P_25, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 æ ‡å‡†ï¼Œ1080P_25 */
+    HI_UNF_VI_MODE_BT1120_1080P_30, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 æ ‡å‡†ï¼Œ1080P_30 */
+    HI_UNF_VI_MODE_BT1120_1080P_50, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 æ ‡å‡†ï¼Œ1080P_50 */
+    HI_UNF_VI_MODE_BT1120_1080P_60, /**<ITU-R BT.1120 YUV4:2:2 standard, 1080P *//**<CNcomment: ITU-R BT.1120 YUV4:2:2 æ ‡å‡†ï¼Œ1080P_60 */
     HI_UNF_VI_MODE_BUTT
 } HI_UNF_VI_INPUT_MODE_E;
 
 /**VI frame buffer management mode */
-/**CNcomment: VIÖ¡»º´æ¹ÜÀí·½Ê½ */
+/**CNcomment: VIå¸§ç¼“å­˜ç®¡ç†æ–¹å¼ */
 typedef enum hiUNF_VI_BUF_MGMT_E
 {
-    HI_UNF_VI_BUF_ALLOC = 0,  /**<VI alloc buffer *//**<CNcomment: VIÉêÇëÖ¡BUF */
-    HI_UNF_VI_BUF_MMAP,       /**<User alloc frame buffer, then maps it to VI *//**<CNcomment: ÓÃ»§ÉêÇëÖ¡BUF£¬²¢Ó³Éä¸øVI */
+    HI_UNF_VI_BUF_ALLOC = 0,  /**<VI alloc buffer *//**<CNcomment: VIç”³è¯·å¸§BUF */
+    HI_UNF_VI_BUF_MMAP,       /**<User alloc frame buffer, then maps it to VI *//**<CNcomment: ç”¨æˆ·ç”³è¯·å¸§BUFï¼Œå¹¶æ˜ å°„ç»™VI */
     HI_UNF_VI_BUF_BUTT
 } HI_UNF_VI_BUF_MGMT_E;
 
 /**VI frame buffer struct */
-/**CNcomment: VIÖ¡»º´æ½á¹¹Ìå */
+/**CNcomment: VIå¸§ç¼“å­˜ç»“æ„ä½“ */
 typedef struct hiUNF_VI_BUFF_ATTR_S
 {
-    HI_U32 u32UsrVirAddr[MAX_VI_EXT_BUF_NUM];  /**<User virtual address *//**<CNcomment: ÓÃ»§Ì¬ĞéÄâµØÖ·*/
-    HI_U32 u32PhyAddr[MAX_VI_EXT_BUF_NUM];     /**<Physical address *//**<CNcomment: ÎïÀíµØÖ·*/
-    HI_U32 u32BufNum;                          /**<Buffer number *//**<CNcomment: »º³åÇø¸öÊı*/
-    HI_U32 u32Stride;                          /**<Stride of external frame buffer *//**<CNcomment:Íâ²¿Ö¡´æµÄstride*/
+    HI_U32 u32UsrVirAddr[MAX_VI_EXT_BUF_NUM];  /**<User virtual address *//**<CNcomment: ç”¨æˆ·æ€è™šæ‹Ÿåœ°å€*/
+    HI_U32 u32PhyAddr[MAX_VI_EXT_BUF_NUM];     /**<Physical address *//**<CNcomment: ç‰©ç†åœ°å€*/
+    HI_U32 u32BufNum;                          /**<Buffer number *//**<CNcomment: ç¼“å†²åŒºä¸ªæ•°*/
+    HI_U32 u32Stride;                          /**<Stride of external frame buffer *//**<CNcomment:å¤–éƒ¨å¸§å­˜çš„stride*/
 } HI_UNF_VI_BUFFER_ATTR_S;
 
 /**VI attributes */
-/**CNcomment: VIÊôĞÔ */
+/**CNcomment: VIå±æ€§ */
 typedef struct hiUNF_VI_ATTR_S
 {
-    HI_BOOL                bVirtual;      /**<whether to create virtual VI, only u32BufNum is valid in virtual VI mode *//**<CNcomment: ÊÇ·ñ´´½¨ĞéÄâVI£¬ĞéÄâVIÏÂÖ»ÓĞu32BufNum²ÎÊıÓĞĞ§*/
-    HI_UNF_VI_INPUT_MODE_E enInputMode;   /**<Video input mode *//**<CNcomment: ÊÓÆµÊäÈëÄ£Ê½ */
-    HI_RECT_S              stInputRect;   /**<Crop region of a window *//**<CNcomment: ´°¿ÚµÄ²Ã¼õÇøÓò */
-    HI_UNF_VIDEO_FORMAT_E  enVideoFormat; /**<Video format *//**<CNcomment: ÊÓÆµ¸ñÊ½ */
-    HI_UNF_VI_BUF_MGMT_E   enBufMgmtMode; /**<VI frame buffer management mode *//**<CNcomment: VIÖ¡»º´æ¹ÜÀí·½Ê½ */
-    HI_U32                 u32BufNum;     /**<Number of available buffers *//**<CNcomment: ¿ÉÓÃµÄÖ¡bufµÄ¸öÊı */
+    HI_BOOL                bVirtual;      /**<whether to create virtual VI, only u32BufNum is valid in virtual VI mode *//**<CNcomment: æ˜¯å¦åˆ›å»ºè™šæ‹ŸVIï¼Œè™šæ‹ŸVIä¸‹åªæœ‰u32BufNumå‚æ•°æœ‰æ•ˆ*/
+    HI_UNF_VI_INPUT_MODE_E enInputMode;   /**<Video input mode *//**<CNcomment: è§†é¢‘è¾“å…¥æ¨¡å¼ */
+    HI_RECT_S              stInputRect;   /**<Crop region of a window *//**<CNcomment: çª—å£çš„è£å‡åŒºåŸŸ */
+    HI_UNF_VIDEO_FORMAT_E  enVideoFormat; /**<Video format *//**<CNcomment: è§†é¢‘æ ¼å¼ */
+    HI_UNF_VI_BUF_MGMT_E   enBufMgmtMode; /**<VI frame buffer management mode *//**<CNcomment: VIå¸§ç¼“å­˜ç®¡ç†æ–¹å¼ */
+    HI_U32                 u32BufNum;     /**<Number of available buffers *//**<CNcomment: å¯ç”¨çš„å¸§bufçš„ä¸ªæ•° */
 } HI_UNF_VI_ATTR_S;
 
 /** @} */  /** <!-- ==== Struct Definition End ==== */
 
 /********************************API Declaration********************************/
 /** \addtogroup      VI */
-/** @{ */  /** <!-- ¡¾VI¡¿ */
+/** @{ */  /** <!-- ã€VIã€‘ */
 
 /**
- \brief Initializes the video input unit (VIU). CNcomment: ³õÊ¼»¯VI CNend
+ \brief Initializes the video input unit (VIU). CNcomment: åˆå§‹åŒ–VI CNend
  \attention \n
 Before calling the VIU, you must call this application programming interface (API).
-CNcomment: µ÷ÓÃVIÄ£¿éÒªÇóÊ×ÏÈµ÷ÓÃ¸Ã½Ó¿Ú CNend
- \param[in] N/A CNcomment: ÎŞ CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_DEV_NOT_EXIST No VI device exists. CNcomment: Éè±¸²»´æÔÚ CNend
- \retval ::HI_ERR_VI_NOT_DEV_FILE The file is not a VI file. CNcomment: ÎÄ¼ş·ÇÉè±¸ CNend
- \retval ::HI_ERR_VI_DEV_OPENED The VI device fails to be started. CNcomment: ´ò¿ªÉè±¸Ê§°Ü CNend
+CNcomment: è°ƒç”¨VIæ¨¡å—è¦æ±‚é¦–å…ˆè°ƒç”¨è¯¥æ¥å£ CNend
+ \param[in] N/A CNcomment: æ—  CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_DEV_NOT_EXIST No VI device exists. CNcomment: è®¾å¤‡ä¸å­˜åœ¨ CNend
+ \retval ::HI_ERR_VI_NOT_DEV_FILE The file is not a VI file. CNcomment: æ–‡ä»¶éè®¾å¤‡ CNend
+ \retval ::HI_ERR_VI_DEV_OPENED The VI device fails to be started. CNcomment: æ‰“å¼€è®¾å¤‡å¤±è´¥ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_Init(HI_VOID);
 
 /**
- \brief Deinitializes the VIU. CNcomment: È¥³õÊ¼»¯VI CNend
+ \brief Deinitializes the VIU. CNcomment: å»åˆå§‹åŒ–VI CNend
  \attention \n
- \param[in] N/A CNcomment: ÎŞ CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
+ \param[in] N/A CNcomment: æ—  CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_DeInit(HI_VOID);
 
 /**
- \brief Obtains the attributes of a VI port. CNcomment: »ñÈ¡VI¶Ë¿ÚÄ¬ÈÏÊôĞÔ CNend
+ \brief Obtains the attributes of a VI port. CNcomment: è·å–VIç«¯å£é»˜è®¤å±æ€§ CNend
  \attention \n
 By default, port 0 is used, half D1 and BT656 formats are used, the data of the odd field is collected, and the semi-planar YUV4:2:0 data is output.
-CNcomment: Ä¬ÈÏPort=0, HALF-D1, BT656£¬²É¼¯Å¼³¡£¬Êä³öSemiPlanner YUV4:2:0¸ñÊ½Êı¾İ CNend
- \param[out] pstAttr Pointer to VI attributes CNcomment: VIÊôĞÔÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
+CNcomment: é»˜è®¤Port=0, HALF-D1, BT656ï¼Œé‡‡é›†å¶åœºï¼Œè¾“å‡ºSemiPlanner YUV4:2:0æ ¼å¼æ•°æ® CNend
+ \param[out] pstAttr Pointer to VI attributes CNcomment: VIå±æ€§æŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_GetDefaultAttr(HI_UNF_VI_ATTR_S *pstAttr);
 
 /**
- \brief Set the attributes of a VI port. CNcomment: ÉèÖÃVI PortÊôĞÔ CNend
+ \brief Set the attributes of a VI port. CNcomment: è®¾ç½®VI Portå±æ€§ CNend
  \attention \n
 This reserved API is combined with HI_UNF_VI_Create, and cannot be called dynamically.
-CNcomment: Ô¤Áô½Ó¿Ú£¬ÓëCreateºÏÒ»£¬²»¿É¶¯Ì¬µ÷ÓÃ CNend
- \param[in] hVi VI handle CNcomment: VI¾ä±ú CNend
- \param[in] pstAttr  Pointer to VI attributes CNcomment: VIÊôĞÔÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
- \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
- \retval ::HI_ERR_VI_CHN_INIT_BUF_ERR An error occurs when the buffer is initialized. CNcomment: ³õÊ¼»¯buffer´íÎó CNend
- \retval ::HI_ERR_VI_INVALID_PARA The attribute parameters are incorrect. CNcomment: ÊôĞÔ²ÎÊı´íÎó CNend
+CNcomment: é¢„ç•™æ¥å£ï¼Œä¸Createåˆä¸€ï¼Œä¸å¯åŠ¨æ€è°ƒç”¨ CNend
+ \param[in] hVi VI handle CNcomment: VIå¥æŸ„ CNend
+ \param[in] pstAttr  Pointer to VI attributes CNcomment: VIå±æ€§æŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
+ \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
+ \retval ::HI_ERR_VI_CHN_INIT_BUF_ERR An error occurs when the buffer is initialized. CNcomment: åˆå§‹åŒ–bufferé”™è¯¯ CNend
+ \retval ::HI_ERR_VI_INVALID_PARA The attribute parameters are incorrect. CNcomment: å±æ€§å‚æ•°é”™è¯¯ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_SetAttr(HI_HANDLE hVI, HI_UNF_VI_ATTR_S *pstAttr);
 
 /**
- \brief Obtains the attributes of a VI port. CNcomment: »ñÈ¡VI PortÊôĞÔ CNend
+ \brief Obtains the attributes of a VI port. CNcomment: è·å–VI Portå±æ€§ CNend
  \attention \n
- \param[in] hVi VI handle CNcomment: VI¾ä±ú CNend
- \param[out] pstAttr Pointer to VI attributes CNcomment: VIÊôĞÔÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
- \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
+ \param[in] hVi VI handle CNcomment: VIå¥æŸ„ CNend
+ \param[out] pstAttr Pointer to VI attributes CNcomment: VIå±æ€§æŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
+ \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_GetAttr(HI_HANDLE hVI, HI_UNF_VI_ATTR_S *pstAttr);
 
 /**
- \brief Enables a VI port to create a VI handle. CNcomment: ´ò¿ªVI Port£¬´´½¨Vi¾ä±ú CNend
+ \brief Enables a VI port to create a VI handle. CNcomment: æ‰“å¼€VI Portï¼Œåˆ›å»ºViå¥æŸ„ CNend
  \attention \n
 Before calling the VIU, you must call this API.\n
 Unless the virtual VI is used, the port ID must correspond to the hardware. That is, the hardware and software must use the same port\n
-CNcomment: µ÷ÓÃVI Ä£¿éĞèÒªÊ×ÏÈµ÷ÓÃ¸Ã½Ó¿Ú\n
-           ³ı·ÇÊ¹ÓÃĞéÄâVI, ·ñÔòPortIDĞèÒªÓëÓ²¼ş¶ÔÓ¦,Ó²¼şÉÏÊ¹ÓÃÁËÄÄ¸öPort,ÄÇÃ´Èí¼şÒ²±ØĞëÊ¹ÓÃÄÄ¸öPort.\n CNend
- \param[in] enViPort VI port CNcomment: VI¶Ë¿Ú CNend
- \param[in] pstAttr Pointer to VI attributes CNcomment: VIÊôĞÔÖ¸Õë CNend
- \param[out] phandle hVi Pointer to the VI handle CNcomment: VI¾ä±úÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
- \retval ::HI_ERR_VI_CHN_INIT_BUF_ERR An error occurs when the buffer is initialized. CNcomment: ³õÊ¼»¯buffer´íÎó CNend
- \retval ::HI_ERR_VI_INVALID_PARA The attribute parameters are incorrect. CNcomment: ÊôĞÔ²ÎÊı´íÎó CNend
+CNcomment: è°ƒç”¨VI æ¨¡å—éœ€è¦é¦–å…ˆè°ƒç”¨è¯¥æ¥å£\n
+           é™¤éä½¿ç”¨è™šæ‹ŸVI, å¦åˆ™PortIDéœ€è¦ä¸ç¡¬ä»¶å¯¹åº”,ç¡¬ä»¶ä¸Šä½¿ç”¨äº†å“ªä¸ªPort,é‚£ä¹ˆè½¯ä»¶ä¹Ÿå¿…é¡»ä½¿ç”¨å“ªä¸ªPort.\n CNend
+ \param[in] enViPort VI port CNcomment: VIç«¯å£ CNend
+ \param[in] pstAttr Pointer to VI attributes CNcomment: VIå±æ€§æŒ‡é’ˆ CNend
+ \param[out] phandle hVi Pointer to the VI handle CNcomment: VIå¥æŸ„æŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
+ \retval ::HI_ERR_VI_CHN_INIT_BUF_ERR An error occurs when the buffer is initialized. CNcomment: åˆå§‹åŒ–bufferé”™è¯¯ CNend
+ \retval ::HI_ERR_VI_INVALID_PARA The attribute parameters are incorrect. CNcomment: å±æ€§å‚æ•°é”™è¯¯ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 
 HI_S32 HI_UNF_VI_Create(HI_UNF_VI_E enViPort, HI_UNF_VI_ATTR_S *pstAttr, HI_HANDLE *phandle);
 
 /**
- \brief Disable a VI port to destroy the handle. CNcomment: ¹Ø±ÕVI Port£¬Ïú»Ù¾ä±ú CNend
+ \brief Disable a VI port to destroy the handle. CNcomment: å…³é—­VI Portï¼Œé”€æ¯å¥æŸ„ CNend
  \attention \n
- \param[in] hVi VI handle CNcomment: VI¾ä±ú CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
+ \param[in] hVi VI handle CNcomment: VIå¥æŸ„ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_Destroy(HI_HANDLE hVI);
 
 /**
- \brief Start VI. CNcomment: Æô¶¯VI£¬Ïú»Ù¾ä±ú CNend
+ \brief Start VI. CNcomment: å¯åŠ¨VIï¼Œé”€æ¯å¥æŸ„ CNend
  \attention \n
- \param[in] hVI VI handle CNcomment: VI¾ä±ú CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
+ \param[in] hVI VI handle CNcomment: VIå¥æŸ„ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_Start(HI_HANDLE hVI);
 
 /**
- \brief Stop VI. CNcomment: Í£Ö¹VI£¬Ïú»Ù¾ä±ú CNend
+ \brief Stop VI. CNcomment: åœæ­¢VIï¼Œé”€æ¯å¥æŸ„ CNend
  \attention \n
- \param[in] hVI VI handle CNcomment: VI¾ä±ú CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
+ \param[in] hVI VI handle CNcomment: VIå¥æŸ„ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_Stop(HI_HANDLE hVI);
 
 /**
- \brief Set external buffer which will be managed by VI. CNcomment: ÉèÖÃÍâ²¿»º³åÇø£¬ÓÉVI¹ÜÀí CNend
+ \brief Set external buffer which will be managed by VI. CNcomment: è®¾ç½®å¤–éƒ¨ç¼“å†²åŒºï¼Œç”±VIç®¡ç† CNend
  \attention \n
  The interface is only valid in real VI scene, and ::HI_UNF_VI_BUF_MMAP mode should be set.
- CNcomment: ÓÃ»§Ö»ÄÜÔÚÊµÌåVI³¡¾°ÏÂ£¬ÉèÖÃÎª::HI_UNF_VI_BUF_MMAPÄ£Ê½Ê±£¬²ÅÄÜÊ¹ÓÃ´Ë½Ó¿Ú\n CNend
- \param[in] hVI VI handle CNcomment: VI¾ä±ú CNend
- \param[in] pstBufAttr Buffer attributes CNcomment: »º³åÇøÊôĞÔ CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
+ CNcomment: ç”¨æˆ·åªèƒ½åœ¨å®ä½“VIåœºæ™¯ä¸‹ï¼Œè®¾ç½®ä¸º::HI_UNF_VI_BUF_MMAPæ¨¡å¼æ—¶ï¼Œæ‰èƒ½ä½¿ç”¨æ­¤æ¥å£\n CNend
+ \param[in] hVI VI handle CNcomment: VIå¥æŸ„ CNend
+ \param[in] pstBufAttr Buffer attributes CNcomment: ç¼“å†²åŒºå±æ€§ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_SetExternBuffer(HI_HANDLE hVI, HI_UNF_VI_BUFFER_ATTR_S* pstBufAttr);
 
 /**
  \brief Obtains the address of a frame buffer over a VI port.
- CNcomment:»ñÈ¡ĞéÄâVI Port Ò»Ö¡Í¼ÏñBuffer CNend
+ CNcomment:è·å–è™šæ‹ŸVI Port ä¸€å¸§å›¾åƒBuffer CNend
  \attention \n
  The interface can only be used in virual VI scene\n
-CNcomment: Ö»ÓĞÔÚĞéÄâVI³¡¾°ÏÂ£¬²Å¿ÉÊ¹ÓÃ´Ë½Ó¿Ú»¹Ö¡\n CNend
- \param[in] hVI VI handle CNcomment: VI¾ä±ú CNend
- \param[out] pViBuf Pointer to the VI buffer CNcomment: VI bufferÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
- \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
+CNcomment: åªæœ‰åœ¨è™šæ‹ŸVIåœºæ™¯ä¸‹ï¼Œæ‰å¯ä½¿ç”¨æ­¤æ¥å£è¿˜å¸§\n CNend
+ \param[in] hVI VI handle CNcomment: VIå¥æŸ„ CNend
+ \param[out] pViBuf Pointer to the VI buffer CNcomment: VI bufferæŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
+ \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_DequeueFrame(HI_HANDLE hVI, HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo);
 
 /**
  \brief Releases the VI frame buffer for the driver.
- CNcomment: ·¢ËÍĞéÄâVI Port Ò»Ö¡Í¼ÏñBuffer£¬Çı¶¯ĞéÄâPort¹¤×÷ CNend
+ CNcomment: å‘é€è™šæ‹ŸVI Port ä¸€å¸§å›¾åƒBufferï¼Œé©±åŠ¨è™šæ‹ŸPortå·¥ä½œ CNend
  \attention
  The interface can only be used in virual VI scene\n
-CNcomment: Ö»ÓĞÔÚĞéÄâVI³¡¾°ÏÂ£¬²Å¿ÉÊ¹ÓÃ´Ë½Ó¿ÚËÍÖ¡\n CNend
- \param[in] hVI VI handle CNcomment: VI¾ä±ú CNend
- \param[in] pViBuf Pointer to the VI buffer CNcomment: VI bufferÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
- \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
+CNcomment: åªæœ‰åœ¨è™šæ‹ŸVIåœºæ™¯ä¸‹ï¼Œæ‰å¯ä½¿ç”¨æ­¤æ¥å£é€å¸§\n CNend
+ \param[in] hVI VI handle CNcomment: VIå¥æŸ„ CNend
+ \param[in] pViBuf Pointer to the VI buffer CNcomment: VI bufferæŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
+ \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_QueueFrame(HI_HANDLE hVI, HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo);
 
 /**
- \brief Obtains the address of a YUV picture. CNcomment: »ñÈ¡Ò»Ö¡YUV Í¼ÏñµØÖ· CNend
+ \brief Obtains the address of a YUV picture. CNcomment: è·å–ä¸€å¸§YUV å›¾åƒåœ°å€ CNend
  \attention \n
 You do not need to call this API generally. It is recommended that you bind the VIU to the video encoder (VENC) or video output unit (VOU) to implement the encoding function or VIVO loopback function.
-CNcomment: Ò»°ãÇé¿öÏÂ£¬ÓÃ»§²»ĞèÒªµ÷ÓÃ´Ë½Ó¿Ú£¬ÍÆ¼öÖ±½Ó½«VIÓëVENC»òÕßVO½øĞĞ°ó¶¨ÒÔ±ãÊµÏÖ±àÂë»òÕßVIVO»·»Ø¹¦ÄÜ¡£ CNend
- \param[in] hVi VI handle CNcomment: VI¾ä±ú CNend
- \param[out] pViBuf Pointer to the VI buffer CNcomment: VI bufferÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
- \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
+CNcomment: ä¸€èˆ¬æƒ…å†µä¸‹ï¼Œç”¨æˆ·ä¸éœ€è¦è°ƒç”¨æ­¤æ¥å£ï¼Œæ¨èç›´æ¥å°†VIä¸VENCæˆ–è€…VOè¿›è¡Œç»‘å®šä»¥ä¾¿å®ç°ç¼–ç æˆ–è€…VIVOç¯å›åŠŸèƒ½ã€‚ CNend
+ \param[in] hVi VI handle CNcomment: VIå¥æŸ„ CNend
+ \param[out] pViBuf Pointer to the VI buffer CNcomment: VI bufferæŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
+ \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_AcquireFrame(HI_HANDLE hVI, HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo, HI_U32 u32TimeoutMs);
 
 /**
  \brief Releases the frame buffer for the VIU after the VENC or VOU obtains a YUV picture.
-CNcomment: ÓÃ»§¹é»¹Ò»Ö¡YUV Í¼ÏñµØÖ· CNend
+CNcomment: ç”¨æˆ·å½’è¿˜ä¸€å¸§YUV å›¾åƒåœ°å€ CNend
  \attention \n
 You do not need to call this API generally. It is recommended that you bind the VIU to the VENC or VOU to implement the encoding function or VIVO loopback function.
-CNcomment: Ò»°ãÇé¿öÏÂ£¬ÓÃ»§²»ĞèÒªµ÷ÓÃ´Ë½Ó¿Ú£¬ÍÆ¼öÖ±½Ó½«VIÓëVENC»òÕßVO½øĞĞ°ó¶¨ÒÔ±ãÊµÏÖ±àÂë»òÕßVIVO»·»Ø¹¦ÄÜ¡£ CNend
- \param[in] hVi VI handle CNcomment: VI¾ä±ú CNend
- \param[in] pViBuf Pointer to the VI buffer CNcomment: VI bufferÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
- \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
+CNcomment: ä¸€èˆ¬æƒ…å†µä¸‹ï¼Œç”¨æˆ·ä¸éœ€è¦è°ƒç”¨æ­¤æ¥å£ï¼Œæ¨èç›´æ¥å°†VIä¸VENCæˆ–è€…VOè¿›è¡Œç»‘å®šä»¥ä¾¿å®ç°ç¼–ç æˆ–è€…VIVOç¯å›åŠŸèƒ½ã€‚ CNend
+ \param[in] hVi VI handle CNcomment: VIå¥æŸ„ CNend
+ \param[in] pViBuf Pointer to the VI buffer CNcomment: VI bufferæŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_VI_CHN_NOT_EXIST The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
+ \retval ::HI_ERR_VI_NULL_PTR The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_VI_ReleaseFrame(HI_HANDLE hVI, const HI_UNF_VIDEO_FRAME_INFO_S *pFrameInfo);
 

@@ -22,7 +22,7 @@
 
 /**
  ** add the include file about the functions that hard decode needed
- ** CNcomment: Ôö¼ÓÓ²¼ş½âÂëĞèÒªµÄÍ·ÎÄ¼ş CNend\n
+ ** CNcomment: å¢åŠ ç¡¬ä»¶è§£ç éœ€è¦çš„å¤´æ–‡ä»¶ CNend\n
  **/
 #include "jpeg_hdec_api.h"
 
@@ -48,8 +48,8 @@ LOCAL(boolean) output_pass_setup JPP((j_decompress_ptr cinfo));
 /**
  ** the soft decode move from jpeg_start_decompress,now jpeg_start_decompress
  ** have two decode type, hard decode and soft decode
- ** CNcomment: Ô­ÏÈjpeg_start_decompressµÄÈí¼ş½âÂëÁ÷³Ì£¬ÏÖÔÚ½«ËûÖØĞÂ
- **            ÃüÃûÒ»¸öº¯ÊıÊµÏÖ CNend\n
+ ** CNcomment: åŸå…ˆjpeg_start_decompressçš„è½¯ä»¶è§£ç æµç¨‹ï¼Œç°åœ¨å°†ä»–é‡æ–°
+ **            å‘½åä¸€ä¸ªå‡½æ•°å®ç° CNend\n
  **/
 static HI_BOOL jpeg_start_hard_decompress(j_decompress_ptr cinfo)
 {
@@ -60,7 +60,7 @@ static HI_BOOL jpeg_start_hard_decompress(j_decompress_ptr cinfo)
 #endif
 		/**
 		 ** check the hard decode whether support
-		 ** CNcomment:ÅĞ¶ÏÓ²¼ş½âÂëÊÇ·ñÖ§³Ö CNend\n
+		 ** CNcomment:åˆ¤æ–­ç¡¬ä»¶è§£ç æ˜¯å¦æ”¯æŒ CNend\n
 		 **/
 		s32RetVal =  JPEG_HDEC_IfSupport(cinfo);
 		if(HI_SUCCESS != s32RetVal)
@@ -69,7 +69,7 @@ static HI_BOOL jpeg_start_hard_decompress(j_decompress_ptr cinfo)
 		}
 		/**
 		 ** open some device that decode need
-		 ** CNcomment:´ò¿ª½âÂëĞèÒªµÄÒ»Ğ©Éè±¸ CNend\n
+		 ** CNcomment:æ‰“å¼€è§£ç éœ€è¦çš„ä¸€äº›è®¾å¤‡ CNend\n
 		 **/
 		s32RetVal = JPEG_HDEC_OpenDev(cinfo);
 		if(HI_SUCCESS != s32RetVal)
@@ -85,7 +85,7 @@ static HI_BOOL jpeg_start_hard_decompress(j_decompress_ptr cinfo)
 #ifdef CONFIG_JPEG_USE_CALLBACK_STREAM
 		/**
 		** this var only used at android version
-		** CNcomment: Õâ¸ö±äÁ¿½öÓÃÔÚandroid½âÂë CNend\n
+		** CNcomment: è¿™ä¸ªå˜é‡ä»…ç”¨åœ¨androidè§£ç  CNend\n
 		**/
 		pJpegHandle->bInHardDec = HI_TRUE;
 #endif
@@ -197,7 +197,7 @@ jpeg_start_decompress (j_decompress_ptr cinfo)
 #endif
 			{/**
 	   		  ** when use external stream,if hard decode failure,user should resume the stream,and call this function again
-	          ** CNcomment: Èç¹ûÊÇÊ¹ÓÃÍâ²¿´¦ÀíÂëÁ÷£¬ÔòÖ±½Ó·µ»ØÊ§°Ü£¬È»ºóÓÃ»§»ØÍËÂëÁ÷Ö®ºóÖØĞÂµ÷ÓÃ¸Ã½Ó¿Ú½øĞĞÈí½â CNend\n
+	          ** CNcomment: å¦‚æœæ˜¯ä½¿ç”¨å¤–éƒ¨å¤„ç†ç æµï¼Œåˆ™ç›´æ¥è¿”å›å¤±è´¥ï¼Œç„¶åç”¨æˆ·å›é€€ç æµä¹‹åé‡æ–°è°ƒç”¨è¯¥æ¥å£è¿›è¡Œè½¯è§£ CNend\n
 	          **/
 	            pJpegHandle->bFirstDec = HI_FALSE;
 	            return HI_FALSE;
@@ -205,7 +205,7 @@ jpeg_start_decompress (j_decompress_ptr cinfo)
 			
         }
 		/**as follows is soft decode dispose
-		 **CNcomment: µ×ÏÂÊÇÈí¼şÁ÷³Ì´¦Àí CNend\n
+		 **CNcomment: åº•ä¸‹æ˜¯è½¯ä»¶æµç¨‹å¤„ç† CNend\n
 		 **/
         bRet = jpeg_start_soft_decompress(cinfo);
 	   
@@ -350,7 +350,7 @@ static HI_U32 jpeg_hard_read_scanlines(j_decompress_ptr cinfo,
 	   if(HI_SUCCESS != row_ctr)
 	   {/**
 		 ** because the jpeg hard dec success,so the csc must success
-		 ** CNcomment:Ó²¼ş½âÂë³É¹¦£¬ËùÒÔÓ²¼ş×ª»»Ò²±ØĞë³É¹¦ CNend\n
+		 ** CNcomment:ç¡¬ä»¶è§£ç æˆåŠŸï¼Œæ‰€ä»¥ç¡¬ä»¶è½¬æ¢ä¹Ÿå¿…é¡»æˆåŠŸ CNend\n
 		 **/
           ERREXIT(cinfo, JERR_HARD_CSC_FAILURE);
 	   }

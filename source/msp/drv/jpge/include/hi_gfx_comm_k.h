@@ -1,6 +1,6 @@
 /**
  \file
- \brief Describes adp file. CNcomment:Çı¶¯¿çÆ½Ì¨ÊÊÅä
+ \brief Describes adp file. CNcomment:é©±åŠ¨è·¨å¹³å°é€‚é…
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version 1.0
@@ -49,7 +49,7 @@
 #endif
 
 #ifdef   CONFIG_GFX_COMM_STR_DISABLE
-#define  CONFIG_GFX_COMM_DEBUG_DISABLE       //¹Ø±Õ×Ö·û´®¹¦ÄÜ,DEBUG¹Ø±Õ±ØĞë¹Ø±Õ.
+#define  CONFIG_GFX_COMM_DEBUG_DISABLE       //å…³é—­å­—ç¬¦ä¸²åŠŸèƒ½,DEBUGå…³é—­å¿…é¡»å…³é—­.
 #endif
 
 
@@ -224,14 +224,14 @@ static inline HI_S32 HI_GFX_GetTimeStamp(HI_U32 *pu32TimeMs, HI_U32 *pu32TimeUs)
  #endif
 
 
-/*CNcomment:ÊÍ·ÅmmzÄÚ´æ£¬µÃµ½ÎïÀíµØÖ·£¬²¢×öÄÚºËÌ¬µØÖ·µÄÓ³Éä*/
+/*CNcomment:é‡Šæ”¾mmzå†…å­˜ï¼Œå¾—åˆ°ç‰©ç†åœ°å€ï¼Œå¹¶åšå†…æ ¸æ€åœ°å€çš„æ˜ å°„*/
 static inline HI_VOID HI_GFX_FreeMem(HI_U32 u32Phyaddr)
 {
         MMZ_BUFFER_S stBuffer;
         stBuffer.u32StartPhyAddr = u32Phyaddr;
         HI_DRV_MMZ_Release(&stBuffer);
 }
-/*CNcomment:ÉêÇëmmzÄÚ´æ£¬µÃµ½ÎïÀíµØÖ·£¬²¢×öÄÚºËÌ¬µØÖ·µÄÓ³Éä*/
+/*CNcomment:ç”³è¯·mmzå†…å­˜ï¼Œå¾—åˆ°ç‰©ç†åœ°å€ï¼Œå¹¶åšå†…æ ¸æ€åœ°å€çš„æ˜ å°„*/
 static inline HI_U32 HI_GFX_AllocMem(HI_CHAR *pName, HI_CHAR* pZoneName, HI_U32 u32LayerSize)
 {
     int addr;
@@ -411,7 +411,7 @@ static inline HI_VOID HI_GFX_SYS_GetChipVersion(HIGFX_CHIP_TYPE_E *penChipType)
     #endif
 
 /*show version num*/
-/*CNcomment:ÉêÇëmmzÄÚ´æ£¬µÃµ½ÎïÀíµØÖ·£¬²¢×öÄÚºËÌ¬µØÖ·µÄÓ³Éä*/
+/*CNcomment:ç”³è¯·mmzå†…å­˜ï¼Œå¾—åˆ°ç‰©ç†åœ°å€ï¼Œå¹¶åšå†…æ ¸æ€åœ°å€çš„æ˜ å°„*/
 #define DECLARE_GFX_NODE(gfx_name,gfx_open, gfx_release, gfx_ioctl, gfx_suspend, gfx_resume) \
 do  \
 {\

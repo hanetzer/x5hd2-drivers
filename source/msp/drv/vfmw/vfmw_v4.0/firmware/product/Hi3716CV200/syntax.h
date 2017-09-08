@@ -105,7 +105,7 @@ typedef struct hiSYNTAX_CTX_S
     #endif
         iMediaSDEC_CTX_S stiMediaSoftCtx;
         USER_CTX_S  stUserCtx;
-    } unSyntax;                     /* ╦цм╗╣ю╤тс╕╣дsyntaxиообнд */
+    } unSyntax;                     /* Х╞╔И─ И│⌠Е╞╧Е╨■Г └syntaxД╦┼Д╦▀Ф√┤ */
 } SYNTAX_CTX_S;
 
 #define  MAX_USRDAT_BLK_NUM   48

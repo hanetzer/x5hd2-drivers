@@ -121,7 +121,7 @@ HI_VOID SCI_DspProc(struct seq_file *p, SCI_PARA_S *pSciPara, ATR_BUF_S *pSciAtr
 
     if ((AtrMask >> 2) & 0x01)
     {
-        PROC_PRINT(p, "%-20s:0x%x (b5¡«b8:BWI  b1¡«b4:CWI)\n", "TB3", pSciAtrBuf->DataBuf[++AtrNum]);
+        PROC_PRINT(p, "%-20s:0x%x (b5ï½žb8:BWI  b1ï½žb4:CWI)\n", "TB3", pSciAtrBuf->DataBuf[++AtrNum]);
     }
 
     if ((AtrMask >> 3) & 0x01)

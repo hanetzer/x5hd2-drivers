@@ -92,7 +92,7 @@ void SI_ReadBlockHDMITXP1(HI_U8 Addr, HI_U8 NBytes, HI_U8 * Data )
 #if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
 /*
  ** HDMI Hardware Reset:Set PERI_CRG2
- ** ¸´Î» ÏÈ 1 ºó 0   ĞèÒªÌáÈ¡?
+ ** å¤ä½ å…ˆ 1 å 0   éœ€è¦æå–?
  */
 HI_S32 SI_HdmiHardwareReset(int iEnable)
 {
@@ -121,7 +121,7 @@ HI_S32 SI_HdmiHardwareReset(int iEnable)
         u32Phy = tmp2;
     }
 
-    //¸´Î»
+    //å¤ä½
     else
     {
         tmp = u32Ctrller;
@@ -330,7 +330,7 @@ void SI_WakeUpHDMITX(void)
     RegVal = ReadByteHDMITXP0(TX_SYS_CTRL1_ADDR) | BIT_TX_PD;
     
 #if 0 /*--w00226427 said need cfg to 0x37--*/
-    //x6µÈÖ®Ç°°æ±¾0x08Ä¬ÈÏÖµ 0x34,S40 Ä¬ÈÏÖµ0x37.²»Ì«È·¶¨×öÊ²Ã´µÄ£¬ÏÈºÍÒÔÍù°æ±¾±£³ÖÒ»ÖÂ
+    //x6ç­‰ä¹‹å‰ç‰ˆæœ¬0x08é»˜è®¤å€¼ 0x34,S40 é»˜è®¤å€¼0x37.ä¸å¤ªç¡®å®šåšä»€ä¹ˆçš„ï¼Œå…ˆå’Œä»¥å¾€ç‰ˆæœ¬ä¿æŒä¸€è‡´
     RegVal &=  ~BIT_TX_CLOCK_RISING_EDGE;
 #endif /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
     

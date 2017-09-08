@@ -690,7 +690,7 @@ HI_S32  VENC_DRV_EflPutImage(HI_S32 EncHandle, HI_DRV_VIDEO_FRAME_S  *pstFrame);
 HI_S32  VENC_DRV_EflCfgRegVenc( HI_U32 EncHandle );
 HI_VOID VENC_DRV_EflSortPriority(HI_VOID);
 
-HI_BOOL VENC_DRV_EflJudgeVPSS( HI_HANDLE EncHandle, HI_DRV_VIDEO_FRAME_S *pstFrameInfo);   //µ˜”√‘⁄ªÒµ√÷°–≈œ¢∫Û
+HI_BOOL VENC_DRV_EflJudgeVPSS( HI_HANDLE EncHandle, HI_DRV_VIDEO_FRAME_S *pstFrameInfo);   //Ë∞ÉÁî®Âú®Ëé∑ÂæóÂ∏ß‰ø°ÊÅØÂêé
 HI_VOID VENC_DRV_EflWakeUpThread(HI_VOID);
 
 HI_S32 VENC_DRV_EflQFrameByAttach( HI_U32 EncHandle, HI_DRV_VIDEO_FRAME_S  *pstFrame);

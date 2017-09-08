@@ -453,13 +453,13 @@ typedef struct
 } DMX_PCR_Info_S;
 
 /**recorded Ts time stamp mode*/
-/**CNcomment: Â¼ÖÆTS°üÊ±¼ä´ÁÌí¼ÓÄ£Ê½*/
+/**CNcomment: å½•åˆ¶TSåŒ…æ—¶é—´æˆ³æ·»åŠ æ¨¡å¼*/
 typedef enum hiDMX_REC_TIMESTAMP_MODE_E
 {
-    DMX_REC_TIMESTAMP_NONE,               /**<No time stamp added before each recoreded  ts packet*/  /**<CNcomment: ²»ÔÚÃ¿¸öÂ¼ÖÆµÄTS °üÇ°¼ÓÊ±¼ä´Á */
-	DMX_REC_TIMESTAMP_ZERO, 				 /**<Use 4 byte 0  added before each recoreded  ts packet*/  /**<CNcomment: ÔÚÃ¿¸öÂ¼ÖÆµÄTS °üÇ°¼Ó4×Ö½ÚÊ±¼ä´Á£¬ÄÚÈİÎª0 */
-    DMX_REC_TIMESTAMP_HIGH32BIT_SCR,      /**<Use high 32 bit of SCR_base (4 byte)  added before each recoreded  ts packet*/  /**<CNcomment: ÔÚÃ¿¸öÂ¼ÖÆµÄTS °üÇ°¼Ó4×Ö½ÚÊ±¼ä´Á£¬ÄÚÈİÎªSCR_BASE µÄ¸ß32bit */ 
-    DMX_REC_TIMESTAMP_LOW32BIT_SCR, 		 /**<Use low 32 bit of SCR_base (4 byte)  added before each recoreded  ts packet*/  /**<CNcomment: ÔÚÃ¿¸öÂ¼ÖÆµÄTS °üÇ°¼Ó4×Ö½ÚÊ±¼ä´Á£¬ÄÚÈİÎªSCR_BASE µÄµÍ32bit */ 
+    DMX_REC_TIMESTAMP_NONE,               /**<No time stamp added before each recoreded  ts packet*/  /**<CNcomment: ä¸åœ¨æ¯ä¸ªå½•åˆ¶çš„TS åŒ…å‰åŠ æ—¶é—´æˆ³ */
+	DMX_REC_TIMESTAMP_ZERO, 				 /**<Use 4 byte 0  added before each recoreded  ts packet*/  /**<CNcomment: åœ¨æ¯ä¸ªå½•åˆ¶çš„TS åŒ…å‰åŠ 4å­—èŠ‚æ—¶é—´æˆ³ï¼Œå†…å®¹ä¸º0 */
+    DMX_REC_TIMESTAMP_HIGH32BIT_SCR,      /**<Use high 32 bit of SCR_base (4 byte)  added before each recoreded  ts packet*/  /**<CNcomment: åœ¨æ¯ä¸ªå½•åˆ¶çš„TS åŒ…å‰åŠ 4å­—èŠ‚æ—¶é—´æˆ³ï¼Œå†…å®¹ä¸ºSCR_BASE çš„é«˜32bit */ 
+    DMX_REC_TIMESTAMP_LOW32BIT_SCR, 		 /**<Use low 32 bit of SCR_base (4 byte)  added before each recoreded  ts packet*/  /**<CNcomment: åœ¨æ¯ä¸ªå½•åˆ¶çš„TS åŒ…å‰åŠ 4å­—èŠ‚æ—¶é—´æˆ³ï¼Œå†…å®¹ä¸ºSCR_BASE çš„ä½32bit */ 
 } DMX_REC_TIMESTAMP_MODE_E;
 
 typedef struct

@@ -175,14 +175,14 @@ static HI_S32 hi_gpio_read_SDA_IN(void)
  *
  *  Parameter:
  *
- *  return£º
+ *  returnï¼š
 ****************************************************************/
 void FD650_Start( void )
 {
     //keyled_trace(8,"\n=== FD650_Start ===\n");
 
 	/** Move position, first set it to output, then set the value */
-    /**CNcomment:ÒÆ¶¯Î»ÖÃ£¬ÏÈÉèÊä³öÔÙÀ­µçÆ½ */
+    /**CNcomment:ç§»åŠ¨ä½ç½®ï¼Œå…ˆè®¾è¾“å‡ºå†æ‹‰ç”µå¹³ */
     //FD650_SDA_SET;
     FD650_SDA_D_OUT;
 
@@ -206,14 +206,14 @@ void FD650_Start( void )
  *
  *  Parameter:
  *
- *  return£º
+ *  returnï¼š
 ****************************************************************/
 void FD650_Stop( void )
 {
     //keyled_trace(8,"\n=== FD650_Stop ===\n");
     
     /** Move position, first set it to output, then set the value */
-    /**CNcomment:ÒÆ¶¯Î»ÖÃ£¬ÏÈÉèÊä³öÔÙÀ­µçÆ½ */
+    /**CNcomment:ç§»åŠ¨ä½ç½®ï¼Œå…ˆè®¾è¾“å‡ºå†æ‹‰ç”µå¹³ */
     //FD650_SDA_CLR;
     FD650_SDA_D_OUT;
     FD650_SDA_CLR;
@@ -234,7 +234,7 @@ void FD650_Stop( void )
  *
  *  Parameter: data
  *
- *  return£º
+ *  returnï¼š
 ****************************************************************/
 void FD650_WrByte( HI_U8 dat )
 {
@@ -257,12 +257,12 @@ void FD650_WrByte( HI_U8 dat )
         DELAY;
         FD650_SCL_SET;
         dat <<= 1;
-        DELAY;  /** This delay is optional */ /**CNcomment:¿ÉÑ¡ÑÓÊ±*/
+        DELAY;  /** This delay is optional */ /**CNcomment:å¯é€‰å»¶æ—¶*/
         FD650_SCL_CLR;
     }
 
 	/** Change position, first set the value, then set it to output */
-    /**CNcomment:½»»»Î»ÖÃ£¬µçÆ½ÉèÖÃºóÔÙÉèÎªÊä³ö */
+    /**CNcomment:äº¤æ¢ä½ç½®ï¼Œç”µå¹³è®¾ç½®åå†è®¾ä¸ºè¾“å‡º */
     //FD650_SDA_D_IN;
     FD650_SDA_SET;
     DELAY;

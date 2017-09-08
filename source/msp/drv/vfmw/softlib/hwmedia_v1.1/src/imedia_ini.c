@@ -4,11 +4,11 @@
 * 
 * $Id: imedia_ini.c,v 1.138 2010/01/12 09:39:22 songxiaogang Exp $     
 *
-* Description£º  
+* Descriptionï¼š  
 *
-* Reference Doc£º  
+* Reference Docï¼š  
 * 
-* Modification£º//¼ûÎÄ¼þÎ²
+* Modificationï¼š//è§æ–‡ä»¶å°¾
 * 
 *************************************************************************/
 
@@ -45,7 +45,7 @@ static INT32 iniFile_addPair(STRU_INI_FILE* pstIni, const char*  key, int  keyLe
 {
     STRU_INI_PAIR*  pair;
 
-    // ¼ì²â¿Õ¼äÊÇ·ñ×ã¹»
+    // æ£€æµ‹ç©ºé—´æ˜¯å¦è¶³å¤Ÿ
     if (pstIni->iNumPairs >= pstIni->iMaxPairs) 
     {
         INT32 oldMax = pstIni->iMaxPairs;
@@ -55,14 +55,14 @@ static INT32 iniFile_addPair(STRU_INI_FILE* pstIni, const char*  key, int  keyLe
         if (newMax < 64)
             newMax = 64;
         
-        // ·ÖÅäÐÂµÄÄÚ´æ
+        // åˆ†é…æ–°çš„å†…å­˜
         newPairs = IMedia_Malloc(newMax * sizeof(STRU_INI_PAIR));
         if (NULL == newPairs)
         {
             return IMEDIA_RET_MEM_MALLOC_FAIL;
         }
 
-        // ÊÍ·ÅÒÔÇ°µÄÄÚ´æ
+        // é‡Šæ”¾ä»¥å‰çš„å†…å­˜
         if (NULL != pstIni->pstPairs)
         {
             IMedia_Free(pstIni->pstPairs);
@@ -139,7 +139,7 @@ static int isKeyChar(int  c)
     return isKeyStartChar(c) || ((unsigned)(c-'0') < 10) || (c == '.');
 }
 
-// ´ÓÄÚ´æ³õÊ¼»¯IniÎÄ¼þ
+// ä»Žå†…å­˜åˆå§‹åŒ–Iniæ–‡ä»¶
 EXPORT_API INT32  IMedia_Ini_OpenFromMemory(const char* pszText, IMEDIA_INI_FILE *pIni)
 {
     

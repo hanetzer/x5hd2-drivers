@@ -249,7 +249,7 @@ static struct net_device *dev_get_by_ip(HI_U32 ip)
     struct in_device *ipdev = NULL;
     struct in_ifaddr *ifaddr = NULL;
 
-    /*search device which has started and ip matching*//*CNcomment:²éÕÒÒÑÆô¶¯£¬²¢ÇÒIPµØÖ·Æ¥ÅäµÄÉè±¸*/
+    /*search device which has started and ip matching*//*CNcomment:æŸ¥æ‰¾å·²å¯åŠ¨ï¼Œå¹¶ä¸”IPåœ°å€åŒ¹é…çš„è®¾å¤‡*/
 	
     read_lock(&dev_base_lock);
 
@@ -264,7 +264,7 @@ static struct net_device *dev_get_by_ip(HI_U32 ip)
     {
         if(dev->flags & IFF_UP){
 
-            /*can resume that device had found when the ip of the device is the same as the search ip*//*CNcomment:Éè±¸µÄipÊÇ·ñÓë²éÕÒµÄipÏàµÈ£¬ÏàµÈÖ¤Ã÷Éè±¸ÕÒµ½ÁË*/
+            /*can resume that device had found when the ip of the device is the same as the search ip*//*CNcomment:è®¾å¤‡çš„ipæ˜¯å¦ä¸æŸ¥æ‰¾çš„ipç›¸ç­‰ï¼Œç›¸ç­‰è¯æ˜è®¾å¤‡æ‰¾åˆ°äº†*/
 			
             ipdev = in_dev_get(dev);
             if(ipdev != NULL)
@@ -461,7 +461,7 @@ static  NDPT_CH_S * ndpt_get_channel(HI_U32 handle)
     return NULL;
 }
 
-/*check whether channel is ready can receive/send data*//*CNcomment:¼ì²éÍ¨µÀÊÇ·ñ×¼±¸ºÃÊÕ·¢Êı¾İ*/
+/*check whether channel is ready can receive/send data*//*CNcomment:æ£€æŸ¥é€šé“æ˜¯å¦å‡†å¤‡å¥½æ”¶å‘æ•°æ®*/
 
 static HI_BOOL ndpt_is_channel_ready(NDPT_CH_S *pstNdptCh)
 {
@@ -478,7 +478,7 @@ static HI_BOOL ndpt_is_channel_ready(NDPT_CH_S *pstNdptCh)
     return HI_TRUE;
 }
 
-/*judge whether the net parameter is loopback model*//*CNcomment:ÅĞ¶ÏÍøÂç²ÎÊıÊÇ·ñÎª»·»ØÄ£Ê½*/
+/*judge whether the net parameter is loopback model*//*CNcomment:åˆ¤æ–­ç½‘ç»œå‚æ•°æ˜¯å¦ä¸ºç¯å›æ¨¡å¼*/
 
 #if 0
 static HI_BOOL ndpt_is_loopback_by_net_para(NDPT_CH_S *pstNdptCh)
@@ -532,7 +532,7 @@ static HI_S32 RTP_SendToIP(HI_U8 *psRtpPkt, HI_U32 uiRtpLen,
     
     if(Sip == Dip)
     {
-        /*loop, loop has be dealed with by the machine itself*//*CNcomment:»·»Ø£¬±¾»ú»·»ØÊ±ÒÑ´¦Àí*/
+        /*loop, loop has be dealed with by the machine itself*//*CNcomment:ç¯å›ï¼Œæœ¬æœºç¯å›æ—¶å·²å¤„ç†*/
 		
 //        pstNdptCh->stSendErrFlag.bit1SameIP = 1;
         ret = HI_SUCCESS;
@@ -540,7 +540,7 @@ static HI_S32 RTP_SendToIP(HI_U8 *psRtpPkt, HI_U32 uiRtpLen,
     }
     else
     {
-        /*not loop, need send out*//*CNcomment:²»ÊÇ»·»Ø£¬ÊÇÍâ·¢±¨ÎÄ*/
+        /*not loop, need send out*//*CNcomment:ä¸æ˜¯ç¯å›ï¼Œæ˜¯å¤–å‘æŠ¥æ–‡*/
 		
         ret = ndpt_get_dest_mac(dmac,dev,Dip,Sip);
         if(ret != HI_SUCCESS)
@@ -555,14 +555,14 @@ static HI_S32 RTP_SendToIP(HI_U8 *psRtpPkt, HI_U32 uiRtpLen,
         }
     }
 
-    /*make sure that the frame is more than 60 byte*//*CNcomment:±£Ö¤±¨ÎÄ×î¶Ì²»»áÉÙÓÚ60 byte*/
+    /*make sure that the frame is more than 60 byte*//*CNcomment:ä¿è¯æŠ¥æ–‡æœ€çŸ­ä¸ä¼šå°‘äº60 byte*/
 	
     ip_pkt_len = sizeof(HDR_IP) +sizeof(HDR_UDP) + uiRtpLen;
     if(ip_pkt_len < (RTP_PKT_MINLEN - NDPT_ETH_HLEN )){
         ip_pkt_len = (RTP_PKT_MINLEN - NDPT_ETH_HLEN );
     }
 
-    /*check whether the packet is super big*//*CNcomment:¼ì²éÊÇ·ñ³¬³¤°ü*/
+    /*check whether the packet is super big*//*CNcomment:æ£€æŸ¥æ˜¯å¦è¶…é•¿åŒ…*/
 	
     if(ip_pkt_len > dev->mtu + dev->hard_header_len){
         pstNdptCh->stSendErrFlag.bit1Long = 1;
@@ -570,7 +570,7 @@ static HI_S32 RTP_SendToIP(HI_U8 *psRtpPkt, HI_U32 uiRtpLen,
         goto out_unlock;
     }
 
-    /*create skb*//*CNcomment:´´½¨SKB*/
+    /*create skb*//*CNcomment:åˆ›å»ºSKB*/
 	
     skb = alloc_skb((ip_pkt_len + LL_RESERVED_SPACE(dev)), GFP_ATOMIC);
     if(skb == NULL){
@@ -588,7 +588,7 @@ static HI_S32 RTP_SendToIP(HI_U8 *psRtpPkt, HI_U32 uiRtpLen,
     skb->dev = dev;
     skb->protocol = htons(ETH_P_IP);
 
-    /*assign value to the head of UDP/IP packet*//*CNcomment:UDPºÍIP°üÍ·¸³Öµ*/
+    /*assign value to the head of UDP/IP packet*//*CNcomment:UDPå’ŒIPåŒ…å¤´èµ‹å€¼*/
 	
     sHdrIp = (HDR_IP*)skb->data;
     sHdrUdp = (HDR_UDP*)(skb->data + sizeof(HDR_IP));
@@ -695,7 +695,7 @@ static HI_S32 RTP_SendToIP(HI_U8 *psRtpPkt, HI_U32 uiRtpLen,
 		
 	}
 
-    /*make MAC head*//*CNcomment:Éú³ÉMACÍ·*/
+    /*make MAC head*//*CNcomment:ç”ŸæˆMACå¤´*/
 	
     if (dev->header_ops &&
         dev->header_ops->create(skb, dev, ETH_P_IP, dmac, smac, skb->len) < 0){
@@ -733,10 +733,10 @@ if return 0, the net driver commit the data to protocal stack, otherwise, the da
 notice: this function is called in soft interrupt of net driver, cannot be reaved by other threads, donot need protect.
 */
 /*CNcomment:
-ARPºÍRTP°ü¼ì²â,
-Íø¿¨Çı¶¯ÊäÈëµÄskbÎªIP ±¨ÎÄ£¬²¢°üº¬Á´Â·²ãÎ²²¿µÄ4×Ö½ÚĞ£ÑéºÍFCS¡£
-·µ»ØÖµÎª0£¬Íø¿¨Çı¶¯½«Êı¾İ¼ÌĞøÌá½»Ğ­ÒéÕ»´¦Àí£»·µ»ØÖµÎª1£¬Íø¿¨Çı¶¯½«Êı¾İ¶ªÆú¡£
-×¢Òâ: ¸Ãº¯ÊıÔÚÍø¿¨Çı¶¯ÈíÖĞ¶ÏÖĞµ÷ÓÃ£¬²»»á±»ÆäËüÏß³ÌÇÀÕ¼£¬²»ĞèÒª¼ÓÊı¾İ±£»¤¡£
+ARPå’ŒRTPåŒ…æ£€æµ‹,
+ç½‘å¡é©±åŠ¨è¾“å…¥çš„skbä¸ºIP æŠ¥æ–‡ï¼Œå¹¶åŒ…å«é“¾è·¯å±‚å°¾éƒ¨çš„4å­—èŠ‚æ ¡éªŒå’ŒFCSã€‚
+è¿”å›å€¼ä¸º0ï¼Œç½‘å¡é©±åŠ¨å°†æ•°æ®ç»§ç»­æäº¤åè®®æ ˆå¤„ç†ï¼›è¿”å›å€¼ä¸º1ï¼Œç½‘å¡é©±åŠ¨å°†æ•°æ®ä¸¢å¼ƒã€‚
+æ³¨æ„: è¯¥å‡½æ•°åœ¨ç½‘å¡é©±åŠ¨è½¯ä¸­æ–­ä¸­è°ƒç”¨ï¼Œä¸ä¼šè¢«å…¶å®ƒçº¿ç¨‹æŠ¢å ï¼Œä¸éœ€è¦åŠ æ•°æ®ä¿æŠ¤ã€‚
 */
 
 HI_S32 adapter_rtp_filter(struct sk_buff    *skb)
@@ -788,7 +788,7 @@ HI_S32 adapter_rtp_filter(struct sk_buff    *skb)
                 pstNdptCh->uiRevRtpCnt++;
                 uiSeqNo = ntohs(ip_hd->id);
 				
-				/*not start to count*//*CNcomment:¼ÆÊıÎ´¿ªÊ¼*/
+				/*not start to count*//*CNcomment:è®¡æ•°æœªå¼€å§‹*/
 				
                 if(pstNdptCh->usRevFlag == 0)
                 {
@@ -800,7 +800,7 @@ HI_S32 adapter_rtp_filter(struct sk_buff    *skb)
                     pstNdptCh->uiRevSeqMax = uiSeqNo;
                 }
 				
-				/*sequence number reverse*//*CNcomment:ĞòÁĞºÅ·­×ª*/
+				/*sequence number reverse*//*CNcomment:åºåˆ—å·ç¿»è½¬*/
 				
                 else if((uiSeqNo < 32768)&&(pstNdptCh->uiRevSeqMax > 32768))
                 {
@@ -934,11 +934,11 @@ retval: !0 FAILURE
 notice: should configure link parameter to net adpter before RTP register callback function
 */
 /*CNcomment:
-RTPÏòÍøÂçÊÊÅä×¢²áÊı¾İ½ÓÊÕ»Øµ÷º¯Êı
-½Ó¿Ú²ÎÊı£º
-Á´½ÓºÅ£¬»Øµ÷º¯ÊıÖ¸Õë£»
-·µ»Ø:0:³É¹¦£»ÆäËû´íÎó£»
-ÉÏ²ãÒªÏÈÅäÖÃlink²ÎÊıµ½ÍøÂçÊÊÅä£¬È»ºóRTP²ÅÄÜ×¢²á»Øµ÷º¯Êı£»
+RTPå‘ç½‘ç»œé€‚é…æ³¨å†Œæ•°æ®æ¥æ”¶å›è°ƒå‡½æ•°
+æ¥å£å‚æ•°ï¼š
+é“¾æ¥å·ï¼Œå›è°ƒå‡½æ•°æŒ‡é’ˆï¼›
+è¿”å›:0:æˆåŠŸï¼›å…¶ä»–é”™è¯¯ï¼›
+ä¸Šå±‚è¦å…ˆé…ç½®linkå‚æ•°åˆ°ç½‘ç»œé€‚é…ï¼Œç„¶åRTPæ‰èƒ½æ³¨å†Œå›è°ƒå‡½æ•°ï¼›
 */
 
 HI_S32 HI_DRV_NDPT_RevFun(HI_U32 handle, HI_U32 TransId, ndpt_rtp_revfrom funptr)
@@ -971,10 +971,10 @@ retval: !0 FAILURE
 notice: void *packetAddr ---the address of sending packet, should free after send 
 */
 /*CNcomment:
-·¢ËÍÊı¾İ½Ó¿Ú£º
-½Ó¿Ú²ÎÊı: Á´½ÓºÅ¡¢Êı¾İ°ü½á¹¹£»
-·µ»Ø:0:³É¹¦£»ÆäËû´íÎó£»
-void *packetAddr --- Êı¾İ°üµÄµØÖ·£¬·¢ËÍÍêºóĞèÒªÊÍ·Å´ËµØÖ·
+å‘é€æ•°æ®æ¥å£ï¼š
+æ¥å£å‚æ•°: é“¾æ¥å·ã€æ•°æ®åŒ…ç»“æ„ï¼›
+è¿”å›:0:æˆåŠŸï¼›å…¶ä»–é”™è¯¯ï¼›
+void *packetAddr --- æ•°æ®åŒ…çš„åœ°å€ï¼Œå‘é€å®Œåéœ€è¦é‡Šæ”¾æ­¤åœ°å€
 */
 
 HI_S32 HI_DRV_NDPT_SendRtp(HI_U32 handle, HI_U32 even_odd, RTP_NET_BUFFER_STRU *data_buffer)
@@ -1030,7 +1030,7 @@ HI_S32 HI_DRV_NDPT_SendRtp(HI_U32 handle, HI_U32 even_odd, RTP_NET_BUFFER_STRU *
         return HI_FAILURE;
     }
 
-    /*deal with send-loop*//*CNcomment:±¾Í¨µÀ·¢ËÍ»·»Ø´¦Àí*/
+    /*deal with send-loop*//*CNcomment:æœ¬é€šé“å‘é€ç¯å›å¤„ç†*/
     
     switch(pstNdptCh->eLoopback)
     {
@@ -1060,7 +1060,7 @@ HI_S32 HI_DRV_NDPT_SendRtp(HI_U32 handle, HI_U32 even_odd, RTP_NET_BUFFER_STRU *
     }
 
 
-    /*check whether channel is ready*//*CNcomment:¼ì²éÍ¨µÀÊÇ·ñ×¼±¸ºÃ*/
+    /*check whether channel is ready*//*CNcomment:æ£€æŸ¥é€šé“æ˜¯å¦å‡†å¤‡å¥½*/
 	
     if(HI_FALSE == ndpt_is_channel_ready(pstNdptCh))
     {
@@ -1069,7 +1069,7 @@ HI_S32 HI_DRV_NDPT_SendRtp(HI_U32 handle, HI_U32 even_odd, RTP_NET_BUFFER_STRU *
         return HI_FAILURE;
     }
 
-    /*deal with send-loop, contain the channel itself*//*CNcomment:±¾»ú·¢ËÍ»·»Ø´¦Àí£¬°üÀ¨±¾Í¨µÀ»·»Ø*/
+    /*deal with send-loop, contain the channel itself*//*CNcomment:æœ¬æœºå‘é€ç¯å›å¤„ç†ï¼ŒåŒ…æ‹¬æœ¬é€šé“ç¯å›*/
 	
     {
         NDPT_CH_S *pstDestCh = NULL;
@@ -1112,7 +1112,7 @@ HI_S32 HI_DRV_NDPT_SendRtp(HI_U32 handle, HI_U32 even_odd, RTP_NET_BUFFER_STRU *
             if((pstDestCh == pstNdptCh)&&(pstNdptCh->eLoopback == SEND_BACK_AND_OUT))
             {
 
-				/*not need loop repeat*//*CNcomment:±¾Í¨µÀ²»ÓÃÖØ¸´»·»Ø*/
+				/*not need loop repeat*//*CNcomment:æœ¬é€šé“ä¸ç”¨é‡å¤ç¯å›*/
 				
                 HI_NDPT_UNLOCK();
                 return ret;
@@ -1126,7 +1126,7 @@ HI_S32 HI_DRV_NDPT_SendRtp(HI_U32 handle, HI_U32 even_odd, RTP_NET_BUFFER_STRU *
         }
     }
 
-    /*send data to net*//*CNcomment:Êı¾İ·¢ËÍµ½ÍøÂç*/
+    /*send data to net*//*CNcomment:æ•°æ®å‘é€åˆ°ç½‘ç»œ*/
 
 #ifdef RTP_BUFF_OFFSET
     psRtpPkt = data_buffer->pucBufferHdr + data_buffer->uiOffset;
@@ -1212,7 +1212,7 @@ static NDPT_CH_S *ndpt_channel_new(HI_VOID)
         return NULL;
     }
         
-    /*insert link and the Pointer-Array of channel*//*CNcomment:²åÈëÁ´±íºÍÍ¨µÀÖ¸ÕëÊı×é*/
+    /*insert link and the Pointer-Array of channel*//*CNcomment:æ’å…¥é“¾è¡¨å’Œé€šé“æŒ‡é’ˆæ•°ç»„*/
 	
     pstNdptCh_Arry[index] = pstNdptCh;
     pstNdptCh->handle = (HI_ID_NDPT<<16) | index;
@@ -1297,12 +1297,12 @@ retval: handle --- the high 16bit is ID of module, the low 8bit is index of chan
         0 --- FAILURE
 */
 /*CNcomment:
-¸ù¾İ²ÎÊıÁ´½ÓºÅ£¬SIP/DIP/SPORT/DPORT/IP TOS¡¢VLAN/Pri/PID£»ÅäÖÃ´«Êä²ã¹ıÂË±í²¢»ñÈ¡±¾¶Ë¶Ô¶ËMACµØÖ·ĞÅÏ¢£»
-»á´´½¨Á½¸ö¹ıÂË±í£¬Ò»¸öÊÇRTPÁ÷ºÍ¶ÔÓ¦µÄRTCPÁ÷£»
-ÊäÈë²ÎÊı£º
-    HI_VOID *pNetPara£ºRTPÁ÷ÍøÂçÍ¨ĞÅĞ­Òé²ÎÊı, NDPT_NET_CONFIG_PARA_S£»
-·µ»Ø:
-    handle: ¸ß16bitÎªÄ£¿éID£¬µÍ8bitÎªÍ¨µÀË÷Òı;Èô·µ»ØÖµÎª0ÔòÊ§°Ü¡£
+æ ¹æ®å‚æ•°é“¾æ¥å·ï¼ŒSIP/DIP/SPORT/DPORT/IP TOSã€VLAN/Pri/PIDï¼›é…ç½®ä¼ è¾“å±‚è¿‡æ»¤è¡¨å¹¶è·å–æœ¬ç«¯å¯¹ç«¯MACåœ°å€ä¿¡æ¯ï¼›
+ä¼šåˆ›å»ºä¸¤ä¸ªè¿‡æ»¤è¡¨ï¼Œä¸€ä¸ªæ˜¯RTPæµå’Œå¯¹åº”çš„RTCPæµï¼›
+è¾“å…¥å‚æ•°ï¼š
+    HI_VOID *pNetParaï¼šRTPæµç½‘ç»œé€šä¿¡åè®®å‚æ•°, NDPT_NET_CONFIG_PARA_Sï¼›
+è¿”å›:
+    handle: é«˜16bitä¸ºæ¨¡å—IDï¼Œä½8bitä¸ºé€šé“ç´¢å¼•;è‹¥è¿”å›å€¼ä¸º0åˆ™å¤±è´¥ã€‚
 */
 
 HI_U32 HI_DRV_NDPT_CreateLink(HI_VOID *pNetCfgPara)
@@ -1477,7 +1477,7 @@ HI_S32 HI_DRV_NDPT_ModifyNetPara(HI_U32 handle,HI_VOID * pNetCfgPara)
         }
     }
 
-    /*measure channel again*//*CNcomment:ÖØ¸´Í¨µÀ¼ì²â*/
+    /*measure channel again*//*CNcomment:é‡å¤é€šé“æ£€æµ‹*/
 	
     if(HI_TRUE == ndpt_is_channel_ready(&stNdptChTmp))
     {
@@ -1510,7 +1510,7 @@ HI_S32 HI_DRV_NDPT_ModifyNetPara(HI_U32 handle,HI_VOID * pNetCfgPara)
         }
     }
 
-    /*get remote route*//*CNcomment:»ñÈ¡Ô¶¶ËÂ·ÓÉ*/
+    /*get remote route*//*CNcomment:è·å–è¿œç«¯è·¯ç”±*/
 	
     if((pstNetCfg->stChange.bit1SrcIP)||(pstNetCfg->stChange.bit1DstIP))
     {
@@ -1540,8 +1540,8 @@ the interface of cancel link
 param: link number
 */
 /*CNcomment:
-×¢ÏúÁ´Â·½Ó¿Ú£º
-½Ó¿Ú²ÎÊı:Á´Â·ºÅ£»
+æ³¨é”€é“¾è·¯æ¥å£ï¼š
+æ¥å£å‚æ•°:é“¾è·¯å·ï¼›
 */
 
 HI_S32 HI_DRV_NDPT_DestroyLink(HI_U32 handle)

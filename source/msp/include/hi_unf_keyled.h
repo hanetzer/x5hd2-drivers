@@ -28,50 +28,50 @@ extern "C"{
 /** \addtogroup      KEYLED */
 /** @{ */  /** <!-- [KEYLED] */
 /**keyled type*/
-/**CNcomment:KEYLEDÀàÐÍ */
+/**CNcomment:KEYLEDç±»åž‹ */
 typedef enum  hiUNF_KEYLED_TYPE_E
 {
-    HI_UNF_KEYLED_TYPE_74HC164 = 0x0, /**<KEYLED type:74HC164*/                   /**<CNcomment:KEYLEDÐÍºÅ: 74HC164 */
-    HI_UNF_KEYLED_TYPE_PT6961,    /**<KEYLED type: PT6961*/                       /**<CNcomment:KEYLEDÐÍºÅ£ºPT6961 */
-    HI_UNF_KEYLED_TYPE_CT1642,    /**<KEYLED type: CT1642*/                       /**<CNcomment:KEYLEDÐÍºÅ£ºCT1642 */
-    HI_UNF_KEYLED_TYPE_PT6964,	  /**<KEYLED type: PT6964*/                       /**<CNcomment:KEYLEDÐÍºÅ£ºPT6964 */
-    HI_UNF_KEYLED_TYPE_FD650,     /**<KEYLED type: FD650*/                        /**<CNcomment:KEYLEDÐÍºÅ£ºFD650 */
+    HI_UNF_KEYLED_TYPE_74HC164 = 0x0, /**<KEYLED type:74HC164*/                   /**<CNcomment:KEYLEDåž‹å·: 74HC164 */
+    HI_UNF_KEYLED_TYPE_PT6961,    /**<KEYLED type: PT6961*/                       /**<CNcomment:KEYLEDåž‹å·ï¼šPT6961 */
+    HI_UNF_KEYLED_TYPE_CT1642,    /**<KEYLED type: CT1642*/                       /**<CNcomment:KEYLEDåž‹å·ï¼šCT1642 */
+    HI_UNF_KEYLED_TYPE_PT6964,	  /**<KEYLED type: PT6964*/                       /**<CNcomment:KEYLEDåž‹å·ï¼šPT6964 */
+    HI_UNF_KEYLED_TYPE_FD650,     /**<KEYLED type: FD650*/                        /**<CNcomment:KEYLEDåž‹å·ï¼šFD650 */
     HI_UNF_KEYLED_TYPE_BUTT       
 }HI_UNF_KEYLED_TYPE_E;
 
 /**Blink frequency level of the LED*/
-/**CNcomment:LEDÉÁË¸ÆµÂÊ¼¶±ð*/
+/**CNcomment:LEDé—ªçƒé¢‘çŽ‡çº§åˆ«*/
 typedef enum hiUNF_KEYLED_LEVEL_E
 {
-    HI_UNF_KEYLED_LEVEL_1 = 0x01,   /**<Level 1, slowest*/  /**<CNcomment:¼¶±ð1,ÉÁË¸ÆµÂÊ×îÂý*/
-    HI_UNF_KEYLED_LEVEL_2,          /**<Level 2*/           /**<CNcomment:¼¶±ð2 */
-    HI_UNF_KEYLED_LEVEL_3,          /**<Level 3*/           /**<CNcomment:¼¶±ð3 */
-    HI_UNF_KEYLED_LEVEL_4,          /**<Level 4*/           /**<CNcomment:¼¶±ð4 */
-    HI_UNF_KEYLED_LEVEL_5,          /**<Level 5, fastest*/  /**<CNcomment:¼¶±ð5 , ÉÁË¸ÆµÂÊ×î¿ì*/
+    HI_UNF_KEYLED_LEVEL_1 = 0x01,   /**<Level 1, slowest*/  /**<CNcomment:çº§åˆ«1,é—ªçƒé¢‘çŽ‡æœ€æ…¢*/
+    HI_UNF_KEYLED_LEVEL_2,          /**<Level 2*/           /**<CNcomment:çº§åˆ«2 */
+    HI_UNF_KEYLED_LEVEL_3,          /**<Level 3*/           /**<CNcomment:çº§åˆ«3 */
+    HI_UNF_KEYLED_LEVEL_4,          /**<Level 4*/           /**<CNcomment:çº§åˆ«4 */
+    HI_UNF_KEYLED_LEVEL_5,          /**<Level 5, fastest*/  /**<CNcomment:çº§åˆ«5 , é—ªçƒé¢‘çŽ‡æœ€å¿«*/
 
     HI_UNF_KEYLED_LEVEL_BUTT
 }HI_UNF_KEYLED_LEVEL_E;
 
 /**Blink sequence of LEDs*/
-/**CNcomment:ÉÁË¸µÄLEDÐòºÅ*/
+/**CNcomment:é—ªçƒçš„LEDåºå·*/
 typedef enum hiUNF_KEYLED_LIGHT_E
 {
-    HI_UNF_KEYLED_LIGHT_1 = 0x01,   /**<The first LED blinks.*/   /**<CNcomment:µÚ1¸öLEDÉÁË¸*/
-    HI_UNF_KEYLED_LIGHT_2,          /**<The second LED blinks.*/  /**<CNcomment:µÚ2¸öLEDÉÁË¸*/
-    HI_UNF_KEYLED_LIGHT_3,          /**<The third LED blinks.*/   /**<CNcomment:µÚ3¸öLEDÉÁË¸*/
-    HI_UNF_KEYLED_LIGHT_4,          /**<The fourth LED blinks.*/  /**<CNcomment:µÚ4¸öLEDÉÁË¸*/
-    HI_UNF_KEYLED_LIGHT_ALL,        /**<All LEDs blink.*/        /**<CNcomment:ËùÓÐLED¾ùÉÁË¸*/
-    HI_UNF_KEYLED_LIGHT_NONE,       /**<All LEDs do not blink.*/  /**<CNcomment:ËùÓÐLED¾ù²»ÉÁË¸*/
+    HI_UNF_KEYLED_LIGHT_1 = 0x01,   /**<The first LED blinks.*/   /**<CNcomment:ç¬¬1ä¸ªLEDé—ªçƒ*/
+    HI_UNF_KEYLED_LIGHT_2,          /**<The second LED blinks.*/  /**<CNcomment:ç¬¬2ä¸ªLEDé—ªçƒ*/
+    HI_UNF_KEYLED_LIGHT_3,          /**<The third LED blinks.*/   /**<CNcomment:ç¬¬3ä¸ªLEDé—ªçƒ*/
+    HI_UNF_KEYLED_LIGHT_4,          /**<The fourth LED blinks.*/  /**<CNcomment:ç¬¬4ä¸ªLEDé—ªçƒ*/
+    HI_UNF_KEYLED_LIGHT_ALL,        /**<All LEDs blink.*/        /**<CNcomment:æ‰€æœ‰LEDå‡é—ªçƒ*/
+    HI_UNF_KEYLED_LIGHT_NONE,       /**<All LEDs do not blink.*/  /**<CNcomment:æ‰€æœ‰LEDå‡ä¸é—ªçƒ*/
 
     HI_UNF_KEYLED_LIGHT_BUTT
 }HI_UNF_KEYLED_LIGHT_E;
 
 /**Display time of each LED*/
-/**CNcomment:LEDÏÔÊ¾Ê±¼ä*/
+/**CNcomment:LEDæ˜¾ç¤ºæ—¶é—´*/
 typedef struct hiUNF_KEYLED_Time_S
 {
-    HI_U32 u32Hour;           /**<Hour*/   /**<CNcomment:Ê±*/
-    HI_U32 u32Minute;         /**<Minute*/ /**<CNcomment:·Ö*/
+    HI_U32 u32Hour;           /**<Hour*/   /**<CNcomment:æ—¶*/
+    HI_U32 u32Minute;         /**<Minute*/ /**<CNcomment:åˆ†*/
 }HI_UNF_KEYLED_TIME_S, *HI_UNF_KEYLED_TIME_S_PTR;
 
 /** @} */  /** <!-- ==== Structure Definition End ==== */
@@ -83,15 +83,15 @@ typedef struct hiUNF_KEYLED_Time_S
 
 /**
 \brief Initializes the KEYLED module.
-CNcomment:\brief ³õÊ¼»¯KEYLEDÄ£¿é¡£CNend
+CNcomment:\brief åˆå§‹åŒ–KEYLEDæ¨¡å—ã€‚CNend
 
 \attention \n
 The error code HI_SUCCESS is returned if this API is called repeatedly.
-CNcomment:ÖØ¸´µ÷ÓÃ±¾½Ó¿Ú£¬»á·µ»Ø³É¹¦¡£CNend
+CNcomment:é‡å¤è°ƒç”¨æœ¬æŽ¥å£ï¼Œä¼šè¿”å›žæˆåŠŸã€‚CNend
 
-\param N/A                                             CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS Success                           CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  The KEYLED device fails to open. CNcomment:KEYLEDÉè±¸´ò¿ªÊ§°Ü CNend
+\param N/A                                             CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success                           CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  The KEYLED device fails to open. CNcomment:KEYLEDè®¾å¤‡æ‰“å¼€å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -100,15 +100,15 @@ HI_S32 HI_UNF_KEYLED_Init(HI_VOID);
 
 /**
 \brief Deinitializes the KEYLED module.
-CNcomment:\brief È¥³õÊ¼»¯KEYLEDÄ£¿é¡£CNend
+CNcomment:\brief åŽ»åˆå§‹åŒ–KEYLEDæ¨¡å—ã€‚CNend
 
 \attention \n
 The error code HI_SUCCESS is returned if this API is called repeatedly.
-CNcomment:ÖØ¸´µ÷ÓÃ±¾½Ó¿Ú£¬»á·µ»Ø³É¹¦¡£CNend
+CNcomment:é‡å¤è°ƒç”¨æœ¬æŽ¥å£ï¼Œä¼šè¿”å›žæˆåŠŸã€‚CNend
 
-\param N/A                                             CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS Success                           CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  The KEYLED device fails to close. CNcomment:KEYLEDÉè±¸¹Ø±ÕÊ§°Ü CNend
+\param N/A                                             CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success                           CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  The KEYLED device fails to close. CNcomment:KEYLEDè®¾å¤‡å…³é—­å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -116,17 +116,17 @@ HI_S32 HI_UNF_KEYLED_DeInit(HI_VOID);
 
 /**
 \brief Selects the type of the KEYLED.
-CNcomment:\brief Ñ¡ÔñKEYLEDÆ÷¼þÀàÐÍ¡£CNend
+CNcomment:\brief é€‰æ‹©KEYLEDå™¨ä»¶ç±»åž‹ã€‚CNend
 
 \attention \n
 It is recommended to call this API once after the KEYLED module is initialized.
-CNcomment:½¨Òé³õÊ¼»¯ºóÖ»Ñ¡ÔñÒ»´Î£¬²»ÒªÖØ¸´µ÷ÓÃ¡£CNend
+CNcomment:å»ºè®®åˆå§‹åŒ–åŽåªé€‰æ‹©ä¸€æ¬¡ï¼Œä¸è¦é‡å¤è°ƒç”¨ã€‚CNend
 
-\param[in] enKeyLedType   KEYLED type                                           CNcomment:keyledÀàÐÍ¡£ CNend
-\retval ::HI_SUCCESS   Success                                                  CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED device is not initialized.         CNcomment:KEYLEDÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_KEYLED_INVALID_PARA  The parameter is invalid.                 CNcomment:²ÎÊý·Ç·¨ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                                     CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
+\param[in] enKeyLedType   KEYLED type                                           CNcomment:keyledç±»åž‹ã€‚ CNend
+\retval ::HI_SUCCESS   Success                                                  CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED device is not initialized.         CNcomment:KEYLEDè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_ERR_KEYLED_INVALID_PARA  The parameter is invalid.                 CNcomment:å‚æ•°éžæ³• CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                                     CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
 
 \see \n
 N/A
@@ -135,16 +135,16 @@ HI_S32 HI_UNF_KEYLED_SelectType(HI_UNF_KEYLED_TYPE_E enKeyLedType);
 
 /**
 \brief Enables the key function.
-CNcomment:\brief ´ò¿ª°´¼ü¹¦ÄÜ¡£CNend
+CNcomment:\brief æ‰“å¼€æŒ‰é”®åŠŸèƒ½ã€‚CNend
 \attention \n
 The KEYLED module starts to receive key values after the key function is enabled.\n
 The error code HI_SUCCESS is returned if this API is called repeatedly.\n
-CNcomment:´ò¿ªºó¿ªÊ¼½ÓÊÕ°´¼ü\n
-ÖØ¸´µ÷ÓÃ±¾½Ó¿Ú£¬»á·µ»Ø³É¹¦¡£CNend
-\param N/A                                                                      CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS Success                                                    CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED device is not initialized.         CNcomment:KEYLEDÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                                     CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
+CNcomment:æ‰“å¼€åŽå¼€å§‹æŽ¥æ”¶æŒ‰é”®\n
+é‡å¤è°ƒç”¨æœ¬æŽ¥å£ï¼Œä¼šè¿”å›žæˆåŠŸã€‚CNend
+\param N/A                                                                      CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success                                                    CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED device is not initialized.         CNcomment:KEYLEDè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                                     CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -152,18 +152,18 @@ HI_S32 HI_UNF_KEY_Open(HI_VOID);
 
 /**
 \brief Disables the key function.
-CNcomment:\brief ¹Ø±Õ°´¼ü¹¦ÄÜ¡£CNend
+CNcomment:\brief å…³é—­æŒ‰é”®åŠŸèƒ½ã€‚CNend
 
 \attention \n
 The KEYLED module stops receiving key IDs after the key function is disabled.\n
 This API is valid when it is called for the first time. If this API is called repeatedly, the error code HI_SUCCESS is returned.\n
-CNcomment:¹Ø±ÕºóÍ£Ö¹½ÓÊÕ°´¼ü\n
-±¾½Ó¿ÚµÚÒ»´Îµ÷ÓÃÆð×÷ÓÃ,ÖØ¸´µ÷ÓÃ·µ»Ø³É¹¦¡£CNend
+CNcomment:å…³é—­åŽåœæ­¢æŽ¥æ”¶æŒ‰é”®\n
+æœ¬æŽ¥å£ç¬¬ä¸€æ¬¡è°ƒç”¨èµ·ä½œç”¨,é‡å¤è°ƒç”¨è¿”å›žæˆåŠŸã€‚CNend
 
-\param N/A                                                                      CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS Success                                                    CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED device is not initialized.         CNcomment:KEYLEDÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                                     CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
+\param N/A                                                                      CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success                                                    CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED device is not initialized.         CNcomment:KEYLEDè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                                     CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -171,15 +171,15 @@ HI_S32 HI_UNF_KEY_Close(HI_VOID);
 
 /**
 \brief Clears the key values that are not received.
-CNcomment:\brief Çå¿Õµ±Ç°Ã»ÓÐ½ÓÊÕµÄ°´¼ü¡£CNend
+CNcomment:\brief æ¸…ç©ºå½“å‰æ²¡æœ‰æŽ¥æ”¶çš„æŒ‰é”®ã€‚CNend
 
 \attention \n
 This API is used to clear the buffer for storing the key values. In this way, the initial state is returned.
-CNcomment:Çå¿Õ°´¼übuffer£¬»Øµ½³õÊ¼×´Ì¬¡£CNend
-\param N/A Success                                                              CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS Success                                                    CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED device is not initialized.         CNcomment:KEYLEDÉè±¸Î´³õÊ¼»¯ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                                     CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
+CNcomment:æ¸…ç©ºæŒ‰é”®bufferï¼Œå›žåˆ°åˆå§‹çŠ¶æ€ã€‚CNend
+\param N/A Success                                                              CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success                                                    CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED device is not initialized.         CNcomment:KEYLEDè®¾å¤‡æœªåˆå§‹åŒ– CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                                     CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -188,7 +188,7 @@ HI_S32 HI_UNF_KEY_Reset(HI_VOID);
 
 /**
 \brief Obtains a key value.
-CNcomment:\brief »ñÈ¡Ò»¸ö°´¼üÖµ¡£CNend
+CNcomment:\brief èŽ·å–ä¸€ä¸ªæŒ‰é”®å€¼ã€‚CNend
 
 \attention \n
 This API is used to obtain the key value that is received first in the buffer. After this API is called, the key value and key status are returned.\n
@@ -197,19 +197,19 @@ This API needs to work with ::HI_UNF_KEY_SetBlockTime.\n
 If there are no key values, the API waits until timeout occurs. In this case, the error code ::HI_ERR_KEYLED_TIMEOUT is returned.\n
 If the timeout is set to 0 in non-block mode, the error code ::HI_ERR_KEYLED_NO_NEW_KEY is returned when there are no key values.\n
 If the timeout is set to 0xFFFFFFFF, it indicates infinite wait.\n
-CNcomment:»ñÈ¡bufferÖÐ×îÔçµ½´ïµÄ°´¼üÖµ£¬·µ»Ø°´¼üÖµµÄÊýÖµºÍ×´Ì¬\n
-×´Ì¬°üº¬°´ÏÂ£¬³¤°´ºÍµ¯Æð\n
-½Ó¿ÚÅäºÏ::HI_UNF_KEY_SetBlockTime½Ó¿ÚÒ»ÆðÊ¹ÓÃ\n
-Ã»ÓÐ°´¼üÊ±£¬½øÐÐµÈ´ý£¬³¬Ê±ºóÍË³ö²¢·µ»Ø³¬Ê±´íÎóÂë\n
-³¬Ê±ÖµÎª0Ê±Îª·Ç×èÈû½Ó¿Ú£¬Ã»ÓÐ°´¼üÖ±½Ó·µ»ØÃ»ÓÐ°´¼ü´íÎóÂë\n
-³¬Ê±ÖµÉèÖÃÎª0xffffffff£¬Ò»Ö±µÈ´ý¡£CNend
-\param[out] pu32PressStatus Key status: pressed(0x0), hold(0x1) or released(0x2) CNcomment:°´¼ü×´Ì¬ÊÇ°´ÏÂ£¬³¤°´»¹ÊÇµ¯Æð¡£CNend
-\param[out] pu32KeyId  Key value                                                 CNcomment:°´¼üÖµ¡£CNend
-\retval ::HI_SUCCESS  Success                                                    CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.          CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯ CNend
-\retval ::HI_ERR_KEYLED_NULL_PTR  The pointer is null.                           CNcomment:Ö¸Õë²ÎÊýÎª¿Õ CNend
-\retval ::HI_ERR_KEYLED_NO_NEW_KEY  There are no key values.                     CNcomment:Ã»ÓÐ°´¼ü CNend
-\retval ::HI_ERR_KEYLED_TIMEOUT  Waiting for key values times out.               CNcomment:µÈ´ý°´¼ü³¬Ê± CNend
+CNcomment:èŽ·å–bufferä¸­æœ€æ—©åˆ°è¾¾çš„æŒ‰é”®å€¼ï¼Œè¿”å›žæŒ‰é”®å€¼çš„æ•°å€¼å’ŒçŠ¶æ€\n
+çŠ¶æ€åŒ…å«æŒ‰ä¸‹ï¼Œé•¿æŒ‰å’Œå¼¹èµ·\n
+æŽ¥å£é…åˆ::HI_UNF_KEY_SetBlockTimeæŽ¥å£ä¸€èµ·ä½¿ç”¨\n
+æ²¡æœ‰æŒ‰é”®æ—¶ï¼Œè¿›è¡Œç­‰å¾…ï¼Œè¶…æ—¶åŽé€€å‡ºå¹¶è¿”å›žè¶…æ—¶é”™è¯¯ç \n
+è¶…æ—¶å€¼ä¸º0æ—¶ä¸ºéžé˜»å¡žæŽ¥å£ï¼Œæ²¡æœ‰æŒ‰é”®ç›´æŽ¥è¿”å›žæ²¡æœ‰æŒ‰é”®é”™è¯¯ç \n
+è¶…æ—¶å€¼è®¾ç½®ä¸º0xffffffffï¼Œä¸€ç›´ç­‰å¾…ã€‚CNend
+\param[out] pu32PressStatus Key status: pressed(0x0), hold(0x1) or released(0x2) CNcomment:æŒ‰é”®çŠ¶æ€æ˜¯æŒ‰ä¸‹ï¼Œé•¿æŒ‰è¿˜æ˜¯å¼¹èµ·ã€‚CNend
+\param[out] pu32KeyId  Key value                                                 CNcomment:æŒ‰é”®å€¼ã€‚CNend
+\retval ::HI_SUCCESS  Success                                                    CNcomment:æˆåŠŸ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.          CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ– CNend
+\retval ::HI_ERR_KEYLED_NULL_PTR  The pointer is null.                           CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©º CNend
+\retval ::HI_ERR_KEYLED_NO_NEW_KEY  There are no key values.                     CNcomment:æ²¡æœ‰æŒ‰é”® CNend
+\retval ::HI_ERR_KEYLED_TIMEOUT  Waiting for key values times out.               CNcomment:ç­‰å¾…æŒ‰é”®è¶…æ—¶ CNend
 \see \n
 N/A
 */
@@ -217,19 +217,19 @@ HI_S32 HI_UNF_KEY_GetValue(HI_U32 * pu32PressStatus, HI_U32 * pu32KeyId);
 
 /**
 \brief Sets the timeout of reading key IDs.
-CNcomment:\brief ÉèÖÃ°´¼ü¶ÁÈ¡µÄ³¬Ê±Ê±¼ä¡£CNend
+CNcomment:\brief è®¾ç½®æŒ‰é”®è¯»å–çš„è¶…æ—¶æ—¶é—´ã€‚CNend
 
 \attention \n
 If the timeout is set to 0, the API is not blocked. If there is no key ID, the error code HI_ERR_KEYLED_NO_NEW_KEY is returned.\n
 If the timeout is set to 0xFFFFFFFF, it indicates infinite wait.\n
 The default time is 500 ms.\n
-CNcomment:³¬Ê±ÖµÎª0Ê±²»×èÈû£¬Ã»ÓÐ°´¼üÖ±½Ó·µ»ØÃ»ÓÐ°´¼ü´íÎóÂë\n
-³¬Ê±ÖµÉèÖÃÎª0xffffffff£¬Ò»Ö±µÈ´ý¡£\n 
-Ä¬ÈÏµÄ³¬Ê±ÅÐ¶ÏÊ±¼äÎª500ms¡£CNend
-\param[in] u32BlockTimeMs   Timeout, in ms                               CNcomment:³¬Ê±Ê±¼ä£¬µ¥Î»ms¡£CNend
-\retval ::HI_SUCCESS Success                                             CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.  CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯ CNend
+CNcomment:è¶…æ—¶å€¼ä¸º0æ—¶ä¸é˜»å¡žï¼Œæ²¡æœ‰æŒ‰é”®ç›´æŽ¥è¿”å›žæ²¡æœ‰æŒ‰é”®é”™è¯¯ç \n
+è¶…æ—¶å€¼è®¾ç½®ä¸º0xffffffffï¼Œä¸€ç›´ç­‰å¾…ã€‚\n 
+é»˜è®¤çš„è¶…æ—¶åˆ¤æ–­æ—¶é—´ä¸º500msã€‚CNend
+\param[in] u32BlockTimeMs   Timeout, in ms                               CNcomment:è¶…æ—¶æ—¶é—´ï¼Œå•ä½msã€‚CNend
+\retval ::HI_SUCCESS Success                                             CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.  CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ– CNend
 \see \n
 N/A
 */
@@ -238,20 +238,20 @@ HI_S32 HI_UNF_KEY_SetBlockTime(HI_U32 u32BlockTimeMs);
 
 /**
 \brief Set the time of pressing a key repeatedly.
-CNcomment:\brief ÉèÖÃÖØ¸´°´¼üµÄÊ±¼ä¡£CNend
+CNcomment:\brief è®¾ç½®é‡å¤æŒ‰é”®çš„æ—¶é—´ã€‚CNend
 
 \attention \n
 If a key is pressed for a period of time, it considers that the key is pressed repeatedly.\n
 The time ranges from 108 ms to 65536 ms. If the time is not within the range, the time is automatically restricted to this range.\n
 The default time is 200 ms.\n
-CNcomment:µ±Ä³¸ö¼ü´¦ÓÚ°´ÏÂ×´Ì¬£¬³¬¹ýÉèÖÃµÄÊ±¼äÖµÅÐ¶ÏÎªÖØ¸´°´¼ü\n
-ÖØ¸´°´¼üµÄÉèÖÃ·¶Î§ÔÚ108msµ½65536msÖ®¼ä£¬³¬¹ýÕâ¸ö·¶Î§»á×Ô¶¯Ô¼Êøµ½ÉÏÏÞ»òÏÂÏÞÉÏ\n
-Ä¬ÈÏµÄÖØ¸´°´¼üÅÐ¶ÏÊ±¼äÎª200ms¡£CNend
+CNcomment:å½“æŸä¸ªé”®å¤„äºŽæŒ‰ä¸‹çŠ¶æ€ï¼Œè¶…è¿‡è®¾ç½®çš„æ—¶é—´å€¼åˆ¤æ–­ä¸ºé‡å¤æŒ‰é”®\n
+é‡å¤æŒ‰é”®çš„è®¾ç½®èŒƒå›´åœ¨108msåˆ°65536msä¹‹é—´ï¼Œè¶…è¿‡è¿™ä¸ªèŒƒå›´ä¼šè‡ªåŠ¨çº¦æŸåˆ°ä¸Šé™æˆ–ä¸‹é™ä¸Š\n
+é»˜è®¤çš„é‡å¤æŒ‰é”®åˆ¤æ–­æ—¶é—´ä¸º200msã€‚CNend
 
-\param[in] u32RepTimeMs  Time of pressing a key repeatedly, in ms       CNcomment:ÅÐ¶ÏÎªÖØ¸´°´¼üµÄÊ±¼ä£¬µ¥Î»ms¡£CNend
-\retval ::HI_SUCCESS Success                                            CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized. CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯ CNend
+\param[in] u32RepTimeMs  Time of pressing a key repeatedly, in ms       CNcomment:åˆ¤æ–­ä¸ºé‡å¤æŒ‰é”®çš„æ—¶é—´ï¼Œå•ä½msã€‚CNend
+\retval ::HI_SUCCESS Success                                            CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ– CNend
 \see \n 
 N/A
 */
@@ -259,16 +259,16 @@ HI_S32 HI_UNF_KEY_RepKeyTimeoutVal(HI_U32 u32RepTimeMs);
 
 /**
 \brief Enables or disables the function of reporting the same key ID.
-CNcomment:\brief ÉèÖÃÊÇ·ñÊ¹ÄÜÖØ¸´°´¼ü¡£CNend
+CNcomment:\brief è®¾ç½®æ˜¯å¦ä½¿èƒ½é‡å¤æŒ‰é”®ã€‚CNend
 
 \attention \n
 The ID of a pressed key is reported consecutively only after the report function is enabled.\n
-CNcomment:Ö»ÓÐÊ¹ÄÜºó£¬Ò»Ö±°´×¡Ä³¸ö¼ü£¬²ÅÄÜÁ¬ÐøÉÏ±¨¼üÖµ¡£CNend
+CNcomment:åªæœ‰ä½¿èƒ½åŽï¼Œä¸€ç›´æŒ‰ä½æŸä¸ªé”®ï¼Œæ‰èƒ½è¿žç»­ä¸ŠæŠ¥é”®å€¼ã€‚CNend
 
-\param[in] u32IsRepKey Repeat key report enable. 1: enabled; 0: disabled   CNcomment:ÊÇ·ñÊ¹ÄÜÖØ¸´°´¼ü£¬1 Ê¹ÄÜ£¬0 ²»Ê¹ÄÜ¡£CNend
-\retval ::HI_SUCCESS Success                                               CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                                CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.    CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯ CNend
+\param[in] u32IsRepKey Repeat key report enable. 1: enabled; 0: disabled   CNcomment:æ˜¯å¦ä½¿èƒ½é‡å¤æŒ‰é”®ï¼Œ1 ä½¿èƒ½ï¼Œ0 ä¸ä½¿èƒ½ã€‚CNend
+\retval ::HI_SUCCESS Success                                               CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                                CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.    CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ– CNend
 \see \n
 N/A
 */
@@ -276,16 +276,16 @@ HI_S32 HI_UNF_KEY_IsRepKey(HI_U32 u32IsRepKey);
 
 /**
 \brief Enables or disables the function of reporting the released status of a key.
-CNcomment:\brief ÉèÖÃÊÇ·ñÉÏ±¨°´¼üµ¯Æð¡£CNend
+CNcomment:\brief è®¾ç½®æ˜¯å¦ä¸ŠæŠ¥æŒ‰é”®å¼¹èµ·ã€‚CNend
 
 \attention \n
 The released statuses of keys are reported only after the report function is enabled. Otherwise, only the pressed statuses are reported.\n
-CNcomment:Ê¹ÄÜºó²Å»áÉÏ±¨°´¼üµ¯ÆðÊÂ¼þ£¬²»È»Ö»ÉÏ±¨°´ÏÂÊÂ¼þ¡£CNend
+CNcomment:ä½¿èƒ½åŽæ‰ä¼šä¸ŠæŠ¥æŒ‰é”®å¼¹èµ·äº‹ä»¶ï¼Œä¸ç„¶åªä¸ŠæŠ¥æŒ‰ä¸‹äº‹ä»¶ã€‚CNend
 
-\param[in] u32IsKeyUp Repeat key report enable. 1: enabled; 0: disabled  CNcomment:ÊÇ·ñÊ¹ÄÜÖØ¸´°´¼ü£¬1 Ê¹ÄÜ£¬0 ²»Ê¹ÄÜ¡£CNend
-\retval ::HI_SUCCESS Success                                             CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.  CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯ CNend
+\param[in] u32IsKeyUp Repeat key report enable. 1: enabled; 0: disabled  CNcomment:æ˜¯å¦ä½¿èƒ½é‡å¤æŒ‰é”®ï¼Œ1 ä½¿èƒ½ï¼Œ0 ä¸ä½¿èƒ½ã€‚CNend
+\retval ::HI_SUCCESS Success                                             CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.  CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ– CNend
 \see \n 
 N/A
 */
@@ -293,17 +293,17 @@ HI_S32 HI_UNF_KEY_IsKeyUp(HI_U32 u32IsKeyUp);
 
 /**
 \brief Enables the display function of LEDs.
-CNcomment:\brief ´ò¿ªÊýÂë¹ÜÏÔÊ¾¹¦ÄÜ¡£CNend
+CNcomment:\brief æ‰“å¼€æ•°ç ç®¡æ˜¾ç¤ºåŠŸèƒ½ã€‚CNend
 
 \attention \n
 The LEDs work only after the display function is enabled.\n
 The error code HI_SUCCESS is returned if this API is called repeatedly.\n
-CNcomment:´ò¿ªºó²Å»áÓÐÊýÂë¹ÜµÄÏÔÊ¾\n
-ÖØ¸´µ÷ÓÃ±¾½Ó¿Ú£¬»á·µ»Ø³É¹¦¡£CNend
+CNcomment:æ‰“å¼€åŽæ‰ä¼šæœ‰æ•°ç ç®¡çš„æ˜¾ç¤º\n
+é‡å¤è°ƒç”¨æœ¬æŽ¥å£ï¼Œä¼šè¿”å›žæˆåŠŸã€‚CNend
 
-\param N/A                                     CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS Success                   CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.    CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
+\param N/A                                     CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success                   CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.    CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -311,17 +311,17 @@ HI_S32 HI_UNF_LED_Open(HI_VOID);
 
 /**
 \brief Disables the display function of LEDs.
-CNcomment:\brief ¹Ø±ÕÊýÂë¹ÜÏÔÊ¾¹¦ÄÜ¡£CNend
+CNcomment:\brief å…³é—­æ•°ç ç®¡æ˜¾ç¤ºåŠŸèƒ½ã€‚CNend
 
 \attention \n
 The LEDs do not work after the display function is disabled.\n
 This API is valid when it is called for the first time. If this API is called repeatedly, the error code HI_SUCCESS is returned.\n
-CNcomment:¹Ø±ÕºóÍ£Ö¹ÊýÂë¹ÜÏÔÊ¾\n
-±¾½Ó¿ÚµÚÒ»´Îµ÷ÓÃÆð×÷ÓÃ,ÖØ¸´µ÷ÓÃ·µ»Ø³É¹¦¡£CNend
+CNcomment:å…³é—­åŽåœæ­¢æ•°ç ç®¡æ˜¾ç¤º\n
+æœ¬æŽ¥å£ç¬¬ä¸€æ¬¡è°ƒç”¨èµ·ä½œç”¨,é‡å¤è°ƒç”¨è¿”å›žæˆåŠŸã€‚CNend
  
-\param N/A                                    CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS Success                  CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.   CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
+\param N/A                                    CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success                  CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.   CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
 \see \n
 N/A
 */
@@ -330,7 +330,7 @@ HI_S32 HI_UNF_LED_Close(HI_VOID);
 
 /**
 \brief Displays characters based on the type of the input code.
-CNcomment:\brief ¸ù¾Ý´«ÈëµÄÂëÐÍÖµ½øÐÐÏÔÊ¾¡£CNend
+CNcomment:\brief æ ¹æ®ä¼ å…¥çš„ç åž‹å€¼è¿›è¡Œæ˜¾ç¤ºã€‚CNend
 
 \attention \n
 Each LED displays a character that corresponds to the value of one byte.\n
@@ -355,13 +355,13 @@ The common display characters and values of the LEDs on HiSilicon demo board are
   Lower-case letters a-z (the characters that cannot be displayed are expressed as 0xFF):\n
     0xFF, 0xC1, 0xE5, 0x85, 0x21, 0xFF, 0x09, 0xD1, 0xDF, 0xFF, 0xFF, 0x9F, 0xFF,\n
     0xD5, 0xC5, 0x31, 0x19, 0xFF, 0x49, 0xFF, 0xC7, 0xE1, 0xFF, 0xFF, 0xFF, 0xFF
-CNcomment:	Ã¿¸öÊýÂë¹ÜÒªÏÔÊ¾µÄ×Ö·û¶ÔÓ¦Ò»¸ö×Ö½ÚµÄÏÔÊ¾Öµ¡£\n
-ÏÔÊ¾Ê±ÐèÒª½«4 ¸ö´ýÏÔÊ¾×Ö·û¶ÔÓ¦µÄÏÔÊ¾Öµ×éºÏ³ÉÒ»¸öunsiged int£¨32bit£©Êý¾Ý×÷Îª´Ë½Ó¿ÚµÄ²ÎÊýÖµ¡£\n
-´Ó×óµ½ÓÒµÄ4 ¸öLED ÒÀ´ÎÏÔÊ¾Êý¾ÝµÄbit[7:0]¡¢bit[15:8]¡¢bit[23:16]¡¢bit[31:24]¡£\n
-ÀýÈç£ºÔÚLED ÉÏÏÔÊ¾¡°0123¡±£¬ÔòÐèÒª½«ÕâÐ©×Ö·û¶ÔÓ¦µÄÏÔÊ¾Öµ×éºÏ³ÉÒ»¸öUnsigned int µÄ±äÁ¿£º\n
-   Unsigned int parameter = 0x03 + (0x9F <<8) + (0x25<<16) + (0x0D <<24)£»\n
-ÆäÖÐ£º0x03¡¢0x9F¡¢0x25¡¢0x0D ·Ö±ðÊÇ¡®0¡¯¡¢¡®1¡¯¡¢¡®2¡¯¡¢¡®3¡¯µÄÏÔÊ¾Öµ¡£\n
-Æß¶ÎÊýÂë¹Ü¶ÎÊýÓëÊý¾ÝµÄbit¶ÔÓ¦¹ØÏµÈçÏÂ:\n
+CNcomment:	æ¯ä¸ªæ•°ç ç®¡è¦æ˜¾ç¤ºçš„å­—ç¬¦å¯¹åº”ä¸€ä¸ªå­—èŠ‚çš„æ˜¾ç¤ºå€¼ã€‚\n
+æ˜¾ç¤ºæ—¶éœ€è¦å°†4 ä¸ªå¾…æ˜¾ç¤ºå­—ç¬¦å¯¹åº”çš„æ˜¾ç¤ºå€¼ç»„åˆæˆä¸€ä¸ªunsiged intï¼ˆ32bitï¼‰æ•°æ®ä½œä¸ºæ­¤æŽ¥å£çš„å‚æ•°å€¼ã€‚\n
+ä»Žå·¦åˆ°å³çš„4 ä¸ªLED ä¾æ¬¡æ˜¾ç¤ºæ•°æ®çš„bit[7:0]ã€bit[15:8]ã€bit[23:16]ã€bit[31:24]ã€‚\n
+ä¾‹å¦‚ï¼šåœ¨LED ä¸Šæ˜¾ç¤ºâ€œ0123â€ï¼Œåˆ™éœ€è¦å°†è¿™äº›å­—ç¬¦å¯¹åº”çš„æ˜¾ç¤ºå€¼ç»„åˆæˆä¸€ä¸ªUnsigned int çš„å˜é‡ï¼š\n
+   Unsigned int parameter = 0x03 + (0x9F <<8) + (0x25<<16) + (0x0D <<24)ï¼›\n
+å…¶ä¸­ï¼š0x03ã€0x9Fã€0x25ã€0x0D åˆ†åˆ«æ˜¯â€˜0â€™ã€â€˜1â€™ã€â€˜2â€™ã€â€˜3â€™çš„æ˜¾ç¤ºå€¼ã€‚\n
+ä¸ƒæ®µæ•°ç ç®¡æ®µæ•°ä¸Žæ•°æ®çš„bitå¯¹åº”å…³ç³»å¦‚ä¸‹:\n
        --7--       \n
       |     |      \n
      2|     |6     \n
@@ -369,18 +369,18 @@ CNcomment:	Ã¿¸öÊýÂë¹ÜÒªÏÔÊ¾µÄ×Ö·û¶ÔÓ¦Ò»¸ö×Ö½ÚµÄÏÔÊ¾Öµ¡£\n
       |     |      \n
      3|     |5     \n
        --4-- .0    \n
-º£Ë¼DEMO°åÊýÂë¹Ü³£ÓÃÏÔÊ¾×Ö·û¼°Æä¶ÔÓ¦µÄÏÔÊ¾ÖµÈçÏÂ(Õë¶Ô¹²Ñô¼«£¬¹²Òõ¼«ÒªÈ¡·´)£º\n
-  . ×Ö·û0-9£º0x03, 0x9F, 0x25, 0x0D, 0x99, 0x49, 0x41, 0x1F, 0x01, 0x09\n
-  . ´óÐ´×ÖÄ¸A-Z£¨²»ÄÜÏÔÊ¾µÄÓÃ0xFF ±íÊ¾£©£º\n
+æµ·æ€DEMOæ¿æ•°ç ç®¡å¸¸ç”¨æ˜¾ç¤ºå­—ç¬¦åŠå…¶å¯¹åº”çš„æ˜¾ç¤ºå€¼å¦‚ä¸‹(é’ˆå¯¹å…±é˜³æžï¼Œå…±é˜´æžè¦å–å)ï¼š\n
+  . å­—ç¬¦0-9ï¼š0x03, 0x9F, 0x25, 0x0D, 0x99, 0x49, 0x41, 0x1F, 0x01, 0x09\n
+  . å¤§å†™å­—æ¯A-Zï¼ˆä¸èƒ½æ˜¾ç¤ºçš„ç”¨0xFF è¡¨ç¤ºï¼‰ï¼š\n
      0xFF, 0xFF, 0x63, 0xFF, 0x61, 0x71, 0xFF, 0x91, 0xFF, 0xFF, 0xFF, 0xE3, 0xFF,\n
      0xFF, 0x03, 0x31, 0xFF, 0xFF, 0x49, 0xFF, 0x83, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF\n
-  . Ð¡Ð´×ÖÄ¸a-z£¨²»ÄÜÏÔÊ¾µÄÓÃ0xFF ±íÊ¾£©£º\n
+  . å°å†™å­—æ¯a-zï¼ˆä¸èƒ½æ˜¾ç¤ºçš„ç”¨0xFF è¡¨ç¤ºï¼‰ï¼š\n
      0xFF, 0xC1, 0xE5, 0x85, 0x21, 0xFF, 0x09, 0xD1, 0xDF, 0xFF, 0xFF, 0x9F, 0xFF,\n
      0xD5, 0xC5, 0x31, 0x19, 0xFF, 0x49, 0xE1, 0xC7, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF CNend
-\param[in] u32CodeValue 4-digit value to be displayed                   CNcomment:ÐèÒªÏÔÊ¾µÄ4Î»ÊýÖµ¡£CNend
-\retval ::HI_SUCCESS Success                                            CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                             CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized. CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯ CNend
+\param[in] u32CodeValue 4-digit value to be displayed                   CNcomment:éœ€è¦æ˜¾ç¤ºçš„4ä½æ•°å€¼ã€‚CNend
+\retval ::HI_SUCCESS Success                                            CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                             CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized. CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ– CNend
 \see \n
 N/A
 */
@@ -389,21 +389,21 @@ HI_S32 HI_UNF_LED_Display(HI_U32 u32CodeValue);
 
 /**
 \brief Displays the time on LEDs.
-CNcomment:\brief ÔÚÊýÂë¹ÜÉÏÏÔÊ¾Ê±¼ä¡£CNend
+CNcomment:\brief åœ¨æ•°ç ç®¡ä¸Šæ˜¾ç¤ºæ—¶é—´ã€‚CNend
 
 \attention \n
 The values of hour and minute need to be converted into corresponding decimal values. For example, if you want to display 22:45, you need to set hour to 22 and set minute to 45.\n
 After the start time is set, the time is displayed on LEDs. At the same time, the colon (:) in the time blinks at the frequency of 1 Hz.\n
 Because the time is displayed in 24-hour format, the maximum value of hour is 23, and the maximum value of minute is 59.\n
-CNcomment:Ð¡Ê±¡¢·ÖÖÓÖ»ÐèÅäÖÃ³ÉÏàÓ¦µÄÊ®½øÖÆÖµ¾ÍÐÐÁË¡£±ÈÈçÏÔÊ¾22£º45£¬Ôòhour=22£¬minute=45¡£\n
-´«ÈëÊ±¼äÊý¾Ý½á¹¹£¬È»ºóÔÚÊýÂë¹ÜÉÏÏÔÊ¾£¬ÏÔÊ¾Ê±¼äµÄÍ¬Ê±Ã°ºÅ»áÒÔ1HZµÄÆµÂÊÉÁË¸\n
-Ê±¼äµÄ·¶Î§×¢Òâ°´24Ð¡Ê±ÖÆ£¬×î´óÖ§³ÖÐ¡Ê±Îª23£¬·ÖÎª59¡£CNend
+CNcomment:å°æ—¶ã€åˆ†é’Ÿåªéœ€é…ç½®æˆç›¸åº”çš„åè¿›åˆ¶å€¼å°±è¡Œäº†ã€‚æ¯”å¦‚æ˜¾ç¤º22ï¼š45ï¼Œåˆ™hour=22ï¼Œminute=45ã€‚\n
+ä¼ å…¥æ—¶é—´æ•°æ®ç»“æž„ï¼Œç„¶åŽåœ¨æ•°ç ç®¡ä¸Šæ˜¾ç¤ºï¼Œæ˜¾ç¤ºæ—¶é—´çš„åŒæ—¶å†’å·ä¼šä»¥1HZçš„é¢‘çŽ‡é—ªçƒ\n
+æ—¶é—´çš„èŒƒå›´æ³¨æ„æŒ‰24å°æ—¶åˆ¶ï¼Œæœ€å¤§æ”¯æŒå°æ—¶ä¸º23ï¼Œåˆ†ä¸º59ã€‚CNend
 
-\param[in] stLedTime Time                                                CNcomment:Ê±¼ä¡£CNend
-\retval ::HI_SUCCESS  Success                                            CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.  CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯ CNend
-\retval ::HI_ERR_KEYLED_INVALID_PARA  The input parameter is invalid.    CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
+\param[in] stLedTime Time                                                CNcomment:æ—¶é—´ã€‚CNend
+\retval ::HI_SUCCESS  Success                                            CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.  CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ– CNend
+\retval ::HI_ERR_KEYLED_INVALID_PARA  The input parameter is invalid.    CNcomment:è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 N/A
 */
@@ -411,17 +411,17 @@ HI_S32 HI_UNF_LED_DisplayTime(HI_UNF_KEYLED_TIME_S stLedTime);
 
 /**
 \brief Sets the ID of the blinked LED.
-CNcomment:\brief ÉèÖÃÒªÉÁË¸µÄLED ÐòºÅ¡£CNend
+CNcomment:\brief è®¾ç½®è¦é—ªçƒçš„LED åºå·ã€‚CNend
 
 \attention \n
 The IDs of the LEDs on the board are 1, 2, 3, and 4 from left to right. If you want 4 LEDs to blink together, set 5.\n
-CNcomment:µ¥°åÉÏµÄÊýÂë¹ÜµÄÐòºÅ´Ó×óµ½ÓÒÒÀ´ÎÎª£º1¡¢2¡¢3¡¢4¡£ÉèÖÃ4¸öÊýÂë¹ÜÒ»ÆðÉÁË¸:5£»CNend
+CNcomment:å•æ¿ä¸Šçš„æ•°ç ç®¡çš„åºå·ä»Žå·¦åˆ°å³ä¾æ¬¡ä¸ºï¼š1ã€2ã€3ã€4ã€‚è®¾ç½®4ä¸ªæ•°ç ç®¡ä¸€èµ·é—ªçƒ:5ï¼›CNend
 
-\param[in] enPin  Pin ID                                                 CNcomment:ÒªÏÔÊ¾µÄÐòºÅ¡£CNend
-\retval ::HI_SUCCESS Success                                             CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.  CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯ CNend
-\retval ::HI_ERR_KEYLED_INVALID_PARA  The input parameter is invalid.    CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
+\param[in] enPin  Pin ID                                                 CNcomment:è¦æ˜¾ç¤ºçš„åºå·ã€‚CNend
+\retval ::HI_SUCCESS Success                                             CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.  CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ– CNend
+\retval ::HI_ERR_KEYLED_INVALID_PARA  The input parameter is invalid.    CNcomment:è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 N/A
 */
@@ -429,17 +429,17 @@ HI_S32 HI_UNF_LED_SetFlashPin(HI_UNF_KEYLED_LIGHT_E enPin);
 
 /**
 \brief Sets the blink level of an LED.
-CNcomment:\brief ÉèÖÃLED ÉÁË¸¼¶±ð¡£CNend
+CNcomment:\brief è®¾ç½®LED é—ªçƒçº§åˆ«ã€‚CNend
 
 \attention \n
 The higher the level, the faster an LED blinks.
-CNcomment:¼¶±ðÔ½¸ßÉÁË¸ËÙ¶ÈÔ½¿ì¡£CNend
+CNcomment:çº§åˆ«è¶Šé«˜é—ªçƒé€Ÿåº¦è¶Šå¿«ã€‚CNend
 
-\param[in] enLevel  Blink level from 1 to 5.                             CNcomment:ÉÁË¸¼¶±ð£¬ÉèÖÃ·¶Î§:1 µ½ 5 CNend
-\retval ::HI_SUCCESS Success                                             CNcomment:³É¹¦ CNend
-\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlµ÷ÓÃÊ§°Ü CNend
-\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.  CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯ CNend
-\retval ::HI_ERR_KEYLED_INVALID_PARA The input parameter is invalid.     CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
+\param[in] enLevel  Blink level from 1 to 5.                             CNcomment:é—ªçƒçº§åˆ«ï¼Œè®¾ç½®èŒƒå›´:1 åˆ° 5 CNend
+\retval ::HI_SUCCESS Success                                             CNcomment:æˆåŠŸ CNend
+\retval ::HI_FAILURE  Calling Ioctrl fails.                              CNcomment: Ioctrlè°ƒç”¨å¤±è´¥ CNend
+\retval ::HI_ERR_KEYLED_NOT_INIT  The KEYLED module is not initialized.  CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ– CNend
+\retval ::HI_ERR_KEYLED_INVALID_PARA The input parameter is invalid.     CNcomment:è¾“å…¥å‚æ•°éžæ³• CNend
 \see \n
 N/A
 */

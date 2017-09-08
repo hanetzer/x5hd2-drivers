@@ -1266,7 +1266,7 @@ static struct file_operations stC51fopts = {
 
 /***********************************************************************/
 /*entrance of function controled by the proc file system*/
-/*CNcomment:Í¨¹ıprocÎÄ¼şÏµÍ³½øĞĞ¿ØÖÆµÄº¯ÊıÈë¿Ú*/
+/*CNcomment:é€šè¿‡procæ–‡ä»¶ç³»ç»Ÿè¿›è¡Œæ§åˆ¶çš„å‡½æ•°å…¥å£*/
 static HI_S8 g_s8KeyLedType[5][16] = {"74HC164", "PT6961", "CT1642", "PT6964", "FD650"};
 static HI_S8 g_s8IRType[5][16] = {"NEC Simple", "TC9012", "NEC Full", "SONY", "RAW"}; 
 static HI_S8 g_s8DebugType[4][32] = {"No debug info", "Save debug info to ram", 

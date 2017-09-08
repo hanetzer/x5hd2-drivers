@@ -274,7 +274,7 @@ static HI_S32 VDEC_DRV_CtrlWriteProc(struct file * file,
         return 0;
     }
 
-    // 如果是设置存选项，可能还跟着保存路径
+    // 濡傛灉鏄缃瓨閫夐」锛屽彲鑳借繕璺熺潃淇濆瓨璺緞
     if (0 == dat1 || 1 == dat1)
     {
         j = 0;

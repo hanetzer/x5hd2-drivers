@@ -24,7 +24,7 @@ void init_event_queue(omx_event_queue *queue)
 }
 
 
-OMX_S32 push_entry(omx_event_queue *queue, OMX_U32 param1, OMX_U32 param2, OMX_U32 id)           //Ñ¹¶ÓÁÐ
+OMX_S32 push_entry(omx_event_queue *queue, OMX_U32 param1, OMX_U32 param2, OMX_U32 id)           //åŽ‹é˜Ÿåˆ—
 {
 
 	if (queue->m_size >= OMX_CORE_CONTROL_CMDQ_SIZE) {
@@ -33,7 +33,7 @@ OMX_S32 push_entry(omx_event_queue *queue, OMX_U32 param1, OMX_U32 param2, OMX_U
 	}
 
 	queue->m_q[queue->m_write].id       = id;
-	queue->m_q[queue->m_write].param1   = param1;           //´æ·Å
+	queue->m_q[queue->m_write].param1   = param1;           //å­˜æ”¾
 	queue->m_q[queue->m_write].param2   = param2;
 	queue->m_write++;
 	queue->m_size++;
@@ -43,7 +43,7 @@ OMX_S32 push_entry(omx_event_queue *queue, OMX_U32 param1, OMX_U32 param2, OMX_U
 	return 0;
 }
 
-OMX_S32 pop_entry(omx_event_queue *queue, OMX_U32 *param1, OMX_U32 *param2, OMX_U32 *id)            //³ö¶ÓÁÐ
+OMX_S32 pop_entry(omx_event_queue *queue, OMX_U32 *param1, OMX_U32 *param2, OMX_U32 *id)            //å‡ºé˜Ÿåˆ—
 {
 	if (queue->m_size == 0) {
 		DEBUG_PRINT_ERROR("\nERROR: %s()::Command Queue empty", __func__);

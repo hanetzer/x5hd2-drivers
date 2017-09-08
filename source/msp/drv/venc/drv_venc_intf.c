@@ -104,7 +104,7 @@ HI_DECLARE_MUTEX(g_VencMutex);
 HI_U32 g_u32VencOpenFlag = 0;
 
 //add by l00228308
-/*vpss 回调函数*/
+/*vpss 鍥炶皟鍑芥暟*/
 HI_S32 VENC_VpssEventHandle(HI_HANDLE hVenc, HI_DRV_VPSS_EVENT_E enEventID, HI_VOID *pstArgs)
 {  
     HI_DRV_VPSS_BUFFUL_STRATAGY_E *pstStratagy;
@@ -379,7 +379,7 @@ HI_S32 VENC_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_V
 	        stPort0Cfg.stBufListCfg.u32BufNumber = 6;
 	        stPort0Cfg.stBufListCfg.u32BufSize   = 2*(pstCreateInfo->stAttr.u32Width * pstCreateInfo->stAttr.u32Height);
 	        stPort0Cfg.stBufListCfg.u32BufStride = pstCreateInfo->stAttr.u32Width;     
-	        //stPort0Cfg.eAspMode                = HI_DRV_ASP_RAT_MODE_FULL;                      /*不同比例缩放策略*/
+	        //stPort0Cfg.eAspMode                = HI_DRV_ASP_RAT_MODE_FULL;                      /*涓嶅悓姣斾緥缂╂斁绛栫暐*/
 	        stPort0Cfg.eFormat                   = HI_DRV_PIX_FMT_NV21;                           /* 21  Y/CrCb 4:2:0  */
 	        Ret |= (pVpssFunc->pfnVpssCreatePort)(hVPSS, &stPort0Cfg, &hPort0);
 	        if (HI_SUCCESS == Ret)
@@ -387,7 +387,7 @@ HI_S32 VENC_Ioctl(struct inode *inode, struct file *file, unsigned int cmd, HI_V
 	           g_stVencChn[u32Index].hVPSS       = hVPSS;
 	           g_stVencChn[u32Index].hPort[0]    = hPort0;
 	        }
-	        /*注册vpss回调函数*/
+	        /*娉ㄥ唽vpss鍥炶皟鍑芥暟*/
 	        Ret |= (pVpssFunc->pfnVpssRegistHook)(hVPSS, pstCreateInfo->hVencChn, VENC_VpssEventHandle);
 		}
         up(&g_VencMutex);

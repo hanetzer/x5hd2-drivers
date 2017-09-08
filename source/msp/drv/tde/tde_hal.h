@@ -306,7 +306,7 @@ typedef struct hiTDE_SCANDIRECTION_S
 */
 
 /* TDEV240 version:
-1. In nonMB mod, you can support MB. Because adding two membet variables:u32CbCrPhyAddr°¢u32CbCrPitch,
+1. In nonMB mod, you can support MB. Because adding two membet variables:u32CbCrPhyAddr„ÄÅu32CbCrPitch,
 which for Src1 and Src2 add one assistant channel by each.
 
 2.Support component order in ARGB/RGB format(24 kinds in toal)
@@ -596,18 +596,18 @@ typedef enum hiTDE_DRV_SRC_E
 #define TDE_ICSC_ADDR 0x0920
 #define TDE_OCSC_ADDR 0x0924
 
-#define TDE_SQ_MASK_DISABLE_ALL 0  /*00000£∫interrupt shield */
-#define TDE_SQ_CUR_LINE_MASK_EN 1  /*00001£∫Enable to complete interrupt of current node and line in SQ */
-#define TDE_SQ_RD_NODE_MASK_EN 2   /*00010£∫Eable, complete interrupt in R/W new node instruct info in SQ, but not begin graphic operation */
-#define TDE_SQ_COMP_NODE_MASK_EN 4 /*00100£∫Enable to complete interrupt of current node in SQ */
-#define TDE_SQ_COMP_LIST_MASK_EN 8 /*01000£∫Enable to complete interrupt in SQ */
-#define TDE_SQ_UPDATE_MASK_EN 16   /*10000£∫Enable to complete interrupt for update on list head in SQ */
+#define TDE_SQ_MASK_DISABLE_ALL 0  /*00000Ôºöinterrupt shield */
+#define TDE_SQ_CUR_LINE_MASK_EN 1  /*00001ÔºöEnable to complete interrupt of current node and line in SQ */
+#define TDE_SQ_RD_NODE_MASK_EN 2   /*00010ÔºöEable, complete interrupt in R/W new node instruct info in SQ, but not begin graphic operation */
+#define TDE_SQ_COMP_NODE_MASK_EN 4 /*00100ÔºöEnable to complete interrupt of current node in SQ */
+#define TDE_SQ_COMP_LIST_MASK_EN 8 /*01000ÔºöEnable to complete interrupt in SQ */
+#define TDE_SQ_UPDATE_MASK_EN 16   /*10000ÔºöEnable to complete interrupt for update on list head in SQ */
 
-#define TDE_AQ_MASK_DISABLE_ALL 0  /*0000£∫interrupt shiled */
-#define TDE_AQ_SUSP_MASK_EN 1      /*0001£∫Enable to interrupt during suspend on execute in one line in AQ */
-#define TDE_AQ_RD_NODE_MASK_EN 2   /*0010£∫Enable to interrupt in completing R/W new node instruct info,but not begin graphic operation in AQ*/
-#define TDE_AQ_COMP_NODE_MASK_EN 4 /*0100£∫Enable to interrupt when complete current node in AQ */
-#define TDE_AQ_COMP_LIST_MASK_EN 8 /*1000£∫Enable to interrupt  in complete AQ */
+#define TDE_AQ_MASK_DISABLE_ALL 0  /*0000Ôºöinterrupt shiled */
+#define TDE_AQ_SUSP_MASK_EN 1      /*0001ÔºöEnable to interrupt during suspend on execute in one line in AQ */
+#define TDE_AQ_RD_NODE_MASK_EN 2   /*0010ÔºöEnable to interrupt in completing R/W new node instruct info,but not begin graphic operation in AQ*/
+#define TDE_AQ_COMP_NODE_MASK_EN 4 /*0100ÔºöEnable to interrupt when complete current node in AQ */
+#define TDE_AQ_COMP_LIST_MASK_EN 8 /*1000ÔºöEnable to interrupt  in complete AQ */
 
 /*Handle responsed with node */
 /*
@@ -617,7 +617,7 @@ typedef enum hiTDE_DRV_SRC_E
 */
 #define TDE_NODE_HEAD_BYTE 16
 
-/* Next node addr°¢update info°¢occupied bytes */
+/* Next node addr„ÄÅupdate info„ÄÅoccupied bytes */
 #ifdef TDE_VERSION_MPW
 #define TDE_NODE_TAIL_BYTE 8
 #else

@@ -66,7 +66,7 @@ void ff_h264_idct_add16intra_c(uint8_t *dst, const int *blockoffset, DCTELEM *bl
 void ff_h264_idct8_add4_c(uint8_t *dst, const int *blockoffset, DCTELEM *block, int stride, const uint8_t nnzc[6*8]);
 void ff_h264_idct_add8_c(uint8_t **dest, const int *blockoffset, DCTELEM *block, int stride, const uint8_t nnzc[6*8]);
 
-/*x00141957 2010 1230这两个函数编译有问题*/
+/*x00141957 2010 1230杩欎袱涓嚱鏁扮紪璇戞湁闂*/
 #if 0
 void ff_vector_fmul_add_add_c(float *dst, const float *src0, const float *src1,
                               const float *src2, int src3, int blocksize, int step);
@@ -101,7 +101,7 @@ void ff_vp3_h_loop_filter_c(uint8_t *src, int stride, int *bounding_values);
 /* VP6 DSP functions */
 void ff_vp6_filter_diag4_c(uint8_t *dst, uint8_t *src, int stride,
                            const int16_t *h_weights, const int16_t *v_weights);
-/*x00141957 2010 1127添加*/
+/*x00141957 2010 1127娣诲姞*/
 void vp6_filter_hv4(uint8_t *dst, uint8_t *src, int stride,						   int delta, const int16_t *weights);
 
 void vp56_edge_filter_c(uint8_t *yuv,
@@ -404,7 +404,7 @@ typedef struct DSPContext {
     void (*vp6_filter_diag4)(uint8_t *dst, uint8_t *src, int stride,
                              const int16_t *h_weights,const int16_t *v_weights);
 
-	/*x00141957 2010 1127添加*/
+	/*x00141957 2010 1127娣诲姞*/
 	void (*vp6_filter_diag4_h)(uint8_t *dst, uint8_t *src, int stride,						   int delta, const int16_t *weights);
 	void (*vp6_filter_diag4_v)(uint8_t *dst, uint8_t *src, int stride,						   int delta, const int16_t *weights);
 	void (*vp56_edge_filter)(uint8_t *yuv,
@@ -414,7 +414,7 @@ typedef struct DSPContext {
 	void (*vp6_filter_diag2_h)(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, uint16_t* filter);
 	void (*vp6_filter_diag2_v)(uint8_t *dst/*align 8*/, uint8_t *src/*align 1*/, int stride, uint16_t* filter);	
 
-	/*vp6 idct函数 x00141957 2010 1127*/
+	/*vp6 idct鍑芥暟 x00141957 2010 1127*/
 	void (*idct_slow1_put)(uint8_t *dst, int stride, int16_t *input);
 	void (*idct_slow3_put)(uint8_t *dst, int stride, int16_t *input);
 	void (*idct_slow10_put)(uint8_t *dst, int stride, int16_t *input);

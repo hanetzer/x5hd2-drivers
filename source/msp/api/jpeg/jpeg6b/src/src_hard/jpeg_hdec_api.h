@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : this include file is cover all api of jpeg dec
-                  CNcomment: ÄÚ²¿µÄ½âÂëÊµÏÖ¶¼°üº¬ÔÚÕâ¸öÎÄ¼şÖĞ CNend\n
+                  CNcomment: å†…éƒ¨çš„è§£ç å®ç°éƒ½åŒ…å«åœ¨è¿™ä¸ªæ–‡ä»¶ä¸­ CNend\n
 Function List 	: 
 
 			  		  
@@ -46,10 +46,10 @@ Date				Author        		Modification
 
     /***************************** Macro Definition ******************************/
     /** \addtogroup 	 JPEG HDEC MACRO */
-    /** @{ */  /** <!-- ¡¾JPEG HDEC MACRO¡¿ */
+    /** @{ */  /** <!-- ã€JPEG HDEC MACROã€‘ */
 
 	 /** jpeg device */
-	 /** CNcomment:jpeg Éè±¸ */
+	 /** CNcomment:jpeg è®¾å¤‡ */
 	#define JPG_DEV 			              "/dev/jpeg"
 	#define MMZ_DEV                          "/dev/mmz_userdev"
 
@@ -62,16 +62,16 @@ Date				Author        		Modification
 	/****************************************************************************/
 	
 	/** \addtogroup      JPEG HDEC ENUM */
-    /** @{ */  /** <!-- ¡¾JPEG HDEC ENUM¡¿ */
+    /** @{ */  /** <!-- ã€JPEG HDEC ENUMã€‘ */
 
 	/** enum of the dec scale */
-    /** CNcomment:½âÂëËõ·Å±ÈÀı */
+    /** CNcomment:è§£ç ç¼©æ”¾æ¯”ä¾‹ */
 	typedef enum tagJPEG_HDEC_SCALE_E
 	{
-	    JPEG_SCALEDOWN_1 = 0,      /**< scanle down 1 *//**<CNcomment:²»Ëõ·Å   */
-	    JPEG_SCALEDOWN_2 = 1,      /**< scanle down 2 *//**<CNcomment:ËõĞ¡2±¶  */
-	    JPEG_SCALEDOWN_4 = 2,      /**< scanle down 4 *//**<CNcomment:ËõĞ¡4±¶  */
-	    JPEG_SCALEDOWN_8 = 3,      /**< scanle down 8 *//**<CNcomment:ËõĞ¡8±¶  */
+	    JPEG_SCALEDOWN_1 = 0,      /**< scanle down 1 *//**<CNcomment:ä¸ç¼©æ”¾   */
+	    JPEG_SCALEDOWN_2 = 1,      /**< scanle down 2 *//**<CNcomment:ç¼©å°2å€  */
+	    JPEG_SCALEDOWN_4 = 2,      /**< scanle down 4 *//**<CNcomment:ç¼©å°4å€  */
+	    JPEG_SCALEDOWN_8 = 3,      /**< scanle down 8 *//**<CNcomment:ç¼©å°8å€  */
 	    JPEG_SCALEDOWN_BUTT
 	}JPEG_HDEC_SCALE_E;
 
@@ -84,138 +84,138 @@ Date				Author        		Modification
 	/****************************************************************************/
 	
 	/** \addtogroup      JPEG HDEC STRUCTURE */
-    /** @{ */  /** <!-- ¡¾JPEG HDEC STRUCTURE¡¿ */
+    /** @{ */  /** <!-- ã€JPEG HDEC STRUCTUREã€‘ */
 
 
-     /** Structure of stream message£¬this memory from user alloc */
-	 /** CNcomment:ÂëÁ÷bufferĞÅÏ¢£¬ÄÚ´æÀ´Ô´ÓÚÓÃ»§·ÖÅäµÄ
-	               ÒªÊÇÂëÁ÷ÄÚ´æÁ¬ĞøµÄ£¬ÓĞµ×ÏÂ¼¸¸öÓÅµã
-	               ÓÅµãÒ»:²»ĞèÒªcpyÂëÁ÷£¬Ê¡·Ç³£¶àµÄÊ±¼ä
-	               ÓÅµã¶ş:²»ĞèÒªÔÙ·ÖÅäÂëÁ÷buffer£¬ÕâÑùÊ¡ÄÚ´æ
-	               ÓÅµãÈı:Ö±½ÓÈ«²¿ËÍ¸øÓ²¼ş½âÂë£¬²»ĞèÒªĞøÂëÁ÷£¬ÕâÑù¾ÍÊ¡ÁË½âÂëÖĞ¶ÏµÄÊ±¼ä */
+     /** Structure of stream messageï¼Œthis memory from user alloc */
+	 /** CNcomment:ç æµbufferä¿¡æ¯ï¼Œå†…å­˜æ¥æºäºç”¨æˆ·åˆ†é…çš„
+	               è¦æ˜¯ç æµå†…å­˜è¿ç»­çš„ï¼Œæœ‰åº•ä¸‹å‡ ä¸ªä¼˜ç‚¹
+	               ä¼˜ç‚¹ä¸€:ä¸éœ€è¦cpyç æµï¼Œçœéå¸¸å¤šçš„æ—¶é—´
+	               ä¼˜ç‚¹äºŒ:ä¸éœ€è¦å†åˆ†é…ç æµbufferï¼Œè¿™æ ·çœå†…å­˜
+	               ä¼˜ç‚¹ä¸‰:ç›´æ¥å…¨éƒ¨é€ç»™ç¡¬ä»¶è§£ç ï¼Œä¸éœ€è¦ç»­ç æµï¼Œè¿™æ ·å°±çœäº†è§£ç ä¸­æ–­çš„æ—¶é—´ */
 	
      /** deal with the data in hard decode */
-	 /** CNcomment:½øÈëÓ²¼ş½âÂëÖ®ºóµÄÂëÁ÷´¦Àí
-	               ½«ÂëÁ÷Ö±½Ó¶Áµ½ÂëÁ÷bufferÖĞ£¬¶ø²»ĞèÒª½øĞĞ¿½±´ */
+	 /** CNcomment:è¿›å…¥ç¡¬ä»¶è§£ç ä¹‹åçš„ç æµå¤„ç†
+	               å°†ç æµç›´æ¥è¯»åˆ°ç æµbufferä¸­ï¼Œè€Œä¸éœ€è¦è¿›è¡Œæ‹·è´ */
 	 typedef struct tagJPEG_HDEC_DATA_S
 	 {
-	     HI_CHAR* pDataPhyBuf;          /**< use mem data,save these        *//**<CNcomment:ÂëÁ÷À´Ô´ÓÚÄÚ´æ£¬Õâ¸öbufferÓÃÀ´±£´æÕâĞ©Êı¾İ        */
-		 HI_CHAR* pDataVirBuf;          /**< use mem data,save these        *//**<CNcomment:ÂëÁ÷À´Ô´ÓÚÄÚ´æ£¬Õâ¸öbufferÓÃÀ´±£´æÕâĞ©Êı¾İ        */
-         HI_CHAR* pSaveStreamPhyBuf;    /**< save stream physics buffer     *//**<CNcomment:Ó²¼ş½âÂëÒª´æ·ÅµÄÂëÁ÷ÎïÀíÄÚ´æ                       */
-		 HI_CHAR* pSaveStreamVirBuf;    /**< save stream virtual buffer     *//**<CNcomment:Ó²¼ş½âÂëÒª´æ·ÅµÄÂëÁ÷ĞéÄâÄÚ´æ                       */
-		 HI_BOOL  bUserPhyMem;           /**< use user physics memory        *//**<CNcomment:ÓÃ»§ÂëÁ÷ÎïÀíÄÚ´æ                                   */
-		 HI_BOOL  bUseFileData;          /**< use user file stream           *//**<CNcomment:ÓÃ»§ÎÄ¼şÂëÁ÷                                		 */
-		 HI_BOOL  bUseInsideData;        /**< use inside deal withe the data *//**<CNcomment:Ê¹ÓÃÄÚ²¿´¦ÀíÂëÁ÷·½Ê½                               */
-		 HI_BOOL  bReadToDataBuf;        /**< if read data to stream buffer  *//**<CNcomment:ÊÇ·ñÒªÖ±½Ó¶Áµ½¸ÃÂëÁ÷bufferÖĞ£¬Õâ¸öÊÇÕë¶ÔÎÄ¼şÀ´ËµµÄ */
-		 HI_U32   u32ReadDataSize;       /**< read data size one time        *//**<CNcomment:Ã¿´Î¶ÁÈ¡µÄÂëÁ÷´óĞ¡,·ÇÓÃ»§Á¬ĞøÄÚ´æ                  */
-		 HI_U64   u64DataSize;           /**< save user stream size           *//**<CNcomment:ÓÃ»§ËÍ½øĞĞµÄÕûÖ¡ÂëÁ÷´óĞ¡                           */
-		 HI_U32   u32ConsumeDataSize;   /**< the consume stream size before hard decode  *//**<CNcomment:Ó²¼ş½âÂëÖ®Ç°ÏûºÄÁË¶àÉÙÂëÁ÷£¬Õâ¸öÊÇÕë¶ÔÄÚ´æÂëÁ÷À´ËµµÄ */
+	     HI_CHAR* pDataPhyBuf;          /**< use mem data,save these        *//**<CNcomment:ç æµæ¥æºäºå†…å­˜ï¼Œè¿™ä¸ªbufferç”¨æ¥ä¿å­˜è¿™äº›æ•°æ®        */
+		 HI_CHAR* pDataVirBuf;          /**< use mem data,save these        *//**<CNcomment:ç æµæ¥æºäºå†…å­˜ï¼Œè¿™ä¸ªbufferç”¨æ¥ä¿å­˜è¿™äº›æ•°æ®        */
+         HI_CHAR* pSaveStreamPhyBuf;    /**< save stream physics buffer     *//**<CNcomment:ç¡¬ä»¶è§£ç è¦å­˜æ”¾çš„ç æµç‰©ç†å†…å­˜                       */
+		 HI_CHAR* pSaveStreamVirBuf;    /**< save stream virtual buffer     *//**<CNcomment:ç¡¬ä»¶è§£ç è¦å­˜æ”¾çš„ç æµè™šæ‹Ÿå†…å­˜                       */
+		 HI_BOOL  bUserPhyMem;           /**< use user physics memory        *//**<CNcomment:ç”¨æˆ·ç æµç‰©ç†å†…å­˜                                   */
+		 HI_BOOL  bUseFileData;          /**< use user file stream           *//**<CNcomment:ç”¨æˆ·æ–‡ä»¶ç æµ                                		 */
+		 HI_BOOL  bUseInsideData;        /**< use inside deal withe the data *//**<CNcomment:ä½¿ç”¨å†…éƒ¨å¤„ç†ç æµæ–¹å¼                               */
+		 HI_BOOL  bReadToDataBuf;        /**< if read data to stream buffer  *//**<CNcomment:æ˜¯å¦è¦ç›´æ¥è¯»åˆ°è¯¥ç æµbufferä¸­ï¼Œè¿™ä¸ªæ˜¯é’ˆå¯¹æ–‡ä»¶æ¥è¯´çš„ */
+		 HI_U32   u32ReadDataSize;       /**< read data size one time        *//**<CNcomment:æ¯æ¬¡è¯»å–çš„ç æµå¤§å°,éç”¨æˆ·è¿ç»­å†…å­˜                  */
+		 HI_U64   u64DataSize;           /**< save user stream size           *//**<CNcomment:ç”¨æˆ·é€è¿›è¡Œçš„æ•´å¸§ç æµå¤§å°                           */
+		 HI_U32   u32ConsumeDataSize;   /**< the consume stream size before hard decode  *//**<CNcomment:ç¡¬ä»¶è§£ç ä¹‹å‰æ¶ˆè€—äº†å¤šå°‘ç æµï¼Œè¿™ä¸ªæ˜¯é’ˆå¯¹å†…å­˜ç æµæ¥è¯´çš„ */
 	 }JPEG_HDEC_DATA_S;
 
 
 	/** when hard decode failure, callback to soft decode need message */
-    /** CNcomment:Ó²¼ş½âÂë²»³É¹¦»ØÍËµ½Èí¼ş½âÂëĞèÒªµÄĞÅÏ¢ */
+    /** CNcomment:ç¡¬ä»¶è§£ç ä¸æˆåŠŸå›é€€åˆ°è½¯ä»¶è§£ç éœ€è¦çš„ä¿¡æ¯ */
 	typedef struct tagJPEG_HDEC_TO_SDEC_S
 	{
-		 HI_CHAR* pLeaveBuf;     /**< remain stream buffer        *//**<CNcomment:Ê£ÓàÂëÁ÷           */
-		 HI_U32   u32FilePos;    /**< the current file position   *//**<CNcomment:µ±Ç°¶Áµ½µÄÎÄ¼şÎ»ÖÃ */
-		 HI_U32   u32StreamPos;  /**< the current stream position *//**<CNcomment:µ±Ç°ÂëÁ÷µÄÎ»ÖÃ     */
-		 HI_U32   u32LeaveByte;  /**< remain stream size          *//**<CNcomment:Ê£ÓàµÄÂëÁ÷Êı       */
+		 HI_CHAR* pLeaveBuf;     /**< remain stream buffer        *//**<CNcomment:å‰©ä½™ç æµ           */
+		 HI_U32   u32FilePos;    /**< the current file position   *//**<CNcomment:å½“å‰è¯»åˆ°çš„æ–‡ä»¶ä½ç½® */
+		 HI_U32   u32StreamPos;  /**< the current stream position *//**<CNcomment:å½“å‰ç æµçš„ä½ç½®     */
+		 HI_U32   u32LeaveByte;  /**< remain stream size          *//**<CNcomment:å‰©ä½™çš„ç æµæ•°       */
 	}JPEG_HDEC_TO_SDEC_S;
 
 
-	/** the jpeg sof information£¬the hard decode is only use dec para */
-    /** CNcomment:jpeg´óĞ¡Ïà¹ØĞÅÏ¢£¬Ó²¼ş½âÂëÖ»ÓĞ½âÂë·Ö±æÂÊµÄ¸ÅÄî */
+	/** the jpeg sof informationï¼Œthe hard decode is only use dec para */
+    /** CNcomment:jpegå¤§å°ç›¸å…³ä¿¡æ¯ï¼Œç¡¬ä»¶è§£ç åªæœ‰è§£ç åˆ†è¾¨ç‡çš„æ¦‚å¿µ */
 	typedef struct tagJPEG_HDEC_SOFINFO_S
 	{
-	     HI_BOOL bCalcSize;        /**< the jpeg size has  calculated *//**<CNcomment:jpeg´óĞ¡ÒÑ¾­¼ÆËãÍêÁË£¬²»ĞèÒªÖØĞÂ¼ÆËãÁË  */
-		 HI_U32  u32YWidth;        /**< the lu width         *//**<CNcomment:ÁÁ¶È¿í¿í¶È        */
-		 HI_U32  u32YHeight;       /**< the lu height        *//**<CNcomment:ÁÁ¶È¸ß¶È          */
-		 HI_U32  u32YSize;         /**< the lu size          *//**<CNcomment:ÁÁ¶È´óĞ¡          */
-		 HI_U32  u32CWidth;        /**< the ch width         *//**<CNcomment:É«¶È¿í¶È          */
-		 HI_U32  u32CHeight;       /**< the ch height        *//**<CNcomment:É«¶È¸ß¶È          */
-		 HI_U32  u32CSize;         /**< the ch size          *//**<CNcomment:É«¶È´óĞ¡          */
-		 HI_U32  u32YStride;       /**< the lu stride        *//**<CNcomment:ÁÁ¶ÈĞĞ¼ä¾à        */
-		 HI_U32  u32CbCrStride;    /**< the ch stride        *//**<CNcomment:É«¶ÈĞĞ¼ä¾à        */
-		 HI_U32  u32DisplayW;      /**< the display width    *//**<CNcomment:ÏÔÊ¾¿í¶È          */
-		 HI_U32  u32DisplayH;      /**< the display height   *//**<CNcomment:ÏÔÊ¾¸ß¶È          */
-		 HI_U32  u32DisplayStride;/**< the display stride   *//**<CNcomment:ÏÔÊ¾ĞĞ¼ä¾à        */
-		 HI_U32  u32DecW;          /**< the dec width        *//**<CNcomment:½âÂë¿í¶È          */
-		 HI_U32  u32DecH;          /**< the dec height       *//**<CNcomment:½âÂë¸ß¶È          */
-		 HI_U32  u32DecStride;    /**< the dec stride       *//**<CNcomment:½âÂë ĞĞ¼ä¾à        */
-		 HI_U32  u32InWandH;       /**< set to register size *//**<CNcomment:Åä¸øÓ²¼şµÄ·Ö±æÂÊ  */
+	     HI_BOOL bCalcSize;        /**< the jpeg size has  calculated *//**<CNcomment:jpegå¤§å°å·²ç»è®¡ç®—å®Œäº†ï¼Œä¸éœ€è¦é‡æ–°è®¡ç®—äº†  */
+		 HI_U32  u32YWidth;        /**< the lu width         *//**<CNcomment:äº®åº¦å®½å®½åº¦        */
+		 HI_U32  u32YHeight;       /**< the lu height        *//**<CNcomment:äº®åº¦é«˜åº¦          */
+		 HI_U32  u32YSize;         /**< the lu size          *//**<CNcomment:äº®åº¦å¤§å°          */
+		 HI_U32  u32CWidth;        /**< the ch width         *//**<CNcomment:è‰²åº¦å®½åº¦          */
+		 HI_U32  u32CHeight;       /**< the ch height        *//**<CNcomment:è‰²åº¦é«˜åº¦          */
+		 HI_U32  u32CSize;         /**< the ch size          *//**<CNcomment:è‰²åº¦å¤§å°          */
+		 HI_U32  u32YStride;       /**< the lu stride        *//**<CNcomment:äº®åº¦è¡Œé—´è·        */
+		 HI_U32  u32CbCrStride;    /**< the ch stride        *//**<CNcomment:è‰²åº¦è¡Œé—´è·        */
+		 HI_U32  u32DisplayW;      /**< the display width    *//**<CNcomment:æ˜¾ç¤ºå®½åº¦          */
+		 HI_U32  u32DisplayH;      /**< the display height   *//**<CNcomment:æ˜¾ç¤ºé«˜åº¦          */
+		 HI_U32  u32DisplayStride;/**< the display stride   *//**<CNcomment:æ˜¾ç¤ºè¡Œé—´è·        */
+		 HI_U32  u32DecW;          /**< the dec width        *//**<CNcomment:è§£ç å®½åº¦          */
+		 HI_U32  u32DecH;          /**< the dec height       *//**<CNcomment:è§£ç é«˜åº¦          */
+		 HI_U32  u32DecStride;    /**< the dec stride       *//**<CNcomment:è§£ç  è¡Œé—´è·        */
+		 HI_U32  u32InWandH;       /**< set to register size *//**<CNcomment:é…ç»™ç¡¬ä»¶çš„åˆ†è¾¨ç‡  */
 		 #ifdef CONFIG_JPEG_HARDDEC2ARGB
 		 HI_U32  u32McuWidth;      /**< the mcu width        */
 		 HI_U32  u32MINSize;       /**< the min size         */
 		 HI_U32  u32MIN1Size;      /**< the min1 size        */
-		 HI_U32  u32RGBSizeReg;    /**< set to register size *//**<CNcomment:Åä¸øÓ²¼ş¼Ä´æÆ÷µÄÖµ  */
+		 HI_U32  u32RGBSizeReg;    /**< set to register size *//**<CNcomment:é…ç»™ç¡¬ä»¶å¯„å­˜å™¨çš„å€¼  */
 		 #endif	
 	}JPEG_HDEC_SOFINFO_S;
 
 	/** the jpeg hard decode output middle buffer and csc output middle buffer */
-	/** CNcomment:Ó²¼ş½âÂëÊä³öÖĞ¼äbufferºÍÑÕÉ«¿Õ¼ä×ª»»Êä³öÖĞ¼äbuffer */
+	/** CNcomment:ç¡¬ä»¶è§£ç è¾“å‡ºä¸­é—´bufferå’Œé¢œè‰²ç©ºé—´è½¬æ¢è¾“å‡ºä¸­é—´buffer */
 	typedef struct tagJPEG_MIDDLE_SURFACE_S
 	{
-		 HI_CHAR* pMiddlePhy[MAX_PIXEL_COMPONENT_NUM]; /**< jpeg hard dec output physics buffer *//**<CNcomment:jpeg Ó²¼ş½âÂëÊä³öÎïÀíµØÖ·  */
-		 HI_CHAR* pMiddleVir[MAX_PIXEL_COMPONENT_NUM]; /**< jpeg hard dec output vitual  buffer *//**<CNcomment:jpeg Ó²¼ş½âÂëÊä³öĞéÄâµØÖ·  */
-		 HI_CHAR* pOutPhy;                             /**<  csc output physics buffer          *//**<CNcomment:ÑÕÉ«¿Õ¼ä×ª»»Êä³öÎïÀíµØÖ·   */
-		 HI_CHAR* pOutVir;                             /**<  csc output virtual buffer          *//**<CNcomment:ÑÕÉ«¿Õ¼ä×ª»»Êä³öĞéÄâµØÖ·   */
+		 HI_CHAR* pMiddlePhy[MAX_PIXEL_COMPONENT_NUM]; /**< jpeg hard dec output physics buffer *//**<CNcomment:jpeg ç¡¬ä»¶è§£ç è¾“å‡ºç‰©ç†åœ°å€  */
+		 HI_CHAR* pMiddleVir[MAX_PIXEL_COMPONENT_NUM]; /**< jpeg hard dec output vitual  buffer *//**<CNcomment:jpeg ç¡¬ä»¶è§£ç è¾“å‡ºè™šæ‹Ÿåœ°å€  */
+		 HI_CHAR* pOutPhy;                             /**<  csc output physics buffer          *//**<CNcomment:é¢œè‰²ç©ºé—´è½¬æ¢è¾“å‡ºç‰©ç†åœ°å€   */
+		 HI_CHAR* pOutVir;                             /**<  csc output virtual buffer          *//**<CNcomment:é¢œè‰²ç©ºé—´è½¬æ¢è¾“å‡ºè™šæ‹Ÿåœ°å€   */
 	}JPEG_MIDDLE_SURFACE_S;
 	
 	/** the private structure of hard decode */
-	/** CNcomment:Ó²¼ş½âÂëÔö¼ÓµÄË½ÓĞ½á¹¹Ìå */
+	/** CNcomment:ç¡¬ä»¶è§£ç å¢åŠ çš„ç§æœ‰ç»“æ„ä½“ */
 	typedef struct tagJPEG_HDEC_HANDLE_S
 	{
 
-		  volatile HI_CHAR *pJpegRegVirAddr;  /**< mmap the jpeg virtual address           *//**<CNcomment:jpegÓ³ÉäÉÏÀ´µÄĞéÄâµØÖ·         */
-          HI_BOOL  bHdecEnd;                  /**< hard decode success                     *//**<CNcomment:Ó²¼ş½âÂë³É¹¦                   */
-		  HI_BOOL  bCSCEnd;                   /**< color space convert success             *//**<CNcomment:ÑÕÉ«¿Õ¼ä×ª»»³É¹¦               */
-          HI_BOOL  bOutYCbCrSP;               /**< if output yuvsp                         *//**<CNcomment:ÊÇ·ñ½âÂëÊä³öyuv semi_planer   */
-          HI_BOOL  bFirstDec;                 /**< if use external stream, call dec agine  *//**<CNcomment: Èç¹ûÊ¹ÓÃÍâ²¿ÂëÁ÷£¬Ó²¼ş½âÂëÊ§°ÜµÚ¶ş´Îµ÷ÓÃ */
-          HI_U32   u32StrideAlign;           /**< how many bytes the output stride align   *//**<CNcomment: Êä³östride¼¸¸ö×Ö½Ú¶ÔÆë       */
+		  volatile HI_CHAR *pJpegRegVirAddr;  /**< mmap the jpeg virtual address           *//**<CNcomment:jpegæ˜ å°„ä¸Šæ¥çš„è™šæ‹Ÿåœ°å€         */
+          HI_BOOL  bHdecEnd;                  /**< hard decode success                     *//**<CNcomment:ç¡¬ä»¶è§£ç æˆåŠŸ                   */
+		  HI_BOOL  bCSCEnd;                   /**< color space convert success             *//**<CNcomment:é¢œè‰²ç©ºé—´è½¬æ¢æˆåŠŸ               */
+          HI_BOOL  bOutYCbCrSP;               /**< if output yuvsp                         *//**<CNcomment:æ˜¯å¦è§£ç è¾“å‡ºyuv semi_planer   */
+          HI_BOOL  bFirstDec;                 /**< if use external stream, call dec agine  *//**<CNcomment: å¦‚æœä½¿ç”¨å¤–éƒ¨ç æµï¼Œç¡¬ä»¶è§£ç å¤±è´¥ç¬¬äºŒæ¬¡è°ƒç”¨ */
+          HI_U32   u32StrideAlign;           /**< how many bytes the output stride align   *//**<CNcomment: è¾“å‡ºstrideå‡ ä¸ªå­—èŠ‚å¯¹é½       */
 		  #ifdef CONFIG_JPEG_HARDDEC2ARGB
-		  HI_BOOL  bDecARGB;                  /**< the jpeg support dec to argb            *//**<CNcomment:jpegÓ²¼şÖ§³Ö½âÂëÊä³öARGB       */
-          HI_CHAR* pMinPhyBuf;                /**< dec to argb need row buffer             *//**<CNcomment:½âÂëÊä³öARGBĞèÒªµÄĞĞbuffer     */
+		  HI_BOOL  bDecARGB;                  /**< the jpeg support dec to argb            *//**<CNcomment:jpegç¡¬ä»¶æ”¯æŒè§£ç è¾“å‡ºARGB       */
+          HI_CHAR* pMinPhyBuf;                /**< dec to argb need row buffer             *//**<CNcomment:è§£ç è¾“å‡ºARGBéœ€è¦çš„è¡Œbuffer     */
 		  #endif
 		  #ifdef CONFIG_JPEG_FPGA_TEST_SAVE_SCEN_ENABLE
-          HI_BOOL bSaveScen;                  /**< if you want to save scen, set it        *//**<CNcomment:Èç¹ûÏë±£´æ½âÂëÏÖ³¡£¬ÉèÖÃÕâ¸ö±ê¼Ç */
+          HI_BOOL bSaveScen;                  /**< if you want to save scen, set it        *//**<CNcomment:å¦‚æœæƒ³ä¿å­˜è§£ç ç°åœºï¼Œè®¾ç½®è¿™ä¸ªæ ‡è®° */
 		  HI_S32  s32RegData[JPGD_REG_LENGTH];
 		  FILE*   pScenFile;
 		  HI_CHAR* pScenFileName;
 		  #endif
 		  #ifdef CONFIG_JPEG_OUTPUT_YUV420SP
-		  HI_BOOL  bOutYUV420SP;              /**< all dec output yuv420sp                *//**<CNcomment:Í³Ò»Êä³öyuv420sp¸ñÊ½        */ 
+		  HI_BOOL  bOutYUV420SP;              /**< all dec output yuv420sp                *//**<CNcomment:ç»Ÿä¸€è¾“å‡ºyuv420spæ ¼å¼        */ 
 		  #endif
 		  #ifdef CONFIG_JPEG_OUTPUT_LUPIXSUM
-		  HI_BOOL  bLuPixSum;                 /**< count the lu pixle sum value            *//**<CNcomment:Í³¼ÆÁÁ¶ÈºÍĞÅÏ¢              */
-          HI_U64   u64LuPixValue;             /**< the lu pixle value                      *//**<CNcomment:ÁÁ¶ÈÖµºÍ                    */
+		  HI_BOOL  bLuPixSum;                 /**< count the lu pixle sum value            *//**<CNcomment:ç»Ÿè®¡äº®åº¦å’Œä¿¡æ¯              */
+          HI_U64   u64LuPixValue;             /**< the lu pixle value                      *//**<CNcomment:äº®åº¦å€¼å’Œ                    */
 		  #endif
 		  #ifdef CONFIG_JPEG_GETDECTIME
-		  HI_U32   u32DecTime;                /**< calc the decode time                     *//**<CNcomment:¼ÆËã½âÂëÊ±¼ä                */
+		  HI_U32   u32DecTime;                /**< calc the decode time                     *//**<CNcomment:è®¡ç®—è§£ç æ—¶é—´                */
 		  #endif
-		  HI_S32   s32ClientData;             /**< the client pointer of private structure  *//**<CNcomment:Ë½ÓĞ½á¹¹ÌåÖ¸Õë              */
-		  HI_S32   s32JpegDev;				   /**< the jpeg device						     *//**<CNcomment:jpegÉè±¸					 */
-		  HI_U32   u32ScalRation;             /**< the dec scale                            *//**<CNcomment:Ëõ·Å±ÈÀı                    */
-		  HI_U32   u32Inflexion;              /**< the soft and hard dec flexiont           *//**<CNcomment:Èí½âºÍÓ²¼ş½âÂëµÄ¹Õµã´óĞ¡    */
-          HI_U32   u32Alpha;                  /**< set alpha value of out ARGB8888 ABGR8888  *//**<CNcomment:ÉèÖÃalphaµÄÖµ              */
-	      HI_BOOL  bTDEDevOpen;               /**< whethe tde device open                   *//**<CNcomment:tdeÉè±¸ÊÇ·ñ´ò¿ª             */
-		  HI_BOOL  bReleaseRes;               /**< the resouce has release                  *//**<CNcomment:×ÊÔ´ÒÑ¾­ÊÍ·ÅµôÁË             */
+		  HI_S32   s32ClientData;             /**< the client pointer of private structure  *//**<CNcomment:ç§æœ‰ç»“æ„ä½“æŒ‡é’ˆ              */
+		  HI_S32   s32JpegDev;				   /**< the jpeg device						     *//**<CNcomment:jpegè®¾å¤‡					 */
+		  HI_U32   u32ScalRation;             /**< the dec scale                            *//**<CNcomment:ç¼©æ”¾æ¯”ä¾‹                    */
+		  HI_U32   u32Inflexion;              /**< the soft and hard dec flexiont           *//**<CNcomment:è½¯è§£å’Œç¡¬ä»¶è§£ç çš„æ‹ç‚¹å¤§å°    */
+          HI_U32   u32Alpha;                  /**< set alpha value of out ARGB8888 ABGR8888  *//**<CNcomment:è®¾ç½®alphaçš„å€¼              */
+	      HI_BOOL  bTDEDevOpen;               /**< whethe tde device open                   *//**<CNcomment:tdeè®¾å¤‡æ˜¯å¦æ‰“å¼€             */
+		  HI_BOOL  bReleaseRes;               /**< the resouce has release                  *//**<CNcomment:èµ„æºå·²ç»é‡Šæ”¾æ‰äº†             */
 		  #ifdef CONFIG_JPEG_USE_CALLBACK_STREAM
 		  HI_BOOL  bInHardDec;                /**< hard dec support and dev open success,now into hard decode */
 		  #endif
 		  #ifdef CONFIG_JPEG_USE_PRIVATE_MMZ
-		  HI_S32   s32MMZDev; 				   /**< the mmz device 						     *//**<CNcomment:MMZÉè±¸          */
+		  HI_S32   s32MMZDev; 				   /**< the mmz device 						     *//**<CNcomment:MMZè®¾å¤‡          */
           #endif
-		  HI_U32 u32ResByteConsum;           /**< consume byte after suspend              *//**<CNcomment:´ı»úÏûºÄµÄÂëÁ÷Êı  */
+		  HI_U32 u32ResByteConsum;           /**< consume byte after suspend              *//**<CNcomment:å¾…æœºæ¶ˆè€—çš„ç æµæ•°  */
 		  #ifdef CONFIG_JPEG_PROC_ENABLE
-		  HI_JPEG_DEC_STATE_E eDecState;       /**< the decode state                        *//**<CNcomment:½âÂë×´Ì¬          */
+		  HI_JPEG_DEC_STATE_E eDecState;       /**< the decode state                        *//**<CNcomment:è§£ç çŠ¶æ€          */
           #endif
-		  JPEG_HDEC_SOFINFO_S            stJpegSofInfo;    /**< the jpeg sof information               *//**<CNcomment:jpegÍ¼Æ¬´óĞ¡ĞÅÏ¢           */
-          JPEG_HDEC_DATA_S               stHDecDataBuf;    /**< the hard decode data buffer message    *//**<CNcomment:Ó²¼ş½âÂëĞèÒªµÄÂëÁ÷ĞÅÏ¢     */
-		  HI_JPEG_FMT_E	                 enImageFmt;	    /**< jpeg picture type                      *//**<CNcomment:jpegÍ¼Æ¬¸ñÊ½               */
-		  JPEG_HDEC_TO_SDEC_S            stJpegHtoSInfo;   /**< hard dec failure callback to soft dec  *//**<CNcomment:Ó²½â²»³É¹¦»ØÍËµ½Èí½âµÄ¹ı³Ì */
-          HI_JPEG_DEC_COEF_S             stDecCoef;        /**< hard dec out argb set coef             *//**<CNcomment:½âÂëÊä³öARGBÊ±ºòÅäÖÃµÄ²ÎÊı */
-		  HI_JPEG_SURFACE_DESCRIPTION_S  stOutDesc;        /**< the user output message description    *//**<CNcomment:ÓÃ»§ÉèÖÃµÄÊä³öĞÅÏ¢ÃèÊö     */
+		  JPEG_HDEC_SOFINFO_S            stJpegSofInfo;    /**< the jpeg sof information               *//**<CNcomment:jpegå›¾ç‰‡å¤§å°ä¿¡æ¯           */
+          JPEG_HDEC_DATA_S               stHDecDataBuf;    /**< the hard decode data buffer message    *//**<CNcomment:ç¡¬ä»¶è§£ç éœ€è¦çš„ç æµä¿¡æ¯     */
+		  HI_JPEG_FMT_E	                 enImageFmt;	    /**< jpeg picture type                      *//**<CNcomment:jpegå›¾ç‰‡æ ¼å¼               */
+		  JPEG_HDEC_TO_SDEC_S            stJpegHtoSInfo;   /**< hard dec failure callback to soft dec  *//**<CNcomment:ç¡¬è§£ä¸æˆåŠŸå›é€€åˆ°è½¯è§£çš„è¿‡ç¨‹ */
+          HI_JPEG_DEC_COEF_S             stDecCoef;        /**< hard dec out argb set coef             *//**<CNcomment:è§£ç è¾“å‡ºARGBæ—¶å€™é…ç½®çš„å‚æ•° */
+		  HI_JPEG_SURFACE_DESCRIPTION_S  stOutDesc;        /**< the user output message description    *//**<CNcomment:ç”¨æˆ·è®¾ç½®çš„è¾“å‡ºä¿¡æ¯æè¿°     */
           JPEG_MIDDLE_SURFACE_S          stMiddleSurface;
 		  	
 	}JPEG_HDEC_HANDLE_S,*JPEG_HDEC_HANDLE_S_PTR;
@@ -230,16 +230,16 @@ Date				Author        		Modification
     /******************************* API declaration *****************************/
 
 	/** \addtogroup      JPEG HDEC API */
-    /** @{ */  /** <!-- ¡¾JPEG HDEC API¡¿ */
+    /** @{ */  /** <!-- ã€JPEG HDEC APIã€‘ */
 	
 
 	/*****************************************************************************
 	* func			: JPEG_HDEC_Init
 	* description	: init the private structure para
-					  CNcomment: ³õÊ¼»¯Ë½ÓĞ½á¹¹Ìå±äÁ¿	CNend\n
-	* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó	CNend\n
-	* retval		: HI_SUCCESS  CNcomment: ³É¹¦  CNend\n
-	* retval		: HI_FAILURE  CNcomment: Ê§°Ü  CNend\n
+					  CNcomment: åˆå§‹åŒ–ç§æœ‰ç»“æ„ä½“å˜é‡	CNend\n
+	* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡	CNend\n
+	* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ  CNend\n
+	* retval		: HI_FAILURE  CNcomment: å¤±è´¥  CNend\n
 	* others:		: NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_Init(j_common_ptr cinfo);
@@ -248,10 +248,10 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_Destroy
 	* description	: destroy the hard decompress
-					  CNcomment: Ïú»ÙÓ²¼ş½âÂëÆ÷         CNend\n
-	* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó	CNend\n
-	* retval		: HI_SUCCESS  CNcomment: ³É¹¦       CNend\n
-	* retval		: HI_FAILURE  CNcomment: Ê§°Ü       CNend\n
+					  CNcomment: é”€æ¯ç¡¬ä»¶è§£ç å™¨         CNend\n
+	* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡	CNend\n
+	* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ       CNend\n
+	* retval		: HI_FAILURE  CNcomment: å¤±è´¥       CNend\n
 	* others:		: NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_Destroy(const struct jpeg_common_struct *cinfo);
@@ -259,10 +259,10 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_Abort
 	* description	: when want use the decompress again,call this
-					  CNcomment:  Èç¹ûÏë¼ÌĞøÊ¹ÓÃ½âÂëÆ÷£¬µ÷ÓÃ¸Ã½Ó¿Ú CNend\n
-	* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó	           CNend\n
-	* retval		: HI_SUCCESS  CNcomment: ³É¹¦  CNend\n
-	* retval		: HI_FAILURE  CNcomment: Ê§°Ü  CNend\n
+					  CNcomment:  å¦‚æœæƒ³ç»§ç»­ä½¿ç”¨è§£ç å™¨ï¼Œè°ƒç”¨è¯¥æ¥å£ CNend\n
+	* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡	           CNend\n
+	* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ  CNend\n
+	* retval		: HI_FAILURE  CNcomment: å¤±è´¥  CNend\n
 	* others:		: NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_Abort(const struct jpeg_common_struct *cinfo);
@@ -271,10 +271,10 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_OpenDev
 	* description	: open some device that decode need
-					  CNcomment: ´ò¿ª½âÂëĞèÒªµÄÏà¹ØÉè±¸ 	   CNend\n
-	* param[in] 	: cinfo 		CNcomment: ½âÂë¶ÔÏó    CNend\n
-	* retval		: HI_SUCCESS	CNcomment: ³É¹¦ 	   CNend\n
-	* retval		: HI_FAILURE	CNcomment: Ê§°Ü 	   CNend\n
+					  CNcomment: æ‰“å¼€è§£ç éœ€è¦çš„ç›¸å…³è®¾å¤‡ 	   CNend\n
+	* param[in] 	: cinfo 		CNcomment: è§£ç å¯¹è±¡    CNend\n
+	* retval		: HI_SUCCESS	CNcomment: æˆåŠŸ 	   CNend\n
+	* retval		: HI_FAILURE	CNcomment: å¤±è´¥ 	   CNend\n
 	* others:		: NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_OpenDev(const struct jpeg_decompress_struct *cinfo);
@@ -282,10 +282,10 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_CloseDev
 	* description	: closxe some device that decode need
-					  CNcomment: ¹Ø±Õ½âÂë´ò¿ªµÄÏà¹ØÉè±¸ 	   CNend\n
-	* param[in] 	: cinfo 		CNcomment: ½âÂë¶ÔÏó    CNend\n
-	* retval		: HI_SUCCESS	CNcomment: ³É¹¦ 	   CNend\n
-	* retval		: HI_FAILURE	CNcomment: Ê§°Ü 	   CNend\n
+					  CNcomment: å…³é—­è§£ç æ‰“å¼€çš„ç›¸å…³è®¾å¤‡ 	   CNend\n
+	* param[in] 	: cinfo 		CNcomment: è§£ç å¯¹è±¡    CNend\n
+	* retval		: HI_SUCCESS	CNcomment: æˆåŠŸ 	   CNend\n
+	* retval		: HI_FAILURE	CNcomment: å¤±è´¥ 	   CNend\n
 	* others:		: NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_CloseDev(const struct jpeg_common_struct *cinfo);
@@ -294,10 +294,10 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_IfSupport
 	* description	: check whether the hard decode support
-	                  CNcomment: ÅĞ¶ÏÊÇ·ñÖ§³ÖÓ²¼ş½âÂë CNend\n
-	* param[in]     : cinfo       CNcomment: ½âÂë¶ÔÏó CNend\n
-	* retval	    : HI_SUCCESS  CNcomment: ³É¹¦     CNend\n
-	* retval	    : HI_FAILURE  CNcomment: Ê§°Ü     CNend\n
+	                  CNcomment: åˆ¤æ–­æ˜¯å¦æ”¯æŒç¡¬ä»¶è§£ç  CNend\n
+	* param[in]     : cinfo       CNcomment: è§£ç å¯¹è±¡ CNend\n
+	* retval	    : HI_SUCCESS  CNcomment: æˆåŠŸ     CNend\n
+	* retval	    : HI_FAILURE  CNcomment: å¤±è´¥     CNend\n
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo);
@@ -307,12 +307,12 @@ Date				Author        		Modification
 	* func			: JPEG_HDEC_CheckStreamMemType
 	* description	: check the stream buffer type, if user no call the function
 	                  of set stream buffer type,call this function
-	                  CNcomment: ²éÑ¯ÂëÁ÷bufferÀàĞÍ£¬ÊÇÁ¬ĞøµÄÎïÀíÄÚ´æ£¬»¹ÊÇĞéÄâ
-	                  ÄÚ´æ£¬ÒªÊÇÓÃ»§Ã»ÓĞµ÷ÓÃÉèÖÃÂëÁ÷bufferÀàĞÍ£¬µ÷ÓÃ¸Ã½Ó¿Ú
-	* param[in]     : cinfo       CNcomment: ½âÂë¶ÔÏó  CNend\n
-	* param[in]     : pVirBuf     CNcomment: ĞéÄâÄÚ´æ  CNend\n
-	* retval	    : HI_SUCCESS  CNcomment: ³É¹¦      CNend\n
-	* retval	    : HI_FAILURE  CNcomment: Ê§°Ü      CNend\n
+	                  CNcomment: æŸ¥è¯¢ç æµbufferç±»å‹ï¼Œæ˜¯è¿ç»­çš„ç‰©ç†å†…å­˜ï¼Œè¿˜æ˜¯è™šæ‹Ÿ
+	                  å†…å­˜ï¼Œè¦æ˜¯ç”¨æˆ·æ²¡æœ‰è°ƒç”¨è®¾ç½®ç æµbufferç±»å‹ï¼Œè°ƒç”¨è¯¥æ¥å£
+	* param[in]     : cinfo       CNcomment: è§£ç å¯¹è±¡  CNend\n
+	* param[in]     : pVirBuf     CNcomment: è™šæ‹Ÿå†…å­˜  CNend\n
+	* retval	    : HI_SUCCESS  CNcomment: æˆåŠŸ      CNend\n
+	* retval	    : HI_FAILURE  CNcomment: å¤±è´¥      CNend\n
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_CheckStreamMemType(const struct jpeg_decompress_struct *cinfo,HI_UCHAR* pVirBuf);
@@ -321,11 +321,11 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_DuplicateStreamInfo
 	* description	: save the stream information before into hard decode
-	                  CNcomment: ÔÚ½øÈëÓ²¼ş½âÂëÖ®Ç°±£´æÂëÁ÷ĞÅÏ¢£¬°üÀ¨ÂëÁ÷Î»ÖÃ
-	                  Ê£ÓàµÄÂëÁ÷ÒÔ¼°Ê£ÓàÂëÁ÷Êı¡£
-	* param[in]     : cinfo       CNcomment: ½âÂë¶ÔÏó  CNend\n
-	* retval	    : HI_SUCCESS  CNcomment: ³É¹¦      CNend\n
-	* retval	    : HI_FAILURE  CNcomment: Ê§°Ü      CNend\n
+	                  CNcomment: åœ¨è¿›å…¥ç¡¬ä»¶è§£ç ä¹‹å‰ä¿å­˜ç æµä¿¡æ¯ï¼ŒåŒ…æ‹¬ç æµä½ç½®
+	                  å‰©ä½™çš„ç æµä»¥åŠå‰©ä½™ç æµæ•°ã€‚
+	* param[in]     : cinfo       CNcomment: è§£ç å¯¹è±¡  CNend\n
+	* retval	    : HI_SUCCESS  CNcomment: æˆåŠŸ      CNend\n
+	* retval	    : HI_FAILURE  CNcomment: å¤±è´¥      CNend\n
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32	JPEG_HDEC_DuplicateStreamInfo(const struct jpeg_decompress_struct *cinfo);
@@ -334,11 +334,11 @@ Date				Author        		Modification
 	* func			: JPEG_HDEC_ResumeStreamInfo
 	* description	: resume the stream information when hard decode failure,and
 	                  then into soft decode
-	                  CNcomment: µ±Ó²¼ş½âÂëÊ§°ÜµÄÊ±ºò»Ö¸´Ô­ÏÈ±£´æµÄÂëÁ÷ĞÅÏ¢£¬È»ºó
-	                  ¼ÌĞø½øĞĞÈí¼ş½âÂë
-	* param[in]     : cinfo       CNcomment: ½âÂë¶ÔÏó  CNend\n
-	* retval	    : HI_SUCCESS  CNcomment: ³É¹¦      CNend\n
-	* retval	    : HI_FAILURE  CNcomment: Ê§°Ü      CNend\n
+	                  CNcomment: å½“ç¡¬ä»¶è§£ç å¤±è´¥çš„æ—¶å€™æ¢å¤åŸå…ˆä¿å­˜çš„ç æµä¿¡æ¯ï¼Œç„¶å
+	                  ç»§ç»­è¿›è¡Œè½¯ä»¶è§£ç 
+	* param[in]     : cinfo       CNcomment: è§£ç å¯¹è±¡  CNend\n
+	* retval	    : HI_SUCCESS  CNcomment: æˆåŠŸ      CNend\n
+	* retval	    : HI_FAILURE  CNcomment: å¤±è´¥      CNend\n
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32  JPEG_HDEC_ResumeStreamInfo(j_decompress_ptr cinfo);
@@ -347,10 +347,10 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_Start
 	* description	: start jpeg hard decode
-	                  CNcomment: ¿ªÊ¼Ó²¼ş½âÂë
-	* param[in]     : cinfo       CNcomment: ½âÂë¶ÔÏó  CNend\n
-	* retval	    : HI_SUCCESS  CNcomment: ³É¹¦      CNend\n
-	* retval	    : HI_FAILURE  CNcomment: Ê§°Ü      CNend\n
+	                  CNcomment: å¼€å§‹ç¡¬ä»¶è§£ç 
+	* param[in]     : cinfo       CNcomment: è§£ç å¯¹è±¡  CNend\n
+	* retval	    : HI_SUCCESS  CNcomment: æˆåŠŸ      CNend\n
+	* retval	    : HI_FAILURE  CNcomment: å¤±è´¥      CNend\n
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_Start(j_decompress_ptr cinfo);
@@ -358,10 +358,10 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_HardCSC
 	* description	: use hard csc
-	                  CNcomment: Ê¹ÓÃÓ²¼ş½øĞĞÑÕÉ«¿Õ¼ä×ª»» CNend\n
-	* param[in]     : cinfo      CNcomment: ½âÂë¶ÔÏó CNend\n
-	* retval	    : HI_SUCCESS CNcomment: ³É¹¦     CNend\n
-	* retval	    : HI_FAILURE CNcomment: Ê§°Ü     CNend\n
+	                  CNcomment: ä½¿ç”¨ç¡¬ä»¶è¿›è¡Œé¢œè‰²ç©ºé—´è½¬æ¢ CNend\n
+	* param[in]     : cinfo      CNcomment: è§£ç å¯¹è±¡ CNend\n
+	* retval	    : HI_SUCCESS CNcomment: æˆåŠŸ     CNend\n
+	* retval	    : HI_FAILURE CNcomment: å¤±è´¥     CNend\n
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_HardCSC(j_decompress_ptr cinfo);
@@ -371,10 +371,10 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_SoftCSC
 	* description	: use soft csc, is use to debug the hard csc
-	                  CNcomment: Ê¹ÓÃÈí¼ş½øĞĞÑÕÉ«¿Õ¼ä×ª»»,ÓÃÀ´¶¨Î»Ó²¼ş×ª»»µÄÎÊÌâ CNend\n
-	* param[in] 	: cinfo      CNcomment: ½âÂë¶ÔÏó  CNend\n
-	* retval		: HI_SUCCESS CNcomment: ³É¹¦      CNend\n
-	* retval		: HI_FAILURE CNcomment: Ê§°Ü      CNend\n
+	                  CNcomment: ä½¿ç”¨è½¯ä»¶è¿›è¡Œé¢œè‰²ç©ºé—´è½¬æ¢,ç”¨æ¥å®šä½ç¡¬ä»¶è½¬æ¢çš„é—®é¢˜ CNend\n
+	* param[in] 	: cinfo      CNcomment: è§£ç å¯¹è±¡  CNend\n
+	* retval		: HI_SUCCESS CNcomment: æˆåŠŸ      CNend\n
+	* retval		: HI_FAILURE CNcomment: å¤±è´¥      CNend\n
 	* others:		: NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_SoftCSC(j_decompress_ptr cinfo);
@@ -384,12 +384,12 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_OutUserBuf
 	* description	: output the scanlines buffer
-	                  CNcomment:  Êä³öµ½ÓÃ»§ĞĞbufferÖĞ CNend\n
-	* param[in]     : cinfo      CNcomment:  ½âÂë¶ÔÏó  CNend\n
-	* param[out]    : max_lines  CNcomment:  ½âÂëĞĞÊı  CNend\n
-	* param[out]    : scanlines  CNcomment:  ĞĞbuffer  CNend\n
-	* retval	    : HI_SUCCESS CNcomment:  ³É¹¦      CNend\n
-	* retval	    : HI_FAILURE CNcomment:  Ê§°Ü      CNend\n
+	                  CNcomment:  è¾“å‡ºåˆ°ç”¨æˆ·è¡Œbufferä¸­ CNend\n
+	* param[in]     : cinfo      CNcomment:  è§£ç å¯¹è±¡  CNend\n
+	* param[out]    : max_lines  CNcomment:  è§£ç è¡Œæ•°  CNend\n
+	* param[out]    : scanlines  CNcomment:  è¡Œbuffer  CNend\n
+	* retval	    : HI_SUCCESS CNcomment:  æˆåŠŸ      CNend\n
+	* retval	    : HI_FAILURE CNcomment:  å¤±è´¥      CNend\n
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_OutUserBuf(j_decompress_ptr cinfo,JDIMENSION max_lines, HI_CHAR *scanlines);

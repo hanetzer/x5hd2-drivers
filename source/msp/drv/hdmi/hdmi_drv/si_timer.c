@@ -25,8 +25,8 @@ Bool TimerSrvF;
 
 SyncInfoType SyncInfo;
 
-static HI_U8 OldOutputState = 0xFF;            /*HDMI last output state note*//*CNcomment:HDMIÉÏÒ»¸öÊä³ö×´Ì¬±¸·İ */
-HI_U8 OutputState    = CABLE_UNPLUG_;   /*HDMI output state at the present time*//*CNcomment: HDMIµ±Ç°Êä³ö×´Ì¬ */
+static HI_U8 OldOutputState = 0xFF;            /*HDMI last output state note*//*CNcomment:HDMIä¸Šä¸€ä¸ªè¾“å‡ºçŠ¶æ€å¤‡ä»½ */
+HI_U8 OutputState    = CABLE_UNPLUG_;   /*HDMI output state at the present time*//*CNcomment: HDMIå½“å‰è¾“å‡ºçŠ¶æ€ */
 HI_U8 OutChangeFlag  = 0;
 HI_U8 HDMIPlugInFlag = HI_FALSE;
 
@@ -46,19 +46,19 @@ HI_U8 HDMIPlugInFlag = HI_FALSE;
   |----------------------|-------------------|--------------|----->Time
  HPD(0)                 (1)                 (2)            (3)
  
- (0)~(1):ÎªHPDÄÚºË²ãÏìÓ¦¹ı³Ì
- (1)~(2):ÎªHPDÓÃ»§²ãÏìÓ¦¹ı³Ì
- (2)~(3):ÎªHPDÄÚºË²ãHDCPÊÚÈ¨¹ı³Ì
- Æä¼ä¶¼»á±»ÈÈ²å°ÎËù´ò¶Ï£¬ĞèÒª¿¼ÂÇ²»Í¬µÄ¹ı³ÌµÄ¸´Î»²Ù×÷¡£   
- ËùÒÔĞèÒªÏÂÃæµÄ¼ÆÊıÆ÷À´¿ØÖÆÁ÷³Ì¡£
+ (0)~(1):ä¸ºHPDå†…æ ¸å±‚å“åº”è¿‡ç¨‹
+ (1)~(2):ä¸ºHPDç”¨æˆ·å±‚å“åº”è¿‡ç¨‹
+ (2)~(3):ä¸ºHPDå†…æ ¸å±‚HDCPæˆæƒè¿‡ç¨‹
+ å…¶é—´éƒ½ä¼šè¢«çƒ­æ’æ‹”æ‰€æ‰“æ–­ï¼Œéœ€è¦è€ƒè™‘ä¸åŒçš„è¿‡ç¨‹çš„å¤ä½æ“ä½œã€‚   
+ æ‰€ä»¥éœ€è¦ä¸‹é¢çš„è®¡æ•°å™¨æ¥æ§åˆ¶æµç¨‹ã€‚
 */
-HI_U32 HPDIsrCount            = 0;      /*the timer of HPD interrupt*//*CNcomment:HPDÖĞ¶Ï²úÉúµÄ¼ÆÊıÆ÷ */
-HI_U32 HPDKernelCallbackCount = 0;      /*the timer of the HPD kernel level Callback*//*CNcomment: HPD Kernel level Callback´¦ÀíÏà¶ÔÓ¦µÄHDPµÄ¼ÆÊıÆ÷ */
-HI_U32 HPDUserCallbackCount   = 0;      /*the timer of the HPD user level Callback*//*CNcomment: HPD User level Callback´¦ÀíÏà¶ÔÓ¦µÄHDPµÄ¼ÆÊıÆ÷ */
-HI_U32 HPDAuthCount           = 0;      /*the timer of the HPD authentication*//*CNcomment:HPD HDCP Auth´¦ÀíÖĞÊ¹ÓÃµÄHDPµÄ¼ÆÊıÆ÷ */
+HI_U32 HPDIsrCount            = 0;      /*the timer of HPD interrupt*//*CNcomment:HPDä¸­æ–­äº§ç”Ÿçš„è®¡æ•°å™¨ */
+HI_U32 HPDKernelCallbackCount = 0;      /*the timer of the HPD kernel level Callback*//*CNcomment: HPD Kernel level Callbackå¤„ç†ç›¸å¯¹åº”çš„HDPçš„è®¡æ•°å™¨ */
+HI_U32 HPDUserCallbackCount   = 0;      /*the timer of the HPD user level Callback*//*CNcomment: HPD User level Callbackå¤„ç†ç›¸å¯¹åº”çš„HDPçš„è®¡æ•°å™¨ */
+HI_U32 HPDAuthCount           = 0;      /*the timer of the HPD authentication*//*CNcomment:HPD HDCP Authå¤„ç†ä¸­ä½¿ç”¨çš„HDPçš„è®¡æ•°å™¨ */
 
-static HI_U8 OldAuthState   = 0xFF;     /*the HDCP last state of authorization*//*CNcomment: HDCPÊÚÈ¨ÉÏÒ»¸ö×´Ì¬±¸·İ */
-HI_U8 AuthState      = NO_HDCP;         /*the HDCP current state of authorization*//*CNcomment:HDCPÊÚÈ¨µ±Ç°×´Ì¬ */
+static HI_U8 OldAuthState   = 0xFF;     /*the HDCP last state of authorization*//*CNcomment: HDCPæˆæƒä¸Šä¸€ä¸ªçŠ¶æ€å¤‡ä»½ */
+HI_U8 AuthState      = NO_HDCP;         /*the HDCP current state of authorization*//*CNcomment:HDCPæˆæƒå½“å‰çŠ¶æ€ */
 
 #define HDCP_MUTEXT_LOCK
 #define HDCP_MUTEXT_UNLOCK
@@ -269,7 +269,7 @@ static void SI_Check_OutputStatus(void)
     {
         if ( (OldOutputState == 0xFF) || (OldOutputState == CABLE_UNPLUG_) )
         {
-           /*HDMI init ,there isn't HPD event*/ /*CNcomment:HDMI³õÊ¼»¯£¬µ±Ç°Ã»ÓĞ°ì·¨²úÉúHPD!*/
+           /*HDMI init ,there isn't HPD event*/ /*CNcomment:HDMIåˆå§‹åŒ–ï¼Œå½“å‰æ²¡æœ‰åŠæ³•äº§ç”ŸHPD!*/
             HI_INFO_HDMI("force to set HDMI Status\n");
             //Plug In Now!
             if(OutputState < CABLE_PLUGIN_CHECK_EDID)

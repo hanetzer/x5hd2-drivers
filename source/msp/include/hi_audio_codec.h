@@ -15,7 +15,7 @@ Description   : define audio common data structure
 
 /**
  * \file
- * \brief Describes the information about the audio codec. CNcomment:Ìá¹©AUDIO_CODECµÄÏà¹ØĞÅÏ¢ CNend
+ * \brief Describes the information about the audio codec. CNcomment:æä¾›AUDIO_CODECçš„ç›¸å…³ä¿¡æ¯ CNend
  */
 
 #ifndef __HISI_AUDIO_CODEC_H__
@@ -30,7 +30,7 @@ extern "C" {
 #endif /* __cplusplus */
 
 /**Define HA codec Print Level*/
-/**CNcomment:¶¨ÒåHA codec´òÓ¡¼¶±ğ*/
+/**CNcomment:å®šä¹‰HA codecæ‰“å°çº§åˆ«*/
 #define HA_TRACE_LEVEL_FATAL    (0)
 #define HA_TRACE_LEVEL_ERROR    (1)
 #define HA_TRACE_LEVEL_WARN     (2)
@@ -80,7 +80,7 @@ extern "C" {
 #endif
 
 /**Define HA codec ID*/
-/**CNcomment:¶¨ÒåHA codec ID*/
+/**CNcomment:å®šä¹‰HA codec ID*/
 /*
 *                HA CODEC_ID defination 
 *   |      7bit                9bit                3bit                   13bit  | 
@@ -105,47 +105,47 @@ extern "C" {
 
 /********************************Macro Definition********************************/
 /** \addtogroup      ACODEC */
-/** @{ */  /** <!-- ¡¾ACODEC¡¿ */
+/** @{ */  /** <!-- ã€ACODECã€‘ */
 
 /**Define HA codec common command ID*/
-/**CNcomment:¶¨ÒåHA codec ¹«¹²CMD ID*/
+/**CNcomment:å®šä¹‰HA codec å…¬å…±CMD ID*/
 #define HA_COMMON_CMD_ID   0xffff
 
 /**Define HA codec format query command ID*/
-/**CNcomment:¶¨ÒåHA codec ¸ñÊ½²éÑ¯CMD ID*/
+/**CNcomment:å®šä¹‰HA codec æ ¼å¼æŸ¥è¯¢CMD ID*/
 #define HA_CODEC_FORMAT_QUERY_CMD         ((((HI_U32)HA_COMMON_CMD_ID) << 16) | 0x1000)
 
 /**Define HA codec decoder open parameter command ID*/
-/**CNcomment:¶¨ÒåHA codec ½âÂëÆ÷´ò¿ª²ÎÊıCMD ID*/
+/**CNcomment:å®šä¹‰HA codec è§£ç å™¨æ‰“å¼€å‚æ•°CMD ID*/
 #define HA_CODEC_GET_DECOPENPARAM_CMD     ((((HI_U32)HA_COMMON_CMD_ID) << 16) | 0x1001)
 
 /**Define HA codec encoder open parameter command ID*/
-/**CNcomment:¶¨ÒåHA codec ±àÂëÆ÷´ò¿ª²ÎÊıCMD ID*/
+/**CNcomment:å®šä¹‰HA codec ç¼–ç å™¨æ‰“å¼€å‚æ•°CMD ID*/
 #define HA_CODEC_GET_ENCOPENPARAM_CMD     ((((HI_U32)HA_COMMON_CMD_ID) << 16) | 0x1002)
 
 /**Define HA codec packet query command ID*/
-/**CNcomment:¶¨ÒåHA codec packet½âÂëÄ£Ê½CMD ID*/
+/**CNcomment:å®šä¹‰HA codec packetè§£ç æ¨¡å¼CMD ID*/
 #define HA_CODEC_PACKETDECODER_QUERY_CMD  ((((HI_U32)HA_COMMON_CMD_ID) << 16) | 0x1003)
 
 /**Define HA codec hwdecode query command ID*/
-/**CNcomment:¶¨ÒåHA codec hwdecode½âÂëÄ£Ê½CMD ID*/
+/**CNcomment:å®šä¹‰HA codec hwdecodeè§£ç æ¨¡å¼CMD ID*/
 #define HA_CODEC_HARDWAREDECODER_QUERY_CMD  ((((HI_U32)HA_COMMON_CMD_ID) << 16) | 0x1004)
 
 /**Define HA codec maximum audio channel*/
-/**CNcomment:¶¨ÒåHA codec ×î´óÒôÆµÍ¨µÀ */
+/**CNcomment:å®šä¹‰HA codec æœ€å¤§éŸ³é¢‘é€šé“ */
 #define HA_AUDIO_MAXCHANNELS 8
 /** @} */  /** <!-- ==== Macro Definition end ==== */
 
 /*************************** Structure Definition ****************************/
 /** \addtogroup      ACODEC */
-/** @{ */  /** <!--  ¡¾ACODEC¡¿ */
+/** @{ */  /** <!--  ã€ACODECã€‘ */
 
 /**HA format definition*/
-/**CNcomment:HA format ¶¨Òå*/
+/**CNcomment:HA format å®šä¹‰*/
 typedef enum hiHA_FORMAT_E
 {
-    FORMAT_MP2 = 0x000,  /**<MPEG audio layer 1, 2.*/ /**<CNcomment:MPEGÒôÆµµÚÒ»²ã¡¢µÚ¶ş²ã */ 
-    FORMAT_MP3, /**<MPEG audio layer 1, 2, 3.*/ /**<CNcomment:MPEGÒôÆµµÚÒ»²ã¡¢µÚ¶ş²ã ¡¢µÚÈı²ã*/ 
+    FORMAT_MP2 = 0x000,  /**<MPEG audio layer 1, 2.*/ /**<CNcomment:MPEGéŸ³é¢‘ç¬¬ä¸€å±‚ã€ç¬¬äºŒå±‚ */ 
+    FORMAT_MP3, /**<MPEG audio layer 1, 2, 3.*/ /**<CNcomment:MPEGéŸ³é¢‘ç¬¬ä¸€å±‚ã€ç¬¬äºŒå±‚ ã€ç¬¬ä¸‰å±‚*/ 
     FORMAT_AAC,
     FORMAT_AC3,
     FORMAT_DTS,
@@ -176,7 +176,7 @@ typedef enum hiHA_FORMAT_E
     FORMAT_IMC,
     FORMAT_MUSEPACK7,
     FORMAT_MLP,
-    FORMAT_GSM_MS, /**<as found in WAV.*/ /**<CNcomment:´æÔÚWAV¸ñÊ½ÖĞ */
+    FORMAT_GSM_MS, /**<as found in WAV.*/ /**<CNcomment:å­˜åœ¨WAVæ ¼å¼ä¸­ */
     FORMAT_ATRAC3,
     FORMAT_VOXWARE,
     FORMAT_APE,
@@ -198,21 +198,21 @@ typedef enum hiHA_FORMAT_E
     FORMAT_BINKAUDIO_DCT,
 	FORMAT_DRA,
 
-    FORMAT_PCM = 0x100,/**<various PCM codecs.*/ /**<CNcomment:PCM¸ñÊ½ */
+    FORMAT_PCM = 0x100,/**<various PCM codecs.*/ /**<CNcomment:PCMæ ¼å¼ */
 	FORMAT_PCM_BLURAY = 0x121,
 
-    FORMAT_ADPCM = 0x130,/**<various ADPCM codecs.*/ /**<CNcomment:ADPCM¸ñÊ½ */
+    FORMAT_ADPCM = 0x130,/**<various ADPCM codecs.*/ /**<CNcomment:ADPCMæ ¼å¼ */
 
-    FORMAT_AMR_NB = 0x160,/**<various AMR codecs.*/ /**<CNcomment:AMR¸ñÊ½ */
+    FORMAT_AMR_NB = 0x160,/**<various AMR codecs.*/ /**<CNcomment:AMRæ ¼å¼ */
     FORMAT_AMR_WB,
     FORMAT_AMR_AWB,
 
-    FORMAT_RA_144 = 0x170,/**<RealAudio codecs.*/ /**<CNcomment:RealAudio¸ñÊ½ */
+    FORMAT_RA_144 = 0x170,/**<RealAudio codecs.*/ /**<CNcomment:RealAudioæ ¼å¼ */
     FORMAT_RA_288,
 
-    FORMAT_DPCM = 0x180,/**<various DPCM codecs.*/ /**<CNcomment:DPCM¸ñÊ½ */
+    FORMAT_DPCM = 0x180,/**<various DPCM codecs.*/ /**<CNcomment:DPCMæ ¼å¼ */
 
-    FORMAT_G711 = 0x190,/**<various G.7xx codecs.*/ /**<CNcomment:G.7xx¸ñÊ½ */
+    FORMAT_G711 = 0x190,/**<various G.7xx codecs.*/ /**<CNcomment:G.7xxæ ¼å¼ */
 	FORMAT_G722,
 	FORMAT_G7231,
 	FORMAT_G726,
@@ -220,13 +220,13 @@ typedef enum hiHA_FORMAT_E
 	FORMAT_G729AB,
 	
 		
-	FORMAT_MULTI = 0x1f0,/**<support multi codecs.*/ /**<CNcomment:¶àÖÖ¸ñÊ½ */
+	FORMAT_MULTI = 0x1f0,/**<support multi codecs.*/ /**<CNcomment:å¤šç§æ ¼å¼ */
 
     FORMAT_BUTT = 0x1ff,
 } HA_FORMAT_E;
 
 /**HA format definition*/
-/**CNcomment:HA_Codec¶¨Òå*/
+/**CNcomment:HA_Codecå®šä¹‰*/
 typedef enum hiHA_CODEC_ID_E
 {
 	/** HISI Codec*/
@@ -262,7 +262,7 @@ typedef enum hiHA_CODEC_ID_E
 
 
 /**Define query parameter of an HA codec.*/
-/**CNcomment:¶¨ÒåHA codec ²éÑ¯²ÎÊı*/
+/**CNcomment:å®šä¹‰HA codec æŸ¥è¯¢å‚æ•°*/
 typedef struct
 {
     HI_U32  enCmd;
@@ -270,7 +270,7 @@ typedef struct
 } HA_CODEC_PARAMETER_QUERY_S;
 
 /**Define format query parameter of an HA codec.*/
-/**CNcomment:¶¨ÒåHA codec ¸ñÊ½²éÑ¯²ÎÊı*/
+/**CNcomment:å®šä¹‰HA codec æ ¼å¼æŸ¥è¯¢å‚æ•°*/
 typedef struct
 {
     HI_U32  enCmd;
@@ -278,140 +278,140 @@ typedef struct
 } HA_CODEC_FORMAT_QUERY_PARAM_S;
 
 /**Define packet query parameter of an HA codec.*/
-/**CNcomment:¶¨ÒåHA codec packet½âÂëÄ£Ê½²éÑ¯²ÎÊı*/
+/**CNcomment:å®šä¹‰HA codec packetè§£ç æ¨¡å¼æŸ¥è¯¢å‚æ•°*/
 typedef struct
 {
-    HI_U32  enCmd;              /**<packet query command.*/ /**<CNcomment:packetÄ£Ê½²éÑ¯ÃüÁî*/
+    HI_U32  enCmd;              /**<packet query command.*/ /**<CNcomment:packetæ¨¡å¼æŸ¥è¯¢å‘½ä»¤*/
     HI_BOOL bPacketDecoder;     /**<Packet mode.In this mode, the decoder can decode the next packet only after processing an entire packet. */ 
-	                            /**<CNcomment:packetÄ£Ê½.ÔÚÕâÖÖÄ£Ê½ÏÂ£¬Ö»ÓĞ´¦ÀíÍêµ±Ç°Õû¸öpacketºó½âÂëÆ÷²ÅÄÜ´¦ÀíÏÂÒ»¸öpacket°ü*/
+	                            /**<CNcomment:packetæ¨¡å¼.åœ¨è¿™ç§æ¨¡å¼ä¸‹ï¼Œåªæœ‰å¤„ç†å®Œå½“å‰æ•´ä¸ªpacketåè§£ç å™¨æ‰èƒ½å¤„ç†ä¸‹ä¸€ä¸ªpacketåŒ…*/
 } HA_CODEC_PACKETDECODER_QUERY_PARAM_S;
 
 /**Define hardware decode query parameter of an HA codec.*/
-/**CNcomment:¶¨ÒåHA codec hardware½âÂëÄ£Ê½²éÑ¯²ÎÊı*/
+/**CNcomment:å®šä¹‰HA codec hardwareè§£ç æ¨¡å¼æŸ¥è¯¢å‚æ•°*/
 typedef struct
 {
-    HI_U32  enCmd;              /**<hwdecode query command.*/ /**<CNcomment: hwdecodeÄ£Ê½²éÑ¯ÃüÁî*/
+    HI_U32  enCmd;              /**<hwdecode query command.*/ /**<CNcomment: hwdecodeæ¨¡å¼æŸ¥è¯¢å‘½ä»¤*/
     HI_BOOL bHwDecoder;         /**<HI_TRUE: hwdecode mode else swdecode mode. */ 
-	                            /**<CNcomment:hwdecodeÄ£Ê½*/
+	                            /**<CNcomment:hwdecodeæ¨¡å¼*/
 } HA_CODEC_HARDWAREDECODER_QUERY_PARAM_S;
 
 /**Define the error codes of an HA codec.*/
-/**CNcomment:¶¨ÒåHA codec ´íÎóÂë*/
+/**CNcomment:å®šä¹‰HA codec é”™è¯¯ç */
 typedef enum hiHA_ERRORTYPE_E
 {
     HA_ErrorNone = 0,
 
-    HA_ErrorInsufficientResources = (HI_S32) 0x80001000,/**<The device fails to be created due to insufficient resources.*/ /**<CNcomment:×ÊÔ´²»¹»£¬´´½¨Éè±¸Ê§°Ü */
+    HA_ErrorInsufficientResources = (HI_S32) 0x80001000,/**<The device fails to be created due to insufficient resources.*/ /**<CNcomment:èµ„æºä¸å¤Ÿï¼Œåˆ›å»ºè®¾å¤‡å¤±è´¥ */
 
-    HA_ErrorInvalidParameter = (HI_S32) 0x80001001, /**<The input parameter is invalid.*/ /**<CNcomment:ÊäÈë²ÎÊı·Ç·¨ */
+    HA_ErrorInvalidParameter = (HI_S32) 0x80001001, /**<The input parameter is invalid.*/ /**<CNcomment:è¾“å…¥å‚æ•°éæ³• */
 
-    HA_ErrorStreamCorrupt = (HI_S32) 0x80001002, /**<The decoding fails due to incorrect input streams.*/ /**<CNcomment:ÊäÈëÂëÁ÷´íÎó£¬½âÂëÊ§°Ü */
+    HA_ErrorStreamCorrupt = (HI_S32) 0x80001002, /**<The decoding fails due to incorrect input streams.*/ /**<CNcomment:è¾“å…¥ç æµé”™è¯¯ï¼Œè§£ç å¤±è´¥ */
 
-    HA_ErrorNotEnoughData = (HI_S32) 0x80001003,/**<The decoding ends due to insufficient streams.*/ /**<CNcomment:ÊäÈëÂëÁ÷²»¹»£¬ÍË³ö½âÂë */
+    HA_ErrorNotEnoughData = (HI_S32) 0x80001003,/**<The decoding ends due to insufficient streams.*/ /**<CNcomment:è¾“å…¥ç æµä¸å¤Ÿï¼Œé€€å‡ºè§£ç  */
 
-    HA_ErrorDecodeMode = (HI_S32) 0x80001004,/**<The decoding mode is not supported.*/ /**<CNcomment:½âÂëÄ£Ê½²»Ö§³Ö */
+    HA_ErrorDecodeMode = (HI_S32) 0x80001004,/**<The decoding mode is not supported.*/ /**<CNcomment:è§£ç æ¨¡å¼ä¸æ”¯æŒ */
 
-	HA_ErrorNotSupportCodec = (HI_S32) 0x80001005,/**<The codec is not supported.*/ /**<CNcomment:½âÂëÆ÷²»Ö§³Ö */
+	HA_ErrorNotSupportCodec = (HI_S32) 0x80001005,/**<The codec is not supported.*/ /**<CNcomment:è§£ç å™¨ä¸æ”¯æŒ */
 
     HA_ErrorMax = 0x9FFFFFFF
 } HI_HA_ERRORTYPE_E;
 
 /**Definition of the distribution mode of the channels of an HA codec.*/
-/**CNcomment:¶¨ÒåHA codec ÉùµÀ·Ö²¼Ä£Ê½*/
+/**CNcomment:å®šä¹‰HA codec å£°é“åˆ†å¸ƒæ¨¡å¼*/
 typedef enum hiHA_CHANNELTYPE_E
 {
-    HA_AUDIO_ChannelNone = 0x0,    /**< Unused or empty.*/ /**<CNcomment:Î´Ê¹ÓÃ»òÎª¿Õ*/
-    HA_AUDIO_ChannelLF  = 0x1,     /**< Left front.*/ /**<CNcomment:×óÇ°*/
-    HA_AUDIO_ChannelRF  = 0x2,     /**< Right front.*/ /**<CNcomment:ÓÒÇ°*/
-    HA_AUDIO_ChannelCF  = 0x3,     /**< Center front.*/ /**<CNcomment:ÖĞÖÃ*/
-    HA_AUDIO_ChannelLS  = 0x4,     /**< Left surround.*/ /**<CNcomment:×ó»·ÈÆ*/
-    HA_AUDIO_ChannelRS  = 0x5,     /**< Right surround.*/ /**<CNcomment:ÓÒ»·ÈÆ*/
-    HA_AUDIO_ChannelLFE = 0x6,     /**< Low frequency effects.*/ /**<CNcomment:µÍÒô*/
-    HA_AUDIO_ChannelCS  = 0x7,     /**< Back surround.*/ /**<CNcomment:ºó»·ÈÆ*/
-    HA_AUDIO_ChannelLR  = 0x8,     /**< Left rear.*/ /**<CNcomment:×óºó*/
-    HA_AUDIO_ChannelRR  = 0x9,     /**< Right rear.*/ /**<CNcomment:ÓÒºó*/
+    HA_AUDIO_ChannelNone = 0x0,    /**< Unused or empty.*/ /**<CNcomment:æœªä½¿ç”¨æˆ–ä¸ºç©º*/
+    HA_AUDIO_ChannelLF  = 0x1,     /**< Left front.*/ /**<CNcomment:å·¦å‰*/
+    HA_AUDIO_ChannelRF  = 0x2,     /**< Right front.*/ /**<CNcomment:å³å‰*/
+    HA_AUDIO_ChannelCF  = 0x3,     /**< Center front.*/ /**<CNcomment:ä¸­ç½®*/
+    HA_AUDIO_ChannelLS  = 0x4,     /**< Left surround.*/ /**<CNcomment:å·¦ç¯ç»•*/
+    HA_AUDIO_ChannelRS  = 0x5,     /**< Right surround.*/ /**<CNcomment:å³ç¯ç»•*/
+    HA_AUDIO_ChannelLFE = 0x6,     /**< Low frequency effects.*/ /**<CNcomment:ä½éŸ³*/
+    HA_AUDIO_ChannelCS  = 0x7,     /**< Back surround.*/ /**<CNcomment:åç¯ç»•*/
+    HA_AUDIO_ChannelLR  = 0x8,     /**< Left rear.*/ /**<CNcomment:å·¦å*/
+    HA_AUDIO_ChannelRR  = 0x9,     /**< Right rear.*/ /**<CNcomment:å³å*/
     HA_AUDIO_ChannelMax = 0x7FFFFFFF
 } HI_HA_CHANNELTYPE_E;
 
 /**Definition of the decoding mode of an HA decoder.*/
-/**CNcomment:¶¨ÒåHA ½âÂëÆ÷½âÂëÄ£Ê½*/
+/**CNcomment:å®šä¹‰HA è§£ç å™¨è§£ç æ¨¡å¼*/
 typedef enum hiHA_DECODEMODE_E
 {
-    HD_DEC_MODE_RAWPCM = 0,        /**<PCM decoding mode.*/ /**<CNcomment:PCM ½âÂëÄ£Ê½*/
-    HD_DEC_MODE_THRU,              /**<SPIDF61937 passthrough decoding mode only, such as AC3/DTS.*/ /**<CNcomment:Í¸´«½âÂëÄ£Ê½*/
-    HD_DEC_MODE_SIMUL,             /**<PCM and passthrough decoding mode.*/ /**<CNcomment:PCM + Í¸´«½âÂëÄ£Ê½*/
+    HD_DEC_MODE_RAWPCM = 0,        /**<PCM decoding mode.*/ /**<CNcomment:PCM è§£ç æ¨¡å¼*/
+    HD_DEC_MODE_THRU,              /**<SPIDF61937 passthrough decoding mode only, such as AC3/DTS.*/ /**<CNcomment:é€ä¼ è§£ç æ¨¡å¼*/
+    HD_DEC_MODE_SIMUL,             /**<PCM and passthrough decoding mode.*/ /**<CNcomment:PCM + é€ä¼ è§£ç æ¨¡å¼*/
     HD_DEC_MODE_BUTT = 0x7FFFFFFF
 } HI_HA_DECODEMODE_E;
 
 /**Definition of the HA codec version.*/
-/**CNcomment:HA codec °æ±¾¶¨Òå*/
+/**CNcomment:HA codec ç‰ˆæœ¬å®šä¹‰*/
 typedef union hiHI_HAAUDIO_VERSIONTYPE_U
 {
     struct
     {
-        HI_U8 u8VersionMajor;      /**< Major version.*/ /**<CNcomment:Ö÷°æ±¾ºÅ */
-        HI_U8 u8VersionMinor;      /**< Minor version.*/ /**<CNcomment:¸±°æ±¾ºÅ */
-        HI_U8 u8Revision;          /**< Revision version.*/ /**<CNcomment:ĞŞ¶©°æ±¾ */
-        HI_U8 u8Step;              /**< Step version.*/ /**<CNcomment:½×¶ÎĞÔ°æ±¾ */
+        HI_U8 u8VersionMajor;      /**< Major version.*/ /**<CNcomment:ä¸»ç‰ˆæœ¬å· */
+        HI_U8 u8VersionMinor;      /**< Minor version.*/ /**<CNcomment:å‰¯ç‰ˆæœ¬å· */
+        HI_U8 u8Revision;          /**< Revision version.*/ /**<CNcomment:ä¿®è®¢ç‰ˆæœ¬ */
+        HI_U8 u8Step;              /**< Step version.*/ /**<CNcomment:é˜¶æ®µæ€§ç‰ˆæœ¬ */
     } s;
     HI_U32 u32Version;
 } HI_HAAUDIO_VERSIONTYPE_U;
 
 /**Definition of the data types of the PCM module in an HA codec HA codec.*/
-/**CNcomment:pcm Êı¾İÀàĞÍ½á¹¹Ìå¶¨Òå*/
+/**CNcomment:pcm æ•°æ®ç±»å‹ç»“æ„ä½“å®šä¹‰*/
 typedef struct hiHA_PCMMODETYPE_S
 {
     HI_U32              u32DesiredOutChannels;/**<Input,number of expected output channels.If the number of original channels is not equal to the number of expected output channels,
                                                   the decoded automatically performs down-mixing or up-mixing,In this way,
                                                   the number of output channels is equal to the value of u32DesiredOutChannels,1: mono; 2 stereo. \n*/
-                                              /**<CNcomment:IN ÆÚÍûÊä³öÉùµÀÊıÄ¿. Èç¹ûÂëÁ÷Ô­Ê¼ÉùµÀ²»µÈÓÚ
-                                                  ÆÚÍûÊä³öÉùµÀ£¬½âÂëÆ÷×Ô¶¯½øĞĞdown-mix »òup-mix ´¦Àí£¬Ê¹µÃÊä³ö
-                                                  ÉùµÀµÈÓÚu32DesiredOutChannels.  1: mono, 2 for stereo*/
+                                              /**<CNcomment:IN æœŸæœ›è¾“å‡ºå£°é“æ•°ç›®. å¦‚æœç æµåŸå§‹å£°é“ä¸ç­‰äº
+                                                  æœŸæœ›è¾“å‡ºå£°é“ï¼Œè§£ç å™¨è‡ªåŠ¨è¿›è¡Œdown-mix æˆ–up-mix å¤„ç†ï¼Œä½¿å¾—è¾“å‡º
+                                                  å£°é“ç­‰äºu32DesiredOutChannels.  1: mono, 2 for stereo*/
     HI_BOOL             bInterleaved;/**<Whether the PCM data is interleaved. 
                                          HI_TRUE: interleaved mode (L/R/L/R.. .L/R/L/R).  
                                          HI_FALSE: non-interleaved mode (L/L/L.../R/R/R...). \n*/
-                                     /**<CNcomment:IN PCM Êı¾İÊÇ·ñ½»Ö¯Ä£Ê½
-                                         HI_TRUE:  ½»Ö¯Ä£Ê½: L/R/L/R...L/R/L/R. 
-                                         HI_FALSE: ·Ç½»Ö¯Ä£Ê½: L/L/L......../R/R/R....... */
+                                     /**<CNcomment:IN PCM æ•°æ®æ˜¯å¦äº¤ç»‡æ¨¡å¼
+                                         HI_TRUE:  äº¤ç»‡æ¨¡å¼: L/R/L/R...L/R/L/R. 
+                                         HI_FALSE: éäº¤ç»‡æ¨¡å¼: L/L/L......../R/R/R....... */
     HI_U32              u32BitPerSample;/**<Input Bit width of the PCM data.Only 16-bit or 24-bit width is supported.For the data of 16-bit width, 16-bit memory is used,
                                             For the data of 24-bit width, 32-bit memory is used,The active bits of the 24-bit PCM data are upper bits, and the lower eight bits are padded with 0s. \n*/
-                                        /**<CNcomment:IN PCM Êı¾İÎ»¿í,½öÖ§³Ö16 »ò24 Êı¾İÎ»¿í 16bit Î»¿íÕ¼ÓÃ16bit ÄÚ´æ,
-                                            24bit Î»¿íÕ¼ÓÃ32±ÈÌØÄÚ´æ.24bit PCMÊı¾İÓĞĞ§ÎªÔÚ¸ßÎ»£¬µÍ8 Î»²¹0*/
-    HI_U32              u32DesiredSampleRate; /**<Input, expected output sampling rate.*/ /**<CNcomment:IN ÆÚÍûÊä³ö²ÉÑùÆµÂÊ*/
-    HI_HA_CHANNELTYPE_E enChannelMapping[HA_AUDIO_MAXCHANNELS]; /**<Input, distribution mode of output channels.*/ /**<CNcomment:IN Êä³öÉùµÀ·Ö²¼Ä£Ê½*/
+                                        /**<CNcomment:IN PCM æ•°æ®ä½å®½,ä»…æ”¯æŒ16 æˆ–24 æ•°æ®ä½å®½ 16bit ä½å®½å ç”¨16bit å†…å­˜,
+                                            24bit ä½å®½å ç”¨32æ¯”ç‰¹å†…å­˜.24bit PCMæ•°æ®æœ‰æ•ˆä¸ºåœ¨é«˜ä½ï¼Œä½8 ä½è¡¥0*/
+    HI_U32              u32DesiredSampleRate; /**<Input, expected output sampling rate.*/ /**<CNcomment:IN æœŸæœ›è¾“å‡ºé‡‡æ ·é¢‘ç‡*/
+    HI_HA_CHANNELTYPE_E enChannelMapping[HA_AUDIO_MAXCHANNELS]; /**<Input, distribution mode of output channels.*/ /**<CNcomment:IN è¾“å‡ºå£°é“åˆ†å¸ƒæ¨¡å¼*/
 } HI_HA_PCMMODETYPE_S;
 
 /**Configuration parameters required by an HA codec for creating devices.*/
-/**CNcomment:HA ½âÂëÆ÷´´½¨Éè±¸µÄÅäÖÃ²ÎÊı*/
+/**CNcomment:HA è§£ç å™¨åˆ›å»ºè®¾å¤‡çš„é…ç½®å‚æ•°*/
 typedef struct hiHADECODE_OPENPARAM_S
 {
-    HI_HA_DECODEMODE_E  enDecMode;  /**<IN Decode Mode.*/ /**<CNcomment:½âÂëÄ£Ê½*/
-    HI_HA_PCMMODETYPE_S sPcmformat; /**<IN data types of pcm module.*/ /**<CNcomment:PCMÊı¾İÀàĞÍ½á¹¹Ìå*/
+    HI_HA_DECODEMODE_E  enDecMode;  /**<IN Decode Mode.*/ /**<CNcomment:è§£ç æ¨¡å¼*/
+    HI_HA_PCMMODETYPE_S sPcmformat; /**<IN data types of pcm module.*/ /**<CNcomment:PCMæ•°æ®ç±»å‹ç»“æ„ä½“*/
     HI_VOID *           pCodecPrivateData;/**<Input, pointer to private data.If the decoder does not contain private data, this parameter is set to 0. */ 
-                                          /**<CNcomment:IN  Ö¸ÏòË½ÓĞÅäÖÃ½á¹¹ÌåµÄÖ¸Õë£¬Èç¹û½âÂëÆ÷Ã»ÓĞË½ÓĞÅäÖÃ£¬ÉèÖÃÎª0*/
+                                          /**<CNcomment:IN  æŒ‡å‘ç§æœ‰é…ç½®ç»“æ„ä½“çš„æŒ‡é’ˆï¼Œå¦‚æœè§£ç å™¨æ²¡æœ‰ç§æœ‰é…ç½®ï¼Œè®¾ç½®ä¸º0*/
     HI_U32              u32CodecPrivateDataSize;/**<Input, size of the private data.If the decoder does not contain private data, this parameter is set to 0. */ 
-                                                /**<CNcomment:IN Ë½ÓĞ½á¹¹Ìå´óĞ¡, Èç¹û½âÂëÆ÷Ã»ÓĞË½ÓĞÅäÖÃ£¬ÉèÖÃÎª0*/
+                                                /**<CNcomment:IN ç§æœ‰ç»“æ„ä½“å¤§å°, å¦‚æœè§£ç å™¨æ²¡æœ‰ç§æœ‰é…ç½®ï¼Œè®¾ç½®ä¸º0*/
 } HI_HADECODE_OPENPARAM_S;
 
 /**Input streams of an HA decoder.*/
-/**CNcomment:HA ½âÂëÆ÷ÊäÈëÂëÁ÷½á¹¹Ìå*/
+/**CNcomment:HA è§£ç å™¨è¾“å…¥ç æµç»“æ„ä½“*/
 typedef struct hiHADECODE_INPACKET_S
 {
-    HI_U32  u32PtsMs;  /**<Input, presentation time stamp (PTS) (in ms).Note: The HA decoder must discard this information. */ /**<CNcomment:µ±Ç°Ê±¼ä´Á*/
-    HI_U8  *pu8Data;   /**<Input/output, pointer to input streams.The decoder update this pointer after decoding. */ /**<CNcomment:IN/OUT ÊäÈëÂëÁ÷Ö¸Õë£¬½âÂëÍê³Éºó½âÂëÆ÷¸üĞÂ¸ÃÖ¸Õë*/
-    HI_S32  s32Size;   /**<Input, size (in byte) of input streams.*/ /**<CNcomment:IN ÊäÈëÂëÁ÷´óĞ¡. unit: Byte*/
+    HI_U32  u32PtsMs;  /**<Input, presentation time stamp (PTS) (in ms).Note: The HA decoder must discard this information. */ /**<CNcomment:å½“å‰æ—¶é—´æˆ³*/
+    HI_U8  *pu8Data;   /**<Input/output, pointer to input streams.The decoder update this pointer after decoding. */ /**<CNcomment:IN/OUT è¾“å…¥ç æµæŒ‡é’ˆï¼Œè§£ç å®Œæˆåè§£ç å™¨æ›´æ–°è¯¥æŒ‡é’ˆ*/
+    HI_S32  s32Size;   /**<Input, size (in byte) of input streams.*/ /**<CNcomment:IN è¾“å…¥ç æµå¤§å°. unit: Byte*/
     HI_BOOL bEndOfFrm;
 } HI_HADECODE_INPACKET_S;
 
 /**Get Open parameter of an HA decoder.*/
-/**CNcomment:»ñÈ¡HA ½âÂëÆ÷´ò¿ª²ÎÊı*/
+/**CNcomment:è·å–HA è§£ç å™¨æ‰“å¼€å‚æ•°*/
 typedef struct
 {
     HI_U32  enCmd;
     HI_HADECODE_OPENPARAM_S *pstDecodeParams;
 } HA_CODEC_GET_DECOPENPARAM_PARAM_S;
 /**
- * Definition of the decoder output pts infomations. CNcomment:ptsÊä³öĞÅÏ¢
+ * Definition of the decoder output pts infomations. CNcomment:ptsè¾“å‡ºä¿¡æ¯
  */
 typedef struct hiHI_HA_OUTPTSINFO_S
 {
@@ -422,36 +422,36 @@ typedef struct hiHI_HA_OUTPTSINFO_S
 } HI_HA_OUTPTSINFO_S;
 
 /**Output structure of the HA decoder.*/
-/**CNcomment:HA ½âÂëÆ÷Êä³ö½á¹¹Ìå*/
+/**CNcomment:HA è§£ç å™¨è¾“å‡ºç»“æ„ä½“*/
 typedef struct hiHI_HADECODE_OUTPUT_S
 {
     HI_S32 *ps32PcmOutBuf;       /**<Input, pointer to the decoded PCM data. 
                                      Note: 1) ps32PcmOutBuf must be 32-word aligned. 
                                            2) ps32PcmOutBuf is NULL when the decoder is working in HD_DEC_MODE_THRU mode.\n*/
-                                 /**<CNcomment:IN Ö¸ÏòPCM ½âÂëÊä³öµÄÖ¸Õë. */
+                                 /**<CNcomment:IN æŒ‡å‘PCM è§£ç è¾“å‡ºçš„æŒ‡é’ˆ. */
                                  
     HI_U32  u32PcmOutBufSize;    /**<Input, size (in byte) of the buffer for storing the decoded PCM data
                                      Note: u32PcmOutBufSize is 0 when the decoder is working in HD_DEC_MODE_THRU mode.\n*/
-                                 /**<CNcomment:IN  PCM ½âÂëÊä³ö»º³åÇø´óĞ¡. unit:Byte */
+                                 /**<CNcomment:IN  PCM è§£ç è¾“å‡ºç¼“å†²åŒºå¤§å°. unit:Byte */
                                   
     HI_S32 *ps32BitsOutBuf;      /**<Input, pointer to the decoded passthrough data. 
                                      Note: 1) ps32BitsOutBuf must be 32-word aligned. 
                                            2) ps32BitsOutBuf is NULL when the decoder is working in HD_DEC_MODE_RAWPCM mode.\n*/
-                                 /**<CNcomment:IN Ö¸ÏòÍ¸´«½âÂëÊä³öµÄÖ¸Õë. */
+                                 /**<CNcomment:IN æŒ‡å‘é€ä¼ è§£ç è¾“å‡ºçš„æŒ‡é’ˆ. */
                                   
     HI_U32  u32BitsOutBufSize;   /**<Input, size (in byte) of the buffer for storing the decoded passthrough data (IEC61937)
                                      Note: u32BitsOutBufSize is 0 when the decoder is working in HD_DEC_MODE_RAWPCM mode.\n*/
-                                 /**<CNcomment:IN Í¸´«(IEC61937) ½âÂëÊä³ö»º³åÇø´óĞ¡. unit:Byte */
+                                 /**<CNcomment:IN é€ä¼ (IEC61937) è§£ç è¾“å‡ºç¼“å†²åŒºå¤§å°. unit:Byte */
                                   
-    HI_U32  u32PcmOutSamplesPerFrame; /**<Output, number of output sampling points after the PCM data is decoded.*/ /**<CNcomment:OUT. ½âÂëPcm Êä³öÑùµãÊı */
-    HI_BOOL bInterleaved;             /**<Output, interleaved mode for PCM decoding.*/ /**<CNcomment:OUT PCM  ½âÂë½»Ö¯Ä£Ê½*/
-    HI_U32  u32BitPerSample;          /**<Output, bit per sampling.*/ /**<CNcomment:OUT Î»¿í*/
-    HI_U32  u32BitsOutBytesPerFrame;  /**<Output, size (in byte) of the passthrough frame.*/ /**<CNcomment:OUT Í¸´«Êä³öÖ¡´óĞ¡. unit: Byte*/
-    HI_U32  u32OutChannels;           /**<Output, number of output channels.*/ /**<CNcomment:OUT Êä³öÉùµÀÊı*/
-    HI_U32  u32OutSampleRate;         /**<Output, output sampling rate.*/ /**<CNcomment:OUT. Êä³ö²ÉÑùÆµÂÊ*/
-    HI_U32  u32OrgChannels;           /**<Output, number of original channels.*/ /**<CNcomment:OUT ÂëÁ÷Ô­Ê¼ÉùµÀÊı*/
-    HI_U32  u32OrgSampleRate;         /**<Output, original sampling rate.*/ /**<CNcomment:OUT ÂëÁ÷Ô­Ê¼²ÉÑùÆµÂÊ*/
-    HI_U32  u32BitRate;               /**<Output, bit rate (in bit/s) of the compressed streams.*/ /**<CNcomment:OUT ÂëÁ÷Ñ¹ËõÂÊunit: bit/S*/
+    HI_U32  u32PcmOutSamplesPerFrame; /**<Output, number of output sampling points after the PCM data is decoded.*/ /**<CNcomment:OUT. è§£ç Pcm è¾“å‡ºæ ·ç‚¹æ•° */
+    HI_BOOL bInterleaved;             /**<Output, interleaved mode for PCM decoding.*/ /**<CNcomment:OUT PCM  è§£ç äº¤ç»‡æ¨¡å¼*/
+    HI_U32  u32BitPerSample;          /**<Output, bit per sampling.*/ /**<CNcomment:OUT ä½å®½*/
+    HI_U32  u32BitsOutBytesPerFrame;  /**<Output, size (in byte) of the passthrough frame.*/ /**<CNcomment:OUT é€ä¼ è¾“å‡ºå¸§å¤§å°. unit: Byte*/
+    HI_U32  u32OutChannels;           /**<Output, number of output channels.*/ /**<CNcomment:OUT è¾“å‡ºå£°é“æ•°*/
+    HI_U32  u32OutSampleRate;         /**<Output, output sampling rate.*/ /**<CNcomment:OUT. è¾“å‡ºé‡‡æ ·é¢‘ç‡*/
+    HI_U32  u32OrgChannels;           /**<Output, number of original channels.*/ /**<CNcomment:OUT ç æµåŸå§‹å£°é“æ•°*/
+    HI_U32  u32OrgSampleRate;         /**<Output, original sampling rate.*/ /**<CNcomment:OUT ç æµåŸå§‹é‡‡æ ·é¢‘ç‡*/
+    HI_U32  u32BitRate;               /**<Output, bit rate (in bit/s) of the compressed streams.*/ /**<CNcomment:OUT ç æµå‹ç¼©ç‡unit: bit/S*/
     HI_HA_OUTPTSINFO_S stPtsInfo;
 } HI_HADECODE_OUTPUT_S;
 
@@ -486,38 +486,38 @@ typedef struct hiHI_HA_OUTPUTBUF_S
 #endif
 
 /**
- *Definition of the HA decoder. CNcomment:HA ½âÂëÆ÷Éè±¸¶¨Òå
+ *Definition of the HA decoder. CNcomment:HA è§£ç å™¨è®¾å¤‡å®šä¹‰
  *
  */
 typedef struct hiHA_DECODE_S
 {
     const HI_PCHAR szName;/**<Input, description information about a decoder, such as MP3 or AAC. */
-                          /**<CNcomment:IN ½âÂëÆ÷ÃèÊöÃû×Ö£¬ÈçMP3,AAC*/ 
+                          /**<CNcomment:IN è§£ç å™¨æè¿°åå­—ï¼Œå¦‚MP3,AAC*/ 
     
     const HI_U32 enCodecID;/**<Input, decoder ID.Note: This ID is the identifier of a decoder, and must be unique. */
-                           /**<CNcomment:IN ½âÂëÆ÷±êÊ¶£¬×¢Òâ: ´Ë±êÊ¶×÷Îª½âÂëÆ÷Î¨Ò»Éí·İ±êÊ¶£¬±ØĞëÎ¨Ò»¶ø²»ÄÜÓĞÖØ¸´*/ 
+                           /**<CNcomment:IN è§£ç å™¨æ ‡è¯†ï¼Œæ³¨æ„: æ­¤æ ‡è¯†ä½œä¸ºè§£ç å™¨å”¯ä¸€èº«ä»½æ ‡è¯†ï¼Œå¿…é¡»å”¯ä¸€è€Œä¸èƒ½æœ‰é‡å¤*/ 
 
-    const HI_HAAUDIO_VERSIONTYPE_U uVersion;/**<Input, decoder version.*/ /**<CNcomment:IN ½âÂëÆ÷°æ±¾ÃèÊö*/
+    const HI_HAAUDIO_VERSIONTYPE_U uVersion;/**<Input, decoder version.*/ /**<CNcomment:IN è§£ç å™¨ç‰ˆæœ¬æè¿°*/
 
-    const HI_PCHAR pszDescription;/**<Input, detailed information about a decoder.*/ /**<CNcomment:IN ½âÂëÆ÷ÏêÏ¸ÃèÊöĞÅÏ¢*/
+    const HI_PCHAR pszDescription;/**<Input, detailed information about a decoder.*/ /**<CNcomment:IN è§£ç å™¨è¯¦ç»†æè¿°ä¿¡æ¯*/
 
     
     
     struct hiHA_DECODE_S *pstNext;/**<Output, pointer to the next decoder.This member variable is maintained by the client that calls the HA codec,
                                       Therefore, the developers of the HA decoder can ignore this member variable. \n*/
-                                  /**<CNcomment:OUT  Ö¸ÏòÏÂ¸ö½âÂëÆ÷Éè±¸µÄÖ¸Õë.  ¸Ã³ÉÔ±±äÁ¿ÓÉµ÷ÓÃHA Codec µÄ¿Í»§¶ËÎ¬»¤, HA ½âÂëÆ÷¿ª·¢Õß¿ÉÒÔºöÂÔ¸Ã³ÉÔ±*/ 
+                                  /**<CNcomment:OUT  æŒ‡å‘ä¸‹ä¸ªè§£ç å™¨è®¾å¤‡çš„æŒ‡é’ˆ.  è¯¥æˆå‘˜å˜é‡ç”±è°ƒç”¨HA Codec çš„å®¢æˆ·ç«¯ç»´æŠ¤, HA è§£ç å™¨å¼€å‘è€…å¯ä»¥å¿½ç•¥è¯¥æˆå‘˜*/ 
 
     HI_VOID  * pDllModule;/**<Output, pointer to the dll symbol of an HA decoder,This member variable is maintained by the client that calls the HA codec,
                               Therefore, the developers of the HA decoder can ignore this member variable.\n*/
-                          /**<CNcomment:OUT ¸Ã³ÉÔ±±äÁ¿ÓÉµ÷ÓÃHA Codec µÄ¿Í»§¶ËÎ¬»¤, HA ½âÂëÆ÷¿ª·¢Õß¿ÉÒÔºöÂÔ¸Ã³ÉÔ±*/
+                          /**<CNcomment:OUT è¯¥æˆå‘˜å˜é‡ç”±è°ƒç”¨HA Codec çš„å®¢æˆ·ç«¯ç»´æŠ¤, HA è§£ç å™¨å¼€å‘è€…å¯ä»¥å¿½ç•¥è¯¥æˆå‘˜*/
 							  
     /** 
-    \brief Initializes a decoder. CNcomment:³õÊ¼»¯½âÂëÆ÷ CNend
+    \brief Initializes a decoder. CNcomment:åˆå§‹åŒ–è§£ç å™¨ CNend
     \attention \n
-    \param[in] pstOpenParam pointer of the open params CNcomment:open²ÎÊı½á¹¹ÌåÖ¸Õë CNend
-    \param[out] phDecoder   pointer of the decoder handle CNcomment:½âÂëÆ÷¾ä±úÖ¸Õë CNend
-    \retval ::HA_ErrorNone  SUCCESS CNcomment:³É¹¦ CNend
-    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:Ê§°Ü CNend
+    \param[in] pstOpenParam pointer of the open params CNcomment:openå‚æ•°ç»“æ„ä½“æŒ‡é’ˆ CNend
+    \param[out] phDecoder   pointer of the decoder handle CNcomment:è§£ç å™¨å¥æŸ„æŒ‡é’ˆ CNend
+    \retval ::HA_ErrorNone  SUCCESS CNcomment:æˆåŠŸ CNend
+    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:å¤±è´¥ CNend
     \see \n
     N/A
     */
@@ -525,11 +525,11 @@ typedef struct hiHA_DECODE_S
                                  const HI_HADECODE_OPENPARAM_S * pstOpenParam);
 							  
     /** 
-    \brief DeInitializes a decoder. CNcomment:È¥³õÊ¼»¯½âÂëÆ÷ CNend
+    \brief DeInitializes a decoder. CNcomment:å»åˆå§‹åŒ–è§£ç å™¨ CNend
     \attention \n
-    \param[in] hDecoder   pointer of the decoder handle CNcomment:½âÂëÆ÷¾ä±úÖ¸Õë CNend
-    \retval ::HA_ErrorNone  SUCCESS CNcomment:³É¹¦ CNend
-    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:Ê§°Ü CNend
+    \param[in] hDecoder   pointer of the decoder handle CNcomment:è§£ç å™¨å¥æŸ„æŒ‡é’ˆ CNend
+    \retval ::HA_ErrorNone  SUCCESS CNcomment:æˆåŠŸ CNend
+    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:å¤±è´¥ CNend
     \see \n
     N/A
     */
@@ -537,12 +537,12 @@ typedef struct hiHA_DECODE_S
 
     /** 
     \brief Configure a decoder dynamically. You can call this API when a decoder works.
-    CNcomment:½âÂëÆ÷¶¯Ì¬ÅäÖÃ·½·¨£¬ÓÃ»§¿ÉÒÔÔÚ½âÂëÆ÷ÔËĞĞÊ±µ÷ÓÃ¸Ã½Ó¿Ú CNend
+    CNcomment:è§£ç å™¨åŠ¨æ€é…ç½®æ–¹æ³•ï¼Œç”¨æˆ·å¯ä»¥åœ¨è§£ç å™¨è¿è¡Œæ—¶è°ƒç”¨è¯¥æ¥å£ CNend
     \attention \n
-    \param[in] hDecoder   the decoder handle CNcomment:½âÂëÆ÷¾ä±ú CNend
-    \param[in] pstConfigStructure pointer to application allocated structure to be used for initialization by the decoder CNcomment:½âÂëÆ÷³õÊ¼»¯½á¹¹Ìå CNend
-    \retval ::HA_ErrorNone  SUCCESS CNcomment:³É¹¦ CNend
-    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:Ê§°Ü CNend
+    \param[in] hDecoder   the decoder handle CNcomment:è§£ç å™¨å¥æŸ„ CNend
+    \param[in] pstConfigStructure pointer to application allocated structure to be used for initialization by the decoder CNcomment:è§£ç å™¨åˆå§‹åŒ–ç»“æ„ä½“ CNend
+    \retval ::HA_ErrorNone  SUCCESS CNcomment:æˆåŠŸ CNend
+    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:å¤±è´¥ CNend
     \see \n
     N/A
     */
@@ -551,12 +551,12 @@ typedef struct hiHA_DECODE_S
     /** 
     \brief Maximum size of the buffer required for storing the PCM data decoded by the decoder,
     The memory needs to be allocated based on the size on the client.
-    CNcomment:½âÂëÆ÷PCMÊä³öËùĞè×î´ó»º³åÇøsize. ¿Í»§¶ËĞèÒª¸ù¾İ¸Ã·½·¨·ÖÅäÄÚ´æ CNend
+    CNcomment:è§£ç å™¨PCMè¾“å‡ºæ‰€éœ€æœ€å¤§ç¼“å†²åŒºsize. å®¢æˆ·ç«¯éœ€è¦æ ¹æ®è¯¥æ–¹æ³•åˆ†é…å†…å­˜ CNend
     \attention \n
-    \param[in] hDecoder   the decoder handle CNcomment:½âÂëÆ÷¾ä±ú CNend
-    \param[out] pu32OutSizes pointer to the max size of the pcm audio frame. unit:Byte CNcomment:×î´óPCMÊä³ö»º³åÇø´óĞ¡ CNend
-    \retval ::HA_ErrorNone  SUCCESS CNcomment:³É¹¦ CNend
-    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:Ê§°Ü CNend
+    \param[in] hDecoder   the decoder handle CNcomment:è§£ç å™¨å¥æŸ„ CNend
+    \param[out] pu32OutSizes pointer to the max size of the pcm audio frame. unit:Byte CNcomment:æœ€å¤§PCMè¾“å‡ºç¼“å†²åŒºå¤§å° CNend
+    \retval ::HA_ErrorNone  SUCCESS CNcomment:æˆåŠŸ CNend
+    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:å¤±è´¥ CNend
     \see \n
     N/A
     */
@@ -566,12 +566,12 @@ typedef struct hiHA_DECODE_S
     /** 
     \brief Maximum size of the buffer required for storing the passthrough data decoded by the decoder,
     The memory needs to be allocated based on the size on the client.
-    CNcomment:½âÂëÆ÷Í¸´«Êä³öËùĞè×î´ó»º³åÇøsize.¿Í»§¶ËĞèÒª¸ù¾İ¸Ã·½·¨·ÖÅäÄÚ´æ CNend
+    CNcomment:è§£ç å™¨é€ä¼ è¾“å‡ºæ‰€éœ€æœ€å¤§ç¼“å†²åŒºsize.å®¢æˆ·ç«¯éœ€è¦æ ¹æ®è¯¥æ–¹æ³•åˆ†é…å†…å­˜ CNend
     \attention \n
-    \param[in] hDecoder   the decoder handle CNcomment:½âÂëÆ÷¾ä±ú CNend
-    \param[out] pu32OutSizes pointer to the max size of the iec61937 audio frame. unit:Byte CNcomment:×î´óÍ¸´«Êä³ö»º³åÇø´óĞ¡ CNend
-    \retval ::HA_ErrorNone  SUCCESS CNcomment:³É¹¦ CNend
-    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:Ê§°Ü CNend
+    \param[in] hDecoder   the decoder handle CNcomment:è§£ç å™¨å¥æŸ„ CNend
+    \param[out] pu32OutSizes pointer to the max size of the iec61937 audio frame. unit:Byte CNcomment:æœ€å¤§é€ä¼ è¾“å‡ºç¼“å†²åŒºå¤§å° CNend
+    \retval ::HA_ErrorNone  SUCCESS CNcomment:æˆåŠŸ CNend
+    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:å¤±è´¥ CNend
     \see \n
     N/A
     */
@@ -579,13 +579,13 @@ typedef struct hiHA_DECODE_S
                                               HI_U32 * pu32OutSizes);
 
     /** 
-    \brief This method is used to decode a frame. CNcomment:½âÂëÆ÷½âÂëÒ»Ö¡·½·¨ CNend
+    \brief This method is used to decode a frame. CNcomment:è§£ç å™¨è§£ç ä¸€å¸§æ–¹æ³• CNend
     \attention \n
-    \param[in] hDecoder   the decoder handle CNcomment:½âÂëÆ÷¾ä±ú CNend
-    \param[in] pstApkt pointer to audio stream packet CNcomment:ÒôÆµÊäÈëÁ÷Ö¸Õë CNend
-    \param[out] pstAOut pointer to audio output CNcomment:ÒôÆµÊä³öÁ÷Ö¸Õë CNend
-    \retval ::HA_ErrorNone	SUCCESS CNcomment:³É¹¦ CNend
-    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:Ê§°Ü CNend
+    \param[in] hDecoder   the decoder handle CNcomment:è§£ç å™¨å¥æŸ„ CNend
+    \param[in] pstApkt pointer to audio stream packet CNcomment:éŸ³é¢‘è¾“å…¥æµæŒ‡é’ˆ CNend
+    \param[out] pstAOut pointer to audio output CNcomment:éŸ³é¢‘è¾“å‡ºæµæŒ‡é’ˆ CNend
+    \retval ::HA_ErrorNone	SUCCESS CNcomment:æˆåŠŸ CNend
+    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:å¤±è´¥ CNend
     \see \n
     N/A
     */
@@ -624,70 +624,70 @@ typedef struct hiHA_DECODE_S
 } HI_HA_DECODE_S;
 
 /**Parameters for creating an HA encoder.*/
-/**CNcomment:HA ±àÂëÆ÷´´½¨ÅäÖÃ²ÎÊı*/
+/**CNcomment:HA ç¼–ç å™¨åˆ›å»ºé…ç½®å‚æ•°*/
 typedef struct hiHAENCODE_OPENPARAM_S
 {
-    HI_U32      u32DesiredOutChannels; /**<IN Number of channels (e.g 2 for stereo).*/ /**<CNcomment:ÉùµÀÊı*/ 
-    HI_BOOL     bInterleaved;       /**<IN interleave or not.*/ /**<CNcomment:½»Ö¯Ä£Ê½*/ 
-    HI_S32      s32BitPerSample;    /**<IN bitwidth per sample.*/ /**<CNcomment:Î»¿í*/ 
-    HI_U32      u32DesiredSampleRate; /**<IN desired samplerate.*/ /**<CNcomment:ÆÚÍû²ÉÑùÂÊ*/ 
-    HI_U32      u32SamplePerFrame;  /**<IN Pcm samples per frame for encoder.*/ /**<CNcomment:Ã¿Ö¡²ÉÑùµã*/ 
+    HI_U32      u32DesiredOutChannels; /**<IN Number of channels (e.g 2 for stereo).*/ /**<CNcomment:å£°é“æ•°*/ 
+    HI_BOOL     bInterleaved;       /**<IN interleave or not.*/ /**<CNcomment:äº¤ç»‡æ¨¡å¼*/ 
+    HI_S32      s32BitPerSample;    /**<IN bitwidth per sample.*/ /**<CNcomment:ä½å®½*/ 
+    HI_U32      u32DesiredSampleRate; /**<IN desired samplerate.*/ /**<CNcomment:æœŸæœ›é‡‡æ ·ç‡*/ 
+    HI_U32      u32SamplePerFrame;  /**<IN Pcm samples per frame for encoder.*/ /**<CNcomment:æ¯å¸§é‡‡æ ·ç‚¹*/ 
     HI_VOID *   pCodecPrivateData;  /**<IN Pointer of decoder private open parameters note: if there is none private parameters, pCodecPrivateData=0.*/
-                                    /**<CNcomment:Ë½ÓĞ²ÎÊı*/  	
+                                    /**<CNcomment:ç§æœ‰å‚æ•°*/  	
     HI_U32      u32CodecPrivateDataSize;/**<IN Size of decoder private open parameters note: if there is none private parameters, u32CodecPrivateDataSize=0.*/
-                                        /**<CNcomment:Ë½ÓĞ²ÎÊı´óĞ¡*/ 	
+                                        /**<CNcomment:ç§æœ‰å‚æ•°å¤§å°*/ 	
 } HI_HAENCODE_OPENPARAM_S;
 
 /**HA input pcm  packet struct.*/
-/**CNcomment:packetÄ£Ê½½á¹¹Ìå*/
+/**CNcomment:packetæ¨¡å¼ç»“æ„ä½“*/
 typedef struct hiHAENCODE_INPACKET_S
 {
     HI_U32  u32PtsMs;      /**<IN  PTS (unit:MS) Note: HA encoder should discard this infomation.*/
-                           /**<CNcomment:PTS£¬µ¥Î»:ºÁÃë*/
+                           /**<CNcomment:PTSï¼Œå•ä½:æ¯«ç§’*/
     HI_U8  *pu8Data;       /**<IN/OUT pointer to input auduo pcm data note: HA encoder would update pu8Data after encode.*/
-                           /**<CNcomment:ÊäÈëÊı¾İÖ¸Õë*/	   	
-    HI_U32  u32Size;       /**<IN/OUT size of the input auduo data. unit: Byte.*/ /**<CNcomment:ÊäÈëÊı¾İ´óĞ¡*/
+                           /**<CNcomment:è¾“å…¥æ•°æ®æŒ‡é’ˆ*/	   	
+    HI_U32  u32Size;       /**<IN/OUT size of the input auduo data. unit: Byte.*/ /**<CNcomment:è¾“å…¥æ•°æ®å¤§å°*/
 } HI_HAENCODE_INPACKET_S;
 
 /**HA encoder output struct.*/
-/**CNcomment:±àÂëÆ÷Êä³ö½á¹¹Ìå*/
+/**CNcomment:ç¼–ç å™¨è¾“å‡ºç»“æ„ä½“*/
 typedef struct hiHAENCODE_OUTPUT_S
 {
     HI_S32 *ps32BitsOutBuf;         /**<IN the pointer to encoded bitstream output buffer note: ps32BitsOutBuf must  be word32-aligned.*/
-                                    /**<CNcomment:±àÂëÊı¾İÊä³öbuffer*/		
-    HI_U32  u32BitsOutBufSize;      /**<IN the buffer size of bitstream output buffer. unit:Byte.*/ /**<CNcomment:±àÂëÆ÷Êä³öbuffer´óĞ¡*/
-    HI_U32  u32BitsOutBytesPerFrame;/**<IN size of the encoded audio data frame ,unit: Byte.*/ /**<CNcomment:±àÂëÊı¾İÖ¡´óĞ¡£¬µ¥Î»:Byte*/
-    HI_U32  u32BitRate;             /**<IN compress bit rate of the audio stream.*/ /**<CNcomment:±ÈÌØÂÊ*/
+                                    /**<CNcomment:ç¼–ç æ•°æ®è¾“å‡ºbuffer*/		
+    HI_U32  u32BitsOutBufSize;      /**<IN the buffer size of bitstream output buffer. unit:Byte.*/ /**<CNcomment:ç¼–ç å™¨è¾“å‡ºbufferå¤§å°*/
+    HI_U32  u32BitsOutBytesPerFrame;/**<IN size of the encoded audio data frame ,unit: Byte.*/ /**<CNcomment:ç¼–ç æ•°æ®å¸§å¤§å°ï¼Œå•ä½:Byte*/
+    HI_U32  u32BitRate;             /**<IN compress bit rate of the audio stream.*/ /**<CNcomment:æ¯”ç‰¹ç‡*/
 } HI_HAENCODE_OUTPUT_S;
 
 /**HA encoder struct define.*/
-/**CNcomment:¶¨Òå±àÂëÆ÷½á¹¹Ìå*/
+/**CNcomment:å®šä¹‰ç¼–ç å™¨ç»“æ„ä½“*/
 typedef struct hiHA_ENCODE_S
 {
     const HI_PCHAR szName;/**<Input, description information about audio encoder. */
-                          /**<CNcomment:IN ±àÂëÆ÷ÃèÊöÃû×Ö*/ 
+                          /**<CNcomment:IN ç¼–ç å™¨æè¿°åå­—*/ 
 
     const HI_U32 enCodecID;/**<Input, encoder ID.Note: This ID is the identifier of a encoder, and must be unique. */
-	                       /**<CNcomment:IN ±àÂëÆ÷±êÊ¶£¬×¢Òâ: ´Ë±êÊ¶×÷Îª±àÂëÆ÷Î¨Ò»Éí·İ±êÊ¶£¬±ØĞëÎ¨Ò»¶ø²»ÄÜÓĞÖØ¸´*/ 
+	                       /**<CNcomment:IN ç¼–ç å™¨æ ‡è¯†ï¼Œæ³¨æ„: æ­¤æ ‡è¯†ä½œä¸ºç¼–ç å™¨å”¯ä¸€èº«ä»½æ ‡è¯†ï¼Œå¿…é¡»å”¯ä¸€è€Œä¸èƒ½æœ‰é‡å¤*/ 
 
-    const HI_HAAUDIO_VERSIONTYPE_U uVersion;/**<Input, encoder version.*/ /**<CNcomment:IN ±àÂëÆ÷°æ±¾ÃèÊö*/
+    const HI_HAAUDIO_VERSIONTYPE_U uVersion;/**<Input, encoder version.*/ /**<CNcomment:IN ç¼–ç å™¨ç‰ˆæœ¬æè¿°*/
 
-    const HI_PCHAR pszDescription;/**<Input, Description infomation of the audio encoder. */ /**<CNcomment:IN ±àÂëÆ÷ÏêÏ¸ÃèÊöĞÅÏ¢*/
+    const HI_PCHAR pszDescription;/**<Input, Description infomation of the audio encoder. */ /**<CNcomment:IN ç¼–ç å™¨è¯¦ç»†æè¿°ä¿¡æ¯*/
 
     struct hiHA_ENCODE_S *pstNext;/**<OUT pointer to next HA enocder.manager by client.client:The layer of software that invokes the methods of the HA encoder. */
-                                  /**<CNcomment:OUT ÏÂ¸ö±àÂëÆ÷½á¹¹ÌåÖ¸Õë£¬ÓÉ¿Í»§¹ÜÀí */
+                                  /**<CNcomment:OUT ä¸‹ä¸ªç¼–ç å™¨ç»“æ„ä½“æŒ‡é’ˆï¼Œç”±å®¢æˆ·ç®¡ç† */
     
     HI_VOID  * pDllModule;/**<Output, pointer to the dll symbol of an HA encoder.This member variable is maintained by the client that calls the HA codec
                               Therefore, the developers of the HA encoder can ignore this member variable. \n*/
-                          /**<CNcomment:OUT ¸Ã³ÉÔ±±äÁ¿ÓÉµ÷ÓÃHA Codec µÄ¿Í»§¶ËÎ¬»¤, HA ±àÂëÆ÷¿ª·¢Õß¿ÉÒÔºöÂÔ¸Ã³ÉÔ±*/
+                          /**<CNcomment:OUT è¯¥æˆå‘˜å˜é‡ç”±è°ƒç”¨HA Codec çš„å®¢æˆ·ç«¯ç»´æŠ¤, HA ç¼–ç å™¨å¼€å‘è€…å¯ä»¥å¿½ç•¥è¯¥æˆå‘˜*/
 
     /** 
-    \brief Initializes a encoder. CNcomment:³õÊ¼»¯±àÂëÆ÷ CNend
+    \brief Initializes a encoder. CNcomment:åˆå§‹åŒ–ç¼–ç å™¨ CNend
     \attention \n
-    \param[in] pstOpenParam pointer of the open params CNcomment:open²ÎÊı½á¹¹ÌåÖ¸Õë CNend
-    \param[out] phEncoder   pointer of the encoder handle CNcomment:±àÂëÆ÷¾ä±úÖ¸Õë CNend
-    \retval ::HA_ErrorNone  SUCCESS CNcomment:³É¹¦ CNend
-    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:Ê§°Ü CNend
+    \param[in] pstOpenParam pointer of the open params CNcomment:openå‚æ•°ç»“æ„ä½“æŒ‡é’ˆ CNend
+    \param[out] phEncoder   pointer of the encoder handle CNcomment:ç¼–ç å™¨å¥æŸ„æŒ‡é’ˆ CNend
+    \retval ::HA_ErrorNone  SUCCESS CNcomment:æˆåŠŸ CNend
+    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:å¤±è´¥ CNend
     \see \n
     N/A
     */
@@ -695,11 +695,11 @@ typedef struct hiHA_ENCODE_S
                                     const HI_HAENCODE_OPENPARAM_S * pstOpenParam);       
 
     /** 
-    \brief DeInitializes a encoder. CNcomment:È¥³õÊ¼»¯±àÂëÆ÷ CNend
+    \brief DeInitializes a encoder. CNcomment:å»åˆå§‹åŒ–ç¼–ç å™¨ CNend
     \attention \n
-    \param[in] hEncoder   pointer of the encoder handle CNcomment:±àÂëÆ÷¾ä±ú CNend
-    \retval ::HA_ErrorNone  SUCCESS CNcomment:³É¹¦ CNend
-    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:Ê§°Ü CNend
+    \param[in] hEncoder   pointer of the encoder handle CNcomment:ç¼–ç å™¨å¥æŸ„ CNend
+    \retval ::HA_ErrorNone  SUCCESS CNcomment:æˆåŠŸ CNend
+    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:å¤±è´¥ CNend
     \see \n
     N/A
     */
@@ -707,24 +707,24 @@ typedef struct hiHA_ENCODE_S
 	
     /** 
     \brief Configure a encoder dynamically. It can be invoked anytime after the Encoder has been loaded.
-    CNcomment:±àÂëÆ÷¶¯Ì¬ÅäÖÃ·½·¨¡£ÓÃ»§¿ÉÒÔÔÚ±àÂëÆ÷ÔËĞĞÊ±µ÷ÓÃ¸Ã½Ó¿Ú CNend
+    CNcomment:ç¼–ç å™¨åŠ¨æ€é…ç½®æ–¹æ³•ã€‚ç”¨æˆ·å¯ä»¥åœ¨ç¼–ç å™¨è¿è¡Œæ—¶è°ƒç”¨è¯¥æ¥å£ CNend
     \attention \n
-    \param[in] hEncoder   the encoder handle CNcomment:±àÂëÆ÷¾ä±ú CNend
-    \param[in] pstConfigStructure pointer to application allocated structure to be used for initialization by the encoder CNcomment:±àÂëÆ÷³õÊ¼»¯½á¹¹Ìå CNend
-    \retval ::HA_ErrorNone  SUCCESS CNcomment:³É¹¦ CNend
-    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:Ê§°Ü CNend
+    \param[in] hEncoder   the encoder handle CNcomment:ç¼–ç å™¨å¥æŸ„ CNend
+    \param[in] pstConfigStructure pointer to application allocated structure to be used for initialization by the encoder CNcomment:ç¼–ç å™¨åˆå§‹åŒ–ç»“æ„ä½“ CNend
+    \retval ::HA_ErrorNone  SUCCESS CNcomment:æˆåŠŸ CNend
+    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:å¤±è´¥ CNend
     \see \n
     N/A
     */	
     HI_HA_ERRORTYPE_E (*EncodeSetConfig)(HI_VOID * hEncoder, HI_VOID * pstConfigStructure);
 	
     /** 
-    \brief Maximum output size of an encoded bitstream CNcomment:±àÂëÆ÷Êä³öËùĞè×î´ó»º³åÇøsize CNend
+    \brief Maximum output size of an encoded bitstream CNcomment:ç¼–ç å™¨è¾“å‡ºæ‰€éœ€æœ€å¤§ç¼“å†²åŒºsize CNend
     \attention \n
-    \param[in] hEncoder   the decoder handle CNcomment:½âÂëÆ÷¾ä±ú CNend
-    \param[out] pu32OutSizes pointer to the max size of the encoded audio frame. unit:Byte CNcomment:×î´ó±àÂëÖ¡Êä³ö»º³åÇø´óĞ¡ CNend
-    \retval ::HA_ErrorNone  SUCCESS CNcomment:³É¹¦ CNend
-    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:Ê§°Ü CNend
+    \param[in] hEncoder   the decoder handle CNcomment:è§£ç å™¨å¥æŸ„ CNend
+    \param[out] pu32OutSizes pointer to the max size of the encoded audio frame. unit:Byte CNcomment:æœ€å¤§ç¼–ç å¸§è¾“å‡ºç¼“å†²åŒºå¤§å° CNend
+    \retval ::HA_ErrorNone  SUCCESS CNcomment:æˆåŠŸ CNend
+    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:å¤±è´¥ CNend
     \see \n
     N/A
     */
@@ -732,13 +732,13 @@ typedef struct hiHA_ENCODE_S
                                                  HI_U32 * pu32OutSizes);
 	
     /** 
-    \brief This method is used to encode a frame. CNcomment:±àÂëÆ÷±àÂëÒ»Ö¡·½·¨ CNend
+    \brief This method is used to encode a frame. CNcomment:ç¼–ç å™¨ç¼–ç ä¸€å¸§æ–¹æ³• CNend
     \attention \n
-    \param[in] hEncoder   the decoder handle CNcomment:±àÂëÆ÷¾ä±ú CNend
-    \param[in] pstApkt pointer to audio stream packet CNcomment:ÒôÆµÊäÈëÁ÷Ö¸Õë CNend
-    \param[out] pstAOut pointer to audio output CNcomment:ÒôÆµÊä³öÁ÷Ö¸Õë CNend
-    \retval ::HA_ErrorNone	SUCCESS CNcomment:³É¹¦ CNend
-    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:Ê§°Ü CNend
+    \param[in] hEncoder   the decoder handle CNcomment:ç¼–ç å™¨å¥æŸ„ CNend
+    \param[in] pstApkt pointer to audio stream packet CNcomment:éŸ³é¢‘è¾“å…¥æµæŒ‡é’ˆ CNend
+    \param[out] pstAOut pointer to audio output CNcomment:éŸ³é¢‘è¾“å‡ºæµæŒ‡é’ˆ CNend
+    \retval ::HA_ErrorNone	SUCCESS CNcomment:æˆåŠŸ CNend
+    \retval ::HI_HA_ERRORTYPE_E FAILURE CNcomment:å¤±è´¥ CNend
     \see \n
     N/A
     */

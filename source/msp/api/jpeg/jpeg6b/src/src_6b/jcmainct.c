@@ -16,7 +16,7 @@
 
 /**
  ** revise this file is to clear up the warning message
- ** CNcomment:Õâ¸öÎÄ¼şµÄĞŞ¸ÄÖ»ÊÇÏû³ı¸æ¾¯ĞÅÏ¢ CNend\n
+ ** CNcomment:è¿™ä¸ªæ–‡ä»¶çš„ä¿®æ”¹åªæ˜¯æ¶ˆé™¤å‘Šè­¦ä¿¡æ¯ CNend\n
  **/
 
 /* Note: currently, there is no operating mode in which a full-image buffer

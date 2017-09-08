@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : the dqt and dht table realize in this file
-                  CNcomment: Á¿»¯±íºÍ¹ş·òÂü±íµÄÊµÏÖ½Ó¿Ú CNend\n
+                  CNcomment: é‡åŒ–è¡¨å’Œå“ˆå¤«æ›¼è¡¨çš„å®ç°æ¥å£ CNend\n
 Function List 	: 
 
 			  		  
@@ -39,7 +39,7 @@ Date				Author        		Modification
 
     /***************************** Macro Definition ******************************/
     /** \addtogroup 	 JPEG TABLE MACRO */
-    /** @{ */  /** <!-- ¡¾JPEG TABLE MACRO¡¿ */
+    /** @{ */  /** <!-- ã€JPEG TABLE MACROã€‘ */
 
 
 	 /** @} */	/*! <!-- Macro Definition end */
@@ -48,7 +48,7 @@ Date				Author        		Modification
 	 /*************************** Enum Definition ****************************/
 
 	/** \addtogroup      JPEG TABLE ENUM */
-    /** @{ */  /** <!-- ¡¾JPEG TABLE ENUM¡¿ */
+    /** @{ */  /** <!-- ã€JPEG TABLE ENUMã€‘ */
 
 
 	
@@ -57,7 +57,7 @@ Date				Author        		Modification
 	/*************************** Structure Definition ****************************/
 
 	/** \addtogroup      JPEG TABLE STRUCTURE */
-    /** @{ */  /** <!-- ¡¾JPEG TABLE STRUCTURE¡¿ */
+    /** @{ */  /** <!-- ã€JPEG TABLE STRUCTUREã€‘ */
 
 	/** @} */  /*! <!-- Structure Definition end */
 
@@ -67,14 +67,14 @@ Date				Author        		Modification
     /******************************* API declaration *****************************/
 
 	/** \addtogroup      JPEG TABLE API */
-    /** @{ */  /** <!-- ¡¾JPEG TABLE API¡¿ */
+    /** @{ */  /** <!-- ã€JPEG TABLE APIã€‘ */
 	
 
 	/*****************************************************************************
 	* func			: JPEG_HDEC_SetDqt
 	* description	: set the dqt
-	                  CNcomment:  ÉèÖÃÁ¿»¯±íĞÅÏ¢          CNend\n
-	* param[in] 	: cinfo        CNcomment:  ½âÂë¶ÔÏó   CNend\n
+	                  CNcomment:  è®¾ç½®é‡åŒ–è¡¨ä¿¡æ¯          CNend\n
+	* param[in] 	: cinfo        CNcomment:  è§£ç å¯¹è±¡   CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -83,8 +83,8 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_SetDht
 	* description	: set the dht
-	                  CNcomment:  ÉèÖÃ¹ş·òÂü±íĞÅÏ¢      CNend\n
-	* param[in] 	: cinfo       CNcomment:  ½âÂë¶ÔÏó  CNend\n
+	                  CNcomment:  è®¾ç½®å“ˆå¤«æ›¼è¡¨ä¿¡æ¯      CNend\n
+	* param[in] 	: cinfo       CNcomment:  è§£ç å¯¹è±¡  CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/

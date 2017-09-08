@@ -5271,7 +5271,7 @@ HI_S32 HI_MPI_AVPLAY_ReleaseIFrame(HI_HANDLE hAvplay, HI_UNF_VIDEO_FRAME_INFO_S 
 }
 
 #if 0
-// TODO: S40 IÖ¡½âÂë·½°¸±ä¸ü£¬ÓĞ´ıÊµÏÖ
+// TODO: S40 Iå¸§è§£ç æ–¹æ¡ˆå˜æ›´ï¼Œæœ‰å¾…å®ç°
 HI_S32 HI_MPI_AVPLAY_DecodeIFrame(HI_HANDLE hAvplay, const HI_UNF_AVPLAY_I_FRAME_S *pstIframe,
                                               HI_UNF_VIDEO_FRAME_INFO_S *pstCapPicture)
 {
@@ -6806,7 +6806,7 @@ HI_S32 HI_MPI_AVPLAY_GetSndHandle(HI_HANDLE hAvplay, HI_HANDLE *phTrack)
     return HI_SUCCESS;
 }
 
-// TODO: È·ÈÏ¸Ã½Ó¿ÚÄÜ·ñÉ¾³ı
+// TODO: ç¡®è®¤è¯¥æ¥å£èƒ½å¦åˆ é™¤
 HI_S32 HI_MPI_AVPLAY_GetWindowHandle(HI_HANDLE hAvplay, HI_HANDLE *phWindow)
 {
     AVPLAY_S           *pAvplay = HI_NULL;
@@ -7231,7 +7231,7 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
         return HI_ERR_AVPLAY_INVALID_OPT;    
     }
 
-    /* homologous window*/ /* Í¬Ô´´°¿Ú */
+    /* homologous window*/ /* åŒæºçª—å£ */
     if (HI_DRV_WIN_ACTIVE_MAIN_AND_SLAVE == WinInfo.eType)
     {
         if (pAvplay->MasterFrmChn.hWindow != WinInfo.hPrim)
@@ -7331,7 +7331,7 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             pAvplay->SlaveChnNum--;
         }
     }
-    /*  analogous master window*/ /* ·ÇÍ¬Ô´ Ö÷´°¿Ú¼°´Ó´°¿Ú */
+    /*  analogous master window*/ /* éåŒæº ä¸»çª—å£åŠä»çª—å£ */
     else if (HI_DRV_WIN_ACTIVE_SINGLE == WinInfo.eType)
     {
         if (pAvplay->MasterFrmChn.hWindow == hWindow)
@@ -7446,7 +7446,7 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             }
         }
     }
-    /* analogous virtual window*/ /* ·ÇÍ¬Ô´ ĞéÄâ´°¿Ú*/
+    /* analogous virtual window*/ /* éåŒæº è™šæ‹Ÿçª—å£*/
     else
     {
         for (i=0; i<pAvplay->VirChnNum; i++)
@@ -7469,7 +7469,7 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
             return HI_ERR_AVPLAY_INVALID_OPT;             
         }
 
-        /* if no master chn £¬ only virtual chn */
+        /* if no master chn ï¼Œ only virtual chn */
         if (HI_INVALID_HANDLE == pAvplay->MasterFrmChn.hWindow)
         {        
             if (HI_TRUE == pAvplay->AvplayProcDataFlag[AVPLAY_PROC_VDEC_VO])
@@ -7512,7 +7512,7 @@ HI_S32 HI_MPI_AVPLAY_DetachWindow(HI_HANDLE hAvplay, HI_HANDLE hWindow)
 }
 
 
-// TODO: È·ÈÏ¸Ã¹¦ÄÜÊÇ·ñ»¹ĞèÒª
+// TODO: ç¡®è®¤è¯¥åŠŸèƒ½æ˜¯å¦è¿˜éœ€è¦
 HI_S32 HI_MPI_AVPLAY_SetWindowRepeat(HI_HANDLE hAvplay, HI_U32 u32Repeat)
 {
     AVPLAY_S           *pAvplay = HI_NULL;

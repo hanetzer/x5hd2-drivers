@@ -31,19 +31,19 @@ extern "C" {
 
 /******************************* API Declaration *****************************/
 /** \addtogroup      TDE */
-/** @{ */  /** <!¡ª[TDE] */
+/** @{ */  /** <!â€”[TDE] */
 
 /** 
-\brief Starts a two-dimensional engine 2 (TDE2) device. CNcomment:´ò¿ªTDE2Éè±¸CNend
+\brief Starts a two-dimensional engine 2 (TDE2) device. CNcomment:æ‰“å¼€TDE2è®¾å¤‡CNend
 \attention \n
 Before using the TDE, you must call this API to ensure that a TDE device is started.\n
 A TDE device can be started repeatedly by using multiple processes.\n.
-CNcomment:ÔÚ½øÐÐTDEÏà¹Ø²Ù×÷Ç°Ó¦¸ÃÊ×ÏÈµ÷ÓÃ´Ë½Ó¿Ú£¬±£Ö¤TDEÉè±¸´¦ÓÚ´ò¿ª×´Ì¬\n
-TDEÉè±¸ÔÊÐí¶à½ø³ÌÖØ¸´´ò¿ª\n  CNend
+CNcomment:åœ¨è¿›è¡ŒTDEç›¸å…³æ“ä½œå‰åº”è¯¥é¦–å…ˆè°ƒç”¨æ­¤æŽ¥å£ï¼Œä¿è¯TDEè®¾å¤‡å¤„äºŽæ‰“å¼€çŠ¶æ€\n
+TDEè®¾å¤‡å…è®¸å¤šè¿›ç¨‹é‡å¤æ‰“å¼€\n  CNend
  
 \param  N/A
-\retval ::HI_SUCCESS Success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_OPEN_FAILED Starting a TDE device fails. CNcomment:TDEÉè±¸´ò¿ªÊ§°ÜCNend
+\retval ::HI_SUCCESS Success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_OPEN_FAILED Starting a TDE device fails. CNcomment:TDEè®¾å¤‡æ‰“å¼€å¤±è´¥CNend
 \see \n
 N/A
 */
@@ -51,10 +51,10 @@ HI_S32      HI_TDE2_Open(HI_VOID);
 
 
 /** 
-\brief Stops a TDE2 device. CNcomment:¹Ø±ÕTDE2Éè±¸CNend
+\brief Stops a TDE2 device. CNcomment:å…³é—­TDE2è®¾å¤‡CNend
 \attention \n
 HI_TDE2_Open must work with HI_TDE2_Close.\n
-CNcomment:µ÷ÓÃHI_TDE2_OpenÓëHI_TDE2_CloseµÄ´ÎÊýÐèÒª¶ÔÓ¦\n  CNend
+CNcomment:è°ƒç”¨HI_TDE2_Openä¸ŽHI_TDE2_Closeçš„æ¬¡æ•°éœ€è¦å¯¹åº”\n  CNend
 \param  N/A
 \retval N/A
 \see \n
@@ -67,9 +67,9 @@ HI_VOID     HI_TDE2_Close(HI_VOID);
 \brief Creates a TDE task.
 \attention N/A
 \param  N/A
-\retval If the return value is greater than 0, it indicates that the TDE task handle is valid. CNcomment:´óÓÚ0£ººÏ·¨µÄTDEÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄTDEÈÎÎñ¾ä±úCNend
+\retval If the return value is greater than 0, it indicates that the TDE task handle is valid. CNcomment:å¤§äºŽ0ï¼šåˆæ³•çš„TDEä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE The handle of a TDE task is invalid. CNcomment:éžæ³•çš„TDEä»»åŠ¡å¥æŸ„CNend
 \see \n
 N/A
 */
@@ -77,26 +77,26 @@ TDE_HANDLE  HI_TDE2_BeginJob(HI_VOID);
 
 
 /** 
-\brief Submits an existing TDE task. CNcomment:Ìá½»ÒÑ´´½¨µÄTDEÈÎÎñCNend
+\brief Submits an existing TDE task. CNcomment:æäº¤å·²åˆ›å»ºçš„TDEä»»åŠ¡CNend
 \attention \n
 Before calling this API, you must call HI_TDE2_Open to start a TDE device and call HI_TDE2_BeginJob to obtain a valid task handle.\n
 If the calling mode is set to block mode, and the API is returned due to timeout or interruption, the operation continues till it is complete even though the API called by the TDE is returned in advance.\n
 If the calling mode is set to synchronization mode, the operations in a TDE task are performed only after the frame or field synchronization signals from the video output unit (VOU) are received. If the calling mode is set to another mode, the operations in a TDE task are added to the global asynchronous command queue.\n
 The synchronization mode is not supported currently.\n
 After a task is submitted, its handle becomes invalid. If the task is submitted again, the error code HI_ERR_TDE_INVALID_HANDLE is returned. \n.
-CNcomment:ÔÚµ÷ÓÃ´Ë½Ó¿ÚÇ°Ó¦±£Ö¤µ÷ÓÃHI_TDE2_Open´ò¿ªTDEÉè±¸£¬²¢ÇÒµ÷ÓÃHI_TDE2_BeginJob»ñµÃÁËÓÐÐ§µÄÈÎÎñ¾ä±ú\n
-ÈôÉèÖÃÎª×èÈû²Ù×÷£¬º¯Êý³¬Ê±·µ»Ø»ò±»ÖÐ¶Ï·µ»ØÊ±Ó¦¸Ã×¢Òâ£º´ËÊ±TDE²Ù×÷µÄAPIº¯ÊýÌáÇ°·µ»Ø£¬µ«Ö´ÐÐµÄ²Ù×÷ÈÔ»áÍê³É\n
-Èç¹ûÉèÖÃÎªÍ¬²½Ä£Ê½£¬ÔòÈÎÎñÖÐµÄ²Ù×÷»áµÈµ½ÊÓÆµÊä³öµÄÖ¡»ò³¡Í¬²½ÐÅºÅÀ´ÁË²Å»áÖ´ÐÐ£»Èç¹û²»ÉèÖÃÎªÍ¬²½Ä£Ê½£¬ÔòÈÎÎñÖÐµÄ²Ù×÷»á¼ÓÈëÈ«¾ÖÒì²½ÃüÁî¶ÓÁÐµÈºòÖ´ÐÐ£»Ä¿Ç°\n
-ÔÝ²»Ö§³ÖÍ¬²½Ä£Ê½\n
-Ìá½»ÈÎÎñºó£¬´ËÈÎÎñ¶ÔÓ¦µÄhandle»á±äÎªÎÞÐ§£¬ÔÙ´ÎÌá½»»á³öÏÖ´íÎóÂëHI_ERR_TDE_INVALID_HANDLE \n  CNend
+CNcomment:åœ¨è°ƒç”¨æ­¤æŽ¥å£å‰åº”ä¿è¯è°ƒç”¨HI_TDE2_Openæ‰“å¼€TDEè®¾å¤‡ï¼Œå¹¶ä¸”è°ƒç”¨HI_TDE2_BeginJobèŽ·å¾—äº†æœ‰æ•ˆçš„ä»»åŠ¡å¥æŸ„\n
+è‹¥è®¾ç½®ä¸ºé˜»å¡žæ“ä½œï¼Œå‡½æ•°è¶…æ—¶è¿”å›žæˆ–è¢«ä¸­æ–­è¿”å›žæ—¶åº”è¯¥æ³¨æ„ï¼šæ­¤æ—¶TDEæ“ä½œçš„APIå‡½æ•°æå‰è¿”å›žï¼Œä½†æ‰§è¡Œçš„æ“ä½œä»ä¼šå®Œæˆ\n
+å¦‚æžœè®¾ç½®ä¸ºåŒæ­¥æ¨¡å¼ï¼Œåˆ™ä»»åŠ¡ä¸­çš„æ“ä½œä¼šç­‰åˆ°è§†é¢‘è¾“å‡ºçš„å¸§æˆ–åœºåŒæ­¥ä¿¡å·æ¥äº†æ‰ä¼šæ‰§è¡Œï¼›å¦‚æžœä¸è®¾ç½®ä¸ºåŒæ­¥æ¨¡å¼ï¼Œåˆ™ä»»åŠ¡ä¸­çš„æ“ä½œä¼šåŠ å…¥å…¨å±€å¼‚æ­¥å‘½ä»¤é˜Ÿåˆ—ç­‰å€™æ‰§è¡Œï¼›ç›®å‰\n
+æš‚ä¸æ”¯æŒåŒæ­¥æ¨¡å¼\n
+æäº¤ä»»åŠ¡åŽï¼Œæ­¤ä»»åŠ¡å¯¹åº”çš„handleä¼šå˜ä¸ºæ— æ•ˆï¼Œå†æ¬¡æäº¤ä¼šå‡ºçŽ°é”™è¯¯ç HI_ERR_TDE_INVALID_HANDLE \n  CNend
 
-\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEÈÎÎñ¾ä±úCNend
-\param[in] bSync  Whether to submit a TDE task in synchronization mode. CNcomment:ÊÇ·ñÊ¹ÓÃÍ¬²½·½Ê½Ìá½»CNend
-\param[in] bBlock  Block flag. CNcomment:×èÈû±êÖ¾CNend
-\param[in] u32TimeOut  Timeout period 10 ms. CNcomment:³¬Ê±Ê±¼ä£¬µ¥Î»jiffies£¨10ms£©CNend
-\retval ::HI_SUCCESS  A task is submitted successfully in non-block mode. CNcomment:·Ç×èÈûÈÎÎñÌá½»³É¹¦CNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The input task handle is invalid. CNcomment:ÊäÈëµÄJob handlerÎÞÐ§CNend
-\retval ::HI_ERR_TDE_JOB_TIMEOUT  A task is not completed due to timeout. CNcomment:ÈÎÎñ³¬Ê±Î´Íê³ÉCNend
+\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEä»»åŠ¡å¥æŸ„CNend
+\param[in] bSync  Whether to submit a TDE task in synchronization mode. CNcomment:æ˜¯å¦ä½¿ç”¨åŒæ­¥æ–¹å¼æäº¤CNend
+\param[in] bBlock  Block flag. CNcomment:é˜»å¡žæ ‡å¿—CNend
+\param[in] u32TimeOut  Timeout period 10 ms. CNcomment:è¶…æ—¶æ—¶é—´ï¼Œå•ä½jiffiesï¼ˆ10msï¼‰CNend
+\retval ::HI_SUCCESS  A task is submitted successfully in non-block mode. CNcomment:éžé˜»å¡žä»»åŠ¡æäº¤æˆåŠŸCNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The input task handle is invalid. CNcomment:è¾“å…¥çš„Job handleræ— æ•ˆCNend
+\retval ::HI_ERR_TDE_JOB_TIMEOUT  A task is not completed due to timeout. CNcomment:ä»»åŠ¡è¶…æ—¶æœªå®ŒæˆCNend
 \see \n
 N/A
 */
@@ -104,21 +104,21 @@ HI_S32      HI_TDE2_EndJob(TDE_HANDLE s32Handle, HI_BOOL bSync, HI_BOOL bBlock, 
 
 
 /** 
-\brief Cancels an operation added in a TDE task. CNcomment:È¡ÏûÒÑ¾­¼ÓÈëµ½TDEÈÎÎñÖÐµÄ²Ù×÷CNend
+\brief Cancels an operation added in a TDE task. CNcomment:å–æ¶ˆå·²ç»åŠ å…¥åˆ°TDEä»»åŠ¡ä¸­çš„æ“ä½œCNend
 \attention \n
 Before calling this API, you must call HI_TDE2_Open to start a TDE device and call HI_TDE2_BeginJob to obtain a valid task handle.\n
 A submitted task cannot be cancelled.\n
 No operations can be added to cancelled tasks, because the cancelled tasks are invalid.\n
 This API is called when an error occurs during TDE operation configuration.\n
-CNcomment:ÔÚµ÷ÓÃ´Ë½Ó¿ÚÇ°Ó¦±£Ö¤µ÷ÓÃHI_TDE2_Open´ò¿ªTDEÉè±¸£¬²¢ÇÒµ÷ÓÃHI_TDE2_BeginJob»ñµÃÁËÓÐÐ§µÄÈÎÎñ¾ä±ú\n
-ÒÑ¾­Ìá½»µÄÈÎÎñ²»ÄÜ¹»ÔÙÈ¡Ïû\n
-È¡ÏûºóµÄÈÎÎñ²»ÔÙÓÐÐ§£¬²»ÄÜÌí¼Ó²Ù×÷\n
-´Ë½Ó¿ÚµÄÓ¦ÓÃ³¡¾°£ºÔÚÅäÖÃTDE²Ù×÷³ö´íÊ±Ê¹ÓÃ\n  CNend
+CNcomment:åœ¨è°ƒç”¨æ­¤æŽ¥å£å‰åº”ä¿è¯è°ƒç”¨HI_TDE2_Openæ‰“å¼€TDEè®¾å¤‡ï¼Œå¹¶ä¸”è°ƒç”¨HI_TDE2_BeginJobèŽ·å¾—äº†æœ‰æ•ˆçš„ä»»åŠ¡å¥æŸ„\n
+å·²ç»æäº¤çš„ä»»åŠ¡ä¸èƒ½å¤Ÿå†å–æ¶ˆ\n
+å–æ¶ˆåŽçš„ä»»åŠ¡ä¸å†æœ‰æ•ˆï¼Œä¸èƒ½æ·»åŠ æ“ä½œ\n
+æ­¤æŽ¥å£çš„åº”ç”¨åœºæ™¯ï¼šåœ¨é…ç½®TDEæ“ä½œå‡ºé”™æ—¶ä½¿ç”¨\n  CNend
 
-\param[in] s32Handle Handle of a TDE task. CNcomment:ÈÎÎñ¾ä±úCNend
-\retval 0 success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_FAILURE  The specified task cannot be cancelled because it has been submitted. CNcomment:Ö¸¶¨µÄÈÎÎñÒÑ¾­Ìá½»ÎÞ·¨È¡ÏûCNend
+\param[in] s32Handle Handle of a TDE task. CNcomment:ä»»åŠ¡å¥æŸ„CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_FAILURE  The specified task cannot be cancelled because it has been submitted. CNcomment:æŒ‡å®šçš„ä»»åŠ¡å·²ç»æäº¤æ— æ³•å–æ¶ˆCNend
 
 \see \n
 N/A
@@ -128,17 +128,17 @@ HI_S32      HI_TDE2_CancelJob(TDE_HANDLE s32Handle);
 
 
 /** 
-\brief Waits for the completion of a specified TDE task. CNcomment:µÈ´ýÖ¸¶¨µÄÈÎÎñÍê³ÉCNend
+\brief Waits for the completion of a specified TDE task. CNcomment:ç­‰å¾…æŒ‡å®šçš„ä»»åŠ¡å®ŒæˆCNend
 \attention \n
  As a block interface, this API is blocked until the specified task is complete.\n
- CNcomment:´Ë½Ó¿ÚÎª×èÈû½Ó¿Ú£¬»á×èÈûµÈ´ýÖ¸¶¨µÄÈÎÎñÍê³É\n  CNend
+ CNcomment:æ­¤æŽ¥å£ä¸ºé˜»å¡žæŽ¥å£ï¼Œä¼šé˜»å¡žç­‰å¾…æŒ‡å®šçš„ä»»åŠ¡å®Œæˆ\n  CNend
  
-\param[in] s32Handle Handle of a TDE task. CNcomment:ÈÎÎñ¾ä±úCNend
-\retval 0  The specified TDE task is not completed. CNcomment:Ö¸¶¨µÄTDEÈÎÎñÎ´Íê³ÉCNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_QUERY_TIMEOUT  The specified task is not completed due to timeout. CNcomment:Ö¸¶¨µÄÈÎÎñ³¬Ê±Î´Íê³ÉCNend
-\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The operation is not supported. CNcomment:²»Ö§³ÖµÄ²Ù×÷CNend
+\param[in] s32Handle Handle of a TDE task. CNcomment:ä»»åŠ¡å¥æŸ„CNend
+\retval 0  The specified TDE task is not completed. CNcomment:æŒ‡å®šçš„TDEä»»åŠ¡æœªå®ŒæˆCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:éžæ³•çš„ä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_QUERY_TIMEOUT  The specified task is not completed due to timeout. CNcomment:æŒ‡å®šçš„ä»»åŠ¡è¶…æ—¶æœªå®ŒæˆCNend
+\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The operation is not supported. CNcomment:ä¸æ”¯æŒçš„æ“ä½œCNend
 
 \see \n
 N/A
@@ -147,14 +147,14 @@ HI_S32      HI_TDE2_WaitForDone(TDE_HANDLE s32Handle);
 
 
 /** 
-\brief Waits for the completion of all TDE tasks. CNcomment:µÈ´ýTDEµÄËùÓÐÈÎÎñÍê³ÉCNend
+\brief Waits for the completion of all TDE tasks. CNcomment:ç­‰å¾…TDEçš„æ‰€æœ‰ä»»åŠ¡å®ŒæˆCNend
 \attention \n
 As a block interface, this API is blocked until all TDE tasks are complete.\n
-CNcomment:´Ë½Ó¿ÚÎª×èÈû½Ó¿Ú£¬»á×èÈûµÈ´ýËùÓÐµÄTDEÈÎÎñÍê³É\n  CNend
+CNcomment:æ­¤æŽ¥å£ä¸ºé˜»å¡žæŽ¥å£ï¼Œä¼šé˜»å¡žç­‰å¾…æ‰€æœ‰çš„TDEä»»åŠ¡å®Œæˆ\n  CNend
 \param  N/A
-\retval 0  The specified TDE task is not completed. CNcomment:Ö¸¶¨µÄTDEÈÎÎñÎ´Íê³ÉCNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The operation is not supported. CNcomment:²»Ö§³ÖµÄ²Ù×÷CNend
+\retval 0  The specified TDE task is not completed. CNcomment:æŒ‡å®šçš„TDEä»»åŠ¡æœªå®ŒæˆCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The operation is not supported. CNcomment:ä¸æ”¯æŒçš„æ“ä½œCNend
 \see \n
 N/A
 */
@@ -162,13 +162,13 @@ HI_S32 HI_TDE2_WaitAllDone(HI_VOID);
 
 
 /** 
-\brief Resets all statuses of the TDE. CNcomment:¸´Î»TDEËùÓÐ×´Ì¬CNend
+\brief Resets all statuses of the TDE. CNcomment:å¤ä½TDEæ‰€æœ‰çŠ¶æ€CNend
 \attention \n
 This API is used to reset software and hardware if a timeout error occurs due to the inconsistency of the software and hardware for standby wakeup.\n
-CNcomment:´Ë½Ó¿ÚÒ»°ãÓÃÓÚ´ý»ú»½ÐÑÈíÓ²¼þ²»Æ¥ÅäÊ±³öÏÖ³¬Ê±´íÎóÊ±µ÷ÓÃ£¬ÓÃÓÚ¸´Î»ÈíÓ²¼þ\n  CNend
+CNcomment:æ­¤æŽ¥å£ä¸€èˆ¬ç”¨äºŽå¾…æœºå”¤é†’è½¯ç¡¬ä»¶ä¸åŒ¹é…æ—¶å‡ºçŽ°è¶…æ—¶é”™è¯¯æ—¶è°ƒç”¨ï¼Œç”¨äºŽå¤ä½è½¯ç¡¬ä»¶\n  CNend
 \param  N/A
-\retval 0  The specified TDE task is not completed. CNcomment:Ö¸¶¨µÄTDEÈÎÎñÎ´Íê³ÉCNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
+\retval 0  The specified TDE task is not completed. CNcomment:æŒ‡å®šçš„TDEä»»åŠ¡æœªå®ŒæˆCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
 \see \n
 N/A
 */
@@ -176,7 +176,7 @@ HI_S32 HI_TDE2_Reset(HI_VOID);
 
 
 /** 
-\brief Adds the fast copy operation to a TDE task. CNcomment:ÏòÈÎÎñÖÐÌí¼Ó¿ìËÙ¿½±´²Ù×÷CNend
+\brief Adds the fast copy operation to a TDE task. CNcomment:å‘ä»»åŠ¡ä¸­æ·»åŠ å¿«é€Ÿæ‹·è´æ“ä½œCNend
 \attention \n
 HI_TDE2_QuickCopy adopts the direct memory access (DMA) transfer technology; therefore, HI_TDE2_QuickCopy is superior to HI_TDE2_Bitblit in transfer.
 Because the format conversion is not supported during fast copying, the formats of the source bitmap and the target bitmap must be the same.\n
@@ -185,26 +185,26 @@ The specified operating area and the specified bitmap must have a public area; o
 If the pixel format of a bitmap is greater than or equal to a byte, the base address and stride of the bitmap format must be aligned based on the pixel format. If the pixel format of a bitmap is smaller than a byte, the base address and stride of the bitmap must be aligned based on byte. This requirement is applicable to other operations.\n
 If the pixel format of a bitmap is smaller than a byte, the horizontal start point and width of the bitmap must be aligned based on pixel.\n
 The horizontal start point and width of the YCbCr422 bitmap must be even numbers. This requirement is applicable to other operations.\n
-CNcomment:´Ë½Ó¿ÚÊ¹ÓÃµÄÊÇÖ±½ÓDMA°áÒÆ£¬Òò´ËÐÔÄÜÓÅÓÚHI_TDE2_Bitblit°áÒÆ\n
-¿ìËÙ¿½±´²Ù×÷²»Ö§³Ö¸ñÊ½×ª»»£¬Ô´Î»Í¼ºÍÄ¿±êÎ»Í¼¸ñÊ½±ØÐëÒ»ÖÂ\n
-¿ìËÙ¿½±´²»Ö§³ÖËõ·Å¹¦ÄÜ£¬Òò´ËÈç¹ûÔ´ºÍÄ¿µÄµÄ²Ù×÷ÇøÓò³ß´ç²»Ò»ÖÂ£¬Ôò°´ÕÕÁ½Õß×îÐ¡µÄ¿í¸ß½øÐÐ¿½±´°áÒÆ\n
-Ö¸¶¨µÄ²Ù×÷ÇøÓòÒªºÍÖ¸¶¨µÄÎ»Í¼ÓÐ¹«¹²ÇøÓò£¬·ñÔò»á·µ»Ø´íÎó£»ÆäËû²Ù×÷¾ùÓÐ´ËÒªÇó\n
-ÏñËØ¸ñÊ½´óÓÚµÈÓÚByteµÄÎ»Í¼¸ñÊ½µÄ»ùµØÖ·ºÍÎ»Í¼µÄStride±ØÐë°´ÕÕÏñËØ¸ñÊ½¶ÔÆë£¬ÏñËØ¸ñÊ½²»×ãByteµÄÎ»Í¼¸ñÊ½µÄ»ùµØÖ·ºÍStrideÐèÒª°´ÕÕByte¶ÔÆë£»ÆäËû²Ù×÷¾ùÓÐ´ËÒªÇó\n
-ÏñËØ¸ñÊ½²»×ãByteµÄÎ»Í¼¸ñÊ½µÄË®Æ½ÆðÊ¼Î»ÖÃºÍ¿í¶È±ØÐë°´ÕÕÏñËØ¶ÔÆë\n
-YCbCr422¸ñÊ½µÄÎ»Í¼µÄË®Æ½ÆðÊ¼Î»ÖÃºÍ¿í¶È±ØÐëÎªÅ¼Êý£»ÆäËû²Ù×÷¾ùÓÐ´ËÒªÇó\n  CNend
+CNcomment:æ­¤æŽ¥å£ä½¿ç”¨çš„æ˜¯ç›´æŽ¥DMAæ¬ç§»ï¼Œå› æ­¤æ€§èƒ½ä¼˜äºŽHI_TDE2_Bitblitæ¬ç§»\n
+å¿«é€Ÿæ‹·è´æ“ä½œä¸æ”¯æŒæ ¼å¼è½¬æ¢ï¼Œæºä½å›¾å’Œç›®æ ‡ä½å›¾æ ¼å¼å¿…é¡»ä¸€è‡´\n
+å¿«é€Ÿæ‹·è´ä¸æ”¯æŒç¼©æ”¾åŠŸèƒ½ï¼Œå› æ­¤å¦‚æžœæºå’Œç›®çš„çš„æ“ä½œåŒºåŸŸå°ºå¯¸ä¸ä¸€è‡´ï¼Œåˆ™æŒ‰ç…§ä¸¤è€…æœ€å°çš„å®½é«˜è¿›è¡Œæ‹·è´æ¬ç§»\n
+æŒ‡å®šçš„æ“ä½œåŒºåŸŸè¦å’ŒæŒ‡å®šçš„ä½å›¾æœ‰å…¬å…±åŒºåŸŸï¼Œå¦åˆ™ä¼šè¿”å›žé”™è¯¯ï¼›å…¶ä»–æ“ä½œå‡æœ‰æ­¤è¦æ±‚\n
+åƒç´ æ ¼å¼å¤§äºŽç­‰äºŽByteçš„ä½å›¾æ ¼å¼çš„åŸºåœ°å€å’Œä½å›¾çš„Strideå¿…é¡»æŒ‰ç…§åƒç´ æ ¼å¼å¯¹é½ï¼Œåƒç´ æ ¼å¼ä¸è¶³Byteçš„ä½å›¾æ ¼å¼çš„åŸºåœ°å€å’ŒStrideéœ€è¦æŒ‰ç…§Byteå¯¹é½ï¼›å…¶ä»–æ“ä½œå‡æœ‰æ­¤è¦æ±‚\n
+åƒç´ æ ¼å¼ä¸è¶³Byteçš„ä½å›¾æ ¼å¼çš„æ°´å¹³èµ·å§‹ä½ç½®å’Œå®½åº¦å¿…é¡»æŒ‰ç…§åƒç´ å¯¹é½\n
+YCbCr422æ ¼å¼çš„ä½å›¾çš„æ°´å¹³èµ·å§‹ä½ç½®å’Œå®½åº¦å¿…é¡»ä¸ºå¶æ•°ï¼›å…¶ä»–æ“ä½œå‡æœ‰æ­¤è¦æ±‚\n  CNend
 
-\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEÈÎÎñ¾ä±úCNend
-\param[in] pstSrc  Source bitmap. CNcomment:Ô´Î»Í¼CNend
-\param[in] pstSrcRect  Operating area of the source bitmap. CNcomment:Ô´Î»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstDst  Target bitmap. CNcomment:Ä¿±êÎ»Í¼CNend
-\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:Ä¿±êÎ»Í¼²Ù×÷ÇøÓòCNend
-\retval 0 success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:²ÎÊýÖÐÓÐ¿ÕÖ¸Õë´íÎóCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:ÎÞÐ§µÄ²ÎÊýÉèÖÃCNend
-\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:ÄÚ´æ²»×ã£¬ÎÞ·¨Ìí¼Ó²Ù×÷CNend
-\retval ::HI_FAILURE  A system error or an unknown error occurs.CNcomment:ÏµÍ³´íÎó»òÎ´Öª´íÎóCNend
+\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEä»»åŠ¡å¥æŸ„CNend
+\param[in] pstSrc  Source bitmap. CNcomment:æºä½å›¾CNend
+\param[in] pstSrcRect  Operating area of the source bitmap. CNcomment:æºä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstDst  Target bitmap. CNcomment:ç›®æ ‡ä½å›¾CNend
+\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:ç›®æ ‡ä½å›¾æ“ä½œåŒºåŸŸCNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:å‚æ•°ä¸­æœ‰ç©ºæŒ‡é’ˆé”™è¯¯CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:éžæ³•çš„ä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•°è®¾ç½®CNend
+\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:å†…å­˜ä¸è¶³ï¼Œæ— æ³•æ·»åŠ æ“ä½œCNend
+\retval ::HI_FAILURE  A system error or an unknown error occurs.CNcomment:ç³»ç»Ÿé”™è¯¯æˆ–æœªçŸ¥é”™è¯¯CNend
 \see \n
 N/A
 */
@@ -213,21 +213,21 @@ HI_S32      HI_TDE2_QuickCopy(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstSrc, TDE2
 
 
 /** 
-\brief Rapidly fills in the target bitmap with a fixed value. CNcomment:¿ìËÙ½«¹Ì¶¨ÖµÌî³äµ½Ä¿µÄÎ»Í¼CNend
+\brief Rapidly fills in the target bitmap with a fixed value. CNcomment:å¿«é€Ÿå°†å›ºå®šå€¼å¡«å……åˆ°ç›®çš„ä½å›¾CNend
 \attention \n
 The data to be filled in must be specified based on the format of the target bitmap.\n
-CNcomment:Ìî³äµÄÊý¾ÝÖµÐèÒª°´ÕÕÄ¿±êÎ»Í¼µÄ¸ñÊ½Ö¸¶¨\n  CNend
-\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEÈÎÎñ¾ä±úCNend
-\param[in] pstDst  Target bitmap. CNcomment:Ä¿±êÎ»Í¼CNend
-\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:Ä¿±êÎ»Í¼²Ù×÷ÇøÓòCNend
-\param[in] u32FillData  Data to be filled in. CNcomment:Ìî³äÖµCNend
-\retval 0 success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:²ÎÊýÖÐÓÐ¿ÕÖ¸Õë´íÎóCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:ÎÞÐ§µÄ²ÎÊýÉèÖÃCNend
-\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:ÄÚ´æ²»×ã£¬ÎÞ·¨Ìí¼Ó²Ù×÷CNend
-\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ÏµÍ³´íÎó»òÎ´Öª´íÎóCNend
+CNcomment:å¡«å……çš„æ•°æ®å€¼éœ€è¦æŒ‰ç…§ç›®æ ‡ä½å›¾çš„æ ¼å¼æŒ‡å®š\n  CNend
+\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEä»»åŠ¡å¥æŸ„CNend
+\param[in] pstDst  Target bitmap. CNcomment:ç›®æ ‡ä½å›¾CNend
+\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:ç›®æ ‡ä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] u32FillData  Data to be filled in. CNcomment:å¡«å……å€¼CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:å‚æ•°ä¸­æœ‰ç©ºæŒ‡é’ˆé”™è¯¯CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:éžæ³•çš„ä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•°è®¾ç½®CNend
+\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:å†…å­˜ä¸è¶³ï¼Œæ— æ³•æ·»åŠ æ“ä½œCNend
+\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ç³»ç»Ÿé”™è¯¯æˆ–æœªçŸ¥é”™è¯¯CNend
 \see \n
 N/A
 */
@@ -237,29 +237,29 @@ HI_S32      HI_TDE2_QuickFill(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstDst, TDE2
 
 /** 
 \brief Scales the source bitmap based on a specified size of the target bitmap. The source bitmap and target bitmap can be the same.
-CNcomment:½«Ô´Î»Í¼´øËõ·ÅÎªÄ¿±êÎ»Í¼Ö¸¶¨´óÐ¡£¬Ô´ºÍÄ¿±ê¿ÉÎªÍ¬Ò»Î»Í¼CNend
+CNcomment:å°†æºä½å›¾å¸¦ç¼©æ”¾ä¸ºç›®æ ‡ä½å›¾æŒ‡å®šå¤§å°ï¼Œæºå’Œç›®æ ‡å¯ä¸ºåŒä¸€ä½å›¾CNend
 \attention \n
 The maximum minification is 15, but there is no limit on magnification.\n
 You can scale a bitmap that serves as both source bitmap and target bitmap. If the memories for storing the source bitmap and target bitmap overlap, the bitmaps cannot be scaled.\n
-CNcomment:ËõÐ¡±¶Êý×î´óÎª15±¶£¬·Å´ó±¶ÊýÔòÃ»ÓÐÏÞÖÆ\n
-Ëõ·ÅÊ±Ô´Î»Í¼ºÍÄ¿±êÎ»Í¼¿ÉÒÔÎªÍ¬Ò»Î»Í¼£¬µ«²»ÄÜÎªÄÚ´æÓÐÖØµþµÄ²»Í¬Î»Í¼\n  CNend
+CNcomment:ç¼©å°å€æ•°æœ€å¤§ä¸º15å€ï¼Œæ”¾å¤§å€æ•°åˆ™æ²¡æœ‰é™åˆ¶\n
+ç¼©æ”¾æ—¶æºä½å›¾å’Œç›®æ ‡ä½å›¾å¯ä»¥ä¸ºåŒä¸€ä½å›¾ï¼Œä½†ä¸èƒ½ä¸ºå†…å­˜æœ‰é‡å çš„ä¸åŒä½å›¾\n  CNend
 
-\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEÈÎÎñ¾ä±úCNend
-\param[in] pstSrc  Source bitmap. CNcomment:Ô´Î»Í¼CNend
-\param[in] pstSrcRect  Operating area of the source bitmap. CNcomment:Ô´Î»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstDst  Target bitmap. CNcomment:Ä¿±êÎ»Í¼CNend
-\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:Ä¿±êÎ»Í¼²Ù×÷ÇøÓòCNend
-\retval 0 success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:²ÎÊýÖÐÓÐ¿ÕÖ¸Õë´íÎóCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:ÎÞÐ§µÄ²ÎÊýÉèÖÃCNend
-\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:ÄÚ´æ²»×ã£¬ÎÞ·¨Ìí¼Ó²Ù×÷CNend
-\retval ::HI_ERR_TDE_NOT_ALIGNED  The start address or stride of the bitmap is not aligned based on pixel. CNcomment:Î»Í¼ÆðÊ¼µØÖ·»òStrideÃ»ÓÐ°´ÕÕÏñËØ¶ÔÆëCNend
-\retval ::HI_ERR_TDE_MINIFICATION  The start address or stride of the bitmap is not aligned based on pixel. CNcomment:ËõÐ¡±¶Êý¹ý´óCNend
-\retval ::HI_ERR_TDE_NOT_ALIGNED  The start address of the color look-up table (CLUT) is not 4-byte aligned. CNcomment:Clut±íµÄÆðÊ¼µØÖ·Ã»ÓÐ°´ÕÕ4byte¶ÔÆëCNend
-\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The operation is not supported. CNcomment:²»Ö§³ÖµÄ²Ù×÷ÅäÖÃCNend
-\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ÏµÍ³´íÎó»òÎ´Öª´íÎóCNend
+\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEä»»åŠ¡å¥æŸ„CNend
+\param[in] pstSrc  Source bitmap. CNcomment:æºä½å›¾CNend
+\param[in] pstSrcRect  Operating area of the source bitmap. CNcomment:æºä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstDst  Target bitmap. CNcomment:ç›®æ ‡ä½å›¾CNend
+\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:ç›®æ ‡ä½å›¾æ“ä½œåŒºåŸŸCNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:å‚æ•°ä¸­æœ‰ç©ºæŒ‡é’ˆé”™è¯¯CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:éžæ³•çš„ä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•°è®¾ç½®CNend
+\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:å†…å­˜ä¸è¶³ï¼Œæ— æ³•æ·»åŠ æ“ä½œCNend
+\retval ::HI_ERR_TDE_NOT_ALIGNED  The start address or stride of the bitmap is not aligned based on pixel. CNcomment:ä½å›¾èµ·å§‹åœ°å€æˆ–Strideæ²¡æœ‰æŒ‰ç…§åƒç´ å¯¹é½CNend
+\retval ::HI_ERR_TDE_MINIFICATION  The start address or stride of the bitmap is not aligned based on pixel. CNcomment:ç¼©å°å€æ•°è¿‡å¤§CNend
+\retval ::HI_ERR_TDE_NOT_ALIGNED  The start address of the color look-up table (CLUT) is not 4-byte aligned. CNcomment:Clutè¡¨çš„èµ·å§‹åœ°å€æ²¡æœ‰æŒ‰ç…§4byteå¯¹é½CNend
+\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The operation is not supported. CNcomment:ä¸æ”¯æŒçš„æ“ä½œé…ç½®CNend
+\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ç³»ç»Ÿé”™è¯¯æˆ–æœªçŸ¥é”™è¯¯CNend
 \see \n
 N/A
 */
@@ -268,30 +268,30 @@ HI_S32      HI_TDE2_QuickResize(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstSrc, TD
 
 
 /** 
-\brief Adds the anti-flicker operation to a TDE task. CNcomment:ÏòÈÎÎñÖÐÌí¼Ó¿¹ÉÁË¸²Ù×÷ CNend
+\brief Adds the anti-flicker operation to a TDE task. CNcomment:å‘ä»»åŠ¡ä¸­æ·»åŠ æŠ—é—ªçƒæ“ä½œ CNend
 \attention \n
 The anti-flicker operation supports vertical filtering only.\n
 The anti-flicker operation can be performed on the source bitmap and target bitmap that are stored in the same memory.\n
 If the sizes of the specified input area and output area are different, scaling is performed.\n
-CNcomment:¿¹ÉÁË¸Ö»°´´¹Ö±·½Ïò½øÐÐÂË²¨\n
-¿¹ÉÁË¸µÄÔ´ºÍÄ¿µÄÎ»Í¼¿ÉÒÔÔÚÍ¬Ò»¿éÄÚ´æ\n
-Èç¹ûÖ¸¶¨µÄÊäÈëÇøÓòÓëÊä³ö²»Ò»ÖÂ£¬Ôò»á½øÐÐËõ·Å´¦Àí\n  CNend
+CNcomment:æŠ—é—ªçƒåªæŒ‰åž‚ç›´æ–¹å‘è¿›è¡Œæ»¤æ³¢\n
+æŠ—é—ªçƒçš„æºå’Œç›®çš„ä½å›¾å¯ä»¥åœ¨åŒä¸€å—å†…å­˜\n
+å¦‚æžœæŒ‡å®šçš„è¾“å…¥åŒºåŸŸä¸Žè¾“å‡ºä¸ä¸€è‡´ï¼Œåˆ™ä¼šè¿›è¡Œç¼©æ”¾å¤„ç†\n  CNend
  	
-\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEÈÎÎñ¾ä±úCNend
-\param[in] pstSrc  Source bitmap. CNcomment:Ô´Î»Í¼CNend
-\param[in] pstSrcRect  Operating area of the source bitmap. CNcomment:Ô´Î»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstDst  Target bitmap. CNcomment:Ä¿±êÎ»Í¼CNend
-\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:Ä¿±êÎ»Í¼²Ù×÷ÇøÓòCNend
-\retval 0 success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:²ÎÊýÖÐÓÐ¿ÕÖ¸Õë´íÎóCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:ÎÞÐ§µÄ²ÎÊýÉèÖÃCNend
-\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:ÄÚ´æ²»×ã£¬ÎÞ·¨Ìí¼Ó²Ù×÷CNend
-\retval ::HI_ERR_TDE_NOT_ALIGNED  The start address or stride of the bitmap is not aligned based on pixel. CNcomment:Î»Í¼ÆðÊ¼µØÖ·»òStrideÃ»ÓÐ°´ÕÕÏñËØ¶ÔÆëCNend
-\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The operation is not supported. CNcomment:²»Ö§³ÖµÄ²Ù×÷ÅäÖÃCNend
-\retval ::HI_ERR_TDE_MINIFICATION  The minification is too large. CNcomment:ËõÐ¡±¶Êý¹ý´óCNend
-\retval ::HI_FAILURE  A system error or an unknown error occurs. ÏµÍ³´íÎó»òÎ´Öª´íÎóCNend
+\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEä»»åŠ¡å¥æŸ„CNend
+\param[in] pstSrc  Source bitmap. CNcomment:æºä½å›¾CNend
+\param[in] pstSrcRect  Operating area of the source bitmap. CNcomment:æºä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstDst  Target bitmap. CNcomment:ç›®æ ‡ä½å›¾CNend
+\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:ç›®æ ‡ä½å›¾æ“ä½œåŒºåŸŸCNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:å‚æ•°ä¸­æœ‰ç©ºæŒ‡é’ˆé”™è¯¯CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:éžæ³•çš„ä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•°è®¾ç½®CNend
+\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:å†…å­˜ä¸è¶³ï¼Œæ— æ³•æ·»åŠ æ“ä½œCNend
+\retval ::HI_ERR_TDE_NOT_ALIGNED  The start address or stride of the bitmap is not aligned based on pixel. CNcomment:ä½å›¾èµ·å§‹åœ°å€æˆ–Strideæ²¡æœ‰æŒ‰ç…§åƒç´ å¯¹é½CNend
+\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The operation is not supported. CNcomment:ä¸æ”¯æŒçš„æ“ä½œé…ç½®CNend
+\retval ::HI_ERR_TDE_MINIFICATION  The minification is too large. CNcomment:ç¼©å°å€æ•°è¿‡å¤§CNend
+\retval ::HI_FAILURE  A system error or an unknown error occurs. ç³»ç»Ÿé”™è¯¯æˆ–æœªçŸ¥é”™è¯¯CNend
 \see \n
 N/A
 */
@@ -302,7 +302,7 @@ HI_S32      HI_TDE2_QuickDeflicker(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstSrc,
 
 /** 
 \brief Adds the transfer operation (with additional functions available for the raster or macroblock bitmap) to a TDE task.
-CNcomment:ÏòÈÎÎñÖÐÌí¼Ó¶Ô¹âÕ¤/ºê¿éÎ»Í¼½øÐÐÓÐ¸½¼Ó¹¦ÄÜµÄ°áÒÆ²Ù×÷CNend
+CNcomment:å‘ä»»åŠ¡ä¸­æ·»åŠ å¯¹å…‰æ …/å®å—ä½å›¾è¿›è¡Œæœ‰é™„åŠ åŠŸèƒ½çš„æ¬ç§»æ“ä½œCNend
 \attention \n
 Before calling this API, you must call HI_TDE2_Open to start a TDE device and call HI_TDE2_BeginJob to obtain a valid task handle.\n
 The color space of the target bitmap must be the same as that of the background bitmap. The color space of the foreground bitmap can be different from that of the background or target bitmap. In this case, color space conversion is performed.\n
@@ -315,37 +315,37 @@ The clip operation can be performed only when the clipping area overlaps the ope
 When the color extension (from CLUT to ARGB/AYCbCr) is performed for the first time, the CLUT Reload flag function must be enabled.\n
 During a simple transfer operation (the operation does not contain additional functions and the pixel format of source and target bitmaps are the same), you can set the pointer to the operation option type to null. Then fast transfer is implemented.\n
 The pixel format of the target bitmap cannot be the macroblock format.\n
-CNcomment:ÔÚµ÷ÓÃ´Ë½Ó¿ÚÇ°Ó¦±£Ö¤µ÷ÓÃHI_TDE2_Open´ò¿ªTDEÉè±¸£¬²¢ÇÒµ÷ÓÃHI_TDE2_BeginJob»ñµÃÁËÓÐÐ§µÄÈÎÎñ¾ä±ú\n
-Ä¿±êÎ»Í¼±ØÐëÓë±³¾°Î»Í¼µÄÑÕÉ«¿Õ¼äÒ»ÖÂ£¬Ç°¾°Î»Í¼µÄÑÕÉ«¿Õ¼ä¿ÉÒÔÓë±³¾°/Ä¿±êÎ»Í¼²»Ò»ÖÂ£¬ÕâÖÖÇé¿öÏÂ»á½øÐÐÑÕÉ«¿Õ¼ä×ª»»¹¦ÄÜ\n
-µ±Ç°¾°Ô´Î»Í¼ÓëÄ¿±êÎ»Í¼³ß´ç²»Ò»ÖÂÊ±£¬Èç¹ûÉèÖÃÁËËõ·ÅÔò°´ÕÕÉè¶¨µÄÇøÓò½øÐÐËõ·Å£¬·ñÔò°´ÕÕÉèÖÃ¹«¹²ÇøÓòµÄ×îÐ¡Öµ½øÐÐ²Ã¼õ°áÒÆ\n
-Global AlphaºÍAlplh0¡¢Alpha1µÄÉèÖÃÖµÍ³Ò»°´ÕÕ[0,255]µÄ·¶Î§½øÐÐÉèÖÃ\n
-±³¾°Î»Í¼¿ÉÒÔÓëÄ¿±êÎ»Í¼ÎªÍ¬Ò»Î»Í¼\n
-µ±Ö»ÐèÒªÊ¹ÓÃµ¥Ô´°áÒÆ²Ù×÷Ê±£¨±ÈÈçÖ»¶ÔÔ´Î»Í¼½øÐÐROPÈ¡·Ç²Ù×÷£©£¬¿ÉÒÔ½«±³¾°»ò±³¾°Î»Í¼µÄ½á¹¹ÐÅÏ¢ºÍ²Ù×÷ÇøÓò½á¹¹Ö¸ÕëÉèÖÃÎª¿Õ\n
-²»ÄÜ¹»ÔÚÆôÓÃ¾µÏñµÄÍ¬Ê±½øÐÐËõ·Å\n
-×÷Clip²Ù×÷Ê±£¬²Ã¼õÇøÓò±ØÐëÓë²Ù×÷ÇøÓòÓÐ¹«¹²½»¼¯£¬·ñÔò»á·µ»Ø´íÎó\n
-ÔÚµÚÒ»´Î×÷ÑÕÉ«À©Õ¹²Ù×÷£¨Ô´ÎªClut¸ñÊ½£¬Ä¿µÄÎªARGB/AYCbCr¸ñÊ½£©Ê±£¬ÐèÒª´ò¿ªClut Reload±ê¼Ç\n
-×÷¼òµ¥µÄ°áÒÆ²Ù×÷(²»´ø¸½¼Ó¹¦ÄÜ£¬ÇÒÔ´ºÍÄ¿±êµÄÏóËØ¸ñÊ½Ò»ÖÂ)Ê±£¬¿ÉÒÔ½«²Ù×÷Ñ¡Ïî½á¹¹ÌåÖ¸ÕëÉèÖÃÎª¿Õ,ÕâÊ±»á½øÐÐ¿ìËÙ°áÒÆ\n
-²»Ö§³ÖÄ¿±êÏóËØ¸ñÊ½Îªºê¿é¸ñÊ½\n  CNend
+CNcomment:åœ¨è°ƒç”¨æ­¤æŽ¥å£å‰åº”ä¿è¯è°ƒç”¨HI_TDE2_Openæ‰“å¼€TDEè®¾å¤‡ï¼Œå¹¶ä¸”è°ƒç”¨HI_TDE2_BeginJobèŽ·å¾—äº†æœ‰æ•ˆçš„ä»»åŠ¡å¥æŸ„\n
+ç›®æ ‡ä½å›¾å¿…é¡»ä¸ŽèƒŒæ™¯ä½å›¾çš„é¢œè‰²ç©ºé—´ä¸€è‡´ï¼Œå‰æ™¯ä½å›¾çš„é¢œè‰²ç©ºé—´å¯ä»¥ä¸ŽèƒŒæ™¯/ç›®æ ‡ä½å›¾ä¸ä¸€è‡´ï¼Œè¿™ç§æƒ…å†µä¸‹ä¼šè¿›è¡Œé¢œè‰²ç©ºé—´è½¬æ¢åŠŸèƒ½\n
+å½“å‰æ™¯æºä½å›¾ä¸Žç›®æ ‡ä½å›¾å°ºå¯¸ä¸ä¸€è‡´æ—¶ï¼Œå¦‚æžœè®¾ç½®äº†ç¼©æ”¾åˆ™æŒ‰ç…§è®¾å®šçš„åŒºåŸŸè¿›è¡Œç¼©æ”¾ï¼Œå¦åˆ™æŒ‰ç…§è®¾ç½®å…¬å…±åŒºåŸŸçš„æœ€å°å€¼è¿›è¡Œè£å‡æ¬ç§»\n
+Global Alphaå’ŒAlplh0ã€Alpha1çš„è®¾ç½®å€¼ç»Ÿä¸€æŒ‰ç…§[0,255]çš„èŒƒå›´è¿›è¡Œè®¾ç½®\n
+èƒŒæ™¯ä½å›¾å¯ä»¥ä¸Žç›®æ ‡ä½å›¾ä¸ºåŒä¸€ä½å›¾\n
+å½“åªéœ€è¦ä½¿ç”¨å•æºæ¬ç§»æ“ä½œæ—¶ï¼ˆæ¯”å¦‚åªå¯¹æºä½å›¾è¿›è¡ŒROPå–éžæ“ä½œï¼‰ï¼Œå¯ä»¥å°†èƒŒæ™¯æˆ–èƒŒæ™¯ä½å›¾çš„ç»“æž„ä¿¡æ¯å’Œæ“ä½œåŒºåŸŸç»“æž„æŒ‡é’ˆè®¾ç½®ä¸ºç©º\n
+ä¸èƒ½å¤Ÿåœ¨å¯ç”¨é•œåƒçš„åŒæ—¶è¿›è¡Œç¼©æ”¾\n
+ä½œClipæ“ä½œæ—¶ï¼Œè£å‡åŒºåŸŸå¿…é¡»ä¸Žæ“ä½œåŒºåŸŸæœ‰å…¬å…±äº¤é›†ï¼Œå¦åˆ™ä¼šè¿”å›žé”™è¯¯\n
+åœ¨ç¬¬ä¸€æ¬¡ä½œé¢œè‰²æ‰©å±•æ“ä½œï¼ˆæºä¸ºClutæ ¼å¼ï¼Œç›®çš„ä¸ºARGB/AYCbCræ ¼å¼ï¼‰æ—¶ï¼Œéœ€è¦æ‰“å¼€Clut Reloadæ ‡è®°\n
+ä½œç®€å•çš„æ¬ç§»æ“ä½œ(ä¸å¸¦é™„åŠ åŠŸèƒ½ï¼Œä¸”æºå’Œç›®æ ‡çš„è±¡ç´ æ ¼å¼ä¸€è‡´)æ—¶ï¼Œå¯ä»¥å°†æ“ä½œé€‰é¡¹ç»“æž„ä½“æŒ‡é’ˆè®¾ç½®ä¸ºç©º,è¿™æ—¶ä¼šè¿›è¡Œå¿«é€Ÿæ¬ç§»\n
+ä¸æ”¯æŒç›®æ ‡è±¡ç´ æ ¼å¼ä¸ºå®å—æ ¼å¼\n  CNend
 
-\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEÈÎÎñ¾ä±úCNend
-\param[in] pstBackGround  Background bitmap. CNcomment:±³¾°Î»Í¼CNend
-\param[in] pstBackGroundRect  Operating area of the background bitmap. CNcomment:±³¾°Î»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstForeGround  Foreground bitmap. CNcomment:Ç°¾°Î»Í¼CNend
-\param[in] pstForeGroundRect  Operating area of the foreground bitmap. CNcomment:Ç°¾°Î»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstDst  Target bitmap. CNcomment:Ä¿±êÎ»Í¼CNend
-\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:Ä¿±êÎ»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstOpt  Structure for setting operation parameters. CNcomment:ÔËËã²ÎÊýÉèÖÃ½á¹¹CNend
-\retval 0 success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:²ÎÊýÖÐÓÐ¿ÕÖ¸Õë´íÎóCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:ÎÞÐ§µÄ²ÎÊýÉèÖÃCNend
-\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:ÄÚ´æ²»×ã£¬ÎÞ·¨Ìí¼Ó²Ù×÷CNend
-\retval ::HI_ERR_TDE_NOT_ALIGNED  The start address of the CLUT is not 4-byte aligned. CNcomment:Clut±íµÄÆðÊ¼µØÖ·Ã»ÓÐ°´ÕÕ4byte¶ÔÆëCNend
-\retval ::HI_ERR_TDE_MINIFICATION  The minification is too large. CNcomment:ËõÐ¡±¶Êý¹ý´óCNend
-\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The bitmap does not support this operation. CNcomment:Î»Í¼µÄ¸ñÊ½²Ù×÷²»Ö§³Ö´Ë²Ù×÷CNend
-\retval ::HI_ERR_TDE_CLIP_AREA  The operating area does not overlap the clipping area, and the displayed information is not updated. CNcomment:²Ù×÷ÇøÓòÓëClipÇøÓòÃ»ÓÐ½»¼¯£¬ÏÔÊ¾²»»áÓÐ¸üÐÂCNend
-\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ÏµÍ³´íÎó»òÎ´Öª´íÎó
+\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEä»»åŠ¡å¥æŸ„CNend
+\param[in] pstBackGround  Background bitmap. CNcomment:èƒŒæ™¯ä½å›¾CNend
+\param[in] pstBackGroundRect  Operating area of the background bitmap. CNcomment:èƒŒæ™¯ä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstForeGround  Foreground bitmap. CNcomment:å‰æ™¯ä½å›¾CNend
+\param[in] pstForeGroundRect  Operating area of the foreground bitmap. CNcomment:å‰æ™¯ä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstDst  Target bitmap. CNcomment:ç›®æ ‡ä½å›¾CNend
+\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:ç›®æ ‡ä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstOpt  Structure for setting operation parameters. CNcomment:è¿ç®—å‚æ•°è®¾ç½®ç»“æž„CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:å‚æ•°ä¸­æœ‰ç©ºæŒ‡é’ˆé”™è¯¯CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:éžæ³•çš„ä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•°è®¾ç½®CNend
+\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:å†…å­˜ä¸è¶³ï¼Œæ— æ³•æ·»åŠ æ“ä½œCNend
+\retval ::HI_ERR_TDE_NOT_ALIGNED  The start address of the CLUT is not 4-byte aligned. CNcomment:Clutè¡¨çš„èµ·å§‹åœ°å€æ²¡æœ‰æŒ‰ç…§4byteå¯¹é½CNend
+\retval ::HI_ERR_TDE_MINIFICATION  The minification is too large. CNcomment:ç¼©å°å€æ•°è¿‡å¤§CNend
+\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The bitmap does not support this operation. CNcomment:ä½å›¾çš„æ ¼å¼æ“ä½œä¸æ”¯æŒæ­¤æ“ä½œCNend
+\retval ::HI_ERR_TDE_CLIP_AREA  The operating area does not overlap the clipping area, and the displayed information is not updated. CNcomment:æ“ä½œåŒºåŸŸä¸ŽClipåŒºåŸŸæ²¡æœ‰äº¤é›†ï¼Œæ˜¾ç¤ºä¸ä¼šæœ‰æ›´æ–°CNend
+\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ç³»ç»Ÿé”™è¯¯æˆ–æœªçŸ¥é”™è¯¯
 \see \n
 N/A
 */
@@ -356,35 +356,35 @@ HI_S32      HI_TDE2_Bitblit(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstBackGround,
 
 /** 
 \brief Adds the fill and transfer operations (with additional functions available for the raster bitmap) to a TDE task. After addition, the functions of drawing a point, drawing a line, filling in a color block on the surface, and filling in a memory can be implemented.
-CNcomment:ÏòÈÎÎñÖÐÌí¼Ó¶Ô¹âÕ¤Î»Í¼½øÐÐÓÐ¸½¼Ó²Ù×÷µÄÌî³ä°áÒÆ²Ù×÷¡£ÊµÏÖÔÚsurfaceÉÏ»­µã¡¢»­Ïß¡¢É«¿éÌî³ä»òÄÚ´æÌî³äµÈ¹¦ÄÜCNend
+CNcomment:å‘ä»»åŠ¡ä¸­æ·»åŠ å¯¹å…‰æ …ä½å›¾è¿›è¡Œæœ‰é™„åŠ æ“ä½œçš„å¡«å……æ¬ç§»æ“ä½œã€‚å®žçŽ°åœ¨surfaceä¸Šç”»ç‚¹ã€ç”»çº¿ã€è‰²å—å¡«å……æˆ–å†…å­˜å¡«å……ç­‰åŠŸèƒ½CNend
 \attention \n
 Before calling this API, you must call HI_TDE2_Open to start a TDE device and call HI_TDE2_BeginJob to obtain a valid task handle.\n
 When the foreground bitmap is null, the functions of this API are the same as those of HI_TDE2_QuickFil.\n
 During solid drawing, the foreground bitmap supports the colorkey operation only.\n
 To draw a rectangle, a vertical line, or a horizontal line by calling HI_TDE2_SolidDraw, you need to set the width and height of the filled rectangle. For example, drawing a vertical line is to draw a rectangle with the width of one pixel.\n
-CNcomment:ÔÚµ÷ÓÃ´Ë½Ó¿ÚÇ°Ó¦±£Ö¤µ÷ÓÃHI_TDE2_Open´ò¿ªTDEÉè±¸£¬²¢ÇÒµ÷ÓÃHI_TDE2_BeginJob»ñµÃÁËÓÐÐ§µÄÈÎÎñ¾ä±ú\n
-µ±Ç°¾°Î»Í¼ÎªNULLÊ±£¬¸Ã½Ó¿ÚºÍHI_TDE2_QuickFillÊµÏÖµÄ¹¦ÄÜÒ»Ñù\n
-ÔÚSolid DrawÊ±£¬Ö»ÄÜ¶ÔÇ°¾°×öColor Key\n
-Solid Draw»æÖÆ¾ØÐÎ»òÕßË®Æ½/´¹Ö±Ö±ÏßµÄ·½·¨ÊÇÍ¨¹ýÉèÖÃÌî³ä¾ØÐÎµÄ¿í/¸ßÀ´Íê³É¡£ÀýÈç£º´¹Ö±Ö±Ïß¾ÍÊÇ»æÖÆ¿í¶ÈÎª1ÏñËØµÄ¾ØÐÎ\n  CNend
+CNcomment:åœ¨è°ƒç”¨æ­¤æŽ¥å£å‰åº”ä¿è¯è°ƒç”¨HI_TDE2_Openæ‰“å¼€TDEè®¾å¤‡ï¼Œå¹¶ä¸”è°ƒç”¨HI_TDE2_BeginJobèŽ·å¾—äº†æœ‰æ•ˆçš„ä»»åŠ¡å¥æŸ„\n
+å½“å‰æ™¯ä½å›¾ä¸ºNULLæ—¶ï¼Œè¯¥æŽ¥å£å’ŒHI_TDE2_QuickFillå®žçŽ°çš„åŠŸèƒ½ä¸€æ ·\n
+åœ¨Solid Drawæ—¶ï¼Œåªèƒ½å¯¹å‰æ™¯åšColor Key\n
+Solid Drawç»˜åˆ¶çŸ©å½¢æˆ–è€…æ°´å¹³/åž‚ç›´ç›´çº¿çš„æ–¹æ³•æ˜¯é€šè¿‡è®¾ç½®å¡«å……çŸ©å½¢çš„å®½/é«˜æ¥å®Œæˆã€‚ä¾‹å¦‚ï¼šåž‚ç›´ç›´çº¿å°±æ˜¯ç»˜åˆ¶å®½åº¦ä¸º1åƒç´ çš„çŸ©å½¢\n  CNend
  	 	 	 	
-\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEÈÎÎñ¾ä±úCNend
-\param[in] pstForeGround  Foreground bitmap. CNcomment:Ç°¾°Î»Í¼CNend
-\param[in] pstForeGroundRect  Operating area of the foreground bitmap. CNcomment:Ç°¾°Î»Í¼µÄ²Ù×÷ÇøÓòCNend
-\param[in] pstDst  Target bitmap. CNcomment:Ä¿±êÎ»Í¼CNend
-\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:Ä¿±êÎ»Í¼µÄ²Ù×÷ÇøÓòCNend
-\param[in] pstFillColor  Structure of fill colors. CNcomment:Ìî³äÉ«½á¹¹ÌåCNend
-\param[in] pstOpt  Structure of operation attributes. CNcomment:²Ù×÷ÊôÐÔ½á¹¹ÌåCNend
-\retval 0 success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:²ÎÊýÖÐÓÐ¿ÕÖ¸Õë´íÎóCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:ÎÞÐ§µÄ²ÎÊýÉèÖÃCNend
-\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:ÄÚ´æ²»×ã£¬ÎÞ·¨Ìí¼Ó²Ù×÷CNend
-\retval ::HI_ERR_TDE_NOT_ALIGNED  The start address of the CLUT is not 4-byte aligned. CNcomment:Clut±íµÄÆðÊ¼µØÖ·Ã»ÓÐ°´ÕÕ4byte¶ÔÆëCNend
-\retval ::HI_ERR_TDE_MINIFICATION  The minification is too large. CNcomment:ËõÐ¡±¶Êý¹ý´óCNend
-\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The bitmap does not support this operation. CNcomment:Î»Í¼µÄ¸ñÊ½²Ù×÷²»Ö§³Ö´Ë²Ù×÷CNend
-\retval ::HI_ERR_TDE_CLIP_AREA  The operating area does not overlap the clipping area, and the displayed information is not updated. CNcomment:²Ù×÷ÇøÓòÓëClipÇøÓòÃ»ÓÐ½»¼¯£¬ÏÔÊ¾²»»áÓÐ¸üÐÂCNend
-\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ÏµÍ³´íÎó»òÎ´Öª´íÎóCNend
+\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEä»»åŠ¡å¥æŸ„CNend
+\param[in] pstForeGround  Foreground bitmap. CNcomment:å‰æ™¯ä½å›¾CNend
+\param[in] pstForeGroundRect  Operating area of the foreground bitmap. CNcomment:å‰æ™¯ä½å›¾çš„æ“ä½œåŒºåŸŸCNend
+\param[in] pstDst  Target bitmap. CNcomment:ç›®æ ‡ä½å›¾CNend
+\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:ç›®æ ‡ä½å›¾çš„æ“ä½œåŒºåŸŸCNend
+\param[in] pstFillColor  Structure of fill colors. CNcomment:å¡«å……è‰²ç»“æž„ä½“CNend
+\param[in] pstOpt  Structure of operation attributes. CNcomment:æ“ä½œå±žæ€§ç»“æž„ä½“CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:å‚æ•°ä¸­æœ‰ç©ºæŒ‡é’ˆé”™è¯¯CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:éžæ³•çš„ä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•°è®¾ç½®CNend
+\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:å†…å­˜ä¸è¶³ï¼Œæ— æ³•æ·»åŠ æ“ä½œCNend
+\retval ::HI_ERR_TDE_NOT_ALIGNED  The start address of the CLUT is not 4-byte aligned. CNcomment:Clutè¡¨çš„èµ·å§‹åœ°å€æ²¡æœ‰æŒ‰ç…§4byteå¯¹é½CNend
+\retval ::HI_ERR_TDE_MINIFICATION  The minification is too large. CNcomment:ç¼©å°å€æ•°è¿‡å¤§CNend
+\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The bitmap does not support this operation. CNcomment:ä½å›¾çš„æ ¼å¼æ“ä½œä¸æ”¯æŒæ­¤æ“ä½œCNend
+\retval ::HI_ERR_TDE_CLIP_AREA  The operating area does not overlap the clipping area, and the displayed information is not updated. CNcomment:æ“ä½œåŒºåŸŸä¸ŽClipåŒºåŸŸæ²¡æœ‰äº¤é›†ï¼Œæ˜¾ç¤ºä¸ä¼šæœ‰æ›´æ–°CNend
+\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ç³»ç»Ÿé”™è¯¯æˆ–æœªçŸ¥é”™è¯¯CNend
 \see \n
 N/A
 */
@@ -396,31 +396,31 @@ HI_S32      HI_TDE2_SolidDraw(TDE_HANDLE s32Handle, TDE2_SURFACE_S* pstForeGroun
 
 /** 
 \brief Adds the transfer operation (with additional functions available for the macroblock bitmap) to a TDE task. That is, the luminance macroblock data and the chrominance macroblock data are combined into raster data. During the combination, the scaling, anti-flicker, and clip operations can be performed concurrently.
-CNcomment:ÏòÈÎÎñÖÐÌí¼Ó¶Ôºê¿éÎ»Í¼½øÐÐÓÐ¸½¼Ó¹¦ÄÜµÄ°áÒÆ²Ù×÷¡£½«ÁÁ¶ÈºÍÉ«¶Èºê¿éÊý¾ÝºÏ²¢³É¹âÕ¤¸ñÊ½£¬¿ÉÒÔ°éËæËõ·Å¡¢¿¹ÉÁË¸¡¢Clip´¦ÀíCNend
+CNcomment:å‘ä»»åŠ¡ä¸­æ·»åŠ å¯¹å®å—ä½å›¾è¿›è¡Œæœ‰é™„åŠ åŠŸèƒ½çš„æ¬ç§»æ“ä½œã€‚å°†äº®åº¦å’Œè‰²åº¦å®å—æ•°æ®åˆå¹¶æˆå…‰æ …æ ¼å¼ï¼Œå¯ä»¥ä¼´éšç¼©æ”¾ã€æŠ—é—ªçƒã€Clipå¤„ç†CNend
 \attention \n
 Before calling this API, you must call HI_TDE2_Open to start a TDE device and call HI_TDE2_BeginJob to obtain a valid task handle.\n
 For the YCbCr422 macroblock, the horizontal coordination of the start point of the operating area must be an even number.\n
 The target bitmap must be in YCbCr format.\n
-CNcomment:ÔÚµ÷ÓÃ´Ë½Ó¿ÚÇ°Ó¦±£Ö¤µ÷ÓÃHI_TDE2_Open´ò¿ªTDEÉè±¸£¬²¢ÇÒµ÷ÓÃHI_TDE2_BeginJob»ñµÃÁËÓÐÐ§µÄÈÎÎñ¾ä±ú\n
-¶ÔÓÚYCbCr422¸ñÊ½µÄºê¿é£¬²Ù×÷ÇøÓòÆðÊ¼µãË®Æ½×ø±ê±ØÐëÊÇÅ¼Êý\n
-Ä¿±êÎ»Í¼±ØÐëÊÇYCbCrÑÕÉ«¿Õ¼ä\n  CNend
+CNcomment:åœ¨è°ƒç”¨æ­¤æŽ¥å£å‰åº”ä¿è¯è°ƒç”¨HI_TDE2_Openæ‰“å¼€TDEè®¾å¤‡ï¼Œå¹¶ä¸”è°ƒç”¨HI_TDE2_BeginJobèŽ·å¾—äº†æœ‰æ•ˆçš„ä»»åŠ¡å¥æŸ„\n
+å¯¹äºŽYCbCr422æ ¼å¼çš„å®å—ï¼Œæ“ä½œåŒºåŸŸèµ·å§‹ç‚¹æ°´å¹³åæ ‡å¿…é¡»æ˜¯å¶æ•°\n
+ç›®æ ‡ä½å›¾å¿…é¡»æ˜¯YCbCré¢œè‰²ç©ºé—´\n  CNend
  	 	 	
-\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEÈÎÎñ¾ä±úCNend
-\param[in] pstMB  Surface of a macroblock. CNcomment:ºê¿ésurface  CNend
-\param[in] pstMbRect  Operating area of a macroblock. CNcomment:ºê¿é²Ù×÷ÇøÓòCNend
-\param[in] pstDst  Target bitmap. CNcomment:Ä¿±êÎ»Í¼CNend
-\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:Ä¿±ê²Ù×÷ÇøÓòCNend
-\param[in] pstMbOpt  Operation attributes of a macroblock. CNcomment:ºê¿é²Ù×÷ÊôÐÔCNend
-\retval 0 success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:²ÎÊýÖÐÓÐ¿ÕÖ¸Õë´íÎóCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:ÎÞÐ§µÄ²ÎÊýÉèÖÃCNend
-\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:ÄÚ´æ²»×ã£¬ÎÞ·¨Ìí¼Ó²Ù×÷CNend
-\retval ::HI_ERR_TDE_MINIFICATION  The minification is too large because its maximum value is 15. CNcomment:ËõÐ¡±¶Êý³¬³öÏÞÖÆ£¨×î´óÎªËõÐ¡15±¶£©CNend
-\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The bitmap does not support this operation. CNcomment:Î»Í¼µÄ¸ñÊ½²Ù×÷²»Ö§³Ö´Ë²Ù×÷CNend
-\retval ::HI_ERR_TDE_CLIP_AREA  The operating area does not overlap the clipping area, and the displayed information is not updated. CNcomment:²Ù×÷ÇøÓòÓëClipÇøÓòÃ»ÓÐ½»¼¯£¬ÏÔÊ¾²»»áÓÐ¸üÐÂCNend
-\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ÏµÍ³´íÎó»òÎ´Öª´íÎóCNend
+\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEä»»åŠ¡å¥æŸ„CNend
+\param[in] pstMB  Surface of a macroblock. CNcomment:å®å—surface  CNend
+\param[in] pstMbRect  Operating area of a macroblock. CNcomment:å®å—æ“ä½œåŒºåŸŸCNend
+\param[in] pstDst  Target bitmap. CNcomment:ç›®æ ‡ä½å›¾CNend
+\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:ç›®æ ‡æ“ä½œåŒºåŸŸCNend
+\param[in] pstMbOpt  Operation attributes of a macroblock. CNcomment:å®å—æ“ä½œå±žæ€§CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:å‚æ•°ä¸­æœ‰ç©ºæŒ‡é’ˆé”™è¯¯CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:éžæ³•çš„ä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•°è®¾ç½®CNend
+\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:å†…å­˜ä¸è¶³ï¼Œæ— æ³•æ·»åŠ æ“ä½œCNend
+\retval ::HI_ERR_TDE_MINIFICATION  The minification is too large because its maximum value is 15. CNcomment:ç¼©å°å€æ•°è¶…å‡ºé™åˆ¶ï¼ˆæœ€å¤§ä¸ºç¼©å°15å€ï¼‰CNend
+\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The bitmap does not support this operation. CNcomment:ä½å›¾çš„æ ¼å¼æ“ä½œä¸æ”¯æŒæ­¤æ“ä½œCNend
+\retval ::HI_ERR_TDE_CLIP_AREA  The operating area does not overlap the clipping area, and the displayed information is not updated. CNcomment:æ“ä½œåŒºåŸŸä¸ŽClipåŒºåŸŸæ²¡æœ‰äº¤é›†ï¼Œæ˜¾ç¤ºä¸ä¼šæœ‰æ›´æ–°CNend
+\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ç³»ç»Ÿé”™è¯¯æˆ–æœªçŸ¥é”™è¯¯CNend
 \see \n
 N/A
 */
@@ -430,35 +430,35 @@ HI_S32      HI_TDE2_MbBlit(TDE_HANDLE s32Handle, TDE2_MB_S* pstMB, TDE2_RECT_S  
 
 /** 
 \brief Adds the mask raster of operation (ROP) (available for the raster bitmap) to a TDE task. That is, the ROP operation is performed on the foreground bitmap and the background bitmap based on the mask bitmap.
-CNcomment:ÏòÈÎÎñÖÐÌí¼Ó¶Ô¹âÕ¤Î»Í¼½øÐÐMask Rop°áÒÆ²Ù×÷¡£¸ù¾ÝMaskÎ»Í¼ÊµÏÖÇ°¾°Î»Í¼ºÍ±³¾°Î»Í¼ROPµÄÐ§¹ûCNend
+CNcomment:å‘ä»»åŠ¡ä¸­æ·»åŠ å¯¹å…‰æ …ä½å›¾è¿›è¡ŒMask Ropæ¬ç§»æ“ä½œã€‚æ ¹æ®Maskä½å›¾å®žçŽ°å‰æ™¯ä½å›¾å’ŒèƒŒæ™¯ä½å›¾ROPçš„æ•ˆæžœCNend
 \attention \n
 Before calling this API, you must call HI_TDE2_Open to start a TDE device and call HI_TDE2_BeginJob to obtain a valid task handle.\n
 The sizes of the operating areas of the mask bitmap, foreground bitmap, and background bitmap must be the same.\n
 The mask bitmap must be in A1 format.\n
 The target bitmap and foreground bitmap must be in the same color space.\n
-CNcomment:ÔÚµ÷ÓÃ´Ë½Ó¿ÚÇ°Ó¦±£Ö¤µ÷ÓÃHI_TDE2_Open´ò¿ªTDEÉè±¸£¬²¢ÇÒµ÷ÓÃHI_TDE2_BeginJob»ñµÃÁËÓÐÐ§µÄÈÎÎñ¾ä±ú\n  CNend
-Èý¸öÎ»Í¼µÄ²Ù×÷ÇøÓò´óÐ¡±ØÐëÒ»ÖÂ\n
-MaskÎ»Í¼±ØÐëÊÇA1¸ñÊ½µÄÎ»Í¼\n
-Ä¿±êÎ»Í¼ºÍÇ°¾°Î»Í¼±ØÐëÎ»ÓÚÍ¬Ò»ÑÕÉ«¿Õ¼ä\n  CNend
+CNcomment:åœ¨è°ƒç”¨æ­¤æŽ¥å£å‰åº”ä¿è¯è°ƒç”¨HI_TDE2_Openæ‰“å¼€TDEè®¾å¤‡ï¼Œå¹¶ä¸”è°ƒç”¨HI_TDE2_BeginJobèŽ·å¾—äº†æœ‰æ•ˆçš„ä»»åŠ¡å¥æŸ„\n  CNend
+ä¸‰ä¸ªä½å›¾çš„æ“ä½œåŒºåŸŸå¤§å°å¿…é¡»ä¸€è‡´\n
+Maskä½å›¾å¿…é¡»æ˜¯A1æ ¼å¼çš„ä½å›¾\n
+ç›®æ ‡ä½å›¾å’Œå‰æ™¯ä½å›¾å¿…é¡»ä½äºŽåŒä¸€é¢œè‰²ç©ºé—´\n  CNend
  	 	 	 	
-\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEÈÎÎñ¾ä±úCNend
-\param[in] pstBackGround  Background bitmap. CNcomment:±³¾°Î»Í¼CNend
-\param[in] pstBackGroundRect  Operating area of the background bitmap. CNcomment:±³¾°Î»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstForeGround  Foreground bitmap. CNcomment:Ç°¾°Î»Í¼CNend
-\param[in] pstForeGroundRect  Operating area of the foreground bitmap. CNcomment:Ç°¾°Î»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstMask  Mask bitmap. CNcomment:MaskÎ»Í¼CNend
-\param[in] pstMaskRect  Operating area of the mask bitmap. CNcomment:MaskÎ»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstDst  Target bitmap. CNcomment:Ä¿±êÎ»Í¼CNend
-\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:Ä¿±êÎ»Í¼²Ù×÷ÇøÓòCNend
-\param[in] enRopCode_Color  ROP code of a color component. CNcomment:ÑÕÉ«·ÖÁ¿µÄROPÔËËãÂëCNend
-\param[in] enRopCode_Alpha  ROP code of the alpha component. CNcomment:Alpha·ÖÁ¿µÄROPÔËËãÂëCNend
-\retval 0 success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:²ÎÊýÖÐÓÐ¿ÕÖ¸Õë´íÎóCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:ÎÞÐ§µÄ²ÎÊýÉèÖÃCNend
-\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:ÄÚ´æ²»×ã£¬ÎÞ·¨Ìí¼Ó²Ù×÷CNend
-\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ÏµÍ³´íÎó»òÎ´Öª´íÎóCNend
+\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEä»»åŠ¡å¥æŸ„CNend
+\param[in] pstBackGround  Background bitmap. CNcomment:èƒŒæ™¯ä½å›¾CNend
+\param[in] pstBackGroundRect  Operating area of the background bitmap. CNcomment:èƒŒæ™¯ä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstForeGround  Foreground bitmap. CNcomment:å‰æ™¯ä½å›¾CNend
+\param[in] pstForeGroundRect  Operating area of the foreground bitmap. CNcomment:å‰æ™¯ä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstMask  Mask bitmap. CNcomment:Maskä½å›¾CNend
+\param[in] pstMaskRect  Operating area of the mask bitmap. CNcomment:Maskä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstDst  Target bitmap. CNcomment:ç›®æ ‡ä½å›¾CNend
+\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:ç›®æ ‡ä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] enRopCode_Color  ROP code of a color component. CNcomment:é¢œè‰²åˆ†é‡çš„ROPè¿ç®—ç CNend
+\param[in] enRopCode_Alpha  ROP code of the alpha component. CNcomment:Alphaåˆ†é‡çš„ROPè¿ç®—ç CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:å‚æ•°ä¸­æœ‰ç©ºæŒ‡é’ˆé”™è¯¯CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:éžæ³•çš„ä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•°è®¾ç½®CNend
+\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:å†…å­˜ä¸è¶³ï¼Œæ— æ³•æ·»åŠ æ“ä½œCNend
+\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ç³»ç»Ÿé”™è¯¯æˆ–æœªçŸ¥é”™è¯¯CNend
 \see \n
 N/A
 */
@@ -472,35 +472,35 @@ HI_S32      HI_TDE2_BitmapMaskRop(TDE_HANDLE s32Handle,
 
 /** 
 \brief Adds the mask blend operation (available for the raster bitmap) to a TDE task. That is, the foreground bitmap and the background bitmap are blending with the mask bitmap based on the mask bitmap.
-CNcomment:ÏòÈÎÎñÖÐÌí¼Ó¶Ô¹âÕ¤Î»Í¼½øÐÐMask Blend°áÒÆ²Ù×÷¡£¸ù¾ÝMaskÎ»Í¼ÊµÏÖÇ°¾°Î»Í¼ºÍ±³¾°Î»Í¼´øMaskÎ»Í¼µÄµþ¼ÓÐ§¹ûCNend
+CNcomment:å‘ä»»åŠ¡ä¸­æ·»åŠ å¯¹å…‰æ …ä½å›¾è¿›è¡ŒMask Blendæ¬ç§»æ“ä½œã€‚æ ¹æ®Maskä½å›¾å®žçŽ°å‰æ™¯ä½å›¾å’ŒèƒŒæ™¯ä½å›¾å¸¦Maskä½å›¾çš„å åŠ æ•ˆæžœCNend
 \attention \n
 Before calling this API, you must call HI_TDE2_Open to start a TDE device and call HI_TDE2_BeginJob to obtain a valid task handle.\n
 The target bitmap and background bitmap must be in the same color space.\n
 If the foreground bitmap contains the premultiplied data, the premultiplied mode must be selected during alpha blending; otherwise, the non-premultiplied mode is selected.
 The parameter enBlendMode cannot be set to TDE2_ALUCMD_ROP.\n
-CNcomment:ÔÚµ÷ÓÃ´Ë½Ó¿ÚÇ°Ó¦±£Ö¤µ÷ÓÃHI_TDE2_Open´ò¿ªTDEÉè±¸£¬²¢ÇÒµ÷ÓÃHI_TDE2_BeginJob»ñµÃÁËÓÐÐ§µÄÈÎÎñ¾ä±ú\n
-Ä¿±êÎ»Í¼ºÍ±³¾°Î»Í¼±ØÐëÎ»ÓÚÍ¬Ò»ÑÕÉ«¿Õ¼ä\n
-Èç¹ûÇ°¾°µÄÎ»Í¼ÊÇÔ¤³ËÁËµÄÊý¾Ý£¬Alphaµþ¼ÓÄ£Ê½Ó¦¸ÃÑ¡ÔñÔ¤³ËÄ£Ê½£»·ñÔòÑ¡Ôñ·ÇÔ¤³ËÄ£Ê½\n
-enBlendMode²»ÄÜÑ¡ÔñTDE2_ALUCMD_ROPÄ£Ê½\n  CNend
+CNcomment:åœ¨è°ƒç”¨æ­¤æŽ¥å£å‰åº”ä¿è¯è°ƒç”¨HI_TDE2_Openæ‰“å¼€TDEè®¾å¤‡ï¼Œå¹¶ä¸”è°ƒç”¨HI_TDE2_BeginJobèŽ·å¾—äº†æœ‰æ•ˆçš„ä»»åŠ¡å¥æŸ„\n
+ç›®æ ‡ä½å›¾å’ŒèƒŒæ™¯ä½å›¾å¿…é¡»ä½äºŽåŒä¸€é¢œè‰²ç©ºé—´\n
+å¦‚æžœå‰æ™¯çš„ä½å›¾æ˜¯é¢„ä¹˜äº†çš„æ•°æ®ï¼ŒAlphaå åŠ æ¨¡å¼åº”è¯¥é€‰æ‹©é¢„ä¹˜æ¨¡å¼ï¼›å¦åˆ™é€‰æ‹©éžé¢„ä¹˜æ¨¡å¼\n
+enBlendModeä¸èƒ½é€‰æ‹©TDE2_ALUCMD_ROPæ¨¡å¼\n  CNend
 
-\param[in] s32Handle   Handle of a TDE task. CNcomment:TDEÈÎÎñ¾ä±úCNend
-\param[in] pstBackGround  Background bitmap. CNcomment:±³¾°Î»Í¼CNend
-\param[in] pstBackGroundRect  Operating area of the background bitmap. CNcomment:±³¾°Î»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstForeGround  Foreground bitmap. CNcomment:Ç°¾°Î»Í¼
-\param[in] pstForeGroundRect  Operating area of the foreground bitmap.CNcomment: Ç°¾°Î»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstMask  Mask bitmap. CNcomment:MaskÎ»Í¼CNend
-\param[in] pstMaskRect  Operating area of the mask bitmap. CNcomment:MaskÎ»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstDst  Target bitmap. CNcomment:Ä¿±êÎ»Í¼
-\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:Ä¿±êÎ»Í¼²Ù×÷ÇøÓòCNend
-\param[in] u8Alpha  Global alpha value during alpha blending. CNcomment:Alphaµþ¼ÓÊ±µÄÈ«¾ÖAlphaÖµCNend
-\param[in] enBlendMode  Alpha blending mode. CNcomment:Alphaµþ¼ÓÄ£Ê½Ñ¡ÔñCNend
-\retval 0 success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:²ÎÊýÖÐÓÐ¿ÕÖ¸Õë´íÎóCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:ÎÞÐ§µÄ²ÎÊýÉèÖÃ
-\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:ÄÚ´æ²»×ã£¬ÎÞ·¨Ìí¼Ó²Ù×÷CNend
-\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ÏµÍ³´íÎó»òÎ´Öª´íÎóCNend
+\param[in] s32Handle   Handle of a TDE task. CNcomment:TDEä»»åŠ¡å¥æŸ„CNend
+\param[in] pstBackGround  Background bitmap. CNcomment:èƒŒæ™¯ä½å›¾CNend
+\param[in] pstBackGroundRect  Operating area of the background bitmap. CNcomment:èƒŒæ™¯ä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstForeGround  Foreground bitmap. CNcomment:å‰æ™¯ä½å›¾
+\param[in] pstForeGroundRect  Operating area of the foreground bitmap.CNcomment: å‰æ™¯ä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstMask  Mask bitmap. CNcomment:Maskä½å›¾CNend
+\param[in] pstMaskRect  Operating area of the mask bitmap. CNcomment:Maskä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstDst  Target bitmap. CNcomment:ç›®æ ‡ä½å›¾
+\param[in] pstDstRect  Operating area of the target bitmap. CNcomment:ç›®æ ‡ä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] u8Alpha  Global alpha value during alpha blending. CNcomment:Alphaå åŠ æ—¶çš„å…¨å±€Alphaå€¼CNend
+\param[in] enBlendMode  Alpha blending mode. CNcomment:Alphaå åŠ æ¨¡å¼é€‰æ‹©CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:å‚æ•°ä¸­æœ‰ç©ºæŒ‡é’ˆé”™è¯¯CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:éžæ³•çš„ä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•°è®¾ç½®
+\retval ::HI_ERR_TDE_NO_MEM  Adding an operation fails due to insufficient memory. CNcomment:å†…å­˜ä¸è¶³ï¼Œæ— æ³•æ·»åŠ æ“ä½œCNend
+\retval ::HI_FAILURE  A system error or an unknown error occurs. CNcomment:ç³»ç»Ÿé”™è¯¯æˆ–æœªçŸ¥é”™è¯¯CNend
 \see \n
 N/A
 */
@@ -513,26 +513,26 @@ HI_S32      HI_TDE2_BitmapMaskBlend(TDE_HANDLE s32Handle,
 
 
 /** 
-\brief  Adds the rotation operation to a TDE task. CNcomment:ÏòÈÎÎñÖÐÌí¼ÓÐý×ª²Ù×÷CNend
+\brief  Adds the rotation operation to a TDE task. CNcomment:å‘ä»»åŠ¡ä¸­æ·»åŠ æ—‹è½¬æ“ä½œCNend
 \attention \n
 The pixel formats of the source bitmap and target bitmap must be the same, and the format cannot be YUV, CLUT1, or CLUT4.\n
 The parameters s32DstPointX and s32DstPointY are set to 0 by default. Because the two parameters are not used at present, they can be set to any values.\n
-CNcomment:Ô´ºÍÄ¿±êµÄÏñËØ¸ñÊ½±ØÐëÏàÍ¬£¬²¢ÇÒ²»ÄÜÊÇYUV¡¢CLUT1ºÍCLUT4¸ñÊ½\n
-²ÎÊýs32DstPointXºÍs32DstPointYÄ¬ÈÏÎª0£¬Ä¿Ç°ÕâÁ½¸ö²ÎÊýÃ»ÓÐÓÃµ½£¬¿ÉÒÔÊäÈëÈÎºÎÖµ\n  CNend
+CNcomment:æºå’Œç›®æ ‡çš„åƒç´ æ ¼å¼å¿…é¡»ç›¸åŒï¼Œå¹¶ä¸”ä¸èƒ½æ˜¯YUVã€CLUT1å’ŒCLUT4æ ¼å¼\n
+å‚æ•°s32DstPointXå’Œs32DstPointYé»˜è®¤ä¸º0ï¼Œç›®å‰è¿™ä¸¤ä¸ªå‚æ•°æ²¡æœ‰ç”¨åˆ°ï¼Œå¯ä»¥è¾“å…¥ä»»ä½•å€¼\n  CNend
 
-\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEÈÎÎñ¾ä±úCNend
-\param[in] pstSrc  Source bitmap.CNcomment: Ô´Î»Í¼CNend
-\param[in] pstSrcRect  Operating area of the source bitmap. CNcomment:Ô´Î»Í¼²Ù×÷ÇøÓòCNend
-\param[in] pstDst  Target bitmap. CNcomment:Ä¿±êÎ»Í¼CNend
-\param[in] s32DstPointX  Horizontal coordinate of the start point of the operating area in the target bitmap. CNcomment:Ä¿±êÎ»Í¼²Ù×÷ÇøÓòµÄÆðÊ¼µãºá×ø±êCNend
-\param[in] s32DstPointY  Vertical coordinate of the start point of the operating area in the target bitmap. CNcomment:Ä¿±êÎ»Í¼²Ù×÷ÇøÓòµÄÆðÊ¼µã×Ý×ø±êCNend
-\param[in] enRotateAngle  Rotate angle. CNcomment:Ðý×ªµÄ½Ç¶ÈCNend
-\retval 0 success. CNcomment:³É¹¦CNend
-\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEÉè±¸Î´´ò¿ª£¬APIµ÷ÓÃÊ§°ÜCNend
-\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:·Ç·¨µÄÈÎÎñ¾ä±úCNend
-\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:²ÎÊýÖÐÓÐ¿ÕÖ¸Õë´íÎóCNend
-\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The operation is not supported. CNcomment:²»Ö§³ÖµÄ²Ù×÷CNend
-\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:ÎÞÐ§µÄ²ÎÊýÉèÖÃCNend
+\param[in] s32Handle  Handle of a TDE task. CNcomment:TDEä»»åŠ¡å¥æŸ„CNend
+\param[in] pstSrc  Source bitmap.CNcomment: æºä½å›¾CNend
+\param[in] pstSrcRect  Operating area of the source bitmap. CNcomment:æºä½å›¾æ“ä½œåŒºåŸŸCNend
+\param[in] pstDst  Target bitmap. CNcomment:ç›®æ ‡ä½å›¾CNend
+\param[in] s32DstPointX  Horizontal coordinate of the start point of the operating area in the target bitmap. CNcomment:ç›®æ ‡ä½å›¾æ“ä½œåŒºåŸŸçš„èµ·å§‹ç‚¹æ¨ªåæ ‡CNend
+\param[in] s32DstPointY  Vertical coordinate of the start point of the operating area in the target bitmap. CNcomment:ç›®æ ‡ä½å›¾æ“ä½œåŒºåŸŸçš„èµ·å§‹ç‚¹çºµåæ ‡CNend
+\param[in] enRotateAngle  Rotate angle. CNcomment:æ—‹è½¬çš„è§’åº¦CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
+\retval ::HI_ERR_TDE_DEV_NOT_OPEN  Calling this API fails because no TDE device is started. CNcomment:TDEè®¾å¤‡æœªæ‰“å¼€ï¼ŒAPIè°ƒç”¨å¤±è´¥CNend
+\retval ::HI_ERR_TDE_INVALID_HANDLE  The handle of a TDE task is invalid. CNcomment:éžæ³•çš„ä»»åŠ¡å¥æŸ„CNend
+\retval ::HI_ERR_TDE_NULL_PTR  The parameter contains a null pointer. CNcomment:å‚æ•°ä¸­æœ‰ç©ºæŒ‡é’ˆé”™è¯¯CNend
+\retval ::HI_ERR_TDE_UNSUPPORTED_OPERATION  The operation is not supported. CNcomment:ä¸æ”¯æŒçš„æ“ä½œCNend
+\retval ::HI_ERR_TDE_INVALID_PARA  The parameter is invalid. CNcomment:æ— æ•ˆçš„å‚æ•°è®¾ç½®CNend
 \see \n
 N/A
 */
@@ -544,11 +544,11 @@ HI_S32 HI_TDE2_Rotate(TDE_HANDLE s32Handle,
 
 
 /** 
-\brief Sets the anti-flicker level. CNcomment:ÉèÖÃ¿¹ÉÁË¸¼¶±ðCNend
+\brief Sets the anti-flicker level. CNcomment:è®¾ç½®æŠ—é—ªçƒçº§åˆ«CNend
 \attention \n
 N/A
-\param[in] enDeflickerLevel  Anti-flicker level. CNcomment:¿¹ÉÁË¸ÏµÊý¼¶±ðCNend
-\retval 0 success. CNcomment:³É¹¦CNend
+\param[in] enDeflickerLevel  Anti-flicker level. CNcomment:æŠ—é—ªçƒç³»æ•°çº§åˆ«CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
 \retval ::
 
 \see none
@@ -557,11 +557,11 @@ HI_S32 HI_TDE2_SetDeflickerLevel(TDE_DEFLICKER_LEVEL_E enDeflickerLevel);
 
 
 /** 
-\brief Obtains the anti-flicker level.CNcomment: »ñÈ¡¿¹ÉÁË¸¼¶±ðCNend
+\brief Obtains the anti-flicker level.CNcomment: èŽ·å–æŠ—é—ªçƒçº§åˆ«CNend
 \attention \n
 N/A
-\param[in] pDeflickerLevel  Anti-flicker level. CNcomment:¿¹ÉÁË¸¼¶±ðCNend
-\retval 0 success. CNcomment:³É¹¦CNend
+\param[in] pDeflickerLevel  Anti-flicker level. CNcomment:æŠ—é—ªçƒçº§åˆ«CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
 \retval ::
 
 \see \n
@@ -571,11 +571,11 @@ HI_S32 HI_TDE2_GetDeflickerLevel(TDE_DEFLICKER_LEVEL_E *pDeflickerLevel);
 
 
 /** 
-\brief Sets the alpha judgment threshold. CNcomment:ÉèÖÃalphaÅÐ¾öãÐÖµCNend
+\brief Sets the alpha judgment threshold. CNcomment:è®¾ç½®alphaåˆ¤å†³é˜ˆå€¼CNend
 \attention \n
 N/A
-\param[in] u8ThresholdValue  Judgment threshold. CNcomment:ÅÐ¾öãÐÖµCNend
-\retval 0 success. CNcomment:³É¹¦CNend
+\param[in] u8ThresholdValue  Judgment threshold. CNcomment:åˆ¤å†³é˜ˆå€¼CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
 \retval ::
 
 \see \n
@@ -585,11 +585,11 @@ HI_S32 HI_TDE2_SetAlphaThresholdValue(HI_U8 u8ThresholdValue);
 
 
 /** 
-\brief Obtains the alpha judgment threshold. CNcomment:»ñÈ¡alphaÅÐ¾öãÐÖµCNend
+\brief Obtains the alpha judgment threshold. CNcomment:èŽ·å–alphaåˆ¤å†³é˜ˆå€¼CNend
 \attention \n
 N/A
-\param[in] pu8ThresholdValue  Judgment threshold. CNcomment:ÅÐ¾öãÐÖµCNend
-\retval 0 success. CNcomment:³É¹¦CNend
+\param[in] pu8ThresholdValue  Judgment threshold. CNcomment:åˆ¤å†³é˜ˆå€¼CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
 \retval ::
 
 \see \n
@@ -599,10 +599,10 @@ HI_S32 HI_TDE2_GetAlphaThresholdValue(HI_U8 *pu8ThresholdValue);
 
 
 /** 
-\brief Enables or disables the alpha judgment. CNcomment:ÉèÖÃalphaÅÐ¾ö¿ª¹ØCNend
+\brief Enables or disables the alpha judgment. CNcomment:è®¾ç½®alphaåˆ¤å†³å¼€å…³CNend
 \attention  N/A
-\param[in] bEnAlphaThreshold  Whether to enable the alpha judgment. CNcomment:alphaÅÐ¾ö¿ª¹ØCNend
-\retval 0 success. CNcomment:³É¹¦CNend
+\param[in] bEnAlphaThreshold  Whether to enable the alpha judgment. CNcomment:alphaåˆ¤å†³å¼€å…³CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
 \retval ::
 \see \n
 N/A
@@ -611,10 +611,10 @@ HI_S32 HI_TDE2_SetAlphaThresholdState(HI_BOOL bEnAlphaThreshold);
 
 
 /** 
-\brief Obtains the enable status of the alpha judgment. CNcomment:»ñÈ¡alphaÅÐ¾ö¿ª¹ØCNend
+\brief Obtains the enable status of the alpha judgment. CNcomment:èŽ·å–alphaåˆ¤å†³å¼€å…³CNend
 \attention N/A
-\param[in]  p_bEnAlphaThreshold  Whether to enable the alpha judgment. CNcomment:alphaÅÐ¾ö¿ª¹ØCNend
-\retval 0 success. CNcomment:³É¹¦CNend
+\param[in]  p_bEnAlphaThreshold  Whether to enable the alpha judgment. CNcomment:alphaåˆ¤å†³å¼€å…³CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
 \retval ::
 
 \see \n
@@ -624,17 +624,17 @@ HI_S32 HI_TDE2_GetAlphaThresholdState(HI_BOOL * p_bEnAlphaThreshold);
 
 
 /** 
-\brief Fills in the pattern. CNcomment:Ä£Ê½Ìî³äCNend
+\brief Fills in the pattern. CNcomment:æ¨¡å¼å¡«å……CNend
 \attention N/A
-\param[in] s32Handle  Handle of a TDE task. CNcomment:ÈÎÎñ¾ä±úCNend
-\param[in] pstBackGround  Background bitmap. CNcomment:±³¾°Î»Í¼ÐÅÏ¢CNend
-\param[in] pstBackGroundRect  Operating rectangle of the background bitmap. CNcomment:±³¾°²Ù×÷¾ØÐÎCNend
-\param[in] pstForeGround  Foreground bitmap. CNcomment:Ç°¾°Î»Í¼ÐÅÏ¢CNend
-\param[in] pstForeGroundRect  Operating rectangle of the foreground bitmap. CNcomment:Ç°¾°Î»²Ù×÷¾ØÐÎCNend
-\param[in] pstDst  Target bitmap. CNcomment:Ä¿±êÎ»Í¼ÐÅÏ¢CNend
-\param[in] pstDstRect  Operating rectangle of the target bitmap. CNcomment:Ä¿±ê²Ù×÷¾ØÐÎCNend
-\param[in] pstOpt  Options for pattern filling. CNcomment:Ä£Ê½Ìî³ä²Ù×÷Ñ¡ÏîCNend
-\retval 0 success. CNcomment:³É¹¦CNend
+\param[in] s32Handle  Handle of a TDE task. CNcomment:ä»»åŠ¡å¥æŸ„CNend
+\param[in] pstBackGround  Background bitmap. CNcomment:èƒŒæ™¯ä½å›¾ä¿¡æ¯CNend
+\param[in] pstBackGroundRect  Operating rectangle of the background bitmap. CNcomment:èƒŒæ™¯æ“ä½œçŸ©å½¢CNend
+\param[in] pstForeGround  Foreground bitmap. CNcomment:å‰æ™¯ä½å›¾ä¿¡æ¯CNend
+\param[in] pstForeGroundRect  Operating rectangle of the foreground bitmap. CNcomment:å‰æ™¯ä½æ“ä½œçŸ©å½¢CNend
+\param[in] pstDst  Target bitmap. CNcomment:ç›®æ ‡ä½å›¾ä¿¡æ¯CNend
+\param[in] pstDstRect  Operating rectangle of the target bitmap. CNcomment:ç›®æ ‡æ“ä½œçŸ©å½¢CNend
+\param[in] pstOpt  Options for pattern filling. CNcomment:æ¨¡å¼å¡«å……æ“ä½œé€‰é¡¹CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
 \retval ::
 
 \see \n
@@ -646,10 +646,10 @@ HI_S32 HI_TDE2_PatternFill(TDE_HANDLE s32Handle, TDE2_SURFACE_S *pstBackGround,
                            TDE2_RECT_S *pstDstRect, TDE2_PATTERN_FILL_OPT_S *pstOpt);
 
 /** 
-\brief Enables or disables the regional anti-flicker function. CNcomment:Ê¹ÄÜ/È¥Ê¹ÄÜ¾Ö²¿¿¹ÉÁË¸CNend
+\brief Enables or disables the regional anti-flicker function. CNcomment:ä½¿èƒ½/åŽ»ä½¿èƒ½å±€éƒ¨æŠ—é—ªçƒCNend
 \attention N/A
-\param[in] bRegionDeflicker  Enable/disable flag. CNcomment:Ê¹ÄÜ/È¥Ê¹ÄÜ±êÖ¾CNend
-\retval 0 success. CNcomment:³É¹¦CNend
+\param[in] bRegionDeflicker  Enable/disable flag. CNcomment:ä½¿èƒ½/åŽ»ä½¿èƒ½æ ‡å¿—CNend
+\retval 0 success. CNcomment:æˆåŠŸCNend
 \retval ::
 
 \see \n

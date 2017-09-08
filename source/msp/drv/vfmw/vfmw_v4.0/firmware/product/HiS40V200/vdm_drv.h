@@ -35,9 +35,9 @@ extern "C" {
 #define VDMDRV_OK  0
 #define VDMDRV_ERR -1
 
-#define    MSG_SLOT_SIZE               256 //512    //һ��SLOT��С, WORD
+#define    MSG_SLOT_SIZE               256 //512    //一个SLOT大小, WORD
 #define    UP_MSG_SLOT_NUM             2
-#define    UP_MSG_SIZE                 (UP_MSG_SLOT_NUM * MSG_SLOT_SIZE)  //�������Ϣ��С, WORD
+#define    UP_MSG_SIZE                 (UP_MSG_SLOT_NUM * MSG_SLOT_SIZE)  //分配的消息大小, WORD
 #define    MAX_UP_MSG_SLICE_NUM        128
 
 #define    LUMA_HISTORGAM_NUM         32
@@ -51,9 +51,9 @@ typedef enum
 
 typedef enum
 {
-    VDMDRV_SLEEP_STAGE_NONE = 0,      // δ����
-    VDMDRV_SLEEP_STAGE_PREPARE,       // �յ������������δ�������
-    VDMDRV_SLEEP_STAGE_SLEEP          // ������
+    VDMDRV_SLEEP_STAGE_NONE = 0,      // 未休眠
+    VDMDRV_SLEEP_STAGE_PREPARE,       // 收到休眠命令，但还未完成休眠
+    VDMDRV_SLEEP_STAGE_SLEEP          // 已休眠
 } VDMDRV_SLEEP_STAGE_E;
 
 typedef struct
@@ -73,18 +73,18 @@ typedef struct
     SINT32 ChanResetFlag;
 	#ifdef VFMW_MODULE_LOWDLY_SUPPORT
 	//add by l00225186 fordsp
-	SINT32 ChanIntState;/*������ʾvdh�ж�״̬�ı�־��1:ͬʱ��⵽�к��жϺͽ�������ж�*/
+	SINT32 ChanIntState;/*用来表示vdh中断状态的标志，1:同时检测到行号中断和解码完成中断*/
 	#endif
 } VDMDRV_PARAM_S;
 
 typedef struct 
 {
-    SINT32 PriorByChanId[MAX_CHAN_NUM];/*��ͨ����˳���ͨ�������ȼ���Ϣ*/
-    SINT32 ChanIdTabByPrior[MAX_CHAN_NUM]; /* -1: ��λֵ��û��Ҫ������ͨ��*/
-    SINT32 ChanDecByVdhPlusOne[MAX_CHAN_NUM]; /* 0: δ��VDH���룬n: ���ڱ�(VDH_id + 1)����  5: ���ڱ�VEDU���� */
+    SINT32 PriorByChanId[MAX_CHAN_NUM];/*按通道号顺序各通道的优先级信息*/
+    SINT32 ChanIdTabByPrior[MAX_CHAN_NUM]; /* -1: 复位值，没有要处理的通道*/
+    SINT32 ChanDecByVdhPlusOne[MAX_CHAN_NUM]; /* 0: 未被VDH解码，n: 正在被(VDH_id + 1)解码  5: 正在被VEDU解码 */
 } CHAN_CTX;
 
-/* VDM�����ڴ��ַ */
+/* VDM自用内存地址 */
 typedef struct
 {
     // vdm register base vir addr
@@ -135,7 +135,7 @@ typedef struct
     UINT8*      chrom_2d_vir_addr;
     UINT32      chrom_2d_phy_addr;
     #ifdef VFMW_MODULE_LOWDLY_SUPPORT
-	/*ģ������ʱʹ�õ��к�*/
+	/*模块间低延时使用的行号*/
 	UINT32      line_num_stAddr;
 	#endif
 
@@ -146,7 +146,7 @@ typedef struct
 	UINT32    LumaSumLow;
 	UINT32    LumaHistorgam[LUMA_HISTORGAM_NUM];
 }LUMA_INFO_S;
-/* ���뱨�����ݽṹ */
+/* 解码报告数据结构 */
 typedef struct
 {
     UINT32    BasicCfg1;
@@ -166,7 +166,7 @@ typedef struct
 	UINT32    LumaHistorgam[LUMA_HISTORGAM_NUM];
 } VDMHAL_BACKUP_S;
 
-/* �޲��������ݽṹ */
+/* 修补参数数据结构 */
 typedef struct
 {
     VID_STD_E VidStd;
@@ -191,7 +191,7 @@ typedef struct
 	SINT32     Pic_type;
 	SINT32     FullRepair;
 } VDMHAL_REPAIR_PARAM_S;
-/* ���뱨�����ݽṹ */
+/* 解码报告数据结构 */
 typedef struct
 {
     UINT32    RetType;
@@ -201,10 +201,10 @@ typedef struct
 } VDMHAL_DEC_REPORT_S;
 
 /*#########################################################################################
-       ȫ�ֱ�������
+       全局变量申明
  ##########################################################################################*/
 extern VDMHAL_HWMEM_S    g_HwMem[MAX_VDH_NUM];
-extern UINT32 g_UpMsg[MAX_VDH_NUM][UP_MSG_SIZE];   //������Ϣ����
+extern UINT32 g_UpMsg[MAX_VDH_NUM][UP_MSG_SIZE];   //上行消息镜像
 extern VDMHAL_REPAIR_PARAM_S g_RepairParam[MAX_VDH_NUM][2];
 extern VDMHAL_DEC_REPORT_S g_DecReport[MAX_VDH_NUM];
 extern VDMHAL_BACKUP_S       g_BackUp[MAX_VDH_NUM];

@@ -1904,7 +1904,7 @@ tmbslTDA18250A_GetIFLevel(
 tmErrorCode_t
 tmbslTDA18250A_GetPowerLevel(
     tmUnitSelect_t  tUnit,      /* I: Unit number */
-    Int32*          pPowerLevel /* O: Power Level in (x100) dBµVrms */
+    Int32*          pPowerLevel /* O: Power Level in (x100) dB Vrms */
 )
 {
 	pTDA18250AObject_t   pObj = Null;
@@ -2072,7 +2072,7 @@ iTDA18250A_GetPowerLevel(
 )
 {
     tmErrorCode_t   err = TM_OK;
-	Int32           PowerLevel = 0; /* in (x100) dBµV */
+	Int32           PowerLevel = 0; /* in (x100) dB?V */
     Int32           DeltaAGC1NBTunerGain = 0; /* in dB x 1000 */
     Int32           DeltaAGC1NBMasterGain = 0; /* in dB x 1000 */
     Int32           DeltaAGC2NBGain = 0; /* in dB x 1000 */
@@ -2084,8 +2084,8 @@ iTDA18250A_GetPowerLevel(
     /*************************************/
     /*  RSSI contribution                */
     /*************************************/
-	/* For 0 < RSSI[7:0] <= 203  => RSSI value= 109.5 - RSSI[7:0] *0.25 (in dBµV) */
-	/* For RSSI[7:0] > 204     => RSSI value = 58.75dBµVrms (in dBµV) */
+	/* For 0 < RSSI[7:0] <= 203  => RSSI value= 109.5 - RSSI[7:0] *0.25 (in dB?V) */
+	/* For RSSI[7:0] > 204     => RSSI value = 58.75dB?Vrms (in dB?V) */
 	if ( uRSSIValue > 204 )
 	{
 		PowerLevel = 10975;
@@ -3492,9 +3492,9 @@ iTDA18250A_OverrideICP(
     tmDBGPRINTEx(DEBUGLVL_INOUT, "iTDA18250A_OverrideICP(0x%08X)", pObj->tUnitW);
 
     /*
-    if fvco<6552 MHz ==> icp = 150µ (register = 01b)
-    if fvco<6860 MHz ==> icp = 300µ (register = 10b)
-    500µA elsewhere (register 00b)
+    if fvco<6552 MHz ==> icp = 150? (register = 01b)
+    if fvco<6860 MHz ==> icp = 300? (register = 10b)
+    500?A elsewhere (register 00b)
 
     Reminder : fvco = postdiv*presc*(RFfreq+IFfreq) 
     */

@@ -30,14 +30,14 @@ extern "C" {
 
 /**
  \brief Starts the WDG device.
-CNcomment:\brief ³õÊ¼»¯WDG£¨Watch Dog£©Éè±¸¡£CNend
+CNcomment:\brief åˆå§‹åŒ–WDGï¼ˆWatch Dogï¼‰è®¾å¤‡ã€‚CNend
 
  \attention \n
 By default, the WDG device is disabled after it is started. In this case, you need to call HI_UNF_WDG_Enable to enable it.\n
-CNcomment:´ò¿ªÖ®ºó£¬WDGÄ¬ÈÏÊÇ½ûÖ¹µÄ£¬ĞèÒªÏÔÊ½µ÷ÓÃHI_UNF_WDG_EnableÊ¹ÄÜWDGÉè±¸¡£CNend\N
+CNcomment:æ‰“å¼€ä¹‹åï¼ŒWDGé»˜è®¤æ˜¯ç¦æ­¢çš„ï¼Œéœ€è¦æ˜¾å¼è°ƒç”¨HI_UNF_WDG_Enableä½¿èƒ½WDGè®¾å¤‡ã€‚CNend\N
 
- \param N/A          	CNcomment:ÎŞ¡£CNend
- \retval 0 Success.   	CNcomment:³É¹¦¡£CNend
+ \param N/A          	CNcomment:æ— ã€‚CNend
+ \retval 0 Success.   	CNcomment:æˆåŠŸã€‚CNend
  \retval ::HI_ERR_WDG_FAILED_INIT	open failed
  \see \n
 N/A
@@ -46,12 +46,12 @@ HI_S32 HI_UNF_WDG_Init(HI_VOID);
 
 /**
  \brief Stops the WDG device.
-CNcomment:\brief È¥³õÊ¼»¯WDGÉè±¸¡£CNend
+CNcomment:\brief å»åˆå§‹åŒ–WDGè®¾å¤‡ã€‚CNend
 
  \attention \n
 N/A
- \param N/A          	CNcomment:ÎŞ¡£CNend
- \retval 0 Success.   	CNcomment:³É¹¦¡£CNend
+ \param N/A          	CNcomment:æ— ã€‚CNend
+ \retval 0 Success.   	CNcomment:æˆåŠŸã€‚CNend
  \see \n
 N/A
  */
@@ -59,15 +59,15 @@ HI_S32 HI_UNF_WDG_DeInit(HI_VOID);
 
 /**
  \brief Get the number of WDG device.
-CNcomment:\brief »ñÈ¡WDGÉè±¸ÊıÁ¿¡£CNend
+CNcomment:\brief è·å–WDGè®¾å¤‡æ•°é‡ã€‚CNend
 
  \attention \n
 You can call this API to get thenumber of WDG chipset supports after the WDG device is started.
-CNcomment:´ò¿ªWDGÉè±¸ºó£¬µ÷ÓÃ´Ë½Ó¿Ú»ñÈ¡Ğ¾Æ¬Ö§³ÖµÄWDGµÄÊıÁ¿¡£CNend
+CNcomment:æ‰“å¼€WDGè®¾å¤‡åï¼Œè°ƒç”¨æ­¤æ¥å£è·å–èŠ¯ç‰‡æ”¯æŒçš„WDGçš„æ•°é‡ã€‚CNend
 
- \param[out] pu32WdgNum  The number of WDG chipset supports        	CNcomment:Ğ¾Æ¬Ö§³ÖµÄWDGµÄÊıÁ¿¡£CNend
- \retval 0 Success  CNcomment:³É¹¦ CNend
- \retval ::HI_FAILURE The Parameter pu32WdgNum is NULL.       CNcomment:²ÎÊıÖ¸Õëpu32WdgNumÎª¿Õ¡£CNend
+ \param[out] pu32WdgNum  The number of WDG chipset supports        	CNcomment:èŠ¯ç‰‡æ”¯æŒçš„WDGçš„æ•°é‡ã€‚CNend
+ \retval 0 Success  CNcomment:æˆåŠŸ CNend
+ \retval ::HI_FAILURE The Parameter pu32WdgNum is NULL.       CNcomment:å‚æ•°æŒ‡é’ˆpu32WdgNumä¸ºç©ºã€‚CNend
  \see \n
 N/A
  */
@@ -75,17 +75,17 @@ HI_S32 HI_UNF_WDG_GetCapability(HI_U32 *pu32WdgNum);
 
 /**
  \brief Enables the WDG device.
-CNcomment:\brief Ê¹ÄÜWDGÉè±¸¡£CNend
+CNcomment:\brief ä½¿èƒ½WDGè®¾å¤‡ã€‚CNend
 
  \attention \n
 You must call HI_UNF_WDG_Enable after the WDG device is started.
-CNcomment:´ò¿ªWDGÉè±¸ºó£¬±ØĞëÏÔÊ½µ÷ÓÃÊ¹ÄÜ½Ó¿Ú¡£CNend
+CNcomment:æ‰“å¼€WDGè®¾å¤‡åï¼Œå¿…é¡»æ˜¾å¼è°ƒç”¨ä½¿èƒ½æ¥å£ã€‚CNend
 
- \param[in] u32WdgNum WDG No. to operate.        	CNcomment:Ö´ĞĞ²Ù×÷µÄWDGºÅ¡£CNend
- \retval 0 Success.  	CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_WDG_NOT_INIT The WDG device is not initialized.       CNcomment:WDGÉè±¸Î´³õÊ¼»¯¡£CNend
- \retval ::HI_ERR_WDG_INVALID_PARA The Paramteter is invalid. 			CNcomment:²ÎÊıÎŞĞ§¡£CNend
- \retval ::HI_ERR_WDG_FAILED_ENABLE enable watchdog failed.				CNcomment:Ê¹ÄÜ¿´ÃÅ¹·Ê§°Ü¡£CNend
+ \param[in] u32WdgNum WDG No. to operate.        	CNcomment:æ‰§è¡Œæ“ä½œçš„WDGå·ã€‚CNend
+ \retval 0 Success.  	CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_WDG_NOT_INIT The WDG device is not initialized.       CNcomment:WDGè®¾å¤‡æœªåˆå§‹åŒ–ã€‚CNend
+ \retval ::HI_ERR_WDG_INVALID_PARA The Paramteter is invalid. 			CNcomment:å‚æ•°æ— æ•ˆã€‚CNend
+ \retval ::HI_ERR_WDG_FAILED_ENABLE enable watchdog failed.				CNcomment:ä½¿èƒ½çœ‹é—¨ç‹—å¤±è´¥ã€‚CNend
  \see \n
 N/A
  */
@@ -93,17 +93,17 @@ HI_S32 HI_UNF_WDG_Enable(HI_U32 u32WdgNum);
 
 /**
  \brief Disables the WDG device.
-CNcomment:\brief ½ûÖ¹WDGÉè±¸¡£CNend
+CNcomment:\brief ç¦æ­¢WDGè®¾å¤‡ã€‚CNend
 
  \attention \n
 After calling this API, you cannot feed and reset the WDG.
-CNcomment:µ÷ÓÃ´Ëº¯Êıºó£¬Î¹¹·ºÍ¸´Î»²Ù×÷²»Æğ×÷ÓÃ¡£CNend
+CNcomment:è°ƒç”¨æ­¤å‡½æ•°åï¼Œå–‚ç‹—å’Œå¤ä½æ“ä½œä¸èµ·ä½œç”¨ã€‚CNend
 
- \param[in] u32WdgNum WDG No. to operate.        	CNcomment:Ö´ĞĞ²Ù×÷µÄWDGºÅ¡£CNend
- \retval 0 Success. CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_WDG_NOT_INIT  The WDG device is not initialized.      CNcomment:WDGÉè±¸Î´³õÊ¼»¯¡£CNend
- \retval ::HI_ERR_WDG_INVALID_PARA The Paramteter is invalid. 			CNcomment:²ÎÊıÎŞĞ§¡£CNend
- \retval ::HI_ERR_WDG_FAILED_DISABLE  disable watchdog failed.			CNcomment:½ûÖ¹¿´ÃÅ¹·Ê§°Ü¡£CNend
+ \param[in] u32WdgNum WDG No. to operate.        	CNcomment:æ‰§è¡Œæ“ä½œçš„WDGå·ã€‚CNend
+ \retval 0 Success. CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_WDG_NOT_INIT  The WDG device is not initialized.      CNcomment:WDGè®¾å¤‡æœªåˆå§‹åŒ–ã€‚CNend
+ \retval ::HI_ERR_WDG_INVALID_PARA The Paramteter is invalid. 			CNcomment:å‚æ•°æ— æ•ˆã€‚CNend
+ \retval ::HI_ERR_WDG_FAILED_DISABLE  disable watchdog failed.			CNcomment:ç¦æ­¢çœ‹é—¨ç‹—å¤±è´¥ã€‚CNend
  \see \n
 N/A
  */
@@ -111,18 +111,18 @@ HI_S32 HI_UNF_WDG_Disable(HI_U32 u32WdgNum);
 
 /**
  \brief Obtains the interval of feeding the WDG.
-CNcomment:\brief »ñÈ¡Î¹¹·Ê±¼ä¼ä¸ô¡£CNend
+CNcomment:\brief è·å–å–‚ç‹—æ—¶é—´é—´éš”ã€‚CNend
 
  \attention \n
 The interval precision is as high as 1000 ms.
-CNcomment:Ê±¼ä¼ä¸ô¾«È·µ½1000ms¡£CNend
+CNcomment:æ—¶é—´é—´éš”ç²¾ç¡®åˆ°1000msã€‚CNend
 
- \param[in] u32WdgNum WDG No. to operate.        	CNcomment:Ö´ĞĞ²Ù×÷µÄWDGºÅ¡£CNend
- \param[in] pu32Value  Interval of feeding the WDG, in ms.             	CNcomment:Î¹¹·Ê±¼ä¼ä¸ô£¬µ¥Î»Îªms¡£CNend
- \retval 0 Success.                                                  	CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_WDG_NOT_INIT  The WDG device is not initialized.     	CNcomment:WDG Éè±¸Î´³õÊ¼»¯¡£CNend
- \retval ::HI_ERR_WDG_INVALID_PARA  The WDG input pointer is invalid.  	CNcomment:WDGÊäÈëÖ¸ÕëÎŞĞ§¡£CNend
- \retval ::HI_ERR_WDG_FAILED_SETTIMEOUT get timeout failed.			  	CNcomment:WDG»ñÈ¡³¬Ê±Ê±¼äÊ§°Ü¡£CNend
+ \param[in] u32WdgNum WDG No. to operate.        	CNcomment:æ‰§è¡Œæ“ä½œçš„WDGå·ã€‚CNend
+ \param[in] pu32Value  Interval of feeding the WDG, in ms.             	CNcomment:å–‚ç‹—æ—¶é—´é—´éš”ï¼Œå•ä½ä¸ºmsã€‚CNend
+ \retval 0 Success.                                                  	CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_WDG_NOT_INIT  The WDG device is not initialized.     	CNcomment:WDG è®¾å¤‡æœªåˆå§‹åŒ–ã€‚CNend
+ \retval ::HI_ERR_WDG_INVALID_PARA  The WDG input pointer is invalid.  	CNcomment:WDGè¾“å…¥æŒ‡é’ˆæ— æ•ˆã€‚CNend
+ \retval ::HI_ERR_WDG_FAILED_SETTIMEOUT get timeout failed.			  	CNcomment:WDGè·å–è¶…æ—¶æ—¶é—´å¤±è´¥ã€‚CNend
  \see \n
 N/A
  */
@@ -130,16 +130,16 @@ HI_S32 HI_UNF_WDG_GetTimeout(HI_U32 u32WdgNum, HI_U32 *pu32Value);
 
 /**
  \brief Sets the interval of feeding the WDG.
-CNcomment:\brief ÉèÖÃÎ¹¹·Ê±¼ä¼ä¸ô¡£CNend
+CNcomment:\brief è®¾ç½®å–‚ç‹—æ—¶é—´é—´éš”ã€‚CNend
 
  \attention \n
 N/A
- \param[in] u32WdgNum WDG No. to operate.        	CNcomment:Ö´ĞĞ²Ù×÷µÄWDGºÅ¡£CNend
- \param[out] u32Value  Interval of feeding the WDG, in ms.                		CNcomment:Î¹¹·Ê±¼ä¼ä¸ô£¬µ¥Î»Îªms¡£CNend
- \retval 0 Success.                                                      		CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_WDG_NOT_INIT The WDG device is not initialized.       		CNcomment:WDGÉè±¸Î´³õÊ¼»¯¡£CNend
- \retval ::HI_ERR_WDG_FAILED_SETTIMEOUT The WDG set timeout failed.   			CNcomment:WDGÉèÖÃ³¬Ê±Ê±¼äÊ§°Ü¡£CNend
- \retval ::HI_ERR_WDG_INVALID_PARA  The WDG input parameter is invalid. 		CNcomment:WDGÊäÈë²ÎÊıÎŞĞ§¡£CNend
+ \param[in] u32WdgNum WDG No. to operate.        	CNcomment:æ‰§è¡Œæ“ä½œçš„WDGå·ã€‚CNend
+ \param[out] u32Value  Interval of feeding the WDG, in ms.                		CNcomment:å–‚ç‹—æ—¶é—´é—´éš”ï¼Œå•ä½ä¸ºmsã€‚CNend
+ \retval 0 Success.                                                      		CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_WDG_NOT_INIT The WDG device is not initialized.       		CNcomment:WDGè®¾å¤‡æœªåˆå§‹åŒ–ã€‚CNend
+ \retval ::HI_ERR_WDG_FAILED_SETTIMEOUT The WDG set timeout failed.   			CNcomment:WDGè®¾ç½®è¶…æ—¶æ—¶é—´å¤±è´¥ã€‚CNend
+ \retval ::HI_ERR_WDG_INVALID_PARA  The WDG input parameter is invalid. 		CNcomment:WDGè¾“å…¥å‚æ•°æ— æ•ˆã€‚CNend
  \see \n
 N/A
  */
@@ -147,15 +147,15 @@ HI_S32 HI_UNF_WDG_SetTimeout(HI_U32 u32WdgNum, HI_U32 u32Value);
 
 /**
  \brief Feeds the WDG.
-CNcomment:\brief Ö´ĞĞÎ¹¹·²Ù×÷¡£CNend
+CNcomment:\brief æ‰§è¡Œå–‚ç‹—æ“ä½œã€‚CNend
 
  \attention \n
 N/A
- \param[in] u32WdgNum WDG No. to operate.        	CNcomment:Ö´ĞĞ²Ù×÷µÄWDGºÅ¡£CNend
- \retval 0 Success.                                                   	CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_WDG_NOT_INIT  The WDG device is not initialized.      CNcomment:WDGÉè±¸Î´³õÊ¼»¯¡£CNend
- \retval ::HI_ERR_WDG_FAILED_CLEARWDG  The WDG clear watchdog failed.   CNcomment:WDG Î¹¹·Ê§°Ü¡£CNend
- \retval ::HI_ERR_WDG_INVALID_PARA The Paramteter is invalid. 			CNcomment:²ÎÊıÎŞĞ§¡£CNend
+ \param[in] u32WdgNum WDG No. to operate.        	CNcomment:æ‰§è¡Œæ“ä½œçš„WDGå·ã€‚CNend
+ \retval 0 Success.                                                   	CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_WDG_NOT_INIT  The WDG device is not initialized.      CNcomment:WDGè®¾å¤‡æœªåˆå§‹åŒ–ã€‚CNend
+ \retval ::HI_ERR_WDG_FAILED_CLEARWDG  The WDG clear watchdog failed.   CNcomment:WDG å–‚ç‹—å¤±è´¥ã€‚CNend
+ \retval ::HI_ERR_WDG_INVALID_PARA The Paramteter is invalid. 			CNcomment:å‚æ•°æ— æ•ˆã€‚CNend
  \see \n
 N/A
  */
@@ -163,15 +163,15 @@ HI_S32 HI_UNF_WDG_Clear(HI_U32 u32WdgNum);
 
 /**
  \brief Resets the entire system.
-CNcomment:\brief ÓÃÓÚ¸´Î»Õû¸öÏµÍ³¡£CNend
+CNcomment:\brief ç”¨äºå¤ä½æ•´ä¸ªç³»ç»Ÿã€‚CNend
 
  \attention \n
 N/A
- \param[in] u32WdgNum WDG No. to operate.        	CNcomment:Ö´ĞĞ²Ù×÷µÄWDGºÅ¡£CNend
- \retval 0 Success. CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_WDG_NOT_INIT  The WDG device is not initialized.  CNcomment:WDGÉè±¸Î´³õÊ¼»¯¡£CNend
- \retval ::HI_ERR_WDG_FAILED_RESET The WDG reset failed.   			CNcomment:WDG¸´Î»Ê§°Ü¡£CNend
- \retval ::HI_ERR_WDG_INVALID_PARA The Paramteter is invalid. 		CNcomment:²ÎÊıÎŞĞ§¡£CNend
+ \param[in] u32WdgNum WDG No. to operate.        	CNcomment:æ‰§è¡Œæ“ä½œçš„WDGå·ã€‚CNend
+ \retval 0 Success. CNcomment:æˆåŠŸã€‚CNend
+ \retval ::HI_ERR_WDG_NOT_INIT  The WDG device is not initialized.  CNcomment:WDGè®¾å¤‡æœªåˆå§‹åŒ–ã€‚CNend
+ \retval ::HI_ERR_WDG_FAILED_RESET The WDG reset failed.   			CNcomment:WDGå¤ä½å¤±è´¥ã€‚CNend
+ \retval ::HI_ERR_WDG_INVALID_PARA The Paramteter is invalid. 		CNcomment:å‚æ•°æ— æ•ˆã€‚CNend
  \see \n
 N/A
  */

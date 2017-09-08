@@ -24,17 +24,17 @@ h_y_loop:
 	smuad lr, lr, r7                       @lr=0|-1 X 1|0	
 	ldrb  r9, [r1], #2                     @r9=3, r1= src+5
 	
-	smlad r11, r6, r8, lr                  @µÚÒ»¸öµã
+	smlad r11, r6, r8, lr                  @ç¬¬ä¸€ä¸ªç‚¹
 	 
 	pkhbt r4, r10, r9, lsl #16             @r4= 3|2
-	smuad lr, r3, r7                       @µÚ¶þ¸öµã lr = 1|0 X 1|0                    
+	smuad lr, r3, r7                       @ç¬¬äºŒä¸ªç‚¹ lr = 1|0 X 1|0                    
 	
 	add   r11, r11, #0x40
-	smlad r12, r4, r8, lr                  @µÚ¶þ¸öµã
+	smlad r12, r4, r8, lr                  @ç¬¬äºŒä¸ªç‚¹
 	usat  r11, #8, r11, asr #7 
 	
 	ldrb  r3,  [r1, #-1]                   @r3=4
-	strb  r11, [r0]                        @´æ´¢µÚÒ»¸öµã
+	strb  r11, [r0]                        @å­˜å‚¨ç¬¬ä¸€ä¸ªç‚¹
 	
 	ldrb  r10,  [r1], #2                   @r10=5, r1= src+7
 	
@@ -43,7 +43,7 @@ h_y_loop:
 	usat  r12, #8, r12, asr #7
 	
 	pkhbt r3, r3, r10, lsl #16            @r3 = 5|4 	
-	strb  r12, [r0,#1]                     @´æ´¢µÚ¶þ¸öµã
+	strb  r12, [r0,#1]                     @å­˜å‚¨ç¬¬äºŒä¸ªç‚¹
 	
 	smuad r11, r6, r7                      @r11= 2|1 X 1|0
 	
@@ -53,48 +53,48 @@ h_y_loop:
 	smuad  r11, r4, r7                     @r11 = 3|2 X 1|0
 	add   lr, #0x40
 	usat  lr, #8, lr, asr #7
-	strb  lr, [r0, #2]                     @´æ´¢µÚÈý¸öµã
+	strb  lr, [r0, #2]                     @å­˜å‚¨ç¬¬ä¸‰ä¸ªç‚¹
 	
 	smlad r12, r3, r8, r11
 	pkhbt r10, r10, r6, lsl #16            @r10= 6|5
 	add   r12, #0x40
 	usat  r12, #8, r12, asr #7
-	strb  r12, [r0, #3]                    @´æ´¢µÚËÄ¸öµã
+	strb  r12, [r0, #3]                    @å­˜å‚¨ç¬¬å››ä¸ªç‚¹
 	
 	smuad r11, r9, r7                      @r11 = 4|3 X 1|0
 	ldrb  r4, [r1], #2                     @ r4= 7 r1 = src+9
 	smuad r9, r3, r7                       @r9=5|4 X 1|0
-	smlad lr, r10, r8, r11                 @lr ÎªµÚ5¸öµã
+	smlad lr, r10, r8, r11                 @lr ä¸ºç¬¬5ä¸ªç‚¹
 	pkhbt r3, r6, r4, lsl #16              @r3 = 7|6 
-	smlad r12, r3, r8, r9                  @r12 =µÚ6¸öµã
+	smlad r12, r3, r8, r9                  @r12 =ç¬¬6ä¸ªç‚¹
 	
 	add lr, #0x40
 	usat  lr, #8, lr, asr #7
 	
 	add   r12, #0x40
-	strb  lr, [r0, #4]                    @´æ´¢µÚ5¸öµã
+	strb  lr, [r0, #4]                    @å­˜å‚¨ç¬¬5ä¸ªç‚¹
 	
 	usat  r12, #8, r12, asr #7
 	ldrb  r9, [r1, #-1]                   @r9 = 8
-	strb  r12, [r0, #5]                    @´æ´¢µÚ6¸öµã
+	strb  r12, [r0, #5]                    @å­˜å‚¨ç¬¬6ä¸ªç‚¹
 	
 	pkhbt r6, r4, r9, lsl #16             @r6 = 8|7
 	ldrb  r4, [r1]                        @r4 = 9
 	
 	smuad r11, r10, r7                    @r11=6|5 X 1|0
 	pkhbt r12, r9, r4, lsl #16            @r12 = 9|8
-	smlad lr, r6, r8, r11                 @lrÎªµÚ7¸öµã
+	smlad lr, r6, r8, r11                 @lrä¸ºç¬¬7ä¸ªç‚¹
 	
 	smuad r4, r3, r7                      @r3=7|6 X 1|0
 	
 	add   lr, #0x40
 	usat  lr, #8, lr, asr #7
-	strb  lr, [r0, #6]                     @´æ´¢µÚ7¸öµã
+	strb  lr, [r0, #6]                     @å­˜å‚¨ç¬¬7ä¸ªç‚¹
 	
-	smlad r11, r12, r8, r4                    @r11ÎªµÚ8¸öµã
+	smlad r11, r12, r8, r4                    @r11ä¸ºç¬¬8ä¸ªç‚¹
 	add   r11, #0x40
 	usat  r11, #8, r11, asr #7
-	strb  r11, [r0, #7]                     @´æ´¢µÚ8¸öµã
+	strb  r11, [r0, #7]                     @å­˜å‚¨ç¬¬8ä¸ªç‚¹
 	  
 	subs  r5, r5, #1
 	add   r0, r2
@@ -132,17 +132,17 @@ v_y_loop:
 	smuad lr, lr, r7                       @lr=0|-1 * 1|0	
 	ldrb  r9, [r1], r2                     @r9=3, r1= src+4stride
 	
-	smlad r11, r6, r8, lr                  @µÚÒ»¸öµã r11 = 0|-1 * 1|0 + 2|1 * 3|2
+	smlad r11, r6, r8, lr                  @ç¬¬ä¸€ä¸ªç‚¹ r11 = 0|-1 * 1|0 + 2|1 * 3|2
 	 
 	pkhbt r4, r10, r9, lsl #16             @r4= 3|2
 	smuad lr, r3, r7                       @lr = 1|0 X 1|0                    
 	
 	add   r11, r11, #0x40
-	smlad r12, r4, r8, lr                  @µÚ¶þ¸öµã r12 = 1|0 X 1|0 + 3|2  * 3 | 2 
+	smlad r12, r4, r8, lr                  @ç¬¬äºŒä¸ªç‚¹ r12 = 1|0 X 1|0 + 3|2  * 3 | 2 
 	usat  r11, #8, r11, asr #7 
 	
 	ldrb  r3,  [r1], r2                   @r3=4, r1=src+5stride
-	strb  r11, [r0],r2                        @´æ´¢µÚÒ»¸öµã , r0 = dst + stride
+	strb  r11, [r0],r2                        @å­˜å‚¨ç¬¬ä¸€ä¸ªç‚¹ , r0 = dst + stride
 	
 	ldrb  r10,  [r1], r2                   @r10=5, r1= src+6stride
 	
@@ -151,7 +151,7 @@ v_y_loop:
 	usat  r12, #8, r12, asr #7
 	
 	pkhbt r3, r3, r10, lsl #16            @r3 = 5|4 	
-	strb  r12, [r0], r2                     @´æ´¢µÚ¶þ¸öµã, r0 = dst + 2stride
+	strb  r12, [r0], r2                     @å­˜å‚¨ç¬¬äºŒä¸ªç‚¹, r0 = dst + 2stride
 	
 	smuad r11, r6, r7                      @r11= 2|1 X 1|0
 	
@@ -161,48 +161,48 @@ v_y_loop:
 	smuad  r11, r4, r7                     @r11 = 3|2 X 1|0
 	add   lr, #0x40
 	usat  lr, #8, lr, asr #7
-	strb  lr, [r0], r2                     @´æ´¢µÚÈý¸öµã ,r0 = dst + 3stride
+	strb  lr, [r0], r2                     @å­˜å‚¨ç¬¬ä¸‰ä¸ªç‚¹ ,r0 = dst + 3stride
 	
 	smlad r12, r3, r8, r11
 	pkhbt r10, r10, r6, lsl #16            @r10= 6|5
 	add   r12, #0x40
 	usat  r12, #8, r12, asr #7
-	strb  r12, [r0], r2                    @´æ´¢µÚËÄ¸öµã, r0 = dst + 4stride
+	strb  r12, [r0], r2                    @å­˜å‚¨ç¬¬å››ä¸ªç‚¹, r0 = dst + 4stride
 	
 	smuad r11, r9, r7                      @r11 = 4|3 X 1|0
 	ldrb  r4, [r1], r2                     @ r4= 7 r1 = src+8stride
 	smuad r9, r3, r7                       @r9=5|4 X 1|0
-	smlad lr, r10, r8, r11                 @lr ÎªµÚ5¸öµã
+	smlad lr, r10, r8, r11                 @lr ä¸ºç¬¬5ä¸ªç‚¹
 	pkhbt r3, r6, r4, lsl #16              @r3 = 7|6 
-	smlad r12, r3, r8, r9                  @r12 =µÚ6¸öµã
+	smlad r12, r3, r8, r9                  @r12 =ç¬¬6ä¸ªç‚¹
 	
 	add lr, #0x40
 	usat  lr, #8, lr, asr #7
 	
 	add   r12, #0x40
-	strb  lr, [r0], r2                    @´æ´¢µÚ5¸öµã , r0 = dst + 5stride
+	strb  lr, [r0], r2                    @å­˜å‚¨ç¬¬5ä¸ªç‚¹ , r0 = dst + 5stride
 	
 	usat  r12, #8, r12, asr #7
 	ldrb  r9, [r1],r2                   @r9 = 8,r1=src+9stride
-	strb  r12, [r0], r2                    @´æ´¢µÚ6¸öµã, r0 = dst + 6stride
+	strb  r12, [r0], r2                    @å­˜å‚¨ç¬¬6ä¸ªç‚¹, r0 = dst + 6stride
 	
 	pkhbt r6, r4, r9, lsl #16             @r6 = 8|7
 	ldrb  r4, [r1]                        @r4 = 9 ,r1 = src+9stride
 	
 	smuad r11, r10, r7                    @r11=6|5 X 1|0
 	pkhbt r12, r9, r4, lsl #16            @r12 = 9|8
-	smlad lr, r6, r8, r11                 @lrÎªµÚ7¸öµã
+	smlad lr, r6, r8, r11                 @lrä¸ºç¬¬7ä¸ªç‚¹
 	
 	smuad r4, r3, r7                      @r3=7|6 X 1|0
 	
 	add   lr, #0x40
 	usat  lr, #8, lr, asr #7
-	strb  lr, [r0], r2                     @´æ´¢µÚ7¸öµã, r0 = dst + 7stride
+	strb  lr, [r0], r2                     @å­˜å‚¨ç¬¬7ä¸ªç‚¹, r0 = dst + 7stride
 	
-	smlad r11, r12, r8, r4                    @r11ÎªµÚ8¸öµã
+	smlad r11, r12, r8, r4                    @r11ä¸ºç¬¬8ä¸ªç‚¹
 	add   r11, #0x40
 	usat  r11, #8, r11, asr #7
-	strb  r11, [r0]                     @´æ´¢µÚ8¸öµã
+	strb  r11, [r0]                     @å­˜å‚¨ç¬¬8ä¸ªç‚¹
 	
 	subs  r5, r5, #1
 	

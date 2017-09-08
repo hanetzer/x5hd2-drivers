@@ -261,8 +261,8 @@ static HI_S32 VDEC_VPSSCMD(HI_HANDLE hVdec, VPSS_CMD_E enCMD, HI_VOID* pstParam)
     {
         return HI_ERR_VDEC_INVALID_PARA;
     }
-    /*vpssµÄ´´½¨ÊÇÔÚHI_MPI_VDEC_SetChanAttrº¯ÊıÖĞÖ´ĞĞµÄ,²¢ÔÚ´´½¨µÄÊ±ºò½«vpss¾ä±ú±£´æÔÚpstVdec->hVpssÖĞ*/
-    /*ÔÚvdecÍ¨µÀÉÏ´´½¨port£¬Ó¦¸ÃÊÇÍ¨¹ıvdec¾ä±úÕÒµ½Õâ¸övdec¶ÔÓ¦µÄvpss¾ä±ú*/
+    /*vpssçš„åˆ›å»ºæ˜¯åœ¨HI_MPI_VDEC_SetChanAttrå‡½æ•°ä¸­æ‰§è¡Œçš„,å¹¶åœ¨åˆ›å»ºçš„æ—¶å€™å°†vpsså¥æŸ„ä¿å­˜åœ¨pstVdec->hVpssä¸­*/
+    /*åœ¨vdecé€šé“ä¸Šåˆ›å»ºportï¼Œåº”è¯¥æ˜¯é€šè¿‡vdecå¥æŸ„æ‰¾åˆ°è¿™ä¸ªvdecå¯¹åº”çš„vpsså¥æŸ„*/
     
     hVpss = pstVdec->hVpss;
     if (HI_INVALID_HANDLE == hVpss)
@@ -1684,7 +1684,7 @@ HI_S32 HI_MPI_VDEC_ReceiveFrame(HI_HANDLE hVdec, HI_DRV_VIDEO_FRAME_PACKAGE_S *p
         return HI_ERR_VDEC_INVALID_PARA;
     }
 	/*get port frames*/
-	/*CNcomment:Ö÷ÒªÊÇ´Ó¶ÔÓ¦µÄPORTµÄ¶ÓÁĞÀïÃæÈ¡¶«Î÷*/
+	/*CNcomment:ä¸»è¦æ˜¯ä»å¯¹åº”çš„PORTçš„é˜Ÿåˆ—é‡Œé¢å–ä¸œè¥¿*/
 	s32Ret = VDEC_VPSSCMD(hVdec, VPSS_CMD_RECEIVEFRAME, (HI_VOID*)pFrmPack);
 	return s32Ret;
 }
@@ -1698,7 +1698,7 @@ HI_S32 HI_MPI_VDEC_ReleaseFrame(HI_HANDLE hPort, HI_DRV_VIDEO_FRAME_S *pVideoFra
         return HI_ERR_VDEC_INVALID_PARA;
     }
 	/*release port frame*/
-	/*CNcomment:Ö÷ÒªÊÇ´Ó¶ÔÓ¦µÄPORTµÄ¶ÓÁĞÀïÃæÊÍ·ÅÊı¾İ*/
+	/*CNcomment:ä¸»è¦æ˜¯ä»å¯¹åº”çš„PORTçš„é˜Ÿåˆ—é‡Œé¢é‡Šæ”¾æ•°æ®*/
 	s32Ret = VPSS_ReleaseFrm(hPort,pVideoFrame);
 	return s32Ret;
 }

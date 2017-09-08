@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : 
 Created		    : 2013/06/20
 Description	    : the adp realize in this file
-                  CNcomment: ÊÊÅäµÄÊµÏÖ¶¼ÔÚÕâ¸öÎÄ¼şÀï CNend\n
+                  CNcomment: é€‚é…çš„å®ç°éƒ½åœ¨è¿™ä¸ªæ–‡ä»¶é‡Œ CNend\n
 Function List 	: 
 
 			  		  
@@ -40,7 +40,7 @@ Date				Author        		Modification
 
     /***************************** Macro Definition ******************************/
     /** \addtogroup 	 JPEG ADP MACRO */
-    /** @{ */  /** <!-- ¡¾JPEG ADP MACRO¡¿ */
+    /** @{ */  /** <!-- ã€JPEG ADP MACROã€‘ */
 
 
 	 /** @} */	/*! <!-- Macro Definition end */
@@ -49,7 +49,7 @@ Date				Author        		Modification
 	 /*************************** Enum Definition ****************************/
 
 	/** \addtogroup      JPEG ADP ENUM */
-    /** @{ */  /** <!-- ¡¾JPEG ADP ENUM¡¿ */
+    /** @{ */  /** <!-- ã€JPEG ADP ENUMã€‘ */
 
 
 	
@@ -58,7 +58,7 @@ Date				Author        		Modification
 	/*************************** Structure Definition ****************************/
 
 	/** \addtogroup      JPEG ADP STRUCTURE */
-    /** @{ */  /** <!-- ¡¾JPEG ADP STRUCTURE¡¿ */
+    /** @{ */  /** <!-- ã€JPEG ADP STRUCTUREã€‘ */
 
 	/** @} */  /*! <!-- Structure Definition end */
 
@@ -68,14 +68,14 @@ Date				Author        		Modification
     /******************************* API declaration *****************************/
 
 	/** \addtogroup      JPEG ADP API */
-    /** @{ */  /** <!-- ¡¾JPEG ADP API¡¿ */
+    /** @{ */  /** <!-- ã€JPEG ADP APIã€‘ */
 	
 
 	/*****************************************************************************
 	* func			: JPEG_HDEC_GetImagInfo
 	* description	: get jpeg picture information
-					  CNcomment:  »ñÈ¡Í¼Æ¬ĞÅÏ¢ CNend\n
-	* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó	CNend\n
+					  CNcomment:  è·å–å›¾ç‰‡ä¿¡æ¯ CNend\n
+	* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡	CNend\n
 	* retval		: NA
 	* others:		: NA
 	*****************************************************************************/
@@ -85,10 +85,10 @@ Date				Author        		Modification
 	 /*****************************************************************************
 	 * func 		 : JPEG_HDEC_SetPara
 	 * description	 : set the parameter that hard decode need
-	                   CNcomment: ÅäÖÃÓ²¼ş½âÂëĞèÒªµÄ²ÎÊıĞÅÏ¢        CNend\n
-	 * param[in]	 : cinfo         CNcomment: ½âÂë¶ÔÏó    CNend\n
-	 * retval		 : HI_SUCCESS    CNcomment: ³É¹¦        CNend\n
-	 * retval		 : HI_FAILURE    CNcomment: Ê§°Ü        CNend\n
+	                   CNcomment: é…ç½®ç¡¬ä»¶è§£ç éœ€è¦çš„å‚æ•°ä¿¡æ¯        CNend\n
+	 * param[in]	 : cinfo         CNcomment: è§£ç å¯¹è±¡    CNend\n
+	 * retval		 : HI_SUCCESS    CNcomment: æˆåŠŸ        CNend\n
+	 * retval		 : HI_FAILURE    CNcomment: å¤±è´¥        CNend\n
 	 * others:		 : NA
 	 *****************************************************************************/
 	 HI_S32 JPEG_HDEC_SetPara(const struct jpeg_decompress_struct *cinfo);
@@ -97,10 +97,10 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_SendStreamFromPhyMem
 	* description	: get the stream from physics memory
-	                  CNcomment:  ÂëÁ÷À´Ô´Á¬ĞøµÄÎïÀíÄÚ´æµÄ´¦Àí·½Ê½   CNend\n
-	* param[in]     : cinfo       CNcomment:  ½âÂë¶ÔÏó     CNend\n
-	* retval	    : HI_SUCCESS  CNcomment:  ³É¹¦         CNend\n
-	* retval	    : HI_FAILURE  CNcomment:  Ê§°Ü         CNend\n
+	                  CNcomment:  ç æµæ¥æºè¿ç»­çš„ç‰©ç†å†…å­˜çš„å¤„ç†æ–¹å¼   CNend\n
+	* param[in]     : cinfo       CNcomment:  è§£ç å¯¹è±¡     CNend\n
+	* retval	    : HI_SUCCESS  CNcomment:  æˆåŠŸ         CNend\n
+	* retval	    : HI_FAILURE  CNcomment:  å¤±è´¥         CNend\n
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_SendStreamFromPhyMem(j_decompress_ptr cinfo);
@@ -109,10 +109,10 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_SendStreamFromVirMem
 	* description	: get the stream from virtual memory
-	                  CNcomment:  ÂëÁ÷À´Ô´ĞéÄâÄÚ´æµÄ´¦Àí·½Ê½   CNend\n
-	* param[in]     : cinfo       CNcomment:  ½âÂë¶ÔÏó     CNend\n
-	* retval	    : HI_SUCCESS  CNcomment:  ³É¹¦         CNend\n
-	* retval	    : HI_FAILURE  CNcomment:  Ê§°Ü         CNend\n
+	                  CNcomment:  ç æµæ¥æºè™šæ‹Ÿå†…å­˜çš„å¤„ç†æ–¹å¼   CNend\n
+	* param[in]     : cinfo       CNcomment:  è§£ç å¯¹è±¡     CNend\n
+	* retval	    : HI_SUCCESS  CNcomment:  æˆåŠŸ         CNend\n
+	* retval	    : HI_FAILURE  CNcomment:  å¤±è´¥         CNend\n
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_SendStreamFromVirMem(j_decompress_ptr cinfo);
@@ -120,11 +120,11 @@ Date				Author        		Modification
 	/*****************************************************************************
 	* func			: JPEG_HDEC_SendStreamFromFile
 	* description	: get the stream from file
-	                  CNcomment:  ÂëÁ÷À´Ô´ÎÄ¼şµÄ´¦Àí·½Ê½
-	* param[in]     : cinfo       CNcomment:  ½âÂë¶ÔÏó
+	                  CNcomment:  ç æµæ¥æºæ–‡ä»¶çš„å¤„ç†æ–¹å¼
+	* param[in]     : cinfo       CNcomment:  è§£ç å¯¹è±¡
 	* param[in]     : NA
-	* retval	    : HI_SUCCESS  CNcomment:  ³É¹¦
-	* retval	    : HI_FAILURE  CNcomment:  Ê§°Ü
+	* retval	    : HI_SUCCESS  CNcomment:  æˆåŠŸ
+	* retval	    : HI_FAILURE  CNcomment:  å¤±è´¥
 	* others:	    : NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_SendStreamFromFile(j_decompress_ptr cinfo);
@@ -132,11 +132,11 @@ Date				Author        		Modification
 
 	/*****************************************************************************
 	* func			: JPEG_HDEC_SendStreamFromCallBack
-	* description	: CNcomment:  ÂëÁ÷À´Ô´Íâ²¿´¦Àí
-	* param[in] 	: cinfo 	  CNcomment:  ½âÂë¶ÔÏó
+	* description	: CNcomment:  ç æµæ¥æºå¤–éƒ¨å¤„ç†
+	* param[in] 	: cinfo 	  CNcomment:  è§£ç å¯¹è±¡
 	* param[in] 	: NA
-	* retval		: HI_SUCCESS  CNcomment:  ³É¹¦
-	* retval		: HI_FAILURE  CNcomment:  Ê§°Ü
+	* retval		: HI_SUCCESS  CNcomment:  æˆåŠŸ
+	* retval		: HI_FAILURE  CNcomment:  å¤±è´¥
 	* others:		: NA
 	*****************************************************************************/
 	HI_S32 JPEG_HDEC_SendStreamFromCallBack(j_decompress_ptr cinfo);

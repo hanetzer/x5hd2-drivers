@@ -1,17 +1,17 @@
 /*******************************************************************************
 Copyright (C), 2009-2012, Huawei Tech. Co., Ltd.
 File name: basetype.h
-Author & ID: ËÎĞ¡¸Õ+00133955 ÕÅÀöÆ¼+00139017 ²Ü¿¡Ã¯+00103648
+Author & ID: å®‹å°åˆš+00133955 å¼ ä¸½è+00139017 æ›¹ä¿ŠèŒ‚+00103648
 Version: 1.00
 Date:  2010-03-01
-Description: ±¾ÎÄ¼ş°üÀ¨ÁË³£ÓÃÊı¾İÀàĞÍÖØ¶¨ÒåµÄºê£¨windows¡¢linuxÆ½Ì¨£©
+Description: æœ¬æ–‡ä»¶åŒ…æ‹¬äº†å¸¸ç”¨æ•°æ®ç±»å‹é‡å®šä¹‰çš„å®ï¼ˆwindowsã€linuxå¹³å°ï¼‰
 Function List:
 History:
 * Revision 1.00  2010/03/01 10:00:00  songxg+00133955
-* ³õÊ¼°æ±¾±àÂëÍê³É
+* åˆå§‹ç‰ˆæœ¬ç¼–ç å®Œæˆ
 *
 * Revision 1.01  2010/03/02 14:15:00  songxg+00133955
-* ¸ù¾İ²Ü¿¡Ã¯ºÍÕÅÀöÆ¼Òâ¼ûÌí¼ÓINT40¡¢UINT40¡¢BOOLÀàĞÍ¼°½«·ÀÖØ¶¨ÒåºêÈ¥³ı
+* æ ¹æ®æ›¹ä¿ŠèŒ‚å’Œå¼ ä¸½èæ„è§æ·»åŠ INT40ã€UINT40ã€BOOLç±»å‹åŠå°†é˜²é‡å®šä¹‰å®å»é™¤
 *
 *******************************************************************************/
 #ifndef __BASE_TYPE_H__
@@ -23,7 +23,7 @@ extern "C" {
 #endif    /* __cpluscplus*/
 #endif    /* __cpluscplus*/
 
-// ÕûÊıÊı¾İÀàĞÍÖØ¶¨Òå
+// æ•´æ•°æ•°æ®ç±»å‹é‡å®šä¹‰
 typedef signed char        INT8;
 typedef signed short       INT16;
 typedef signed int         INT32;
@@ -42,23 +42,23 @@ typedef unsigned long long UINT64;
 
 typedef double             DOUBLE;
 
-// ¿ÕÊı¾İÀàĞÍÖØ¶¨Òå
+// ç©ºæ•°æ®ç±»å‹é‡å®šä¹‰
 typedef void               VOID;
 #else
 typedef          __int64   INT64;
 typedef unsigned __int64   UINT64;
 #endif
 
-// DSP¿ÉÄÜ»áÓÃµ½µÄÊı¾İÀàĞÍ
+// DSPå¯èƒ½ä¼šç”¨åˆ°çš„æ•°æ®ç±»å‹
 typedef long               INT40;
 typedef unsigned long      UINT40;
 
-// ¸¡µãÊı¾İÀàĞÍÖØ¶¨Òå
+// æµ®ç‚¹æ•°æ®ç±»å‹é‡å®šä¹‰
 typedef float              FLOAT32;
 typedef double             FLOAT64;
 
 
-// ²¼¶ûÊı¾İÀàĞÍÖØ¶¨Òå
+// å¸ƒå°”æ•°æ®ç±»å‹é‡å®šä¹‰
 typedef char               BOOL8;
 typedef short              BOOL16;
 typedef int                BOOL;

@@ -58,12 +58,12 @@ typedef struct tagMCE_AVPLAY_S
     SYNC_AUD_OPT_S             AudOpt;
 
 	HI_BOOL                    bFrcEnable;
-    AVPLAY_FRC_CFG_S           FrcParamCfg;        /* config frc param */ /*CNcomment: ÅäÖÃµÄfrc²ÎÊı */
-    AVPLAY_ALG_FRC_S           FrcCalAlg;          /* frc used rate info */ /*CNcomment: frcÕıÔÚÊ¹ÓÃµÄÖ¡ÂÊĞÅÏ¢ */
-    AVPLAY_FRC_CTRL_S          FrcCtrlInfo;        /* frc control */ /*CNcomment: frc¿ØÖÆĞÅÏ¢ */
+    AVPLAY_FRC_CFG_S           FrcParamCfg;        /* config frc param */ /*CNcomment: é…ç½®çš„frcå‚æ•° */
+    AVPLAY_ALG_FRC_S           FrcCalAlg;          /* frc used rate info */ /*CNcomment: frcæ­£åœ¨ä½¿ç”¨çš„å¸§ç‡ä¿¡æ¯ */
+    AVPLAY_FRC_CTRL_S          FrcCtrlInfo;        /* frc control */ /*CNcomment: frcæ§åˆ¶ä¿¡æ¯ */
 
-    HI_U32                     FrcNeedPlayCnt;     /* this frame need to play time*/ /*CNcomment:¸ÃÖ¡ĞèÒª²¥¼¸´Î */
-    HI_U32                     FrcCurPlayCnt;     /* this frame had played time*/   /*CNcomment:¸ÃÖ¡Êµ¼Ê²¥µ½µÚ¼¸´Î*/
+    HI_U32                     FrcNeedPlayCnt;     /* this frame need to play time*/ /*CNcomment:è¯¥å¸§éœ€è¦æ’­å‡ æ¬¡ */
+    HI_U32                     FrcCurPlayCnt;     /* this frame had played time*/   /*CNcomment:è¯¥å¸§å®é™…æ’­åˆ°ç¬¬å‡ æ¬¡*/
 
 	HI_DRV_VIDEO_FRAME_PACKAGE_S CurFrmPack;
     HI_DRV_VIDEO_FRAME_PACKAGE_S LstFrmPack;

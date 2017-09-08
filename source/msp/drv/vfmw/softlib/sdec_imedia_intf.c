@@ -21,7 +21,7 @@
 //#include "vfmw_type.h"
 #include "sdec_imedia.h"
 
-//#include "himedia.h"  换成drv_dev_ext.h
+//#include "himedia.h"  鎹㈡垚drv_dev_ext.h
 #include "drv_dev_ext.h"
 
 //#include "common_dev.h"
@@ -64,7 +64,7 @@ HI_S32 SVDEC_ModeInit(HI_VOID)
 	
     iMediaSDEC_FUNC_S  stSdecFunc;
 
-    /* 向VFMW注册软解码库 */
+    /* 鍚慥FMW娉ㄥ唽杞В鐮佸簱 */
     stSdecFunc.pfun_iMediaSoftDEC_Create = iMediaSoftDEC_Create;
     stSdecFunc.pfun_iMediaSoftDEC_Destroy = iMediaSoftDEC_Destroy;
     stSdecFunc.pfun_iMediaSoftDEC_Init = iMediaSoftDEC_Init;
@@ -91,7 +91,7 @@ HI_S32 SVDEC_ModeInit(HI_VOID)
         return HI_FAILURE;
     }
 
-    /* 注册vsdec设备 */
+    /* 娉ㄥ唽vsdec璁惧 */
     sprintf(g_SvdecRegisterData.devfs_name, UMAP_DEVNAME_SVDEC);
 	g_SvdecRegisterData.minor  = UMAP_MIN_MINOR_SVDEC;
 	g_SvdecRegisterData.owner  = THIS_MODULE;

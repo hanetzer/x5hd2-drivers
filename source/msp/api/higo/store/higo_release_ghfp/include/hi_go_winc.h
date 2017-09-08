@@ -1,6 +1,6 @@
 /**
  \file
- \brief Describes the header file of the window (Winc) module.CNcomment:WincÄ£¿éÍ·ÎÄ¼ş CNend
+ \brief Describes the header file of the window (Winc) module.CNcomment:Wincæ¨¡å—å¤´æ–‡ä»¶ CNend
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version 1.0
@@ -21,37 +21,37 @@ extern "C" {
 
 /*************************** Structure Definition ****************************/
 /** \addtogroup      HIGO_WINC */
-/** @{ */  /** <!¡ª[HIGO_WINC]  */
+/** @{ */  /** <!â€”[HIGO_WINC]  */
 
 
 
-/**Number of buffers used by the window*//** CNcomment:windowÊ¹ÓÃbufferµÄ·½Ê½*/
+/**Number of buffers used by the window*//** CNcomment:windowä½¿ç”¨bufferçš„æ–¹å¼*/
 typedef enum
 {
-    HIGO_BUFFER_SINGLE = 0,  /**<The window uses a buffer.*//**<CNcomment:windowÊ¹ÓÃµ¥buffer*/
-    HIGO_BUFFER_DOUBLE,     /**<The window uses dual buffers.*/ /**<CNcomment:windowÊ¹ÓÃË«buffer*/
+    HIGO_BUFFER_SINGLE = 0,  /**<The window uses a buffer.*//**<CNcomment:windowä½¿ç”¨å•buffer*/
+    HIGO_BUFFER_DOUBLE,     /**<The window uses dual buffers.*/ /**<CNcomment:windowä½¿ç”¨åŒbuffer*/
     HIGO_BUFFER_BUTT
 }HIGO_BUFFERTYPE_E;
 
-/**Maximum number of window layers*//** CNcomment: ×î´ó´°¿Ú²ãÊı */
+/**Maximum number of window layers*//** CNcomment: æœ€å¤§çª—å£å±‚æ•° */
 #define HIGO_WINTREE_NUM 16
 
 typedef struct
 {
-    HI_HANDLE hLayer; /**<Graphics layer on which a window is displayed*//**<CNcomment:´°¿ÚÏÔÊ¾µÄÍ¼²ã*/
-    HI_RECT rect;     /**<Window range*//**<CNcomment:´°¿ÚµÄ·¶Î§*/
-    HI_U32 LayerNum;     /**<Display level of a window, ranging from 0 to 15. The greater the number, the upper the position of the window.*//**<CNcomment:´°¿ÚÏÔÊ¾µÄ¼¶±ğ,ĞòºÅÎª0-15¡£Êı×ÖÔ½´óµÄ´°¿ÚÔ½ÔÚÉÏÃæ*/         
-    HIGO_PF_E PixelFormat;/**<Pixel format of a window*//**<CNcomment:´°¿ÚµÄÏñËØ¸ñÊ½*/
-    HIGO_BUFFERTYPE_E BufferType; /**<Number of surface buffers required by a window*/ /**<CNcomment:´°¿ÚĞèÒªµÄsurface buffer¸öÊıµÄÉèÖÃ*/ 
-    HI_BOOL bPubPallette;    /**<Window surface use single Palette or not*//**<CNcomment:´°¿ÚµÄsurfaceÊÇ·ñÊ¹ÓÃµ¥¶ÀµÄPalette;Ö»ÓĞµ±´°¿Ú
-                                            µÄÄÚ´æÄ£Ê½Îª¶ÀÁ¢ÄÚ´æÊ±¸Ã±êÖ¾²ÅÓĞĞ§*/
+    HI_HANDLE hLayer; /**<Graphics layer on which a window is displayed*//**<CNcomment:çª—å£æ˜¾ç¤ºçš„å›¾å±‚*/
+    HI_RECT rect;     /**<Window range*//**<CNcomment:çª—å£çš„èŒƒå›´*/
+    HI_U32 LayerNum;     /**<Display level of a window, ranging from 0 to 15. The greater the number, the upper the position of the window.*//**<CNcomment:çª—å£æ˜¾ç¤ºçš„çº§åˆ«,åºå·ä¸º0-15ã€‚æ•°å­—è¶Šå¤§çš„çª—å£è¶Šåœ¨ä¸Šé¢*/         
+    HIGO_PF_E PixelFormat;/**<Pixel format of a window*//**<CNcomment:çª—å£çš„åƒç´ æ ¼å¼*/
+    HIGO_BUFFERTYPE_E BufferType; /**<Number of surface buffers required by a window*/ /**<CNcomment:çª—å£éœ€è¦çš„surface bufferä¸ªæ•°çš„è®¾ç½®*/ 
+    HI_BOOL bPubPallette;    /**<Window surface use single Palette or not*//**<CNcomment:çª—å£çš„surfaceæ˜¯å¦ä½¿ç”¨å•ç‹¬çš„Palette;åªæœ‰å½“çª—å£
+                                            çš„å†…å­˜æ¨¡å¼ä¸ºç‹¬ç«‹å†…å­˜æ—¶è¯¥æ ‡å¿—æ‰æœ‰æ•ˆ*/
 } HIGO_WNDINFO_S;
 /** @} */  /*! <!-- Structure Definition end */
 
 typedef enum
 {
-     HIGO_WNDMEM_SHARED = 0,  /**<All windows share memory*//**<CNcomment:ËùÓĞwindow¹²ÏíÄÚ´æ*/
-     HIGO_WNDMEM_SEP,          /**<Window uses it's own memory*//**<CNcomment:µ¥¶ÀÊ¹ÓÃÒ»¿éÄÚ´æ*/
+     HIGO_WNDMEM_SHARED = 0,  /**<All windows share memory*//**<CNcomment:æ‰€æœ‰windowå…±äº«å†…å­˜*/
+     HIGO_WNDMEM_SEP,          /**<Window uses it's own memory*//**<CNcomment:å•ç‹¬ä½¿ç”¨ä¸€å—å†…å­˜*/
     HIGO_WNDMEM_BUTT,
 }HIGO_WNDMEM_E;
 
@@ -62,14 +62,14 @@ typedef struct tag_HIGO_INVRGNLIST_S
 }HIGO_INVRGN_S;
 /******************************* API declaration *****************************/
 /** \addtogroup      HIGO_WINC */
-/** @{ */  /** <!¡ª[HIGO_WINC] */
+/** @{ */  /** <!â€”[HIGO_WINC] */
 
 /**
-\brief Creates a window on a specified graphics layer and sets the pixel format of a window.CNcomment:ÔÚÖ¸¶¨Í¼²ãÉÏ´´½¨´°¿Ú CNend
+\brief Creates a window on a specified graphics layer and sets the pixel format of a window.CNcomment:åœ¨æŒ‡å®šå›¾å±‚ä¸Šåˆ›å»ºçª—å£ CNend
 \attention \n
 The new window is always located on the top of a specified graphics layer. The parts of the canvas surface that 
-exceed the graphics layer are cropped.CNcomment:ĞÂ´´½¨µÄ´°¿ÚÊ¼ÖÕÔÚÖ¸¶¨²ãµÄ×îÉÏÃæ, µ±ÏÔÊ¾Ê±£¬³¬³öÍ¼²ãcanvas surface·¶Î§²¿·Ö»á±»¼ôÇĞµô¡£CNend
-\param[in] pInfo Information for creating a window. Only the following pixel formats are supported:CNcomment:´°¿Ú´´½¨µÄĞÅÏ¢£¬ÆäÖĞÏñËØ¸ñÊ½Ö»Ö§³ÖÏÂÃæËùÁĞµÄÏñËØ¸ñÊ½:
+exceed the graphics layer are cropped.CNcomment:æ–°åˆ›å»ºçš„çª—å£å§‹ç»ˆåœ¨æŒ‡å®šå±‚çš„æœ€ä¸Šé¢, å½“æ˜¾ç¤ºæ—¶ï¼Œè¶…å‡ºå›¾å±‚canvas surfaceèŒƒå›´éƒ¨åˆ†ä¼šè¢«å‰ªåˆ‡æ‰ã€‚CNend
+\param[in] pInfo Information for creating a window. Only the following pixel formats are supported:CNcomment:çª—å£åˆ›å»ºçš„ä¿¡æ¯ï¼Œå…¶ä¸­åƒç´ æ ¼å¼åªæ”¯æŒä¸‹é¢æ‰€åˆ—çš„åƒç´ æ ¼å¼:
     HIGO_PF_CLUT8
     HIGO_PF_4444
     HIGO_PF_0444
@@ -80,9 +80,9 @@ exceed the graphics layer are cropped.CNcomment:ĞÂ´´½¨µÄ´°¿ÚÊ¼ÖÕÔÚÖ¸¶¨²ãµÄ×îÉÏÃæ
     HIGO_PF_8888
     HIGO_PF_0888 CNend
     The number of the layer where a window is located must range from 0 to 15. The greater the ID, the upper the 
-position of the window.CNcomment:ÆäÖĞ´°¿Ú²ãºÅÖ»ÄÜÔÚ0µ½15µÄ·¶Î§ÄÚ(°üÀ¨0ºÍ15)£¬²ãºÅ´óµÄ´°¿ÚÓÀÔ¶ÔÚÍ¼²ãºÅĞ¡µÄÉÏÃæ CNend
+position of the window.CNcomment:å…¶ä¸­çª—å£å±‚å·åªèƒ½åœ¨0åˆ°15çš„èŒƒå›´å†…(åŒ…æ‹¬0å’Œ15)ï¼Œå±‚å·å¤§çš„çª—å£æ°¸è¿œåœ¨å›¾å±‚å·å°çš„ä¸Šé¢ CNend
     
-\param[out] pWindow  Address for storing window handles. The value cannot be empty.CNcomment:´æ´¢´°¿Ú¾ä±úµÄµØÖ·£¬²»¿ÉÎª¿Õ CNend
+\param[out] pWindow  Address for storing window handles. The value cannot be empty.CNcomment:å­˜å‚¨çª—å£å¥æŸ„çš„åœ°å€ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NULLPTR
@@ -99,17 +99,17 @@ position of the window.CNcomment:ÆäÖĞ´°¿Ú²ãºÅÖ»ÄÜÔÚ0µ½15µÄ·¶Î§ÄÚ(°üÀ¨0ºÍ15)£¬²ãº
 HI_S32 HI_GO_CreateWindowEx(const HIGO_WNDINFO_S* pInfo, HI_HANDLE* pWindow);
 
 /**
-\brief Creates a window on a specified graphics layer.CNcomment:ÔÚÖ¸¶¨Í¼²ãÉÏ´´½¨´°¿Ú CNend
+\brief Creates a window on a specified graphics layer.CNcomment:åœ¨æŒ‡å®šå›¾å±‚ä¸Šåˆ›å»ºçª—å£ CNend
 \attention \n
 If the pixel format of a graphics layer contains pixel alpha, you can choose whether to use pixel alpha for the 
 surface of the window.
-CNcomment:µ±Í¼²ãµÄÏñËØ¸ñÊ½´øÓĞÏñËØalphaÊ±£¬´°¿ÚµÄsurface¿ÉÒÔÑ¡ÔñÊÇ·ñÊ¹ÓÃÏñËØalpha CNend
-\param[in] hLayer  Handle of the graphics layer.CNcomment:Í¼²ã¾ä±ú CNend
-\param[in] pRect Rectangle window region. If the value is empty, it indicates the entire desktop region.CNcomment:¾ØĞÎ´°¿ÚÇøÓò£¬Îª¿Õ±íÊ¾Õû¸ö×ÀÃæÇøÓò CNend
-\param[in] LayerNum Number of the layer where a window is located. The number ranges from 0 to 15.CNcomment:´°¿ÚËù´¦µÄ²ãºÅ,ĞòºÅÎª0-15¡£CNend
-\param[in] bHasPixelAlpha Whether a window contains pixel alpha.CNcomment:´°¿ÚÊÇ·ñ´øÏñËØalpha CNend
-\param[out] pWindow  Address for storing window handles. The value cannot be empty.CNcomment:´æ´¢´°¿Ú¾ä±úµÄµØÖ·£¬²»¿ÉÎª¿Õ CNend
-\param[out] eBufferType Type of the surface buffer used by a window.CNcomment:windwoÊ¹ÓÃsurface bufferµÄÉèÖÃ CNend
+CNcomment:å½“å›¾å±‚çš„åƒç´ æ ¼å¼å¸¦æœ‰åƒç´ alphaæ—¶ï¼Œçª—å£çš„surfaceå¯ä»¥é€‰æ‹©æ˜¯å¦ä½¿ç”¨åƒç´ alpha CNend
+\param[in] hLayer  Handle of the graphics layer.CNcomment:å›¾å±‚å¥æŸ„ CNend
+\param[in] pRect Rectangle window region. If the value is empty, it indicates the entire desktop region.CNcomment:çŸ©å½¢çª—å£åŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºæ•´ä¸ªæ¡Œé¢åŒºåŸŸ CNend
+\param[in] LayerNum Number of the layer where a window is located. The number ranges from 0 to 15.CNcomment:çª—å£æ‰€å¤„çš„å±‚å·,åºå·ä¸º0-15ã€‚CNend
+\param[in] bHasPixelAlpha Whether a window contains pixel alpha.CNcomment:çª—å£æ˜¯å¦å¸¦åƒç´ alpha CNend
+\param[out] pWindow  Address for storing window handles. The value cannot be empty.CNcomment:å­˜å‚¨çª—å£å¥æŸ„çš„åœ°å€ï¼Œä¸å¯ä¸ºç©º CNend
+\param[out] eBufferType Type of the surface buffer used by a window.CNcomment:windwoä½¿ç”¨surface bufferçš„è®¾ç½® CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NULLPTR
@@ -126,9 +126,9 @@ HI_S32 HI_GO_CreateWindow(HI_HANDLE hLayer, const HI_RECT* pRect,
                           HI_HANDLE* pWindow,HIGO_BUFFERTYPE_E eBufferType);
 
 /**
-\brief Destroys a window.CNcomment:Ïú»Ù´°¿Ú CNend
+\brief Destroys a window.CNcomment:é”€æ¯çª—å£ CNend
 \attention \n
-\param[in] Window Window handle to be destroyed.CNcomment:´ıÏú»Ù´°¿Ú¾ä±ú CNend
+\param[in] Window Window handle to be destroyed.CNcomment:å¾…é”€æ¯çª—å£å¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -140,11 +140,11 @@ HI_S32 HI_GO_CreateWindow(HI_HANDLE hLayer, const HI_RECT* pRect,
 HI_S32 HI_GO_DestroyWindow(HI_HANDLE Window);
 
 /**
-\brief Obtains a window rectangle.CNcomment:»ñÈ¡´°¿Ú¾ØĞÎ CNend
+\brief Obtains a window rectangle.CNcomment:è·å–çª—å£çŸ©å½¢ CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] Window Window handle.CNcomment:´°¿Ú¾ä±ú CNend
-\param[out] pRect Window rectangle address. The value cannot be empty.CNcomment:´°¿Ú¾ØĞÎµØÖ·£¬²»¿ÉÎª¿Õ CNend
+N/A.CNcomment:æ—  CNend
+\param[in] Window Window handle.CNcomment:çª—å£å¥æŸ„ CNend
+\param[out] pRect Window rectangle address. The value cannot be empty.CNcomment:çª—å£çŸ©å½¢åœ°å€ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -157,12 +157,12 @@ N/A.CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetWindowRect(HI_HANDLE Window, HI_RECT* pRect);
 
 /**
-\brief Sets the start position of a window on the attached layer.CNcomment:ÉèÖÃ´°¿ÚÔÚ°ó¶¨²ãÉÏµÄÆğÊ¼Î»ÖÃ CNend
+\brief Sets the start position of a window on the attached layer.CNcomment:è®¾ç½®çª—å£åœ¨ç»‘å®šå±‚ä¸Šçš„èµ·å§‹ä½ç½® CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] Window Window handle.CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] StartX Horizontal coordinate.CNcomment:X×ø±ê CNend
-\param[in] StartY Vertical coordinate.CNcomment:Y×ø±ê CNend
+N/A.CNcomment:æ—  CNend
+\param[in] Window Window handle.CNcomment:çª—å£å¥æŸ„ CNend
+\param[in] StartX Horizontal coordinate.CNcomment:Xåæ ‡ CNend
+\param[in] StartY Vertical coordinate.CNcomment:Yåæ ‡ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -173,12 +173,12 @@ N/A.CNcomment:ÎŞ CNend
 HI_S32 HI_GO_SetWindowPos(HI_HANDLE Window, HI_S32 StartX, HI_S32 StartY);
 
 /**
-\brief Changes the window size.CNcomment:¸Ä±ä´°¿Ú´óĞ¡ CNend
+\brief Changes the window size.CNcomment:æ”¹å˜çª—å£å¤§å° CNend
 \attention \n
-After the window size is changed, you need to redraw the window.CNcomment:¸Ä±ä´°¿Ú´óĞ¡ºó£¬´°¿ÚĞèÒªÖØ»æ CNend
-\param[in] Window Window handle.CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] Width Window width.CNcomment:´°¿Ú¿í¶È CNend
-\param[in] Height Window height.CNcomment: ´°¿Ú¸ß¶È CNend
+After the window size is changed, you need to redraw the window.CNcomment:æ”¹å˜çª—å£å¤§å°åï¼Œçª—å£éœ€è¦é‡ç»˜ CNend
+\param[in] Window Window handle.CNcomment:çª—å£å¥æŸ„ CNend
+\param[in] Width Window width.CNcomment:çª—å£å®½åº¦ CNend
+\param[in] Height Window height.CNcomment: çª—å£é«˜åº¦ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -195,11 +195,11 @@ After the window size is changed, you need to redraw the window.CNcomment:¸Ä±ä´°
 HI_S32 HI_GO_ResizeWindow(HI_HANDLE Window, HI_S32 Width, HI_S32 Height);
 
 /**
-\brief Obtains the z-order of a window. The smaller the z-order, the lower the position of the window.CNcomment:»ñÈ¡´°¿ÚZĞò£¬zĞòÖµĞ¡µÄ´°¿Ú±»Öµ´ó´°¿Ú¸²¸Ç¡£CNend 
+\brief Obtains the z-order of a window. The smaller the z-order, the lower the position of the window.CNcomment:è·å–çª—å£Zåºï¼Œzåºå€¼å°çš„çª—å£è¢«å€¼å¤§çª—å£è¦†ç›–ã€‚CNend 
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] Window Window handle.CNcomment:´°¿Ú¾ä±ú CNend
-\param[out] pZOrder Address for storing the window Z-order. The value cannot be empty.CNcomment:´æ´¢´°¿ÚZĞòµÄµØÖ·£¬²»¿ÉÎª¿Õ CNend
+N/A.CNcomment:æ—  CNend
+\param[in] Window Window handle.CNcomment:çª—å£å¥æŸ„ CNend
+\param[out] pZOrder Address for storing the window Z-order. The value cannot be empty.CNcomment:å­˜å‚¨çª—å£Zåºçš„åœ°å€ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -212,11 +212,11 @@ HI_S32 HI_GO_GetWindowZOrder(HI_HANDLE Window, HI_U32* pZOrder);
 
 
 /**
-\brief Changes the z-order of a window.CNcomment:¸ü¸Ä´°¿ÚZĞò CNend
+\brief Changes the z-order of a window.CNcomment:æ›´æ”¹çª—å£Zåº CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] Window Window handle.CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] EnType Window z-order adjustment mode.CNcomment:´°¿ÚZĞòµ÷Õû·½Ê½ CNend
+N/A.CNcomment:æ—  CNend
+\param[in] Window Window handle.CNcomment:çª—å£å¥æŸ„ CNend
+\param[in] EnType Window z-order adjustment mode.CNcomment:çª—å£Zåºè°ƒæ•´æ–¹å¼ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVPARAM
@@ -230,11 +230,11 @@ N/A.CNcomment:ÎŞ CNend
 HI_S32 HI_GO_ChangeWindowZOrder(HI_HANDLE Window, HIGO_ZORDER_E EnType);
 
 /**
-\brief Obtains the window transparency.CNcomment:»ñÈ¡´°¿Ú¿É¼û¶È CNend
+\brief Obtains the window transparency.CNcomment:è·å–çª—å£å¯è§åº¦ CNend
 \attention \n 
-N/A.CNcomment:ÎŞ CNend
-\param[in] Window Window handle.CNcomment:´°¿Ú¾ä±ú CNend
-\param[out] pOpacity Address for storing the information about window transparency. The value cannot be empty.CNcomment:´æ´¢´°¿Ú²»Í¸Ã÷¶ÈµÄµØÖ·£¬²»¿ÉÎª¿Õ£¬255Îª²»Í¸Ã÷ CNend
+N/A.CNcomment:æ—  CNend
+\param[in] Window Window handle.CNcomment:çª—å£å¥æŸ„ CNend
+\param[out] pOpacity Address for storing the information about window transparency. The value cannot be empty.CNcomment:å­˜å‚¨çª—å£ä¸é€æ˜åº¦çš„åœ°å€ï¼Œä¸å¯ä¸ºç©ºï¼Œ255ä¸ºä¸é€æ˜ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -245,11 +245,11 @@ N/A.CNcomment:ÎŞ CNend
 HI_S32 HI_GO_GetWindowOpacity(HI_HANDLE Window, HI_U8* pOpacity);
 
 /**
-\brief Sets the window transparency.CNcomment:ÉèÖÃ´°¿Ú²»Í¸Ã÷¶È CNend
+\brief Sets the window transparency.CNcomment:è®¾ç½®çª—å£ä¸é€æ˜åº¦ CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] Window Window handle.CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] Opacity Window transparency, ranging from 0 to 255. 0: opaque, 255: full transparent.CNcomment:´°¿Ú²»Í¸Ã÷¶È£¬·¶Î§Îª0~255, µ±Îª0Ê±£¬¸Ã´°¿Ú²»¿É¼û£¬255Ê±£¬´°¿ÚÍêÈ«¿É¼û CNend
+N/A.CNcomment:æ—  CNend
+\param[in] Window Window handle.CNcomment:çª—å£å¥æŸ„ CNend
+\param[in] Opacity Window transparency, ranging from 0 to 255. 0: opaque, 255: full transparent.CNcomment:çª—å£ä¸é€æ˜åº¦ï¼ŒèŒƒå›´ä¸º0~255, å½“ä¸º0æ—¶ï¼Œè¯¥çª—å£ä¸å¯è§ï¼Œ255æ—¶ï¼Œçª—å£å®Œå…¨å¯è§ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -260,29 +260,29 @@ N/A.CNcomment:ÎŞ CNend
 HI_S32 HI_GO_SetWindowOpacity(HI_HANDLE Window, HI_U8 Opacity);
 
 /**
-\brief Sets the window colorkey.CNcomment:ÉèÖÃ´°¿ÚµÄcolorkey CNend
+\brief Sets the window colorkey.CNcomment:è®¾ç½®çª—å£çš„colorkey CNend
 \attention \n
-\param[in] Window Window handle.CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] ColorKey Colorkey value.CNcomment:ColorkeyÖµ CNend
+\param[in] Window Window handle.CNcomment:çª—å£å¥æŸ„ CNend
+\param[in] ColorKey Colorkey value.CNcomment:Colorkeyå€¼ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
 \retval ::HIGO_ERR_LOCKED
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_SetWindowColorkey(HI_HANDLE Window, HI_COLOR ColorKey);
 
 /**
-\brief Obtains the surface handle of a window.CNcomment:»ñÈ¡´°¿ÚµÄsurface¾ä±ú CNend
+\brief Obtains the surface handle of a window.CNcomment:è·å–çª—å£çš„surfaceå¥æŸ„ CNend
 \attention \n
 If the window has dual buffers and you have called HI_GO_FlipWindowSurface, you need to call HI_GO_GetWindowSurface 
 again to obtain another buffer for drawing.
-CNcomment:Èç¹ûÊÇË«bufferµÄwindow£¬HI_GO_FlipWindowSurfaceÖ®ºóĞèÒªÖØĞÂµ÷ÓÃ¸Ã½Ó¿Ú£¬´Ó¶ø»ñÈ¡ÁíÍâÒ»¿ébuffer½øĞĞ»æÖÆ CNend
+CNcomment:å¦‚æœæ˜¯åŒbufferçš„windowï¼ŒHI_GO_FlipWindowSurfaceä¹‹åéœ€è¦é‡æ–°è°ƒç”¨è¯¥æ¥å£ï¼Œä»è€Œè·å–å¦å¤–ä¸€å—bufferè¿›è¡Œç»˜åˆ¶ CNend
 
-\param[in] Window   Window handle.CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] pSurface Address for storing window surfaces. The value cannot be empty.CNcomment:´æ´¢´°¿Úsurface¾ä±úµÄµØÖ·£¬²»¿ÉÎª¿Õ CNend
+\param[in] Window   Window handle.CNcomment:çª—å£å¥æŸ„ CNend
+\param[in] pSurface Address for storing window surfaces. The value cannot be empty.CNcomment:å­˜å‚¨çª—å£surfaceå¥æŸ„çš„åœ°å€ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -294,118 +294,118 @@ CNcomment:Èç¹ûÊÇË«bufferµÄwindow£¬HI_GO_FlipWindowSurfaceÖ®ºóĞèÒªÖØĞÂµ÷ÓÃ¸Ã½Ó¿Ú£
 HI_S32 HI_GO_GetWindowSurface(HI_HANDLE Window, HI_HANDLE* pSurface);
 
 /**
-\brief Refreshes a window.CNcomment:Ë¢ĞÂ´°¿Ú CNend
+\brief Refreshes a window.CNcomment:åˆ·æ–°çª—å£ CNend
 \attention \n
 After changing the window surface contents, you need to call the API for the changes to take effect.
-CNcomment:¸üĞÂ´°¿ÚsurfaceÄÚÈİÖ®ºóĞèÒªµ÷ÓÃ´Ë½Ó¿Ú²ÅÄÜÉúĞ§ CNend
+CNcomment:æ›´æ–°çª—å£surfaceå†…å®¹ä¹‹åéœ€è¦è°ƒç”¨æ­¤æ¥å£æ‰èƒ½ç”Ÿæ•ˆ CNend
 
-\param[in] Window Window handle.CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] pRect Updated window region.CNcomment:¸üĞÂµÄ´°¿ÚÇøÓò CNend
+\param[in] Window Window handle.CNcomment:çª—å£å¥æŸ„ CNend
+\param[in] pRect Updated window region.CNcomment:æ›´æ–°çš„çª—å£åŒºåŸŸ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_UpdateWindow(HI_HANDLE Window, const HI_RECT* pRect);
 
 /**
-\brief Changes the graphics layer to which a window belongs and retains the window.CNcomment:ĞŞ¸Ä´°¿ÚËùÊôÍ¼²ã£¬²»É¾³ı´°¿Ú CNend
+\brief Changes the graphics layer to which a window belongs and retains the window.CNcomment:ä¿®æ”¹çª—å£æ‰€å±å›¾å±‚ï¼Œä¸åˆ é™¤çª—å£ CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] hWindow Window handle.CNcomment: ´°¿Ú¾ä±ú CNend
-\param[in] hNewLayer  Handle of the new layer.CNcomment:ĞÂÍ¼²ã¾ä±ú CNend
+N/A.CNcomment:æ—  CNend
+\param[in] hWindow Window handle.CNcomment: çª—å£å¥æŸ„ CNend
+\param[in] hNewLayer  Handle of the new layer.CNcomment:æ–°å›¾å±‚å¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_ChangeWindowLayer(HI_HANDLE hWindow, HI_HANDLE hNewLayer);
 
 /**
-\brief Switches the surface of a window. This function is valid only for the window that has double surfaces.CNcomment:ÇĞ»»window µÄsurface£¬½ö¶Ôdouble surfaceµÄwindowÓĞĞ§ CNend
+\brief Switches the surface of a window. This function is valid only for the window that has double surfaces.CNcomment:åˆ‡æ¢window çš„surfaceï¼Œä»…å¯¹double surfaceçš„windowæœ‰æ•ˆ CNend
 \attention \n 
-N/A.CNcomment:ÎŞ CNend
-\param[in] hWindow Window handle.CNcomment: ´°¿Ú¾ä±ú CNend
+N/A.CNcomment:æ—  CNend
+\param[in] hWindow Window handle.CNcomment: çª—å£å¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 
 HI_S32 HI_GO_FlipWindowSurface(HI_HANDLE hWindow);
     
 /**
-\brief Set window memory mode. CNcomment:ÉèÖÃ´°¿ÚµÄÄÚ´æÄ£Ê½ CNend
+\brief Set window memory mode. CNcomment:è®¾ç½®çª—å£çš„å†…å­˜æ¨¡å¼ CNend
 \attention \n
 Must set the mode before Window create,Default mode is HIGO_WNDMEM_SEP.
-CNcomment:±ØĞëÔÚ´´½¨´°¿ÚÇ°Ö¸¶¨ÄÚ´æÄ£Ê½,Ä¬ÈÏÎª¶ÀÕ¼ÄÚ´æÄ£Ê½.²»Ö§³Ö
-¶ÀÕ¼ÄÚ´æ´°¿ÚºÍ¹²ÏíÄÚ´æ´°¿ÚÍ¬Ê±´æÔÚ. CNend
-\param[in] Window memory mode. CNcomment:´°¿ÚÄÚ´æÄ£Ê½ CNend
+CNcomment:å¿…é¡»åœ¨åˆ›å»ºçª—å£å‰æŒ‡å®šå†…å­˜æ¨¡å¼,é»˜è®¤ä¸ºç‹¬å å†…å­˜æ¨¡å¼.ä¸æ”¯æŒ
+ç‹¬å å†…å­˜çª—å£å’Œå…±äº«å†…å­˜çª—å£åŒæ—¶å­˜åœ¨. CNend
+\param[in] Window memory mode. CNcomment:çª—å£å†…å­˜æ¨¡å¼ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVPARAM
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_SetWindowMode(HIGO_WNDMEM_E enMode);
 
 /**
-\brief Get window memory mode. CNcomment:»ñÈ¡´°¿ÚµÄÄÚ´æÄ£Ê½ CNend
+\brief Get window memory mode. CNcomment:è·å–çª—å£çš„å†…å­˜æ¨¡å¼ CNend
 \attention \n
 \param[in] 
-\param[out]  Window memory mode. CNcomment:´°¿ÚÄÚ´æÄ£Ê½ CNend
+\param[out]  Window memory mode. CNcomment:çª—å£å†…å­˜æ¨¡å¼ CNend
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NULLPTR
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_GetWindowMode(HIGO_WNDMEM_E *penMode);
 
 /**
-\brief Get clip region of window. CNcomment:»ñÈ¡´°¿ÚµÄ¼ôÇĞÓò CNend
+\brief Get clip region of window. CNcomment:è·å–çª—å£çš„å‰ªåˆ‡åŸŸ CNend
 \attention \n
 In HIGO_WNDMEM_SHARED mode, Can use this API to get window clip region, and to draw. 
-CNcomment:ÔÚ´°¿Ú¹²ÏíÄÚ´æÄ£Ê½ÏÂ,Ê¹ÓÃ¸Ã½Ó¿Ú¿ÉÒÔ»ñÈ¡´°¿ÚµÄ¼ôÇĞÓò, 
-½øĞĞ»æÖÆ. CNend
-\param[in] window handle. CNcomment:´°¿Ú¾ä±ú CNend
-\param[out]  window clip region. CNcomment:´°¿Ú¼ôÇĞÓò CNend
-\param[out]  number of clip region. CNcomment:¼ôÇĞÓò¸öÊı CNend
+CNcomment:åœ¨çª—å£å…±äº«å†…å­˜æ¨¡å¼ä¸‹,ä½¿ç”¨è¯¥æ¥å£å¯ä»¥è·å–çª—å£çš„å‰ªåˆ‡åŸŸ, 
+è¿›è¡Œç»˜åˆ¶. CNend
+\param[in] window handle. CNcomment:çª—å£å¥æŸ„ CNend
+\param[out]  window clip region. CNcomment:çª—å£å‰ªåˆ‡åŸŸ CNend
+\param[out]  number of clip region. CNcomment:å‰ªåˆ‡åŸŸä¸ªæ•° CNend
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NULLPTR
 \retval ::HIGO_ERR_INVHANDLE
 \retval ::HIGO_ERR_NOMEM
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_GetWindowClipRgn(HI_HANDLE hWindow,  HI_REGION **ppClipRgn, 
     HI_U32 *pu32Num);
 
 /**
-\brief Get window invalid region. CNcomment:»ñÈ¡´°¿Ú¾ä±ú¼°ÎŞĞ§Óò CNend
+\brief Get window invalid region. CNcomment:è·å–çª—å£å¥æŸ„åŠæ— æ•ˆåŸŸ CNend
 \attention \n
-CNcomment:¸Ã½Ó¿Ú¿ÉÒÔ»ñÈ¡hWindowËùÔÚÍ¼²ãµÄËùÓĞ´°¿ÚµÄÎŞĞ§Óò(Èç¹ûÓĞµÄ
-»°).Ã¿¸ö´°¿ÚµÄÎŞĞ§ÓòÎªÒ»¸ö¾ØĞÎ,¸Ã¾ØĞÎÖ»ÊÇÎŞĞ§ÓòµÄ°üÂç,ĞèÒª
-ºÍ´°¿Ú¼ôÇĞÓò×÷¼ôÇĞºó»æÖÆ,²ÅÄÜ±£Ö¤ÏÔÊ¾µÄÕıÈ·.
-µ±ĞŞ¸Ä´°¿ÚµÄÍ¸Ã÷¶È(¹²ÏíÄÚ´æÄ£Ê½ÏÂÖ»ÓĞÍ¸Ã÷ºÍ²»Í¸,²»Ö§³Ö
-°ëÍ¸,ËùÓĞ°ëÍ¸µ±Í¸Ã÷´¦Àí)/ÒÆ¶¯´°¿ÚÊ±,¿ÉÒÔÊ¹ÓÃ¸Ã½Ó¿Ú»ñÈ¡
-ÓÉ´Ë²Ù×÷²úÉúµÄÎŞĞ§Óò,È»ºó¸üĞÂ»æÖÆ. CNend
-\param[in] window handle. CNcomment:´°¿Ú¾ä±ú CNend
-\param[out]  window invalid region. CNcomment:´°¿ÚÎŞĞ§Óò CNend
-\param[out]  number of invalid region. CNcomment:ÎŞĞ§Óò¸öÊı CNend
+CNcomment:è¯¥æ¥å£å¯ä»¥è·å–hWindowæ‰€åœ¨å›¾å±‚çš„æ‰€æœ‰çª—å£çš„æ— æ•ˆåŸŸ(å¦‚æœæœ‰çš„
+è¯).æ¯ä¸ªçª—å£çš„æ— æ•ˆåŸŸä¸ºä¸€ä¸ªçŸ©å½¢,è¯¥çŸ©å½¢åªæ˜¯æ— æ•ˆåŸŸçš„åŒ…ç»œ,éœ€è¦
+å’Œçª—å£å‰ªåˆ‡åŸŸä½œå‰ªåˆ‡åç»˜åˆ¶,æ‰èƒ½ä¿è¯æ˜¾ç¤ºçš„æ­£ç¡®.
+å½“ä¿®æ”¹çª—å£çš„é€æ˜åº¦(å…±äº«å†…å­˜æ¨¡å¼ä¸‹åªæœ‰é€æ˜å’Œä¸é€,ä¸æ”¯æŒ
+åŠé€,æ‰€æœ‰åŠé€å½“é€æ˜å¤„ç†)/ç§»åŠ¨çª—å£æ—¶,å¯ä»¥ä½¿ç”¨è¯¥æ¥å£è·å–
+ç”±æ­¤æ“ä½œäº§ç”Ÿçš„æ— æ•ˆåŸŸ,ç„¶åæ›´æ–°ç»˜åˆ¶. CNend
+\param[in] window handle. CNcomment:çª—å£å¥æŸ„ CNend
+\param[out]  window invalid region. CNcomment:çª—å£æ— æ•ˆåŸŸ CNend
+\param[out]  number of invalid region. CNcomment:æ— æ•ˆåŸŸä¸ªæ•° CNend
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_NULLPTR
 \retval ::HIGO_ERR_INVHANDLE
 \retval ::HIGO_ERR_NOMEM
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */ 
 HI_S32 HI_GO_GetWindowInvRgn(HI_HANDLE hWindow, HIGO_INVRGN_S **ppInvRgn, 
     HI_U32 *pu32Num);

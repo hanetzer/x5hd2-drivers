@@ -46,7 +46,7 @@
 #define  GPIO_11_ADDR            0xF8B2B000
 #define  GPIO_12_ADDR            0xF8B2C000
 
-//GPIO 13~17 ÏÈ²»¹Ü
+//GPIO 13~17 å…ˆä¸ç®¡
 
 #define  GPIO_DIR_REG            0x400
 #define  GPIO_BIT_NUM            8
@@ -242,7 +242,7 @@ static void SaveEdidToEeprom(HI_U8 offset, HI_U8 ucLen, HI_U8 *pucData)
 #if 0 /*--NO MODIFY : COMMENT BY CODINGPARTNER--*/
 static HI_U32 SI_GPIO_SetDirBit(HI_U32 u32GpioNo, HI_U8 GpioBitNum, HI_BOOL	bInput)
 {
-    //ÐèÒª¸Ä
+    //éœ€è¦æ”¹
     HI_U32 Ret;
     HI_U32 GpioUsrAddr = 0, value;
     
@@ -473,7 +473,7 @@ static HI_U32 SI_DDC_Adjust(void)
         //SDA is high
         
         //Set GPIO0_1:HDMI_SDA input
-        //  u32GpioNo = ×éºÅ*8 + ÔÚ×éÀïµÄ±àºÅ
+        //  u32GpioNo = ç»„å·*8 + åœ¨ç»„é‡Œçš„ç¼–å·
         //Ret = HI_UNF_GPIO_SetDirBit(0*8 + 1, HI_TRUE);//GPIO0_1:HDMI_SDA
         //SI_GPIO_SetDirBit(0, 1, HI_TRUE);
         gpio_func_ops->pfnGpioDirSetBit(1,HI_TRUE);
@@ -1898,7 +1898,7 @@ static HI_U8 BasicParse(HI_U8 * pSysError, HI_U16 * pCRC16)
     
     g_stSinkCap.u8Version    = EDID_Basic_Block[0x12];
     g_stSinkCap.u8Revision   = EDID_Basic_Block[0x13];
-    g_stSinkCap.u8EDIDExternBlockNum = EDID_Basic_Block[0x7e]; /*extern flag*//*CNcomment:ÍâÀ©±êÖ¾ */
+    g_stSinkCap.u8EDIDExternBlockNum = EDID_Basic_Block[0x7e]; /*extern flag*//*CNcomment:å¤–æ‰©æ ‡å¿— */
     
     return Error;
 }

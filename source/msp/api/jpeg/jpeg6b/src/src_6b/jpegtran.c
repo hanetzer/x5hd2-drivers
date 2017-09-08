@@ -52,7 +52,7 @@ static jpeg_transform_info transformoption;   /* image transformation options   
 /******************************* API declaration *****************************/
 
 
-/************************** Api ½Ó¿Ú²âÊÔ *************************************/
+/************************** Api æ¥å£æµ‹è¯• *************************************/
 
 
 /*****************************************************************************
@@ -478,7 +478,7 @@ static int parse_switches (j_compress_ptr cinfo,    \
 
 /*****************************************************************************
 * func         : main  
-: description  : Ö÷ÒªÊÇĞı×ªÍ¼Æ¬¸ñÊ½µÄ±à½âÂëÊ¹ÓÃÓÃÀı
+: description  : ä¸»è¦æ˜¯æ—‹è½¬å›¾ç‰‡æ ¼å¼çš„ç¼–è§£ç ä½¿ç”¨ç”¨ä¾‹
 * param[in]    :  
 * retval       :
 * others:	   :
@@ -487,8 +487,8 @@ int main (int argc, char **argv)
 {
 
 
-	  struct jpeg_decompress_struct srcinfo;  /** ½âÂë½á¹¹Ìå¶ÔÏó**/
-	  struct jpeg_compress_struct   dstinfo;  /** ±àÂë½á¹¹Ìå¶ÔÏó**/
+	  struct jpeg_decompress_struct srcinfo;  /** è§£ç ç»“æ„ä½“å¯¹è±¡**/
+	  struct jpeg_compress_struct   dstinfo;  /** ç¼–ç ç»“æ„ä½“å¯¹è±¡**/
 	  struct jpeg_error_mgr jsrcerr, jdsterr;
 	  
 	  #ifdef PROGRESS_REPORT
@@ -514,7 +514,7 @@ int main (int argc, char **argv)
  
       /* Initialize the JPEG decompression object with default error handling. */
 	  /**
-	   ** ½âÂë
+	   ** è§£ç 
 	   **/
 	  srcinfo.err = jpeg_std_error(&jsrcerr);
 	  jpeg_create_decompress(&srcinfo);
@@ -522,7 +522,7 @@ int main (int argc, char **argv)
 	  
 	  /* Initialize the JPEG compression object with default error handling. */
 	  /**
-	   ** ±àÂë
+	   ** ç¼–ç 
 	   **/
 	  dstinfo.err = jpeg_std_error(&jdsterr);
 	  jpeg_create_compress(&dstinfo);
@@ -613,14 +613,14 @@ int main (int argc, char **argv)
 
 
        /**
-        **  Õâ²¿·ÖÊôÓÚ½âÂëµÄ
+        **  è¿™éƒ¨åˆ†å±äºè§£ç çš„
         **/
        /* Specify data source for decompression */
       jpeg_stdio_src(&srcinfo, input_file);
 
 	  /* Enable saving of extra markers that we want to copy */
 	  /**
-	   ** ±£´æ¶îÍâµÄĞÅÏ¢Ê¹ÄÜ
+	   ** ä¿å­˜é¢å¤–çš„ä¿¡æ¯ä½¿èƒ½
 	   **/
 	  jcopy_markers_setup(&srcinfo, copyoption);
 

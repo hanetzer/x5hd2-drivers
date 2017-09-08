@@ -55,16 +55,16 @@ extern HI_U32 OmxTraceParam;
 #endif
 
 
-/* OmxTraceParam ³£ÓÃÖµ
+/* OmxTraceParam å¸¸ç”¨å€¼
 
    1:      OMX_FATAL
    2:      OMX_ERR
    4:      OMX_WARN
-   8:      OMX_INFO        (³£ÓÃÓÚ²é¿´´´½¨Í¨µÀÅäÖÃÏîÒÔ¼°¸ú×Ù×îºóÒ»Ö¡Çé¿ö)
+   8:      OMX_INFO        (å¸¸ç”¨äºŽæŸ¥çœ‹åˆ›å»ºé€šé“é…ç½®é¡¹ä»¥åŠè·Ÿè¸ªæœ€åŽä¸€å¸§æƒ…å†µ)
    16:     OMX_TRACE
    32:     OMX_INBUF
    64:     OMX_OUTBUF
-   128:    OMX_VPSS        (³£ÓÃÓÚ¸ú×ÙÍ¼Ïñ²»Êä³öÊ±VPSSµÄÇé¿ö)
+   128:    OMX_VPSS        (å¸¸ç”¨äºŽè·Ÿè¸ªå›¾åƒä¸è¾“å‡ºæ—¶VPSSçš„æƒ…å†µ)
 
    3:      OMX_FATAL & OMX_ERR
    7:      OMX_FATAL & OMX_ERR & OMX_WARN

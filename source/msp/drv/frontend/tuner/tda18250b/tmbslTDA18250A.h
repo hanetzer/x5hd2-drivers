@@ -221,7 +221,7 @@ tmbslTDA18250A_GetIFLevel(
 tmErrorCode_t
 tmbslTDA18250A_GetPowerLevel(
     tmUnitSelect_t  tUnit,      /* I: Unit number */
-    Int32*          pPowerLevel /* O: Power Level in (x100) dBµVrms */
+    Int32*          pPowerLevel /* O: Power Level in (x100) dBç¤¦rms */
 );
 
 tmErrorCode_t

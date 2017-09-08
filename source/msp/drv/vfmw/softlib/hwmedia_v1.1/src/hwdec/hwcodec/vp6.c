@@ -229,13 +229,13 @@ static int vp6_parse_header(VP56Context *s, const uint8_t *buf, int buf_size,
     int rows, cols;
     int res = 1;
     int separated_coeff;
-	/*x00141957 20100908 Ôö¼Ó±äÁ¿¼ÇÂ¼crop´óĞ¡*/
-	/*ÎÊÌâµ¥ºÅ£ºAZ1D02316
-	ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-	Ê±¼ä£º2010/09/09
-	ÎÊÌâÃèÊö£º ½âÂë1080pÍ¼ÏñÓëffmpeg²»Ò»ÖÂ
-	ÎÊÌâĞŞ¸Ä£º ½«flvÖĞ¶îÍâĞÅÏ¢´øÈëÂëÁ÷ÖĞ*/
-	/*cropsize¸Ä·ÅÔÚs->avctx->extradata[0]ÖĞ x00141957 2011 0331*/
+	/*x00141957 20100908 å¢åŠ å˜é‡è®°å½•cropå¤§å°*/
+	/*é—®é¢˜å•å·ï¼šAZ1D02316
+	ä¿®æ”¹äººï¼šç†Šé£ +00141957
+	æ—¶é—´ï¼š2010/09/09
+	é—®é¢˜æè¿°ï¼š è§£ç 1080på›¾åƒä¸ffmpegä¸ä¸€è‡´
+	é—®é¢˜ä¿®æ”¹ï¼š å°†flvä¸­é¢å¤–ä¿¡æ¯å¸¦å…¥ç æµä¸­*/
+	/*cropsizeæ”¹æ”¾åœ¨s->avctx->extradata[0]ä¸­ x00141957 2011 0331*/
 	//uint8_t cropsize = buf[0];
 
 	//buf++;
@@ -255,7 +255,7 @@ static int vp6_parse_header(VP56Context *s, const uint8_t *buf, int buf_size,
 			IMEDIA_SET_ERR_PIC(s->avctx->iErrorCode, IMEDIA_ERR_PIC_ID);
 			//return 0;
 		}
-		/*vp ProfileµÄÖµ±Ø¶¨Îª0,3 x00141957 20100901*/
+		/*vp Profileçš„å€¼å¿…å®šä¸º0,3 x00141957 20100901*/
         s->filter_header = buf[1] & 0x06;
 		if ((s->filter_header != 0)&&(s->filter_header != 6))
 		{
@@ -263,7 +263,7 @@ static int vp6_parse_header(VP56Context *s, const uint8_t *buf, int buf_size,
 			IMEDIA_SET_ERR_PIC(s->avctx->iErrorCode, IMEDIA_ERR_PIC_ID);
 		}
 
-		/*´ËÎª±£ÁôÎ»£¬±Ø¶¨Îª1 x00141957 20100901*/
+		/*æ­¤ä¸ºä¿ç•™ä½ï¼Œå¿…å®šä¸º1 x00141957 20100901*/
         if (buf[1] & 1) {
             av_log(s->avctx, AV_LOG_WARNING, "interlacing not supported\n");
 			/*x00141957 20100712*/
@@ -271,7 +271,7 @@ static int vp6_parse_header(VP56Context *s, const uint8_t *buf, int buf_size,
             //return 0;
         }
 
-		/*Èç¹ûbuff2offset´æÔÚ£¬Ôò»¹ĞèÒª¶ÁÈ¡16¸ö±ÈÌØ x00141957 20100901*/
+		/*å¦‚æœbuff2offsetå­˜åœ¨ï¼Œåˆ™è¿˜éœ€è¦è¯»å–16ä¸ªæ¯”ç‰¹ x00141957 20100901*/
         if (separated_coeff || !s->filter_header) {
             coeff_offset = AV_RB16(buf+2) - 2;
             buf += 2;
@@ -299,7 +299,7 @@ static int vp6_parse_header(VP56Context *s, const uint8_t *buf, int buf_size,
 #endif
 		if (0 == s->avctx->frame_number /* first frame */) 
 		{
-			/*ÅĞ¶ÏÍ¼Ïñ¿í¸ßÊÇ·ñºÏ·¨ x00141957 20100913*/
+			/*åˆ¤æ–­å›¾åƒå®½é«˜æ˜¯å¦åˆæ³• x00141957 20100913*/
 			{
 				int actualwidth,actualheight;
 				actualwidth = 16*cols;
@@ -312,7 +312,7 @@ static int vp6_parse_header(VP56Context *s, const uint8_t *buf, int buf_size,
 				actualheight -= ((unsigned int)s->avctx->extradata[0][0]) & 0x0F;
 				if(actualwidth > (int)s->avctx->usSourceWidth || actualheight > (int)s->avctx->usSourceHeight )
 				{
-					/*x00141957 2011 0328 ĞŞ¸Ä£¬µ±Êµ¼Ê¿í¸ß´óÓÚÍ¨µÀ¿í¸ßÊ±£¬·µ»Ø-2£¬±íÊ¾ÎŞ·¨½âÂë*/
+					/*x00141957 2011 0328 ä¿®æ”¹ï¼Œå½“å®é™…å®½é«˜å¤§äºé€šé“å®½é«˜æ—¶ï¼Œè¿”å›-2ï¼Œè¡¨ç¤ºæ— æ³•è§£ç */
 					av_log(s->avctx, AV_LOG_WARNING, "pic 's actual width and actual height illegal!\n");
 					IMEDIA_SET_ERR_SEQ(s->avctx->iErrorCode, IMEDIA_ERR_SEQ_SIZE);
 					return -2;
@@ -330,18 +330,18 @@ static int vp6_parse_header(VP56Context *s, const uint8_t *buf, int buf_size,
 			s->avctx->width  -= ((unsigned int)cropsize) >> 4;
 			s->avctx->height -=((unsigned int)cropsize) & 0x0F;
 			*/
-			/*cropsize·ÅÔÚs->avctx->extradata[0]ÖĞ x00141957 2011 0331*/
+			/*cropsizeæ”¾åœ¨s->avctx->extradata[0]ä¸­ x00141957 2011 0331*/
 			s->avctx->width  -= ((unsigned int)s->avctx->extradata[0][0]) >> 4;
 			s->avctx->height -= ((unsigned int)s->avctx->extradata[0][0]) & 0x0F;
 			res = 2;
-			/*¼ÇÂ¼Í¼ÏñÊµ¼Ê¿í¸ß x00141957 20100629*/
+			/*è®°å½•å›¾åƒå®é™…å®½é«˜ x00141957 20100629*/
 			s->avctx->usActualWidth = s->avctx->width;
 			s->avctx->usActualHeight = s->avctx->height;
             	printk(">>>>>>>>>s->avctx->usActualWidth = %d,s->avctx->usActualHeight = %d\n",s->avctx->usActualWidth, 
                     s->avctx->usActualHeight);
 		}
 		else if (16*cols != s->avctx->coded_width ||
-			16*rows != s->avctx->coded_height)/*x00141957 20100905ĞŞ¸Ä*/
+			16*rows != s->avctx->coded_height)/*x00141957 20100905ä¿®æ”¹*/
 		{
 			av_log(s->avctx, AV_LOG_WARNING, " unsupport size [%d x %d] changed to [%d x %d]!\n",s->avctx->coded_width,s->avctx->coded_height,16*cols,16*rows);
 			/*x00141957 20100905*/
@@ -349,7 +349,7 @@ static int vp6_parse_header(VP56Context *s, const uint8_t *buf, int buf_size,
 		}
 		
 
-		/*³õÊ¼»¯bool½âÂë½á¹¹Ìå x00141957 20100901*/
+		/*åˆå§‹åŒ–boolè§£ç ç»“æ„ä½“ x00141957 20100901*/
         vp56_init_range_decoder(c, buf+6, buf_size-6);
 
 		/*scaling mode x00141957 20100901*/
@@ -360,7 +360,7 @@ static int vp6_parse_header(VP56Context *s, const uint8_t *buf, int buf_size,
             vrt_shift = 5;
         s->sub_version = sub_version;
 
-		/*x00141957 20100715 Ôö¼Ókeyframe¼ÆÊı*/
+		/*x00141957 20100715 å¢åŠ keyframeè®¡æ•°*/
 		s->avctx->uiDecIFrames++;
     } else {
            
@@ -382,13 +382,13 @@ static int vp6_parse_header(VP56Context *s, const uint8_t *buf, int buf_size,
                 parse_filter_info = vp56_rac_get(c);
         }
 
-		/*x00141957 20100715 Ôö¼Óp frame¼ÆÊı*/
+		/*x00141957 20100715 å¢åŠ p frameè®¡æ•°*/
 		s->avctx->uiDecPFrames++;
 
-		/*Ôö¼Ó´úÂëÅĞ¶Ï£¬ÓÉÓÚ¿ÉÄÜ³öÏÖµÚÒ»Ö¡ÎªPÖ¡µÄÇé¿ö x00141957 20110725*/
+		/*å¢åŠ ä»£ç åˆ¤æ–­ï¼Œç”±äºå¯èƒ½å‡ºç°ç¬¬ä¸€å¸§ä¸ºPå¸§çš„æƒ…å†µ x00141957 20110725*/
 		if(s->avctx->usActualWidth > (int)s->avctx->usSourceWidth || s->avctx->usActualHeight > (int)s->avctx->usSourceHeight )
 		{
-			/*x00141957 2011 0328 ĞŞ¸Ä£¬µ±Êµ¼Ê¿í¸ß´óÓÚÍ¨µÀ¿í¸ßÊ±£¬·µ»Ø-2£¬±íÊ¾ÎŞ·¨½âÂë*/
+			/*x00141957 2011 0328 ä¿®æ”¹ï¼Œå½“å®é™…å®½é«˜å¤§äºé€šé“å®½é«˜æ—¶ï¼Œè¿”å›-2ï¼Œè¡¨ç¤ºæ— æ³•è§£ç */
 			av_log(s->avctx, AV_LOG_WARNING, "pic 's actual width and actual height illegal!\n");
 			IMEDIA_SET_ERR_SEQ(s->avctx->iErrorCode, IMEDIA_ERR_SEQ_SIZE);
 			return -2;
@@ -529,7 +529,7 @@ static int vp6_build_huff_tree(VP56Context *s, uint8_t coeff_model[],
                                 const uint8_t *map, unsigned size, VLC *vlc)
 {
     //Node nodes[2*size], *tmp = &nodes[size];
-	/*x00141957 20100608ĞŞ¸Ä*/
+	/*x00141957 20100608ä¿®æ”¹*/
 //	Node nodes[2*size], *tmp = &nodes[size];
 	Node *tmp;
 #if __STDC_VERSION__ >= 199901L
@@ -539,7 +539,7 @@ static int vp6_build_huff_tree(VP56Context *s, uint8_t coeff_model[],
 #endif
 
     int a, b;
-	/*x00141957 20100729 Ïû³ıwarning*/
+	/*x00141957 20100729 æ¶ˆé™¤warning*/
 	unsigned int i;
 
 	/*x00141957 20100927*/
@@ -777,7 +777,7 @@ static void vp6_parse_coeff_huffman(VP56Context *s)
 	int SignBit;
 	int16_t *CoeffData;
 
-	/*x00141957 2010 1128 6¸öblock*/
+	/*x00141957 2010 1128 6ä¸ªblock*/
 	for (b=0; b<6; b++) 
 	{
 		int ct = 0;    /* code type */
@@ -788,7 +788,7 @@ static void vp6_parse_coeff_huffman(VP56Context *s)
 		coeff_idx = 0;
 		vlc_coeff = &s->dccv_vlc[pt];
 
-		/*¿ªÊ¼½âÂëDCÏµÊı x00141957 2010 1128*/
+		/*å¼€å§‹è§£ç DCç³»æ•° x00141957 2010 1128*/
 		
 		if (s->nb_null[coeff_idx][pt]) 
 		{
@@ -845,7 +845,7 @@ static void vp6_parse_coeff_huffman(VP56Context *s)
 				s->block_coeff[b][0] = (int16_t)((value ^ -SignBit) + SignBit); 
 			}
 		}
-		/*¿ªÊ¼½âÂëACÏµÊı x00141957 2010 1128*/
+		/*å¼€å§‹è§£ç ACç³»æ•° x00141957 2010 1128*/
 		
 		coeff_idx ++;
 		cg = FFMIN(vp6_coeff_groups[coeff_idx], 3);
@@ -1027,7 +1027,7 @@ static void vp6_parse_coeff(VP56Context *s)
         NDECODEBOOL_AND_BRANCH_IF_ONE(model2[ZERO_CONTEXT_NODE], DC_NON_ZERO_);
 		idx ++;
 		ct = 0;
-		/*DCÏµÊıÎªÁã ¿ªÊ¼½âÂëACÏµÊı x00141957 20101115*/
+		/*DCç³»æ•°ä¸ºé›¶ å¼€å§‹è§£ç ACç³»æ•° x00141957 20101115*/
 		goto AC_DO_WHILE;
 
 DC_NON_ZERO_:
@@ -1115,7 +1115,7 @@ DC_EXTRA_BITS_:
             APPLYSIGN(s->block_coeff[b][0], tValue);
 
 	     idx ++;		
-		/*DCÏµÊı½âÂëÍê³É x00141957 2010 11.16*/
+		/*DCç³»æ•°è§£ç å®Œæˆ x00141957 2010 11.16*/
             goto AC_DO_WHILE;
         }
 
@@ -1152,20 +1152,20 @@ ONE_CONTEXT_NODE_0_:
          idx ++;
 
 AC_DO_WHILE:
-      /*²ÉÓÃAC½âÂëprob±í x00141957 2010 11.16*/
+      /*é‡‡ç”¨ACè§£ç probè¡¨ x00141957 2010 11.16*/
 	cg = vp6_coeff_groups[idx];
        model2 = model->coeff_ract[pt][ct][cg];
 	ct = 0;   
-		//ÅĞ¶ÏÊÇ·ñÎŞÖµ x00141957 2010 1116
+		//åˆ¤æ–­æ˜¯å¦æ— å€¼ x00141957 2010 1116
         NDECODEBOOL_AND_BRANCH_IF_ONE(model2[ZERO_CONTEXT_NODE], NON_ZERO_RUN_);
 
 //ZERO_RUN_:
 		// Is the token a Zero or EOB
         NDECODEBOOL_AND_BRANCH_IF_ZERO(model2[EOB_CONTEXT_NODE], BLOCK_FINISHED_1);
 
-       /*½«model3Ö¸ÕëÖ¸Ïòzerorunprobs x00141957 2010 1115*/
+       /*å°†model3æŒ‡é’ˆæŒ‡å‘zerorunprobs x00141957 2010 1115*/
 	   model3 = model->coeff_runv[idx >= 6];
-	/*´ËÊ±¿ªÊ¼½âÂë0run x00141957 2010 1115*/
+	/*æ­¤æ—¶å¼€å§‹è§£ç 0run x00141957 2010 1115*/
         NDECODEBOOL_AND_BRANCH_IF_ONE(model3[0], ZERO_RUN_5_8);
 
 //ZERO_RUN_1_4:
@@ -1576,7 +1576,7 @@ static av_cold int vp6_decode_init(AVCodecContext *avctx)
 
     ret = vp56_init(avctx, avctx->codec->id == CODEC_ID_VP6,
                      avctx->codec->id == CODEC_ID_VP6A);
-    /*x00141957 20100914,Èç¹û³õÊ¼»¯ËùÓĞbufferÊ§°Ü£¬Ôò·µ»Ø*/
+    /*x00141957 20100914,å¦‚æœåˆå§‹åŒ–æ‰€æœ‰bufferå¤±è´¥ï¼Œåˆ™è¿”å›*/
 	if (ret <0)
     {
 		av_log(avctx, AV_LOG_ERROR, "get yuv buffer malloc failed!\n");
@@ -1594,16 +1594,16 @@ static av_cold int vp6_decode_init(AVCodecContext *avctx)
     s->parse_header = vp6_parse_header;
 
 	/*x00141957 20100630*/
-	/* ĞÂÔö´úÂë: ¸øparse.buffer·ÖÅäÄÚ´æ ¸Äµ½parse frameÖĞ*/
+	/* æ–°å¢ä»£ç : ç»™parse.bufferåˆ†é…å†…å­˜ æ”¹åˆ°parse frameä¸­*/
 // 	if(NULL == s->parse_context.buffer)
 // 	{
 // 		s->parse_context.buffer_size = avctx->usSourceWidth*avctx->usSourceHeight*2;
 // 		s->parse_context.buffer = av_malloc_hw(s->parse_context.buffer_size);
 // 		
-	/*Ôö¼ÓcodecµÄÄÚ´æ·ÖÅä£¬ÓÉÅäÖÃµÄ¾²Ì¬²ÎÊıÖĞµÄ×î´ó¿í¸ß¾ö¶¨*/
+	/*å¢åŠ codecçš„å†…å­˜åˆ†é…ï¼Œç”±é…ç½®çš„é™æ€å‚æ•°ä¸­çš„æœ€å¤§å®½é«˜å†³å®š*/
 	stride = s->framep[VP56_FRAME_CURRENT]->linesize[0];
 
-/*³õÊ¼»¯coded_widthÎª¾²Ì¬ÅäÖÃ¿í¸ß x00141957 20100914*/
+/*åˆå§‹åŒ–coded_widthä¸ºé™æ€é…ç½®å®½é«˜ x00141957 20100914*/
 	avctx->coded_width = avctx->usSourceWidth;
 	avctx->coded_height = avctx->usSourceHeight;
 
@@ -1633,12 +1633,12 @@ static av_cold int vp6_decode_init(AVCodecContext *avctx)
 	}    
 	if (NULL == s->edge_emu_buffer_alloc)
 	{
-		/*½«av_malloc¸ÄÎªav_malloc_hw x00141957 20100701*/
+		/*å°†av_mallocæ”¹ä¸ºav_malloc_hw x00141957 20100701*/
 		s->edge_emu_buffer_alloc = av_malloc_hw(avctx,16*stride);
 	} 
 	//av_free(s->edge_emu_buffer_alloc);
 
-	/*x00141957 20100914 ÅĞ¶ÏÉÏÊöÄÚ´æ·ÖÅäÊÇ·ñ³É¹¦ Èç¹ûÃ»ÓĞÔòÊÍ·ÅËùÓĞÒÑ·ÖÅäÄÚ´æ£¬²¢ÇÒ·µ»Ø-1*/
+	/*x00141957 20100914 åˆ¤æ–­ä¸Šè¿°å†…å­˜åˆ†é…æ˜¯å¦æˆåŠŸ å¦‚æœæ²¡æœ‰åˆ™é‡Šæ”¾æ‰€æœ‰å·²åˆ†é…å†…å­˜ï¼Œå¹¶ä¸”è¿”å›-1*/
 	if((NULL == s->above_blocks)||(NULL == s->macroblocks)||(NULL == s->edge_emu_buffer_alloc))
 	{
 		av_log(avctx, AV_LOG_ERROR, "decode buffer malloc failed!\n");
@@ -1654,7 +1654,7 @@ static av_cold int vp6_decode_init(AVCodecContext *avctx)
 
 #if 1
 #if 0
-/* Çå¿ÕYUV buffer¶ÓÁĞºÍ×´Ì¬ĞÅÏ¢ x00141957 20100702ĞÂÔöº¯Êı*/
+/* æ¸…ç©ºYUV bufferé˜Ÿåˆ—å’ŒçŠ¶æ€ä¿¡æ¯ x00141957 20100702æ–°å¢å‡½æ•°*/
 static void ff_vp6_flush(AVCodecContext *avctx)
 {
 	int i;
@@ -1663,7 +1663,7 @@ static void ff_vp6_flush(AVCodecContext *avctx)
 	if(s==NULL)
 		return;
 
-	/* Çå¿ÕYUV buffer¶ÓÁĞ */
+	/* æ¸…ç©ºYUV bufferé˜Ÿåˆ— */
 	for(i=0; i<MAX_PICTURE_COUNT; i++)
 	{
 		if(s->picture[i].data[0] && (   s->picture[i].type == FF_BUFFER_TYPE_INTERNAL
@@ -1672,7 +1672,7 @@ static void ff_vp6_flush(AVCodecContext *avctx)
 	}
 	s->current_picture_ptr = s->last_picture_ptr = s->next_picture_ptr = NULL;
 
-	/* Çå¿Õ×´Ì¬ĞÅÏ¢ */
+	/* æ¸…ç©ºçŠ¶æ€ä¿¡æ¯ */
 	s->mb_x= s->mb_y= 0;
 
 	s->parse_context.state= -1;
@@ -1685,8 +1685,8 @@ static void ff_vp6_flush(AVCodecContext *avctx)
 	s->pp_time=0;
 }
 #endif 
-/* ĞÂÔöº¯Êı£º¸´Î»VP6½âÂëÆ÷ xiongfei20100702*/
-/*x00141957 20101230 ÒòÎªÄÚºËÌ¬±àÒëÕ»¿Õ¼ä¹ı´ó£¬ËùÒÔ¸ÄĞ´´Ëº¯Êı£¬²»ÔÙ¶Ôvp56context½á¹¹ÌåÇåÁã*/
+/* æ–°å¢å‡½æ•°ï¼šå¤ä½VP6è§£ç å™¨ xiongfei20100702*/
+/*x00141957 20101230 å› ä¸ºå†…æ ¸æ€ç¼–è¯‘æ ˆç©ºé—´è¿‡å¤§ï¼Œæ‰€ä»¥æ”¹å†™æ­¤å‡½æ•°ï¼Œä¸å†å¯¹vp56contextç»“æ„ä½“æ¸…é›¶*/
 static av_cold int vp6_reset(VP56Context *h)
 {
 	int pt,ct,cg;
@@ -1695,7 +1695,7 @@ static av_cold int vp6_reset(VP56Context *h)
 	
 	AVCodecContext *avctx	= h->avctx;
 	
-	/*±£´æÇ°´Î·ÖÅäµÄÄÚ´æ x00141957 20100915*/
+	/*ä¿å­˜å‰æ¬¡åˆ†é…çš„å†…å­˜ x00141957 20100915*/
 	VP56RefDc *above_blocks = h->above_blocks;
 	VP56Macroblock *macroblocks = h->macroblocks;
 	uint8_t *edge_emu_buffer_alloc = h->edge_emu_buffer_alloc;
@@ -1703,17 +1703,17 @@ static av_cold int vp6_reset(VP56Context *h)
 	int buffer_size = h->parse_context.buffer_size;
 
 
-	/* Çå¿ÕVP56Context½á¹¹Ìå±äÁ¿ xionigfei20100702*/
+	/* æ¸…ç©ºVP56Contextç»“æ„ä½“å˜é‡ xionigfei20100702*/
 	memset(h, 0, sizeof(VP56Context));
 
-	/*±£´æÇ°´Î·ÖÅäµÄÄÚ´æ x00141957 20100915*/
+	/*ä¿å­˜å‰æ¬¡åˆ†é…çš„å†…å­˜ x00141957 20100915*/
 	h->above_blocks = above_blocks;
 	h->macroblocks = macroblocks;
 	h->edge_emu_buffer_alloc = edge_emu_buffer_alloc;
 	h->parse_context.buffer = buffer;
 	h->parse_context.buffer_size = buffer_size;
 	 h->parse_context.state = -1;
-	/* ³õÊ¼»¯AVCodecContext½á¹¹Ìå±äÁ¿ xiongfei20100702*/
+	/* åˆå§‹åŒ–AVCodecContextç»“æ„ä½“å˜é‡ xiongfei20100702*/
 	iRet = vp6_decode_init(avctx);
 	if(0 != iRet)
 	{
@@ -1722,23 +1722,23 @@ static av_cold int vp6_reset(VP56Context *h)
 	return iRet;
 }
 
-/*Ôö¼Ódecode_resetº¯Êı£¬ÓÃÓÚcontrolÖĞµÄreset xiongfei20100702*/
+/*å¢åŠ decode_resetå‡½æ•°ï¼Œç”¨äºcontrolä¸­çš„reset xiongfei20100702*/
 static av_cold int decode_reset(AVCodecContext *avctx)
 {
 	int iRet = 0;
 	VP56Context *h = avctx->priv_data;
 
-	/* Çå¿Õbuffer x00141957 20100702*/
+	/* æ¸…ç©ºbuffer x00141957 20100702*/
 	//ff_mpeg_flush(avctx);
 
-	/*ÎÊÌâµ¥ºÅ£ºAZ1D02230
-	ĞŞ¸ÄÈË£ºĞÜ·É +00141957
-	Ê±¼ä£º2010/7/21
-	ÎÊÌâÃèÊö£º ¶à´Îcreat process resetµ¼ÖÂËÀ»ú
-	ÎÊÌâĞŞ¸Ä£º Ôö¼Óvp56_freeÊÍ·ÅÄÚ´æ*/
+	/*é—®é¢˜å•å·ï¼šAZ1D02230
+	ä¿®æ”¹äººï¼šç†Šé£ +00141957
+	æ—¶é—´ï¼š2010/7/21
+	é—®é¢˜æè¿°ï¼š å¤šæ¬¡creat process resetå¯¼è‡´æ­»æœº
+	é—®é¢˜ä¿®æ”¹ï¼š å¢åŠ vp56_freeé‡Šæ”¾å†…å­˜*/
 	//vp56_free(avctx);
 
-	/* ¸´Î»¼°³õÊ¼»¯AVCodecContext½á¹¹Ìå±äÁ¿ xiongfei20100702*/
+	/* å¤ä½åŠåˆå§‹åŒ–AVCodecContextç»“æ„ä½“å˜é‡ xiongfei20100702*/
 	iRet = avcodec_reset(avctx);
 
 	if(0 != iRet)
@@ -1747,7 +1747,7 @@ static av_cold int decode_reset(AVCodecContext *avctx)
 		return iRet;
 	}
 
-	/* ¸´Î»¼°³õÊ¼»¯VP56Context½á¹¹Ìå±äÁ¿ xiongfei20100702*/
+	/* å¤ä½åŠåˆå§‹åŒ–VP56Contextç»“æ„ä½“å˜é‡ xiongfei20100702*/
 	iRet = vp6_reset(h);
 	if(0 != iRet)
 	{
@@ -1869,7 +1869,7 @@ int vp6_fill_linesize(AVPicture *picture, int pix_fmt, int width)
 }
 
 /*x00141957 20100926*/
-/*²éÑ¯Ëã·¨ËùĞèÒªÄÚ´æ¿Õ¼ä´óĞ¡*/
+/*æŸ¥è¯¢ç®—æ³•æ‰€éœ€è¦å†…å­˜ç©ºé—´å¤§å°*/
 int vp6_query_memsize(uint16_t width,uint16_t height,uint16_t buffernumber,int pix_format)
 {
 	int yuvbufsize;
@@ -1884,7 +1884,7 @@ int vp6_query_memsize(uint16_t width,uint16_t height,uint16_t buffernumber,int p
 	VP56Contextsize = sizeof(VP56Context)+16;
 	internalbuffersize = (INTERNAL_BUFFER_SIZE+1)*sizeof(InternalBuffer)+16;
 	yuvbufsize = 0;
-	/*¼ÆËãµ¥¸öyuvbufferËùĞè´óĞ¡*/
+	/*è®¡ç®—å•ä¸ªyuvbufferæ‰€éœ€å¤§å°*/
 	{
 		int h_chroma_shift, v_chroma_shift;
 		int size[4] = {0};
@@ -1917,8 +1917,8 @@ int vp6_query_memsize(uint16_t width,uint16_t height,uint16_t buffernumber,int p
 			size[i] = picture.data[i+1] - picture.data[i];
 		size[i] = tmpsize - (picture.data[i] - picture.data[0]);
 
-		/*x00141957 20100914 ¶ÔÓÚsize[0] ·ÖÅäy+0.5*y´óĞ¡¿Õ¼ä*/
-		/*x00141957 20110726 ¶ÔÓÚsize[0] Ôö¼Ó·ÖÅäy´óĞ¡¿Õ¼ä*/
+		/*x00141957 20100914 å¯¹äºsize[0] åˆ†é…y+0.5*yå¤§å°ç©ºé—´*/
+		/*x00141957 20110726 å¯¹äºsize[0] å¢åŠ åˆ†é…yå¤§å°ç©ºé—´*/
 		size[0] = (size[0]<<1) + (size[0] >> 1);
 
 		for(i=0; i<4 && size[i]; i++)
@@ -1930,7 +1930,7 @@ int vp6_query_memsize(uint16_t width,uint16_t height,uint16_t buffernumber,int p
 	}
 	yuvbufsize *= (int)buffernumber;
 
-	/*¼ÆËã½âÂëËùĞèbuffer´óĞ¡*/
+	/*è®¡ç®—è§£ç æ‰€éœ€bufferå¤§å°*/
 	decsize = 0;
 	{
 		int stride;

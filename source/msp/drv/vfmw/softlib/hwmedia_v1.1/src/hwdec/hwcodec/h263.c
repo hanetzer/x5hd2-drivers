@@ -64,7 +64,7 @@
 #define CBPC_B_VLC_BITS 3
 
 /*guoshan+00101841 20100610*/
-/*ÓÉÓÚH.263Ö§³Ö16cif¸ñÊ½1408x1152,¸ß¶È³¬¹ıfull HDµÄ1080,¹ÊÔÚ½âÂëÊ±ÖØĞÂ°´H.263µÄĞ­Òé½øĞĞ¼ì²â*/
+/*ç”±äºH.263æ”¯æŒ16cifæ ¼å¼1408x1152,é«˜åº¦è¶…è¿‡full HDçš„1080,æ•…åœ¨è§£ç æ—¶é‡æ–°æŒ‰H.263çš„åè®®è¿›è¡Œæ£€æµ‹*/
 #define H263_MAX_WIDTH 1920
 #define H263_MAX_HEIGHT 1088
 
@@ -609,9 +609,9 @@ void ff_mpeg4_init_direct_mv(MpegEncContext *s)
 {
 	int i;
 	for(i=0; i<tab_size; i++){
-		/*guoshan+00101841 20100730 ÎÊÌâµ¥£º[AZ1D02236]*/
-		/*s->pp_timeÎóÂëÇé¿öÏÂ³öÏÖ0ÖµÊ±£¬×ö³ıÊı£¬µ¼ÖÂfloating-point exceptionÎÊÌâ*/
-		/*s->pp_time = 0Ê±£¬mvÖ±½ÓÖÃ0*/
+		/*guoshan+00101841 20100730 é—®é¢˜å•ï¼š[AZ1D02236]*/
+		/*s->pp_timeè¯¯ç æƒ…å†µä¸‹å‡ºç°0å€¼æ—¶ï¼Œåšé™¤æ•°ï¼Œå¯¼è‡´floating-point exceptioné—®é¢˜*/
+		/*s->pp_time = 0æ—¶ï¼Œmvç›´æ¥ç½®0*/
 // 		s->direct_scale_mv[0][i] = (i-tab_bias)*s->pb_time/s->pp_time;
 // 		s->direct_scale_mv[1][i] = (i-tab_bias)*(s->pb_time-s->pp_time)/s->pp_time;
 		if(s->pp_time)
@@ -645,8 +645,8 @@ static inline void ff_mpeg4_set_one_direct_mv(MpegEncContext *s, int mx, int my,
 	else
 	{
 		/*guoshan+00101841 20100617*/
-		/*time_pp == 0Çé¿öÏÂ²»ÄÜ×ö³ıÊı*/
-		/*time_pp == 0, mvÖ±½ÓÖÃ0£¬²»·µ»Ø*/
+		/*time_pp == 0æƒ…å†µä¸‹ä¸èƒ½åšé™¤æ•°*/
+		/*time_pp == 0, mvç›´æ¥ç½®0ï¼Œä¸è¿”å›*/
 		if(!time_pp) 
 		{
 			av_log(s->avctx,AV_LOG_WARNING,"time_pp = 0, cannot be divided!\n");
@@ -671,8 +671,8 @@ static inline void ff_mpeg4_set_one_direct_mv(MpegEncContext *s, int mx, int my,
 	else
 	{
 		/*guoshan+00101841 20100617*/
-		/*time_pp == 0Çé¿öÏÂ²»ÄÜ×ö³ıÊı*/
-		/*time_pp == 0, mvÖ±½ÓÖÃ0£¬²»·µ»Ø*/
+		/*time_pp == 0æƒ…å†µä¸‹ä¸èƒ½åšé™¤æ•°*/
+		/*time_pp == 0, mvç›´æ¥ç½®0ï¼Œä¸è¿”å›*/
 		if(!time_pp) 
 		{
 			av_log(s->avctx,AV_LOG_WARNING,"time_pp = 0, cannot be divided!\n");
@@ -729,9 +729,9 @@ int ff_mpeg4_set_direct_mv(MpegEncContext *s, int mx, int my)
 				time_pb= s->pb_field_time + field_select - i;
 			}
 
-			/*guoshan+00101841 20100730 ÎÊÌâµ¥£º[AZ1D02236]*/
-			/*time_ppÎóÂëÇé¿öÏÂ³öÏÖ0Öµ£¬×ö³ıÊı£¬µ¼ÖÂfloating-point exceptionÎÊÌâ*/
-			/*time_pp = 0Ê±£¬mvÖ±½ÓÖÃ0*/
+			/*guoshan+00101841 20100730 é—®é¢˜å•ï¼š[AZ1D02236]*/
+			/*time_ppè¯¯ç æƒ…å†µä¸‹å‡ºç°0å€¼ï¼Œåšé™¤æ•°ï¼Œå¯¼è‡´floating-point exceptioné—®é¢˜*/
+			/*time_pp = 0æ—¶ï¼Œmvç›´æ¥ç½®0*/
 			// 			s->mv[0][i][0] = s->p_field_mv_table[i][0][mb_index][0]*time_pb/time_pp + mx;
 			// 			s->mv[0][i][1] = s->p_field_mv_table[i][0][mb_index][1]*time_pb/time_pp + my;
 			// 			s->mv[1][i][0] = mx ? s->mv[0][i][0] - s->p_field_mv_table[i][0][mb_index][0]
@@ -1805,7 +1805,7 @@ int16_t *h263_pred_motion(MpegEncContext * s, int block, int dir,
 					*px = mid_pred(A[0], 0, C[0]);
 					*py = mid_pred(A[1], 0, C[1]);
 				}
-			}else{ //guoshan+00101841 20100511:µÚÒ»ĞĞµÄmbµÄpred_mv»ù±¾ÊÇÆä×ó±ß¿éµÄmv
+			}else{ //guoshan+00101841 20100511:ç¬¬ä¸€è¡Œçš„mbçš„pred_mvåŸºæœ¬æ˜¯å…¶å·¦è¾¹å—çš„mv
 				*px = A[0];
 				*py = A[1];
 			}
@@ -1828,7 +1828,7 @@ int16_t *h263_pred_motion(MpegEncContext * s, int block, int dir,
 			*py = mid_pred(A[1], B[1], C[1]);
 		}
 	} else {
-		B = mot_val[ - wrap];  //guoshan+00101841 20100511:ÉÏ±ß¿émv
+		B = mot_val[ - wrap];  //guoshan+00101841 20100511:ä¸Šè¾¹å—mv
 		C = mot_val[off[block] - wrap];
 		*px = mid_pred(A[0], B[0], C[0]);
 		*py = mid_pred(A[1], B[1], C[1]);
@@ -2682,7 +2682,7 @@ static inline int ff_mpeg4_pred_dc(MpegEncContext * s, int n, int level, int *di
 			if(level<0)
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "dc<0 at %dx%d\n", s->mb_x, s->mb_y);
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_RESIDUAL( s->avctx->iErrorCode, IMEDIA_ERR_RESIDUAL_DC);
 				s->avctx->iTotalError++;
 				return -1;
@@ -2690,7 +2690,7 @@ static inline int ff_mpeg4_pred_dc(MpegEncContext * s, int n, int level, int *di
 			if(level*scale > 2048 + scale)
 			{
 				av_log(s->avctx, AV_LOG_ERROR, "dc overflow at %dx%d\n", s->mb_x, s->mb_y);
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_RESIDUAL( s->avctx->iErrorCode, IMEDIA_ERR_RESIDUAL_DC);
 				s->avctx->iTotalError++;
 				return -1;
@@ -3126,13 +3126,13 @@ static int h263_decode_gob_header(MpegEncContext *s)
 	skip_bits(&s->gb, 16); /* Drop the zeros */
 	left= s->gb.size_in_bits - get_bits_count(&s->gb);
 	//MN: we must check the bits left or we might end in a infinite loop (or segfault)
-	for(;left>13; left--)    //guoshan+00101841: 13bits = GBSC×îºó1Î»bit + GN(5bits) + GFID(2bits) + GQUANT(5bits)
+	for(;left>13; left--)    //guoshan+00101841: 13bits = GBSCæœ€å1ä½bit + GN(5bits) + GFID(2bits) + GQUANT(5bits)
 	{
 		if(get_bits1(&s->gb)) break; /* Seek the '1' bit */
 	}
 	if(left<=13)
 	{
-		/*guoshan+00101841 20100423Ìí¼ÓÈÕÖ¾ĞÅÏ¢*/
+		/*guoshan+00101841 20100423æ·»åŠ æ—¥å¿—ä¿¡æ¯*/
 		av_log(s->avctx, AV_LOG_WARNING, "not enough bits in buf for GOB header\n");
 		return -1;
 	}
@@ -3313,7 +3313,7 @@ static int mpeg4_decode_video_packet_header(MpegEncContext *s)
 	}
 
 	if(len!=ff_mpeg4_get_video_packet_prefix_length(s)){
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//    av_log(s->avctx, AV_LOG_ERROR, "marker does not match f_code\n");
 		av_log(s->avctx, AV_LOG_WARNING, "marker does not match f_code\n");
 		return -1;
@@ -3326,7 +3326,7 @@ static int mpeg4_decode_video_packet_header(MpegEncContext *s)
 
 	mb_num= get_bits(&s->gb, mb_num_bits);
 	if(mb_num>=s->mb_num){
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		// av_log(s->avctx, AV_LOG_ERROR, "illegal mb_num in video packet (%d %d) \n", mb_num, s->mb_num);
 		av_log(s->avctx, AV_LOG_WARNING, "illegal mb_num in video packet (%d %d) \n", mb_num, s->mb_num);
 		return -1;
@@ -3367,7 +3367,7 @@ static int mpeg4_decode_video_packet_header(MpegEncContext *s)
 			//FIXME don't just ignore everything
 			if(s->pict_type == FF_S_TYPE && s->vol_sprite_usage==GMC_SPRITE){
 				mpeg4_decode_sprite_trajectory(s, &s->gb);
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//     av_log(s->avctx, AV_LOG_ERROR, "untested\n");
 				av_log(s->avctx, AV_LOG_WARNING, "untested\n");
 			}
@@ -3377,7 +3377,7 @@ static int mpeg4_decode_video_packet_header(MpegEncContext *s)
 			if (s->pict_type != FF_I_TYPE) {
 				int f_code = get_bits(&s->gb, 3);       /* fcode_for */
 				if(f_code==0){
-					//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+					//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 					//       av_log(s->avctx, AV_LOG_ERROR, "Error, video packet header damaged (f_code=0)\n");
 					av_log(s->avctx, AV_LOG_WARNING, "Error, video packet header damaged (f_code=0)\n");
 				}
@@ -3385,7 +3385,7 @@ static int mpeg4_decode_video_packet_header(MpegEncContext *s)
 			if (s->pict_type == FF_B_TYPE) {
 				int b_code = get_bits(&s->gb, 3);
 				if(b_code==0){
-					//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+					//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 					//         av_log(s->avctx, AV_LOG_ERROR, "Error, video packet header damaged (b_code=0)\n");
 					av_log(s->avctx, AV_LOG_WARNING, "Error, video packet header damaged (b_code=0)\n");
 				}
@@ -3582,7 +3582,7 @@ static int mpeg4_decode_partition_a(MpegEncContext *s){
 
 					cbpc = get_vlc2(&s->gb, intra_MCBPC_vlc.table, INTRA_MCBPC_VLC_BITS, 2);
 					if (cbpc < 0){
-						//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+						//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 						//          av_log(s->avctx, AV_LOG_ERROR, "cbpc corrupted at %d %d\n", s->mb_x, s->mb_y);
 						av_log(s->avctx, AV_LOG_WARNING, "cbpc corrupted at %d %d\n", s->mb_x, s->mb_y);
 						return -1;
@@ -3603,7 +3603,7 @@ static int mpeg4_decode_partition_a(MpegEncContext *s){
 					int dc_pred_dir;
 					int dc= mpeg4_decode_dc(s, i, &dc_pred_dir);
 					if(dc < 0){
-						//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+						//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 						//av_log(s->avctx, AV_LOG_ERROR, "DC corrupted at %d %d\n", s->mb_x, s->mb_y);
 						av_log(s->avctx, AV_LOG_WARNING, "DC corrupted at %d %d\n", s->mb_x, s->mb_y);
 						return -1;
@@ -3645,7 +3645,7 @@ try_again:
 
 				cbpc = get_vlc2(&s->gb, inter_MCBPC_vlc.table, INTER_MCBPC_VLC_BITS, 2);
 				if (cbpc < 0){
-					//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+					//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 					//av_log(s->avctx, AV_LOG_ERROR, "cbpc corrupted at %d %d\n", s->mb_x, s->mb_y);
 					av_log(s->avctx, AV_LOG_WARNING, "cbpc corrupted at %d %d\n", s->mb_x, s->mb_y);
 					return -1;
@@ -3746,7 +3746,7 @@ static int mpeg4_decode_partition_b(MpegEncContext *s, int mb_count){
 				int ac_pred= get_bits1(&s->gb);
 				int cbpy = get_vlc2(&s->gb, cbpy_vlc.table, CBPY_VLC_BITS, 1);
 				if(cbpy<0){
-					//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+					//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 					//av_log(s->avctx, AV_LOG_ERROR, "cbpy corrupted at %d %d\n", s->mb_x, s->mb_y);
 					av_log(s->avctx, AV_LOG_WARNING, "cbpy corrupted at %d %d\n", s->mb_x, s->mb_y);
 					return -1;
@@ -3761,7 +3761,7 @@ static int mpeg4_decode_partition_b(MpegEncContext *s, int mb_count){
 					int cbpy = get_vlc2(&s->gb, cbpy_vlc.table, CBPY_VLC_BITS, 1);
 
 					if(cbpy<0){
-						//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+						//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 						//av_log(s->avctx, AV_LOG_ERROR, "I cbpy corrupted at %d %d\n", s->mb_x, s->mb_y);
 						av_log(s->avctx, AV_LOG_WARNING, "I cbpy corrupted at %d %d\n", s->mb_x, s->mb_y);
 						return -1;
@@ -3776,7 +3776,7 @@ static int mpeg4_decode_partition_b(MpegEncContext *s, int mb_count){
 						int dc_pred_dir;
 						int dc= mpeg4_decode_dc(s, i, &dc_pred_dir);
 						if(dc < 0){
-							//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+							//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 							//av_log(s->avctx, AV_LOG_ERROR, "DC corrupted at %d %d\n", s->mb_x, s->mb_y);
 							av_log(s->avctx, AV_LOG_WARNING, "DC corrupted at %d %d\n", s->mb_x, s->mb_y);
 							return -1;
@@ -3795,7 +3795,7 @@ static int mpeg4_decode_partition_b(MpegEncContext *s, int mb_count){
 					int cbpy = get_vlc2(&s->gb, cbpy_vlc.table, CBPY_VLC_BITS, 1);
 
 					if(cbpy<0){
-						//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+						//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 						//av_log(s->avctx, AV_LOG_ERROR, "P cbpy corrupted at %d %d\n", s->mb_x, s->mb_y);
 						av_log(s->avctx, AV_LOG_WARNING, "P cbpy corrupted at %d %d\n", s->mb_x, s->mb_y);
 						return -1;
@@ -3834,7 +3834,7 @@ int ff_mpeg4_decode_partitions(MpegEncContext *s)
 	}
 
 	if(s->resync_mb_x + s->resync_mb_y*s->mb_width + mb_num > s->mb_num){
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(s->avctx, AV_LOG_ERROR, "slice below monitor ...\n");
 		av_log(s->avctx, AV_LOG_WARNING, "slice below monitor ...\n");
 		ff_er_add_slice(s, s->resync_mb_x, s->resync_mb_y, s->mb_x, s->mb_y, part_a_error);
@@ -3847,7 +3847,7 @@ int ff_mpeg4_decode_partitions(MpegEncContext *s)
 		while(show_bits(&s->gb, 9) == 1)
 			skip_bits(&s->gb, 9);
 		if(get_bits_long(&s->gb, 19)!=DC_MARKER){
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "marker missing after first I partition at %d %d\n", s->mb_x, s->mb_y);
 			av_log(s->avctx, AV_LOG_WARNING, "marker missing after first I partition at %d %d\n", s->mb_x, s->mb_y);
 			return -1;
@@ -3856,7 +3856,7 @@ int ff_mpeg4_decode_partitions(MpegEncContext *s)
 		while(show_bits(&s->gb, 10) == 1)
 			skip_bits(&s->gb, 10);
 		if(get_bits(&s->gb, 17)!=MOTION_MARKER){
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "marker missing after first P partition at %d %d\n", s->mb_x, s->mb_y);
 			av_log(s->avctx, AV_LOG_WARNING, "marker missing after first P partition at %d %d\n", s->mb_x, s->mb_y);
 			return -1;
@@ -3957,7 +3957,7 @@ static int mpeg4_decode_partitioned_mb(MpegEncContext *s, DCTELEM block[6][64])
 		{
 			if(mpeg4_decode_block(s, block[i], i, cbp&32, s->mb_intra, s->rvlc) < 0)
 			{
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "texture corrupted at %d %d %d\n", s->mb_x, s->mb_y, s->mb_intra);
 				av_log(s->avctx, AV_LOG_WARNING, "texture corrupted at %d %d %d\n", s->mb_x, s->mb_y, s->mb_intra);
 				return -1;
@@ -4122,7 +4122,7 @@ int ff_h263_decode_mb(MpegEncContext *s,
 				s->mv[0][0][1] = 0;
 				s->mb_skipped = !(s->obmc | s->loop_filter);
 				/* 2010/09/16 11:30:00 liuxw+00139685 */
-				/* Èç¹ûobmc¹¦ÄÜ´ò¿ª£¬ÄÇÃ´µ±Ç°ÊÇskip»¹ĞèÒª¼ÆËãÓÒ±ßºê¿éµÄmv */
+				/* å¦‚æœobmcåŠŸèƒ½æ‰“å¼€ï¼Œé‚£ä¹ˆå½“å‰æ˜¯skipè¿˜éœ€è¦è®¡ç®—å³è¾¹å®å—çš„mv */
 				if(s->obmc)
 				{
 					s->current_picture.motion_val[0][s->block_index[0]][0] = s->current_picture.motion_val[0][s->block_index[0]][1] =
@@ -4137,7 +4137,7 @@ int ff_h263_decode_mb(MpegEncContext *s,
 			//fprintf(stderr, "\tCBPC: %d", cbpc);
 			if (cbpc < 0)
 			{
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "cbpc damaged at %d %d\n", s->mb_x, s->mb_y);
 				av_log(s->avctx, AV_LOG_WARNING, "cbpc damaged at %d %d\n", s->mb_x, s->mb_y);
 				return -1;
@@ -4169,7 +4169,7 @@ int ff_h263_decode_mb(MpegEncContext *s,
 			/* 16x16 motion prediction */
 			s->mv_type = MV_TYPE_16X16;
 			/* 2010/09/15 18:30:00 liuxw+00139685 */
-			/* ·µ»Ømv´æ·ÅµÄµØÖ· */
+			/* è¿”å›mvå­˜æ”¾çš„åœ°å€ */
 			//h263_pred_motion(s, 0, 0, &pred_x, &pred_y);
 			mot_val = h263_pred_motion(s, 0, 0, &pred_x, &pred_y);
 			if (s->umvplus)
@@ -4177,9 +4177,9 @@ int ff_h263_decode_mb(MpegEncContext *s,
 			else
 				mx = h263_decode_motion(s, pred_x, 1);
 
-			if (mx >= 0xffff) //guoshan+00101841 20100524 H.263mvÈ¡Öµ[0, 0xFFFF],²Î¿¼6486 M4H3DEC_HW_decodeMV()
+			if (mx >= 0xffff) //guoshan+00101841 20100524 H.263mvå–å€¼[0, 0xFFFF],å‚è€ƒ6486 M4H3DEC_HW_decodeMV()
 			{
-				//guoshan+00101841 20100524Ôö¼Ómv´íÎó´òÓ¡ĞÅÏ¢
+				//guoshan+00101841 20100524å¢åŠ mvé”™è¯¯æ‰“å°ä¿¡æ¯
 				av_log(s->avctx, AV_LOG_WARNING, "mvx[%d]invalid at [%d]x[%d] \n", mx, s->mb_x, s->mb_y);
 				return -1;
 			}
@@ -4191,7 +4191,7 @@ int ff_h263_decode_mb(MpegEncContext *s,
 
 			if (my >= 0xffff)
 			{
-				//guoshan+00101841 20100524Ôö¼Ómv´íÎó´òÓ¡ĞÅÏ¢
+				//guoshan+00101841 20100524å¢åŠ mvé”™è¯¯æ‰“å°ä¿¡æ¯
 				av_log(s->avctx, AV_LOG_WARNING, "mvy[%d]invalid at [%d]x[%d]\n", my, s->mb_x, s->mb_y);
 				return -1;
 			}
@@ -4202,7 +4202,7 @@ int ff_h263_decode_mb(MpegEncContext *s,
 				skip_bits1(&s->gb); /* Bit stuffing to prevent PSC */
 			
 			/* 2010/09/15 18:30:00 liuxw+00139685 */
-			/* ±£´æÒ»Ö¡ÖĞµÄµÚÒ»¸öºê¿éµÄmv */
+			/* ä¿å­˜ä¸€å¸§ä¸­çš„ç¬¬ä¸€ä¸ªå®å—çš„mv */
 			if(/*s->mb_x == 0  && s->mb_y == 0*/s->obmc)
 			{
 				mot_val[0] = mot_val[2] = mot_val[0+s->b8_stride*2] = mot_val[2+s->b8_stride*2] = mx;
@@ -4242,7 +4242,7 @@ int ff_h263_decode_mb(MpegEncContext *s,
 		{
 			if (h263_decode_block(s, block[i], i, cbp&32) < 0)
 				return -1;
-			cbp+=cbp; //guoshan+00101841 Ïàµ±ÓÚcbp <<=1;
+			cbp+=cbp; //guoshan+00101841 ç›¸å½“äºcbp <<=1;
 		}
 OBMC:
 		if(s->obmc)
@@ -4270,7 +4270,7 @@ OBMC:
 			mb_type= get_vlc2(&s->gb, h263_mbtype_b_vlc.table, H263_MBTYPE_B_VLC_BITS, 2);
 			if (mb_type < 0)
 			{
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "b mb_type damaged at %d %d\n", s->mb_x, s->mb_y);
 				av_log(s->avctx, AV_LOG_WARNING, "b mb_type damaged at %d %d\n", s->mb_x, s->mb_y);
 				return -1;
@@ -4294,7 +4294,7 @@ OBMC:
 
 			if (cbpy < 0)
 			{
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "b cbpy damaged at %d %d\n", s->mb_x, s->mb_y);
 				av_log(s->avctx, AV_LOG_WARNING, "b cbpy damaged at %d %d\n", s->mb_x, s->mb_y);
 				return -1;
@@ -4372,7 +4372,7 @@ OBMC:
 			cbpc = get_vlc2(&s->gb, intra_MCBPC_vlc.table, INTRA_MCBPC_VLC_BITS, 2);
 			if (cbpc < 0)
 			{
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "I cbpc damaged at %d %d\n", s->mb_x, s->mb_y);
 				av_log(s->avctx, AV_LOG_WARNING, "I cbpc damaged at %d %d\n", s->mb_x, s->mb_y);
 				return -1;
@@ -4401,7 +4401,7 @@ intra:
 		cbpy = get_vlc2(&s->gb, cbpy_vlc.table, CBPY_VLC_BITS, 1);
 		if(cbpy<0)
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "I cbpy damaged at %d %d\n", s->mb_x, s->mb_y);
 			av_log(s->avctx, AV_LOG_WARNING, "I cbpy damaged at %d %d\n", s->mb_x, s->mb_y);
 			return -1;
@@ -4482,10 +4482,10 @@ int ff_mpeg4_decode_mb(MpegEncContext *s,
 			//fprintf(stderr, "\tCBPC: %d", cbpc);
 			if (cbpc < 0)
 			{
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "cbpc damaged at %d %d\n", s->mb_x, s->mb_y);
 				av_log(s->avctx, AV_LOG_WARNING, "cbpc damaged at %d %d\n", s->mb_x, s->mb_y);
-				/*guoshan+00101841 20100424Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100424æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_MB( s->avctx->iErrorCode, IMEDIA_ERR_MB_CBP);
 				s->avctx->iTotalError++;
 				return -1;
@@ -4627,11 +4627,11 @@ int ff_mpeg4_decode_mb(MpegEncContext *s,
 			modb2= get_bits1(&s->gb);
 			mb_type= get_vlc2(&s->gb, mb_type_b_vlc.table, MB_TYPE_B_VLC_BITS, 1);
 			/*guoshan+00101841 20100512 */
-			/*¸ù¾İ²é±í¹æÔò£¬mb_type×÷ÎªË÷ÒıÒ²²»ÄÜ³¬¹ı3*/
+			/*æ ¹æ®æŸ¥è¡¨è§„åˆ™ï¼Œmb_typeä½œä¸ºç´¢å¼•ä¹Ÿä¸èƒ½è¶…è¿‡3*/
 			//     if(mb_type<0){
 			if(mb_type<0 || mb_type > 3)
 			{
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "illegal MB_type\n");
 				av_log(s->avctx, AV_LOG_WARNING, "illegal MB_type\n");
 				return -1;
@@ -4733,7 +4733,7 @@ int ff_mpeg4_decode_mb(MpegEncContext *s,
 		do{
 			cbpc = get_vlc2(&s->gb, intra_MCBPC_vlc.table, INTRA_MCBPC_VLC_BITS, 2);
 			if (cbpc < 0){
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "I cbpc damaged at %d %d\n", s->mb_x, s->mb_y);
 				av_log(s->avctx, AV_LOG_WARNING, "I cbpc damaged at %d %d\n", s->mb_x, s->mb_y);
 				return -1;
@@ -4751,7 +4751,7 @@ intra:
 
 		cbpy = get_vlc2(&s->gb, cbpy_vlc.table, CBPY_VLC_BITS, 1);
 		if(cbpy<0){
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "I cbpy damaged at %d %d\n", s->mb_x, s->mb_y);
 			av_log(s->avctx, AV_LOG_WARNING, "I cbpy damaged at %d %d\n", s->mb_x, s->mb_y);
 			return -1;
@@ -4840,7 +4840,7 @@ static int h263_decode_motion(MpegEncContext * s, int pred, int f_code)
 
 /* Decodes RVLC of H.263+ UMV */
 /*20100511 guoshan+00101841*/
-/*½âÂëµÄ²é±í¹ı³Ì²Î¿¼H.263Ğ­ÒéTable D.3*/
+/*è§£ç çš„æŸ¥è¡¨è¿‡ç¨‹å‚è€ƒH.263åè®®Table D.3*/
 static int h263p_decode_umotion(MpegEncContext * s, int pred)
 {
 	int code = 0, sign;
@@ -4911,7 +4911,7 @@ static int h263_decode_block(MpegEncContext * s, DCTELEM * block,
 		}else{
 			level = get_bits(&s->gb, 8);
 			if((level&0x7F) == 0){
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "illegal dc %d at %d %d\n", level, s->mb_x, s->mb_y);
 				av_log(s->avctx, AV_LOG_WARNING, "illegal dc %d at %d %d\n", level, s->mb_x, s->mb_y);
 				if(s->error_recognition >= FF_ER_COMPLIANT)
@@ -4935,7 +4935,7 @@ retry:
 	for(;;) {
 		code = get_vlc2(&s->gb, rl->vlc.table, TEX_VLC_BITS, 2);
 		if (code < 0){
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "illegal ac vlc code at %dx%d\n", s->mb_x, s->mb_y);
 			av_log(s->avctx, AV_LOG_WARNING, "illegal ac vlc code at %dx%d\n", s->mb_x, s->mb_y);
 			return -1;
@@ -4982,7 +4982,7 @@ retry:
 				s->dsp.clear_block(block);
 				goto retry;
 			}
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "run overflow at %dx%d i:%d\n", s->mb_x, s->mb_y, s->mb_intra);
 			av_log(s->avctx, AV_LOG_WARNING, "run overflow at %dx%d i:%d\n", s->mb_x, s->mb_y, s->mb_intra);
 			return -1;
@@ -5017,7 +5017,7 @@ static inline int mpeg4_decode_dc(MpegEncContext * s, int n, int *dir_ptr)
 	else
 		code = get_vlc2(&s->gb, dc_chrom.table, DC_VLC_BITS, 1);
 	if (code < 0 || code > 9 /* && s->nbit<9 */){
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(s->avctx, AV_LOG_ERROR, "illegal dc vlc\n");
 		av_log(s->avctx, AV_LOG_WARNING, "illegal dc vlc\n");
 		return -1;
@@ -5041,7 +5041,7 @@ static inline int mpeg4_decode_dc(MpegEncContext * s, int n, int *dir_ptr)
 		if (code > 8){
 			if(get_bits1(&s->gb)==0){ /* marker */
 				if(s->error_recognition>=2){
-					//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+					//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 					//av_log(s->avctx, AV_LOG_ERROR, "dc marker bit missing\n");
 					av_log(s->avctx, AV_LOG_WARNING, "dc marker bit missing\n");
 					return -1;
@@ -5186,10 +5186,10 @@ static inline int mpeg4_decode_block(MpegEncContext * s, DCTELEM * block,
 				{
 					if(SHOW_UBITS(re, &s->gb, 1)==0)
 					{
-						//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+						//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 						//av_log(s->avctx, AV_LOG_ERROR, "1. marker bit missing in rvlc esc\n");
 						av_log(s->avctx, AV_LOG_WARNING, "1. marker bit missing in rvlc esc\n");
-						/*guoshan+00101841 20100424Ìí¼Ó´íÎóÂë*/
+						/*guoshan+00101841 20100424æ·»åŠ é”™è¯¯ç */
 						IMEDIA_SET_ERR_MB( s->avctx->iErrorCode, IMEDIA_ERR_MB_MARKER);
 						s->avctx->iTotalError++;
 						return -1;
@@ -5203,10 +5203,10 @@ static inline int mpeg4_decode_block(MpegEncContext * s, DCTELEM * block,
 
 					if(SHOW_UBITS(re, &s->gb, 1)==0)
 					{
-						//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+						//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 						//av_log(s->avctx, AV_LOG_ERROR, "2. marker bit missing in rvlc esc\n");
 						av_log(s->avctx, AV_LOG_WARNING, "2. marker bit missing in rvlc esc\n");
-						/*guoshan+00101841 20100424Ìí¼Ó´íÎóÂë*/
+						/*guoshan+00101841 20100424æ·»åŠ é”™è¯¯ç */
 						IMEDIA_SET_ERR_MB( s->avctx->iErrorCode, IMEDIA_ERR_MB_MARKER);
 						s->avctx->iTotalError++;
 						return -1;
@@ -5217,10 +5217,10 @@ static inline int mpeg4_decode_block(MpegEncContext * s, DCTELEM * block,
 
 					if(SHOW_UBITS(re, &s->gb, 5)!=0x10)
 					{
-						//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+						//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 						//av_log(s->avctx, AV_LOG_ERROR, "reverse esc missing\n");
 						av_log(s->avctx, AV_LOG_WARNING, "reverse esc missing\n");
-						/*guoshan+00101841 20100424Ìí¼Ó´íÎóÂë*/
+						/*guoshan+00101841 20100424æ·»åŠ é”™è¯¯ç */
 						IMEDIA_SET_ERR_MB( s->avctx->iErrorCode, IMEDIA_ERR_MB_MARKER);
 						s->avctx->iTotalError++;
 						return -1;
@@ -5261,7 +5261,7 @@ static inline int mpeg4_decode_block(MpegEncContext * s, DCTELEM * block,
 							{
 								if(SHOW_UBITS(re, &s->gb, 1)==0)
 								{
-									//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+									//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 									//av_log(s->avctx, AV_LOG_ERROR, "1. marker bit missing in 3. esc\n");
 									av_log(s->avctx, AV_LOG_WARNING, "1. marker bit missing in 3. esc\n");
 									return -1;
@@ -5272,7 +5272,7 @@ static inline int mpeg4_decode_block(MpegEncContext * s, DCTELEM * block,
 
 								if(SHOW_UBITS(re, &s->gb, 1)==0)
 								{
-									//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+									//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 									//av_log(s->avctx, AV_LOG_ERROR, "2. marker bit missing in 3. esc\n");
 									av_log(s->avctx, AV_LOG_WARNING, "2. marker bit missing in 3. esc\n");
 									return -1;
@@ -5315,10 +5315,10 @@ static inline int mpeg4_decode_block(MpegEncContext * s, DCTELEM * block,
 								{
 									if(level > 2560 || level<-2560)
 									{
-										//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+										//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 										//av_log(s->avctx, AV_LOG_ERROR, "|level| overflow in 3. esc, qp=%d\n", s->qscale);
 										av_log(s->avctx, AV_LOG_WARNING, "|level| overflow in 3. esc, qp=%d\n", s->qscale);
-										/*guoshan+00101841 20100424Ìí¼Ó´íÎóÂë*/
+										/*guoshan+00101841 20100424æ·»åŠ é”™è¯¯ç */
 										IMEDIA_SET_ERR_RESIDUAL( s->avctx->iErrorCode, IMEDIA_ERR_RESIDUAL_LEVEL);
 										s->avctx->iTotalError++;
 										return -1;
@@ -5375,10 +5375,10 @@ static inline int mpeg4_decode_block(MpegEncContext * s, DCTELEM * block,
 				i-= 192;
 				if(i&(~63))
 				{
-					//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+					//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 					//av_log(s->avctx, AV_LOG_ERROR, "ac-tex damaged at %d %d\n", s->mb_x, s->mb_y);
 					av_log(s->avctx, AV_LOG_WARNING, "ac-tex damaged at %d %d\n", s->mb_x, s->mb_y);
-					/*guoshan+00101841 20100424Ìí¼Ó´íÎóÂë*/
+					/*guoshan+00101841 20100424æ·»åŠ é”™è¯¯ç */
 					IMEDIA_SET_ERR_RESIDUAL( s->avctx->iErrorCode, IMEDIA_ERR_RESIDUAL_AC);
 					s->avctx->iTotalError++;
 					return -1;
@@ -5443,7 +5443,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 	}
 
 	/* 2010/09/14 15:30:00 liuxw+00139685 */
-	/* ÓÉÓÚ½á¹¹µ÷Õû£¬µ±Ç°current_picture_ptr»¹Î´»ñÈ¡ */
+	/* ç”±äºç»“æ„è°ƒæ•´ï¼Œå½“å‰current_picture_ptrè¿˜æœªè·å– */
 //	s->current_picture_ptr->pts = s->picture_number = (s->picture_number&~0xFF) + i;
 
 	/* PTYPE starts here */
@@ -5451,7 +5451,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 	{
 		/* marker */
 		av_log(s->avctx, AV_LOG_WARNING, "Bad marker\n");
-		/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+		/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 		IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 		s->avctx->iTotalError++;
 //		return -1;
@@ -5459,7 +5459,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 	if (get_bits1(&s->gb) != 0) 
 	{
 		av_log(s->avctx, AV_LOG_WARNING, "Bad H263 id\n");
-		/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+		/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 		IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 		s->avctx->iTotalError++;
 //		return -1;      /* h263 id */
@@ -5482,9 +5482,9 @@ int h263_decode_picture_header(MpegEncContext *s)
 		/* H.263v1 */
 		width = h263_format[format][0];
 		height = h263_format[format][1];
-		if (!width) /*guoshan+00101841 20100423¸ù¾İ²é±í½á¹û£¬width==0Ê±ÒâÎ¶Í¬Ê±height==0£¬²»ÓÃÖØ¸´ÅĞ¶Ï£¬Í¬Ê±format = 0µÄ´íÎóÔÚ´Ë´¦·µ»Ø*/
+		if (!width) /*guoshan+00101841 20100423æ ¹æ®æŸ¥è¡¨ç»“æœï¼Œwidth==0æ—¶æ„å‘³åŒæ—¶height==0ï¼Œä¸ç”¨é‡å¤åˆ¤æ–­ï¼ŒåŒæ—¶format = 0çš„é”™è¯¯åœ¨æ­¤å¤„è¿”å›*/
 		{
-			/*guoshan+00101841 20100423Ìí¼ÓlogºÍ´íÎóÂë*/
+			/*guoshan+00101841 20100423æ·»åŠ logå’Œé”™è¯¯ç */
 			av_log(s->avctx, AV_LOG_WARNING, "width == 0\n");
 			IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_SIZE);
 			s->avctx->iTotalError++;
@@ -5498,7 +5498,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 		if (get_bits1(&s->gb) != 0) 
 		{
 			av_log(s->avctx, AV_LOG_WARNING, "H263 SAC not supported\n");
-			/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+			/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 			IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 			s->avctx->iTotalError++;
 //			return -1; /* SAC: off */
@@ -5509,7 +5509,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 		if (get_bits1(&s->gb) != 0) 
 		{
 			av_log(s->avctx, AV_LOG_WARNING, "H263 PB frame not supported\n");
-			/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+			/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 			IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 			s->avctx->iTotalError++;
 //			return -1; /* not PB frame */
@@ -5545,7 +5545,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 			if (get_bits1(&s->gb) != 0) 
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "Syntax-based Arithmetic Coding (SAC) not supported\n");
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 				s->avctx->iTotalError++;
 			}
@@ -5558,14 +5558,14 @@ int h263_decode_picture_header(MpegEncContext *s)
 			if (get_bits1(&s->gb) != 0) 
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "Reference Picture Selection not supported\n");
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 				s->avctx->iTotalError++;
 			}
 			if (get_bits1(&s->gb) != 0) 
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "Independent Segment Decoding not supported\n");
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 				s->avctx->iTotalError++;
 			}
@@ -5581,7 +5581,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 		else if (ufep != 0) 
 		{
 			av_log(s->avctx, AV_LOG_WARNING, "Bad UFEP type (%d)\n", ufep);
-			/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+			/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 			IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 			s->avctx->iTotalError++;
 //			return -1;
@@ -5606,7 +5606,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 				s->pict_type= FF_B_TYPE;
 				break;
 			}
-		/*guoshan+00101841 20100612½âÂëÆ÷²»ÓÃ¿¼ÂÇ¼æÈİZYGO*/
+		/*guoshan+00101841 20100612è§£ç å™¨ä¸ç”¨è€ƒè™‘å…¼å®¹ZYGO*/
 // 		case 7: 
 // 			{
 // 				s->pict_type= FF_I_TYPE;
@@ -5614,7 +5614,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 // 			}
 		default:
 			{
-				/*guoshan+00101841 20100423Ìí¼ÓlogºÍ´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ logå’Œé”™è¯¯ç */
 				av_log(s->avctx, AV_LOG_WARNING, "pic_type[%d] invalid\n", s->pict_type);
 				IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_FRAME_TYPE);
 				s->avctx->iTotalError++;
@@ -5667,11 +5667,11 @@ int h263_decode_picture_header(MpegEncContext *s)
 			}
 			if ((width == 0) || (height == 0))
 			{
-				/*guoshan+00101841 20100423Ìí¼ÓlogºÍ´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ logå’Œé”™è¯¯ç */
 				av_log(s->avctx, AV_LOG_WARNING, "width[%d] or height[%d] == 0\n", width, height);
 				IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_SIZE);
 				s->avctx->iTotalError++;
-				/*guoshan+00101841 20100612²»ÓÃreturn,ºóÃæ»á¶Ôs->width½øĞĞÏŞÖÆµÄ*/
+				/*guoshan+00101841 20100612ä¸ç”¨return,åé¢ä¼šå¯¹s->widthè¿›è¡Œé™åˆ¶çš„*/
 //				return -1;
 			}
 			s->width = width;
@@ -5685,17 +5685,17 @@ int h263_decode_picture_header(MpegEncContext *s)
 				s->avctx->time_base.num*= get_bits(&s->gb, 7);
 				if(s->avctx->time_base.num == 0)
 				{
-					/*guoshan+00101841 20100612²»ÓÃreturn,ĞŞÕıÎªÒ»¸öÖµ*/
-					/*guoshan+00101841 20100613, ÈÕÖ¾´òÓ¡µÄÖ¸Õë³ö´í*/
+					/*guoshan+00101841 20100612ä¸ç”¨return,ä¿®æ­£ä¸ºä¸€ä¸ªå€¼*/
+					/*guoshan+00101841 20100613, æ—¥å¿—æ‰“å°çš„æŒ‡é’ˆå‡ºé”™*/
 					//av_log(s, AV_LOG_WARNING, "zero framerate\n");
 					av_log(s->avctx, AV_LOG_WARNING, "zero framerate, modify = 1001*60\n");
-					/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+					/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 					IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_TIME_FRAMERATE);
 					s->avctx->iTotalError++;	
 					s->avctx->time_base.num = 1001*60;
 	//				return -1;
 				}
-//				gcd= (int)av_gcd(s->avctx->time_base.den, s->avctx->time_base.num); //s->avctx->time_base.denÊÇ·Ç0³£Êı
+//				gcd= (int)av_gcd(s->avctx->time_base.den, s->avctx->time_base.num); //s->avctx->time_base.denæ˜¯é0å¸¸æ•°
 				s->avctx->time_base.den /= gcd;
 				s->avctx->time_base.num /= gcd;
 				//                av_log(s->avctx, AV_LOG_DEBUG, "%d/%d\n", s->avctx->time_base.den, s->avctx->time_base.num);
@@ -5725,7 +5725,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 				if (get_bits1(&s->gb) != 0) 
 				{
 					av_log(s->avctx, AV_LOG_WARNING, "rectangular slices not supported\n");
-					/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+					/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 					IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 					s->avctx->iTotalError++;
 
@@ -5733,7 +5733,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 				if (get_bits1(&s->gb) != 0) 
 				{
 					av_log(s->avctx, AV_LOG_WARNING, "unordered slices not supported\n");
-					/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+					/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 					IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 					s->avctx->iTotalError++;
 				}
@@ -5744,7 +5744,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 	}
 
 	/*guoshan + 00101841 20100422*/
-	/*°Ñ½âÎöºóµÄ¿í¸ßĞÅÏ¢±£´æ³öÀ´*/	
+	/*æŠŠè§£æåçš„å®½é«˜ä¿¡æ¯ä¿å­˜å‡ºæ¥*/	
 	if((0 == s->avctx->usActualWidth)||(0 == s->avctx->usActualHeight))
 	{
 		int width_high = (!s->avctx->usSourceWidth) ? H263_MAX_WIDTH : s->avctx->usSourceWidth; 
@@ -5792,7 +5792,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 		if (get_bits1(&s->gb) != 1) 
 		{
 			av_log(s->avctx, AV_LOG_WARNING, "SEPB1 marker missing\n");
-			/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+			/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 			IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 			s->avctx->iTotalError++;
 
@@ -5803,10 +5803,10 @@ int h263_decode_picture_header(MpegEncContext *s)
 
 		if (get_bits1(&s->gb) != 1) 
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "SEPB2 marker missing\n");
 			av_log(s->avctx, AV_LOG_WARNING, "SEPB2 marker missing\n");
-			/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+			/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 			IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 			s->avctx->iTotalError++;
 
@@ -5833,7 +5833,7 @@ int h263_decode_picture_header(MpegEncContext *s)
 
 
 
-	/*Î´³õÊ¼»¯ºó³õÊ¼»¯*/
+	/*æœªåˆå§‹åŒ–ååˆå§‹åŒ–*/
 	if(s->avctx->iActualProfile == 0)
 	{
 		s->avctx->iActualProfile = (s->h263_plus == 0) ? IVIDEO_PROFILE_H263 : IVIDEO_PROFILE_H263_PLUS;
@@ -6089,7 +6089,7 @@ static int mpeg4_decode_gop_header(MpegEncContext * s, GetBitContext *gb){
 }
 
 /*guoshan + 00101841 20100415 9:45:00*/
-/*È¡Ïûº¯ÊıµÄ¾²Ì¬ÉêÃ÷£¬¹©probe_header.cÖĞµÄº¯ÊıÖ±½Óµ÷ÓÃ*/
+/*å–æ¶ˆå‡½æ•°çš„é™æ€ç”³æ˜ï¼Œä¾›probe_header.cä¸­çš„å‡½æ•°ç›´æ¥è°ƒç”¨*/
 //static int decode_vol_header(MpegEncContext *s, GetBitContext *gb){
 int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 {
@@ -6102,10 +6102,10 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 	{ /* is_ol_id */
 		vo_ver_id = get_bits(gb, 4); /* vo_ver_id */
 
-		/*guoshan+00101841 20100428¸ù¾İMPEG-4Ğ­ÒéÔö¼Ó¶Ôvideo_object_layer_verid µÄ¼ì²â*/
+		/*guoshan+00101841 20100428æ ¹æ®MPEG-4åè®®å¢åŠ å¯¹video_object_layer_verid çš„æ£€æµ‹*/
 		if(vo_ver_id != 1 && vo_ver_id != 2)
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "illegal video_object_layer_verid!\n");
 			av_log(s->avctx, AV_LOG_WARNING, "illegal video_object_layer_verid!\n");
 			IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_MARKER);
@@ -6126,17 +6126,17 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 		s->avctx->sample_aspect_ratio.num= get_bits(gb, 8); // par_width
 		s->avctx->sample_aspect_ratio.den= get_bits(gb, 8); // par_height
 
-		/*guoshan+00101841 20100428¸ù¾İMPEG-4Ğ­ÒéÔö¼Ó¶Ôpar_widthºÍpar_heightµÄ¼ì²â*/
+		/*guoshan+00101841 20100428æ ¹æ®MPEG-4åè®®å¢åŠ å¯¹par_widthå’Œpar_heightçš„æ£€æµ‹*/
 		if(!s->avctx->sample_aspect_ratio.num || !s->avctx->sample_aspect_ratio.den)
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			// 			av_log(s->avctx, AV_LOG_ERROR, "illegal par_width[%d] or par_height[%d]!\n", s->avctx->sample_aspect_ratio.num, 
 			// 				    s->avctx->sample_aspect_ratio.den);
 			av_log(s->avctx, AV_LOG_WARNING, "illegal par_width[%d] or par_height[%d]!\n", s->avctx->sample_aspect_ratio.num, 
 				s->avctx->sample_aspect_ratio.den);
 			IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_SIZE);
 			s->avctx->iTotalError++;
-			/*guoshan+00101841 20100612 par_width,par_height¶Ô½âÂëÎŞÓ°Ïì£¬¿ÉÖ±½ÓĞŞÕı£¬²»ÓÃ·µ»Ø*/
+			/*guoshan+00101841 20100612 par_width,par_heightå¯¹è§£ç æ— å½±å“ï¼Œå¯ç›´æ¥ä¿®æ­£ï¼Œä¸ç”¨è¿”å›*/
 			av_log(s->avctx, AV_LOG_WARNING, "modify par_width = 12 & par_height = 11!\n");
 			s->avctx->sample_aspect_ratio.num = 12;
 	        s->avctx->sample_aspect_ratio.den = 11;
@@ -6155,19 +6155,19 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 		//         if(chroma_format!=CHROMA_420)
 		// 		{
 		//             av_log(s->avctx, AV_LOG_ERROR, "illegal chroma format\n");
-		// 			return -1; //guoshan + 00101841 ·Ç4£º2£º0¸ñÊ½²»Ö§³Ö£¬Ö±½ÓÍË³ö
+		// 			return -1; //guoshan + 00101841 é4ï¼š2ï¼š0æ ¼å¼ä¸æ”¯æŒï¼Œç›´æ¥é€€å‡º
 		//         }
 		/*guoshan + 00101841 20100416*/
-		/*Ö±½ÓÊ¹ÓÃ½á¹¹Ìå³ÉÔ±*/
+		/*ç›´æ¥ä½¿ç”¨ç»“æ„ä½“æˆå‘˜*/
 		s->chroma_format= get_bits(gb, 2);
 		if(s->chroma_format !=CHROMA_420)
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "illegal chroma format\n");
 			av_log(s->avctx, AV_LOG_WARNING, "illegal chroma format, change to CHROMA_420 and continue... \n");
 			IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_COLOR_SPACE);
 			s->avctx->iTotalError++;
-	//		return -1; //guoshan + 00101841 ·Ç4£º2£º0¸ñÊ½²»Ö§³Ö£¬Ö±½ÓÍË³ö
+	//		return -1; //guoshan + 00101841 é4ï¼š2ï¼š0æ ¼å¼ä¸æ”¯æŒï¼Œç›´æ¥é€€å‡º
 			s->chroma_format = CHROMA_420;
 		}
 
@@ -6200,7 +6200,7 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 	if(s->shape != RECT_SHAPE) 
 	{
 		av_log(s->avctx, AV_LOG_WARNING, "only rectangular vol supported, modify to rectangular...\n");
-		/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+		/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 		IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_SHAPE);
 		s->avctx->iTotalError++;
 		s->shape = RECT_SHAPE;
@@ -6208,7 +6208,7 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 	if(s->shape == GRAY_SHAPE && vo_ver_id != 1)
 	{
 		av_log(s->avctx, AV_LOG_WARNING, "Gray shape not supported\n");
-		/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+		/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 		IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_SHAPE);
 		s->avctx->iTotalError++;
 		skip_bits(gb, 4);  //video_object_layer_shape_extension
@@ -6220,7 +6220,7 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 	if(!s->avctx->time_base.den)
 	{
 		av_log(s->avctx, AV_LOG_WARNING, "time_base.den==0, modify to 25\n");
-		/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+		/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 		IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_TIME_FRAMERATE);
 		s->avctx->iTotalError++;
 		s->avctx->time_base.den = 25;
@@ -6252,7 +6252,7 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 			height = get_bits(gb, 13);
 			skip_bits1(gb);   /* marker */
 
-			/*guoshan+00101841 20100423Ìí¼Ó·À´í´¦Àí, ÈÕÖ¾£¬´íÎóÂë*/
+			/*guoshan+00101841 20100423æ·»åŠ é˜²é”™å¤„ç†, æ—¥å¿—ï¼Œé”™è¯¯ç */
 			if(width == 0 || height == 0)
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "width[%d] or height[%d] == 0\n", width, height);
@@ -6260,7 +6260,7 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 				s->avctx->iTotalError++;
 			}
 
-			/*guoshan+00101841 20100423ÏÂÃæµÄÅĞ¶ÏÌõ¼ş¿ÉÒÔÈ¡ÏûÁË*/
+			/*guoshan+00101841 20100423ä¸‹é¢çš„åˆ¤æ–­æ¡ä»¶å¯ä»¥å–æ¶ˆäº†*/
 			//          if(width && height && !(s->width && s->codec_tag == AV_RL32("MP4S")))
 			{ /* they should be non zero but who knows ... */
 				s->width = width;
@@ -6269,7 +6269,7 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 			}
 
 			/*guoshan + 00101841 20100416*/
-			/*°Ñ½âÎöºóµÄ¿í¸ßĞÅÏ¢½øĞĞ·À´í¼ì²â£¬²¢±£´æ³öÀ´*/
+			/*æŠŠè§£æåçš„å®½é«˜ä¿¡æ¯è¿›è¡Œé˜²é”™æ£€æµ‹ï¼Œå¹¶ä¿å­˜å‡ºæ¥*/
 			//s->avctx->iChromaFormat = s->chroma_format;
 
 			if((0 == s->avctx->usActualWidth)||(0 == s->avctx->usActualHeight))
@@ -6289,7 +6289,7 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 				s->avctx->usActualWidth = s->width;
 				s->avctx->usActualHeight = s->height;	
 				/*guoshan + 00101841 20100605*/
-				/*µ±ÂëÁ÷ÖĞÎŞvol_control_parameter×Ö¶ÎÊ±,s->chroma_formatÊ¼ÖÕÎ´±»¸³Öµ,µ¼ÖÂºóĞø½âÎö´íÎó,µÚÒ»´Î½âÎöÊ±Òª¸³ÉÏÕıÈ·Öµ*/
+				/*å½“ç æµä¸­æ— vol_control_parameterå­—æ®µæ—¶,s->chroma_formatå§‹ç»ˆæœªè¢«èµ‹å€¼,å¯¼è‡´åç»­è§£æé”™è¯¯,ç¬¬ä¸€æ¬¡è§£ææ—¶è¦èµ‹ä¸Šæ­£ç¡®å€¼*/
 				s->avctx->iChromaFormat = s->chroma_format = CHROMA_420;
 			}
 			else if(s->width != s->avctx->usActualWidth || s->avctx->usActualHeight != s->height)
@@ -6311,7 +6311,7 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 		if(!get_bits1(gb) && (s->avctx->debug & FF_DEBUG_PICT_INFO)) /*guoshan+00101841 20100428 obmc_disable flag*/
 		{
 			av_log(s->avctx, AV_LOG_INFO, "MPEG4 OBMC not supported (very likely buggy encoder)\n");   /* OBMC Disable */
-			/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+			/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 			IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_MARKER);
 			s->avctx->iTotalError++;
 		}
@@ -6327,10 +6327,10 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 
 		if(s->vol_sprite_usage==STATIC_SPRITE) 
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "Static Sprites not supported\n");
 			//av_log(s->avctx, AV_LOG_WARNING, "Static Sprites not supported\n");
-			/*guoshan+00101841 20100612 ²»Ö§³ÖStatic Sprites¹¦ÄÜ£¬¹Øµô*/
+			/*guoshan+00101841 20100612 ä¸æ”¯æŒStatic SpritesåŠŸèƒ½ï¼Œå…³æ‰*/
 			av_log(s->avctx, AV_LOG_WARNING, "Static Sprites not supported, disable it!\n");
 			s->vol_sprite_usage = 0;
 		}
@@ -6351,7 +6351,7 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 			s->num_sprite_warping_points= get_bits(gb, 6);
 			if(s->num_sprite_warping_points > 3)
 			{
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "%d sprite_warping_points\n", s->num_sprite_warping_points);
 				av_log(s->avctx, AV_LOG_WARNING, "%d sprite_warping_points\n", s->num_sprite_warping_points);
 				s->num_sprite_warping_points= 0;
@@ -6370,14 +6370,14 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 			if(get_bits(gb, 4)!=8) 
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "N-bit not supported\n"); /* bits_per_pixel */
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_BIT_DEPTH);
 				s->avctx->iTotalError++;
 			}
 			if(s->quant_precision!=5) 
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "quant precision %d\n", s->quant_precision);
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_QUANT);
 				s->avctx->iTotalError++;
 			}
@@ -6520,7 +6520,7 @@ int decode_vol_header(MpegEncContext *s, GetBitContext *gb)
 			else
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "Invalid Complexity estimation method %d\n", estimation_method);
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_MARKER);
 				s->avctx->iTotalError++;
 			}
@@ -6547,7 +6547,7 @@ no_cplx_est:
 			if(s->new_pred)
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "new pred not supported\n");
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_MARKER);
 				s->avctx->iTotalError++;
 				s->new_pred = 0;
@@ -6559,7 +6559,7 @@ no_cplx_est:
 			if(s->reduced_res_vop) 
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "reduced resolution VOP not supported\n");
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_MARKER);
 				s->avctx->iTotalError++;
 				s->reduced_res_vop = 0;
@@ -6604,7 +6604,7 @@ no_cplx_est:
 			else
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "scalability not supported\n");
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_MARKER);
 				s->avctx->iTotalError++;
 				s->scalability = 0;
@@ -6691,7 +6691,7 @@ static int decode_vop_header(MpegEncContext *s, GetBitContext *gb)
 	s->pict_type = get_bits(gb, 2) + FF_I_TYPE;        /* pict type: I = 0 , P = 1 */
 	if(s->pict_type==FF_B_TYPE && s->low_delay && s->vol_control_parameters==0 && !(s->flags & CODEC_FLAG_LOW_DELAY))
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(s->avctx, AV_LOG_ERROR, "low_delay flag incorrectly, clearing it\n");
 		av_log(s->avctx, AV_LOG_WARNING, "low_delay flag incorrectly, clearing it\n");
 		s->low_delay=0;
@@ -6712,7 +6712,7 @@ static int decode_vop_header(MpegEncContext *s, GetBitContext *gb)
 	if(s->time_increment_bits==0 || !(show_bits(gb, s->time_increment_bits+1)&1))
 	{
 		av_log(s->avctx, AV_LOG_WARNING, "hmm, seems the headers are not complete, trying to guess time_increment_bits\n");
-		/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+		/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 		IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_TIME_FRAMERATE);
 		s->avctx->iTotalError ++;
 
@@ -6789,10 +6789,10 @@ static int decode_vop_header(MpegEncContext *s, GetBitContext *gb)
 	{
 		if(s->avctx->debug&FF_DEBUG_PICT_INFO)
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "vop not coded\n");
 			av_log(s->avctx, AV_LOG_WARNING, "vop not coded\n");
-			/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+			/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 			IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 			s->avctx->iTotalError++;
 		}
@@ -6875,14 +6875,14 @@ static int decode_vop_header(MpegEncContext *s, GetBitContext *gb)
 		mpeg4_decode_sprite_trajectory(s, gb);
 		if(s->sprite_brightness_change) 
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "sprite_brightness_change not supported\n");
 			av_log(s->avctx, AV_LOG_WARNING, "sprite_brightness_change not supported\n");
 		}
 
 		if(s->vol_sprite_usage==STATIC_SPRITE) 
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "static sprite not supported\n");
 			av_log(s->avctx, AV_LOG_WARNING, "static sprite not supported\n");
 		}
@@ -6894,7 +6894,7 @@ static int decode_vop_header(MpegEncContext *s, GetBitContext *gb)
 		if(s->qscale==0)
 		{
 			av_log(s->avctx, AV_LOG_WARNING, "Error, header damaged or not MPEG4 header (qscale=0)\n");
-			/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+			/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 			IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_QP);
 			s->avctx->iTotalError++;
 
@@ -6907,7 +6907,7 @@ static int decode_vop_header(MpegEncContext *s, GetBitContext *gb)
 			if(s->f_code==0)
 			{
 				av_log(s->avctx, AV_LOG_WARNING, "Error, header damaged or not MPEG4 header (f_code=0)\n");
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_FCODE);
 				s->avctx->iTotalError++;
 				return -1; // makes no sense to continue, as the MV decoding will break very quickly
@@ -6950,7 +6950,7 @@ static int decode_vop_header(MpegEncContext *s, GetBitContext *gb)
 				if(load_backward_shape)
 				{
 					av_log(s->avctx, AV_LOG_WARNING, "load backward shape isn't supported\n");
-					/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+					/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 					IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_MARKER);
 					s->avctx->iTotalError++;
 				}
@@ -6962,15 +6962,15 @@ static int decode_vop_header(MpegEncContext *s, GetBitContext *gb)
 	// note we cannot detect divx5 without b-frames easily (although it's buggy too)
 	if(s->vo_type==0 && s->vol_control_parameters==0 && s->divx_version==0 && s->picture_number==0)
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_INFO
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_INFO
 		//av_log(s->avctx, AV_LOG_ERROR, "looks like this file was encoded with (divx4/(old)xvid/opendivx) -> forcing low_delay flag\n");
 		//av_log(s->avctx, AV_LOG_INFO, "looks like this file was encoded with (divx4/(old)xvid/opendivx) -> forcing low_delay flag\n");
 		av_log(s->avctx, AV_LOG_INFO, "looks like this file was encoded with (divx4/(old)xvid/opendivx)\n");
-		/*guoshan+00101841 20100424Ìí¼Ó´íÎóÂë*/
+		/*guoshan+00101841 20100424æ·»åŠ é”™è¯¯ç */
 // 		IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_OTHER);
 // 		s->avctx->iTotalError++;
 
-		/*guoshan+00101841 20100611ÔÚÎŞBÖ¡×´Ì¬ÏÂ£¬low_delay=0½ö»áÓ°ÏìÕû¸öĞòÁĞÊä³öÊ±ÑÓ1Ö¡£¬²»Ó°Ïì½âÂë½á¹û£¬²»ÉèÖÃ¸ÃÎ»±È½Ï±£ÏÕ*/
+		/*guoshan+00101841 20100611åœ¨æ— Bå¸§çŠ¶æ€ä¸‹ï¼Œlow_delay=0ä»…ä¼šå½±å“æ•´ä¸ªåºåˆ—è¾“å‡ºæ—¶å»¶1å¸§ï¼Œä¸å½±å“è§£ç ç»“æœï¼Œä¸è®¾ç½®è¯¥ä½æ¯”è¾ƒä¿é™©*/
 		/*s->low_delay=1;*/
 	}
 
@@ -7014,18 +7014,18 @@ int ff_mpeg4_decode_picture_header(MpegEncContext * s, GetBitContext *gb)
 		{
 			if(gb->size_in_bits==8 && (s->divx_version || s->xvid_build))
 			{
-				//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+				//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 				//av_log(s->avctx, AV_LOG_ERROR, "frame skip %d\n", gb->size_in_bits);
 				av_log(s->avctx, AV_LOG_WARNING, "frame skip %d\n", gb->size_in_bits);
-				/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë*/
+				/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç */
 				IMEDIA_SET_ERR_PIC( s->avctx->iErrorCode, IMEDIA_ERR_PIC_OTHER);
 				s->avctx->iTotalError++;
 				return FRAME_SKIPPED; //divx bug
 			}
 			else
 			{
-				/*guoshan+00101841 20100424Ìí¼ÓÈÕÖ¾ĞÅÏ¢*/
-				/*guoshan+00101841 20100608ÈÕÖ¾´òÓ¡¶àÓà£¬ÂëÁ÷½áÊøÍË³ö£¬²»Ò»¶¨ÊÇÕÒ²»µ½startcode*/
+				/*guoshan+00101841 20100424æ·»åŠ æ—¥å¿—ä¿¡æ¯*/
+				/*guoshan+00101841 20100608æ—¥å¿—æ‰“å°å¤šä½™ï¼Œç æµç»“æŸé€€å‡ºï¼Œä¸ä¸€å®šæ˜¯æ‰¾ä¸åˆ°startcode*/
 			//	av_log(s->avctx, AV_LOG_WARNING, "no startcode found!\n");
 				return -1; 
 			}//end of stream
@@ -7072,7 +7072,7 @@ int ff_mpeg4_decode_picture_header(MpegEncContext * s, GetBitContext *gb)
 		}
 
 		/*guoshan + 00101841 20100416*/
-		/*°Ñ½âÎöºóµÄprofile,level±£´æ³öÀ´*/
+		/*æŠŠè§£æåçš„profile,levelä¿å­˜å‡ºæ¥*/
 #define  VIS_OBJSEQ_START_CODE 0x1B0
 		if(startcode == VIS_OBJSEQ_START_CODE)
 		{
@@ -7107,17 +7107,17 @@ int ff_mpeg4_decode_picture_header(MpegEncContext * s, GetBitContext *gb)
 				/*else fall through to show av_log warning*/
 			default: 
 				{
-					//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+					//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 					//av_log(s->avctx, AV_LOG_ERROR, "unsupported MPEG4 Profile[%d] or Level[%d]!\n",iProfile, iLevel);
 					av_log(s->avctx, AV_LOG_WARNING, "unsupported MPEG4 Profile[%d] or Level[%d]!\n",iProfile, iLevel);
-					/*guoshan+00101841 20100423Ìí¼Ó´íÎóÂë,level»òprofileµÄ´íÎó¶¼Ìíµ½ÕâÀï£¬Ôİ²»Çø·Ö*/
+					/*guoshan+00101841 20100423æ·»åŠ é”™è¯¯ç ,levelæˆ–profileçš„é”™è¯¯éƒ½æ·»åˆ°è¿™é‡Œï¼Œæš‚ä¸åŒºåˆ†*/
 					IMEDIA_SET_ERR_SEQ( s->avctx->iErrorCode, IMEDIA_ERR_SEQ_PROFILE_LEVEL);
 					s->avctx->iTotalError++;
 				//	return -1;
 				}
 			}
 
-			/*Î´³õÊ¼»¯ºó³õÊ¼»¯*/
+			/*æœªåˆå§‹åŒ–ååˆå§‹åŒ–*/
 			if((s->avctx->iActualProfile == 0) || (s->avctx->iActualLevel == 0))
 			{
 				s->avctx->iActualProfile = iProfile;
@@ -7125,19 +7125,19 @@ int ff_mpeg4_decode_picture_header(MpegEncContext * s, GetBitContext *gb)
 				s->avctx->iActualRefNum = 1;
 			}
 		}
-		/*ĞÂÔö½áÊø*/
+		/*æ–°å¢ç»“æŸ*/
 //		if(startcode >= 0x120 && startcode <= 0x12F)
 		else if(startcode >= 0x120 && startcode <= 0x12F)
 		{
 			if(decode_vol_header(s, gb) < 0)
 			{
-				/*guoshan+00101841 20100424Ìí¼ÓÈÕÖ¾*/
+				/*guoshan+00101841 20100424æ·»åŠ æ—¥å¿—*/
 				av_log(s->avctx, AV_LOG_WARNING, "decode_vol_header failed!\n");
-                /*guoshan+00101841 20100628±êÖ¾iNotFoundVOLFlag*/
+                /*guoshan+00101841 20100628æ ‡å¿—iNotFoundVOLFlag*/
 				s->iNotFoundVOLFlag = 1;
 				return -1;
 			}
-			/*guoshan+00101841 20100628ÕÒµ½VOLÍ·ºóĞŞÕı¸Ã±êÖ¾Î»*/
+			/*guoshan+00101841 20100628æ‰¾åˆ°VOLå¤´åä¿®æ­£è¯¥æ ‡å¿—ä½*/
 			s->iNotFoundVOLFlag = 0;
 		}
 		else if(startcode == USER_DATA_STARTCODE)
@@ -7161,7 +7161,7 @@ end:
 		s->low_delay=1;
 	s->avctx->has_b_frames= !s->low_delay;
 
-	/*guoshan+00101841 20100628 ÔÚÎŞÕıÈ·VOLÍ·µÄÇé¿öÏÂ£¬²»±Ø½âÎöVOPÍ·*/
+	/*guoshan+00101841 20100628 åœ¨æ— æ­£ç¡®VOLå¤´çš„æƒ…å†µä¸‹ï¼Œä¸å¿…è§£æVOPå¤´*/
 	if(s->iNotFoundVOLFlag == 1)
 	{
 		av_log(s->avctx, AV_LOG_WARNING, "no proper vol header !\n");
@@ -7179,7 +7179,7 @@ int intel_h263_decode_picture_header(MpegEncContext *s)
 	/* picture header */
 	if (get_bits_long(&s->gb, 22) != 0x20) 
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(s->avctx, AV_LOG_ERROR, "Bad picture start code\n");
 		av_log(s->avctx, AV_LOG_WARNING, "Bad picture start code\n");
 		return -1;
@@ -7188,14 +7188,14 @@ int intel_h263_decode_picture_header(MpegEncContext *s)
 
 	if (get_bits1(&s->gb) != 1) 
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(s->avctx, AV_LOG_ERROR, "Bad marker\n");
 		av_log(s->avctx, AV_LOG_WARNING, "Bad marker\n");
 		return -1;      /* marker */
 	}
 	if (get_bits1(&s->gb) != 0) 
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(s->avctx, AV_LOG_ERROR, "Bad H263 id\n");
 		av_log(s->avctx, AV_LOG_WARNING, "Bad H263 id\n");
 		return -1;      /* h263 id */
@@ -7207,7 +7207,7 @@ int intel_h263_decode_picture_header(MpegEncContext *s)
 	format = get_bits(&s->gb, 3);
 	if (format != 7) 
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(s->avctx, AV_LOG_ERROR, "Intel H263 free format not supported\n");
 		av_log(s->avctx, AV_LOG_WARNING, "Intel H263 free format not supported\n");
 		return -1;
@@ -7221,7 +7221,7 @@ int intel_h263_decode_picture_header(MpegEncContext *s)
 
 	if (get_bits1(&s->gb) != 0) 
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(s->avctx, AV_LOG_ERROR, "SAC not supported\n");
 		av_log(s->avctx, AV_LOG_WARNING, "SAC not supported\n");
 		return -1;      /* SAC: off */
@@ -7233,21 +7233,21 @@ int intel_h263_decode_picture_header(MpegEncContext *s)
 		format = get_bits(&s->gb, 3);
 		if(format == 0 || format == 7)
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "Wrong Intel H263 format\n");
 			av_log(s->avctx, AV_LOG_WARNING, "Wrong Intel H263 format\n");
 			return -1;
 		}
 		if(get_bits(&s->gb, 2))
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "Bad value for reserved field\n");
 			av_log(s->avctx, AV_LOG_WARNING, "Bad value for reserved field\n");
 		}
 		s->loop_filter = get_bits1(&s->gb);
 		if(get_bits1(&s->gb))
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "Bad value for reserved field\n");
 			av_log(s->avctx, AV_LOG_WARNING, "Bad value for reserved field\n");
 		}
@@ -7255,13 +7255,13 @@ int intel_h263_decode_picture_header(MpegEncContext *s)
 			s->pb_frame = 2;
 		if(get_bits(&s->gb, 5))
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "Bad value for reserved field\n");
 			av_log(s->avctx, AV_LOG_WARNING, "Bad value for reserved field\n");
 		}
 		if(get_bits(&s->gb, 5) != 1)
 		{
-			//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+			//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 			//av_log(s->avctx, AV_LOG_ERROR, "Invalid marker\n");
 			av_log(s->avctx, AV_LOG_WARNING, "Invalid marker\n");
 		}
@@ -7299,7 +7299,7 @@ int intel_h263_decode_picture_header(MpegEncContext *s)
 
 	if(s->pb_frame)
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(s->avctx, AV_LOG_ERROR, "PB frame mode no supported\n");
 		av_log(s->avctx, AV_LOG_WARNING, "PB frame mode no supported\n");
 		return -1;      /* PB frame mode */
@@ -7314,7 +7314,7 @@ int flv_h263_decode_picture_header(MpegEncContext *s)
 	/* picture header */
 	if (get_bits_long(&s->gb, 17) != 1) 
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(s->avctx, AV_LOG_ERROR, "Bad picture start code\n");
 		av_log(s->avctx, AV_LOG_WARNING, "Bad picture start code\n");
 		return -1;
@@ -7322,7 +7322,7 @@ int flv_h263_decode_picture_header(MpegEncContext *s)
 	format = get_bits(&s->gb, 5);
 	if (format != 0 && format != 1) 
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(s->avctx, AV_LOG_ERROR, "Bad picture format\n");
 		av_log(s->avctx, AV_LOG_WARNING, "Bad picture format\n");
 		return -1;
@@ -7368,14 +7368,14 @@ int flv_h263_decode_picture_header(MpegEncContext *s)
 	{
 		IMEDIA_SET_ERR_SEQ(s->avctx->iErrorCode,IMEDIA_ERR_SEQ_SIZE);
 		s->avctx->iTotalError++;
-		/*ÕâÀï²»ÍË³ö£¬ºóÃæÓĞ¶Ôwidth,heightµÄ¼ì²â*/
+		/*è¿™é‡Œä¸é€€å‡ºï¼Œåé¢æœ‰å¯¹width,heightçš„æ£€æµ‹*/
 //		return -1;
 	}
 	s->width = width;
 	s->height = height;
 
 	/*guoshan + 00101841 20100813*/
-	/*°Ñ½âÎöºóµÄ¿í¸ßĞÅÏ¢±£´æ³öÀ´*/	
+	/*æŠŠè§£æåçš„å®½é«˜ä¿¡æ¯ä¿å­˜å‡ºæ¥*/	
 	if((0 == s->avctx->usActualWidth)||(0 == s->avctx->usActualHeight))
 	{
 		int width_high = (!s->avctx->usSourceWidth) ? H263_MAX_WIDTH : s->avctx->usSourceWidth; 
@@ -7440,7 +7440,7 @@ int flv_h263_decode_picture_header(MpegEncContext *s)
 }
 
 /*guoshan + 00101841 20100415*/
-/*ĞÂÔöº¯Êı,ÓÃÓÚ½âÂëÆ÷¸´Î»*/
+/*æ–°å¢å‡½æ•°,ç”¨äºè§£ç å™¨å¤ä½*/
 static av_cold int h263_mpeg4_reset(MpegEncContext *h)
 {
 	int iRet = 0;
@@ -7449,16 +7449,16 @@ static av_cold int h263_mpeg4_reset(MpegEncContext *h)
 	AVCodecContext *avctx	= s->avctx;
 
 	/* 2010/09/14 16:30:00 liuxw+00139685 */
-	/* ÎŞĞèÈ«²¿Çå0£¬È»ºóÔÙÈ¥µ÷ÓÃ³õÊ¼»¯º¯Êı£¬Ö»ĞèÒª½«sÖĞ²¿·Ö×´Ì¬ĞÅÏ¢Çå0¼´¿É */
+	/* æ— éœ€å…¨éƒ¨æ¸…0ï¼Œç„¶åå†å»è°ƒç”¨åˆå§‹åŒ–å‡½æ•°ï¼Œåªéœ€è¦å°†sä¸­éƒ¨åˆ†çŠ¶æ€ä¿¡æ¯æ¸…0å³å¯ */
 #if 0
-	/* Çå¿ÕMpegEncContext½á¹¹Ìå±äÁ¿*/
+	/* æ¸…ç©ºMpegEncContextç»“æ„ä½“å˜é‡*/
 	memset(h, 0, sizeof(MpegEncContext));
 
-	/* ³õÊ¼»¯MpegEncContext½á¹¹Ìå±äÁ¿*/
+	/* åˆå§‹åŒ–MpegEncContextç»“æ„ä½“å˜é‡*/
 	iRet = ff_h263_decode_init(avctx);
 	if(0 != iRet)
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(avctx, AV_LOG_ERROR, "avctx[%p] s_ctx[%p] decode_init() failed! return code: %d !\n",avctx, s, iRet);
 		av_log(avctx, AV_LOG_WARNING, "avctx[%p] s_ctx[%p] decode_init() failed! return code: %d !\n",avctx, s, iRet);
 	}
@@ -7498,35 +7498,35 @@ static av_cold int h263_mpeg4_reset(MpegEncContext *h)
 }
 
 /*guoshan + 00101841 20100415*/
-/*ĞÂÔöº¯Êı£¬ÓÃÓÚcontrolÖĞµÄreset */
+/*æ–°å¢å‡½æ•°ï¼Œç”¨äºcontrolä¸­çš„reset */
 static av_cold int decode_reset(AVCodecContext *avctx)
 {
 	int iRet = 0;
 
 	MpegEncContext *s = avctx->priv_data;
 
-	/* Çå¿Õbuffer */
+	/* æ¸…ç©ºbuffer */
 	ff_mpeg_flush(avctx);
 
 	/* 2010/09/14 16:30:00 liuxw+00139685 */
-	/* ËùÓĞµÄÄÚ´æÖ»·ÖÅäÒ»´Î£¬ËùÒÔÖ»ÔÚcloseµÄÊ±ºò²Å»áÉæ¼°µ½ÊÍ·Å */
+	/* æ‰€æœ‰çš„å†…å­˜åªåˆ†é…ä¸€æ¬¡ï¼Œæ‰€ä»¥åªåœ¨closeçš„æ—¶å€™æ‰ä¼šæ¶‰åŠåˆ°é‡Šæ”¾ */
 	//MPV_common_end(s);
 
-	/* ¸´Î»¼°³õÊ¼»¯AVCodecContext½á¹¹Ìå±äÁ¿*/
+	/* å¤ä½åŠåˆå§‹åŒ–AVCodecContextç»“æ„ä½“å˜é‡*/
 	iRet = avcodec_reset(avctx);
 	if(0 != iRet)
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(avctx, AV_LOG_ERROR, "avctx[%p] avcodec_reset() failed! return code: %d !\n",avctx, iRet);
 		av_log(avctx, AV_LOG_WARNING, "avctx[%p] avcodec_reset() failed! return code: %d !\n",avctx, iRet);
 		return iRet;
 	}
 
-	/* ¸´Î»¼°³õÊ¼»¯MpegEncContext½á¹¹Ìå±äÁ¿*/
+	/* å¤ä½åŠåˆå§‹åŒ–MpegEncContextç»“æ„ä½“å˜é‡*/
 	iRet = h263_mpeg4_reset(s);
 	if(0 != iRet)
 	{
-		//guoshan+00101841 20100517ĞŞ¸ÄAV_LOG_ERRORÎªAV_LOG_WARNING
+		//guoshan+00101841 20100517ä¿®æ”¹AV_LOG_ERRORä¸ºAV_LOG_WARNING
 		//av_log(avctx, AV_LOG_ERROR, "avctx[%p] s_ctx[%p] h263_mpeg4_reset() failed! return code: %d !\n",avctx, s, iRet);
 		av_log(avctx, AV_LOG_WARNING, "avctx[%p] s_ctx[%p] h263_mpeg4_reset() failed! return code: %d !\n",avctx, s, iRet);
 		return iRet;
@@ -7549,7 +7549,7 @@ int H263_Query_MemSize(uint16_t width, uint16_t height, uint16_t bufnum, int pix
     int b8_array_size;
     int b4_array_size;
 
-	total_size += sizeof(MpegEncContext); // H263½âÂëÆ÷Í¨µÀ±äÁ¿ËùÕ¼µÄÄÚ´æ´óĞ¡ 
+	total_size += sizeof(MpegEncContext); // H263è§£ç å™¨é€šé“å˜é‡æ‰€å çš„å†…å­˜å¤§å° 
 
     mb_height = (height + 15) / 16;
     mb_width  = (width  + 15) / 16;
@@ -7618,7 +7618,7 @@ int H263_Query_MemSize(uint16_t width, uint16_t height, uint16_t bufnum, int pix
 	total_size += tmp_size * bufnum;
 
 	
-	total_size += 16*1024;   // ¼Ù³ä»á·ÖÅä512¿éÄÚ´æ£¬Ã¿¿é·Ç16×Ö½Ú¶ÔÆë£¬ÄÇÃ´ÀË·Ñ×î´óµÄ¿Õ¼ä¼´Îª16*512
+	total_size += 16*1024;   // å‡å……ä¼šåˆ†é…512å—å†…å­˜ï¼Œæ¯å—é16å­—èŠ‚å¯¹é½ï¼Œé‚£ä¹ˆæµªè´¹æœ€å¤§çš„ç©ºé—´å³ä¸º16*512
 	
 	return total_size;
 }

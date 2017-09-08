@@ -18,12 +18,12 @@ extern "C"{
 
 /** 
 \brief Init an otp device.
-\brief CNcomment:³õÊ¼»¯OTPÉè±¸¡£ CNend
+\brief CNcomment:åˆå§‹åŒ–OTPè®¾å¤‡ã€‚ CNend
 \attention \n
 N/A
-\param N/A                                    				CNcomment:ÎŞ¡£ CNend
-\retval ::HI_SUCCESS  Call this API successful.           CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 				CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param N/A                                    				CNcomment:æ— ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API successful.           CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 				CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -31,12 +31,12 @@ HI_S32 HI_UNF_OTP_Init(HI_VOID);
 
 /** 
 \brief Deinit an otp device.
-\brief CNcomment:È¥³õÊ¼»¯OTPÉè±¸¡£ CNend
+\brief CNcomment:å»åˆå§‹åŒ–OTPè®¾å¤‡ã€‚ CNend
 \attention \n
 N/A
-\param N/A                                    				CNcomment:ÎŞ¡£ CNend
-\retval ::HI_SUCCESS  Call this API successful.          CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 				CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param N/A                                    				CNcomment:æ— ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API successful.          CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 				CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -44,13 +44,13 @@ HI_S32 HI_UNF_OTP_DeInit(HI_VOID);
 
 /** 
 \brief Set customer key, the customer key is used by the customer to encrypt some private data.
-\brief CNcomment:ÉèÖÃcustomer key£¬customer keyÓÉ¿Í»§×Ô¼º¶¨Òå£¬ÇÒ×Ô¶¨ÒåÓÃÍ¾¡£ CNend
+\brief CNcomment:è®¾ç½®customer keyï¼Œcustomer keyç”±å®¢æˆ·è‡ªå·±å®šä¹‰ï¼Œä¸”è‡ªå®šä¹‰ç”¨é€”ã€‚ CNend
 \attention \n
 N/A
-\param[in] pKey:  Customer key to be written to otp.    				CNcomment:Customer keyµÄÖµ£¬´ıĞ´ÈëOTP¡£ CNend
-\param[in] u32KeyLen:  The length of customer key, must be 16bytes.		CNcomment:Customer keyµÄ³¤¶È£¬±ØĞëÎª16×Ö½Ú¡£           CNend
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[in] pKey:  Customer key to be written to otp.    				CNcomment:Customer keyçš„å€¼ï¼Œå¾…å†™å…¥OTPã€‚ CNend
+\param[in] u32KeyLen:  The length of customer key, must be 16bytes.		CNcomment:Customer keyçš„é•¿åº¦ï¼Œå¿…é¡»ä¸º16å­—èŠ‚ã€‚           CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -58,13 +58,13 @@ HI_S32 HI_UNF_OTP_SetCustomerKey(HI_U8 *pKey, HI_U32 u32KeyLen);
 
 /** 
 \brief Get customer key, the customer key is used by the customer to encrypt some private data.
-\brief CNcomment:»ñÈ¡customer key¡£ CNend
+\brief CNcomment:è·å–customer keyã€‚ CNend
 \attention \n
 N/A
-\param[in] pKey:Buffer to store the customer key read from otp.		CNcomment:´æ´¢customer keyµÄbuffer¡£ CNend
-\param[in] u32KeyLen:The length of buffer, must be 16bytes. 			CNcomment:customer key µÄ³¤¶È£¬±ØĞëÎª16×Ö½Ú¡£ CNend
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[in] pKey:Buffer to store the customer key read from otp.		CNcomment:å­˜å‚¨customer keyçš„bufferã€‚ CNend
+\param[in] u32KeyLen:The length of buffer, must be 16bytes. 			CNcomment:customer key çš„é•¿åº¦ï¼Œå¿…é¡»ä¸º16å­—èŠ‚ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -73,13 +73,13 @@ HI_S32 HI_UNF_OTP_GetCustomerKey(HI_U8 *pKey, HI_U32 u32KeyLen);
 
 /** 
 \brief Set stb private data, the stb private data is used by the customer to set some private data.
-\brief CNcomment:ÉèÖÃ¿Í»§Ë½ÓĞÊı¾İ¡£ CNend
+\brief CNcomment:è®¾ç½®å®¢æˆ·ç§æœ‰æ•°æ®ã€‚ CNend
 \attention \n
 N/A
-\param[in] u32Offset:  The offset to set the private data, should be between 0 and 15.	CNcomment:ÉèÖÃstbprivDataµÄÆ«ÒÆ£¬±ØĞëÎª0~15Ö®¼ä¡£ CNend
-\param[in] u8Data:  The private data to be set.							CNcomment:ĞèÒªÉèÖÃµÄÖµ¡£ CNend
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[in] u32Offset:  The offset to set the private data, should be between 0 and 15.	CNcomment:è®¾ç½®stbprivDataçš„åç§»ï¼Œå¿…é¡»ä¸º0~15ä¹‹é—´ã€‚ CNend
+\param[in] u8Data:  The private data to be set.							CNcomment:éœ€è¦è®¾ç½®çš„å€¼ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -87,13 +87,13 @@ HI_S32 HI_UNF_OTP_SetStbPrivData(HI_U32 u32Offset, HI_U8 u8Data);
 
 /** 
 \brief Get stb private data, the stb private data is used by the customer to set some private data.
-\brief CNcomment:»ñÈ¡¿Í»§Ë½ÓĞÊı¾İ¡£ CNend
+\brief CNcomment:è·å–å®¢æˆ·ç§æœ‰æ•°æ®ã€‚ CNend
 \attention \n
 N/A
-\param[in] u32Offset:  The offset to get the private data, should be between 0 and 15.  CNcomment:»ñÈ¡stbprivDataµÄÆ«ÒÆ£¬±ØĞëÎª0~15Ö®¼ä¡£ CNend
-\param[out] pu8Data:  The data read from otp.  							CNcomment:»ñÈ¡µÄÖµ¡£ CNend
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[in] u32Offset:  The offset to get the private data, should be between 0 and 15.  CNcomment:è·å–stbprivDataçš„åç§»ï¼Œå¿…é¡»ä¸º0~15ä¹‹é—´ã€‚ CNend
+\param[out] pu8Data:  The data read from otp.  							CNcomment:è·å–çš„å€¼ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -102,12 +102,12 @@ HI_S32 HI_UNF_OTP_GetStbPrivData(HI_U32 u32Offset, HI_U8 *pu8Data);
 
 /** 
 \brief  Set hdcp root key to otp, 16bytes length.
-\brief CNcomment:ÏòĞ¾Æ¬ÄÚ²¿Ğ´Èëhdcp root key£¬±ØĞëÎª16×Ö½Ú³¤¡£ CNend
+\brief CNcomment:å‘èŠ¯ç‰‡å†…éƒ¨å†™å…¥hdcp root keyï¼Œå¿…é¡»ä¸º16å­—èŠ‚é•¿ã€‚ CNend
 \attention \n
 N/A
-\param[in] pu8RootKey:  Set hdcp root key to otp.					CNcommentÉèÖÃhdcp root keyµ½OTP¡£ CNend
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[in] pu8RootKey:  Set hdcp root key to otp.					CNcommentè®¾ç½®hdcp root keyåˆ°OTPã€‚ CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -115,12 +115,12 @@ HI_S32 HI_UNF_OTP_WriteHdcpRootKey(HI_U8 *pu8HdcpRootKey, HI_U32 u32Keylen);
 
 /** 
 \brief  Get hdcp root key from otp, 16bytes length.
-\brief CNcomment:¶ÁÈ¡Ğ¾Æ¬ÄÚ²¿ÉèÖÃµÄhdcp root key£¬±ØĞëÎª16×Ö½Ú³¤¡£ CNend
+\brief CNcomment:è¯»å–èŠ¯ç‰‡å†…éƒ¨è®¾ç½®çš„hdcp root keyï¼Œå¿…é¡»ä¸º16å­—èŠ‚é•¿ã€‚ CNend
 \attention \n
 N/A
-\param[out] pu8RootKey:  Point to hdcp root key from otp.				CNcomment:´ÓOTPÖĞ»ñÈ¡hdcp root key¡£ CNend
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[out] pu8RootKey:  Point to hdcp root key from otp.				CNcomment:ä»OTPä¸­è·å–hdcp root keyã€‚ CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -128,11 +128,11 @@ HI_S32 HI_UNF_OTP_ReadHdcpRootKey(HI_U8 *pu8HdcpRootKey, HI_U32 u32Keylen);
     
 /** 
 \brief  Lock hdcp root key in otp.
-\brief CNcomment:Ëø¶¨Ğ¾Æ¬ÄÚ²¿ÉèÖÃµÄhdcp root key¡£Ëø¶¨ºó£¬hdcp root key½«²»¿É±»¶ÁÈ¡¡£ CNend
+\brief CNcomment:é”å®šèŠ¯ç‰‡å†…éƒ¨è®¾ç½®çš„hdcp root keyã€‚é”å®šåï¼Œhdcp root keyå°†ä¸å¯è¢«è¯»å–ã€‚ CNend
 \attention \n
 N/A
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -140,12 +140,12 @@ HI_S32 HI_UNF_OTP_LockHdcpRootKey(HI_VOID);
 
 /** 
 \brief  Get hdcp root Key lock flag.
-\brief CNcomment:¶ÁÈ¡Ğ¾Æ¬ÄÚ²¿ÉèÖÃµÄhdcp root keyµÄËø¶¨±êÖ¾Î»¡£ CNend
+\brief CNcomment:è¯»å–èŠ¯ç‰‡å†…éƒ¨è®¾ç½®çš„hdcp root keyçš„é”å®šæ ‡å¿—ä½ã€‚ CNend
 \attention \n
 N/A
-\param[out] pbLockFlag:  Point to hdcp root key lock flag from otp.		CNcomment:Ö¸Ïò»ñÈ¡µ½µÄ±êÖ¾Î»¡£ CNend
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[out] pbLockFlag:  Point to hdcp root key lock flag from otp.		CNcomment:æŒ‡å‘è·å–åˆ°çš„æ ‡å¿—ä½ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -153,12 +153,12 @@ HI_S32 HI_UNF_OTP_GetHdcpRootKeyLockFlag(HI_BOOL *pbLockFlag);
 
 /** 
 \brief Set stb root key to otp.
-\brief CNcomment:ÏòĞ¾Æ¬ÄÚ²¿ÉèÖÃstb root key¡£ CNend
+\brief CNcomment:å‘èŠ¯ç‰‡å†…éƒ¨è®¾ç½®stb root keyã€‚ CNend
 \attention \n
 N/A
-\param[in] u8StbRootKey:  Point to stb root key value.					CNcomment:Stb root keyµÄÖµ¡£ CNend
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[in] u8StbRootKey:  Point to stb root key value.					CNcomment:Stb root keyçš„å€¼ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -166,12 +166,12 @@ HI_S32 HI_UNF_OTP_WriteStbRootKey(HI_U8 *pu8StbRootKey, HI_U32 u32Keylen);
 
 /** 
 \brief Get stb root key from otp.
-\brief CNcomment:¶ÁÈ¡Ğ¾Æ¬ÄÚ²¿ÉèÖÃµÄstb root key¡£ CNend
+\brief CNcomment:è¯»å–èŠ¯ç‰‡å†…éƒ¨è®¾ç½®çš„stb root keyã€‚ CNend
 \attention \n
 N/A
-\param[out] pu8RootKey:  Point to stb root key from otp.				CNcomment:Ö»Ïë»ñÈ¡µ½µÄStb root key¡£ CNend
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[out] pu8RootKey:  Point to stb root key from otp.				CNcomment:åªæƒ³è·å–åˆ°çš„Stb root keyã€‚ CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -179,11 +179,11 @@ HI_S32 HI_UNF_OTP_ReadStbRootKey(HI_U8 *pu8StbRootKey, HI_U32 u32Keylen);
 
 /** 
 \brief Lock stb root key in otp.
-\brief CNcomment:Ëø×¡Ğ¾Æ¬ÄÚ²¿ÉèÖÃµÄstb root key¡£Ëø¶¨ºó£¬stb root key½«²»¿É±»¶ÁÈ¡¡£ CNend
+\brief CNcomment:é”ä½èŠ¯ç‰‡å†…éƒ¨è®¾ç½®çš„stb root keyã€‚é”å®šåï¼Œstb root keyå°†ä¸å¯è¢«è¯»å–ã€‚ CNend
 \attention \n
 N/A
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */
@@ -191,12 +191,12 @@ HI_S32 HI_UNF_OTP_LockStbRootKey(HI_VOID);
 
 /** 
 \brief Get stb root Key lock flag
-\brief CNcomment:»ñÈ¡Ğ¾Æ¬ÄÚ²¿stb root keyµÄËø¶¨±êÖ¾Î»¡£ CNend
+\brief CNcomment:è·å–èŠ¯ç‰‡å†…éƒ¨stb root keyçš„é”å®šæ ‡å¿—ä½ã€‚ CNend
 \attention \n
 N/A
-\param[out] pbLockFlag:  Point to stb root key lock flag from otp.		CNcomment:Ö¸Ïò»ñÈ¡µ½µÄ±êÖ¾Î»¡£ CNend
-\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\param[out] pbLockFlag:  Point to stb root key lock flag from otp.		CNcomment:æŒ‡å‘è·å–åˆ°çš„æ ‡å¿—ä½ã€‚ CNend
+\retval ::HI_SUCCESS  Call this API successful.          			CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval ::HI_FAILURE  Call this API fails. 							CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 \see \n
 N/A
 */

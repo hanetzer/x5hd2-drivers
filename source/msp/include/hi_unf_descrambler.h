@@ -24,17 +24,17 @@ extern "C" {
 /** @{ */  /** <!-- [Descrambler] */
 
 /**Conditional access (CA) type, indicating whether advanced CA is used.*/
-/**CNcomment:CAÀàÐÍ£¬ÊÇ·ñÊ¹ÓÃ¸ß°²È«CA*/
+/**CNcomment:CAç±»åž‹ï¼Œæ˜¯å¦ä½¿ç”¨é«˜å®‰å…¨CA*/
 typedef enum hiUNF_DMX_CA_TYPE_E
 {
-    HI_UNF_DMX_CA_NORMAL = 0,    /**<Common CA*/ /**< CNcomment:ÆÕÍ¨CA*/
-    HI_UNF_DMX_CA_ADVANCE,       /**<Advanced CA*/ /**< CNcomment:¸ß°²È«CA*/
+    HI_UNF_DMX_CA_NORMAL = 0,    /**<Common CA*/ /**< CNcomment:æ™®é€šCA*/
+    HI_UNF_DMX_CA_ADVANCE,       /**<Advanced CA*/ /**< CNcomment:é«˜å®‰å…¨CA*/
 
     HI_UNF_DMX_CA_BUTT
 } HI_UNF_DMX_CA_TYPE_E;
 
 /**CA Entropy reduction mode*/
-/**CNcomment:ìØ¼õÉÙÄ£Ê½*/
+/**CNcomment:ç†µå‡å°‘æ¨¡å¼*/
 typedef enum hiUNF_DMX_CA_ENTROPY_REDUCTION_E
 {
     HI_UNF_DMX_CA_ENTROPY_REDUCTION_CLOSE = 0,  /**<64bit*/
@@ -45,7 +45,7 @@ typedef enum hiUNF_DMX_CA_ENTROPY_REDUCTION_E
 
 
 /**Type of the descrambler protocol.*/
-/**CNcomment:½âÈÅÆ÷Ð­ÒéÀàÐÍ*/
+/**CNcomment:è§£æ‰°å™¨åè®®ç±»åž‹*/
 typedef enum hiUNF_DMX_DESCRAMBLER_TYPE_E
 {
     HI_UNF_DMX_DESCRAMBLER_TYPE_CSA2      = 0,   /**<CSA2.0*/
@@ -69,12 +69,12 @@ typedef enum hiUNF_DMX_DESCRAMBLER_TYPE_E
 } HI_UNF_DMX_DESCRAMBLER_TYPE_E;
 
 /**Attribute of the key area.*/
-/**CNcomment:ÃÜÔ¿ÇøÊôÐÔ*/
+/**CNcomment:å¯†é’¥åŒºå±žæ€§*/
 typedef struct hiUNF_DMX_DESCRAMBLER_ATTR_S
 {
-    HI_UNF_DMX_CA_TYPE_E enCaType;                    /**<Whether the descrambler adopts advanced CA.*/ /**< CNcomment:½âÈÅÆ÷ÊÇ·ñÊ¹ÓÃ¸ß°²È«CA*/
-    HI_UNF_DMX_DESCRAMBLER_TYPE_E enDescramblerType;  /**<Descrambling protocol type of the descrambler*/ /**< CNcomment:½âÈÅÆ÷½âÈÅÐ­ÒéÀàÐÍ*/
-    HI_UNF_DMX_CA_ENTROPY_E enEntropyReduction;       /**<CA Entropy reduction mode,for CSA2.0*/ /**< CNcomment:ìØ¼õÉÙÄ£Ê½£¬CSA2.0ÓÐÐ§*/
+    HI_UNF_DMX_CA_TYPE_E enCaType;                    /**<Whether the descrambler adopts advanced CA.*/ /**< CNcomment:è§£æ‰°å™¨æ˜¯å¦ä½¿ç”¨é«˜å®‰å…¨CA*/
+    HI_UNF_DMX_DESCRAMBLER_TYPE_E enDescramblerType;  /**<Descrambling protocol type of the descrambler*/ /**< CNcomment:è§£æ‰°å™¨è§£æ‰°åè®®ç±»åž‹*/
+    HI_UNF_DMX_CA_ENTROPY_E enEntropyReduction;       /**<CA Entropy reduction mode,for CSA2.0*/ /**< CNcomment:ç†µå‡å°‘æ¨¡å¼ï¼ŒCSA2.0æœ‰æ•ˆ*/
 } HI_UNF_DMX_DESCRAMBLER_ATTR_S;
 
 /** @} */  /** <!-- ==== Structure Definition end ==== */
@@ -85,223 +85,223 @@ typedef struct hiUNF_DMX_DESCRAMBLER_ATTR_S
 /** @{ */  /** <!--[Descrambler]*/
 
 /**
-\brief Creates a key area.CNcomment:´´½¨Ò»¸öÃÜÔ¿Çø¡£CNend
+\brief Creates a key area.CNcomment:åˆ›å»ºä¸€ä¸ªå¯†é’¥åŒºã€‚CNend
 \attention \n
 When creating a key area, you can ignore the DUMUX to which the key area belongs, because all DEMUXs share all key areas.
-CNcomment:ÉêÇëÃÜÔ¿Çø£¬²»ÓÃ¹ØÐÄÊôÓÚÄÄÂ·DEMUX£¬ËùÓÐDEMUX¹²ÓÃËùÓÐÃÜÔ¿Çø¡£CNend
-\param[in] u32DmxId   DEMUX ID. CNcomment: DEMUXºÅ¡£CNend
-\param[out] phKey     Pointer to the handle of a created key area.CNcomment:Ö¸ÕëÀàÐÍ£¬Êä³öÉêÇëµ½µÄÃÜÔ¿ÇøHandle¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊý·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊýÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOFREE_KEY There is no available key area. CNcomment:Ã»ÓÐ¿ÕÏÐµÄÃÜÔ¿Çø¡£CNend
+CNcomment:ç”³è¯·å¯†é’¥åŒºï¼Œä¸ç”¨å…³å¿ƒå±žäºŽå“ªè·¯DEMUXï¼Œæ‰€æœ‰DEMUXå…±ç”¨æ‰€æœ‰å¯†é’¥åŒºã€‚CNend
+\param[in] u32DmxId   DEMUX ID. CNcomment: DEMUXå·ã€‚CNend
+\param[out] phKey     Pointer to the handle of a created key area.CNcomment:æŒ‡é’ˆç±»åž‹ï¼Œè¾“å‡ºç”³è¯·åˆ°çš„å¯†é’¥åŒºHandleã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éžæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOFREE_KEY There is no available key area. CNcomment:æ²¡æœ‰ç©ºé—²çš„å¯†é’¥åŒºã€‚CNend
 \see \n
- N/A.CNcomment:ÎÞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_CreateDescrambler(HI_U32 u32DmxId, HI_HANDLE *phKey);
 
 
 /**
-\brief Creates a key area. The key area type and descrambling protocol type can be selected.CNcomment:´´½¨Ò»¸öÃÜÔ¿Çø,Ö§³ÖÑ¡Ôñ¸ß°²È«CAºÍ½âÈÅÐ­ÒéÀàÐÍ¡£CNend
+\brief Creates a key area. The key area type and descrambling protocol type can be selected.CNcomment:åˆ›å»ºä¸€ä¸ªå¯†é’¥åŒº,æ”¯æŒé€‰æ‹©é«˜å®‰å…¨CAå’Œè§£æ‰°åè®®ç±»åž‹ã€‚CNend
 \attention \n
 When an advanced CA key area is created, the descrambling protocol depends on the hardware and interface settings are ignored.\n
-CNcomment:Èç¹ûÊÇ¸ß°²È«CA£¬½âÈÅÐ­ÒéÒÑ¾­ÓÉÓ²¼þ¾ö¶¨£¬½Ó¿ÚµÄÉèÖÃ±»ºöÂÔ¡£CNend
-\param[in] u32DmxId   DEMUX ID. CNcomment: DEMUXºÅ¡£CNend
-\param[in] pstDesramblerAttr  Pointer to the attributes of a key area.CNcomment:ÃÜÔ¿ÇøÊôÐÔÖ¸Õë¡£CNend
-\param[out] phKey      Pointer to the handle of a created key area.CNcomment:Ö¸ÕëÀàÐÍ£¬Êä³öÉêÇëµ½µÄÃÜÔ¿ÇøHandle¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊý·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊýÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOFREE_KEY  There is no available key area.CNcomment:Ã»ÓÐ¿ÕÏÐµÄÃÜÔ¿Çø¡£CNend
-\retval ::HI_ERR_DMX_NOT_SUPPORT  Not support HI_UNF_DMX_DESCRAMBLER_ATTR_S type.CNcomment:²»Ö§³ÖµÄHI_UNF_DMX_DESCRAMBLER_ATTR_SÀàÐÍ¡£CNend
+CNcomment:å¦‚æžœæ˜¯é«˜å®‰å…¨CAï¼Œè§£æ‰°åè®®å·²ç»ç”±ç¡¬ä»¶å†³å®šï¼ŒæŽ¥å£çš„è®¾ç½®è¢«å¿½ç•¥ã€‚CNend
+\param[in] u32DmxId   DEMUX ID. CNcomment: DEMUXå·ã€‚CNend
+\param[in] pstDesramblerAttr  Pointer to the attributes of a key area.CNcomment:å¯†é’¥åŒºå±žæ€§æŒ‡é’ˆã€‚CNend
+\param[out] phKey      Pointer to the handle of a created key area.CNcomment:æŒ‡é’ˆç±»åž‹ï¼Œè¾“å‡ºç”³è¯·åˆ°çš„å¯†é’¥åŒºHandleã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éžæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOFREE_KEY  There is no available key area.CNcomment:æ²¡æœ‰ç©ºé—²çš„å¯†é’¥åŒºã€‚CNend
+\retval ::HI_ERR_DMX_NOT_SUPPORT  Not support HI_UNF_DMX_DESCRAMBLER_ATTR_S type.CNcomment:ä¸æ”¯æŒçš„HI_UNF_DMX_DESCRAMBLER_ATTR_Sç±»åž‹ã€‚CNend
 \see \n
- N/A.CNcomment:ÎÞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_CreateDescramblerExt(HI_U32 u32DmxId, const HI_UNF_DMX_DESCRAMBLER_ATTR_S *pstDesramblerAttr, HI_HANDLE *phKey);
 
 /**
-\brief Destroys an existing key area.CNcomment:Ïú»Ù´´½¨µÄÃÜÔ¿Çø¡£CNend
+\brief Destroys an existing key area.CNcomment:é”€æ¯åˆ›å»ºçš„å¯†é’¥åŒºã€‚CNend
 \attention \n
 If a key area is attached to a channel, the key area needs to be detached from the channel first, but the channel is not disabled.\n
 If a key area is detached or destroyed before the attached channel is disabled, an error may occur during data receiving.
-CNcomment:Èç¹ûÃÜÔ¿Çø°ó¶¨ÔÚÍ¨µÀÉÏ£¬»áÏÈ´ÓÍ¨µÀÉÏ½â°ó¶¨ÃÜÔ¿Çø£¬µ«ÊÇ×¢Òâ²»»á¹Ø±ÕÍ¨µÀ\n
-Èç¹ûÃ»ÓÐ¹Ø±ÕÍ¨µÀÔò½øÐÐÃÜÔ¿ÇøµÄ½â°ó¶¨»òÏú»Ù²Ù×÷£¬¿ÉÄÜµ¼ÖÂÊý¾Ý½ÓÊÕµÄ´íÎó¡£CNend
-\param[in] hKey  Handle of the key area to be destroyed.CNcomment:´ýÉ¾³ýµÄÃÜÔ¿ÇøHandle¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊý·Ç·¨¡£CNend
+CNcomment:å¦‚æžœå¯†é’¥åŒºç»‘å®šåœ¨é€šé“ä¸Šï¼Œä¼šå…ˆä»Žé€šé“ä¸Šè§£ç»‘å®šå¯†é’¥åŒºï¼Œä½†æ˜¯æ³¨æ„ä¸ä¼šå…³é—­é€šé“\n
+å¦‚æžœæ²¡æœ‰å…³é—­é€šé“åˆ™è¿›è¡Œå¯†é’¥åŒºçš„è§£ç»‘å®šæˆ–é”€æ¯æ“ä½œï¼Œå¯èƒ½å¯¼è‡´æ•°æ®æŽ¥æ”¶çš„é”™è¯¯ã€‚CNend
+\param[in] hKey  Handle of the key area to be destroyed.CNcomment:å¾…åˆ é™¤çš„å¯†é’¥åŒºHandleã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éžæ³•ã€‚CNend
 \see \n
- N/A.CNcomment:ÎÞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_DestroyDescrambler(HI_HANDLE hKey);
 
 
 /**
-\brief Sets the even keys of a key area. This API is used to configure the DEMUX descrambler based on even keys after the CA system obtains control words.CNcomment:ÉèÖÃÃÜÔ¿ÇøµÄÅ¼ÃÜÔ¿¡£CAÏµÍ³µÃµ½¿ØÖÆ×Öºó£¬¿Éµ÷ÓÃ±¾½Ó¿Ú½«Å¼ÃÜÔ¿ÅäÖÃµ½DEMUX½âÈÅÄ£¿é¡£CNend
+\brief Sets the even keys of a key area. This API is used to configure the DEMUX descrambler based on even keys after the CA system obtains control words.CNcomment:è®¾ç½®å¯†é’¥åŒºçš„å¶å¯†é’¥ã€‚CAç³»ç»Ÿå¾—åˆ°æŽ§åˆ¶å­—åŽï¼Œå¯è°ƒç”¨æœ¬æŽ¥å£å°†å¶å¯†é’¥é…ç½®åˆ°DEMUXè§£æ‰°æ¨¡å—ã€‚CNend
 \attention \n
 pEvenKey points to the even key data to be set. The data consists of 16 bytes: CW1, CW2, ..., and CW16.\n
 The key value can be set dynamically, that is, the key value can be set at any time after a key area is created.\n
 The initial value of each key is 0, which indicates that data is not descrambled.
-CNcomment:pEvenKeyÖ¸ÏòÒªÉèÖÃµÄÅ¼ÃÜÔ¿Êý¾Ý¡£Êý¾Ý¹²16byte£¬byteÒÀ´ÎÊÇCW1¡¢CW2¡¢¡­¡­¡¢CW16\n
-Ö§³ÖÃÜÔ¿ÇøµÄ¶¯Ì¬ÉèÖÃ£¬¿ÉÒÔÔÚÃÜÔ¿ÇøÉêÇëºóµÄÈÎÒâÊ±¿ÌÉèÖÃÃÜÔ¿Öµ\n
-µ±ÉèÖÃÃÜÔ¿Ö®Ç°£¬ÃÜÔ¿µÄ³õÊ±Öµ¶¼ÊÇ0£¬±íÊ¾²»×ö½âÈÅ¡£CNend
-\param[in] hKey  Handle of the key area to be set.CNcomment:´ýÉèÖÃµÄÃÜÔ¿Çø¾ä±ú¡£CNend
-\param[in] pu8EvenKey  Pointer to the 16-byte even key data to be set.CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸ÏòÒªÉèÖÃµÄÅ¼ÃÜÔ¿Êý¾Ý£¬±ØÐëÊÇ16¸ö×Ö½ÚµÄÊý×é¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊý·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊýÎª¿Õ¡£CNend
+CNcomment:pEvenKeyæŒ‡å‘è¦è®¾ç½®çš„å¶å¯†é’¥æ•°æ®ã€‚æ•°æ®å…±16byteï¼Œbyteä¾æ¬¡æ˜¯CW1ã€CW2ã€â€¦â€¦ã€CW16\n
+æ”¯æŒå¯†é’¥åŒºçš„åŠ¨æ€è®¾ç½®ï¼Œå¯ä»¥åœ¨å¯†é’¥åŒºç”³è¯·åŽçš„ä»»æ„æ—¶åˆ»è®¾ç½®å¯†é’¥å€¼\n
+å½“è®¾ç½®å¯†é’¥ä¹‹å‰ï¼Œå¯†é’¥çš„åˆæ—¶å€¼éƒ½æ˜¯0ï¼Œè¡¨ç¤ºä¸åšè§£æ‰°ã€‚CNend
+\param[in] hKey  Handle of the key area to be set.CNcomment:å¾…è®¾ç½®çš„å¯†é’¥åŒºå¥æŸ„ã€‚CNend
+\param[in] pu8EvenKey  Pointer to the 16-byte even key data to be set.CNcomment:æŒ‡é’ˆç±»åž‹ï¼ŒæŒ‡å‘è¦è®¾ç½®çš„å¶å¯†é’¥æ•°æ®ï¼Œå¿…é¡»æ˜¯16ä¸ªå­—èŠ‚çš„æ•°ç»„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éžæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎÞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_SetDescramblerEvenKey(HI_HANDLE hKey, const HI_U8 *pu8EvenKey);
 
 
 /**
-\brief Sets the odd keys of a key area. This API is used to configure the DEMUX descrambler based on odd keys after the CA system obtains control words.CNcomment:ÉèÖÃÃÜÔ¿ÇøµÄÆæÃÜÔ¿¡£CAÏµÍ³µÃµ½¿ØÖÆ×Öºó£¬¿Éµ÷ÓÃ±¾½Ó¿Ú½«ÆæÃÜÔ¿ÅäÖÃµ½DEMUX½âÈÅÄ£¿é¡£CNend
+\brief Sets the odd keys of a key area. This API is used to configure the DEMUX descrambler based on odd keys after the CA system obtains control words.CNcomment:è®¾ç½®å¯†é’¥åŒºçš„å¥‡å¯†é’¥ã€‚CAç³»ç»Ÿå¾—åˆ°æŽ§åˆ¶å­—åŽï¼Œå¯è°ƒç”¨æœ¬æŽ¥å£å°†å¥‡å¯†é’¥é…ç½®åˆ°DEMUXè§£æ‰°æ¨¡å—ã€‚CNend
 \attention \n
 pOddKey points to the odd key data to be set. The data consists of 16 bytes: CW1, CW2, ..., and CW16.\n
 The key value can be set dynamically, that is, the key value can be set at any time after a key area is created.\n
 The initial value of each key is 0, which indicates that data is not descrambled.
-CNcomment:pOddKeyÖ¸ÏòÒªÉèÖÃµÄÆæÃÜÔ¿Êý¾Ý¡£ÆæÃÜÔ¿Êý¾Ý¹²16byte£¬byteÒÀ´ÎÊÇCW1¡¢CW2¡¢¡­¡­¡¢CW16\n
-Ö§³ÖÃÜÔ¿ÇøµÄ¶¯Ì¬ÉèÖÃ£¬¿ÉÒÔÔÚÃÜÔ¿ÇøÉêÇëºóµÄÈÎÒâÊ±¿ÌÉèÖÃÃÜÔ¿Öµ\n
-µ±ÉèÖÃÃÜÔ¿Ö®Ç°£¬ÃÜÔ¿µÄ³õÊ±Öµ¶¼ÊÇ0£¬±íÊ¾²»×ö½âÈÅ¡£CNend
-\param[in] hKey  Handle of the key area to be set.CNcomment:´ýÉèÖÃµÄÃÜÔ¿Çø¾ä±ú¡£CNend
-\param[in] pu8OddKey   Pointer to the 16-byte odd key data to be set.CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸ÏòÒªÉèÖÃµÄÆæÃÜÔ¿Êý¾Ý£¬±ØÐëÊÇ16¸ö×Ö½ÚµÄÊý×é¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊý·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊýÎª¿Õ¡£CNend
+CNcomment:pOddKeyæŒ‡å‘è¦è®¾ç½®çš„å¥‡å¯†é’¥æ•°æ®ã€‚å¥‡å¯†é’¥æ•°æ®å…±16byteï¼Œbyteä¾æ¬¡æ˜¯CW1ã€CW2ã€â€¦â€¦ã€CW16\n
+æ”¯æŒå¯†é’¥åŒºçš„åŠ¨æ€è®¾ç½®ï¼Œå¯ä»¥åœ¨å¯†é’¥åŒºç”³è¯·åŽçš„ä»»æ„æ—¶åˆ»è®¾ç½®å¯†é’¥å€¼\n
+å½“è®¾ç½®å¯†é’¥ä¹‹å‰ï¼Œå¯†é’¥çš„åˆæ—¶å€¼éƒ½æ˜¯0ï¼Œè¡¨ç¤ºä¸åšè§£æ‰°ã€‚CNend
+\param[in] hKey  Handle of the key area to be set.CNcomment:å¾…è®¾ç½®çš„å¯†é’¥åŒºå¥æŸ„ã€‚CNend
+\param[in] pu8OddKey   Pointer to the 16-byte odd key data to be set.CNcomment:æŒ‡é’ˆç±»åž‹ï¼ŒæŒ‡å‘è¦è®¾ç½®çš„å¥‡å¯†é’¥æ•°æ®ï¼Œå¿…é¡»æ˜¯16ä¸ªå­—èŠ‚çš„æ•°ç»„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éžæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎÞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_SetDescramblerOddKey(HI_HANDLE hKey, const HI_U8 *pu8OddKey);
 
 
 /**
-\brief Set Even IV.For algs do not use IV,do not care.CNcomment:ÉèÖÃÅ¼ÃÜÔ¿ÇøµÄ³õÊ¼»¯ÏòÁ¿¡£¶ÔÓÚ²»Éæ¼°³õÊ¼»¯ÏòÁ¿µÄ½âÈÅËã·¨¿ÉÒÔ²»¹Ø×¢¡£CNend
+\brief Set Even IV.For algs do not use IV,do not care.CNcomment:è®¾ç½®å¶å¯†é’¥åŒºçš„åˆå§‹åŒ–å‘é‡ã€‚å¯¹äºŽä¸æ¶‰åŠåˆå§‹åŒ–å‘é‡çš„è§£æ‰°ç®—æ³•å¯ä»¥ä¸å…³æ³¨ã€‚CNend
 \attention \n
 pu8IVKey points to the iv key data to be set.The data consists of 16 bytes: CW1, CW2, ..., and CW16.\n
 The key value can be set dynamically, that is, the key value can be set at any time after a key area is created.
-CNcomment:pu8IVKeyÖ¸ÏòÒªÉèÖÃµÄ³õÊ¼»¯ÏòÁ¿Êý¾Ý¡£ÆæÃÜÔ¿Êý¾Ý¹²16byte£¬byteÒÀ´ÎÊÇCW1¡¢CW2¡¢¡­¡­¡¢CW16\n
-Ö§³ÖÃÜÔ¿ÇøµÄ¶¯Ì¬ÉèÖÃ£¬¿ÉÒÔÔÚÃÜÔ¿ÇøÉêÇëºóµÄÈÎÒâÊ±¿ÌÉèÖÃ¡£CNend
-\param[in] hKey  Handle of the key area to be set.CNcomment:´ýÉèÖÃµÄÃÜÔ¿Çø¾ä±ú¡£CNend
-\param[in] pu8IVKey   Pointer to the 16-byte IV key data to be set.CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸ÏòÒªÉèÖÃµÄÆæÃÜÔ¿Êý¾Ý£¬±ØÐëÊÇ16¸ö×Ö½ÚµÄÊý×é¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊý·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊýÎª¿Õ¡£CNend
+CNcomment:pu8IVKeyæŒ‡å‘è¦è®¾ç½®çš„åˆå§‹åŒ–å‘é‡æ•°æ®ã€‚å¥‡å¯†é’¥æ•°æ®å…±16byteï¼Œbyteä¾æ¬¡æ˜¯CW1ã€CW2ã€â€¦â€¦ã€CW16\n
+æ”¯æŒå¯†é’¥åŒºçš„åŠ¨æ€è®¾ç½®ï¼Œå¯ä»¥åœ¨å¯†é’¥åŒºç”³è¯·åŽçš„ä»»æ„æ—¶åˆ»è®¾ç½®ã€‚CNend
+\param[in] hKey  Handle of the key area to be set.CNcomment:å¾…è®¾ç½®çš„å¯†é’¥åŒºå¥æŸ„ã€‚CNend
+\param[in] pu8IVKey   Pointer to the 16-byte IV key data to be set.CNcomment:æŒ‡é’ˆç±»åž‹ï¼ŒæŒ‡å‘è¦è®¾ç½®çš„å¥‡å¯†é’¥æ•°æ®ï¼Œå¿…é¡»æ˜¯16ä¸ªå­—èŠ‚çš„æ•°ç»„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éžæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎÞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_SetDescramblerEvenIVKey(HI_HANDLE hKey, const HI_U8 *pu8IVKey);
 
 /**
-\brief Set Odd IV.For algs do not use IV,do not care.CNcomment:ÉèÖÃÆæÃÜÔ¿ÇøµÄ³õÊ¼»¯ÏòÁ¿¡£¶ÔÓÚ²»Éæ¼°³õÊ¼»¯ÏòÁ¿µÄ½âÈÅËã·¨¿ÉÒÔ²»¹Ø×¢¡£CNend
+\brief Set Odd IV.For algs do not use IV,do not care.CNcomment:è®¾ç½®å¥‡å¯†é’¥åŒºçš„åˆå§‹åŒ–å‘é‡ã€‚å¯¹äºŽä¸æ¶‰åŠåˆå§‹åŒ–å‘é‡çš„è§£æ‰°ç®—æ³•å¯ä»¥ä¸å…³æ³¨ã€‚CNend
 \attention \n
 pu8IVKey points to the iv key data to be set.The data consists of 16 bytes: CW1, CW2, ..., and CW16.\n
 The key value can be set dynamically, that is, the key value can be set at any time after a key area is created.
-CNcomment:pu8IVKeyÖ¸ÏòÒªÉèÖÃµÄ³õÊ¼»¯ÏòÁ¿Êý¾Ý¡£ÆæÃÜÔ¿Êý¾Ý¹²16byte£¬byteÒÀ´ÎÊÇCW1¡¢CW2¡¢¡­¡­¡¢CW16\n
-Ö§³ÖÃÜÔ¿ÇøµÄ¶¯Ì¬ÉèÖÃ£¬¿ÉÒÔÔÚÃÜÔ¿ÇøÉêÇëºóµÄÈÎÒâÊ±¿ÌÉèÖÃ¡£CNend
-\param[in] hKey  Handle of the key area to be set.CNcomment:´ýÉèÖÃµÄÃÜÔ¿Çø¾ä±ú¡£CNend
-\param[in] pu8IVKey    Pointer to the 16-byte IV key data to be set.CNcomment:Ö¸ÕëÀàÐÍ£¬Ö¸ÏòÒªÉèÖÃµÄÆæÃÜÔ¿Êý¾Ý£¬±ØÐëÊÇ16¸ö×Ö½ÚµÄÊý×é¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊý·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊýÎª¿Õ¡£CNend
+CNcomment:pu8IVKeyæŒ‡å‘è¦è®¾ç½®çš„åˆå§‹åŒ–å‘é‡æ•°æ®ã€‚å¥‡å¯†é’¥æ•°æ®å…±16byteï¼Œbyteä¾æ¬¡æ˜¯CW1ã€CW2ã€â€¦â€¦ã€CW16\n
+æ”¯æŒå¯†é’¥åŒºçš„åŠ¨æ€è®¾ç½®ï¼Œå¯ä»¥åœ¨å¯†é’¥åŒºç”³è¯·åŽçš„ä»»æ„æ—¶åˆ»è®¾ç½®ã€‚CNend
+\param[in] hKey  Handle of the key area to be set.CNcomment:å¾…è®¾ç½®çš„å¯†é’¥åŒºå¥æŸ„ã€‚CNend
+\param[in] pu8IVKey    Pointer to the 16-byte IV key data to be set.CNcomment:æŒ‡é’ˆç±»åž‹ï¼ŒæŒ‡å‘è¦è®¾ç½®çš„å¥‡å¯†é’¥æ•°æ®ï¼Œå¿…é¡»æ˜¯16ä¸ªå­—èŠ‚çš„æ•°ç»„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éžæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎÞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_SetDescramblerOddIVKey(HI_HANDLE hKey, const HI_U8 *pu8IVKey);
 
 /**
-\brief Attaches a key area to a specific channel.CNcomment:°ó¶¨ÃÜÔ¿Çøµ½Ö¸¶¨Í¨µÀ¡£CNend
+\brief Attaches a key area to a specific channel.CNcomment:ç»‘å®šå¯†é’¥åŒºåˆ°æŒ‡å®šé€šé“ã€‚CNend
 \attention \n
 A key area can be attached to multiple channels that belong to different DEMUXs.\n
 The static loading data in the key areas that are attached to all types of channels can be descrambled.\n
 The same key area or different key areas cannot be attached to the same channel.
-CNcomment:Ò»¸öÃÜÔ¿Çø¿ÉÒÔ°ó¶¨µ½¶à¸öÍ¨µÀÉÏ£¬Í¨µÀ¿ÉÒÔÊôÓÚ²»Í¬µÄDEMUX\n
-¿ÉÒÔ¶ÔËùÓÐÀàÐÍµÄÍ¨µÀ°ó¶¨ÃÜÔ¿Çø½øÐÐÊý¾ÝµÄ½âÈÅ\n
-²»ÔÊÐíÖØ¸´°ó¶¨ÏàÍ¬»ò²»Í¬µÄÃÜÔ¿Çøµ½Í¬Ò»¸öÍ¨µÀÉÏ¡£CNend
-\param[in] hKey    Handle of the key area to be attached.CNcomment:´ý°ó¶¨µÄÃÜÔ¿Çø¾ä±ú¡£CNend
-\param[in] hChannel   Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊý·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_ATTACHED_KEY  A key area is attached to the channel.CNcomment:Í¨µÀÉÏÒÑ¾­ÓÐÒ»¸öÃÜÔ¿Çø°ó¶¨ÔÚÉÏÃæ¡£CNend
+CNcomment:ä¸€ä¸ªå¯†é’¥åŒºå¯ä»¥ç»‘å®šåˆ°å¤šä¸ªé€šé“ä¸Šï¼Œé€šé“å¯ä»¥å±žäºŽä¸åŒçš„DEMUX\n
+å¯ä»¥å¯¹æ‰€æœ‰ç±»åž‹çš„é€šé“ç»‘å®šå¯†é’¥åŒºè¿›è¡Œæ•°æ®çš„è§£æ‰°\n
+ä¸å…è®¸é‡å¤ç»‘å®šç›¸åŒæˆ–ä¸åŒçš„å¯†é’¥åŒºåˆ°åŒä¸€ä¸ªé€šé“ä¸Šã€‚CNend
+\param[in] hKey    Handle of the key area to be attached.CNcomment:å¾…ç»‘å®šçš„å¯†é’¥åŒºå¥æŸ„ã€‚CNend
+\param[in] hChannel   Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éžæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_ATTACHED_KEY  A key area is attached to the channel.CNcomment:é€šé“ä¸Šå·²ç»æœ‰ä¸€ä¸ªå¯†é’¥åŒºç»‘å®šåœ¨ä¸Šé¢ã€‚CNend
 \see \n
- N/A.CNcomment:ÎÞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_AttachDescrambler(HI_HANDLE hKey, HI_HANDLE hChannel);
 
 
 /**
-\brief Detaches a key area from a channel.CNcomment:½«ÃÜÔ¿Çø´ÓÍ¨µÀÉÏ½â°ó¶¨¡£CNend
+\brief Detaches a key area from a channel.CNcomment:å°†å¯†é’¥åŒºä»Žé€šé“ä¸Šè§£ç»‘å®šã€‚CNend
 \attention \n
 The key area used by a channel can be detached dynamically. That is, you can call this API to detach a key area at any time after it is attached.\n
 The scrambled data, however, may not be descrambled after the key area is detached, which causes data error.\n
 The value of a key area retains even after it is detached. If the key area is attached again, its value is still the previously configured value.\n
 If you do not want to descramble data, you can detach the corresponding key area or set all key values to 0.
-CNcomment:¿ÉÒÔ¶¯Ì¬µÄ½â°ó¶¨Í¨µÀÊ¹ÓÃµÄÃÜÔ¿Çø£¬¿ÉÒÔÔÚ°ó¶¨ºóµÄÈÎÒâÊ±¿ÌÊ¹ÓÃ´Ë½Ó¿Ú½â°ó¶¨ÃÜÔ¿Çø\n
-µ«ÊÇ½â°ó¶¨ºó¿ÉÄÜµ¼ÖÂ¼ÓÈÅÊý¾ÝÃ»ÓÐ±»½âÈÅ£¬µ¼ÖÂÊý¾Ý´íÎó\n
-½â°ó¶¨ÃÜÔ¿Çø²¢²»ÄÜ¸Ä±äÃÜÔ¿ÇøµÄÖµ£¬Èç¹ûÖØÐÂ°ó¶¨ÃÜÔ¿Çø£¬ÃÜÔ¿ÖµÈÔÈ»ÊÇÉÏ´ÎÉèÖÃµÄÖµ\n
-Èç¹û²»Ïë½øÐÐ½âÈÅ£¬³ýÁË½â°ó¶¨ÃÜÔ¿ÇøÖ®Íâ£¬Ò²¿ÉÒÔÖ±½Ó½«ÃÜÔ¿ÖµÈ«²¿ÉèÖÃÎª0À´ÊµÏÖ¡£CNend
-\param[in] hKey    Handle of the key area to be detached.CNcomment:´ý½â°ó¶¨µÄÃÜÔ¿Çø¾ä±ú¡£CNend
-\param[in] hChannel  Channel handle.CNcomment:Í¨µÀ¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊý·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NOATTACH_KEY  No key areas are attached to the channel.CNcomment:Í¨µÀÉÏÃ»ÓÐ°ó¶¨ÈÎºÎÃÜÔ¿Çø¡£CNend
-\retval ::HI_ERR_DMX_UNMATCH_KEY  The specified key area is not attached to the specified channel.CNcomment:Ö¸¶¨µÄÃÜÔ¿ÇøÃ»ÓÐ°ó¶¨ÔÚÖ¸¶¨µÄÍ¨µÀÉÏ¡£CNend
+CNcomment:å¯ä»¥åŠ¨æ€çš„è§£ç»‘å®šé€šé“ä½¿ç”¨çš„å¯†é’¥åŒºï¼Œå¯ä»¥åœ¨ç»‘å®šåŽçš„ä»»æ„æ—¶åˆ»ä½¿ç”¨æ­¤æŽ¥å£è§£ç»‘å®šå¯†é’¥åŒº\n
+ä½†æ˜¯è§£ç»‘å®šåŽå¯èƒ½å¯¼è‡´åŠ æ‰°æ•°æ®æ²¡æœ‰è¢«è§£æ‰°ï¼Œå¯¼è‡´æ•°æ®é”™è¯¯\n
+è§£ç»‘å®šå¯†é’¥åŒºå¹¶ä¸èƒ½æ”¹å˜å¯†é’¥åŒºçš„å€¼ï¼Œå¦‚æžœé‡æ–°ç»‘å®šå¯†é’¥åŒºï¼Œå¯†é’¥å€¼ä»ç„¶æ˜¯ä¸Šæ¬¡è®¾ç½®çš„å€¼\n
+å¦‚æžœä¸æƒ³è¿›è¡Œè§£æ‰°ï¼Œé™¤äº†è§£ç»‘å®šå¯†é’¥åŒºä¹‹å¤–ï¼Œä¹Ÿå¯ä»¥ç›´æŽ¥å°†å¯†é’¥å€¼å…¨éƒ¨è®¾ç½®ä¸º0æ¥å®žçŽ°ã€‚CNend
+\param[in] hKey    Handle of the key area to be detached.CNcomment:å¾…è§£ç»‘å®šçš„å¯†é’¥åŒºå¥æŸ„ã€‚CNend
+\param[in] hChannel  Channel handle.CNcomment:é€šé“å¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éžæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NOATTACH_KEY  No key areas are attached to the channel.CNcomment:é€šé“ä¸Šæ²¡æœ‰ç»‘å®šä»»ä½•å¯†é’¥åŒºã€‚CNend
+\retval ::HI_ERR_DMX_UNMATCH_KEY  The specified key area is not attached to the specified channel.CNcomment:æŒ‡å®šçš„å¯†é’¥åŒºæ²¡æœ‰ç»‘å®šåœ¨æŒ‡å®šçš„é€šé“ä¸Šã€‚CNend
 \see \n
- N/A.CNcomment:ÎÞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_DetachDescrambler(HI_HANDLE hKey, HI_HANDLE hChannel);
 
 
 /**
-\brief Obtains the handle of the key area that is attached to a channel.CNcomment:»ñÈ¡Í¨µÀ°ó¶¨µÄÃÜÔ¿Çø¾ä±ú¡£CNend
+\brief Obtains the handle of the key area that is attached to a channel.CNcomment:èŽ·å–é€šé“ç»‘å®šçš„å¯†é’¥åŒºå¥æŸ„ã€‚CNend
 \attention \n
 If no key area is attached to the channel, the error code HI_ERR_DMX_NOATTACH_KEY is returned when you call this API.
-CNcomment:µ±Í¨µÀÃ»ÓÐ°ó¶¨ÃÜÔ¿ÇøÊ±£¬µ÷ÓÃ±¾½Ó¿Ú·µ»ØHI_ERR_DMX_NOATTACH_KEY´íÎóÂë¡£CNend
-\param[in] hChannel  Handle of the channel to be queried.CNcomment:Òª²éÑ¯µÄÍ¨µÀ¾ä±ú¡£CNend
-\param[out] phKey     Pointer to the handle of the key area that is attached to a channel (output).CNcomment:Ö¸ÕëÀàÐÍ£¬Êä³öÍ¨µÀ°ó¶¨µÄÃÜÔ¿Çø¾ä±ú¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊý·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊýÎª¿Õ¡£CNend
-\retval ::HI_ERR_DMX_NOATTACH_KEY  No key areas are attached to the channel.CNcomment:Í¨µÀÉÏÃ»ÓÐ°ó¶¨ÈÎºÎÃÜÔ¿Çø¡£CNend
+CNcomment:å½“é€šé“æ²¡æœ‰ç»‘å®šå¯†é’¥åŒºæ—¶ï¼Œè°ƒç”¨æœ¬æŽ¥å£è¿”å›žHI_ERR_DMX_NOATTACH_KEYé”™è¯¯ç ã€‚CNend
+\param[in] hChannel  Handle of the channel to be queried.CNcomment:è¦æŸ¥è¯¢çš„é€šé“å¥æŸ„ã€‚CNend
+\param[out] phKey     Pointer to the handle of the key area that is attached to a channel (output).CNcomment:æŒ‡é’ˆç±»åž‹ï¼Œè¾“å‡ºé€šé“ç»‘å®šçš„å¯†é’¥åŒºå¥æŸ„ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éžæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
+\retval ::HI_ERR_DMX_NOATTACH_KEY  No key areas are attached to the channel.CNcomment:é€šé“ä¸Šæ²¡æœ‰ç»‘å®šä»»ä½•å¯†é’¥åŒºã€‚CNend
 \see \n
- N/A.CNcomment:ÎÞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetDescramblerKeyHandle(HI_HANDLE hChannel, HI_HANDLE *phKey);
 
 
 /**
-\brief Obtains the number of available key areas.CNcomment:»ñÈ¡¿ÕÏÐÃÜÔ¿ÇøÊýÁ¿¡£CNend
+\brief Obtains the number of available key areas.CNcomment:èŽ·å–ç©ºé—²å¯†é’¥åŒºæ•°é‡ã€‚CNend
 \attention \n
-Because key areas are shared by multiple DEMUXs, the first parameter is meaningless. Therefore, you only need to enter a valid value.CNcomment:ÃÜÔ¿ÇøÔÚ¼¸Â·DEMUXÖ®¼ä¹²ÓÃ£¬ËùÒÔµÚÒ»¸ö²ÎÊýÃ»ÓÐÒâÒå£¬Ö»ÒªÊäÈëÒ»¸öºÏ·¨Öµ¾Í¿ÉÒÔÁË¡£CNend
-\param[in] u32DmxId   DEMUX ID. CNcomment: DEMUXºÅ¡£CNend
-\param[out]  pu32FreeCount   Pointer to the number of available key areas (output).CNcomment:Ö¸ÕëÀàÐÍ£¬Êä³ö¿ÕÏÐÃÜÔ¿ÇøÊýÄ¿¡£CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦¡£CNend
-\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£CNend
-\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:Ä£¿éÃ»ÓÐ³õÊ¼»¯¡£CNend
-\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:ÊäÈë²ÎÊý·Ç·¨¡£CNend
-\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:Ö¸Õë²ÎÊýÎª¿Õ¡£CNend
+Because key areas are shared by multiple DEMUXs, the first parameter is meaningless. Therefore, you only need to enter a valid value.CNcomment:å¯†é’¥åŒºåœ¨å‡ è·¯DEMUXä¹‹é—´å…±ç”¨ï¼Œæ‰€ä»¥ç¬¬ä¸€ä¸ªå‚æ•°æ²¡æœ‰æ„ä¹‰ï¼Œåªè¦è¾“å…¥ä¸€ä¸ªåˆæ³•å€¼å°±å¯ä»¥äº†ã€‚CNend
+\param[in] u32DmxId   DEMUX ID. CNcomment: DEMUXå·ã€‚CNend
+\param[out]  pu32FreeCount   Pointer to the number of available key areas (output).CNcomment:æŒ‡é’ˆç±»åž‹ï¼Œè¾“å‡ºç©ºé—²å¯†é’¥åŒºæ•°ç›®ã€‚CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸã€‚CNend
+\retval ::HI_FAILURE  Calling this API fails.CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚CNend
+\retval ::HI_ERR_DMX_NOT_INIT  The DEMUX module is not initialized.CNcomment:æ¨¡å—æ²¡æœ‰åˆå§‹åŒ–ã€‚CNend
+\retval ::HI_ERR_DMX_INVALID_PARA  The input parameter is invalid. CNcomment:è¾“å…¥å‚æ•°éžæ³•ã€‚CNend
+\retval ::HI_ERR_DMX_NULL_PTR  The pointer is null. CNcomment:æŒ‡é’ˆå‚æ•°ä¸ºç©ºã€‚CNend
 \see \n
- N/A.CNcomment:ÎÞ¡£CNend
+ N/A.CNcomment:æ— ã€‚CNend
 */
 HI_S32 HI_UNF_DMX_GetFreeDescramblerKeyCount(HI_U32 u32DmxId , HI_U32 * pu32FreeCount);
 

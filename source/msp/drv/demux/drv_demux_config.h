@@ -263,9 +263,9 @@
 #define DMX_OQ_CNT                      128
 
 /*0xf9c03a04 , switch :
-0x00£º ¹Ø±ÕTSÔ´£»
-0x01¡«0x07£º·Ö±ðÑ¡ÔñDVBÏÂµÄTS1¡«TS7¶Ë¿ÚÂëÁ÷£»
-0x10¡«0x15£º·Ö±ðÑ¡ÔñIPÏÂµÄIP0¡«IP5ÄÚ²¿¶Ë¿ÚÂëÁ÷¡£*/
+0x00ï¼š å…³é—­TSæºï¼›
+0x01ï½ž0x07ï¼šåˆ†åˆ«é€‰æ‹©DVBä¸‹çš„TS1ï½žTS7ç«¯å£ç æµï¼›
+0x10ï½ž0x15ï¼šåˆ†åˆ«é€‰æ‹©IPä¸‹çš„IP0ï½žIP5å†…éƒ¨ç«¯å£ç æµã€‚*/
 #define DMX_RAM_PORT_OFFSET             15         
 
 
@@ -322,9 +322,9 @@
 #define DMX_OQ_CNT                      128
 
 /*0xf9c03a04 , switch :
-0x00£º ¹Ø±ÕTSÔ´£»
-0x01¡«0x07£º·Ö±ðÑ¡ÔñDVBÏÂµÄTS1¡«TS7¶Ë¿ÚÂëÁ÷£»
-0x10¡«0x15£º·Ö±ðÑ¡ÔñIPÏÂµÄIP0¡«IP5ÄÚ²¿¶Ë¿ÚÂëÁ÷¡£*/
+0x00ï¼š å…³é—­TSæºï¼›
+0x01ï½ž0x07ï¼šåˆ†åˆ«é€‰æ‹©DVBä¸‹çš„TS1ï½žTS7ç«¯å£ç æµï¼›
+0x10ï½ž0x15ï¼šåˆ†åˆ«é€‰æ‹©IPä¸‹çš„IP0ï½žIP5å†…éƒ¨ç«¯å£ç æµã€‚*/
 #define DMX_RAM_PORT_OFFSET             15         
 
 

@@ -505,7 +505,7 @@ OMX_ERRORTYPE EmptyBufferDone(OMX_IN OMX_HANDLETYPE hComponent,
 	}
 
 	pthread_mutex_lock(&etb_lock);
-	if(push(etb_queue, (void *) pBuffer) < 0)                                     //Ñ¹Èë¶ÓÁÐ
+	if(push(etb_queue, (void *) pBuffer) < 0)                                     //åŽ‹å…¥é˜Ÿåˆ—
 	{
 		printf("Error in enqueue  ebd data\n");
 		pthread_mutex_unlock(&etb_lock);
@@ -672,7 +672,7 @@ static int Init_Encoder(void)
 
 	CONFIG_VERSION_SIZE(role);
 	strncpy((char*)role.cRole, compRole, OMX_MAX_STRINGNAME_SIZE);
-	omxresult = OMX_SetParameter(venc_handle, OMX_IndexParamStandardComponentRole, &role);             //ÉèÖÃ±àÂëÆ÷±àÂëµÄÐ­ÒéÀàÐÍ                 
+	omxresult = OMX_SetParameter(venc_handle, OMX_IndexParamStandardComponentRole, &role);             //è®¾ç½®ç¼–ç å™¨ç¼–ç çš„åè®®ç±»åž‹                 
 	if(FAILED(omxresult))
 	{
 		DEBUG_PRINT_ERROR("ERROR - Failed to set param!\n");
@@ -680,7 +680,7 @@ static int Init_Encoder(void)
 	}
     DEBUG_PRINT("current role of component is %s\n", (char *)role.cRole);
 	
-	omxresult = OMX_GetParameter(venc_handle,OMX_IndexParamStandardComponentRole, &role);   //½öÓÃÓÚ¼ì²é
+	omxresult = OMX_GetParameter(venc_handle,OMX_IndexParamStandardComponentRole, &role);   //ä»…ç”¨äºŽæ£€æŸ¥
 	if(FAILED(omxresult))
 	{
 		DEBUG_PRINT_ERROR("ERROR - Failed to get role!\n");
@@ -729,7 +729,7 @@ static int Play_Encoder()
 	DEBUG_PRINT("portParam.nPorts:%d\n", portParam.nPorts);
 	DEBUG_PRINT("portParam.nStartPortNumber:%d\n", portParam.nStartPortNumber);
 
-	/* Query the encoder input's  buf requirements */                                //ÉèÖÃÊäÈë¶Ë¿ÚµÄÊôÐÔ
+	/* Query the encoder input's  buf requirements */                                //è®¾ç½®è¾“å…¥ç«¯å£çš„å±žæ€§
 	CONFIG_VERSION_SIZE(portFmt);
 	portFmt.nPortIndex = portParam.nStartPortNumber;
 
@@ -747,8 +747,8 @@ static int Play_Encoder()
 
 	portFmt.format.video.nFrameWidth  = DEFAULT_WIDTH;
 	portFmt.format.video.nFrameHeight = DEFAULT_HEIGHT;
-	portFmt.format.video.xFramerate   = 30;                                          //ÊäÈëÖ¡ÂÊ
-	portFmt.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;            //ÊäÈë¸ñÊ½
+	portFmt.format.video.xFramerate   = 30;                                          //è¾“å…¥å¸§çŽ‡
+	portFmt.format.video.eColorFormat = OMX_COLOR_FormatYUV420SemiPlanar;            //è¾“å…¥æ ¼å¼
 	portFmt.format.video.eCompressionFormat = OMX_VIDEO_CodingUnused;                
 	OMX_SetParameter(venc_handle,OMX_IndexParamPortDefinition, &portFmt);
 
@@ -804,7 +804,7 @@ static int Play_Encoder()
 	}
 #endif
 
-	/* Query the encoder output's  buf requirements */                                //ÉèÖÃÊä³ö¶Ë¿ÚµÄÊôÐÔ
+	/* Query the encoder output's  buf requirements */                                //è®¾ç½®è¾“å‡ºç«¯å£çš„å±žæ€§
 	portFmt.nPortIndex = portParam.nStartPortNumber + 1;
 	OMX_GetParameter(venc_handle, OMX_IndexParamPortDefinition, &portFmt);
 
@@ -820,9 +820,9 @@ static int Play_Encoder()
 
 	portFmt.format.video.nFrameWidth  = DEFAULT_WIDTH;
 	portFmt.format.video.nFrameHeight = DEFAULT_HEIGHT;
-	portFmt.format.video.xFramerate   = 30;                                          //Êä³öÖ¡ÂÊ
+	portFmt.format.video.xFramerate   = 30;                                          //è¾“å‡ºå¸§çŽ‡
 	portFmt.format.video.eColorFormat = OMX_COLOR_FormatUnused;           
-	portFmt.format.video.eCompressionFormat = OMX_VIDEO_CodingAVC;    	             //Êä³öÂëÁ÷¸ñÊ½
+	portFmt.format.video.eCompressionFormat = OMX_VIDEO_CodingAVC;    	             //è¾“å‡ºç æµæ ¼å¼
 	OMX_SetParameter(venc_handle,OMX_IndexParamPortDefinition, &portFmt);
 
 	/* get again to check */
@@ -867,7 +867,7 @@ static int Play_Encoder()
 		return -1;
 	}
 
-	ret = OMX_SetParameter(venc_handle,OMX_IndexParamVideoPortFormat, (OMX_PTR)&videoportFmt);            //¿ÉÒÔÉèÖÃ±àÂëÐ­Òé
+	ret = OMX_SetParameter(venc_handle,OMX_IndexParamVideoPortFormat, (OMX_PTR)&videoportFmt);            //å¯ä»¥è®¾ç½®ç¼–ç åè®®
 	if (ret != OMX_ErrorNone)
 	{
 	    DEBUG_PRINT_ERROR("Setting Tile format failed\n");
@@ -1070,7 +1070,7 @@ static int Play_Encoder()
 ////////////////////////////////////////////////////////////////////////
 	DEBUG_PRINT("\nstart OMX_EmptyThisBuffer!\n");
 
-	for (bufCnt = 0; bufCnt < used_ip_buf_cnt; bufCnt++)    //Ò»´Î²åÈë6Ö¡
+	for (bufCnt = 0; bufCnt < used_ip_buf_cnt; bufCnt++)    //ä¸€æ¬¡æ’å…¥6å¸§
 	{
 		pInputYUVBufHdrs[bufCnt]->nInputPortIndex = 0;
 		pInputYUVBufHdrs[bufCnt]->nOffset = 0;
@@ -1623,7 +1623,7 @@ int main(int argc, char **argv)
 
 	loop_function();
 
-/////////////////////////////////////////  ÊÕÎ²¹¤×÷
+/////////////////////////////////////////  æ”¶å°¾å·¥ä½œ
     ebd_thread_exit = 1;
 	fbd_thread_exit = 1;
 	pthread_join(ebd_thread_id, NULL);

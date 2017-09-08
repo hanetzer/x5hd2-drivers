@@ -37,19 +37,19 @@ extern HI_S32 AO_Track_FlushBuf(HI_U32 u32TrackID);
 extern HI_S32 AO_Track_GetAipReadPos(HI_U32 u32TrackID, HI_U32 *pu32ReadPos);
 //set volume
 extern HI_S32 AO_SND_SetVolume(HI_UNF_SND_E enSound, HI_UNF_SND_OUTPUTPORT_E enOutPort, HI_UNF_SND_GAIN_ATTR_S stGain);
-//Ê¹ÄÜÖ¸¶¨AE DMA  Í¨µÀ ´«Êä
+//ä½¿èƒ½æŒ‡å®šAE DMA  é€šé“ ä¼ è¾“
 int aoe_dma_start(int dma_Index, void * p)
 {
     return AO_Track_Kstart(&dma_Index);
 }
 
-//ÔİÍ£Ö¸¶¨AE DMA  Í¨µÀ ´«Êä
+//æš‚åœæŒ‡å®šAE DMA  é€šé“ ä¼ è¾“
 int aoe_dma_stop(int dma_Index, void * p)
 {
     return AO_Track_Kstop(&dma_Index);
 }
 
-// prepare Ã¿´Î¶ÁĞ´Ç°/ XRUN »Ö¸´  ¶¼»á±»µ÷ÓÃ±£Áô¸Ã½Ó¿Ú
+// prepare æ¯æ¬¡è¯»å†™å‰/ XRUN æ¢å¤  éƒ½ä¼šè¢«è°ƒç”¨ä¿ç•™è¯¥æ¥å£
 int aoe_dma_prepare(int dma_Index, void * p)
 {
     return AO_Track_Kflush(&dma_Index);     //TO CHECK
@@ -69,9 +69,9 @@ int aoe_dma_sethwparam(int dma_Index, void *param)
     return 0;
 }
 
-//ÉêÇë/ÊÍ·ÅÒ»Â·AE DMA ×ÊÔ´
-//Stream: DMA ´«Êä·½Ïò
-//Dma_Index: ·µ»ØÍ¨µÀÊı
+//ç”³è¯·/é‡Šæ”¾ä¸€è·¯AE DMA èµ„æº
+//Stream: DMA ä¼ è¾“æ–¹å‘
+//Dma_Index: è¿”å›é€šé“æ•°
 int aoe_dma_requestchan(int *dma_index, struct file *file, void *arg)
 {
     AO_Track_Create_Param_S stTrack;

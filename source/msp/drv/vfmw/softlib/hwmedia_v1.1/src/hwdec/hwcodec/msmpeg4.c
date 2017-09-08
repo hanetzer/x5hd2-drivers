@@ -1053,20 +1053,20 @@ static av_cold void init_h263_dc_for_msmpeg4(void)
 av_cold int ff_msmpeg4_decode_init(MpegEncContext *s)
 {
 	/* 2010/08/13 11:30:00 liuxw+00139685 [AZ1D02265] */
-	/* ÔÚMpegEncContextÖÐÌí¼ÓÒ»¸ö±äÁ¿À´´úÌæÕâ¸ö¾Ö²¿¾²Ì¬±äÁ¿ */
+	/* åœ¨MpegEncContextä¸­æ·»åŠ ä¸€ä¸ªå˜é‡æ¥ä»£æ›¿è¿™ä¸ªå±€éƒ¨é™æ€å˜é‡ */
 	/* 2010/08/31 11:30:00 liuxw+00139685 [AZ1D02297] */
-    /* ½«¶¯Ì¬·ÖÅäµÄVLC¿Õ¼äÈ«²¿×ª»»Îª¾²Ì¬Êý×é£¬ËùÒÔ½«´Ë¾²Ì¬¾Ö²¿±äÁ¿»¹Ô­ */
+    /* å°†åŠ¨æ€åˆ†é…çš„VLCç©ºé—´å…¨éƒ¨è½¬æ¢ä¸ºé™æ€æ•°ç»„ï¼Œæ‰€ä»¥å°†æ­¤é™æ€å±€éƒ¨å˜é‡è¿˜åŽŸ */
    static int done = 0;
     int i;
     MVTable *mv;
 	/* 2010/06/18 17:30:00 liuxw+00139685 */
-	/* Ôö¼Ó·µ»ØÂë */
+	/* å¢žåŠ è¿”å›žç  */
 	int iRet = 0;
 
     common_init(s);
 
 	/* 2010/08/13 11:30:00 liuxw+00139685 [AZ1D02265] */
-	/* ÔÚMpegEncContextÖÐÌí¼ÓÒ»¸ö±äÁ¿À´´úÌæÕâ¸ö¾Ö²¿¾²Ì¬±äÁ¿ */
+	/* åœ¨MpegEncContextä¸­æ·»åŠ ä¸€ä¸ªå˜é‡æ¥ä»£æ›¿è¿™ä¸ªå±€éƒ¨é™æ€å˜é‡ */
   if (!done) 
   {
         done = 1; 
@@ -1280,12 +1280,12 @@ av_cold int ff_msmpeg4_decode_init(MpegEncContext *s)
 }
 
 /* 2010/08/31 11:30:00 liuxw+00139685 [AZ1D02297] */
-/* ½«¶¯Ì¬·ÖÅäµÄVLC¿Õ¼äÈ«²¿×ª»»Îª¾²Ì¬Êý×é */
+/* å°†åŠ¨æ€åˆ†é…çš„VLCç©ºé—´å…¨éƒ¨è½¬æ¢ä¸ºé™æ€æ•°ç»„ */
 #if 0
 /* 2010/06/18 14:30:00 liuxw+00139685 */
-/* ÐÂÔöº¯Êý£ºÊÍ·ÅÔÚvc1³õÊ¼»¯Ê±·ÖÅäµÄÒ»Ð©VLC±íËùÕ¼µÄÄÚ´æ */
+/* æ–°å¢žå‡½æ•°ï¼šé‡Šæ”¾åœ¨vc1åˆå§‹åŒ–æ—¶åˆ†é…çš„ä¸€äº›VLCè¡¨æ‰€å çš„å†…å­˜ */
 /* 2010/08/18 15:30:00 liuxw+00139685 [AZ1D02265] */
-/* ¶ÔÓÚÃ¿Ò»¸öÊÍ·ÅºóµÄvlc_table£¬¶Ô¹ÜÀíÆätableµÄÈ«¾Ö±äÁ¿½øÐÐÇå0´¦Àí */
+/* å¯¹äºŽæ¯ä¸€ä¸ªé‡Šæ”¾åŽçš„vlc_tableï¼Œå¯¹ç®¡ç†å…¶tableçš„å…¨å±€å˜é‡è¿›è¡Œæ¸…0å¤„ç† */
 int msmpeg4_vlc_table_free()
 {
 	int i;

@@ -17,7 +17,7 @@ CFG_HI_CHIP_TYPE = hi3716cv200
 #===============================================================================
 #   chip type used by STB
 #   PRODUCT_DIR: product path
-#   CFG_CAP_DIR£ºvfmw decode capbility
+#   CFG_CAP_DIRï¼švfmw decode capbility
 #===============================================================================
 ifeq ($(CFG_HI_CHIP_TYPE),hi3716cv200)
 PRODUCT_DIR = Hi3716CV200

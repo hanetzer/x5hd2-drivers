@@ -1,6 +1,6 @@
 /**
  \file
- \brief Describes adp file. CNcomment:Çı¶¯¿çÆ½Ì¨ÊÊÅä
+ \brief Describes adp file. CNcomment:é©±åŠ¨è·¨å¹³å°é€‚é…
  \author Shenzhen Hisilicon Co., Ltd.
  \date 2008-2018
  \version 1.0

@@ -22,7 +22,7 @@
 
 #include "parser.h"
 #include "mpegvideo.h"
-/*xiongfei添加 20100221*/
+/*xiongfei娣诲姞 20100221*/
 #include "mpeg12.h"
 
 static void mpegvideo_extract_headers(AVCodecParserContext *s,
@@ -179,7 +179,7 @@ static int mpegvideo_split(AVCodecContext *avctx,
 /* lxw add for frame parse whole frame */
 #include "video_error.h"
 
-/*xongfei新增代码 20100303*/
+/*xongfei鏂板浠ｇ爜 20100303*/
 int MPEG2_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf, unsigned int *puiOutBufSize,const uint8_t *pucInBuf, unsigned int uiInBufSize, int *piLength)
 {
 	int iRet = VIDEO_RET_SUCCESS;
@@ -202,7 +202,7 @@ int MPEG2_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBu
 	}	
 
 	/* 2010/05/25 14:00:00 liuxw+00139685 */
-	/* 修改判断条件 */
+	/* 淇敼鍒ゆ柇鏉′欢 */
 	if(0 != uiInBufSize && NULL==pucInBuf )
 	{
 		av_log(pstAVCodecContext, AV_LOG_ERROR, "input bitstream buf is NULL\n");

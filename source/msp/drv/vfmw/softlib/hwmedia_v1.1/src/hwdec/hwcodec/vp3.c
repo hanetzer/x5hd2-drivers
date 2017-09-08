@@ -40,7 +40,7 @@
 
 #include "vp3data.h"
 #include "xiph.h"
-/*x00141957 20100608 Ôö¼Ó*/
+/*x00141957 20100608 å¢žåŠ */
 #include "internal.h"
 
 #define FRAGMENT_PIXELS 8

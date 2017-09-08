@@ -11,11 +11,11 @@
 
 typedef struct hiImageQueue 
 {
-	SINT8      queue_name[IMGQUE_MAX_NAME_LEN];    //��������˶��ʵ�������������ʶ
-	SINT8      ImageValid[IMGQUE_MAX_IMAGE_NUM];   // 0(00b): ����Ч, 
-	                                               // 1(01b): ������Ч, 
-	                                               // 2(10b): �׳���Ч��
-	                                               // 3(11b): ����Ч
+	SINT8      queue_name[IMGQUE_MAX_NAME_LEN];    //如果生成了多个实例，用这个来标识
+	SINT8      ImageValid[IMGQUE_MAX_IMAGE_NUM];   // 0(00b): 均无效, 
+	                                               // 1(01b): 顶场有效, 
+	                                               // 2(10b): 底场有效，
+	                                               // 3(11b): 均有效
     IMAGE      *image_ptr[IMGQUE_MAX_IMAGE_NUM];
     SINT32     max_queue_size;
     SINT32     queue_size;
@@ -30,88 +30,88 @@ typedef struct hiImageQueue
 
 
 /*********************************************************************************
-    ����ԭ��
+    函数原型
         SINT32 IMGQUE_InitQueue( IMAGE_QUEUE *pImageQueue )
-    ��������
-        ��ʼ��ͼ�����
-    ����˵��
-        pImageQueue: ͼ�����ָ��
-		QueueName:   ͼ����е����֣�16���ַ�����
-    ����ֵ
-        �����ʼ���ɹ�����VF_OK�����򷵻ش�����
+    功能描述
+        初始化图像队列
+    参数说明
+        pImageQueue: 图象队列指针
+		QueueName:   图象队列的名字，16个字符以内
+    返回值
+        如果初始化成功返回VF_OK，否则返回错误码
  *********************************************************************************/
 SINT32 IMGQUE_InitQueue( IMAGE_QUEUE *pImageQueue, SINT8 *QueueName, 
 						SINT32 (*DelImageProc)(struct hiImageQueue *pImageQueue, SINT32 ImageID) );
 
 /*********************************************************************************
-    ����ԭ��
+    函数原型
         SINT32 IMGQUE_ResetQueue( IMAGE_QUEUE *pImageQueue )
-    ��������
-        ��ʼ��ͼ�����
-    ����˵��
-        pImageQueue: ͼ�����ָ��
-    ����ֵ
-        �����ʼ���ɹ�����VF_OK�����򷵻ش�����
+    功能描述
+        初始化图像队列
+    参数说明
+        pImageQueue: 图象队列指针
+    返回值
+        如果初始化成功返回VF_OK，否则返回错误码
  *********************************************************************************/
 SINT32 IMGQUE_ResetQueue( IMAGE_QUEUE *pImageQueue );
 
 /*********************************************************************************
-    ����ԭ��
+    函数原型
         SINT32 IMGQUE_InsertImage(IMAGE_QUEUE *pImageQueue, IMAGE *p_image)
-    ��������
-        ��ָ����ͼ����뵽ͼ�������
-    ����˵��
-        pImageQueue: ͼ�����ָ��
-        p_image����������е�ͼ������
-    ����ֵ
-        �������ɹ��򷵻�VF_OK�����򷵻ش�����
-    �㷨����
+    功能描述
+        将指定的图像插入到图象队列中
+    参数说明
+        pImageQueue: 图象队列指针
+        p_image：待插入队列的图像描述
+    返回值
+        如果插入成功则返回VF_OK，否则返回错误码
+    算法描述
  *********************************************************************************/
 SINT32 IMGQUE_InsertImage(IMAGE_QUEUE *pImageQueue, IMAGE *p_image);
 
 /*********************************************************************************
-    ����ԭ��
+    函数原型
         VOID IMGQUE_GetImageNum(IMAGE_QUEUE *pImageQueue, SINT32 *pReadImgNum, SINT32 *pNewImgNum)
-    ��������
-        ��ȡ�����е�ͼ����Ŀ
-    ����˵��
-        pImageQueue: ͼ�����ָ��
-        pReadImgNum: �ѱ����ߣ�����δ�ͷŵ�ͼ�����( history ~ head )
-        pNewImgNum:  �Ѳ�����л�û�б����ߵ�ͼ�����( head ~ tail )
-    ����ֵ
-        ��
-    �㷨����
+    功能描述
+        获取队列中的图像数目
+    参数说明
+        pImageQueue: 图象队列指针
+        pReadImgNum: 已被读走，但尚未释放的图像个数( history ~ head )
+        pNewImgNum:  已插入队列还没有被读走的图像个数( head ~ tail )
+    返回值
+        无
+    算法描述
  *********************************************************************************/
 VOID IMGQUE_GetImageNum(IMAGE_QUEUE *pImageQueue, SINT32 *pReadImgNum, SINT32 *pNewImgNum);
 
 SINT32 IMGQUE_ReturnImage(IMAGE_QUEUE *pImageQueue);
 
 /*********************************************************************************
-    ����ԭ��
+    函数原型
         SINT32 IMGQUE_GetImage(IMAGE_QUEUE *pImageQueue, IMAGE *p_image)
-    ��������
-        ��VO�����л�ȡһ��ͼ��
-    ����˵��
-        pImageQueue: ͼ�����ָ��
-        p_image:     IMAGE���͵�ָ�룬���ջ�ȡ����ͼ�����Ϣ
-    ����ֵ
-        �����ȡ�ɹ��򷵻�VF_OK�����򷵻ش�����
-    �㷨����
+    功能描述
+        从VO队列中获取一幅图像
+    参数说明
+        pImageQueue: 图象队列指针
+        p_image:     IMAGE类型的指针，接收获取到的图像的信息
+    返回值
+        如果获取成功则返回VF_OK，否则返回错误码
+    算法描述
  *********************************************************************************/
 SINT32 IMGQUE_GetImage(IMAGE_QUEUE *pImageQueue, IMAGE *p_image);
 
 /*********************************************************************************
-    ����ԭ��
+    函数原型
         SINT32 IMGQUE_DeleteImage(IMAGE_QUEUE *pImageQueue, SINT32 ImageID, SINT32 *pDelTopAddr, SINT32 *pDelBtmAddr)
-    ��������
-        �ͷ�һ��ͼ��ϵͳ�������ô˺�������p_image��������ͼ���Ѿ�ʹ�ã�������
-        Ҫ���棬��洢�ռ���Ա���������������·���
-    ����˵��
-        pImageQueue: ͼ�����ָ��
-        p_image��IMAGE���͵�ָ�룬ָʾҪ�ͷŵ�ͼ�����Ϣ
-    ����ֵ
-        ����ͷųɹ��򷵻�VF_OK�����򷵻ش�����
-    �㷨����
+    功能描述
+        释放一幅图像。系统软件调用此函数表明p_image所描述的图像已经使用，不再需
+        要保存，其存储空间可以被后续解码过程重新分配
+    参数说明
+        pImageQueue: 图象队列指针
+        p_image：IMAGE类型的指针，指示要释放的图像的信息
+    返回值
+        如果释放成功则返回VF_OK，否则返回错误码
+    算法描述
  *********************************************************************************/
 SINT32 IMGQUE_DeleteImage(IMAGE_QUEUE *pImageQueue, SINT32 ImageID, SINT32 *pDelTopAddr, SINT32 *pDelBtmAddr);
 

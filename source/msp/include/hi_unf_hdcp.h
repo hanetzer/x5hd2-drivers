@@ -18,7 +18,7 @@ typedef struct hiUNF_DECRYPT_HDCP_S
 }HI_UNF_HDCP_DECRYPT_S;
 
 /** Encrypted HDCP key */
-/** CNcomment:¼ÓÃÜµÄHDCP key */
+/** CNcomment:åŠ å¯†çš„HDCP key */
 typedef struct hiUNF_ENCRYPT_HDCP_S
 {
 	HI_U8 u8EncryptKey[384];
@@ -49,13 +49,13 @@ typedef struct hiUNF_HDCPKEY_HDCP_S
 \n        head                HDMIIP_HDCPKey               CRC32_0 CRC32_1
 \n		|-------|-----------------------------------------|------|------|
 \n
-\brief CNcomment: ¼ÓÃÜ¿Í»§ÉèÖÃµÄHDCP key¡£Í¨¹ı bIsUseOTPRootKey Ñ¡ÔñÊÇ·ñÊ¹ÓÃOTPÄÚ²¿µÄRootKey¼ÓÃÜÊı¾İ»¹ÊÇÊ¹ÓÃº£Ë¼¹Ì¶¨µÄkey¼ÓÃÜÊı¾İ¡£ CNend
-\attention \n The encrypted data(u8OutEncryptKey) include two CRC32 values.CRC32_1 is used to verify the integration of the whole data, and CRC32_0 is used to debug.  CNcomment: ¼ÓÃÜµÄÊı¾İu8OutEncryptKey°üº¬2´ÎCRCĞ£ÑéÖµ£¬CRC32_1 ÓÃÓÚÊı¾İÍêÕûĞÔÅĞ¶Ï£¬CRC32_0ÓÃÓÚµ÷ÊÔÊ¹ÓÃ¡£ CNend
-\param[in]:stHdcpKey.This parameter is used to define hdcp key in encrypted mode or clear mode.  CNcomment: ¸Ã²ÎÊıÎªHDCP keyµÄ²ÎÊı¶¨Òå,°üº¬¼ÓÃÜ/·Ç¼ÓÃÜµÄ·½Ê½. CNend
-\param[in]:IsUseOTPRootKey. This parameter is used to select the key(key in otp or a fixed key by hisilicon).  CNcomment: ÊÇ·ñÊ¹ÓÃOTP/EFUSEÖĞÉÕĞ´µÄHdcpRootKey¼ÓÃÜHDCP key. CNend
-\param[out]:u8OutEncryptKey. Output the encrypted hdcp key.   CNcomment: Êä³öµÄ¼ÓÃÜºóµÄHDCP KEY²ÎÊı¡£ CNend
-\retval HI_SUCCESS  Call this API succussful.  	CNcomment:APIÏµÍ³µ÷ÓÃ³É¹¦¡£ CNend
-\retval HI_FAILURE  Call this API fails.  		CNcomment:APIÏµÍ³µ÷ÓÃÊ§°Ü¡£ CNend
+\brief CNcomment: åŠ å¯†å®¢æˆ·è®¾ç½®çš„HDCP keyã€‚é€šè¿‡ bIsUseOTPRootKey é€‰æ‹©æ˜¯å¦ä½¿ç”¨OTPå†…éƒ¨çš„RootKeyåŠ å¯†æ•°æ®è¿˜æ˜¯ä½¿ç”¨æµ·æ€å›ºå®šçš„keyåŠ å¯†æ•°æ®ã€‚ CNend
+\attention \n The encrypted data(u8OutEncryptKey) include two CRC32 values.CRC32_1 is used to verify the integration of the whole data, and CRC32_0 is used to debug.  CNcomment: åŠ å¯†çš„æ•°æ®u8OutEncryptKeyåŒ…å«2æ¬¡CRCæ ¡éªŒå€¼ï¼ŒCRC32_1 ç”¨äºæ•°æ®å®Œæ•´æ€§åˆ¤æ–­ï¼ŒCRC32_0ç”¨äºè°ƒè¯•ä½¿ç”¨ã€‚ CNend
+\param[in]:stHdcpKey.This parameter is used to define hdcp key in encrypted mode or clear mode.  CNcomment: è¯¥å‚æ•°ä¸ºHDCP keyçš„å‚æ•°å®šä¹‰,åŒ…å«åŠ å¯†/éåŠ å¯†çš„æ–¹å¼. CNend
+\param[in]:IsUseOTPRootKey. This parameter is used to select the key(key in otp or a fixed key by hisilicon).  CNcomment: æ˜¯å¦ä½¿ç”¨OTP/EFUSEä¸­çƒ§å†™çš„HdcpRootKeyåŠ å¯†HDCP key. CNend
+\param[out]:u8OutEncryptKey. Output the encrypted hdcp key.   CNcomment: è¾“å‡ºçš„åŠ å¯†åçš„HDCP KEYå‚æ•°ã€‚ CNend
+\retval HI_SUCCESS  Call this API succussful.  	CNcomment:APIç³»ç»Ÿè°ƒç”¨æˆåŠŸã€‚ CNend
+\retval HI_FAILURE  Call this API fails.  		CNcomment:APIç³»ç»Ÿè°ƒç”¨å¤±è´¥ã€‚ CNend
 */
 HI_S32  HI_UNF_HDCP_EncryptHDCPKey(HI_UNF_HDCP_HDCPKEY_S stHdcpKey, HI_BOOL bIsUseHdcpRootKey, HI_U8 u8OutEncryptKey[332]);
 

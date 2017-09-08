@@ -28,7 +28,7 @@ HI_U32 OPTM_ALG_FrameRateDetect(OPTM_ALG_FRD_S *pPtsInfo,HI_U32 Pts)
             rateDiff = nowRate - pPtsInfo->InFrameRateLast;
 
             /* For stream about 30fps, use bigger JUMP hreshold, accept wider PTS diff range */
-            /* CNcomment: ¶Ô30fps×óÓÒµÄ³£ÓÃÂëÁ÷,·Å´óJUMPÃÅÏÞ£¬½«PTS¶¶¶¯ÄÉÈëÕý³£·¶Î§*/
+            /* CNcomment: å¯¹30fpså·¦å³çš„å¸¸ç”¨ç æµ,æ”¾å¤§JUMPé—¨é™ï¼Œå°†PTSæŠ–åŠ¨çº³å…¥æ­£å¸¸èŒƒå›´*/
             if(pPtsInfo->InFrameRateLast >= 200 && pPtsInfo->InFrameRateLast <= 400)
             {
                 u32JumpDelta = 200;
@@ -81,8 +81,8 @@ HI_U32 OPTM_ALG_FrameRateDetect(OPTM_ALG_FRD_S *pPtsInfo,HI_U32 Pts)
                 }
 
                 /* For stream about 30fps, use bigger JUMP hreshold, accept wider PTS diff range */
-                /* CNcomment: ¶Ô30fps×óÓÒµÄ³£ÓÃÂëÁ÷,¼Ó´óÖ¡ÂÊ±ä»¯ÎÈ¶¨ÃÅÏÞ£¬
-                        ±£Ö¤²»»áÒòÎªÁ½ÈýÖ¡ÎÈ¶¨µÄPTS¶¶¶¯µ¼ÖÂÎÞ·¨¼ì²â³öÓÐÐ§Ö¡ÂÊ*/
+                /* CNcomment: å¯¹30fpså·¦å³çš„å¸¸ç”¨ç æµ,åŠ å¤§å¸§çŽ‡å˜åŒ–ç¨³å®šé—¨é™ï¼Œ
+                        ä¿è¯ä¸ä¼šå› ä¸ºä¸¤ä¸‰å¸§ç¨³å®šçš„PTSæŠ–åŠ¨å¯¼è‡´æ— æ³•æ£€æµ‹å‡ºæœ‰æ•ˆå¸§çŽ‡*/
                 /* calculate the times of occurrence of stability of new frame rate*/
                 if(pPtsInfo->InFrameRateLast >= 200 && pPtsInfo->InFrameRateLast <= 400)
                 {
@@ -120,9 +120,9 @@ HI_U32 OPTM_ALG_FrameRateDetect(OPTM_ALG_FRD_S *pPtsInfo,HI_U32 Pts)
                     rateDiff = OPTM_ALG_ABS(pPtsInfo->InFrameRate - nowRate);
 
                     /* For stream about 30fps, use bigger JUMP hreshold, accept wider PTS diff range */
-                    /* CNcomment: ¶Ô30fps×óÓÒµÄ³£ÓÃÂëÁ÷,¼Ó´óÎ¢Ð¡±ä»¯»Ø¹éÃÅÏÞ£¬
-                        ÒòÎªÇ°ÃæÃÅÏÞ¼Ó´ó£¬
-                        ¿ÉÄÜ»áµ¼ÖÂÈ«¶ÓÁÐËã³öµÄÆ½¾ùÖ¡ÂÊ´æÔÚ¶¶¶¯£¬·Å´ó¸ÃÃÅÏÞ£¬±ÜÃâÊä³öÖ¡ÂÊÆµ·±Î¢Ð¡±ä»¯*/
+                    /* CNcomment: å¯¹30fpså·¦å³çš„å¸¸ç”¨ç æµ,åŠ å¤§å¾®å°å˜åŒ–å›žå½’é—¨é™ï¼Œ
+                        å› ä¸ºå‰é¢é—¨é™åŠ å¤§ï¼Œ
+                        å¯èƒ½ä¼šå¯¼è‡´å…¨é˜Ÿåˆ—ç®—å‡ºçš„å¹³å‡å¸§çŽ‡å­˜åœ¨æŠ–åŠ¨ï¼Œæ”¾å¤§è¯¥é—¨é™ï¼Œé¿å…è¾“å‡ºå¸§çŽ‡é¢‘ç¹å¾®å°å˜åŒ–*/
                     if(pPtsInfo->InFrameRateLast >= 200 && pPtsInfo->InFrameRateLast <= 400)
                     {
                         s32WaveDelta = 50;

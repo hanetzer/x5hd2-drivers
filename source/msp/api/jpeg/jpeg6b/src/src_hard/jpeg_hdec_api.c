@@ -8,7 +8,7 @@ Version		    : Initial Draft
 Author		    : y00181162
 Created		    : 2013/06/20
 Description	    : the jpeg hard decode realize in this function
-                  CNcomment: jpegÓ²¼ş½âÂëµÄÊµÏÖÔÚ¸Ãº¯ÊıÖĞ CNend\n
+                  CNcomment: jpegç¡¬ä»¶è§£ç çš„å®ç°åœ¨è¯¥å‡½æ•°ä¸­ CNend\n
 Function List 	:
 
 			  		  
@@ -59,11 +59,11 @@ Date				Author        		Modification
 /***************************** Macro Definition ******************************/
 
 /** the jpeg structure init pointer */
-/** CNcomment:jpegË½ÓĞ»ú¹¹Ìå³õÊ¼»¯Ö¸Õë */
+/** CNcomment:jpegç§æœ‰æœºæ„ä½“åˆå§‹åŒ–æŒ‡é’ˆ */
 #define CLIENT_DATA_MARK				  0x00FFFFFF
 
 /** the hard dec inflexion size */
-/** CNcomment:Èí¼şºÍÓ²¼ş½âÂëµÄ¹Õµã´óĞ¡ */
+/** CNcomment:è½¯ä»¶å’Œç¡¬ä»¶è§£ç çš„æ‹ç‚¹å¤§å° */
 #define JPGD_HDEC_FLEXION_SIZE		  0 //100000000
 
 /*************************** Structure Definition ****************************/
@@ -72,13 +72,13 @@ Date				Author        		Modification
 #ifdef CONFIG_JPEG_REALIZEFUNC_BEFORMAINFUNC
 
 /** Structure of the some function should realize before main function */
-/** CNcomment:Ò»Ğ©±ØĞëÔÚmainº¯ÊıÖ®Ç°ÊµÏÖµÄ¹¦ÄÜ±äÁ¿ */
+/** CNcomment:ä¸€äº›å¿…é¡»åœ¨mainå‡½æ•°ä¹‹å‰å®ç°çš„åŠŸèƒ½å˜é‡ */
 typedef struct tagJPEG_DECOMPRESS_RES 
 {
 
-    HI_BOOL    bOpenTDE;         /**< whether open tde device   *//**<CNcomment:ÊÇ·ñ´ò¿ªTDEÉè±¸     */
-    HI_CHAR*   pStreamPhyBuf;   /**< The stream physics address *//**<CNcomment:ÂëÁ÷bufferÎïÀíµØÖ· */
-    HI_CHAR*   pStreamVirBuf;   /**< The stream virtual address *//**<CNcomment:ÂëÁ÷bufferĞéÄâµØÖ· */
+    HI_BOOL    bOpenTDE;         /**< whether open tde device   *//**<CNcomment:æ˜¯å¦æ‰“å¼€TDEè®¾å¤‡     */
+    HI_CHAR*   pStreamPhyBuf;   /**< The stream physics address *//**<CNcomment:ç æµbufferç‰©ç†åœ°å€ */
+    HI_CHAR*   pStreamVirBuf;   /**< The stream virtual address *//**<CNcomment:ç æµbufferè™šæ‹Ÿåœ°å€ */
 	
 }JPEG_DECOMPRESS_RES;
 
@@ -88,7 +88,7 @@ static JPEG_DECOMPRESS_RES g_stJpegDecompressRes = {HI_FALSE ,NULL, NULL};
 /********************** Global Variable declaration **************************/
 
 #ifdef CONFIG_JPEG_FPGA_TEST_ENABLE
-/**Èç¹ûÊÇÊ¹ÓÃFPGA²âÊÔ£¬Ôò·ÖÅäµÄÄÚ´æ·½Ê½ÊÇ×Ô¼º·â×°µÄ£¬ÒÔ¼°ÆäËüÊµÏÖ·½Ê½Ò²²»Ò»Ñù**/
+/**å¦‚æœæ˜¯ä½¿ç”¨FPGAæµ‹è¯•ï¼Œåˆ™åˆ†é…çš„å†…å­˜æ–¹å¼æ˜¯è‡ªå·±å°è£…çš„ï¼Œä»¥åŠå…¶å®ƒå®ç°æ–¹å¼ä¹Ÿä¸ä¸€æ ·**/
 HI_S32 sg_s32MMZDev = -1;
 #endif
 
@@ -102,11 +102,11 @@ HI_S32 sg_s32MMZDev = -1;
 * func			: __attribute__ ((constructor))
 * description	: this function will realize before main function, so some function will
                   realize in this function.
-                  CNcomment: Ó¦ÓÃ³ÌĞòÆğÀ´Ö®ºó£¬Ò²¾ÍÊÇµÚÒ»´Îµ÷ÓÃlibjpeg¿âµÄÊ±ºò»áÏÈµ÷ÓÃ
-                             ¸Ãº¯Êı£¬È»ºóÔÙµ÷ÓÃmainº¯Êı£¬Ö±µ½ÍË³öjpegÓ¦ÓÃ³ÌĞò CNend\n
+                  CNcomment: åº”ç”¨ç¨‹åºèµ·æ¥ä¹‹åï¼Œä¹Ÿå°±æ˜¯ç¬¬ä¸€æ¬¡è°ƒç”¨libjpegåº“çš„æ—¶å€™ä¼šå…ˆè°ƒç”¨
+                             è¯¥å‡½æ•°ï¼Œç„¶åå†è°ƒç”¨mainå‡½æ•°ï¼Œç›´åˆ°é€€å‡ºjpegåº”ç”¨ç¨‹åº CNend\n
 * param[in] 	: NA
-* retval		: HI_SUCCESS ³É¹¦
-* retval		: HI_FAILURE Ê§°Ü
+* retval		: HI_SUCCESS æˆåŠŸ
+* retval		: HI_FAILURE å¤±è´¥
 * others:		: NA
 ***************************************************************************************/
 void __attribute__ ((constructor)) jpeg_lib_creat(void)
@@ -117,13 +117,13 @@ void __attribute__ ((constructor)) jpeg_lib_creat(void)
 		/**
 		 ** when malloc mem failure at soft decode, pthread will be killed, so
 		 ** we want to use MMZ malloc. we should open at creat decompress
-		 ** CNcomment: ÒªÊÇÊ¹ÓÃmalloc·ÖÅäµÄÄÚ´æ£¬ÔÚÈí¼ş½âÂë¹ı³ÌÖĞÒªÊÇÄÚ´æ²»×ã
-		 **            »áµ¼ÖÂÏµÍ³Ö±½Ó¹ÒËÀ£¬ËùÒÔÒªÊ¹ÓÃmmzÀ´·ÖÅäÄÚ´æ CNend\n
+		 ** CNcomment: è¦æ˜¯ä½¿ç”¨mallocåˆ†é…çš„å†…å­˜ï¼Œåœ¨è½¯ä»¶è§£ç è¿‡ç¨‹ä¸­è¦æ˜¯å†…å­˜ä¸è¶³
+		 **            ä¼šå¯¼è‡´ç³»ç»Ÿç›´æ¥æŒ‚æ­»ï¼Œæ‰€ä»¥è¦ä½¿ç”¨mmzæ¥åˆ†é…å†…å­˜ CNend\n
 		 **/
 
 		/**
 		 ** open tde device
-		 ** CNcomment: ´ò¿ªTDEÉè±¸  CNend\n
+		 ** CNcomment: æ‰“å¼€TDEè®¾å¤‡  CNend\n
 		 **/
 		if(HI_SUCCESS == HI_TDE2_Open())
 		{
@@ -142,9 +142,9 @@ void __attribute__ ((constructor)) jpeg_lib_creat(void)
 		 ** get the stream mem, if the stream from the user physics mem,
 		 ** no need alloc this mem.is critical variable,so should consider
 		 ** the many pthread.
-		 ** CNcomment: »ñÈ¡ÂëÁ÷bufferÄÚ´æ£¬ÒªÊÇÂëÁ÷À´Ô´ÓÚÓÃ»§Á¬ĞøµÄÎïÀíÄÚ´æ
-		 ** 		   ÕâÀï¾Í²»ĞèÒª·ÖÅäÁË£¬Ö»ĞèÒª¸øºê¿ª¹Ø¸³ÖµÎª0¼´¿É¡£Õâ¸ö
-		 **            µØ·½ÊôÓÚÁÙ½ç×ÊÔ´£¬ËùÒÔÒª¿¼ÂÇµ½¶àÏß³ÌµÄÎÊÌâ£¬ÒªÊÇÓĞÎÊÌâ¾Í²»Ê¹ÓÃÕâÖÖ·½Ê½ÁË CNend\n
+		 ** CNcomment: è·å–ç æµbufferå†…å­˜ï¼Œè¦æ˜¯ç æµæ¥æºäºç”¨æˆ·è¿ç»­çš„ç‰©ç†å†…å­˜
+		 ** 		   è¿™é‡Œå°±ä¸éœ€è¦åˆ†é…äº†ï¼Œåªéœ€è¦ç»™å®å¼€å…³èµ‹å€¼ä¸º0å³å¯ã€‚è¿™ä¸ª
+		 **            åœ°æ–¹å±äºä¸´ç•Œèµ„æºï¼Œæ‰€ä»¥è¦è€ƒè™‘åˆ°å¤šçº¿ç¨‹çš„é—®é¢˜ï¼Œè¦æ˜¯æœ‰é—®é¢˜å°±ä¸ä½¿ç”¨è¿™ç§æ–¹å¼äº† CNend\n
 		 **/
 		s32Ret = JPEG_HDEC_GetStreamMem(u32StreamSize,&g_stJpegDecompressRes.pStreamPhyBuf,&g_stJpegDecompressRes.pStreamVirBuf);
         if(HI_SUCCESS != s32Ret)
@@ -158,10 +158,10 @@ void __attribute__ ((constructor)) jpeg_lib_creat(void)
 /***************************************************************************************
 * func			: __attribute__ ((destructor))
 * description	: when exit the program, will call this function
-                  CNcomment: µ±ÍË³ö¿ÉÖ´ĞĞ³ÌĞòµÄÊ±ºò»áµ÷ÓÃ¸Ãº¯Êı CNend\n
+                  CNcomment: å½“é€€å‡ºå¯æ‰§è¡Œç¨‹åºçš„æ—¶å€™ä¼šè°ƒç”¨è¯¥å‡½æ•° CNend\n
 * param[in] 	: NA
-* retval		: HI_SUCCESS   CNcomment: ³É¹¦  CNend\n
-* retval		: HI_FAILURE   CNcomment: Ê§°Ü  CNend\n
+* retval		: HI_SUCCESS   CNcomment: æˆåŠŸ  CNend\n
+* retval		: HI_FAILURE   CNcomment: å¤±è´¥  CNend\n
 * others:		: NA
 ***************************************************************************************/
 void __attribute__ ((destructor)) jpeg_lib_destroy(void)
@@ -170,7 +170,7 @@ void __attribute__ ((destructor)) jpeg_lib_destroy(void)
 
 		  /**
 		   ** close tde device
-		   ** CNcomment:¹Ø±ÕTDEÉè±¸  CNend\n
+		   ** CNcomment:å…³é—­TDEè®¾å¤‡  CNend\n
 		   **/
           if (HI_TRUE == g_stJpegDecompressRes.bOpenTDE) 
 		  {
@@ -184,7 +184,7 @@ void __attribute__ ((destructor)) jpeg_lib_destroy(void)
 		  
 		  /**
 		   ** free the stream buffer mem
-		   ** CNcomment: ÊÍ·ÅÂëÁ÷bufferÄÚ´æ CNend\n
+		   ** CNcomment: é‡Šæ”¾ç æµbufferå†…å­˜ CNend\n
 		   **/
 		  JPEG_HDEC_FreeStreamMem(g_stJpegDecompressRes.pStreamPhyBuf);
           g_stJpegDecompressRes.pStreamPhyBuf = NULL;
@@ -197,10 +197,10 @@ void __attribute__ ((destructor)) jpeg_lib_destroy(void)
 /*****************************************************************************
 * func			: JPEG_HDEC_OpenDev
 * description	: open some device that decode need
-				  CNcomment: ´ò¿ª½âÂëĞèÒªµÄÏà¹ØÉè±¸ 	   CNend\n
-* param[in] 	: cinfo 		CNcomment: ½âÂë¶ÔÏó    CNend\n
-* retval		: HI_SUCCESS	CNcomment: ³É¹¦ 	   CNend\n
-* retval		: HI_FAILURE	CNcomment: Ê§°Ü 	   CNend\n
+				  CNcomment: æ‰“å¼€è§£ç éœ€è¦çš„ç›¸å…³è®¾å¤‡ 	   CNend\n
+* param[in] 	: cinfo 		CNcomment: è§£ç å¯¹è±¡    CNend\n
+* retval		: HI_SUCCESS	CNcomment: æˆåŠŸ 	   CNend\n
+* retval		: HI_FAILURE	CNcomment: å¤±è´¥ 	   CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_OpenDev(const struct jpeg_decompress_struct *cinfo)
@@ -221,7 +221,7 @@ HI_S32 JPEG_HDEC_OpenDev(const struct jpeg_decompress_struct *cinfo)
 
 		/**
 		** get jpeg device, this has signal
-		** CNcomment: »ñÈ¡Ó²¼şÉè±¸£¬ÕâÀïÓĞĞÅºÅÁ¿Ëø£¬Ê¹Ö®Ö§³Ö¶àÈÎÎñ CNend\n
+		** CNcomment: è·å–ç¡¬ä»¶è®¾å¤‡ï¼Œè¿™é‡Œæœ‰ä¿¡å·é‡é”ï¼Œä½¿ä¹‹æ”¯æŒå¤šä»»åŠ¡ CNend\n
 		**/
 		s32RetVal = ioctl(pJpegHandle->s32JpegDev, CMD_JPG_GETDEVICE);
 		if (HI_SUCCESS != s32RetVal)
@@ -231,7 +231,7 @@ HI_S32 JPEG_HDEC_OpenDev(const struct jpeg_decompress_struct *cinfo)
 
 		/**
 		** mmap the device virtual
-		** CNcomment: Ó³ÉäjpegÉè±¸ĞéÄâµØÖ· CNend\n
+		** CNcomment: æ˜ å°„jpegè®¾å¤‡è™šæ‹Ÿåœ°å€ CNend\n
 		**/
 		pJpegHandle->pJpegRegVirAddr  = (volatile char*  )mmap(NULL, \
 															 JPGD_REG_LENGTH, 	       \
@@ -278,10 +278,10 @@ HI_S32 JPEG_HDEC_OpenDev(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_SetProcInfo
 * description	: set the proc information
-				  CNcomment: ÉèÖÃprocĞÅÏ¢		  CNend\n
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó CNend\n
-* retval		: HI_SUCCESS  CNcomment: ³É¹¦	  CNend\n
-* retval		: HI_FAILURE  CNcomment: Ê§°Ü	  CNend\n
+				  CNcomment: è®¾ç½®procä¿¡æ¯		  CNend\n
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡ CNend\n
+* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ	  CNend\n
+* retval		: HI_FAILURE  CNcomment: å¤±è´¥	  CNend\n
 * others:		: NA
 *****************************************************************************/
 static HI_S32 JPEG_HDEC_SetProcInfo(const struct jpeg_decompress_struct *cinfo)
@@ -407,10 +407,10 @@ static HI_S32 JPEG_HDEC_SetProcInfo(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_CloseDev
 * description	: closxe some device that decode need
-				  CNcomment: ¹Ø±Õ½âÂë´ò¿ªµÄÏà¹ØÉè±¸ 	   CNend\n
-* param[in] 	: cinfo 		CNcomment: ½âÂë¶ÔÏó    CNend\n
-* retval		: HI_SUCCESS	CNcomment: ³É¹¦ 	   CNend\n
-* retval		: HI_FAILURE	CNcomment: Ê§°Ü 	   CNend\n
+				  CNcomment: å…³é—­è§£ç æ‰“å¼€çš„ç›¸å…³è®¾å¤‡ 	   CNend\n
+* param[in] 	: cinfo 		CNcomment: è§£ç å¯¹è±¡    CNend\n
+* retval		: HI_SUCCESS	CNcomment: æˆåŠŸ 	   CNend\n
+* retval		: HI_FAILURE	CNcomment: å¤±è´¥ 	   CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_CloseDev(const struct jpeg_common_struct *cinfo)
@@ -468,10 +468,10 @@ HI_S32 JPEG_HDEC_CloseDev(const struct jpeg_common_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_Init
 * description	: init the private structure para
-                  CNcomment: ³õÊ¼»¯Ë½ÓĞ½á¹¹Ìå±äÁ¿   CNend\n
-* param[in] 	: cinfo       CNcomment: ½âÂë¶ÔÏó   CNend\n
-* retval		: HI_SUCCESS  CNcomment: ³É¹¦  CNend\n
-* retval		: HI_FAILURE  CNcomment: Ê§°Ü  CNend\n
+                  CNcomment: åˆå§‹åŒ–ç§æœ‰ç»“æ„ä½“å˜é‡   CNend\n
+* param[in] 	: cinfo       CNcomment: è§£ç å¯¹è±¡   CNend\n
+* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ  CNend\n
+* retval		: HI_FAILURE  CNcomment: å¤±è´¥  CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_Init(j_common_ptr cinfo)
@@ -489,8 +489,8 @@ HI_S32 JPEG_HDEC_Init(j_common_ptr cinfo)
 		/**
 		** if use external stream,when dec failure, call start decompress
 		** again,do not need call hard decode again
-		** CNcomment: Èç¹ûÊ¹ÓÃÍâ²¿ÂëÁ÷£¬µ±½âÂëÊ§°ÜµÄÊ±ºò»áµÚ¶ş´Îµ÷ÓÃ½âÂë
-		**            ¾Í²»ĞèÒªÔÙ×ßÓ²¼şÁËCNend\n
+		** CNcomment: å¦‚æœä½¿ç”¨å¤–éƒ¨ç æµï¼Œå½“è§£ç å¤±è´¥çš„æ—¶å€™ä¼šç¬¬äºŒæ¬¡è°ƒç”¨è§£ç 
+		**            å°±ä¸éœ€è¦å†èµ°ç¡¬ä»¶äº†CNend\n
 		**/
 		pJpegHandle->bFirstDec          =  HI_TRUE;
 
@@ -519,13 +519,13 @@ HI_S32 JPEG_HDEC_Init(j_common_ptr cinfo)
 
 		/**
 		** the jpeg format
-		** CNcomment: Ô­Ê¼jpegÍ¼Æ¬¸ñÊ½ CNend\n
+		** CNcomment: åŸå§‹jpegå›¾ç‰‡æ ¼å¼ CNend\n
 		**/
 		pJpegHandle->enImageFmt   =  JPEG_FMT_BUTT;
 
 		/**
 		** save the jpeg handle pointer
-		** CNcomment: ´æ´¢jpeg¾ä±úÖ¸Õë CNend\n
+		** CNcomment: å­˜å‚¨jpegå¥æŸ„æŒ‡é’ˆ CNend\n
 		**/
 		cinfo->client_data = (void *)pJpegHandle;
 
@@ -538,10 +538,10 @@ HI_S32 JPEG_HDEC_Init(j_common_ptr cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_ReleaseRes
 * description	: release the resouce
-				  CNcomment:  ÊÍ·Å×ÊÔ´       CNend\n
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó	CNend\n
-* retval		: HI_SUCCESS  CNcomment: ³É¹¦  CNend\n
-* retval		: HI_FAILURE  CNcomment: Ê§°Ü  CNend\n
+				  CNcomment:  é‡Šæ”¾èµ„æº       CNend\n
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡	CNend\n
+* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ  CNend\n
+* retval		: HI_FAILURE  CNcomment: å¤±è´¥  CNend\n
 * others:		: NA
 *****************************************************************************/
 static HI_VOID JPEG_HDEC_ReleaseRes(const struct jpeg_common_struct *cinfo)
@@ -550,7 +550,7 @@ static HI_VOID JPEG_HDEC_ReleaseRes(const struct jpeg_common_struct *cinfo)
 		JPEG_HDEC_HANDLE_S_PTR  pJpegHandle = (JPEG_HDEC_HANDLE_S_PTR)(cinfo->client_data);
 		/**
 		** get the stream mem
-		** CNcomment: »ñÈ¡Ó²¼ş½âÂëµÄÂëÁ÷buffer CNend\n
+		** CNcomment: è·å–ç¡¬ä»¶è§£ç çš„ç æµbuffer CNend\n
 		**/	 
 #ifndef CONFIG_JPEG_REALIZEFUNC_BEFORMAINFUNC
 		JPEG_HDEC_FreeStreamMem(pJpegHandle);
@@ -584,10 +584,10 @@ static HI_VOID JPEG_HDEC_ReleaseRes(const struct jpeg_common_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_Destroy
 * description	: dinit the private structure para
-				  CNcomment:  Ïú»ÙÓ²¼ş½âÂëÆ÷        CNend\n
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó	CNend\n
-* retval		: HI_SUCCESS  CNcomment: ³É¹¦  CNend\n
-* retval		: HI_FAILURE  CNcomment: Ê§°Ü  CNend\n
+				  CNcomment:  é”€æ¯ç¡¬ä»¶è§£ç å™¨        CNend\n
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡	CNend\n
+* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ  CNend\n
+* retval		: HI_FAILURE  CNcomment: å¤±è´¥  CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_Destroy(const struct jpeg_common_struct *cinfo)
@@ -601,7 +601,7 @@ HI_S32 JPEG_HDEC_Destroy(const struct jpeg_common_struct *cinfo)
 		}
 		/**
 		 ** if memory leak, take out this check
-		 ** CNcomment: ÒªÊÇÓĞÄÚ´æÊÍ·ÅÎÊÌâ£¬È¥µô¸ÃÅĞ¶Ï CNend\n
+		 ** CNcomment: è¦æ˜¯æœ‰å†…å­˜é‡Šæ”¾é—®é¢˜ï¼Œå»æ‰è¯¥åˆ¤æ–­ CNend\n
 		 **/
 		if(HI_FALSE == pJpegHandle->bReleaseRes)
 		{
@@ -617,10 +617,10 @@ HI_S32 JPEG_HDEC_Destroy(const struct jpeg_common_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_Abort
 * description	: when want use the decompress again,call this
-				  CNcomment:  Èç¹ûÏë¼ÌĞøÊ¹ÓÃ½âÂëÆ÷£¬µ÷ÓÃ¸Ã½Ó¿Ú CNend\n
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó	           CNend\n
-* retval		: HI_SUCCESS  CNcomment: ³É¹¦  CNend\n
-* retval		: HI_FAILURE  CNcomment: Ê§°Ü  CNend\n
+				  CNcomment:  å¦‚æœæƒ³ç»§ç»­ä½¿ç”¨è§£ç å™¨ï¼Œè°ƒç”¨è¯¥æ¥å£ CNend\n
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡	           CNend\n
+* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ  CNend\n
+* retval		: HI_FAILURE  CNcomment: å¤±è´¥  CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_Abort(const struct jpeg_common_struct *cinfo)
@@ -637,7 +637,7 @@ HI_S32 JPEG_HDEC_Abort(const struct jpeg_common_struct *cinfo)
 
 	   /**
 		** if memory leak, take out this check
-		** CNcomment: ÒªÊÇÓĞÄÚ´æÊÍ·ÅÎÊÌâ£¬È¥µô¸ÃÅĞ¶Ï CNend\n
+		** CNcomment: è¦æ˜¯æœ‰å†…å­˜é‡Šæ”¾é—®é¢˜ï¼Œå»æ‰è¯¥åˆ¤æ–­ CNend\n
 		**/
 		if(HI_FALSE == pJpegHandle->bReleaseRes)
 		{
@@ -646,7 +646,7 @@ HI_S32 JPEG_HDEC_Abort(const struct jpeg_common_struct *cinfo)
 
 		/**
 		** dinit the para, these are the same as init para value
-		** CNcomment: È¥³õÊ¼»¯±äÁ¿µÄÖµ£¬±£Ö¤ºÍ³õÊ¼»¯±äÁ¿µÄÖµ±£³ÖÒ»ÖÂ CNend\n
+		** CNcomment: å»åˆå§‹åŒ–å˜é‡çš„å€¼ï¼Œä¿è¯å’Œåˆå§‹åŒ–å˜é‡çš„å€¼ä¿æŒä¸€è‡´ CNend\n
 		**/
 		memset(pJpegHandle,0,sizeof(JPEG_HDEC_HANDLE_S));		
 		pJpegHandle->bReleaseRes        =  HI_TRUE;
@@ -686,8 +686,8 @@ HI_S32 JPEG_HDEC_Abort(const struct jpeg_common_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_CheckCropSurface
 * description	: check the crop rect whether is reasonable
-				  CNcomment: ÅĞ¶Ï²Ã¼ôÇøÓòÊÇ·ñºÏÀí CNend\n
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó CNend\n
+				  CNcomment: åˆ¤æ–­è£å‰ªåŒºåŸŸæ˜¯å¦åˆç† CNend\n
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡ CNend\n
 * retval		: NA
 * others:		: NA
 *****************************************************************************/
@@ -708,20 +708,20 @@ HI_VOID JPEG_HDEC_CheckCropSurface(const struct jpeg_decompress_struct *cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_IfSupport
 * description	: check whether the hard decode support
-				  CNcomment: ÅĞ¶ÏÊÇ·ñÖ§³ÖÓ²¼ş½âÂë CNend\n
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó CNend\n
-* retval		: HI_SUCCESS  CNcomment: ³É¹¦	  CNend\n
-* retval		: HI_FAILURE  CNcomment: Ê§°Ü	  CNend\n
+				  CNcomment: åˆ¤æ–­æ˜¯å¦æ”¯æŒç¡¬ä»¶è§£ç  CNend\n
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡ CNend\n
+* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ	  CNend\n
+* retval		: HI_FAILURE  CNcomment: å¤±è´¥	  CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 {
 
-		HI_U32 u32ImageSize	   = 0; /**< the jpeg picture size  *//**<CNcomment:Í¼Æ¬´óĞ¡         */
+		HI_U32 u32ImageSize	   = 0; /**< the jpeg picture size  *//**<CNcomment:å›¾ç‰‡å¤§å°         */
 		HI_S32 s32RetVal		   = HI_FAILURE;
 #ifdef CONFIG_JPEG_DEBUG_INFO
 	#ifdef CONFIG_JPEG_ANDROID_DEBUG_ENABLE
-		HI_CHAR JpegDecMod[256]   = {0}; /**< select jpeg decode module   *//**<CNcomment:Ñ¡Ôñ½âÂë·½Ê½  */
+		HI_CHAR JpegDecMod[256]   = {0}; /**< select jpeg decode module   *//**<CNcomment:é€‰æ‹©è§£ç æ–¹å¼  */
 	#else
 		HI_CHAR *pJpegDecMod       = NULL;
 	#endif
@@ -734,8 +734,8 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 		 ** because only one program can operation,and if the message
 		 ** is wrong, the hardware can not support, so the followed 
 		 ** can not operation
-		 ** CNcomment: Ó²¼ş½âÂë¹ı³ÌÖ»ÅĞ¶ÏÒ»´Î£¬¼ÙÈçÕâ¸öÖµ±»¸Ä±äÁË£¬ÒªÃ´Ê¹ÓÃÄÚ²¿µÄÍË³öº¯Êı
-		 **            ÍË³öÕû¸öÓ¦ÓÃ£¬ÒªÃ´Ê¹ÓÃÓÃ»§»Øµ÷µÄ´íÎó¹ÜÀíº¯Êı½áÊø¸ÃÕÅÍ¼Æ¬½âÂë CNend\n
+		 ** CNcomment: ç¡¬ä»¶è§£ç è¿‡ç¨‹åªåˆ¤æ–­ä¸€æ¬¡ï¼Œå‡å¦‚è¿™ä¸ªå€¼è¢«æ”¹å˜äº†ï¼Œè¦ä¹ˆä½¿ç”¨å†…éƒ¨çš„é€€å‡ºå‡½æ•°
+		 **            é€€å‡ºæ•´ä¸ªåº”ç”¨ï¼Œè¦ä¹ˆä½¿ç”¨ç”¨æˆ·å›è°ƒçš„é”™è¯¯ç®¡ç†å‡½æ•°ç»“æŸè¯¥å¼ å›¾ç‰‡è§£ç  CNend\n
 		 **/
 		if(CLIENT_DATA_MARK != pJpegHandle->s32ClientData)
 		{
@@ -756,7 +756,7 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 
 	   /**
 		** the leave stream dispose
-		** CNcomment: Ê£ÓàÂëÁ÷´¦Àí CNend\n
+		** CNcomment: å‰©ä½™ç æµå¤„ç† CNend\n
 		**/
 		if(HI_TRUE == pJpegHandle->stHDecDataBuf.bUseFileData)
 		{
@@ -778,7 +778,7 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 #endif
 		/**
 		 ** get the stream mem
-		 ** CNcomment: »ñÈ¡Ó²¼ş½âÂëµÄÂëÁ÷buffer CNend\n
+		 ** CNcomment: è·å–ç¡¬ä»¶è§£ç çš„ç æµbuffer CNend\n
 		 **/	
 #ifndef CONFIG_JPEG_REALIZEFUNC_BEFORMAINFUNC
 		s32RetVal = JPEG_HDEC_GetStreamMem(pJpegHandle,JPGD_HARD_BUFFER);
@@ -798,7 +798,7 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 
 		/**
 		** get the middle mem
-		** CNcomment: »ñÈ¡Ó²¼ş½âÂëµÄÖĞ¼äbuffer CNend\n
+		** CNcomment: è·å–ç¡¬ä»¶è§£ç çš„ä¸­é—´buffer CNend\n
 		**/	
 		s32RetVal = JPEG_HDEC_GetYUVMem(pJpegHandle);
 		if(HI_SUCCESS != s32RetVal)
@@ -828,8 +828,8 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 			/**
 			** how to use this, when run android,you can get default value = "hw",
 			** so when you not run( setprop JPEGDECMOD soft(or other char valu) ),is all run hard decode
-			** CNcomment:android³ÌĞòÔËĞĞ¹ı³ÌÖĞ,Ê×ÏÈ»ñÈ¡Ä¬ÈÏµÄÖµhw£¬ÒªÊÇÔËĞĞ
-			** ¹ı³ÌÖĞÃ»ÓĞsetprop JPEGDECMOD soft(³ıÁËhw×Ö·û) ¾ÍÒ»Ö±ÊÇhwÖµÁË CNend\n
+			** CNcomment:androidç¨‹åºè¿è¡Œè¿‡ç¨‹ä¸­,é¦–å…ˆè·å–é»˜è®¤çš„å€¼hwï¼Œè¦æ˜¯è¿è¡Œ
+			** è¿‡ç¨‹ä¸­æ²¡æœ‰setprop JPEGDECMOD soft(é™¤äº†hwå­—ç¬¦) å°±ä¸€ç›´æ˜¯hwå€¼äº† CNend\n
 			**/
 			property_get("JPEGDECMOD",JpegDecMod,"hw");
 			if(0 != strncmp("hw", JpegDecMod, strlen("hw")>strlen(JpegDecMod)?strlen("hw"):strlen(JpegDecMod)))
@@ -840,8 +840,8 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 	#else
 			/**
 			**use the export entironment var
-			**export JPEGDECMOD=soft Èí¼ş½âÂë
-			**Ä¬ÈÏÓ²¼ş½âÂëÖ§³Ö×ßÓ²¼ş½âÂë
+			**export JPEGDECMOD=soft è½¯ä»¶è§£ç 
+			**é»˜è®¤ç¡¬ä»¶è§£ç æ”¯æŒèµ°ç¡¬ä»¶è§£ç 
 			**/
 			pJpegDecMod = getenv( "JPEGDECMOD" );
 			if(pJpegDecMod && 0 == strncmp("soft", pJpegDecMod, strlen("soft")>strlen(pJpegDecMod)?strlen("soft"):strlen(pJpegDecMod)))
@@ -854,7 +854,7 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 
 		/**
 		** the hard decode support resolution
-		** CNcomment: Ó²¼şÖ§³ÖµÄ½âÂë·Ö±æÂÊ CNend\n
+		** CNcomment: ç¡¬ä»¶æ”¯æŒçš„è§£ç åˆ†è¾¨ç‡ CNend\n
 		**/
 		if (	(cinfo->image_width  < 1)
 			|| (cinfo->image_width  > 8192)
@@ -866,7 +866,7 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 
 		/**
 		** Get the image inflexion, use hardwire decode or soft decode
-		** CNcomment: »ñÈ¡Èí½âºÍÓ²½âµÄ¹Õµã CNend\n
+		** CNcomment: è·å–è½¯è§£å’Œç¡¬è§£çš„æ‹ç‚¹ CNend\n
 		**/
 		u32ImageSize = cinfo->image_width * cinfo->image_height;
 		if(u32ImageSize <= pJpegHandle->u32Inflexion)
@@ -877,7 +877,7 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 		/**
 		** the CMYK and YCCK color space,the hard decode can not support
 		** JCS_YCbCr TDE not support
-		** CNcomment: ÕâÁ½ÖÖÍ¼Ïñ¸ñÊ½Ó²¼ş½âÂë²»Ö§³Ö£¬TDE²»Ö§³ÖJCS_YCbCr×ª»» CNend\n
+		** CNcomment: è¿™ä¸¤ç§å›¾åƒæ ¼å¼ç¡¬ä»¶è§£ç ä¸æ”¯æŒï¼ŒTDEä¸æ”¯æŒJCS_YCbCrè½¬æ¢ CNend\n
 		**/
 		if(   (JCS_CMYK  == cinfo->jpeg_color_space)
 			||(JCS_YCCK  == cinfo->jpeg_color_space)
@@ -888,7 +888,7 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 
 		/**
 		** progressive, arith code ,data_prcidion !=8, cann't use hard decode 
-		** CNcomment: progressive arith code data_prcidion !=8Ó²¼ş²»Ö§³Ö CNend\n
+		** CNcomment: progressive arith code data_prcidion !=8ç¡¬ä»¶ä¸æ”¯æŒ CNend\n
 		**/
 		if(	(FALSE != cinfo->progressive_mode) ||(FALSE != cinfo->arith_code) ||(8 != cinfo->data_precision))
 		{
@@ -897,7 +897,7 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 
 		/**
 		** if the jpeg image have not any dqt table,we use standard table
-		** CNcomment:ÒªÊÇjpegÎÄ¼şÃ»ÓĞ´øÁ¿»¯±í¾ÍÊ¹ÓÃ±ê×¼Á¿»¯±í CNend\n
+		** CNcomment:è¦æ˜¯jpegæ–‡ä»¶æ²¡æœ‰å¸¦é‡åŒ–è¡¨å°±ä½¿ç”¨æ ‡å‡†é‡åŒ–è¡¨ CNend\n
 		**/
 #ifndef CONFIG_JPEG_MPG_DEC_ENABLE
 		if(NULL == cinfo->quant_tbl_ptrs[0])
@@ -907,7 +907,7 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 #endif
 		/**
 		** if the jpeg image have not  huff table,we use standard table
-		** CNcomment:ÒªÊÇjpegÎÄ¼şÃ»ÓĞ´ø¹ş·òÂü±í¾ÍÊ¹ÓÃ±ê×¼¹ş·òÂü±í CNend\n
+		** CNcomment:è¦æ˜¯jpegæ–‡ä»¶æ²¡æœ‰å¸¦å“ˆå¤«æ›¼è¡¨å°±ä½¿ç”¨æ ‡å‡†å“ˆå¤«æ›¼è¡¨ CNend\n
 		**/
 #ifndef CONFIG_JPEG_MPG_DEC_ENABLE
 		if (	(NULL == cinfo->dc_huff_tbl_ptrs[0]) || (NULL != cinfo->dc_huff_tbl_ptrs[2]) 
@@ -925,10 +925,10 @@ HI_S32 JPEG_HDEC_IfSupport(j_decompress_ptr cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_Start
 * description	: start jpeg hard decode
-				  CNcomment: ¿ªÊ¼Ó²¼ş½âÂë
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó  CNend\n
-* retval		: HI_SUCCESS  CNcomment: ³É¹¦	   CNend\n
-* retval		: HI_FAILURE  CNcomment: Ê§°Ü	   CNend\n
+				  CNcomment: å¼€å§‹ç¡¬ä»¶è§£ç 
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡  CNend\n
+* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ	   CNend\n
+* retval		: HI_FAILURE  CNcomment: å¤±è´¥	   CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_Start(j_decompress_ptr cinfo)
@@ -946,7 +946,7 @@ HI_S32 JPEG_HDEC_Start(j_decompress_ptr cinfo)
 
 		/**
 		** set parameter thar hard decode need
-		** CNcomment:ÅäÖÃÓ²¼ş½âÂëĞèÒªµÄ²ÎÊı CNend\n
+		** CNcomment:é…ç½®ç¡¬ä»¶è§£ç éœ€è¦çš„å‚æ•° CNend\n
 		**/
 		s32RetVal = JPEG_HDEC_SetPara(cinfo);
 		if(HI_SUCCESS != s32RetVal)
@@ -956,7 +956,7 @@ HI_S32 JPEG_HDEC_Start(j_decompress_ptr cinfo)
 
 		/**
 		 ** send the stream to hard register to start dec
-		 ** CNcomment:½«ÂëÁ÷ËÍ¸øÓ²¼ş¼Ä´æÆ÷¿ªÊ¼½âÂë CNend\n
+		 ** CNcomment:å°†ç æµé€ç»™ç¡¬ä»¶å¯„å­˜å™¨å¼€å§‹è§£ç  CNend\n
 		 **/
 		if(HI_FALSE == pJpegHandle->stHDecDataBuf.bUseInsideData)
 		{
@@ -987,7 +987,7 @@ HI_S32 JPEG_HDEC_Start(j_decompress_ptr cinfo)
 		#ifdef CONFIG_JPEG_OUTPUT_LUPIXSUM
 		/**
 		 ** get the lu pixle value
-		 ** CNcomment: »ñÈ¡ÁÁ¶ÈÖµ´óĞ¡ CNend\n
+		 ** CNcomment: è·å–äº®åº¦å€¼å¤§å° CNend\n
 		 **/
 		if(HI_TRUE == pJpegHandle->bLuPixSum)
 		{
@@ -999,7 +999,7 @@ HI_S32 JPEG_HDEC_Start(j_decompress_ptr cinfo)
 		
 		/**
 		 ** the jpeg hard decode finish
-		 ** CNcomment: jpegÓ²¼ş½âÂëÍê³É CNend\n
+		 ** CNcomment: jpegç¡¬ä»¶è§£ç å®Œæˆ CNend\n
 		 **/	
 		pJpegHandle->bHdecEnd  = HI_TRUE;
 
@@ -1018,10 +1018,10 @@ HI_S32 JPEG_HDEC_Start(j_decompress_ptr cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_HardCSC
 * description	: use hard csc
-				  CNcomment: Ê¹ÓÃÓ²¼ş½øĞĞÑÕÉ«¿Õ¼ä×ª»» CNend\n
-* param[in] 	: cinfo 	 CNcomment: ½âÂë¶ÔÏó CNend\n
-* retval		: HI_SUCCESS CNcomment: ³É¹¦	 CNend\n
-* retval		: HI_FAILURE CNcomment: Ê§°Ü	 CNend\n
+				  CNcomment: ä½¿ç”¨ç¡¬ä»¶è¿›è¡Œé¢œè‰²ç©ºé—´è½¬æ¢ CNend\n
+* param[in] 	: cinfo 	 CNcomment: è§£ç å¯¹è±¡ CNend\n
+* retval		: HI_SUCCESS CNcomment: æˆåŠŸ	 CNend\n
+* retval		: HI_FAILURE CNcomment: å¤±è´¥	 CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_HardCSC(j_decompress_ptr cinfo)
@@ -1057,19 +1057,19 @@ HI_S32 JPEG_HDEC_HardCSC(j_decompress_ptr cinfo)
 #endif
 		{/**
 		** no need tde csc,only add the sanlines
-		** CNcomment: ²»ĞèÒªTDE×ª»»ÁË£¬Ö»ĞèÒªÔö¼ÓĞĞÊı CNend\n
+		** CNcomment: ä¸éœ€è¦TDEè½¬æ¢äº†ï¼Œåªéœ€è¦å¢åŠ è¡Œæ•° CNend\n
 		**/
 			return HI_SUCCESS;
 		}
 
 		/**
 		** if has image quality quest,you should change the tde coef
-		** CNcomment: Èç¹ûÓĞÍ¼Æ¬ÖÊÁ¿µÄĞèÇó¾ÍÒªÍ¨¹ımake menuconfigÀ´ĞŞ¸ÄTDEÏµÊı£¬Ä¬ÈÏÃ»ÓĞ·ÖÅäºÃÄÚ´æ CNend\n
+		** CNcomment: å¦‚æœæœ‰å›¾ç‰‡è´¨é‡çš„éœ€æ±‚å°±è¦é€šè¿‡make menuconfigæ¥ä¿®æ”¹TDEç³»æ•°ï¼Œé»˜è®¤æ²¡æœ‰åˆ†é…å¥½å†…å­˜ CNend\n
 		**/
 
 		/**
 		** src data from jpeg hard dec output
-		** CNcomment: jpeg Ó²¼ş½âÂëµÄÊä³öÊı¾İ CNend\n
+		** CNcomment: jpeg ç¡¬ä»¶è§£ç çš„è¾“å‡ºæ•°æ® CNend\n
 		**/
 		SrcSurface.u32YPhyAddr	  = (HI_U32)(pJpegHandle->stMiddleSurface.pMiddlePhy[0]);
 		SrcSurface.u32CbCrPhyAddr = (HI_U32)(pJpegHandle->stMiddleSurface.pMiddlePhy[1]);
@@ -1090,7 +1090,7 @@ HI_S32 JPEG_HDEC_HardCSC(j_decompress_ptr cinfo)
 #endif
 		/**
 		** tde csc output data,not use memset, because the memset cost many times.
-		** CNcomment: tde×ª»»Ö®ºóµÄÊä³öÊı¾İ CNend\n
+		** CNcomment: tdeè½¬æ¢ä¹‹åçš„è¾“å‡ºæ•°æ® CNend\n
 		**/
 		switch(cinfo->out_color_space)
 		{
@@ -1149,7 +1149,7 @@ HI_S32 JPEG_HDEC_HardCSC(j_decompress_ptr cinfo)
 
 		/**
 		 ** if the rect equal with the output size, that has been crop.other has no crop.
-		 ** CNcomment:ÊÇ·ñÓĞ²Ã¼ôÊÇ¿´rect´óĞ¡,ÒªÊÇºÍÊä³ö´óĞ¡±£³ÖÒ»ÖÂ¾ÍÃ»ÓĞ²Ã¼ô CNend\n
+		 ** CNcomment:æ˜¯å¦æœ‰è£å‰ªæ˜¯çœ‹rectå¤§å°,è¦æ˜¯å’Œè¾“å‡ºå¤§å°ä¿æŒä¸€è‡´å°±æ²¡æœ‰è£å‰ª CNend\n
 		 **/
 		SrcRect.s32Xpos   = pJpegHandle->stOutDesc.stCropRect.x;
 		SrcRect.s32Ypos   = pJpegHandle->stOutDesc.stCropRect.y;
@@ -1173,7 +1173,7 @@ HI_S32 JPEG_HDEC_HardCSC(j_decompress_ptr cinfo)
 		JPEG_TRACE("============================================================================\n");
 #endif
 		/**
-		**Õâ¸ö²Ù×÷ĞÔÄÜ»á±ä²î£¬µ«ÊÇÏû¸æ¾¯
+		**è¿™ä¸ªæ“ä½œæ€§èƒ½ä¼šå˜å·®ï¼Œä½†æ˜¯æ¶ˆå‘Šè­¦
 		**/
 		memset(&stMbOpt,0,sizeof(TDE2_MBOPT_S));
 		stMbOpt.enResize   = TDE2_MBRESIZE_QUALITY_LOW;
@@ -1191,7 +1191,7 @@ HI_S32 JPEG_HDEC_HardCSC(j_decompress_ptr cinfo)
 			/**
 			** if HI_TRUE,is no sync. and HI_FALSE you should call tde wait for done to
 			** waite the tde work finish.
-			** CNcomment:HI_TRUE ×èÈû£¬ÒªÊÇ·Ç×èÈûÒªµ÷ÓÃwaitfordoneµÈ´ıTDE²Ù×÷Íê³É CNend\n
+			** CNcomment:HI_TRUE é˜»å¡ï¼Œè¦æ˜¯éé˜»å¡è¦è°ƒç”¨waitfordoneç­‰å¾…TDEæ“ä½œå®Œæˆ CNend\n
 			**/
 			s32Ret = HI_TDE2_EndJob(s32Handle, HI_FALSE, HI_TRUE, 10000);
 			if(HI_SUCCESS != s32Ret)
@@ -1219,12 +1219,12 @@ HI_S32 JPEG_HDEC_HardCSC(j_decompress_ptr cinfo)
 /*****************************************************************************
 * func			: JPEG_HDEC_OutUserBuf
 * description	: output the scanlines buffer
-				  CNcomment:  Êä³öµ½ÓÃ»§ĞĞbufferÖĞ CNend\n
-* param[in] 	: cinfo 	 CNcomment:  ½âÂë¶ÔÏó  CNend\n
-* param[out] 	: max_lines  CNcomment:  ½âÂëĞĞÊı  CNend\n
-* param[out]	: scanlines  CNcomment:  ĞĞbuffer  CNend\n
-* retval		: HI_SUCCESS CNcomment:  ³É¹¦	   CNend\n
-* retval		: HI_FAILURE CNcomment:  Ê§°Ü	   CNend\n
+				  CNcomment:  è¾“å‡ºåˆ°ç”¨æˆ·è¡Œbufferä¸­ CNend\n
+* param[in] 	: cinfo 	 CNcomment:  è§£ç å¯¹è±¡  CNend\n
+* param[out] 	: max_lines  CNcomment:  è§£ç è¡Œæ•°  CNend\n
+* param[out]	: scanlines  CNcomment:  è¡Œbuffer  CNend\n
+* retval		: HI_SUCCESS CNcomment:  æˆåŠŸ	   CNend\n
+* retval		: HI_FAILURE CNcomment:  å¤±è´¥	   CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_OutUserBuf(j_decompress_ptr cinfo,JDIMENSION max_lines, HI_CHAR *scanlines)
@@ -1248,7 +1248,7 @@ HI_S32 JPEG_HDEC_OutUserBuf(j_decompress_ptr cinfo,JDIMENSION max_lines, HI_CHAR
 		{  
 			/**
 			** not use tde convert or use physics buffer,so not output the usr buffer
-			** CNcomment: tde×ª»»Ê§°Ü»òÕßÊ¹ÓÃÎïÀíÄÚ´æ£¬ËùÒÔ²»ĞèÒªÊä³öµ½ÓÃ»§bufferÖĞ CNend\n
+			** CNcomment: tdeè½¬æ¢å¤±è´¥æˆ–è€…ä½¿ç”¨ç‰©ç†å†…å­˜ï¼Œæ‰€ä»¥ä¸éœ€è¦è¾“å‡ºåˆ°ç”¨æˆ·bufferä¸­ CNend\n
 			**/
 			for(u32Cnt=0; u32Cnt<max_lines; u32Cnt++)
 			{
@@ -1270,7 +1270,7 @@ HI_S32 JPEG_HDEC_OutUserBuf(j_decompress_ptr cinfo,JDIMENSION max_lines, HI_CHAR
 		
 		/**
 		** is not set output description,so is output scanlines buffer
-		** CNcomment:ËµÃ÷Ã»ÓĞÉèÖÃ½âÂëÊä³öµÄÊôĞÔ£¬ÊÇÊä³öµ½ĞĞbufferÖĞ CNend\n
+		** CNcomment:è¯´æ˜æ²¡æœ‰è®¾ç½®è§£ç è¾“å‡ºçš„å±æ€§ï¼Œæ˜¯è¾“å‡ºåˆ°è¡Œbufferä¸­ CNend\n
 		**/
 		u32Stride  = pJpegHandle->stJpegSofInfo.u32DisplayStride;
         
@@ -1285,7 +1285,7 @@ HI_S32 JPEG_HDEC_OutUserBuf(j_decompress_ptr cinfo,JDIMENSION max_lines, HI_CHAR
 		}
 		/**
 		** data size in reality
-		** CNcomment: Êµ¼ÊµÄÊı¾İ´óĞ¡ CNend\n
+		** CNcomment: å®é™…çš„æ•°æ®å¤§å° CNend\n
 		**/
 		s32BufSrcLength = (cinfo->output_components) * (pJpegHandle->stOutDesc.stCropRect.w);
 		for(u32Cnt = 0; u32Cnt < max_lines; u32Cnt++)
@@ -1310,11 +1310,11 @@ HI_S32 JPEG_HDEC_OutUserBuf(j_decompress_ptr cinfo,JDIMENSION max_lines, HI_CHAR
 /*****************************************************************************
 * func			: JPEG_HDEC_DuplicateStreamInfo
 * description	: save the stream information before into hard decode
-				  CNcomment: ÔÚ½øÈëÓ²¼ş½âÂëÖ®Ç°±£´æÂëÁ÷ĞÅÏ¢£¬°üÀ¨ÂëÁ÷Î»ÖÃ
-				  Ê£ÓàµÄÂëÁ÷ÒÔ¼°Ê£ÓàÂëÁ÷Êı¡£
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó  CNend\n
-* retval		: HI_SUCCESS  CNcomment: ³É¹¦	   CNend\n
-* retval		: HI_FAILURE  CNcomment: Ê§°Ü	   CNend\n
+				  CNcomment: åœ¨è¿›å…¥ç¡¬ä»¶è§£ç ä¹‹å‰ä¿å­˜ç æµä¿¡æ¯ï¼ŒåŒ…æ‹¬ç æµä½ç½®
+				  å‰©ä½™çš„ç æµä»¥åŠå‰©ä½™ç æµæ•°ã€‚
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡  CNend\n
+* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ	   CNend\n
+* retval		: HI_FAILURE  CNcomment: å¤±è´¥	   CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32	JPEG_HDEC_DuplicateStreamInfo(const struct jpeg_decompress_struct *cinfo)
@@ -1335,9 +1335,9 @@ HI_S32	JPEG_HDEC_DuplicateStreamInfo(const struct jpeg_decompress_struct *cinfo)
 			** only use file stream or use external stream should save the data.
 			** because the mem stream decode, the hard has no change the 
 			** cinfo->src->next_input_byte buffer and leave data.
-			** CNcomment: Ê¹ÓÃÎÄ¼şÂëÁ÷²ÅĞèÒª»ØÍË£¬ÒòÎªÄÚ´æÂëÁ÷Ó²¼ş½âÂëµÄÊ±ºò
-			**            Ã»ÓĞÊ¹ÓÃcinfo->src->next_input_byteÕâ¿éÁÙÊ±bufferÒÔ¼°
-			**            Ã»ÓĞ¸Ä±äcinfo->src->bytes_in_bufferÊ£ÓàÂëÁ÷´óĞ¡ CNend\n
+			** CNcomment: ä½¿ç”¨æ–‡ä»¶ç æµæ‰éœ€è¦å›é€€ï¼Œå› ä¸ºå†…å­˜ç æµç¡¬ä»¶è§£ç çš„æ—¶å€™
+			**            æ²¡æœ‰ä½¿ç”¨cinfo->src->next_input_byteè¿™å—ä¸´æ—¶bufferä»¥åŠ
+			**            æ²¡æœ‰æ”¹å˜cinfo->src->bytes_in_bufferå‰©ä½™ç æµå¤§å° CNend\n
 			**/
 			pJpegHandle->stJpegHtoSInfo.u32FilePos = (HI_U32)ftell(src->infile);
 			memcpy(pJpegHandle->stJpegHtoSInfo.pLeaveBuf,	\
@@ -1355,11 +1355,11 @@ HI_S32	JPEG_HDEC_DuplicateStreamInfo(const struct jpeg_decompress_struct *cinfo)
 * func			: JPEG_HDEC_ResumeStreamInfo
 * description	: resume the stream information when hard decode failure,and
 				  then into soft decode
-				  CNcomment: µ±Ó²¼ş½âÂëÊ§°ÜµÄÊ±ºò»Ö¸´Ô­ÏÈ±£´æµÄÂëÁ÷ĞÅÏ¢£¬È»ºó
-				  ¼ÌĞø½øĞĞÈí¼ş½âÂë
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó  CNend\n
-* retval		: HI_SUCCESS  CNcomment: ³É¹¦	   CNend\n
-* retval		: HI_FAILURE  CNcomment: Ê§°Ü	   CNend\n
+				  CNcomment: å½“ç¡¬ä»¶è§£ç å¤±è´¥çš„æ—¶å€™æ¢å¤åŸå…ˆä¿å­˜çš„ç æµä¿¡æ¯ï¼Œç„¶å
+				  ç»§ç»­è¿›è¡Œè½¯ä»¶è§£ç 
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡  CNend\n
+* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ	   CNend\n
+* retval		: HI_FAILURE  CNcomment: å¤±è´¥	   CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32	JPEG_HDEC_ResumeStreamInfo(j_decompress_ptr cinfo)
@@ -1390,7 +1390,7 @@ HI_S32	JPEG_HDEC_ResumeStreamInfo(j_decompress_ptr cinfo)
 			if(HI_SUCCESS != s32Ret)
 			{ /**
 			   ** the stream back failure,not soft decode again
-			   ** CNcomment: ÂëÁ÷»ØÍË´íÎó£¬²»ĞèÒªÔÚ½øĞĞÈí¼ş½âÂëÁË CNend\n
+			   ** CNcomment: ç æµå›é€€é”™è¯¯ï¼Œä¸éœ€è¦åœ¨è¿›è¡Œè½¯ä»¶è§£ç äº† CNend\n
 			   **/
 				ERREXIT(cinfo, JERR_STREAM_BACK_FAILURE); /*lint !e740  ignore by y00181162, because this function is macro */  
 			}
@@ -1409,12 +1409,12 @@ HI_S32	JPEG_HDEC_ResumeStreamInfo(j_decompress_ptr cinfo)
 * func			: JPEG_HDEC_CheckStreamMemType
 * description	: check the stream buffer type, if user no call the function
 				  of set stream buffer type,call this function
-				  CNcomment: ²éÑ¯ÂëÁ÷bufferÀàĞÍ£¬ÊÇÁ¬ĞøµÄÎïÀíÄÚ´æ£¬»¹ÊÇĞéÄâ
-				  ÄÚ´æ£¬ÒªÊÇÓÃ»§Ã»ÓĞµ÷ÓÃÉèÖÃÂëÁ÷bufferÀàĞÍ£¬µ÷ÓÃ¸Ã½Ó¿Ú
-* param[in] 	: cinfo 	  CNcomment: ½âÂë¶ÔÏó  CNend\n
-* param[in] 	: pVirBuf	  CNcomment: ĞéÄâÄÚ´æ  CNend\n
-* retval		: HI_SUCCESS  CNcomment: ³É¹¦	   CNend\n
-* retval		: HI_FAILURE  CNcomment: Ê§°Ü	   CNend\n
+				  CNcomment: æŸ¥è¯¢ç æµbufferç±»å‹ï¼Œæ˜¯è¿ç»­çš„ç‰©ç†å†…å­˜ï¼Œè¿˜æ˜¯è™šæ‹Ÿ
+				  å†…å­˜ï¼Œè¦æ˜¯ç”¨æˆ·æ²¡æœ‰è°ƒç”¨è®¾ç½®ç æµbufferç±»å‹ï¼Œè°ƒç”¨è¯¥æ¥å£
+* param[in] 	: cinfo 	  CNcomment: è§£ç å¯¹è±¡  CNend\n
+* param[in] 	: pVirBuf	  CNcomment: è™šæ‹Ÿå†…å­˜  CNend\n
+* retval		: HI_SUCCESS  CNcomment: æˆåŠŸ	   CNend\n
+* retval		: HI_FAILURE  CNcomment: å¤±è´¥	   CNend\n
 * others:		: NA
 *****************************************************************************/
 HI_S32 JPEG_HDEC_CheckStreamMemType(const struct jpeg_decompress_struct *cinfo,HI_UCHAR* pVirBuf)

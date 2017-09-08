@@ -14,58 +14,58 @@ This module contains the class definition for openMAX decoder component.
 
 /********************************Macro Definition********************************/
 /** \addtogroup      H_2_2_11 */
-/** @{ */  /** <!-- ¡¾VENC¡¿ */
+/** @{ */  /** <!-- ã€VENCã€‘ */
 
 /**<Maximum encoding width*/
-/**<CNcomment: ×î´ó±àÂë¿í¶È*/
+/**<CNcomment: æœ€å¤§ç¼–ç å®½åº¦*/
 #define HI_VENC_MAX_WIDTH       (1920)	
 /**<Minimum encoding width*/	
-/**<CNcomment: ×îĞ¡±àÂë¿í¶È*/	
+/**<CNcomment: æœ€å°ç¼–ç å®½åº¦*/	
 #define HI_VENC_MIN_WIDTH       (176)
 /**<Maximum encoding height*/			  
-/**<CNcomment: ×î´ó±àÂë¸ß¶È*/
+/**<CNcomment: æœ€å¤§ç¼–ç é«˜åº¦*/
 #define HI_VENC_MAX_HEIGTH      (1088)		
 /**<Minimum encoding height*/
-/**<CNcomment: ×îĞ¡±àÂë¸ß¶È*/	
+/**<CNcomment: æœ€å°ç¼–ç é«˜åº¦*/	
 #define HI_VENC_MIN_HEIGTH      (144)	
 /**<Picture size alignment (in bytes)*/		  
-/**<CNcomment: Í¼Ïñ´óĞ¡¶ÔÆë×Ö½Ú*/
+/**<CNcomment: å›¾åƒå¤§å°å¯¹é½å­—èŠ‚*/
 #define HI_VENC_PIC_SZIE_ALIGN  (4)	
 /**<Maximum buffer (in bytes)*/		  
-/**<CNcomment: ×î´ó»º´æ×Ö½Ú*/
+/**<CNcomment: æœ€å¤§ç¼“å­˜å­—èŠ‚*/
 #define HI_VENC_MAX_BUF_SIZE    (20*1024*1024)	
 /**<Minimum buffer (in bytes)*/
-/**<CNcomment: ×îĞ¡»º´æ×Ö½Ú*/ 
+/**<CNcomment: æœ€å°ç¼“å­˜å­—èŠ‚*/ 
 #define HI_VENC_MIN_BUF_SIZE    (256*1024)	
 /**<Minimum group of picture (GOP)*/
-/**<CNcomment: ×îĞ¡GOP*/
+/**<CNcomment: æœ€å°GOP*/
 #define HI_VENC_MIN_GOP         (1)		
 /**<Maximum output bit rate*/		  
-/**<CNcomment: ×î´óÊä³öÂëÂÊ*/
+/**<CNcomment: æœ€å¤§è¾“å‡ºç ç‡*/
 #define HI_VENC_MAX_bps         (42*1024*1024)
 /**<Minimum output bit rate*/	
-/**<CNcomment: ×îĞ¡Êä³öÂëÂÊ*/
+/**<CNcomment: æœ€å°è¾“å‡ºç ç‡*/
 #define HI_VENC_MIN_bps         (32*1024)	
 /**<Maximum split size (in bytes)*/	
-/**<CNcomment: ×î´óSplit×Ö½Ú*/
+/**<CNcomment: æœ€å¤§Splitå­—èŠ‚*/
 #define HI_VENC_MAX_SPLIT_SIZE  (0xFFFF)	
 /**<Minimum split size (in bytes)*/	
-/**<CNcomment: ×îĞ¡Split×Ö½Ú*/
+/**<CNcomment: æœ€å°Splitå­—èŠ‚*/
 #define HI_VENC_MIN_SPLIT_SIZE  (512)	
 /**Maximum frame rate*/			  
-/**<CNcomment: ×î´óÖ¡ÂÊ*/
+/**<CNcomment: æœ€å¤§å¸§ç‡*/
 #define HI_VENC_MAX_fps         (30)
 /**Minimum frame rate*/		
-/**<CNcomment: ×îĞ¡Ö¡ÂÊ*/	  
+/**<CNcomment: æœ€å°å¸§ç‡*/	  
 #define HI_VENC_MIN_fps         (1)		
 /**Maximum channel priority*/		
-/**<CNcomment: ×î´óÍ¨µÀÓÅÏÈ¼¶*/	  
+/**<CNcomment: æœ€å¤§é€šé“ä¼˜å…ˆçº§*/	  
 #define HI_VENC_MAX_PRIORITY    (8)					  
 /**<Maximum Quantization Parameter*/		 
-/**<CNcomment: ×î´óÁ¿»¯²ÎÊıÖµ*/
+/**<CNcomment: æœ€å¤§é‡åŒ–å‚æ•°å€¼*/
 #define HI_VENC_MAX_QP          (51)
 /**<Size of reserved bytes for the bit rate*/		 
-/**<CNcomment: ÂëÂÊ±£Áô×Ö½Ú´óĞ¡*/
+/**<CNcomment: ç ç‡ä¿ç•™å­—èŠ‚å¤§å°*/
 #define HI_VENC_STREAM_RESERV_SIZE  (48)
 /** @} */  /** <!-- ==== Macro Definition end ==== */
 
@@ -84,7 +84,7 @@ typedef struct OPTM_venc_stream_S {
 } venc_stream_buf_S;
 
 typedef struct venc_driver_context {
-	OMX_S32 video_driver_fd;                                //Éè±¸ÎÄ¼ş±êÊ¶·û£¬µ±video_driver_fd>0Ê±£¬Éè±¸ÒÑ¾­±»´ò¿ª(Í¨³£ÔÚ³õÊ¼»¯µÄÊ±ºò´ò¿ª)
+	OMX_S32 video_driver_fd;                                //è®¾å¤‡æ–‡ä»¶æ ‡è¯†ç¬¦ï¼Œå½“video_driver_fd>0æ—¶ï¼Œè®¾å¤‡å·²ç»è¢«æ‰“å¼€(é€šå¸¸åœ¨åˆå§‹åŒ–çš„æ—¶å€™æ‰“å¼€)
 
     venc_channel_S venc_chan_attr;
     venc_stream_buf_S venc_stream_addr;

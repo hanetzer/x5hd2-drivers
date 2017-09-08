@@ -1,15 +1,15 @@
 /*******************************************************************************
 Copyright (C), 2009-2012, Huawei Tech. Co., Ltd.
 File name: imedia_videnc.h
-Author & ID: ËÎĞ¡¸Õ+00133955
+Author & ID: å®‹å°åˆš+00133955
 Version: 1.00
 Date:  2009-12-18
-Description: ±¾ÎÄ¼ş°üÀ¨ÁËÖĞ¼ä´¦ÀíÄ£¿éµÄ½Ó¿Úº¯Êı¼°Ïà¹Ø½á¹¹¶¨Òå
+Description: æœ¬æ–‡ä»¶åŒ…æ‹¬äº†ä¸­é—´å¤„ç†æ¨¡å—çš„æ¥å£å‡½æ•°åŠç›¸å…³ç»“æ„å®šä¹‰
 Function List:
 
 History:
 * Revision 1.00  2010/03/09 10:00:00  songxg+00133955
-* ³õÊ¼°æ±¾±àÂëÍê³É
+* åˆå§‹ç‰ˆæœ¬ç¼–ç å®Œæˆ
 *
 *******************************************************************************/
 #ifndef __QUALITY_PARAMS_H__
@@ -42,13 +42,13 @@ typedef enum ENUM_IVIDENC_RC_METHOD
 
 typedef enum ENUM_IVIDENC_PICTURE_CODING_TYPE
 {
-    PIC_CODING_FRAME = 0,    /**< Ö¡±àÂë */
-    PIC_CODING_FIELD,        /**< ³¡±àÂë */
+    PIC_CODING_FRAME = 0,    /**< å¸§ç¼–ç  */
+    PIC_CODING_FIELD,        /**< åœºç¼–ç  */
     
-    /**< ½öH264ÓĞĞ§ */
-    PIC_CODING_PICAFF,       /**< Ö¡³¡Í¼Ïñ×ÔÊÊÓ¦±àÂë(NO MBAFF) */
-    PIC_CODING_MBAFF,        /**< Ö¡³¡ºê¿é×ÔÊÊÓ¦±àÂë(ONLY MBAFF) */
-    PIC_CODING_PICAFF_MBAFF, /**< Ö¡³¡Í¼ÏñºÍºê¿é×ÔÊÊÓ¦±àÂë */
+    /**< ä»…H264æœ‰æ•ˆ */
+    PIC_CODING_PICAFF,       /**< å¸§åœºå›¾åƒè‡ªé€‚åº”ç¼–ç (NO MBAFF) */
+    PIC_CODING_MBAFF,        /**< å¸§åœºå®å—è‡ªé€‚åº”ç¼–ç (ONLY MBAFF) */
+    PIC_CODING_PICAFF_MBAFF, /**< å¸§åœºå›¾åƒå’Œå®å—è‡ªé€‚åº”ç¼–ç  */
 } ENUM_IVIDENC_PICTURE_CODING_TYPE;
 
 typedef enum ENUM_IVIDENC_SCENECUT_METHOD
@@ -95,41 +95,41 @@ typedef enum ENUM_IVIDENC_FILTER_TYPE
     FILTER_NOSLICE    /* no filter in slice edge */
 } ENUM_IVIDENC_FILTER_TYPE;
 
-/**< ½öH264ÓĞĞ§ */
+/**< ä»…H264æœ‰æ•ˆ */
 typedef enum ENUM_IVIDENC_SLICE_MODE
 {
-    SLICE_MODE_ONLY_ONE = 0,    /**< ÕûÖ¡Ò»¸öslice */
-    SLICE_MODE_FIXMB,           /**< °´ºê¿éÊı»®·Öslice */
-    SLICE_MODE_FIXBYTE,         /**< °´×Ö½ÚÊı»®·Öslice */         
-    SLICE_MODE_STRIP,           /**< °´ĞĞ»®·Öslice£¨¼´Ò»ĞĞºê¿éÎªÒ»¸ö£© */       
+    SLICE_MODE_ONLY_ONE = 0,    /**< æ•´å¸§ä¸€ä¸ªslice */
+    SLICE_MODE_FIXMB,           /**< æŒ‰å®å—æ•°åˆ’åˆ†slice */
+    SLICE_MODE_FIXBYTE,         /**< æŒ‰å­—èŠ‚æ•°åˆ’åˆ†slice */         
+    SLICE_MODE_STRIP,           /**< æŒ‰è¡Œåˆ’åˆ†sliceï¼ˆå³ä¸€è¡Œå®å—ä¸ºä¸€ä¸ªï¼‰ */       
 } ENUM_IVIDENC_SLICE_MODE;
 
-/*!ÊÓÆµ±àÂëÖÊÁ¿¿ØÖÆ²ÎÊı*/
-// ¶ÔÊÓÆµ±àÂëÖÊÁ¿ºÍĞÔÄÜÓĞ½Ï´óÓ°ÏìµÄ²ÎÊı£¬¶ÔËã·¨½ÏÊìÏ¤µÄÈË¿ÉÍ¨¹ıÏÂÃæ²ÎÊıÓÅ»¯£¨ºóĞø¸ù¾İ²âÊÔÇé¿ö¿ÉÄÜ»áÓĞ²¿·Ö×Ö¶Îµ÷Õû£©
+/*!è§†é¢‘ç¼–ç è´¨é‡æ§åˆ¶å‚æ•°*/
+// å¯¹è§†é¢‘ç¼–ç è´¨é‡å’Œæ€§èƒ½æœ‰è¾ƒå¤§å½±å“çš„å‚æ•°ï¼Œå¯¹ç®—æ³•è¾ƒç†Ÿæ‚‰çš„äººå¯é€šè¿‡ä¸‹é¢å‚æ•°ä¼˜åŒ–ï¼ˆåç»­æ ¹æ®æµ‹è¯•æƒ…å†µå¯èƒ½ä¼šæœ‰éƒ¨åˆ†å­—æ®µè°ƒæ•´ï¼‰
 typedef struct STRU_IVIDENC_QUALITY_PARAMS
 {
     ENUM_IVIDEO_CODEC_LEVEL  eLevel;    /**< level idc */
-    ENUM_IVIDENC_PICTURE_CODING_TYPE ePicCodingType; /**< Í¼Ïñ±àÂëÀàĞÍ (FRAME, FIELD, PICAFF, ...) */
+    ENUM_IVIDENC_PICTURE_CODING_TYPE ePicCodingType; /**< å›¾åƒç¼–ç ç±»å‹ (FRAME, FIELD, PICAFF, ...) */
     INT32  iMultiPass;
 
-    BOOL   bCabacFlag;      /**< ìØ±àÂëÄ£Ê½ 0-CAVLC 1-CABAC */
+    BOOL   bCabacFlag;      /**< ç†µç¼–ç æ¨¡å¼ 0-CAVLC 1-CABAC */
     BOOL   bDCT8x8Flag;
 
-    /**< Âë¿ØÏà¹Ø²ÎÊı */
-    //INT32  iRCMethod;            /**< Âë¿ØÀàĞÍ£¬Ò»ÆÚÖ»ÓĞCBR(ÓÃABRÊµÏÖ) */
-    UINT32 uiVbvBufDelay;          /**< VBV Buffer, µ¥Î»ms, Range[500-30000] */
-    //UINT32 uiInitVbvBuf;         /**< Init VBV Buffer, µ¥Î»ms */
-    BOOL   bSkipFrameFlag;         /**< Ö÷¶¯ÌøÖ¡±êÊ¶£¬ÔÚÎŞ·¨Âú×ãÄ¿±êÂëÁ÷Ê±Ö÷¶¯ÌøÖ¡±ê¼Ç */
+    /**< ç æ§ç›¸å…³å‚æ•° */
+    //INT32  iRCMethod;            /**< ç æ§ç±»å‹ï¼Œä¸€æœŸåªæœ‰CBR(ç”¨ABRå®ç°) */
+    UINT32 uiVbvBufDelay;          /**< VBV Buffer, å•ä½ms, Range[500-30000] */
+    //UINT32 uiInitVbvBuf;         /**< Init VBV Buffer, å•ä½ms */
+    BOOL   bSkipFrameFlag;         /**< ä¸»åŠ¨è·³å¸§æ ‡è¯†ï¼Œåœ¨æ— æ³•æ»¡è¶³ç›®æ ‡ç æµæ—¶ä¸»åŠ¨è·³å¸§æ ‡è®° */
     INT32  iChromaQPOffset;        /**< Chroma QP offset (-12..12) */ 
     INT32  iSecondChromaQPOffset;  /**< Secondary chroma QP offset  */
-    //INT32  iQPISlice;             /**< I Slices³õÊ¼QPÖµ (0-51) */
-    //INT32  iQPSlice;              /**< non-I Slices³õÊ¼QPÖµ */
-    //INT32  iRCQPMax;              /**< ×î´óQPÖµ  Range[0,51] */
-    //INT32  iRCQPMin;              /**< ×îĞ¡QPÖµ Range[0,51] */
-    //INT32  iRCQPDiff;             /**< Âë¿Øµ÷ÕûÊ±QP±ä»¯µÄ×î´óÖµ */
+    //INT32  iQPISlice;             /**< I Slicesåˆå§‹QPå€¼ (0-51) */
+    //INT32  iQPSlice;              /**< non-I Slicesåˆå§‹QPå€¼ */
+    //INT32  iRCQPMax;              /**< æœ€å¤§QPå€¼  Range[0,51] */
+    //INT32  iRCQPMin;              /**< æœ€å°QPå€¼ Range[0,51] */
+    //INT32  iRCQPDiff;             /**< ç æ§è°ƒæ•´æ—¶QPå˜åŒ–çš„æœ€å¤§å€¼ */
 
-    /**< ËÑË÷Ëã·¨Ïà¹Ø²ÎÊı */
-    ENUM_IVIDENC_ME_METHOD eMEMethod;  /**< MEÀàĞÍ: Full Search or Low Power ME or Hybrid ME */
+    /**< æœç´¢ç®—æ³•ç›¸å…³å‚æ•° */
+    ENUM_IVIDENC_ME_METHOD eMEMethod;  /**< MEç±»å‹: Full Search or Low Power ME or Hybrid ME */
     INT32  iSubMELevel;
     INT32  iMERange;
     INT32  iRefFrameNum;
@@ -138,36 +138,36 @@ typedef struct STRU_IVIDENC_QUALITY_PARAMS
     BOOL   bBiMEFlag;
     BOOL   bFastPSkipFlag;
     
-    /**< Ç°´¦ÀíËã·¨Ïà¹Ø²ÎÊı */
+    /**< å‰å¤„ç†ç®—æ³•ç›¸å…³å‚æ•° */
     ENUM_IVIDENC_SCENECUT_METHOD eScenecutType;
 
-    /**< BÖ¡Ïà¹Ø²ÎÊı */
-    ENUM_IVIDENC_BREF_METHOD eBFrameRefType;         /**< BÖ¡×ö²Î¿¼ÀàĞÍ */
+    /**< Bå¸§ç›¸å…³å‚æ•° */
+    ENUM_IVIDENC_BREF_METHOD eBFrameRefType;         /**< Bå¸§åšå‚è€ƒç±»å‹ */
     ENUM_IVIDENC_DIRECT_MODE eBFrameDirectMode;
     INT32  iBFrameNum;
     //INT32  iBFrameDirect8x8;
     BOOL   bBFrameAdaptFlag;
     BOOL   bBFrameRDOFlag;
     
-    /**< ºê¿éÄ£Ê½Ïà¹Ø²ÎÊı */
+    /**< å®å—æ¨¡å¼ç›¸å…³å‚æ•° */
     BOOL  bI4x4Flag;        //use I4x4 or not. 
     BOOL  bI8x8Flag;        //use I8x8 or not.  
     BOOL  bPSub16x16Flag;   //use sub P16x16 or not.  
     BOOL  bPSub8x8Flag;     //use sub P8x8 or not.  
     BOOL  bBSub16x16Flag;   //use sub B16x16 or not.  
 
-    /**< ¼ÓÈ¨Ô¤²âÏà¹Ø²ÎÊı */
+    /**< åŠ æƒé¢„æµ‹ç›¸å…³å‚æ•° */
     BOOL  bWPFlag;          //weighted prediction on or not.
 
-    /**< »·Â·ÂË²¨Ïà¹Ø²ÎÊı */
+    /**< ç¯è·¯æ»¤æ³¢ç›¸å…³å‚æ•° */
     ENUM_IVIDENC_FILTER_TYPE eLfDisableIdc;         /**< Loop Filter enable/disable control */
-    INT32  iLFAlphaOffset;         /**< Alpha & C0 offset div. 2£¬Range[-6-6] */
+    INT32  iLFAlphaOffset;         /**< Alpha & C0 offset div. 2ï¼ŒRange[-6-6] */
     INT32  iLFBetaOffset;          /**< Beta offset div. 2, Range[-6-6] */
 
     ENUM_IVIDENC_QUANT_TYPE eQuantType;
     // slice partition
-    ENUM_IVIDENC_SLICE_MODE eSliceMode;             /**< slice»®·ÖÄ£Ê½ */ 
-    INT32  iSliceParam;            /**< µ±slice»®·ÖÄ£Ê½ÎªSLICE_MODE_FIXMB¡¢SLICE_MODE_FIXBYTEÊ±£¬ÏàÓ¦µÄÖµ */
+    ENUM_IVIDENC_SLICE_MODE eSliceMode;             /**< sliceåˆ’åˆ†æ¨¡å¼ */ 
+    INT32  iSliceParam;            /**< å½“sliceåˆ’åˆ†æ¨¡å¼ä¸ºSLICE_MODE_FIXMBã€SLICE_MODE_FIXBYTEæ—¶ï¼Œç›¸åº”çš„å€¼ */
 } STRU_IVIDENC_QUALITY_PARAMS;
     
 #pragma pack(pop)

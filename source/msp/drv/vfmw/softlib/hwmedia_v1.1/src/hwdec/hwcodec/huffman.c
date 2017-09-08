@@ -28,12 +28,12 @@
 
 
 
-/*ÒÆÖ²º£Ë¼´úÂëqsort x00141957 2010 0327*/
+/*ç§»æ¤æµ·æ€ä»£ç qsort x00141957 2010 0327*/
 #ifdef IMEDIA_LINUX_KERNEL
 /*************************************************************************/
 
 /*************************************************************************/
-/* º¯ÊýÔ­ÐÍ*/
+/* å‡½æ•°åŽŸåž‹*/
 static void shortsort(char *lo, char *hi, size_t width,
                 int ( *comp)(const void *, const void *));
 static void swap_kn(char *a, char *b, size_t width);
@@ -41,53 +41,53 @@ static void swap_kn(char *a, char *b, size_t width);
    insertion sort for arrays; arrays with lengths shorter or equal to the
    below value use insertion sort */
 
-/* Õâ¸ö²ÎÊý¶¨ÒåµÄ×÷ÓÃÊÇ£¬µ±¿ìËÙÅÅÐòµÄÑ­»·ÖÐÓöµ½´óÐ¡Ð¡ÓÚCUTOFFµÄÊý×éÊ±£¬¾ÍÊ¹ÓÃ²åÈë
+/* è¿™ä¸ªå‚æ•°å®šä¹‰çš„ä½œç”¨æ˜¯ï¼Œå½“å¿«é€ŸæŽ’åºçš„å¾ªçŽ¯ä¸­é‡åˆ°å¤§å°å°äºŽCUTOFFçš„æ•°ç»„æ—¶ï¼Œå°±ä½¿ç”¨æ’å…¥
 
-ÅÅÐòÀ´½øÐÐÅÅÐò£¬ÕâÑù¾Í±ÜÃâÁË¶ÔÐ¡Êý×é¼ÌÐø²ð·Ö¶ø´øÀ´µÄ¶îÍâ¿ªÏú¡£ÕâÀïµÄÈ¡Öµ8£¬ÊÇ
+æŽ’åºæ¥è¿›è¡ŒæŽ’åºï¼Œè¿™æ ·å°±é¿å…äº†å¯¹å°æ•°ç»„ç»§ç»­æ‹†åˆ†è€Œå¸¦æ¥çš„é¢å¤–å¼€é”€ã€‚è¿™é‡Œçš„å–å€¼8ï¼Œæ˜¯
 
-¾­¹ý²âÊÔÒÔºóÄÜ¹»Ê±¿ìËÙÅÅÐòËã·¨´ïµ½×î¿ìµÄCUTOFFµÄÖµ¡£*/
+ç»è¿‡æµ‹è¯•ä»¥åŽèƒ½å¤Ÿæ—¶å¿«é€ŸæŽ’åºç®—æ³•è¾¾åˆ°æœ€å¿«çš„CUTOFFçš„å€¼ã€‚*/
 
 #define CUTOFF 8            /* testing shows that this is good value */
 
  
 
-/* Ô´´úÂëÖÐÕâÀïÊÇqsortµÄ´úÂë£¬µ«ÊÇÎÒ¾õµÃÏÈ½âÊÍÁËqsortÒªµ÷ÓÃµÄº¯ÊýµÄ¹¦ÄÜ±È½Ï
+/* æºä»£ç ä¸­è¿™é‡Œæ˜¯qsortçš„ä»£ç ï¼Œä½†æ˜¯æˆ‘è§‰å¾—å…ˆè§£é‡Šäº†qsortè¦è°ƒç”¨çš„å‡½æ•°çš„åŠŸèƒ½æ¯”è¾ƒ
 
-ºÃ¡£
+å¥½ã€‚
 
-    shortsortº¯Êý£º
+    shortsortå‡½æ•°ï¼š
 
-    Õâ¸öº¯ÊýµÄ×÷ÓÃ£¬ÉÏÃæÒÑ¾­ÓÐÌáµ½¡£¾ÍÊÇµ±¶Ô¿ìËÙÅÅÐòµÝ¹éµ÷ÓÃµÄÊ±ºò£¬Èç¹ûÓöµ½
+    è¿™ä¸ªå‡½æ•°çš„ä½œç”¨ï¼Œä¸Šé¢å·²ç»æœ‰æåˆ°ã€‚å°±æ˜¯å½“å¯¹å¿«é€ŸæŽ’åºé€’å½’è°ƒç”¨çš„æ—¶å€™ï¼Œå¦‚æžœé‡åˆ°
 
-´óÐ¡Ð¡ÓÚCUTOFFµÄÊý×é£¬¾Íµ÷ÓÃÕâ¸öº¯ÊýÀ´½øÐÐÅÅÐò£¬¶ø²»ÊÇ¼ÌÐø²ð·ÖÊý×é½øÈëÏÂÒ»²ã
+å¤§å°å°äºŽCUTOFFçš„æ•°ç»„ï¼Œå°±è°ƒç”¨è¿™ä¸ªå‡½æ•°æ¥è¿›è¡ŒæŽ’åºï¼Œè€Œä¸æ˜¯ç»§ç»­æ‹†åˆ†æ•°ç»„è¿›å…¥ä¸‹ä¸€å±‚
 
-µÝ¹é¡£ÒòÎªËäÈ»ÕâÀïÓÃµÄÊÇ»ù±¾ÅÅÐò·½·¨£¬ËüµÄÔËÐÐÊ±¼äºÍO(n^2)³É±ÈÀý£¬µ«ÊÇÈç¹ûÊÇ
+é€’å½’ã€‚å› ä¸ºè™½ç„¶è¿™é‡Œç”¨çš„æ˜¯åŸºæœ¬æŽ’åºæ–¹æ³•ï¼Œå®ƒçš„è¿è¡Œæ—¶é—´å’ŒO(n^2)æˆæ¯”ä¾‹ï¼Œä½†æ˜¯å¦‚æžœæ˜¯
 
-Ö»ÓÐ8¸öÔªËØ£¬ËüµÄËÙ¶È±ÈÐèÒªµÝ¹éµÄ¿ìËÙÅÅÐòÒª¿ìµÃ¶à¡£ÁíÍâ£¬ÔÚÔ´´úÂëµÄ×¢ÊÍÖÐ£¬Ëµ
+åªæœ‰8ä¸ªå…ƒç´ ï¼Œå®ƒçš„é€Ÿåº¦æ¯”éœ€è¦é€’å½’çš„å¿«é€ŸæŽ’åºè¦å¿«å¾—å¤šã€‚å¦å¤–ï¼Œåœ¨æºä»£ç çš„æ³¨é‡Šä¸­ï¼Œè¯´
 
-ÕâÊÇÒ»¸ö²åÈëÅÅÐò(insertion sort)£¬µ«ÊÇÎÒ¾õµÃÕâ¸öÓ¦¸ÃÊÇÒ»¸öÑ¡ÔñÅÅÐò²Å¶Ô
+è¿™æ˜¯ä¸€ä¸ªæ’å…¥æŽ’åº(insertion sort)ï¼Œä½†æ˜¯æˆ‘è§‰å¾—è¿™ä¸ªåº”è¯¥æ˜¯ä¸€ä¸ªé€‰æ‹©æŽ’åºæ‰å¯¹
 
-(selection sort)¡£ÖÁÓÚÎªÊ²Ã´ÓÃÑ¡ÔñÅÅÐò¶ø²»ÓÃ²åÈëÅÅÐò£¬Ó¦¸ÃÊÇºÍÑ¡ÔñÅÅÐòµÄÔªËØ
+(selection sort)ã€‚è‡³äºŽä¸ºä»€ä¹ˆç”¨é€‰æ‹©æŽ’åºè€Œä¸ç”¨æ’å…¥æŽ’åºï¼Œåº”è¯¥æ˜¯å’Œé€‰æ‹©æŽ’åºçš„å…ƒç´ 
 
-½»»»´ÎÊýÉÙÓÐ¹ØÏµ£¬Ö»ÐèÒªN-1´Î½»»»£¬¶ø²åÈëÅÅÐòÆ½¾ùÐèÒª(N^2)/2´Î¡£Ö®ËùÒÔÒªÑ¡Ôñ
+äº¤æ¢æ¬¡æ•°å°‘æœ‰å…³ç³»ï¼Œåªéœ€è¦N-1æ¬¡äº¤æ¢ï¼Œè€Œæ’å…¥æŽ’åºå¹³å‡éœ€è¦(N^2)/2æ¬¡ã€‚ä¹‹æ‰€ä»¥è¦é€‰æ‹©
 
-½»»»´ÎÊýÉÙµÄËã·¨£¬ÊÇÒòÎªÓÐ¿ÉÄÜÊý×éÀïÃæµÄµ¥¸öÔªËØµÄ´óÐ¡ºÜ´ó£¬Ê¹µÃ½»»»³ÉÎª×îÖ÷
+äº¤æ¢æ¬¡æ•°å°‘çš„ç®—æ³•ï¼Œæ˜¯å› ä¸ºæœ‰å¯èƒ½æ•°ç»„é‡Œé¢çš„å•ä¸ªå…ƒç´ çš„å¤§å°å¾ˆå¤§ï¼Œä½¿å¾—äº¤æ¢æˆä¸ºæœ€ä¸»
 
-ÒªµÄÐÔÄÜÆ¿¾±¡£
+è¦çš„æ€§èƒ½ç“¶é¢ˆã€‚
 
-    ²ÎÊýËµÃ÷£º
+    å‚æ•°è¯´æ˜Žï¼š
 
-       char *lo;    Ö¸ÏòÒªÅÅÐòµÄ×ÓÊý×éµÄµÚÒ»¸öÔªËØµÄÖ¸Õë
+       char *lo;    æŒ‡å‘è¦æŽ’åºçš„å­æ•°ç»„çš„ç¬¬ä¸€ä¸ªå…ƒç´ çš„æŒ‡é’ˆ
 
-       char *hi;    Ö¸ÏòÒªÅÅÐòµÄ×ÓÊý×éµÄ×îºóÒ»¸öÔªËØµÄÖ¸Õë
+       char *hi;    æŒ‡å‘è¦æŽ’åºçš„å­æ•°ç»„çš„æœ€åŽä¸€ä¸ªå…ƒç´ çš„æŒ‡é’ˆ
 
-       size_t width;  Êý×éÖÐµ¥¸öÔªËØµÄ´óÐ¡
+       size_t width;  æ•°ç»„ä¸­å•ä¸ªå…ƒç´ çš„å¤§å°
 
-       int (__cdecl *comp)(const void *,const void *);   ÓÃÀ´±È½ÏÁ½¸öÔªËØ´ó
+       int (__cdecl *comp)(const void *,const void *);   ç”¨æ¥æ¯”è¾ƒä¸¤ä¸ªå…ƒç´ å¤§
 
-Ð¡µÄº¯ÊýÖ¸Õë£¬Õâ¸öº¯ÊýÊÇÄãÔÚµ÷ÓÃqsortµÄÊ±ºò´«ÈëµÄ²ÎÊý£¬µ±Ç°Ò»¸öÖ¸ÕëÖ¸ÏòµÄÔªËØ
+å°çš„å‡½æ•°æŒ‡é’ˆï¼Œè¿™ä¸ªå‡½æ•°æ˜¯ä½ åœ¨è°ƒç”¨qsortçš„æ—¶å€™ä¼ å…¥çš„å‚æ•°ï¼Œå½“å‰ä¸€ä¸ªæŒ‡é’ˆæŒ‡å‘çš„å…ƒç´ 
 
-Ð¡ÓÚºóÒ»¸öÊ±£¬·µ»Ø¸ºÊý£»µ±ÏàµÈÊ±£¬·µ»Ø0£»µ±´óÓÚÊ±£¬·µ»ØÕýÊý¡£*/
+å°äºŽåŽä¸€ä¸ªæ—¶ï¼Œè¿”å›žè´Ÿæ•°ï¼›å½“ç›¸ç­‰æ—¶ï¼Œè¿”å›ž0ï¼›å½“å¤§äºŽæ—¶ï¼Œè¿”å›žæ­£æ•°ã€‚*/
 
 static void shortsort (
     char *lo,
@@ -105,9 +105,9 @@ static void shortsort (
         /* A[i] <= A[j] for i <= j, j > hi */
         max = lo;
 
-      /*ÏÂÃæÕâ¸öforÑ­»·×÷ÓÃÊÇ´Óloµ½hiµÄÔªËØÖÐ£¬Ñ¡³ö×î´óµÄÒ»¸ö£¬maxÖ¸ÕëÖ¸ÏòÕâ
+      /*ä¸‹é¢è¿™ä¸ªforå¾ªçŽ¯ä½œç”¨æ˜¯ä»Žloåˆ°hiçš„å…ƒç´ ä¸­ï¼Œé€‰å‡ºæœ€å¤§çš„ä¸€ä¸ªï¼ŒmaxæŒ‡é’ˆæŒ‡å‘è¿™
 
-¸ö×î´óÏî*/
+ä¸ªæœ€å¤§é¡¹*/
         for (p = lo+width; p <= hi; p += width) {
             /* A[i] <= A[max] for lo <= i < p */
             if (comp(p, max) > 0) {
@@ -118,14 +118,14 @@ static void shortsort (
 
         /* A[i] <= A[max] for lo <= i <= hi */
 
-      /*ÕâÀï°Ñ×î´óÏîºÍhiÖ¸ÏòµÄÏîÏò½»»»*/
+      /*è¿™é‡ŒæŠŠæœ€å¤§é¡¹å’ŒhiæŒ‡å‘çš„é¡¹å‘äº¤æ¢*/
         swap_kn(max, hi, width);
 
         /* A[i] <= A[hi] for i <= hi, so A[i] <= A[j] for i <= j, j >= hi */
 
-       /*hiÏòÇ°ÒÆ¶¯Ò»¸öÖ¸Õë¡£¾­¹ýÕâÒ»²½£¬ÔÚhiºóÃæµÄÊÇÒÑ¾­ÅÅºÃÐòµÄ±ÈÎ´ÅÅÐò²¿·Ö
+       /*hiå‘å‰ç§»åŠ¨ä¸€ä¸ªæŒ‡é’ˆã€‚ç»è¿‡è¿™ä¸€æ­¥ï¼Œåœ¨hiåŽé¢çš„æ˜¯å·²ç»æŽ’å¥½åºçš„æ¯”æœªæŽ’åºéƒ¨åˆ†
 
-ËùÓÐµÄÊýÒª´óµÄÊý¡£*/
+æ‰€æœ‰çš„æ•°è¦å¤§çš„æ•°ã€‚*/
 
         hi -= width;
 
@@ -137,9 +137,9 @@ static void shortsort (
 
  
 
-/*ÏÂÃæ·ÖÎöswapº¯Êý£º
+/*ä¸‹é¢åˆ†æžswapå‡½æ•°ï¼š
 
-      Õâ¸öº¯Êý±È½Ï¼òµ¥£¬¾ÍÊÇ½»»»Á½¸öÏîµÄ²Ù×÷£¬²»¹ýÊÇÓÃÖ¸ÕëÀ´ÊµÏÖµÄ¡£
+      è¿™ä¸ªå‡½æ•°æ¯”è¾ƒç®€å•ï¼Œå°±æ˜¯äº¤æ¢ä¸¤ä¸ªé¡¹çš„æ“ä½œï¼Œä¸è¿‡æ˜¯ç”¨æŒ‡é’ˆæ¥å®žçŽ°çš„ã€‚
 
 */
 
@@ -163,11 +163,11 @@ static void swap_kn (
 
  
 
-     /*ÏÂÃæÊÇ×îÖØÒªµÄ²¿·Ö£¬qsortº¯Êý£º*/
+     /*ä¸‹é¢æ˜¯æœ€é‡è¦çš„éƒ¨åˆ†ï¼Œqsortå‡½æ•°ï¼š*/
 
  
 
-/*Ê¹ÓÃµÄÊÇ·ÇµÝ¹é·½Ê½£¬ËùÒÔÕâÀïÓÐÒ»¸ö×Ô¶¨ÒåµÄÕ»Ê½½á¹¹£¬ÏÂÃæÕâ¸ö¶¨ÒåÊÇÕ»µÄ´óÐ¡
+/*ä½¿ç”¨çš„æ˜¯éžé€’å½’æ–¹å¼ï¼Œæ‰€ä»¥è¿™é‡Œæœ‰ä¸€ä¸ªè‡ªå®šä¹‰çš„æ ˆå¼ç»“æž„ï¼Œä¸‹é¢è¿™ä¸ªå®šä¹‰æ˜¯æ ˆçš„å¤§å°
 
 */
 
@@ -183,27 +183,27 @@ static void qsort (
     /* Note: the number of stack entries required is no more than
        1 + log2(num), so 30 is sufficient for any array */
 
-   /*ÓÉÓÚÊ¹ÓÃÁËÄ³Ð©¼¼ÇÉ£¨ÏÂÃæ»á½²µ½£©£¬Ê¹µÃÕ»´óÐ¡µÄÐèÇó²»»á´óÓÚ1+log2(num)£¬
+   /*ç”±äºŽä½¿ç”¨äº†æŸäº›æŠ€å·§ï¼ˆä¸‹é¢ä¼šè®²åˆ°ï¼‰ï¼Œä½¿å¾—æ ˆå¤§å°çš„éœ€æ±‚ä¸ä¼šå¤§äºŽ1+log2(num)ï¼Œ
 
-Òò´Ë30µÄÕ»´óÐ¡Ó¦¸ÃÊÇ×ã¹»ÁË¡£ÎªÊ²Ã´ËµÊÇ30ÄØ£¿ÆäÊµÔÚÉÏÃæSTKSIZµÄ¶¨ÒåÖÐ¿ÉÒÔ¼ÆËã³ösizeof(void*)£½4£¬ËùÒÔ8*4-2£½30*/
-    char *lo, *hi;              /* ends of sub-array currently sorting   Êý×é
+å› æ­¤30çš„æ ˆå¤§å°åº”è¯¥æ˜¯è¶³å¤Ÿäº†ã€‚ä¸ºä»€ä¹ˆè¯´æ˜¯30å‘¢ï¼Ÿå…¶å®žåœ¨ä¸Šé¢STKSIZçš„å®šä¹‰ä¸­å¯ä»¥è®¡ç®—å‡ºsizeof(void*)ï¼4ï¼Œæ‰€ä»¥8*4-2ï¼30*/
+    char *lo, *hi;              /* ends of sub-array currently sorting   æ•°ç»„
 
-µÄÁ½¶ËÏîÖ¸Õë£¬ÓÃÀ´Ö¸Ã÷Êý×éµÄÉÏ½çºÍÏÂ½ç*/
-    char *mid;                  /* points to middle of subarray  Êý×éµÄÖÐ¼äÏîÖ¸
+çš„ä¸¤ç«¯é¡¹æŒ‡é’ˆï¼Œç”¨æ¥æŒ‡æ˜Žæ•°ç»„çš„ä¸Šç•Œå’Œä¸‹ç•Œ*/
+    char *mid;                  /* points to middle of subarray  æ•°ç»„çš„ä¸­é—´é¡¹æŒ‡
 
-Õë*/
-    char *loguy, *higuy;        /* traveling pointers for partition step  Ñ­
+é’ˆ*/
+    char *loguy, *higuy;        /* traveling pointers for partition step  å¾ª
 
-»·ÖÐµÄÓÎ¶¯Ö¸Õë*/
-    size_t size;                /* size of the sub-array  Êý×éµÄ´óÐ¡*/
+çŽ¯ä¸­çš„æ¸¸åŠ¨æŒ‡é’ˆ*/
+    size_t size;                /* size of the sub-array  æ•°ç»„çš„å¤§å°*/
     char *lostk[STKSIZ], *histk[STKSIZ];
-    int stkptr;                 /* stack for saving sub-array to be processed  Õ»¶¥Ö¸Õë
+    int stkptr;                 /* stack for saving sub-array to be processed  æ ˆé¡¶æŒ‡é’ˆ
 
 */
 
  
 
-/*Èç¹ûÖ»ÓÐÒ»¸ö»òÒÔÏÂµÄÔªËØ£¬ÔòÍË³ö*/
+/*å¦‚æžœåªæœ‰ä¸€ä¸ªæˆ–ä»¥ä¸‹çš„å…ƒç´ ï¼Œåˆ™é€€å‡º*/
 
     if (num < 2 || width == 0)
         return;                 /* nothing to do */
@@ -217,14 +217,14 @@ static void qsort (
        lo and hi and jumping to here is like recursion, but stkptr is
        preserved, locals aren't, so we preserve stuff on the stack */
 
-    /*Õâ¸ö±êÇ©ÊÇÎ±µÝ¹éµÄ¿ªÊ¼*/
+    /*è¿™ä¸ªæ ‡ç­¾æ˜¯ä¼ªé€’å½’çš„å¼€å§‹*/
 recurse:
 
     size = (hi - lo) / width + 1;        /* number of el's to sort */
 
     /* below a certain size, it is faster to use a O(n^2) sorting method */
 
-   /*µ±sizeÐ¡ÓÚCUTOFFÊ±£¬Ê¹ÓÃO(n2)µÄÅÅÐòËã·¨¸ü¿ì*/
+   /*å½“sizeå°äºŽCUTOFFæ—¶ï¼Œä½¿ç”¨O(n2)çš„æŽ’åºç®—æ³•æ›´å¿«*/
     if (size <= CUTOFF) {
         shortsort(lo, hi, width, comp);
     }
@@ -244,29 +244,29 @@ a
            median-of-three algorithm provides better performance than simply
            picking the middle element for the latter case. */
 
-      /*Ê×ÏÈÎÒÃÇÒªÑ¡ÔñÒ»¸ö·ÖÇøÏî¡£Ëã·¨µÄ¸ßÐ§ÐÔÒªÇóÎÒÃÇÕÒµ½Ò»¸ö½üËÆÊý×éÖÐ¼äÖµ
+      /*é¦–å…ˆæˆ‘ä»¬è¦é€‰æ‹©ä¸€ä¸ªåˆ†åŒºé¡¹ã€‚ç®—æ³•çš„é«˜æ•ˆæ€§è¦æ±‚æˆ‘ä»¬æ‰¾åˆ°ä¸€ä¸ªè¿‘ä¼¼æ•°ç»„ä¸­é—´å€¼
 
-µÄÏî£¬µ«ÎÒÃÇÒª±£Ö¤ÄÜ¹»ºÜ¿ìÕÒµ½Ëü¡£ÎÒÃÇÑ¡ÔñÊý×éµÄµÚÒ»Ïî¡¢ÖÐ¼äÏîºÍ×îºóÒ»ÏîµÄÖÐ
+çš„é¡¹ï¼Œä½†æˆ‘ä»¬è¦ä¿è¯èƒ½å¤Ÿå¾ˆå¿«æ‰¾åˆ°å®ƒã€‚æˆ‘ä»¬é€‰æ‹©æ•°ç»„çš„ç¬¬ä¸€é¡¹ã€ä¸­é—´é¡¹å’Œæœ€åŽä¸€é¡¹çš„ä¸­
 
-¼äÖµ£¬À´±ÜÃâ×î»µÇé¿öÏÂµÄµÍÐ§ÂÊ¡£²âÊÔ±íÃ÷£¬Ñ¡ÔñÈý¸öÊýµÄÖÐ¼äÖµ£¬±Èµ¥´¿Ñ¡ÔñÊý×é
+é—´å€¼ï¼Œæ¥é¿å…æœ€åæƒ…å†µä¸‹çš„ä½Žæ•ˆçŽ‡ã€‚æµ‹è¯•è¡¨æ˜Žï¼Œé€‰æ‹©ä¸‰ä¸ªæ•°çš„ä¸­é—´å€¼ï¼Œæ¯”å•çº¯é€‰æ‹©æ•°ç»„
 
-µÄÖÐ¼äÏîµÄÐ§ÂÊÒª¸ß¡£
+çš„ä¸­é—´é¡¹çš„æ•ˆçŽ‡è¦é«˜ã€‚
 
-       ÎÒÃÇ½âÊÍÒ»ÏÂÎªÊ²Ã´Òª±ÜÃâ×î»µÇé¿öºÍÔõÑù±ÜÃâ¡£ÔÚ×î»µÇé¿öÏÂ£¬¿ìËÙÅÅÐòËã·¨
+       æˆ‘ä»¬è§£é‡Šä¸€ä¸‹ä¸ºä»€ä¹ˆè¦é¿å…æœ€åæƒ…å†µå’Œæ€Žæ ·é¿å…ã€‚åœ¨æœ€åæƒ…å†µä¸‹ï¼Œå¿«é€ŸæŽ’åºç®—æ³•
 
-µÄÔËÐÐÊ±¼ä¸´ÔÓ¶ÈÊÇO(n^2)¡£ÕâÖÖÇé¿öµÄÒ»¸öÀý×ÓÊÇÒÑ¾­ÅÅÐòµÄÎÄ¼þ¡£Èç¹ûÎÒÃÇÑ¡Ôñ×î
+çš„è¿è¡Œæ—¶é—´å¤æ‚åº¦æ˜¯O(n^2)ã€‚è¿™ç§æƒ…å†µçš„ä¸€ä¸ªä¾‹å­æ˜¯å·²ç»æŽ’åºçš„æ–‡ä»¶ã€‚å¦‚æžœæˆ‘ä»¬é€‰æ‹©æœ€
 
-ºóÒ»¸öÏî×÷Îª»®·ÖÏî£¬Ò²¾ÍÊÇÒÑÅÅÐòÊý×éÖÐµÄ×î´óÏî£¬ÎÒÃÇ·ÖÇøµÄ½á¹ûÊÇ·Ö³ÉÁËÒ»¸ö´ó
+åŽä¸€ä¸ªé¡¹ä½œä¸ºåˆ’åˆ†é¡¹ï¼Œä¹Ÿå°±æ˜¯å·²æŽ’åºæ•°ç»„ä¸­çš„æœ€å¤§é¡¹ï¼Œæˆ‘ä»¬åˆ†åŒºçš„ç»“æžœæ˜¯åˆ†æˆäº†ä¸€ä¸ªå¤§
 
-Ð¡ÎªN-1µÄÊý×éºÍÒ»¸ö´óÐ¡Îª1µÄÊý×é£¬ÕâÑùµÄ»°£¬ÎÒÃÇÐèÒªµÄ±È½Ï´ÎÊýÊÇN + N-1 + N-2 
+å°ä¸ºN-1çš„æ•°ç»„å’Œä¸€ä¸ªå¤§å°ä¸º1çš„æ•°ç»„ï¼Œè¿™æ ·çš„è¯ï¼Œæˆ‘ä»¬éœ€è¦çš„æ¯”è¾ƒæ¬¡æ•°æ˜¯N + N-1 + N-2 
 
-+ N-3 +...+2+1=(N+1)N/2=O(n^2)¡£¶øÈç¹ûÑ¡ÔñÇ° ÖÐ ºóÈý¸öÊýµÄÖÐ¼äÖµ£¬ÕâÖÖ×î»µÇé¿öµÄ
++ N-3 +...+2+1=(N+1)N/2=O(n^2)ã€‚è€Œå¦‚æžœé€‰æ‹©å‰ ä¸­ åŽä¸‰ä¸ªæ•°çš„ä¸­é—´å€¼ï¼Œè¿™ç§æœ€åæƒ…å†µçš„
 
-Êý×éÒ²ÄÜ¹»µÃµ½ºÜºÃµÄ´¦Àí¡£*/
+æ•°ç»„ä¹Ÿèƒ½å¤Ÿå¾—åˆ°å¾ˆå¥½çš„å¤„ç†ã€‚*/
 
         mid = lo + (size / 2) * width;      /* find middle element */
 
-       /*µÚÒ»Ïî ÖÐ¼äÏî ºÍ×îºóÏîÈý¸öÔªËØÅÅÐò*/
+       /*ç¬¬ä¸€é¡¹ ä¸­é—´é¡¹ å’Œæœ€åŽé¡¹ä¸‰ä¸ªå…ƒç´ æŽ’åº*/
 
         /* Sort the first, middle, last elements into order */
         if (comp(lo, mid) > 0) {
@@ -286,11 +286,11 @@ consisting
            partition element, and one of elements > than it.  This is done
            below; comments indicate conditions established at every step. */
 
-        /*ÏÂÃæÒª°ÑÊý×é·ÖÇø³ÉÈý¿é£¬Ò»¿éÊÇÐ¡ÓÚ·ÖÇøÏîµÄ£¬Ò»¿éÊÇµÈÓÚ·ÖÇøÏîµÄ£¬¶ø
+        /*ä¸‹é¢è¦æŠŠæ•°ç»„åˆ†åŒºæˆä¸‰å—ï¼Œä¸€å—æ˜¯å°äºŽåˆ†åŒºé¡¹çš„ï¼Œä¸€å—æ˜¯ç­‰äºŽåˆ†åŒºé¡¹çš„ï¼Œè€Œ
 
-ÁíÒ»¿éÊÇ´óÓÚ·ÖÇøÏîµÄ¡£*/
+å¦ä¸€å—æ˜¯å¤§äºŽåˆ†åŒºé¡¹çš„ã€‚*/
 
-       /*ÕâÀï³õÊ¼»¯µÄloguy ºÍ higuyÁ½¸öÖ¸Õë£¬ÊÇÔÚÑ­»·ÖÐÓÃÓÚÒÆ¶¯À´Ö¸Ê¾ÐèÒª½»»»µÄÁ½¸öÔªËØµÄ¡£higuyµÝ¼õ£¬loguyµÝÔö£¬ËùÒÔÏÂÃæµÄforÑ­»·×ÜÊÇ¿ÉÒÔÖÕÖ¹¡£*/
+       /*è¿™é‡Œåˆå§‹åŒ–çš„loguy å’Œ higuyä¸¤ä¸ªæŒ‡é’ˆï¼Œæ˜¯åœ¨å¾ªçŽ¯ä¸­ç”¨äºŽç§»åŠ¨æ¥æŒ‡ç¤ºéœ€è¦äº¤æ¢çš„ä¸¤ä¸ªå…ƒç´ çš„ã€‚higuyé€’å‡ï¼Œloguyé€’å¢žï¼Œæ‰€ä»¥ä¸‹é¢çš„forå¾ªçŽ¯æ€»æ˜¯å¯ä»¥ç»ˆæ­¢ã€‚*/
 
         loguy = lo;
         higuy = hi;
@@ -307,7 +307,7 @@ consisting
                existing comparison funcs don't work when passed the same
                value for both pointers. */
 
-           /*¿ªÊ¼ÒÆ¶¯loguyÖ¸Õë£¬Ö±µ½A[loguy]>A[mid]*/
+           /*å¼€å§‹ç§»åŠ¨loguyæŒ‡é’ˆï¼Œç›´åˆ°A[loguy]>A[mid]*/
 
             if (mid > loguy) {
                 do  {
@@ -315,9 +315,9 @@ consisting
                 } while (loguy < mid && comp(loguy, mid) <= 0);
             }
 
-            /*Èç¹ûÒÆ¶¯µ½loguy>=midµÄÊ±ºò£¬¾Í¼ÌÐøÏòºóÒÆ¶¯£¬Ê¹µÃA[loguy]>a
+            /*å¦‚æžœç§»åŠ¨åˆ°loguy>=midçš„æ—¶å€™ï¼Œå°±ç»§ç»­å‘åŽç§»åŠ¨ï¼Œä½¿å¾—A[loguy]>a
 
-[mid]¡£ÕâÒ»²½Êµ¼ÊÉÏ×÷ÓÃ¾ÍÊÇÊ¹µÃÒÆ¶¯ÍêloguyÖ®ºó£¬loguyÖ¸ÕëÖ®Ç°µÄÔªËØ¶¼ÊÇ²»´óÓÚ»®·ÖÖµµÄÔªËØ¡£*/
+[mid]ã€‚è¿™ä¸€æ­¥å®žé™…ä¸Šä½œç”¨å°±æ˜¯ä½¿å¾—ç§»åŠ¨å®Œloguyä¹‹åŽï¼ŒloguyæŒ‡é’ˆä¹‹å‰çš„å…ƒç´ éƒ½æ˜¯ä¸å¤§äºŽåˆ’åˆ†å€¼çš„å…ƒç´ ã€‚*/
             if (mid <= loguy) {
                 do  {
                     loguy += width;
@@ -327,17 +327,17 @@ consisting
             /* lo < loguy <= hi+1, A[i] <= A[mid] for lo <= i < loguy,
                either loguy > hi or A[loguy] > A[mid] */
 
-           /*Ö´ÐÐµ½ÕâÀïµÄÊ±ºò£¬lo<loguy<=hi+1£¬
+           /*æ‰§è¡Œåˆ°è¿™é‡Œçš„æ—¶å€™ï¼Œlo<loguy<=hi+1ï¼Œ
 
-             ¶ÔËùÓÐlo<=i<loguy£¬ÓÐA[i]<=A[mid]£¬
+             å¯¹æ‰€æœ‰lo<=i<loguyï¼Œæœ‰A[i]<=A[mid]ï¼Œ
 
-             »òÕßloguy>hi³ÉÁ¢£¬»òÕßA[loguy]>A[mid]³ÉÁ¢
+             æˆ–è€…loguy>hiæˆç«‹ï¼Œæˆ–è€…A[loguy]>A[mid]æˆç«‹
 
-            Ò²¾ÍÊÇËµ£¬loguyÖ¸ÕëÖ®Ç°µÄÏî¶¼±ÈA[mid]ÒªÐ¡»òÕßµÈÓÚËü*/
+            ä¹Ÿå°±æ˜¯è¯´ï¼ŒloguyæŒ‡é’ˆä¹‹å‰çš„é¡¹éƒ½æ¯”A[mid]è¦å°æˆ–è€…ç­‰äºŽå®ƒ*/
 
  
 
-            /*ÏÂÃæÒÆ¶¯higuyÖ¸Õë£¬Ö±µ½A[higuy]<£½A[mid]*/
+            /*ä¸‹é¢ç§»åŠ¨higuyæŒ‡é’ˆï¼Œç›´åˆ°A[higuy]<ï¼A[mid]*/
 
             do  {
                 higuy -= width;
@@ -348,7 +348,7 @@ consisting
 
  
 
-           /*Èç¹ûÁ½¸öÖ¸Õë½»²æÁË£¬ÔòÍË³öÑ­»·¡£*/
+           /*å¦‚æžœä¸¤ä¸ªæŒ‡é’ˆäº¤å‰äº†ï¼Œåˆ™é€€å‡ºå¾ªçŽ¯ã€‚*/
 
             if (higuy < loguy)
                 break;
@@ -357,15 +357,15 @@ consisting
                A[loguy] > A[mid], A[higuy] <= A[mid],
                loguy <= hi, higuy > lo */
 
-           /*Èç¹ûloguy>hi »òÕßhiguy==lo£¬ÔòÉÏÃæÒ»ÌõbreakÓï¾äÒÑ¾­³ÉÁ¢£¬ÎÒÃÇÒÑ
+           /*å¦‚æžœloguy>hi æˆ–è€…higuy==loï¼Œåˆ™ä¸Šé¢ä¸€æ¡breakè¯­å¥å·²ç»æˆç«‹ï¼Œæˆ‘ä»¬å·²
 
-¾­Ìø³ö¡£
+ç»è·³å‡ºã€‚
 
-             Òò´Ë£¬´ËÊ±A[loguy]>A[mid],A[higuy]<=A[mid],
+             å› æ­¤ï¼Œæ­¤æ—¶A[loguy]>A[mid],A[higuy]<=A[mid],
 
-            loguy<=hi£¬higuy>lo¡£*/
+            loguy<=hiï¼Œhiguy>loã€‚*/
 
-           /*½»»»Á½¸öÖ¸ÕëÖ¸ÏòµÄÔªËØ*/
+           /*äº¤æ¢ä¸¤ä¸ªæŒ‡é’ˆæŒ‡å‘çš„å…ƒç´ */
 
             swap_kn(loguy, higuy, width);
 
@@ -373,17 +373,17 @@ consisting
                to check for mid == higuy, since before the swap,
                A[loguy] > A[mid] implies loguy != mid. */
 
-           /*Èç¹û»®·ÖÔªËØµÄÎ»ÖÃÒÆ¶¯ÁË£¬ÎÒÃÇÒª¸ú×ÙËü¡£
+           /*å¦‚æžœåˆ’åˆ†å…ƒç´ çš„ä½ç½®ç§»åŠ¨äº†ï¼Œæˆ‘ä»¬è¦è·Ÿè¸ªå®ƒã€‚
 
-              ÒòÎªÔÚÇ°Ãæ¶Ôloguy´¦ÀíµÄÁ½¸öÑ­»·ÖÐµÄµÚ¶þ¸öÑ­»·ÒÑ¾­±£Ö¤ÁËloguy>mid,
+              å› ä¸ºåœ¨å‰é¢å¯¹loguyå¤„ç†çš„ä¸¤ä¸ªå¾ªçŽ¯ä¸­çš„ç¬¬äºŒä¸ªå¾ªçŽ¯å·²ç»ä¿è¯äº†loguy>mid,
 
-             ¼´loguyÖ¸Õë²»ºÍmidÖ¸ÕëÏàµÈ¡£
+             å³loguyæŒ‡é’ˆä¸å’ŒmidæŒ‡é’ˆç›¸ç­‰ã€‚
 
-             ËùÒÔÎÒÃÇÖ»ÐèÒª¿´Ò»ÏÂhiguyÖ¸ÕëÊÇ·ñµÈÓÚmidÖ¸Õë£¬
+             æ‰€ä»¥æˆ‘ä»¬åªéœ€è¦çœ‹ä¸€ä¸‹higuyæŒ‡é’ˆæ˜¯å¦ç­‰äºŽmidæŒ‡é’ˆï¼Œ
 
-            Èç¹ûÔ­À´ÊÇmid==higuy³ÉÁ¢ÁË£¬ÄÇÃ´¾­¹ý¸Õ²ÅµÄ½»»»£¬ÖÐ¼äÖµÏîÒÑ¾­µ½ÁË
+            å¦‚æžœåŽŸæ¥æ˜¯mid==higuyæˆç«‹äº†ï¼Œé‚£ä¹ˆç»è¿‡åˆšæ‰çš„äº¤æ¢ï¼Œä¸­é—´å€¼é¡¹å·²ç»åˆ°äº†
 
-loguyÖ¸ÏòµÄÎ»ÖÃ£¨×¢Òâ£º¸Õ²ÅÊÇÖµ½»»»ÁË£¬µ«ÊÇ²¢Ã»ÓÐ½»»»Ö¸Õë¡£µ±higuyºÍmidÏàµÈ£¬½»»»higuyºÍloguyÖ¸ÏòµÄÄÚÈÝ£¬higuyÒÀÈ»µÈÓÚmid£©£¬ËùÒÔÈÃmid£½loguy£¬ÖØÐÂ¸ú×ÙÖÐ¼äÖµ¡£*/
+loguyæŒ‡å‘çš„ä½ç½®ï¼ˆæ³¨æ„ï¼šåˆšæ‰æ˜¯å€¼äº¤æ¢äº†ï¼Œä½†æ˜¯å¹¶æ²¡æœ‰äº¤æ¢æŒ‡é’ˆã€‚å½“higuyå’Œmidç›¸ç­‰ï¼Œäº¤æ¢higuyå’ŒloguyæŒ‡å‘çš„å†…å®¹ï¼Œhiguyä¾ç„¶ç­‰äºŽmidï¼‰ï¼Œæ‰€ä»¥è®©midï¼loguyï¼Œé‡æ–°è·Ÿè¸ªä¸­é—´å€¼ã€‚*/
 
             if (mid == higuy)
                 mid = loguy;
@@ -391,7 +391,7 @@ loguyÖ¸ÏòµÄÎ»ÖÃ£¨×¢Òâ£º¸Õ²ÅÊÇÖµ½»»»ÁË£¬µ«ÊÇ²¢Ã»ÓÐ½»»»Ö¸Õë¡£µ±higuyºÍmidÏàµÈ£¬½»»
             /* A[loguy] <= A[mid], A[higuy] > A[mid]; so condition at top
                of loop is re-established */
 
-            /*Õâ¸öÑ­»·Ò»Ö±½øÐÐµ½Á½¸öÖ¸Õë½»²æÎªÖ¹*/
+            /*è¿™ä¸ªå¾ªçŽ¯ä¸€ç›´è¿›è¡Œåˆ°ä¸¤ä¸ªæŒ‡é’ˆäº¤å‰ä¸ºæ­¢*/
         }
 
         /*     A[i] <= A[mid] for lo <= i < loguy,
@@ -402,13 +402,13 @@ loguyÖ¸ÏòµÄÎ»ÖÃ£¨×¢Òâ£º¸Õ²ÅÊÇÖµ½»»»ÁË£¬µ«ÊÇ²¢Ã»ÓÐ½»»»Ö¸Õë¡£µ±higuyºÍmidÏàµÈ£¬½»»
                higuy == loguy-1
                or higuy == hi - 1, loguy == hi + 1, A[hi] == A[mid] */
 
-       /*ÉÏÒ»¸öÑ­»·½áÊøÖ®ºó£¬ÒòÎª»¹Ã»ÓÐÖ´ÐÐloguyÖ¸ÕëºÍhiguyÖ¸ÕëÄÚÈÝµÄ½»»»£¬ËùÒÔloguyÖ¸ÕëµÄÇ°ÃæµÄÊý×éÔªËØ¶¼²»´óÓÚ»®·ÖÖµ£¬¶øhiguyÖ¸ÕëÖ®ºóµÄÊý×éÔªËØ¶¼´óÓÚ»®·ÖÖµ£¬ËùÒÔ´ËÊ±ÓÐÁ½ÖÖÇé¿ö£º
+       /*ä¸Šä¸€ä¸ªå¾ªçŽ¯ç»“æŸä¹‹åŽï¼Œå› ä¸ºè¿˜æ²¡æœ‰æ‰§è¡ŒloguyæŒ‡é’ˆå’ŒhiguyæŒ‡é’ˆå†…å®¹çš„äº¤æ¢ï¼Œæ‰€ä»¥loguyæŒ‡é’ˆçš„å‰é¢çš„æ•°ç»„å…ƒç´ éƒ½ä¸å¤§äºŽåˆ’åˆ†å€¼ï¼Œè€ŒhiguyæŒ‡é’ˆä¹‹åŽçš„æ•°ç»„å…ƒç´ éƒ½å¤§äºŽåˆ’åˆ†å€¼ï¼Œæ‰€ä»¥æ­¤æ—¶æœ‰ä¸¤ç§æƒ…å†µï¼š
 
-       1)  higuy£½loguy£­1
+       1)  higuyï¼loguyï¼1
 
-       2)  higuy£½hi£­1£¬loguy£½hi+1
+       2)  higuyï¼hiï¼1ï¼Œloguyï¼hi+1
 
-       ÆäÖÐµÚ¶þÖÖÇé¿ö·¢ÉúÔÚÒ»¿ªÊ¼Ñ¡ÔñÈý¸öÔªËØµÄÊ±ºò£¬hiÖ¸ÏòµÄÔªËØºÍmidÖ¸ÏòµÄÔªËØÖµÏàµÈ£¬¶øhiÇ°ÃæµÄÔªËØÈ«²¿¶¼²»´óÓÚ»®·ÖÖµ£¬Ê¹µÃÒÆ¶¯loguyÖ¸ÕëµÄÊ±ºò£¬Ò»Ö±ÒÆ¶¯µ½ÁËhi+1²ÅÍ£Ö¹£¬ÔÙÒÆ¶¯higuyÖ¸ÕëµÄÊ±ºò£¬higuyÖ¸ÕëÒÆ¶¯Ò»²½¾ÍÍ£Ö¹ÁË£¬Í£ÔÚhi£­1´¦¡£
+       å…¶ä¸­ç¬¬äºŒç§æƒ…å†µå‘ç”Ÿåœ¨ä¸€å¼€å§‹é€‰æ‹©ä¸‰ä¸ªå…ƒç´ çš„æ—¶å€™ï¼ŒhiæŒ‡å‘çš„å…ƒç´ å’ŒmidæŒ‡å‘çš„å…ƒç´ å€¼ç›¸ç­‰ï¼Œè€Œhiå‰é¢çš„å…ƒç´ å…¨éƒ¨éƒ½ä¸å¤§äºŽåˆ’åˆ†å€¼ï¼Œä½¿å¾—ç§»åŠ¨loguyæŒ‡é’ˆçš„æ—¶å€™ï¼Œä¸€ç›´ç§»åŠ¨åˆ°äº†hi+1æ‰åœæ­¢ï¼Œå†ç§»åŠ¨higuyæŒ‡é’ˆçš„æ—¶å€™ï¼ŒhiguyæŒ‡é’ˆç§»åŠ¨ä¸€æ­¥å°±åœæ­¢äº†ï¼Œåœåœ¨hiï¼1å¤„ã€‚
 
        */
 
@@ -437,34 +437,34 @@ loguyÖ¸ÏòµÄÎ»ÖÃ£¨×¢Òâ£º¸Õ²ÅÊÇÖµ½»»»ÁË£¬µ«ÊÇ²¢Ã»ÓÐ½»»»Ö¸Õë¡£µ±higuyºÍmidÏàµÈ£¬½»»
               A[i]  >  A[mid] for loguy <= i < hi
               A[hi] >= A[mid] */
 
-       /*¾­¹ýÉÏÃæµÄ´¦Àí£¬higuyÖ¸ÕëºÍÖ®Ç°µÄ¶¼ÊÇÐ¡ÓÚµÈÓÚA[mid]µÄÊý£¬¶øhiguyÖ¸Õë
+       /*ç»è¿‡ä¸Šé¢çš„å¤„ç†ï¼ŒhiguyæŒ‡é’ˆå’Œä¹‹å‰çš„éƒ½æ˜¯å°äºŽç­‰äºŽA[mid]çš„æ•°ï¼Œè€ŒhiguyæŒ‡é’ˆ
 
-ºÍloguyÖ¸ÕëÖ®¼äµÄÊÇµÈÓÚA[mid]µÄÊý£¬¶øloguyÖ¸ÕëºÍÖ®ºóµÄÊÇ´óÓÚA[mid]µÄÊý¡£Êµ¼ÊÉÏÎÒÃÇ¿ÉÒÔ¿´µ½£¬higuyÖ¸ÕëÇ°ÃæÈÔÈ»¿ÉÄÜÓÐµÈÓÚA[mid]µÄÊý£¬µ«ÊÇÕâÑùµÄÈýÂ·»®·ÖÖ®ºó£¬È·ÊµÄÜ¹»ÔÚÒ»¶¨³Ì¶ÈÉÏÃæ¼õÉÙ×ÓÊý×éµÄ´óÐ¡¡£ÓÅ»¯ÁË³ÌÐòµÄÐ§ÂÊ¡£*/
+å’ŒloguyæŒ‡é’ˆä¹‹é—´çš„æ˜¯ç­‰äºŽA[mid]çš„æ•°ï¼Œè€ŒloguyæŒ‡é’ˆå’Œä¹‹åŽçš„æ˜¯å¤§äºŽA[mid]çš„æ•°ã€‚å®žé™…ä¸Šæˆ‘ä»¬å¯ä»¥çœ‹åˆ°ï¼ŒhiguyæŒ‡é’ˆå‰é¢ä»ç„¶å¯èƒ½æœ‰ç­‰äºŽA[mid]çš„æ•°ï¼Œä½†æ˜¯è¿™æ ·çš„ä¸‰è·¯åˆ’åˆ†ä¹‹åŽï¼Œç¡®å®žèƒ½å¤Ÿåœ¨ä¸€å®šç¨‹åº¦ä¸Šé¢å‡å°‘å­æ•°ç»„çš„å¤§å°ã€‚ä¼˜åŒ–äº†ç¨‹åºçš„æ•ˆçŽ‡ã€‚*/
 
         /* We've finished the partition, now we want to sort the subarrays
            [lo, higuy] and [loguy, hi].
            We do the smaller one first to minimize stack usage.
            We only sort arrays of length 2 or more.*/
 
-       /*ÎÒÃÇÏÖÔÚÒÑ¾­Íê³ÉÁË·ÖÇø£¬¿ÉÒÔ¿ªÊ¼¶Ô×ÓÊýÁÐ[lo,higuy]ºÍ[loguy,hi]µÄÅÅÐò
+       /*æˆ‘ä»¬çŽ°åœ¨å·²ç»å®Œæˆäº†åˆ†åŒºï¼Œå¯ä»¥å¼€å§‹å¯¹å­æ•°åˆ—[lo,higuy]å’Œ[loguy,hi]çš„æŽ’åº
 
-¡£
+ã€‚
 
-         ÎÒÃÇÏÈ´¦ÀíÐ¡µÄÄÇ¸öÊýÁÐ£¬ÕâÑù¿ÉÒÔ±ÜÃâ×î»µÇé¿öÏÂÕ»´óÐ¡ºÍN³É±ÈÀýµÄÇé¿ö
+         æˆ‘ä»¬å…ˆå¤„ç†å°çš„é‚£ä¸ªæ•°åˆ—ï¼Œè¿™æ ·å¯ä»¥é¿å…æœ€åæƒ…å†µä¸‹æ ˆå¤§å°å’ŒNæˆæ¯”ä¾‹çš„æƒ…å†µ
 
-¡£
+ã€‚
 
-         ÎÒÃÇ¿ÉÒÔÏëÏñÒ»ÏÂ£¬¶ÔÓÚÒ»¸öÒÑ¾­ÅÅÐòµÄÊý×é£¬Èç¹ûÃ¿´Î·Ö³ÉN-1ºÍ1µÄÊý×é£¬
+         æˆ‘ä»¬å¯ä»¥æƒ³åƒä¸€ä¸‹ï¼Œå¯¹äºŽä¸€ä¸ªå·²ç»æŽ’åºçš„æ•°ç»„ï¼Œå¦‚æžœæ¯æ¬¡åˆ†æˆN-1å’Œ1çš„æ•°ç»„ï¼Œ
 
-        ¶øÎÒÃÇÓÖÃ¿´Î¶¼ÏÈ´¦ÀíN-1ÄÇÒ»°ë£¬
+        è€Œæˆ‘ä»¬åˆæ¯æ¬¡éƒ½å…ˆå¤„ç†N-1é‚£ä¸€åŠï¼Œ
 
-        ÄÇÃ´ÎÒÃÇµÄµÝ¹éÉî¶È¾ÍÊÇºÍN³É±ÈÀý£¬ÕâÑù¶ÔÓÚ´óN£¬Õ»¿Õ¼äµÄ¿ªÏúÊÇºÜ´óµÄ¡£
+        é‚£ä¹ˆæˆ‘ä»¬çš„é€’å½’æ·±åº¦å°±æ˜¯å’ŒNæˆæ¯”ä¾‹ï¼Œè¿™æ ·å¯¹äºŽå¤§Nï¼Œæ ˆç©ºé—´çš„å¼€é”€æ˜¯å¾ˆå¤§çš„ã€‚
 
-        Èç¹ûÏÈ´¦Àí1µÄÄÇÒ»°ë£¬Õ»ÀïÃæ×î¶àÖ»ÓÐ2Ïî¡£
+        å¦‚æžœå…ˆå¤„ç†1çš„é‚£ä¸€åŠï¼Œæ ˆé‡Œé¢æœ€å¤šåªæœ‰2é¡¹ã€‚
 
-        µ±»®·ÖÔªËØ¸ÕºÃÔÚÊý×éÖÐ¼äÊ±£¬Õ»µÄ³¤¶ÈÊÇlogN¡£
+        å½“åˆ’åˆ†å…ƒç´ åˆšå¥½åœ¨æ•°ç»„ä¸­é—´æ—¶ï¼Œæ ˆçš„é•¿åº¦æ˜¯logNã€‚
 
-         ¶ÔÓÚÕ»µÄ²Ù×÷£¬¾ÍÊÇÏÈ°Ñ´óµÄÊý×éÐÅÏ¢ÈëÕ»¡£
+         å¯¹äºŽæ ˆçš„æ“ä½œï¼Œå°±æ˜¯å…ˆæŠŠå¤§çš„æ•°ç»„ä¿¡æ¯å…¥æ ˆã€‚
 
        */
 
@@ -497,7 +497,7 @@ loguyÖ¸ÏòµÄÎ»ÖÃ£¨×¢Òâ£º¸Õ²ÅÊÇÖµ½»»»ÁË£¬µ«ÊÇ²¢Ã»ÓÐ½»»»Ö¸Õë¡£µ±higuyºÍmidÏàµÈ£¬½»»
     /* We have sorted the array, except for any pending sorts on the stack.
        Check if there are any, and do them. */
 
-   /*³öÕ»²Ù×÷£¬Ö±µ½Õ»Îª¿Õ£¬ÍË³öÑ­»·*/
+   /*å‡ºæ ˆæ“ä½œï¼Œç›´åˆ°æ ˆä¸ºç©ºï¼Œé€€å‡ºå¾ªçŽ¯*/
 
     --stkptr;
     if (stkptr >= 0) {
@@ -531,7 +531,7 @@ static void get_tree_codes(uint32_t *bits, int16_t *lens, uint8_t *xlat, Node *n
     }
 }
 
-/*´Ë3¸öÊý×é¸Ä×÷¾²Ì¬·ÖÅä£¬ÒòÎªÄÚºË±àÒëÊ±Õ»¿Õ¼ä¹ý´ó x00141957 20101230*/	
+/*æ­¤3ä¸ªæ•°ç»„æ”¹ä½œé™æ€åˆ†é…ï¼Œå› ä¸ºå†…æ ¸ç¼–è¯‘æ—¶æ ˆç©ºé—´è¿‡å¤§ x00141957 20101230*/	
 static uint32_t bits[256];
 static int16_t lens[256];
 static uint8_t xlat[256];
@@ -539,7 +539,7 @@ static uint8_t xlat[256];
 static int build_huff_tree(VLC *vlc, Node *nodes, int head, int flags)
 {
     int no_zero_count = !(flags & FF_HUFFMAN_FLAG_ZERO_COUNT);
-    /*´Ë3¸öÊý×é¸Ä×÷¾²Ì¬·ÖÅä£¬ÒòÎªÄÚºË±àÒëÊ±Õ»¿Õ¼ä¹ý´ó x00141957 20101230*/	
+    /*æ­¤3ä¸ªæ•°ç»„æ”¹ä½œé™æ€åˆ†é…ï¼Œå› ä¸ºå†…æ ¸ç¼–è¯‘æ—¶æ ˆç©ºé—´è¿‡å¤§ x00141957 20101230*/	
    /* uint32_t bits[256];
     int16_t lens[256];
     uint8_t xlat[256];
@@ -547,7 +547,7 @@ static int build_huff_tree(VLC *vlc, Node *nodes, int head, int flags)
     int pos = 0;
 
     get_tree_codes(bits, lens, xlat, nodes, head, 0, 0, &pos, no_zero_count);
-	/*x00141957 20100928 ×îºóÒ»¸ö²ÎÊýÔ­±¾ÊÇ0£¬¸ÄÎª1£¬·ÖÅäÄÚ´æÓÉ¸ÃÖ¸ÕëÊÇ·ñÎª¿Õ¾ö¶¨*/
+	/*x00141957 20100928 æœ€åŽä¸€ä¸ªå‚æ•°åŽŸæœ¬æ˜¯0ï¼Œæ”¹ä¸º1ï¼Œåˆ†é…å†…å­˜ç”±è¯¥æŒ‡é’ˆæ˜¯å¦ä¸ºç©ºå†³å®š*/
     return init_vlc_sparse(vlc, VP6VLCBITS/*9*/, pos, lens, 2, 2, bits, 4, 4, xlat, 1, 1,/*0*/ 1);
 }
 

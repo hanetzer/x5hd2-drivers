@@ -121,16 +121,16 @@ HI_S32 CheckELFPaser(HI_UCHAR* pElfAddr)
 #if 0
             if (ppdr[j].p_paddr == DSP0_PRIM_VECTOR)
             {
-                //ÖØÓ³ÉäµØÖ·
+                //é‡æ˜ å°„åœ°å€
                 ppdr[j].p_paddr = DSP0_REF_PRIM_VECTOR;
             }
             if (ppdr[j].p_paddr == DSP1_PRIM_VECTOR)
             {
-                //ÖØÓ³ÉäµØÖ·
+                //é‡æ˜ å°„åœ°å€
                 ppdr[j].p_paddr = DSP1_REF_PRIM_VECTOR;
             }
 #endif
-            //½«ELF½âÎö³öÀ´µÄÎïÀíµØÖ·Ó³Éäµ½ĞéÄâµØÖ·
+            //å°†ELFè§£æå‡ºæ¥çš„ç‰©ç†åœ°å€æ˜ å°„åˆ°è™šæ‹Ÿåœ°å€
 #if 0
             vAddr = ioremap_nocache( ppdr[j].p_paddr , ppdr[j].p_filesz + 3 );
 #else
@@ -146,7 +146,7 @@ HI_S32 CheckELFPaser(HI_UCHAR* pElfAddr)
 			
             for (i=0;(i<ppdr[j].p_filesz>>2);i++)
             {
-                    //ĞéÄâµØÖ·¶ÔÓ¦µÄÖµ£¬ÓëELFÖĞ½âÎöµÄÖµ±È½Ï
+                    //è™šæ‹Ÿåœ°å€å¯¹åº”çš„å€¼ï¼Œä¸ELFä¸­è§£æçš„å€¼æ¯”è¾ƒ
                     if (vAddr[i]!=((HI_U32 *)(pElfAddr + ppdr[j].p_offset))[i])
                     {
                         ELF_PRINT("Error addr 0x%x: 0x%x - 0x%x:0x%x \r\n",ppdr[j].p_paddr ,vAddr[i],((HI_U32 *)(pElfAddr + ppdr[j].p_offset))[i],((HI_U32 *)(pElfAddr + ppdr[j].p_offset))[i]);

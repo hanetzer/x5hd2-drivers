@@ -15,7 +15,7 @@
 ******************************************************************************/
 /** 
  * \file
- * \brief Describes the information about the audio input (AI) module. CNcomment:Ìá¹©AIµÄÏà¹ØĞÅÏ¢ CNend
+ * \brief Describes the information about the audio input (AI) module. CNcomment:æä¾›AIçš„ç›¸å…³ä¿¡æ¯ CNend
  */
  
 #ifndef  __HI_UNF_AI_H__
@@ -39,13 +39,13 @@ extern "C" {
 
 /*************************** Structure Definition ****************************/
 /** \addtogroup      AI */
-/** @{ */  /** <!--  ¡¾AI¡¿ */
+/** @{ */  /** <!--  ã€AIã€‘ */
 
 
 
 
 /**Audio inputport defination */
-/**CNcomment:ÒôÆµÊäÈë¶Ë¿Ú¶¨Òå*/
+/**CNcomment:éŸ³é¢‘è¾“å…¥ç«¯å£å®šä¹‰*/
 typedef enum hiUNF_AI_E
 {
     HI_UNF_AI_I2S0 = 0,
@@ -60,7 +60,7 @@ typedef enum hiUNF_AI_E
 } HI_UNF_AI_E;
 
 /**Defines internal Audio ADC inputport attribute */
-/**CNcomment:¶¨ÒåÄÚÖÃÒôÆµADCÊäÈë¶Ë¿ÚÊôĞÔ*/
+/**CNcomment:å®šä¹‰å†…ç½®éŸ³é¢‘ADCè¾“å…¥ç«¯å£å±æ€§*/
 typedef struct hiUNF_AI_ADC_ATTR_S
 {
     HI_VOID* pPara;
@@ -68,14 +68,14 @@ typedef struct hiUNF_AI_ADC_ATTR_S
 
 
 /**Defines  Audio I2S inputport attribute */
-/**CNcomment:¶¨ÒåÒôÆµI2SÊäÈë¶Ë¿ÚÊôĞÔ*/
+/**CNcomment:å®šä¹‰éŸ³é¢‘I2Sè¾“å…¥ç«¯å£å±æ€§*/
 typedef struct hiUNF_AI_I2S_ATTR_S
 {
     HI_UNF_I2S_ATTR_S  stAttr;
 }  HI_UNF_AI_I2S_ATTR_S;
 
 /**Defines  HDMI Audio inputport attribute */
-/**CNcomment:¶¨ÒåHDMIÒôÆµÊäÈë¶Ë¿ÚÊôĞÔ*/
+/**CNcomment:å®šä¹‰HDMIéŸ³é¢‘è¾“å…¥ç«¯å£å±æ€§*/
 typedef struct hiUNF_AI_HDMI_ATTR_S
 {
     HI_VOID* pPara;
@@ -83,12 +83,12 @@ typedef struct hiUNF_AI_HDMI_ATTR_S
 
 
 /**Defines  Audio inputport attribute */
-/**CNcomment:¶¨ÒåÒôÆµÊäÈë¶Ë¿ÚÊôĞÔ*/
+/**CNcomment:å®šä¹‰éŸ³é¢‘è¾“å…¥ç«¯å£å±æ€§*/
 typedef struct hiHI_UNF_AI_ATTR_S
 {
-    HI_UNF_SAMPLE_RATE_E    enSampleRate;          /**< samplerate*/ /**<CNcomment:Éè±¸²ÉÑùÆµÂÊ*/
-    HI_U32                  u32PcmFrameMaxNum;     /**<Max frame of the PCM data at cast buffer*/ /**<CNcomment: ×î´ó¿É»º´æÖ¡Êı*/
-    HI_U32                  u32PcmSamplesPerFrame; /**<Number of sample of the PCM data*/ /**<CNcomment: PCMÊı¾İ²ÉÑùµãÊıÁ¿*/
+    HI_UNF_SAMPLE_RATE_E    enSampleRate;          /**< samplerate*/ /**<CNcomment:è®¾å¤‡é‡‡æ ·é¢‘ç‡*/
+    HI_U32                  u32PcmFrameMaxNum;     /**<Max frame of the PCM data at cast buffer*/ /**<CNcomment: æœ€å¤§å¯ç¼“å­˜å¸§æ•°*/
+    HI_U32                  u32PcmSamplesPerFrame; /**<Number of sample of the PCM data*/ /**<CNcomment: PCMæ•°æ®é‡‡æ ·ç‚¹æ•°é‡*/
     union
     {
         HI_UNF_AI_ADC_ATTR_S  stAdcAttr;
@@ -103,138 +103,138 @@ typedef struct hiHI_UNF_AI_ATTR_S
 
 /******************************* API declaration *****************************/
 /** \addtogroup      AI */
-/** @{ */  /** <!--  ¡¾AI¡¿ */
+/** @{ */  /** <!--  ã€AIã€‘ */
 
 /** 
-\brief Initializes an AI device. CNcomment:³õÊ¼»¯ÒôÆµÊäÈëÉè±¸ CNend
+\brief Initializes an AI device. CNcomment:åˆå§‹åŒ–éŸ³é¢‘è¾“å…¥è®¾å¤‡ CNend
 \attention \n
-Before calling the AI module, you must call this application programming interface (API). CNcomment:µ÷ÓÃAIÄ£¿éÒªÇóÊ×ÏÈµ÷ÓÃ¸Ã½Ó¿Ú CNend
+Before calling the AI module, you must call this application programming interface (API). CNcomment:è°ƒç”¨AIæ¨¡å—è¦æ±‚é¦–å…ˆè°ƒç”¨è¯¥æ¥å£ CNend
 \param N/A
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦ CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AI_Init(HI_VOID);
 
 /** 
-\brief Deinitializes an AI device. CNcomment:È¥³õÊ¼»¯ÒôÆµÊäÈëÉè±¸ CNend
+\brief Deinitializes an AI device. CNcomment:å»åˆå§‹åŒ–éŸ³é¢‘è¾“å…¥è®¾å¤‡ CNend
 \attention \n
 \param N/A
-\retval ::HI_SUCCESS Success CNcomment:³É¹¦  CNend
+\retval ::HI_SUCCESS Success CNcomment:æˆåŠŸ  CNend
 \see \n
 N/A
 */
 HI_S32 HI_UNF_AI_DeInit(HI_VOID);
 
 /**
- \brief Obtains the attributes of a AI port. CNcomment: »ñÈ¡AI¶Ë¿ÚÄ¬ÈÏÊôĞÔ CNend
+ \brief Obtains the attributes of a AI port. CNcomment: è·å–AIç«¯å£é»˜è®¤å±æ€§ CNend
  \attention \n
- \param[in] pstAttr Pointer to AI attributes CNcomment: AIÊôĞÔÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
+ \param[in] pstAttr Pointer to AI attributes CNcomment: AIå±æ€§æŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_AI_GetDefaultAttr(HI_UNF_AI_E enAiPort, HI_UNF_AI_ATTR_S *pstAttr);
 
 /**
- \brief Enables a AI port to create a AI handle. CNcomment: ´ò¿ªAI Port£¬´´½¨Vi¾ä±ú CNend
+ \brief Enables a AI port to create a AI handle. CNcomment: æ‰“å¼€AI Portï¼Œåˆ›å»ºViå¥æŸ„ CNend
  \attention \n
 Before calling the AI, you must call this API.\n
-CNcomment: µ÷ÓÃAI Ä£¿éĞèÒªÊ×ÏÈµ÷ÓÃ¸Ã½Ó¿Ú CNend
- \param[in] pstAttr CNcomment: Pointer to AI attributes AIÊôĞÔÖ¸Õë CNend
- \param[in] phandle CNcomment: hAi Pointer to the AI handle AI¾ä±úÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
- \retval ::HI_ERR_AI_INVALID_PARA   The attribute parameters are incorrect. CNcomment: ÊôĞÔ²ÎÊı´íÎó CNend
+CNcomment: è°ƒç”¨AI æ¨¡å—éœ€è¦é¦–å…ˆè°ƒç”¨è¯¥æ¥å£ CNend
+ \param[in] pstAttr CNcomment: Pointer to AI attributes AIå±æ€§æŒ‡é’ˆ CNend
+ \param[in] phandle CNcomment: hAi Pointer to the AI handle AIå¥æŸ„æŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
+ \retval ::HI_ERR_AI_INVALID_PARA   The attribute parameters are incorrect. CNcomment: å±æ€§å‚æ•°é”™è¯¯ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_AI_Create(HI_UNF_AI_E enAiPort, HI_UNF_AI_ATTR_S *pstAttr, HI_HANDLE *phAI);
 
 /**
- \brief Disable a AI port to destroy the handle. CNcomment: ¹Ø±ÕAI Port£¬Ïú»Ù¾ä±ú CNend
+ \brief Disable a AI port to destroy the handle. CNcomment: å…³é—­AI Portï¼Œé”€æ¯å¥æŸ„ CNend
  \attention \n
- \param[in] hAi AI handle CNcomment: AI¾ä±ú CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_AI_INVALID_PARA  The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
+ \param[in] hAi AI handle CNcomment: AIå¥æŸ„ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_AI_INVALID_PARA  The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_AI_Destroy(HI_HANDLE hAI);
 
 /**
- \brief Set the attributes of a AI port. CNcomment: ÉèÖÃAI PortÊôĞÔ CNend
+ \brief Set the attributes of a AI port. CNcomment: è®¾ç½®AI Portå±æ€§ CNend
  \attention \n
- \param[in] hAi AI handle CNcomment: AI¾ä±ú CNend
- \param[in] pstAttr  Pointer to AI attributes CNcomment: AIÊôĞÔÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
- \retval ::HI_ERR_AI_INVALID_ID   The handle is invalid. CNcomment: ·Ç·¨¾ä±ú CNend
- \retval ::HI_ERR_AI_INVALID_PARA   The attribute parameters are incorrect. CNcomment: ÊôĞÔ²ÎÊı´íÎó CNend
+ \param[in] hAi AI handle CNcomment: AIå¥æŸ„ CNend
+ \param[in] pstAttr  Pointer to AI attributes CNcomment: AIå±æ€§æŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
+ \retval ::HI_ERR_AI_INVALID_ID   The handle is invalid. CNcomment: éæ³•å¥æŸ„ CNend
+ \retval ::HI_ERR_AI_INVALID_PARA   The attribute parameters are incorrect. CNcomment: å±æ€§å‚æ•°é”™è¯¯ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
  HI_S32 HI_UNF_AI_SetAttr(HI_HANDLE hAI, HI_UNF_AI_ATTR_S *pstAttr);
 
 
 /**
- \brief Obtains the attributes of a AI port. CNcomment: »ñÈ¡AI PortÊôĞÔ CNend
+ \brief Obtains the attributes of a AI port. CNcomment: è·å–AI Portå±æ€§ CNend
  \attention \n
- \param[in] hAi AI handle CNcomment: AI¾ä±ú CNend
- \param[out] pstAttr Pointer to AI attributes CNcomment: AIÊôĞÔÖ¸Õë CNend
- \retval ::HI_SUCCESS Success CNcomment: ³É¹¦ CNend
- \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: ¿ÕÖ¸Õë CNend
- \retval ::HI_ERR_AI_INVALID_ID   The handle is invalid. CNcomment: ·Ç·¨¾ä±ú CNend
- \retval ::HI_ERR_AI_INVALID_PARA   The handle is incorrect. CNcomment: ¾ä±ú´íÎó CNend
+ \param[in] hAi AI handle CNcomment: AIå¥æŸ„ CNend
+ \param[out] pstAttr Pointer to AI attributes CNcomment: AIå±æ€§æŒ‡é’ˆ CNend
+ \retval ::HI_SUCCESS Success CNcomment: æˆåŠŸ CNend
+ \retval ::HI_ERR_AI_NULL_PTR   The pointer is null. CNcomment: ç©ºæŒ‡é’ˆ CNend
+ \retval ::HI_ERR_AI_INVALID_ID   The handle is invalid. CNcomment: éæ³•å¥æŸ„ CNend
+ \retval ::HI_ERR_AI_INVALID_PARA   The handle is incorrect. CNcomment: å¥æŸ„é”™è¯¯ CNend
  \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
  */
 HI_S32 HI_UNF_AI_GetAttr(HI_HANDLE hAI, HI_UNF_AI_ATTR_S *pstAttr);
 
 
 /**
-\brief enable screen share. CNcomment: Ê¹ÄÜÉùÒô¹²Ïí¹¦ÄÜ CNend
+\brief enable screen share. CNcomment: ä½¿èƒ½å£°éŸ³å…±äº«åŠŸèƒ½ CNend
 \attention \n
-\param[in] AI handle CNcomment: AI¾ä±ú CNend
-\param[in] bEnable      enable  .CNcomment:Ê¹ÄÜ¿ØÖÆ CNend
-\retval ::HI_SUCCESS CNcomment: success.³É¹¦ CNend
-\retval ::HI_ERR_AI_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AI_INVALID_ID     The handle is invalid. CNcomment: ·Ç·¨¾ä±ú CNend
-\retval ::HI_ERR_AI_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\param[in] AI handle CNcomment: AIå¥æŸ„ CNend
+\param[in] bEnable      enable  .CNcomment:ä½¿èƒ½æ§åˆ¶ CNend
+\retval ::HI_SUCCESS CNcomment: success.æˆåŠŸ CNend
+\retval ::HI_ERR_AI_NULL_PTR          Input pointer is NULL.CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AI_INVALID_ID     The handle is invalid. CNcomment: éæ³•å¥æŸ„ CNend
+\retval ::HI_ERR_AI_INVALID_PARA   invalid input parameter.CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_AI_SetEnable(HI_HANDLE hAI, HI_BOOL bEnable);
 
 /**
-\brief get frame buffer from AI. CNcomment: »ñÈ¡ÉùÒôÖ¡´æ CNend
+\brief get frame buffer from AI. CNcomment: è·å–å£°éŸ³å¸§å­˜ CNend
 \attention \n
 Cast pcm data format  s32BitPerSample(16), u32Channels(2),bInterleaved(HI_TRUE), u32SampleRate(same as AI).
-\param[in] AI handle CNcomment: AI¾ä±ú CNend
-\param[in] u32TimeoutMs     acquire timeout.CNcomment:»ñÈ¡³¬Ê± CNend
-\param[out] pstFrame        frame info.CNcomment:Ö¡ĞÅÏ¢ CNend
-\retval ::HI_SUCCESS CNcomment: success.³É¹¦ CNend
-\retval ::HI_ERR_AI_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AI_INVALID_ID     The handle is invalid. CNcomment: ·Ç·¨¾ä±ú CNend
-\retval ::HI_ERR_AI_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\param[in] AI handle CNcomment: AIå¥æŸ„ CNend
+\param[in] u32TimeoutMs     acquire timeout.CNcomment:è·å–è¶…æ—¶ CNend
+\param[out] pstFrame        frame info.CNcomment:å¸§ä¿¡æ¯ CNend
+\retval ::HI_SUCCESS CNcomment: success.æˆåŠŸ CNend
+\retval ::HI_ERR_AI_NULL_PTR          Input pointer is NULL.CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AI_INVALID_ID     The handle is invalid. CNcomment: éæ³•å¥æŸ„ CNend
+\retval ::HI_ERR_AI_INVALID_PARA   invalid input parameter.CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_AI_AcquireFrame(HI_HANDLE hAI, HI_UNF_AO_FRAMEINFO_S *pstFrame, HI_U32 u32TimeoutMs);
 
 /**
-\brief Releases the frame buffer for AI . CNcomment: ÊÍ·ÅÉùÒôÖ¡´æ CNend
+\brief Releases the frame buffer for AI . CNcomment: é‡Šæ”¾å£°éŸ³å¸§å­˜ CNend
 \attention \n
-\param[in] AI handle CNcomment: AI¾ä±ú CNend
-\param[in] u32TimeoutMs     acquire timeout.CNcomment:ÊÍ·Å³¬Ê± CNend
-\param[out] pstFrame        frame info.CNcomment:Ö¡ĞÅÏ¢ CNend
-\retval ::HI_SUCCESS CNcomment: success.³É¹¦ CNend
-\retval ::HI_ERR_AI_NULL_PTR          Input pointer is NULL.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_AI_INVALID_ID     The handle is invalid. CNcomment: ·Ç·¨¾ä±ú CNend
-\retval ::HI_ERR_AI_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊı·Ç·¨ CNend
+\param[in] AI handle CNcomment: AIå¥æŸ„ CNend
+\param[in] u32TimeoutMs     acquire timeout.CNcomment:é‡Šæ”¾è¶…æ—¶ CNend
+\param[out] pstFrame        frame info.CNcomment:å¸§ä¿¡æ¯ CNend
+\retval ::HI_SUCCESS CNcomment: success.æˆåŠŸ CNend
+\retval ::HI_ERR_AI_NULL_PTR          Input pointer is NULL.CNcomment:è¾“å…¥æŒ‡é’ˆä¸ºç©º CNend
+\retval ::HI_ERR_AI_INVALID_ID     The handle is invalid. CNcomment: éæ³•å¥æŸ„ CNend
+\retval ::HI_ERR_AI_INVALID_PARA   invalid input parameter.CNcomment:è¾“å…¥å‚æ•°éæ³• CNend
 \see \n
-N/A CNcomment: ÎŞ CNend
+N/A CNcomment: æ—  CNend
 */
 HI_S32 HI_UNF_AI_ReleaseFrame(HI_HANDLE hAI, HI_UNF_AO_FRAMEINFO_S *pstFrame);
 

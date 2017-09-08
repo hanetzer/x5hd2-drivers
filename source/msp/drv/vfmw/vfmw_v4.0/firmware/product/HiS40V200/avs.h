@@ -1,19 +1,19 @@
 /******************************************************************************
 
-                  °æÈ¨ËùÓĞ (C), 2001-2011, »ªÎª¼¼ÊõÓĞÏŞ¹«Ë¾
+                  ç‰ˆæƒæ‰€æœ‰ (C), 2001-2011, åä¸ºæŠ€æœ¯æœ‰é™å…¬å¸
 
  ******************************************************************************
-  ÎÄ ¼ş Ãû   : avs_vfmw.h
-  °æ ±¾ ºÅ   : ³õ¸å
-  ×÷    Õß   : y62639
-  Éú³ÉÈÕÆÚ   : 2007Äê12ÔÂ14ÈÕ
-  ×î½üĞŞ¸Ä   :
-  ¹¦ÄÜÃèÊö   : avs vfmw header file
-  º¯ÊıÁĞ±í   :
-  ĞŞ¸ÄÀúÊ·   :
-  1.ÈÕ    ÆÚ   : 2007Äê12ÔÂ14ÈÕ
-    ×÷    Õß   : y62639
-    ĞŞ¸ÄÄÚÈİ   : ´´½¨ÎÄ¼ş
+  æ–‡ ä»¶ å   : avs_vfmw.h
+  ç‰ˆ æœ¬ å·   : åˆç¨¿
+  ä½œ    è€…   : y62639
+  ç”Ÿæˆæ—¥æœŸ   : 2007å¹´12æœˆ14æ—¥
+  æœ€è¿‘ä¿®æ”¹   :
+  åŠŸèƒ½æè¿°   : avs vfmw header file
+  å‡½æ•°åˆ—è¡¨   :
+  ä¿®æ”¹å†å²   :
+  1.æ—¥    æœŸ   : 2007å¹´12æœˆ14æ—¥
+    ä½œ    è€…   : y62639
+    ä¿®æ”¹å†…å®¹   : åˆ›å»ºæ–‡ä»¶
 
 ******************************************************************************/
 
@@ -25,7 +25,7 @@
 #include    <stdio.h>
 #include    <time.h>
 #ifndef ENV_VXWORKS   
-#include    <sys/timeb.h>  /* VXWORKSÏµÍ³ÏÂ²»ÄÜ°üº¬Õâ¸öÍ·ÎÄ¼ş */
+#include    <sys/timeb.h>  /* VXWORKSç³»ç»Ÿä¸‹ä¸èƒ½åŒ…å«è¿™ä¸ªå¤´æ–‡ä»¶ */
 #endif //ENV_VXWORKS
 #else
 #endif
@@ -39,7 +39,7 @@
 
 
 /*----------------------------------------------*
- * ºê¶¨Òå                                       *
+ * å®å®šä¹‰                                       *
  *----------------------------------------------*/
 #define AVS_FALSE                            0
 #define AVS_TRUE                             1 
@@ -122,7 +122,7 @@ typedef struct
     UINT8  col_pic_struct;         
     UINT8  col_pic_type;
 
-    /* ¼Ä´æÆ÷ĞÅÏ¢ */
+    /* å¯„å­˜å™¨ä¿¡æ¯ */
     UINT32 stream_base_addr;
 
     UINT32 ref_pic_type0;  //bwd
@@ -130,7 +130,7 @@ typedef struct
     UINT32 ref_pic_type2;  //fwd1
     UINT32 ref_pic_type3;  //curr
     
-    /* ÏÂĞĞÏûÏ¢³Ø*/
+    /* ä¸‹è¡Œæ¶ˆæ¯æ± */
     /*D0*/
     UINT32 pic_height_in_mb;       
     UINT32 pic_width_in_mb;        
@@ -255,13 +255,13 @@ typedef struct
 
 typedef struct 
 {
-    UINT8*             pVdmBsPos; /*ÅäÖÃ¸øVDMµÄÂëÁ÷ÆğÊ¼Ö¸Õë(byte¶ÔÆë)*/
+    UINT8*             pVdmBsPos; /*é…ç½®ç»™VDMçš„ç æµèµ·å§‹æŒ‡é’ˆ(byteå¯¹é½)*/
 	FRAME_OBJ          ZeroFrm;
     FRAME_OBJ          FrameObj[5];	//B fram alway in 4 Buf// ref[3] + 1 for Bframe
 	FRAME_OBJ*         pCurFrm;
-    FRAME_OBJ*         pRef[3];   /*ÆäÖĞ0Îª×î½ü½â³öµÄ²Î¿¼Í¼£¬1Îª½ÏÔç½â³öµÄ²Î¿¼Í¼*/
-    /*ÂëÁ÷ĞÅÏ¢*/
-    SINT32             UsedByte;  /*¸ú×Ùµ÷ÊÔĞÅÏ¢£¬Õû¸öÂëÁ÷µÄÏûºÄbyteÊı*/
+    FRAME_OBJ*         pRef[3];   /*å…¶ä¸­0ä¸ºæœ€è¿‘è§£å‡ºçš„å‚è€ƒå›¾ï¼Œ1ä¸ºè¾ƒæ—©è§£å‡ºçš„å‚è€ƒå›¾*/
+    /*ç æµä¿¡æ¯*/
+    SINT32             UsedByte;  /*è·Ÿè¸ªè°ƒè¯•ä¿¡æ¯ï¼Œæ•´ä¸ªç æµçš„æ¶ˆè€—byteæ•°*/
     SINT32             PicMbWidth;
     SINT32             PicMbHeight;
     UINT32             Integrity;
@@ -271,25 +271,25 @@ typedef struct
     AVS_SYNTAX         Syntax;
     //DEC_STREAM_PACKET_S*      pBsPack;
     BS*                pBs;
-    SINT32             VdmBsLen;  /*ÅäÖÃ¸øVDMµÄÂëÁ÷³¤¶È(bytes)*/
-    /*×ÊÔ´ĞÅÏ¢*/
-    SINT32             NumOfAllocatedFrameObj;//ÏÖÔÚÃ»ÓĞÊ¹ÓÃ´ËÁ¿
+    SINT32             VdmBsLen;  /*é…ç½®ç»™VDMçš„ç æµé•¿åº¦(bytes)*/
+    /*èµ„æºä¿¡æ¯*/
+    SINT32             NumOfAllocatedFrameObj;//ç°åœ¨æ²¡æœ‰ä½¿ç”¨æ­¤é‡
 	SINT32             CurFrameObjId;
 	
     UINT32             pmv_colmb_buf_phyaddr_bpic;
     UINT32             pmv_colmb_buf_phyaddr;
     SINT32             DDR_Stride;
     IMAGE_VO_QUEUE     *pstImgQue;
-    /*pmvµÄ±íĞÅÏ¢*/
+    /*pmvçš„è¡¨ä¿¡æ¯*/
     SINT32             Idx2Dist[8]; /*curfld:dir:reffld*/
     SINT32             MvEScale[32];
     SINT32             DirectScale[8];
     SINT32             SymScale[4];
     SINT32             BBlkDist[8];
-    /*ÆäËü¿ØÖÆĞÅÏ¢*/
-    SINT32             UsedDecMode;   /* ½âÂëÄ£Ê½£¬I£¬IP£¬IPB */
-    SINT32             RefNum;         /* ÒÑ½â³öÀ´µÄ²Î¿¼Í¼¸öÊı */
-    SINT32             ErrRatio;      /* Ò»Ö¡Í¼ÏóµÄ½âÂë´íÎóÂÊ£¬0~100 */
+    /*å…¶å®ƒæ§åˆ¶ä¿¡æ¯*/
+    SINT32             UsedDecMode;   /* è§£ç æ¨¡å¼ï¼ŒIï¼ŒIPï¼ŒIPB */
+    SINT32             RefNum;         /* å·²è§£å‡ºæ¥çš„å‚è€ƒå›¾ä¸ªæ•° */
+    SINT32             ErrRatio;      /* ä¸€å¸§å›¾è±¡çš„è§£ç é”™è¯¯ç‡ï¼Œ0~100 */
     SINT32             YuvOutputOrder;
     SINT32             PicCnt;
     /*usr data*/

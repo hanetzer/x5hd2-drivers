@@ -36,10 +36,10 @@ typedef struct hiAIAO_Sys_Crg_S
 typedef struct 
 {
     HI_UNF_HDMI_ID_E enHdmi;
-    HDMI_AUDIOINTERFACE_E   enSoundIntf;         /**<the origin of Sound,suggestion set HI_UNF_SND_INTERFACE_I2S,the parameter need consistent with Ao input *//**<CNcomment:HDMIÒôÆµÀ´Ô´, ½¨ÒéHI_UNF_SND_INTERFACE_I2S,´Ë²ÎÊýÐèÒªÓëAOÊäÈë±£³ÖÒ»ÖÂ */
-	HI_U32 					u32Channels;         //ÏÈchannelºÍmulty channel¶¼±£Áô£¬ºóÐøÔÚÄÚºËÌ¬¸Éµômulty channel
-    HI_UNF_SAMPLE_RATE_E    enSampleRate;        /**<the samplerate of audio,this parameter consistent with AO config *//**<CNcomment:PCMÒôÆµ²ÉÑùÂÊ,´Ë²ÎÊýÐèÒªÓëAOµÄÅäÖÃ±£³ÖÒ»ÖÂ */
-    HI_UNF_BIT_DEPTH_E      enBitDepth;  //Ä¿Ç°Ä¬ÈÏÅä16bit    /**<the audio bit depth,defualt 16,this parameter consistent with AO config*//**<CNcomment:ÒôÆµÎ»¿í£¬Ä¬ÈÏÎª16,´Ë²ÎÊýÐèÒªÓëAOµÄÅäÖÃ±£³ÖÒ»ÖÂ */
+    HDMI_AUDIOINTERFACE_E   enSoundIntf;         /**<the origin of Sound,suggestion set HI_UNF_SND_INTERFACE_I2S,the parameter need consistent with Ao input *//**<CNcomment:HDMIéŸ³é¢‘æ¥æº, å»ºè®®HI_UNF_SND_INTERFACE_I2S,æ­¤å‚æ•°éœ€è¦ä¸ŽAOè¾“å…¥ä¿æŒä¸€è‡´ */
+	HI_U32 					u32Channels;         //å…ˆchannelå’Œmulty channeléƒ½ä¿ç•™ï¼ŒåŽç»­åœ¨å†…æ ¸æ€å¹²æŽ‰multy channel
+    HI_UNF_SAMPLE_RATE_E    enSampleRate;        /**<the samplerate of audio,this parameter consistent with AO config *//**<CNcomment:PCMéŸ³é¢‘é‡‡æ ·çŽ‡,æ­¤å‚æ•°éœ€è¦ä¸ŽAOçš„é…ç½®ä¿æŒä¸€è‡´ */
+    HI_UNF_BIT_DEPTH_E      enBitDepth;  //ç›®å‰é»˜è®¤é…16bit    /**<the audio bit depth,defualt 16,this parameter consistent with AO config*//**<CNcomment:éŸ³é¢‘ä½å®½ï¼Œé»˜è®¤ä¸º16,æ­¤å‚æ•°éœ€è¦ä¸ŽAOçš„é…ç½®ä¿æŒä¸€è‡´ */
 } AIAO_HDMI_AUDIO_ATRR_S;
 
 /***************************** Macro Definition ******************************/

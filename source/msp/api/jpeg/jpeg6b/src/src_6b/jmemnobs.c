@@ -22,7 +22,7 @@
 
 /**
  ** add the include file about the init function
- ** CNcomment: ����Ӳ��������Ҫ��ͷ�ļ� CNend\n
+ ** CNcomment: 增加硬件解码需要的头文件 CNend\n
  **/
 #include "jmemmgr.h"
 #include "jpeg_hdec_api.h"
@@ -66,7 +66,7 @@ jpeg_get_large (j_common_ptr cinfo, size_t sizeofobject)
 #if 1
 	   /**
 	    ** this use malloc to alloc mem, because the capability is the best
-		** ����ط���malloc�������ܱȽϺ�
+		** 这个地方用malloc分配性能比较好
 		**/
          return (void FAR *) malloc(sizeofobject);
 #else
@@ -79,7 +79,7 @@ jpeg_get_large (j_common_ptr cinfo, size_t sizeofobject)
 	    tSize = MEM_ALIGN2MUL(sizeofobject, 64);
 
 		/**
-		 ** TC AND XBMCƽ̨��MMZ֧�ֶ���̣��Լ���װ�����ʵ�֣�����ʹ�ù���ģ���
+		 ** TC AND XBMC平台的MMZ支持多进程，自己封装必须改实现，所有使用公共模块的
 		 **/
         PhysAddr = (size_t)HI_GFX_AllocMem((HI_U32)tSize, 64, (HI_CHAR*)"jpeg", "JPEG");
 	    if(0 == PhysAddr)
@@ -88,8 +88,8 @@ jpeg_get_large (j_common_ptr cinfo, size_t sizeofobject)
 	    }
 #if 1
 		/**
-		 ** ����ط��п��ܻᵼ�½��������Ϊ��������ڴ��ʱ��û�ж������ˢcach
-		 ** �����ڶ���CPU������û�ж���Щ�����ڴ���в��������������ϲ��������⡣
+		 ** 这个地方有可能会导致解码错误，因为操作这个内存的时候没有对其进行刷cach
+		 ** 但由于都是CPU操作，没有对这些物理内存进行操作，所以理论上不会有问题。
 		 **/
          pVirtAddr = (void FAR *)HI_GFX_MapCached((HI_U32)PhysAddr);
 		 if (NULL == pVirtAddr)

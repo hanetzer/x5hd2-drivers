@@ -1,7 +1,7 @@
 
 /**
 \file
-\brief Describes the header file of the text module.CNcomment:textÄ£¿éÍ·ÎÄ¼ş CNend
+\brief Describes the header file of the text module.CNcomment:textæ¨¡å—å¤´æ–‡ä»¶ CNend
 \author Shenzhen Hisilicon Co., Ltd.
 \date 2008-2018
 \version 1.0
@@ -21,18 +21,18 @@ extern "C" {
 
 /*************************** Structure Definition ****************************/
 /** \addtogroup      HIGO_TEXT */
-/** @{ */  /** <!¡ª[HIGO_TEXT] */
+/** @{ */  /** <!â€”[HIGO_TEXT] */
 
-#define LAYOUT_LEFT          HIGO_LAYOUT_LEFT     /**<Horizontally left*//**<CNcomment:Ë®Æ½¾Ó×ó*/
-#define LAYOUT_RIGHT         HIGO_LAYOUT_RIGHT    /**<Horizontally right*//**<CNcomment:Ë®Æ½¾ÓÓÒ*/
-#define LAYOUT_HCENTER       HIGO_LAYOUT_HCENTER  /**<Horizontally center*//**<CNcomment:Ë®Æ½¾ÓÖĞ*/
-#define LAYOUT_TOP           HIGO_LAYOUT_TOP      /**<Vertically top*//**<CNcomment:´¹Ö±¾Ó¶¥*/
-#define LAYOUT_BOTTOM        HIGO_LAYOUT_BOTTOM   /**<Vertically bottom*//**<CNcomment:´¹Ö±¾Óµ×*/
-#define LAYOUT_VCENTER       HIGO_LAYOUT_VCENTER  /**<Vertically center*//**<CNcomment:´¹Ö±¾ÓÖĞ*/
-#define LAYOUT_WRAP          HIGO_LAYOUT_WRAP     /**<Wrap*//**<CNcomment:×Ô¶¯»»ĞĞ*/
-#define LAYOUT_WORDELLIPSIS  HIGO_LAYOUT_WORDELLIPSIS /**<Ellipsis format*//**<CNcomment:Ê¹ÓÃÊ¡ÂÔºÅ·ç¸ñ*/
-#define LAYOUT_FORCE_LEFT    HIGO_LAYOUT_FORCE_LEFT     /**<Force Horizontally left*//**<CNcomment:Ç¿ÖÆË®Æ½¾Ó×ó*/
-#define LAYOUT_FORCE_RIGHT   HIGO_LAYOUT_FORCE_RIGHT    /**<Force Horizontally right*//**<CNcomment:Ç¿ÖÆË®Æ½¾ÓÓÒ*/
+#define LAYOUT_LEFT          HIGO_LAYOUT_LEFT     /**<Horizontally left*//**<CNcomment:æ°´å¹³å±…å·¦*/
+#define LAYOUT_RIGHT         HIGO_LAYOUT_RIGHT    /**<Horizontally right*//**<CNcomment:æ°´å¹³å±…å³*/
+#define LAYOUT_HCENTER       HIGO_LAYOUT_HCENTER  /**<Horizontally center*//**<CNcomment:æ°´å¹³å±…ä¸­*/
+#define LAYOUT_TOP           HIGO_LAYOUT_TOP      /**<Vertically top*//**<CNcomment:å‚ç›´å±…é¡¶*/
+#define LAYOUT_BOTTOM        HIGO_LAYOUT_BOTTOM   /**<Vertically bottom*//**<CNcomment:å‚ç›´å±…åº•*/
+#define LAYOUT_VCENTER       HIGO_LAYOUT_VCENTER  /**<Vertically center*//**<CNcomment:å‚ç›´å±…ä¸­*/
+#define LAYOUT_WRAP          HIGO_LAYOUT_WRAP     /**<Wrap*//**<CNcomment:è‡ªåŠ¨æ¢è¡Œ*/
+#define LAYOUT_WORDELLIPSIS  HIGO_LAYOUT_WORDELLIPSIS /**<Ellipsis format*//**<CNcomment:ä½¿ç”¨çœç•¥å·é£æ ¼*/
+#define LAYOUT_FORCE_LEFT    HIGO_LAYOUT_FORCE_LEFT     /**<Force Horizontally left*//**<CNcomment:å¼ºåˆ¶æ°´å¹³å±…å·¦*/
+#define LAYOUT_FORCE_RIGHT   HIGO_LAYOUT_FORCE_RIGHT    /**<Force Horizontally right*//**<CNcomment:å¼ºåˆ¶æ°´å¹³å±…å³*/
 
 /** */
 typedef enum 
@@ -50,7 +50,7 @@ typedef enum
     HIGO_LAYOUT_BUTT             = 0x20000,
 } HIGO_LAYOUT_E;
 
-/**<Definition of a character set*//** CNcomment: ×Ö·û¼¯¶¨Òå */
+/**<Definition of a character set*//** CNcomment: å­—ç¬¦é›†å®šä¹‰ */
 typedef enum 
 {
     HIGO_CHARSET_UNKOWN,
@@ -63,51 +63,51 @@ typedef enum
     HIGO_CHARSET_BUTT,
 } HIGO_CHARSET_E;
 
-/** Definition of a text base direction*//** CNcomment: ÎÄ±¾Êä³ö»ù´¡·½Ïò¶¨Òå*/
+/** Definition of a text base direction*//** CNcomment: æ–‡æœ¬è¾“å‡ºåŸºç¡€æ–¹å‘å®šä¹‰*/
 typedef enum 
 {
-    HIGO_TEXT_DIR_NEUTRAL = 0,/**<neutral deirction*//**<CNcomment:ÖĞĞÔ·½Ïò£¬°´ÄÚÈİ²éÕÒÇ¿×Ö·û·½Ïò*/
-    HIGO_TEXT_DIR_LTR,/**<Left to right*//**<CNcomment:´Ó×óµ½ÓÒ·½Ïò */
-    HIGO_TEXT_DIR_RTL,/**<Right to left*//**<CNcomment:´ÓÓÒµ½×ó·½Ïò */
+    HIGO_TEXT_DIR_NEUTRAL = 0,/**<neutral deirction*//**<CNcomment:ä¸­æ€§æ–¹å‘ï¼ŒæŒ‰å†…å®¹æŸ¥æ‰¾å¼ºå­—ç¬¦æ–¹å‘*/
+    HIGO_TEXT_DIR_LTR,/**<Left to right*//**<CNcomment:ä»å·¦åˆ°å³æ–¹å‘ */
+    HIGO_TEXT_DIR_RTL,/**<Right to left*//**<CNcomment:ä»å³åˆ°å·¦æ–¹å‘ */
     HIGO_TEXT_DIR_BUTT
 } HIGO_TEXT_DIR_E;
 
 
 typedef struct
 {
-    HIGO_CHARSET_E Charset; /**<Character set name*//**<CNcomment:×Ö·û¼¯Ãû³Æ */
-    HI_U8 Height;         /**<Font height*//**<CNcomment:×ÖÌå¸ß¶È */
-    HI_U8 MaxWidth;      /**<Maximum font width*//**<CNcomment:×ÖÌå×î´ó¿í¶È */
+    HIGO_CHARSET_E Charset; /**<Character set name*//**<CNcomment:å­—ç¬¦é›†åç§° */
+    HI_U8 Height;         /**<Font height*//**<CNcomment:å­—ä½“é«˜åº¦ */
+    HI_U8 MaxWidth;      /**<Maximum font width*//**<CNcomment:å­—ä½“æœ€å¤§å®½åº¦ */
 }HIGO_FONTATTR_S;
 
-/** Attributes of a text output object*//** CNcomment: ÎÄ±¾Êä³ö¶ÔÏñÊôĞÔ */
+/** Attributes of a text output object*//** CNcomment: æ–‡æœ¬è¾“å‡ºå¯¹åƒå±æ€§ */
 typedef struct
 {
-    HI_COLOR        BgColor;     /**<Background color*//**<CNcomment:±³¾°É« */
-    HI_COLOR        FgColor;     /**<Foreground color*/ /**<CNcomment:Ç°¾°É« */ 
-    HIGO_FONTATTR_S SbFontAttr;  /**<Font attributes of the single-byte character set*/ /**<CNcomment:µ¥×Ö½Ú×Ö·û¼¯×ÖÌåÊôĞÔ */  
-    HIGO_FONTATTR_S MbFontAttr;  /**<Font attributes of the multi-byte character set*//**<CNcomment:¶à×Ö½Ú×Ö·û¼¯×ÖÌåÊôĞÔ */    
+    HI_COLOR        BgColor;     /**<Background color*//**<CNcomment:èƒŒæ™¯è‰² */
+    HI_COLOR        FgColor;     /**<Foreground color*/ /**<CNcomment:å‰æ™¯è‰² */ 
+    HIGO_FONTATTR_S SbFontAttr;  /**<Font attributes of the single-byte character set*/ /**<CNcomment:å•å­—èŠ‚å­—ç¬¦é›†å­—ä½“å±æ€§ */  
+    HIGO_FONTATTR_S MbFontAttr;  /**<Font attributes of the multi-byte character set*//**<CNcomment:å¤šå­—èŠ‚å­—ç¬¦é›†å­—ä½“å±æ€§ */    
 } HIGO_TEXTOUTATTR_S;
 
 /** @} */  /*! <!-- Structure Definition end */
 
 /******************************* API declaration *****************************/
 /** \addtogroup      HIGO_TEXT */
-/** @{ */  /** <!¡ª[HIGO_TEXT] */
+/** @{ */  /** <!â€”[HIGO_TEXT] */
 
 /**
-\brief Creates a text output object.CNcomment: ´´½¨ÎÄ±¾Êä³ö¶ÔÏó CNend
+\brief Creates a text output object.CNcomment: åˆ›å»ºæ–‡æœ¬è¾“å‡ºå¯¹è±¡ CNend
 \attention \n
 The values of pSbFontFile and pMbFontFile cannot be empty at the same time. If the received file name is in vector 
 font, the font height is set based on the 22-dot array. 
-CNcomment: pSbFontFileºÍpMbFontFile²»¿ÉÍ¬Ê±Îª¿Õ,Èç¹û´«ÈëµÄÊÇÊ¸Á¿×ÖÌåÎÄ¼şÃû,Ôò×ÖÌå¸ß¶È°´ 
-22µãÕó´´½¨ CNend
+CNcomment: pSbFontFileå’ŒpMbFontFileä¸å¯åŒæ—¶ä¸ºç©º,å¦‚æœä¼ å…¥çš„æ˜¯çŸ¢é‡å­—ä½“æ–‡ä»¶å,åˆ™å­—ä½“é«˜åº¦æŒ‰ 
+22ç‚¹é˜µåˆ›å»º CNend
 \param[in] pSbFontFile Font file of the single-byte character set. If the value is empty, it indicates that the single
--byte character set library is not used.CNcomment: µ¥×Ö½Ú×Ö·û¼¯×ÖÌåÎÄ¼ş£¬Îª¿Õ±íÊ¾²»Ê¹ÓÃµ¥×Ö½Ú×Ö·û¼¯×Ö¿â CNend
+-byte character set library is not used.CNcomment: å•å­—èŠ‚å­—ç¬¦é›†å­—ä½“æ–‡ä»¶ï¼Œä¸ºç©ºè¡¨ç¤ºä¸ä½¿ç”¨å•å­—èŠ‚å­—ç¬¦é›†å­—åº“ CNend
 \param[in] pMbFontFile  Font file of the multi-byte character set. If the value is empty, it indicates that the multi-
 byte character set library is not used. Ensure that the font files of the single-byte and multi-byte character sets 
-cannot be empty concurrently.CNcomment: ¶à×Ö½Ú×Ö·û¼¯×ÖÌåÎÄ¼ş£¬Îª¿Õ±íÊ¾²»Ê¹ÓÃ¶à×Ö½Ú×Ö·û¼¯×Ö¿â£¬µ«ÊÇ²»ÄÜÓëµ¥×Ö½Ú×Ö·ûÎÄ¼şÍ¬Ê±Îª¿Õ¡£ CNend
-\param[out]  pTextOut Handle of a text output object.CNcomment: ÎÄ±¾Êä³ö¶ÔÏó¾ä±ú CNend
+cannot be empty concurrently.CNcomment: å¤šå­—èŠ‚å­—ç¬¦é›†å­—ä½“æ–‡ä»¶ï¼Œä¸ºç©ºè¡¨ç¤ºä¸ä½¿ç”¨å¤šå­—èŠ‚å­—ç¬¦é›†å­—åº“ï¼Œä½†æ˜¯ä¸èƒ½ä¸å•å­—èŠ‚å­—ç¬¦æ–‡ä»¶åŒæ—¶ä¸ºç©ºã€‚ CNend
+\param[out]  pTextOut Handle of a text output object.CNcomment: æ–‡æœ¬è¾“å‡ºå¯¹è±¡å¥æŸ„ CNend
 
 \retval ::HI_SUCCESS 
 \retval ::HIGO_ERR_NULLPTR
@@ -123,10 +123,10 @@ cannot be empty concurrently.CNcomment: ¶à×Ö½Ú×Ö·û¼¯×ÖÌåÎÄ¼ş£¬Îª¿Õ±íÊ¾²»Ê¹ÓÃ¶à×Ö
 HI_S32 HI_GO_CreateText(const HI_CHAR* pSbFontFile, const HI_CHAR* pMbFontFile, HI_HANDLE* pTextOut);
 
 /** 
-\brief Destroys a text output object.CNcomment:Ïú»ÙÎÄ±¾Êä³ö¶ÔÏó CNend
+\brief Destroys a text output object.CNcomment:é”€æ¯æ–‡æœ¬è¾“å‡ºå¯¹è±¡ CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] TextOut Handle of a text output object.CNcomment:ÎÄ±¾Êä³ö¶ÔÏó¾ä±ú CNend
+N/A.CNcomment:æ—  CNend
+\param[in] TextOut Handle of a text output object.CNcomment:æ–‡æœ¬è¾“å‡ºå¯¹è±¡å¥æŸ„ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -137,11 +137,11 @@ N/A.CNcomment:ÎŞ CNend
 HI_S32 HI_GO_DestroyText(HI_HANDLE TextOut);
 
 /** 
-\brief set the input charset. CNcomment:ÉèÖÃÊäÈë×Ö·û¼¯ CNend
+\brief set the input charset. CNcomment:è®¾ç½®è¾“å…¥å­—ç¬¦é›† CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] TextOut Handle of a text output object.CNcomment:ÎÄ±¾Êä³ö¶ÔÏó¾ä±ú CNend
-\param[out] CharSet  charset of input text.CNcomment:ÊäÈëÎÄ±¾×Ö·û¼¯ºÏ CNend
+N/A.CNcomment:æ—  CNend
+\param[in] TextOut Handle of a text output object.CNcomment:æ–‡æœ¬è¾“å‡ºå¯¹è±¡å¥æŸ„ CNend
+\param[out] CharSet  charset of input text.CNcomment:è¾“å…¥æ–‡æœ¬å­—ç¬¦é›†åˆ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
@@ -153,11 +153,11 @@ N/A.CNcomment:ÎŞ CNend
 HI_S32 HI_GO_SetInputCharSet(HI_HANDLE TextOut, HIGO_CHARSET_E CharSet);
 
 /** 
-\brief Obtains the attributes of a text output object.CNcomment:»ñÈ¡ÎÄ±¾Êä³ö¶ÔÏóÊôĞÔ CNend
+\brief Obtains the attributes of a text output object.CNcomment:è·å–æ–‡æœ¬è¾“å‡ºå¯¹è±¡å±æ€§ CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] TextOut Handle of a text output object.CNcomment:ÎÄ±¾Êä³ö¶ÔÏó¾ä±ú CNend
-\param[out] pTextOutAttr  Attributes of a text output object.CNcomment:ÎÄ±¾Êä³ö¶ÔÏóÊôĞÔ CNend
+N/A.CNcomment:æ—  CNend
+\param[in] TextOut Handle of a text output object.CNcomment:æ–‡æœ¬è¾“å‡ºå¯¹è±¡å¥æŸ„ CNend
+\param[out] pTextOutAttr  Attributes of a text output object.CNcomment:æ–‡æœ¬è¾“å‡ºå¯¹è±¡å±æ€§ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVPARAM
@@ -165,18 +165,18 @@ N/A.CNcomment:ÎŞ CNend
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_GetTextAttr(HI_HANDLE TextOut,HIGO_TEXTOUTATTR_S *pTextOutAttr);
 
 /** 
-\brief Obtains the width and height of text contents.CNcomment:»ñÈ¡ÎÄ±¾ÄÚÈİµÄ¿í¸ß CNend
+\brief Obtains the width and height of text contents.CNcomment:è·å–æ–‡æœ¬å†…å®¹çš„å®½é«˜ CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] TextOut Handle of a text output object.CNcomment:ÎÄ±¾Êä³ö¶ÔÏó¾ä±ú CNend
-\param[in] pText Text contents.CNcomment:ÎÄ±¾ÄÚÈİ CNend
-\param[out] pWidth Width of text contents. It cannot be empty.CNcomment:ÎÄ±¾ÄÚÈİ¿í¶È£¬²»¿ÉÎª¿Õ CNend
-\param[out] pHeight Height of text contents. It cannot be empty.CNcomment:ÎÄ±¾ÄÚÈİ¸ß¶È£¬²»¿ÉÎª¿Õ CNend
+N/A.CNcomment:æ—  CNend
+\param[in] TextOut Handle of a text output object.CNcomment:æ–‡æœ¬è¾“å‡ºå¯¹è±¡å¥æŸ„ CNend
+\param[in] pText Text contents.CNcomment:æ–‡æœ¬å†…å®¹ CNend
+\param[out] pWidth Width of text contents. It cannot be empty.CNcomment:æ–‡æœ¬å†…å®¹å®½åº¦ï¼Œä¸å¯ä¸ºç©º CNend
+\param[out] pHeight Height of text contents. It cannot be empty.CNcomment:æ–‡æœ¬å†…å®¹é«˜åº¦ï¼Œä¸å¯ä¸ºç©º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVPARAM
@@ -184,84 +184,84 @@ N/A.CNcomment:ÎŞ CNend
 \retval ::HIGO_ERR_UNSUPPORT_CHARSET
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_GetTextExtent(HI_HANDLE TextOut, const HI_CHAR *pText, HI_S32 *pWidth, HI_S32 *pHeight);
 
 /** 
-\brief Sets to display the background color of a text output object.CNcomment:ÉèÖÃÎÄ±¾Êä³ö¶ÔÏóµÄ±³¾°É«ÊÇ·ñÏÔÊ¾ CNend
+\brief Sets to display the background color of a text output object.CNcomment:è®¾ç½®æ–‡æœ¬è¾“å‡ºå¯¹è±¡çš„èƒŒæ™¯è‰²æ˜¯å¦æ˜¾ç¤º CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] TextOut Handle of a text output object.CNcomment:ÎÄ±¾Êä³ö¶ÔÏó¾ä±ú CNend
+N/A.CNcomment:æ—  CNend
+\param[in] TextOut Handle of a text output object.CNcomment:æ–‡æœ¬è¾“å‡ºå¯¹è±¡å¥æŸ„ CNend
 \param[in] bTransparent  Whether to display the background color of a text output object. If the value is set to 
-HI_TRUE, the background color is not displayed. The default value is HI_TRUE.CNcomment:ÎÄ±¾Êä³ö¶ÔÏó±³¾°É«ÊÇ·ñÏÔÊ¾£¬ÎªHI_TRUE, Ôò²»ÏÔÊ¾£¬Ä¬ÈÏÎªHI_TRUE CNend
+HI_TRUE, the background color is not displayed. The default value is HI_TRUE.CNcomment:æ–‡æœ¬è¾“å‡ºå¯¹è±¡èƒŒæ™¯è‰²æ˜¯å¦æ˜¾ç¤ºï¼Œä¸ºHI_TRUE, åˆ™ä¸æ˜¾ç¤ºï¼Œé»˜è®¤ä¸ºHI_TRUE CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/ACNcomment:ÎŞ CNend
+N/ACNcomment:æ—  CNend
 */
 HI_S32 HI_GO_SetTextBGTransparent(HI_HANDLE TextOut, HI_BOOL bTransparent);
 
 /** 
-\brief Sets the background color of a text output object.CNcomment:ÉèÖÃÎÄ±¾Êä³ö¶ÔÏóµÄ±³¾°É« CNend
+\brief Sets the background color of a text output object.CNcomment:è®¾ç½®æ–‡æœ¬è¾“å‡ºå¯¹è±¡çš„èƒŒæ™¯è‰² CNend
 \attention \n
-If the target surface is a palette, the color is the palette index.CNcomment:Èç¹ûÄ¿±êsurfaceÊÇµ÷É«°å£¬ÔòColorÊÇµ÷É«°åË÷Òı CNend
-\param[in] TextOut Handle of a text output object.CNcomment:ÎÄ±¾Êä³ö¶ÔÏó¾ä±ú CNend
-\param[in] Color  Background color of a text output object.CNcomment:ÎÄ±¾Êä³ö¶ÔÏó±³¾°É«£¬CNend  
+If the target surface is a palette, the color is the palette index.CNcomment:å¦‚æœç›®æ ‡surfaceæ˜¯è°ƒè‰²æ¿ï¼Œåˆ™Coloræ˜¯è°ƒè‰²æ¿ç´¢å¼• CNend
+\param[in] TextOut Handle of a text output object.CNcomment:æ–‡æœ¬è¾“å‡ºå¯¹è±¡å¥æŸ„ CNend
+\param[in] Color  Background color of a text output object.CNcomment:æ–‡æœ¬è¾“å‡ºå¯¹è±¡èƒŒæ™¯è‰²ï¼ŒCNend  
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_SetTextBGColor(HI_HANDLE TextOut, HI_COLOR Color);
 
 /**
-\brief Sets the font color of a text output object.CNcomment: ÉèÖÃÎÄ±¾Êä³ö¶ÔÏóµÄ×ÖÌåÑÕÉ« CNend
+\brief Sets the font color of a text output object.CNcomment: è®¾ç½®æ–‡æœ¬è¾“å‡ºå¯¹è±¡çš„å­—ä½“é¢œè‰² CNend
 \attention \n
-If the target surface is a palette, the color is the palette index.CNcomment: Èç¹ûÄ¿±êsurfaceÊÇµ÷É«°å£¬ÔòColorÊÇµ÷É«°åË÷Òı CNend
-\param[in] TextOut Handle of a text output object.CNcomment: ÎÄ±¾Êä³ö¶ÔÏó¾ä±ú CNend
-\param[in] Color  Font color of a text output object.CNcomment: ÎÄ±¾Êä³ö¶ÔÏó×ÖÌåÑÕÉ« CNend
+If the target surface is a palette, the color is the palette index.CNcomment: å¦‚æœç›®æ ‡surfaceæ˜¯è°ƒè‰²æ¿ï¼Œåˆ™Coloræ˜¯è°ƒè‰²æ¿ç´¢å¼• CNend
+\param[in] TextOut Handle of a text output object.CNcomment: æ–‡æœ¬è¾“å‡ºå¯¹è±¡å¥æŸ„ CNend
+\param[in] Color  Font color of a text output object.CNcomment: æ–‡æœ¬è¾“å‡ºå¯¹è±¡å­—ä½“é¢œè‰² CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A.CNcomment: ÎŞ CNend
+N/A.CNcomment: æ—  CNend
 */
 HI_S32 HI_GO_SetTextColor(HI_HANDLE TextOut, HI_COLOR Color);
 
 /** 
-\brief Outputs text contents to a specified surface.CNcomment:Êä³öÎÄ±¾ÄÚÈİµ½Ö¸¶¨surface CNend
+\brief Outputs text contents to a specified surface.CNcomment:è¾“å‡ºæ–‡æœ¬å†…å®¹åˆ°æŒ‡å®šsurface CNend
 \attention
-N/A.CNcomment:ÎŞ CNend 
-\param[in] TextOut Handle of a text output object.CNcomment:ÎÄ±¾Êä³ö¶ÔÏó¾ä±ú CNend
-\param[in] Surface Surface handle.CNcomment:Surface¾ä±ú CNend
-\param[in] pText  Text contents.CNcomment:ÎÄ±¾ÄÚÈİ CNend
+N/A.CNcomment:æ—  CNend 
+\param[in] TextOut Handle of a text output object.CNcomment:æ–‡æœ¬è¾“å‡ºå¯¹è±¡å¥æŸ„ CNend
+\param[in] Surface Surface handle.CNcomment:Surfaceå¥æŸ„ CNend
+\param[in] pText  Text contents.CNcomment:æ–‡æœ¬å†…å®¹ CNend
 \param[in] pRect Text output region. If the value is empty, it indicates that text contents are output from the 
-surface origin.CNcomment:ÎÄ±¾Êä³öÇøÓò£¬Îª¿Õ±íÊ¾´ÓsurfaceÔ­µãÊä³ö CNend
+surface origin.CNcomment:æ–‡æœ¬è¾“å‡ºåŒºåŸŸï¼Œä¸ºç©ºè¡¨ç¤ºä»surfaceåŸç‚¹è¾“å‡º CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVPARAM
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_TextOut(HI_HANDLE TextOut,HI_HANDLE Surface, const HI_CHAR *pText, 
                            const HI_RECT *pRect);
 
 /** 
 \brief Outputs texts. This API is an extended API. You can call this API to output contents based on customized 
-styles and formatting.CNcomment:ÎÄ±¾Êä³öÀ©Õ¹½Ó¿Ú,Êä³öÄÚÈİ¿ÉÒÔ°´ÕÕÓÃ»§Ö¸¶¨µÄÅÅ°æ½øĞĞÊä³ö¡£CNend
-\param[in] hTextOut Text output handle.CNcomment:ÎÄ±¾Êä³ö¾ä±ú CNend
-\param[in] hSurface Surface handle.CNcomment:Surface¾ä±ú CNend
-\param[in] pText    Text contents ending with /0.CNcomment:ÒÔ/0½áÎ²µÄÎÄ±¾ÄÚÈİ CNend
-\param[in] pRect    Text output region.CNcomment:ÎÄ±¾Êä³öÇøÓò CNend
-\param[in] Style    Styles and formatting including LAYOUT_LEFT, LAYOUT_RIGHT, and LAYOUT_HCENTER.CNcomment:ÅÅ°æ¸ñÊ½£¬ÈçLAYOUT_LEFT¡¢LAYOUT_RIGHT¡¢LAYOUT_HCENTERµÈ CNend
+styles and formatting.CNcomment:æ–‡æœ¬è¾“å‡ºæ‰©å±•æ¥å£,è¾“å‡ºå†…å®¹å¯ä»¥æŒ‰ç…§ç”¨æˆ·æŒ‡å®šçš„æ’ç‰ˆè¿›è¡Œè¾“å‡ºã€‚CNend
+\param[in] hTextOut Text output handle.CNcomment:æ–‡æœ¬è¾“å‡ºå¥æŸ„ CNend
+\param[in] hSurface Surface handle.CNcomment:Surfaceå¥æŸ„ CNend
+\param[in] pText    Text contents ending with /0.CNcomment:ä»¥/0ç»“å°¾çš„æ–‡æœ¬å†…å®¹ CNend
+\param[in] pRect    Text output region.CNcomment:æ–‡æœ¬è¾“å‡ºåŒºåŸŸ CNend
+\param[in] Style    Styles and formatting including LAYOUT_LEFT, LAYOUT_RIGHT, and LAYOUT_HCENTER.CNcomment:æ’ç‰ˆæ ¼å¼ï¼Œå¦‚LAYOUT_LEFTã€LAYOUT_RIGHTã€LAYOUT_HCENTERç­‰ CNend
 
 \retval ::HI_SUCCESS
 \retval ::HIGO_ERR_INVPARAM
@@ -269,36 +269,36 @@ styles and formatting.CNcomment:ÎÄ±¾Êä³öÀ©Õ¹½Ó¿Ú,Êä³öÄÚÈİ¿ÉÒÔ°´ÕÕÓÃ»§Ö¸¶¨µÄÅÅ°æ½
 \retval ::HIGO_ERR_NULLPTR
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_TextOutEx(HI_HANDLE hTextOut, HI_HANDLE hSurface, 
                                const HI_CHAR *pText,  const HI_RECT *pRect, 
                                HIGO_LAYOUT_E Style);
 
 /**
-\brief Calculates the number of characters in a specified text output region.CNcomment: ¼ÆËãÖ¸¶¨ÎÄ±¾Êä³öÇøÓò×Ö·û¸öÊı CNend
+\brief Calculates the number of characters in a specified text output region.CNcomment: è®¡ç®—æŒ‡å®šæ–‡æœ¬è¾“å‡ºåŒºåŸŸå­—ç¬¦ä¸ªæ•° CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] hTextOut Text output handle.CNcomment: ÎÄ±¾Êä³ö¾ä±ú CNend
-\param[in] pText    Text contents ending with /0.CNcomment: ÒÔ/0½áÎ²µÄÎÄ±¾ÄÚÈİ CNend
-\param[in] pRect    Text output region. The value cannot be empty.CNcomment: ÎÄ±¾Êä³öÇøÓò,²»¿ÉÎª¿Õ CNend
-\param[in] pLen      Pointer to the string length.CNcomment: ×Ö·û´®³¤¶ÈÖ¸Õë CNend
+N/A.CNcomment:æ—  CNend
+\param[in] hTextOut Text output handle.CNcomment: æ–‡æœ¬è¾“å‡ºå¥æŸ„ CNend
+\param[in] pText    Text contents ending with /0.CNcomment: ä»¥/0ç»“å°¾çš„æ–‡æœ¬å†…å®¹ CNend
+\param[in] pRect    Text output region. The value cannot be empty.CNcomment: æ–‡æœ¬è¾“å‡ºåŒºåŸŸ,ä¸å¯ä¸ºç©º CNend
+\param[in] pLen      Pointer to the string length.CNcomment: å­—ç¬¦ä¸²é•¿åº¦æŒ‡é’ˆ CNend
 
 \retval ::HIGO_ERR_INVPARAM
 \retval ::HIGO_ERR_INVHANDLE
 \retval ::HI_SUCCESS
 
 \see \n
-N/A.CNcomment: ÎŞ CNend
+N/A.CNcomment: æ—  CNend
 */
 HI_S32 HI_GO_GetTextExtentEx(HI_HANDLE TextOut, const HI_CHAR *pText, 
                                        const HI_RECT *pRect, HI_U32 *pLen);
 
 typedef enum
 {
-    HIGO_TEXT_STYLE_NORMAL = 0x00,/*Normal font*//**<CNcomment:Õı³£×ÖÌå*/ 
-    HIGO_TEXT_STYLE_ITALIC = 0x01, /*Italic font*//**<CNcomment:Ğ±Ìå×ÖÌå*/ 
-    HIGO_TEXT_STYLE_BOLD   = 0x02, /*Bold font*//**<CNcomment:´ÖÌå×ÖÌå*/ 
+    HIGO_TEXT_STYLE_NORMAL = 0x00,/*Normal font*//**<CNcomment:æ­£å¸¸å­—ä½“*/ 
+    HIGO_TEXT_STYLE_ITALIC = 0x01, /*Italic font*//**<CNcomment:æ–œä½“å­—ä½“*/ 
+    HIGO_TEXT_STYLE_BOLD   = 0x02, /*Bold font*//**<CNcomment:ç²—ä½“å­—ä½“*/ 
     HIGO_TEXT_STYLE_BUTT   = 0x80,
 } HIGO_TEXT_STYLE_E;
 
@@ -306,39 +306,39 @@ typedef struct
 {
     const HI_CHAR* pSbcFontFile;
     const HI_CHAR* pMbcFontFile;
-    HI_U32   u32Size; /*This value is ignored for the dot-matrix font.*//**<CNcomment:Èç¹ûÊÇµãÕó×ÖÌå£¬Ôò¸ÃÖµ±»ºöÂÔ*/
+    HI_U32   u32Size; /*This value is ignored for the dot-matrix font.*//**<CNcomment:å¦‚æœæ˜¯ç‚¹é˜µå­—ä½“ï¼Œåˆ™è¯¥å€¼è¢«å¿½ç•¥*/
 } HIGO_TEXT_INFO_S;
 
 /** 
-\brief Creates a font.CNcomment:´´½¨×ÖÌå CNend
+\brief Creates a font.CNcomment:åˆ›å»ºå­—ä½“ CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] phText Text output handle.CNcomment:ÎÄ±¾Êä³ö¾ä±ú CNend
-\param[in] pInfo  Text information.CNcomment:ÎÄ¼şĞÅÏ¢ CNend
+N/A.CNcomment:æ—  CNend
+\param[in] phText Text output handle.CNcomment:æ–‡æœ¬è¾“å‡ºå¥æŸ„ CNend
+\param[in] pInfo  Text information.CNcomment:æ–‡ä»¶ä¿¡æ¯ CNend
 
-\retval ::HI_SUCCESS A font is created successfully.CNcomment:×ÖÌå´´½¨³É¹¦ CNend
-\retval ::HI_FAILURE A font fails to be created.CNcomment:×ÖÌå´´½¨Ê§°Ü CNend
+\retval ::HI_SUCCESS A font is created successfully.CNcomment:å­—ä½“åˆ›å»ºæˆåŠŸ CNend
+\retval ::HI_FAILURE A font fails to be created.CNcomment:å­—ä½“åˆ›å»ºå¤±è´¥ CNend
 \retval ::HIGO_ERR_INVPARAM
 \retval ::HIGO_ERR_NOMEM
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_CreateTextEx(const HIGO_TEXT_INFO_S* pInfo, HI_HANDLE* phText);
 
 /** 
-\brief Sets the style of a font, such as bold, italic, or normal.CNcomment:ÉèÖÃ×ÖÌåµÄ·ç¸ñ£¬±ÈÈç:´ÖÌå£¬Ğ±Ìå£¬Õı³£Ìå CNend
+\brief Sets the style of a font, such as bold, italic, or normal.CNcomment:è®¾ç½®å­—ä½“çš„é£æ ¼ï¼Œæ¯”å¦‚:ç²—ä½“ï¼Œæ–œä½“ï¼Œæ­£å¸¸ä½“ CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param[in] hTextOut Text output handle.CNcomment:ÎÄ±¾Êä³ö¾ä±ú CNend
-\param[in] eStyle   Font style.CNcomment:×ÖÌå·ç¸ñ CNend
+N/A.CNcomment:æ—  CNend
+\param[in] hTextOut Text output handle.CNcomment:æ–‡æœ¬è¾“å‡ºå¥æŸ„ CNend
+\param[in] eStyle   Font style.CNcomment:å­—ä½“é£æ ¼ CNend
 
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦ CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸ CNend
 \retval ::HIGO_ERR_INVHANDLE
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_SetTextStyle(HI_HANDLE hTextOut, HIGO_TEXT_STYLE_E eStyle);
 
@@ -346,78 +346,78 @@ HI_S32 HI_GO_SetTextStyle(HI_HANDLE hTextOut, HIGO_TEXT_STYLE_E eStyle);
 
 /** 
 \brief Sets the the text base direction
-lines.CNcomment:ÉèÖÃÎÄ±¾Êä³ö¶ÔÏóµÄ»ù±¾·½Ïò CNend
+lines.CNcomment:è®¾ç½®æ–‡æœ¬è¾“å‡ºå¯¹è±¡çš„åŸºæœ¬æ–¹å‘ CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 
-\param[in] hTextOut Text output handle. CNcomment:ÎÄ±¾Êä³ö¾ä±ú CNend
-\param[in] BaseDir the base direction of the text. CNcomment: ÎÄ±¾Êä³ö¶ÔÏó»ù±¾·½Ïò CNend
+\param[in] hTextOut Text output handle. CNcomment:æ–‡æœ¬è¾“å‡ºå¥æŸ„ CNend
+\param[in] BaseDir the base direction of the text. CNcomment: æ–‡æœ¬è¾“å‡ºå¯¹è±¡åŸºæœ¬æ–¹å‘ CNend
 
-\retval ::HI_SUCCESS Success.CNcomment: ³É¹¦ CNend
-\retval ::HIGO_ERR_INVHANDLE Failure.CNcomment:Ê§°Ü CNend
+\retval ::HI_SUCCESS Success.CNcomment: æˆåŠŸ CNend
+\retval ::HIGO_ERR_INVHANDLE Failure.CNcomment:å¤±è´¥ CNend
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 
 HI_S32 HI_GO_SetBaseDir(HI_HANDLE TextOut, HIGO_TEXT_DIR_E eBaseDir);
 /** 
 \brief Sets the horizontal spacing between displayed characters, that is, the horizontal spacing between character 
-lines.CNcomment:ÉèÖÃ×Ö·ûÏÔÊ¾Ë®Æ½¼ä¾à£¬Á½¸ö×Ö·ûĞĞË®Æ½¼ä¾à CNend
+lines.CNcomment:è®¾ç½®å­—ç¬¦æ˜¾ç¤ºæ°´å¹³é—´è·ï¼Œä¸¤ä¸ªå­—ç¬¦è¡Œæ°´å¹³é—´è· CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 
-\param[in] hTextOut Text output handle.CNcomment:ÎÄ±¾Êä³ö¾ä±ú CNend
-\param[in] u32Distance Horizontal spacing.CNcomment:Ë®Æ½¼ä¾à CNend
+\param[in] hTextOut Text output handle.CNcomment:æ–‡æœ¬è¾“å‡ºå¥æŸ„ CNend
+\param[in] u32Distance Horizontal spacing.CNcomment:æ°´å¹³é—´è· CNend
 
-\retval ::HI_SUCCESS Success.CNcomment: ³É¹¦ CNend
-\retval ::HIGO_ERR_INVHANDLE Failure.CNcomment:Ê§°Ü CNend
+\retval ::HI_SUCCESS Success.CNcomment: æˆåŠŸ CNend
+\retval ::HIGO_ERR_INVHANDLE Failure.CNcomment:å¤±è´¥ CNend
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_SetCharExtra(HI_HANDLE hTextOut, HI_U32 u32Distance);
 
 /** 
-\brief Sets the vertical and horizontal spacing.CNcomment:ÉèÖÃ´¹Ö±Ë®Æ½¼ä¾à CNend
+\brief Sets the vertical and horizontal spacing.CNcomment:è®¾ç½®å‚ç›´æ°´å¹³é—´è· CNend
 \attention \n
-This API is available only when the font style is changed.CNcomment:Ö»ÓĞ»»ĞĞ·ç¸ñ²ÅÓĞĞ§ CNend
+This API is available only when the font style is changed.CNcomment:åªæœ‰æ¢è¡Œé£æ ¼æ‰æœ‰æ•ˆ CNend
 
-\param[in] hTextOut Text output handle.CNcomment:ÎÄ±¾Êä³ö¾ä±ú CNend
-\param[in] u32Distance Vertical spacing.CNcomment:´¹Ö±¼ä¾à CNend
+\param[in] hTextOut Text output handle.CNcomment:æ–‡æœ¬è¾“å‡ºå¥æŸ„ CNend
+\param[in] u32Distance Vertical spacing.CNcomment:å‚ç›´é—´è· CNend
 
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦ CNend
-\retval ::HIGO_ERR_INVHANDLE Failure.CNcomment:Ê§°Ü CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸ CNend
+\retval ::HIGO_ERR_INVHANDLE Failure.CNcomment:å¤±è´¥ CNend
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_SetLineExtra(HI_HANDLE hText, HI_U32 u32Distance);
 
 /**
-\brief Initializes the character module.CNcomment: ³õÊ¼»¯×Ö·ûÄ£¿é CNend
+\brief Initializes the character module.CNcomment: åˆå§‹åŒ–å­—ç¬¦æ¨¡å— CNend
 \attention \n
-N/A.CNcomment: ÎŞ CNend
-\param N/A.CNcomment: ÎŞ CNend
-\retval ::HI_SUCCESS Success.CNcomment: ³É¹¦ CNend
-\retval ::HI_FAILURE Failure.CNcomment: Ê§°Ü CNend
+N/A.CNcomment: æ—  CNend
+\param N/A.CNcomment: æ—  CNend
+\retval ::HI_SUCCESS Success.CNcomment: æˆåŠŸ CNend
+\retval ::HI_FAILURE Failure.CNcomment: å¤±è´¥ CNend
 \retval ::HIGO_ERR_DEPEND_TDE
 
 \see \n
-N/A.CNcomment: ÎŞ CNend
+N/A.CNcomment: æ—  CNend
 */
 HI_S32 HI_GO_InitText();
 
 /** 
-\brief Deinitializes the character module.CNcomment:È¥³õÊ¼»¯×Ö·ûÄ£¿é CNend
+\brief Deinitializes the character module.CNcomment:å»åˆå§‹åŒ–å­—ç¬¦æ¨¡å— CNend
 \attention \n
-N/A.CNcomment:ÎŞ CNend
-\param N/A.CNcomment:ÎŞ CNend
-\retval ::HI_SUCCESS Success.CNcomment:³É¹¦ CNend
-\retval ::HIGO_ERR_NOTINIT Failure.CNcomment:Ê§°Ü CNend
+N/A.CNcomment:æ—  CNend
+\param N/A.CNcomment:æ—  CNend
+\retval ::HI_SUCCESS Success.CNcomment:æˆåŠŸ CNend
+\retval ::HIGO_ERR_NOTINIT Failure.CNcomment:å¤±è´¥ CNend
 
 \see \n
-N/A.CNcomment:ÎŞ CNend
+N/A.CNcomment:æ—  CNend
 */
 HI_S32 HI_GO_DeinitText();
 

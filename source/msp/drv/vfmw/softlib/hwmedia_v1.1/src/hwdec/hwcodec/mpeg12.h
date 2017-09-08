@@ -24,8 +24,8 @@
 
 #include "mpegvideo.h"
 
-/*´Óimedia_common.hÖĞÒÆ¹ıÀ´ Óëmpeg2ÌØ¶¨Ïà¹Øºê xiongfei20100304*/
-/*Óëmpeg2Ïà¹Ø Êı¾İ½á¹¹  xiongfei2010211*/
+/*ä»imedia_common.hä¸­ç§»è¿‡æ¥ ä¸mpeg2ç‰¹å®šç›¸å…³å® xiongfei20100304*/
+/*ä¸mpeg2ç›¸å…³ æ•°æ®ç»“æ„  xiongfei2010211*/
 /* Start codes. */
 #define SEQ_END_CODE            0x000001b7
 #define SEQ_START_CODE          0x000001b3
@@ -36,7 +36,7 @@
 #define EXT_START_CODE          0x000001b5
 #define USER_START_CODE         0x000001b2
 
-/*½«Mpeg1Context´Ómpeg12.cÖĞÒÆµ½´Ë´¦ xiongfei20100221*/
+/*å°†Mpeg1Contextä»mpeg12.cä¸­ç§»åˆ°æ­¤å¤„ xiongfei20100221*/
 typedef struct Mpeg1Context {
 	MpegEncContext mpeg_enc_ctx;
 	int mpeg_enc_ctx_allocated; /* true if decoding context allocated */
@@ -62,12 +62,12 @@ void ff_mpeg12_common_init(MpegEncContext *s);
 void ff_mpeg12_init_vlcs(void);
 
 /* 2010/03/11 14:05:00 liuxw+00139685 */
-/* Ôö¼Óº¯ÊıµÄÉùÃ÷ */
+/* å¢åŠ å‡½æ•°çš„å£°æ˜ */
 int mpeg1_decode_sequence(AVCodecContext *avctx, const uint8_t *buf, int buf_size);
 void mpeg_decode_extension(AVCodecContext *avctx, const uint8_t *buf, int buf_size);
 void mpeg_decode_user_data(AVCodecContext *avctx, const uint8_t *buf, int buf_size);
 
-/*x00141957 20100726Ìí¼Óº¯ÊıÓÃÀ´¼ÆËãÏñËØ¿í¸ß±È*/
+/*x00141957 20100726æ·»åŠ å‡½æ•°ç”¨æ¥è®¡ç®—åƒç´ å®½é«˜æ¯”*/
 void mpeg12_get_sar(MpegEncContext *s2,uint16_t *sample_height,uint16_t *sample_width);
 
 static inline int decode_dc(GetBitContext *gb, int component)

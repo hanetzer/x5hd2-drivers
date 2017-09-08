@@ -94,7 +94,7 @@ struct vp56_context {
     AVCodecContext *avctx;
     DSPContext dsp;
     ScanTable scantable;
-	/*x00141957 20100914 修改*/
+	/*x00141957 20100914 淇敼*/
     //AVFrame frames[4];
 #define INTERNAL_BUFFER_SIZE 32
     AVFrame frames[INTERNAL_BUFFER_SIZE];
@@ -177,9 +177,9 @@ struct vp56_context {
     VLC ract_vlc[2][3][6];
     unsigned int nb_null[2][2];       /* number of consecutive NULL DC/AC */
  	
- 	/*x00141957 20100628 添加*/
+ 	/*x00141957 20100628 娣诲姞*/
  	ParseContext parse_context;
-	/*6个block中每个block的结束index x00141957 2010 11.12*/
+	/*6涓猙lock涓瘡涓猙lock鐨勭粨鏉焛ndex x00141957 2010 11.12*/
 	int eob_pos[6];
 	int little_1;
 	int little_3;
@@ -196,7 +196,7 @@ int vp56_decode_frame(AVCodecContext *avctx, void *data, int *data_size,
                       const uint8_t *buf, int buf_size);
 
 
-/*x00141957 20100628添加*/
+/*x00141957 20100628娣诲姞*/
 int vp6_Frame_Parse(AVCodecContext *pstAVCodecContext,const uint8_t **pucOutBuf, unsigned int *puiOutBufSize,const uint8_t *pucInBuf, unsigned int uiInBufSize, int *piLength);
 
 /**

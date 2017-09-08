@@ -828,7 +828,7 @@ HI_VOID SIL9293_HAL_SetAudioAuto(HI_VOID)
     u8Value = (u8Value | BIT6) & (~BIT5);
     SIL9293_Write(HDMIRX_SEC_DEV, 0x26, u8Value);
 
-    /* 0x88 PLL 0x88£¬0x89 PLL 0x16 */
+    /* 0x88 PLL 0x88ï¼Œ0x89 PLL 0x16 */
     SIL9293_Write(HDMIRX_FST_DEV, 0x88, 0x88);
     SIL9293_Write(HDMIRX_FST_DEV, 0x89, 0x16);
 

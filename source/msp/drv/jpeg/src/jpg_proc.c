@@ -51,10 +51,10 @@ HI_JPEG_PROC_INFO_S s_stJpeg6bProcInfo = {0};
 
 
 /** user need proc message */
-/** CNcomment:对外的proc信息 */
+/** CNcomment:瀵瑰鐨刾roc淇℃伅 */
 static HI_BOOL gs_bProcOn  = HI_FALSE;
 /** our need debug message */
-/** CNcomment:自己需要调试增加的信息 */
+/** CNcomment:鑷繁闇�瑕佽皟璇曞鍔犵殑淇℃伅 */
 static HI_BOOL gs_bTraceOn = HI_FALSE;
 
 

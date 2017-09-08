@@ -31,24 +31,24 @@ extern "C"{
 
 /*************************** Structure Definition ****************************/
 /** \addtogroup      H_2_2_1 */
-/** @{ */  /** <!-- ¡¾Common for the media domain CNcomment: Ã½ÌåÍ¨ÓÃ¡¿ */
+/** @{ */  /** <!-- ã€Common for the media domain CNcomment: åª’ä½“é€šç”¨ã€‘ */
 
 /**Defines the stream buffer.*/
-/**CNcomment: ¶¨ÒåÂëÁ÷»º³å½á¹¹Ìå */
+/**CNcomment: å®šä¹‰ç æµç¼“å†²ç»“æž„ä½“ */
 typedef struct hiUNF_STREAM_BUF_S
 {
-    HI_U8   *pu8Data;        /**<Data pointer*/ /**<CNcomment: Êý¾ÝÖ¸Õë */
-    HI_U32  u32Size;         /**<Data size*/ /**<CNcomment: Êý¾Ý³¤¶È */
+    HI_U8   *pu8Data;        /**<Data pointer*/ /**<CNcomment: æ•°æ®æŒ‡é’ˆ */
+    HI_U32  u32Size;         /**<Data size*/ /**<CNcomment: æ•°æ®é•¿åº¦ */
 } HI_UNF_STREAM_BUF_S;
 
 /**Defines the structure of the ES buffer.*/
-/**CNcomment: ¶¨ÒåESÂëÁ÷»º³å½á¹¹Ìå */
+/**CNcomment: å®šä¹‰ESç æµç¼“å†²ç»“æž„ä½“ */
 typedef struct hiUNF_ES_BUF_S
 {
-    HI_U8 * pu8Buf;    /**<User-state virtual address of the buffer*/ /**<CNcomment: bufferµÄÓÃ»§Ì¬ÐéµØÖ·*/
-    HI_U32 u32BufLen;  /**<Buffer length*/ /**<CNcomment: bufferµÄ³¤¶È*/
+    HI_U8 * pu8Buf;    /**<User-state virtual address of the buffer*/ /**<CNcomment: bufferçš„ç”¨æˆ·æ€è™šåœ°å€*/
+    HI_U32 u32BufLen;  /**<Buffer length*/ /**<CNcomment: bufferçš„é•¿åº¦*/
     HI_U32 u32PtsMs;   /**<Presentation time stamp (PTS) value corresponding to the start of the stream. The invalid value is 0xFFFFFFFF.*/
-                       /**<CNcomment: ÂëÁ÷¿ªÊ¼´¦¶ÔÓ¦µÄPTSÖµ£¬ÎÞÐ§Îª0xffffffff*/
+                       /**<CNcomment: ç æµå¼€å§‹å¤„å¯¹åº”çš„PTSå€¼ï¼Œæ— æ•ˆä¸º0xffffffff*/
 }HI_UNF_ES_BUF_S;
 
 /* Crop parameter */

@@ -24,7 +24,7 @@ static void himedia_bus_release(struct device *dev)
 struct device himedia_bus = {
 	.init_name	= "himediaBusDev",
 	.release    = himedia_bus_release
-};  /*top level bus, parent and bus member are both NULL*//*CNcomment:ÕâÊÇ¶¥²ã×ÜÏß£¬parent ºÍ bus ³ÉÔ±Îª NULL*/
+};  /*top level bus, parent and bus member are both NULL*//*CNcomment:è¿™æ˜¯é¡¶å±‚æ€»çº¿ï¼Œparent å’Œ bus æˆå‘˜ä¸º NULL*/
 
 //EXPORT_SYMBOL_GPL(himedia_bus);
 

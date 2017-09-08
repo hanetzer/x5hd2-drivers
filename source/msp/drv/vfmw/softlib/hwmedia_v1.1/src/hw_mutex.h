@@ -1,15 +1,15 @@
 /*******************************************************************************
 Copyright (C), 2009-2012, Huawei Tech. Co., Ltd.
 File name: imedia_common.h
-Author & ID: ËÎĞ¡¸Õ+00133955
+Author & ID: å®‹å°åˆš+00133955
 Version: 1.00
 Date:  2010-3-4
-Description: ±¾ÎÄ¼ş°üÀ¨ÁË¿çÆ½Ì¨Ïß³ÌÍ¬²½½á¹¹¶¨Òå
+Description: æœ¬æ–‡ä»¶åŒ…æ‹¬äº†è·¨å¹³å°çº¿ç¨‹åŒæ­¥ç»“æ„å®šä¹‰
 Function List:
 History:
-1¡¢2010-3-4 ±àÂëÍê³É ËÎĞ¡¸Õ+00133955
-2¡¢xxxx
-3¡¢xxxx
+1ã€2010-3-4 ç¼–ç å®Œæˆ å®‹å°åˆš+00133955
+2ã€xxxx
+3ã€xxxx
 *******************************************************************************/
 #ifndef __HW_MUTEX_H__
 #define __HW_MUTEX_H__
@@ -62,7 +62,7 @@ static /*inline*/ void hw_mutex_destroy(struct hw_mutex *mutex)
 static /*inline*/ void hw_mutex_lock(struct hw_mutex *mutex)
 {
 	/* 2010/08/25 11:30:00 liuxw+00139685 [AZ1D02270] */
-	/* ×¢ÊÍµôÓÃÓÚÓÅ»¯µÄ´úÂë£¬Ö±½Óµ÷ÓÃÏµÍ³µÄ»¥Ëøº¯Êı */
+	/* æ³¨é‡Šæ‰ç”¨äºä¼˜åŒ–çš„ä»£ç ï¼Œç›´æ¥è°ƒç”¨ç³»ç»Ÿçš„äº’é”å‡½æ•° */
 //	int this_thread = hw_get_current_thread_id();
 //	if (this_thread == mutex->owner)
 //	{
@@ -76,7 +76,7 @@ static /*inline*/ void hw_mutex_lock(struct hw_mutex *mutex)
 	pthread_mutex_lock(&mutex->id);
 #endif
 	/* 2010/08/25 11:30:00 liuxw+00139685 [AZ1D02270] */
-	/* ×¢ÊÍµôÓÃÓÚÓÅ»¯µÄ´úÂë£¬Ö±½Óµ÷ÓÃÏµÍ³µÄ»¥Ëøº¯Êı */
+	/* æ³¨é‡Šæ‰ç”¨äºä¼˜åŒ–çš„ä»£ç ï¼Œç›´æ¥è°ƒç”¨ç³»ç»Ÿçš„äº’é”å‡½æ•° */
 //	mutex->owner = this_thread;
 //	++mutex->recursive;
 }
@@ -84,7 +84,7 @@ static /*inline*/ void hw_mutex_lock(struct hw_mutex *mutex)
 static /*inline*/ void hw_mutex_unlock(struct hw_mutex *mutex)
 {
 	/* 2010/08/25 11:30:00 liuxw+00139685 [AZ1D02270] */
-	/* ×¢ÊÍµôÓÃÓÚÓÅ»¯µÄ´úÂë£¬Ö±½Óµ÷ÓÃÏµÍ³µÄ»¥Ëøº¯Êı */
+	/* æ³¨é‡Šæ‰ç”¨äºä¼˜åŒ–çš„ä»£ç ï¼Œç›´æ¥è°ƒç”¨ç³»ç»Ÿçš„äº’é”å‡½æ•° */
 //	int this_thread = hw_get_current_thread_id();
 //	if (this_thread != mutex->owner)
 //		return;

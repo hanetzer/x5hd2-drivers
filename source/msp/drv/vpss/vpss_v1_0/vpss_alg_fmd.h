@@ -211,11 +211,11 @@ typedef struct
     HI_BOOL  DirMch;
     HI_BOOL  DieOutSelLum;
     HI_BOOL  DieOutSelChr;
-    HI_BOOL  EdgeSmoothEn; /*����2:2��Ӱģʽ�ұ�Եƽ��ʹ�������Ϊ1*/  
+    HI_BOOL  EdgeSmoothEn; /*仅在2:2电影模式且边缘平滑使能情况下为1*/  
     
-    HI_BOOL  SceneChange;/* �����л���Ϣ */
-    HI_S32 s32FieldOrder;/* ���س��� */
-    HI_S32 s32FilmType;/* ��Ӱģʽ */
+    HI_BOOL  SceneChange;/* 场景切换信息 */
+    HI_S32 s32FieldOrder;/* 顶地场序 */
+    HI_S32 s32FilmType;/* 电影模式 */
 }ALG_FMD_RTL_OUTPARA_S;
 
 typedef struct
@@ -251,10 +251,10 @@ typedef struct
 /*structure of pulldown software result */
 typedef struct
 {
-    HI_BOOL Is2ndFld;             /*��ʾ����ͳ����Ϣʱ���ο����Ƿ�Ϊ�ڶ���*/
-    HI_BOOL NxtIs2ndFld;          /*��ʾ������һ�����ø��߼��Ĳο����Ƿ�Ϊ�ڶ���*/
-    HI_BOOL BtMode;               /*��ʾ����ͳ����Ϣʱ�����ø��߼��ĳ���*/
-    HI_BOOL RefFld;               /*��ʾ����ͳ����Ϣʱ�����ø��߼��Ĳο���,�㷨��Ա�����Ĳο���Ҳ���߼���Ա�ĵ�ǰ��*/
+    HI_BOOL Is2ndFld;             /*表示计算统计信息时，参考场是否为第二场*/
+    HI_BOOL NxtIs2ndFld;          /*表示驱动下一次配置给逻辑的参考场是否为第二场*/
+    HI_BOOL BtMode;               /*表示计算统计信息时，配置给逻辑的场序*/
+    HI_BOOL RefFld;               /*表示计算统计信息时，配置给逻辑的参考场,算法人员描述的参考场也是逻辑人员的当前场*/
     HI_S32 s32PbDelay;            /*delayed fields*/
     HI_S32 SadBuf[16], SadCnt, *pSadRd, *pSadWt;
     PD32_INFO_S Pld32InfoBuf[5], PdInfo;
@@ -297,12 +297,12 @@ typedef struct
     /*the following may be different for different frames*/
     HI_S32 s32Repeat;    /*if s32Repeat>0, it indicates this frame is repeated. */
     HI_S32 s32Drop;       /*if s32Repeat>0, it indicates this frame is dropped. */
-    HI_BOOL  BtMode;        /*  Ϊ��ͳ����Ϣʱ����һ���ĳ��� 0 topFirst*/    
-    HI_BOOL  RefFld;       /* ref field  Ϊ��ͳ����Ϣʱ����һ�������� ��0 ��ǰ��Ϊ�׳� ��1*/
-    HI_BOOL  bPreInfo;    /*DEI�߼�����timeout���Ծɴ�����һ��*/ 
+    HI_BOOL  BtMode;        /*  为读统计信息时的那一场的场序， 0 topFirst*/    
+    HI_BOOL  RefFld;       /* ref field  为读统计信息时的那一场，顶场 配0 当前场为底场 配1*/
+    HI_BOOL  bPreInfo;    /*DEI逻辑处理timeout，仍旧处理上一场*/ 
         
     ALG_VDEC_INFO_S stVdecInfo;
-    ALG_FMD_RTL_STATPARA_S stFmdRtlStatPara; /*��Ҫ���߼�����ͳ����Ϣ*/
+    ALG_FMD_RTL_STATPARA_S stFmdRtlStatPara; /*需要从逻辑读的统计信息*/
 }ALG_DEI_DRV_PARA_S;
 
 
@@ -313,7 +313,7 @@ typedef struct
      BTMODE_S stBtMode;    
      ALG_FMD_CTX_S stFmdCtx;          
      STILLBLK_THD_S  StillBlkCtrl;
-     ALG_FMD_RTL_OUTPARA_S stRtlOutParaBak;/*��DEI�߼�Timeoutʱ��ʹ����һ�εļ�����*/
+     ALG_FMD_RTL_OUTPARA_S stRtlOutParaBak;/*当DEI逻辑Timeout时，使用上一次的计算结果*/
 }ALG_FMD_SOFTINFO_S;
 
 HI_VOID FmdThdParaInitDefault(void);

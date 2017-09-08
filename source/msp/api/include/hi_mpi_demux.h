@@ -30,9 +30,9 @@ extern "C" {
 typedef struct hiMPI_DMX_BUF_STATUS_S
 {
     HI_U32 u32BufSize;  /*buffer size */
-    HI_U32 u32UsedSize; /* buffer used size *//*CNcomment:»º³åÇøÒÑÊ¹ÓÃ´óĞ¡ */
-    HI_U32 u32BufRptr;  /*buffer read pointer *//*CNcomment:»º³åÇø¶ÁÖ¸Õë*/
-    HI_U32 u32BufWptr;/*buffer written pointer *//*CNcomment:»º³åÇøĞ´Ö¸Õë*/
+    HI_U32 u32UsedSize; /* buffer used size *//*CNcomment:ç¼“å†²åŒºå·²ä½¿ç”¨å¤§å° */
+    HI_U32 u32BufRptr;  /*buffer read pointer *//*CNcomment:ç¼“å†²åŒºè¯»æŒ‡é’ˆ*/
+    HI_U32 u32BufWptr;/*buffer written pointer *//*CNcomment:ç¼“å†²åŒºå†™æŒ‡é’ˆ*/
 } HI_MPI_DMX_BUF_STATUS_S;
 
 typedef struct hiDMX_DATA_S
@@ -68,7 +68,7 @@ HI_S32 HI_MPI_DMX_GetTSBufferPortId(HI_HANDLE hTsBuffer, HI_UNF_DMX_PORT_E *penP
 HI_S32 HI_MPI_DMX_GetTSBufferHandle(HI_UNF_DMX_PORT_E enPortId, HI_HANDLE *phTsBuffer);
 
 /* Channel */
-/*Buffer for video and audio channel should be attached,it's meaningless to config when apply them *//*CNcomment: ÒôÊÓÆµÍ¨µÀµÄbufferĞèÒª°ó¶¨£¬ÔÚÉêÇëÊ±ÅäÖÃÃ»ÓĞÒâÒå*/
+/*Buffer for video and audio channel should be attached,it's meaningless to config when apply them *//*CNcomment: éŸ³è§†é¢‘é€šé“çš„bufferéœ€è¦ç»‘å®šï¼Œåœ¨ç”³è¯·æ—¶é…ç½®æ²¡æœ‰æ„ä¹‰*/
 HI_S32 HI_MPI_DMX_GetPortMode(HI_U32 u32DmxId, HI_UNF_DMX_PORT_MODE_E *penPortMod);
 HI_S32 HI_MPI_DMX_GetChannelDefaultAttr(HI_UNF_DMX_CHAN_ATTR_S *pstChAttr);
 HI_S32 HI_MPI_DMX_CreateChannel(HI_U32 u32DmxId, const HI_UNF_DMX_CHAN_ATTR_S *pstChAttr,
@@ -123,10 +123,10 @@ HI_S32 HI_MPI_DMX_PcrScrGet(HI_U32 pu32PcrChId, HI_U64 *pu64PcrMs,HI_U64 *pu64Sc
 HI_S32 HI_MPI_DMX_PcrSyncAttach(HI_U32 u32PcrChId, HI_U32 u32SyncHandle);
 HI_S32 HI_MPI_DMX_PcrSyncDetach(HI_U32 u32PcrChId);
 
-/*Only video and audio channel are enable to attach PES Buffer *//*CNcomment:   Ö»ÓĞÒôÊÓÆµÍ¨µÀÔÊĞí°ó¶¨ºÍ½â°ó¶¨PES Buffer*/
+/*Only video and audio channel are enable to attach PES Buffer *//*CNcomment:   åªæœ‰éŸ³è§†é¢‘é€šé“å…è®¸ç»‘å®šå’Œè§£ç»‘å®šPES Buffer*/
 HI_S32 HI_MPI_DMX_GetPESBufferStatus(HI_HANDLE hChannel, HI_MPI_DMX_BUF_STATUS_S *pBufStat);
 
-/*Be used to send stream to user status decoder *//*CNcomment:   ÓÃÓÚ¸øÓÃ»§Ì¬µÄÒôÆµ½âÂëËÍÂëÁ÷*/
+/*Be used to send stream to user status decoder *//*CNcomment:   ç”¨äºç»™ç”¨æˆ·æ€çš„éŸ³é¢‘è§£ç é€ç æµ*/
 HI_S32 HI_MPI_DMX_AcquireEs(HI_HANDLE hChannel, HI_UNF_ES_BUF_S *pAudioEsBuf);
 HI_S32 HI_MPI_DMX_ReleaseEs(HI_HANDLE hChannel,const HI_UNF_ES_BUF_S *pAudioEsBuf);
 
@@ -172,7 +172,7 @@ typedef enum
 } HI_MPI_DMX_REC_INDEX_TYPE_E;
 
 /* Sequence of DMX_IDX_DATA_S 's member can not change,must match the sequence defined by hardware*/
-/* CNcomment:DMX_IDX_DATA_S ÖĞ¸÷³ÉÔ±µÄË³Ğò²»ÄÜ¸Ä±ä£¬±ØĞëÓëÓ²¼ş¹æ¶¨µÄË³Ğò±£³ÖÒ»ÖÂ */
+/* CNcomment:DMX_IDX_DATA_S ä¸­å„æˆå‘˜çš„é¡ºåºä¸èƒ½æ”¹å˜ï¼Œå¿…é¡»ä¸ç¡¬ä»¶è§„å®šçš„é¡ºåºä¿æŒä¸€è‡´ */
 typedef struct hiDMX_IDX_DATA_S
 {
     HI_U32 u32Chn_Ovflag_IdxType_Flags;
@@ -181,7 +181,7 @@ typedef struct hiDMX_IDX_DATA_S
     HI_U32 u32TsCntHi8_Byte345AfterSc;
     HI_U32 u32ScCode_Byte678AfterSc;
     HI_U32 u32SrcClk;
-    HI_U32 u32BackPacetNum;/*Back package number*//* CNcomment:»ØÍË°ü¼ÆÊı*/
+    HI_U32 u32BackPacetNum;/*Back package number*//* CNcomment:å›é€€åŒ…è®¡æ•°*/
 } DMX_IDX_DATA_S;
 
 HI_S32 HI_MPI_DMX_StartRecord(HI_U32 u32DmxId,

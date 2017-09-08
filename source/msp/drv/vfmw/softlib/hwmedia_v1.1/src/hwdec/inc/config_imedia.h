@@ -1,14 +1,14 @@
 #ifndef IMEDIA_CONFIG_H
 #define IMEDIA_CONFIG_H
 
-// ÒÔÏÂ±àÒëÅäÖÃÏîÎªiMediaÌí¼Ó
+// ä»¥ä¸‹ç¼–è¯‘é…ç½®é¡¹ä¸ºiMediaæ·»åŠ 
 #undef  restrict
 #define restrict
 
 #undef CONFIG_GPL
 #define CONFIG_GPL 1
 
-// decoderÅäÖÃ£¬ËùÓĞ±àÒëÆ½Ì¨Í¨ÓÃ
+// decoderé…ç½®ï¼Œæ‰€æœ‰ç¼–è¯‘å¹³å°é€šç”¨
 #undef CONFIG_MPEG1VIDEO_DECODER
 #undef CONFIG_MPEG2VIDEO_DECODER
 #undef CONFIG_MPEG4_DECODER
@@ -73,11 +73,11 @@
 
 #define lrintf(x) (int)(x)
 
-// linux±àÒëÅäÖÃÍ¨ÓÃ²¿·Ö
+// linuxç¼–è¯‘é…ç½®é€šç”¨éƒ¨åˆ†
 #elif defined(__GNUC__)
 
 #if defined(__KERNEL__)
-//linuxÄÚºËÌ¬¶¨Òå
+//linuxå†…æ ¸æ€å®šä¹‰
 #include <linux/init.h>
 #include <linux/module.h>	/* Needed by all modules */
 #include <linux/kernel.h>	/* Needed for KERN_INFO */
@@ -117,7 +117,7 @@ static inline int64_t do_mod(int64_t a1, int64_t a2)
 
 #else
 
-//linuxÓÃ»§Ì¬¶¨Òå
+//linuxç”¨æˆ·æ€å®šä¹‰
 #define _alloca alloca
 #undef HAVE_MEMALIGN
 #undef HAVE_MKSTEMP
@@ -130,7 +130,7 @@ static inline int64_t do_mod(int64_t a1, int64_t a2)
 #define HAVE_MALLOC_H 1
 #endif
 
-// linux±àÒëÅäÖÃ - X86Æ½Ì¨²îÒì²¿·Ö
+// linuxç¼–è¯‘é…ç½® - X86å¹³å°å·®å¼‚éƒ¨åˆ†
 #ifdef BUILD_X86
 #undef ARCH_X86
 #undef ARCH_X86_32
@@ -169,7 +169,7 @@ static inline int64_t do_mod(int64_t a1, int64_t a2)
 #define HAVE_YASM 1
 #endif
 
-// linux±àÒëÅäÖÃ - ARMÆ½Ì¨²îÒì²¿·Ö
+// linuxç¼–è¯‘é…ç½® - ARMå¹³å°å·®å¼‚éƒ¨åˆ†
 #ifdef BUILD_ARM
 #undef ARCH_ARM
 #undef HAVE_ARMV5TE

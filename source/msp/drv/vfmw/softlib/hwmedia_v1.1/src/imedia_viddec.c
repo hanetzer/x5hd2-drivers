@@ -4,11 +4,11 @@
 * 
 * $Id: hwdec.c,v 1.138 2010/01/12 09:39:22 songxiaogang Exp $     
 *
-* Description£º  
+* Descriptionï¼š  
 *
-* Reference Doc£º  
+* Reference Docï¼š  
 * 
-* Modification£º//¼ûÎÄ¼şÎ²
+* Modificationï¼š//è§æ–‡ä»¶å°¾
 * 
 *************************************************************************/
 
@@ -42,14 +42,14 @@ typedef struct STRU_DEC_CONTEXT
     /* previous total time(unit:us) that store the time before ullTotalSpendTime more than 1s */
     UINT64 ullPrevSpendTime;
 
-    /* ÓÃÓÚÍ³¼ÆÊµÊ±ĞÔÄÜ */
+    /* ç”¨äºç»Ÿè®¡å®æ—¶æ€§èƒ½ */
     UINT32 uiPrevOutputFrames;
 
-    /* ÓÃÓÚÍ³¼ÆÊä³öYUV ID */
+    /* ç”¨äºç»Ÿè®¡è¾“å‡ºYUV ID */
     UINT32 uiPrevDisplayID;
     /* 2010/05/25 16:00:00 liuxw+00139685 [AZ1D02103] */
-    /* ½«Ëã·¨Í¨µÀ×´Ì¬¶¨Òå´ÓavcodeccontextµÄ½á¹¹ÌåÖĞÒÆµ½±¾½á¹¹ÌåÖĞ£¬ÔÚ¸´Î»µÄÊ±ºò²¢²»¶ÔÆä½øĞĞÇåÁã */
-    /**< Ëã·¨Í¨µÀ×´Ì¬ */
+    /* å°†ç®—æ³•é€šé“çŠ¶æ€å®šä¹‰ä»avcodeccontextçš„ç»“æ„ä½“ä¸­ç§»åˆ°æœ¬ç»“æ„ä½“ä¸­ï¼Œåœ¨å¤ä½çš„æ—¶å€™å¹¶ä¸å¯¹å…¶è¿›è¡Œæ¸…é›¶ */
+    /**< ç®—æ³•é€šé“çŠ¶æ€ */
     ENUM_IVIDEO_CODEC_STATUS eCodecStatus; 
 
 }STRU_DEC_CONTEXT;
@@ -80,7 +80,7 @@ extern AVCodec wmv3_decoder;
 /*x00141957 20100701*/
 extern AVCodec vp6_decoder;
 extern AVCodec vp6f_decoder;
-/*x00141957 2011 0331Ôö¼Ó*/
+/*x00141957 2011 0331å¢åŠ */
 extern AVCodec vp6a_decoder;
 
 /*guoshan+00101841 20100830*/
@@ -167,15 +167,15 @@ void Decoder_msg_callback(void *ptr, int level, const char *format, va_list ap)
 
 
 /*========================================================================================
- * º¯ÊıËµÃ÷£º´ÓÂëÁ÷ÖĞ½âÎöÔªÊı¾İÀàĞÍ¡£
- * ÊäÈë²ÎÊı£º
-         eCodecType Ëã·¨ÀàĞÍ
-         pstInArgs  ÊäÈë²ÎÊıĞÅÏ¢
- * Êä³ö²ÎÊı£º
-         pstOutArgs Êä³ö²ÎÊıĞÅÏ¢
- * ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+ * å‡½æ•°è¯´æ˜ï¼šä»ç æµä¸­è§£æå…ƒæ•°æ®ç±»å‹ã€‚
+ * è¾“å…¥å‚æ•°ï¼š
+         eCodecType ç®—æ³•ç±»å‹
+         pstInArgs  è¾“å…¥å‚æ•°ä¿¡æ¯
+ * è¾“å‡ºå‚æ•°ï¼š
+         pstOutArgs è¾“å‡ºå‚æ•°ä¿¡æ¯
+ * è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 =========================================================================================*/
-/*x00141957 20101230 ÄÚºËÌ¬±àÒë²»ĞèÒª´Ëº¯Êı*/
+/*x00141957 20101230 å†…æ ¸æ€ç¼–è¯‘ä¸éœ€è¦æ­¤å‡½æ•°*/
 #ifndef LINUX_KERNEL_BUILD
 EXPORT_API INT32 IMedia_Viddec_ProbeHeader(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IMEDIA_SINGLE_BUFFER *pstInArgs, STRU_IVIDDEC_META_DATA_OUT_ARGS *pstOutArgs)
 {
@@ -196,8 +196,8 @@ EXPORT_API INT32 IMedia_Viddec_ProbeHeader(ENUM_IVIDEO_CODEC_TYPE eCodecType, ST
 
     if(NULL == pstInArgs->pucBuf || 0 == pstInArgs->uiSize)
     {
-        /*guoshan+00101841 20100715 16:05:00 ÎÊÌâµ¥ºÅ[AZ1D02218]*/
-        /*ÈÕÖ¾ĞÅÏ¢ÖĞNILLÆ´Ğ´´íÎó£¬¸üÕıÎªNULL*/
+        /*guoshan+00101841 20100715 16:05:00 é—®é¢˜å•å·[AZ1D02218]*/
+        /*æ—¥å¿—ä¿¡æ¯ä¸­NILLæ‹¼å†™é”™è¯¯ï¼Œæ›´æ­£ä¸ºNULL*/
         //       IMEDIA_LOG(IMEDIA_ERROR, "input bitsteam is NILL or len is zero!\n");
         IMEDIA_LOG(IMEDIA_ERROR, "NULL == pstInArgs->pucBuf || 0 == pstInArgs->uiSize\n");
         return IMEDIA_RET_PARAM_IN_VALUE_NULL;
@@ -212,7 +212,7 @@ EXPORT_API INT32 IMedia_Viddec_ProbeHeader(ENUM_IVIDEO_CODEC_TYPE eCodecType, ST
     /*lint +e685*/
 
     /* 2010/05/11 10:25:00 songxg+00133955 */
-    /* ½Ó¿Úµ÷ÓÃÇ°Í¬ÑùĞèÒªÍ³Ò»malloc¡¢free¡¢logµÈº¯Êı */
+    /* æ¥å£è°ƒç”¨å‰åŒæ ·éœ€è¦ç»Ÿä¸€mallocã€freeã€logç­‰å‡½æ•° */
     /* config the malloc function which will be used in application layer and interface layer (just config once) */
     AV_MALLOC_FUNCTION(iMedia_GetAlignMem);
 
@@ -225,11 +225,11 @@ EXPORT_API INT32 IMedia_Viddec_ProbeHeader(ENUM_IVIDEO_CODEC_TYPE eCodecType, ST
     g_stGlobalInfo.bMallocFxnUsed = TRUE;
 
     /* 2010/07/14 14:30:00 liuxw+00139685 [AZ1D02219] */
-    /* ½«profileºÍlevelµÄÎŞĞ§ÖµĞŞ¸ÄÎª-1 */
+    /* å°†profileå’Œlevelçš„æ— æ•ˆå€¼ä¿®æ”¹ä¸º-1 */
     pstOutArgs->stStreamInfo.eProfile        = IVIDEO_PROFILE_UNKNOWN;
     pstOutArgs->stStreamInfo.eLevel          = IVIDEO_LEVEL_UNKNOWN;
     /* 2010/08/2 17:00:00 liuxw+00139685 [AZ1D02237] */
-    /* ¸øÊä³ö²ÎÊıÖĞµÄÂëÁ÷ĞÅÏ¢½á¹¹³ÉÔ±³õÊ¼»¯ÎªÎŞĞ§Öµ */
+    /* ç»™è¾“å‡ºå‚æ•°ä¸­çš„ç æµä¿¡æ¯ç»“æ„æˆå‘˜åˆå§‹åŒ–ä¸ºæ— æ•ˆå€¼ */
     pstOutArgs->stStreamInfo.eCodecType      = IVIDEO_CODEC_UNKNOWN;
     pstOutArgs->stStreamInfo.eContentType    = IVIDEO_CONTENT_UNKNOW;
     pstOutArgs->stStreamInfo.eColorSpaceType = IVIDEO_CSP_UNKNOWN;
@@ -273,7 +273,7 @@ EXPORT_API INT32 IMedia_Viddec_ProbeHeader(ENUM_IVIDEO_CODEC_TYPE eCodecType, ST
 				iRet = VP6_ProbeHeader(pstInArgs->pucBuf,pstInArgs->uiSize,&(pstOutArgs->uiBytesConsumed),(INT32*)(&pstOutArgs->eStatus),&pstOutArgs->stMetaData,&pstOutArgs->stStreamInfo);
 			}
 			break;
-        /*x00141957 2011 0331 Ôö¼Óvp6a*/
+        /*x00141957 2011 0331 å¢åŠ vp6a*/
 		case IVIDEO_CODEC_VP6A:
             {
                 iRet = VP6A_ProbeHeader(pstInArgs->pucBuf,pstInArgs->uiSize,&(pstOutArgs->uiBytesConsumed),(INT32*)(&pstOutArgs->eStatus),&pstOutArgs->stMetaData,&pstOutArgs->stStreamInfo);
@@ -284,7 +284,7 @@ EXPORT_API INT32 IMedia_Viddec_ProbeHeader(ENUM_IVIDEO_CODEC_TYPE eCodecType, ST
 				iRet = H263_ProbeHeader(pstInArgs->pucBuf,pstInArgs->uiSize,&(pstOutArgs->uiBytesConsumed),(INT32*)(&pstOutArgs->eStatus),&pstOutArgs->stMetaData,&pstOutArgs->stStreamInfo);
 			}
 			break;
-        /*guoshan+00101841 20100830 Ôö¼ÓSorenson Spark*/
+        /*guoshan+00101841 20100830 å¢åŠ Sorenson Spark*/
         case IVIDEO_CODEC_SORENSON:
             {
                 iRet = Sorenson_Spark_ProbeHeader(pstInArgs->pucBuf,pstInArgs->uiSize,&(pstOutArgs->uiBytesConsumed),(INT32*)(&pstOutArgs->eStatus),&pstOutArgs->stMetaData,&pstOutArgs->stStreamInfo);
@@ -299,7 +299,7 @@ EXPORT_API INT32 IMedia_Viddec_ProbeHeader(ENUM_IVIDEO_CODEC_TYPE eCodecType, ST
     }
 
     /* 2010/08/2 17:00:00 liuxw+00139685 [AZ1D02237] */
-    /* ¸øÊä³ö²ÎÊıÖĞµÄÂëÁ÷ĞÅÏ¢½á¹¹³ÉÔ±¸³Öµ */
+    /* ç»™è¾“å‡ºå‚æ•°ä¸­çš„ç æµä¿¡æ¯ç»“æ„æˆå‘˜èµ‹å€¼ */
     pstOutArgs->stStreamInfo.eCodecType = eCodecType;
 
     return iRet;
@@ -307,13 +307,13 @@ EXPORT_API INT32 IMedia_Viddec_ProbeHeader(ENUM_IVIDEO_CODEC_TYPE eCodecType, ST
 #endif
 
 /*========================================================================================
-* º¯ÊıËµÃ÷£ºÑ°ÎÊ½âÂëËã·¨ËùĞèµÄÄÚ´æ´óĞ¡¡£
-* ÊäÈë²ÎÊı£º
-      eCodecType    Ëã·¨ÀàĞÍ£¬¾ßÌå¼ûENUM_IVIDEO_CODEC_TYPE¶¨Òå
-      pstMemInfo    Í¼ÏñµÄ×î´ó¿í¶È¡¢ Í¼ÏñµÄ×î¸ß¸ß¶È¡¢×î´óÍ¼Ïñ¸öÊıÒÔ¼°É«¶È¿Õ¼äµÈĞÅÏ¢ 
-* Êä³ö²ÎÊı£º
-      piSize        ½âÂëÆ÷ËùĞèµÄ×ÜµÄÄÚ´æ´óĞ¡
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+* å‡½æ•°è¯´æ˜ï¼šå¯»é—®è§£ç ç®—æ³•æ‰€éœ€çš„å†…å­˜å¤§å°ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+      eCodecType    ç®—æ³•ç±»å‹ï¼Œå…·ä½“è§ENUM_IVIDEO_CODEC_TYPEå®šä¹‰
+      pstMemInfo    å›¾åƒçš„æœ€å¤§å®½åº¦ã€ å›¾åƒçš„æœ€é«˜é«˜åº¦ã€æœ€å¤§å›¾åƒä¸ªæ•°ä»¥åŠè‰²åº¦ç©ºé—´ç­‰ä¿¡æ¯ 
+* è¾“å‡ºå‚æ•°ï¼š
+      piSize        è§£ç å™¨æ‰€éœ€çš„æ€»çš„å†…å­˜å¤§å°
+* è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 =========================================================================================*/
 EXPORT_API INT32 IMedia_Viddec_QueryMemSize(ENUM_IVIDEO_CODEC_TYPE eCodecType,STRU_IVIDDEC_MEMORY_INFO *pstMemInfo ,INT32 *piSize)
 {
@@ -395,13 +395,13 @@ EXPORT_API INT32 IMedia_Viddec_QueryMemSize(ENUM_IVIDEO_CODEC_TYPE eCodecType,ST
 
 
 /*========================================================================================
- * º¯ÊıËµÃ÷£º´´½¨Ëã·¨Í¨µÀ¡£
- * ÊäÈë²ÎÊı£º
-         eCodecType Ëã·¨ÀàĞÍ
-         params     Ö¸Ïò´æ´¢Í¼ÏñµÄÒ»Ğ©»ù±¾ĞÅÏ¢µÄ½á¹¹Ìå£¨°üÀ¨Í¼ÏñµÄ¿í¸ßµÈ£©
- * Êä³ö²ÎÊı£º
-         pctx       Ëã·¨Í¨µÀ¾ä±ú
- * ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+ * å‡½æ•°è¯´æ˜ï¼šåˆ›å»ºç®—æ³•é€šé“ã€‚
+ * è¾“å…¥å‚æ•°ï¼š
+         eCodecType ç®—æ³•ç±»å‹
+         params     æŒ‡å‘å­˜å‚¨å›¾åƒçš„ä¸€äº›åŸºæœ¬ä¿¡æ¯çš„ç»“æ„ä½“ï¼ˆåŒ…æ‹¬å›¾åƒçš„å®½é«˜ç­‰ï¼‰
+ * è¾“å‡ºå‚æ•°ï¼š
+         pctx       ç®—æ³•é€šé“å¥æŸ„
+ * è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 =========================================================================================*/
 EXPORT_API INT32 IMedia_Viddec_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IVIDDEC_PARAMS *pstParams, IMEDIA_CODEC_CTX *pctx)
 {
@@ -550,12 +550,12 @@ EXPORT_API INT32 IMedia_Viddec_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
 
     /* init dec handle with system features and function */
     /* 2010/04/23 9:30:00 liuxw+00139685 */
-    /* ½«cpu_maskµÄÖµ½øĞĞÒ»¸öÈ¡·´²Ù×÷£ºÓÉÓÚÔÚºóÃæ¾ßÌåÊ¹ÓÃÊ±£¬»áÔÙ½øĞĞÒ»¸öÈ¡·´²Ù×÷£¬ËùÒÔ·´·´ÔòÎªÕı */
+    /* å°†cpu_maskçš„å€¼è¿›è¡Œä¸€ä¸ªå–åæ“ä½œï¼šç”±äºåœ¨åé¢å…·ä½“ä½¿ç”¨æ—¶ï¼Œä¼šå†è¿›è¡Œä¸€ä¸ªå–åæ“ä½œï¼Œæ‰€ä»¥åååˆ™ä¸ºæ­£ */
 //  pstAVCodecContext->dsp_mask = pstSysInfo->stCpuCaps.uiCpuFlag;
 //    pstAVCodecContext->dsp_mask = (pstSysInfo->stCpuCaps.uiCpuFlag & 0x80000000) ? 0x80000000 : ~(pstSysInfo->stCpuCaps.uiCpuFlag | 0xffff0000);
 
     /* 2010/04/29 18:05:00 songxiaogang+00133955 */
-    /* ĞŞ¸Ä»ã±àÓÅ»¯´«Èë½Ó¿Ú */
+    /* ä¿®æ”¹æ±‡ç¼–ä¼˜åŒ–ä¼ å…¥æ¥å£ */
     pstAVCodecContext->dsp_mask =  (pstParams->iFlags & IMEDIA_FLAG_DISABLE_ASM) ? 0xffff : 0x80000000;
 
 	pstAVCodecContext->arm_disable_flag = (pstParams->iFlags & IMEDIA_FLAG_DISABLE_ARM);
@@ -644,7 +644,7 @@ EXPORT_API INT32 IMedia_Viddec_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
                 pstAVCodec = &vp6_decoder;
             }
             break;
-        /*x00141957 2011 0331 Ôö¼Óvp6a codec*/
+        /*x00141957 2011 0331 å¢åŠ vp6a codec*/
 		case IVIDEO_CODEC_VP6A:   
 			{
 				pstAVCodec = &vp6a_decoder;
@@ -677,7 +677,7 @@ EXPORT_API INT32 IMedia_Viddec_Create(ENUM_IVIDEO_CODEC_TYPE eCodecType, STRU_IV
     iRet = avcodec_open(pstAVCodecContext, pstAVCodec);
 
     /* 2010/04/24 17:25:00 songxiaogang+00133955 */
-    /* Ğè±£Ö¤ÔÚÒì³£·µ»ØÇ°½âËø */
+    /* éœ€ä¿è¯åœ¨å¼‚å¸¸è¿”å›å‰è§£é” */
 #if THREAD_SAFE
     hw_mutex_unlock(&g_mutex_avcodec);
 #endif
@@ -780,21 +780,21 @@ CREAT_END:
     return iRet;
 }
 /*========================================================================================
-* º¯ÊıËµÃ÷£ºËã·¨Í¨µÀ¿ØÖÆº¯Êı¡£
-* ÊäÈë²ÎÊı£º
-ctx       Ëã·¨Í¨µÀ¾ä±ú
-cmd:      ¿ØÖÆ²ÎÊıµÄÃüÁîÂë
-IMEDIA_GET_VERSION    ·µ»Ø°æ±¾ĞÅÏ¢                   wparam(STRU_IMEDIA_VERSION*)         lparam(NULL)
-IMEDIA_GET_STATUS    ·µ»ØËã·¨Í¨µÀ×´Ì¬ĞÅÏ¢           wparam(STRU_IVIDDEC_STATUS*)            lparam(NULL)
-IMEDIA_GET_STREAM_INFO ·µ»ØËã·¨Í¨µÀµ±Ç°ÂëÁ÷ĞÅÏ¢    wparam(STRU_IVIDDEC_STREAM_INFO*)    lparam(NULL)
-IMEDIA_GET_PARAMS    ÉèÖÃËã·¨Í¨µÀµÄ²ÎÊıĞÅÏ¢         wparam(STRU_IVIDDEC_PARAMS*)         lparam(NULL)
-IMEDIA_RESET        ¸´Î»Ëã·¨Í¨µÀ                   wparam(NULL)                         lparam(NULL)
-wparam    Ã¿ÖÖÃüÁî¶ÔÓ¦¸÷×ÔÀàĞÍ£¬¿É×÷ÎªÊäÈë»òÊä³ö
-lparam    Ã¿ÖÖÃüÁî¶ÔÓ¦¸÷×ÔÀàĞÍ£¬¿É×÷ÎªÊäÈë»òÊä³ö
-* Êä³ö²ÎÊı£º
-wparam    Ã¿ÖÖÃüÁî¶ÔÓ¦¸÷×ÔÀàĞÍ£¬¿É×÷ÎªÊäÈë»òÊä³ö
-lparam    Ã¿ÖÖÃüÁî¶ÔÓ¦¸÷×ÔÀàĞÍ£¬¿É×÷ÎªÊäÈë»òÊä³ö
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+* å‡½æ•°è¯´æ˜ï¼šç®—æ³•é€šé“æ§åˆ¶å‡½æ•°ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+ctx       ç®—æ³•é€šé“å¥æŸ„
+cmd:      æ§åˆ¶å‚æ•°çš„å‘½ä»¤ç 
+IMEDIA_GET_VERSION    è¿”å›ç‰ˆæœ¬ä¿¡æ¯                   wparam(STRU_IMEDIA_VERSION*)         lparam(NULL)
+IMEDIA_GET_STATUS    è¿”å›ç®—æ³•é€šé“çŠ¶æ€ä¿¡æ¯           wparam(STRU_IVIDDEC_STATUS*)            lparam(NULL)
+IMEDIA_GET_STREAM_INFO è¿”å›ç®—æ³•é€šé“å½“å‰ç æµä¿¡æ¯    wparam(STRU_IVIDDEC_STREAM_INFO*)    lparam(NULL)
+IMEDIA_GET_PARAMS    è®¾ç½®ç®—æ³•é€šé“çš„å‚æ•°ä¿¡æ¯         wparam(STRU_IVIDDEC_PARAMS*)         lparam(NULL)
+IMEDIA_RESET        å¤ä½ç®—æ³•é€šé“                   wparam(NULL)                         lparam(NULL)
+wparam    æ¯ç§å‘½ä»¤å¯¹åº”å„è‡ªç±»å‹ï¼Œå¯ä½œä¸ºè¾“å…¥æˆ–è¾“å‡º
+lparam    æ¯ç§å‘½ä»¤å¯¹åº”å„è‡ªç±»å‹ï¼Œå¯ä½œä¸ºè¾“å…¥æˆ–è¾“å‡º
+* è¾“å‡ºå‚æ•°ï¼š
+wparam    æ¯ç§å‘½ä»¤å¯¹åº”å„è‡ªç±»å‹ï¼Œå¯ä½œä¸ºè¾“å…¥æˆ–è¾“å‡º
+lparam    æ¯ç§å‘½ä»¤å¯¹åº”å„è‡ªç±»å‹ï¼Œå¯ä½œä¸ºè¾“å…¥æˆ–è¾“å‡º
+* è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 =========================================================================================*/
 EXPORT_API INT32 IMedia_Viddec_Control(IMEDIA_CODEC_CTX ctx, ENUM_IMEDIA_CMD cmd, void *wparam, void *lparam)
 {
@@ -811,7 +811,7 @@ EXPORT_API INT32 IMedia_Viddec_Control(IMEDIA_CODEC_CTX ctx, ENUM_IMEDIA_CMD cmd
                     return IMEDIA_RET_PARAM_NULL;
                 }
                 /* 2010/05/11 14:00:00 liuxw+00139685 [AZ1D02063] */
-                /* ½«iMedia MS-ENC V100R001P301ĞŞ¸ÄÎªiMedia MS-DEC V100R001P301 */
+                /* å°†iMedia MS-ENC V100R001P301ä¿®æ”¹ä¸ºiMedia MS-DEC V100R001P301 */
 //              strcpy(pstVersion->cVersionChar, "iMedia MS-ENC V100R001P301");
                 strcpy(pstVersion->cVersionChar, "iMedia MS-DEC V100R001P301");
                 strcpy(pstVersion->cReleaseTime, __TIME__ " " __DATE__);
@@ -881,11 +881,11 @@ EXPORT_API INT32 IMedia_Viddec_Control(IMEDIA_CODEC_CTX ctx, ENUM_IMEDIA_CMD cmd
     return iRet;
 }
 /*========================================================================================
- * º¯ÊıËµÃ÷£º´¦Àíº¯Êı¡£
- * ÊäÈë²ÎÊı£ºctx     ½âÂëÆ÷¾ä±ú
-          inArgs  ÊäÈë²ÎÊı - ÊäÈëÂëÁ÷µÄµØÖ·ÒÔ¼°³¤¶ÈµÈ
- * Êä³ö²ÎÊı£ºoutArgs Êä³ö²ÎÊı - ½âÂëÊä³öÍ¼ÏñµÄÏà¹ØĞÅÏ¢
- * ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+ * å‡½æ•°è¯´æ˜ï¼šå¤„ç†å‡½æ•°ã€‚
+ * è¾“å…¥å‚æ•°ï¼šctx     è§£ç å™¨å¥æŸ„
+          inArgs  è¾“å…¥å‚æ•° - è¾“å…¥ç æµçš„åœ°å€ä»¥åŠé•¿åº¦ç­‰
+ * è¾“å‡ºå‚æ•°ï¼šoutArgs è¾“å‡ºå‚æ•° - è§£ç è¾“å‡ºå›¾åƒçš„ç›¸å…³ä¿¡æ¯
+ * è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 =========================================================================================*/
 #if 0
 EXPORT_API INT32 IMedia_Viddec_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_IN_ARGS *pstInArgs, STRU_IVIDDEC_OUT_ARGS *pstOutArgs)
@@ -933,13 +933,13 @@ EXPORT_API INT32 IMedia_Viddec_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_IN_ARG
     }
 
     /* 2010/04/24 17:05:00 songxiaogang+00133955 */
-    /* ±£Ö¤Êä³ö²ÎÊıµÄÖµÊ¼ÖÕÓĞĞ§ */
+    /* ä¿è¯è¾“å‡ºå‚æ•°çš„å€¼å§‹ç»ˆæœ‰æ•ˆ */
     memset(pstOutArgs, 0, sizeof(STRU_IVIDDEC_OUT_ARGS));
     pstOutArgs->eFrameType = IVIDEO_FRAME_UNKNOWN;
     pstOutArgs->stPicture.eContentType = IVIDEO_CONTENT_UNKNOW;
 
     /* 2010/07/26 11:50:00 guoshan+00101841 */
-    /* Ïû³ıpc-lintÖĞµÄwarning: Warning 685 Relational operator '<' always evaluates to 'false' */
+    /* æ¶ˆé™¤pc-lintä¸­çš„warning: Warning 685 Relational operator '<' always evaluates to 'false' */
     /*lint -e685*/
     if(BITSTREAM_SEGMENT_BEGIN > pstInArgs->eBitstreamStatus || BITSTREAM_OTHER < pstInArgs->eBitstreamStatus)
     {
@@ -1003,7 +1003,7 @@ EXPORT_API INT32 IMedia_Viddec_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_IN_ARG
         uiNumBytes      -= iLength;
 
         /* 2010/04/24 17:25:00 songxiaogang+00133955 */
-        /* ¼°Ê±¸üĞÂÒÑ·ÖÎöÍêµÄ×Ö½ÚÊı£¬±ãÓÚÓ¦ÓÃ²ãÍùºó½øĞĞ´¦Àí */
+        /* åŠæ—¶æ›´æ–°å·²åˆ†æå®Œçš„å­—èŠ‚æ•°ï¼Œä¾¿äºåº”ç”¨å±‚å¾€åè¿›è¡Œå¤„ç† */
         pstOutArgs->uiBytesConsumed = uiConsumedBytes;
 
         if(IMEDIA_RET_SUCCESS != iRet)
@@ -1017,7 +1017,7 @@ EXPORT_API INT32 IMedia_Viddec_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_IN_ARG
         {
             /* if reach the end of bitstream file, then not go out of the loop and keep on outputing the YUV stored in delay buffer */
             /* 2010/06/29 19:30:00 liuxw+00139685 */
-            /* Ôö¼ÓÒ»¸öÅĞ¶ÏÌõ¼ş */
+            /* å¢åŠ ä¸€ä¸ªåˆ¤æ–­æ¡ä»¶ */
             if(BITSTREAM_SEGMENT_END != pstInArgs->eBitstreamStatus && iLength)
             {
                 break;
@@ -1048,8 +1048,8 @@ EXPORT_API INT32 IMedia_Viddec_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_IN_ARG
                 return IMEDIA_RET_DECODE_INTERRUPT;
             }
 
-            /*guoshan+00101841 20100730 ÎÊÌâµ¥£ºAZ1D02234 */
-            /*ÈÕÖ¾´òÓ¡ĞÅÏ¢¶àÓà0x,È¥µô*/
+            /*guoshan+00101841 20100730 é—®é¢˜å•ï¼šAZ1D02234 */
+            /*æ—¥å¿—æ‰“å°ä¿¡æ¯å¤šä½™0x,å»æ‰*/
             //             IMEDIA_LOG(IMEDIA_DEBUG,"codec_ctx[0x%p] buf[0x%p] input size[%d]  consumed bytes[%d] left[%d] pic[0x%p] decode_return[%d]\n",
             //                 pstAVCodecContext,pucBuf-iLength, uiNumBytes+iLength, iLength,uiNumBytes, pucOutputBuf, iReturn);
             IMEDIA_LOG(IMEDIA_DEBUG,"codec_ctx[%p] buf[%p] input size[%d]  consumed bytes[%d] left[%d] pic[%p] decode_return[%d]\n",
@@ -1149,7 +1149,7 @@ EXPORT_API INT32 IMedia_Viddec_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_IN_ARG
         pstOutArgs->stPicture.apucBuf[2]    = pstTmpPic->data[2];
 
         /* 2010/07/23 15:30:00 liuxw+00139685 */
-        /* ¶Ôaspect ratio½øĞĞ¸³Öµ */
+        /* å¯¹aspect ratioè¿›è¡Œèµ‹å€¼ */
         pstOutArgs->stPicture.stAspectRatio.usSarWidth  = pstAVCodecContext->sample_aspect_ratio.num;
         pstOutArgs->stPicture.stAspectRatio.usSarHeight = pstAVCodecContext->sample_aspect_ratio.den;
         
@@ -1186,11 +1186,11 @@ EXPORT_API INT32 IMedia_Viddec_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_IN_ARG
 }
 #endif
 /*========================================================================================
-* º¯ÊıËµÃ÷£ºÉ¾³ıËã·¨Í¨µÀ¡£
-* ÊäÈë²ÎÊı£º
-ctx       Ëã·¨Í¨µÀ¾ä±ú
-* Êä³ö²ÎÊı£ºÎŞ
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+* å‡½æ•°è¯´æ˜ï¼šåˆ é™¤ç®—æ³•é€šé“ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+ctx       ç®—æ³•é€šé“å¥æŸ„
+* è¾“å‡ºå‚æ•°ï¼šæ— 
+* è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 =========================================================================================*/
 EXPORT_API INT32 IMedia_Viddec_Delete(IMEDIA_CODEC_CTX ctx)
 {
@@ -1247,8 +1247,8 @@ EXPORT_API INT32 IMedia_Viddec_Delete(IMEDIA_CODEC_CTX ctx)
     iRet = avcodec_close(pstAVCodecContext);
 
 #if THREAD_SAFE
-    /*guoshan+0010841 20100730 ÎÊÌâµ¥:[AZ1D02235]*/
-    /*Ïû³ıÆµ·±´´½¨¡¢É¾³ıÍ¨µÀ¹ı³ÌÖĞÏß³ÌËø³öÏÖÁÙ½ç×ÊÔ´³åÍ»µÄÎÊÌâ*/
+    /*guoshan+0010841 20100730 é—®é¢˜å•:[AZ1D02235]*/
+    /*æ¶ˆé™¤é¢‘ç¹åˆ›å»ºã€åˆ é™¤é€šé“è¿‡ç¨‹ä¸­çº¿ç¨‹é”å‡ºç°ä¸´ç•Œèµ„æºå†²çªçš„é—®é¢˜*/
 //    g_iChanNum--;
     hw_mutex_unlock(&g_mutex_avcodec);
     if (0 == g_iChanNum)
@@ -1284,14 +1284,14 @@ EXPORT_API INT32 IMedia_Viddec_Delete(IMEDIA_CODEC_CTX ctx)
 }
 
 /*****************************************************************************************
-* º¯ÊıËµÃ÷£ºÂëÁ÷Ö¡½âÎö½Ó¿Ú£¬´ÓÊäÈëÂëÁ÷ÖĞ½âÎö³öÒ»Ö¡Êı¾İ£¬×¢ÒâÊä³öµÄÖ¡»º´æÓĞ¿ÉÄÜÊÇÊäÈëÂëÁ÷µØÖ·£¬Ò²ÓĞ¿ÉÄÜÊÇÄÚ²¿»º´æµØÖ·£¨µ±ÊäÈëÂëÁ÷²»×ãÒ»Ö¡Ê±ÄÚ²¿»áÆ´½Ó£©¡£
-*           ¸Ã½Ó¿ÚÔÚº£Ë¼ARMÈí½âÂëÏîÄ¿ÖĞ½öÌá¹©¸øÓ¦ÓÃ²ã×öµ÷ÊÔ
-* ÊäÈë²ÎÊı£º
-*     ctx        Ëã·¨Í¨µÀ¾ä±ú
-*     pstInArgs  ÊäÈë²ÎÊıĞÅÏ¢£¨ÊäÈëÂëÁ÷µÄµØÖ·¡¢³¤¶È¼°Ê±¼ä´ÁµÈ£©
-* Êä³ö²ÎÊı£º
-*     pstOutArgs Êä³ö²ÎÊıĞÅÏ¢£¨Ö¡»º´æµÄµØÖ·ºÍ³¤¶È£©
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+* å‡½æ•°è¯´æ˜ï¼šç æµå¸§è§£ææ¥å£ï¼Œä»è¾“å…¥ç æµä¸­è§£æå‡ºä¸€å¸§æ•°æ®ï¼Œæ³¨æ„è¾“å‡ºçš„å¸§ç¼“å­˜æœ‰å¯èƒ½æ˜¯è¾“å…¥ç æµåœ°å€ï¼Œä¹Ÿæœ‰å¯èƒ½æ˜¯å†…éƒ¨ç¼“å­˜åœ°å€ï¼ˆå½“è¾“å…¥ç æµä¸è¶³ä¸€å¸§æ—¶å†…éƒ¨ä¼šæ‹¼æ¥ï¼‰ã€‚
+*           è¯¥æ¥å£åœ¨æµ·æ€ARMè½¯è§£ç é¡¹ç›®ä¸­ä»…æä¾›ç»™åº”ç”¨å±‚åšè°ƒè¯•
+* è¾“å…¥å‚æ•°ï¼š
+*     ctx        ç®—æ³•é€šé“å¥æŸ„
+*     pstInArgs  è¾“å…¥å‚æ•°ä¿¡æ¯ï¼ˆè¾“å…¥ç æµçš„åœ°å€ã€é•¿åº¦åŠæ—¶é—´æˆ³ç­‰ï¼‰
+* è¾“å‡ºå‚æ•°ï¼š
+*     pstOutArgs è¾“å‡ºå‚æ•°ä¿¡æ¯ï¼ˆå¸§ç¼“å­˜çš„åœ°å€å’Œé•¿åº¦ï¼‰
+* è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 *****************************************************************************************/
 EXPORT_API INT32 IMedia_Viddec_FrameParse(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_STREAM *pstInArgs, STRU_IVIDDEC_FRAME_PARSE_OUT_ARGS *pstOutArgs)
 {
@@ -1328,7 +1328,7 @@ EXPORT_API INT32 IMedia_Viddec_FrameParse(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_STR
         return IMEDIA_RET_PARAM_NULL;
     }
 
-    /* ±£Ö¤Êä³ö²ÎÊıµÄÖµÊ¼ÖÕÓĞĞ§ */
+    /* ä¿è¯è¾“å‡ºå‚æ•°çš„å€¼å§‹ç»ˆæœ‰æ•ˆ */
     memset(pstOutArgs, 0, sizeof(STRU_IVIDDEC_FRAME_PARSE_OUT_ARGS));
     
      /* check the input bitstream size */
@@ -1353,13 +1353,13 @@ EXPORT_API INT32 IMedia_Viddec_FrameParse(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_STR
 
 
 /*****************************************************************************************
-* º¯ÊıËµÃ÷£ºÂëÁ÷Ö¡½âÂë½Ó¿Ú£¬Ã¿´ÎÖ»½âÂëÒ»Ö¡£¬ÑÓ³ÙÊä³öµÄÖ¡ĞèÖØ¸´µ÷ÓÃ¸Ã½Ó¿Ú£¨ÊäÈëÂëÁ÷µØÖ·¸³ÖµÎªNULL£©£¬Ö±µ½Êä³ö²ÎÊıÖĞÖ¸Ê¾Îª×îºóÒ»Ö¡Ê±¡£
-* ÊäÈë²ÎÊı£º
-*     ctx        Ëã·¨Í¨µÀ¾ä±ú
-*     pstInArgs  ÊäÈë²ÎÊıĞÅÏ¢£¨ÊäÈëÂëÁ÷Ö¡µÄµØÖ·¡¢³¤¶È¼°Ê±¼ä´ÁµÈ£©
-* Êä³ö²ÎÊı£º
-*     pstOutArgs Êä³ö²ÎÊıĞÅÏ¢£¨½âÂëÊä³öÍ¼ÏñµÄÏà¹ØĞÅÏ¢£©
-* ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+* å‡½æ•°è¯´æ˜ï¼šç æµå¸§è§£ç æ¥å£ï¼Œæ¯æ¬¡åªè§£ç ä¸€å¸§ï¼Œå»¶è¿Ÿè¾“å‡ºçš„å¸§éœ€é‡å¤è°ƒç”¨è¯¥æ¥å£ï¼ˆè¾“å…¥ç æµåœ°å€èµ‹å€¼ä¸ºNULLï¼‰ï¼Œç›´åˆ°è¾“å‡ºå‚æ•°ä¸­æŒ‡ç¤ºä¸ºæœ€åä¸€å¸§æ—¶ã€‚
+* è¾“å…¥å‚æ•°ï¼š
+*     ctx        ç®—æ³•é€šé“å¥æŸ„
+*     pstInArgs  è¾“å…¥å‚æ•°ä¿¡æ¯ï¼ˆè¾“å…¥ç æµå¸§çš„åœ°å€ã€é•¿åº¦åŠæ—¶é—´æˆ³ç­‰ï¼‰
+* è¾“å‡ºå‚æ•°ï¼š
+*     pstOutArgs è¾“å‡ºå‚æ•°ä¿¡æ¯ï¼ˆè§£ç è¾“å‡ºå›¾åƒçš„ç›¸å…³ä¿¡æ¯ï¼‰
+* è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 *****************************************************************************************/
 EXPORT_API INT32 IMedia_Viddec_FrameDecode(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_STREAM *pstInArgs, STRU_IVIDDEC_OUT_ARGS *pstOutArgs)
 {
@@ -1402,7 +1402,7 @@ EXPORT_API INT32 IMedia_Viddec_FrameDecode(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_ST
     }
 
     /* 2010/04/24 17:05:00 songxiaogang+00133955 */
-    /* ±£Ö¤Êä³ö²ÎÊıµÄÖµÊ¼ÖÕÓĞĞ§ */
+    /* ä¿è¯è¾“å‡ºå‚æ•°çš„å€¼å§‹ç»ˆæœ‰æ•ˆ */
     memset(pstOutArgs, 0, sizeof(STRU_IVIDDEC_OUT_ARGS));
     pstOutArgs->eFrameType = IVIDEO_FRAME_UNKNOWN;
     pstOutArgs->stPicture.eContentType = IVIDEO_CONTENT_UNKNOW;
@@ -1520,7 +1520,7 @@ EXPORT_API INT32 IMedia_Viddec_FrameDecode(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_ST
         pstOutArgs->stPicture.apucBuf[2]    = pstTmpPic->data[2];
         pstOutArgs->stPicture.apucBuf[3]    = pstTmpPic->data[3];
         /* 2010/07/23 15:30:00 liuxw+00139685 */
-        /* ¶Ôaspect ratio½øĞĞ¸³Öµ */
+        /* å¯¹aspect ratioè¿›è¡Œèµ‹å€¼ */
         pstOutArgs->stPicture.stAspectRatio.usSarWidth  = pstAVCodecContext->sample_aspect_ratio.num;
         pstOutArgs->stPicture.stAspectRatio.usSarHeight = pstAVCodecContext->sample_aspect_ratio.den;
         
@@ -1562,11 +1562,11 @@ EXPORT_API INT32 IMedia_Viddec_FrameDecode(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_ST
 }
 
 /*========================================================================================
- * º¯ÊıËµÃ÷£º´¦Àíº¯Êı¡£
- * ÊäÈë²ÎÊı£ºctx     ½âÂëÆ÷¾ä±ú
-          inArgs  ÊäÈë²ÎÊı - ÊäÈëÂëÁ÷µÄµØÖ·ÒÔ¼°³¤¶ÈµÈ
- * Êä³ö²ÎÊı£ºoutArgs Êä³ö²ÎÊı - ½âÂëÊä³öÍ¼ÏñµÄÏà¹ØĞÅÏ¢
- * ·µ »Ø Öµ£º0-³É¹¦£¬ÆäËûÖµ¼û·µ»ØÖµ¶¨Òå¡£
+ * å‡½æ•°è¯´æ˜ï¼šå¤„ç†å‡½æ•°ã€‚
+ * è¾“å…¥å‚æ•°ï¼šctx     è§£ç å™¨å¥æŸ„
+          inArgs  è¾“å…¥å‚æ•° - è¾“å…¥ç æµçš„åœ°å€ä»¥åŠé•¿åº¦ç­‰
+ * è¾“å‡ºå‚æ•°ï¼šoutArgs è¾“å‡ºå‚æ•° - è§£ç è¾“å‡ºå›¾åƒçš„ç›¸å…³ä¿¡æ¯
+ * è¿” å› å€¼ï¼š0-æˆåŠŸï¼Œå…¶ä»–å€¼è§è¿”å›å€¼å®šä¹‰ã€‚
 =========================================================================================*/
 EXPORT_API INT32 IMedia_Viddec_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_IN_ARGS *pstInArgs, STRU_IVIDDEC_OUT_ARGS *pstOutArgs)
 {
@@ -1634,7 +1634,7 @@ EXPORT_API INT32 IMedia_Viddec_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_IN_ARG
             pstAVCodecContext->extradata_num  = pstInArgs->pstMetaData->iNumMetaData; 
         }
     }
-    /* ½«ÊäÈë²ÎÊı¸³¸øÁÙÊ±½á¹¹Ìå±äÁ¿£¬ÓÃÓÚÖ¡±ß½çº¯ÊıµÄÊäÈë²ÎÊı */
+    /* å°†è¾“å…¥å‚æ•°èµ‹ç»™ä¸´æ—¶ç»“æ„ä½“å˜é‡ï¼Œç”¨äºå¸§è¾¹ç•Œå‡½æ•°çš„è¾“å…¥å‚æ•° */
     stInArgs.iPTS = pstInArgs->iPTS;
     stInArgs.pucBuf = pstInArgs->pucBuf;
     stInArgs.uiNumBytes = pstInArgs->uiNumBytes;
@@ -1665,7 +1665,7 @@ EXPORT_API INT32 IMedia_Viddec_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_IN_ARG
 
         if(IMEDIA_RET_SUCCESS != iRet)
         {
-            /* Èô½âÎö´íÎó£¬Ò²Ğè¸üĞÂÓÃµôµÄ×Ö½ÚÊı */
+            /* è‹¥è§£æé”™è¯¯ï¼Œä¹Ÿéœ€æ›´æ–°ç”¨æ‰çš„å­—èŠ‚æ•° */
             pstOutArgs->uiBytesConsumed = uiConsumedBytes;
             IMEDIA_LOG(IMEDIA_ERROR,"codec_ctx[%p] Frame_Parse failed! Return Code: %d\n",pstAVCodecContext, iRet);
             return iRet;
@@ -1688,13 +1688,13 @@ EXPORT_API INT32 IMedia_Viddec_Process(IMEDIA_CODEC_CTX ctx, STRU_IVIDDEC_IN_ARG
 //      iReturn = pstAVCodecContext->codec->decode(pstAVCodecContext, &stAVFrame, (int *)&uiOutputSize, pucOutputBuf, (int)uiOutputBufSize);
         iRet = IMedia_Viddec_FrameDecode(ctx, &stOutArgs.stFrame, pstOutArgs);
 
-        /* ¸üĞÂÏûºÄµÄ×Ö½ÚÊı */
+        /* æ›´æ–°æ¶ˆè€—çš„å­—èŠ‚æ•° */
         pstOutArgs->uiBytesConsumed = uiConsumedBytes;
 
         /* if there are some problem that lead to return , then return errors code */
         if(IMEDIA_RET_SUCCESS != iRet)
         {
-            IMEDIA_LOG(IMEDIA_ERROR,"codec_ctx[%p] occurs seriously error£º%d\n",pstAVCodecContext, iRet);
+            IMEDIA_LOG(IMEDIA_ERROR,"codec_ctx[%p] occurs seriously errorï¼š%d\n",pstAVCodecContext, iRet);
             return iRet;
         }
 
@@ -1818,7 +1818,7 @@ INT32 GetDecStatus(IMEDIA_CODEC_CTX ctx, void *wparam)
     if (pstDecContext->ullTotalSpendTime > 0)
     {
         UINT32 uiDecodedFrames = pstAVCodecContext->uiDecIFrames + pstAVCodecContext->uiDecPFrames + pstAVCodecContext->uiDecBFrames;
-        // 2010/07/21 songxg ÓÉÓÚVP6ÔÚ¿ªÆô»ã±àºó¸¡µã×ª»»´æÔÚÎÊÌâ
+        // 2010/07/21 songxg ç”±äºVP6åœ¨å¼€å¯æ±‡ç¼–åæµ®ç‚¹è½¬æ¢å­˜åœ¨é—®é¢˜
         pstVidDecStatus->uiAvgFps = (UINT32)(((UINT64)uiDecodedFrames * 1000 * 1000) / (pstDecContext->ullTotalSpendTime));
 //		pstVidDecStatus->uiH263LFFps = (UINT32)(((UINT64)uiDecodedFrames * 1000 * 1000) / (pstAVCodecContext->loop_filter_time));
     }

@@ -31,19 +31,19 @@ extern "C" {
 #define HI_UNF_GPIO_Close HI_UNF_GPIO_DeInit
 
 /**type of GPIO interrupt*/
-/** CNcomment:GPIO ÷–∂œ¿‡–Õ*/
+/** CNcomment:GPIO ‰∏≠Êñ≠Á±ªÂûã*/
 typedef enum hiUNF_GPIO_INTTYPE_E
 {
-    HI_UNF_GPIO_INTTYPE_UP, /**<spring by the up edge*/                 /**< CNcomment:…œ…˝—ÿ¥•∑¢*/
-    HI_UNF_GPIO_INTTYPE_DOWN, /**<spring by the down edge*/               /**< CNcomment:œ¬Ωµ—ÿ¥•∑¢*/
-    HI_UNF_GPIO_INTTYPE_UPDOWN, /**<spring by both the up and down edge*/   /**< CNcomment:À´—ÿ¥•∑¢*/
-    HI_UNF_GPIO_INTTYPE_HIGH, /**<spring by the high level*/              /**< CNcomment:∏ﬂµÁ∆Ω¥•∑¢*/
-    HI_UNF_GPIO_INTTYPE_LOW, /**<spring by the low level*/               /**< CNcomment:µÕµÁ∆Ω¥•∑¢*/
-    HI_UNF_GPIO_INTTYPE_BUTT, /**<Invalid value*/                        /**< CNcomment:∑«∑®±ﬂΩÁ÷µ*/
+    HI_UNF_GPIO_INTTYPE_UP, /**<spring by the up edge*/                 /**< CNcomment:‰∏äÂçáÊ≤øËß¶Âèë*/
+    HI_UNF_GPIO_INTTYPE_DOWN, /**<spring by the down edge*/               /**< CNcomment:‰∏ãÈôçÊ≤øËß¶Âèë*/
+    HI_UNF_GPIO_INTTYPE_UPDOWN, /**<spring by both the up and down edge*/   /**< CNcomment:ÂèåÊ≤øËß¶Âèë*/
+    HI_UNF_GPIO_INTTYPE_HIGH, /**<spring by the high level*/              /**< CNcomment:È´òÁîµÂπ≥Ëß¶Âèë*/
+    HI_UNF_GPIO_INTTYPE_LOW, /**<spring by the low level*/               /**< CNcomment:‰ΩéÁîµÂπ≥Ëß¶Âèë*/
+    HI_UNF_GPIO_INTTYPE_BUTT, /**<Invalid value*/                        /**< CNcomment:ÈùûÊ≥ïËæπÁïåÂÄº*/
 } HI_UNF_GPIO_INTTYPE_E;
 
 /**GPIO output type*/
-/** CNcomment:GPIO  ‰≥ˆ¿‡–Õ*/
+/** CNcomment:GPIO ËæìÂá∫Á±ªÂûã*/
 typedef enum hiUNF_GPIO_OUTPUTTYPE_E
 {
 	HI_UNF_GPIO_OUTPUTTYPE_CMOS,
@@ -62,16 +62,16 @@ typedef enum hiUNF_GPIO_OUTPUTTYPE_E
 
 /**
  \brief Starts the general-purpose input/output (GPIO) device.
-CNcomment:\brief ¥Úø™GPIO£®General Purpose Input/Output£©…Ë±∏°£CNend
+CNcomment:\brief ÊâìÂºÄGPIOÔºàGeneral Purpose Input/OutputÔºâËÆæÂ§á„ÄÇCNend
 
  \attention \n
 This API can be called repeatedly.
-CNcomment:÷ÿ∏¥¥Úø™ª·≥…π¶°£CNend
+CNcomment:ÈáçÂ§çÊâìÂºÄ‰ºöÊàêÂäü„ÄÇCNend
 
- \param  N/A       CNcomment:Œﬁ°£CNend
- \retval 0 Success. CNcomment:≥…π¶°£CNend
- \retval ::HI_FAILURE			Initialize GPIO failed.                 	CNcomment:¥Úø™GPIO ß∞‹°£CNend
- \retval ::HI_ERR_GPIO_OPEN_ERR  Initialize GPIO failed.                 	CNcomment:¥Úø™GPIO ß∞‹°£CNend
+ \param  N/A       CNcomment:Êó†„ÄÇCNend
+ \retval 0 Success. CNcomment:ÊàêÂäü„ÄÇCNend
+ \retval ::HI_FAILURE			Initialize GPIO failed.                 	CNcomment:ÊâìÂºÄGPIOÂ§±Ë¥•„ÄÇCNend
+ \retval ::HI_ERR_GPIO_OPEN_ERR  Initialize GPIO failed.                 	CNcomment:ÊâìÂºÄGPIOÂ§±Ë¥•„ÄÇCNend
  \see \n
 N/A
  */
@@ -79,14 +79,14 @@ HI_S32 HI_UNF_GPIO_Init(HI_VOID);
 
 /**
  \brief Stops the GPIO device.
-CNcomment:\brief πÿ±’GPIO…Ë±∏°£CNend
+CNcomment:\brief ÂÖ≥Èó≠GPIOËÆæÂ§á„ÄÇCNend
 
  \attention \n
 This API can be called repeatedly.
-CNcomment:÷ÿ∏¥πÿ±’ª·≥…π¶°£CNend
- \param  N/A  CNcomment:Œﬁ°£CNend
- \retval 0 Success. CNcomment:≥…π¶°£CNend
- \retval ::HI_ERR_GPIO_CLOSE_ERR  Deinitialize GPIO failed.                 	CNcomment:¥Úø™GPIO ß∞‹°£CNend
+CNcomment:ÈáçÂ§çÂÖ≥Èó≠‰ºöÊàêÂäü„ÄÇCNend
+ \param  N/A  CNcomment:Êó†„ÄÇCNend
+ \retval 0 Success. CNcomment:ÊàêÂäü„ÄÇCNend
+ \retval ::HI_ERR_GPIO_CLOSE_ERR  Deinitialize GPIO failed.                 	CNcomment:ÊâìÂºÄGPIOÂ§±Ë¥•„ÄÇCNend
  \see \n
 N/A
  */
@@ -94,22 +94,22 @@ HI_S32 HI_UNF_GPIO_DeInit(HI_VOID);
 
 /**
  \brief Reads data from a GPIO pin.
-CNcomment:\brief ¥”GPIOµ•∏ˆ“˝Ω≈∂¡»° ˝æ›°£CNend
+CNcomment:\brief ‰ªéGPIOÂçï‰∏™ÂºïËÑöËØªÂèñÊï∞ÊçÆ„ÄÇCNend
 
  \attention The pin number is defined as follows: Pin number = GPIO group ID x 8 + GPIO pin ID in the group\n
 For example, GPIO1_2 indicates pin 2 in group 1, and the pin number is 10 (1 x 8 + 2).\n
 Both pin group ID and pin number are numbered from 0. Each HD chip provides GPIO pins number reference to HD chip hardware manual.\n
-CNcomment:\attention π‹Ω≈∫≈º∆À„πÊ‘Ú: π‹Ω≈∫≈ = GPIO◊È∫≈*8 + GPIOπ‹Ω≈‘⁄◊Èƒ⁄µƒ±È∫≈°£\n
-±»»ÁGPIO1_2,¥˙±Ìµ⁄1◊Èµ⁄2Ω≈£¨ƒ«√¥π‹Ω≈∫≈=1*8+2=10°£\n
-GPIOµƒ◊È∫≈∫Õπ‹Ω≈∫≈µƒ±‡∫≈∂º¥”0ø™ º°£∏ﬂ«Â–æ∆¨Ã·π©µƒgpioπ‹Ω≈ ˝«Î≤Œøºœ‡πÿµƒ–æ∆¨”≤º˛ ÷≤·\n CNend
+CNcomment:\attention ÁÆ°ËÑöÂè∑ËÆ°ÁÆóËßÑÂàô: ÁÆ°ËÑöÂè∑ = GPIOÁªÑÂè∑*8 + GPIOÁÆ°ËÑöÂú®ÁªÑÂÜÖÁöÑÈÅçÂè∑„ÄÇ\n
+ÊØîÂ¶ÇGPIO1_2,‰ª£Ë°®Á¨¨1ÁªÑÁ¨¨2ËÑöÔºåÈÇ£‰πàÁÆ°ËÑöÂè∑=1*8+2=10„ÄÇ\n
+GPIOÁöÑÁªÑÂè∑ÂíåÁÆ°ËÑöÂè∑ÁöÑÁºñÂè∑ÈÉΩ‰ªé0ÂºÄÂßã„ÄÇÈ´òÊ∏ÖËäØÁâáÊèê‰æõÁöÑgpioÁÆ°ËÑöÊï∞ËØ∑ÂèÇËÄÉÁõ∏ÂÖ≥ÁöÑËäØÁâáÁ°¨‰ª∂ÊâãÂÜå\n CNend
 
- \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:π‹Ω≈∫≈£¨»°÷µ∑∂ŒßŒ™0°´103£¨≤ªÕ¨µƒ–æ∆¨¿‡–Õ∑∂Œß≤ª“ª—˘°£CNend
- \param[out] pbHighVolt   Pointer to the input level of a pin.  CNcomment:÷∏’Î¿‡–Õ£¨∑µªÿπ‹Ω≈ ‰»ÎµÁ∆Ω°£CNend
- \retval 0 Success. CNcomment:≥…π¶°£CNend
- \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:∑«∑®≤Œ ˝°£CNend
- \retval ::HI_ERR_GPIO_NULL_PTR  Pointer Parameters is NULL.                 	CNcomment:÷∏’Î≤Œ ˝Œ™ø’÷∏’Î°£CNend
- \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOƒ£øÈ√ª”–≥ı ºªØ°£CNend
- \retval ::HI_ERR_GPIO_INVALID_OPT  Invalid Operation.              			CNcomment:∑«∑®≤Ÿ◊˜°£CNend
+ \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:ÁÆ°ËÑöÂè∑ÔºåÂèñÂÄºËåÉÂõ¥‰∏∫0ÔΩû103Ôºå‰∏çÂêåÁöÑËäØÁâáÁ±ªÂûãËåÉÂõ¥‰∏ç‰∏ÄÊ†∑„ÄÇCNend
+ \param[out] pbHighVolt   Pointer to the input level of a pin.  CNcomment:ÊåáÈíàÁ±ªÂûãÔºåËøîÂõûÁÆ°ËÑöËæìÂÖ•ÁîµÂπ≥„ÄÇCNend
+ \retval 0 Success. CNcomment:ÊàêÂäü„ÄÇCNend
+ \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:ÈùûÊ≥ïÂèÇÊï∞„ÄÇCNend
+ \retval ::HI_ERR_GPIO_NULL_PTR  Pointer Parameters is NULL.                 	CNcomment:ÊåáÈíàÂèÇÊï∞‰∏∫Á©∫ÊåáÈíà„ÄÇCNend
+ \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOÊ®°ÂùóÊ≤°ÊúâÂàùÂßãÂåñ„ÄÇCNend
+ \retval ::HI_ERR_GPIO_INVALID_OPT  Invalid Operation.              			CNcomment:ÈùûÊ≥ïÊìç‰Ωú„ÄÇCNend
  \see \n
 N/A
  */
@@ -120,18 +120,18 @@ HI_S32 HI_UNF_GPIO_SetOutputType(HI_U32 u32GpioNo, HI_UNF_GPIO_OUTPUTTYPE_E  enO
 HI_S32 HI_UNF_GPIO_GetOutputType(HI_U32 u32GpioNo, HI_UNF_GPIO_OUTPUTTYPE_E  *penOutputType);
 /**
  \brief Writes data to a GPIO pin.
-CNcomment:\brief œÚGPIOµ•∏ˆ“˝Ω≈ ‰≥ˆ ˝æ›°£CNend
+CNcomment:\brief ÂêëGPIOÂçï‰∏™ÂºïËÑöËæìÂá∫Êï∞ÊçÆ„ÄÇCNend
  \attention \n
 N/A
- \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:π‹Ω≈∫≈£¨»°÷µ∑∂ŒßŒ™0°´103£¨≤ªÕ¨µƒ–æ∆¨¿‡–Õ∑∂Œß≤ª“ª—˘°£CNend
- \param[in] bHighVolt  Output level of a pin              CNcomment:π‹Ω≈ ‰≥ˆµÁ∆Ω°£CNend
-                      0: low level                       CNcomment:0: µÕµÁ∆Ω CNend
-                      1: high level                      CNcomment:1£∫∏ﬂµÁ∆Ω CNend
-                     Others: high level                  CNcomment:∆‰À˚£∫∏ﬂµÁ∆Ω°£CNend
- \retval 0 Success. CNcomment:≥…π¶°£CNend
- \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:∑«∑®≤Œ ˝°£CNend
- \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOƒ£øÈ√ª”–≥ı ºªØ°£CNend
- \retval ::HI_ERR_GPIO_INVALID_OPT  Invalid Operation.              			CNcomment:∑«∑®≤Ÿ◊˜°£CNend
+ \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:ÁÆ°ËÑöÂè∑ÔºåÂèñÂÄºËåÉÂõ¥‰∏∫0ÔΩû103Ôºå‰∏çÂêåÁöÑËäØÁâáÁ±ªÂûãËåÉÂõ¥‰∏ç‰∏ÄÊ†∑„ÄÇCNend
+ \param[in] bHighVolt  Output level of a pin              CNcomment:ÁÆ°ËÑöËæìÂá∫ÁîµÂπ≥„ÄÇCNend
+                      0: low level                       CNcomment:0: ‰ΩéÁîµÂπ≥ CNend
+                      1: high level                      CNcomment:1ÔºöÈ´òÁîµÂπ≥ CNend
+                     Others: high level                  CNcomment:ÂÖ∂‰ªñÔºöÈ´òÁîµÂπ≥„ÄÇCNend
+ \retval 0 Success. CNcomment:ÊàêÂäü„ÄÇCNend
+ \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:ÈùûÊ≥ïÂèÇÊï∞„ÄÇCNend
+ \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOÊ®°ÂùóÊ≤°ÊúâÂàùÂßãÂåñ„ÄÇCNend
+ \retval ::HI_ERR_GPIO_INVALID_OPT  Invalid Operation.              			CNcomment:ÈùûÊ≥ïÊìç‰Ωú„ÄÇCNend
  \see \n
 N/A
  */
@@ -139,20 +139,20 @@ HI_S32 HI_UNF_GPIO_WriteBit(HI_U32 u32GpioNo, HI_BOOL bHighVolt );
 
 /**
  \brief Sets the direction (input or output) of a GPIO pin.
-CNcomment:\brief …Ë÷√GPIOµ•∏ˆ“˝Ω≈ ‰»Î ‰≥ˆ∑ΩœÚ°£CNend
+CNcomment:\brief ËÆæÁΩÆGPIOÂçï‰∏™ÂºïËÑöËæìÂÖ•ËæìÂá∫ÊñπÂêë„ÄÇCNend
 
  \attention \n
 When setting the operating mode of a GPIO pin, ensure that it works in GPIO mode only.\n
 This is because the GPIO pin may be multiplexed.\n
-CNcomment:…Ë÷√∂‘”¶π‹Ω≈µƒπ§◊˜∑Ω Ω ±£¨±ÿ–Î±£÷§∏√π‹Ω≈Ωˆπ§◊˜‘⁄GPIOƒ£ Ωœ¬£¨GPIOπ‹Ω≈”–ø…ƒ‹±ª∏¥”√°£CNend
+CNcomment:ËÆæÁΩÆÂØπÂ∫îÁÆ°ËÑöÁöÑÂ∑•‰ΩúÊñπÂºèÊó∂ÔºåÂøÖÈ°ª‰øùËØÅËØ•ÁÆ°ËÑö‰ªÖÂ∑•‰ΩúÂú®GPIOÊ®°Âºè‰∏ãÔºåGPIOÁÆ°ËÑöÊúâÂèØËÉΩË¢´Â§çÁî®„ÄÇCNend
 
- \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:π‹Ω≈∫≈£¨»°÷µ∑∂ŒßŒ™0°´103£¨≤ªÕ¨µƒ–æ∆¨¿‡–Õ∑∂Œß≤ª“ª—˘°£CNend
- \param[in] bInput  Boolean variable that indicates the direction of a pin  CNcomment:≤º∂˚±‰¡ø£¨±Í ∂π‹Ω≈∑ΩœÚ°£CNend
-                   HI_TRUE: input pin  HI_TRUE.                           CNcomment:∏√π‹Ω≈”√”⁄ ‰»Î°£CNend
-                   HI_FALSE: output pin HI_FALSE.                         CNcomment:∏√π‹Ω≈”√”⁄ ‰≥ˆ°£CNend
- \retval 0 Success. CNcomment:≥…π¶°£CNend
- \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:∑«∑®≤Œ ˝°£CNend
- \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOƒ£øÈ√ª”–≥ı ºªØ°£CNend
+ \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:ÁÆ°ËÑöÂè∑ÔºåÂèñÂÄºËåÉÂõ¥‰∏∫0ÔΩû103Ôºå‰∏çÂêåÁöÑËäØÁâáÁ±ªÂûãËåÉÂõ¥‰∏ç‰∏ÄÊ†∑„ÄÇCNend
+ \param[in] bInput  Boolean variable that indicates the direction of a pin  CNcomment:Â∏ÉÂ∞îÂèòÈáèÔºåÊ†áËØÜÁÆ°ËÑöÊñπÂêë„ÄÇCNend
+                   HI_TRUE: input pin  HI_TRUE.                           CNcomment:ËØ•ÁÆ°ËÑöÁî®‰∫éËæìÂÖ•„ÄÇCNend
+                   HI_FALSE: output pin HI_FALSE.                         CNcomment:ËØ•ÁÆ°ËÑöÁî®‰∫éËæìÂá∫„ÄÇCNend
+ \retval 0 Success. CNcomment:ÊàêÂäü„ÄÇCNend
+ \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:ÈùûÊ≥ïÂèÇÊï∞„ÄÇCNend
+ \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOÊ®°ÂùóÊ≤°ÊúâÂàùÂßãÂåñ„ÄÇCNend
  \see \n
 N/A
  */
@@ -160,16 +160,16 @@ HI_S32 HI_UNF_GPIO_SetDirBit(HI_U32 u32GpioNo, HI_BOOL bInput);
 
 /**
  \brief Obtains the direction (input or output) of a GPIO pin.
-CNcomment:\brief ªÒ»°GPIOµ•∏ˆ“˝Ω≈ ‰»Î ‰≥ˆ∑ΩœÚ°£CNend
+CNcomment:\brief Ëé∑ÂèñGPIOÂçï‰∏™ÂºïËÑöËæìÂÖ•ËæìÂá∫ÊñπÂêë„ÄÇCNend
 
  \attention \n
 N/A
- \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type.     CNcomment:π‹Ω≈∫≈£¨»°÷µ∑∂ŒßŒ™0°´103£¨≤ªÕ¨µƒ–æ∆¨¿‡–Õ∑∂Œß≤ª“ª—˘°£CNend
- \param[out] pbInput   Pointer to the boolean variable that indicates the direction of a pin.  CNcomment:÷∏’Î¿‡–Õ£¨÷∏œÚ≤º∂˚–Õ±‰¡ø£¨”√¿¥∑µªÿπ‹Ω≈∑ΩœÚ°£CNend
- \retval 0 Success. CNcomment:≥…π¶°£CNend
- \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:∑«∑®≤Œ ˝°£CNend
- \retval ::HI_ERR_GPIO_NULL_PTR  Pointer Parameters is NULL.                 	CNcomment:÷∏’Î≤Œ ˝Œ™ø’÷∏’Î°£CNend
- \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOƒ£øÈ√ª”–≥ı ºªØ°£CNend
+ \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type.     CNcomment:ÁÆ°ËÑöÂè∑ÔºåÂèñÂÄºËåÉÂõ¥‰∏∫0ÔΩû103Ôºå‰∏çÂêåÁöÑËäØÁâáÁ±ªÂûãËåÉÂõ¥‰∏ç‰∏ÄÊ†∑„ÄÇCNend
+ \param[out] pbInput   Pointer to the boolean variable that indicates the direction of a pin.  CNcomment:ÊåáÈíàÁ±ªÂûãÔºåÊåáÂêëÂ∏ÉÂ∞îÂûãÂèòÈáèÔºåÁî®Êù•ËøîÂõûÁÆ°ËÑöÊñπÂêë„ÄÇCNend
+ \retval 0 Success. CNcomment:ÊàêÂäü„ÄÇCNend
+ \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:ÈùûÊ≥ïÂèÇÊï∞„ÄÇCNend
+ \retval ::HI_ERR_GPIO_NULL_PTR  Pointer Parameters is NULL.                 	CNcomment:ÊåáÈíàÂèÇÊï∞‰∏∫Á©∫ÊåáÈíà„ÄÇCNend
+ \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOÊ®°ÂùóÊ≤°ÊúâÂàùÂßãÂåñ„ÄÇCNend
  \see \n
 N/A
  */
@@ -177,17 +177,17 @@ HI_S32 HI_UNF_GPIO_GetDirBit(HI_U32 u32GpioNo, HI_BOOL    *pbInput);
 
 /**
  \brief Starts the cipher device.
-CNcomment:\brief …Ë÷√GPIOµ•∏ˆ“˝Ω≈µƒ÷–∂œ¿‡–Õ°£CNend
+CNcomment:\brief ËÆæÁΩÆGPIOÂçï‰∏™ÂºïËÑöÁöÑ‰∏≠Êñ≠Á±ªÂûã„ÄÇCNend
 
  \attention \n
 N/A
- \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:π‹Ω≈∫≈£¨»°÷µ∑∂ŒßŒ™0°´103£¨≤ªÕ¨µƒ–æ∆¨¿‡–Õ∑∂Œß≤ª“ª—˘°£CNend
- \param[in] enIntType    interrupt type                                CNcomment:÷–∂œ¿‡–Õ°£CNend
- \retval 0 Success. CNcomment:≥…π¶°£CNend
- \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:∑«∑®≤Œ ˝°£CNend
- \retval ::HI_ERR_GPIO_INTTYPE_NOT_SUPPORT  interupt type is not support.       CNcomment:≤ª÷ß≥÷µƒ÷–∂œ¿‡–Õ°£CNend
- \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOƒ£øÈ√ª”–≥ı ºªØ°£CNend
- \retval ::HI_ERR_GPIO_FAILED_SETINT  set interupt type failed.              	CNcomment:…Ë÷√÷–∂œ¿‡–Õ ß∞‹°£CNend
+ \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:ÁÆ°ËÑöÂè∑ÔºåÂèñÂÄºËåÉÂõ¥‰∏∫0ÔΩû103Ôºå‰∏çÂêåÁöÑËäØÁâáÁ±ªÂûãËåÉÂõ¥‰∏ç‰∏ÄÊ†∑„ÄÇCNend
+ \param[in] enIntType    interrupt type                                CNcomment:‰∏≠Êñ≠Á±ªÂûã„ÄÇCNend
+ \retval 0 Success. CNcomment:ÊàêÂäü„ÄÇCNend
+ \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:ÈùûÊ≥ïÂèÇÊï∞„ÄÇCNend
+ \retval ::HI_ERR_GPIO_INTTYPE_NOT_SUPPORT  interupt type is not support.       CNcomment:‰∏çÊîØÊåÅÁöÑ‰∏≠Êñ≠Á±ªÂûã„ÄÇCNend
+ \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOÊ®°ÂùóÊ≤°ÊúâÂàùÂßãÂåñ„ÄÇCNend
+ \retval ::HI_ERR_GPIO_FAILED_SETINT  set interupt type failed.              	CNcomment:ËÆæÁΩÆ‰∏≠Êñ≠Á±ªÂûãÂ§±Ë¥•„ÄÇCNend
  \see \n
 N/A
  */
@@ -195,16 +195,16 @@ HI_S32 HI_UNF_GPIO_SetIntType(HI_U32 u32GpioNo, HI_UNF_GPIO_INTTYPE_E enIntType)
 
 /**
  \brief set GPIO single pin interrupt enable
-CNcomment:\brief …Ë÷√GPIOµ•∏ˆ“˝Ω≈µƒ÷–∂œ πƒ‹°£CNend
+CNcomment:\brief ËÆæÁΩÆGPIOÂçï‰∏™ÂºïËÑöÁöÑ‰∏≠Êñ≠‰ΩøËÉΩ„ÄÇCNend
  \attention \n
 interrupte type HI_UNF_GPIO_INTTYPE_LOW and HI_UNF_GPIO_INTTYPE_HIGH is not support
-CNcomment:≤ª÷ß≥÷HI_UNF_GPIO_INTTYPE_LOW ∫Õ HI_UNF_GPIO_INTTYPE_HIGH÷–∂œ¿‡–Õ°£CNend
- \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:π‹Ω≈∫≈£¨»°÷µ∑∂ŒßŒ™0°´103£¨≤ªÕ¨µƒ–æ∆¨¿‡–Õ∑∂Œß≤ª“ª—˘°£CNend
- \param[in] bEnable  HI_TRUE: interrupt enable, HI_FALSE: interrupt disable CNcomment:HI_TRUE: ÷–∂œ πƒ‹ ,HI_FALSE: ÷–∂œΩ˚÷π°£CNend
- \retval 0 Success. CNcomment:≥…π¶°£CNend
- \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:∑«∑®≤Œ ˝°£CNend
- \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOƒ£øÈ√ª”–≥ı ºªØ°£CNend
- \retval ::HI_ERR_GPIO_FAILED_SETENABLE  enable interupt failed.              	CNcomment: πƒ‹÷–∂œ ß∞‹°£CNend
+CNcomment:‰∏çÊîØÊåÅHI_UNF_GPIO_INTTYPE_LOW Âíå HI_UNF_GPIO_INTTYPE_HIGH‰∏≠Êñ≠Á±ªÂûã„ÄÇCNend
+ \param[in] u32GpioNo  Pin number, ranging from 0 to 103, ranging is different in otherness chip type     CNcomment:ÁÆ°ËÑöÂè∑ÔºåÂèñÂÄºËåÉÂõ¥‰∏∫0ÔΩû103Ôºå‰∏çÂêåÁöÑËäØÁâáÁ±ªÂûãËåÉÂõ¥‰∏ç‰∏ÄÊ†∑„ÄÇCNend
+ \param[in] bEnable  HI_TRUE: interrupt enable, HI_FALSE: interrupt disable CNcomment:HI_TRUE: ‰∏≠Êñ≠‰ΩøËÉΩ ,HI_FALSE: ‰∏≠Êñ≠Á¶ÅÊ≠¢„ÄÇCNend
+ \retval 0 Success. CNcomment:ÊàêÂäü„ÄÇCNend
+ \retval ::HI_ERR_GPIO_INVALID_PARA	 Parameters Invalid.                 		CNcomment:ÈùûÊ≥ïÂèÇÊï∞„ÄÇCNend
+ \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOÊ®°ÂùóÊ≤°ÊúâÂàùÂßãÂåñ„ÄÇCNend
+ \retval ::HI_ERR_GPIO_FAILED_SETENABLE  enable interupt failed.              	CNcomment:‰ΩøËÉΩ‰∏≠Êñ≠Â§±Ë¥•„ÄÇCNend
  \see \n
 N/A
  */
@@ -212,15 +212,15 @@ HI_S32 HI_UNF_GPIO_SetIntEnable(HI_U32 u32GpioNo, HI_BOOL bEnable);
 
 /**
  \brief query GPIO interrupt, report it if there is interrupter happen.\n
-CNcomment:\brief ≤È—ØGPIO÷–∂œ£¨÷ª“™”–GPIO÷–∂œæÕª·…œ±®…œ¿¥°£CNend
+CNcomment:\brief Êü•ËØ¢GPIO‰∏≠Êñ≠ÔºåÂè™Ë¶ÅÊúâGPIO‰∏≠Êñ≠Â∞±‰ºö‰∏äÊä•‰∏äÊù•„ÄÇCNend
  \attention \n
 N/A
- \param[out] p32GpioNo    get interrupt pin number.        CNcomment:ªÒ»°÷–∂œµƒπ‹Ω≈∫≈°£CNend
- \param[in] u32TimeoutMs  get interrupt timeout.           CNcomment:ªÒ»°÷–∂œ≥¨ ± ±º‰°£CNend
- \retval 0 Success. CNcomment:≥…π¶°£CNend
- \retval ::HI_ERR_GPIO_NULL_PTR  Pointer Parameters is NULL.                 	CNcomment:÷∏’Î≤Œ ˝Œ™ø’÷∏’Î°£CNend
- \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOƒ£øÈ√ª”–≥ı ºªØ°£CNend
- \retval ::HI_ERR_GPIO_FAILED_GETINT  Query interupt failed.              	CNcomment:≤È—Ø÷–∂œ ß∞‹°£CNend
+ \param[out] p32GpioNo    get interrupt pin number.        CNcomment:Ëé∑Âèñ‰∏≠Êñ≠ÁöÑÁÆ°ËÑöÂè∑„ÄÇCNend
+ \param[in] u32TimeoutMs  get interrupt timeout.           CNcomment:Ëé∑Âèñ‰∏≠Êñ≠Ë∂ÖÊó∂Êó∂Èó¥„ÄÇCNend
+ \retval 0 Success. CNcomment:ÊàêÂäü„ÄÇCNend
+ \retval ::HI_ERR_GPIO_NULL_PTR  Pointer Parameters is NULL.                 	CNcomment:ÊåáÈíàÂèÇÊï∞‰∏∫Á©∫ÊåáÈíà„ÄÇCNend
+ \retval ::HI_ERR_GPIO_NOT_INIT  GPIO module is not initialiazed.              	CNcomment:GPIOÊ®°ÂùóÊ≤°ÊúâÂàùÂßãÂåñ„ÄÇCNend
+ \retval ::HI_ERR_GPIO_FAILED_GETINT  Query interupt failed.              	CNcomment:Êü•ËØ¢‰∏≠Êñ≠Â§±Ë¥•„ÄÇCNend
  \see \n
 N/A
  */

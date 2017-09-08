@@ -29,7 +29,7 @@
 #include "config.h"
 #include "common.h"
 
-/* ĞÂÔö¶¨ÒåºÍ±äÁ¿ */
+/* æ–°å¢å®šä¹‰å’Œå˜é‡ */
 #if 0
 typedef void* funAVMalloc(unsigned int len);
 #else
@@ -42,7 +42,7 @@ typedef void  funAVFree(void *ptr);
 extern funAVFree* av_free_hw;
 #define AV_FREE_FUNCTION(fun) {if(av_free_hw != fun) av_free_hw = fun;}
 
-/* ½áÊø£¨ĞÂÔö¶¨ÒåºÍ±äÁ¿£© */
+/* ç»“æŸï¼ˆæ–°å¢å®šä¹‰å’Œå˜é‡ï¼‰ */
 
 #if AV_GCC_VERSION_AT_LEAST(3,1)
     #define av_malloc_attrib __attribute__((__malloc__))
