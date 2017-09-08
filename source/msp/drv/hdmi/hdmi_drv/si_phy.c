@@ -154,14 +154,14 @@ HI_S32 SI_TX_PHY_EnableHdmiOutput(void)
 #if defined(BOARD_TYPE_S40V2_fpga) 
     SI_TX_PHY_ReadRegister(0x1,&u32Reg);
     HI_INFO_HDMI("writing phy 0x%x EnableHdmiOutput\n",u32Reg);
-    u32Reg |= 0x20;
+    u32Reg |= 0x20;
     HI_INFO_HDMI("writing phy 0x%x EnableHdmiOutput\n",u32Reg);
     SI_TX_PHY_WriteRegister(0x1, u32Reg);
 #else  
     //ÐÂphy
     SI_TX_PHY_ReadRegister(0x05,&u32Reg);
     HI_INFO_HDMI("writing phy 0x%x EnableHdmiOutput\n",u32Reg);
-    u32Reg |= 0x20;
+    u32Reg |= 0x20;
     HI_INFO_HDMI("writing phy 0x%x EnableHdmiOutput\n",u32Reg);
     SI_TX_PHY_WriteRegister(0x05, u32Reg);
 #endif
@@ -226,7 +226,7 @@ HI_S32 SI_TX_PHY_PowerDown(HI_BOOL bPwdown)
     }
     else
     {
-        u32Value |= 0x01;
+        u32Value |= 0x01;
     }
     HI_INFO_HDMI("writing phy 0x%x PowerDown\n",u32Value);
     SI_TX_PHY_WriteRegister(0x2,u32Value);
@@ -240,7 +240,7 @@ HI_S32 SI_TX_PHY_PowerDown(HI_BOOL bPwdown)
     }
     else
     {
-        u32Value |= 0x10;
+        u32Value |= 0x10;
     }
     HI_INFO_HDMI("writing phy 0x%x PowerDown\n",u32Value);
     SI_TX_PHY_WriteRegister(0x05,u32Value);

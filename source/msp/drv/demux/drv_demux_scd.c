@@ -21,7 +21,7 @@
 #include "hi_type.h"
 
 #include "demux_debug.h"
-#include "drv_demux_scd.h"
+#include "drv_demux_scd.h"
 
 
 #define PVR_INDEX_INVALID_PTSMS             ((HI_U32)(-1))

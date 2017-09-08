@@ -284,7 +284,7 @@ HI_S32	DispCastSetFramePTS(HI_DRV_VIDEO_FRAME_S *pstCastFrame,MIRA_GET_PTS_E pts
     }
     
 
-    return HI_SUCCESS;}
+    return HI_SUCCESS;}
 
 
 static HI_S32 Cast_AcquireFrame(DISP_CAST_S *pstCast, HI_DRV_VIDEO_FRAME_S *pstCastFrame)

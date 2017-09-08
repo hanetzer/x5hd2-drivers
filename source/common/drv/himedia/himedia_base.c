@@ -619,7 +619,7 @@ PM_BASEDRV_S *himedia_driver_alloc(const char *name, struct module *owner,
 		// 1
 		if (ops && ops->probe) {
 			pa->pdrv.probe = ops->probe;
-		}else{
+		}else{
 			pa->pdrv.probe = NULL;
 		}
 

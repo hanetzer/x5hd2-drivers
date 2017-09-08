@@ -1804,7 +1804,7 @@ static HI_S32 HDMI0_Sink_Proc(struct seq_file *p, HI_VOID *v)
 
     if(sinkCap.u8Speaker != 0x00)
     {
-        p += PROC_PRINT(p, "\n%-10s : ","Speaker");        
+        p += PROC_PRINT(p, "\n%-10s : ","Speaker");        
 
         for(u32Index = 0; u32Index < 8; u32Index++)
         {

@@ -1823,7 +1823,7 @@ HI_S32 VPSS_REG_SetMode(HI_U32 u32AppAddr,REG_DIE_MODE_E eDieMode,HI_U32  u32Mod
 
     return HI_SUCCESS;
 }
-HI_S32 VPSS_REG_SetStInfo(HI_U32 u32AppAddr,HI_BOOL bStop)
+HI_S32 VPSS_REG_SetStInfo(HI_U32 u32AppAddr,HI_BOOL bStop)
 {
     U_VPSS_DIECTRL VPSS_DIECTRL;
     VPSS_REG_S *pstReg;

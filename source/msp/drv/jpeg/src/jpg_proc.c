@@ -262,7 +262,7 @@ static HI_S32 JPEG_Read_Proc(struct seq_file *p, HI_VOID *v)
 							strncpy(DecodeState, "FinishStartDecompress",strlen("FinishStartDecompress"));
 							DecodeState[strlen("FinishStartDecompress")] = '\0';
 	                        break;
-	                   case JPEG_DEC_FINISH_READ_SCANLINES:
+	                   case JPEG_DEC_FINISH_READ_SCANLINES:
 					   	    strncpy(DecodeState, "FinishReadScanlies",strlen("FinishReadScanlies"));
 					        DecodeState[strlen("FinishReadScanlies")] = '\0';
 					   	    break;

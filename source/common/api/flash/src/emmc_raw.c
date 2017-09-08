@@ -272,7 +272,7 @@ HI_S32 emmc_raw_read(const EMMC_CB_S *pstEmmcCB,
     {
         EMMC_RAW_ASSERT("Pointer is null.");
         return HI_FAILURE;
-    }
+    }
 
     /* Reject read, which are not block aligned */
     if( EMMC_PART_TYPE_RAW == pstEmmcCB->enPartType )

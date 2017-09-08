@@ -427,7 +427,7 @@ typedef enum
 /** CNcomment:已经设定窗口内存模式 0xB0078005 */
 #define HIGO_ERR_ALREADYSETMODE HIGO_DEF_ERR(HIGO_MOD_WINC, ERR_WINC_ALREADYSETMODE)
 
-/**Error codes of the HiGo surface module*/
+/**Error codes of the HiGo surface module*/
 /** CNcomment:HiGo Cursor模块错误码 */
 typedef enum
 {

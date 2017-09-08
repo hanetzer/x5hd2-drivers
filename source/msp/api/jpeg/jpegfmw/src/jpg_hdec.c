@@ -807,7 +807,7 @@ HI_S32 JPGHDEC_ResetJpgHW(JPGHD_CTX_S*  pstHdCtx)
     extern HI_VOID *s_pRegReset;
 
     JPG_INTMASK_U IntMask;
-      JPG_RESET_U Reset;
+      JPG_RESET_U Reset;
     JPG_STADDR_U BufStAddr;
     JPG_ENDADDR_U BufEndAddr;
 

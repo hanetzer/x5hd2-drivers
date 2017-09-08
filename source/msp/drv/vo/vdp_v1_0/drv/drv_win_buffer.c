@@ -213,7 +213,7 @@ HI_S32 WinBuf_Reset(WB_POOL_S *pstWinBP)
 }
 
 HI_S32 WinBuf_SetSource(WB_POOL_S *pstWinBP, WB_SOURCE_INFO_S *pstSrc)
-{
+{
     WIN_CHECK_NULL_RETURN(pstWinBP);
     WIN_CHECK_NULL_RETURN(pstSrc);
 

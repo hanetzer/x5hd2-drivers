@@ -4036,7 +4036,7 @@ HI_S32 OPTM_GFX_ClearLogoOsd(HIFB_LAYER_ID_E enLayerId)
 
 HI_S32 OPTM_GFX_SetStereoDepth(HIFB_LAYER_ID_E enLayerId, HI_S32 s32Depth)
 {
-	return HI_SUCCESS;
+	return HI_SUCCESS;
 }
 
 HI_VOID OPTM_GFX_GetOps(OPTM_GFX_OPS_S *ops)

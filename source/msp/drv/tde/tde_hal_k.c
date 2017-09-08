@@ -1871,7 +1871,7 @@ HI_VOID TdeHalNodeSetBlend(TDE_HWNode_S *pHWNode, TDE2_BLEND_OPT_S *pstBlendOpt)
             unAlphaBlend.stBits.u32Src1BlendMode = pstBlendOpt->eSrc1BlendMode;
             unAlphaBlend.stBits.u32Src2BlendMode = pstBlendOpt->eSrc2BlendMode;
             break;
-        }
+        }
     }
     pHWNode->u32TDE_ALPHA_BLEND = unAlphaBlend.u32All;
 

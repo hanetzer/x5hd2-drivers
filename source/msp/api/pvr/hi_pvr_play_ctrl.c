@@ -1707,7 +1707,7 @@ HI_S32 PVRPlaySendAframe(PVR_PLAY_CHN_S  *pChnAttr, const PVR_INDEX_ENTRY_S *pfr
     {
         HI_INFO_PVR("SEND:0->%llu.\n", pframe->u64Offset);
 
-        /*send stream from the beginning of file to the beginning of the first frame*//*CNcomment:从文件开头送到第一帧开始 */
+        /*send stream from the beginning of file to the beginning of the first frame*//*CNcomment:从文件开头送到第一帧开始 */
         ret |= PVRPlaySendData(pChnAttr, 0, (HI_U32)pframe->u64Offset);
         pChnAttr->bCAStreamHeadSent = HI_TRUE;
 
@@ -2833,7 +2833,7 @@ STATIC void* PVRPlayMainRoute(void *args)
             }
         }
 
-        PVR_LOCK(&(pChnAttr->stMutex));
+        PVR_LOCK(&(pChnAttr->stMutex));
 
         ret = PVRPlayCheckIfTsOverByRec(pChnAttr);
         if (HI_SUCCESS != ret)

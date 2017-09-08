@@ -63,7 +63,7 @@ HI_VOID HifbSetLogoLayerEnable(HI_BOOL bEnable)
 {
     PDM_EXPORT_FUNC_S *ps_PdmExportFuncs = HI_NULL;
 	
-    if (bEnable) 
+    if (bEnable)
     {
         *g_u32LogoCtrlReg |= (0x1 << 31);
         *g_u32SDCtrlReg   |= (0x1 << 31);
